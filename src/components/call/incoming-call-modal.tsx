@@ -77,8 +77,8 @@ export function IncomingCallModal({
         <DialogOverlay className="bg-black/90 backdrop-blur-sm" />
         <DialogContent
           className={cn(
-            'fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
-            'max-w-md border-0 p-0 bg-transparent shadow-none',
+            'fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]',
+            'max-w-md border-0 bg-transparent p-0 shadow-none',
             className
           )}
           aria-describedby={undefined}
@@ -99,9 +99,7 @@ export function IncomingCallModal({
 
             {/* Auto-decline countdown */}
             {timeRemaining !== undefined && timeRemaining > 0 && (
-              <div className="text-sm text-white/60">
-                Auto-declining in {timeRemaining}s
-              </div>
+              <div className="text-sm text-white/60">Auto-declining in {timeRemaining}s</div>
             )}
           </div>
         </DialogContent>
@@ -146,8 +144,8 @@ export function IncomingCallQueue({
         <DialogOverlay className="bg-black/90 backdrop-blur-sm" />
         <DialogContent
           className={cn(
-            'fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]',
-            'max-w-md border-0 p-0 bg-transparent shadow-none',
+            'fixed left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]',
+            'max-w-md border-0 bg-transparent p-0 shadow-none',
             className
           )}
           aria-describedby={undefined}
@@ -171,11 +169,12 @@ export function IncomingCallQueue({
             {remainingCalls.length > 0 && (
               <div className="flex flex-col items-center gap-2 text-white">
                 <p className="text-sm">
-                  +{remainingCalls.length} more incoming {remainingCalls.length === 1 ? 'call' : 'calls'}
+                  +{remainingCalls.length} more incoming{' '}
+                  {remainingCalls.length === 1 ? 'call' : 'calls'}
                 </p>
                 <button
                   onClick={onDeclineAll}
-                  className="text-xs text-red-400 hover:text-red-300 underline"
+                  className="text-xs text-red-400 underline hover:text-red-300"
                 >
                   Decline all
                 </button>

@@ -167,12 +167,7 @@ export class DoubleRatchet {
     localRatchetKeyPair: KeyPair
   ): Promise<DoubleRatchet> {
     // Derive initial root key from shared secret
-    const rootKey = await hkdfWithInfo(
-      sharedSecret,
-      new Uint8Array(32),
-      KDF_INFO.ROOT_KEY,
-      32
-    )
+    const rootKey = await hkdfWithInfo(sharedSecret, new Uint8Array(32), KDF_INFO.ROOT_KEY, 32)
 
     const state: RatchetState = {
       rootKey,
@@ -235,10 +230,7 @@ export class DoubleRatchet {
    * @param associatedData - Additional authenticated data (optional)
    * @returns Encrypted payload with header and ciphertext
    */
-  async encrypt(
-    plaintext: Uint8Array,
-    associatedData?: Uint8Array
-  ): Promise<EncryptedPayload> {
+  async encrypt(plaintext: Uint8Array, associatedData?: Uint8Array): Promise<EncryptedPayload> {
     // Ensure we have a sending chain
     if (!this.state.sendingChainKey) {
       throw new EncryptionError(

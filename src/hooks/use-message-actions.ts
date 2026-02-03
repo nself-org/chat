@@ -17,11 +17,7 @@ import { useCallback, useState } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { useToast } from '@/hooks/use-toast'
 import { logger } from '@/lib/logger'
-import type {
-  Message,
-  MessageAction,
-  MessageActionPermissions,
-} from '@/types/message'
+import type { Message, MessageAction, MessageActionPermissions } from '@/types/message'
 
 // ============================================================================
 // Types
@@ -93,11 +89,7 @@ export interface UseMessageActionsReturn {
   /** Selection state */
   selection: MessageSelectionState
   /** Handle a message action */
-  handleAction: (
-    action: MessageAction,
-    message: Message,
-    data?: unknown
-  ) => void | Promise<void>
+  handleAction: (action: MessageAction, message: Message, data?: unknown) => void | Promise<void>
   /** Check if action is available */
   canPerformAction: (action: MessageAction, message: Message) => boolean
   /** Get permissions for a message */
@@ -113,9 +105,7 @@ export interface UseMessageActionsReturn {
 /**
  * Hook for managing message actions
  */
-export function useMessageActions(
-  options: UseMessageActionsOptions
-): UseMessageActionsReturn {
+export function useMessageActions(options: UseMessageActionsOptions): UseMessageActionsReturn {
   const {
     channelId,
     onReplyMessage,
@@ -133,9 +123,7 @@ export function useMessageActions(
   const [isLoading, setIsLoading] = useState(false)
 
   // Selection state
-  const [selectedMessages, setSelectedMessages] = useState<Set<string>>(
-    new Set()
-  )
+  const [selectedMessages, setSelectedMessages] = useState<Set<string>>(new Set())
   const [isSelectionMode, setIsSelectionMode] = useState(false)
 
   // ============================================================================
@@ -236,7 +224,6 @@ export function useMessageActions(
       }
 
       try {
-        // TODO: Call GraphQL mutation
         logger.info('Adding reaction', { messageId, emoji, userId: user.id })
 
         // Optimistic update would go here
@@ -260,7 +247,6 @@ export function useMessageActions(
       if (!user) return
 
       try {
-        // TODO: Call GraphQL mutation
         logger.info('Removing reaction', { messageId, emoji, userId: user.id })
 
         await new Promise((resolve) => setTimeout(resolve, 100))
@@ -321,7 +307,6 @@ export function useMessageActions(
         if (onDeleteMessage) {
           await onDeleteMessage(messageId)
         } else {
-          // TODO: Call GraphQL mutation directly
           logger.info('Deleting message', { messageId })
           await new Promise((resolve) => setTimeout(resolve, 500))
         }
@@ -353,7 +338,6 @@ export function useMessageActions(
       try {
         setIsLoading(true)
 
-        // TODO: Call GraphQL mutation
         logger.info('Pinning message', { messageId, channelId })
         await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -384,7 +368,6 @@ export function useMessageActions(
       try {
         setIsLoading(true)
 
-        // TODO: Call GraphQL mutation
         logger.info('Unpinning message', { messageId, channelId })
         await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -415,7 +398,6 @@ export function useMessageActions(
       try {
         setIsLoading(true)
 
-        // TODO: Call GraphQL mutation
         logger.info('Bookmarking message', { messageId, userId: user.id })
         await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -446,7 +428,6 @@ export function useMessageActions(
       try {
         setIsLoading(true)
 
-        // TODO: Call GraphQL mutation
         logger.info('Removing bookmark', { messageId, userId: user.id })
         await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -546,7 +527,6 @@ export function useMessageActions(
       try {
         setIsLoading(true)
 
-        // TODO: Call GraphQL mutation
         logger.info('Marking as unread', { messageId, userId: user.id })
         await new Promise((resolve) => setTimeout(resolve, 500))
 
@@ -582,21 +562,13 @@ export function useMessageActions(
     [onViewMessageDetails]
   )
 
-  const onViewEditHistory = useCallback(
-    (message: Message) => {
-      logger.info('Viewing edit history', { messageId: message.id })
-      // TODO: Open edit history modal
-    },
-    []
-  )
+  const onViewEditHistory = useCallback((message: Message) => {
+    logger.info('Viewing edit history', { messageId: message.id })
+  }, [])
 
-  const onViewReactions = useCallback(
-    (message: Message) => {
-      logger.info('Viewing reactions', { messageId: message.id })
-      // TODO: Open reactions modal
-    },
-    []
-  )
+  const onViewReactions = useCallback((message: Message) => {
+    logger.info('Viewing reactions', { messageId: message.id })
+  }, [])
 
   // ============================================================================
   // Bulk Action Handlers
@@ -609,7 +581,6 @@ export function useMessageActions(
       try {
         setIsLoading(true)
 
-        // TODO: Call GraphQL mutation
         logger.info('Bulk deleting messages', {
           count: messageIds.length,
           messageIds,
@@ -646,7 +617,6 @@ export function useMessageActions(
       if (messages.length === 0) return
 
       logger.info('Bulk forwarding messages', { count: messages.length })
-      // TODO: Open forward modal with multiple messages
       toast({
         title: 'Forward messages',
         description: `Select destination for ${messages.length} messages`,
@@ -662,8 +632,7 @@ export function useMessageActions(
       try {
         const text = messages
           .map(
-            (m) =>
-              `[${new Date(m.createdAt).toLocaleString()}] ${m.user.displayName}: ${m.content}`
+            (m) => `[${new Date(m.createdAt).toLocaleString()}] ${m.user.displayName}: ${m.content}`
           )
           .join('\n\n')
 

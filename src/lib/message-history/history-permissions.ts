@@ -49,9 +49,7 @@ export function canViewEditHistory(
       return userId === messageAuthorId
 
     case 'moderators':
-      return (
-        hasRoleOrHigher(userRole, 'moderator') || userId === messageAuthorId
-      )
+      return hasRoleOrHigher(userRole, 'moderator') || userId === messageAuthorId
 
     case 'admins':
       return hasRoleOrHigher(userRole, 'admin') || userId === messageAuthorId
@@ -75,12 +73,7 @@ export function canViewHistoryWithSettings(
 ): boolean {
   if (!settings.trackingEnabled) return false
 
-  return canViewEditHistory(
-    settings.viewPermission,
-    userRole,
-    userId,
-    messageAuthorId
-  )
+  return canViewEditHistory(settings.viewPermission, userRole, userId, messageAuthorId)
 }
 
 // ============================================================================
@@ -110,10 +103,7 @@ export function canRestoreVersion(
 /**
  * Check if a user can clear edit history.
  */
-export function canClearHistory(
-  settings: EditHistorySettings,
-  userRole: UserRole
-): boolean {
+export function canClearHistory(settings: EditHistorySettings, userRole: UserRole): boolean {
   if (!settings.allowHistoryClear) return false
 
   // Only admins and owners can clear history
@@ -176,12 +166,7 @@ export function getHistoryPermissions(
   messageAuthorId: string
 ): HistoryPermissions {
   return {
-    canView: canViewHistoryWithSettings(
-      settings,
-      userRole,
-      userId,
-      messageAuthorId
-    ),
+    canView: canViewHistoryWithSettings(settings, userRole, userId, messageAuthorId),
     canRestore: canRestoreVersion(settings, userRole, userId, messageAuthorId),
     canClear: canClearHistory(settings, userRole),
     canDeleteVersions: canDeleteVersions(userRole, userId, messageAuthorId),
@@ -197,9 +182,7 @@ export function getHistoryPermissions(
 /**
  * Get human-readable description of view permission level.
  */
-export function getViewPermissionDescription(
-  permission: HistoryViewPermission
-): string {
+export function getViewPermissionDescription(permission: HistoryViewPermission): string {
   switch (permission) {
     case 'everyone':
       return 'All users can view edit history'
@@ -233,14 +216,12 @@ export function getViewPermissionOptions(): Array<{
     {
       value: 'author-only',
       label: 'Author Only',
-      description:
-        'Users can only view edit history for their own messages',
+      description: 'Users can only view edit history for their own messages',
     },
     {
       value: 'moderators',
       label: 'Moderators+',
-      description:
-        'Moderators, admins, and owners can view all edit history',
+      description: 'Moderators, admins, and owners can view all edit history',
     },
     {
       value: 'admins',

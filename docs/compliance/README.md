@@ -15,18 +15,21 @@ nself-chat is designed with compliance-first architecture to support organizatio
 ### Supported Compliance Standards
 
 **Data Protection:**
+
 - GDPR (General Data Protection Regulation)
 - CCPA (California Consumer Privacy Act)
 - PIPEDA (Canada)
 - Data Protection Act 2018 (UK)
 
 **Security & Privacy:**
+
 - SOC 2 Type II (in progress)
 - ISO 27001 readiness
 - HIPAA considerations (healthcare)
 - FERPA considerations (education)
 
 **Industry-Specific:**
+
 - Financial services (PCI DSS considerations)
 - Healthcare (HIPAA/HITECH)
 - Education (FERPA, COPPA)
@@ -37,6 +40,7 @@ nself-chat is designed with compliance-first architecture to support organizatio
 ### Data Protection (GDPR/CCPA)
 
 **User Rights:**
+
 - Right to access personal data
 - Right to data portability (export)
 - Right to erasure ("right to be forgotten")
@@ -44,6 +48,7 @@ nself-chat is designed with compliance-first architecture to support organizatio
 - Right to restriction of processing
 
 **Privacy Controls:**
+
 - Granular consent management
 - Privacy-by-design architecture
 - Data minimization
@@ -51,22 +56,26 @@ nself-chat is designed with compliance-first architecture to support organizatio
 - Storage limitation
 
 **Documentation:**
+
 - See [COMPLIANCE-OVERVIEW.md](COMPLIANCE-OVERVIEW.md) for implementation details
 
 ### Data Retention
 
 **Configurable Retention Policies:**
+
 - Message retention periods (7 days to indefinite)
 - File retention periods
 - Log retention periods
 - Backup retention schedules
 
 **Legal Hold:**
+
 - Preserve data for litigation/investigation
 - Override retention policies when required
 - Audit trail of legal holds
 
 **Automated Deletion:**
+
 - Scheduled data purges
 - User-initiated deletion
 - Compliance-driven deletion
@@ -74,6 +83,7 @@ nself-chat is designed with compliance-first architecture to support organizatio
 ### Audit & Logging
 
 **Comprehensive Audit Trails:**
+
 - User activity logs
 - Administrative actions
 - Data access logs
@@ -81,6 +91,7 @@ nself-chat is designed with compliance-first architecture to support organizatio
 - Security events
 
 **Log Retention:**
+
 - Configurable retention periods
 - Tamper-proof logging
 - Encrypted log storage
@@ -89,12 +100,14 @@ nself-chat is designed with compliance-first architecture to support organizatio
 ### Security & Encryption
 
 **Data Protection:**
+
 - End-to-end encryption (E2EE) for messages
 - Encryption at rest (database, files)
 - Encryption in transit (TLS 1.3)
 - Zero-knowledge architecture options
 
 **Access Control:**
+
 - Role-based access control (RBAC)
 - Multi-factor authentication (2FA)
 - Session management
@@ -103,6 +116,7 @@ nself-chat is designed with compliance-first architecture to support organizatio
 ### Data Processing Agreements
 
 **DPA Support:**
+
 - Standard Contractual Clauses (SCCs)
 - Data Processing Addendum templates
 - Sub-processor management
@@ -198,6 +212,7 @@ await createLegalHold({
 ### Data Privacy Impact Assessment (DPIA)
 
 When to conduct DPIA:
+
 - Processing sensitive personal data at scale
 - Systematic monitoring of public areas
 - Automated decision-making with legal effects
@@ -210,6 +225,7 @@ Template available in [COMPLIANCE-OVERVIEW.md](COMPLIANCE-OVERVIEW.md)
 ### Healthcare (HIPAA)
 
 **Considerations:**
+
 - Business Associate Agreement (BAA) required
 - PHI encryption and access controls
 - Audit logging of PHI access
@@ -221,6 +237,7 @@ Template available in [COMPLIANCE-OVERVIEW.md](COMPLIANCE-OVERVIEW.md)
 ### Education (FERPA/COPPA)
 
 **Considerations:**
+
 - Parental consent for users under 13 (COPPA)
 - Educational records protection (FERPA)
 - Student data privacy
@@ -231,6 +248,7 @@ Template available in [COMPLIANCE-OVERVIEW.md](COMPLIANCE-OVERVIEW.md)
 ### Finance (PCI DSS)
 
 **Considerations:**
+
 - No storage of cardholder data (use Stripe)
 - Secure transmission of payment data
 - Access control and monitoring
@@ -241,6 +259,7 @@ Template available in [COMPLIANCE-OVERVIEW.md](COMPLIANCE-OVERVIEW.md)
 ### Government (FedRAMP)
 
 **Considerations:**
+
 - Cloud security requirements
 - Continuous monitoring
 - Incident response
@@ -310,11 +329,13 @@ See [COMPLIANCE-OVERVIEW.md - Reporting](COMPLIANCE-OVERVIEW.md#compliance-repor
 ### Data Residency
 
 **Options:**
+
 - Single-region deployment (data stays in one region)
 - Multi-region with data sovereignty controls
 - Edge caching with origin protection
 
 **Configuration:**
+
 ```typescript
 dataResidency: {
   primaryRegion: 'eu-west-1',

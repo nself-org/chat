@@ -52,10 +52,7 @@ export const DELETE_ROLE = gql`
  */
 export const UPDATE_ROLE_POSITION = gql`
   mutation UpdateRolePosition($id: uuid!, $position: Int!) {
-    update_nchat_roles_by_pk(
-      pk_columns: { id: $id }
-      _set: { position: $position }
-    ) {
+    update_nchat_roles_by_pk(pk_columns: { id: $id }, _set: { position: $position }) {
       id
       position
     }
@@ -82,10 +79,7 @@ export const BATCH_UPDATE_ROLE_POSITIONS = gql`
 export const UPDATE_ROLE_PERMISSIONS = gql`
   ${ROLE_FRAGMENT}
   mutation UpdateRolePermissions($id: uuid!, $permissions: jsonb!) {
-    update_nchat_roles_by_pk(
-      pk_columns: { id: $id }
-      _set: { permissions: $permissions }
-    ) {
+    update_nchat_roles_by_pk(pk_columns: { id: $id }, _set: { permissions: $permissions }) {
       ...RoleFields
     }
   }
@@ -97,17 +91,11 @@ export const UPDATE_ROLE_PERMISSIONS = gql`
 export const SET_DEFAULT_ROLE = gql`
   mutation SetDefaultRole($roleId: uuid!) {
     # First, unset all other defaults
-    update_nchat_roles(
-      where: { id: { _neq: $roleId } }
-      _set: { is_default: false }
-    ) {
+    update_nchat_roles(where: { id: { _neq: $roleId } }, _set: { is_default: false }) {
       affected_rows
     }
     # Then set the new default
-    update_nchat_roles_by_pk(
-      pk_columns: { id: $roleId }
-      _set: { is_default: true }
-    ) {
+    update_nchat_roles_by_pk(pk_columns: { id: $roleId }, _set: { is_default: true }) {
       id
       is_default
     }
@@ -141,12 +129,7 @@ export const ASSIGN_ROLE = gql`
  */
 export const REMOVE_ROLE = gql`
   mutation RemoveRole($userId: uuid!, $roleId: uuid!) {
-    delete_nchat_user_roles(
-      where: {
-        user_id: { _eq: $userId }
-        role_id: { _eq: $roleId }
-      }
-    ) {
+    delete_nchat_user_roles(where: { user_id: { _eq: $userId }, role_id: { _eq: $roleId } }) {
       affected_rows
       returning {
         user_id
@@ -183,12 +166,7 @@ export const BULK_ASSIGN_ROLES = gql`
  */
 export const BULK_REMOVE_ROLES = gql`
   mutation BulkRemoveRoles($userIds: [uuid!]!, $roleIds: [uuid!]!) {
-    delete_nchat_user_roles(
-      where: {
-        user_id: { _in: $userIds }
-        role_id: { _in: $roleIds }
-      }
-    ) {
+    delete_nchat_user_roles(where: { user_id: { _in: $userIds }, role_id: { _in: $roleIds } }) {
       affected_rows
     }
   }
@@ -226,33 +204,19 @@ export const TRANSFER_OWNERSHIP = gql`
   ) {
     # Remove owner role from current owner
     delete_nchat_user_roles(
-      where: {
-        user_id: { _eq: $currentOwnerId }
-        role_id: { _eq: $ownerRoleId }
-      }
+      where: { user_id: { _eq: $currentOwnerId }, role_id: { _eq: $ownerRoleId } }
     ) {
       affected_rows
     }
     # Assign owner role to new owner
-    insert_nchat_user_roles_one(
-      object: {
-        user_id: $newOwnerId
-        role_id: $ownerRoleId
-      }
-    ) {
+    insert_nchat_user_roles_one(object: { user_id: $newOwnerId, role_id: $ownerRoleId }) {
       user_id
       role_id
     }
     # Give previous owner a fallback role
     insert_nchat_user_roles_one(
-      object: {
-        user_id: $currentOwnerId
-        role_id: $fallbackRoleId
-      }
-      on_conflict: {
-        constraint: user_roles_pkey
-        update_columns: []
-      }
+      object: { user_id: $currentOwnerId, role_id: $fallbackRoleId }
+      on_conflict: { constraint: user_roles_pkey, update_columns: [] }
     ) {
       user_id
       role_id
@@ -302,16 +266,8 @@ export const SET_CHANNEL_ROLE_OVERRIDE = gql`
     $deny: jsonb!
   ) {
     insert_nchat_channel_permission_overrides_one(
-      object: {
-        channel_id: $channelId
-        role_id: $roleId
-        allow: $allow
-        deny: $deny
-      }
-      on_conflict: {
-        constraint: channel_permission_overrides_pkey
-        update_columns: [allow, deny]
-      }
+      object: { channel_id: $channelId, role_id: $roleId, allow: $allow, deny: $deny }
+      on_conflict: { constraint: channel_permission_overrides_pkey, update_columns: [allow, deny] }
     ) {
       channel_id
       role_id
@@ -332,16 +288,8 @@ export const SET_CHANNEL_USER_OVERRIDE = gql`
     $deny: jsonb!
   ) {
     insert_nchat_channel_permission_overrides_one(
-      object: {
-        channel_id: $channelId
-        user_id: $userId
-        allow: $allow
-        deny: $deny
-      }
-      on_conflict: {
-        constraint: channel_permission_overrides_pkey
-        update_columns: [allow, deny]
-      }
+      object: { channel_id: $channelId, user_id: $userId, allow: $allow, deny: $deny }
+      on_conflict: { constraint: channel_permission_overrides_pkey, update_columns: [allow, deny] }
     ) {
       channel_id
       user_id
@@ -355,18 +303,11 @@ export const SET_CHANNEL_USER_OVERRIDE = gql`
  * Remove channel permission override
  */
 export const REMOVE_CHANNEL_OVERRIDE = gql`
-  mutation RemoveChannelOverride(
-    $channelId: uuid!
-    $roleId: uuid
-    $userId: uuid
-  ) {
+  mutation RemoveChannelOverride($channelId: uuid!, $roleId: uuid, $userId: uuid) {
     delete_nchat_channel_permission_overrides(
       where: {
         channel_id: { _eq: $channelId }
-        _or: [
-          { role_id: { _eq: $roleId } }
-          { user_id: { _eq: $userId } }
-        ]
+        _or: [{ role_id: { _eq: $roleId } }, { user_id: { _eq: $userId } }]
       }
     ) {
       affected_rows
@@ -428,11 +369,7 @@ export const REBALANCE_POSITIONS = gql`
  */
 export const EXPIRE_ROLE_ASSIGNMENTS = gql`
   mutation ExpireRoleAssignments {
-    delete_nchat_user_roles(
-      where: {
-        expires_at: { _lte: "now()" }
-      }
-    ) {
+    delete_nchat_user_roles(where: { expires_at: { _lte: "now()" } }) {
       affected_rows
       returning {
         user_id

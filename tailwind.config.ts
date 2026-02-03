@@ -17,24 +17,24 @@ const config: Config = {
     },
     // Custom screens for mobile-first responsive design
     screens: {
-      'xs': '480px',      // Extra small phones in landscape
-      'sm': '640px',      // Small tablets, large phones
-      'md': '768px',      // Tablets
-      'lg': '1024px',     // Laptops
-      'xl': '1280px',     // Desktops
-      '2xl': '1536px',    // Large desktops
+      xs: '480px', // Extra small phones in landscape
+      sm: '640px', // Small tablets, large phones
+      md: '768px', // Tablets
+      lg: '1024px', // Laptops
+      xl: '1280px', // Desktops
+      '2xl': '1536px', // Large desktops
       // Mobile-specific breakpoints
-      'mobile': { max: '767px' },       // Mobile only
-      'tablet': { min: '768px', max: '1023px' }, // Tablet only
-      'desktop': { min: '1024px' },     // Desktop only
+      mobile: { max: '767px' }, // Mobile only
+      tablet: { min: '768px', max: '1023px' }, // Tablet only
+      desktop: { min: '1024px' }, // Desktop only
       // Touch device detection
-      'touch': { raw: '(hover: none)' },
-      'pointer': { raw: '(hover: hover)' },
+      touch: { raw: '(hover: none)' },
+      pointer: { raw: '(hover: hover)' },
       // Orientation
-      'portrait': { raw: '(orientation: portrait)' },
-      'landscape': { raw: '(orientation: landscape)' },
+      portrait: { raw: '(orientation: portrait)' },
+      landscape: { raw: '(orientation: landscape)' },
       // PWA standalone mode
-      'standalone': { raw: '(display-mode: standalone)' },
+      standalone: { raw: '(display-mode: standalone)' },
     },
     extend: {
       colors: {
@@ -44,7 +44,7 @@ const config: Config = {
         primary: 'var(--primary)',
         secondary: 'var(--secondary)',
         accent: 'var(--accent)',
-        
+
         // Zinc scale - hardcoded dark values for reliability
         zinc: {
           50: '#fafafa',
@@ -59,7 +59,7 @@ const config: Config = {
           900: '#18181b',
           950: '#09090b',
         },
-        
+
         // Sky scale from CSS variables
         sky: {
           50: 'var(--sky-50)',
@@ -73,7 +73,7 @@ const config: Config = {
           800: 'var(--sky-800)',
           900: 'var(--sky-900)',
         },
-        
+
         // Legacy support
         border: 'var(--zinc-200)',
         input: 'var(--zinc-200)',
@@ -173,7 +173,7 @@ const config: Config = {
         'safe-right': 'var(--sar, 0px)',
         'safe-bottom': 'var(--sab, 0px)',
         'safe-left': 'var(--sal, 0px)',
-        'touch': '44px', // Minimum touch target size
+        touch: '44px', // Minimum touch target size
         'touch-lg': '48px', // Comfortable touch target size
       },
       // Mobile-specific heights
@@ -184,7 +184,7 @@ const config: Config = {
         'mobile-header': '56px',
       },
       minHeight: {
-        'touch': '44px',
+        touch: '44px',
         'touch-lg': '48px',
         'screen-safe': 'calc(100vh - var(--sat, 0px) - var(--sab, 0px))',
         'screen-dvh': '100dvh',
@@ -198,9 +198,9 @@ const config: Config = {
       zIndex: {
         'mobile-nav': '40',
         'mobile-header': '40',
-        'drawer': '50',
+        drawer: '50',
         'action-sheet': '50',
-        'overlay': '45',
+        overlay: '45',
       },
     },
   },

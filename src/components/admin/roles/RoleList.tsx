@@ -64,8 +64,7 @@ export function RoleList({
 }: RoleListProps) {
   const canCreateRoles =
     currentUserPermissions &&
-    (currentUserPermissions.isAdmin ||
-      currentUserPermissions.permissions.includes('manage_roles'))
+    (currentUserPermissions.isAdmin || currentUserPermissions.permissions.includes('manage_roles'))
 
   const getCanManageRole = (role: Role): boolean => {
     if (!currentUserPermissions) return false
@@ -81,8 +80,7 @@ export function RoleList({
       const query = searchQuery.toLowerCase()
       result = result.filter(
         (role) =>
-          role.name.toLowerCase().includes(query) ||
-          role.description?.toLowerCase().includes(query)
+          role.name.toLowerCase().includes(query) || role.description?.toLowerCase().includes(query)
       )
     }
 
@@ -149,9 +147,7 @@ export function RoleList({
           {/* Sort */}
           <Select
             value={sortBy}
-            onValueChange={(value) =>
-              onSortChange?.(value as 'position' | 'name' | 'memberCount')
-            }
+            onValueChange={(value) => onSortChange?.(value as 'position' | 'name' | 'memberCount')}
           >
             <SelectTrigger className="w-[130px]">
               <ArrowUpDown className="mr-2 h-4 w-4" />
@@ -167,16 +163,11 @@ export function RoleList({
           <Button
             variant="outline"
             size="icon"
-            onClick={() =>
-              onSortOrderChange?.(sortOrder === 'asc' ? 'desc' : 'asc')
-            }
+            onClick={() => onSortOrderChange?.(sortOrder === 'asc' ? 'desc' : 'asc')}
             title={sortOrder === 'asc' ? 'Sort descending' : 'Sort ascending'}
           >
             <ArrowUpDown
-              className={cn(
-                'h-4 w-4 transition-transform',
-                sortOrder === 'asc' && 'rotate-180'
-              )}
+              className={cn('h-4 w-4 transition-transform', sortOrder === 'asc' && 'rotate-180')}
             />
           </Button>
 
@@ -209,16 +200,10 @@ export function RoleList({
           // Empty state
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8">
             <p className="text-muted-foreground">
-              {searchQuery
-                ? 'No roles found matching your search'
-                : 'No roles found'}
+              {searchQuery ? 'No roles found matching your search' : 'No roles found'}
             </p>
             {canCreateRoles && onCreateRole && !searchQuery && (
-              <Button
-                variant="outline"
-                className="mt-4"
-                onClick={onCreateRole}
-              >
+              <Button variant="outline" className="mt-4" onClick={onCreateRole}>
                 <Plus className="mr-2 h-4 w-4" />
                 Create your first role
               </Button>

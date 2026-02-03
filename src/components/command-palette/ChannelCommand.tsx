@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ChannelCommand
@@ -6,11 +6,11 @@
  * Specialized command item for channels with channel-specific UI.
  */
 
-import * as React from 'react';
-import { Command as CommandPrimitive } from 'cmdk';
-import { Hash, Lock, Users, Star, BellOff } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { ChannelCommandData } from '@/lib/command-palette/command-types';
+import * as React from 'react'
+import { Command as CommandPrimitive } from 'cmdk'
+import { Hash, Lock, Users, Star, BellOff } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { ChannelCommandData } from '@/lib/command-palette/command-types'
 
 // ============================================================================
 // Types
@@ -18,13 +18,13 @@ import type { ChannelCommandData } from '@/lib/command-palette/command-types';
 
 export interface ChannelCommandProps {
   /** Channel command data */
-  command: ChannelCommandData;
+  command: ChannelCommandData
   /** Whether this item is currently selected */
-  isSelected?: boolean;
+  isSelected?: boolean
   /** Click handler */
-  onSelect?: (command: ChannelCommandData) => void;
+  onSelect?: (command: ChannelCommandData) => void
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -37,8 +37,8 @@ export function ChannelCommand({
   onSelect,
   className,
 }: ChannelCommandProps) {
-  const isPrivate = command.channelType === 'private';
-  const Icon = isPrivate ? Lock : Hash;
+  const isPrivate = command.channelType === 'private'
+  const Icon = isPrivate ? Lock : Hash
 
   return (
     <CommandPrimitive.Item
@@ -46,10 +46,10 @@ export function ChannelCommand({
       onSelect={() => onSelect?.(command)}
       className={cn(
         'relative flex cursor-pointer select-none items-center gap-3 rounded-md px-3 py-2 text-sm outline-none',
-        'aria-selected:bg-accent aria-selected:text-accent-foreground',
+        'aria-selected:text-accent-foreground aria-selected:bg-accent',
         'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-        'hover:bg-accent hover:text-accent-foreground',
-        isSelected && 'bg-accent text-accent-foreground',
+        'hover:text-accent-foreground hover:bg-accent',
+        isSelected && 'text-accent-foreground bg-accent',
         className
       )}
       data-selected={isSelected}
@@ -64,9 +64,7 @@ export function ChannelCommand({
         <Icon
           className={cn(
             'h-4 w-4',
-            command.isStarred
-              ? 'text-amber-600 dark:text-amber-400'
-              : 'text-muted-foreground'
+            command.isStarred ? 'text-amber-600 dark:text-amber-400' : 'text-muted-foreground'
           )}
         />
       </div>
@@ -77,12 +75,8 @@ export function ChannelCommand({
           <span className="truncate font-medium">{command.channelName}</span>
 
           {/* Status badges */}
-          {command.isStarred && (
-            <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-          )}
-          {command.isMuted && (
-            <BellOff className="h-3 w-3 text-muted-foreground" />
-          )}
+          {command.isStarred && <Star className="h-3 w-3 fill-amber-500 text-amber-500" />}
+          {command.isMuted && <BellOff className="h-3 w-3 text-muted-foreground" />}
         </div>
 
         {/* Description or member count */}
@@ -101,14 +95,14 @@ export function ChannelCommand({
             'flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-xs font-medium',
             command.isMuted
               ? 'bg-muted text-muted-foreground'
-              : 'bg-primary text-primary-foreground'
+              : 'text-primary-foreground bg-primary'
           )}
         >
           {command.unreadCount > 99 ? '99+' : command.unreadCount}
         </span>
       )}
     </CommandPrimitive.Item>
-  );
+  )
 }
 
-export default ChannelCommand;
+export default ChannelCommand

@@ -179,7 +179,7 @@ describe('BotRuntime', () => {
         { id: 'bot-3', name: 'Bot 3', description: '', version: '1.0.0', permissions: [] },
       ]
 
-      manifests.forEach(m => runtime.register(m))
+      manifests.forEach((m) => runtime.register(m))
       const allBots = runtime.getAll()
 
       expect(allBots).toHaveLength(3)
@@ -549,7 +549,7 @@ describe('BotRuntime', () => {
         { id: 'bot-2', name: 'Bot 2', description: '', version: '1.0.0', permissions: [] },
       ]
 
-      manifests.forEach(m => runtime.register(m))
+      manifests.forEach((m) => runtime.register(m))
       const stats = runtime.getStats()
 
       expect(stats.totalBots).toBe(2)
@@ -715,9 +715,13 @@ describe('BotRuntime', () => {
     it('should support setup function in createBot', () => {
       const setupSpy = jest.fn()
 
-      createBot('factory-bot', {
-        name: 'Factory Bot',
-      }, setupSpy)
+      createBot(
+        'factory-bot',
+        {
+          name: 'Factory Bot',
+        },
+        setupSpy
+      )
 
       expect(setupSpy).toHaveBeenCalled()
     })

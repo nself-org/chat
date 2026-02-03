@@ -42,9 +42,13 @@ export function AccessibilityProvider({ children }: AccessibilityProviderProps) 
           target.focus()
           target.scrollIntoView({ behavior: 'smooth' })
 
-          target.addEventListener('blur', () => {
-            target.removeAttribute('tabindex')
-          }, { once: true })
+          target.addEventListener(
+            'blur',
+            () => {
+              target.removeAttribute('tabindex')
+            },
+            { once: true }
+          )
         }
       })
 
@@ -58,9 +62,5 @@ export function AccessibilityProvider({ children }: AccessibilityProviderProps) 
     }
   }, [])
 
-  return (
-    <A11yProvider>
-      {children}
-    </A11yProvider>
-  )
+  return <A11yProvider>{children}</A11yProvider>
 }

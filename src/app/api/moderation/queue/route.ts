@@ -9,6 +9,8 @@ import { getApolloClient } from '@/lib/apollo-client'
 import { ModerationQueue } from '@/lib/moderation/moderation-queue'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -36,7 +38,7 @@ export async function GET(request: NextRequest) {
       count: items.length,
     })
   } catch (error) {
-    console.error('Get queue error:', error)
+    logger.error('Get queue error:', error)
     captureError(error as Error, {
       tags: { feature: 'moderation', endpoint: 'queue-get' },
     })
@@ -66,34 +68,25 @@ export async function POST(request: NextRequest) {
     } = body
 
     if (!contentType || !contentId || !userId || !moderationResult) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     const apolloClient = getApolloClient()
     const queue = new ModerationQueue(apolloClient)
 
-    const queueId = await queue.addToQueue(
-      contentType,
-      contentId,
-      userId,
-      moderationResult,
-      {
-        contentText,
-        contentUrl,
-        channelId,
-        userDisplayName,
-      }
-    )
+    const queueId = await queue.addToQueue(contentType, contentId, userId, moderationResult, {
+      contentText,
+      contentUrl,
+      channelId,
+      userDisplayName,
+    })
 
     return NextResponse.json({
       success: true,
       queueId,
     })
   } catch (error) {
-    console.error('Add to queue error:', error)
+    logger.error('Add to queue error:', error)
     captureError(error as Error, {
       tags: { feature: 'moderation', endpoint: 'queue-post' },
     })

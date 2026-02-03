@@ -19,7 +19,7 @@ app:
 # Container image configuration
 image:
   repository: ghcr.io/nself/nself-chat
-  tag: ""  # Defaults to Chart.appVersion
+  tag: '' # Defaults to Chart.appVersion
   pullPolicy: IfNotPresent
 
 # Replica configuration
@@ -28,14 +28,14 @@ replicaCount: 2
 # Service account
 serviceAccount:
   create: true
-  name: ""
+  name: ''
   annotations: {}
 
 # Pod annotations
 podAnnotations:
-  prometheus.io/scrape: "true"
-  prometheus.io/port: "3000"
-  prometheus.io/path: "/api/metrics"
+  prometheus.io/scrape: 'true'
+  prometheus.io/port: '3000'
+  prometheus.io/path: '/api/metrics'
 
 # Pod security context
 podSecurityContext:
@@ -65,9 +65,9 @@ ingress:
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
-    nginx.ingress.kubernetes.io/websocket-services: "nself-chat"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: '50m'
+    nginx.ingress.kubernetes.io/websocket-services: 'nself-chat'
   hosts:
     - host: chat.nself.io
       paths:
@@ -158,7 +158,7 @@ startupProbe:
 config:
   NODE_ENV: production
   NEXT_PUBLIC_ENV: production
-  NEXT_PUBLIC_USE_DEV_AUTH: "false"
+  NEXT_PUBLIC_USE_DEV_AUTH: 'false'
   NEXT_PUBLIC_APP_NAME: nchat
   LOG_LEVEL: info
   LOG_FORMAT: json
@@ -166,11 +166,11 @@ config:
 # External service URLs (configure based on your infrastructure)
 externalServices:
   graphql:
-    url: ""  # e.g., https://api.nself.io/v1/graphql
+    url: '' # e.g., https://api.nself.io/v1/graphql
   auth:
-    url: ""  # e.g., https://auth.nself.io
+    url: '' # e.g., https://auth.nself.io
   storage:
-    url: ""  # e.g., https://storage.nself.io
+    url: '' # e.g., https://storage.nself.io
 
 # Secrets configuration
 secrets:

@@ -114,12 +114,10 @@ export function BanDialog({ user, open, onOpenChange, onConfirm }: BanDialogProp
 
         <div className="space-y-4 py-4">
           {/* User info */}
-          <div className="flex items-center space-x-4 rounded-lg border bg-muted/30 p-4">
+          <div className="bg-muted/30 flex items-center space-x-4 rounded-lg border p-4">
             <Avatar className="h-12 w-12">
               <AvatarImage src={user.avatarUrl} />
-              <AvatarFallback>
-                {user.displayName.charAt(0).toUpperCase()}
-              </AvatarFallback>
+              <AvatarFallback>{user.displayName.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div>
               <p className="font-medium">{user.displayName}</p>
@@ -188,8 +186,8 @@ export function BanDialog({ user, open, onOpenChange, onConfirm }: BanDialogProp
           {isBanned && (
             <div className="rounded-lg border border-green-200 bg-green-50 p-4 text-sm text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-200">
               <p>
-                This user is currently banned. Unbanning will restore their access
-                to the workspace with their previous role and permissions.
+                This user is currently banned. Unbanning will restore their access to the workspace
+                with their previous role and permissions.
               </p>
             </div>
           )}
@@ -204,11 +202,7 @@ export function BanDialog({ user, open, onOpenChange, onConfirm }: BanDialogProp
             onClick={handleSubmit}
             disabled={isSubmitting || (!isBanned && !reason.trim())}
           >
-            {isSubmitting
-              ? 'Processing...'
-              : isBanned
-              ? 'Unban User'
-              : 'Ban User'}
+            {isSubmitting ? 'Processing...' : isBanned ? 'Unban User' : 'Ban User'}
           </Button>
         </DialogFooter>
       </DialogContent>

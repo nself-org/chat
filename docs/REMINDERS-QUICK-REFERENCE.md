@@ -9,8 +9,7 @@
 ```tsx
 // 1. Add to your app layout
 import { ReminderNotificationContainer } from '@/components/reminders'
-
-<ReminderNotificationContainer userId={user.id} />
+;<ReminderNotificationContainer userId={user.id} />
 
 // 2. Use in any component
 import { useReminders } from '@/lib/reminders/use-reminders'
@@ -25,20 +24,20 @@ const { createReminder, reminders } = useReminders({ userId: user.id })
 ```tsx
 // Components
 import {
-  RemindersList,           // Full list with filters
-  SetReminderModal,        // Create/Edit modal
-  ReminderItem,            // Single reminder card
-  ReminderNotification,    // Notification UI
-  QuickRemind,             // Quick time picker
-  ReminderTimePicker,      // Date/time picker
+  RemindersList, // Full list with filters
+  SetReminderModal, // Create/Edit modal
+  ReminderItem, // Single reminder card
+  ReminderNotification, // Notification UI
+  QuickRemind, // Quick time picker
+  ReminderTimePicker, // Date/time picker
 } from '@/components/reminders'
 
 // Hooks
 import {
-  useReminders,            // Main hook (full API)
-  useChannelReminders,     // Channel-specific
-  useRemindersCount,       // Count only
-  useMessageReminder,      // Message reminder check
+  useReminders, // Main hook (full API)
+  useChannelReminders, // Channel-specific
+  useRemindersCount, // Count only
+  useMessageReminder, // Message reminder check
 } from '@/lib/reminders/use-reminders'
 
 // Store
@@ -100,22 +99,13 @@ await createReminder({
 ### 4. Quick Remind Menu
 
 ```tsx
-<QuickRemind
-  messageId={msg.id}
-  channelId={channel.id}
-  messageContent={msg.content}
-/>
+<QuickRemind messageId={msg.id} channelId={channel.id} messageContent={msg.content} />
 ```
 
 ### 5. Full Reminders List
 
 ```tsx
-<RemindersList
-  userId={user.id}
-  showFilters
-  showSearch
-  onEdit={(r) => openEditModal(r)}
-/>
+<RemindersList userId={user.id} showFilters showSearch onEdit={(r) => openEditModal(r)} />
 ```
 
 ---
@@ -127,12 +117,12 @@ await createReminder({
 ```tsx
 const {
   // Data
-  reminders,              // All reminders
-  upcomingReminders,      // Pending only
-  completedReminders,     // Completed/dismissed
-  dueReminders,           // Currently due
-  pendingCount,           // Count of pending
-  nextReminder,           // Next upcoming
+  reminders, // All reminders
+  upcomingReminders, // Pending only
+  completedReminders, // Completed/dismissed
+  dueReminders, // Currently due
+  pendingCount, // Count of pending
+  nextReminder, // Next upcoming
 
   // Loading states
   isLoading,
@@ -141,22 +131,22 @@ const {
   isDeleting,
 
   // CRUD
-  createReminder,         // Create new
-  updateReminder,         // Update existing
-  deleteReminder,         // Delete by ID
-  completeReminder,       // Mark complete
-  snoozeReminder,         // Snooze for duration
-  bulkComplete,           // Complete multiple
-  bulkDelete,             // Delete multiple
+  createReminder, // Create new
+  updateReminder, // Update existing
+  deleteReminder, // Delete by ID
+  completeReminder, // Mark complete
+  snoozeReminder, // Snooze for duration
+  bulkComplete, // Complete multiple
+  bulkDelete, // Delete multiple
 
   // Message-specific
-  setReminderForMessage,  // Quick message reminder
-  hasReminderForMessage,  // Check if exists
-  getReminderForMessage,  // Get by message ID
+  setReminderForMessage, // Quick message reminder
+  hasReminderForMessage, // Check if exists
+  getReminderForMessage, // Get by message ID
 
   // UI helpers
-  openReminderModal,      // Open creation modal
-  closeReminderModal,     // Close modal
+  openReminderModal, // Open creation modal
+  closeReminderModal, // Close modal
 } = useReminders({ userId: user.id })
 ```
 
@@ -171,9 +161,9 @@ const {
   open={boolean}
   onOpenChange={(open) => {}}
   userId={string}
-  messageId={string}        // Optional: for message reminders
-  channelId={string}        // Optional: context
-  initialContent={string}   // Optional: pre-fill
+  messageId={string} // Optional: for message reminders
+  channelId={string} // Optional: context
+  initialContent={string} // Optional: pre-fill
   editingReminder={reminder} // Optional: edit mode
   onSuccess={(reminder) => {}}
   onCancel={() => {}}
@@ -185,7 +175,7 @@ const {
 ```tsx
 <RemindersList
   userId={string}
-  channelId={string}        // Optional: filter by channel
+  channelId={string} // Optional: filter by channel
   onEdit={(reminder) => {}}
   onCreateNew={() => {}}
   showFilters={true}
@@ -219,7 +209,7 @@ const presets = {
 
 ```tsx
 // In-app notification (automatic)
-<ReminderNotificationContainer userId={user.id} />
+;<ReminderNotificationContainer userId={user.id} />
 
 // Desktop notification (requires permission)
 const { requestDesktopPermission } = useNotifications()
@@ -246,11 +236,7 @@ query GetReminders($userId: uuid!) {
 # Get due reminders
 query GetDueReminders($userId: uuid!, $now: timestamptz!) {
   nchat_reminders(
-    where: {
-      user_id: { _eq: $userId }
-      status: { _eq: "pending" }
-      remind_at: { _lte: $now }
-    }
+    where: { user_id: { _eq: $userId }, status: { _eq: "pending" }, remind_at: { _lte: $now } }
   ) {
     ...ReminderFragment
   }
@@ -262,11 +248,9 @@ query GetDueReminders($userId: uuid!, $now: timestamptz!) {
 ```graphql
 # Create reminder
 mutation CreateReminder($userId: uuid!, $content: String!, $remindAt: timestamptz!) {
-  insert_nchat_reminders_one(object: {
-    user_id: $userId
-    content: $content
-    remind_at: $remindAt
-  }) {
+  insert_nchat_reminders_one(
+    object: { user_id: $userId, content: $content, remind_at: $remindAt }
+  ) {
     ...ReminderFragment
   }
 }
@@ -460,9 +444,10 @@ Before using reminders:
 ## 🆘 Common Issues
 
 **Reminder not showing?**
+
 ```tsx
 // Check if due
-const dueReminders = useReminderStore(s => s.dueReminders)
+const dueReminders = useReminderStore((s) => s.dueReminders)
 
 // Force check
 const { checkDueReminders } = useReminders({ userId })
@@ -470,6 +455,7 @@ checkDueReminders()
 ```
 
 **Desktop notification not working?**
+
 ```tsx
 // Check permission
 console.log(Notification.permission) // Should be "granted"
@@ -479,6 +465,7 @@ await requestDesktopPermission()
 ```
 
 **Timezone issues?**
+
 ```tsx
 // Use user's timezone
 const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -503,4 +490,4 @@ const tz = 'America/New_York'
 
 ---
 
-*Last updated: February 1, 2026*
+_Last updated: February 1, 2026_

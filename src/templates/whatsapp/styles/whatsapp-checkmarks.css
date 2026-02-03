@@ -33,7 +33,7 @@
 .wa-checkmark-pending svg {
   width: 14px;
   height: 14px;
-  color: var(--wa-check-pending, #8696A0);
+  color: var(--wa-check-pending, #8696a0);
 }
 
 /* Animated clock */
@@ -42,8 +42,12 @@
 }
 
 @keyframes wa-clock-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -97,7 +101,7 @@
  * ───────────────────────────────────────────────────────────────────────────── */
 
 .wa-checkmark-read svg {
-  color: var(--wa-check-blue, #53BDEB);
+  color: var(--wa-check-blue, #53bdeb);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -107,7 +111,7 @@
 .wa-checkmark-failed svg {
   width: 16px;
   height: 16px;
-  color: #EA0038;
+  color: #ea0038;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -168,11 +172,11 @@
     color: var(--wa-check-gray, #667781);
   }
   50% {
-    color: var(--wa-check-blue, #53BDEB);
+    color: var(--wa-check-blue, #53bdeb);
     transform: scale(1.15);
   }
   100% {
-    color: var(--wa-check-blue, #53BDEB);
+    color: var(--wa-check-blue, #53bdeb);
     transform: scale(1);
   }
 }
@@ -187,7 +191,7 @@
 }
 
 .wa-checkmark-group-partial svg:first-child {
-  color: var(--wa-check-blue, #53BDEB);
+  color: var(--wa-check-blue, #53bdeb);
 }
 
 .wa-checkmark-group-partial svg:last-child {
@@ -220,7 +224,7 @@
 }
 
 .wa-timestamp-check-light .wa-checkmark-read svg {
-  color: var(--wa-check-blue, #53BDEB);
+  color: var(--wa-check-blue, #53bdeb);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -252,14 +256,14 @@
  * ───────────────────────────────────────────────────────────────────────────── */
 
 .wa-checkmark-played svg {
-  color: var(--wa-check-blue, #53BDEB);
+  color: var(--wa-check-blue, #53bdeb);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
  * Accessibility
  * ───────────────────────────────────────────────────────────────────────────── */
 
-.wa-checkmark[role="img"] {
+.wa-checkmark[role='img'] {
   /* Screen readers will announce the aria-label */
 }
 

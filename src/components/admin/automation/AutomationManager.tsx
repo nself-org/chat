@@ -132,7 +132,7 @@ export function AutomationManager() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-3xl font-bold">
             <Zap className="h-8 w-8" />
             Automation Rules
           </h1>
@@ -141,7 +141,7 @@ export function AutomationManager() {
           </p>
         </div>
         <Button onClick={openCreateRuleModal}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Create Rule
         </Button>
       </div>
@@ -210,7 +210,7 @@ export function AutomationManager() {
         </div>
         <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
           <SelectTrigger className="w-[180px]">
-            <Filter className="h-4 w-4 mr-2" />
+            <Filter className="mr-2 h-4 w-4" />
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -293,7 +293,7 @@ function RulesTable({
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <Zap className="h-12 w-12 text-muted-foreground mb-4" />
+          <Zap className="mb-4 h-12 w-12 text-muted-foreground" />
           <p className="text-lg font-medium">No automation rules found</p>
           <p className="text-sm text-muted-foreground">
             Create your first rule to automate administrative tasks
@@ -325,7 +325,7 @@ function RulesTable({
                 <div>
                   <button
                     onClick={() => onViewDetails(rule)}
-                    className="font-medium hover:underline text-left"
+                    className="text-left font-medium hover:underline"
                   >
                     {rule.name}
                   </button>
@@ -339,7 +339,7 @@ function RulesTable({
                   {rule.trigger.replace('_', ' ')}
                 </Badge>
                 {rule.triggerConfig.schedule && (
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {describeCronSchedule(rule.triggerConfig.schedule.cron)}
                   </p>
                 )}
@@ -350,9 +350,7 @@ function RulesTable({
                 </Badge>
               </TableCell>
               <TableCell>
-                <Badge variant={getAutomationStatusBadgeVariant(rule.status)}>
-                  {rule.status}
-                </Badge>
+                <Badge variant={getAutomationStatusBadgeVariant(rule.status)}>{rule.status}</Badge>
               </TableCell>
               <TableCell>
                 <div className="text-sm">
@@ -418,12 +416,7 @@ function RulesTable({
                   >
                     <Copy className="h-4 w-4" />
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => onDelete(rule)}
-                    title="Delete"
-                  >
+                  <Button variant="ghost" size="icon" onClick={() => onDelete(rule)} title="Delete">
                     <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
@@ -449,7 +442,7 @@ function ExecutionHistoryTable({ executions }: ExecutionHistoryTableProps) {
     return (
       <Card>
         <CardContent className="flex flex-col items-center justify-center py-12">
-          <Clock className="h-12 w-12 text-muted-foreground mb-4" />
+          <Clock className="mb-4 h-12 w-12 text-muted-foreground" />
           <p className="text-lg font-medium">No execution history</p>
           <p className="text-sm text-muted-foreground">
             Automation executions will appear here once rules run
@@ -494,8 +487,8 @@ function ExecutionHistoryTable({ executions }: ExecutionHistoryTableProps) {
                     execution.status === 'completed'
                       ? 'default'
                       : execution.status === 'failed'
-                      ? 'destructive'
-                      : 'secondary'
+                        ? 'destructive'
+                        : 'secondary'
                   }
                 >
                   {execution.status}
@@ -521,7 +514,7 @@ function TemplatesGrid({ onSelectTemplate }: TemplatesGridProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
       {AUTOMATION_TEMPLATES.map((template, index) => (
-        <Card key={index} className="hover:border-primary transition-colors cursor-pointer">
+        <Card key={index} className="cursor-pointer transition-colors hover:border-primary">
           <CardHeader>
             <CardTitle className="text-base">{template.name}</CardTitle>
             <CardDescription>{template.description}</CardDescription>
@@ -541,12 +534,12 @@ function TemplatesGrid({ onSelectTemplate }: TemplatesGridProps) {
                 </Badge>
               </div>
               {template.triggerConfig?.schedule && (
-                <div className="text-xs text-muted-foreground mt-2">
+                <div className="mt-2 text-xs text-muted-foreground">
                   {describeCronSchedule(template.triggerConfig.schedule.cron)}
                 </div>
               )}
             </div>
-            <Button onClick={onSelectTemplate} className="w-full mt-4" size="sm">
+            <Button onClick={onSelectTemplate} className="mt-4 w-full" size="sm">
               Use Template
             </Button>
           </CardContent>
@@ -577,15 +570,15 @@ function RuleDetailsDialog({ rule, open, onClose }: RuleDetailsDialogProps) {
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h4 className="text-sm font-medium mb-2">Status</h4>
+              <h4 className="mb-2 text-sm font-medium">Status</h4>
               <Badge variant={getAutomationStatusBadgeVariant(rule.status)}>{rule.status}</Badge>
             </div>
             <div>
-              <h4 className="text-sm font-medium mb-2">Run Count</h4>
+              <h4 className="mb-2 text-sm font-medium">Run Count</h4>
               <p className="text-sm">{formatAutomationRunCount(rule.runCount)}</p>
             </div>
             <div>
-              <h4 className="text-sm font-medium mb-2">Success Rate</h4>
+              <h4 className="mb-2 text-sm font-medium">Success Rate</h4>
               <p className="text-sm">
                 {rule.runCount > 0
                   ? formatAutomationSuccessRate(rule.successCount, rule.runCount)
@@ -593,40 +586,38 @@ function RuleDetailsDialog({ rule, open, onClose }: RuleDetailsDialogProps) {
               </p>
             </div>
             <div>
-              <h4 className="text-sm font-medium mb-2">Last Run</h4>
+              <h4 className="mb-2 text-sm font-medium">Last Run</h4>
               <p className="text-sm">
-                {rule.lastRunAt ? formatDistanceToNow(rule.lastRunAt, { addSuffix: true }) : 'Never'}
+                {rule.lastRunAt
+                  ? formatDistanceToNow(rule.lastRunAt, { addSuffix: true })
+                  : 'Never'}
               </p>
             </div>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Trigger</h4>
+            <h4 className="mb-2 text-sm font-medium">Trigger</h4>
             <Badge variant="outline" className="capitalize">
               {rule.trigger.replace('_', ' ')}
             </Badge>
             {rule.triggerConfig.schedule && (
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="mt-2 text-sm text-muted-foreground">
                 {describeCronSchedule(rule.triggerConfig.schedule.cron)}
               </p>
             )}
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Action</h4>
+            <h4 className="mb-2 text-sm font-medium">Action</h4>
             <Badge variant="outline" className="capitalize">
               {rule.action.replace('_', ' ')}
             </Badge>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Configuration</h4>
-            <pre className="text-xs bg-muted p-3 rounded-lg overflow-auto">
-              {JSON.stringify(
-                { trigger: rule.triggerConfig, action: rule.actionConfig },
-                null,
-                2
-              )}
+            <h4 className="mb-2 text-sm font-medium">Configuration</h4>
+            <pre className="overflow-auto rounded-lg bg-muted p-3 text-xs">
+              {JSON.stringify({ trigger: rule.triggerConfig, action: rule.actionConfig }, null, 2)}
             </pre>
           </div>
         </div>

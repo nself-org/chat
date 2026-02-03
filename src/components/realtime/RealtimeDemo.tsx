@@ -48,7 +48,7 @@ export function RealtimeDemo() {
 
   const handleSendMessage = (content: string) => {
     setMessages((prev) => [...prev, content])
-    console.log('Message sent:', content)
+    // REMOVED: console.log('Message sent:', content)
   }
 
   const handlePresenceChange = (status: PresenceStatus) => {
@@ -56,7 +56,7 @@ export function RealtimeDemo() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Real-time Features Demo</h1>
@@ -125,7 +125,7 @@ export function RealtimeDemo() {
               <CardTitle>Floating Connection Status</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="relative h-40 rounded-lg border bg-muted/50">
+              <div className="bg-muted/50 relative h-40 rounded-lg border">
                 <ConnectionStatus show position="top-right" showStats />
                 <ConnectionStatus show position="bottom-left" compact />
               </div>
@@ -181,11 +181,7 @@ export function RealtimeDemo() {
                       >
                         <div className="flex items-center gap-3">
                           <div className="relative h-10 w-10 rounded-full bg-muted">
-                            <PresenceIndicator
-                              userId={userId}
-                              showTooltip
-                              showLastSeen
-                            />
+                            <PresenceIndicator userId={userId} showTooltip showLastSeen />
                           </div>
                           <div>
                             <div className="font-medium">{userId}</div>
@@ -240,9 +236,7 @@ export function RealtimeDemo() {
                   {typingUsers.length > 0 ? (
                     <TypingIndicator users={mappedTypingUsers} />
                   ) : (
-                    <p className="text-sm text-muted-foreground">
-                      No one is typing
-                    </p>
+                    <p className="text-sm text-muted-foreground">No one is typing</p>
                   )}
                 </div>
 
@@ -250,7 +244,7 @@ export function RealtimeDemo() {
 
                 <div className="space-y-2">
                   <h4 className="text-sm font-medium">Inline Indicator</h4>
-                  <div className="rounded-lg border bg-muted/50 p-4">
+                  <div className="bg-muted/50 rounded-lg border p-4">
                     <InlineTypingIndicator users={mappedTypingUsers} />
                   </div>
                 </div>
@@ -307,15 +301,10 @@ export function RealtimeDemo() {
                   <h4 className="text-sm font-medium">Sent Messages</h4>
                   <div className="max-h-40 space-y-2 overflow-y-auto rounded-lg border p-3">
                     {messages.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">
-                        No messages yet
-                      </p>
+                      <p className="text-sm text-muted-foreground">No messages yet</p>
                     ) : (
                       messages.map((msg, i) => (
-                        <div
-                          key={i}
-                          className="rounded-lg bg-primary/10 px-3 py-2 text-sm"
-                        >
+                        <div key={i} className="bg-primary/10 rounded-lg px-3 py-2 text-sm">
                           {msg}
                         </div>
                       ))

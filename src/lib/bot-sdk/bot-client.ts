@@ -23,6 +23,7 @@ import type {
   Result,
   ApiError,
 } from './types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // RATE LIMITER
@@ -162,7 +163,7 @@ export class BotEventEmitter {
         try {
           listener(botEvent)
         } catch (error) {
-          console.error(`[BotEventEmitter] Error in event listener for '${event}':`, error)
+          logger.error(`[BotEventEmitter] Error in event listener for '${event}':`, error)
         }
       })
     }
@@ -174,7 +175,7 @@ export class BotEventEmitter {
         try {
           listener(botEvent)
         } catch (error) {
-          console.error(`[BotEventEmitter] Error in wildcard listener:`, error)
+          logger.error(`[BotEventEmitter] Error in wildcard listener:`, error)
         }
       })
     }
@@ -259,7 +260,11 @@ export class BotClient {
         secret: this.config.secret,
       }
 
-      const response = await this.makeRequest<{ token: string; expiresIn: number; refreshToken?: string }>(
+      const response = await this.makeRequest<{
+        token: string
+        expiresIn: number
+        refreshToken?: string
+      }>(
         '/auth/bot',
         {
           method: 'POST',
@@ -301,11 +306,18 @@ export class BotClient {
    */
   async refreshToken(): Promise<Result<BotToken>> {
     if (!this.token?.refreshToken) {
-      return { success: false, error: { code: 'NO_REFRESH_TOKEN', message: 'No refresh token available' } }
+      return {
+        success: false,
+        error: { code: 'NO_REFRESH_TOKEN', message: 'No refresh token available' },
+      }
     }
 
     try {
-      const response = await this.makeRequest<{ token: string; expiresIn: number; refreshToken?: string }>(
+      const response = await this.makeRequest<{
+        token: string
+        expiresIn: number
+        refreshToken?: string
+      }>(
         '/auth/refresh',
         {
           method: 'POST',
@@ -442,7 +454,11 @@ export class BotClient {
   /**
    * Add a reaction to a message
    */
-  async addReaction(channelId: ChannelId, messageId: MessageId, emoji: string): Promise<Result<void>> {
+  async addReaction(
+    channelId: ChannelId,
+    messageId: MessageId,
+    emoji: string
+  ): Promise<Result<void>> {
     if (!this.rateLimiters.reactions.canMakeRequest()) {
       const state = this.rateLimiters.reactions.getState()
       this.setStatus('rate_limited')
@@ -475,7 +491,11 @@ export class BotClient {
   /**
    * Remove a reaction from a message
    */
-  async removeReaction(channelId: ChannelId, messageId: MessageId, emoji: string): Promise<Result<void>> {
+  async removeReaction(
+    channelId: ChannelId,
+    messageId: MessageId,
+    emoji: string
+  ): Promise<Result<void>> {
     const response = await this.makeRequest<void>('/reactions', {
       method: 'DELETE',
       body: JSON.stringify({

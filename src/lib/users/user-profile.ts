@@ -75,9 +75,7 @@ export const PROFILE_FIELD_CONFIGS: ProfileFieldConfig[] = [
     label: 'Phone',
     required: false,
     validate: (value) =>
-      !value || PHONE_PATTERN.test(value)
-        ? null
-        : 'Please enter a valid phone number',
+      !value || PHONE_PATTERN.test(value) ? null : 'Please enter a valid phone number',
   },
 ]
 
@@ -88,10 +86,7 @@ export const PROFILE_FIELD_CONFIGS: ProfileFieldConfig[] = [
 /**
  * Validate a profile field value
  */
-export function validateField(
-  config: ProfileFieldConfig,
-  value: string
-): string | null {
+export function validateField(config: ProfileFieldConfig, value: string): string | null {
   // Check required
   if (config.required && !value.trim()) {
     return `${config.label} is required`
@@ -187,9 +182,7 @@ export function formatPresenceStatus(user: UserProfile): string {
     case 'dnd':
       return 'Do not disturb'
     case 'offline':
-      return user.lastSeenAt
-        ? `Last seen ${formatRelativeTime(user.lastSeenAt)}`
-        : 'Offline'
+      return user.lastSeenAt ? `Last seen ${formatRelativeTime(user.lastSeenAt)}` : 'Offline'
     default:
       return 'Unknown'
   }
@@ -283,7 +276,9 @@ export function prepareProfileForApi(data: EditProfileData): Record<string, unkn
 /**
  * Convert API response to profile data
  */
-export function parseProfileFromApi(apiData: Record<string, unknown>): Partial<ExtendedUserProfile> {
+export function parseProfileFromApi(
+  apiData: Record<string, unknown>
+): Partial<ExtendedUserProfile> {
   return {
     displayName: apiData.display_name as string,
     username: apiData.username as string,
@@ -304,11 +299,7 @@ export function parseProfileFromApi(apiData: Record<string, unknown>): Partial<E
  * Check if profile has required fields filled
  */
 export function isProfileComplete(user: ExtendedUserProfile): boolean {
-  return Boolean(
-    user.displayName &&
-    user.username &&
-    user.avatarUrl
-  )
+  return Boolean(user.displayName && user.username && user.avatarUrl)
 }
 
 /**

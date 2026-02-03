@@ -13,6 +13,7 @@ The message actions system provides three main components:
 ## Features
 
 ### Message Hover Actions
+
 - ✅ Quick reactions (emoji picker)
 - ✅ Reply
 - ✅ Thread
@@ -20,6 +21,7 @@ The message actions system provides three main components:
 - ✅ More menu (...)
 
 ### Context Menu (Right-Click)
+
 - ✅ Copy text
 - ✅ Copy link
 - ✅ Edit message (if own)
@@ -36,6 +38,7 @@ The message actions system provides three main components:
 - ✅ View reactions
 
 ### Bulk Operations
+
 - ✅ Select multiple messages
 - ✅ Bulk delete
 - ✅ Bulk forward
@@ -47,21 +50,11 @@ The message actions system provides three main components:
 
 ```tsx
 import { useState } from 'react'
-import {
-  MessageItem,
-  MessageActions,
-  MessageContextMenu,
-} from '@/components/chat'
+import { MessageItem, MessageActions, MessageContextMenu } from '@/components/chat'
 import { useMessageActions } from '@/hooks'
 
 function MessageList({ channelId, messages }) {
-  const {
-    handlers,
-    bulkHandlers,
-    selection,
-    handleAction,
-    getPermissions,
-  } = useMessageActions({
+  const { handlers, bulkHandlers, selection, handleAction, getPermissions } = useMessageActions({
     channelId,
     onReplyMessage: (message) => {
       // Handle reply
@@ -128,11 +121,13 @@ Hover action bar that appears on message hover.
 ```
 
 **Variants:**
+
 - `default` - Full hover bar with all actions
 - `compact` - Smaller inline actions
 - `mobile` - Mobile floating action sheet
 
 **Actions:**
+
 - React (opens emoji picker)
 - Reply
 - Thread
@@ -157,6 +152,7 @@ Right-click context menu with comprehensive actions.
 ```
 
 **Menu Structure:**
+
 1. Quick reactions (row of emoji buttons)
 2. Copy text/link
 3. Reply/Thread
@@ -189,13 +185,13 @@ Main hook for managing message actions.
 
 ```tsx
 const {
-  handlers,        // Individual action handlers
-  bulkHandlers,    // Bulk operation handlers
-  selection,       // Selection state
-  handleAction,    // Main action dispatcher
+  handlers, // Individual action handlers
+  bulkHandlers, // Bulk operation handlers
+  selection, // Selection state
+  handleAction, // Main action dispatcher
   canPerformAction, // Permission checker
-  getPermissions,  // Get message permissions
-  isLoading,       // Loading state
+  getPermissions, // Get message permissions
+  isLoading, // Loading state
 } = useMessageActions({
   channelId: 'channel-123',
   onReplyMessage: (message) => {},
@@ -343,19 +339,13 @@ function MessageListWithBulk() {
       {selection.isSelectionMode && (
         <BulkMessageActions
           selectedCount={selection.selectedMessages.size}
-          onDelete={() => bulkHandlers.onBulkDelete(
-            Array.from(selection.selectedMessages)
-          )}
+          onDelete={() => bulkHandlers.onBulkDelete(Array.from(selection.selectedMessages))}
           onForward={() => {
-            const selected = messages.filter(m =>
-              selection.selectedMessages.has(m.id)
-            )
+            const selected = messages.filter((m) => selection.selectedMessages.has(m.id))
             bulkHandlers.onBulkForward(selected)
           }}
           onCopy={() => {
-            const selected = messages.filter(m =>
-              selection.selectedMessages.has(m.id)
-            )
+            const selected = messages.filter((m) => selection.selectedMessages.has(m.id))
             bulkHandlers.onBulkCopy(selected)
           }}
           onClearSelection={selection.clearSelection}
@@ -474,16 +464,19 @@ function MessageWithActions({ message }) {
 ## Troubleshooting
 
 ### Actions not appearing
+
 - Check that permissions are correctly set
 - Verify the user is authenticated
 - Ensure the message is not deleted
 
 ### Context menu not opening
+
 - Make sure the MessageContextMenu wraps the entire message
 - Check browser console for errors
 - Verify Radix UI context menu is installed
 
 ### Permissions not working
+
 - Check user role is correctly set
 - Verify the isOwnMessage check
 - Ensure message.userId matches current user
@@ -491,6 +484,7 @@ function MessageWithActions({ message }) {
 ## Examples
 
 See the following files for complete examples:
+
 - `/Users/admin/Sites/nself-chat/src/components/chat/message-item.tsx`
 - `/Users/admin/Sites/nself-chat/src/components/chat/message-list.tsx`
 - `/Users/admin/Sites/nself-chat/src/app/chat/page.tsx`

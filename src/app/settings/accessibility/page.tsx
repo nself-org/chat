@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { useA11yStore, applyA11ySettings, FontSize, ContrastMode } from '@/lib/accessibility';
-import { useReducedMotion } from '@/lib/accessibility/use-reduced-motion';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { useEffect, useState } from 'react'
+import { useA11yStore, applyA11ySettings, FontSize, ContrastMode } from '@/lib/accessibility'
+import { useReducedMotion } from '@/lib/accessibility/use-reduced-motion'
+import { cn } from '@/lib/utils'
 
 interface SettingToggleProps {
-  id: string;
-  label: string;
-  description: string;
-  checked: boolean;
-  onChange: (checked: boolean) => void;
-  disabled?: boolean;
+  id: string
+  label: string
+  description: string
+  checked: boolean
+  onChange: (checked: boolean) => void
+  disabled?: boolean
 }
 
 function SettingToggle({
@@ -64,26 +64,19 @@ function SettingToggle({
         />
       </button>
     </div>
-  );
+  )
 }
 
 interface SettingSelectProps {
-  id: string;
-  label: string;
-  description: string;
-  value: string;
-  options: { value: string; label: string }[];
-  onChange: (value: string) => void;
+  id: string
+  label: string
+  description: string
+  value: string
+  options: { value: string; label: string }[]
+  onChange: (value: string) => void
 }
 
-function SettingSelect({
-  id,
-  label,
-  description,
-  value,
-  options,
-  onChange,
-}: SettingSelectProps) {
+function SettingSelect({ id, label, description, value, options, onChange }: SettingSelectProps) {
   return (
     <div className="py-4">
       <label htmlFor={id} className="block text-sm font-medium text-foreground">
@@ -110,7 +103,7 @@ function SettingSelect({
         ))}
       </select>
     </div>
-  );
+  )
 }
 
 function KeyboardHint({ keys, action }: { keys: string[]; action: string }) {
@@ -128,19 +121,17 @@ function KeyboardHint({ keys, action }: { keys: string[]; action: string }) {
             >
               {key}
             </kbd>
-            {index < keys.length - 1 && (
-              <span className="text-muted-foreground">+</span>
-            )}
+            {index < keys.length - 1 && <span className="text-muted-foreground">+</span>}
           </React.Fragment>
         ))}
       </div>
     </div>
-  );
+  )
 }
 
 export default function AccessibilitySettingsPage() {
-  const [mounted, setMounted] = useState(false);
-  const systemReducedMotion = useReducedMotion();
+  const [mounted, setMounted] = useState(false)
+  const systemReducedMotion = useReducedMotion()
   const {
     reduceMotion,
     highContrast,
@@ -167,12 +158,12 @@ export default function AccessibilitySettingsPage() {
     setPreferCaptions,
     setAnnounceMessages,
     resetSettings,
-  } = useA11yStore();
+  } = useA11yStore()
 
   // Apply settings on change
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (mounted) {
@@ -189,7 +180,7 @@ export default function AccessibilitySettingsPage() {
         showKeyboardHints,
         preferCaptions,
         announceMessages,
-      });
+      })
     }
   }, [
     mounted,
@@ -205,14 +196,14 @@ export default function AccessibilitySettingsPage() {
     showKeyboardHints,
     preferCaptions,
     announceMessages,
-  ]);
+  ])
 
   if (!mounted) {
     return (
       <div className="flex h-full items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
-    );
+    )
   }
 
   const fontSizeOptions = [
@@ -220,31 +211,28 @@ export default function AccessibilitySettingsPage() {
     { value: 'medium', label: 'Medium (16px) - Default' },
     { value: 'large', label: 'Large (18px)' },
     { value: 'extra-large', label: 'Extra Large (20px)' },
-  ];
+  ]
 
   const contrastOptions = [
     { value: 'normal', label: 'Normal' },
     { value: 'high', label: 'High' },
     { value: 'higher', label: 'Higher' },
-  ];
+  ]
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8">
       <header className="mb-8">
         <h1 className="text-2xl font-bold text-foreground">Accessibility Settings</h1>
         <p className="mt-2 text-muted-foreground">
-          Customize nchat to better suit your needs. These settings help make the
-          application more accessible and comfortable to use.
+          Customize nchat to better suit your needs. These settings help make the application more
+          accessible and comfortable to use.
         </p>
       </header>
 
       <main>
         {/* Visual Settings */}
         <section aria-labelledby="visual-settings-heading" className="mb-8">
-          <h2
-            id="visual-settings-heading"
-            className="mb-4 text-lg font-semibold text-foreground"
-          >
+          <h2 id="visual-settings-heading" className="mb-4 text-lg font-semibold text-foreground">
             Visual
           </h2>
           <div className="divide-y divide-border rounded-lg border border-border bg-card p-4">
@@ -296,10 +284,7 @@ export default function AccessibilitySettingsPage() {
 
         {/* Motion Settings */}
         <section aria-labelledby="motion-settings-heading" className="mb-8">
-          <h2
-            id="motion-settings-heading"
-            className="mb-4 text-lg font-semibold text-foreground"
-          >
+          <h2 id="motion-settings-heading" className="mb-4 text-lg font-semibold text-foreground">
             Motion
           </h2>
           <div className="divide-y divide-border rounded-lg border border-border bg-card p-4">
@@ -326,10 +311,7 @@ export default function AccessibilitySettingsPage() {
 
         {/* Focus & Navigation */}
         <section aria-labelledby="focus-settings-heading" className="mb-8">
-          <h2
-            id="focus-settings-heading"
-            className="mb-4 text-lg font-semibold text-foreground"
-          >
+          <h2 id="focus-settings-heading" className="mb-4 text-lg font-semibold text-foreground">
             Focus & Navigation
           </h2>
           <div className="divide-y divide-border rounded-lg border border-border bg-card p-4">
@@ -361,10 +343,7 @@ export default function AccessibilitySettingsPage() {
 
         {/* Screen Reader Settings */}
         <section aria-labelledby="screen-reader-heading" className="mb-8">
-          <h2
-            id="screen-reader-heading"
-            className="mb-4 text-lg font-semibold text-foreground"
-          >
+          <h2 id="screen-reader-heading" className="mb-4 text-lg font-semibold text-foreground">
             Screen Reader
           </h2>
           <div className="divide-y divide-border rounded-lg border border-border bg-card p-4">
@@ -434,7 +413,7 @@ export default function AccessibilitySettingsPage() {
             <button
               onClick={() => {
                 if (confirm('Are you sure you want to reset all accessibility settings?')) {
-                  resetSettings();
+                  resetSettings()
                 }
               }}
               className={cn(
@@ -452,11 +431,10 @@ export default function AccessibilitySettingsPage() {
       </main>
 
       {/* Help Section */}
-      <footer className="mt-12 rounded-lg bg-muted/50 p-4">
+      <footer className="bg-muted/50 mt-12 rounded-lg p-4">
         <h2 className="text-sm font-medium text-foreground">Need Help?</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          If you encounter any accessibility issues or have suggestions for improvement,
-          please{' '}
+          If you encounter any accessibility issues or have suggestions for improvement, please{' '}
           <a
             href="mailto:support@nself.org"
             className="text-primary underline hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -467,5 +445,5 @@ export default function AccessibilitySettingsPage() {
         </p>
       </footer>
     </div>
-  );
+  )
 }

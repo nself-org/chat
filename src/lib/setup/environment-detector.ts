@@ -76,9 +76,7 @@ export interface EnvFileStatus {
  */
 export const REQUIRED_ENV_VARS = {
   // Minimum for dev mode
-  development: [
-    'NEXT_PUBLIC_APP_NAME',
-  ],
+  development: ['NEXT_PUBLIC_APP_NAME'],
 
   // Required for staging/production
   production: [
@@ -90,11 +88,7 @@ export const REQUIRED_ENV_VARS = {
   ],
 
   // Optional but recommended
-  recommended: [
-    'NEXT_PUBLIC_THEME_PRIMARY',
-    'NEXT_PUBLIC_THEME_MODE',
-    'NEXT_PUBLIC_SOCKET_URL',
-  ],
+  recommended: ['NEXT_PUBLIC_THEME_PRIMARY', 'NEXT_PUBLIC_THEME_MODE', 'NEXT_PUBLIC_SOCKET_URL'],
 }
 
 /**
@@ -120,7 +114,7 @@ export const CONFIG_TO_ENV_MAP: Record<string, string> = {
   'theme.fontFamily': 'NEXT_PUBLIC_THEME_FONT',
 
   // Landing Page
-  'landingTheme': 'NEXT_PUBLIC_LANDING_THEME',
+  landingTheme: 'NEXT_PUBLIC_LANDING_THEME',
   'homepage.mode': 'NEXT_PUBLIC_HOMEPAGE_MODE',
   'homepage.redirectTo': 'NEXT_PUBLIC_HOMEPAGE_REDIRECT',
 
@@ -260,7 +254,12 @@ export function generateEnvFile(
   const appConfig = configToEnv(config)
 
   if (includeComments) lines.push('# App Identity')
-  const identityVars = ['NEXT_PUBLIC_APP_NAME', 'NEXT_PUBLIC_APP_TAGLINE', 'NEXT_PUBLIC_COMPANY_NAME', 'NEXT_PUBLIC_WEBSITE_URL']
+  const identityVars = [
+    'NEXT_PUBLIC_APP_NAME',
+    'NEXT_PUBLIC_APP_TAGLINE',
+    'NEXT_PUBLIC_COMPANY_NAME',
+    'NEXT_PUBLIC_WEBSITE_URL',
+  ]
   for (const key of identityVars) {
     if (appConfig[key]) lines.push(`${key}=${appConfig[key]}`)
   }
@@ -276,7 +275,7 @@ export function generateEnvFile(
 
   // Theme
   if (includeComments) lines.push('# Theme')
-  const themeVars = Object.keys(appConfig).filter(k => k.startsWith('NEXT_PUBLIC_THEME_'))
+  const themeVars = Object.keys(appConfig).filter((k) => k.startsWith('NEXT_PUBLIC_THEME_'))
   for (const key of themeVars) {
     lines.push(`${key}=${appConfig[key]}`)
   }
@@ -284,7 +283,11 @@ export function generateEnvFile(
 
   // Landing Page
   if (includeComments) lines.push('# Landing Page')
-  const landingVars = ['NEXT_PUBLIC_LANDING_THEME', 'NEXT_PUBLIC_HOMEPAGE_MODE', 'NEXT_PUBLIC_HOMEPAGE_REDIRECT']
+  const landingVars = [
+    'NEXT_PUBLIC_LANDING_THEME',
+    'NEXT_PUBLIC_HOMEPAGE_MODE',
+    'NEXT_PUBLIC_HOMEPAGE_REDIRECT',
+  ]
   for (const key of landingVars) {
     if (appConfig[key]) lines.push(`${key}=${appConfig[key]}`)
   }
@@ -292,7 +295,7 @@ export function generateEnvFile(
 
   // Authentication
   if (includeComments) lines.push('# Authentication Providers')
-  const authVars = Object.keys(appConfig).filter(k => k.startsWith('NEXT_PUBLIC_AUTH_'))
+  const authVars = Object.keys(appConfig).filter((k) => k.startsWith('NEXT_PUBLIC_AUTH_'))
   for (const key of authVars) {
     lines.push(`${key}=${appConfig[key]}`)
   }
@@ -300,7 +303,11 @@ export function generateEnvFile(
 
   // Access Control
   if (includeComments) lines.push('# Access Control')
-  const accessVars = ['NEXT_PUBLIC_ACCESS_MODE', 'NEXT_PUBLIC_REQUIRE_EMAIL_VERIFICATION', 'NEXT_PUBLIC_REQUIRE_APPROVAL']
+  const accessVars = [
+    'NEXT_PUBLIC_ACCESS_MODE',
+    'NEXT_PUBLIC_REQUIRE_EMAIL_VERIFICATION',
+    'NEXT_PUBLIC_REQUIRE_APPROVAL',
+  ]
   for (const key of accessVars) {
     if (appConfig[key]) lines.push(`${key}=${appConfig[key]}`)
   }
@@ -308,7 +315,7 @@ export function generateEnvFile(
 
   // Features
   if (includeComments) lines.push('# Features')
-  const featureVars = Object.keys(appConfig).filter(k => k.startsWith('NEXT_PUBLIC_FEATURE_'))
+  const featureVars = Object.keys(appConfig).filter((k) => k.startsWith('NEXT_PUBLIC_FEATURE_'))
   for (const key of featureVars) {
     lines.push(`${key}=${appConfig[key]}`)
   }
@@ -316,7 +323,7 @@ export function generateEnvFile(
 
   // Owner
   if (includeComments) lines.push('# Owner Information')
-  const ownerVars = Object.keys(appConfig).filter(k => k.startsWith('NEXT_PUBLIC_OWNER_'))
+  const ownerVars = Object.keys(appConfig).filter((k) => k.startsWith('NEXT_PUBLIC_OWNER_'))
   for (const key of ownerVars) {
     lines.push(`${key}=${appConfig[key]}`)
   }
@@ -400,8 +407,10 @@ export function getSkippableSteps(config: Record<string, unknown>): number[] {
   }
 
   // Step 7: Auth - skip if at least one provider is enabled
-  const authProviders = getNestedValue(config, 'authProviders') as Record<string, unknown> | undefined
-  if (authProviders && Object.values(authProviders).some(v => v === true)) {
+  const authProviders = getNestedValue(config, 'authProviders') as
+    | Record<string, unknown>
+    | undefined
+  if (authProviders && Object.values(authProviders).some((v) => v === true)) {
     skippable.push(7)
   }
 

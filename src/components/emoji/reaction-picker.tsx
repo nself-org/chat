@@ -58,7 +58,7 @@ export function ReactionPicker({
         exit={{ opacity: 0, scale: 0.95, y: 5 }}
         transition={{ duration: 0.15, ease: 'easeOut' }}
         className={cn(
-          'flex items-center gap-0.5 rounded-full bg-popover border shadow-lg p-1',
+          'flex items-center gap-0.5 rounded-full border bg-popover p-1 shadow-lg',
           className
         )}
       >
@@ -74,9 +74,9 @@ export function ReactionPicker({
                 whileHover={{ scale: 1.2 }}
                 whileTap={{ scale: 0.9 }}
                 className={cn(
-                  'flex items-center justify-center w-8 h-8 rounded-full transition-colors',
+                  'flex h-8 w-8 items-center justify-center rounded-full transition-colors',
                   'hover:bg-accent focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
-                  'disabled:opacity-50 disabled:cursor-not-allowed',
+                  'disabled:cursor-not-allowed disabled:opacity-50',
                   hoveredEmoji === emoji && 'bg-accent'
                 )}
               >
@@ -91,7 +91,7 @@ export function ReactionPicker({
 
         {showFullPicker && (
           <>
-            <div className="w-px h-5 bg-border mx-1" />
+            <div className="mx-1 h-5 w-px bg-border" />
             <EmojiPicker
               onEmojiSelect={handleEmojiSelect}
               open={showEmojiPicker}
@@ -105,7 +105,7 @@ export function ReactionPicker({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="w-8 h-8 rounded-full"
+                    className="h-8 w-8 rounded-full"
                     disabled={disabled}
                   >
                     <Plus className="h-4 w-4" />
@@ -178,8 +178,8 @@ export function InlineReactionPicker({
           onClick={() => onReactionSelect(emoji)}
           disabled={disabled}
           className={cn(
-            'text-lg p-1 rounded hover:bg-accent transition-colors',
-            'disabled:opacity-50 disabled:cursor-not-allowed'
+            'rounded p-1 text-lg transition-colors hover:bg-accent',
+            'disabled:cursor-not-allowed disabled:opacity-50'
           )}
         >
           {emoji}
@@ -196,7 +196,7 @@ export function InlineReactionPicker({
       >
         <button
           type="button"
-          className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-accent transition-colors"
+          className="rounded p-1 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           disabled={disabled}
         >
           <Plus className="h-4 w-4" />

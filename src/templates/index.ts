@@ -19,6 +19,7 @@ import type {
   TerminologyConfig,
   AnimationConfig,
 } from './types'
+import { logger } from '@/lib/logger'
 
 // Re-export types
 export type {
@@ -117,7 +118,7 @@ export async function loadTemplate(id: TemplateId): Promise<PlatformTemplate> {
   // Load the template
   const entry = templateRegistry[id]
   if (!entry) {
-    console.warn(`Template "${id}" not found, falling back to default`)
+    logger.warn(`Template "${id}" not found, falling back to default`)
     return loadTemplate('default')
   }
 
@@ -126,7 +127,7 @@ export async function loadTemplate(id: TemplateId): Promise<PlatformTemplate> {
     templateCache.set(id, template)
     return template
   } catch (error) {
-    console.error(`Failed to load template "${id}":`, error)
+    logger.error(`Failed to load template "${id}":`,  error)
     if (id !== 'default') {
       return loadTemplate('default')
     }
@@ -171,12 +172,12 @@ function deepMerge<T extends object>(base: T, override: Partial<T>): T {
         typeof overrideValue === 'object' &&
         !Array.isArray(overrideValue)
       ) {
-        (result as Record<string, unknown>)[key] = deepMerge(
+        ;(result as Record<string, unknown>)[key] = deepMerge(
           baseValue as object,
           overrideValue as object
         )
       } else {
-        (result as Record<string, unknown>)[key] = overrideValue
+        ;(result as Record<string, unknown>)[key] = overrideValue
       }
     }
   }
@@ -224,8 +225,7 @@ export function applyEnvOverrides(template: PlatformTemplate): PlatformTemplate 
       defaultMode: (process.env.NEXT_PUBLIC_THEME_MODE as 'light' | 'dark' | 'system') ?? undefined,
     },
     layout: {
-      sidebarPosition:
-        (process.env.NEXT_PUBLIC_SIDEBAR_POSITION as 'left' | 'right') ?? undefined,
+      sidebarPosition: (process.env.NEXT_PUBLIC_SIDEBAR_POSITION as 'left' | 'right') ?? undefined,
       sidebarWidth: process.env.NEXT_PUBLIC_SIDEBAR_WIDTH
         ? parseInt(process.env.NEXT_PUBLIC_SIDEBAR_WIDTH)
         : undefined,

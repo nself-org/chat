@@ -7,6 +7,7 @@
  * - Token refresh support
  */
 
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderMetadata,
@@ -72,10 +73,12 @@ export class TwitterProvider extends BaseAuthProvider {
     // If we have OAuth credentials (from callback), process them
     const oauthCreds = credentials as OAuthCredentials
     if (oauthCreds.code && oauthCreds.state) {
-      return this.handleCallback(new URLSearchParams({
-        code: oauthCreds.code,
-        state: oauthCreds.state,
-      }))
+      return this.handleCallback(
+        new URLSearchParams({
+          code: oauthCreds.code,
+          state: oauthCreds.state,
+        })
+      )
     }
 
     // Otherwise, redirect to Twitter
@@ -90,7 +93,10 @@ export class TwitterProvider extends BaseAuthProvider {
     }
   }
 
-  async signUp(credentials: AuthCredentials, metadata?: Record<string, unknown>): Promise<AuthResult> {
+  async signUp(
+    credentials: AuthCredentials,
+    metadata?: Record<string, unknown>
+  ): Promise<AuthResult> {
     // For OAuth, signUp is the same as signIn
     return this.signIn(credentials)
   }
@@ -130,7 +136,10 @@ export class TwitterProvider extends BaseAuthProvider {
         )
       }
       return this.createErrorResult(
-        this.createError('OAUTH_ERROR', params.get('error_description') || 'Twitter authentication failed')
+        this.createError(
+          'OAUTH_ERROR',
+          params.get('error_description') || 'Twitter authentication failed'
+        )
       )
     }
 
@@ -149,7 +158,10 @@ export class TwitterProvider extends BaseAuthProvider {
 
         if (!response.ok) {
           return this.createErrorResult(
-            this.createError('AUTH_FAILED', data.error?.message || 'Failed to authenticate with Twitter')
+            this.createError(
+              'AUTH_FAILED',
+              data.error?.message || 'Failed to authenticate with Twitter'
+            )
           )
         }
 
@@ -167,7 +179,7 @@ export class TwitterProvider extends BaseAuthProvider {
 
         return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
       } catch (error) {
-        console.error('Twitter callback error:', error)
+        logger.error('Twitter callback error:',  error)
         return this.createErrorResult(
           this.createError('NETWORK_ERROR', 'Failed to complete Twitter authentication')
         )
@@ -198,7 +210,10 @@ export class TwitterProvider extends BaseAuthProvider {
 
         if (!response.ok) {
           return this.createErrorResult(
-            this.createError('AUTH_FAILED', data.error?.message || 'Failed to authenticate with Twitter')
+            this.createError(
+              'AUTH_FAILED',
+              data.error?.message || 'Failed to authenticate with Twitter'
+            )
           )
         }
 
@@ -216,7 +231,7 @@ export class TwitterProvider extends BaseAuthProvider {
 
         return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
       } catch (error) {
-        console.error('Twitter code exchange error:', error)
+        logger.error('Twitter code exchange error:',  error)
         return this.createErrorResult(
           this.createError('NETWORK_ERROR', 'Failed to complete Twitter authentication')
         )
@@ -235,7 +250,7 @@ export class TwitterProvider extends BaseAuthProvider {
         headers: this.getAuthHeaders(),
       })
     } catch (error) {
-      console.error('Sign out error:', error)
+      logger.error('Sign out error:',  error)
     }
 
     this.clearSession()
@@ -273,10 +288,8 @@ export class TwitterProvider extends BaseAuthProvider {
         data.session.refreshToken
       )
     } catch (error) {
-      console.error('Token refresh error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to refresh token')
-      )
+      logger.error('Token refresh error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to refresh token'))
     }
   }
 
@@ -295,7 +308,7 @@ export class TwitterProvider extends BaseAuthProvider {
 
     // Check for both OAuth 1.0a and 2.0 parameters
     if (params.has('refreshToken') || params.has('code') || params.has('oauth_verifier')) {
-      this.handleCallback(params).then(result => {
+      this.handleCallback(params).then((result) => {
         if (result.success) {
           const url = new URL(window.location.href)
           url.search = ''
@@ -333,7 +346,11 @@ export class TwitterProvider extends BaseAuthProvider {
   }
 
   private getAuthApiUrl(): string {
-    return this.extendedConfig.authApiUrl || process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1'
+    return (
+      this.extendedConfig.authApiUrl ||
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      'http://localhost:4000/v1'
+    )
   }
 
   private getRedirectUrl(): string {
@@ -353,18 +370,18 @@ export class TwitterProvider extends BaseAuthProvider {
 
   private mapUserResponse(userData: Record<string, unknown>): AuthUser {
     // Twitter might not provide email in some cases
-    const email = userData.email as string || `${userData.displayName}@twitter.placeholder`
+    const email = (userData.email as string) || `${userData.displayName}@twitter.placeholder`
 
     return {
       id: userData.id as string,
       email,
-      username: userData.displayName as string || email.split('@')[0],
-      displayName: userData.displayName as string || email.split('@')[0],
+      username: (userData.displayName as string) || email.split('@')[0],
+      displayName: (userData.displayName as string) || email.split('@')[0],
       avatarUrl: userData.avatarUrl as string | undefined,
       role: (userData.defaultRole as AuthUser['role']) || 'member',
       emailVerified: !!userData.email, // Only verified if email provided
       metadata: {
-        ...(userData.metadata as Record<string, unknown> || {}),
+        ...((userData.metadata as Record<string, unknown>) || {}),
         provider: 'twitter',
         twitterHandle: userData.displayName,
       },
@@ -375,10 +392,13 @@ export class TwitterProvider extends BaseAuthProvider {
 
   private persistSession(session: { accessToken: string; refreshToken: string }): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem('nchat-twitter-session', JSON.stringify({
-      ...session,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-twitter-session',
+      JSON.stringify({
+        ...session,
+        timestamp: Date.now(),
+      })
+    )
   }
 
   private getStoredSession(): { accessToken: string; refreshToken: string } | null {

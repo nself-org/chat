@@ -378,13 +378,7 @@ export function calculatePasswordStrength(password: string): PasswordStrength {
   // Normalize score to 0-4
   const normalizedScore = Math.min(4, Math.max(0, Math.floor(score / 1.5)))
 
-  const labels: PasswordStrength['label'][] = [
-    'Weak',
-    'Fair',
-    'Good',
-    'Strong',
-    'Very Strong',
-  ]
+  const labels: PasswordStrength['label'][] = ['Weak', 'Fair', 'Good', 'Strong', 'Very Strong']
 
   return {
     score: normalizedScore,

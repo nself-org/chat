@@ -17,12 +17,7 @@ interface RoleColorProps {
 /**
  * RoleColor - Color picker for roles with presets and custom input
  */
-export function RoleColor({
-  value,
-  onChange,
-  disabled = false,
-  className,
-}: RoleColorProps) {
+export function RoleColor({ value, onChange, disabled = false, className }: RoleColorProps) {
   const [customColor, setCustomColor] = React.useState(value)
 
   const handlePresetClick = (color: string) => {
@@ -70,10 +65,7 @@ export function RoleColor({
               title={preset.name}
             >
               {value === preset.color && (
-                <Check
-                  className="absolute inset-0 m-auto text-white drop-shadow-md"
-                  size={16}
-                />
+                <Check className="absolute inset-0 m-auto text-white drop-shadow-md" size={16} />
               )}
             </button>
           ))}
@@ -101,15 +93,9 @@ export function RoleColor({
             disabled={disabled}
             placeholder="#000000"
             maxLength={7}
-            className={cn(
-              'w-28 font-mono uppercase',
-              !isPreset && 'border-primary'
-            )}
+            className={cn('w-28 font-mono uppercase', !isPreset && 'border-primary')}
           />
-          <div
-            className="h-10 w-10 rounded border"
-            style={{ backgroundColor: value }}
-          />
+          <div className="h-10 w-10 rounded border" style={{ backgroundColor: value }} />
         </div>
       </div>
 
@@ -129,17 +115,10 @@ interface RoleColorPreviewProps {
   className?: string
 }
 
-export function RoleColorPreview({
-  color,
-  name,
-  className,
-}: RoleColorPreviewProps) {
+export function RoleColorPreview({ color, name, className }: RoleColorPreviewProps) {
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <div
-        className="h-4 w-4 rounded-full border"
-        style={{ backgroundColor: color }}
-      />
+      <div className="h-4 w-4 rounded-full border" style={{ backgroundColor: color }} />
       {name && <span style={{ color }}>{name}</span>}
     </div>
   )

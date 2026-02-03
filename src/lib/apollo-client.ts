@@ -12,6 +12,8 @@ import { createClient, type Client } from 'graphql-ws'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
 
+import { logger } from '@/lib/logger'
+
 // Environment variables
 const GRAPHQL_HTTP_URL =
   process.env.NEXT_PUBLIC_GRAPHQL_URL ||
@@ -19,8 +21,7 @@ const GRAPHQL_HTTP_URL =
   'http://localhost:1337/v1/graphql'
 
 const GRAPHQL_WS_URL =
-  process.env.NEXT_PUBLIC_GRAPHQL_WS_URL ||
-  GRAPHQL_HTTP_URL.replace(/^http/, 'ws')
+  process.env.NEXT_PUBLIC_GRAPHQL_WS_URL || GRAPHQL_HTTP_URL.replace(/^http/, 'ws')
 
 // Helper to get auth token
 function getAuthToken(): string | null {
@@ -49,13 +50,11 @@ const authLink = setContext((_, { headers }) => {
 const errorLink = onError(({ graphQLErrors, networkError }) => {
   if (graphQLErrors) {
     graphQLErrors.forEach(({ message, locations, path }) => {
-      console.error(
-        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
-      )
+      logger.error(`[GraphQL error]: Message: ${message},  Location: ${locations}, Path: ${path}`)
     })
   }
   if (networkError) {
-    console.error(`[Network error]: ${networkError}`)
+    logger.error(`[Network error]: ${networkError}`)
   }
 })
 
@@ -88,12 +87,10 @@ if (typeof window !== 'undefined') {
     lazy: true,
     // Event handlers for connection state management
     on: {
-      connected: () => {
-      },
-      closed: (event) => {
-      },
+      connected: () => {},
+      closed: (event) => {},
       error: (error) => {
-        console.error('[WebSocket] Connection error', error)
+        logger.error('[WebSocket] Connection error', error)
       },
     },
   })
@@ -108,8 +105,7 @@ const splitLink =
         ({ query }) => {
           const definition = getMainDefinition(query)
           return (
-            definition.kind === 'OperationDefinition' &&
-            definition.operation === 'subscription'
+            definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
           )
         },
         wsLink,
@@ -159,4 +155,52 @@ export function reconnectWebSocket(): void {
 // Utility function to get the Apollo Client instance
 export function getApolloClient(): ApolloClient<NormalizedCacheObject> {
   return apolloClient
+}
+
+// ============================================================================
+// Server-Side Apollo Client
+// ============================================================================
+
+// Server-side Apollo Client (for API routes, no WebSocket needed)
+let serverApolloClient: ApolloClient<NormalizedCacheObject> | null = null
+
+/**
+ * Get Apollo Client for server-side use (API routes, server components)
+ * Uses admin secret for full access to Hasura
+ */
+export function getServerApolloClient(): ApolloClient<NormalizedCacheObject> {
+  if (serverApolloClient) {
+    return serverApolloClient
+  }
+
+  const httpLink = createHttpLink({
+    uri: GRAPHQL_HTTP_URL,
+  })
+
+  // Auth link with admin secret for server-side operations
+  const serverAuthLink = setContext((_, { headers }) => {
+    const adminSecret = process.env.HASURA_ADMIN_SECRET
+
+    return {
+      headers: {
+        ...headers,
+        ...(adminSecret ? { 'x-hasura-admin-secret': adminSecret } : {}),
+      },
+    }
+  })
+
+  serverApolloClient = new ApolloClient({
+    link: from([errorLink, serverAuthLink, httpLink]),
+    cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: 'no-cache',
+      },
+      query: {
+        fetchPolicy: 'no-cache',
+      },
+    },
+  })
+
+  return serverApolloClient
 }

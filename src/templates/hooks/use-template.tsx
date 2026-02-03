@@ -121,9 +121,8 @@ export function TemplateProvider({ children, initialTemplateId }: TemplateProvid
   useEffect(() => {
     if (!template) return
 
-    const finalTemplate = Object.keys(overrides).length > 0
-      ? customizeTemplate(template, overrides)
-      : template
+    const finalTemplate =
+      Object.keys(overrides).length > 0 ? customizeTemplate(template, overrides) : template
 
     // Generate and inject CSS
     const css = generateTemplateCSS(finalTemplate)
@@ -167,26 +166,29 @@ export function TemplateProvider({ children, initialTemplateId }: TemplateProvid
   }, [])
 
   // Switch to a different template
-  const switchTemplate = useCallback(async (newTemplateId: TemplateId) => {
-    setIsLoading(true)
-    setError(null)
+  const switchTemplate = useCallback(
+    async (newTemplateId: TemplateId) => {
+      setIsLoading(true)
+      setError(null)
 
-    try {
-      let loadedTemplate = await loadTemplate(newTemplateId)
-      loadedTemplate = applyEnvOverrides(loadedTemplate)
+      try {
+        let loadedTemplate = await loadTemplate(newTemplateId)
+        loadedTemplate = applyEnvOverrides(loadedTemplate)
 
-      if (Object.keys(overrides).length > 0) {
-        loadedTemplate = customizeTemplate(loadedTemplate, overrides)
+        if (Object.keys(overrides).length > 0) {
+          loadedTemplate = customizeTemplate(loadedTemplate, overrides)
+        }
+
+        setTemplate(loadedTemplate)
+        setTemplateId(newTemplateId)
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to switch template'))
+      } finally {
+        setIsLoading(false)
       }
-
-      setTemplate(loadedTemplate)
-      setTemplateId(newTemplateId)
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to switch template'))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [overrides])
+    },
+    [overrides]
+  )
 
   // Apply custom overrides
   const applyOverrides = useCallback((newOverrides: PartialTemplate) => {

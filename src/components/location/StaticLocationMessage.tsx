@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  MapPin,
-  Navigation,
-  Copy,
-  ExternalLink,
-  MoreVertical,
-} from 'lucide-react'
+import { MapPin, Navigation, Copy, ExternalLink, MoreVertical } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -131,7 +125,7 @@ export function StaticLocationMessage({
       {/* Location Info */}
       <div className={config.padding}>
         <div className={cn('flex items-start justify-between', config.gap)}>
-          <div className="flex items-start gap-2 flex-1 min-w-0">
+          <div className="flex min-w-0 flex-1 items-start gap-2">
             <div
               className={cn(
                 'flex items-center justify-center rounded-full',
@@ -142,34 +136,24 @@ export function StaticLocationMessage({
               <MapPin className={cn('text-primary', config.icon)} />
             </div>
 
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               {label ? (
                 <>
-                  <p className={cn('font-semibold truncate', config.title)}>
-                    {label}
-                  </p>
+                  <p className={cn('truncate font-semibold', config.title)}>{label}</p>
                   {address && (
-                    <p className={cn('text-muted-foreground truncate', config.text)}>
-                      {typeof address === 'string'
-                        ? address
-                        : formatAddress(address, 'short')}
+                    <p className={cn('truncate text-muted-foreground', config.text)}>
+                      {typeof address === 'string' ? address : formatAddress(address, 'short')}
                     </p>
                   )}
                 </>
               ) : address ? (
                 <p className={cn('font-medium', config.text)}>
-                  {typeof address === 'string'
-                    ? address
-                    : formatAddress(address, 'short')}
+                  {typeof address === 'string' ? address : formatAddress(address, 'short')}
                 </p>
               ) : (
-                <p className={cn('font-medium', config.text)}>
-                  {formatCoordinates(coordinates)}
-                </p>
+                <p className={cn('font-medium', config.text)}>{formatCoordinates(coordinates)}</p>
               )}
-              <p className={cn('text-muted-foreground mt-0.5', config.text)}>
-                Shared location
-              </p>
+              <p className={cn('mt-0.5 text-muted-foreground', config.text)}>Shared location</p>
             </div>
           </div>
 
@@ -198,21 +182,12 @@ export function StaticLocationMessage({
         </div>
 
         {/* Quick Actions */}
-        <div className={cn('flex gap-2 mt-3', config.gap)}>
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1"
-            onClick={handleGetDirections}
-          >
+        <div className={cn('mt-3 flex gap-2', config.gap)}>
+          <Button variant="outline" size="sm" className="flex-1" onClick={handleGetDirections}>
             <Navigation className="mr-1.5 h-3.5 w-3.5" />
             Directions
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleOpenMaps}
-          >
+          <Button variant="ghost" size="sm" onClick={handleOpenMaps}>
             <ExternalLink className="h-3.5 w-3.5" />
           </Button>
         </div>
@@ -244,14 +219,15 @@ export function CompactStaticLocation({
   return (
     <button
       className={cn(
-        'flex items-center gap-2 rounded-lg bg-muted/50 p-2 text-left hover:bg-muted',
+        'bg-muted/50 flex items-center gap-2 rounded-lg p-2 text-left hover:bg-muted',
         className
       )}
       onClick={onClick}
     >
       <MapPin className="h-4 w-4 text-primary" />
       <span className="truncate text-sm">
-        {label || (address && typeof address === 'string' ? address : formatCoordinates(coordinates))}
+        {label ||
+          (address && typeof address === 'string' ? address : formatCoordinates(coordinates))}
       </span>
     </button>
   )

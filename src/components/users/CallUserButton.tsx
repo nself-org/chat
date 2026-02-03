@@ -123,7 +123,7 @@ const CallUserButton = React.forwardRef<HTMLButtonElement, CallUserButtonProps>(
                 handleCall('audio')
               }}
             >
-              <Phone className="h-4 w-4 mr-2" />
+              <Phone className="mr-2 h-4 w-4" />
               Audio Call
             </DropdownMenuItem>
             <DropdownMenuItem
@@ -132,7 +132,7 @@ const CallUserButton = React.forwardRef<HTMLButtonElement, CallUserButtonProps>(
                 handleCall('video')
               }}
             >
-              <Video className="h-4 w-4 mr-2" />
+              <Video className="mr-2 h-4 w-4" />
               Video Call
             </DropdownMenuItem>
           </DropdownMenuContent>

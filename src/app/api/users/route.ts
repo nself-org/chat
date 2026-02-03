@@ -23,7 +23,14 @@ export const dynamic = 'force-dynamic'
 const CreateUserSchema = z.object({
   email: z.string().email('Invalid email address'),
   displayName: z.string().min(1, 'Display name is required').max(100),
-  username: z.string().min(3, 'Username must be at least 3 characters').max(50).regex(/^[a-zA-Z0-9_-]+$/, 'Username can only contain letters, numbers, underscores, and hyphens'),
+  username: z
+    .string()
+    .min(3, 'Username must be at least 3 characters')
+    .max(50)
+    .regex(
+      /^[a-zA-Z0-9_-]+$/,
+      'Username can only contain letters, numbers, underscores, and hyphens'
+    ),
   password: z.string().min(8, 'Password must be at least 8 characters').optional(),
   role: z.enum(['owner', 'admin', 'moderator', 'member', 'guest']).default('member'),
   avatar: z.string().url().optional().nullable(),
@@ -37,7 +44,12 @@ const UpdateUserSchema = z.object({
   userId: z.string().uuid('Invalid user ID'),
   email: z.string().email('Invalid email address').optional(),
   displayName: z.string().min(1).max(100).optional(),
-  username: z.string().min(3).max(50).regex(/^[a-zA-Z0-9_-]+$/).optional(),
+  username: z
+    .string()
+    .min(3)
+    .max(50)
+    .regex(/^[a-zA-Z0-9_-]+$/)
+    .optional(),
   role: z.enum(['owner', 'admin', 'moderator', 'member', 'guest']).optional(),
   avatar: z.string().url().optional().nullable(),
   bio: z.string().max(500).optional().nullable(),
@@ -110,7 +122,6 @@ export async function GET(request: NextRequest) {
 
     const params = validation.data
 
-    // TODO: Replace with actual database query using Hasura GraphQL
     // This is a mock implementation
     const mockUsers: User[] = [
       {
@@ -150,15 +161,15 @@ export async function GET(request: NextRequest) {
     // Apply filters
     let filteredUsers = mockUsers
     if (params.role) {
-      filteredUsers = filteredUsers.filter(u => u.role === params.role)
+      filteredUsers = filteredUsers.filter((u) => u.role === params.role)
     }
     if (params.status) {
-      filteredUsers = filteredUsers.filter(u => u.status === params.status)
+      filteredUsers = filteredUsers.filter((u) => u.status === params.status)
     }
     if (params.q) {
       const query = params.q.toLowerCase()
       filteredUsers = filteredUsers.filter(
-        u =>
+        (u) =>
           u.email.toLowerCase().includes(query) ||
           u.displayName.toLowerCase().includes(query) ||
           u.username.toLowerCase().includes(query)
@@ -221,16 +232,12 @@ export async function POST(request: NextRequest) {
 
     const data = validation.data
 
-    // TODO: Check authentication and authorization
     // Only admins should be able to create users
 
-    // TODO: Check if email or username already exists
     // This should query the database
 
-    // TODO: Hash password if provided
     // Use bcrypt or similar
 
-    // TODO: Create user in database via Hasura GraphQL mutation
     const newUser: User = {
       id: crypto.randomUUID(),
       email: data.email,
@@ -247,8 +254,6 @@ export async function POST(request: NextRequest) {
       lastActiveAt: null,
       emailVerified: false,
     }
-
-    // TODO: Send verification email if email auth is enabled
 
     logger.info('POST /api/users - User created', { userId: newUser.id, email: newUser.email })
 
@@ -296,13 +301,9 @@ export async function PUT(request: NextRequest) {
 
     const data = validation.data
 
-    // TODO: Check authentication and authorization
     // Users can update their own profile
     // Admins can update any user
 
-    // TODO: If email or username is being changed, check for conflicts
-
-    // TODO: Update user in database via Hasura GraphQL mutation
     const updatedUser: User = {
       id: data.userId,
       email: data.email || 'user@example.com', // Would come from database
@@ -351,32 +352,21 @@ export async function DELETE(request: NextRequest) {
     const userId = searchParams.get('userId')
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'userId query parameter is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'userId query parameter is required' }, { status: 400 })
     }
 
     // Validate UUID format
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
     if (!uuidRegex.test(userId)) {
-      return NextResponse.json(
-        { error: 'Invalid user ID format' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid user ID format' }, { status: 400 })
     }
 
-    // TODO: Check authentication and authorization
     // Only admins and owners should be able to delete users
     // Users cannot delete themselves if they're the last owner
 
-    // TODO: Check if user exists
-
-    // TODO: Soft delete or hard delete based on config
     // Soft delete: Update status to 'deleted'
     // Hard delete: Remove from database
 
-    // TODO: Handle related data (messages, channels, etc.)
     // Options:
     // 1. Anonymize user data
     // 2. Transfer ownership

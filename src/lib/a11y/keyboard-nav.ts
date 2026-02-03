@@ -504,9 +504,13 @@ export function createSkipLink(
       target.scrollIntoView({ behavior: 'smooth' })
 
       // Remove tabindex after focus
-      target.addEventListener('blur', () => {
-        target.removeAttribute('tabindex')
-      }, { once: true })
+      target.addEventListener(
+        'blur',
+        () => {
+          target.removeAttribute('tabindex')
+        },
+        { once: true }
+      )
     }
   })
 
@@ -516,9 +520,7 @@ export function createSkipLink(
 /**
  * Add skip links to page
  */
-export function addSkipLinks(
-  links: Array<{ id: string; label: string }>
-): () => void {
+export function addSkipLinks(links: Array<{ id: string; label: string }>): () => void {
   const container = document.createElement('div')
   container.className = 'skip-links'
   container.setAttribute('role', 'navigation')

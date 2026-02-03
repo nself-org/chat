@@ -160,8 +160,8 @@ export function createAuthProviders(config: {
   whatsapp?: boolean
   telegram?: boolean
   idme?: boolean | { enabled: boolean }
-}): Map<AuthProviderId, InstanceType<typeof authProviders[AuthProviderId]>> {
-  const providers = new Map<AuthProviderId, InstanceType<typeof authProviders[AuthProviderId]>>()
+}): Map<AuthProviderId, InstanceType<(typeof authProviders)[AuthProviderId]>> {
+  const providers = new Map<AuthProviderId, InstanceType<(typeof authProviders)[AuthProviderId]>>()
 
   // Create each provider and set enabled status
   if (config.emailPassword !== undefined) {
@@ -243,7 +243,9 @@ export function createAuthProviders(config: {
 /**
  * Get enabled providers from a configuration object
  */
-export function getEnabledProviders(config: Record<string, boolean | { enabled: boolean }>): AuthProviderId[] {
+export function getEnabledProviders(
+  config: Record<string, boolean | { enabled: boolean }>
+): AuthProviderId[] {
   const enabled: AuthProviderId[] = []
 
   for (const [flag, value] of Object.entries(config)) {

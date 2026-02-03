@@ -2,12 +2,7 @@
 
 import { memo } from 'react'
 import { Clock, Check, CheckCheck, AlertCircle, RefreshCw } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
 // ============================================================================
@@ -18,11 +13,11 @@ import { cn } from '@/lib/utils'
  * Message delivery status states
  */
 export type DeliveryStatusType =
-  | 'sending'    // Message is being sent to server
-  | 'sent'       // Server received the message
-  | 'delivered'  // Recipient's device received (for DMs)
-  | 'read'       // Recipient opened the chat
-  | 'failed'     // Message failed to send
+  | 'sending' // Message is being sent to server
+  | 'sent' // Server received the message
+  | 'delivered' // Recipient's device received (for DMs)
+  | 'read' // Recipient opened the chat
+  | 'failed' // Message failed to send
 
 export interface DeliveryStatusProps {
   /** Current delivery status */
@@ -173,12 +168,7 @@ export const DeliveryStatus = memo(function DeliveryStatus({
       tabIndex={status === 'failed' && onRetry ? 0 : undefined}
       aria-label={config.label}
     >
-      <Icon
-        className={cn(
-          sizeStyles.icon,
-          status === 'sending' && 'animate-spin'
-        )}
-      />
+      <Icon className={cn(sizeStyles.icon, status === 'sending' && 'animate-spin')} />
     </span>
   )
 
@@ -234,8 +224,8 @@ export const DeliveryStatusBadge = memo(function DeliveryStatusBadge({
         status === 'failed'
           ? 'bg-destructive/10 text-destructive'
           : status === 'read'
-          ? 'bg-primary/10 text-primary'
-          : 'bg-muted text-muted-foreground',
+            ? 'bg-primary/10 text-primary'
+            : 'bg-muted text-muted-foreground',
         size === 'sm' ? 'px-1.5 py-0.5 text-[10px]' : 'px-2 py-1 text-xs',
         className
       )}
@@ -273,12 +263,7 @@ export const InlineDeliveryStatus = memo(function InlineDeliveryStatus({
   const Icon = config.icon
 
   return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1 text-xs text-muted-foreground',
-        className
-      )}
-    >
+    <span className={cn('inline-flex items-center gap-1 text-xs text-muted-foreground', className)}>
       {timestamp && <span>{timestamp}</span>}
       <Icon
         className={cn(

@@ -132,10 +132,7 @@ mutation BlockUser($blockerId: uuid!, $blockedUserId: uuid!) {
 # Unblock a user
 mutation UnblockUser($blockerId: uuid!, $blockedUserId: uuid!) {
   delete_nchat_blocked_users(
-    where: {
-      blocker_id: { _eq: $blockerId }
-      blocked_user_id: { _eq: $blockedUserId }
-    }
+    where: { blocker_id: { _eq: $blockerId }, blocked_user_id: { _eq: $blockedUserId } }
   ) {
     affected_rows
   }
@@ -145,10 +142,7 @@ mutation UnblockUser($blockerId: uuid!, $blockedUserId: uuid!) {
 mutation MuteChannel($userId: uuid!, $channelId: uuid!, $mutedUntil: timestamptz) {
   insert_nchat_muted_channels_one(
     object: { user_id: $userId, channel_id: $channelId, muted_until: $mutedUntil }
-    on_conflict: {
-      constraint: muted_channels_pkey
-      update_columns: [muted_until]
-    }
+    on_conflict: { constraint: muted_channels_pkey, update_columns: [muted_until] }
   ) {
     id
     channel_id
@@ -169,10 +163,7 @@ mutation UnmuteChannel($userId: uuid!, $channelId: uuid!) {
 mutation MuteUser($muterId: uuid!, $mutedUserId: uuid!, $mutedUntil: timestamptz) {
   insert_nchat_muted_users_one(
     object: { muter_id: $muterId, muted_user_id: $mutedUserId, muted_until: $mutedUntil }
-    on_conflict: {
-      constraint: muted_users_pkey
-      update_columns: [muted_until]
-    }
+    on_conflict: { constraint: muted_users_pkey, update_columns: [muted_until] }
   ) {
     id
     muted_user_id
@@ -204,11 +195,7 @@ mutation RevokeSession($sessionId: uuid!) {
 # Revoke all other sessions
 mutation RevokeAllOtherSessions($userId: uuid!, $currentSessionId: uuid!) {
   update_nchat_user_sessions(
-    where: {
-      user_id: { _eq: $userId }
-      id: { _neq: $currentSessionId }
-      is_active: { _eq: true }
-    }
+    where: { user_id: { _eq: $userId }, id: { _neq: $currentSessionId }, is_active: { _eq: true } }
     _set: { is_active: false, revoked_at: "now()" }
   ) {
     affected_rows

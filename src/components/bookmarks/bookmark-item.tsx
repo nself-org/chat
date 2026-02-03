@@ -4,12 +4,7 @@ import * as React from 'react'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +16,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useBookmarkActions, useBookmarkFolders } from '@/lib/bookmarks/use-bookmarks'
 import { useBookmarkStore, type Bookmark } from '@/lib/bookmarks/bookmark-store'
 import { formatRelativeTime, formatMessageTimeTooltip } from '@/lib/date'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -88,11 +85,7 @@ function ArrowRightIcon({ className }: { className?: string }) {
       stroke="currentColor"
       className={cn('h-4 w-4', className)}
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
     </svg>
   )
 }
@@ -211,9 +204,7 @@ export function BookmarkItem({
   const [isRemoving, setIsRemoving] = React.useState(false)
 
   const { message } = bookmark
-  const folder = bookmark.folder_id
-    ? folders.find((f) => f.id === bookmark.folder_id)
-    : null
+  const folder = bookmark.folder_id ? folders.find((f) => f.id === bookmark.folder_id) : null
 
   const handleJumpToMessage = () => {
     if (onJumpToMessage) {
@@ -231,7 +222,7 @@ export function BookmarkItem({
       await removeBookmark(bookmark.id)
       onRemove?.(bookmark.id)
     } catch (error) {
-      console.error('Failed to remove bookmark:', error)
+      logger.error('Failed to remove bookmark:', error)
     } finally {
       setIsRemoving(false)
     }
@@ -246,8 +237,8 @@ export function BookmarkItem({
     return (
       <div
         className={cn(
-          'group flex items-start gap-2 p-2 rounded-md cursor-pointer',
-          'hover:bg-accent transition-colors',
+          'group flex cursor-pointer items-start gap-2 rounded-md p-2',
+          'transition-colors hover:bg-accent',
           className
         )}
         onClick={handleJumpToMessage}
@@ -260,13 +251,13 @@ export function BookmarkItem({
             {getInitials(message.user.display_name)}
           </AvatarFallback>
         </Avatar>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm text-foreground truncate">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm text-foreground">
             {getMessageTypeIcon(message.type)}
             {truncateContent(message.content, 60)}
           </p>
           {showChannel && (
-            <p className="text-xs text-muted-foreground flex items-center gap-1 mt-0.5">
+            <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
               <HashIcon className="h-3 w-3" />
               {message.channel.name}
             </p>
@@ -276,7 +267,7 @@ export function BookmarkItem({
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
             onClick={(e) => {
               e.stopPropagation()
               handleRemove()
@@ -294,7 +285,7 @@ export function BookmarkItem({
   return (
     <div
       className={cn(
-        'group relative border rounded-lg p-4 transition-colors',
+        'group relative rounded-lg border p-4 transition-colors',
         'hover:bg-accent/50',
         className
       )}
@@ -303,14 +294,14 @@ export function BookmarkItem({
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
+        <div className="flex min-w-0 flex-1 items-start gap-3">
           <Avatar className="h-10 w-10 flex-shrink-0">
             <AvatarImage src={message.user.avatar_url} alt={message.user.display_name} />
             <AvatarFallback>{getInitials(message.user.display_name)}</AvatarFallback>
           </Avatar>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-sm">{message.user.display_name}</span>
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-sm font-semibold">{message.user.display_name}</span>
               <span className="text-xs text-muted-foreground">@{message.user.username}</span>
               <TooltipProvider>
                 <Tooltip>
@@ -324,9 +315,7 @@ export function BookmarkItem({
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
-              {message.is_edited && (
-                <span className="text-xs text-muted-foreground">(edited)</span>
-              )}
+              {message.is_edited && <span className="text-xs text-muted-foreground">(edited)</span>}
             </div>
           </div>
         </div>
@@ -339,7 +328,7 @@ export function BookmarkItem({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
                   onClick={handleJumpToMessage}
                 >
                   <ArrowRightIcon className="h-4 w-4" />
@@ -356,18 +345,18 @@ export function BookmarkItem({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
               >
                 <MoreHorizontalIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleJumpToMessage}>
-                <ArrowRightIcon className="h-4 w-4 mr-2" />
+                <ArrowRightIcon className="mr-2 h-4 w-4" />
                 Jump to message
               </DropdownMenuItem>
               <DropdownMenuItem onClick={handleMoveToFolder}>
-                <FolderIcon className="h-4 w-4 mr-2" />
+                <FolderIcon className="mr-2 h-4 w-4" />
                 Move to folder
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -376,7 +365,7 @@ export function BookmarkItem({
                 disabled={isRemoving}
                 className="text-destructive focus:text-destructive"
               >
-                <TrashIcon className="h-4 w-4 mr-2" />
+                <TrashIcon className="mr-2 h-4 w-4" />
                 Remove bookmark
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -386,11 +375,9 @@ export function BookmarkItem({
 
       {/* Message Content */}
       <div className="mt-3 pl-[52px]">
-        <p className="text-sm text-foreground whitespace-pre-wrap">
+        <p className="whitespace-pre-wrap text-sm text-foreground">
           {getMessageTypeIcon(message.type) && (
-            <span className="text-muted-foreground mr-1">
-              {getMessageTypeIcon(message.type)}
-            </span>
+            <span className="mr-1 text-muted-foreground">{getMessageTypeIcon(message.type)}</span>
           )}
           {truncateContent(message.content)}
         </p>
@@ -401,13 +388,13 @@ export function BookmarkItem({
             {message.attachments.slice(0, 3).map((attachment) => (
               <div
                 key={attachment.id}
-                className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded text-xs"
+                className="flex items-center gap-1.5 rounded bg-muted px-2 py-1 text-xs"
               >
-                <span className="truncate max-w-[100px]">{attachment.file_name}</span>
+                <span className="max-w-[100px] truncate">{attachment.file_name}</span>
               </div>
             ))}
             {message.attachments.length > 3 && (
-              <div className="flex items-center px-2 py-1 bg-muted rounded text-xs">
+              <div className="flex items-center rounded bg-muted px-2 py-1 text-xs">
                 +{message.attachments.length - 3} more
               </div>
             )}
@@ -416,9 +403,9 @@ export function BookmarkItem({
 
         {/* Note */}
         {bookmark.note && (
-          <div className="mt-2 px-3 py-2 bg-yellow-50 dark:bg-yellow-900/20 border-l-2 border-yellow-400 rounded-r">
-            <p className="text-sm text-yellow-800 dark:text-yellow-200 flex items-start gap-2">
-              <PencilIcon className="h-4 w-4 flex-shrink-0 mt-0.5" />
+          <div className="mt-2 rounded-r border-l-2 border-yellow-400 bg-yellow-50 px-3 py-2 dark:bg-yellow-900/20">
+            <p className="flex items-start gap-2 text-sm text-yellow-800 dark:text-yellow-200">
+              <PencilIcon className="mt-0.5 h-4 w-4 flex-shrink-0" />
               <span>{bookmark.note}</span>
             </p>
           </div>
@@ -426,7 +413,7 @@ export function BookmarkItem({
       </div>
 
       {/* Footer */}
-      <div className="mt-3 pl-[52px] flex items-center gap-3 text-xs text-muted-foreground">
+      <div className="mt-3 flex items-center gap-3 pl-[52px] text-xs text-muted-foreground">
         {showChannel && (
           <div className="flex items-center gap-1">
             <HashIcon className="h-3 w-3" />

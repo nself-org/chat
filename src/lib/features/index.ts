@@ -100,7 +100,7 @@ export {
   type FeatureKey,
   type FeatureFlag,
   type FeatureCategory,
-} from './feature-flags';
+} from './feature-flags'
 
 // ============================================================================
 // TYPES
@@ -129,9 +129,9 @@ export type {
   PartialFeatureState,
   FeaturePreset,
   FeatureAuditEntry,
-} from './types';
+} from './types'
 
-export { isFeatureFlag, isFeatureKey } from './types';
+export { isFeatureFlag, isFeatureKey } from './types'
 
 // ============================================================================
 // FEATURE CONFIGURATION
@@ -167,7 +167,7 @@ export {
   // Metadata
   FEATURE_CONFIGS,
   getFeatureConfig,
-} from './feature-config';
+} from './feature-config'
 
 // ============================================================================
 // LIMITS
@@ -184,7 +184,7 @@ export {
   getLimitCategories,
   type LimitKey,
   type LimitValue,
-} from './limits';
+} from './limits'
 
 // ============================================================================
 // DEPENDENCIES
@@ -216,7 +216,7 @@ export {
   canSafelyDisable,
   getDependencyGraph,
   sortByDependencyOrder,
-} from './dependencies';
+} from './dependencies'
 
 // ============================================================================
 // HOOKS
@@ -238,7 +238,7 @@ export {
   // Computed hooks
   useEnabledFeatureCount,
   useFeaturePattern,
-} from './hooks/use-feature';
+} from './hooks/use-feature'
 
 // ============================================================================
 // COMPONENTS
@@ -255,7 +255,7 @@ export {
   type FeatureGateDisabledProps,
   type FeatureGateDebugProps,
   type FeatureGateRenderProps,
-} from './components/feature-gate';
+} from './components/feature-gate'
 
 export {
   // Multiple feature gates
@@ -277,7 +277,7 @@ export {
   type FeatureCasesProps,
   type FeatureGateAnyRenderProps,
   type FeatureGateAllRenderProps,
-} from './components/feature-gate-any';
+} from './components/feature-gate-any'
 
 // ============================================================================
 // CONVENIENCE RE-EXPORTS
@@ -287,16 +287,13 @@ export {
  * Check if a feature is enabled (convenience export)
  * @alias isFeatureEnabled
  */
-export { isFeatureEnabled as checkFeature } from './feature-config';
+export { isFeatureEnabled as checkFeature } from './feature-config'
 
 // ============================================================================
 // CATEGORY-BASED FEATURE SERVICE (White-Label)
 // ============================================================================
 
-export {
-  featureService,
-  FeatureService,
-} from './feature-service';
+export { featureService, FeatureService } from './feature-service'
 
 // Re-export from config for convenience
 export {
@@ -309,7 +306,7 @@ export {
   type FeatureCategory as WhiteLabelFeatureCategory,
   type FeaturesInCategory,
   type FeaturePath,
-} from '@/config/feature-flags';
+} from '@/config/feature-flags'
 
 /**
  * Default export with commonly used items
@@ -320,4 +317,4 @@ export default {
   isFeatureEnabled: {} as typeof import('./feature-config').isFeatureEnabled,
   useFeature: {} as typeof import('./hooks/use-feature').useFeature,
   FeatureGate: {} as typeof import('./components/feature-gate').FeatureGate,
-};
+}

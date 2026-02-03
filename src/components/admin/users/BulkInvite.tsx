@@ -23,6 +23,8 @@ import {
 } from '@/lib/admin/users/user-invite'
 import type { UserRole, BulkInviteResult } from '@/lib/admin/users/user-types'
 
+import { logger } from '@/lib/logger'
+
 export function BulkInvite() {
   const [emails, setEmails] = useState('')
   const [role, setRole] = useState<UserRole>('member')
@@ -38,12 +40,15 @@ export function BulkInvite() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { roles } = useUserManagementStore()
 
-  const roleOptions = roles.length > 0 ? roles : [
-    { id: 'admin', name: 'Admin' },
-    { id: 'moderator', name: 'Moderator' },
-    { id: 'member', name: 'Member' },
-    { id: 'guest', name: 'Guest' },
-  ]
+  const roleOptions =
+    roles.length > 0
+      ? roles
+      : [
+          { id: 'admin', name: 'Admin' },
+          { id: 'moderator', name: 'Moderator' },
+          { id: 'member', name: 'Member' },
+          { id: 'guest', name: 'Guest' },
+        ]
 
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -89,7 +94,7 @@ export function BulkInvite() {
       setEmails('')
       setValidation(null)
     } catch (error) {
-      console.error('Failed to send bulk invites:', error)
+      logger.error('Failed to send bulk invites:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -113,10 +118,7 @@ export function BulkInvite() {
           <div className="space-y-2">
             <Label>Upload CSV File</Label>
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                onClick={() => fileInputRef.current?.click()}
-              >
+              <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
                 <Upload className="mr-2 h-4 w-4" />
                 Upload CSV
               </Button>
@@ -174,11 +176,7 @@ export function BulkInvite() {
 
             <div className="flex items-end pb-2">
               <div className="flex items-center space-x-2">
-                <Switch
-                  id="send-emails"
-                  checked={sendEmails}
-                  onCheckedChange={setSendEmails}
-                />
+                <Switch id="send-emails" checked={sendEmails} onCheckedChange={setSendEmails} />
                 <Label htmlFor="send-emails">Send invitation emails</Label>
               </div>
             </div>
@@ -202,9 +200,7 @@ export function BulkInvite() {
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
                   <AlertTitle>Invalid emails: {validation.invalid.length}</AlertTitle>
-                  <AlertDescription>
-                    {validation.invalid.join(', ')}
-                  </AlertDescription>
+                  <AlertDescription>{validation.invalid.join(', ')}</AlertDescription>
                 </Alert>
               )}
             </div>
@@ -225,10 +221,7 @@ export function BulkInvite() {
           {/* Actions */}
           <div className="flex gap-2">
             {!validation ? (
-              <Button
-                onClick={handleValidate}
-                disabled={!emails.trim() || isValidating}
-              >
+              <Button onClick={handleValidate} disabled={!emails.trim() || isValidating}>
                 {isValidating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 <FileText className="mr-2 h-4 w-4" />
                 Validate Emails

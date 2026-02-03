@@ -209,11 +209,7 @@ export async function openAppSettings(): Promise<void> {
 /**
  * Open email app
  */
-export async function openEmail(
-  to: string,
-  subject?: string,
-  body?: string
-): Promise<boolean> {
+export async function openEmail(to: string, subject?: string, body?: string): Promise<boolean> {
   const params = new URLSearchParams()
   if (subject) params.set('subject', subject)
   if (body) params.set('body', body)

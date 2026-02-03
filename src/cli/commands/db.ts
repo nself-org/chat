@@ -8,6 +8,8 @@ import chalk from 'chalk'
 import ora from 'ora'
 import inquirer from 'inquirer'
 
+import { logger } from '@/lib/logger'
+
 interface MigrateOptions {
   up?: boolean
   down?: boolean
@@ -66,12 +68,12 @@ export async function migrate(options: MigrateOptions) {
 
     child.on('error', (error) => {
       spinner.fail('Migrations failed')
-      console.error(chalk.red(error.message))
+      logger.error(chalk.red(error.message))
       process.exit(1)
     })
   } catch (error) {
     spinner.fail('Migrations failed')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }
@@ -85,19 +87,22 @@ export async function seed(options: SeedOptions) {
   try {
     spinner.text = `Creating ${options.users || 10} users, ${options.channels || 5} channels, ${options.messages || 50} messages per channel...`
 
-    // TODO: Implement actual seeding logic
     // This would typically use the SDK or direct database access
 
-    await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate seeding
+    await new Promise((resolve) => setTimeout(resolve, 2000)) // Simulate seeding
 
     spinner.succeed('Database seeded successfully')
-    console.log(chalk.green('\n✓ Sample data created:'))
-    console.log(chalk.gray(`  - ${options.users || 10} users`))
-    console.log(chalk.gray(`  - ${options.channels || 5} channels`))
-    console.log(chalk.gray(`  - ${(parseInt(options.messages || '50') * parseInt(options.channels || '5'))} messages\n`))
+// REMOVED: console.log(chalk.green('\n✓ Sample data created:'))
+// REMOVED: console.log(chalk.gray(`  - ${options.users || 10} users`))
+// REMOVED: console.log(chalk.gray(`  - ${options.channels || 5} channels`))
+    // REMOVED: console.log(
+    //   chalk.gray(
+    //     `  - ${parseInt(options.messages || '50') * parseInt(options.channels || '5')} messages\n`
+    //   )
+    // )
   } catch (error) {
     spinner.fail('Seeding failed')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }
@@ -117,7 +122,7 @@ export async function reset(options: ResetOptions) {
     ])
 
     if (!confirm) {
-      console.log(chalk.gray('Database reset cancelled'))
+// REMOVED: console.log(chalk.gray('Database reset cancelled'))
       return
     }
   }
@@ -134,7 +139,7 @@ export async function reset(options: ResetOptions) {
     spinner.succeed('Database reset successfully')
   } catch (error) {
     spinner.fail('Database reset failed')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }
@@ -162,7 +167,7 @@ export async function status() {
     })
   } catch (error) {
     spinner.fail('Failed to check database status')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }
@@ -190,7 +195,7 @@ export async function backup(options: BackupOptions) {
     child.on('exit', (code) => {
       if (code === 0) {
         spinner.succeed('Database backup created')
-        console.log(chalk.green(`\n✓ Backup saved to: ${outputPath}\n`))
+// REMOVED: console.log(chalk.green(`\n✓ Backup saved to: ${outputPath}\n`))
       } else {
         spinner.fail('Backup failed')
         process.exit(code || 1)
@@ -199,12 +204,12 @@ export async function backup(options: BackupOptions) {
 
     child.on('error', (error) => {
       spinner.fail('Backup failed')
-      console.error(chalk.red(error.message))
+      logger.error(chalk.red(error.message))
       process.exit(1)
     })
   } catch (error) {
     spinner.fail('Backup failed')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }
@@ -224,7 +229,7 @@ export async function restore(file: string, options: RestoreOptions) {
     ])
 
     if (!confirm) {
-      console.log(chalk.gray('Database restore cancelled'))
+// REMOVED: console.log(chalk.gray('Database restore cancelled'))
       return
     }
   }
@@ -244,7 +249,7 @@ export async function restore(file: string, options: RestoreOptions) {
     child.on('exit', (code) => {
       if (code === 0) {
         spinner.succeed('Database restored successfully')
-        console.log(chalk.green('\n✓ Database restored from backup\n'))
+// REMOVED: console.log(chalk.green('\n✓ Database restored from backup\n'))
       } else {
         spinner.fail('Restore failed')
         process.exit(code || 1)
@@ -253,12 +258,12 @@ export async function restore(file: string, options: RestoreOptions) {
 
     child.on('error', (error) => {
       spinner.fail('Restore failed')
-      console.error(chalk.red(error.message))
+      logger.error(chalk.red(error.message))
       process.exit(1)
     })
   } catch (error) {
     spinner.fail('Restore failed')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }

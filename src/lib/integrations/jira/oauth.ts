@@ -5,7 +5,12 @@
  * authorization URL generation, token exchange, and token refresh.
  */
 
-import { JIRA_AUTH_URL, JIRA_TOKEN_URL, JIRA_RESOURCES_URL, JIRA_DEFAULT_SCOPES } from './jira-client'
+import {
+  JIRA_AUTH_URL,
+  JIRA_TOKEN_URL,
+  JIRA_RESOURCES_URL,
+  JIRA_DEFAULT_SCOPES,
+} from './jira-client'
 
 // ============================================================================
 // Types
@@ -279,10 +284,7 @@ export async function getAccessibleResources(
   })
 
   if (!response.ok) {
-    throw new JiraOAuthException(
-      'resource_fetch_failed',
-      'Failed to fetch accessible Jira sites'
-    )
+    throw new JiraOAuthException('resource_fetch_failed', 'Failed to fetch accessible Jira sites')
   }
 
   return response.json()
@@ -307,10 +309,7 @@ export async function handleJiraOAuthCallback(
 }> {
   // Check for error response from Jira
   if (callbackParams.error) {
-    throw new JiraOAuthException(
-      callbackParams.error,
-      callbackParams.errorDescription
-    )
+    throw new JiraOAuthException(callbackParams.error, callbackParams.errorDescription)
   }
 
   // Validate required parameters
@@ -384,10 +383,7 @@ export function parseScopes(scopeString: string): string[] {
 /**
  * Check if token has required scopes
  */
-export function hasRequiredScopes(
-  tokenScopes: string,
-  requiredScopes: string[]
-): boolean {
+export function hasRequiredScopes(tokenScopes: string, requiredScopes: string[]): boolean {
   const scopes = parseScopes(tokenScopes)
   return requiredScopes.every((required) => scopes.includes(required))
 }

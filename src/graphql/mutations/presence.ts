@@ -1,7 +1,12 @@
 import { gql } from '@apollo/client'
 
 export const UPDATE_PRESENCE = gql`
-  mutation UpdatePresence($userId: uuid!, $status: String!, $customStatus: String, $customStatusEmoji: String) {
+  mutation UpdatePresence(
+    $userId: uuid!
+    $status: String!
+    $customStatus: String
+    $customStatusEmoji: String
+  ) {
     insert_nchat_presence_one(
       object: {
         user_id: $userId
@@ -24,10 +29,7 @@ export const UPDATE_PRESENCE = gql`
 
 export const HEARTBEAT = gql`
   mutation Heartbeat($userId: uuid!) {
-    update_nchat_presence_by_pk(
-      pk_columns: { user_id: $userId }
-      _set: { last_seen: "now()" }
-    ) {
+    update_nchat_presence_by_pk(pk_columns: { user_id: $userId }, _set: { last_seen: "now()" }) {
       user_id
       last_seen
     }

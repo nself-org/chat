@@ -1,35 +1,30 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Bookmark, BookmarkCheck, Star, StarOff, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import * as React from 'react'
+import { Bookmark, BookmarkCheck, Star, StarOff, Loader2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 export interface SaveButtonProps {
   /** Whether the message is currently saved */
-  isSaved: boolean;
+  isSaved: boolean
   /** Whether the message is starred */
-  isStarred?: boolean;
+  isStarred?: boolean
   /** Callback when save/unsave is clicked */
-  onToggleSave: () => void;
+  onToggleSave: () => void
   /** Callback when star/unstar is clicked */
-  onToggleStar?: () => void;
+  onToggleStar?: () => void
   /** Whether the action is in progress */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Button size */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Button variant */
-  variant?: 'icon' | 'button' | 'menu';
+  variant?: 'icon' | 'button' | 'menu'
   /** Show label */
-  showLabel?: boolean;
+  showLabel?: boolean
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -50,16 +45,16 @@ export function SaveButton({
     sm: 'h-8 w-8',
     md: 'h-9 w-9',
     lg: 'h-10 w-10',
-  };
+  }
 
   const iconSizes = {
     sm: 'h-4 w-4',
     md: 'h-5 w-5',
     lg: 'h-6 w-6',
-  };
+  }
 
-  const saveLabel = isSaved ? 'Remove from saved' : 'Save message';
-  const starLabel = isStarred ? 'Unstar' : 'Star';
+  const saveLabel = isSaved ? 'Remove from saved' : 'Save message'
+  const starLabel = isStarred ? 'Unstar' : 'Star'
 
   if (variant === 'menu') {
     return (
@@ -67,7 +62,7 @@ export function SaveButton({
         <button
           onClick={onToggleSave}
           disabled={isLoading}
-          className="flex w-full items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent rounded-sm"
+          className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
         >
           {isLoading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
@@ -82,18 +77,14 @@ export function SaveButton({
           <button
             onClick={onToggleStar}
             disabled={isLoading}
-            className="flex w-full items-center gap-2 px-2 py-1.5 text-sm hover:bg-accent rounded-sm"
+            className="flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
           >
-            {isStarred ? (
-              <StarOff className="h-4 w-4" />
-            ) : (
-              <Star className="h-4 w-4" />
-            )}
+            {isStarred ? <StarOff className="h-4 w-4" /> : <Star className="h-4 w-4" />}
             <span>{starLabel}</span>
           </button>
         )}
       </div>
-    );
+    )
   }
 
   if (variant === 'button') {
@@ -122,14 +113,14 @@ export function SaveButton({
             disabled={isLoading}
           >
             {isStarred ? (
-              <Star className={cn(iconSizes[size], 'text-yellow-500 fill-yellow-500')} />
+              <Star className={cn(iconSizes[size], 'fill-yellow-500 text-yellow-500')} />
             ) : (
               <Star className={iconSizes[size]} />
             )}
           </Button>
         )}
       </div>
-    );
+    )
   }
 
   // Icon variant (default)
@@ -143,10 +134,7 @@ export function SaveButton({
               size="icon"
               onClick={onToggleSave}
               disabled={isLoading}
-              className={cn(
-                sizeClasses[size],
-                isSaved && 'text-blue-500 hover:text-blue-600'
-              )}
+              className={cn(sizeClasses[size], isSaved && 'text-blue-500 hover:text-blue-600')}
             >
               {isLoading ? (
                 <Loader2 className={cn(iconSizes[size], 'animate-spin')} />
@@ -178,12 +166,7 @@ export function SaveButton({
                   isStarred && 'text-yellow-500 hover:text-yellow-600'
                 )}
               >
-                <Star
-                  className={cn(
-                    iconSizes[size],
-                    isStarred && 'fill-current'
-                  )}
-                />
+                <Star className={cn(iconSizes[size], isStarred && 'fill-current')} />
                 <span className="sr-only">{starLabel}</span>
               </Button>
             </TooltipTrigger>
@@ -194,5 +177,5 @@ export function SaveButton({
         </TooltipProvider>
       )}
     </div>
-  );
+  )
 }

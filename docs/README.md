@@ -1,12 +1,12 @@
 # nself-chat Documentation
 
-**Version**: 0.3.0 (January 30, 2026)
+**Version**: 0.9.1 (February 3, 2026)
 **Status**: Production-Ready
 **License**: MIT
 
 <div align="center">
 
-[![Version](https://img.shields.io/badge/version-0.3.0-blue.svg)](about/Changelog)
+[![Version](https://img.shields.io/badge/version-0.9.1-blue.svg)](about/Changelog)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](../LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Desktop%20%7C%20Mobile-lightgrey.svg)]()
 [![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg)]()
@@ -24,6 +24,7 @@
 This documentation is organized into the following sections:
 
 ### 📚 [Getting Started](getting-started/)
+
 Start here if you're new to nself-chat.
 
 - **[Quick Start Guide](getting-started/QUICK-START)** - Get running in 5 minutes
@@ -31,29 +32,35 @@ Start here if you're new to nself-chat.
 - **[Getting Started](getting-started/Getting-Started)** - First steps after installation
 
 ### ✨ [Features](features/)
+
 Learn about all the features nself-chat offers.
 
 #### Core Features
+
 - **[Features Overview](features/Features)** - Complete feature list
 - **[Messaging Features](features/Features-Messaging)** - Chat capabilities
 - **[Feature Completion Matrix](features/Features-Complete)** - Feature parity comparison
 
 #### Communication Features
+
 - **[Voice Calling](features/VOICE-CALLING-COMPLETE)** - Voice call implementation
 - **[Live Streaming](features/LIVE_STREAMING_IMPLEMENTATION_SUMMARY)** - Live streaming capabilities
 - **[Screen Sharing](features/SCREEN-SHARING-SUMMARY)** - Screen sharing features
 - **[Mobile Calls](features/MOBILE-CALLS-IMPLEMENTATION)** - Mobile call optimization
 
 #### Interactive Features
+
 - **[GIFs & Stickers](features/GIF-Sticker-Implementation)** - GIF picker and sticker packs
 - **[Polls](features/Polls-Implementation)** - Create and manage polls
 - **[Social Media Integration](features/Social-Media-Integration)** - Twitter, Instagram, LinkedIn integration
 
 #### Advanced Features
+
 - **[Search](features/SEARCH_IMPLEMENTATION_SUMMARY)** - Enhanced search with MeiliSearch
 - **[Social Media Posting](features/SOCIAL-MEDIA-IMPLEMENTATION-SUMMARY)** - Auto-posting to social platforms
 
 #### Customization
+
 - **[White-Label Guide](features/White-Label-Guide)** - Branding and theming
 - **[Bots](features/Bots)** - Bot development and integration
 - **[Plugins](features/Plugins)** - Plugin system
@@ -61,9 +68,11 @@ Learn about all the features nself-chat offers.
 - **[Media Server](features/Media-Server-Setup)** - Media server configuration
 
 ### 📖 [Guides](guides/)
+
 Step-by-step implementation and usage guides.
 
 #### Implementation Guides
+
 - **[Advanced Messaging](guides/advanced-messaging-implementation-summary)** - Edit, delete, forward, pin, star messages
 - **[E2EE (End-to-End Encryption)](guides/E2EE-Implementation)** - Encryption implementation
 - **[Search Implementation](guides/Search-Implementation)** - MeiliSearch integration
@@ -75,6 +84,7 @@ Step-by-step implementation and usage guides.
 - **[Mobile Call Optimizations](guides/Mobile-Call-Optimizations)** - Mobile-specific optimizations
 
 #### User Guides
+
 - **[User Guide](guides/USER-GUIDE)** - End-user documentation
 - **[Settings Quick Start](guides/Settings-Quick-Start)** - User settings guide
 - **[Testing Guide](guides/testing-guide)** - Testing strategies
@@ -82,9 +92,11 @@ Step-by-step implementation and usage guides.
 - **[Utilities Guide](guides/README)** - Development utilities
 
 ### 📚 [Reference](reference/)
+
 Technical reference documentation.
 
 #### Architecture & Design
+
 - **[Architecture](reference/Architecture)** - System architecture
 - **[Architecture Diagrams](reference/ARCHITECTURE-DIAGRAMS)** - Visual documentation
 - **[Database Schema](reference/Database-Schema)** - Database structure
@@ -93,6 +105,7 @@ Technical reference documentation.
 - **[SPORT Reference](reference/SPORT)** - Complete API reference
 
 #### Quick References
+
 - **[2FA Quick Reference](reference/2FA-Quick-Reference)** - Two-factor authentication
 - **[Advanced Messaging Quick Reference](reference/advanced-messaging-quick-reference)** - Messaging shortcuts
 - **[Call Management Quick Reference](reference/Call-Management-Quick-Reference)** - Call system shortcuts
@@ -108,6 +121,7 @@ Technical reference documentation.
 - **[Voice Calling Quick Start](reference/Voice-Calling-Quick-Start)** - Voice call quick start
 
 ### ⚙️ [Configuration](configuration/)
+
 Configure nself-chat for your needs.
 
 - **[Configuration Guide](configuration/Configuration)** - Complete configuration reference
@@ -115,6 +129,7 @@ Configure nself-chat for your needs.
 - **[Environment Variables](configuration/Environment-Variables)** - All environment variables
 
 ### 📡 [API](api/)
+
 API documentation and examples.
 
 - **[API Overview](api/API)** - GraphQL API overview
@@ -123,6 +138,7 @@ API documentation and examples.
 - **[Bot API Implementation](api/BOT_API_IMPLEMENTATION)** - Bot API reference
 
 ### 🚀 [Deployment](deployment/)
+
 Deploy nself-chat to production.
 
 - **[Deployment Overview](deployment/DEPLOYMENT)** - Production deployment guide
@@ -133,23 +149,28 @@ Deploy nself-chat to production.
 - **[Production Validation](deployment/Production-Validation)** - Post-deployment validation
 
 ### 🔐 [Security](security/)
+
 Security features and best practices.
 
 #### Security Features
+
 - **[Security Overview](security/SECURITY)** - Security architecture
 - **[Security Audit](security/SECURITY-AUDIT)** - Security audit results
 - **[Performance Optimization](security/PERFORMANCE-OPTIMIZATION)** - Performance guide
 
 #### Authentication & Authorization
+
 - **[2FA Implementation](security/2FA-Implementation-Summary)** - Two-factor authentication
 - **[PIN Lock System](security/PIN-LOCK-SYSTEM)** - PIN lock and biometric auth
 - **[PIN Lock Implementation](security/PIN-LOCK-IMPLEMENTATION-SUMMARY)** - Technical details
 
 #### Encryption
+
 - **[E2EE Implementation Summary](security/E2EE-Implementation-Summary)** - End-to-end encryption
 - **[E2EE Security Audit](security/E2EE-Security-Audit)** - Encryption audit
 
 ### 🆘 [Troubleshooting](troubleshooting/)
+
 Common issues and solutions.
 
 - **[FAQ](troubleshooting/FAQ)** - Frequently asked questions
@@ -157,21 +178,25 @@ Common issues and solutions.
 - **[Operations Runbook](troubleshooting/RUNBOOK)** - Operations guide
 
 ### ℹ️ [About](about/)
+
 Project information and planning.
 
 #### Release Information
+
 - **[Changelog](about/Changelog)** - Version history
 - **[Release Notes v0.3.0](about/RELEASE-NOTES-v0.3.0)** - Latest release notes
 - **[Release Checklist v0.3.0](about/RELEASE-CHECKLIST-v0.3.0)** - Release checklist
 - **[Implementation Complete](about/IMPLEMENTATION_COMPLETE)** - v0.3.0 completion status
 
 #### Planning & Roadmap
+
 - **[Roadmap](about/Roadmap)** - Future plans
 - **[Roadmap v0.2](about/Roadmap-v0.2)** - v0.2 planning
 - **[Upgrade Guide](about/UPGRADE-GUIDE)** - Version upgrade guide
 - **[Contributing](about/Contributing)** - How to contribute
 
 #### Documentation
+
 - **[Documentation Audit](about/DOCUMENTATION-AUDIT)** - Documentation quality assessment
 - **[Documentation Map](about/DOCUMENTATION-MAP)** - Documentation structure
 - **[Documentation Improvements](about/DOCUMENTATION-IMPROVEMENT-SUMMARY)** - Improvement summary
@@ -200,6 +225,7 @@ open http://localhost:3000
 ```
 
 **Next Steps:**
+
 1. Complete the [9-step setup wizard](http://localhost:3000/setup)
 2. Explore the [feature documentation](features/)
 3. Check out the [configuration guide](configuration/Configuration)
@@ -208,9 +234,11 @@ open http://localhost:3000
 
 ---
 
-## What's New in v0.3.0
+## What's New in v0.9.1
 
-### Major Feature Release - 8 new feature sets, 85+ individual features
+### Documentation Excellence & Plugin System
+
+**v0.9.1** brings comprehensive documentation polish and a powerful plugin architecture:
 
 #### Highlights
 
@@ -331,6 +359,7 @@ open http://localhost:3000
 ## Tech Stack
 
 ### Frontend
+
 - **Framework**: Next.js 15.5.10, React 19.0.0, TypeScript 5.7.3
 - **UI**: Tailwind CSS 3.4.17, Radix UI, Framer Motion 11.18.0
 - **State**: Zustand 5.0.3, Apollo Client 3.12.8
@@ -339,6 +368,7 @@ open http://localhost:3000
 - **Real-time**: Socket.io 4.8.1, GraphQL subscriptions
 
 ### Backend (via nself CLI)
+
 - **Database**: PostgreSQL with 60+ extensions
 - **GraphQL**: Hasura GraphQL Engine
 - **Auth**: Nhost Authentication
@@ -347,6 +377,7 @@ open http://localhost:3000
 - **Cache**: Redis
 
 ### Development
+
 - **Testing**: Jest 29.7.0, Playwright 1.50.1
 - **Linting**: ESLint 9.18.0, Prettier 3.4.2
 - **CI/CD**: 19 GitHub Actions workflows
@@ -357,6 +388,7 @@ open http://localhost:3000
 ## Key Features
 
 ### White-Label Everything
+
 - Complete branding customization (name, logo, colors)
 - 25+ theme presets with light/dark modes
 - Custom CSS injection support
@@ -364,6 +396,7 @@ open http://localhost:3000
 - Feature toggles for selective functionality
 
 ### Dual Authentication
+
 - **Development Mode**: 8 test users for fast iteration
 - **Production Mode**: Nhost Auth with 11 provider options
   - Email/password, Magic links
@@ -371,6 +404,7 @@ open http://localhost:3000
   - ID.me (military, police, first responders, government)
 
 ### Advanced Messaging
+
 - Edit/delete messages with history
 - Forward to multiple channels
 - Pin important messages
@@ -380,6 +414,7 @@ open http://localhost:3000
 - Rich text editing (markdown, code blocks)
 
 ### Powerful Search
+
 - MeiliSearch integration (sub-50ms queries)
 - Search operators: `from:`, `in:`, `has:`, `before:`, `after:`, `is:`
 - Filter by date, channel, user, file type
@@ -388,6 +423,7 @@ open http://localhost:3000
 - Keyboard shortcuts (Cmd+K)
 
 ### Enterprise Security
+
 - Two-factor authentication (TOTP)
 - PIN lock with biometric support
 - Session management with device tracking
@@ -400,12 +436,14 @@ open http://localhost:3000
 ## Documentation By Audience
 
 ### For End Users
+
 - [Quick Start](getting-started/QUICK-START)
 - [User Guide](guides/USER-GUIDE)
 - [Settings Guide](guides/Settings-Quick-Start)
 - [FAQ](troubleshooting/FAQ)
 
 ### For Administrators
+
 - [Installation](getting-started/INSTALLATION)
 - [Configuration](configuration/Configuration)
 - [Deployment Guide](deployment/DEPLOYMENT)
@@ -414,6 +452,7 @@ open http://localhost:3000
 - [Security Overview](security/SECURITY)
 
 ### For Developers
+
 - [Architecture](reference/Architecture)
 - [API Reference](api/API-DOCUMENTATION)
 - [Contributing Guide](about/Contributing)
@@ -422,6 +461,7 @@ open http://localhost:3000
 - [Plugin Development](features/Plugins)
 
 ### For DevOps
+
 - [Docker Deployment](deployment/Deployment-Docker)
 - [Kubernetes Deployment](deployment/Deployment-Kubernetes)
 - [Helm Charts](deployment/Deployment-Helm)
@@ -432,33 +472,36 @@ open http://localhost:3000
 
 ## Project Stats
 
-| Metric | Value |
-|--------|-------|
-| **Version** | 0.3.0 |
-| **Release Date** | January 30, 2026 |
-| **Total Features** | 85+ (v0.3.0) |
-| **Feature Parity** | ~40% (vs major platforms) |
-| **Components** | 75+ directories |
-| **Custom Hooks** | 60+ hooks |
-| **Database Tables** | 28 new tables (v0.3.0) |
-| **API Endpoints** | 25+ endpoints |
-| **Theme Presets** | 25+ themes |
-| **Auth Providers** | 11 providers |
-| **CI Workflows** | 19 workflows |
-| **Documentation Pages** | 70+ pages |
+| Metric                  | Value                     |
+| ----------------------- | ------------------------- |
+| **Version**             | 0.9.1                     |
+| **Release Date**        | February 3, 2026          |
+| **Total Features**      | 150+                      |
+| **Feature Parity**      | ~65% (vs major platforms) |
+| **Components**          | 75+ directories           |
+| **Custom Hooks**        | 60+ hooks                 |
+| **Database Tables**     | 50+ tables                |
+| **API Endpoints**       | 40+ endpoints             |
+| **Theme Presets**       | 25+ themes                |
+| **Auth Providers**      | 11 providers              |
+| **CI Workflows**        | 19 workflows              |
+| **Documentation Pages** | 333+ pages                |
 
 ---
 
 ## Support & Community
 
 ### Getting Help
+
 - **Documentation**: You're reading it!
 - **Issues**: [GitHub Issues](https://github.com/acamarata/nself-chat/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)
 - **Email**: support@nself.org
 
 ### Contributing
+
 We welcome contributions! See our [Contributing Guide](about/Contributing) for:
+
 - Code of conduct
 - Development setup
 - Pull request process
@@ -466,10 +509,11 @@ We welcome contributions! See our [Contributing Guide](about/Contributing) for:
 - Testing requirements
 
 ### Roadmap
-- **v0.3.1** (1 week): Bug fixes and polish
-- **v0.4.0** (2 months): E2E encryption, voice/video calls
-- **v0.5.0** (2 months): Web3 integration
-- **v0.6.0** (2 months): Mobile polish
+
+- **v0.9.2** (1 week): Additional plugin integrations
+- **v1.0.0** (1 month): Production launch with full feature parity
+- **v1.1.0** (2 months): Advanced AI features and analytics
+- **v1.2.0** (3 months): Enterprise features and compliance
 
 **[Full Roadmap →](about/Roadmap)**
 
@@ -484,6 +528,7 @@ MIT License - see [LICENSE](../LICENSE) for details.
 ## Acknowledgments
 
 Built with:
+
 - [Next.js](https://nextjs.org/) - React framework
 - [nself CLI](https://github.com/acamarata/nself) - Backend infrastructure
 - [Radix UI](https://www.radix-ui.com/) - UI components
@@ -495,8 +540,8 @@ Built with:
 
 <div align="center">
 
-**Version 0.3.0** • **January 2026** • **[GitHub](https://github.com/acamarata/nself-chat)**
+**Version 0.9.1** • **February 2026** • **[GitHub](https://github.com/acamarata/nself-chat)**
 
-*nself-chat - White-label team communication platform*
+_nself-chat - White-label team communication platform_
 
 </div>

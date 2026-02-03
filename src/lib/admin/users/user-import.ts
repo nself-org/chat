@@ -3,12 +3,7 @@
  * Handles user import functionality for admin
  */
 
-import type {
-  UserImportRow,
-  UserImportResult,
-  UserRole,
-  UserActionResult,
-} from './user-types'
+import type { UserImportRow, UserImportResult, UserRole, UserActionResult } from './user-types'
 
 // ============================================================================
 // Import Operations
@@ -80,9 +75,10 @@ export function parseCSV(content: string): UserImportRow[] {
   // Map column indices
   const emailIndex = headers.indexOf('email')
   const usernameIndex = headers.indexOf('username')
-  const displayNameIndex = headers.indexOf('displayname') !== -1
-    ? headers.indexOf('displayname')
-    : headers.indexOf('display_name')
+  const displayNameIndex =
+    headers.indexOf('displayname') !== -1
+      ? headers.indexOf('displayname')
+      : headers.indexOf('display_name')
   const roleIndex = headers.indexOf('role')
   const passwordIndex = headers.indexOf('password')
 
@@ -320,8 +316,16 @@ export function validateImportFile(file: File): UserActionResult {
 export function getExpectedColumns(): { name: string; required: boolean; description: string }[] {
   return [
     { name: 'email', required: true, description: 'User email address' },
-    { name: 'username', required: false, description: 'Unique username (auto-generated if not provided)' },
-    { name: 'displayName', required: false, description: 'Display name (uses email prefix if not provided)' },
+    {
+      name: 'username',
+      required: false,
+      description: 'Unique username (auto-generated if not provided)',
+    },
+    {
+      name: 'displayName',
+      required: false,
+      description: 'Display name (uses email prefix if not provided)',
+    },
     { name: 'role', required: false, description: 'User role (defaults to member)' },
     { name: 'password', required: false, description: 'Initial password (random if not provided)' },
   ]

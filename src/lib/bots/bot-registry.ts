@@ -229,10 +229,7 @@ export function searchBots(query: string): Array<{
 /**
  * Create and register a bot instance
  */
-export async function instantiateBot(
-  botId: string,
-  config: Partial<BotConfig> = {}
-): Promise<Bot> {
+export async function instantiateBot(botId: string, config: Partial<BotConfig> = {}): Promise<Bot> {
   const registered = registry.get(botId)
   if (!registered) {
     throw new Error(`Bot ${botId} not found in registry`)
@@ -294,11 +291,11 @@ export async function registerDefaultBots(): Promise<void> {
 
   try {
     // Dynamically import bot factories with typed modules
-    const reminderMod = await import('@/bots/reminder-bot') as BotModule
-    const welcomeMod = await import('@/bots/welcome-bot') as BotModule
-    const pollMod = await import('@/bots/poll-bot') as BotModule
-    const faqMod = await import('@/bots/faq-bot') as BotModule
-    const schedulerMod = await import('@/bots/scheduler-bot') as BotModule
+    const reminderMod = (await import('@/bots/reminder-bot')) as BotModule
+    const welcomeMod = (await import('@/bots/welcome-bot')) as BotModule
+    const pollMod = (await import('@/bots/poll-bot')) as BotModule
+    const faqMod = (await import('@/bots/faq-bot')) as BotModule
+    const schedulerMod = (await import('@/bots/scheduler-bot')) as BotModule
 
     // Register bots
     registerBotFactory('reminder-bot', reminderMod.default as BotFactory, reminderMod.manifest, {

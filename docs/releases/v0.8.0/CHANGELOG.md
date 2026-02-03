@@ -16,6 +16,7 @@
 ## ✨ New Features
 
 ### Dark Mode
+
 - System preference detection with `prefers-color-scheme`
 - User override persisted to localStorage
 - Three UI variants: button, dropdown, switch
@@ -24,6 +25,7 @@
 - SSR-safe implementation
 
 ### Virtual Scrolling
+
 - Implemented `@tanstack/react-virtual` for efficient rendering
 - Handles 10,000+ messages smoothly
 - Dynamic row heights with accurate estimation
@@ -32,6 +34,7 @@
 - Auto-scroll to bottom for new messages
 
 ### Long-Press Context Menu
+
 - 500ms default trigger duration (customizable)
 - Haptic feedback on supported devices
 - Smart positioning that avoids screen edges
@@ -40,6 +43,7 @@
 - Portal-based rendering for proper stacking
 
 ### Pinch-to-Zoom
+
 - Multi-touch pinch gesture support (1x to 4x zoom)
 - Double-tap to zoom in/out
 - Pan support when zoomed
@@ -49,6 +53,7 @@
 - Auto-hiding controls
 
 ### Skeleton Loaders
+
 - 10+ skeleton variants (message, channel, user, image, video, list, card, text, avatar, button)
 - Two animation modes: pulse and wave
 - Dark mode compatible
@@ -56,6 +61,7 @@
 - Customizable count and styling
 
 ### Pull-to-Refresh
+
 - Natural pull-down gesture
 - Visual feedback with rotating icon
 - Haptic feedback on trigger
@@ -65,6 +71,7 @@
 - Works seamlessly with virtual scrolling
 
 ### Touch-Optimized Components
+
 - `TouchButton` - 48px minimum height, haptic feedback
 - `TouchIconButton` - Icon-only buttons with proper sizing
 - `TouchListItem` - 48px minimum list items
@@ -76,6 +83,7 @@
 ## 🚀 Performance Improvements
 
 ### Code Splitting
+
 - Implemented centralized lazy loading system
 - Route-based preloading
 - Network-aware loading (respects slow connections)
@@ -83,6 +91,7 @@
 - Reduced main bundle from 300KB to 180KB (-40%)
 
 ### Optimization Utilities
+
 - Debounce and throttle functions with React hooks
 - Deep memoization helpers
 - Chunked processing for expensive operations
@@ -91,6 +100,7 @@
 - Battery and network optimization utilities
 
 ### Virtual Scrolling Performance
+
 - Only renders visible messages (~10-15 at a time)
 - Smooth 60fps scrolling on low-end devices
 - Efficient memory usage
@@ -99,6 +109,7 @@
 ## ♿ Accessibility Improvements
 
 ### WCAG 2.1 AA Compliance
+
 - All text meets 4.5:1 contrast ratio
 - All interactive elements have focus indicators
 - Complete keyboard navigation support
@@ -109,6 +120,7 @@
 - Reduced motion preference support
 
 ### Accessibility Utilities
+
 - Screen reader announcement system
 - Focus trap for modals and dropdowns
 - Focus restoration on component unmount
@@ -119,6 +131,7 @@
 - Form field accessibility helpers
 
 ### Touch Accessibility
+
 - All touch targets ≥44pt (iOS) / 48dp (Android)
 - Proper spacing between interactive elements
 - Visual feedback on touch (no webkit tap highlight)
@@ -127,11 +140,13 @@
 ## 📚 Documentation
 
 ### New Documentation
+
 - **Mobile-UI-v0.8.0.md**: Complete feature documentation (523 lines)
 - **Mobile-Quick-Reference.md**: Quick reference guide (347 lines)
 - **MOBILE-UI-SUMMARY.md**: Implementation summary and statistics
 
 ### Updated Documentation
+
 - Updated mobile component index
 - Added usage examples for all new components
 - Added migration guide from v0.7.0
@@ -141,10 +156,12 @@
 ## 🔧 Technical Changes
 
 ### New Dependencies
+
 - Already using `@tanstack/react-virtual` (no new deps needed)
 - All features use existing dependencies
 
 ### New Files Created (15)
+
 1. `/src/components/mobile/VirtualMessageList.tsx` (347 lines)
 2. `/src/components/mobile/LongPressMenu.tsx` (425 lines)
 3. `/src/components/mobile/PinchZoom.tsx` (487 lines)
@@ -161,10 +178,12 @@
 14. `/CHANGELOG-v0.8.0.md` (this file)
 
 ### Updated Files (2)
+
 1. `/src/components/mobile/index.ts` - Added new exports
 2. `/src/lib/accessibility/a11y-utils.ts` - Enhanced existing utilities
 
 ### Total Code Added
+
 - **Components**: 2,477 lines
 - **Utilities**: 949 lines
 - **Documentation**: 870 lines
@@ -173,18 +192,21 @@
 ## 📊 Performance Metrics
 
 ### Before v0.8.0
+
 - Main bundle: ~300KB gzipped
 - FPS (1000+ messages): 30-45fps
 - Time to Interactive (3G): ~5s
 - Lighthouse mobile: 75-80
 
 ### After v0.8.0
+
 - Main bundle: ~180KB gzipped (-40%)
 - FPS (1000+ messages): 60fps (100% improvement)
 - Time to Interactive (3G): ~3s (-40%)
 - Lighthouse mobile: 95+ (19% improvement)
 
 ## 🐛 Bug Fixes
+
 - None (all new features)
 
 ## ⚠️ Known Issues
@@ -202,6 +224,7 @@
    - No fix needed (browser limitation)
 
 ## 🔄 Breaking Changes
+
 - None (all additions, fully backward compatible)
 
 ## 📦 Migration Guide
@@ -242,6 +265,7 @@
 ## 🧪 Testing
 
 ### Test Coverage
+
 - ✅ Manual testing on iOS and Android
 - ✅ Lighthouse mobile audit: 95+
 - ✅ Accessibility testing (screen reader)
@@ -250,6 +274,7 @@
 - ⏳ Load testing (1000+ messages)
 
 ### Tested Devices
+
 - ✅ iPhone 12 Pro (iOS 16)
 - ✅ iPhone SE (small screen)
 - ✅ Samsung Galaxy S21 (Android 13)
@@ -259,18 +284,21 @@
 ## 🎯 Next Steps
 
 ### v0.8.1 (Planned - February 2026)
+
 - Optimize virtual scroll for low-end devices
 - Improve Safari iOS <13 compatibility
 - Add gesture recording for accessibility
 - Performance monitoring dashboard
 
 ### v0.9.0 (Planned - March 2026)
+
 - Offline message queue
 - PWA enhancements
 - Voice message optimization
 - Video call mobile optimization
 
 ### v1.0.0 (Planned - Q2 2026)
+
 - Native iOS app (Capacitor)
 - Native Android app (Capacitor)
 - Desktop app (Tauri)
@@ -289,6 +317,7 @@ Same as nself-chat main license
 ---
 
 For detailed documentation, see:
+
 - `/docs/Mobile-UI-v0.8.0.md` - Complete documentation
 - `/docs/Mobile-Quick-Reference.md` - Quick reference
 - `/MOBILE-UI-SUMMARY.md` - Implementation summary

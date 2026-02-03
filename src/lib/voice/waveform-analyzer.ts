@@ -5,6 +5,8 @@
  * and static waveform generation from audio blobs/files.
  */
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -75,7 +77,7 @@ const DEFAULT_OPTIONS: Required<WaveformAnalyzerOptions> = {
  *
  * analyzer.onUpdate((data) => {
  *   // Update visualization with data.bars
- *   console.log('Volume:', data.volume)
+ *   // console.log('Volume:', data.volume)
  * })
  *
  * analyzer.start()
@@ -148,7 +150,7 @@ export class RealtimeWaveformAnalyzer {
       this._isRunning = true
       this.analyze()
     } catch (error) {
-      console.error('Failed to start waveform analyzer:', error)
+      logger.error('Failed to start waveform analyzer:', error)
       this.cleanup()
     }
   }
@@ -424,9 +426,7 @@ export async function generateDetailedWaveform(
 /**
  * Get audio duration from a blob without full waveform analysis
  */
-export async function getAudioDuration(
-  audioSource: Blob | ArrayBuffer | string
-): Promise<number> {
+export async function getAudioDuration(audioSource: Blob | ArrayBuffer | string): Promise<number> {
   let arrayBuffer: ArrayBuffer
 
   if (audioSource instanceof Blob) {
@@ -473,10 +473,7 @@ export function normalizeWaveform(
 /**
  * Smooth waveform data to reduce visual noise
  */
-export function smoothWaveform(
-  amplitudes: number[],
-  windowSize: number = 3
-): number[] {
+export function smoothWaveform(amplitudes: number[], windowSize: number = 3): number[] {
   if (windowSize < 1 || amplitudes.length < windowSize) {
     return amplitudes
   }
@@ -505,10 +502,7 @@ export function smoothWaveform(
 /**
  * Resample waveform to a different number of samples
  */
-export function resampleWaveform(
-  amplitudes: number[],
-  targetCount: number
-): number[] {
+export function resampleWaveform(amplitudes: number[], targetCount: number): number[] {
   if (targetCount === amplitudes.length) {
     return amplitudes
   }
@@ -523,9 +517,7 @@ export function resampleWaveform(
     const fraction = srcIndex - srcIndexFloor
 
     // Linear interpolation
-    const value =
-      amplitudes[srcIndexFloor] * (1 - fraction) +
-      amplitudes[srcIndexCeil] * fraction
+    const value = amplitudes[srcIndexFloor] * (1 - fraction) + amplitudes[srcIndexCeil] * fraction
 
     result.push(value)
   }

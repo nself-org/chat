@@ -7,6 +7,7 @@ This document outlines the roadmap for version 0.2, including internal module re
 ## v0.1 Status (Current Release)
 
 ### Completed
+
 - Full project structure with Next.js 15 + React 19
 - 9-step setup wizard UI
 - White-label branding system with 10+ theme presets
@@ -21,6 +22,7 @@ This document outlines the roadmap for version 0.2, including internal module re
 - Platform build configs (Electron, Tauri, Capacitor, React Native)
 
 ### Known Issues in v0.1
+
 - TypeScript strict mode warnings (non-blocking)
 - ESLint warnings in some files (non-blocking)
 - E2E tests skipped (requires backend)
@@ -36,6 +38,7 @@ This document outlines the roadmap for version 0.2, including internal module re
 Refactor code into modular, testable units while keeping them internal to nself-chat.
 
 #### Core Modules
+
 ```
 src/modules/
 ├── auth/           # Authentication module
@@ -69,46 +72,51 @@ src/modules/
 These are candidates for extraction as generic `@nself/plugin-*` packages for use in other nself projects.
 
 #### High Priority (Generic Use)
-| Plugin | Description | Status |
-|--------|-------------|--------|
-| `@nself/plugin-auth` | OAuth2/OIDC providers | Plan |
-| `@nself/plugin-idme` | ID.me verification | Plan |
-| `@nself/plugin-storage` | S3/MinIO/R2 storage | Plan |
-| `@nself/plugin-realtime` | Socket.io wrapper | Plan |
-| `@nself/plugin-search` | Full-text search (MeiliSearch) | Plan |
-| `@nself/plugin-analytics` | Usage analytics | Plan |
-| `@nself/plugin-audit` | Audit logging | Plan |
+
+| Plugin                    | Description                    | Status |
+| ------------------------- | ------------------------------ | ------ |
+| `@nself/plugin-auth`      | OAuth2/OIDC providers          | Plan   |
+| `@nself/plugin-idme`      | ID.me verification             | Plan   |
+| `@nself/plugin-storage`   | S3/MinIO/R2 storage            | Plan   |
+| `@nself/plugin-realtime`  | Socket.io wrapper              | Plan   |
+| `@nself/plugin-search`    | Full-text search (MeiliSearch) | Plan   |
+| `@nself/plugin-analytics` | Usage analytics                | Plan   |
+| `@nself/plugin-audit`     | Audit logging                  | Plan   |
 
 #### Medium Priority (Chat-Specific but Extractable)
-| Plugin | Description | Status |
-|--------|-------------|--------|
-| `@nself/plugin-voice` | Voice messages | Plan |
-| `@nself/plugin-video` | Video calling (WebRTC) | Plan |
-| `@nself/plugin-polls` | Polls and voting | Plan |
-| `@nself/plugin-reactions` | Emoji reactions | Plan |
-| `@nself/plugin-threads` | Threaded conversations | Plan |
-| `@nself/plugin-bots` | Bot SDK | Plan |
+
+| Plugin                    | Description            | Status |
+| ------------------------- | ---------------------- | ------ |
+| `@nself/plugin-voice`     | Voice messages         | Plan   |
+| `@nself/plugin-video`     | Video calling (WebRTC) | Plan   |
+| `@nself/plugin-polls`     | Polls and voting       | Plan   |
+| `@nself/plugin-reactions` | Emoji reactions        | Plan   |
+| `@nself/plugin-threads`   | Threaded conversations | Plan   |
+| `@nself/plugin-bots`      | Bot SDK                | Plan   |
 
 #### Lower Priority (Internal First)
-| Plugin | Description | Status |
-|--------|-------------|--------|
-| `@nself/plugin-webhooks` | Webhook management | Plan |
-| `@nself/plugin-workflows` | Automation workflows | Plan |
-| `@nself/plugin-commands` | Slash commands | Plan |
-| `@nself/plugin-stickers` | Sticker packs | Plan |
-| `@nself/plugin-gifs` | GIF picker | Plan |
+
+| Plugin                    | Description          | Status |
+| ------------------------- | -------------------- | ------ |
+| `@nself/plugin-webhooks`  | Webhook management   | Plan   |
+| `@nself/plugin-workflows` | Automation workflows | Plan   |
+| `@nself/plugin-commands`  | Slash commands       | Plan   |
+| `@nself/plugin-stickers`  | Sticker packs        | Plan   |
+| `@nself/plugin-gifs`      | GIF picker           | Plan   |
 
 ---
 
 ## v0.2 Implementation Plan
 
 ### Phase 1: Fix TypeScript Issues
+
 - [ ] Fix type mismatches in API routes
 - [ ] Add proper types for all props
 - [ ] Enable strict mode progressively
 - [ ] Fix ESLint errors
 
 ### Phase 2: Module Extraction
+
 - [ ] Create `src/modules/` directory structure
 - [ ] Extract auth into module
 - [ ] Extract messaging into module
@@ -116,24 +124,28 @@ These are candidates for extraction as generic `@nself/plugin-*` packages for us
 - [ ] Update imports across codebase
 
 ### Phase 3: Real-time Integration
+
 - [ ] Complete Socket.io integration
 - [ ] Add presence indicators
 - [ ] Add typing indicators
 - [ ] Add real-time message updates
 
 ### Phase 4: Production Auth
+
 - [ ] Complete Nhost auth integration
 - [ ] Add session management
 - [ ] Add refresh token handling
 - [ ] Add logout functionality
 
 ### Phase 5: File Upload
+
 - [ ] Complete MinIO integration
 - [ ] Add file upload UI
 - [ ] Add file preview
 - [ ] Add image optimization
 
 ### Phase 6: Testing
+
 - [ ] Set up E2E test environment
 - [ ] Write component tests
 - [ ] Write integration tests
@@ -197,4 +209,4 @@ See [docs/Contributing.md](docs/Contributing.md) for how to contribute to nself-
 
 ---
 
-*Last updated: 2026-01-29*
+_Last updated: 2026-01-29_

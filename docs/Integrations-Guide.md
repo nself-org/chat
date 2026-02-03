@@ -61,14 +61,14 @@ nself-chat provides a comprehensive integration system that supports:
 
 ## Supported Integrations
 
-| Platform | Type | OAuth | Webhooks | Import | Bidirectional Sync |
-|----------|------|-------|----------|--------|-------------------|
-| Slack | Communication | ✅ | ✅ | ✅ | ✅ |
-| Discord | Communication | ✅ | ✅ | ✅ | ✅ |
-| Telegram | Communication | ❌ (Bot Token) | ✅ | ⚠️ Limited | ✅ |
-| GitHub | DevTools | ✅ | ✅ | ❌ | ❌ |
-| Jira | DevTools | ✅ | ✅ | ❌ | ❌ |
-| Google Drive | Storage | ✅ | ❌ | ❌ | ❌ |
+| Platform     | Type          | OAuth          | Webhooks | Import     | Bidirectional Sync |
+| ------------ | ------------- | -------------- | -------- | ---------- | ------------------ |
+| Slack        | Communication | ✅             | ✅       | ✅         | ✅                 |
+| Discord      | Communication | ✅             | ✅       | ✅         | ✅                 |
+| Telegram     | Communication | ❌ (Bot Token) | ✅       | ⚠️ Limited | ✅                 |
+| GitHub       | DevTools      | ✅             | ✅       | ❌         | ❌                 |
+| Jira         | DevTools      | ✅             | ✅       | ❌         | ❌                 |
+| Google Drive | Storage       | ✅             | ❌       | ❌         | ❌                 |
 
 ---
 
@@ -204,6 +204,7 @@ curl -X POST "https://your-domain.com/api/webhooks/discord" \
    - Copy bot token
 
 2. **Setup Webhook**:
+
    ```bash
    curl -X POST "https://api.telegram.org/bot<YOUR_BOT_TOKEN>/setWebhook" \
      -d "url=https://your-domain.com/api/webhooks/telegram&secret_token=<YOUR_SECRET>"
@@ -216,6 +217,7 @@ curl -X POST "https://your-domain.com/api/webhooks/discord" \
 ### Important Notes
 
 ⚠️ **Limitations**:
+
 - Telegram Bot API cannot fetch historical messages
 - Bots can only see messages sent after they were added to the chat
 - For full history import, you'd need MTProto API (user account)
@@ -366,11 +368,7 @@ const webhook = manager.createWebhook({
   name: 'External Service',
   url: 'https://external-service.com/webhook',
   secret: 'your-secret-key',
-  events: [
-    'message.created',
-    'channel.created',
-    'user.joined',
-  ],
+  events: ['message.created', 'channel.created', 'user.joined'],
 })
 ```
 
@@ -379,15 +377,19 @@ const webhook = manager.createWebhook({
 ```typescript
 import { triggerWebhookEvent } from '@/lib/webhooks/outgoing-webhooks'
 
-await triggerWebhookEvent('message.created', {
-  messageId: '123',
-  channelId: '456',
-  content: 'Hello!',
-  author: { id: '789', username: 'user' },
-}, {
-  userId: '789',
-  username: 'user',
-})
+await triggerWebhookEvent(
+  'message.created',
+  {
+    messageId: '123',
+    channelId: '456',
+    content: 'Hello!',
+    author: { id: '789', username: 'user' },
+  },
+  {
+    userId: '789',
+    username: 'user',
+  }
+)
 ```
 
 ### Webhook Signature Verification
@@ -544,17 +546,20 @@ LIMIT 100;
 ### Common Issues
 
 **OAuth Callback Not Working**:
+
 - Verify redirect URI matches exactly
 - Check OAuth app credentials
 - Ensure callback endpoint is accessible
 
 **Webhooks Not Delivering**:
+
 - Check webhook queue is running
 - Verify Redis connection
 - Check network connectivity
 - Review webhook logs
 
 **Import Failing**:
+
 - Verify API permissions/scopes
 - Check rate limits
 - Ensure date ranges are valid

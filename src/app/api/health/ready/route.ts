@@ -17,12 +17,15 @@ export async function GET() {
   try {
     // Check GraphQL endpoint (Hasura)
     try {
-      const graphqlResponse = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/v1/graphql'}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: '{ __typename }' }),
-        signal: AbortSignal.timeout(2000), // 2 second timeout
-      })
+      const graphqlResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/v1/graphql'}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: '{ __typename }' }),
+          signal: AbortSignal.timeout(2000), // 2 second timeout
+        }
+      )
 
       if (graphqlResponse.ok) {
         checks.graphql = { status: 'ok' }
@@ -31,16 +34,22 @@ export async function GET() {
         allReady = false
       }
     } catch (error) {
-      checks.graphql = { status: 'error', message: error instanceof Error ? error.message : 'Failed to connect' }
+      checks.graphql = {
+        status: 'error',
+        message: error instanceof Error ? error.message : 'Failed to connect',
+      }
       allReady = false
     }
 
     // Check Auth service (Nhost Auth)
     try {
-      const authResponse = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1/auth'}/healthz`, {
-        method: 'GET',
-        signal: AbortSignal.timeout(2000),
-      })
+      const authResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1/auth'}/healthz`,
+        {
+          method: 'GET',
+          signal: AbortSignal.timeout(2000),
+        }
+      )
 
       if (authResponse.ok) {
         checks.auth = { status: 'ok' }
@@ -49,7 +58,10 @@ export async function GET() {
         allReady = false
       }
     } catch (error) {
-      checks.auth = { status: 'error', message: error instanceof Error ? error.message : 'Failed to connect' }
+      checks.auth = {
+        status: 'error',
+        message: error instanceof Error ? error.message : 'Failed to connect',
+      }
       allReady = false
     }
 

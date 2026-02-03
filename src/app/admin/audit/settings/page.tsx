@@ -7,12 +7,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
-import {
-  Settings,
-  ArrowLeft,
-  Save,
-  Loader2,
-} from 'lucide-react'
+import { Settings, ArrowLeft, Save, Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -25,6 +20,8 @@ import type { AuditRetentionPolicy, AuditSettings } from '@/lib/audit/audit-type
 import { defaultAuditSettings } from '@/lib/audit/audit-retention'
 
 import { AuditLogRetention } from '@/components/audit'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Component
@@ -43,7 +40,9 @@ export default function AuditSettingsPage() {
     setSavingSettings,
   } = useAuditStore()
 
-  const [localSettings, setLocalSettings] = useState<AuditSettings>(settings || defaultAuditSettings)
+  const [localSettings, setLocalSettings] = useState<AuditSettings>(
+    settings || defaultAuditSettings
+  )
   const [hasChanges, setHasChanges] = useState(false)
 
   // Auth check
@@ -119,7 +118,7 @@ export default function AuditSettingsPage() {
 
       setHasChanges(false)
     } catch (error) {
-      console.error('Failed to save settings:', error)
+      logger.error('Failed to save settings:', error)
     } finally {
       setSavingSettings(false)
     }
@@ -144,18 +143,15 @@ export default function AuditSettingsPage() {
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Audit Logs
             </Button>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
+            <h1 className="flex items-center gap-3 text-3xl font-bold">
               <Settings className="h-8 w-8" />
               Audit Settings
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="mt-1 text-muted-foreground">
               Configure audit logging, retention policies, and export settings
             </p>
           </div>
-          <Button
-            onClick={handleSave}
-            disabled={!hasChanges || isSavingSettings}
-          >
+          <Button onClick={handleSave} disabled={!hasChanges || isSavingSettings}>
             {isSavingSettings ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -174,9 +170,7 @@ export default function AuditSettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle>General Settings</CardTitle>
-            <CardDescription>
-              Configure basic audit logging behavior
-            </CardDescription>
+            <CardDescription>Configure basic audit logging behavior</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -191,9 +185,7 @@ export default function AuditSettingsPage() {
               <Switch
                 id="audit-enabled"
                 checked={localSettings.enabled}
-                onCheckedChange={(checked) =>
-                  handleSettingsChange({ enabled: checked })
-                }
+                onCheckedChange={(checked) => handleSettingsChange({ enabled: checked })}
               />
             </div>
 
@@ -209,9 +201,7 @@ export default function AuditSettingsPage() {
               <Switch
                 id="realtime-enabled"
                 checked={localSettings.realTimeEnabled}
-                onCheckedChange={(checked) =>
-                  handleSettingsChange({ realTimeEnabled: checked })
-                }
+                onCheckedChange={(checked) => handleSettingsChange({ realTimeEnabled: checked })}
               />
             </div>
 
@@ -245,9 +235,7 @@ export default function AuditSettingsPage() {
               <Switch
                 id="ip-logging"
                 checked={localSettings.ipLoggingEnabled}
-                onCheckedChange={(checked) =>
-                  handleSettingsChange({ ipLoggingEnabled: checked })
-                }
+                onCheckedChange={(checked) => handleSettingsChange({ ipLoggingEnabled: checked })}
               />
             </div>
 
@@ -263,9 +251,7 @@ export default function AuditSettingsPage() {
               <Switch
                 id="geo-location"
                 checked={localSettings.geoLocationEnabled}
-                onCheckedChange={(checked) =>
-                  handleSettingsChange({ geoLocationEnabled: checked })
-                }
+                onCheckedChange={(checked) => handleSettingsChange({ geoLocationEnabled: checked })}
               />
             </div>
           </CardContent>
@@ -294,9 +280,7 @@ export default function AuditSettingsPage() {
               <p className="text-sm">
                 Scheduled exports and advanced export configuration coming soon.
               </p>
-              <p className="text-xs mt-1">
-                For now, use the Export button in the Audit Logs page.
-              </p>
+              <p className="mt-1 text-xs">For now, use the Export button in the Audit Logs page.</p>
             </div>
           </CardContent>
         </Card>

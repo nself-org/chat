@@ -133,13 +133,9 @@ export function ActivityLog({
     <div className="space-y-1">
       {isLoading ? (
         // Loading skeleton
-        Array.from({ length: 5 }).map((_, i) => (
-          <ActivityItemSkeleton key={i} />
-        ))
+        Array.from({ length: 5 }).map((_, i) => <ActivityItemSkeleton key={i} />)
       ) : logs.length === 0 ? (
-        <div className="py-8 text-center text-sm text-muted-foreground">
-          No activity to show
-        </div>
+        <div className="py-8 text-center text-sm text-muted-foreground">No activity to show</div>
       ) : (
         logs.map((log) => <ActivityItem key={log.id} log={log} />)
       )}
@@ -182,14 +178,14 @@ export function ActivityItem({ log }: ActivityItemProps) {
   const fullDate = format(new Date(log.createdAt), 'PPpp')
 
   return (
-    <div className="group flex items-start gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50">
+    <div className="hover:bg-muted/50 group flex items-start gap-3 rounded-lg p-2 transition-colors">
       {/* Icon */}
       <div className={cn('mt-0.5 rounded-full p-1.5', config.color)}>
         <Icon className="h-3.5 w-3.5" />
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <Avatar className="h-5 w-5">
             <AvatarImage src={log.actor.avatarUrl} />
@@ -197,7 +193,7 @@ export function ActivityItem({ log }: ActivityItemProps) {
               {getInitials(log.actor.displayName)}
             </AvatarFallback>
           </Avatar>
-          <span className="text-sm font-medium truncate">{log.actor.displayName}</span>
+          <span className="truncate text-sm font-medium">{log.actor.displayName}</span>
         </div>
         <p className="mt-0.5 text-sm text-muted-foreground">{log.description}</p>
         {log.metadata && Object.keys(log.metadata).length > 0 && (
@@ -210,10 +206,7 @@ export function ActivityItem({ log }: ActivityItemProps) {
       </div>
 
       {/* Timestamp */}
-      <time
-        className="text-xs text-muted-foreground shrink-0"
-        title={fullDate}
-      >
+      <time className="shrink-0 text-xs text-muted-foreground" title={fullDate}>
         {timeAgo}
       </time>
     </div>
@@ -243,7 +236,11 @@ interface ActivityLogCompactProps {
   limit?: number
 }
 
-export function ActivityLogCompact({ logs, isLoading = false, limit = 5 }: ActivityLogCompactProps) {
+export function ActivityLogCompact({
+  logs,
+  isLoading = false,
+  limit = 5,
+}: ActivityLogCompactProps) {
   const displayLogs = logs.slice(0, limit)
 
   return (
@@ -256,9 +253,7 @@ export function ActivityLogCompact({ logs, isLoading = false, limit = 5 }: Activ
           </div>
         ))
       ) : displayLogs.length === 0 ? (
-        <div className="py-4 text-center text-xs text-muted-foreground">
-          No recent activity
-        </div>
+        <div className="py-4 text-center text-xs text-muted-foreground">No recent activity</div>
       ) : (
         displayLogs.map((log) => {
           const config = activityConfig[log.type] || defaultConfig
@@ -268,11 +263,11 @@ export function ActivityLogCompact({ logs, isLoading = false, limit = 5 }: Activ
           return (
             <div key={log.id} className="flex items-center gap-2 text-xs">
               <Icon className={cn('h-3.5 w-3.5 shrink-0', config.color.split(' ')[0])} />
-              <span className="truncate flex-1">
+              <span className="flex-1 truncate">
                 <span className="font-medium">{log.actor.displayName}</span>{' '}
                 <span className="text-muted-foreground">{log.description.toLowerCase()}</span>
               </span>
-              <span className="text-muted-foreground shrink-0">{timeAgo}</span>
+              <span className="shrink-0 text-muted-foreground">{timeAgo}</span>
             </div>
           )
         })

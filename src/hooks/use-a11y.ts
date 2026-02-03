@@ -437,9 +437,7 @@ export function useAriaExpanded(
  * @example
  * const srOnlyRef = useScreenReaderOnly<HTMLSpanElement>('Additional context');
  */
-export function useScreenReaderOnly<T extends HTMLElement>(
-  content: string
-): RefObject<T | null> {
+export function useScreenReaderOnly<T extends HTMLElement>(content: string): RefObject<T | null> {
   const ref = useRef<T>(null)
 
   useEffect(() => {

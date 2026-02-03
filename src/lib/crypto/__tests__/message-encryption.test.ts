@@ -815,9 +815,7 @@ describe('Ratchet State', () => {
     it('should throw error if not initialized', async () => {
       const state = initializeRatchetState()
 
-      await expect(ratchetSend(state)).rejects.toThrow(
-        'Ratchet state not initialized for sending'
-      )
+      await expect(ratchetSend(state)).rejects.toThrow('Ratchet state not initialized for sending')
     })
   })
 
@@ -900,11 +898,7 @@ describe('Message Signing', () => {
     it('should verify a valid signature', async () => {
       mockCryptoSubtle.verify.mockResolvedValue(true)
 
-      const result = await verifyMessageSignature(
-        'Hello',
-        'signature-base64',
-        mockVerificationKey
-      )
+      const result = await verifyMessageSignature('Hello', 'signature-base64', mockVerificationKey)
 
       expect(result).toBe(true)
     })
@@ -912,11 +906,7 @@ describe('Message Signing', () => {
     it('should return false for invalid signature', async () => {
       mockCryptoSubtle.verify.mockResolvedValue(false)
 
-      const result = await verifyMessageSignature(
-        'Hello',
-        'invalid-signature',
-        mockVerificationKey
-      )
+      const result = await verifyMessageSignature('Hello', 'invalid-signature', mockVerificationKey)
 
       expect(result).toBe(false)
     })

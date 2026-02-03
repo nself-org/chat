@@ -141,36 +141,33 @@ export const VirtualMessageList = forwardRef<VirtualMessageListRef, VirtualMessa
     const virtualItems = virtualizer.getVirtualItems()
 
     // Scroll to bottom
-    const scrollToBottom = useCallback(
-      (behavior: ScrollBehavior = 'smooth') => {
-        if (parentRef.current) {
-          parentRef.current.scrollTo({
-            top: parentRef.current.scrollHeight,
-            behavior,
-          })
-        }
-      },
-      []
-    )
+    const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+      if (parentRef.current) {
+        parentRef.current.scrollTo({
+          top: parentRef.current.scrollHeight,
+          behavior,
+        })
+      }
+    }, [])
 
     // Scroll to top
-    const scrollToTop = useCallback(
-      (behavior: ScrollBehavior = 'smooth') => {
-        if (parentRef.current) {
-          parentRef.current.scrollTo({
-            top: 0,
-            behavior,
-          })
-        }
-      },
-      []
-    )
+    const scrollToTop = useCallback((behavior: ScrollBehavior = 'smooth') => {
+      if (parentRef.current) {
+        parentRef.current.scrollTo({
+          top: 0,
+          behavior,
+        })
+      }
+    }, [])
 
     // Scroll to index
     const scrollToIndex = useCallback(
       (index: number, options: ScrollToOptions = {}) => {
         const { align = 'center', behavior = 'smooth' } = options
-        virtualizer.scrollToIndex(index, { align, behavior: behavior as 'auto' | 'smooth' | undefined })
+        virtualizer.scrollToIndex(index, {
+          align,
+          behavior: behavior as 'auto' | 'smooth' | undefined,
+        })
       },
       [virtualizer]
     )
@@ -238,23 +235,26 @@ export const VirtualMessageList = forwardRef<VirtualMessageListRef, VirtualMessa
       }
     }, [])
 
-    const handleTouchMove = useCallback((e: React.TouchEvent) => {
-      if (!onRefresh || isRefreshing) return
+    const handleTouchMove = useCallback(
+      (e: React.TouchEvent) => {
+        if (!onRefresh || isRefreshing) return
 
-      if (parentRef.current && parentRef.current.scrollTop === 0) {
-        const touchY = e.touches[0].clientY
-        const distance = touchY - touchStartY.current
+        if (parentRef.current && parentRef.current.scrollTop === 0) {
+          const touchY = e.touches[0].clientY
+          const distance = touchY - touchStartY.current
 
-        if (distance > 0) {
-          setPullDistance(Math.min(distance, 120))
+          if (distance > 0) {
+            setPullDistance(Math.min(distance, 120))
 
-          // Prevent default scroll when pulling down
-          if (distance > 10) {
-            e.preventDefault()
+            // Prevent default scroll when pulling down
+            if (distance > 10) {
+              e.preventDefault()
+            }
           }
         }
-      }
-    }, [onRefresh, isRefreshing])
+      },
+      [onRefresh, isRefreshing]
+    )
 
     const handleTouchEnd = useCallback(() => {
       if (pullDistance > 80 && onRefresh && !isRefreshing) {
@@ -306,12 +306,15 @@ export const VirtualMessageList = forwardRef<VirtualMessageListRef, VirtualMessa
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center py-2"
+              className="absolute left-0 right-0 top-0 z-10 flex items-center justify-center py-2"
               style={{ height: pullDistance }}
             >
               <motion.div
                 animate={{ rotate: isRefreshing ? 360 : pullDistance > 80 ? 180 : 0 }}
-                transition={{ duration: isRefreshing ? 1 : 0.3, repeat: isRefreshing ? Infinity : 0 }}
+                transition={{
+                  duration: isRefreshing ? 1 : 0.3,
+                  repeat: isRefreshing ? Infinity : 0,
+                }}
               >
                 <Loader2 className="h-5 w-5 text-primary" />
               </motion.div>
@@ -321,7 +324,7 @@ export const VirtualMessageList = forwardRef<VirtualMessageListRef, VirtualMessa
 
         {/* Offline indicator */}
         {isOffline && (
-          <div className="flex items-center gap-2 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+          <div className="bg-destructive/10 flex items-center gap-2 px-4 py-2 text-sm text-destructive">
             <WifiOff className="h-4 w-4" />
             <span>You are offline. Messages will be sent when connection is restored.</span>
           </div>
@@ -396,7 +399,7 @@ export const VirtualMessageList = forwardRef<VirtualMessageListRef, VirtualMessa
                   scrollToBottom()
                   setNewMessageCount(0)
                 }}
-                className="h-11 rounded-full shadow-lg touch-manipulation"
+                className="h-11 touch-manipulation rounded-full shadow-lg"
                 size="sm"
               >
                 <ChevronDown className="mr-1 h-4 w-4" />
@@ -416,9 +419,7 @@ export const VirtualMessageList = forwardRef<VirtualMessageListRef, VirtualMessa
 // Helper Functions
 // ============================================================================
 
-type DisplayItem =
-  | { type: 'message'; message: Message }
-  | { type: 'separator'; date: Date }
+type DisplayItem = { type: 'message'; message: Message } | { type: 'separator'; date: Date }
 
 function processMessagesWithDates(
   messages: Message[],

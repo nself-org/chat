@@ -212,10 +212,7 @@ export function splitIntoSegments(
 /**
  * Render content with mentions as HTML string
  */
-export function renderMentionsToHTML(
-  content: string,
-  options: MentionRenderOptions = {}
-): string {
+export function renderMentionsToHTML(content: string, options: MentionRenderOptions = {}): string {
   const {
     users = new Map(),
     channels = new Map(),
@@ -259,9 +256,7 @@ export function renderMentionsToHTML(
         dataAttrs = `data-mention-type="${mention.type}"`
       }
 
-      const interactiveAttrs = clickable
-        ? 'tabindex="0" role="button"'
-        : ''
+      const interactiveAttrs = clickable ? 'tabindex="0" role="button"' : ''
 
       html += `<span class="${classes}" ${dataAttrs} ${interactiveAttrs}>${escapeHTML(displayText)}</span>`
     }
@@ -364,10 +359,7 @@ export function serializeMentions(
           end: mention.end,
         })
       }
-    } else if (
-      mention.type === 'everyone' ||
-      mention.type === 'here'
-    ) {
+    } else if (mention.type === 'everyone' || mention.type === 'here') {
       serialized.push({
         type: mention.type,
         id: mention.type,

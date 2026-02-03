@@ -1,66 +1,56 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import Link from 'next/link';
-import {
-  Package,
-  Settings,
-  AlertCircle,
-  ArrowUpCircle,
-  Pause,
-  Play,
-  Search,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { useAppDirectoryStore, selectInstalledApps } from '@/stores/app-directory-store';
-import { AppCard, AppIcon } from './AppCard';
-import type { AppInstallation } from '@/lib/app-directory/app-types';
+import * as React from 'react'
+import Link from 'next/link'
+import { Package, Settings, AlertCircle, ArrowUpCircle, Pause, Play, Search } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { useAppDirectoryStore, selectInstalledApps } from '@/stores/app-directory-store'
+import { AppCard, AppIcon } from './AppCard'
+import type { AppInstallation } from '@/lib/app-directory/app-types'
 
 interface InstalledAppsProps {
-  className?: string;
+  className?: string
 }
 
 export function InstalledApps({ className }: InstalledAppsProps) {
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const installedApps = useAppDirectoryStore(selectInstalledApps);
+  const [searchQuery, setSearchQuery] = React.useState('')
+  const installedApps = useAppDirectoryStore(selectInstalledApps)
 
   // Filter apps by search query
   const filteredApps = installedApps.filter((installation) =>
     installation.app.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  )
 
   // Group by status
-  const activeApps = filteredApps.filter((i) => i.status === 'active');
-  const pausedApps = filteredApps.filter((i) => i.status === 'paused');
+  const activeApps = filteredApps.filter((i) => i.status === 'active')
+  const pausedApps = filteredApps.filter((i) => i.status === 'paused')
 
   // Check for updates (mock for now)
-  const appsWithUpdates = installedApps.filter(
-    (i) => i.installedVersion !== i.app.currentVersion
-  );
+  const appsWithUpdates = installedApps.filter((i) => i.installedVersion !== i.app.currentVersion)
 
   if (installedApps.length === 0) {
     return (
       <div className={cn('flex flex-col items-center justify-center py-16', className)}>
-        <Package className="w-16 h-16 text-muted-foreground mb-4" />
-        <h2 className="text-xl font-semibold mb-2">No apps installed</h2>
-        <p className="text-muted-foreground text-center max-w-md mb-6">
+        <Package className="mb-4 h-16 w-16 text-muted-foreground" />
+        <h2 className="mb-2 text-xl font-semibold">No apps installed</h2>
+        <p className="mb-6 max-w-md text-center text-muted-foreground">
           Browse the App Directory to discover apps and integrations for your workspace.
         </p>
         <Button asChild>
           <Link href="/apps">Browse Apps</Link>
         </Button>
       </div>
-    );
+    )
   }
 
   return (
     <div className={cn('space-y-6', className)}>
       {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -74,9 +64,7 @@ export function InstalledApps({ className }: InstalledAppsProps) {
 
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium text-muted-foreground">
-              Active Apps
-            </CardTitle>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Active Apps</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{activeApps.length}</div>
@@ -92,10 +80,8 @@ export function InstalledApps({ className }: InstalledAppsProps) {
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-2">
-                <ArrowUpCircle className="w-5 h-5 text-yellow-600" />
-                <span className="text-2xl font-bold text-yellow-600">
-                  {appsWithUpdates.length}
-                </span>
+                <ArrowUpCircle className="h-5 w-5 text-yellow-600" />
+                <span className="text-2xl font-bold text-yellow-600">{appsWithUpdates.length}</span>
               </div>
             </CardContent>
           </Card>
@@ -104,7 +90,7 @@ export function InstalledApps({ className }: InstalledAppsProps) {
 
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -117,16 +103,12 @@ export function InstalledApps({ className }: InstalledAppsProps) {
       {appsWithUpdates.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-center gap-2">
-            <ArrowUpCircle className="w-5 h-5 text-yellow-500" />
+            <ArrowUpCircle className="h-5 w-5 text-yellow-500" />
             <h2 className="font-semibold">Updates Available</h2>
           </div>
           <div className="space-y-2">
             {appsWithUpdates.map((installation) => (
-              <InstalledAppRow
-                key={installation.id}
-                installation={installation}
-                showUpdate
-              />
+              <InstalledAppRow key={installation.id} installation={installation} showUpdate />
             ))}
           </div>
         </section>
@@ -136,7 +118,7 @@ export function InstalledApps({ className }: InstalledAppsProps) {
       {activeApps.length > 0 && (
         <section className="space-y-3">
           <h2 className="font-semibold">Active Apps ({activeApps.length})</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {activeApps.map((installation) => (
               <InstalledAppRow key={installation.id} installation={installation} />
             ))}
@@ -148,12 +130,12 @@ export function InstalledApps({ className }: InstalledAppsProps) {
       {pausedApps.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-center gap-2">
-            <Pause className="w-5 h-5 text-muted-foreground" />
+            <Pause className="h-5 w-5 text-muted-foreground" />
             <h2 className="font-semibold text-muted-foreground">
               Paused Apps ({pausedApps.length})
             </h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             {pausedApps.map((installation) => (
               <InstalledAppRow key={installation.id} installation={installation} />
             ))}
@@ -163,42 +145,39 @@ export function InstalledApps({ className }: InstalledAppsProps) {
 
       {/* No results */}
       {filteredApps.length === 0 && searchQuery && (
-        <div className="text-center py-8 text-muted-foreground">
+        <div className="py-8 text-center text-muted-foreground">
           No installed apps match &quot;{searchQuery}&quot;
         </div>
       )}
     </div>
-  );
+  )
 }
 
 interface InstalledAppRowProps {
-  installation: AppInstallation;
-  showUpdate?: boolean;
+  installation: AppInstallation
+  showUpdate?: boolean
 }
 
 function InstalledAppRow({ installation, showUpdate }: InstalledAppRowProps) {
-  const { app, status, installedVersion, installedAt } = installation;
-  const hasUpdate = installedVersion !== app.currentVersion;
+  const { app, status, installedVersion, installedAt } = installation
+  const hasUpdate = installedVersion !== app.currentVersion
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    });
-  };
+    })
+  }
 
   return (
     <Card className={cn(status === 'paused' && 'opacity-60')}>
       <CardContent className="p-4">
         <div className="flex items-center gap-4">
           <AppIcon icon={app.icon} name={app.name} size="md" />
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <Link
-                href={`/apps/${app.slug}`}
-                className="font-medium hover:underline truncate"
-              >
+              <Link href={`/apps/${app.slug}`} className="truncate font-medium hover:underline">
                 {app.name}
               </Link>
               {status === 'paused' && (
@@ -207,12 +186,12 @@ function InstalledAppRow({ installation, showUpdate }: InstalledAppRowProps) {
                 </Badge>
               )}
               {hasUpdate && showUpdate && (
-                <Badge variant="outline" className="text-xs text-yellow-600 border-yellow-200">
+                <Badge variant="outline" className="border-yellow-200 text-xs text-yellow-600">
                   Update available
                 </Badge>
               )}
             </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+            <div className="mt-1 flex items-center gap-4 text-xs text-muted-foreground">
               <span>v{installedVersion}</span>
               <span>Installed {formatDate(installedAt)}</span>
             </div>
@@ -220,18 +199,18 @@ function InstalledAppRow({ installation, showUpdate }: InstalledAppRowProps) {
           <div className="flex items-center gap-2">
             {hasUpdate && (
               <Button variant="outline" size="sm">
-                <ArrowUpCircle className="w-4 h-4 mr-1" />
+                <ArrowUpCircle className="mr-1 h-4 w-4" />
                 Update
               </Button>
             )}
             <Button variant="ghost" size="icon" asChild>
               <Link href={`/apps/${app.slug}/settings`}>
-                <Settings className="w-4 h-4" />
+                <Settings className="h-4 w-4" />
               </Link>
             </Button>
           </div>
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

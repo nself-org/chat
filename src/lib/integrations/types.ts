@@ -424,7 +424,17 @@ export interface GoogleDrivePermission {
 }
 
 export interface GoogleDrivePickerConfig {
-  viewId?: 'DOCS' | 'DOCS_IMAGES' | 'DOCS_IMAGES_AND_VIDEOS' | 'DOCUMENTS' | 'DRAWINGS' | 'FOLDERS' | 'FORMS' | 'PDFS' | 'PRESENTATIONS' | 'SPREADSHEETS'
+  viewId?:
+    | 'DOCS'
+    | 'DOCS_IMAGES'
+    | 'DOCS_IMAGES_AND_VIDEOS'
+    | 'DOCUMENTS'
+    | 'DRAWINGS'
+    | 'FOLDERS'
+    | 'FORMS'
+    | 'PDFS'
+    | 'PRESENTATIONS'
+    | 'SPREADSHEETS'
   multiSelect?: boolean
   selectFolders?: boolean
   mimeTypes?: string[]

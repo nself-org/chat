@@ -26,14 +26,14 @@
 
 nself-chat supports multiple deployment strategies:
 
-| Strategy | Best For | Complexity | Auto-scaling |
-|----------|----------|------------|--------------|
-| **Docker** | VPS, single server | Low | Manual |
-| **Kubernetes** | Production, high availability | High | Yes (HPA) |
-| **Vercel** | Quick deploys, serverless | Low | Automatic |
-| **Netlify** | Static hosting + functions | Low | Automatic |
-| **AWS ECS/Fargate** | AWS ecosystem | Medium | Yes |
-| **Google Cloud Run** | Serverless containers | Medium | Automatic |
+| Strategy             | Best For                      | Complexity | Auto-scaling |
+| -------------------- | ----------------------------- | ---------- | ------------ |
+| **Docker**           | VPS, single server            | Low        | Manual       |
+| **Kubernetes**       | Production, high availability | High       | Yes (HPA)    |
+| **Vercel**           | Quick deploys, serverless     | Low        | Automatic    |
+| **Netlify**          | Static hosting + functions    | Low        | Automatic    |
+| **AWS ECS/Fargate**  | AWS ecosystem                 | Medium     | Yes          |
+| **Google Cloud Run** | Serverless containers         | Medium     | Automatic    |
 
 ### Architecture Overview
 
@@ -722,10 +722,7 @@ docker push <account-id>.dkr.ecr.us-east-1.amazonaws.com/nself-chat:latest
         }
       ],
       "healthCheck": {
-        "command": [
-          "CMD-SHELL",
-          "curl -f http://localhost:3000/api/health || exit 1"
-        ],
+        "command": ["CMD-SHELL", "curl -f http://localhost:3000/api/health || exit 1"],
         "interval": 30,
         "timeout": 10,
         "retries": 3,
@@ -1336,11 +1333,11 @@ docker service scale nself-chat_nchat=5
 # Kubernetes
 resources:
   requests:
-    cpu: "500m"
-    memory: "1Gi"
+    cpu: '500m'
+    memory: '1Gi'
   limits:
-    cpu: "2000m"
-    memory: "4Gi"
+    cpu: '2000m'
+    memory: '4Gi'
 ```
 
 #### Docker
@@ -1643,13 +1640,13 @@ Create `public/maintenance.html`:
 ```html
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Maintenance</title>
-</head>
-<body>
-  <h1>We'll be back soon!</h1>
-  <p>We're performing maintenance. Please check back shortly.</p>
-</body>
+  <head>
+    <title>Maintenance</title>
+  </head>
+  <body>
+    <h1>We'll be back soon!</h1>
+    <p>We're performing maintenance. Please check back shortly.</p>
+  </body>
 </html>
 ```
 
@@ -1712,14 +1709,14 @@ location = /maintenance.html {
 
 ### Performance Benchmarks
 
-| Metric | Target | Good | Needs Improvement |
-|--------|--------|------|-------------------|
-| Response Time (p95) | < 200ms | < 500ms | > 500ms |
-| Error Rate | < 0.1% | < 1% | > 1% |
-| Uptime | > 99.9% | > 99% | < 99% |
-| CPU Usage | < 70% | < 85% | > 85% |
-| Memory Usage | < 80% | < 90% | > 90% |
-| Database Connections | < 50 | < 100 | > 100 |
+| Metric               | Target  | Good    | Needs Improvement |
+| -------------------- | ------- | ------- | ----------------- |
+| Response Time (p95)  | < 200ms | < 500ms | > 500ms           |
+| Error Rate           | < 0.1%  | < 1%    | > 1%              |
+| Uptime               | > 99.9% | > 99%   | < 99%             |
+| CPU Usage            | < 70%   | < 85%   | > 85%             |
+| Memory Usage         | < 80%   | < 90%   | > 90%             |
+| Database Connections | < 50    | < 100   | > 100             |
 
 ### Cost Estimation
 

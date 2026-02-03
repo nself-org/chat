@@ -259,7 +259,7 @@ export class GraphQLErrorClass extends AppError {
         ...context,
         metadata: {
           ...context?.metadata,
-          graphQLErrors: graphQLErrors.map(e => ({
+          graphQLErrors: graphQLErrors.map((e) => ({
             message: e.message,
             path: e.path,
             extensions: e.extensions,
@@ -302,7 +302,8 @@ export class OfflineError extends AppError {
   constructor(message: string, context?: ErrorContext) {
     super(message, ErrorCategory.OFFLINE, {
       severity: ErrorSeverity.MEDIUM,
-      userMessage: 'You are currently offline. This action will be queued and completed when you reconnect.',
+      userMessage:
+        'You are currently offline. This action will be queued and completed when you reconnect.',
       isRetryable: true,
       shouldReport: false,
       context,
@@ -436,11 +437,9 @@ export function parseGraphQLError(apolloError: ApolloError): AppError {
   // Network error takes precedence
   if (networkError) {
     if ('statusCode' in networkError) {
-      return parseHttpError(
-        networkError.statusCode as number,
-        networkError.message,
-        { originalError: networkError }
-      )
+      return parseHttpError(networkError.statusCode as number, networkError.message, {
+        originalError: networkError,
+      })
     }
     return new NetworkError(networkError.message, { originalError: networkError })
   }
@@ -474,7 +473,10 @@ export function parseGraphQLError(apolloError: ApolloError): AppError {
 
     // Convert GraphQLFormattedError to GraphQLError for storage
     // Note: We're storing the formatted errors which have the essential info
-    return new GraphQLErrorClass(apolloError.message, graphQLErrors as unknown as readonly GraphQLError[])
+    return new GraphQLErrorClass(
+      apolloError.message,
+      graphQLErrors as unknown as readonly GraphQLError[]
+    )
   }
 
   // Fallback

@@ -31,12 +31,7 @@ export interface VideoCallModalProps {
 // Component
 // =============================================================================
 
-export function VideoCallModal({
-  userId,
-  userName,
-  userAvatarUrl,
-  onClose,
-}: VideoCallModalProps) {
+export function VideoCallModal({ userId, userName, userAvatarUrl, onClose }: VideoCallModalProps) {
   const containerRef = useRef<HTMLDivElement>(null)
 
   // Call state
@@ -100,9 +95,9 @@ export function VideoCallModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-gray-900 flex flex-col">
+    <div className="fixed inset-0 z-50 flex flex-col bg-gray-900">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gray-800 border-b border-gray-700">
+      <div className="flex items-center justify-between border-b border-gray-700 bg-gray-800 px-4 py-3">
         <div className="flex items-center gap-3">
           <h2 className="text-lg font-semibold text-white">Video Call</h2>
           {isCallConnected && (
@@ -129,7 +124,7 @@ export function VideoCallModal({
       </div>
 
       {/* Video Container */}
-      <div ref={containerRef} className="flex-1 relative bg-gray-950">
+      <div ref={containerRef} className="relative flex-1 bg-gray-950">
         {mode === 'grid' ? (
           <VideoGrid
             tiles={tiles}
@@ -149,7 +144,7 @@ export function VideoCallModal({
       </div>
 
       {/* Controls */}
-      <div className="px-4 py-4 bg-gray-800 border-t border-gray-700">
+      <div className="border-t border-gray-700 bg-gray-800 px-4 py-4">
         <VideoControls
           isMuted={isMuted}
           isVideoEnabled={isVideoEnabled}

@@ -32,9 +32,7 @@ export {
   parseError,
 } from './error-types'
 
-export type {
-  ErrorContext,
-} from './error-types'
+export type { ErrorContext } from './error-types'
 
 // Error handler
 export {
@@ -67,11 +65,6 @@ export {
   offlineQueue,
 } from './retry-manager'
 
-export type {
-  RetryConfig,
-  QueuedOperation,
-} from './retry-manager'
+export type { RetryConfig, QueuedOperation } from './retry-manager'
 
-export {
-  DEFAULT_RETRY_CONFIG,
-} from './retry-manager'
+export { DEFAULT_RETRY_CONFIG } from './retry-manager'

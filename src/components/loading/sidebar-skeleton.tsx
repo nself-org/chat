@@ -27,10 +27,7 @@ export function SidebarSkeleton({
 }: SidebarSkeletonProps) {
   return (
     <div
-      className={cn(
-        'flex h-full w-64 flex-col border-r bg-zinc-50 dark:bg-zinc-900/50',
-        className
-      )}
+      className={cn('flex h-full w-64 flex-col border-r bg-zinc-50 dark:bg-zinc-900/50', className)}
     >
       {/* Workspace header */}
       {showHeader && <WorkspaceHeaderSkeleton />}
@@ -38,7 +35,7 @@ export function SidebarSkeleton({
       {/* Main content */}
       <div className="flex-1 overflow-hidden px-2 py-4">
         {/* Search */}
-        <div className="px-2 mb-4">
+        <div className="mb-4 px-2">
           <Skeleton className="h-8 w-full rounded-md" />
         </div>
 
@@ -52,10 +49,7 @@ export function SidebarSkeleton({
         {Array.from({ length: categoryCount }).map((_, i) => (
           <div key={i} className="mt-4">
             <ChannelCategoryHeaderSkeleton />
-            <ChannelSkeleton
-              count={2 + Math.floor(Math.random() * 3)}
-              showCategories={false}
-            />
+            <ChannelSkeleton count={2 + Math.floor(Math.random() * 3)} showCategories={false} />
           </div>
         ))}
 
@@ -74,15 +68,11 @@ export function SidebarSkeleton({
 /**
  * Workspace header skeleton
  */
-export function WorkspaceHeaderSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function WorkspaceHeaderSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex h-16 items-center justify-between border-b border-zinc-200 dark:border-zinc-800 px-4',
+        'flex h-16 items-center justify-between border-b border-zinc-200 px-4 dark:border-zinc-800',
         className
       )}
     >
@@ -110,12 +100,7 @@ export function SectionHeaderSkeleton({
   className?: string
 }) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between px-2 py-1',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between px-2 py-1', className)}>
       <LineSkeleton width={60} height={10} />
       {showActions && (
         <div className="flex gap-1">
@@ -130,18 +115,9 @@ export function SectionHeaderSkeleton({
 /**
  * Channel category header skeleton
  */
-export function ChannelCategoryHeaderSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function ChannelCategoryHeaderSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex items-center gap-1 px-2 py-1 mb-1',
-        className
-      )}
-    >
+    <div className={cn('mb-1 flex items-center gap-1 px-2 py-1', className)}>
       <Skeleton className="h-3 w-3 rounded" />
       <LineSkeleton width={50} height={10} />
     </div>
@@ -153,18 +129,13 @@ export function ChannelCategoryHeaderSkeleton({
  */
 export function UserProfileSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'border-t border-zinc-200 dark:border-zinc-800 p-4',
-        className
-      )}
-    >
+    <div className={cn('border-t border-zinc-200 p-4 dark:border-zinc-800', className)}>
       <div className="flex items-center gap-3">
         {/* Avatar */}
         <CircleSkeleton size={32} />
 
         {/* User info */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <LineSkeleton width={100} height={14} />
           <LineSkeleton width={80} height={10} className="mt-0.5" />
         </div>
@@ -180,23 +151,19 @@ export function UserProfileSkeleton({ className }: { className?: string }) {
  * Minimal sidebar skeleton
  * For collapsed sidebar state
  */
-export function CollapsedSidebarSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function CollapsedSidebarSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex h-full w-16 flex-col items-center border-r bg-zinc-50 dark:bg-zinc-900/50 py-4',
+        'flex h-full w-16 flex-col items-center border-r bg-zinc-50 py-4 dark:bg-zinc-900/50',
         className
       )}
     >
       {/* Logo */}
-      <Skeleton className="h-10 w-10 rounded-lg mb-4" />
+      <Skeleton className="mb-4 h-10 w-10 rounded-lg" />
 
       {/* Channel icons */}
-      <div className="flex-1 flex flex-col gap-2 items-center">
+      <div className="flex flex-1 flex-col items-center gap-2">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="h-8 w-8 rounded" />
         ))}
@@ -215,7 +182,7 @@ export function ServerListSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'flex h-full w-18 flex-col items-center border-r bg-zinc-100 dark:bg-zinc-950 py-3 gap-2',
+        'w-18 flex h-full flex-col items-center gap-2 border-r bg-zinc-100 py-3 dark:bg-zinc-950',
         className
       )}
     >
@@ -223,7 +190,7 @@ export function ServerListSkeleton({ className }: { className?: string }) {
       <Skeleton className="h-12 w-12 rounded-2xl" />
 
       {/* Divider */}
-      <div className="h-px w-8 bg-zinc-300 dark:bg-zinc-700 my-1" />
+      <div className="my-1 h-px w-8 bg-zinc-300 dark:bg-zinc-700" />
 
       {/* Servers */}
       {Array.from({ length: 5 }).map((_, i) => (

@@ -1,24 +1,24 @@
-import type { Metadata, Viewport } from 'next';
-import { Inter } from 'next/font/google';
-import '@/styles/globals.css';
-import { AppProviders } from '@/providers';
-import { WebVitalsWrapper } from '@/components/performance/web-vitals-wrapper';
+import type { Metadata, Viewport } from 'next'
+import { Inter } from 'next/font/google'
+import '@/styles/globals.css'
+import { AppProviders } from '@/providers'
+import { WebVitalsWrapper } from '@/components/performance/web-vitals-wrapper'
 
 // Initialize Sentry client-side monitoring
-import '@/sentry.client.config';
+import '@/sentry.client.config'
 
 const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-inter',
-});
+})
 
 // =============================================================================
 // Metadata
 // =============================================================================
 
-const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'nChat';
-const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_TAGLINE || 'Modern team communication platform';
+const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'nChat'
+const APP_DESCRIPTION = process.env.NEXT_PUBLIC_APP_TAGLINE || 'Modern team communication platform'
 
 export const metadata: Metadata = {
   title: {
@@ -27,14 +27,7 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   applicationName: APP_NAME,
-  keywords: [
-    'chat',
-    'team',
-    'communication',
-    'collaboration',
-    'messaging',
-    'slack alternative',
-  ],
+  keywords: ['chat', 'team', 'communication', 'collaboration', 'messaging', 'slack alternative'],
   authors: [{ name: 'nself', url: 'https://nself.io' }],
   creator: 'nself',
   publisher: 'nself',
@@ -101,7 +94,7 @@ export const metadata: Metadata = {
     'msapplication-TileColor': '#6366f1',
     'msapplication-tap-highlight': 'no',
   },
-};
+}
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -113,17 +106,13 @@ export const viewport: Viewport = {
     { media: '(prefers-color-scheme: light)', color: '#ffffff' },
     { media: '(prefers-color-scheme: dark)', color: '#18181b' },
   ],
-};
+}
 
 // =============================================================================
 // Root Layout
 // =============================================================================
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <head>
@@ -135,21 +124,11 @@ export default function RootLayout({
 
         {/* Preconnect to external services */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
 
         {/* DNS prefetch for API endpoints */}
-        <link
-          rel="dns-prefetch"
-          href={process.env.NEXT_PUBLIC_GRAPHQL_URL || ''}
-        />
-        <link
-          rel="dns-prefetch"
-          href={process.env.NEXT_PUBLIC_AUTH_URL || ''}
-        />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_GRAPHQL_URL || ''} />
+        <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_AUTH_URL || ''} />
 
         {/* iOS splash screens - generated for common device sizes */}
         <link
@@ -209,20 +188,12 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`
-          ${inter.className}
-          min-h-screen
-          bg-background
-          text-foreground
-          antialiased
-          selection:bg-primary/20
-          selection:text-primary
-        `}
+        className={` ${inter.className} selection:bg-primary/20 min-h-screen bg-background text-foreground antialiased selection:text-primary`}
       >
         {/* Skip to main content link for screen readers */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          className="focus:text-primary-foreground sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[9999] focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:shadow-lg focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
         >
           Skip to main content
         </a>
@@ -238,7 +209,11 @@ export default function RootLayout({
         {/* Main app with all providers */}
         <AppProviders>
           {/* Main content area */}
-          <main id="main-content" tabIndex={-1} className="min-h-screen outline-none focus:outline-none">
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className="min-h-screen outline-none focus:outline-none"
+          >
             {children}
           </main>
         </AppProviders>
@@ -253,5 +228,5 @@ export default function RootLayout({
         <div id="context-menu-root" />
       </body>
     </html>
-  );
+  )
 }

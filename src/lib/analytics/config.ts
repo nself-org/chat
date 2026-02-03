@@ -93,10 +93,7 @@ export function isAnalyticsAvailable(): boolean {
 
   // Check if required config is present
   if (platform === 'web') {
-    return !!(
-      process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID &&
-      process.env.NEXT_PUBLIC_SENTRY_DSN
-    )
+    return !!(process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID && process.env.NEXT_PUBLIC_SENTRY_DSN)
   }
 
   return !!process.env.NEXT_PUBLIC_SENTRY_DSN

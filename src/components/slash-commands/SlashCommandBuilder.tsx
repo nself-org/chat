@@ -6,15 +6,7 @@
 
 import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Save,
-  X,
-  ChevronLeft,
-  ChevronRight,
-  AlertCircle,
-  CheckCircle,
-  Loader2,
-} from 'lucide-react'
+import { Save, X, ChevronLeft, ChevronRight, AlertCircle, CheckCircle, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -72,14 +64,8 @@ export function SlashCommandBuilder({
   const [isSaving, setIsSaving] = useState(false)
   const [validation, setValidation] = useState<CommandValidation | null>(null)
 
-  const {
-    editingCommand,
-    startEditing,
-    updateDraft,
-    saveDraft,
-    cancelEditing,
-    commands,
-  } = useSlashCommandsStore()
+  const { editingCommand, startEditing, updateDraft, saveDraft, cancelEditing, commands } =
+    useSlashCommandsStore()
 
   // Initialize editing state
   useEffect(() => {
@@ -155,9 +141,7 @@ export function SlashCommandBuilder({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">
-            {commandId ? 'Edit Command' : 'Create Command'}
-          </h1>
+          <h1 className="text-2xl font-bold">{commandId ? 'Edit Command' : 'Create Command'}</h1>
           <p className="text-sm text-muted-foreground">
             {commandId
               ? `Editing /${editingCommand.trigger || '...'}`
@@ -169,10 +153,7 @@ export function SlashCommandBuilder({
             <X className="mr-2 h-4 w-4" />
             Cancel
           </Button>
-          <Button
-            onClick={handleSave}
-            disabled={!validation?.isValid || isSaving}
-          >
+          <Button onClick={handleSave} disabled={!validation?.isValid || isSaving}>
             {isSaving ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
             ) : (
@@ -259,9 +240,7 @@ export function SlashCommandBuilder({
                       <CommandTrigger
                         value={editingCommand.trigger}
                         aliases={editingCommand.aliases}
-                        onChange={(trigger, aliases) =>
-                          updateDraft({ trigger, aliases })
-                        }
+                        onChange={(trigger, aliases) => updateDraft({ trigger, aliases })}
                       />
                       <CommandInfo
                         name={editingCommand.name}
@@ -287,20 +266,22 @@ export function SlashCommandBuilder({
                       <CommandAction
                         actionType={editingCommand.actionType}
                         action={editingCommand.action}
-                        onChange={(actionType, action) =>
-                          updateDraft({ actionType, action })
-                        }
+                        onChange={(actionType, action) => updateDraft({ actionType, action })}
                       />
                       {editingCommand.actionType === 'webhook' && (
                         <CommandWebhook
                           webhook={editingCommand.webhook}
-                          onChange={(webhook) => updateDraft({ webhook: webhook as typeof editingCommand.webhook })}
+                          onChange={(webhook) =>
+                            updateDraft({ webhook: webhook as typeof editingCommand.webhook })
+                          }
                         />
                       )}
                       {editingCommand.actionType === 'workflow' && (
                         <CommandWorkflow
                           workflow={editingCommand.workflow}
-                          onChange={(workflow) => updateDraft({ workflow: workflow as typeof editingCommand.workflow })}
+                          onChange={(workflow) =>
+                            updateDraft({ workflow: workflow as typeof editingCommand.workflow })
+                          }
                         />
                       )}
                     </div>
@@ -309,31 +290,37 @@ export function SlashCommandBuilder({
                   {activeTab === 'permissions' && (
                     <CommandPermissions
                       permissions={editingCommand.permissions}
-                      onChange={(permissions) => updateDraft({ permissions: permissions as typeof editingCommand.permissions })}
+                      onChange={(permissions) =>
+                        updateDraft({
+                          permissions: permissions as typeof editingCommand.permissions,
+                        })
+                      }
                     />
                   )}
 
                   {activeTab === 'channels' && (
                     <CommandChannels
                       channels={editingCommand.channels}
-                      onChange={(channels) => updateDraft({ channels: channels as typeof editingCommand.channels })}
+                      onChange={(channels) =>
+                        updateDraft({ channels: channels as typeof editingCommand.channels })
+                      }
                     />
                   )}
 
                   {activeTab === 'response' && (
                     <CommandResponse
                       responseConfig={editingCommand.responseConfig}
-                      onChange={(responseConfig) => updateDraft({ responseConfig: responseConfig as typeof editingCommand.responseConfig })}
+                      onChange={(responseConfig) =>
+                        updateDraft({
+                          responseConfig: responseConfig as typeof editingCommand.responseConfig,
+                        })
+                      }
                     />
                   )}
 
-                  {activeTab === 'preview' && (
-                    <CommandPreview command={editingCommand} />
-                  )}
+                  {activeTab === 'preview' && <CommandPreview command={editingCommand} />}
 
-                  {activeTab === 'test' && (
-                    <CommandTesting command={editingCommand} />
-                  )}
+                  {activeTab === 'test' && <CommandTesting command={editingCommand} />}
                 </motion.div>
               </AnimatePresence>
 
@@ -354,9 +341,7 @@ export function SlashCommandBuilder({
                       onClick={() => setActiveTab(tab.id)}
                       className={cn(
                         'h-2 w-2 rounded-full transition-colors',
-                        i === currentIndex
-                          ? 'bg-primary'
-                          : 'bg-muted hover:bg-muted-foreground/50'
+                        i === currentIndex ? 'bg-primary' : 'hover:bg-muted-foreground/50 bg-muted'
                       )}
                     />
                   ))}

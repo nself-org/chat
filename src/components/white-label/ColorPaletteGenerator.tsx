@@ -43,22 +43,29 @@ export function ColorPaletteGenerator({
     onPaletteGenerated(newPalette, mode)
   }, [primaryColor, mode, onPaletteGenerated])
 
-  const handleHarmonyChange = useCallback((type: HarmonyType) => {
-    setHarmonyType(type)
-    if (type === 'complementary') {
-      const comp = getComplementary(primaryColor)
-      onPrimaryChange(comp)
-    } else if (type === 'analogous') {
-      const [analog1] = getAnalogous(primaryColor)
-      onPrimaryChange(analog1)
-    } else if (type === 'triadic') {
-      const [triad1] = getTriadic(primaryColor)
-      onPrimaryChange(triad1)
-    }
-  }, [primaryColor, onPrimaryChange])
+  const handleHarmonyChange = useCallback(
+    (type: HarmonyType) => {
+      setHarmonyType(type)
+      if (type === 'complementary') {
+        const comp = getComplementary(primaryColor)
+        onPrimaryChange(comp)
+      } else if (type === 'analogous') {
+        const [analog1] = getAnalogous(primaryColor)
+        onPrimaryChange(analog1)
+      } else if (type === 'triadic') {
+        const [triad1] = getTriadic(primaryColor)
+        onPrimaryChange(triad1)
+      }
+    },
+    [primaryColor, onPrimaryChange]
+  )
 
   const handleRandomPrimary = useCallback(() => {
-    const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')
+    const randomHex =
+      '#' +
+      Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, '0')
     onPrimaryChange(randomHex)
     setHarmonyType('custom')
   }, [onPrimaryChange])
@@ -81,7 +88,12 @@ export function ColorPaletteGenerator({
   // Key colors to display prominently
   const keyColors = [
     { key: 'primary', label: 'Primary', value: palette.primary, fg: palette.primaryForeground },
-    { key: 'secondary', label: 'Secondary', value: palette.secondary, fg: palette.secondaryForeground },
+    {
+      key: 'secondary',
+      label: 'Secondary',
+      value: palette.secondary,
+      fg: palette.secondaryForeground,
+    },
     { key: 'accent', label: 'Accent', value: palette.accent, fg: palette.accentForeground },
     { key: 'background', label: 'Background', value: palette.background, fg: palette.foreground },
   ]
@@ -104,13 +116,13 @@ export function ColorPaletteGenerator({
         </div>
 
         {/* Mode toggle */}
-        <div className="flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-1">
+        <div className="flex items-center gap-1 rounded-lg bg-zinc-100 p-1 dark:bg-zinc-800">
           <button
             onClick={() => setMode('light')}
             className={cn(
-              'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
+              'flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors',
               mode === 'light'
-                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm'
+                ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white'
                 : 'text-zinc-600 dark:text-zinc-400'
             )}
           >
@@ -120,9 +132,9 @@ export function ColorPaletteGenerator({
           <button
             onClick={() => setMode('dark')}
             className={cn(
-              'flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors',
+              'flex items-center gap-1 rounded px-2 py-1 text-xs transition-colors',
               mode === 'dark'
-                ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm'
+                ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white'
                 : 'text-zinc-600 dark:text-zinc-400'
             )}
           >
@@ -138,13 +150,8 @@ export function ColorPaletteGenerator({
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Primary Color
           </label>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleRandomPrimary}
-          >
-            <Shuffle className="h-3 w-3 mr-1" />
+          <Button type="button" variant="outline" size="sm" onClick={handleRandomPrimary}>
+            <Shuffle className="mr-1 h-3 w-3" />
             Random
           </Button>
         </div>
@@ -167,10 +174,10 @@ export function ColorPaletteGenerator({
               key={type}
               onClick={() => handleHarmonyChange(type)}
               className={cn(
-                'px-3 py-1 text-xs rounded-full transition-colors capitalize',
+                'rounded-full px-3 py-1 text-xs capitalize transition-colors',
                 harmonyType === type
-                  ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300'
-                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                  ? 'dark:bg-sky-900/30 bg-sky-100 text-sky-700 dark:text-sky-300'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
               )}
             >
               {type}
@@ -185,25 +192,22 @@ export function ColorPaletteGenerator({
           <button
             key={key}
             onClick={() => handleCopyColor(key, value)}
-            className="group relative overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700 transition-all hover:shadow-md"
+            className="group relative overflow-hidden rounded-xl border border-zinc-200 transition-all hover:shadow-md dark:border-zinc-700"
           >
             <div
-              className="h-16 flex items-center justify-center"
+              className="flex h-16 items-center justify-center"
               style={{ backgroundColor: value }}
             >
-              <span
-                className="text-xs font-medium"
-                style={{ color: fg }}
-              >
+              <span className="text-xs font-medium" style={{ color: fg }}>
                 {label}
               </span>
             </div>
-            <div className="bg-white dark:bg-zinc-800 px-3 py-2 flex items-center justify-between">
-              <span className="text-xs font-mono text-zinc-500">{value}</span>
+            <div className="flex items-center justify-between bg-white px-3 py-2 dark:bg-zinc-800">
+              <span className="font-mono text-xs text-zinc-500">{value}</span>
               {copied === key ? (
                 <Check className="h-3 w-3 text-green-500" />
               ) : (
-                <Copy className="h-3 w-3 text-zinc-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Copy className="h-3 w-3 text-zinc-400 opacity-0 transition-opacity group-hover:opacity-100" />
               )}
             </div>
           </button>
@@ -220,14 +224,11 @@ export function ColorPaletteGenerator({
             <button
               key={key}
               onClick={() => handleCopyColor(key, value)}
-              className="group flex-1 overflow-hidden rounded-lg border border-zinc-200 dark:border-zinc-700 transition-all hover:shadow-md"
+              className="group flex-1 overflow-hidden rounded-lg border border-zinc-200 transition-all hover:shadow-md dark:border-zinc-700"
               title={`${label}: ${value}`}
             >
-              <div
-                className="h-8"
-                style={{ backgroundColor: value }}
-              />
-              <div className="bg-white dark:bg-zinc-800 px-2 py-1 text-center">
+              <div className="h-8" style={{ backgroundColor: value }} />
+              <div className="bg-white px-2 py-1 text-center dark:bg-zinc-800">
                 <span className="text-[10px] text-zinc-500">{label}</span>
               </div>
             </button>
@@ -237,26 +238,24 @@ export function ColorPaletteGenerator({
 
       {/* Preview card */}
       <div className="space-y-2">
-        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Preview
-        </label>
+        <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Preview</label>
         <div
           className="rounded-xl p-4 transition-colors"
           style={{ backgroundColor: palette.background, color: palette.foreground }}
         >
           <div
-            className="rounded-lg p-4 mb-3"
+            className="mb-3 rounded-lg p-4"
             style={{ backgroundColor: palette.card, color: palette.cardForeground }}
           >
-            <h4 className="font-semibold mb-2" style={{ color: palette.foreground }}>
+            <h4 className="mb-2 font-semibold" style={{ color: palette.foreground }}>
               Sample Card
             </h4>
-            <p className="text-sm mb-3" style={{ color: palette.mutedForeground }}>
+            <p className="mb-3 text-sm" style={{ color: palette.mutedForeground }}>
               This is how your content will look with the generated palette.
             </p>
             <div className="flex gap-2">
               <button
-                className="px-3 py-1.5 text-sm font-medium rounded-lg"
+                className="rounded-lg px-3 py-1.5 text-sm font-medium"
                 style={{
                   backgroundColor: palette.primary,
                   color: palette.primaryForeground,
@@ -265,7 +264,7 @@ export function ColorPaletteGenerator({
                 Primary
               </button>
               <button
-                className="px-3 py-1.5 text-sm font-medium rounded-lg"
+                className="rounded-lg px-3 py-1.5 text-sm font-medium"
                 style={{
                   backgroundColor: palette.secondary,
                   color: palette.secondaryForeground,
@@ -276,7 +275,7 @@ export function ColorPaletteGenerator({
             </div>
           </div>
           <div
-            className="rounded-lg p-3 border"
+            className="rounded-lg border p-3"
             style={{ borderColor: palette.border, backgroundColor: palette.muted }}
           >
             <p className="text-xs" style={{ color: palette.mutedForeground }}>
@@ -287,16 +286,11 @@ export function ColorPaletteGenerator({
       </div>
 
       {/* Export button */}
-      <Button
-        type="button"
-        variant="outline"
-        onClick={handleCopyPalette}
-        className="w-full"
-      >
+      <Button type="button" variant="outline" onClick={handleCopyPalette} className="w-full">
         {copied === 'palette' ? (
-          <Check className="h-4 w-4 mr-2 text-green-500" />
+          <Check className="mr-2 h-4 w-4 text-green-500" />
         ) : (
-          <Copy className="h-4 w-4 mr-2" />
+          <Copy className="mr-2 h-4 w-4" />
         )}
         {copied === 'palette' ? 'Copied!' : 'Copy CSS Variables'}
       </Button>

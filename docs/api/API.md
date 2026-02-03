@@ -63,6 +63,7 @@ curl -X POST http://localhost:3000/api/auth/signin \
 ```
 
 **Response**:
+
 ```json
 {
   "user": {
@@ -113,13 +114,13 @@ curl -X GET http://localhost:3000/api/config?history=true \
 
 ### Role-Based Access Control
 
-| Role | Permissions |
-|------|-------------|
-| **owner** | Full system access, can manage all users and settings |
-| **admin** | Can manage users, channels, and configuration |
-| **moderator** | Can moderate content, manage channels |
-| **member** | Standard user access |
-| **guest** | Limited read-only access |
+| Role          | Permissions                                           |
+| ------------- | ----------------------------------------------------- |
+| **owner**     | Full system access, can manage all users and settings |
+| **admin**     | Can manage users, channels, and configuration         |
+| **moderator** | Can moderate content, manage channels                 |
+| **member**    | Standard user access                                  |
+| **guest**     | Limited read-only access                              |
 
 Admin-only endpoints return `403 Forbidden` for non-admin users.
 
@@ -143,6 +144,7 @@ curl -X POST <endpoint> \
 All API responses follow a consistent structure:
 
 **Success Response**:
+
 ```json
 {
   "success": true,
@@ -153,6 +155,7 @@ All API responses follow a consistent structure:
 ```
 
 **Error Response**:
+
 ```json
 {
   "success": false,
@@ -167,16 +170,19 @@ All API responses follow a consistent structure:
 Endpoints that return lists support pagination:
 
 **Parameters**:
+
 - `page` - Page number (1-indexed)
 - `limit` - Items per page (default: 20, max: 100)
 - `offset` - Number of items to skip (alternative to page)
 
 **Example**:
+
 ```bash
 curl "http://localhost:3000/api/search?q=hello&limit=20&offset=0"
 ```
 
 **Response includes pagination metadata**:
+
 ```json
 {
   "items": [...],
@@ -214,33 +220,33 @@ POST /api/search
 
 ### HTTP Status Codes
 
-| Code | Meaning | Common Causes |
-|------|---------|---------------|
-| **200** | OK | Request successful |
-| **201** | Created | Resource created successfully |
-| **400** | Bad Request | Invalid input, validation failed |
-| **401** | Unauthorized | Missing or invalid authentication token |
-| **403** | Forbidden | Insufficient permissions |
-| **404** | Not Found | Resource doesn't exist |
-| **429** | Too Many Requests | Rate limit exceeded |
-| **500** | Internal Server Error | Server-side error |
-| **503** | Service Unavailable | Service temporarily unavailable |
+| Code    | Meaning               | Common Causes                           |
+| ------- | --------------------- | --------------------------------------- |
+| **200** | OK                    | Request successful                      |
+| **201** | Created               | Resource created successfully           |
+| **400** | Bad Request           | Invalid input, validation failed        |
+| **401** | Unauthorized          | Missing or invalid authentication token |
+| **403** | Forbidden             | Insufficient permissions                |
+| **404** | Not Found             | Resource doesn't exist                  |
+| **429** | Too Many Requests     | Rate limit exceeded                     |
+| **500** | Internal Server Error | Server-side error                       |
+| **503** | Service Unavailable   | Service temporarily unavailable         |
 
 ### Error Codes
 
 Common error codes returned in the `code` field:
 
-| Code | Description |
-|------|-------------|
-| `BAD_REQUEST` | Invalid request parameters |
-| `VALIDATION_ERROR` | Input validation failed |
-| `UNAUTHORIZED` | Authentication required |
-| `INVALID_TOKEN` | JWT token is invalid or expired |
-| `FORBIDDEN` | Insufficient permissions |
-| `NOT_FOUND` | Resource not found |
-| `RATE_LIMIT_EXCEEDED` | Too many requests |
-| `FILE_TOO_LARGE` | Uploaded file exceeds size limit |
-| `INVALID_FILE_TYPE` | File type not allowed |
+| Code                  | Description                      |
+| --------------------- | -------------------------------- |
+| `BAD_REQUEST`         | Invalid request parameters       |
+| `VALIDATION_ERROR`    | Input validation failed          |
+| `UNAUTHORIZED`        | Authentication required          |
+| `INVALID_TOKEN`       | JWT token is invalid or expired  |
+| `FORBIDDEN`           | Insufficient permissions         |
+| `NOT_FOUND`           | Resource not found               |
+| `RATE_LIMIT_EXCEEDED` | Too many requests                |
+| `FILE_TOO_LARGE`      | Uploaded file exceeds size limit |
+| `INVALID_FILE_TYPE`   | File type not allowed            |
 
 ### Error Response Example
 
@@ -259,15 +265,16 @@ Common error codes returned in the `code` field:
 ### Handling Errors in Code
 
 **JavaScript/TypeScript**:
+
 ```typescript
 try {
   const response = await fetch('/api/endpoint', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   })
 
   const result = await response.json()
@@ -289,11 +296,11 @@ try {
 
 ### Limits by Endpoint
 
-| Endpoint | Limit | Window |
-|----------|-------|--------|
-| Most endpoints | 60 requests | 60 seconds |
-| `/api/upload` | 30 requests | 60 seconds |
-| `/api/search` | 60 requests | 60 seconds |
+| Endpoint         | Limit                   | Window     |
+| ---------------- | ----------------------- | ---------- |
+| Most endpoints   | 60 requests             | 60 seconds |
+| `/api/upload`    | 30 requests             | 60 seconds |
+| `/api/search`    | 60 requests             | 60 seconds |
 | `/api/webhook/*` | 30 requests per webhook | 60 seconds |
 
 ### Rate Limit Headers
@@ -319,12 +326,14 @@ When you exceed the rate limit, the API returns `429 Too Many Requests`:
 ```
 
 **Best practices**:
+
 - Check `X-RateLimit-Remaining` header
 - Implement exponential backoff on 429 responses
 - Cache responses when possible
 - Use webhooks instead of polling
 
 **Retry Logic Example**:
+
 ```typescript
 async function apiRequestWithRetry(url: string, options: RequestInit, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
@@ -336,7 +345,7 @@ async function apiRequestWithRetry(url: string, options: RequestInit, maxRetries
 
     // Exponential backoff: 1s, 2s, 4s
     const delay = Math.pow(2, i) * 1000
-    await new Promise(resolve => setTimeout(resolve, delay))
+    await new Promise((resolve) => setTimeout(resolve, delay))
   }
 
   throw new Error('Max retries exceeded')
@@ -349,68 +358,68 @@ async function apiRequestWithRetry(url: string, options: RequestInit, maxRetries
 
 ### Health & Monitoring
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/health` | GET | Basic health check | No |
-| `/api/ready` | GET, HEAD | Readiness probe | No |
-| `/api/metrics` | GET | Prometheus metrics | No |
+| Endpoint       | Method    | Description        | Auth |
+| -------------- | --------- | ------------------ | ---- |
+| `/api/health`  | GET       | Basic health check | No   |
+| `/api/ready`   | GET, HEAD | Readiness probe    | No   |
+| `/api/metrics` | GET       | Prometheus metrics | No   |
 
 ### Configuration
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/config` | GET | Get app configuration | No (cached) |
-| `/api/config` | POST | Update configuration (full) | Admin |
-| `/api/config` | PATCH | Update configuration (partial) | Admin |
+| Endpoint      | Method | Description                    | Auth        |
+| ------------- | ------ | ------------------------------ | ----------- |
+| `/api/config` | GET    | Get app configuration          | No (cached) |
+| `/api/config` | POST   | Update configuration (full)    | Admin       |
+| `/api/config` | PATCH  | Update configuration (partial) | Admin       |
 
 ### Authentication
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/auth/signin` | POST | Sign in with email/password | No |
-| `/api/auth/signup` | POST | Create new account | No |
-| `/api/auth/verify-password` | POST | Verify password | Yes |
-| `/api/auth/change-password` | POST | Change password | Yes |
+| Endpoint                    | Method | Description                 | Auth |
+| --------------------------- | ------ | --------------------------- | ---- |
+| `/api/auth/signin`          | POST   | Sign in with email/password | No   |
+| `/api/auth/signup`          | POST   | Create new account          | No   |
+| `/api/auth/verify-password` | POST   | Verify password             | Yes  |
+| `/api/auth/change-password` | POST   | Change password             | Yes  |
 
 ### File Upload
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/upload` | GET | Get upload service status | No |
-| `/api/upload` | POST | Initialize file upload | Optional |
-| `/api/upload/complete` | POST | Mark upload as complete | Optional |
+| Endpoint               | Method | Description               | Auth     |
+| ---------------------- | ------ | ------------------------- | -------- |
+| `/api/upload`          | GET    | Get upload service status | No       |
+| `/api/upload`          | POST   | Initialize file upload    | Optional |
+| `/api/upload/complete` | POST   | Mark upload as complete   | Optional |
 
 ### Search
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/search` | GET | Quick search | Optional |
-| `/api/search` | POST | Advanced search with filters | Optional |
+| Endpoint      | Method | Description                  | Auth     |
+| ------------- | ------ | ---------------------------- | -------- |
+| `/api/search` | GET    | Quick search                 | Optional |
+| `/api/search` | POST   | Advanced search with filters | Optional |
 
 ### Webhooks
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/webhook/{id}` | GET | Get webhook info | Token |
-| `/api/webhook/{id}` | POST | Send webhook message | Token |
+| Endpoint            | Method | Description          | Auth  |
+| ------------------- | ------ | -------------------- | ----- |
+| `/api/webhook/{id}` | GET    | Get webhook info     | Token |
+| `/api/webhook/{id}` | POST   | Send webhook message | Token |
 
 ### Audit Logs
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/audit` | GET | Query audit logs | Yes |
-| `/api/audit` | POST | Create audit log entry | Yes |
-| `/api/audit` | DELETE | Delete audit logs | Admin |
-| `/api/audit/export` | GET | Export audit logs | Admin |
+| Endpoint            | Method | Description            | Auth  |
+| ------------------- | ------ | ---------------------- | ----- |
+| `/api/audit`        | GET    | Query audit logs       | Yes   |
+| `/api/audit`        | POST   | Create audit log entry | Yes   |
+| `/api/audit`        | DELETE | Delete audit logs      | Admin |
+| `/api/audit/export` | GET    | Export audit logs      | Admin |
 
 ### Other
 
-| Endpoint | Method | Description | Auth |
-|----------|--------|-------------|------|
-| `/api/translate` | POST | Translate text | No |
-| `/api/link-preview` | GET | Get link metadata | No |
-| `/api/gif` | GET | Search GIFs | No |
-| `/api/save-svg` | POST | Save SVG logo | No |
+| Endpoint            | Method | Description       | Auth |
+| ------------------- | ------ | ----------------- | ---- |
+| `/api/translate`    | POST   | Translate text    | No   |
+| `/api/link-preview` | GET    | Get link metadata | No   |
+| `/api/gif`          | GET    | Search GIFs       | No   |
+| `/api/save-svg`     | POST   | Save SVG logo     | No   |
 
 ---
 
@@ -436,9 +445,9 @@ async function updateConfig(updates: Partial<AppConfig>, token: string) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(updates)
+    body: JSON.stringify(updates),
   })
 
   if (!response.ok) {
@@ -459,13 +468,13 @@ async function uploadFile(file: File, token: string) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify({
       filename: file.name,
       contentType: file.type,
-      size: file.size
-    })
+      size: file.size,
+    }),
   })
 
   const { fileId, uploadUrl, method, headers } = await initResponse.json()
@@ -474,7 +483,7 @@ async function uploadFile(file: File, token: string) {
   const uploadResponse = await fetch(uploadUrl, {
     method,
     headers,
-    body: file
+    body: file,
   })
 
   if (!uploadResponse.ok) {
@@ -496,8 +505,8 @@ async function searchMessages(query: string, channelId: string) {
       query,
       types: ['messages'],
       channelIds: [channelId],
-      limit: 50
-    })
+      limit: 50,
+    }),
   })
 
   const data = await response.json()

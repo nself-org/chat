@@ -5,7 +5,7 @@
 
 import { bot, command } from '@/lib/bots'
 import type { CommandContext, MessageContext, BotApi, BotResponse } from '@/lib/bots'
-import {response, embed, error, success} from '@/lib/bots'
+import { response, embed, error, success } from '@/lib/bots'
 import { createLogger } from '@/lib/logger'
 import {
   addFAQ,
@@ -62,7 +62,10 @@ const faqCommand = async (ctx: CommandContext, api: BotApi): Promise<BotResponse
     .footer(`FAQ ID: ${faq.id} | Category: ${faq.category || 'General'}`)
 
   if (faq.relatedLinks && faq.relatedLinks.length > 0) {
-    embedBuilder.field('Related Links', faq.relatedLinks.map(l => `• [${l.title}](${l.url})`).join('\n'))
+    embedBuilder.field(
+      'Related Links',
+      faq.relatedLinks.map((l) => `• [${l.title}](${l.url})`).join('\n')
+    )
   }
 
   if (results.length > 1) {
@@ -70,7 +73,7 @@ const faqCommand = async (ctx: CommandContext, api: BotApi): Promise<BotResponse
       'Related Questions',
       results
         .slice(1, 4)
-        .map(f => `• ${f.question}`)
+        .map((f) => `• ${f.question}`)
         .join('\n'),
       false
     )
@@ -109,10 +112,7 @@ const addFAQCommand = async (ctx: CommandContext, api: BotApi): Promise<BotRespo
     logger.error('Failed to save FAQs', error as Error)
   }
 
-  return success(
-    'FAQ added!',
-    `Question: "${question}"\nCategory: ${category}\nFAQ ID: \`${faq.id}\``
-  )
+  return success('FAQ added!', `Question: "${question}"\nCategory: ${category}\nFAQ ID: ${faq.id}`)
 }
 
 /**
@@ -160,7 +160,10 @@ const editFAQCommand = async (ctx: CommandContext, api: BotApi): Promise<BotResp
   if (category) updates.category = category
 
   if (Object.keys(updates).length === 0) {
-    return error('No updates provided', 'Specify at least one field to update (question, answer, or category)')
+    return error(
+      'No updates provided',
+      'Specify at least one field to update (question, answer, or category)'
+    )
   }
 
   const updated = updateFAQ(faqId, updates)
@@ -216,7 +219,7 @@ const listFAQsCommand = async (ctx: CommandContext, api: BotApi): Promise<BotRes
   for (const [cat, catFAQs] of Object.entries(grouped)) {
     const questions = catFAQs
       .slice(0, 5)
-      .map(f => `• ${f.question}`)
+      .map((f) => `• ${f.question}`)
       .join('\n')
 
     embedBuilder.field(
@@ -277,90 +280,95 @@ const handleMessage = async (ctx: MessageContext, api: BotApi): Promise<BotRespo
  * Create and configure the FAQ Bot
  */
 export function createFAQBot() {
-  return bot(manifest.id)
-    .name(manifest.name)
-    .description(manifest.description)
-    .version(manifest.version)
-    .author(manifest.author)
-    .icon(manifest.icon)
-    .permissions('read_messages', 'send_messages')
+  return (
+    bot(manifest.id)
+      .name(manifest.name)
+      .description(manifest.description)
+      .version(manifest.version)
+      .author(manifest.author)
+      .icon(manifest.icon)
+      .permissions('read_messages', 'send_messages')
 
-    // Register commands
-    .command(
-      command('faq')
-        .description('Search the FAQ knowledge base')
-        .aliases('ask', 'help')
-        .stringArg('query', 'Your question', true)
-        .example('/faq how to reset password', '/faq what is the refund policy'),
-      faqCommand
-    )
-    .command(
-      command('addfaq')
-        .description('Add a new FAQ')
-        .stringArg('question', 'The question', true)
-        .stringArg('answer', 'The answer', true)
-        .stringArg('category', 'Category (optional)')
-        .example('/addfaq "How to reset password?" "Go to Settings > Reset"')
-        .cooldown(10),
-      addFAQCommand
-    )
-    .command(
-      command('removefaq')
-        .description('Remove an FAQ')
-        .stringArg('faq_id', 'FAQ ID to remove', true)
-        .example('/removefaq faq_abc123'),
-      removeFAQCommand
-    )
-    .command(
-      command('editfaq')
-        .description('Edit an existing FAQ')
-        .stringArg('faq_id', 'FAQ ID', true)
-        .stringArg('question', 'New question (optional)')
-        .stringArg('answer', 'New answer (optional)')
-        .stringArg('category', 'New category (optional)')
-        .example('/editfaq faq_abc123 --answer "Updated answer"'),
-      editFAQCommand
-    )
-    .command(
-      command('listfaqs')
-        .description('List all FAQs')
-        .aliases('faqs')
-        .stringArg('category', 'Filter by category (optional)')
-        .example('/listfaqs', '/listfaqs General'),
-      listFAQsCommand
-    )
+      // Register commands
+      .command(
+        command('faq')
+          .description('Search the FAQ knowledge base')
+          .aliases('ask', 'help')
+          .stringArg('query', 'Your question', true)
+          .example('/faq how to reset password', '/faq what is the refund policy'),
+        faqCommand
+      )
+      .command(
+        command('addfaq')
+          .description('Add a new FAQ')
+          .stringArg('question', 'The question', true)
+          .stringArg('answer', 'The answer', true)
+          .stringArg('category', 'Category (optional)')
+          .example('/addfaq "How to reset password?" "Go to Settings > Reset"')
+          .cooldown(10),
+        addFAQCommand
+      )
+      .command(
+        command('removefaq')
+          .description('Remove an FAQ')
+          .stringArg('faq_id', 'FAQ ID to remove', true)
+          .example('/removefaq faq_abc123'),
+        removeFAQCommand
+      )
+      .command(
+        command('editfaq')
+          .description('Edit an existing FAQ')
+          .stringArg('faq_id', 'FAQ ID', true)
+          .stringArg('question', 'New question (optional)')
+          .stringArg('answer', 'New answer (optional)')
+          .stringArg('category', 'New category (optional)')
+          .example('/editfaq faq_abc123 --answer "Updated answer"'),
+        editFAQCommand
+      )
+      .command(
+        command('listfaqs')
+          .description('List all FAQs')
+          .aliases('faqs')
+          .stringArg('category', 'Filter by category (optional)')
+          .example('/listfaqs', '/listfaqs General'),
+        listFAQsCommand
+      )
 
-    // Auto-answer questions
-    .onMessage(handleMessage)
+      // Auto-answer questions
+      .onMessage(handleMessage)
 
-    // Initialization
-    .onInit(async (instance, api) => {
-      // Load saved FAQs
-      try {
-        const savedFAQs = await api.getStorage<FAQ[]>('faqs')
-        if (savedFAQs && savedFAQs.length > 0) {
-          importFAQs(savedFAQs)
-          logger.info('Loaded FAQs from storage', { count: savedFAQs.length })
-        }
-      } catch (error) {
-        logger.error('Failed to load FAQs', error as Error)
-      }
-
-      // Periodic save
-      const saveInterval = setInterval(async () => {
+      // Initialization
+      .onInit(async (instance, api) => {
+        // Load saved FAQs
         try {
-          await api.setStorage('faqs', exportFAQs())
+          const savedFAQs = await api.getStorage<FAQ[]>('faqs')
+          if (savedFAQs && savedFAQs.length > 0) {
+            importFAQs(savedFAQs)
+            logger.info('Loaded FAQs from storage', { count: savedFAQs.length })
+          }
         } catch (error) {
-          logger.error('Failed to save FAQs', error as Error)
+          logger.error('Failed to load FAQs', error as Error)
         }
-      }, 5 * 60 * 1000) // Every 5 minutes
 
-      instance.registerCleanup(() => {
-        clearInterval(saveInterval)
+        // Periodic save
+        const saveInterval = setInterval(
+          async () => {
+            try {
+              await api.setStorage('faqs', exportFAQs())
+            } catch (error) {
+              logger.error('Failed to save FAQs', error as Error)
+            }
+          },
+          5 * 60 * 1000
+        ) // Every 5 minutes
+
+        instance.registerCleanup(() => {
+          clearInterval(saveInterval)
+        })
       })
-    })
 
-    .build()
+      .build()
+  )
 }
 
 // ============================================================================
@@ -402,7 +410,7 @@ function extractKeywords(text: string): string[] {
     .toLowerCase()
     .replace(/[^\w\s]/g, '')
     .split(/\s+/)
-    .filter(word => word.length > 2 && !stopWords.has(word))
+    .filter((word) => word.length > 2 && !stopWords.has(word))
 }
 
 // ============================================================================

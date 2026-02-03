@@ -8,7 +8,7 @@ Add the offline indicator to your main layout:
 
 ```tsx
 // src/app/layout.tsx or src/components/layout/main-layout.tsx
-import { OfflineIndicator } from '@/components/ui/offline-indicator';
+import { OfflineIndicator } from '@/components/ui/offline-indicator'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,7 +16,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <OfflineIndicator position="top" detailed={true} />
       {children}
     </div>
-  );
+  )
 }
 ```
 
@@ -26,10 +26,10 @@ Initialize the sync manager when the app starts:
 
 ```tsx
 // src/app/layout.tsx or src/contexts/app-provider.tsx
-'use client';
+'use client'
 
-import { useEffect } from 'react';
-import { getSyncManager } from '@/lib/offline/sync-manager';
+import { useEffect } from 'react'
+import { getSyncManager } from '@/lib/offline/sync-manager'
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
@@ -38,16 +38,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       autoSync: true,
       syncInterval: 30000, // 30 seconds
       syncOnReconnect: true,
-    });
+    })
 
-    syncManager.initialize().catch(console.error);
+    syncManager.initialize().catch(console.error)
 
     return () => {
-      syncManager.shutdown();
-    };
-  }, []);
+      syncManager.shutdown()
+    }
+  }, [])
 
-  return <>{children}</>;
+  return <>{children}</>
 }
 ```
 
@@ -57,18 +57,18 @@ Save messages to cache when received:
 
 ```tsx
 // src/hooks/use-messages.ts
-import { messageStorage } from '@/lib/offline/offline-storage';
-import { useEffect } from 'react';
+import { messageStorage } from '@/lib/offline/offline-storage'
+import { useEffect } from 'react'
 
 export function useMessages(channelId: string) {
   const { data: messages } = useQuery(GET_MESSAGES, {
     variables: { channelId },
-  });
+  })
 
   // Cache messages for offline access
   useEffect(() => {
     if (messages) {
-      const cached = messages.map(msg => ({
+      const cached = messages.map((msg) => ({
         id: msg.id,
         channelId: msg.channel_id,
         content: msg.content,
@@ -77,13 +77,13 @@ export function useMessages(channelId: string) {
         createdAt: new Date(msg.created_at),
         reactions: msg.reactions || [],
         attachments: msg.attachments || [],
-      }));
+      }))
 
-      messageStorage.saveMany(cached).catch(console.error);
+      messageStorage.saveMany(cached).catch(console.error)
     }
-  }, [messages]);
+  }, [messages])
 
-  return { messages };
+  return { messages }
 }
 ```
 
@@ -93,18 +93,18 @@ Queue messages sent while offline:
 
 ```tsx
 // src/components/chat/message-input.tsx
-import { queueStorage } from '@/lib/offline/offline-storage';
-import { useOfflineStatus } from '@/hooks/use-offline';
-import { v4 as uuid } from 'uuid';
+import { queueStorage } from '@/lib/offline/offline-storage'
+import { useOfflineStatus } from '@/hooks/use-offline'
+import { v4 as uuid } from 'uuid'
 
 export function MessageInput({ channelId }: { channelId: string }) {
-  const isOnline = useOfflineStatus();
-  const [sendMessage] = useMutation(SEND_MESSAGE);
+  const isOnline = useOfflineStatus()
+  const [sendMessage] = useMutation(SEND_MESSAGE)
 
   const handleSend = async (content: string) => {
     if (isOnline) {
       // Send normally
-      await sendMessage({ variables: { channelId, content } });
+      await sendMessage({ variables: { channelId, content } })
     } else {
       // Queue for later
       await queueStorage.add({
@@ -122,28 +122,29 @@ export function MessageInput({ channelId }: { channelId: string }) {
         retryCount: 0,
         maxRetries: 5,
         lastError: null,
-      });
+      })
     }
-  };
+  }
 
   return (
     <input
       type="text"
       onKeyDown={(e) => {
         if (e.key === 'Enter') {
-          handleSend(e.currentTarget.value);
-          e.currentTarget.value = '';
+          handleSend(e.currentTarget.value)
+          e.currentTarget.value = ''
         }
       }}
       placeholder={isOnline ? 'Type a message...' : 'Offline - message will send later'}
     />
-  );
+  )
 }
 ```
 
 ## That's It!
 
 You now have:
+
 - ✅ Offline indicator showing connection status
 - ✅ Automatic message caching
 - ✅ Offline message queueing
@@ -164,41 +165,37 @@ You now have:
 ### Add Sync Button
 
 ```tsx
-import { useSync } from '@/hooks/use-sync';
+import { useSync } from '@/hooks/use-sync'
 
 function SyncButton() {
-  const { isSyncing, syncNow } = useSync();
+  const { isSyncing, syncNow } = useSync()
 
   return (
     <button onClick={syncNow} disabled={isSyncing}>
       {isSyncing ? 'Syncing...' : 'Sync Now'}
     </button>
-  );
+  )
 }
 ```
 
 ### Show Pending Count
 
 ```tsx
-import { usePendingCount } from '@/hooks/use-offline';
+import { usePendingCount } from '@/hooks/use-offline'
 
 function PendingBadge() {
-  const count = usePendingCount();
+  const count = usePendingCount()
 
-  if (count === 0) return null;
+  if (count === 0) return null
 
-  return (
-    <span className="badge">
-      {count} pending
-    </span>
-  );
+  return <span className="badge">{count} pending</span>
 }
 ```
 
 ### Monitor Sync Progress
 
 ```tsx
-import { SyncProgressToast } from '@/components/ui/sync-progress';
+import { SyncProgressToast } from '@/components/ui/sync-progress'
 
 function App() {
   return (
@@ -206,18 +203,18 @@ function App() {
       <YourApp />
       <SyncProgressToast />
     </>
-  );
+  )
 }
 ```
 
 ### Cache Attachments
 
 ```tsx
-import { getAttachmentCache } from '@/lib/offline/attachment-cache';
+import { getAttachmentCache } from '@/lib/offline/attachment-cache'
 
 async function downloadAttachment(url: string, messageId: string) {
-  const cache = getAttachmentCache();
-  await cache.initialize();
+  const cache = getAttachmentCache()
+  await cache.initialize()
 
   const attachment = await cache.download(
     url,
@@ -230,13 +227,13 @@ async function downloadAttachment(url: string, messageId: string) {
       size: 1024000,
     },
     (progress) => {
-      console.log(`Downloaded ${progress.percent}%`);
+      console.log(`Downloaded ${progress.percent}%`)
     }
-  );
+  )
 
   // Get data URL for display
-  const dataUrl = await cache.getDataUrl(attachment.id);
-  return dataUrl;
+  const dataUrl = await cache.getDataUrl(attachment.id)
+  return dataUrl
 }
 ```
 
@@ -246,26 +243,26 @@ async function downloadAttachment(url: string, messageId: string) {
 
 ```typescript
 // src/app/layout.tsx (Capacitor app)
-import { backgroundFetchService } from '@/lib/ios/background-fetch';
+import { backgroundFetchService } from '@/lib/ios/background-fetch'
 
 useEffect(() => {
   if (Capacitor.getPlatform() === 'ios') {
-    backgroundFetchService.start();
+    backgroundFetchService.start()
 
     backgroundFetchService.onFetch('app', (result) => {
       if (result.newData) {
         // Show notification or update UI
       }
-    });
+    })
   }
-}, []);
+}, [])
 ```
 
 ### Android WorkManager
 
 ```typescript
 // src/app/layout.tsx (Capacitor app)
-import { workManager } from '@/lib/android/work-manager';
+import { workManager } from '@/lib/android/work-manager'
 
 useEffect(() => {
   if (Capacitor.getPlatform() === 'android') {
@@ -273,9 +270,9 @@ useEffect(() => {
       syncIntervalMinutes: 15,
       requiresCharging: false,
       requiresWifi: false,
-    });
+    })
   }
-}, []);
+}, [])
 ```
 
 ## Configuration
@@ -283,8 +280,8 @@ useEffect(() => {
 Customize offline behavior:
 
 ```typescript
-import { getSyncManager } from '@/lib/offline/sync-manager';
-import { getAttachmentCache } from '@/lib/offline/attachment-cache';
+import { getSyncManager } from '@/lib/offline/sync-manager'
+import { getAttachmentCache } from '@/lib/offline/attachment-cache'
 
 // Configure sync
 const syncManager = getSyncManager({
@@ -292,14 +289,14 @@ const syncManager = getSyncManager({
   syncInterval: 60000, // 1 minute
   batteryThreshold: 15, // Pause sync below 15%
   batchSize: 50,
-});
+})
 
 // Configure attachment cache
 const cache = getAttachmentCache({
   maxSize: 200 * 1024 * 1024, // 200MB
   maxFileSize: 50 * 1024 * 1024, // 50MB per file
   generateThumbnails: true,
-});
+})
 ```
 
 ## Troubleshooting
@@ -309,10 +306,10 @@ const cache = getAttachmentCache({
 Check the queue:
 
 ```typescript
-import { queueStorage } from '@/lib/offline/offline-storage';
+import { queueStorage } from '@/lib/offline/offline-storage'
 
-const pending = await queueStorage.getPending();
-console.log('Pending items:', pending);
+const pending = await queueStorage.getPending()
+console.log('Pending items:', pending)
 ```
 
 ### Sync failing?
@@ -320,11 +317,11 @@ console.log('Pending items:', pending);
 Check sync state:
 
 ```typescript
-import { getSyncManager } from '@/lib/offline/sync-manager';
+import { getSyncManager } from '@/lib/offline/sync-manager'
 
-const syncManager = getSyncManager();
-const state = syncManager.getState();
-console.log('Sync state:', state);
+const syncManager = getSyncManager()
+const state = syncManager.getState()
+console.log('Sync state:', state)
 ```
 
 ### Cache full?
@@ -332,10 +329,10 @@ console.log('Sync state:', state);
 Check storage stats:
 
 ```typescript
-import { getStorageStats } from '@/lib/offline/offline-storage';
+import { getStorageStats } from '@/lib/offline/offline-storage'
 
-const stats = await getStorageStats();
-console.log('Storage:', stats);
+const stats = await getStorageStats()
+console.log('Storage:', stats)
 ```
 
 ## Next Steps
@@ -349,6 +346,7 @@ console.log('Storage:', stats);
 ## Support
 
 For issues or questions:
+
 - Check the troubleshooting section in the full docs
 - Review the test files for examples
 - Look at the integration tests

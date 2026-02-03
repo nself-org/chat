@@ -7,12 +7,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
-import {
-  Lock,
-  ArrowLeft,
-  RefreshCw,
-  Download,
-} from 'lucide-react'
+import { Lock, ArrowLeft, RefreshCw, Download } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -80,10 +75,17 @@ function generateMockSecurityData(): AuditLogEntry[] {
       errorMessage: success ? undefined : getSecurityError(action),
       ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
       requestId: `req-${Math.random().toString(36).substr(2, 9)}`,
-      geoLocation: Math.random() > 0.5 ? {
-        country: ['United States', 'Germany', 'Japan', 'Brazil', 'Unknown'][Math.floor(Math.random() * 5)],
-        city: ['New York', 'Berlin', 'Tokyo', 'Sao Paulo', 'Unknown'][Math.floor(Math.random() * 5)],
-      } : undefined,
+      geoLocation:
+        Math.random() > 0.5
+          ? {
+              country: ['United States', 'Germany', 'Japan', 'Brazil', 'Unknown'][
+                Math.floor(Math.random() * 5)
+              ],
+              city: ['New York', 'Berlin', 'Tokyo', 'Sao Paulo', 'Unknown'][
+                Math.floor(Math.random() * 5)
+              ],
+            }
+          : undefined,
     })
   }
 
@@ -193,21 +195,16 @@ export default function SecurityEventsPage() {
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Audit Logs
             </Button>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
+            <h1 className="flex items-center gap-3 text-3xl font-bold">
               <Lock className="h-8 w-8" />
               Security Events
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="mt-1 text-muted-foreground">
               Monitor security-related events and potential threats
             </p>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={isLoading}
-            >
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
               <RefreshCw className={cn('mr-2 h-4 w-4', isLoading && 'animate-spin')} />
               Refresh
             </Button>
@@ -219,10 +216,7 @@ export default function SecurityEventsPage() {
         </div>
 
         {/* Security Events Component */}
-        <AuditSecurityEvents
-          entries={entries}
-          onEntryClick={handleEntryClick}
-        />
+        <AuditSecurityEvents entries={entries} onEntryClick={handleEntryClick} />
 
         {/* Detail Modal */}
         <AuditLogDetail

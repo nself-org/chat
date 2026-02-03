@@ -20,7 +20,11 @@ import {
   BulkAssignmentState,
   PermissionCategory,
 } from '@/lib/admin/roles/role-types'
-import { DEFAULT_ROLES, ROLE_COLOR_PRESETS, ROLE_ICON_OPTIONS } from '@/lib/admin/roles/role-defaults'
+import {
+  DEFAULT_ROLES,
+  ROLE_COLOR_PRESETS,
+  ROLE_ICON_OPTIONS,
+} from '@/lib/admin/roles/role-defaults'
 import {
   sortRolesByPosition,
   getHighestRole,
@@ -96,10 +100,22 @@ interface RolesActions {
   cancelEditing: () => void
 
   // Role CRUD
-  createNewRole: (input: CreateRoleInput, creatorPermissions: EffectivePermissions) => { role: Role | null; errors: string[] }
-  updateSelectedRole: (input: UpdateRoleInput, editorPermissions: EffectivePermissions) => { success: boolean; errors: string[] }
-  deleteSelectedRole: (deleterPermissions: EffectivePermissions) => { success: boolean; errors: string[] }
-  duplicateSelectedRole: (newName: string, creatorPermissions: EffectivePermissions) => { role: Role | null; errors: string[] }
+  createNewRole: (
+    input: CreateRoleInput,
+    creatorPermissions: EffectivePermissions
+  ) => { role: Role | null; errors: string[] }
+  updateSelectedRole: (
+    input: UpdateRoleInput,
+    editorPermissions: EffectivePermissions
+  ) => { success: boolean; errors: string[] }
+  deleteSelectedRole: (deleterPermissions: EffectivePermissions) => {
+    success: boolean
+    errors: string[]
+  }
+  duplicateSelectedRole: (
+    newName: string,
+    creatorPermissions: EffectivePermissions
+  ) => { role: Role | null; errors: string[] }
 
   // Editing
   setEditingField: <K extends keyof Role>(field: K, value: Role[K]) => void
@@ -109,8 +125,16 @@ interface RolesActions {
 
   // User role management
   setUserRoles: (userId: string, roles: Role[]) => void
-  assignRole: (userId: string, roleId: string, assignerPermissions: EffectivePermissions) => { success: boolean; errors: string[] }
-  removeRole: (userId: string, roleId: string, removerPermissions: EffectivePermissions) => { success: boolean; errors: string[] }
+  assignRole: (
+    userId: string,
+    roleId: string,
+    assignerPermissions: EffectivePermissions
+  ) => { success: boolean; errors: string[] }
+  removeRole: (
+    userId: string,
+    roleId: string,
+    removerPermissions: EffectivePermissions
+  ) => { success: boolean; errors: string[] }
 
   // Role members
   setRoleMembers: (roleId: string, userIds: string[]) => void
@@ -118,7 +142,11 @@ interface RolesActions {
   removeRoleMember: (roleId: string, userId: string) => void
 
   // Bulk operations
-  startBulkAssignment: (userIds: string[], roleIds: string[], action: 'add' | 'remove' | 'set') => void
+  startBulkAssignment: (
+    userIds: string[],
+    roleIds: string[],
+    action: 'add' | 'remove' | 'set'
+  ) => void
   cancelBulkAssignment: () => void
   setBulkProgress: (progress: number) => void
   completeBulkAssignment: () => void
@@ -195,10 +223,13 @@ export const useRolesStore = create<RolesStore>()(
         set(
           (state) => {
             state.roles = sortRolesByPosition(roles)
-            state.rolesById = roles.reduce((acc, role) => {
-              acc[role.id] = role
-              return acc
-            }, {} as Record<string, Role>)
+            state.rolesById = roles.reduce(
+              (acc, role) => {
+                acc[role.id] = role
+                return acc
+              },
+              {} as Record<string, Role>
+            )
           },
           false,
           'roles/setRoles'
@@ -356,7 +387,7 @@ export const useRolesStore = create<RolesStore>()(
         set(
           (state) => {
             if (state.editingRole) {
-              (state.editingRole as Record<string, unknown>)[field] = value
+              ;(state.editingRole as Record<string, unknown>)[field] = value
               state.isDirty = true
             }
           },
@@ -421,13 +452,7 @@ export const useRolesStore = create<RolesStore>()(
       assignRole: (userId, roleId, assignerPermissions) => {
         const { roles, userRoles } = get()
         const currentRoles = userRoles[userId] || []
-        const result = assignRoleToUser(
-          userId,
-          roleId,
-          roles,
-          currentRoles,
-          assignerPermissions
-        )
+        const result = assignRoleToUser(userId, roleId, roles, currentRoles, assignerPermissions)
 
         if (result.success) {
           const role = get().rolesById[roleId]
@@ -457,13 +482,7 @@ export const useRolesStore = create<RolesStore>()(
       removeRole: (userId, roleId, removerPermissions) => {
         const { roles, userRoles } = get()
         const currentRoles = userRoles[userId] || []
-        const result = removeRoleFromUser(
-          userId,
-          roleId,
-          roles,
-          currentRoles,
-          removerPermissions
-        )
+        const result = removeRoleFromUser(userId, roleId, roles, currentRoles, removerPermissions)
 
         if (result.success) {
           set(
@@ -472,9 +491,7 @@ export const useRolesStore = create<RolesStore>()(
                 (r) => r.id !== roleId
               )
               if (state.roleMembers[roleId]) {
-                state.roleMembers[roleId] = state.roleMembers[roleId].filter(
-                  (id) => id !== userId
-                )
+                state.roleMembers[roleId] = state.roleMembers[roleId].filter((id) => id !== userId)
               }
             },
             false,
@@ -513,9 +530,7 @@ export const useRolesStore = create<RolesStore>()(
         set(
           (state) => {
             if (state.roleMembers[roleId]) {
-              state.roleMembers[roleId] = state.roleMembers[roleId].filter(
-                (id) => id !== userId
-              )
+              state.roleMembers[roleId] = state.roleMembers[roleId].filter((id) => id !== userId)
             }
           },
           false,
@@ -707,8 +722,7 @@ export const useRolesStore = create<RolesStore>()(
         })
       },
 
-      reset: () =>
-        set(() => initialState, false, 'roles/reset'),
+      reset: () => set(() => initialState, false, 'roles/reset'),
     })),
     { name: 'roles-store' }
   )
@@ -750,7 +764,10 @@ export function useEffectivePermissions(userId: string): EffectivePermissions | 
 /**
  * Hook to check if current user can manage a role
  */
-export function useCanManageRole(roleId: string, currentUserPermissions: EffectivePermissions | null): boolean {
+export function useCanManageRole(
+  roleId: string,
+  currentUserPermissions: EffectivePermissions | null
+): boolean {
   const role = useRolesStore((state) => state.rolesById[roleId])
 
   if (!role || !currentUserPermissions) {

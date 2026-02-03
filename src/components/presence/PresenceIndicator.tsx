@@ -1,19 +1,14 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
 import {
   type PresenceStatus,
   getPresenceColor,
   getPresenceLabel,
-} from '@/lib/presence/presence-types';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/lib/presence/presence-types'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 // ============================================================================
 // Variants
@@ -43,36 +38,35 @@ const presenceIndicatorVariants = cva(
       position: 'bottom-right',
     },
   }
-);
+)
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface PresenceIndicatorProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof presenceIndicatorVariants> {
+  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof presenceIndicatorVariants> {
   /**
    * The presence status to display
    */
-  status: PresenceStatus;
+  status: PresenceStatus
 
   /**
    * Whether to show a tooltip on hover
    * @default false
    */
-  showTooltip?: boolean;
+  showTooltip?: boolean
 
   /**
    * Whether to animate the indicator (pulse for online)
    * @default true
    */
-  animate?: boolean;
+  animate?: boolean
 
   /**
    * Custom tooltip content (overrides default label)
    */
-  tooltipContent?: React.ReactNode;
+  tooltipContent?: React.ReactNode
 }
 
 // ============================================================================
@@ -93,12 +87,12 @@ const PresenceIndicator = React.forwardRef<HTMLSpanElement, PresenceIndicatorPro
     },
     ref
   ) => {
-    const color = getPresenceColor(status);
-    const label = getPresenceLabel(status);
+    const color = getPresenceColor(status)
+    const label = getPresenceLabel(status)
 
     // Don't render for invisible status
     if (status === 'invisible') {
-      return null;
+      return null
     }
 
     const indicator = (
@@ -113,24 +107,24 @@ const PresenceIndicator = React.forwardRef<HTMLSpanElement, PresenceIndicatorPro
         {/* Pulse animation for online status */}
         {animate && status === 'online' && (
           <span
-            className="absolute inset-0 rounded-full animate-ping opacity-75"
+            className="absolute inset-0 animate-ping rounded-full opacity-75"
             style={{ backgroundColor: color }}
           />
         )}
         {/* DND minus icon */}
         {status === 'dnd' && (
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="w-[60%] h-[2px] bg-background rounded-full" />
+            <span className="h-[2px] w-[60%] rounded-full bg-background" />
           </span>
         )}
         {/* Away clock icon (simple dot for small sizes) */}
         {status === 'away' && size !== 'xs' && size !== 'sm' && (
           <span className="absolute inset-0 flex items-center justify-center">
-            <span className="w-[40%] h-[40%] rounded-full bg-background" />
+            <span className="h-[40%] w-[40%] rounded-full bg-background" />
           </span>
         )}
       </span>
-    );
+    )
 
     if (showTooltip) {
       return (
@@ -142,13 +136,13 @@ const PresenceIndicator = React.forwardRef<HTMLSpanElement, PresenceIndicatorPro
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      );
+      )
     }
 
-    return indicator;
+    return indicator
   }
-);
+)
 
-PresenceIndicator.displayName = 'PresenceIndicator';
+PresenceIndicator.displayName = 'PresenceIndicator'
 
-export { PresenceIndicator, presenceIndicatorVariants };
+export { PresenceIndicator, presenceIndicatorVariants }

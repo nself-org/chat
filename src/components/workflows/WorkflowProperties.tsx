@@ -45,8 +45,7 @@ interface WorkflowPropertiesProps {
 export function WorkflowProperties({ className }: WorkflowPropertiesProps) {
   const selectedStep = useWorkflowBuilderStore(selectSelectedStep)
   const selectedEdge = useWorkflowBuilderStore(selectSelectedEdge)
-  const { updateStep, deleteStep, deleteEdge, setPropertiesPanelOpen } =
-    useWorkflowBuilderStore()
+  const { updateStep, deleteStep, deleteEdge, setPropertiesPanelOpen } = useWorkflowBuilderStore()
 
   const handleClose = () => {
     setPropertiesPanelOpen(false)
@@ -56,20 +55,15 @@ export function WorkflowProperties({ className }: WorkflowPropertiesProps) {
   if (!selectedStep && !selectedEdge) {
     return (
       <div className={cn('flex flex-col bg-card', className)}>
-        <div className="flex items-center justify-between px-3 py-2 border-b">
+        <div className="flex items-center justify-between border-b px-3 py-2">
           <span className="text-sm font-medium">Properties</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
-            onClick={handleClose}
-          >
+          <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={handleClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
-        <div className="flex-1 flex items-center justify-center p-4">
+        <div className="flex flex-1 items-center justify-center p-4">
           <div className="text-center text-muted-foreground">
-            <Info className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <Info className="mx-auto mb-2 h-8 w-8 opacity-50" />
             <p className="text-sm">Select a step to edit its properties</p>
           </div>
         </div>
@@ -81,27 +75,22 @@ export function WorkflowProperties({ className }: WorkflowPropertiesProps) {
   if (selectedEdge && !selectedStep) {
     return (
       <div className={cn('flex flex-col bg-card', className)}>
-        <div className="flex items-center justify-between px-3 py-2 border-b">
+        <div className="flex items-center justify-between border-b px-3 py-2">
           <span className="text-sm font-medium">Connection Properties</span>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6 w-6 p-0"
-            onClick={handleClose}
-          >
+          <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={handleClose}>
             <X className="h-4 w-4" />
           </Button>
         </div>
         <ScrollArea className="flex-1">
-          <div className="p-3 space-y-4">
+          <div className="space-y-4 p-3">
             <div>
               <Label className="text-xs">Type</Label>
-              <p className="text-sm mt-1">{selectedEdge.type}</p>
+              <p className="mt-1 text-sm">{selectedEdge.type}</p>
             </div>
             {selectedEdge.label && (
               <div>
                 <Label className="text-xs">Label</Label>
-                <p className="text-sm mt-1">{selectedEdge.label}</p>
+                <p className="mt-1 text-sm">{selectedEdge.label}</p>
               </div>
             )}
             <div className="pt-4">
@@ -125,29 +114,22 @@ export function WorkflowProperties({ className }: WorkflowPropertiesProps) {
 
   return (
     <div className={cn('flex flex-col bg-card', className)}>
-      <div className="flex items-center justify-between px-3 py-2 border-b">
+      <div className="flex items-center justify-between border-b px-3 py-2">
         <span className="text-sm font-medium">Step Properties</span>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-6 w-6 p-0"
-          onClick={handleClose}
-        >
+        <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={handleClose}>
           <X className="h-4 w-4" />
         </Button>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-3 space-y-4">
+        <div className="space-y-4 p-3">
           {/* Common properties */}
           <div>
             <Label className="text-xs">Step Name</Label>
             <Input
               value={selectedStep.name}
-              onChange={(e) =>
-                updateStep(selectedStep.id, { name: e.target.value })
-              }
-              className="h-8 text-sm mt-1"
+              onChange={(e) => updateStep(selectedStep.id, { name: e.target.value })}
+              className="mt-1 h-8 text-sm"
             />
           </div>
 
@@ -155,16 +137,14 @@ export function WorkflowProperties({ className }: WorkflowPropertiesProps) {
             <Label className="text-xs">Description</Label>
             <Textarea
               value={selectedStep.description || ''}
-              onChange={(e) =>
-                updateStep(selectedStep.id, { description: e.target.value })
-              }
-              className="text-sm mt-1 min-h-[60px]"
+              onChange={(e) => updateStep(selectedStep.id, { description: e.target.value })}
+              className="mt-1 min-h-[60px] text-sm"
               placeholder="Optional description..."
             />
           </div>
 
           {/* Step-specific properties */}
-          <div className="pt-2 border-t">
+          <div className="border-t pt-2">
             <StepSpecificProperties
               step={selectedStep}
               onUpdate={(config) =>
@@ -174,7 +154,7 @@ export function WorkflowProperties({ className }: WorkflowPropertiesProps) {
           </div>
 
           {/* Delete button */}
-          <div className="pt-4 border-t">
+          <div className="border-t pt-4">
             <Button
               variant="destructive"
               size="sm"
@@ -238,7 +218,11 @@ function ActionStepProperties({
   step: WorkflowStep
   onUpdate: (config: Record<string, unknown>) => void
 }) {
-  const config = step.config as { actionType?: string; variableName?: string; variableValue?: unknown }
+  const config = step.config as {
+    actionType?: string
+    variableName?: string
+    variableValue?: unknown
+  }
 
   return (
     <div className="space-y-3">
@@ -248,7 +232,7 @@ function ActionStepProperties({
           value={config.actionType || 'set_variable'}
           onValueChange={(value) => onUpdate({ actionType: value })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -270,7 +254,7 @@ function ActionStepProperties({
             <Input
               value={config.variableName || ''}
               onChange={(e) => onUpdate({ variableName: e.target.value })}
-              className="h-8 text-sm mt-1 font-mono"
+              className="mt-1 h-8 font-mono text-sm"
               placeholder="myVariable"
             />
           </div>
@@ -279,7 +263,7 @@ function ActionStepProperties({
             <Input
               value={String(config.variableValue || '')}
               onChange={(e) => onUpdate({ variableValue: e.target.value })}
-              className="h-8 text-sm mt-1"
+              className="mt-1 h-8 text-sm"
               placeholder="Value or {{variable}}"
             />
           </div>
@@ -311,7 +295,7 @@ function LoopStepProperties({
           value={config.loopType || 'for_each'}
           onValueChange={(value) => onUpdate({ loopType: value })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -328,7 +312,7 @@ function LoopStepProperties({
           <Input
             value={config.collection || ''}
             onChange={(e) => onUpdate({ collection: e.target.value })}
-            className="h-8 text-sm mt-1 font-mono"
+            className="mt-1 h-8 font-mono text-sm"
             placeholder="items"
           />
         </div>
@@ -341,7 +325,7 @@ function LoopStepProperties({
             type="number"
             value={config.count || 1}
             onChange={(e) => onUpdate({ count: parseInt(e.target.value) })}
-            className="h-8 text-sm mt-1"
+            className="mt-1 h-8 text-sm"
             min={1}
           />
         </div>
@@ -353,7 +337,7 @@ function LoopStepProperties({
           type="number"
           value={config.maxIterations || 100}
           onChange={(e) => onUpdate({ maxIterations: parseInt(e.target.value) })}
-          className="h-8 text-sm mt-1"
+          className="mt-1 h-8 text-sm"
           min={1}
           max={1000}
         />
@@ -406,7 +390,7 @@ function EndStepProperties({
           value={config.status || 'success'}
           onValueChange={(value) => onUpdate({ status: value })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -422,7 +406,7 @@ function EndStepProperties({
         <Textarea
           value={config.message || ''}
           onChange={(e) => onUpdate({ message: e.target.value })}
-          className="text-sm mt-1 min-h-[60px]"
+          className="mt-1 min-h-[60px] text-sm"
           placeholder="Optional completion message..."
         />
       </div>

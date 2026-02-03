@@ -21,10 +21,7 @@ mutation SaveMessage(
       is_starred: $isStarred
       reminder_at: $reminderAt
     }
-    on_conflict: {
-      constraint: saved_messages_user_id_message_id_key
-      update_columns: []
-    }
+    on_conflict: { constraint: saved_messages_user_id_message_id_key, update_columns: [] }
   ) {
     id
     user_id
@@ -85,12 +82,7 @@ mutation UpdateSavedMessage(
 ) {
   update_nchat_saved_messages_by_pk(
     pk_columns: { id: $savedId }
-    _set: {
-      note: $note
-      tags: $tags
-      is_starred: $isStarred
-      reminder_at: $reminderAt
-    }
+    _set: { note: $note, tags: $tags, is_starred: $isStarred, reminder_at: $reminderAt }
   ) {
     id
     note
@@ -124,10 +116,7 @@ mutation TriggerReminder($savedId: uuid!) {
 
 # Add tag to saved message
 mutation AddTagToSaved($savedId: uuid!, $tag: String!) {
-  update_nchat_saved_messages_by_pk(
-    pk_columns: { id: $savedId }
-    _append: { tags: [$tag] }
-  ) {
+  update_nchat_saved_messages_by_pk(pk_columns: { id: $savedId }, _append: { tags: [$tag] }) {
     id
     tags
   }
@@ -135,10 +124,7 @@ mutation AddTagToSaved($savedId: uuid!, $tag: String!) {
 
 # Remove tag from saved message
 mutation RemoveTagFromSaved($savedId: uuid!, $tag: String!) {
-  update_nchat_saved_messages_by_pk(
-    pk_columns: { id: $savedId }
-    _delete_elem: { tags: $tag }
-  ) {
+  update_nchat_saved_messages_by_pk(pk_columns: { id: $savedId }, _delete_elem: { tags: $tag }) {
     id
     tags
   }
@@ -232,10 +218,7 @@ mutation ReorderCollections($updates: [nchat_saved_collections_updates!]!) {
 mutation AddToCollection($savedId: uuid!, $collectionId: uuid!) {
   insert_nchat_collection_memberships_one(
     object: { saved_message_id: $savedId, collection_id: $collectionId }
-    on_conflict: {
-      constraint: collection_memberships_pkey
-      update_columns: []
-    }
+    on_conflict: { constraint: collection_memberships_pkey, update_columns: [] }
   ) {
     saved_message_id
     collection_id

@@ -16,11 +16,7 @@ interface TypingIndicatorProps {
  * Typing indicator component
  * Shows who is currently typing in the channel with animated dots
  */
-export function TypingIndicator({
-  users,
-  className,
-  maxAvatars = 3,
-}: TypingIndicatorProps) {
+export function TypingIndicator({ users, className, maxAvatars = 3 }: TypingIndicatorProps) {
   if (users.length === 0) {
     return null
   }
@@ -40,8 +36,8 @@ export function TypingIndicator({
     if (users.length === 2) {
       return (
         <>
-          <strong>{users[0].displayName}</strong> and{' '}
-          <strong>{users[1].displayName}</strong> are typing
+          <strong>{users[0].displayName}</strong> and <strong>{users[1].displayName}</strong> are
+          typing
         </>
       )
     }
@@ -49,8 +45,7 @@ export function TypingIndicator({
     if (users.length === 3) {
       return (
         <>
-          <strong>{users[0].displayName}</strong>,{' '}
-          <strong>{users[1].displayName}</strong>, and{' '}
+          <strong>{users[0].displayName}</strong>, <strong>{users[1].displayName}</strong>, and{' '}
           <strong>{users[2].displayName}</strong> are typing
         </>
       )
@@ -58,9 +53,8 @@ export function TypingIndicator({
 
     return (
       <>
-        <strong>{users[0].displayName}</strong>,{' '}
-        <strong>{users[1].displayName}</strong>, and {users.length - 2} others
-        are typing
+        <strong>{users[0].displayName}</strong>, <strong>{users[1].displayName}</strong>, and{' '}
+        {users.length - 2} others are typing
       </>
     )
   }
@@ -72,18 +66,12 @@ export function TypingIndicator({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 10 }}
         transition={{ duration: 0.2 }}
-        className={cn(
-          'flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground',
-          className
-        )}
+        className={cn('flex items-center gap-2 px-4 py-2 text-xs text-muted-foreground', className)}
       >
         {/* Avatars */}
         <div className="flex -space-x-2">
           {displayedUsers.map((user) => (
-            <Avatar
-              key={user.id}
-              className="h-5 w-5 border-2 border-background"
-            >
+            <Avatar key={user.id} className="h-5 w-5 border-2 border-background">
               <AvatarImage src={user.avatarUrl} alt={user.displayName} />
               <AvatarFallback className="text-[10px]">
                 {user.displayName.charAt(0).toUpperCase()}
@@ -161,10 +149,7 @@ export function InlineTypingIndicator({
           {/* Avatar or avatars */}
           <div className="flex -space-x-1.5">
             {users.slice(0, 2).map((user) => (
-              <Avatar
-                key={user.id}
-                className="h-8 w-8 border-2 border-background"
-              >
+              <Avatar key={user.id} className="h-8 w-8 border-2 border-background">
                 <AvatarImage src={user.avatarUrl} alt={user.displayName} />
                 <AvatarFallback className="text-xs">
                   {user.displayName.charAt(0).toUpperCase()}

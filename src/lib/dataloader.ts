@@ -121,12 +121,7 @@ const GET_UNREAD_COUNTS_BY_CHANNEL_IDS = gql`
             _gt: {
               _select: {
                 _from: "nchat_read_receipts"
-                _where: {
-                  _and: [
-                    { user_id: { _eq: $userId } }
-                    { channel_id: { _eq: "id" } }
-                  ]
-                }
+                _where: { _and: [{ user_id: { _eq: $userId } }, { channel_id: { _eq: "id" } }] }
                 _select: "read_at"
                 _order_by: { read_at: desc }
                 _limit: 1
@@ -155,9 +150,7 @@ async function batchLoadUsers(ids: readonly string[]): Promise<(User | null)[]> 
     fetchPolicy: 'cache-first',
   })
 
-  const userMap = new Map<string, User>(
-    data.users.map((user: any) => [user.id, user])
-  )
+  const userMap = new Map<string, User>(data.users.map((user: any) => [user.id, user]))
 
   return ids.map((id) => userMap.get(id) || null)
 }
@@ -190,9 +183,7 @@ async function batchLoadMessages(ids: readonly string[]): Promise<(Message | nul
   return ids.map((id) => messageMap.get(id) || null)
 }
 
-async function batchLoadReactionsByMessage(
-  messageIds: readonly string[]
-): Promise<Reaction[][]> {
+async function batchLoadReactionsByMessage(messageIds: readonly string[]): Promise<Reaction[][]> {
   const { data } = await apolloClient.query({
     query: GET_REACTIONS_BY_MESSAGE_IDS,
     variables: { messageIds },
@@ -209,9 +200,7 @@ async function batchLoadReactionsByMessage(
   return messageIds.map((id) => reactionsMap.get(id) || [])
 }
 
-async function batchLoadChannelMembers(
-  channelIds: readonly string[]
-): Promise<any[][]> {
+async function batchLoadChannelMembers(channelIds: readonly string[]): Promise<any[][]> {
   const { data } = await apolloClient.query({
     query: GET_CHANNEL_MEMBERS_BY_CHANNEL_IDS,
     variables: { channelIds },
@@ -262,24 +251,18 @@ export class DataLoaderService {
     })
 
     // Reactions loader (by message ID)
-    this.reactionsLoader = new DataLoader<string, Reaction[]>(
-      batchLoadReactionsByMessage,
-      {
-        cache: true,
-        maxBatchSize: 100,
-        batchScheduleFn: (callback: () => void) => setTimeout(callback, 10),
-      }
-    )
+    this.reactionsLoader = new DataLoader<string, Reaction[]>(batchLoadReactionsByMessage, {
+      cache: true,
+      maxBatchSize: 100,
+      batchScheduleFn: (callback: () => void) => setTimeout(callback, 10),
+    })
 
     // Channel members loader
-    this.channelMembersLoader = new DataLoader<string, any[]>(
-      batchLoadChannelMembers,
-      {
-        cache: true,
-        maxBatchSize: 50,
-        batchScheduleFn: (callback: () => void) => setTimeout(callback, 10),
-      }
-    )
+    this.channelMembersLoader = new DataLoader<string, any[]>(batchLoadChannelMembers, {
+      cache: true,
+      maxBatchSize: 50,
+      batchScheduleFn: (callback: () => void) => setTimeout(callback, 10),
+    })
   }
 
   // ============================================================================

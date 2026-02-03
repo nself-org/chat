@@ -28,7 +28,10 @@ import type { InstalledBot, MarketplaceBot, BotPermission } from '@/lib/bot-sdk/
 // TEST DATA
 // ============================================================================
 
-const createTestInstalledBot = (id: string, overrides: Partial<InstalledBot> = {}): InstalledBot => ({
+const createTestInstalledBot = (
+  id: string,
+  overrides: Partial<InstalledBot> = {}
+): InstalledBot => ({
   id,
   name: `Bot ${id}`,
   description: 'Test bot',
@@ -40,7 +43,10 @@ const createTestInstalledBot = (id: string, overrides: Partial<InstalledBot> = {
   ...overrides,
 })
 
-const createTestMarketplaceBot = (id: string, overrides: Partial<MarketplaceBot> = {}): MarketplaceBot => ({
+const createTestMarketplaceBot = (
+  id: string,
+  overrides: Partial<MarketplaceBot> = {}
+): MarketplaceBot => ({
   id,
   name: `Marketplace Bot ${id}`,
   description: 'A marketplace bot',
@@ -115,10 +121,7 @@ describe('useBotSdkStore', () => {
 
   describe('setInstalledBots', () => {
     it('should set installed bots', () => {
-      const bots = [
-        createTestInstalledBot('bot_1'),
-        createTestInstalledBot('bot_2'),
-      ]
+      const bots = [createTestInstalledBot('bot_1'), createTestInstalledBot('bot_2')]
 
       act(() => useBotSdkStore.getState().setInstalledBots(bots))
 
@@ -227,10 +230,7 @@ describe('useBotSdkStore', () => {
 
   describe('setMarketplaceBots', () => {
     it('should set marketplace bots', () => {
-      const bots = [
-        createTestMarketplaceBot('mp_1'),
-        createTestMarketplaceBot('mp_2'),
-      ]
+      const bots = [createTestMarketplaceBot('mp_1'), createTestMarketplaceBot('mp_2')]
 
       act(() => useBotSdkStore.getState().setMarketplaceBots(bots))
 
@@ -439,9 +439,11 @@ describe('useBotSdkStore', () => {
 
   describe('getBotPermissions', () => {
     it('should return bot permissions', () => {
-      act(() => useBotSdkStore.getState().addInstalledBot(
-        createTestInstalledBot('bot_1', { permissions: ['admin'] })
-      ))
+      act(() =>
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_1', { permissions: ['admin'] }))
+      )
 
       expect(useBotSdkStore.getState().getBotPermissions('bot_1')).toEqual(['admin'])
     })
@@ -453,25 +455,31 @@ describe('useBotSdkStore', () => {
 
   describe('hasPermission', () => {
     it('should return true if bot has permission', () => {
-      act(() => useBotSdkStore.getState().addInstalledBot(
-        createTestInstalledBot('bot_1', { permissions: ['send_messages'] })
-      ))
+      act(() =>
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_1', { permissions: ['send_messages'] }))
+      )
 
       expect(useBotSdkStore.getState().hasPermission('bot_1', 'send_messages')).toBe(true)
     })
 
     it('should return true for admin permission', () => {
-      act(() => useBotSdkStore.getState().addInstalledBot(
-        createTestInstalledBot('bot_1', { permissions: ['admin'] })
-      ))
+      act(() =>
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_1', { permissions: ['admin'] }))
+      )
 
       expect(useBotSdkStore.getState().hasPermission('bot_1', 'send_messages')).toBe(true)
     })
 
     it('should return false if bot lacks permission', () => {
-      act(() => useBotSdkStore.getState().addInstalledBot(
-        createTestInstalledBot('bot_1', { permissions: ['read_messages'] })
-      ))
+      act(() =>
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_1', { permissions: ['read_messages'] }))
+      )
 
       expect(useBotSdkStore.getState().hasPermission('bot_1', 'send_messages')).toBe(false)
     })
@@ -503,8 +511,12 @@ describe('Selectors', () => {
   describe('selectFilteredInstalledBots', () => {
     beforeEach(() => {
       act(() => {
-        useBotSdkStore.getState().addInstalledBot(createTestInstalledBot('bot_1', { name: 'Alpha Bot', status: 'online' }))
-        useBotSdkStore.getState().addInstalledBot(createTestInstalledBot('bot_2', { name: 'Beta Bot', status: 'offline' }))
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_1', { name: 'Alpha Bot', status: 'online' }))
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_2', { name: 'Beta Bot', status: 'offline' }))
       })
     })
 
@@ -529,7 +541,11 @@ describe('Selectors', () => {
     beforeEach(() => {
       act(() => {
         useBotSdkStore.getState().setMarketplaceBots([
-          createTestMarketplaceBot('mp_1', { name: 'Productivity Bot', category: 'productivity', tags: ['work'] }),
+          createTestMarketplaceBot('mp_1', {
+            name: 'Productivity Bot',
+            category: 'productivity',
+            tags: ['work'],
+          }),
           createTestMarketplaceBot('mp_2', { name: 'Fun Bot', category: 'fun', tags: ['games'] }),
         ])
       })
@@ -563,8 +579,12 @@ describe('Selectors', () => {
   describe('selectBotsByStatus', () => {
     it('should select bots by status', () => {
       act(() => {
-        useBotSdkStore.getState().addInstalledBot(createTestInstalledBot('bot_1', { status: 'online' }))
-        useBotSdkStore.getState().addInstalledBot(createTestInstalledBot('bot_2', { status: 'offline' }))
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_1', { status: 'online' }))
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_2', { status: 'offline' }))
       })
 
       const onlineBots = selectBotsByStatus('online')(useBotSdkStore.getState())
@@ -575,8 +595,12 @@ describe('Selectors', () => {
   describe('selectOnlineBots', () => {
     it('should select online bots', () => {
       act(() => {
-        useBotSdkStore.getState().addInstalledBot(createTestInstalledBot('bot_1', { status: 'online' }))
-        useBotSdkStore.getState().addInstalledBot(createTestInstalledBot('bot_2', { status: 'offline' }))
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_1', { status: 'online' }))
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_2', { status: 'offline' }))
       })
 
       const bots = selectOnlineBots(useBotSdkStore.getState())
@@ -587,8 +611,12 @@ describe('Selectors', () => {
   describe('selectBotsByPermission', () => {
     it('should select bots by permission', () => {
       act(() => {
-        useBotSdkStore.getState().addInstalledBot(createTestInstalledBot('bot_1', { permissions: ['admin'] }))
-        useBotSdkStore.getState().addInstalledBot(createTestInstalledBot('bot_2', { permissions: ['read_messages'] }))
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_1', { permissions: ['admin'] }))
+        useBotSdkStore
+          .getState()
+          .addInstalledBot(createTestInstalledBot('bot_2', { permissions: ['read_messages'] }))
       })
 
       const adminBots = selectBotsByPermission('admin')(useBotSdkStore.getState())

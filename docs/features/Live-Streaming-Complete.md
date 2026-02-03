@@ -11,6 +11,7 @@ nself-chat (nchat) now includes a **complete live streaming system** with HLS pl
 ## Features
 
 ### Core Streaming
+
 - ✅ **WebRTC Broadcast** - Low-latency video/audio ingest from browser
 - ✅ **HLS Playback** - Adaptive bitrate streaming with wide device compatibility
 - ✅ **Quality Selection** - Auto, 1080p, 720p, 480p, 360p with manual and automatic switching
@@ -19,6 +20,7 @@ nself-chat (nchat) now includes a **complete live streaming system** with HLS pl
 - ✅ **Stream Recording** - Automatic recording with replay functionality
 
 ### Interactive Features
+
 - ✅ **Live Chat** - Real-time messaging during streams with rate limiting
 - ✅ **Emoji Reactions** - Animated floating reactions with position control
 - ✅ **Q&A Mode** - Optional question and answer sessions
@@ -26,6 +28,7 @@ nself-chat (nchat) now includes a **complete live streaming system** with HLS pl
 - ✅ **Chat Modes** - Open, followers-only, subscribers-only, or disabled
 
 ### Analytics & Monitoring
+
 - ✅ **Viewer Metrics** - Real-time viewer count, peak viewers, total views
 - ✅ **Quality Metrics** - Bitrate, FPS, resolution, dropped frames tracking
 - ✅ **Network Metrics** - Latency, bandwidth, packet loss monitoring
@@ -33,6 +36,7 @@ nself-chat (nchat) now includes a **complete live streaming system** with HLS pl
 - ✅ **Health Scoring** - Real-time stream health assessment (0-100)
 
 ### Adaptive Bitrate (ABR)
+
 - ✅ **EWMA Estimation** - Exponentially weighted moving average bandwidth estimation
 - ✅ **Buffer-Based ABR** - Quality selection based on buffer health
 - ✅ **Quality Switching** - Intelligent upgrade/downgrade with cooldown periods
@@ -42,14 +46,14 @@ nself-chat (nchat) now includes a **complete live streaming system** with HLS pl
 
 ### Technology Stack
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Video Ingest** | WebRTC | Browser-based broadcasting |
-| **Media Processing** | Ant Media Server / NGINX-RTMP | Transcoding & packaging |
-| **Playback** | HLS.js | Adaptive streaming player |
-| **Database** | PostgreSQL | Stream metadata & analytics |
-| **Real-time** | Socket.io | Chat, reactions, viewer counts |
-| **Frontend** | React 19 + Next.js 15 | UI components |
+| Component            | Technology                    | Purpose                        |
+| -------------------- | ----------------------------- | ------------------------------ |
+| **Video Ingest**     | WebRTC                        | Browser-based broadcasting     |
+| **Media Processing** | Ant Media Server / NGINX-RTMP | Transcoding & packaging        |
+| **Playback**         | HLS.js                        | Adaptive streaming player      |
+| **Database**         | PostgreSQL                    | Stream metadata & analytics    |
+| **Real-time**        | Socket.io                     | Chat, reactions, viewer counts |
+| **Frontend**         | React 19 + Next.js 15         | UI components                  |
 
 ### Data Flow
 
@@ -71,6 +75,7 @@ nself-chat (nchat) now includes a **complete live streaming system** with HLS pl
 ### Tables
 
 #### `nchat_streams`
+
 Primary stream metadata table.
 
 ```sql
@@ -112,15 +117,19 @@ CREATE TABLE nchat_streams (
 ```
 
 #### `nchat_stream_viewers`
+
 Tracks individual viewer sessions.
 
 #### `nchat_stream_quality_metrics`
+
 Time-series quality and performance metrics.
 
 #### `nchat_stream_chat_messages`
+
 Live chat messages with moderation support.
 
 #### `nchat_stream_reactions`
+
 Emoji reactions with animation positions.
 
 ### Views
@@ -133,6 +142,7 @@ Emoji reactions with animation positions.
 ### Stream Management
 
 #### Create Stream
+
 ```typescript
 POST /api/streams/create
 
@@ -154,15 +164,17 @@ Response: Stream
 ```
 
 #### Get Stream Details
+
 ```typescript
-GET /api/streams/[id]
+GET / api / streams / [id]
 
 Response: Stream
 ```
 
 #### Update Stream
+
 ```typescript
-PATCH /api/streams/[id]
+PATCH / api / streams / [id]
 
 Body: Partial<Stream>
 
@@ -170,15 +182,19 @@ Response: Stream
 ```
 
 #### Delete Stream
-```typescript
-DELETE /api/streams/[id]
 
-Response: { success: true }
+```typescript
+DELETE / api / streams / [id]
+
+Response: {
+  success: true
+}
 ```
 
 ### Stream Lifecycle
 
 #### Start Stream (Go Live)
+
 ```typescript
 POST /api/streams/[id]/start
 
@@ -186,6 +202,7 @@ Response: Stream (status: 'live', hls_manifest_url populated)
 ```
 
 #### End Stream
+
 ```typescript
 POST /api/streams/[id]/end
 
@@ -195,6 +212,7 @@ Response: Stream (status: 'ended', with final statistics)
 ### Chat
 
 #### Get Chat Messages
+
 ```typescript
 GET /api/streams/[id]/chat?limit=100&offset=0
 
@@ -202,6 +220,7 @@ Response: StreamChatMessage[]
 ```
 
 #### Send Chat Message
+
 ```typescript
 POST /api/streams/[id]/chat
 
@@ -215,6 +234,7 @@ Response: StreamChatMessage
 ### Reactions
 
 #### Send Reaction
+
 ```typescript
 POST /api/streams/[id]/reactions
 
@@ -405,6 +425,7 @@ import { StreamBroadcaster } from '@/components/streaming'
 ```
 
 **Features**:
+
 - Video preview with local stream
 - Camera/microphone device selection
 - Quality preset selection (1080p, 720p, 480p, 360p)
@@ -428,6 +449,7 @@ import { StreamViewer } from '@/components/streaming'
 ```
 
 **Features**:
+
 - HLS video player with adaptive bitrate
 - Quality selection dropdown
 - Volume controls
@@ -471,12 +493,12 @@ features: {
 
 ```typescript
 const config: HLSPlayerConfig = {
-  manifestUrl: string,           // HLS manifest URL (.m3u8)
+  manifestUrl: string, // HLS manifest URL (.m3u8)
   videoElement: HTMLVideoElement,
-  autoStart: true,                // Auto-play on load
-  startLevel: -1,                 // -1 = auto, or specific level
-  lowLatencyMode: true,           // Enable LL-HLS
-  maxBufferLength: 30,            // Max buffer in seconds
+  autoStart: true, // Auto-play on load
+  startLevel: -1, // -1 = auto, or specific level
+  lowLatencyMode: true, // Enable LL-HLS
+  maxBufferLength: 30, // Max buffer in seconds
   maxBufferSize: 60 * 1000 * 1000, // Max buffer in bytes (60MB)
 }
 ```
@@ -485,13 +507,13 @@ const config: HLSPlayerConfig = {
 
 ```typescript
 const abrConfig: ABRConfig = {
-  minAutoBitrate: 500_000,        // 500 kbps
-  maxAutoBitrate: 10_000_000,     // 10 Mbps
-  bufferBasedABR: true,           // Use buffer-based ABR
-  bandwidthEstimator: 'ewma',     // 'ewma' or 'sliding-window'
-  switchUpThreshold: 0.8,         // 80% of bandwidth
-  switchDownThreshold: 1.2,       // 120% of bitrate
-  minBufferForQualitySwitch: 5,   // 5 seconds
+  minAutoBitrate: 500_000, // 500 kbps
+  maxAutoBitrate: 10_000_000, // 10 Mbps
+  bufferBasedABR: true, // Use buffer-based ABR
+  bandwidthEstimator: 'ewma', // 'ewma' or 'sliding-window'
+  switchUpThreshold: 0.8, // 80% of bandwidth
+  switchDownThreshold: 1.2, // 120% of bitrate
+  minBufferForQualitySwitch: 5, // 5 seconds
 }
 ```
 
@@ -524,6 +546,7 @@ NEXT_PUBLIC_HLS_BASE_URL=https://localhost:5080/nchat/streams
 ```
 
 **Features**:
+
 - WebRTC ingest (sub-second latency)
 - Adaptive bitrate transcoding
 - HLS packaging with multiple quality levels
@@ -612,13 +635,13 @@ For testing or professional broadcasting, you can use OBS Studio:
 
 ## Quality Levels
 
-| Quality | Resolution | Bitrate | FPS | CPU | Use Case |
-|---------|-----------|---------|-----|-----|----------|
-| 1080p | 1920x1080 | 3000 kbps | 30 | High | High quality, good bandwidth |
-| 720p | 1280x720 | 1500 kbps | 30 | Medium | HD, recommended default |
-| 480p | 854x480 | 800 kbps | 24 | Low | SD, moderate bandwidth |
-| 360p | 640x360 | 400 kbps | 24 | Very Low | Low bandwidth |
-| Auto | Adaptive | Dynamic | Dynamic | N/A | Automatic based on conditions |
+| Quality | Resolution | Bitrate   | FPS     | CPU      | Use Case                      |
+| ------- | ---------- | --------- | ------- | -------- | ----------------------------- |
+| 1080p   | 1920x1080  | 3000 kbps | 30      | High     | High quality, good bandwidth  |
+| 720p    | 1280x720   | 1500 kbps | 30      | Medium   | HD, recommended default       |
+| 480p    | 854x480    | 800 kbps  | 24      | Low      | SD, moderate bandwidth        |
+| 360p    | 640x360    | 400 kbps  | 24      | Very Low | Low bandwidth                 |
+| Auto    | Adaptive   | Dynamic   | Dynamic | N/A      | Automatic based on conditions |
 
 ## Performance Optimization
 
@@ -656,6 +679,7 @@ For testing or professional broadcasting, you can use OBS Studio:
 **Symptoms**: 10+ seconds delay between broadcaster and viewers
 
 **Solutions**:
+
 - ✓ Enable low-latency mode in HLS player config
 - ✓ Reduce HLS fragment size (2s recommended)
 - ✓ Reduce playlist length
@@ -667,6 +691,7 @@ For testing or professional broadcasting, you can use OBS Studio:
 **Symptoms**: "Failed to start stream" or WebRTC connection errors
 
 **Solutions**:
+
 - ✓ Check camera/microphone permissions in browser
 - ✓ Verify STUN/TURN servers are accessible
 - ✓ Check firewall settings (allow UDP ports)
@@ -678,6 +703,7 @@ For testing or professional broadcasting, you can use OBS Studio:
 **Symptoms**: Constant buffering, playback pauses
 
 **Solutions**:
+
 - ✓ Lower quality level manually
 - ✓ Check viewer's download bandwidth
 - ✓ Verify CDN performance
@@ -690,6 +716,7 @@ For testing or professional broadcasting, you can use OBS Studio:
 **Symptoms**: Messages not sending/receiving
 
 **Solutions**:
+
 - ✓ Check Socket.io connection status
 - ✓ Verify authentication token is valid
 - ✓ Review RLS policies in database
@@ -701,6 +728,7 @@ For testing or professional broadcasting, you can use OBS Studio:
 **Symptoms**: Blurry video, artifacts, pixelation
 
 **Solutions**:
+
 - ✓ Increase bitrate setting
 - ✓ Use higher quality preset
 - ✓ Check upload bandwidth (broadcaster)
@@ -777,6 +805,7 @@ STREAM_RECORDING_PATH=/mnt/recordings
 ### Monitoring
 
 **Key Metrics to Monitor**:
+
 - Active streams count
 - Concurrent viewers
 - Average viewer count
@@ -788,6 +817,7 @@ STREAM_RECORDING_PATH=/mnt/recordings
 - Error rates
 
 **Recommended Tools**:
+
 - Grafana for dashboards
 - Prometheus for metrics collection
 - Sentry for error tracking
@@ -852,6 +882,7 @@ For questions, issues, or feature requests, please open an issue on GitHub or co
 ---
 
 **Related Documentation**:
+
 - [Live Streaming Quick Start](./Live-Streaming-Quick-Start.md)
 - [API Documentation](../api/Streams.md)
 - [Database Schema](../reference/Database-Schema.md)

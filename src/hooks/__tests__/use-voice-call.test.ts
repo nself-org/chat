@@ -196,9 +196,7 @@ describe('useVoiceCall', () => {
 
     it('should call onCallStarted callback', async () => {
       const onCallStarted = jest.fn()
-      const { result } = renderHook(() =>
-        useVoiceCall({ ...defaultOptions, onCallStarted })
-      )
+      const { result } = renderHook(() => useVoiceCall({ ...defaultOptions, onCallStarted }))
 
       await act(async () => {
         await result.current.startCall('target-user', 'Target User')
@@ -277,9 +275,7 @@ describe('useVoiceCall', () => {
         },
       ]
 
-      const { result } = renderHook(() =>
-        useVoiceCall({ ...defaultOptions, onCallStarted })
-      )
+      const { result } = renderHook(() => useVoiceCall({ ...defaultOptions, onCallStarted }))
 
       await act(async () => {
         await result.current.acceptCall('call-123')
@@ -356,9 +352,7 @@ describe('useVoiceCall', () => {
         initiatorId: 'user-123',
       }
 
-      const { result } = renderHook(() =>
-        useVoiceCall({ ...defaultOptions, onCallEnded })
-      )
+      const { result } = renderHook(() => useVoiceCall({ ...defaultOptions, onCallEnded }))
 
       act(() => {
         result.current.endCall()
@@ -522,9 +516,7 @@ describe('useVoiceCall', () => {
 
     it('should call onError callback when error occurs', async () => {
       const onError = jest.fn()
-      const { result } = renderHook(() =>
-        useVoiceCall({ ...defaultOptions, onError })
-      )
+      const { result } = renderHook(() => useVoiceCall({ ...defaultOptions, onError }))
 
       // The onError would be called through the media manager callbacks
       // This tests that the hook accepts the callback
@@ -620,7 +612,21 @@ describe('useVoiceCall Integration', () => {
       type: 'voice',
       state: 'connected',
       direction: 'outgoing',
-      participants: new Map([['target-user', { id: 'target-user', name: 'Target User', isMuted: false, isVideoEnabled: false, isScreenSharing: false, isSpeaking: false, joinedAt: new Date().toISOString(), connectionState: 'connected' }]]),
+      participants: new Map([
+        [
+          'target-user',
+          {
+            id: 'target-user',
+            name: 'Target User',
+            isMuted: false,
+            isVideoEnabled: false,
+            isScreenSharing: false,
+            isSpeaking: false,
+            joinedAt: new Date().toISOString(),
+            connectionState: 'connected',
+          },
+        ],
+      ]),
       startedAt: new Date().toISOString(),
       connectedAt: new Date().toISOString(),
       endedAt: null,

@@ -44,12 +44,7 @@ interface ParticipantVideoProps {
   className?: string
 }
 
-function ParticipantVideo({
-  participant,
-  callType,
-  layout,
-  className,
-}: ParticipantVideoProps) {
+function ParticipantVideo({ participant, callType, layout, className }: ParticipantVideoProps) {
   const videoRef = React.useRef<HTMLVideoElement>(null)
 
   // Attach stream to video element
@@ -64,30 +59,25 @@ function ParticipantVideo({
   return (
     <div
       className={cn(
-        'relative rounded-lg overflow-hidden bg-muted',
+        'relative overflow-hidden rounded-lg bg-muted',
         'flex items-center justify-center',
-        layout === 'grid' ? 'aspect-video' : 'w-full h-full',
+        layout === 'grid' ? 'aspect-video' : 'h-full w-full',
         participant.isSpeaking && 'ring-4 ring-green-500',
         className
       )}
     >
       {/* Video Stream */}
       {showVideo ? (
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          className="w-full h-full object-cover"
-        />
+        <video ref={videoRef} autoPlay playsInline className="h-full w-full object-cover" />
       ) : (
         /* Avatar Fallback */
         <div className="flex flex-col items-center justify-center gap-3 p-4">
-          <div className="h-20 w-20 rounded-full bg-background flex items-center justify-center overflow-hidden">
+          <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-background">
             {participant.avatarUrl ? (
               <img
                 src={participant.avatarUrl}
                 alt={participant.name}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             ) : (
               <User className="h-10 w-10 text-muted-foreground" />
@@ -98,27 +88,25 @@ function ParticipantVideo({
       )}
 
       {/* Overlay Info */}
-      <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/80 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-3">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-sm font-medium text-white truncate">
-            {participant.name}
-          </span>
+          <span className="truncate text-sm font-medium text-white">{participant.name}</span>
           <div className="flex items-center gap-1">
             {participant.isScreenSharing && (
-              <div className="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center">
+              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-500">
                 <Monitor className="h-3 w-3 text-white" />
               </div>
             )}
             <div
               className={cn(
-                'h-6 w-6 rounded-full flex items-center justify-center',
+                'flex h-6 w-6 items-center justify-center rounded-full',
                 participant.isMuted ? 'bg-red-500' : 'bg-transparent'
               )}
             >
               {participant.isMuted ? (
                 <MicOff className="h-3 w-3 text-white" />
               ) : participant.isSpeaking ? (
-                <Mic className="h-3 w-3 text-green-500 animate-pulse" />
+                <Mic className="h-3 w-3 animate-pulse text-green-500" />
               ) : null}
             </div>
           </div>
@@ -127,8 +115,8 @@ function ParticipantVideo({
 
       {/* Speaking Indicator */}
       {participant.isSpeaking && (
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 border-4 border-green-500 rounded-lg animate-pulse" />
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 animate-pulse rounded-lg border-4 border-green-500" />
         </div>
       )}
     </div>
@@ -171,7 +159,7 @@ export function CallParticipants({
     const otherParticipants = participants.filter((p) => !p.isScreenSharing)
 
     return (
-      <div className={cn('flex gap-4 h-full', className)}>
+      <div className={cn('flex h-full gap-4', className)}>
         {/* Main Screen Share */}
         <div className="flex-1">
           <ParticipantVideo
@@ -183,7 +171,7 @@ export function CallParticipants({
 
         {/* Sidebar with other participants */}
         {otherParticipants.length > 0 && (
-          <div className="w-64 flex flex-col gap-2 overflow-y-auto">
+          <div className="flex w-64 flex-col gap-2 overflow-y-auto">
             {otherParticipants.map((participant) => (
               <ParticipantVideo
                 key={participant.id}
@@ -200,14 +188,7 @@ export function CallParticipants({
 
   // Grid layout for normal calls
   return (
-    <div
-      className={cn(
-        'grid gap-4 w-full h-full auto-rows-fr',
-        getGridLayout(),
-        'p-4',
-        className
-      )}
-    >
+    <div className={cn('grid h-full w-full auto-rows-fr gap-4', getGridLayout(), 'p-4', className)}>
       {participants.map((participant) => (
         <ParticipantVideo
           key={participant.id}
@@ -228,7 +209,7 @@ CallParticipants.displayName = 'CallParticipants'
 
 export function EmptyCallState({ message = 'Waiting for participants to join...' }) {
   return (
-    <div className="flex flex-col items-center justify-center h-full gap-4 text-muted-foreground">
+    <div className="flex h-full flex-col items-center justify-center gap-4 text-muted-foreground">
       <User className="h-16 w-16" />
       <p className="text-sm">{message}</p>
     </div>

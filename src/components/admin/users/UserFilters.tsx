@@ -102,7 +102,10 @@ export function UserFilters({ filters, onFiltersChange, onClear }: UserFiltersPr
             type="date"
             value={filters.createdAfter?.split('T')[0] || ''}
             onChange={(e) =>
-              handleChange('createdAfter', e.target.value ? new Date(e.target.value).toISOString() : undefined)
+              handleChange(
+                'createdAfter',
+                e.target.value ? new Date(e.target.value).toISOString() : undefined
+              )
             }
           />
         </div>
@@ -115,7 +118,10 @@ export function UserFilters({ filters, onFiltersChange, onClear }: UserFiltersPr
             type="date"
             value={filters.createdBefore?.split('T')[0] || ''}
             onChange={(e) =>
-              handleChange('createdBefore', e.target.value ? new Date(e.target.value).toISOString() : undefined)
+              handleChange(
+                'createdBefore',
+                e.target.value ? new Date(e.target.value).toISOString() : undefined
+              )
             }
           />
         </div>
@@ -128,7 +134,10 @@ export function UserFilters({ filters, onFiltersChange, onClear }: UserFiltersPr
             type="date"
             value={filters.lastSeenAfter?.split('T')[0] || ''}
             onChange={(e) =>
-              handleChange('lastSeenAfter', e.target.value ? new Date(e.target.value).toISOString() : undefined)
+              handleChange(
+                'lastSeenAfter',
+                e.target.value ? new Date(e.target.value).toISOString() : undefined
+              )
             }
           />
         </div>
@@ -141,7 +150,10 @@ export function UserFilters({ filters, onFiltersChange, onClear }: UserFiltersPr
             type="date"
             value={filters.lastSeenBefore?.split('T')[0] || ''}
             onChange={(e) =>
-              handleChange('lastSeenBefore', e.target.value ? new Date(e.target.value).toISOString() : undefined)
+              handleChange(
+                'lastSeenBefore',
+                e.target.value ? new Date(e.target.value).toISOString() : undefined
+              )
             }
           />
         </div>

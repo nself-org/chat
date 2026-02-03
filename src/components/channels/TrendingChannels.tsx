@@ -94,9 +94,9 @@ export function TrendingChannels({
           {trendingChannels.map((channel, index) => (
             <div
               key={channel.id}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
+              className="hover:bg-accent/50 flex items-center gap-3 rounded-lg p-3 transition-colors"
             >
-              <div className="flex items-center gap-2 w-8">
+              <div className="flex w-8 items-center gap-2">
                 {index < 3 ? (
                   <Flame
                     className={cn(
@@ -107,12 +107,10 @@ export function TrendingChannels({
                     )}
                   />
                 ) : (
-                  <span className="text-sm font-medium text-muted-foreground">
-                    #{index + 1}
-                  </span>
+                  <span className="text-sm font-medium text-muted-foreground">#{index + 1}</span>
                 )}
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <ChannelCard
                   channel={channel}
                   isJoined={joinedChannelIds.has(channel.id)}
@@ -135,13 +133,13 @@ export function TrendingChannels({
 
     if (layout === 'grid') {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {trendingChannels.map((channel, index) => (
             <div key={channel.id} className="relative">
               {index < 3 && (
                 <Badge
                   className={cn(
-                    'absolute -top-2 -right-2 z-10',
+                    'absolute -right-2 -top-2 z-10',
                     index === 0 && 'bg-red-500',
                     index === 1 && 'bg-orange-500',
                     index === 2 && 'bg-yellow-500'
@@ -170,18 +168,17 @@ export function TrendingChannels({
       <ScrollArea className="w-full">
         <div className="flex gap-4 pb-4">
           {trendingChannels.map((channel, index) => (
-            <div key={channel.id} className="w-[280px] flex-shrink-0 relative">
+            <div key={channel.id} className="relative w-[280px] flex-shrink-0">
               {index < 3 && (
                 <Badge
                   className={cn(
-                    'absolute -top-2 -right-2 z-10',
+                    'absolute -right-2 -top-2 z-10',
                     index === 0 && 'bg-red-500',
                     index === 1 && 'bg-orange-500',
                     index === 2 && 'bg-yellow-500'
                   )}
                 >
-                  <Flame className="h-3 w-3 mr-1" />
-                  #{index + 1}
+                  <Flame className="mr-1 h-3 w-3" />#{index + 1}
                 </Badge>
               )}
               <ChannelCard
@@ -208,7 +205,7 @@ export function TrendingChannels({
           <Flame className="h-5 w-5 text-red-500" />
           <h2 className="text-lg font-semibold">Trending Now</h2>
           <Badge variant="outline" className="text-xs">
-            <TrendingUp className="h-3 w-3 mr-1" />
+            <TrendingUp className="mr-1 h-3 w-3" />
             Hot
           </Badge>
         </div>

@@ -71,7 +71,9 @@ useArrowNavigation(listRef, { orientation: 'vertical', loop: true })
 return (
   <div ref={listRef} role="list">
     {items.map((item, i) => (
-      <a key={item.id} tabIndex={i === 0 ? 0 : -1}>{item.name}</a>
+      <a key={item.id} tabIndex={i === 0 ? 0 : -1}>
+        {item.name}
+      </a>
     ))}
   </div>
 )
@@ -117,18 +119,18 @@ return (
 
 ## 📝 Common ARIA Attributes
 
-| Attribute | Use Case | Example |
-|-----------|----------|---------|
-| `aria-label` | Label for icon-only elements | `<button aria-label="Close">×</button>` |
-| `aria-labelledby` | Reference to label element | `<dialog aria-labelledby="title">` |
-| `aria-describedby` | Additional description | `<input aria-describedby="hint">` |
-| `aria-expanded` | Expandable elements | `<button aria-expanded={isOpen}>` |
-| `aria-pressed` | Toggle buttons | `<button aria-pressed={isActive}>` |
-| `aria-invalid` | Form validation | `<input aria-invalid={!!error}>` |
-| `aria-busy` | Loading states | `<div aria-busy={isLoading}>` |
-| `aria-live` | Dynamic content | `<div aria-live="polite">` |
-| `aria-hidden` | Decorative elements | `<span aria-hidden="true">🎉</span>` |
-| `aria-modal` | Modal dialogs | `<div role="dialog" aria-modal="true">` |
+| Attribute          | Use Case                     | Example                                 |
+| ------------------ | ---------------------------- | --------------------------------------- |
+| `aria-label`       | Label for icon-only elements | `<button aria-label="Close">×</button>` |
+| `aria-labelledby`  | Reference to label element   | `<dialog aria-labelledby="title">`      |
+| `aria-describedby` | Additional description       | `<input aria-describedby="hint">`       |
+| `aria-expanded`    | Expandable elements          | `<button aria-expanded={isOpen}>`       |
+| `aria-pressed`     | Toggle buttons               | `<button aria-pressed={isActive}>`      |
+| `aria-invalid`     | Form validation              | `<input aria-invalid={!!error}>`        |
+| `aria-busy`        | Loading states               | `<div aria-busy={isLoading}>`           |
+| `aria-live`        | Dynamic content              | `<div aria-live="polite">`              |
+| `aria-hidden`      | Decorative elements          | `<span aria-hidden="true">🎉</span>`    |
+| `aria-modal`       | Modal dialogs                | `<div role="dialog" aria-modal="true">` |
 
 ---
 
@@ -163,23 +165,23 @@ const better = suggestAccessibleColor('#777777', '#FFFFFF', 4.5)
 
 ### Global
 
-| Shortcut | Action |
-|----------|--------|
-| `Alt+A` | Open accessibility menu |
-| `Tab` | Next element |
-| `Shift+Tab` | Previous element |
-| `Escape` | Close modal/dialog |
-| `Enter` / `Space` | Activate button |
+| Shortcut          | Action                  |
+| ----------------- | ----------------------- |
+| `Alt+A`           | Open accessibility menu |
+| `Tab`             | Next element            |
+| `Shift+Tab`       | Previous element        |
+| `Escape`          | Close modal/dialog      |
+| `Enter` / `Space` | Activate button         |
 
 ### List Navigation
 
-| Shortcut | Action |
-|----------|--------|
-| `Arrow Up/Down` | Previous/Next item |
+| Shortcut           | Action                     |
+| ------------------ | -------------------------- |
+| `Arrow Up/Down`    | Previous/Next item         |
 | `Arrow Left/Right` | Previous/Next (horizontal) |
-| `Home` | First item |
-| `End` | Last item |
-| `Enter` / `Space` | Select item |
+| `Home`             | First item                 |
+| `End`              | Last item                  |
+| `Enter` / `Space`  | Select item                |
 
 ---
 
@@ -202,12 +204,10 @@ announce('Error occurred', 'assertive')
 ```tsx
 import { getMessageLabel } from '@/lib/a11y'
 
-const label = getMessageLabel(
-  'Hello world',
-  'John Doe',
-  new Date(),
-  { isEdited: true, hasAttachments: true }
-)
+const label = getMessageLabel('Hello world', 'John Doe', new Date(), {
+  isEdited: true,
+  hasAttachments: true,
+})
 // "Message from John Doe, just now, edited, 1 attachment: Hello world"
 ```
 
@@ -219,8 +219,8 @@ const label = getMessageLabel(
 
 ```tsx
 const modalRef = useFocusTrap(isOpen, {
-  returnFocus: true,  // Return focus on close
-  onEscape: onClose,  // Close on ESC key
+  returnFocus: true, // Return focus on close
+  onEscape: onClose, // Close on ESC key
 })
 ```
 
@@ -249,9 +249,7 @@ const handleOpen = () => {
 ### Screen Reader Only
 
 ```tsx
-<span className="sr-only">
-  Hidden from view but announced by screen readers
-</span>
+<span className="sr-only">Hidden from view but announced by screen readers</span>
 ```
 
 ### Focus Visible
@@ -357,12 +355,12 @@ pnpm test src/components/MyComponent.test.tsx
 
 ## 📚 Resources
 
-| Resource | Link |
-|----------|------|
-| **Full Guide** | `/docs/Accessibility-Guide.md` |
-| **Examples** | `/src/components/accessibility/examples.tsx` |
-| **WCAG 2.1** | https://www.w3.org/WAI/WCAG21/quickref/ |
-| **ARIA Practices** | https://www.w3.org/WAI/ARIA/apg/ |
+| Resource           | Link                                         |
+| ------------------ | -------------------------------------------- |
+| **Full Guide**     | `/docs/Accessibility-Guide.md`               |
+| **Examples**       | `/src/components/accessibility/examples.tsx` |
+| **WCAG 2.1**       | https://www.w3.org/WAI/WCAG21/quickref/      |
+| **ARIA Practices** | https://www.w3.org/WAI/ARIA/apg/             |
 
 ---
 

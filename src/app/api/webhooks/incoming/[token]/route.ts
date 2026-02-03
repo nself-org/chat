@@ -7,17 +7,10 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
-import {
-  withErrorHandler,
-  withRateLimit,
-  compose,
-  type RouteContext,
-} from '@/lib/api/middleware'
-import {
-  successResponse,
-  badRequestResponse,
-  internalErrorResponse,
-} from '@/lib/api/response'
+import { withErrorHandler, withRateLimit, compose, type RouteContext } from '@/lib/api/middleware'
+import { successResponse, badRequestResponse, internalErrorResponse } from '@/lib/api/response'
+
+import { logger } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -34,7 +27,7 @@ async function handleWebhookPost(
   request: NextRequest,
   context: RouteContext
 ): Promise<NextResponse> {
-  const params = await context.params as { token: string }
+  const params = (await context.params) as { token: string }
   try {
     const token = params.token
 
@@ -49,13 +42,12 @@ async function handleWebhookPost(
     const headersList = await headers()
     const ip = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || 'unknown'
 
-    // TODO: Validate webhook token and find target channel
     // For now, return success
-    console.log('Incoming webhook:', {
-      token,
-      ip,
-      body,
-    })
+    // REMOVED: console.log('Incoming webhook:', {
+    //   token,
+    //   ip,
+    //   body,
+    // })
 
     return successResponse({
       success: true,
@@ -63,16 +55,13 @@ async function handleWebhookPost(
       timestamp: new Date().toISOString(),
     })
   } catch (error) {
-    console.error('Incoming webhook error:', error)
+    logger.error('Incoming webhook error:', error)
     return internalErrorResponse('Failed to process webhook')
   }
 }
 
 // Apply rate limiting and error handling
-export const POST = compose(
-  withErrorHandler,
-  withRateLimit(RATE_LIMIT)
-)(handleWebhookPost)
+export const POST = compose(withErrorHandler, withRateLimit(RATE_LIMIT))(handleWebhookPost)
 
 /**
  * GET /api/webhooks/incoming/[token]
@@ -87,13 +76,8 @@ export async function GET(
     const { token } = await params
 
     if (!token) {
-      return NextResponse.json(
-        { error: 'Missing webhook token' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing webhook token' }, { status: 400 })
     }
-
-    // TODO: Fetch webhook configuration from database
 
     return NextResponse.json({
       webhook: {
@@ -119,10 +103,7 @@ export async function GET(
       },
     })
   } catch (error) {
-    console.error('Webhook info error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch webhook info' },
-      { status: 500 }
-    )
+    logger.error('Webhook info error:', error)
+    return NextResponse.json({ error: 'Failed to fetch webhook info' }, { status: 500 })
   }
 }

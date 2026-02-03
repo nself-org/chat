@@ -290,10 +290,7 @@ export function createLocationTracker(options?: TrackerOptions): LocationTracker
 /**
  * Format coordinates as a string.
  */
-export function formatCoordinates(
-  coords: Coordinates,
-  precision: number = 6
-): string {
+export function formatCoordinates(coords: Coordinates, precision: number = 6): string {
   const lat = coords.latitude.toFixed(precision)
   const lon = coords.longitude.toFixed(precision)
   return `${lat}, ${lon}`
@@ -304,9 +301,7 @@ export function formatCoordinates(
  */
 export function formatCoordinatesDMS(coords: Coordinates): string {
   const formatDMS = (decimal: number, isLat: boolean): string => {
-    const direction = isLat
-      ? decimal >= 0 ? 'N' : 'S'
-      : decimal >= 0 ? 'E' : 'W'
+    const direction = isLat ? (decimal >= 0 ? 'N' : 'S') : decimal >= 0 ? 'E' : 'W'
     const absolute = Math.abs(decimal)
     const degrees = Math.floor(absolute)
     const minutesDecimal = (absolute - degrees) * 60

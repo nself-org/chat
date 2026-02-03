@@ -44,12 +44,18 @@ import { Badge } from '@/components/ui/badge'
 import { MessageItem, CompactMessageItem } from './message-item'
 import { MessageInput } from './message-input'
 import { ThreadSummaryPanel } from './ThreadSummaryPanel'
-import { useThread, type ThreadMessage as HookThreadMessage, type ThreadParticipant } from '@/hooks/use-thread'
+import {
+  useThread,
+  type ThreadMessage as HookThreadMessage,
+  type ThreadParticipant,
+} from '@/hooks/use-thread'
 import { useAuth } from '@/contexts/auth-context'
 import { useAppConfig } from '@/contexts/app-config-context'
 import { cn } from '@/lib/utils'
 import { format } from 'date-fns'
 import type { Message } from '@/types/message'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -149,7 +155,7 @@ export function ThreadView({
         await sendReply(content)
         scrollToBottom()
       } catch (err) {
-        console.error('Failed to send reply:', err)
+        logger.error('Failed to send reply:', err)
       }
     },
     [sendReply, scrollToBottom]
@@ -164,7 +170,7 @@ export function ThreadView({
         await joinThread()
       }
     } catch (err) {
-      console.error('Failed to toggle follow:', err)
+      logger.error('Failed to toggle follow:', err)
     }
   }, [isParticipant, joinThread, leaveThread])
 
@@ -173,10 +179,11 @@ export function ThreadView({
     if (!thread) return
 
     try {
-      const currentState = participants.find(p => p.user_id === user?.id)?.notifications_enabled ?? true
+      const currentState =
+        participants.find((p) => p.user_id === user?.id)?.notifications_enabled ?? true
       await toggleNotifications(!currentState)
     } catch (err) {
-      console.error('Failed to toggle notifications:', err)
+      logger.error('Failed to toggle notifications:', err)
     }
   }, [thread, participants, user?.id, toggleNotifications])
 
@@ -212,12 +219,14 @@ export function ThreadView({
     reactions: msg.reactions?.map((r: any) => ({
       emoji: r.emoji,
       count: 1,
-      users: [{
-        id: r.user.id,
-        username: r.user.username,
-        displayName: r.user.display_name,
-        avatarUrl: r.user.avatar_url,
-      }],
+      users: [
+        {
+          id: r.user.id,
+          username: r.user.username,
+          displayName: r.user.display_name,
+          avatarUrl: r.user.avatar_url,
+        },
+      ],
       hasReacted: r.user_id === user?.id,
     })),
     isPinned: msg.is_pinned,
@@ -225,7 +234,8 @@ export function ThreadView({
   }))
 
   // Get notification status for current user
-  const notificationsEnabled = participants.find(p => p.user_id === user?.id)?.notifications_enabled ?? true
+  const notificationsEnabled =
+    participants.find((p) => p.user_id === user?.id)?.notifications_enabled ?? true
 
   // Loading state
   if (loading && !thread) {
@@ -242,7 +252,7 @@ export function ThreadView({
       <div className={cn('flex h-full items-center justify-center p-8', className)}>
         <div className="text-center">
           <p className="text-sm text-muted-foreground">Failed to load thread</p>
-          <p className="text-xs text-muted-foreground mt-2">{error.message}</p>
+          <p className="mt-2 text-xs text-muted-foreground">{error.message}</p>
         </div>
       </div>
     )
@@ -253,7 +263,7 @@ export function ThreadView({
     return (
       <div className={cn('flex h-full items-center justify-center p-8', className)}>
         <div className="text-center">
-          <MessageSquare className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <MessageSquare className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
           <p className="text-sm text-muted-foreground">Thread not found</p>
         </div>
       </div>
@@ -263,30 +273,22 @@ export function ThreadView({
   return (
     <div className={cn('flex h-full flex-col bg-background', className)}>
       {/* Header */}
-      <div className={cn(
-        'flex items-center justify-between border-b px-4',
-        compactHeader ? 'py-2' : 'py-3'
-      )}>
-        <div className="flex items-center gap-3 min-w-0 flex-1">
+      <div
+        className={cn(
+          'flex items-center justify-between border-b px-4',
+          compactHeader ? 'py-2' : 'py-3'
+        )}
+      >
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           {standalone && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onClose}
-              className="shrink-0"
-            >
+            <Button variant="ghost" size="sm" onClick={onClose} className="shrink-0">
               <ChevronLeft className="h-4 w-4" />
             </Button>
           )}
 
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <MessageSquare className="h-4 w-4 text-muted-foreground shrink-0" />
-            <span className={cn(
-              'font-semibold truncate',
-              compactHeader && 'text-sm'
-            )}>
-              Thread
-            </span>
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <MessageSquare className="h-4 w-4 shrink-0 text-muted-foreground" />
+            <span className={cn('truncate font-semibold', compactHeader && 'text-sm')}>Thread</span>
             <Badge variant="secondary" className="shrink-0">
               {totalCount} {totalCount === 1 ? 'reply' : 'replies'}
             </Badge>
@@ -298,7 +300,7 @@ export function ThreadView({
           </div>
         </div>
 
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex shrink-0 items-center gap-1">
           {/* Participants dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -314,19 +316,14 @@ export function ThreadView({
               <Separator />
               <div className="max-h-64 overflow-y-auto">
                 {participants.map((participant: ThreadParticipant) => (
-                  <div
-                    key={participant.id}
-                    className="flex items-center gap-2 px-2 py-1.5"
-                  >
+                  <div key={participant.id} className="flex items-center gap-2 px-2 py-1.5">
                     <Avatar className="h-6 w-6">
                       <AvatarImage src={participant.user.avatar_url} />
                       <AvatarFallback className="text-xs">
                         {participant.user.display_name.charAt(0)}
                       </AvatarFallback>
                     </Avatar>
-                    <span className="text-sm flex-1 truncate">
-                      {participant.user.display_name}
-                    </span>
+                    <span className="flex-1 truncate text-sm">{participant.user.display_name}</span>
                   </div>
                 ))}
               </div>
@@ -347,19 +344,19 @@ export function ThreadView({
               <DropdownMenuItem onClick={handleToggleNotifications}>
                 {notificationsEnabled ? (
                   <>
-                    <BellOff className="h-4 w-4 mr-2" />
+                    <BellOff className="mr-2 h-4 w-4" />
                     Mute notifications
                   </>
                 ) : (
                   <>
-                    <Bell className="h-4 w-4 mr-2" />
+                    <Bell className="mr-2 h-4 w-4" />
                     Enable notifications
                   </>
                 )}
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => setShowSummary(!showSummary)}>
-                <MessageSquare className="h-4 w-4 mr-2" />
+                <MessageSquare className="mr-2 h-4 w-4" />
                 {showSummary ? 'Hide' : 'Show'} AI Summary
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -384,10 +381,10 @@ export function ThreadView({
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="border-b overflow-hidden"
+            className="overflow-hidden border-b"
           >
             <ThreadSummaryPanel
-              messages={componentMessages.map(msg => ({
+              messages={componentMessages.map((msg) => ({
                 id: msg.id,
                 userId: msg.userId,
                 userName: msg.user.displayName,
@@ -403,20 +400,16 @@ export function ThreadView({
       </AnimatePresence>
 
       {/* Parent message */}
-      <div className="border-b bg-muted/30 p-4">
+      <div className="bg-muted/30 border-b p-4">
         <div className="flex items-start gap-3">
           <Avatar className="h-10 w-10 shrink-0">
             <AvatarImage src={parentMessage.user.avatar_url} />
-            <AvatarFallback>
-              {parentMessage.user.display_name.charAt(0)}
-            </AvatarFallback>
+            <AvatarFallback>{parentMessage.user.display_name.charAt(0)}</AvatarFallback>
           </Avatar>
 
           <div className="min-w-0 flex-1">
-            <div className="flex items-baseline gap-2 mb-1">
-              <span className="font-semibold text-sm">
-                {parentMessage.user.display_name}
-              </span>
+            <div className="mb-1 flex items-baseline gap-2">
+              <span className="text-sm font-semibold">{parentMessage.user.display_name}</span>
               <span className="text-xs text-muted-foreground">
                 {format(new Date(parentMessage.created_at), 'MMM d, h:mm a')}
               </span>
@@ -427,38 +420,28 @@ export function ThreadView({
       </div>
 
       {/* Thread messages */}
-      <ScrollArea
-        ref={scrollRef}
-        className="flex-1 relative"
-        onScroll={handleScroll}
-      >
+      <ScrollArea ref={scrollRef} className="relative flex-1" onScroll={handleScroll}>
         {loadingMessages && hasMore && (
           <div className="flex items-center justify-center p-4">
             <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
           </div>
         )}
 
-        <div className="p-4 space-y-1">
+        <div className="space-y-1 p-4">
           <AnimatePresence initial={false}>
             {componentMessages.map((message, index) => (
               <CompactMessageItem
                 key={message.id}
                 message={message}
-                isGrouped={
-                  index > 0 &&
-                  componentMessages[index - 1].userId === message.userId
-                }
-                showAvatar={
-                  index === 0 ||
-                  componentMessages[index - 1].userId !== message.userId
-                }
+                isGrouped={index > 0 && componentMessages[index - 1].userId === message.userId}
+                showAvatar={index === 0 || componentMessages[index - 1].userId !== message.userId}
               />
             ))}
           </AnimatePresence>
 
           {messages.length === 0 && !loadingMessages && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <MessageSquare className="h-12 w-12 text-muted-foreground mb-4" />
+              <MessageSquare className="mb-4 h-12 w-12 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
                 No replies yet. Be the first to reply!
               </p>

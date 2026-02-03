@@ -61,10 +61,9 @@ const defaultTargets = {
 
 export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepProps) {
   // Get initial values from config's extended settings
-  const deploySettings = (config as AppConfig & { deploymentSettings?: DeploymentSettings }).deploymentSettings
-  const [targets, setTargets] = useState(
-    deploySettings?.targets ?? defaultTargets
-  )
+  const deploySettings = (config as AppConfig & { deploymentSettings?: DeploymentSettings })
+    .deploymentSettings
+  const [targets, setTargets] = useState(deploySettings?.targets ?? defaultTargets)
   const [expandedSection, setExpandedSection] = useState<string | null>('backend')
   const [copiedCommand, setCopiedCommand] = useState<string | null>(null)
   const [isDeploying, setIsDeploying] = useState(false)
@@ -97,12 +96,12 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
   return (
     <div className="space-y-6">
       {/* Introduction */}
-      <div className="p-4 bg-primary/5 border border-primary/20 rounded-lg">
+      <div className="bg-primary/5 border-primary/20 rounded-lg border p-4">
         <div className="flex items-start gap-3">
-          <Rocket className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+          <Rocket className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
           <div>
             <h4 className="font-semibold">Deployment Options</h4>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="mt-1 text-sm text-muted-foreground">
               Choose how you want to deploy your chat application. You can deploy the backend,
               frontend, desktop apps, and mobile apps independently.
             </p>
@@ -149,7 +148,7 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
 
           {targets.backend === 'nself' && (
             <div className="mt-4 space-y-3">
-              <h5 className="font-medium text-sm">Deployment Commands</h5>
+              <h5 className="text-sm font-medium">Deployment Commands</h5>
 
               <CommandBlock
                 label="Deploy to Staging"
@@ -168,7 +167,7 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
               <div className="text-xs text-muted-foreground">
                 <p>
                   Before deploying, configure your server in{' '}
-                  <code className="bg-muted px-1 rounded">.backend/.environments/</code>
+                  <code className="rounded bg-muted px-1">.backend/.environments/</code>
                 </p>
               </div>
             </div>
@@ -224,30 +223,29 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
 
           {targets.frontend === 'vercel' && (
             <div className="mt-4 space-y-3">
-              <h5 className="font-medium text-sm">Deploy to Vercel</h5>
+              <h5 className="text-sm font-medium">Deploy to Vercel</h5>
 
               <div className="flex gap-3">
                 <a
                   href="https://vercel.com/new/clone?repository-url=https://github.com/acamarata/nself-chat"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800"
+                  className="flex items-center gap-2 rounded-lg bg-black px-4 py-2 text-white hover:bg-gray-800"
                 >
-                  <ExternalLink className="w-4 h-4" />
+                  <ExternalLink className="h-4 w-4" />
                   Deploy to Vercel
                 </a>
               </div>
 
               <p className="text-xs text-muted-foreground">
-                Or use the CLI:{' '}
-                <code className="bg-muted px-1 rounded">npx vercel --prod</code>
+                Or use the CLI: <code className="rounded bg-muted px-1">npx vercel --prod</code>
               </p>
             </div>
           )}
 
           {targets.frontend === 'docker' && (
             <div className="mt-4 space-y-3">
-              <h5 className="font-medium text-sm">Docker Deployment</h5>
+              <h5 className="text-sm font-medium">Docker Deployment</h5>
 
               <CommandBlock
                 label="Build Docker Image"
@@ -317,7 +315,7 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
 
           {(targets.desktop === 'tauri' || targets.desktop === 'both') && (
             <div className="mt-4 space-y-3">
-              <h5 className="font-medium text-sm">Tauri Build Commands</h5>
+              <h5 className="text-sm font-medium">Tauri Build Commands</h5>
 
               <CommandBlock
                 label="Development"
@@ -334,14 +332,17 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
               />
 
               <p className="text-xs text-muted-foreground">
-                Output: <code className="bg-muted px-1 rounded">platforms/tauri/target/release/bundle/</code>
+                Output:{' '}
+                <code className="rounded bg-muted px-1">
+                  platforms/tauri/target/release/bundle/
+                </code>
               </p>
             </div>
           )}
 
           {(targets.desktop === 'electron' || targets.desktop === 'both') && (
             <div className="mt-4 space-y-3">
-              <h5 className="font-medium text-sm">Electron Build Commands</h5>
+              <h5 className="text-sm font-medium">Electron Build Commands</h5>
 
               <CommandBlock
                 label="Development"
@@ -358,7 +359,7 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
               />
 
               <p className="text-xs text-muted-foreground">
-                Output: <code className="bg-muted px-1 rounded">dist-electron/</code>
+                Output: <code className="rounded bg-muted px-1">dist-electron/</code>
               </p>
             </div>
           )}
@@ -411,7 +412,7 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
 
           {(targets.mobile === 'capacitor' || targets.mobile === 'both') && (
             <div className="mt-4 space-y-3">
-              <h5 className="font-medium text-sm">Capacitor Build Commands</h5>
+              <h5 className="text-sm font-medium">Capacitor Build Commands</h5>
 
               <CommandBlock
                 label="Sync Web Assets"
@@ -438,7 +439,7 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
 
           {(targets.mobile === 'react-native' || targets.mobile === 'both') && (
             <div className="mt-4 space-y-3">
-              <h5 className="font-medium text-sm">React Native Build Commands</h5>
+              <h5 className="text-sm font-medium">React Native Build Commands</h5>
 
               <CommandBlock
                 label="iOS"
@@ -461,12 +462,12 @@ export function DeploymentStep({ config, onUpdate, onValidate }: DeploymentStepP
       </DeploymentSection>
 
       {/* Summary */}
-      <div className="p-4 bg-muted/50 rounded-lg">
-        <h4 className="font-medium mb-3 flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 text-green-500" />
+      <div className="bg-muted/50 rounded-lg p-4">
+        <h4 className="mb-3 flex items-center gap-2 font-medium">
+          <CheckCircle2 className="h-4 w-4 text-green-500" />
           Deployment Summary
         </h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
           <div>
             <span className="text-muted-foreground">Backend:</span>
             <span className="ml-2 font-medium capitalize">{targets.backend}</span>
@@ -508,23 +509,23 @@ function DeploymentSection({
   const isConfigured = selected !== 'none'
 
   return (
-    <div className="border rounded-lg overflow-hidden">
+    <div className="overflow-hidden rounded-lg border">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
+        className="hover:bg-muted/50 flex w-full items-center justify-between p-4 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <Icon className="w-5 h-5 text-primary" />
+          <Icon className="h-5 w-5 text-primary" />
           <span className="font-medium">{title}</span>
           {isConfigured && (
-            <span className="px-2 py-0.5 text-xs font-medium bg-green-500/10 text-green-600 dark:text-green-400 rounded-full">
+            <span className="rounded-full bg-green-500/10 px-2 py-0.5 text-xs font-medium text-green-600 dark:text-green-400">
               {selected}
             </span>
           )}
         </div>
-        {expanded ? <ChevronDown className="w-5 h-5" /> : <ChevronRight className="w-5 h-5" />}
+        {expanded ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
       </button>
-      {expanded && <div className="p-4 border-t bg-muted/20">{children}</div>}
+      {expanded && <div className="bg-muted/20 border-t p-4">{children}</div>}
     </div>
   )
 }
@@ -549,38 +550,38 @@ function DeploymentOption({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-start gap-3 p-3 rounded-lg border-2 text-left transition-all',
+        'flex items-start gap-3 rounded-lg border-2 p-3 text-left transition-all',
         selected
-          ? 'border-primary bg-primary/5'
-          : 'border-transparent bg-muted/50 hover:border-primary/30'
+          ? 'bg-primary/5 border-primary'
+          : 'bg-muted/50 hover:border-primary/30 border-transparent'
       )}
     >
       <div
         className={cn(
-          'p-1.5 rounded',
-          selected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+          'rounded p-1.5',
+          selected ? 'text-primary-foreground bg-primary' : 'bg-muted'
         )}
       >
-        <Icon className="w-4 h-4" />
+        <Icon className="h-4 w-4" />
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <h5 className="font-medium text-sm">{title}</h5>
+          <h5 className="text-sm font-medium">{title}</h5>
           {badge && (
-            <span className="px-1.5 py-0.5 text-[10px] font-medium bg-primary/10 text-primary rounded">
+            <span className="bg-primary/10 rounded px-1.5 py-0.5 text-[10px] font-medium text-primary">
               {badge}
             </span>
           )}
         </div>
-        <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+        <p className="mt-0.5 text-xs text-muted-foreground">{description}</p>
       </div>
       <div
         className={cn(
-          'w-4 h-4 rounded-full border-2 flex items-center justify-center flex-shrink-0',
+          'flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border-2',
           selected ? 'border-primary bg-primary' : 'border-muted-foreground/30'
         )}
       >
-        {selected && <Check className="w-2.5 h-2.5 text-primary-foreground" />}
+        {selected && <Check className="text-primary-foreground h-2.5 w-2.5" />}
       </div>
     </button>
   )
@@ -600,14 +601,14 @@ function CommandBlock({
 }) {
   return (
     <div>
-      <div className="text-xs text-muted-foreground mb-1">{label}</div>
-      <div className="relative bg-gray-900 text-gray-100 p-3 rounded-lg font-mono text-xs">
+      <div className="mb-1 text-xs text-muted-foreground">{label}</div>
+      <div className="relative rounded-lg bg-gray-900 p-3 font-mono text-xs text-gray-100">
         <code>{command}</code>
         <button
           onClick={() => onCopy(command)}
-          className="absolute top-2 right-2 p-1.5 hover:bg-gray-800 rounded"
+          className="absolute right-2 top-2 rounded p-1.5 hover:bg-gray-800"
         >
-          {copied ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+          {copied ? <Check className="h-3 w-3 text-green-400" /> : <Copy className="h-3 w-3" />}
         </button>
       </div>
     </div>

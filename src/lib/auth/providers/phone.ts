@@ -5,49 +5,56 @@
  * Can be used with various SMS providers (Twilio, AWS SNS, etc.)
  */
 
-import { AuthProvider, AuthResult, BaseProviderConfig, AuthCredentials, PhoneCredentials } from './types';
+import { logger } from '@/lib/logger'
+import {
+  AuthProvider,
+  AuthResult,
+  BaseProviderConfig,
+  AuthCredentials,
+  PhoneCredentials,
+} from './types'
 
 // Extended phone credentials with OTP code for verification step
 interface PhoneCredentialsWithCode extends PhoneCredentials {
-  code?: string;
+  code?: string
 }
 
 export interface PhoneAuthConfig extends BaseProviderConfig {
-  provider: 'twilio' | 'aws-sns' | 'messagebird' | 'vonage' | 'custom';
+  provider: 'twilio' | 'aws-sns' | 'messagebird' | 'vonage' | 'custom'
   // Twilio
-  twilioAccountSid?: string;
-  twilioAuthToken?: string;
-  twilioVerifyServiceSid?: string;
+  twilioAccountSid?: string
+  twilioAuthToken?: string
+  twilioVerifyServiceSid?: string
   // AWS SNS
-  awsRegion?: string;
-  awsAccessKeyId?: string;
-  awsSecretAccessKey?: string;
+  awsRegion?: string
+  awsAccessKeyId?: string
+  awsSecretAccessKey?: string
   // Custom webhook
-  sendCodeWebhook?: string;
-  verifyCodeWebhook?: string;
+  sendCodeWebhook?: string
+  verifyCodeWebhook?: string
   // Options
-  codeLength?: number;
-  codeExpiry?: number; // seconds
-  maxAttempts?: number;
-  cooldownPeriod?: number; // seconds between resends
+  codeLength?: number
+  codeExpiry?: number // seconds
+  maxAttempts?: number
+  cooldownPeriod?: number // seconds between resends
 }
 
 export interface PhoneVerificationState {
-  phoneNumber: string;
-  codeSentAt: number;
-  attempts: number;
-  verified: boolean;
-  _code?: string; // Internal code storage
+  phoneNumber: string
+  codeSentAt: number
+  attempts: number
+  verified: boolean
+  _code?: string // Internal code storage
 }
 
 // In-memory store for verification states (use Redis in production)
-const verificationStates = new Map<string, PhoneVerificationState>();
+const verificationStates = new Map<string, PhoneVerificationState>()
 
 export class PhoneAuthProvider implements AuthProvider {
-  private config: PhoneAuthConfig;
+  private config: PhoneAuthConfig
 
-  readonly type: 'phone' = 'phone';
-  readonly name: string;
+  readonly type: 'phone' = 'phone'
+  readonly name: string
 
   constructor(config: PhoneAuthConfig) {
     this.config = {
@@ -56,16 +63,16 @@ export class PhoneAuthProvider implements AuthProvider {
       maxAttempts: 3,
       cooldownPeriod: 60, // 1 minute
       ...config,
-    };
-    this.name = config.displayName || 'Phone';
+    }
+    this.name = config.displayName || 'Phone'
   }
 
   get id() {
-    return 'phone';
+    return 'phone'
   }
 
   get icon() {
-    return 'phone';
+    return 'phone'
   }
 
   /**
@@ -73,19 +80,23 @@ export class PhoneAuthProvider implements AuthProvider {
    */
   isConfigured(): boolean {
     if (!this.config.enabled) {
-      return false;
+      return false
     }
 
     switch (this.config.provider) {
       case 'twilio':
-        return !!(this.config.twilioAccountSid && this.config.twilioAuthToken);
+        return !!(this.config.twilioAccountSid && this.config.twilioAuthToken)
       case 'aws-sns':
-        return !!(this.config.awsRegion && this.config.awsAccessKeyId && this.config.awsSecretAccessKey);
+        return !!(
+          this.config.awsRegion &&
+          this.config.awsAccessKeyId &&
+          this.config.awsSecretAccessKey
+        )
       case 'custom':
-        return !!(this.config.sendCodeWebhook && this.config.verifyCodeWebhook);
+        return !!(this.config.sendCodeWebhook && this.config.verifyCodeWebhook)
       default:
         // Development mode - always configured
-        return true;
+        return true
     }
   }
 
@@ -94,66 +105,66 @@ export class PhoneAuthProvider implements AuthProvider {
    */
   private formatPhoneNumber(phone: string): string {
     // Remove all non-digit characters except +
-    let formatted = phone.replace(/[^\d+]/g, '');
+    let formatted = phone.replace(/[^\d+]/g, '')
 
     // Add + if not present
     if (!formatted.startsWith('+')) {
       // Assume US number if no country code
       if (formatted.length === 10) {
-        formatted = '+1' + formatted;
+        formatted = '+1' + formatted
       } else {
-        formatted = '+' + formatted;
+        formatted = '+' + formatted
       }
     }
 
-    return formatted;
+    return formatted
   }
 
   /**
    * Generate a random OTP code
    */
   private generateCode(): string {
-    const length = this.config.codeLength || 6;
-    let code = '';
+    const length = this.config.codeLength || 6
+    let code = ''
     for (let i = 0; i < length; i++) {
-      code += Math.floor(Math.random() * 10).toString();
+      code += Math.floor(Math.random() * 10).toString()
     }
-    return code;
+    return code
   }
 
   /**
    * Send verification code via configured provider
    */
   async sendVerificationCode(phoneNumber: string): Promise<{ success: boolean; message?: string }> {
-    const formattedPhone = this.formatPhoneNumber(phoneNumber);
+    const formattedPhone = this.formatPhoneNumber(phoneNumber)
 
     // Check cooldown
-    const existingState = verificationStates.get(formattedPhone);
+    const existingState = verificationStates.get(formattedPhone)
     if (existingState) {
-      const timeSinceLastCode = (Date.now() - existingState.codeSentAt) / 1000;
+      const timeSinceLastCode = (Date.now() - existingState.codeSentAt) / 1000
       if (timeSinceLastCode < (this.config.cooldownPeriod || 60)) {
         return {
           success: false,
           message: `Please wait ${Math.ceil((this.config.cooldownPeriod || 60) - timeSinceLastCode)} seconds before requesting a new code`,
-        };
+        }
       }
     }
 
-    const code = this.generateCode();
+    const code = this.generateCode()
 
     try {
       switch (this.config.provider) {
         case 'twilio':
-          await this.sendViaTwilio(formattedPhone, code);
-          break;
+          await this.sendViaTwilio(formattedPhone, code)
+          break
         case 'aws-sns':
-          await this.sendViaAwsSns(formattedPhone, code);
-          break;
+          await this.sendViaAwsSns(formattedPhone, code)
+          break
         case 'custom':
-          await this.sendViaCustomWebhook(formattedPhone, code);
-          break;
+          await this.sendViaCustomWebhook(formattedPhone, code)
+          break
         default:
-          // Development mode - log code to console
+        // Development mode - log code to console
       }
 
       // Store verification state
@@ -162,19 +173,19 @@ export class PhoneAuthProvider implements AuthProvider {
         codeSentAt: Date.now(),
         attempts: 0,
         verified: false,
-      });
+      })
 
       // Store code securely (in production, use encrypted storage)
       // For demo purposes, we store it in the state
-      const storedState = verificationStates.get(formattedPhone);
+      const storedState = verificationStates.get(formattedPhone)
       if (storedState) {
-        storedState._code = code;
+        storedState._code = code
       }
 
-      return { success: true };
+      return { success: true }
     } catch (error) {
-      console.error('[Phone Auth] Failed to send code:', error);
-      return { success: false, message: 'Failed to send verification code' };
+      logger.error('[Phone Auth] Failed to send code:',  error)
+      return { success: false, message: 'Failed to send verification code' }
     }
   }
 
@@ -183,16 +194,16 @@ export class PhoneAuthProvider implements AuthProvider {
    */
   private async sendViaTwilio(phone: string, code: string): Promise<void> {
     if (!this.config.twilioAccountSid || !this.config.twilioAuthToken) {
-      throw new Error('Twilio credentials not configured');
+      throw new Error('Twilio credentials not configured')
     }
 
     const url = this.config.twilioVerifyServiceSid
       ? `https://verify.twilio.com/v2/Services/${this.config.twilioVerifyServiceSid}/Verifications`
-      : `https://api.twilio.com/2010-04-01/Accounts/${this.config.twilioAccountSid}/Messages.json`;
+      : `https://api.twilio.com/2010-04-01/Accounts/${this.config.twilioAccountSid}/Messages.json`
 
     const auth = Buffer.from(
       `${this.config.twilioAccountSid}:${this.config.twilioAuthToken}`
-    ).toString('base64');
+    ).toString('base64')
 
     if (this.config.twilioVerifyServiceSid) {
       // Use Twilio Verify service
@@ -206,7 +217,7 @@ export class PhoneAuthProvider implements AuthProvider {
           To: phone,
           Channel: 'sms',
         }),
-      });
+      })
     } else {
       // Use regular SMS
       await fetch(url, {
@@ -220,7 +231,7 @@ export class PhoneAuthProvider implements AuthProvider {
           From: process.env.TWILIO_PHONE_NUMBER || '',
           Body: `Your nChat verification code is: ${code}`,
         }),
-      });
+      })
     }
   }
 
@@ -229,7 +240,7 @@ export class PhoneAuthProvider implements AuthProvider {
    */
   private async sendViaAwsSns(phone: string, code: string): Promise<void> {
     // In production, use AWS SDK
-    throw new Error('AWS SNS integration requires @aws-sdk/client-sns');
+    throw new Error('AWS SNS integration requires @aws-sdk/client-sns')
   }
 
   /**
@@ -237,17 +248,17 @@ export class PhoneAuthProvider implements AuthProvider {
    */
   private async sendViaCustomWebhook(phone: string, code: string): Promise<void> {
     if (!this.config.sendCodeWebhook) {
-      throw new Error('Custom webhook URL not configured');
+      throw new Error('Custom webhook URL not configured')
     }
 
     const response = await fetch(this.config.sendCodeWebhook, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ phone, code }),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error('Custom webhook failed');
+      throw new Error('Custom webhook failed')
     }
   }
 
@@ -255,48 +266,51 @@ export class PhoneAuthProvider implements AuthProvider {
    * Verify the OTP code
    */
   async verifyCode(phoneNumber: string, code: string): Promise<AuthResult> {
-    const formattedPhone = this.formatPhoneNumber(phoneNumber);
-    const state = verificationStates.get(formattedPhone);
+    const formattedPhone = this.formatPhoneNumber(phoneNumber)
+    const state = verificationStates.get(formattedPhone)
 
     if (!state) {
       return {
         success: false,
-        error: { code: 'NO_VERIFICATION', message: 'No verification in progress for this phone number' },
-      };
+        error: {
+          code: 'NO_VERIFICATION',
+          message: 'No verification in progress for this phone number',
+        },
+      }
     }
 
     // Check expiry
-    const elapsed = (Date.now() - state.codeSentAt) / 1000;
+    const elapsed = (Date.now() - state.codeSentAt) / 1000
     if (elapsed > (this.config.codeExpiry || 300)) {
-      verificationStates.delete(formattedPhone);
+      verificationStates.delete(formattedPhone)
       return {
         success: false,
         error: { code: 'CODE_EXPIRED', message: 'Verification code has expired' },
-      };
+      }
     }
 
     // Check attempts
     if (state.attempts >= (this.config.maxAttempts || 3)) {
-      verificationStates.delete(formattedPhone);
+      verificationStates.delete(formattedPhone)
       return {
         success: false,
         error: { code: 'TOO_MANY_ATTEMPTS', message: 'Too many failed attempts' },
-      };
+      }
     }
 
     // Verify code
-    const storedCode = state._code;
+    const storedCode = state._code
     if (code !== storedCode) {
-      state.attempts++;
+      state.attempts++
       return {
         success: false,
         error: { code: 'INVALID_CODE', message: 'Invalid verification code' },
-      };
+      }
     }
 
     // Mark as verified
-    state.verified = true;
-    verificationStates.delete(formattedPhone);
+    state.verified = true
+    verificationStates.delete(formattedPhone)
 
     return {
       success: true,
@@ -314,7 +328,7 @@ export class PhoneAuthProvider implements AuthProvider {
           },
         },
       },
-    };
+    }
   }
 
   /**
@@ -327,7 +341,7 @@ export class PhoneAuthProvider implements AuthProvider {
       return {
         success: false,
         error: { code: 'NO_CREDENTIALS', message: 'Phone credentials are required' },
-      };
+      }
     }
 
     // Handle phone credentials
@@ -335,27 +349,30 @@ export class PhoneAuthProvider implements AuthProvider {
       return {
         success: false,
         error: { code: 'INVALID_CREDENTIALS', message: 'Phone credentials are required' },
-      };
+      }
     }
 
-    const phoneCredentials = credentials as PhoneCredentialsWithCode;
-    const phoneNumber = phoneCredentials.phone || '';
-    const code = phoneCredentials.code;
+    const phoneCredentials = credentials as PhoneCredentialsWithCode
+    const phoneNumber = phoneCredentials.phone || ''
+    const code = phoneCredentials.code
 
     if (!code) {
       // Step 1: Send code
-      const result = await this.sendVerificationCode(phoneNumber);
+      const result = await this.sendVerificationCode(phoneNumber)
       if (!result.success) {
-        return { success: false, error: { code: 'SEND_FAILED', message: result.message || 'Failed to send code' } };
+        return {
+          success: false,
+          error: { code: 'SEND_FAILED', message: result.message || 'Failed to send code' },
+        }
       }
       return {
         success: true,
         requiresVerification: true,
-      };
+      }
     }
 
     // Step 2: Verify code
-    return this.verifyCode(phoneNumber, code);
+    return this.verifyCode(phoneNumber, code)
   }
 
   /**
@@ -377,7 +394,7 @@ export function createPhoneAuthProvider(
     displayName: 'Phone',
     provider,
     ...options,
-  });
+  })
 }
 
 // Development phone auth provider (logs codes to console)
@@ -391,5 +408,5 @@ export function createDevPhoneAuthProvider(): PhoneAuthProvider {
     codeExpiry: 300,
     maxAttempts: 5,
     cooldownPeriod: 10, // Short cooldown for testing
-  });
+  })
 }

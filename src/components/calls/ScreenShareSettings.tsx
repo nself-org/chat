@@ -15,13 +15,7 @@ import { Label } from '@/components/ui/label'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Info, Zap, Network, Save } from 'lucide-react'
@@ -118,9 +112,7 @@ export function ScreenShareSettings({
     <Card className={cn('w-full max-w-2xl', className)}>
       <CardHeader>
         <CardTitle>Screen Share Settings</CardTitle>
-        <CardDescription>
-          Configure quality, performance, and advanced options
-        </CardDescription>
+        <CardDescription>Configure quality, performance, and advanced options</CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
         {/* Quality Settings */}
@@ -128,9 +120,7 @@ export function ScreenShareSettings({
           <div className="flex items-center justify-between">
             <div>
               <Label className="text-base font-semibold">Quality Preset</Label>
-              <p className="text-sm text-muted-foreground">
-                Choose video quality and resolution
-              </p>
+              <p className="text-sm text-muted-foreground">Choose video quality and resolution</p>
             </div>
             <Badge variant="outline">
               <Zap className="mr-1 h-3 w-3" />
@@ -147,7 +137,7 @@ export function ScreenShareSettings({
             {Object.entries(QUALITY_INFO).map(([key, info]) => (
               <div
                 key={key}
-                className="flex items-start space-x-3 space-y-0 rounded-md border p-4 hover:bg-accent/50 transition-colors"
+                className="hover:bg-accent/50 flex items-start space-x-3 space-y-0 rounded-md border p-4 transition-colors"
               >
                 <RadioGroupItem value={key} id={key} />
                 <div className="flex-1 space-y-1">
@@ -157,9 +147,7 @@ export function ScreenShareSettings({
                   >
                     {key === 'auto' ? 'Auto' : key.toUpperCase()}
                   </Label>
-                  <p className="text-sm text-muted-foreground">
-                    {info.description}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{info.description}</p>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
                     <span>{info.resolution}</span>
                     <span>•</span>
@@ -189,9 +177,7 @@ export function ScreenShareSettings({
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <Label htmlFor="frameRate">
-                {settings.frameRate ?? 30} fps
-              </Label>
+              <Label htmlFor="frameRate">{settings.frameRate ?? 30} fps</Label>
               <Badge variant="outline">
                 {settings.frameRate! >= 60
                   ? 'Smooth'
@@ -223,9 +209,7 @@ export function ScreenShareSettings({
         <div className="space-y-4">
           <div>
             <Label className="text-base font-semibold">Audio Options</Label>
-            <p className="text-sm text-muted-foreground">
-              Capture system audio along with screen
-            </p>
+            <p className="text-sm text-muted-foreground">Capture system audio along with screen</p>
           </div>
 
           <div className="flex items-center justify-between space-x-2">
@@ -240,16 +224,14 @@ export function ScreenShareSettings({
             <Switch
               id="systemAudio"
               checked={settings.captureSystemAudio ?? false}
-              onCheckedChange={(checked) =>
-                updateSetting('captureSystemAudio', checked)
-              }
+              onCheckedChange={(checked) => updateSetting('captureSystemAudio', checked)}
               disabled={!supportsSystemAudio}
             />
           </div>
 
           {!supportsSystemAudio && (
-            <div className="flex items-start gap-2 rounded-md bg-amber-50 dark:bg-amber-950 p-3 text-sm">
-              <Info className="h-4 w-4 text-amber-600 dark:text-amber-400 mt-0.5" />
+            <div className="flex items-start gap-2 rounded-md bg-amber-50 p-3 text-sm dark:bg-amber-950">
+              <Info className="mt-0.5 h-4 w-4 text-amber-600 dark:text-amber-400" />
               <div className="text-amber-900 dark:text-amber-100">
                 System audio capture is only supported in Chrome and Edge browsers.
               </div>
@@ -263,9 +245,7 @@ export function ScreenShareSettings({
         <div className="space-y-4">
           <div>
             <Label className="text-base font-semibold">Display Options</Label>
-            <p className="text-sm text-muted-foreground">
-              Customize how your screen is shared
-            </p>
+            <p className="text-sm text-muted-foreground">Customize how your screen is shared</p>
           </div>
 
           <div className="space-y-3">
@@ -297,9 +277,7 @@ export function ScreenShareSettings({
               <Switch
                 id="surfaceSwitching"
                 checked={settings.allowSurfaceSwitching ?? true}
-                onCheckedChange={(checked) =>
-                  updateSetting('allowSurfaceSwitching', checked)
-                }
+                onCheckedChange={(checked) => updateSetting('allowSurfaceSwitching', checked)}
               />
             </div>
           </div>
@@ -308,12 +286,12 @@ export function ScreenShareSettings({
         <Separator />
 
         {/* Recommended Settings */}
-        <div className="rounded-lg bg-muted p-4 space-y-2">
+        <div className="space-y-2 rounded-lg bg-muted p-4">
           <div className="flex items-center gap-2 font-semibold">
             <Info className="h-4 w-4" />
             Recommended Settings
           </div>
-          <ul className="text-sm space-y-1 ml-6 list-disc text-muted-foreground">
+          <ul className="ml-6 list-disc space-y-1 text-sm text-muted-foreground">
             <li>
               <strong>Presentations:</strong> 720p @ 30fps (better compatibility)
             </li>

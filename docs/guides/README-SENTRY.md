@@ -33,11 +33,13 @@ https://[key]@[org].ingest.sentry.io/[project]
 Add the following to your production environment variables:
 
 **Required:**
+
 ```bash
 NEXT_PUBLIC_SENTRY_DSN=https://[key]@[org].ingest.sentry.io/[project]
 ```
 
 **Optional (for sourcemap uploads):**
+
 ```bash
 SENTRY_ORG=your-org-slug
 SENTRY_PROJECT=your-project-slug
@@ -45,6 +47,7 @@ SENTRY_AUTH_TOKEN=your-auth-token
 ```
 
 **For release tracking:**
+
 ```bash
 NEXT_PUBLIC_RELEASE_VERSION=0.5.0  # Or use git commit SHA
 ```
@@ -104,6 +107,7 @@ src/
 ### Breadcrumbs
 
 Track user actions leading up to errors:
+
 - Console logs (dev only)
 - DOM events (clicks, inputs)
 - Network requests (fetch, XHR)
@@ -115,11 +119,13 @@ Track user actions leading up to errors:
 All configurations include automatic filtering of sensitive data:
 
 **Filtered Headers:**
+
 - `authorization`
 - `cookie`
 - `x-api-key`
 
 **Filtered Fields:**
+
 - `password`
 - `token`
 - `secret`
@@ -231,11 +237,13 @@ try {
 Adjust in the respective configuration files:
 
 **Server-side (`instrumentation.node.ts`):**
+
 ```typescript
 tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0
 ```
 
 **Client-side (`sentry.client.config.ts`):**
+
 ```typescript
 tracesSampleRate: 0.1,  // 10% of transactions
 replaysSessionSampleRate: 0.01,  // 1% of sessions
@@ -245,6 +253,7 @@ replaysOnErrorSampleRate: 0.5,   // 50% of error sessions
 ### Ignored Errors
 
 Common noisy errors are automatically ignored:
+
 - Browser extension errors
 - Network failures (expected)
 - Navigation cancellations
@@ -256,6 +265,7 @@ Add custom patterns in the `ignoreErrors` array.
 ### Custom Tags
 
 All events are tagged with:
+
 - `runtime`: `browser`, `nodejs`, or `edge`
 - `nextjs`: `15`
 - `app`: `nself-chat`
@@ -295,8 +305,8 @@ metadata:
   name: sentry-secrets
 type: Opaque
 stringData:
-  NEXT_PUBLIC_SENTRY_DSN: "https://[key]@[org].ingest.sentry.io/[project]"
-  SENTRY_AUTH_TOKEN: "your-auth-token"
+  NEXT_PUBLIC_SENTRY_DSN: 'https://[key]@[org].ingest.sentry.io/[project]'
+  SENTRY_AUTH_TOKEN: 'your-auth-token'
 ```
 
 Reference in deployment:
@@ -341,6 +351,7 @@ NEXT_PUBLIC_SENTRY_DSN=https://prod-key@org.ingest.sentry.io/prod-project
 ### 2. Set Alerts
 
 Configure alerts in Sentry dashboard:
+
 - **Immediate**: Critical errors, payment failures
 - **Hourly digest**: General errors
 - **Daily digest**: Performance issues
@@ -348,6 +359,7 @@ Configure alerts in Sentry dashboard:
 ### 3. Monitor Performance Budget
 
 Set performance budgets in Sentry:
+
 - Page load: < 2s
 - API responses: < 500ms
 - Database queries: < 100ms
@@ -355,6 +367,7 @@ Set performance budgets in Sentry:
 ### 4. Review Regularly
 
 Schedule regular reviews:
+
 - Weekly: New error types
 - Monthly: Performance trends
 - Quarterly: User impact analysis
@@ -362,6 +375,7 @@ Schedule regular reviews:
 ### 5. Add Context
 
 Always add relevant context to errors:
+
 ```typescript
 import { setSentryContext } from '@/lib/sentry-utils'
 
@@ -425,6 +439,7 @@ Sentry pricing is based on events and transactions:
 ## Support
 
 For issues specific to nself-chat Sentry integration:
+
 - Create an issue: [GitHub Issues](https://github.com/nself/nself-chat/issues)
 - Email: support@nself.org
 - Discord: [nself Community](https://discord.gg/nself)

@@ -60,34 +60,34 @@ The nself-chat notifications system is **100% complete** and production-ready. A
 
 ### Core Notification Features
 
-| Feature | Status | Implementation |
-|---------|--------|----------------|
-| In-app notification center/inbox | ✅ | `notification-center.tsx` |
-| Notification badges with counts | ✅ | `notification-bell.tsx`, `unread-badge.tsx` |
-| Unread notification count | ✅ | Store + real-time updates |
-| Mark notification as read | ✅ | `markAsRead()` action |
-| Mark all as read | ✅ | `markAllAsRead()` action |
-| Notification grouping | ✅ | By channel, type, thread |
-| Notification sounds (customizable) | ✅ | Full sound system with profiles |
-| Desktop notifications (Web API) | ✅ | Permission handling + display |
-| Mobile push notifications | ✅ | Capacitor integration |
-| Rich notifications with images | ✅ | Metadata + actor avatars |
-| Notification actions | ✅ | Reply, mark read, dismiss |
+| Feature                            | Status | Implementation                              |
+| ---------------------------------- | ------ | ------------------------------------------- |
+| In-app notification center/inbox   | ✅     | `notification-center.tsx`                   |
+| Notification badges with counts    | ✅     | `notification-bell.tsx`, `unread-badge.tsx` |
+| Unread notification count          | ✅     | Store + real-time updates                   |
+| Mark notification as read          | ✅     | `markAsRead()` action                       |
+| Mark all as read                   | ✅     | `markAllAsRead()` action                    |
+| Notification grouping              | ✅     | By channel, type, thread                    |
+| Notification sounds (customizable) | ✅     | Full sound system with profiles             |
+| Desktop notifications (Web API)    | ✅     | Permission handling + display               |
+| Mobile push notifications          | ✅     | Capacitor integration                       |
+| Rich notifications with images     | ✅     | Metadata + actor avatars                    |
+| Notification actions               | ✅     | Reply, mark read, dismiss                   |
 
 ### Advanced Features
 
-| Feature | Status | Implementation |
-|---------|--------|----------------|
-| Do not disturb mode | ✅ | DND toggle + schedule |
-| DND schedule (set hours) | ✅ | Time-based quiet hours |
-| Per-channel notification settings | ✅ | Channel-specific overrides |
-| Mute channel for duration | ✅ | Temporary/permanent muting |
-| Keyword alerts | ✅ | Custom keyword monitoring |
-| @mention notifications | ✅ | User, @here, @channel, @everyone |
-| DM notifications | ✅ | Separate DM settings |
-| Thread reply notifications | ✅ | Thread tracking |
-| Notification preferences UI | ✅ | Complete settings interface |
-| Test notification button | ✅ | 11+ test templates |
+| Feature                           | Status | Implementation                   |
+| --------------------------------- | ------ | -------------------------------- |
+| Do not disturb mode               | ✅     | DND toggle + schedule            |
+| DND schedule (set hours)          | ✅     | Time-based quiet hours           |
+| Per-channel notification settings | ✅     | Channel-specific overrides       |
+| Mute channel for duration         | ✅     | Temporary/permanent muting       |
+| Keyword alerts                    | ✅     | Custom keyword monitoring        |
+| @mention notifications            | ✅     | User, @here, @channel, @everyone |
+| DM notifications                  | ✅     | Separate DM settings             |
+| Thread reply notifications        | ✅     | Thread tracking                  |
+| Notification preferences UI       | ✅     | Complete settings interface      |
+| Test notification button          | ✅     | 11+ test templates               |
 
 ---
 
@@ -101,6 +101,7 @@ src/app/api/notifications/
 ```
 
 **Features**:
+
 - Full CRUD operations
 - GraphQL integration
 - Permission validation
@@ -218,6 +219,7 @@ docs/
 **File**: `src/components/notifications/notification-center.tsx`
 
 Features:
+
 - Filter tabs (All, Mentions, Threads, Reactions)
 - Mark all as read
 - Individual notification actions (read, dismiss, navigate)
@@ -231,10 +233,12 @@ Features:
 ### 2. Notification Sounds
 
 **Files**:
+
 - `src/lib/notifications/notification-sounds.ts` (basic)
 - `src/lib/notifications/sounds.ts` (advanced)
 
 Features:
+
 - 15+ built-in sounds
 - Custom sound upload
 - Sound profiles (themes)
@@ -246,6 +250,7 @@ Features:
 - Volume normalization
 
 Sound profiles:
+
 - Default (balanced)
 - Minimal (subtle)
 - Professional (business)
@@ -255,10 +260,12 @@ Sound profiles:
 ### 3. Keyword Alerts
 
 **Files**:
+
 - `src/lib/notifications/keyword-matcher.ts` (matching)
 - `src/lib/notifications/keyword-alerts.ts` (alerts)
 
 Features:
+
 - Custom keyword creation
 - Case-sensitive matching
 - Whole-word matching
@@ -277,6 +284,7 @@ Features:
 **File**: `src/lib/notifications/quiet-hours.ts`
 
 Features:
+
 - Time-based schedules (HH:mm format)
 - Day-of-week selection (Sunday-Saturday)
 - Breakthrough rules (urgent, mentions)
@@ -289,10 +297,12 @@ Features:
 ### 5. Per-Channel Settings
 
 **Files**:
+
 - `src/lib/notifications/channel-settings.ts`
 - `src/components/notifications/channel-notification-settings.tsx`
 
 Features:
+
 - Notification levels (all, mentions, nothing, custom)
 - Mute duration (15m, 1h, 2h, 4h, 8h, 24h, 1w, forever)
 - Custom sounds
@@ -305,6 +315,7 @@ Features:
 **File**: `src/components/notifications/desktop-notification.tsx`
 
 Features:
+
 - Permission request flow
 - Preview toggle
 - Avatar display
@@ -320,6 +331,7 @@ Features:
 **File**: `src/lib/notifications/push-subscription.ts`
 
 Features:
+
 - Capacitor integration (iOS/Android)
 - Device registration
 - Preview toggle
@@ -335,6 +347,7 @@ Features:
 **File**: `src/components/notifications/test-notification-button.tsx`
 
 Features:
+
 - 11 pre-built templates
 - Priority variations (low, normal, high, urgent)
 - Type variations (mention, DM, thread, reaction, etc.)
@@ -344,6 +357,7 @@ Features:
 - Visual priority badges
 
 Templates:
+
 1. Mention (Normal)
 2. Mention (Urgent)
 3. Direct Message
@@ -363,9 +377,11 @@ Templates:
 Endpoints:
 
 #### GET /api/notifications
+
 Fetch notifications with filtering, pagination.
 
 **Query params**:
+
 - `userId` (required)
 - `limit` (1-100, default: 20)
 - `offset` (default: 0)
@@ -375,21 +391,25 @@ Fetch notifications with filtering, pagination.
 - `channelId`, `type`, `priority`
 
 #### POST /api/notifications
+
 Create new notification.
 
 **Body**: notification object with type, priority, title, body, userId, etc.
 
 #### PUT /api/notifications
+
 Update notification(s) - mark as read/archived.
 
 **Body**: `{ notificationIds, isRead, isArchived }`
 
 #### DELETE /api/notifications
+
 Delete notification(s).
 
 **Query**: `?ids=uuid1,uuid2,uuid3`
 
 #### PATCH /api/notifications
+
 Mark all as read for a user.
 
 **Body**: `{ userId }`
@@ -401,36 +421,32 @@ Mark all as read for a user.
 ### Basic Setup
 
 ```tsx
-import { NotificationBell } from '@/components/notifications/notification-bell';
-import { NotificationCenter } from '@/components/notifications/notification-center';
-import { useNotifications } from '@/hooks/use-notifications';
+import { NotificationBell } from '@/components/notifications/notification-bell'
+import { NotificationCenter } from '@/components/notifications/notification-center'
+import { useNotifications } from '@/hooks/use-notifications'
 
 function App() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
   const { requestDesktopPermission } = useNotifications({
-    autoRequestPermission: true
-  });
+    autoRequestPermission: true,
+  })
 
   return (
     <div>
       <NotificationBell onClick={() => setIsOpen(true)} />
 
-      <NotificationCenter
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        position="dropdown"
-      />
+      <NotificationCenter isOpen={isOpen} onClose={() => setIsOpen(false)} position="dropdown" />
     </div>
-  );
+  )
 }
 ```
 
 ### Send Notification
 
 ```tsx
-import { useNotificationStore } from '@/stores/notification-store';
+import { useNotificationStore } from '@/stores/notification-store'
 
-const addNotification = useNotificationStore(state => state.addNotification);
+const addNotification = useNotificationStore((state) => state.addNotification)
 
 addNotification({
   id: crypto.randomUUID(),
@@ -441,23 +457,23 @@ addNotification({
   actor: {
     id: userId,
     name: 'Sarah Johnson',
-    avatarUrl: '/avatars/sarah.jpg'
+    avatarUrl: '/avatars/sarah.jpg',
   },
   channelId: channelId,
   channelName: '#engineering',
   isRead: false,
   isArchived: false,
   createdAt: new Date().toISOString(),
-  actionUrl: `/chat/${channelId}/msg-${messageId}`
-});
+  actionUrl: `/chat/${channelId}/msg-${messageId}`,
+})
 ```
 
 ### Configure Preferences
 
 ```tsx
-import { useNotificationStore } from '@/stores/notification-store';
+import { useNotificationStore } from '@/stores/notification-store'
 
-const updatePreferences = useNotificationStore(state => state.updatePreferences);
+const updatePreferences = useNotificationStore((state) => state.updatePreferences)
 
 updatePreferences({
   desktopEnabled: true,
@@ -468,15 +484,15 @@ updatePreferences({
     startTime: '22:00',
     endTime: '08:00',
     days: [1, 2, 3, 4, 5], // Mon-Fri
-    allowMentionsBreakthrough: true
-  }
-});
+    allowMentionsBreakthrough: true,
+  },
+})
 ```
 
 ### Create Keyword Alert
 
 ```tsx
-import { createKeyword } from '@/lib/notifications/keyword-matcher';
+import { createKeyword } from '@/lib/notifications/keyword-matcher'
 
 const keyword = createKeyword('deployment', {
   caseSensitive: false,
@@ -484,8 +500,8 @@ const keyword = createKeyword('deployment', {
   enabled: true,
   highlightColor: '#ef4444',
   soundId: 'alert',
-  channelIds: [] // All channels
-});
+  channelIds: [], // All channels
+})
 ```
 
 ---
@@ -497,9 +513,8 @@ const keyword = createKeyword('deployment', {
 Add to your UI for easy testing:
 
 ```tsx
-import { TestNotificationButton } from '@/components/notifications/test-notification-button';
-
-<TestNotificationButton variant="outline" />
+import { TestNotificationButton } from '@/components/notifications/test-notification-button'
+;<TestNotificationButton variant="outline" />
 ```
 
 ### Manual Testing
@@ -523,6 +538,7 @@ const inQuietHours = isInQuietHours(preferences.quietHours);
 ## Production Readiness
 
 ### ✅ Error Handling
+
 - Try-catch blocks in all async operations
 - GraphQL error handling
 - Permission denied handling
@@ -530,12 +546,14 @@ const inQuietHours = isInQuietHours(preferences.quietHours);
 - Network error handling
 
 ### ✅ Permission Management
+
 - Graceful permission requests
 - Permission state tracking
 - User-friendly permission prompts
 - Fallback for denied permissions
 
 ### ✅ Performance
+
 - Debounced operations
 - Pagination support
 - Lazy loading
@@ -543,6 +561,7 @@ const inQuietHours = isInQuietHours(preferences.quietHours);
 - Efficient re-renders
 
 ### ✅ Accessibility
+
 - ARIA labels
 - Keyboard navigation
 - Screen reader support
@@ -550,6 +569,7 @@ const inQuietHours = isInQuietHours(preferences.quietHours);
 - Semantic HTML
 
 ### ✅ Security
+
 - Input validation (Zod schemas)
 - XSS protection
 - CSRF protection
@@ -557,6 +577,7 @@ const inQuietHours = isInQuietHours(preferences.quietHours);
 - Rate limiting ready
 
 ### ✅ Browser Support
+
 - Chrome 90+
 - Firefox 88+
 - Safari 14+
@@ -618,18 +639,21 @@ While the system is complete, these enhancements could be added:
 ## Support & Maintenance
 
 ### Documentation
+
 - ✅ Complete API documentation
 - ✅ Usage examples
 - ✅ Troubleshooting guide
 - ✅ Migration guide (for upgrades)
 
 ### Testing
+
 - ✅ Unit tests for core functions
 - ✅ Component tests for UI
 - ✅ Test utilities and fixtures
 - ✅ Integration test structure
 
 ### Monitoring
+
 - ✅ Sentry error tracking integration
 - ✅ Performance metrics
 - ✅ User analytics events
@@ -668,6 +692,7 @@ The implementation provides a solid foundation for real-time communication and c
 **Questions or Issues?**
 
 Refer to:
+
 - `/docs/Notifications-System.md` - Complete documentation
 - `/docs/COMMON-ISSUES.md` - Troubleshooting
 - Test components for examples

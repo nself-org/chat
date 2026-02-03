@@ -5,7 +5,7 @@ import { Mail, MoreHorizontal, RefreshCw, Trash2, Clock, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Avatar, AvatarFallback} from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,12 +71,10 @@ export function PendingInvites() {
       <Card>
         <CardHeader>
           <CardTitle>Pending Invitations</CardTitle>
-          <CardDescription>
-            No pending invitations at this time
-          </CardDescription>
+          <CardDescription>No pending invitations at this time</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="py-8 text-center text-muted-foreground">
             <Mail className="mx-auto h-12 w-12 opacity-50" />
             <p className="mt-2">All invitations have been accepted or expired</p>
           </div>
@@ -90,9 +88,7 @@ export function PendingInvites() {
       <Card>
         <CardHeader>
           <CardTitle>Pending Invitations</CardTitle>
-          <CardDescription>
-            Manage invitations that haven't been accepted yet
-          </CardDescription>
+          <CardDescription>Manage invitations that haven't been accepted yet</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -106,9 +102,7 @@ export function PendingInvites() {
                 >
                   <div className="flex items-center gap-4">
                     <Avatar className="h-10 w-10">
-                      <AvatarFallback>
-                        {invite.email.charAt(0).toUpperCase()}
-                      </AvatarFallback>
+                      <AvatarFallback>{invite.email.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div>
                       <p className="font-medium">{invite.email}</p>
@@ -129,7 +123,7 @@ export function PendingInvites() {
                           {formatInviteExpiration(invite.expiresAt)}
                         </span>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="mt-1 text-xs text-muted-foreground">
                         Invited by {invite.invitedBy.displayName} on{' '}
                         {new Date(invite.createdAt).toLocaleDateString()}
                       </p>
@@ -178,16 +172,13 @@ export function PendingInvites() {
             <AlertDialogTitle>Revoke Invitation</AlertDialogTitle>
             <AlertDialogDescription>
               Are you sure you want to revoke the invitation for{' '}
-              <strong>{selectedInvite?.email}</strong>? They will no longer be
-              able to join using this invitation link.
+              <strong>{selectedInvite?.email}</strong>? They will no longer be able to join using
+              this invitation link.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleRevoke}
-              className="bg-orange-600 hover:bg-orange-700"
-            >
+            <AlertDialogAction onClick={handleRevoke} className="bg-orange-600 hover:bg-orange-700">
               Revoke Invitation
             </AlertDialogAction>
           </AlertDialogFooter>

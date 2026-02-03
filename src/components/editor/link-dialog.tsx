@@ -114,11 +114,14 @@ export function LinkDialog({
     }
   }, [open, initialData, selectedText])
 
-  const handleUrlChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
-    setUrl(value)
-    if (error) setError(null)
-  }, [error])
+  const handleUrlChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value
+      setUrl(value)
+      if (error) setError(null)
+    },
+    [error]
+  )
 
   const handleTextChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     setText(e.target.value)
@@ -167,9 +170,7 @@ export function LinkDialog({
             {isEditing ? 'Edit Link' : 'Insert Link'}
           </DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? 'Update the link URL or display text.'
-              : 'Add a link to your message.'}
+            {isEditing ? 'Update the link URL or display text.' : 'Add a link to your message.'}
           </DialogDescription>
         </DialogHeader>
 
@@ -187,9 +188,7 @@ export function LinkDialog({
                 className={cn(error && 'border-destructive')}
                 autoFocus
               />
-              {error && (
-                <p className="text-sm text-destructive">{error}</p>
-              )}
+              {error && <p className="text-sm text-destructive">{error}</p>}
             </div>
 
             {/* Text Input */}
@@ -202,14 +201,12 @@ export function LinkDialog({
                 value={text}
                 onChange={handleTextChange}
               />
-              <p className="text-xs text-muted-foreground">
-                Leave empty to display the URL
-              </p>
+              <p className="text-xs text-muted-foreground">Leave empty to display the URL</p>
             </div>
 
             {/* Link Preview */}
             {previewUrl && (
-              <div className="rounded-lg border bg-muted/50 p-3">
+              <div className="bg-muted/50 rounded-lg border p-3">
                 <p className="text-sm font-medium">Preview</p>
                 <div className="mt-2 flex items-center gap-2 text-sm">
                   <ExternalLink className="h-4 w-4 text-muted-foreground" />
@@ -217,14 +214,12 @@ export function LinkDialog({
                     href={previewUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline truncate"
+                    className="truncate text-primary hover:underline"
                   >
                     {text || previewUrl}
                   </a>
                 </div>
-                {domain && (
-                  <p className="mt-1 text-xs text-muted-foreground">{domain}</p>
-                )}
+                {domain && <p className="mt-1 text-xs text-muted-foreground">{domain}</p>}
               </div>
             )}
           </div>
@@ -241,16 +236,10 @@ export function LinkDialog({
                 Remove Link
               </Button>
             )}
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit">
-              {isEditing ? 'Update Link' : 'Insert Link'}
-            </Button>
+            <Button type="submit">{isEditing ? 'Update Link' : 'Insert Link'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -275,13 +264,7 @@ export interface LinkPreviewProps {
   className?: string
 }
 
-export function LinkPreview({
-  url,
-  title,
-  description,
-  image,
-  className,
-}: LinkPreviewProps) {
+export function LinkPreview({ url, title, description, image, className }: LinkPreviewProps) {
   const domain = extractDomain(url)
 
   return (
@@ -290,7 +273,7 @@ export function LinkPreview({
       target="_blank"
       rel="noopener noreferrer"
       className={cn(
-        'block rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50',
+        'hover:bg-accent/50 block rounded-lg border bg-card p-3 transition-colors',
         className
       )}
     >
@@ -307,14 +290,10 @@ export function LinkPreview({
         )}
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
-          {title && (
-            <p className="font-medium text-sm line-clamp-1">{title}</p>
-          )}
+        <div className="min-w-0 flex-1">
+          {title && <p className="line-clamp-1 text-sm font-medium">{title}</p>}
           {description && (
-            <p className="mt-0.5 text-xs text-muted-foreground line-clamp-2">
-              {description}
-            </p>
+            <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">{description}</p>
           )}
           <div className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
             <ExternalLink className="h-3 w-3" />
@@ -337,12 +316,7 @@ export interface InlineLinkProps {
   onClick?: (e: React.MouseEvent) => void
 }
 
-export function InlineLink({
-  href,
-  children,
-  className,
-  onClick,
-}: InlineLinkProps) {
+export function InlineLink({ href, children, className, onClick }: InlineLinkProps) {
   return (
     <a
       href={href}
@@ -350,7 +324,7 @@ export function InlineLink({
       rel="noopener noreferrer"
       onClick={onClick}
       className={cn(
-        'text-primary underline decoration-primary/30 underline-offset-2 transition-colors hover:decoration-primary',
+        'decoration-primary/30 text-primary underline underline-offset-2 transition-colors hover:decoration-primary',
         className
       )}
     >

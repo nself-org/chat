@@ -126,7 +126,7 @@ function DefaultErrorFallback({ error, onReset }: DefaultErrorFallbackProps) {
       <div className="w-full max-w-md space-y-6 text-center">
         {/* Error Icon */}
         <div className="flex justify-center">
-          <div className="rounded-full bg-destructive/10 p-4">
+          <div className="bg-destructive/10 rounded-full p-4">
             <AlertCircle className="h-12 w-12 text-destructive" />
           </div>
         </div>

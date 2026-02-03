@@ -48,7 +48,7 @@ export default function HomePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="text-muted-foreground">Loading...</div>
       </div>
     )
@@ -61,7 +61,7 @@ export default function HomePage() {
 
   // For redirect/chat modes, show loading while redirecting
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="flex min-h-screen items-center justify-center">
       <div className="text-muted-foreground">Redirecting...</div>
     </div>
   )

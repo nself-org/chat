@@ -1,18 +1,8 @@
 import { ApolloClient, InMemoryCache, ApolloLink, Observable } from '@apollo/client'
 import { MockLink } from '@apollo/client/testing'
-import {
-  SEND_MESSAGE,
-  UPDATE_MESSAGE,
-  DELETE_MESSAGE,
-} from '../mutations/messages'
-import {
-  CREATE_CHANNEL,
-  JOIN_CHANNEL,
-} from '../mutations/channels'
-import {
-  ADD_REACTION,
-  REMOVE_REACTION,
-} from '../mutations/reactions'
+import { SEND_MESSAGE, UPDATE_MESSAGE, DELETE_MESSAGE } from '../mutations/messages'
+import { CREATE_CHANNEL, JOIN_CHANNEL } from '../mutations/channels'
+import { ADD_REACTION, REMOVE_REACTION } from '../mutations/reactions'
 import { GET_CHANNELS, GET_USER_CHANNELS } from '../queries/channels'
 import { GET_MESSAGES } from '../queries/messages'
 
@@ -144,9 +134,7 @@ describe('Channel Query Mocks', () => {
 
       const client = createMockClient(mocks)
 
-      await expect(client.query({ query: GET_CHANNELS })).rejects.toThrow(
-        'Network error'
-      )
+      await expect(client.query({ query: GET_CHANNELS })).rejects.toThrow('Network error')
     })
 
     it('should handle GraphQL errors', async () => {
@@ -249,9 +237,7 @@ describe('Message Query Mocks', () => {
 
     it('should handle pagination correctly', async () => {
       const channelId = 'channel-123'
-      const mockMessages = [
-        createMockMessage({ id: 'msg-51', content: 'Message 51' }),
-      ]
+      const mockMessages = [createMockMessage({ id: 'msg-51', content: 'Message 51' })]
 
       const mocks = [
         {
@@ -350,9 +336,7 @@ describe('Message Query Mocks', () => {
       })
 
       expect(result.data.nchat_messages[0].attachments).toHaveLength(1)
-      expect(result.data.nchat_messages[0].attachments[0].file_name).toBe(
-        'image.png'
-      )
+      expect(result.data.nchat_messages[0].attachments[0].file_name).toBe('image.png')
     })
   })
 })
@@ -463,9 +447,7 @@ describe('Message Mutation Mocks', () => {
         variables,
       })
 
-      expect(result.data?.update_nchat_messages_by_pk.content).toBe(
-        'Updated content'
-      )
+      expect(result.data?.update_nchat_messages_by_pk.content).toBe('Updated content')
       expect(result.data?.update_nchat_messages_by_pk.updated_at).toBeDefined()
     })
   })
@@ -576,12 +558,8 @@ describe('Channel Mutation Mocks', () => {
         variables,
       })
 
-      expect(result.data?.insert_nchat_channel_members_one.channel_id).toBe(
-        'channel-123'
-      )
-      expect(result.data?.insert_nchat_channel_members_one.user_id).toBe(
-        'user-456'
-      )
+      expect(result.data?.insert_nchat_channel_members_one.channel_id).toBe('channel-123')
+      expect(result.data?.insert_nchat_channel_members_one.user_id).toBe('user-456')
     })
   })
 })
@@ -749,9 +727,7 @@ describe('Error Handling Mocks', () => {
       errorPolicy: 'all',
     })
 
-    expect(result.errors?.[0].message).toBe(
-      'You do not have permission to post in this channel'
-    )
+    expect(result.errors?.[0].message).toBe('You do not have permission to post in this channel')
   })
 
   it('should handle validation error', async () => {

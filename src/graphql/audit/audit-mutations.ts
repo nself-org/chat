@@ -55,15 +55,9 @@ export const DELETE_OLD_AUDIT_LOGS = gql`
  * Delete audit logs by category and date
  */
 export const DELETE_AUDIT_LOGS_BY_CATEGORY = gql`
-  mutation DeleteAuditLogsByCategory(
-    $category: String!
-    $olderThan: timestamptz!
-  ) {
+  mutation DeleteAuditLogsByCategory($category: String!, $olderThan: timestamptz!) {
     delete_nchat_audit_logs(
-      where: {
-        category: { _eq: $category }
-        timestamp: { _lt: $olderThan }
-      }
+      where: { category: { _eq: $category }, timestamp: { _lt: $olderThan } }
     ) {
       affected_rows
     }
@@ -74,15 +68,9 @@ export const DELETE_AUDIT_LOGS_BY_CATEGORY = gql`
  * Delete audit logs by severity and date
  */
 export const DELETE_AUDIT_LOGS_BY_SEVERITY = gql`
-  mutation DeleteAuditLogsBySeverity(
-    $severities: [String!]!
-    $olderThan: timestamptz!
-  ) {
+  mutation DeleteAuditLogsBySeverity($severities: [String!]!, $olderThan: timestamptz!) {
     delete_nchat_audit_logs(
-      where: {
-        severity: { _in: $severities }
-        timestamp: { _lt: $olderThan }
-      }
+      where: { severity: { _in: $severities }, timestamp: { _lt: $olderThan } }
     ) {
       affected_rows
     }
@@ -97,14 +85,8 @@ export const DELETE_AUDIT_LOGS_BY_SEVERITY = gql`
  * Update audit settings
  */
 export const UPDATE_AUDIT_SETTINGS = gql`
-  mutation UpdateAuditSettings(
-    $id: uuid!
-    $settings: nchat_audit_settings_set_input!
-  ) {
-    update_nchat_audit_settings_by_pk(
-      pk_columns: { id: $id }
-      _set: $settings
-    ) {
+  mutation UpdateAuditSettings($id: uuid!, $settings: nchat_audit_settings_set_input!) {
+    update_nchat_audit_settings_by_pk(pk_columns: { id: $id }, _set: $settings) {
       id
       enabled
       default_retention_days
@@ -170,9 +152,7 @@ export const UPSERT_AUDIT_SETTINGS = gql`
  * Insert a new retention policy
  */
 export const INSERT_RETENTION_POLICY = gql`
-  mutation InsertRetentionPolicy(
-    $object: nchat_audit_retention_policies_insert_input!
-  ) {
+  mutation InsertRetentionPolicy($object: nchat_audit_retention_policies_insert_input!) {
     insert_nchat_audit_retention_policies_one(object: $object) {
       id
       name
@@ -192,14 +172,8 @@ export const INSERT_RETENTION_POLICY = gql`
  * Update a retention policy
  */
 export const UPDATE_RETENTION_POLICY = gql`
-  mutation UpdateRetentionPolicy(
-    $id: uuid!
-    $policy: nchat_audit_retention_policies_set_input!
-  ) {
-    update_nchat_audit_retention_policies_by_pk(
-      pk_columns: { id: $id }
-      _set: $policy
-    ) {
+  mutation UpdateRetentionPolicy($id: uuid!, $policy: nchat_audit_retention_policies_set_input!) {
+    update_nchat_audit_retention_policies_by_pk(pk_columns: { id: $id }, _set: $policy) {
       id
       name
       enabled
@@ -264,17 +238,10 @@ export const MARK_ENTRIES_FOR_ARCHIVE = gql`
  * Mark entries as archived with location
  */
 export const UPDATE_ARCHIVE_STATUS = gql`
-  mutation UpdateArchiveStatus(
-    $ids: [uuid!]!
-    $archiveLocation: String!
-  ) {
+  mutation UpdateArchiveStatus($ids: [uuid!]!, $archiveLocation: String!) {
     update_nchat_audit_logs(
       where: { id: { _in: $ids } }
-      _set: {
-        archived: true
-        archived_at: "now()"
-        archive_location: $archiveLocation
-      }
+      _set: { archived: true, archived_at: "now()", archive_location: $archiveLocation }
     ) {
       affected_rows
     }

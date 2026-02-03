@@ -41,14 +41,14 @@ export function UserSkeleton({
           <Skeleton
             className={cn(
               'absolute rounded-full border-2 border-background',
-              size === 'sm' ? 'h-2 w-2 -bottom-0.5 -right-0.5' : 'h-3 w-3 -bottom-0.5 -right-0.5'
+              size === 'sm' ? '-bottom-0.5 -right-0.5 h-2 w-2' : '-bottom-0.5 -right-0.5 h-3 w-3'
             )}
           />
         )}
       </div>
 
       {/* Name and role */}
-      <div className="flex flex-col gap-0.5 min-w-0">
+      <div className="flex min-w-0 flex-col gap-0.5">
         <LineSkeleton width={80} height={config.name} />
         {showRole && <LineSkeleton width={50} height={config.role} />}
       </div>
@@ -83,17 +83,9 @@ export function UserListSkeleton({
   className,
 }: UserListSkeletonProps) {
   return (
-    <div
-      className={cn('flex flex-col', className)}
-      style={{ gap: `${gap}px` }}
-    >
+    <div className={cn('flex flex-col', className)} style={{ gap: `${gap}px` }}>
       {Array.from({ length: count }).map((_, i) => (
-        <UserSkeleton
-          key={i}
-          size={size}
-          showStatus={showStatus}
-          showRole={showRole}
-        />
+        <UserSkeleton key={i} size={size} showStatus={showStatus} showRole={showRole} />
       ))}
     </div>
   )
@@ -114,7 +106,7 @@ export function UserRowSkeleton({
   return (
     <div
       className={cn(
-        'flex items-center gap-3 px-4 py-3 border-b border-border last:border-0',
+        'flex items-center gap-3 border-b border-border px-4 py-3 last:border-0',
         className
       )}
     >
@@ -122,7 +114,7 @@ export function UserRowSkeleton({
       <CircleSkeleton size={40} />
 
       {/* User info */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <LineSkeleton width={120} height={14} className="mb-1" />
         {showEmail && <LineSkeleton width={160} height={12} />}
       </div>
@@ -157,7 +149,7 @@ export function MemberListSkeleton({
     <div className={cn('flex flex-col', className)}>
       {/* Section header */}
       {showHeader && (
-        <div className="flex items-center justify-between px-4 py-2 border-b">
+        <div className="flex items-center justify-between border-b px-4 py-2">
           <LineSkeleton width={100} height={14} />
           <LineSkeleton width={30} height={12} />
         </div>
@@ -199,7 +191,7 @@ export function UserPresenceListSkeleton({
     <div className={cn('flex flex-col gap-4', className)}>
       {/* Online section */}
       <div>
-        <div className="flex items-center gap-2 px-2 py-1 mb-2">
+        <div className="mb-2 flex items-center gap-2 px-2 py-1">
           <Skeleton className="h-2 w-2 rounded-full bg-green-500/30" />
           <LineSkeleton width={70} height={10} />
         </div>
@@ -208,7 +200,7 @@ export function UserPresenceListSkeleton({
 
       {/* Offline section */}
       <div>
-        <div className="flex items-center gap-2 px-2 py-1 mb-2">
+        <div className="mb-2 flex items-center gap-2 px-2 py-1">
           <Skeleton className="h-2 w-2 rounded-full" />
           <LineSkeleton width={70} height={10} />
         </div>

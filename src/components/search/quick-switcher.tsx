@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Command } from 'cmdk';
-import { useHotkeys } from 'react-hotkeys-hook';
+import * as React from 'react'
+import { Command } from 'cmdk'
+import { useHotkeys } from 'react-hotkeys-hook'
 import {
   Hash,
   Lock,
@@ -14,16 +14,16 @@ import {
   Search,
   Clock,
   Star,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { useUIStore } from '@/stores/ui-store';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { useUIStore } from '@/stores/ui-store'
 import {
   useSearchStore,
   type ChannelSearchResult,
   type UserSearchResult,
-} from '@/stores/search-store';
+} from '@/stores/search-store'
 
 // ============================================================================
 // Types
@@ -31,31 +31,31 @@ import {
 
 export interface QuickSwitcherProps {
   /** Whether the quick switcher is open */
-  open?: boolean;
+  open?: boolean
   /** Callback when open state changes */
-  onOpenChange?: (open: boolean) => void;
+  onOpenChange?: (open: boolean) => void
   /** List of recent channels */
-  recentChannels?: ChannelSearchResult[];
+  recentChannels?: ChannelSearchResult[]
   /** List of starred channels */
-  starredChannels?: ChannelSearchResult[];
+  starredChannels?: ChannelSearchResult[]
   /** List of all channels */
-  allChannels?: ChannelSearchResult[];
+  allChannels?: ChannelSearchResult[]
   /** List of direct message users */
-  directMessages?: UserSearchResult[];
+  directMessages?: UserSearchResult[]
   /** Callback when a channel is selected */
-  onSelectChannel?: (channel: ChannelSearchResult) => void;
+  onSelectChannel?: (channel: ChannelSearchResult) => void
   /** Callback when a user is selected (for DM) */
-  onSelectUser?: (user: UserSearchResult) => void;
+  onSelectUser?: (user: UserSearchResult) => void
   /** Callback when "Create channel" is selected */
-  onCreateChannel?: () => void;
+  onCreateChannel?: () => void
   /** Callback when "Start DM" is selected */
-  onStartDM?: () => void;
+  onStartDM?: () => void
   /** Callback when settings is selected */
-  onOpenSettings?: () => void;
+  onOpenSettings?: () => void
   /** Callback when sign out is selected */
-  onSignOut?: () => void;
+  onSignOut?: () => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -78,71 +78,71 @@ export function QuickSwitcher({
   className,
 }: QuickSwitcherProps) {
   // Use controlled or uncontrolled state
-  const quickSwitcherOpen = useUIStore((state) => state.quickSwitcherOpen);
-  const setQuickSwitcherOpen = useUIStore((state) => state.setQuickSwitcherOpen);
+  const quickSwitcherOpen = useUIStore((state) => state.quickSwitcherOpen)
+  const setQuickSwitcherOpen = useUIStore((state) => state.setQuickSwitcherOpen)
 
-  const isOpen = controlledOpen ?? quickSwitcherOpen;
-  const setIsOpen = onOpenChange ?? setQuickSwitcherOpen;
+  const isOpen = controlledOpen ?? quickSwitcherOpen
+  const setIsOpen = onOpenChange ?? setQuickSwitcherOpen
 
-  const [search, setSearch] = React.useState('');
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [search, setSearch] = React.useState('')
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
   // Keyboard shortcut to open
   useHotkeys(
     'mod+k',
     (e) => {
-      e.preventDefault();
-      setIsOpen(!isOpen);
+      e.preventDefault()
+      setIsOpen(!isOpen)
     },
     { enableOnFormTags: true }
-  );
+  )
 
   // Focus input when opened
   React.useEffect(() => {
     if (isOpen) {
-      setSearch('');
-      setTimeout(() => inputRef.current?.focus(), 0);
+      setSearch('')
+      setTimeout(() => inputRef.current?.focus(), 0)
     }
-  }, [isOpen]);
+  }, [isOpen])
 
   // Handle selection
   const handleSelectChannel = (channel: ChannelSearchResult) => {
-    onSelectChannel?.(channel);
-    setIsOpen(false);
-  };
+    onSelectChannel?.(channel)
+    setIsOpen(false)
+  }
 
   const handleSelectUser = (user: UserSearchResult) => {
-    onSelectUser?.(user);
-    setIsOpen(false);
-  };
+    onSelectUser?.(user)
+    setIsOpen(false)
+  }
 
   const handleCreateChannel = () => {
-    onCreateChannel?.();
-    setIsOpen(false);
-  };
+    onCreateChannel?.()
+    setIsOpen(false)
+  }
 
   const handleStartDM = () => {
-    onStartDM?.();
-    setIsOpen(false);
-  };
+    onStartDM?.()
+    setIsOpen(false)
+  }
 
   const handleOpenSettings = () => {
-    onOpenSettings?.();
-    setIsOpen(false);
-  };
+    onOpenSettings?.()
+    setIsOpen(false)
+  }
 
   const handleSignOut = () => {
-    onSignOut?.();
-    setIsOpen(false);
-  };
+    onSignOut?.()
+    setIsOpen(false)
+  }
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+        className="bg-background/80 absolute inset-0 backdrop-blur-sm"
         onClick={() => setIsOpen(false)}
       />
 
@@ -159,8 +159,8 @@ export function QuickSwitcher({
           shouldFilter={true}
           filter={(value, search) => {
             // Custom filter to search by name
-            if (value.toLowerCase().includes(search.toLowerCase())) return 1;
-            return 0;
+            if (value.toLowerCase().includes(search.toLowerCase())) return 1
+            return 0
           }}
         >
           {/* Search input */}
@@ -233,11 +233,7 @@ export function QuickSwitcher({
             {directMessages.length > 0 && (
               <Command.Group heading="Direct Messages">
                 {directMessages.map((user) => (
-                  <UserItem
-                    key={user.userId}
-                    user={user}
-                    onSelect={() => handleSelectUser(user)}
-                  />
+                  <UserItem key={user.userId} user={user} onSelect={() => handleSelectUser(user)} />
                 ))}
               </Command.Group>
             )}
@@ -249,7 +245,7 @@ export function QuickSwitcher({
                 onSelect={handleCreateChannel}
                 className={cn(
                   'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm',
-                  'aria-selected:bg-accent aria-selected:text-accent-foreground'
+                  'aria-selected:text-accent-foreground aria-selected:bg-accent'
                 )}
               >
                 <Plus className="h-4 w-4 text-muted-foreground" />
@@ -261,7 +257,7 @@ export function QuickSwitcher({
                 onSelect={handleStartDM}
                 className={cn(
                   'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm',
-                  'aria-selected:bg-accent aria-selected:text-accent-foreground'
+                  'aria-selected:text-accent-foreground aria-selected:bg-accent'
                 )}
               >
                 <MessageSquare className="h-4 w-4 text-muted-foreground" />
@@ -273,7 +269,7 @@ export function QuickSwitcher({
                 onSelect={handleOpenSettings}
                 className={cn(
                   'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm',
-                  'aria-selected:bg-accent aria-selected:text-accent-foreground'
+                  'aria-selected:text-accent-foreground aria-selected:bg-accent'
                 )}
               >
                 <Settings className="h-4 w-4 text-muted-foreground" />
@@ -285,7 +281,7 @@ export function QuickSwitcher({
                 onSelect={handleSignOut}
                 className={cn(
                   'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm',
-                  'aria-selected:bg-accent aria-selected:text-accent-foreground'
+                  'aria-selected:text-accent-foreground aria-selected:bg-accent'
                 )}
               >
                 <LogOut className="h-4 w-4 text-muted-foreground" />
@@ -314,7 +310,7 @@ export function QuickSwitcher({
         </Command>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -322,19 +318,14 @@ export function QuickSwitcher({
 // ============================================================================
 
 interface ChannelItemProps {
-  channel: ChannelSearchResult;
-  icon?: React.ElementType;
-  iconClassName?: string;
-  onSelect: () => void;
+  channel: ChannelSearchResult
+  icon?: React.ElementType
+  iconClassName?: string
+  onSelect: () => void
 }
 
-function ChannelItem({
-  channel,
-  icon: CustomIcon,
-  iconClassName,
-  onSelect,
-}: ChannelItemProps) {
-  const Icon = CustomIcon ?? (channel.isPrivate ? Lock : Hash);
+function ChannelItem({ channel, icon: CustomIcon, iconClassName, onSelect }: ChannelItemProps) {
+  const Icon = CustomIcon ?? (channel.isPrivate ? Lock : Hash)
 
   return (
     <Command.Item
@@ -342,15 +333,10 @@ function ChannelItem({
       onSelect={onSelect}
       className={cn(
         'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm',
-        'aria-selected:bg-accent aria-selected:text-accent-foreground'
+        'aria-selected:text-accent-foreground aria-selected:bg-accent'
       )}
     >
-      <Icon
-        className={cn(
-          'h-4 w-4 shrink-0 text-muted-foreground',
-          iconClassName
-        )}
-      />
+      <Icon className={cn('h-4 w-4 shrink-0 text-muted-foreground', iconClassName)} />
       <span className="min-w-0 flex-1 truncate">{channel.name}</span>
       {channel.isPrivate && !CustomIcon && (
         <Badge variant="secondary" className="h-5 px-1.5 text-xs">
@@ -363,7 +349,7 @@ function ChannelItem({
         </Badge>
       )}
     </Command.Item>
-  );
+  )
 }
 
 // ============================================================================
@@ -371,8 +357,8 @@ function ChannelItem({
 // ============================================================================
 
 interface UserItemProps {
-  user: UserSearchResult;
-  onSelect: () => void;
+  user: UserSearchResult
+  onSelect: () => void
 }
 
 function UserItem({ user, onSelect }: UserItemProps) {
@@ -381,14 +367,14 @@ function UserItem({ user, onSelect }: UserItemProps) {
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2)
 
   const statusColors = {
     online: 'bg-green-500',
     away: 'bg-yellow-500',
     busy: 'bg-red-500',
     offline: 'bg-gray-400',
-  };
+  }
 
   return (
     <Command.Item
@@ -396,14 +382,12 @@ function UserItem({ user, onSelect }: UserItemProps) {
       onSelect={onSelect}
       className={cn(
         'flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm',
-        'aria-selected:bg-accent aria-selected:text-accent-foreground'
+        'aria-selected:text-accent-foreground aria-selected:bg-accent'
       )}
     >
       <div className="relative shrink-0">
         <Avatar className="h-6 w-6">
-          {user.avatar && (
-            <AvatarImage src={user.avatar} alt={user.displayName} />
-          )}
+          {user.avatar && <AvatarImage src={user.avatar} alt={user.displayName} />}
           <AvatarFallback className="text-xs">{initials}</AvatarFallback>
         </Avatar>
         <span
@@ -414,11 +398,9 @@ function UserItem({ user, onSelect }: UserItemProps) {
         />
       </div>
       <span className="min-w-0 flex-1 truncate">{user.displayName}</span>
-      <span className="shrink-0 text-xs text-muted-foreground">
-        @{user.username}
-      </span>
+      <span className="shrink-0 text-xs text-muted-foreground">@{user.username}</span>
     </Command.Item>
-  );
+  )
 }
 
 // ============================================================================
@@ -426,16 +408,16 @@ function UserItem({ user, onSelect }: UserItemProps) {
 // ============================================================================
 
 export function useQuickSwitcher() {
-  const isOpen = useUIStore((state) => state.quickSwitcherOpen);
-  const setOpen = useUIStore((state) => state.setQuickSwitcherOpen);
-  const toggle = useUIStore((state) => state.toggleQuickSwitcher);
+  const isOpen = useUIStore((state) => state.quickSwitcherOpen)
+  const setOpen = useUIStore((state) => state.setQuickSwitcherOpen)
+  const toggle = useUIStore((state) => state.toggleQuickSwitcher)
 
   return {
     isOpen,
     open: () => setOpen(true),
     close: () => setOpen(false),
     toggle,
-  };
+  }
 }
 
-export default QuickSwitcher;
+export default QuickSwitcher

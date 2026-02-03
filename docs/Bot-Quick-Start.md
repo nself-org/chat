@@ -20,11 +20,13 @@ The application will start on `http://localhost:3000`.
 ### 2. List Available Bots
 
 **API:**
+
 ```bash
 curl http://localhost:3000/api/bots?type=available
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -54,6 +56,7 @@ curl http://localhost:3000/api/bots?type=available
 ### 3. Install a Bot
 
 **API:**
+
 ```bash
 curl -X POST http://localhost:3000/api/bots \
   -H "Content-Type: application/json" \
@@ -70,6 +73,7 @@ curl -X POST http://localhost:3000/api/bots \
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -88,6 +92,7 @@ curl -X POST http://localhost:3000/api/bots \
 In any chat channel, use the bot commands:
 
 **Reminder Bot:**
+
 ```
 /remind 5m "Check the build"
 /reminders
@@ -95,6 +100,7 @@ In any chat channel, use the bot commands:
 ```
 
 **FAQ Bot:**
+
 ```
 /faq how to reset password
 /addfaq "How to reset password?" "Go to Settings > Reset"
@@ -102,6 +108,7 @@ In any chat channel, use the bot commands:
 ```
 
 **Scheduler Bot:**
+
 ```
 /schedule 1h "Team meeting reminder"
 /recurring 1d "Daily standup reminder"
@@ -111,16 +118,19 @@ In any chat channel, use the bot commands:
 ### 5. Manage Bots
 
 **List Installed Bots:**
+
 ```bash
 curl http://localhost:3000/api/bots?type=installed
 ```
 
 **Get Bot Details:**
+
 ```bash
 curl http://localhost:3000/api/bots/reminder-bot
 ```
 
 **Disable a Bot:**
+
 ```bash
 curl -X POST http://localhost:3000/api/bots/reminder-bot/enable \
   -H "Content-Type: application/json" \
@@ -128,6 +138,7 @@ curl -X POST http://localhost:3000/api/bots/reminder-bot/enable \
 ```
 
 **Update Bot Config:**
+
 ```bash
 curl -X PATCH http://localhost:3000/api/bots/reminder-bot \
   -H "Content-Type: application/json" \
@@ -139,6 +150,7 @@ curl -X PATCH http://localhost:3000/api/bots/reminder-bot \
 ```
 
 **Uninstall a Bot:**
+
 ```bash
 curl -X DELETE http://localhost:3000/api/bots/reminder-bot
 ```
@@ -146,9 +158,11 @@ curl -X DELETE http://localhost:3000/api/bots/reminder-bot
 ## Available Bots
 
 ### 1. Reminder Bot
+
 Set reminders for yourself or your team.
 
 **Commands:**
+
 - `/remind <time> "<message>"` - Set a reminder
 - `/reminders` - List your reminders
 - `/cancelreminder <id>` - Cancel a reminder
@@ -156,6 +170,7 @@ Set reminders for yourself or your team.
 - `/remindchannel <time> "<message>"` - Channel reminder
 
 **Example:**
+
 ```
 /remind 30m "Check the deployment"
 /remind 1h "Team standup meeting"
@@ -163,14 +178,17 @@ Set reminders for yourself or your team.
 ```
 
 ### 2. Welcome Bot
+
 Automatically welcome new members.
 
 **Commands:**
+
 - `/setwelcome "<message>"` - Set welcome message
 - `/testwelcome` - Preview welcome message
 - `/disablewelcome` - Disable welcomes
 
 **Variables:**
+
 - `{user}` - Username
 - `{channel}` - Channel name
 - `{memberCount}` - Member number
@@ -178,29 +196,35 @@ Automatically welcome new members.
 - `{time}` - Current time
 
 **Example:**
+
 ```
 /setwelcome "Welcome {user}! You're member #{memberCount} 🎉"
 ```
 
 ### 3. Poll Bot
+
 Create interactive polls and surveys.
 
 **Commands:**
+
 - `/poll "<question>" "<options>"` - Create a poll
 - `/quickpoll "<question>"` - Yes/no poll
 - `/pollresults <id>` - Show results
 - `/endpoll <id>` - End poll early
 
 **Example:**
+
 ```
 /poll "What's for lunch?" "Pizza | Tacos | Sushi"
 /quickpoll "Should we have a team meeting today?"
 ```
 
 ### 4. FAQ Bot
+
 Answer frequently asked questions.
 
 **Commands:**
+
 - `/faq <question>` - Search FAQ
 - `/addfaq "<question>" "<answer>"` - Add FAQ
 - `/removefaq <id>` - Remove FAQ
@@ -208,6 +232,7 @@ Answer frequently asked questions.
 - `/listfaqs [category]` - List all FAQs
 
 **Example:**
+
 ```
 /addfaq "How to reset password?" "Go to Settings > Security > Reset Password"
 /faq how to reset password
@@ -215,9 +240,11 @@ Answer frequently asked questions.
 ```
 
 ### 5. Scheduler Bot
+
 Schedule messages and recurring tasks.
 
 **Commands:**
+
 - `/schedule <when> "<message>"` - Schedule a message
 - `/scheduled` - List scheduled messages
 - `/cancelschedule <id>` - Cancel schedule
@@ -226,6 +253,7 @@ Schedule messages and recurring tasks.
 - `/cancelrecurring <id>` - Cancel recurring task
 
 **Example:**
+
 ```
 /schedule 1h "Meeting reminder!"
 /recurring 1d "Daily standup reminder!"
@@ -241,6 +269,7 @@ http://localhost:3000/admin/bots
 ```
 
 Features:
+
 - View all installed and available bots
 - Search and filter bots
 - Enable/disable bots
@@ -293,16 +322,11 @@ export function createMyBot() {
     .permissions('read_messages', 'send_messages')
 
     .command(
-      command('hello')
-        .description('Say hello')
-        .example('/hello'),
+      command('hello').description('Say hello').example('/hello'),
       async (ctx: CommandContext, api: BotApi) => {
         return response()
           .embed(
-            embed()
-              .title('👋 Hello!')
-              .description(`Hi ${ctx.user.displayName}!`)
-              .color('#10B981')
+            embed().title('👋 Hello!').description(`Hi ${ctx.user.displayName}!`).color('#10B981')
           )
           .build()
       }
@@ -351,16 +375,19 @@ curl -X POST http://localhost:3000/api/bots \
 ### Bot not responding
 
 1. Check if bot is enabled:
+
 ```bash
 curl http://localhost:3000/api/bots/reminder-bot
 ```
 
 2. Check bot logs (if available):
+
 ```bash
 curl http://localhost:3000/api/bots/reminder-bot/logs
 ```
 
 3. Check server logs:
+
 ```bash
 # Look for errors in terminal
 ```
@@ -395,6 +422,7 @@ curl http://localhost:3000/api/bots/reminder-bot/logs
 ## Support
 
 For issues or questions:
+
 1. Check the documentation
 2. Review example bots
 3. Test with API endpoints

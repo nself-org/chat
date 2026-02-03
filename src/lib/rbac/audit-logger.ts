@@ -8,6 +8,8 @@
 import { type Permission, type Role } from '@/types/rbac'
 import { type PermissionResult } from './permission-builder'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -529,10 +531,7 @@ export class AuditLogger {
   /**
    * Log a logout event
    */
-  logLogout(params: {
-    userId: string
-    metadata?: Record<string, unknown>
-  }): AuditLogEntry | null {
+  logLogout(params: { userId: string; metadata?: Record<string, unknown> }): AuditLogEntry | null {
     if (!this.config.enabled) return null
 
     const entry = this.createEntry({
@@ -683,9 +682,7 @@ export class AuditLogger {
 
     if (this.entries.length > 0) {
       // Entries are not guaranteed to be sorted
-      const sorted = [...this.entries].sort(
-        (a, b) => a.timestamp.getTime() - b.timestamp.getTime()
-      )
+      const sorted = [...this.entries].sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime())
       stats.oldestEntry = sorted[0].timestamp
       stats.newestEntry = sorted[sorted.length - 1].timestamp
     }
@@ -784,7 +781,9 @@ export class AuditLogger {
   /**
    * Create a new audit entry
    */
-  private createEntry(params: Partial<AuditLogEntry> & { eventType: AuditEventType; userId: string }): AuditLogEntry {
+  private createEntry(
+    params: Partial<AuditLogEntry> & { eventType: AuditEventType; userId: string }
+  ): AuditLogEntry {
     return {
       id: generateId(),
       timestamp: new Date(),
@@ -822,7 +821,7 @@ export class AuditLogger {
     // Persist if configured
     if (this.config.persistFn) {
       this.config.persistFn(entry).catch((err) => {
-        console.error('Failed to persist audit log entry:', err)
+        logger.error('Failed to persist audit log entry:', err)
       })
     }
 

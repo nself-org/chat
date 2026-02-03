@@ -167,12 +167,8 @@ export function parseAndResolveMentions(
   const result = parseMentions(content)
 
   // Create lookup maps
-  const usersByUsername = new Map(
-    users.map((u) => [u.username.toLowerCase(), u])
-  )
-  const channelsBySlug = new Map(
-    channels.map((c) => [c.slug.toLowerCase(), c])
-  )
+  const usersByUsername = new Map(users.map((u) => [u.username.toLowerCase(), u]))
+  const channelsBySlug = new Map(channels.map((c) => [c.slug.toLowerCase(), c]))
 
   // Resolve mentions
   for (const mention of result.mentions) {
@@ -248,9 +244,11 @@ export function extractChannelMentions(content: string): string[] {
 /**
  * Extract group mentions from content
  */
-export function extractGroupMentions(
-  content: string
-): { hasEveryone: boolean; hasHere: boolean; hasChannel: boolean } {
+export function extractGroupMentions(content: string): {
+  hasEveryone: boolean
+  hasHere: boolean
+  hasChannel: boolean
+} {
   return {
     hasEveryone: EVERYONE_MENTION_REGEX.test(content),
     hasHere: HERE_MENTION_REGEX.test(content),
@@ -276,10 +274,7 @@ export function containsUserMention(content: string, username: string): boolean 
 /**
  * Check if content mentions the current user
  */
-export function mentionsCurrentUser(
-  content: string,
-  currentUsername: string
-): boolean {
+export function mentionsCurrentUser(content: string, currentUsername: string): boolean {
   const groupMentions = extractGroupMentions(content)
   if (groupMentions.hasEveryone || groupMentions.hasHere || groupMentions.hasChannel) {
     return true
@@ -307,11 +302,14 @@ export function replaceMentionsWithHTML(
   } = {}
 ): string {
   const {
-    userTemplate = (u) => `<span class="mention mention-user" data-user-id="${u.id}">@${u.displayName}</span>`,
-    channelTemplate = (c) => `<span class="mention mention-channel" data-channel-id="${c.id}">#${c.name}</span>`,
+    userTemplate = (u) =>
+      `<span class="mention mention-user" data-user-id="${u.id}">@${u.displayName}</span>`,
+    channelTemplate = (c) =>
+      `<span class="mention mention-channel" data-channel-id="${c.id}">#${c.name}</span>`,
     groupTemplate = (t) => `<span class="mention mention-group mention-${t}">@${t}</span>`,
     unknownUserTemplate = (u) => `<span class="mention mention-user mention-unknown">@${u}</span>`,
-    unknownChannelTemplate = (c) => `<span class="mention mention-channel mention-unknown">#${c}</span>`,
+    unknownChannelTemplate = (c) =>
+      `<span class="mention mention-channel mention-unknown">#${c}</span>`,
   } = options
 
   let result = content
@@ -350,27 +348,21 @@ export function replaceMentionsWithHTML(
  * Strip all mentions from content (for plain text)
  */
 export function stripMentions(content: string): string {
-  return content
-    .replace(USER_MENTION_REGEX, '$1')
-    .replace(CHANNEL_MENTION_REGEX, '$1')
+  return content.replace(USER_MENTION_REGEX, '$1').replace(CHANNEL_MENTION_REGEX, '$1')
 }
 
 /**
  * Escape content to prevent mention parsing
  */
 export function escapeMentions(content: string): string {
-  return content
-    .replace(/@/g, '\\@')
-    .replace(/#/g, '\\#')
+  return content.replace(/@/g, '\\@').replace(/#/g, '\\#')
 }
 
 /**
  * Unescape previously escaped mentions
  */
 export function unescapeMentions(content: string): string {
-  return content
-    .replace(/\\@/g, '@')
-    .replace(/\\#/g, '#')
+  return content.replace(/\\@/g, '@').replace(/\\#/g, '#')
 }
 
 // ============================================================================

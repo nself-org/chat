@@ -20,6 +20,7 @@ import type {
   EventHandler,
   BotApi,
 } from './bot-types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // EVENT EMITTER
@@ -96,7 +97,7 @@ export class BotEventEmitter {
       try {
         await listener(data, api)
       } catch (error) {
-        console.error(`[BotEventEmitter] Error in listener for '${event}':`, error)
+        logger.error(`[BotEventEmitter] Error in listener for '${event}':`, error)
       }
     }
 
@@ -105,7 +106,7 @@ export class BotEventEmitter {
       try {
         await listener(data, api)
       } catch (error) {
-        console.error(`[BotEventEmitter] Error in once listener for '${event}':`, error)
+        logger.error(`[BotEventEmitter] Error in once listener for '${event}':`, error)
       }
     }
     this.onceListeners.delete(event)
@@ -115,20 +116,14 @@ export class BotEventEmitter {
    * Get listener count for an event
    */
   listenerCount(event: string): number {
-    return (
-      (this.listeners.get(event)?.size || 0) +
-      (this.onceListeners.get(event)?.size || 0)
-    )
+    return (this.listeners.get(event)?.size || 0) + (this.onceListeners.get(event)?.size || 0)
   }
 
   /**
    * Get all event names with listeners
    */
   eventNames(): string[] {
-    const names = new Set([
-      ...this.listeners.keys(),
-      ...this.onceListeners.keys(),
-    ])
+    const names = new Set([...this.listeners.keys(), ...this.onceListeners.keys()])
     return Array.from(names)
   }
 }
@@ -379,7 +374,9 @@ export function isAllowed(id: string, allowList?: string[]): boolean {
  * Examples: "5m", "1h", "30s", "1d", "1w"
  */
 export function parseDuration(input: string): number | null {
-  const match = input.match(/^(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hr|hour|hours|d|day|days|w|week|weeks)$/i)
+  const match = input.match(
+    /^(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hr|hour|hours|d|day|days|w|week|weeks)$/i
+  )
 
   if (!match) return null
 

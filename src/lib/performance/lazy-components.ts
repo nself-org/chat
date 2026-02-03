@@ -417,7 +417,11 @@ export function shouldPreload(): boolean {
     const connection = (navigator as any).connection
 
     // Don't preload on slow connections
-    if (connection.saveData || connection.effectiveType === 'slow-2g' || connection.effectiveType === '2g') {
+    if (
+      connection.saveData ||
+      connection.effectiveType === 'slow-2g' ||
+      connection.effectiveType === '2g'
+    ) {
       return false
     }
   }
@@ -461,7 +465,9 @@ export function trackBundleSize() {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
         if (entry.entryType === 'resource' && entry.name.includes('.js')) {
-          console.log(`[Bundle] ${entry.name}: ${((entry as any).transferSize / 1024).toFixed(2)} KB`)
+          // REMOVED: console.log(
+          //   `[Bundle] ${entry.name}: ${((entry as any).transferSize / 1024).toFixed(2)} KB`
+          // )
         }
       }
     })

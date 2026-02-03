@@ -82,11 +82,7 @@ export function ThreadPanel({
 /**
  * Container component that manages thread panel visibility and state
  */
-export function ThreadPanelContainer({
-  className,
-}: {
-  className?: string
-}) {
+export function ThreadPanelContainer({ className }: { className?: string }) {
   const { activeThreadId, threadPanelOpen, closeThread } = useThreadStore()
 
   if (!threadPanelOpen || !activeThreadId) {
@@ -95,10 +91,7 @@ export function ThreadPanelContainer({
 
   return (
     <div className={cn('h-full', className)}>
-      <ThreadPanel
-        threadId={activeThreadId}
-        onClose={closeThread}
-      />
+      <ThreadPanel threadId={activeThreadId} onClose={closeThread} />
     </div>
   )
 }

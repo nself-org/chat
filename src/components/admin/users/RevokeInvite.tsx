@@ -15,6 +15,8 @@ import {
 import { useUserManagementStore } from '@/stores/user-management-store'
 import type { UserInvite } from '@/lib/admin/users/user-types'
 
+import { logger } from '@/lib/logger'
+
 interface RevokeInviteProps {
   invite: UserInvite | null
   open: boolean
@@ -22,12 +24,7 @@ interface RevokeInviteProps {
   onRevoked?: () => void
 }
 
-export function RevokeInvite({
-  invite,
-  open,
-  onOpenChange,
-  onRevoked,
-}: RevokeInviteProps) {
+export function RevokeInvite({ invite, open, onOpenChange, onRevoked }: RevokeInviteProps) {
   const [isRevoking, setIsRevoking] = useState(false)
 
   const { updateInvite } = useUserManagementStore()
@@ -48,7 +45,7 @@ export function RevokeInvite({
       onRevoked?.()
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to revoke invite:', error)
+      logger.error('Failed to revoke invite:', error)
     } finally {
       setIsRevoking(false)
     }
@@ -60,12 +57,11 @@ export function RevokeInvite({
         <AlertDialogHeader>
           <AlertDialogTitle>Revoke Invitation</AlertDialogTitle>
           <AlertDialogDescription>
-            Are you sure you want to revoke the invitation for{' '}
-            <strong>{invite?.email}</strong>?
+            Are you sure you want to revoke the invitation for <strong>{invite?.email}</strong>?
             <br />
             <br />
-            They will no longer be able to join using this invitation link or
-            code. This action cannot be undone.
+            They will no longer be able to join using this invitation link or code. This action
+            cannot be undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>

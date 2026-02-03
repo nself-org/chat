@@ -51,7 +51,9 @@ const createMockQueueItem = (overrides: Partial<QueueItem> = {}): QueueItem => (
   ...overrides,
 })
 
-const createMockModerationConfig = (overrides: Partial<ModerationConfig> = {}): ModerationConfig => ({
+const createMockModerationConfig = (
+  overrides: Partial<ModerationConfig> = {}
+): ModerationConfig => ({
   toxicThreshold: 0.7,
   nsfwThreshold: 0.7,
   spamThreshold: 0.6,
@@ -108,9 +110,7 @@ describe('ModerationQueue Component', () => {
     render(<ModerationQueue {...defaultProps} />)
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/moderation/queue')
-      )
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/api/moderation/queue'))
     })
   })
 
@@ -235,9 +235,7 @@ describe('ModerationQueue Component', () => {
   })
 
   it('displays AI flags', async () => {
-    const mockItems = [
-      createMockQueueItem({ aiFlags: ['toxic', 'harassment', 'spam'] }),
-    ]
+    const mockItems = [createMockQueueItem({ aiFlags: ['toxic', 'harassment', 'spam'] })]
 
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({
       json: async () => ({ success: true, items: mockItems }),
@@ -501,9 +499,7 @@ describe('ModerationQueue Component', () => {
   })
 
   it('displays content URL when available', async () => {
-    const mockItems = [
-      createMockQueueItem({ contentUrl: 'https://example.com/image.jpg' }),
-    ]
+    const mockItems = [createMockQueueItem({ contentUrl: 'https://example.com/image.jpg' })]
 
     ;(global.fetch as jest.Mock).mockResolvedValueOnce({
       json: async () => ({ success: true, items: mockItems }),
@@ -530,7 +526,9 @@ describe('ModerationSettings Component', () => {
     render(<ModerationSettings />)
 
     expect(screen.getByText('Moderation Settings')).toBeInTheDocument()
-    expect(screen.getByText('Configure AI-powered moderation rules and thresholds')).toBeInTheDocument()
+    expect(
+      screen.getByText('Configure AI-powered moderation rules and thresholds')
+    ).toBeInTheDocument()
   })
 
   it('displays detection features section', () => {

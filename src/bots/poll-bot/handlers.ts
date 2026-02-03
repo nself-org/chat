@@ -175,7 +175,10 @@ export function registerVote(
 /**
  * End a poll
  */
-export function endPoll(pollId: string, userId: string): { success: boolean; message: string; poll?: Poll } {
+export function endPoll(
+  pollId: string,
+  userId: string
+): { success: boolean; message: string; poll?: Poll } {
   const poll = polls.get(pollId)
 
   if (!poll) {
@@ -211,7 +214,10 @@ export function formatPollResults(poll: Poll, showVoters = true): string {
     results += `${bar} ${percentage}% (${voteCount} vote${voteCount !== 1 ? 's' : ''})\n`
 
     if (showVoters && !poll.isAnonymous && voteCount > 0) {
-      const voterMentions = option.votes.slice(0, 5).map((id) => mentionUser(id)).join(', ')
+      const voterMentions = option.votes
+        .slice(0, 5)
+        .map((id) => mentionUser(id))
+        .join(', ')
       const overflow = voteCount > 5 ? ` +${voteCount - 5} more` : ''
       results += `  Voters: ${voterMentions}${overflow}\n`
     }
@@ -324,9 +330,7 @@ export function checkExpiredPolls(): Poll[] {
  * Get active polls for a channel
  */
 export function getActivePolls(channelId: string): Poll[] {
-  return Array.from(polls.values()).filter(
-    (poll) => poll.channelId === channelId && !poll.isEnded
-  )
+  return Array.from(polls.values()).filter((poll) => poll.channelId === channelId && !poll.isEnded)
 }
 
 /**

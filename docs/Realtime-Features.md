@@ -57,25 +57,30 @@ socketManager.disconnect()
 ### Features
 
 #### Connection Pooling
+
 - Maintains pool of idle connections for instant reconnect
 - Round-robin load balancing for multiple connections
 - Automatic cleanup of idle connections (5-minute timeout)
 
 #### Message Batching
+
 - Batches messages sent within 50ms window
 - Maximum batch size: 10 messages
 - Reduces network overhead for rapid operations
 
 #### Compression
+
 - Per-message deflate compression for payloads > 1KB
 - Reduces bandwidth usage by ~60% for text messages
 
 #### Heartbeat/Ping-Pong
+
 - 30-second heartbeat interval to keep connections alive
 - Latency measurement via ping/pong
 - Automatic reconnection on missed heartbeats
 
 #### Exponential Backoff
+
 - Initial delay: 1000ms
 - Max delay: 5000ms
 - Max attempts: 5
@@ -182,8 +187,7 @@ recordActivity()
 
 ```tsx
 import { PresenceIndicator } from '@/components/user/PresenceIndicator'
-
-<PresenceIndicator
+;<PresenceIndicator
   userId="user-123"
   size="md"
   position="bottom-right"
@@ -197,23 +201,14 @@ import { PresenceIndicator } from '@/components/user/PresenceIndicator'
 
 ```tsx
 import { PresenceBadge } from '@/components/user/PresenceIndicator'
-
-<PresenceBadge
-  userId="user-123"
-  showLabel
-  showCustomStatus
-/>
+;<PresenceBadge userId="user-123" showLabel showCustomStatus />
 ```
 
 #### PresenceSelector
 
 ```tsx
 import { PresenceSelector } from '@/components/user/PresenceIndicator'
-
-<PresenceSelector
-  value={currentStatus}
-  onChange={(status) => updateOwnPresence(status)}
-/>
+;<PresenceSelector value={currentStatus} onChange={(status) => updateOwnPresence(status)} />
 ```
 
 ---
@@ -276,11 +271,7 @@ function MessageInput({ channelId }) {
 
 ```tsx
 import { TypingIndicator } from '@/components/chat/typing-indicator'
-
-<TypingIndicator
-  users={typingUsers}
-  maxAvatars={3}
-/>
+;<TypingIndicator users={typingUsers} maxAvatars={3} />
 ```
 
 Output: "Alice, Bob, and Charlie are typing..."
@@ -289,8 +280,7 @@ Output: "Alice, Bob, and Charlie are typing..."
 
 ```tsx
 import { InlineTypingIndicator } from '@/components/chat/typing-indicator'
-
-<InlineTypingIndicator users={typingUsers} />
+;<InlineTypingIndicator users={typingUsers} />
 ```
 
 Shows avatar(s) with animated typing bubble.
@@ -299,8 +289,7 @@ Shows avatar(s) with animated typing bubble.
 
 ```tsx
 import { MessageInputWithTyping } from '@/components/chat/MessageInputWithTyping'
-
-<MessageInputWithTyping
+;<MessageInputWithTyping
   channelId="channel-123"
   onSendMessage={(content) => sendMessage(content)}
   placeholder="Type a message..."
@@ -324,32 +313,25 @@ Display WebSocket connection state with quality indicators.
 
 ```tsx
 import { ConnectionStatus } from '@/components/realtime/ConnectionStatus'
-
-<ConnectionStatus
-  show={true}
-  position="top-right"
-  showStats
-  compact={false}
-/>
+;<ConnectionStatus show={true} position="top-right" showStats compact={false} />
 ```
 
 #### InlineConnectionStatus
 
 ```tsx
 import { InlineConnectionStatus } from '@/components/realtime/ConnectionStatus'
-
-<InlineConnectionStatus showLabel />
+;<InlineConnectionStatus showLabel />
 ```
 
 #### ConnectionQualityBar
 
 ```tsx
 import { ConnectionQualityBar } from '@/components/realtime/ConnectionStatus'
-
-<ConnectionQualityBar />
+;<ConnectionQualityBar />
 ```
 
 Shows 4 bars indicating connection quality:
+
 - **4 bars (green)**: Excellent (< 100ms)
 - **3 bars (yellow)**: Good (100-300ms)
 - **2 bars (orange)**: Poor (> 300ms)
@@ -359,11 +341,11 @@ Shows 4 bars indicating connection quality:
 
 ```tsx
 import { ConnectionStatusCard } from '@/components/realtime/ConnectionStatus'
-
-<ConnectionStatusCard />
+;<ConnectionStatusCard />
 ```
 
 Full card showing:
+
 - Connection status
 - Quality indicator
 - Latency
@@ -556,7 +538,7 @@ function ChatRoom({ channelId, members }) {
   const [messages, setMessages] = useState([])
   const { isConnected, subscribe, emit } = useSocket()
   const { typingUsers } = useTyping(channelId)
-  const { getPresence } = usePresence(members.map(m => m.id))
+  const { getPresence } = usePresence(members.map((m) => m.id))
 
   // Subscribe to new messages
   useEffect(() => {
@@ -578,35 +560,26 @@ function ChatRoom({ channelId, members }) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       <ConnectionStatus position="top-right" />
 
       {/* Header with members */}
-      <div className="flex items-center gap-2 p-4 border-b">
+      <div className="flex items-center gap-2 border-b p-4">
         {members.map((member) => (
           <div key={member.id} className="relative">
             <img src={member.avatar} className="h-8 w-8 rounded-full" />
-            <PresenceIndicator
-              userId={member.id}
-              size="sm"
-              position="bottom-right"
-              showTooltip
-            />
+            <PresenceIndicator userId={member.id} size="sm" position="bottom-right" showTooltip />
           </div>
         ))}
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      <div className="flex-1 space-y-2 overflow-y-auto p-4">
         {messages.map((msg) => (
           <div key={msg.id} className="flex items-start gap-2">
             <div className="relative">
               <img src={msg.author.avatar} className="h-8 w-8 rounded-full" />
-              <PresenceIndicator
-                userId={msg.author.id}
-                size="xs"
-                position="bottom-right"
-              />
+              <PresenceIndicator userId={msg.author.id} size="xs" position="bottom-right" />
             </div>
             <div>
               <div className="font-medium">{msg.author.name}</div>
@@ -620,7 +593,7 @@ function ChatRoom({ channelId, members }) {
       <TypingIndicator users={typingUsers} />
 
       {/* Input */}
-      <div className="p-4 border-t">
+      <div className="border-t p-4">
         <MessageInputWithTyping
           channelId={channelId}
           onSendMessage={handleSendMessage}
@@ -640,14 +613,7 @@ import { usePresence } from '@/hooks/use-presence'
 import { PresenceSelector } from '@/components/user/PresenceIndicator'
 
 function UserSettings() {
-  const {
-    currentStatus,
-    setOnline,
-    setAway,
-    setDnd,
-    setOffline,
-    setCustomStatus,
-  } = usePresence([])
+  const { currentStatus, setOnline, setAway, setDnd, setOffline, setCustomStatus } = usePresence([])
 
   return (
     <div className="space-y-4">
@@ -657,10 +623,18 @@ function UserSettings() {
         value={currentStatus}
         onChange={(status) => {
           switch (status) {
-            case 'online': setOnline(); break
-            case 'away': setAway(); break
-            case 'dnd': setDnd(); break
-            case 'offline': setOffline(); break
+            case 'online':
+              setOnline()
+              break
+            case 'away':
+              setAway()
+              break
+            case 'dnd':
+              setDnd()
+              break
+            case 'offline':
+              setOffline()
+              break
           }
         }}
       />
@@ -679,6 +653,7 @@ function UserSettings() {
 ## Best Practices
 
 1. **Always clean up subscriptions**
+
    ```typescript
    useEffect(() => {
      const unsubscribe = subscribe('event', handler)
@@ -687,6 +662,7 @@ function UserSettings() {
    ```
 
 2. **Use forceStopTyping on message send**
+
    ```typescript
    const handleSend = () => {
      forceStopTyping() // Stop immediately
@@ -695,6 +671,7 @@ function UserSettings() {
    ```
 
 3. **Check connection before emitting**
+
    ```typescript
    if (isConnected) {
      emit('message:new', data)
@@ -702,6 +679,7 @@ function UserSettings() {
    ```
 
 4. **Handle reconnection gracefully**
+
    ```typescript
    useEffect(() => {
      if (isConnected) {
@@ -713,10 +691,7 @@ function UserSettings() {
 
 5. **Debounce expensive operations**
    ```typescript
-   const debouncedUpdate = useMemo(
-     () => debounce(updatePresence, 1000),
-     []
-   )
+   const debouncedUpdate = useMemo(() => debounce(updatePresence, 1000), [])
    ```
 
 ---
@@ -728,6 +703,7 @@ function UserSettings() {
 **Problem**: WebSocket won't connect
 
 **Solutions**:
+
 - Check `NEXT_PUBLIC_SOCKET_URL` environment variable
 - Verify backend is running
 - Check browser console for errors
@@ -738,6 +714,7 @@ function UserSettings() {
 **Problem**: Typing events not being received
 
 **Solutions**:
+
 - Ensure `channelId` is correct
 - Check that other user is connected
 - Verify event subscription is active
@@ -748,6 +725,7 @@ function UserSettings() {
 **Problem**: User status not changing
 
 **Solutions**:
+
 - Check auto-away timeout (default 5 minutes)
 - Verify user activity events are firing
 - Check that presence subscription includes user ID
@@ -758,6 +736,7 @@ function UserSettings() {
 **Problem**: Slow message delivery
 
 **Solutions**:
+
 - Check network connection quality
 - Disable message batching for critical messages
 - Use `emitImmediate()` instead of `emit()`

@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useInView } from 'react-intersection-observer';
-import { ArrowUpDown, Loader2, Search, Frown } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import * as React from 'react'
+import { useInView } from 'react-intersection-observer'
+import { ArrowUpDown, Loader2, Search, Frown } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   useSearchStore,
   type SearchResult,
@@ -15,17 +15,11 @@ import {
   type UserSearchResult,
   type ChannelSearchResult,
   selectFilteredResults,
-} from '@/stores/search-store';
-import {
-  SearchResultMessage,
-  MessageResultSkeleton,
-} from './search-result-message';
-import { SearchResultFile, FileResultSkeleton } from './search-result-file';
-import { SearchResultUser, UserResultSkeleton } from './search-result-user';
-import {
-  SearchResultChannel,
-  ChannelResultSkeleton,
-} from './search-result-channel';
+} from '@/stores/search-store'
+import { SearchResultMessage, MessageResultSkeleton } from './search-result-message'
+import { SearchResultFile, FileResultSkeleton } from './search-result-file'
+import { SearchResultUser, UserResultSkeleton } from './search-result-user'
+import { SearchResultChannel, ChannelResultSkeleton } from './search-result-channel'
 
 // ============================================================================
 // Types
@@ -33,31 +27,31 @@ import {
 
 export interface SearchResultsProps {
   /** Additional class names */
-  className?: string;
+  className?: string
   /** Callback when a message result is clicked */
-  onMessageClick?: (result: MessageSearchResult) => void;
+  onMessageClick?: (result: MessageSearchResult) => void
   /** Callback when jump to message is clicked */
-  onJumpToMessage?: (result: MessageSearchResult) => void;
+  onJumpToMessage?: (result: MessageSearchResult) => void
   /** Callback when show context is clicked */
-  onShowContext?: (result: MessageSearchResult) => void;
+  onShowContext?: (result: MessageSearchResult) => void
   /** Callback when a file result is clicked */
-  onFileClick?: (result: FileSearchResult) => void;
+  onFileClick?: (result: FileSearchResult) => void
   /** Callback when file download is clicked */
-  onFileDownload?: (result: FileSearchResult) => void;
+  onFileDownload?: (result: FileSearchResult) => void
   /** Callback when a user result is clicked */
-  onUserClick?: (result: UserSearchResult) => void;
+  onUserClick?: (result: UserSearchResult) => void
   /** Callback when message user is clicked */
-  onMessageUser?: (result: UserSearchResult) => void;
+  onMessageUser?: (result: UserSearchResult) => void
   /** Callback when a channel result is clicked */
-  onChannelClick?: (result: ChannelSearchResult) => void;
+  onChannelClick?: (result: ChannelSearchResult) => void
   /** Callback when join channel is clicked */
-  onJoinChannel?: (result: ChannelSearchResult) => void;
+  onJoinChannel?: (result: ChannelSearchResult) => void
   /** Callback when open channel is clicked */
-  onOpenChannel?: (result: ChannelSearchResult) => void;
+  onOpenChannel?: (result: ChannelSearchResult) => void
   /** Callback to load more results */
-  onLoadMore?: () => void;
+  onLoadMore?: () => void
   /** Maximum height of the results container */
-  maxHeight?: number | string;
+  maxHeight?: number | string
 }
 
 // ============================================================================
@@ -68,7 +62,7 @@ const sortOptions: { value: SearchSortBy; label: string }[] = [
   { value: 'relevance', label: 'Best match' },
   { value: 'date_desc', label: 'Newest first' },
   { value: 'date_asc', label: 'Oldest first' },
-];
+]
 
 // ============================================================================
 // Main Component
@@ -89,52 +83,52 @@ export function SearchResults({
   onLoadMore,
   maxHeight = 'calc(100vh - 200px)',
 }: SearchResultsProps) {
-  const results = useSearchStore(selectFilteredResults);
-  const totalResults = useSearchStore((state) => state.totalResults);
-  const hasMore = useSearchStore((state) => state.hasMore);
-  const isSearching = useSearchStore((state) => state.isSearching);
-  const isLoadingMore = useSearchStore((state) => state.isLoadingMore);
-  const query = useSearchStore((state) => state.debouncedQuery);
-  const sortBy = useSearchStore((state) => state.sortBy);
-  const setSortBy = useSearchStore((state) => state.setSortBy);
+  const results = useSearchStore(selectFilteredResults)
+  const totalResults = useSearchStore((state) => state.totalResults)
+  const hasMore = useSearchStore((state) => state.hasMore)
+  const isSearching = useSearchStore((state) => state.isSearching)
+  const isLoadingMore = useSearchStore((state) => state.isLoadingMore)
+  const query = useSearchStore((state) => state.debouncedQuery)
+  const sortBy = useSearchStore((state) => state.sortBy)
+  const setSortBy = useSearchStore((state) => state.setSortBy)
 
   // Infinite scroll
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0,
     rootMargin: '100px',
-  });
+  })
 
   // Load more when scrolled to bottom
   React.useEffect(() => {
     if (inView && hasMore && !isLoadingMore && onLoadMore) {
-      onLoadMore();
+      onLoadMore()
     }
-  }, [inView, hasMore, isLoadingMore, onLoadMore]);
+  }, [inView, hasMore, isLoadingMore, onLoadMore])
 
   // Empty state
   if (!isSearching && results.length === 0 && query) {
     return (
       <div className={cn('flex flex-col items-center justify-center py-12', className)}>
-        <Frown className="h-12 w-12 text-muted-foreground/50" />
+        <Frown className="text-muted-foreground/50 h-12 w-12" />
         <h3 className="mt-4 text-lg font-medium">No results found</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Try different keywords or adjust your filters
         </p>
       </div>
-    );
+    )
   }
 
   // Initial state (no query)
   if (!query && results.length === 0) {
     return (
       <div className={cn('flex flex-col items-center justify-center py-12', className)}>
-        <Search className="h-12 w-12 text-muted-foreground/50" />
+        <Search className="text-muted-foreground/50 h-12 w-12" />
         <h3 className="mt-4 text-lg font-medium">Search your workspace</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Find messages, files, people, and channels
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -186,15 +180,13 @@ export function SearchResults({
           {/* Load more trigger */}
           {hasMore && (
             <div ref={loadMoreRef} className="flex justify-center py-4">
-              {isLoadingMore && (
-                <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-              )}
+              {isLoadingMore && <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />}
             </div>
           )}
         </div>
       </ScrollArea>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -202,18 +194,18 @@ export function SearchResults({
 // ============================================================================
 
 interface SearchResultItemProps {
-  result: SearchResult;
-  query: string;
-  onMessageClick?: (result: MessageSearchResult) => void;
-  onJumpToMessage?: (result: MessageSearchResult) => void;
-  onShowContext?: (result: MessageSearchResult) => void;
-  onFileClick?: (result: FileSearchResult) => void;
-  onFileDownload?: (result: FileSearchResult) => void;
-  onUserClick?: (result: UserSearchResult) => void;
-  onMessageUser?: (result: UserSearchResult) => void;
-  onChannelClick?: (result: ChannelSearchResult) => void;
-  onJoinChannel?: (result: ChannelSearchResult) => void;
-  onOpenChannel?: (result: ChannelSearchResult) => void;
+  result: SearchResult
+  query: string
+  onMessageClick?: (result: MessageSearchResult) => void
+  onJumpToMessage?: (result: MessageSearchResult) => void
+  onShowContext?: (result: MessageSearchResult) => void
+  onFileClick?: (result: FileSearchResult) => void
+  onFileDownload?: (result: FileSearchResult) => void
+  onUserClick?: (result: UserSearchResult) => void
+  onMessageUser?: (result: UserSearchResult) => void
+  onChannelClick?: (result: ChannelSearchResult) => void
+  onJoinChannel?: (result: ChannelSearchResult) => void
+  onOpenChannel?: (result: ChannelSearchResult) => void
 }
 
 function SearchResultItem({
@@ -240,7 +232,7 @@ function SearchResultItem({
           onJumpToMessage={onJumpToMessage}
           onShowContext={onShowContext}
         />
-      );
+      )
     case 'file':
       return (
         <SearchResultFile
@@ -269,12 +261,12 @@ function SearchResultItem({
                 isStarred: false,
                 reactions: [],
                 hasAttachments: true,
-              };
-              onJumpToMessage(messageResult);
+              }
+              onJumpToMessage(messageResult)
             }
           }}
         />
-      );
+      )
     case 'user':
       return (
         <SearchResultUser
@@ -283,7 +275,7 @@ function SearchResultItem({
           onClick={onUserClick}
           onMessage={onMessageUser}
         />
-      );
+      )
     case 'channel':
       return (
         <SearchResultChannel
@@ -293,9 +285,9 @@ function SearchResultItem({
           onJoin={onJoinChannel}
           onOpen={onOpenChannel}
         />
-      );
+      )
     default:
-      return null;
+      return null
   }
 }
 
@@ -304,29 +296,26 @@ function SearchResultItem({
 // ============================================================================
 
 interface SortDropdownProps {
-  value: SearchSortBy;
-  onChange: (value: SearchSortBy) => void;
+  value: SearchSortBy
+  onChange: (value: SearchSortBy) => void
 }
 
 function SortDropdown({ value, onChange }: SortDropdownProps) {
-  const [open, setOpen] = React.useState(false);
-  const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const [open, setOpen] = React.useState(false)
+  const dropdownRef = React.useRef<HTMLDivElement>(null)
 
   // Close on click outside
   React.useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setOpen(false);
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setOpen(false)
       }
     }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
-  const currentOption = sortOptions.find((opt) => opt.value === value);
+  const currentOption = sortOptions.find((opt) => opt.value === value)
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -347,25 +336,23 @@ function SortDropdown({ value, onChange }: SortDropdownProps) {
               key={option.value}
               type="button"
               onClick={() => {
-                onChange(option.value);
-                setOpen(false);
+                onChange(option.value)
+                setOpen(false)
               }}
               className={cn(
                 'flex w-full items-center rounded-sm px-2 py-1.5 text-sm',
-                'hover:bg-accent hover:text-accent-foreground',
+                'hover:text-accent-foreground hover:bg-accent',
                 value === option.value && 'bg-accent'
               )}
             >
               {option.label}
-              {value === option.value && (
-                <span className="ml-auto text-primary">&#10003;</span>
-              )}
+              {value === option.value && <span className="ml-auto text-primary">&#10003;</span>}
             </button>
           ))}
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -373,9 +360,9 @@ function SortDropdown({ value, onChange }: SortDropdownProps) {
 // ============================================================================
 
 export interface GroupedSearchResultsProps extends Omit<SearchResultsProps, 'className'> {
-  className?: string;
+  className?: string
   /** Whether to show section headers */
-  showHeaders?: boolean;
+  showHeaders?: boolean
 }
 
 export function GroupedSearchResults({
@@ -383,48 +370,48 @@ export function GroupedSearchResults({
   showHeaders = true,
   ...callbacks
 }: GroupedSearchResultsProps) {
-  const results = useSearchStore(selectFilteredResults);
-  const query = useSearchStore((state) => state.debouncedQuery);
-  const isSearching = useSearchStore((state) => state.isSearching);
+  const results = useSearchStore(selectFilteredResults)
+  const query = useSearchStore((state) => state.debouncedQuery)
+  const isSearching = useSearchStore((state) => state.isSearching)
 
   // Group results by type
   const grouped = React.useMemo(() => {
-    const messages: MessageSearchResult[] = [];
-    const files: FileSearchResult[] = [];
-    const users: UserSearchResult[] = [];
-    const channels: ChannelSearchResult[] = [];
+    const messages: MessageSearchResult[] = []
+    const files: FileSearchResult[] = []
+    const users: UserSearchResult[] = []
+    const channels: ChannelSearchResult[] = []
 
     for (const result of results) {
       switch (result.type) {
         case 'message':
-          messages.push(result);
-          break;
+          messages.push(result)
+          break
         case 'file':
-          files.push(result);
-          break;
+          files.push(result)
+          break
         case 'user':
-          users.push(result);
-          break;
+          users.push(result)
+          break
         case 'channel':
-          channels.push(result);
-          break;
+          channels.push(result)
+          break
       }
     }
 
-    return { messages, files, users, channels };
-  }, [results]);
+    return { messages, files, users, channels }
+  }, [results])
 
   // Empty state
   if (!isSearching && results.length === 0 && query) {
     return (
       <div className={cn('flex flex-col items-center justify-center py-12', className)}>
-        <Frown className="h-12 w-12 text-muted-foreground/50" />
+        <Frown className="text-muted-foreground/50 h-12 w-12" />
         <h3 className="mt-4 text-lg font-medium">No results found</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           Try different keywords or adjust your filters
         </p>
       </div>
-    );
+    )
   }
 
   return (
@@ -491,7 +478,7 @@ export function GroupedSearchResults({
         </ResultSection>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -499,10 +486,10 @@ export function GroupedSearchResults({
 // ============================================================================
 
 interface ResultSectionProps {
-  title: string;
-  count: number;
-  show: boolean;
-  children: React.ReactNode;
+  title: string
+  count: number
+  show: boolean
+  children: React.ReactNode
 }
 
 function ResultSection({ title, count, show, children }: ResultSectionProps) {
@@ -516,7 +503,7 @@ function ResultSection({ title, count, show, children }: ResultSectionProps) {
       )}
       <div className="space-y-2">{children}</div>
     </div>
-  );
+  )
 }
 
-export default SearchResults;
+export default SearchResults

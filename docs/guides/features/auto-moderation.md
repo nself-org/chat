@@ -263,31 +263,31 @@ The system recognizes the following content categories:
 
 #### General Categories
 
-| Category | Keywords | Weight |
-|----------|----------|--------|
-| **General** | hello, hi, thanks, please, help, question | 0.5 |
-| **Technical** | code, bug, error, function, api, database, server | 0.7 |
-| **Business** | meeting, project, deadline, client, revenue, strategy | 0.7 |
-| **Social** | party, event, lunch, coffee, weekend, vacation | 0.6 |
-| **Support** | issue, problem, help, urgent, broken, fix | 0.8 |
-| **Announcement** | announce, news, update, release, launch | 0.7 |
+| Category         | Keywords                                              | Weight |
+| ---------------- | ----------------------------------------------------- | ------ |
+| **General**      | hello, hi, thanks, please, help, question             | 0.5    |
+| **Technical**    | code, bug, error, function, api, database, server     | 0.7    |
+| **Business**     | meeting, project, deadline, client, revenue, strategy | 0.7    |
+| **Social**       | party, event, lunch, coffee, weekend, vacation        | 0.6    |
+| **Support**      | issue, problem, help, urgent, broken, fix             | 0.8    |
+| **Announcement** | announce, news, update, release, launch               | 0.7    |
 
 #### Content Type Categories
 
-| Category | Keywords | Weight |
-|----------|----------|--------|
-| **Question** | how, what, why, when, where, who, can, should | 0.6 |
-| **Feedback** | feedback, suggestion, improvement, idea | 0.6 |
-| **Complaint** | complaint, disappointed, frustrated, unacceptable | 0.7 |
-| **Praise** | great, awesome, excellent, fantastic, amazing | 0.6 |
+| Category      | Keywords                                          | Weight |
+| ------------- | ------------------------------------------------- | ------ |
+| **Question**  | how, what, why, when, where, who, can, should     | 0.6    |
+| **Feedback**  | feedback, suggestion, improvement, idea           | 0.6    |
+| **Complaint** | complaint, disappointed, frustrated, unacceptable | 0.7    |
+| **Praise**    | great, awesome, excellent, fantastic, amazing     | 0.6    |
 
 #### Warning Categories
 
-| Category | Keywords | Weight |
-|----------|----------|--------|
-| **Inappropriate** | nsfw, explicit, adult, 18+, mature | 0.9 |
-| **Harassment** | harass, bully, threaten, stalk, intimidate | 0.9 |
-| **Spam** | spam, advertisement, promotion, buy now, click here | 0.8 |
+| Category          | Keywords                                            | Weight |
+| ----------------- | --------------------------------------------------- | ------ |
+| **Inappropriate** | nsfw, explicit, adult, 18+, mature                  | 0.9    |
+| **Harassment**    | harass, bully, threaten, stalk, intimidate          | 0.9    |
+| **Spam**          | spam, advertisement, promotion, buy now, click here | 0.8    |
 
 ### Language Detection
 
@@ -352,13 +352,7 @@ console.log(result)
 Add domain-specific categories:
 
 ```typescript
-classifier.addCategory('legal', [
-  'contract',
-  'agreement',
-  'terms',
-  'liability',
-  'compliance'
-], 0.7)
+classifier.addCategory('legal', ['contract', 'agreement', 'terms', 'liability', 'compliance'], 0.7)
 ```
 
 ---
@@ -369,15 +363,15 @@ Comprehensive toxicity detection using Google Perspective API with rule-based fa
 
 ### 7 Toxicity Categories
 
-| Category | Description | Default Threshold |
-|----------|-------------|-------------------|
-| **TOXICITY** | General toxicity (rude, disrespectful, unreasonable) | 0.7 |
-| **SEVERE_TOXICITY** | Very hateful, aggressive, disrespectful | 0.8 |
-| **INSULT** | Insulting, inflammatory, or negative comments | 0.7 |
-| **PROFANITY** | Swear words, curse words, vulgarity | 0.5 |
-| **THREAT** | Threats of violence or harm | 0.8 |
-| **IDENTITY_ATTACK** | Negative comments about identity (race, religion, etc.) | 0.75 |
-| **SEXUALLY_EXPLICIT** | Sexually explicit content | 0.7 |
+| Category              | Description                                             | Default Threshold |
+| --------------------- | ------------------------------------------------------- | ----------------- |
+| **TOXICITY**          | General toxicity (rude, disrespectful, unreasonable)    | 0.7               |
+| **SEVERE_TOXICITY**   | Very hateful, aggressive, disrespectful                 | 0.8               |
+| **INSULT**            | Insulting, inflammatory, or negative comments           | 0.7               |
+| **PROFANITY**         | Swear words, curse words, vulgarity                     | 0.5               |
+| **THREAT**            | Threats of violence or harm                             | 0.8               |
+| **IDENTITY_ATTACK**   | Negative comments about identity (race, religion, etc.) | 0.75              |
+| **SEXUALLY_EXPLICIT** | Sexually explicit content                               | 0.7               |
 
 ### Scoring System
 
@@ -429,18 +423,15 @@ const detector = getToxicityDetector({
     'PROFANITY',
     'THREAT',
     'IDENTITY_ATTACK',
-    'SEXUALLY_EXPLICIT'
-  ]
+    'SEXUALLY_EXPLICIT',
+  ],
 })
 ```
 
 ### Usage Example
 
 ```typescript
-const analysis = await detector.analyze(
-  "You're a complete idiot and I hate you!",
-  'en'
-)
+const analysis = await detector.analyze("You're a complete idiot and I hate you!", 'en')
 
 console.log(analysis)
 // {
@@ -478,16 +469,12 @@ When Perspective API is unavailable, the system uses rule-based patterns:
 ```typescript
 // Pattern examples
 const patterns = {
-  toxicity: [
-    /\b(hate|stupid|dumb|idiot|moron|loser|pathetic)\b/gi
-  ],
-  severeToxicity: [
-    /\b(kill|die|hurt|attack|destroy|murder)\b/gi
-  ],
+  toxicity: [/\b(hate|stupid|dumb|idiot|moron|loser|pathetic)\b/gi],
+  severeToxicity: [/\b(kill|die|hurt|attack|destroy|murder)\b/gi],
   threat: [
     /i will (kill|hurt|attack|destroy|beat|shoot|stab)/gi,
-    /going to (kill|hurt|attack|destroy)/gi
-  ]
+    /going to (kill|hurt|attack|destroy)/gi,
+  ],
 }
 ```
 
@@ -508,17 +495,17 @@ ML-powered spam detection with pattern recognition and user behavior analysis.
 
 ### Spam Types Detected
 
-| Type | Description | Indicators |
-|------|-------------|------------|
-| **link_spam** | Excessive or suspicious links | Too many links, non-whitelisted domains |
-| **promotional** | Marketing/advertising content | Spam phrases, CTAs, promotional keywords |
-| **repetitive** | Repeated characters/words | Character repetition (aaaa), word repetition |
-| **excessive_caps** | ALL CAPS messages | >70% uppercase characters |
-| **excessive_punctuation** | Too many punctuation marks | >30% punctuation ratio |
-| **shortened_urls** | Bit.ly, tinyurl, etc. | URL shortener services |
-| **suspicious_patterns** | Known spam patterns | Pattern matching against database |
-| **flooding** | Message rate abuse | >10 messages/minute |
-| **duplicate_content** | Repeated messages | Same content posted 3+ times |
+| Type                      | Description                   | Indicators                                   |
+| ------------------------- | ----------------------------- | -------------------------------------------- |
+| **link_spam**             | Excessive or suspicious links | Too many links, non-whitelisted domains      |
+| **promotional**           | Marketing/advertising content | Spam phrases, CTAs, promotional keywords     |
+| **repetitive**            | Repeated characters/words     | Character repetition (aaaa), word repetition |
+| **excessive_caps**        | ALL CAPS messages             | >70% uppercase characters                    |
+| **excessive_punctuation** | Too many punctuation marks    | >30% punctuation ratio                       |
+| **shortened_urls**        | Bit.ly, tinyurl, etc.         | URL shortener services                       |
+| **suspicious_patterns**   | Known spam patterns           | Pattern matching against database            |
+| **flooding**              | Message rate abuse            | >10 messages/minute                          |
+| **duplicate_content**     | Repeated messages             | Same content posted 3+ times                 |
 
 ### Detection Patterns
 
@@ -533,6 +520,7 @@ ML-powered spam detection with pattern recognition and user behavior analysis.
 ```
 
 **Whitelisted Domains** (by default):
+
 - github.com
 - gitlab.com
 - stackoverflow.com
@@ -543,6 +531,7 @@ ML-powered spam detection with pattern recognition and user behavior analysis.
 #### Promotional Content
 
 **Spam Phrases** (examples):
+
 - "click here", "buy now", "limited time"
 - "special offer", "act now", "exclusive deal"
 - "make money", "earn money", "work from home"
@@ -550,6 +539,7 @@ ML-powered spam detection with pattern recognition and user behavior analysis.
 - "crypto", "bitcoin", "guaranteed returns"
 
 **Promotional Keywords**:
+
 - discount, coupon, promo code
 - sale, deal, offer
 - subscribe, sign up, register
@@ -592,14 +582,8 @@ const detector = getSpamDetectorML({
   enableDuplicateDetection: true,
 
   // Whitelist
-  whitelistedDomains: [
-    'github.com',
-    'yourcompany.com'
-  ],
-  trustedUsers: [
-    'user-id-1',
-    'user-id-2'
-  ]
+  whitelistedDomains: ['github.com', 'yourcompany.com'],
+  trustedUsers: ['user-id-1', 'user-id-2'],
 })
 ```
 
@@ -607,12 +591,12 @@ const detector = getSpamDetectorML({
 
 ```typescript
 const analysis = await detector.analyze(
-  "🔥🔥🔥 CLICK HERE NOW!!! Limited time offer! Buy now and get 50% OFF! Visit bit.ly/amazing-deal",
+  '🔥🔥🔥 CLICK HERE NOW!!! Limited time offer! Buy now and get 50% OFF! Visit bit.ly/amazing-deal',
   {
     userId: 'user-123',
     hasAttachments: false,
     accountAge: 1, // days
-    trustScore: 30
+    trustScore: 30,
   }
 )
 
@@ -660,18 +644,12 @@ Add trusted domains and users:
 ```typescript
 // Add whitelisted domain
 detector.updateConfig({
-  whitelistedDomains: [
-    ...detector.getConfig().whitelistedDomains,
-    'trusted-partner.com'
-  ]
+  whitelistedDomains: [...detector.getConfig().whitelistedDomains, 'trusted-partner.com'],
 })
 
 // Add trusted user
 detector.updateConfig({
-  trustedUsers: [
-    ...detector.getConfig().trustedUsers,
-    'trusted-user-id'
-  ]
+  trustedUsers: [...detector.getConfig().trustedUsers, 'trusted-user-id'],
 })
 ```
 
@@ -679,9 +657,12 @@ detector.updateConfig({
 
 ```typescript
 // Cleanup old user history periodically
-setInterval(() => {
-  detector.cleanupHistory()
-}, 60 * 60 * 1000) // Every hour
+setInterval(
+  () => {
+    detector.cleanupHistory()
+  },
+  60 * 60 * 1000
+) // Every hour
 ```
 
 ---
@@ -709,12 +690,12 @@ Decision Made
 
 ### Priority Levels
 
-| Priority | Score Range | Description | SLA |
-|----------|-------------|-------------|-----|
-| **Critical** | 0.9 - 1.0 | Severe violations | < 5 min |
-| **High** | 0.7 - 0.9 | Likely violations | < 1 hour |
-| **Medium** | 0.5 - 0.7 | Possible violations | < 24 hours |
-| **Low** | 0.0 - 0.5 | Minor concerns | < 72 hours |
+| Priority     | Score Range | Description         | SLA        |
+| ------------ | ----------- | ------------------- | ---------- |
+| **Critical** | 0.9 - 1.0   | Severe violations   | < 5 min    |
+| **High**     | 0.7 - 0.9   | Likely violations   | < 1 hour   |
+| **Medium**   | 0.5 - 0.7   | Possible violations | < 24 hours |
+| **Low**      | 0.0 - 0.5   | Minor concerns      | < 72 hours |
 
 ### Queue Operations
 
@@ -747,7 +728,7 @@ await queue.addToQueue({
 const items = await queue.getPendingItems({
   priority: 'high',
   limit: 10,
-  offset: 0
+  offset: 0,
 })
 
 // Approve content
@@ -758,21 +739,14 @@ await queue.approveContent(
 )
 
 // Reject content
-await queue.rejectContent(
-  'queue-item-id',
-  'moderator-id',
-  'Confirmed spam - promotional content'
-)
+await queue.rejectContent('queue-item-id', 'moderator-id', 'Confirmed spam - promotional content')
 ```
 
 #### Appeals Process
 
 ```typescript
 // User submits appeal
-await queue.submitAppeal(
-  'queue-item-id',
-  'I believe this was flagged incorrectly because...'
-)
+await queue.submitAppeal('queue-item-id', 'I believe this was flagged incorrectly because...')
 
 // Moderator reviews appeal
 await queue.reviewAppeal(
@@ -827,16 +801,16 @@ Automated responses to detected violations based on configurable thresholds.
 
 ### Action Types
 
-| Action | Reversible | Duration Support | Description |
-|--------|-----------|------------------|-------------|
-| **none** | N/A | No | No action taken (below thresholds) |
-| **flag** | Yes | No | Add to moderation queue for review |
-| **hide** | Yes | No | Hide content from users |
-| **warn** | No | No | Send warning to user |
-| **mute** | Yes | Yes | Prevent user from posting |
-| **delete** | No | No | Permanently remove content |
-| **ban** | Yes | Yes | Ban user from platform |
-| **shadowban** | Yes | Yes | User can post but content hidden |
+| Action        | Reversible | Duration Support | Description                        |
+| ------------- | ---------- | ---------------- | ---------------------------------- |
+| **none**      | N/A        | No               | No action taken (below thresholds) |
+| **flag**      | Yes        | No               | Add to moderation queue for review |
+| **hide**      | Yes        | No               | Hide content from users            |
+| **warn**      | No         | No               | Send warning to user               |
+| **mute**      | Yes        | Yes              | Prevent user from posting          |
+| **delete**    | No         | No               | Permanently remove content         |
+| **ban**       | Yes        | Yes              | Ban user from platform             |
+| **shadowban** | Yes        | Yes              | User can post but content hidden   |
 
 ### Action Thresholds
 
@@ -851,11 +825,11 @@ const thresholds = {
   profanity: 0.5,
 
   // Auto-action thresholds
-  flagThreshold: 0.5,      // Flag for manual review
-  hideThreshold: 0.8,      // Auto-hide content
-  warnThreshold: 0.7,      // Warn user
-  muteThreshold: 0.85,     // Temporary mute
-  banThreshold: 0.95,      // Permanent ban
+  flagThreshold: 0.5, // Flag for manual review
+  hideThreshold: 0.8, // Auto-hide content
+  warnThreshold: 0.7, // Warn user
+  muteThreshold: 0.85, // Temporary mute
+  banThreshold: 0.95, // Permanent ban
 
   // User behavior thresholds
   maxViolationsPerDay: 3,
@@ -863,7 +837,7 @@ const thresholds = {
   maxViolationsTotal: 10,
 
   // Minimum confidence for auto-action
-  minimumConfidenceForAutoAction: 0.6
+  minimumConfidenceForAutoAction: 0.6,
 }
 ```
 
@@ -879,20 +853,15 @@ if (confidence < minimumConfidence) {
 
 if (shouldBan && autoBan) {
   return 'ban'
-}
-else if (shouldMute && autoMute) {
+} else if (shouldMute && autoMute) {
   return 'mute'
-}
-else if (shouldHide && autoHide) {
+} else if (shouldHide && autoHide) {
   return 'hide'
-}
-else if (shouldWarn && autoWarn) {
+} else if (shouldWarn && autoWarn) {
   return 'warn'
-}
-else if (shouldFlag && autoFlag) {
+} else if (shouldFlag && autoFlag) {
   return 'flag'
-}
-else {
+} else {
   return 'none'
 }
 ```
@@ -918,6 +887,7 @@ interface UserViolationHistory {
 ```
 
 **Trust Score Penalties**:
+
 - Low severity: -5 points
 - Medium severity: -10 points
 - High severity: -20 points
@@ -937,10 +907,10 @@ const moderator = getAIModerator({
 
   // Auto-action toggles
   autoFlag: true,
-  autoHide: false,    // Disabled by default
-  autoWarn: false,    // Disabled by default
-  autoMute: false,    // Disabled by default
-  autoBan: false,     // Disabled by default
+  autoHide: false, // Disabled by default
+  autoWarn: false, // Disabled by default
+  autoMute: false, // Disabled by default
+  autoBan: false, // Disabled by default
 
   // Thresholds
   thresholds: {
@@ -957,7 +927,7 @@ const moderator = getAIModerator({
 
     maxViolationsPerDay: 3,
     maxViolationsPerWeek: 5,
-    maxViolationsTotal: 10
+    maxViolationsTotal: 10,
   },
 
   // Custom word lists
@@ -970,7 +940,7 @@ const moderator = getAIModerator({
 
   // Learning
   enableFalsePositiveLearning: true,
-  minimumConfidenceForAutoAction: 0.6
+  minimumConfidenceForAutoAction: 0.6,
 })
 ```
 
@@ -986,7 +956,7 @@ const analysis = await moderator.analyzeContent(
     userId: 'user-id',
     channelId: 'channel-id',
     hasLinks: true,
-    linkCount: 2
+    linkCount: 2,
   }
 )
 
@@ -1032,7 +1002,7 @@ await actions.bulkAction(
   [
     { targetType: 'message', targetId: 'msg-1', targetUserId: 'user-1' },
     { targetType: 'message', targetId: 'msg-2', targetUserId: 'user-1' },
-    { targetType: 'message', targetId: 'msg-3', targetUserId: 'user-1' }
+    { targetType: 'message', targetId: 'msg-3', targetUserId: 'user-1' },
   ],
   'moderator-id',
   'Spam campaign detected',
@@ -1055,7 +1025,7 @@ await moderator.recordFalsePositive(
   'content-id',
   'toxicity',
   0.2, // actual score (should be low)
-  0.8  // predicted score (was high)
+  0.8 // predicted score (was high)
 )
 ```
 
@@ -1104,8 +1074,8 @@ moderator.updatePolicy({
   customAllowedWords: [
     ...moderator.getPolicy().customAllowedWords,
     'scunthorpe', // Known false positive for profanity filter
-    'arsenal'     // Sports team name
-  ]
+    'arsenal', // Sports team name
+  ],
 })
 ```
 
@@ -1123,7 +1093,7 @@ const analysis = await moderator.analyzeContent(
     userId: 'user-id',
     channelId: 'tech-support-channel', // Channel context
     messageCount: 50, // User has history
-    timeWindow: 3600
+    timeWindow: 3600,
   }
 )
 ```
@@ -1178,8 +1148,8 @@ interface ModerationMetrics {
   totalActioned: number
 
   // Rates
-  flagRate: number        // Percentage of content flagged
-  actionRate: number      // Percentage requiring action
+  flagRate: number // Percentage of content flagged
+  actionRate: number // Percentage requiring action
   falsePositiveRate: number
 
   // By Category
@@ -1199,8 +1169,8 @@ interface ModerationMetrics {
   }
 
   // Performance
-  avgProcessingTime: number  // milliseconds
-  avgReviewTime: number      // time to moderator review
+  avgProcessingTime: number // milliseconds
+  avgReviewTime: number // time to moderator review
 
   // User Impact
   uniqueUsersAffected: number
@@ -1257,7 +1227,7 @@ Access via **Admin → Moderation → Dashboard**:
 const analytics = await getAnalytics({
   startDate: '2026-01-01',
   endDate: '2026-01-31',
-  format: 'csv'
+  format: 'csv',
 })
 
 // Download report
@@ -1270,11 +1240,7 @@ Build custom reports using GraphQL:
 
 ```graphql
 query ModerationReport($startDate: timestamptz!, $endDate: timestamptz!) {
-  nchat_moderation_actions(
-    where: {
-      created_at: { _gte: $startDate, _lte: $endDate }
-    }
-  ) {
+  nchat_moderation_actions(where: { created_at: { _gte: $startDate, _lte: $endDate } }) {
     id
     action_type
     is_automated
@@ -1285,11 +1251,7 @@ query ModerationReport($startDate: timestamptz!, $endDate: timestamptz!) {
     }
   }
 
-  nchat_moderation_queue_aggregate(
-    where: {
-      created_at: { _gte: $startDate, _lte: $endDate }
-    }
-  ) {
+  nchat_moderation_queue_aggregate(where: { created_at: { _gte: $startDate, _lte: $endDate } }) {
     aggregate {
       count
     }
@@ -1313,19 +1275,19 @@ Begin with high thresholds and manual review:
 
 ```typescript
 const initialConfig = {
-  autoFlag: true,        // ✅ Enable
-  autoHide: false,       // ❌ Disable
-  autoWarn: false,       // ❌ Disable
-  autoMute: false,       // ❌ Disable
-  autoBan: false,        // ❌ Disable
+  autoFlag: true, // ✅ Enable
+  autoHide: false, // ❌ Disable
+  autoWarn: false, // ❌ Disable
+  autoMute: false, // ❌ Disable
+  autoBan: false, // ❌ Disable
 
   thresholds: {
-    flagThreshold: 0.6,  // Higher threshold = less aggressive
-    hideThreshold: 0.9,  // Very high
+    flagThreshold: 0.6, // Higher threshold = less aggressive
+    hideThreshold: 0.9, // Very high
     warnThreshold: 0.85,
     muteThreshold: 0.9,
-    banThreshold: 0.95
-  }
+    banThreshold: 0.95,
+  },
 }
 ```
 
@@ -1368,11 +1330,11 @@ Turn on auto-actions one at a time:
 const hybridConfig = {
   // Auto-action for obvious violations
   autoHide: true,
-  hideThreshold: 0.9,  // Very high confidence
+  hideThreshold: 0.9, // Very high confidence
 
   // Flag borderline cases
   autoFlag: true,
-  flagThreshold: 0.5,  // Catch potential issues
+  flagThreshold: 0.5, // Catch potential issues
 
   // Manual review in between
   // 0.5-0.9 = Queue for moderator review
@@ -1382,8 +1344,8 @@ const hybridConfig = {
   warnThreshold: 0.75,
 
   // Severe actions require high confidence
-  autoMute: false,  // Manual only
-  autoBan: false    // Manual only
+  autoMute: false, // Manual only
+  autoBan: false, // Manual only
 }
 ```
 
@@ -1398,10 +1360,10 @@ const hybridConfig = {
 ```typescript
 const professionalConfig = {
   thresholds: {
-    toxicity: 0.6,      // Lower (stricter)
-    spam: 0.5,          // Lower (stricter)
-    profanity: 0.7      // Higher (more lenient)
-  }
+    toxicity: 0.6, // Lower (stricter)
+    spam: 0.5, // Lower (stricter)
+    profanity: 0.7, // Higher (more lenient)
+  },
 }
 ```
 
@@ -1414,11 +1376,11 @@ const professionalConfig = {
 ```typescript
 const gamingConfig = {
   thresholds: {
-    toxicity: 0.8,           // Higher (more lenient)
-    severeToxicity: 0.6,     // Lower (stricter)
-    identityAttack: 0.6,     // Lower (stricter)
-    nsfw: 0.6                // Lower (stricter)
-  }
+    toxicity: 0.8, // Higher (more lenient)
+    severeToxicity: 0.6, // Lower (stricter)
+    identityAttack: 0.6, // Lower (stricter)
+    nsfw: 0.6, // Lower (stricter)
+  },
 }
 ```
 
@@ -1435,11 +1397,11 @@ const educationalConfig = {
     severeToxicity: 0.4,
     threat: 0.5,
     identityAttack: 0.5,
-    nsfw: 0.3
+    nsfw: 0.3,
   },
   customAllowedWords: [
     // Educational terms that might trigger false positives
-  ]
+  ],
 }
 ```
 
@@ -1459,7 +1421,7 @@ interface ModerationDataPolicy {
     'User ID',
     'Timestamps',
     'Analysis scores',
-    'Moderator actions'
+    'Moderator actions',
   ]
 
   // Legal basis
@@ -1467,19 +1429,19 @@ interface ModerationDataPolicy {
 
   // Data retention
   retention: {
-    analyzedContent: '24 hours',  // Then deleted
-    moderationActions: '2 years',
-    auditLogs: '7 years',
+    analyzedContent: '24 hours' // Then deleted
+    moderationActions: '2 years'
+    auditLogs: '7 years'
     userViolationHistory: 'While account active'
   }
 
   // User rights
   userRights: {
-    accessData: true,      // Export moderation history
-    rectification: true,   // Contest decisions
-    erasure: true,         // Delete after account closure
-    portability: true,     // Export in machine-readable format
-    objectAutomated: true  // Appeal automated decisions
+    accessData: true // Export moderation history
+    rectification: true // Contest decisions
+    erasure: true // Delete after account closure
+    portability: true // Export in machine-readable format
+    objectAutomated: true // Appeal automated decisions
   }
 }
 ```
@@ -1499,7 +1461,7 @@ const privacyConfig = {
 
   // Anonymization
   anonymizeInReports: true,
-  hashUserIds: true
+  hashUserIds: true,
 }
 ```
 
@@ -1513,14 +1475,14 @@ async function cleanupModeration() {
   // Delete old analyzed content
   await db.deleteWhere({
     table: 'analyzed_content',
-    where: { created_at: { olderThan: '24 hours' } }
+    where: { created_at: { olderThan: '24 hours' } },
   })
 
   // Anonymize old audit logs
   await db.update({
     table: 'moderation_actions',
     where: { created_at: { olderThan: '2 years' } },
-    set: { user_id: 'ANONYMIZED' }
+    set: { user_id: 'ANONYMIZED' },
   })
 }
 
@@ -1573,13 +1535,13 @@ interface AuditLog {
 const userAudit = await getAuditLog({
   targetUserId: 'user-id',
   startDate: '2026-01-01',
-  endDate: '2026-01-31'
+  endDate: '2026-01-31',
 })
 
 // Get automated actions
 const automatedAudit = await getAuditLog({
   isAutomated: true,
-  actionType: 'ban'
+  actionType: 'ban',
 })
 
 // Export for compliance
@@ -1587,7 +1549,7 @@ const complianceReport = await exportAuditLog({
   format: 'json',
   includePersonalData: false, // GDPR-safe export
   startDate: '2025-01-01',
-  endDate: '2025-12-31'
+  endDate: '2025-12-31',
 })
 ```
 
@@ -1602,23 +1564,24 @@ const complianceReport = await exportAuditLog({
 **Symptoms**: Many legitimate messages flagged
 
 **Solutions**:
+
 ```typescript
 // Increase thresholds
 moderator.updatePolicy({
   thresholds: {
-    flagThreshold: 0.6,  // Was 0.5
-    hideThreshold: 0.85  // Was 0.8
-  }
+    flagThreshold: 0.6, // Was 0.5
+    hideThreshold: 0.85, // Was 0.8
+  },
 })
 
 // Add allowed words
 moderator.updatePolicy({
-  customAllowedWords: ['commonly-flagged-word']
+  customAllowedWords: ['commonly-flagged-word'],
 })
 
 // Whitelist trusted users
 moderator.updatePolicy({
-  whitelistedUsers: ['trusted-user-id']
+  whitelistedUsers: ['trusted-user-id'],
 })
 ```
 
@@ -1627,16 +1590,17 @@ moderator.updatePolicy({
 **Symptoms**: `429 Too Many Requests` errors
 
 **Solutions**:
+
 ```typescript
 // Enable caching (built-in)
 const detector = getToxicityDetector({
   enableCache: true,
-  cacheTTL: 300000 // 5 minutes
+  cacheTTL: 300000, // 5 minutes
 })
 
 // Use fallback detection
 const detector = getToxicityDetector({
-  enableFallback: true  // Use rule-based if API fails
+  enableFallback: true, // Use rule-based if API fails
 })
 ```
 
@@ -1645,6 +1609,7 @@ const detector = getToxicityDetector({
 **Symptoms**: Analysis takes > 5 seconds
 
 **Solutions**:
+
 ```typescript
 // Optimize analysis
 const moderator = getAIModerator({
@@ -1652,12 +1617,12 @@ const moderator = getAIModerator({
   enableNSFWDetection: false,
 
   // Skip profanity for technical channels
-  enableProfanityFilter: false
+  enableProfanityFilter: false,
 })
 
 // Batch processing
 const results = await Promise.all(
-  messages.map(msg => moderator.analyzeContent(msg.id, 'message', msg.content))
+  messages.map((msg) => moderator.analyzeContent(msg.id, 'message', msg.content))
 )
 ```
 
@@ -1666,6 +1631,7 @@ const results = await Promise.all(
 **Symptoms**: All detections use fallback
 
 **Solutions**:
+
 ```bash
 # Verify API key
 echo $PERSPECTIVE_API_KEY
@@ -1687,6 +1653,7 @@ curl "https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze?key=$PERS
 Analyze content for violations.
 
 **Request:**
+
 ```json
 {
   "contentId": "msg-123",
@@ -1702,6 +1669,7 @@ Analyze content for violations.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1723,6 +1691,7 @@ Analyze content for violations.
 Take moderation action.
 
 **Request:**
+
 ```json
 {
   "action": "hide",
@@ -1736,6 +1705,7 @@ Take moderation action.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -1754,12 +1724,7 @@ import { getAIModerator } from '@/lib/moderation/ai-moderator'
 const moderator = getAIModerator(customPolicy)
 
 // Analyze content
-const analysis = await moderator.analyzeContent(
-  contentId,
-  contentType,
-  content,
-  metadata
-)
+const analysis = await moderator.analyzeContent(contentId, contentType, content, metadata)
 
 // Record violation
 await moderator.recordViolation(userId, severity)

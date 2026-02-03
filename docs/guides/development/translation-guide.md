@@ -54,6 +54,7 @@ mkdir -p src/locales/it
 ```
 
 Common language codes:
+
 - `it` - Italian
 - `ko` - Korean
 - `nl` - Dutch
@@ -78,19 +79,19 @@ export const SUPPORTED_LOCALES: Record<string, LocaleConfig> = {
   // ... existing languages
   it: {
     code: 'it',
-    name: 'Italiano',           // Native name
-    englishName: 'Italian',      // English name
-    script: 'Latn',              // Script: Latn (Latin), Arab, Hans, Cyrl, etc.
-    direction: 'ltr',            // Direction: 'ltr' or 'rtl'
-    bcp47: 'it-IT',              // BCP 47 language tag
-    flag: '🇮🇹',                  // Flag emoji
-    dateFnsLocale: 'it',         // date-fns locale identifier
-    numberLocale: 'it-IT',       // Intl.NumberFormat locale
-    pluralRule: 'other',         // Plural rule category (see below)
-    isComplete: false,           // Set to true when 100% translated
-    completionPercent: 0,        // Update as you translate
+    name: 'Italiano', // Native name
+    englishName: 'Italian', // English name
+    script: 'Latn', // Script: Latn (Latin), Arab, Hans, Cyrl, etc.
+    direction: 'ltr', // Direction: 'ltr' or 'rtl'
+    bcp47: 'it-IT', // BCP 47 language tag
+    flag: '🇮🇹', // Flag emoji
+    dateFnsLocale: 'it', // date-fns locale identifier
+    numberLocale: 'it-IT', // Intl.NumberFormat locale
+    pluralRule: 'other', // Plural rule category (see below)
+    isComplete: false, // Set to true when 100% translated
+    completionPercent: 0, // Update as you translate
   },
-};
+}
 ```
 
 #### Plural Rules by Language
@@ -112,14 +113,15 @@ Start with `common.json` (most important):
 {
   "app": {
     "name": "nChat",
-    "tagline": "Piattaforma di Comunicazione del Team",  // Translate
-    "loading": "Caricamento...",                          // Translate
-    "error": "Si è verificato un errore"                  // Translate
+    "tagline": "Piattaforma di Comunicazione del Team", // Translate
+    "loading": "Caricamento...", // Translate
+    "error": "Si è verificato un errore" // Translate
   }
 }
 ```
 
 **Rules:**
+
 - ✅ Translate the **values** (right side)
 - ❌ Don't change the **keys** (left side)
 - ✅ Keep variables like `{{name}}` unchanged
@@ -185,13 +187,15 @@ node scripts/find-missing-keys.js it
    - Match the app's friendly but professional tone
 
 2. **Preserve formatting**
+
    ```json
    {
-     "welcome": "Benvenuto, {{name}}!"  // ✅ Keep {{name}}
+     "welcome": "Benvenuto, {{name}}!" // ✅ Keep {{name}}
    }
    ```
 
 3. **Handle plurals correctly**
+
    ```json
    {
      "messages_one": "{{count}} messaggio",
@@ -220,6 +224,7 @@ node scripts/find-missing-keys.js it
    - Exception: If your language has widely accepted translation
 
 3. **Don't change interpolation variables**
+
    ```json
    {
      "welcome": "Benvenuto, {{nome}}!"  // ❌ Wrong
@@ -237,6 +242,7 @@ node scripts/find-missing-keys.js it
 ### Example 1: Simple Translation
 
 English:
+
 ```json
 {
   "app": {
@@ -247,6 +253,7 @@ English:
 ```
 
 Italian:
+
 ```json
 {
   "app": {
@@ -259,6 +266,7 @@ Italian:
 ### Example 2: With Interpolation
 
 English:
+
 ```json
 {
   "time": {
@@ -268,6 +276,7 @@ English:
 ```
 
 Italian:
+
 ```json
 {
   "time": {
@@ -279,6 +288,7 @@ Italian:
 ### Example 3: With Plurals
 
 English:
+
 ```json
 {
   "members": {
@@ -289,6 +299,7 @@ English:
 ```
 
 Italian:
+
 ```json
 {
   "members": {
@@ -301,6 +312,7 @@ Italian:
 ### Example 4: Complex Plural (Arabic)
 
 Arabic needs more plural forms:
+
 ```json
 {
   "messages": {
@@ -321,6 +333,7 @@ If you're adding an RTL language (Arabic, Hebrew, Persian, Urdu):
 ### Special Considerations
 
 1. **Set direction in locale config**
+
    ```typescript
    direction: 'rtl',
    ```
@@ -342,7 +355,7 @@ Some strings need RTL-specific handling:
 ```json
 {
   "formatting": {
-    "bold": "**غامق**",        // Arabic text between English markers
+    "bold": "**غامق**", // Arabic text between English markers
     "example": "مثال: {{text}}" // RTL text with LTR variable
   }
 }
@@ -368,6 +381,7 @@ Before submitting your translation, verify:
 ### Contributors
 
 All contributors are recognized in:
+
 - `CONTRIBUTORS.md` file
 - GitHub Contributors page
 - App's "About" section (optional)
@@ -384,7 +398,7 @@ Each translation file can include translator credits:
       {
         "name": "Your Name",
         "github": "yourusername",
-        "email": "your@email.com"  // optional
+        "email": "your@email.com" // optional
       }
     ],
     "lastUpdated": "2026-01-31",
@@ -400,17 +414,17 @@ Each translation file can include translator credits:
 
 Current status of all languages:
 
-| Language | Common | Chat | Settings | Admin | Total |
-|----------|--------|------|----------|-------|-------|
-| English (en) | 100% | 100% | 100% | 100% | 100% |
-| Spanish (es) | 100% | 100% | 100% | 95% | 98% |
-| French (fr) | 100% | 100% | 100% | 95% | 98% |
-| German (de) | 100% | 100% | 95% | 90% | 96% |
-| Chinese (zh) | 100% | 100% | 90% | 85% | 93% |
-| Arabic (ar) | 100% | 95% | 85% | 80% | 90% |
-| Japanese (ja) | 100% | 95% | 80% | 75% | 87% |
-| Portuguese (pt) | 100% | 95% | 80% | 75% | 87% |
-| Russian (ru) | 100% | 95% | 80% | 75% | 87% |
+| Language        | Common | Chat | Settings | Admin | Total |
+| --------------- | ------ | ---- | -------- | ----- | ----- |
+| English (en)    | 100%   | 100% | 100%     | 100%  | 100%  |
+| Spanish (es)    | 100%   | 100% | 100%     | 95%   | 98%   |
+| French (fr)     | 100%   | 100% | 100%     | 95%   | 98%   |
+| German (de)     | 100%   | 100% | 95%      | 90%   | 96%   |
+| Chinese (zh)    | 100%   | 100% | 90%      | 85%   | 93%   |
+| Arabic (ar)     | 100%   | 95%  | 85%      | 80%   | 90%   |
+| Japanese (ja)   | 100%   | 95%  | 80%      | 75%   | 87%   |
+| Portuguese (pt) | 100%   | 95%  | 80%      | 75%   | 87%   |
+| Russian (ru)    | 100%   | 95%  | 80%      | 75%   | 87%   |
 
 [Check latest status](https://nself-chat.github.io/i18n-status)
 
@@ -459,6 +473,7 @@ Current status of all languages:
 ### Similar Apps for Reference
 
 Check terminology in similar apps:
+
 - Slack
 - Discord
 - Microsoft Teams

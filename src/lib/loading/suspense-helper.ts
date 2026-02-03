@@ -20,7 +20,7 @@ export function lazyLoad<T extends ComponentType<any>>(
   const LazyComponent = lazy(importFn)
 
   if (displayName) {
-    (LazyComponent as LazyComponentWithDisplayName<T>).displayName = displayName
+    ;(LazyComponent as LazyComponentWithDisplayName<T>).displayName = displayName
   }
 
   return LazyComponent
@@ -41,7 +41,7 @@ export function lazyLoadNamed<T extends ComponentType<any>>(
   })
 
   if (displayName) {
-    (LazyComponent as LazyComponentWithDisplayName<T>).displayName = displayName
+    ;(LazyComponent as LazyComponentWithDisplayName<T>).displayName = displayName
   }
 
   return LazyComponent
@@ -83,7 +83,7 @@ export function lazyLoadWithRetry<T extends ComponentType<any>>(
   })
 
   if (displayName) {
-    (LazyComponent as LazyComponentWithDisplayName<T>).displayName = displayName
+    ;(LazyComponent as LazyComponentWithDisplayName<T>).displayName = displayName
   }
 
   return LazyComponent
@@ -108,9 +108,7 @@ export function preloadComponent<T extends ComponentType<any>>(
  * Create a resource for data fetching with Suspense
  * Implements the Suspense pattern for async data
  */
-export function createResource<T>(
-  promise: Promise<T>
-): { read: () => T } {
+export function createResource<T>(promise: Promise<T>): { read: () => T } {
   let status: 'pending' | 'success' | 'error' = 'pending'
   let result: T
   let error: Error
@@ -146,10 +144,7 @@ export function createResource<T>(
 class ResourceCache<T> {
   private cache = new Map<string, { read: () => T }>()
 
-  get(
-    key: string,
-    fetcher: () => Promise<T>
-  ): { read: () => T } {
+  get(key: string, fetcher: () => Promise<T>): { read: () => T } {
     if (!this.cache.has(key)) {
       this.cache.set(key, createResource(fetcher()))
     }
@@ -175,10 +170,7 @@ export function createResourceCache<T>(): ResourceCache<T> {
 /**
  * Wrapper for fetch API that works with Suspense
  */
-export function suspenseFetch<T>(
-  url: string,
-  options?: RequestInit
-): { read: () => T } {
+export function suspenseFetch<T>(url: string, options?: RequestInit): { read: () => T } {
   const promise = fetch(url, options).then((response) => {
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
@@ -220,9 +212,9 @@ export function createSuspenseFetcher<TArgs extends any[], TData>(
 /**
  * Wait for multiple resources in parallel
  */
-export function waitForAll<T extends any[]>(
-  resources: { [K in keyof T]: { read: () => T[K] } }
-): { read: () => T } {
+export function waitForAll<T extends any[]>(resources: { [K in keyof T]: { read: () => T[K] } }): {
+  read: () => T
+} {
   return {
     read() {
       return resources.map((resource) => resource.read()) as T
@@ -233,9 +225,7 @@ export function waitForAll<T extends any[]>(
 /**
  * Race multiple resources (return first to resolve)
  */
-export function raceResources<T>(
-  resources: Array<{ read: () => T }>
-): { read: () => T } {
+export function raceResources<T>(resources: Array<{ read: () => T }>): { read: () => T } {
   let firstResult: T | undefined
   let hasResult = false
 
@@ -310,23 +300,16 @@ export function createDeferredResource<T>(): {
 /**
  * Type guard for lazy components
  */
-export function isLazyComponent(
-  component: any
-): component is LazyExoticComponent<any> {
+export function isLazyComponent(component: any): component is LazyExoticComponent<any> {
   return (
-    component &&
-    typeof component === 'object' &&
-    '$$typeof' in component &&
-    '_payload' in component
+    component && typeof component === 'object' && '$$typeof' in component && '_payload' in component
   )
 }
 
 /**
  * Get loading state from a resource
  */
-export function getResourceState<T>(
-  resource: { read: () => T }
-): 'loading' | 'success' | 'error' {
+export function getResourceState<T>(resource: { read: () => T }): 'loading' | 'success' | 'error' {
   try {
     resource.read()
     return 'success'
@@ -342,9 +325,7 @@ export function getResourceState<T>(
  * Batch multiple lazy loads together
  * Useful for preloading routes
  */
-export function batchPreload(
-  components: Array<LazyExoticComponent<any>>
-): Promise<void[]> {
+export function batchPreload(components: Array<LazyExoticComponent<any>>): Promise<void[]> {
   return Promise.all(
     components.map((component) => {
       const payload = (component as any)._payload

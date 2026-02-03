@@ -23,6 +23,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
+import { logger } from '@/lib/logger'
 import {
   Shield,
   AlertTriangle,
@@ -79,7 +80,7 @@ export function ModerationDashboard() {
         setStats(data)
       }
     } catch (error) {
-      console.error('Failed to fetch stats:', error)
+      logger.error('Failed to fetch stats:',  error)
     } finally {
       setLoading(false)
     }
@@ -87,7 +88,7 @@ export function ModerationDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex h-64 items-center justify-center">
         <p className="text-muted-foreground">Loading dashboard...</p>
       </div>
     )
@@ -95,7 +96,7 @@ export function ModerationDashboard() {
 
   if (!stats) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex h-64 items-center justify-center">
         <p className="text-muted-foreground">Failed to load dashboard</p>
       </div>
     )
@@ -140,33 +141,29 @@ export function ModerationDashboard() {
       {/* Key Metrics */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Flagged</CardTitle>
             <Shield className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.totalFlagged}</div>
-            <p className="text-xs text-muted-foreground">
-              {metrics.pendingReview} pending review
-            </p>
+            <p className="text-xs text-muted-foreground">{metrics.pendingReview} pending review</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">High Priority</CardTitle>
             <AlertTriangle className="h-4 w-4 text-orange-500" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{metrics.highPriority}</div>
-            <p className="text-xs text-muted-foreground">
-              Requires immediate attention
-            </p>
+            <p className="text-xs text-muted-foreground">Requires immediate attention</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Actions</CardTitle>
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -179,7 +176,7 @@ export function ModerationDashboard() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Automation Rate</CardTitle>
             <TrendingUp className="h-4 w-4 text-green-500" />
           </CardHeader>
@@ -190,9 +187,7 @@ export function ModerationDashboard() {
                 : 0}
               %
             </div>
-            <p className="text-xs text-muted-foreground">
-              AI-powered moderation
-            </p>
+            <p className="text-xs text-muted-foreground">AI-powered moderation</p>
           </CardContent>
         </Card>
       </div>
@@ -225,10 +220,10 @@ export function ModerationDashboard() {
                         entry.name === 'Approved'
                           ? COLORS.success
                           : entry.name === 'Rejected'
-                          ? COLORS.danger
-                          : entry.name === 'Reviewing'
-                          ? COLORS.primary
-                          : COLORS.warning
+                            ? COLORS.danger
+                            : entry.name === 'Reviewing'
+                              ? COLORS.primary
+                              : COLORS.warning
                       }
                     />
                   ))}
@@ -260,10 +255,10 @@ export function ModerationDashboard() {
                         entry.name === 'Critical'
                           ? COLORS.danger
                           : entry.name === 'High'
-                          ? COLORS.warning
-                          : entry.name === 'Medium'
-                          ? COLORS.primary
-                          : COLORS.success
+                            ? COLORS.warning
+                            : entry.name === 'Medium'
+                              ? COLORS.primary
+                              : COLORS.success
                       }
                     />
                   ))}
@@ -304,13 +299,11 @@ export function ModerationDashboard() {
                 stats.topViolators.slice(0, 5).map((user, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-3 bg-muted rounded-lg"
+                    className="flex items-center justify-between rounded-lg bg-muted p-3"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-full bg-red-100 dark:bg-red-900/20">
-                        <span className="text-sm font-bold text-red-600">
-                          {index + 1}
-                        </span>
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
+                        <span className="text-sm font-bold text-red-600">{index + 1}</span>
                       </div>
                       <div>
                         <p className="text-sm font-medium">User {user.user_id.slice(0, 8)}</p>
@@ -326,7 +319,7 @@ export function ModerationDashboard() {
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-muted-foreground text-center py-8">
+                <p className="py-8 text-center text-sm text-muted-foreground">
                   No violations in this period
                 </p>
               )}
@@ -343,43 +336,33 @@ export function ModerationDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
-            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="rounded-lg bg-blue-50 p-4 dark:bg-blue-900/20">
+              <div className="mb-2 flex items-center gap-2">
                 <Shield className="h-5 w-5 text-blue-600" />
                 <p className="text-sm font-medium">Automated Actions</p>
               </div>
-              <p className="text-2xl font-bold text-blue-600">
-                {metrics.automatedActions}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                AI-powered decisions
-              </p>
+              <p className="text-2xl font-bold text-blue-600">{metrics.automatedActions}</p>
+              <p className="mt-1 text-xs text-muted-foreground">AI-powered decisions</p>
             </div>
 
-            <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="rounded-lg bg-purple-50 p-4 dark:bg-purple-900/20">
+              <div className="mb-2 flex items-center gap-2">
                 <Users className="h-5 w-5 text-purple-600" />
                 <p className="text-sm font-medium">Manual Actions</p>
               </div>
-              <p className="text-2xl font-bold text-purple-600">
-                {metrics.manualActions}
-              </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Human moderator decisions
-              </p>
+              <p className="text-2xl font-bold text-purple-600">{metrics.manualActions}</p>
+              <p className="mt-1 text-xs text-muted-foreground">Human moderator decisions</p>
             </div>
 
-            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
+            <div className="rounded-lg bg-green-50 p-4 dark:bg-green-900/20">
+              <div className="mb-2 flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-600" />
                 <p className="text-sm font-medium">Time Saved</p>
               </div>
               <p className="text-2xl font-bold text-green-600">
                 {Math.round((metrics.automatedActions * 2) / 60)}h
               </p>
-              <p className="text-xs text-muted-foreground mt-1">
-                Estimated hours saved
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">Estimated hours saved</p>
             </div>
           </div>
         </CardContent>

@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 import {
   type PresenceStatus,
   formatLastSeen,
   isVisibleOnline,
   getPresenceLabel,
-} from '@/lib/presence/presence-types';
-import { PresenceIndicator } from './PresenceIndicator';
+} from '@/lib/presence/presence-types'
+import { PresenceIndicator } from './PresenceIndicator'
 
 // ============================================================================
 // Types
@@ -18,30 +18,30 @@ export interface LastSeenProps extends React.HTMLAttributes<HTMLSpanElement> {
   /**
    * When the user was last seen
    */
-  lastSeenAt?: Date | string;
+  lastSeenAt?: Date | string
 
   /**
    * User's current status
    */
-  status?: PresenceStatus;
+  status?: PresenceStatus
 
   /**
    * Whether to show "Online" for online users instead of last seen
    * @default true
    */
-  showOnlineStatus?: boolean;
+  showOnlineStatus?: boolean
 
   /**
    * Prefix text
    * @default 'Last seen'
    */
-  prefix?: string;
+  prefix?: string
 
   /**
    * Whether to show the presence indicator
    * @default false
    */
-  showIndicator?: boolean;
+  showIndicator?: boolean
 }
 
 // ============================================================================
@@ -59,40 +59,30 @@ export function LastSeen({
 }: LastSeenProps) {
   // If user is online and we want to show that
   if (showOnlineStatus && isVisibleOnline(status)) {
-    const statusLabel = getPresenceLabel(status);
+    const statusLabel = getPresenceLabel(status)
 
     return (
       <span
         className={cn('inline-flex items-center gap-1.5 text-xs text-muted-foreground', className)}
         {...props}
       >
-        {showIndicator && (
-          <PresenceIndicator status={status} size="xs" position="inline" />
-        )}
+        {showIndicator && <PresenceIndicator status={status} size="xs" position="inline" />}
         <span>{statusLabel}</span>
       </span>
-    );
+    )
   }
 
   // Show last seen time
-  const formattedTime = formatLastSeen(lastSeenAt);
+  const formattedTime = formatLastSeen(lastSeenAt)
 
   return (
-    <span
-      className={cn('text-xs text-muted-foreground', className)}
-      {...props}
-    >
+    <span className={cn('text-xs text-muted-foreground', className)} {...props}>
       {showIndicator && (
-        <PresenceIndicator
-          status="offline"
-          size="xs"
-          position="inline"
-          className="mr-1.5"
-        />
+        <PresenceIndicator status="offline" size="xs" position="inline" className="mr-1.5" />
       )}
       {prefix} {formattedTime}
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -100,8 +90,8 @@ export function LastSeen({
 // ============================================================================
 
 export interface LastSeenBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  lastSeenAt?: Date | string;
-  status?: PresenceStatus;
+  lastSeenAt?: Date | string
+  status?: PresenceStatus
 }
 
 export function LastSeenBadge({
@@ -115,8 +105,8 @@ export function LastSeenBadge({
     return (
       <span
         className={cn(
-          'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full',
-          'bg-green-500/10 text-green-600 text-xs',
+          'inline-flex items-center gap-1 rounded-full px-1.5 py-0.5',
+          'bg-green-500/10 text-xs text-green-600',
           className
         )}
         {...props}
@@ -124,7 +114,7 @@ export function LastSeenBadge({
         <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
         Online
       </span>
-    );
+    )
   }
 
   // Offline with last seen
@@ -132,30 +122,30 @@ export function LastSeenBadge({
     return (
       <span
         className={cn(
-          'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full',
-          'bg-muted text-muted-foreground text-xs',
+          'inline-flex items-center gap-1 rounded-full px-1.5 py-0.5',
+          'bg-muted text-xs text-muted-foreground',
           className
         )}
         {...props}
       >
         {formatLastSeen(lastSeenAt)}
       </span>
-    );
+    )
   }
 
   // Offline, no last seen
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full',
-        'bg-muted text-muted-foreground text-xs',
+        'inline-flex items-center gap-1 rounded-full px-1.5 py-0.5',
+        'bg-muted text-xs text-muted-foreground',
         className
       )}
       {...props}
     >
       Offline
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -163,56 +153,42 @@ export function LastSeenBadge({
 // ============================================================================
 
 export interface LastActiveProps {
-  lastSeenAt?: Date | string;
-  status?: PresenceStatus;
-  className?: string;
+  lastSeenAt?: Date | string
+  status?: PresenceStatus
+  className?: string
 }
 
 export function LastActive({ lastSeenAt, status, className }: LastActiveProps) {
   if (status && isVisibleOnline(status)) {
-    return (
-      <span className={cn('text-xs text-green-600', className)}>
-        Active now
-      </span>
-    );
+    return <span className={cn('text-xs text-green-600', className)}>Active now</span>
   }
 
   if (!lastSeenAt) {
-    return (
-      <span className={cn('text-xs text-muted-foreground', className)}>
-        Not available
-      </span>
-    );
+    return <span className={cn('text-xs text-muted-foreground', className)}>Not available</span>
   }
 
-  const date = typeof lastSeenAt === 'string' ? new Date(lastSeenAt) : lastSeenAt;
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / (1000 * 60));
+  const date = typeof lastSeenAt === 'string' ? new Date(lastSeenAt) : lastSeenAt
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / (1000 * 60))
 
   // Active within last 5 minutes
   if (diffMins < 5) {
-    return (
-      <span className={cn('text-xs text-green-600', className)}>
-        Active just now
-      </span>
-    );
+    return <span className={cn('text-xs text-green-600', className)}>Active just now</span>
   }
 
   // Active within last hour
   if (diffMins < 60) {
     return (
-      <span className={cn('text-xs text-muted-foreground', className)}>
-        Active {diffMins}m ago
-      </span>
-    );
+      <span className={cn('text-xs text-muted-foreground', className)}>Active {diffMins}m ago</span>
+    )
   }
 
   return (
     <span className={cn('text-xs text-muted-foreground', className)}>
       Active {formatLastSeen(lastSeenAt)}
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -220,12 +196,12 @@ export function LastActive({ lastSeenAt, status, className }: LastActiveProps) {
 // ============================================================================
 
 export interface RelativeTimeProps {
-  date: Date | string;
-  className?: string;
+  date: Date | string
+  className?: string
 }
 
 export function RelativeTime({ date, className }: RelativeTimeProps) {
-  const formatted = formatLastSeen(date);
+  const formatted = formatLastSeen(date)
 
   return (
     <time
@@ -234,7 +210,7 @@ export function RelativeTime({ date, className }: RelativeTimeProps) {
     >
       {formatted}
     </time>
-  );
+  )
 }
 
-export default LastSeen;
+export default LastSeen

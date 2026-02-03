@@ -8,39 +8,39 @@ Generate these icons from your source logo (recommended minimum 1024x1024px SVG 
 
 ### Standard Icons (required)
 
-| File | Size | Purpose |
-|------|------|---------|
-| `icon-72.png` | 72x72 | Android launcher (mdpi) |
-| `icon-96.png` | 96x96 | Android launcher (hdpi), shortcut icons |
-| `icon-128.png` | 128x128 | Chrome Web Store |
-| `icon-144.png` | 144x144 | iOS (iPad), Windows tile |
-| `icon-152.png` | 152x152 | iOS (iPad) |
-| `icon-192.png` | 192x192 | Android launcher, PWA splash |
-| `icon-384.png` | 384x384 | Large Android icons |
-| `icon-512.png` | 512x512 | PWA splash screen, Google Play |
-| `maskable-icon.png` | 512x512 | Adaptive icon with safe zone |
+| File                | Size    | Purpose                                 |
+| ------------------- | ------- | --------------------------------------- |
+| `icon-72.png`       | 72x72   | Android launcher (mdpi)                 |
+| `icon-96.png`       | 96x96   | Android launcher (hdpi), shortcut icons |
+| `icon-128.png`      | 128x128 | Chrome Web Store                        |
+| `icon-144.png`      | 144x144 | iOS (iPad), Windows tile                |
+| `icon-152.png`      | 152x152 | iOS (iPad)                              |
+| `icon-192.png`      | 192x192 | Android launcher, PWA splash            |
+| `icon-384.png`      | 384x384 | Large Android icons                     |
+| `icon-512.png`      | 512x512 | PWA splash screen, Google Play          |
+| `maskable-icon.png` | 512x512 | Adaptive icon with safe zone            |
 
 ### Badge Icons (for notifications)
 
-| File | Size | Purpose |
-|------|------|---------|
+| File           | Size  | Purpose                         |
+| -------------- | ----- | ------------------------------- |
 | `badge-72.png` | 72x72 | Notification badge (monochrome) |
 
 ### Shortcut Icons (optional)
 
-| File | Size | Purpose |
-|------|------|---------|
-| `shortcut-message.png` | 96x96 | New message shortcut |
-| `shortcut-channels.png` | 96x96 | Channels shortcut |
+| File                    | Size  | Purpose              |
+| ----------------------- | ----- | -------------------- |
+| `shortcut-message.png`  | 96x96 | New message shortcut |
+| `shortcut-channels.png` | 96x96 | Channels shortcut    |
 
 ### Action Icons (optional, for notification actions)
 
-| File | Size | Purpose |
-|------|------|---------|
-| `action-reply.png` | 24x24 | Reply action |
-| `action-read.png` | 24x24 | Mark as read action |
-| `action-view.png` | 24x24 | View action |
-| `action-open.png` | 24x24 | Open action |
+| File               | Size  | Purpose             |
+| ------------------ | ----- | ------------------- |
+| `action-reply.png` | 24x24 | Reply action        |
+| `action-read.png`  | 24x24 | Mark as read action |
+| `action-view.png`  | 24x24 | View action         |
+| `action-open.png`  | 24x24 | Open action         |
 
 ## Maskable Icon Guidelines
 
@@ -67,16 +67,13 @@ The maskable icon should have a "safe zone" of content that won't be cropped.
 ### Using sharp (Node.js)
 
 ```javascript
-const sharp = require('sharp');
+const sharp = require('sharp')
 
-const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+const sizes = [72, 96, 128, 144, 152, 192, 384, 512]
 
-sizes.forEach(size => {
-  sharp('source-icon.png')
-    .resize(size, size)
-    .png()
-    .toFile(`icon-${size}.png`);
-});
+sizes.forEach((size) => {
+  sharp('source-icon.png').resize(size, size).png().toFile(`icon-${size}.png`)
+})
 ```
 
 ### Using ImageMagick

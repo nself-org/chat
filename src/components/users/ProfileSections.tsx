@@ -104,14 +104,7 @@ const SECTION_DEFINITIONS: {
 
 const ProfileSections = React.forwardRef<HTMLDivElement, ProfileSectionsProps>(
   (
-    {
-      className,
-      sections,
-      onSectionChange,
-      disabled = false,
-      allowReorder = false,
-      ...props
-    },
+    { className, sections, onSectionChange, disabled = false, allowReorder = false, ...props },
     ref
   ) => {
     return (
@@ -124,32 +117,30 @@ const ProfileSections = React.forwardRef<HTMLDivElement, ProfileSectionsProps>(
             <div
               key={section.key}
               className={cn(
-                'flex items-center gap-3 p-3 rounded-lg transition-colors',
+                'flex items-center gap-3 rounded-lg p-3 transition-colors',
                 'hover:bg-muted/50',
                 !isEnabled && 'opacity-60'
               )}
             >
               {allowReorder && (
-                <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab" />
+                <GripVertical className="h-4 w-4 cursor-grab text-muted-foreground" />
               )}
               <div
                 className={cn(
-                  'flex items-center justify-center h-9 w-9 rounded-lg flex-shrink-0',
+                  'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg',
                   isEnabled ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground'
                 )}
               >
                 <Icon className="h-4 w-4" />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <Label
                   htmlFor={`section-${section.key}`}
-                  className="text-sm font-medium cursor-pointer"
+                  className="cursor-pointer text-sm font-medium"
                 >
                   {section.label}
                 </Label>
-                <p className="text-xs text-muted-foreground truncate">
-                  {section.description}
-                </p>
+                <p className="truncate text-xs text-muted-foreground">{section.description}</p>
               </div>
               <Switch
                 id={`section-${section.key}`}
@@ -162,10 +153,10 @@ const ProfileSections = React.forwardRef<HTMLDivElement, ProfileSectionsProps>(
         })}
 
         {/* Info note */}
-        <div className="mt-4 p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
+        <div className="bg-muted/50 mt-4 rounded-lg p-3 text-xs text-muted-foreground">
           <p>
-            Disabled sections will not appear on your public profile. Some sections
-            may still be visible to workspace admins.
+            Disabled sections will not appear on your public profile. Some sections may still be
+            visible to workspace admins.
           </p>
         </div>
       </div>

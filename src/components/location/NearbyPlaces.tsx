@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { logger } from '@/lib/logger'
 import {
   type Coordinates,
   type Place,
@@ -114,7 +115,7 @@ export function NearbyPlaces({
         setPlaces(results)
       } catch (err) {
         setError('Failed to load nearby places')
-        console.error('Failed to fetch nearby places:', err)
+        logger.error('Failed to fetch nearby places:',  err)
       } finally {
         setIsLoading(false)
       }
@@ -163,7 +164,7 @@ export function NearbyPlaces({
 
       {/* Error State */}
       {error && !isLoading && (
-        <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-center">
+        <div className="border-destructive/30 bg-destructive/5 rounded-lg border p-4 text-center">
           <p className="text-sm text-destructive">{error}</p>
         </div>
       )}
@@ -172,9 +173,7 @@ export function NearbyPlaces({
       {!isLoading && !error && places.length === 0 && (
         <div className="py-8 text-center">
           <MapPin className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">
-            No places found nearby
-          </p>
+          <p className="text-sm text-muted-foreground">No places found nearby</p>
         </div>
       )}
 
@@ -182,11 +181,7 @@ export function NearbyPlaces({
       {!isLoading && !error && places.length > 0 && (
         <div className="space-y-1">
           {places.map((place) => (
-            <PlaceItem
-              key={place.id}
-              place={place}
-              onClick={() => onPlaceSelect?.(place)}
-            />
+            <PlaceItem key={place.id} place={place} onClick={() => onPlaceSelect?.(place)} />
           ))}
         </div>
       )}
@@ -219,12 +214,12 @@ export function PlaceItem({ place, onClick, className }: PlaceItemProps) {
       onClick={onClick}
     >
       {/* Icon */}
-      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+      <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
         <Icon className="h-5 w-5 text-primary" />
       </div>
 
       {/* Info */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <p className="truncate font-medium">{place.name}</p>
           {place.rating && (
@@ -234,29 +229,18 @@ export function PlaceItem({ place, onClick, className }: PlaceItemProps) {
             </div>
           )}
         </div>
-        <p className="truncate text-xs text-muted-foreground">
-          {place.address}
-        </p>
+        <p className="truncate text-xs text-muted-foreground">{place.address}</p>
         {place.category && (
-          <p className="text-xs text-muted-foreground">
-            {getPlaceCategoryName(place.category)}
-          </p>
+          <p className="text-xs text-muted-foreground">{getPlaceCategoryName(place.category)}</p>
         )}
       </div>
 
       {/* Distance */}
       {place.distance !== undefined && (
         <div className="text-right">
-          <p className="text-sm font-medium">
-            {formatDistanceForUI(place.distance)}
-          </p>
+          <p className="text-sm font-medium">{formatDistanceForUI(place.distance)}</p>
           {place.isOpen !== undefined && (
-            <p
-              className={cn(
-                'text-xs',
-                place.isOpen ? 'text-green-600' : 'text-muted-foreground'
-              )}
-            >
+            <p className={cn('text-xs', place.isOpen ? 'text-green-600' : 'text-muted-foreground')}>
               {place.isOpen ? 'Open' : 'Closed'}
             </p>
           )}
@@ -290,14 +274,12 @@ export function PlaceCard({ place, onClick, className }: PlaceCardProps) {
       )}
       onClick={onClick}
     >
-      <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+      <div className="bg-primary/10 mb-2 flex h-10 w-10 items-center justify-center rounded-full">
         <Icon className="h-5 w-5 text-primary" />
       </div>
       <p className="mb-0.5 truncate text-sm font-medium">{place.name}</p>
       {place.distance !== undefined && (
-        <p className="text-xs text-muted-foreground">
-          {formatDistanceForUI(place.distance)}
-        </p>
+        <p className="text-xs text-muted-foreground">{formatDistanceForUI(place.distance)}</p>
       )}
     </button>
   )

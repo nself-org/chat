@@ -16,6 +16,7 @@ import type {
   MessageId,
   BotId,
 } from './types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -359,7 +360,7 @@ export class CommandRegistry {
       await registered.command.handler(commandContext)
       this.setCooldown(registered, context.userId)
     } catch (error) {
-      console.error(`[CommandRegistry] Error executing command '${parsed.name}':`, error)
+      logger.error(`[CommandRegistry] Error executing command '${parsed.name}':`,  error)
       await context.respond('An error occurred while executing the command.')
     }
   }

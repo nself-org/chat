@@ -42,7 +42,16 @@ export interface QueueItem {
 export interface ModerationAction {
   id: string
   queueId?: string
-  actionType: 'flagged' | 'approved' | 'rejected' | 'deleted' | 'edited' | 'warned' | 'muted' | 'banned' | 'appealed'
+  actionType:
+    | 'flagged'
+    | 'approved'
+    | 'rejected'
+    | 'deleted'
+    | 'edited'
+    | 'warned'
+    | 'muted'
+    | 'banned'
+    | 'appealed'
   actionReason?: string
   isAutomated: boolean
   automationType?: 'ai' | 'rule_based' | 'manual'
@@ -69,10 +78,7 @@ const ADD_TO_QUEUE = gql`
 const GET_QUEUE_ITEMS = gql`
   query GetModerationQueue($status: String, $priority: String, $limit: Int, $offset: Int) {
     nchat_moderation_queue(
-      where: {
-        status: { _eq: $status }
-        priority: { _eq: $priority }
-      }
+      where: { status: { _eq: $status }, priority: { _eq: $priority } }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
@@ -112,10 +118,7 @@ const GET_QUEUE_ITEMS = gql`
 
 const UPDATE_QUEUE_ITEM = gql`
   mutation UpdateQueueItem($id: uuid!, $updates: ModerationQueueSetInput!) {
-    update_nchat_moderation_queue_by_pk(
-      pk_columns: { id: $id }
-      _set: $updates
-    ) {
+    update_nchat_moderation_queue_by_pk(pk_columns: { id: $id }, _set: $updates) {
       id
       status
       updated_at
@@ -262,7 +265,11 @@ export class ModerationQueue {
   ): Promise<void> {
     const updateData: any = { ...updates }
 
-    if (updates.moderatorDecision || updates.status === 'approved' || updates.status === 'rejected') {
+    if (
+      updates.moderatorDecision ||
+      updates.status === 'approved' ||
+      updates.status === 'rejected'
+    ) {
       updateData.reviewed_at = new Date().toISOString()
     }
 
@@ -314,11 +321,7 @@ export class ModerationQueue {
   /**
    * Approve content
    */
-  async approveContent(
-    itemId: string,
-    moderatorId: string,
-    notes?: string
-  ): Promise<void> {
+  async approveContent(itemId: string, moderatorId: string, notes?: string): Promise<void> {
     const item = await this.getQueueItem(itemId)
 
     await this.updateQueueItem(itemId, {
@@ -341,11 +344,7 @@ export class ModerationQueue {
   /**
    * Reject/delete content
    */
-  async rejectContent(
-    itemId: string,
-    moderatorId: string,
-    reason?: string
-  ): Promise<void> {
+  async rejectContent(itemId: string, moderatorId: string, reason?: string): Promise<void> {
     const item = await this.getQueueItem(itemId)
 
     await this.updateQueueItem(itemId, {
@@ -368,11 +367,7 @@ export class ModerationQueue {
   /**
    * Warn user
    */
-  async warnUser(
-    itemId: string,
-    moderatorId: string,
-    reason?: string
-  ): Promise<void> {
+  async warnUser(itemId: string, moderatorId: string, reason?: string): Promise<void> {
     const item = await this.getQueueItem(itemId)
 
     await this.updateQueueItem(itemId, {

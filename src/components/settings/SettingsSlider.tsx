@@ -1,27 +1,27 @@
-'use client';
+'use client'
 
-import { cn } from '@/lib/utils';
-import { Slider } from '@/components/ui/slider';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles } from 'lucide-react';
+import { cn } from '@/lib/utils'
+import { Slider } from '@/components/ui/slider'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Sparkles } from 'lucide-react'
 
 interface SettingsSliderProps {
-  id: string;
-  label: string;
-  description?: string;
-  value: number;
-  onValueChange: (value: number) => void;
-  min?: number;
-  max?: number;
-  step?: number;
-  unit?: string;
-  showValue?: boolean;
-  disabled?: boolean;
-  premium?: boolean;
-  className?: string;
-  vertical?: boolean;
-  marks?: { value: number; label: string }[];
+  id: string
+  label: string
+  description?: string
+  value: number
+  onValueChange: (value: number) => void
+  min?: number
+  max?: number
+  step?: number
+  unit?: string
+  showValue?: boolean
+  disabled?: boolean
+  premium?: boolean
+  className?: string
+  vertical?: boolean
+  marks?: { value: number; label: string }[]
 }
 
 /**
@@ -44,17 +44,11 @@ export function SettingsSlider({
   vertical = false,
   marks,
 }: SettingsSliderProps) {
-  const formattedValue = `${value}${unit}`;
+  const formattedValue = `${value}${unit}`
 
   if (vertical) {
     return (
-      <div
-        className={cn(
-          'space-y-4 py-3',
-          disabled && 'opacity-60',
-          className
-        )}
-      >
+      <div className={cn('space-y-4 py-3', disabled && 'opacity-60', className)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Label
@@ -74,14 +68,12 @@ export function SettingsSlider({
             )}
           </div>
           {showValue && (
-            <span className="text-sm font-medium text-muted-foreground tabular-nums">
+            <span className="text-sm font-medium tabular-nums text-muted-foreground">
               {formattedValue}
             </span>
           )}
         </div>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
         <Slider
           id={id}
           value={[value]}
@@ -113,7 +105,7 @@ export function SettingsSlider({
           </div>
         )}
       </div>
-    );
+    )
   }
 
   return (
@@ -142,9 +134,7 @@ export function SettingsSlider({
             </Badge>
           )}
         </div>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       <div className="flex items-center gap-4">
         <Slider
@@ -159,11 +149,11 @@ export function SettingsSlider({
           aria-describedby={description ? `${id}-description` : undefined}
         />
         {showValue && (
-          <span className="w-14 text-right text-sm font-medium text-muted-foreground tabular-nums">
+          <span className="w-14 text-right text-sm font-medium tabular-nums text-muted-foreground">
             {formattedValue}
           </span>
         )}
       </div>
     </div>
-  );
+  )
 }

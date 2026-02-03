@@ -11,7 +11,18 @@
  * Tests use proper mocking, test isolation, and comprehensive assertions.
  */
 
-import { BotBuilder, bot, quickBot, createEchoBot, createPingBot, BaseBot, Command, text, error, success } from '../bot-sdk'
+import {
+  BotBuilder,
+  bot,
+  quickBot,
+  createEchoBot,
+  createPingBot,
+  BaseBot,
+  Command,
+  text,
+  error,
+  success,
+} from '../bot-sdk'
 import { getRuntime, createRuntime, setRuntime, BotInstance, BotRuntime } from '../bot-runtime'
 import { createMockServices, type BotServices } from '../bot-api'
 import type { MessageContext, CommandContext, UserContext, ReactionContext } from '../bot-types'
@@ -200,7 +211,7 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
         .build()
 
       // Wait for async init to complete
-      await new Promise(resolve => setTimeout(resolve, 10))
+      await new Promise((resolve) => setTimeout(resolve, 10))
 
       expect(instance).toBeDefined()
       expect(instance.state.status).toBe('active')
@@ -220,26 +231,19 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
     })
 
     test('should support version management', () => {
-      const instance = bot('lifecycle-bot-8')
-        .name('Version Bot')
-        .version('2.1.0')
-        .build()
+      const instance = bot('lifecycle-bot-8').name('Version Bot').version('2.1.0').build()
 
       expect(instance.manifest.version).toBe('2.1.0')
     })
 
     test('should support hot reload by recreating bot', () => {
-      const instance1 = bot('lifecycle-bot-9')
-        .name('Original Bot')
-        .build()
+      const instance1 = bot('lifecycle-bot-9').name('Original Bot').build()
 
       expect(instance1.manifest.name).toBe('Original Bot')
 
       runtime.unregister('lifecycle-bot-9')
 
-      const instance2 = bot('lifecycle-bot-9')
-        .name('Updated Bot')
-        .build()
+      const instance2 = bot('lifecycle-bot-9').name('Updated Bot').build()
 
       expect(instance2.manifest.name).toBe('Updated Bot')
       expect(runtime.get('lifecycle-bot-9')).toBe(instance2)
@@ -308,9 +312,7 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
 
     test('should handle custom events with keyword triggers', async () => {
       const handler = jest.fn()
-      const instance = bot('event-bot-5')
-        .onKeyword(['help', 'support'], handler)
-        .build()
+      const instance = bot('event-bot-5').onKeyword(['help', 'support'], handler).build()
 
       const ctx = createMockMessageContext({
         message: { ...createMockMessageContext().message, content: 'I need help' },
@@ -322,10 +324,7 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
 
     test('should support event filtering by channel', async () => {
       const handler = jest.fn()
-      const instance = bot('event-bot-6')
-        .channels('allowed-channel')
-        .onMessage(handler)
-        .build()
+      const instance = bot('event-bot-6').channels('allowed-channel').onMessage(handler).build()
 
       const allowedCtx = createMockMessageContext({
         channel: { id: 'allowed-channel', name: 'allowed', type: 'public' },
@@ -344,10 +343,7 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
       const handler1 = jest.fn().mockResolvedValue(undefined)
       const handler2 = jest.fn().mockResolvedValue(text('Response'))
 
-      const instance = bot('event-bot-7')
-        .onMessage(handler1)
-        .onMessage(handler2)
-        .build()
+      const instance = bot('event-bot-7').onMessage(handler1).onMessage(handler2).build()
 
       const ctx = createMockMessageContext()
       const result = await instance.handleMessage(ctx)
@@ -731,9 +727,7 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
     })
 
     it('should add single permission', () => {
-      const instance = bot('test-bot')
-        .addPermission('manage_channels')
-        .build()
+      const instance = bot('test-bot').addPermission('manage_channels').build()
 
       expect(instance.manifest.permissions).toContain('manage_channels')
     })
@@ -744,25 +738,21 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
         .addPermission('read_messages')
         .build()
 
-      const count = instance.manifest.permissions.filter(p => p === 'read_messages').length
+      const count = instance.manifest.permissions.filter((p) => p === 'read_messages').length
       expect(count).toBe(1)
     })
   })
 
   describe('Channels and Settings', () => {
     it('should set enabled channels', () => {
-      const instance = bot('test-bot')
-        .channels('channel-1', 'channel-2')
-        .build()
+      const instance = bot('test-bot').channels('channel-1', 'channel-2').build()
 
       expect(instance.config.channels).toEqual(['channel-1', 'channel-2'])
     })
 
     it('should set bot settings', () => {
       const settings = { color: 'blue', limit: 10 }
-      const instance = bot('test-bot')
-        .settings(settings)
-        .build()
+      const instance = bot('test-bot').settings(settings).build()
 
       expect(instance.config.settings).toEqual(settings)
     })
@@ -771,9 +761,7 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
   describe('Command Registration', () => {
     it('should register command with name and description', () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .command('test', 'Test command', handler)
-        .build()
+      const instance = bot('test-bot').command('test', 'Test command', handler).build()
 
       expect(instance.manifest.commands).toHaveLength(1)
       expect(instance.manifest.commands?.[0].name).toBe('test')
@@ -791,9 +779,7 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
 
     it('should execute registered command handler', async () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .command('test', 'Test command', handler)
-        .build()
+      const instance = bot('test-bot').command('test', 'Test command', handler).build()
 
       const ctx: CommandContext = {
         message: {
@@ -821,18 +807,14 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
   describe('Message Handlers', () => {
     it('should register message handler', () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onMessage(handler)
-        .build()
+      const instance = bot('test-bot').onMessage(handler).build()
 
       expect(instance).toBeDefined()
     })
 
     it('should execute message handler on message', async () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onMessage(handler)
-        .build()
+      const instance = bot('test-bot').onMessage(handler).build()
 
       const ctx: MessageContext = {
         message: {
@@ -856,36 +838,28 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
 
     it('should register keyword trigger', () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onKeyword(['help', 'support'], handler)
-        .build()
+      const instance = bot('test-bot').onKeyword(['help', 'support'], handler).build()
 
       expect(instance).toBeDefined()
     })
 
     it('should register pattern trigger', () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onPattern(['bug-\\d+', 'issue-\\d+'], handler)
-        .build()
+      const instance = bot('test-bot').onPattern(['bug-\\d+', 'issue-\\d+'], handler).build()
 
       expect(instance).toBeDefined()
     })
 
     it('should register mention trigger', () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onMention(handler)
-        .build()
+      const instance = bot('test-bot').onMention(handler).build()
 
       expect(instance).toBeDefined()
     })
 
     it('should execute mention handler when mentioned', async () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onMention(handler)
-        .build()
+      const instance = bot('test-bot').onMention(handler).build()
 
       const ctx: MessageContext = {
         message: {
@@ -912,18 +886,14 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
   describe('User Event Handlers', () => {
     it('should register user join handler', () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onUserJoin(handler)
-        .build()
+      const instance = bot('test-bot').onUserJoin(handler).build()
 
       expect(instance).toBeDefined()
     })
 
     it('should execute user join handler', async () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onUserJoin(handler)
-        .build()
+      const instance = bot('test-bot').onUserJoin(handler).build()
 
       const ctx: UserContext = {
         user: {
@@ -941,18 +911,14 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
 
     it('should register user leave handler', () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onUserLeave(handler)
-        .build()
+      const instance = bot('test-bot').onUserLeave(handler).build()
 
       expect(instance).toBeDefined()
     })
 
     it('should execute user leave handler', async () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onUserLeave(handler)
-        .build()
+      const instance = bot('test-bot').onUserLeave(handler).build()
 
       const ctx: UserContext = {
         user: {
@@ -972,18 +938,14 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
   describe('Reaction Handlers', () => {
     it('should register reaction handler', () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onReaction(handler)
-        .build()
+      const instance = bot('test-bot').onReaction(handler).build()
 
       expect(instance).toBeDefined()
     })
 
     it('should execute reaction handler', async () => {
       const handler = jest.fn()
-      const instance = bot('test-bot')
-        .onReaction(handler)
-        .build()
+      const instance = bot('test-bot').onReaction(handler).build()
 
       const ctx: ReactionContext = {
         reaction: {
@@ -1014,18 +976,14 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
   describe('Initialization Handler', () => {
     it('should register init handler', () => {
       const initHandler = jest.fn()
-      const instance = bot('test-bot')
-        .onInit(initHandler)
-        .build()
+      const instance = bot('test-bot').onInit(initHandler).build()
 
       expect(instance).toBeDefined()
     })
 
     it('should execute init handler during build', () => {
       const initHandler = jest.fn()
-      bot('test-bot')
-        .onInit(initHandler)
-        .build()
+      bot('test-bot').onInit(initHandler).build()
 
       // Init handler should be called during build
       // Note: actual timing depends on implementation
@@ -1034,12 +992,10 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
 
     it('should handle async init handler', async () => {
       const initHandler = jest.fn(async () => {
-        await new Promise(resolve => setTimeout(resolve, 10))
+        await new Promise((resolve) => setTimeout(resolve, 10))
       })
 
-      bot('test-bot')
-        .onInit(initHandler)
-        .build()
+      bot('test-bot').onInit(initHandler).build()
 
       expect(initHandler).toHaveBeenCalled()
     })
@@ -1117,9 +1073,7 @@ describe('Bot SDK - Comprehensive Test Suite', () => {
         expect(ctx.user).toBeDefined()
       }
 
-      const instance = bot('test-bot')
-        .onMessage(validHandler)
-        .build()
+      const instance = bot('test-bot').onMessage(validHandler).build()
 
       expect(instance).toBeDefined()
     })

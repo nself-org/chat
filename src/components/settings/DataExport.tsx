@@ -45,6 +45,8 @@ import {
 import { cn } from '@/lib/utils'
 import type { ExportOptions, ExportRequest, ExportFormat, ExportScope } from '@/lib/export/types'
 
+import { logger } from '@/lib/logger'
+
 interface ExportHistoryItem {
   id: string
   status: ExportRequest['status']
@@ -92,7 +94,7 @@ export function DataExport() {
     if (activeExports.size === 0) return
 
     const interval = setInterval(() => {
-      activeExports.forEach(exportId => {
+      activeExports.forEach((exportId) => {
         checkExportStatus(exportId)
       })
     }, 2000) // Poll every 2 seconds
@@ -105,18 +107,20 @@ export function DataExport() {
     const saved = localStorage.getItem('export-history')
     if (saved) {
       const history = JSON.parse(saved) as ExportHistoryItem[]
-      setExportHistory(history.map(item => ({
-        ...item,
-        createdAt: new Date(item.createdAt),
-        completedAt: item.completedAt ? new Date(item.completedAt) : undefined,
-        expiresAt: new Date(item.expiresAt),
-      })))
+      setExportHistory(
+        history.map((item) => ({
+          ...item,
+          createdAt: new Date(item.createdAt),
+          completedAt: item.completedAt ? new Date(item.completedAt) : undefined,
+          expiresAt: new Date(item.expiresAt),
+        }))
+      )
 
       // Mark processing exports as active
       const active = new Set(
         history
-          .filter(item => item.status === 'pending' || item.status === 'processing')
-          .map(item => item.id)
+          .filter((item) => item.status === 'pending' || item.status === 'processing')
+          .map((item) => item.id)
       )
       setActiveExports(active)
     }
@@ -136,8 +140,8 @@ export function DataExport() {
         const updatedExport = data.export as ExportRequest
 
         // Update history
-        setExportHistory(prev => {
-          const updated = prev.map(item =>
+        setExportHistory((prev) => {
+          const updated = prev.map((item) =>
             item.id === exportId
               ? {
                   ...item,
@@ -168,7 +172,7 @@ export function DataExport() {
           updatedExport.status === 'failed' ||
           updatedExport.status === 'cancelled'
         ) {
-          setActiveExports(prev => {
+          setActiveExports((prev) => {
             const next = new Set(prev)
             next.delete(exportId)
             return next
@@ -176,7 +180,7 @@ export function DataExport() {
         }
       }
     } catch (error) {
-      console.error(`Failed to check export status:`, error)
+      logger.error(`Failed to check export status:`, error)
     }
   }
 
@@ -224,14 +228,14 @@ export function DataExport() {
         saveExportHistory(updated)
 
         // Mark as active for polling
-        setActiveExports(prev => new Set(prev).add(data.exportId))
+        setActiveExports((prev) => new Set(prev).add(data.exportId))
 
         setShowSuccessDialog(true)
       } else {
         alert(`Export creation failed: ${data.error}`)
       }
     } catch (error) {
-      console.error('Export creation error:', error)
+      logger.error('Export creation error:', error)
       alert('Failed to create export. Please try again.')
     } finally {
       setIsCreatingExport(false)
@@ -249,22 +253,22 @@ export function DataExport() {
       })
 
       if (response.ok) {
-        setExportHistory(prev => {
-          const updated = prev.map(item =>
+        setExportHistory((prev) => {
+          const updated = prev.map((item) =>
             item.id === exportId ? { ...item, status: 'cancelled' as const } : item
           )
           localStorage.setItem('export-history', JSON.stringify(updated))
           return updated
         })
 
-        setActiveExports(prev => {
+        setActiveExports((prev) => {
           const next = new Set(prev)
           next.delete(exportId)
           return next
         })
       }
     } catch (error) {
-      console.error('Failed to cancel export:', error)
+      logger.error('Failed to cancel export:', error)
     }
   }
 
@@ -324,13 +328,13 @@ export function DataExport() {
       {/* Header */}
       <div>
         <h2 className="text-2xl font-semibold">Data Export & Backup</h2>
-        <p className="text-muted-foreground mt-1">
+        <p className="mt-1 text-muted-foreground">
           Export your data in various formats for backup or GDPR compliance.
         </p>
       </div>
 
       {/* Export Options */}
-      <div className="bg-card rounded-xl border p-6 space-y-6">
+      <div className="space-y-6 rounded-xl border bg-card p-6">
         <h3 className="text-lg font-semibold">Create New Export</h3>
 
         {/* Scope Selection */}
@@ -372,18 +376,18 @@ export function DataExport() {
         {/* Format Selection */}
         <div className="space-y-2">
           <label className="text-sm font-medium">Export Format</label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {(['json', 'csv', 'html', 'pdf'] as ExportFormat[]).map(fmt => {
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            {(['json', 'csv', 'html', 'pdf'] as ExportFormat[]).map((fmt) => {
               const Icon = getFormatIcon(fmt)
               return (
                 <button
                   key={fmt}
                   onClick={() => setFormat(fmt)}
                   className={cn(
-                    'flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-colors',
+                    'flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors',
                     format === fmt
-                      ? 'border-primary bg-primary/5'
-                      : 'border-border hover:border-primary/50'
+                      ? 'bg-primary/5 border-primary'
+                      : 'hover:border-primary/50 border-border'
                   )}
                 >
                   <Icon className="h-6 w-6" />
@@ -395,28 +399,28 @@ export function DataExport() {
         </div>
 
         {/* Date Range */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="space-y-2">
             <label className="text-sm font-medium">From Date</label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="date"
                 value={fromDate}
-                onChange={e => setFromDate(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 rounded-xl border bg-background"
+                onChange={(e) => setFromDate(e.target.value)}
+                className="w-full rounded-xl border bg-background py-2 pl-10 pr-3"
               />
             </div>
           </div>
           <div className="space-y-2">
             <label className="text-sm font-medium">To Date</label>
             <div className="relative">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <input
                 type="date"
                 value={toDate}
-                onChange={e => setToDate(e.target.value)}
-                className="w-full pl-10 pr-3 py-2 rounded-xl border bg-background"
+                onChange={(e) => setToDate(e.target.value)}
+                className="w-full rounded-xl border bg-background py-2 pl-10 pr-3"
               />
             </div>
           </div>
@@ -425,39 +429,39 @@ export function DataExport() {
         {/* Include Options */}
         <div className="space-y-3">
           <label className="text-sm font-medium">Include in Export</label>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <label className="flex items-center gap-2 cursor-pointer">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <label className="flex cursor-pointer items-center gap-2">
               <input
                 type="checkbox"
                 checked={includeFiles}
-                onChange={e => setIncludeFiles(e.target.checked)}
+                onChange={(e) => setIncludeFiles(e.target.checked)}
                 className="rounded"
               />
               <span className="text-sm">File Attachments</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex cursor-pointer items-center gap-2">
               <input
                 type="checkbox"
                 checked={includeReactions}
-                onChange={e => setIncludeReactions(e.target.checked)}
+                onChange={(e) => setIncludeReactions(e.target.checked)}
                 className="rounded"
               />
               <span className="text-sm">Reactions</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex cursor-pointer items-center gap-2">
               <input
                 type="checkbox"
                 checked={includeThreads}
-                onChange={e => setIncludeThreads(e.target.checked)}
+                onChange={(e) => setIncludeThreads(e.target.checked)}
                 className="rounded"
               />
               <span className="text-sm">Thread Replies</span>
             </label>
-            <label className="flex items-center gap-2 cursor-pointer">
+            <label className="flex cursor-pointer items-center gap-2">
               <input
                 type="checkbox"
                 checked={includeEdits}
-                onChange={e => setIncludeEdits(e.target.checked)}
+                onChange={(e) => setIncludeEdits(e.target.checked)}
                 className="rounded"
               />
               <span className="text-sm">Edit History</span>
@@ -466,17 +470,17 @@ export function DataExport() {
         </div>
 
         {/* GDPR Compliance */}
-        <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-          <label className="flex items-center gap-2 cursor-pointer">
+        <div className="bg-muted/50 space-y-2 rounded-lg p-4">
+          <label className="flex cursor-pointer items-center gap-2">
             <input
               type="checkbox"
               checked={anonymize}
-              onChange={e => setAnonymize(e.target.checked)}
+              onChange={(e) => setAnonymize(e.target.checked)}
               className="rounded"
             />
             <span className="text-sm font-medium">Anonymize Data (GDPR Compliance)</span>
           </label>
-          <p className="text-xs text-muted-foreground ml-6">
+          <p className="ml-6 text-xs text-muted-foreground">
             Remove personally identifiable information from the export. User names will be replaced
             with anonymous identifiers.
           </p>
@@ -491,12 +495,12 @@ export function DataExport() {
         >
           {isCreatingExport ? (
             <>
-              <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
               Creating Export...
             </>
           ) : (
             <>
-              <Download className="h-5 w-5 mr-2" />
+              <Download className="mr-2 h-5 w-5" />
               Create Export
             </>
           )}
@@ -504,28 +508,25 @@ export function DataExport() {
       </div>
 
       {/* Export History */}
-      <div className="bg-card rounded-xl border p-6 space-y-4">
+      <div className="space-y-4 rounded-xl border bg-card p-6">
         <h3 className="text-lg font-semibold">Export History</h3>
 
         {exportHistory.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            <Download className="h-12 w-12 mx-auto mb-3 opacity-50" />
+          <div className="py-12 text-center text-muted-foreground">
+            <Download className="mx-auto mb-3 h-12 w-12 opacity-50" />
             <p>No exports yet</p>
           </div>
         ) : (
           <div className="space-y-3">
-            {exportHistory.map(item => {
+            {exportHistory.map((item) => {
               const StatusIcon = getStatusIcon(item.status)
               const FormatIcon = getFormatIcon(item.format)
 
               return (
-                <div
-                  key={item.id}
-                  className="p-4 rounded-lg border bg-background space-y-3"
-                >
+                <div key={item.id} className="space-y-3 rounded-lg border bg-background p-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-start gap-3">
-                      <FormatIcon className="h-5 w-5 mt-0.5 text-muted-foreground" />
+                      <FormatIcon className="mt-0.5 h-5 w-5 text-muted-foreground" />
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
                           <span className="font-medium">
@@ -557,12 +558,8 @@ export function DataExport() {
 
                     <div className="flex items-center gap-2">
                       {item.status === 'completed' && (
-                        <Button
-                          onClick={() => handleDownload(item.id)}
-                          size="sm"
-                          variant="outline"
-                        >
-                          <Download className="h-4 w-4 mr-1" />
+                        <Button onClick={() => handleDownload(item.id)} size="sm" variant="outline">
+                          <Download className="mr-1 h-4 w-4" />
                           Download
                         </Button>
                       )}
@@ -572,7 +569,7 @@ export function DataExport() {
                           size="sm"
                           variant="outline"
                         >
-                          <XCircle className="h-4 w-4 mr-1" />
+                          <XCircle className="mr-1 h-4 w-4" />
                           Cancel
                         </Button>
                       )}

@@ -5,7 +5,7 @@
  * Supports standard Unicode emojis and custom server emojis.
  */
 
-import type { UserBasicInfo } from './user';
+import type { UserBasicInfo } from './user'
 
 // ============================================================================
 // Emoji Category Types
@@ -23,25 +23,25 @@ export type StandardEmojiCategory =
   | 'activities'
   | 'objects'
   | 'symbols'
-  | 'flags';
+  | 'flags'
 
 /**
  * All emoji category types.
  */
-export type EmojiCategory = StandardEmojiCategory | 'custom' | 'recent' | 'search';
+export type EmojiCategory = StandardEmojiCategory | 'custom' | 'recent' | 'search'
 
 /**
  * Category metadata.
  */
 export interface EmojiCategoryInfo {
   /** Category ID */
-  id: EmojiCategory;
+  id: EmojiCategory
   /** Display name */
-  name: string;
+  name: string
   /** Category icon (emoji) */
-  icon: string;
+  icon: string
   /** Display order */
-  order: number;
+  order: number
 }
 
 /**
@@ -59,7 +59,7 @@ export const EmojiCategories: EmojiCategoryInfo[] = [
   { id: 'objects', name: 'Objects', icon: '💡', order: 8 },
   { id: 'symbols', name: 'Symbols', icon: '❤️', order: 9 },
   { id: 'flags', name: 'Flags', icon: '🏳️', order: 10 },
-];
+]
 
 // ============================================================================
 // Emoji Types
@@ -68,13 +68,7 @@ export const EmojiCategories: EmojiCategoryInfo[] = [
 /**
  * Skin tone modifiers.
  */
-export type SkinTone =
-  | 'default'
-  | 'light'
-  | 'medium-light'
-  | 'medium'
-  | 'medium-dark'
-  | 'dark';
+export type SkinTone = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark'
 
 /**
  * Skin tone emoji modifiers.
@@ -86,32 +80,32 @@ export const SkinToneModifiers: Record<SkinTone, string> = {
   medium: '🏽',
   'medium-dark': '🏾',
   dark: '🏿',
-};
+}
 
 /**
  * Standard Unicode emoji.
  */
 export interface Emoji {
   /** Emoji character(s) */
-  emoji: string;
+  emoji: string
   /** Short name (e.g., :smile:) */
-  shortName: string;
+  shortName: string
   /** Alternative short names */
-  shortNames?: string[];
+  shortNames?: string[]
   /** Unicode code points */
-  unicode: string;
+  unicode: string
   /** Category */
-  category: StandardEmojiCategory;
+  category: StandardEmojiCategory
   /** Emoji version introduced */
-  version?: string;
+  version?: string
   /** Keywords for search */
-  keywords?: string[];
+  keywords?: string[]
   /** Supports skin tone modifiers */
-  hasSkinTones?: boolean;
+  hasSkinTones?: boolean
   /** Skin tone variants */
-  skinToneVariants?: Record<SkinTone, string>;
+  skinToneVariants?: Record<SkinTone, string>
   /** Display order within category */
-  order?: number;
+  order?: number
 }
 
 /**
@@ -119,41 +113,39 @@ export interface Emoji {
  */
 export interface CustomEmoji {
   /** Unique emoji ID */
-  id: string;
+  id: string
   /** Short name (without colons) */
-  name: string;
+  name: string
   /** Image URL */
-  url: string;
+  url: string
   /** Thumbnail URL */
-  thumbnailUrl?: string;
+  thumbnailUrl?: string
   /** Whether emoji is animated */
-  isAnimated: boolean;
+  isAnimated: boolean
   /** Who uploaded the emoji */
-  uploadedBy: string;
+  uploadedBy: string
   /** Uploader info */
-  uploader?: UserBasicInfo;
+  uploader?: UserBasicInfo
   /** When emoji was uploaded */
-  createdAt: Date;
+  createdAt: Date
   /** Category/group name */
-  category?: string;
+  category?: string
   /** Alias names */
-  aliases?: string[];
+  aliases?: string[]
   /** Keywords for search */
-  keywords?: string[];
+  keywords?: string[]
   /** Usage count */
-  usageCount?: number;
+  usageCount?: number
   /** Whether emoji is available (not disabled) */
-  isAvailable: boolean;
+  isAvailable: boolean
   /** Roles that can use this emoji (empty = all) */
-  allowedRoles?: string[];
+  allowedRoles?: string[]
 }
 
 /**
  * Unified emoji type (standard or custom).
  */
-export type AnyEmoji =
-  | { type: 'standard'; emoji: Emoji }
-  | { type: 'custom'; emoji: CustomEmoji };
+export type AnyEmoji = { type: 'standard'; emoji: Emoji } | { type: 'custom'; emoji: CustomEmoji }
 
 // ============================================================================
 // Reaction Types
@@ -164,21 +156,21 @@ export type AnyEmoji =
  */
 export interface Reaction {
   /** Emoji character or custom emoji ID */
-  emoji: string;
+  emoji: string
   /** Whether this is a custom emoji */
-  isCustom: boolean;
+  isCustom: boolean
   /** Custom emoji details (if custom) */
-  customEmoji?: CustomEmoji;
+  customEmoji?: CustomEmoji
   /** Number of users who reacted */
-  count: number;
+  count: number
   /** Users who reacted (partial list) */
-  users: UserBasicInfo[];
+  users: UserBasicInfo[]
   /** Whether current user has reacted */
-  hasReacted: boolean;
+  hasReacted: boolean
   /** First reaction timestamp */
-  firstReactionAt?: Date;
+  firstReactionAt?: Date
   /** Most recent reaction timestamp */
-  lastReactionAt?: Date;
+  lastReactionAt?: Date
 }
 
 /**
@@ -186,7 +178,7 @@ export interface Reaction {
  */
 export interface ReactionWithUsers extends Reaction {
   /** Complete list of users who reacted */
-  allUsers: UserBasicInfo[];
+  allUsers: UserBasicInfo[]
 }
 
 /**
@@ -194,15 +186,15 @@ export interface ReactionWithUsers extends Reaction {
  */
 export interface ReactionSummary {
   /** Message ID */
-  messageId: string;
+  messageId: string
   /** Total reaction count */
-  totalCount: number;
+  totalCount: number
   /** Unique reactor count */
-  uniqueReactors: number;
+  uniqueReactors: number
   /** Reactions grouped by emoji */
-  reactions: Reaction[];
+  reactions: Reaction[]
   /** Top reactors */
-  topReactors?: UserBasicInfo[];
+  topReactors?: UserBasicInfo[]
 }
 
 // ============================================================================
@@ -214,15 +206,15 @@ export interface ReactionSummary {
  */
 export interface RecentEmoji {
   /** Emoji character or custom emoji ID */
-  emoji: string;
+  emoji: string
   /** Whether it's a custom emoji */
-  isCustom: boolean;
+  isCustom: boolean
   /** Custom emoji ID (if custom) */
-  customEmojiId?: string;
+  customEmojiId?: string
   /** Last used timestamp */
-  lastUsedAt: Date;
+  lastUsedAt: Date
   /** Usage count */
-  usageCount: number;
+  usageCount: number
 }
 
 /**
@@ -230,7 +222,7 @@ export interface RecentEmoji {
  */
 export interface FrequentEmoji extends RecentEmoji {
   /** Usage frequency score */
-  frequencyScore: number;
+  frequencyScore: number
 }
 
 /**
@@ -238,11 +230,11 @@ export interface FrequentEmoji extends RecentEmoji {
  */
 export interface EmojiSearchResult {
   /** The emoji */
-  emoji: AnyEmoji;
+  emoji: AnyEmoji
   /** Match score */
-  score: number;
+  score: number
   /** Matched keyword/term */
-  matchedTerm?: string;
+  matchedTerm?: string
 }
 
 /**
@@ -250,19 +242,19 @@ export interface EmojiSearchResult {
  */
 export interface EmojiPickerState {
   /** Current search query */
-  searchQuery: string;
+  searchQuery: string
   /** Selected category */
-  selectedCategory: EmojiCategory;
+  selectedCategory: EmojiCategory
   /** Selected skin tone */
-  skinTone: SkinTone;
+  skinTone: SkinTone
   /** Recent emojis */
-  recentEmojis: RecentEmoji[];
+  recentEmojis: RecentEmoji[]
   /** Frequently used emojis */
-  frequentEmojis: FrequentEmoji[];
+  frequentEmojis: FrequentEmoji[]
   /** Custom emojis available */
-  customEmojis: CustomEmoji[];
+  customEmojis: CustomEmoji[]
   /** Whether picker is loading */
-  isLoading: boolean;
+  isLoading: boolean
 }
 
 // ============================================================================
@@ -274,15 +266,15 @@ export interface EmojiPickerState {
  */
 export interface CreateCustomEmojiInput {
   /** Emoji name (without colons) */
-  name: string;
+  name: string
   /** Image file to upload */
-  file: File;
+  file: File
   /** Category name */
-  category?: string;
+  category?: string
   /** Alias names */
-  aliases?: string[];
+  aliases?: string[]
   /** Roles that can use this emoji */
-  allowedRoles?: string[];
+  allowedRoles?: string[]
 }
 
 /**
@@ -290,17 +282,17 @@ export interface CreateCustomEmojiInput {
  */
 export interface UpdateCustomEmojiInput {
   /** Emoji ID */
-  id: string;
+  id: string
   /** New name */
-  name?: string;
+  name?: string
   /** New category */
-  category?: string;
+  category?: string
   /** Updated aliases */
-  aliases?: string[];
+  aliases?: string[]
   /** Updated allowed roles */
-  allowedRoles?: string[];
+  allowedRoles?: string[]
   /** Enable/disable emoji */
-  isAvailable?: boolean;
+  isAvailable?: boolean
 }
 
 /**
@@ -308,19 +300,19 @@ export interface UpdateCustomEmojiInput {
  */
 export interface EmojiUploadValidation {
   /** Is the upload valid */
-  isValid: boolean;
+  isValid: boolean
   /** Validation errors */
-  errors: string[];
+  errors: string[]
   /** Warnings (non-blocking) */
-  warnings: string[];
+  warnings: string[]
   /** Detected file type */
-  fileType?: string;
+  fileType?: string
   /** Detected dimensions */
-  dimensions?: { width: number; height: number };
+  dimensions?: { width: number; height: number }
   /** File size in bytes */
-  fileSize?: number;
+  fileSize?: number
   /** Whether image is animated */
-  isAnimated?: boolean;
+  isAnimated?: boolean
 }
 
 /**
@@ -328,21 +320,21 @@ export interface EmojiUploadValidation {
  */
 export interface EmojiUploadConstraints {
   /** Maximum file size in bytes */
-  maxFileSize: number;
+  maxFileSize: number
   /** Maximum dimensions (pixels) */
-  maxDimensions: number;
+  maxDimensions: number
   /** Minimum dimensions (pixels) */
-  minDimensions: number;
+  minDimensions: number
   /** Allowed file types */
-  allowedTypes: string[];
+  allowedTypes: string[]
   /** Allow animated images */
-  allowAnimated: boolean;
+  allowAnimated: boolean
   /** Maximum name length */
-  maxNameLength: number;
+  maxNameLength: number
   /** Minimum name length */
-  minNameLength: number;
+  minNameLength: number
   /** Name pattern (regex) */
-  namePattern: RegExp;
+  namePattern: RegExp
 }
 
 /**
@@ -357,7 +349,7 @@ export const DefaultEmojiUploadConstraints: EmojiUploadConstraints = {
   maxNameLength: 32,
   minNameLength: 2,
   namePattern: /^[a-z0-9_]+$/,
-};
+}
 
 // ============================================================================
 // Emoji Pack Types
@@ -368,39 +360,39 @@ export const DefaultEmojiUploadConstraints: EmojiUploadConstraints = {
  */
 export interface EmojiPack {
   /** Pack ID */
-  id: string;
+  id: string
   /** Pack name */
-  name: string;
+  name: string
   /** Pack description */
-  description?: string;
+  description?: string
   /** Pack thumbnail/icon */
-  iconUrl?: string;
+  iconUrl?: string
   /** Emojis in the pack */
-  emojis: CustomEmoji[];
+  emojis: CustomEmoji[]
   /** Number of emojis */
-  emojiCount: number;
+  emojiCount: number
   /** Pack creator */
-  createdBy: string;
+  createdBy: string
   /** Creator info */
-  creator?: UserBasicInfo;
+  creator?: UserBasicInfo
   /** When pack was created */
-  createdAt: Date;
+  createdAt: Date
   /** Whether pack is official/verified */
-  isOfficial?: boolean;
+  isOfficial?: boolean
   /** Whether pack is installed/enabled */
-  isInstalled?: boolean;
+  isInstalled?: boolean
   /** Install count */
-  installCount?: number;
+  installCount?: number
 }
 
 /**
  * Input for creating an emoji pack.
  */
 export interface CreateEmojiPackInput {
-  name: string;
-  description?: string;
-  icon?: File;
-  emojis: CreateCustomEmojiInput[];
+  name: string
+  description?: string
+  icon?: File
+  emojis: CreateCustomEmojiInput[]
 }
 
 // ============================================================================
@@ -411,37 +403,37 @@ export interface CreateEmojiPackInput {
  * Reaction added event.
  */
 export interface ReactionAddedEvent {
-  messageId: string;
-  channelId: string;
-  emoji: string;
-  isCustom: boolean;
-  customEmojiId?: string;
-  userId: string;
-  user: UserBasicInfo;
-  timestamp: Date;
+  messageId: string
+  channelId: string
+  emoji: string
+  isCustom: boolean
+  customEmojiId?: string
+  userId: string
+  user: UserBasicInfo
+  timestamp: Date
 }
 
 /**
  * Reaction removed event.
  */
 export interface ReactionRemovedEvent {
-  messageId: string;
-  channelId: string;
-  emoji: string;
-  isCustom: boolean;
-  customEmojiId?: string;
-  userId: string;
-  timestamp: Date;
+  messageId: string
+  channelId: string
+  emoji: string
+  isCustom: boolean
+  customEmojiId?: string
+  userId: string
+  timestamp: Date
 }
 
 /**
  * Reactions cleared event.
  */
 export interface ReactionsClearedEvent {
-  messageId: string;
-  channelId: string;
-  emoji?: string; // If specified, only this emoji was cleared
-  timestamp: Date;
+  messageId: string
+  channelId: string
+  emoji?: string // If specified, only this emoji was cleared
+  timestamp: Date
 }
 
 // ============================================================================
@@ -452,35 +444,37 @@ export interface ReactionsClearedEvent {
  * Convert emoji short name to display format.
  */
 export function formatEmojiShortName(name: string): string {
-  return `:${name.replace(/^:|:$/g, '')}:`;
+  return `:${name.replace(/^:|:$/g, '')}:`
 }
 
 /**
  * Parse emoji short name from text.
  */
 export function parseEmojiShortName(text: string): string | null {
-  const match = text.match(/^:([a-z0-9_+-]+):$/);
-  return match ? match[1] : null;
+  const match = text.match(/^:([a-z0-9_+-]+):$/)
+  return match ? match[1] : null
 }
 
 /**
  * Check if emoji name is valid.
  */
 export function isValidEmojiName(name: string): boolean {
-  return DefaultEmojiUploadConstraints.namePattern.test(name) &&
+  return (
+    DefaultEmojiUploadConstraints.namePattern.test(name) &&
     name.length >= DefaultEmojiUploadConstraints.minNameLength &&
-    name.length <= DefaultEmojiUploadConstraints.maxNameLength;
+    name.length <= DefaultEmojiUploadConstraints.maxNameLength
+  )
 }
 
 /**
  * Apply skin tone to emoji.
  */
 export function applyEmojiSkinTone(emoji: string, skinTone: SkinTone): string {
-  if (skinTone === 'default') return emoji;
-  const modifier = SkinToneModifiers[skinTone];
+  if (skinTone === 'default') return emoji
+  const modifier = SkinToneModifiers[skinTone]
   // This is a simplified implementation - real implementation would need
   // to handle multi-codepoint emojis properly
-  return emoji + modifier;
+  return emoji + modifier
 }
 
 /**
@@ -488,7 +482,7 @@ export function applyEmojiSkinTone(emoji: string, skinTone: SkinTone): string {
  */
 export function getEmojiLabel(emoji: AnyEmoji): string {
   if (emoji.type === 'standard') {
-    return emoji.emoji.shortName.replace(/_/g, ' ');
+    return emoji.emoji.shortName.replace(/_/g, ' ')
   }
-  return emoji.emoji.name.replace(/_/g, ' ');
+  return emoji.emoji.name.replace(/_/g, ' ')
 }

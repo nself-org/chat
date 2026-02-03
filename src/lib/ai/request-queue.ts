@@ -56,9 +56,7 @@ export interface ProcessResult<T = any> {
   processingTime: number
 }
 
-export type RequestProcessor<T = any, R = any> = (
-  request: QueuedRequest<T>
-) => Promise<R>
+export type RequestProcessor<T = any, R = any> = (request: QueuedRequest<T>) => Promise<R>
 
 // ============================================================================
 // Request Queue Class
@@ -226,10 +224,7 @@ export class RequestQueue<T = any, R = any> {
     const promises = requests.map(async (request) => {
       try {
         const startTime = Date.now()
-        const result = await Promise.race([
-          this.processor(request),
-          this.timeout(request.timeout),
-        ])
+        const result = await Promise.race([this.processor(request), this.timeout(request.timeout)])
         const processingTime = Date.now() - startTime
 
         await this.complete(request.id, result)
@@ -293,21 +288,15 @@ export class RequestQueue<T = any, R = any> {
   // ============================================================================
 
   async getMetrics(): Promise<QueueMetrics> {
-    const [
-      totalQueued,
-      processing,
-      completed,
-      failed,
-      processingTimes,
-      queuedByPriority,
-    ] = await Promise.all([
-      this.getQueueLength(),
-      this.getProcessingCount(),
-      this.getCompletedCount(),
-      this.getFailedCount(),
-      this.getProcessingTimes(),
-      this.getQueuedByPriority(),
-    ])
+    const [totalQueued, processing, completed, failed, processingTimes, queuedByPriority] =
+      await Promise.all([
+        this.getQueueLength(),
+        this.getProcessingCount(),
+        this.getCompletedCount(),
+        this.getFailedCount(),
+        this.getProcessingTimes(),
+        this.getQueuedByPriority(),
+      ])
 
     const averageProcessingTime =
       processingTimes.length > 0
@@ -503,9 +492,7 @@ export class RequestQueue<T = any, R = any> {
   // ============================================================================
 
   private timeout(ms: number): Promise<never> {
-    return new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Request timeout')), ms)
-    )
+    return new Promise((_, reject) => setTimeout(() => reject(new Error('Request timeout')), ms))
   }
 
   private sleep(ms: number): Promise<void> {

@@ -21,59 +21,61 @@ export interface MediaInfoProps {
 export function MediaInfo({ item, className }: MediaInfoProps) {
   return (
     <div className={cn('p-4 text-sm text-white', className)}>
-      <h3 className="font-semibold text-lg mb-4">File Information</h3>
+      <h3 className="mb-4 text-lg font-semibold">File Information</h3>
 
       <div className="space-y-3">
         {/* File name */}
         <div>
-          <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Name</p>
+          <p className="mb-1 text-xs uppercase tracking-wide text-white/60">Name</p>
           <p className="break-all">{item.fileName}</p>
         </div>
 
         {/* File type */}
         <div>
-          <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Type</p>
+          <p className="mb-1 text-xs uppercase tracking-wide text-white/60">Type</p>
           <p>{item.mimeType}</p>
         </div>
 
         {/* File size */}
         <div>
-          <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Size</p>
+          <p className="mb-1 text-xs uppercase tracking-wide text-white/60">Size</p>
           <p>{formatFileSize(item.fileSize)}</p>
         </div>
 
         {/* Dimensions (for images/videos) */}
         {item.metadata.dimensions && (
           <div>
-            <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Dimensions</p>
-            <p>{item.metadata.dimensions.width} x {item.metadata.dimensions.height} px</p>
+            <p className="mb-1 text-xs uppercase tracking-wide text-white/60">Dimensions</p>
+            <p>
+              {item.metadata.dimensions.width} x {item.metadata.dimensions.height} px
+            </p>
           </div>
         )}
 
         {/* Duration (for audio/video) */}
         {item.metadata.duration && (
           <div>
-            <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Duration</p>
+            <p className="mb-1 text-xs uppercase tracking-wide text-white/60">Duration</p>
             <p>{formatDuration(item.metadata.duration)}</p>
           </div>
         )}
 
         {/* Uploaded by */}
         <div>
-          <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Uploaded by</p>
+          <p className="mb-1 text-xs uppercase tracking-wide text-white/60">Uploaded by</p>
           <p>{item.uploadedBy.displayName}</p>
         </div>
 
         {/* Upload date */}
         <div>
-          <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Uploaded</p>
+          <p className="mb-1 text-xs uppercase tracking-wide text-white/60">Uploaded</p>
           <p>{getRelativeTime(item.createdAt)}</p>
         </div>
 
         {/* Channel/DM info */}
         {item.channelName && (
           <div>
-            <p className="text-white/60 text-xs uppercase tracking-wide mb-1">Shared in</p>
+            <p className="mb-1 text-xs uppercase tracking-wide text-white/60">Shared in</p>
             <p>#{item.channelName}</p>
           </div>
         )}

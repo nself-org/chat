@@ -28,9 +28,7 @@ export function InviteUsers({ defaultTab = 'email' }: InviteUsersProps) {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold">Invite Users</h1>
-          <p className="text-muted-foreground">
-            Invite new users to join your workspace
-          </p>
+          <p className="text-muted-foreground">Invite new users to join your workspace</p>
         </div>
       </div>
 
@@ -42,9 +40,7 @@ export function InviteUsers({ defaultTab = 'email' }: InviteUsersProps) {
             <CardTitle className="text-2xl">{pendingInvitesCount}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xs text-muted-foreground">
-              Awaiting acceptance
-            </div>
+            <div className="text-xs text-muted-foreground">Awaiting acceptance</div>
           </CardContent>
         </Card>
         <Card>
@@ -53,9 +49,7 @@ export function InviteUsers({ defaultTab = 'email' }: InviteUsersProps) {
             <CardTitle className="text-2xl">{activeLinksCount}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xs text-muted-foreground">
-              Invite links active
-            </div>
+            <div className="text-xs text-muted-foreground">Invite links active</div>
           </CardContent>
         </Card>
         <Card>
@@ -64,9 +58,7 @@ export function InviteUsers({ defaultTab = 'email' }: InviteUsersProps) {
             <CardTitle className="text-2xl">{invitesTotal}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-xs text-muted-foreground">
-              All time
-            </div>
+            <div className="text-xs text-muted-foreground">All time</div>
           </CardContent>
         </Card>
       </div>

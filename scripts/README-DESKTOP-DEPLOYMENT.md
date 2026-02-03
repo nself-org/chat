@@ -10,6 +10,7 @@ This directory contains production-ready deployment scripts for both Electron an
 - **`deploy-desktop-tauri.sh`** - Tauri deployment automation
 
 Both scripts provide complete automation of:
+
 - ✅ Dependency checking
 - ✅ Frontend building (Next.js)
 - ✅ Application bundling
@@ -53,24 +54,24 @@ Both scripts provide complete automation of:
 
 Both scripts support these options:
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| `--platform <platform>` | Target platform(s) | `--platform mac` |
-| `--env <environment>` | Build environment | `--env prod` |
-| `--version <version>` | Override version | `--version 1.2.3` |
-| `--clean` | Clean before build | `--clean` |
-| `--no-sign` | Skip code signing | `--no-sign` |
-| `--no-publish` | Skip publishing | `--no-publish` |
-| `--draft` | Create draft release | `--draft` |
-| `--prerelease` | Mark as pre-release | `--prerelease` |
-| `--help` | Show help message | `--help` |
+| Option                  | Description          | Example           |
+| ----------------------- | -------------------- | ----------------- |
+| `--platform <platform>` | Target platform(s)   | `--platform mac`  |
+| `--env <environment>`   | Build environment    | `--env prod`      |
+| `--version <version>`   | Override version     | `--version 1.2.3` |
+| `--clean`               | Clean before build   | `--clean`         |
+| `--no-sign`             | Skip code signing    | `--no-sign`       |
+| `--no-publish`          | Skip publishing      | `--no-publish`    |
+| `--draft`               | Create draft release | `--draft`         |
+| `--prerelease`          | Mark as pre-release  | `--prerelease`    |
+| `--help`                | Show help message    | `--help`          |
 
 ### Tauri-Specific Options
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| `--target <target>` | Rust target triple | `--target aarch64-apple-darwin` |
-| `--debug` | Build in debug mode | `--debug` |
+| Option              | Description         | Example                         |
+| ------------------- | ------------------- | ------------------------------- |
+| `--target <target>` | Rust target triple  | `--target aarch64-apple-darwin` |
+| `--debug`           | Build in debug mode | `--debug`                       |
 
 ### Platform Values
 
@@ -90,6 +91,7 @@ Both scripts support these options:
 ### System Requirements
 
 **All Platforms:**
+
 ```bash
 node >= 20.0.0
 npm >= 9.0.0
@@ -97,6 +99,7 @@ git >= 2.0.0
 ```
 
 **Electron:**
+
 ```bash
 # macOS
 xcode-select --install
@@ -109,6 +112,7 @@ xcode-select --install
 ```
 
 **Tauri:**
+
 ```bash
 # Install Rust
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
@@ -325,6 +329,7 @@ gpg --detach-sign --armor package.deb
 ```
 
 For detailed setup instructions, see:
+
 - [Desktop Deployment Guide](../docs/guides/deployment/desktop-deployment.md)
 - [Code Signing Guide](../docs/guides/deployment/code-signing.md)
 
@@ -335,17 +340,20 @@ For detailed setup instructions, see:
 Artifacts are generated in `dist-electron/`:
 
 **macOS:**
+
 - `nchat-{version}-mac-x64.dmg` - Intel installer
 - `nchat-{version}-mac-arm64.dmg` - Apple Silicon installer
 - `nchat-{version}-mac-x64.zip` - Intel portable
 - `nchat-{version}-mac-arm64.zip` - Apple Silicon portable
 
 **Windows:**
+
 - `nchat-{version}-win-x64.exe` - 64-bit installer (NSIS)
 - `nchat-{version}-win-ia32.exe` - 32-bit installer (NSIS)
 - `nchat-{version}-win-x64-portable.exe` - Portable executable
 
 **Linux:**
+
 - `nchat-{version}-linux-x64.AppImage` - Universal Linux app
 - `nchat-{version}-linux-x64.deb` - Debian/Ubuntu package
 - `nchat-{version}-linux-x64.rpm` - Fedora/RHEL package
@@ -356,15 +364,18 @@ Artifacts are generated in `dist-electron/`:
 Artifacts are generated in `platforms/tauri/src-tauri/target/release/bundle/`:
 
 **macOS:**
+
 - `dmg/nchat_{version}_x64.dmg` - Intel installer
 - `dmg/nchat_{version}_aarch64.dmg` - Apple Silicon installer
 - `macos/nchat.app` - Application bundle
 
 **Windows:**
+
 - `nsis/nchat_{version}_x64-setup.exe` - NSIS installer
 - `msi/nchat_{version}_x64_en-US.msi` - MSI installer
 
 **Linux:**
+
 - `deb/nchat_{version}_amd64.deb` - Debian package
 - `appimage/nchat_{version}_amd64.AppImage` - AppImage
 
@@ -530,22 +541,26 @@ jobs:
 ## Best Practices
 
 1. **Always test locally first**
+
    ```bash
    ./scripts/deploy-desktop-electron.sh --no-sign --no-publish
    ```
 
 2. **Use version tags**
+
    ```bash
    git tag v1.2.3
    ./scripts/deploy-desktop-electron.sh --env prod --version 1.2.3
    ```
 
 3. **Enable clean builds for releases**
+
    ```bash
    ./scripts/deploy-desktop-electron.sh --env prod --clean
    ```
 
 4. **Create draft releases for review**
+
    ```bash
    ./scripts/deploy-desktop-electron.sh --env prod --draft
    # Review on GitHub, then publish

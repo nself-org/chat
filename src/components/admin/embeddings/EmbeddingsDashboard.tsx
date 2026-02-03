@@ -9,13 +9,14 @@
  * - Bulk operations
  */
 
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
+import React, { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import { logger } from '@/lib/logger'
 import {
   Database,
   Play,
@@ -27,7 +28,7 @@ import {
   AlertCircle,
   Zap,
   DollarSign,
-} from 'lucide-react';
+} from 'lucide-react'
 
 // ========================================
 // Types
@@ -35,58 +36,58 @@ import {
 
 interface EmbeddingStats {
   coverage: {
-    totalMessages: number;
-    messagesWithEmbeddings: number;
-    coveragePercentage: number;
-    pendingEmbeddings: number;
-    failedEmbeddings: number;
-    oldestUnembeddedMessage?: string;
-  };
+    totalMessages: number
+    messagesWithEmbeddings: number
+    coveragePercentage: number
+    pendingEmbeddings: number
+    failedEmbeddings: number
+    oldestUnembeddedMessage?: string
+  }
   indexHealth: {
-    indexName: string;
-    indexSize: string;
-    totalVectors: number;
-    indexEfficiency: number;
-  };
+    indexName: string
+    indexSize: string
+    totalVectors: number
+    indexEfficiency: number
+  }
   performance: {
-    totalEmbeddings: number;
-    totalTokens: number;
-    totalCost: string;
-    avgCostPerEmbedding: string;
-    cacheHitRate: string;
-    errorRate: string;
-  };
+    totalEmbeddings: number
+    totalTokens: number
+    totalCost: string
+    avgCostPerEmbedding: string
+    cacheHitRate: string
+    errorRate: string
+  }
   queue: {
-    pending: number;
-    processing: number;
-    failed: number;
-  };
+    pending: number
+    processing: number
+    failed: number
+  }
   cache: {
-    totalEntries: number;
-    totalUsage: number;
-    recentlyUsed: number;
-    avgUsagePerEntry: number;
-  };
+    totalEntries: number
+    totalUsage: number
+    recentlyUsed: number
+    avgUsagePerEntry: number
+  }
   dailyStats: Array<{
-    date: string;
-    total_embeddings: number;
-    estimated_cost: number;
-  }>;
+    date: string
+    total_embeddings: number
+    estimated_cost: number
+  }>
 }
 
 interface Job {
-  id: string;
-  job_type: string;
-  status: string;
-  total_messages: number;
-  processed_messages: number;
-  successful_embeddings: number;
-  failed_embeddings: number;
-  started_at?: string;
-  completed_at?: string;
-  created_at: string;
-  percentage?: number;
-  estimatedTimeRemaining?: number;
+  id: string
+  job_type: string
+  status: string
+  total_messages: number
+  processed_messages: number
+  successful_embeddings: number
+  failed_embeddings: number
+  started_at?: string
+  completed_at?: string
+  created_at: string
+  percentage?: number
+  estimatedTimeRemaining?: number
 }
 
 // ========================================
@@ -94,86 +95,84 @@ interface Job {
 // ========================================
 
 export function EmbeddingsDashboard() {
-  const [stats, setStats] = useState<EmbeddingStats | null>(null);
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [activeJob, setActiveJob] = useState<Job | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [stats, setStats] = useState<EmbeddingStats | null>(null)
+  const [jobs, setJobs] = useState<Job[]>([])
+  const [activeJob, setActiveJob] = useState<Job | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Fetch stats on mount and every 30 seconds
   useEffect(() => {
-    fetchStats();
-    fetchJobs();
+    fetchStats()
+    fetchJobs()
 
     const interval = setInterval(() => {
-      fetchStats();
-      fetchJobs();
-    }, 30000);
+      fetchStats()
+      fetchJobs()
+    }, 30000)
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => clearInterval(interval)
+  }, [])
 
   // Poll active job every 5 seconds
   useEffect(() => {
     if (!activeJob || activeJob.status !== 'running') {
-      return;
+      return
     }
 
     const interval = setInterval(() => {
-      fetchJobStatus(activeJob.id);
-    }, 5000);
+      fetchJobStatus(activeJob.id)
+    }, 5000)
 
-    return () => clearInterval(interval);
-  }, [activeJob]);
+    return () => clearInterval(interval)
+  }, [activeJob])
 
   const fetchStats = async () => {
     try {
-      const response = await fetch('/api/admin/embeddings/stats');
-      if (!response.ok) throw new Error('Failed to fetch stats');
-      const data = await response.json();
-      setStats(data);
-      setError(null);
+      const response = await fetch('/api/admin/embeddings/stats')
+      if (!response.ok) throw new Error('Failed to fetch stats')
+      const data = await response.json()
+      setStats(data)
+      setError(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load stats');
+      setError(err instanceof Error ? err.message : 'Failed to load stats')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const fetchJobs = async () => {
     try {
-      const response = await fetch('/api/admin/embeddings/status?limit=5');
-      if (!response.ok) throw new Error('Failed to fetch jobs');
-      const data = await response.json();
-      setJobs(data.jobs);
+      const response = await fetch('/api/admin/embeddings/status?limit=5')
+      if (!response.ok) throw new Error('Failed to fetch jobs')
+      const data = await response.json()
+      setJobs(data.jobs)
 
       // Update active job if running
-      const running = data.jobs.find((j: Job) => j.status === 'running');
+      const running = data.jobs.find((j: Job) => j.status === 'running')
       if (running) {
-        setActiveJob(running);
+        setActiveJob(running)
       } else if (activeJob?.status === 'running') {
-        setActiveJob(null);
+        setActiveJob(null)
       }
     } catch (err) {
-      console.error('Failed to fetch jobs:', err);
+      logger.error('Failed to fetch jobs:',  err)
     }
-  };
+  }
 
   const fetchJobStatus = async (jobId: string) => {
     try {
-      const response = await fetch(`/api/admin/embeddings/status?jobId=${jobId}`);
-      if (!response.ok) throw new Error('Failed to fetch job status');
-      const data = await response.json();
-      setActiveJob(data.job);
+      const response = await fetch(`/api/admin/embeddings/status?jobId=${jobId}`)
+      if (!response.ok) throw new Error('Failed to fetch job status')
+      const data = await response.json()
+      setActiveJob(data.job)
 
       // Update in jobs list
-      setJobs((prev) =>
-        prev.map((j) => (j.id === jobId ? data.job : j))
-      );
+      setJobs((prev) => prev.map((j) => (j.id === jobId ? data.job : j)))
     } catch (err) {
-      console.error('Failed to fetch job status:', err);
+      logger.error('Failed to fetch job status:',  err)
     }
-  };
+  }
 
   const startEmbeddingGeneration = async (type: 'initial' | 'repair') => {
     try {
@@ -181,17 +180,17 @@ export function EmbeddingsDashboard() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type }),
-      });
+      })
 
-      if (!response.ok) throw new Error('Failed to start generation');
+      if (!response.ok) throw new Error('Failed to start generation')
 
-      const data = await response.json();
-      await fetchJobStatus(data.jobId);
-      await fetchJobs();
+      const data = await response.json()
+      await fetchJobStatus(data.jobId)
+      await fetchJobs()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to start generation');
+      setError(err instanceof Error ? err.message : 'Failed to start generation')
     }
-  };
+  }
 
   const cancelJob = async (jobId: string) => {
     try {
@@ -199,28 +198,28 @@ export function EmbeddingsDashboard() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ jobId }),
-      });
+      })
 
-      if (!response.ok) throw new Error('Failed to cancel job');
+      if (!response.ok) throw new Error('Failed to cancel job')
 
-      await fetchJobs();
+      await fetchJobs()
       if (activeJob?.id === jobId) {
-        setActiveJob(null);
+        setActiveJob(null)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to cancel job');
+      setError(err instanceof Error ? err.message : 'Failed to cancel job')
     }
-  };
+  }
 
   if (loading) {
     return (
       <div className="flex items-center justify-center p-12">
         <div className="text-center">
-          <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-muted-foreground" />
+          <RefreshCw className="mx-auto mb-4 h-8 w-8 animate-spin text-muted-foreground" />
           <p className="text-sm text-muted-foreground">Loading embeddings data...</p>
         </div>
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -235,10 +234,10 @@ export function EmbeddingsDashboard() {
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
-  if (!stats) return null;
+  if (!stats) return null
 
   return (
     <div className="space-y-6 p-6">
@@ -251,11 +250,8 @@ export function EmbeddingsDashboard() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button
-            onClick={() => startEmbeddingGeneration('initial')}
-            disabled={!!activeJob}
-          >
-            <Play className="h-4 w-4 mr-2" />
+          <Button onClick={() => startEmbeddingGeneration('initial')} disabled={!!activeJob}>
+            <Play className="mr-2 h-4 w-4" />
             Generate All
           </Button>
           <Button
@@ -263,7 +259,7 @@ export function EmbeddingsDashboard() {
             onClick={() => startEmbeddingGeneration('repair')}
             disabled={!!activeJob}
           >
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="mr-2 h-4 w-4" />
             Retry Failed
           </Button>
         </div>
@@ -275,21 +271,17 @@ export function EmbeddingsDashboard() {
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
-                <Zap className="h-5 w-5 text-primary animate-pulse" />
+                <Zap className="h-5 w-5 animate-pulse text-primary" />
                 Active Job: {activeJob.job_type}
               </CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => cancelJob(activeJob.id)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => cancelJob(activeJob.id)}>
                 Cancel
               </Button>
             </div>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <div className="flex justify-between mb-2 text-sm">
+              <div className="mb-2 flex justify-between text-sm">
                 <span>
                   {activeJob.processed_messages} / {activeJob.total_messages} messages
                 </span>
@@ -306,9 +298,7 @@ export function EmbeddingsDashboard() {
               </div>
               <div>
                 <p className="text-muted-foreground">Failed</p>
-                <p className="text-lg font-semibold text-red-600">
-                  {activeJob.failed_embeddings}
-                </p>
+                <p className="text-lg font-semibold text-red-600">{activeJob.failed_embeddings}</p>
               </div>
               <div>
                 <p className="text-muted-foreground">Est. Time Remaining</p>
@@ -331,9 +321,7 @@ export function EmbeddingsDashboard() {
             <Database className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {stats.coverage.coveragePercentage}%
-            </div>
+            <div className="text-2xl font-bold">{stats.coverage.coveragePercentage}%</div>
             <p className="text-xs text-muted-foreground">
               {stats.coverage.messagesWithEmbeddings.toLocaleString()} of{' '}
               {stats.coverage.totalMessages.toLocaleString()} messages
@@ -408,7 +396,7 @@ export function EmbeddingsDashboard() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Index Name</p>
-                <p className="text-sm font-mono">{stats.indexHealth.indexName}</p>
+                <p className="font-mono text-sm">{stats.indexHealth.indexName}</p>
               </div>
             </div>
           </CardContent>
@@ -423,9 +411,7 @@ export function EmbeddingsDashboard() {
           <CardContent>
             <div className="space-y-3">
               {jobs.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">
-                  No jobs found
-                </p>
+                <p className="py-4 text-center text-sm text-muted-foreground">No jobs found</p>
               ) : (
                 jobs.map((job) => (
                   <div
@@ -434,9 +420,7 @@ export function EmbeddingsDashboard() {
                   >
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <Badge variant={getJobStatusVariant(job.status)}>
-                          {job.status}
-                        </Badge>
+                        <Badge variant={getJobStatusVariant(job.status)}>{job.status}</Badge>
                         <span className="text-sm font-medium">{job.job_type}</span>
                       </div>
                       <p className="text-xs text-muted-foreground">
@@ -454,7 +438,7 @@ export function EmbeddingsDashboard() {
         </Card>
       </div>
     </div>
-  );
+  )
 }
 
 // ========================================
@@ -464,45 +448,45 @@ export function EmbeddingsDashboard() {
 function getJobStatusVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
   switch (status) {
     case 'completed':
-      return 'default';
+      return 'default'
     case 'running':
-      return 'secondary';
+      return 'secondary'
     case 'failed':
-      return 'destructive';
+      return 'destructive'
     default:
-      return 'outline';
+      return 'outline'
   }
 }
 
 function formatDuration(ms: number): string {
-  const seconds = Math.floor(ms / 1000);
-  const minutes = Math.floor(seconds / 60);
-  const hours = Math.floor(minutes / 60);
+  const seconds = Math.floor(ms / 1000)
+  const minutes = Math.floor(seconds / 60)
+  const hours = Math.floor(minutes / 60)
 
   if (hours > 0) {
-    return `${hours}h ${minutes % 60}m`;
+    return `${hours}h ${minutes % 60}m`
   } else if (minutes > 0) {
-    return `${minutes}m ${seconds % 60}s`;
+    return `${minutes}m ${seconds % 60}s`
   } else {
-    return `${seconds}s`;
+    return `${seconds}s`
   }
 }
 
 function formatRelativeTime(dateString: string): string {
-  const date = new Date(dateString);
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / 60000);
-  const diffHours = Math.floor(diffMins / 60);
-  const diffDays = Math.floor(diffHours / 24);
+  const date = new Date(dateString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / 60000)
+  const diffHours = Math.floor(diffMins / 60)
+  const diffDays = Math.floor(diffHours / 24)
 
   if (diffDays > 0) {
-    return `${diffDays}d ago`;
+    return `${diffDays}d ago`
   } else if (diffHours > 0) {
-    return `${diffHours}h ago`;
+    return `${diffHours}h ago`
   } else if (diffMins > 0) {
-    return `${diffMins}m ago`;
+    return `${diffMins}m ago`
   } else {
-    return 'Just now';
+    return 'Just now'
   }
 }

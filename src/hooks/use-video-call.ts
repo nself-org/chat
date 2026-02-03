@@ -180,9 +180,7 @@ export function useVideoCall(options: UseVideoCallOptions): UseVideoCallReturn {
   const isRinging = activeCall?.state === 'ringing' || incomingCalls.length > 0
   const hasIncomingCall = incomingCalls.length > 0
   const localStream = activeCall?.localStream ?? null
-  const remoteStreams = activeCall
-    ? Array.from(activeCall.remoteStreams.values())
-    : []
+  const remoteStreams = activeCall ? Array.from(activeCall.remoteStreams.values()) : []
 
   // ==========================================================================
   // Cleanup
@@ -545,7 +543,14 @@ export function useVideoCall(options: UseVideoCallOptions): UseVideoCallReturn {
 
       onCallStarted?.(callId)
     },
-    [incomingCalls, acceptCallAction, userId, initializeManagers, setupPeerConnection, onCallStarted]
+    [
+      incomingCalls,
+      acceptCallAction,
+      userId,
+      initializeManagers,
+      setupPeerConnection,
+      onCallStarted,
+    ]
   )
 
   const declineCall = useCallback(
@@ -607,16 +612,13 @@ export function useVideoCall(options: UseVideoCallOptions): UseVideoCallReturn {
     [activeCall, userId, setLocalVideoEnabled]
   )
 
-  const setVideoQuality = useCallback(
-    async (quality: VideoQuality): Promise<void> => {
-      if (!mediaManagerRef.current) return
+  const setVideoQuality = useCallback(async (quality: VideoQuality): Promise<void> => {
+    if (!mediaManagerRef.current) return
 
-      setVideoQualityState(quality)
-      const constraints = VIDEO_QUALITY_CONSTRAINTS[quality]
-      await mediaManagerRef.current.applyVideoConstraints(constraints)
-    },
-    []
-  )
+    setVideoQualityState(quality)
+    const constraints = VIDEO_QUALITY_CONSTRAINTS[quality]
+    await mediaManagerRef.current.applyVideoConstraints(constraints)
+  }, [])
 
   // Screen sharing
   const startScreenShare = useCallback(async (): Promise<void> => {

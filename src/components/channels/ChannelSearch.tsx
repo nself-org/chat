@@ -2,15 +2,7 @@
 
 import * as React from 'react'
 import { useState, useCallback, useMemo, useRef, useEffect } from 'react'
-import {
-  Search,
-  X,
-  Hash,
-  Lock,
-  Clock,
-  Sparkles,
-  ArrowRight,
-} from 'lucide-react'
+import { Search, X, Hash, Lock, Clock, Sparkles, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -24,11 +16,7 @@ import {
   CommandList,
   CommandSeparator,
 } from '@/components/ui/command'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   searchChannels,
   getSearchSuggestions,
@@ -184,7 +172,7 @@ export function ChannelSearch({
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               ref={inputRef}
               type="text"
@@ -199,7 +187,7 @@ export function ChannelSearch({
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
                 onClick={handleClear}
               >
                 <X className="h-4 w-4" />
@@ -244,14 +232,14 @@ export function ChannelSearch({
                     <CommandItem
                       key={result.channel.id}
                       onSelect={() => handleResultSelect(result.channel)}
-                      className="flex items-center gap-2 cursor-pointer"
+                      className="flex cursor-pointer items-center gap-2"
                     >
                       {result.channel.type === 'private' ? (
                         <Lock className="h-4 w-4 text-muted-foreground" />
                       ) : (
                         <Hash className="h-4 w-4 text-muted-foreground" />
                       )}
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="font-medium">
                           {renderHighlightedText(
                             result.channel.name,
@@ -259,10 +247,11 @@ export function ChannelSearch({
                           )}
                         </div>
                         {result.channel.description && (
-                          <div className="text-sm text-muted-foreground truncate">
+                          <div className="truncate text-sm text-muted-foreground">
                             {renderHighlightedText(
                               result.channel.description,
-                              result.highlights.find((h) => h.field === 'description')?.matches || []
+                              result.highlights.find((h) => h.field === 'description')?.matches ||
+                                []
                             )}
                           </div>
                         )}
@@ -280,7 +269,7 @@ export function ChannelSearch({
                     <CommandItem
                       key={`${suggestion.type}-${suggestion.value}-${index}`}
                       onSelect={() => handleSuggestionSelect(suggestion)}
-                      className="flex items-center gap-2 cursor-pointer"
+                      className="flex cursor-pointer items-center gap-2"
                     >
                       {suggestion.type === 'channel' ? (
                         <Hash className="h-4 w-4 text-muted-foreground" />
@@ -295,9 +284,7 @@ export function ChannelSearch({
 
               {/* Empty state */}
               {query && searchResults.length === 0 && (
-                <CommandEmpty>
-                  No channels found for &quot;{query}&quot;
-                </CommandEmpty>
+                <CommandEmpty>No channels found for &quot;{query}&quot;</CommandEmpty>
               )}
 
               {/* Search action */}
@@ -307,7 +294,7 @@ export function ChannelSearch({
                   <CommandGroup>
                     <CommandItem
                       onSelect={handleSearch}
-                      className="flex items-center gap-2 cursor-pointer"
+                      className="flex cursor-pointer items-center gap-2"
                     >
                       <Search className="h-4 w-4" />
                       <span>Search for &quot;{query}&quot;</span>
@@ -339,7 +326,7 @@ function renderHighlightedText(
     <span>
       {segments.map((segment, index) =>
         segment.highlighted ? (
-          <mark key={index} className="bg-yellow-200 dark:bg-yellow-800 rounded px-0.5">
+          <mark key={index} className="rounded bg-yellow-200 px-0.5 dark:bg-yellow-800">
             {segment.text}
           </mark>
         ) : (

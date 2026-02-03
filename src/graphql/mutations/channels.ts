@@ -144,15 +144,8 @@ export const LEAVE_CHANNEL = gql`
 export const ADD_CHANNEL_MEMBER = gql`
   mutation AddChannelMember($channelId: uuid!, $userId: uuid!, $role: String) {
     insert_nchat_channel_members_one(
-      object: {
-        channel_id: $channelId
-        user_id: $userId
-        role: $role
-      }
-      on_conflict: {
-        constraint: channel_members_pkey
-        update_columns: [role]
-      }
+      object: { channel_id: $channelId, user_id: $userId, role: $role }
+      on_conflict: { constraint: channel_members_pkey, update_columns: [role] }
     ) {
       channel_id
       user_id
@@ -199,10 +192,7 @@ export const UPDATE_MEMBER_ROLE = gql`
 
 export const TRANSFER_OWNERSHIP = gql`
   mutation TransferOwnership($channelId: uuid!, $newOwnerId: uuid!) {
-    update_nchat_channels_by_pk(
-      pk_columns: { id: $channelId }
-      _set: { owner_id: $newOwnerId }
-    ) {
+    update_nchat_channels_by_pk(pk_columns: { id: $channelId }, _set: { owner_id: $newOwnerId }) {
       id
       owner_id
       owner {
@@ -300,10 +290,7 @@ export const UPDATE_CHANNEL_NOTIFICATIONS = gql`
 
 export const UPDATE_CHANNEL_PRIVACY = gql`
   mutation UpdateChannelPrivacy($channelId: uuid!, $isPrivate: Boolean!) {
-    update_nchat_channels_by_pk(
-      pk_columns: { id: $channelId }
-      _set: { is_private: $isPrivate }
-    ) {
+    update_nchat_channels_by_pk(pk_columns: { id: $channelId }, _set: { is_private: $isPrivate }) {
       id
       is_private
       updated_at
@@ -319,10 +306,7 @@ export const ADD_MULTIPLE_MEMBERS = gql`
   mutation AddMultipleMembers($members: [nchat_channel_members_insert_input!]!) {
     insert_nchat_channel_members(
       objects: $members
-      on_conflict: {
-        constraint: channel_members_pkey
-        update_columns: [role]
-      }
+      on_conflict: { constraint: channel_members_pkey, update_columns: [role] }
     ) {
       affected_rows
       returning {
@@ -342,10 +326,7 @@ export const ADD_MULTIPLE_MEMBERS = gql`
 export const REMOVE_MULTIPLE_MEMBERS = gql`
   mutation RemoveMultipleMembers($channelId: uuid!, $userIds: [uuid!]!) {
     delete_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _in: $userIds }
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _in: $userIds } }
     ) {
       affected_rows
     }

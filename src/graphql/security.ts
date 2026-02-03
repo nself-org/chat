@@ -145,10 +145,7 @@ export const LOGIN_ATTEMPT_FRAGMENT = gql`
 export const GET_SESSIONS = gql`
   query GetSessions($userId: uuid!) {
     nchat_user_sessions(
-      where: {
-        user_id: { _eq: $userId }
-        expires_at: { _gt: "now()" }
-      }
+      where: { user_id: { _eq: $userId }, expires_at: { _gt: "now()" } }
       order_by: { last_active_at: desc }
     ) {
       ...SessionFragment
@@ -212,10 +209,7 @@ export const GET_SECURITY_SETTINGS = gql`
 export const GET_BACKUP_CODES_COUNT = gql`
   query GetBackupCodesCount($userId: uuid!) {
     nchat_backup_codes_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        used_at: { _is_null: true }
-      }
+      where: { user_id: { _eq: $userId }, used_at: { _is_null: true } }
     ) {
       aggregate {
         count
@@ -236,11 +230,7 @@ export const CHANGE_PASSWORD = gql`
   mutation ChangePassword($userId: uuid!, $passwordHash: String!) {
     update_nchat_users_by_pk(
       pk_columns: { id: $userId }
-      _set: {
-        password_hash: $passwordHash
-        password_changed_at: "now()"
-        updated_at: "now()"
-      }
+      _set: { password_hash: $passwordHash, password_changed_at: "now()", updated_at: "now()" }
     ) {
       id
       password_changed_at
@@ -354,10 +344,7 @@ export const REVOKE_SESSION = gql`
 export const REVOKE_ALL_SESSIONS = gql`
   mutation RevokeAllSessions($userId: uuid!, $currentSessionId: uuid!) {
     delete_nchat_user_sessions(
-      where: {
-        user_id: { _eq: $userId }
-        id: { _neq: $currentSessionId }
-      }
+      where: { user_id: { _eq: $userId }, id: { _neq: $currentSessionId } }
     ) {
       affected_rows
     }
@@ -467,10 +454,7 @@ export const UPDATE_SECURITY_SETTINGS = gql`
 export const SESSIONS_SUBSCRIPTION = gql`
   subscription SessionsSubscription($userId: uuid!) {
     nchat_user_sessions(
-      where: {
-        user_id: { _eq: $userId }
-        expires_at: { _gt: "now()" }
-      }
+      where: { user_id: { _eq: $userId }, expires_at: { _gt: "now()" } }
       order_by: { last_active_at: desc }
     ) {
       ...SessionFragment

@@ -38,12 +38,7 @@ export type {
 // Template-specific data transformers
 // -------------------------------------------------------------------------------
 
-import {
-  demoUsers,
-  demoChannels,
-  demoMessages,
-  getDemoUser,
-} from '@/lib/demo/sample-data'
+import { demoUsers, demoChannels, demoMessages, getDemoUser } from '@/lib/demo/sample-data'
 import type { TemplateId } from '@/templates/types'
 
 /**
@@ -212,7 +207,7 @@ export function getTelegramChats() {
       id: channel.id,
       name: channel.name,
       avatar: undefined,
-      type: channel.type === 'direct' ? 'private' as const : 'group' as const,
+      type: channel.type === 'direct' ? ('private' as const) : ('group' as const),
       lastMessage: lastMessage
         ? {
             content: lastMessage.content.slice(0, 50),
@@ -241,7 +236,7 @@ export function getWhatsAppChats() {
       id: channel.id,
       name: channel.name,
       avatar: undefined,
-      type: channel.type === 'direct' ? 'private' as const : 'group' as const,
+      type: channel.type === 'direct' ? ('private' as const) : ('group' as const),
       lastMessage: lastMessage
         ? {
             content: lastMessage.content.slice(0, 50),

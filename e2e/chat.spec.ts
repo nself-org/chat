@@ -189,9 +189,7 @@ test.describe('Channel Navigation', () => {
   })
 
   test('should highlight active channel', async ({ page }) => {
-    const channels = page.locator(
-      '[data-testid="channel-item"], .channel-item, a[href*="/chat/"]'
-    )
+    const channels = page.locator('[data-testid="channel-item"], .channel-item, a[href*="/chat/"]')
 
     const count = await channels.count()
     if (count > 0) {
@@ -278,7 +276,10 @@ test.describe('Thread Interaction', () => {
         '[data-testid="reply-button"], button[aria-label*="reply"], button:has-text("Reply")'
       )
 
-      const isVisible = await replyButton.first().isVisible().catch(() => false)
+      const isVisible = await replyButton
+        .first()
+        .isVisible()
+        .catch(() => false)
       expect(typeof isVisible).toBe('boolean')
     }
   })
@@ -454,9 +455,7 @@ test.describe('Message Actions', () => {
         await page.waitForTimeout(300)
 
         // Confirmation dialog should appear
-        const confirmDialog = page.locator(
-          '[role="alertdialog"], [role="dialog"], .confirm-dialog'
-        )
+        const confirmDialog = page.locator('[role="alertdialog"], [role="dialog"], .confirm-dialog')
 
         if (await confirmDialog.isVisible()) {
           // Cancel to avoid actually deleting

@@ -135,7 +135,10 @@ export function calculateWordDiff(oldText: string, newText: string): WordDiff[] 
         result.push({ value: oldTokens[oldIdx], type: 'removed' })
         oldIdx++
       }
-      if (newIdx < newTokens.length && (oldIdx >= oldTokens.length || oldTokens[oldIdx - 1] !== newTokens[newIdx])) {
+      if (
+        newIdx < newTokens.length &&
+        (oldIdx >= oldTokens.length || oldTokens[oldIdx - 1] !== newTokens[newIdx])
+      ) {
         // Only add if not already covered
         if (result.length === 0 || result[result.length - 1].value !== newTokens[newIdx]) {
           result.push({ value: newTokens[newIdx], type: 'added' })
@@ -245,10 +248,7 @@ function generateDiffSummary(charsAdded: number, charsRemoved: number): string {
 /**
  * Calculate character-level diff for more precise highlighting.
  */
-export function calculateCharDiff(
-  oldText: string,
-  newText: string
-): DiffSegment[] {
+export function calculateCharDiff(oldText: string, newText: string): DiffSegment[] {
   const oldChars = oldText.split('')
   const newChars = newText.split('')
   const common = lcs(oldChars, newChars)
@@ -329,10 +329,7 @@ export function hasChanges(oldText: string, newText: string): boolean {
 /**
  * Get percentage of text changed.
  */
-export function getChangePercentage(
-  oldText: string,
-  newText: string
-): number {
+export function getChangePercentage(oldText: string, newText: string): number {
   if (oldText === newText) return 0
   if (oldText.length === 0 && newText.length === 0) return 0
   if (oldText.length === 0) return 100
@@ -356,10 +353,7 @@ export function getChangePercentage(
 /**
  * Truncate diff for preview display.
  */
-export function truncateDiff(
-  segments: DiffSegment[],
-  maxLength: number = 100
-): DiffSegment[] {
+export function truncateDiff(segments: DiffSegment[], maxLength: number = 100): DiffSegment[] {
   const result: DiffSegment[] = []
   let currentLength = 0
 
@@ -480,9 +474,7 @@ export function generateUnifiedDiff(
 
   // Finish last hunk
   if (currentHunk.length > 0) {
-    hunks.push(
-      `@@ -${oldStart},${oldCount} +${newStart},${newCount} @@\n${currentHunk.join('\n')}`
-    )
+    hunks.push(`@@ -${oldStart},${oldCount} +${newStart},${newCount} @@\n${currentHunk.join('\n')}`)
   }
 
   return hunks.join('\n')

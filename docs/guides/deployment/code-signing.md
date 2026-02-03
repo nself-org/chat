@@ -16,18 +16,21 @@ Complete guide for code signing nchat desktop applications on all platforms.
 Code signing is essential for desktop application distribution:
 
 ### macOS
+
 - **Required** for distribution outside Mac App Store
 - Gatekeeper will block unsigned apps
 - Users see scary warnings
 - Notarization requires valid signing
 
 ### Windows
+
 - **Recommended** for professional distribution
 - SmartScreen flags unsigned apps
 - Users see warnings: "Unknown publisher"
 - Enterprise deployment requires signing
 
 ### Linux
+
 - **Optional** but recommended
 - Builds trust with users
 - Enables repository distribution
@@ -128,6 +131,7 @@ env:
 ### Step 6: Configure Entitlements
 
 Entitlements are already configured in:
+
 - `platforms/electron/resources/entitlements.mac.plist`
 - `platforms/tauri/src-tauri/Info.plist` (auto-generated)
 
@@ -202,16 +206,19 @@ spctl -a -vvv -t install /Applications/nchat.app
 #### Recommended Providers
 
 **DigiCert** (Premium)
+
 - https://www.digicert.com/signing/code-signing-certificates
 - EV available (best for instant SmartScreen bypass)
 - ~$474/year (Standard), ~$599/year (EV)
 
 **Sectigo** (Mid-tier)
+
 - https://sectigo.com/ssl-certificates-tls/code-signing
 - Good balance of price and reputation
 - ~$179/year (Standard)
 
 **SSL.com** (Budget)
+
 - https://www.ssl.com/code-signing/
 - Affordable option
 - ~$99/year (Standard)
@@ -269,7 +276,7 @@ For CI/CD:
 ```yaml
 # .github/workflows/build-electron.yml
 env:
-  WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}  # Base64 encoded cert
+  WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }} # Base64 encoded cert
   WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
 ```
 
@@ -457,6 +464,7 @@ TAURI_SKIP_SIGNING=1               # Tauri
 ### Storage Best Practices
 
 **DO:**
+
 - Store certificates in secure location
 - Use environment variables for passwords
 - Use CI/CD secrets for automation
@@ -464,6 +472,7 @@ TAURI_SKIP_SIGNING=1               # Tauri
 - Use hardware tokens for EV certificates
 
 **DON'T:**
+
 - Commit certificates to git
 - Share private keys
 - Use weak passwords
@@ -534,6 +543,7 @@ jobs:
 **Cause:** Gatekeeper quarantine attribute
 
 **Solution:**
+
 ```bash
 # Remove quarantine
 xattr -cr /Applications/nchat.app
@@ -546,6 +556,7 @@ xattr -cr /Applications/nchat.app
 **Cause:** App not notarized or signature invalid
 
 **Solution:**
+
 ```bash
 # Check signature
 codesign --verify --deep --strict /Applications/nchat.app
@@ -565,6 +576,7 @@ xcrun notarytool submit nchat.dmg \
 **Cause:** New certificate or low download count
 
 **Solutions:**
+
 1. Get EV certificate ($599/year) - instant bypass
 2. Submit to Microsoft for analysis
 3. Wait for reputation to build (weeks/months)
@@ -574,6 +586,7 @@ xcrun notarytool submit nchat.dmg \
 **Cause:** Certificate not from trusted CA
 
 **Solution:**
+
 - Purchase from major CA (DigiCert, Sectigo, SSL.com)
 - Ensure certificate chain is complete
 - Check certificate expiration date
@@ -583,6 +596,7 @@ xcrun notarytool submit nchat.dmg \
 **Cause:** Certificate not in keychain or environment variable not set
 
 **Solution:**
+
 ```bash
 # macOS: Check keychain
 security find-identity -v -p codesigning
@@ -599,6 +613,7 @@ export CSC_IDENTITY_AUTO_DISCOVERY=false
 **Cause:** Certificate path incorrect or password wrong
 
 **Solution:**
+
 ```bash
 # Verify certificate exists
 ls -la /path/to/certificate.pfx
@@ -618,17 +633,20 @@ codesign --force --sign "Developer ID" --timestamp app.app
 ## Resources
 
 ### Documentation
+
 - [Apple Code Signing Guide](https://developer.apple.com/support/code-signing/)
 - [Microsoft Code Signing](https://docs.microsoft.com/en-us/windows/win32/seccrypto/cryptography-tools)
 - [electron-builder Code Signing](https://www.electron.build/code-signing)
 - [Tauri Code Signing](https://tauri.app/v1/guides/distribution/sign-macos)
 
 ### Certificate Providers
+
 - [DigiCert](https://www.digicert.com/signing/code-signing-certificates)
 - [Sectigo](https://sectigo.com/ssl-certificates-tls/code-signing)
 - [SSL.com](https://www.ssl.com/code-signing/)
 
 ### Tools
+
 - [Xcode](https://developer.apple.com/xcode/)
 - [Windows SDK](https://developer.microsoft.com/en-us/windows/downloads/windows-sdk/)
 - [GPG Tools](https://gpgtools.org/)
@@ -636,6 +654,7 @@ codesign --force --sign "Developer ID" --timestamp app.app
 ## Support
 
 For code signing issues:
+
 - Check troubleshooting section above
 - Review platform-specific documentation
 - Contact your certificate provider

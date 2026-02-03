@@ -29,15 +29,9 @@ export function GifPicker({ onSelect, onClose, className }: GifPickerProps) {
   const debouncedQuery = useDebounce(searchQuery, 500)
 
   // Use GIF search hook
-  const {
-    gifs,
-    isLoading,
-    error,
-    hasMore,
-    trendingTerms,
-    loadMore,
-    isConfigured,
-  } = useGifSearch((debouncedQuery || selectedCategory) || undefined)
+  const { gifs, isLoading, error, hasMore, trendingTerms, loadMore, isConfigured } = useGifSearch(
+    debouncedQuery || selectedCategory || undefined
+  )
 
   // Handle GIF selection
   const handleSelect = useCallback(
@@ -177,12 +171,7 @@ export function GifPicker({ onSelect, onClose, className }: GifPickerProps) {
             {/* Load more button */}
             {hasMore && (
               <div className="flex justify-center p-4">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={loadMore}
-                  disabled={isLoading}
-                >
+                <Button variant="outline" size="sm" onClick={loadMore} disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -242,7 +231,7 @@ function GifItem({ gif, onSelect }: { gif: TenorGif; onSelect: (gif: TenorGif) =
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        'group relative overflow-hidden rounded-lg border bg-muted/30 transition-all hover:border-primary hover:shadow-md',
+        'bg-muted/30 group relative overflow-hidden rounded-lg border transition-all hover:border-primary hover:shadow-md',
         'aspect-square'
       )}
     >

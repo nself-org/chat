@@ -1,15 +1,16 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
+import { cn } from '@/lib/utils'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface MenuSeparatorProps
-  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Separator> {}
+export interface MenuSeparatorProps extends React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.Separator
+> {}
 
 // ============================================================================
 // Component
@@ -24,12 +25,12 @@ const MenuSeparator = React.forwardRef<
     className={cn('-mx-1 my-1 h-px bg-border', className)}
     {...props}
   />
-));
+))
 
-MenuSeparator.displayName = 'MenuSeparator';
+MenuSeparator.displayName = 'MenuSeparator'
 
 // ============================================================================
 // Exports
 // ============================================================================
 
-export { MenuSeparator };
+export { MenuSeparator }

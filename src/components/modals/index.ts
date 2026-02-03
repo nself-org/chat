@@ -69,11 +69,7 @@ export {
 // ============================================
 
 // Image Lightbox - Full-screen image viewer
-export {
-  ImageLightbox,
-  type ImageLightboxProps,
-  type LightboxImage,
-} from './image-lightbox'
+export { ImageLightbox, type ImageLightboxProps, type LightboxImage } from './image-lightbox'
 
 // Video Modal - Video player modal
 export { VideoModal, type VideoModalProps } from './video-modal'
@@ -108,11 +104,7 @@ export {
 
 // Channel modals
 export { CreateChannelModal } from './create-channel-modal'
-export type {
-  ChannelMember,
-  ChannelCategory,
-  CreateChannelData,
-} from './create-channel-modal'
+export type { ChannelMember, ChannelCategory, CreateChannelData } from './create-channel-modal'
 
 export { EditChannelModal } from './edit-channel-modal'
 export type { ChannelData, EditChannelData } from './edit-channel-modal'

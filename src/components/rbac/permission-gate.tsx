@@ -58,11 +58,7 @@ export function PermissionGate({
 }: PermissionGateProps) {
   const { hasPermission, hasRole } = usePermission()
 
-  const hasAccess = permission
-    ? hasPermission(permission)
-    : role
-      ? hasRole(role)
-      : true
+  const hasAccess = permission ? hasPermission(permission) : role ? hasRole(role) : true
 
   if (!hasAccess) return <>{fallback}</>
 

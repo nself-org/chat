@@ -425,9 +425,7 @@ export type {
 } from './types'
 
 // Export Discord-specific types
-export {
-  DiscordChannelType,
-} from './discord'
+export { DiscordChannelType } from './discord'
 
 export type {
   DiscordGatewayEventType,

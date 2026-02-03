@@ -104,9 +104,7 @@ export interface UseUserManagementReturn {
 // Hook Implementation
 // ============================================================================
 
-export function useUserManagement(
-  options: UseUserManagementOptions = {}
-): UseUserManagementReturn {
+export function useUserManagement(options: UseUserManagementOptions = {}): UseUserManagementReturn {
   const {
     initialUsers = [],
     initialFilters = {},
@@ -251,9 +249,7 @@ export function useUserManagement(
       const result = deleteUser(user, input)
       if (result.success) {
         setAllUsers((prev) =>
-          prev.map((u) =>
-            u.id === input.userId ? { ...u, status: 'deleted' as UserStatus } : u
-          )
+          prev.map((u) => (u.id === input.userId ? { ...u, status: 'deleted' as UserStatus } : u))
         )
         setSelectedUsers((prev) => {
           const next = new Set(prev)
@@ -341,9 +337,7 @@ export function useUserManagement(
           userIds.filter((id) => !result.errors.some((e) => e.userId === id))
         )
         setAllUsers((prev) =>
-          prev.map((u) =>
-            deletedIds.has(u.id) ? { ...u, status: 'deleted' as UserStatus } : u
-          )
+          prev.map((u) => (deletedIds.has(u.id) ? { ...u, status: 'deleted' as UserStatus } : u))
         )
         setSelectedUsers((prev) => {
           const next = new Set(prev)
@@ -389,10 +383,7 @@ export function useUserManagement(
     })
   }, [])
 
-  const isSelected = useCallback(
-    (userId: string) => selectedUsers.has(userId),
-    [selectedUsers]
-  )
+  const isSelected = useCallback((userId: string) => selectedUsers.has(userId), [selectedUsers])
 
   // Permission check
   const canManage = useCallback(
@@ -413,9 +404,7 @@ export function useUserManagement(
   }, [])
 
   const updateUser = useCallback((userId: string, updates: Partial<ManagedUser>) => {
-    setAllUsers((prev) =>
-      prev.map((u) => (u.id === userId ? { ...u, ...updates } : u))
-    )
+    setAllUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, ...updates } : u)))
   }, [])
 
   const removeUserFromList = useCallback((userId: string) => {

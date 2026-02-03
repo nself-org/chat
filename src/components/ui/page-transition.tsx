@@ -15,11 +15,7 @@ interface PageTransitionProps {
  * Page transition wrapper component
  * Animates page changes with smooth transitions
  */
-export function PageTransition({
-  children,
-  mode = 'fade',
-  className,
-}: PageTransitionProps) {
+export function PageTransition({ children, mode = 'fade', className }: PageTransitionProps) {
   const pathname = usePathname()
 
   const variants = React.useMemo(() => {

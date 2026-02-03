@@ -49,9 +49,7 @@ export class MobileTestHelper {
    * Wait for element with retry logic
    */
   static async waitForElement(matcher: Detox.NativeMatcher, timeout = 10000) {
-    await waitFor(element(matcher))
-      .toBeVisible()
-      .withTimeout(timeout)
+    await waitFor(element(matcher)).toBeVisible().withTimeout(timeout)
   }
 
   /**
@@ -201,7 +199,7 @@ export class MobileTestHelper {
    * Wait for time (use sparingly)
    */
   static async wait(ms: number) {
-    await new Promise(resolve => setTimeout(resolve, ms))
+    await new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   /**
@@ -297,7 +295,7 @@ beforeEach(async () => {
   PerformanceHelper.clear()
 })
 
-afterEach(async function() {
+afterEach(async function () {
   // Take screenshot on failure
   if (this.currentTest?.state === 'failed') {
     const testName = this.currentTest.title.replace(/\s+/g, '-')

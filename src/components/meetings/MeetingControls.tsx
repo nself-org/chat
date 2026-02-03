@@ -1,32 +1,23 @@
-'use client';
+'use client'
 
 /**
  * MeetingControls - Audio/video controls for meeting rooms
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipProvider,
-} from '@/components/ui/tooltip';
-import { Meeting } from '@/lib/meetings/meeting-types';
-import {
-  useMeetingStore,
-  selectLocalUser,
-  selectRoomState,
-} from '@/stores/meeting-store';
+} from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip'
+import { Meeting } from '@/lib/meetings/meeting-types'
+import { useMeetingStore, selectLocalUser, selectRoomState } from '@/stores/meeting-store'
 import {
   Mic,
   MicOff,
@@ -43,17 +34,17 @@ import {
   ChevronUp,
   Volume2,
   VolumeX,
-} from 'lucide-react';
+} from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface MeetingControlsProps {
-  meeting: Meeting;
-  variant?: 'default' | 'audio';
-  onLeave?: () => void;
-  onEnd?: () => void;
+  meeting: Meeting
+  variant?: 'default' | 'audio'
+  onLeave?: () => void
+  onEnd?: () => void
 }
 
 // ============================================================================
@@ -66,25 +57,20 @@ export function MeetingControls({
   onLeave,
   onEnd,
 }: MeetingControlsProps) {
-  const localUser = useMeetingStore(selectLocalUser);
-  const roomState = useMeetingStore(selectRoomState);
-  const {
-    toggleMute,
-    toggleVideo,
-    toggleScreenShare,
-    toggleHandRaise,
-  } = useMeetingStore();
+  const localUser = useMeetingStore(selectLocalUser)
+  const roomState = useMeetingStore(selectRoomState)
+  const { toggleMute, toggleVideo, toggleScreenShare, toggleHandRaise } = useMeetingStore()
 
-  const isMuted = localUser?.isMuted ?? true;
-  const isVideoOn = localUser?.isVideoOn ?? false;
-  const isScreenSharing = localUser?.isScreenSharing ?? false;
-  const isHandRaised = localUser?.isHandRaised ?? false;
-  const isRecording = roomState?.recordingStatus === 'recording';
-  const isHost = true; // Would check against current user
+  const isMuted = localUser?.isMuted ?? true
+  const isVideoOn = localUser?.isVideoOn ?? false
+  const isScreenSharing = localUser?.isScreenSharing ?? false
+  const isHandRaised = localUser?.isHandRaised ?? false
+  const isRecording = roomState?.recordingStatus === 'recording'
+  const isHost = true // Would check against current user
 
   return (
     <TooltipProvider>
-      <div className="flex items-center justify-center gap-2 px-4 py-4 bg-gray-800/80 backdrop-blur border-t border-gray-700">
+      <div className="flex items-center justify-center gap-2 border-t border-gray-700 bg-gray-800/80 px-4 py-4 backdrop-blur">
         {/* Audio Control */}
         <Tooltip>
           <TooltipTrigger asChild>
@@ -95,22 +81,18 @@ export function MeetingControls({
                     variant={isMuted ? 'destructive' : 'secondary'}
                     size="lg"
                     className={cn(
-                      'rounded-full h-12 w-12',
+                      'h-12 w-12 rounded-full',
                       !isMuted && 'bg-gray-700 hover:bg-gray-600'
                     )}
                     onClick={toggleMute}
                   >
-                    {isMuted ? (
-                      <MicOff className="h-5 w-5" />
-                    ) : (
-                      <Mic className="h-5 w-5" />
-                    )}
+                    {isMuted ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
                   </Button>
                   <DropdownMenuTrigger asChild>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-6 w-6 p-0 -ml-2 rounded-full bg-gray-600 hover:bg-gray-500"
+                      className="-ml-2 h-6 w-6 rounded-full bg-gray-600 p-0 hover:bg-gray-500"
                     >
                       <ChevronUp className="h-3 w-3" />
                     </Button>
@@ -118,26 +100,20 @@ export function MeetingControls({
                 </div>
                 <DropdownMenuContent align="start" className="w-64">
                   <DropdownMenuItem>
-                    <Settings className="h-4 w-4 mr-2" />
+                    <Settings className="mr-2 h-4 w-4" />
                     Audio Settings
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <div className="px-2 py-1 text-xs text-muted-foreground">
-                    Microphone
-                  </div>
+                  <div className="px-2 py-1 text-xs text-muted-foreground">Microphone</div>
                   <DropdownMenuItem>Default Microphone</DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <div className="px-2 py-1 text-xs text-muted-foreground">
-                    Speaker
-                  </div>
+                  <div className="px-2 py-1 text-xs text-muted-foreground">Speaker</div>
                   <DropdownMenuItem>Default Speaker</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
           </TooltipTrigger>
-          <TooltipContent>
-            {isMuted ? 'Unmute' : 'Mute'}
-          </TooltipContent>
+          <TooltipContent>{isMuted ? 'Unmute' : 'Mute'}</TooltipContent>
         </Tooltip>
 
         {/* Video Control (not shown for audio-only) */}
@@ -151,22 +127,18 @@ export function MeetingControls({
                       variant={!isVideoOn ? 'destructive' : 'secondary'}
                       size="lg"
                       className={cn(
-                        'rounded-full h-12 w-12',
+                        'h-12 w-12 rounded-full',
                         isVideoOn && 'bg-gray-700 hover:bg-gray-600'
                       )}
                       onClick={toggleVideo}
                     >
-                      {isVideoOn ? (
-                        <Video className="h-5 w-5" />
-                      ) : (
-                        <VideoOff className="h-5 w-5" />
-                      )}
+                      {isVideoOn ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
                     </Button>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="h-6 w-6 p-0 -ml-2 rounded-full bg-gray-600 hover:bg-gray-500"
+                        className="-ml-2 h-6 w-6 rounded-full bg-gray-600 p-0 hover:bg-gray-500"
                       >
                         <ChevronUp className="h-3 w-3" />
                       </Button>
@@ -174,21 +146,17 @@ export function MeetingControls({
                   </div>
                   <DropdownMenuContent align="start" className="w-64">
                     <DropdownMenuItem>
-                      <Settings className="h-4 w-4 mr-2" />
+                      <Settings className="mr-2 h-4 w-4" />
                       Video Settings
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <div className="px-2 py-1 text-xs text-muted-foreground">
-                      Camera
-                    </div>
+                    <div className="px-2 py-1 text-xs text-muted-foreground">Camera</div>
                     <DropdownMenuItem>Default Camera</DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
             </TooltipTrigger>
-            <TooltipContent>
-              {isVideoOn ? 'Turn off camera' : 'Turn on camera'}
-            </TooltipContent>
+            <TooltipContent>{isVideoOn ? 'Turn off camera' : 'Turn on camera'}</TooltipContent>
           </Tooltip>
         )}
 
@@ -200,7 +168,7 @@ export function MeetingControls({
                 variant={isScreenSharing ? 'default' : 'secondary'}
                 size="lg"
                 className={cn(
-                  'rounded-full h-12 w-12',
+                  'h-12 w-12 rounded-full',
                   !isScreenSharing && 'bg-gray-700 hover:bg-gray-600',
                   isScreenSharing && 'bg-green-600 hover:bg-green-700'
                 )}
@@ -213,9 +181,7 @@ export function MeetingControls({
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              {isScreenSharing ? 'Stop sharing' : 'Share screen'}
-            </TooltipContent>
+            <TooltipContent>{isScreenSharing ? 'Stop sharing' : 'Share screen'}</TooltipContent>
           </Tooltip>
         )}
 
@@ -226,7 +192,7 @@ export function MeetingControls({
               variant={isHandRaised ? 'default' : 'secondary'}
               size="lg"
               className={cn(
-                'rounded-full h-12 w-12',
+                'h-12 w-12 rounded-full',
                 !isHandRaised && 'bg-gray-700 hover:bg-gray-600',
                 isHandRaised && 'bg-yellow-600 hover:bg-yellow-700'
               )}
@@ -235,9 +201,7 @@ export function MeetingControls({
               <Hand className="h-5 w-5" />
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
-            {isHandRaised ? 'Lower hand' : 'Raise hand'}
-          </TooltipContent>
+          <TooltipContent>{isHandRaised ? 'Lower hand' : 'Raise hand'}</TooltipContent>
         </Tooltip>
 
         {/* More Options */}
@@ -246,7 +210,7 @@ export function MeetingControls({
             <Button
               variant="secondary"
               size="lg"
-              className="rounded-full h-12 w-12 bg-gray-700 hover:bg-gray-600"
+              className="h-12 w-12 rounded-full bg-gray-700 hover:bg-gray-600"
             >
               <MoreVertical className="h-5 w-5" />
             </Button>
@@ -257,12 +221,12 @@ export function MeetingControls({
                 <DropdownMenuItem onClick={() => {}}>
                   {isRecording ? (
                     <>
-                      <StopCircle className="h-4 w-4 mr-2 text-red-500" />
+                      <StopCircle className="mr-2 h-4 w-4 text-red-500" />
                       Stop Recording
                     </>
                   ) : (
                     <>
-                      <Disc className="h-4 w-4 mr-2" />
+                      <Disc className="mr-2 h-4 w-4" />
                       Start Recording
                     </>
                   )}
@@ -271,7 +235,7 @@ export function MeetingControls({
               </>
             )}
             <DropdownMenuItem>
-              <Settings className="h-4 w-4 mr-2" />
+              <Settings className="mr-2 h-4 w-4" />
               Meeting Settings
             </DropdownMenuItem>
             {isHost && (
@@ -286,7 +250,7 @@ export function MeetingControls({
         </DropdownMenu>
 
         {/* Spacer */}
-        <div className="w-px h-8 bg-gray-600 mx-2" />
+        <div className="mx-2 h-8 w-px bg-gray-600" />
 
         {/* Leave Button */}
         <Tooltip>
@@ -294,10 +258,10 @@ export function MeetingControls({
             <Button
               variant="destructive"
               size="lg"
-              className="rounded-full h-12 px-6"
+              className="h-12 rounded-full px-6"
               onClick={onLeave}
             >
-              <PhoneOff className="h-5 w-5 mr-2" />
+              <PhoneOff className="mr-2 h-5 w-5" />
               Leave
             </Button>
           </TooltipTrigger>
@@ -306,12 +270,12 @@ export function MeetingControls({
 
         {/* Recording Indicator */}
         {isRecording && (
-          <Badge className="absolute top-4 left-4 bg-red-500 text-white animate-pulse">
-            <Disc className="h-3 w-3 mr-1 animate-spin" />
+          <Badge className="absolute left-4 top-4 animate-pulse bg-red-500 text-white">
+            <Disc className="mr-1 h-3 w-3 animate-spin" />
             Recording
           </Badge>
         )}
       </div>
     </TooltipProvider>
-  );
+  )
 }

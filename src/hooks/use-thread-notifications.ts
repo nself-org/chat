@@ -41,11 +41,7 @@ export interface UseThreadNotificationsReturn {
 export function useThreadNotifications(
   options: ThreadNotificationOptions = {}
 ): UseThreadNotificationsReturn {
-  const {
-    desktopNotifications = true,
-    playSounds = true,
-    onNewReply,
-  } = options
+  const { desktopNotifications = true, playSounds = true, onNewReply } = options
 
   const { user } = useAuth()
 
@@ -53,11 +49,7 @@ export function useThreadNotifications(
   const notificationStore = useNotificationStore()
   const threadStore = useThreadStore()
 
-  const {
-    addNotification,
-    preferences,
-    unreadCounts,
-  } = notificationStore
+  const { addNotification, preferences, unreadCounts } = notificationStore
 
   const {
     unreadThreadIds,
@@ -80,36 +72,38 @@ export function useThreadNotifications(
         // Process thread updates
         const participations = data.data.nchat_thread_participants
 
-        participations.forEach((participation: {
-          thread: {
-            id: string
-            message_count: number
-            last_reply_at: string
-            parent_message?: {
+        participations.forEach(
+          (participation: {
+            thread: {
               id: string
-              content: string
-              channel?: {
+              message_count: number
+              last_reply_at: string
+              parent_message?: {
                 id: string
-                name: string
-                slug: string
+                content: string
+                channel?: {
+                  id: string
+                  name: string
+                  slug: string
+                }
               }
             }
+            last_read_at?: string
+          }) => {
+            const { thread, last_read_at } = participation
+
+            if (!thread || !last_read_at) return
+
+            // Check if there are new messages since last read
+            const lastReplyTime = new Date(thread.last_reply_at).getTime()
+            const lastReadTime = new Date(last_read_at).getTime()
+
+            if (lastReplyTime > lastReadTime) {
+              // Thread has unread messages
+              incrementThreadUnread(thread.id)
+            }
           }
-          last_read_at?: string
-        }) => {
-          const { thread, last_read_at } = participation
-
-          if (!thread || !last_read_at) return
-
-          // Check if there are new messages since last read
-          const lastReplyTime = new Date(thread.last_reply_at).getTime()
-          const lastReadTime = new Date(last_read_at).getTime()
-
-          if (lastReplyTime > lastReadTime) {
-            // Thread has unread messages
-            incrementThreadUnread(thread.id)
-          }
-        })
+        )
       }
     },
   })
@@ -187,14 +181,7 @@ export function useThreadNotifications(
         // This is handled by the notification-sounds.ts utility
       }
     },
-    [
-      addNotification,
-      desktopNotifications,
-      mutedThreadIds,
-      onNewReply,
-      playSounds,
-      preferences,
-    ]
+    [addNotification, desktopNotifications, mutedThreadIds, onNewReply, playSounds, preferences]
   )
 
   // Mark a thread as read
@@ -292,8 +279,7 @@ export function useThreadReplyNotifications({
 
         // Trigger callback
         if (onNewMessage) {
-          const authorName =
-            newMessage.user?.display_name || newMessage.user?.username || 'Unknown'
+          const authorName = newMessage.user?.display_name || newMessage.user?.username || 'Unknown'
           onNewMessage(newMessage.content, authorName)
         }
       }

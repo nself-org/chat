@@ -2,15 +2,7 @@
 
 import * as React from 'react'
 import { useState, useEffect } from 'react'
-import {
-  Users,
-  X,
-  Search,
-  Link as LinkIcon,
-  Copy,
-  Check,
-  Mail,
-} from 'lucide-react'
+import { Users, X, Search, Link as LinkIcon, Copy, Check, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -26,13 +18,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useChannelStore, selectActiveChannel } from '@/stores/channel-store'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -70,11 +59,7 @@ const mockUsers: UserOption[] = [
 // Component
 // ============================================================================
 
-export function ChannelInviteModal({
-  open,
-  onOpenChange,
-  channelId,
-}: ChannelInviteModalProps) {
+export function ChannelInviteModal({ open, onOpenChange, channelId }: ChannelInviteModalProps) {
   const channel = useChannelStore(selectActiveChannel)
   const { addChannelMember } = useChannelStore()
 
@@ -145,7 +130,7 @@ export function ChannelInviteModal({
       }
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to invite members:', error)
+      logger.error('Failed to invite members:', error)
     } finally {
       setIsLoading(false)
     }
@@ -164,7 +149,7 @@ export function ChannelInviteModal({
 
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to send email invites:', error)
+      logger.error('Failed to send email invites:', error)
     } finally {
       setIsLoading(false)
     }
@@ -193,10 +178,10 @@ export function ChannelInviteModal({
           </TabsList>
 
           {/* Members Tab */}
-          <TabsContent value="members" className="space-y-4 mt-4">
+          <TabsContent value="members" className="mt-4 space-y-4">
             {/* Search Input */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -209,11 +194,7 @@ export function ChannelInviteModal({
             {selectedUsers.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {selectedUsers.map((user) => (
-                  <Badge
-                    key={user.id}
-                    variant="secondary"
-                    className="pl-1 pr-0.5 py-0.5 gap-1"
-                  >
+                  <Badge key={user.id} variant="secondary" className="gap-1 py-0.5 pl-1 pr-0.5">
                     <Avatar className="h-4 w-4">
                       <AvatarImage src={user.avatarUrl} />
                       <AvatarFallback className="text-[8px]">
@@ -224,7 +205,7 @@ export function ChannelInviteModal({
                     <button
                       type="button"
                       onClick={() => handleRemoveUser(user.id)}
-                      className="p-0.5 rounded hover:bg-muted transition-colors"
+                      className="rounded p-0.5 transition-colors hover:bg-muted"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -241,22 +222,16 @@ export function ChannelInviteModal({
                     <button
                       key={user.id}
                       type="button"
-                      className="w-full flex items-center gap-3 p-2 hover:bg-accent rounded-md transition-colors text-left"
+                      className="flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors hover:bg-accent"
                       onClick={() => handleSelectUser(user)}
                     >
                       <Avatar className="h-8 w-8">
                         <AvatarImage src={user.avatarUrl} />
-                        <AvatarFallback>
-                          {user.displayName.charAt(0)}
-                        </AvatarFallback>
+                        <AvatarFallback>{user.displayName.charAt(0)}</AvatarFallback>
                       </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          {user.displayName}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          @{user.username}
-                        </p>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">{user.displayName}</p>
+                        <p className="truncate text-xs text-muted-foreground">@{user.username}</p>
                       </div>
                     </button>
                   ))
@@ -280,7 +255,7 @@ export function ChannelInviteModal({
           </TabsContent>
 
           {/* Invite Link Tab */}
-          <TabsContent value="link" className="space-y-4 mt-4">
+          <TabsContent value="link" className="mt-4 space-y-4">
             <div className="space-y-2">
               <Label>Invite link</Label>
               <div className="flex gap-2">
@@ -310,9 +285,7 @@ export function ChannelInviteModal({
             <div className="flex items-center justify-between rounded-lg border p-3">
               <div className="space-y-0.5">
                 <Label className="font-medium">Link expires</Label>
-                <p className="text-xs text-muted-foreground">
-                  Link will expire in 7 days
-                </p>
+                <p className="text-xs text-muted-foreground">Link will expire in 7 days</p>
               </div>
               <Switch checked={linkExpiry} onCheckedChange={setLinkExpiry} />
             </div>
@@ -324,7 +297,7 @@ export function ChannelInviteModal({
           </TabsContent>
 
           {/* Email Tab */}
-          <TabsContent value="email" className="space-y-4 mt-4">
+          <TabsContent value="email" className="mt-4 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="emails">Email addresses</Label>
               <textarea
@@ -335,7 +308,8 @@ export function ChannelInviteModal({
                 className="flex min-h-[120px] w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               />
               <p className="text-xs text-muted-foreground">
-                Invitations will be sent via email. Recipients will need to create an account if they don&apos;t have one.
+                Invitations will be sent via email. Recipients will need to create an account if
+                they don&apos;t have one.
               </p>
             </div>
 

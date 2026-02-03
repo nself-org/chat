@@ -44,12 +44,7 @@ export type { BotState, BotCategory, BotFilters } from './bot-store'
 // BOT HOOKS (existing)
 // ============================================================================
 
-export {
-  useBots,
-  useBot,
-  useBotCommands,
-  useBotReviews,
-} from './use-bots'
+export { useBots, useBot, useBotCommands, useBotReviews } from './use-bots'
 export type { UseBotsOptions, UseBotsResult } from './use-bots'
 
 // ============================================================================
@@ -111,10 +106,7 @@ export {
 } from './bot-responses'
 
 // Command system
-export {
-  CommandRegistry,
-  createHelpCommand,
-} from './bot-commands'
+export { CommandRegistry, createHelpCommand } from './bot-commands'
 
 // Event system
 export {
@@ -128,11 +120,7 @@ export {
 } from './bot-events'
 
 // Runtime
-export {
-  BotRuntime,
-  createRuntime,
-  setRuntime,
-} from './bot-runtime'
+export { BotRuntime, createRuntime, setRuntime } from './bot-runtime'
 export type { CreateBotOptions } from './bot-runtime'
 
 // API

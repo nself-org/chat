@@ -106,10 +106,7 @@ export class CursorHighlighter {
   updateCursor(position: CursorPosition): void {
     // Assign color if new user
     if (!this.userColors.has(position.userId)) {
-      this.userColors.set(
-        position.userId,
-        USER_COLORS[this.colorIndex % USER_COLORS.length]
-      )
+      this.userColors.set(position.userId, USER_COLORS[this.colorIndex % USER_COLORS.length])
       this.colorIndex++
     }
 
@@ -368,9 +365,7 @@ export class CursorHighlighter {
 // Factory Function
 // =============================================================================
 
-export function createCursorHighlighter(
-  options: CursorHighlighterOptions
-): CursorHighlighter {
+export function createCursorHighlighter(options: CursorHighlighterOptions): CursorHighlighter {
   return new CursorHighlighter(options)
 }
 

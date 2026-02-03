@@ -10,7 +10,7 @@ import type {
   ConsentStatus,
   ConsentConfig,
   CookiePreferences,
-} from './compliance-types';
+} from './compliance-types'
 
 // ============================================================================
 // CONSENT CONFIGURATIONS
@@ -154,7 +154,7 @@ export const CONSENT_CONFIGS: ConsentConfig[] = [
     retentionPeriod: '90 days',
     version: '1.0',
   },
-];
+]
 
 // ============================================================================
 // CONSENT MANAGEMENT
@@ -168,13 +168,13 @@ export function createConsent(
   consentType: ConsentType,
   status: ConsentStatus,
   options: {
-    ipAddress?: string;
-    userAgent?: string;
-    source?: UserConsent['source'];
+    ipAddress?: string
+    userAgent?: string
+    source?: UserConsent['source']
   } = {}
 ): UserConsent {
-  const config = CONSENT_CONFIGS.find((c) => c.type === consentType);
-  const now = new Date();
+  const config = CONSENT_CONFIGS.find((c) => c.type === consentType)
+  const now = new Date()
 
   return {
     id: crypto.randomUUID(),
@@ -187,7 +187,7 @@ export function createConsent(
     ipAddress: options.ipAddress,
     userAgent: options.userAgent,
     source: options.source || 'settings',
-  };
+  }
 }
 
 /**
@@ -197,11 +197,11 @@ export function updateConsentStatus(
   consent: UserConsent,
   newStatus: ConsentStatus,
   options: {
-    ipAddress?: string;
-    userAgent?: string;
+    ipAddress?: string
+    userAgent?: string
   } = {}
 ): UserConsent {
-  const now = new Date();
+  const now = new Date()
 
   return {
     ...consent,
@@ -210,7 +210,7 @@ export function updateConsentStatus(
     revokedAt: newStatus === 'denied' ? now : consent.revokedAt,
     ipAddress: options.ipAddress || consent.ipAddress,
     userAgent: options.userAgent || consent.userAgent,
-  };
+  }
 }
 
 // ============================================================================
@@ -221,46 +221,41 @@ export function updateConsentStatus(
  * Check if all required consents are granted
  */
 export function hasRequiredConsents(consents: UserConsent[]): {
-  valid: boolean;
-  missing: ConsentType[];
+  valid: boolean
+  missing: ConsentType[]
 } {
-  const requiredTypes = CONSENT_CONFIGS.filter((c) => c.required).map((c) => c.type);
-  const grantedTypes = consents
-    .filter((c) => c.status === 'granted')
-    .map((c) => c.consentType);
+  const requiredTypes = CONSENT_CONFIGS.filter((c) => c.required).map((c) => c.type)
+  const grantedTypes = consents.filter((c) => c.status === 'granted').map((c) => c.consentType)
 
-  const missing = requiredTypes.filter((type) => !grantedTypes.includes(type));
+  const missing = requiredTypes.filter((type) => !grantedTypes.includes(type))
 
   return {
     valid: missing.length === 0,
     missing,
-  };
+  }
 }
 
 /**
  * Get consent config by type
  */
 export function getConsentConfig(type: ConsentType): ConsentConfig | undefined {
-  return CONSENT_CONFIGS.find((c) => c.type === type);
+  return CONSENT_CONFIGS.find((c) => c.type === type)
 }
 
 /**
  * Check if consent type is required
  */
 export function isConsentRequired(type: ConsentType): boolean {
-  const config = getConsentConfig(type);
-  return config?.required || false;
+  const config = getConsentConfig(type)
+  return config?.required || false
 }
 
 /**
  * Get current consent status for a type
  */
-export function getCurrentConsentStatus(
-  consents: UserConsent[],
-  type: ConsentType
-): ConsentStatus {
-  const consent = consents.find((c) => c.consentType === type);
-  return consent?.status || 'pending';
+export function getCurrentConsentStatus(consents: UserConsent[], type: ConsentType): ConsentStatus {
+  const consent = consents.find((c) => c.consentType === type)
+  return consent?.status || 'pending'
 }
 
 // ============================================================================
@@ -277,7 +272,7 @@ export function createDefaultCookiePreferences(): CookiePreferences {
     analytics: false,
     advertising: false,
     updatedAt: new Date(),
-  };
+  }
 }
 
 /**
@@ -292,7 +287,7 @@ export function updateCookiePreferences(
     ...updates,
     essential: true, // Always true
     updatedAt: new Date(),
-  };
+  }
 }
 
 /**
@@ -302,11 +297,11 @@ export function cookiePreferencesToConsents(
   userId: string,
   preferences: CookiePreferences,
   options: {
-    ipAddress?: string;
-    userAgent?: string;
+    ipAddress?: string
+    userAgent?: string
   } = {}
 ): UserConsent[] {
-  const consents: UserConsent[] = [];
+  const consents: UserConsent[] = []
 
   // Essential cookies (always granted)
   consents.push(
@@ -314,39 +309,33 @@ export function cookiePreferencesToConsents(
       ...options,
       source: 'banner',
     })
-  );
+  )
 
   // Functional cookies
   consents.push(
-    createConsent(
-      userId,
-      'cookies_functional',
-      preferences.functional ? 'granted' : 'denied',
-      { ...options, source: 'banner' }
-    )
-  );
+    createConsent(userId, 'cookies_functional', preferences.functional ? 'granted' : 'denied', {
+      ...options,
+      source: 'banner',
+    })
+  )
 
   // Analytics cookies
   consents.push(
-    createConsent(
-      userId,
-      'cookies_analytics',
-      preferences.analytics ? 'granted' : 'denied',
-      { ...options, source: 'banner' }
-    )
-  );
+    createConsent(userId, 'cookies_analytics', preferences.analytics ? 'granted' : 'denied', {
+      ...options,
+      source: 'banner',
+    })
+  )
 
   // Advertising cookies
   consents.push(
-    createConsent(
-      userId,
-      'cookies_advertising',
-      preferences.advertising ? 'granted' : 'denied',
-      { ...options, source: 'banner' }
-    )
-  );
+    createConsent(userId, 'cookies_advertising', preferences.advertising ? 'granted' : 'denied', {
+      ...options,
+      source: 'banner',
+    })
+  )
 
-  return consents;
+  return consents
 }
 
 // ============================================================================
@@ -354,12 +343,12 @@ export function cookiePreferencesToConsents(
 // ============================================================================
 
 export interface ConsentSummary {
-  totalConsents: number;
-  granted: number;
-  denied: number;
-  pending: number;
-  byCategory: Record<string, { granted: number; denied: number; pending: number }>;
-  lastUpdated?: Date;
+  totalConsents: number
+  granted: number
+  denied: number
+  pending: number
+  byCategory: Record<string, { granted: number; denied: number; pending: number }>
+  lastUpdated?: Date
 }
 
 /**
@@ -373,48 +362,48 @@ export function generateConsentSummary(consents: UserConsent[]): ConsentSummary 
     pending: 0,
     byCategory: {},
     lastUpdated: undefined,
-  };
+  }
 
-  const categories = new Set(CONSENT_CONFIGS.map((c) => c.category));
+  const categories = new Set(CONSENT_CONFIGS.map((c) => c.category))
   categories.forEach((cat) => {
-    summary.byCategory[cat] = { granted: 0, denied: 0, pending: 0 };
-  });
+    summary.byCategory[cat] = { granted: 0, denied: 0, pending: 0 }
+  })
 
   for (const consent of consents) {
-    const config = getConsentConfig(consent.consentType);
-    const category = config?.category || 'other';
+    const config = getConsentConfig(consent.consentType)
+    const category = config?.category || 'other'
 
     switch (consent.status) {
       case 'granted':
-        summary.granted++;
+        summary.granted++
         if (summary.byCategory[category]) {
-          summary.byCategory[category].granted++;
+          summary.byCategory[category].granted++
         }
-        break;
+        break
       case 'denied':
-        summary.denied++;
+        summary.denied++
         if (summary.byCategory[category]) {
-          summary.byCategory[category].denied++;
+          summary.byCategory[category].denied++
         }
-        break;
+        break
       case 'pending':
-        summary.pending++;
+        summary.pending++
         if (summary.byCategory[category]) {
-          summary.byCategory[category].pending++;
+          summary.byCategory[category].pending++
         }
-        break;
+        break
     }
 
     // Track last updated
-    const updateDate = consent.grantedAt || consent.revokedAt;
+    const updateDate = consent.grantedAt || consent.revokedAt
     if (updateDate) {
       if (!summary.lastUpdated || updateDate > summary.lastUpdated) {
-        summary.lastUpdated = updateDate;
+        summary.lastUpdated = updateDate
       }
     }
   }
 
-  return summary;
+  return summary
 }
 
 // ============================================================================
@@ -426,19 +415,19 @@ export function generateConsentSummary(consents: UserConsent[]): ConsentSummary 
  */
 export function exportConsentHistory(consents: UserConsent[]): {
   consents: Array<{
-    type: string;
-    name: string;
-    status: string;
-    grantedAt?: string;
-    revokedAt?: string;
-    version: string;
-    source: string;
-  }>;
-  summary: ConsentSummary;
-  exportedAt: string;
+    type: string
+    name: string
+    status: string
+    grantedAt?: string
+    revokedAt?: string
+    version: string
+    source: string
+  }>
+  summary: ConsentSummary
+  exportedAt: string
 } {
   const exportedConsents = consents.map((consent) => {
-    const config = getConsentConfig(consent.consentType);
+    const config = getConsentConfig(consent.consentType)
     return {
       type: consent.consentType,
       name: config?.name || consent.consentType,
@@ -447,54 +436,55 @@ export function exportConsentHistory(consents: UserConsent[]): {
       revokedAt: consent.revokedAt?.toISOString(),
       version: consent.version,
       source: consent.source,
-    };
-  });
+    }
+  })
 
   return {
     consents: exportedConsents,
     summary: generateConsentSummary(consents),
     exportedAt: new Date().toISOString(),
-  };
+  }
 }
 
 // ============================================================================
 // LEGAL BASIS HELPERS
 // ============================================================================
 
-export type LegalBasis = ConsentConfig['legalBasis'];
+export type LegalBasis = ConsentConfig['legalBasis']
 
 /**
  * Get legal basis display info
  */
 export function getLegalBasisInfo(basis: LegalBasis): {
-  name: string;
-  description: string;
-  gdprArticle: string;
+  name: string
+  description: string
+  gdprArticle: string
 } {
-  const basisInfo: Record<LegalBasis, { name: string; description: string; gdprArticle: string }> = {
-    consent: {
-      name: 'Consent',
-      description: 'Processing based on explicit user consent',
-      gdprArticle: 'Article 6(1)(a)',
-    },
-    contract: {
-      name: 'Contract',
-      description: 'Necessary for the performance of a contract',
-      gdprArticle: 'Article 6(1)(b)',
-    },
-    legal_obligation: {
-      name: 'Legal Obligation',
-      description: 'Necessary for compliance with a legal obligation',
-      gdprArticle: 'Article 6(1)(c)',
-    },
-    legitimate_interest: {
-      name: 'Legitimate Interest',
-      description: 'Necessary for legitimate interests pursued by the controller',
-      gdprArticle: 'Article 6(1)(f)',
-    },
-  };
+  const basisInfo: Record<LegalBasis, { name: string; description: string; gdprArticle: string }> =
+    {
+      consent: {
+        name: 'Consent',
+        description: 'Processing based on explicit user consent',
+        gdprArticle: 'Article 6(1)(a)',
+      },
+      contract: {
+        name: 'Contract',
+        description: 'Necessary for the performance of a contract',
+        gdprArticle: 'Article 6(1)(b)',
+      },
+      legal_obligation: {
+        name: 'Legal Obligation',
+        description: 'Necessary for compliance with a legal obligation',
+        gdprArticle: 'Article 6(1)(c)',
+      },
+      legitimate_interest: {
+        name: 'Legitimate Interest',
+        description: 'Necessary for legitimate interests pursued by the controller',
+        gdprArticle: 'Article 6(1)(f)',
+      },
+    }
 
-  return basisInfo[basis];
+  return basisInfo[basis]
 }
 
 // ============================================================================
@@ -515,4 +505,4 @@ export const ConsentManager = {
   generateConsentSummary,
   exportConsentHistory,
   getLegalBasisInfo,
-};
+}

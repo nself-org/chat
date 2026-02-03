@@ -13,6 +13,8 @@ import { getThreadSummarizer } from '@/lib/ai/thread-summarizer'
 import { getMeetingNotesGenerator } from '@/lib/ai/meeting-notes'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -86,40 +88,28 @@ export async function POST(request: NextRequest) {
     // Generate summary based on type
     switch (type) {
       case 'digest': {
-        const digest = await summarizer.generateChannelDigest(
-          body.messages,
-          body.options
-        )
+        const digest = await summarizer.generateChannelDigest(body.messages, body.options)
         result.digest = digest
         result.summary = digest.summary
         break
       }
 
       case 'thread': {
-        const threadSummary = await summarizer.summarizeThread(
-          body.messages,
-          body.options
-        )
+        const threadSummary = await summarizer.summarizeThread(body.messages, body.options)
         result.threadSummary = threadSummary
         result.summary = threadSummary.summary
         break
       }
 
       case 'catchup': {
-        const catchupSummary = await summarizer.generateCatchUpSummary(
-          body.messages,
-          body.options
-        )
+        const catchupSummary = await summarizer.generateCatchUpSummary(body.messages, body.options)
         result.summary = catchupSummary
         break
       }
 
       case 'meeting-notes': {
         const meetingGen = getMeetingNotesGenerator()
-        const notes = await meetingGen.generateNotes(
-          body.messages,
-          body.meetingOptions
-        )
+        const notes = await meetingGen.generateNotes(body.messages, body.meetingOptions)
         result.summary = notes.formattedNotes
         result.meetingNotes = notes
         break
@@ -134,10 +124,7 @@ export async function POST(request: NextRequest) {
         result.summary = summary
 
         // Add quality score
-        const qualityScore = summarizer.calculateQualityScore(
-          summary,
-          body.messages
-        )
+        const qualityScore = summarizer.calculateQualityScore(summary, body.messages)
         result.qualityScore = qualityScore
         break
       }
@@ -154,7 +141,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Summarization error:', error)
+    logger.error('Summarization error:', error)
     captureError(error as Error, {
       tags: { api: 'ai-summarize' },
       extra: { requestBody: request.body },

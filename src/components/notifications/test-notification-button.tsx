@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * Test Notification Button
@@ -7,8 +7,8 @@
  * Useful for development, testing, and demoing the notification system.
  */
 
-import * as React from 'react';
-import { Button } from '@/components/ui/button';
+import * as React from 'react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,24 +16,28 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useNotificationStore, type NotificationType, type NotificationPriority } from '@/stores/notification-store';
-import { useAuth } from '@/contexts/auth-context';
-import { Bell, Play } from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+} from '@/components/ui/dropdown-menu'
+import {
+  useNotificationStore,
+  type NotificationType,
+  type NotificationPriority,
+} from '@/stores/notification-store'
+import { useAuth } from '@/contexts/auth-context'
+import { Bell, Play } from 'lucide-react'
+import { toast } from '@/hooks/use-toast'
 
 // ============================================================================
 // Test Notification Templates
 // ============================================================================
 
 interface NotificationTemplate {
-  id: string;
-  name: string;
-  type: NotificationType;
-  priority: NotificationPriority;
-  title: string;
-  body: string;
-  description: string;
+  id: string
+  name: string
+  type: NotificationType
+  priority: NotificationPriority
+  title: string
+  body: string
+  description: string
 }
 
 const NOTIFICATION_TEMPLATES: NotificationTemplate[] = [
@@ -136,7 +140,7 @@ const NOTIFICATION_TEMPLATES: NotificationTemplate[] = [
     body: 'Frank mentioned: "deployment scheduled for tonight"',
     description: 'Keyword alert notification',
   },
-];
+]
 
 // ============================================================================
 // Component
@@ -146,22 +150,22 @@ export interface TestNotificationButtonProps {
   /**
    * Button variant
    */
-  variant?: 'default' | 'outline' | 'ghost' | 'secondary';
+  variant?: 'default' | 'outline' | 'ghost' | 'secondary'
 
   /**
    * Button size
    */
-  size?: 'default' | 'sm' | 'lg' | 'icon';
+  size?: 'default' | 'sm' | 'lg' | 'icon'
 
   /**
    * Show as icon button
    */
-  iconOnly?: boolean;
+  iconOnly?: boolean
 
   /**
    * Custom className
    */
-  className?: string;
+  className?: string
 }
 
 export function TestNotificationButton({
@@ -170,8 +174,8 @@ export function TestNotificationButton({
   iconOnly = false,
   className,
 }: TestNotificationButtonProps) {
-  const { user } = useAuth();
-  const addNotification = useNotificationStore((state) => state.addNotification);
+  const { user } = useAuth()
+  const addNotification = useNotificationStore((state) => state.addNotification)
 
   const handleSendTestNotification = React.useCallback(
     (template: NotificationTemplate) => {
@@ -180,8 +184,8 @@ export function TestNotificationButton({
           title: 'Not authenticated',
           description: 'You must be logged in to test notifications',
           variant: 'destructive',
-        });
-        return;
+        })
+        return
       }
 
       const notification = {
@@ -205,51 +209,52 @@ export function TestNotificationButton({
           test: true,
           templateId: template.id,
         },
-      };
+      }
 
-      addNotification(notification);
+      addNotification(notification)
 
       toast({
         title: 'Test notification sent',
         description: `${template.name} - ${template.description}`,
-      });
+      })
     },
     [user, addNotification]
-  );
+  )
 
   const handleSendAll = React.useCallback(() => {
     NOTIFICATION_TEMPLATES.forEach((template, index) => {
       setTimeout(() => {
-        handleSendTestNotification(template);
-      }, index * 500); // Stagger notifications
-    });
+        handleSendTestNotification(template)
+      }, index * 500) // Stagger notifications
+    })
 
     toast({
       title: 'Sending all test notifications',
       description: `Sending ${NOTIFICATION_TEMPLATES.length} notifications...`,
-    });
-  }, [handleSendTestNotification]);
+    })
+  }, [handleSendTestNotification])
 
   const handleSendBurst = React.useCallback(() => {
     // Send 5 random notifications quickly
     for (let i = 0; i < 5; i++) {
-      const randomTemplate = NOTIFICATION_TEMPLATES[Math.floor(Math.random() * NOTIFICATION_TEMPLATES.length)];
+      const randomTemplate =
+        NOTIFICATION_TEMPLATES[Math.floor(Math.random() * NOTIFICATION_TEMPLATES.length)]
       setTimeout(() => {
-        handleSendTestNotification(randomTemplate);
-      }, i * 200);
+        handleSendTestNotification(randomTemplate)
+      }, i * 200)
     }
 
     toast({
       title: 'Burst test',
       description: 'Sending 5 random notifications',
-    });
-  }, [handleSendTestNotification]);
+    })
+  }, [handleSendTestNotification])
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant={variant} size={size} className={className}>
-          <Play className="h-4 w-4 mr-2" />
+          <Play className="mr-2 h-4 w-4" />
           {!iconOnly && 'Test Notifications'}
         </Button>
       </DropdownMenuTrigger>
@@ -261,18 +266,14 @@ export function TestNotificationButton({
         <DropdownMenuItem onClick={handleSendAll}>
           <div className="flex flex-col gap-1">
             <div className="font-medium">Send All Types</div>
-            <div className="text-xs text-muted-foreground">
-              Send one of each notification type
-            </div>
+            <div className="text-xs text-muted-foreground">Send one of each notification type</div>
           </div>
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={handleSendBurst}>
           <div className="flex flex-col gap-1">
             <div className="font-medium">Burst Test (5x)</div>
-            <div className="text-xs text-muted-foreground">
-              Rapid-fire 5 random notifications
-            </div>
+            <div className="text-xs text-muted-foreground">Rapid-fire 5 random notifications</div>
           </div>
         </DropdownMenuItem>
 
@@ -281,24 +282,19 @@ export function TestNotificationButton({
 
         {/* Individual templates */}
         {NOTIFICATION_TEMPLATES.map((template) => (
-          <DropdownMenuItem
-            key={template.id}
-            onClick={() => handleSendTestNotification(template)}
-          >
-            <div className="flex flex-col gap-1 flex-1">
+          <DropdownMenuItem key={template.id} onClick={() => handleSendTestNotification(template)}>
+            <div className="flex flex-1 flex-col gap-1">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-sm">{template.name}</span>
+                <span className="text-sm font-medium">{template.name}</span>
                 <PriorityBadge priority={template.priority} />
               </div>
-              <div className="text-xs text-muted-foreground">
-                {template.description}
-              </div>
+              <div className="text-xs text-muted-foreground">{template.description}</div>
             </div>
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }
 
 /**
@@ -310,15 +306,13 @@ function PriorityBadge({ priority }: { priority: NotificationPriority }) {
     normal: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-400',
     high: 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-400',
     urgent: 'bg-red-100 text-red-600 dark:bg-red-900 dark:text-red-400',
-  };
+  }
 
   return (
-    <span
-      className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${colors[priority]}`}
-    >
+    <span className={`rounded-full px-1.5 py-0.5 text-[10px] font-medium ${colors[priority]}`}>
       {priority}
     </span>
-  );
+  )
 }
 
-export default TestNotificationButton;
+export default TestNotificationButton

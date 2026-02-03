@@ -197,7 +197,7 @@ function generateTrayIcon() {
 /**
  * Copy icons to Linux hicolor theme structure
  */
-function organizeLin uxIcons() {
+function organizeLinuxIcons() {
   log('Organizing Linux icons...');
 
   const linuxSizes = SIZES.linux;

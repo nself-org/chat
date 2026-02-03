@@ -245,19 +245,9 @@ export const GET_REPORTS = gql`
  * Get user reports only (admin only)
  */
 export const GET_USER_REPORTS = gql`
-  query GetUserReports(
-    $status: String
-    $priority: String
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetUserReports($status: String, $priority: String, $limit: Int = 50, $offset: Int = 0) {
     nchat_user_reports(
-      where: {
-        _and: [
-          { status: { _eq: $status } }
-          { priority: { _eq: $priority } }
-        ]
-      }
+      where: { _and: [{ status: { _eq: $status } }, { priority: { _eq: $priority } }] }
       order_by: [{ priority: desc }, { created_at: desc }]
       limit: $limit
       offset: $offset
@@ -265,12 +255,7 @@ export const GET_USER_REPORTS = gql`
       ...UserReport
     }
     nchat_user_reports_aggregate(
-      where: {
-        _and: [
-          { status: { _eq: $status } }
-          { priority: { _eq: $priority } }
-        ]
-      }
+      where: { _and: [{ status: { _eq: $status } }, { priority: { _eq: $priority } }] }
     ) {
       aggregate {
         count
@@ -284,19 +269,9 @@ export const GET_USER_REPORTS = gql`
  * Get message reports only (admin only)
  */
 export const GET_MESSAGE_REPORTS = gql`
-  query GetMessageReports(
-    $status: String
-    $priority: String
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetMessageReports($status: String, $priority: String, $limit: Int = 50, $offset: Int = 0) {
     nchat_message_reports(
-      where: {
-        _and: [
-          { status: { _eq: $status } }
-          { priority: { _eq: $priority } }
-        ]
-      }
+      where: { _and: [{ status: { _eq: $status } }, { priority: { _eq: $priority } }] }
       order_by: [{ priority: desc }, { created_at: desc }]
       limit: $limit
       offset: $offset
@@ -304,12 +279,7 @@ export const GET_MESSAGE_REPORTS = gql`
       ...MessageReport
     }
     nchat_message_reports_aggregate(
-      where: {
-        _and: [
-          { status: { _eq: $status } }
-          { priority: { _eq: $priority } }
-        ]
-      }
+      where: { _and: [{ status: { _eq: $status } }, { priority: { _eq: $priority } }] }
     ) {
       aggregate {
         count
@@ -363,9 +333,7 @@ export const GET_REPORTS_AGAINST_USER = gql`
     ) {
       ...UserReport
     }
-    nchat_user_reports_aggregate(
-      where: { reported_user_id: { _eq: $userId } }
-    ) {
+    nchat_user_reports_aggregate(where: { reported_user_id: { _eq: $userId } }) {
       aggregate {
         count
       }
@@ -409,48 +377,35 @@ export const GET_REPORT_STATS = gql`
       }
     }
 
-    pending: nchat_user_reports_aggregate(
-      where: { status: { _eq: "pending" } }
-    ) {
+    pending: nchat_user_reports_aggregate(where: { status: { _eq: "pending" } }) {
       aggregate {
         count
       }
     }
 
-    under_review: nchat_user_reports_aggregate(
-      where: { status: { _eq: "under_review" } }
-    ) {
+    under_review: nchat_user_reports_aggregate(where: { status: { _eq: "under_review" } }) {
       aggregate {
         count
       }
     }
 
-    resolved: nchat_user_reports_aggregate(
-      where: { status: { _eq: "resolved" } }
-    ) {
+    resolved: nchat_user_reports_aggregate(where: { status: { _eq: "resolved" } }) {
       aggregate {
         count
       }
     }
 
-    dismissed: nchat_user_reports_aggregate(
-      where: { status: { _eq: "dismissed" } }
-    ) {
+    dismissed: nchat_user_reports_aggregate(where: { status: { _eq: "dismissed" } }) {
       aggregate {
         count
       }
     }
 
-    by_reason: nchat_user_reports(
-      distinct_on: reason
-      order_by: { reason: asc }
-    ) {
+    by_reason: nchat_user_reports(distinct_on: reason, order_by: { reason: asc }) {
       reason
     }
 
-    by_priority: nchat_user_reports_aggregate(
-      distinct_on: priority
-    ) {
+    by_priority: nchat_user_reports_aggregate(distinct_on: priority) {
       nodes {
         priority
       }
@@ -462,11 +417,7 @@ export const GET_REPORT_STATS = gql`
  * Check if user has already reported something
  */
 export const CHECK_EXISTING_REPORT = gql`
-  query CheckExistingReport(
-    $reporterId: uuid!
-    $reportedUserId: uuid
-    $messageId: uuid
-  ) {
+  query CheckExistingReport($reporterId: uuid!, $reportedUserId: uuid, $messageId: uuid) {
     user_report: nchat_user_reports(
       where: {
         _and: [

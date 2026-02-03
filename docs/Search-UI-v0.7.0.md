@@ -13,6 +13,7 @@ The v0.7.0 Smart Search UI provides a comprehensive search experience with advan
 **Location**: `/src/components/search/SearchResultCard.tsx`
 
 Enhanced search result card with:
+
 - Message preview with highlighted search terms
 - Author, channel, timestamp metadata
 - Quick actions (open, share, bookmark)
@@ -23,10 +24,10 @@ Enhanced search result card with:
 - Reaction badges
 
 **Usage**:
-```tsx
-import { SearchResultCard } from '@/components/search';
 
-<SearchResultCard
+```tsx
+import { SearchResultCard } from '@/components/search'
+;<SearchResultCard
   result={messageResult}
   query="project update"
   showContext={true}
@@ -40,6 +41,7 @@ import { SearchResultCard } from '@/components/search';
 ```
 
 **Variants**:
+
 - `SearchResultCard` - Full card with all features
 - `CompactSearchResultCard` - Minimal version for lists
 
@@ -48,6 +50,7 @@ import { SearchResultCard } from '@/components/search';
 **Location**: `/src/components/search/SearchHistory.tsx`
 
 Search history management with:
+
 - Recent searches list with timestamps
 - Clear all history
 - Remove individual searches
@@ -57,10 +60,10 @@ Search history management with:
 - Compact view option
 
 **Usage**:
-```tsx
-import { SearchHistory } from '@/components/search';
 
-<SearchHistory
+```tsx
+import { SearchHistory } from '@/components/search'
+;<SearchHistory
   maxItems={50}
   onSelect={(search) => runSearch(search)}
   onExport={(searches) => exportToFile(searches)}
@@ -68,6 +71,7 @@ import { SearchHistory } from '@/components/search';
 ```
 
 **Variants**:
+
 - `SearchHistory` - Full history manager
 - `CompactSearchHistory` - Minimal list for dropdowns
 
@@ -76,6 +80,7 @@ import { SearchHistory } from '@/components/search';
 **Location**: `/src/components/search/SavedSearches.tsx`
 
 Saved searches management with:
+
 - Save search with custom name
 - Edit saved search (enhanced version)
 - Delete saved search
@@ -85,10 +90,10 @@ Saved searches management with:
 - Usage tracking
 
 **Usage**:
-```tsx
-import { SavedSearches } from '@/components/search';
 
-<SavedSearches
+```tsx
+import { SavedSearches } from '@/components/search'
+;<SavedSearches
   onSelect={(search) => loadSearch(search)}
   onExport={(searches) => exportSearches(searches)}
   onImport={(searches) => importSearches(searches)}
@@ -96,6 +101,7 @@ import { SavedSearches } from '@/components/search';
 ```
 
 **Features**:
+
 - Category organization (Work, Personal, etc.)
 - Search statistics (usage count, last used)
 - Drag and drop reordering (future enhancement)
@@ -105,6 +111,7 @@ import { SavedSearches } from '@/components/search';
 **Location**: `/src/components/search/AdvancedSearchBuilder.tsx`
 
 Visual query builder with:
+
 - Visual query builder UI
 - Boolean operators (AND, OR, NOT)
 - Field-specific search (from:user, in:channel, has:link, is:pinned)
@@ -114,10 +121,10 @@ Visual query builder with:
 - Code view with syntax highlighting
 
 **Usage**:
-```tsx
-import { AdvancedSearchBuilder } from '@/components/search';
 
-<AdvancedSearchBuilder
+```tsx
+import { AdvancedSearchBuilder } from '@/components/search'
+;<AdvancedSearchBuilder
   initialParts={[]}
   onChange={(query, parts) => console.log('Query:', query)}
   onSearch={(query) => performSearch(query)}
@@ -125,6 +132,7 @@ import { AdvancedSearchBuilder } from '@/components/search';
 ```
 
 **Query Syntax**:
+
 ```
 from:alice             # Messages from user alice
 in:general             # Messages in #general channel
@@ -141,6 +149,7 @@ NOT term               # Exclude term
 **Location**: `/src/components/admin/search/SearchAnalytics.tsx`
 
 Admin analytics dashboard with:
+
 - Total searches and unique users
 - Average search time
 - Search success rate (clicks / searches)
@@ -152,16 +161,14 @@ Admin analytics dashboard with:
 - Export analytics data
 
 **Usage**:
-```tsx
-import { SearchAnalytics } from '@/components/admin/search';
 
-<SearchAnalytics
-  timeRange="week"
-  onExport={(data) => exportAnalytics(data)}
-/>
+```tsx
+import { SearchAnalytics } from '@/components/admin/search'
+;<SearchAnalytics timeRange="week" onExport={(data) => exportAnalytics(data)} />
 ```
 
 **Metrics Tracked**:
+
 - Overview: Total searches, unique users, avg time, success rate
 - Top Searches: Query, count, success rate, avg click position
 - Zero Results: Queries with no results (improvement opportunities)
@@ -173,6 +180,7 @@ import { SearchAnalytics } from '@/components/admin/search';
 **Location**: `/src/components/ui/date-range-picker.tsx`
 
 Comprehensive date range picker with:
+
 - Calendar date picker
 - Quick presets (today, yesterday, last week, last month, etc.)
 - Custom date range selection
@@ -181,10 +189,10 @@ Comprehensive date range picker with:
 - Keyboard navigation ready
 
 **Usage**:
-```tsx
-import { DateRangePicker } from '@/components/ui/date-range-picker';
 
-<DateRangePicker
+```tsx
+import { DateRangePicker } from '@/components/ui/date-range-picker'
+;<DateRangePicker
   value={{ from: new Date(), to: null }}
   onChange={(range) => setDateRange(range)}
   placeholder="Select date range"
@@ -193,6 +201,7 @@ import { DateRangePicker } from '@/components/ui/date-range-picker';
 ```
 
 **Presets**:
+
 - Today
 - Yesterday
 - Last 7 days
@@ -207,6 +216,7 @@ import { DateRangePicker } from '@/components/ui/date-range-picker';
 **Location**: `/src/components/search/SmartSearch.tsx` (existing, enhanced documentation)
 
 The existing SmartSearch component provides AI-powered semantic search. It complements the v0.7.0 components with:
+
 - Natural language queries
 - Semantic search with embeddings
 - Contextual result highlighting
@@ -217,14 +227,10 @@ The existing SmartSearch component provides AI-powered semantic search. It compl
 ### 1. Basic Search Implementation
 
 ```tsx
-import {
-  SearchModal,
-  SearchResultCard,
-  SearchHistory
-} from '@/components/search';
+import { SearchModal, SearchResultCard, SearchHistory } from '@/components/search'
 
 function MySearchPage() {
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState([])
 
   return (
     <div>
@@ -234,46 +240,39 @@ function MySearchPage() {
       />
 
       <div className="results">
-        {results.map(result => (
-          <SearchResultCard
-            key={result.id}
-            result={result}
-            onClick={openMessage}
-          />
+        {results.map((result) => (
+          <SearchResultCard key={result.id} result={result} onClick={openMessage} />
         ))}
       </div>
     </div>
-  );
+  )
 }
 ```
 
 ### 2. Advanced Search with Query Builder
 
 ```tsx
-import {
-  AdvancedSearchBuilder,
-  SearchFilters
-} from '@/components/search';
+import { AdvancedSearchBuilder, SearchFilters } from '@/components/search'
 
 function AdvancedSearchPage() {
   return (
     <div>
       <AdvancedSearchBuilder
         onChange={(query, parts) => {
-          console.log('Built query:', query);
-          console.log('Query parts:', parts);
+          console.log('Built query:', query)
+          console.log('Query parts:', parts)
         }}
         onSearch={performSearch}
       />
     </div>
-  );
+  )
 }
 ```
 
 ### 3. Admin Analytics Dashboard
 
 ```tsx
-import { SearchAnalytics } from '@/components/admin/search';
+import { SearchAnalytics } from '@/components/admin/search'
 
 function AdminDashboard() {
   return (
@@ -281,10 +280,10 @@ function AdminDashboard() {
       timeRange="month"
       onExport={(data) => {
         // Export as CSV or JSON
-        downloadFile(data, 'analytics.json');
+        downloadFile(data, 'analytics.json')
       }}
     />
-  );
+  )
 }
 ```
 
@@ -318,6 +317,7 @@ All components support data export:
 4. **Query Builder**: Export/import query definitions
 
 **Export Format**:
+
 ```json
 {
   "version": "0.7.0",
@@ -354,58 +354,48 @@ Total addition: ~46KB (gzipped)
 ### Unit Tests
 
 ```tsx
-import { render, screen, fireEvent } from '@testing-library/react';
-import { SearchResultCard } from '@/components/search';
+import { render, screen, fireEvent } from '@testing-library/react'
+import { SearchResultCard } from '@/components/search'
 
 describe('SearchResultCard', () => {
   it('highlights search terms', () => {
-    render(
-      <SearchResultCard
-        result={mockResult}
-        query="test query"
-      />
-    );
+    render(<SearchResultCard result={mockResult} query="test query" />)
 
-    expect(screen.getByText(/test/)).toHaveClass('bg-yellow-200');
-  });
+    expect(screen.getByText(/test/)).toHaveClass('bg-yellow-200')
+  })
 
   it('calls onClick when card is clicked', () => {
-    const onClick = jest.fn();
-    render(
-      <SearchResultCard
-        result={mockResult}
-        onClick={onClick}
-      />
-    );
+    const onClick = jest.fn()
+    render(<SearchResultCard result={mockResult} onClick={onClick} />)
 
-    fireEvent.click(screen.getByRole('button'));
-    expect(onClick).toHaveBeenCalledWith(mockResult);
-  });
-});
+    fireEvent.click(screen.getByRole('button'))
+    expect(onClick).toHaveBeenCalledWith(mockResult)
+  })
+})
 ```
 
 ### E2E Tests
 
 ```typescript
 // e2e/search.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 test('advanced search builder', async ({ page }) => {
-  await page.goto('/search');
+  await page.goto('/search')
 
   // Add search condition
-  await page.click('button:has-text("Add condition")');
+  await page.click('button:has-text("Add condition")')
 
   // Select field
-  await page.selectOption('select[name="field"]', 'from');
+  await page.selectOption('select[name="field"]', 'from')
 
   // Enter value
-  await page.fill('input[placeholder*="Username"]', 'alice');
+  await page.fill('input[placeholder*="Username"]', 'alice')
 
   // Verify query preview
-  const preview = await page.textContent('.query-preview');
-  expect(preview).toContain('from:alice');
-});
+  const preview = await page.textContent('.query-preview')
+  expect(preview).toContain('from:alice')
+})
 ```
 
 ## API Integration
@@ -415,18 +405,8 @@ test('advanced search builder', async ({ page }) => {
 ```typescript
 // GraphQL Query
 const SEARCH_MESSAGES = gql`
-  query SearchMessages(
-    $query: String!
-    $filters: SearchFilters
-    $limit: Int
-    $offset: Int
-  ) {
-    searchMessages(
-      query: $query
-      filters: $filters
-      limit: $limit
-      offset: $offset
-    ) {
+  query SearchMessages($query: String!, $filters: SearchFilters, $limit: Int, $offset: Int) {
+    searchMessages(query: $query, filters: $filters, limit: $limit, offset: $offset) {
       totalCount
       hasMore
       results {
@@ -447,7 +427,7 @@ const SEARCH_MESSAGES = gql`
       }
     }
   }
-`;
+`
 ```
 
 ### Analytics API
@@ -476,7 +456,7 @@ const SEARCH_ANALYTICS = gql`
       }
     }
   }
-`;
+`
 ```
 
 ## Accessibility
@@ -503,15 +483,17 @@ All components follow WCAG 2.1 Level AA guidelines:
 ### From v0.6.0 to v0.7.0
 
 1. **Update imports**:
+
 ```tsx
 // Old
-import { SearchResult } from '@/components/search/search-results';
+import { SearchResult } from '@/components/search/search-results'
 
 // New
-import { SearchResultCard } from '@/components/search';
+import { SearchResultCard } from '@/components/search'
 ```
 
 2. **Update component usage**:
+
 ```tsx
 // Old
 <SearchResult result={result} />
@@ -525,14 +507,12 @@ import { SearchResultCard } from '@/components/search';
 ```
 
 3. **Add date range picker**:
+
 ```tsx
-import { DateRangePicker } from '@/components/ui/date-range-picker';
+import { DateRangePicker } from '@/components/ui/date-range-picker'
 
 // In your filters
-<DateRangePicker
-  value={dateRange}
-  onChange={setDateRange}
-/>
+;<DateRangePicker value={dateRange} onChange={setDateRange} />
 ```
 
 ## Future Enhancements
@@ -551,6 +531,7 @@ Planned for v0.8.0:
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/nself-chat/nself-chat/issues
 - Documentation: https://docs.nself.chat/search
 - Discord: https://discord.gg/nself-chat

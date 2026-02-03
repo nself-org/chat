@@ -11,22 +11,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useAuth } from '@/contexts/auth-context'
 import { useSecurity } from '@/lib/security/use-security'
-import {
-  Shield,
-  Key,
-  Smartphone,
-  History,
-  Bell,
-  AlertTriangle,
-} from 'lucide-react'
+import { Shield, Key, Smartphone, History, Bell, AlertTriangle } from 'lucide-react'
 
 export default function SecuritySettingsPage() {
   const { user, isDevMode } = useAuth()
-  const {
-    securitySettings,
-    twoFactorEnabled,
-    backupCodesRemaining,
-  } = useSecurity()
+  const { securitySettings, twoFactorEnabled, backupCodesRemaining } = useSecurity()
 
   const [activeTab, setActiveTab] = useState('password')
 
@@ -45,7 +34,7 @@ export default function SecuritySettingsPage() {
       <div className="space-y-6">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
             <Shield className="h-6 w-6" />
             Security
           </h1>
@@ -59,9 +48,8 @@ export default function SecuritySettingsPage() {
           <Alert>
             <AlertTriangle className="h-4 w-4" />
             <AlertDescription>
-              You are in development mode. Security features are simulated and do not
-              affect actual authentication. Password changes and 2FA setup will not
-              persist.
+              You are in development mode. Security features are simulated and do not affect actual
+              authentication. Password changes and 2FA setup will not persist.
             </AlertDescription>
           </Alert>
         )}
@@ -99,7 +87,7 @@ export default function SecuritySettingsPage() {
 
         {/* Tabbed Content */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-5 lg:inline-grid lg:w-auto">
             <TabsTrigger value="password" className="flex items-center gap-2">
               <Key className="h-4 w-4" />
               <span className="hidden sm:inline">Password</span>
@@ -206,19 +194,15 @@ function SecurityStatusCard({
   }
 
   return (
-    <div
-      className={`rounded-lg border p-4 ${statusColors[status]}`}
-    >
+    <div className={`rounded-lg border p-4 ${statusColors[status]}`}>
       <div className="flex items-start gap-3">
         <div className={`mt-0.5 ${iconColors[status]}`}>
           <Icon className="h-5 w-5" />
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <h3 className="font-medium">{title}</h3>
           <p className="text-sm opacity-80">{description}</p>
-          {extra && (
-            <p className="text-xs mt-1 opacity-60">{extra}</p>
-          )}
+          {extra && <p className="mt-1 text-xs opacity-60">{extra}</p>}
         </div>
       </div>
     </div>

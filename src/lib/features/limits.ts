@@ -27,23 +27,20 @@
  */
 function parseEnvInt(envVar: string | undefined, defaultValue: number): number {
   if (typeof envVar === 'undefined' || envVar === '') {
-    return defaultValue;
+    return defaultValue
   }
-  const parsed = parseInt(envVar, 10);
-  return isNaN(parsed) ? defaultValue : parsed;
+  const parsed = parseInt(envVar, 10)
+  return isNaN(parsed) ? defaultValue : parsed
 }
 
 /**
  * Parse a boolean from environment variable with fallback
  */
-function parseEnvBool(
-  envVar: string | undefined,
-  defaultValue: boolean
-): boolean {
+function parseEnvBool(envVar: string | undefined, defaultValue: boolean): boolean {
   if (typeof envVar === 'undefined' || envVar === '') {
-    return defaultValue;
+    return defaultValue
   }
-  return envVar.toLowerCase() === 'true' || envVar === '1';
+  return envVar.toLowerCase() === 'true' || envVar === '1'
 }
 
 // ============================================================================
@@ -59,16 +56,10 @@ export const LIMITS = {
   // ============================================================================
 
   /** Maximum length of a message in characters */
-  MAX_MESSAGE_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_MESSAGE_LENGTH,
-    4000
-  ),
+  MAX_MESSAGE_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_MESSAGE_LENGTH, 4000),
 
   /** Maximum length of a message in edit mode (may be different from original) */
-  MAX_MESSAGE_EDIT_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_MESSAGE_EDIT_LENGTH,
-    4000
-  ),
+  MAX_MESSAGE_EDIT_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_MESSAGE_EDIT_LENGTH, 4000),
 
   /** Time window for editing messages after sending (in milliseconds) */
   MESSAGE_EDIT_WINDOW: parseEnvInt(
@@ -83,28 +74,16 @@ export const LIMITS = {
   ),
 
   /** Maximum number of reactions per message */
-  MAX_REACTIONS_PER_MESSAGE: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_REACTIONS_PER_MESSAGE,
-    50
-  ),
+  MAX_REACTIONS_PER_MESSAGE: parseEnvInt(process.env.NEXT_PUBLIC_MAX_REACTIONS_PER_MESSAGE, 50),
 
   /** Maximum number of unique emoji reactions per message */
-  MAX_REACTION_EMOJI: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_REACTION_EMOJI,
-    20
-  ),
+  MAX_REACTION_EMOJI: parseEnvInt(process.env.NEXT_PUBLIC_MAX_REACTION_EMOJI, 20),
 
   /** Maximum number of users that can react with the same emoji */
-  MAX_REACTIONS_PER_EMOJI: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_REACTIONS_PER_EMOJI,
-    100
-  ),
+  MAX_REACTIONS_PER_EMOJI: parseEnvInt(process.env.NEXT_PUBLIC_MAX_REACTIONS_PER_EMOJI, 100),
 
   /** Maximum number of pinned messages per channel */
-  MAX_PINNED_MESSAGES: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_PINNED_MESSAGES,
-    50
-  ),
+  MAX_PINNED_MESSAGES: parseEnvInt(process.env.NEXT_PUBLIC_MAX_PINNED_MESSAGES, 50),
 
   /** Maximum number of bookmarks per user */
   MAX_BOOKMARKS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_BOOKMARKS, 500),
@@ -113,10 +92,7 @@ export const LIMITS = {
   MAX_THREAD_DEPTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_THREAD_DEPTH, 1),
 
   /** Maximum number of replies in a thread */
-  MAX_THREAD_REPLIES: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_THREAD_REPLIES,
-    1000
-  ),
+  MAX_THREAD_REPLIES: parseEnvInt(process.env.NEXT_PUBLIC_MAX_THREAD_REPLIES, 1000),
 
   /** Maximum voice message duration in seconds */
   MAX_VOICE_MESSAGE_DURATION: parseEnvInt(
@@ -125,10 +101,7 @@ export const LIMITS = {
   ),
 
   /** Maximum code block length in characters */
-  MAX_CODE_BLOCK_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_CODE_BLOCK_LENGTH,
-    10000
-  ),
+  MAX_CODE_BLOCK_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_CODE_BLOCK_LENGTH, 10000),
 
   // ============================================================================
   // FILE LIMITS
@@ -159,10 +132,7 @@ export const LIMITS = {
   ),
 
   /** Maximum attachments per message */
-  MAX_ATTACHMENTS: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_ATTACHMENTS_PER_MESSAGE,
-    10
-  ),
+  MAX_ATTACHMENTS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_ATTACHMENTS_PER_MESSAGE, 10),
 
   /** Maximum total attachments size per message in bytes (default: 200MB) */
   MAX_ATTACHMENTS_TOTAL_SIZE: parseEnvInt(
@@ -171,10 +141,7 @@ export const LIMITS = {
   ),
 
   /** Maximum image dimensions (width or height) in pixels */
-  MAX_IMAGE_DIMENSION: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_IMAGE_DIMENSION,
-    4096
-  ),
+  MAX_IMAGE_DIMENSION: parseEnvInt(process.env.NEXT_PUBLIC_MAX_IMAGE_DIMENSION, 4096),
 
   /** Maximum avatar file size in bytes (default: 5MB) */
   MAX_AVATAR_SIZE: parseEnvInt(
@@ -183,93 +150,54 @@ export const LIMITS = {
   ),
 
   /** Maximum avatar dimensions in pixels */
-  MAX_AVATAR_DIMENSION: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_AVATAR_DIMENSION,
-    512
-  ),
+  MAX_AVATAR_DIMENSION: parseEnvInt(process.env.NEXT_PUBLIC_MAX_AVATAR_DIMENSION, 512),
 
   // ============================================================================
   // CHANNEL LIMITS
   // ============================================================================
 
   /** Maximum channel name length */
-  MAX_CHANNEL_NAME_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_CHANNEL_NAME_LENGTH,
-    80
-  ),
+  MAX_CHANNEL_NAME_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_CHANNEL_NAME_LENGTH, 80),
 
   /** Minimum channel name length */
-  MIN_CHANNEL_NAME_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MIN_CHANNEL_NAME_LENGTH,
-    1
-  ),
+  MIN_CHANNEL_NAME_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MIN_CHANNEL_NAME_LENGTH, 1),
 
   /** Maximum channel topic/description length */
-  MAX_CHANNEL_TOPIC_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_CHANNEL_TOPIC_LENGTH,
-    250
-  ),
+  MAX_CHANNEL_TOPIC_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_CHANNEL_TOPIC_LENGTH, 250),
 
   /** Maximum channels per workspace */
-  MAX_CHANNELS_PER_WORKSPACE: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_CHANNELS_PER_WORKSPACE,
-    500
-  ),
+  MAX_CHANNELS_PER_WORKSPACE: parseEnvInt(process.env.NEXT_PUBLIC_MAX_CHANNELS_PER_WORKSPACE, 500),
 
   /** Maximum private channels per workspace */
-  MAX_PRIVATE_CHANNELS: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_PRIVATE_CHANNELS,
-    250
-  ),
+  MAX_PRIVATE_CHANNELS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_PRIVATE_CHANNELS, 250),
 
   /** Maximum members in a group DM */
-  MAX_GROUP_DM_MEMBERS: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_GROUP_DM_MEMBERS,
-    10
-  ),
+  MAX_GROUP_DM_MEMBERS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_GROUP_DM_MEMBERS, 10),
 
   /** Maximum members in a channel */
-  MAX_CHANNEL_MEMBERS: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_CHANNEL_MEMBERS,
-    10000
-  ),
+  MAX_CHANNEL_MEMBERS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_CHANNEL_MEMBERS, 10000),
 
   /** Maximum categories per workspace */
   MAX_CATEGORIES: parseEnvInt(process.env.NEXT_PUBLIC_MAX_CATEGORIES, 50),
 
   /** Maximum channels per category */
-  MAX_CHANNELS_PER_CATEGORY: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_CHANNELS_PER_CATEGORY,
-    50
-  ),
+  MAX_CHANNELS_PER_CATEGORY: parseEnvInt(process.env.NEXT_PUBLIC_MAX_CHANNELS_PER_CATEGORY, 50),
 
   // ============================================================================
   // USER LIMITS
   // ============================================================================
 
   /** Maximum display name length */
-  MAX_DISPLAY_NAME_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_DISPLAY_NAME_LENGTH,
-    50
-  ),
+  MAX_DISPLAY_NAME_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_DISPLAY_NAME_LENGTH, 50),
 
   /** Minimum display name length */
-  MIN_DISPLAY_NAME_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MIN_DISPLAY_NAME_LENGTH,
-    1
-  ),
+  MIN_DISPLAY_NAME_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MIN_DISPLAY_NAME_LENGTH, 1),
 
   /** Maximum username length */
-  MAX_USERNAME_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_USERNAME_LENGTH,
-    30
-  ),
+  MAX_USERNAME_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_USERNAME_LENGTH, 30),
 
   /** Minimum username length */
-  MIN_USERNAME_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MIN_USERNAME_LENGTH,
-    3
-  ),
+  MIN_USERNAME_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MIN_USERNAME_LENGTH, 3),
 
   /** Maximum custom status length */
   MAX_STATUS_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_STATUS_LENGTH, 100),
@@ -278,10 +206,7 @@ export const LIMITS = {
   MAX_BIO_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_BIO_LENGTH, 500),
 
   /** Maximum users per workspace */
-  MAX_WORKSPACE_MEMBERS: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_WORKSPACE_MEMBERS,
-    10000
-  ),
+  MAX_WORKSPACE_MEMBERS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_WORKSPACE_MEMBERS, 10000),
 
   /** Maximum blocked users per user */
   MAX_BLOCKED_USERS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_BLOCKED_USERS, 500),
@@ -309,54 +234,33 @@ export const LIMITS = {
   ),
 
   /** Real-time connection retry delay in milliseconds */
-  REALTIME_RETRY_DELAY: parseEnvInt(
-    process.env.NEXT_PUBLIC_REALTIME_RETRY_DELAY,
-    3000
-  ),
+  REALTIME_RETRY_DELAY: parseEnvInt(process.env.NEXT_PUBLIC_REALTIME_RETRY_DELAY, 3000),
 
   /** Maximum real-time connection retries */
-  REALTIME_MAX_RETRIES: parseEnvInt(
-    process.env.NEXT_PUBLIC_REALTIME_MAX_RETRIES,
-    5
-  ),
+  REALTIME_MAX_RETRIES: parseEnvInt(process.env.NEXT_PUBLIC_REALTIME_MAX_RETRIES, 5),
 
   // ============================================================================
   // SEARCH LIMITS
   // ============================================================================
 
   /** Maximum search query length */
-  MAX_SEARCH_QUERY_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_SEARCH_QUERY_LENGTH,
-    500
-  ),
+  MAX_SEARCH_QUERY_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_SEARCH_QUERY_LENGTH, 500),
 
   /** Minimum search query length */
-  MIN_SEARCH_QUERY_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MIN_SEARCH_QUERY_LENGTH,
-    2
-  ),
+  MIN_SEARCH_QUERY_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MIN_SEARCH_QUERY_LENGTH, 2),
 
   /** Maximum search results per page */
-  MAX_SEARCH_RESULTS: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_SEARCH_RESULTS,
-    50
-  ),
+  MAX_SEARCH_RESULTS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_SEARCH_RESULTS, 50),
 
   /** Search debounce delay in milliseconds */
-  SEARCH_DEBOUNCE_DELAY: parseEnvInt(
-    process.env.NEXT_PUBLIC_SEARCH_DEBOUNCE_DELAY,
-    300
-  ),
+  SEARCH_DEBOUNCE_DELAY: parseEnvInt(process.env.NEXT_PUBLIC_SEARCH_DEBOUNCE_DELAY, 300),
 
   // ============================================================================
   // NOTIFICATION LIMITS
   // ============================================================================
 
   /** Maximum notifications to keep in history */
-  MAX_NOTIFICATION_HISTORY: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_NOTIFICATION_HISTORY,
-    100
-  ),
+  MAX_NOTIFICATION_HISTORY: parseEnvInt(process.env.NEXT_PUBLIC_MAX_NOTIFICATION_HISTORY, 100),
 
   /** Notification sound cooldown in milliseconds (prevent spam) */
   NOTIFICATION_SOUND_COOLDOWN: parseEnvInt(
@@ -372,37 +276,22 @@ export const LIMITS = {
   MAX_POLL_OPTIONS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_POLL_OPTIONS, 10),
 
   /** Maximum poll question length */
-  MAX_POLL_QUESTION_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_POLL_QUESTION_LENGTH,
-    200
-  ),
+  MAX_POLL_QUESTION_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_POLL_QUESTION_LENGTH, 200),
 
   /** Maximum poll option length */
-  MAX_POLL_OPTION_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_POLL_OPTION_LENGTH,
-    100
-  ),
+  MAX_POLL_OPTION_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_POLL_OPTION_LENGTH, 100),
 
   /** Maximum custom emoji per workspace */
   MAX_CUSTOM_EMOJI: parseEnvInt(process.env.NEXT_PUBLIC_MAX_CUSTOM_EMOJI, 500),
 
   /** Maximum custom emoji name length */
-  MAX_EMOJI_NAME_LENGTH: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_EMOJI_NAME_LENGTH,
-    32
-  ),
+  MAX_EMOJI_NAME_LENGTH: parseEnvInt(process.env.NEXT_PUBLIC_MAX_EMOJI_NAME_LENGTH, 32),
 
   /** Maximum webhook integrations per channel */
-  MAX_WEBHOOKS_PER_CHANNEL: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_WEBHOOKS_PER_CHANNEL,
-    10
-  ),
+  MAX_WEBHOOKS_PER_CHANNEL: parseEnvInt(process.env.NEXT_PUBLIC_MAX_WEBHOOKS_PER_CHANNEL, 10),
 
   /** Maximum bot accounts per workspace */
-  MAX_BOTS_PER_WORKSPACE: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_BOTS_PER_WORKSPACE,
-    50
-  ),
+  MAX_BOTS_PER_WORKSPACE: parseEnvInt(process.env.NEXT_PUBLIC_MAX_BOTS_PER_WORKSPACE, 50),
 
   // ============================================================================
   // RATE LIMITS
@@ -421,16 +310,10 @@ export const LIMITS = {
   ),
 
   /** Maximum API requests per minute */
-  RATE_LIMIT_API_PER_MINUTE: parseEnvInt(
-    process.env.NEXT_PUBLIC_RATE_LIMIT_API_PER_MINUTE,
-    60
-  ),
+  RATE_LIMIT_API_PER_MINUTE: parseEnvInt(process.env.NEXT_PUBLIC_RATE_LIMIT_API_PER_MINUTE, 60),
 
   /** Slow mode minimum delay in seconds */
-  SLOW_MODE_MIN_DELAY: parseEnvInt(
-    process.env.NEXT_PUBLIC_SLOW_MODE_MIN_DELAY,
-    1
-  ),
+  SLOW_MODE_MIN_DELAY: parseEnvInt(process.env.NEXT_PUBLIC_SLOW_MODE_MIN_DELAY, 1),
 
   /** Slow mode maximum delay in seconds */
   SLOW_MODE_MAX_DELAY: parseEnvInt(
@@ -443,41 +326,23 @@ export const LIMITS = {
   // ============================================================================
 
   /** Maximum messages to load initially */
-  INITIAL_MESSAGES_LOAD: parseEnvInt(
-    process.env.NEXT_PUBLIC_INITIAL_MESSAGES_LOAD,
-    50
-  ),
+  INITIAL_MESSAGES_LOAD: parseEnvInt(process.env.NEXT_PUBLIC_INITIAL_MESSAGES_LOAD, 50),
 
   /** Messages to load when scrolling up */
-  MESSAGES_LOAD_MORE: parseEnvInt(
-    process.env.NEXT_PUBLIC_MESSAGES_LOAD_MORE,
-    25
-  ),
+  MESSAGES_LOAD_MORE: parseEnvInt(process.env.NEXT_PUBLIC_MESSAGES_LOAD_MORE, 25),
 
   /** Maximum messages to keep in memory per channel */
-  MAX_MESSAGES_IN_MEMORY: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_MESSAGES_IN_MEMORY,
-    500
-  ),
+  MAX_MESSAGES_IN_MEMORY: parseEnvInt(process.env.NEXT_PUBLIC_MAX_MESSAGES_IN_MEMORY, 500),
 
   /** Maximum channels in sidebar before collapsing */
-  SIDEBAR_COLLAPSE_THRESHOLD: parseEnvInt(
-    process.env.NEXT_PUBLIC_SIDEBAR_COLLAPSE_THRESHOLD,
-    30
-  ),
+  SIDEBAR_COLLAPSE_THRESHOLD: parseEnvInt(process.env.NEXT_PUBLIC_SIDEBAR_COLLAPSE_THRESHOLD, 30),
 
   /** Maximum recent channels to show */
-  MAX_RECENT_CHANNELS: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_RECENT_CHANNELS,
-    10
-  ),
+  MAX_RECENT_CHANNELS: parseEnvInt(process.env.NEXT_PUBLIC_MAX_RECENT_CHANNELS, 10),
 
   /** Maximum recent searches to save */
-  MAX_RECENT_SEARCHES: parseEnvInt(
-    process.env.NEXT_PUBLIC_MAX_RECENT_SEARCHES,
-    10
-  ),
-} as const;
+  MAX_RECENT_SEARCHES: parseEnvInt(process.env.NEXT_PUBLIC_MAX_RECENT_SEARCHES, 10),
+} as const
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -486,12 +351,12 @@ export const LIMITS = {
 /**
  * Type for all limit keys
  */
-export type LimitKey = keyof typeof LIMITS;
+export type LimitKey = keyof typeof LIMITS
 
 /**
  * Type for limit values (all numbers)
  */
-export type LimitValue = (typeof LIMITS)[LimitKey];
+export type LimitValue = (typeof LIMITS)[LimitKey]
 
 // ============================================================================
 // LIMIT METADATA
@@ -503,12 +368,12 @@ export type LimitValue = (typeof LIMITS)[LimitKey];
 export const LIMIT_METADATA: Record<
   LimitKey,
   {
-    name: string;
-    description: string;
-    unit: 'bytes' | 'ms' | 'seconds' | 'minutes' | 'count' | 'characters';
-    min: number;
-    max: number;
-    category: string;
+    name: string
+    description: string
+    unit: 'bytes' | 'ms' | 'seconds' | 'minutes' | 'count' | 'characters'
+    min: number
+    max: number
+    category: string
   }
 > = {
   // Message limits
@@ -1074,7 +939,7 @@ export const LIMIT_METADATA: Record<
     max: 50,
     category: 'ui',
   },
-};
+}
 
 // ============================================================================
 // UTILITY FUNCTIONS
@@ -1084,14 +949,14 @@ export const LIMIT_METADATA: Record<
  * Get a specific limit value
  */
 export function getLimit(key: LimitKey): number {
-  return LIMITS[key];
+  return LIMITS[key]
 }
 
 /**
  * Get limit metadata
  */
 export function getLimitMetadata(key: LimitKey) {
-  return LIMIT_METADATA[key];
+  return LIMIT_METADATA[key]
 }
 
 /**
@@ -1101,46 +966,46 @@ export function validateLimitValue(
   key: LimitKey,
   value: number
 ): { valid: boolean; error?: string } {
-  const metadata = LIMIT_METADATA[key];
+  const metadata = LIMIT_METADATA[key]
 
   if (value < metadata.min) {
     return {
       valid: false,
       error: `${metadata.name} must be at least ${metadata.min}`,
-    };
+    }
   }
 
   if (value > metadata.max) {
     return {
       valid: false,
       error: `${metadata.name} cannot exceed ${metadata.max}`,
-    };
+    }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
  * Format a limit value with its unit
  */
 export function formatLimitValue(key: LimitKey): string {
-  const value = LIMITS[key];
-  const metadata = LIMIT_METADATA[key];
+  const value = LIMITS[key]
+  const metadata = LIMIT_METADATA[key]
 
   switch (metadata.unit) {
     case 'bytes':
-      return formatBytes(value);
+      return formatBytes(value)
     case 'ms':
-      return formatDuration(value);
+      return formatDuration(value)
     case 'seconds':
-      return `${value} seconds`;
+      return `${value} seconds`
     case 'minutes':
-      return `${value} minutes`;
+      return `${value} minutes`
     case 'characters':
-      return `${value} characters`;
+      return `${value} characters`
     case 'count':
     default:
-      return value.toLocaleString();
+      return value.toLocaleString()
   }
 }
 
@@ -1148,23 +1013,23 @@ export function formatLimitValue(key: LimitKey): string {
  * Format bytes to human-readable string
  */
 function formatBytes(bytes: number): string {
-  if (bytes === 0) return '0 Bytes';
+  if (bytes === 0) return '0 Bytes'
 
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const k = 1024
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`
 }
 
 /**
  * Format milliseconds to human-readable string
  */
 function formatDuration(ms: number): string {
-  if (ms < 1000) return `${ms}ms`;
-  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`;
-  if (ms < 3600000) return `${(ms / 60000).toFixed(1)} min`;
-  return `${(ms / 3600000).toFixed(1)} hr`;
+  if (ms < 1000) return `${ms}ms`
+  if (ms < 60000) return `${(ms / 1000).toFixed(1)}s`
+  if (ms < 3600000) return `${(ms / 60000).toFixed(1)} min`
+  return `${(ms / 3600000).toFixed(1)} hr`
 }
 
 /**
@@ -1179,15 +1044,13 @@ export function getLimitsByCategory(
       key: key as LimitKey,
       value: LIMITS[key as LimitKey],
       metadata,
-    }));
+    }))
 }
 
 /**
  * Get all limit categories
  */
 export function getLimitCategories(): string[] {
-  const categories = new Set(
-    Object.values(LIMIT_METADATA).map((m) => m.category)
-  );
-  return Array.from(categories).sort();
+  const categories = new Set(Object.values(LIMIT_METADATA).map((m) => m.category))
+  return Array.from(categories).sort()
 }

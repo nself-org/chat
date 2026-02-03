@@ -249,11 +249,7 @@ export function useForward(options: UseForwardOptions = {}): UseForwardReturn {
     try {
       // Forward to each destination
       for (const destination of store.selectedDestinations) {
-        const result = await forwardToSingle(
-          store.messageToForward,
-          destination,
-          store.comment
-        )
+        const result = await forwardToSingle(store.messageToForward, destination, store.comment)
         results.push(result)
         store.addForwardResult(result)
       }
@@ -339,12 +335,7 @@ export function useQuickForward() {
   const addRecentDestination = useForwardStore((s) => s.addRecentDestination)
 
   const quickForward = useCallback(
-    async (
-      messageId: string,
-      targetChannelId: string,
-      userId: string,
-      comment?: string
-    ) => {
+    async (messageId: string, targetChannelId: string, userId: string, comment?: string) => {
       if (!isForwardEnabled) {
         throw new Error('Forwarding is not enabled')
       }

@@ -25,9 +25,7 @@ import {
 // ============================================================================
 
 function getFragmentName(fragment: DocumentNode): string | undefined {
-  const definition = fragment.definitions.find(
-    (def) => def.kind === 'FragmentDefinition'
-  )
+  const definition = fragment.definitions.find((def) => def.kind === 'FragmentDefinition')
   if (definition && definition.kind === 'FragmentDefinition') {
     return definition.name.value
   }
@@ -35,9 +33,7 @@ function getFragmentName(fragment: DocumentNode): string | undefined {
 }
 
 function getFragmentTypeName(fragment: DocumentNode): string | undefined {
-  const definition = fragment.definitions.find(
-    (def) => def.kind === 'FragmentDefinition'
-  )
+  const definition = fragment.definitions.find((def) => def.kind === 'FragmentDefinition')
   if (definition && definition.kind === 'FragmentDefinition') {
     return definition.typeCondition.name.value
   }
@@ -45,9 +41,7 @@ function getFragmentTypeName(fragment: DocumentNode): string | undefined {
 }
 
 function getFragmentFields(fragment: DocumentNode): string[] {
-  const definition = fragment.definitions.find(
-    (def) => def.kind === 'FragmentDefinition'
-  )
+  const definition = fragment.definitions.find((def) => def.kind === 'FragmentDefinition')
   if (definition && definition.kind === 'FragmentDefinition') {
     return definition.selectionSet.selections
       .filter((sel): sel is { kind: 'Field'; name: { value: string } } => sel.kind === 'Field')
@@ -57,9 +51,7 @@ function getFragmentFields(fragment: DocumentNode): string[] {
 }
 
 function hasFragmentSpread(fragment: DocumentNode, spreadName: string): boolean {
-  const definition = fragment.definitions.find(
-    (def) => def.kind === 'FragmentDefinition'
-  )
+  const definition = fragment.definitions.find((def) => def.kind === 'FragmentDefinition')
   if (definition && definition.kind === 'FragmentDefinition') {
     return definition.selectionSet.selections.some(
       (sel) => sel.kind === 'FragmentSpread' && sel.name.value === spreadName
@@ -611,7 +603,9 @@ describe('Search Result Fragments', () => {
 
     it('should include UserBasic and ChannelBasic fragment definitions', () => {
       expect(hasIncludedFragmentDefinition(SEARCH_MESSAGE_RESULT_FRAGMENT, 'UserBasic')).toBe(true)
-      expect(hasIncludedFragmentDefinition(SEARCH_MESSAGE_RESULT_FRAGMENT, 'ChannelBasic')).toBe(true)
+      expect(hasIncludedFragmentDefinition(SEARCH_MESSAGE_RESULT_FRAGMENT, 'ChannelBasic')).toBe(
+        true
+      )
     })
 
     it('should use fragment spreads in nested selections', () => {

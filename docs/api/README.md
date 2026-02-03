@@ -98,12 +98,7 @@ query GetChannels {
 
 # Mutation
 mutation SendMessage($channelId: uuid!, $content: String!) {
-  insert_nchat_messages_one(
-    object: {
-      channel_id: $channelId
-      content: $content
-    }
-  ) {
+  insert_nchat_messages_one(object: { channel_id: $channelId, content: $content }) {
     id
     content
     created_at
@@ -137,13 +132,13 @@ import { NChatClient } from '@nchat/sdk'
 
 const client = new NChatClient({
   apiUrl: 'https://api.nchat.example.com',
-  apiKey: 'your-api-key'
+  apiKey: 'your-api-key',
 })
 
 // Authenticate
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 client.setToken(token)
@@ -151,7 +146,7 @@ client.setToken(token)
 // Send a message
 const message = await client.messages.send({
   channelId: 'channel-123',
-  content: 'Hello, world!'
+  content: 'Hello, world!',
 })
 ```
 
@@ -273,15 +268,15 @@ When rate limited:
 
 ## Error Codes
 
-| Code | HTTP Status | Description |
-|------|-------------|-------------|
-| `AUTHENTICATION_ERROR` | 401 | Authentication required or invalid |
-| `AUTHORIZATION_ERROR` | 403 | Insufficient permissions |
-| `NOT_FOUND` | 404 | Resource not found |
-| `VALIDATION_ERROR` | 400 | Invalid request data |
-| `RATE_LIMIT_ERROR` | 429 | Too many requests |
-| `SERVER_ERROR` | 500 | Internal server error |
-| `NETWORK_ERROR` | - | Network connection failed |
+| Code                   | HTTP Status | Description                        |
+| ---------------------- | ----------- | ---------------------------------- |
+| `AUTHENTICATION_ERROR` | 401         | Authentication required or invalid |
+| `AUTHORIZATION_ERROR`  | 403         | Insufficient permissions           |
+| `NOT_FOUND`            | 404         | Resource not found                 |
+| `VALIDATION_ERROR`     | 400         | Invalid request data               |
+| `RATE_LIMIT_ERROR`     | 429         | Too many requests                  |
+| `SERVER_ERROR`         | 500         | Internal server error              |
+| `NETWORK_ERROR`        | -           | Network connection failed          |
 
 ## Versioning
 

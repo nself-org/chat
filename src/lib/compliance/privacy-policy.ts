@@ -4,7 +4,7 @@
  * Utilities for managing privacy settings and generating privacy documentation.
  */
 
-import type { PrivacySettings } from './compliance-types';
+import type { PrivacySettings } from './compliance-types'
 
 // ============================================================================
 // DEFAULT PRIVACY SETTINGS
@@ -33,7 +33,7 @@ export function createDefaultPrivacySettings(userId: string): PrivacySettings {
     productUpdates: true,
     securityAlerts: true,
     updatedAt: new Date(),
-  };
+  }
 }
 
 // ============================================================================
@@ -41,9 +41,9 @@ export function createDefaultPrivacySettings(userId: string): PrivacySettings {
 // ============================================================================
 
 export const PROFILE_VISIBILITY_OPTIONS: {
-  value: PrivacySettings['profileVisibility'];
-  label: string;
-  description: string;
+  value: PrivacySettings['profileVisibility']
+  label: string
+  description: string
 }[] = [
   {
     value: 'public',
@@ -65,12 +65,12 @@ export const PROFILE_VISIBILITY_OPTIONS: {
     label: 'Private',
     description: 'Your profile is hidden from everyone',
   },
-];
+]
 
 export const DIRECT_MESSAGE_OPTIONS: {
-  value: PrivacySettings['allowDirectMessages'];
-  label: string;
-  description: string;
+  value: PrivacySettings['allowDirectMessages']
+  label: string
+  description: string
 }[] = [
   {
     value: 'everyone',
@@ -87,26 +87,26 @@ export const DIRECT_MESSAGE_OPTIONS: {
     label: 'Nobody',
     description: 'Disable direct messages',
   },
-];
+]
 
 // ============================================================================
 // PRIVACY SETTING CATEGORIES
 // ============================================================================
 
 export interface PrivacySettingCategory {
-  id: string;
-  name: string;
-  description: string;
-  settings: PrivacySettingConfig[];
+  id: string
+  name: string
+  description: string
+  settings: PrivacySettingConfig[]
 }
 
 export interface PrivacySettingConfig {
-  key: keyof PrivacySettings;
-  name: string;
-  description: string;
-  type: 'boolean' | 'select';
-  options?: { value: string; label: string }[];
-  sensitive?: boolean;
+  key: keyof PrivacySettings
+  name: string
+  description: string
+  type: 'boolean' | 'select'
+  options?: { value: string; label: string }[]
+  sensitive?: boolean
 }
 
 export const PRIVACY_SETTING_CATEGORIES: PrivacySettingCategory[] = [
@@ -253,16 +253,16 @@ export const PRIVACY_SETTING_CATEGORIES: PrivacySettingCategory[] = [
       },
     ],
   },
-];
+]
 
 // ============================================================================
 // PRIVACY POLICY GENERATION
 // ============================================================================
 
 export interface PrivacyPolicySection {
-  id: string;
-  title: string;
-  content: string;
+  id: string
+  title: string
+  content: string
 }
 
 /**
@@ -360,7 +360,7 @@ You can control cookies through your browser settings.`,
     },
     {
       id: 'children',
-      title: 'Children\'s Privacy',
+      title: "Children's Privacy",
       content: `The Service is not intended for users under 13 (or 16 in certain jurisdictions). We do not knowingly collect information from children. If you believe we have collected information from a child, please contact us immediately.`,
     },
     {
@@ -376,9 +376,9 @@ You can control cookies through your browser settings.`,
 Email: ${contactEmail}
 Company: ${companyName}`,
     },
-  ];
+  ]
 
-  return sections;
+  return sections
 }
 
 // ============================================================================
@@ -388,29 +388,30 @@ Company: ${companyName}`,
 /**
  * Validate privacy settings
  */
-export function validatePrivacySettings(
-  settings: Partial<PrivacySettings>
-): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
+export function validatePrivacySettings(settings: Partial<PrivacySettings>): {
+  valid: boolean
+  errors: string[]
+} {
+  const errors: string[] = []
 
   if (settings.profileVisibility) {
-    const validVisibilities = PROFILE_VISIBILITY_OPTIONS.map((o) => o.value);
+    const validVisibilities = PROFILE_VISIBILITY_OPTIONS.map((o) => o.value)
     if (!validVisibilities.includes(settings.profileVisibility)) {
-      errors.push('Invalid profile visibility option');
+      errors.push('Invalid profile visibility option')
     }
   }
 
   if (settings.allowDirectMessages) {
-    const validDMOptions = DIRECT_MESSAGE_OPTIONS.map((o) => o.value);
+    const validDMOptions = DIRECT_MESSAGE_OPTIONS.map((o) => o.value)
     if (!validDMOptions.includes(settings.allowDirectMessages)) {
-      errors.push('Invalid direct messages option');
+      errors.push('Invalid direct messages option')
     }
   }
 
   return {
     valid: errors.length === 0,
     errors,
-  };
+  }
 }
 
 // ============================================================================
@@ -421,57 +422,57 @@ export function validatePrivacySettings(
  * Calculate a privacy score based on settings
  */
 export function calculatePrivacyScore(settings: PrivacySettings): {
-  score: number;
-  level: 'low' | 'medium' | 'high' | 'maximum';
-  recommendations: string[];
+  score: number
+  level: 'low' | 'medium' | 'high' | 'maximum'
+  recommendations: string[]
 } {
-  let score = 0;
-  const recommendations: string[] = [];
+  let score = 0
+  const recommendations: string[] = []
 
   // Profile visibility
-  if (settings.profileVisibility === 'private') score += 20;
-  else if (settings.profileVisibility === 'contacts') score += 15;
-  else if (settings.profileVisibility === 'members') score += 10;
-  else recommendations.push('Consider restricting your profile visibility');
+  if (settings.profileVisibility === 'private') score += 20
+  else if (settings.profileVisibility === 'contacts') score += 15
+  else if (settings.profileVisibility === 'members') score += 10
+  else recommendations.push('Consider restricting your profile visibility')
 
   // Activity settings
-  if (!settings.showOnlineStatus) score += 10;
-  else recommendations.push('Hiding online status increases privacy');
+  if (!settings.showOnlineStatus) score += 10
+  else recommendations.push('Hiding online status increases privacy')
 
-  if (!settings.showLastSeen) score += 10;
-  else recommendations.push('Hiding last seen increases privacy');
+  if (!settings.showLastSeen) score += 10
+  else recommendations.push('Hiding last seen increases privacy')
 
-  if (!settings.activityStatusVisible) score += 5;
+  if (!settings.activityStatusVisible) score += 5
 
   // Messaging settings
-  if (!settings.showReadReceipts) score += 5;
-  if (!settings.showTypingIndicator) score += 5;
+  if (!settings.showReadReceipts) score += 5
+  if (!settings.showTypingIndicator) score += 5
 
-  if (settings.allowDirectMessages === 'none') score += 10;
-  else if (settings.allowDirectMessages === 'contacts') score += 5;
+  if (settings.allowDirectMessages === 'none') score += 10
+  else if (settings.allowDirectMessages === 'contacts') score += 5
 
   // Data settings
-  if (!settings.shareAnalytics) score += 15;
-  else recommendations.push('Disabling analytics sharing improves privacy');
+  if (!settings.shareAnalytics) score += 15
+  else recommendations.push('Disabling analytics sharing improves privacy')
 
-  if (!settings.personalizedAds) score += 10;
-  else recommendations.push('Disabling personalized ads improves privacy');
+  if (!settings.personalizedAds) score += 10
+  else recommendations.push('Disabling personalized ads improves privacy')
 
-  if (!settings.searchable) score += 5;
-  if (!settings.marketingEmails) score += 5;
+  if (!settings.searchable) score += 5
+  if (!settings.marketingEmails) score += 5
 
   // Determine level
-  let level: 'low' | 'medium' | 'high' | 'maximum';
-  if (score >= 80) level = 'maximum';
-  else if (score >= 60) level = 'high';
-  else if (score >= 40) level = 'medium';
-  else level = 'low';
+  let level: 'low' | 'medium' | 'high' | 'maximum'
+  if (score >= 80) level = 'maximum'
+  else if (score >= 60) level = 'high'
+  else if (score >= 40) level = 'medium'
+  else level = 'low'
 
   return {
     score: Math.min(100, score),
     level,
     recommendations: recommendations.slice(0, 3), // Top 3 recommendations
-  };
+  }
 }
 
 // ============================================================================
@@ -486,4 +487,4 @@ export const PrivacyPolicyHelpers = {
   generatePrivacyPolicySections,
   validatePrivacySettings,
   calculatePrivacyScore,
-};
+}

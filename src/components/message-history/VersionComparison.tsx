@@ -46,9 +46,7 @@ export function VersionComparison({
   onVersionsChange,
   className,
 }: VersionComparisonProps) {
-  const [leftVersion, setLeftVersion] = useState<MessageVersion>(
-    initialLeft ?? versions[0]
-  )
+  const [leftVersion, setLeftVersion] = useState<MessageVersion>(initialLeft ?? versions[0])
   const [rightVersion, setRightVersion] = useState<MessageVersion>(
     initialRight ?? versions[versions.length - 1]
   )
@@ -87,10 +85,7 @@ export function VersionComparison({
       <div className="flex flex-wrap items-center gap-4">
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">From:</span>
-          <Select
-            value={leftVersion.versionNumber.toString()}
-            onValueChange={handleLeftChange}
-          >
+          <Select value={leftVersion.versionNumber.toString()} onValueChange={handleLeftChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select version" />
             </SelectTrigger>
@@ -120,21 +115,13 @@ export function VersionComparison({
           </Select>
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={swapVersions}
-          className="h-8 w-8"
-        >
+        <Button variant="ghost" size="icon" onClick={swapVersions} className="h-8 w-8">
           <ArrowLeftRight className="h-4 w-4" />
         </Button>
 
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">To:</span>
-          <Select
-            value={rightVersion.versionNumber.toString()}
-            onValueChange={handleRightChange}
-          >
+          <Select value={rightVersion.versionNumber.toString()} onValueChange={handleRightChange}>
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Select version" />
             </SelectTrigger>
@@ -164,7 +151,7 @@ export function VersionComparison({
           </Select>
         </div>
 
-        <div className="ml-auto flex items-center gap-1 border rounded-md p-1">
+        <div className="ml-auto flex items-center gap-1 rounded-md border p-1">
           <Button
             variant={mode === 'inline' ? 'secondary' : 'ghost'}
             size="sm"
@@ -192,9 +179,7 @@ export function VersionComparison({
             createdAt={leftVersion.createdAt}
             isOriginal={leftVersion.isOriginal}
           />
-          <p className="text-xs text-muted-foreground">
-            by {leftVersion.editedBy.displayName}
-          </p>
+          <p className="text-xs text-muted-foreground">by {leftVersion.editedBy.displayName}</p>
         </div>
         <ArrowRight className="h-4 w-4 text-muted-foreground" />
         <div>
@@ -203,24 +188,15 @@ export function VersionComparison({
             createdAt={rightVersion.createdAt}
             isCurrent={rightVersion.isCurrent}
           />
-          <p className="text-xs text-muted-foreground">
-            by {rightVersion.editedBy.displayName}
-          </p>
+          <p className="text-xs text-muted-foreground">by {rightVersion.editedBy.displayName}</p>
         </div>
       </div>
 
       {/* Diff stats */}
-      {diff && (
-        <DiffStatsBar
-          charsAdded={diff.charsAdded}
-          charsRemoved={diff.charsRemoved}
-        />
-      )}
+      {diff && <DiffStatsBar charsAdded={diff.charsAdded} charsRemoved={diff.charsRemoved} />}
 
       {/* Comparison view */}
-      {diff && mode === 'inline' && (
-        <EditDiff diff={diff} showStats={false} />
-      )}
+      {diff && mode === 'inline' && <EditDiff diff={diff} showStats={false} />}
 
       {mode === 'side-by-side' && (
         <SideBySideDiff
@@ -298,10 +274,7 @@ export function QuickComparison({
         </Button>
       </div>
 
-      <DiffStatsBar
-        charsAdded={diff.charsAdded}
-        charsRemoved={diff.charsRemoved}
-      />
+      <DiffStatsBar charsAdded={diff.charsAdded} charsRemoved={diff.charsRemoved} />
 
       {showDiff && <EditDiff diff={diff} showStats={false} />}
     </div>
@@ -318,19 +291,11 @@ export interface TabbedVersionViewProps {
   className?: string
 }
 
-export function TabbedVersionView({
-  versions,
-  className,
-}: TabbedVersionViewProps) {
-  const sortedVersions = [...versions].sort(
-    (a, b) => b.versionNumber - a.versionNumber
-  )
+export function TabbedVersionView({ versions, className }: TabbedVersionViewProps) {
+  const sortedVersions = [...versions].sort((a, b) => b.versionNumber - a.versionNumber)
 
   return (
-    <Tabs
-      defaultValue={sortedVersions[0]?.versionNumber.toString()}
-      className={className}
-    >
+    <Tabs defaultValue={sortedVersions[0]?.versionNumber.toString()} className={className}>
       <TabsList className="w-full justify-start overflow-x-auto">
         {sortedVersions.map((version) => (
           <TabsTrigger
@@ -354,17 +319,11 @@ export function TabbedVersionView({
       </TabsList>
 
       {sortedVersions.map((version) => (
-        <TabsContent
-          key={version.id}
-          value={version.versionNumber.toString()}
-          className="mt-4"
-        >
+        <TabsContent key={version.id} value={version.versionNumber.toString()} className="mt-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <div>
-                <p className="font-medium">
-                  {version.editedBy.displayName}
-                </p>
+                <p className="font-medium">{version.editedBy.displayName}</p>
                 <p className="text-sm text-muted-foreground">
                   {formatMessageTime(version.createdAt)}
                 </p>
@@ -373,10 +332,8 @@ export function TabbedVersionView({
                 {version.content.length} characters
               </div>
             </div>
-            <div className="rounded-md border bg-muted/30 p-4">
-              <pre className="whitespace-pre-wrap font-mono text-sm">
-                {version.content}
-              </pre>
+            <div className="bg-muted/30 rounded-md border p-4">
+              <pre className="whitespace-pre-wrap font-mono text-sm">{version.content}</pre>
             </div>
           </div>
         </TabsContent>

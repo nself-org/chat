@@ -25,10 +25,7 @@ export {
 } from './recording-indicator'
 
 // Voice Recorder
-export {
-  VoiceRecorder,
-  type VoiceRecorderProps,
-} from './voice-recorder'
+export { VoiceRecorder, type VoiceRecorderProps } from './voice-recorder'
 
 // Voice Recorder Button
 export {
@@ -42,13 +39,7 @@ export {
 } from './voice-recorder-button'
 
 // Voice Message
-export {
-  VoiceMessage,
-  type VoiceMessageProps,
-} from './voice-message'
+export { VoiceMessage, type VoiceMessageProps } from './voice-message'
 
 // Voice Message Preview
-export {
-  VoiceMessagePreview,
-  type VoiceMessagePreviewProps,
-} from './voice-message-preview'
+export { VoiceMessagePreview, type VoiceMessagePreviewProps } from './voice-message-preview'

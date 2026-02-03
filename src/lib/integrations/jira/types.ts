@@ -6,13 +6,7 @@
  */
 
 // Import types from parent for local use
-import type {
-  JiraUser,
-  JiraIssue,
-  JiraIssueType,
-  JiraPriority,
-  JiraStatus,
-} from '../types'
+import type { JiraUser, JiraIssue, JiraIssueType, JiraPriority, JiraStatus } from '../types'
 
 // Re-export types from parent
 export type {

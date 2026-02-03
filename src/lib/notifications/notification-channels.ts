@@ -13,45 +13,46 @@ import type {
   DesktopNotificationSettings,
   PushNotificationSettings,
   EmailNotificationSettings,
-} from './notification-types';
+} from './notification-types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface NotificationChannelStatus {
-  method: NotificationDeliveryMethod;
-  available: boolean;
-  enabled: boolean;
-  permissionStatus?: NotificationPermission | 'unknown';
-  lastError?: string;
-  lastDeliveredAt?: string;
+  method: NotificationDeliveryMethod
+  available: boolean
+  enabled: boolean
+  permissionStatus?: NotificationPermission | 'unknown'
+  lastError?: string
+  lastDeliveredAt?: string
 }
 
 export interface DeliveryPayload {
-  id: string;
-  title: string;
-  body: string;
-  icon?: string;
-  badge?: string;
-  tag?: string;
-  data?: Record<string, unknown>;
-  actionUrl?: string;
-  requireInteraction?: boolean;
-  silent?: boolean;
+  id: string
+  title: string
+  body: string
+  icon?: string
+  badge?: string
+  tag?: string
+  data?: Record<string, unknown>
+  actionUrl?: string
+  requireInteraction?: boolean
+  silent?: boolean
   actions?: Array<{
-    action: string;
-    title: string;
-    icon?: string;
-  }>;
+    action: string
+    title: string
+    icon?: string
+  }>
 }
 
 export interface DeliveryResult {
-  success: boolean;
-  method: NotificationDeliveryMethod;
-  timestamp: string;
-  error?: string;
-  notificationId?: string;
+  success: boolean
+  method: NotificationDeliveryMethod
+  timestamp: string
+  error?: string
+  notificationId?: string
 }
 
 // ============================================================================
@@ -62,7 +63,7 @@ export interface DeliveryResult {
  * Check if desktop notifications are available
  */
 export function isDesktopAvailable(): boolean {
-  return typeof window !== 'undefined' && 'Notification' in window;
+  return typeof window !== 'undefined' && 'Notification' in window
 }
 
 /**
@@ -70,9 +71,9 @@ export function isDesktopAvailable(): boolean {
  */
 export function getDesktopPermission(): NotificationPermission | 'unavailable' {
   if (!isDesktopAvailable()) {
-    return 'unavailable';
+    return 'unavailable'
   }
-  return Notification.permission;
+  return Notification.permission
 }
 
 /**
@@ -80,18 +81,18 @@ export function getDesktopPermission(): NotificationPermission | 'unavailable' {
  */
 export async function requestDesktopPermission(): Promise<NotificationPermission> {
   if (!isDesktopAvailable()) {
-    return 'denied';
+    return 'denied'
   }
 
   if (Notification.permission === 'granted') {
-    return 'granted';
+    return 'granted'
   }
 
   if (Notification.permission !== 'denied') {
-    return await Notification.requestPermission();
+    return await Notification.requestPermission()
   }
 
-  return 'denied';
+  return 'denied'
 }
 
 /**
@@ -101,7 +102,7 @@ export async function deliverDesktopNotification(
   payload: DeliveryPayload,
   settings: DesktopNotificationSettings
 ): Promise<DeliveryResult> {
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date().toISOString()
 
   if (!isDesktopAvailable()) {
     return {
@@ -109,7 +110,7 @@ export async function deliverDesktopNotification(
       method: 'desktop',
       timestamp,
       error: 'Desktop notifications not available',
-    };
+    }
   }
 
   if (Notification.permission !== 'granted') {
@@ -118,7 +119,7 @@ export async function deliverDesktopNotification(
       method: 'desktop',
       timestamp,
       error: 'Permission not granted',
-    };
+    }
   }
 
   try {
@@ -130,20 +131,20 @@ export async function deliverDesktopNotification(
       requireInteraction: payload.requireInteraction || settings.requireInteraction,
       silent: payload.silent || !settings.playSound,
       data: payload.data,
-    });
+    })
 
     // Handle click
     notification.onclick = () => {
-      window.focus();
+      window.focus()
       if (payload.actionUrl) {
-        window.location.href = payload.actionUrl;
+        window.location.href = payload.actionUrl
       }
-      notification.close();
-    };
+      notification.close()
+    }
 
     // Auto-close if duration is set
     if (settings.duration > 0 && !notification.requireInteraction) {
-      setTimeout(() => notification.close(), settings.duration);
+      setTimeout(() => notification.close(), settings.duration)
     }
 
     return {
@@ -151,14 +152,14 @@ export async function deliverDesktopNotification(
       method: 'desktop',
       timestamp,
       notificationId: payload.id,
-    };
+    }
   } catch (error) {
     return {
       success: false,
       method: 'desktop',
       timestamp,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    }
   }
 }
 
@@ -170,56 +171,50 @@ export async function deliverDesktopNotification(
  * Check if push notifications are available
  */
 export function isPushAvailable(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    'serviceWorker' in navigator &&
-    'PushManager' in window
-  );
+  return typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window
 }
 
 /**
  * Get push subscription status
  */
 export async function getPushSubscription(): Promise<PushSubscription | null> {
-  if (!isPushAvailable()) return null;
+  if (!isPushAvailable()) return null
 
   try {
-    const registration = await navigator.serviceWorker.ready;
-    return await registration.pushManager.getSubscription();
+    const registration = await navigator.serviceWorker.ready
+    return await registration.pushManager.getSubscription()
   } catch {
-    return null;
+    return null
   }
 }
 
 /**
  * Subscribe to push notifications
  */
-export async function subscribeToPush(
-  vapidPublicKey: string
-): Promise<PushSubscription | null> {
-  if (!isPushAvailable()) return null;
+export async function subscribeToPush(vapidPublicKey: string): Promise<PushSubscription | null> {
+  if (!isPushAvailable()) return null
 
   try {
-    const registration = await navigator.serviceWorker.ready;
+    const registration = await navigator.serviceWorker.ready
 
     // Convert VAPID key to Uint8Array
     const urlBase64ToUint8Array = (base64String: string): Uint8Array => {
-      const padding = '='.repeat((4 - (base64String.length % 4)) % 4);
-      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
-      const rawData = window.atob(base64);
-      return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
-    };
+      const padding = '='.repeat((4 - (base64String.length % 4)) % 4)
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/')
+      const rawData = window.atob(base64)
+      return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)))
+    }
 
-    const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
+    const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey)
     const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: applicationServerKey.buffer as ArrayBuffer,
-    });
+    })
 
-    return subscription;
+    return subscription
   } catch (error) {
-    console.error('Failed to subscribe to push:', error);
-    return null;
+    logger.error('Failed to subscribe to push:', error)
+    return null
   }
 }
 
@@ -227,13 +222,13 @@ export async function subscribeToPush(
  * Unsubscribe from push notifications
  */
 export async function unsubscribeFromPush(): Promise<boolean> {
-  const subscription = await getPushSubscription();
-  if (!subscription) return true;
+  const subscription = await getPushSubscription()
+  if (!subscription) return true
 
   try {
-    return await subscription.unsubscribe();
+    return await subscription.unsubscribe()
   } catch {
-    return false;
+    return false
   }
 }
 
@@ -244,7 +239,7 @@ export async function deliverPushNotification(
   payload: DeliveryPayload,
   settings: PushNotificationSettings
 ): Promise<DeliveryResult> {
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date().toISOString()
 
   if (!isPushAvailable()) {
     return {
@@ -252,11 +247,11 @@ export async function deliverPushNotification(
       method: 'mobile',
       timestamp,
       error: 'Push notifications not available',
-    };
+    }
   }
 
   try {
-    const registration = await navigator.serviceWorker.ready;
+    const registration = await navigator.serviceWorker.ready
 
     await registration.showNotification(payload.title, {
       body: settings.showPreview ? payload.body : 'You have a new notification',
@@ -272,21 +267,21 @@ export async function deliverPushNotification(
       actions: payload.actions,
       // vibrate is part of the Notifications API but not in TS types
       ...(settings.vibrate && { vibrate: [200, 100, 200] }),
-    } as NotificationOptions);
+    } as NotificationOptions)
 
     return {
       success: true,
       method: 'mobile',
       timestamp,
       notificationId: payload.id,
-    };
+    }
   } catch (error) {
     return {
       success: false,
       method: 'mobile',
       timestamp,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    }
   }
 }
 
@@ -295,12 +290,12 @@ export async function deliverPushNotification(
 // ============================================================================
 
 export interface EmailPayload {
-  to: string;
-  subject: string;
-  text: string;
-  html?: string;
-  template?: string;
-  templateData?: Record<string, unknown>;
+  to: string
+  subject: string
+  text: string
+  html?: string
+  template?: string
+  templateData?: Record<string, unknown>
 }
 
 /**
@@ -312,7 +307,7 @@ export async function sendEmailNotification(
   settings: EmailNotificationSettings,
   apiEndpoint: string = '/api/notifications/email'
 ): Promise<DeliveryResult> {
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date().toISOString()
 
   if (!settings.enabled) {
     return {
@@ -320,7 +315,7 @@ export async function sendEmailNotification(
       method: 'email',
       timestamp,
       error: 'Email notifications disabled',
-    };
+    }
   }
 
   try {
@@ -338,27 +333,27 @@ export async function sendEmailNotification(
         templateData: email.templateData,
         includePreview: settings.includePreview,
       }),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
+      throw new Error(`HTTP ${response.status}`)
     }
 
-    const result = await response.json();
+    const result = await response.json()
 
     return {
       success: true,
       method: 'email',
       timestamp,
       notificationId: result.id,
-    };
+    }
   } catch (error) {
     return {
       success: false,
       method: 'email',
       timestamp,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    }
   }
 }
 
@@ -366,29 +361,29 @@ export async function sendEmailNotification(
 // In-App Notifications
 // ============================================================================
 
-export type InAppNotificationHandler = (payload: DeliveryPayload) => void;
+export type InAppNotificationHandler = (payload: DeliveryPayload) => void
 
-let inAppHandler: InAppNotificationHandler | null = null;
+let inAppHandler: InAppNotificationHandler | null = null
 
 /**
  * Register in-app notification handler
  */
 export function registerInAppHandler(handler: InAppNotificationHandler): void {
-  inAppHandler = handler;
+  inAppHandler = handler
 }
 
 /**
  * Unregister in-app notification handler
  */
 export function unregisterInAppHandler(): void {
-  inAppHandler = null;
+  inAppHandler = null
 }
 
 /**
  * Deliver an in-app notification
  */
 export function deliverInAppNotification(payload: DeliveryPayload): DeliveryResult {
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date().toISOString()
 
   if (!inAppHandler) {
     return {
@@ -396,24 +391,24 @@ export function deliverInAppNotification(payload: DeliveryPayload): DeliveryResu
       method: 'in_app',
       timestamp,
       error: 'No in-app handler registered',
-    };
+    }
   }
 
   try {
-    inAppHandler(payload);
+    inAppHandler(payload)
     return {
       success: true,
       method: 'in_app',
       timestamp,
       notificationId: payload.id,
-    };
+    }
   } catch (error) {
     return {
       success: false,
       method: 'in_app',
       timestamp,
       error: error instanceof Error ? error.message : 'Unknown error',
-    };
+    }
   }
 }
 
@@ -425,7 +420,7 @@ export function deliverInAppNotification(payload: DeliveryPayload): DeliveryResu
  * Get status of all notification channels
  */
 export async function getChannelStatuses(): Promise<NotificationChannelStatus[]> {
-  const statuses: NotificationChannelStatus[] = [];
+  const statuses: NotificationChannelStatus[] = []
 
   // Desktop
   statuses.push({
@@ -433,40 +428,40 @@ export async function getChannelStatuses(): Promise<NotificationChannelStatus[]>
     available: isDesktopAvailable(),
     enabled: isDesktopAvailable() && Notification.permission === 'granted',
     permissionStatus: isDesktopAvailable() ? Notification.permission : 'unknown',
-  });
+  })
 
   // Push
-  const pushSubscription = await getPushSubscription();
+  const pushSubscription = await getPushSubscription()
   statuses.push({
     method: 'mobile',
     available: isPushAvailable(),
     enabled: !!pushSubscription,
     permissionStatus: 'unknown',
-  });
+  })
 
   // Email (always available, enabled based on settings)
   statuses.push({
     method: 'email',
     available: true,
     enabled: false, // Will be updated based on user settings
-  });
+  })
 
   // In-app
   statuses.push({
     method: 'in_app',
     available: true,
     enabled: !!inAppHandler,
-  });
+  })
 
-  return statuses;
+  return statuses
 }
 
 /**
  * Get available delivery methods
  */
 export async function getAvailableMethods(): Promise<NotificationDeliveryMethod[]> {
-  const statuses = await getChannelStatuses();
-  return statuses.filter((s) => s.available && s.enabled).map((s) => s.method);
+  const statuses = await getChannelStatuses()
+  return statuses.filter((s) => s.available && s.enabled).map((s) => s.method)
 }
 
 // ============================================================================
@@ -480,42 +475,42 @@ export async function deliverToChannels(
   payload: DeliveryPayload,
   methods: NotificationDeliveryMethod[],
   settings: {
-    desktop?: DesktopNotificationSettings;
-    push?: PushNotificationSettings;
-    email?: EmailNotificationSettings;
+    desktop?: DesktopNotificationSettings
+    push?: PushNotificationSettings
+    email?: EmailNotificationSettings
   }
 ): Promise<DeliveryResult[]> {
-  const results: DeliveryResult[] = [];
+  const results: DeliveryResult[] = []
 
   for (const method of methods) {
-    let result: DeliveryResult;
+    let result: DeliveryResult
 
     switch (method) {
       case 'desktop':
         if (settings.desktop) {
-          result = await deliverDesktopNotification(payload, settings.desktop);
+          result = await deliverDesktopNotification(payload, settings.desktop)
         } else {
           result = {
             success: false,
             method,
             timestamp: new Date().toISOString(),
             error: 'Desktop settings not provided',
-          };
+          }
         }
-        break;
+        break
 
       case 'mobile':
         if (settings.push) {
-          result = await deliverPushNotification(payload, settings.push);
+          result = await deliverPushNotification(payload, settings.push)
         } else {
           result = {
             success: false,
             method,
             timestamp: new Date().toISOString(),
             error: 'Push settings not provided',
-          };
+          }
         }
-        break;
+        break
 
       case 'email':
         // Email requires specific handling
@@ -524,12 +519,12 @@ export async function deliverToChannels(
           method,
           timestamp: new Date().toISOString(),
           error: 'Email delivery requires separate API call',
-        };
-        break;
+        }
+        break
 
       case 'in_app':
-        result = deliverInAppNotification(payload);
-        break;
+        result = deliverInAppNotification(payload)
+        break
 
       default:
         result = {
@@ -537,11 +532,11 @@ export async function deliverToChannels(
           method,
           timestamp: new Date().toISOString(),
           error: `Unknown delivery method: ${method}`,
-        };
+        }
     }
 
-    results.push(result);
+    results.push(result)
   }
 
-  return results;
+  return results
 }

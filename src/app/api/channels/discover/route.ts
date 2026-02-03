@@ -12,9 +12,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ channels, total: 0 })
   } catch (error) {
-    return NextResponse.json(
-      { error: 'Failed to discover channels' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Failed to discover channels' }, { status: 500 })
   }
 }

@@ -30,41 +30,41 @@ export const themePresets: Record<string, ThemePreset> = {
     name: 'nself (Default)',
     preset: 'nself',
     light: {
-      primaryColor: '#00D4FF',   // nself signature cyan (glowing blue)
+      primaryColor: '#00D4FF', // nself signature cyan (glowing blue)
       secondaryColor: '#0EA5E9', // nself secondary blue
-      accentColor: '#38BDF8',    // light accent blue
+      accentColor: '#38BDF8', // light accent blue
       backgroundColor: '#FFFFFF', // Protocol white bg
-      surfaceColor: '#F4F4F5',   // zinc-100 (Protocol surface)
-      textColor: '#18181B',      // zinc-900 (Protocol text)
-      mutedColor: '#71717A',     // zinc-500 (Protocol muted)
-      borderColor: '#18181B1A',  // zinc-900/10 (Protocol borders)
+      surfaceColor: '#F4F4F5', // zinc-100 (Protocol surface)
+      textColor: '#18181B', // zinc-900 (Protocol text)
+      mutedColor: '#71717A', // zinc-500 (Protocol muted)
+      borderColor: '#18181B1A', // zinc-900/10 (Protocol borders)
       buttonPrimaryBg: '#18181B', // zinc-900 (Protocol primary button)
       buttonPrimaryText: '#FFFFFF', // white (Protocol button text)
       buttonSecondaryBg: '#F4F4F5', // zinc-100 (Protocol secondary)
       buttonSecondaryText: '#18181B', // zinc-900 (Protocol secondary text)
-      successColor: '#10B981',   // emerald-500
-      warningColor: '#F59E0B',   // amber-500
-      errorColor: '#EF4444',     // red-500
-      infoColor: '#00D4FF',      // nself cyan
+      successColor: '#10B981', // emerald-500
+      warningColor: '#F59E0B', // amber-500
+      errorColor: '#EF4444', // red-500
+      infoColor: '#00D4FF', // nself cyan
     },
     dark: {
-      primaryColor: '#00D4FF',   // nself glowing cyan (bright in dark)
+      primaryColor: '#00D4FF', // nself glowing cyan (bright in dark)
       secondaryColor: '#0EA5E9', // nself blue
-      accentColor: '#38BDF8',    // light blue accent
+      accentColor: '#38BDF8', // light blue accent
       backgroundColor: '#18181B', // zinc-900 (Protocol dark bg)
-      surfaceColor: '#27272A',   // zinc-800 (Protocol dark surface)
-      textColor: '#F4F4F5',      // zinc-100 (Protocol dark text)
-      mutedColor: '#A1A1AA',     // zinc-400 (Protocol dark muted)
-      borderColor: '#FFFFFF1A',  // white/10 (Protocol dark borders)
+      surfaceColor: '#27272A', // zinc-800 (Protocol dark surface)
+      textColor: '#F4F4F5', // zinc-100 (Protocol dark text)
+      mutedColor: '#A1A1AA', // zinc-400 (Protocol dark muted)
+      borderColor: '#FFFFFF1A', // white/10 (Protocol dark borders)
       buttonPrimaryBg: '#00D4FF', // nself cyan (Protocol accent style)
       buttonPrimaryText: '#18181B', // zinc-900 (dark contrast text)
       buttonSecondaryBg: '#3F3F461A', // zinc-800/40 (Protocol dark secondary bg)
       buttonSecondaryText: '#A1A1AA', // zinc-400 (Protocol dark secondary text)
-      successColor: '#34D399',   // emerald-400 (brighter for dark)
-      warningColor: '#FBBF24',   // amber-400 (brighter for dark) 
-      errorColor: '#F87171',     // red-400 (brighter for dark)
-      infoColor: '#00D4FF',      // nself cyan
-    }
+      successColor: '#34D399', // emerald-400 (brighter for dark)
+      warningColor: '#FBBF24', // amber-400 (brighter for dark)
+      errorColor: '#F87171', // red-400 (brighter for dark)
+      infoColor: '#00D4FF', // nself cyan
+    },
   },
 
   // SLACK - Exact match to Slack's 2024 design system
@@ -72,41 +72,41 @@ export const themePresets: Record<string, ThemePreset> = {
     name: 'Slack',
     preset: 'slack',
     light: {
-      primaryColor: '#4A154B',     // Slack aubergine (deep purple)
-      secondaryColor: '#350D36',   // Darker aubergine
-      accentColor: '#007A5A',      // Slack green (teal-green)
+      primaryColor: '#4A154B', // Slack aubergine (deep purple)
+      secondaryColor: '#350D36', // Darker aubergine
+      accentColor: '#007A5A', // Slack green (teal-green)
       backgroundColor: '#FFFFFF',
-      surfaceColor: '#F4EDE4',     // Slack's actual warm off-white
-      textColor: '#1D1C1D',        // Slack black
-      mutedColor: '#696969',       // Slack muted gray
-      borderColor: '#DDDDDC',      // Slack's subtle warm border
-      buttonPrimaryBg: '#007A5A',  // Green primary button (Slack's CTA)
+      surfaceColor: '#F4EDE4', // Slack's actual warm off-white
+      textColor: '#1D1C1D', // Slack black
+      mutedColor: '#696969', // Slack muted gray
+      borderColor: '#DDDDDC', // Slack's subtle warm border
+      buttonPrimaryBg: '#007A5A', // Green primary button (Slack's CTA)
       buttonPrimaryText: '#FFFFFF',
       buttonSecondaryBg: '#FFFFFF',
       buttonSecondaryText: '#4A154B',
-      successColor: '#007A5A',     // Slack green
-      warningColor: '#ECB22E',     // Slack yellow
-      errorColor: '#CC2E45',       // Slack red (less pink)
-      infoColor: '#1164A3',        // Slack blue
+      successColor: '#007A5A', // Slack green
+      warningColor: '#ECB22E', // Slack yellow
+      errorColor: '#CC2E45', // Slack red (less pink)
+      infoColor: '#1164A3', // Slack blue
     },
     dark: {
-      primaryColor: '#D1B3D3',     // Light purple for dark mode (readable)
-      secondaryColor: '#9B6B9E',   // Medium purple for contrast
-      accentColor: '#2BAC76',      // Brighter green for dark mode
-      backgroundColor: '#1A1D21',  // Slack dark bg (actual)
-      surfaceColor: '#222529',     // Slack dark surface
-      textColor: '#E8E8E8',        // Slack light text (brighter)
-      mutedColor: '#BCBCBC',       // Lighter muted for dark
-      borderColor: '#35383C',      // Slack dark border
-      buttonPrimaryBg: '#2BAC76',  // Brighter green in dark
+      primaryColor: '#D1B3D3', // Light purple for dark mode (readable)
+      secondaryColor: '#9B6B9E', // Medium purple for contrast
+      accentColor: '#2BAC76', // Brighter green for dark mode
+      backgroundColor: '#1A1D21', // Slack dark bg (actual)
+      surfaceColor: '#222529', // Slack dark surface
+      textColor: '#E8E8E8', // Slack light text (brighter)
+      mutedColor: '#BCBCBC', // Lighter muted for dark
+      borderColor: '#35383C', // Slack dark border
+      buttonPrimaryBg: '#2BAC76', // Brighter green in dark
       buttonPrimaryText: '#1A1D21', // Dark text on green button
       buttonSecondaryBg: '#4A4D52',
       buttonSecondaryText: '#E8E8E8',
-      successColor: '#2BAC76',     // Brighter green for dark
-      warningColor: '#FCB400',     // Brighter yellow for dark
-      errorColor: '#E96379',       // Lighter red for dark mode
-      infoColor: '#36C5F0',        // Brighter blue for dark
-    }
+      successColor: '#2BAC76', // Brighter green for dark
+      warningColor: '#FCB400', // Brighter yellow for dark
+      errorColor: '#E96379', // Lighter red for dark mode
+      infoColor: '#36C5F0', // Brighter blue for dark
+    },
   },
 
   // DISCORD - Based on Discord's current design
@@ -114,31 +114,31 @@ export const themePresets: Record<string, ThemePreset> = {
     name: 'Discord',
     preset: 'discord',
     light: {
-      primaryColor: '#5865F2',    // Discord blurple
+      primaryColor: '#5865F2', // Discord blurple
       secondaryColor: '#4752C4',
-      accentColor: '#EB459E',     // Discord pink accent
+      accentColor: '#EB459E', // Discord pink accent
       backgroundColor: '#FFFFFF',
       surfaceColor: '#F2F3F5',
-      textColor: '#2E3338',       // Discord dark gray
-      mutedColor: '#747F8D',      // Discord muted
+      textColor: '#2E3338', // Discord dark gray
+      mutedColor: '#747F8D', // Discord muted
       borderColor: '#E3E5E8',
       buttonPrimaryBg: '#5865F2',
       buttonPrimaryText: '#FFFFFF',
       buttonSecondaryBg: '#E3E5E8',
       buttonSecondaryText: '#2E3338',
-      successColor: '#3BA55D',    // Discord green
-      warningColor: '#FAA81A',    // Discord yellow
-      errorColor: '#ED4245',      // Discord red
+      successColor: '#3BA55D', // Discord green
+      warningColor: '#FAA81A', // Discord yellow
+      errorColor: '#ED4245', // Discord red
       infoColor: '#5865F2',
     },
     dark: {
-      primaryColor: '#5865F2',    // Discord blurple
+      primaryColor: '#5865F2', // Discord blurple
       secondaryColor: '#4752C4',
-      accentColor: '#EB459E',     // Discord pink
-      backgroundColor: '#202225',  // Discord dark bg
-      surfaceColor: '#2F3136',    // Discord surface
-      textColor: '#DCDDDE',       // Discord text
-      mutedColor: '#72767D',      // Discord muted
+      accentColor: '#EB459E', // Discord pink
+      backgroundColor: '#202225', // Discord dark bg
+      surfaceColor: '#2F3136', // Discord surface
+      textColor: '#DCDDDE', // Discord text
+      mutedColor: '#72767D', // Discord muted
       borderColor: '#202225',
       buttonPrimaryBg: '#5865F2',
       buttonPrimaryText: '#FFFFFF',
@@ -148,7 +148,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#FAA81A',
       errorColor: '#ED4245',
       infoColor: '#5865F2',
-    }
+    },
   },
 
   // OCEAN - Deep ocean blues and teals
@@ -156,14 +156,14 @@ export const themePresets: Record<string, ThemePreset> = {
     name: 'Ocean',
     preset: 'ocean',
     light: {
-      primaryColor: '#0891B2',    // Cyan-600
-      secondaryColor: '#06B6D4',   // Cyan-500
-      accentColor: '#14B8A6',      // Teal-500
+      primaryColor: '#0891B2', // Cyan-600
+      secondaryColor: '#06B6D4', // Cyan-500
+      accentColor: '#14B8A6', // Teal-500
       backgroundColor: '#FFFFFF',
-      surfaceColor: '#F0FDFA',    // Cyan-50
-      textColor: '#083344',       // Very dark cyan
-      mutedColor: '#67E8F9',      // Cyan-300
-      borderColor: '#A5F3FC',     // Cyan-200
+      surfaceColor: '#F0FDFA', // Cyan-50
+      textColor: '#083344', // Very dark cyan
+      mutedColor: '#67E8F9', // Cyan-300
+      borderColor: '#A5F3FC', // Cyan-200
       buttonPrimaryBg: '#0891B2',
       buttonPrimaryText: '#FFFFFF',
       buttonSecondaryBg: '#CCFBF1', // Teal-100
@@ -174,14 +174,14 @@ export const themePresets: Record<string, ThemePreset> = {
       infoColor: '#0891B2',
     },
     dark: {
-      primaryColor: '#22D3EE',    // Cyan-400 (brighter for dark)
-      secondaryColor: '#06B6D4',   // Cyan-500
-      accentColor: '#14B8A6',      // Teal-500
-      backgroundColor: '#0C1826',  // Deep ocean dark
-      surfaceColor: '#1A2E42',     // Ocean depths
-      textColor: '#CFFAFE',        // Cyan-100
-      mutedColor: '#67E8F9',       // Cyan-300
-      borderColor: '#2E5173',      // Ocean border
+      primaryColor: '#22D3EE', // Cyan-400 (brighter for dark)
+      secondaryColor: '#06B6D4', // Cyan-500
+      accentColor: '#14B8A6', // Teal-500
+      backgroundColor: '#0C1826', // Deep ocean dark
+      surfaceColor: '#1A2E42', // Ocean depths
+      textColor: '#CFFAFE', // Cyan-100
+      mutedColor: '#67E8F9', // Cyan-300
+      borderColor: '#2E5173', // Ocean border
       buttonPrimaryBg: '#22D3EE',
       buttonPrimaryText: '#0C1826',
       buttonSecondaryBg: '#2E5173',
@@ -190,7 +190,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#FBBF24',
       errorColor: '#F87171',
       infoColor: '#22D3EE',
-    }
+    },
   },
 
   // SUNSET - Warm oranges, reds, and purples
@@ -198,14 +198,14 @@ export const themePresets: Record<string, ThemePreset> = {
     name: 'Sunset',
     preset: 'sunset',
     light: {
-      primaryColor: '#F97316',    // Orange-500
-      secondaryColor: '#FB923C',   // Orange-400
-      accentColor: '#DC2626',      // Red-600
+      primaryColor: '#F97316', // Orange-500
+      secondaryColor: '#FB923C', // Orange-400
+      accentColor: '#DC2626', // Red-600
       backgroundColor: '#FFFFFF',
-      surfaceColor: '#FFF7ED',    // Orange-50
-      textColor: '#431407',       // Very dark orange
-      mutedColor: '#FB923C',      // Orange-400
-      borderColor: '#FED7AA',     // Orange-200
+      surfaceColor: '#FFF7ED', // Orange-50
+      textColor: '#431407', // Very dark orange
+      mutedColor: '#FB923C', // Orange-400
+      borderColor: '#FED7AA', // Orange-200
       buttonPrimaryBg: '#F97316',
       buttonPrimaryText: '#FFFFFF',
       buttonSecondaryBg: '#FFEDD5', // Orange-100
@@ -216,14 +216,14 @@ export const themePresets: Record<string, ThemePreset> = {
       infoColor: '#2563EB',
     },
     dark: {
-      primaryColor: '#FB923C',    // Orange-400 (brighter)
-      secondaryColor: '#F97316',   // Orange-500
-      accentColor: '#EF4444',      // Red-500
-      backgroundColor: '#1F0E08',  // Very dark warm
-      surfaceColor: '#3A1F14',     // Dark brown-orange
-      textColor: '#FFF7ED',        // Orange-50
-      mutedColor: '#FDBA74',       // Orange-300
-      borderColor: '#5C2E1F',      // Warm border
+      primaryColor: '#FB923C', // Orange-400 (brighter)
+      secondaryColor: '#F97316', // Orange-500
+      accentColor: '#EF4444', // Red-500
+      backgroundColor: '#1F0E08', // Very dark warm
+      surfaceColor: '#3A1F14', // Dark brown-orange
+      textColor: '#FFF7ED', // Orange-50
+      mutedColor: '#FDBA74', // Orange-300
+      borderColor: '#5C2E1F', // Warm border
       buttonPrimaryBg: '#FB923C',
       buttonPrimaryText: '#1F0E08',
       buttonSecondaryBg: '#5C2E1F',
@@ -232,7 +232,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#FACC15',
       errorColor: '#F87171',
       infoColor: '#60A5FA',
-    }
+    },
   },
 
   // MIDNIGHT - Deep purples and indigos
@@ -240,14 +240,14 @@ export const themePresets: Record<string, ThemePreset> = {
     name: 'Midnight',
     preset: 'midnight',
     light: {
-      primaryColor: '#6366F1',    // Indigo-500
-      secondaryColor: '#4F46E5',   // Indigo-600
-      accentColor: '#8B5CF6',      // Violet-500
+      primaryColor: '#6366F1', // Indigo-500
+      secondaryColor: '#4F46E5', // Indigo-600
+      accentColor: '#8B5CF6', // Violet-500
       backgroundColor: '#FFFFFF',
-      surfaceColor: '#F5F3FF',    // Violet-50
-      textColor: '#1E1B4B',       // Indigo-950
-      mutedColor: '#A5B4FC',      // Indigo-300
-      borderColor: '#C7D2FE',     // Indigo-200
+      surfaceColor: '#F5F3FF', // Violet-50
+      textColor: '#1E1B4B', // Indigo-950
+      mutedColor: '#A5B4FC', // Indigo-300
+      borderColor: '#C7D2FE', // Indigo-200
       buttonPrimaryBg: '#6366F1',
       buttonPrimaryText: '#FFFFFF',
       buttonSecondaryBg: '#E0E7FF', // Indigo-100
@@ -258,14 +258,14 @@ export const themePresets: Record<string, ThemePreset> = {
       infoColor: '#6366F1',
     },
     dark: {
-      primaryColor: '#818CF8',    // Indigo-400 (brighter)
-      secondaryColor: '#6366F1',   // Indigo-500
-      accentColor: '#A78BFA',      // Violet-400
-      backgroundColor: '#0F0F23',  // Deep midnight blue
-      surfaceColor: '#1E1E3A',     // Dark indigo
-      textColor: '#E0E7FF',        // Indigo-100
-      mutedColor: '#A5B4FC',       // Indigo-300
-      borderColor: '#2E2E5C',      // Midnight border
+      primaryColor: '#818CF8', // Indigo-400 (brighter)
+      secondaryColor: '#6366F1', // Indigo-500
+      accentColor: '#A78BFA', // Violet-400
+      backgroundColor: '#0F0F23', // Deep midnight blue
+      surfaceColor: '#1E1E3A', // Dark indigo
+      textColor: '#E0E7FF', // Indigo-100
+      mutedColor: '#A5B4FC', // Indigo-300
+      borderColor: '#2E2E5C', // Midnight border
       buttonPrimaryBg: '#818CF8',
       buttonPrimaryText: '#0F0F23',
       buttonSecondaryBg: '#2E2E5C',
@@ -274,7 +274,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#FBBF24',
       errorColor: '#F87171',
       infoColor: '#818CF8',
-    }
+    },
   },
 
   // Tailwind Color Palettes
@@ -316,7 +316,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   gray: {
     name: 'Gray',
@@ -356,7 +356,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   zinc: {
     name: 'Zinc',
@@ -396,7 +396,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   stone: {
     name: 'Stone',
@@ -436,7 +436,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   red: {
     name: 'Red',
@@ -476,7 +476,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   orange: {
     name: 'Orange',
@@ -516,7 +516,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F97316',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   amber: {
     name: 'Amber',
@@ -556,7 +556,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   yellow: {
     name: 'Yellow',
@@ -596,7 +596,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#EAB308',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   lime: {
     name: 'Lime',
@@ -636,7 +636,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   green: {
     name: 'Green',
@@ -676,7 +676,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   emerald: {
     name: 'Emerald',
@@ -716,7 +716,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   teal: {
     name: 'Teal',
@@ -756,7 +756,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#14B8A6',
-    }
+    },
   },
   cyan: {
     name: 'Cyan',
@@ -796,7 +796,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#06B6D4',
-    }
+    },
   },
   sky: {
     name: 'Sky',
@@ -836,7 +836,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#0EA5E9',
-    }
+    },
   },
   blue: {
     name: 'Blue',
@@ -876,7 +876,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#3B82F6',
-    }
+    },
   },
   indigo: {
     name: 'Indigo',
@@ -916,7 +916,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#6366F1',
-    }
+    },
   },
   violet: {
     name: 'Violet',
@@ -956,7 +956,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#8B5CF6',
-    }
+    },
   },
   purple: {
     name: 'Purple',
@@ -996,7 +996,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#A855F7',
-    }
+    },
   },
   fuchsia: {
     name: 'Fuchsia',
@@ -1036,7 +1036,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EF4444',
       infoColor: '#D946EF',
-    }
+    },
   },
   pink: {
     name: 'Pink',
@@ -1076,7 +1076,7 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#EC4899',
       infoColor: '#3B82F6',
-    }
+    },
   },
   rose: {
     name: 'Rose',
@@ -1116,6 +1116,6 @@ export const themePresets: Record<string, ThemePreset> = {
       warningColor: '#F59E0B',
       errorColor: '#F43F5E',
       infoColor: '#3B82F6',
-    }
-  }
+    },
+  },
 }

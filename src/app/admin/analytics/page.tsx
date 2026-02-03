@@ -29,32 +29,48 @@ import { useAdminAccess } from '@/lib/admin/use-admin'
 
 // Lazy load chart components
 const MessagesOverTimeChart = dynamic(
-  () => import('@/components/admin/analytics-charts').then(mod => ({ default: mod.MessagesOverTimeChart })),
+  () =>
+    import('@/components/admin/analytics-charts').then((mod) => ({
+      default: mod.MessagesOverTimeChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 const PeakActivityChart = dynamic(
-  () => import('@/components/admin/analytics-charts').then(mod => ({ default: mod.PeakActivityChart })),
+  () =>
+    import('@/components/admin/analytics-charts').then((mod) => ({
+      default: mod.PeakActivityChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 const UserGrowthChart = dynamic(
-  () => import('@/components/admin/analytics-charts').then(mod => ({ default: mod.UserGrowthChart })),
+  () =>
+    import('@/components/admin/analytics-charts').then((mod) => ({ default: mod.UserGrowthChart })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 const RoleDistributionChart = dynamic(
-  () => import('@/components/admin/analytics-charts').then(mod => ({ default: mod.RoleDistributionChart })),
+  () =>
+    import('@/components/admin/analytics-charts').then((mod) => ({
+      default: mod.RoleDistributionChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 const DailyActiveUsersChart = dynamic(
-  () => import('@/components/admin/analytics-charts').then(mod => ({ default: mod.DailyActiveUsersChart })),
+  () =>
+    import('@/components/admin/analytics-charts').then((mod) => ({
+      default: mod.DailyActiveUsersChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
 const PopularChannelsChart = dynamic(
-  () => import('@/components/admin/analytics-charts').then(mod => ({ default: mod.PopularChannelsChart })),
+  () =>
+    import('@/components/admin/analytics-charts').then((mod) => ({
+      default: mod.PopularChannelsChart,
+    })),
   { loading: () => <ChartSkeleton />, ssr: false }
 )
 
@@ -156,7 +172,7 @@ export default function AnalyticsPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-bold">
               <BarChart3 className="h-8 w-8" />
               Analytics
             </h1>

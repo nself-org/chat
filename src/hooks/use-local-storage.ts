@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
+import { logger } from '@/lib/logger'
+
 /**
  * Hook for syncing state with localStorage
  * Automatically syncs across tabs via storage event
@@ -23,7 +25,7 @@ export function useLocalStorage<T>(
       const item = window.localStorage.getItem(key)
       return item ? (JSON.parse(item) as T) : initialValue
     } catch (error) {
-      console.warn(`Error reading localStorage key "${key}":`, error)
+      logger.warn(`Error reading localStorage key "${key}":`, { context: error })
       return initialValue
     }
   })
@@ -47,7 +49,7 @@ export function useLocalStorage<T>(
           )
         }
       } catch (error) {
-        console.warn(`Error setting localStorage key "${key}":`, error)
+        logger.warn(`Error setting localStorage key "${key}":`, { context: error })
       }
     },
     [key, storedValue]
@@ -67,7 +69,7 @@ export function useLocalStorage<T>(
         )
       }
     } catch (error) {
-      console.warn(`Error removing localStorage key "${key}":`, error)
+      logger.warn(`Error removing localStorage key "${key}":`, { context: error })
     }
   }, [key, initialValue])
 
@@ -80,7 +82,7 @@ export function useLocalStorage<T>(
         try {
           setStoredValue(JSON.parse(event.newValue) as T)
         } catch (error) {
-          console.warn(`Error parsing storage event for key "${key}":`, error)
+          logger.warn(`Error parsing storage event for key "${key}":`, { context: error })
         }
       } else if (event.key === key && event.newValue === null) {
         setStoredValue(initialValue)

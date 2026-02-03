@@ -71,11 +71,7 @@ export function RoleSelect({
   const roles: UserRole[] = ['owner', 'admin', 'moderator', 'member', 'guest']
 
   return (
-    <Select
-      value={value}
-      onValueChange={(v) => onChange(v as UserRole)}
-      disabled={disabled}
-    >
+    <Select value={value} onValueChange={(v) => onChange(v as UserRole)} disabled={disabled}>
       <SelectTrigger className={cn('w-full', className)}>
         <SelectValue placeholder="Select a role">
           {value && (
@@ -101,19 +97,12 @@ export function RoleSelect({
           const isDisabled = disabledRoles.includes(role)
 
           return (
-            <SelectItem
-              key={role}
-              value={role}
-              disabled={isDisabled}
-              className="py-2"
-            >
+            <SelectItem key={role} value={role} disabled={isDisabled} className="py-2">
               <div className="flex items-start">
                 <Icon className={cn('mr-2 mt-0.5 h-4 w-4', config.color)} />
                 <div>
                   <div className="font-medium">{config.label}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {config.description}
-                  </div>
+                  <div className="text-xs text-muted-foreground">{config.description}</div>
                 </div>
               </div>
             </SelectItem>

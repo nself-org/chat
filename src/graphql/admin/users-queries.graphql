@@ -182,10 +182,7 @@ query GetUserActivity($userId: uuid!, $limit: Int!, $offset: Int!) {
 
 # Get user sessions
 query GetUserSessions($userId: uuid!) {
-  nchat_user_sessions(
-    where: { user_id: { _eq: $userId } }
-    order_by: { last_active_at: desc }
-  ) {
+  nchat_user_sessions(where: { user_id: { _eq: $userId } }, order_by: { last_active_at: desc }) {
     id
     user_id
     status
@@ -203,10 +200,7 @@ query GetUserSessions($userId: uuid!) {
 
 # Get user devices
 query GetUserDevices($userId: uuid!) {
-  nchat_user_devices(
-    where: { user_id: { _eq: $userId } }
-    order_by: { last_seen_at: desc }
-  ) {
+  nchat_user_devices(where: { user_id: { _eq: $userId } }, order_by: { last_seen_at: desc }) {
     id
     user_id
     device_type
@@ -254,10 +248,7 @@ query GetBannedUsers($limit: Int!, $offset: Int!) {
 
 # Get user ban history
 query GetUserBanHistory($userId: uuid!) {
-  nchat_user_bans(
-    where: { user_id: { _eq: $userId } }
-    order_by: { banned_at: desc }
-  ) {
+  nchat_user_bans(where: { user_id: { _eq: $userId } }, order_by: { banned_at: desc }) {
     id
     user_id
     type
@@ -428,9 +419,7 @@ query GetUserStats {
 # Get user growth data
 query GetUserGrowth($startDate: timestamptz!, $endDate: timestamptz!) {
   nchat_users(
-    where: {
-      created_at: { _gte: $startDate, _lte: $endDate }
-    }
+    where: { created_at: { _gte: $startDate, _lte: $endDate } }
     order_by: { created_at: asc }
   ) {
     id
@@ -440,11 +429,7 @@ query GetUserGrowth($startDate: timestamptz!, $endDate: timestamptz!) {
 
 # Get impersonation history
 query GetImpersonationHistory($limit: Int!, $offset: Int!) {
-  nchat_impersonation_sessions(
-    limit: $limit
-    offset: $offset
-    order_by: { started_at: desc }
-  ) {
+  nchat_impersonation_sessions(limit: $limit, offset: $offset, order_by: { started_at: desc }) {
     id
     reason
     started_at

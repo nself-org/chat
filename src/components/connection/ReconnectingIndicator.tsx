@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ReconnectingIndicator - Animated indicator for reconnection state
@@ -7,20 +7,20 @@
  * to reconnect to the server.
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { useConnectionStatus } from '@/hooks/useConnectionStatus';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { useConnectionStatus } from '@/hooks/useConnectionStatus'
 
 // =============================================================================
 // Types
 // =============================================================================
 
 export interface ReconnectingIndicatorProps {
-  className?: string;
-  size?: 'sm' | 'md' | 'lg';
-  showText?: boolean;
-  showAttempts?: boolean;
-  variant?: 'spinner' | 'dots' | 'pulse';
+  className?: string
+  size?: 'sm' | 'md' | 'lg'
+  showText?: boolean
+  showAttempts?: boolean
+  variant?: 'spinner' | 'dots' | 'pulse'
 }
 
 // =============================================================================
@@ -34,23 +34,23 @@ export function ReconnectingIndicator({
   showAttempts = true,
   variant = 'spinner',
 }: ReconnectingIndicatorProps) {
-  const { isReconnecting, reconnectAttempts } = useConnectionStatus();
+  const { isReconnecting, reconnectAttempts } = useConnectionStatus()
 
   if (!isReconnecting) {
-    return null;
+    return null
   }
 
   const sizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-5 w-5',
     lg: 'h-6 w-6',
-  };
+  }
 
   const textSizeClasses = {
     sm: 'text-xs',
     md: 'text-sm',
     lg: 'text-base',
-  };
+  }
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
@@ -81,7 +81,7 @@ export function ReconnectingIndicator({
         <div className="flex space-x-1">
           <div
             className={cn(
-              'rounded-full bg-yellow-500 animate-bounce',
+              'animate-bounce rounded-full bg-yellow-500',
               size === 'sm' && 'h-1.5 w-1.5',
               size === 'md' && 'h-2 w-2',
               size === 'lg' && 'h-2.5 w-2.5'
@@ -90,7 +90,7 @@ export function ReconnectingIndicator({
           />
           <div
             className={cn(
-              'rounded-full bg-yellow-500 animate-bounce',
+              'animate-bounce rounded-full bg-yellow-500',
               size === 'sm' && 'h-1.5 w-1.5',
               size === 'md' && 'h-2 w-2',
               size === 'lg' && 'h-2.5 w-2.5'
@@ -99,7 +99,7 @@ export function ReconnectingIndicator({
           />
           <div
             className={cn(
-              'rounded-full bg-yellow-500 animate-bounce',
+              'animate-bounce rounded-full bg-yellow-500',
               size === 'sm' && 'h-1.5 w-1.5',
               size === 'md' && 'h-2 w-2',
               size === 'lg' && 'h-2.5 w-2.5'
@@ -111,15 +111,10 @@ export function ReconnectingIndicator({
 
       {variant === 'pulse' && (
         <div className="relative">
+          <div className={cn('rounded-full bg-yellow-500', sizeClasses[size])} />
           <div
             className={cn(
-              'rounded-full bg-yellow-500',
-              sizeClasses[size]
-            )}
-          />
-          <div
-            className={cn(
-              'absolute inset-0 rounded-full bg-yellow-500 animate-ping opacity-75',
+              'absolute inset-0 animate-ping rounded-full bg-yellow-500 opacity-75',
               sizeClasses[size]
             )}
           />
@@ -128,21 +123,16 @@ export function ReconnectingIndicator({
 
       {showText && (
         <span
-          className={cn(
-            'text-yellow-600 dark:text-yellow-400 font-medium',
-            textSizeClasses[size]
-          )}
+          className={cn('font-medium text-yellow-600 dark:text-yellow-400', textSizeClasses[size])}
         >
           Reconnecting
           {showAttempts && reconnectAttempts > 1 && (
-            <span className="text-muted-foreground ml-1">
-              (attempt {reconnectAttempts})
-            </span>
+            <span className="ml-1 text-muted-foreground">(attempt {reconnectAttempts})</span>
           )}
         </span>
       )}
     </div>
-  );
+  )
 }
 
-export default ReconnectingIndicator;
+export default ReconnectingIndicator

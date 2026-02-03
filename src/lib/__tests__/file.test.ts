@@ -271,9 +271,7 @@ describe('File Name Utilities', () => {
     })
 
     it('should increment for multiple duplicates', () => {
-      expect(
-        generateUniqueFileName('file.txt', ['file.txt', 'file (1).txt'])
-      ).toBe('file (2).txt')
+      expect(generateUniqueFileName('file.txt', ['file.txt', 'file (1).txt'])).toBe('file (2).txt')
     })
 
     it('should be case-insensitive', () => {
@@ -321,11 +319,7 @@ describe('File Validation', () => {
   })
 
   describe('validateFile', () => {
-    const createMockFile = (
-      name: string,
-      size: number,
-      type: string
-    ): File => {
+    const createMockFile = (name: string, size: number, type: string): File => {
       return {
         name,
         size,

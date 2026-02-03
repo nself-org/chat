@@ -8,6 +8,8 @@
 import { DocumentNode, FieldNode, OperationDefinitionNode } from 'graphql'
 import { visit } from 'graphql/language/visitor'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Configuration
 // ============================================================================
@@ -125,9 +127,7 @@ export class QueryComplexityAnalyzer {
             // Check for pagination arguments
             const hasLimit = node.arguments?.some((arg) => arg.name.value === 'limit')
             if (isList && !hasLimit) {
-              result.errors.push(
-                `List field '${fieldName}' should include a 'limit' argument`
-              )
+              result.errors.push(`List field '${fieldName}' should include a 'limit' argument`)
             }
           },
         },
@@ -180,13 +180,7 @@ export class QueryComplexityAnalyzer {
     const fieldName = node.name.value
 
     // Common list field patterns
-    const listPatterns = [
-      /_aggregate$/,
-      /^nchat_/,
-      /^search_/,
-      /^get_.*_list$/,
-      /_by_ids$/,
-    ]
+    const listPatterns = [/_aggregate$/, /^nchat_/, /^search_/, /^get_.*_list$/, /_by_ids$/]
 
     return listPatterns.some((pattern) => pattern.test(fieldName))
   }
@@ -256,10 +250,7 @@ export class ComplexityRateLimiter {
     maxComplexityPerHour: number
   }
 
-  constructor(config?: {
-    maxComplexityPerMinute?: number
-    maxComplexityPerHour?: number
-  }) {
+  constructor(config?: { maxComplexityPerMinute?: number; maxComplexityPerHour?: number }) {
     this.config = {
       maxComplexityPerMinute: config?.maxComplexityPerMinute || 10000,
       maxComplexityPerHour: config?.maxComplexityPerHour || 100000,
@@ -383,7 +374,7 @@ export function getQueryComplexity(queryString: string): number {
     const result = validateQueryComplexity(query)
     return result.complexity
   } catch (error) {
-    console.error('Error parsing query:', error)
+    logger.error('Error parsing query:', error)
     return 0
   }
 }

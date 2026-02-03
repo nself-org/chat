@@ -380,9 +380,7 @@ export function removeStep(workflow: Workflow, stepId: string): Workflow {
   return {
     ...workflow,
     steps: workflow.steps.filter((s) => s.id !== stepId),
-    edges: workflow.edges.filter(
-      (e) => e.sourceId !== stepId && e.targetId !== stepId
-    ),
+    edges: workflow.edges.filter((e) => e.sourceId !== stepId && e.targetId !== stepId),
     updatedAt: new Date().toISOString(),
   }
 }
@@ -424,10 +422,7 @@ export function removeEdge(workflow: Workflow, edgeId: string): Workflow {
 /**
  * Add a variable to a workflow
  */
-export function addVariable(
-  workflow: Workflow,
-  variable: WorkflowVariable
-): Workflow {
+export function addVariable(workflow: Workflow, variable: WorkflowVariable): Workflow {
   return {
     ...workflow,
     variables: [...workflow.variables, variable],
@@ -445,9 +440,7 @@ export function updateVariable(
 ): Workflow {
   return {
     ...workflow,
-    variables: workflow.variables.map((v) =>
-      v.id === variableId ? { ...v, ...updates } : v
-    ),
+    variables: workflow.variables.map((v) => (v.id === variableId ? { ...v, ...updates } : v)),
     updatedAt: new Date().toISOString(),
   }
 }
@@ -455,10 +448,7 @@ export function updateVariable(
 /**
  * Remove a variable from a workflow
  */
-export function removeVariable(
-  workflow: Workflow,
-  variableId: string
-): Workflow {
+export function removeVariable(workflow: Workflow, variableId: string): Workflow {
   return {
     ...workflow,
     variables: workflow.variables.filter((v) => v.id !== variableId),
@@ -469,10 +459,7 @@ export function removeVariable(
 /**
  * Update workflow settings
  */
-export function updateSettings(
-  workflow: Workflow,
-  settings: Partial<WorkflowSettings>
-): Workflow {
+export function updateSettings(workflow: Workflow, settings: Partial<WorkflowSettings>): Workflow {
   return {
     ...workflow,
     settings: { ...workflow.settings, ...settings },
@@ -483,10 +470,7 @@ export function updateSettings(
 /**
  * Update workflow status
  */
-export function updateStatus(
-  workflow: Workflow,
-  status: WorkflowStatus
-): Workflow {
+export function updateStatus(workflow: Workflow, status: WorkflowStatus): Workflow {
   const updates: Partial<Workflow> = {
     status,
     updatedAt: new Date().toISOString(),
@@ -576,18 +560,13 @@ export function updateRunStatus(
 /**
  * Find workflows that match a trigger event
  */
-export function findMatchingWorkflows(
-  workflows: Workflow[],
-  event: TriggerEvent
-): Workflow[] {
+export function findMatchingWorkflows(workflows: Workflow[], event: TriggerEvent): Workflow[] {
   return workflows.filter((workflow) => {
     // Only active workflows
     if (workflow.status !== 'active') return false
 
     // Find triggers that match
-    const triggers = workflow.steps.filter(
-      (s): s is TriggerStep => s.type === 'trigger'
-    )
+    const triggers = workflow.steps.filter((s): s is TriggerStep => s.type === 'trigger')
 
     return triggers.some((trigger) => shouldTriggerFire(trigger, event))
   })
@@ -606,9 +585,7 @@ export function getNextSteps(
   outputHandle?: string
 ): WorkflowStep[] {
   const edges = workflow.edges.filter(
-    (e) =>
-      e.sourceId === stepId &&
-      (outputHandle === undefined || e.sourceHandle === outputHandle)
+    (e) => e.sourceId === stepId && (outputHandle === undefined || e.sourceHandle === outputHandle)
   )
 
   const stepIds = edges.map((e) => e.targetId)
@@ -625,10 +602,7 @@ export function getTriggerSteps(workflow: Workflow): TriggerStep[] {
 /**
  * Get a step by ID
  */
-export function getStep(
-  workflow: Workflow,
-  stepId: string
-): WorkflowStep | undefined {
+export function getStep(workflow: Workflow, stepId: string): WorkflowStep | undefined {
   return workflow.steps.find((s) => s.id === stepId)
 }
 
@@ -742,11 +716,7 @@ export function deserializeWorkflow(json: string): Workflow {
 /**
  * Clone a workflow with a new ID
  */
-export function cloneWorkflow(
-  workflow: Workflow,
-  newName: string,
-  createdBy: string
-): Workflow {
+export function cloneWorkflow(workflow: Workflow, newName: string, createdBy: string): Workflow {
   const now = new Date().toISOString()
 
   // Create new IDs for all steps

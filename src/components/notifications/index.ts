@@ -31,17 +31,11 @@ export {
   NotificationCenter,
   NotificationCenterDropdown,
   type NotificationCenterProps,
-} from './notification-center';
+} from './notification-center'
 
-export {
-  NotificationItem,
-  type NotificationItemProps,
-} from './notification-item';
+export { NotificationItem, type NotificationItemProps } from './notification-item'
 
-export {
-  NotificationBell,
-  type NotificationBellProps,
-} from './notification-bell';
+export { NotificationBell, type NotificationBellProps } from './notification-bell'
 
 export {
   NotificationToast,
@@ -49,36 +43,30 @@ export {
   type NotificationToastProps,
   type NotificationToastContainerProps,
   type ToastItem,
-} from './notification-toast';
+} from './notification-toast'
 
 // Settings components
 export {
   NotificationPreferences,
   type NotificationPreferencesProps,
-} from './notification-preferences';
+} from './notification-preferences'
 
 export {
   ChannelNotificationSettings,
   type ChannelNotificationSettingsProps,
-} from './channel-notification-settings';
+} from './channel-notification-settings'
 
 // Badge components
-export {
-  MentionBadge,
-  type MentionBadgeProps,
-} from './mention-badge';
+export { MentionBadge, type MentionBadgeProps } from './mention-badge'
 
-export {
-  UnreadBadge,
-  type UnreadBadgeProps,
-} from './unread-badge';
+export { UnreadBadge, type UnreadBadgeProps } from './unread-badge'
 
 // Empty state
 export {
   NotificationEmpty,
   NotificationFilteredEmpty,
   type NotificationEmptyProps,
-} from './notification-empty';
+} from './notification-empty'
 
 // Desktop notification hook and component
 export {
@@ -87,7 +75,7 @@ export {
   type UseDesktopNotificationReturn,
   type DesktopNotificationOptions,
   type DesktopNotificationPermissionButtonProps,
-} from './desktop-notification';
+} from './desktop-notification'
 
 // Sound hook and components
 export {
@@ -98,7 +86,7 @@ export {
   type NotificationSoundOptions,
   type NotificationSoundPlayerProps,
   type SoundVolumeControlProps,
-} from './notification-sound';
+} from './notification-sound'
 
 // Types
 export type {
@@ -113,17 +101,21 @@ export type {
   UnreadCounts,
   NotificationFilterTab,
   NotificationFilterTabConfig,
-} from './types';
+} from './types'
 
 // Re-export hooks from /hooks folder for convenience
-export { useNotifications, type UseNotificationsOptions, type UseNotificationsReturn } from '@/hooks/use-notifications';
+export {
+  useNotifications,
+  type UseNotificationsOptions,
+  type UseNotificationsReturn,
+} from '@/hooks/use-notifications'
 export {
   useUnreadCounts,
   useChannelUnread,
   type UseUnreadCountsOptions,
   type UseUnreadCountsReturn,
   type ChannelUnreadInfo,
-} from '@/hooks/use-unread-counts';
+} from '@/hooks/use-unread-counts'
 
 // Re-export store for direct access
 export {
@@ -137,4 +129,55 @@ export {
   type NotificationStore,
   type NotificationState,
   type NotificationActions,
-} from '@/stores/notification-store';
+} from '@/stores/notification-store'
+
+// Plugin integration components
+export {
+  NotificationBell as NotificationBellNew,
+  type NotificationBellProps as NotificationBellNewProps,
+} from './NotificationBell'
+
+export { NotificationList, type NotificationListProps } from './NotificationList'
+
+export {
+  NotificationPreferences as NotificationPreferencesNew,
+  type NotificationPreferencesProps as NotificationPreferencesNewProps,
+} from './NotificationPreferences'
+
+// Plugin integration hooks
+export {
+  useNotificationPreferences,
+  type UseNotificationPreferencesOptions,
+  type UseNotificationPreferencesReturn,
+} from '@/hooks/use-notification-preferences'
+
+export {
+  usePushSubscription,
+  type UsePushSubscriptionOptions,
+  type UsePushSubscriptionReturn,
+} from '@/hooks/use-push-subscription'
+
+// Plugin integration services
+export {
+  NotificationService,
+  getNotificationService,
+  PreferenceService,
+  getPreferenceService,
+  TemplateService,
+  getTemplateService,
+  NotificationEventDispatcher,
+  getNotificationEventDispatcher,
+} from '@/services/notifications'
+
+// Plugin types
+export type {
+  NotificationChannel,
+  NotificationCategory,
+  NotificationStatus,
+  UserNotificationPreferences,
+  QuietHours,
+  ChatEventType,
+  ChatNotificationEvent,
+  SendNotificationRequest,
+  SendNotificationResponse,
+} from '@/types/notifications'

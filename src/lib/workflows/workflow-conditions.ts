@@ -152,10 +152,7 @@ export function evaluateConditionConfig(
 /**
  * Evaluate a condition group
  */
-export function evaluateConditionGroup(
-  group: ConditionGroup,
-  context: WorkflowContext
-): boolean {
+export function evaluateConditionGroup(group: ConditionGroup, context: WorkflowContext): boolean {
   const { logic, conditions } = group
 
   if (conditions.length === 0) {
@@ -179,10 +176,7 @@ export function evaluateConditionGroup(
 /**
  * Evaluate a single condition
  */
-export function evaluateCondition(
-  condition: Condition,
-  context: WorkflowContext
-): boolean {
+export function evaluateCondition(condition: Condition, context: WorkflowContext): boolean {
   const { field, operator, value } = condition
 
   // Get the field value from context
@@ -272,10 +266,7 @@ function isEqual(a: unknown, b: unknown): boolean {
     const bKeys = Object.keys(b as object)
     if (aKeys.length !== bKeys.length) return false
     return aKeys.every((key) =>
-      isEqual(
-        (a as Record<string, unknown>)[key],
-        (b as Record<string, unknown>)[key]
-      )
+      isEqual((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key])
     )
   }
 
@@ -478,9 +469,7 @@ export function getFieldValue(field: string, context: WorkflowContext): unknown 
 /**
  * Check if an item is a condition group
  */
-export function isConditionGroup(
-  item: Condition | ConditionGroup
-): item is ConditionGroup {
+export function isConditionGroup(item: Condition | ConditionGroup): item is ConditionGroup {
   return 'logic' in item && 'conditions' in item && Array.isArray(item.conditions)
 }
 
@@ -521,9 +510,7 @@ export function createConditionGroup(
 /**
  * Create a condition step
  */
-export function createConditionStep(
-  overrides?: Partial<ConditionStep>
-): ConditionStep {
+export function createConditionStep(overrides?: Partial<ConditionStep>): ConditionStep {
   const id = `condition_step_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`
 
   return {

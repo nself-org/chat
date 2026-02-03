@@ -58,6 +58,7 @@ import type {
   BotResponse,
   ChannelId,
 } from './bot-types'
+
 import { BotInstance, getRuntime, createBot } from './bot-runtime'
 import { command, CommandBuilder } from './bot-commands'
 import {
@@ -76,6 +77,8 @@ import {
   quote,
 } from './bot-responses'
 import { parseDuration, formatDuration, matchesKeyword, matchesPattern } from './bot-events'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // BOT BUILDER
@@ -328,7 +331,7 @@ export class BotBuilder {
       // Run init handler
       if (this.initHandler) {
         Promise.resolve(this.initHandler(instance, instance.api)).catch((err) => {
-          console.error(`[BotBuilder] Init error for '${manifest.name}':`, err)
+          logger.error(`[BotBuilder] Init error for '${manifest.name}':`, err)
         })
       }
     })
@@ -352,11 +355,7 @@ export function bot(id: string): BotBuilder {
 /**
  * Quick bot creation with minimal config
  */
-export function quickBot(
-  id: string,
-  name: string,
-  setup: (bot: BotBuilder) => void
-): BotInstance {
+export function quickBot(id: string, name: string, setup: (bot: BotBuilder) => void): BotInstance {
   const builder = bot(id).name(name)
   setup(builder)
   return builder.build()
@@ -421,17 +420,11 @@ const COMMAND_METADATA_KEY = Symbol('commands')
  * Command decorator
  */
 export function Command(nameOrDef: string | BotCommandDefinition) {
-  return function (
-    target: object,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) {
+  return function (target: object, propertyKey: string, descriptor: PropertyDescriptor) {
     const existing = Reflect.getMetadata(COMMAND_METADATA_KEY, target.constructor)
     const commands: CommandMetadata[] = Array.isArray(existing) ? existing : []
     const definition: BotCommandDefinition =
-      typeof nameOrDef === 'string'
-        ? { name: nameOrDef, description: '' }
-        : nameOrDef
+      typeof nameOrDef === 'string' ? { name: nameOrDef, description: '' } : nameOrDef
     commands.push({
       definition,
       methodName: propertyKey,
@@ -505,7 +498,7 @@ export function createEchoBot(id = 'echo-bot'): BotInstance {
     .name('Echo Bot')
     .description('Echoes back messages')
     .command('echo', 'Echo a message', (ctx) => {
-      const message = ctx.args._raw as string || 'Nothing to echo!'
+      const message = (ctx.args._raw as string) || 'Nothing to echo!'
       return text(message)
     })
     .onMention((ctx) => {

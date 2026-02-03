@@ -7,6 +7,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -126,9 +128,7 @@ export function useBatteryStatus(): UseBatteryStatusReturn {
         setBatteryLevel(Math.round(battery.level * 100))
         setIsCharging(battery.charging)
         setChargingTime(battery.chargingTime === Infinity ? null : battery.chargingTime)
-        setDischargingTime(
-          battery.dischargingTime === Infinity ? null : battery.dischargingTime
-        )
+        setDischargingTime(battery.dischargingTime === Infinity ? null : battery.dischargingTime)
 
         // Listen for changes
         battery.addEventListener('levelchange', handleLevelChange)
@@ -136,7 +136,7 @@ export function useBatteryStatus(): UseBatteryStatusReturn {
         battery.addEventListener('chargingtimechange', handleChargingTimeChange)
         battery.addEventListener('dischargingtimechange', handleDischargingTimeChange)
       } catch (err) {
-        console.error('Failed to get battery status:', err)
+        logger.error('Failed to get battery status:', err)
         setIsSupported(false)
       }
     }
@@ -158,9 +158,7 @@ export function useBatteryStatus(): UseBatteryStatusReturn {
 
     const handleDischargingTimeChange = (event: Event) => {
       const target = event.target as BatteryManager
-      setDischargingTime(
-        target.dischargingTime === Infinity ? null : target.dischargingTime
-      )
+      setDischargingTime(target.dischargingTime === Infinity ? null : target.dischargingTime)
     }
 
     initBattery()

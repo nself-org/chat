@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * OfflineBanner - Banner for offline mode
@@ -7,21 +7,21 @@
  * with access to cached content.
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { useConnectionStatus } from '@/hooks/useConnectionStatus';
-import { useOfflineStore } from '@/stores/offline-store';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { useConnectionStatus } from '@/hooks/useConnectionStatus'
+import { useOfflineStore } from '@/stores/offline-store'
 
 // =============================================================================
 // Types
 // =============================================================================
 
 export interface OfflineBannerProps {
-  className?: string;
-  position?: 'top' | 'bottom';
-  dismissible?: boolean;
-  showCacheInfo?: boolean;
+  className?: string
+  position?: 'top' | 'bottom'
+  dismissible?: boolean
+  showCacheInfo?: boolean
 }
 
 // =============================================================================
@@ -34,24 +34,21 @@ export function OfflineBanner({
   dismissible = true,
   showCacheInfo = true,
 }: OfflineBannerProps) {
-  const { isOffline, offlineDurationText, reconnect, dismissBanner } =
-    useConnectionStatus();
-  const { cachedChannelIds, cacheStats, pendingMessages, queuedActions } =
-    useOfflineStore();
-  const [isDismissed, setIsDismissed] = React.useState(false);
+  const { isOffline, offlineDurationText, reconnect, dismissBanner } = useConnectionStatus()
+  const { cachedChannelIds, cacheStats, pendingMessages, queuedActions } = useOfflineStore()
+  const [isDismissed, setIsDismissed] = React.useState(false)
 
   if (!isOffline || isDismissed) {
-    return null;
+    return null
   }
 
   const pendingCount =
-    pendingMessages.length +
-    queuedActions.filter((a) => a.status === 'pending').length;
+    pendingMessages.length + queuedActions.filter((a) => a.status === 'pending').length
 
   const handleDismiss = () => {
-    setIsDismissed(true);
-    dismissBanner();
-  };
+    setIsDismissed(true)
+    dismissBanner()
+  }
 
   return (
     <div
@@ -63,7 +60,7 @@ export function OfflineBanner({
       role="alert"
     >
       <div className="mx-auto max-w-7xl px-4 py-3">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Main content */}
           <div className="flex items-start gap-3">
             {/* Offline icon */}
@@ -85,13 +82,9 @@ export function OfflineBanner({
 
             {/* Text content */}
             <div>
-              <p className="text-sm font-medium text-white">
-                You&apos;re viewing cached content
-              </p>
-              <div className="mt-1 text-xs text-gray-300 space-y-0.5">
-                {offlineDurationText && (
-                  <p>Offline for {offlineDurationText}</p>
-                )}
+              <p className="text-sm font-medium text-white">You&apos;re viewing cached content</p>
+              <div className="mt-1 space-y-0.5 text-xs text-gray-300">
+                {offlineDurationText && <p>Offline for {offlineDurationText}</p>}
                 {showCacheInfo && (
                   <p>
                     {cachedChannelIds.length > 0 ? (
@@ -106,8 +99,8 @@ export function OfflineBanner({
                 )}
                 {pendingCount > 0 && (
                   <p className="text-yellow-300">
-                    {pendingCount} pending action{pendingCount !== 1 ? 's' : ''}{' '}
-                    will sync when online
+                    {pendingCount} pending action{pendingCount !== 1 ? 's' : ''} will sync when
+                    online
                   </p>
                 )}
               </div>
@@ -120,14 +113,9 @@ export function OfflineBanner({
               variant="secondary"
               size="sm"
               onClick={() => reconnect()}
-              className="bg-gray-700 hover:bg-gray-600 text-white border-0"
+              className="border-0 bg-gray-700 text-white hover:bg-gray-600"
             >
-              <svg
-                className="h-4 w-4 mr-1.5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg className="mr-1.5 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -140,15 +128,10 @@ export function OfflineBanner({
             {dismissible && (
               <button
                 onClick={handleDismiss}
-                className="p-1.5 rounded hover:bg-gray-700 text-gray-300 hover:text-white"
+                className="rounded p-1.5 text-gray-300 hover:bg-gray-700 hover:text-white"
                 aria-label="Dismiss"
               >
-                <svg
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -162,7 +145,7 @@ export function OfflineBanner({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default OfflineBanner;
+export default OfflineBanner

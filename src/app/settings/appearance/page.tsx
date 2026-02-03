@@ -19,7 +19,7 @@ export default function AppearancePage() {
   if (!mounted) {
     return (
       <div className="container max-w-2xl py-8">
-        <h1 className="mb-8 text-3xl font-bold flex items-center gap-3">
+        <h1 className="mb-8 flex items-center gap-3 text-3xl font-bold">
           <Palette className="h-8 w-8" />
           Appearance Settings
         </h1>
@@ -34,7 +34,7 @@ export default function AppearancePage() {
 
   return (
     <div className="container max-w-2xl py-8">
-      <h1 className="mb-8 text-3xl font-bold flex items-center gap-3">
+      <h1 className="mb-8 flex items-center gap-3 text-3xl font-bold">
         <Palette className="h-8 w-8" />
         Appearance Settings
       </h1>
@@ -51,26 +51,26 @@ export default function AppearancePage() {
               onValueChange={(value) => setTheme(value)}
               className="space-y-3"
             >
-              <div className="flex items-center space-x-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50">
+              <div className="hover:bg-muted/50 flex cursor-pointer items-center space-x-3 rounded-lg border p-4">
                 <RadioGroupItem value="light" id="light" />
                 <Sun className="h-5 w-5 text-yellow-500" />
-                <Label htmlFor="light" className="cursor-pointer flex-1">
+                <Label htmlFor="light" className="flex-1 cursor-pointer">
                   <div className="font-medium">Light</div>
                   <div className="text-sm text-muted-foreground">A clean, bright interface</div>
                 </Label>
               </div>
-              <div className="flex items-center space-x-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50">
+              <div className="hover:bg-muted/50 flex cursor-pointer items-center space-x-3 rounded-lg border p-4">
                 <RadioGroupItem value="dark" id="dark" />
                 <Moon className="h-5 w-5 text-blue-500" />
-                <Label htmlFor="dark" className="cursor-pointer flex-1">
+                <Label htmlFor="dark" className="flex-1 cursor-pointer">
                   <div className="font-medium">Dark</div>
                   <div className="text-sm text-muted-foreground">Easy on the eyes in low light</div>
                 </Label>
               </div>
-              <div className="flex items-center space-x-3 rounded-lg border p-4 cursor-pointer hover:bg-muted/50">
+              <div className="hover:bg-muted/50 flex cursor-pointer items-center space-x-3 rounded-lg border p-4">
                 <RadioGroupItem value="system" id="system" />
                 <Monitor className="h-5 w-5 text-gray-500" />
-                <Label htmlFor="system" className="cursor-pointer flex-1">
+                <Label htmlFor="system" className="flex-1 cursor-pointer">
                   <div className="font-medium">System</div>
                   <div className="text-sm text-muted-foreground">Match your device settings</div>
                 </Label>
@@ -88,8 +88,10 @@ export default function AppearancePage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              To change the platform template (Slack, Discord, Telegram, WhatsApp, or nself default),
-              set the <code className="bg-muted px-1 rounded">NEXT_PUBLIC_PLATFORM_TEMPLATE</code> environment variable.
+              To change the platform template (Slack, Discord, Telegram, WhatsApp, or nself
+              default), set the{' '}
+              <code className="rounded bg-muted px-1">NEXT_PUBLIC_PLATFORM_TEMPLATE</code>{' '}
+              environment variable.
             </p>
           </CardContent>
         </Card>

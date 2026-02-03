@@ -195,8 +195,11 @@ import type {
   SessionState,
   MessageHeader,
 } from '@/types/encryption'
+
 import { EncryptionError, EncryptionErrorType } from '@/types/encryption'
 import { concatUint8Arrays, uint8ArrayToBase64, base64ToUint8Array } from './crypto-primitives'
+
+import { logger } from '@/lib/logger'
 
 /**
  * Initializes the encryption system
@@ -228,7 +231,7 @@ export async function initializeEncryption(): Promise<void> {
   // Check if signed prekey rotation is needed
   await signedPreKeyManager.rotateIfNeeded()
 
-  console.log('E2E encryption initialized')
+  // REMOVED: console.log('E2E encryption initialized')
 }
 
 /**
@@ -340,10 +343,7 @@ export async function decryptMessage(
   }
 
   if (!session) {
-    throw new EncryptionError(
-      EncryptionErrorType.NO_SESSION,
-      `No session with ${senderId}`
-    )
+    throw new EncryptionError(EncryptionErrorType.NO_SESSION, `No session with ${senderId}`)
   }
 
   // Create Double Ratchet from session state
@@ -354,11 +354,7 @@ export async function decryptMessage(
   const ciphertext = encryptedMessage.ciphertext.slice(12)
 
   // Decrypt the message
-  const { plaintext } = await ratchet.decrypt(
-    encryptedMessage.header,
-    ciphertext,
-    iv
-  )
+  const { plaintext } = await ratchet.decrypt(encryptedMessage.header, ciphertext, iv)
 
   // Update session state
   const updatedState = ratchet.exportSessionState()
@@ -459,5 +455,5 @@ export async function clearAllEncryptionData(): Promise<void> {
   await groupManager.clearAll()
   await deviceManager.clearAllDeviceData()
 
-  console.warn('All encryption data cleared')
+  logger.warn('All encryption data cleared')
 }

@@ -14,10 +14,7 @@ export {
   ComponentErrorBoundary,
 } from './ErrorBoundary'
 
-export type {
-  ErrorBoundaryProps,
-  ErrorFallbackProps,
-} from './ErrorBoundary'
+export type { ErrorBoundaryProps, ErrorFallbackProps } from './ErrorBoundary'
 
 // Error Toasts
 export {
@@ -37,7 +34,4 @@ export {
   useErrorToast,
 } from './ErrorToast'
 
-export type {
-  ErrorToastOptions,
-  UseErrorToastOptions,
-} from './ErrorToast'
+export type { ErrorToastOptions, UseErrorToastOptions } from './ErrorToast'

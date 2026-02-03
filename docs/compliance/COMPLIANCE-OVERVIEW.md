@@ -24,6 +24,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 **Status:** Implemented ✓
 **Scope:** EU residents' personal data
 **Key Features:**
+
 - Right to Access (Article 15)
 - Right to Rectification (Article 16)
 - Right to Erasure / "Right to be Forgotten" (Article 17)
@@ -36,6 +37,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Breach Notification (72 hours)
 
 **Implementation:**
+
 - Data export API (`/api/compliance/export`)
 - Data deletion API (`/api/compliance/deletion`)
 - Consent management API (`/api/compliance/consent`)
@@ -48,6 +50,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 **Status:** Implemented ✓
 **Scope:** California residents' personal information
 **Key Features:**
+
 - Right to Know
 - Right to Delete
 - Right to Opt-Out
@@ -55,6 +58,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Notice at Collection
 
 **Implementation:**
+
 - Similar to GDPR implementation
 - CCPA-specific compliance helpers
 - "Do Not Sell My Personal Information" option
@@ -66,6 +70,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 **Applicability:** Only if platform handles healthcare data
 
 **Key Features:**
+
 - Privacy Rule compliance
 - Security Rule (Administrative, Physical, Technical Safeguards)
 - Breach Notification Rule
@@ -75,6 +80,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Encryption at Rest and in Transit
 
 **Implementation:**
+
 - HIPAA compliance assessment
 - PHI identifier detection
 - Business Associate Agreement templates
@@ -87,6 +93,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 **Scope:** Trust Services Criteria
 
 **Trust Services Criteria:**
+
 1. **Security (CC)** - Protection against unauthorized access
 2. **Availability (A)** - System availability for operation
 3. **Processing Integrity (PI)** - Complete, valid, accurate, timely processing
@@ -94,6 +101,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 5. **Privacy (P)** - Proper collection, use, and disposal of personal information
 
 **Implementation:**
+
 - 30+ control objectives mapped
 - Evidence collection framework
 - Vendor risk management
@@ -157,6 +165,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 1. Data Retention & Lifecycle Management
 
 **Automated Data Retention:**
+
 - Configurable retention policies per data category
 - Retention periods: 30/60/90/180/365 days, 1/2/3/5/7 years, forever
 - Channel-specific overrides
@@ -165,6 +174,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Dry-run mode for testing
 
 **Data Categories:**
+
 - Messages
 - Files
 - Reactions
@@ -177,6 +187,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Backups
 
 **Configuration:**
+
 ```typescript
 {
   retentionEnabled: true,
@@ -191,6 +202,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 **Purpose:** Prevent data deletion during litigation or investigation
 
 **Features:**
+
 - Create/manage legal holds
 - Associate custodians (users)
 - Associate channels
@@ -199,6 +211,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Hold release management
 
 **Use Cases:**
+
 - eDiscovery
 - Litigation support
 - Internal investigations
@@ -207,6 +220,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 3. Data Export (GDPR Article 20)
 
 **Features:**
+
 - User-initiated data export
 - Export categories: Profile, Messages, Files, Reactions, Activity, Settings, Consents
 - Export formats: JSON, CSV, ZIP
@@ -217,6 +231,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Download limits (5 downloads)
 
 **Process:**
+
 1. User requests export
 2. Request queued for processing
 3. Background job compiles data
@@ -227,6 +242,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 4. Data Deletion (GDPR Article 17)
 
 **Features:**
+
 - Full account deletion
 - Partial deletion (messages only, files only, etc.)
 - Identity verification required
@@ -236,6 +252,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Audit trail
 
 **Deletion Scopes:**
+
 - Full Account - Complete deletion including account
 - Messages Only - Keep account, delete messages
 - Files Only - Delete uploaded files
@@ -243,6 +260,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Partial - Custom selection
 
 **Process:**
+
 1. User requests deletion
 2. Identity verification (email)
 3. Legal hold check
@@ -254,6 +272,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 5. Consent Management
 
 **Consent Types:**
+
 - Essential (required)
 - Analytics
 - Marketing
@@ -262,6 +281,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Cookie consents (essential, functional, analytics, advertising)
 
 **Features:**
+
 - Granular consent controls
 - Consent versioning
 - Consent audit trail
@@ -272,6 +292,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 6. Privacy Settings
 
 **User Controls:**
+
 - Profile visibility (public, members, contacts, private)
 - Online status visibility
 - Last seen timestamp
@@ -285,6 +306,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 7. Compliance Reports
 
 **Available Reports:**
+
 - GDPR Compliance Assessment
 - HIPAA Compliance Assessment
 - SOC 2 Compliance Assessment
@@ -299,6 +321,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Breach Report
 
 **Report Formats:**
+
 - JSON (API response)
 - PDF (downloadable)
 - CSV (data export)
@@ -307,6 +330,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 8. Audit Logging
 
 **Logged Events:**
+
 - All data access
 - Data exports
 - Data deletions
@@ -317,6 +341,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Admin actions
 
 **Audit Log Fields:**
+
 - Timestamp
 - Actor (user ID, email)
 - Action type
@@ -329,6 +354,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 9. Data Classification
 
 **Classification Levels:**
+
 - Public
 - Internal
 - Confidential
@@ -336,6 +362,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 - Top Secret
 
 **Features:**
+
 - Manual classification
 - Auto-classification rules
 - PII detection
@@ -345,6 +372,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### 10. Privacy Policy Management
 
 **Features:**
+
 - Version control
 - Effective dates
 - User acknowledgment tracking
@@ -356,6 +384,7 @@ The nChat platform includes comprehensive compliance features to meet GDPR, CCPA
 ### Data Export API
 
 **Create Export Request:**
+
 ```http
 POST /api/compliance/export
 Content-Type: application/json
@@ -370,11 +399,13 @@ Content-Type: application/json
 ```
 
 **List Export Requests:**
+
 ```http
 GET /api/compliance/export
 ```
 
 **Cancel Export:**
+
 ```http
 DELETE /api/compliance/export?id=<requestId>
 ```
@@ -382,6 +413,7 @@ DELETE /api/compliance/export?id=<requestId>
 ### Data Deletion API
 
 **Create Deletion Request:**
+
 ```http
 POST /api/compliance/deletion
 Content-Type: application/json
@@ -393,6 +425,7 @@ Content-Type: application/json
 ```
 
 **Update Deletion Request:**
+
 ```http
 PATCH /api/compliance/deletion?id=<requestId>
 Content-Type: application/json
@@ -406,11 +439,13 @@ Content-Type: application/json
 ### Consent API
 
 **Get Consents:**
+
 ```http
 GET /api/compliance/consent
 ```
 
 **Update Consent:**
+
 ```http
 POST /api/compliance/consent
 Content-Type: application/json
@@ -423,6 +458,7 @@ Content-Type: application/json
 ```
 
 **Update Cookie Preferences:**
+
 ```http
 PUT /api/compliance/consent/cookies
 Content-Type: application/json
@@ -437,6 +473,7 @@ Content-Type: application/json
 ### Compliance Reports API
 
 **Generate Report:**
+
 ```http
 GET /api/compliance/reports?type=gdpr|hipaa|soc2|overview
 ```
@@ -446,6 +483,7 @@ GET /api/compliance/reports?type=gdpr|hipaa|soc2|overview
 See [`026_compliance_system.sql`](../../.backend/migrations/026_compliance_system.sql) for complete schema.
 
 **Key Tables:**
+
 - `nchat_retention_policies` - Data retention configurations
 - `nchat_auto_delete_config` - Auto-delete settings
 - `nchat_retention_jobs` - Job history
@@ -605,6 +643,7 @@ DPO_EMAIL=dpo@example.com
 ## Support
 
 For compliance-related questions:
+
 - Email: dpo@example.com
 - Documentation: https://docs.example.com/compliance
 - Privacy Policy: https://example.com/privacy
@@ -613,6 +652,7 @@ For compliance-related questions:
 ---
 
 **Next Steps:**
+
 - [GDPR Implementation Guide](./GDPR-GUIDE.md)
 - [HIPAA Implementation Guide](./HIPAA-GUIDE.md)
 - [SOC 2 Implementation Guide](./SOC2-GUIDE.md)

@@ -1,12 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import {
-  Skeleton,
-  CircleSkeleton,
-  LineSkeleton,
-  TextBlockSkeleton,
-} from './skeleton'
+import { Skeleton, CircleSkeleton, LineSkeleton, TextBlockSkeleton } from './skeleton'
 
 interface MessageSkeletonProps {
   /** Number of message items to render */
@@ -74,37 +69,24 @@ export function MessageSkeletonItem({
   className,
 }: MessageSkeletonItemProps) {
   return (
-    <div
-      className={cn(
-        'flex',
-        compact ? 'gap-2 px-2 py-1' : 'gap-3 px-4 py-2',
-        className
-      )}
-    >
+    <div className={cn('flex', compact ? 'gap-2 px-2 py-1' : 'gap-3 px-4 py-2', className)}>
       {/* Avatar */}
-      {showAvatar && (
-        <CircleSkeleton size={compact ? 24 : 36} />
-      )}
+      {showAvatar && <CircleSkeleton size={compact ? 24 : 36} />}
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {/* Header: username and timestamp */}
-        <div className="flex items-center gap-2 mb-1">
+        <div className="mb-1 flex items-center gap-2">
           <LineSkeleton width={80} height={compact ? 12 : 14} />
           <LineSkeleton width={40} height={10} />
         </div>
 
         {/* Message content */}
-        <TextBlockSkeleton
-          lines={2}
-          lastLineWidth="70%"
-          lineHeight={compact ? 12 : 14}
-          gap={4}
-        />
+        <TextBlockSkeleton lines={2} lastLineWidth="70%" lineHeight={compact ? 12 : 14} gap={4} />
 
         {/* Reactions */}
         {showReactions && (
-          <div className="flex gap-2 mt-2">
+          <div className="mt-2 flex gap-2">
             <Skeleton className="h-6 w-12 rounded-full" />
             <Skeleton className="h-6 w-10 rounded-full" />
             <Skeleton className="h-6 w-14 rounded-full" />
@@ -113,7 +95,7 @@ export function MessageSkeletonItem({
 
         {/* Thread preview */}
         {showThreadPreview && (
-          <div className="flex items-center gap-2 mt-2 pl-2 border-l-2 border-muted">
+          <div className="mt-2 flex items-center gap-2 border-l-2 border-muted pl-2">
             <CircleSkeleton size={16} />
             <LineSkeleton width={100} height={12} />
             <LineSkeleton width={60} height={10} />
@@ -133,17 +115,8 @@ export function GroupedMessageSkeleton({
   className,
 }: Pick<MessageSkeletonItemProps, 'compact' | 'className'>) {
   return (
-    <div
-      className={cn(
-        'pl-12',
-        compact ? 'px-2 py-0.5' : 'px-4 py-0.5',
-        className
-      )}
-    >
-      <TextBlockSkeleton
-        lines={1}
-        lineHeight={compact ? 12 : 14}
-      />
+    <div className={cn('pl-12', compact ? 'px-2 py-0.5' : 'px-4 py-0.5', className)}>
+      <TextBlockSkeleton lines={1} lineHeight={compact ? 12 : 14} />
     </div>
   )
 }
@@ -168,18 +141,12 @@ export function MessageWithAttachmentSkeleton({
   className,
 }: Pick<MessageSkeletonItemProps, 'compact' | 'className'>) {
   return (
-    <div
-      className={cn(
-        'flex gap-3',
-        compact ? 'px-2 py-1' : 'px-4 py-2',
-        className
-      )}
-    >
+    <div className={cn('flex gap-3', compact ? 'px-2 py-1' : 'px-4 py-2', className)}>
       <CircleSkeleton size={compact ? 24 : 36} />
 
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {/* Header */}
-        <div className="flex items-center gap-2 mb-1">
+        <div className="mb-1 flex items-center gap-2">
           <LineSkeleton width={80} height={14} />
           <LineSkeleton width={40} height={10} />
         </div>

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * UserCommand
@@ -6,11 +6,11 @@
  * Specialized command item for users with profile info and presence.
  */
 
-import * as React from 'react';
-import { Command as CommandPrimitive } from 'cmdk';
-import { User, Shield, Crown, Star } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { UserCommandData } from '@/lib/command-palette/command-types';
+import * as React from 'react'
+import { Command as CommandPrimitive } from 'cmdk'
+import { User, Shield, Crown, Star } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { UserCommandData } from '@/lib/command-palette/command-types'
 
 // ============================================================================
 // Types
@@ -18,13 +18,13 @@ import type { UserCommandData } from '@/lib/command-palette/command-types';
 
 export interface UserCommandProps {
   /** User command data */
-  command: UserCommandData;
+  command: UserCommandData
   /** Whether this item is currently selected */
-  isSelected?: boolean;
+  isSelected?: boolean
   /** Click handler */
-  onSelect?: (command: UserCommandData) => void;
+  onSelect?: (command: UserCommandData) => void
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -37,7 +37,7 @@ const roleConfig: Record<string, { icon: React.ElementType; color: string; label
   moderator: { icon: Star, color: 'text-purple-500', label: 'Moderator' },
   member: { icon: User, color: 'text-blue-500', label: 'Member' },
   guest: { icon: User, color: 'text-gray-500', label: 'Guest' },
-};
+}
 
 // ============================================================================
 // Presence Colors
@@ -48,7 +48,7 @@ const presenceColors: Record<string, string> = {
   away: 'bg-amber-500',
   dnd: 'bg-red-500',
   offline: 'bg-gray-400',
-};
+}
 
 // ============================================================================
 // Component
@@ -60,9 +60,9 @@ export function UserCommand({
   onSelect,
   className,
 }: UserCommandProps) {
-  const role = command.role || 'member';
-  const roleInfo = roleConfig[role] || roleConfig.member;
-  const RoleIcon = roleInfo.icon;
+  const role = command.role || 'member'
+  const roleInfo = roleConfig[role] || roleConfig.member
+  const RoleIcon = roleInfo.icon
 
   return (
     <CommandPrimitive.Item
@@ -70,10 +70,10 @@ export function UserCommand({
       onSelect={() => onSelect?.(command)}
       className={cn(
         'relative flex cursor-pointer select-none items-center gap-3 rounded-md px-3 py-2 text-sm outline-none',
-        'aria-selected:bg-accent aria-selected:text-accent-foreground',
+        'aria-selected:text-accent-foreground aria-selected:bg-accent',
         'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-        'hover:bg-accent hover:text-accent-foreground',
-        isSelected && 'bg-accent text-accent-foreground',
+        'hover:text-accent-foreground hover:bg-accent',
+        isSelected && 'text-accent-foreground bg-accent',
         className
       )}
       data-selected={isSelected}
@@ -125,16 +125,14 @@ export function UserCommand({
 
         {/* Username */}
         {command.userName !== command.userDisplayName && (
-          <p className="truncate text-xs text-muted-foreground">
-            @{command.userName}
-          </p>
+          <p className="truncate text-xs text-muted-foreground">@{command.userName}</p>
         )}
       </div>
 
       {/* View profile indicator */}
       <span className="text-xs text-muted-foreground">View profile</span>
     </CommandPrimitive.Item>
-  );
+  )
 }
 
-export default UserCommand;
+export default UserCommand

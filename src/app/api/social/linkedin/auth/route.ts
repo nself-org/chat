@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { LinkedInClient } from '@/lib/social/linkedin-client'
 
+import { logger } from '@/lib/logger'
+
 // Lazy instantiate in route handler
 
 /**
@@ -24,12 +26,12 @@ export async function GET(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 600 // 10 minutes
+      maxAge: 600, // 10 minutes
     })
 
     return response
   } catch (error) {
-    console.error('LinkedIn auth error:', error)
+    logger.error('LinkedIn auth error:', error)
     return NextResponse.json(
       { error: 'Failed to initiate LinkedIn authentication' },
       { status: 500 }

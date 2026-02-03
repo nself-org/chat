@@ -19,6 +19,7 @@ This document summarizes the enterprise features implemented for nself-chat, mak
 **Location**: `/src/lib/auth/saml.ts`
 
 #### Features
+
 - ✅ SAML 2.0 protocol support
 - ✅ Pre-configured provider templates (Okta, Azure AD, Google Workspace, OneLogin, Auth0, Ping Identity, JumpCloud)
 - ✅ Just-in-Time (JIT) user provisioning
@@ -30,6 +31,7 @@ This document summarizes the enterprise features implemented for nself-chat, mak
 - ✅ Connection testing
 
 #### Key Classes
+
 ```typescript
 class SAMLService {
   addConnection(connection: SSOConnection)
@@ -42,6 +44,7 @@ class SAMLService {
 ```
 
 #### Provider Presets
+
 - Okta
 - Microsoft Azure AD
 - Google Workspace
@@ -56,6 +59,7 @@ class SAMLService {
 **Location**: `/src/lib/rbac/custom-roles.ts`
 
 #### Features
+
 - ✅ Custom role creation (unlimited)
 - ✅ Fine-grained permissions (50+ permission types)
 - ✅ Role templates (6 pre-configured)
@@ -66,9 +70,13 @@ class SAMLService {
 - ✅ Role auto-expiration
 
 #### Key Classes
+
 ```typescript
 class CustomRoleService {
-  createRole(data: Omit<CustomRole, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>, createdBy: string)
+  createRole(
+    data: Omit<CustomRole, 'id' | 'createdAt' | 'updatedAt' | 'createdBy'>,
+    createdBy: string
+  )
   updateRole(roleId: string, updates: Partial<CustomRole>, updatedBy: string)
   deleteRole(roleId: string, deletedBy: string)
   assignRole(userId: string, roleId: string, assignedBy: string, expiresAt?: Date)
@@ -79,6 +87,7 @@ class CustomRoleService {
 ```
 
 #### Role Templates
+
 1. Community Manager
 2. Content Moderator
 3. Support Agent
@@ -87,6 +96,7 @@ class CustomRoleService {
 6. Channel Administrator
 
 #### Permission Categories
+
 - Channel Permissions (11)
 - Message Permissions (12)
 - File Permissions (4)
@@ -102,6 +112,7 @@ class CustomRoleService {
 **Location**: `/src/lib/audit/tamper-proof-audit.ts`
 
 #### Features
+
 - ✅ Cryptographic hash chains (blockchain-inspired)
 - ✅ Immutable audit trail
 - ✅ Integrity verification
@@ -113,6 +124,7 @@ class CustomRoleService {
 - ✅ Audit statistics and analytics
 
 #### Key Classes
+
 ```typescript
 class TamperProofAuditService {
   logTamperProofEvent(entry: Omit<AuditLogEntry, 'id' | 'timestamp'>)
@@ -125,6 +137,7 @@ class TamperProofAuditService {
 ```
 
 #### Hash Chain Architecture
+
 ```
 Genesis Block
     ↓
@@ -138,6 +151,7 @@ Block 3: [Data + Hash(Block 2)] → Hash(Block 3)
 ```
 
 #### Export Formats
+
 - JSON (structured data)
 - CSV (spreadsheet import)
 - Syslog (RFC 5424)
@@ -151,6 +165,7 @@ Block 3: [Data + Hash(Block 2)] → Hash(Block 3)
 **Location**: `/src/components/admin/sso/SSOConfiguration.tsx`
 
 **Features**:
+
 - ✅ Provider selection with pre-configured templates
 - ✅ IdP configuration (Entity ID, SSO URL, Certificate)
 - ✅ Attribute mapping configuration
@@ -162,6 +177,7 @@ Block 3: [Data + Hash(Block 2)] → Hash(Block 3)
 - ✅ Multi-tab configuration wizard
 
 **UI Elements**:
+
 - Connection list with status badges
 - Multi-step configuration dialog
 - Certificate upload with validation
@@ -174,6 +190,7 @@ Block 3: [Data + Hash(Block 2)] → Hash(Block 3)
 **Location**: `/src/components/admin/rbac/RoleEditor.tsx`
 
 **Features**:
+
 - ✅ Custom role creation
 - ✅ Permission selection with categories
 - ✅ Role templates gallery
@@ -185,6 +202,7 @@ Block 3: [Data + Hash(Block 2)] → Hash(Block 3)
 - ✅ Color and icon customization
 
 **UI Elements**:
+
 - Role cards with statistics
 - Permission matrix editor
 - Template selection dialog
@@ -196,6 +214,7 @@ Block 3: [Data + Hash(Block 2)] → Hash(Block 3)
 **Location**: `/src/components/admin/audit/AuditLogViewer.tsx`
 
 **Features**:
+
 - ✅ Real-time log streaming
 - ✅ Advanced filtering (category, severity, actor, resource, time range)
 - ✅ Full-text search
@@ -207,6 +226,7 @@ Block 3: [Data + Hash(Block 2)] → Hash(Block 3)
 - ✅ Statistics dashboard
 
 **UI Elements**:
+
 - Filterable log table
 - Integrity status card
 - Export dropdown menu
@@ -217,6 +237,7 @@ Block 3: [Data + Hash(Block 2)] → Hash(Block 3)
 ### 5. Documentation
 
 #### Created Guides
+
 1. **SSO Setup Guide** (`docs/guides/enterprise/SSO-Setup.md`)
    - Complete SAML configuration
    - Provider-specific guides (Okta, Azure AD, Google)
@@ -431,12 +452,12 @@ const connection = createSSOConnectionFromPreset('okta', {
     email: 'email',
     firstName: 'firstName',
     lastName: 'lastName',
-    groups: 'groups'
+    groups: 'groups',
   },
   roleMappings: [
     { ssoValue: 'Admins', nchatRole: 'admin', priority: 100 },
-    { ssoValue: 'Moderators', nchatRole: 'moderator', priority: 80 }
-  ]
+    { ssoValue: 'Moderators', nchatRole: 'moderator', priority: 80 },
+  ],
 })
 
 await service.addConnection({
@@ -447,7 +468,7 @@ await service.addConnection({
   domains: ['acme.com'],
   createdAt: new Date(),
   updatedAt: new Date(),
-  ...connection
+  ...connection,
 })
 ```
 
@@ -458,24 +479,27 @@ import { getCustomRoleService } from '@/lib/rbac/custom-roles'
 
 const service = getCustomRoleService()
 
-await service.createRole({
-  name: 'Content Manager',
-  slug: 'content-manager',
-  description: 'Manages content across all channels',
-  color: '#8B5CF6',
-  priority: 55,
-  baseRole: 'moderator',
-  permissions: [
-    'channel:create',
-    'channel:update',
-    'message:delete_any',
-    'message:pin',
-    'file:upload',
-    'file:delete_any'
-  ],
-  isSystem: false,
-  isDefault: false
-}, 'current-user-id')
+await service.createRole(
+  {
+    name: 'Content Manager',
+    slug: 'content-manager',
+    description: 'Manages content across all channels',
+    color: '#8B5CF6',
+    priority: 55,
+    baseRole: 'moderator',
+    permissions: [
+      'channel:create',
+      'channel:update',
+      'message:delete_any',
+      'message:pin',
+      'file:upload',
+      'file:delete_any',
+    ],
+    isSystem: false,
+    isDefault: false,
+  },
+  'current-user-id'
+)
 ```
 
 ### 3. Log Tamper-Proof Event
@@ -493,9 +517,9 @@ await logTamperProofEvent({
   metadata: {
     reason: 'Spam',
     duration: '7 days',
-    reviewerId: 'admin-123'
+    reviewerId: 'admin-123',
   },
-  success: true
+  success: true,
 })
 ```
 
@@ -509,7 +533,7 @@ const verification = await verifyAuditIntegrity()
 if (!verification.isValid) {
   console.error('Audit chain compromised!', {
     compromisedBlocks: verification.compromisedBlocks,
-    errors: verification.errors
+    errors: verification.errors,
   })
 
   // Alert security team
@@ -605,6 +629,7 @@ if (!verification.isValid) {
 - Search: O(n·log(n)) with filtering and sorting
 
 **Optimizations Needed**:
+
 - Database indexes on frequently queried fields
 - Caching for role permissions
 - Batch verification for large chains
@@ -615,6 +640,7 @@ if (!verification.isValid) {
 ### Prerequisites
 
 1. **SAML Library** (Critical)
+
    ```bash
    npm install samlify
    # or
@@ -622,6 +648,7 @@ if (!verification.isValid) {
    ```
 
 2. **Environment Variables**
+
    ```bash
    # SSO
    NEXT_PUBLIC_SSO_ENABLED=true
@@ -638,6 +665,7 @@ if (!verification.isValid) {
    ```
 
 3. **Database Migrations**
+
    ```sql
    -- SSO connections table
    CREATE TABLE sso_connections (
@@ -698,6 +726,7 @@ if (!verification.isValid) {
 ## Future Enhancements
 
 ### Phase 1 (Q1 2026)
+
 - [ ] Complete SAML implementation with `samlify`
 - [ ] Add SCIM provisioning
 - [ ] Implement MFA enforcement
@@ -705,6 +734,7 @@ if (!verification.isValid) {
 - [ ] Geo-blocking support
 
 ### Phase 2 (Q2 2026)
+
 - [ ] Advanced analytics dashboard
 - [ ] Custom compliance templates
 - [ ] Automated security scanning
@@ -712,6 +742,7 @@ if (!verification.isValid) {
 - [ ] Custom webhook integrations
 
 ### Phase 3 (Q3 2026)
+
 - [ ] SOC 2 certification
 - [ ] HIPAA compliance toolkit
 - [ ] PCI DSS compliance features
@@ -723,6 +754,7 @@ if (!verification.isValid) {
 ### Monitoring
 
 Monitor these metrics:
+
 - SSO login success/failure rate
 - Permission check latency
 - Audit log write throughput
@@ -732,6 +764,7 @@ Monitor these metrics:
 ### Alerts
 
 Set up alerts for:
+
 - SSO connection failures
 - Audit integrity failures
 - Suspicious role changes
@@ -741,21 +774,25 @@ Set up alerts for:
 ### Maintenance Tasks
 
 **Daily**:
+
 - Review security events
 - Monitor SSO connections
 - Check audit log integrity
 
 **Weekly**:
+
 - Review role assignments
 - Analyze permission usage
 - Export audit logs
 
 **Monthly**:
+
 - Audit role definitions
 - Review compliance settings
 - Test backup/restore
 
 **Quarterly**:
+
 - Security assessment
 - Compliance review
 - Documentation update
@@ -773,6 +810,7 @@ The enterprise features have been successfully implemented and are production-re
 5. ✅ **Documentation**: Comprehensive guides and examples
 
 **Next Steps**:
+
 1. Install SAML parsing library (`samlify` or `passport-saml`)
 2. Run database migrations
 3. Configure initial SSO connections
@@ -785,4 +823,4 @@ The enterprise features have been successfully implemented and are production-re
 
 ---
 
-*For questions or support, contact: enterprise@nself.com*
+_For questions or support, contact: enterprise@nself.com_

@@ -62,7 +62,8 @@ export function isValidUrl(url: string): boolean {
  */
 export function extractUrls(text: string): string[] {
   // More comprehensive URL regex
-  const urlRegex = /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi
+  const urlRegex =
+    /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi
 
   const matches = text.match(urlRegex) || []
   return [...new Set(matches)] // Remove duplicates
@@ -145,8 +146,17 @@ export function createVideoPreview(url: string): LinkPreviewData {
 /**
  * Fetch preview for a single URL
  */
-export async function fetchPreview(url: string, options: FetchOptions = {}): Promise<UnfurlResponse> {
-  const { forceRefresh = false, timeout = DEFAULT_TIMEOUT, blockedDomains = [], allowedDomains = [], whitelistMode = false } = options
+export async function fetchPreview(
+  url: string,
+  options: FetchOptions = {}
+): Promise<UnfurlResponse> {
+  const {
+    forceRefresh = false,
+    timeout = DEFAULT_TIMEOUT,
+    blockedDomains = [],
+    allowedDomains = [],
+    whitelistMode = false,
+  } = options
 
   // Check if URL should be unfurled
   const { allowed, reason } = shouldUnfurl(url, blockedDomains, allowedDomains, whitelistMode)

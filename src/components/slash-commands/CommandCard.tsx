@@ -44,25 +44,22 @@ export function CommandCard({
   onToggleEnabled,
   compact = false,
 }: CommandCardProps) {
-  const category =
-    commandCategories[command.category as keyof typeof commandCategories]
+  const category = commandCategories[command.category as keyof typeof commandCategories]
 
   if (compact) {
     return (
       <div
         className={cn(
-          'flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-muted/50',
+          'hover:bg-muted/50 flex items-center gap-3 rounded-lg border p-3 transition-colors',
           !command.isEnabled && 'opacity-60'
         )}
       >
-        <div className="flex h-8 w-8 items-center justify-center rounded bg-primary/10 text-primary">
+        <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded text-primary">
           <Hash className="h-4 w-4" />
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <code className="font-mono text-sm text-primary">/{command.trigger}</code>
-          <p className="text-xs text-muted-foreground truncate">
-            {command.description}
-          </p>
+          <p className="truncate text-xs text-muted-foreground">{command.description}</p>
         </div>
       </div>
     )
@@ -79,7 +76,7 @@ export function CommandCard({
         {/* Header */}
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg text-primary">
               <Hash className="h-5 w-5" />
             </div>
             <div>
@@ -138,10 +135,7 @@ export function CommandCard({
               {!command.isBuiltIn && (
                 <>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="text-destructive"
-                    onClick={onDelete}
-                  >
+                  <DropdownMenuItem className="text-destructive" onClick={onDelete}>
                     <Trash2 className="mr-2 h-4 w-4" />
                     Delete
                   </DropdownMenuItem>
@@ -152,9 +146,7 @@ export function CommandCard({
         </div>
 
         {/* Description */}
-        <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
-          {command.description}
-        </p>
+        <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{command.description}</p>
 
         {/* Footer */}
         <div className="mt-4 flex items-center gap-2">
@@ -187,7 +179,7 @@ export function CommandCard({
         </div>
 
         {/* Usage preview on hover */}
-        <div className="mt-3 overflow-hidden rounded bg-muted/50 p-2 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="bg-muted/50 mt-3 overflow-hidden rounded p-2 opacity-0 transition-opacity group-hover:opacity-100">
           <code className="text-xs text-muted-foreground">
             {command.usage || `/${command.trigger}`}
           </code>

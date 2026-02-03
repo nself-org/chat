@@ -133,7 +133,7 @@ const DiffView = memo(function DiffView({
   const diff = useMemo(() => computeDiff(oldContent, newContent), [oldContent, newContent])
 
   return (
-    <div className="rounded-md border bg-muted/30 p-3 font-mono text-sm">
+    <div className="bg-muted/30 rounded-md border p-3 font-mono text-sm">
       {diff.map((segment, idx) => (
         <span
           key={idx}
@@ -168,7 +168,7 @@ const EditHistoryItem = memo(function EditHistoryItem({
     <div className="border-b last:border-b-0">
       <button
         onClick={onToggleExpand}
-        className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-muted/50"
+        className="hover:bg-muted/50 flex w-full items-center justify-between px-4 py-3 text-left transition-colors"
       >
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium">
@@ -195,7 +195,7 @@ const EditHistoryItem = memo(function EditHistoryItem({
           {showDiff && previousContent ? (
             <DiffView oldContent={record.content} newContent={previousContent} />
           ) : (
-            <div className="rounded-md border bg-muted/30 p-3 text-sm">{record.content}</div>
+            <div className="bg-muted/30 rounded-md border p-3 text-sm">{record.content}</div>
           )}
         </div>
       )}
@@ -242,20 +242,18 @@ export const MessageEditHistory = memo(function MessageEditHistory({
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
               <History className="h-5 w-5 text-primary" />
             </div>
             <div>
               <DialogTitle>Edit History</DialogTitle>
-              <DialogDescription>
-                View all previous versions of this message
-              </DialogDescription>
+              <DialogDescription>View all previous versions of this message</DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
         {/* Author info */}
-        <div className="flex items-center gap-3 rounded-lg border bg-muted/30 p-3">
+        <div className="bg-muted/30 flex items-center gap-3 rounded-lg border p-3">
           <Avatar className="h-8 w-8">
             <AvatarImage src={author.avatarUrl} alt={author.displayName} />
             <AvatarFallback>{author.displayName.charAt(0).toUpperCase()}</AvatarFallback>
@@ -297,7 +295,7 @@ export const MessageEditHistory = memo(function MessageEditHistory({
               <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
             </div>
           ) : error ? (
-            <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-center text-sm text-destructive">
+            <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4 text-center text-sm text-destructive">
               {error}
             </div>
           ) : fullHistory.length === 0 ? (
@@ -307,13 +305,13 @@ export const MessageEditHistory = memo(function MessageEditHistory({
           ) : (
             <div className="rounded-lg border">
               {/* Current version */}
-              <div className="border-b bg-primary/5">
+              <div className="bg-primary/5 border-b">
                 <button
                   onClick={() => handleToggleExpand(-1)}
-                  className="flex w-full items-center justify-between px-4 py-3 text-left transition-colors hover:bg-muted/50"
+                  className="hover:bg-muted/50 flex w-full items-center justify-between px-4 py-3 text-left transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-medium text-primary-foreground">
+                    <div className="text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-medium">
                       C
                     </div>
                     <div>
@@ -329,7 +327,7 @@ export const MessageEditHistory = memo(function MessageEditHistory({
                 </button>
                 {expandedIndex === -1 && (
                   <div className="px-4 pb-4">
-                    <div className="rounded-md border bg-muted/30 p-3 text-sm">
+                    <div className="bg-muted/30 rounded-md border p-3 text-sm">
                       {currentContent}
                     </div>
                   </div>

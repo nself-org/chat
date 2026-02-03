@@ -28,7 +28,7 @@ export function MessageThreadPreview({
     <motion.button
       onClick={onClick}
       className={cn(
-        'group mt-1 flex w-full items-center gap-2 rounded-md p-2 text-left transition-colors hover:bg-muted/50',
+        'hover:bg-muted/50 group mt-1 flex w-full items-center gap-2 rounded-md p-2 text-left transition-colors',
         className
       )}
       whileHover={{ x: 2 }}
@@ -37,10 +37,7 @@ export function MessageThreadPreview({
       {/* Participant avatars */}
       <div className="flex -space-x-1.5">
         {participants.slice(0, 3).map((user) => (
-          <Avatar
-            key={user.id}
-            className="h-6 w-6 border-2 border-background ring-0"
-          >
+          <Avatar key={user.id} className="h-6 w-6 border-2 border-background ring-0">
             <AvatarImage src={user.avatarUrl} alt={user.displayName} />
             <AvatarFallback className="text-[10px]">
               {user.displayName.charAt(0).toUpperCase()}
@@ -58,8 +55,7 @@ export function MessageThreadPreview({
         {latestReply && (
           <>
             <span className="text-xs text-muted-foreground">
-              Last reply{' '}
-              {formatDistanceToNow(new Date(lastReplyAt), { addSuffix: true })}
+              Last reply {formatDistanceToNow(new Date(lastReplyAt), { addSuffix: true })}
             </span>
           </>
         )}
@@ -98,9 +94,7 @@ export function CompactThreadPreview({
           {participants.slice(0, 2).map((user) => (
             <Avatar key={user.id} className="h-4 w-4 border border-background">
               <AvatarImage src={user.avatarUrl} alt={user.displayName} />
-              <AvatarFallback className="text-[8px]">
-                {user.displayName.charAt(0)}
-              </AvatarFallback>
+              <AvatarFallback className="text-[8px]">{user.displayName.charAt(0)}</AvatarFallback>
             </Avatar>
           ))}
         </div>
@@ -123,27 +117,14 @@ interface ThreadHeaderProps {
   className?: string
 }
 
-export function ThreadHeader({
-  parentMessage,
-  replyCount,
-  onClose,
-  className,
-}: ThreadHeaderProps) {
+export function ThreadHeader({ parentMessage, replyCount, onClose, className }: ThreadHeaderProps) {
   return (
     <div className={cn('border-b p-4', className)}>
       <div className="mb-3 flex items-center justify-between">
         <h3 className="text-sm font-semibold">Thread</h3>
-        <button
-          onClick={onClose}
-          className="text-muted-foreground hover:text-foreground"
-        >
+        <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
           <span className="sr-only">Close thread</span>
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -157,27 +138,18 @@ export function ThreadHeader({
       {/* Parent message preview */}
       <div className="flex items-start gap-2">
         <Avatar className="h-8 w-8">
-          <AvatarImage
-            src={parentMessage.user.avatarUrl}
-            alt={parentMessage.user.displayName}
-          />
-          <AvatarFallback>
-            {parentMessage.user.displayName.charAt(0).toUpperCase()}
-          </AvatarFallback>
+          <AvatarImage src={parentMessage.user.avatarUrl} alt={parentMessage.user.displayName} />
+          <AvatarFallback>{parentMessage.user.displayName.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
 
         <div className="min-w-0 flex-1">
           <div className="flex items-baseline gap-2">
-            <span className="text-sm font-medium">
-              {parentMessage.user.displayName}
-            </span>
+            <span className="text-sm font-medium">{parentMessage.user.displayName}</span>
             <span className="text-xs text-muted-foreground">
               {format(new Date(parentMessage.createdAt), 'MMM d, h:mm a')}
             </span>
           </div>
-          <p className="line-clamp-2 text-sm text-muted-foreground">
-            {parentMessage.content}
-          </p>
+          <p className="line-clamp-2 text-sm text-muted-foreground">{parentMessage.content}</p>
         </div>
       </div>
 

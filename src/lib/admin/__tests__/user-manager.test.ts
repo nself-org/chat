@@ -64,7 +64,11 @@ describe('Filter Functions', () => {
     const users = [
       createTestUser({ username: 'alice', displayName: 'Alice Smith', email: 'alice@example.com' }),
       createTestUser({ username: 'bob', displayName: 'Bob Jones', email: 'bob@test.com' }),
-      createTestUser({ username: 'charlie', displayName: 'Charlie Brown', email: 'charlie@example.com' }),
+      createTestUser({
+        username: 'charlie',
+        displayName: 'Charlie Brown',
+        email: 'charlie@example.com',
+      }),
     ]
 
     it('should return all users when search is empty', () => {
@@ -163,11 +167,7 @@ describe('Filter Functions', () => {
     })
 
     it('should filter by both dates', () => {
-      const result = filterByDateRange(
-        users,
-        new Date('2025-01-10'),
-        new Date('2025-01-20')
-      )
+      const result = filterByDateRange(users, new Date('2025-01-10'), new Date('2025-01-20'))
       expect(result.length).toBe(1)
     })
 

@@ -168,11 +168,7 @@ describe('QuotaManager', () => {
       const quota = await manager.getQuota('user-1', 'user')
 
       // Try to upload more than remaining space
-      const result = await manager.canUpload(
-        'user-1',
-        'user',
-        quota.limit - quota.used + 1024
-      )
+      const result = await manager.canUpload('user-1', 'user', quota.limit - quota.used + 1024)
 
       expect(result.allowed).toBe(false)
       expect(result.reason).toBeDefined()
@@ -194,10 +190,7 @@ describe('QuotaManager', () => {
     it('should have valid type breakdown', async () => {
       const breakdown = await manager.getUsageBreakdown('user-1', 'user')
 
-      const totalByType = Object.values(breakdown.byType).reduce(
-        (sum, value) => sum + value,
-        0
-      )
+      const totalByType = Object.values(breakdown.byType).reduce((sum, value) => sum + value, 0)
 
       // Total should approximately equal sum of types (allowing for rounding)
       expect(totalByType).toBeGreaterThanOrEqual(breakdown.total * 0.9)

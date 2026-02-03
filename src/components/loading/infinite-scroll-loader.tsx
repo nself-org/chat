@@ -76,18 +76,13 @@ export function InfiniteScrollLoader({
 
   // Nothing more to load
   if (!hasMore && !isLoading) {
-    return endContent ? (
-      <div className={cn('py-4 text-center', className)}>{endContent}</div>
-    ) : null
+    return endContent ? <div className={cn('py-4 text-center', className)}>{endContent}</div> : null
   }
 
   // Loading state
   if (isLoading) {
     return (
-      <div
-        ref={loaderRef}
-        className={cn('flex justify-center py-4', className)}
-      >
+      <div ref={loaderRef} className={cn('flex justify-center py-4', className)}>
         {loadingContent ?? <Spinner size="md" text="Loading more..." />}
       </div>
     )
@@ -105,13 +100,7 @@ export function InfiniteScrollLoader({
   }
 
   // Auto mode - invisible trigger element
-  return (
-    <div
-      ref={loaderRef}
-      className={cn('h-4', className)}
-      aria-hidden="true"
-    />
-  )
+  return <div ref={loaderRef} className={cn('h-4', className)} aria-hidden="true" />
 }
 
 interface LoadMoreButtonProps {
@@ -146,11 +135,7 @@ export function LoadMoreButton({
 
   return (
     <div className={cn('flex justify-center py-4', className)}>
-      <Button
-        variant={variant}
-        onClick={onClick}
-        disabled={isLoading}
-      >
+      <Button variant={variant} onClick={onClick} disabled={isLoading}>
         {isLoading ? (
           <>
             <Spinner size="sm" className="mr-2" />

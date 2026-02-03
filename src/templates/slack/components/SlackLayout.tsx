@@ -54,10 +54,8 @@ export function SlackLayout({
       {sidebar && (
         <aside
           className={cn(
-            'flex-shrink-0 flex flex-col transition-all duration-200',
-            isSidebarCollapsed
-              ? 'w-[72px]'
-              : `w-[${slackComponentStyles.sidebar.width}px]`
+            'flex flex-shrink-0 flex-col transition-all duration-200',
+            isSidebarCollapsed ? 'w-[72px]' : `w-[${slackComponentStyles.sidebar.width}px]`
           )}
           style={{
             width: isSidebarCollapsed
@@ -71,7 +69,7 @@ export function SlackLayout({
       )}
 
       {/* Main Content Area */}
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Header */}
         {header && (
           <header
@@ -83,9 +81,9 @@ export function SlackLayout({
         )}
 
         {/* Content + Thread Panel */}
-        <div className="flex flex-1 min-h-0">
+        <div className="flex min-h-0 flex-1">
           {/* Main Chat Area */}
-          <main className="flex-1 flex flex-col min-w-0 bg-white dark:bg-[#1A1D21]">
+          <main className="flex min-w-0 flex-1 flex-col bg-white dark:bg-[#1A1D21]">
             {children}
           </main>
 

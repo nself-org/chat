@@ -104,13 +104,13 @@ function TimelineItem({ entry, onClick, showConnector = true, isLast = false }: 
     <div className="relative flex gap-4">
       {/* Connector Line */}
       {showConnector && !isLast && (
-        <div className="absolute left-5 top-10 bottom-0 w-px bg-border" />
+        <div className="absolute bottom-0 left-5 top-10 w-px bg-border" />
       )}
 
       {/* Icon */}
       <div
         className={cn(
-          'relative z-10 flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center',
+          'relative z-10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full',
           getCategoryBadgeClass(entry.category)
         )}
       >
@@ -118,19 +118,11 @@ function TimelineItem({ entry, onClick, showConnector = true, isLast = false }: 
       </div>
 
       {/* Content */}
-      <div
-        className={cn(
-          'flex-1 pb-6 min-w-0',
-          onClick && 'cursor-pointer'
-        )}
-        onClick={onClick}
-      >
+      <div className={cn('min-w-0 flex-1 pb-6', onClick && 'cursor-pointer')} onClick={onClick}>
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-medium">
-                {getActionDisplayName(entry.action)}
-              </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-medium">{getActionDisplayName(entry.action)}</span>
               <Badge
                 variant="outline"
                 className={cn('text-xs', getSeverityBadgeClass(entry.severity))}
@@ -138,30 +130,28 @@ function TimelineItem({ entry, onClick, showConnector = true, isLast = false }: 
                 {entry.severity}
               </Badge>
               {!entry.success && (
-                <Badge variant="destructive" className="text-xs gap-1">
+                <Badge variant="destructive" className="gap-1 text-xs">
                   <X className="h-3 w-3" />
                   Failed
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-muted-foreground mt-1">
-              {entry.description}
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">{entry.description}</p>
           </div>
-          <span className="text-xs text-muted-foreground whitespace-nowrap flex-shrink-0">
+          <span className="flex-shrink-0 whitespace-nowrap text-xs text-muted-foreground">
             {formatTimestamp(entry.timestamp, 'short')}
           </span>
         </div>
 
         {/* Actor & Details */}
-        <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+        <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1.5">
             <Avatar className="h-5 w-5">
               <AvatarFallback className="text-[10px]">
                 {actorName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <span className="truncate max-w-[150px]">{actorName}</span>
+            <span className="max-w-[150px] truncate">{actorName}</span>
           </div>
           {entry.resource && (
             <span className="truncate">
@@ -169,14 +159,12 @@ function TimelineItem({ entry, onClick, showConnector = true, isLast = false }: 
               {entry.resource.name || entry.resource.id}
             </span>
           )}
-          {entry.ipAddress && (
-            <span className="font-mono">{entry.ipAddress}</span>
-          )}
+          {entry.ipAddress && <span className="font-mono">{entry.ipAddress}</span>}
         </div>
 
         {/* Error */}
         {entry.errorMessage && (
-          <div className="mt-2 p-2 rounded bg-red-50 dark:bg-red-900/20 text-xs text-red-700 dark:text-red-300">
+          <div className="mt-2 rounded bg-red-50 p-2 text-xs text-red-700 dark:bg-red-900/20 dark:text-red-300">
             {entry.errorMessage}
           </div>
         )}
@@ -199,8 +187,8 @@ export function AuditTimeline({
 }: AuditTimelineProps) {
   if (entries.length === 0) {
     return (
-      <div className={cn('text-center py-8 text-muted-foreground', className)}>
-        <Clock className="h-8 w-8 mx-auto mb-2 opacity-50" />
+      <div className={cn('py-8 text-center text-muted-foreground', className)}>
+        <Clock className="mx-auto mb-2 h-8 w-8 opacity-50" />
         <p>No audit events to display</p>
       </div>
     )
@@ -217,7 +205,7 @@ export function AuditTimeline({
           <div key={group.date} className={cn(groupIndex > 0 && 'mt-6')}>
             {/* Date Header */}
             <div className="sticky top-0 z-20 bg-background py-2">
-              <h3 className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+              <h3 className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
                 <Clock className="h-4 w-4" />
                 {group.date}
                 <Badge variant="secondary" className="ml-2">
@@ -235,8 +223,7 @@ export function AuditTimeline({
                   onClick={() => onEntryClick?.(entry)}
                   showConnector={showConnector}
                   isLast={
-                    groupIndex === groups.length - 1 &&
-                    entryIndex === group.entries.length - 1
+                    groupIndex === groups.length - 1 && entryIndex === group.entries.length - 1
                   }
                 />
               ))}

@@ -43,7 +43,7 @@ async function translateText(
   const detectedSource = sourceLanguage || detectLanguage(text)
 
   // Simulate API delay
-  await new Promise(resolve => setTimeout(resolve, 500))
+  await new Promise((resolve) => setTimeout(resolve, 500))
 
   // Mock translation (just add a prefix)
   const translatedText = `[Translated to ${targetLanguage}] ${text}`
@@ -61,17 +61,11 @@ export async function POST(request: NextRequest) {
     const { text, targetLanguage, sourceLanguage } = body
 
     if (!text || !text.trim()) {
-      return NextResponse.json(
-        { error: 'Text is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Text is required' }, { status: 400 })
     }
 
     if (!targetLanguage) {
-      return NextResponse.json(
-        { error: 'Target language is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Target language is required' }, { status: 400 })
     }
 
     if (text.length > 5000) {

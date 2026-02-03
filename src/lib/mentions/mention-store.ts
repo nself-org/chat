@@ -347,11 +347,7 @@ export const useMentionStore = create<MentionStore>()(
           const state = get()
           return Array.from(state.mentions.values())
             .filter((m) => m.message.channel_id === channelId)
-            .sort(
-              (a, b) =>
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime()
-            )
+            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         },
 
         getUnreadMentions: () => {
@@ -359,19 +355,13 @@ export const useMentionStore = create<MentionStore>()(
           return Array.from(state.unreadMentionIds)
             .map((id) => state.mentions.get(id))
             .filter((m): m is Mention => m !== undefined)
-            .sort(
-              (a, b) =>
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime()
-            )
+            .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
         },
 
         getAllMentions: () => {
           const state = get()
           return Array.from(state.mentions.values()).sort(
-            (a, b) =>
-              new Date(b.created_at).getTime() -
-              new Date(a.created_at).getTime()
+            (a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
           )
         },
 
@@ -401,27 +391,23 @@ export const useMentionStore = create<MentionStore>()(
 // Selectors
 // ============================================================================
 
-export const selectMentions = (state: MentionStore) =>
-  Array.from(state.mentions.values())
+export const selectMentions = (state: MentionStore) => Array.from(state.mentions.values())
 
-export const selectUnreadMentions = (state: MentionStore) =>
-  state.getUnreadMentions()
+export const selectUnreadMentions = (state: MentionStore) => state.getUnreadMentions()
 
 export const selectUnreadCount = (state: MentionStore) => state.getUnreadCount()
 
 export const selectMentionById = (mentionId: string) => (state: MentionStore) =>
   state.mentions.get(mentionId)
 
-export const selectMentionsByChannel =
-  (channelId: string) => (state: MentionStore) =>
-    state.getMentionsByChannel(channelId)
+export const selectMentionsByChannel = (channelId: string) => (state: MentionStore) =>
+  state.getMentionsByChannel(channelId)
 
 export const selectIsPanelOpen = (state: MentionStore) => state.panel.isOpen
 
 export const selectPanelFilter = (state: MentionStore) => state.panel.filter
 
-export const selectSelectedMentionId = (state: MentionStore) =>
-  state.selectedMentionId
+export const selectSelectedMentionId = (state: MentionStore) => state.selectedMentionId
 
 export const selectIsLoading = (state: MentionStore) => state.isLoading
 
@@ -477,10 +463,7 @@ export function isGroupMention(type: MentionType): boolean {
 /**
  * Extract preview text from message content
  */
-export function extractMentionPreview(
-  content: string,
-  maxLength: number = 100
-): string {
+export function extractMentionPreview(content: string, maxLength: number = 100): string {
   // Remove extra whitespace
   const cleaned = content.replace(/\s+/g, ' ').trim()
 

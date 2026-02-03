@@ -13,13 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Search,
-  UserPlus,
-  UserMinus,
-  MoreVertical,
-  X,
-} from 'lucide-react'
+import { Search, UserPlus, UserMinus, MoreVertical, X } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -117,16 +111,10 @@ export function RoleMembers({
         ) : filteredMembers.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8">
             <p className="text-muted-foreground">
-              {searchQuery
-                ? 'No members found matching your search'
-                : 'No members with this role'}
+              {searchQuery ? 'No members found matching your search' : 'No members with this role'}
             </p>
             {canManage && onAddMember && !searchQuery && (
-              <Button
-                variant="outline"
-                className="mt-4"
-                onClick={onAddMember}
-              >
+              <Button variant="outline" className="mt-4" onClick={onAddMember}>
                 <UserPlus className="mr-2 h-4 w-4" />
                 Add first member
               </Button>
@@ -139,11 +127,7 @@ export function RoleMembers({
               member={member}
               roleColor={role.color}
               canManage={canManage}
-              onRemove={
-                onRemoveMember
-                  ? () => onRemoveMember(member.userId)
-                  : undefined
-              }
+              onRemove={onRemoveMember ? () => onRemoveMember(member.userId) : undefined}
             />
           ))
         )}
@@ -162,12 +146,7 @@ interface MemberItemProps {
   onRemove?: () => void
 }
 
-function MemberItem({
-  member,
-  roleColor,
-  canManage = false,
-  onRemove,
-}: MemberItemProps) {
+function MemberItem({ member, roleColor, canManage = false, onRemove }: MemberItemProps) {
   const assignedDate = new Date(member.assignedAt)
   const formattedDate = assignedDate.toLocaleDateString('en-US', {
     month: 'short',
@@ -176,7 +155,7 @@ function MemberItem({
   })
 
   return (
-    <div className="group flex items-center gap-3 rounded-lg border p-3 transition-colors hover:bg-accent/50">
+    <div className="hover:bg-accent/50 group flex items-center gap-3 rounded-lg border p-3 transition-colors">
       <Avatar>
         <AvatarImage src={member.avatarUrl} alt={member.displayName} />
         <AvatarFallback style={{ backgroundColor: `${roleColor}20`, color: roleColor }}>
@@ -184,9 +163,9 @@ function MemberItem({
         </AvatarFallback>
       </Avatar>
 
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="font-medium truncate">{member.displayName}</span>
+          <span className="truncate font-medium">{member.displayName}</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <span>@{member.username}</span>
@@ -225,7 +204,7 @@ function MemberItem({
  */
 function MemberSkeleton() {
   return (
-    <div className="flex items-center gap-3 rounded-lg border p-3 animate-pulse">
+    <div className="flex animate-pulse items-center gap-3 rounded-lg border p-3">
       <div className="h-10 w-10 rounded-full bg-muted" />
       <div className="flex-1 space-y-2">
         <div className="h-4 w-32 rounded bg-muted" />
@@ -268,9 +247,7 @@ export function MemberSelector({
     if (!searchQuery) return availableUsers
     const query = searchQuery.toLowerCase()
     return availableUsers.filter(
-      (u) =>
-        u.username.toLowerCase().includes(query) ||
-        u.displayName.toLowerCase().includes(query)
+      (u) => u.username.toLowerCase().includes(query) || u.displayName.toLowerCase().includes(query)
     )
   }, [availableUsers, searchQuery])
 
@@ -286,7 +263,7 @@ export function MemberSelector({
             return (
               <div
                 key={userId}
-                className="flex items-center gap-1.5 rounded-full bg-primary/10 pl-1 pr-2 py-1"
+                className="bg-primary/10 flex items-center gap-1.5 rounded-full py-1 pl-1 pr-2"
               >
                 <Avatar className="h-5 w-5">
                   <AvatarImage src={user.avatarUrl} />
@@ -322,13 +299,9 @@ export function MemberSelector({
       {/* User list */}
       <div className="max-h-48 space-y-1 overflow-y-auto">
         {isLoading ? (
-          <div className="text-center py-4 text-sm text-muted-foreground">
-            Loading users...
-          </div>
+          <div className="py-4 text-center text-sm text-muted-foreground">Loading users...</div>
         ) : filteredUsers.length === 0 ? (
-          <div className="text-center py-4 text-sm text-muted-foreground">
-            No users found
-          </div>
+          <div className="py-4 text-center text-sm text-muted-foreground">No users found</div>
         ) : (
           filteredUsers.map((user) => {
             const isSelected = selectedUserIds.includes(user.id)
@@ -337,31 +310,21 @@ export function MemberSelector({
               <button
                 key={user.id}
                 type="button"
-                onClick={() =>
-                  isSelected ? onDeselect(user.id) : onSelect(user.id)
-                }
+                onClick={() => (isSelected ? onDeselect(user.id) : onSelect(user.id))}
                 className={cn(
                   'flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors',
-                  isSelected
-                    ? 'bg-primary/10'
-                    : 'hover:bg-accent'
+                  isSelected ? 'bg-primary/10' : 'hover:bg-accent'
                 )}
               >
                 <Avatar className="h-8 w-8">
                   <AvatarImage src={user.avatarUrl} />
-                  <AvatarFallback>
-                    {getInitials(user.displayName)}
-                  </AvatarFallback>
+                  <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
                 </Avatar>
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="truncate font-medium">{user.displayName}</div>
-                  <div className="truncate text-sm text-muted-foreground">
-                    @{user.username}
-                  </div>
+                  <div className="truncate text-sm text-muted-foreground">@{user.username}</div>
                 </div>
-                {isSelected && (
-                  <div className="h-2 w-2 rounded-full bg-primary" />
-                )}
+                {isSelected && <div className="h-2 w-2 rounded-full bg-primary" />}
               </button>
             )
           })

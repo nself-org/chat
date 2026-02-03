@@ -16,6 +16,8 @@ import type {
   MessageReadPayload,
   MessageFailedPayload,
 } from '@/lib/realtime/events'
+
+import { logger } from '@/lib/logger'
 import {
   useDeliveryStateStore,
   markSending,
@@ -75,10 +77,7 @@ export interface DeliverySyncResponse {
 /**
  * Delivery event listener
  */
-export type DeliveryEventListener = (
-  event: DeliveryEventType,
-  data: unknown
-) => void
+export type DeliveryEventListener = (event: DeliveryEventType, data: unknown) => void
 
 /**
  * Delivery handler configuration
@@ -182,7 +181,7 @@ export class DeliveryEventHandler {
       try {
         listener(event, data)
       } catch (error) {
-        console.error('[DeliveryHandler] Listener error:', error)
+        logger.error('[DeliveryHandler] Listener error:',  error)
       }
     })
   }
@@ -537,7 +536,7 @@ export class DeliveryEventHandler {
    */
   private log(message: string): void {
     if (this.config.debug) {
-      console.log(`[DeliveryHandler] ${message}`)
+      // REMOVED: console.log(`[DeliveryHandler] ${message}`)
     }
   }
 }
@@ -551,9 +550,7 @@ let deliveryHandlerInstance: DeliveryEventHandler | null = null
 /**
  * Get the delivery event handler instance
  */
-export function getDeliveryEventHandler(
-  config?: DeliveryHandlerConfig
-): DeliveryEventHandler {
+export function getDeliveryEventHandler(config?: DeliveryHandlerConfig): DeliveryEventHandler {
   if (!deliveryHandlerInstance) {
     deliveryHandlerInstance = new DeliveryEventHandler(config)
   }
@@ -563,9 +560,7 @@ export function getDeliveryEventHandler(
 /**
  * Initialize the delivery event handler
  */
-export function initializeDeliveryHandler(
-  config?: DeliveryHandlerConfig
-): DeliveryEventHandler {
+export function initializeDeliveryHandler(config?: DeliveryHandlerConfig): DeliveryEventHandler {
   const handler = getDeliveryEventHandler(config)
   handler.initialize()
   return handler

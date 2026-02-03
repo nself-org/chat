@@ -6,11 +6,7 @@
  */
 
 // Import types from parent for local use
-import type {
-  DiscordUser,
-  DiscordChannel,
-  DiscordMessage,
-} from '../types'
+import type { DiscordUser, DiscordChannel, DiscordMessage } from '../types'
 
 // Re-export types from parent
 export type {

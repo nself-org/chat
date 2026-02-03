@@ -62,6 +62,8 @@ import {
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Configuration
 // ============================================================================
@@ -261,7 +263,7 @@ function validateExportRequest(
     request: {
       type: data.type as ExportType,
       format,
-      channelIds: Array.isArray(data.channelIds) ? data.channelIds as string[] : undefined,
+      channelIds: Array.isArray(data.channelIds) ? (data.channelIds as string[]) : undefined,
       dateFrom: data.dateFrom as string | undefined,
       dateTo: data.dateTo as string | undefined,
       includeAttachments: data.includeAttachments === true,
@@ -375,10 +377,7 @@ async function processExportJob(jobId: string, job: ExportJob): Promise<void> {
 
     // Update job metadata
     job.metadata.messageCount = messages.length
-    job.metadata.fileCount = messages.reduce(
-      (count, m) => count + (m.attachments?.length || 0),
-      0
-    )
+    job.metadata.fileCount = messages.reduce((count, m) => count + (m.attachments?.length || 0), 0)
 
     job.progress = 80
     exportJobs.set(jobId, job)
@@ -387,7 +386,8 @@ async function processExportJob(jobId: string, job: ExportJob): Promise<void> {
     job.downloadUrl = `/api/export?jobId=${jobId}&download=true`
 
     // Calculate file size
-    const content = job.format === 'csv' ? messagesToCsv(messages) : JSON.stringify(messages, null, 2)
+    const content =
+      job.format === 'csv' ? messagesToCsv(messages) : JSON.stringify(messages, null, 2)
     job.fileSize = new TextEncoder().encode(content).length
 
     // Mark as completed
@@ -396,7 +396,7 @@ async function processExportJob(jobId: string, job: ExportJob): Promise<void> {
     job.completedAt = new Date().toISOString()
     exportJobs.set(jobId, job)
   } catch (error) {
-    console.error('Export job failed:', error)
+    logger.error('Export job failed:', error)
     job.status = 'failed'
     job.error = error instanceof Error ? error.message : 'Export failed'
     exportJobs.set(jobId, job)
@@ -441,10 +441,7 @@ async function handleGet(request: AuthenticatedRequest): Promise<NextResponse> {
 
   // Check if ready for download
   if (job.status !== 'completed') {
-    return badRequestResponse(
-      `Export is not ready. Status: ${job.status}`,
-      'EXPORT_NOT_READY'
-    )
+    return badRequestResponse(`Export is not ready. Status: ${job.status}`, 'EXPORT_NOT_READY')
   }
 
   // Get export data
@@ -502,7 +499,8 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
   }
 
   // Check if this is a new-style ExportConfig request
-  const isNewStyleExport = body && typeof body === 'object' && 'options' in body && 'filters' in body
+  const isNewStyleExport =
+    body && typeof body === 'object' && 'options' in body && 'filters' in body
 
   if (isNewStyleExport) {
     return handleNewStyleExport(body as ExportConfig)
@@ -510,7 +508,10 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
 
   const validation = validateExportRequest(body)
   if (!validation.valid) {
-    return badRequestResponse((validation as { valid: false; error: string }).error, 'VALIDATION_ERROR')
+    return badRequestResponse(
+      (validation as { valid: false; error: string }).error,
+      'VALIDATION_ERROR'
+    )
   }
 
   const { user } = request
@@ -518,9 +519,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
 
   // Check for existing pending/processing exports
   const existingJobs = Array.from(exportJobs.values()).filter(
-    (job) =>
-      job.userId === user.id &&
-      (job.status === 'pending' || job.status === 'processing')
+    (job) => job.userId === user.id && (job.status === 'pending' || job.status === 'processing')
   )
 
   if (existingJobs.length >= 2) {
@@ -555,7 +554,7 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
 
   // Start processing (in production, this would be queued)
   processExportJob(jobId, job).catch((error) => {
-    console.error('Export processing error:', error)
+    logger.error('Export processing error:', error)
   })
 
   return successResponse(
@@ -577,22 +576,102 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
 // ============================================================================
 
 const MOCK_EXPORT_USERS = [
-  { id: '1', username: 'john_doe', display_name: 'John Doe', email: 'john@example.com', role: 'admin', created_at: '2024-01-15T10:30:00Z' },
-  { id: '2', username: 'jane_smith', display_name: 'Jane Smith', email: 'jane@example.com', role: 'member', created_at: '2024-01-16T14:20:00Z' },
-  { id: '3', username: 'bob_wilson', display_name: 'Bob Wilson', email: 'bob@example.com', role: 'member', created_at: '2024-01-17T09:15:00Z' },
+  {
+    id: '1',
+    username: 'john_doe',
+    display_name: 'John Doe',
+    email: 'john@example.com',
+    role: 'admin',
+    created_at: '2024-01-15T10:30:00Z',
+  },
+  {
+    id: '2',
+    username: 'jane_smith',
+    display_name: 'Jane Smith',
+    email: 'jane@example.com',
+    role: 'member',
+    created_at: '2024-01-16T14:20:00Z',
+  },
+  {
+    id: '3',
+    username: 'bob_wilson',
+    display_name: 'Bob Wilson',
+    email: 'bob@example.com',
+    role: 'member',
+    created_at: '2024-01-17T09:15:00Z',
+  },
 ]
 
 const MOCK_EXPORT_CHANNELS = [
-  { id: '1', name: 'general', slug: 'general', description: 'General discussion', type: 'public', is_private: false, is_archived: false, created_at: '2024-01-01T00:00:00Z' },
-  { id: '2', name: 'random', slug: 'random', description: 'Random chat', type: 'public', is_private: false, is_archived: false, created_at: '2024-01-01T00:00:00Z' },
-  { id: '3', name: 'engineering', slug: 'engineering', description: 'Engineering team discussions', type: 'private', is_private: true, is_archived: false, created_at: '2024-01-02T00:00:00Z' },
+  {
+    id: '1',
+    name: 'general',
+    slug: 'general',
+    description: 'General discussion',
+    type: 'public',
+    is_private: false,
+    is_archived: false,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '2',
+    name: 'random',
+    slug: 'random',
+    description: 'Random chat',
+    type: 'public',
+    is_private: false,
+    is_archived: false,
+    created_at: '2024-01-01T00:00:00Z',
+  },
+  {
+    id: '3',
+    name: 'engineering',
+    slug: 'engineering',
+    description: 'Engineering team discussions',
+    type: 'private',
+    is_private: true,
+    is_archived: false,
+    created_at: '2024-01-02T00:00:00Z',
+  },
 ]
 
 const MOCK_EXPORT_MESSAGES = [
-  { id: '1', channel_id: '1', user_id: '1', content: 'Hello everyone! Welcome to the team.', type: 'text', created_at: '2024-01-15T10:35:00Z', is_pinned: true },
-  { id: '2', channel_id: '1', user_id: '2', content: 'Thanks John! Excited to be here.', type: 'text', created_at: '2024-01-15T10:40:00Z', is_pinned: false },
-  { id: '3', channel_id: '2', user_id: '3', content: 'Anyone want to grab coffee?', type: 'text', created_at: '2024-01-15T14:00:00Z', is_pinned: false },
-  { id: '4', channel_id: '3', user_id: '1', content: 'Sprint planning tomorrow at 10am', type: 'text', created_at: '2024-01-16T09:00:00Z', is_pinned: true },
+  {
+    id: '1',
+    channel_id: '1',
+    user_id: '1',
+    content: 'Hello everyone! Welcome to the team.',
+    type: 'text',
+    created_at: '2024-01-15T10:35:00Z',
+    is_pinned: true,
+  },
+  {
+    id: '2',
+    channel_id: '1',
+    user_id: '2',
+    content: 'Thanks John! Excited to be here.',
+    type: 'text',
+    created_at: '2024-01-15T10:40:00Z',
+    is_pinned: false,
+  },
+  {
+    id: '3',
+    channel_id: '2',
+    user_id: '3',
+    content: 'Anyone want to grab coffee?',
+    type: 'text',
+    created_at: '2024-01-15T14:00:00Z',
+    is_pinned: false,
+  },
+  {
+    id: '4',
+    channel_id: '3',
+    user_id: '1',
+    content: 'Sprint planning tomorrow at 10am',
+    type: 'text',
+    created_at: '2024-01-16T09:00:00Z',
+    is_pinned: true,
+  },
 ]
 
 async function handleNewStyleExport(config: ExportConfig): Promise<NextResponse> {
@@ -644,22 +723,26 @@ async function handleNewStyleExport(config: ExportConfig): Promise<NextResponse>
     contentType = 'text/csv'
     filename = `nchat-export-${Date.now()}.csv`
   } else {
-    content = JSON.stringify({
-      metadata: {
-        exportedAt: new Date().toISOString(),
-        format: 'json',
-        version: '1.0.0',
-        filters: config.filters,
-        stats: {
-          usersExported: users.length,
-          channelsExported: channels.length,
-          messagesExported: messages.length,
+    content = JSON.stringify(
+      {
+        metadata: {
+          exportedAt: new Date().toISOString(),
+          format: 'json',
+          version: '1.0.0',
+          filters: config.filters,
+          stats: {
+            usersExported: users.length,
+            channelsExported: channels.length,
+            messagesExported: messages.length,
+          },
         },
+        ...(config.options.includeUsers && { users }),
+        ...(config.options.includeChannels && { channels }),
+        ...(config.options.includeMessages && { messages }),
       },
-      ...(config.options.includeUsers && { users }),
-      ...(config.options.includeChannels && { channels }),
-      ...(config.options.includeMessages && { messages }),
-    }, null, 2)
+      null,
+      2
+    )
     contentType = 'application/json'
     filename = `nchat-export-${Date.now()}.json`
   }
@@ -683,24 +766,27 @@ function generateExportCsv(
 
   if (options.includeUsers && users.length) {
     const header = 'id,username,display_name,email,role,created_at'
-    const rows = users.map((u) =>
-      `${u.id},${escapeExportCsv(u.username)},${escapeExportCsv(u.display_name)},${escapeExportCsv(u.email)},${u.role},${u.created_at}`
+    const rows = users.map(
+      (u) =>
+        `${u.id},${escapeExportCsv(u.username)},${escapeExportCsv(u.display_name)},${escapeExportCsv(u.email)},${u.role},${u.created_at}`
     )
     sections.push('# USERS\n' + header + '\n' + rows.join('\n'))
   }
 
   if (options.includeChannels && channels.length) {
     const header = 'id,name,slug,description,type,is_private,is_archived,created_at'
-    const rows = channels.map((c) =>
-      `${c.id},${escapeExportCsv(c.name)},${escapeExportCsv(c.slug)},${escapeExportCsv(c.description)},${c.type},${c.is_private},${c.is_archived},${c.created_at}`
+    const rows = channels.map(
+      (c) =>
+        `${c.id},${escapeExportCsv(c.name)},${escapeExportCsv(c.slug)},${escapeExportCsv(c.description)},${c.type},${c.is_private},${c.is_archived},${c.created_at}`
     )
     sections.push('# CHANNELS\n' + header + '\n' + rows.join('\n'))
   }
 
   if (options.includeMessages && messages.length) {
     const header = 'id,channel_id,user_id,content,type,created_at,is_pinned'
-    const rows = messages.map((m) =>
-      `${m.id},${m.channel_id},${m.user_id},${escapeExportCsv(m.content)},${m.type},${m.created_at},${m.is_pinned}`
+    const rows = messages.map(
+      (m) =>
+        `${m.id},${m.channel_id},${m.user_id},${escapeExportCsv(m.content)},${m.type},${m.created_at},${m.is_pinned}`
     )
     sections.push('# MESSAGES\n' + header + '\n' + rows.join('\n'))
   }
@@ -719,10 +805,7 @@ function escapeExportCsv(value: string): string {
 // Export Handlers
 // ============================================================================
 
-export const GET = compose(
-  withErrorHandler,
-  withAuth
-)(handleGet)
+export const GET = compose(withErrorHandler, withAuth)(handleGet)
 
 export const POST = compose(
   withErrorHandler,

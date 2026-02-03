@@ -103,10 +103,7 @@ export const DELETE_USER = gql`
 
 export const PROMOTE_USER = gql`
   mutation PromoteUser($userId: uuid!, $newRole: String!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { role: $newRole }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { role: $newRole }) {
       id
       username
       role
@@ -117,10 +114,7 @@ export const PROMOTE_USER = gql`
 
 export const DEMOTE_USER = gql`
   mutation DemoteUser($userId: uuid!, $newRole: String!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { role: $newRole }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { role: $newRole }) {
       id
       username
       role
@@ -197,12 +191,7 @@ export const INVITE_USERS = gql`
 // ============================================================================
 
 export const CREATE_ROLE = gql`
-  mutation CreateRole(
-    $name: String!
-    $description: String
-    $permissions: jsonb!
-    $priority: Int
-  ) {
+  mutation CreateRole($name: String!, $description: String, $permissions: jsonb!, $priority: Int) {
     insert_nchat_roles_one(
       object: {
         name: $name
@@ -259,10 +248,7 @@ export const DELETE_ROLE = gql`
 
 export const ASSIGN_ROLE_TO_USER = gql`
   mutation AssignRoleToUser($userId: uuid!, $roleId: uuid!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { role_id: $roleId }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { role_id: $roleId }) {
       id
       username
       role_id
@@ -378,12 +364,7 @@ export const LOCK_CHANNEL = gql`
   mutation LockChannel($channelId: uuid!, $reason: String, $lockedBy: uuid!) {
     update_nchat_channels_by_pk(
       pk_columns: { id: $channelId }
-      _set: {
-        is_locked: true
-        locked_at: "now()"
-        locked_by: $lockedBy
-        lock_reason: $reason
-      }
+      _set: { is_locked: true, locked_at: "now()", locked_by: $lockedBy, lock_reason: $reason }
     ) {
       id
       name
@@ -398,12 +379,7 @@ export const UNLOCK_CHANNEL = gql`
   mutation UnlockChannel($channelId: uuid!) {
     update_nchat_channels_by_pk(
       pk_columns: { id: $channelId }
-      _set: {
-        is_locked: false
-        locked_at: null
-        locked_by: null
-        lock_reason: null
-      }
+      _set: { is_locked: false, locked_at: null, locked_by: null, lock_reason: null }
     ) {
       id
       name
@@ -482,10 +458,7 @@ export const TOGGLE_FEATURE_FLAG = gql`
   mutation ToggleFeatureFlag($flagName: String!, $enabled: Boolean!) {
     insert_nchat_feature_flags_one(
       object: { name: $flagName, enabled: $enabled, updated_at: "now()" }
-      on_conflict: {
-        constraint: feature_flags_name_key
-        update_columns: [enabled, updated_at]
-      }
+      on_conflict: { constraint: feature_flags_name_key, update_columns: [enabled, updated_at] }
     ) {
       name
       enabled
@@ -529,10 +502,7 @@ export const BULK_DELETE_USERS = gql`
 
 export const BULK_ASSIGN_ROLE = gql`
   mutation BulkAssignRole($userIds: [uuid!]!, $roleId: uuid!) {
-    update_nchat_users(
-      where: { id: { _in: $userIds } }
-      _set: { role_id: $roleId }
-    ) {
+    update_nchat_users(where: { id: { _in: $userIds } }, _set: { role_id: $roleId }) {
       affected_rows
       returning {
         id
@@ -545,12 +515,7 @@ export const BULK_ASSIGN_ROLE = gql`
 
 export const BULK_DELETE_MESSAGES = gql`
   mutation BulkDeleteMessagesByUser($userId: uuid!, $channelId: uuid) {
-    delete_nchat_messages(
-      where: {
-        user_id: { _eq: $userId }
-        channel_id: { _eq: $channelId }
-      }
-    ) {
+    delete_nchat_messages(where: { user_id: { _eq: $userId }, channel_id: { _eq: $channelId } }) {
       affected_rows
     }
   }
@@ -571,11 +536,7 @@ export const REFRESH_STATS_CACHE = gql`
 
 export const EXPORT_USER_DATA = gql`
   mutation ExportUserData($userId: uuid!, $format: String!, $includeMessages: Boolean) {
-    export_user_data(
-      userId: $userId
-      format: $format
-      includeMessages: $includeMessages
-    ) {
+    export_user_data(userId: $userId, format: $format, includeMessages: $includeMessages) {
       export_id
       download_url
       expires_at
@@ -606,13 +567,7 @@ export const CREATE_WEBHOOK = gql`
     $enabled: Boolean
   ) {
     insert_nchat_webhooks_one(
-      object: {
-        name: $name
-        url: $url
-        events: $events
-        secret: $secret
-        enabled: $enabled
-      }
+      object: { name: $name, url: $url, events: $events, secret: $secret, enabled: $enabled }
     ) {
       id
       name

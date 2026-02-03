@@ -1,4 +1,5 @@
 # Performance Optimization Report
+
 **nself-chat (nchat) - White-Label Team Communication Platform**
 
 **Date:** January 29, 2026
@@ -25,17 +26,18 @@ This document outlines the comprehensive performance optimization measures imple
 
 ### Build Metrics
 
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| Build Time | 43.0s | 16.5s | **-62%** |
-| TypeScript Errors | 5+ | 0 | **100%** |
-| Largest Page Size | 254 KB | 240 KB | **-5.5%** |
-| First Load JS (Shared) | 103 KB | 103 KB | Maintained |
-| Total Routes | 95 | 95 | - |
+| Metric                 | Before | After  | Improvement |
+| ---------------------- | ------ | ------ | ----------- |
+| Build Time             | 43.0s  | 16.5s  | **-62%**    |
+| TypeScript Errors      | 5+     | 0      | **100%**    |
+| Largest Page Size      | 254 KB | 240 KB | **-5.5%**   |
+| First Load JS (Shared) | 103 KB | 103 KB | Maintained  |
+| Total Routes           | 95     | 95     | -           |
 
 ### Page Load Sizes (Production Build)
 
 #### Largest Pages (Before Optimization)
+
 ```
 /chat/channel/[slug]     254 KB    570 KB (with dependencies)
 /settings                3.5 KB     401 KB (with dependencies)
@@ -43,6 +45,7 @@ This document outlines the comprehensive performance optimization measures imple
 ```
 
 #### Largest Pages (After Optimization)
+
 ```
 /chat/channel/[slug]     240 KB    516 KB (with dependencies) ✓ -14KB
 /settings                3.5 KB     402 KB (with dependencies)
@@ -63,9 +66,11 @@ This document outlines the comprehensive performance optimization measures imple
 ### 1. Dynamic Imports & Code Splitting
 
 #### Channel Page Optimization
+
 **File:** `/src/app/chat/channel/[slug]/page.tsx`
 
 **Before:**
+
 ```typescript
 import { MemberList } from '@/components/layout/member-list'
 import { PinnedMessages } from '@/components/layout/pinned-messages'
@@ -73,6 +78,7 @@ import { ThreadPanel } from '@/components/thread/thread-panel'
 ```
 
 **After:**
+
 ```typescript
 // Dynamic imports for heavy components (loaded only when needed)
 const MemberList = dynamic(() =>
@@ -95,15 +101,18 @@ const ThreadPanel = dynamic(() =>
 ```
 
 **Impact:**
+
 - **14 KB reduction** on initial page load
 - Components load on-demand when user opens panels
 - Smooth loading states with skeleton animations
 - No SSR overhead for interactive components
 
 #### Setup Wizard Optimization
+
 **File:** `/src/components/setup/setup-wizard.tsx`
 
 **Before:**
+
 ```typescript
 import { WelcomeStep } from './steps/welcome-step'
 import { EnvironmentStep } from './steps/environment-step'
@@ -112,6 +121,7 @@ import { BackendSetupStep } from './steps/backend-setup-step'
 ```
 
 **After:**
+
 ```typescript
 // Lazy load step components for better code splitting
 const WelcomeStep = lazy(() => import('./steps/welcome-step').then(mod => ({ default: mod.WelcomeStep })))
@@ -126,6 +136,7 @@ const BackendSetupStep = lazy(() => import('./steps/backend-setup-step').then(mo
 ```
 
 **Impact:**
+
 - Each step loads independently
 - Faster initial setup page load
 - Better user experience during navigation
@@ -169,6 +180,7 @@ modularizeImports: {
 ```
 
 **Impact:**
+
 - **19 packages** optimized for tree-shaking
 - Lucide icons load individually (not entire 1MB+ package)
 - Radix UI components tree-shaken automatically
@@ -179,6 +191,7 @@ modularizeImports: {
 **Current Status:** ✅ **Already Optimized**
 
 All images in the application are SVG format:
+
 ```
 /public/logo.svg
 /public/icon.svg
@@ -187,6 +200,7 @@ All images in the application are SVG format:
 ```
 
 **Configuration:**
+
 ```javascript
 images: {
   formats: ['image/avif', 'image/webp'],
@@ -198,6 +212,7 @@ images: {
 ```
 
 **Benefits:**
+
 - SVGs are resolution-independent (perfect for logos/icons)
 - Zero raster image optimization needed
 - AVIF/WebP ready for user-uploaded content
@@ -206,13 +221,16 @@ images: {
 ### 4. TypeScript & GraphQL Optimizations
 
 #### Fixed Duplicate Exports
+
 **Files Modified:**
+
 - `/src/graphql/index.ts`
 - `/src/graphql/users.ts`
 - `/src/graphql/mutations/index.ts`
 - `/src/hooks/graphql/use-users.ts`
 
 **Issues Resolved:**
+
 1. `SEARCH_USERS` exported from both `users.ts` and `search.ts`
    - Renamed to `SEARCH_USERS_SIMPLE` in users.ts
 
@@ -232,12 +250,14 @@ images: {
    - Disabled `social.ts` export (presence is primary)
 
 **Impact:**
+
 - Zero TypeScript compilation errors
 - Cleaner import structure
 - Reduced module conflicts
 - Better IDE autocomplete
 
 #### Fixed Profile Settings
+
 **File:** `/src/app/settings/profile/page.tsx`
 
 **Issue:** Undefined variable `loading`
@@ -245,10 +265,10 @@ images: {
 
 ```typescript
 // Before
-disabled={loading}
+disabled = { loading }
 
 // After
-disabled={updating}
+disabled = { updating }
 ```
 
 ---
@@ -260,6 +280,7 @@ disabled={updating}
 The codebase already implements several performance best practices:
 
 #### 1. React.memo Usage
+
 **46 components** already use `React.memo` for preventing unnecessary re-renders:
 
 ```typescript
@@ -272,27 +293,33 @@ export const ReadByList = memo(function ReadByList({ ... }) { ... })
 ```
 
 #### 2. Virtual Scrolling
+
 **Implementation:** `@tanstack/react-virtual` (v3.13.0)
 
 **Files:**
+
 - `/src/components/chat/message-list.tsx`
 - `/src/components/thread/thread-message-list.tsx`
 
 **Benefits:**
+
 - Handles 1000+ messages efficiently
 - Only renders visible DOM nodes
 - Smooth scrolling performance
 - Low memory footprint
 
 #### 3. Optimistic UI Updates
+
 Already implemented in message stores using Zustand with immer:
 
 ```typescript
 // Optimistic message sending
 const addOptimisticMessage = (message) => {
-  set(produce(draft => {
-    draft.messages.push({ ...message, status: 'sending' })
-  }))
+  set(
+    produce((draft) => {
+      draft.messages.push({ ...message, status: 'sending' })
+    })
+  )
 }
 ```
 
@@ -320,6 +347,7 @@ const addOptimisticMessage = (message) => {
 **Note:** These may be used in platform-specific code or future features. Audit before removal.
 
 ### Missing Dependencies (Not Critical)
+
 Platform-specific dependencies (Capacitor, Electron, etc.) are correctly excluded from main bundle.
 
 ---
@@ -337,6 +365,7 @@ compiler: {
 ```
 
 **Impact:**
+
 - Removes `console.log()` in production
 - Keeps `console.error()` and `console.warn()` for debugging
 - ~1-2% bundle size reduction
@@ -350,6 +379,7 @@ eslint: { ignoreDuringBuilds: true },
 ```
 
 **Benefits:**
+
 - Standalone mode for Docker deployments
 - Strict TypeScript checking enabled
 - ESLint warnings don't block builds (dev iteration speed)
@@ -362,26 +392,27 @@ eslint: { ignoreDuringBuilds: true },
 
 ### Performance Targets
 
-| Category | Target Score | Status |
-|----------|-------------|--------|
-| Performance | ≥ 80% | ✓ Configured |
-| Accessibility | ≥ 90% | ✓ Configured |
-| Best Practices | ≥ 85% | ✓ Configured |
-| SEO | ≥ 85% | ✓ Configured |
+| Category       | Target Score | Status       |
+| -------------- | ------------ | ------------ |
+| Performance    | ≥ 80%        | ✓ Configured |
+| Accessibility  | ≥ 90%        | ✓ Configured |
+| Best Practices | ≥ 85%        | ✓ Configured |
+| SEO            | ≥ 85%        | ✓ Configured |
 
 ### Key Metrics Monitored
 
 ```json
 {
-  "first-contentful-paint": ["warn", {"maxNumericValue": 2000}],
-  "largest-contentful-paint": ["warn", {"maxNumericValue": 3000}],
-  "cumulative-layout-shift": ["warn", {"maxNumericValue": 0.15}],
-  "total-blocking-time": ["warn", {"maxNumericValue": 500}],
-  "speed-index": ["warn", {"maxNumericValue": 4000}]
+  "first-contentful-paint": ["warn", { "maxNumericValue": 2000 }],
+  "largest-contentful-paint": ["warn", { "maxNumericValue": 3000 }],
+  "cumulative-layout-shift": ["warn", { "maxNumericValue": 0.15 }],
+  "total-blocking-time": ["warn", { "maxNumericValue": 500 }],
+  "speed-index": ["warn", { "maxNumericValue": 4000 }]
 }
 ```
 
 **Run Lighthouse:**
+
 ```bash
 pnpm lighthouse
 ```
@@ -401,6 +432,7 @@ pnpm lighthouse
 ### Future Optimizations
 
 #### 1. Service Worker & PWA (Planned)
+
 **Priority:** High
 **Impact:** Offline support, faster repeat visits
 
@@ -413,6 +445,7 @@ pnpm lighthouse
 ```
 
 #### 2. Prefetching Strategy
+
 **Priority:** Medium
 **Impact:** Faster navigation
 
@@ -430,6 +463,7 @@ useEffect(() => {
 ```
 
 #### 3. Font Optimization
+
 **Priority:** Medium
 **Impact:** Reduced layout shift
 
@@ -441,11 +475,12 @@ const inter = Inter({
   subsets: ['latin'],
   display: 'swap',
   preload: true,
-  variable: '--font-inter'
+  variable: '--font-inter',
 })
 ```
 
 #### 4. Database Query Optimization
+
 **Priority:** High
 **Impact:** Faster API responses
 
@@ -455,6 +490,7 @@ const inter = Inter({
 - Optimize subscription queries
 
 #### 5. Image CDN Integration
+
 **Priority:** Low (SVGs currently)
 **Impact:** User-generated content optimization
 
@@ -498,13 +534,13 @@ pnpm validate
 
 ### Recommended Testing Schedule
 
-| Test Type | Frequency | Command |
-|-----------|-----------|---------|
-| Type Check | Pre-commit | `pnpm type-check` |
-| Build Test | Pre-push | `pnpm build` |
-| Bundle Analysis | Weekly | `pnpm build:analyze` |
-| Lighthouse Audit | Release | `pnpm lighthouse` |
-| Full Validation | CI/CD | `pnpm validate` |
+| Test Type        | Frequency  | Command              |
+| ---------------- | ---------- | -------------------- |
+| Type Check       | Pre-commit | `pnpm type-check`    |
+| Build Test       | Pre-push   | `pnpm build`         |
+| Bundle Analysis  | Weekly     | `pnpm build:analyze` |
+| Lighthouse Audit | Release    | `pnpm lighthouse`    |
+| Full Validation  | CI/CD      | `pnpm validate`      |
 
 ---
 
@@ -538,7 +574,7 @@ export function reportWebVitals(metric) {
     sendToAnalytics({
       name: metric.name,
       value: Math.round(metric.value),
-      id: metric.id
+      id: metric.id,
     })
   }
 }
@@ -623,26 +659,26 @@ location / {
 
 ### Before vs After Comparison
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Build Time | 43.0s | 16.5s | **-62%** ⬇ |
-| TypeScript Errors | 5 | 0 | **-100%** ⬇ |
-| Largest Route | 254KB | 240KB | **-5.5%** ⬇ |
-| Shared Bundle | 103KB | 103KB | **0%** ✓ |
-| Total Routes | 95 | 95 | **0%** ✓ |
-| Package Optimizations | 8 | 19 | **+137%** ⬆ |
-| Dynamic Imports | 0 | 15 | **+∞** ⬆ |
+| Metric                | Before | After | Change      |
+| --------------------- | ------ | ----- | ----------- |
+| Build Time            | 43.0s  | 16.5s | **-62%** ⬇  |
+| TypeScript Errors     | 5      | 0     | **-100%** ⬇ |
+| Largest Route         | 254KB  | 240KB | **-5.5%** ⬇ |
+| Shared Bundle         | 103KB  | 103KB | **0%** ✓    |
+| Total Routes          | 95     | 95    | **0%** ✓    |
+| Package Optimizations | 8      | 19    | **+137%** ⬆ |
+| Dynamic Imports       | 0      | 15    | **+∞** ⬆    |
 
 ### Performance Score Estimates
 
 Based on configuration and optimizations:
 
-| Category | Estimated Score | Target |
-|----------|----------------|--------|
-| Performance | 85-92 | ≥80 ✓ |
-| Accessibility | 90-95 | ≥90 ✓ |
-| Best Practices | 88-93 | ≥85 ✓ |
-| SEO | 90-95 | ≥85 ✓ |
+| Category       | Estimated Score | Target |
+| -------------- | --------------- | ------ |
+| Performance    | 85-92           | ≥80 ✓  |
+| Accessibility  | 90-95           | ≥90 ✓  |
+| Best Practices | 88-93           | ≥85 ✓  |
+| SEO            | 90-95           | ≥85 ✓  |
 
 **Note:** Actual scores require running `pnpm lighthouse` against deployed instance.
 

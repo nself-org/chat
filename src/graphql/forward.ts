@@ -1,9 +1,5 @@
 import { gql } from '@apollo/client'
-import {
-  MESSAGE_FULL_FRAGMENT,
-  CHANNEL_BASIC_FRAGMENT,
-  USER_BASIC_FRAGMENT,
-} from './fragments'
+import { MESSAGE_FULL_FRAGMENT, CHANNEL_BASIC_FRAGMENT, USER_BASIC_FRAGMENT } from './fragments'
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -130,9 +126,7 @@ export const FORWARD_MESSAGE = gql`
  * Note: This requires constructing the objects array on the client side.
  */
 export const FORWARD_MESSAGE_TO_MULTIPLE = gql`
-  mutation ForwardMessageToMultiple(
-    $objects: [nchat_messages_insert_input!]!
-  ) {
+  mutation ForwardMessageToMultiple($objects: [nchat_messages_insert_input!]!) {
     insert_nchat_messages(objects: $objects) {
       affected_rows
       returning {
@@ -175,22 +169,12 @@ export const FORWARD_MESSAGE_TO_MULTIPLE = gql`
  * Includes recent activity for sorting purposes.
  */
 export const GET_FORWARD_DESTINATIONS = gql`
-  query GetForwardDestinations(
-    $search: String
-    $limit: Int = 50
-    $offset: Int = 0
-    $userId: uuid
-  ) {
+  query GetForwardDestinations($search: String, $limit: Int = 50, $offset: Int = 0, $userId: uuid) {
     nchat_channels(
       where: {
         _and: [
           { is_archived: { _eq: false } }
-          {
-            _or: [
-              { name: { _ilike: $search } }
-              { description: { _ilike: $search } }
-            ]
-          }
+          { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }] }
         ]
       }
       order_by: [{ updated_at: desc }, { name: asc }]
@@ -228,11 +212,7 @@ export const GET_FORWARD_DESTINATIONS = gql`
 export const GET_RECENT_FORWARD_DESTINATIONS = gql`
   query GetRecentForwardDestinations($userId: uuid!, $limit: Int = 10) {
     nchat_messages(
-      where: {
-        user_id: { _eq: $userId }
-        type: { _eq: "forwarded" }
-        is_deleted: { _eq: false }
-      }
+      where: { user_id: { _eq: $userId }, type: { _eq: "forwarded" }, is_deleted: { _eq: false } }
       order_by: { created_at: desc }
       limit: $limit
       distinct_on: channel_id
@@ -306,10 +286,7 @@ export const GET_FORWARDED_MESSAGE_DETAILS = gql`
 export const GET_FORWARD_COUNT = gql`
   query GetForwardCount($messageId: uuid!) {
     nchat_messages_aggregate(
-      where: {
-        forwarded_from_id: { _eq: $messageId }
-        is_deleted: { _eq: false }
-      }
+      where: { forwarded_from_id: { _eq: $messageId }, is_deleted: { _eq: false } }
     ) {
       aggregate {
         count

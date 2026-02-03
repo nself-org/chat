@@ -13,53 +13,183 @@ export interface GoogleFont {
 // Popular Google Fonts organized by category
 export const POPULAR_FONTS: GoogleFont[] = [
   // Sans-Serif
-  { family: 'Inter', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Inter',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
   { family: 'Roboto', category: 'sans-serif', variants: ['400', '500', '700'], subsets: ['latin'] },
-  { family: 'Open Sans', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Open Sans',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
   { family: 'Lato', category: 'sans-serif', variants: ['400', '700'], subsets: ['latin'] },
-  { family: 'Montserrat', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Poppins', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Source Sans 3', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Nunito', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Raleway', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Work Sans', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'DM Sans', category: 'sans-serif', variants: ['400', '500', '700'], subsets: ['latin'] },
-  { family: 'Outfit', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Plus Jakarta Sans', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Manrope', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Geist', category: 'sans-serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Montserrat',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Poppins',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Source Sans 3',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Nunito',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Raleway',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Work Sans',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'DM Sans',
+    category: 'sans-serif',
+    variants: ['400', '500', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Outfit',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Plus Jakarta Sans',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Manrope',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Geist',
+    category: 'sans-serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
 
   // Serif
-  { family: 'Playfair Display', category: 'serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Playfair Display',
+    category: 'serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
   { family: 'Merriweather', category: 'serif', variants: ['400', '700'], subsets: ['latin'] },
   { family: 'Lora', category: 'serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
   { family: 'PT Serif', category: 'serif', variants: ['400', '700'], subsets: ['latin'] },
   { family: 'Libre Baskerville', category: 'serif', variants: ['400', '700'], subsets: ['latin'] },
-  { family: 'Source Serif 4', category: 'serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Crimson Text', category: 'serif', variants: ['400', '600', '700'], subsets: ['latin'] },
-  { family: 'EB Garamond', category: 'serif', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Source Serif 4',
+    category: 'serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Crimson Text',
+    category: 'serif',
+    variants: ['400', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'EB Garamond',
+    category: 'serif',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
 
   // Display
-  { family: 'Oswald', category: 'display', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Oswald',
+    category: 'display',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
   { family: 'Bebas Neue', category: 'display', variants: ['400'], subsets: ['latin'] },
   { family: 'Righteous', category: 'display', variants: ['400'], subsets: ['latin'] },
   { family: 'Alfa Slab One', category: 'display', variants: ['400'], subsets: ['latin'] },
   { family: 'Archivo Black', category: 'display', variants: ['400'], subsets: ['latin'] },
 
   // Handwriting
-  { family: 'Dancing Script', category: 'handwriting', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Dancing Script',
+    category: 'handwriting',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
   { family: 'Pacifico', category: 'handwriting', variants: ['400'], subsets: ['latin'] },
-  { family: 'Caveat', category: 'handwriting', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Caveat',
+    category: 'handwriting',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
   { family: 'Satisfy', category: 'handwriting', variants: ['400'], subsets: ['latin'] },
 
   // Monospace
-  { family: 'JetBrains Mono', category: 'monospace', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Fira Code', category: 'monospace', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Source Code Pro', category: 'monospace', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'IBM Plex Mono', category: 'monospace', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
-  { family: 'Roboto Mono', category: 'monospace', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'JetBrains Mono',
+    category: 'monospace',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Fira Code',
+    category: 'monospace',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Source Code Pro',
+    category: 'monospace',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'IBM Plex Mono',
+    category: 'monospace',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
+  {
+    family: 'Roboto Mono',
+    category: 'monospace',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
   { family: 'Space Mono', category: 'monospace', variants: ['400', '700'], subsets: ['latin'] },
-  { family: 'Geist Mono', category: 'monospace', variants: ['400', '500', '600', '700'], subsets: ['latin'] },
+  {
+    family: 'Geist Mono',
+    category: 'monospace',
+    variants: ['400', '500', '600', '700'],
+    subsets: ['latin'],
+  },
 ]
 
 // Font pairing recommendations
@@ -161,10 +291,7 @@ export async function loadFonts(
  * Preconnect to Google Fonts for faster loading
  */
 export function preconnectGoogleFonts(): void {
-  const origins = [
-    'https://fonts.googleapis.com',
-    'https://fonts.gstatic.com',
-  ]
+  const origins = ['https://fonts.googleapis.com', 'https://fonts.gstatic.com']
 
   for (const origin of origins) {
     // Check if preconnect already exists
@@ -185,9 +312,7 @@ export function preconnectGoogleFonts(): void {
 /**
  * Get fonts by category
  */
-export function getFontsByCategory(
-  category: GoogleFont['category']
-): GoogleFont[] {
+export function getFontsByCategory(category: GoogleFont['category']): GoogleFont[] {
   return POPULAR_FONTS.filter((font) => font.category === category)
 }
 
@@ -196,9 +321,7 @@ export function getFontsByCategory(
  */
 export function searchFonts(query: string): GoogleFont[] {
   const lowerQuery = query.toLowerCase()
-  return POPULAR_FONTS.filter((font) =>
-    font.family.toLowerCase().includes(lowerQuery)
-  )
+  return POPULAR_FONTS.filter((font) => font.family.toLowerCase().includes(lowerQuery))
 }
 
 /**
@@ -215,14 +338,26 @@ export function getRecommendedBodyFont(headingFont: string): GoogleFont | null {
 /**
  * Generate CSS font-family value
  */
-export function generateFontFamily(
-  fontFamily: string,
-  fallbacks?: string[]
-): string {
+export function generateFontFamily(fontFamily: string, fallbacks?: string[]): string {
   const defaultFallbacks: Record<string, string[]> = {
-    'sans-serif': ['system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+    'sans-serif': [
+      'system-ui',
+      '-apple-system',
+      'BlinkMacSystemFont',
+      'Segoe UI',
+      'Roboto',
+      'sans-serif',
+    ],
     serif: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
-    monospace: ['SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', 'monospace'],
+    monospace: [
+      'SFMono-Regular',
+      'Menlo',
+      'Monaco',
+      'Consolas',
+      'Liberation Mono',
+      'Courier New',
+      'monospace',
+    ],
     display: ['system-ui', 'sans-serif'],
     handwriting: ['cursive'],
   }
@@ -238,9 +373,7 @@ export function generateFontFamily(
 /**
  * Generate CSS for font imports
  */
-export function generateFontCSS(
-  fonts: Array<{ family: string; weights?: string[] }>
-): string {
+export function generateFontCSS(fonts: Array<{ family: string; weights?: string[] }>): string {
   const url = generateGoogleFontsUrl(fonts)
   return `@import url('${url}');`
 }
@@ -293,14 +426,10 @@ export function isFontLoaded(fontFamily: string): boolean {
 /**
  * Wait for fonts to be loaded
  */
-export async function waitForFonts(
-  fonts: string[]
-): Promise<void> {
+export async function waitForFonts(fonts: string[]): Promise<void> {
   if (typeof document === 'undefined') return
 
-  const promises = fonts.map((font) =>
-    document.fonts.load(`16px "${font}"`)
-  )
+  const promises = fonts.map((font) => document.fonts.load(`16px "${font}"`))
 
   await Promise.all(promises)
 }

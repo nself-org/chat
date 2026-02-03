@@ -38,6 +38,8 @@ import {
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/contexts/auth-context'
 
+import { logger } from '@/lib/logger'
+
 interface StorageUsageProps {
   className?: string
 }
@@ -61,9 +63,7 @@ export function StorageUsage({ className }: StorageUsageProps) {
     setLoading(true)
     try {
       // Load user quota
-      const quotaRes = await fetch(
-        `/api/storage?action=quota&entityId=${user.id}&entityType=user`
-      )
+      const quotaRes = await fetch(`/api/storage?action=quota&entityId=${user.id}&entityType=user`)
       const quotaData = await quotaRes.json()
       setQuota(quotaData)
 
@@ -81,7 +81,7 @@ export function StorageUsage({ className }: StorageUsageProps) {
       const warningsData = await warningsRes.json()
       setWarnings(warningsData)
     } catch (error) {
-      console.error('Failed to load storage data:', error)
+      logger.error('Failed to load storage data:', error)
     } finally {
       setLoading(false)
     }
@@ -104,7 +104,7 @@ export function StorageUsage({ className }: StorageUsageProps) {
       await res.json()
       await loadData()
     } catch (error) {
-      console.error('Failed to delete old files:', error)
+      logger.error('Failed to delete old files:', error)
     }
   }
 
@@ -124,13 +124,13 @@ export function StorageUsage({ className }: StorageUsageProps) {
       await res.json()
       await loadData()
     } catch (error) {
-      console.error('Failed to clear cache:', error)
+      logger.error('Failed to clear cache:', error)
     }
   }
 
   const handleDownloadData = async () => {
     // Implement data export
-    console.log('Download data')
+    // REMOVED: console.log('Download data')
   }
 
   const handleAcknowledgeWarning = async (warningId: string) => {
@@ -145,14 +145,13 @@ export function StorageUsage({ className }: StorageUsageProps) {
       })
       await loadData()
     } catch (error) {
-      console.error('Failed to acknowledge warning:', error)
+      logger.error('Failed to acknowledge warning:', error)
     }
   }
 
   const quotaStatus = quota ? getQuotaStatus(quota.used, quota.limit) : 'ok'
-  const currentTier = STORAGE_TIERS.find((tier) =>
-    quota && tier.limit >= quota.limit
-  ) || STORAGE_TIERS[0]
+  const currentTier =
+    STORAGE_TIERS.find((tier) => quota && tier.limit >= quota.limit) || STORAGE_TIERS[0]
 
   if (loading) {
     return (
@@ -169,9 +168,7 @@ export function StorageUsage({ className }: StorageUsageProps) {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold">Storage Usage</h3>
-          <p className="text-sm text-muted-foreground">
-            Manage your personal storage quota
-          </p>
+          <p className="text-sm text-muted-foreground">Manage your personal storage quota</p>
         </div>
         <Button variant="outline" size="sm" onClick={loadData}>
           <RefreshCw className="mr-2 h-4 w-4" />
@@ -296,9 +293,7 @@ export function StorageUsage({ className }: StorageUsageProps) {
             <Card>
               <CardHeader>
                 <CardTitle>Storage Breakdown</CardTitle>
-                <CardDescription>
-                  See what's taking up your storage space
-                </CardDescription>
+                <CardDescription>See what's taking up your storage space</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -388,35 +383,21 @@ export function StorageUsage({ className }: StorageUsageProps) {
           <Card>
             <CardHeader>
               <CardTitle>Storage Actions</CardTitle>
-              <CardDescription>
-                Free up space by managing your files
-              </CardDescription>
+              <CardDescription>Free up space by managing your files</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-3">
-                <Button
-                  variant="outline"
-                  className="justify-start"
-                  onClick={handleDeleteOldFiles}
-                >
+                <Button variant="outline" className="justify-start" onClick={handleDeleteOldFiles}>
                   <Trash2 className="mr-2 h-4 w-4" />
                   Delete files older than 90 days
                 </Button>
 
-                <Button
-                  variant="outline"
-                  className="justify-start"
-                  onClick={handleClearCache}
-                >
+                <Button variant="outline" className="justify-start" onClick={handleClearCache}>
                   <Database className="mr-2 h-4 w-4" />
                   Clear cached data
                 </Button>
 
-                <Button
-                  variant="outline"
-                  className="justify-start"
-                  onClick={handleDownloadData}
-                >
+                <Button variant="outline" className="justify-start" onClick={handleDownloadData}>
                   <Download className="mr-2 h-4 w-4" />
                   Download all your data
                 </Button>
@@ -441,17 +422,13 @@ export function StorageUsage({ className }: StorageUsageProps) {
           <Card>
             <CardHeader>
               <CardTitle>Current Plan</CardTitle>
-              <CardDescription>
-                You are on the {currentTier.name} plan
-              </CardDescription>
+              <CardDescription>You are on the {currentTier.name} plan</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Storage</span>
-                  <span className="text-sm font-medium">
-                    {formatBytes(currentTier.limit)}
-                  </span>
+                  <span className="text-sm font-medium">{formatBytes(currentTier.limit)}</span>
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Price</span>

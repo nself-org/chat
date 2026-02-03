@@ -7,6 +7,7 @@
  * - Token refresh support
  */
 
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderMetadata,
@@ -73,10 +74,12 @@ export class GoogleProvider extends BaseAuthProvider {
     // If we have OAuth credentials (from callback), process them
     const oauthCreds = credentials as OAuthCredentials
     if (oauthCreds.code && oauthCreds.state) {
-      return this.handleCallback(new URLSearchParams({
-        code: oauthCreds.code,
-        state: oauthCreds.state,
-      }))
+      return this.handleCallback(
+        new URLSearchParams({
+          code: oauthCreds.code,
+          state: oauthCreds.state,
+        })
+      )
     }
 
     // Otherwise, redirect to Google
@@ -91,7 +94,10 @@ export class GoogleProvider extends BaseAuthProvider {
     }
   }
 
-  async signUp(credentials: AuthCredentials, metadata?: Record<string, unknown>): Promise<AuthResult> {
+  async signUp(
+    credentials: AuthCredentials,
+    metadata?: Record<string, unknown>
+  ): Promise<AuthResult> {
     // For OAuth, signUp is the same as signIn
     return this.signIn(credentials)
   }
@@ -125,7 +131,10 @@ export class GoogleProvider extends BaseAuthProvider {
     const error = params.get('error')
     if (error) {
       return this.createErrorResult(
-        this.createError('OAUTH_ERROR', params.get('error_description') || 'Google authentication failed')
+        this.createError(
+          'OAUTH_ERROR',
+          params.get('error_description') || 'Google authentication failed'
+        )
       )
     }
 
@@ -145,7 +154,10 @@ export class GoogleProvider extends BaseAuthProvider {
 
         if (!response.ok) {
           return this.createErrorResult(
-            this.createError('AUTH_FAILED', data.error?.message || 'Failed to authenticate with Google')
+            this.createError(
+              'AUTH_FAILED',
+              data.error?.message || 'Failed to authenticate with Google'
+            )
           )
         }
 
@@ -163,7 +175,7 @@ export class GoogleProvider extends BaseAuthProvider {
 
         return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
       } catch (error) {
-        console.error('Google callback error:', error)
+        logger.error('Google callback error:',  error)
         return this.createErrorResult(
           this.createError('NETWORK_ERROR', 'Failed to complete Google authentication')
         )
@@ -187,7 +199,10 @@ export class GoogleProvider extends BaseAuthProvider {
 
         if (!response.ok) {
           return this.createErrorResult(
-            this.createError('AUTH_FAILED', data.error?.message || 'Failed to authenticate with Google')
+            this.createError(
+              'AUTH_FAILED',
+              data.error?.message || 'Failed to authenticate with Google'
+            )
           )
         }
 
@@ -205,7 +220,7 @@ export class GoogleProvider extends BaseAuthProvider {
 
         return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
       } catch (error) {
-        console.error('Google code exchange error:', error)
+        logger.error('Google code exchange error:',  error)
         return this.createErrorResult(
           this.createError('NETWORK_ERROR', 'Failed to complete Google authentication')
         )
@@ -224,7 +239,7 @@ export class GoogleProvider extends BaseAuthProvider {
         headers: this.getAuthHeaders(),
       })
     } catch (error) {
-      console.error('Sign out error:', error)
+      logger.error('Sign out error:',  error)
     }
 
     this.clearSession()
@@ -262,10 +277,8 @@ export class GoogleProvider extends BaseAuthProvider {
         data.session.refreshToken
       )
     } catch (error) {
-      console.error('Token refresh error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to refresh token')
-      )
+      logger.error('Token refresh error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to refresh token'))
     }
   }
 
@@ -291,7 +304,7 @@ export class GoogleProvider extends BaseAuthProvider {
         ...Array.from(hash.entries()),
       ])
 
-      this.handleCallback(allParams).then(result => {
+      this.handleCallback(allParams).then((result) => {
         if (result.success) {
           // Clean up URL
           const url = new URL(window.location.href)
@@ -313,7 +326,11 @@ export class GoogleProvider extends BaseAuthProvider {
   }
 
   private getAuthApiUrl(): string {
-    return this.extendedConfig.authApiUrl || process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1'
+    return (
+      this.extendedConfig.authApiUrl ||
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      'http://localhost:4000/v1'
+    )
   }
 
   private getRedirectUrl(): string {
@@ -335,13 +352,15 @@ export class GoogleProvider extends BaseAuthProvider {
     return {
       id: userData.id as string,
       email: userData.email as string,
-      username: (userData.displayName as string)?.replace(/\s+/g, '_').toLowerCase() || (userData.email as string).split('@')[0],
-      displayName: userData.displayName as string || (userData.email as string).split('@')[0],
+      username:
+        (userData.displayName as string)?.replace(/\s+/g, '_').toLowerCase() ||
+        (userData.email as string).split('@')[0],
+      displayName: (userData.displayName as string) || (userData.email as string).split('@')[0],
       avatarUrl: userData.avatarUrl as string | undefined,
       role: (userData.defaultRole as AuthUser['role']) || 'member',
       emailVerified: true, // Google verifies email
       metadata: {
-        ...(userData.metadata as Record<string, unknown> || {}),
+        ...((userData.metadata as Record<string, unknown>) || {}),
         provider: 'google',
       },
       createdAt: userData.createdAt as string,
@@ -351,10 +370,13 @@ export class GoogleProvider extends BaseAuthProvider {
 
   private persistSession(session: { accessToken: string; refreshToken: string }): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem('nchat-google-session', JSON.stringify({
-      ...session,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-google-session',
+      JSON.stringify({
+        ...session,
+        timestamp: Date.now(),
+      })
+    )
   }
 
   private getStoredSession(): { accessToken: string; refreshToken: string } | null {

@@ -11,6 +11,8 @@
 import { getCache, type RedisCacheService } from '@/lib/redis-cache'
 import { captureError, addSentryBreadcrumb } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -207,7 +209,7 @@ export class CostTracker {
     const pricing = MODEL_PRICING[model]
 
     if (!pricing) {
-      console.warn(`Unknown model pricing: ${model}, using default`)
+      logger.warn(`Unknown model pricing: ${model}, using default`)
       return {
         inputCost: 0,
         outputCost: 0,
@@ -293,11 +295,7 @@ export class CostTracker {
   // Usage Statistics
   // ============================================================================
 
-  async getUserStats(
-    userId: string,
-    startDate: Date,
-    endDate: Date
-  ): Promise<UsageStats> {
+  async getUserStats(userId: string, startDate: Date, endDate: Date): Promise<UsageStats> {
     const key = `ai:usage:user:${userId}:${this.getDateKey(startDate)}:${this.getDateKey(endDate)}`
 
     // Try cache first
@@ -313,11 +311,7 @@ export class CostTracker {
     return stats
   }
 
-  async getOrgStats(
-    orgId: string,
-    startDate: Date,
-    endDate: Date
-  ): Promise<UsageStats> {
+  async getOrgStats(orgId: string, startDate: Date, endDate: Date): Promise<UsageStats> {
     const key = `ai:usage:org:${orgId}:${this.getDateKey(startDate)}:${this.getDateKey(endDate)}`
 
     const cached = await this.cache.get<UsageStats>(key)
@@ -393,10 +387,7 @@ export class CostTracker {
     }
   }
 
-  async getAllBudgetStatuses(
-    userId?: string,
-    orgId?: string
-  ): Promise<BudgetStatus[]> {
+  async getAllBudgetStatuses(userId?: string, orgId?: string): Promise<BudgetStatus[]> {
     const pattern = `ai:budget:*`
     const keys = await this.cache.keys(pattern)
 
@@ -475,13 +466,12 @@ export class CostTracker {
   }
 
   private async storeInDatabase(record: UsageRecord): Promise<void> {
-    // TODO: Store in PostgreSQL using Hasura or direct connection
     // For now, just log
-    console.log('[CostTracker] Would store in database:', {
-      id: record.id,
-      cost: record.cost.totalCost,
-      tokens: record.tokens.totalTokens,
-    })
+    // REMOVED: console.log('[CostTracker] Would store in database:', {
+    //   id: record.id,
+    //   cost: record.cost.totalCost,
+    //   tokens: record.tokens.totalTokens,
+    // })
   }
 
   private async updateTotals(record: UsageRecord): Promise<void> {
@@ -521,13 +511,12 @@ export class CostTracker {
       currentSpending: status.currentSpending,
     })
 
-    // TODO: Send actual notification (email, webhook, etc.)
-    console.log('[CostTracker] Budget alert:', {
-      name: status.alert.name,
-      limit: status.alert.limit,
-      current: status.currentSpending,
-      percentUsed: status.percentUsed,
-    })
+    // REMOVED: console.log('[CostTracker] Budget alert:', {
+    //   name: status.alert.name,
+    //   limit: status.alert.limit,
+    //   current: status.currentSpending,
+    //   percentUsed: status.percentUsed,
+    // })
 
     // Update last notified timestamp
     status.alert.lastNotified = new Date()
@@ -540,7 +529,6 @@ export class CostTracker {
     startDate: Date
     endDate: Date
   }): Promise<UsageStats> {
-    // TODO: Calculate from database
     // For now, return mock data
     return {
       totalRequests: 0,

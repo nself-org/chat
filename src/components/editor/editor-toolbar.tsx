@@ -30,12 +30,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Separator } from '@/components/ui/separator'
 import { LinkDialog, type LinkData } from './link-dialog'
 
@@ -97,7 +92,7 @@ function ToolbarButton({
           className={cn(
             'transition-colors',
             size === 'sm' ? 'h-7 w-7' : 'h-8 w-8',
-            isActive && 'bg-accent text-accent-foreground'
+            isActive && 'text-accent-foreground bg-accent'
           )}
         >
           {icon}
@@ -107,9 +102,7 @@ function ToolbarButton({
       <TooltipContent side="top" className="flex items-center gap-2">
         <span>{label}</span>
         {shortcut && (
-          <kbd className="rounded bg-muted px-1.5 py-0.5 text-xs font-mono">
-            {shortcut}
-          </kbd>
+          <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{shortcut}</kbd>
         )}
       </TooltipContent>
     </Tooltip>
@@ -232,7 +225,7 @@ export function EditorToolbar({
     <TooltipProvider delayDuration={300}>
       <div
         className={cn(
-          'flex items-center gap-0.5 rounded-lg border bg-background/95 backdrop-blur p-1',
+          'bg-background/95 flex items-center gap-0.5 rounded-lg border p-1 backdrop-blur',
           className
         )}
         role="toolbar"
@@ -370,10 +363,7 @@ export interface FloatingToolbarProps extends EditorToolbarProps {
   position?: { top: number; left: number }
 }
 
-export function FloatingToolbar({
-  position,
-  ...props
-}: FloatingToolbarProps) {
+export function FloatingToolbar({ position, ...props }: FloatingToolbarProps) {
   if (!position) return null
 
   return (

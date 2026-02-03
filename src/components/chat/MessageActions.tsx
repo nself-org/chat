@@ -51,17 +51,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuShortcut,
 } from '@/components/ui/dropdown-menu'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import type {
-  Message,
-  MessageActionPermissions,
-  MessageAction,
-} from '@/types/message'
+import type { Message, MessageActionPermissions, MessageAction } from '@/types/message'
 
 // ============================================================================
 // Types
@@ -155,7 +147,7 @@ export function MessageActions({
           <PopoverContent
             side="top"
             align="start"
-            className="w-auto border-0 bg-popover/95 p-2 shadow-xl backdrop-blur-sm"
+            className="bg-popover/95 w-auto border-0 p-2 shadow-xl backdrop-blur-sm"
           >
             <QuickReactionPicker
               onReact={(emoji) => {
@@ -207,11 +199,7 @@ export function MessageActions({
       )}
 
       {/* More menu */}
-      <MoreActionsMenu
-        message={message}
-        permissions={permissions}
-        onAction={onAction}
-      />
+      <MoreActionsMenu message={message} permissions={permissions} onAction={onAction} />
     </motion.div>
   )
 }
@@ -220,11 +208,7 @@ export function MessageActions({
 // Quick Reaction Picker
 // ============================================================================
 
-function QuickReactionPicker({
-  onReact,
-}: {
-  onReact: (emoji: string) => void
-}) {
+function QuickReactionPicker({ onReact }: { onReact: (emoji: string) => void }) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-1">
@@ -239,9 +223,7 @@ function QuickReactionPicker({
           </button>
         ))}
       </div>
-      <div className="text-center text-xs text-muted-foreground">
-        Click to react
-      </div>
+      <div className="text-center text-xs text-muted-foreground">Click to react</div>
     </div>
   )
 }
@@ -283,9 +265,7 @@ function MoreActionsMenu({
 
         {/* Pin/Unpin */}
         {permissions.canPin && (
-          <DropdownMenuItem
-            onClick={() => onAction(message.isPinned ? 'unpin' : 'pin')}
-          >
+          <DropdownMenuItem onClick={() => onAction(message.isPinned ? 'unpin' : 'pin')}>
             {message.isPinned ? (
               <>
                 <PinOff className="mr-2 h-4 w-4" />
@@ -304,9 +284,7 @@ function MoreActionsMenu({
         {/* Bookmark */}
         {permissions.canBookmark && (
           <DropdownMenuItem
-            onClick={() =>
-              onAction(message.isBookmarked ? 'unbookmark' : 'bookmark')
-            }
+            onClick={() => onAction(message.isBookmarked ? 'unbookmark' : 'bookmark')}
           >
             {message.isBookmarked ? (
               <>
@@ -379,9 +357,7 @@ function MoreActionsMenu({
             Message info
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
-            <DropdownMenuLabel className="text-xs">
-              Message Details
-            </DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs">Message Details</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {message.isEdited && (
               <DropdownMenuItem>
@@ -398,13 +374,11 @@ function MoreActionsMenu({
             <DropdownMenuSeparator />
             <div className="px-2 py-2 text-xs text-muted-foreground">
               <div>
-                <strong>Sent:</strong>{' '}
-                {new Date(message.createdAt).toLocaleString()}
+                <strong>Sent:</strong> {new Date(message.createdAt).toLocaleString()}
               </div>
               {message.isEdited && message.editedAt && (
                 <div className="mt-1">
-                  <strong>Edited:</strong>{' '}
-                  {new Date(message.editedAt).toLocaleString()}
+                  <strong>Edited:</strong> {new Date(message.editedAt).toLocaleString()}
                 </div>
               )}
             </div>
@@ -412,9 +386,7 @@ function MoreActionsMenu({
         </DropdownMenuSub>
 
         {/* Separator before destructive actions */}
-        {(permissions.canReport || permissions.canDelete) && (
-          <DropdownMenuSeparator />
-        )}
+        {(permissions.canReport || permissions.canDelete) && <DropdownMenuSeparator />}
 
         {/* Report */}
         {permissions.canReport && (
@@ -488,11 +460,7 @@ export function CompactMessageActions({
           <MessageSquare className="h-3.5 w-3.5" />
         </Button>
       )}
-      <MoreActionsMenu
-        message={message}
-        permissions={permissions}
-        onAction={onAction}
-      />
+      <MoreActionsMenu message={message} permissions={permissions} onAction={onAction} />
     </div>
   )
 }
@@ -524,9 +492,7 @@ export function MobileMessageActions({
       {/* Quick reactions */}
       {permissions.canReact && (
         <div className="mb-4">
-          <div className="mb-2 text-xs font-medium text-muted-foreground">
-            React
-          </div>
+          <div className="mb-2 text-xs font-medium text-muted-foreground">React</div>
           <div className="flex justify-center gap-2">
             {QUICK_REACTIONS.map((reaction) => (
               <button
@@ -535,7 +501,7 @@ export function MobileMessageActions({
                   onAction('react', { emoji: reaction.emoji })
                   onClose?.()
                 }}
-                className="flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-2xl hover:bg-muted/80"
+                className="hover:bg-muted/80 flex h-12 w-12 items-center justify-center rounded-xl bg-muted text-2xl"
               >
                 {reaction.emoji}
               </button>
@@ -629,11 +595,7 @@ export function MobileMessageActions({
       </div>
 
       {/* Close button */}
-      <Button
-        variant="ghost"
-        className="mt-4 w-full"
-        onClick={onClose}
-      >
+      <Button variant="ghost" className="mt-4 w-full" onClick={onClose}>
         Cancel
       </Button>
     </motion.div>
@@ -661,8 +623,7 @@ function ActionButton({
       className={cn(
         'flex flex-col items-center gap-2 rounded-xl p-3 transition-colors',
         variant === 'default' && 'hover:bg-muted',
-        variant === 'destructive' &&
-          'text-destructive hover:bg-destructive/10'
+        variant === 'destructive' && 'hover:bg-destructive/10 text-destructive'
       )}
     >
       <Icon className="h-5 w-5" />
@@ -725,12 +686,7 @@ export function BulkMessageActions({
         </Button>
       </div>
 
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={onClearSelection}
-        className="ml-auto"
-      >
+      <Button variant="ghost" size="sm" onClick={onClearSelection} className="ml-auto">
         <X className="h-4 w-4" />
       </Button>
     </motion.div>

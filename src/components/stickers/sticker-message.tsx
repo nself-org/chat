@@ -7,6 +7,8 @@ import { cn } from '@/lib/utils'
 import { StickerService } from '@/lib/stickers/sticker-service'
 import type { Sticker, StickerPack } from '@/graphql/stickers'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // TYPES
 // ============================================================================
@@ -81,49 +83,51 @@ function MessageLottiePlayer({
   useEffect(() => {
     let isMounted = true
 
-    import('lottie-web').then((lottie) => {
-      if (!containerRef.current || !isMounted) return
+    import('lottie-web')
+      .then((lottie) => {
+        if (!containerRef.current || !isMounted) return
 
-      // Clear any existing animation
-      if (animationRef.current) {
-        (animationRef.current as { destroy: () => void }).destroy()
-      }
-
-      try {
-        animationRef.current = lottie.default.loadAnimation({
-          container: containerRef.current,
-          renderer: 'svg',
-          loop,
-          autoplay: isPlaying,
-          path: src,
-        })
-
-        const anim = animationRef.current as {
-          addEventListener: (event: string, cb: () => void) => void
+        // Clear any existing animation
+        if (animationRef.current) {
+          ;(animationRef.current as { destroy: () => void }).destroy()
         }
 
-        anim.addEventListener('DOMLoaded', () => {
-          if (isMounted) {
-            setLoaded(true)
+        try {
+          animationRef.current = lottie.default.loadAnimation({
+            container: containerRef.current,
+            renderer: 'svg',
+            loop,
+            autoplay: isPlaying,
+            path: src,
+          })
+
+          const anim = animationRef.current as {
+            addEventListener: (event: string, cb: () => void) => void
           }
-        })
-      } catch (err) {
-        console.error('Failed to load Lottie animation:', err)
+
+          anim.addEventListener('DOMLoaded', () => {
+            if (isMounted) {
+              setLoaded(true)
+            }
+          })
+        } catch (err) {
+          logger.error('Failed to load Lottie animation:', err)
+          if (isMounted) {
+            setError(true)
+          }
+        }
+      })
+      .catch((err) => {
+        logger.error('Failed to import lottie-web:', err)
         if (isMounted) {
           setError(true)
         }
-      }
-    }).catch((err) => {
-      console.error('Failed to import lottie-web:', err)
-      if (isMounted) {
-        setError(true)
-      }
-    })
+      })
 
     return () => {
       isMounted = false
       if (animationRef.current) {
-        (animationRef.current as { destroy: () => void }).destroy()
+        ;(animationRef.current as { destroy: () => void }).destroy()
       }
     }
   }, [src, loop, isPlaying])
@@ -147,7 +151,7 @@ function MessageLottiePlayer({
   if (error) {
     return (
       <div
-        className={cn('flex items-center justify-center bg-muted rounded-lg', className)}
+        className={cn('flex items-center justify-center rounded-lg bg-muted', className)}
         style={{ width: size, height: size }}
       >
         <span className="text-xs text-muted-foreground">Error loading</span>
@@ -156,11 +160,11 @@ function MessageLottiePlayer({
   }
 
   return (
-    <div className={cn('relative group', className)} style={{ width: size, height: size }}>
-      <div ref={containerRef} className="w-full h-full" />
+    <div className={cn('group relative', className)} style={{ width: size, height: size }}>
+      <div ref={containerRef} className="h-full w-full" />
       {!loaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted/50 rounded-lg animate-pulse">
-          <div className="w-6 h-6 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <div className="bg-muted/50 absolute inset-0 flex animate-pulse items-center justify-center rounded-lg">
+          <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       )}
       {loaded && (
@@ -170,14 +174,10 @@ function MessageLottiePlayer({
             e.stopPropagation()
             togglePlay()
           }}
-          className="absolute bottom-1 right-1 p-1 rounded-full bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute bottom-1 right-1 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
           aria-label={isPlaying ? 'Pause animation' : 'Play animation'}
         >
-          {isPlaying ? (
-            <Pause className="h-3 w-3" />
-          ) : (
-            <Play className="h-3 w-3" />
-          )}
+          {isPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
         </button>
       )}
     </div>
@@ -207,19 +207,17 @@ export function StickerMessage({
     onClick?.(sticker)
   }, [onClick, sticker])
 
-  const handlePackClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-    onPackClick?.(sticker.pack_id)
-  }, [onPackClick, sticker.pack_id])
+  const handlePackClick = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      onPackClick?.(sticker.pack_id)
+    },
+    [onPackClick, sticker.pack_id]
+  )
 
   return (
     <div
-      className={cn(
-        'inline-block',
-        config.container,
-        onClick && 'cursor-pointer',
-        className
-      )}
+      className={cn('inline-block', config.container, onClick && 'cursor-pointer', className)}
       onClick={onClick ? handleClick : undefined}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -237,14 +235,10 @@ export function StickerMessage({
       {/* Sticker Image/Animation */}
       <div className="relative">
         {isAnimated && stickerType === 'lottie' ? (
-          <MessageLottiePlayer
-            src={sticker.url}
-            size={config.image}
-            className="rounded-lg"
-          />
+          <MessageLottiePlayer src={sticker.url} size={config.image} className="rounded-lg" />
         ) : imageError ? (
           <div
-            className="flex items-center justify-center bg-muted rounded-lg"
+            className="flex items-center justify-center rounded-lg bg-muted"
             style={{ width: config.image, height: config.image }}
           >
             <span className="text-xs text-muted-foreground">Failed to load</span>
@@ -269,8 +263,8 @@ export function StickerMessage({
           type="button"
           onClick={handlePackClick}
           className={cn(
-            'flex items-center gap-1 mt-1 px-2 py-1 rounded-md',
-            'text-muted-foreground hover:text-foreground hover:bg-accent',
+            'mt-1 flex items-center gap-1 rounded-md px-2 py-1',
+            'text-muted-foreground hover:bg-accent hover:text-foreground',
             'transition-colors',
             config.packText
           )}
@@ -317,27 +311,14 @@ export function StickerMessageBubble({
     : null
 
   return (
-    <div
-      className={cn(
-        'flex flex-col gap-1',
-        isOwn && 'items-end',
-        className
-      )}
-    >
+    <div className={cn('flex flex-col gap-1', isOwn && 'items-end', className)}>
       {/* Sender Name */}
       {showSender && senderName && !isOwn && (
-        <span className="text-xs font-medium text-foreground/80 ml-1">
-          {senderName}
-        </span>
+        <span className="text-foreground/80 ml-1 text-xs font-medium">{senderName}</span>
       )}
 
       {/* Sticker */}
-      <div
-        className={cn(
-          'relative p-2 rounded-2xl',
-          isOwn ? 'bg-primary/5' : 'bg-muted/50'
-        )}
-      >
+      <div className={cn('relative rounded-2xl p-2', isOwn ? 'bg-primary/5' : 'bg-muted/50')}>
         <StickerMessage
           sticker={sticker}
           onClick={onClick}
@@ -350,12 +331,7 @@ export function StickerMessageBubble({
 
       {/* Timestamp */}
       {formattedTime && (
-        <span
-          className={cn(
-            'text-[10px] text-muted-foreground',
-            isOwn ? 'mr-1' : 'ml-1'
-          )}
-        >
+        <span className={cn('text-[10px] text-muted-foreground', isOwn ? 'mr-1' : 'ml-1')}>
           {formattedTime}
         </span>
       )}
@@ -384,14 +360,14 @@ export function StickerMessagePreview({
   return (
     <div
       className={cn(
-        'relative inline-flex items-center gap-2 p-2 rounded-lg bg-muted/50 border',
+        'bg-muted/50 relative inline-flex items-center gap-2 rounded-lg border p-2',
         className
       )}
     >
       {/* Thumbnail */}
-      <div className="relative w-12 h-12 rounded overflow-hidden bg-muted">
+      <div className="relative h-12 w-12 overflow-hidden rounded bg-muted">
         {imageError ? (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             <span className="text-[10px] text-muted-foreground">Error</span>
           </div>
         ) : (
@@ -407,10 +383,8 @@ export function StickerMessagePreview({
       </div>
 
       {/* Info */}
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">
-          {sticker.name || 'Sticker'}
-        </p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{sticker.name || 'Sticker'}</p>
         <p className="text-xs text-muted-foreground">
           {sticker.width}x{sticker.height}
         </p>
@@ -422,8 +396,8 @@ export function StickerMessagePreview({
           type="button"
           onClick={onRemove}
           className={cn(
-            'p-1 rounded-full text-muted-foreground hover:text-foreground',
-            'hover:bg-background transition-colors'
+            'rounded-full p-1 text-muted-foreground hover:text-foreground',
+            'transition-colors hover:bg-background'
           )}
           aria-label="Remove sticker"
         >
@@ -452,7 +426,7 @@ export function StickerMessageSkeleton({
   return (
     <div className={cn('inline-block', config.container, className)}>
       <div
-        className="rounded-lg bg-muted animate-pulse"
+        className="animate-pulse rounded-lg bg-muted"
         style={{ width: config.image, height: config.image }}
       />
     </div>

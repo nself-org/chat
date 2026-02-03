@@ -5,11 +5,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -18,15 +14,9 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import {
-  Circle,
-  Clock,
-  Moon,
-  MinusCircle,
-  X,
-  Smile,
-  Loader2,
-} from 'lucide-react'
+import { Circle, Clock, Moon, MinusCircle, X, Smile, Loader2 } from 'lucide-react'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -79,7 +69,7 @@ const PRESENCE_OPTIONS: {
   {
     value: 'dnd',
     label: 'Do Not Disturb',
-    description: 'You won\'t receive notifications',
+    description: "You won't receive notifications",
     icon: <MinusCircle className="h-3 w-3 text-red-500" />,
     color: 'bg-red-500',
   },
@@ -180,7 +170,7 @@ function EmojiPicker({ onSelect, className }: EmojiPickerProps) {
           key={emoji}
           type="button"
           onClick={() => onSelect(emoji)}
-          className="p-2 text-lg rounded hover:bg-accent transition-colors"
+          className="rounded p-2 text-lg transition-colors hover:bg-accent"
           data-testid={`emoji-${emoji}`}
         >
           {emoji}
@@ -240,7 +230,7 @@ export function UserStatusSelector({
       })
       setIsOpen(false)
     } catch (error) {
-      console.error('Failed to set status:', error)
+      logger.error('Failed to set status:', error)
     } finally {
       setSaving(false)
     }
@@ -254,7 +244,7 @@ export function UserStatusSelector({
       setStatusText('')
       setIsOpen(false)
     } catch (error) {
-      console.error('Failed to clear status:', error)
+      logger.error('Failed to clear status:', error)
     } finally {
       setSaving(false)
     }
@@ -282,7 +272,7 @@ export function UserStatusSelector({
       <PopoverContent className="w-80 p-0" align="start">
         {/* Status Form */}
         {showStatusForm ? (
-          <div className="p-4 space-y-4" data-testid="status-form">
+          <div className="space-y-4 p-4" data-testid="status-form">
             <div className="flex items-center justify-between">
               <h4 className="font-medium">Set a status</h4>
               <Button
@@ -362,7 +352,7 @@ export function UserStatusSelector({
                 className="flex-1"
                 data-testid="save-status-button"
               >
-                {saving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Save
               </Button>
             </div>
@@ -372,7 +362,7 @@ export function UserStatusSelector({
             {/* Current Status */}
             {currentStatus && (currentStatus.emoji || currentStatus.text) && (
               <>
-                <div className="p-3 border-b">
+                <div className="border-b p-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       {currentStatus.emoji && (
@@ -387,11 +377,7 @@ export function UserStatusSelector({
                       disabled={saving}
                       data-testid="clear-status-button"
                     >
-                      {saving ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        'Clear'
-                      )}
+                      {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Clear'}
                     </Button>
                   </div>
                 </div>
@@ -401,7 +387,7 @@ export function UserStatusSelector({
             {/* Set Status Button */}
             <div className="p-2">
               <button
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-left"
+                className="flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-accent"
                 onClick={() => setShowStatusForm(true)}
                 data-testid="set-status-button"
               >
@@ -418,7 +404,7 @@ export function UserStatusSelector({
                 <button
                   key={option.value}
                   className={cn(
-                    'w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-accent transition-colors text-left',
+                    'flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors hover:bg-accent',
                     currentPresence === option.value && 'bg-accent'
                   )}
                   onClick={() => handlePresenceChange(option.value)}
@@ -430,7 +416,7 @@ export function UserStatusSelector({
                     <p className="text-xs text-muted-foreground">{option.description}</p>
                   </div>
                   {currentPresence === option.value && (
-                    <span className="text-primary text-sm">✓</span>
+                    <span className="text-sm text-primary">✓</span>
                   )}
                 </button>
               ))}

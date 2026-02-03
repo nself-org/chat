@@ -71,6 +71,7 @@ src/
 8. **nchat_prekey_bundles** - Materialized view for efficient lookups
 
 **Extended Table:**
+
 - **nchat_messages** - Added encryption columns (is_encrypted, encrypted_payload, message_type, sender_device_id, encryption_version)
 
 ---
@@ -164,15 +165,11 @@ function E2EESetupFlow() {
 E2EE is automatically applied to private channels and DMs:
 
 ```typescript
-import { encryptMessageForSending, prepareMessageForStorage } from '@/lib/e2ee/message-encryption';
-import { useApolloClient } from '@apollo/client';
+import { encryptMessageForSending, prepareMessageForStorage } from '@/lib/e2ee/message-encryption'
+import { useApolloClient } from '@apollo/client'
 
-async function sendEncryptedMessage(
-  content: string,
-  channelId: string,
-  recipientUserId: string
-) {
-  const apolloClient = useApolloClient();
+async function sendEncryptedMessage(content: string, channelId: string, recipientUserId: string) {
+  const apolloClient = useApolloClient()
 
   // Encrypt message
   const encryptedPayload = await encryptMessageForSending(
@@ -183,10 +180,10 @@ async function sendEncryptedMessage(
       isDirectMessage: true,
     },
     apolloClient
-  );
+  )
 
   // Prepare for database storage
-  const messageData = prepareMessageForStorage(encryptedPayload);
+  const messageData = prepareMessageForStorage(encryptedPayload)
 
   // Send to GraphQL mutation
   await apolloClient.mutate({
@@ -195,7 +192,7 @@ async function sendEncryptedMessage(
       channelId,
       ...messageData,
     },
-  });
+  })
 }
 ```
 
@@ -204,19 +201,19 @@ async function sendEncryptedMessage(
 Messages are automatically decrypted when displayed:
 
 ```typescript
-import { extractMessageContent } from '@/lib/e2ee/message-encryption';
-import { useApolloClient } from '@apollo/client';
+import { extractMessageContent } from '@/lib/e2ee/message-encryption'
+import { useApolloClient } from '@apollo/client'
 
 async function displayMessage(message: Message) {
-  const apolloClient = useApolloClient();
+  const apolloClient = useApolloClient()
 
   if (message.is_encrypted) {
     // Decrypt message
-    const plaintext = await extractMessageContent(message, apolloClient);
-    return plaintext;
+    const plaintext = await extractMessageContent(message, apolloClient)
+    return plaintext
   }
 
-  return message.content;
+  return message.content
 }
 ```
 
@@ -304,12 +301,14 @@ E2EE can be enabled/configured in `src/config/app-config.ts`:
 ### 3. Attack Surface
 
 **Protected Against:**
+
 - ✅ Server compromise (can't decrypt messages)
 - ✅ Network eavesdropping (messages encrypted in transit)
 - ✅ Database breach (keys encrypted)
 - ✅ Key compromise (forward/future secrecy)
 
 **User Must Protect:**
+
 - ⚠️ Password (used to derive master key)
 - ⚠️ Recovery code (used to recover master key)
 - ⚠️ Device (contains decryption keys in memory)
@@ -317,6 +316,7 @@ E2EE can be enabled/configured in `src/config/app-config.ts`:
 ### 4. Trust Model
 
 **Trust on First Use (TOFU)**:
+
 - First key exchange is assumed authentic
 - Safety numbers provide out-of-band verification
 - Users should verify safety numbers in person or via trusted channel
@@ -368,31 +368,31 @@ manager.destroy();
 ### E2EE Context Hook
 
 ```typescript
-import { useE2EEContext } from '@/contexts/e2ee-context';
+import { useE2EEContext } from '@/contexts/e2ee-context'
 
 const {
-  status,              // E2EE status object
-  isEnabled,           // Is E2EE enabled in config?
-  isInitialized,       // Is E2EE initialized?
-  isLoading,           // Is operation in progress?
-  error,               // Last error message
+  status, // E2EE status object
+  isEnabled, // Is E2EE enabled in config?
+  isInitialized, // Is E2EE initialized?
+  isLoading, // Is operation in progress?
+  error, // Last error message
 
-  initialize,          // Initialize E2EE
-  recover,             // Recover using recovery code
-  disable,             // Disable E2EE
+  initialize, // Initialize E2EE
+  recover, // Recover using recovery code
+  disable, // Disable E2EE
 
-  encryptMessage,      // Encrypt a message
-  decryptMessage,      // Decrypt a message
+  encryptMessage, // Encrypt a message
+  decryptMessage, // Decrypt a message
 
-  rotateSignedPreKey,  // Rotate signed prekey
+  rotateSignedPreKey, // Rotate signed prekey
   replenishOneTimePreKeys, // Replenish one-time prekeys
-  getRecoveryCode,     // Get recovery code
-  clearRecoveryCode,   // Clear recovery code
+  getRecoveryCode, // Get recovery code
+  clearRecoveryCode, // Clear recovery code
 
-  hasSession,          // Check if session exists
-  generateSafetyNumber,// Generate safety number
-  formatSafetyNumber,  // Format safety number for display
-} = useE2EEContext();
+  hasSession, // Check if session exists
+  generateSafetyNumber, // Generate safety number
+  formatSafetyNumber, // Format safety number for display
+} = useE2EEContext()
 ```
 
 ---
@@ -418,10 +418,7 @@ query GetMasterKeyInfo {
 # Get prekey bundle
 query GetPreKeyBundle($userId: uuid!, $deviceId: String!) {
   nchat_prekey_bundles(
-    where: {
-      user_id: { _eq: $userId }
-      device_id: { _eq: $deviceId }
-    }
+    where: { user_id: { _eq: $userId }, device_id: { _eq: $deviceId } }
     limit: 1
   ) {
     identity_key_public
@@ -452,9 +449,7 @@ query GetSession($deviceId: String!, $peerUserId: uuid!, $peerDeviceId: String!)
 
 # Get safety number
 query GetSafetyNumbers($peerUserId: uuid) {
-  nchat_safety_numbers(
-    where: { peer_user_id: { _eq: $peerUserId } }
-  ) {
+  nchat_safety_numbers(where: { peer_user_id: { _eq: $peerUserId } }) {
     safety_number
     is_verified
     verified_at
@@ -468,11 +463,7 @@ query GetSafetyNumbers($peerUserId: uuid) {
 # Save master key
 mutation SaveMasterKey($salt: bytea!, $keyHash: bytea!, $iterations: Int!) {
   insert_nchat_user_master_keys_one(
-    object: {
-      salt: $salt
-      key_hash: $keyHash
-      iterations: $iterations
-    }
+    object: { salt: $salt, key_hash: $keyHash, iterations: $iterations }
   ) {
     id
   }
@@ -534,11 +525,7 @@ mutation ConsumeOneTimePreKey(
       key_id: { _eq: $keyId }
       is_consumed: { _eq: false }
     }
-    _set: {
-      is_consumed: true
-      consumed_at: "now()"
-      consumed_by: $consumedBy
-    }
+    _set: { is_consumed: true, consumed_at: "now()", consumed_by: $consumedBy }
   ) {
     affected_rows
   }
@@ -569,11 +556,7 @@ mutation SaveSession(
 mutation VerifySafetyNumber($peerUserId: uuid!, $verifiedBy: uuid!) {
   update_nchat_safety_numbers(
     where: { peer_user_id: { _eq: $peerUserId } }
-    _set: {
-      is_verified: true
-      verified_at: "now()"
-      verified_by_user_id: $verifiedBy
-    }
+    _set: { is_verified: true, verified_at: "now()", verified_by_user_id: $verifiedBy }
   ) {
     affected_rows
   }
@@ -587,6 +570,7 @@ mutation VerifySafetyNumber($peerUserId: uuid!, $verifiedBy: uuid!) {
 ### Manual Testing Steps
 
 1. **Initialize E2EE**
+
    ```bash
    # Open app in browser
    # Navigate to Settings > Security > End-to-End Encryption
@@ -597,6 +581,7 @@ mutation VerifySafetyNumber($peerUserId: uuid!, $verifiedBy: uuid!) {
    ```
 
 2. **Send Encrypted Message**
+
    ```bash
    # Open a private channel or DM
    # Send a message
@@ -606,6 +591,7 @@ mutation VerifySafetyNumber($peerUserId: uuid!, $verifiedBy: uuid!) {
    ```
 
 3. **Receive Encrypted Message**
+
    ```bash
    # Open message in UI
    # Verify message displays correctly (decrypted)
@@ -613,6 +599,7 @@ mutation VerifySafetyNumber($peerUserId: uuid!, $verifiedBy: uuid!) {
    ```
 
 4. **Verify Safety Number**
+
    ```bash
    # Open DM with another user
    # Click "Verify" button in chat header
@@ -634,24 +621,33 @@ mutation VerifySafetyNumber($peerUserId: uuid!, $verifiedBy: uuid!) {
 // Jest unit tests
 describe('E2EE Manager', () => {
   it('should initialize with password', async () => {
-    const manager = getE2EEManager(apolloClient);
-    await manager.initialize('test-password-123');
-    expect(manager.isInitialized()).toBe(true);
-  });
+    const manager = getE2EEManager(apolloClient)
+    await manager.initialize('test-password-123')
+    expect(manager.isInitialized()).toBe(true)
+  })
 
   it('should encrypt and decrypt message', async () => {
-    const plaintext = 'Hello, World!';
-    const result = await manager.encryptMessage(plaintext, recipientUserId, recipientDeviceId);
-    const decrypted = await manager.decryptMessage(result.encryptedPayload, result.type, senderUserId, senderDeviceId);
-    expect(decrypted).toBe(plaintext);
-  });
+    const plaintext = 'Hello, World!'
+    const result = await manager.encryptMessage(plaintext, recipientUserId, recipientDeviceId)
+    const decrypted = await manager.decryptMessage(
+      result.encryptedPayload,
+      result.type,
+      senderUserId,
+      senderDeviceId
+    )
+    expect(decrypted).toBe(plaintext)
+  })
 
   it('should generate safety number', async () => {
-    const safetyNumber = await manager.generateSafetyNumber(localUserId, peerUserId, peerIdentityKey);
-    expect(safetyNumber).toHaveLength(60);
-    expect(safetyNumber).toMatch(/^\d+$/);
-  });
-});
+    const safetyNumber = await manager.generateSafetyNumber(
+      localUserId,
+      peerUserId,
+      peerIdentityKey
+    )
+    expect(safetyNumber).toHaveLength(60)
+    expect(safetyNumber).toMatch(/^\d+$/)
+  })
+})
 ```
 
 ---
@@ -661,22 +657,27 @@ describe('E2EE Manager', () => {
 ### Common Issues
 
 **1. "E2EE not initialized"**
+
 - **Cause**: User hasn't set up E2EE or session expired
 - **Solution**: Run E2EE setup wizard, enter password
 
 **2. "Failed to decrypt message"**
+
 - **Cause**: Missing session, corrupted session state, or wrong device
 - **Solution**: Re-establish session by sending new message
 
 **3. "No prekey bundle available"**
+
 - **Cause**: Recipient hasn't initialized E2EE
 - **Solution**: Ask recipient to enable E2EE in settings
 
 **4. "Master key not found"**
+
 - **Cause**: Lost password or database cleared
 - **Solution**: Use recovery code to recover master key
 
 **5. "One-time prekeys exhausted"**
+
 - **Cause**: Many new sessions established
 - **Solution**: Automatically replenished (runs every 100 consumptions)
 
@@ -686,10 +687,10 @@ Enable E2EE debug logging:
 
 ```typescript
 // Add to .env.local
-NEXT_PUBLIC_E2EE_DEBUG=true
+NEXT_PUBLIC_E2EE_DEBUG = true
 
 // Or in console:
-localStorage.setItem('e2ee_debug', 'true');
+localStorage.setItem('e2ee_debug', 'true')
 ```
 
 ---
@@ -794,6 +795,7 @@ nself db shell
 ## License
 
 This E2EE implementation uses open-source cryptographic libraries:
+
 - **libsignal-client**: GPLv3 License
 - **@noble/curves**: MIT License
 - **@noble/hashes**: MIT License

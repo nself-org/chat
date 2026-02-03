@@ -41,9 +41,7 @@ program
 // Development Commands
 // ============================================================================
 
-const dev = program
-  .command('dev')
-  .description('Development server commands')
+const dev = program.command('dev').description('Development server commands')
 
 dev
   .command('start')
@@ -75,45 +73,35 @@ dev
 // Database Commands
 // ============================================================================
 
-const db = program
-  .command('db')
-  .description('Database management commands')
+const db = program.command('db').description('Database management commands')
 
-db
-  .command('migrate')
+db.command('migrate')
   .description('Run database migrations')
   .option('--up', 'Migrate up (default)')
   .option('--down', 'Migrate down')
   .option('--to <version>', 'Migrate to specific version')
   .action(dbCommands.migrate)
 
-db
-  .command('seed')
+db.command('seed')
   .description('Seed database with sample data')
   .option('--users <count>', 'Number of users to create', '10')
   .option('--channels <count>', 'Number of channels to create', '5')
   .option('--messages <count>', 'Number of messages per channel', '50')
   .action(dbCommands.seed)
 
-db
-  .command('reset')
+db.command('reset')
   .description('Reset database (WARNING: destroys all data)')
   .option('--force', 'Skip confirmation prompt')
   .action(dbCommands.reset)
 
-db
-  .command('status')
-  .description('Show database connection status')
-  .action(dbCommands.status)
+db.command('status').description('Show database connection status').action(dbCommands.status)
 
-db
-  .command('backup')
+db.command('backup')
   .description('Create database backup')
   .option('-o, --output <path>', 'Output file path')
   .action(dbCommands.backup)
 
-db
-  .command('restore')
+db.command('restore')
   .description('Restore database from backup')
   .argument('<file>', 'Backup file to restore')
   .option('--force', 'Skip confirmation prompt')
@@ -123,9 +111,7 @@ db
 // User Commands
 // ============================================================================
 
-const user = program
-  .command('user')
-  .description('User management commands')
+const user = program.command('user').description('User management commands')
 
 user
   .command('create')
@@ -176,9 +162,7 @@ user
 // Channel Commands
 // ============================================================================
 
-const channel = program
-  .command('channel')
-  .description('Channel management commands')
+const channel = program.command('channel').description('Channel management commands')
 
 channel
   .command('create')
@@ -212,9 +196,7 @@ channel
 // Deploy Commands
 // ============================================================================
 
-const deploy = program
-  .command('deploy')
-  .description('Deployment commands')
+const deploy = program.command('deploy').description('Deployment commands')
 
 deploy
   .command('vercel')
@@ -240,9 +222,7 @@ deploy
 // Config Commands
 // ============================================================================
 
-const config = program
-  .command('config')
-  .description('Configuration management commands')
+const config = program.command('config').description('Configuration management commands')
 
 config
   .command('get')
@@ -275,9 +255,7 @@ config
 // Backup Commands
 // ============================================================================
 
-const backup = program
-  .command('backup')
-  .description('Backup and restore commands')
+const backup = program.command('backup').description('Backup and restore commands')
 
 backup
   .command('create')

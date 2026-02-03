@@ -245,18 +245,18 @@ Add to `src/config/app-config.ts`:
 
 ```typescript
 analytics: {
-  enabled: boolean;                    // Master toggle
-  trackingMode: 'full' | 'privacy' | 'minimal';
-  retentionDays: number;              // Data retention (default: 90)
-  enableRealtime: boolean;            // Real-time dashboard updates
-  enableExports: boolean;             // Allow CSV/PDF exports
-  anonymizeUserData: boolean;         // Anonymize PII
-  excludeTestUsers: boolean;          // Exclude test users from stats
-  trackPerformance: boolean;          // Track API performance
-  trackWebSocket: boolean;            // Track WebSocket metrics
-  trackFeatureUsage: boolean;         // Track feature adoption
-  trackErrors: boolean;               // Track errors (Sentry integration)
-  allowUserOptOut: boolean;           // Allow users to opt-out
+  enabled: boolean // Master toggle
+  trackingMode: 'full' | 'privacy' | 'minimal'
+  retentionDays: number // Data retention (default: 90)
+  enableRealtime: boolean // Real-time dashboard updates
+  enableExports: boolean // Allow CSV/PDF exports
+  anonymizeUserData: boolean // Anonymize PII
+  excludeTestUsers: boolean // Exclude test users from stats
+  trackPerformance: boolean // Track API performance
+  trackWebSocket: boolean // Track WebSocket metrics
+  trackFeatureUsage: boolean // Track feature adoption
+  trackErrors: boolean // Track errors (Sentry integration)
+  allowUserOptOut: boolean // Allow users to opt-out
 }
 ```
 
@@ -301,10 +301,10 @@ function MyComponent() {
 #### User Identification
 
 ```typescript
-import { useAnalytics } from '@/hooks/use-analytics';
+import { useAnalytics } from '@/hooks/use-analytics'
 
 function AuthComponent() {
-  const { identify } = useAnalytics();
+  const { identify } = useAnalytics()
 
   useEffect(() => {
     if (user) {
@@ -313,23 +313,23 @@ function AuthComponent() {
         displayName: user.displayName,
         role: user.role,
         plan: 'free',
-      });
+      })
     }
-  }, [user]);
+  }, [user])
 }
 ```
 
 #### Page View Tracking
 
 ```typescript
-import { useAnalytics } from '@/hooks/use-analytics';
+import { useAnalytics } from '@/hooks/use-analytics'
 
 function Page() {
-  const { page } = useAnalytics();
+  const { page } = useAnalytics()
 
   useEffect(() => {
-    page('/chat', 'Chat - nChat');
-  }, []);
+    page('/chat', 'Chat - nChat')
+  }, [])
 }
 ```
 
@@ -344,25 +344,25 @@ const {
   trackSearchPerformed,
   trackFeatureUsed,
   trackError,
-} = useAnalytics();
+} = useAnalytics()
 
 // Track message sent
-trackMessageSent(channelId, messageLength, hasAttachments);
+trackMessageSent(channelId, messageLength, hasAttachments)
 
 // Track reaction
-trackReactionAdded(messageId, '👍');
+trackReactionAdded(messageId, '👍')
 
 // Track file upload
-trackFileUploaded(fileId, fileName, fileSize, mimeType);
+trackFileUploaded(fileId, fileName, fileSize, mimeType)
 
 // Track search
-trackSearchPerformed(query, resultCount);
+trackSearchPerformed(query, resultCount)
 
 // Track feature usage
-trackFeatureUsed('voice-call', { duration: 120 });
+trackFeatureUsed('voice-call', { duration: 120 })
 
 // Track error
-trackError('api_error', 'Failed to send message', { code: 500 });
+trackError('api_error', 'Failed to send message', { code: 500 })
 ```
 
 ### Dashboard Consumption
@@ -401,21 +401,21 @@ function AnalyticsDashboard() {
 
 ```typescript
 // Message analytics
-const { volume, topMessages, stats } = useMessageAnalytics();
+const { volume, topMessages, stats } = useMessageAnalytics()
 
 // User analytics
-const { activity, growth, activeUsers } = useUserAnalytics();
+const { activity, growth, activeUsers } = useUserAnalytics()
 
 // Channel analytics
-const { activity, stats } = useChannelAnalytics();
+const { activity, stats } = useChannelAnalytics()
 
 // Date range filtering
-const { dateRange, setPreset, setRange } = useDateRangeFilter();
-setPreset('last30days');
-setRange(new Date('2025-01-01'), new Date('2025-01-31'));
+const { dateRange, setPreset, setRange } = useDateRangeFilter()
+setPreset('last30days')
+setRange(new Date('2025-01-01'), new Date('2025-01-31'))
 
 // Real-time updates (auto-refresh every 30 seconds)
-useRealtimeAnalytics(30000);
+useRealtimeAnalytics(30000)
 ```
 
 ---
@@ -515,6 +515,7 @@ Navigate to `/admin/analytics` (admin/owner only).
 ### Exports
 
 Supported formats:
+
 - **CSV**: Spreadsheet-friendly
 - **JSON**: API-friendly
 - **PDF**: Report-ready (with charts)
@@ -543,8 +544,8 @@ Supported formats:
 
 ```typescript
 // Allow users to opt-out
-const { reset } = useAnalytics();
-reset(); // Clears user identity and stops tracking
+const { reset } = useAnalytics()
+reset() // Clears user identity and stops tracking
 ```
 
 ---
@@ -579,6 +580,7 @@ reset(); // Clears user identity and stops tracking
 ### Issue: Events Not Tracking
 
 **Solution:**
+
 1. Check `analytics.enabled` in AppConfig
 2. Verify `NEXT_PUBLIC_ANALYTICS_ENABLED=true`
 3. Check browser console for errors
@@ -587,6 +589,7 @@ reset(); // Clears user identity and stops tracking
 ### Issue: Dashboard Slow
 
 **Solution:**
+
 1. Reduce date range
 2. Increase cache TTL
 3. Check TimescaleDB compression status
@@ -595,6 +598,7 @@ reset(); // Clears user identity and stops tracking
 ### Issue: High Database Load
 
 **Solution:**
+
 1. Enable continuous aggregates
 2. Increase retention policy frequency
 3. Check for missing indexes
@@ -603,6 +607,7 @@ reset(); // Clears user identity and stops tracking
 ### Issue: Missing Data
 
 **Solution:**
+
 1. Check retention policies (data may be expired)
 2. Verify hypertables are created
 3. Check Hasura permissions
@@ -615,18 +620,21 @@ reset(); // Clears user identity and stops tracking
 ### From v0.4.0 to v0.5.0
 
 1. **Enable TimescaleDB**:
+
    ```bash
    cd .backend
    nself db exec postgres "CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;"
    ```
 
 2. **Run Analytics Migration**:
+
    ```bash
    nself db migrate up
    # Applies analytics schema from migrations/
    ```
 
 3. **Update AppConfig**:
+
    ```typescript
    analytics: {
      enabled: true,
@@ -637,13 +645,14 @@ reset(); // Clears user identity and stops tracking
    ```
 
 4. **Initialize Analytics Client**:
+
    ```typescript
    // Add to _app.tsx or root layout
-   import { getAnalyticsClient } from '@/lib/analytics/analytics-client';
+   import { getAnalyticsClient } from '@/lib/analytics/analytics-client'
 
    useEffect(() => {
-     getAnalyticsClient().initialize();
-   }, []);
+     getAnalyticsClient().initialize()
+   }, [])
    ```
 
 ---
@@ -663,11 +672,13 @@ reset(); // Clears user identity and stops tracking
 ## Roadmap
 
 ### v0.5.1
+
 - [ ] Enhanced PDF exports with charts
 - [ ] Email scheduled reports
 - [ ] Custom dashboard widgets
 
 ### v0.6.0
+
 - [ ] Machine learning insights
 - [ ] Anomaly detection
 - [ ] Predictive analytics
@@ -677,6 +688,7 @@ reset(); // Clears user identity and stops tracking
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/nself/nchat/issues
 - Documentation: https://docs.nchat.io/analytics
 - Email: support@nself.org

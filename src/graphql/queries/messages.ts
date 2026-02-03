@@ -3,10 +3,7 @@ import { gql } from '@apollo/client'
 export const GET_MESSAGES = gql`
   query GetMessages($channelId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_messages(
-      where: { 
-        channel_id: { _eq: $channelId }
-        is_deleted: { _eq: false }
-      }
+      where: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
@@ -54,10 +51,7 @@ export const GET_MESSAGES = gql`
 export const MESSAGE_SUBSCRIPTION = gql`
   subscription MessageSubscription($channelId: uuid!) {
     nchat_messages(
-      where: { 
-        channel_id: { _eq: $channelId }
-        is_deleted: { _eq: false }
-      }
+      where: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
       order_by: { created_at: desc }
       limit: 1
     ) {

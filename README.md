@@ -2,12 +2,12 @@
 
 **Production-Ready Multi-Tenant Team Communication Platform**
 
-Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `0.5.0`
+Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **Version**: `0.9.1`
 
 [![CI](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/ci.yml)
 [![CD](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml/badge.svg)](https://github.com/acamarata/nself-chat/actions/workflows/cd.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Version](https://img.shields.io/badge/Version-0.5.0-brightgreen.svg)](https://github.com/acamarata/nself-chat/releases)
+[![Version](https://img.shields.io/badge/Version-0.9.1-brightgreen.svg)](https://github.com/acamarata/nself-chat/releases)
 [![Node.js](https://img.shields.io/badge/Node.js-20+-green.svg)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue.svg)](https://www.typescriptlang.org/)
 [![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
@@ -16,7 +16,7 @@ Technical name: `nself-chat` | Package: `@nself/chat` | Short name: `nchat` | **
 [![Accessibility](https://img.shields.io/badge/A11y-WCAG%20AA-blue.svg)](https://www.w3.org/WAI/WCAG2AA-Conformance)
 [![Multi-Tenant](https://img.shields.io/badge/Multi--Tenant-SaaS%20Ready-ff69b4.svg)](https://github.com/acamarata/nself-chat)
 
-> **v0.5.0 Major Release**: Production-Ready Multi-Tenant SaaS Architecture with schema-level isolation, Stripe billing integration, AI-powered moderation, comprehensive analytics, advanced integrations, compliance framework, and performance optimizations for 10,000+ concurrent users. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
+> **v0.9.1 Documentation Release**: Production-Ready Multi-Tenant SaaS Architecture with comprehensive plugin system, enhanced backend integration, polished documentation, and GitHub Wiki-ready structure. Powered by [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure.
 
 ---
 
@@ -28,10 +28,31 @@ Powered by [ɳSelf](https://nself.org) for backend infrastructure (PostgreSQL, H
 
 ---
 
-## 🌟 What's New in v0.5.0
+## 🌟 What's New in v0.9.1
+
+### 📚 **Documentation Excellence**
+
+Complete GitHub Wiki-ready documentation with 333+ pages:
+
+- **Comprehensive Guides**: Installation, configuration, deployment across all platforms
+- **API Reference**: Complete GraphQL schema, REST endpoints, multi-language examples
+- **Developer Docs**: Architecture, database schema, plugin development
+- **User Guides**: Feature walkthroughs, troubleshooting, FAQs
+- **Visual Content**: Architecture diagrams, screenshots, video tutorials (coming soon)
+
+### 🔌 **Plugin System**
+
+Extensible plugin architecture for custom functionality:
+
+- **nself-plugins**: Modular plugin system with hot-reload support
+- **Plugin Marketplace**: Discover and install community plugins
+- **Developer SDK**: Build custom plugins with TypeScript support
+- **Built-in Plugins**: Realtime, jobs, search, storage, analytics
 
 ### 🏢 **Multi-Tenant SaaS Architecture**
+
 Transform your single deployment into a complete **SaaS platform**:
+
 - **Schema-level tenant isolation** for maximum data security
 - **Subdomain routing** (tenant1.nchat.app, tenant2.nchat.app)
 - **Custom domain support** (chat.acme.com)
@@ -39,7 +60,9 @@ Transform your single deployment into a complete **SaaS platform**:
 - **Per-tenant resource limits** based on subscription plan
 
 ### 💰 **Stripe Billing Integration**
+
 Complete subscription management out of the box:
+
 - **4 subscription plans**: Free, Pro ($15/mo), Enterprise ($99/mo), Custom
 - **Usage tracking** and limit enforcement
 - **Automated billing** via Stripe webhooks
@@ -47,7 +70,9 @@ Complete subscription management out of the box:
 - **Trial periods** (14 days) for new tenants
 
 ### 🤖 **AI-Powered Advanced Moderation**
+
 Intelligent content moderation powered by TensorFlow.js:
+
 - **Toxicity detection** with 7 categories (identity attack, insult, threat, etc.)
 - **Profanity filtering** with 1,700+ word dictionary
 - **Spam detection** using pattern recognition
@@ -56,7 +81,9 @@ Intelligent content moderation powered by TensorFlow.js:
 - **Audit logging** for compliance
 
 ### 📊 **Analytics & Telemetry**
+
 Comprehensive insights dashboard:
+
 - **Real-time metrics**: Active users, messages/sec, API calls
 - **User analytics**: Engagement, retention, activity heatmaps
 - **Channel analytics**: Most active channels, message distribution
@@ -65,7 +92,9 @@ Comprehensive insights dashboard:
 - **Data export** in CSV/JSON formats
 
 ### 🔗 **Advanced Integrations**
+
 Connect to the tools your team already uses:
+
 - **Slack**: Bi-directional message sync and user import
 - **GitHub**: Issue linking, commit notifications, PR updates
 - **Jira**: Issue tracking, status updates, smart linking
@@ -74,7 +103,9 @@ Connect to the tools your team already uses:
 - **Zapier/Make.com**: 1000+ app integrations via webhooks
 
 ### 🛡️ **Compliance & Data Retention**
+
 Enterprise-grade compliance features:
+
 - **Data retention policies**: Auto-delete after 30/90/365 days or never
 - **Legal hold** for litigation and investigations
 - **GDPR compliance**: Right to erasure, data portability, consent management
@@ -83,7 +114,9 @@ Enterprise-grade compliance features:
 - **Encryption at rest** for archived data
 
 ### ⚡ **Performance Optimizations**
+
 Built to scale to 10,000+ concurrent users:
+
 - **Connection pooling**: 100 connections per tenant
 - **Redis caching**: Tenant metadata, user sessions, rate limits
 - **Database indexes**: Optimized queries (<50ms response times)
@@ -97,28 +130,30 @@ Built to scale to 10,000+ concurrent users:
 
 ## Project Status
 
-| Category | Status | Details |
-|----------|--------|---------|
-| **Version** | v0.5.0 | Production-Ready Multi-Tenant SaaS |
-| **CI/CD** | ✅ All Passing | All CI checks green, Docker build working |
-| **Code Quality** | ✅ Excellent | 860+ tests, TypeScript strict mode, 10% type error reduction |
-| **Production** | ✅ Ready | Multi-platform support (web, iOS, Android, desktop) |
-| **Documentation** | ✅ Comprehensive | 40+ documentation pages, interactive API docs |
-| **Security** | ✅ Enterprise | E2EE with Signal Protocol, encrypted storage, SOC 2 ready |
-| **Performance** | ✅ Optimized | 10,000+ concurrent users, <50ms response times |
-| **Multi-Tenancy** | ✅ Production | Schema isolation, Stripe billing, per-tenant limits |
+| Category          | Status           | Details                                                      |
+| ----------------- | ---------------- | ------------------------------------------------------------ |
+| **Version**       | v0.9.1           | Production-Ready with Plugin System & Polished Docs          |
+| **CI/CD**         | ✅ All Passing   | All CI checks green, Docker build working                    |
+| **Code Quality**  | ✅ Excellent     | 860+ tests, TypeScript strict mode, 10% type error reduction |
+| **Production**    | ✅ Ready         | Multi-platform support (web, iOS, Android, desktop)          |
+| **Documentation** | ✅ Comprehensive | 333+ documentation pages, GitHub Wiki-ready                  |
+| **Security**      | ✅ Enterprise    | E2EE with Signal Protocol, encrypted storage, SOC 2 ready    |
+| **Performance**   | ✅ Optimized     | 10,000+ concurrent users, <50ms response times               |
+| **Multi-Tenancy** | ✅ Production    | Schema isolation, Stripe billing, per-tenant limits          |
 
 ---
 
 ## Why ɳChat?
 
 ### Lightning Fast Setup
+
 - **Under 5 minutes** from zero to running multi-tenant SaaS
 - 3 commands to start development
 - 8 test users ready to explore immediately
 - Auto-login in development mode for rapid iteration
 
 ### Complete Feature Set
+
 - **150+ Features**: Messaging, channels, threads, reactions, file uploads, and more
 - **Multi-Tenant SaaS**: Schema isolation, subdomain routing, custom domains
 - **Stripe Billing**: Complete subscription management with webhooks
@@ -139,6 +174,7 @@ Built to scale to 10,000+ concurrent users:
 - **Monitoring**: Sentry error tracking and performance monitoring
 
 ### White-Label Everything
+
 - **12-Step Setup Wizard**: Complete guided experience with environment detection
 - **27 Theme Presets**: From Slack-like to Discord-style and beyond
 - **Full Branding Control**: Logo, colors, fonts, and custom CSS
@@ -147,12 +183,14 @@ Built to scale to 10,000+ concurrent users:
 - **Multi-Tenant Branding**: Each tenant can customize their own branding
 
 ### Multi-Platform Support
+
 - **Web**: Next.js 15 with React 19
 - **Desktop**: Tauri (lightweight native) and Electron (cross-platform)
 - **Mobile**: Capacitor (iOS/Android) and React Native
 - **Deployment**: Docker, Kubernetes, Helm, Vercel, Netlify
 
 ### Production-Ready SaaS
+
 - **Multi-Tenant Architecture**: Schema-level isolation for maximum security
 - **Stripe Integration**: Complete billing and subscription management
 - **Resource Limits**: Per-tenant limits based on subscription plan
@@ -205,18 +243,18 @@ Development mode includes 8 test users so you can immediately experience all fea
 
 ### Development Test Users
 
-| Email | Role | Password | Purpose |
-|-------|------|----------|---------|
-| owner@nself.org | Owner | password123 | Full permissions, first user |
-| admin@nself.org | Admin | password123 | User/channel management |
-| moderator@nself.org | Moderator | password123 | Content moderation |
-| member@nself.org | Member | password123 | Standard user experience |
-| guest@nself.org | Guest | password123 | Limited read-only access |
-| alice@nself.org | Member | password123 | Additional test user |
-| bob@nself.org | Member | password123 | Additional test user |
-| charlie@nself.org | Member | password123 | Additional test user |
+| Email               | Role      | Password    | Purpose                      |
+| ------------------- | --------- | ----------- | ---------------------------- |
+| owner@nself.org     | Owner     | password123 | Full permissions, first user |
+| admin@nself.org     | Admin     | password123 | User/channel management      |
+| moderator@nself.org | Moderator | password123 | Content moderation           |
+| member@nself.org    | Member    | password123 | Standard user experience     |
+| guest@nself.org     | Guest     | password123 | Limited read-only access     |
+| alice@nself.org     | Member    | password123 | Additional test user         |
+| bob@nself.org       | Member    | password123 | Additional test user         |
+| charlie@nself.org   | Member    | password123 | Additional test user         |
 
-*Dev mode auto-logs in as `owner@nself.org` for faster iteration.*
+_Dev mode auto-logs in as `owner@nself.org` for faster iteration._
 
 ---
 
@@ -224,28 +262,28 @@ Development mode includes 8 test users so you can immediately experience all fea
 
 ### 150+ Features Across 20 Categories
 
-| Category | Count | Features |
-|----------|-------|----------|
-| **Multi-Tenancy** | 12 | Schema isolation, subdomain routing, custom domains, per-tenant limits, usage tracking, billing integration, trial periods, tenant dashboard, automated provisioning, resource quotas, tenant branding, tenant analytics |
-| **Billing & Subscriptions** | 8 | Stripe integration, 4 subscription plans, usage-based billing, webhook processing, customer portal, trial management, invoice generation, payment methods |
-| **Messaging** | 17 | Channels, DMs, threads, reactions, pins, bookmarks, voice messages, scheduled messages, code blocks, markdown, link previews, mentions, quotes, forward, translations, polls, reminders |
-| **AI & Moderation** | 9 | AI-powered toxicity detection, profanity filtering, spam detection, auto-moderation, content quarantine, manual review queue, audit logs, custom word lists, pattern recognition |
-| **Analytics & Telemetry** | 12 | Real-time metrics, user analytics, channel analytics, engagement tracking, retention analysis, activity heatmaps, performance monitoring, custom events, data export, OpenTelemetry integration, dashboards, reports |
-| **Integrations** | 11 | Slack sync, GitHub issues, Jira tracking, Google Drive, webhooks (incoming/outgoing), Zapier, Make.com, API keys, OAuth apps, webhook retry logic, rate limiting |
-| **Compliance & Legal** | 8 | Data retention policies, legal hold, GDPR compliance, right to erasure, data portability, consent management, audit trails, encrypted archives |
-| **Channels** | 9 | Public, private, direct messages, group DMs, categories, topics, archive, favorites, mute |
-| **Files & Media** | 8 | Upload, images, documents, audio, video, preview, drag & drop, clipboard paste |
-| **Security & Encryption** | 7 | End-to-end encryption (Signal Protocol), encrypted file storage, encrypted backups, key management, perfect forward secrecy, secure verification, encrypted notifications |
-| **Voice & Video Calls** | 12 | WebRTC calling (1-on-1 and group up to 50), screen sharing with annotations, call recording, noise cancellation, virtual backgrounds, CallKit integration (iOS), Telecom Manager (Android), Picture-in-Picture mode, call quality indicators, bandwidth optimization, call transfers, call waiting |
-| **Live Streaming** | 6 | HLS streaming, WebRTC streaming, stream recording, stream chat, viewer analytics, multi-quality adaptive streaming |
-| **Users & Presence** | 7 | Online/away status, custom status, profiles, roles, blocking, avatars, display names |
-| **Real-time** | 5 | Typing indicators, read receipts, presence updates, live messages, live notifications |
-| **Search** | 7 | Messages, files, users, global search, filters, highlighting, MeiliSearch full-text search |
-| **Notifications** | 6 | Desktop, sound, email, mobile push, do not disturb, quiet hours |
-| **Emoji & Reactions** | 4 | Emoji picker, custom emoji, GIF picker, stickers |
-| **Polls & Voting** | 4 | Create polls, anonymous voting, timed polls, poll results |
-| **Bots & Automation** | 8 | Bot SDK, slash commands, webhooks, custom bots, bot marketplace, event handlers, bot authentication, bot permissions |
-| **Admin** | 6 | Dashboard, user management, analytics, audit logs, bulk operations, data export |
+| Category                    | Count | Features                                                                                                                                                                                                                                                                                           |
+| --------------------------- | ----- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Multi-Tenancy**           | 12    | Schema isolation, subdomain routing, custom domains, per-tenant limits, usage tracking, billing integration, trial periods, tenant dashboard, automated provisioning, resource quotas, tenant branding, tenant analytics                                                                           |
+| **Billing & Subscriptions** | 8     | Stripe integration, 4 subscription plans, usage-based billing, webhook processing, customer portal, trial management, invoice generation, payment methods                                                                                                                                          |
+| **Messaging**               | 17    | Channels, DMs, threads, reactions, pins, bookmarks, voice messages, scheduled messages, code blocks, markdown, link previews, mentions, quotes, forward, translations, polls, reminders                                                                                                            |
+| **AI & Moderation**         | 9     | AI-powered toxicity detection, profanity filtering, spam detection, auto-moderation, content quarantine, manual review queue, audit logs, custom word lists, pattern recognition                                                                                                                   |
+| **Analytics & Telemetry**   | 12    | Real-time metrics, user analytics, channel analytics, engagement tracking, retention analysis, activity heatmaps, performance monitoring, custom events, data export, OpenTelemetry integration, dashboards, reports                                                                               |
+| **Integrations**            | 11    | Slack sync, GitHub issues, Jira tracking, Google Drive, webhooks (incoming/outgoing), Zapier, Make.com, API keys, OAuth apps, webhook retry logic, rate limiting                                                                                                                                   |
+| **Compliance & Legal**      | 8     | Data retention policies, legal hold, GDPR compliance, right to erasure, data portability, consent management, audit trails, encrypted archives                                                                                                                                                     |
+| **Channels**                | 9     | Public, private, direct messages, group DMs, categories, topics, archive, favorites, mute                                                                                                                                                                                                          |
+| **Files & Media**           | 8     | Upload, images, documents, audio, video, preview, drag & drop, clipboard paste                                                                                                                                                                                                                     |
+| **Security & Encryption**   | 7     | End-to-end encryption (Signal Protocol), encrypted file storage, encrypted backups, key management, perfect forward secrecy, secure verification, encrypted notifications                                                                                                                          |
+| **Voice & Video Calls**     | 12    | WebRTC calling (1-on-1 and group up to 50), screen sharing with annotations, call recording, noise cancellation, virtual backgrounds, CallKit integration (iOS), Telecom Manager (Android), Picture-in-Picture mode, call quality indicators, bandwidth optimization, call transfers, call waiting |
+| **Live Streaming**          | 6     | HLS streaming, WebRTC streaming, stream recording, stream chat, viewer analytics, multi-quality adaptive streaming                                                                                                                                                                                 |
+| **Users & Presence**        | 7     | Online/away status, custom status, profiles, roles, blocking, avatars, display names                                                                                                                                                                                                               |
+| **Real-time**               | 5     | Typing indicators, read receipts, presence updates, live messages, live notifications                                                                                                                                                                                                              |
+| **Search**                  | 7     | Messages, files, users, global search, filters, highlighting, MeiliSearch full-text search                                                                                                                                                                                                         |
+| **Notifications**           | 6     | Desktop, sound, email, mobile push, do not disturb, quiet hours                                                                                                                                                                                                                                    |
+| **Emoji & Reactions**       | 4     | Emoji picker, custom emoji, GIF picker, stickers                                                                                                                                                                                                                                                   |
+| **Polls & Voting**          | 4     | Create polls, anonymous voting, timed polls, poll results                                                                                                                                                                                                                                          |
+| **Bots & Automation**       | 8     | Bot SDK, slash commands, webhooks, custom bots, bot marketplace, event handlers, bot authentication, bot permissions                                                                                                                                                                               |
+| **Admin**                   | 6     | Dashboard, user management, analytics, audit logs, bulk operations, data export                                                                                                                                                                                                                    |
 
 **Total: 150+ features** across 20 categories, making ɳChat one of the most feature-complete open-source communication platforms available.
 
@@ -259,17 +297,17 @@ Development mode includes 8 test users so you can immediately experience all fea
 
 ### Quick Links
 
-| Category | Key Docs |
-|----------|----------|
-| **Getting Started** | [Quick Start](docs/getting-started/Getting-Started.md) · [Installation](docs/getting-started/Installation.md) |
-| **Features** | [Features Overview](docs/features/Features.md) · [Messaging](docs/features/Features-Messaging.md) · [White-Label Guide](docs/features/White-Label-Guide.md) |
-| **Multi-Tenancy** | [Multi-Tenant Deployment](docs/deployment/Multi-Tenant-Deployment.md) · [Multi-Tenant README](docs/deployment/Multi-Tenant-README.md) |
-| **Configuration** | [Configuration](docs/configuration/Configuration.md) · [Authentication](docs/configuration/Authentication.md) · [Environment Variables](docs/configuration/Environment-Variables.md) |
-| **API** | [API Overview](docs/api/API.md) · [API Documentation](docs/api/API-DOCUMENTATION.md) |
-| **Deployment** | [Deployment Guide](docs/deployment/DEPLOYMENT.md) · [Docker](docs/deployment/Deployment-Docker.md) · [Kubernetes](docs/deployment/Deployment-Kubernetes.md) |
-| **Guides** | [User Guide](docs/guides/USER-GUIDE.md) · [Sentry Setup](docs/guides/README-SENTRY.md) · [Testing](docs/guides/testing-guide.md) |
-| **Reference** | [Architecture](docs/reference/Architecture.md) · [Database Schema](docs/reference/Database-Schema.md) · [Project Structure](docs/reference/Project-Structure.md) |
-| **About** | [Changelog](docs/about/Changelog.md) · [Contributing](docs/about/Contributing.md) · [Roadmap](docs/about/Roadmap.md) |
+| Category            | Key Docs                                                                                                                                                                             |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Getting Started** | [Quick Start](docs/getting-started/Getting-Started.md) · [Installation](docs/getting-started/Installation.md)                                                                        |
+| **Features**        | [Features Overview](docs/features/Features.md) · [Messaging](docs/features/Features-Messaging.md) · [White-Label Guide](docs/features/White-Label-Guide.md)                          |
+| **Multi-Tenancy**   | [Multi-Tenant Deployment](docs/deployment/Multi-Tenant-Deployment.md) · [Multi-Tenant README](docs/deployment/Multi-Tenant-README.md)                                                |
+| **Configuration**   | [Configuration](docs/configuration/Configuration.md) · [Authentication](docs/configuration/Authentication.md) · [Environment Variables](docs/configuration/Environment-Variables.md) |
+| **API**             | [API Overview](docs/api/API.md) · [API Documentation](docs/api/API-DOCUMENTATION.md)                                                                                                 |
+| **Deployment**      | [Deployment Guide](docs/deployment/DEPLOYMENT.md) · [Docker](docs/deployment/Deployment-Docker.md) · [Kubernetes](docs/deployment/Deployment-Kubernetes.md)                          |
+| **Guides**          | [User Guide](docs/guides/USER-GUIDE.md) · [Sentry Setup](docs/guides/README-SENTRY.md) · [Testing](docs/guides/testing-guide.md)                                                     |
+| **Reference**       | [Architecture](docs/reference/Architecture.md) · [Database Schema](docs/reference/Database-Schema.md) · [Project Structure](docs/reference/Project-Structure.md)                     |
+| **About**           | [Changelog](docs/about/Changelog.md) · [Contributing](docs/about/Contributing.md) · [Roadmap](docs/about/Roadmap.md)                                                                 |
 
 ---
 
@@ -319,6 +357,7 @@ Learn more at [nself.org](https://nself.org)
 ## Acknowledgments
 
 Built with love using:
+
 - [Next.js](https://nextjs.org/) - The React Framework
 - [React](https://react.dev/) - A JavaScript library for building user interfaces
 - [TypeScript](https://www.typescriptlang.org/) - JavaScript with syntax for types
@@ -334,6 +373,6 @@ Built with love using:
 
 ---
 
-Built with [ɳSelf](https://nself.org) | Powered by Next.js 15 & React 19 | Version 0.5.0
+Built with [ɳSelf](https://nself.org) | Powered by Next.js 15 & React 19 | Version 0.9.1
 
 **Star us on GitHub** ⭐ if you find ɳChat useful!

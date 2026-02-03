@@ -138,7 +138,7 @@ function CallerAvatar({ name, avatarUrl, isRinging, size = 'default' }: CallerAv
           <div
             className={cn(
               avatarVariants({ size }),
-              'absolute inset-0 animate-ping bg-green-500/10 animation-delay-150'
+              'animation-delay-150 absolute inset-0 animate-ping bg-green-500/10'
             )}
             style={{ animationDelay: '150ms' }}
           />
@@ -148,11 +148,7 @@ function CallerAvatar({ name, avatarUrl, isRinging, size = 'default' }: CallerAv
       {/* Avatar */}
       <div className={cn(avatarVariants({ size }), 'relative')}>
         {avatarUrl ? (
-          <img
-            src={avatarUrl}
-            alt={`${name}'s avatar`}
-            className="h-full w-full object-cover"
-          />
+          <img src={avatarUrl} alt={`${name}'s avatar`} className="h-full w-full object-cover" />
         ) : (
           <span className="text-2xl font-semibold text-muted-foreground">
             {initials || <User size={32} />}
@@ -208,7 +204,7 @@ function ActionButton({
       className={cn(
         actionButtonVariants({ action, size }),
         action === 'accept' && 'animate-bounce-gentle',
-        disabled && 'opacity-50 cursor-not-allowed'
+        disabled && 'cursor-not-allowed opacity-50'
       )}
     >
       {getIcon()}
@@ -261,16 +257,10 @@ export function IncomingCall({
 
       {/* Call Info */}
       <div className="flex flex-col items-center gap-1 text-center">
-        <h3
-          id={`incoming-call-title-${callId}`}
-          className="text-lg font-semibold"
-        >
+        <h3 id={`incoming-call-title-${callId}`} className="text-lg font-semibold">
           {callerName}
         </h3>
-        <p
-          id={`incoming-call-desc-${callId}`}
-          className="text-sm text-muted-foreground"
-        >
+        <p id={`incoming-call-desc-${callId}`} className="text-sm text-muted-foreground">
           {callType === 'video' ? 'Incoming video call' : 'Incoming call'}
           {channelName && ` in ${channelName}`}
         </p>
@@ -339,16 +329,13 @@ export function CompactIncomingCall({
 
   return (
     <div
-      className={cn(
-        'flex items-center gap-3 rounded-lg bg-card border p-3 shadow-lg',
-        className
-      )}
+      className={cn('flex items-center gap-3 rounded-lg border bg-card p-3 shadow-lg', className)}
       role="alertdialog"
       aria-label={`Incoming ${callType} call from ${callerName}`}
     >
       {/* Avatar */}
       <div className="relative">
-        <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-muted">
           {callerAvatarUrl ? (
             <img
               src={callerAvatarUrl}
@@ -356,17 +343,15 @@ export function CompactIncomingCall({
               className="h-full w-full object-cover"
             />
           ) : (
-            <span className="text-sm font-medium text-muted-foreground">
-              {initials}
-            </span>
+            <span className="text-sm font-medium text-muted-foreground">{initials}</span>
           )}
         </div>
-        <div className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-500 animate-pulse" />
+        <div className="absolute -right-1 -top-1 h-3 w-3 animate-pulse rounded-full bg-green-500" />
       </div>
 
       {/* Info */}
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{callerName}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{callerName}</p>
         <p className="text-xs text-muted-foreground">
           {callType === 'video' ? 'Video call' : 'Voice call'}
         </p>
@@ -380,9 +365,9 @@ export function CompactIncomingCall({
           disabled={disabled}
           aria-label="Decline call"
           className={cn(
-            'h-8 w-8 rounded-full bg-red-500 text-white flex items-center justify-center',
-            'hover:bg-red-600 transition-colors',
-            disabled && 'opacity-50 cursor-not-allowed'
+            'flex h-8 w-8 items-center justify-center rounded-full bg-red-500 text-white',
+            'transition-colors hover:bg-red-600',
+            disabled && 'cursor-not-allowed opacity-50'
           )}
         >
           <PhoneOff size={16} />
@@ -393,9 +378,9 @@ export function CompactIncomingCall({
           disabled={disabled}
           aria-label={callType === 'video' ? 'Accept video call' : 'Accept call'}
           className={cn(
-            'h-8 w-8 rounded-full bg-green-500 text-white flex items-center justify-center',
-            'hover:bg-green-600 transition-colors',
-            disabled && 'opacity-50 cursor-not-allowed'
+            'flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white',
+            'transition-colors hover:bg-green-600',
+            disabled && 'cursor-not-allowed opacity-50'
           )}
         >
           {callType === 'video' ? <Video size={16} /> : <Phone size={16} />}
@@ -409,10 +394,4 @@ export function CompactIncomingCall({
 // Exports
 // =============================================================================
 
-export {
-  incomingCallVariants,
-  avatarVariants,
-  actionButtonVariants,
-  CallerAvatar,
-  ActionButton,
-}
+export { incomingCallVariants, avatarVariants, actionButtonVariants, CallerAvatar, ActionButton }

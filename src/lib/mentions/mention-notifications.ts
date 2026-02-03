@@ -23,7 +23,10 @@ import type {
   MentionNotification,
   ParsedMention,
 } from './mention-types'
+
 import { DEFAULT_MENTION_PREFERENCES } from './mention-types'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Notification Permission
@@ -49,7 +52,9 @@ export function getNotificationPermission(): NotificationPermission | 'unsupport
 /**
  * Request notification permission from the user
  */
-export async function requestNotificationPermission(): Promise<NotificationPermission | 'unsupported'> {
+export async function requestNotificationPermission(): Promise<
+  NotificationPermission | 'unsupported'
+> {
   if (!isNotificationSupported()) {
     return 'unsupported'
   }
@@ -236,8 +241,10 @@ export function initializeMentionAudio(): void {
   if (typeof window === 'undefined') return
 
   if (!audioContext) {
-    audioContext = new (window.AudioContext ||
-      (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext)()
+    audioContext = new (
+      window.AudioContext ||
+      (window as typeof window & { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    )()
   }
 }
 
@@ -255,7 +262,7 @@ export async function preloadMentionSounds(): Promise<void> {
         const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
         audioBuffers.set(type, audioBuffer)
       } catch {
-        console.warn(`Failed to preload mention sound: ${type}`)
+        logger.warn(`Failed to preload mention sound: ${type}`)
       }
     }
   }
@@ -264,9 +271,7 @@ export async function preloadMentionSounds(): Promise<void> {
 /**
  * Play mention notification sound
  */
-export function playMentionSound(
-  type: MentionSoundType = 'default'
-): void {
+export function playMentionSound(type: MentionSoundType = 'default'): void {
   if (type === 'none' || typeof window === 'undefined') return
 
   // Fallback to simple Audio if AudioContext not available
@@ -421,10 +426,7 @@ function formatNotificationDate(date: Date): string {
 /**
  * Update document title with unread mention count
  */
-export function updateDocumentTitleWithMentions(
-  baseTitle: string,
-  unreadCount: number
-): void {
+export function updateDocumentTitleWithMentions(baseTitle: string, unreadCount: number): void {
   if (typeof document === 'undefined') return
 
   if (unreadCount > 0) {
@@ -442,7 +444,7 @@ export function updateFaviconBadge(count: number): void {
 
   // This would require a favicon badge library or custom implementation
   // For now, just update the title
-  console.debug(`Favicon badge update: ${count}`)
+  // REMOVED: console.debug(`Favicon badge update: ${count}`)
 }
 
 // ============================================================================

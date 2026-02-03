@@ -5,8 +5,8 @@
  */
 
 // Configuration
-export { i18nConfig, type I18nConfig, type Namespace } from './i18n-config';
-export { parseTranslationKey, buildTranslationKey, isValidNamespace } from './i18n-config';
+export { i18nConfig, type I18nConfig, type Namespace } from './i18n-config'
+export { parseTranslationKey, buildTranslationKey, isValidNamespace } from './i18n-config'
 
 // Locales
 export {
@@ -23,7 +23,7 @@ export {
   getSortedLocales,
   getCompleteLocales,
   getLocalesByDirection,
-} from './locales';
+} from './locales'
 
 // Translator
 export {
@@ -46,7 +46,7 @@ export {
   type TranslationValue,
   type TranslationObject,
   type TranslationStore,
-} from './translator';
+} from './translator'
 
 // Plurals
 export {
@@ -62,7 +62,7 @@ export {
   ordinalRules,
   type PluralCategory,
   type PluralRuleFunction,
-} from './plurals';
+} from './plurals'
 
 // Date Formatting
 export {
@@ -81,7 +81,7 @@ export {
   dateFormatPatterns,
   type DateFormatPatterns,
   type FormatDateOptions,
-} from './date-formats';
+} from './date-formats'
 
 // Number Formatting
 export {
@@ -100,7 +100,7 @@ export {
   type NumberFormatOptions,
   type CurrencyFormatOptions,
   type PercentFormatOptions,
-} from './number-formats';
+} from './number-formats'
 
 // RTL Support
 export {
@@ -118,7 +118,7 @@ export {
   isDocumentRTL,
   isolateBidi,
   logicalProperties,
-} from './rtl';
+} from './rtl'
 
 // Language Detection
 export {
@@ -131,4 +131,4 @@ export {
   type DetectionSource,
   type DetectionResult,
   type DetectorOptions,
-} from './language-detector';
+} from './language-detector'

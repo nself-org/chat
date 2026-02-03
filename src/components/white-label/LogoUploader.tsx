@@ -36,84 +36,93 @@ export function LogoUploader({
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const validateFile = useCallback(async (file: File): Promise<string | null> => {
-    // Check file type
-    if (!isValidImageFile(file)) {
-      return 'Please upload a valid image file (PNG, JPG, SVG, or WebP)'
-    }
-
-    // Check file size
-    if (file.size > maxSize * 1024 * 1024) {
-      return `File size must be less than ${maxSize}MB`
-    }
-
-    // For non-SVG files, check dimensions
-    if (!file.type.includes('svg')) {
-      try {
-        const reader = new FileReader()
-        const dataUrl = await new Promise<string>((resolve, reject) => {
-          reader.onload = () => resolve(reader.result as string)
-          reader.onerror = () => reject(new Error('Failed to read file'))
-          reader.readAsDataURL(file)
-        })
-
-        const dimensions = await getImageDimensions(dataUrl)
-
-        if (minWidth && dimensions.width < minWidth) {
-          return `Image width must be at least ${minWidth}px`
-        }
-
-        if (minHeight && dimensions.height < minHeight) {
-          return `Image height must be at least ${minHeight}px`
-        }
-
-        if (aspectRatio) {
-          const ratio = dimensions.width / dimensions.height
-          const tolerance = 0.1
-          if (Math.abs(ratio - aspectRatio) > tolerance) {
-            return `Image aspect ratio should be ${aspectRatio}:1`
-          }
-        }
-      } catch (err) {
-        return 'Failed to validate image dimensions'
+  const validateFile = useCallback(
+    async (file: File): Promise<string | null> => {
+      // Check file type
+      if (!isValidImageFile(file)) {
+        return 'Please upload a valid image file (PNG, JPG, SVG, or WebP)'
       }
-    }
 
-    return null
-  }, [maxSize, minWidth, minHeight, aspectRatio])
+      // Check file size
+      if (file.size > maxSize * 1024 * 1024) {
+        return `File size must be less than ${maxSize}MB`
+      }
 
-  const handleFile = useCallback(async (file: File) => {
-    setIsLoading(true)
-    setError(null)
+      // For non-SVG files, check dimensions
+      if (!file.type.includes('svg')) {
+        try {
+          const reader = new FileReader()
+          const dataUrl = await new Promise<string>((resolve, reject) => {
+            reader.onload = () => resolve(reader.result as string)
+            reader.onerror = () => reject(new Error('Failed to read file'))
+            reader.readAsDataURL(file)
+          })
 
-    const validationError = await validateFile(file)
-    if (validationError) {
-      setError(validationError)
-      setIsLoading(false)
-      return
-    }
+          const dimensions = await getImageDimensions(dataUrl)
 
-    const reader = new FileReader()
-    reader.onload = () => {
-      onChange(reader.result as string)
-      setIsLoading(false)
-    }
-    reader.onerror = () => {
-      setError('Failed to read file')
-      setIsLoading(false)
-    }
-    reader.readAsDataURL(file)
-  }, [validateFile, onChange])
+          if (minWidth && dimensions.width < minWidth) {
+            return `Image width must be at least ${minWidth}px`
+          }
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
+          if (minHeight && dimensions.height < minHeight) {
+            return `Image height must be at least ${minHeight}px`
+          }
 
-    const file = e.dataTransfer.files[0]
-    if (file) {
-      handleFile(file)
-    }
-  }, [handleFile])
+          if (aspectRatio) {
+            const ratio = dimensions.width / dimensions.height
+            const tolerance = 0.1
+            if (Math.abs(ratio - aspectRatio) > tolerance) {
+              return `Image aspect ratio should be ${aspectRatio}:1`
+            }
+          }
+        } catch (err) {
+          return 'Failed to validate image dimensions'
+        }
+      }
+
+      return null
+    },
+    [maxSize, minWidth, minHeight, aspectRatio]
+  )
+
+  const handleFile = useCallback(
+    async (file: File) => {
+      setIsLoading(true)
+      setError(null)
+
+      const validationError = await validateFile(file)
+      if (validationError) {
+        setError(validationError)
+        setIsLoading(false)
+        return
+      }
+
+      const reader = new FileReader()
+      reader.onload = () => {
+        onChange(reader.result as string)
+        setIsLoading(false)
+      }
+      reader.onerror = () => {
+        setError('Failed to read file')
+        setIsLoading(false)
+      }
+      reader.readAsDataURL(file)
+    },
+    [validateFile, onChange]
+  )
+
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragging(false)
+
+      const file = e.dataTransfer.files[0]
+      if (file) {
+        handleFile(file)
+      }
+    },
+    [handleFile]
+  )
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -125,12 +134,15 @@ export function LogoUploader({
     setIsDragging(false)
   }, [])
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      handleFile(file)
-    }
-  }, [handleFile])
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        handleFile(file)
+      }
+    },
+    [handleFile]
+  )
 
   const handleRemove = useCallback(() => {
     onChange(null)
@@ -147,15 +159,11 @@ export function LogoUploader({
   return (
     <div className={cn('space-y-2', className)}>
       {showPreview && value ? (
-        <div className="relative rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-4">
-          <img
-            src={value}
-            alt="Uploaded logo"
-            className="max-h-32 mx-auto object-contain"
-          />
+        <div className="relative rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+          <img src={value} alt="Uploaded logo" className="mx-auto max-h-32 object-contain" />
           <button
             onClick={handleRemove}
-            className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+            className="absolute right-2 top-2 rounded-full bg-red-500 p-1.5 text-white transition-colors hover:bg-red-600"
             aria-label="Remove logo"
           >
             <X className="h-4 w-4" />
@@ -168,19 +176,19 @@ export function LogoUploader({
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           className={cn(
-            'border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all',
+            'cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-all',
             isDragging
               ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/30'
-              : 'border-zinc-300 dark:border-zinc-600 hover:border-sky-400 dark:hover:border-sky-500',
+              : 'border-zinc-300 hover:border-sky-400 dark:border-zinc-600 dark:hover:border-sky-500',
             isLoading && 'pointer-events-none opacity-50'
           )}
         >
           {isLoading ? (
-            <Loader2 className="h-10 w-10 mx-auto text-sky-500 animate-spin" />
+            <Loader2 className="mx-auto h-10 w-10 animate-spin text-sky-500" />
           ) : isDragging ? (
-            <Upload className="h-10 w-10 mx-auto text-sky-500" />
+            <Upload className="mx-auto h-10 w-10 text-sky-500" />
           ) : (
-            <ImageIcon className="h-10 w-10 mx-auto text-zinc-400 dark:text-zinc-500" />
+            <ImageIcon className="mx-auto h-10 w-10 text-zinc-400 dark:text-zinc-500" />
           )}
           <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
             {isLoading ? 'Processing...' : placeholder}
@@ -191,9 +199,7 @@ export function LogoUploader({
         </div>
       )}
 
-      {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      )}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
 
       <input
         ref={inputRef}
@@ -212,7 +218,7 @@ export function LogoUploader({
           disabled={isLoading}
           className="w-full"
         >
-          <Upload className="h-4 w-4 mr-2" />
+          <Upload className="mr-2 h-4 w-4" />
           Choose File
         </Button>
       )}

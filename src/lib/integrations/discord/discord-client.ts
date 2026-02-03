@@ -18,10 +18,7 @@ import type {
   DiscordImportOptions,
   DiscordSyncResult,
 } from '../types'
-import {
-  buildAuthUrl,
-  tokenResponseToCredentials,
-} from '../integration-manager'
+import { buildAuthUrl, tokenResponseToCredentials } from '../integration-manager'
 
 // ============================================================================
 // Constants

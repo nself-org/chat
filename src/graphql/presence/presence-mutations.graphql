@@ -51,11 +51,7 @@ mutation UpdateCustomStatus(
 mutation ClearCustomStatus($userId: uuid!) {
   update_nchat_user_presence(
     where: { user_id: { _eq: $userId } }
-    _set: {
-      custom_status: null
-      custom_emoji: null
-      custom_status_expires_at: null
-    }
+    _set: { custom_status: null, custom_emoji: null, custom_status_expires_at: null }
   ) {
     affected_rows
     returning {
@@ -176,14 +172,8 @@ mutation CleanupExpiredTypingIndicators {
 # Clean up expired custom statuses
 mutation CleanupExpiredCustomStatuses {
   update_nchat_user_presence(
-    where: {
-      custom_status_expires_at: { _lt: "now()", _is_null: false }
-    }
-    _set: {
-      custom_status: null
-      custom_emoji: null
-      custom_status_expires_at: null
-    }
+    where: { custom_status_expires_at: { _lt: "now()", _is_null: false } }
+    _set: { custom_status: null, custom_emoji: null, custom_status_expires_at: null }
   ) {
     affected_rows
   }

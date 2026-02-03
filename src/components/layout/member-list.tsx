@@ -5,17 +5,8 @@ import { cn } from '@/lib/utils'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { UserAvatar } from '@/components/user/user-avatar'
 import { RoleBadge } from '@/components/user/role-badge'
 import {
@@ -24,14 +15,7 @@ import {
   type PresenceStatus,
   getPresenceLabel,
 } from '@/stores/user-store'
-import {
-  X,
-  Crown,
-  Shield,
-  ShieldCheck,
-  MessageSquare,
-  UserPlus,
-} from 'lucide-react'
+import { X, Crown, Shield, ShieldCheck, MessageSquare, UserPlus } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -113,21 +97,16 @@ function MemberItem({ member, onClick, onStartDM }: MemberItemProps) {
           onClick={() => setShowPopover(true)}
           className={cn(
             'flex w-full items-center gap-3 rounded-md px-2 py-1.5',
-            'hover:bg-accent transition-colors',
+            'transition-colors hover:bg-accent',
             'focus:outline-none focus-visible:ring-2 focus-visible:ring-ring'
           )}
         >
-          <UserAvatar
-            user={member}
-            size="sm"
-            presence={member.presence}
-            showPresence
-          />
-          <div className="flex-1 min-w-0 text-left">
+          <UserAvatar user={member} size="sm" presence={member.presence} showPresence />
+          <div className="min-w-0 flex-1 text-left">
             <div className="flex items-center gap-1.5">
               <span
                 className={cn(
-                  'text-sm font-medium truncate',
+                  'truncate text-sm font-medium',
                   member.presence === 'offline' && 'text-muted-foreground'
                 )}
               >
@@ -135,7 +114,7 @@ function MemberItem({ member, onClick, onStartDM }: MemberItemProps) {
               </span>
             </div>
             {member.customStatus?.text && (
-              <p className="text-xs text-muted-foreground truncate">
+              <p className="truncate text-xs text-muted-foreground">
                 {member.customStatus.emoji} {member.customStatus.text}
               </p>
             )}
@@ -146,17 +125,10 @@ function MemberItem({ member, onClick, onStartDM }: MemberItemProps) {
         <div className="p-4">
           {/* Profile Header */}
           <div className="flex items-start gap-3">
-            <UserAvatar
-              user={member}
-              size="lg"
-              presence={member.presence}
-              showPresence
-            />
-            <div className="flex-1 min-w-0">
-              <h4 className="font-semibold truncate">{member.displayName}</h4>
-              <p className="text-sm text-muted-foreground truncate">
-                @{member.username}
-              </p>
+            <UserAvatar user={member} size="lg" presence={member.presence} showPresence />
+            <div className="min-w-0 flex-1">
+              <h4 className="truncate font-semibold">{member.displayName}</h4>
+              <p className="truncate text-sm text-muted-foreground">@{member.username}</p>
               <RoleBadge role={member.role} size="xs" className="mt-1" />
             </div>
           </div>
@@ -172,9 +144,7 @@ function MemberItem({ member, onClick, onStartDM }: MemberItemProps) {
                 member.presence === 'offline' && 'bg-gray-400'
               )}
             />
-            <span className="text-muted-foreground">
-              {getPresenceLabel(member.presence)}
-            </span>
+            <span className="text-muted-foreground">{getPresenceLabel(member.presence)}</span>
           </div>
 
           {member.customStatus?.text && (
@@ -184,14 +154,12 @@ function MemberItem({ member, onClick, onStartDM }: MemberItemProps) {
           )}
 
           {member.bio && (
-            <p className="mt-3 text-sm text-muted-foreground line-clamp-2">
-              {member.bio}
-            </p>
+            <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{member.bio}</p>
           )}
         </div>
 
         {/* Actions */}
-        <div className="border-t p-2 flex gap-2">
+        <div className="flex gap-2 border-t p-2">
           <Button
             variant="outline"
             size="sm"
@@ -211,7 +179,7 @@ function MemberItem({ member, onClick, onStartDM }: MemberItemProps) {
               setShowPopover(false)
             }}
           >
-            <MessageSquare className="h-4 w-4 mr-1.5" />
+            <MessageSquare className="mr-1.5 h-4 w-4" />
             Message
           </Button>
         </div>
@@ -240,7 +208,7 @@ function MemberGroup({
     <div className="mb-4">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="flex w-full items-center gap-2 px-2 py-1 text-xs font-semibold uppercase text-muted-foreground hover:text-foreground transition-colors"
+        className="flex w-full items-center gap-2 px-2 py-1 text-xs font-semibold uppercase text-muted-foreground transition-colors hover:text-foreground"
       >
         {icon}
         <span>{title}</span>
@@ -299,38 +267,23 @@ export function MemberList({
   onStartDM,
   className,
 }: MemberListProps) {
-  const groupedMembers = React.useMemo(
-    () => groupMembersByRole(members),
-    [members]
-  )
+  const groupedMembers = React.useMemo(() => groupMembersByRole(members), [members])
 
   const onlineCount = members.filter((m) => m.presence !== 'offline').length
 
   return (
-    <div
-      className={cn(
-        'flex h-full flex-col border-l bg-background',
-        className
-      )}
-    >
+    <div className={cn('flex h-full flex-col border-l bg-background', className)}>
       {/* Header */}
       <div className="flex h-14 items-center justify-between border-b px-4">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-semibold">Members</h2>
-          <span className="text-xs text-muted-foreground">
-            {onlineCount} online
-          </span>
+          <span className="text-xs text-muted-foreground">{onlineCount} online</span>
         </div>
         {onClose && (
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={onClose}
-                >
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
                   <X className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -345,11 +298,9 @@ export function MemberList({
         {loading ? (
           <MemberListSkeleton />
         ) : members.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-            <UserPlus className="h-10 w-10 text-muted-foreground mb-3" />
-            <p className="text-sm text-muted-foreground">
-              No members in this channel yet.
-            </p>
+          <div className="flex flex-col items-center justify-center px-4 py-8 text-center">
+            <UserPlus className="mb-3 h-10 w-10 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">No members in this channel yet.</p>
           </div>
         ) : (
           <div className="p-2">

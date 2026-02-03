@@ -3,10 +3,10 @@
  * Hook for safety number generation and verification
  */
 
-import { useState, useCallback } from 'react';
-import { useApolloClient } from '@apollo/client';
-import { gql } from '@apollo/client';
-import { useToast } from './use-toast';
+import { useState, useCallback } from 'react'
+import { useApolloClient } from '@apollo/client'
+import { gql } from '@apollo/client'
+import { useToast } from './use-toast'
 
 const SAVE_SAFETY_NUMBER = gql`
   mutation SaveSafetyNumber(
@@ -37,7 +37,7 @@ const SAVE_SAFETY_NUMBER = gql`
       safety_number
     }
   }
-`;
+`
 
 const VERIFY_SAFETY_NUMBER = gql`
   mutation VerifySafetyNumber($peerUserId: uuid!) {
@@ -53,7 +53,7 @@ const VERIFY_SAFETY_NUMBER = gql`
       }
     }
   }
-`;
+`
 
 const GET_SAFETY_NUMBER = gql`
   query GetSafetyNumber($peerUserId: uuid!) {
@@ -68,45 +68,42 @@ const GET_SAFETY_NUMBER = gql`
       updated_at
     }
   }
-`;
+`
 
 export interface SafetyNumber {
-  id: string;
-  safetyNumber: string;
-  formattedSafetyNumber: string;
-  qrCodeData: string;
-  isVerified: boolean;
-  verifiedAt?: Date;
-  userFingerprint: string;
-  peerFingerprint: string;
+  id: string
+  safetyNumber: string
+  formattedSafetyNumber: string
+  qrCodeData: string
+  isVerified: boolean
+  verifiedAt?: Date
+  userFingerprint: string
+  peerFingerprint: string
 }
 
 export interface UseSafetyNumbersReturn {
   // State
-  safetyNumber: SafetyNumber | null;
-  isLoading: boolean;
-  error: string | null;
+  safetyNumber: SafetyNumber | null
+  isLoading: boolean
+  error: string | null
 
   // Actions
   generateSafetyNumber: (
     localUserId: string,
     peerUserId: string,
     peerDeviceId: string
-  ) => Promise<SafetyNumber>;
-  verifySafetyNumber: (peerUserId: string) => Promise<void>;
-  loadSafetyNumber: (peerUserId: string) => Promise<SafetyNumber | null>;
-  compareSafetyNumbers: (
-    displayedNumber: string,
-    scannedNumber: string
-  ) => boolean;
+  ) => Promise<SafetyNumber>
+  verifySafetyNumber: (peerUserId: string) => Promise<void>
+  loadSafetyNumber: (peerUserId: string) => Promise<SafetyNumber | null>
+  compareSafetyNumbers: (displayedNumber: string, scannedNumber: string) => boolean
 }
 
 export function useSafetyNumbers(): UseSafetyNumbersReturn {
-  const apolloClient = useApolloClient();
-  const { toast } = useToast();
-  const [safetyNumber, setSafetyNumber] = useState<SafetyNumber | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const apolloClient = useApolloClient()
+  const { toast } = useToast()
+  const [safetyNumber, setSafetyNumber] = useState<SafetyNumber | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   // Generate safety number
   const generateSafetyNumber = useCallback(
@@ -115,8 +112,8 @@ export function useSafetyNumbers(): UseSafetyNumbersReturn {
       peerUserId: string,
       peerDeviceId: string
     ): Promise<SafetyNumber> => {
-      setIsLoading(true);
-      setError(null);
+      setIsLoading(true)
+      setError(null)
 
       try {
         const response = await fetch('/api/e2ee/safety-number', {
@@ -128,13 +125,13 @@ export function useSafetyNumbers(): UseSafetyNumbersReturn {
             peerUserId,
             peerDeviceId,
           }),
-        });
+        })
 
         if (!response.ok) {
-          throw new Error('Failed to generate safety number');
+          throw new Error('Failed to generate safety number')
         }
 
-        const data = await response.json();
+        const data = await response.json()
 
         // Save to database
         await apolloClient.mutate({
@@ -145,7 +142,7 @@ export function useSafetyNumbers(): UseSafetyNumbersReturn {
             userIdentityFingerprint: 'user_fingerprint', // TODO: Get from E2EE manager
             peerIdentityFingerprint: 'peer_fingerprint',
           },
-        });
+        })
 
         const result: SafetyNumber = {
           id: '',
@@ -155,88 +152,86 @@ export function useSafetyNumbers(): UseSafetyNumbersReturn {
           isVerified: false,
           userFingerprint: 'user_fingerprint',
           peerFingerprint: 'peer_fingerprint',
-        };
+        }
 
-        setSafetyNumber(result);
-        return result;
+        setSafetyNumber(result)
+        return result
       } catch (err: any) {
-        const errorMessage = err.message || 'Failed to generate safety number';
-        setError(errorMessage);
+        const errorMessage = err.message || 'Failed to generate safety number'
+        setError(errorMessage)
 
         toast({
           title: 'Safety Number Error',
           description: errorMessage,
           variant: 'destructive',
-        });
+        })
 
-        throw err;
+        throw err
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     },
     [apolloClient, toast]
-  );
+  )
 
   // Verify safety number
   const verifySafetyNumber = useCallback(
     async (peerUserId: string) => {
-      setIsLoading(true);
+      setIsLoading(true)
 
       try {
         await apolloClient.mutate({
           mutation: VERIFY_SAFETY_NUMBER,
           variables: { peerUserId },
-        });
+        })
 
         if (safetyNumber) {
           setSafetyNumber({
             ...safetyNumber,
             isVerified: true,
             verifiedAt: new Date(),
-          });
+          })
         }
 
         toast({
           title: 'Safety Number Verified',
           description: 'The identity has been verified successfully',
-        });
+        })
       } catch (err: any) {
         toast({
           title: 'Verification Failed',
           description: err.message,
           variant: 'destructive',
-        });
+        })
 
-        throw err;
+        throw err
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     },
     [apolloClient, safetyNumber, toast]
-  );
+  )
 
   // Load safety number from database
   const loadSafetyNumber = useCallback(
     async (peerUserId: string): Promise<SafetyNumber | null> => {
-      setIsLoading(true);
+      setIsLoading(true)
 
       try {
         const { data } = await apolloClient.query({
           query: GET_SAFETY_NUMBER,
           variables: { peerUserId },
           fetchPolicy: 'network-only',
-        });
+        })
 
         if (data.nchat_safety_numbers.length === 0) {
-          return null;
+          return null
         }
 
-        const sn = data.nchat_safety_numbers[0];
+        const sn = data.nchat_safety_numbers[0]
 
         // Format safety number
-        const formatted = sn.safety_number
-          .match(/.{1,5}/g)
-          ?.join(' ') || sn.safety_number;
+        const formatted = sn.safety_number.match(/.{1,5}/g)?.join(' ') || sn.safety_number
 
         const result: SafetyNumber = {
           id: sn.id,
@@ -247,30 +242,30 @@ export function useSafetyNumbers(): UseSafetyNumbersReturn {
           verifiedAt: sn.verified_at ? new Date(sn.verified_at) : undefined,
           userFingerprint: sn.user_identity_fingerprint,
           peerFingerprint: sn.peer_identity_fingerprint,
-        };
+        }
 
-        setSafetyNumber(result);
-        return result;
+        setSafetyNumber(result)
+        return result
       } catch (err: any) {
-        setError(err.message);
-        return null;
+        setError(err.message)
+        return null
       } finally {
-        setIsLoading(false);
+        setIsLoading(false)
       }
     },
     [apolloClient]
-  );
+  )
 
   // Compare two safety numbers
   const compareSafetyNumbers = useCallback(
     (displayedNumber: string, scannedNumber: string): boolean => {
       // Remove spaces and compare
-      const clean1 = displayedNumber.replace(/\s/g, '');
-      const clean2 = scannedNumber.replace(/\s/g, '');
-      return clean1 === clean2;
+      const clean1 = displayedNumber.replace(/\s/g, '')
+      const clean2 = scannedNumber.replace(/\s/g, '')
+      return clean1 === clean2
     },
     []
-  );
+  )
 
   return {
     safetyNumber,
@@ -280,7 +275,7 @@ export function useSafetyNumbers(): UseSafetyNumbersReturn {
     verifySafetyNumber,
     loadSafetyNumber,
     compareSafetyNumbers,
-  };
+  }
 }
 
-export default useSafetyNumbers;
+export default useSafetyNumbers

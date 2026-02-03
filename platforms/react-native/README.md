@@ -5,6 +5,7 @@ This directory contains the React Native mobile application for nChat, supportin
 ## Overview
 
 React Native provides:
+
 - True native performance
 - Full access to native APIs
 - Platform-specific UI components
@@ -26,6 +27,7 @@ React Native provides:
 ## Prerequisites
 
 ### General Requirements
+
 - Node.js >= 20.0.0
 - pnpm >= 9.15.4
 - React Native CLI
@@ -40,6 +42,7 @@ npm install -g react-native-cli
 ```
 
 ### iOS Requirements
+
 - macOS (required for iOS development)
 - Xcode 15.0 or later
 - CocoaPods 1.10 or later
@@ -55,6 +58,7 @@ brew install cocoapods
 ```
 
 ### Android Requirements
+
 - Android Studio Hedgehog (2023.1.1) or later
 - Android SDK API 34
 - Java JDK 17
@@ -124,6 +128,7 @@ Merge `ios-info.plist.template` into `ios/nchat/Info.plist`:
 ```
 
 Key configurations:
+
 - Camera, microphone, photo library permissions
 - Face ID usage description
 - Background modes (audio, fetch, remote-notification, voip)
@@ -154,6 +159,7 @@ cd ..
 #### 4. Configure Signing
 
 In Xcode:
+
 1. Open `ios/nchat.xcworkspace`
 2. Select the `nchat` target
 3. Go to "Signing & Capabilities"
@@ -163,6 +169,7 @@ In Xcode:
 #### 5. Add Capabilities
 
 In Xcode, add these capabilities:
+
 - Push Notifications
 - Background Modes (check: Audio, Fetch, Remote notifications, Voice over IP)
 - Associated Domains (add: `applinks:nchat.nself.org`)
@@ -174,6 +181,7 @@ In Xcode, add these capabilities:
 Merge `android-manifest.template.xml` into `android/app/src/main/AndroidManifest.xml`.
 
 Key configurations:
+
 - All required permissions
 - Deep linking intents
 - Firebase messaging service
@@ -184,6 +192,7 @@ Key configurations:
 Merge `android-build.gradle.template` into `android/app/build.gradle`.
 
 Key configurations:
+
 - Application ID: `org.nself.nchat`
 - Min SDK: 24
 - Target SDK: 34
@@ -262,6 +271,7 @@ Create `android/app/src/main/res/xml/network_security_config.xml`:
 ### iOS Universal Links
 
 1. Create `apple-app-site-association` file at:
+
    ```
    https://nchat.nself.org/.well-known/apple-app-site-association
    ```
@@ -271,10 +281,12 @@ Create `android/app/src/main/res/xml/network_security_config.xml`:
    {
      "applinks": {
        "apps": [],
-       "details": [{
-         "appID": "TEAM_ID.org.nself.nchat",
-         "paths": ["*"]
-       }]
+       "details": [
+         {
+           "appID": "TEAM_ID.org.nself.nchat",
+           "paths": ["*"]
+         }
+       ]
      }
    }
    ```
@@ -282,23 +294,28 @@ Create `android/app/src/main/res/xml/network_security_config.xml`:
 ### Android App Links
 
 1. Create `assetlinks.json` file at:
+
    ```
    https://nchat.nself.org/.well-known/assetlinks.json
    ```
 
 2. File contents:
+
    ```json
-   [{
-     "relation": ["delegate_permission/common.handle_all_urls"],
-     "target": {
-       "namespace": "android_app",
-       "package_name": "org.nself.nchat",
-       "sha256_cert_fingerprints": ["YOUR_SHA256_FINGERPRINT"]
+   [
+     {
+       "relation": ["delegate_permission/common.handle_all_urls"],
+       "target": {
+         "namespace": "android_app",
+         "package_name": "org.nself.nchat",
+         "sha256_cert_fingerprints": ["YOUR_SHA256_FINGERPRINT"]
+       }
      }
-   }]
+   ]
    ```
 
 3. Get SHA256 fingerprint:
+
    ```bash
    # Debug keystore
    keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey -storepass android -keypass android | grep SHA256
@@ -312,7 +329,7 @@ Create `android/app/src/main/res/xml/network_security_config.xml`:
 Deep links are handled in `src/navigation/linking.ts`:
 
 ```typescript
-import { LinkingOptions } from '@react-navigation/native';
+import { LinkingOptions } from '@react-navigation/native'
 
 export const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['nchat://', 'https://nchat.nself.org'],
@@ -327,7 +344,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
       // ... more screens
     },
   },
-};
+}
 ```
 
 ## Development
@@ -354,6 +371,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
    - Settings > Developer Options > USB Debugging
 
 3. Connect via USB and verify:
+
    ```bash
    adb devices
    ```
@@ -368,6 +386,7 @@ export const linking: LinkingOptions<RootStackParamList> = {
 Metro bundler provides fast refresh by default. Changes to JavaScript/TypeScript will reload automatically.
 
 For native code changes:
+
 - iOS: Rebuild in Xcode or run `pnpm run ios`
 - Android: Run `pnpm run android`
 
@@ -376,6 +395,7 @@ For native code changes:
 #### React Native Debugger
 
 1. Install React Native Debugger:
+
    ```bash
    brew install --cask react-native-debugger
    ```
@@ -394,6 +414,7 @@ Flipper is integrated for advanced debugging:
 4. Flipper will auto-connect
 
 Features:
+
 - Network inspector
 - Layout inspector
 - Logs viewer
@@ -578,74 +599,74 @@ fastlane android screenshots
 ### Push Notifications
 
 ```typescript
-import { pushNotifications } from '@native/push-notifications';
+import { pushNotifications } from '@native/push-notifications'
 
 // Initialize
-await pushNotifications.initialize();
+await pushNotifications.initialize()
 
 // Get token
-const token = await pushNotifications.getToken();
+const token = await pushNotifications.getToken()
 
 // Handle notification
 pushNotifications.onNotificationReceived((notification) => {
-  console.log('Received:', notification);
-});
+  console.log('Received:', notification)
+})
 ```
 
 ### Camera
 
 ```typescript
-import { camera } from '@native/camera';
+import { camera } from '@native/camera'
 
 // Take photo
-const photo = await camera.takePhoto();
+const photo = await camera.takePhoto()
 
 // Pick from gallery
-const photo = await camera.pickImage();
+const photo = await camera.pickImage()
 
 // Record video
-const video = await camera.recordVideo();
+const video = await camera.recordVideo()
 ```
 
 ### Biometrics
 
 ```typescript
-import { biometrics } from '@native/biometrics';
+import { biometrics } from '@native/biometrics'
 
 // Check availability
-const available = await biometrics.isAvailable();
+const available = await biometrics.isAvailable()
 
 // Authenticate
 const success = await biometrics.authenticate({
   reason: 'Login to nChat',
-});
+})
 ```
 
 ### Offline Storage
 
 ```typescript
-import { OfflineStorage, MessageCache, SyncQueue } from '@utils/offline-storage';
+import { OfflineStorage, MessageCache, SyncQueue } from '@utils/offline-storage'
 
 // Store data
-OfflineStorage.set('key', { data: 'value' });
+OfflineStorage.set('key', { data: 'value' })
 
 // Get data
-const data = OfflineStorage.get('key');
+const data = OfflineStorage.get('key')
 
 // Cache messages
-MessageCache.setChannelMessages('channel-id', messages);
+MessageCache.setChannelMessages('channel-id', messages)
 
 // Add to sync queue
 SyncQueue.addToQueue({
   type: 'SEND_MESSAGE',
   payload: { text: 'Hello' },
-});
+})
 ```
 
 ### Platform Detection
 
 ```typescript
-import { isIOS, isAndroid, platformSelect, scale } from '@utils/platform';
+import { isIOS, isAndroid, platformSelect, scale } from '@utils/platform'
 
 // Platform check
 if (isIOS) {
@@ -657,10 +678,10 @@ const padding = platformSelect({
   ios: 20,
   android: 16,
   default: 12,
-});
+})
 
 // Responsive sizing
-const fontSize = scale(16);
+const fontSize = scale(16)
 ```
 
 ## Testing
@@ -718,6 +739,7 @@ project.ext.react = [
 ### ProGuard (Android)
 
 ProGuard is configured for release builds to:
+
 - Minify code
 - Remove unused code
 - Obfuscate class names
@@ -734,6 +756,7 @@ pnpm run optimize:images
 ### iOS Issues
 
 **Pods not found**
+
 ```bash
 cd ios
 pod deintegrate
@@ -741,6 +764,7 @@ pod install
 ```
 
 **Build fails after updating packages**
+
 ```bash
 pnpm run clean:ios
 cd ios && pod install && cd ..
@@ -748,6 +772,7 @@ pnpm run ios
 ```
 
 **CocoaPods version issues**
+
 ```bash
 sudo gem install cocoapods
 pod repo update
@@ -756,6 +781,7 @@ pod repo update
 ### Android Issues
 
 **Gradle build failed**
+
 ```bash
 cd android
 ./gradlew clean
@@ -765,12 +791,14 @@ pnpm run android
 ```
 
 **ADB not found**
+
 ```bash
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 ```
 
 **Metro bundler issues**
+
 ```bash
 pnpm start -- --reset-cache
 ```
@@ -778,6 +806,7 @@ pnpm start -- --reset-cache
 ### General Issues
 
 **Module not found**
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules
@@ -786,12 +815,14 @@ pnpm start -- --reset-cache
 ```
 
 **Watchman issues (macOS)**
+
 ```bash
 watchman watch-del-all
 rm -rf $TMPDIR/react-*
 ```
 
 **Build artifacts cleanup**
+
 ```bash
 # iOS
 rm -rf ios/build
@@ -858,6 +889,7 @@ pnpm run pod:update       # Update iOS pods
 ## Support
 
 For issues or questions:
+
 1. Check the troubleshooting section above
 2. Review React Native docs: https://reactnative.dev
 3. Check GitHub issues

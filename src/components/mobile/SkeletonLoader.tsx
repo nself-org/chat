@@ -47,7 +47,9 @@ export const Skeleton = memo(function Skeleton({
       className={cn(
         'rounded-md bg-muted',
         animate && variant === 'pulse' && 'animate-pulse',
-        animate && variant === 'wave' && 'animate-shimmer bg-gradient-to-r from-muted via-muted-foreground/10 to-muted bg-[length:200%_100%]',
+        animate &&
+          variant === 'wave' &&
+          'via-muted-foreground/10 animate-shimmer bg-gradient-to-r from-muted to-muted bg-[length:200%_100%]',
         className
       )}
       aria-hidden="true"
@@ -92,9 +94,7 @@ export const MessageSkeleton = memo(function MessageSkeleton({
             />
 
             {/* Additional line for some messages */}
-            {index % 2 === 0 && (
-              <Skeleton className="h-4 w-2/3" animate={animate} />
-            )}
+            {index % 2 === 0 && <Skeleton className="h-4 w-2/3" animate={animate} />}
           </div>
         </div>
       ))}
@@ -124,9 +124,7 @@ export const ChannelSkeleton = memo(function ChannelSkeleton({
           </div>
 
           {/* Badge */}
-          {index % 3 === 0 && (
-            <Skeleton className="h-5 w-5 rounded-full" animate={animate} />
-          )}
+          {index % 3 === 0 && <Skeleton className="h-5 w-5 rounded-full" animate={animate} />}
         </div>
       ))}
     </div>
@@ -175,7 +173,7 @@ export const ImageSkeleton = memo(function ImageSkeleton({
 
       {/* Loading indicator overlay */}
       <div className="absolute inset-0 flex items-center justify-center">
-        <div className="rounded-full bg-background/80 p-3 backdrop-blur-sm">
+        <div className="bg-background/80 rounded-full p-3 backdrop-blur-sm">
           <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       </div>
@@ -291,10 +289,7 @@ export const TextSkeleton = memo(function TextSkeleton({
       {Array.from({ length: count }).map((_, index) => (
         <Skeleton
           key={index}
-          className={cn(
-            'h-4',
-            index === count - 1 ? 'w-3/4' : 'w-full'
-          )}
+          className={cn('h-4', index === count - 1 ? 'w-3/4' : 'w-full')}
           animate={animate}
         />
       ))}
@@ -309,9 +304,7 @@ export const AvatarSkeleton = memo(function AvatarSkeleton({
   className,
   animate = true,
 }: Omit<SkeletonLoaderProps, 'type' | 'count'>) {
-  return (
-    <Skeleton className={cn('h-10 w-10 rounded-full', className)} animate={animate} />
-  )
+  return <Skeleton className={cn('h-10 w-10 rounded-full', className)} animate={animate} />
 })
 
 // ============================================================================
@@ -372,9 +365,7 @@ export const ButtonSkeleton = memo(function ButtonSkeleton({
   className,
   animate = true,
 }: Omit<SkeletonLoaderProps, 'type' | 'count'>) {
-  return (
-    <Skeleton className={cn('h-10 w-24 rounded-md', className)} animate={animate} />
-  )
+  return <Skeleton className={cn('h-10 w-24 rounded-md', className)} animate={animate} />
 })
 
 /**
@@ -384,9 +375,7 @@ export const InputSkeleton = memo(function InputSkeleton({
   className,
   animate = true,
 }: Omit<SkeletonLoaderProps, 'type' | 'count'>) {
-  return (
-    <Skeleton className={cn('h-10 w-full rounded-md', className)} animate={animate} />
-  )
+  return <Skeleton className={cn('h-10 w-full rounded-md', className)} animate={animate} />
 })
 
 /**
@@ -396,9 +385,7 @@ export const BadgeSkeleton = memo(function BadgeSkeleton({
   className,
   animate = true,
 }: Omit<SkeletonLoaderProps, 'type' | 'count'>) {
-  return (
-    <Skeleton className={cn('h-5 w-16 rounded-full', className)} animate={animate} />
-  )
+  return <Skeleton className={cn('h-5 w-16 rounded-full', className)} animate={animate} />
 })
 
 export default SkeletonLoader

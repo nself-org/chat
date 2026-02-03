@@ -13,8 +13,8 @@ export function DevModeBanner() {
   if (!isDevMode || !isVisible) return null
 
   return (
-    <div className="bg-yellow-500 text-black px-4 py-2 text-sm">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
+    <div className="bg-yellow-500 px-4 py-2 text-sm text-black">
+      <div className="mx-auto flex max-w-7xl items-center justify-between">
         <div className="flex items-center gap-4">
           <span className="font-semibold">🚧 Dev Mode</span>
           <span>
@@ -38,7 +38,7 @@ export function DevModeBanner() {
         </div>
         <button
           onClick={() => setIsVisible(false)}
-          className="hover:bg-yellow-600 rounded p-1"
+          className="rounded p-1 hover:bg-yellow-600"
           aria-label="Close banner"
         >
           <X className="h-4 w-4" />

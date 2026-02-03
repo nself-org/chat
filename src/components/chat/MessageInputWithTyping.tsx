@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea'
 import { useTyping } from '@/hooks/use-typing'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 /**
  * Message input props
  */
@@ -102,7 +104,7 @@ export function MessageInputWithTyping({
       // Focus back on textarea
       textareaRef.current?.focus()
     } catch (error) {
-      console.error('Failed to send message:', error)
+      logger.error('Failed to send message:', error)
     } finally {
       setIsSending(false)
     }
@@ -163,7 +165,7 @@ export function MessageInputWithTyping({
             disabled={disabled || isSending}
             autoFocus={autoFocus}
             className={cn(
-              'min-h-[44px] max-h-[200px] resize-none pr-12',
+              'max-h-[200px] min-h-[44px] resize-none pr-12',
               isOverLimit && 'border-destructive focus-visible:ring-destructive'
             )}
             rows={1}
@@ -189,11 +191,7 @@ export function MessageInputWithTyping({
           size="icon"
           className="h-[44px] w-[44px] flex-shrink-0"
         >
-          {isSending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
-          )}
+          {isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
           <span className="sr-only">Send message</span>
         </Button>
       </div>
@@ -255,7 +253,7 @@ export function MinimalMessageInput({
         await onSendMessage(trimmed)
         setMessage('')
       } catch (error) {
-        console.error('Failed to send message:', error)
+        logger.error('Failed to send message:', error)
       }
     },
     [message, disabled, onSendMessage, forceStopTyping]

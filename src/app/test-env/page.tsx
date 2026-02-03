@@ -15,12 +15,12 @@ export default function TestEnvPage() {
         hostname: window.location.hostname,
         port: window.location.port,
         href: window.location.href,
-        protocol: window.location.protocol
+        protocol: window.location.protocol,
       },
       processEnv: {
         NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV,
-        NODE_ENV: process.env.NODE_ENV
-      }
+        NODE_ENV: process.env.NODE_ENV,
+      },
     }
     setClientInfo(info)
   }, [])
@@ -30,21 +30,26 @@ export default function TestEnvPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Environment Detection Test</h1>
+    <div className="mx-auto max-w-4xl p-8">
+      <h1 className="mb-6 text-2xl font-bold">Environment Detection Test</h1>
 
       <div className="space-y-4">
-        <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
-          <h2 className="font-semibold mb-2">Detection Results:</h2>
+        <div className="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-800">
+          <h2 className="mb-2 font-semibold">Detection Results:</h2>
           <div className="space-y-2 font-mono text-sm">
-            <div>isDevelopment(): <span className={clientInfo.isDevelopment ? 'text-green-600' : 'text-red-600'}>{String(clientInfo.isDevelopment)}</span></div>
+            <div>
+              isDevelopment():{' '}
+              <span className={clientInfo.isDevelopment ? 'text-green-600' : 'text-red-600'}>
+                {String(clientInfo.isDevelopment)}
+              </span>
+            </div>
             <div>hostname (direct): {clientInfo.hostname}</div>
             <div>isLocalDomain (direct): {String(clientInfo.isLocalDomain)}</div>
           </div>
         </div>
 
-        <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
-          <h2 className="font-semibold mb-2">Window Location:</h2>
+        <div className="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-800">
+          <h2 className="mb-2 font-semibold">Window Location:</h2>
           <div className="space-y-2 font-mono text-sm">
             <div>hostname: {clientInfo.windowLocation.hostname}</div>
             <div>port: {clientInfo.windowLocation.port || '(none)'}</div>
@@ -53,16 +58,16 @@ export default function TestEnvPage() {
           </div>
         </div>
 
-        <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
-          <h2 className="font-semibold mb-2">Environment Variables:</h2>
+        <div className="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-800">
+          <h2 className="mb-2 font-semibold">Environment Variables:</h2>
           <div className="space-y-2 font-mono text-sm">
             <div>NEXT_PUBLIC_ENV: {clientInfo.processEnv.NEXT_PUBLIC_ENV || '(undefined)'}</div>
             <div>NODE_ENV: {clientInfo.processEnv.NODE_ENV || '(undefined)'}</div>
           </div>
         </div>
 
-        <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4">
-          <h2 className="font-semibold mb-2">Expected Auto-Prefill Values (if dev):</h2>
+        <div className="rounded-lg bg-amber-100 p-4 dark:bg-amber-900/30">
+          <h2 className="mb-2 font-semibold">Expected Auto-Prefill Values (if dev):</h2>
           {clientInfo.isDevelopment ? (
             <div className="space-y-2 text-sm">
               <div>✓ Email: owner@nself.org</div>
@@ -70,9 +75,7 @@ export default function TestEnvPage() {
               <div>✓ Role: Platform Owner</div>
             </div>
           ) : (
-            <div className="text-sm text-zinc-600">
-              Auto-prefill is disabled in production mode
-            </div>
+            <div className="text-sm text-zinc-600">Auto-prefill is disabled in production mode</div>
           )}
         </div>
       </div>

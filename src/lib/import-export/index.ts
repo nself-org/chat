@@ -6,8 +6,18 @@
 export * from './types'
 
 // Parsers
-export { SlackParser, extractSlackExport, parseSlackExportFile, SLACK_DEFAULT_MAPPINGS } from './slack-parser'
-export { DiscordParser, parseDiscordExportFile, parseMultipleDiscordExports, DISCORD_DEFAULT_MAPPINGS } from './discord-parser'
+export {
+  SlackParser,
+  extractSlackExport,
+  parseSlackExportFile,
+  SLACK_DEFAULT_MAPPINGS,
+} from './slack-parser'
+export {
+  DiscordParser,
+  parseDiscordExportFile,
+  parseMultipleDiscordExports,
+  DISCORD_DEFAULT_MAPPINGS,
+} from './discord-parser'
 
 // Services
 export {

@@ -9,8 +9,13 @@ import { generateBackupCodes, hashBackupCode } from '@/lib/2fa/backup-codes'
 import { getApolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 const REGENERATE_BACKUP_CODES = gql`
-  mutation RegenerateBackupCodes($userId: uuid!, $backupCodes: [nchat_user_backup_codes_insert_input!]!) {
+  mutation RegenerateBackupCodes(
+    $userId: uuid!
+    $backupCodes: [nchat_user_backup_codes_insert_input!]!
+  ) {
     # Delete old backup codes
     delete_nchat_user_backup_codes(where: { user_id: { _eq: $userId } }) {
       affected_rows
@@ -29,9 +34,7 @@ const REGENERATE_BACKUP_CODES = gql`
 
 const GET_BACKUP_CODES_STATUS = gql`
   query GetBackupCodesStatus($userId: uuid!) {
-    total: nchat_user_backup_codes_aggregate(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    total: nchat_user_backup_codes_aggregate(where: { user_id: { _eq: $userId } }) {
       aggregate {
         count
       }
@@ -52,10 +55,7 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId')
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
     }
 
     // Get backup codes status
@@ -66,11 +66,8 @@ export async function GET(request: NextRequest) {
     })
 
     if (errors) {
-      console.error('GraphQL errors:', errors)
-      return NextResponse.json(
-        { error: 'Failed to fetch backup codes status' },
-        { status: 500 }
-      )
+      logger.error('GraphQL errors:', errors)
+      return NextResponse.json({ error: 'Failed to fetch backup codes status' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -82,11 +79,8 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Backup codes status error:', error)
-    return NextResponse.json(
-      { error: 'Failed to get backup codes status' },
-      { status: 500 }
-    )
+    logger.error('Backup codes status error:', error)
+    return NextResponse.json({ error: 'Failed to get backup codes status' }, { status: 500 })
   }
 }
 
@@ -95,13 +89,9 @@ export async function POST(request: NextRequest) {
     const { userId, password } = await request.json()
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
     }
 
-    // TODO: Verify password before regenerating codes
     // This is a critical security step
 
     // Generate new backup codes
@@ -126,11 +116,8 @@ export async function POST(request: NextRequest) {
     })
 
     if (errors) {
-      console.error('GraphQL errors:', errors)
-      return NextResponse.json(
-        { error: 'Failed to regenerate backup codes' },
-        { status: 500 }
-      )
+      logger.error('GraphQL errors:', errors)
+      return NextResponse.json({ error: 'Failed to regenerate backup codes' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -143,10 +130,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Backup codes regeneration error:', error)
-    return NextResponse.json(
-      { error: 'Failed to regenerate backup codes' },
-      { status: 500 }
-    )
+    logger.error('Backup codes regeneration error:', error)
+    return NextResponse.json({ error: 'Failed to regenerate backup codes' }, { status: 500 })
   }
 }

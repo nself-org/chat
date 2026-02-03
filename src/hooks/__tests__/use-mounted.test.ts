@@ -109,10 +109,9 @@ describe('useOnUnmount', () => {
     let callbackValue = 'first'
     const mockCallback = jest.fn(() => callbackValue)
 
-    const { rerender, unmount } = renderHook(
-      ({ cb }) => useOnUnmount(cb),
-      { initialProps: { cb: mockCallback } }
-    )
+    const { rerender, unmount } = renderHook(({ cb }) => useOnUnmount(cb), {
+      initialProps: { cb: mockCallback },
+    })
 
     callbackValue = 'second'
     const newCallback = jest.fn(() => callbackValue)

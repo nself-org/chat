@@ -33,12 +33,14 @@ export function VideoGrid({ tiles, localStream, remoteStreams, participants }: V
     if (!participant) return null
 
     // Return appropriate stream
-    const streamIndex = participants.findIndex((p) => p.id === participantId && p.id !== participant.id)
+    const streamIndex = participants.findIndex(
+      (p) => p.id === participantId && p.id !== participant.id
+    )
     return streamIndex >= 0 ? remoteStreams[streamIndex] : localStream
   }
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative h-full w-full">
       {tiles.map((tile) => {
         const participant = participants.find((p) => p.id === tile.participantId)
         if (!participant) return null

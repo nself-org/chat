@@ -87,10 +87,7 @@ export class WorkflowExecutor {
   /**
    * Register a step handler
    */
-  registerHandler<T extends WorkflowStep>(
-    type: string,
-    handler: StepHandler<T>
-  ): void {
+  registerHandler<T extends WorkflowStep>(type: string, handler: StepHandler<T>): void {
     this.stepHandlers.set(type, handler as StepHandler)
   }
 
@@ -202,10 +199,7 @@ export class WorkflowExecutor {
       }
 
       // Execute with timeout
-      const result = await Promise.race([
-        handler(step, context, run),
-        this.createTimeout(step.id),
-      ])
+      const result = await Promise.race([handler(step, context, run), this.createTimeout(step.id)])
 
       if (!result.success) {
         throw new Error(result.error?.message || 'Step execution failed')
@@ -216,8 +210,7 @@ export class WorkflowExecutor {
       stepRun.output = result.output
       stepRun.completedAt = new Date().toISOString()
       stepRun.duration =
-        new Date(stepRun.completedAt).getTime() -
-        new Date(stepRun.startedAt).getTime()
+        new Date(stepRun.completedAt).getTime() - new Date(stepRun.startedAt).getTime()
 
       // Update context with output
       if (result.output) {
@@ -446,9 +439,7 @@ export class WorkflowExecutor {
           hours: 3600000,
           days: 86400000,
         }
-        delayMs =
-          (config.duration || 0) *
-          (multipliers[config.durationUnit || 'seconds'] || 1000)
+        delayMs = (config.duration || 0) * (multipliers[config.durationUnit || 'seconds'] || 1000)
         break
       }
       case 'until_time': {
@@ -490,9 +481,7 @@ export class WorkflowExecutor {
 
     // Interpolate URL and body
     const url = this.interpolateVariables(config.url, context)
-    const body = config.body
-      ? this.interpolateVariables(config.body, context)
-      : undefined
+    const body = config.body ? this.interpolateVariables(config.body, context) : undefined
 
     // Build headers
     const headers: Record<string, string> = {}
@@ -505,22 +494,16 @@ export class WorkflowExecutor {
       const response = await fetch(url, {
         method: config.method,
         headers: {
-          'Content-Type':
-            config.bodyType === 'json' ? 'application/json' : 'text/plain',
+          'Content-Type': config.bodyType === 'json' ? 'application/json' : 'text/plain',
           ...headers,
         },
         body: config.method !== 'GET' ? body : undefined,
       })
 
-      const responseBody = config.parseResponse
-        ? await response.json()
-        : await response.text()
+      const responseBody = config.parseResponse ? await response.json() : await response.text()
 
       // Check expected status codes
-      if (
-        config.expectedStatusCodes &&
-        !config.expectedStatusCodes.includes(response.status)
-      ) {
+      if (config.expectedStatusCodes && !config.expectedStatusCodes.includes(response.status)) {
         throw new Error(
           `Unexpected status code: ${response.status}. Expected: ${config.expectedStatusCodes.join(', ')}`
         )
@@ -643,10 +626,7 @@ export class WorkflowExecutor {
       }
 
       case 'count': {
-        const count = Math.min(
-          config.count || 0,
-          config.maxIterations || 100
-        )
+        const count = Math.min(config.count || 0, config.maxIterations || 100)
 
         for (let i = 0; i < count; i++) {
           if (config.indexVariableName) {
@@ -666,10 +646,7 @@ export class WorkflowExecutor {
 
         while (iterations < maxIterations) {
           if (config.condition) {
-            const shouldContinue = evaluateConditionConfig(
-              config.condition,
-              context
-            )
+            const shouldContinue = evaluateConditionConfig(config.condition, context)
             if (!shouldContinue) break
           }
           // Inner steps would be executed here
@@ -740,10 +717,7 @@ export class WorkflowExecutor {
   /**
    * Interpolate variables in a string
    */
-  private interpolateVariables(
-    text: string,
-    context: WorkflowContext
-  ): string {
+  private interpolateVariables(text: string, context: WorkflowContext): string {
     return text.replace(/\{\{([^}]+)\}\}/g, (_, varPath) => {
       const path = varPath.trim().split('.')
       let value: unknown = context

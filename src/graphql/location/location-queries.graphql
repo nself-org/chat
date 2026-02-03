@@ -129,11 +129,7 @@ query GetUserActiveLocation($userId: uuid!) {
 }
 
 # Get user's location sharing history
-query GetUserLocationHistory(
-  $userId: uuid!
-  $limit: Int = 50
-  $offset: Int = 0
-) {
+query GetUserLocationHistory($userId: uuid!, $limit: Int = 50, $offset: Int = 0) {
   nchat_location_shares(
     where: { user_id: { _eq: $userId } }
     order_by: { created_at: desc }

@@ -8,10 +8,7 @@
 # Subscribe to DM updates for the current user
 subscription DMListSubscription($userId: uuid!) {
   nchat_dm_participants(
-    where: {
-      user_id: { _eq: $userId }
-      dm: { status: { _eq: "active" } }
-    }
+    where: { user_id: { _eq: $userId }, dm: { status: { _eq: "active" } } }
     order_by: { dm: { last_message_at: desc_nulls_last } }
   ) {
     dm {
@@ -109,10 +106,7 @@ subscription DMParticipantsSubscription($dmId: uuid!) {
 # Subscribe to new messages in a DM
 subscription DMMessagesSubscription($dmId: uuid!, $limit: Int = 50) {
   nchat_dm_messages(
-    where: {
-      dm_id: { _eq: $dmId }
-      is_deleted: { _eq: false }
-    }
+    where: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false } }
     order_by: { created_at: desc }
     limit: $limit
   ) {
@@ -207,11 +201,7 @@ subscription DMMessageSubscription($messageId: uuid!) {
 # Subscribe to pinned messages in a DM
 subscription DMPinnedMessagesSubscription($dmId: uuid!) {
   nchat_dm_messages(
-    where: {
-      dm_id: { _eq: $dmId }
-      is_pinned: { _eq: true }
-      is_deleted: { _eq: false }
-    }
+    where: { dm_id: { _eq: $dmId }, is_pinned: { _eq: true }, is_deleted: { _eq: false } }
     order_by: { created_at: desc }
   ) {
     id
@@ -259,9 +249,7 @@ subscription DMTypingSubscription($dmId: uuid!, $excludeUserId: uuid!) {
 
 # Subscribe to read receipts for a DM
 subscription DMReadReceiptsSubscription($dmId: uuid!) {
-  nchat_dm_participants(
-    where: { dm_id: { _eq: $dmId } }
-  ) {
+  nchat_dm_participants(where: { dm_id: { _eq: $dmId } }) {
     user_id
     last_read_at
     last_read_message_id
@@ -276,10 +264,7 @@ subscription DMReadReceiptsSubscription($dmId: uuid!) {
 
 # Subscribe to read receipts for a specific message
 subscription DMMessageReadReceiptsSubscription($messageId: uuid!) {
-  nchat_dm_read_receipts(
-    where: { message_id: { _eq: $messageId } }
-    order_by: { read_at: desc }
-  ) {
+  nchat_dm_read_receipts(where: { message_id: { _eq: $messageId } }, order_by: { read_at: desc }) {
     id
     user_id
     message_id
@@ -299,9 +284,7 @@ subscription DMMessageReadReceiptsSubscription($messageId: uuid!) {
 
 # Subscribe to participant presence in a DM
 subscription DMPresenceSubscription($dmId: uuid!) {
-  nchat_dm_participants(
-    where: { dm_id: { _eq: $dmId } }
-  ) {
+  nchat_dm_participants(where: { dm_id: { _eq: $dmId } }) {
     user_id
     user {
       id
@@ -320,24 +303,14 @@ subscription DMPresenceSubscription($dmId: uuid!) {
 
 # Subscribe to unread count for all DMs
 subscription DMUnreadCountSubscription($userId: uuid!) {
-  nchat_dm_participants(
-    where: {
-      user_id: { _eq: $userId }
-      dm: { status: { _eq: "active" } }
-    }
-  ) {
+  nchat_dm_participants(where: { user_id: { _eq: $userId }, dm: { status: { _eq: "active" } } }) {
     dm_id
     last_read_at
     is_muted
     dm {
       id
       last_message_at
-      messages_aggregate(
-        where: {
-          is_deleted: { _eq: false }
-          user_id: { _neq: $userId }
-        }
-      ) {
+      messages_aggregate(where: { is_deleted: { _eq: false }, user_id: { _neq: $userId } }) {
         aggregate {
           count
         }
@@ -353,9 +326,7 @@ subscription DMUnreadCountSubscription($userId: uuid!) {
 # Subscribe to reactions on messages in a DM
 subscription DMReactionsSubscription($dmId: uuid!) {
   nchat_dm_reactions(
-    where: {
-      message: { dm_id: { _eq: $dmId } }
-    }
+    where: { message: { dm_id: { _eq: $dmId } } }
     order_by: { created_at: desc }
     limit: 100
   ) {
@@ -380,12 +351,7 @@ subscription DMReactionsSubscription($dmId: uuid!) {
 # Subscribe to new attachments in a DM (for media gallery updates)
 subscription DMAttachmentsSubscription($dmId: uuid!, $limit: Int = 50) {
   nchat_dm_attachments(
-    where: {
-      message: {
-        dm_id: { _eq: $dmId }
-        is_deleted: { _eq: false }
-      }
-    }
+    where: { message: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false } } }
     order_by: { created_at: desc }
     limit: $limit
   ) {

@@ -7,13 +7,12 @@
  */
 
 import { useCallback, useMemo } from 'react'
+import { extractUrls, isValidUrl, detectUrlType, mightHavePreview } from '@/lib/link-preview'
 import {
-  extractUrls,
-  isValidUrl,
-  detectUrlType,
-  mightHavePreview,
-} from '@/lib/link-preview'
-import { useLinkPreviewStore, selectSettings, selectAllBlockedDomains } from '@/stores/link-preview-store'
+  useLinkPreviewStore,
+  selectSettings,
+  selectAllBlockedDomains,
+} from '@/stores/link-preview-store'
 
 // ============================================================================
 // Types
@@ -123,10 +122,7 @@ export interface DetectedUrl extends UrlInfo {
   length: number
 }
 
-export function useUrlDetection(
-  text: string,
-  options: UseUrlDetectionOptions = {}
-): DetectedUrl[] {
+export function useUrlDetection(text: string, options: UseUrlDetectionOptions = {}): DetectedUrl[] {
   const { maxUrls = 10, filterBlocked = true } = options
   const { isBlocked } = useUnfurl()
 

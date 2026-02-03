@@ -59,21 +59,24 @@ export function StickerPackItem({
   const [isLoading, setIsLoading] = useState(false)
   const [imageError, setImageError] = useState(false)
 
-  const handleAction = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (isLoading) return
+  const handleAction = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      if (isLoading) return
 
-    setIsLoading(true)
-    try {
-      if (isInstalled && onRemove) {
-        await onRemove(pack)
-      } else if (!isInstalled && onAdd) {
-        await onAdd(pack)
+      setIsLoading(true)
+      try {
+        if (isInstalled && onRemove) {
+          await onRemove(pack)
+        } else if (!isInstalled && onAdd) {
+          await onAdd(pack)
+        }
+      } finally {
+        setIsLoading(false)
       }
-    } finally {
-      setIsLoading(false)
-    }
-  }, [isInstalled, isLoading, onAdd, onRemove, pack])
+    },
+    [isInstalled, isLoading, onAdd, onRemove, pack]
+  )
 
   const handleClick = useCallback(() => {
     onClick?.(pack)
@@ -84,8 +87,8 @@ export function StickerPackItem({
     return (
       <div
         className={cn(
-          'flex items-center gap-2 p-2 rounded-lg cursor-pointer',
-          'hover:bg-accent transition-colors',
+          'flex cursor-pointer items-center gap-2 rounded-lg p-2',
+          'transition-colors hover:bg-accent',
           className
         )}
         onClick={handleClick}
@@ -98,9 +101,9 @@ export function StickerPackItem({
           }
         }}
       >
-        <div className="relative w-8 h-8 rounded-md overflow-hidden bg-muted flex-shrink-0">
+        <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-md bg-muted">
           {imageError ? (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="flex h-full w-full items-center justify-center">
               <Package className="h-4 w-4 text-muted-foreground" />
             </div>
           ) : (
@@ -113,10 +116,8 @@ export function StickerPackItem({
             />
           )}
         </div>
-        <span className="text-sm font-medium truncate">{pack.name}</span>
-        {pack.is_official && (
-          <Sparkles className="h-3 w-3 text-primary flex-shrink-0" />
-        )}
+        <span className="truncate text-sm font-medium">{pack.name}</span>
+        {pack.is_official && <Sparkles className="h-3 w-3 flex-shrink-0 text-primary" />}
       </div>
     )
   }
@@ -126,8 +127,8 @@ export function StickerPackItem({
     return (
       <div
         className={cn(
-          'flex items-start gap-4 p-4 rounded-xl border bg-card',
-          onClick && 'cursor-pointer hover:bg-accent/50 transition-colors',
+          'flex items-start gap-4 rounded-xl border bg-card p-4',
+          onClick && 'hover:bg-accent/50 cursor-pointer transition-colors',
           className
         )}
         onClick={onClick ? handleClick : undefined}
@@ -135,9 +136,9 @@ export function StickerPackItem({
         tabIndex={onClick ? 0 : undefined}
       >
         {/* Thumbnail */}
-        <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
           {imageError ? (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="flex h-full w-full items-center justify-center">
               <Package className="h-8 w-8 text-muted-foreground" />
             </div>
           ) : (
@@ -152,12 +153,12 @@ export function StickerPackItem({
         </div>
 
         {/* Info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-foreground truncate">{pack.name}</h3>
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center gap-2">
+            <h3 className="truncate font-semibold text-foreground">{pack.name}</h3>
             {pack.is_official && (
               <Badge variant="secondary" className="text-xs">
-                <Sparkles className="h-3 w-3 mr-1" />
+                <Sparkles className="mr-1 h-3 w-3" />
                 Official
               </Badge>
             )}
@@ -168,9 +169,7 @@ export function StickerPackItem({
             )}
           </div>
           {pack.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-              {pack.description}
-            </p>
+            <p className="mb-2 line-clamp-2 text-sm text-muted-foreground">{pack.description}</p>
           )}
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             {pack.author && <span>by {pack.author}</span>}
@@ -191,12 +190,12 @@ export function StickerPackItem({
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : isInstalled ? (
               <>
-                <Check className="h-4 w-4 mr-1" />
+                <Check className="mr-1 h-4 w-4" />
                 Added
               </>
             ) : (
               <>
-                <Plus className="h-4 w-4 mr-1" />
+                <Plus className="mr-1 h-4 w-4" />
                 Add
               </>
             )}
@@ -210,8 +209,8 @@ export function StickerPackItem({
   return (
     <div
       className={cn(
-        'relative rounded-xl border bg-card overflow-hidden',
-        onClick && 'cursor-pointer hover:shadow-md transition-shadow',
+        'relative overflow-hidden rounded-xl border bg-card',
+        onClick && 'cursor-pointer transition-shadow hover:shadow-md',
         className
       )}
       onClick={onClick ? handleClick : undefined}
@@ -219,9 +218,9 @@ export function StickerPackItem({
       tabIndex={onClick ? 0 : undefined}
     >
       {/* Thumbnail */}
-      <div className="relative w-full aspect-square bg-muted">
+      <div className="relative aspect-square w-full bg-muted">
         {imageError ? (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             <Package className="h-12 w-12 text-muted-foreground" />
           </div>
         ) : (
@@ -234,22 +233,22 @@ export function StickerPackItem({
           />
         )}
         {/* Badges */}
-        <div className="absolute top-2 left-2 flex gap-1">
+        <div className="absolute left-2 top-2 flex gap-1">
           {pack.is_official && (
-            <Badge variant="secondary" className="text-xs bg-background/80 backdrop-blur-sm">
-              <Sparkles className="h-3 w-3 mr-1" />
+            <Badge variant="secondary" className="bg-background/80 text-xs backdrop-blur-sm">
+              <Sparkles className="mr-1 h-3 w-3" />
               Official
             </Badge>
           )}
           {pack.is_animated && (
-            <Badge variant="outline" className="text-xs bg-background/80 backdrop-blur-sm">
+            <Badge variant="outline" className="bg-background/80 text-xs backdrop-blur-sm">
               Animated
             </Badge>
           )}
         </div>
         {/* Installed check */}
         {isInstalled && (
-          <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+          <div className="text-primary-foreground absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary">
             <Check className="h-4 w-4" />
           </div>
         )}
@@ -257,10 +256,8 @@ export function StickerPackItem({
 
       {/* Info */}
       <div className="p-3">
-        <h3 className="font-medium text-sm truncate">{pack.name}</h3>
-        <p className="text-xs text-muted-foreground">
-          {pack.sticker_count} stickers
-        </p>
+        <h3 className="truncate text-sm font-medium">{pack.name}</h3>
+        <p className="text-xs text-muted-foreground">{pack.sticker_count} stickers</p>
       </div>
 
       {/* Action Button */}
@@ -277,12 +274,12 @@ export function StickerPackItem({
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : isInstalled ? (
               <>
-                <Minus className="h-4 w-4 mr-1" />
+                <Minus className="mr-1 h-4 w-4" />
                 Remove
               </>
             ) : (
               <>
-                <Plus className="h-4 w-4 mr-1" />
+                <Plus className="mr-1 h-4 w-4" />
                 Add
               </>
             )}
@@ -311,16 +308,16 @@ export function StickerPackTab({
       type="button"
       onClick={() => onClick?.(pack)}
       className={cn(
-        'relative flex flex-col items-center justify-center gap-1 p-2 rounded-lg transition-colors',
+        'relative flex flex-col items-center justify-center gap-1 rounded-lg p-2 transition-colors',
         'hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         isActive && 'bg-accent',
         className
       )}
       title={pack.name}
     >
-      <div className="relative w-8 h-8 rounded-md overflow-hidden bg-muted">
+      <div className="relative h-8 w-8 overflow-hidden rounded-md bg-muted">
         {imageError ? (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             <Package className="h-4 w-4 text-muted-foreground" />
           </div>
         ) : (
@@ -333,13 +330,9 @@ export function StickerPackTab({
           />
         )}
       </div>
-      {showCount && (
-        <span className="text-[10px] text-muted-foreground">
-          {pack.sticker_count}
-        </span>
-      )}
+      {showCount && <span className="text-[10px] text-muted-foreground">{pack.sticker_count}</span>}
       {isActive && (
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-primary rounded-full" />
+        <div className="absolute bottom-0 left-1/2 h-0.5 w-4 -translate-x-1/2 rounded-full bg-primary" />
       )}
     </button>
   )
@@ -378,12 +371,12 @@ export function StickerPackPreview({
   }, [isInstalled, isLoading, onAdd, onRemove, pack])
 
   return (
-    <div className={cn('rounded-xl border bg-card overflow-hidden', className)}>
+    <div className={cn('overflow-hidden rounded-xl border bg-card', className)}>
       {/* Header */}
-      <div className="flex items-center gap-4 p-4 border-b">
-        <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+      <div className="flex items-center gap-4 border-b p-4">
+        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
           {imageError ? (
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="flex h-full w-full items-center justify-center">
               <Package className="h-6 w-6 text-muted-foreground" />
             </div>
           ) : (
@@ -396,17 +389,13 @@ export function StickerPackPreview({
             />
           )}
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-lg truncate">{pack.name}</h3>
-            {pack.is_official && (
-              <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
-            )}
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center gap-2">
+            <h3 className="truncate text-lg font-semibold">{pack.name}</h3>
+            {pack.is_official && <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />}
           </div>
           {pack.description && (
-            <p className="text-sm text-muted-foreground line-clamp-1 mb-1">
-              {pack.description}
-            </p>
+            <p className="mb-1 line-clamp-1 text-sm text-muted-foreground">{pack.description}</p>
           )}
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             {pack.author && <span>by {pack.author}</span>}
@@ -428,12 +417,12 @@ export function StickerPackPreview({
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : isInstalled ? (
               <>
-                <Minus className="h-4 w-4 mr-2" />
+                <Minus className="mr-2 h-4 w-4" />
                 Remove
               </>
             ) : (
               <>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Add Pack
               </>
             )}
@@ -446,13 +435,11 @@ export function StickerPackPreview({
         {loading ? (
           <div className="grid grid-cols-5 gap-2">
             {Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="aspect-square rounded-lg bg-muted animate-pulse" />
+              <div key={i} className="aspect-square animate-pulse rounded-lg bg-muted" />
             ))}
           </div>
         ) : stickers.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            No stickers in this pack
-          </div>
+          <div className="py-8 text-center text-muted-foreground">No stickers in this pack</div>
         ) : (
           <div className="grid grid-cols-5 gap-2">
             {stickers.slice(0, 15).map((sticker) => (
@@ -461,8 +448,8 @@ export function StickerPackPreview({
                 type="button"
                 onClick={() => onStickerClick?.(sticker)}
                 className={cn(
-                  'relative aspect-square rounded-lg overflow-hidden bg-muted',
-                  'hover:bg-accent transition-colors',
+                  'relative aspect-square overflow-hidden rounded-lg bg-muted',
+                  'transition-colors hover:bg-accent',
                   onStickerClick && 'cursor-pointer'
                 )}
               >
@@ -475,7 +462,7 @@ export function StickerPackPreview({
               </button>
             ))}
             {stickers.length > 15 && (
-              <div className="aspect-square rounded-lg bg-muted flex items-center justify-center text-sm text-muted-foreground">
+              <div className="flex aspect-square items-center justify-center rounded-lg bg-muted text-sm text-muted-foreground">
                 +{stickers.length - 15}
               </div>
             )}
@@ -498,32 +485,32 @@ export function StickerPackSkeleton({
   if (variant === 'compact') {
     return (
       <div className="flex items-center gap-2 p-2">
-        <div className="w-8 h-8 rounded-md bg-muted animate-pulse" />
-        <div className="h-4 w-24 bg-muted animate-pulse rounded" />
+        <div className="h-8 w-8 animate-pulse rounded-md bg-muted" />
+        <div className="h-4 w-24 animate-pulse rounded bg-muted" />
       </div>
     )
   }
 
   if (variant === 'detailed') {
     return (
-      <div className="flex items-start gap-4 p-4 rounded-xl border bg-card">
-        <div className="w-20 h-20 rounded-lg bg-muted animate-pulse" />
+      <div className="flex items-start gap-4 rounded-xl border bg-card p-4">
+        <div className="h-20 w-20 animate-pulse rounded-lg bg-muted" />
         <div className="flex-1 space-y-2">
-          <div className="h-5 w-32 bg-muted animate-pulse rounded" />
-          <div className="h-4 w-full bg-muted animate-pulse rounded" />
-          <div className="h-3 w-24 bg-muted animate-pulse rounded" />
+          <div className="h-5 w-32 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+          <div className="h-3 w-24 animate-pulse rounded bg-muted" />
         </div>
-        <div className="w-16 h-8 bg-muted animate-pulse rounded" />
+        <div className="h-8 w-16 animate-pulse rounded bg-muted" />
       </div>
     )
   }
 
   return (
-    <div className="rounded-xl border bg-card overflow-hidden">
-      <div className="aspect-square bg-muted animate-pulse" />
-      <div className="p-3 space-y-2">
-        <div className="h-4 w-24 bg-muted animate-pulse rounded" />
-        <div className="h-3 w-16 bg-muted animate-pulse rounded" />
+    <div className="overflow-hidden rounded-xl border bg-card">
+      <div className="aspect-square animate-pulse bg-muted" />
+      <div className="space-y-2 p-3">
+        <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+        <div className="h-3 w-16 animate-pulse rounded bg-muted" />
       </div>
     </div>
   )

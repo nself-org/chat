@@ -1,15 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import {
-  Plus,
-  Hash,
-  Search,
-  FolderPlus,
-  ChevronsUpDown,
-  RefreshCw,
-  Settings,
-} from 'lucide-react'
+import { Plus, Hash, Search, FolderPlus, ChevronsUpDown, RefreshCw, Settings } from 'lucide-react'
 import {
   ContextMenu,
   ContextMenuContent,

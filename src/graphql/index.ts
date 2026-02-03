@@ -94,6 +94,11 @@ export * from './app-config'
 export * from './moderation'
 
 // ============================================================================
+// BROADCASTS - Broadcast lists and announcements
+// ============================================================================
+export * from './broadcasts'
+
+// ============================================================================
 // NAMESPACE EXPORTS - For organized imports
 // ============================================================================
 import * as fragments from './fragments'
@@ -112,6 +117,7 @@ import * as readReceipts from './read-receipts'
 import * as messageStatus from './message-status'
 import * as appConfig from './app-config'
 import * as moderation from './moderation'
+import * as broadcasts from './broadcasts'
 
 export {
   fragments,
@@ -130,6 +136,7 @@ export {
   messageStatus,
   appConfig,
   moderation,
+  broadcasts,
 }
 
 // ============================================================================
@@ -282,3 +289,19 @@ export type {
   GetReportsVariables,
   ResolveReportVariables,
 } from './moderation'
+
+export type {
+  // Broadcasts
+  BroadcastList,
+  Broadcast,
+  CreateBroadcastListInput,
+  UpdateBroadcastListInput,
+  SendBroadcastInput,
+  GetBroadcastListsVariables,
+  GetBroadcastListVariables,
+  CreateBroadcastListVariables,
+  UpdateBroadcastListVariables,
+  DeleteBroadcastListVariables,
+  SendBroadcastVariables,
+  GetBroadcastHistoryVariables,
+} from './broadcasts'

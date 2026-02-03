@@ -73,21 +73,21 @@ curl -X POST https://your-domain.com/api/webhooks/incoming/{TOKEN} \
 ```typescript
 interface IncomingWebhookPayload {
   // Required: At least one must be present
-  content?: string              // Message text
-  embeds?: IncomingWebhookEmbed[]    // Rich embeds
-  attachments?: IncomingWebhookAttachment[]  // File attachments
+  content?: string // Message text
+  embeds?: IncomingWebhookEmbed[] // Rich embeds
+  attachments?: IncomingWebhookAttachment[] // File attachments
 
   // Optional
-  username?: string             // Override display name
-  avatarUrl?: string           // Override avatar
-  threadId?: string            // Post to specific thread
+  username?: string // Override display name
+  avatarUrl?: string // Override avatar
+  threadId?: string // Post to specific thread
 }
 
 interface IncomingWebhookEmbed {
   title?: string
   description?: string
   url?: string
-  color?: string              // Hex color code
+  color?: string // Hex color code
   thumbnail?: { url: string }
   image?: { url: string }
   footer?: { text: string; iconUrl?: string }
@@ -222,11 +222,7 @@ Outgoing webhooks include an `X-Webhook-Signature` header for verification:
 ```typescript
 import crypto from 'crypto'
 
-function verifyWebhookSignature(
-  payload: string,
-  signature: string,
-  secret: string
-): boolean {
+function verifyWebhookSignature(payload: string, signature: string, secret: string): boolean {
   // Extract algorithm and signature
   const [algorithm, receivedSignature] = signature.split('=')
 
@@ -236,10 +232,7 @@ function verifyWebhookSignature(
   const expectedSignature = hmac.digest('hex')
 
   // Constant-time comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(receivedSignature),
-    Buffer.from(expectedSignature)
-  )
+  return crypto.timingSafeEqual(Buffer.from(receivedSignature), Buffer.from(expectedSignature))
 }
 ```
 
@@ -251,14 +244,15 @@ Failed deliveries are automatically retried with exponential backoff:
 interface WebhookRetryConfig {
   enabled: true
   maxAttempts: 3
-  initialDelay: 1          // seconds
-  maxDelay: 60            // seconds
+  initialDelay: 1 // seconds
+  maxDelay: 60 // seconds
   backoffMultiplier: 2
   retryOnStatus: [408, 429, 500, 502, 503, 504]
 }
 ```
 
 **Retry Schedule:**
+
 - Attempt 1: Immediate
 - Attempt 2: After 1 second
 - Attempt 3: After 2 seconds
@@ -273,6 +267,7 @@ interface WebhookRetryConfig {
 **Endpoint:** `POST /api/webhooks/slack`
 
 **Setup:**
+
 1. Create a Slack App at https://api.slack.com/apps
 2. Enable Event Subscriptions
 3. Set Request URL to `https://your-domain.com/api/webhooks/slack`
@@ -284,6 +279,7 @@ interface WebhookRetryConfig {
 5. Set signing secret in `.env`: `SLACK_SIGNING_SECRET=xxx`
 
 **Supported Events:**
+
 - Message created/updated/deleted
 - Reactions added/removed
 - Channel created/renamed/deleted
@@ -296,6 +292,7 @@ interface WebhookRetryConfig {
 **Endpoint:** `POST /api/webhooks/github`
 
 **Setup:**
+
 1. Go to repository Settings → Webhooks
 2. Add webhook with URL: `https://your-domain.com/api/webhooks/github`
 3. Set content type to `application/json`
@@ -309,6 +306,7 @@ interface WebhookRetryConfig {
    - Deployments
 
 **Supported Events:**
+
 - Push (with commit details)
 - Pull request (opened, closed, merged)
 - Issues (created, updated, closed)
@@ -336,6 +334,7 @@ interface WebhookRetryConfig {
 **Endpoint:** `POST /api/webhooks/jira`
 
 **Setup:**
+
 1. Jira Settings → System → WebHooks
 2. Create webhook with URL: `https://your-domain.com/api/webhooks/jira`
 3. Select events:
@@ -345,6 +344,7 @@ interface WebhookRetryConfig {
 4. Optional: Configure secret in `.env`: `JIRA_WEBHOOK_SECRET=xxx`
 
 **Supported Events:**
+
 - Issue created/updated/deleted
 - Comments on issues
 - Sprint started/closed
@@ -382,6 +382,7 @@ Discord primarily uses Gateway WebSocket for bot events, but this endpoint can r
 **Endpoint:** `POST /api/webhooks/telegram`
 
 **Setup:**
+
 1. Create bot with @BotFather
 2. Get bot token
 3. Generate secure secret: `openssl rand -hex 32`
@@ -396,6 +397,7 @@ curl -X POST "https://api.telegram.org/bot{TOKEN}/setWebhook" \
 5. Add secret to `.env`: `TELEGRAM_WEBHOOK_SECRET=xxx`
 
 **Supported Updates:**
+
 - Messages (text, photos, documents, videos, voice)
 - Edited messages
 - Channel posts
@@ -410,25 +412,30 @@ curl -X POST "https://api.telegram.org/bot{TOKEN}/setWebhook" \
 All webhooks support signature verification using HMAC-SHA256:
 
 **GitHub:**
+
 - Header: `X-Hub-Signature-256`
 - Format: `sha256={signature}`
 
 **Slack:**
+
 - Header: `X-Slack-Signature`
 - Format: `v0={signature}`
 - Uses timestamp to prevent replay attacks
 
 **Jira:**
+
 - Header: `X-Hub-Signature`
 - Format: `sha256={signature}`
 
 **Telegram:**
+
 - Header: `X-Telegram-Bot-Api-Secret-Token`
 - Uses simple token comparison
 
 ### Rate Limiting
 
 Incoming webhooks enforce rate limits:
+
 - 60 requests per minute per IP
 - Configurable per-webhook limits
 - Automatic backoff on limit exceeded
@@ -476,6 +483,7 @@ REDIS_PASSWORD=optional
 ### Database Tables
 
 **nchat_webhooks:**
+
 - `id` (uuid, primary key)
 - `name` (text)
 - `avatar_url` (text, nullable)
@@ -489,6 +497,7 @@ REDIS_PASSWORD=optional
 - `last_used_at` (timestamptz, nullable)
 
 **nchat_webhook_deliveries:**
+
 - `id` (uuid, primary key)
 - `webhook_id` (uuid, foreign key)
 - `status` (text: 'pending', 'success', 'failed', 'retrying')
@@ -585,6 +594,7 @@ View delivery history in the admin dashboard:
 ### Logging
 
 Webhook activity is logged with:
+
 - Request ID
 - Webhook ID
 - Event type
@@ -618,6 +628,7 @@ GET /api/admin/webhooks/queue/stats
 ### Common Issues
 
 **Webhook not receiving events:**
+
 1. Check webhook status is "active"
 2. Verify URL is correct and accessible
 3. Check firewall/network settings
@@ -625,12 +636,14 @@ GET /api/admin/webhooks/queue/stats
 5. Check platform-specific configuration
 
 **Signature verification failing:**
+
 1. Ensure secret matches on both sides
 2. Check payload is not modified before verification
 3. Verify using raw request body (not parsed JSON)
 4. Check timestamp for Slack webhooks (max 5 minutes old)
 
 **High failure rate:**
+
 1. Check target service availability
 2. Review response status codes
 3. Increase timeout if needed
@@ -638,6 +651,7 @@ GET /api/admin/webhooks/queue/stats
 5. Check rate limits on target service
 
 **Messages not appearing in channel:**
+
 1. Verify webhook has permission to post
 2. Check channel mapping is configured
 3. Ensure system user exists
@@ -684,6 +698,7 @@ See `/examples/webhooks/` for complete examples:
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/your-org/nself-chat/issues
 - Documentation: https://docs.nself-chat.com/webhooks
 - Discord: https://discord.gg/nself-chat

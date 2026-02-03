@@ -656,10 +656,7 @@ describe('Mention Store', () => {
 
     describe('getAllMentions', () => {
       it('should return all mentions', () => {
-        const mentions = [
-          createTestMention({ id: 'm-1' }),
-          createTestMention({ id: 'm-2' }),
-        ]
+        const mentions = [createTestMention({ id: 'm-1' }), createTestMention({ id: 'm-2' })]
 
         act(() => {
           useMentionStore.getState().setMentions(mentions)

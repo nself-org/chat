@@ -64,6 +64,7 @@ pnpm list --depth=0
 ```
 
 **Expected New Dependencies:**
+
 - `@daily-co/daily-js` - Video conferencing
 - `giphy-js-sdk-core` - GIF integration
 - `dompurify` - XSS sanitization
@@ -125,6 +126,7 @@ psql -U postgres -d nchat -c "\dt nchat_*"
 ```
 
 **Expected New Tables:**
+
 - `nchat_sticker_packs`
 - `nchat_stickers`
 - `nchat_link_previews`
@@ -149,6 +151,7 @@ ls -lh .next/
 ```
 
 **Expected Output:**
+
 - ✅ Zero build errors
 - ✅ Zero type errors
 - ✅ Optimized bundle sizes
@@ -166,6 +169,7 @@ pnpm test:e2e
 ```
 
 **Test Checklist:**
+
 - [ ] Login/logout works
 - [ ] Can send messages
 - [ ] Can create channels
@@ -243,6 +247,7 @@ tail -f logs/nchat.log
 ```
 
 **Success Criteria:**
+
 - ✅ Application starts without errors
 - ✅ Database connections successful
 - ✅ All services healthy
@@ -389,6 +394,7 @@ pm2 start nchat
 ### Recommended Settings
 
 **Apollo Client Cache:**
+
 ```typescript
 // Already configured in v0.6.0
 cache: new InMemoryCache({
@@ -397,15 +403,16 @@ cache: new InMemoryCache({
       fields: {
         messages: {
           merge: false,
-          keyArgs: ['channelId']
-        }
-      }
-    }
-  }
+          keyArgs: ['channelId'],
+        },
+      },
+    },
+  },
 })
 ```
 
 **Next.js Configuration:**
+
 ```javascript
 // next.config.js already optimized
 experimental: {
@@ -470,15 +477,15 @@ After successful upgrade:
 
 ### Third-Party Services (Optional)
 
-| Service | Free Tier | Paid Plans |
-|---------|-----------|------------|
-| Daily.co (Video) | 10,000 minutes/month | $0.002/minute |
-| Giphy API | 42 requests/hour | Enterprise only |
-| Tenor API | Unlimited (with attribution) | Free |
-| Slack API | Unlimited | Free |
-| GitHub API | 5,000 requests/hour | Free |
-| JIRA API | Depends on Jira plan | Varies |
-| Google Drive API | 20,000 requests/day | Free |
+| Service          | Free Tier                    | Paid Plans      |
+| ---------------- | ---------------------------- | --------------- |
+| Daily.co (Video) | 10,000 minutes/month         | $0.002/minute   |
+| Giphy API        | 42 requests/hour             | Enterprise only |
+| Tenor API        | Unlimited (with attribution) | Free            |
+| Slack API        | Unlimited                    | Free            |
+| GitHub API       | 5,000 requests/hour          | Free            |
+| JIRA API         | Depends on Jira plan         | Varies          |
+| Google Drive API | 20,000 requests/day          | Free            |
 
 **Recommendation:** Start with free tiers, upgrade as needed.
 

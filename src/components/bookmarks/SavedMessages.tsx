@@ -291,13 +291,13 @@ export function SavedMessages({ className }: SavedMessagesProps) {
               </div>
 
               <DialogFooter>
-                <Button
-                  variant="outline"
-                  onClick={() => setIsCreateDialogOpen(false)}
-                >
+                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
                   Cancel
                 </Button>
-                <Button onClick={handleCreateSavedMessage} disabled={saving || !newMessageContent.trim()}>
+                <Button
+                  onClick={handleCreateSavedMessage}
+                  disabled={saving || !newMessageContent.trim()}
+                >
                   {saving ? 'Saving...' : 'Save Message'}
                 </Button>
               </DialogFooter>
@@ -307,7 +307,7 @@ export function SavedMessages({ className }: SavedMessagesProps) {
       </div>
 
       {/* Filters and Search */}
-      <div className="border-b px-6 py-4 space-y-3">
+      <div className="space-y-3 border-b px-6 py-4">
         {/* Search */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -352,10 +352,7 @@ export function SavedMessages({ className }: SavedMessagesProps) {
           )}
 
           {/* Sort */}
-          <Select
-            value={sortBy}
-            onValueChange={(value) => setSortBy(value as typeof sortBy)}
-          >
+          <Select value={sortBy} onValueChange={(value) => setSortBy(value as typeof sortBy)}>
             <SelectTrigger className="w-[180px]">
               <SelectValue />
             </SelectTrigger>
@@ -397,7 +394,7 @@ export function SavedMessages({ className }: SavedMessagesProps) {
         <div className="p-6">
           {filteredMessages.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Save className="mb-4 h-12 w-12 text-muted-foreground/50" />
+              <Save className="text-muted-foreground/50 mb-4 h-12 w-12" />
               <h3 className="mb-2 text-lg font-medium">No saved messages</h3>
               <p className="mb-4 text-sm text-muted-foreground">
                 {searchQuery || selectedChannel
@@ -420,12 +417,12 @@ export function SavedMessages({ className }: SavedMessagesProps) {
                     exit={{ opacity: 0, x: -100 }}
                     layout
                   >
-                    <Card className="group relative overflow-hidden hover:shadow-md transition-shadow">
+                    <Card className="group relative overflow-hidden transition-shadow hover:shadow-md">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
                           {/* Save icon */}
-                          <div className="flex-shrink-0 mt-1">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                          <div className="mt-1 flex-shrink-0">
+                            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
                               <Save className="h-5 w-5 text-primary" />
                             </div>
                           </div>
@@ -453,7 +450,7 @@ export function SavedMessages({ className }: SavedMessagesProps) {
                                       message.source_channel_id!
                                     )
                                   }
-                                  className="h-7 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                                  className="h-7 text-xs opacity-0 transition-opacity group-hover:opacity-100"
                                 >
                                   <MessageSquare className="mr-1 h-3 w-3" />
                                   View original
@@ -468,7 +465,7 @@ export function SavedMessages({ className }: SavedMessagesProps) {
 
                             {/* Note */}
                             {message.note && (
-                              <div className="mb-2 rounded-md bg-muted/50 p-2">
+                              <div className="bg-muted/50 mb-2 rounded-md p-2">
                                 <p className="text-xs text-muted-foreground">
                                   Note: {message.note}
                                 </p>
@@ -504,7 +501,7 @@ export function SavedMessages({ className }: SavedMessagesProps) {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="h-8 w-8 p-0 opacity-0 transition-opacity group-hover:opacity-100"
                               >
                                 <MoreVertical className="h-4 w-4" />
                               </Button>

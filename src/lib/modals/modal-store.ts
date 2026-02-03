@@ -267,9 +267,7 @@ export const useModalStore = create<ModalStore>()(
         const state = get()
 
         // Call onClose for all modals that can be closed
-        state.modals
-          .filter((m) => !m.preventClose)
-          .forEach((m) => m.onClose?.())
+        state.modals.filter((m) => !m.preventClose).forEach((m) => m.onClose?.())
 
         set((state) => {
           const remainingModals = state.modals.filter((m) => m.preventClose)

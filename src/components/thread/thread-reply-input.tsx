@@ -5,18 +5,11 @@ import { useState, useRef, useCallback, KeyboardEvent, ChangeEvent } from 'react
 import { Send, Paperclip, Smile, AtSign, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -122,29 +115,32 @@ export function ThreadReplyInput({
   )
 
   // Insert mention
-  const insertMention = useCallback((mention: Mention) => {
-    if (!textareaRef.current) return
+  const insertMention = useCallback(
+    (mention: Mention) => {
+      if (!textareaRef.current) return
 
-    const textarea = textareaRef.current
-    const cursorPos = textarea.selectionStart
-    const textBeforeCursor = content.slice(0, cursorPos)
-    const textAfterCursor = content.slice(cursorPos)
+      const textarea = textareaRef.current
+      const cursorPos = textarea.selectionStart
+      const textBeforeCursor = content.slice(0, cursorPos)
+      const textAfterCursor = content.slice(cursorPos)
 
-    // Find and replace the @query with @username
-    const newTextBefore = textBeforeCursor.replace(/@\w*$/, `@${mention.username} `)
-    const newContent = newTextBefore + textAfterCursor
+      // Find and replace the @query with @username
+      const newTextBefore = textBeforeCursor.replace(/@\w*$/, `@${mention.username} `)
+      const newContent = newTextBefore + textAfterCursor
 
-    setContent(newContent)
-    setMentionQuery(null)
-    setMentionResults([])
+      setContent(newContent)
+      setMentionQuery(null)
+      setMentionResults([])
 
-    // Focus and set cursor position
-    requestAnimationFrame(() => {
-      textarea.focus()
-      const newCursorPos = newTextBefore.length
-      textarea.setSelectionRange(newCursorPos, newCursorPos)
-    })
-  }, [content])
+      // Focus and set cursor position
+      requestAnimationFrame(() => {
+        textarea.focus()
+        const newCursorPos = newTextBefore.length
+        textarea.setSelectionRange(newCursorPos, newCursorPos)
+      })
+    },
+    [content]
+  )
 
   // Handle keyboard navigation for mentions
   const handleKeyDown = useCallback(
@@ -153,16 +149,12 @@ export function ThreadReplyInput({
       if (mentionResults.length > 0) {
         if (e.key === 'ArrowDown') {
           e.preventDefault()
-          setMentionIndex((prev) =>
-            prev < mentionResults.length - 1 ? prev + 1 : 0
-          )
+          setMentionIndex((prev) => (prev < mentionResults.length - 1 ? prev + 1 : 0))
           return
         }
         if (e.key === 'ArrowUp') {
           e.preventDefault()
-          setMentionIndex((prev) =>
-            prev > 0 ? prev - 1 : mentionResults.length - 1
-          )
+          setMentionIndex((prev) => (prev > 0 ? prev - 1 : mentionResults.length - 1))
           return
         }
         if (e.key === 'Enter' || e.key === 'Tab') {
@@ -202,7 +194,7 @@ export function ThreadReplyInput({
         textareaRef.current.style.height = 'auto'
       }
     } catch (error) {
-      console.error('Failed to send reply:', error)
+      logger.error('Failed to send reply:', error)
     }
   }, [content, attachments, sending, disabled, onSend])
 
@@ -214,18 +206,19 @@ export function ThreadReplyInput({
       const validFiles = files.filter((file) => {
         // Check file size
         if (file.size > maxFileSize) {
-          console.warn(`File ${file.name} exceeds max size`)
+          logger.warn(`File ${file.name} exceeds max size`)
           return false
         }
         // Check file type
         if (allowedFileTypes && !allowedFileTypes.includes(file.type)) {
-          console.warn(`File type ${file.type} not allowed`)
+          logger.warn(`File type ${file.type} not allowed`)
           return false
         }
         return true
       })
 
-      const newAttachments = validFiles.slice(0, maxAttachments - attachments.length)
+      const newAttachments = validFiles
+        .slice(0, maxAttachments - attachments.length)
         .map((file) => {
           const attachment: Attachment = {
             id: `${Date.now()}-${file.name}`,
@@ -284,11 +277,11 @@ export function ThreadReplyInput({
       <div className={cn('border-t bg-background', className)}>
         {/* Attachments preview */}
         {attachments.length > 0 && (
-          <div className="px-3 pt-3 flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 px-3 pt-3">
             {attachments.map((attachment) => (
               <div
                 key={attachment.id}
-                className="relative group bg-muted rounded-md overflow-hidden"
+                className="group relative overflow-hidden rounded-md bg-muted"
               >
                 {attachment.preview ? (
                   <img
@@ -297,18 +290,18 @@ export function ThreadReplyInput({
                     className="h-16 w-16 object-cover"
                   />
                 ) : (
-                  <div className="h-16 w-16 flex items-center justify-center">
+                  <div className="flex h-16 w-16 items-center justify-center">
                     <Paperclip className="h-6 w-6 text-muted-foreground" />
                   </div>
                 )}
                 <button
                   type="button"
                   onClick={() => removeAttachment(attachment.id)}
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-destructive-foreground opacity-0 transition-opacity group-hover:opacity-100"
                 >
                   <X className="h-3 w-3" />
                 </button>
-                <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[10px] px-1 truncate">
+                <div className="absolute bottom-0 left-0 right-0 truncate bg-black/50 px-1 text-[10px] text-white">
                   {attachment.file.name}
                 </div>
               </div>
@@ -319,13 +312,13 @@ export function ThreadReplyInput({
         {/* Mention suggestions */}
         {mentionResults.length > 0 && (
           <div className="px-3 pt-2">
-            <div className="bg-popover border rounded-md shadow-md overflow-hidden">
+            <div className="overflow-hidden rounded-md border bg-popover shadow-md">
               {mentionResults.map((mention, index) => (
                 <button
                   key={mention.id}
                   type="button"
                   className={cn(
-                    'w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-muted transition-colors',
+                    'flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition-colors hover:bg-muted',
                     index === mentionIndex && 'bg-muted'
                   )}
                   onClick={() => insertMention(mention)}
@@ -342,7 +335,7 @@ export function ThreadReplyInput({
         {/* Input area */}
         <div className="p-3">
           <div className="flex items-end gap-2">
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <Textarea
                 ref={textareaRef}
                 value={content}
@@ -351,7 +344,7 @@ export function ThreadReplyInput({
                 placeholder={placeholder}
                 disabled={disabled || sending}
                 autoFocus={autoFocus}
-                className="min-h-[40px] max-h-[150px] resize-none pr-10 py-2.5"
+                className="max-h-[150px] min-h-[40px] resize-none py-2.5 pr-10"
                 rows={1}
               />
             </div>
@@ -404,22 +397,47 @@ export function ThreadReplyInput({
                   </TooltipTrigger>
                   <TooltipContent>Add emoji</TooltipContent>
                 </Tooltip>
-                <PopoverContent
-                  side="top"
-                  align="end"
-                  className="w-[280px] p-2"
-                >
+                <PopoverContent side="top" align="end" className="w-[280px] p-2">
                   {/* Simple emoji grid - can be replaced with emoji-picker-react */}
                   <div className="grid grid-cols-8 gap-1">
-                    {['128516', '128522', '128525', '128514', '129315', '128517', '128518', '128521',
-                      '128519', '128513', '129392', '128523', '128539', '128540', '129299', '128526',
-                      '128527', '128531', '128532', '128560', '128557', '128546', '128545', '128548',
-                      '129300', '129488', '128293', '129505', '128077', '128079', '128588', '129309',
+                    {[
+                      '128516',
+                      '128522',
+                      '128525',
+                      '128514',
+                      '129315',
+                      '128517',
+                      '128518',
+                      '128521',
+                      '128519',
+                      '128513',
+                      '129392',
+                      '128523',
+                      '128539',
+                      '128540',
+                      '129299',
+                      '128526',
+                      '128527',
+                      '128531',
+                      '128532',
+                      '128560',
+                      '128557',
+                      '128546',
+                      '128545',
+                      '128548',
+                      '129300',
+                      '129488',
+                      '128293',
+                      '129505',
+                      '128077',
+                      '128079',
+                      '128588',
+                      '129309',
                     ].map((code) => (
                       <button
                         key={code}
                         type="button"
-                        className="h-8 w-8 flex items-center justify-center text-lg hover:bg-muted rounded transition-colors"
+                        className="flex h-8 w-8 items-center justify-center rounded text-lg transition-colors hover:bg-muted"
                         onClick={() => handleEmojiSelect(String.fromCodePoint(parseInt(code)))}
                       >
                         {String.fromCodePoint(parseInt(code))}
@@ -447,17 +465,16 @@ export function ThreadReplyInput({
                     <span className="sr-only">Send reply</span>
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>
-                  Send reply (Enter)
-                </TooltipContent>
+                <TooltipContent>Send reply (Enter)</TooltipContent>
               </Tooltip>
             </div>
           </div>
 
           {/* Helper text */}
           <p className="mt-1.5 text-[11px] text-muted-foreground">
-            Press <kbd className="px-1 py-0.5 bg-muted rounded text-[10px]">Enter</kbd> to send,{' '}
-            <kbd className="px-1 py-0.5 bg-muted rounded text-[10px]">Shift + Enter</kbd> for new line
+            Press <kbd className="rounded bg-muted px-1 py-0.5 text-[10px]">Enter</kbd> to send,{' '}
+            <kbd className="rounded bg-muted px-1 py-0.5 text-[10px]">Shift + Enter</kbd> for new
+            line
           </p>
         </div>
       </div>

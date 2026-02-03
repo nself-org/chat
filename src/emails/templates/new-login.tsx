@@ -4,28 +4,28 @@
  * Sent when a login occurs from a new device or location.
  */
 
-import { Text, Section } from '@react-email/components';
-import * as React from 'react';
-import EmailButton from '../components/EmailButton';
-import EmailHeading from '../components/EmailHeading';
-import EmailLayout from '../components/EmailLayout';
+import { Text, Section } from '@react-email/components'
+import * as React from 'react'
+import EmailButton from '../components/EmailButton'
+import EmailHeading from '../components/EmailHeading'
+import EmailLayout from '../components/EmailLayout'
 
 interface NewLoginEmailProps {
-  userName?: string;
-  appName?: string;
-  logoUrl?: string;
-  securityUrl?: string;
+  userName?: string
+  appName?: string
+  logoUrl?: string
+  securityUrl?: string
   deviceInfo?: {
-    browser?: string;
-    os?: string;
-    device?: string;
-  };
+    browser?: string
+    os?: string
+    device?: string
+  }
   location?: {
-    city?: string;
-    country?: string;
-  };
-  ipAddress?: string;
-  timestamp?: Date;
+    city?: string
+    country?: string
+  }
+  ipAddress?: string
+  timestamp?: Date
 }
 
 export default function NewLoginEmail({
@@ -38,23 +38,17 @@ export default function NewLoginEmail({
   ipAddress,
   timestamp = new Date(),
 }: NewLoginEmailProps) {
-  const previewText = `New login to your ${appName} account`;
+  const previewText = `New login to your ${appName} account`
 
   return (
-    <EmailLayout
-      preview={previewText}
-      appName={appName}
-      logoUrl={logoUrl}
-    >
+    <EmailLayout preview={previewText} appName={appName} logoUrl={logoUrl}>
       <EmailHeading>New Login Detected</EmailHeading>
 
-      {userName && (
-        <Text style={paragraph}>Hi {userName},</Text>
-      )}
+      {userName && <Text style={paragraph}>Hi {userName},</Text>}
 
       <Text style={paragraph}>
-        We detected a new login to your {appName} account. If this was you,
-        you can safely ignore this email.
+        We detected a new login to your {appName} account. If this was you, you can safely ignore
+        this email.
       </Text>
 
       <Section style={infoSection}>
@@ -96,17 +90,15 @@ export default function NewLoginEmail({
       </Section>
 
       <Text style={warningText}>
-        ⚠️ If this wasn't you, your account may be compromised.
-        Please secure your account immediately.
+        ⚠️ If this wasn't you, your account may be compromised. Please secure your account
+        immediately.
       </Text>
 
       <EmailButton href={securityUrl} variant="danger">
         Review Security Settings
       </EmailButton>
 
-      <Text style={paragraph}>
-        We recommend taking these steps:
-      </Text>
+      <Text style={paragraph}>We recommend taking these steps:</Text>
 
       <ul style={list}>
         <li style={listItem}>Change your password immediately</li>
@@ -121,7 +113,7 @@ export default function NewLoginEmail({
         The {appName} Security Team
       </Text>
     </EmailLayout>
-  );
+  )
 }
 
 // ============================================================================
@@ -133,7 +125,7 @@ const paragraph = {
   lineHeight: '1.6',
   color: '#334155',
   margin: '0 0 16px',
-};
+}
 
 const infoSection = {
   backgroundColor: '#f8fafc',
@@ -141,14 +133,14 @@ const infoSection = {
   borderRadius: '8px',
   padding: '16px',
   margin: '16px 0',
-};
+}
 
 const infoText = {
   fontSize: '14px',
   lineHeight: '1.5',
   color: '#64748b',
   margin: '0 0 8px',
-};
+}
 
 const warningText = {
   fontSize: '14px',
@@ -159,7 +151,7 @@ const warningText = {
   borderRadius: '6px',
   margin: '16px 0',
   borderLeft: '4px solid #dc2626',
-};
+}
 
 const list = {
   fontSize: '16px',
@@ -167,8 +159,8 @@ const list = {
   color: '#334155',
   margin: '0 0 16px',
   paddingLeft: '20px',
-};
+}
 
 const listItem = {
   marginBottom: '8px',
-};
+}

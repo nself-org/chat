@@ -7,13 +7,10 @@
 
 import Stripe from 'stripe'
 import { DEFAULT_PLANS } from '../tenants/types'
-import type {
-  Tenant,
-  BillingPlan,
-  BillingInterval,
-  SubscriptionPlan,
-} from '../tenants/types'
+import type { Tenant, BillingPlan, BillingInterval, SubscriptionPlan } from '../tenants/types'
 import { getTenantService } from '../tenants/tenant-service'
+
+import { logger } from '@/lib/logger'
 
 /**
  * Initialize Stripe client
@@ -85,9 +82,7 @@ export class StripeBillingService {
     // Get price ID from plan configuration
     const planConfig: SubscriptionPlan = (DEFAULT_PLANS as any)[plan]
     const priceId =
-      interval === 'monthly'
-        ? planConfig.stripePriceIdMonthly
-        : planConfig.stripePriceIdYearly
+      interval === 'monthly' ? planConfig.stripePriceIdMonthly : planConfig.stripePriceIdYearly
 
     if (!priceId) {
       throw new Error(`Price ID not configured for plan: ${plan}/${interval}`)
@@ -131,32 +126,27 @@ export class StripeBillingService {
     // Get new price ID
     const planConfig: SubscriptionPlan = (DEFAULT_PLANS as any)[newPlan]
     const newPriceId =
-      newInterval === 'monthly'
-        ? planConfig.stripePriceIdMonthly
-        : planConfig.stripePriceIdYearly
+      newInterval === 'monthly' ? planConfig.stripePriceIdMonthly : planConfig.stripePriceIdYearly
 
     if (!newPriceId) {
       throw new Error(`Price ID not configured for plan: ${newPlan}/${newInterval}`)
     }
 
     // Update subscription
-    const updatedSubscription = await this.stripe.subscriptions.update(
-      subscription.id,
-      {
-        items: [
-          {
-            id: subscription.items.data[0].id,
-            price: newPriceId,
-          },
-        ],
-        proration_behavior: 'create_prorations',
-        metadata: {
-          ...subscription.metadata,
-          plan: newPlan,
-          interval: newInterval,
+    const updatedSubscription = await this.stripe.subscriptions.update(subscription.id, {
+      items: [
+        {
+          id: subscription.items.data[0].id,
+          price: newPriceId,
         },
-      }
-    )
+      ],
+      proration_behavior: 'create_prorations',
+      metadata: {
+        ...subscription.metadata,
+        plan: newPlan,
+        interval: newInterval,
+      },
+    })
 
     return updatedSubscription
   }
@@ -174,17 +164,12 @@ export class StripeBillingService {
 
     if (immediately) {
       // Cancel immediately
-      return await this.stripe.subscriptions.cancel(
-        tenant.billing.stripeSubscriptionId
-      )
+      return await this.stripe.subscriptions.cancel(tenant.billing.stripeSubscriptionId)
     } else {
       // Cancel at period end
-      return await this.stripe.subscriptions.update(
-        tenant.billing.stripeSubscriptionId,
-        {
-          cancel_at_period_end: true,
-        }
-      )
+      return await this.stripe.subscriptions.update(tenant.billing.stripeSubscriptionId, {
+        cancel_at_period_end: true,
+      })
     }
   }
 
@@ -196,12 +181,9 @@ export class StripeBillingService {
       throw new Error('No subscription found')
     }
 
-    return await this.stripe.subscriptions.update(
-      tenant.billing.stripeSubscriptionId,
-      {
-        cancel_at_period_end: false,
-      }
-    )
+    return await this.stripe.subscriptions.update(tenant.billing.stripeSubscriptionId, {
+      cancel_at_period_end: false,
+    })
   }
 
   /**
@@ -224,9 +206,7 @@ export class StripeBillingService {
     // Get price ID
     const planConfig: SubscriptionPlan = (DEFAULT_PLANS as any)[plan]
     const priceId =
-      interval === 'monthly'
-        ? planConfig.stripePriceIdMonthly
-        : planConfig.stripePriceIdYearly
+      interval === 'monthly' ? planConfig.stripePriceIdMonthly : planConfig.stripePriceIdYearly
 
     if (!priceId) {
       throw new Error(`Price ID not configured for plan: ${plan}/${interval}`)
@@ -299,21 +279,15 @@ export class StripeBillingService {
     // Handle different event types
     switch (event.type) {
       case 'customer.subscription.created':
-        await this.handleSubscriptionCreated(
-          event.data.object as Stripe.Subscription
-        )
+        await this.handleSubscriptionCreated(event.data.object as Stripe.Subscription)
         break
 
       case 'customer.subscription.updated':
-        await this.handleSubscriptionUpdated(
-          event.data.object as Stripe.Subscription
-        )
+        await this.handleSubscriptionUpdated(event.data.object as Stripe.Subscription)
         break
 
       case 'customer.subscription.deleted':
-        await this.handleSubscriptionDeleted(
-          event.data.object as Stripe.Subscription
-        )
+        await this.handleSubscriptionDeleted(event.data.object as Stripe.Subscription)
         break
 
       case 'invoice.paid':
@@ -321,19 +295,15 @@ export class StripeBillingService {
         break
 
       case 'invoice.payment_failed':
-        await this.handleInvoicePaymentFailed(
-          event.data.object as Stripe.Invoice
-        )
+        await this.handleInvoicePaymentFailed(event.data.object as Stripe.Invoice)
         break
 
       case 'customer.subscription.trial_will_end':
-        await this.handleTrialWillEnd(
-          event.data.object as Stripe.Subscription
-        )
+        await this.handleTrialWillEnd(event.data.object as Stripe.Subscription)
         break
 
       default:
-        console.log(`Unhandled event type: ${event.type}`)
+      // REMOVED: console.log(`Unhandled event type: ${event.type}`)
     }
   }
 
@@ -376,13 +346,11 @@ export class StripeBillingService {
 
   // Private webhook handlers
 
-  private async handleSubscriptionCreated(
-    subscription: Stripe.Subscription
-  ): Promise<void> {
+  private async handleSubscriptionCreated(subscription: Stripe.Subscription): Promise<void> {
     const tenantId = subscription.metadata.tenant_id
 
     if (!tenantId) {
-      console.error('No tenant_id in subscription metadata')
+      logger.error('No tenant_id in subscription metadata')
       return
     }
 
@@ -394,9 +362,7 @@ export class StripeBillingService {
     })
   }
 
-  private async handleSubscriptionUpdated(
-    subscription: Stripe.Subscription
-  ): Promise<void> {
+  private async handleSubscriptionUpdated(subscription: Stripe.Subscription): Promise<void> {
     const tenantId = subscription.metadata.tenant_id
 
     if (!tenantId) {
@@ -420,9 +386,7 @@ export class StripeBillingService {
     })
   }
 
-  private async handleSubscriptionDeleted(
-    subscription: Stripe.Subscription
-  ): Promise<void> {
+  private async handleSubscriptionDeleted(subscription: Stripe.Subscription): Promise<void> {
     const tenantId = subscription.metadata.tenant_id
 
     if (!tenantId) {
@@ -434,7 +398,9 @@ export class StripeBillingService {
   }
 
   private async handleInvoicePaid(invoice: Stripe.Invoice): Promise<void> {
-    const invoiceWithSub = invoice as Stripe.Invoice & { subscription?: string | Stripe.Subscription | null }
+    const invoiceWithSub = invoice as Stripe.Invoice & {
+      subscription?: string | Stripe.Subscription | null
+    }
     const subscriptionId =
       typeof invoiceWithSub.subscription === 'string'
         ? invoiceWithSub.subscription
@@ -444,8 +410,7 @@ export class StripeBillingService {
       return
     }
 
-    const subscription =
-      await this.stripe.subscriptions.retrieve(subscriptionId)
+    const subscription = await this.stripe.subscriptions.retrieve(subscriptionId)
     const tenantId = subscription.metadata.tenant_id
 
     if (!tenantId) {
@@ -462,10 +427,10 @@ export class StripeBillingService {
     })
   }
 
-  private async handleInvoicePaymentFailed(
-    invoice: Stripe.Invoice
-  ): Promise<void> {
-    const invoiceWithSub = invoice as Stripe.Invoice & { subscription?: string | Stripe.Subscription | null }
+  private async handleInvoicePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
+    const invoiceWithSub = invoice as Stripe.Invoice & {
+      subscription?: string | Stripe.Subscription | null
+    }
     const subscriptionId =
       typeof invoiceWithSub.subscription === 'string'
         ? invoiceWithSub.subscription
@@ -475,8 +440,7 @@ export class StripeBillingService {
       return
     }
 
-    const subscription =
-      await this.stripe.subscriptions.retrieve(subscriptionId)
+    const subscription = await this.stripe.subscriptions.retrieve(subscriptionId)
     const tenantId = subscription.metadata.tenant_id
 
     if (!tenantId) {
@@ -489,21 +453,16 @@ export class StripeBillingService {
         lastPaymentStatus: 'failed',
       },
     })
-
-    // TODO: Send email notification about payment failure
   }
 
-  private async handleTrialWillEnd(
-    subscription: Stripe.Subscription
-  ): Promise<void> {
+  private async handleTrialWillEnd(subscription: Stripe.Subscription): Promise<void> {
     const tenantId = subscription.metadata.tenant_id
 
     if (!tenantId) {
       return
     }
 
-    // TODO: Send email notification about trial ending
-    console.log(`Trial ending soon for tenant: ${tenantId}`)
+    // REMOVED: console.log(`Trial ending soon for tenant: ${tenantId}`)
   }
 }
 

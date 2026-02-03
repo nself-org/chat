@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * MediaItem - Single media item component for galleries
@@ -6,37 +6,28 @@
  * Displays a media item with thumbnail, info, and interaction states.
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { MediaItem as MediaItemType, MediaViewMode } from '@/lib/media/media-types';
-import { formatFileSize, formatDuration, getMediaTypeIcon } from '@/lib/media/media-manager';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Checkbox } from '@radix-ui/react-checkbox';
-import {
-  Image,
-  Video,
-  Music,
-  FileText,
-  Archive,
-  File,
-  Play,
-  CheckCircle,
-} from 'lucide-react';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { MediaItem as MediaItemType, MediaViewMode } from '@/lib/media/media-types'
+import { formatFileSize, formatDuration, getMediaTypeIcon } from '@/lib/media/media-manager'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { Checkbox } from '@radix-ui/react-checkbox'
+import { Image, Video, Music, FileText, Archive, File, Play, CheckCircle } from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface MediaItemProps {
-  item: MediaItemType;
-  viewMode?: MediaViewMode;
-  isSelected?: boolean;
-  isSelectMode?: boolean;
-  showInfo?: boolean;
-  onClick?: (item: MediaItemType) => void;
-  onSelect?: (item: MediaItemType) => void;
-  onDoubleClick?: (item: MediaItemType) => void;
-  className?: string;
+  item: MediaItemType
+  viewMode?: MediaViewMode
+  isSelected?: boolean
+  isSelectMode?: boolean
+  showInfo?: boolean
+  onClick?: (item: MediaItemType) => void
+  onSelect?: (item: MediaItemType) => void
+  onDoubleClick?: (item: MediaItemType) => void
+  className?: string
 }
 
 // ============================================================================
@@ -50,7 +41,7 @@ const MediaTypeIcons = {
   document: FileText,
   archive: Archive,
   other: File,
-};
+}
 
 // ============================================================================
 // Component
@@ -67,31 +58,31 @@ export function MediaItem({
   onDoubleClick,
   className,
 }: MediaItemProps) {
-  const TypeIcon = MediaTypeIcons[item.fileType] || File;
+  const TypeIcon = MediaTypeIcons[item.fileType] || File
 
   const handleClick = (e: React.MouseEvent) => {
     if (isSelectMode) {
-      e.preventDefault();
-      e.stopPropagation();
-      onSelect?.(item);
+      e.preventDefault()
+      e.stopPropagation()
+      onSelect?.(item)
     } else if (e.shiftKey || e.metaKey || e.ctrlKey) {
-      e.preventDefault();
-      onSelect?.(item);
+      e.preventDefault()
+      onSelect?.(item)
     } else {
-      onClick?.(item);
+      onClick?.(item)
     }
-  };
+  }
 
   const handleDoubleClick = () => {
     if (!isSelectMode) {
-      onDoubleClick?.(item);
+      onDoubleClick?.(item)
     }
-  };
+  }
 
   const handleCheckboxClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onSelect?.(item);
-  };
+    e.stopPropagation()
+    onSelect?.(item)
+  }
 
   // Grid view
   if (viewMode === 'grid' || viewMode === 'masonry') {
@@ -100,7 +91,7 @@ export function MediaItem({
         className={cn(
           'group relative cursor-pointer overflow-hidden rounded-lg border bg-card transition-all',
           'hover:border-primary/50 hover:shadow-md',
-          isSelected && 'border-primary ring-2 ring-primary/30',
+          isSelected && 'ring-primary/30 border-primary ring-2',
           className
         )}
         onClick={handleClick}
@@ -139,16 +130,13 @@ export function MediaItem({
 
           {/* Selection checkbox */}
           {(isSelectMode || isSelected) && (
-            <div
-              className="absolute left-2 top-2 z-10"
-              onClick={handleCheckboxClick}
-            >
+            <div className="absolute left-2 top-2 z-10" onClick={handleCheckboxClick}>
               <div
                 className={cn(
                   'flex h-5 w-5 items-center justify-center rounded-full border-2 transition-colors',
                   isSelected
-                    ? 'border-primary bg-primary text-primary-foreground'
-                    : 'border-white bg-black/30 text-transparent hover:border-primary/50'
+                    ? 'text-primary-foreground border-primary bg-primary'
+                    : 'hover:border-primary/50 border-white bg-black/30 text-transparent'
                 )}
               >
                 {isSelected && <CheckCircle className="h-4 w-4" />}
@@ -166,13 +154,11 @@ export function MediaItem({
         {showInfo && (
           <div className="p-2">
             <p className="truncate text-sm font-medium">{item.fileName}</p>
-            <p className="text-xs text-muted-foreground">
-              {formatFileSize(item.fileSize)}
-            </p>
+            <p className="text-xs text-muted-foreground">{formatFileSize(item.fileSize)}</p>
           </div>
         )}
       </div>
-    );
+    )
   }
 
   // List view
@@ -181,7 +167,7 @@ export function MediaItem({
       className={cn(
         'group flex cursor-pointer items-center gap-3 rounded-lg border bg-card p-3 transition-all',
         'hover:border-primary/50 hover:bg-accent/50',
-        isSelected && 'border-primary bg-accent ring-1 ring-primary/30',
+        isSelected && 'ring-primary/30 border-primary bg-accent ring-1',
         className
       )}
       onClick={handleClick}
@@ -194,8 +180,8 @@ export function MediaItem({
             className={cn(
               'flex h-5 w-5 items-center justify-center rounded-full border-2 transition-colors',
               isSelected
-                ? 'border-primary bg-primary text-primary-foreground'
-                : 'border-muted-foreground/50 text-transparent hover:border-primary/50'
+                ? 'text-primary-foreground border-primary bg-primary'
+                : 'border-muted-foreground/50 hover:border-primary/50 text-transparent'
             )}
           >
             {isSelected && <CheckCircle className="h-4 w-4" />}
@@ -238,9 +224,7 @@ export function MediaItem({
       {/* Uploader */}
       <div className="flex items-center gap-2">
         <Avatar className="h-6 w-6">
-          {item.uploadedBy.avatarUrl && (
-            <AvatarImage src={item.uploadedBy.avatarUrl} />
-          )}
+          {item.uploadedBy.avatarUrl && <AvatarImage src={item.uploadedBy.avatarUrl} />}
           <AvatarFallback className="text-xs">
             {item.uploadedBy.displayName.charAt(0).toUpperCase()}
           </AvatarFallback>
@@ -253,7 +237,7 @@ export function MediaItem({
       {/* Type icon */}
       <TypeIcon className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
     </div>
-  );
+  )
 }
 
-export default MediaItem;
+export default MediaItem

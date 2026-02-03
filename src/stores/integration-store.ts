@@ -64,7 +64,11 @@ export interface IntegrationStoreActions {
   updateSettings: (id: string, updates: Partial<IntegrationSettings>) => void
   addChannelMapping: (id: string, mapping: ChannelMapping) => void
   removeChannelMapping: (id: string, sourceChannelId: string) => void
-  updateChannelMapping: (id: string, sourceChannelId: string, updates: Partial<ChannelMapping>) => void
+  updateChannelMapping: (
+    id: string,
+    sourceChannelId: string,
+    updates: Partial<ChannelMapping>
+  ) => void
 
   // UI state
   setLoading: (loading: boolean) => void
@@ -515,8 +519,7 @@ export const useIntegrationStore = create<IntegrationStore>()(
 // Selectors
 // ============================================================================
 
-export const selectIntegrations = (state: IntegrationStore) =>
-  Object.values(state.integrations)
+export const selectIntegrations = (state: IntegrationStore) => Object.values(state.integrations)
 
 export const selectConnectedIntegrations = (state: IntegrationStore) =>
   Object.values(state.integrations).filter((i) => i.status === 'connected')
@@ -524,18 +527,14 @@ export const selectConnectedIntegrations = (state: IntegrationStore) =>
 export const selectIntegrationById = (id: string) => (state: IntegrationStore) =>
   state.integrations[id]
 
-export const selectSyncStatus = (id: string) => (state: IntegrationStore) =>
-  state.syncStatus[id]
+export const selectSyncStatus = (id: string) => (state: IntegrationStore) => state.syncStatus[id]
 
-export const selectSettings = (id: string) => (state: IntegrationStore) =>
-  state.settings[id]
+export const selectSettings = (id: string) => (state: IntegrationStore) => state.settings[id]
 
 export const selectIsConnecting = (state: IntegrationStore) => state.isConnecting
 
 export const selectSelectedIntegration = (state: IntegrationStore) =>
-  state.selectedIntegrationId
-    ? state.integrations[state.selectedIntegrationId]
-    : null
+  state.selectedIntegrationId ? state.integrations[state.selectedIntegrationId] : null
 
 export const selectIsSyncing = (id: string) => (state: IntegrationStore) =>
   state.syncStatus[id]?.status === 'syncing'

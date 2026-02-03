@@ -15,75 +15,75 @@ nchat is highly configurable through environment variables and the AppConfig sys
 
 ### Core Variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `NEXT_PUBLIC_GRAPHQL_URL` | Yes | - | Hasura GraphQL endpoint |
-| `NEXT_PUBLIC_AUTH_URL` | Yes | - | Authentication service URL |
-| `NEXT_PUBLIC_STORAGE_URL` | Yes | - | File storage service URL |
-| `NEXT_PUBLIC_ENV` | No | `development` | Environment mode |
-| `PORT` | No | `3000` | Server port |
+| Variable                  | Required | Default       | Description                |
+| ------------------------- | -------- | ------------- | -------------------------- |
+| `NEXT_PUBLIC_GRAPHQL_URL` | Yes      | -             | Hasura GraphQL endpoint    |
+| `NEXT_PUBLIC_AUTH_URL`    | Yes      | -             | Authentication service URL |
+| `NEXT_PUBLIC_STORAGE_URL` | Yes      | -             | File storage service URL   |
+| `NEXT_PUBLIC_ENV`         | No       | `development` | Environment mode           |
+| `PORT`                    | No       | `3000`        | Server port                |
 
 ### Authentication Variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `NEXT_PUBLIC_USE_DEV_AUTH` | No | `false` | Enable development auth |
-| `NEXTAUTH_SECRET` | Prod | - | NextAuth.js secret key |
-| `NEXTAUTH_URL` | Prod | - | Application URL |
+| Variable                   | Required | Default | Description             |
+| -------------------------- | -------- | ------- | ----------------------- |
+| `NEXT_PUBLIC_USE_DEV_AUTH` | No       | `false` | Enable development auth |
+| `NEXTAUTH_SECRET`          | Prod     | -       | NextAuth.js secret key  |
+| `NEXTAUTH_URL`             | Prod     | -       | Application URL         |
 
 ### OAuth Provider Variables
 
 #### Google
 
-| Variable | Description |
-|----------|-------------|
-| `GOOGLE_CLIENT_ID` | Google OAuth client ID |
+| Variable               | Description                |
+| ---------------------- | -------------------------- |
+| `GOOGLE_CLIENT_ID`     | Google OAuth client ID     |
 | `GOOGLE_CLIENT_SECRET` | Google OAuth client secret |
 
 #### GitHub
 
-| Variable | Description |
-|----------|-------------|
-| `GITHUB_CLIENT_ID` | GitHub OAuth app ID |
+| Variable               | Description             |
+| ---------------------- | ----------------------- |
+| `GITHUB_CLIENT_ID`     | GitHub OAuth app ID     |
 | `GITHUB_CLIENT_SECRET` | GitHub OAuth app secret |
 
 #### Apple
 
-| Variable | Description |
-|----------|-------------|
-| `APPLE_CLIENT_ID` | Apple Services ID |
+| Variable              | Description               |
+| --------------------- | ------------------------- |
+| `APPLE_CLIENT_ID`     | Apple Services ID         |
 | `APPLE_CLIENT_SECRET` | Apple client secret (JWT) |
-| `APPLE_TEAM_ID` | Apple Developer Team ID |
-| `APPLE_KEY_ID` | Apple Sign-In key ID |
+| `APPLE_TEAM_ID`       | Apple Developer Team ID   |
+| `APPLE_KEY_ID`        | Apple Sign-In key ID      |
 
 #### ID.me
 
-| Variable | Description |
-|----------|-------------|
-| `IDME_CLIENT_ID` | ID.me OAuth client ID |
+| Variable             | Description               |
+| -------------------- | ------------------------- |
+| `IDME_CLIENT_ID`     | ID.me OAuth client ID     |
 | `IDME_CLIENT_SECRET` | ID.me OAuth client secret |
-| `IDME_SCOPE` | ID.me verification scopes |
+| `IDME_SCOPE`         | ID.me verification scopes |
 
 ### Branding Variables
 
-| Variable | Required | Default | Description |
-|----------|----------|---------|-------------|
-| `NEXT_PUBLIC_APP_NAME` | No | `nchat` | Application name |
-| `NEXT_PUBLIC_PRIMARY_COLOR` | No | `#6366f1` | Primary brand color |
-| `NEXT_PUBLIC_LOGO_URL` | No | - | Logo image URL |
-| `NEXT_PUBLIC_FAVICON_URL` | No | - | Favicon URL |
+| Variable                    | Required | Default   | Description         |
+| --------------------------- | -------- | --------- | ------------------- |
+| `NEXT_PUBLIC_APP_NAME`      | No       | `nchat`   | Application name    |
+| `NEXT_PUBLIC_PRIMARY_COLOR` | No       | `#6366f1` | Primary brand color |
+| `NEXT_PUBLIC_LOGO_URL`      | No       | -         | Logo image URL      |
+| `NEXT_PUBLIC_FAVICON_URL`   | No       | -         | Favicon URL         |
 
 ### Feature Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `NEXT_PUBLIC_ENABLE_CHANNELS` | `true` | Enable channels |
-| `NEXT_PUBLIC_ENABLE_DM` | `true` | Enable direct messages |
-| `NEXT_PUBLIC_ENABLE_THREADS` | `true` | Enable threading |
-| `NEXT_PUBLIC_ENABLE_REACTIONS` | `true` | Enable reactions |
-| `NEXT_PUBLIC_ENABLE_FILE_UPLOADS` | `true` | Enable file uploads |
-| `NEXT_PUBLIC_ENABLE_SEARCH` | `true` | Enable search |
-| `NEXT_PUBLIC_ENABLE_NOTIFICATIONS` | `true` | Enable notifications |
+| Variable                           | Default | Description            |
+| ---------------------------------- | ------- | ---------------------- |
+| `NEXT_PUBLIC_ENABLE_CHANNELS`      | `true`  | Enable channels        |
+| `NEXT_PUBLIC_ENABLE_DM`            | `true`  | Enable direct messages |
+| `NEXT_PUBLIC_ENABLE_THREADS`       | `true`  | Enable threading       |
+| `NEXT_PUBLIC_ENABLE_REACTIONS`     | `true`  | Enable reactions       |
+| `NEXT_PUBLIC_ENABLE_FILE_UPLOADS`  | `true`  | Enable file uploads    |
+| `NEXT_PUBLIC_ENABLE_SEARCH`        | `true`  | Enable search          |
+| `NEXT_PUBLIC_ENABLE_NOTIFICATIONS` | `true`  | Enable notifications   |
 
 ### Example .env.local
 
@@ -180,9 +180,9 @@ interface AppConfig {
     }
   }
   integrations: {
-    slack: { enabled: boolean, webhookUrl?: string }
-    github: { enabled: boolean, token?: string }
-    jira: { enabled: boolean, domain?: string }
+    slack: { enabled: boolean; webhookUrl?: string }
+    github: { enabled: boolean; token?: string }
+    jira: { enabled: boolean; domain?: string }
     googleDrive: { enabled: boolean }
   }
 }
@@ -216,16 +216,16 @@ const { updateConfig } = useAppConfig()
 await updateConfig({
   branding: {
     appName: 'New Name',
-    tagline: 'New tagline'
-  }
+    tagline: 'New tagline',
+  },
 })
 
 // Update features
 await updateConfig({
   features: {
     polls: true,
-    voiceMessages: true
-  }
+    voiceMessages: true,
+  },
 })
 ```
 
@@ -300,7 +300,7 @@ const channelConfig = {
   allowPrivateChannels: true,
   allowChannelCreation: 'all' | 'admin' | 'none',
   defaultChannels: ['general', 'random'],
-  archiveInactiveAfterDays: 90
+  archiveInactiveAfterDays: 90,
 }
 ```
 
@@ -313,7 +313,7 @@ const messageConfig = {
   deleteTimeWindow: 86400, // seconds
   allowedMimeTypes: ['image/*', 'video/*', 'application/pdf'],
   maxFileSize: 50 * 1024 * 1024, // 50MB
-  maxFilesPerMessage: 10
+  maxFilesPerMessage: 10,
 }
 ```
 
@@ -328,12 +328,12 @@ const notificationConfig = {
     enabled: true,
     start: '22:00',
     end: '08:00',
-    timezone: 'America/New_York'
+    timezone: 'America/New_York',
   },
   grouping: {
     enabled: true,
-    windowSeconds: 60
-  }
+    windowSeconds: 60,
+  },
 }
 ```
 
@@ -343,17 +343,17 @@ const notificationConfig = {
 
 nchat includes 8+ theme presets:
 
-| Preset | Description |
-|--------|-------------|
-| `default` | Clean, professional look |
-| `slack` | Slack-inspired colors |
-| `discord` | Discord dark theme |
-| `telegram` | Telegram blue theme |
-| `whatsapp` | WhatsApp green theme |
+| Preset     | Description                   |
+| ---------- | ----------------------------- |
+| `default`  | Clean, professional look      |
+| `slack`    | Slack-inspired colors         |
+| `discord`  | Discord dark theme            |
+| `telegram` | Telegram blue theme           |
+| `whatsapp` | WhatsApp green theme          |
 | `midnight` | Dark mode with purple accents |
-| `ocean` | Blue ocean theme |
-| `forest` | Green nature theme |
-| `sunset` | Warm orange theme |
+| `ocean`    | Blue ocean theme              |
+| `forest`   | Green nature theme            |
+| `sunset`   | Warm orange theme             |
 
 ### Custom Theme
 
@@ -371,17 +371,17 @@ const customTheme = {
     border: '#334155',
     error: '#ef4444',
     success: '#22c55e',
-    warning: '#f59e0b'
+    warning: '#f59e0b',
   },
   fonts: {
     sans: 'Inter, sans-serif',
-    mono: 'JetBrains Mono, monospace'
+    mono: 'JetBrains Mono, monospace',
   },
   radius: {
     sm: '0.25rem',
     md: '0.5rem',
-    lg: '0.75rem'
-  }
+    lg: '0.75rem',
+  },
 }
 ```
 
@@ -419,22 +419,22 @@ const authSecurity = {
     requireUppercase: true,
     requireLowercase: true,
     requireNumbers: true,
-    requireSpecialChars: false
+    requireSpecialChars: false,
   },
   session: {
     maxAge: 30 * 24 * 60 * 60, // 30 days
-    updateAge: 24 * 60 * 60 // 24 hours
+    updateAge: 24 * 60 * 60, // 24 hours
   },
   rateLimit: {
     login: {
       window: 15 * 60, // 15 minutes
-      max: 5
+      max: 5,
     },
     register: {
       window: 60 * 60, // 1 hour
-      max: 3
-    }
-  }
+      max: 3,
+    },
+  },
 }
 ```
 
@@ -445,17 +445,17 @@ const contentSecurity = {
   sanitize: {
     html: true,
     markdown: true,
-    links: true
+    links: true,
   },
   allowedHtml: ['b', 'i', 'u', 'a', 'code', 'pre'],
   linkPreview: {
     enabled: true,
-    timeout: 5000
+    timeout: 5000,
   },
   profanityFilter: {
     enabled: false,
-    action: 'blur' | 'replace' | 'block'
-  }
+    action: 'blur' | 'replace' | 'block',
+  },
 }
 ```
 

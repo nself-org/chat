@@ -8,15 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useSecurity } from '@/lib/security/use-security'
 import { calculatePasswordStrength, getStrengthColor } from '@/lib/security/two-factor'
 import { useAuth } from '@/contexts/auth-context'
-import {
-  Eye,
-  EyeOff,
-  Check,
-  X,
-  AlertCircle,
-  Loader2,
-  CheckCircle2,
-} from 'lucide-react'
+import { Eye, EyeOff, Check, X, AlertCircle, Loader2, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function ChangePasswordForm() {
@@ -36,10 +28,7 @@ export function ChangePasswordForm() {
   const [error, setError] = useState<string | null>(null)
 
   // Password strength calculation
-  const passwordStrength = useMemo(
-    () => calculatePasswordStrength(newPassword),
-    [newPassword]
-  )
+  const passwordStrength = useMemo(() => calculatePasswordStrength(newPassword), [newPassword])
 
   // Validation
   const passwordsMatch = newPassword === confirmPassword
@@ -91,11 +80,9 @@ export function ChangePasswordForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Success Message */}
       {success && (
-        <Alert className="bg-green-500/10 text-green-600 border-green-500/20">
+        <Alert className="border-green-500/20 bg-green-500/10 text-green-600">
           <CheckCircle2 className="h-4 w-4" />
-          <AlertDescription>
-            Your password has been changed successfully.
-          </AlertDescription>
+          <AlertDescription>Your password has been changed successfully.</AlertDescription>
         </Alert>
       )}
 
@@ -178,7 +165,7 @@ export function ChangePasswordForm() {
         {newPassword.length > 0 && (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
-              <div className="flex-1 flex gap-1">
+              <div className="flex flex-1 gap-1">
                 {[0, 1, 2, 3, 4].map((index) => (
                   <div
                     key={index}
@@ -213,11 +200,7 @@ export function ChangePasswordForm() {
                     req.met ? 'text-green-600' : 'text-muted-foreground'
                   )}
                 >
-                  {req.met ? (
-                    <Check className="h-3 w-3" />
-                  ) : (
-                    <X className="h-3 w-3" />
-                  )}
+                  {req.met ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
                   {req.label}
                 </div>
               ))}
@@ -260,7 +243,7 @@ export function ChangePasswordForm() {
           <p className="text-xs text-red-500">Passwords do not match</p>
         )}
         {confirmPassword.length > 0 && passwordsMatch && (
-          <p className="text-xs text-green-600 flex items-center gap-1">
+          <p className="flex items-center gap-1 text-xs text-green-600">
             <Check className="h-3 w-3" />
             Passwords match
           </p>

@@ -66,7 +66,8 @@ export const TELEGRAM_COLORS = {
 
 export const TELEGRAM_TYPOGRAPHY = {
   fontFamily: {
-    primary: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+    primary:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
     monospace: 'SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace',
   },
   fontSize: {
@@ -268,7 +269,8 @@ export const telegramTemplate: PlatformTemplate = {
 
   id: 'telegram',
   name: 'Telegram',
-  description: 'Complete Telegram clone with 100% feature parity - bubble messages, checkmarks, voice messages, stickers, and more',
+  description:
+    'Complete Telegram clone with 100% feature parity - bubble messages, checkmarks, voice messages, stickers, and more',
   version: '2.0.0',
   author: 'nself',
 
@@ -433,14 +435,7 @@ export const telegramTemplate: PlatformTemplate = {
     gifPicker: true,
 
     // Message actions (Telegram's swipe/long-press actions)
-    messageActions: [
-      'reply',
-      'forward',
-      'copy',
-      'pin',
-      'edit',
-      'delete',
-    ],
+    messageActions: ['reply', 'forward', 'copy', 'pin', 'edit', 'delete'],
     showActionsOnHover: false, // Telegram uses long-press/right-click on desktop
 
     // Real-time features

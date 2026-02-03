@@ -40,9 +40,7 @@ Related to #
 
 ### Before
 
-
 ### After
-
 
 ## Testing
 
@@ -116,6 +114,7 @@ Related to #
 ### For Reviewers
 
 Please check:
+
 - [ ] Code quality and style adherence
 - [ ] Test coverage adequacy
 - [ ] Documentation completeness

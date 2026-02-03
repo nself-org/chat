@@ -1,50 +1,39 @@
-'use client';
+'use client'
 
 /**
  * AnalyticsHeader - Header component with date range picker and filters
  */
 
-import * as React from 'react';
-import { format } from 'date-fns';
-import {
-  Calendar,
-  ChevronDown,
-  RefreshCw,
-  Download,
-  Filter,
-  X,
-} from 'lucide-react';
+import * as React from 'react'
+import { format } from 'date-fns'
+import { Calendar, ChevronDown, RefreshCw, Download, Filter, X } from 'lucide-react'
 
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Badge } from '@/components/ui/badge';
-import { Separator } from '@/components/ui/separator';
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
 
-import { useAnalyticsStore } from '@/stores/analytics-store';
-import type { DateRangePreset, TimeGranularity } from '@/lib/analytics/analytics-types';
+import { useAnalyticsStore } from '@/stores/analytics-store'
+import type { DateRangePreset, TimeGranularity } from '@/lib/analytics/analytics-types'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface AnalyticsHeaderProps {
-  title?: string;
-  showFilters?: boolean;
-  showExport?: boolean;
-  onExport?: () => void;
-  className?: string;
+  title?: string
+  showFilters?: boolean
+  showExport?: boolean
+  onExport?: () => void
+  className?: string
 }
 
 // ============================================================================
@@ -60,14 +49,14 @@ const dateRangePresets: { value: DateRangePreset; label: string }[] = [
   { value: 'thisMonth', label: 'This month' },
   { value: 'lastMonth', label: 'Last month' },
   { value: 'thisYear', label: 'This year' },
-];
+]
 
 const granularityOptions: { value: TimeGranularity; label: string }[] = [
   { value: 'hour', label: 'Hourly' },
   { value: 'day', label: 'Daily' },
   { value: 'week', label: 'Weekly' },
   { value: 'month', label: 'Monthly' },
-];
+]
 
 // ============================================================================
 // Component
@@ -93,18 +82,18 @@ export function AnalyticsHeader({
     setGranularity,
     resetFilters,
     refreshData,
-  } = useAnalyticsStore();
+  } = useAnalyticsStore()
 
-  const [isFilterOpen, setIsFilterOpen] = React.useState(false);
+  const [isFilterOpen, setIsFilterOpen] = React.useState(false)
 
   const activeFiltersCount =
     (selectedChannelIds.length > 0 ? 1 : 0) +
     (selectedUserIds.length > 0 ? 1 : 0) +
-    (includeBots ? 1 : 0);
+    (includeBots ? 1 : 0)
 
   const handleRefresh = async () => {
-    await refreshData();
-  };
+    await refreshData()
+  }
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -120,15 +109,8 @@ export function AnalyticsHeader({
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleRefresh}
-            disabled={isLoading}
-          >
-            <RefreshCw
-              className={cn('mr-2 h-4 w-4', isLoading && 'animate-spin')}
-            />
+          <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
+            <RefreshCw className={cn('mr-2 h-4 w-4', isLoading && 'animate-spin')} />
             Refresh
           </Button>
 
@@ -163,9 +145,8 @@ export function AnalyticsHeader({
           </Select>
 
           {/* Date Display */}
-          <div className="hidden rounded-md border bg-muted/50 px-3 py-2 text-sm sm:block">
-            {format(dateRange.start, 'MMM d, yyyy')} -{' '}
-            {format(dateRange.end, 'MMM d, yyyy')}
+          <div className="bg-muted/50 hidden rounded-md border px-3 py-2 text-sm sm:block">
+            {format(dateRange.start, 'MMM d, yyyy')} - {format(dateRange.end, 'MMM d, yyyy')}
           </div>
 
           <Separator orientation="vertical" className="hidden h-8 sm:block" />
@@ -194,10 +175,7 @@ export function AnalyticsHeader({
                 <Filter className="mr-2 h-4 w-4" />
                 Filters
                 {activeFiltersCount > 0 && (
-                  <Badge
-                    variant="secondary"
-                    className="ml-2 h-5 w-5 rounded-full p-0 text-xs"
-                  >
+                  <Badge variant="secondary" className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
                     {activeFiltersCount}
                   </Badge>
                 )}
@@ -213,8 +191,8 @@ export function AnalyticsHeader({
                       variant="ghost"
                       size="sm"
                       onClick={() => {
-                        resetFilters();
-                        setIsFilterOpen(false);
+                        resetFilters()
+                        setIsFilterOpen(false)
                       }}
                     >
                       <X className="mr-1 h-3 w-3" />
@@ -281,7 +259,7 @@ export function AnalyticsHeader({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default AnalyticsHeader;
+export default AnalyticsHeader

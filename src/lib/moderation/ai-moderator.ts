@@ -61,15 +61,7 @@ export interface DetectedIssue {
   evidence: string[]
 }
 
-export type AutoAction =
-  | 'none'
-  | 'flag'
-  | 'hide'
-  | 'warn'
-  | 'mute'
-  | 'delete'
-  | 'ban'
-  | 'shadowban'
+export type AutoAction = 'none' | 'flag' | 'hide' | 'warn' | 'mute' | 'delete' | 'ban' | 'shadowban'
 
 export interface ModerationThresholds {
   // Detection thresholds (0-1)
@@ -79,11 +71,11 @@ export interface ModerationThresholds {
   profanity: number
 
   // Auto-action thresholds
-  flagThreshold: number    // Flag for manual review
-  hideThreshold: number    // Auto-hide content
-  warnThreshold: number    // Warn user
-  muteThreshold: number    // Temporary mute
-  banThreshold: number     // Permanent ban
+  flagThreshold: number // Flag for manual review
+  hideThreshold: number // Auto-hide content
+  warnThreshold: number // Warn user
+  muteThreshold: number // Temporary mute
+  banThreshold: number // Permanent ban
 
   // User behavior thresholds
   maxViolationsPerDay: number
@@ -245,13 +237,18 @@ export class AIModerator {
     const priority = this.determinePriority(scores.overall)
 
     // Get user violation history
-    const userHistory = metadata?.userId
-      ? this.getUserHistory(metadata.userId)
-      : undefined
+    const userHistory = metadata?.userId ? this.getUserHistory(metadata.userId) : undefined
 
     // Determine auto-action
-    const { autoAction, autoActionReason, shouldFlag, shouldHide, shouldWarn, shouldMute, shouldBan } =
-      this.determineAutoAction(scores, confidence, detectedIssues, userHistory)
+    const {
+      autoAction,
+      autoActionReason,
+      shouldFlag,
+      shouldHide,
+      shouldWarn,
+      shouldMute,
+      shouldBan,
+    } = this.determineAutoAction(scores, confidence, detectedIssues, userHistory)
 
     const processingTime = Date.now() - startTime
 
@@ -341,7 +338,7 @@ export class AIModerator {
       (toxicity.toxicScore + spam.spamScore + profanity.score + (nsfw?.nsfwScore || 0)) / 4
 
     // Combine agreement and model confidence
-    return (agreementScore * 0.6 + avgModelConfidence * 0.4)
+    return agreementScore * 0.6 + avgModelConfidence * 0.4
   }
 
   /**
@@ -462,21 +459,23 @@ export class AIModerator {
     }
 
     // Determine flags
-    const shouldFlag = overall >= thresholds.flagThreshold ||
-                       toxicity >= thresholds.toxicity ||
-                       spam >= thresholds.spam ||
-                       profanity >= thresholds.profanity ||
-                       nsfw >= thresholds.nsfw
+    const shouldFlag =
+      overall >= thresholds.flagThreshold ||
+      toxicity >= thresholds.toxicity ||
+      spam >= thresholds.spam ||
+      profanity >= thresholds.profanity ||
+      nsfw >= thresholds.nsfw
 
     const shouldHide = overall >= thresholds.hideThreshold
     const shouldWarn = overall >= thresholds.warnThreshold
     const shouldMute = overall >= thresholds.muteThreshold
 
     // Check user history for ban decision
-    const shouldBan = overall >= thresholds.banThreshold ||
-                      (userHistory && userHistory.totalViolations >= thresholds.maxViolationsTotal) ||
-                      (userHistory && userHistory.violationsThisWeek >= thresholds.maxViolationsPerWeek) ||
-                      false
+    const shouldBan =
+      overall >= thresholds.banThreshold ||
+      (userHistory && userHistory.totalViolations >= thresholds.maxViolationsTotal) ||
+      (userHistory && userHistory.violationsThisWeek >= thresholds.maxViolationsPerWeek) ||
+      false
 
     // Determine action (in order of severity)
     let autoAction: AutoAction = 'none'
@@ -525,14 +524,14 @@ export class AIModerator {
     reasons.push(`Overall risk score: ${(score * 100).toFixed(1)}%`)
 
     // Add detected issues
-    const criticalIssues = issues.filter(i => i.severity === 'critical')
-    const highIssues = issues.filter(i => i.severity === 'high')
+    const criticalIssues = issues.filter((i) => i.severity === 'critical')
+    const highIssues = issues.filter((i) => i.severity === 'high')
 
     if (criticalIssues.length > 0) {
-      reasons.push(`Critical issues: ${criticalIssues.map(i => i.category).join(', ')}`)
+      reasons.push(`Critical issues: ${criticalIssues.map((i) => i.category).join(', ')}`)
     }
     if (highIssues.length > 0) {
-      reasons.push(`High-severity issues: ${highIssues.map(i => i.category).join(', ')}`)
+      reasons.push(`High-severity issues: ${highIssues.map((i) => i.category).join(', ')}`)
     }
 
     // Add user history context
@@ -603,13 +602,13 @@ export class AIModerator {
 
     // In production, this would update ML models
     // For now, just log
-    console.log('False positive recorded:', {
-      contentId,
-      contentType,
-      actualScore,
-      predictedScore,
-      difference: Math.abs(actualScore - predictedScore),
-    })
+    // REMOVED: console.log('False positive recorded:', {
+    //   contentId,
+    //   contentType,
+    //   actualScore,
+    //   predictedScore,
+    //   difference: Math.abs(actualScore - predictedScore),
+    // })
   }
 
   /**
@@ -697,13 +696,15 @@ export class AIModerator {
       autoAction: 'ban',
       autoActionReason: 'User is blacklisted',
       priority: 'critical',
-      detectedIssues: [{
-        category: 'blacklisted',
-        severity: 'critical',
-        confidence: 1,
-        description: 'User is on blacklist',
-        evidence: ['User blacklisted'],
-      }],
+      detectedIssues: [
+        {
+          category: 'blacklisted',
+          severity: 'critical',
+          confidence: 1,
+          description: 'User is on blacklist',
+          evidence: ['User blacklisted'],
+        },
+      ],
       modelVersion: this.modelVersion,
       processingTime: Date.now() - startTime,
       analyzedAt: new Date(),

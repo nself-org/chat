@@ -16,11 +16,7 @@ import {
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   Select,
   SelectContent,
@@ -103,8 +99,7 @@ export function ChannelDirectory({
           categoryId,
           channelList.filter(
             (c) =>
-              c.name.toLowerCase().includes(query) ||
-              c.description?.toLowerCase().includes(query)
+              c.name.toLowerCase().includes(query) || c.description?.toLowerCase().includes(query)
           )
         )
       }
@@ -144,18 +139,18 @@ export function ChannelDirectory({
   const renderTreeItem = (channel: Channel) => (
     <div
       key={channel.id}
-      className="group flex items-center gap-2 px-3 py-2 hover:bg-accent rounded-md cursor-pointer"
+      className="group flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 hover:bg-accent"
       onClick={() => handleChannelClick(channel)}
     >
       {channel.type === 'private' ? (
-        <Lock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+        <Lock className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
       ) : (
-        <Hash className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+        <Hash className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
       )}
-      <div className="flex-1 min-w-0">
-        <span className="text-sm font-medium truncate">{channel.name}</span>
+      <div className="min-w-0 flex-1">
+        <span className="truncate text-sm font-medium">{channel.name}</span>
       </div>
-      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className="flex items-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
         <span className="text-xs text-muted-foreground">
           {formatMemberCount(channel.memberCount)}
         </span>
@@ -178,11 +173,7 @@ export function ChannelDirectory({
   )
 
   // Render category section
-  const renderCategory = (
-    categoryId: string,
-    categoryName: string,
-    categoryColor?: string
-  ) => {
+  const renderCategory = (categoryId: string, categoryName: string, categoryColor?: string) => {
     const categoryChannels = channelsByCategory.get(categoryId) || []
     if (categoryChannels.length === 0) return null
 
@@ -196,13 +187,13 @@ export function ChannelDirectory({
         className="space-y-1"
       >
         <CollapsibleTrigger asChild>
-          <button className="flex items-center gap-2 w-full px-2 py-1.5 hover:bg-accent rounded-md text-left">
+          <button className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left hover:bg-accent">
             {isExpanded ? (
               <FolderOpen className="h-4 w-4" style={{ color: categoryColor }} />
             ) : (
               <Folder className="h-4 w-4" style={{ color: categoryColor }} />
             )}
-            <span className="text-sm font-medium flex-1">{categoryName}</span>
+            <span className="flex-1 text-sm font-medium">{categoryName}</span>
             <Badge variant="secondary" className="text-xs">
               {categoryChannels.length}
             </Badge>
@@ -215,7 +206,7 @@ export function ChannelDirectory({
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="pl-4 border-l ml-2 space-y-0.5">
+          <div className="ml-2 space-y-0.5 border-l pl-4">
             {categoryChannels.map(renderTreeItem)}
           </div>
         </CollapsibleContent>
@@ -254,17 +245,14 @@ export function ChannelDirectory({
           (c) => c.id !== 'archived' && (channelsByCategory.get(c.id)?.length || 0) > 0
         ).map((category) => (
           <div key={category.id} className="space-y-3">
-            <h3 className="text-sm font-semibold flex items-center gap-2">
-              <span
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: category.color }}
-              />
+            <h3 className="flex items-center gap-2 text-sm font-semibold">
+              <span className="h-3 w-3 rounded-full" style={{ backgroundColor: category.color }} />
               {category.name}
               <Badge variant="secondary" className="text-xs">
                 {channelsByCategory.get(category.id)?.length || 0}
               </Badge>
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {(channelsByCategory.get(category.id) || []).map((channel) => (
                 <ChannelCard
                   key={channel.id}
@@ -284,7 +272,7 @@ export function ChannelDirectory({
         {(channelsByCategory.get(null)?.length || 0) > 0 && (
           <div className="space-y-3">
             <h3 className="text-sm font-semibold">Other Channels</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
               {(channelsByCategory.get(null) || []).map((channel) => (
                 <ChannelCard
                   key={channel.id}
@@ -304,10 +292,7 @@ export function ChannelDirectory({
   }
 
   if (layout === 'list') {
-    const allChannels = sortChannelList(
-      Array.from(channelsByCategory.values()).flat(),
-      sortBy
-    )
+    const allChannels = sortChannelList(Array.from(channelsByCategory.values()).flat(), sortBy)
 
     return (
       <div className={cn('space-y-4', className)}>
@@ -388,12 +373,12 @@ export function ChannelDirectory({
           <div className="space-y-1">
             <div className="flex items-center gap-2 px-2 py-1.5">
               <Hash className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium flex-1">Other Channels</span>
+              <span className="flex-1 text-sm font-medium">Other Channels</span>
               <Badge variant="secondary" className="text-xs">
                 {channelsByCategory.get(null)?.length || 0}
               </Badge>
             </div>
-            <div className="pl-4 border-l ml-2 space-y-0.5">
+            <div className="ml-2 space-y-0.5 border-l pl-4">
               {(channelsByCategory.get(null) || []).map(renderTreeItem)}
             </div>
           </div>

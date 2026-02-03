@@ -24,6 +24,7 @@
 ## iOS Features
 
 ### App Fundamentals
+
 - ✅ **iOS 14.0+ Support** - Compatible with iPhone and iPad running iOS 14.0 or later
 - ✅ **Universal Binary** - Single app for iPhone, iPad, and iPod Touch
 - ✅ **Dark Mode** - Automatic dark mode support with system settings
@@ -32,6 +33,7 @@
 - ✅ **Safe Area** - Proper handling of notches, Dynamic Island, home indicator
 
 ### Authentication & Security
+
 - ✅ **Face ID** - Biometric authentication using Face ID
 - ✅ **Touch ID** - Fingerprint authentication for older devices
 - ✅ **Secure Enclave** - Credentials stored in iOS Secure Enclave
@@ -41,6 +43,7 @@
 - ✅ **Screenshot Protection** - Blur sensitive screens when backgrounded
 
 ### Notifications
+
 - ✅ **APNs Integration** - Native Apple Push Notification service
 - ✅ **Rich Notifications** - Images, videos, and custom actions
 - ✅ **Notification Actions** - Reply, mark as read, mute
@@ -52,6 +55,7 @@
 - ✅ **Critical Alerts** - High-priority notifications (with permission)
 
 ### Camera & Photos
+
 - ✅ **Camera Capture** - Take photos with front or rear camera
 - ✅ **Video Recording** - Record videos up to 5 minutes
 - ✅ **Photo Library** - Access and select from Photos app
@@ -64,6 +68,7 @@
 - ✅ **RAW Photos** - Support for RAW image formats (Pro devices)
 
 ### Voice & Audio
+
 - ✅ **Voice Messages** - Record and send voice messages
 - ✅ **Waveform Display** - Visual waveform for audio playback
 - ✅ **Playback Speed** - Adjust playback speed (0.5x - 2x)
@@ -72,6 +77,7 @@
 - ✅ **Voice Memos Integration** - Import from Voice Memos app
 
 ### Files & Documents
+
 - ✅ **Files App** - Browse and select files from Files app
 - ✅ **iCloud Drive** - Access files from iCloud
 - ✅ **Document Picker** - Pick files from any provider
@@ -80,6 +86,7 @@
 - ✅ **Share Sheet** - Share files to other apps
 
 ### Sharing & Extensions
+
 - ✅ **Share Extension** - Share content from other apps to nChat
 - ✅ **Share Sheet** - Share messages, files, links to other apps
 - ✅ **Copy & Paste** - Rich text and media clipboard support
@@ -87,6 +94,7 @@
 - ✅ **Drag & Drop** - Drag content between apps (iPad)
 
 ### Deep Linking
+
 - ✅ **Universal Links** - Open nchat.io links directly in app
 - ✅ **Custom URL Scheme** - nchat:// URL scheme support
 - ✅ **Handoff** - Continue browsing on other Apple devices
@@ -94,6 +102,7 @@
 - ✅ **Siri Shortcuts** - Custom Siri shortcuts for actions
 
 ### Background & Offline
+
 - ✅ **Background Fetch** - Fetch new messages every 15-30 minutes
 - ✅ **Background App Refresh** - Update content in background
 - ✅ **Offline Mode** - Full app functionality without internet
@@ -102,6 +111,7 @@
 - ✅ **Sync on Connect** - Automatic sync when reconnected
 
 ### UI & Interaction
+
 - ✅ **3D Touch** - Quick actions on home screen (older iPhones)
 - ✅ **Haptic Touch** - Long-press context menus (newer iPhones)
 - ✅ **Haptic Feedback** - Tactile feedback for interactions
@@ -112,6 +122,7 @@
 - ✅ **Smooth Scrolling** - 60 FPS scrolling performance
 
 ### Widgets & Today
+
 - ✅ **Today Widget** - Quick view of recent messages
 - ✅ **Home Screen Widgets** - iOS 14+ home screen widgets
 - ✅ **Widget Sizes** - Small, medium, and large widgets
@@ -119,6 +130,7 @@
 - ✅ **Live Activities** - Real-time updates (iOS 16+, future)
 
 ### Accessibility
+
 - ✅ **VoiceOver** - Full screen reader support
 - ✅ **Dynamic Type** - Respect system font size settings
 - ✅ **Voice Control** - Control app with voice commands
@@ -131,6 +143,7 @@
 - ✅ **Speak Screen** - Read entire screen aloud
 
 ### Other iOS Features
+
 - ✅ **Location Services** - Share current location in messages
 - ✅ **Contacts Integration** - Access iOS contacts
 - ✅ **Calendar Integration** - Create events from messages
@@ -141,6 +154,7 @@
 - ✅ **App Store** - Production distribution
 
 ### Performance
+
 - 📊 **Launch Time:** <0.8s (iPhone 14 Pro)
 - 📊 **Memory Usage:** ~85 MB average
 - 📊 **Battery Impact:** <5% per hour
@@ -152,6 +166,7 @@
 ## Android Features
 
 ### App Fundamentals
+
 - ✅ **Android 7.0+ (API 24+)** - Support for 95%+ Android devices
 - ✅ **Material Design 3** - Latest Material Design components
 - ✅ **Material You** - Dynamic color theming (Android 12+)
@@ -162,6 +177,7 @@
 - ✅ **Foldable Support** - Samsung Z Fold, Flip devices
 
 ### Authentication & Security
+
 - ✅ **Fingerprint** - Fingerprint authentication
 - ✅ **Face Unlock** - Face recognition (supported devices)
 - ✅ **Hardware Keystore** - Secure credential storage
@@ -171,6 +187,7 @@
 - ✅ **Screenshot Protection** - Prevent screenshots in sensitive screens
 
 ### Notifications
+
 - ✅ **FCM Integration** - Firebase Cloud Messaging
 - ✅ **Notification Channels** - Categorized notifications
 - ✅ **Rich Notifications** - Images, videos, custom actions
@@ -183,6 +200,7 @@
 - ✅ **Vibration Patterns** - Custom vibration patterns
 
 ### Camera & Photos
+
 - ✅ **Camera2 API** - Advanced camera features
 - ✅ **Photo Capture** - Front and rear camera
 - ✅ **Video Recording** - HD/4K video capture
@@ -195,6 +213,7 @@
 - ✅ **HDR Support** - High dynamic range photos
 
 ### Voice & Audio
+
 - ✅ **Voice Messages** - Record and send audio messages
 - ✅ **Waveform Display** - Visual audio waveform
 - ✅ **Playback Speed** - Adjust speed (0.5x - 2x)
@@ -203,6 +222,7 @@
 - ✅ **Noise Suppression** - Built-in noise reduction
 
 ### Files & Documents
+
 - ✅ **Storage Access Framework** - Access any file provider
 - ✅ **Google Drive** - Access Google Drive files
 - ✅ **Scoped Storage** - Android 10+ storage compliance
@@ -212,6 +232,7 @@
 - ✅ **Download Manager** - Handle file downloads
 
 ### Sharing
+
 - ✅ **Share Target** - Receive content from other apps
 - ✅ **ShareSheet** - Share to other apps
 - ✅ **Direct Share** - Share directly to recent contacts
@@ -219,12 +240,14 @@
 - ✅ **Drag & Drop** - Multi-window drag and drop
 
 ### Deep Linking
+
 - ✅ **App Links** - Verified deep linking
 - ✅ **Custom URL Scheme** - nchat:// scheme
 - ✅ **Intent Filters** - Handle external intents
 - ✅ **App Indexing** - Google Search integration (future)
 
 ### Background & Offline
+
 - ✅ **WorkManager** - Reliable background work
 - ✅ **Periodic Work** - Schedule recurring sync
 - ✅ **Expedited Work** - Urgent background tasks
@@ -237,6 +260,7 @@
 - ✅ **Sync Queue** - Queue offline actions
 
 ### UI & Interaction
+
 - ✅ **Material Gestures** - Swipe, long-press, pull-to-refresh
 - ✅ **Haptic Feedback** - Vibration feedback
 - ✅ **Pull to Refresh** - Refresh content
@@ -247,6 +271,7 @@
 - ✅ **MotionLayout** - Complex animations
 
 ### Widgets
+
 - ✅ **Home Screen Widgets** - Android home screen widgets
 - ✅ **Widget Sizes** - 1x1, 2x2, 4x2, 4x4
 - ✅ **Widget Configuration** - Customizable settings
@@ -254,6 +279,7 @@
 - ✅ **App Shortcuts** - Quick actions on long press
 
 ### Accessibility
+
 - ✅ **TalkBack** - Screen reader support
 - ✅ **Large Text** - System font size support
 - ✅ **High Contrast** - High contrast themes
@@ -264,6 +290,7 @@
 - ✅ **Content Descriptions** - Accessibility labels
 
 ### Other Android Features
+
 - ✅ **Location Services** - GPS and network location
 - ✅ **Contacts Provider** - Access Android contacts
 - ✅ **Calendar Provider** - Calendar integration
@@ -274,6 +301,7 @@
 - ✅ **Play Console** - Production distribution
 
 ### Performance
+
 - 📊 **Launch Time:** <1.2s (Pixel 6)
 - 📊 **Memory Usage:** ~95 MB average
 - 📊 **Battery Impact:** <6% per hour
@@ -286,6 +314,7 @@
 ## Desktop Features
 
 ### Window Management
+
 - ✅ **Multi-Window** - Open multiple windows
 - ✅ **Custom Title Bar** - Frameless window with custom controls
 - ✅ **Window Controls** - Minimize, maximize, close
@@ -297,6 +326,7 @@
 - ✅ **Transparency** - Semi-transparent windows (macOS, Windows)
 
 ### System Tray
+
 - ✅ **Tray Icon** - Minimize to system tray
 - ✅ **Tray Menu** - Quick actions from tray
 - ✅ **Tray Notifications** - Desktop notifications
@@ -305,6 +335,7 @@
 - ✅ **Start Minimized** - Launch to tray
 
 ### Menus
+
 - ✅ **Menu Bar** - Native menu bar (macOS)
 - ✅ **Application Menu** - File, Edit, View, Window, Help
 - ✅ **Context Menus** - Right-click menus
@@ -312,6 +343,7 @@
 - ✅ **Jump List** - Windows taskbar jump list
 
 ### Keyboard & Shortcuts
+
 - ✅ **Global Shortcuts** - System-wide hotkeys
 - ✅ **App Shortcuts** - In-app keyboard shortcuts
 - ✅ **Custom Shortcuts** - User-configurable hotkeys
@@ -320,6 +352,7 @@
 - ✅ **Focus Management** - Proper focus handling
 
 ### Notifications
+
 - ✅ **Native Notifications** - System notification center
 - ✅ **Notification Actions** - Reply, mark read
 - ✅ **Notification Sounds** - Custom notification sounds
@@ -327,6 +360,7 @@
 - ✅ **Notification Center** - macOS notification center integration
 
 ### File Operations
+
 - ✅ **Drag & Drop** - Drag files into chat
 - ✅ **File Dialogs** - Native open/save dialogs
 - ✅ **Recent Files** - Track recently opened files
@@ -335,6 +369,7 @@
 - ✅ **Print Support** - Print conversations
 
 ### Auto-Updates
+
 - ✅ **Update Checker** - Check for updates on launch
 - ✅ **Auto Download** - Download updates in background
 - ✅ **Install on Quit** - Install updates when app quits
@@ -343,11 +378,13 @@
 - ✅ **Delta Updates** - Download only changed files
 
 ### Deep Linking
+
 - ✅ **Protocol Handler** - Register nchat:// protocol
 - ✅ **Open URLs** - Open nchat:// links from browser
 - ✅ **Default App** - Set as default for nchat:// links
 
 ### Media
+
 - ✅ **Media Playback** - Audio and video playback
 - ✅ **Media Controls** - System media controls (macOS)
 - ✅ **Picture-in-Picture** - PiP for video calls
@@ -355,6 +392,7 @@
 - ✅ **Window Sharing** - Share specific window
 
 ### Security
+
 - ✅ **Code Signing** - Signed binaries (macOS, Windows)
 - ✅ **Notarization** - macOS notarization
 - ✅ **SmartScreen** - Windows SmartScreen compatible
@@ -364,6 +402,7 @@
 ### Platform-Specific
 
 **macOS:**
+
 - ✅ **Universal Binary** - Intel + Apple Silicon
 - ✅ **macOS 10.15+** - Catalina and later
 - ✅ **Touch Bar** - MacBook Pro Touch Bar support (future)
@@ -374,6 +413,7 @@
 - ✅ **Mac App Store** - Optional MAS distribution
 
 **Windows:**
+
 - ✅ **Windows 10+** - 64-bit and 32-bit
 - ✅ **NSIS Installer** - Windows installer
 - ✅ **Portable Mode** - No installation required
@@ -383,6 +423,7 @@
 - ✅ **Windows Store** - Optional Store distribution (future)
 
 **Linux:**
+
 - ✅ **Ubuntu 18.04+** - Ubuntu and derivatives
 - ✅ **Fedora 32+** - Fedora and RHEL
 - ✅ **Debian 10+** - Debian-based distros
@@ -393,6 +434,7 @@
 - ✅ **System Tray** - Tray icon (environment dependent)
 
 ### Performance
+
 - 📊 **Launch Time:** <2s (cold start)
 - 📊 **Memory Usage:** ~150 MB idle, ~250 MB active
 - 📊 **CPU Usage:** <2% idle, 5-8% active
@@ -403,6 +445,7 @@
 ## Offline Mode
 
 ### Data Storage
+
 - ✅ **IndexedDB** - Client-side database
 - ✅ **Message Cache** - 1000 messages per channel
 - ✅ **Media Cache** - 500 MB media storage
@@ -411,6 +454,7 @@
 - ✅ **Settings** - Local settings storage
 
 ### Offline Actions
+
 - ✅ **Send Messages** - Queue messages for delivery
 - ✅ **Edit Messages** - Queue edits for sync
 - ✅ **Delete Messages** - Queue deletions
@@ -421,6 +465,7 @@
 - ✅ **Draft Messages** - Save drafts locally
 
 ### Sync Features
+
 - ✅ **Background Sync** - Sync when reconnected
 - ✅ **Differential Sync** - Only sync changes
 - ✅ **Conflict Resolution** - Merge conflicting changes
@@ -429,6 +474,7 @@
 - ✅ **Batch Sync** - Sync in batches for efficiency
 
 ### Offline UI
+
 - ✅ **Offline Indicator** - Show offline status
 - ✅ **Pending Badge** - Show pending actions count
 - ✅ **Sync Status** - Show sync progress
@@ -436,6 +482,7 @@
 - ✅ **Optimistic UI** - Immediate visual feedback
 
 ### Storage Management
+
 - ✅ **Storage Quota** - 1 GB maximum (IndexedDB)
 - ✅ **Cache Cleanup** - Automatic old data cleanup
 - ✅ **Manual Clear** - Clear cache manually
@@ -446,6 +493,7 @@
 ## Background Sync
 
 ### iOS Background Fetch
+
 - ✅ **Background Fetch** - Fetch every 15-30 minutes
 - ✅ **Update Badge** - Update app icon badge
 - ✅ **Push Notifications** - Trigger notifications
@@ -454,6 +502,7 @@
 - ✅ **Configurable** - Adjust fetch interval
 
 ### Android WorkManager
+
 - ✅ **Periodic Sync** - Schedule recurring sync (15 min minimum)
 - ✅ **Expedited Work** - Urgent sync tasks
 - ✅ **Constraints** - WiFi, charging, battery level
@@ -462,6 +511,7 @@
 - ✅ **Foreground Service** - High-priority sync
 
 ### Web Service Workers
+
 - ✅ **Background Sync API** - Queue sync tasks
 - ✅ **Periodic Background Sync** - Scheduled sync (experimental)
 - ✅ **Push Notifications** - Web push
@@ -472,6 +522,7 @@
 ## Camera & Media
 
 ### Photo Capture
+
 - ✅ **Front/Rear Camera** - Switch between cameras
 - ✅ **Flash Control** - Auto, on, off, torch
 - ✅ **Focus & Exposure** - Tap to focus/expose
@@ -481,6 +532,7 @@
 - ✅ **Portrait Mode** - Bokeh effect (supported devices)
 
 ### Video Recording
+
 - ✅ **HD/4K Recording** - Quality selection
 - ✅ **Video Length** - Up to 5 minutes (configurable)
 - ✅ **Pause/Resume** - Pause and continue recording
@@ -488,6 +540,7 @@
 - ✅ **Front/Rear** - Switch camera while recording
 
 ### Photo Editing
+
 - ✅ **Crop** - Free and fixed aspect ratio
 - ✅ **Rotate** - 90° rotation
 - ✅ **Flip** - Horizontal/vertical flip
@@ -501,6 +554,7 @@
 - ✅ **Undo/Redo** - Multiple undo/redo steps
 
 ### Voice Messages
+
 - ✅ **Record Audio** - High-quality recording
 - ✅ **Waveform** - Visual waveform display
 - ✅ **Playback** - Play recorded audio
@@ -510,6 +564,7 @@
 - ✅ **Audio Format** - AAC encoding
 
 ### Gallery Access
+
 - ✅ **Photo Library** - Access all photos
 - ✅ **Album Selection** - Browse albums
 - ✅ **Multi-Select** - Select multiple items
@@ -521,6 +576,7 @@
 ## Mobile UI
 
 ### Virtual Scrolling
+
 - ✅ **Render Visible** - Only render visible items
 - ✅ **60 FPS** - Smooth 60 frames per second
 - ✅ **10,000+ Messages** - Handle large lists
@@ -528,6 +584,7 @@
 - ✅ **Scroll Indicator** - Scroll-to-bottom button
 
 ### Touch Gestures
+
 - ✅ **Swipe to Reply** - Quick reply gesture
 - ✅ **Long-Press Reactions** - Quick reactions
 - ✅ **Pull-to-Refresh** - Refresh content
@@ -537,6 +594,7 @@
 - ✅ **Swipe Navigation** - Swipe between screens
 
 ### Adaptive Layouts
+
 - ✅ **Portrait/Landscape** - Orientation support
 - ✅ **Tablet Layouts** - Optimized for tablets
 - ✅ **Split-Screen** - iPad split view
@@ -545,6 +603,7 @@
 - ✅ **Dynamic Island** - iOS Dynamic Island support (iPhone 14 Pro+)
 
 ### Performance
+
 - ✅ **Lazy Loading** - Load images on demand
 - ✅ **Progressive JPEG** - Progressive image rendering
 - ✅ **Image Compression** - Compress before upload
@@ -553,6 +612,7 @@
 - ✅ **Memoization** - Memoize expensive components
 
 ### Accessibility
+
 - ✅ **Screen Readers** - VoiceOver, TalkBack
 - ✅ **Large Text** - Dynamic Type support
 - ✅ **High Contrast** - High contrast themes
@@ -565,6 +625,7 @@
 ## Analytics
 
 ### Firebase Analytics
+
 - ✅ **User Engagement** - Track user activity
 - ✅ **Screen Views** - Track screen navigation
 - ✅ **Custom Events** - Track custom actions
@@ -576,6 +637,7 @@
 - ✅ **Retention Cohorts** - User retention analysis
 
 ### Sentry Crash Reporting
+
 - ✅ **iOS Sentry** - iOS crash reporting
 - ✅ **Android Sentry** - Android crash reporting
 - ✅ **Electron Sentry** - Desktop crash reporting
@@ -587,6 +649,7 @@
 - ✅ **Session Replay** - Replay user sessions (web/desktop)
 
 ### Firebase Crashlytics
+
 - ✅ **Real-Time Crashes** - Real-time crash reports
 - ✅ **Non-Fatal Errors** - Track non-fatal exceptions
 - ✅ **Custom Logs** - Add custom log messages
@@ -595,6 +658,7 @@
 - ✅ **Issue Prioritization** - Prioritize crashes by impact
 
 ### Firebase Performance
+
 - ✅ **App Startup** - Measure startup time
 - ✅ **Screen Rendering** - Measure render time
 - ✅ **Network Performance** - HTTP request metrics
@@ -602,6 +666,7 @@
 - ✅ **Automatic Monitoring** - Auto HTTP/S monitoring
 
 ### Events Tracked
+
 - ✅ **app_open** - App launched
 - ✅ **screen_view** - Screen viewed
 - ✅ **message_sent** - Message sent
@@ -618,6 +683,7 @@
 ## Build Automation
 
 ### GitHub Actions Workflows
+
 - ✅ **ios-build.yml** - Build iOS app
 - ✅ **android-build.yml** - Build Android app
 - ✅ **desktop-build.yml** - Build desktop apps
@@ -628,6 +694,7 @@
 - ✅ **e2e-tests.yml** - E2E test automation
 
 ### Build Features
+
 - ✅ **Automated Versioning** - Semantic versioning
 - ✅ **Code Signing** - iOS and Android signing
 - ✅ **Notarization** - macOS notarization
@@ -639,6 +706,7 @@
 - ✅ **Artifact Storage** - Build artifact storage
 
 ### Build Matrix
+
 - ✅ **iOS Debug** - Development builds
 - ✅ **iOS Release** - App Store builds
 - ✅ **iOS Ad-hoc** - Internal distribution
@@ -656,12 +724,14 @@
 ## Testing
 
 ### E2E Test Frameworks
+
 - ✅ **Detox** - React Native/Capacitor testing
 - ✅ **Appium** - Cross-platform mobile testing
 - ✅ **WebdriverIO** - Automation framework
 - ✅ **Playwright** - Desktop app testing
 
 ### Mobile Test Suites
+
 - ✅ **auth.spec.ts** - Authentication (login, signup, logout)
 - ✅ **messaging.spec.ts** - Send/receive messages
 - ✅ **channels.spec.ts** - Channel management
@@ -674,6 +744,7 @@
 - ✅ **performance.spec.ts** - Performance benchmarks
 
 ### Test Coverage
+
 - ✅ **30+ Mobile E2E Tests** - Comprehensive mobile coverage
 - ✅ **20+ Desktop E2E Tests** - Desktop functionality
 - ✅ **Automated on Commit** - Run on every commit
@@ -683,6 +754,7 @@
 - ✅ **Performance Benchmarks** - Measure performance
 
 ### Test Environments
+
 - ✅ **iOS Simulator** - Xcode simulators
 - ✅ **Android Emulator** - Android Studio emulators
 - ✅ **Real iOS Devices** - TestFlight testing
@@ -694,12 +766,14 @@
 ## Summary Statistics
 
 ### Code Statistics
+
 - **Total Files:** 487 new/modified files
 - **Lines Added:** +34,682 lines
 - **Lines Removed:** -2,145 lines
 - **Net Change:** +32,537 lines
 
 ### Platform Statistics
+
 - **iOS:** 127 files, 8,934 lines
 - **Android:** 98 files, 7,621 lines
 - **Electron:** 67 files, 5,498 lines
@@ -708,6 +782,7 @@
 - **CI/CD:** 8 workflows, 2,341 lines
 
 ### Features Count
+
 - **iOS Features:** 150+ features
 - **Android Features:** 140+ features
 - **Desktop Features:** 100+ features
@@ -715,6 +790,7 @@
 - **Analytics Events:** 10+ tracked events
 
 ### Test Coverage
+
 - **E2E Tests:** 50+ tests total
 - **Mobile Tests:** 30+ tests
 - **Desktop Tests:** 20+ tests
@@ -724,26 +800,27 @@
 
 ## Platform Support Matrix
 
-| Feature | iOS | Android | Desktop | Web |
-|---------|-----|---------|---------|-----|
-| **Push Notifications** | ✅ | ✅ | ✅ | ✅ |
-| **Biometric Auth** | ✅ | ✅ | ❌ | ❌ |
-| **Camera** | ✅ | ✅ | ✅ | ✅ |
-| **Voice Messages** | ✅ | ✅ | ✅ | ✅ |
-| **Offline Mode** | ✅ | ✅ | ✅ | ✅ |
-| **Background Sync** | ✅ | ✅ | ✅ | ⚠️ |
-| **Deep Linking** | ✅ | ✅ | ✅ | ✅ |
-| **File Sharing** | ✅ | ✅ | ✅ | ✅ |
-| **Rich Notifications** | ✅ | ✅ | ✅ | ⚠️ |
-| **Auto-Updates** | ✅* | ✅* | ✅ | N/A |
-| **Widgets** | ✅ | ✅ | ❌ | ❌ |
-| **System Tray** | ❌ | ❌ | ✅ | ❌ |
-| **Screen Sharing** | ❌** | ❌** | ✅ | ✅ |
+| Feature                | iOS    | Android | Desktop | Web |
+| ---------------------- | ------ | ------- | ------- | --- |
+| **Push Notifications** | ✅     | ✅      | ✅      | ✅  |
+| **Biometric Auth**     | ✅     | ✅      | ❌      | ❌  |
+| **Camera**             | ✅     | ✅      | ✅      | ✅  |
+| **Voice Messages**     | ✅     | ✅      | ✅      | ✅  |
+| **Offline Mode**       | ✅     | ✅      | ✅      | ✅  |
+| **Background Sync**    | ✅     | ✅      | ✅      | ⚠️  |
+| **Deep Linking**       | ✅     | ✅      | ✅      | ✅  |
+| **File Sharing**       | ✅     | ✅      | ✅      | ✅  |
+| **Rich Notifications** | ✅     | ✅      | ✅      | ⚠️  |
+| **Auto-Updates**       | ✅\*   | ✅\*    | ✅      | N/A |
+| **Widgets**            | ✅     | ✅      | ❌      | ❌  |
+| **System Tray**        | ❌     | ❌      | ✅      | ❌  |
+| **Screen Sharing**     | ❌\*\* | ❌\*\*  | ✅      | ✅  |
 
-*Via App Store/Play Store
-**Planned for future release
+\*Via App Store/Play Store
+\*\*Planned for future release
 
 Legend:
+
 - ✅ Fully supported
 - ⚠️ Partially supported (limitations)
 - ❌ Not supported
@@ -756,6 +833,7 @@ Legend:
 See [UPGRADE-GUIDE.md](./UPGRADE-GUIDE.md) for migration instructions and [DEPLOYMENT-GUIDE.md](../../deployment/) for deployment guides.
 
 For complete API documentation, see:
+
 - [Mobile API Reference](/docs/api/mobile-api.md)
 - [Platform Detection API](/docs/api/platform-detection.md)
 - [Analytics API](/docs/api/analytics-api.md)

@@ -2,6 +2,8 @@ import { io, Socket } from 'socket.io-client'
 import { SOCKET_CONFIG } from './config'
 import type { SocketEvent } from './events'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -106,7 +108,7 @@ class SocketManager {
     })
 
     socket.on('error', (error) => {
-      console.error('[Socket] Error:', error)
+      logger.error('[Socket] Error:', error)
       this.stats.failedConnections++
     })
 

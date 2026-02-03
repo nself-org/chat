@@ -12,13 +12,7 @@ export { OfflineIndicator, useOnlineStatus } from './offline-indicator'
 export { ConnectionLost, ConnectionStatusDot } from './connection-lost'
 
 // Not found and permission components
-export {
-  NotFound,
-  ChannelNotFound,
-  UserNotFound,
-  MessageNotFound,
-  FileNotFound,
-} from './not-found'
+export { NotFound, ChannelNotFound, UserNotFound, MessageNotFound, FileNotFound } from './not-found'
 export {
   PermissionDenied,
   Unauthorized,

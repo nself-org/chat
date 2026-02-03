@@ -146,14 +146,12 @@ export function EmojiPicker({
 
   // Get categories with recent
   const categories = useMemo(() => {
-    const cats = EMOJI_CATEGORIES
-      .map((cat) => ({
-        id: cat.id,
-        label: cat.name,
-        icon: cat.icon,
-        emojis: getEmojisByCategory(cat.id),
-      }))
-      .filter((cat) => cat.emojis.length > 0)
+    const cats = EMOJI_CATEGORIES.map((cat) => ({
+      id: cat.id,
+      label: cat.name,
+      icon: cat.icon,
+      emojis: getEmojisByCategory(cat.id),
+    })).filter((cat) => cat.emojis.length > 0)
 
     // Add recent category if there are recent emojis
     if (recentEmojis.length > 0) {
@@ -195,18 +193,18 @@ export function EmojiPicker({
         align={align}
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <div className="flex flex-col h-[420px]">
+        <div className="flex h-[420px] flex-col">
           {/* Header with Search and Skin Tone */}
-          <div className="p-3 border-b space-y-2">
+          <div className="space-y-2 border-b p-3">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 ref={searchInputRef}
                 placeholder="Search emoji..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-9"
+                className="h-9 pl-9"
               />
             </div>
 
@@ -219,17 +217,15 @@ export function EmojiPicker({
 
           {/* Quick Reactions */}
           {!searchQuery && showQuickReactions && (
-            <div className="p-3 border-b">
-              <div className="text-xs font-medium text-muted-foreground mb-2">
-                Quick Reactions
-              </div>
+            <div className="border-b p-3">
+              <div className="mb-2 text-xs font-medium text-muted-foreground">Quick Reactions</div>
               <div className="flex gap-1">
                 {QUICK_REACTIONS.map((emojiObj) => (
                   <button
                     key={emojiObj.emoji}
                     type="button"
                     onClick={() => handleSelectEmoji(applyEmojiSkinTone(emojiObj.emoji))}
-                    className="flex items-center justify-center w-10 h-10 text-2xl rounded hover:bg-accent transition-colors"
+                    className="flex h-10 w-10 items-center justify-center rounded text-2xl transition-colors hover:bg-accent"
                   >
                     {applyEmojiSkinTone(emojiObj.emoji)}
                   </button>
@@ -245,7 +241,7 @@ export function EmojiPicker({
               <div className="p-3">
                 {searchResults && searchResults.length > 0 ? (
                   <>
-                    <div className="text-xs font-medium text-muted-foreground mb-2">
+                    <div className="mb-2 text-xs font-medium text-muted-foreground">
                       Search Results ({searchResults.length})
                     </div>
                     <div className="grid grid-cols-8 gap-1">
@@ -265,7 +261,7 @@ export function EmojiPicker({
                     </div>
                   </>
                 ) : (
-                  <div className="text-center py-8 text-sm text-muted-foreground">
+                  <div className="py-8 text-center text-sm text-muted-foreground">
                     No emoji found for "{searchQuery}"
                   </div>
                 )}
@@ -276,14 +272,14 @@ export function EmojiPicker({
             <Tabs
               value={selectedCategory}
               onValueChange={(v) => setSelectedCategory(v as EmojiCategory)}
-              className="flex-1 flex flex-col"
+              className="flex flex-1 flex-col"
             >
-              <TabsList className="w-full justify-start rounded-none border-b h-auto p-1 bg-transparent flex-wrap">
+              <TabsList className="h-auto w-full flex-wrap justify-start rounded-none border-b bg-transparent p-1">
                 {categories.map((category) => (
                   <TabsTrigger
                     key={category.id}
                     value={category.id}
-                    className="rounded-sm data-[state=active]:bg-accent min-w-[40px]"
+                    className="min-w-[40px] rounded-sm data-[state=active]:bg-accent"
                     title={category.label}
                   >
                     <span className="text-lg">{category.icon}</span>
@@ -292,14 +288,10 @@ export function EmojiPicker({
               </TabsList>
 
               {categories.map((category) => (
-                <TabsContent
-                  key={category.id}
-                  value={category.id}
-                  className="flex-1 m-0 mt-0"
-                >
+                <TabsContent key={category.id} value={category.id} className="m-0 mt-0 flex-1">
                   <ScrollArea className="h-full">
                     <div className="p-3">
-                      <div className="text-xs font-medium text-muted-foreground mb-2">
+                      <div className="mb-2 text-xs font-medium text-muted-foreground">
                         {category.label}
                       </div>
                       <div className="grid grid-cols-8 gap-1">
@@ -308,9 +300,7 @@ export function EmojiPicker({
                             key={`${emojiData.emoji}-${index}`}
                             emoji={applyEmojiSkinTone(emojiData.emoji)}
                             label={emojiData.name}
-                            onClick={() =>
-                              handleSelectEmoji(applyEmojiSkinTone(emojiData.emoji))
-                            }
+                            onClick={() => handleSelectEmoji(applyEmojiSkinTone(emojiData.emoji))}
                           />
                         ))}
                       </div>
@@ -341,7 +331,7 @@ function EmojiButton({ emoji, label, onClick }: EmojiButtonProps) {
     <button
       type="button"
       onClick={onClick}
-      className="flex items-center justify-center w-10 h-10 text-2xl rounded hover:bg-accent transition-colors"
+      className="flex h-10 w-10 items-center justify-center rounded text-2xl transition-colors hover:bg-accent"
       title={label ? `:${label}:` : undefined}
     >
       {emoji}
@@ -374,7 +364,7 @@ function SkinToneSelector({ value, onChange }: SkinToneSelectorProps) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 px-2">
-          <span className="text-lg mr-1">{currentTone.emoji}</span>
+          <span className="mr-1 text-lg">{currentTone.emoji}</span>
           <span className="text-xs">{currentTone.label}</span>
         </Button>
       </DropdownMenuTrigger>
@@ -385,7 +375,7 @@ function SkinToneSelector({ value, onChange }: SkinToneSelectorProps) {
             onClick={() => onChange(item.tone)}
             className={cn('cursor-pointer', value === item.tone && 'bg-accent')}
           >
-            <span className="text-lg mr-2">{item.emoji}</span>
+            <span className="mr-2 text-lg">{item.emoji}</span>
             <span>{item.label}</span>
           </DropdownMenuItem>
         ))}

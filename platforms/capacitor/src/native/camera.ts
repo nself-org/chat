@@ -3,16 +3,16 @@
  * Handles photo/video capture and gallery access
  */
 
-import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera';
-import { Filesystem, Directory } from '@capacitor/filesystem';
-import { Capacitor } from '@capacitor/core';
+import { Camera, CameraResultType, CameraSource, Photo } from '@capacitor/camera'
+import { Filesystem, Directory } from '@capacitor/filesystem'
+import { Capacitor } from '@capacitor/core'
 
 export interface MediaFile {
-  uri: string;
-  base64?: string;
-  type: 'image' | 'video';
-  filename: string;
-  size?: number;
+  uri: string
+  base64?: string
+  type: 'image' | 'video'
+  filename: string
+  size?: number
 }
 
 class CameraService {
@@ -27,12 +27,12 @@ class CameraService {
         quality: 90,
         allowEditing: false,
         saveToGallery: true,
-      });
+      })
 
-      return this.processPhoto(photo);
+      return this.processPhoto(photo)
     } catch (error) {
-      console.error('Error taking photo:', error);
-      return null;
+      console.error('Error taking photo:', error)
+      return null
     }
   }
 
@@ -46,12 +46,12 @@ class CameraService {
         source: CameraSource.Photos,
         quality: 90,
         allowEditing: false,
-      });
+      })
 
-      return this.processPhoto(photo);
+      return this.processPhoto(photo)
     } catch (error) {
-      console.error('Error picking photo:', error);
-      return null;
+      console.error('Error picking photo:', error)
+      return null
     }
   }
 
@@ -64,16 +64,16 @@ class CameraService {
       // Capacitor Camera plugin doesn't support multiple selection natively
       // For web, we can use input[multiple]
       if (typeof window !== 'undefined' && !Capacitor.isNativePlatform()) {
-        return this.pickPhotosWeb(maxPhotos);
+        return this.pickPhotosWeb(maxPhotos)
       }
 
       // Fallback: single photo selection
-      console.warn('Multiple photo selection requires @capacitor-community/media plugin on native');
-      const photo = await this.pickPhoto();
-      return photo ? [photo] : [];
+      console.warn('Multiple photo selection requires @capacitor-community/media plugin on native')
+      const photo = await this.pickPhoto()
+      return photo ? [photo] : []
     } catch (error) {
-      console.error('Error picking photos:', error);
-      return [];
+      console.error('Error picking photos:', error)
+      return []
     }
   }
 
@@ -82,32 +82,32 @@ class CameraService {
    */
   private async pickPhotosWeb(maxPhotos: number): Promise<MediaFile[]> {
     return new Promise((resolve) => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.accept = 'image/*';
-      input.multiple = true;
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.accept = 'image/*'
+      input.multiple = true
 
       input.onchange = async (event) => {
-        const files = Array.from((event.target as HTMLInputElement).files || []);
-        const limited = files.slice(0, maxPhotos);
+        const files = Array.from((event.target as HTMLInputElement).files || [])
+        const limited = files.slice(0, maxPhotos)
 
         const mediaFiles = await Promise.all(
           limited.map(async (file) => {
-            const uri = URL.createObjectURL(file);
+            const uri = URL.createObjectURL(file)
             return {
               uri,
               type: 'image' as const,
               filename: file.name,
               size: file.size,
-            };
+            }
           })
-        );
+        )
 
-        resolve(mediaFiles);
-      };
+        resolve(mediaFiles)
+      }
 
-      input.click();
-    });
+      input.click()
+    })
   }
 
   /**
@@ -115,11 +115,11 @@ class CameraService {
    */
   async requestCameraPermission(): Promise<boolean> {
     try {
-      const permissions = await Camera.requestPermissions({ permissions: ['camera'] });
-      return permissions.camera === 'granted';
+      const permissions = await Camera.requestPermissions({ permissions: ['camera'] })
+      return permissions.camera === 'granted'
     } catch (error) {
-      console.error('Error requesting camera permission:', error);
-      return false;
+      console.error('Error requesting camera permission:', error)
+      return false
     }
   }
 
@@ -128,11 +128,11 @@ class CameraService {
    */
   async requestPhotoLibraryPermission(): Promise<boolean> {
     try {
-      const permissions = await Camera.requestPermissions({ permissions: ['photos'] });
-      return permissions.photos === 'granted';
+      const permissions = await Camera.requestPermissions({ permissions: ['photos'] })
+      return permissions.photos === 'granted'
     } catch (error) {
-      console.error('Error requesting photo library permission:', error);
-      return false;
+      console.error('Error requesting photo library permission:', error)
+      return false
     }
   }
 
@@ -141,11 +141,11 @@ class CameraService {
    */
   async checkCameraPermission(): Promise<boolean> {
     try {
-      const permissions = await Camera.checkPermissions();
-      return permissions.camera === 'granted';
+      const permissions = await Camera.checkPermissions()
+      return permissions.camera === 'granted'
     } catch (error) {
-      console.error('Error checking camera permission:', error);
-      return false;
+      console.error('Error checking camera permission:', error)
+      return false
     }
   }
 
@@ -154,11 +154,11 @@ class CameraService {
    */
   async checkPhotoLibraryPermission(): Promise<boolean> {
     try {
-      const permissions = await Camera.checkPermissions();
-      return permissions.photos === 'granted';
+      const permissions = await Camera.checkPermissions()
+      return permissions.photos === 'granted'
     } catch (error) {
-      console.error('Error checking photo library permission:', error);
-      return false;
+      console.error('Error checking photo library permission:', error)
+      return false
     }
   }
 
@@ -168,17 +168,17 @@ class CameraService {
   async getPhotoAsBase64(photo: Photo): Promise<string | null> {
     try {
       if (!photo.path) {
-        return null;
+        return null
       }
 
       const file = await Filesystem.readFile({
         path: photo.path,
-      });
+      })
 
-      return file.data;
+      return file.data
     } catch (error) {
-      console.error('Error converting photo to base64:', error);
-      return null;
+      console.error('Error converting photo to base64:', error)
+      return null
     }
   }
 
@@ -191,12 +191,12 @@ class CameraService {
         path: filename,
         data: base64Data,
         directory: Directory.Data,
-      });
+      })
 
-      return savedFile.uri;
+      return savedFile.uri
     } catch (error) {
-      console.error('Error saving photo:', error);
-      return null;
+      console.error('Error saving photo:', error)
+      return null
     }
   }
 
@@ -208,11 +208,11 @@ class CameraService {
       await Filesystem.deleteFile({
         path: filepath,
         directory: Directory.Data,
-      });
-      return true;
+      })
+      return true
     } catch (error) {
-      console.error('Error deleting photo:', error);
-      return false;
+      console.error('Error deleting photo:', error)
+      return false
     }
   }
 
@@ -224,11 +224,11 @@ class CameraService {
       const stat = await Filesystem.stat({
         path: filepath,
         directory: Directory.Data,
-      });
-      return stat.size;
+      })
+      return stat.size
     } catch (error) {
-      console.error('Error getting photo size:', error);
-      return null;
+      console.error('Error getting photo size:', error)
+      return null
     }
   }
 
@@ -237,18 +237,18 @@ class CameraService {
    */
   private async processPhoto(photo: Photo): Promise<MediaFile | null> {
     if (!photo.path) {
-      return null;
+      return null
     }
 
-    const filename = photo.path.split('/').pop() || `photo-${Date.now()}.jpg`;
+    const filename = photo.path.split('/').pop() || `photo-${Date.now()}.jpg`
 
     // Get file size if possible
-    let size: number | undefined;
+    let size: number | undefined
     try {
-      const stat = await Filesystem.stat({ path: photo.path });
-      size = stat.size;
+      const stat = await Filesystem.stat({ path: photo.path })
+      size = stat.size
     } catch (error) {
-      console.warn('Could not get file size:', error);
+      console.warn('Could not get file size:', error)
     }
 
     return {
@@ -257,7 +257,7 @@ class CameraService {
       type: 'image',
       filename,
       size,
-    };
+    }
   }
 
   /**
@@ -266,7 +266,7 @@ class CameraService {
   async compressImage(base64Data: string, quality: number = 0.7): Promise<string> {
     // Note: This is a basic implementation
     // For production, consider using a dedicated image compression plugin
-    return base64Data;
+    return base64Data
   }
 
   /**
@@ -277,19 +277,19 @@ class CameraService {
       // Note: This requires creating an Image element
       // In Capacitor, you might need to use a plugin for this
       return new Promise((resolve, reject) => {
-        const img = new Image();
+        const img = new Image()
         img.onload = () => {
-          resolve({ width: img.width, height: img.height });
-        };
-        img.onerror = reject;
-        img.src = uri;
-      });
+          resolve({ width: img.width, height: img.height })
+        }
+        img.onerror = reject
+        img.src = uri
+      })
     } catch (error) {
-      console.error('Error getting image dimensions:', error);
-      return null;
+      console.error('Error getting image dimensions:', error)
+      return null
     }
   }
 }
 
 // Export singleton instance
-export const camera = new CameraService();
+export const camera = new CameraService()

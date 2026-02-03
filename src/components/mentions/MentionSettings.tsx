@@ -20,7 +20,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import type { MentionPreferences, ChannelMentionSettings } from '@/lib/mentions/mention-types'
-import { DEFAULT_MENTION_PREFERENCES, DEFAULT_CHANNEL_MENTION_SETTINGS } from '@/lib/mentions/mention-types'
+import {
+  DEFAULT_MENTION_PREFERENCES,
+  DEFAULT_CHANNEL_MENTION_SETTINGS,
+} from '@/lib/mentions/mention-types'
 
 // ============================================================================
 // Types
@@ -94,7 +97,7 @@ export function MentionSettings({
 
       {/* Notification Settings */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+        <h4 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Notifications
         </h4>
 
@@ -133,7 +136,7 @@ export function MentionSettings({
 
       {/* Display Settings */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+        <h4 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Display
         </h4>
 
@@ -156,7 +159,7 @@ export function MentionSettings({
 
       {/* Sound Settings */}
       <div className="space-y-4">
-        <h4 className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+        <h4 className="text-sm font-medium uppercase tracking-wider text-muted-foreground">
           Sound
         </h4>
 
@@ -185,7 +188,7 @@ export function MentionSettings({
       </div>
 
       {/* Reset Button */}
-      <div className="pt-4 border-t">
+      <div className="border-t pt-4">
         <Button
           variant="outline"
           onClick={() => onPreferencesChange(DEFAULT_MENTION_PREFERENCES)}
@@ -253,13 +256,11 @@ export function ChannelMentionSettingsPanel({
       </div>
 
       {/* @everyone Settings */}
-      <div className="space-y-4 p-4 rounded-lg border">
+      <div className="space-y-4 rounded-lg border p-4">
         <div className="flex items-center justify-between">
           <div>
             <Label className="text-base">@everyone</Label>
-            <p className="text-xs text-muted-foreground">
-              Notifies all workspace members
-            </p>
+            <p className="text-xs text-muted-foreground">Notifies all workspace members</p>
           </div>
           <Switch
             checked={settings.allowEveryone}
@@ -269,7 +270,7 @@ export function ChannelMentionSettingsPanel({
         </div>
 
         {settings.allowEveryone && (
-          <div className="flex items-center justify-between pt-2 border-t">
+          <div className="flex items-center justify-between border-t pt-2">
             <Label className="text-sm">Minimum role required</Label>
             <Select
               value={settings.everyoneMinRole}
@@ -291,13 +292,11 @@ export function ChannelMentionSettingsPanel({
       </div>
 
       {/* @here Settings */}
-      <div className="space-y-4 p-4 rounded-lg border">
+      <div className="space-y-4 rounded-lg border p-4">
         <div className="flex items-center justify-between">
           <div>
             <Label className="text-base">@here</Label>
-            <p className="text-xs text-muted-foreground">
-              Notifies online members only
-            </p>
+            <p className="text-xs text-muted-foreground">Notifies online members only</p>
           </div>
           <Switch
             checked={settings.allowHere}
@@ -307,7 +306,7 @@ export function ChannelMentionSettingsPanel({
         </div>
 
         {settings.allowHere && (
-          <div className="flex items-center justify-between pt-2 border-t">
+          <div className="flex items-center justify-between border-t pt-2">
             <Label className="text-sm">Minimum role required</Label>
             <Select
               value={settings.hereMinRole}
@@ -329,13 +328,11 @@ export function ChannelMentionSettingsPanel({
       </div>
 
       {/* @channel Settings */}
-      <div className="space-y-4 p-4 rounded-lg border">
+      <div className="space-y-4 rounded-lg border p-4">
         <div className="flex items-center justify-between">
           <div>
             <Label className="text-base">@channel</Label>
-            <p className="text-xs text-muted-foreground">
-              Notifies all channel members
-            </p>
+            <p className="text-xs text-muted-foreground">Notifies all channel members</p>
           </div>
           <Switch
             checked={settings.allowChannel}
@@ -345,7 +342,7 @@ export function ChannelMentionSettingsPanel({
         </div>
 
         {settings.allowChannel && (
-          <div className="flex items-center justify-between pt-2 border-t">
+          <div className="flex items-center justify-between border-t pt-2">
             <Label className="text-sm">Minimum role required</Label>
             <Select
               value={settings.channelMinRole}
@@ -367,7 +364,7 @@ export function ChannelMentionSettingsPanel({
       </div>
 
       {/* Reset Button */}
-      <div className="pt-4 border-t">
+      <div className="border-t pt-4">
         <Button
           variant="outline"
           onClick={() => onSettingsChange(DEFAULT_CHANNEL_MENTION_SETTINGS)}
@@ -392,24 +389,14 @@ interface SettingRowProps {
   disabled?: boolean
 }
 
-function SettingRow({
-  label,
-  description,
-  checked,
-  onCheckedChange,
-  disabled,
-}: SettingRowProps) {
+function SettingRow({ label, description, checked, onCheckedChange, disabled }: SettingRowProps) {
   return (
     <div className="flex items-center justify-between">
       <div>
         <Label className="text-sm font-medium">{label}</Label>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
-      <Switch
-        checked={checked}
-        onCheckedChange={onCheckedChange}
-        disabled={disabled}
-      />
+      <Switch checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} />
     </div>
   )
 }

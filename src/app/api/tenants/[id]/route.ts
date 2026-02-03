@@ -11,6 +11,8 @@ import { getTenantId } from '@/lib/tenants/tenant-middleware'
 import type { UpdateTenantRequest } from '@/lib/tenants/types'
 import { z } from 'zod'
 
+import { logger } from '@/lib/logger'
+
 const updateTenantSchema = z.object({
   name: z.string().min(2).max(255).optional(),
   customDomain: z.string().max(255).optional(),
@@ -29,10 +31,7 @@ const updateTenantSchema = z.object({
   metadata: z.record(z.any()).optional(),
 })
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const tenantService = getTenantService()
@@ -40,24 +39,18 @@ export async function GET(
     // Verify tenant access
     const requestTenantId = getTenantId(request)
     if (requestTenantId !== id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
     const tenant = await tenantService.getTenantById(id)
 
     if (!tenant) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
     }
 
     return NextResponse.json(tenant)
   } catch (error: any) {
-    console.error('Error fetching tenant:', error)
+    logger.error('Error fetching tenant:', error)
     return NextResponse.json(
       { error: 'Failed to fetch tenant', details: error.message },
       { status: 500 }
@@ -65,10 +58,7 @@ export async function GET(
   }
 }
 
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const body = await request.json()
@@ -76,10 +66,7 @@ export async function PUT(
     // Verify tenant access
     const requestTenantId = getTenantId(request)
     if (requestTenantId !== id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
     // Validate request
@@ -103,7 +90,7 @@ export async function PUT(
 
     return NextResponse.json(tenant)
   } catch (error: any) {
-    console.error('Error updating tenant:', error)
+    logger.error('Error updating tenant:', error)
     return NextResponse.json(
       { error: 'Failed to update tenant', details: error.message },
       { status: 500 }
@@ -121,10 +108,7 @@ export async function DELETE(
     // Verify tenant access
     const requestTenantId = getTenantId(request)
     if (requestTenantId !== id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
     }
 
     // Delete tenant (soft delete by default)
@@ -133,7 +117,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error: any) {
-    console.error('Error deleting tenant:', error)
+    logger.error('Error deleting tenant:', error)
     return NextResponse.json(
       { error: 'Failed to delete tenant', details: error.message },
       { status: 500 }

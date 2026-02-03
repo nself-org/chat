@@ -140,14 +140,14 @@ Before deploying, ensure you have:
 
 These variables **must** be set for nchat to work:
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_USE_DEV_AUTH` | Enable dev auth (set to `false` for production) | `false` |
-| `NEXT_PUBLIC_APP_NAME` | Your app name | `nchat` |
-| `NEXT_PUBLIC_APP_URL` | Your deployment URL | `https://nchat.vercel.app` |
-| `NEXT_PUBLIC_GRAPHQL_URL` | Hasura GraphQL endpoint | `https://api.yourproject.nhost.run/v1/graphql` |
-| `NEXT_PUBLIC_AUTH_URL` | Authentication service URL | `https://auth.yourproject.nhost.run/v1/auth` |
-| `NEXT_PUBLIC_STORAGE_URL` | File storage URL | `https://storage.yourproject.nhost.run/v1/storage` |
+| Variable                   | Description                                     | Example                                            |
+| -------------------------- | ----------------------------------------------- | -------------------------------------------------- |
+| `NEXT_PUBLIC_USE_DEV_AUTH` | Enable dev auth (set to `false` for production) | `false`                                            |
+| `NEXT_PUBLIC_APP_NAME`     | Your app name                                   | `nchat`                                            |
+| `NEXT_PUBLIC_APP_URL`      | Your deployment URL                             | `https://nchat.vercel.app`                         |
+| `NEXT_PUBLIC_GRAPHQL_URL`  | Hasura GraphQL endpoint                         | `https://api.yourproject.nhost.run/v1/graphql`     |
+| `NEXT_PUBLIC_AUTH_URL`     | Authentication service URL                      | `https://auth.yourproject.nhost.run/v1/auth`       |
+| `NEXT_PUBLIC_STORAGE_URL`  | File storage URL                                | `https://storage.yourproject.nhost.run/v1/storage` |
 
 ### Adding Variables in Vercel Dashboard
 
@@ -266,6 +266,7 @@ This enables 8 test users with auto-login. **DO NOT use in production!**
    Vercel will show you DNS records to add:
 
    **For subdomain (chat.yourdomain.com)**:
+
    ```
    Type: CNAME
    Name: chat
@@ -273,6 +274,7 @@ This enables 8 test users with auto-login. **DO NOT use in production!**
    ```
 
    **For root domain (yourdomain.com)**:
+
    ```
    Type: A
    Name: @
@@ -287,6 +289,7 @@ This enables 8 test users with auto-login. **DO NOT use in production!**
 5. **Update Environment Variable**
 
    Update `NEXT_PUBLIC_APP_URL` to your custom domain:
+
    ```bash
    NEXT_PUBLIC_APP_URL=https://chat.yourdomain.com
    ```
@@ -342,6 +345,7 @@ For production error tracking:
 **Problem**: Vercel doesn't recognize pnpm
 
 **Solution**: Add `package.json` field:
+
 ```json
 {
   "packageManager": "pnpm@9.15.4"
@@ -357,6 +361,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: Backend URLs are not set or incorrect
 
 **Solution**:
+
 1. Check environment variables in Vercel
 2. Ensure URLs are HTTPS (not HTTP)
 3. Test URLs in browser/Postman
@@ -369,6 +374,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: `NEXT_PUBLIC_USE_DEV_AUTH` is `true` in production
 
 **Solution**:
+
 1. Set `NEXT_PUBLIC_USE_DEV_AUTH=false`
 2. Ensure `NEXT_PUBLIC_AUTH_URL` is correct
 3. Redeploy
@@ -380,6 +386,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: Storage URL is incorrect or CORS not configured
 
 **Solution**:
+
 1. Verify `NEXT_PUBLIC_STORAGE_URL`
 2. Configure CORS in your storage service:
    ```json
@@ -397,6 +404,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: API routes take too long (10s free tier, 60s Pro)
 
 **Solution**:
+
 1. Optimize database queries
 2. Add indexes to frequently queried fields
 3. Implement caching (Redis/Vercel KV)
@@ -409,6 +417,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: Changed env vars but app still uses old values
 
 **Solution**:
+
 1. Redeploy after changing env vars
 2. Clear Vercel cache: `vercel --force`
 3. Check variable scope (Production/Preview/Development)
@@ -420,6 +429,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: Dynamic routes not working
 
 **Solution**:
+
 1. Ensure `next.config.js` doesn't override routes
 2. Check file names in `src/app/` match URL structure
 3. Clear `.next` cache and rebuild
@@ -431,6 +441,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: WebSocket connections fail
 
 **Solution**:
+
 1. Vercel doesn't support WebSockets on edge
 2. Use Hasura Cloud or separate WebSocket server
 3. Configure WebSocket URL separately:
@@ -445,6 +456,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: Build warns about large bundle size
 
 **Solution**:
+
 1. Enable bundle analysis:
    ```bash
    ANALYZE=true pnpm build
@@ -460,6 +472,7 @@ Or create `pnpm-lock.yaml` in root directory.
 **Problem**: Too many requests/bandwidth
 
 **Solution**:
+
 1. Implement caching with `Cache-Control` headers
 2. Use Vercel Edge Config for static data
 3. Upgrade to Pro plan for higher limits
@@ -536,7 +549,7 @@ For faster API routes, use Edge Runtime:
 
 ```typescript
 // src/app/api/config/route.ts
-export const runtime = 'edge';
+export const runtime = 'edge'
 
 export async function GET(request: Request) {
   // Your API logic
@@ -548,6 +561,7 @@ export async function GET(request: Request) {
 Every git push to a branch creates a preview deployment:
 
 1. Push to any branch:
+
    ```bash
    git checkout -b feature/new-feature
    git push origin feature/new-feature
@@ -571,6 +585,7 @@ Enable deployment protection:
 ### Performance Optimizations
 
 1. **Enable Image Optimization**
+
    ```typescript
    // next.config.js
    module.exports = {
@@ -578,10 +593,11 @@ Enable deployment protection:
        domains: ['storage.yourproject.nhost.run'],
        formats: ['image/avif', 'image/webp'],
      },
-   };
+   }
    ```
 
 2. **Enable Compression**
+
    ```json
    // vercel.json
    {
@@ -600,10 +616,11 @@ Enable deployment protection:
    ```
 
 3. **Use Vercel Edge Config**
-   ```typescript
-   import { get } from '@vercel/edge-config';
 
-   const config = await get('app-config');
+   ```typescript
+   import { get } from '@vercel/edge-config'
+
+   const config = await get('app-config')
    ```
 
 ---
@@ -631,19 +648,19 @@ Before going live, verify:
 
 ### Vercel Pricing
 
-| Tier | Price | Limits |
-|------|-------|--------|
-| **Hobby** | Free | 100 GB bandwidth, 1000 serverless functions |
-| **Pro** | $20/month | 1 TB bandwidth, 1M serverless functions |
-| **Enterprise** | Custom | Unlimited, SLA, custom support |
+| Tier           | Price     | Limits                                      |
+| -------------- | --------- | ------------------------------------------- |
+| **Hobby**      | Free      | 100 GB bandwidth, 1000 serverless functions |
+| **Pro**        | $20/month | 1 TB bandwidth, 1M serverless functions     |
+| **Enterprise** | Custom    | Unlimited, SLA, custom support              |
 
 ### Backend Costs
 
-| Option | Price | Notes |
-|--------|-------|-------|
-| **Nhost Free** | Free | 1 GB database, 1 GB storage |
-| **Nhost Starter** | $25/month | 8 GB database, 20 GB storage |
-| **Self-hosted** | $5-50/month | VPS costs (DigitalOcean, AWS, etc.) |
+| Option            | Price       | Notes                               |
+| ----------------- | ----------- | ----------------------------------- |
+| **Nhost Free**    | Free        | 1 GB database, 1 GB storage         |
+| **Nhost Starter** | $25/month   | 8 GB database, 20 GB storage        |
+| **Self-hosted**   | $5-50/month | VPS costs (DigitalOcean, AWS, etc.) |
 
 **Total Estimated Cost for Small Team**: $0-45/month
 

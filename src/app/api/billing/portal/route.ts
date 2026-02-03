@@ -10,6 +10,8 @@ import { getTenantService } from '@/lib/tenants/tenant-service'
 import { getTenantId } from '@/lib/tenants/tenant-middleware'
 import { z } from 'zod'
 
+import { logger } from '@/lib/logger'
+
 const portalSchema = z.object({
   returnUrl: z.string().url(),
 })
@@ -19,10 +21,7 @@ export async function POST(request: NextRequest) {
     const tenantId = getTenantId(request)
 
     if (!tenantId) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Tenant not found' }, { status: 400 })
     }
 
     const body = await request.json()
@@ -47,17 +46,11 @@ export async function POST(request: NextRequest) {
     const tenant = await tenantService.getTenantById(tenantId)
 
     if (!tenant) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
     }
 
     if (!tenant.billing.stripeCustomerId) {
-      return NextResponse.json(
-        { error: 'No billing account found' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'No billing account found' }, { status: 400 })
     }
 
     // Create portal session
@@ -68,7 +61,7 @@ export async function POST(request: NextRequest) {
       url: session.url,
     })
   } catch (error: any) {
-    console.error('Error creating portal session:', error)
+    logger.error('Error creating portal session:', error)
     return NextResponse.json(
       { error: 'Failed to create portal session', details: error.message },
       { status: 500 }

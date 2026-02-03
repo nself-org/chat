@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import React, { useEffect } from 'react';
-import { useSystemTray } from '@/hooks/useSystemTray';
-import { useTauri } from '@/hooks/useTauri';
-import type { UserStatus } from '@/lib/tauri';
+import React, { useEffect } from 'react'
+import { useSystemTray } from '@/hooks/useSystemTray'
+import { useTauri } from '@/hooks/useTauri'
+import type { UserStatus } from '@/lib/tauri'
 
 export interface TrayMenuProps {
-  unreadCount?: number;
-  userStatus?: UserStatus;
-  onNewMessage?: () => void;
-  onNewChannel?: () => void;
-  onStatusChange?: (status: UserStatus) => void;
-  onPreferences?: () => void;
+  unreadCount?: number
+  userStatus?: UserStatus
+  onNewMessage?: () => void
+  onNewChannel?: () => void
+  onStatusChange?: (status: UserStatus) => void
+  onPreferences?: () => void
 }
 
 /**
@@ -26,30 +26,30 @@ export function TrayMenu({
   onStatusChange,
   onPreferences,
 }: TrayMenuProps) {
-  const { isTauri } = useTauri();
+  const { isTauri } = useTauri()
   const { setUnread, setStatus, isAvailable } = useSystemTray({
     onNewMessage,
     onNewChannel,
     onStatusChange,
     onPreferences,
-  });
+  })
 
   // Sync unread count to tray
   useEffect(() => {
     if (isAvailable) {
-      setUnread(unreadCount);
+      setUnread(unreadCount)
     }
-  }, [unreadCount, isAvailable, setUnread]);
+  }, [unreadCount, isAvailable, setUnread])
 
   // Sync user status to tray
   useEffect(() => {
     if (isAvailable) {
-      setStatus(userStatus);
+      setStatus(userStatus)
     }
-  }, [userStatus, isAvailable, setStatus]);
+  }, [userStatus, isAvailable, setStatus])
 
   // This component doesn't render anything
-  return null;
+  return null
 }
 
-export default TrayMenu;
+export default TrayMenu

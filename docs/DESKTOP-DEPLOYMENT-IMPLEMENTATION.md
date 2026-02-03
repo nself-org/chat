@@ -184,6 +184,7 @@ This document summarizes the complete desktop deployment implementation for ncha
 **File**: `scripts/deploy-desktop-electron.sh`
 
 **Features**:
+
 - ✅ Dependency validation
 - ✅ Environment loading (.env files)
 - ✅ Clean build option
@@ -199,6 +200,7 @@ This document summarizes the complete desktop deployment implementation for ncha
 - ✅ Build summary
 
 **Usage**:
+
 ```bash
 ./scripts/deploy-desktop-electron.sh [options]
 
@@ -218,6 +220,7 @@ Options:
 **File**: `scripts/deploy-desktop-tauri.sh`
 
 **Features**:
+
 - ✅ Rust toolchain validation
 - ✅ Tauri CLI installation
 - ✅ Environment loading
@@ -235,6 +238,7 @@ Options:
 - ✅ Comprehensive logging
 
 **Usage**:
+
 ```bash
 ./scripts/deploy-desktop-tauri.sh [options]
 
@@ -258,6 +262,7 @@ Options:
 **File**: `platforms/electron/resources/entitlements.mac.plist`
 
 **Permissions**:
+
 - ✅ JIT compilation (JavaScript engines)
 - ✅ Unsigned executable memory (V8)
 - ✅ Network client/server
@@ -276,16 +281,19 @@ Options:
 Documented variables for code signing:
 
 **macOS**:
+
 - `APPLE_ID` - Apple Developer account email
 - `APPLE_ID_PASSWORD` - App-specific password
 - `APPLE_TEAM_ID` - Developer team ID
 - `APPLE_SIGNING_IDENTITY` - Code signing identity
 
 **Windows**:
+
 - `WIN_CSC_LINK` - Path to PFX certificate
 - `WIN_CSC_KEY_PASSWORD` - Certificate password
 
 **Linux**:
+
 - `GPG_KEY_ID` - GPG key ID for signing
 - `GPG_PASSPHRASE` - GPG key passphrase
 
@@ -296,6 +304,7 @@ Documented variables for code signing:
 **File**: `docs/guides/deployment/desktop-deployment.md`
 
 **Contents** (120+ sections):
+
 - Overview and comparison (Electron vs Tauri)
 - Prerequisites and setup
 - Environment configuration
@@ -314,6 +323,7 @@ Documented variables for code signing:
 **File**: `docs/guides/deployment/code-signing.md`
 
 **Contents** (100+ sections):
+
 - Why code signing is essential
 - macOS code signing setup (8 steps)
 - Windows code signing setup (6 steps)
@@ -329,6 +339,7 @@ Documented variables for code signing:
 **File**: `scripts/README-DESKTOP-DEPLOYMENT.md`
 
 **Contents**:
+
 - Script overview
 - Quick start guide
 - All options reference
@@ -348,12 +359,14 @@ Documented variables for code signing:
 **Features**:
 
 #### Overview Tab
+
 - Platform comparison (Electron vs Tauri)
 - System requirements
 - Supported targets and formats
 - Bundle size comparison
 
 #### Build Tab
+
 - Visual build configuration
 - Platform selection (Electron/Tauri)
 - Target selection (mac/win/linux/all)
@@ -368,6 +381,7 @@ Documented variables for code signing:
 - Artifact list
 
 #### Code Signing Tab
+
 - macOS credentials form
   - Apple ID
   - App-specific password
@@ -385,11 +399,13 @@ Documented variables for code signing:
 - Security warnings
 
 #### Releases Tab
+
 - Release management (placeholder)
 - GitHub integration link
 - Future feature notice
 
 **UI Components Used**:
+
 - Card, CardHeader, CardContent
 - Tabs, TabsList, TabsContent
 - Button, Input, Label
@@ -461,6 +477,7 @@ nself-chat/
 ## Technology Stack
 
 ### Electron Stack
+
 - **Framework**: Electron 28.2.0
 - **Runtime**: Chromium + Node.js
 - **Language**: TypeScript 5.3.3
@@ -470,6 +487,7 @@ nself-chat/
 - **Builder**: electron-builder 24.9.1
 
 ### Tauri Stack
+
 - **Framework**: Tauri 2.0
 - **Backend**: Rust 1.70+
 - **Frontend**: WebView (native)
@@ -480,6 +498,7 @@ nself-chat/
   - Updater, Global Shortcut, Store, Log
 
 ### Common Stack
+
 - **Frontend**: Next.js 15.1.6
 - **UI Framework**: React 19.0.0
 - **Styling**: Tailwind CSS 3.4.17
@@ -488,27 +507,31 @@ nself-chat/
 ## Platform Support
 
 ### Electron
-| Platform | Architectures | Formats | Status |
-|----------|--------------|---------|--------|
-| macOS | x64, arm64 | DMG, ZIP | ✅ Ready |
-| Windows | x64, ia32 | NSIS, Portable | ✅ Ready |
-| Linux | x64 | AppImage, deb, rpm, tar.gz | ✅ Ready |
+
+| Platform | Architectures | Formats                    | Status   |
+| -------- | ------------- | -------------------------- | -------- |
+| macOS    | x64, arm64    | DMG, ZIP                   | ✅ Ready |
+| Windows  | x64, ia32     | NSIS, Portable             | ✅ Ready |
+| Linux    | x64           | AppImage, deb, rpm, tar.gz | ✅ Ready |
 
 ### Tauri
-| Platform | Architectures | Formats | Status |
-|----------|--------------|---------|--------|
-| macOS | Universal (x64 + arm64) | DMG, App | ✅ Ready |
-| Windows | x64 | MSI, NSIS | ✅ Ready |
-| Linux | x64 | deb, AppImage | ✅ Ready |
+
+| Platform | Architectures           | Formats       | Status   |
+| -------- | ----------------------- | ------------- | -------- |
+| macOS    | Universal (x64 + arm64) | DMG, App      | ✅ Ready |
+| Windows  | x64                     | MSI, NSIS     | ✅ Ready |
+| Linux    | x64                     | deb, AppImage | ✅ Ready |
 
 ## Bundle Sizes
 
 ### Electron
+
 - **macOS**: ~150 MB (DMG), ~200 MB (installed)
 - **Windows**: ~140 MB (installer), ~180 MB (installed)
 - **Linux**: ~130 MB (AppImage), ~170 MB (installed)
 
 ### Tauri
+
 - **macOS**: ~15 MB (DMG), ~20 MB (installed)
 - **Windows**: ~12 MB (installer), ~18 MB (installed)
 - **Linux**: ~10 MB (AppImage), ~15 MB (installed)
@@ -517,21 +540,21 @@ nself-chat/
 
 ## Features Comparison
 
-| Feature | Electron | Tauri |
-|---------|----------|-------|
-| Window Management | ✅ Complete | ✅ Complete |
-| Auto-Updates | ✅ GitHub Releases | ✅ Signed Manifests |
-| System Tray | ✅ Full Featured | ✅ Full Featured |
-| Notifications | ✅ Rich Notifications | ✅ System Notifications |
-| Deep Linking | ✅ Custom Protocol | ✅ Custom Protocol |
-| Menu Bar | ✅ Native Menus | ✅ Native Menus |
-| Auto-Launch | ✅ Cross-Platform | ✅ Cross-Platform |
-| Global Shortcuts | ✅ Customizable | ✅ Customizable |
-| Code Signing | ✅ Automated | ✅ Automated |
-| Bundle Size | ~150-200 MB | ~10-20 MB |
-| Startup Time | 1-2 seconds | <1 second |
-| Memory Usage | ~150-300 MB | ~50-100 MB |
-| Ecosystem | Mature | Growing |
+| Feature           | Electron              | Tauri                   |
+| ----------------- | --------------------- | ----------------------- |
+| Window Management | ✅ Complete           | ✅ Complete             |
+| Auto-Updates      | ✅ GitHub Releases    | ✅ Signed Manifests     |
+| System Tray       | ✅ Full Featured      | ✅ Full Featured        |
+| Notifications     | ✅ Rich Notifications | ✅ System Notifications |
+| Deep Linking      | ✅ Custom Protocol    | ✅ Custom Protocol      |
+| Menu Bar          | ✅ Native Menus       | ✅ Native Menus         |
+| Auto-Launch       | ✅ Cross-Platform     | ✅ Cross-Platform       |
+| Global Shortcuts  | ✅ Customizable       | ✅ Customizable         |
+| Code Signing      | ✅ Automated          | ✅ Automated            |
+| Bundle Size       | ~150-200 MB           | ~10-20 MB               |
+| Startup Time      | 1-2 seconds           | <1 second               |
+| Memory Usage      | ~150-300 MB           | ~50-100 MB              |
+| Ecosystem         | Mature                | Growing                 |
 
 ## Deployment Workflow
 
@@ -594,6 +617,7 @@ git push origin v1.2.3
 ## Security Considerations
 
 ### Code Signing
+
 - ✅ All executables signed with valid certificates
 - ✅ macOS: Developer ID Application certificate
 - ✅ macOS: Notarized with Apple
@@ -601,12 +625,14 @@ git push origin v1.2.3
 - ✅ Linux: GPG signed packages (optional)
 
 ### Update Security
+
 - ✅ Electron: HTTPS-only update server (GitHub)
 - ✅ Tauri: Cryptographically signed updates
 - ✅ Version verification
 - ✅ Rollback support
 
 ### Sandboxing
+
 - ✅ Context isolation enabled
 - ✅ Node integration disabled in renderer
 - ✅ Webview tag disabled
@@ -614,6 +640,7 @@ git push origin v1.2.3
 - ✅ Preload script for secure IPC
 
 ### Network Security
+
 - ✅ CSP headers configured
 - ✅ HTTPS-only connections
 - ✅ Certificate pinning (optional)
@@ -622,6 +649,7 @@ git push origin v1.2.3
 ## Performance Optimizations
 
 ### Electron
+
 - ✅ V8 code caching enabled
 - ✅ Lazy loading of modules
 - ✅ Hardware acceleration configurable
@@ -629,6 +657,7 @@ git push origin v1.2.3
 - ✅ ASAR archive compression
 
 ### Tauri
+
 - ✅ Release profile optimizations (LTO, opt-level=z)
 - ✅ Binary stripping
 - ✅ Single codegen unit
@@ -637,6 +666,7 @@ git push origin v1.2.3
 ## Future Enhancements
 
 ### Planned Features
+
 - [ ] Windows Store submission
 - [ ] Mac App Store submission
 - [ ] Linux Snap/Flatpak packages
@@ -647,6 +677,7 @@ git push origin v1.2.3
 - [ ] Beta testing channels
 
 ### Potential Improvements
+
 - [ ] Differential updates (delta patches)
 - [ ] Background update downloads
 - [ ] Update scheduling
@@ -658,16 +689,19 @@ git push origin v1.2.3
 ## Resources
 
 ### Documentation
+
 - [Electron Docs](https://www.electronjs.org/docs)
 - [Tauri Docs](https://tauri.app/v1/guides/)
 - [electron-builder](https://www.electron.build/)
 
 ### Tools
+
 - [Xcode](https://developer.apple.com/xcode/) (macOS development)
 - [Rust](https://www.rust-lang.org/) (Tauri development)
 - [GitHub Actions](https://github.com/features/actions) (CI/CD)
 
 ### Community
+
 - [Electron Discord](https://discord.gg/electron)
 - [Tauri Discord](https://discord.com/invite/tauri)
 - [nchat Discord](https://discord.gg/nself)

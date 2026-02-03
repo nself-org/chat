@@ -76,7 +76,12 @@ export { ProfileLayout } from './ProfileLayout'
 export type { ProfileLayoutProps, ProfileLayoutOption } from './ProfileLayout'
 
 export { ProfileVisibility } from './ProfileVisibility'
-export type { ProfileVisibilityProps, ProfileVisibilitySettings, VisibilityLevel, ActivityVisibility } from './ProfileVisibility'
+export type {
+  ProfileVisibilityProps,
+  ProfileVisibilitySettings,
+  VisibilityLevel,
+  ActivityVisibility,
+} from './ProfileVisibility'
 
 export { ProfileSections } from './ProfileSections'
 export type { ProfileSectionsProps, ProfileSectionsSettings } from './ProfileSections'

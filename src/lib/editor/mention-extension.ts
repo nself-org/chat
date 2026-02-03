@@ -30,10 +30,7 @@ import type {
   MentionPermissions,
 } from '@/lib/mentions/mention-types'
 import { GROUP_MENTIONS } from '@/lib/mentions/mention-types'
-import {
-  filterMentionSuggestions,
-  addRecentMention,
-} from '@/lib/mentions/mention-autocomplete'
+import { filterMentionSuggestions, addRecentMention } from '@/lib/mentions/mention-autocomplete'
 
 // ============================================================================
 // Types
@@ -102,9 +99,7 @@ export const ChannelMentionPluginKey = new PluginKey('channelMention')
 /**
  * Create the user mention extension (@username, @everyone, @here)
  */
-export function createUserMentionExtension(
-  options: UserMentionExtensionOptions
-) {
+export function createUserMentionExtension(options: UserMentionExtensionOptions) {
   const {
     getUsers,
     getPermissions = () => ({
@@ -207,15 +202,8 @@ export function createUserMentionExtension(
 /**
  * Create the channel mention extension (#channel)
  */
-export function createChannelMentionExtension(
-  options: ChannelMentionExtensionOptions
-) {
-  const {
-    getChannels,
-    onSelect,
-    suggestionRenderer,
-    HTMLAttributes = {},
-  } = options
+export function createChannelMentionExtension(options: ChannelMentionExtensionOptions) {
+  const { getChannels, onSelect, suggestionRenderer, HTMLAttributes = {} } = options
 
   // Create a custom extension that extends Mention with a different name
   const ChannelMention = Mention.extend({

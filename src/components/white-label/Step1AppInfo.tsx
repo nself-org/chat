@@ -58,29 +58,27 @@ export function Step1AppInfo({ onValidChange, className }: Step1AppInfoProps) {
     <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-sky-400 to-sky-600 rounded-xl mb-4 shadow-lg">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-sky-400 to-sky-600 shadow-lg">
           <Type className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-          App Information
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">App Information</h2>
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Give your app a name and tagline that will appear across your platform.
         </p>
       </div>
 
       {/* Form */}
-      <div className="max-w-md mx-auto space-y-5">
+      <div className="mx-auto max-w-md space-y-5">
         {/* App Name */}
         <div>
           <label
             htmlFor="appName"
-            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+            className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
           >
             App Name <span className="text-red-500">*</span>
           </label>
           <div className="relative">
-            <Type className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+            <Type className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               id="appName"
               type="text"
@@ -88,16 +86,12 @@ export function Step1AppInfo({ onValidChange, className }: Step1AppInfoProps) {
               onChange={(e) => handleChange('appName', e.target.value)}
               placeholder="My App"
               className={cn(
-                'w-full pl-10 pr-4 py-2.5 border rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-colors',
-                errors.appName
-                  ? 'border-red-500'
-                  : 'border-zinc-200 dark:border-zinc-700'
+                'w-full rounded-lg border bg-white py-2.5 pl-10 pr-4 text-zinc-900 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-zinc-800 dark:text-zinc-100',
+                errors.appName ? 'border-red-500' : 'border-zinc-200 dark:border-zinc-700'
               )}
             />
           </div>
-          {errors.appName && (
-            <p className="mt-1 text-sm text-red-500">{errors.appName}</p>
-          )}
+          {errors.appName && <p className="mt-1 text-sm text-red-500">{errors.appName}</p>}
           <p className="mt-1 text-xs text-zinc-500">
             {config.appInfo.appName.length}/50 characters
           </p>
@@ -107,7 +101,7 @@ export function Step1AppInfo({ onValidChange, className }: Step1AppInfoProps) {
         <div>
           <label
             htmlFor="tagline"
-            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+            className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
           >
             Tagline
           </label>
@@ -120,16 +114,12 @@ export function Step1AppInfo({ onValidChange, className }: Step1AppInfoProps) {
               onChange={(e) => handleChange('tagline', e.target.value)}
               placeholder="Your catchy tagline here"
               className={cn(
-                'w-full pl-10 pr-4 py-2.5 border rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-colors',
-                errors.tagline
-                  ? 'border-red-500'
-                  : 'border-zinc-200 dark:border-zinc-700'
+                'w-full rounded-lg border bg-white py-2.5 pl-10 pr-4 text-zinc-900 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-zinc-800 dark:text-zinc-100',
+                errors.tagline ? 'border-red-500' : 'border-zinc-200 dark:border-zinc-700'
               )}
             />
           </div>
-          {errors.tagline && (
-            <p className="mt-1 text-sm text-red-500">{errors.tagline}</p>
-          )}
+          {errors.tagline && <p className="mt-1 text-sm text-red-500">{errors.tagline}</p>}
           <p className="mt-1 text-xs text-zinc-500">
             {config.appInfo.tagline.length}/100 characters
           </p>
@@ -139,7 +129,7 @@ export function Step1AppInfo({ onValidChange, className }: Step1AppInfoProps) {
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2"
+            className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
           >
             Description <span className="text-zinc-400">(optional)</span>
           </label>
@@ -152,16 +142,12 @@ export function Step1AppInfo({ onValidChange, className }: Step1AppInfoProps) {
               placeholder="A brief description of your app..."
               rows={3}
               className={cn(
-                'w-full pl-10 pr-4 py-2.5 border rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500 transition-colors resize-none',
-                errors.description
-                  ? 'border-red-500'
-                  : 'border-zinc-200 dark:border-zinc-700'
+                'w-full resize-none rounded-lg border bg-white py-2.5 pl-10 pr-4 text-zinc-900 transition-colors focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-zinc-800 dark:text-zinc-100',
+                errors.description ? 'border-red-500' : 'border-zinc-200 dark:border-zinc-700'
               )}
             />
           </div>
-          {errors.description && (
-            <p className="mt-1 text-sm text-red-500">{errors.description}</p>
-          )}
+          {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
           <p className="mt-1 text-xs text-zinc-500">
             {(config.appInfo.description || '').length}/500 characters
           </p>
@@ -169,22 +155,20 @@ export function Step1AppInfo({ onValidChange, className }: Step1AppInfoProps) {
       </div>
 
       {/* Preview */}
-      <div className="max-w-md mx-auto mt-8">
-        <div className="bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/30 dark:to-sky-900/30 border border-sky-200 dark:border-sky-800 rounded-xl p-5">
-          <h3 className="text-sm font-medium text-sky-900 dark:text-sky-100 mb-3">
-            Preview
-          </h3>
-          <div className="bg-white dark:bg-zinc-800 rounded-lg p-4 shadow-sm">
+      <div className="mx-auto mt-8 max-w-md">
+        <div className="dark:to-sky-900/30 rounded-xl border border-sky-200 bg-gradient-to-br from-sky-50 to-sky-100 p-5 dark:border-sky-800 dark:from-sky-950/30">
+          <h3 className="mb-3 text-sm font-medium text-sky-900 dark:text-sky-100">Preview</h3>
+          <div className="rounded-lg bg-white p-4 shadow-sm dark:bg-zinc-800">
             <h4 className="text-xl font-bold text-zinc-900 dark:text-white">
               {config.appInfo.appName || 'Your App Name'}
             </h4>
             {config.appInfo.tagline && (
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">
+              <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
                 {config.appInfo.tagline}
               </p>
             )}
             {config.appInfo.description && (
-              <p className="text-xs text-zinc-500 mt-3 line-clamp-2">
+              <p className="mt-3 line-clamp-2 text-xs text-zinc-500">
                 {config.appInfo.description}
               </p>
             )}

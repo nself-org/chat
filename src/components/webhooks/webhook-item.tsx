@@ -1,17 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  MoreHorizontal,
-  Pencil,
-  Trash2,
-  Pause,
-  Play,
-  Send,
-  Copy,
-  Check,
-  Hash,
-} from 'lucide-react'
+import { MoreHorizontal, Pencil, Trash2, Pause, Play, Send, Copy, Check, Hash } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -22,19 +12,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
-import {
-  Webhook,
-  getWebhookStatusColor,
-  copyWebhookUrl,
-  formatDeliveryTime,
-} from '@/lib/webhooks'
+import { Webhook, getWebhookStatusColor, copyWebhookUrl, formatDeliveryTime } from '@/lib/webhooks'
 
 // ============================================================================
 // TYPES
@@ -101,9 +81,7 @@ export function WebhookItem({
       >
         <Avatar className="h-8 w-8">
           <AvatarImage src={webhook.avatar_url} alt={webhook.name} />
-          <AvatarFallback className="text-xs">
-            {getInitials(webhook.name)}
-          </AvatarFallback>
+          <AvatarFallback className="text-xs">{getInitials(webhook.name)}</AvatarFallback>
         </Avatar>
 
         <div className="min-w-0 flex-1">
@@ -154,7 +132,7 @@ export function WebhookItem({
 
         {/* Webhook URL */}
         <div className="mt-2 flex items-center gap-2">
-          <code className="flex-1 truncate rounded bg-muted px-2 py-1 text-xs font-mono">
+          <code className="flex-1 truncate rounded bg-muted px-2 py-1 font-mono text-xs">
             {webhook.url}
           </code>
           <TooltipProvider>
@@ -226,11 +204,7 @@ export function WebhookItem({
                   onToggleStatus?.(webhook)
                 }}
               >
-                {isActive ? (
-                  <Pause className="h-4 w-4" />
-                ) : (
-                  <Play className="h-4 w-4" />
-                )}
+                {isActive ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
               </Button>
             </TooltipTrigger>
             <TooltipContent>

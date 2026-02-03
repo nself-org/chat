@@ -100,14 +100,17 @@ async function startGroupCall(channelId: string) {
   const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
 
   // Create group call manager
-  const manager = createGroupCallManager({
-    callId: `call-${channelId}-${Date.now()}`,
-    userId: currentUser.id,
-    maxParticipants: 50,
-  }, {
-    onParticipantJoined: (p) => console.log('Joined:', p.name),
-    onParticipantLeft: (id) => console.log('Left:', id),
-  })
+  const manager = createGroupCallManager(
+    {
+      callId: `call-${channelId}-${Date.now()}`,
+      userId: currentUser.id,
+      maxParticipants: 50,
+    },
+    {
+      onParticipantJoined: (p) => console.log('Joined:', p.name),
+      onParticipantLeft: (id) => console.log('Left:', id),
+    }
+  )
 
   // Initialize
   await manager.initialize(stream)
@@ -214,11 +217,11 @@ const machine = createCallStateMachine('call-123', {
 })
 
 // Transitions
-machine.initiate()    // Start call
-machine.ring()        // Ringing
-machine.accept()      // Accepted
-machine.connect()     // Connected
-machine.end()         // Ended
+machine.initiate() // Start call
+machine.ring() // Ringing
+machine.accept() // Accepted
+machine.connect() // Connected
+machine.end() // Ended
 ```
 
 ## Audio Processing
@@ -226,16 +229,19 @@ machine.end()         // Ended
 ```typescript
 import { createAudioProcessor } from '@/lib/calls/audio-processor'
 
-const processor = createAudioProcessor({
-  echoCancellation: true,
-  noiseSuppression: true,
-  autoGainControl: true,
-  vadEnabled: true, // Voice Activity Detection
-}, {
-  onAudioLevel: (info) => {
-    console.log('Level:', info.level, 'Speaking:', info.isSpeaking)
+const processor = createAudioProcessor(
+  {
+    echoCancellation: true,
+    noiseSuppression: true,
+    autoGainControl: true,
+    vadEnabled: true, // Voice Activity Detection
   },
-})
+  {
+    onAudioLevel: (info) => {
+      console.log('Level:', info.level, 'Speaking:', info.isSpeaking)
+    },
+  }
+)
 
 // Initialize with stream
 await processor.initialize(localStream)
@@ -349,6 +355,7 @@ console.log('Packet Loss:', quality.packetLoss, '%')
 ## Common Issues
 
 ### No Audio
+
 ```typescript
 // Check permissions
 const permission = await navigator.permissions.query({ name: 'microphone' })
@@ -356,10 +363,14 @@ console.log('Microphone permission:', permission.state)
 
 // Check devices
 const devices = await navigator.mediaDevices.enumerateDevices()
-console.log('Audio inputs:', devices.filter(d => d.kind === 'audioinput'))
+console.log(
+  'Audio inputs:',
+  devices.filter((d) => d.kind === 'audioinput')
+)
 ```
 
 ### Echo
+
 ```typescript
 // Enable echo cancellation
 const stream = await navigator.mediaDevices.getUserMedia({
@@ -371,6 +382,7 @@ const stream = await navigator.mediaDevices.getUserMedia({
 ```
 
 ### High Latency
+
 ```typescript
 // Check RTT
 const { avgRtt } = callQuality

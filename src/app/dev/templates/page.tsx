@@ -32,7 +32,8 @@ const templates = [
   {
     id: 'login-only',
     name: 'Login Only',
-    description: 'Direct to login page, no landing page. Best for internal tools and private teams.',
+    description:
+      'Direct to login page, no landing page. Best for internal tools and private teams.',
     icon: LogIn,
     color: 'text-blue-500',
     bgColor: 'bg-blue-500/10',
@@ -187,15 +188,15 @@ export default function TemplatesPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-3 mb-2">
+        <div className="mb-2 flex items-center gap-3">
           <div className="rounded-lg bg-pink-500/10 p-2">
             <Palette className="h-5 w-5 text-pink-500" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Landing Page Templates</h1>
         </div>
         <p className="text-muted-foreground">
-          Choose from 5 pre-built landing page templates to customize your nself-chat
-          deployment. Each template is fully customizable through the setup wizard.
+          Choose from 5 pre-built landing page templates to customize your nself-chat deployment.
+          Each template is fully customizable through the setup wizard.
         </p>
       </div>
 
@@ -216,8 +217,8 @@ export default function TemplatesPage() {
 
       {/* Template Grid */}
       <section>
-        <h2 className="text-xl font-semibold mb-4">Choose a Template</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 className="mb-4 text-xl font-semibold">Choose a Template</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {templates.map((template) => {
             const Icon = template.icon
             const isSelected = selectedTemplate === template.id
@@ -225,8 +226,8 @@ export default function TemplatesPage() {
               <Card
                 key={template.id}
                 className={cn(
-                  'cursor-pointer transition-all hover:border-primary/50',
-                  isSelected && 'border-primary ring-2 ring-primary/20'
+                  'hover:border-primary/50 cursor-pointer transition-all',
+                  isSelected && 'ring-primary/20 border-primary ring-2'
                 )}
                 onClick={() => setSelectedTemplate(template.id)}
               >
@@ -237,7 +238,7 @@ export default function TemplatesPage() {
                     </div>
                     {isSelected && (
                       <div className="rounded-full bg-primary p-1">
-                        <Check className="h-4 w-4 text-primary-foreground" />
+                        <Check className="text-primary-foreground h-4 w-4" />
                       </div>
                     )}
                   </div>
@@ -263,10 +264,8 @@ export default function TemplatesPage() {
       {currentTemplate && (
         <section className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">
-              Template Preview: {currentTemplate.name}
-            </h2>
-            <div className="flex items-center rounded-md border bg-muted/30 p-0.5">
+            <h2 className="text-xl font-semibold">Template Preview: {currentTemplate.name}</h2>
+            <div className="bg-muted/30 flex items-center rounded-md border p-0.5">
               <Button
                 variant={previewDevice === 'desktop' ? 'secondary' : 'ghost'}
                 size="sm"
@@ -292,23 +291,23 @@ export default function TemplatesPage() {
           </div>
 
           {/* Preview Container */}
-          <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="bg-muted/30 rounded-lg border p-4">
             <div
               className={cn(
-                'mx-auto rounded-lg border bg-background overflow-hidden transition-all',
+                'mx-auto overflow-hidden rounded-lg border bg-background transition-all',
                 previewDevice === 'desktop' && 'w-full',
                 previewDevice === 'tablet' && 'w-[768px]',
                 previewDevice === 'mobile' && 'w-[375px]'
               )}
             >
               {/* Mock Browser Chrome */}
-              <div className="flex items-center gap-2 border-b bg-muted/50 px-4 py-2">
+              <div className="bg-muted/50 flex items-center gap-2 border-b px-4 py-2">
                 <div className="flex gap-1.5">
                   <div className="h-3 w-3 rounded-full bg-red-500" />
                   <div className="h-3 w-3 rounded-full bg-yellow-500" />
                   <div className="h-3 w-3 rounded-full bg-green-500" />
                 </div>
-                <div className="flex-1 mx-4">
+                <div className="mx-4 flex-1">
                   <div className="rounded-md bg-background px-3 py-1 text-xs text-muted-foreground">
                     https://your-app.com
                   </div>
@@ -320,7 +319,7 @@ export default function TemplatesPage() {
                 {currentTemplate.id === 'login-only' ? (
                   <div className="flex h-full items-center justify-center p-8">
                     <div className="w-full max-w-sm space-y-6 text-center">
-                      <div className="mx-auto h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                      <div className="bg-primary/10 mx-auto flex h-12 w-12 items-center justify-center rounded-lg">
                         <LogIn className="h-6 w-6 text-primary" />
                       </div>
                       <div>
@@ -328,8 +327,8 @@ export default function TemplatesPage() {
                         <p className="text-muted-foreground">Sign in to continue</p>
                       </div>
                       <div className="space-y-3">
-                        <div className="h-10 rounded-md border bg-muted/30" />
-                        <div className="h-10 rounded-md border bg-muted/30" />
+                        <div className="bg-muted/30 h-10 rounded-md border" />
+                        <div className="bg-muted/30 h-10 rounded-md border" />
                         <div className="h-10 rounded-md bg-primary" />
                       </div>
                     </div>
@@ -337,11 +336,9 @@ export default function TemplatesPage() {
                 ) : (
                   <div className="space-y-12 p-8">
                     {/* Hero Section */}
-                    <div className="text-center space-y-4">
-                      <h1 className="text-3xl font-bold">
-                        Your App Name
-                      </h1>
-                      <p className="text-muted-foreground max-w-md mx-auto">
+                    <div className="space-y-4 text-center">
+                      <h1 className="text-3xl font-bold">Your App Name</h1>
+                      <p className="mx-auto max-w-md text-muted-foreground">
                         Team communication made simple. Connect, collaborate, and build together.
                       </p>
                       <div className="flex items-center justify-center gap-3">
@@ -355,9 +352,9 @@ export default function TemplatesPage() {
                       <div className="grid grid-cols-3 gap-4">
                         {[1, 2, 3].map((i) => (
                           <div key={i} className="rounded-lg border p-4 text-center">
-                            <div className="mx-auto h-10 w-10 rounded-lg bg-muted mb-2" />
-                            <div className="h-4 w-20 mx-auto rounded bg-muted mb-1" />
-                            <div className="h-3 w-full rounded bg-muted/50" />
+                            <div className="mx-auto mb-2 h-10 w-10 rounded-lg bg-muted" />
+                            <div className="mx-auto mb-1 h-4 w-20 rounded bg-muted" />
+                            <div className="bg-muted/50 h-3 w-full rounded" />
                           </div>
                         ))}
                       </div>
@@ -368,11 +365,11 @@ export default function TemplatesPage() {
                       <div className="grid grid-cols-3 gap-4">
                         {['Free', 'Pro', 'Enterprise'].map((plan) => (
                           <div key={plan} className="rounded-lg border p-4 text-center">
-                            <h3 className="font-semibold mb-2">{plan}</h3>
-                            <div className="h-8 w-16 mx-auto rounded bg-muted mb-4" />
+                            <h3 className="mb-2 font-semibold">{plan}</h3>
+                            <div className="mx-auto mb-4 h-8 w-16 rounded bg-muted" />
                             <div className="space-y-2">
                               {[1, 2, 3].map((i) => (
-                                <div key={i} className="h-3 w-full rounded bg-muted/50" />
+                                <div key={i} className="bg-muted/50 h-3 w-full rounded" />
                               ))}
                             </div>
                           </div>
@@ -386,9 +383,9 @@ export default function TemplatesPage() {
                       <div className="grid grid-cols-2 gap-4">
                         {[1, 2, 3, 4].map((i) => (
                           <div key={i} className="rounded-lg border p-3">
-                            <div className="h-3 w-24 rounded bg-muted mb-2" />
-                            <div className="h-2 w-full rounded bg-muted/50 mb-1" />
-                            <div className="h-2 w-3/4 rounded bg-muted/50" />
+                            <div className="mb-2 h-3 w-24 rounded bg-muted" />
+                            <div className="bg-muted/50 mb-1 h-2 w-full rounded" />
+                            <div className="bg-muted/50 h-2 w-3/4 rounded" />
                           </div>
                         ))}
                       </div>
@@ -468,24 +465,24 @@ export default function TemplatesPage() {
 
       {/* Customization Tips */}
       <section>
-        <h2 className="text-xl font-semibold mb-4">Customization Guide</h2>
+        <h2 className="mb-4 text-xl font-semibold">Customization Guide</h2>
         <PreviewGrid cols={3}>
           <PreviewCard title="Branding">
             <p className="text-sm text-muted-foreground">
-              Customize logo, app name, tagline, and colors through the setup wizard
-              or programmatically via AppConfig.
+              Customize logo, app name, tagline, and colors through the setup wizard or
+              programmatically via AppConfig.
             </p>
           </PreviewCard>
           <PreviewCard title="Theme Colors">
             <p className="text-sm text-muted-foreground">
-              Choose from 25+ color presets or define custom colors. Templates
-              automatically adapt to your theme.
+              Choose from 25+ color presets or define custom colors. Templates automatically adapt
+              to your theme.
             </p>
           </PreviewCard>
           <PreviewCard title="Content">
             <p className="text-sm text-muted-foreground">
-              Update hero text, feature descriptions, and pricing through the
-              admin panel or directly in code.
+              Update hero text, feature descriptions, and pricing through the admin panel or
+              directly in code.
             </p>
           </PreviewCard>
         </PreviewGrid>

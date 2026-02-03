@@ -27,11 +27,13 @@ Complete guide to building intelligent bots for nself-chat using the Bot SDK.
 ### Prerequisites
 
 **Required**:
+
 - Node.js >= 20.0.0
 - TypeScript >= 5.0.0
 - nself-chat development environment
 
 **Recommended**:
+
 - VS Code with TypeScript extension
 - Basic understanding of async/await
 - Familiarity with React (for UI components)
@@ -109,6 +111,7 @@ const myBot = bot('my-bot-id')
 ```
 
 **Pros**:
+
 - ✅ Less boilerplate
 - ✅ Easier to read
 - ✅ Type-safe
@@ -138,6 +141,7 @@ const myBot = new MyBot()
 ```
 
 **Pros**:
+
 - ✅ Familiar OOP patterns
 - ✅ Better for complex state
 - ✅ Easier testing (dependency injection)
@@ -160,6 +164,7 @@ const builder = bot(id: string)
 ```
 
 **Parameters**:
+
 - `id` - Unique bot identifier (e.g., 'weather-bot')
 
 **Returns**: `BotBuilder` instance
@@ -171,34 +176,41 @@ const builder = bot(id: string)
 ```typescript
 .name(name: string): BotBuilder
 ```
+
 Set bot display name.
 
 ```typescript
 .description(description: string): BotBuilder
 ```
+
 Set bot description (shown in bot list).
 
 ```typescript
 .version(version: string): BotBuilder
 ```
+
 Set semantic version (default: '1.0.0').
 
 ```typescript
 .author(author: string): BotBuilder
 ```
+
 Set bot author name.
 
 ```typescript
 .icon(icon: string): BotBuilder
 ```
+
 Set bot icon (emoji or image URL).
 
 ```typescript
 .permissions(...permissions: BotPermission[]): BotBuilder
 ```
+
 Set required permissions.
 
 **Available Permissions**:
+
 - `'read_messages'` - Read messages in channels
 - `'send_messages'` - Send messages
 - `'manage_messages'` - Edit/delete messages
@@ -209,16 +221,19 @@ Set required permissions.
 ```typescript
 .addPermission(permission: BotPermission): BotBuilder
 ```
+
 Add a single permission.
 
 ```typescript
 .channels(...channelIds: ChannelId[]): BotBuilder
 ```
+
 Restrict bot to specific channels.
 
 ```typescript
 .settings(settings: Record<string, unknown>): BotBuilder
 ```
+
 Set bot configuration settings.
 
 ---
@@ -232,14 +247,17 @@ Set bot configuration settings.
   handler: CommandHandler
 ): BotBuilder
 ```
+
 Add a slash command.
 
 **Parameters**:
+
 - `name` - Command name (without `/`)
 - `description` - Help text
 - `handler` - Function to handle the command
 
 **Example**:
+
 ```typescript
 .command('hello', 'Say hello', (ctx) => {
   return text(`Hello, ${ctx.user.displayName}!`)
@@ -252,9 +270,11 @@ Add a slash command.
   handler: CommandHandler
 ): BotBuilder
 ```
+
 Add a command with advanced options.
 
 **Example**:
+
 ```typescript
 import { command } from '@/lib/bots/bot-sdk'
 
@@ -281,9 +301,11 @@ import { command } from '@/lib/bots/bot-sdk'
 ```typescript
 .onMessage(handler: MessageHandler): BotBuilder
 ```
+
 Handle all messages in channels the bot is in.
 
 **Example**:
+
 ```typescript
 .onMessage((ctx) => {
   if (ctx.message.content.includes('help')) {
@@ -295,9 +317,11 @@ Handle all messages in channels the bot is in.
 ```typescript
 .onMention(handler: MessageHandler): BotBuilder
 ```
+
 Handle messages that mention the bot.
 
 **Example**:
+
 ```typescript
 .onMention((ctx) => {
   return text(`You mentioned me! How can I help?`)
@@ -307,9 +331,11 @@ Handle messages that mention the bot.
 ```typescript
 .onKeyword(keywords: string[], handler: MessageHandler): BotBuilder
 ```
+
 Trigger on specific keywords.
 
 **Example**:
+
 ```typescript
 .onKeyword(['hello', 'hi', 'hey'], (ctx) => {
   return text('Hello! 👋')
@@ -319,9 +345,11 @@ Trigger on specific keywords.
 ```typescript
 .onPattern(patterns: string[], handler: MessageHandler): BotBuilder
 ```
+
 Trigger on regex patterns.
 
 **Example**:
+
 ```typescript
 .onPattern(['/bug-\\d+/', '/issue-\\d+/'], (ctx) => {
   // Extract issue number and fetch details
@@ -334,24 +362,29 @@ Trigger on regex patterns.
 ```typescript
 .onUserJoin(handler: UserEventHandler): BotBuilder
 ```
+
 Handle user joining a channel.
 
 ```typescript
 .onUserLeave(handler: UserEventHandler): BotBuilder
 ```
+
 Handle user leaving a channel.
 
 ```typescript
 .onReaction(handler: ReactionHandler): BotBuilder
 ```
+
 Handle reactions added to messages.
 
 ```typescript
 .onInit(handler: (bot, api) => void | Promise<void>): BotBuilder
 ```
+
 Run code when bot initializes.
 
 **Example**:
+
 ```typescript
 .onInit(async (bot, api) => {
   console.log(`${bot.manifest.name} initialized`)
@@ -368,6 +401,7 @@ Run code when bot initializes.
 ```typescript
 .build(): BotInstance
 ```
+
 Build and register the bot. Call this as the last step.
 
 **Returns**: `BotInstance` - The active bot instance
@@ -403,17 +437,18 @@ const cmd = command(name: string)
 ```
 
 **Example**:
+
 ```typescript
 command('create-poll')
   .description('Create a poll')
   .option('question', 'Poll question', { required: true })
   .option('duration', 'Duration in minutes', {
     type: 'number',
-    default: 60
+    default: 60,
   })
   .option('anonymous', 'Anonymous voting', {
     type: 'boolean',
-    default: false
+    default: false,
   })
 ```
 
@@ -425,14 +460,14 @@ command('create-poll')
 
 Bots can subscribe to various events:
 
-| Event | Trigger | Context Type | Common Use Cases |
-|-------|---------|-------------|------------------|
-| **Command** | User types `/command` | `CommandContext` | Execute actions, fetch data |
-| **Message** | Any message sent | `MessageContext` | Monitor keywords, auto-respond |
-| **Mention** | Bot is @mentioned | `MessageContext` | Help requests, Q&A |
-| **User Join** | User joins channel | `UserContext` | Welcome messages, onboarding |
-| **User Leave** | User leaves channel | `UserContext` | Goodbye messages, cleanup |
-| **Reaction** | Reaction added/removed | `ReactionContext` | Polls, bookmarks, votes |
+| Event          | Trigger                | Context Type      | Common Use Cases               |
+| -------------- | ---------------------- | ----------------- | ------------------------------ |
+| **Command**    | User types `/command`  | `CommandContext`  | Execute actions, fetch data    |
+| **Message**    | Any message sent       | `MessageContext`  | Monitor keywords, auto-respond |
+| **Mention**    | Bot is @mentioned      | `MessageContext`  | Help requests, Q&A             |
+| **User Join**  | User joins channel     | `UserContext`     | Welcome messages, onboarding   |
+| **User Leave** | User leaves channel    | `UserContext`     | Goodbye messages, cleanup      |
+| **Reaction**   | Reaction added/removed | `ReactionContext` | Polls, bookmarks, votes        |
 
 ### Event Handling Patterns
 
@@ -479,12 +514,7 @@ Bots can subscribe to various events:
 ### Event Helpers
 
 ```typescript
-import {
-  matchesKeyword,
-  matchesPattern,
-  parseDuration,
-  formatDuration
-} from '@/lib/bots/bot-sdk'
+import { matchesKeyword, matchesPattern, parseDuration, formatDuration } from '@/lib/bots/bot-sdk'
 ```
 
 #### matchesKeyword
@@ -496,6 +526,7 @@ matchesKeyword(text: string, keywords: string[]): boolean
 Check if text contains any keyword (case-insensitive).
 
 **Example**:
+
 ```typescript
 if (matchesKeyword(ctx.message.content, ['help', 'support'])) {
   return text('How can I help you?')
@@ -511,6 +542,7 @@ matchesPattern(text: string, patterns: string[]): boolean
 Check if text matches any regex pattern.
 
 **Example**:
+
 ```typescript
 if (matchesPattern(ctx.message.content, ['/bug-\\d+/', '/issue-\\d+/'])) {
   // Handle bug/issue reference
@@ -526,6 +558,7 @@ parseDuration(text: string): number
 Parse natural language duration to milliseconds.
 
 **Examples**:
+
 - `'30 minutes'` → 1800000
 - `'2 hours'` → 7200000
 - `'1 day'` → 86400000
@@ -539,6 +572,7 @@ formatDuration(ms: number): string
 Format milliseconds to human-readable duration.
 
 **Example**:
+
 ```typescript
 formatDuration(90000) // '1 minute 30 seconds'
 ```
@@ -554,10 +588,10 @@ Provided to command handlers:
 ```typescript
 interface CommandContext {
   // Command info
-  command: string           // Command name (without /)
+  command: string // Command name (without /)
   args: {
-    [key: string]: any     // Parsed arguments
-    _raw: string           // Raw argument string
+    [key: string]: any // Parsed arguments
+    _raw: string // Raw argument string
   }
 
   // Message info
@@ -593,8 +627,8 @@ interface CommandContext {
   }
 
   // Helpers
-  isMention: boolean        // Is bot mentioned?
-  isDM: boolean            // Is this a DM?
+  isMention: boolean // Is bot mentioned?
+  isDM: boolean // Is this a DM?
 }
 ```
 
@@ -638,7 +672,7 @@ interface UserContext {
     email: string
     avatarUrl?: string
     role: UserRole
-    joinedAt: Date       // When they joined the workspace
+    joinedAt: Date // When they joined the workspace
   }
 
   // Channel context
@@ -712,7 +746,7 @@ import {
   code,
   quote,
   button,
-  select
+  select,
 } from '@/lib/bots/bot-sdk'
 ```
 
@@ -727,6 +761,7 @@ text(content: string): BotResponse
 Simple text response.
 
 **Example**:
+
 ```typescript
 return text('Hello, world!')
 ```
@@ -804,6 +839,7 @@ embed(options: {
 Rich embed with formatted content.
 
 **Example**:
+
 ```typescript
 return embed({
   title: '📊 Poll Results',
@@ -811,10 +847,10 @@ return embed({
   color: '#6366f1',
   fields: [
     { name: '🍕 Pizza', value: '45% (9 votes)', inline: true },
-    { name: '🌮 Tacos', value: '55% (11 votes)', inline: true }
+    { name: '🌮 Tacos', value: '55% (11 votes)', inline: true },
   ],
   footer: 'Poll closed',
-  timestamp: new Date()
+  timestamp: new Date(),
 })
 ```
 
@@ -827,13 +863,12 @@ list(items: string[], title?: string): BotResponse
 Bulleted list.
 
 **Example**:
+
 ```typescript
-return list([
-  'Install dependencies',
-  'Configure environment',
-  'Run tests',
-  'Deploy to production'
-], '📋 Deployment Checklist')
+return list(
+  ['Install dependencies', 'Configure environment', 'Run tests', 'Deploy to production'],
+  '📋 Deployment Checklist'
+)
 ```
 
 #### code
@@ -845,12 +880,16 @@ code(content: string, language?: string): BotResponse
 Code block with syntax highlighting.
 
 **Example**:
+
 ```typescript
-return code(`
+return code(
+  `
 function greet(name) {
   return \`Hello, \${name}!\`
 }
-`, 'javascript')
+`,
+  'javascript'
+)
 ```
 
 #### quote
@@ -862,11 +901,9 @@ quote(text: string, author?: string): BotResponse
 Blockquote formatting.
 
 **Example**:
+
 ```typescript
-return quote(
-  'The best way to predict the future is to invent it.',
-  'Alan Kay'
-)
+return quote('The best way to predict the future is to invent it.', 'Alan Kay')
 ```
 
 ### Interactive Responses
@@ -885,6 +922,7 @@ button(options: {
 Create a button.
 
 **Example**:
+
 ```typescript
 import { response, button } from '@/lib/bots/bot-sdk'
 
@@ -892,8 +930,8 @@ return response({
   content: 'Choose an option:',
   components: [
     button({ label: 'Approve', action: 'approve', style: 'success' }),
-    button({ label: 'Reject', action: 'reject', style: 'danger' })
-  ]
+    button({ label: 'Reject', action: 'reject', style: 'danger' }),
+  ],
 })
 ```
 
@@ -910,6 +948,7 @@ select(options: {
 Create a dropdown select.
 
 **Example**:
+
 ```typescript
 return response({
   content: 'Select a priority:',
@@ -920,11 +959,11 @@ return response({
         { label: 'Low', value: 'low' },
         { label: 'Medium', value: 'medium' },
         { label: 'High', value: 'high' },
-        { label: 'Critical', value: 'critical' }
+        { label: 'Critical', value: 'critical' },
       ],
-      action: 'set_priority'
-    })
-  ]
+      action: 'set_priority',
+    }),
+  ],
 })
 ```
 
@@ -942,12 +981,13 @@ confirm(message: string, options?: {
 Confirmation dialog with yes/no buttons.
 
 **Example**:
+
 ```typescript
 return confirm('Are you sure you want to delete this poll?', {
   confirmText: 'Yes, delete',
   cancelText: 'Cancel',
   confirmAction: 'confirm_delete',
-  cancelAction: 'cancel_delete'
+  cancelAction: 'cancel_delete',
 })
 ```
 
@@ -957,10 +997,10 @@ All response functions accept additional options:
 
 ```typescript
 text('Message', {
-  ephemeral: true,           // Only visible to user who triggered
-  threadId: 'thread-123',    // Reply in thread
-  mentionUser: 'user-456',   // Mention a user
-  deleteAfter: 5000          // Auto-delete after 5 seconds
+  ephemeral: true, // Only visible to user who triggered
+  threadId: 'thread-123', // Reply in thread
+  mentionUser: 'user-456', // Mention a user
+  deleteAfter: 5000, // Auto-delete after 5 seconds
 })
 ```
 
@@ -1141,8 +1181,8 @@ const myBot = bot('my-bot')
 // Bot auto-starts by default
 
 // Manual control
-myBot.stop()   // Stop the bot
-myBot.start()  // Restart the bot
+myBot.stop() // Stop the bot
+myBot.start() // Restart the bot
 ```
 
 ### Error Handling
@@ -1188,13 +1228,13 @@ myBot.start()  // Restart the bot
 Enable verbose logging:
 
 ```typescript
-const DEBUG = process.env.BOT_DEBUG === 'true'
-
-.onMessage((ctx) => {
-  if (DEBUG) {
-    console.log('Full context:', JSON.stringify(ctx, null, 2))
-  }
-})
+const DEBUG =
+  process.env.BOT_DEBUG ===
+  'true'.onMessage((ctx) => {
+    if (DEBUG) {
+      console.log('Full context:', JSON.stringify(ctx, null, 2))
+    }
+  })
 ```
 
 ### Testing Commands
@@ -1217,6 +1257,7 @@ curl -X POST http://localhost:3000/api/bots/test \
 #### Bot Not Responding
 
 **Check**:
+
 1. Bot is registered: Check `initializeBots()` is called
 2. Bot is started: `myBot.start()` called
 3. Bot has permission: Check `manifest.permissions`
@@ -1225,6 +1266,7 @@ curl -X POST http://localhost:3000/api/bots/test \
 #### Storage Not Working
 
 **Check**:
+
 1. Storage service configured
 2. Using correct key format
 3. Handling async properly (await)
@@ -1233,6 +1275,7 @@ curl -X POST http://localhost:3000/api/bots/test \
 #### Events Not Firing
 
 **Check**:
+
 1. Bot is in the channel
 2. Bot has `read_messages` permission
 3. Event handler registered before `.build()`
@@ -1245,6 +1288,7 @@ curl -X POST http://localhost:3000/api/bots/test \
 ### 1. Security
 
 **✅ Do**:
+
 - Validate all user input
 - Use typed arguments
 - Check permissions before actions
@@ -1252,12 +1296,14 @@ curl -X POST http://localhost:3000/api/bots/test \
 - Rate limit commands
 
 **❌ Don't**:
+
 - Trust user input blindly
 - Store sensitive data in bot storage
 - Grant excessive permissions
 - Expose internal errors to users
 
 **Example**:
+
 ```typescript
 .command('admin', 'Admin command', (ctx) => {
   // Check permissions
@@ -1279,6 +1325,7 @@ curl -X POST http://localhost:3000/api/bots/test \
 ### 2. Performance
 
 **✅ Do**:
+
 - Cache expensive operations
 - Use async/await properly
 - Implement timeouts
@@ -1286,53 +1333,58 @@ curl -X POST http://localhost:3000/api/bots/test \
 - Clean up resources
 
 **❌ Don't**:
+
 - Block the event loop
 - Make synchronous network calls
 - Store large data in memory
 - Create memory leaks
 
 **Example**:
+
 ```typescript
 // Cache expensive data
-const cache = new Map<string, { data: any, expires: number }>()
+const cache = new Map<string, { data: any; expires: number }>().command(
+  'fetch',
+  'Fetch data',
+  async (ctx) => {
+    const key = ctx.args.key
 
-.command('fetch', 'Fetch data', async (ctx) => {
-  const key = ctx.args.key
+    // Check cache first
+    const cached = cache.get(key)
+    if (cached && cached.expires > Date.now()) {
+      return text(`Cached: ${cached.data}`)
+    }
 
-  // Check cache first
-  const cached = cache.get(key)
-  if (cached && cached.expires > Date.now()) {
-    return text(`Cached: ${cached.data}`)
+    // Fetch with timeout
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 5000)
+
+    try {
+      const response = await fetch(`/api/data/${key}`, {
+        signal: controller.signal,
+      })
+      const data = await response.json()
+
+      // Cache for 5 minutes
+      cache.set(key, {
+        data,
+        expires: Date.now() + 300000,
+      })
+
+      return text(`Fresh: ${data}`)
+    } catch (error) {
+      return error('Fetch timeout or failed')
+    } finally {
+      clearTimeout(timeout)
+    }
   }
-
-  // Fetch with timeout
-  const controller = new AbortController()
-  const timeout = setTimeout(() => controller.abort(), 5000)
-
-  try {
-    const response = await fetch(`/api/data/${key}`, {
-      signal: controller.signal
-    })
-    const data = await response.json()
-
-    // Cache for 5 minutes
-    cache.set(key, {
-      data,
-      expires: Date.now() + 300000
-    })
-
-    return text(`Fresh: ${data}`)
-  } catch (error) {
-    return error('Fetch timeout or failed')
-  } finally {
-    clearTimeout(timeout)
-  }
-})
+)
 ```
 
 ### 3. User Experience
 
 **✅ Do**:
+
 - Provide clear error messages
 - Use progress indicators for slow operations
 - Confirm destructive actions
@@ -1340,12 +1392,14 @@ const cache = new Map<string, { data: any, expires: number }>()
 - Use consistent formatting
 
 **❌ Don't**:
+
 - Show technical errors to users
 - Make users wait without feedback
 - Use jargon in messages
 - Spam channels
 
 **Example**:
+
 ```typescript
 .command('delete', 'Delete data', async (ctx) => {
   const id = ctx.args.id
@@ -1377,6 +1431,7 @@ const cache = new Map<string, { data: any, expires: number }>()
 ### 4. Code Organization
 
 **✅ Do**:
+
 - One bot per file
 - Group related commands
 - Extract complex logic to functions
@@ -1384,6 +1439,7 @@ const cache = new Map<string, { data: any, expires: number }>()
 - Document your code
 
 **Example Structure**:
+
 ```
 src/lib/bots/
   ├── weather-bot/

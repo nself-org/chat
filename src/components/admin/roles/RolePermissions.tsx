@@ -2,11 +2,7 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import {
-  Permission,
-  PermissionCategory,
-  EffectivePermissions,
-} from '@/lib/admin/roles/role-types'
+import { Permission, PermissionCategory, EffectivePermissions } from '@/lib/admin/roles/role-types'
 import {
   PERMISSION_GROUPS,
   PERMISSIONS,
@@ -15,17 +11,9 @@ import {
 } from '@/lib/admin/roles/permission-types'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import * as Icons from 'lucide-react'
-import {
-  ChevronDown,
-  AlertTriangle,
-  Shield,
-} from 'lucide-react'
+import { ChevronDown, AlertTriangle, Shield } from 'lucide-react'
 
 interface RolePermissionsProps {
   permissions: Permission[]
@@ -51,18 +39,14 @@ export function RolePermissions({
   onCategoryToggle,
   className,
 }: RolePermissionsProps) {
-  const [localExpanded, setLocalExpanded] = React.useState<PermissionCategory[]>(
-    expandedCategories
-  )
+  const [localExpanded, setLocalExpanded] = React.useState<PermissionCategory[]>(expandedCategories)
 
   const expanded = onCategoryToggle ? expandedCategories : localExpanded
   const setExpanded = onCategoryToggle
     ? (category: PermissionCategory) => onCategoryToggle(category)
     : (category: PermissionCategory) => {
         setLocalExpanded((prev) =>
-          prev.includes(category)
-            ? prev.filter((c) => c !== category)
-            : [...prev, category]
+          prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
         )
       }
 
@@ -82,9 +66,7 @@ export function RolePermissions({
 
     if (!categoryPermissions) return
 
-    const allEnabled = categoryPermissions.every((p) =>
-      permissions.includes(p)
-    )
+    const allEnabled = categoryPermissions.every((p) => permissions.includes(p))
 
     if (allEnabled) {
       // Remove all category permissions
@@ -114,9 +96,7 @@ export function RolePermissions({
     if (!group) return { enabled: 0, total: 0 }
 
     const total = group.permissions.length
-    const enabled = group.permissions.filter((p) =>
-      permissions.includes(p.id)
-    ).length
+    const enabled = group.permissions.filter((p) => permissions.includes(p.id)).length
 
     return { enabled, total }
   }
@@ -124,9 +104,7 @@ export function RolePermissions({
   return (
     <div className={cn('space-y-4', className)}>
       {PERMISSION_GROUPS.map((group) => {
-        const IconComponent = Icons[
-          group.icon as keyof typeof Icons
-        ] as React.ElementType
+        const IconComponent = Icons[group.icon as keyof typeof Icons] as React.ElementType
         const isExpanded = expanded.includes(group.category)
         const stats = getCategoryStats(group.category)
         const allEnabled = stats.enabled === stats.total
@@ -140,22 +118,18 @@ export function RolePermissions({
           >
             <div className="rounded-lg border">
               {/* Category header */}
-              <CollapsibleTrigger className="flex w-full items-center gap-3 p-4 hover:bg-accent/50">
+              <CollapsibleTrigger className="hover:bg-accent/50 flex w-full items-center gap-3 p-4">
                 <ChevronDown
                   className={cn(
                     'h-4 w-4 text-muted-foreground transition-transform',
                     isExpanded && 'rotate-180'
                   )}
                 />
-                {IconComponent && (
-                  <IconComponent className="h-5 w-5 text-muted-foreground" />
-                )}
+                {IconComponent && <IconComponent className="h-5 w-5 text-muted-foreground" />}
                 <div className="flex-1 text-left">
                   <div className="font-medium">{group.name}</div>
                   {showDescriptions && (
-                    <div className="text-sm text-muted-foreground">
-                      {group.description}
-                    </div>
+                    <div className="text-sm text-muted-foreground">{group.description}</div>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
@@ -180,7 +154,7 @@ export function RolePermissions({
 
               {/* Permissions list */}
               <CollapsibleContent>
-                <div className="border-t p-4 space-y-3">
+                <div className="space-y-3 border-t p-4">
                   {group.permissions.map((perm) => {
                     const isEnabled = permissions.includes(perm.id)
                     const canGrant = canGrantPermission(perm.id)
@@ -242,18 +216,11 @@ function PermissionItem({
       )}
       onClick={disabled ? undefined : onToggle}
     >
-      <Checkbox
-        checked={isEnabled}
-        disabled={disabled}
-        className="mt-1"
-      />
-      <div className="flex-1 min-w-0">
+      <Checkbox checked={isEnabled} disabled={disabled} className="mt-1" />
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <Label
-            className={cn(
-              'cursor-pointer font-medium',
-              permission.dangerous && 'text-amber-500'
-            )}
+            className={cn('cursor-pointer font-medium', permission.dangerous && 'text-amber-500')}
           >
             {permission.name}
           </Label>
@@ -269,14 +236,10 @@ function PermissionItem({
           )}
         </div>
         {showDescription && (
-          <p className="text-sm text-muted-foreground">
-            {permission.description}
-          </p>
+          <p className="text-sm text-muted-foreground">{permission.description}</p>
         )}
         {!canGrant && (
-          <p className="text-xs text-amber-500 mt-1">
-            You cannot grant this permission
-          </p>
+          <p className="mt-1 text-xs text-amber-500">You cannot grant this permission</p>
         )}
       </div>
     </div>
@@ -303,10 +266,7 @@ export function PermissionSummary({
   return (
     <div className={cn('space-y-1', className)}>
       {displayPermissions.map((perm) => (
-        <div
-          key={perm}
-          className="flex items-center gap-2 text-sm text-muted-foreground"
-        >
+        <div key={perm} className="flex items-center gap-2 text-sm text-muted-foreground">
           <div className="h-1.5 w-1.5 rounded-full bg-primary" />
           {PERMISSIONS[perm]?.name ?? perm}
         </div>

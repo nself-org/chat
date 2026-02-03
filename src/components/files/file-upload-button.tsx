@@ -6,12 +6,7 @@ import { Paperclip, Plus, Image, FileText, Film, Music, Folder } from 'lucide-re
 import { cn } from '@/lib/utils'
 import { Button, type ButtonProps } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,11 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  validateFile,
-  MAX_FILE_SIZE,
-  ALLOWED_MIME_TYPES,
-} from '@/lib/storage/upload'
+import { validateFile, MAX_FILE_SIZE, ALLOWED_MIME_TYPES } from '@/lib/storage/upload'
 
 // ============================================================================
 // TYPES
@@ -271,16 +262,11 @@ export function FileUploadButton({
 
         <DropdownMenuContent align="start">
           {/* All files option */}
-          <DropdownMenuItem
-            onClick={handleClick}
-            className="flex items-center gap-2"
-          >
+          <DropdownMenuItem onClick={handleClick} className="flex items-center gap-2">
             <Folder className="h-4 w-4" />
             <div>
               <p className="font-medium">All files</p>
-              <p className="text-xs text-muted-foreground">
-                Any supported file type
-              </p>
+              <p className="text-xs text-muted-foreground">Any supported file type</p>
             </div>
           </DropdownMenuItem>
 
@@ -306,9 +292,7 @@ export function FileUploadButton({
               <option.icon className="h-4 w-4" />
               <div>
                 <p className="font-medium">{option.label}</p>
-                <p className="text-xs text-muted-foreground">
-                  {option.description}
-                </p>
+                <p className="text-xs text-muted-foreground">{option.description}</p>
               </div>
             </DropdownMenuItem>
           ))}
@@ -373,17 +357,12 @@ export function FileUploadButton({
 /**
  * AddFileButton - Plus icon button for adding files
  */
-export interface AddFileButtonProps
-  extends Omit<FileUploadButtonProps, 'variant' | 'icon'> {
+export interface AddFileButtonProps extends Omit<FileUploadButtonProps, 'variant' | 'icon'> {
   /** Show as outline style */
   outline?: boolean
 }
 
-export function AddFileButton({
-  outline = false,
-  buttonVariant,
-  ...props
-}: AddFileButtonProps) {
+export function AddFileButton({ outline = false, buttonVariant, ...props }: AddFileButtonProps) {
   return (
     <FileUploadButton
       {...props}
@@ -398,8 +377,7 @@ export function AddFileButton({
 /**
  * ImageUploadButton - Button specifically for image uploads
  */
-export interface ImageUploadButtonProps
-  extends Omit<FileUploadButtonProps, 'accept' | 'icon'> {}
+export interface ImageUploadButtonProps extends Omit<FileUploadButtonProps, 'accept' | 'icon'> {}
 
 export function ImageUploadButton(props: ImageUploadButtonProps) {
   return (

@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useState, useCallback } from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { useState, useCallback } from 'react'
+import { cn } from '@/lib/utils'
 import {
   type CustomStatus,
   type StatusDuration,
@@ -12,19 +12,15 @@ import {
   DURATION_OPTIONS,
   getDurationOption,
   getPresetActivity,
-} from '@/lib/presence/presence-types';
-import { CustomStatusPreview } from './CustomStatus';
-import { StatusDurationPicker } from './StatusDuration';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { X, Smile } from 'lucide-react';
+} from '@/lib/presence/presence-types'
+import { CustomStatusPreview } from './CustomStatus'
+import { StatusDurationPicker } from './StatusDuration'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { X, Smile } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -34,22 +30,22 @@ export interface CustomStatusPickerProps {
   /**
    * Current custom status
    */
-  value?: CustomStatus;
+  value?: CustomStatus
 
   /**
    * Callback when status changes
    */
-  onChange: (status: CustomStatus | null) => void;
+  onChange: (status: CustomStatus | null) => void
 
   /**
    * Callback when cancel is clicked
    */
-  onCancel?: () => void;
+  onCancel?: () => void
 
   /**
    * Additional class names
    */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -62,55 +58,55 @@ export function CustomStatusPicker({
   onCancel,
   className,
 }: CustomStatusPickerProps) {
-  const [emoji, setEmoji] = useState(value?.emoji ?? '');
-  const [text, setText] = useState(value?.text ?? '');
-  const [duration, setDuration] = useState<StatusDuration>('indefinite');
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [emoji, setEmoji] = useState(value?.emoji ?? '')
+  const [text, setText] = useState(value?.text ?? '')
+  const [duration, setDuration] = useState<StatusDuration>('indefinite')
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
 
   const handlePresetClick = useCallback((activity: ActivityType) => {
-    const preset = getPresetActivity(activity);
+    const preset = getPresetActivity(activity)
     if (preset) {
-      setEmoji(preset.emoji);
-      setText(preset.text);
+      setEmoji(preset.emoji)
+      setText(preset.text)
       if (preset.defaultDuration) {
-        setDuration(preset.defaultDuration);
+        setDuration(preset.defaultDuration)
       }
     }
-  }, []);
+  }, [])
 
   const handleEmojiSelect = useCallback((selectedEmoji: string) => {
-    setEmoji(selectedEmoji);
-    setShowEmojiPicker(false);
-  }, []);
+    setEmoji(selectedEmoji)
+    setShowEmojiPicker(false)
+  }, [])
 
   const handleSave = useCallback(() => {
     if (!emoji && !text) {
-      onChange(null);
-      return;
+      onChange(null)
+      return
     }
 
-    const durationOption = getDurationOption(duration);
-    const expiresAt = durationOption?.getExpiresAt() ?? null;
+    const durationOption = getDurationOption(duration)
+    const expiresAt = durationOption?.getExpiresAt() ?? null
 
     onChange({
       emoji: emoji || undefined,
       text: text || undefined,
       expiresAt,
-    });
-  }, [emoji, text, duration, onChange]);
+    })
+  }, [emoji, text, duration, onChange])
 
   const handleClear = useCallback(() => {
-    setEmoji('');
-    setText('');
-    setDuration('indefinite');
-    onChange(null);
-  }, [onChange]);
+    setEmoji('')
+    setText('')
+    setDuration('indefinite')
+    onChange(null)
+  }, [onChange])
 
   return (
     <div className={cn('flex flex-col gap-4', className)}>
       {/* Preview */}
       <div>
-        <Label className="text-xs text-muted-foreground mb-2 block">Preview</Label>
+        <Label className="mb-2 block text-xs text-muted-foreground">Preview</Label>
         <CustomStatusPreview
           emoji={emoji}
           text={text}
@@ -132,7 +128,7 @@ export function CustomStatusPicker({
                 key={activity.type}
                 onClick={() => handlePresetClick(activity.type)}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-md text-left',
+                  'flex items-center gap-3 rounded-md px-3 py-2 text-left',
                   'hover:bg-muted/50 transition-colors',
                   emoji === activity.emoji && text === activity.text && 'bg-muted'
                 )}
@@ -171,7 +167,7 @@ export function CustomStatusPicker({
                       key={e}
                       onClick={() => handleEmojiSelect(e)}
                       className={cn(
-                        'p-2 text-lg rounded hover:bg-muted transition-colors',
+                        'rounded p-2 text-lg transition-colors hover:bg-muted',
                         emoji === e && 'bg-muted ring-2 ring-ring'
                       )}
                     >
@@ -183,7 +179,7 @@ export function CustomStatusPicker({
             </Popover>
 
             {/* Text Input */}
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <Input
                 value={text}
                 onChange={(e) => setText(e.target.value)}
@@ -194,10 +190,10 @@ export function CustomStatusPicker({
               {(emoji || text) && (
                 <button
                   onClick={() => {
-                    setEmoji('');
-                    setText('');
+                    setEmoji('')
+                    setText('')
                   }}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded hover:bg-muted"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 hover:bg-muted"
                   aria-label="Clear"
                 >
                   <X className="h-4 w-4 text-muted-foreground" />
@@ -210,12 +206,12 @@ export function CustomStatusPicker({
 
       {/* Duration Picker */}
       <div>
-        <Label className="text-xs text-muted-foreground mb-2 block">Clear after</Label>
+        <Label className="mb-2 block text-xs text-muted-foreground">Clear after</Label>
         <StatusDurationPicker value={duration} onChange={setDuration} />
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-between pt-2 border-t">
+      <div className="flex items-center justify-between border-t pt-2">
         <Button
           variant="ghost"
           size="sm"
@@ -236,7 +232,7 @@ export function CustomStatusPicker({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -244,30 +240,26 @@ export function CustomStatusPicker({
 // ============================================================================
 
 export interface QuickStatusPickerProps {
-  value?: CustomStatus;
-  onChange: (status: CustomStatus | null) => void;
-  className?: string;
+  value?: CustomStatus
+  onChange: (status: CustomStatus | null) => void
+  className?: string
 }
 
-export function QuickStatusPicker({
-  value,
-  onChange,
-  className,
-}: QuickStatusPickerProps) {
+export function QuickStatusPicker({ value, onChange, className }: QuickStatusPickerProps) {
   const handlePresetClick = useCallback(
     (activity: (typeof PRESET_ACTIVITIES)[0]) => {
       const durationOption = activity.defaultDuration
         ? getDurationOption(activity.defaultDuration)
-        : null;
+        : null
 
       onChange({
         emoji: activity.emoji,
         text: activity.text,
         expiresAt: durationOption?.getExpiresAt() ?? null,
-      });
+      })
     },
     [onChange]
-  );
+  )
 
   return (
     <div className={cn('space-y-2', className)}>
@@ -278,7 +270,7 @@ export function QuickStatusPicker({
             key={activity.type}
             onClick={() => handlePresetClick(activity)}
             className={cn(
-              'flex items-center gap-2 px-2 py-1.5 rounded text-left text-sm',
+              'flex items-center gap-2 rounded px-2 py-1.5 text-left text-sm',
               'hover:bg-muted/50 transition-colors',
               value?.emoji === activity.emoji && value?.text === activity.text && 'bg-muted'
             )}
@@ -291,18 +283,13 @@ export function QuickStatusPicker({
 
       {/* Clear */}
       {value && (value.emoji || value.text) && (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full"
-          onClick={() => onChange(null)}
-        >
-          <X className="h-4 w-4 mr-2" />
+        <Button variant="ghost" size="sm" className="w-full" onClick={() => onChange(null)}>
+          <X className="mr-2 h-4 w-4" />
           Clear status
         </Button>
       )}
     </div>
-  );
+  )
 }
 
-export default CustomStatusPicker;
+export default CustomStatusPicker

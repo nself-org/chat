@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { useCallback, useRef, useEffect } from 'react';
+import { useCallback, useRef, useEffect } from 'react'
 
-export type AnnouncementPriority = 'polite' | 'assertive';
+export type AnnouncementPriority = 'polite' | 'assertive'
 
 export interface Announcement {
-  message: string;
-  priority: AnnouncementPriority;
-  timestamp: number;
+  message: string
+  priority: AnnouncementPriority
+  timestamp: number
 }
 
 /**
@@ -15,73 +15,71 @@ export interface Announcement {
  * Creates and manages ARIA live regions for dynamic content
  */
 export function useAnnouncer() {
-  const politeRegionRef = useRef<HTMLDivElement | null>(null);
-  const assertiveRegionRef = useRef<HTMLDivElement | null>(null);
-  const queueRef = useRef<Announcement[]>([]);
-  const processingRef = useRef(false);
+  const politeRegionRef = useRef<HTMLDivElement | null>(null)
+  const assertiveRegionRef = useRef<HTMLDivElement | null>(null)
+  const queueRef = useRef<Announcement[]>([])
+  const processingRef = useRef(false)
 
   // Create live regions on mount
   useEffect(() => {
     // Check if regions already exist (from another instance)
-    let politeRegion = document.getElementById('a11y-announcer-polite') as HTMLDivElement;
-    let assertiveRegion = document.getElementById('a11y-announcer-assertive') as HTMLDivElement;
+    let politeRegion = document.getElementById('a11y-announcer-polite') as HTMLDivElement
+    let assertiveRegion = document.getElementById('a11y-announcer-assertive') as HTMLDivElement
 
     if (!politeRegion) {
-      politeRegion = createLiveRegion('polite');
-      document.body.appendChild(politeRegion);
+      politeRegion = createLiveRegion('polite')
+      document.body.appendChild(politeRegion)
     }
 
     if (!assertiveRegion) {
-      assertiveRegion = createLiveRegion('assertive');
-      document.body.appendChild(assertiveRegion);
+      assertiveRegion = createLiveRegion('assertive')
+      document.body.appendChild(assertiveRegion)
     }
 
-    politeRegionRef.current = politeRegion;
-    assertiveRegionRef.current = assertiveRegion;
+    politeRegionRef.current = politeRegion
+    assertiveRegionRef.current = assertiveRegion
 
     return () => {
       // Don't remove regions on unmount - they might be used by other instances
       // They'll be cleaned up when the app unmounts
-    };
-  }, []);
+    }
+  }, [])
 
   /**
    * Process the announcement queue
    */
   const processQueue = useCallback(() => {
-    if (processingRef.current || queueRef.current.length === 0) return;
+    if (processingRef.current || queueRef.current.length === 0) return
 
-    processingRef.current = true;
-    const announcement = queueRef.current.shift();
+    processingRef.current = true
+    const announcement = queueRef.current.shift()
 
     if (announcement) {
       const region =
-        announcement.priority === 'assertive'
-          ? assertiveRegionRef.current
-          : politeRegionRef.current;
+        announcement.priority === 'assertive' ? assertiveRegionRef.current : politeRegionRef.current
 
       if (region) {
         // Clear first to ensure screen readers detect the change
-        region.textContent = '';
+        region.textContent = ''
 
         // Use RAF to ensure the clear is processed
         requestAnimationFrame(() => {
-          region.textContent = announcement.message;
+          region.textContent = announcement.message
 
           // Clear after announcement is read (approximate time)
           setTimeout(() => {
-            region.textContent = '';
-            processingRef.current = false;
-            processQueue(); // Process next in queue
-          }, 1000);
-        });
+            region.textContent = ''
+            processingRef.current = false
+            processQueue() // Process next in queue
+          }, 1000)
+        })
       } else {
-        processingRef.current = false;
+        processingRef.current = false
       }
     } else {
-      processingRef.current = false;
+      processingRef.current = false
     }
-  }, []);
+  }, [])
 
   /**
    * Announce a message to screen readers
@@ -92,46 +90,42 @@ export function useAnnouncer() {
         message,
         priority,
         timestamp: Date.now(),
-      });
-      processQueue();
+      })
+      processQueue()
     },
     [processQueue]
-  );
+  )
 
   /**
    * Announce a message immediately (skips queue)
    */
   const announceImmediate = useCallback(
     (message: string, priority: AnnouncementPriority = 'assertive') => {
-      const region =
-        priority === 'assertive' ? assertiveRegionRef.current : politeRegionRef.current;
+      const region = priority === 'assertive' ? assertiveRegionRef.current : politeRegionRef.current
 
       if (region) {
-        region.textContent = '';
+        region.textContent = ''
         requestAnimationFrame(() => {
-          region.textContent = message;
-        });
+          region.textContent = message
+        })
       }
     },
     []
-  );
+  )
 
   /**
    * Clear all pending announcements
    */
   const clearQueue = useCallback(() => {
-    queueRef.current = [];
-    if (politeRegionRef.current) politeRegionRef.current.textContent = '';
-    if (assertiveRegionRef.current) assertiveRegionRef.current.textContent = '';
-  }, []);
+    queueRef.current = []
+    if (politeRegionRef.current) politeRegionRef.current.textContent = ''
+    if (assertiveRegionRef.current) assertiveRegionRef.current.textContent = ''
+  }, [])
 
   /**
    * Announce a polite message
    */
-  const announcePolite = useCallback(
-    (message: string) => announce(message, 'polite'),
-    [announce]
-  );
+  const announcePolite = useCallback((message: string) => announce(message, 'polite'), [announce])
 
   /**
    * Announce an assertive message
@@ -139,7 +133,7 @@ export function useAnnouncer() {
   const announceAssertive = useCallback(
     (message: string) => announce(message, 'assertive'),
     [announce]
-  );
+  )
 
   return {
     announce,
@@ -147,18 +141,18 @@ export function useAnnouncer() {
     announcePolite,
     announceAssertive,
     clearQueue,
-  };
+  }
 }
 
 /**
  * Create a visually hidden live region
  */
 function createLiveRegion(priority: AnnouncementPriority): HTMLDivElement {
-  const region = document.createElement('div');
-  region.id = `a11y-announcer-${priority}`;
-  region.setAttribute('role', 'status');
-  region.setAttribute('aria-live', priority);
-  region.setAttribute('aria-atomic', 'true');
+  const region = document.createElement('div')
+  region.id = `a11y-announcer-${priority}`
+  region.setAttribute('role', 'status')
+  region.setAttribute('aria-live', priority)
+  region.setAttribute('aria-atomic', 'true')
 
   // Visually hidden styles
   Object.assign(region.style, {
@@ -171,9 +165,9 @@ function createLiveRegion(priority: AnnouncementPriority): HTMLDivElement {
     clip: 'rect(0, 0, 0, 0)',
     whiteSpace: 'nowrap',
     border: '0',
-  });
+  })
 
-  return region;
+  return region
 }
 
 /**
@@ -218,9 +212,7 @@ export const announcements = {
 
   // Notifications
   notificationCount: (count: number) =>
-    count === 0
-      ? 'No new notifications'
-      : `${count} new notification${count === 1 ? '' : 's'}`,
-} as const;
+    count === 0 ? 'No new notifications' : `${count} new notification${count === 1 ? '' : 's'}`,
+} as const
 
-export default useAnnouncer;
+export default useAnnouncer

@@ -4,7 +4,7 @@
  * Defines all onboarding steps with their metadata and configuration
  */
 
-import type { OnboardingStep, OnboardingStepId } from './onboarding-types';
+import type { OnboardingStep, OnboardingStepId } from './onboarding-types'
 
 // ============================================================================
 // Step Definitions
@@ -93,7 +93,7 @@ export const onboardingSteps: OnboardingStep[] = [
   },
   {
     id: 'completion',
-    title: 'You\'re All Set!',
+    title: "You're All Set!",
     description: 'Welcome to your new team communication hub',
     icon: 'CheckCircle',
     required: true,
@@ -101,7 +101,7 @@ export const onboardingSteps: OnboardingStep[] = [
     estimatedTime: 10,
     canSkip: false,
   },
-];
+]
 
 // ============================================================================
 // Step Helpers
@@ -111,90 +111,90 @@ export const onboardingSteps: OnboardingStep[] = [
  * Get a step by its ID
  */
 export function getStepById(stepId: OnboardingStepId): OnboardingStep | undefined {
-  return onboardingSteps.find((step) => step.id === stepId);
+  return onboardingSteps.find((step) => step.id === stepId)
 }
 
 /**
  * Get the next step after the given step ID
  */
 export function getNextStep(currentStepId: OnboardingStepId): OnboardingStep | undefined {
-  const currentStep = getStepById(currentStepId);
-  if (!currentStep) return undefined;
-  return onboardingSteps.find((step) => step.order === currentStep.order + 1);
+  const currentStep = getStepById(currentStepId)
+  if (!currentStep) return undefined
+  return onboardingSteps.find((step) => step.order === currentStep.order + 1)
 }
 
 /**
  * Get the previous step before the given step ID
  */
 export function getPreviousStep(currentStepId: OnboardingStepId): OnboardingStep | undefined {
-  const currentStep = getStepById(currentStepId);
-  if (!currentStep) return undefined;
-  return onboardingSteps.find((step) => step.order === currentStep.order - 1);
+  const currentStep = getStepById(currentStepId)
+  if (!currentStep) return undefined
+  return onboardingSteps.find((step) => step.order === currentStep.order - 1)
 }
 
 /**
  * Get all required steps
  */
 export function getRequiredSteps(): OnboardingStep[] {
-  return onboardingSteps.filter((step) => step.required);
+  return onboardingSteps.filter((step) => step.required)
 }
 
 /**
  * Get all optional steps
  */
 export function getOptionalSteps(): OnboardingStep[] {
-  return onboardingSteps.filter((step) => !step.required);
+  return onboardingSteps.filter((step) => !step.required)
 }
 
 /**
  * Get the total number of steps
  */
 export function getTotalSteps(): number {
-  return onboardingSteps.length;
+  return onboardingSteps.length
 }
 
 /**
  * Get step index by ID
  */
 export function getStepIndex(stepId: OnboardingStepId): number {
-  return onboardingSteps.findIndex((step) => step.id === stepId);
+  return onboardingSteps.findIndex((step) => step.id === stepId)
 }
 
 /**
  * Get step by index
  */
 export function getStepByIndex(index: number): OnboardingStep | undefined {
-  return onboardingSteps[index];
+  return onboardingSteps[index]
 }
 
 /**
  * Calculate total estimated time for all steps
  */
 export function getTotalEstimatedTime(): number {
-  return onboardingSteps.reduce((total, step) => total + (step.estimatedTime || 0), 0);
+  return onboardingSteps.reduce((total, step) => total + (step.estimatedTime || 0), 0)
 }
 
 /**
  * Get step IDs in order
  */
 export function getStepIds(): OnboardingStepId[] {
-  return onboardingSteps.map((step) => step.id);
+  return onboardingSteps.map((step) => step.id)
 }
 
 /**
  * Check if a step can be skipped
  */
 export function canSkipStep(stepId: OnboardingStepId): boolean {
-  const step = getStepById(stepId);
-  return step?.canSkip ?? false;
+  const step = getStepById(stepId)
+  return step?.canSkip ?? false
 }
 
 /**
  * Check if a step is required
  */
 export function isStepRequired(stepId: OnboardingStepId): boolean {
-  const step = getStepById(stepId);
-  return step?.required ?? false;
+  const step = getStepById(stepId)
+  return step?.required ?? false
 }
 
 // ============================================================================
@@ -202,82 +202,82 @@ export function isStepRequired(stepId: OnboardingStepId): boolean {
 // ============================================================================
 
 export interface StepValidationResult {
-  isValid: boolean;
-  errors: string[];
+  isValid: boolean
+  errors: string[]
 }
 
-export type StepValidator = (data: Record<string, unknown>) => StepValidationResult;
+export type StepValidator = (data: Record<string, unknown>) => StepValidationResult
 
 /**
  * Validation functions for each step
  */
 export const stepValidators: Partial<Record<OnboardingStepId, StepValidator>> = {
   'profile-setup': (data) => {
-    const errors: string[] = [];
+    const errors: string[] = []
 
     if (!data.displayName || typeof data.displayName !== 'string') {
-      errors.push('Display name is required');
+      errors.push('Display name is required')
     } else if ((data.displayName as string).length < 2) {
-      errors.push('Display name must be at least 2 characters');
+      errors.push('Display name must be at least 2 characters')
     } else if ((data.displayName as string).length > 50) {
-      errors.push('Display name must be less than 50 characters');
+      errors.push('Display name must be less than 50 characters')
     }
 
-    return { isValid: errors.length === 0, errors };
+    return { isValid: errors.length === 0, errors }
   },
 
   'avatar-upload': (data) => {
-    const errors: string[] = [];
+    const errors: string[] = []
 
     // Avatar is optional, so no validation errors
     if (data.file && data.file instanceof File) {
-      const file = data.file as File;
-      const maxSize = 5 * 1024 * 1024; // 5MB
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      const file = data.file as File
+      const maxSize = 5 * 1024 * 1024 // 5MB
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
 
       if (file.size > maxSize) {
-        errors.push('Image must be less than 5MB');
+        errors.push('Image must be less than 5MB')
       }
 
       if (!allowedTypes.includes(file.type)) {
-        errors.push('Image must be JPEG, PNG, GIF, or WebP');
+        errors.push('Image must be JPEG, PNG, GIF, or WebP')
       }
     }
 
-    return { isValid: errors.length === 0, errors };
+    return { isValid: errors.length === 0, errors }
   },
 
-  'preferences': () => {
+  preferences: () => {
     // Preferences always valid as they have defaults
-    return { isValid: true, errors: [] };
+    return { isValid: true, errors: [] }
   },
 
   'notification-permission': () => {
     // No validation needed, permission is optional
-    return { isValid: true, errors: [] };
+    return { isValid: true, errors: [] }
   },
 
   'join-channels': () => {
     // No validation needed, channels are optional
-    return { isValid: true, errors: [] };
+    return { isValid: true, errors: [] }
   },
 
   'invite-team': (data) => {
-    const errors: string[] = [];
+    const errors: string[] = []
 
     if (data.invitations && Array.isArray(data.invitations)) {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-      (data.invitations as { email: string }[]).forEach((invitation, index) => {
+      ;(data.invitations as { email: string }[]).forEach((invitation, index) => {
         if (invitation.email && !emailRegex.test(invitation.email)) {
-          errors.push(`Invalid email address at position ${index + 1}`);
+          errors.push(`Invalid email address at position ${index + 1}`)
         }
-      });
+      })
     }
 
-    return { isValid: errors.length === 0, errors };
+    return { isValid: errors.length === 0, errors }
   },
-};
+}
 
 /**
  * Validate step data
@@ -286,13 +286,13 @@ export function validateStep(
   stepId: OnboardingStepId,
   data: Record<string, unknown>
 ): StepValidationResult {
-  const validator = stepValidators[stepId];
+  const validator = stepValidators[stepId]
 
   if (!validator) {
-    return { isValid: true, errors: [] };
+    return { isValid: true, errors: [] }
   }
 
-  return validator(data);
+  return validator(data)
 }
 
 // ============================================================================
@@ -310,7 +310,7 @@ export const defaultOnboardingPreferences = {
   desktopNotifications: true,
   emailDigest: 'daily' as const,
   showOnlineStatus: true,
-};
+}
 
 /**
  * Default notification settings
@@ -326,7 +326,7 @@ export const defaultNotificationSettings = {
     startTime: '22:00',
     endTime: '08:00',
   },
-};
+}
 
 /**
  * Default user profile
@@ -342,4 +342,4 @@ export const defaultUserProfile = {
   pronouns: '',
   phone: '',
   website: '',
-};
+}

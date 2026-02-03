@@ -348,9 +348,7 @@ export const useReportStore = create<ReportStore>()(
       removeMessageReport: (reportId) =>
         set(
           (state) => {
-            state.messageReports = state.messageReports.filter(
-              (r) => r.id !== reportId
-            )
+            state.messageReports = state.messageReports.filter((r) => r.id !== reportId)
             state.messageReportsTotal -= 1
           },
           false,
@@ -508,10 +506,10 @@ export const selectUserReports = (state: ReportStore) => state.userReports
 
 export const selectMessageReports = (state: ReportStore) => state.messageReports
 
-export const selectAllReports = (state: ReportStore): Report[] => [
-  ...state.userReports,
-  ...state.messageReports,
-].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+export const selectAllReports = (state: ReportStore): Report[] =>
+  [...state.userReports, ...state.messageReports].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )
 
 export const selectPendingReportsCount = (state: ReportStore) =>
   state.userReports.filter((r) => r.status === 'pending').length +

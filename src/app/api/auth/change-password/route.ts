@@ -7,23 +7,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authConfig } from '@/config/auth.config'
 
+import { logger } from '@/lib/logger'
+
 export async function POST(request: NextRequest) {
   try {
     const { userId, currentPassword, newPassword } = await request.json()
 
     if (!userId || !currentPassword || !newPassword) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     // Validate new password strength
     if (newPassword.length < 8) {
-      return NextResponse.json(
-        { error: 'Password must be at least 8 characters' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 })
     }
 
     // In dev mode, allow password changes for test users
@@ -45,10 +41,7 @@ export async function POST(request: NextRequest) {
       message: 'Password updated successfully',
     })
   } catch (error) {
-    console.error('Password change error:', error)
-    return NextResponse.json(
-      { error: 'Failed to change password' },
-      { status: 500 }
-    )
+    logger.error('Password change error:', error)
+    return NextResponse.json({ error: 'Failed to change password' }, { status: 500 })
   }
 }

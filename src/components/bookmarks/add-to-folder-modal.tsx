@@ -17,6 +17,8 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useBookmarkFolders } from '@/lib/bookmarks/use-bookmarks'
 import { useBookmarkStore, type BookmarkFolder } from '@/lib/bookmarks/bookmark-store'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -116,18 +118,16 @@ function FolderOption({ folder, isSelected, onSelect }: FolderOptionProps) {
       type="button"
       onClick={onSelect}
       className={cn(
-        'w-full flex items-center justify-between gap-2 px-3 py-2 rounded-md transition-colors text-left',
-        isSelected
-          ? 'bg-primary/10 text-primary'
-          : 'hover:bg-accent'
+        'flex w-full items-center justify-between gap-2 rounded-md px-3 py-2 text-left transition-colors',
+        isSelected ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
       )}
     >
-      <div className="flex items-center gap-2 min-w-0">
+      <div className="flex min-w-0 items-center gap-2">
         <FolderIcon
           className="h-4 w-4 flex-shrink-0"
           style={folder.color ? { color: folder.color } : undefined}
         />
-        <span className="text-sm truncate">{folder.name}</span>
+        <span className="truncate text-sm">{folder.name}</span>
         <span className="text-xs text-muted-foreground">({folder.bookmark_count})</span>
       </div>
       {isSelected && <CheckIcon className="h-4 w-4 flex-shrink-0 text-primary" />}
@@ -164,9 +164,7 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
   }
 
   // Get the current bookmark's folder
-  const bookmark = selectedBookmarkForFolder
-    ? getBookmarkById(selectedBookmarkForFolder)
-    : null
+  const bookmark = selectedBookmarkForFolder ? getBookmarkById(selectedBookmarkForFolder) : null
 
   // Reset state when modal opens
   React.useEffect(() => {
@@ -188,7 +186,7 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
       setIsCreatingFolder(false)
       setNewFolderName('')
     } catch (error) {
-      console.error('Failed to create folder:', error)
+      logger.error('Failed to create folder:', error)
     }
   }
 
@@ -201,7 +199,7 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
       onMoved?.(selectedFolderId)
       handleOpenChange(false)
     } catch (error) {
-      console.error('Failed to move bookmark:', error)
+      logger.error('Failed to move bookmark:', error)
     } finally {
       setIsMoving(false)
     }
@@ -216,7 +214,7 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
       onMoved?.(null)
       handleOpenChange(false)
     } catch (error) {
-      console.error('Failed to remove from folder:', error)
+      logger.error('Failed to remove from folder:', error)
     } finally {
       setIsMoving(false)
     }
@@ -227,9 +225,7 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
           <DialogTitle>Move to Folder</DialogTitle>
-          <DialogDescription>
-            Choose a folder to organize this saved item.
-          </DialogDescription>
+          <DialogDescription>Choose a folder to organize this saved item.</DialogDescription>
         </DialogHeader>
 
         <div className="py-4">
@@ -252,11 +248,7 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
                   }}
                   autoFocus
                 />
-                <Button
-                  size="icon"
-                  onClick={handleCreateFolder}
-                  disabled={!newFolderName.trim()}
-                >
+                <Button size="icon" onClick={handleCreateFolder} disabled={!newFolderName.trim()}>
                   <CheckIcon className="h-4 w-4" />
                 </Button>
                 <Button
@@ -279,10 +271,8 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
                   type="button"
                   onClick={() => setSelectedFolderId(null)}
                   className={cn(
-                    'w-full flex items-center justify-between gap-2 px-3 py-2 rounded-md transition-colors text-left',
-                    selectedFolderId === null
-                      ? 'bg-primary/10 text-primary'
-                      : 'hover:bg-accent'
+                    'flex w-full items-center justify-between gap-2 rounded-md px-3 py-2 text-left transition-colors',
+                    selectedFolderId === null ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
                   )}
                 >
                   <div className="flex items-center gap-2">
@@ -308,7 +298,7 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
                 <button
                   type="button"
                   onClick={() => setIsCreatingFolder(true)}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-md transition-colors hover:bg-accent text-muted-foreground hover:text-foreground"
+                  className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
                 >
                   <FolderPlusIcon className="h-4 w-4" />
                   <span className="text-sm">Create new folder</span>
@@ -329,11 +319,7 @@ export function AddToFolderModal({ open, onOpenChange, onMoved }: AddToFolderMod
               Remove from folder
             </Button>
           )}
-          <Button
-            variant="outline"
-            onClick={() => handleOpenChange(false)}
-            disabled={isMoving}
-          >
+          <Button variant="outline" onClick={() => handleOpenChange(false)} disabled={isMoving}>
             Cancel
           </Button>
           <Button

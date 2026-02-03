@@ -49,20 +49,20 @@ function QuickAction({ icon, title, description, href, onClick }: QuickActionPro
   const content = (
     <Card
       className={cn(
-        'group cursor-pointer transition-all hover:shadow-md hover:border-primary/50',
-        'bg-card hover:bg-accent/50'
+        'hover:border-primary/50 group cursor-pointer transition-all hover:shadow-md',
+        'hover:bg-accent/50 bg-card'
       )}
     >
-      <CardContent className="p-4 flex items-start gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+      <CardContent className="flex items-start gap-4 p-4">
+        <div className="bg-primary/10 group-hover:text-primary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-primary transition-colors group-hover:bg-primary">
           {icon}
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="font-medium flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <h3 className="flex items-center gap-2 font-medium">
             {title}
-            <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+            <ArrowRight className="h-4 w-4 -translate-x-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
           </h3>
-          <p className="text-sm text-muted-foreground mt-1">{description}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{description}</p>
         </div>
       </CardContent>
     </Card>
@@ -83,35 +83,26 @@ function QuickAction({ icon, title, description, href, onClick }: QuickActionPro
 // Recent Channel Item Component
 // ============================================================================
 
-function RecentChannelItem({
-  name,
-  slug,
-  lastMessage,
-  lastMessageTime,
-}: RecentChannelProps) {
+function RecentChannelItem({ name, slug, lastMessage, lastMessageTime }: RecentChannelProps) {
   return (
     <Link
       href={`/chat/channel/${slug}`}
       className={cn(
-        'flex items-center gap-3 px-3 py-2 rounded-lg',
-        'hover:bg-accent transition-colors'
+        'flex items-center gap-3 rounded-lg px-3 py-2',
+        'transition-colors hover:bg-accent'
       )}
     >
       <div className="flex h-8 w-8 items-center justify-center rounded-md bg-muted">
         <Hash className="h-4 w-4 text-muted-foreground" />
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <span className="font-medium truncate">{name}</span>
+          <span className="truncate font-medium">{name}</span>
           {lastMessageTime && (
-            <span className="text-xs text-muted-foreground shrink-0">
-              {lastMessageTime}
-            </span>
+            <span className="shrink-0 text-xs text-muted-foreground">{lastMessageTime}</span>
           )}
         </div>
-        {lastMessage && (
-          <p className="text-sm text-muted-foreground truncate">{lastMessage}</p>
-        )}
+        {lastMessage && <p className="truncate text-sm text-muted-foreground">{lastMessage}</p>}
       </div>
     </Link>
   )
@@ -161,20 +152,20 @@ export default function ChatPage() {
 
   return (
     <div className="flex h-full flex-col overflow-auto">
-      <div className="flex-1 p-6 lg:p-8 max-w-4xl mx-auto w-full">
+      <div className="mx-auto w-full max-w-4xl flex-1 p-6 lg:p-8">
         {/* Welcome Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight">
             {greeting}, {user?.displayName?.split(' ')[0] || 'there'}!
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="mt-2 text-muted-foreground">
             Welcome to {config?.branding?.appName || 'nchat'}. What would you like to do today?
           </p>
         </div>
 
         {/* Quick Actions */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
             <Sparkles className="h-5 w-5 text-primary" />
             Quick Actions
           </h2>
@@ -208,7 +199,7 @@ export default function ChatPage() {
 
         {/* Recent Activity */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
             <Clock className="h-5 w-5 text-muted-foreground" />
             Recent Activity
           </h2>
@@ -222,7 +213,7 @@ export default function ChatPage() {
                 </div>
               ) : (
                 <div className="py-8 text-center">
-                  <MessageSquare className="h-10 w-10 mx-auto text-muted-foreground mb-3" />
+                  <MessageSquare className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground">
                     No recent activity yet. Start by joining a channel!
                   </p>
@@ -234,7 +225,7 @@ export default function ChatPage() {
 
         {/* Team Stats (Placeholder) */}
         <div>
-          <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold">
             <Users className="h-5 w-5 text-muted-foreground" />
             Team Overview
           </h2>
@@ -262,18 +253,16 @@ export default function ChatPage() {
 
         {/* Getting Started Guide (for new users) */}
         {user?.role === 'owner' && !config?.setup?.isCompleted && (
-          <div className="mt-8 p-6 rounded-lg border-2 border-dashed border-primary/30 bg-primary/5">
+          <div className="border-primary/30 bg-primary/5 mt-8 rounded-lg border-2 border-dashed p-6">
             <div className="flex items-start gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+              <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-full">
                 <Sparkles className="h-6 w-6 text-primary" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-lg mb-1">
-                  Complete Your Setup
-                </h3>
-                <p className="text-muted-foreground mb-4">
-                  You haven&apos;t finished setting up your workspace. Complete the
-                  setup wizard to customize your chat experience.
+                <h3 className="mb-1 text-lg font-semibold">Complete Your Setup</h3>
+                <p className="mb-4 text-muted-foreground">
+                  You haven&apos;t finished setting up your workspace. Complete the setup wizard to
+                  customize your chat experience.
                 </p>
                 <Button asChild>
                   <Link href="/setup">Continue Setup</Link>
@@ -285,18 +274,9 @@ export default function ChatPage() {
       </div>
 
       {/* Modals */}
-      <CreateChannelModal
-        open={showCreateChannel}
-        onOpenChange={setShowCreateChannel}
-      />
-      <CreateDmModal
-        open={showCreateDm}
-        onOpenChange={setShowCreateDm}
-      />
-      <SearchModal
-        open={showSearch}
-        onOpenChange={setShowSearch}
-      />
+      <CreateChannelModal open={showCreateChannel} onOpenChange={setShowCreateChannel} />
+      <CreateDmModal open={showCreateDm} onOpenChange={setShowCreateDm} />
+      <SearchModal open={showSearch} onOpenChange={setShowSearch} />
     </div>
   )
 }

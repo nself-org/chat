@@ -7,6 +7,8 @@
 
 import { testStunServer, testTurnServer, getIceServers, getTurnServerFromEnv } from './servers'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -125,7 +127,7 @@ export class NatTraversalService {
 
       return natType
     } catch (error) {
-      console.error('NAT detection failed:', error)
+      logger.error('NAT detection failed:', error)
       return 'unknown'
     }
   }
@@ -361,7 +363,10 @@ export class NatTraversalService {
     }
 
     // Cone NAT types - STUN should work
-    if ((natType === 'full-cone' || natType === 'restricted' || natType === 'port-restricted') && stunAvailable) {
+    if (
+      (natType === 'full-cone' || natType === 'restricted' || natType === 'port-restricted') &&
+      stunAvailable
+    ) {
       return 'stun'
     }
 
@@ -402,7 +407,7 @@ export class NatTraversalService {
   async fallbackToTurn(): Promise<boolean> {
     const turnServer = getTurnServerFromEnv()
     if (!turnServer) {
-      console.warn('No TURN server configured for fallback')
+      logger.warn('No TURN server configured for fallback')
       return false
     }
 
@@ -449,7 +454,9 @@ export class NatTraversalService {
 // Factory Function
 // =============================================================================
 
-export function createNatTraversalService(config?: Partial<NatTraversalConfig>): NatTraversalService {
+export function createNatTraversalService(
+  config?: Partial<NatTraversalConfig>
+): NatTraversalService {
   return new NatTraversalService(config)
 }
 
@@ -490,7 +497,9 @@ export function getNatTypeDescription(natType: NatType): string {
 /**
  * Get connectivity difficulty level
  */
-export function getConnectivityDifficulty(natType: NatType): 'easy' | 'medium' | 'hard' | 'impossible' {
+export function getConnectivityDifficulty(
+  natType: NatType
+): 'easy' | 'medium' | 'hard' | 'impossible' {
   switch (natType) {
     case 'open':
     case 'full-cone':

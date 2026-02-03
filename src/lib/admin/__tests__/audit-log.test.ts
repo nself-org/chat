@@ -243,10 +243,30 @@ describe('Entry Creation', () => {
 
 describe('Filter Functions', () => {
   const entries = [
-    createTestEntry({ action: 'user.create', targetType: 'user', actorId: 'actor-1', actorEmail: 'admin@example.com' }),
-    createTestEntry({ action: 'user.delete', targetType: 'user', actorId: 'actor-1', actorEmail: 'admin@example.com' }),
-    createTestEntry({ action: 'channel.create', targetType: 'channel', actorId: 'actor-2', actorEmail: 'mod@example.com' }),
-    createTestEntry({ action: 'settings.update', targetType: 'settings', actorId: 'actor-1', actorEmail: 'admin@example.com' }),
+    createTestEntry({
+      action: 'user.create',
+      targetType: 'user',
+      actorId: 'actor-1',
+      actorEmail: 'admin@example.com',
+    }),
+    createTestEntry({
+      action: 'user.delete',
+      targetType: 'user',
+      actorId: 'actor-1',
+      actorEmail: 'admin@example.com',
+    }),
+    createTestEntry({
+      action: 'channel.create',
+      targetType: 'channel',
+      actorId: 'actor-2',
+      actorEmail: 'mod@example.com',
+    }),
+    createTestEntry({
+      action: 'settings.update',
+      targetType: 'settings',
+      actorId: 'actor-1',
+      actorEmail: 'admin@example.com',
+    }),
   ]
 
   describe('filterByAction', () => {
@@ -350,8 +370,16 @@ describe('Filter Functions', () => {
 
   describe('filterBySearch', () => {
     const entriesWithDetails = [
-      createTestEntry({ action: 'user.create', actorEmail: 'admin@example.com', details: { username: 'john' } }),
-      createTestEntry({ action: 'user.delete', actorEmail: 'mod@example.com', details: { username: 'jane' } }),
+      createTestEntry({
+        action: 'user.create',
+        actorEmail: 'admin@example.com',
+        details: { username: 'john' },
+      }),
+      createTestEntry({
+        action: 'user.delete',
+        actorEmail: 'mod@example.com',
+        details: { username: 'jane' },
+      }),
     ]
 
     it('should search in action', () => {
@@ -399,9 +427,21 @@ describe('Filter Functions', () => {
 describe('Sort Functions', () => {
   describe('sortAuditLog', () => {
     const entries = [
-      createTestEntry({ timestamp: '2025-01-15T00:00:00Z', action: 'user.delete', actorEmail: 'bob@example.com' }),
-      createTestEntry({ timestamp: '2025-01-01T00:00:00Z', action: 'user.create', actorEmail: 'alice@example.com' }),
-      createTestEntry({ timestamp: '2025-01-10T00:00:00Z', action: 'channel.create', actorEmail: 'charlie@example.com' }),
+      createTestEntry({
+        timestamp: '2025-01-15T00:00:00Z',
+        action: 'user.delete',
+        actorEmail: 'bob@example.com',
+      }),
+      createTestEntry({
+        timestamp: '2025-01-01T00:00:00Z',
+        action: 'user.create',
+        actorEmail: 'alice@example.com',
+      }),
+      createTestEntry({
+        timestamp: '2025-01-10T00:00:00Z',
+        action: 'channel.create',
+        actorEmail: 'charlie@example.com',
+      }),
     ]
 
     it('should sort by timestamp ascending', () => {
@@ -439,9 +479,7 @@ describe('Sort Functions', () => {
 // ============================================================================
 
 describe('Pagination Functions', () => {
-  const entries = Array.from({ length: 25 }, (_, i) =>
-    createTestEntry({ id: `audit-${i}` })
-  )
+  const entries = Array.from({ length: 25 }, (_, i) => createTestEntry({ id: `audit-${i}` }))
 
   describe('paginateAuditLog', () => {
     it('should return correct page size', () => {

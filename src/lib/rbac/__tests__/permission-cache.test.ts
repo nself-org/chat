@@ -156,8 +156,12 @@ describe('Permission Cache', () => {
         smallCache.set({ userId: 'user4', permission: PERMISSIONS.MESSAGE_SEND }, { allowed: true })
 
         expect(smallCache.size).toBe(3)
-        expect(smallCache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })).toBeUndefined()
-        expect(smallCache.get({ userId: 'user4', permission: PERMISSIONS.MESSAGE_SEND })).toBeDefined()
+        expect(
+          smallCache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })
+        ).toBeUndefined()
+        expect(
+          smallCache.get({ userId: 'user4', permission: PERMISSIONS.MESSAGE_SEND })
+        ).toBeDefined()
       })
 
       it('accessing an entry moves it to front', () => {
@@ -174,8 +178,12 @@ describe('Permission Cache', () => {
         // Add one more (should evict user2 now)
         smallCache.set({ userId: 'user4', permission: PERMISSIONS.MESSAGE_SEND }, { allowed: true })
 
-        expect(smallCache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })).toBeDefined()
-        expect(smallCache.get({ userId: 'user2', permission: PERMISSIONS.MESSAGE_SEND })).toBeUndefined()
+        expect(
+          smallCache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })
+        ).toBeDefined()
+        expect(
+          smallCache.get({ userId: 'user2', permission: PERMISSIONS.MESSAGE_SEND })
+        ).toBeUndefined()
       })
 
       it('tracks eviction count in stats', () => {
@@ -247,8 +255,12 @@ describe('Permission Cache', () => {
           const count = cache.invalidateUser('user1')
 
           expect(count).toBe(2)
-          expect(cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })).toBeUndefined()
-          expect(cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_EDIT })).toBeUndefined()
+          expect(
+            cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })
+          ).toBeUndefined()
+          expect(
+            cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_EDIT })
+          ).toBeUndefined()
           expect(cache.get({ userId: 'user2', permission: PERMISSIONS.MESSAGE_SEND })).toBeDefined()
         })
 
@@ -353,8 +365,12 @@ describe('Permission Cache', () => {
 
           cache.setBatch(request, results)
 
-          expect(cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })?.allowed).toBe(true)
-          expect(cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_EDIT })?.allowed).toBe(false)
+          expect(
+            cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })?.allowed
+          ).toBe(true)
+          expect(
+            cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_EDIT })?.allowed
+          ).toBe(false)
         })
       })
     })
@@ -677,10 +693,7 @@ describe('Permission Cache', () => {
         const batchCheck = withBatchCache(cache, checkFn)
 
         // Pre-cache one permission
-        cache.set(
-          { userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND },
-          { allowed: true }
-        )
+        cache.set({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND }, { allowed: true })
 
         const request: BatchPermissionRequest = {
           userId: 'user1',
@@ -709,9 +722,7 @@ describe('Permission Cache', () => {
         batchCheck(request)
 
         // Should be cached now
-        expect(
-          cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })
-        ).toBeDefined()
+        expect(cache.get({ userId: 'user1', permission: PERMISSIONS.MESSAGE_SEND })).toBeDefined()
       })
     })
   })
@@ -759,10 +770,7 @@ describe('Permission Cache', () => {
 
       // Add 50 entries, causing 40 evictions
       for (let i = 0; i < 50; i++) {
-        cache.set(
-          { userId: `user${i}`, permission: PERMISSIONS.MESSAGE_SEND },
-          { allowed: true }
-        )
+        cache.set({ userId: `user${i}`, permission: PERMISSIONS.MESSAGE_SEND }, { allowed: true })
       }
 
       expect(cache.size).toBe(10)

@@ -8,14 +8,7 @@ import { UserLinks } from './UserLinks'
 import { UserTimezone } from './UserTimezone'
 import { UserRoles } from './UserRoles'
 import { Separator } from '@/components/ui/separator'
-import {
-  Mail,
-  Phone,
-  Building2,
-  Briefcase,
-  Users,
-  Globe,
-} from 'lucide-react'
+import { Mail, Phone, Building2, Briefcase, Users, Globe } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -32,22 +25,13 @@ export interface UserProfileAboutProps extends React.HTMLAttributes<HTMLDivEleme
 // ============================================================================
 
 const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>(
-  (
-    {
-      className,
-      user,
-      showContactInfo = true,
-      showWorkInfo = true,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, user, showContactInfo = true, showWorkInfo = true, ...props }, ref) => {
     return (
-      <div ref={ref} className={cn('p-6 space-y-6', className)} {...props}>
+      <div ref={ref} className={cn('space-y-6 p-6', className)} {...props}>
         {/* Bio */}
         {user.bio && (
           <section>
-            <h3 className="text-sm font-semibold mb-3">About</h3>
+            <h3 className="mb-3 text-sm font-semibold">About</h3>
             <UserBio bio={user.bio} />
           </section>
         )}
@@ -55,11 +39,11 @@ const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>
         {/* Contact information */}
         {showContactInfo && (user.email || user.phone) && (
           <section>
-            <h3 className="text-sm font-semibold mb-3">Contact</h3>
+            <h3 className="mb-3 text-sm font-semibold">Contact</h3>
             <div className="space-y-3">
               {user.email && (
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-muted">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
                     <Mail className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
@@ -75,7 +59,7 @@ const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>
               )}
               {user.phone && (
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-muted">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
                     <Phone className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
@@ -98,11 +82,11 @@ const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>
         {/* Work information */}
         {showWorkInfo && (user.title || user.department || user.team) && (
           <section>
-            <h3 className="text-sm font-semibold mb-3">Work</h3>
+            <h3 className="mb-3 text-sm font-semibold">Work</h3>
             <div className="space-y-3">
               {user.title && (
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-muted">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
                     <Briefcase className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
@@ -113,7 +97,7 @@ const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>
               )}
               {user.department && (
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-muted">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
                     <Building2 className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
@@ -124,7 +108,7 @@ const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>
               )}
               {user.team && (
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-muted">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
                     <Users className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div>
@@ -142,7 +126,7 @@ const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>
         {/* Timezone */}
         {user.timezone && (
           <section>
-            <h3 className="text-sm font-semibold mb-3">Local Time</h3>
+            <h3 className="mb-3 text-sm font-semibold">Local Time</h3>
             <UserTimezone timezone={user.timezone} />
           </section>
         )}
@@ -152,11 +136,11 @@ const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>
           <>
             <Separator />
             <section>
-              <h3 className="text-sm font-semibold mb-3">Links</h3>
+              <h3 className="mb-3 text-sm font-semibold">Links</h3>
               <div className="space-y-3">
                 {user.website && (
                   <div className="flex items-center gap-3">
-                    <div className="flex items-center justify-center h-8 w-8 rounded-lg bg-muted">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-muted">
                       <Globe className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <div>
@@ -184,7 +168,7 @@ const UserProfileAbout = React.forwardRef<HTMLDivElement, UserProfileAboutProps>
 
         {/* Role and permissions */}
         <section>
-          <h3 className="text-sm font-semibold mb-3">Role & Permissions</h3>
+          <h3 className="mb-3 text-sm font-semibold">Role & Permissions</h3>
           <UserRoles role={user.role} />
         </section>
       </div>

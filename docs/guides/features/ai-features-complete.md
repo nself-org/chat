@@ -28,12 +28,12 @@ A comprehensive guide to all AI-powered features in nself-chat, including messag
 
 nself-chat includes four major AI-powered capabilities:
 
-| Feature | Description | Status | AI Required |
-|---------|-------------|--------|-------------|
-| **Message Summarization** | Generate summaries of conversations, threads, and channels | ✅ Available | Optional |
-| **Smart Search** | Semantic search that understands meaning, not just keywords | ✅ Available | Optional |
-| **Intelligent Bots** | Automated assistants that respond to commands and events | ✅ Available | No |
-| **Auto-Moderation** | AI-powered content detection for toxicity, spam, and NSFW | ✅ Available | Optional |
+| Feature                   | Description                                                 | Status       | AI Required |
+| ------------------------- | ----------------------------------------------------------- | ------------ | ----------- |
+| **Message Summarization** | Generate summaries of conversations, threads, and channels  | ✅ Available | Optional    |
+| **Smart Search**          | Semantic search that understands meaning, not just keywords | ✅ Available | Optional    |
+| **Intelligent Bots**      | Automated assistants that respond to commands and events    | ✅ Available | No          |
+| **Auto-Moderation**       | AI-powered content detection for toxicity, spam, and NSFW   | ✅ Available | Optional    |
 
 ### How It Works
 
@@ -45,11 +45,11 @@ All AI features in nself-chat are designed with **graceful degradation**:
 
 ### Supported AI Providers
 
-| Provider | Summarization | Search Embeddings | Moderation | Cost |
-|----------|--------------|-------------------|------------|------|
-| **OpenAI** | GPT-4o-mini | text-embedding-3-small | ✅ TensorFlow.js | ~$0.001 per 1K messages |
+| Provider      | Summarization    | Search Embeddings        | Moderation       | Cost                     |
+| ------------- | ---------------- | ------------------------ | ---------------- | ------------------------ |
+| **OpenAI**    | GPT-4o-mini      | text-embedding-3-small   | ✅ TensorFlow.js | ~$0.001 per 1K messages  |
 | **Anthropic** | Claude 3.5 Haiku | ❌ (falls back to local) | ✅ TensorFlow.js | ~$0.0015 per 1K messages |
-| **Local** | Basic statistics | Keyword search | ✅ TensorFlow.js | Free |
+| **Local**     | Basic statistics | Keyword search           | ✅ TensorFlow.js | Free                     |
 
 ---
 
@@ -102,17 +102,20 @@ Message summarization uses AI to condense long conversations into concise, reada
 **What it does**: Provides a comprehensive overview of channel activity over a time period.
 
 **When to use**:
+
 - Starting your workday
 - Reviewing what happened while you were offline
 - Understanding channel activity patterns
 
 **How to access**:
+
 1. Open any channel
 2. Click the **⚡ Summarize** button in the top toolbar
 3. Select **"Channel Digest"**
 4. Choose time period (Last hour, Today, Last 7 days, Custom)
 
 **Example Output**:
+
 ```
 📊 Channel Digest: #engineering (Last 24 hours)
 
@@ -136,16 +139,19 @@ Participants: 8 members | Messages: 156
 **What it does**: Summarizes a conversation thread to help you understand the discussion.
 
 **When to use**:
+
 - Before joining a long thread
 - Reviewing decisions made in a thread
 - Understanding context without reading all replies
 
 **How to access**:
+
 1. Hover over any message with replies
 2. Click **"View Thread"**
 3. Click the **📝 Summary** button at the top of the thread panel
 
 **Example Output**:
+
 ```
 🧵 Thread Summary
 
@@ -166,15 +172,18 @@ Participants: 4 | Messages: 23
 **What it does**: Shows you what you missed since you were last online.
 
 **When to use**:
+
 - Returning after time away
 - Checking in on channels you don't actively monitor
 - Quick status updates
 
 **How to access**:
+
 1. Automatically appears when you open a channel with new messages
 2. Or click your profile > **"Catch Up"** to see all channels
 
 **Example Output**:
+
 ```
 👋 Welcome back! You missed 47 messages in 3 channels.
 
@@ -196,15 +205,18 @@ Participants: 4 | Messages: 23
 **What it does**: Generates a brief 1-2 sentence summary of any selection of messages.
 
 **When to use**:
+
 - Quick context on recent messages
 - TL;DR for lengthy discussions
 - Sharing context with others
 
 **How to access**:
+
 1. Select multiple messages (Shift+Click)
 2. Right-click and choose **"Summarize Selection"**
 
 **Example Output**:
+
 ```
 Brief Summary: Discussion about API rate limiting. Team decided to
 implement exponential backoff and increase default limits for premium users.
@@ -215,6 +227,7 @@ implement exponential backoff and increase default limits for premium users.
 #### Desktop Application
 
 **Step-by-step**:
+
 1. Navigate to any channel or thread
 2. Look for the summarization controls:
    - **⚡ Button** in the toolbar (Channel Digest)
@@ -226,6 +239,7 @@ implement exponential backoff and increase default limits for premium users.
 6. Review and optionally **"Copy"** or **"Share"** the summary
 
 **Keyboard Shortcuts**:
+
 - `Cmd/Ctrl + Shift + S` - Summarize current view
 - `Cmd/Ctrl + Shift + D` - Generate channel digest
 - `Esc` - Close summary panel
@@ -233,6 +247,7 @@ implement exponential backoff and increase default limits for premium users.
 #### Mobile Application
 
 **Step-by-step**:
+
 1. Tap the **⋮ Menu** icon in the top-right
 2. Select **"Summarize"**
 3. Choose summary type
@@ -240,6 +255,7 @@ implement exponential backoff and increase default limits for premium users.
 5. View summary and tap **"Done"** when finished
 
 **Tips for Mobile**:
+
 - Summaries are optimized for mobile screens
 - Swipe down to dismiss
 - Long-press summary to copy
@@ -248,14 +264,15 @@ implement exponential backoff and increase default limits for premium users.
 
 **Options available**:
 
-| Option | Description | Values |
-|--------|-------------|--------|
-| **Style** | Output format | Brief, Detailed, Bullet Points |
-| **Length** | Summary length | Short (100 words), Medium (300 words), Long (500 words) |
-| **Focus** | What to emphasize | All content, Decisions only, Key points only |
-| **Language** | Output language | Auto-detect, English, Spanish, French, German, etc. |
+| Option       | Description       | Values                                                  |
+| ------------ | ----------------- | ------------------------------------------------------- |
+| **Style**    | Output format     | Brief, Detailed, Bullet Points                          |
+| **Length**   | Summary length    | Short (100 words), Medium (300 words), Long (500 words) |
+| **Focus**    | What to emphasize | All content, Decisions only, Key points only            |
+| **Language** | Output language   | Auto-detect, English, Spanish, French, German, etc.     |
 
 **To customize**:
+
 1. Click **Settings** in the summary panel
 2. Adjust options
 3. Click **"Regenerate"** to apply changes
@@ -299,18 +316,21 @@ Smart Search uses AI to understand the **meaning** of your queries, not just mat
 #### Advanced Searches
 
 **Natural Language**:
+
 ```
 "What did Sarah say about the database migration?"
 → Finds Sarah's messages related to database, migration, schema changes
 ```
 
 **Time-Based**:
+
 ```
 "bug reports from last week"
 → Filters to messages from the past 7 days containing bug descriptions
 ```
 
 **Multi-Concept**:
+
 ```
 "authentication AND security NOT testing"
 → Finds security-related auth discussions, excluding test-related messages
@@ -326,6 +346,7 @@ Smart Search uses AI to understand the **meaning** of your queries, not just mat
 4. **Click a result** to jump to that message in context
 
 **Search Bar Features**:
+
 ```
 ┌─────────────────────────────────────────┐
 │ 🔍 Search messages with AI...         │
@@ -338,16 +359,17 @@ Smart Search uses AI to understand the **meaning** of your queries, not just mat
 
 **Available Filters**:
 
-| Filter | Description | Example |
-|--------|-------------|---------|
-| **Channel** | Search within specific channel(s) | `#engineering` |
-| **User** | Messages from specific users | `from:sarah` |
-| **Date** | Time range | `after:2026-01-01` |
-| **Has Thread** | Only messages with replies | `has:thread` |
-| **Has Links** | Messages containing URLs | `has:links` |
-| **Has Files** | Messages with attachments | `has:files` |
+| Filter         | Description                       | Example            |
+| -------------- | --------------------------------- | ------------------ |
+| **Channel**    | Search within specific channel(s) | `#engineering`     |
+| **User**       | Messages from specific users      | `from:sarah`       |
+| **Date**       | Time range                        | `after:2026-01-01` |
+| **Has Thread** | Only messages with replies        | `has:thread`       |
+| **Has Links**  | Messages containing URLs          | `has:links`        |
+| **Has Files**  | Messages with attachments         | `has:files`        |
 
 **Combining Filters**:
+
 ```
 authentication in:#engineering from:sarah after:2026-01-15
 → Sarah's messages about authentication in #engineering since Jan 15
@@ -355,13 +377,13 @@ authentication in:#engineering from:sarah after:2026-01-15
 
 #### Search Operators
 
-| Operator | Usage | Example |
-|----------|-------|---------|
-| **AND** | Both terms must be present | `API AND security` |
-| **OR** | Either term present | `bug OR issue` |
-| **NOT** | Exclude term | `deploy NOT staging` |
-| **""** | Exact phrase | `"critical bug"` |
-| **( )** | Group terms | `(API OR backend) AND performance` |
+| Operator | Usage                      | Example                            |
+| -------- | -------------------------- | ---------------------------------- |
+| **AND**  | Both terms must be present | `API AND security`                 |
+| **OR**   | Either term present        | `bug OR issue`                     |
+| **NOT**  | Exclude term               | `deploy NOT staging`               |
+| **""**   | Exact phrase               | `"critical bug"`                   |
+| **( )**  | Group terms                | `(API OR backend) AND performance` |
 
 ### Understanding Search Results
 
@@ -383,6 +405,7 @@ Each search result shows:
 ```
 
 **Elements explained**:
+
 - **Relevance Score**: How well the message matches your query (0-100%)
 - **Match Type**:
   - `Semantic` - AI understanding (best)
@@ -394,6 +417,7 @@ Each search result shows:
 #### Viewing Context
 
 **To see surrounding messages**:
+
 1. Hover over a search result
 2. Click **"Show Context"**
 3. View 2 messages before and after (configurable)
@@ -404,11 +428,11 @@ Each search result shows:
 
 Choose how results are ordered:
 
-| Strategy | Description | Best For |
-|----------|-------------|----------|
-| **Relevance** | Most relevant first | Finding best matches |
-| **Recent** | Newest first | Finding latest mentions |
-| **Hybrid** | Balance relevance (70%) + recency (30%) | Most searches (default) |
+| Strategy      | Description                             | Best For                |
+| ------------- | --------------------------------------- | ----------------------- |
+| **Relevance** | Most relevant first                     | Finding best matches    |
+| **Recent**    | Newest first                            | Finding latest mentions |
+| **Hybrid**    | Balance relevance (70%) + recency (30%) | Most searches (default) |
 
 **To change ranking**:
 Click the **⚙️ Settings** icon in search → Select ranking strategy
@@ -418,6 +442,7 @@ Click the **⚙️ Settings** icon in search → Select ranking strategy
 #### Getting Better Results
 
 **✅ Do**:
+
 - Use natural language: "show me", "find", "what did"
 - Be specific: "React performance optimization" vs "React"
 - Use synonyms: Try different terms if first search doesn't work
@@ -425,6 +450,7 @@ Click the **⚙️ Settings** icon in search → Select ranking strategy
 - Use quotes for exact phrases: "critical production bug"
 
 **❌ Avoid**:
+
 - Single-letter searches: "a", "I" (minimum 2 characters)
 - Too generic: "help", "question" (too many results)
 - Overly complex queries: Keep it simple for best results
@@ -432,18 +458,21 @@ Click the **⚙️ Settings** icon in search → Select ranking strategy
 #### Common Search Patterns
 
 **Find experts**:
+
 ```
 "who knows about GraphQL?"
 → People discussing GraphQL, their messages, expertise
 ```
 
 **Track decisions**:
+
 ```
 "approved OR decided OR agreed" in:#product-planning
 → Decision-making messages in product planning
 ```
 
 **Monitor bugs**:
+
 ```
 "bug OR issue OR error" has:thread after:yesterday
 → Recent bug reports with discussion threads
@@ -452,26 +481,28 @@ Click the **⚙️ Settings** icon in search → Select ranking strategy
 ### Saved Searches
 
 **Save frequent searches**:
+
 1. Perform a search
 2. Click **⭐ Save Search**
 3. Name your search (e.g., "Recent bugs in engineering")
 4. Access from **Saved Searches** dropdown
 
 **Benefits**:
+
 - Quick access to common queries
 - Shared saved searches (admin feature)
 - Email alerts for saved search results (coming soon)
 
 ### Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `Cmd/Ctrl + K` | Open search |
-| `Cmd/Ctrl + Shift + F` | Advanced search |
-| `↑` `↓` | Navigate results |
-| `Enter` | Open selected result |
-| `Esc` | Close search |
-| `Cmd/Ctrl + Enter` | Open in new window |
+| Shortcut               | Action               |
+| ---------------------- | -------------------- |
+| `Cmd/Ctrl + K`         | Open search          |
+| `Cmd/Ctrl + Shift + F` | Advanced search      |
+| `↑` `↓`                | Navigate results     |
+| `Enter`                | Open selected result |
+| `Esc`                  | Close search         |
+| `Cmd/Ctrl + Enter`     | Open in new window   |
 
 ### When Search Is Not Semantic
 
@@ -480,12 +511,14 @@ Click the **⚙️ Settings** icon in search → Select ranking strategy
 This means AI-powered semantic search is not available, but you still have full keyword search functionality.
 
 **Differences**:
+
 - ✅ Still works for exact matches and keywords
 - ✅ Still supports all filters and operators
 - ⚠️ Won't understand synonyms or concepts
 - ⚠️ May return more irrelevant results
 
 **Example**:
+
 - With semantic: `authentication issues` finds login, password, session problems
 - Without semantic: `authentication issues` finds only messages with those exact words
 
@@ -496,6 +529,7 @@ This means AI-powered semantic search is not available, but you still have full 
 ### What Are Bots?
 
 Bots are automated assistants that can:
+
 - **Respond to commands** (/help, /poll, /remind)
 - **Answer questions** based on chat history and knowledge
 - **Automate tasks** (create polls, set reminders, fetch data)
@@ -505,14 +539,14 @@ Bots are automated assistants that can:
 
 #### Built-In Bots
 
-| Bot | Purpose | Commands | AI Required |
-|-----|---------|----------|-------------|
-| **HelloBot** 👋 | Greetings and jokes | `/hello`, `/hi`, `/joke` | No |
-| **PollBot** 📊 | Create and manage polls | `/poll`, `/vote`, `/results` | No |
-| **ReminderBot** ⏰ | Set reminders | `/remind`, `/reminders` | No |
-| **WelcomeBot** 🎉 | Welcome new members | `/setwelcome`, `/welcomemessage` | No |
-| **SearchBot** 🔍 | Semantic search assistant | `/search`, `/find` | Optional |
-| **SummaryBot** 📝 | Generate summaries | `/summarize`, `/digest` | Optional |
+| Bot                | Purpose                   | Commands                         | AI Required |
+| ------------------ | ------------------------- | -------------------------------- | ----------- |
+| **HelloBot** 👋    | Greetings and jokes       | `/hello`, `/hi`, `/joke`         | No          |
+| **PollBot** 📊     | Create and manage polls   | `/poll`, `/vote`, `/results`     | No          |
+| **ReminderBot** ⏰ | Set reminders             | `/remind`, `/reminders`          | No          |
+| **WelcomeBot** 🎉  | Welcome new members       | `/setwelcome`, `/welcomemessage` | No          |
+| **SearchBot** 🔍   | Semantic search assistant | `/search`, `/find`               | Optional    |
+| **SummaryBot** 📝  | Generate summaries        | `/summarize`, `/digest`          | Optional    |
 
 #### Custom Bots
 
@@ -540,18 +574,21 @@ Admins can add custom bots from the Bot Marketplace or build their own using the
 #### Command Help
 
 **Get command list**:
+
 ```
 /help
 → Shows all available commands from all enabled bots
 ```
 
 **Get bot-specific help**:
+
 ```
 /help poll
 → Shows all PollBot commands and usage
 ```
 
 **Get command details**:
+
 ```
 /help /poll
 → Shows detailed usage for /poll command
@@ -562,6 +599,7 @@ Admins can add custom bots from the Bot Marketplace or build their own using the
 #### Mentions
 
 **Mention a bot** to get its attention:
+
 ```
 @HelloBot what can you do?
 → "I can greet people and tell programming jokes! Try /hello or /joke"
@@ -570,6 +608,7 @@ Admins can add custom bots from the Bot Marketplace or build their own using the
 #### Natural Language
 
 Some AI-powered bots understand natural language:
+
 ```
 @SearchBot find discussions about authentication
 → SearchBot performs a semantic search and returns results
@@ -585,24 +624,28 @@ Some AI-powered bots understand natural language:
 **Step-by-step**:
 
 1. **Create poll**:
+
 ```
 /poll "Should we have pizza or tacos for lunch?" "Pizza" "Tacos" --duration 30
 → PollBot creates poll with 30-minute duration
 ```
 
 2. **Vote**:
+
 ```
 /vote poll-123 1
 → Vote for option 1 (Pizza)
 ```
 
 3. **Check results**:
+
 ```
 /results poll-123
 → Shows current vote counts
 ```
 
 4. **Close poll**:
+
 ```
 /closepoll poll-123
 → Closes poll and shows final results
@@ -611,24 +654,28 @@ Some AI-powered bots understand natural language:
 #### Setting Reminders
 
 **Quick reminder**:
+
 ```
 /remind in 30 minutes to check deployment
 → "⏰ Reminder set! I'll remind you in 30 minutes."
 ```
 
 **Scheduled reminder**:
+
 ```
 /remind tomorrow at 9am to review pull requests
 → "⏰ Reminder set for tomorrow at 9:00 AM"
 ```
 
 **List reminders**:
+
 ```
 /reminders
 → Shows all your active reminders
 ```
 
 **Cancel reminder**:
+
 ```
 /cancel-reminder 456
 → "Reminder #456 cancelled"
@@ -639,24 +686,28 @@ Some AI-powered bots understand natural language:
 **Set up welcome message** (Admins only):
 
 1. **Enable welcome**:
+
 ```
 /setwelcome on
 → "Welcome messages enabled for this channel"
 ```
 
 2. **Customize message**:
+
 ```
 /welcomemessage "Welcome {user} to {channel}! Check out our guidelines in the pinned message."
 → "Welcome message updated"
 ```
 
 3. **Test it**:
+
 ```
 /testwelcome
 → Shows preview of welcome message
 ```
 
 **Placeholders**:
+
 - `{user}` - New member's name
 - `{channel}` - Channel name
 - `{server}` - Workspace name
@@ -682,11 +733,13 @@ Bots have limited permissions to protect your data:
 ### Managing Bots
 
 **As a User**:
+
 1. Go to **Settings > Bots**
 2. View all available bots
 3. See what bots are active in each channel
 
 **As an Admin**:
+
 1. Go to **Admin Panel > Bots**
 2. Enable/disable bots workspace-wide
 3. Configure bot permissions
@@ -717,6 +770,7 @@ Auto-moderation uses AI to automatically detect and handle problematic content:
 5. **Action execution** → Flag, hide, warn, or mute
 
 **Analysis Methods**:
+
 - **TensorFlow.js models** (runs locally, no data sent to external APIs)
 - **Pattern matching** (rule-based detection)
 - **Behavioral analysis** (message frequency, link counts)
@@ -726,6 +780,7 @@ Auto-moderation uses AI to automatically detect and handle problematic content:
 #### Toxicity Detection
 
 **What it detects**:
+
 - Identity attacks
 - Insults and name-calling
 - Threats
@@ -733,6 +788,7 @@ Auto-moderation uses AI to automatically detect and handle problematic content:
 - Obscene language
 
 **Example**:
+
 ```
 ❌ Message: "You're an idiot and should be fired"
 🚨 Detected: Toxicity (85%), Categories: Insult, Identity Attack
@@ -742,6 +798,7 @@ Auto-moderation uses AI to automatically detect and handle problematic content:
 #### Spam Detection
 
 **What it detects**:
+
 - Excessive capitalization
 - Repetitive characters
 - Too many links
@@ -750,6 +807,7 @@ Auto-moderation uses AI to automatically detect and handle problematic content:
 - Known spam phrases
 
 **Example**:
+
 ```
 ❌ Message: "CLICK HERE NOW!!! bit.ly/sketchy-link FREE MONEY!!!"
 🚨 Detected: Spam (92%), Reasons: Excessive caps, shortened URL, spam phrases
@@ -759,6 +817,7 @@ Auto-moderation uses AI to automatically detect and handle problematic content:
 #### NSFW Detection
 
 **What it detects** (images only):
+
 - Pornographic content
 - Sexually suggestive images
 - Graphic violence
@@ -768,24 +827,26 @@ Auto-moderation uses AI to automatically detect and handle problematic content:
 #### Profanity Filtering
 
 **What it does**:
+
 - Detects offensive words
 - Can block, mask, or just flag
 - Supports custom word lists
 - Context-aware (avoids false positives)
 
 **Modes**:
+
 - **Block**: Message rejected, not sent
 - **Mask**: Offensive words replaced with `***`
 - **Flag**: Message sent but flagged for review
 
 ### Automatic Actions
 
-| Score | Risk Level | Automatic Action | User Impact |
-|-------|-----------|------------------|-------------|
-| 0-49% | Low | No action | Message sent normally |
-| 50-69% | Medium | Flagged | Message sent, flagged for review |
-| 70-89% | High | Hidden + Warning | Message hidden, user warned |
-| 90-100% | Critical | Mute user | Message deleted, user temporarily muted |
+| Score   | Risk Level | Automatic Action | User Impact                             |
+| ------- | ---------- | ---------------- | --------------------------------------- |
+| 0-49%   | Low        | No action        | Message sent normally                   |
+| 50-69%  | Medium     | Flagged          | Message sent, flagged for review        |
+| 70-89%  | High       | Hidden + Warning | Message hidden, user warned             |
+| 90-100% | Critical   | Mute user        | Message deleted, user temporarily muted |
 
 **Configurable by admins** - Default actions can be customized per workspace.
 
@@ -794,6 +855,7 @@ Auto-moderation uses AI to automatically detect and handle problematic content:
 #### When Your Message Is Flagged
 
 **You'll see**:
+
 ```
 ⚠️ Your message may violate community guidelines
 
@@ -804,6 +866,7 @@ Options:
 ```
 
 **What you can do**:
+
 1. **Edit Message**: Revise and resend
 2. **Appeal**: Request human review
 3. **Cancel**: Don't send the message
@@ -811,6 +874,7 @@ Options:
 #### When Someone Else's Message Is Hidden
 
 **You'll see**:
+
 ```
 [Hidden message]
 This message was hidden by auto-moderation.
@@ -845,6 +909,7 @@ Reason: Policy violation
 5. **Notification**: You'll be notified of the decision
 
 **Tips for successful appeals**:
+
 - Explain context (was it a quote, reference, etc.?)
 - Be respectful and constructive
 - Provide relevant information
@@ -859,6 +924,7 @@ Reason: Policy violation
 - **Sarcasm**: AI may not understand tone
 
 **What happens**:
+
 - Appeals are reviewed by humans
 - False positives are marked to improve the system
 - Custom allowlists can be created (admin feature)
@@ -883,28 +949,31 @@ Reason: Policy violation
 
 **For AI features, we collect**:
 
-| Data Type | Purpose | Retention | Shared With |
-|-----------|---------|-----------|-------------|
-| **Message content** | Summarization, search | Processed, not stored | AI provider (OpenAI/Anthropic) |
-| **Search queries** | Provide search results | Not stored | AI provider (for embeddings) |
-| **Bot interactions** | Command processing | Bot-specific data only | Not shared |
-| **Moderation data** | Detect violations | Stored for audit | Not shared (local processing) |
+| Data Type            | Purpose                | Retention              | Shared With                    |
+| -------------------- | ---------------------- | ---------------------- | ------------------------------ |
+| **Message content**  | Summarization, search  | Processed, not stored  | AI provider (OpenAI/Anthropic) |
+| **Search queries**   | Provide search results | Not stored             | AI provider (for embeddings)   |
+| **Bot interactions** | Command processing     | Bot-specific data only | Not shared                     |
+| **Moderation data**  | Detect violations      | Stored for audit       | Not shared (local processing)  |
 
 ### AI Provider Data Usage
 
 **When you use OpenAI-powered features**:
+
 - Messages sent to OpenAI for processing
 - OpenAI's data usage policy applies
 - Data is NOT used to train OpenAI's models (per enterprise agreement)
 - Data is processed and discarded
 
 **When you use Anthropic-powered features**:
+
 - Messages sent to Anthropic for processing
 - Anthropic's data usage policy applies
 - Data is NOT used for training
 - Data is processed and discarded
 
 **When using local fallbacks**:
+
 - No data sent to external services
 - All processing happens on your device/server
 - Complete privacy, but reduced capability
@@ -938,16 +1007,19 @@ nself-chat is designed for GDPR compliance:
 ### Security Measures
 
 **Data in transit**:
+
 - ✅ TLS 1.3 encryption
 - ✅ Certificate pinning
 - ✅ End-to-end encryption for DMs (optional)
 
 **Data at rest**:
+
 - ✅ Encrypted database storage
 - ✅ Encrypted backups
 - ✅ Access logging and auditing
 
 **API communication**:
+
 - ✅ Secure API keys
 - ✅ Rate limiting
 - ✅ Request signing
@@ -1009,6 +1081,7 @@ Data Usage
 #### Opt out of Message Summarization
 
 **Effect**:
+
 - ❌ No AI-generated summaries
 - ✅ Basic statistical summaries still available
 - ✅ All other features work normally
@@ -1018,6 +1091,7 @@ Data Usage
 #### Opt out of Smart Search
 
 **Effect**:
+
 - ❌ No semantic search
 - ✅ Keyword search still works
 - ✅ All filters and operators available
@@ -1027,6 +1101,7 @@ Data Usage
 #### Opt out of Bot Interactions
 
 **Effect**:
+
 - ❌ Bots won't respond to your messages
 - ❌ Can't use slash commands
 - ✅ See bot messages from others
@@ -1037,6 +1112,7 @@ Data Usage
 **Note**: You CANNOT completely opt out of auto-moderation as it's a workspace policy, but you can adjust how aggressively it filters content YOU see.
 
 **Options**:
+
 - **Normal**: Standard filtering
 - **Relaxed**: Less aggressive (more content visible)
 - **Strict**: More aggressive (safer experience)
@@ -1066,6 +1142,7 @@ Data Usage
 4. Re-enable anytime or automatically after session ends
 
 **Use cases**:
+
 - Privacy-sensitive conversations
 - Testing non-AI functionality
 - Reducing distractions
@@ -1191,6 +1268,7 @@ Data Usage
    - Community: community.nself.org
 
 **Include in your support request**:
+
 - Description of the issue
 - Steps to reproduce
 - Screenshots (if applicable)
@@ -1261,6 +1339,7 @@ A: You'll see a message like "Rate limit reached. Please try again in a few minu
 ## Video Tutorials
 
 📺 **Coming Soon**:
+
 - Getting Started with AI Features (3 min)
 - Mastering Smart Search (5 min)
 - Creating Your First Bot (10 min)

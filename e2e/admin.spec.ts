@@ -54,9 +54,7 @@ test.describe('Admin Access Control', () => {
     })
   })
 
-  test('should deny access to admin dashboard for non-admin users', async ({
-    page,
-  }) => {
+  test('should deny access to admin dashboard for non-admin users', async ({ page }) => {
     // Navigate to admin
     await page.goto('/admin')
     await page.waitForTimeout(2000)
@@ -65,9 +63,7 @@ test.describe('Admin Access Control', () => {
     const currentUrl = page.url()
     const accessDenied = page.locator('text=/access denied|unauthorized|forbidden/i')
 
-    expect(
-      !currentUrl.includes('/admin') || (await accessDenied.isVisible())
-    ).toBe(true)
+    expect(!currentUrl.includes('/admin') || (await accessDenied.isVisible())).toBe(true)
   })
 
   test('should allow owner access to admin dashboard', async ({ page }) => {
@@ -77,9 +73,7 @@ test.describe('Admin Access Control', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -105,9 +99,7 @@ test.describe('Admin Access Control', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.admin.email)
@@ -133,9 +125,7 @@ test.describe('Admin Access Control', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.member.email)
@@ -167,9 +157,7 @@ test.describe('Admin Dashboard', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -192,9 +180,7 @@ test.describe('Admin Dashboard', () => {
 
   test('should display stats cards', async ({ page }) => {
     // Look for stats cards
-    const statsCards = page.locator(
-      '[data-testid="stats-card"], .stats-card, [class*="Stats"]'
-    )
+    const statsCards = page.locator('[data-testid="stats-card"], .stats-card, [class*="Stats"]')
 
     const count = await statsCards.count()
     expect(count).toBeGreaterThanOrEqual(0) // May have stats
@@ -202,9 +188,7 @@ test.describe('Admin Dashboard', () => {
 
   test('should display activity chart', async ({ page }) => {
     // Look for chart
-    const chart = page.locator(
-      '[data-testid="activity-chart"], .activity-chart, svg'
-    )
+    const chart = page.locator('[data-testid="activity-chart"], .activity-chart, svg')
 
     const exists = await chart.count()
     expect(exists).toBeGreaterThanOrEqual(0)
@@ -212,9 +196,7 @@ test.describe('Admin Dashboard', () => {
 
   test('should display recent activity section', async ({ page }) => {
     // Look for recent activity
-    const recentActivity = page.locator(
-      'text=/Recent Activity|recent activity/i'
-    )
+    const recentActivity = page.locator('text=/Recent Activity|recent activity/i')
 
     const isVisible = await recentActivity.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -249,9 +231,7 @@ test.describe('User Management', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -275,9 +255,7 @@ test.describe('User Management', () => {
 
   test('should display user list/table', async ({ page }) => {
     // Look for user table or list
-    const userTable = page.locator(
-      '[data-testid="user-table"], table, [data-testid="user-list"]'
-    )
+    const userTable = page.locator('[data-testid="user-table"], table, [data-testid="user-list"]')
 
     const isVisible = await userTable.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -285,9 +263,7 @@ test.describe('User Management', () => {
 
   test('should display user list items', async ({ page }) => {
     // Look for user items
-    const userItems = page.locator(
-      '[data-testid="user-item"], tbody tr, [data-user-id]'
-    )
+    const userItems = page.locator('[data-testid="user-item"], tbody tr, [data-user-id]')
 
     const count = await userItems.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -304,9 +280,7 @@ test.describe('User Management', () => {
   })
 
   test('should display user actions (edit, delete, etc)', async ({ page }) => {
-    const userItems = page.locator(
-      '[data-testid="user-item"], tbody tr, [data-user-id]'
-    )
+    const userItems = page.locator('[data-testid="user-item"], tbody tr, [data-user-id]')
 
     if ((await userItems.count()) > 0) {
       // Hover over user item to show actions
@@ -314,9 +288,7 @@ test.describe('User Management', () => {
       await page.waitForTimeout(300)
 
       // Look for action buttons
-      const actionMenu = page.locator(
-        '[data-testid="user-actions"], .user-actions, [role="menu"]'
-      )
+      const actionMenu = page.locator('[data-testid="user-actions"], .user-actions, [role="menu"]')
 
       const exists = await actionMenu.count()
       expect(exists).toBeGreaterThanOrEqual(0)
@@ -340,9 +312,7 @@ test.describe('User Management', () => {
         await page.waitForTimeout(500)
 
         // User list should update
-        const userItems = page.locator(
-          '[data-testid="user-item"], tbody tr, [data-user-id]'
-        )
+        const userItems = page.locator('[data-testid="user-item"], tbody tr, [data-user-id]')
         const count = await userItems.count()
         expect(count).toBeGreaterThanOrEqual(0)
       }
@@ -360,17 +330,13 @@ test.describe('User Management', () => {
       await page.waitForTimeout(500)
 
       // Results should update
-      const userItems = page.locator(
-        '[data-testid="user-item"], tbody tr, [data-user-id]'
-      )
+      const userItems = page.locator('[data-testid="user-item"], tbody tr, [data-user-id]')
       expect(true).toBe(true) // Results filtered
     }
   })
 
   test('should view user details', async ({ page }) => {
-    const userItems = page.locator(
-      '[data-testid="user-item"], tbody tr, [data-user-id]'
-    )
+    const userItems = page.locator('[data-testid="user-item"], tbody tr, [data-user-id]')
 
     if ((await userItems.count()) > 0) {
       // Click first user
@@ -384,17 +350,13 @@ test.describe('User Management', () => {
   })
 
   test('should manage user roles', async ({ page }) => {
-    const userItems = page.locator(
-      '[data-testid="user-item"], tbody tr, [data-user-id]'
-    )
+    const userItems = page.locator('[data-testid="user-item"], tbody tr, [data-user-id]')
 
     if ((await userItems.count()) > 0) {
       await userItems.first().hover()
 
       // Look for role selector/dropdown
-      const roleSelector = page.locator(
-        '[data-testid="role-selector"], select[name="role"]'
-      )
+      const roleSelector = page.locator('[data-testid="role-selector"], select[name="role"]')
 
       if (await roleSelector.isVisible()) {
         await roleSelector.click()
@@ -411,26 +373,20 @@ test.describe('User Management', () => {
   })
 
   test('should handle user deletion with confirmation', async ({ page }) => {
-    const userItems = page.locator(
-      '[data-testid="user-item"], tbody tr, [data-user-id]'
-    )
+    const userItems = page.locator('[data-testid="user-item"], tbody tr, [data-user-id]')
 
     if ((await userItems.count()) > 0) {
       await userItems.first().hover()
 
       // Look for delete button
-      const deleteButton = page.locator(
-        'button[aria-label*="delete"], button:has-text("Delete")'
-      )
+      const deleteButton = page.locator('button[aria-label*="delete"], button:has-text("Delete")')
 
       if (await deleteButton.isVisible()) {
         await deleteButton.click()
         await page.waitForTimeout(300)
 
         // Confirmation dialog should appear
-        const confirmDialog = page.locator(
-          '[role="alertdialog"], [role="dialog"], .confirm-dialog'
-        )
+        const confirmDialog = page.locator('[role="alertdialog"], [role="dialog"], .confirm-dialog')
 
         if (await confirmDialog.isVisible()) {
           // Click cancel to not actually delete
@@ -444,15 +400,11 @@ test.describe('User Management', () => {
   })
 
   test('should display user status indicators', async ({ page }) => {
-    const userItems = page.locator(
-      '[data-testid="user-item"], tbody tr, [data-user-id]'
-    )
+    const userItems = page.locator('[data-testid="user-item"], tbody tr, [data-user-id]')
 
     if ((await userItems.count()) > 0) {
       // Look for status badge (online, offline, etc)
-      const statusBadge = page.locator(
-        '[data-testid="user-status"], .status, [class*="badge"]'
-      )
+      const statusBadge = page.locator('[data-testid="user-status"], .status, [class*="badge"]')
 
       const exists = await statusBadge.count()
       expect(exists).toBeGreaterThanOrEqual(0)
@@ -472,9 +424,7 @@ test.describe('Channel Management', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -507,9 +457,7 @@ test.describe('Channel Management', () => {
   })
 
   test('should display channel items', async ({ page }) => {
-    const channelItems = page.locator(
-      '[data-testid="channel-item"], tbody tr, [data-channel-id]'
-    )
+    const channelItems = page.locator('[data-testid="channel-item"], tbody tr, [data-channel-id]')
 
     const count = await channelItems.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -526,18 +474,14 @@ test.describe('Channel Management', () => {
   })
 
   test('should display channel actions', async ({ page }) => {
-    const channelItems = page.locator(
-      '[data-testid="channel-item"], tbody tr, [data-channel-id]'
-    )
+    const channelItems = page.locator('[data-testid="channel-item"], tbody tr, [data-channel-id]')
 
     if ((await channelItems.count()) > 0) {
       await channelItems.first().hover()
       await page.waitForTimeout(300)
 
       // Look for action menu
-      const actionMenu = page.locator(
-        '[data-testid="channel-actions"], [role="menu"]'
-      )
+      const actionMenu = page.locator('[data-testid="channel-actions"], [role="menu"]')
 
       const exists = await actionMenu.count()
       expect(exists).toBeGreaterThanOrEqual(0)
@@ -565,27 +509,21 @@ test.describe('Channel Management', () => {
 
   test('should search for channels', async ({ page }) => {
     // Look for search input
-    const searchInput = page.locator(
-      'input[placeholder*="search"], [data-testid="channel-search"]'
-    )
+    const searchInput = page.locator('input[placeholder*="search"], [data-testid="channel-search"]')
 
     if (await searchInput.isVisible()) {
       await searchInput.fill('general')
       await page.waitForTimeout(500)
 
       // Results should filter
-      const channelItems = page.locator(
-        '[data-testid="channel-item"], tbody tr, [data-channel-id]'
-      )
+      const channelItems = page.locator('[data-testid="channel-item"], tbody tr, [data-channel-id]')
       const count = await channelItems.count()
       expect(count).toBeGreaterThanOrEqual(0)
     }
   })
 
   test('should view channel details', async ({ page }) => {
-    const channelItems = page.locator(
-      '[data-testid="channel-item"], tbody tr, [data-channel-id]'
-    )
+    const channelItems = page.locator('[data-testid="channel-item"], tbody tr, [data-channel-id]')
 
     if ((await channelItems.count()) > 0) {
       // Click channel
@@ -599,9 +537,7 @@ test.describe('Channel Management', () => {
   })
 
   test('should display channel member list', async ({ page }) => {
-    const channelItems = page.locator(
-      '[data-testid="channel-item"], tbody tr, [data-channel-id]'
-    )
+    const channelItems = page.locator('[data-testid="channel-item"], tbody tr, [data-channel-id]')
 
     if ((await channelItems.count()) > 0) {
       await channelItems.first().click()
@@ -618,9 +554,7 @@ test.describe('Channel Management', () => {
   })
 
   test('should manage channel permissions', async ({ page }) => {
-    const channelItems = page.locator(
-      '[data-testid="channel-item"], tbody tr, [data-channel-id]'
-    )
+    const channelItems = page.locator('[data-testid="channel-item"], tbody tr, [data-channel-id]')
 
     if ((await channelItems.count()) > 0) {
       await channelItems.first().click()
@@ -649,9 +583,7 @@ test.describe('Analytics & Statistics', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -669,15 +601,16 @@ test.describe('Analytics & Statistics', () => {
   test('should display analytics page', async ({ page }) => {
     // Look for analytics heading
     const heading = page.locator('h1, h2')
-    const isVisible = await heading.first().isVisible().catch(() => false)
+    const isVisible = await heading
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
   test('should display analytics metrics', async ({ page }) => {
     // Look for metric cards or values
-    const metrics = page.locator(
-      '[data-testid="metric"], .metric, [class*="Analytics"]'
-    )
+    const metrics = page.locator('[data-testid="metric"], .metric, [class*="Analytics"]')
 
     const count = await metrics.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -708,9 +641,7 @@ test.describe('Analytics & Statistics', () => {
 
   test('should display user statistics', async ({ page }) => {
     // Look for user stats
-    const userStats = page.locator(
-      'text=/Total Users|Active Users|users/i'
-    )
+    const userStats = page.locator('text=/Total Users|Active Users|users/i')
 
     const isVisible = await userStats.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -718,9 +649,7 @@ test.describe('Analytics & Statistics', () => {
 
   test('should display message statistics', async ({ page }) => {
     // Look for message stats
-    const messageStats = page.locator(
-      'text=/Messages|message count/i'
-    )
+    const messageStats = page.locator('text=/Messages|message count/i')
 
     const exists = await messageStats.count()
     expect(exists).toBeGreaterThanOrEqual(0)
@@ -728,9 +657,7 @@ test.describe('Analytics & Statistics', () => {
 
   test('should display channel statistics', async ({ page }) => {
     // Look for channel stats
-    const channelStats = page.locator(
-      'text=/Channels|channel count/i'
-    )
+    const channelStats = page.locator('text=/Channels|channel count/i')
 
     const exists = await channelStats.count()
     expect(exists).toBeGreaterThanOrEqual(0)
@@ -749,9 +676,7 @@ test.describe('Audit Logs', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -775,9 +700,7 @@ test.describe('Audit Logs', () => {
 
   test('should display audit log table', async ({ page }) => {
     // Look for log table
-    const logTable = page.locator(
-      '[data-testid="audit-table"], table, [data-testid="log-list"]'
-    )
+    const logTable = page.locator('[data-testid="audit-table"], table, [data-testid="log-list"]')
 
     const isVisible = await logTable.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -785,9 +708,7 @@ test.describe('Audit Logs', () => {
 
   test('should display audit log entries', async ({ page }) => {
     // Look for log entries
-    const logEntries = page.locator(
-      '[data-testid="log-entry"], tbody tr, [data-log-id]'
-    )
+    const logEntries = page.locator('[data-testid="log-entry"], tbody tr, [data-log-id]')
 
     const count = await logEntries.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -814,18 +735,14 @@ test.describe('Audit Logs', () => {
 
   test('should filter logs by user', async ({ page }) => {
     // Look for user filter
-    const userFilter = page.locator(
-      'input[placeholder*="user"], [data-testid="user-filter"]'
-    )
+    const userFilter = page.locator('input[placeholder*="user"], [data-testid="user-filter"]')
 
     if (await userFilter.isVisible()) {
       await userFilter.fill('alice')
       await page.waitForTimeout(500)
 
       // Results should filter
-      const logEntries = page.locator(
-        '[data-testid="log-entry"], tbody tr, [data-log-id]'
-      )
+      const logEntries = page.locator('[data-testid="log-entry"], tbody tr, [data-log-id]')
       const count = await logEntries.count()
       expect(count).toBeGreaterThanOrEqual(0)
     }
@@ -844,18 +761,14 @@ test.describe('Audit Logs', () => {
   })
 
   test('should view log entry details', async ({ page }) => {
-    const logEntries = page.locator(
-      '[data-testid="log-entry"], tbody tr, [data-log-id]'
-    )
+    const logEntries = page.locator('[data-testid="log-entry"], tbody tr, [data-log-id]')
 
     if ((await logEntries.count()) > 0) {
       await logEntries.first().click()
       await page.waitForTimeout(300)
 
       // Detail view should open
-      const detailView = page.locator(
-        '[data-testid="log-detail"], .log-detail, [role="dialog"]'
-      )
+      const detailView = page.locator('[data-testid="log-detail"], .log-detail, [role="dialog"]')
 
       const isVisible = await detailView.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -873,9 +786,7 @@ test.describe('Audit Logs', () => {
       await page.waitForTimeout(300)
 
       // Export dialog or menu should appear
-      const exportMenu = page.locator(
-        '[role="menu"], .export-menu, [data-testid="export-options"]'
-      )
+      const exportMenu = page.locator('[role="menu"], .export-menu, [data-testid="export-options"]')
 
       const exists = await exportMenu.count()
       expect(exists).toBeGreaterThanOrEqual(0)
@@ -895,9 +806,7 @@ test.describe('System Settings', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -921,9 +830,7 @@ test.describe('System Settings', () => {
 
   test('should display settings sections', async ({ page }) => {
     // Look for settings categories/tabs
-    const tabs = page.locator(
-      '[role="tablist"], .settings-tabs, [data-testid="settings-nav"]'
-    )
+    const tabs = page.locator('[role="tablist"], .settings-tabs, [data-testid="settings-nav"]')
 
     const isVisible = await tabs.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -950,9 +857,7 @@ test.describe('System Settings', () => {
       await page.waitForTimeout(300)
 
       // Security options should appear
-      const securityOptions = page.locator(
-        'text=/password|2fa|security/i'
-      )
+      const securityOptions = page.locator('text=/password|2fa|security/i')
 
       const exists = await securityOptions.count()
       expect(exists).toBeGreaterThanOrEqual(0)
@@ -961,9 +866,7 @@ test.describe('System Settings', () => {
 
   test('should display notification settings', async ({ page }) => {
     // Look for notification settings
-    const notificationSettings = page.locator(
-      'text=/Notifications|notification/i'
-    )
+    const notificationSettings = page.locator('text=/Notifications|notification/i')
 
     const exists = await notificationSettings.count()
     expect(exists).toBeGreaterThanOrEqual(0)
@@ -1005,9 +908,7 @@ test.describe('Moderation', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -1025,7 +926,10 @@ test.describe('Moderation', () => {
   test('should display moderation page', async ({ page }) => {
     // Look for moderation heading
     const heading = page.locator('h1, h2')
-    const isVisible = await heading.first().isVisible().catch(() => false)
+    const isVisible = await heading
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
@@ -1041,12 +945,8 @@ test.describe('Moderation', () => {
 
   test('should display ban/mute user options', async ({ page }) => {
     // Look for user management buttons in moderation
-    const banButton = page.locator(
-      'button:has-text("Ban"), button[aria-label*="ban"]'
-    )
-    const muteButton = page.locator(
-      'button:has-text("Mute"), button[aria-label*="mute"]'
-    )
+    const banButton = page.locator('button:has-text("Ban"), button[aria-label*="ban"]')
+    const muteButton = page.locator('button:has-text("Mute"), button[aria-label*="mute"]')
 
     const banExists = await banButton.isVisible().catch(() => false)
     const muteExists = await muteButton.isVisible().catch(() => false)
@@ -1057,9 +957,7 @@ test.describe('Moderation', () => {
 
   test('should display slow mode settings', async ({ page }) => {
     // Look for slow mode options
-    const slowModeText = page.locator(
-      'text=/Slow Mode|slow mode|message rate/i'
-    )
+    const slowModeText = page.locator('text=/Slow Mode|slow mode|message rate/i')
 
     const exists = await slowModeText.count()
     expect(exists).toBeGreaterThanOrEqual(0)
@@ -1067,9 +965,7 @@ test.describe('Moderation', () => {
 
   test('should filter moderation reports', async ({ page }) => {
     // Look for filter options
-    const filterButton = page.locator(
-      'button[aria-label*="filter"], [data-testid="filter"]'
-    )
+    const filterButton = page.locator('button[aria-label*="filter"], [data-testid="filter"]')
 
     if (await filterButton.isVisible()) {
       await filterButton.click()
@@ -1083,9 +979,7 @@ test.describe('Moderation', () => {
   })
 
   test('should take moderation action on report', async ({ page }) => {
-    const reportItems = page.locator(
-      '[data-testid="report-item"], .report-item, [data-report-id]'
-    )
+    const reportItems = page.locator('[data-testid="report-item"], .report-item, [data-report-id]')
 
     if ((await reportItems.count()) > 0) {
       await reportItems.first().hover()

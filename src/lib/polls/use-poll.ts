@@ -25,6 +25,7 @@ import {
   type PollSettings,
   type PollUser,
 } from './poll-store'
+import { logger } from '@/lib/logger'
 import {
   GET_POLL,
   GET_POLL_BY_MESSAGE,
@@ -172,7 +173,8 @@ export function usePoll(pollId: string | undefined): UsePollResult {
   const [unvoteMutation] = useMutation(REMOVE_VOTE)
   const [removeAllVotesMutation] = useMutation(REMOVE_USER_VOTES)
 
-  const poll = cachedPoll || (data?.nchat_polls_by_pk ? normalizePoll(data.nchat_polls_by_pk) : undefined)
+  const poll =
+    cachedPoll || (data?.nchat_polls_by_pk ? normalizePoll(data.nchat_polls_by_pk) : undefined)
 
   const votedOptions = useMemo(() => {
     if (!pollId) return []
@@ -182,7 +184,9 @@ export function usePoll(pollId: string | undefined): UsePollResult {
   const hasVoted = votedOptions.length > 0
 
   const isEnded = poll ? isPollEnded(poll) : false
-  const timeRemaining = poll ? getPollTimeRemaining(poll) : getPollTimeRemaining({ status: 'closed' } as Poll)
+  const timeRemaining = poll
+    ? getPollTimeRemaining(poll)
+    : getPollTimeRemaining({ status: 'closed' } as Poll)
 
   const canVote = useMemo(() => {
     if (!poll || !user) return false
@@ -232,7 +236,7 @@ export function usePoll(pollId: string | undefined): UsePollResult {
             variables: { pollId, userId: user.id },
           })
         } catch (err) {
-          console.error('Failed to remove previous votes:', err)
+          logger.error('Failed to remove previous votes:',  err)
         }
       }
 
@@ -441,7 +445,7 @@ export function useCreatePoll(): UseCreatePollResult {
         }
         return null
       } catch (err) {
-        console.error('Failed to create poll:', err)
+        logger.error('Failed to create poll:',  err)
         throw err
       }
     },
@@ -493,7 +497,7 @@ export function usePollCreator(): UsePollCreatorResult {
 
       return poll
     } catch (err) {
-      console.error('Failed to submit poll:', err)
+      logger.error('Failed to submit poll:',  err)
       return null
     }
   }, [channelId, validation.valid, question, options, settings, endsAt, createPoll])
@@ -544,7 +548,7 @@ export function usePollActions(pollId: string | undefined) {
       await closeMutation({ variables: { pollId } })
       store.updatePollStatus(pollId, 'closed')
     } catch (err) {
-      console.error('Failed to close poll:', err)
+      logger.error('Failed to close poll:',  err)
       throw err
     }
   }, [pollId, closeMutation])
@@ -559,7 +563,7 @@ export function usePollActions(pollId: string | undefined) {
         })
         store.updatePollStatus(pollId, 'active')
       } catch (err) {
-        console.error('Failed to reopen poll:', err)
+        logger.error('Failed to reopen poll:',  err)
         throw err
       }
     },
@@ -578,7 +582,7 @@ export function usePollActions(pollId: string | undefined) {
           variables: { pollId, text, position },
         })
       } catch (err) {
-        console.error('Failed to add option:', err)
+        logger.error('Failed to add option:',  err)
         throw err
       }
     },
@@ -629,10 +633,7 @@ export function usePollResults(pollId: string | undefined) {
         text: opt.text,
         position: opt.position,
         voteCount: opt.votes_aggregate?.aggregate?.count || 0,
-        percentage: calculateVotePercentage(
-          opt.votes_aggregate?.aggregate?.count || 0,
-          totalVotes
-        ),
+        percentage: calculateVotePercentage(opt.votes_aggregate?.aggregate?.count || 0, totalVotes),
         voters: opt.votes.map((v: any) => v.user),
       })),
     }
@@ -664,9 +665,4 @@ export function useCanCreatePoll() {
 // Export types
 // ============================================================================
 
-export type {
-  Poll,
-  PollOptionData,
-  PollSettings,
-  PollUser,
-} from './poll-store'
+export type { Poll, PollOptionData, PollSettings, PollUser } from './poll-store'

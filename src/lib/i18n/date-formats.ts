@@ -15,20 +15,10 @@ import {
   isThisWeek,
   isThisYear,
   type Locale,
-} from 'date-fns';
-import {
-  enUS,
-  es,
-  fr,
-  de,
-  arSA,
-  zhCN,
-  ja,
-  ptBR,
-  ru,
-} from 'date-fns/locale';
+} from 'date-fns'
+import { enUS, es, fr, de, arSA, zhCN, ja, ptBR, ru } from 'date-fns/locale'
 
-import { SUPPORTED_LOCALES, type LocaleCode } from './locales';
+import { SUPPORTED_LOCALES, type LocaleCode } from './locales'
 
 /**
  * Map of locale codes to date-fns locale objects
@@ -43,13 +33,13 @@ const dateFnsLocales: Record<string, Locale> = {
   ja: ja,
   pt: ptBR,
   ru: ru,
-};
+}
 
 /**
  * Get date-fns locale object for a locale code
  */
 export function getDateFnsLocale(localeCode: string): Locale {
-  return dateFnsLocales[localeCode] || enUS;
+  return dateFnsLocales[localeCode] || enUS
 }
 
 /**
@@ -57,31 +47,31 @@ export function getDateFnsLocale(localeCode: string): Locale {
  */
 export interface DateFormatPatterns {
   /** Short date: 1/1/24 or 01.01.24 */
-  short: string;
+  short: string
   /** Medium date: Jan 1, 2024 or 1 Jan 2024 */
-  medium: string;
+  medium: string
   /** Long date: January 1, 2024 or 1 January 2024 */
-  long: string;
+  long: string
   /** Full date with weekday */
-  full: string;
+  full: string
   /** Time only: 3:30 PM or 15:30 */
-  time: string;
+  time: string
   /** Time with seconds */
-  timeSeconds: string;
+  timeSeconds: string
   /** Date and time combined */
-  dateTime: string;
+  dateTime: string
   /** Short date and time */
-  dateTimeShort: string;
+  dateTimeShort: string
   /** Month and year only */
-  monthYear: string;
+  monthYear: string
   /** Month and day only */
-  monthDay: string;
+  monthDay: string
   /** Year only */
-  year: string;
+  year: string
   /** Weekday name */
-  weekday: string;
+  weekday: string
   /** Short weekday name */
-  weekdayShort: string;
+  weekdayShort: string
 }
 
 /**
@@ -106,14 +96,14 @@ export const dateFormatPatterns: Record<string, DateFormatPatterns> = {
   es: {
     short: 'd/M/yy',
     medium: 'd MMM yyyy',
-    long: 'd \'de\' MMMM \'de\' yyyy',
-    full: 'EEEE, d \'de\' MMMM \'de\' yyyy',
+    long: "d 'de' MMMM 'de' yyyy",
+    full: "EEEE, d 'de' MMMM 'de' yyyy",
     time: 'H:mm',
     timeSeconds: 'H:mm:ss',
     dateTime: 'd MMM yyyy H:mm',
     dateTimeShort: 'd/M/yy H:mm',
-    monthYear: 'MMMM \'de\' yyyy',
-    monthDay: 'd \'de\' MMMM',
+    monthYear: "MMMM 'de' yyyy",
+    monthDay: "d 'de' MMMM",
     year: 'yyyy',
     weekday: 'EEEE',
     weekdayShort: 'EEE',
@@ -195,15 +185,15 @@ export const dateFormatPatterns: Record<string, DateFormatPatterns> = {
   },
   pt: {
     short: 'dd/MM/yy',
-    medium: 'd \'de\' MMM \'de\' yyyy',
-    long: 'd \'de\' MMMM \'de\' yyyy',
-    full: 'EEEE, d \'de\' MMMM \'de\' yyyy',
+    medium: "d 'de' MMM 'de' yyyy",
+    long: "d 'de' MMMM 'de' yyyy",
+    full: "EEEE, d 'de' MMMM 'de' yyyy",
     time: 'HH:mm',
     timeSeconds: 'HH:mm:ss',
-    dateTime: 'd \'de\' MMM \'de\' yyyy HH:mm',
+    dateTime: "d 'de' MMM 'de' yyyy HH:mm",
     dateTimeShort: 'dd/MM/yy HH:mm',
-    monthYear: 'MMMM \'de\' yyyy',
-    monthDay: 'd \'de\' MMMM',
+    monthYear: "MMMM 'de' yyyy",
+    monthDay: "d 'de' MMMM",
     year: 'yyyy',
     weekday: 'EEEE',
     weekdayShort: 'EEE',
@@ -223,17 +213,14 @@ export const dateFormatPatterns: Record<string, DateFormatPatterns> = {
     weekday: 'EEEE',
     weekdayShort: 'EEE',
   },
-};
+}
 
 /**
  * Get date format pattern for a locale
  */
-export function getDatePattern(
-  localeCode: string,
-  pattern: keyof DateFormatPatterns
-): string {
-  const patterns = dateFormatPatterns[localeCode] || dateFormatPatterns.en;
-  return patterns[pattern];
+export function getDatePattern(localeCode: string, pattern: keyof DateFormatPatterns): string {
+  const patterns = dateFormatPatterns[localeCode] || dateFormatPatterns.en
+  return patterns[pattern]
 }
 
 /**
@@ -241,30 +228,27 @@ export function getDatePattern(
  */
 export interface FormatDateOptions {
   /** Format pattern type or custom pattern */
-  pattern?: keyof DateFormatPatterns | string;
+  pattern?: keyof DateFormatPatterns | string
   /** Locale code */
-  locale?: string;
+  locale?: string
 }
 
 /**
  * Format a date according to locale
  */
-export function formatDate(
-  date: Date | number | string,
-  options: FormatDateOptions = {}
-): string {
-  const { pattern = 'medium', locale = 'en' } = options;
+export function formatDate(date: Date | number | string, options: FormatDateOptions = {}): string {
+  const { pattern = 'medium', locale = 'en' } = options
 
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-  const dateFnsLocale = getDateFnsLocale(locale);
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
+  const dateFnsLocale = getDateFnsLocale(locale)
 
   // Check if pattern is a predefined pattern name
   const formatPattern =
     pattern in (dateFormatPatterns[locale] || dateFormatPatterns.en)
       ? getDatePattern(locale, pattern as keyof DateFormatPatterns)
-      : pattern;
+      : pattern
 
-  return format(dateObj, formatPattern, { locale: dateFnsLocale });
+  return format(dateObj, formatPattern, { locale: dateFnsLocale })
 }
 
 /**
@@ -274,11 +258,11 @@ export function formatTime(
   date: Date | number | string,
   options: { locale?: string; withSeconds?: boolean } = {}
 ): string {
-  const { locale = 'en', withSeconds = false } = options;
+  const { locale = 'en', withSeconds = false } = options
   return formatDate(date, {
     pattern: withSeconds ? 'timeSeconds' : 'time',
     locale,
-  });
+  })
 }
 
 /**
@@ -288,14 +272,14 @@ export function formatRelativeTime(
   date: Date | number | string,
   options: { locale?: string; addSuffix?: boolean } = {}
 ): string {
-  const { locale = 'en', addSuffix = true } = options;
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-  const dateFnsLocale = getDateFnsLocale(locale);
+  const { locale = 'en', addSuffix = true } = options
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
+  const dateFnsLocale = getDateFnsLocale(locale)
 
   return formatDistanceToNow(dateObj, {
     locale: dateFnsLocale,
     addSuffix,
-  });
+  })
 }
 
 /**
@@ -306,15 +290,15 @@ export function formatDateDistance(
   baseDate: Date | number | string,
   options: { locale?: string; addSuffix?: boolean } = {}
 ): string {
-  const { locale = 'en', addSuffix = false } = options;
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-  const baseDateObj = typeof baseDate === 'string' ? new Date(baseDate) : new Date(baseDate);
-  const dateFnsLocale = getDateFnsLocale(locale);
+  const { locale = 'en', addSuffix = false } = options
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
+  const baseDateObj = typeof baseDate === 'string' ? new Date(baseDate) : new Date(baseDate)
+  const dateFnsLocale = getDateFnsLocale(locale)
 
   return formatDistance(dateObj, baseDateObj, {
     locale: dateFnsLocale,
     addSuffix,
-  });
+  })
 }
 
 /**
@@ -325,15 +309,15 @@ export function formatStrictDistance(
   baseDate: Date | number | string,
   options: { locale?: string; unit?: 'second' | 'minute' | 'hour' | 'day' | 'month' | 'year' } = {}
 ): string {
-  const { locale = 'en', unit } = options;
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-  const baseDateObj = typeof baseDate === 'string' ? new Date(baseDate) : new Date(baseDate);
-  const dateFnsLocale = getDateFnsLocale(locale);
+  const { locale = 'en', unit } = options
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
+  const baseDateObj = typeof baseDate === 'string' ? new Date(baseDate) : new Date(baseDate)
+  const dateFnsLocale = getDateFnsLocale(locale)
 
   return formatDistanceStrict(dateObj, baseDateObj, {
     locale: dateFnsLocale,
     unit,
-  });
+  })
 }
 
 /**
@@ -345,12 +329,12 @@ export function formatRelativeDate(
   baseDate: Date | number | string,
   options: { locale?: string } = {}
 ): string {
-  const { locale = 'en' } = options;
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-  const baseDateObj = typeof baseDate === 'string' ? new Date(baseDate) : new Date(baseDate);
-  const dateFnsLocale = getDateFnsLocale(locale);
+  const { locale = 'en' } = options
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
+  const baseDateObj = typeof baseDate === 'string' ? new Date(baseDate) : new Date(baseDate)
+  const dateFnsLocale = getDateFnsLocale(locale)
 
-  return formatRelative(dateObj, baseDateObj, { locale: dateFnsLocale });
+  return formatRelative(dateObj, baseDateObj, { locale: dateFnsLocale })
 }
 
 /**
@@ -360,36 +344,34 @@ export function formatSmartDate(
   date: Date | number | string,
   options: { locale?: string; showTime?: boolean } = {}
 ): string {
-  const { locale = 'en', showTime = true } = options;
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
+  const { locale = 'en', showTime = true } = options
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
 
   if (isToday(dateObj)) {
-    return showTime
-      ? formatTime(dateObj, { locale })
-      : formatRelativeTime(dateObj, { locale });
+    return showTime ? formatTime(dateObj, { locale }) : formatRelativeTime(dateObj, { locale })
   }
 
   if (isYesterday(dateObj)) {
-    const timeStr = showTime ? ` ${formatTime(dateObj, { locale })}` : '';
+    const timeStr = showTime ? ` ${formatTime(dateObj, { locale })}` : ''
     // This would need translation
-    return `Yesterday${timeStr}`;
+    return `Yesterday${timeStr}`
   }
 
   if (isThisWeek(dateObj)) {
     return showTime
       ? `${formatDate(dateObj, { pattern: 'weekdayShort', locale })} ${formatTime(dateObj, { locale })}`
-      : formatDate(dateObj, { pattern: 'weekday', locale });
+      : formatDate(dateObj, { pattern: 'weekday', locale })
   }
 
   if (isThisYear(dateObj)) {
     return showTime
       ? formatDate(dateObj, { pattern: 'dateTimeShort', locale })
-      : formatDate(dateObj, { pattern: 'monthDay', locale });
+      : formatDate(dateObj, { pattern: 'monthDay', locale })
   }
 
   return showTime
     ? formatDate(dateObj, { pattern: 'dateTime', locale })
-    : formatDate(dateObj, { pattern: 'medium', locale });
+    : formatDate(dateObj, { pattern: 'medium', locale })
 }
 
 /**
@@ -399,36 +381,36 @@ export function formatMessageTime(
   date: Date | number | string,
   options: { locale?: string } = {}
 ): string {
-  const { locale = 'en' } = options;
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
+  const { locale = 'en' } = options
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
 
   if (isToday(dateObj)) {
-    return formatTime(dateObj, { locale });
+    return formatTime(dateObj, { locale })
   }
 
   if (isYesterday(dateObj)) {
-    return `Yesterday ${formatTime(dateObj, { locale })}`;
+    return `Yesterday ${formatTime(dateObj, { locale })}`
   }
 
   if (isThisWeek(dateObj)) {
-    return `${formatDate(dateObj, { pattern: 'weekdayShort', locale })} ${formatTime(dateObj, { locale })}`;
+    return `${formatDate(dateObj, { pattern: 'weekdayShort', locale })} ${formatTime(dateObj, { locale })}`
   }
 
-  return formatDate(dateObj, { pattern: 'dateTimeShort', locale });
+  return formatDate(dateObj, { pattern: 'dateTimeShort', locale })
 }
 
 /**
  * Format date for input fields (ISO format)
  */
 export function formatDateForInput(date: Date | number | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-  return format(dateObj, 'yyyy-MM-dd');
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
+  return format(dateObj, 'yyyy-MM-dd')
 }
 
 /**
  * Format datetime for input fields (ISO format)
  */
 export function formatDateTimeForInput(date: Date | number | string): string {
-  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date);
-  return format(dateObj, "yyyy-MM-dd'T'HH:mm");
+  const dateObj = typeof date === 'string' ? new Date(date) : new Date(date)
+  return format(dateObj, "yyyy-MM-dd'T'HH:mm")
 }

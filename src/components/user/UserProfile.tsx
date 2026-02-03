@@ -11,40 +11,29 @@
  * - Action buttons (edit, message, block, report)
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { useUser } from '@/hooks/use-user';
-import { useUserStore, getInitials } from '@/stores/user-store';
-import { useAuth } from '@/contexts/auth-context';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { useUser } from '@/hooks/use-user'
+import { useUserStore, getInitials } from '@/stores/user-store'
+import { useAuth } from '@/contexts/auth-context'
 
 // UI Components
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
-import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 // User Components
-import { UserStatus } from './user-status';
-import { UserPresenceDot } from './user-presence-dot';
-import { RoleBadge } from './role-badge';
-import { SetStatusModal } from './set-status-modal';
-import { EditProfileForm } from './edit-profile-form';
+import { UserStatus } from './user-status'
+import { UserPresenceDot } from './user-presence-dot'
+import { RoleBadge } from './role-badge'
+import { SetStatusModal } from './set-status-modal'
+import { EditProfileForm } from './edit-profile-form'
 
 // Icons
 import {
@@ -63,7 +52,7 @@ import {
   Link2,
   MoreVertical,
   Shield,
-} from 'lucide-react';
+} from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -71,11 +60,11 @@ import {
 
 export interface UserProfileProps {
   /** User ID to display (if not provided, shows current user) */
-  userId?: string;
+  userId?: string
   /** Callback when profile is updated */
-  onUpdate?: () => void;
+  onUpdate?: () => void
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -83,27 +72,27 @@ export interface UserProfileProps {
 // ============================================================================
 
 export function UserProfile({ userId, onUpdate, className }: UserProfileProps) {
-  const { user: authUser } = useAuth();
-  const { user, currentUser, isLoading, updateProfile } = useUser({ userId });
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [statusModalOpen, setStatusModalOpen] = React.useState(false);
+  const { user: authUser } = useAuth()
+  const { user, currentUser, isLoading, updateProfile } = useUser({ userId })
+  const [isEditing, setIsEditing] = React.useState(false)
+  const [statusModalOpen, setStatusModalOpen] = React.useState(false)
 
   // Determine if viewing own profile
-  const isOwnProfile = !userId || userId === authUser?.id || userId === currentUser?.id;
+  const isOwnProfile = !userId || userId === authUser?.id || userId === currentUser?.id
 
   // Use current user if no userId provided
-  const displayUser = user || currentUser;
+  const displayUser = user || currentUser
 
   // Loading state
   if (isLoading || !displayUser) {
-    return <UserProfileSkeleton />;
+    return <UserProfileSkeleton />
   }
 
   return (
     <div className={cn('w-full', className)}>
       {/* Cover Image */}
       <div
-        className="relative h-48 bg-gradient-to-r from-primary/20 to-primary/10 rounded-t-lg overflow-hidden"
+        className="from-primary/20 to-primary/10 relative h-48 overflow-hidden rounded-t-lg bg-gradient-to-r"
         style={
           displayUser.coverUrl
             ? {
@@ -118,10 +107,10 @@ export function UserProfile({ userId, onUpdate, className }: UserProfileProps) {
           <Button
             variant="secondary"
             size="sm"
-            className="absolute top-4 right-4"
+            className="absolute right-4 top-4"
             onClick={() => setIsEditing(true)}
           >
-            <Edit2 className="h-4 w-4 mr-2" />
+            <Edit2 className="mr-2 h-4 w-4" />
             Edit Profile
           </Button>
         )}
@@ -129,7 +118,7 @@ export function UserProfile({ userId, onUpdate, className }: UserProfileProps) {
 
       <div className="px-6 pb-6">
         {/* Avatar and Basic Info */}
-        <div className="flex items-start gap-6 -mt-16 mb-6">
+        <div className="-mt-16 mb-6 flex items-start gap-6">
           {/* Avatar */}
           <div className="relative">
             <Avatar className="h-32 w-32 border-4 border-background shadow-xl">
@@ -196,10 +185,7 @@ export function UserProfile({ userId, onUpdate, className }: UserProfileProps) {
               )}
 
               {isOwnProfile && (
-                <Button
-                  variant="outline"
-                  onClick={() => setStatusModalOpen(true)}
-                >
+                <Button variant="outline" onClick={() => setStatusModalOpen(true)}>
                   Set Status
                 </Button>
               )}
@@ -217,9 +203,9 @@ export function UserProfile({ userId, onUpdate, className }: UserProfileProps) {
               <EditProfileForm
                 user={displayUser}
                 onSave={async (data) => {
-                  await updateProfile(data);
-                  setIsEditing(false);
-                  onUpdate?.();
+                  await updateProfile(data)
+                  setIsEditing(false)
+                  onUpdate?.()
                 }}
                 onCancel={() => setIsEditing(false)}
               />
@@ -235,7 +221,7 @@ export function UserProfile({ userId, onUpdate, className }: UserProfileProps) {
               <CardContent className="space-y-4">
                 {displayUser.bio && (
                   <div>
-                    <p className="text-sm text-muted-foreground whitespace-pre-wrap">
+                    <p className="whitespace-pre-wrap text-sm text-muted-foreground">
                       {displayUser.bio}
                     </p>
                   </div>
@@ -328,7 +314,7 @@ export function UserProfile({ userId, onUpdate, className }: UserProfileProps) {
         currentStatus={displayUser.customStatus}
       />
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -343,9 +329,9 @@ function UserProfileSkeleton() {
 
       <div className="px-6 pb-6">
         {/* Avatar and Name Skeleton */}
-        <div className="flex items-start gap-6 -mt-16 mb-6">
+        <div className="-mt-16 mb-6 flex items-start gap-6">
           <Skeleton className="h-32 w-32 rounded-full" />
-          <div className="flex-1 pt-16 space-y-2">
+          <div className="flex-1 space-y-2 pt-16">
             <Skeleton className="h-8 w-64" />
             <Skeleton className="h-4 w-32" />
             <Skeleton className="h-4 w-48" />
@@ -378,5 +364,5 @@ function UserProfileSkeleton() {
         </div>
       </div>
     </div>
-  );
+  )
 }

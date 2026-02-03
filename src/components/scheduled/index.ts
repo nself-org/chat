@@ -41,9 +41,5 @@ export {
 export { default as ScheduleQuickOptionsDefault } from './schedule-quick-options'
 
 // Indicator components for message input
-export {
-  ScheduledIndicator,
-  ScheduleButton,
-  ScheduledCountBadge,
-} from './scheduled-indicator'
+export { ScheduledIndicator, ScheduleButton, ScheduledCountBadge } from './scheduled-indicator'
 export { default as ScheduledIndicatorDefault } from './scheduled-indicator'

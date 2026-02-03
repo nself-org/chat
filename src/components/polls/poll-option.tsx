@@ -69,7 +69,8 @@ export function PollOption({
 
   const remainingVoters = option.vote_count - displayVoters.length
 
-  const isClickable = pollStatus === 'active' && (canVote || (isSelected && settings.allowMultipleVotes))
+  const isClickable =
+    pollStatus === 'active' && (canVote || (isSelected && settings.allowMultipleVotes))
 
   return (
     <div
@@ -87,13 +88,13 @@ export function PollOption({
           : undefined
       }
       className={cn(
-        'relative p-3 rounded-lg border transition-all overflow-hidden',
+        'relative overflow-hidden rounded-lg border p-3 transition-all',
         isClickable && 'cursor-pointer',
         isSelected
-          ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
-          : 'border-border hover:border-primary/50',
+          ? 'bg-primary/5 ring-primary/20 border-primary ring-1'
+          : 'hover:border-primary/50 border-border',
         isWinner && pollStatus === 'closed' && 'border-green-500 bg-green-500/5',
-        isVoting && 'opacity-70 pointer-events-none',
+        isVoting && 'pointer-events-none opacity-70',
         !isClickable && pollStatus === 'closed' && 'cursor-default'
       )}
     >
@@ -122,7 +123,7 @@ export function PollOption({
         )}
 
         {/* Option text */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <p
             className={cn(
               'text-sm',
@@ -135,7 +136,7 @@ export function PollOption({
 
           {/* Voter avatars (if not anonymous) */}
           {!settings.isAnonymous && displayVoters.length > 0 && (
-            <div className="flex items-center gap-1 mt-1.5">
+            <div className="mt-1.5 flex items-center gap-1">
               <div className="flex -space-x-1.5">
                 {displayVoters.map((vote) => (
                   <Avatar key={vote.id} className="h-5 w-5 border-2 border-background">
@@ -153,7 +154,7 @@ export function PollOption({
                     e.stopPropagation()
                     onShowVoters?.()
                   }}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+                  className="text-xs text-muted-foreground transition-colors hover:text-foreground"
                 >
                   +{remainingVoters} more
                 </button>
@@ -163,7 +164,7 @@ export function PollOption({
         </div>
 
         {/* Vote count and percentage */}
-        <div className="flex items-center gap-2 text-sm flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center gap-2 text-sm">
           {!settings.isAnonymous && option.vote_count > 0 && onShowVoters && (
             <Button
               variant="ghost"
@@ -174,7 +175,7 @@ export function PollOption({
               }}
               className="h-6 px-2 text-xs text-muted-foreground"
             >
-              <Users className="h-3 w-3 mr-1" />
+              <Users className="mr-1 h-3 w-3" />
               {option.vote_count}
             </Button>
           )}
@@ -183,7 +184,7 @@ export function PollOption({
           )}
           <span
             className={cn(
-              'font-medium tabular-nums min-w-[3ch] text-right',
+              'min-w-[3ch] text-right font-medium tabular-nums',
               isWinner && pollStatus === 'closed' && 'text-green-600 dark:text-green-400'
             )}
           >
@@ -218,7 +219,7 @@ export function PollOptionCompact({
   )
 
   return (
-    <div className="relative h-6 rounded bg-muted/50 overflow-hidden">
+    <div className="bg-muted/50 relative h-6 overflow-hidden rounded">
       <div
         className={cn(
           'absolute inset-y-0 left-0 transition-all',
@@ -227,11 +228,9 @@ export function PollOptionCompact({
         )}
         style={{ width: `${percentage}%` }}
       />
-      <div className="relative flex items-center justify-between px-2 h-full text-xs">
-        <span className={cn('truncate flex-1', isSelected && 'font-medium')}>
-          {option.text}
-        </span>
-        <span className="font-medium ml-2">{percentage}%</span>
+      <div className="relative flex h-full items-center justify-between px-2 text-xs">
+        <span className={cn('flex-1 truncate', isSelected && 'font-medium')}>{option.text}</span>
+        <span className="ml-2 font-medium">{percentage}%</span>
       </div>
     </div>
   )

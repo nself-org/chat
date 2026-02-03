@@ -51,35 +51,38 @@ export function useMessages(channelId: string): UseMessagesReturn {
   const [hasMore, setHasMore] = useState(true)
   const offsetRef = useRef(0)
 
-  const fetchMessages = useCallback(async (reset: boolean = true) => {
-    if (!channelId) return
+  const fetchMessages = useCallback(
+    async (reset: boolean = true) => {
+      if (!channelId) return
 
-    setIsLoading(true)
-    setError(null)
+      setIsLoading(true)
+      setError(null)
 
-    try {
-      // API call would go here
-      await new Promise((resolve) => setTimeout(resolve, 300))
+      try {
+        // API call would go here
+        await new Promise((resolve) => setTimeout(resolve, 300))
 
-      const offset = reset ? 0 : offsetRef.current
-      const mockMessages = generateMockMessages(channelId, DEFAULT_PAGE_SIZE, offset)
+        const offset = reset ? 0 : offsetRef.current
+        const mockMessages = generateMockMessages(channelId, DEFAULT_PAGE_SIZE, offset)
 
-      if (reset) {
-        setMessages(mockMessages)
-        offsetRef.current = DEFAULT_PAGE_SIZE
-      } else {
-        setMessages((prev) => [...prev, ...mockMessages])
-        offsetRef.current += DEFAULT_PAGE_SIZE
+        if (reset) {
+          setMessages(mockMessages)
+          offsetRef.current = DEFAULT_PAGE_SIZE
+        } else {
+          setMessages((prev) => [...prev, ...mockMessages])
+          offsetRef.current += DEFAULT_PAGE_SIZE
+        }
+
+        // Simulate end of messages after 100
+        setHasMore(offsetRef.current < 100)
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to fetch messages'))
+      } finally {
+        setIsLoading(false)
       }
-
-      // Simulate end of messages after 100
-      setHasMore(offsetRef.current < 100)
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch messages'))
-    } finally {
-      setIsLoading(false)
-    }
-  }, [channelId])
+    },
+    [channelId]
+  )
 
   useEffect(() => {
     fetchMessages(true)
@@ -90,39 +93,40 @@ export function useMessages(channelId: string): UseMessagesReturn {
     await fetchMessages(false)
   }, [hasMore, isLoading, fetchMessages])
 
-  const sendMessage = useCallback(async (params: SendMessageParams): Promise<Message> => {
-    setIsSending(true)
-    try {
-      // API call would go here
-      await new Promise((resolve) => setTimeout(resolve, 200))
+  const sendMessage = useCallback(
+    async (params: SendMessageParams): Promise<Message> => {
+      setIsSending(true)
+      try {
+        // API call would go here
+        await new Promise((resolve) => setTimeout(resolve, 200))
 
-      const newMessage: Message = {
-        id: `msg-${Date.now()}`,
-        channelId,
-        senderId: 'current-user',
-        content: params.content,
-        type: 'text',
-        replyTo: params.replyTo,
-        isEdited: false,
-        isDeleted: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        const newMessage: Message = {
+          id: `msg-${Date.now()}`,
+          channelId,
+          senderId: 'current-user',
+          content: params.content,
+          type: 'text',
+          replyTo: params.replyTo,
+          isEdited: false,
+          isDeleted: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }
+
+        // Add to beginning (newest first for inverted list)
+        setMessages((prev) => [newMessage, ...prev])
+        return newMessage
+      } finally {
+        setIsSending(false)
       }
-
-      // Add to beginning (newest first for inverted list)
-      setMessages((prev) => [newMessage, ...prev])
-      return newMessage
-    } finally {
-      setIsSending(false)
-    }
-  }, [channelId])
+    },
+    [channelId]
+  )
 
   const deleteMessage = useCallback(async (messageId: string) => {
     // API call would go here
     setMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === messageId ? { ...msg, isDeleted: true, content: '' } : msg
-      )
+      prev.map((msg) => (msg.id === messageId ? { ...msg, isDeleted: true, content: '' } : msg))
     )
   }, [])
 
@@ -130,9 +134,7 @@ export function useMessages(channelId: string): UseMessagesReturn {
     // API call would go here
     setMessages((prev) =>
       prev.map((msg) =>
-        msg.id === messageId
-          ? { ...msg, content, isEdited: true, updatedAt: new Date() }
-          : msg
+        msg.id === messageId ? { ...msg, content, isEdited: true, updatedAt: new Date() } : msg
       )
     )
   }, [])

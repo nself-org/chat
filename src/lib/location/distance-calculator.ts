@@ -38,11 +38,7 @@ const CONVERSION_TO_METERS: Record<DistanceUnit, number> = {
 /**
  * Convert distance between units.
  */
-export function convertDistance(
-  distance: number,
-  from: DistanceUnit,
-  to: DistanceUnit
-): number {
+export function convertDistance(distance: number, from: DistanceUnit, to: DistanceUnit): number {
   const inMeters = distance * CONVERSION_TO_METERS[from]
   return inMeters / CONVERSION_TO_METERS[to]
 }
@@ -81,8 +77,7 @@ export function calculateDistance(
 
   const a =
     Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-    Math.cos(lat1) * Math.cos(lat2) *
-    Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2)
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2)
 
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
@@ -105,9 +100,7 @@ export function calculateBearing(from: Coordinates, to: Coordinates): number {
   const deltaLon = toRadians(to.longitude - from.longitude)
 
   const x = Math.sin(deltaLon) * Math.cos(lat2)
-  const y =
-    Math.cos(lat1) * Math.sin(lat2) -
-    Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon)
+  const y = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon)
 
   const bearing = toDegrees(Math.atan2(x, y))
 
@@ -250,10 +243,10 @@ export function calculateBoundingBox(
   const lon = center.longitude
 
   // Latitude: 1 degree = ~111km
-  const latDelta = (radiusMeters / 1000) / 111
+  const latDelta = radiusMeters / 1000 / 111
 
   // Longitude: depends on latitude
-  const lonDelta = (radiusMeters / 1000) / (111 * Math.cos(toRadians(lat)))
+  const lonDelta = radiusMeters / 1000 / (111 * Math.cos(toRadians(lat)))
 
   return {
     northeast: {
@@ -340,8 +333,7 @@ export function calculateDestinationPoint(
   const d = distanceMeters / EARTH_RADIUS_METERS
 
   const lat2 = Math.asin(
-    Math.sin(lat1) * Math.cos(d) +
-    Math.cos(lat1) * Math.sin(d) * Math.cos(bearingRad)
+    Math.sin(lat1) * Math.cos(d) + Math.cos(lat1) * Math.sin(d) * Math.cos(bearingRad)
   )
 
   const lon2 =

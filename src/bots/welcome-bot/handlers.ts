@@ -21,10 +21,7 @@ import {
 /**
  * Handle user join events
  */
-export async function handleUserJoin(
-  ctx: UserContext,
-  api: BotApi
-): Promise<BotResponse | void> {
+export async function handleUserJoin(ctx: UserContext, api: BotApi): Promise<BotResponse | void> {
   const config = api.getBotConfig()
 
   // Get channel-specific template or use default
@@ -49,11 +46,7 @@ export async function handleUserJoin(
   }
 
   // Create variables
-  const variables = createWelcomeVariables(
-    ctx.user,
-    ctx.channel.name,
-    ctx.memberCount
-  )
+  const variables = createWelcomeVariables(ctx.user, ctx.channel.name, ctx.memberCount)
 
   // Delay before sending (optional)
   if (template.delaySeconds > 0) {
@@ -91,10 +84,7 @@ export async function handleUserJoin(
 /**
  * Handle user leave events (optional logging)
  */
-export async function handleUserLeave(
-  ctx: UserContext,
-  api: BotApi
-): Promise<BotResponse | void> {
+export async function handleUserLeave(ctx: UserContext, api: BotApi): Promise<BotResponse | void> {
   // Optional: Log departures or send farewell messages
 
   // By default, don't send any message on leave

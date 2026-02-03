@@ -9,14 +9,14 @@ import type { SocialPost, SocialEmbed, SocialPlatform } from './types'
 const PLATFORM_COLORS: Record<SocialPlatform, string> = {
   twitter: '#1DA1F2',
   instagram: '#E4405F',
-  linkedin: '#0A66C2'
+  linkedin: '#0A66C2',
 }
 
 // Platform icons (using emoji as fallback)
 const PLATFORM_ICONS: Record<SocialPlatform, string> = {
   twitter: '𝕏', // Twitter/X icon
   instagram: '📷',
-  linkedin: '💼'
+  linkedin: '💼',
 }
 
 /**
@@ -30,17 +30,17 @@ export function createSocialEmbed(post: SocialPost, platform: SocialPlatform): S
     author: {
       name: post.author_name,
       handle: post.author_handle,
-      avatar_url: post.author_avatar_url
+      avatar_url: post.author_avatar_url,
     },
     content: post.content,
     media: post.media_urls?.map((url, index) => ({
       url,
       type: post.media_types?.[index] || 'image',
-      thumbnail_url: url // Use same URL as thumbnail for now
+      thumbnail_url: url, // Use same URL as thumbnail for now
     })),
     engagement: post.engagement,
     posted_at: post.posted_at,
-    color: PLATFORM_COLORS[platform]
+    color: PLATFORM_COLORS[platform],
   }
 }
 
@@ -77,7 +77,7 @@ export function formatAsMessageContent(embed: SocialEmbed): any {
         name: embed.author.name,
         handle: embed.author.handle,
         avatar_url: embed.author.avatar_url,
-        url: getAuthorUrl(embed.platform, embed.author.handle)
+        url: getAuthorUrl(embed.platform, embed.author.handle),
       },
       description: truncateText(embed.content, 500),
       url: embed.post_url,
@@ -85,10 +85,10 @@ export function formatAsMessageContent(embed: SocialEmbed): any {
       media: embed.media,
       footer: {
         text: `Posted ${timeAgo}`,
-        timestamp: embed.posted_at
+        timestamp: embed.posted_at,
       },
-      engagement: engagementText
-    }
+      engagement: engagementText,
+    },
   }
 }
 
@@ -99,7 +99,7 @@ function getPlatformDisplayName(platform: SocialPlatform): string {
   const names: Record<SocialPlatform, string> = {
     twitter: 'Twitter/X',
     instagram: 'Instagram',
-    linkedin: 'LinkedIn'
+    linkedin: 'LinkedIn',
   }
   return names[platform]
 }
@@ -113,7 +113,7 @@ function getAuthorUrl(platform: SocialPlatform, handle?: string): string | undef
   const urls: Record<SocialPlatform, (h: string) => string> = {
     twitter: (h) => `https://twitter.com/${h}`,
     instagram: (h) => `https://instagram.com/${h}`,
-    linkedin: (h) => `https://linkedin.com/in/${h}` // Note: LinkedIn uses /in/ for profiles
+    linkedin: (h) => `https://linkedin.com/in/${h}`, // Note: LinkedIn uses /in/ for profiles
   }
 
   return urls[platform](handle)
@@ -183,7 +183,8 @@ export function generateEmailHTML(embed: SocialEmbed): string {
   // Add media
   if (embed.media && embed.media.length > 0) {
     html += '<div style="margin: 12px 0;">'
-    for (const media of embed.media.slice(0, 4)) { // Max 4 images
+    for (const media of embed.media.slice(0, 4)) {
+      // Max 4 images
       if (media.type === 'image') {
         html += `<img src="${media.url}" style="max-width: 100%; height: auto; margin: 4px; border-radius: 8px;" />`
       }
@@ -195,9 +196,11 @@ export function generateEmailHTML(embed: SocialEmbed): string {
   if (embed.engagement) {
     const stats: string[] = []
     if (embed.engagement.likes) stats.push(`❤️ ${formatNumber(embed.engagement.likes)} likes`)
-    if (embed.engagement.retweets) stats.push(`🔄 ${formatNumber(embed.engagement.retweets)} retweets`)
+    if (embed.engagement.retweets)
+      stats.push(`🔄 ${formatNumber(embed.engagement.retweets)} retweets`)
     if (embed.engagement.shares) stats.push(`🔗 ${formatNumber(embed.engagement.shares)} shares`)
-    if (embed.engagement.comments) stats.push(`💬 ${formatNumber(embed.engagement.comments)} comments`)
+    if (embed.engagement.comments)
+      stats.push(`💬 ${formatNumber(embed.engagement.comments)} comments`)
 
     if (stats.length > 0) {
       html += `<div style="color: #666; font-size: 14px; margin-top: 12px;">${stats.join(' • ')}</div>`

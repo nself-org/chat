@@ -72,40 +72,46 @@ export function useTyping(channelId: string, config: TypingConfig = {}) {
   /**
    * Add or update a user in the typing list
    */
-  const addTypingUser = useCallback((typingUser: TypingUser) => {
-    setTypingUsers((prev) => {
-      // Remove if already exists
-      const filtered = prev.filter((u) => u.id !== typingUser.id)
-      // Add with current timestamp
-      return [...filtered, { ...typingUser, startedAt: new Date().toISOString() }]
-    })
+  const addTypingUser = useCallback(
+    (typingUser: TypingUser) => {
+      setTypingUsers((prev) => {
+        // Remove if already exists
+        const filtered = prev.filter((u) => u.id !== typingUser.id)
+        // Add with current timestamp
+        return [...filtered, { ...typingUser, startedAt: new Date().toISOString() }]
+      })
 
-    // Clear existing timeout for this user
-    const existingTimer = timeoutTimersRef.current.get(typingUser.id)
-    if (existingTimer) {
-      clearTimeout(existingTimer)
-    }
+      // Clear existing timeout for this user
+      const existingTimer = timeoutTimersRef.current.get(typingUser.id)
+      if (existingTimer) {
+        clearTimeout(existingTimer)
+      }
 
-    // Set new timeout to remove user after timeout period
-    const timer = setTimeout(() => {
-      removeTypingUser(typingUser.id)
-    }, fullConfig.timeoutMs)
+      // Set new timeout to remove user after timeout period
+      const timer = setTimeout(() => {
+        removeTypingUser(typingUser.id)
+      }, fullConfig.timeoutMs)
 
-    timeoutTimersRef.current.set(typingUser.id, timer)
-  }, [fullConfig.timeoutMs, removeTypingUser])
+      timeoutTimersRef.current.set(typingUser.id, timer)
+    },
+    [fullConfig.timeoutMs, removeTypingUser]
+  )
 
   /**
    * Emit typing event to server
    */
-  const emitTyping = useCallback((isTyping: boolean) => {
-    if (!isConnected || !channelId) return
+  const emitTyping = useCallback(
+    (isTyping: boolean) => {
+      if (!isConnected || !channelId) return
 
-    emit<TypingPayload>(SOCKET_EVENTS.MESSAGE_TYPING, {
-      channelId,
-      userId: user?.id || '',
-      isTyping,
-    })
-  }, [isConnected, channelId, user?.id, emit])
+      emit<TypingPayload>(SOCKET_EVENTS.MESSAGE_TYPING, {
+        channelId,
+        userId: user?.id || '',
+        isTyping,
+      })
+    },
+    [isConnected, channelId, user?.id, emit]
+  )
 
   /**
    * Start typing indicator
@@ -205,31 +211,28 @@ export function useTyping(channelId: string, config: TypingConfig = {}) {
   useEffect(() => {
     if (!isConnected || !channelId) return
 
-    const unsubscribe = subscribe<TypingPayload>(
-      SOCKET_EVENTS.MESSAGE_TYPING,
-      (data) => {
-        // Ignore own typing events
-        if (data.userId === user?.id) return
+    const unsubscribe = subscribe<TypingPayload>(SOCKET_EVENTS.MESSAGE_TYPING, (data) => {
+      // Ignore own typing events
+      if (data.userId === user?.id) return
 
-        // Only process events for current channel
-        if (data.channelId !== channelId) return
+      // Only process events for current channel
+      if (data.channelId !== channelId) return
 
-        if (data.isTyping) {
-          // Add user to typing list
-          // In a real app, you'd fetch user info from a user service/store
-          const typingUser: TypingUser = {
-            id: data.userId,
-            username: data.userId, // TODO: fetch from user service
-            displayName: data.userId, // TODO: fetch from user service
-            startedAt: new Date().toISOString(),
-          }
-          addTypingUser(typingUser)
-        } else {
-          // Remove user from typing list
-          removeTypingUser(data.userId)
+      if (data.isTyping) {
+        // Add user to typing list
+        // In a real app, you'd fetch user info from a user service/store
+        const typingUser: TypingUser = {
+          id: data.userId,
+          username: data.userId, // TODO: fetch from user service
+          displayName: data.userId, // TODO: fetch from user service
+          startedAt: new Date().toISOString(),
         }
+        addTypingUser(typingUser)
+      } else {
+        // Remove user from typing list
+        removeTypingUser(data.userId)
       }
-    )
+    })
 
     return () => {
       unsubscribe()

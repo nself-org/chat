@@ -94,7 +94,8 @@ export function createRealisticThread(): Message[] {
     },
     {
       id: 'msg-3',
-      content: 'We need to ship by end of week. The main tasks are: 1) Fix the authentication bug, 2) Add new dashboard widgets, 3) Write documentation',
+      content:
+        'We need to ship by end of week. The main tasks are: 1) Fix the authentication bug, 2) Add new dashboard widgets, 3) Write documentation',
       userId: 'user-1',
       userName: 'Alice',
       createdAt: new Date('2024-01-30T10:02:00Z').toISOString(),
@@ -137,11 +138,14 @@ export function createRealisticThread(): Message[] {
 /**
  * Mock OpenAI chat completion response
  */
-export function createMockOpenAIResponse(content: string, usage?: {
-  prompt_tokens: number
-  completion_tokens: number
-  total_tokens: number
-}) {
+export function createMockOpenAIResponse(
+  content: string,
+  usage?: {
+    prompt_tokens: number
+    completion_tokens: number
+    total_tokens: number
+  }
+) {
   return {
     id: 'chatcmpl-123',
     object: 'chat.completion',
@@ -174,7 +178,9 @@ export function createMockOpenAIEmbedding(dimension: number = 1536) {
     data: [
       {
         object: 'embedding',
-        embedding: Array(dimension).fill(0).map(() => Math.random() - 0.5),
+        embedding: Array(dimension)
+          .fill(0)
+          .map(() => Math.random() - 0.5),
         index: 0,
       },
     ],
@@ -189,10 +195,13 @@ export function createMockOpenAIEmbedding(dimension: number = 1536) {
 /**
  * Mock Anthropic messages response
  */
-export function createMockAnthropicResponse(content: string, usage?: {
-  input_tokens: number
-  output_tokens: number
-}) {
+export function createMockAnthropicResponse(
+  content: string,
+  usage?: {
+    input_tokens: number
+    output_tokens: number
+  }
+) {
   return {
     id: 'msg-123',
     type: 'message',
@@ -219,10 +228,7 @@ export function createMockAnthropicResponse(content: string, usage?: {
 /**
  * Setup mock fetch for OpenAI API
  */
-export function setupMockOpenAI(responses: {
-  chat?: string
-  embedding?: number[]
-}) {
+export function setupMockOpenAI(responses: { chat?: string; embedding?: number[] }) {
   const mockFetch = jest.fn()
 
   mockFetch.mockImplementation((url: string, options: any) => {
@@ -232,15 +238,20 @@ export function setupMockOpenAI(responses: {
         json: () => Promise.resolve(createMockOpenAIResponse(responses.chat || 'Test response')),
       })
     } else if (url.includes('/embeddings')) {
-      const embedding = responses.embedding || Array(1536).fill(0).map(() => Math.random())
+      const embedding =
+        responses.embedding ||
+        Array(1536)
+          .fill(0)
+          .map(() => Math.random())
       return Promise.resolve({
         ok: true,
-        json: () => Promise.resolve({
-          object: 'list',
-          data: [{ object: 'embedding', embedding, index: 0 }],
-          model: 'text-embedding-3-small',
-          usage: { prompt_tokens: 8, total_tokens: 8 },
-        }),
+        json: () =>
+          Promise.resolve({
+            object: 'list',
+            data: [{ object: 'embedding', embedding, index: 0 }],
+            model: 'text-embedding-3-small',
+            usage: { prompt_tokens: 8, total_tokens: 8 },
+          }),
       })
     }
 
@@ -290,10 +301,13 @@ export function setupMockAPIError(statusCode: number = 500, message: string = 'A
 /**
  * Assert that a TL;DR is valid
  */
-export function assertValidTldr(tldr: string, options?: {
-  minLength?: number
-  maxLength?: number
-}) {
+export function assertValidTldr(
+  tldr: string,
+  options?: {
+    minLength?: number
+    maxLength?: number
+  }
+) {
   expect(tldr).toBeTruthy()
   expect(typeof tldr).toBe('string')
   expect(tldr.length).toBeGreaterThan(options?.minLength || 10)
@@ -305,10 +319,13 @@ export function assertValidTldr(tldr: string, options?: {
 /**
  * Assert that key points are valid
  */
-export function assertValidKeyPoints(keyPoints: string[], options?: {
-  minCount?: number
-  maxCount?: number
-}) {
+export function assertValidKeyPoints(
+  keyPoints: string[],
+  options?: {
+    minCount?: number
+    maxCount?: number
+  }
+) {
   expect(keyPoints).toBeTruthy()
   expect(Array.isArray(keyPoints)).toBe(true)
   expect(keyPoints.length).toBeGreaterThanOrEqual(options?.minCount || 1)
@@ -340,10 +357,13 @@ export function assertValidActionItems(actionItems: any[]) {
 /**
  * Assert that search results are valid
  */
-export function assertValidSearchResults(results: any[], options?: {
-  minScore?: number
-  hasHighlights?: boolean
-}) {
+export function assertValidSearchResults(
+  results: any[],
+  options?: {
+    minScore?: number
+    hasHighlights?: boolean
+  }
+) {
   expect(results).toBeTruthy()
   expect(Array.isArray(results)).toBe(true)
   results.forEach((result) => {

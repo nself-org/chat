@@ -13,7 +13,13 @@ import type {
 } from './preview-types'
 import { parseOpenGraph, extractFallbackMetadata, mergeWithFallbacks } from './og-parser'
 import { parseTwitterCard, hasTwitterCard, mergeWithOpenGraph } from './twitter-parser'
-import { applyDomainHandler, detectUrlType, mapToPreviewType, isDirectImageUrl, isDirectVideoUrl } from './domain-handlers'
+import {
+  applyDomainHandler,
+  detectUrlType,
+  mapToPreviewType,
+  isDirectImageUrl,
+  isDirectVideoUrl,
+} from './domain-handlers'
 import {
   sanitizePreviewData,
   sanitizeUrl,
@@ -48,7 +54,11 @@ export interface UnfurlResult {
  * Unfurl a URL from HTML content
  * This is the main function used server-side to process HTML
  */
-export function unfurlFromHtml(url: string, html: string, options: UnfurlOptions = {}): UnfurlResult {
+export function unfurlFromHtml(
+  url: string,
+  html: string,
+  options: UnfurlOptions = {}
+): UnfurlResult {
   const now = Date.now()
 
   // Initialize base preview
@@ -69,7 +79,12 @@ export function unfurlFromHtml(url: string, html: string, options: UnfurlOptions
 
   // Parse Twitter Card metadata
   const twitterData = parseTwitterCard(html)
-  const mergedTwitter = mergeWithOpenGraph(twitterData, mergedOg.title, mergedOg.description, mergedOg.image)
+  const mergedTwitter = mergeWithOpenGraph(
+    twitterData,
+    mergedOg.title,
+    mergedOg.description,
+    mergedOg.image
+  )
 
   // Detect URL type and apply domain-specific handler
   const urlType = detectUrlType(url)
@@ -77,7 +92,9 @@ export function unfurlFromHtml(url: string, html: string, options: UnfurlOptions
 
   // Build the preview data
   // Map internal URL types (like 'gist', 'codepen') to public PreviewType
-  const previewType = domainData?.type || (urlType === 'generic' ? getTypeFromOg(mergedOg.type) : mapToPreviewType(urlType));
+  const previewType =
+    domainData?.type ||
+    (urlType === 'generic' ? getTypeFromOg(mergedOg.type) : mapToPreviewType(urlType))
 
   let preview: LinkPreviewData = {
     ...basePreview,
@@ -104,7 +121,10 @@ export function unfurlFromHtml(url: string, html: string, options: UnfurlOptions
   }
 
   // Apply Twitter Card data if it has player/app cards (takes highest priority)
-  if (hasTwitterCard(mergedTwitter) && (mergedTwitter.card === 'player' || mergedTwitter.card === 'app')) {
+  if (
+    hasTwitterCard(mergedTwitter) &&
+    (mergedTwitter.card === 'player' || mergedTwitter.card === 'app')
+  ) {
     preview = {
       ...preview,
       title: mergedTwitter.title || preview.title,
@@ -249,7 +269,11 @@ export function mightHavePreview(url: string): boolean {
 /**
  * Create an error preview
  */
-export function createErrorPreview(url: string, errorCode: string, errorMessage: string): LinkPreviewData {
+export function createErrorPreview(
+  url: string,
+  errorCode: string,
+  errorMessage: string
+): LinkPreviewData {
   return {
     url,
     type: 'generic',

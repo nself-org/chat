@@ -28,9 +28,7 @@ export function SettingsRow({
           <Label htmlFor={htmlFor} className="text-sm font-medium">
             {label}
           </Label>
-          {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          )}
+          {description && <p className="text-sm text-muted-foreground">{description}</p>}
         </div>
         {children}
       </div>
@@ -38,19 +36,12 @@ export function SettingsRow({
   }
 
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between gap-4 py-3',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between gap-4 py-3', className)}>
       <div className="space-y-0.5">
-        <Label htmlFor={htmlFor} className="text-sm font-medium cursor-pointer">
+        <Label htmlFor={htmlFor} className="cursor-pointer text-sm font-medium">
           {label}
         </Label>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       <div className="flex-shrink-0">{children}</div>
     </div>

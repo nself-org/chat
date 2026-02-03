@@ -6,6 +6,8 @@ import { spawn } from 'child_process'
 import chalk from 'chalk'
 import ora from 'ora'
 
+import { logger } from '@/lib/logger'
+
 interface DevStartOptions {
   port?: string
   turbo?: boolean
@@ -42,7 +44,7 @@ export async function start(options: DevStartOptions) {
     }
 
     spinner.succeed('Starting development server')
-    console.log(chalk.blue(`\n🚀 Server will run on http://localhost:${options.port || 3000}\n`))
+    // REMOVED: console.log(chalk.blue(`\n🚀 Server will run on http://localhost:${options.port || 3000}\n`))
 
     const child = spawn('pnpm', args, {
       stdio: 'inherit',
@@ -51,7 +53,7 @@ export async function start(options: DevStartOptions) {
 
     child.on('error', (error) => {
       spinner.fail('Failed to start development server')
-      console.error(chalk.red(error.message))
+      logger.error(chalk.red(error.message))
       process.exit(1)
     })
 
@@ -63,7 +65,7 @@ export async function start(options: DevStartOptions) {
     })
   } catch (error) {
     spinner.fail('Failed to start development server')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }
@@ -84,21 +86,21 @@ export async function backend(options: DevBackendOptions) {
     })
 
     spinner.succeed('Backend services started')
-    console.log(chalk.green('\n✓ Backend services are running'))
-    console.log(chalk.gray('  Run `nself status` to check service status'))
-    console.log(chalk.gray('  Run `nself logs` to view logs\n'))
+    // REMOVED: console.log(chalk.green('\n✓ Backend services are running'))
+    // REMOVED: console.log(chalk.gray('  Run `nself status` to check service status'))
+    // REMOVED: console.log(chalk.gray('  Run `nself logs` to view logs\n'))
 
     if (!options.detach) {
       child.on('exit', (code) => {
         if (code !== 0) {
-          console.error(chalk.red(`\nBackend exited with code ${code}`))
+          logger.error(chalk.red(`\nBackend exited with code ${code}`))
           process.exit(code || 1)
         }
       })
     }
   } catch (error) {
     spinner.fail('Failed to start backend services')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }
@@ -125,8 +127,8 @@ export async function build(options: DevBuildOptions) {
     child.on('exit', (code) => {
       if (code === 0) {
         spinner.succeed('Build completed successfully')
-        console.log(chalk.green('\n✓ Production build ready'))
-        console.log(chalk.gray('  Run `pnpm start` to start the production server\n'))
+        // REMOVED: console.log(chalk.green('\n✓ Production build ready'))
+        // REMOVED: console.log(chalk.gray('  Run `pnpm start` to start the production server\n'))
       } else {
         spinner.fail(`Build failed with code ${code}`)
         process.exit(code || 1)
@@ -135,12 +137,12 @@ export async function build(options: DevBuildOptions) {
 
     child.on('error', (error) => {
       spinner.fail('Build failed')
-      console.error(chalk.red(error.message))
+      logger.error(chalk.red(error.message))
       process.exit(1)
     })
   } catch (error) {
     spinner.fail('Build failed')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }
@@ -171,21 +173,21 @@ export async function test(options: DevTestOptions) {
 
     child.on('exit', (code) => {
       if (code === 0) {
-        console.log(chalk.green('\n✓ All tests passed\n'))
+        // REMOVED: console.log(chalk.green('\n✓ All tests passed\n'))
       } else {
-        console.error(chalk.red(`\n✗ Tests failed with code ${code}\n`))
+        logger.error(chalk.red(`\n✗ Tests failed with code ${code}\n`))
         process.exit(code || 1)
       }
     })
 
     child.on('error', (error) => {
       spinner.fail('Tests failed')
-      console.error(chalk.red(error.message))
+      logger.error(chalk.red(error.message))
       process.exit(1)
     })
   } catch (error) {
     spinner.fail('Tests failed')
-    console.error(chalk.red((error as Error).message))
+    logger.error(chalk.red((error as Error).message))
     process.exit(1)
   }
 }

@@ -5,8 +5,8 @@
  * Includes standard Edit, View, Window menus plus app-specific items.
  */
 
-import { app, Menu, MenuItemConstructorOptions, shell, BrowserWindow } from 'electron';
-import log from 'electron-log';
+import { app, Menu, MenuItemConstructorOptions, shell, BrowserWindow } from 'electron'
+import log from 'electron-log'
 import {
   showMainWindow,
   reloadWindow,
@@ -15,11 +15,11 @@ import {
   setZoomLevel,
   getZoomLevel,
   getMainWindow,
-} from './window';
-import settingsStore from './store';
-import { checkForUpdates } from './updates';
+} from './window'
+import settingsStore from './store'
+import { checkForUpdates } from './updates'
 
-const isMac = process.platform === 'darwin';
+const isMac = process.platform === 'darwin'
 
 function getAppMenu(): MenuItemConstructorOptions {
   return {
@@ -31,8 +31,8 @@ function getAppMenu(): MenuItemConstructorOptions {
         label: 'Preferences...',
         accelerator: 'CmdOrCtrl+,',
         click: () => {
-          const mainWindow = getMainWindow();
-          mainWindow?.webContents.send('navigate', '/settings');
+          const mainWindow = getMainWindow()
+          mainWindow?.webContents.send('navigate', '/settings')
         },
       },
       { type: 'separator' },
@@ -49,7 +49,7 @@ function getAppMenu(): MenuItemConstructorOptions {
       { type: 'separator' },
       { role: 'quit' },
     ],
-  };
+  }
 }
 
 function getFileMenu(): MenuItemConstructorOptions {
@@ -58,16 +58,16 @@ function getFileMenu(): MenuItemConstructorOptions {
       label: 'New Message',
       accelerator: 'CmdOrCtrl+N',
       click: () => {
-        const mainWindow = getMainWindow();
-        mainWindow?.webContents.send('app:new-message');
+        const mainWindow = getMainWindow()
+        mainWindow?.webContents.send('app:new-message')
       },
     },
     {
       label: 'New Channel',
       accelerator: 'CmdOrCtrl+Shift+N',
       click: () => {
-        const mainWindow = getMainWindow();
-        mainWindow?.webContents.send('app:new-channel');
+        const mainWindow = getMainWindow()
+        mainWindow?.webContents.send('app:new-channel')
       },
     },
     { type: 'separator' },
@@ -75,19 +75,19 @@ function getFileMenu(): MenuItemConstructorOptions {
       label: 'Find...',
       accelerator: 'CmdOrCtrl+F',
       click: () => {
-        const mainWindow = getMainWindow();
-        mainWindow?.webContents.send('app:find');
+        const mainWindow = getMainWindow()
+        mainWindow?.webContents.send('app:find')
       },
     },
     {
       label: 'Find in Channel...',
       accelerator: 'CmdOrCtrl+Shift+F',
       click: () => {
-        const mainWindow = getMainWindow();
-        mainWindow?.webContents.send('app:find-in-channel');
+        const mainWindow = getMainWindow()
+        mainWindow?.webContents.send('app:find-in-channel')
       },
     },
-  ];
+  ]
 
   if (!isMac) {
     submenu.push(
@@ -96,21 +96,21 @@ function getFileMenu(): MenuItemConstructorOptions {
         label: 'Settings',
         accelerator: 'CmdOrCtrl+,',
         click: () => {
-          const mainWindow = getMainWindow();
-          mainWindow?.webContents.send('navigate', '/settings');
+          const mainWindow = getMainWindow()
+          mainWindow?.webContents.send('navigate', '/settings')
         },
       },
       { type: 'separator' },
       { role: 'quit' }
-    );
+    )
   } else {
-    submenu.push({ type: 'separator' }, { role: 'close' });
+    submenu.push({ type: 'separator' }, { role: 'close' })
   }
 
   return {
     label: 'File',
     submenu,
-  };
+  }
 }
 
 function getEditMenu(): MenuItemConstructorOptions {
@@ -132,7 +132,7 @@ function getEditMenu(): MenuItemConstructorOptions {
         submenu: [{ role: 'startSpeaking' }, { role: 'stopSpeaking' }],
       },
     ],
-  };
+  }
 }
 
 function getViewMenu(): MenuItemConstructorOptions {
@@ -176,28 +176,28 @@ function getViewMenu(): MenuItemConstructorOptions {
             label: 'Show Sidebar',
             accelerator: 'CmdOrCtrl+\\',
             click: () => {
-              const mainWindow = getMainWindow();
-              mainWindow?.webContents.send('app:toggle-sidebar');
+              const mainWindow = getMainWindow()
+              mainWindow?.webContents.send('app:toggle-sidebar')
             },
           },
           {
             label: 'Show Channels',
             click: () => {
-              const mainWindow = getMainWindow();
-              mainWindow?.webContents.send('app:show-channels');
+              const mainWindow = getMainWindow()
+              mainWindow?.webContents.send('app:show-channels')
             },
           },
           {
             label: 'Show Direct Messages',
             click: () => {
-              const mainWindow = getMainWindow();
-              mainWindow?.webContents.send('app:show-dms');
+              const mainWindow = getMainWindow()
+              mainWindow?.webContents.send('app:show-dms')
             },
           },
         ],
       },
     ],
-  };
+  }
 }
 
 function getGoMenu(): MenuItemConstructorOptions {
@@ -208,9 +208,9 @@ function getGoMenu(): MenuItemConstructorOptions {
         label: 'Back',
         accelerator: isMac ? 'Cmd+[' : 'Alt+Left',
         click: () => {
-          const mainWindow = getMainWindow();
+          const mainWindow = getMainWindow()
           if (mainWindow?.webContents.canGoBack()) {
-            mainWindow.webContents.goBack();
+            mainWindow.webContents.goBack()
           }
         },
       },
@@ -218,9 +218,9 @@ function getGoMenu(): MenuItemConstructorOptions {
         label: 'Forward',
         accelerator: isMac ? 'Cmd+]' : 'Alt+Right',
         click: () => {
-          const mainWindow = getMainWindow();
+          const mainWindow = getMainWindow()
           if (mainWindow?.webContents.canGoForward()) {
-            mainWindow.webContents.goForward();
+            mainWindow.webContents.goForward()
           }
         },
       },
@@ -229,16 +229,16 @@ function getGoMenu(): MenuItemConstructorOptions {
         label: 'Jump to Channel...',
         accelerator: 'CmdOrCtrl+K',
         click: () => {
-          const mainWindow = getMainWindow();
-          mainWindow?.webContents.send('app:quick-switcher');
+          const mainWindow = getMainWindow()
+          mainWindow?.webContents.send('app:quick-switcher')
         },
       },
       {
         label: 'Jump to Conversation...',
         accelerator: 'CmdOrCtrl+J',
         click: () => {
-          const mainWindow = getMainWindow();
-          mainWindow?.webContents.send('app:jump-to-conversation');
+          const mainWindow = getMainWindow()
+          mainWindow?.webContents.send('app:jump-to-conversation')
         },
       },
       { type: 'separator' },
@@ -246,35 +246,32 @@ function getGoMenu(): MenuItemConstructorOptions {
         label: 'All Unreads',
         accelerator: 'CmdOrCtrl+Shift+A',
         click: () => {
-          const mainWindow = getMainWindow();
-          mainWindow?.webContents.send('navigate', '/unreads');
+          const mainWindow = getMainWindow()
+          mainWindow?.webContents.send('navigate', '/unreads')
         },
       },
       {
         label: 'Threads',
         accelerator: 'CmdOrCtrl+Shift+T',
         click: () => {
-          const mainWindow = getMainWindow();
-          mainWindow?.webContents.send('navigate', '/threads');
+          const mainWindow = getMainWindow()
+          mainWindow?.webContents.send('navigate', '/threads')
         },
       },
       {
         label: 'All DMs',
         accelerator: 'CmdOrCtrl+Shift+K',
         click: () => {
-          const mainWindow = getMainWindow();
-          mainWindow?.webContents.send('navigate', '/dms');
+          const mainWindow = getMainWindow()
+          mainWindow?.webContents.send('navigate', '/dms')
         },
       },
     ],
-  };
+  }
 }
 
 function getWindowMenu(): MenuItemConstructorOptions {
-  const submenu: MenuItemConstructorOptions[] = [
-    { role: 'minimize' },
-    { role: 'zoom' },
-  ];
+  const submenu: MenuItemConstructorOptions[] = [{ role: 'minimize' }, { role: 'zoom' }]
 
   if (isMac) {
     submenu.push(
@@ -282,15 +279,15 @@ function getWindowMenu(): MenuItemConstructorOptions {
       { role: 'front' },
       { type: 'separator' },
       { role: 'window' }
-    );
+    )
   } else {
-    submenu.push({ role: 'close' });
+    submenu.push({ role: 'close' })
   }
 
   return {
     label: 'Window',
     submenu,
-  };
+  }
 }
 
 function getHelpMenu(): MenuItemConstructorOptions {
@@ -328,19 +325,19 @@ function getHelpMenu(): MenuItemConstructorOptions {
         label: 'Toggle Developer Tools',
         accelerator: isMac ? 'Alt+Cmd+I' : 'Ctrl+Shift+I',
         click: () => {
-          const mainWindow = getMainWindow();
-          mainWindow?.webContents.toggleDevTools();
+          const mainWindow = getMainWindow()
+          mainWindow?.webContents.toggleDevTools()
         },
       },
     ],
-  };
+  }
 }
 
 export function createMenu(): void {
-  const template: MenuItemConstructorOptions[] = [];
+  const template: MenuItemConstructorOptions[] = []
 
   if (isMac) {
-    template.push(getAppMenu());
+    template.push(getAppMenu())
   }
 
   template.push(
@@ -350,14 +347,14 @@ export function createMenu(): void {
     getGoMenu(),
     getWindowMenu(),
     getHelpMenu()
-  );
+  )
 
-  const menu = Menu.buildFromTemplate(template);
-  Menu.setApplicationMenu(menu);
+  const menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
 
-  log.info('Application menu created');
+  log.info('Application menu created')
 }
 
 export function updateMenu(): void {
-  createMenu();
+  createMenu()
 }

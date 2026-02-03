@@ -1,18 +1,12 @@
 'use client'
 
-import {
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-  ReactNode,
-  memo,
-  CSSProperties,
-} from 'react'
+import { useState, useRef, useCallback, useEffect, ReactNode, memo, CSSProperties } from 'react'
 import { motion, useAnimation, PanInfo } from 'framer-motion'
 import { X, ZoomIn, ZoomOut, RotateCw, Download } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -243,7 +237,7 @@ export const PinchZoom = memo(function PinchZoom({
       document.body.removeChild(a)
       window.URL.revokeObjectURL(url)
     } catch (error) {
-      console.error('Failed to download image:', error)
+      logger.error('Failed to download image:', error)
     }
   }, [downloadUrl, downloadFilename])
 
@@ -333,7 +327,7 @@ export const PinchZoom = memo(function PinchZoom({
       {showControls && (
         <>
           {/* Top controls */}
-          <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between bg-gradient-to-b from-black/50 to-transparent p-4">
+          <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-between bg-gradient-to-b from-black/50 to-transparent p-4">
             {/* Scale indicator */}
             <div className="rounded-full bg-black/50 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
               {Math.round(scale * 100)}%
@@ -345,7 +339,7 @@ export const PinchZoom = memo(function PinchZoom({
                 onClick={onClose}
                 variant="ghost"
                 size="icon"
-                className="h-11 w-11 rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm touch-manipulation"
+                className="h-11 w-11 touch-manipulation rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70"
                 aria-label="Close"
               >
                 <X className="h-5 w-5" />
@@ -362,7 +356,7 @@ export const PinchZoom = memo(function PinchZoom({
                 disabled={scale <= minScale}
                 variant="ghost"
                 size="icon"
-                className="h-11 w-11 rounded-full bg-black/50 text-white hover:bg-black/70 disabled:opacity-30 backdrop-blur-sm touch-manipulation"
+                className="h-11 w-11 touch-manipulation rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 disabled:opacity-30"
                 aria-label="Zoom out"
               >
                 <ZoomOut className="h-5 w-5" />
@@ -374,7 +368,7 @@ export const PinchZoom = memo(function PinchZoom({
                   onClick={reset}
                   variant="ghost"
                   size="sm"
-                  className="rounded-full bg-black/50 px-4 text-white hover:bg-black/70 backdrop-blur-sm touch-manipulation"
+                  className="touch-manipulation rounded-full bg-black/50 px-4 text-white backdrop-blur-sm hover:bg-black/70"
                 >
                   Reset
                 </Button>
@@ -386,7 +380,7 @@ export const PinchZoom = memo(function PinchZoom({
                 disabled={scale >= maxScale}
                 variant="ghost"
                 size="icon"
-                className="h-11 w-11 rounded-full bg-black/50 text-white hover:bg-black/70 disabled:opacity-30 backdrop-blur-sm touch-manipulation"
+                className="h-11 w-11 touch-manipulation rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70 disabled:opacity-30"
                 aria-label="Zoom in"
               >
                 <ZoomIn className="h-5 w-5" />
@@ -398,7 +392,7 @@ export const PinchZoom = memo(function PinchZoom({
                   onClick={rotate}
                   variant="ghost"
                   size="icon"
-                  className="h-11 w-11 rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm touch-manipulation"
+                  className="h-11 w-11 touch-manipulation rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70"
                   aria-label="Rotate"
                 >
                   <RotateCw className="h-5 w-5" />
@@ -411,7 +405,7 @@ export const PinchZoom = memo(function PinchZoom({
                   onClick={handleDownload}
                   variant="ghost"
                   size="icon"
-                  className="h-11 w-11 rounded-full bg-black/50 text-white hover:bg-black/70 backdrop-blur-sm touch-manipulation"
+                  className="h-11 w-11 touch-manipulation rounded-full bg-black/50 text-white backdrop-blur-sm hover:bg-black/70"
                   aria-label="Download"
                 >
                   <Download className="h-5 w-5" />

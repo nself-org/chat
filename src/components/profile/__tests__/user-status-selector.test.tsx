@@ -43,22 +43,12 @@ describe('UserStatusSelector', () => {
     })
 
     it('displays custom status text when set', () => {
-      render(
-        <UserStatusSelector
-          {...defaultProps}
-          currentStatus={{ text: 'Working from home' }}
-        />
-      )
+      render(<UserStatusSelector {...defaultProps} currentStatus={{ text: 'Working from home' }} />)
       expect(screen.getByText('Working from home')).toBeInTheDocument()
     })
 
     it('displays custom status emoji when set', () => {
-      render(
-        <UserStatusSelector
-          {...defaultProps}
-          currentStatus={{ emoji: '🏠', text: 'WFH' }}
-        />
-      )
+      render(<UserStatusSelector {...defaultProps} currentStatus={{ emoji: '🏠', text: 'WFH' }} />)
       expect(screen.getByText(/🏠/)).toBeInTheDocument()
     })
 
@@ -110,12 +100,7 @@ describe('UserStatusSelector', () => {
     })
 
     it('shows clear button when status is set', async () => {
-      render(
-        <UserStatusSelector
-          {...defaultProps}
-          currentStatus={{ emoji: '🏠', text: 'WFH' }}
-        />
-      )
+      render(<UserStatusSelector {...defaultProps} currentStatus={{ emoji: '🏠', text: 'WFH' }} />)
 
       await userEvent.click(screen.getByTestId('status-selector-trigger'))
 
@@ -130,9 +115,7 @@ describe('UserStatusSelector', () => {
   describe('Presence Change', () => {
     it('calls onPresenceChange when presence option clicked', async () => {
       const onPresenceChange = jest.fn()
-      render(
-        <UserStatusSelector {...defaultProps} onPresenceChange={onPresenceChange} />
-      )
+      render(<UserStatusSelector {...defaultProps} onPresenceChange={onPresenceChange} />)
 
       await userEvent.click(screen.getByTestId('status-selector-trigger'))
       await userEvent.click(screen.getByTestId('presence-option-away'))
@@ -258,9 +241,7 @@ describe('UserStatusSelector', () => {
 
     it('calls onStatusChange with status data on save', async () => {
       const onStatusChange = jest.fn().mockResolvedValue(undefined)
-      render(
-        <UserStatusSelector {...defaultProps} onStatusChange={onStatusChange} />
-      )
+      render(<UserStatusSelector {...defaultProps} onStatusChange={onStatusChange} />)
 
       await userEvent.click(screen.getByTestId('status-selector-trigger'))
       await userEvent.click(screen.getByTestId('set-status-button'))
@@ -339,12 +320,7 @@ describe('UserStatusSelector', () => {
     })
 
     it('closes popover after clearing status', async () => {
-      render(
-        <UserStatusSelector
-          {...defaultProps}
-          currentStatus={{ text: 'Test' }}
-        />
-      )
+      render(<UserStatusSelector {...defaultProps} currentStatus={{ text: 'Test' }} />)
 
       await userEvent.click(screen.getByTestId('status-selector-trigger'))
       await userEvent.click(screen.getByTestId('clear-status-button'))
@@ -362,9 +338,7 @@ describe('UserStatusSelector', () => {
   describe('Clear After', () => {
     it('includes expiry date when clear after is set', async () => {
       const onStatusChange = jest.fn().mockResolvedValue(undefined)
-      render(
-        <UserStatusSelector {...defaultProps} onStatusChange={onStatusChange} />
-      )
+      render(<UserStatusSelector {...defaultProps} onStatusChange={onStatusChange} />)
 
       await userEvent.click(screen.getByTestId('status-selector-trigger'))
       await userEvent.click(screen.getByTestId('set-status-button'))

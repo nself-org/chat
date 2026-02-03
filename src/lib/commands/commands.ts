@@ -9,12 +9,12 @@
  * import { COMMANDS, getCommandByName } from '@/lib/commands/commands'
  *
  * const giphyCommand = getCommandByName('giphy')
- * console.log(giphyCommand?.description)
+ * // console.log(giphyCommand?.description)
  * ```
  */
 
-import { FEATURES } from '@/lib/features/feature-flags';
-import type { FeatureFlag } from '@/lib/features/types';
+import { FEATURES } from '@/lib/features/feature-flags'
+import type { FeatureFlag } from '@/lib/features/types'
 
 // ============================================================================
 // Types
@@ -30,38 +30,31 @@ export type CommandCategory =
   | 'moderation'
   | 'utility'
   | 'fun'
-  | 'navigation';
+  | 'navigation'
 
 /**
  * Type of argument a command accepts
  */
-export type CommandArgType =
-  | 'text'
-  | 'user'
-  | 'channel'
-  | 'duration'
-  | 'emoji'
-  | 'options'
-  | 'none';
+export type CommandArgType = 'text' | 'user' | 'channel' | 'duration' | 'emoji' | 'options' | 'none'
 
 /**
  * Command argument definition
  */
 export interface CommandArg {
   /** Argument name */
-  name: string;
+  name: string
   /** Argument type */
-  type: CommandArgType;
+  type: CommandArgType
   /** Whether the argument is required */
-  required: boolean;
+  required: boolean
   /** Description of the argument */
-  description: string;
+  description: string
   /** Placeholder text for the argument input */
-  placeholder?: string;
+  placeholder?: string
   /** Default value if not provided */
-  defaultValue?: string;
+  defaultValue?: string
   /** Valid options (for 'options' type) */
-  options?: string[];
+  options?: string[]
 }
 
 /**
@@ -69,33 +62,33 @@ export interface CommandArg {
  */
 export interface SlashCommand {
   /** Command name (without the leading slash) */
-  name: string;
+  name: string
   /** Short description shown in the command menu */
-  description: string;
+  description: string
   /** Detailed description shown in help */
-  longDescription?: string;
+  longDescription?: string
   /** Usage example */
-  usage: string;
+  usage: string
   /** Command category for organization */
-  category: CommandCategory;
+  category: CommandCategory
   /** Arguments the command accepts */
-  args: CommandArg[];
+  args: CommandArg[]
   /** Keyboard shortcut (if any) */
-  shortcut?: string;
+  shortcut?: string
   /** Feature flag that must be enabled for this command */
-  requiredFeature?: FeatureFlag;
+  requiredFeature?: FeatureFlag
   /** Aliases for the command */
-  aliases?: string[];
+  aliases?: string[]
   /** Whether command requires channel context */
-  requiresChannel?: boolean;
+  requiresChannel?: boolean
   /** Whether command requires admin/moderator permissions */
-  requiresPermission?: 'admin' | 'moderator' | 'owner';
+  requiresPermission?: 'admin' | 'moderator' | 'owner'
   /** Whether the command shows a preview before executing */
-  showPreview?: boolean;
+  showPreview?: boolean
   /** Icon name for the command */
-  icon?: string;
+  icon?: string
   /** Whether the command is hidden from the menu */
-  hidden?: boolean;
+  hidden?: boolean
 }
 
 // ============================================================================
@@ -409,7 +402,8 @@ export const COMMANDS: SlashCommand[] = [
   {
     name: 'kick',
     description: 'Remove user from channel',
-    longDescription: 'Remove a user from the current channel. They can rejoin if the channel is public.',
+    longDescription:
+      'Remove a user from the current channel. They can rejoin if the channel is public.',
     usage: '/kick @user',
     category: 'moderation',
     args: [
@@ -722,7 +716,7 @@ export const COMMANDS: SlashCommand[] = [
     shortcut: 'Cmd+,',
     icon: 'settings',
   },
-];
+]
 
 // ============================================================================
 // Utility Functions
@@ -732,41 +726,39 @@ export const COMMANDS: SlashCommand[] = [
  * Get a command by its name
  */
 export function getCommandByName(name: string): SlashCommand | undefined {
-  const normalizedName = name.toLowerCase();
+  const normalizedName = name.toLowerCase()
   return COMMANDS.find(
-    (cmd) =>
-      cmd.name === normalizedName ||
-      cmd.aliases?.includes(normalizedName)
-  );
+    (cmd) => cmd.name === normalizedName || cmd.aliases?.includes(normalizedName)
+  )
 }
 
 /**
  * Get all commands in a category
  */
 export function getCommandsByCategory(category: CommandCategory): SlashCommand[] {
-  return COMMANDS.filter((cmd) => cmd.category === category && !cmd.hidden);
+  return COMMANDS.filter((cmd) => cmd.category === category && !cmd.hidden)
 }
 
 /**
  * Get all visible commands
  */
 export function getVisibleCommands(): SlashCommand[] {
-  return COMMANDS.filter((cmd) => !cmd.hidden);
+  return COMMANDS.filter((cmd) => !cmd.hidden)
 }
 
 /**
  * Search commands by query
  */
 export function searchCommands(query: string): SlashCommand[] {
-  const normalizedQuery = query.toLowerCase();
+  const normalizedQuery = query.toLowerCase()
   return COMMANDS.filter((cmd) => {
-    if (cmd.hidden) return false;
+    if (cmd.hidden) return false
     return (
       cmd.name.includes(normalizedQuery) ||
       cmd.description.toLowerCase().includes(normalizedQuery) ||
       cmd.aliases?.some((alias) => alias.includes(normalizedQuery))
-    );
-  });
+    )
+  })
 }
 
 /**
@@ -780,11 +772,11 @@ export const COMMAND_CATEGORIES: Record<CommandCategory, string> = {
   utility: 'Utility',
   fun: 'Fun',
   navigation: 'Navigation',
-};
+}
 
 /**
  * Get all categories in display order
  */
 export function getCommandCategoriesInOrder(): CommandCategory[] {
-  return ['navigation', 'channel', 'status', 'media', 'utility', 'moderation', 'fun'];
+  return ['navigation', 'channel', 'status', 'media', 'utility', 'moderation', 'fun']
 }

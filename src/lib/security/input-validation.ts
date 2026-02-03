@@ -47,7 +47,10 @@ export const channelNameSchema = z
   .string()
   .min(1, 'Channel name is required')
   .max(80, 'Channel name must be at most 80 characters')
-  .regex(/^[a-zA-Z0-9_-\s]+$/, 'Channel name can only contain letters, numbers, spaces, underscores, and hyphens')
+  .regex(
+    /^[a-zA-Z0-9_-\s]+$/,
+    'Channel name can only contain letters, numbers, spaces, underscores, and hyphens'
+  )
 
 /**
  * Message content validation
@@ -68,9 +71,7 @@ export const urlSchema = z
 /**
  * UUID validation
  */
-export const uuidSchema = z
-  .string()
-  .uuid('Invalid UUID')
+export const uuidSchema = z.string().uuid('Invalid UUID')
 
 /**
  * Hex color validation
@@ -129,8 +130,25 @@ export const mimeTypeSchema = z.enum([
 export function sanitizeHtml(html: string): string {
   return DOMPurify.sanitize(html, {
     ALLOWED_TAGS: [
-      'p', 'br', 'strong', 'em', 'u', 's', 'a', 'ul', 'ol', 'li',
-      'blockquote', 'code', 'pre', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+      'p',
+      'br',
+      'strong',
+      'em',
+      'u',
+      's',
+      'a',
+      'ul',
+      'ol',
+      'li',
+      'blockquote',
+      'code',
+      'pre',
+      'h1',
+      'h2',
+      'h3',
+      'h4',
+      'h5',
+      'h6',
     ],
     ALLOWED_ATTR: ['href', 'target', 'rel'],
     ALLOW_DATA_ATTR: false,
@@ -155,9 +173,9 @@ export function sanitizeText(text: string): string {
  */
 export function sanitizeFilename(filename: string): string {
   return filename
-    .replace(/\.\./g, '')  // Remove ..
-    .replace(/\//g, '')    // Remove /
-    .replace(/\\/g, '')    // Remove \
+    .replace(/\.\./g, '') // Remove ..
+    .replace(/\//g, '') // Remove /
+    .replace(/\\/g, '') // Remove \
     .replace(/[<>:"|?*]/g, '') // Remove invalid filename characters
     .trim()
 }
@@ -214,10 +232,7 @@ export function sanitizeEmail(email: string): string | null {
  * Escape SQL LIKE pattern (for PostgreSQL)
  */
 export function escapeLikePattern(pattern: string): string {
-  return pattern
-    .replace(/\\/g, '\\\\')
-    .replace(/%/g, '\\%')
-    .replace(/_/g, '\\_')
+  return pattern.replace(/\\/g, '\\\\').replace(/%/g, '\\%').replace(/_/g, '\\_')
 }
 
 /**

@@ -12,9 +12,11 @@
 import { v4 as uuidv4 } from 'uuid'
 import type { AuditLogEntry, AuditAction, AuditCategory } from './audit-types'
 import { logAuditEvent } from './audit-logger'
+import { logger } from '@/lib/logger'
+
 // Note: captureError is defined locally to avoid circular dependencies
 function captureError(error: Error, context?: { tags?: Record<string, string> }): void {
-  console.error('[TamperProofAudit]', error.message, context?.tags)
+  logger.error('[TamperProofAudit]', error, context?.tags)
 }
 
 // ============================================================================
@@ -249,7 +251,6 @@ export class TamperProofAuditService {
       // Update chain metadata
       this.chainMetadata.lastVerified = new Date()
       this.chainMetadata.integrityStatus = result.isValid ? 'valid' : 'compromised'
-
     } catch (error) {
       result.errors.push(`Verification failed: ${(error as Error).message}`)
       result.isValid = false
@@ -270,37 +271,38 @@ export class TamperProofAuditService {
 
     // Apply filters
     if (filter.startDate) {
-      filtered = filtered.filter(e => e.timestamp >= filter.startDate!)
+      filtered = filtered.filter((e) => e.timestamp >= filter.startDate!)
     }
     if (filter.endDate) {
-      filtered = filtered.filter(e => e.timestamp <= filter.endDate!)
+      filtered = filtered.filter((e) => e.timestamp <= filter.endDate!)
     }
     if (filter.actorIds && filter.actorIds.length > 0) {
-      filtered = filtered.filter(e => filter.actorIds!.includes(e.actor.id))
+      filtered = filtered.filter((e) => filter.actorIds!.includes(e.actor.id))
     }
     if (filter.actions && filter.actions.length > 0) {
-      filtered = filtered.filter(e => filter.actions!.includes(e.action))
+      filtered = filtered.filter((e) => filter.actions!.includes(e.action))
     }
     if (filter.categories && filter.categories.length > 0) {
-      filtered = filtered.filter(e => filter.categories!.includes(e.category))
+      filtered = filtered.filter((e) => filter.categories!.includes(e.category))
     }
     if (filter.severities && filter.severities.length > 0) {
-      filtered = filtered.filter(e => filter.severities!.includes(e.severity))
+      filtered = filtered.filter((e) => filter.severities!.includes(e.severity))
     }
     if (filter.resourceTypes && filter.resourceTypes.length > 0) {
-      filtered = filtered.filter(e =>
-        e.resource && filter.resourceTypes!.includes(e.resource.type)
+      filtered = filtered.filter(
+        (e) => e.resource && filter.resourceTypes!.includes(e.resource.type)
       )
     }
     if (filter.success !== undefined) {
-      filtered = filtered.filter(e => e.success === filter.success)
+      filtered = filtered.filter((e) => e.success === filter.success)
     }
     if (filter.searchText) {
       const searchLower = filter.searchText.toLowerCase()
-      filtered = filtered.filter(e =>
-        e.description.toLowerCase().includes(searchLower) ||
-        e.actor.id.toLowerCase().includes(searchLower) ||
-        e.action.toLowerCase().includes(searchLower)
+      filtered = filtered.filter(
+        (e) =>
+          e.description.toLowerCase().includes(searchLower) ||
+          e.actor.id.toLowerCase().includes(searchLower) ||
+          e.action.toLowerCase().includes(searchLower)
       )
     }
 
@@ -344,10 +346,7 @@ export class TamperProofAuditService {
   /**
    * Export audit logs in various formats
    */
-  async exportLogs(
-    filter: AuditSearchFilter,
-    format: ExportFormat
-  ): Promise<string | Blob> {
+  async exportLogs(filter: AuditSearchFilter, format: ExportFormat): Promise<string | Blob> {
     const { entries } = await this.searchLogs(filter)
 
     switch (format) {
@@ -391,18 +390,15 @@ export class TamperProofAuditService {
     const actorCounts = new Map<string, number>()
     let failures = 0
 
-    entries.forEach(entry => {
+    entries.forEach((entry) => {
       // Category stats
-      stats.eventsByCategory[entry.category] =
-        (stats.eventsByCategory[entry.category] || 0) + 1
+      stats.eventsByCategory[entry.category] = (stats.eventsByCategory[entry.category] || 0) + 1
 
       // Action stats
-      stats.eventsByAction[entry.action] =
-        (stats.eventsByAction[entry.action] || 0) + 1
+      stats.eventsByAction[entry.action] = (stats.eventsByAction[entry.action] || 0) + 1
 
       // Severity stats
-      stats.eventsBySeverity[entry.severity] =
-        (stats.eventsBySeverity[entry.severity] || 0) + 1
+      stats.eventsBySeverity[entry.severity] = (stats.eventsBySeverity[entry.severity] || 0) + 1
 
       // Actor stats
       const count = actorCounts.get(entry.actor.id) || 0
@@ -526,7 +522,7 @@ export class TamperProofAuditService {
     let hash = 0
     for (let i = 0; i < input.length; i++) {
       const char = input.charCodeAt(i)
-      hash = ((hash << 5) - hash) + char
+      hash = (hash << 5) - hash + char
       hash = hash & hash // Convert to 32-bit integer
     }
     return Math.abs(hash).toString(16).padStart(16, '0')
@@ -561,7 +557,7 @@ export class TamperProofAuditService {
       'Entry Hash',
     ]
 
-    const rows = entries.map(e => [
+    const rows = entries.map((e) => [
       e.blockNumber,
       e.timestamp.toISOString(),
       e.action,
@@ -576,16 +572,15 @@ export class TamperProofAuditService {
       e.entryHash,
     ])
 
-    return [
-      headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
-    ].join('\n')
+    return [headers.join(','), ...rows.map((row) => row.map((cell) => `"${cell}"`).join(','))].join(
+      '\n'
+    )
   }
 
   private exportSyslog(entries: TamperProofLogEntry[]): string {
     // RFC 5424 syslog format
     return entries
-      .map(e => {
+      .map((e) => {
         const priority = this.getSyslogPriority(e.severity)
         const timestamp = e.timestamp.toISOString()
         return `<${priority}>1 ${timestamp} nchat audit - - - ${e.action}: ${e.description}`
@@ -596,7 +591,7 @@ export class TamperProofAuditService {
   private exportCEF(entries: TamperProofLogEntry[]): string {
     // Common Event Format
     return entries
-      .map(e => {
+      .map((e) => {
         const severity = this.getCEFSeverity(e.severity)
         return `CEF:0|nself|nchat|1.0|${e.action}|${e.description}|${severity}|act=${e.action} suser=${e.actor.id} outcome=${e.success ? 'success' : 'failure'}`
       })
@@ -613,9 +608,9 @@ export class TamperProofAuditService {
   private getSyslogPriority(severity: string): number {
     const severityMap: Record<string, number> = {
       critical: 2, // Critical
-      error: 3,    // Error
-      warning: 4,  // Warning
-      info: 6,     // Informational
+      error: 3, // Error
+      warning: 4, // Warning
+      info: 6, // Informational
     }
     return (1 << 3) | (severityMap[severity] || 6) // Facility: user (1)
   }
@@ -667,9 +662,7 @@ export async function verifyAuditIntegrity(): Promise<IntegrityVerification> {
 /**
  * Search tamper-proof audit logs
  */
-export async function searchTamperProofLogs(
-  filter: AuditSearchFilter
-): Promise<{
+export async function searchTamperProofLogs(filter: AuditSearchFilter): Promise<{
   entries: TamperProofLogEntry[]
   total: number
   hasMore: boolean

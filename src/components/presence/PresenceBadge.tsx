@@ -1,22 +1,17 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
 import {
   type PresenceStatus,
   type CustomStatus,
   getPresenceLabel,
   getPresenceColor,
   isStatusExpired,
-} from '@/lib/presence/presence-types';
-import { PresenceIndicator } from './PresenceIndicator';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/lib/presence/presence-types'
+import { PresenceIndicator } from './PresenceIndicator'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 // ============================================================================
 // Variants
@@ -42,54 +37,53 @@ const presenceBadgeVariants = cva(
       size: 'sm',
     },
   }
-);
+)
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface PresenceBadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof presenceBadgeVariants> {
+  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof presenceBadgeVariants> {
   /**
    * Presence status
    */
-  status: PresenceStatus;
+  status: PresenceStatus
 
   /**
    * Custom status
    */
-  customStatus?: CustomStatus;
+  customStatus?: CustomStatus
 
   /**
    * Whether to show the indicator dot
    * @default true
    */
-  showIndicator?: boolean;
+  showIndicator?: boolean
 
   /**
    * Whether to show the status label
    * @default true
    */
-  showLabel?: boolean;
+  showLabel?: boolean
 
   /**
    * Whether to show custom status emoji/text
    * @default false
    */
-  showCustomStatus?: boolean;
+  showCustomStatus?: boolean
 
   /**
    * Whether to show tooltip
    * @default false
    */
-  showTooltip?: boolean;
+  showTooltip?: boolean
 
   /**
    * Maximum length for custom status text
    * @default 20
    */
-  maxCustomStatusLength?: number;
+  maxCustomStatusLength?: number
 }
 
 // ============================================================================
@@ -113,24 +107,25 @@ const PresenceBadge = React.forwardRef<HTMLSpanElement, PresenceBadgeProps>(
     },
     ref
   ) => {
-    const label = getPresenceLabel(status);
+    const label = getPresenceLabel(status)
     const hasCustomStatus =
-      customStatus && (customStatus.emoji || customStatus.text) && !isStatusExpired(customStatus);
+      customStatus && (customStatus.emoji || customStatus.text) && !isStatusExpired(customStatus)
 
-    const indicatorSize = size === 'lg' ? 'sm' : 'xs';
+    const indicatorSize = size === 'lg' ? 'sm' : 'xs'
 
     // Build display content
-    const displayText = showCustomStatus && hasCustomStatus
-      ? customStatus?.text
-        ? customStatus.text.length > maxCustomStatusLength
-          ? `${customStatus.text.slice(0, maxCustomStatusLength)}...`
-          : customStatus.text
-        : null
-      : showLabel
-        ? label
-        : null;
+    const displayText =
+      showCustomStatus && hasCustomStatus
+        ? customStatus?.text
+          ? customStatus.text.length > maxCustomStatusLength
+            ? `${customStatus.text.slice(0, maxCustomStatusLength)}...`
+            : customStatus.text
+          : null
+        : showLabel
+          ? label
+          : null
 
-    const displayEmoji = showCustomStatus && hasCustomStatus ? customStatus?.emoji : null;
+    const displayEmoji = showCustomStatus && hasCustomStatus ? customStatus?.emoji : null
 
     const badge = (
       <span
@@ -149,12 +144,12 @@ const PresenceBadge = React.forwardRef<HTMLSpanElement, PresenceBadgeProps>(
         {displayEmoji && <span>{displayEmoji}</span>}
         {displayText && <span>{displayText}</span>}
       </span>
-    );
+    )
 
     if (showTooltip) {
       const tooltipContent = hasCustomStatus
         ? `${label}${customStatus?.text ? ` - ${customStatus.text}` : ''}`
-        : label;
+        : label
 
       return (
         <TooltipProvider>
@@ -165,33 +160,33 @@ const PresenceBadge = React.forwardRef<HTMLSpanElement, PresenceBadgeProps>(
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      );
+      )
     }
 
-    return badge;
+    return badge
   }
-);
+)
 
-PresenceBadge.displayName = 'PresenceBadge';
+PresenceBadge.displayName = 'PresenceBadge'
 
 // ============================================================================
 // Status Pill (colored background)
 // ============================================================================
 
 export interface StatusPillProps extends React.HTMLAttributes<HTMLSpanElement> {
-  status: PresenceStatus;
+  status: PresenceStatus
 }
 
 export const StatusPill = React.forwardRef<HTMLSpanElement, StatusPillProps>(
   ({ status, className, ...props }, ref) => {
-    const label = getPresenceLabel(status);
-    const color = getPresenceColor(status);
+    const label = getPresenceLabel(status)
+    const color = getPresenceColor(status)
 
     return (
       <span
         ref={ref}
         className={cn(
-          'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium',
+          'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium',
           className
         )}
         style={{
@@ -200,55 +195,41 @@ export const StatusPill = React.forwardRef<HTMLSpanElement, StatusPillProps>(
         }}
         {...props}
       >
-        <span
-          className="h-1.5 w-1.5 rounded-full"
-          style={{ backgroundColor: color }}
-        />
+        <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: color }} />
         {label}
       </span>
-    );
+    )
   }
-);
+)
 
-StatusPill.displayName = 'StatusPill';
+StatusPill.displayName = 'StatusPill'
 
 // ============================================================================
 // Mini Badge (just the dot and optionally status text)
 // ============================================================================
 
 export interface MiniBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  status: PresenceStatus;
-  showText?: boolean;
+  status: PresenceStatus
+  showText?: boolean
 }
 
 export const MiniBadge = React.forwardRef<HTMLSpanElement, MiniBadgeProps>(
   ({ status, showText = false, className, ...props }, ref) => {
-    const label = getPresenceLabel(status);
+    const label = getPresenceLabel(status)
 
     return (
-      <span
-        ref={ref}
-        className={cn('inline-flex items-center gap-1', className)}
-        {...props}
-      >
-        <PresenceIndicator
-          status={status}
-          size="xs"
-          position="inline"
-          animate={false}
-        />
-        {showText && (
-          <span className="text-xs text-muted-foreground">{label}</span>
-        )}
+      <span ref={ref} className={cn('inline-flex items-center gap-1', className)} {...props}>
+        <PresenceIndicator status={status} size="xs" position="inline" animate={false} />
+        {showText && <span className="text-xs text-muted-foreground">{label}</span>}
       </span>
-    );
+    )
   }
-);
+)
 
-MiniBadge.displayName = 'MiniBadge';
+MiniBadge.displayName = 'MiniBadge'
 
 // ============================================================================
 // Exports
 // ============================================================================
 
-export { PresenceBadge, presenceBadgeVariants };
+export { PresenceBadge, presenceBadgeVariants }

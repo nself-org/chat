@@ -3,12 +3,7 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { format } from 'date-fns'
-import {
-  Pin,
-  PinOff,
-  ExternalLink,
-  MoreVertical,
-} from 'lucide-react'
+import { Pin, PinOff, ExternalLink, MoreVertical } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -54,7 +49,8 @@ const mockPinnedMessages: PinnedMessage[] = [
   {
     id: 'pin-1',
     messageId: 'msg-1',
-    content: 'Welcome to the team! Please make sure to read the onboarding documentation in the #resources channel.',
+    content:
+      'Welcome to the team! Please make sure to read the onboarding documentation in the #resources channel.',
     authorId: '1',
     authorName: 'Alice Johnson',
     authorAvatar: undefined,
@@ -66,7 +62,8 @@ const mockPinnedMessages: PinnedMessage[] = [
   {
     id: 'pin-2',
     messageId: 'msg-2',
-    content: 'Important: All team meetings are now on Tuesdays at 10 AM PST. Please update your calendars accordingly.',
+    content:
+      'Important: All team meetings are now on Tuesdays at 10 AM PST. Please update your calendars accordingly.',
     authorId: '2',
     authorName: 'Bob Smith',
     authorAvatar: undefined,
@@ -78,7 +75,8 @@ const mockPinnedMessages: PinnedMessage[] = [
   {
     id: 'pin-3',
     messageId: 'msg-3',
-    content: 'Project deadlines:\n- Phase 1: Jan 20\n- Phase 2: Feb 15\n- Final release: March 1\n\nPlease coordinate with your team leads.',
+    content:
+      'Project deadlines:\n- Phase 1: Jan 20\n- Phase 2: Feb 15\n- Final release: March 1\n\nPlease coordinate with your team leads.',
     authorId: '3',
     authorName: 'Charlie Brown',
     authorAvatar: undefined,
@@ -105,15 +103,13 @@ function PinnedMessageItem({
   onUnpin: () => void
 }) {
   return (
-    <div className="group p-3 hover:bg-accent/50 rounded-md transition-colors">
+    <div className="hover:bg-accent/50 group rounded-md p-3 transition-colors">
       {/* Header */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Avatar className="h-6 w-6">
             <AvatarImage src={message.authorAvatar} alt={message.authorName} />
-            <AvatarFallback className="text-[10px]">
-              {message.authorName.charAt(0)}
-            </AvatarFallback>
+            <AvatarFallback className="text-[10px]">{message.authorName.charAt(0)}</AvatarFallback>
           </Avatar>
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-medium">{message.authorName}</span>
@@ -128,7 +124,7 @@ function PinnedMessageItem({
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
             >
               <MoreVertical className="h-4 w-4" />
             </Button>
@@ -149,10 +145,10 @@ function PinnedMessageItem({
       </div>
 
       {/* Content */}
-      <p className="text-sm whitespace-pre-wrap break-words">{message.content}</p>
+      <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
 
       {/* Footer */}
-      <div className="flex items-center gap-1.5 mt-2 text-xs text-muted-foreground">
+      <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
         <Pin className="h-3 w-3" />
         <span>
           Pinned by {message.pinnedByName} on {format(message.pinnedAt, 'MMM d')}
@@ -163,7 +159,7 @@ function PinnedMessageItem({
       <Button
         variant="ghost"
         size="sm"
-        className="mt-2 h-7 text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+        className="mt-2 h-7 text-xs opacity-0 transition-opacity group-hover:opacity-100"
         onClick={onJumpToMessage}
       >
         <ExternalLink className="mr-1.5 h-3 w-3" />
@@ -177,11 +173,7 @@ function PinnedMessageItem({
 // Component
 // ============================================================================
 
-export function PinnedMessages({
-  channelId,
-  className,
-  onMessageClick,
-}: PinnedMessagesProps) {
+export function PinnedMessages({ channelId, className, onMessageClick }: PinnedMessagesProps) {
   const { user } = useAuth()
   const isAdmin = user?.role === 'owner' || user?.role === 'admin'
 
@@ -218,10 +210,10 @@ export function PinnedMessages({
   }
 
   return (
-    <div className={cn('flex flex-col h-full', className)}>
+    <div className={cn('flex h-full flex-col', className)}>
       {pinnedMessages.length > 0 ? (
         <ScrollArea className="flex-1">
-          <div className="p-2 space-y-1">
+          <div className="space-y-1 p-2">
             {pinnedMessages.map((message) => (
               <PinnedMessageItem
                 key={message.id}
@@ -234,12 +226,12 @@ export function PinnedMessages({
           </div>
         </ScrollArea>
       ) : (
-        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
+        <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
             <Pin className="h-6 w-6 text-muted-foreground" />
           </div>
-          <h3 className="font-medium mb-1">No pinned messages</h3>
-          <p className="text-sm text-muted-foreground max-w-[250px]">
+          <h3 className="mb-1 font-medium">No pinned messages</h3>
+          <p className="max-w-[250px] text-sm text-muted-foreground">
             Pin important messages so they&apos;re easy to find. Right-click any message to pin it.
           </p>
         </div>
@@ -247,7 +239,7 @@ export function PinnedMessages({
 
       {/* Info footer */}
       {pinnedMessages.length > 0 && (
-        <div className="p-3 border-t text-center">
+        <div className="border-t p-3 text-center">
           <p className="text-xs text-muted-foreground">
             {pinnedMessages.length} pinned message{pinnedMessages.length !== 1 ? 's' : ''}
           </p>

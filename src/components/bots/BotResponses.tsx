@@ -85,13 +85,7 @@ const TEMPLATE_VARIABLES = [
 // MAIN COMPONENT
 // ============================================================================
 
-export function BotResponses({
-  actions,
-  onAdd,
-  onRemove,
-  error,
-  className,
-}: BotResponsesProps) {
+export function BotResponses({ actions, onAdd, onRemove, error, className }: BotResponsesProps) {
   const [isAdding, setIsAdding] = useState(false)
   const [draft, setDraft] = useState<ResponseDraft>({
     type: 'send_message',
@@ -100,9 +94,7 @@ export function BotResponses({
   const [validationError, setValidationError] = useState<string>()
 
   // Filter response actions (not commands)
-  const responseActions = actions.filter(
-    (a) => !a.config.isCommand
-  )
+  const responseActions = actions.filter((a) => !a.config.isCommand)
 
   // Validate draft
   const validateDraft = (): boolean => {
@@ -208,9 +200,7 @@ export function BotResponses({
     <div className={cn('space-y-4', className)}>
       {/* Error message */}
       {error && (
-        <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">
-          {error}
-        </div>
+        <div className="bg-destructive/10 rounded-md p-3 text-sm text-destructive">{error}</div>
       )}
 
       {/* Existing Actions */}
@@ -218,9 +208,9 @@ export function BotResponses({
         <div className="space-y-2">
           <h4 className="text-sm font-medium">Response Actions</h4>
           {responseActions.map((action, index) => (
-            <Card key={action.id} className="p-3 flex justify-between items-center">
+            <Card key={action.id} className="flex items-center justify-between p-3">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded">
+                <span className="rounded bg-muted px-2 py-0.5 text-xs text-muted-foreground">
                   {index + 1}
                 </span>
                 <span className="font-medium">{formatAction(action)}</span>
@@ -240,20 +230,16 @@ export function BotResponses({
 
       {/* Add Action Form */}
       {isAdding ? (
-        <Card className="p-4 space-y-4">
+        <Card className="space-y-4 p-4">
           <h4 className="font-medium">New Response Action</h4>
 
           {/* Action Type */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Action Type
-            </label>
+            <label className="mb-2 block text-sm font-medium">Action Type</label>
             <select
               value={draft.type}
-              onChange={(e) =>
-                setDraft({ type: e.target.value as BuilderActionType })
-              }
-              className="w-full px-3 py-2 rounded-md border border-input bg-background"
+              onChange={(e) => setDraft({ type: e.target.value as BuilderActionType })}
+              className="w-full rounded-md border border-input bg-background px-3 py-2"
             >
               {ACTION_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -266,20 +252,16 @@ export function BotResponses({
           {/* Send/Reply Message */}
           {(draft.type === 'send_message' || draft.type === 'reply_message') && (
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Message
-              </label>
+              <label className="mb-1 block text-sm font-medium">Message</label>
               <textarea
                 value={draft.message || ''}
-                onChange={(e) =>
-                  setDraft((prev) => ({ ...prev, message: e.target.value }))
-                }
+                onChange={(e) => setDraft((prev) => ({ ...prev, message: e.target.value }))}
                 placeholder="Enter your message..."
                 rows={4}
-                className="w-full px-3 py-2 rounded-md border border-input bg-background resize-none"
+                className="w-full resize-none rounded-md border border-input bg-background px-3 py-2"
               />
               <div className="mt-2">
-                <p className="text-xs font-medium text-muted-foreground mb-1">
+                <p className="mb-1 text-xs font-medium text-muted-foreground">
                   Available variables:
                 </p>
                 <div className="flex flex-wrap gap-1">
@@ -293,7 +275,7 @@ export function BotResponses({
                           message: (prev.message || '') + v.variable,
                         }))
                       }
-                      className="text-xs px-2 py-1 rounded bg-muted hover:bg-muted/80 transition-colors"
+                      className="hover:bg-muted/80 rounded bg-muted px-2 py-1 text-xs transition-colors"
                       title={v.description}
                     >
                       {v.variable}
@@ -307,19 +289,15 @@ export function BotResponses({
           {/* Add Reaction */}
           {draft.type === 'add_reaction' && (
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Reactions
-              </label>
+              <label className="mb-1 block text-sm font-medium">Reactions</label>
               <input
                 type="text"
                 value={draft.reactions || ''}
-                onChange={(e) =>
-                  setDraft((prev) => ({ ...prev, reactions: e.target.value }))
-                }
+                onChange={(e) => setDraft((prev) => ({ ...prev, reactions: e.target.value }))}
                 placeholder=":thumbsup:, :heart:, :fire:"
-                className="w-full px-3 py-2 rounded-md border border-input bg-background"
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Separate multiple reactions with commas
               </p>
             </div>
@@ -328,17 +306,13 @@ export function BotResponses({
           {/* Call Webhook */}
           {draft.type === 'call_webhook' && (
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Webhook URL
-              </label>
+              <label className="mb-1 block text-sm font-medium">Webhook URL</label>
               <input
                 type="url"
                 value={draft.webhookUrl || ''}
-                onChange={(e) =>
-                  setDraft((prev) => ({ ...prev, webhookUrl: e.target.value }))
-                }
+                onChange={(e) => setDraft((prev) => ({ ...prev, webhookUrl: e.target.value }))}
                 placeholder="https://api.example.com/webhook"
-                className="w-full px-3 py-2 rounded-md border border-input bg-background"
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
               />
             </div>
           )}
@@ -347,40 +321,30 @@ export function BotResponses({
           {draft.type === 'store_data' && (
             <>
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Data Key
-                </label>
+                <label className="mb-1 block text-sm font-medium">Data Key</label>
                 <input
                   type="text"
                   value={draft.dataKey || ''}
-                  onChange={(e) =>
-                    setDraft((prev) => ({ ...prev, dataKey: e.target.value }))
-                  }
+                  onChange={(e) => setDraft((prev) => ({ ...prev, dataKey: e.target.value }))}
                   placeholder="my_data_key"
-                  className="w-full px-3 py-2 rounded-md border border-input bg-background"
+                  className="w-full rounded-md border border-input bg-background px-3 py-2"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">
-                  Data Value
-                </label>
+                <label className="mb-1 block text-sm font-medium">Data Value</label>
                 <input
                   type="text"
                   value={draft.dataValue || ''}
-                  onChange={(e) =>
-                    setDraft((prev) => ({ ...prev, dataValue: e.target.value }))
-                  }
+                  onChange={(e) => setDraft((prev) => ({ ...prev, dataValue: e.target.value }))}
                   placeholder="Value to store"
-                  className="w-full px-3 py-2 rounded-md border border-input bg-background"
+                  className="w-full rounded-md border border-input bg-background px-3 py-2"
                 />
               </div>
             </>
           )}
 
           {/* Validation Error */}
-          {validationError && (
-            <p className="text-sm text-destructive">{validationError}</p>
-          )}
+          {validationError && <p className="text-sm text-destructive">{validationError}</p>}
 
           {/* Actions */}
           <div className="flex justify-end gap-2">
@@ -397,11 +361,7 @@ export function BotResponses({
           </div>
         </Card>
       ) : (
-        <Button
-          variant="outline"
-          onClick={() => setIsAdding(true)}
-          className="w-full"
-        >
+        <Button variant="outline" onClick={() => setIsAdding(true)} className="w-full">
           + Add Response Action
         </Button>
       )}
@@ -409,8 +369,8 @@ export function BotResponses({
       {/* Help */}
       <div className="text-sm text-muted-foreground">
         <p>
-          Response actions define what your bot does when a trigger fires.
-          Actions are executed in order from top to bottom.
+          Response actions define what your bot does when a trigger fires. Actions are executed in
+          order from top to bottom.
         </p>
       </div>
     </div>

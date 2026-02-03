@@ -287,12 +287,15 @@ export type QualityLevel = 'low' | 'medium' | 'high' | 'hd'
 /**
  * Quality preset configurations
  */
-export const QUALITY_PRESETS: Record<QualityLevel, {
-  width: number
-  height: number
-  frameRate: number
-  bitrate: number
-}> = {
+export const QUALITY_PRESETS: Record<
+  QualityLevel,
+  {
+    width: number
+    height: number
+    frameRate: number
+    bitrate: number
+  }
+> = {
   low: { width: 320, height: 240, frameRate: 15, bitrate: 250 },
   medium: { width: 640, height: 480, frameRate: 24, bitrate: 500 },
   high: { width: 1280, height: 720, frameRate: 30, bitrate: 1500 },

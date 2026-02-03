@@ -12,6 +12,8 @@ import { CallButton } from './call-button'
 import { useCall } from '@/hooks/use-call'
 import { useToast } from '@/hooks/use-toast'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -68,7 +70,7 @@ export function CallActions({
     try {
       await initiateVoiceCall(targetUserId, targetUserName, channelId)
     } catch (error) {
-      console.error('Failed to initiate voice call:', error)
+      logger.error('Failed to initiate voice call:', error)
     }
   }, [isInCall, initiateVoiceCall, targetUserId, targetUserName, channelId, toast])
 
@@ -85,7 +87,7 @@ export function CallActions({
     try {
       await initiateVideoCall(targetUserId, targetUserName, channelId)
     } catch (error) {
-      console.error('Failed to initiate video call:', error)
+      logger.error('Failed to initiate video call:', error)
     }
   }, [isInCall, initiateVideoCall, targetUserId, targetUserName, channelId, toast])
 

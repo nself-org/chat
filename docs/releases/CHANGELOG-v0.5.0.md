@@ -12,6 +12,7 @@
 nself-chat v0.5.0 introduces a production-ready multi-tenant system, transforming the platform into a fully-featured SaaS application.
 
 **Key Capabilities**:
+
 - ✅ **Subdomain Routing**: Automatic tenant resolution from subdomains (`tenant.nchat.app`)
 - ✅ **Custom Domains**: Optional custom domain support (`chat.acme.com`)
 - ✅ **Schema-Level Isolation**: Each tenant gets isolated PostgreSQL schema
@@ -28,6 +29,7 @@ nself-chat v0.5.0 introduces a production-ready multi-tenant system, transformin
 ### Database Schema
 
 **New Global Tables** (in `public` schema):
+
 - `tenants` - Tenant organizations metadata
 - `tenant_usage` - Usage statistics per tenant per month
 - `tenant_settings` - Tenant-specific configuration
@@ -36,6 +38,7 @@ nself-chat v0.5.0 introduces a production-ready multi-tenant system, transformin
 - `stripe_webhooks` - Stripe webhook event log
 
 **Tenant Isolation**:
+
 - Each tenant gets dedicated schema: `tenant_{slug}`
 - Complete isolation of all chat data (users, channels, messages, etc.)
 - Automatic schema provisioning on tenant creation
@@ -43,6 +46,7 @@ nself-chat v0.5.0 introduces a production-ready multi-tenant system, transformin
 ### Middleware Enhancement
 
 **Tenant Resolution**:
+
 ```typescript
 // Before: Single-tenant
 export function middleware(request: NextRequest) {
@@ -65,34 +69,38 @@ export async function middleware(request: NextRequest) {
 ### Tenant Management
 
 **Core Service** (`src/lib/tenants/tenant-service.ts`):
+
 ```typescript
 class TenantService {
   createTenant(request: CreateTenantRequest): Promise<Tenant>
   getTenantBySlug(slug: string): Promise<Tenant | null>
   updateTenant(id: string, request: UpdateTenantRequest): Promise<Tenant>
   deleteTenant(id: string): Promise<void>
-  checkLimits(tenant: Tenant): Promise<{ exceeded: boolean, limits: string[] }>
+  checkLimits(tenant: Tenant): Promise<{ exceeded: boolean; limits: string[] }>
 }
 ```
 
 **Middleware** (`src/lib/tenants/tenant-middleware.ts`):
+
 - Subdomain parsing and validation
 - Custom domain resolution
 - Tenant caching for performance
 - Automatic tenant context injection
 
 **Context & Hooks** (`src/contexts/tenant-context.tsx`):
+
 ```typescript
 // React hooks for tenant operations
-useTenant()           // Get current tenant
-useTenantFeature()    // Check feature availability
-useTenantLimits()     // Check resource limits
-useTenantBilling()    // Get billing information
+useTenant() // Get current tenant
+useTenantFeature() // Check feature availability
+useTenantLimits() // Check resource limits
+useTenantBilling() // Get billing information
 ```
 
 ### Billing Integration
 
 **Stripe Service** (`src/lib/billing/stripe-service.ts`):
+
 ```typescript
 class StripeBillingService {
   createCustomer(tenant: Tenant): Promise<string>
@@ -106,6 +114,7 @@ class StripeBillingService {
 ```
 
 **Webhook Processing**:
+
 - Automatic subscription lifecycle management
 - Payment status tracking
 - Trial expiration handling
@@ -114,6 +123,7 @@ class StripeBillingService {
 ### API Routes
 
 **Tenant Management**:
+
 - `POST /api/tenants/create` - Create new tenant
 - `GET /api/tenants/[id]` - Get tenant details
 - `PUT /api/tenants/[id]` - Update tenant
@@ -122,6 +132,7 @@ class StripeBillingService {
 - `GET /api/tenants/by-domain?domain=chat.acme.com` - Custom domain resolution
 
 **Billing**:
+
 - `POST /api/billing/checkout` - Create Stripe checkout session
 - `POST /api/billing/portal` - Access customer billing portal
 - `POST /api/billing/webhook` - Stripe webhook endpoint
@@ -131,6 +142,7 @@ class StripeBillingService {
 ## 💰 Subscription Plans
 
 ### Free Plan ($0/month)
+
 - 10 users
 - 5 channels
 - 1 GB storage
@@ -138,6 +150,7 @@ class StripeBillingService {
 - Basic features only
 
 ### Pro Plan ($15/month or $150/year)
+
 - 100 users
 - 50 channels
 - 100 GB storage
@@ -145,11 +158,13 @@ class StripeBillingService {
 - All features + analytics + integrations
 
 ### Enterprise Plan ($99/month or $990/year)
+
 - Unlimited users, channels, storage
 - Unlimited API calls
 - All features + SSO + audit logs + priority support
 
 ### Custom Plan (Contact Sales)
+
 - Custom resource limits
 - Custom feature set
 - Dedicated support
@@ -162,6 +177,7 @@ class StripeBillingService {
 ### Row-Level Security (RLS)
 
 **Tenant Isolation Policies**:
+
 ```sql
 -- Super admins can see all tenants
 CREATE POLICY tenants_super_admin_all ON public.tenants
@@ -182,6 +198,7 @@ CREATE POLICY tenants_owner_select ON public.tenants
 ### Rate Limiting
 
 Per-tenant rate limits based on subscription plan:
+
 - Free: 60 requests/minute, 1,000 requests/hour
 - Pro: 120 requests/minute, 5,000 requests/hour
 - Enterprise: 300 requests/minute, 15,000 requests/hour
@@ -194,6 +211,7 @@ Per-tenant rate limits based on subscription plan:
 ### New Environment Variables
 
 **Required**:
+
 ```bash
 # Multi-tenancy
 ENABLE_MULTI_TENANCY=true
@@ -208,6 +226,7 @@ DATABASE_URL=postgresql://...
 ```
 
 **Optional**:
+
 ```bash
 # Custom domains
 ENABLE_CUSTOM_DOMAINS=true
@@ -221,14 +240,17 @@ DEFAULT_TENANT_SLUG=demo
 ### Infrastructure Requirements
 
 **DNS Configuration**:
+
 - Wildcard DNS record: `*.nchat.app → server IP`
 - Wildcard SSL certificate for `*.nchat.app`
 
 **Database**:
+
 - PostgreSQL ≥14 with schema support
 - Recommended: Connection pooling (PgBouncer)
 
 **Caching**:
+
 - Redis ≥6.0 for tenant metadata caching
 - Recommended: Separate Redis instance per environment
 
@@ -239,6 +261,7 @@ DEFAULT_TENANT_SLUG=demo
 ### Usage Tracking
 
 **Metrics Collected**:
+
 - Active users per tenant
 - Messages sent per tenant
 - Storage used per tenant
@@ -246,6 +269,7 @@ DEFAULT_TENANT_SLUG=demo
 - Call duration and participant counts
 
 **Database Functions**:
+
 ```sql
 -- Check if tenant has exceeded limits
 SELECT public.check_tenant_limits('{tenant_id}');
@@ -258,6 +282,7 @@ WHERE tenant_id = '{id}' AND period = '2026-01';
 ### Audit Logging
 
 All tenant administrative actions logged:
+
 - Tenant creation/deletion
 - Subscription changes
 - Feature flag updates
@@ -269,11 +294,13 @@ All tenant administrative actions logged:
 ## 📝 Documentation
 
 **New Documentation**:
+
 - `/docs/Multi-Tenant-Deployment.md` - Complete deployment guide (12,000+ words)
 - `/docs/Multi-Tenant-README.md` - Quick start guide
 - `.env.multi-tenant.example` - Environment configuration template
 
 **Migration Guides**:
+
 - Single-tenant to multi-tenant migration
 - Self-hosted to SaaS conversion
 - Development to production checklist
@@ -285,12 +312,14 @@ All tenant administrative actions logged:
 ### From v0.4.0 to v0.5.0
 
 **1. Database Migration**:
+
 ```bash
 cd .backend
 nself db migrate up 030_multi_tenant_system.sql
 ```
 
 **2. Create Default Tenant** (for existing installations):
+
 ```sql
 INSERT INTO public.tenants (
   name, slug, status, owner_email, owner_name,
@@ -307,6 +336,7 @@ INSERT INTO public.tenants (
 ```
 
 **3. Update Environment**:
+
 ```bash
 # Add to .env.local
 ENABLE_MULTI_TENANCY=true
@@ -314,11 +344,13 @@ DEFAULT_TENANT_SLUG=default
 ```
 
 **4. Install Dependencies**:
+
 ```bash
 pnpm install  # Adds Stripe SDK
 ```
 
 **5. Test**:
+
 ```bash
 # Access via default subdomain
 http://default.localhost:3000
@@ -331,20 +363,24 @@ http://default.localhost:3000
 ### Environment Variables
 
 **Renamed**:
+
 - None
 
 **Added** (required for multi-tenant mode):
+
 - `ENABLE_MULTI_TENANCY`
 - `NEXT_PUBLIC_BASE_DOMAIN`
 - `STRIPE_SECRET_KEY`
 - `STRIPE_WEBHOOK_SECRET`
 
 **Deprecated**:
+
 - None
 
 ### API Changes
 
 **New Headers** (automatically added by middleware):
+
 - `X-Tenant-Id` - Current tenant UUID
 - `X-Tenant-Slug` - Current tenant slug
 - `X-Tenant-Schema` - Current tenant schema name
@@ -353,9 +389,11 @@ http://default.localhost:3000
 ### Database Changes
 
 **New Required Tables**:
+
 - All `public.tenants*` tables (see migration 030)
 
 **Schema Changes**:
+
 - No changes to existing `nchat.*` tables
 - Existing data can be migrated to tenant schema
 
@@ -373,13 +411,16 @@ http://default.localhost:3000
 ### Benchmarks
 
 **Tenant Resolution**:
+
 - Cached: <1ms
 - Uncached: 5-10ms
 
 **Schema Switching**:
+
 - PostgreSQL SET search_path: <1ms
 
 **Total Overhead**:
+
 - Multi-tenant vs single-tenant: +2-5ms per request
 
 ---
@@ -423,6 +464,7 @@ Same as nself-chat: MIT License
 ## 🙏 Acknowledgments
 
 Special thanks to:
+
 - Stripe for excellent billing infrastructure
 - PostgreSQL for robust schema isolation
 - nself CLI team for backend foundation

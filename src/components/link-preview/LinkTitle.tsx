@@ -30,16 +30,11 @@ const lineClampClasses = {
   3: 'line-clamp-3',
 }
 
-export function LinkTitle({
-  title,
-  maxLines = 2,
-  size = 'md',
-  className,
-}: LinkTitleProps) {
+export function LinkTitle({ title, maxLines = 2, size = 'md', className }: LinkTitleProps) {
   return (
     <h3
       className={cn(
-        'text-foreground leading-tight',
+        'leading-tight text-foreground',
         sizeClasses[size],
         lineClampClasses[maxLines],
         className

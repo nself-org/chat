@@ -34,7 +34,12 @@ export interface UseBlockReturn {
   isUnblocking: boolean
 
   // Actions
-  blockUser: (userId: string, username: string, displayName: string, avatarUrl?: string) => Promise<void>
+  blockUser: (
+    userId: string,
+    username: string,
+    displayName: string,
+    avatarUrl?: string
+  ) => Promise<void>
   unblockUser: (blockedUserId: string) => Promise<void>
   isUserBlocked: (userId: string) => boolean
   refreshBlockedUsers: () => Promise<void>
@@ -142,12 +147,7 @@ export function useBlock(options: UseBlockOptions = {}): UseBlockReturn {
 
   // Block a user
   const blockUser = useCallback(
-    async (
-      blockedUserId: string,
-      username: string,
-      displayName: string,
-      avatarUrl?: string
-    ) => {
+    async (blockedUserId: string, username: string, displayName: string, avatarUrl?: string) => {
       if (!userId) {
         setError('You must be logged in to block users')
         return
@@ -187,22 +187,14 @@ export function useBlock(options: UseBlockOptions = {}): UseBlockReturn {
 
         closeBlockModal()
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to block user'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to block user'
         setError(errorMessage)
         throw err
       } finally {
         setBlocking(false)
       }
     },
-    [
-      userId,
-      blockUserMutation,
-      addBlockedUser,
-      closeBlockModal,
-      setBlocking,
-      setError,
-    ]
+    [userId, blockUserMutation, addBlockedUser, closeBlockModal, setBlocking, setError]
   )
 
   // Unblock a user
@@ -228,8 +220,7 @@ export function useBlock(options: UseBlockOptions = {}): UseBlockReturn {
           removeBlockedUser(blockedUserId)
         }
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to unblock user'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to unblock user'
         setError(errorMessage)
         throw err
       } finally {
@@ -246,8 +237,7 @@ export function useBlock(options: UseBlockOptions = {}): UseBlockReturn {
     try {
       await refetchBlockedUsers()
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to refresh blocked users'
+      const errorMessage = err instanceof Error ? err.message : 'Failed to refresh blocked users'
       setError(errorMessage)
     }
   }, [userId, refetchBlockedUsers, setLoading, setError])
@@ -310,8 +300,7 @@ export function useBlockStatus(): {
     isBlocked: isUserBlocked,
     shouldHideContent: (userId: string) =>
       settings.hideBlockedMessages && blockedUserIds.has(userId),
-    shouldPreventDM: (userId: string) =>
-      settings.preventDMs && blockedUserIds.has(userId),
+    shouldPreventDM: (userId: string) => settings.preventDMs && blockedUserIds.has(userId),
   }
 }
 

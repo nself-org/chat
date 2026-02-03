@@ -10,7 +10,7 @@ import {
   requiresAdmin,
 } from '@/lib/admin/roles/permission-types'
 import * as Icons from 'lucide-react'
-import { AlertTriangle, Shield} from 'lucide-react'
+import { AlertTriangle, Shield } from 'lucide-react'
 
 interface PermissionDescriptionProps {
   permission: Permission
@@ -35,9 +35,7 @@ export function PermissionDescription({
   const isDangerous = isDangerousPermission(permission)
   const needsAdmin = requiresAdmin(permission)
 
-  const CategoryIcon = Icons[
-    categoryDef.icon as keyof typeof Icons
-  ] as React.ElementType
+  const CategoryIcon = Icons[categoryDef.icon as keyof typeof Icons] as React.ElementType
 
   return (
     <div className={cn('rounded-lg border p-4', className)}>
@@ -72,20 +70,17 @@ export function PermissionDescription({
 
           {/* Category */}
           {showCategory && (
-            <div className="text-xs text-muted-foreground">
-              Category: {categoryDef.name}
-            </div>
+            <div className="text-xs text-muted-foreground">Category: {categoryDef.name}</div>
           )}
 
           {/* Warnings */}
           {showWarnings && isDangerous && (
             <div className="mt-3 flex items-start gap-2 rounded-lg bg-amber-500/10 p-3 text-sm text-amber-600 dark:text-amber-400">
-              <AlertTriangle className="h-4 w-4 mt-0.5 flex-shrink-0" />
+              <AlertTriangle className="mt-0.5 h-4 w-4 flex-shrink-0" />
               <div>
                 <p className="font-medium">This is a sensitive permission</p>
                 <p className="text-xs opacity-90">
-                  Granting this permission gives significant control. Only assign
-                  to trusted users.
+                  Granting this permission gives significant control. Only assign to trusted users.
                 </p>
               </div>
             </div>
@@ -143,9 +138,7 @@ export function PermissionList({
   className,
 }: PermissionListProps) {
   if (permissions.length === 0) {
-    return (
-      <div className="text-sm text-muted-foreground">No permissions</div>
-    )
+    return <div className="text-sm text-muted-foreground">No permissions</div>
   }
 
   return (
@@ -159,10 +152,7 @@ export function PermissionList({
         return (
           <div
             key={permission}
-            className={cn(
-              'flex items-center gap-2',
-              compact ? 'text-xs' : 'text-sm'
-            )}
+            className={cn('flex items-center gap-2', compact ? 'text-xs' : 'text-sm')}
           >
             <div
               className={cn(
@@ -170,13 +160,9 @@ export function PermissionList({
                 isDangerous ? 'bg-amber-500' : 'bg-primary'
               )}
             />
-            <span className={isDangerous ? 'text-amber-500' : undefined}>
-              {permDef.name}
-            </span>
+            <span className={isDangerous ? 'text-amber-500' : undefined}>{permDef.name}</span>
             {showDescriptions && (
-              <span className="text-muted-foreground">
-                - {permDef.description}
-              </span>
+              <span className="text-muted-foreground">- {permDef.description}</span>
             )}
           </div>
         )

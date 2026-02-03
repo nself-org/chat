@@ -376,10 +376,16 @@ export function validateBrandingConfig(config: Partial<BrandingConfig>): {
 
   // Validate typography
   if (config.typography) {
-    if (config.typography.baseFontSize && (config.typography.baseFontSize < 10 || config.typography.baseFontSize > 24)) {
+    if (
+      config.typography.baseFontSize &&
+      (config.typography.baseFontSize < 10 || config.typography.baseFontSize > 24)
+    ) {
       errors.push('Base font size must be between 10 and 24')
     }
-    if (config.typography.lineHeight && (config.typography.lineHeight < 1 || config.typography.lineHeight > 3)) {
+    if (
+      config.typography.lineHeight &&
+      (config.typography.lineHeight < 1 || config.typography.lineHeight > 3)
+    ) {
       errors.push('Line height must be between 1 and 3')
     }
   }

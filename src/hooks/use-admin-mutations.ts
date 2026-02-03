@@ -76,10 +76,8 @@ export function useAdminMutations() {
   const [deleteUserMutation, { loading: deletingUser }] = useMutation(DELETE_USER)
   const [promoteUserMutation, { loading: promotingUser }] = useMutation(PROMOTE_USER)
   const [demoteUserMutation, { loading: demotingUser }] = useMutation(DEMOTE_USER)
-  const [resetPasswordMutation, { loading: resettingPassword }] =
-    useMutation(RESET_USER_PASSWORD)
-  const [impersonateMutation, { loading: startingImpersonation }] =
-    useMutation(IMPERSONATE_USER)
+  const [resetPasswordMutation, { loading: resettingPassword }] = useMutation(RESET_USER_PASSWORD)
+  const [impersonateMutation, { loading: startingImpersonation }] = useMutation(IMPERSONATE_USER)
   const [endImpersonationMutation, { loading: endingImpersonation }] =
     useMutation(END_IMPERSONATION)
   const [inviteUsersMutation, { loading: invitingUsers }] = useMutation(INVITE_USERS)
@@ -813,23 +811,17 @@ export function useAdminMutations() {
   // For brevity, I'll include the return API with all methods
 
   const [createAuditLogMutation] = useMutation(CREATE_AUDIT_LOG)
-  const [purgeAuditLogsMutation, { loading: purgingAuditLogs }] =
-    useMutation(PURGE_OLD_AUDIT_LOGS)
+  const [purgeAuditLogsMutation, { loading: purgingAuditLogs }] = useMutation(PURGE_OLD_AUDIT_LOGS)
   const [updateSettingsMutation, { loading: updatingSettings }] =
     useMutation(UPDATE_SYSTEM_SETTINGS)
-  const [deleteSettingMutation, { loading: deletingSetting }] =
-    useMutation(DELETE_SYSTEM_SETTING)
-  const [toggleFeatureMutation, { loading: togglingFeature }] =
-    useMutation(TOGGLE_FEATURE_FLAG)
+  const [deleteSettingMutation, { loading: deletingSetting }] = useMutation(DELETE_SYSTEM_SETTING)
+  const [toggleFeatureMutation, { loading: togglingFeature }] = useMutation(TOGGLE_FEATURE_FLAG)
   const [bulkSuspendMutation, { loading: bulkSuspending }] = useMutation(BULK_SUSPEND_USERS)
   const [bulkDeleteMutation, { loading: bulkDeleting }] = useMutation(BULK_DELETE_USERS)
-  const [bulkAssignRoleMutation, { loading: bulkAssigningRole }] =
-    useMutation(BULK_ASSIGN_ROLE)
-  const [bulkDeleteMessagesMutation, { loading: bulkDeletingMessages }] = useMutation(
-    BULK_DELETE_MESSAGES
-  )
-  const [refreshStatsMutation, { loading: refreshingStats }] =
-    useMutation(REFRESH_STATS_CACHE)
+  const [bulkAssignRoleMutation, { loading: bulkAssigningRole }] = useMutation(BULK_ASSIGN_ROLE)
+  const [bulkDeleteMessagesMutation, { loading: bulkDeletingMessages }] =
+    useMutation(BULK_DELETE_MESSAGES)
+  const [refreshStatsMutation, { loading: refreshingStats }] = useMutation(REFRESH_STATS_CACHE)
   const [exportDataMutation, { loading: exportingData }] = useMutation(EXPORT_USER_DATA)
   const [importUsersMutation, { loading: importingUsers }] = useMutation(IMPORT_USERS)
   const [createWebhookMutation, { loading: creatingWebhook }] = useMutation(CREATE_WEBHOOK)

@@ -18,13 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -183,9 +177,7 @@ export function PinManage({ userId, userName }: PinManageProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium">Last activity</p>
-              <p className="text-sm text-muted-foreground">
-                {getFormattedTimeSinceActivity()}
-              </p>
+              <p className="text-sm text-muted-foreground">{getFormattedTimeSinceActivity()}</p>
             </div>
             <Badge variant="default">
               <CheckCircle2 className="mr-1 h-3 w-3" />
@@ -194,26 +186,14 @@ export function PinManage({ userId, userName }: PinManageProps) {
           </div>
 
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleLockNow}
-            >
+            <Button variant="outline" size="sm" onClick={handleLockNow}>
               <Lock className="mr-2 h-4 w-4" />
               Lock Now
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowChangePinDialog(true)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setShowChangePinDialog(true)}>
               Change PIN
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowDisablePinDialog(true)}
-            >
+            <Button variant="outline" size="sm" onClick={() => setShowDisablePinDialog(true)}>
               Disable PIN
             </Button>
           </div>
@@ -242,9 +222,7 @@ export function PinManage({ userId, userName }: PinManageProps) {
               <Switch
                 id="lock-close"
                 checked={pinSettings.lockOnClose}
-                onCheckedChange={(checked) =>
-                  handleSettingsChange({ lockOnClose: checked })
-                }
+                onCheckedChange={(checked) => handleSettingsChange({ lockOnClose: checked })}
               />
             </div>
 
@@ -259,9 +237,7 @@ export function PinManage({ userId, userName }: PinManageProps) {
               <Switch
                 id="lock-background"
                 checked={pinSettings.lockOnBackground}
-                onCheckedChange={(checked) =>
-                  handleSettingsChange({ lockOnBackground: checked })
-                }
+                onCheckedChange={(checked) => handleSettingsChange({ lockOnBackground: checked })}
               />
             </div>
 
@@ -303,14 +279,12 @@ export function PinManage({ userId, userName }: PinManageProps) {
               <Fingerprint className="h-5 w-5" />
               Biometric Authentication
             </CardTitle>
-            <CardDescription>
-              Manage biometric credentials for quick unlock
-            </CardDescription>
+            <CardDescription>Manage biometric credentials for quick unlock</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             {credentials.length === 0 ? (
-              <div className="text-center py-4">
-                <p className="text-sm text-muted-foreground mb-4">
+              <div className="py-4 text-center">
+                <p className="mb-4 text-sm text-muted-foreground">
                   No biometric credentials registered
                 </p>
                 <Button
@@ -334,7 +308,7 @@ export function PinManage({ userId, userName }: PinManageProps) {
                   {credentials.map((cred) => (
                     <div
                       key={cred.id}
-                      className="flex items-center justify-between p-3 border rounded-lg"
+                      className="flex items-center justify-between rounded-lg border p-3"
                     >
                       <div className="flex items-center gap-3">
                         <Fingerprint className="h-5 w-5 text-muted-foreground" />
@@ -394,11 +368,7 @@ export function PinManage({ userId, userName }: PinManageProps) {
           <CardDescription>Recent PIN unlock attempts</CardDescription>
         </CardHeader>
         <CardContent>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowAttemptsDialog(true)}
-          >
+          <Button variant="outline" size="sm" onClick={() => setShowAttemptsDialog(true)}>
             View Recent Attempts
           </Button>
         </CardContent>
@@ -427,10 +397,7 @@ export function PinManage({ userId, userName }: PinManageProps) {
       />
 
       {/* Attempts Dialog */}
-      <AttemptsDialog
-        open={showAttemptsDialog}
-        onOpenChange={setShowAttemptsDialog}
-      />
+      <AttemptsDialog open={showAttemptsDialog} onOpenChange={setShowAttemptsDialog} />
     </div>
   )
 }
@@ -527,11 +494,7 @@ function ChangePinDialog({
             />
           </div>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowPins(!showPins)}
-          >
+          <Button variant="ghost" size="sm" onClick={() => setShowPins(!showPins)}>
             {showPins ? <EyeOff className="mr-2 h-4 w-4" /> : <Eye className="mr-2 h-4 w-4" />}
             {showPins ? 'Hide' : 'Show'} PINs
           </Button>
@@ -665,21 +628,19 @@ function AttemptsDialog({
           <DialogDescription>Failed PIN unlock attempts in the last hour</DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2 max-h-96 overflow-y-auto">
+        <div className="max-h-96 space-y-2 overflow-y-auto">
           {attempts.length === 0 ? (
-            <p className="text-sm text-muted-foreground text-center py-4">
+            <p className="py-4 text-center text-sm text-muted-foreground">
               No failed attempts in the last hour
             </p>
           ) : (
             attempts.map((attempt, i) => (
-              <div key={i} className="p-3 border rounded-lg">
+              <div key={i} className="rounded-lg border p-3">
                 <p className="text-sm font-medium">
                   {new Date(attempt.timestamp).toLocaleString()}
                 </p>
                 {attempt.failureReason && (
-                  <p className="text-xs text-muted-foreground">
-                    Reason: {attempt.failureReason}
-                  </p>
+                  <p className="text-xs text-muted-foreground">Reason: {attempt.failureReason}</p>
                 )}
               </div>
             ))

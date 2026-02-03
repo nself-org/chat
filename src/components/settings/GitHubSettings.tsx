@@ -97,8 +97,7 @@ export function GitHubSettings({
     const query = searchQuery.toLowerCase()
     return repositories.filter(
       (repo) =>
-        repo.name.toLowerCase().includes(query) ||
-        repo.fullName.toLowerCase().includes(query)
+        repo.name.toLowerCase().includes(query) || repo.fullName.toLowerCase().includes(query)
     )
   }, [repositories, searchQuery])
 
@@ -159,11 +158,7 @@ export function GitHubSettings({
           {settings?.connected && settings.user ? (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <img
-                  src={settings.user.avatarUrl}
-                  alt=""
-                  className="h-10 w-10 rounded-full"
-                />
+                <img src={settings.user.avatarUrl} alt="" className="h-10 w-10 rounded-full" />
                 <div>
                   <p className="font-medium">{settings.user.name || settings.user.login}</p>
                   <p className="text-sm text-muted-foreground">@{settings.user.login}</p>
@@ -178,7 +173,7 @@ export function GitHubSettings({
             </div>
           ) : (
             <div className="flex flex-col items-center gap-4 py-4">
-              <p className="text-muted-foreground text-center">
+              <p className="text-center text-muted-foreground">
                 Connect your GitHub account to enable notifications for issues, pull requests, and
                 more.
               </p>
@@ -209,9 +204,7 @@ export function GitHubSettings({
                 className="max-w-sm"
               />
               {settings.selectedRepositories.length > 0 && (
-                <Badge variant="secondary">
-                  {settings.selectedRepositories.length} selected
-                </Badge>
+                <Badge variant="secondary">{settings.selectedRepositories.length} selected</Badge>
               )}
             </div>
 
@@ -225,7 +218,7 @@ export function GitHubSettings({
                   </p>
                 </div>
               ) : (
-                <div className="p-4 space-y-2">
+                <div className="space-y-2 p-4">
                   {filteredRepositories.map((repo) => (
                     <RepositoryItem
                       key={repo.id}
@@ -253,10 +246,7 @@ export function GitHubSettings({
             {channels.length > 0 && (
               <div className="space-y-2">
                 <Label>Send notifications to</Label>
-                <Select
-                  value={settings.targetChannel}
-                  onValueChange={handleChannelChange}
-                >
+                <Select value={settings.targetChannel} onValueChange={handleChannelChange}>
                   <SelectTrigger className="w-64">
                     <SelectValue placeholder="Select a channel" />
                   </SelectTrigger>
@@ -349,9 +339,7 @@ export function GitHubSettings({
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    navigator.clipboard.writeText(
-                      `${window.location.origin}/api/webhooks/github`
-                    )
+                    navigator.clipboard.writeText(`${window.location.origin}/api/webhooks/github`)
                   }}
                 >
                   Copy
@@ -388,20 +376,20 @@ function RepositoryItem({ repository, isSelected, onToggle }: RepositoryItemProp
   return (
     <label
       className={cn(
-        'flex items-center gap-3 rounded-md p-2 hover:bg-muted cursor-pointer',
+        'flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-muted',
         isSelected && 'bg-muted'
       )}
     >
       <Checkbox checked={isSelected} onCheckedChange={onToggle} />
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="font-medium truncate">{repository.name}</span>
+          <span className="truncate font-medium">{repository.name}</span>
           {repository.private && (
-            <LockIcon className="h-3 w-3 text-muted-foreground flex-shrink-0" />
+            <LockIcon className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
           )}
         </div>
         {repository.description && (
-          <p className="text-sm text-muted-foreground truncate">{repository.description}</p>
+          <p className="truncate text-sm text-muted-foreground">{repository.description}</p>
         )}
       </div>
     </label>

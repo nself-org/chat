@@ -11,16 +11,7 @@
 
 import { cn } from '@/lib/utils'
 import { discordColors } from '../config'
-import {
-  Volume2,
-  Mic,
-  MicOff,
-  Video,
-  VideoOff,
-  Monitor,
-  PhoneOff,
-  Signal,
-} from 'lucide-react'
+import { Volume2, Mic, MicOff, Video, VideoOff, Monitor, PhoneOff, Signal } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -95,33 +86,31 @@ export function DiscordVoiceChannel({
     >
       {/* Voice Status */}
       <div className="px-2 py-2">
-        <div className="flex items-center justify-between mb-2">
+        <div className="mb-2 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded bg-green-600/20">
-              <Volume2 className="w-4 h-4 text-green-500" />
+            <div className="rounded bg-green-600/20 p-1.5">
+              <Volume2 className="h-4 w-4 text-green-500" />
             </div>
             <div>
-              <div className="text-sm font-medium text-green-500">
-                Voice Connected
-              </div>
+              <div className="text-sm font-medium text-green-500">Voice Connected</div>
               <div className="text-xs text-gray-400">{channelName}</div>
             </div>
           </div>
           {ping !== undefined && (
             <div className="flex items-center gap-1 text-xs" style={{ color: getPingColor(ping) }}>
-              <Signal className="w-3 h-3" />
+              <Signal className="h-3 w-3" />
               {ping} ms
             </div>
           )}
         </div>
 
         {/* Connected Users Preview */}
-        <div className="flex flex-wrap gap-1 mb-2">
+        <div className="mb-2 flex flex-wrap gap-1">
           {connectedUsers.slice(0, 6).map((user) => (
             <VoiceUserAvatar key={user.id} user={user} size="sm" />
           ))}
           {connectedUsers.length > 6 && (
-            <div className="w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center text-xs text-gray-300">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-600 text-xs text-gray-300">
               +{connectedUsers.length - 6}
             </div>
           )}
@@ -131,27 +120,27 @@ export function DiscordVoiceChannel({
         <div className="flex items-center justify-between gap-1">
           <div className="flex items-center gap-1">
             <VoiceButton
-              icon={isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              icon={isMuted ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
               isActive={!isMuted}
               isWarning={isMuted}
               onClick={onMuteToggle}
               tooltip={isMuted ? 'Unmute' : 'Mute'}
             />
             <VoiceButton
-              icon={isDeafened ? <Volume2 className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+              icon={isDeafened ? <Volume2 className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
               isActive={!isDeafened}
               isWarning={isDeafened}
               onClick={onDeafenToggle}
               tooltip={isDeafened ? 'Undeafen' : 'Deafen'}
             />
             <VoiceButton
-              icon={<Video className="w-5 h-5" />}
+              icon={<Video className="h-5 w-5" />}
               isActive={isVideoOn}
               onClick={onVideoToggle}
               tooltip={isVideoOn ? 'Turn off camera' : 'Turn on camera'}
             />
             <VoiceButton
-              icon={<Monitor className="w-5 h-5" />}
+              icon={<Monitor className="h-5 w-5" />}
               isActive={isScreenSharing}
               onClick={onScreenShareToggle}
               tooltip={isScreenSharing ? 'Stop sharing' : 'Share screen'}
@@ -159,10 +148,10 @@ export function DiscordVoiceChannel({
           </div>
           <button
             onClick={onDisconnect}
-            className="p-2 rounded bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-colors"
+            className="rounded bg-red-500/20 p-2 text-red-400 transition-colors hover:bg-red-500/30"
             title="Disconnect"
           >
-            <PhoneOff className="w-5 h-5" />
+            <PhoneOff className="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -191,16 +180,16 @@ function VoiceUserAvatar({
     <div className="relative">
       <div
         className={cn(
-          'rounded-full overflow-hidden ring-2',
+          'overflow-hidden rounded-full ring-2',
           sizeClasses[size],
           user.isSpeaking ? 'ring-green-500' : 'ring-transparent'
         )}
       >
         {user.avatar ? (
-          <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+          <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
         ) : (
           <div
-            className="w-full h-full flex items-center justify-center text-white font-medium text-xs"
+            className="flex h-full w-full items-center justify-center text-xs font-medium text-white"
             style={{ backgroundColor: discordColors.blurple }}
           >
             {user.name[0]?.toUpperCase()}
@@ -208,8 +197,8 @@ function VoiceUserAvatar({
         )}
       </div>
       {user.isMuted && (
-        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-red-500 flex items-center justify-center">
-          <MicOff className="w-2 h-2 text-white" />
+        <div className="absolute -bottom-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-red-500">
+          <MicOff className="h-2 w-2 text-white" />
         </div>
       )}
     </div>
@@ -234,12 +223,12 @@ function VoiceButton({
       onClick={onClick}
       title={tooltip}
       className={cn(
-        'p-2 rounded transition-colors',
+        'rounded p-2 transition-colors',
         isWarning
           ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
           : isActive
-          ? 'bg-gray-600/50 text-gray-200 hover:bg-gray-600/70'
-          : 'text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
+            ? 'bg-gray-600/50 text-gray-200 hover:bg-gray-600/70'
+            : 'text-gray-400 hover:bg-gray-600/30 hover:text-gray-200'
       )}
     >
       {icon}

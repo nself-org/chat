@@ -6,7 +6,13 @@
  * to all resources.
  */
 
-import { ApolloClient, InMemoryCache, HttpLink, NormalizedCacheObject, ApolloLink } from '@apollo/client'
+import {
+  ApolloClient,
+  InMemoryCache,
+  HttpLink,
+  NormalizedCacheObject,
+  ApolloLink,
+} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { onError } from '@apollo/client/link/error'
 import { NChatError, AuthenticationError, RateLimitError, ValidationError } from './errors'
@@ -17,6 +23,8 @@ import { AuthResource } from './resources/auth'
 import { WebhooksResource } from './resources/webhooks'
 import { BotsResource } from './resources/bots'
 import { AdminResource } from './resources/admin'
+
+import { logger } from '@/lib/logger'
 
 /**
  * SDK Configuration Options
@@ -168,7 +176,7 @@ export class NChatClient {
 
       if (networkError) {
         if (this.config.debug) {
-          console.error(`[Network error]: ${networkError}`)
+          logger.error(`[Network error]: ${networkError}`)
         }
         throw new NChatError('Network error occurred', 500)
       }
@@ -208,7 +216,7 @@ export class NChatClient {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
       ...this.config.headers,
-      ...(options?.headers as Record<string, string> || {}),
+      ...((options?.headers as Record<string, string>) || {}),
     }
 
     if (this.config.apiKey) {
@@ -230,7 +238,7 @@ export class NChatClient {
     }
 
     if (this.config.debug) {
-      console.log(`[SDK Request] ${method} ${url}`, data)
+      // REMOVED: console.log(`[SDK Request] ${method} ${url}`, data)
     }
 
     try {
@@ -253,7 +261,7 @@ export class NChatClient {
       const result = await response.json()
 
       if (this.config.debug) {
-        console.log(`[SDK Response] ${method} ${url}`, result)
+        // REMOVED: console.log(`[SDK Response] ${method} ${url}`, result)
       }
 
       return result.data || result
@@ -261,10 +269,7 @@ export class NChatClient {
       if (error instanceof NChatError) {
         throw error
       }
-      throw new NChatError(
-        error instanceof Error ? error.message : 'Unknown error occurred',
-        500
-      )
+      throw new NChatError(error instanceof Error ? error.message : 'Unknown error occurred', 500)
     }
   }
 

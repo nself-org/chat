@@ -11,6 +11,8 @@ import {
 } from '@/lib/ai/channel-digest'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -93,7 +95,7 @@ export async function POST(request: NextRequest) {
       provider: generator.getProvider(),
     } as DigestResponse)
   } catch (error) {
-    console.error('Digest generation error:', error)
+    logger.error('Digest generation error:', error)
     captureError(error as Error, {
       tags: { api: 'ai-digest' },
       extra: { requestBody: request.body },
@@ -139,7 +141,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Digest info error:', error)
+    logger.error('Digest info error:', error)
     captureError(error as Error, {
       tags: { api: 'ai-digest-info' },
     })

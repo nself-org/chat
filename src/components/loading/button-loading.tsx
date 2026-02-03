@@ -157,9 +157,7 @@ export const IconButtonLoading = forwardRef<HTMLButtonElement, IconButtonLoading
         className={cn('relative', className)}
         {...props}
       >
-        <span className={cn('transition-opacity', isLoading && 'opacity-0')}>
-          {icon}
-        </span>
+        <span className={cn('transition-opacity', isLoading && 'opacity-0')}>{icon}</span>
         {isLoading && (
           <span className="absolute inset-0 flex items-center justify-center">
             <InlineSpinner />
@@ -183,22 +181,11 @@ interface SubmitButtonProps extends ButtonProps {
  */
 export const SubmitButton = forwardRef<HTMLButtonElement, SubmitButtonProps>(
   (
-    {
-      isSubmitting = false,
-      submittingText = 'Submitting...',
-      disabled,
-      children,
-      ...props
-    },
+    { isSubmitting = false, submittingText = 'Submitting...', disabled, children, ...props },
     ref
   ) => {
     return (
-      <Button
-        ref={ref}
-        type="submit"
-        disabled={disabled || isSubmitting}
-        {...props}
-      >
+      <Button ref={ref} type="submit" disabled={disabled || isSubmitting} {...props}>
         {isSubmitting ? (
           <>
             <InlineSpinner className="mr-2" />

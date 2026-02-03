@@ -85,15 +85,6 @@ export {
 } from './contrast'
 
 // Type exports
-export type {
-  FocusableElement,
-  NavigationOptions,
-  RovingTabIndexOptions,
-} from './keyboard-nav'
+export type { FocusableElement, NavigationOptions, RovingTabIndexOptions } from './keyboard-nav'
 
-export type {
-  RGB,
-  HSL,
-  ContrastLevel,
-  ContrastResult,
-} from './contrast'
+export type { RGB, HSL, ContrastLevel, ContrastResult } from './contrast'

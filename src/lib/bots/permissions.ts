@@ -3,8 +3,10 @@
  * Handles permission checking and management for bot API access
  */
 
-import { gql } from '@apollo/client';
-import { getApolloClient } from '@/lib/apollo-client';
+import { gql } from '@apollo/client'
+import { getApolloClient } from '@/lib/apollo-client'
+
+import { logger } from '@/lib/logger'
 
 /**
  * Available bot permissions
@@ -55,10 +57,10 @@ export enum PermissionCategory {
  * Permission metadata
  */
 export interface PermissionDefinition {
-  permission: BotPermission;
-  description: string;
-  category: PermissionCategory;
-  isDangerous: boolean;
+  permission: BotPermission
+  description: string
+  category: PermissionCategory
+  isDangerous: boolean
 }
 
 /**
@@ -161,27 +163,29 @@ export const PERMISSION_DEFINITIONS: PermissionDefinition[] = [
     category: PermissionCategory.THREADS,
     isDangerous: false,
   },
-];
+]
 
 /**
  * Get permissions by category
  */
 export function getPermissionsByCategory(category: PermissionCategory): PermissionDefinition[] {
-  return PERMISSION_DEFINITIONS.filter(p => p.category === category);
+  return PERMISSION_DEFINITIONS.filter((p) => p.category === category)
 }
 
 /**
  * Get permission definition
  */
-export function getPermissionDefinition(permission: BotPermission): PermissionDefinition | undefined {
-  return PERMISSION_DEFINITIONS.find(p => p.permission === permission);
+export function getPermissionDefinition(
+  permission: BotPermission
+): PermissionDefinition | undefined {
+  return PERMISSION_DEFINITIONS.find((p) => p.permission === permission)
 }
 
 /**
  * Check if a permission is dangerous
  */
 export function isDangerousPermission(permission: BotPermission): boolean {
-  return PERMISSION_DEFINITIONS.find(p => p.permission === permission)?.isDangerous || false;
+  return PERMISSION_DEFINITIONS.find((p) => p.permission === permission)?.isDangerous || false
 }
 
 /**
@@ -189,17 +193,12 @@ export function isDangerousPermission(permission: BotPermission): boolean {
  */
 const CHECK_BOT_PERMISSION = gql`
   query CheckBotPermission($botId: uuid!, $permission: String!) {
-    nchat_bot_permissions(
-      where: {
-        bot_id: { _eq: $botId }
-        permission: { _eq: $permission }
-      }
-    ) {
+    nchat_bot_permissions(where: { bot_id: { _eq: $botId }, permission: { _eq: $permission } }) {
       id
       permission
     }
   }
-`;
+`
 
 /**
  * GraphQL query to get all bot permissions
@@ -213,7 +212,7 @@ const GET_BOT_PERMISSIONS = gql`
       created_at
     }
   }
-`;
+`
 
 /**
  * GraphQL mutation to grant permission
@@ -221,21 +220,14 @@ const GET_BOT_PERMISSIONS = gql`
 const GRANT_BOT_PERMISSION = gql`
   mutation GrantBotPermission($botId: uuid!, $permission: String!, $grantedBy: uuid!) {
     insert_nchat_bot_permissions_one(
-      object: {
-        bot_id: $botId
-        permission: $permission
-        granted_by: $grantedBy
-      }
-      on_conflict: {
-        constraint: bot_permission_unique
-        update_columns: []
-      }
+      object: { bot_id: $botId, permission: $permission, granted_by: $grantedBy }
+      on_conflict: { constraint: bot_permission_unique, update_columns: [] }
     ) {
       id
       permission
     }
   }
-`;
+`
 
 /**
  * GraphQL mutation to revoke permission
@@ -243,15 +235,12 @@ const GRANT_BOT_PERMISSION = gql`
 const REVOKE_BOT_PERMISSION = gql`
   mutation RevokeBotPermission($botId: uuid!, $permission: String!) {
     delete_nchat_bot_permissions(
-      where: {
-        bot_id: { _eq: $botId }
-        permission: { _eq: $permission }
-      }
+      where: { bot_id: { _eq: $botId }, permission: { _eq: $permission } }
     ) {
       affected_rows
     }
   }
-`;
+`
 
 /**
  * Check if a bot has a specific permission
@@ -271,17 +260,17 @@ export async function checkBotPermission(
   permission: BotPermission
 ): Promise<boolean> {
   try {
-    const client = getApolloClient();
+    const client = getApolloClient()
     const { data } = await client.query({
       query: CHECK_BOT_PERMISSION,
       variables: { botId, permission },
       fetchPolicy: 'network-only',
-    });
+    })
 
-    return data?.nchat_bot_permissions?.length > 0;
+    return data?.nchat_bot_permissions?.length > 0
   } catch (error) {
-    console.error('Error checking bot permission:', error);
-    return false;
+    logger.error('Error checking bot permission:', error)
+    return false
   }
 }
 
@@ -296,11 +285,9 @@ export async function checkBotPermissions(
   botId: string,
   permissions: BotPermission[]
 ): Promise<boolean> {
-  const results = await Promise.all(
-    permissions.map(p => checkBotPermission(botId, p))
-  );
+  const results = await Promise.all(permissions.map((p) => checkBotPermission(botId, p)))
 
-  return results.every(result => result === true);
+  return results.every((result) => result === true)
 }
 
 /**
@@ -311,17 +298,17 @@ export async function checkBotPermissions(
  */
 export async function getBotPermissions(botId: string): Promise<string[]> {
   try {
-    const client = getApolloClient();
+    const client = getApolloClient()
     const { data } = await client.query({
       query: GET_BOT_PERMISSIONS,
       variables: { botId },
       fetchPolicy: 'network-only',
-    });
+    })
 
-    return data?.nchat_bot_permissions?.map((p: any) => p.permission) || [];
+    return data?.nchat_bot_permissions?.map((p: any) => p.permission) || []
   } catch (error) {
-    console.error('Error getting bot permissions:', error);
-    return [];
+    logger.error('Error getting bot permissions:', error)
+    return []
   }
 }
 
@@ -338,14 +325,14 @@ export async function grantBotPermission(
   grantedBy: string
 ): Promise<void> {
   try {
-    const client = getApolloClient();
+    const client = getApolloClient()
     await client.mutate({
       mutation: GRANT_BOT_PERMISSION,
       variables: { botId, permission, grantedBy },
-    });
+    })
   } catch (error) {
-    console.error('Error granting bot permission:', error);
-    throw error;
+    logger.error('Error granting bot permission:', error)
+    throw error
   }
 }
 
@@ -355,19 +342,16 @@ export async function grantBotPermission(
  * @param botId - The bot ID
  * @param permission - The permission to revoke
  */
-export async function revokeBotPermission(
-  botId: string,
-  permission: BotPermission
-): Promise<void> {
+export async function revokeBotPermission(botId: string, permission: BotPermission): Promise<void> {
   try {
-    const client = getApolloClient();
+    const client = getApolloClient()
     await client.mutate({
       mutation: REVOKE_BOT_PERMISSION,
       variables: { botId, permission },
-    });
+    })
   } catch (error) {
-    console.error('Error revoking bot permission:', error);
-    throw error;
+    logger.error('Error revoking bot permission:', error)
+    throw error
   }
 }
 
@@ -383,9 +367,7 @@ export async function grantBotPermissions(
   permissions: BotPermission[],
   grantedBy: string
 ): Promise<void> {
-  await Promise.all(
-    permissions.map(p => grantBotPermission(botId, p, grantedBy))
-  );
+  await Promise.all(permissions.map((p) => grantBotPermission(botId, p, grantedBy)))
 }
 
 /**
@@ -398,9 +380,7 @@ export async function revokeBotPermissions(
   botId: string,
   permissions: BotPermission[]
 ): Promise<void> {
-  await Promise.all(
-    permissions.map(p => revokeBotPermission(botId, p))
-  );
+  await Promise.all(permissions.map((p) => revokeBotPermission(botId, p)))
 }
 
 /**
@@ -410,7 +390,7 @@ export async function revokeBotPermissions(
  * @returns True if permission format is valid
  */
 export function isValidPermissionFormat(permission: string): boolean {
-  return /^[a-z]+\.[a-z]+$/.test(permission);
+  return /^[a-z]+\.[a-z]+$/.test(permission)
 }
 
 /**
@@ -427,19 +407,19 @@ export function tokenHasPermission(
 ): boolean {
   // Check for exact match
   if (tokenScopes.includes(requiredPermission)) {
-    return true;
+    return true
   }
 
   // Check for wildcard scopes (e.g., "messages.*" includes "messages.send")
-  const [category] = requiredPermission.split('.');
+  const [category] = requiredPermission.split('.')
   if (tokenScopes.includes(`${category}.*`)) {
-    return true;
+    return true
   }
 
   // Check for admin scope (all permissions)
   if (tokenScopes.includes('*')) {
-    return true;
+    return true
   }
 
-  return false;
+  return false
 }

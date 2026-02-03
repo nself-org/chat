@@ -23,18 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Radio,
-  Users,
-  MessageSquare,
-  Send,
-} from 'lucide-react'
+import { Play, Pause, Volume2, VolumeX, Radio, Users, MessageSquare, Send } from 'lucide-react'
 import { useState } from 'react'
 import type { StreamQuality } from '@/lib/streaming'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -104,7 +97,7 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
       await sendMessage(chatInput.trim())
       setChatInput('')
     } catch (error) {
-      console.error('Failed to send message:', error)
+      logger.error('Failed to send message:', error)
     }
   }
 
@@ -114,7 +107,7 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
       const x = Math.random() * 80 + 10 // 10-90%
       await sendReaction(emoji, { x, y: 0 })
     } catch (error) {
-      console.error('Failed to send reaction:', error)
+      logger.error('Failed to send reaction:', error)
     }
   }
 
@@ -128,9 +121,9 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-96">
-        <div className="text-center space-y-2">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto" />
+      <div className="flex h-96 items-center justify-center">
+        <div className="space-y-2 text-center">
+          <div className="mx-auto h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           <p className="text-muted-foreground">Loading stream...</p>
         </div>
       </div>
@@ -144,7 +137,7 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
   if (error) {
     return (
       <Card className="p-8 text-center">
-        <p className="text-destructive font-semibold mb-2">Stream Error</p>
+        <p className="mb-2 font-semibold text-destructive">Stream Error</p>
         <p className="text-muted-foreground">{error}</p>
       </Card>
     )
@@ -155,64 +148,47 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
   // ==========================================================================
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+    <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
       {/* Video Player */}
-      <div className="lg:col-span-3 space-y-4">
+      <div className="space-y-4 lg:col-span-3">
         {/* Video Container */}
-        <Card className="overflow-hidden bg-black aspect-video relative">
-          <video
-            ref={videoRef}
-            className="w-full h-full object-contain"
-            playsInline
-          />
+        <Card className="relative aspect-video overflow-hidden bg-black">
+          <video ref={videoRef} className="h-full w-full object-contain" playsInline />
 
           {/* Buffering Overlay */}
           {isBuffering && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-              <div className="w-12 h-12 border-4 border-white border-t-transparent rounded-full animate-spin" />
+              <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent" />
             </div>
           )}
 
           {/* Live Indicator */}
-          <div className="absolute top-4 left-4 flex items-center gap-2">
-            <div className="flex items-center gap-2 bg-red-600 text-white px-3 py-1 rounded-full font-semibold">
-              <Radio className="w-4 h-4 animate-pulse" />
+          <div className="absolute left-4 top-4 flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-full bg-red-600 px-3 py-1 font-semibold text-white">
+              <Radio className="h-4 w-4 animate-pulse" />
               LIVE
             </div>
             {latency > 10 && (
-              <Button
-                size="sm"
-                variant="secondary"
-                onClick={goToLive}
-                className="text-xs"
-              >
+              <Button size="sm" variant="secondary" onClick={goToLive} className="text-xs">
                 Behind by {Math.floor(latency)}s
               </Button>
             )}
           </div>
 
           {/* Viewer Count */}
-          <div className="absolute top-4 right-4 flex items-center gap-2 bg-black/75 text-white px-3 py-1 rounded-full">
-            <Users className="w-4 h-4" />
+          <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-black/75 px-3 py-1 text-white">
+            <Users className="h-4 w-4" />
             <span>{viewerCount}</span>
           </div>
 
           {/* Controls Overlay */}
           <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2">
-            <Button
-              size="icon"
-              variant="secondary"
-              onClick={isPlaying ? pause : () => play()}
-            >
-              {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+            <Button size="icon" variant="secondary" onClick={isPlaying ? pause : () => play()}>
+              {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
             </Button>
 
-            <Button
-              size="icon"
-              variant="secondary"
-              onClick={() => setMuted(!isMuted)}
-            >
-              {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+            <Button size="icon" variant="secondary" onClick={() => setMuted(!isMuted)}>
+              {isMuted ? <VolumeX className="h-5 w-5" /> : <Volume2 className="h-5 w-5" />}
             </Button>
 
             <input
@@ -227,7 +203,7 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
 
             <div className="ml-auto">
               <Select value={currentQuality} onValueChange={handleQualityChange}>
-                <SelectTrigger className="w-32 bg-black/75 text-white border-white/20">
+                <SelectTrigger className="w-32 border-white/20 bg-black/75 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -243,11 +219,11 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
           </div>
 
           {/* Reactions Overlay */}
-          <div className="absolute inset-0 pointer-events-none">
+          <div className="pointer-events-none absolute inset-0">
             {recentReactions.map((reaction) => (
               <div
                 key={reaction.id}
-                className="absolute animate-float-up text-4xl"
+                className="animate-float-up absolute text-4xl"
                 style={{
                   left: `${reaction.positionX ?? 50}%`,
                   bottom: 0,
@@ -264,21 +240,21 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
         <Card className="p-4">
           <h2 className="text-xl font-bold">{stream?.title}</h2>
           {stream?.description && (
-            <p className="text-muted-foreground mt-2">{stream.description}</p>
+            <p className="mt-2 text-muted-foreground">{stream.description}</p>
           )}
         </Card>
 
         {/* Quick Reactions */}
         <Card className="p-4">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-sm font-semibold mr-2">Quick Reactions:</span>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="mr-2 text-sm font-semibold">Quick Reactions:</span>
             {quickEmojis.map((emoji) => (
               <Button
                 key={emoji}
                 variant="outline"
                 size="sm"
                 onClick={() => handleSendReaction(emoji)}
-                className="text-2xl h-12 w-12 p-0"
+                className="h-12 w-12 p-0 text-2xl"
               >
                 {emoji}
               </Button>
@@ -290,18 +266,14 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
       {/* Chat Panel */}
       {showChat && (
         <div className="lg:col-span-1">
-          <Card className="h-[600px] flex flex-col">
+          <Card className="flex h-[600px] flex-col">
             {/* Chat Header */}
-            <div className="p-4 border-b flex items-center justify-between">
+            <div className="flex items-center justify-between border-b p-4">
               <div className="flex items-center gap-2">
-                <MessageSquare className="w-5 h-5" />
+                <MessageSquare className="h-5 w-5" />
                 <span className="font-semibold">Live Chat</span>
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowChat(false)}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setShowChat(false)}>
                 Hide
               </Button>
             </div>
@@ -312,12 +284,12 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
-                    className={`text-sm ${msg.isPinned ? 'bg-primary/10 p-2 rounded' : ''}`}
+                    className={`text-sm ${msg.isPinned ? 'bg-primary/10 rounded p-2' : ''}`}
                   >
                     <span className="font-semibold text-primary">
                       {msg.user?.displayName ?? 'Anonymous'}:
                     </span>{' '}
-                    <span className={msg.isDeleted ? 'text-muted-foreground italic' : ''}>
+                    <span className={msg.isDeleted ? 'italic text-muted-foreground' : ''}>
                       {msg.isDeleted ? '[Message deleted]' : msg.content}
                     </span>
                   </div>
@@ -326,7 +298,7 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
             </ScrollArea>
 
             {/* Chat Input */}
-            <div className="p-4 border-t">
+            <div className="border-t p-4">
               <div className="flex gap-2">
                 <Input
                   value={chatInput}
@@ -346,12 +318,10 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
                   onClick={handleSendMessage}
                   disabled={isSending || !chatInput.trim()}
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {chatInput.length}/500
-              </p>
+              <p className="mt-1 text-xs text-muted-foreground">{chatInput.length}/500</p>
             </div>
           </Card>
         </div>
@@ -359,12 +329,8 @@ export function StreamViewer({ streamId, onStreamEnded }: StreamViewerProps) {
 
       {!showChat && (
         <div className="lg:col-span-1">
-          <Button
-            variant="outline"
-            onClick={() => setShowChat(true)}
-            className="w-full"
-          >
-            <MessageSquare className="w-4 h-4 mr-2" />
+          <Button variant="outline" onClick={() => setShowChat(true)} className="w-full">
+            <MessageSquare className="mr-2 h-4 w-4" />
             Show Chat
           </Button>
         </div>

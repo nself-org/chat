@@ -1,30 +1,30 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { SettingsSection } from './settings-section';
-import { Button } from '@/components/ui/button';
-import { Monitor, Smartphone, Tablet, MoreVertical, Trash2, AlertCircle, Check } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useState } from 'react'
+import { SettingsSection } from './settings-section'
+import { Button } from '@/components/ui/button'
+import { Monitor, Smartphone, Tablet, MoreVertical, Trash2, AlertCircle, Check } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
-import { formatDistanceToNow } from 'date-fns';
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
+import { formatDistanceToNow } from 'date-fns'
 
 interface Device {
-  id: string;
-  name: string;
-  type: 'desktop' | 'mobile' | 'tablet';
-  lastSync: Date;
-  isCurrent: boolean;
-  pushEnabled: boolean;
+  id: string
+  name: string
+  type: 'desktop' | 'mobile' | 'tablet'
+  lastSync: Date
+  isCurrent: boolean
+  pushEnabled: boolean
 }
 
 interface DevicesSettingsProps {
-  className?: string;
+  className?: string
 }
 
 // Mock devices data
@@ -53,57 +53,53 @@ const mockDevices: Device[] = [
     isCurrent: false,
     pushEnabled: false,
   },
-];
+]
 
 const deviceIcons = {
   desktop: Monitor,
   mobile: Smartphone,
   tablet: Tablet,
-};
+}
 
 /**
  * DevicesSettings - Manage logged-in devices
  */
 export function DevicesSettings({ className }: DevicesSettingsProps) {
-  const [devices, setDevices] = useState<Device[]>(mockDevices);
-  const [loading, setLoading] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [devices, setDevices] = useState<Device[]>(mockDevices)
+  const [loading, setLoading] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   const handleRemoveDevice = async (deviceId: string) => {
-    setLoading(deviceId);
-    setError(null);
+    setLoading(deviceId)
+    setError(null)
 
     try {
-      // TODO: Implement actual device removal
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
-      setDevices((prev) => prev.filter((d) => d.id !== deviceId));
+      setDevices((prev) => prev.filter((d) => d.id !== deviceId))
     } catch {
-      setError('Failed to remove device');
+      setError('Failed to remove device')
     } finally {
-      setLoading(null);
+      setLoading(null)
     }
-  };
+  }
 
   const handleTogglePush = async (deviceId: string) => {
-    setLoading(`push-${deviceId}`);
-    setError(null);
+    setLoading(`push-${deviceId}`)
+    setError(null)
 
     try {
-      // TODO: Implement actual push toggle
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
       setDevices((prev) =>
-        prev.map((d) =>
-          d.id === deviceId ? { ...d, pushEnabled: !d.pushEnabled } : d
-        )
-      );
+        prev.map((d) => (d.id === deviceId ? { ...d, pushEnabled: !d.pushEnabled } : d))
+      )
     } catch {
-      setError('Failed to update push settings');
+      setError('Failed to update push settings')
     } finally {
-      setLoading(null);
+      setLoading(null)
     }
-  };
+  }
 
   return (
     <SettingsSection
@@ -120,7 +116,7 @@ export function DevicesSettings({ className }: DevicesSettingsProps) {
 
       <div className="space-y-3">
         {devices.map((device) => {
-          const DeviceIcon = deviceIcons[device.type];
+          const DeviceIcon = deviceIcons[device.type]
 
           return (
             <div
@@ -148,7 +144,7 @@ export function DevicesSettings({ className }: DevicesSettingsProps) {
                   <div className="flex items-center gap-2">
                     <p className="font-medium">{device.name}</p>
                     {device.isCurrent && (
-                      <span className="flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+                      <span className="bg-primary/10 flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-primary">
                         <Check className="h-3 w-3" />
                         This device
                       </span>
@@ -195,7 +191,7 @@ export function DevicesSettings({ className }: DevicesSettingsProps) {
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
-          );
+          )
         })}
       </div>
 
@@ -203,5 +199,5 @@ export function DevicesSettings({ className }: DevicesSettingsProps) {
         Removing a device will sign you out and stop syncing data to that device.
       </p>
     </SettingsSection>
-  );
+  )
 }

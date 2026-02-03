@@ -15,13 +15,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/hooks/use-toast'
 import { useStickerPacks } from '@/hooks/use-stickers'
@@ -46,11 +40,7 @@ export function StickerPackManager() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
   const [editingPack, setEditingPack] = useState<StickerPack | null>(null)
 
-  const handleCreatePack = async (input: {
-    name: string
-    slug: string
-    description?: string
-  }) => {
+  const handleCreatePack = async (input: { name: string; slug: string; description?: string }) => {
     try {
       await createPack(input)
       toast({
@@ -115,9 +105,7 @@ export function StickerPackManager() {
       <Card>
         <CardHeader>
           <CardTitle>Access Denied</CardTitle>
-          <CardDescription>
-            You don't have permission to manage sticker packs
-          </CardDescription>
+          <CardDescription>You don't have permission to manage sticker packs</CardDescription>
         </CardHeader>
       </Card>
     )
@@ -138,9 +126,7 @@ export function StickerPackManager() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Sticker Packs</h2>
-          <p className="text-sm text-muted-foreground">
-            Manage custom sticker packs for your team
-          </p>
+          <p className="text-sm text-muted-foreground">Manage custom sticker packs for your team</p>
         </div>
 
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
@@ -200,9 +186,7 @@ export function StickerPackManager() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">
-                  {pack.stickers.length} stickers
-                </span>
+                <span className="text-muted-foreground">{pack.stickers.length} stickers</span>
                 <Button variant="outline" size="sm" asChild>
                   <a href={`/admin/stickers/${pack.id}`}>
                     <ImagePlus className="mr-2 h-4 w-4" />
@@ -265,9 +249,7 @@ function CreatePackForm({
     <form onSubmit={handleSubmit}>
       <DialogHeader>
         <DialogTitle>Create Sticker Pack</DialogTitle>
-        <DialogDescription>
-          Create a new sticker pack for your team
-        </DialogDescription>
+        <DialogDescription>Create a new sticker pack for your team</DialogDescription>
       </DialogHeader>
 
       <div className="space-y-4 py-4">
@@ -360,12 +342,7 @@ function EditPackForm({
       <div className="space-y-4 py-4">
         <div className="space-y-2">
           <Label htmlFor="edit-name">Pack Name</Label>
-          <Input
-            id="edit-name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+          <Input id="edit-name" value={name} onChange={(e) => setName(e.target.value)} required />
         </div>
 
         <div className="space-y-2">

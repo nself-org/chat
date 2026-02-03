@@ -11,6 +11,8 @@
 import * as mediasoupClient from 'mediasoup-client'
 import type { Device, types } from 'mediasoup-client'
 
+import { logger } from '@/lib/logger'
+
 // Re-export types from mediasoup-client for local use
 type Transport = types.Transport
 type Producer = types.Producer
@@ -150,7 +152,7 @@ export class GroupCallManager {
       return await response.json()
     } catch (error) {
       // Fallback to default capabilities for development
-      console.warn('Using default RTP capabilities (production requires SFU server)')
+      logger.warn('Using default RTP capabilities (production requires SFU server)')
       return this.getDefaultRtpCapabilities()
     }
   }
@@ -197,36 +199,49 @@ export class GroupCallManager {
     const sendTransportParams = await this.requestTransport('send')
     this.sendTransport = this.device.createSendTransport(sendTransportParams)
 
-    this.sendTransport.on('connect', async ({ dtlsParameters }: any, callback: () => void, errback: (error: Error) => void) => {
-      try {
-        await this.connectTransport('send', dtlsParameters)
-        callback()
-      } catch (error) {
-        errback(error instanceof Error ? error : new Error(String(error)))
+    this.sendTransport.on(
+      'connect',
+      async ({ dtlsParameters }: any, callback: () => void, errback: (error: Error) => void) => {
+        try {
+          await this.connectTransport('send', dtlsParameters)
+          callback()
+        } catch (error) {
+          errback(error instanceof Error ? error : new Error(String(error)))
+        }
       }
-    })
+    )
 
-    this.sendTransport.on('produce', async ({ kind, rtpParameters }: any, callback: (params: { id: string }) => void, errback: (error: Error) => void) => {
-      try {
-        const { id } = await this.produce(kind, rtpParameters)
-        callback({ id })
-      } catch (error) {
-        errback(error instanceof Error ? error : new Error(String(error)))
+    this.sendTransport.on(
+      'produce',
+      async (
+        { kind, rtpParameters }: any,
+        callback: (params: { id: string }) => void,
+        errback: (error: Error) => void
+      ) => {
+        try {
+          const { id } = await this.produce(kind, rtpParameters)
+          callback({ id })
+        } catch (error) {
+          errback(error instanceof Error ? error : new Error(String(error)))
+        }
       }
-    })
+    )
 
     // Create receive transport
     const recvTransportParams = await this.requestTransport('recv')
     this.recvTransport = this.device.createRecvTransport(recvTransportParams)
 
-    this.recvTransport.on('connect', async ({ dtlsParameters }: any, callback: () => void, errback: (error: Error) => void) => {
-      try {
-        await this.connectTransport('recv', dtlsParameters)
-        callback()
-      } catch (error) {
-        errback(error instanceof Error ? error : new Error(String(error)))
+    this.recvTransport.on(
+      'connect',
+      async ({ dtlsParameters }: any, callback: () => void, errback: (error: Error) => void) => {
+        try {
+          await this.connectTransport('recv', dtlsParameters)
+          callback()
+        } catch (error) {
+          errback(error instanceof Error ? error : new Error(String(error)))
+        }
       }
-    })
+    )
   }
 
   /**
@@ -251,7 +266,7 @@ export class GroupCallManager {
       return await response.json()
     } catch (error) {
       // Fallback for development
-      console.warn(`Using mock ${direction} transport (production requires SFU server)`)
+      logger.warn(`Using mock ${direction} transport (production requires SFU server)`)
       return this.getMockTransportParams()
     }
   }
@@ -275,7 +290,11 @@ export class GroupCallManager {
             algorithm: 'sha-256',
             value: Array(32)
               .fill(0)
-              .map(() => Math.floor(Math.random() * 256).toString(16).padStart(2, '0'))
+              .map(() =>
+                Math.floor(Math.random() * 256)
+                  .toString(16)
+                  .padStart(2, '0')
+              )
               .join(':'),
           },
         ],
@@ -299,7 +318,7 @@ export class GroupCallManager {
         }),
       })
     } catch (error) {
-      console.warn('Transport connect failed (development mode)')
+      logger.warn('Transport connect failed (development mode)')
     }
   }
 
@@ -537,10 +556,9 @@ export class GroupCallManager {
     if (!this.sendTransport && !this.recvTransport) return
 
     try {
-      // TODO: Collect real stats from transports
       this.callbacks.onStatsUpdate?.(this.stats)
     } catch (error) {
-      console.error('Failed to collect stats:', error)
+      logger.error('Failed to collect stats:', error)
     }
   }
 

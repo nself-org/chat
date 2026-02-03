@@ -8,13 +8,9 @@
  */
 
 import { nhost } from '@/lib/nhost'
-import {
-  AuthProvider,
-  AuthProviderType,
-  AuthResult,
-  AuthError,
-  OAuthProviderConfig,
-} from './types'
+import { AuthProvider, AuthProviderType, AuthResult, AuthError, OAuthProviderConfig } from './types'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Configuration
@@ -79,7 +75,7 @@ export class AppleProvider implements AuthProvider {
         requiresVerification: true,
       }
     } catch (err) {
-      console.error('AppleProvider.authenticate error:', err)
+      logger.error('AppleProvider.authenticate error:', err)
       return {
         success: false,
         error: {
@@ -119,8 +115,9 @@ export class AppleProvider implements AuthProvider {
 
       // Apple only provides name on first sign-in
       // After that, we need to retrieve it from our database
-      const displayName = session.user.displayName ||
-        session.user.metadata?.['name'] as string ||
+      const displayName =
+        session.user.displayName ||
+        (session.user.metadata?.['name'] as string) ||
         this.extractNameFromMetadata(session.user.metadata)
 
       return {
@@ -144,7 +141,7 @@ export class AppleProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('AppleProvider.handleCallback error:', err)
+      logger.error('AppleProvider.handleCallback error:', err)
       return {
         success: false,
         error: {
@@ -219,7 +216,7 @@ export class AppleProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('AppleProvider.handlePostCallback error:', err)
+      logger.error('AppleProvider.handlePostCallback error:', err)
       return {
         success: false,
         error: {
@@ -244,7 +241,7 @@ export class AppleProvider implements AuthProvider {
         requiresVerification: true,
       }
     } catch (err) {
-      console.error('AppleProvider.linkAccount error:', err)
+      logger.error('AppleProvider.linkAccount error:', err)
       return {
         success: false,
         error: {
@@ -281,7 +278,7 @@ export class AppleProvider implements AuthProvider {
 
       return { success: true }
     } catch (err) {
-      console.error('AppleProvider.unlinkAccount error:', err)
+      logger.error('AppleProvider.unlinkAccount error:', err)
       return {
         success: false,
         error: {

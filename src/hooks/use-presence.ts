@@ -13,19 +13,19 @@ export function usePresence(userIds: string[]) {
 
     emit(SOCKET_EVENTS.PRESENCE_SUBSCRIBE, { userIds })
 
-    const unsubscribe = subscribe<PresencePayload>(
-      SOCKET_EVENTS.PRESENCE_UPDATE,
-      (data) => {
-        setPresence(prev => new Map(prev).set(data.userId, data))
-      }
-    )
+    const unsubscribe = subscribe<PresencePayload>(SOCKET_EVENTS.PRESENCE_UPDATE, (data) => {
+      setPresence((prev) => new Map(prev).set(data.userId, data))
+    })
 
     return unsubscribe
   }, [isConnected, userIds, subscribe, emit])
 
-  const getPresence = useCallback((userId: string) => {
-    return presence.get(userId) ?? { userId, status: 'offline' as const }
-  }, [presence])
+  const getPresence = useCallback(
+    (userId: string) => {
+      return presence.get(userId) ?? { userId, status: 'offline' as const }
+    },
+    [presence]
+  )
 
   return { presence, getPresence }
 }

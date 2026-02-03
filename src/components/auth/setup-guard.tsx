@@ -49,9 +49,9 @@ function SetupPendingMessage() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md rounded-lg border bg-card p-6 text-center shadow-lg">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-warning/10">
+        <div className="bg-warning/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
           <svg
-            className="h-8 w-8 text-warning"
+            className="text-warning h-8 w-8"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -65,18 +65,15 @@ function SetupPendingMessage() {
           </svg>
         </div>
 
-        <h2 className="mb-2 text-xl font-semibold text-foreground">
-          Setup In Progress
-        </h2>
+        <h2 className="mb-2 text-xl font-semibold text-foreground">Setup In Progress</h2>
 
         <p className="mb-4 text-muted-foreground">
-          The system administrator is completing the initial setup.
-          Please check back shortly.
+          The system administrator is completing the initial setup. Please check back shortly.
         </p>
 
         <button
           onClick={() => router.refresh()}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          className="text-primary-foreground hover:bg-primary/90 rounded-md bg-primary px-4 py-2 text-sm font-medium"
         >
           Refresh
         </button>
@@ -206,20 +203,14 @@ export function SetupGuard({
 
   if (isSetupPage) {
     return (
-      <RequireSetupIncomplete
-        loadingComponent={loadingComponent}
-        redirectTo={onCompleteRedirectTo}
-      >
+      <RequireSetupIncomplete loadingComponent={loadingComponent} redirectTo={onCompleteRedirectTo}>
         {children}
       </RequireSetupIncomplete>
     )
   }
 
   return (
-    <RequireSetupComplete
-      loadingComponent={loadingComponent}
-      redirectTo={onIncompleteRedirectTo}
-    >
+    <RequireSetupComplete loadingComponent={loadingComponent} redirectTo={onIncompleteRedirectTo}>
       {children}
     </RequireSetupComplete>
   )

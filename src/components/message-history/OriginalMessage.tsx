@@ -36,8 +36,8 @@ export function OriginalMessage({
   const displayContent = showFullContent
     ? content
     : content.length > maxPreviewLength
-    ? `${content.slice(0, maxPreviewLength)}...`
-    : content
+      ? `${content.slice(0, maxPreviewLength)}...`
+      : content
 
   const hasChanges = currentContent && currentContent !== content
 
@@ -70,10 +70,7 @@ export function OriginalMessage({
         </Avatar>
         <span className="font-medium">{editedBy.displayName}</span>
         <span className="text-muted-foreground">posted</span>
-        <span
-          className="text-muted-foreground"
-          title={formatMessageTimeTooltip(createdAt)}
-        >
+        <span className="text-muted-foreground" title={formatMessageTimeTooltip(createdAt)}>
           {formatMessageTime(createdAt)}
         </span>
       </div>
@@ -113,8 +110,7 @@ export function OriginalMessagePreview({
   maxLength = 100,
   className,
 }: OriginalMessagePreviewProps) {
-  const preview =
-    content.length > maxLength ? `${content.slice(0, maxLength)}...` : content
+  const preview = content.length > maxLength ? `${content.slice(0, maxLength)}...` : content
 
   return (
     <div className={cn('space-y-1 text-sm', className)}>
@@ -122,7 +118,7 @@ export function OriginalMessagePreview({
         <Clock className="h-3 w-3" />
         <span>Original ({formatMessageTime(createdAt)})</span>
       </div>
-      <p className="rounded-md bg-muted/50 p-2 text-muted-foreground italic">
+      <p className="bg-muted/50 rounded-md p-2 italic text-muted-foreground">
         &quot;{preview}&quot;
       </p>
     </div>
@@ -141,18 +137,12 @@ export interface OriginalVsCurrentProps {
   className?: string
 }
 
-export function OriginalVsCurrent({
-  original,
-  currentContent,
-  className,
-}: OriginalVsCurrentProps) {
+export function OriginalVsCurrent({ original, currentContent, className }: OriginalVsCurrentProps) {
   const originalLength = original.content.length
   const currentLength = currentContent.length
   const lengthDiff = currentLength - originalLength
   const percentChange =
-    originalLength > 0
-      ? Math.round((Math.abs(lengthDiff) / originalLength) * 100)
-      : 100
+    originalLength > 0 ? Math.round((Math.abs(lengthDiff) / originalLength) * 100) : 100
 
   return (
     <div className={cn('grid gap-4 md:grid-cols-2', className)}>
@@ -160,51 +150,37 @@ export function OriginalVsCurrent({
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Original</span>
-          <span className="text-xs text-muted-foreground">
-            {originalLength} chars
-          </span>
+          <span className="text-xs text-muted-foreground">{originalLength} chars</span>
         </div>
-        <div className="min-h-[100px] rounded-md border bg-muted/30 p-3">
+        <div className="bg-muted/30 min-h-[100px] rounded-md border p-3">
           <pre className="whitespace-pre-wrap font-mono text-sm">
             {original.content || (
               <span className="italic text-muted-foreground">Empty message</span>
             )}
           </pre>
         </div>
-        <div className="text-xs text-muted-foreground">
-          {formatMessageTime(original.createdAt)}
-        </div>
+        <div className="text-xs text-muted-foreground">{formatMessageTime(original.createdAt)}</div>
       </div>
 
       {/* Current */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium">Current</span>
-          <span className="text-xs text-muted-foreground">
-            {currentLength} chars
-          </span>
+          <span className="text-xs text-muted-foreground">{currentLength} chars</span>
         </div>
-        <div className="min-h-[100px] rounded-md border bg-muted/30 p-3">
+        <div className="bg-muted/30 min-h-[100px] rounded-md border p-3">
           <pre className="whitespace-pre-wrap font-mono text-sm">
-            {currentContent || (
-              <span className="italic text-muted-foreground">Empty message</span>
-            )}
+            {currentContent || <span className="italic text-muted-foreground">Empty message</span>}
           </pre>
         </div>
         <div className="flex items-center gap-2 text-xs">
           {lengthDiff !== 0 && (
-            <span
-              className={cn(
-                lengthDiff > 0 ? 'text-green-600' : 'text-red-600'
-              )}
-            >
+            <span className={cn(lengthDiff > 0 ? 'text-green-600' : 'text-red-600')}>
               {lengthDiff > 0 ? '+' : ''}
               {lengthDiff} chars ({percentChange}%)
             </span>
           )}
-          {lengthDiff === 0 && (
-            <span className="text-muted-foreground">Same length</span>
-          )}
+          {lengthDiff === 0 && <span className="text-muted-foreground">Same length</span>}
         </div>
       </div>
     </div>
@@ -231,14 +207,12 @@ export function InlineOriginal({
   return (
     <div
       className={cn(
-        'rounded-md border-l-2 border-muted-foreground/30 bg-muted/30 py-2 pl-3 pr-2',
+        'border-muted-foreground/30 bg-muted/30 rounded-md border-l-2 py-2 pl-3 pr-2',
         className
       )}
     >
       <p className="text-xs font-medium text-muted-foreground">{label}</p>
-      <p className="mt-1 text-sm italic text-muted-foreground">
-        &quot;{originalContent}&quot;
-      </p>
+      <p className="mt-1 text-sm italic text-muted-foreground">&quot;{originalContent}&quot;</p>
     </div>
   )
 }

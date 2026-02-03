@@ -48,28 +48,30 @@ function SearchInput({
 }: SearchInputProps) {
   return (
     <div className={cn('relative', className)}>
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={cn(
-          'w-full h-9 pl-9 pr-9 rounded-lg border border-input bg-background',
+          'h-9 w-full rounded-lg border border-input bg-background pl-9 pr-9',
           'text-sm placeholder:text-muted-foreground',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
         )}
       />
       {loading ? (
-        <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
-      ) : value && (
-        <button
-          type="button"
-          onClick={onClear}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-        >
-          <X className="h-4 w-4" />
-        </button>
+        <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+      ) : (
+        value && (
+          <button
+            type="button"
+            onClick={onClear}
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        )
       )}
     </div>
   )
@@ -109,7 +111,7 @@ function PackTabs({
             type="button"
             onClick={onRecentClick}
             className={cn(
-              'flex flex-col items-center justify-center gap-1 p-2 rounded-lg transition-colors',
+              'flex flex-col items-center justify-center gap-1 rounded-lg p-2 transition-colors',
               'hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
               activePackId === 'recent' && 'bg-accent'
             )}
@@ -125,7 +127,7 @@ function PackTabs({
             type="button"
             onClick={onFavoritesClick}
             className={cn(
-              'flex flex-col items-center justify-center gap-1 p-2 rounded-lg transition-colors',
+              'flex flex-col items-center justify-center gap-1 rounded-lg p-2 transition-colors',
               'hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
               activePackId === 'favorites' && 'bg-accent'
             )}
@@ -137,7 +139,7 @@ function PackTabs({
 
         {/* Divider */}
         {(showRecent || showFavorites) && packs.length > 0 && (
-          <div className="w-px h-8 self-center bg-border mx-1" />
+          <div className="mx-1 h-8 w-px self-center bg-border" />
         )}
 
         {/* Pack Tabs */}
@@ -193,15 +195,18 @@ export function StickerPicker({
   }, [favoriteStickers])
 
   // Handle search input change
-  const handleSearchChange = useCallback((value: string) => {
-    setLocalSearchQuery(value)
-    if (value.length >= 2) {
-      setActiveTab('search')
-      searchStickers(value)
-    } else if (value.length === 0) {
-      setActiveTab('recent')
-    }
-  }, [searchStickers])
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setLocalSearchQuery(value)
+      if (value.length >= 2) {
+        setActiveTab('search')
+        searchStickers(value)
+      } else if (value.length === 0) {
+        setActiveTab('recent')
+      }
+    },
+    [searchStickers]
+  )
 
   // Handle search clear
   const handleSearchClear = useCallback(() => {
@@ -210,35 +215,47 @@ export function StickerPicker({
   }, [])
 
   // Handle sticker click
-  const handleStickerClick = useCallback((sticker: Sticker) => {
-    sendSticker(sticker)
-    onStickerSelect(sticker)
-  }, [sendSticker, onStickerSelect])
+  const handleStickerClick = useCallback(
+    (sticker: Sticker) => {
+      sendSticker(sticker)
+      onStickerSelect(sticker)
+    },
+    [sendSticker, onStickerSelect]
+  )
 
   // Handle sticker long press (toggle favorite)
-  const handleStickerLongPress = useCallback((sticker: Sticker) => {
-    if (isFavorite(sticker.id)) {
-      removeFromFavorites(sticker.id)
-    } else {
-      addToFavorites(sticker)
-    }
-  }, [isFavorite, addToFavorites, removeFromFavorites])
+  const handleStickerLongPress = useCallback(
+    (sticker: Sticker) => {
+      if (isFavorite(sticker.id)) {
+        removeFromFavorites(sticker.id)
+      } else {
+        addToFavorites(sticker)
+      }
+    },
+    [isFavorite, addToFavorites, removeFromFavorites]
+  )
 
   // Handle favorite toggle
-  const handleFavorite = useCallback((sticker: Sticker) => {
-    if (isFavorite(sticker.id)) {
-      removeFromFavorites(sticker.id)
-    } else {
-      addToFavorites(sticker)
-    }
-  }, [isFavorite, addToFavorites, removeFromFavorites])
+  const handleFavorite = useCallback(
+    (sticker: Sticker) => {
+      if (isFavorite(sticker.id)) {
+        removeFromFavorites(sticker.id)
+      } else {
+        addToFavorites(sticker)
+      }
+    },
+    [isFavorite, addToFavorites, removeFromFavorites]
+  )
 
   // Handle pack tab click
-  const handlePackSelect = useCallback((packId: string) => {
-    setActiveTab('packs')
-    setActivePackId(packId)
-    loadPackStickers(packId)
-  }, [setActivePackId, loadPackStickers])
+  const handlePackSelect = useCallback(
+    (packId: string) => {
+      setActiveTab('packs')
+      setActivePackId(packId)
+      loadPackStickers(packId)
+    },
+    [setActivePackId, loadPackStickers]
+  )
 
   // Handle recent tab click
   const handleRecentClick = useCallback(() => {
@@ -272,12 +289,12 @@ export function StickerPicker({
   return (
     <div
       className={cn(
-        'flex flex-col w-[360px] h-[400px] rounded-xl border bg-background shadow-lg overflow-hidden',
+        'flex h-[400px] w-[360px] flex-col overflow-hidden rounded-xl border bg-background shadow-lg',
         className
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2 border-b">
+      <div className="flex items-center justify-between border-b px-3 py-2">
         <h3 className="text-sm font-medium">Stickers</h3>
         <div className="flex items-center gap-1">
           {onAddPackClick && (
@@ -303,12 +320,7 @@ export function StickerPicker({
             </Button>
           )}
           {onClose && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="h-7 w-7"
-            >
+            <Button variant="ghost" size="icon" onClick={onClose} className="h-7 w-7">
               <X className="h-4 w-4" />
             </Button>
           )}
@@ -316,7 +328,7 @@ export function StickerPicker({
       </div>
 
       {/* Search */}
-      <div className="px-3 py-2 border-b">
+      <div className="border-b px-3 py-2">
         <SearchInput
           value={localSearchQuery}
           onChange={handleSearchChange}
@@ -329,7 +341,13 @@ export function StickerPicker({
       <div className="border-b">
         <PackTabs
           packs={installedPacks}
-          activePackId={activeTab === 'recent' ? 'recent' : activeTab === 'favorites' ? 'favorites' : activePackId}
+          activePackId={
+            activeTab === 'recent'
+              ? 'recent'
+              : activeTab === 'favorites'
+                ? 'favorites'
+                : activePackId
+          }
           onPackSelect={handlePackSelect}
           onRecentClick={handleRecentClick}
           onFavoritesClick={handleFavoritesClick}
@@ -395,15 +413,15 @@ export function StickerPicker({
 
       {/* No Packs Message */}
       {installedPacks.length === 0 && activeTab !== 'search' && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/95 p-6 text-center">
-          <div className="text-4xl mb-3">:-)</div>
-          <h3 className="font-medium mb-1">No sticker packs</h3>
-          <p className="text-sm text-muted-foreground mb-4">
+        <div className="bg-background/95 absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+          <div className="mb-3 text-4xl">:-)</div>
+          <h3 className="mb-1 font-medium">No sticker packs</h3>
+          <p className="mb-4 text-sm text-muted-foreground">
             Add some sticker packs to start using stickers
           </p>
           {onAddPackClick && (
             <Button onClick={onAddPackClick}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Browse Packs
             </Button>
           )}
@@ -422,10 +440,7 @@ export interface CompactStickerPickerProps {
   className?: string
 }
 
-export function CompactStickerPicker({
-  onStickerSelect,
-  className,
-}: CompactStickerPickerProps) {
+export function CompactStickerPicker({ onStickerSelect, className }: CompactStickerPickerProps) {
   const {
     installedPacks,
     recentStickers,
@@ -439,23 +454,29 @@ export function CompactStickerPicker({
 
   const [activeTab, setActiveTab] = useState<'recent' | 'packs'>('recent')
 
-  const handleStickerClick = useCallback((sticker: Sticker) => {
-    sendSticker(sticker)
-    onStickerSelect(sticker)
-  }, [sendSticker, onStickerSelect])
+  const handleStickerClick = useCallback(
+    (sticker: Sticker) => {
+      sendSticker(sticker)
+      onStickerSelect(sticker)
+    },
+    [sendSticker, onStickerSelect]
+  )
 
-  const handlePackSelect = useCallback((packId: string) => {
-    setActiveTab('packs')
-    setActivePackId(packId)
-    loadPackStickers(packId)
-  }, [setActivePackId, loadPackStickers])
+  const handlePackSelect = useCallback(
+    (packId: string) => {
+      setActiveTab('packs')
+      setActivePackId(packId)
+      loadPackStickers(packId)
+    },
+    [setActivePackId, loadPackStickers]
+  )
 
   const recentStickerItems = useMemo(() => {
     return recentStickers.map((r) => r.sticker)
   }, [recentStickers])
 
   return (
-    <div className={cn('flex flex-col w-full', className)}>
+    <div className={cn('flex w-full flex-col', className)}>
       {/* Pack Tabs */}
       <ScrollArea className="w-full border-b">
         <div className="flex gap-1 p-1">
@@ -466,7 +487,7 @@ export function CompactStickerPicker({
               setActivePackId(null)
             }}
             className={cn(
-              'flex items-center justify-center p-2 rounded-lg transition-colors',
+              'flex items-center justify-center rounded-lg p-2 transition-colors',
               'hover:bg-accent',
               activeTab === 'recent' && 'bg-accent'
             )}

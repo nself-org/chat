@@ -3,14 +3,7 @@
  */
 
 import React, { useCallback } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Image,
-  Dimensions,
-} from 'react-native'
+import { View, Text, StyleSheet, Pressable, Image, Dimensions } from 'react-native'
 
 import { useTheme } from '@theme'
 import { UserAvatar } from './UserAvatar'
@@ -100,7 +93,10 @@ export function MessageBubble({
         return (
           <View
             key={attachment.id || index}
-            style={[styles.audioAttachment, { backgroundColor: isOwnMessage ? 'rgba(0,0,0,0.1)' : theme.colors.border }]}
+            style={[
+              styles.audioAttachment,
+              { backgroundColor: isOwnMessage ? 'rgba(0,0,0,0.1)' : theme.colors.border },
+            ]}
           >
             <Pressable style={styles.audioPlayButton}>
               <Text style={{ color: textColor }}>play</Text>
@@ -108,14 +104,23 @@ export function MessageBubble({
             <View style={styles.audioWaveform}>
               {/* Waveform visualization */}
               <View style={[styles.waveformBar, { backgroundColor: textColor + '40' }]} />
-              <View style={[styles.waveformBar, { backgroundColor: textColor + '40', height: 16 }]} />
-              <View style={[styles.waveformBar, { backgroundColor: textColor + '40', height: 24 }]} />
-              <View style={[styles.waveformBar, { backgroundColor: textColor + '40', height: 12 }]} />
-              <View style={[styles.waveformBar, { backgroundColor: textColor + '40', height: 20 }]} />
+              <View
+                style={[styles.waveformBar, { backgroundColor: textColor + '40', height: 16 }]}
+              />
+              <View
+                style={[styles.waveformBar, { backgroundColor: textColor + '40', height: 24 }]}
+              />
+              <View
+                style={[styles.waveformBar, { backgroundColor: textColor + '40', height: 12 }]}
+              />
+              <View
+                style={[styles.waveformBar, { backgroundColor: textColor + '40', height: 20 }]}
+              />
             </View>
             {attachment.duration && (
               <Text style={[styles.audioDuration, { color: textColor }]}>
-                {Math.floor(attachment.duration / 60)}:{(attachment.duration % 60).toString().padStart(2, '0')}
+                {Math.floor(attachment.duration / 60)}:
+                {(attachment.duration % 60).toString().padStart(2, '0')}
               </Text>
             )}
           </View>
@@ -125,7 +130,10 @@ export function MessageBubble({
         return (
           <Pressable
             key={attachment.id || index}
-            style={[styles.fileAttachment, { backgroundColor: isOwnMessage ? 'rgba(0,0,0,0.1)' : theme.colors.border }]}
+            style={[
+              styles.fileAttachment,
+              { backgroundColor: isOwnMessage ? 'rgba(0,0,0,0.1)' : theme.colors.border },
+            ]}
             onPress={() => {
               // Download/open file
             }}
@@ -170,12 +178,7 @@ export function MessageBubble({
   }
 
   return (
-    <View
-      style={[
-        styles.container,
-        isOwnMessage ? styles.ownMessage : styles.otherMessage,
-      ]}
-    >
+    <View style={[styles.container, isOwnMessage ? styles.ownMessage : styles.otherMessage]}>
       {/* Avatar (for other users) */}
       {!isOwnMessage && showAvatar && (
         <View style={styles.avatarContainer}>
@@ -192,10 +195,7 @@ export function MessageBubble({
           </Text>
         )}
 
-        <Pressable
-          style={[styles.bubble, bubbleStyle]}
-          onLongPress={onLongPress}
-        >
+        <Pressable style={[styles.bubble, bubbleStyle]} onLongPress={onLongPress}>
           {/* Reply preview */}
           {message.replyTo && (
             <View style={[styles.replyPreview, { borderLeftColor: theme.colors.primary }]}>
@@ -214,9 +214,7 @@ export function MessageBubble({
 
           {/* Message content */}
           {message.content && (
-            <Text style={[styles.messageText, { color: textColor }]}>
-              {message.content}
-            </Text>
+            <Text style={[styles.messageText, { color: textColor }]}>{message.content}</Text>
           )}
 
           {/* Timestamp and status */}
@@ -225,9 +223,7 @@ export function MessageBubble({
               {formatMessageTime(message.createdAt)}
             </Text>
             {message.isEdited && (
-              <Text style={[styles.edited, { color: textColor + '60' }]}>
-                (edited)
-              </Text>
+              <Text style={[styles.edited, { color: textColor + '60' }]}>(edited)</Text>
             )}
             {isOwnMessage && (
               <Text style={[styles.status, { color: textColor + '80' }]}>

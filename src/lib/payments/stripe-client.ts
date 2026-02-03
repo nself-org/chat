@@ -10,32 +10,32 @@
 // ============================================================================
 
 export interface StripeConfig {
-  publishableKey: string;
-  secretKey?: string;
-  webhookSecret?: string;
-  apiVersion?: string;
+  publishableKey: string
+  secretKey?: string
+  webhookSecret?: string
+  apiVersion?: string
 }
 
 export interface PaymentIntentParams {
-  amount: number;
-  currency: string;
-  customerId?: string;
-  description?: string;
-  metadata?: Record<string, string>;
-  receiptEmail?: string;
-  paymentMethodTypes?: string[];
+  amount: number
+  currency: string
+  customerId?: string
+  description?: string
+  metadata?: Record<string, string>
+  receiptEmail?: string
+  paymentMethodTypes?: string[]
 }
 
 export interface PaymentIntent {
-  id: string;
-  clientSecret: string;
-  amount: number;
-  currency: string;
-  status: PaymentIntentStatus;
-  customerId?: string;
-  paymentMethodId?: string;
-  metadata?: Record<string, string>;
-  createdAt: Date;
+  id: string
+  clientSecret: string
+  amount: number
+  currency: string
+  status: PaymentIntentStatus
+  customerId?: string
+  paymentMethodId?: string
+  metadata?: Record<string, string>
+  createdAt: Date
 }
 
 export type PaymentIntentStatus =
@@ -45,28 +45,28 @@ export type PaymentIntentStatus =
   | 'processing'
   | 'requires_capture'
   | 'canceled'
-  | 'succeeded';
+  | 'succeeded'
 
 export interface SubscriptionParams {
-  customerId: string;
-  priceId: string;
-  paymentMethodId?: string;
-  trialPeriodDays?: number;
-  metadata?: Record<string, string>;
-  cancelAtPeriodEnd?: boolean;
+  customerId: string
+  priceId: string
+  paymentMethodId?: string
+  trialPeriodDays?: number
+  metadata?: Record<string, string>
+  cancelAtPeriodEnd?: boolean
 }
 
 export interface Subscription {
-  id: string;
-  customerId: string;
-  priceId: string;
-  status: SubscriptionStatus;
-  currentPeriodStart: Date;
-  currentPeriodEnd: Date;
-  cancelAtPeriodEnd: boolean;
-  trialEnd?: Date;
-  metadata?: Record<string, string>;
-  createdAt: Date;
+  id: string
+  customerId: string
+  priceId: string
+  status: SubscriptionStatus
+  currentPeriodStart: Date
+  currentPeriodEnd: Date
+  cancelAtPeriodEnd: boolean
+  trialEnd?: Date
+  metadata?: Record<string, string>
+  createdAt: Date
 }
 
 export type SubscriptionStatus =
@@ -77,82 +77,83 @@ export type SubscriptionStatus =
   | 'incomplete_expired'
   | 'trialing'
   | 'unpaid'
-  | 'paused';
+  | 'paused'
 
 export interface Invoice {
-  id: string;
-  customerId: string;
-  subscriptionId?: string;
-  amount: number;
-  currency: string;
-  status: InvoiceStatus;
-  paidAt?: Date;
-  dueDate?: Date;
-  hostedUrl?: string;
-  pdfUrl?: string;
-  createdAt: Date;
+  id: string
+  customerId: string
+  subscriptionId?: string
+  amount: number
+  currency: string
+  status: InvoiceStatus
+  paidAt?: Date
+  dueDate?: Date
+  hostedUrl?: string
+  pdfUrl?: string
+  createdAt: Date
 }
 
-export type InvoiceStatus =
-  | 'draft'
-  | 'open'
-  | 'paid'
-  | 'uncollectible'
-  | 'void';
+export type InvoiceStatus = 'draft' | 'open' | 'paid' | 'uncollectible' | 'void'
 
 export interface WebhookEvent {
-  id: string;
-  type: string;
+  id: string
+  type: string
   data: {
-    object: Record<string, unknown>;
-  };
-  createdAt: Date;
+    object: Record<string, unknown>
+  }
+  createdAt: Date
 }
 
 export interface Customer {
-  id: string;
-  email: string;
-  name?: string;
-  metadata?: Record<string, string>;
-  defaultPaymentMethodId?: string;
-  createdAt: Date;
+  id: string
+  email: string
+  name?: string
+  metadata?: Record<string, string>
+  defaultPaymentMethodId?: string
+  createdAt: Date
 }
 
 export interface PaymentMethod {
-  id: string;
-  type: string;
+  id: string
+  type: string
   card?: {
-    brand: string;
-    last4: string;
-    expMonth: number;
-    expYear: number;
-  };
+    brand: string
+    last4: string
+    expMonth: number
+    expYear: number
+  }
   billingDetails?: {
-    name?: string;
-    email?: string;
+    name?: string
+    email?: string
     address?: {
-      city?: string;
-      country?: string;
-      line1?: string;
-      line2?: string;
-      postalCode?: string;
-      state?: string;
-    };
-  };
-  createdAt: Date;
+      city?: string
+      country?: string
+      line1?: string
+      line2?: string
+      postalCode?: string
+      state?: string
+    }
+  }
+  createdAt: Date
 }
 
 export interface StripeError {
-  code: string;
-  message: string;
-  type: 'card_error' | 'validation_error' | 'api_error' | 'authentication_error' | 'rate_limit_error' | 'invalid_request_error';
-  param?: string;
+  code: string
+  message: string
+  type:
+    | 'card_error'
+    | 'validation_error'
+    | 'api_error'
+    | 'authentication_error'
+    | 'rate_limit_error'
+    | 'invalid_request_error'
+  param?: string
 }
 
 export interface StripeClientResult<T> {
-  success: boolean;
-  data?: T;
-  error?: StripeError;
+  success: boolean
+  data?: T
+  error?: StripeError
 }
 
 // ============================================================================
@@ -160,20 +161,20 @@ export interface StripeClientResult<T> {
 // ============================================================================
 
 export class StripeClient {
-  private config: StripeConfig;
-  private initialized: boolean = false;
+  private config: StripeConfig
+  private initialized: boolean = false
 
   constructor(config: StripeConfig) {
-    this.config = config;
-    this.validateConfig();
+    this.config = config
+    this.validateConfig()
   }
 
   private validateConfig(): void {
     if (!this.config.publishableKey) {
-      throw new Error('Stripe publishable key is required');
+      throw new Error('Stripe publishable key is required')
     }
     if (!this.config.publishableKey.startsWith('pk_')) {
-      throw new Error('Invalid Stripe publishable key format');
+      throw new Error('Invalid Stripe publishable key format')
     }
   }
 
@@ -182,15 +183,15 @@ export class StripeClient {
    */
   async initialize(): Promise<boolean> {
     if (this.initialized) {
-      return true;
+      return true
     }
 
     try {
       // In a real implementation, this would load Stripe.js
-      this.initialized = true;
-      return true;
+      this.initialized = true
+      return true
     } catch {
-      return false;
+      return false
     }
   }
 
@@ -198,14 +199,14 @@ export class StripeClient {
    * Check if the client is initialized
    */
   isInitialized(): boolean {
-    return this.initialized;
+    return this.initialized
   }
 
   /**
    * Get the publishable key
    */
   getPublishableKey(): string {
-    return this.config.publishableKey;
+    return this.config.publishableKey
   }
 
   // ==========================================================================
@@ -226,7 +227,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (params.amount <= 0) {
@@ -238,7 +239,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'amount',
         },
-      };
+      }
     }
 
     if (!params.currency || params.currency.length !== 3) {
@@ -250,7 +251,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'currency',
         },
-      };
+      }
     }
 
     // Generate mock payment intent
@@ -263,12 +264,12 @@ export class StripeClient {
       customerId: params.customerId,
       metadata: params.metadata,
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: paymentIntent,
-    };
+    }
   }
 
   /**
@@ -286,7 +287,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!paymentIntentId.startsWith('pi_')) {
@@ -298,7 +299,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'paymentIntentId',
         },
-      };
+      }
     }
 
     if (!paymentMethodId.startsWith('pm_')) {
@@ -310,7 +311,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'paymentMethodId',
         },
-      };
+      }
     }
 
     // Mock confirmation
@@ -322,20 +323,18 @@ export class StripeClient {
       status: 'succeeded',
       paymentMethodId,
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: paymentIntent,
-    };
+    }
   }
 
   /**
    * Cancel a payment intent
    */
-  async cancelPaymentIntent(
-    paymentIntentId: string
-  ): Promise<StripeClientResult<PaymentIntent>> {
+  async cancelPaymentIntent(paymentIntentId: string): Promise<StripeClientResult<PaymentIntent>> {
     if (!this.initialized) {
       return {
         success: false,
@@ -344,7 +343,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!paymentIntentId.startsWith('pi_')) {
@@ -356,7 +355,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'paymentIntentId',
         },
-      };
+      }
     }
 
     const paymentIntent: PaymentIntent = {
@@ -366,20 +365,18 @@ export class StripeClient {
       currency: 'usd',
       status: 'canceled',
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: paymentIntent,
-    };
+    }
   }
 
   /**
    * Retrieve a payment intent
    */
-  async retrievePaymentIntent(
-    paymentIntentId: string
-  ): Promise<StripeClientResult<PaymentIntent>> {
+  async retrievePaymentIntent(paymentIntentId: string): Promise<StripeClientResult<PaymentIntent>> {
     if (!this.initialized) {
       return {
         success: false,
@@ -388,7 +385,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!paymentIntentId.startsWith('pi_')) {
@@ -400,7 +397,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'paymentIntentId',
         },
-      };
+      }
     }
 
     const paymentIntent: PaymentIntent = {
@@ -410,12 +407,12 @@ export class StripeClient {
       currency: 'usd',
       status: 'requires_payment_method',
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: paymentIntent,
-    };
+    }
   }
 
   // ==========================================================================
@@ -425,9 +422,7 @@ export class StripeClient {
   /**
    * Create a subscription
    */
-  async createSubscription(
-    params: SubscriptionParams
-  ): Promise<StripeClientResult<Subscription>> {
+  async createSubscription(params: SubscriptionParams): Promise<StripeClientResult<Subscription>> {
     if (!this.initialized) {
       return {
         success: false,
@@ -436,7 +431,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!params.customerId.startsWith('cus_')) {
@@ -448,7 +443,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'customerId',
         },
-      };
+      }
     }
 
     if (!params.priceId.startsWith('price_')) {
@@ -460,12 +455,12 @@ export class StripeClient {
           type: 'validation_error',
           param: 'priceId',
         },
-      };
+      }
     }
 
-    const now = new Date();
-    const periodEnd = new Date(now);
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
+    const now = new Date()
+    const periodEnd = new Date(now)
+    periodEnd.setMonth(periodEnd.getMonth() + 1)
 
     const subscription: Subscription = {
       id: `sub_${this.generateId()}`,
@@ -480,12 +475,12 @@ export class StripeClient {
         : undefined,
       metadata: params.metadata,
       createdAt: now,
-    };
+    }
 
     return {
       success: true,
       data: subscription,
-    };
+    }
   }
 
   /**
@@ -503,7 +498,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!subscriptionId.startsWith('sub_')) {
@@ -515,12 +510,12 @@ export class StripeClient {
           type: 'validation_error',
           param: 'subscriptionId',
         },
-      };
+      }
     }
 
-    const now = new Date();
-    const periodEnd = new Date(now);
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
+    const now = new Date()
+    const periodEnd = new Date(now)
+    periodEnd.setMonth(periodEnd.getMonth() + 1)
 
     const subscription: Subscription = {
       id: subscriptionId,
@@ -532,12 +527,12 @@ export class StripeClient {
       cancelAtPeriodEnd: params.cancelAtPeriodEnd ?? false,
       metadata: params.metadata,
       createdAt: now,
-    };
+    }
 
     return {
       success: true,
       data: subscription,
-    };
+    }
   }
 
   /**
@@ -555,7 +550,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!subscriptionId.startsWith('sub_')) {
@@ -567,12 +562,12 @@ export class StripeClient {
           type: 'validation_error',
           param: 'subscriptionId',
         },
-      };
+      }
     }
 
-    const now = new Date();
-    const periodEnd = new Date(now);
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
+    const now = new Date()
+    const periodEnd = new Date(now)
+    periodEnd.setMonth(periodEnd.getMonth() + 1)
 
     const subscription: Subscription = {
       id: subscriptionId,
@@ -583,20 +578,18 @@ export class StripeClient {
       currentPeriodEnd: periodEnd,
       cancelAtPeriodEnd: !immediately,
       createdAt: now,
-    };
+    }
 
     return {
       success: true,
       data: subscription,
-    };
+    }
   }
 
   /**
    * Retrieve a subscription
    */
-  async retrieveSubscription(
-    subscriptionId: string
-  ): Promise<StripeClientResult<Subscription>> {
+  async retrieveSubscription(subscriptionId: string): Promise<StripeClientResult<Subscription>> {
     if (!this.initialized) {
       return {
         success: false,
@@ -605,7 +598,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!subscriptionId.startsWith('sub_')) {
@@ -617,12 +610,12 @@ export class StripeClient {
           type: 'validation_error',
           param: 'subscriptionId',
         },
-      };
+      }
     }
 
-    const now = new Date();
-    const periodEnd = new Date(now);
-    periodEnd.setMonth(periodEnd.getMonth() + 1);
+    const now = new Date()
+    const periodEnd = new Date(now)
+    periodEnd.setMonth(periodEnd.getMonth() + 1)
 
     const subscription: Subscription = {
       id: subscriptionId,
@@ -633,20 +626,18 @@ export class StripeClient {
       currentPeriodEnd: periodEnd,
       cancelAtPeriodEnd: false,
       createdAt: now,
-    };
+    }
 
     return {
       success: true,
       data: subscription,
-    };
+    }
   }
 
   /**
    * List subscriptions for a customer
    */
-  async listSubscriptions(
-    customerId: string
-  ): Promise<StripeClientResult<Subscription[]>> {
+  async listSubscriptions(customerId: string): Promise<StripeClientResult<Subscription[]>> {
     if (!this.initialized) {
       return {
         success: false,
@@ -655,7 +646,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!customerId.startsWith('cus_')) {
@@ -667,13 +658,13 @@ export class StripeClient {
           type: 'validation_error',
           param: 'customerId',
         },
-      };
+      }
     }
 
     return {
       success: true,
       data: [],
-    };
+    }
   }
 
   // ==========================================================================
@@ -692,7 +683,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!invoiceId.startsWith('in_')) {
@@ -704,7 +695,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'invoiceId',
         },
-      };
+      }
     }
 
     const invoice: Invoice = {
@@ -715,12 +706,12 @@ export class StripeClient {
       status: 'paid',
       paidAt: new Date(),
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: invoice,
-    };
+    }
   }
 
   /**
@@ -735,7 +726,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!customerId.startsWith('cus_')) {
@@ -747,13 +738,13 @@ export class StripeClient {
           type: 'validation_error',
           param: 'customerId',
         },
-      };
+      }
     }
 
     return {
       success: true,
       data: [],
-    };
+    }
   }
 
   /**
@@ -768,7 +759,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!invoiceId.startsWith('in_')) {
@@ -780,7 +771,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'invoiceId',
         },
-      };
+      }
     }
 
     const invoice: Invoice = {
@@ -791,12 +782,12 @@ export class StripeClient {
       status: 'paid',
       paidAt: new Date(),
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: invoice,
-    };
+    }
   }
 
   /**
@@ -811,7 +802,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!invoiceId.startsWith('in_')) {
@@ -823,7 +814,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'invoiceId',
         },
-      };
+      }
     }
 
     const invoice: Invoice = {
@@ -833,12 +824,12 @@ export class StripeClient {
       currency: 'usd',
       status: 'void',
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: invoice,
-    };
+    }
   }
 
   // ==========================================================================
@@ -853,7 +844,7 @@ export class StripeClient {
     signature: string,
     secret?: string
   ): StripeClientResult<WebhookEvent> {
-    const webhookSecret = secret ?? this.config.webhookSecret;
+    const webhookSecret = secret ?? this.config.webhookSecret
 
     if (!webhookSecret) {
       return {
@@ -863,7 +854,7 @@ export class StripeClient {
           message: 'Webhook secret is required',
           type: 'authentication_error',
         },
-      };
+      }
     }
 
     if (!signature) {
@@ -874,7 +865,7 @@ export class StripeClient {
           message: 'Webhook signature is required',
           type: 'authentication_error',
         },
-      };
+      }
     }
 
     // Verify signature format (t=timestamp,v1=signature)
@@ -886,28 +877,28 @@ export class StripeClient {
           message: 'Invalid webhook signature format',
           type: 'authentication_error',
         },
-      };
+      }
     }
 
     try {
       const event = JSON.parse(payload) as {
-        id: string;
-        type: string;
-        data: { object: Record<string, unknown> };
-        created: number;
-      };
+        id: string
+        type: string
+        data: { object: Record<string, unknown> }
+        created: number
+      }
 
       const webhookEvent: WebhookEvent = {
         id: event.id,
         type: event.type,
         data: event.data,
         createdAt: new Date(event.created * 1000),
-      };
+      }
 
       return {
         success: true,
         data: webhookEvent,
-      };
+      }
     } catch {
       return {
         success: false,
@@ -916,7 +907,7 @@ export class StripeClient {
           message: 'Invalid webhook payload',
           type: 'validation_error',
         },
-      };
+      }
     }
   }
 
@@ -937,9 +928,9 @@ export class StripeClient {
       'charge.succeeded',
       'charge.failed',
       'charge.refunded',
-    ];
+    ]
 
-    const handled = supportedEvents.includes(event.type);
+    const handled = supportedEvents.includes(event.type)
 
     return {
       success: true,
@@ -947,7 +938,7 @@ export class StripeClient {
         handled,
         type: event.type,
       },
-    };
+    }
   }
 
   // ==========================================================================
@@ -970,7 +961,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!email || !email.includes('@')) {
@@ -982,7 +973,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'email',
         },
-      };
+      }
     }
 
     const customer: Customer = {
@@ -991,12 +982,12 @@ export class StripeClient {
       name,
       metadata,
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: customer,
-    };
+    }
   }
 
   /**
@@ -1011,7 +1002,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!customerId.startsWith('cus_')) {
@@ -1023,19 +1014,19 @@ export class StripeClient {
           type: 'validation_error',
           param: 'customerId',
         },
-      };
+      }
     }
 
     const customer: Customer = {
       id: customerId,
       email: 'customer@example.com',
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: customer,
-    };
+    }
   }
 
   /**
@@ -1053,7 +1044,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!customerId.startsWith('cus_')) {
@@ -1065,7 +1056,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'customerId',
         },
-      };
+      }
     }
 
     const customer: Customer = {
@@ -1074,12 +1065,12 @@ export class StripeClient {
       name: params.name,
       metadata: params.metadata,
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: customer,
-    };
+    }
   }
 
   /**
@@ -1094,7 +1085,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!customerId.startsWith('cus_')) {
@@ -1106,13 +1097,13 @@ export class StripeClient {
           type: 'validation_error',
           param: 'customerId',
         },
-      };
+      }
     }
 
     return {
       success: true,
       data: { deleted: true },
-    };
+    }
   }
 
   // ==========================================================================
@@ -1134,7 +1125,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!paymentMethodId.startsWith('pm_')) {
@@ -1146,7 +1137,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'paymentMethodId',
         },
-      };
+      }
     }
 
     if (!customerId.startsWith('cus_')) {
@@ -1158,7 +1149,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'customerId',
         },
-      };
+      }
     }
 
     const paymentMethod: PaymentMethod = {
@@ -1171,20 +1162,18 @@ export class StripeClient {
         expYear: 2025,
       },
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: paymentMethod,
-    };
+    }
   }
 
   /**
    * Detach a payment method from a customer
    */
-  async detachPaymentMethod(
-    paymentMethodId: string
-  ): Promise<StripeClientResult<PaymentMethod>> {
+  async detachPaymentMethod(paymentMethodId: string): Promise<StripeClientResult<PaymentMethod>> {
     if (!this.initialized) {
       return {
         success: false,
@@ -1193,7 +1182,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!paymentMethodId.startsWith('pm_')) {
@@ -1205,7 +1194,7 @@ export class StripeClient {
           type: 'validation_error',
           param: 'paymentMethodId',
         },
-      };
+      }
     }
 
     const paymentMethod: PaymentMethod = {
@@ -1218,12 +1207,12 @@ export class StripeClient {
         expYear: 2025,
       },
       createdAt: new Date(),
-    };
+    }
 
     return {
       success: true,
       data: paymentMethod,
-    };
+    }
   }
 
   /**
@@ -1241,7 +1230,7 @@ export class StripeClient {
           message: 'Stripe client not initialized',
           type: 'api_error',
         },
-      };
+      }
     }
 
     if (!customerId.startsWith('cus_')) {
@@ -1253,16 +1242,16 @@ export class StripeClient {
           type: 'validation_error',
           param: 'customerId',
         },
-      };
+      }
     }
 
     // Prevent unused variable warning
-    void type;
+    void type
 
     return {
       success: true,
       data: [],
-    };
+    }
   }
 
   // ==========================================================================
@@ -1273,7 +1262,7 @@ export class StripeClient {
    * Generate a random ID
    */
   private generateId(): string {
-    return Math.random().toString(36).substring(2, 15);
+    return Math.random().toString(36).substring(2, 15)
   }
 
   /**
@@ -1283,61 +1272,61 @@ export class StripeClient {
     const formatter = new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: currency.toUpperCase(),
-    });
-    return formatter.format(amount / 100);
+    })
+    return formatter.format(amount / 100)
   }
 
   /**
    * Parse amount from string
    */
   parseAmount(amountString: string): number {
-    const cleaned = amountString.replace(/[^0-9.-]/g, '');
-    return Math.round(parseFloat(cleaned) * 100);
+    const cleaned = amountString.replace(/[^0-9.-]/g, '')
+    return Math.round(parseFloat(cleaned) * 100)
   }
 
   /**
    * Validate card number using Luhn algorithm
    */
   validateCardNumber(cardNumber: string): boolean {
-    const cleaned = cardNumber.replace(/\D/g, '');
+    const cleaned = cardNumber.replace(/\D/g, '')
     if (cleaned.length < 13 || cleaned.length > 19) {
-      return false;
+      return false
     }
 
-    let sum = 0;
-    let isEven = false;
+    let sum = 0
+    let isEven = false
 
     for (let i = cleaned.length - 1; i >= 0; i--) {
-      let digit = parseInt(cleaned[i], 10);
+      let digit = parseInt(cleaned[i], 10)
 
       if (isEven) {
-        digit *= 2;
+        digit *= 2
         if (digit > 9) {
-          digit -= 9;
+          digit -= 9
         }
       }
 
-      sum += digit;
-      isEven = !isEven;
+      sum += digit
+      isEven = !isEven
     }
 
-    return sum % 10 === 0;
+    return sum % 10 === 0
   }
 
   /**
    * Get card brand from card number
    */
   getCardBrand(cardNumber: string): string {
-    const cleaned = cardNumber.replace(/\D/g, '');
+    const cleaned = cardNumber.replace(/\D/g, '')
 
-    if (/^4/.test(cleaned)) return 'visa';
-    if (/^5[1-5]/.test(cleaned)) return 'mastercard';
-    if (/^3[47]/.test(cleaned)) return 'amex';
-    if (/^6(?:011|5)/.test(cleaned)) return 'discover';
-    if (/^35(?:2[89]|[3-8])/.test(cleaned)) return 'jcb';
-    if (/^3(?:0[0-5]|[68])/.test(cleaned)) return 'diners';
+    if (/^4/.test(cleaned)) return 'visa'
+    if (/^5[1-5]/.test(cleaned)) return 'mastercard'
+    if (/^3[47]/.test(cleaned)) return 'amex'
+    if (/^6(?:011|5)/.test(cleaned)) return 'discover'
+    if (/^35(?:2[89]|[3-8])/.test(cleaned)) return 'jcb'
+    if (/^3(?:0[0-5]|[68])/.test(cleaned)) return 'diners'
 
-    return 'unknown';
+    return 'unknown'
   }
 }
 
@@ -1345,24 +1334,24 @@ export class StripeClient {
 // Factory Function
 // ============================================================================
 
-let stripeClientInstance: StripeClient | null = null;
+let stripeClientInstance: StripeClient | null = null
 
 /**
  * Create or get the Stripe client singleton
  */
 export function getStripeClient(config?: StripeConfig): StripeClient {
   if (!stripeClientInstance && config) {
-    stripeClientInstance = new StripeClient(config);
+    stripeClientInstance = new StripeClient(config)
   }
   if (!stripeClientInstance) {
-    throw new Error('Stripe client not initialized. Call with config first.');
+    throw new Error('Stripe client not initialized. Call with config first.')
   }
-  return stripeClientInstance;
+  return stripeClientInstance
 }
 
 /**
  * Reset the Stripe client (for testing)
  */
 export function resetStripeClient(): void {
-  stripeClientInstance = null;
+  stripeClientInstance = null
 }

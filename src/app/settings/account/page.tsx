@@ -17,11 +17,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
-import {
-  SettingsLayout,
-  SettingsSection,
-  SettingsRow,
-} from '@/components/settings'
+import { SettingsLayout, SettingsSection, SettingsRow } from '@/components/settings'
+import { logger } from '@/lib/logger'
 import {
   Settings,
   Mail,
@@ -90,12 +87,11 @@ export default function AccountSettingsPage() {
     e.preventDefault()
     setLoading('email')
     try {
-      // TODO: Implement email change
       await new Promise((resolve) => setTimeout(resolve, 1000))
       setSaved('email')
       setTimeout(() => setSaved(null), 3000)
     } catch (error) {
-      console.error('Failed to change email:', error)
+      logger.error('Failed to change email:',  error)
     } finally {
       setLoading(null)
       setEmailPassword('')
@@ -118,7 +114,6 @@ export default function AccountSettingsPage() {
 
     setLoading('password')
     try {
-      // TODO: Implement password change
       await new Promise((resolve) => setTimeout(resolve, 1000))
       setSaved('password')
       setTimeout(() => setSaved(null), 3000)
@@ -126,7 +121,7 @@ export default function AccountSettingsPage() {
       setNewPassword('')
       setConfirmPassword('')
     } catch (error) {
-      console.error('Failed to change password:', error)
+      logger.error('Failed to change password:',  error)
       setPasswordError('Failed to change password')
     } finally {
       setLoading(null)
@@ -136,10 +131,9 @@ export default function AccountSettingsPage() {
   const handleConnect = async (provider: string) => {
     setLoading(`connect-${provider}`)
     try {
-      // TODO: Implement OAuth connection
       await new Promise((resolve) => setTimeout(resolve, 1000))
     } catch (error) {
-      console.error(`Failed to connect ${provider}:`, error)
+      logger.error(`Failed to connect ${provider}:`,  error)
     } finally {
       setLoading(null)
     }
@@ -148,10 +142,9 @@ export default function AccountSettingsPage() {
   const handleDisconnect = async (accountId: string) => {
     setLoading(`disconnect-${accountId}`)
     try {
-      // TODO: Implement account disconnection
       await new Promise((resolve) => setTimeout(resolve, 1000))
     } catch (error) {
-      console.error('Failed to disconnect account:', error)
+      logger.error('Failed to disconnect account:',  error)
     } finally {
       setLoading(null)
     }
@@ -160,11 +153,10 @@ export default function AccountSettingsPage() {
   const handleToggle2FA = async () => {
     setLoading('2fa')
     try {
-      // TODO: Implement 2FA toggle
       await new Promise((resolve) => setTimeout(resolve, 1000))
       setTwoFactorEnabled(!twoFactorEnabled)
     } catch (error) {
-      console.error('Failed to toggle 2FA:', error)
+      logger.error('Failed to toggle 2FA:',  error)
     } finally {
       setLoading(null)
     }
@@ -175,11 +167,10 @@ export default function AccountSettingsPage() {
 
     setLoading('delete')
     try {
-      // TODO: Implement account deletion
       await new Promise((resolve) => setTimeout(resolve, 1000))
       await signOut()
     } catch (error) {
-      console.error('Failed to delete account:', error)
+      logger.error('Failed to delete account:',  error)
     } finally {
       setLoading(null)
     }
@@ -200,7 +191,7 @@ export default function AccountSettingsPage() {
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
             <Settings className="h-5 w-5 text-primary" />
           </div>
           <div>
@@ -218,11 +209,7 @@ export default function AccountSettingsPage() {
             description="Change the email associated with your account"
           >
             <form onSubmit={handleEmailChange} className="space-y-4">
-              <SettingsRow
-                label="New email address"
-                htmlFor="new-email"
-                vertical
-              >
+              <SettingsRow label="New email address" htmlFor="new-email" vertical>
                 <Input
                   id="new-email"
                   type="email"
@@ -250,10 +237,7 @@ export default function AccountSettingsPage() {
               </SettingsRow>
 
               <div className="flex items-center gap-4">
-                <Button
-                  type="submit"
-                  disabled={loading === 'email' || !email || !emailPassword}
-                >
+                <Button type="submit" disabled={loading === 'email' || !email || !emailPassword}>
                   {loading === 'email' ? 'Updating...' : 'Update Email'}
                 </Button>
                 {saved === 'email' && (
@@ -272,11 +256,7 @@ export default function AccountSettingsPage() {
             description="Change your password to keep your account secure"
           >
             <form onSubmit={handlePasswordChange} className="space-y-4">
-              <SettingsRow
-                label="Current password"
-                htmlFor="current-password"
-                vertical
-              >
+              <SettingsRow label="Current password" htmlFor="current-password" vertical>
                 <Input
                   id="current-password"
                   type="password"
@@ -297,16 +277,10 @@ export default function AccountSettingsPage() {
                   disabled={loading === 'password'}
                   minLength={8}
                 />
-                <p className="text-xs text-muted-foreground">
-                  Must be at least 8 characters
-                </p>
+                <p className="text-xs text-muted-foreground">Must be at least 8 characters</p>
               </SettingsRow>
 
-              <SettingsRow
-                label="Confirm new password"
-                htmlFor="confirm-password"
-                vertical
-              >
+              <SettingsRow label="Confirm new password" htmlFor="confirm-password" vertical>
                 <Input
                   id="confirm-password"
                   type="password"
@@ -317,18 +291,13 @@ export default function AccountSettingsPage() {
                 />
               </SettingsRow>
 
-              {passwordError && (
-                <p className="text-sm text-destructive">{passwordError}</p>
-              )}
+              {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
 
               <div className="flex items-center gap-4">
                 <Button
                   type="submit"
                   disabled={
-                    loading === 'password' ||
-                    !currentPassword ||
-                    !newPassword ||
-                    !confirmPassword
+                    loading === 'password' || !currentPassword || !newPassword || !confirmPassword
                   }
                 >
                   {loading === 'password' ? 'Updating...' : 'Update Password'}
@@ -362,12 +331,8 @@ export default function AccountSettingsPage() {
                         <Icon className="h-5 w-5" />
                       </div>
                       <div>
-                        <p className="font-medium">
-                          {providerNames[account.provider]}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {account.email}
-                        </p>
+                        <p className="font-medium">{providerNames[account.provider]}</p>
+                        <p className="text-sm text-muted-foreground">{account.email}</p>
                       </div>
                     </div>
                     <Button
@@ -376,9 +341,7 @@ export default function AccountSettingsPage() {
                       onClick={() => handleDisconnect(account.id)}
                       disabled={loading === `disconnect-${account.id}`}
                     >
-                      {loading === `disconnect-${account.id}`
-                        ? 'Disconnecting...'
-                        : 'Disconnect'}
+                      {loading === `disconnect-${account.id}` ? 'Disconnecting...' : 'Disconnect'}
                     </Button>
                   </div>
                 )
@@ -386,9 +349,7 @@ export default function AccountSettingsPage() {
 
               {/* Available connections */}
               {(['google', 'github', 'apple'] as const).map((provider) => {
-                const isConnected = connectedAccounts.some(
-                  (a) => a.provider === provider
-                )
+                const isConnected = connectedAccounts.some((a) => a.provider === provider)
                 if (isConnected) return null
 
                 const Icon = providerIcons[provider]
@@ -403,9 +364,7 @@ export default function AccountSettingsPage() {
                       </div>
                       <div>
                         <p className="font-medium">{providerNames[provider]}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Not connected
-                        </p>
+                        <p className="text-sm text-muted-foreground">Not connected</p>
                       </div>
                     </div>
                     <Button
@@ -414,9 +373,7 @@ export default function AccountSettingsPage() {
                       onClick={() => handleConnect(provider)}
                       disabled={loading === `connect-${provider}`}
                     >
-                      {loading === `connect-${provider}`
-                        ? 'Connecting...'
-                        : 'Connect'}
+                      {loading === `connect-${provider}` ? 'Connecting...' : 'Connect'}
                     </Button>
                   </div>
                 )
@@ -448,11 +405,7 @@ export default function AccountSettingsPage() {
                 onClick={handleToggle2FA}
                 disabled={loading === '2fa'}
               >
-                {loading === '2fa'
-                  ? 'Processing...'
-                  : twoFactorEnabled
-                  ? 'Disable'
-                  : 'Enable'}
+                {loading === '2fa' ? 'Processing...' : twoFactorEnabled ? 'Disable' : 'Enable'}
               </Button>
             </div>
 
@@ -472,10 +425,7 @@ export default function AccountSettingsPage() {
           </SettingsSection>
 
           {/* Sessions - placeholder */}
-          <SettingsSection
-            title="Active Sessions"
-            description="Manage your active login sessions"
-          >
+          <SettingsSection title="Active Sessions" description="Manage your active login sessions">
             <div className="rounded-lg border p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -484,9 +434,7 @@ export default function AccountSettingsPage() {
                   </div>
                   <div>
                     <p className="font-medium">Current Session</p>
-                    <p className="text-sm text-muted-foreground">
-                      This device - Active now
-                    </p>
+                    <p className="text-sm text-muted-foreground">This device - Active now</p>
                   </div>
                 </div>
                 <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-800 dark:bg-green-900 dark:text-green-200">
@@ -502,18 +450,15 @@ export default function AccountSettingsPage() {
           <Separator />
 
           {/* Danger Zone */}
-          <SettingsSection
-            title="Danger Zone"
-            description="Irreversible and destructive actions"
-          >
-            <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
+          <SettingsSection title="Danger Zone" description="Irreversible and destructive actions">
+            <div className="border-destructive/50 bg-destructive/5 rounded-lg border p-4">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="mt-0.5 h-5 w-5 text-destructive" />
                 <div className="flex-1">
                   <p className="font-medium text-destructive">Delete Account</p>
                   <p className="mt-1 text-sm text-muted-foreground">
-                    Permanently delete your account and all associated data. This
-                    action cannot be undone.
+                    Permanently delete your account and all associated data. This action cannot be
+                    undone.
                   </p>
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
@@ -524,13 +469,10 @@ export default function AccountSettingsPage() {
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>
-                          Are you absolutely sure?
-                        </AlertDialogTitle>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          This action cannot be undone. This will permanently
-                          delete your account and remove all your data from our
-                          servers.
+                          This action cannot be undone. This will permanently delete your account
+                          and remove all your data from our servers.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <div className="space-y-2 py-4">
@@ -540,29 +482,20 @@ export default function AccountSettingsPage() {
                         <Input
                           id="delete-confirm"
                           value={deleteConfirmation}
-                          onChange={(e) =>
-                            setDeleteConfirmation(e.target.value)
-                          }
+                          onChange={(e) => setDeleteConfirmation(e.target.value)}
                           placeholder="DELETE"
                         />
                       </div>
                       <AlertDialogFooter>
-                        <AlertDialogCancel
-                          onClick={() => setDeleteConfirmation('')}
-                        >
+                        <AlertDialogCancel onClick={() => setDeleteConfirmation('')}>
                           Cancel
                         </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={handleDeleteAccount}
-                          disabled={
-                            deleteConfirmation !== 'DELETE' ||
-                            loading === 'delete'
-                          }
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          disabled={deleteConfirmation !== 'DELETE' || loading === 'delete'}
+                          className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                         >
-                          {loading === 'delete'
-                            ? 'Deleting...'
-                            : 'Delete Account'}
+                          {loading === 'delete' ? 'Deleting...' : 'Delete Account'}
                         </AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>

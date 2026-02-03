@@ -138,6 +138,7 @@ Click **"Test Connection"** to verify the configuration.
    - Application username: Email
 
 3. **Attribute Statements**
+
    ```
    email → user.email
    firstName → user.firstName
@@ -146,6 +147,7 @@ Click **"Test Connection"** to verify the configuration.
    ```
 
 4. **Group Attribute Statements**
+
    ```
    groups → Matches regex: .*
    ```
@@ -172,6 +174,7 @@ Click **"Test Connection"** to verify the configuration.
      - Reply URL (ACS): Your ACS URL
 
 3. **Attributes & Claims**
+
    ```
    email → user.mail
    firstName → user.givenname
@@ -207,6 +210,7 @@ Click **"Test Connection"** to verify the configuration.
    - Name ID: Basic Information > Primary email
 
 4. **Attribute Mapping**
+
    ```
    email → Primary email
    firstName → First name
@@ -250,6 +254,7 @@ Click **"Test Connection"** to verify the configuration.
 
 **Cause**: Certificate mismatch or expired
 **Solution**:
+
 - Verify certificate format (PEM)
 - Check certificate expiration
 - Ensure no extra whitespace in certificate
@@ -258,6 +263,7 @@ Click **"Test Connection"** to verify the configuration.
 
 **Cause**: Incorrect attribute mapping
 **Solution**:
+
 - Check IdP attribute names
 - Use browser dev tools to inspect SAML response
 - Update attribute mapping in nself-chat
@@ -266,6 +272,7 @@ Click **"Test Connection"** to verify the configuration.
 
 **Cause**: User's email domain not in allowed list
 **Solution**:
+
 - Add domain to "Allowed Domains" list
 - Or remove domain restrictions
 
@@ -273,6 +280,7 @@ Click **"Test Connection"** to verify the configuration.
 
 **Cause**: Missing required attributes
 **Solution**:
+
 - Ensure email attribute is configured
 - Check IdP sends required attributes
 - Review audit logs for details
@@ -283,8 +291,8 @@ Enable verbose logging:
 
 ```typescript
 // In production environment variables
-SAML_DEBUG=true
-SAML_LOG_LEVEL=debug
+SAML_DEBUG = true
+SAML_LOG_LEVEL = debug
 ```
 
 ### Testing Tools

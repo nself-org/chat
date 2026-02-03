@@ -7,6 +7,8 @@ import { useQuery, useMutation, gql } from '@apollo/client'
 import { useCallback } from 'react'
 import type { SocialAccount, SocialPlatform } from '@/lib/social/types'
 
+import { logger } from '@/lib/logger'
+
 const GET_SOCIAL_ACCOUNTS = gql`
   query GetSocialAccounts {
     nchat_social_accounts(order_by: { created_at: desc }) {
@@ -27,10 +29,7 @@ const GET_SOCIAL_ACCOUNTS = gql`
 
 const TOGGLE_ACCOUNT_STATUS = gql`
   mutation ToggleAccountStatus($id: uuid!, $isActive: Boolean!) {
-    update_nchat_social_accounts_by_pk(
-      pk_columns: { id: $id }
-      _set: { is_active: $isActive }
-    ) {
+    update_nchat_social_accounts_by_pk(pk_columns: { id: $id }, _set: { is_active: $isActive }) {
       id
       is_active
     }
@@ -47,7 +46,7 @@ const DELETE_ACCOUNT = gql`
 
 export function useSocialAccounts() {
   const { data, loading, error, refetch } = useQuery(GET_SOCIAL_ACCOUNTS, {
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
   })
 
   const [toggleStatusMutation] = useMutation(TOGGLE_ACCOUNT_STATUS)
@@ -75,12 +74,12 @@ export function useSocialAccounts() {
             update_nchat_social_accounts_by_pk: {
               __typename: 'nchat_social_accounts',
               id,
-              is_active: isActive
-            }
-          }
+              is_active: isActive,
+            },
+          },
         })
       } catch (err) {
-        console.error('Failed to toggle account status:', err)
+        logger.error('Failed to toggle account status:', err)
         throw err
       }
     },
@@ -98,10 +97,10 @@ export function useSocialAccounts() {
           update(cache) {
             cache.evict({ id: `nchat_social_accounts:${id}` })
             cache.gc()
-          }
+          },
         })
       } catch (err) {
-        console.error('Failed to delete account:', err)
+        logger.error('Failed to delete account:', err)
         throw err
       }
     },
@@ -116,7 +115,7 @@ export function useSocialAccounts() {
       const response = await fetch('/api/social/poll', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ accountId })
+        body: JSON.stringify({ accountId }),
       })
 
       if (!response.ok) {
@@ -126,7 +125,7 @@ export function useSocialAccounts() {
       const result = await response.json()
       return result.result
     } catch (err) {
-      console.error('Failed to trigger import:', err)
+      logger.error('Failed to trigger import:', err)
       throw err
     }
   }, [])
@@ -173,6 +172,6 @@ export function useSocialAccounts() {
     deleteAccount,
     triggerImport,
     getAccountsByPlatform,
-    isPlatformConnected
+    isPlatformConnected,
   }
 }

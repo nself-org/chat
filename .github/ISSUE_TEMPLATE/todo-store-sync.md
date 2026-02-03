@@ -13,23 +13,29 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
 ## Affected Components
 
 ### Notification Settings
+
 - [ ] `src/stores/notification-settings-store.ts:970` - Save to backend
 - [ ] `src/stores/notification-settings-store.ts:1006` - Load from backend
 
 ### Admin Settings
+
 - [ ] `src/components/admin/settings-management.tsx:20` - Save admin settings
 
 ### Message History
+
 - [ ] `src/lib/message-history/history-manager.ts:199` - Fetch from server
 - [ ] `src/lib/message-history/history-manager.ts:493` - Server-side fetching
 
 ### Edit History
+
 - [ ] `src/hooks/useEditHistory.ts:113` - Fetch edit history from GraphQL
 
 ### Disappearing Messages
+
 - [ ] `src/lib/disappearing/disappearing-settings.ts:321` - GraphQL mutation
 
 ### Settings Sync
+
 - [ ] `src/lib/settings/settings-sync.ts:231` - Push API call
 - [ ] `src/lib/settings/settings-sync.ts:241` - Pull API call
 
@@ -38,6 +44,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
 ### Store Synchronization Pattern
 
 1. **Bi-directional Sync:**
+
    ```typescript
    // src/lib/sync/store-sync.ts
    export class StoreSync<T> {
@@ -68,6 +75,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
    ```
 
 2. **Optimistic Updates:**
+
    ```typescript
    const updateSetting = async (key: string, value: any) => {
      // Update UI immediately
@@ -92,6 +100,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
 ### Notification Settings Sync
 
 1. **GraphQL Mutation:**
+
    ```graphql
    mutation UpdateNotificationSettings($userId: uuid!, $settings: jsonb!) {
      update_nchat_users_by_pk(
@@ -106,6 +115,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
    ```
 
 2. **Implementation:**
+
    ```typescript
    // src/stores/notification-settings-store.ts
    const saveToBackend = async (settings: NotificationSettings) => {
@@ -128,18 +138,11 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
 ### Message History Sync
 
 1. **Pagination Strategy:**
+
    ```graphql
-   query GetMessageHistory(
-     $channelId: uuid!
-     $limit: Int!
-     $offset: Int!
-     $before: timestamp
-   ) {
+   query GetMessageHistory($channelId: uuid!, $limit: Int!, $offset: Int!, $before: timestamp) {
      nchat_messages(
-       where: {
-         channel_id: { _eq: $channelId }
-         created_at: { _lt: $before }
-       }
+       where: { channel_id: { _eq: $channelId }, created_at: { _lt: $before } }
        order_by: { created_at: desc }
        limit: $limit
        offset: $offset
@@ -155,6 +158,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
    ```
 
 2. **Infinite Scroll:**
+
    ```typescript
    const loadMoreMessages = async () => {
      const oldestMessage = messages[0]
@@ -174,6 +178,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
 ### Edit History Sync
 
 1. **GraphQL Query:**
+
    ```graphql
    query GetEditHistory($messageId: uuid!) {
      nchat_messages_by_pk(id: $messageId) {
@@ -187,6 +192,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
    ```
 
 2. **Implementation:**
+
    ```typescript
    const loadEditHistory = async (messageId: string) => {
      const { data } = await getEditHistory({
@@ -200,6 +206,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
 ### Admin Settings Sync
 
 1. **App Configuration:**
+
    ```graphql
    mutation UpdateAppConfig($config: jsonb!) {
      update_app_configuration(
@@ -237,10 +244,7 @@ Synchronize all Zustand stores with the GraphQL backend to ensure data persisten
    ) {
      update_nchat_channels_by_pk(
        pk_columns: { id: $channelId }
-       _set: {
-         disappearing_messages_enabled: $enabled
-         disappearing_messages_duration: $duration
-       }
+       _set: { disappearing_messages_enabled: $enabled, disappearing_messages_duration: $duration }
      ) {
        id
        disappearing_messages_enabled
@@ -279,12 +283,14 @@ CREATE TABLE nchat_settings_sync_log (
 ## Implementation Plan
 
 ### Phase 1: Core Infrastructure
+
 1. Create `StoreSync` utility class
 2. Add GraphQL queries/mutations for all stores
 3. Implement optimistic updates pattern
 4. Add conflict resolution logic
 
 ### Phase 2: Store-by-Store Migration
+
 1. Notification settings store
 2. Admin settings store
 3. Message history manager
@@ -293,12 +299,14 @@ CREATE TABLE nchat_settings_sync_log (
 6. General settings sync
 
 ### Phase 3: Real-time Sync
+
 1. GraphQL subscriptions for each store
 2. Handle concurrent updates
 3. Sync on reconnection
 4. Handle offline mode
 
 ### Phase 4: Testing
+
 1. Unit tests for sync logic
 2. Integration tests with backend
 3. Conflict resolution tests
@@ -335,4 +343,5 @@ CREATE TABLE nchat_settings_sync_log (
 - [ ] Use subscriptions only when needed
 
 ## Priority: Medium
+
 Important for production but can be phased in after initial v1.0.0 launch.

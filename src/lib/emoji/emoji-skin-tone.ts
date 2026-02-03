@@ -5,14 +5,14 @@
  * Fitzpatrick skin tone modifiers on emojis.
  */
 
-import type { SkinTone, SkinToneInfo } from './emoji-types';
-import { SKIN_TONES, EMOJI_DATA } from './emoji-data';
+import type { SkinTone, SkinToneInfo } from './emoji-types'
+import { SKIN_TONES, EMOJI_DATA } from './emoji-data'
 
 // ============================================================================
 // Constants
 // ============================================================================
 
-const STORAGE_KEY = 'nchat-emoji-skin-tone';
+const STORAGE_KEY = 'nchat-emoji-skin-tone'
 
 /**
  * Skin tone modifier Unicode codepoints
@@ -23,19 +23,19 @@ export const SKIN_TONE_MODIFIERS: Record<Exclude<SkinTone, ''>, string> = {
   '1F3FD': '\u{1F3FD}', // Medium
   '1F3FE': '\u{1F3FE}', // Medium-Dark
   '1F3FF': '\u{1F3FF}', // Dark
-};
+}
 
 /**
  * Regex to match existing skin tone modifiers
  */
-const SKIN_TONE_REGEX = /[\u{1F3FB}-\u{1F3FF}]/gu;
+const SKIN_TONE_REGEX = /[\u{1F3FB}-\u{1F3FF}]/gu
 
 /**
  * Set of emojis that support skin tones (built from data)
  */
 const SKIN_TONE_EMOJIS = new Set(
-  EMOJI_DATA.filter(e => e.supportsSkinTone).map(e => e.emoji.replace(SKIN_TONE_REGEX, ''))
-);
+  EMOJI_DATA.filter((e) => e.supportsSkinTone).map((e) => e.emoji.replace(SKIN_TONE_REGEX, ''))
+)
 
 // ============================================================================
 // Skin Tone Application
@@ -54,33 +54,36 @@ const SKIN_TONE_EMOJIS = new Set(
 export function applySkinTone(emoji: string, skinTone: SkinTone): string {
   // No modification for default skin tone
   if (!skinTone) {
-    return emoji;
+    return emoji
   }
 
   // Remove any existing skin tone modifiers
-  const baseEmoji = removeSkinTone(emoji);
+  const baseEmoji = removeSkinTone(emoji)
 
   // Check if this emoji supports skin tones
   if (!supportsSkinTone(baseEmoji)) {
-    return emoji;
+    return emoji
   }
 
   // Apply the new skin tone
-  const modifier = SKIN_TONE_MODIFIERS[skinTone];
+  const modifier = SKIN_TONE_MODIFIERS[skinTone]
 
   // For compound emojis (like person raising hand), we need to insert
   // the modifier after the first character
   if (baseEmoji.length > 2) {
     // Get first grapheme cluster
-    const segments = [...new Intl.Segmenter().segment(baseEmoji)];
+    const segments = [...new Intl.Segmenter().segment(baseEmoji)]
     if (segments.length > 1) {
-      const first = segments[0].segment;
-      const rest = segments.slice(1).map(s => s.segment).join('');
-      return first + modifier + rest;
+      const first = segments[0].segment
+      const rest = segments
+        .slice(1)
+        .map((s) => s.segment)
+        .join('')
+      return first + modifier + rest
     }
   }
 
-  return baseEmoji + modifier;
+  return baseEmoji + modifier
 }
 
 /**
@@ -90,7 +93,7 @@ export function applySkinTone(emoji: string, skinTone: SkinTone): string {
  * @returns The base emoji without skin tone
  */
 export function removeSkinTone(emoji: string): string {
-  return emoji.replace(SKIN_TONE_REGEX, '');
+  return emoji.replace(SKIN_TONE_REGEX, '')
 }
 
 /**
@@ -100,8 +103,8 @@ export function removeSkinTone(emoji: string): string {
  * @returns Whether the emoji supports skin tones
  */
 export function supportsSkinTone(emoji: string): boolean {
-  const baseEmoji = removeSkinTone(emoji);
-  return SKIN_TONE_EMOJIS.has(baseEmoji);
+  const baseEmoji = removeSkinTone(emoji)
+  return SKIN_TONE_EMOJIS.has(baseEmoji)
 }
 
 /**
@@ -111,19 +114,19 @@ export function supportsSkinTone(emoji: string): boolean {
  * @returns The skin tone value or empty string for default
  */
 export function getEmojiSkinTone(emoji: string): SkinTone {
-  const match = emoji.match(SKIN_TONE_REGEX);
+  const match = emoji.match(SKIN_TONE_REGEX)
 
   if (!match) {
-    return '';
+    return ''
   }
 
-  const codePoint = match[0].codePointAt(0);
+  const codePoint = match[0].codePointAt(0)
   if (!codePoint) {
-    return '';
+    return ''
   }
 
-  const hex = codePoint.toString(16).toUpperCase() as SkinTone;
-  return Object.keys(SKIN_TONE_MODIFIERS).includes(hex) ? hex : '';
+  const hex = codePoint.toString(16).toUpperCase() as SkinTone
+  return Object.keys(SKIN_TONE_MODIFIERS).includes(hex) ? hex : ''
 }
 
 // ============================================================================
@@ -136,20 +139,20 @@ export function getEmojiSkinTone(emoji: string): SkinTone {
  * @returns The saved skin tone or default
  */
 export function getSavedSkinTone(): SkinTone {
-  if (typeof window === 'undefined') return '';
+  if (typeof window === 'undefined') return ''
 
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (!stored) return '';
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (!stored) return ''
 
     // Validate the stored value
     if (['', '1F3FB', '1F3FC', '1F3FD', '1F3FE', '1F3FF'].includes(stored)) {
-      return stored as SkinTone;
+      return stored as SkinTone
     }
 
-    return '';
+    return ''
   } catch {
-    return '';
+    return ''
   }
 }
 
@@ -159,13 +162,13 @@ export function getSavedSkinTone(): SkinTone {
  * @param skinTone - The skin tone to save
  */
 export function saveSkinTone(skinTone: SkinTone): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') return
 
   try {
     if (skinTone === '') {
-      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(STORAGE_KEY)
     } else {
-      localStorage.setItem(STORAGE_KEY, skinTone);
+      localStorage.setItem(STORAGE_KEY, skinTone)
     }
   } catch {
     // Storage full or disabled
@@ -176,8 +179,8 @@ export function saveSkinTone(skinTone: SkinTone): void {
  * Clear saved skin tone preference
  */
 export function clearSkinTone(): void {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem(STORAGE_KEY);
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(STORAGE_KEY)
 }
 
 // ============================================================================
@@ -190,7 +193,7 @@ export function clearSkinTone(): void {
  * @returns Array of skin tone information
  */
 export function getSkinToneOptions(): SkinToneInfo[] {
-  return SKIN_TONES;
+  return SKIN_TONES
 }
 
 /**
@@ -200,7 +203,7 @@ export function getSkinToneOptions(): SkinToneInfo[] {
  * @returns Skin tone info or undefined
  */
 export function getSkinToneInfo(value: SkinTone): SkinToneInfo | undefined {
-  return SKIN_TONES.find(t => t.value === value);
+  return SKIN_TONES.find((t) => t.value === value)
 }
 
 /**
@@ -210,8 +213,8 @@ export function getSkinToneInfo(value: SkinTone): SkinToneInfo | undefined {
  * @returns The display name
  */
 export function getSkinToneName(value: SkinTone): string {
-  const info = getSkinToneInfo(value);
-  return info?.name ?? 'Default';
+  const info = getSkinToneInfo(value)
+  return info?.name ?? 'Default'
 }
 
 /**
@@ -221,8 +224,8 @@ export function getSkinToneName(value: SkinTone): string {
  * @returns The preview emoji (waving hand with skin tone)
  */
 export function getSkinTonePreview(value: SkinTone): string {
-  const info = getSkinToneInfo(value);
-  return info?.emoji ?? '\u{1F44B}';
+  const info = getSkinToneInfo(value)
+  return info?.emoji ?? '\u{1F44B}'
 }
 
 // ============================================================================
@@ -237,7 +240,7 @@ export function getSkinTonePreview(value: SkinTone): string {
  * @returns Array of emojis with skin tone applied
  */
 export function applySkintoneToAll(emojis: string[], skinTone: SkinTone): string[] {
-  return emojis.map(emoji => applySkinTone(emoji, skinTone));
+  return emojis.map((emoji) => applySkinTone(emoji, skinTone))
 }
 
 /**
@@ -247,7 +250,7 @@ export function applySkintoneToAll(emojis: string[], skinTone: SkinTone): string
  * @returns Array of base emojis without skin tone
  */
 export function removeSkinToneFromAll(emojis: string[]): string[] {
-  return emojis.map(emoji => removeSkinTone(emoji));
+  return emojis.map((emoji) => removeSkinTone(emoji))
 }
 
 // ============================================================================
@@ -261,10 +264,10 @@ export function removeSkinToneFromAll(emojis: string[]): string[] {
  * @returns Array of all skin tone variants (including default)
  */
 export function getSkinToneVariants(emoji: string): string[] {
-  const baseEmoji = removeSkinTone(emoji);
+  const baseEmoji = removeSkinTone(emoji)
 
   if (!supportsSkinTone(baseEmoji)) {
-    return [baseEmoji];
+    return [baseEmoji]
   }
 
   return [
@@ -274,7 +277,7 @@ export function getSkinToneVariants(emoji: string): string[] {
     applySkinTone(baseEmoji, '1F3FD'),
     applySkinTone(baseEmoji, '1F3FE'),
     applySkinTone(baseEmoji, '1F3FF'),
-  ];
+  ]
 }
 
 /**
@@ -286,17 +289,17 @@ export function getSkinToneVariants(emoji: string): string[] {
 export function getSkinToneVariantsWithLabels(
   emoji: string
 ): Array<{ emoji: string; skinTone: SkinTone; name: string }> {
-  const baseEmoji = removeSkinTone(emoji);
+  const baseEmoji = removeSkinTone(emoji)
 
   if (!supportsSkinTone(baseEmoji)) {
-    return [{ emoji: baseEmoji, skinTone: '', name: 'Default' }];
+    return [{ emoji: baseEmoji, skinTone: '', name: 'Default' }]
   }
 
-  return SKIN_TONES.map(tone => ({
+  return SKIN_TONES.map((tone) => ({
     emoji: applySkinTone(baseEmoji, tone.value),
     skinTone: tone.value,
     name: tone.name,
-  }));
+  }))
 }
 
 // ============================================================================
@@ -311,7 +314,7 @@ export function getSkinToneVariantsWithLabels(
  * @returns Whether the emojis are the same base emoji
  */
 export function isSameEmoji(a: string, b: string): boolean {
-  return removeSkinTone(a) === removeSkinTone(b);
+  return removeSkinTone(a) === removeSkinTone(b)
 }
 
 /**
@@ -322,7 +325,7 @@ export function isSameEmoji(a: string, b: string): boolean {
  * @returns Whether the emojis are exactly the same
  */
 export function isSameEmojiExact(a: string, b: string): boolean {
-  return a === b;
+  return a === b
 }
 
 // ============================================================================
@@ -336,26 +339,26 @@ export function isSameEmojiExact(a: string, b: string): boolean {
  * @returns The skin tone value
  */
 export function parseSkinTone(str: string): SkinTone {
-  const lower = str.toLowerCase();
+  const lower = str.toLowerCase()
 
   switch (lower) {
     case 'light':
     case 'type-1-2':
-      return '1F3FB';
+      return '1F3FB'
     case 'medium-light':
     case 'type-3':
-      return '1F3FC';
+      return '1F3FC'
     case 'medium':
     case 'type-4':
-      return '1F3FD';
+      return '1F3FD'
     case 'medium-dark':
     case 'type-5':
-      return '1F3FE';
+      return '1F3FE'
     case 'dark':
     case 'type-6':
-      return '1F3FF';
+      return '1F3FF'
     default:
-      return '';
+      return ''
   }
 }
 
@@ -368,17 +371,17 @@ export function parseSkinTone(str: string): SkinTone {
 export function getSkinToneClass(skinTone: SkinTone): string {
   switch (skinTone) {
     case '1F3FB':
-      return 'skin-tone-light';
+      return 'skin-tone-light'
     case '1F3FC':
-      return 'skin-tone-medium-light';
+      return 'skin-tone-medium-light'
     case '1F3FD':
-      return 'skin-tone-medium';
+      return 'skin-tone-medium'
     case '1F3FE':
-      return 'skin-tone-medium-dark';
+      return 'skin-tone-medium-dark'
     case '1F3FF':
-      return 'skin-tone-dark';
+      return 'skin-tone-dark'
     default:
-      return 'skin-tone-default';
+      return 'skin-tone-default'
   }
 }
 
@@ -391,16 +394,16 @@ export function getSkinToneClass(skinTone: SkinTone): string {
 export function getSkinToneColor(skinTone: SkinTone): string {
   switch (skinTone) {
     case '1F3FB':
-      return '#fde7c0';
+      return '#fde7c0'
     case '1F3FC':
-      return '#ddb896';
+      return '#ddb896'
     case '1F3FD':
-      return '#c19a6b';
+      return '#c19a6b'
     case '1F3FE':
-      return '#8b6914';
+      return '#8b6914'
     case '1F3FF':
-      return '#4a3728';
+      return '#4a3728'
     default:
-      return '#ffc93a';
+      return '#ffc93a'
   }
 }

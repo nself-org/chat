@@ -16,19 +16,11 @@ export class ModerationPage {
 
   constructor(page: Page) {
     this.page = page
-    this.queueList = page.locator(
-      '[data-testid="moderation-queue"], .moderation-queue'
-    )
-    this.filterButtons = page.locator(
-      '[data-testid="moderation-filter"], .filter-button'
-    )
-    this.actionButtons = page.locator(
-      '[data-testid="moderation-action"], .action-button'
-    )
+    this.queueList = page.locator('[data-testid="moderation-queue"], .moderation-queue')
+    this.filterButtons = page.locator('[data-testid="moderation-filter"], .filter-button')
+    this.actionButtons = page.locator('[data-testid="moderation-action"], .action-button')
     this.statsCards = page.locator('[data-testid="stat-card"], .stat-card')
-    this.settingsPanel = page.locator(
-      '[data-testid="moderation-settings"], .moderation-settings'
-    )
+    this.settingsPanel = page.locator('[data-testid="moderation-settings"], .moderation-settings')
   }
 
   async goto() {
@@ -41,9 +33,7 @@ export class ModerationPage {
   }
 
   async filterByType(type: 'spam' | 'toxicity' | 'all') {
-    const filterButton = this.page.locator(
-      `button:has-text("${type}"), [data-filter="${type}"]`
-    )
+    const filterButton = this.page.locator(`button:has-text("${type}"), [data-filter="${type}"]`)
     await filterButton.first().click()
     await this.page.waitForTimeout(500)
   }
@@ -61,9 +51,7 @@ export class ModerationPage {
     await actionButton.first().click()
 
     // Handle confirmation if needed
-    const confirmButton = this.page.locator(
-      'button:has-text("Confirm"), [data-testid="confirm"]'
-    )
+    const confirmButton = this.page.locator('button:has-text("Confirm"), [data-testid="confirm"]')
     if (await confirmButton.isVisible({ timeout: 1000 })) {
       await confirmButton.click()
     }
@@ -97,9 +85,7 @@ export class ModerationPage {
     await this.page.goto('/admin/moderation/settings')
     await this.page.waitForLoadState('networkidle')
 
-    const slider = this.page.locator(
-      `[data-testid="${type}-threshold"], input[name*="${type}"]`
-    )
+    const slider = this.page.locator(`[data-testid="${type}-threshold"], input[name*="${type}"]`)
     await slider.fill(value.toString())
     await this.page.waitForTimeout(300)
   }

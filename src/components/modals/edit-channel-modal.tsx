@@ -25,24 +25,37 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import {
-  Hash,
-  Lock,
-  Users,
-  X,
-  Search,
-  Loader2,
-  Smile,
-  Trash2,
-  AlertTriangle,
-} from 'lucide-react'
+import { Hash, Lock, Users, X, Search, Loader2, Smile, Trash2, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+import { logger } from '@/lib/logger'
 
 // Common emoji options for channel icons
 const CHANNEL_EMOJIS = [
-  '💬', '📢', '📣', '🔔', '💡', '🎯', '🚀', '⭐',
-  '📝', '📚', '🎨', '🎵', '🎮', '💻', '🔧', '📊',
-  '🌍', '🏠', '🎉', '❤️', '🔥', '⚡', '🌟', '✨',
+  '💬',
+  '📢',
+  '📣',
+  '🔔',
+  '💡',
+  '🎯',
+  '🚀',
+  '⭐',
+  '📝',
+  '📚',
+  '🎨',
+  '🎵',
+  '🎮',
+  '💻',
+  '🔧',
+  '📊',
+  '🌍',
+  '🏠',
+  '🎉',
+  '❤️',
+  '🔥',
+  '⚡',
+  '🌟',
+  '✨',
 ]
 
 export interface ChannelMember {
@@ -154,15 +167,12 @@ export function EditChannelModal({
     const query = memberSearchQuery.toLowerCase()
     return availableMembers.filter(
       (member) =>
-        member.name.toLowerCase().includes(query) ||
-        member.email.toLowerCase().includes(query)
+        member.name.toLowerCase().includes(query) || member.email.toLowerCase().includes(query)
     )
   }, [availableMembers, memberSearchQuery])
 
   const selectedMemberObjects = useMemo(() => {
-    return availableMembers.filter((member) =>
-      selectedMembers.includes(member.id)
-    )
+    return availableMembers.filter((member) => selectedMembers.includes(member.id))
   }, [availableMembers, selectedMembers])
 
   const handleSlugChange = (value: string) => {
@@ -171,9 +181,7 @@ export function EditChannelModal({
 
   const handleMemberToggle = (memberId: string) => {
     setSelectedMembers((prev) =>
-      prev.includes(memberId)
-        ? prev.filter((id) => id !== memberId)
-        : [...prev, memberId]
+      prev.includes(memberId) ? prev.filter((id) => id !== memberId) : [...prev, memberId]
     )
   }
 
@@ -197,7 +205,7 @@ export function EditChannelModal({
       })
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to update channel:', error)
+      logger.error('Failed to update channel:', error)
     } finally {
       setSubmitting(false)
     }
@@ -211,7 +219,7 @@ export function EditChannelModal({
       await onDelete(channel.id)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to delete channel:', error)
+      logger.error('Failed to delete channel:', error)
     } finally {
       setDeleting(false)
     }
@@ -223,7 +231,7 @@ export function EditChannelModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             {isPrivate ? (
@@ -233,12 +241,10 @@ export function EditChannelModal({
             )}
             Edit channel
           </DialogTitle>
-          <DialogDescription>
-            Update the channel settings and members.
-          </DialogDescription>
+          <DialogDescription>Update the channel settings and members.</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 -mx-6 px-6">
+        <ScrollArea className="-mx-6 flex-1 px-6">
           <div className="space-y-6 py-4">
             {/* Channel Name */}
             <div className="space-y-2">
@@ -250,7 +256,7 @@ export function EditChannelModal({
                   type="button"
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                   className={cn(
-                    'flex items-center justify-center h-10 w-10 rounded-xl border border-input bg-background hover:bg-accent transition-colors',
+                    'flex h-10 w-10 items-center justify-center rounded-xl border border-input bg-background transition-colors hover:bg-accent',
                     emoji && 'text-xl'
                   )}
                 >
@@ -266,7 +272,7 @@ export function EditChannelModal({
                 />
               </div>
               {showEmojiPicker && (
-                <div className="p-3 border rounded-xl bg-background">
+                <div className="rounded-xl border bg-background p-3">
                   <div className="grid grid-cols-8 gap-1">
                     {CHANNEL_EMOJIS.map((e) => (
                       <button
@@ -277,7 +283,7 @@ export function EditChannelModal({
                           setShowEmojiPicker(false)
                         }}
                         className={cn(
-                          'p-2 text-lg rounded-lg hover:bg-accent transition-colors',
+                          'rounded-lg p-2 text-lg transition-colors hover:bg-accent',
                           emoji === e && 'bg-accent'
                         )}
                       >
@@ -306,7 +312,7 @@ export function EditChannelModal({
             <div className="space-y-2">
               <Label htmlFor="channel-slug">Slug</Label>
               <div className="flex items-center gap-2">
-                <span className="text-muted-foreground text-sm">#</span>
+                <span className="text-sm text-muted-foreground">#</span>
                 <Input
                   id="channel-slug"
                   placeholder="channel-slug"
@@ -324,8 +330,7 @@ export function EditChannelModal({
             {/* Description */}
             <div className="space-y-2">
               <Label htmlFor="channel-description">
-                Description{' '}
-                <span className="text-muted-foreground">(optional)</span>
+                Description <span className="text-muted-foreground">(optional)</span>
               </Label>
               <Textarea
                 id="channel-description"
@@ -343,9 +348,7 @@ export function EditChannelModal({
                 <Label>Category</Label>
                 <Select
                   value={categoryId || 'none'}
-                  onValueChange={(value) =>
-                    setCategoryId(value === 'none' ? null : value)
-                  }
+                  onValueChange={(value) => setCategoryId(value === 'none' ? null : value)}
                   disabled={isLoading || submitting}
                 >
                   <SelectTrigger>
@@ -390,13 +393,9 @@ export function EditChannelModal({
 
               {/* Selected members */}
               {selectedMemberObjects.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 p-2 border rounded-xl bg-muted/30">
+                <div className="bg-muted/30 flex flex-wrap gap-1.5 rounded-xl border p-2">
                   {selectedMemberObjects.map((member) => (
-                    <Badge
-                      key={member.id}
-                      variant="secondary"
-                      className="gap-1 pr-1"
-                    >
+                    <Badge key={member.id} variant="secondary" className="gap-1 pr-1">
                       {member.name}
                       <button
                         type="button"
@@ -414,7 +413,7 @@ export function EditChannelModal({
               {availableMembers.length > 0 && (
                 <>
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       placeholder="Search members..."
                       value={memberSearchQuery}
@@ -424,9 +423,9 @@ export function EditChannelModal({
                     />
                   </div>
 
-                  <div className="border rounded-xl max-h-40 overflow-y-auto">
+                  <div className="max-h-40 overflow-y-auto rounded-xl border">
                     {filteredMembers.length === 0 ? (
-                      <p className="text-sm text-muted-foreground text-center py-4">
+                      <p className="py-4 text-center text-sm text-muted-foreground">
                         No members found
                       </p>
                     ) : (
@@ -436,24 +435,18 @@ export function EditChannelModal({
                           type="button"
                           onClick={() => handleMemberToggle(member.id)}
                           className={cn(
-                            'flex items-center gap-3 w-full px-3 py-2 hover:bg-accent transition-colors text-left',
+                            'flex w-full items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-accent',
                             selectedMembers.includes(member.id) && 'bg-accent'
                           )}
                           disabled={isLoading || submitting}
                         >
                           <Avatar className="h-8 w-8">
                             <AvatarImage src={member.avatarUrl} />
-                            <AvatarFallback>
-                              {member.name.charAt(0).toUpperCase()}
-                            </AvatarFallback>
+                            <AvatarFallback>{member.name.charAt(0).toUpperCase()}</AvatarFallback>
                           </Avatar>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium truncate">
-                              {member.name}
-                            </p>
-                            <p className="text-xs text-muted-foreground truncate">
-                              {member.email}
-                            </p>
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-sm font-medium">{member.name}</p>
+                            <p className="truncate text-xs text-muted-foreground">{member.email}</p>
                           </div>
                           {selectedMembers.includes(member.id) && (
                             <Badge variant="secondary" className="text-xs">
@@ -473,7 +466,7 @@ export function EditChannelModal({
               <>
                 <Separator />
                 <div className="space-y-3">
-                  <h4 className="text-sm font-medium text-destructive flex items-center gap-2">
+                  <h4 className="flex items-center gap-2 text-sm font-medium text-destructive">
                     <AlertTriangle className="h-4 w-4" />
                     Danger Zone
                   </h4>
@@ -489,10 +482,10 @@ export function EditChannelModal({
                       Delete Channel
                     </Button>
                   ) : (
-                    <div className="space-y-3 p-4 border border-destructive rounded-xl bg-destructive/5">
+                    <div className="bg-destructive/5 space-y-3 rounded-xl border border-destructive p-4">
                       <p className="text-sm text-destructive">
-                        This action cannot be undone. All messages and files in
-                        this channel will be permanently deleted.
+                        This action cannot be undone. All messages and files in this channel will be
+                        permanently deleted.
                       </p>
                       <p className="text-sm">
                         Type <strong>{channel.name}</strong> to confirm:
@@ -517,14 +510,10 @@ export function EditChannelModal({
                         <Button
                           variant="destructive"
                           onClick={handleDelete}
-                          disabled={
-                            deleteConfirmText !== channel.name || deleting
-                          }
+                          disabled={deleteConfirmText !== channel.name || deleting}
                           className="flex-1"
                         >
-                          {deleting && (
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          )}
+                          {deleting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                           Delete
                         </Button>
                       </div>
@@ -537,17 +526,10 @@ export function EditChannelModal({
         </ScrollArea>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={submitting}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>
             Cancel
           </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!isValid || isLoading || submitting}
-          >
+          <Button onClick={handleSubmit} disabled={!isValid || isLoading || submitting}>
             {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Save Changes
           </Button>

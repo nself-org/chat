@@ -8,6 +8,8 @@
 import { Queue, Worker, QueueEvents, Job } from 'bullmq'
 import { Redis } from 'ioredis'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -137,18 +139,21 @@ export class WebhookQueueManager {
    * Setup queue event listeners
    */
   private setupEventListeners(): void {
-    this.worker.on('completed', (job: Job<OutgoingWebhookPayload>, result: WebhookDeliveryResult) => {
-      console.log(`Webhook ${job.data.id} delivered successfully to ${job.data.url}`)
-      const callback = this.deliveryCallbacks.get(job.data.id)
-      if (callback) {
-        callback(result)
-        this.deliveryCallbacks.delete(job.data.id)
+    this.worker.on(
+      'completed',
+      (job: Job<OutgoingWebhookPayload>, result: WebhookDeliveryResult) => {
+        // REMOVED: console.log(`Webhook ${job.data.id} delivered successfully to ${job.data.url}`)
+        const callback = this.deliveryCallbacks.get(job.data.id)
+        if (callback) {
+          callback(result)
+          this.deliveryCallbacks.delete(job.data.id)
+        }
       }
-    })
+    )
 
     this.worker.on('failed', (job: Job<OutgoingWebhookPayload> | undefined, error: Error) => {
       if (job) {
-        console.error(`Webhook ${job.data.id} failed:`, error.message)
+        logger.error(`Webhook ${job.data.id} failed:`, error.message)
         const result: WebhookDeliveryResult = {
           success: false,
           error: error.message,
@@ -165,7 +170,7 @@ export class WebhookQueueManager {
     })
 
     this.worker.on('error', (error: Error) => {
-      console.error('Webhook worker error:', error)
+      logger.error('Webhook worker error:', error)
     })
   }
 
@@ -189,10 +194,7 @@ export class WebhookQueueManager {
 
       // Add signature if secret is provided
       if (payload.secret) {
-        const signature = await this.generateSignature(
-          JSON.stringify(payload.data),
-          payload.secret
-        )
+        const signature = await this.generateSignature(JSON.stringify(payload.data), payload.secret)
         headers['X-Webhook-Signature'] = `sha256=${signature}`
       }
 
@@ -379,15 +381,17 @@ export class WebhookQueueManager {
   async getRecentWebhooks(
     status: 'completed' | 'failed' | 'active' | 'waiting',
     limit = 50
-  ): Promise<Array<{
-    id: string
-    url: string
-    event: string
-    state: string
-    attemptsMade: number
-    timestamp: number
-    result?: WebhookDeliveryResult
-  }>> {
+  ): Promise<
+    Array<{
+      id: string
+      url: string
+      event: string
+      state: string
+      attemptsMade: number
+      timestamp: number
+      result?: WebhookDeliveryResult
+    }>
+  > {
     let jobs: Job<OutgoingWebhookPayload>[] = []
 
     switch (status) {
@@ -517,7 +521,7 @@ export function getWebhookQueueManager(config?: WebhookQueueConfig): WebhookQueu
  */
 export function initializeWebhookQueue(config: WebhookQueueConfig): WebhookQueueManager {
   if (managerInstance) {
-    console.warn('WebhookQueueManager already initialized. Returning existing instance.')
+    logger.warn('WebhookQueueManager already initialized. Returning existing instance.')
     return managerInstance
   }
   managerInstance = new WebhookQueueManager(config)

@@ -1,28 +1,28 @@
-'use client';
+'use client'
 
-import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles, Eye, EyeOff } from 'lucide-react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Sparkles, Eye, EyeOff } from 'lucide-react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
 
 interface SettingsInputProps {
-  id: string;
-  label: string;
-  description?: string;
-  value: string;
-  onChange: (value: string) => void;
-  type?: 'text' | 'email' | 'password' | 'url' | 'tel' | 'number';
-  placeholder?: string;
-  disabled?: boolean;
-  premium?: boolean;
-  className?: string;
-  vertical?: boolean;
-  error?: string;
-  maxLength?: number;
-  pattern?: string;
+  id: string
+  label: string
+  description?: string
+  value: string
+  onChange: (value: string) => void
+  type?: 'text' | 'email' | 'password' | 'url' | 'tel' | 'number'
+  placeholder?: string
+  disabled?: boolean
+  premium?: boolean
+  className?: string
+  vertical?: boolean
+  error?: string
+  maxLength?: number
+  pattern?: string
 }
 
 /**
@@ -44,9 +44,9 @@ export function SettingsInput({
   maxLength,
   pattern,
 }: SettingsInputProps) {
-  const [showPassword, setShowPassword] = useState(false);
-  const isPassword = type === 'password';
-  const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+  const [showPassword, setShowPassword] = useState(false)
+  const isPassword = type === 'password'
+  const inputType = isPassword ? (showPassword ? 'text' : 'password') : type
 
   const inputElement = (
     <div className="relative">
@@ -64,9 +64,7 @@ export function SettingsInput({
           isPassword && 'pr-10',
           error && 'border-destructive'
         )}
-        aria-describedby={
-          description || error ? `${id}-description` : undefined
-        }
+        aria-describedby={description || error ? `${id}-description` : undefined}
         aria-invalid={!!error}
       />
       {isPassword && (
@@ -83,23 +81,15 @@ export function SettingsInput({
           ) : (
             <Eye className="h-4 w-4 text-muted-foreground" />
           )}
-          <span className="sr-only">
-            {showPassword ? 'Hide password' : 'Show password'}
-          </span>
+          <span className="sr-only">{showPassword ? 'Hide password' : 'Show password'}</span>
         </Button>
       )}
     </div>
-  );
+  )
 
   if (vertical) {
     return (
-      <div
-        className={cn(
-          'space-y-3 py-3',
-          disabled && 'opacity-60',
-          className
-        )}
-      >
+      <div className={cn('space-y-3 py-3', disabled && 'opacity-60', className)}>
         <div className="flex items-center gap-2">
           <Label
             htmlFor={id}
@@ -123,16 +113,14 @@ export function SettingsInput({
           </p>
         )}
         {inputElement}
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-sm text-destructive">{error}</p>}
         {maxLength && (
-          <p className="text-xs text-muted-foreground text-right">
+          <p className="text-right text-xs text-muted-foreground">
             {value.length}/{maxLength}
           </p>
         )}
       </div>
-    );
+    )
   }
 
   return (
@@ -166,11 +154,9 @@ export function SettingsInput({
             {description}
           </p>
         )}
-        {error && (
-          <p className="text-sm text-destructive">{error}</p>
-        )}
+        {error && <p className="text-sm text-destructive">{error}</p>}
       </div>
       <div className="flex-shrink-0">{inputElement}</div>
     </div>
-  );
+  )
 }

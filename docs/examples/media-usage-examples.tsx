@@ -3,41 +3,41 @@
  * Complete examples for all media features in nself-chat v0.8.0
  */
 
-import React, { useState } from 'react';
-import { ImagePicker, type SelectedImage } from '@/components/media/ImagePicker';
-import { VideoPicker, type VideoMetadata } from '@/components/media/VideoPicker';
-import { VoiceRecorder, type VoiceRecording } from '@/components/media/VoiceRecorder';
-import { ImageEditor } from '@/components/media/ImageEditor';
-import { ImageLazy } from '@/components/chat/ImageLazy';
+import React, { useState } from 'react'
+import { ImagePicker, type SelectedImage } from '@/components/media/ImagePicker'
+import { VideoPicker, type VideoMetadata } from '@/components/media/VideoPicker'
+import { VoiceRecorder, type VoiceRecording } from '@/components/media/VoiceRecorder'
+import { ImageEditor } from '@/components/media/ImageEditor'
+import { ImageLazy } from '@/components/chat/ImageLazy'
 import {
   compressImage,
   aggressiveCompress,
   smartCompress,
   batchCompress,
-} from '@/lib/media/image-compression';
-import { permissions } from '@/lib/capacitor/permissions';
-import { generateLQIP } from '@/lib/media/lazy-loading';
+} from '@/lib/media/image-compression'
+import { permissions } from '@/lib/capacitor/permissions'
+import { generateLQIP } from '@/lib/media/lazy-loading'
 
 // ============================================================================
 // Example 1: Image Upload with Compression
 // ============================================================================
 
 export function ImageUploadExample() {
-  const [images, setImages] = useState<SelectedImage[]>([]);
-  const [uploading, setUploading] = useState(false);
+  const [images, setImages] = useState<SelectedImage[]>([])
+  const [uploading, setUploading] = useState(false)
 
   const handleImagesSelected = async (selectedImages: SelectedImage[]) => {
-    setImages(selectedImages);
-    console.log('Images selected:', selectedImages);
+    setImages(selectedImages)
+    console.log('Images selected:', selectedImages)
 
     // Images are already compressed by ImagePicker
     // Just upload the blobs
-    setUploading(true);
+    setUploading(true)
     for (const image of selectedImages) {
-      await uploadToServer(image.blob, image.file.name);
+      await uploadToServer(image.blob, image.file.name)
     }
-    setUploading(false);
-  };
+    setUploading(false)
+  }
 
   return (
     <div className="p-4">
@@ -52,7 +52,7 @@ export function ImageUploadExample() {
       />
       {uploading && <p className="mt-4">Uploading...</p>}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -60,28 +60,28 @@ export function ImageUploadExample() {
 // ============================================================================
 
 export function ManualCompressionExample() {
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<any>(null)
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]
+    if (!file) return
 
     // Method 1: Aggressive compression (70-90% reduction)
-    const aggressive = await aggressiveCompress(file);
-    console.log(`Original: ${file.size}, Compressed: ${aggressive.compressedSize}`);
-    console.log(`Reduction: ${aggressive.reductionPercent.toFixed(1)}%`);
+    const aggressive = await aggressiveCompress(file)
+    console.log(`Original: ${file.size}, Compressed: ${aggressive.compressedSize}`)
+    console.log(`Reduction: ${aggressive.reductionPercent.toFixed(1)}%`)
 
     // Method 2: Smart compression (context-aware)
-    const smart = await smartCompress(file, 'chat');
+    const smart = await smartCompress(file, 'chat')
 
     // Method 3: Target size compression
     const targeted = await compressImage(file, {
       targetSizeKB: 500, // Target 500KB
       quality: 0.7,
-    });
+    })
 
-    setResult(aggressive);
-  };
+    setResult(aggressive)
+  }
 
   return (
     <div className="p-4">
@@ -92,11 +92,13 @@ export function ManualCompressionExample() {
           <p>Original Size: {(result.originalSize / 1024).toFixed(1)} KB</p>
           <p>Compressed Size: {(result.compressedSize / 1024).toFixed(1)} KB</p>
           <p>Reduction: {result.reductionPercent.toFixed(1)}%</p>
-          <p>Dimensions: {result.width} × {result.height}</p>
+          <p>
+            Dimensions: {result.width} × {result.height}
+          </p>
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -104,14 +106,14 @@ export function ManualCompressionExample() {
 // ============================================================================
 
 export function BatchCompressionExample() {
-  const [progress, setProgress] = useState(0);
-  const [total, setTotal] = useState(0);
+  const [progress, setProgress] = useState(0)
+  const [total, setTotal] = useState(0)
 
   const handleMultipleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    if (files.length === 0) return;
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
 
-    setTotal(files.length);
+    setTotal(files.length)
 
     // Compress with concurrency control
     const results = await batchCompress(
@@ -119,12 +121,12 @@ export function BatchCompressionExample() {
       { quality: 0.7, maxWidth: 1920, maxHeight: 1920 },
       3, // 3 concurrent compressions
       (completed, total) => {
-        setProgress(completed);
+        setProgress(completed)
       }
-    );
+    )
 
-    console.log('All images compressed:', results);
-  };
+    console.log('All images compressed:', results)
+  }
 
   return (
     <div className="p-4">
@@ -136,7 +138,7 @@ export function BatchCompressionExample() {
         </p>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -144,22 +146,22 @@ export function BatchCompressionExample() {
 // ============================================================================
 
 export function VideoUploadExample() {
-  const [videoBlob, setVideoBlob] = useState<Blob | null>(null);
-  const [metadata, setMetadata] = useState<VideoMetadata | null>(null);
+  const [videoBlob, setVideoBlob] = useState<Blob | null>(null)
+  const [metadata, setMetadata] = useState<VideoMetadata | null>(null)
 
   const handleVideoSelected = async (blob: Blob, meta: VideoMetadata) => {
-    setVideoBlob(blob);
-    setMetadata(meta);
+    setVideoBlob(blob)
+    setMetadata(meta)
 
     console.log('Video selected:', {
       duration: meta.duration,
       size: meta.size,
       dimensions: `${meta.width}x${meta.height}`,
-    });
+    })
 
     // Upload video
-    await uploadToServer(blob, 'video.webm');
-  };
+    await uploadToServer(blob, 'video.webm')
+  }
 
   return (
     <div className="p-4">
@@ -178,7 +180,7 @@ export function VideoUploadExample() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -186,21 +188,21 @@ export function VideoUploadExample() {
 // ============================================================================
 
 export function VoiceNoteExample() {
-  const [recording, setRecording] = useState<VoiceRecording | null>(null);
+  const [recording, setRecording] = useState<VoiceRecording | null>(null)
 
   const handleRecordingComplete = async (rec: VoiceRecording) => {
-    setRecording(rec);
+    setRecording(rec)
 
     console.log('Voice note recorded:', {
       duration: rec.duration,
       size: rec.size,
       waveformPoints: rec.waveformData?.length,
-    });
+    })
 
     // Convert blob to file and upload
-    const blob = await fetch(rec.uri).then(r => r.blob());
-    await uploadToServer(blob, 'voice-note.webm');
-  };
+    const blob = await fetch(rec.uri).then((r) => r.blob())
+    await uploadToServer(blob, 'voice-note.webm')
+  }
 
   return (
     <div className="p-4">
@@ -217,7 +219,7 @@ export function VoiceNoteExample() {
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -225,24 +227,24 @@ export function VoiceNoteExample() {
 // ============================================================================
 
 export function ImageEditExample() {
-  const [imageUrl, setImageUrl] = useState<string>('');
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [showEditor, setShowEditor] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>('')
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const [showEditor, setShowEditor] = useState(false)
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const file = e.target.files?.[0]
+    if (!file) return
 
-    setImageFile(file);
-    setImageUrl(URL.createObjectURL(file));
-    setShowEditor(true);
-  };
+    setImageFile(file)
+    setImageUrl(URL.createObjectURL(file))
+    setShowEditor(true)
+  }
 
   const handleSave = async (blob: Blob) => {
-    console.log('Edited image saved');
-    await uploadToServer(blob, 'edited-image.jpg');
-    setShowEditor(false);
-  };
+    console.log('Edited image saved')
+    await uploadToServer(blob, 'edited-image.jpg')
+    setShowEditor(false)
+  }
 
   return (
     <div className="p-4">
@@ -258,7 +260,7 @@ export function ImageEditExample() {
         />
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -273,7 +275,7 @@ export function ChatMessageListExample() {
       lqip: 'data:image/jpeg;base64,...', // Pre-generated LQIP
     },
     // ... more messages
-  ];
+  ]
 
   return (
     <div className="space-y-4 p-4">
@@ -291,7 +293,7 @@ export function ChatMessageListExample() {
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -300,15 +302,15 @@ export function ChatMessageListExample() {
 
 export async function generateLQIPExample(imageFile: File) {
   // Generate low-quality placeholder (20x size, 10% quality)
-  const lqip = await generateLQIP(imageFile, 20, 0.1);
+  const lqip = await generateLQIP(imageFile, 20, 0.1)
 
   // Store LQIP with image metadata
   const metadata = {
     url: await uploadToServer(imageFile, imageFile.name),
     lqip: lqip, // Store this for progressive loading
-  };
+  }
 
-  return metadata;
+  return metadata
 }
 
 // ============================================================================
@@ -316,44 +318,35 @@ export async function generateLQIPExample(imageFile: File) {
 // ============================================================================
 
 export function PermissionExample() {
-  const [permissionStatus, setPermissionStatus] = useState<string>('');
+  const [permissionStatus, setPermissionStatus] = useState<string>('')
 
   const checkPermissions = async () => {
     // Check multiple permissions
-    const results = await permissions.checkPermissions([
-      'camera',
-      'photos',
-      'microphone',
-    ]);
+    const results = await permissions.checkPermissions(['camera', 'photos', 'microphone'])
 
-    console.log('Permissions:', results);
-    setPermissionStatus(JSON.stringify(results, null, 2));
-  };
+    console.log('Permissions:', results)
+    setPermissionStatus(JSON.stringify(results, null, 2))
+  }
 
   const requestCameraPermission = async () => {
-    const status = await permissions.requestCameraPermission();
-    console.log('Camera permission:', status);
+    const status = await permissions.requestCameraPermission()
+    console.log('Camera permission:', status)
 
     if (status === 'denied') {
-      alert('Camera permission denied. Please enable in settings.');
+      alert('Camera permission denied. Please enable in settings.')
     }
-  };
+  }
 
   const requestWithRationale = async () => {
-    const { requestPermissionWithRationale } = await import(
-      '@/lib/capacitor/permissions'
-    );
+    const { requestPermissionWithRationale } = await import('@/lib/capacitor/permissions')
 
-    const status = await requestPermissionWithRationale(
-      'camera',
-      async (message) => {
-        // Show custom dialog
-        return confirm(message);
-      }
-    );
+    const status = await requestPermissionWithRationale('camera', async (message) => {
+      // Show custom dialog
+      return confirm(message)
+    })
 
-    console.log('Permission status:', status);
-  };
+    console.log('Permission status:', status)
+  }
 
   return (
     <div className="p-4">
@@ -363,11 +356,9 @@ export function PermissionExample() {
         <button onClick={requestCameraPermission}>Request Camera</button>
         <button onClick={requestWithRationale}>Request with Rationale</button>
       </div>
-      {permissionStatus && (
-        <pre className="mt-4 rounded bg-gray-100 p-4">{permissionStatus}</pre>
-      )}
+      {permissionStatus && <pre className="mt-4 rounded bg-gray-100 p-4">{permissionStatus}</pre>}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -375,37 +366,37 @@ export function PermissionExample() {
 // ============================================================================
 
 export function CompleteChatInputExample() {
-  const [showImagePicker, setShowImagePicker] = useState(false);
-  const [showVideoPicker, setShowVideoPicker] = useState(false);
-  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
-  const [showImageEditor, setShowImageEditor] = useState(false);
+  const [showImagePicker, setShowImagePicker] = useState(false)
+  const [showVideoPicker, setShowVideoPicker] = useState(false)
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false)
+  const [showImageEditor, setShowImageEditor] = useState(false)
   const [editingImage, setEditingImage] = useState<{
-    url: string;
-    file: File;
-  } | null>(null);
+    url: string
+    file: File
+  } | null>(null)
 
   const handleImageEdit = (image: SelectedImage) => {
     setEditingImage({
       url: image.preview,
       file: image.file,
-    });
-    setShowImageEditor(true);
-  };
+    })
+    setShowImageEditor(true)
+  }
 
   const handleImagesSelected = async (images: SelectedImage[]) => {
-    console.log('Images selected:', images);
+    console.log('Images selected:', images)
 
     // Option to edit first image
     if (images.length === 1) {
-      handleImageEdit(images[0]);
+      handleImageEdit(images[0])
     } else {
       // Upload all images
       for (const img of images) {
-        await uploadToServer(img.blob, img.file.name);
+        await uploadToServer(img.blob, img.file.name)
       }
-      setShowImagePicker(false);
+      setShowImagePicker(false)
     }
-  };
+  }
 
   return (
     <div className="border-t bg-background p-4">
@@ -450,8 +441,8 @@ export function CompleteChatInputExample() {
             maxDurationSeconds={300}
             allowTrimming={true}
             onVideoSelected={async (blob, metadata) => {
-              await uploadToServer(blob, 'video.webm');
-              setShowVideoPicker(false);
+              await uploadToServer(blob, 'video.webm')
+              setShowVideoPicker(false)
             }}
             onError={console.error}
           />
@@ -464,9 +455,9 @@ export function CompleteChatInputExample() {
           <VoiceRecorder
             maxDuration={300}
             onRecordingComplete={async (recording) => {
-              const blob = await fetch(recording.uri).then((r) => r.blob());
-              await uploadToServer(blob, 'voice.webm');
-              setShowVoiceRecorder(false);
+              const blob = await fetch(recording.uri).then((r) => r.blob())
+              await uploadToServer(blob, 'voice.webm')
+              setShowVoiceRecorder(false)
             }}
             onCancel={() => setShowVoiceRecorder(false)}
           />
@@ -480,18 +471,18 @@ export function CompleteChatInputExample() {
             imageUrl={editingImage.url}
             imageFile={editingImage.file}
             onSave={async (blob) => {
-              await uploadToServer(blob, editingImage.file.name);
-              setShowImageEditor(false);
-              setShowImagePicker(false);
+              await uploadToServer(blob, editingImage.file.name)
+              setShowImageEditor(false)
+              setShowImagePicker(false)
             }}
             onCancel={() => {
-              setShowImageEditor(false);
+              setShowImageEditor(false)
             }}
           />
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -500,15 +491,15 @@ export function CompleteChatInputExample() {
 
 async function uploadToServer(blob: Blob, filename: string): Promise<string> {
   // Create FormData
-  const formData = new FormData();
-  formData.append('file', blob, filename);
+  const formData = new FormData()
+  formData.append('file', blob, filename)
 
   // Upload to your server
   const response = await fetch('/api/upload', {
     method: 'POST',
     body: formData,
-  });
+  })
 
-  const data = await response.json();
-  return data.url;
+  const data = await response.json()
+  return data.url
 }

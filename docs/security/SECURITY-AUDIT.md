@@ -113,6 +113,7 @@ This document outlines security considerations, vulnerabilities addressed, and h
 ### 🔒 Security Recommendations
 
 1. **API Gateway Configuration**
+
    ```yaml
    rate_limits:
      global: 1000 req/min
@@ -123,7 +124,7 @@ This document outlines security considerations, vulnerabilities addressed, and h
 
 2. **CORS Configuration**
    - Whitelist specific domains only
-   - No wildcard (*) in production
+   - No wildcard (\*) in production
    - Credentials: true only for trusted origins
 
 ---
@@ -239,6 +240,7 @@ This document outlines security considerations, vulnerabilities addressed, and h
 ### 🔒 Security Recommendations
 
 1. **Content Security Policy**
+
    ```
    Content-Security-Policy:
      default-src 'self';
@@ -313,6 +315,7 @@ This document outlines security considerations, vulnerabilities addressed, and h
 ### 🔒 Security Recommendations
 
 1. **Container Hardening**
+
    ```dockerfile
    # Don't run as root
    USER node
@@ -332,7 +335,7 @@ This document outlines security considerations, vulnerabilities addressed, and h
      readOnlyRootFilesystem: true
      allowPrivilegeEscalation: false
      capabilities:
-       drop: ["ALL"]
+       drop: ['ALL']
    ```
 
 ---
@@ -535,17 +538,20 @@ This document outlines security considerations, vulnerabilities addressed, and h
 **Test Results**: ✅ PASS
 
 **Tests Performed:**
+
 1. Unauthorized API access attempts
 2. Privilege escalation attempts
 3. Direct object reference (IDOR) testing
 4. JWT token manipulation
 
 **Findings:**
+
 - All protected routes properly enforce authentication
 - Role-based checks prevent privilege escalation
 - Middleware pattern ensures consistent authorization
 
 **Evidence:**
+
 ```bash
 # Test: Access admin endpoint without token
 curl -X POST http://localhost:3000/api/config \
@@ -570,12 +576,14 @@ curl -X POST http://localhost:3000/api/config \
 **Test Results**: ⚠️ MEDIUM RISK (Default Secrets Found)
 
 **Tests Performed:**
+
 1. Secret key strength analysis
 2. TLS configuration review
 3. Password hashing verification
 4. Token security assessment
 
 **Critical Findings:**
+
 ```typescript
 // VULNERABILITY: Default JWT secret
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
@@ -585,6 +593,7 @@ SECRET: process.env.CSRF_SECRET || 'change-this-in-production'
 ```
 
 **Recommendations:**
+
 ```typescript
 // FIXED: Fail fast on missing secrets
 const JWT_SECRET = process.env.JWT_SECRET
@@ -605,6 +614,7 @@ if (!CSRF_SECRET && process.env.NODE_ENV === 'production') {
 **Test Results**: ✅ PASS
 
 **SQL Injection Tests:**
+
 ```javascript
 // Test 1: Email field injection
 POST /api/auth/signin
@@ -631,6 +641,7 @@ POST /api/upload
 ```
 
 **XSS Tests:**
+
 ```javascript
 // Test 1: Script tag in message
 POST /api/messages
@@ -661,12 +672,14 @@ POST /api/messages
 **Test Results**: ✅ PASS
 
 **Architecture Review:**
+
 - ✅ Security middleware pattern
 - ✅ Defense in depth
 - ✅ Fail-secure defaults
 - ✅ Least privilege principle
 
 **Design Patterns Verified:**
+
 - Composable middleware ensures layered security
 - Rate limiting at API boundary
 - Input validation before processing
@@ -681,6 +694,7 @@ POST /api/messages
 **Issues Found:**
 
 1. **TypeScript Errors Ignored:**
+
 ```javascript
 // next.config.js
 typescript: {
@@ -689,12 +703,14 @@ typescript: {
 ```
 
 2. **CSP 'unsafe-inline' Usage:**
+
 ```javascript
 "script-src 'self' 'unsafe-eval' 'unsafe-inline'"
 // ⚠️ Weakens XSS protection
 ```
 
 3. **Development Mode Bypasses:**
+
 ```typescript
 if (process.env.NODE_ENV === 'development') {
   return true // ⚠️ Skip security check
@@ -702,6 +718,7 @@ if (process.env.NODE_ENV === 'development') {
 ```
 
 **Remediation Required:**
+
 - Re-enable TypeScript strict checking
 - Remove 'unsafe-inline' from CSP (use nonces)
 - Remove development mode security bypasses
@@ -713,6 +730,7 @@ if (process.env.NODE_ENV === 'development') {
 **Test Results**: ✅ PASS
 
 **Dependency Audit:**
+
 ```bash
 npm audit
 # Found 0 vulnerabilities ✅
@@ -734,6 +752,7 @@ npm audit
 **Test Results**: ✅ PASS
 
 **Brute Force Tests:**
+
 ```bash
 # Test: Multiple failed login attempts
 for i in {1..10}; do
@@ -751,6 +770,7 @@ done
 ```
 
 **Session Security Tests:**
+
 ```javascript
 // Test: Token expiration
 const expiredToken = jwt.sign({ sub: 'user123' }, JWT_SECRET, { expiresIn: '0s' })
@@ -771,6 +791,7 @@ const tamperedToken = validToken.substring(0, validToken.length - 10) + 'XXXXXXX
 **Test Results**: ✅ PASS
 
 **CSRF Protection Tests:**
+
 ```bash
 # Test: POST without CSRF token
 curl -X POST http://localhost:3000/api/config \
@@ -787,6 +808,7 @@ curl -X POST http://localhost:3000/api/config \
 ```
 
 **Subresource Integrity:**
+
 - ⚠️ SRI tags not implemented for CDN resources
 - Recommendation: Add SRI hashes to external scripts
 
@@ -797,6 +819,7 @@ curl -X POST http://localhost:3000/api/config \
 **Test Results**: ⚠️ INSUFFICIENT
 
 **Current Logging:**
+
 - ✅ Error logging via Sentry
 - ✅ API request logging (dev mode)
 - ❌ No security event logging
@@ -804,6 +827,7 @@ curl -X POST http://localhost:3000/api/config \
 - ❌ No failed login tracking
 
 **Missing Logs:**
+
 - Failed authentication attempts
 - Permission changes
 - Config updates
@@ -811,6 +835,7 @@ curl -X POST http://localhost:3000/api/config \
 - Suspicious activity
 
 **Recommendation:**
+
 ```typescript
 // Implement comprehensive audit logging
 interface SecurityEvent {
@@ -836,6 +861,7 @@ export async function logSecurityEvent(event: SecurityEvent) {
 **Test Results**: ✅ PASS
 
 **SSRF Tests:**
+
 ```javascript
 // Test: Internal network access via URL
 POST /api/link-preview
@@ -860,6 +886,7 @@ POST /api/link-preview
 ```
 
 **URL Sanitization Verified:**
+
 ```typescript
 export function sanitizeUrl(url: string): string | null {
   const parsed = new URL(url)
@@ -878,19 +905,20 @@ export function sanitizeUrl(url: string): string | null {
 
 **Test Results:**
 
-| Header | Status | Value |
-|--------|--------|-------|
-| Content-Security-Policy | ✅ A | Comprehensive CSP implemented |
-| Strict-Transport-Security | ✅ A+ | max-age=31536000; includeSubDomains |
-| X-Frame-Options | ✅ A | SAMEORIGIN |
-| X-Content-Type-Options | ✅ A | nosniff |
-| Referrer-Policy | ✅ A | strict-origin-when-cross-origin |
-| Permissions-Policy | ✅ A | camera=(), microphone=(), geolocation=() |
-| X-XSS-Protection | ✅ B | 1; mode=block |
+| Header                    | Status | Value                                    |
+| ------------------------- | ------ | ---------------------------------------- |
+| Content-Security-Policy   | ✅ A   | Comprehensive CSP implemented            |
+| Strict-Transport-Security | ✅ A+  | max-age=31536000; includeSubDomains      |
+| X-Frame-Options           | ✅ A   | SAMEORIGIN                               |
+| X-Content-Type-Options    | ✅ A   | nosniff                                  |
+| Referrer-Policy           | ✅ A   | strict-origin-when-cross-origin          |
+| Permissions-Policy        | ✅ A   | camera=(), microphone=(), geolocation=() |
+| X-XSS-Protection          | ✅ B   | 1; mode=block                            |
 
 **Overall Grade**: A
 
 **Missing Headers:**
+
 - Expect-CT (recommended but optional)
 - Cross-Origin-Embedder-Policy (recommended for isolation)
 
@@ -901,6 +929,7 @@ export function sanitizeUrl(url: string): string | null {
 ### Pre-Deployment Checklist
 
 **Environment Variables:**
+
 - [ ] `JWT_SECRET` - 32+ character random string
 - [ ] `CSRF_SECRET` - 32+ character random string
 - [ ] `DATABASE_PASSWORD` - Strong password, rotated
@@ -908,40 +937,47 @@ export function sanitizeUrl(url: string): string | null {
 - [ ] Remove all default credentials
 
 **Build Configuration:**
+
 - [ ] `ignoreBuildErrors: false`
 - [ ] `ignoreDuringBuilds: false`
 - [ ] Run `npm audit --audit-level=high`
 - [ ] Verify all TypeScript errors resolved
 
 **Security Headers:**
+
 - [ ] CSP configured for production domains
 - [ ] HSTS enabled
 - [ ] All security headers tested
 
 **Rate Limiting:**
+
 - [ ] All critical endpoints rate-limited
 - [ ] Redis configured for production rate limiting
 - [ ] Monitor rate limit violations
 
 **HTTPS/TLS:**
+
 - [ ] SSL certificate installed
 - [ ] Certificate auto-renewal configured
 - [ ] HTTP to HTTPS redirect enabled
 - [ ] TLS 1.2+ only
 
 **Monitoring:**
+
 - [ ] Sentry configured with production DSN
 - [ ] Error alerting enabled
 - [ ] Performance monitoring active
 - [ ] Security event logging enabled
 
 **Backups:**
+
 - [ ] Automated database backups
 - [ ] Backup encryption enabled
 - [ ] Restore tested successfully
 - [ ] Off-site backup storage
 
 **Access Control:**
+
 - [ ] Production secrets stored in vault
 - [ ] Principle of least privilege applied
 - [ ] Service accounts created
@@ -949,8 +985,8 @@ export function sanitizeUrl(url: string): string | null {
 
 ---
 
-**Final Security Sign-off Date**: _____________
+**Final Security Sign-off Date**: **\*\***\_**\*\***
 
-**Approved By**: _____________
+**Approved By**: **\*\***\_**\*\***
 
-**Next Review Date**: _____________
+**Next Review Date**: **\*\***\_**\*\***

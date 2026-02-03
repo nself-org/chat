@@ -6,6 +6,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from '@/lib/logger'
 import {
   getSummarizeUserLimiter,
   getSummarizeOrgLimiter,
@@ -78,7 +79,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error getting rate limits:', error)
+    logger.error('Error getting rate limits:', error)
     return NextResponse.json(
       {
         success: false,
@@ -155,7 +156,7 @@ export async function DELETE(request: NextRequest) {
       message: 'Rate limits reset successfully',
     })
   } catch (error) {
-    console.error('Error resetting rate limits:', error)
+    logger.error('Error resetting rate limits:', error)
     return NextResponse.json(
       {
         success: false,

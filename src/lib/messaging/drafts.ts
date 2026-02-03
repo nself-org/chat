@@ -51,10 +51,7 @@ export class DraftManager {
   private callbacks: DraftCallbacks
   private autoSaveFunctions: Map<string, ReturnType<typeof debounce>> = new Map()
 
-  constructor(
-    config: Partial<DraftConfig> = {},
-    callbacks: DraftCallbacks = {}
-  ) {
+  constructor(config: Partial<DraftConfig> = {}, callbacks: DraftCallbacks = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config }
     this.callbacks = callbacks
     this.loadFromStorage()
@@ -67,7 +64,12 @@ export class DraftManager {
     draft: Omit<DraftMessage, 'id' | 'createdAt' | 'updatedAt'>,
     autoSave = false
   ): DraftMessage {
-    const draftKey = this.getDraftKey(draft.channelId, draft.userId, draft.replyToId, draft.threadId)
+    const draftKey = this.getDraftKey(
+      draft.channelId,
+      draft.userId,
+      draft.replyToId,
+      draft.threadId
+    )
 
     // Get or create auto-save function for this draft key
     if (autoSave) {
@@ -150,7 +152,12 @@ export class DraftManager {
   /**
    * Get a draft
    */
-  getDraft(channelId: string, userId: string, replyToId?: string, threadId?: string): DraftMessage | undefined {
+  getDraft(
+    channelId: string,
+    userId: string,
+    replyToId?: string,
+    threadId?: string
+  ): DraftMessage | undefined {
     const draftKey = this.getDraftKey(channelId, userId, replyToId, threadId)
     return this.drafts.get(draftKey)
   }
@@ -168,9 +175,7 @@ export class DraftManager {
    * Get all drafts for a user
    */
   getUserDrafts(userId: string): DraftMessage[] {
-    return Array.from(this.drafts.values()).filter(
-      (draft) => draft.userId === userId
-    )
+    return Array.from(this.drafts.values()).filter((draft) => draft.userId === userId)
   }
 
   /**
@@ -298,7 +303,12 @@ export class DraftManager {
   /**
    * Restore a draft (e.g., when switching back to a channel)
    */
-  restoreDraft(channelId: string, userId: string, replyToId?: string, threadId?: string): DraftMessage | undefined {
+  restoreDraft(
+    channelId: string,
+    userId: string,
+    replyToId?: string,
+    threadId?: string
+  ): DraftMessage | undefined {
     const draft = this.getDraft(channelId, userId, replyToId, threadId)
     if (draft) {
       logger.debug('Draft restored', { id: draft.id, channelId })
@@ -324,7 +334,12 @@ export class DraftManager {
   /**
    * Generate a unique draft key
    */
-  private getDraftKey(channelId: string, userId: string, replyToId?: string, threadId?: string): string {
+  private getDraftKey(
+    channelId: string,
+    userId: string,
+    replyToId?: string,
+    threadId?: string
+  ): string {
     const parts = [channelId, userId]
     if (threadId) parts.push('thread', threadId)
     if (replyToId) parts.push('reply', replyToId)

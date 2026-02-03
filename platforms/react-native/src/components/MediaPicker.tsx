@@ -3,16 +3,7 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Image,
-  FlatList,
-  Dimensions,
-  Alert,
-} from 'react-native'
+import { View, Text, StyleSheet, Pressable, Image, FlatList, Dimensions, Alert } from 'react-native'
 
 import { useTheme } from '@theme'
 import { ActionSheet } from './ActionSheet'
@@ -70,18 +61,21 @@ export function MediaPicker({
     }
   }, [])
 
-  const handleItemPress = useCallback((item: MediaItem) => {
-    setSelectedItems((prev) => {
-      if (prev.includes(item.id)) {
-        return prev.filter((id) => id !== item.id)
-      }
-      if (prev.length >= maxSelection) {
-        Alert.alert('Limit reached', `You can only select up to ${maxSelection} items`)
-        return prev
-      }
-      return [...prev, item.id]
-    })
-  }, [maxSelection])
+  const handleItemPress = useCallback(
+    (item: MediaItem) => {
+      setSelectedItems((prev) => {
+        if (prev.includes(item.id)) {
+          return prev.filter((id) => id !== item.id)
+        }
+        if (prev.length >= maxSelection) {
+          Alert.alert('Limit reached', `You can only select up to ${maxSelection} items`)
+          return prev
+        }
+        return [...prev, item.id]
+      })
+    },
+    [maxSelection]
+  )
 
   const handleDone = useCallback(() => {
     const selected = mediaItems.filter((item) => selectedItems.includes(item.id))
@@ -102,15 +96,8 @@ export function MediaPicker({
     const selectionIndex = selectedItems.indexOf(item.id) + 1
 
     return (
-      <Pressable
-        style={styles.mediaItem}
-        onPress={() => handleItemPress(item)}
-      >
-        <Image
-          source={{ uri: item.uri }}
-          style={styles.mediaImage}
-          resizeMode="cover"
-        />
+      <Pressable style={styles.mediaItem} onPress={() => handleItemPress(item)}>
+        <Image source={{ uri: item.uri }} style={styles.mediaImage} resizeMode="cover" />
 
         {/* Video duration badge */}
         {item.type === 'video' && item.duration && (
@@ -131,9 +118,7 @@ export function MediaPicker({
             },
           ]}
         >
-          {isSelected && (
-            <Text style={styles.selectionNumber}>{selectionIndex}</Text>
-          )}
+          {isSelected && <Text style={styles.selectionNumber}>{selectionIndex}</Text>}
         </View>
       </Pressable>
     )
@@ -168,14 +153,10 @@ export function MediaPicker({
       {/* Header */}
       <View style={[styles.header, { borderBottomColor: theme.colors.border }]}>
         <Pressable style={styles.headerButton} onPress={handleCancel}>
-          <Text style={[styles.headerButtonText, { color: theme.colors.text }]}>
-            Cancel
-          </Text>
+          <Text style={[styles.headerButtonText, { color: theme.colors.text }]}>Cancel</Text>
         </Pressable>
         <Text style={[styles.headerTitle, { color: theme.colors.text }]}>
-          {selectedItems.length > 0
-            ? `${selectedItems.length} selected`
-            : 'Select Media'}
+          {selectedItems.length > 0 ? `${selectedItems.length} selected` : 'Select Media'}
         </Text>
         <Pressable
           style={styles.headerButton}
@@ -186,9 +167,7 @@ export function MediaPicker({
             style={[
               styles.headerButtonText,
               {
-                color: selectedItems.length > 0
-                  ? theme.colors.primary
-                  : theme.colors.muted,
+                color: selectedItems.length > 0 ? theme.colors.primary : theme.colors.muted,
               },
             ]}
           >

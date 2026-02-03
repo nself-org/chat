@@ -5,10 +5,7 @@
  * Handles file previews, document embeds, and file sharing notifications.
  */
 
-import type {
-  GoogleDriveFile,
-  GoogleDrivePermission,
-} from '../types'
+import type { GoogleDriveFile, GoogleDrivePermission } from '../types'
 
 import type {
   GoogleDriveFileMetadata,
@@ -78,12 +75,12 @@ export type DriveNotificationIcon =
   | 'drive'
 
 export type DriveNotificationColor =
-  | 'green'   // created, shared
-  | 'blue'    // modified, comment
-  | 'purple'  // Google Docs colors
-  | 'red'     // deleted, unshared
-  | 'yellow'  // warning
-  | 'gray'    // neutral
+  | 'green' // created, shared
+  | 'blue' // modified, comment
+  | 'purple' // Google Docs colors
+  | 'red' // deleted, unshared
+  | 'yellow' // warning
+  | 'gray' // neutral
 
 export interface DriveNotificationMetadata {
   eventType: string

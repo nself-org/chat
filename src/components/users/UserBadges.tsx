@@ -3,12 +3,7 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { type UserBadge } from './UserCard'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Dialog,
   DialogContent,
@@ -41,11 +36,14 @@ function getBadgeIcon(badgeName: string): React.ReactNode {
 
   if (name.includes('star') || name.includes('featured')) return <Star {...iconProps} />
   if (name.includes('shield') || name.includes('verified')) return <Shield {...iconProps} />
-  if (name.includes('bolt') || name.includes('power') || name.includes('early')) return <Zap {...iconProps} />
-  if (name.includes('heart') || name.includes('love') || name.includes('helpful')) return <Heart {...iconProps} />
+  if (name.includes('bolt') || name.includes('power') || name.includes('early'))
+    return <Zap {...iconProps} />
+  if (name.includes('heart') || name.includes('love') || name.includes('helpful'))
+    return <Heart {...iconProps} />
   if (name.includes('trophy') || name.includes('winner')) return <Trophy {...iconProps} />
   if (name.includes('medal') || name.includes('achievement')) return <Medal {...iconProps} />
-  if (name.includes('crown') || name.includes('founder') || name.includes('owner')) return <Crown {...iconProps} />
+  if (name.includes('crown') || name.includes('founder') || name.includes('owner'))
+    return <Crown {...iconProps} />
   return <Award {...iconProps} />
 }
 
@@ -54,17 +52,7 @@ function getBadgeIcon(badgeName: string): React.ReactNode {
 // ============================================================================
 
 const UserBadges = React.forwardRef<HTMLDivElement, UserBadgesProps>(
-  (
-    {
-      className,
-      badges,
-      maxVisible = 5,
-      size = 'md',
-      showTooltip = true,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, badges, maxVisible = 5, size = 'md', showTooltip = true, ...props }, ref) => {
     if (badges.length === 0) return null
 
     const visibleBadges = badges.slice(0, maxVisible)
@@ -82,7 +70,7 @@ const UserBadges = React.forwardRef<HTMLDivElement, UserBadgesProps>(
           className={cn(
             'inline-flex items-center rounded-full font-medium',
             'bg-muted text-muted-foreground',
-            'transition-colors hover:bg-primary/10 hover:text-primary',
+            'hover:bg-primary/10 transition-colors hover:text-primary',
             sizeClasses[size]
           )}
           style={{
@@ -90,11 +78,7 @@ const UserBadges = React.forwardRef<HTMLDivElement, UserBadgesProps>(
             color: badge.color || undefined,
           }}
         >
-          {badge.icon ? (
-            <span>{badge.icon}</span>
-          ) : (
-            getBadgeIcon(badge.name)
-          )}
+          {badge.icon ? <span>{badge.icon}</span> : getBadgeIcon(badge.name)}
           <span>{badge.name}</span>
         </span>
       )
@@ -126,13 +110,7 @@ const UserBadges = React.forwardRef<HTMLDivElement, UserBadgesProps>(
         {hiddenBadges.length > 0 && (
           <Dialog>
             <DialogTrigger asChild>
-              <Button
-                variant="ghost"
-                className={cn(
-                  'rounded-full font-medium',
-                  sizeClasses[size]
-                )}
-              >
+              <Button variant="ghost" className={cn('rounded-full font-medium', sizeClasses[size])}>
                 +{hiddenBadges.length} more
               </Button>
             </DialogTrigger>
@@ -145,10 +123,10 @@ const UserBadges = React.forwardRef<HTMLDivElement, UserBadgesProps>(
                   {badges.map((badge) => (
                     <div
                       key={badge.id}
-                      className="flex items-start gap-3 p-3 rounded-lg bg-muted/50"
+                      className="bg-muted/50 flex items-start gap-3 rounded-lg p-3"
                     >
                       <div
-                        className="flex items-center justify-center h-10 w-10 rounded-full"
+                        className="flex h-10 w-10 items-center justify-center rounded-full"
                         style={{
                           backgroundColor: badge.color ? `${badge.color}20` : 'hsl(var(--muted))',
                           color: badge.color || undefined,
@@ -163,9 +141,7 @@ const UserBadges = React.forwardRef<HTMLDivElement, UserBadgesProps>(
                       <div className="flex-1">
                         <h4 className="font-medium">{badge.name}</h4>
                         {badge.description && (
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {badge.description}
-                          </p>
+                          <p className="mt-1 text-sm text-muted-foreground">{badge.description}</p>
                         )}
                       </div>
                     </div>

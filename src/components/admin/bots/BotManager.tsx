@@ -230,7 +230,7 @@ export function BotManager({
       {/* Header Controls */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 items-center gap-2">
-          <div className="relative flex-1 max-w-sm">
+          <div className="relative max-w-sm flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search bots..."
@@ -255,9 +255,7 @@ export function BotManager({
         </div>
         <div className="flex items-center gap-2">
           {selectedBots.size > 0 && (
-            <span className="text-sm text-muted-foreground">
-              {selectedBots.size} selected
-            </span>
+            <span className="text-sm text-muted-foreground">{selectedBots.size} selected</span>
           )}
           {onRefresh && (
             <Button variant="outline" size="sm" onClick={onRefresh}>
@@ -361,15 +359,11 @@ export function BotManager({
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
                         <AvatarImage src={bot.avatarUrl} alt={bot.displayName} />
-                        <AvatarFallback>
-                          {bot.displayName.slice(0, 2).toUpperCase()}
-                        </AvatarFallback>
+                        <AvatarFallback>{bot.displayName.slice(0, 2).toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="font-medium">{bot.displayName}</div>
-                        <div className="text-sm text-muted-foreground">
-                          @{bot.username}
-                        </div>
+                        <div className="text-sm text-muted-foreground">@{bot.username}</div>
                       </div>
                     </div>
                   </TableCell>
@@ -461,8 +455,8 @@ export function BotManager({
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
             Showing {(currentPage - 1) * itemsPerPage + 1} to{' '}
-            {Math.min(currentPage * itemsPerPage, filteredBots.length)} of{' '}
-            {filteredBots.length} bots
+            {Math.min(currentPage * itemsPerPage, filteredBots.length)} of {filteredBots.length}{' '}
+            bots
           </div>
           <div className="flex items-center gap-2">
             <Button

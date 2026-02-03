@@ -231,7 +231,9 @@ describe('Delivery Handler', () => {
         handleRetryAttempt(msg.clientMessageId)
       })
       expect(useDeliveryStatusStore.getState().getStatus(msg.clientMessageId)).toBe('sending')
-      expect(useDeliveryStatusStore.getState().getStatusEntry(msg.clientMessageId)?.retryCount).toBe(1)
+      expect(
+        useDeliveryStatusStore.getState().getStatusEntry(msg.clientMessageId)?.retryCount
+      ).toBe(1)
 
       // Success
       act(() => {

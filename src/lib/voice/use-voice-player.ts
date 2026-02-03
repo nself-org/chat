@@ -175,7 +175,7 @@ export function formatTimeWithHours(seconds: number): string {
  *     cycleSpeed,
  *   } = useVoicePlayer({
  *     src: audioUrl,
- *     onEnd: () => console.log('Playback ended'),
+ *     onEnd: () => // console.log('Playback ended'),
  *   })
  *
  *   return (
@@ -193,9 +193,7 @@ export function formatTimeWithHours(seconds: number): string {
  * }
  * ```
  */
-export function useVoicePlayer(
-  options: UseVoicePlayerOptions = {}
-): UseVoicePlayerReturn {
+export function useVoicePlayer(options: UseVoicePlayerOptions = {}): UseVoicePlayerReturn {
   const {
     src: initialSrc,
     autoPlay = false,
@@ -399,8 +397,7 @@ export function useVoicePlayer(
 
       await audio.play()
     } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to play audio'
+      const errorMessage = err instanceof Error ? err.message : 'Failed to play audio'
       setError(errorMessage)
       setPlaybackState('error')
       onError?.(errorMessage)
@@ -419,19 +416,22 @@ export function useVoicePlayer(
     }
   }, [playbackState, play, pause])
 
-  const seek = useCallback((time: number) => {
-    const audio = audioRef.current
-    if (!audio) return
+  const seek = useCallback(
+    (time: number) => {
+      const audio = audioRef.current
+      if (!audio) return
 
-    const clampedTime = Math.max(0, Math.min(time, audio.duration || 0))
-    audio.currentTime = clampedTime
-    setCurrentTime(clampedTime)
+      const clampedTime = Math.max(0, Math.min(time, audio.duration || 0))
+      audio.currentTime = clampedTime
+      setCurrentTime(clampedTime)
 
-    // If ended, reset state to paused
-    if (playbackState === 'ended') {
-      setPlaybackState('paused')
-    }
-  }, [playbackState])
+      // If ended, reset state to paused
+      if (playbackState === 'ended') {
+        setPlaybackState('paused')
+      }
+    },
+    [playbackState]
+  )
 
   const seekByPercentage = useCallback(
     (percentage: number) => {

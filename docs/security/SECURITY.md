@@ -20,6 +20,7 @@ We take security seriously. If you discover a security vulnerability in ɳChat, 
 **DO NOT** open a public GitHub issue for security vulnerabilities.
 
 Instead, please report security issues to:
+
 - **Email**: security@nself.org
 - **Subject**: [SECURITY] Brief description of the issue
 
@@ -81,6 +82,7 @@ We are committed to responding to security reports promptly:
 We classify vulnerabilities using the following severity levels:
 
 #### Critical
+
 - Remote code execution
 - Authentication bypass
 - SQL injection
@@ -89,6 +91,7 @@ We classify vulnerabilities using the following severity levels:
 **Response**: Immediate (0-24 hours)
 
 #### High
+
 - Stored XSS
 - CSRF on sensitive operations
 - Insecure direct object references (IDOR)
@@ -97,6 +100,7 @@ We classify vulnerabilities using the following severity levels:
 **Response**: Within 72 hours
 
 #### Medium
+
 - Reflected XSS
 - Open redirects
 - Information disclosure (non-sensitive)
@@ -105,6 +109,7 @@ We classify vulnerabilities using the following severity levels:
 **Response**: Within 7 days
 
 #### Low
+
 - Self-XSS
 - Verbose error messages
 - Minor information leaks
@@ -116,6 +121,7 @@ We classify vulnerabilities using the following severity levels:
 The following are considered **in scope** for security reports:
 
 ✅ **In Scope**:
+
 - Authentication and authorization bypass
 - Cross-site scripting (XSS)
 - Cross-site request forgery (CSRF)
@@ -131,6 +137,7 @@ The following are considered **in scope** for security reports:
 - GraphQL injection
 
 ❌ **Out of Scope**:
+
 - Denial of service (DoS/DDoS) attacks
 - Social engineering attacks on users
 - Physical attacks on infrastructure
@@ -145,6 +152,7 @@ The following are considered **in scope** for security reports:
 If you want to test for vulnerabilities:
 
 #### Permitted
+
 - ✅ Use your own test account
 - ✅ Test on a local development instance
 - ✅ Automated scanning with rate limits respected
@@ -152,6 +160,7 @@ If you want to test for vulnerabilities:
 - ✅ Testing file upload vulnerabilities
 
 #### Prohibited
+
 - ❌ Testing on production systems without permission
 - ❌ Accessing other users' data
 - ❌ Denial of service attacks
@@ -174,7 +183,7 @@ We want to thank the following security researchers for responsibly disclosing v
 
 <!-- This section will be updated as reports come in -->
 
-*No vulnerabilities reported yet. Be the first!*
+_No vulnerabilities reported yet. Be the first!_
 
 ### Security Best Practices
 
@@ -233,6 +242,7 @@ We want to thank the following security researchers for responsibly disclosing v
 ɳChat includes the following security features:
 
 #### Authentication
+
 - JWT-based authentication with refresh tokens
 - OAuth 2.0 support (Google, GitHub, etc.)
 - Magic link passwordless authentication
@@ -240,12 +250,14 @@ We want to thank the following security researchers for responsibly disclosing v
 - Session management with secure logout
 
 #### Authorization
+
 - Role-based access control (RBAC)
 - Granular permission system
 - Channel-level permissions
 - API rate limiting
 
 #### Data Protection
+
 - Passwords hashed with bcrypt
 - Sensitive data encrypted at rest
 - TLS/SSL for all connections
@@ -253,6 +265,7 @@ We want to thank the following security researchers for responsibly disclosing v
 - CSRF protection on all forms
 
 #### Frontend Security
+
 - Content Security Policy (CSP) headers
 - XSS protection via React escaping
 - Input validation with Zod schemas
@@ -260,6 +273,7 @@ We want to thank the following security researchers for responsibly disclosing v
 - Subresource Integrity (SRI) for CDN assets
 
 #### Backend Security
+
 - SQL injection prevention (Hasura)
 - GraphQL query complexity limits
 - WebSocket authentication
@@ -267,6 +281,7 @@ We want to thank the following security researchers for responsibly disclosing v
 - CORS configuration
 
 #### Privacy
+
 - Privacy-aware analytics
 - GDPR compliance features
 - Data export functionality
@@ -301,6 +316,7 @@ Content-Security-Policy:
 ```
 
 **Key Protections:**
+
 - **script-src**: Only allows scripts from our domain and inline scripts with valid nonces
 - **'strict-dynamic'**: Allows dynamically loaded scripts from trusted sources
 - **object-src 'none'**: Blocks Flash and other plugins
@@ -309,6 +325,7 @@ Content-Security-Policy:
 - **report-uri**: Sends violation reports to `/api/csp-report` for monitoring
 
 **Development vs Production:**
+
 - Development allows `'unsafe-eval'` for hot module replacement
 - Production removes `'unsafe-eval'` for maximum security
 - CSP reporting only enabled in production
@@ -336,6 +353,7 @@ Referrer-Policy: strict-origin-when-cross-origin
 ```
 
 Controls how much referrer information is sent with requests:
+
 - Same-origin: Full URL is sent
 - Cross-origin HTTPS: Only origin is sent
 - Cross-origin HTTP: No referrer is sent
@@ -347,6 +365,7 @@ Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
 ```
 
 Forces browsers to only use HTTPS connections:
+
 - **max-age=63072000**: 2 years
 - **includeSubDomains**: Applies to all subdomains
 - **preload**: Eligible for browser preload lists
@@ -400,6 +419,7 @@ In production, CORS is restrictive with explicit origin validation:
 ```
 
 **Security Rules:**
+
 1. ✅ **Never use `origin: '*'` with `credentials: true`** in production
 2. ✅ **Always specify explicit allowed origins** for production APIs
 3. ✅ **Validate origin** before setting Access-Control-Allow-Origin header
@@ -424,7 +444,7 @@ import { withCors, compose } from '@/lib/api/middleware'
 // Public API endpoint (no credentials)
 export const GET = withCors({
   origin: '*',
-  credentials: false
+  credentials: false,
 })(handler)
 
 // Authenticated API endpoint
@@ -432,7 +452,7 @@ export const POST = compose(
   withErrorHandler,
   withCors({
     origin: process.env.NEXT_PUBLIC_APP_URL,
-    credentials: true
+    credentials: true,
   }),
   withAuth
 )(handler)
@@ -464,50 +484,55 @@ CSP violations are automatically reported to `/api/csp-report` for monitoring.
 In production, violations should be sent to a monitoring service:
 
 **Sentry:**
+
 ```typescript
 Sentry.captureMessage('CSP Violation', {
   level: 'warning',
-  extra: violation
+  extra: violation,
 })
 ```
 
 **DataDog:**
+
 ```typescript
 await fetch('https://http-intake.logs.datadoghq.com/v1/input', {
   method: 'POST',
   headers: {
     'DD-API-KEY': process.env.DATADOG_API_KEY,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   },
   body: JSON.stringify({
     ddsource: 'browser',
     ddtags: 'env:production,service:nchat',
     message: 'CSP Violation',
-    ...violation
-  })
+    ...violation,
+  }),
 })
 ```
 
 **CloudWatch:**
+
 ```typescript
 await cloudwatch.putLogEvents({
   logGroupName: '/nchat/csp-violations',
   logStreamName: 'violations',
-  logEvents: [{
-    message: JSON.stringify(violation),
-    timestamp: Date.now()
-  }]
+  logEvents: [
+    {
+      message: JSON.stringify(violation),
+      timestamp: Date.now(),
+    },
+  ],
 })
 ```
 
 ### Common Violations
 
-| Violation | Cause | Resolution |
-|-----------|-------|------------|
-| script-src | Third-party script | Add to CSP or use nonce |
-| style-src | Inline styles | Use Tailwind classes or add nonce |
-| connect-src | API call to new domain | Add domain to connect-src |
-| img-src | Image from blocked source | Proxy images or add source |
+| Violation   | Cause                     | Resolution                        |
+| ----------- | ------------------------- | --------------------------------- |
+| script-src  | Third-party script        | Add to CSP or use nonce           |
+| style-src   | Inline styles             | Use Tailwind classes or add nonce |
+| connect-src | API call to new domain    | Add domain to connect-src         |
+| img-src     | Image from blocked source | Proxy images or add source        |
 
 ---
 
@@ -536,6 +561,7 @@ bash scripts/security-check.sh
 ```
 
 This checks:
+
 1. Dependency vulnerabilities (npm audit)
 2. Environment configuration
 3. TypeScript type safety
@@ -583,14 +609,16 @@ Upcoming security enhancements:
 ### Contact
 
 For non-security inquiries:
+
 - **General Support**: support@nself.org
 - **GitHub Issues**: https://github.com/acamarata/nself-chat/issues
 - **Documentation**: https://docs.nself.org
 
 For security-specific inquiries:
+
 - **Email**: security@nself.org
 - **PGP Key**: [Coming Soon]
 
 ---
 
-*This security policy is effective as of 2026-01-29 and may be updated periodically.*
+_This security policy is effective as of 2026-01-29 and may be updated periodically._

@@ -46,10 +46,7 @@ const roles = [
 // Component
 // ============================================================================
 
-export function CommandPermissions({
-  permissions = {},
-  onChange,
-}: CommandPermissionsProps) {
+export function CommandPermissions({ permissions = {}, onChange }: CommandPermissionsProps) {
   const [newAllowedUser, setNewAllowedUser] = useState('')
   const [newDeniedUser, setNewDeniedUser] = useState('')
 
@@ -84,7 +81,7 @@ export function CommandPermissions({
   return (
     <div className="space-y-6">
       {/* Description */}
-      <div className="rounded-lg border bg-muted/30 p-4">
+      <div className="bg-muted/30 rounded-lg border p-4">
         <div className="flex items-center gap-2">
           <Shield className="h-5 w-5 text-primary" />
           <h3 className="font-medium">Permission Settings</h3>
@@ -106,11 +103,11 @@ export function CommandPermissions({
               key={role.value}
               onClick={() => onChange({ ...permissions, minRole: role.value })}
               className={cn(
-                'rounded-lg border p-3 text-left transition-colors hover:bg-muted/50',
-                permissions.minRole === role.value && 'border-primary bg-primary/5'
+                'hover:bg-muted/50 rounded-lg border p-3 text-left transition-colors',
+                permissions.minRole === role.value && 'bg-primary/5 border-primary'
               )}
             >
-              <div className="font-medium text-sm">{role.label}</div>
+              <div className="text-sm font-medium">{role.label}</div>
               <div className="text-xs text-muted-foreground">{role.description}</div>
             </button>
           ))}
@@ -226,24 +223,26 @@ export function CommandPermissions({
       </div>
 
       {/* Summary */}
-      <div className="rounded-lg border bg-muted/30 p-4">
-        <h4 className="font-medium text-sm">Permission Summary</h4>
+      <div className="bg-muted/30 rounded-lg border p-4">
+        <h4 className="text-sm font-medium">Permission Summary</h4>
         <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
           <li>
             - Requires <strong>{permissions.minRole || 'member'}</strong> role or higher
           </li>
           <li>
-            - Guests {permissions.allowGuests ? <strong className="text-green-500">can</strong> : <strong className="text-red-500">cannot</strong>} use this command
+            - Guests{' '}
+            {permissions.allowGuests ? (
+              <strong className="text-green-500">can</strong>
+            ) : (
+              <strong className="text-red-500">cannot</strong>
+            )}{' '}
+            use this command
           </li>
           {permissions.allowedUsers && permissions.allowedUsers.length > 0 && (
-            <li>
-              - {permissions.allowedUsers.length} user(s) have explicit access
-            </li>
+            <li>- {permissions.allowedUsers.length} user(s) have explicit access</li>
           )}
           {permissions.deniedUsers && permissions.deniedUsers.length > 0 && (
-            <li>
-              - {permissions.deniedUsers.length} user(s) are blocked
-            </li>
+            <li>- {permissions.deniedUsers.length} user(s) are blocked</li>
           )}
         </ul>
       </div>

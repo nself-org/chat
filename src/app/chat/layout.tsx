@@ -11,11 +11,7 @@ import { VideoCallModal } from '@/components/calls/VideoCallModal'
 import { useCallStore, selectHasIncomingCall, selectIsInCall } from '@/stores/call-store'
 import { cn } from '@/lib/utils'
 import { useMediaQuery } from '@/hooks/use-media-query'
-import {
-  Panel,
-  PanelGroup,
-  PanelResizeHandle,
-} from 'react-resizable-panels'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { Menu, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -34,7 +30,7 @@ function ResizeHandle({ className }: { className?: string }) {
         className
       )}
     >
-      <div className="h-8 w-0.5 rounded-full bg-border opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="h-8 w-0.5 rounded-full bg-border opacity-0 transition-opacity group-hover:opacity-100" />
     </PanelResizeHandle>
   )
 }
@@ -57,12 +53,9 @@ function MobileSidebarOverlay({
   return (
     <>
       {/* Backdrop */}
-      <div
-        className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-        onClick={onClose}
-      />
+      <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={onClose} />
       {/* Sidebar */}
-      <div className="fixed inset-y-0 left-0 z-50 w-64 lg:hidden animate-in slide-in-from-left duration-200">
+      <div className="fixed inset-y-0 left-0 z-50 w-64 duration-200 animate-in slide-in-from-left lg:hidden">
         {children}
       </div>
     </>
@@ -134,10 +127,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
               </div>
 
               {/* Mobile Sidebar Overlay */}
-              <MobileSidebarOverlay
-                open={sidebarOpen}
-                onClose={() => setSidebarOpen(false)}
-              >
+              <MobileSidebarOverlay open={sidebarOpen} onClose={() => setSidebarOpen(false)}>
                 <div className="relative h-full">
                   <Button
                     variant="ghost"
@@ -152,25 +142,13 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
               </MobileSidebarOverlay>
 
               {/* Mobile Main Content */}
-              <main className="flex flex-1 flex-col overflow-hidden">
-                {children}
-              </main>
+              <main className="flex flex-1 flex-col overflow-hidden">{children}</main>
             </>
           ) : (
             /* Desktop: Resizable panels */
-            <PanelGroup
-              direction="horizontal"
-              autoSaveId="nchat-layout"
-              className="h-full"
-            >
+            <PanelGroup direction="horizontal" autoSaveId="nchat-layout" className="h-full">
               {/* Sidebar Panel */}
-              <Panel
-                id="sidebar"
-                defaultSize={18}
-                minSize={15}
-                maxSize={25}
-                order={1}
-              >
+              <Panel id="sidebar" defaultSize={18} minSize={15} maxSize={25} order={1}>
                 <Sidebar />
               </Panel>
 
@@ -178,15 +156,8 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
               <ResizeHandle />
 
               {/* Main Content Panel */}
-              <Panel
-                id="main"
-                defaultSize={82}
-                minSize={50}
-                order={2}
-              >
-                <main className="flex h-full flex-col overflow-hidden">
-                  {children}
-                </main>
+              <Panel id="main" defaultSize={82} minSize={50} order={2}>
+                <main className="flex h-full flex-col overflow-hidden">{children}</main>
               </Panel>
             </PanelGroup>
           )}

@@ -95,6 +95,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation changes
@@ -105,6 +106,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `perf`: Performance improvements
 
 **Examples:**
+
 ```
 feat(chat): add message reactions
 fix(auth): resolve login redirect issue
@@ -243,6 +245,7 @@ describe('Button', () => {
 ### Before Submitting
 
 1. **Update your branch** with the latest main:
+
    ```bash
    git checkout main
    git pull origin main
@@ -251,6 +254,7 @@ describe('Button', () => {
    ```
 
 2. **Run all checks**:
+
    ```bash
    pnpm check-all
    ```
@@ -272,20 +276,24 @@ fix(auth): resolve login redirect issue
 
 ```markdown
 ## Description
+
 Brief description of what this PR does.
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests added/updated
 - [ ] E2E tests added/updated
 - [ ] Manual testing completed
 
 ## Checklist
+
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Comments added for complex code
@@ -452,6 +460,7 @@ By contributing to ɳChat, you agree that your contributions will be licensed un
 ## Recognition
 
 Contributors will be recognized in:
+
 - `CHANGELOG.md` for each release
 - GitHub contributors page
 - Project website (if applicable)

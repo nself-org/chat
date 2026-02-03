@@ -5,7 +5,16 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/auth-context'
-import { Users, Hash, MessageSquare, Activity, ArrowRight, Clock, CheckCircle, AlertTriangle } from 'lucide-react'
+import {
+  Users,
+  Hash,
+  MessageSquare,
+  Activity,
+  ArrowRight,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+} from 'lucide-react'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { StatsCard } from '@/components/admin/stats-card'
 import { generateMockActivityData } from '@/components/admin/activity-chart'
@@ -17,9 +26,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 
 // Lazy load heavy chart component (recharts)
 const ActivityChart = dynamic(
-  () => import('@/components/admin/activity-chart').then(mod => ({ default: mod.ActivityChart })),
+  () => import('@/components/admin/activity-chart').then((mod) => ({ default: mod.ActivityChart })),
   { loading: () => <ChartSkeleton />, ssr: false }
-);
+)
 
 // Mock data for demonstration
 const mockStats = {
@@ -104,9 +113,7 @@ export default function AdminDashboardPage() {
         {/* Header */}
         <div>
           <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">
-            Overview of your workspace activity and health
-          </p>
+          <p className="text-muted-foreground">Overview of your workspace activity and health</p>
         </div>
 
         {/* Stats Grid */}
@@ -186,7 +193,7 @@ export default function AdminDashboardPage() {
                         <span className="font-medium">{activity.user.name}</span>{' '}
                         <span className="text-muted-foreground">{activity.description}</span>
                       </p>
-                      <p className="text-xs text-muted-foreground flex items-center">
+                      <p className="flex items-center text-xs text-muted-foreground">
                         <Clock className="mr-1 h-3 w-3" />
                         {activity.time}
                       </p>

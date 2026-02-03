@@ -311,9 +311,7 @@ export default function WebhooksManagementPage() {
     const newStatus = webhook.status === 'active' ? 'paused' : 'active'
     setWebhooks((prev) =>
       prev.map((w) =>
-        w.id === webhook.id
-          ? { ...w, status: newStatus, updated_at: new Date().toISOString() }
-          : w
+        w.id === webhook.id ? { ...w, status: newStatus, updated_at: new Date().toISOString() } : w
       )
     )
   }, [])
@@ -352,9 +350,7 @@ export default function WebhooksManagementPage() {
 
   const handleRetryDelivery = useCallback(async (deliveryId: string) => {
     setDeliveries((prev) =>
-      prev.map((d) =>
-        d.id === deliveryId ? { ...d, status: 'retrying' as const } : d
-      )
+      prev.map((d) => (d.id === deliveryId ? { ...d, status: 'retrying' as const } : d))
     )
 
     await new Promise((resolve) => setTimeout(resolve, 2000))
@@ -393,11 +389,11 @@ export default function WebhooksManagementPage() {
     return (
       <AdminLayout>
         <div className="flex flex-col items-center justify-center py-12">
-          <WebhookIcon className="h-16 w-16 text-muted-foreground/50" />
+          <WebhookIcon className="text-muted-foreground/50 h-16 w-16" />
           <h2 className="mt-4 text-2xl font-bold">Webhooks Disabled</h2>
           <p className="mt-2 text-center text-muted-foreground">
-            The webhooks feature is currently disabled. Enable it in your
-            app configuration to start using webhooks.
+            The webhooks feature is currently disabled. Enable it in your app configuration to start
+            using webhooks.
           </p>
           <Button className="mt-6" onClick={() => router.push('/admin/config')}>
             <Settings2 className="mr-2 h-4 w-4" />
@@ -414,9 +410,7 @@ export default function WebhooksManagementPage() {
   const failedDeliveries = deliveries.filter((d) => d.status === 'failed').length
   const successRate =
     totalDeliveries > 0
-      ? Math.round(
-          ((totalDeliveries - failedDeliveries) / totalDeliveries) * 100
-        )
+      ? Math.round(((totalDeliveries - failedDeliveries) / totalDeliveries) * 100)
       : 100
 
   return (
@@ -426,9 +420,7 @@ export default function WebhooksManagementPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Webhooks</h1>
-            <p className="text-muted-foreground">
-              Manage webhooks for external integrations
-            </p>
+            <p className="text-muted-foreground">Manage webhooks for external integrations</p>
           </div>
         </div>
 
@@ -436,65 +428,45 @@ export default function WebhooksManagementPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Webhooks
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Total Webhooks</CardTitle>
               <WebhookIcon className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{webhooks.length}</div>
-              <p className="text-xs text-muted-foreground">
-                {activeCount} active
-              </p>
+              <p className="text-xs text-muted-foreground">{activeCount} active</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Total Deliveries
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Total Deliveries</CardTitle>
               <Badge variant="outline">{totalDeliveries}</Badge>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{totalDeliveries}</div>
-              <p className="text-xs text-muted-foreground">
-                Last 30 days
-              </p>
+              <p className="text-xs text-muted-foreground">Last 30 days</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Success Rate</CardTitle>
-              <Badge
-                variant={successRate >= 95 ? 'default' : 'destructive'}
-              >
-                {successRate}%
-              </Badge>
+              <Badge variant={successRate >= 95 ? 'default' : 'destructive'}>{successRate}%</Badge>
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{successRate}%</div>
-              <p className="text-xs text-muted-foreground">
-                {failedDeliveries} failed
-              </p>
+              <p className="text-xs text-muted-foreground">{failedDeliveries} failed</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Failed Deliveries
-              </CardTitle>
-              {failedDeliveries > 0 && (
-                <AlertCircle className="h-4 w-4 text-destructive" />
-              )}
+              <CardTitle className="text-sm font-medium">Failed Deliveries</CardTitle>
+              {failedDeliveries > 0 && <AlertCircle className="h-4 w-4 text-destructive" />}
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{failedDeliveries}</div>
-              <p className="text-xs text-muted-foreground">
-                Require attention
-              </p>
+              <p className="text-xs text-muted-foreground">Require attention</p>
             </CardContent>
           </Card>
         </div>

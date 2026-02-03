@@ -47,12 +47,7 @@ const ARGUMENT_TYPES = [
 // MAIN COMPONENT
 // ============================================================================
 
-export function BotCommands({
-  actions,
-  onAdd,
-  onRemove,
-  className,
-}: BotCommandsProps) {
+export function BotCommands({ actions, onAdd, onRemove, className }: BotCommandsProps) {
   const [isAdding, setIsAdding] = useState(false)
   const [draft, setDraft] = useState<CommandDraft>({
     name: '',
@@ -63,9 +58,7 @@ export function BotCommands({
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   // Filter command actions
-  const commandActions = actions.filter(
-    (a) => a.type === 'send_message' && a.config.isCommand
-  )
+  const commandActions = actions.filter((a) => a.type === 'send_message' && a.config.isCommand)
 
   // Validate draft
   const validateDraft = (): boolean => {
@@ -74,7 +67,8 @@ export function BotCommands({
     if (!draft.name.trim()) {
       newErrors.name = 'Command name is required'
     } else if (!/^[a-z][a-z0-9_-]*$/.test(draft.name)) {
-      newErrors.name = 'Command name must start with a letter and contain only lowercase letters, numbers, hyphens, and underscores'
+      newErrors.name =
+        'Command name must start with a letter and contain only lowercase letters, numbers, hyphens, and underscores'
     }
 
     if (!draft.description.trim()) {
@@ -138,9 +132,7 @@ export function BotCommands({
   const updateArgument = (index: number, field: keyof CommandArgument, value: unknown) => {
     setDraft((prev) => ({
       ...prev,
-      arguments: prev.arguments.map((arg, i) =>
-        i === index ? { ...arg, [field]: value } : arg
-      ),
+      arguments: prev.arguments.map((arg, i) => (i === index ? { ...arg, [field]: value } : arg)),
     }))
   }
 
@@ -160,17 +152,18 @@ export function BotCommands({
           <h4 className="text-sm font-medium">Commands</h4>
           {commandActions.map((action) => (
             <Card key={action.id} className="p-4">
-              <div className="flex justify-between items-start">
+              <div className="flex items-start justify-between">
                 <div>
-                  <code className="text-sm font-mono text-primary">
+                  <code className="font-mono text-sm text-primary">
                     /{action.config.command as string}
                   </code>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {action.config.description as string}
                   </p>
                   {(action.config.arguments as CommandArgument[])?.length > 0 && (
                     <div className="mt-2 text-xs text-muted-foreground">
-                      Arguments: {(action.config.arguments as CommandArgument[]).map((a) => a.name).join(', ')}
+                      Arguments:{' '}
+                      {(action.config.arguments as CommandArgument[]).map((a) => a.name).join(', ')}
                     </div>
                   )}
                 </div>
@@ -190,16 +183,14 @@ export function BotCommands({
 
       {/* Add Command Form */}
       {isAdding ? (
-        <Card className="p-4 space-y-4">
+        <Card className="space-y-4 p-4">
           <h4 className="font-medium">New Command</h4>
 
           {/* Command Name */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Command Name
-            </label>
+            <label className="mb-1 block text-sm font-medium">Command Name</label>
             <div className="flex items-center">
-              <span className="text-muted-foreground mr-1">/</span>
+              <span className="mr-1 text-muted-foreground">/</span>
               <input
                 type="text"
                 value={draft.name}
@@ -211,65 +202,54 @@ export function BotCommands({
                 }
                 placeholder="mycommand"
                 className={cn(
-                  'flex-1 px-3 py-2 rounded-md border bg-background',
+                  'flex-1 rounded-md border bg-background px-3 py-2',
                   errors.name ? 'border-destructive' : 'border-input'
                 )}
               />
             </div>
-            {errors.name && (
-              <p className="text-sm text-destructive mt-1">{errors.name}</p>
-            )}
+            {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name}</p>}
           </div>
 
           {/* Description */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Description
-            </label>
+            <label className="mb-1 block text-sm font-medium">Description</label>
             <input
               type="text"
               value={draft.description}
-              onChange={(e) =>
-                setDraft((prev) => ({ ...prev, description: e.target.value }))
-              }
+              onChange={(e) => setDraft((prev) => ({ ...prev, description: e.target.value }))}
               placeholder="What does this command do?"
               className={cn(
-                'w-full px-3 py-2 rounded-md border bg-background',
+                'w-full rounded-md border bg-background px-3 py-2',
                 errors.description ? 'border-destructive' : 'border-input'
               )}
             />
             {errors.description && (
-              <p className="text-sm text-destructive mt-1">{errors.description}</p>
+              <p className="mt-1 text-sm text-destructive">{errors.description}</p>
             )}
           </div>
 
           {/* Arguments */}
           <div>
-            <div className="flex justify-between items-center mb-2">
-              <label className="block text-sm font-medium">
-                Arguments (optional)
-              </label>
+            <div className="mb-2 flex items-center justify-between">
+              <label className="block text-sm font-medium">Arguments (optional)</label>
               <Button variant="outline" size="sm" onClick={addArgument}>
                 Add Argument
               </Button>
             </div>
 
             {draft.arguments.map((arg, index) => (
-              <div
-                key={index}
-                className="flex gap-2 items-start mb-2 p-2 border rounded-md"
-              >
+              <div key={index} className="mb-2 flex items-start gap-2 rounded-md border p-2">
                 <input
                   type="text"
                   value={arg.name}
                   onChange={(e) => updateArgument(index, 'name', e.target.value)}
                   placeholder="name"
-                  className="flex-1 px-2 py-1 text-sm rounded border border-input bg-background"
+                  className="flex-1 rounded border border-input bg-background px-2 py-1 text-sm"
                 />
                 <select
                   value={arg.type}
                   onChange={(e) => updateArgument(index, 'type', e.target.value)}
-                  className="px-2 py-1 text-sm rounded border border-input bg-background"
+                  className="rounded border border-input bg-background px-2 py-1 text-sm"
                 >
                   {ARGUMENT_TYPES.map((type) => (
                     <option key={type.value} value={type.value}>
@@ -281,18 +261,12 @@ export function BotCommands({
                   <input
                     type="checkbox"
                     checked={arg.required}
-                    onChange={(e) =>
-                      updateArgument(index, 'required', e.target.checked)
-                    }
+                    onChange={(e) => updateArgument(index, 'required', e.target.checked)}
                     className="mr-1"
                   />
                   Required
                 </label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => removeArgument(index)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => removeArgument(index)}>
                   X
                 </Button>
               </div>
@@ -301,27 +275,21 @@ export function BotCommands({
 
           {/* Response */}
           <div>
-            <label className="block text-sm font-medium mb-1">
-              Response Message
-            </label>
+            <label className="mb-1 block text-sm font-medium">Response Message</label>
             <textarea
               value={draft.response}
-              onChange={(e) =>
-                setDraft((prev) => ({ ...prev, response: e.target.value }))
-              }
+              onChange={(e) => setDraft((prev) => ({ ...prev, response: e.target.value }))}
               placeholder="The message to send when this command is used"
               rows={3}
               className={cn(
-                'w-full px-3 py-2 rounded-md border bg-background resize-none',
+                'w-full resize-none rounded-md border bg-background px-3 py-2',
                 errors.response ? 'border-destructive' : 'border-input'
               )}
             />
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Use {'{user}'} for username, {'{channel}'} for channel name
             </p>
-            {errors.response && (
-              <p className="text-sm text-destructive mt-1">{errors.response}</p>
-            )}
+            {errors.response && <p className="mt-1 text-sm text-destructive">{errors.response}</p>}
           </div>
 
           {/* Actions */}
@@ -339,11 +307,7 @@ export function BotCommands({
           </div>
         </Card>
       ) : (
-        <Button
-          variant="outline"
-          onClick={() => setIsAdding(true)}
-          className="w-full"
-        >
+        <Button variant="outline" onClick={() => setIsAdding(true)} className="w-full">
           + Add Command
         </Button>
       )}
@@ -351,8 +315,8 @@ export function BotCommands({
       {/* Help */}
       <div className="text-sm text-muted-foreground">
         <p>
-          Commands allow users to interact with your bot using slash commands
-          like <code className="text-primary">/mycommand</code>.
+          Commands allow users to interact with your bot using slash commands like{' '}
+          <code className="text-primary">/mycommand</code>.
         </p>
       </div>
     </div>

@@ -24,26 +24,21 @@ const sizeClasses = {
   lg: 'w-6 h-6',
 }
 
-export function LinkFavicon({
-  src,
-  siteName,
-  size = 'md',
-  className,
-}: LinkFaviconProps) {
+export function LinkFavicon({ src, siteName, size = 'md', className }: LinkFaviconProps) {
   const [error, setError] = React.useState(false)
 
   if (!src || error) {
     return (
       <div
         className={cn(
-          'rounded-sm bg-muted flex items-center justify-center',
+          'flex items-center justify-center rounded-sm bg-muted',
           sizeClasses[size],
           className
         )}
         aria-hidden="true"
       >
         <svg
-          className="w-3 h-3 text-muted-foreground"
+          className="h-3 w-3 text-muted-foreground"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"

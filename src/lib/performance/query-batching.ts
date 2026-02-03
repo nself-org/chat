@@ -54,10 +54,7 @@ export class QueryBatcher {
   /**
    * Add query to batch
    */
-  async query<T = any>(
-    query: DocumentNode,
-    variables?: Record<string, any>
-  ): Promise<T> {
+  async query<T = any>(query: DocumentNode, variables?: Record<string, any>): Promise<T> {
     return new Promise((resolve, reject) => {
       this.queue.push({
         id: Math.random().toString(36).substring(7),
@@ -163,10 +160,7 @@ export class DataLoader<K, V> {
 
       // Start batch timer
       if (!this.batchTimer) {
-        this.batchTimer = setTimeout(
-          () => this.flush(),
-          this.options.batchWindowMs
-        )
+        this.batchTimer = setTimeout(() => this.flush(), this.options.batchWindowMs)
       }
 
       // Flush if max batch size reached
@@ -421,10 +415,7 @@ export const OPTIMIZED_FRAGMENTS = {
 /**
  * Create paginated query with cursor
  */
-export function createPaginatedQuery(
-  baseQuery: DocumentNode,
-  limit: number = 50
-) {
+export function createPaginatedQuery(baseQuery: DocumentNode, limit: number = 50) {
   return {
     query: baseQuery,
     variables: {

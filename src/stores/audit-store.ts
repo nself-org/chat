@@ -473,7 +473,10 @@ export const useAuditStore = create<AuditStore>()(
             }
 
             const actionCounts = new Map<AuditAction, number>()
-            const actorCounts = new Map<string, { actor: typeof entries[0]['actor']; count: number }>()
+            const actorCounts = new Map<
+              string,
+              { actor: (typeof entries)[0]['actor']; count: number }
+            >()
             let failedEvents = 0
 
             entries.forEach((entry) => {
@@ -615,8 +618,7 @@ export const useAuditStore = create<AuditStore>()(
           'audit/applyFiltersAndSort'
         ),
 
-      reset: () =>
-        set(() => initialState, false, 'audit/reset'),
+      reset: () => set(() => initialState, false, 'audit/reset'),
     })),
     { name: 'audit-store' }
   )
@@ -653,8 +655,7 @@ export const selectAdminEntries = (state: AuditStore) =>
 export const selectRecentEntries = (limit: number) => (state: AuditStore) =>
   state.entries.slice(0, limit)
 
-export const selectFailedEntries = (state: AuditStore) =>
-  state.entries.filter((e) => !e.success)
+export const selectFailedEntries = (state: AuditStore) => state.entries.filter((e) => !e.success)
 
 export const selectCriticalEntries = (state: AuditStore) =>
   state.entries.filter((e) => e.severity === 'critical' || e.severity === 'error')

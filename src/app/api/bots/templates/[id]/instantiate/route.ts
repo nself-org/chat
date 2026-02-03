@@ -14,10 +14,7 @@ const logger = createLogger('BotTemplatesAPI')
  * POST /api/bots/templates/[id]/instantiate
  * Create a new bot instance from a template
  */
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: templateId } = await params
     const body = await request.json()
@@ -70,11 +67,14 @@ export async function POST(
       botName: bot.name,
     })
 
-    return NextResponse.json({
-      success: true,
-      data: bot,
-      message: 'Bot created from template successfully',
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: bot,
+        message: 'Bot created from template successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     logger.error('Failed to instantiate bot from template', error as Error)
 

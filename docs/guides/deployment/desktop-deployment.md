@@ -19,12 +19,13 @@ Comprehensive guide for building, signing, and deploying nchat desktop applicati
 
 nchat supports two desktop application frameworks:
 
-| Framework | Technology | Pros | Cons | Bundle Size |
-|-----------|------------|------|------|-------------|
+| Framework    | Technology         | Pros                            | Cons                   | Bundle Size |
+| ------------ | ------------------ | ------------------------------- | ---------------------- | ----------- |
 | **Electron** | Chromium + Node.js | Mature ecosystem, rich features | Larger bundle (~150MB) | ~150-200 MB |
-| **Tauri** | WebView + Rust | Small bundle, fast, secure | Newer ecosystem | ~10-20 MB |
+| **Tauri**    | WebView + Rust     | Small bundle, fast, secure      | Newer ecosystem        | ~10-20 MB   |
 
 Choose based on your requirements:
+
 - **Electron**: Maximum compatibility, feature-rich, easier debugging
 - **Tauri**: Smaller downloads, better performance, modern security
 
@@ -104,6 +105,7 @@ sudo pacman -S webkit2gtk \
 Create environment-specific files:
 
 **`.env.production`**
+
 ```bash
 # Environment
 NODE_ENV=production
@@ -143,6 +145,7 @@ AWS_S3_BUCKET=your-releases-bucket
 ```
 
 **`.env.staging`**
+
 ```bash
 # Similar to production but with staging URLs
 NODE_ENV=staging
@@ -341,6 +344,7 @@ The build is configured in `platforms/tauri/tauri.conf.json`:
 ## Code Signing
 
 Code signing is **required** for distributing desktop applications. Without it:
+
 - macOS: Gatekeeper will block your app
 - Windows: SmartScreen will show warnings
 - Linux: No hard requirement, but recommended
@@ -413,6 +417,7 @@ Electron will handle notarization automatically if credentials are set:
 #### 1. Get Code Signing Certificate
 
 Purchase from:
+
 - DigiCert
 - Sectigo
 - GoDaddy
@@ -488,6 +493,7 @@ In `platforms/electron/electron-builder.json`:
 #### 2. Update Channels
 
 Configure in app settings:
+
 - **stable**: Production releases
 - **beta**: Beta/RC releases
 - **alpha**: Development builds
@@ -495,6 +501,7 @@ Configure in app settings:
 #### 3. Update Behavior
 
 Configured in `platforms/electron/main/updates.ts`:
+
 - Check for updates on startup
 - Auto-download based on settings
 - Notify user when ready
@@ -661,6 +668,7 @@ xattr -cr /Applications/nchat.app
 #### SmartScreen Warnings
 
 New apps will show SmartScreen warnings until they build reputation:
+
 - Get EV code signing certificate (bypasses SmartScreen)
 - Or wait for reputation to build (weeks/months)
 
@@ -740,6 +748,7 @@ certutil -dump certificate.pfx
 ### Auto-Update Not Working
 
 **Electron:**
+
 ```bash
 # Check update server
 curl -I https://api.github.com/repos/nself/nself-chat/releases/latest
@@ -751,6 +760,7 @@ curl -I https://api.github.com/repos/nself/nself-chat/releases/latest
 ```
 
 **Tauri:**
+
 ```bash
 # Verify update endpoint
 curl https://releases.../nchat/{{target}}/{{arch}}/{{version}}
@@ -810,26 +820,26 @@ For Tauri, implement your own update server:
 ```typescript
 // Express.js example
 app.get('/nchat/:target/:arch/:version', async (req, res) => {
-  const { target, arch, version } = req.params;
+  const { target, arch, version } = req.params
 
   // Check if update is available
-  const latestVersion = await getLatestVersion();
+  const latestVersion = await getLatestVersion()
   if (semver.gt(latestVersion, version)) {
     res.json({
       version: latestVersion,
-      notes: "Bug fixes and improvements",
+      notes: 'Bug fixes and improvements',
       pub_date: new Date().toISOString(),
       platforms: {
         [`${target}-${arch}`]: {
           signature: await getSignature(target, arch),
-          url: `https://releases.../nchat-${latestVersion}-${target}-${arch}.tar.gz`
-        }
-      }
-    });
+          url: `https://releases.../nchat-${latestVersion}-${target}-${arch}.tar.gz`,
+        },
+      },
+    })
   } else {
-    res.status(204).send();
+    res.status(204).send()
   }
-});
+})
 ```
 
 ### Performance Optimization
@@ -838,10 +848,10 @@ app.get('/nchat/:target/:arch/:version', async (req, res) => {
 
 ```javascript
 // Enable V8 code caching
-app.commandLine.appendSwitch('js-flags', '--optimize-for-size');
+app.commandLine.appendSwitch('js-flags', '--optimize-for-size')
 
 // Disable unused features
-app.commandLine.appendSwitch('disable-features', 'MediaRouter');
+app.commandLine.appendSwitch('disable-features', 'MediaRouter')
 ```
 
 #### Tauri
@@ -858,25 +868,30 @@ strip = true     # Strip symbols
 ## Resources
 
 ### Documentation
+
 - [Electron Documentation](https://www.electronjs.org/docs)
 - [Tauri Documentation](https://tauri.app/v1/guides/)
 - [electron-builder](https://www.electron.build/)
 
 ### Code Signing
+
 - [Apple Developer](https://developer.apple.com)
 - [Windows Code Signing](https://docs.microsoft.com/en-us/windows/win32/seccrypto/cryptography-tools)
 
 ### Auto-Update
+
 - [electron-updater](https://www.electron.build/auto-update)
 - [Tauri Updater](https://tauri.app/v1/guides/distribution/updater)
 
 ### Community
+
 - [Electron Discord](https://discord.gg/electron)
 - [Tauri Discord](https://discord.com/invite/tauri)
 
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/nself/nself-chat/issues
 - Discord: https://discord.gg/nself
 - Email: support@nself.org

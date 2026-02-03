@@ -5,6 +5,8 @@
  * highly sensitive data, and automatic cleanup on logout.
  */
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -68,11 +70,10 @@ const KEY_STORAGE_KEY = '__secure_storage_key__'
  * Generates a random encryption key for secure storage
  */
 export async function generateStorageKey(): Promise<CryptoKey> {
-  return crypto.subtle.generateKey(
-    { name: ENCRYPTION_ALGORITHM, length: 256 },
-    true,
-    ['encrypt', 'decrypt']
-  )
+  return crypto.subtle.generateKey({ name: ENCRYPTION_ALGORITHM, length: 256 }, true, [
+    'encrypt',
+    'decrypt',
+  ])
 }
 
 /**
@@ -86,13 +87,10 @@ export async function exportStorageKey(key: CryptoKey): Promise<JsonWebKey> {
  * Imports a storage key from JWK format
  */
 export async function importStorageKey(jwk: JsonWebKey): Promise<CryptoKey> {
-  return crypto.subtle.importKey(
-    'jwk',
-    jwk,
-    { name: ENCRYPTION_ALGORITHM },
-    true,
-    ['encrypt', 'decrypt']
-  )
+  return crypto.subtle.importKey('jwk', jwk, { name: ENCRYPTION_ALGORITHM }, true, [
+    'encrypt',
+    'decrypt',
+  ])
 }
 
 /**
@@ -122,10 +120,7 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
 /**
  * Encrypts data with AES-GCM
  */
-export async function encryptData(
-  data: string,
-  key: CryptoKey
-): Promise<EncryptedData> {
+export async function encryptData(data: string, key: CryptoKey): Promise<EncryptedData> {
   const iv = crypto.getRandomValues(new Uint8Array(12))
   const encoder = new TextEncoder()
   const encodedData = encoder.encode(data)
@@ -146,18 +141,11 @@ export async function encryptData(
 /**
  * Decrypts data with AES-GCM
  */
-export async function decryptData(
-  encrypted: EncryptedData,
-  key: CryptoKey
-): Promise<string> {
+export async function decryptData(encrypted: EncryptedData, key: CryptoKey): Promise<string> {
   const ciphertext = base64ToArrayBuffer(encrypted.ciphertext)
   const iv = new Uint8Array(base64ToArrayBuffer(encrypted.iv))
 
-  const decrypted = await crypto.subtle.decrypt(
-    { name: ENCRYPTION_ALGORITHM, iv },
-    key,
-    ciphertext
-  )
+  const decrypted = await crypto.subtle.decrypt({ name: ENCRYPTION_ALGORITHM, iv }, key, ciphertext)
 
   const decoder = new TextDecoder()
   return decoder.decode(decrypted)
@@ -457,7 +445,9 @@ export class SecureStorage {
       this.setRawItem(fullKey, JSON.stringify(item))
     } catch (error) {
       // Storage full or other error, use memory fallback
-      console.warn('SecureStorage: localStorage failed, using memory fallback', error)
+      logger.warn('SecureStorage: localStorage failed, using memory fallback', {
+        error: error instanceof Error ? error.message : String(error)
+      })
       this.memoryFallback.set(fullKey, item, ttl ?? undefined)
     }
   }
@@ -659,10 +649,7 @@ export class SecureStorage {
   /**
    * Imports data (for restore purposes)
    */
-  async importData(
-    data: Record<string, unknown>,
-    options: StorageOptions = {}
-  ): Promise<void> {
+  async importData(data: Record<string, unknown>, options: StorageOptions = {}): Promise<void> {
     for (const [key, value] of Object.entries(data)) {
       await this.set(key, value, options)
     }

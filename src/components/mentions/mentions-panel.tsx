@@ -51,11 +51,11 @@ interface FilterTabsProps {
 
 function FilterTabs({ filter, onFilterChange, unreadCount }: FilterTabsProps) {
   return (
-    <div className="flex gap-1 p-1 bg-muted/50 rounded-lg">
+    <div className="bg-muted/50 flex gap-1 rounded-lg p-1">
       <button
         onClick={() => onFilterChange('all')}
         className={cn(
-          'flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors',
+          'flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
           filter === 'all'
             ? 'bg-background text-foreground shadow-sm'
             : 'text-muted-foreground hover:text-foreground'
@@ -66,7 +66,7 @@ function FilterTabs({ filter, onFilterChange, unreadCount }: FilterTabsProps) {
       <button
         onClick={() => onFilterChange('unread')}
         className={cn(
-          'flex-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors',
+          'flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors',
           'flex items-center justify-center gap-1.5',
           filter === 'unread'
             ? 'bg-background text-foreground shadow-sm'
@@ -77,9 +77,9 @@ function FilterTabs({ filter, onFilterChange, unreadCount }: FilterTabsProps) {
         {unreadCount > 0 && (
           <span
             className={cn(
-              'px-1.5 py-0.5 text-xs rounded-full',
+              'rounded-full px-1.5 py-0.5 text-xs',
               filter === 'unread'
-                ? 'bg-primary text-primary-foreground'
+                ? 'text-primary-foreground bg-primary'
                 : 'bg-muted-foreground/20 text-muted-foreground'
             )}
           >
@@ -103,8 +103,8 @@ function EmptyState({ filter }: EmptyStateProps) {
   const isUnreadFilter = filter === 'unread'
 
   return (
-    <div className="flex flex-col items-center justify-center h-64 text-center px-4">
-      <div className="w-16 h-16 rounded-full bg-muted/50 flex items-center justify-center mb-4">
+    <div className="flex h-64 flex-col items-center justify-center px-4 text-center">
+      <div className="bg-muted/50 mb-4 flex h-16 w-16 items-center justify-center rounded-full">
         <svg
           className="h-8 w-8 text-muted-foreground"
           viewBox="0 0 24 24"
@@ -116,10 +116,10 @@ function EmptyState({ filter }: EmptyStateProps) {
           <path d="M13.73 21a2 2 0 0 1-3.46 0" />
         </svg>
       </div>
-      <h3 className="text-sm font-medium text-foreground mb-1">
+      <h3 className="mb-1 text-sm font-medium text-foreground">
         {isUnreadFilter ? 'No unread mentions' : 'No mentions yet'}
       </h3>
-      <p className="text-sm text-muted-foreground max-w-[240px]">
+      <p className="max-w-[240px] text-sm text-muted-foreground">
         {isUnreadFilter
           ? "You're all caught up! Check back later for new mentions."
           : "When someone mentions you, you'll see it here."}
@@ -136,12 +136,12 @@ function LoadingState() {
   return (
     <div className="flex flex-col gap-3 p-3">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="flex gap-3 animate-pulse">
-          <div className="w-10 h-10 rounded-full bg-muted" />
+        <div key={i} className="flex animate-pulse gap-3">
+          <div className="h-10 w-10 rounded-full bg-muted" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 w-32 bg-muted rounded" />
-            <div className="h-3 w-24 bg-muted rounded" />
-            <div className="h-8 w-full bg-muted rounded" />
+            <div className="h-4 w-32 rounded bg-muted" />
+            <div className="h-3 w-24 rounded bg-muted" />
+            <div className="h-8 w-full rounded bg-muted" />
           </div>
         </div>
       ))}
@@ -160,8 +160,8 @@ interface ErrorStateProps {
 
 function ErrorState({ error, onRetry }: ErrorStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center h-64 text-center px-4">
-      <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
+    <div className="flex h-64 flex-col items-center justify-center px-4 text-center">
+      <div className="bg-destructive/10 mb-4 flex h-16 w-16 items-center justify-center rounded-full">
         <svg
           className="h-8 w-8 text-destructive"
           viewBox="0 0 24 24"
@@ -174,10 +174,8 @@ function ErrorState({ error, onRetry }: ErrorStateProps) {
           <line x1="12" y1="16" x2="12.01" y2="16" />
         </svg>
       </div>
-      <h3 className="text-sm font-medium text-foreground mb-1">
-        Failed to load mentions
-      </h3>
-      <p className="text-sm text-muted-foreground max-w-[240px] mb-4">{error}</p>
+      <h3 className="mb-1 text-sm font-medium text-foreground">Failed to load mentions</h3>
+      <p className="mb-4 max-w-[240px] text-sm text-muted-foreground">{error}</p>
       <Button variant="outline" size="sm" onClick={onRetry}>
         Try again
       </Button>
@@ -234,10 +232,10 @@ export function MentionsPanel({
   if (!isFeatureEnabled) {
     return (
       <div
-        className={cn('flex flex-col bg-background border rounded-lg shadow-lg', className)}
+        className={cn('flex flex-col rounded-lg border bg-background shadow-lg', className)}
         style={{ width, height }}
       >
-        <div className="flex items-center justify-center h-full text-muted-foreground text-sm">
+        <div className="flex h-full items-center justify-center text-sm text-muted-foreground">
           Mentions feature is not enabled
         </div>
       </div>
@@ -246,11 +244,11 @@ export function MentionsPanel({
 
   return (
     <div
-      className={cn('flex flex-col bg-background border rounded-lg shadow-lg', className)}
+      className={cn('flex flex-col rounded-lg border bg-background shadow-lg', className)}
       style={{ width, height }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between border-b p-4">
         <div className="flex items-center gap-2">
           <svg
             className="h-5 w-5 text-foreground"
@@ -266,14 +264,9 @@ export function MentionsPanel({
         </div>
         <div className="flex items-center gap-2">
           {unreadCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleMarkAllAsRead}
-              className="text-xs h-8"
-            >
+            <Button variant="ghost" size="sm" onClick={handleMarkAllAsRead} className="h-8 text-xs">
               <svg
-                className="h-4 w-4 mr-1"
+                className="mr-1 h-4 w-4"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -303,12 +296,8 @@ export function MentionsPanel({
       </div>
 
       {/* Filter tabs */}
-      <div className="p-3 border-b">
-        <FilterTabs
-          filter={panelFilter}
-          onFilterChange={setFilter}
-          unreadCount={unreadCount}
-        />
+      <div className="border-b p-3">
+        <FilterTabs filter={panelFilter} onFilterChange={setFilter} unreadCount={unreadCount} />
       </div>
 
       {/* Content */}
@@ -335,7 +324,7 @@ export function MentionsPanel({
 
       {/* Footer */}
       {displayedMentions.length > 0 && (
-        <div className="p-3 border-t text-center">
+        <div className="border-t p-3 text-center">
           <p className="text-xs text-muted-foreground">
             Showing {displayedMentions.length} mention
             {displayedMentions.length !== 1 ? 's' : ''}
@@ -368,13 +357,10 @@ export function MentionsPanelInline({
   onViewAll,
   className,
 }: MentionsPanelInlineProps) {
-  const {
-    unreadMentions,
-    unreadCount,
-    jumpToMention,
-    markAsRead,
-    isFeatureEnabled,
-  } = useMentions({ userId, channelId })
+  const { unreadMentions, unreadCount, jumpToMention, markAsRead, isFeatureEnabled } = useMentions({
+    userId,
+    channelId,
+  })
 
   const displayedMentions = unreadMentions.slice(0, maxItems)
 
@@ -385,14 +371,11 @@ export function MentionsPanelInline({
   return (
     <div className={cn('space-y-2', className)}>
       <div className="flex items-center justify-between px-2">
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
           Mentions ({unreadCount})
         </h3>
         {showViewAll && onViewAll && unreadCount > maxItems && (
-          <button
-            onClick={onViewAll}
-            className="text-xs text-primary hover:underline"
-          >
+          <button onClick={onViewAll} className="text-xs text-primary hover:underline">
             View all
           </button>
         )}

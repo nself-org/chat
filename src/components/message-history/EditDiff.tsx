@@ -46,19 +46,15 @@ export function EditDiff({
       {showStats && (
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           {diff.charsAdded > 0 && (
-            <span className="text-green-600 dark:text-green-400">
-              +{diff.charsAdded}
-            </span>
+            <span className="text-green-600 dark:text-green-400">+{diff.charsAdded}</span>
           )}
           {diff.charsRemoved > 0 && (
-            <span className="text-red-600 dark:text-red-400">
-              -{diff.charsRemoved}
-            </span>
+            <span className="text-red-600 dark:text-red-400">-{diff.charsRemoved}</span>
           )}
           <span>{diff.summary}</span>
         </div>
       )}
-      <div className="rounded-md border bg-muted/30 p-3 font-mono text-sm">
+      <div className="bg-muted/30 rounded-md border p-3 font-mono text-sm">
         <DiffSegments segments={segments} />
       </div>
     </div>
@@ -165,11 +161,9 @@ export function TextDiff({
   return (
     <div className={cn('space-y-2', className)}>
       {showPercentage && changePercent > 0 && (
-        <div className="text-xs text-muted-foreground">
-          {changePercent}% changed
-        </div>
+        <div className="text-xs text-muted-foreground">{changePercent}% changed</div>
       )}
-      <div className="rounded-md border bg-muted/30 p-3 font-mono text-sm">
+      <div className="bg-muted/30 rounded-md border p-3 font-mono text-sm">
         <DiffSegments segments={segments} />
       </div>
     </div>
@@ -221,9 +215,7 @@ export function SideBySideDiff({
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium text-muted-foreground">{oldLabel}</span>
-          <span className="text-xs text-red-600 dark:text-red-400">
-            Removed
-          </span>
+          <span className="text-xs text-red-600 dark:text-red-400">Removed</span>
         </div>
         <div className="rounded-md border border-red-200 bg-red-50/50 p-3 font-mono text-sm dark:border-red-900/50 dark:bg-red-950/20">
           {oldText || <span className="italic text-muted-foreground">Empty</span>}
@@ -232,9 +224,7 @@ export function SideBySideDiff({
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium text-muted-foreground">{newLabel}</span>
-          <span className="text-xs text-green-600 dark:text-green-400">
-            Added
-          </span>
+          <span className="text-xs text-green-600 dark:text-green-400">Added</span>
         </div>
         <div className="rounded-md border border-green-200 bg-green-50/50 p-3 font-mono text-sm dark:border-green-900/50 dark:bg-green-950/20">
           {newText || <span className="italic text-muted-foreground">Empty</span>}
@@ -256,15 +246,8 @@ export interface DiffPreviewProps {
   className?: string
 }
 
-export function DiffPreview({
-  diff,
-  maxChars = 50,
-  className,
-}: DiffPreviewProps) {
-  const segments = useMemo(
-    () => truncateDiff(diff.segments, maxChars),
-    [diff.segments, maxChars]
-  )
+export function DiffPreview({ diff, maxChars = 50, className }: DiffPreviewProps) {
+  const segments = useMemo(() => truncateDiff(diff.segments, maxChars), [diff.segments, maxChars])
 
   return (
     <span className={cn('text-sm', className)}>
@@ -285,42 +268,24 @@ export interface DiffStatsBarProps {
   className?: string
 }
 
-export function DiffStatsBar({
-  charsAdded,
-  charsRemoved,
-  className,
-}: DiffStatsBarProps) {
+export function DiffStatsBar({ charsAdded, charsRemoved, className }: DiffStatsBarProps) {
   const total = charsAdded + charsRemoved
   const addedPercent = total > 0 ? (charsAdded / total) * 100 : 50
   const removedPercent = total > 0 ? (charsRemoved / total) * 100 : 50
 
   if (total === 0) {
-    return (
-      <div className={cn('text-xs text-muted-foreground', className)}>
-        No changes
-      </div>
-    )
+    return <div className={cn('text-xs text-muted-foreground', className)}>No changes</div>
   }
 
   return (
     <div className={cn('space-y-1', className)}>
       <div className="flex h-2 overflow-hidden rounded-full bg-muted">
-        <div
-          className="bg-green-500 transition-all"
-          style={{ width: `${addedPercent}%` }}
-        />
-        <div
-          className="bg-red-500 transition-all"
-          style={{ width: `${removedPercent}%` }}
-        />
+        <div className="bg-green-500 transition-all" style={{ width: `${addedPercent}%` }} />
+        <div className="bg-red-500 transition-all" style={{ width: `${removedPercent}%` }} />
       </div>
       <div className="flex justify-between text-xs">
-        <span className="text-green-600 dark:text-green-400">
-          +{charsAdded} added
-        </span>
-        <span className="text-red-600 dark:text-red-400">
-          -{charsRemoved} removed
-        </span>
+        <span className="text-green-600 dark:text-green-400">+{charsAdded} added</span>
+        <span className="text-red-600 dark:text-red-400">-{charsRemoved} removed</span>
       </div>
     </div>
   )

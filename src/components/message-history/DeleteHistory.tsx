@@ -75,19 +75,13 @@ export function DeleteHistory({
     return null
   }
 
-  const versionsToDelete = keepOriginal
-    ? history.versions.length - 1
-    : history.versions.length
+  const versionsToDelete = keepOriginal ? history.versions.length - 1 : history.versions.length
 
   return (
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button
-            variant="destructive"
-            size="sm"
-            className={cn('gap-2', className)}
-          >
+          <Button variant="destructive" size="sm" className={cn('gap-2', className)}>
             <Trash2 className="h-4 w-4" />
             Clear History
           </Button>
@@ -99,8 +93,8 @@ export function DeleteHistory({
               Clear Edit History
             </DialogTitle>
             <DialogDescription>
-              This will permanently delete the edit history for this message.
-              This action cannot be undone.
+              This will permanently delete the edit history for this message. This action cannot be
+              undone.
             </DialogDescription>
           </DialogHeader>
 
@@ -133,13 +127,9 @@ export function DeleteHistory({
                 <Checkbox
                   id="keep-original"
                   checked={keepOriginal}
-                  onCheckedChange={(checked) =>
-                    setKeepOriginal(checked === true)
-                  }
+                  onCheckedChange={(checked) => setKeepOriginal(checked === true)}
                 />
-                <Label htmlFor="keep-original">
-                  Keep original version (recommended)
-                </Label>
+                <Label htmlFor="keep-original">Keep original version (recommended)</Label>
               </div>
               <p className="text-sm text-muted-foreground">
                 {keepOriginal
@@ -166,8 +156,8 @@ export function DeleteHistory({
               <AlertTriangle className="h-4 w-4" />
               <AlertTitle>Warning</AlertTitle>
               <AlertDescription>
-                This action is irreversible. All selected edit history will be
-                permanently deleted. This action will be logged in the audit trail.
+                This action is irreversible. All selected edit history will be permanently deleted.
+                This action will be logged in the audit trail.
               </AlertDescription>
             </Alert>
           </div>
@@ -176,10 +166,7 @@ export function DeleteHistory({
             <Button variant="outline" onClick={() => setIsOpen(false)}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={() => setShowConfirm(true)}
-            >
+            <Button variant="destructive" onClick={() => setShowConfirm(true)}>
               Continue
             </Button>
           </DialogFooter>
@@ -193,8 +180,8 @@ export function DeleteHistory({
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               You are about to delete {versionsToDelete} version
-              {versionsToDelete !== 1 ? 's' : ''} from this message&apos;s edit
-              history. This action cannot be undone.
+              {versionsToDelete !== 1 ? 's' : ''} from this message&apos;s edit history. This action
+              cannot be undone.
               {!keepOriginal && (
                 <span className="mt-2 block font-medium text-destructive">
                   Warning: You are also deleting the original version!
@@ -207,7 +194,7 @@ export function DeleteHistory({
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               {isDeleting ? (
                 <>
@@ -257,15 +244,12 @@ export function DeleteVersions({
   const [showConfirm, setShowConfirm] = useState(false)
 
   // Can't delete original or current versions
-  const deletableVersions = versions.filter(
-    (v) => !v.isOriginal && !v.isCurrent
-  )
+  const deletableVersions = versions.filter((v) => !v.isOriginal && !v.isCurrent)
 
   if (deletableVersions.length === 0) {
     return (
       <p className={cn('text-sm text-muted-foreground', className)}>
-        No versions available for deletion. Original and current versions cannot
-        be deleted.
+        No versions available for deletion. Original and current versions cannot be deleted.
       </p>
     )
   }
@@ -279,19 +263,13 @@ export function DeleteVersions({
     <div className={cn('space-y-4', className)}>
       <div className="space-y-2">
         {deletableVersions.map((version) => (
-          <div
-            key={version.id}
-            className="flex items-center space-x-3 rounded-md border p-3"
-          >
+          <div key={version.id} className="flex items-center space-x-3 rounded-md border p-3">
             <Checkbox
               id={`version-${version.id}`}
               checked={selectedIds.includes(version.id)}
               onCheckedChange={() => onToggleSelect(version.id)}
             />
-            <Label
-              htmlFor={`version-${version.id}`}
-              className="flex-1 cursor-pointer"
-            >
+            <Label htmlFor={`version-${version.id}`} className="flex-1 cursor-pointer">
               <span className="font-medium">Version {version.versionNumber}</span>
               <span className="ml-2 text-sm text-muted-foreground">
                 by {version.editedBy.displayName}
@@ -326,7 +304,7 @@ export function DeleteVersions({
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               {isDeleting ? (
                 <>

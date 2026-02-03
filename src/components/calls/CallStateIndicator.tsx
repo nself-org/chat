@@ -68,21 +68,11 @@ export function CallStateIndicator({
   const sizes = sizeClasses[size]
 
   return (
-    <div
-      className={cn(
-        'inline-flex items-center gap-2',
-        sizes.container,
-        className
-      )}
-    >
+    <div className={cn('inline-flex items-center gap-2', sizes.container, className)}>
       {/* State icon or dot */}
       {showIcon && config.icon ? (
         <config.icon
-          className={cn(
-            sizes.icon,
-            config.iconClassName,
-            config.animated && 'animate-spin'
-          )}
+          className={cn(sizes.icon, config.iconClassName, config.animated && 'animate-spin')}
         />
       ) : (
         <span
@@ -96,15 +86,11 @@ export function CallStateIndicator({
       )}
 
       {/* State label */}
-      <span className={cn('font-medium', config.textClassName)}>
-        {displayName || config.label}
-      </span>
+      <span className={cn('font-medium', config.textClassName)}>{displayName || config.label}</span>
 
       {/* Duration */}
       {showDuration && duration !== undefined && duration > 0 && (
-        <span className="text-muted-foreground">
-          {formatDuration(duration)}
-        </span>
+        <span className="text-muted-foreground">{formatDuration(duration)}</span>
       )}
     </div>
   )

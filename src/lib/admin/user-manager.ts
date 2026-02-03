@@ -131,10 +131,7 @@ export function filterBySearch(users: ManagedUser[], search: string): ManagedUse
 /**
  * Apply role filter to users
  */
-export function filterByRole(
-  users: ManagedUser[],
-  role: UserRole | UserRole[]
-): ManagedUser[] {
+export function filterByRole(users: ManagedUser[], role: UserRole | UserRole[]): ManagedUser[] {
   const roles = Array.isArray(role) ? role : [role]
   if (roles.length === 0) {
     return users
@@ -175,10 +172,7 @@ export function filterByDateRange(
 /**
  * Apply activity filter to users
  */
-export function filterByActivity(
-  users: ManagedUser[],
-  hasActivity: boolean
-): ManagedUser[] {
+export function filterByActivity(users: ManagedUser[], hasActivity: boolean): ManagedUser[] {
   if (hasActivity) {
     return users.filter((user) => user.messageCount > 0 || user.channelCount > 0)
   }
@@ -221,10 +215,7 @@ export function applyFilters(users: ManagedUser[], filters: UserFilters): Manage
 /**
  * Sort users by field and direction
  */
-export function sortUsers(
-  users: ManagedUser[],
-  options: UserSortOptions
-): ManagedUser[] {
+export function sortUsers(users: ManagedUser[], options: UserSortOptions): ManagedUser[] {
   const { field, direction } = options
   const multiplier = direction === 'asc' ? 1 : -1
 
@@ -333,10 +324,7 @@ export function listUsers(
 /**
  * Suspend a user
  */
-export function suspendUser(
-  user: ManagedUser,
-  input: SuspendUserInput
-): SuspendResult {
+export function suspendUser(user: ManagedUser, input: SuspendUserInput): SuspendResult {
   const now = new Date()
 
   if (user.status === 'deleted') {
@@ -405,10 +393,7 @@ export function isSuspensionExpired(user: ManagedUser): boolean {
 /**
  * Delete a user
  */
-export function deleteUser(
-  user: ManagedUser,
-  input: DeleteUserInput
-): DeleteResult {
+export function deleteUser(user: ManagedUser, input: DeleteUserInput): DeleteResult {
   const now = new Date()
 
   if (user.role === 'owner') {
@@ -537,10 +522,7 @@ export function bulkSuspend(
 /**
  * Unsuspend multiple users
  */
-export function bulkUnsuspend(
-  users: ManagedUser[],
-  userIds: string[]
-): BulkActionResult {
+export function bulkUnsuspend(users: ManagedUser[], userIds: string[]): BulkActionResult {
   const errors: Array<{ userId: string; error: string }> = []
   let succeeded = 0
 
@@ -651,10 +633,7 @@ export function canChangeRole(
 /**
  * Check if user can manage another user
  */
-export function canManageUser(
-  currentUser: ManagedUser,
-  targetUser: ManagedUser
-): boolean {
+export function canManageUser(currentUser: ManagedUser, targetUser: ManagedUser): boolean {
   // Owner can manage everyone except themselves
   if (currentUser.role === 'owner') {
     return currentUser.id !== targetUser.id

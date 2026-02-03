@@ -25,21 +25,15 @@ export interface SearchModalProps {
 
 export function SearchModal({ open, onOpenChange }: SearchModalProps) {
   const [query, setQuery] = useState('')
-  const [activeTab, setActiveTab] = useState<'all' | 'messages' | 'files' | 'users' | 'channels'>('all')
+  const [activeTab, setActiveTab] = useState<'all' | 'messages' | 'files' | 'users' | 'channels'>(
+    'all'
+  )
   const [showFilters, setShowFilters] = useState(false)
   const [showSaved, setShowSaved] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const {
-    search,
-    results,
-    isLoading,
-    error,
-    filters,
-    setFilters,
-    saveSearch,
-    loadSavedSearch,
-  } = useSearch()
+  const { search, results, isLoading, error, filters, setFilters, saveSearch, loadSavedSearch } =
+    useSearch()
 
   // Focus input when modal opens
   useEffect(() => {
@@ -109,17 +103,17 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl h-[80vh] flex flex-col p-0">
-        <DialogHeader className="px-6 pt-6 pb-4 border-b">
+      <DialogContent className="flex h-[80vh] max-w-4xl flex-col p-0">
+        <DialogHeader className="border-b px-6 pb-4 pt-6">
           <div className="flex items-center justify-between">
             <DialogTitle className="text-xl font-semibold">Search</DialogTitle>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowSaved(!showSaved)}
                 className={cn(
-                  'text-sm px-3 py-1.5 rounded-md transition-colors',
+                  'rounded-md px-3 py-1.5 text-sm transition-colors',
                   showSaved
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'text-primary-foreground bg-primary'
                     : 'text-muted-foreground hover:bg-secondary'
                 )}
               >
@@ -128,9 +122,9 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
               <button
                 onClick={() => setShowFilters(!showFilters)}
                 className={cn(
-                  'text-sm px-3 py-1.5 rounded-md transition-colors',
+                  'rounded-md px-3 py-1.5 text-sm transition-colors',
                   showFilters
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'text-primary-foreground bg-primary'
                     : 'text-muted-foreground hover:bg-secondary'
                 )}
               >
@@ -143,7 +137,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
         <div className="px-6 pt-4">
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               ref={inputRef}
               type="text"
@@ -154,43 +148,44 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
               className="pl-10 pr-10"
             />
             {isLoading && (
-              <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin text-muted-foreground" />
+              <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
             )}
           </div>
 
           {/* Tips */}
           <div className="mt-2 text-xs text-muted-foreground">
             <span className="font-medium">Tips:</span> Use{' '}
-            <code className="px-1 py-0.5 bg-secondary rounded">from:username</code>{' '}
-            <code className="px-1 py-0.5 bg-secondary rounded">in:channel</code>{' '}
-            <code className="px-1 py-0.5 bg-secondary rounded">has:file</code>{' '}
-            <code className="px-1 py-0.5 bg-secondary rounded">is:pinned</code> |{' '}
-            <kbd className="px-1 py-0.5 bg-secondary rounded text-xs">Cmd+S</kbd> to save |{' '}
-            <kbd className="px-1 py-0.5 bg-secondary rounded text-xs">Cmd+F</kbd> for filters
+            <code className="rounded bg-secondary px-1 py-0.5">from:username</code>{' '}
+            <code className="rounded bg-secondary px-1 py-0.5">in:channel</code>{' '}
+            <code className="rounded bg-secondary px-1 py-0.5">has:file</code>{' '}
+            <code className="rounded bg-secondary px-1 py-0.5">is:pinned</code> |{' '}
+            <kbd className="rounded bg-secondary px-1 py-0.5 text-xs">Cmd+S</kbd> to save |{' '}
+            <kbd className="rounded bg-secondary px-1 py-0.5 text-xs">Cmd+F</kbd> for filters
           </div>
         </div>
 
         {/* Saved Searches */}
         {showSaved && (
-          <div className="px-6 py-4 border-b bg-secondary/50">
+          <div className="bg-secondary/50 border-b px-6 py-4">
             <SavedSearches onLoadSearch={handleLoadSavedSearch} />
           </div>
         )}
 
         {/* Filters */}
         {showFilters && (
-          <div className="px-6 py-4 border-b bg-secondary/50">
+          <div className="bg-secondary/50 border-b px-6 py-4">
             <SearchFilters filters={filters} onChange={setFilters} />
           </div>
         )}
 
         {/* Search Type Tabs */}
         <div className="px-6 pt-4">
-          <Tabs value={activeTab} onValueChange={(v: string) => setActiveTab(v as typeof activeTab)}>
+          <Tabs
+            value={activeTab}
+            onValueChange={(v: string) => setActiveTab(v as typeof activeTab)}
+          >
             <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="all">
-                All {results && `(${results.totals.total})`}
-              </TabsTrigger>
+              <TabsTrigger value="all">All {results && `(${results.totals.total})`}</TabsTrigger>
               <TabsTrigger value="messages">
                 Messages {results && `(${results.totals.messages})`}
               </TabsTrigger>
@@ -210,18 +205,16 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
         {/* Results */}
         <div className="flex-1 overflow-y-auto px-6 pb-6">
           {error && (
-            <div className="mt-4 p-4 bg-destructive/10 text-destructive rounded-md text-sm">
+            <div className="bg-destructive/10 mt-4 rounded-md p-4 text-sm text-destructive">
               <strong>Error:</strong> {error}
             </div>
           )}
 
           {!query.trim() && !showSaved && (
             <div className="mt-8 text-center text-muted-foreground">
-              <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <Search className="mx-auto mb-4 h-12 w-12 opacity-50" />
               <p className="text-lg font-medium">Search across everything</p>
-              <p className="text-sm mt-2">
-                Find messages, files, users, and channels instantly
-              </p>
+              <p className="mt-2 text-sm">Find messages, files, users, and channels instantly</p>
             </div>
           )}
 
@@ -236,7 +229,7 @@ export function SearchModal({ open, onOpenChange }: SearchModalProps) {
 
           {isLoading && query.trim() && (
             <div className="mt-8 text-center">
-              <Loader2 className="h-8 w-8 mx-auto mb-4 animate-spin text-muted-foreground" />
+              <Loader2 className="mx-auto mb-4 h-8 w-8 animate-spin text-muted-foreground" />
               <p className="text-sm text-muted-foreground">Searching...</p>
             </div>
           )}

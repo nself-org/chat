@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ShortcutKey Component
@@ -7,41 +7,41 @@
  * Handles platform-specific display (Mac symbols vs Windows text).
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { splitShortcutForDisplay, isMacOS } from '@/lib/keyboard/shortcut-utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { splitShortcutForDisplay, isMacOS } from '@/lib/keyboard/shortcut-utils'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export type KeySize = 'xs' | 'sm' | 'md' | 'lg';
-export type KeyVariant = 'default' | 'outline' | 'ghost' | 'subtle';
+export type KeySize = 'xs' | 'sm' | 'md' | 'lg'
+export type KeyVariant = 'default' | 'outline' | 'ghost' | 'subtle'
 
 export interface ShortcutKeyProps {
   /** The key or key combination to display (e.g., 'mod+k', 'shift+enter') */
-  keys: string;
+  keys: string
   /** Size of the key caps */
-  size?: KeySize;
+  size?: KeySize
   /** Visual variant */
-  variant?: KeyVariant;
+  variant?: KeyVariant
   /** Override platform detection (true = Mac style) */
-  useMacSymbols?: boolean;
+  useMacSymbols?: boolean
   /** Show keys as separate elements or combined */
-  separated?: boolean;
+  separated?: boolean
   /** Additional class name */
-  className?: string;
+  className?: string
 }
 
 export interface SingleKeyProps {
   /** The key to display */
-  keyChar: string;
+  keyChar: string
   /** Size of the key cap */
-  size?: KeySize;
+  size?: KeySize
   /** Visual variant */
-  variant?: KeyVariant;
+  variant?: KeyVariant
   /** Additional class name */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -53,18 +53,14 @@ const sizeStyles: Record<KeySize, string> = {
   sm: 'min-w-[22px] h-[22px] px-1.5 text-xs rounded',
   md: 'min-w-[26px] h-[26px] px-2 text-sm rounded-md',
   lg: 'min-w-[32px] h-[32px] px-2.5 text-base rounded-md',
-};
+}
 
 const variantStyles: Record<KeyVariant, string> = {
-  default:
-    'bg-muted border border-border text-muted-foreground shadow-sm',
-  outline:
-    'bg-transparent border border-border text-foreground',
-  ghost:
-    'bg-transparent text-muted-foreground',
-  subtle:
-    'bg-muted/50 text-muted-foreground',
-};
+  default: 'bg-muted border border-border text-muted-foreground shadow-sm',
+  outline: 'bg-transparent border border-border text-foreground',
+  ghost: 'bg-transparent text-muted-foreground',
+  subtle: 'bg-muted/50 text-muted-foreground',
+}
 
 // ============================================================================
 // SingleKey Component
@@ -91,7 +87,7 @@ export function SingleKey({
     >
       {keyChar}
     </kbd>
-  );
+  )
 }
 
 // ============================================================================
@@ -124,26 +120,16 @@ export function ShortcutKey({
   separated = false,
   className,
 }: ShortcutKeyProps) {
-  const isMac = useMacSymbols ?? isMacOS();
-  const keyParts = React.useMemo(
-    () => splitShortcutForDisplay(keys, isMac),
-    [keys, isMac]
-  );
+  const isMac = useMacSymbols ?? isMacOS()
+  const keyParts = React.useMemo(() => splitShortcutForDisplay(keys, isMac), [keys, isMac])
 
   // For Mac, combine modifier symbols; for Windows, show separately
-  const shouldCombine = isMac && !separated;
+  const shouldCombine = isMac && !separated
 
   if (shouldCombine) {
     // Combine all keys into a single key cap (Mac style)
-    const combinedKey = keyParts.join('');
-    return (
-      <SingleKey
-        keyChar={combinedKey}
-        size={size}
-        variant={variant}
-        className={className}
-      />
-    );
+    const combinedKey = keyParts.join('')
+    return <SingleKey keyChar={combinedKey} size={size} variant={variant} className={className} />
   }
 
   // Show keys as separate key caps
@@ -153,31 +139,31 @@ export function ShortcutKey({
         <React.Fragment key={index}>
           <SingleKey keyChar={part} size={size} variant={variant} />
           {index < keyParts.length - 1 && !isMac && (
-            <span className="text-muted-foreground text-xs mx-0.5">+</span>
+            <span className="mx-0.5 text-xs text-muted-foreground">+</span>
           )}
         </React.Fragment>
       ))}
     </span>
-  );
+  )
 }
 
 // ============================================================================
 // ModifierKey Component
 // ============================================================================
 
-export type ModifierType = 'mod' | 'ctrl' | 'alt' | 'shift' | 'meta';
+export type ModifierType = 'mod' | 'ctrl' | 'alt' | 'shift' | 'meta'
 
 export interface ModifierKeyProps {
   /** The modifier key type */
-  modifier: ModifierType;
+  modifier: ModifierType
   /** Size of the key cap */
-  size?: KeySize;
+  size?: KeySize
   /** Visual variant */
-  variant?: KeyVariant;
+  variant?: KeyVariant
   /** Override platform detection */
-  useMacSymbols?: boolean;
+  useMacSymbols?: boolean
   /** Additional class name */
-  className?: string;
+  className?: string
 }
 
 const modifierSymbols: Record<ModifierType, { mac: string; win: string }> = {
@@ -186,7 +172,7 @@ const modifierSymbols: Record<ModifierType, { mac: string; win: string }> = {
   alt: { mac: '\u2325', win: 'Alt' },
   shift: { mac: '\u21E7', win: 'Shift' },
   meta: { mac: '\u2318', win: 'Win' },
-};
+}
 
 /**
  * Displays a single modifier key
@@ -198,18 +184,11 @@ export function ModifierKey({
   useMacSymbols,
   className,
 }: ModifierKeyProps) {
-  const isMac = useMacSymbols ?? isMacOS();
-  const symbol = modifierSymbols[modifier];
-  const display = isMac ? symbol.mac : symbol.win;
+  const isMac = useMacSymbols ?? isMacOS()
+  const symbol = modifierSymbols[modifier]
+  const display = isMac ? symbol.mac : symbol.win
 
-  return (
-    <SingleKey
-      keyChar={display}
-      size={size}
-      variant={variant}
-      className={className}
-    />
-  );
+  return <SingleKey keyChar={display} size={size} variant={variant} className={className} />
 }
 
 // ============================================================================
@@ -218,15 +197,15 @@ export function ModifierKey({
 
 export interface KeyComboProps {
   /** Array of keys to display */
-  keys: string[];
+  keys: string[]
   /** Size of the key caps */
-  size?: KeySize;
+  size?: KeySize
   /** Visual variant */
-  variant?: KeyVariant;
+  variant?: KeyVariant
   /** Separator between keys */
-  separator?: 'plus' | 'space' | 'then' | 'none';
+  separator?: 'plus' | 'space' | 'then' | 'none'
   /** Additional class name */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -248,19 +227,17 @@ export function KeyCombo({
   const separatorElement = React.useMemo(() => {
     switch (separator) {
       case 'plus':
-        return <span className="text-muted-foreground text-xs mx-0.5">+</span>;
+        return <span className="mx-0.5 text-xs text-muted-foreground">+</span>
       case 'space':
-        return <span className="w-1" />;
+        return <span className="w-1" />
       case 'then':
-        return (
-          <span className="text-muted-foreground text-xs mx-1">then</span>
-        );
+        return <span className="mx-1 text-xs text-muted-foreground">then</span>
       case 'none':
-        return null;
+        return null
       default:
-        return null;
+        return null
     }
-  }, [separator]);
+  }, [separator])
 
   return (
     <span className={cn('inline-flex items-center', className)}>
@@ -271,11 +248,11 @@ export function KeyCombo({
         </React.Fragment>
       ))}
     </span>
-  );
+  )
 }
 
 // ============================================================================
 // Exports
 // ============================================================================
 
-export default ShortcutKey;
+export default ShortcutKey

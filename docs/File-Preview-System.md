@@ -9,6 +9,7 @@ Complete file preview system with support for images, videos, audio, PDFs, docum
 Universal file preview modal that automatically selects the appropriate viewer based on file type.
 
 **Features:**
+
 - Automatic viewer selection based on MIME type
 - Keyboard navigation (←/→ for prev/next, Esc to close, D to download, I for info)
 - Gallery mode with multiple files
@@ -20,11 +21,11 @@ Universal file preview modal that automatically selects the appropriate viewer b
 **Usage:**
 
 ```tsx
-import { FilePreview } from '@/components/media/FilePreview';
+import { FilePreview } from '@/components/media/FilePreview'
 
 function MyComponent() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<MediaItem | null>(null);
+  const [isOpen, setIsOpen] = useState(false)
+  const [selectedFile, setSelectedFile] = useState<MediaItem | null>(null)
 
   return (
     <FilePreview
@@ -32,16 +33,21 @@ function MyComponent() {
       items={allFiles}
       isOpen={isOpen}
       onClose={() => setIsOpen(false)}
-      onNext={() => {/* navigate to next file */}}
-      onPrevious={() => {/* navigate to previous file */}}
+      onNext={() => {
+        /* navigate to next file */
+      }}
+      onPrevious={() => {
+        /* navigate to previous file */
+      }}
       showNavigation={true}
       showInfo={true}
     />
-  );
+  )
 }
 ```
 
 **Props:**
+
 - `item: MediaItem` - Current file to preview
 - `items?: MediaItem[]` - All files for gallery navigation
 - `isOpen: boolean` - Modal open state
@@ -61,6 +67,7 @@ function MyComponent() {
 PDF document viewer using PDF.js from CDN.
 
 **Features:**
+
 - Page navigation (arrows, input field)
 - Zoom controls (in/out/reset)
 - Keyboard shortcuts (←/→ for pages, +/- for zoom)
@@ -72,7 +79,7 @@ PDF document viewer using PDF.js from CDN.
 **Usage:**
 
 ```tsx
-import { PDFViewer } from '@/components/media/PDFViewer';
+import { PDFViewer } from '@/components/media/PDFViewer'
 
 function PDFPreview() {
   return (
@@ -83,11 +90,12 @@ function PDFPreview() {
       showControls={true}
       onDownload={handleDownload}
     />
-  );
+  )
 }
 ```
 
 **Props:**
+
 - `item: MediaItem` - PDF file to display
 - `initialPage?: number` - Starting page (default: 1)
 - `initialZoom?: number` - Starting zoom level (default: 1.5)
@@ -97,6 +105,7 @@ function PDFPreview() {
 - `className?: string` - Additional CSS classes
 
 **PDF.js Configuration:**
+
 - Version: 4.0.379 (from CDN)
 - Worker loaded automatically
 - No npm installation required
@@ -109,6 +118,7 @@ function PDFPreview() {
 Text and code file preview with syntax highlighting.
 
 **Features:**
+
 - Text file preview with line numbers
 - Code syntax detection (20+ languages)
 - CSV table rendering
@@ -119,6 +129,7 @@ Text and code file preview with syntax highlighting.
 - Download and open external buttons
 
 **Supported File Types:**
+
 - **Text:** .txt, .md, .log
 - **Code:** .js, .ts, .jsx, .tsx, .html, .css, .json, .py, .java, .c, .cpp, .go, .rs, .rb, .php
 - **Data:** .csv (rendered as table)
@@ -127,7 +138,7 @@ Text and code file preview with syntax highlighting.
 **Usage:**
 
 ```tsx
-import { DocumentPreview } from '@/components/media/DocumentPreview';
+import { DocumentPreview } from '@/components/media/DocumentPreview'
 
 function CodePreview() {
   return (
@@ -138,11 +149,12 @@ function CodePreview() {
       onDownload={handleDownload}
       onOpenExternal={handleOpen}
     />
-  );
+  )
 }
 ```
 
 **Props:**
+
 - `item: MediaItem` - Document to display
 - `maxLines?: number` - Max lines to display (default: 500)
 - `showLineNumbers?: boolean` - Show line numbers (default: true)
@@ -151,6 +163,7 @@ function CodePreview() {
 - `className?: string` - Additional CSS classes
 
 **CSV Rendering:**
+
 - Automatically renders CSV as table
 - Header row styling
 - Scrollable rows
@@ -163,6 +176,7 @@ function CodePreview() {
 Already exists - image viewer with zoom, pan, and rotation.
 
 **Features:**
+
 - Zoom in/out (mouse wheel, buttons)
 - Pan and drag when zoomed
 - Rotate left/right
@@ -177,6 +191,7 @@ Already exists - image viewer with zoom, pan, and rotation.
 Already exists - video player with full controls.
 
 **Features:**
+
 - Play/pause
 - Seek bar
 - Volume control
@@ -192,6 +207,7 @@ Already exists - video player with full controls.
 Already exists - audio player with waveform.
 
 **Features:**
+
 - Play/pause
 - Seek bar
 - Volume control
@@ -207,6 +223,7 @@ Already exists - audio player with waveform.
 ### File Preview Utilities (`/lib/media/file-preview.ts`)
 
 **Type Detection:**
+
 ```typescript
 import {
   isImage,
@@ -218,7 +235,7 @@ import {
   isTextBased,
   getFileCategory,
   getFileTypeInfo,
-} from '@/lib/media/file-preview';
+} from '@/lib/media/file-preview'
 
 // Check file type
 if (isImage(file.mimeType)) {
@@ -226,11 +243,12 @@ if (isImage(file.mimeType)) {
 }
 
 // Get file info
-const info = getFileTypeInfo(file.mimeType);
-console.log(info.category, info.icon, info.color, info.previewable);
+const info = getFileTypeInfo(file.mimeType)
+console.log(info.category, info.icon, info.color, info.previewable)
 ```
 
 **File Categories:**
+
 - `image` - JPG, PNG, GIF, WebP, SVG, BMP
 - `video` - MP4, WebM, OGG, QuickTime, MPEG
 - `audio` - MP3, WAV, OGG, FLAC, AAC, M4A
@@ -245,68 +263,62 @@ console.log(info.category, info.icon, info.color, info.previewable);
 - `unknown` - Other files
 
 **Preview URL Generation:**
+
 ```typescript
-import {
-  generatePreviewUrl,
-  generateDataUrl,
-  revokePreviewUrl,
-} from '@/lib/media/file-preview';
+import { generatePreviewUrl, generateDataUrl, revokePreviewUrl } from '@/lib/media/file-preview'
 
 // Create blob URL
-const url = generatePreviewUrl(file);
+const url = generatePreviewUrl(file)
 
 // Create data URL
-const dataUrl = await generateDataUrl(file);
+const dataUrl = await generateDataUrl(file)
 
 // Clean up
-revokePreviewUrl(url);
+revokePreviewUrl(url)
 ```
 
 **Text/Code Preview:**
+
 ```typescript
-import {
-  generateTextPreview,
-  generateCodePreview,
-} from '@/lib/media/file-preview';
+import { generateTextPreview, generateCodePreview } from '@/lib/media/file-preview'
 
 // Load text content
-const text = await generateTextPreview(file, 1000);
+const text = await generateTextPreview(file, 1000)
 
 // Load code with language detection
-const { content, language } = await generateCodePreview(file, 20);
-console.log(language); // 'javascript', 'python', etc.
+const { content, language } = await generateCodePreview(file, 20)
+console.log(language) // 'javascript', 'python', etc.
 ```
 
 **File Information:**
+
 ```typescript
 import {
   getFileExtension,
   getFileBaseName,
   formatFileSize,
   getFriendlyTypeName,
-} from '@/lib/media/file-preview';
+} from '@/lib/media/file-preview'
 
-getFileExtension('document.pdf'); // 'pdf'
-getFileBaseName('document.pdf'); // 'document'
-formatFileSize(1048576); // '1 MB'
-getFriendlyTypeName('application/pdf'); // 'PDF Document'
+getFileExtension('document.pdf') // 'pdf'
+getFileBaseName('document.pdf') // 'document'
+formatFileSize(1048576) // '1 MB'
+getFriendlyTypeName('application/pdf') // 'PDF Document'
 ```
 
 **Download Helpers:**
+
 ```typescript
-import {
-  downloadFile,
-  openInNewTab,
-} from '@/lib/media/file-preview';
+import { downloadFile, openInNewTab } from '@/lib/media/file-preview'
 
 // Trigger download
-downloadFile(file, 'custom-name.pdf');
-downloadFile(url, 'custom-name.pdf');
-downloadFile(blob, 'custom-name.pdf');
+downloadFile(file, 'custom-name.pdf')
+downloadFile(url, 'custom-name.pdf')
+downloadFile(blob, 'custom-name.pdf')
 
 // Open in new tab
-openInNewTab(url);
-openInNewTab(file);
+openInNewTab(url)
+openInNewTab(file)
 ```
 
 ---
@@ -314,6 +326,7 @@ openInNewTab(file);
 ## Keyboard Shortcuts
 
 ### FilePreview Modal
+
 - **Esc** - Close preview
 - **←** - Previous file
 - **→** - Next file
@@ -321,6 +334,7 @@ openInNewTab(file);
 - **I** - Toggle info panel
 
 ### PDFViewer
+
 - **←** - Previous page
 - **→** - Next page
 - **+** or **=** - Zoom in
@@ -328,6 +342,7 @@ openInNewTab(file);
 - **0** - Reset zoom
 
 ### ImageViewer
+
 - **Mouse Wheel** - Zoom in/out
 - **Double Click** - Toggle zoom
 - **Drag** - Pan when zoomed
@@ -369,6 +384,7 @@ openInNewTab(file);
 ```
 
 **No npm dependencies required!** PDF.js is loaded from CDN:
+
 - Library: `cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.min.js`
 - Worker: `cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js`
 
@@ -377,6 +393,7 @@ openInNewTab(file);
 ## Example Implementation
 
 See `/src/components/media/FilePreviewExample.tsx` for a complete working example with:
+
 - File list with preview buttons
 - Gallery navigation
 - Multiple file types
@@ -388,6 +405,7 @@ See `/src/components/media/FilePreviewExample.tsx` for a complete working exampl
 ## Styling
 
 All components use:
+
 - **Tailwind CSS** for styling
 - **Radix UI** for accessible primitives
 - **Lucide React** for icons
@@ -465,22 +483,18 @@ src/
 ## Integration Example
 
 ```tsx
-import { useState } from 'react';
-import { FilePreview } from '@/components/media/FilePreview';
-import { MediaItem } from '@/lib/media/media-types';
+import { useState } from 'react'
+import { FilePreview } from '@/components/media/FilePreview'
+import { MediaItem } from '@/lib/media/media-types'
 
 function ChatMessage({ message }) {
-  const [previewFile, setPreviewFile] = useState<MediaItem | null>(null);
+  const [previewFile, setPreviewFile] = useState<MediaItem | null>(null)
 
   return (
     <>
       <div className="message">
         {message.attachments.map((file) => (
-          <button
-            key={file.id}
-            onClick={() => setPreviewFile(file)}
-            className="file-attachment"
-          >
+          <button key={file.id} onClick={() => setPreviewFile(file)} className="file-attachment">
             <FileIcon type={file.mimeType} />
             <span>{file.fileName}</span>
           </button>
@@ -498,7 +512,7 @@ function ChatMessage({ message }) {
         />
       )}
     </>
-  );
+  )
 }
 ```
 
@@ -516,10 +530,10 @@ To test the file preview system:
 6. Test with large files
 
 ```tsx
-import { FilePreviewExample } from '@/components/media/FilePreviewExample';
+import { FilePreviewExample } from '@/components/media/FilePreviewExample'
 
 export default function TestPage() {
-  return <FilePreviewExample />;
+  return <FilePreviewExample />
 }
 ```
 
@@ -550,6 +564,7 @@ export default function TestPage() {
 ## Support
 
 For issues or questions about the file preview system, see:
+
 - Component source code with inline documentation
 - Example implementation in `FilePreviewExample.tsx`
 - Utility functions in `file-preview.ts`

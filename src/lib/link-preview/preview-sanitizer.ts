@@ -163,7 +163,11 @@ export function sanitizeImageUrl(url: string | undefined, baseUrl?: string): str
     }
 
     // Allow if it looks like an image path
-    if (pathLower.includes('/image') || pathLower.includes('/photo') || pathLower.includes('/media')) {
+    if (
+      pathLower.includes('/image') ||
+      pathLower.includes('/photo') ||
+      pathLower.includes('/media')
+    ) {
       return sanitized
     }
 

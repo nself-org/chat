@@ -212,60 +212,60 @@ export function MessageInput({ channelId }: { channelId: string }) {
 
 ```typescript
 // src/lib/sync/processors.ts
-import { getSyncQueue } from '@/lib/offline';
-import { messageStorage } from '@/lib/offline/offline-storage';
-import type { SyncQueueItem } from '@/lib/offline';
+import { getSyncQueue } from '@/lib/offline'
+import { messageStorage } from '@/lib/offline/offline-storage'
+import type { SyncQueueItem } from '@/lib/offline'
 
 export function registerSyncProcessors() {
-  const queue = getSyncQueue();
+  const queue = getSyncQueue()
 
   // Message processor
   queue.registerProcessor('message', async (item: SyncQueueItem) => {
     if (item.operation === 'create') {
-      const { channelId, content, tempId } = item.data as any;
+      const { channelId, content, tempId } = item.data as any
 
       // Send to server
       const response = await fetch(`/api/channels/${channelId}/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error('Failed to send message');
+        throw new Error('Failed to send message')
       }
 
-      const serverMessage = await response.json();
+      const serverMessage = await response.json()
 
       // Update local cache with server ID
-      await messageStorage.remove(tempId);
+      await messageStorage.remove(tempId)
       await messageStorage.save({
         ...serverMessage,
         isPending: false,
-      });
+      })
     }
-  });
+  })
 
   // Reaction processor
   queue.registerProcessor('reaction', async (item: SyncQueueItem) => {
-    const { messageId, emoji } = item.data as any;
+    const { messageId, emoji } = item.data as any
 
     const response = await fetch(`/api/messages/${messageId}/reactions`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ emoji }),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error('Failed to add reaction');
+      throw new Error('Failed to add reaction')
     }
-  });
+  })
 
   // Add more processors as needed...
 }
 
 // Call this during app initialization
-registerSyncProcessors();
+registerSyncProcessors()
 ```
 
 ---
@@ -274,49 +274,49 @@ registerSyncProcessors();
 
 ```typescript
 // src/hooks/use-messages.ts
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { messageStorage } from '@/lib/offline/offline-storage';
-import { useOfflineStatus } from '@/hooks/use-offline';
-import type { CachedMessage } from '@/lib/offline';
+import { useState, useEffect } from 'react'
+import { messageStorage } from '@/lib/offline/offline-storage'
+import { useOfflineStatus } from '@/hooks/use-offline'
+import type { CachedMessage } from '@/lib/offline'
 
 export function useMessages(channelId: string) {
-  const [messages, setMessages] = useState<CachedMessage[]>([]);
-  const [loading, setLoading] = useState(true);
-  const isOnline = useOfflineStatus();
+  const [messages, setMessages] = useState<CachedMessage[]>([])
+  const [loading, setLoading] = useState(true)
+  const isOnline = useOfflineStatus()
 
   useEffect(() => {
     const loadMessages = async () => {
-      setLoading(true);
+      setLoading(true)
 
       if (isOnline) {
         // Fetch from server
         try {
-          const response = await fetch(`/api/channels/${channelId}/messages`);
-          const serverMessages = await response.json();
+          const response = await fetch(`/api/channels/${channelId}/messages`)
+          const serverMessages = await response.json()
 
           // Update cache
-          await messageStorage.saveMany(serverMessages);
-          setMessages(serverMessages);
+          await messageStorage.saveMany(serverMessages)
+          setMessages(serverMessages)
         } catch (error) {
           // Fall back to cache on error
-          const cached = await messageStorage.getByChannel(channelId);
-          setMessages(cached);
+          const cached = await messageStorage.getByChannel(channelId)
+          setMessages(cached)
         }
       } else {
         // Load from cache when offline
-        const cached = await messageStorage.getByChannel(channelId);
-        setMessages(cached);
+        const cached = await messageStorage.getByChannel(channelId)
+        setMessages(cached)
       }
 
-      setLoading(false);
-    };
+      setLoading(false)
+    }
 
-    loadMessages();
-  }, [channelId, isOnline]);
+    loadMessages()
+  }, [channelId, isOnline])
 
-  return { messages, loading };
+  return { messages, loading }
 }
 ```
 
@@ -326,28 +326,28 @@ export function useMessages(channelId: string) {
 
 ```typescript
 // src/hooks/use-attachment.ts
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { getAttachmentCache } from '@/lib/offline';
-import type { CachedAttachment } from '@/lib/offline';
+import { useState, useEffect } from 'react'
+import { getAttachmentCache } from '@/lib/offline'
+import type { CachedAttachment } from '@/lib/offline'
 
 export function useAttachment(attachmentId: string, url: string) {
-  const [dataUrl, setDataUrl] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [progress, setProgress] = useState(0);
+  const [dataUrl, setDataUrl] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
     const loadAttachment = async () => {
-      const cache = getAttachmentCache();
+      const cache = getAttachmentCache()
 
       // Check if cached
-      const cached = await cache.get(attachmentId);
+      const cached = await cache.get(attachmentId)
       if (cached) {
-        const url = await cache.getDataUrl(attachmentId);
-        setDataUrl(url);
-        setLoading(false);
-        return;
+        const url = await cache.getDataUrl(attachmentId)
+        setDataUrl(url)
+        setLoading(false)
+        return
       }
 
       // Download and cache
@@ -363,21 +363,21 @@ export function useAttachment(attachmentId: string, url: string) {
             size: 0, // Will be set from response
           },
           (p) => setProgress(p.percent)
-        );
+        )
 
-        const dataUrl = await cache.getDataUrl(attachmentId);
-        setDataUrl(dataUrl);
+        const dataUrl = await cache.getDataUrl(attachmentId)
+        setDataUrl(dataUrl)
       } catch (error) {
-        console.error('Failed to load attachment:', error);
+        console.error('Failed to load attachment:', error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    loadAttachment();
-  }, [attachmentId, url]);
+    loadAttachment()
+  }, [attachmentId, url])
 
-  return { dataUrl, loading, progress };
+  return { dataUrl, loading, progress }
 }
 ```
 
@@ -572,30 +572,30 @@ export function registerServiceWorker() {
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
       try {
-        const registration = await navigator.serviceWorker.register('/sw.js');
-        console.log('[SW] Registered:', registration.scope);
+        const registration = await navigator.serviceWorker.register('/sw.js')
+        console.log('[SW] Registered:', registration.scope)
 
         // Listen for updates
         registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing;
+          const newWorker = registration.installing
           if (newWorker) {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('[SW] New version available');
+                console.log('[SW] New version available')
                 // Optionally show update notification
               }
-            });
+            })
           }
-        });
+        })
       } catch (error) {
-        console.error('[SW] Registration failed:', error);
+        console.error('[SW] Registration failed:', error)
       }
-    });
+    })
   }
 }
 
 // Call in app initialization
-registerServiceWorker();
+registerServiceWorker()
 ```
 
 ---
@@ -613,23 +613,23 @@ registerServiceWorker();
 
 ```typescript
 // Simulate offline
-window.dispatchEvent(new Event('offline'));
+window.dispatchEvent(new Event('offline'))
 
 // Simulate online
-window.dispatchEvent(new Event('online'));
+window.dispatchEvent(new Event('online'))
 
 // Check status
-console.log('Online:', navigator.onLine);
+console.log('Online:', navigator.onLine)
 
 // Check cached data
-import { messageStorage } from '@/lib/offline/offline-storage';
-const messages = await messageStorage.getAll();
-console.log('Cached messages:', messages);
+import { messageStorage } from '@/lib/offline/offline-storage'
+const messages = await messageStorage.getAll()
+console.log('Cached messages:', messages)
 
 // Check queue
-import { queueStorage } from '@/lib/offline/offline-storage';
-const pending = await queueStorage.getPending();
-console.log('Pending actions:', pending);
+import { queueStorage } from '@/lib/offline/offline-storage'
+const pending = await queueStorage.getPending()
+console.log('Pending actions:', pending)
 ```
 
 ---
@@ -641,21 +641,24 @@ console.log('Pending actions:', pending);
 ```typescript
 // Update UI immediately, sync in background
 async function sendMessage(content: string) {
-  const tempId = uuidv4();
+  const tempId = uuidv4()
 
   // 1. Show in UI immediately
-  setMessages(prev => [...prev, {
-    id: tempId,
-    content,
-    isPending: true,
-    createdAt: new Date(),
-  }]);
+  setMessages((prev) => [
+    ...prev,
+    {
+      id: tempId,
+      content,
+      isPending: true,
+      createdAt: new Date(),
+    },
+  ])
 
   // 2. Queue for sync
   await queueStorage.add({
     type: 'send_message',
     data: { content, tempId },
-  });
+  })
 
   // 3. Will sync automatically when online
 }
@@ -667,16 +670,16 @@ async function sendMessage(content: string) {
 async function loadMessages(channelId: string) {
   try {
     // Try server first
-    const response = await fetch(`/api/channels/${channelId}/messages`);
-    const messages = await response.json();
+    const response = await fetch(`/api/channels/${channelId}/messages`)
+    const messages = await response.json()
 
     // Update cache
-    await messageStorage.saveMany(messages);
-    return messages;
+    await messageStorage.saveMany(messages)
+    return messages
   } catch (error) {
     // Fall back to cache
-    console.log('Using cached messages');
-    return await messageStorage.getByChannel(channelId);
+    console.log('Using cached messages')
+    return await messageStorage.getByChannel(channelId)
   }
 }
 ```
@@ -710,36 +713,42 @@ function ChatComponent() {
 ## Best Practices
 
 ### 1. Always Cache Critical Data
+
 - User profile
 - Recent messages
 - Active channels
 - Contact list
 
 ### 2. Queue Important Actions
+
 - Message sending
 - Reactions
 - Read receipts
 - Status updates
 
 ### 3. Handle Edge Cases
+
 - Queue full → Show warning
 - Cache full → Auto-cleanup
 - Sync conflict → User choice
 - Network timeout → Retry
 
 ### 4. Provide Feedback
+
 - Show offline indicator
 - Display sync progress
 - Indicate pending messages
 - Show cache statistics
 
 ### 5. Optimize Performance
+
 - Batch operations
 - Limit concurrent syncs
 - Use indexes for queries
 - Implement pagination
 
 ### 6. Monitor & Debug
+
 - Log sync operations
 - Track error rates
 - Monitor cache size
@@ -750,42 +759,45 @@ function ChatComponent() {
 ## Troubleshooting
 
 ### IndexedDB Quota Exceeded
+
 ```typescript
 // Clear old data
-await messageStorage.clear();
-await channelStorage.clear();
+await messageStorage.clear()
+await channelStorage.clear()
 
 // Or increase quota (if supported)
 if ('storage' in navigator && 'persist' in navigator.storage) {
-  const persisted = await navigator.storage.persist();
-  console.log('Persistent storage:', persisted);
+  const persisted = await navigator.storage.persist()
+  console.log('Persistent storage:', persisted)
 }
 ```
 
 ### Sync Not Working
+
 ```typescript
 // Check sync manager status
-const syncManager = getSyncManager();
-const state = syncManager.getState();
-console.log('Sync state:', state);
+const syncManager = getSyncManager()
+const state = syncManager.getState()
+console.log('Sync state:', state)
 
 // Manually trigger sync
-await syncManager.fullSync();
+await syncManager.fullSync()
 ```
 
 ### Queue Not Processing
+
 ```typescript
 // Check queue
-const queue = getSyncQueue();
-const pending = await queue.getPending();
-console.log('Pending:', pending);
+const queue = getSyncQueue()
+const pending = await queue.getPending()
+console.log('Pending:', pending)
 
 // Check processors
-const config = queue.getConfig();
-console.log('Config:', config);
+const config = queue.getConfig()
+console.log('Config:', config)
 
 // Manually process
-await queue.process();
+await queue.process()
 ```
 
 ---

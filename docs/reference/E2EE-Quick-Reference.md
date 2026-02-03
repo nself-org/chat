@@ -13,6 +13,7 @@ pnpm install
 ```
 
 Dependencies:
+
 - `@signalapp/libsignal-client` - Official Signal Protocol library
 - `@noble/curves` - Elliptic curve cryptography
 - `@noble/hashes` - Cryptographic hash functions
@@ -29,6 +30,7 @@ nself exec postgres -- psql -U postgres -d nself_db -f /app/migrations/014_e2ee_
 ```
 
 Tables created:
+
 - `nchat_user_master_keys` - Master key info
 - `nchat_identity_keys` - Device identity keys
 - `nchat_signed_prekeys` - Signed prekeys (rotated weekly)
@@ -63,15 +65,11 @@ function SetupE2EE() {
 ### 2. Encrypt Message
 
 ```typescript
-import { useE2EE } from '@/hooks/use-e2ee';
+import { useE2EE } from '@/hooks/use-e2ee'
 
-const { encryptMessage } = useE2EE();
+const { encryptMessage } = useE2EE()
 
-const encrypted = await encryptMessage(
-  'Hello, World!',
-  'recipient-user-id',
-  'recipient-device-id'
-);
+const encrypted = await encryptMessage('Hello, World!', 'recipient-user-id', 'recipient-device-id')
 
 // Store encrypted in database
 await insertMessage({
@@ -79,28 +77,27 @@ await insertMessage({
   is_encrypted: true,
   encrypted_payload: Array.from(encrypted),
   sender_device_id: myDeviceId,
-});
+})
 ```
 
 ### 3. Decrypt Message
 
 ```typescript
-const { decryptMessage } = useE2EE();
+const { decryptMessage } = useE2EE()
 
 const plaintext = await decryptMessage(
   new Uint8Array(message.encrypted_payload),
   message.message_type,
   message.sender_user_id,
   message.sender_device_id
-);
+)
 ```
 
 ### 4. Show Safety Number
 
 ```tsx
-import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay';
-
-<SafetyNumberDisplay
+import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay'
+;<SafetyNumberDisplay
   localUserId={currentUser.id}
   peerUserId={peer.id}
   peerDeviceId={peer.deviceId}
@@ -116,7 +113,7 @@ import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay';
 ### Check if E2EE is Enabled
 
 ```typescript
-const { isInitialized } = useE2EE();
+const { isInitialized } = useE2EE()
 
 if (isInitialized) {
   // E2EE is enabled
@@ -126,21 +123,16 @@ if (isInitialized) {
 ### Check if Session Exists
 
 ```typescript
-const { hasSession } = useE2EE();
+const { hasSession } = useE2EE()
 
-const sessionExists = await hasSession(peerUserId, peerDeviceId);
+const sessionExists = await hasSession(peerUserId, peerDeviceId)
 ```
 
 ### Show Encryption Status
 
 ```tsx
-import { E2EEStatus } from '@/components/e2ee/E2EEStatus';
-
-<E2EEStatus
-  isEncrypted={message.is_encrypted}
-  isVerified={contact.is_verified}
-  variant="badge"
-/>
+import { E2EEStatus } from '@/components/e2ee/E2EEStatus'
+;<E2EEStatus isEncrypted={message.is_encrypted} isVerified={contact.is_verified} variant="badge" />
 ```
 
 ### Handle Decryption Errors
@@ -159,6 +151,7 @@ try {
 ## API Endpoints
 
 ### Initialize E2EE
+
 ```
 POST /api/e2ee/initialize
 Body: { password: string, deviceId?: string }
@@ -166,6 +159,7 @@ Response: { status, recoveryCode }
 ```
 
 ### Recover E2EE
+
 ```
 POST /api/e2ee/recover
 Body: { recoveryCode: string, deviceId?: string }
@@ -173,6 +167,7 @@ Response: { status }
 ```
 
 ### Generate Safety Number
+
 ```
 POST /api/e2ee/safety-number
 Body: { action: "generate", localUserId, peerUserId, peerDeviceId }
@@ -180,6 +175,7 @@ Response: { safetyNumber, formattedSafetyNumber, qrCodeData }
 ```
 
 ### Replenish Prekeys
+
 ```
 POST /api/e2ee/keys/replenish
 Body: { count: 50 }
@@ -195,10 +191,7 @@ Response: { success, count }
 ```graphql
 query GetPreKeyBundle($userId: uuid!, $deviceId: String!) {
   nchat_prekey_bundles(
-    where: {
-      user_id: { _eq: $userId }
-      device_id: { _eq: $deviceId }
-    }
+    where: { user_id: { _eq: $userId }, device_id: { _eq: $deviceId } }
     limit: 1
   ) {
     identity_key_public
@@ -216,12 +209,7 @@ query GetPreKeyBundle($userId: uuid!, $deviceId: String!) {
 
 ```graphql
 query GetSignalSessions($deviceId: String!) {
-  nchat_signal_sessions(
-    where: {
-      device_id: { _eq: $deviceId }
-      is_active: { _eq: true }
-    }
-  ) {
+  nchat_signal_sessions(where: { device_id: { _eq: $deviceId }, is_active: { _eq: true } }) {
     peer_user_id
     peer_device_id
     created_at
@@ -265,19 +253,19 @@ import {
   encryptMessageForSending,
   prepareMessageForStorage,
   extractMessageContent,
-} from '@/lib/e2ee/message-encryption';
+} from '@/lib/e2ee/message-encryption'
 
 // Sending
 const payload = await encryptMessageForSending(
   plaintext,
   { recipientUserId, isDirectMessage: true },
   apolloClient
-);
+)
 
-const messageData = prepareMessageForStorage(payload);
+const messageData = prepareMessageForStorage(payload)
 
 // Receiving
-const plaintext = await extractMessageContent(message, apolloClient);
+const plaintext = await extractMessageContent(message, apolloClient)
 ```
 
 ---
@@ -299,13 +287,13 @@ const plaintext = await extractMessageContent(message, apolloClient);
 
 ## Troubleshooting
 
-| Error | Solution |
-|-------|----------|
-| E2EE not initialized | Call `initialize(password)` |
-| No prekey bundle | Recipient must setup E2EE first |
-| Decryption failed | Check session exists, verify device ID |
-| Invalid password | Use recovery code to recover |
-| Low prekey count | Call `replenishOneTimePreKeys(50)` |
+| Error                | Solution                               |
+| -------------------- | -------------------------------------- |
+| E2EE not initialized | Call `initialize(password)`            |
+| No prekey bundle     | Recipient must setup E2EE first        |
+| Decryption failed    | Check session exists, verify device ID |
+| Invalid password     | Use recovery code to recover           |
+| Low prekey count     | Call `replenishOneTimePreKeys(50)`     |
 
 ---
 
@@ -314,20 +302,20 @@ const plaintext = await extractMessageContent(message, apolloClient);
 ### Test E2EE Setup
 
 ```typescript
-import { getE2EEManager } from '@/lib/e2ee';
+import { getE2EEManager } from '@/lib/e2ee'
 
-const e2eeManager = getE2EEManager(apolloClient);
+const e2eeManager = getE2EEManager(apolloClient)
 
 // Initialize
-await e2eeManager.initialize('test-password');
+await e2eeManager.initialize('test-password')
 
 // Get status
-const status = e2eeManager.getStatus();
-console.log(status); // { initialized: true, ... }
+const status = e2eeManager.getStatus()
+console.log(status) // { initialized: true, ... }
 
 // Get recovery code
-const recoveryCode = e2eeManager.getRecoveryCode();
-console.log('Recovery code:', recoveryCode);
+const recoveryCode = e2eeManager.getRecoveryCode()
+console.log('Recovery code:', recoveryCode)
 ```
 
 ### Test Message Encryption
@@ -338,9 +326,9 @@ const result = await e2eeManager.encryptMessage(
   'Hello, World!',
   'recipient-user-id',
   'recipient-device-id'
-);
+)
 
-console.log('Encrypted:', result.encryptedPayload);
+console.log('Encrypted:', result.encryptedPayload)
 
 // Decrypt
 const plaintext = await e2eeManager.decryptMessage(
@@ -348,9 +336,9 @@ const plaintext = await e2eeManager.decryptMessage(
   result.type,
   'sender-user-id',
   'sender-device-id'
-);
+)
 
-console.log('Decrypted:', plaintext); // "Hello, World!"
+console.log('Decrypted:', plaintext) // "Hello, World!"
 ```
 
 ---
@@ -369,13 +357,13 @@ console.log('Decrypted:', plaintext); // "Hello, World!"
 ### Complete Message Send Flow
 
 ```typescript
-import { useApolloClient } from '@apollo/client';
-import { useE2EE } from '@/hooks/use-e2ee';
-import { encryptMessageForSending, prepareMessageForStorage } from '@/lib/e2ee/message-encryption';
+import { useApolloClient } from '@apollo/client'
+import { useE2EE } from '@/hooks/use-e2ee'
+import { encryptMessageForSending, prepareMessageForStorage } from '@/lib/e2ee/message-encryption'
 
 function useSendMessage(channelId: string, recipientUserId: string) {
-  const apolloClient = useApolloClient();
-  const { isInitialized } = useE2EE();
+  const apolloClient = useApolloClient()
+  const { isInitialized } = useE2EE()
 
   const sendMessage = async (plaintext: string) => {
     // 1. Encrypt message
@@ -383,10 +371,10 @@ function useSendMessage(channelId: string, recipientUserId: string) {
       plaintext,
       { recipientUserId, isDirectMessage: true },
       apolloClient
-    );
+    )
 
     // 2. Prepare for storage
-    const messageData = prepareMessageForStorage(payload);
+    const messageData = prepareMessageForStorage(payload)
 
     // 3. Insert into database
     await apolloClient.mutate({
@@ -395,10 +383,10 @@ function useSendMessage(channelId: string, recipientUserId: string) {
         channel_id: channelId,
         ...messageData,
       },
-    });
-  };
+    })
+  }
 
-  return { sendMessage, isE2EEEnabled: isInitialized };
+  return { sendMessage, isE2EEEnabled: isInitialized }
 }
 ```
 

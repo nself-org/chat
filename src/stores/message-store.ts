@@ -7,12 +7,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import type {
-  Message,
-  MessageDraft,
-  TypingUser,
-  Reaction,
-} from '@/types/message'
+import type { Message, MessageDraft, TypingUser, Reaction } from '@/types/message'
 
 // ============================================================================
 // Types
@@ -318,9 +313,7 @@ export const useMessageStore = create<MessageStore>()(
               state.typingUsers[channelId] = []
             }
             // Don't add duplicates
-            const existing = state.typingUsers[channelId].find(
-              (u) => u.id === user.id
-            )
+            const existing = state.typingUsers[channelId].find((u) => u.id === user.id)
             if (!existing) {
               state.typingUsers[channelId].push(user)
             }
@@ -333,9 +326,9 @@ export const useMessageStore = create<MessageStore>()(
         set(
           (state) => {
             if (state.typingUsers[channelId]) {
-              state.typingUsers[channelId] = state.typingUsers[
-                channelId
-              ].filter((u) => u.id !== userId)
+              state.typingUsers[channelId] = state.typingUsers[channelId].filter(
+                (u) => u.id !== userId
+              )
             }
           },
           false,
@@ -373,9 +366,7 @@ export const useMessageStore = create<MessageStore>()(
                 if (!message.reactions) {
                   message.reactions = []
                 }
-                const existing = message.reactions.find(
-                  (r) => r.emoji === reaction.emoji
-                )
+                const existing = message.reactions.find((r) => r.emoji === reaction.emoji)
                 if (existing) {
                   existing.count = reaction.count
                   existing.users = reaction.users
@@ -397,9 +388,7 @@ export const useMessageStore = create<MessageStore>()(
             if (messages) {
               const message = messages.find((m) => m.id === messageId)
               if (message && message.reactions) {
-                const reactionIndex = message.reactions.findIndex(
-                  (r) => r.emoji === emoji
-                )
+                const reactionIndex = message.reactions.findIndex((r) => r.emoji === emoji)
                 if (reactionIndex !== -1) {
                   const reaction = message.reactions[reactionIndex]
                   reaction.users = reaction.users.filter((u) => u.id !== userId)
@@ -445,12 +434,7 @@ export const useMessageStore = create<MessageStore>()(
           'messages/clearChannel'
         ),
 
-      reset: () =>
-        set(
-          () => initialState,
-          false,
-          'messages/reset'
-        ),
+      reset: () => set(() => initialState, false, 'messages/reset'),
     })),
     { name: 'message-store' }
   )
@@ -475,8 +459,6 @@ export const selectTypingUsers = (channelId: string) => (state: MessageStore) =>
 export const selectUnreadCount = (channelId: string) => (state: MessageStore) =>
   state.unreadCountByChannel[channelId] ?? 0
 
-export const selectIsEditing = (state: MessageStore) =>
-  state.editingMessage !== null
+export const selectIsEditing = (state: MessageStore) => state.editingMessage !== null
 
-export const selectIsReplying = (state: MessageStore) =>
-  state.replyingTo !== null
+export const selectIsReplying = (state: MessageStore) => state.replyingTo !== null

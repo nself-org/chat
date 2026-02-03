@@ -79,9 +79,7 @@ describe('SOCKET_EVENTS', () => {
 
   describe('Event naming conventions', () => {
     it('should use colon separator for namespaced events', () => {
-      const namespacedEvents = Object.values(SOCKET_EVENTS).filter((v) =>
-        v.includes(':')
-      )
+      const namespacedEvents = Object.values(SOCKET_EVENTS).filter((v) => v.includes(':'))
       expect(namespacedEvents.length).toBeGreaterThan(0)
       namespacedEvents.forEach((event) => {
         expect(event.split(':').length).toBe(2)

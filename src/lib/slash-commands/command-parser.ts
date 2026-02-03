@@ -20,10 +20,7 @@ import type {
 /**
  * Parse user input into a command structure
  */
-export function parseCommand(
-  input: string,
-  command: SlashCommand
-): ParsedCommand {
+export function parseCommand(input: string, command: SlashCommand): ParsedCommand {
   const errors: ParseError[] = []
   const parsedArgs: ParsedArgument[] = []
   const parsedFlags: Record<string, ParsedArgument> = {}
@@ -256,10 +253,7 @@ function tokenize(input: string): string[] {
 /**
  * Parse and validate a single argument value
  */
-function parseArgumentValue(
-  rawValue: string,
-  argDef: CommandArgument
-): ParsedArgument {
+function parseArgumentValue(rawValue: string, argDef: CommandArgument): ParsedArgument {
   let value: CommandArgValue = rawValue
   let isValid = true
   let error: string | undefined
@@ -477,7 +471,9 @@ function parseDateTime(input: string): string | undefined {
   const lower = input.toLowerCase()
   const now = new Date()
 
-  const relativeMatch = lower.match(/^in\s+(\d+)\s*(m|min|minute|minutes|h|hr|hour|hours|d|day|days)$/i)
+  const relativeMatch = lower.match(
+    /^in\s+(\d+)\s*(m|min|minute|minutes|h|hr|hour|hours|d|day|days)$/i
+  )
   if (relativeMatch) {
     const amount = parseInt(relativeMatch[1])
     const unit = relativeMatch[2].toLowerCase()
@@ -524,7 +520,8 @@ function parseDuration(input: string): number | undefined {
 
   // Parse duration format: 1h30m, 2d, 30s, etc.
   let totalMs = 0
-  const regex = /(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hr|hour|hours|d|day|days|w|week|weeks)/gi
+  const regex =
+    /(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hr|hour|hours|d|day|days|w|week|weeks)/gi
   let match
 
   while ((match = regex.exec(lower)) !== null) {

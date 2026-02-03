@@ -6,6 +6,8 @@
 
 import { captureError, addSentryBreadcrumb } from '../sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -43,9 +45,9 @@ const THRESHOLDS: Record<string, PerformanceThresholds> = {
 
   // Web Vitals
   lcp: { warning: 2500, critical: 4000 }, // Largest Contentful Paint
-  fid: { warning: 100, critical: 300 },   // First Input Delay
-  cls: { warning: 0.1, critical: 0.25 },  // Cumulative Layout Shift
-  inp: { warning: 200, critical: 500 },   // Interaction to Next Paint
+  fid: { warning: 100, critical: 300 }, // First Input Delay
+  cls: { warning: 0.1, critical: 0.25 }, // Cumulative Layout Shift
+  inp: { warning: 200, critical: 500 }, // Interaction to Next Paint
   ttfb: { warning: 800, critical: 1800 }, // Time to First Byte
 
   // Memory (megabytes)
@@ -94,7 +96,7 @@ export class PerformanceMonitor {
 
     // Log to console in dev
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[Perf] ${name}: ${value}${unit}`, metadata)
+      // REMOVED: console.log(`[Perf] ${name}: ${value}${unit}`, metadata)
     }
 
     return metric
@@ -141,30 +143,23 @@ export class PerformanceMonitor {
 
     // Send to Sentry
     if (typeof window !== 'undefined') {
-      addSentryBreadcrumb(
-        'performance',
-        `Performance ${alert.severity}: ${alert.metric}`,
-        {
-          value: alert.value,
-          threshold: alert.threshold,
-          unit: metric.unit,
-        }
-      )
+      addSentryBreadcrumb('performance', `Performance ${alert.severity}: ${alert.metric}`, {
+        value: alert.value,
+        threshold: alert.threshold,
+        unit: metric.unit,
+      })
 
       if (alert.severity === 'critical') {
-        captureError(
-          new Error(`Performance threshold exceeded: ${alert.metric}`),
-          {
-            tags: { category: 'performance' },
-            extra: {
-              metric: alert.metric,
-              value: alert.value,
-              threshold: alert.threshold,
-              unit: metric.unit,
-              metadata: metric.metadata,
-            },
-          }
-        )
+        captureError(new Error(`Performance threshold exceeded: ${alert.metric}`), {
+          tags: { category: 'performance' },
+          extra: {
+            metric: alert.metric,
+            value: alert.value,
+            threshold: alert.threshold,
+            unit: metric.unit,
+            metadata: metric.metadata,
+          },
+        })
       }
     }
   }
@@ -217,15 +212,19 @@ export class PerformanceMonitor {
    * Export metrics as JSON
    */
   export(): string {
-    return JSON.stringify({
-      metrics: this.metrics,
-      alerts: this.alerts,
-      summary: {
-        total_metrics: this.metrics.length,
-        total_alerts: this.alerts.length,
-        critical_alerts: this.alerts.filter((a) => a.severity === 'critical').length,
+    return JSON.stringify(
+      {
+        metrics: this.metrics,
+        alerts: this.alerts,
+        summary: {
+          total_metrics: this.metrics.length,
+          total_alerts: this.alerts.length,
+          critical_alerts: this.alerts.filter((a) => a.severity === 'critical').length,
+        },
       },
-    }, null, 2)
+      null,
+      2
+    )
   }
 }
 
@@ -263,11 +262,7 @@ export async function measureAsync<T>(
 /**
  * Measure synchronous function execution time
  */
-export function measure<T>(
-  name: string,
-  fn: () => T,
-  metadata?: Record<string, any>
-): T {
+export function measure<T>(name: string, fn: () => T, metadata?: Record<string, any>): T {
   const start = performance.now()
   try {
     const result = fn()
@@ -302,7 +297,7 @@ export function measureBetween(name: string, startMark: string, endMark: string)
         performanceMonitor.record(name, measure.duration, 'ms')
       }
     } catch (error) {
-      console.warn(`Failed to measure between ${startMark} and ${endMark}:`, error)
+      logger.warn(`Failed to measure between ${startMark} and ${endMark}:`, { context: error })
     }
   }
 }

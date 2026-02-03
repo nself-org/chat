@@ -15,6 +15,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ## Features Implemented
 
 ### ✅ 1. Edit Messages with Edit History
+
 - Users can edit their own messages within 24 hours
 - Moderators can edit any message anytime
 - Full edit history tracked in database
@@ -24,6 +25,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Database trigger automatically records all edits
 
 **Files:**
+
 - Database: `.backend/migrations/012_advanced_messaging_features.sql` (nchat_message_edit_history table)
 - UI: `src/components/chat/message-edit-history.tsx` (360 lines)
 - Hook: `src/hooks/use-messages.ts` (updateMessage function)
@@ -32,6 +34,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ---
 
 ### ✅ 2. Delete Messages (Soft Delete)
+
 - Soft delete replaces content with "[deleted]" placeholder
 - Hard delete available to admins (complete removal)
 - Tracks who deleted the message (audit trail)
@@ -40,6 +43,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Original author/timestamp retained for context
 
 **Files:**
+
 - Database: `nchat_message` table (is_deleted, deleted_at, deleted_by columns)
 - UI: `src/components/chat/message-content.tsx` (shows placeholder)
 - Hook: `src/hooks/use-messages.ts` (deleteMessage function)
@@ -48,6 +52,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ---
 
 ### ✅ 3. Forward Messages to Other Channels/DMs
+
 - Forward to up to 10 destinations at once
 - Three forwarding modes: Forward (with attribution), Copy (as own), Quote
 - Search and select channels/users
@@ -57,6 +62,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Beautiful modal with multi-select UI
 
 **Files:**
+
 - Database: `nchat_message` table (forwarded_from column)
 - UI: `src/components/chat/message-forward-modal.tsx` (375 lines, fully implemented)
 - Hook: `src/hooks/use-messages.ts` (forwardMessage function)
@@ -65,6 +71,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ---
 
 ### ✅ 4. Pin Messages to Channels
+
 - Moderators can pin important messages
 - Pinned messages shown in channel header
 - Track who pinned and when
@@ -72,6 +79,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Multiple messages can be pinned per channel
 
 **Files:**
+
 - Database: `.backend/migrations/006_channel_permissions_system.sql` (nchat_pinned_message table - already exists)
 - UI: `src/components/chat/message-actions.tsx` (pin/unpin buttons)
 - Hook: `src/hooks/use-messages.ts` (pinMessage, unpinMessage functions)
@@ -80,6 +88,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ---
 
 ### ✅ 5. Star/Save Messages for Later
+
 - Users can bookmark messages for quick access later
 - Private to each user
 - Optional folders for organization
@@ -88,6 +97,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Survives message deletion
 
 **Files:**
+
 - Database: `.backend/migrations/012_advanced_messaging_features.sql` (nchat_starred_message table)
 - UI: `src/components/chat/message-actions.tsx` (star/unstar buttons)
 - Hook: `src/hooks/use-messages.ts` (starMessage, unstarMessage functions)
@@ -97,6 +107,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ---
 
 ### ✅ 6. Message Read Receipts
+
 - Track when each user reads each message
 - Show checkmark indicators (✓ sent, ✓✓ delivered, ✓✓ read)
 - Hover to see who read and when
@@ -105,6 +116,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Privacy-aware (configurable per channel)
 
 **Files:**
+
 - Database: `.backend/migrations/012_advanced_messaging_features.sql` (nchat_message_read_receipt table)
 - UI: `src/components/chat/message-read-status.tsx` (read receipt display)
 - Hook: `src/hooks/use-messages.ts` (markMessageRead function)
@@ -114,6 +126,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ---
 
 ### ✅ 7. Typing Indicators (Enhanced)
+
 - Show "User is typing..." when someone types
 - Smart grouping: "Alice and Bob are typing..."
 - Auto-hide after 3 seconds of inactivity
@@ -122,6 +135,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - TTL-based cleanup
 
 **Files:**
+
 - Database: `nchat_typing_indicator` table (enhanced with started_at column)
 - UI: `src/components/chat/typing-indicator.tsx` (animated indicator)
 - Hook: `src/hooks/use-messages.ts` (startTyping, stopTyping functions)
@@ -134,25 +148,30 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ### Database Layer
 
 **New Tables (Migration 012):**
+
 1. `nchat_message_edit_history` - Edit audit trail
 2. `nchat_starred_message` - Saved messages
 3. `nchat_message_read_receipt` - Read tracking
 4. `nchat_thread_subscription` - Thread notifications
 
 **Enhanced Tables:**
+
 - `nchat_message` - Added: deleted_by, forwarded_from, edit_count, last_edited_at
 - `nchat_typing_indicator` - Added: started_at
 
 **Triggers:**
+
 - `record_message_edit()` - Auto-records edits on UPDATE
 
 **Helper Functions:**
+
 - `get_message_edit_history(message_id)`
 - `get_user_starred_messages(user_id, limit, offset)`
 - `get_message_read_receipts(message_id)`
 - `can_edit_message(user_id, message_id)`
 
 **Indexes:**
+
 - All tables properly indexed for performance
 - Composite indexes on (message_id, user_id) pairs
 - Timestamp indexes for sorting
@@ -162,6 +181,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ### GraphQL Layer
 
 **Mutations (30+ total):**
+
 - Message CRUD: SEND, UPDATE, DELETE, SOFT_DELETE
 - Interactions: PIN, UNPIN, STAR, UNSTAR, FORWARD, MARK_READ
 - Threading: CREATE_THREAD, REPLY_TO_THREAD, SUBSCRIBE, UNSUBSCRIBE
@@ -170,10 +190,12 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Bulk: DELETE_MULTIPLE, PIN_MULTIPLE
 
 **Subscriptions:**
+
 - MESSAGE_SUBSCRIPTION - Real-time message updates
 - Includes edit status, deletion status, reactions
 
 **Queries:**
+
 - GET_MESSAGES - Fetch messages with all metadata
 - GET_MESSAGE_DETAIL - Single message with history
 - GET_STARRED_MESSAGES - User's saved messages
@@ -183,6 +205,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ### React Layer
 
 **Main Hook: `useMessageMutations()`**
+
 - 995 lines of comprehensive functionality
 - Returns 40+ functions and loading states
 - Full error handling with toast notifications
@@ -191,6 +214,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - User authentication validation
 
 **UI Components:**
+
 - `message-content.tsx` - Renders message with markdown (405 lines)
 - `message-actions.tsx` - Action buttons and menus (454 lines)
 - `message-edit-history.tsx` - Edit history modal (360 lines)
@@ -208,6 +232,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ### Role-Based Access Control
 
 **User Permissions:**
+
 - Can edit own messages (24-hour window)
 - Can delete own messages
 - Can star/save any message
@@ -215,17 +240,20 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Can react to messages
 
 **Moderator Permissions (admin, moderator, owner):**
+
 - Can edit any message anytime
 - Can delete any message
 - Can pin/unpin messages
 - Can view deletion audit trail
 
 **Guest Permissions:**
+
 - Read-only access
 - Can copy links
 - Cannot react, reply, or perform actions
 
 **Validation:**
+
 - Client-side permission checks via `getMessagePermissions()`
 - Server-side validation in GraphQL mutations
 - Database-level checks via `can_edit_message()` function
@@ -235,6 +263,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ## Real-Time Features
 
 ### GraphQL Subscriptions
+
 - Message updates (content changes, edit status)
 - Message deletion (switches to placeholder)
 - Reactions added/removed
@@ -242,6 +271,7 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 - Read receipts updated
 
 ### WebSocket Events
+
 - Channel-based rooms for efficient broadcasting
 - Event types: message:edit, message:delete, typing:start, typing:stop
 - Auto-reconnection on disconnect
@@ -252,9 +282,11 @@ All advanced messaging features requested for v0.3.0 have been successfully impl
 ## Testing
 
 ### Unit Tests Required
+
 Location: `src/components/chat/__tests__/`
 
 Tests to implement:
+
 1. Edit message permissions (own message, 24hr window)
 2. Delete message permissions (own + moderator)
 3. Pin permissions (moderator only)
@@ -264,9 +296,11 @@ Tests to implement:
 7. Typing indicator timeout
 
 ### E2E Tests Required
+
 Location: `e2e/advanced-messaging.spec.ts`
 
 Scenarios:
+
 1. Edit a message and view history
 2. Delete a message and verify placeholder
 3. Forward a message to multiple channels
@@ -367,17 +401,21 @@ pnpm start
 ## File Manifest
 
 ### Database
+
 - ✅ `.backend/migrations/012_advanced_messaging_features.sql` (NEW - 400+ lines)
 - ✅ `.backend/migrations/006_channel_permissions_system.sql` (EXISTING - nchat_pinned_message)
 
 ### GraphQL
+
 - ✅ `src/graphql/mutations/messages.ts` (492 lines, COMPLETE)
 - ✅ `src/graphql/queries/messages.ts` (EXISTING, updated)
 
 ### React Hooks
+
 - ✅ `src/hooks/use-messages.ts` (995 lines, COMPLETE)
 
 ### UI Components
+
 - ✅ `src/components/chat/message-content.tsx` (405 lines)
 - ✅ `src/components/chat/message-actions.tsx` (454 lines)
 - ✅ `src/components/chat/message-edit-history.tsx` (360 lines)
@@ -390,9 +428,11 @@ pnpm start
 - ✅ Plus 10+ other supporting components
 
 ### TypeScript Types
+
 - ✅ `src/types/message.ts` (EXISTING, comprehensive)
 
 ### Documentation
+
 - ✅ `docs/advanced-messaging-implementation-summary.md` (NEW - Full implementation guide)
 - ✅ `docs/advanced-messaging-quick-reference.md` (NEW - Developer quick start)
 - ✅ `ADVANCED_MESSAGING_REPORT.md` (THIS FILE)
@@ -402,6 +442,7 @@ pnpm start
 ## Metrics
 
 ### Code Volume
+
 - **Database:** 400+ lines SQL (migration 012)
 - **GraphQL:** 492 lines (mutations)
 - **React Hook:** 995 lines (use-messages.ts)
@@ -409,6 +450,7 @@ pnpm start
 - **Documentation:** 1,500+ lines
 
 ### Features Delivered
+
 - ✅ 7 major features
 - ✅ 30+ GraphQL mutations
 - ✅ 40+ React hook functions
@@ -486,6 +528,7 @@ pnpm start
 **All advanced messaging features for nself-chat v0.3.0 have been successfully implemented and are production-ready.**
 
 The implementation includes:
+
 - Complete database schema with migrations
 - Full GraphQL API layer
 - Comprehensive React hooks
@@ -502,17 +545,20 @@ The implementation includes:
 ## Support & Resources
 
 ### Documentation
+
 - Implementation Summary: `docs/advanced-messaging-implementation-summary.md`
 - Quick Reference: `docs/advanced-messaging-quick-reference.md`
 - Database Migration: `.backend/migrations/012_advanced_messaging_features.sql`
 
 ### Code References
+
 - GraphQL Mutations: `src/graphql/mutations/messages.ts`
 - React Hook: `src/hooks/use-messages.ts`
 - UI Components: `src/components/chat/`
 - TypeScript Types: `src/types/message.ts`
 
 ### Getting Help
+
 - Review the Quick Reference for common patterns
 - Check the Implementation Summary for detailed explanations
 - Examine existing components for examples
@@ -536,6 +582,7 @@ The implementation includes:
 All requested features have been implemented according to specifications. The system is architected for scalability, maintainability, and performance. Database migrations are idempotent and safe to run multiple times. All code follows best practices with proper error handling, logging, and user feedback.
 
 **Recommended Next Steps:**
+
 1. Run database migration in staging
 2. Configure Hasura permissions
 3. Run test suite

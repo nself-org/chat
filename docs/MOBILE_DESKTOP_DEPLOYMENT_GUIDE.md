@@ -7,7 +7,9 @@ Complete documentation suite for deploying nChat mobile (iOS/Android) and deskto
 This comprehensive guide covers all aspects of building, signing, and deploying nChat applications across all platforms.
 
 ### Created: January 31, 2026
+
 ### Version: 0.8.0
+
 ### Status: Production Ready
 
 ---
@@ -19,6 +21,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 #### Mobile Platforms
 
 **iOS Deployment** (`docs/deployment/ios-deployment.md`)
+
 - Complete iOS deployment guide
 - 34,000+ words, production-ready
 - Covers TestFlight, App Store submission
@@ -27,6 +30,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - ✅ **Status: Complete**
 
 **Android Deployment** (`docs/deployment/android-deployment.md`)
+
 - Complete Android deployment guide
 - 32,000+ words, comprehensive
 - Covers Internal Testing, Beta, Production
@@ -37,6 +41,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 #### Desktop Platforms
 
 **Desktop Deployment** (`docs/deployment/desktop-deployment.md`)
+
 - Cross-platform desktop guide
 - Covers Windows, macOS, Linux
 - Electron-based applications
@@ -46,6 +51,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - ✅ **Status: Complete**
 
 **Windows Code Signing** (`docs/deployment/windows-signing.md`)
+
 - Detailed Windows signing guide
 - Certificate acquisition
 - SmartScreen reputation
@@ -53,6 +59,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - 📝 **Status: To be created**
 
 **macOS Signing & Notarization** (`docs/deployment/macos-signing.md`)
+
 - macOS Developer ID certificates
 - Notarization process
 - Gatekeeper requirements
@@ -60,6 +67,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - 📝 **Status: To be created**
 
 **Linux Packaging** (`docs/deployment/linux-packaging.md`)
+
 - AppImage, DEB, RPM packaging
 - Repository setup (APT, YUM)
 - Snap and Flatpak distribution
@@ -69,6 +77,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 ### Troubleshooting Guides
 
 **iOS Troubleshooting** (`docs/troubleshooting/ios-issues.md`)
+
 - Code signing issues
 - Build errors
 - Xcode problems
@@ -80,6 +89,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - ✅ **Status: Complete** (27,000+ words)
 
 **Android Troubleshooting** (`docs/troubleshooting/android-issues.md`)
+
 - Gradle build errors
 - Signing configuration
 - Play Store issues
@@ -89,6 +99,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - 📝 **Status: To be created**
 
 **Desktop Troubleshooting** (`docs/troubleshooting/desktop-issues.md`)
+
 - Platform-specific build issues
 - Code signing problems
 - Auto-update failures
@@ -98,6 +109,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 ### Build Process
 
 **Development Setup** (`docs/build/development-setup.md`)
+
 - Local development environment
 - Prerequisites for each platform
 - IDE configuration
@@ -105,6 +117,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - 📝 **Status: To be created**
 
 **Build Process** (`docs/build/build-process.md`)
+
 - Step-by-step build instructions
 - Platform-specific configurations
 - Build optimization
@@ -112,6 +125,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - 📝 **Status: To be created**
 
 **CI/CD Pipeline** (`docs/build/ci-cd-pipeline.md`)
+
 - GitHub Actions workflows
 - Automated builds
 - Testing integration
@@ -121,6 +135,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 ### App Store Submission
 
 **iOS App Store Submission** (`docs/appstore/ios-submission.md`)
+
 - App Store Connect configuration
 - Screenshots and metadata
 - Review guidelines compliance
@@ -129,6 +144,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 - 📝 **Status: To be created**
 
 **Android Play Store Submission** (`docs/appstore/android-submission.md`)
+
 - Google Play Console setup
 - Store listing optimization
 - Content rating
@@ -139,6 +155,7 @@ This comprehensive guide covers all aspects of building, signing, and deploying 
 ### Release Management
 
 **Release Checklist** (`docs/release/RELEASE_CHECKLIST.md`)
+
 - Pre-release testing
 - Version management
 - Build process
@@ -237,18 +254,21 @@ electron-builder --mac --win --linux
 ### iOS
 
 **Development**:
+
 - macOS 13.0 (Ventura) or later
 - Xcode 15.2 or later
 - CocoaPods 1.10+
 - iOS 14.0+ deployment target
 
 **Distribution**:
+
 - Apple Developer Program ($99/year)
 - Developer ID certificate
 - Provisioning profiles
 - App-specific password for automation
 
 **Testing Devices**:
+
 - iPhone 12 Mini (5.4")
 - iPhone 13 (6.1")
 - iPhone 14 Pro (6.1")
@@ -258,6 +278,7 @@ electron-builder --mac --win --linux
 ### Android
 
 **Development**:
+
 - Java JDK 17
 - Android Studio Hedgehog (2023.1.1)+
 - Android SDK API 34
@@ -265,12 +286,14 @@ electron-builder --mac --win --linux
 - Min SDK: API 24 (Android 7.0)
 
 **Distribution**:
+
 - Google Play Developer Account ($25 one-time)
 - Upload keystore
 - SHA-256 fingerprints
 - Service account for automation
 
 **Testing Devices**:
+
 - Pixel 6 (1080 x 2400) ⭐ Required for screenshots
 - Various manufacturers (Samsung, OnePlus, etc.)
 - Tablet (1800 x 2400)
@@ -278,17 +301,20 @@ electron-builder --mac --win --linux
 ### Desktop
 
 **macOS**:
+
 - macOS 10.15+
 - Developer ID certificate
 - Notarization (App-specific password)
 - Targets: Intel, Apple Silicon, Universal
 
 **Windows**:
+
 - Windows 10/11
 - Code signing certificate (optional but recommended)
 - Targets: x64, arm64
 
 **Linux**:
+
 - Build-essential packages
 - GTK+ 3.0 development headers
 - Targets: x64
@@ -301,14 +327,17 @@ electron-builder --mac --win --linux
 ### iOS
 
 **Required Certificates**:
+
 - iOS Distribution Certificate
 - Developer ID Application (for notarization)
 
 **Required Profiles**:
+
 - App Store Distribution Profile
 - Ad Hoc Profile (for TestFlight)
 
 **Setup**:
+
 ```bash
 # Check installed certificates
 security find-identity -v -p codesigning
@@ -320,6 +349,7 @@ security find-identity -v -p codesigning
 ### Android
 
 **Upload Keystore** (created once, backed up securely):
+
 ```bash
 keytool -genkey -v \
   -keystore nchat-upload.jks \
@@ -334,14 +364,17 @@ keytool -genkey -v \
 ### Desktop
 
 **macOS**:
+
 - Developer ID Application certificate
 - App-specific password for notarization
 
 **Windows**:
+
 - Code Signing certificate (optional but recommended)
 - EV certificate preferred (instant SmartScreen trust)
 
 **Linux**:
+
 - GPG key for package signing (optional)
 
 ---
@@ -351,16 +384,19 @@ keytool -genkey -v \
 ### GitHub Actions Workflows
 
 **iOS** (`.github/workflows/build-capacitor-ios.yml`):
+
 - Triggered on push to main or manual
 - Builds, signs, and uploads to TestFlight
 - Requires secrets: `CERTIFICATES_P12`, `APPLE_ID`, `APPLE_PASSWORD`
 
 **Android** (`.github/workflows/build-capacitor-android.yml`):
+
 - Builds signed AAB
 - Uploads to Play Console internal track
 - Requires secrets: `KEYSTORE_FILE`, `PLAY_STORE_JSON_KEY`
 
 **Desktop** (`.github/workflows/build-electron.yml`):
+
 - Builds for Windows, macOS, Linux
 - Signs applications
 - Creates GitHub release
@@ -369,6 +405,7 @@ keytool -genkey -v \
 ### Fastlane Automation
 
 **iOS**:
+
 ```bash
 cd platforms/capacitor/ios
 fastlane beta          # Deploy to TestFlight
@@ -376,6 +413,7 @@ fastlane production    # Deploy to App Store
 ```
 
 **Android**:
+
 ```bash
 cd platforms/capacitor/android
 fastlane internal      # Internal testing
@@ -390,16 +428,19 @@ fastlane production   # Production release
 ### iOS App Store
 
 **App Icon**:
+
 - 1024 x 1024 px
 - PNG (no transparency)
 - RGB color space
 
 **Screenshots** (iPhone 6.7"):
+
 - Size: 1290 x 2796 px
 - Minimum: 3 screenshots
 - Maximum: 10 screenshots
 
 **Screenshots** (iPad Pro 12.9"):
+
 - Size: 2048 x 2732 px (optional but recommended)
 
 **Feature Graphic**: None required for iOS
@@ -410,20 +451,24 @@ fastlane production   # Production release
 ### Google Play Store
 
 **App Icon**:
+
 - 512 x 512 px
 - PNG (32-bit with alpha)
 
 **Feature Graphic**:
+
 - 1024 x 500 px
 - PNG or JPEG
 - Required for Play Store listing
 
 **Screenshots** (Phone):
+
 - Minimum dimension: 320px
 - Maximum dimension: 3840px
 - Recommended: 1080 x 2400 px
 
-**Screenshots** (Tablet)**:
+**Screenshots** (Tablet)\*\*:
+
 - Recommended: 1800 x 2400 px
 
 **Privacy Policy**: Required URL
@@ -479,14 +524,17 @@ Format: `MAJOR.MINOR.PATCH`
 ### Build Numbers
 
 **iOS**:
+
 - CFBundleVersion: Integer, increments for each build
 - CFBundleShortVersionString: Semantic version (0.8.0)
 
 **Android**:
+
 - versionCode: Integer, must increase with each release
 - versionName: Semantic version (0.8.0)
 
 **Desktop**:
+
 - package.json version: Semantic version
 - Synced across all desktop builds
 
@@ -523,16 +571,19 @@ pnpm version major   # 0.8.0 -> 1.0.0
 ### External Resources
 
 **Apple**:
+
 - [App Store Review Guidelines](https://developer.apple.com/app-store/review/guidelines/)
 - [Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
 - [App Store Connect Help](https://help.apple.com/app-store-connect/)
 
 **Google**:
+
 - [Play Console Help](https://support.google.com/googleplay/android-developer/)
 - [Material Design Guidelines](https://material.io/design)
 - [Android Developer Docs](https://developer.android.com/docs)
 
 **Electron**:
+
 - [Electron Documentation](https://www.electronjs.org/docs)
 - [electron-builder](https://www.electron.build/)
 - [electron-updater](https://www.electron.build/auto-update)
@@ -641,6 +692,7 @@ Use this quick checklist before each release:
 ### App Store Ratings
 
 **Target**:
+
 - iOS: 4.5+ stars
 - Android: 4.3+ stars
 - Reviews: Respond within 24-48 hours
@@ -648,12 +700,14 @@ Use this quick checklist before each release:
 ### Crash Rates
 
 **Target**:
+
 - Crash-free users: > 99.5%
 - ANR-free users: > 99.9% (Android)
 
 ### Performance
 
 **Target**:
+
 - Launch time: < 2 seconds
 - Memory usage: < 150MB
 - Battery drain: < 5% per hour active use
@@ -662,6 +716,7 @@ Use this quick checklist before each release:
 ### Adoption
 
 **Target**:
+
 - Update rate: > 80% on latest version within 30 days
 - Retention: > 60% 30-day retention
 - Daily active users: Track and improve

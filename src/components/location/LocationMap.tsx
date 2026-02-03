@@ -118,17 +118,9 @@ export function LocationMap({
           )}
         >
           {/* Grid pattern to simulate map */}
-          <svg
-            className="absolute inset-0 h-full w-full"
-            xmlns="http://www.w3.org/2000/svg"
-          >
+          <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <pattern
-                id="map-grid"
-                width="40"
-                height="40"
-                patternUnits="userSpaceOnUse"
-              >
+              <pattern id="map-grid" width="40" height="40" patternUnits="userSpaceOnUse">
                 <path
                   d="M 40 0 L 0 0 0 40"
                   fill="none"
@@ -174,11 +166,7 @@ export function LocationMap({
         <div className="absolute inset-0">
           {/* Center marker */}
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-full">
-            <MapPin
-              color="var(--primary)"
-              size={32}
-              isAnimated={false}
-            />
+            <MapPin color="var(--primary)" size={32} isAnimated={false} />
           </div>
 
           {/* Additional markers */}
@@ -251,9 +239,7 @@ export function LocationMap({
       )}
 
       {/* Attribution */}
-      <div className="absolute bottom-2 right-2 text-[10px] text-gray-400">
-        Map placeholder
-      </div>
+      <div className="absolute bottom-2 right-2 text-[10px] text-gray-400">Map placeholder</div>
     </div>
   )
 }

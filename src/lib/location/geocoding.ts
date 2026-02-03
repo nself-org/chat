@@ -83,7 +83,7 @@ const MOCK_PLACES: Place[] = [
     id: 'place_2',
     name: 'City Park',
     address: '200 Park Ave',
-    coordinates: { latitude: 37.7751, longitude: -122.4180 },
+    coordinates: { latitude: 37.7751, longitude: -122.418 },
     category: 'park',
     distance: 300,
     rating: 4.8,
@@ -93,7 +93,7 @@ const MOCK_PLACES: Place[] = [
     id: 'place_3',
     name: 'Metro Station',
     address: '150 Transit Way',
-    coordinates: { latitude: 37.7745, longitude: -122.4200 },
+    coordinates: { latitude: 37.7745, longitude: -122.42 },
     category: 'transit',
     distance: 200,
   },
@@ -101,7 +101,7 @@ const MOCK_PLACES: Place[] = [
     id: 'place_4',
     name: 'Local Grocery',
     address: '50 Food Lane',
-    coordinates: { latitude: 37.7755, longitude: -122.4170 },
+    coordinates: { latitude: 37.7755, longitude: -122.417 },
     category: 'store',
     distance: 400,
     rating: 4.2,
@@ -111,7 +111,7 @@ const MOCK_PLACES: Place[] = [
     id: 'place_5',
     name: 'Downtown Medical Center',
     address: '300 Health Blvd',
-    coordinates: { latitude: 37.7740, longitude: -122.4210 },
+    coordinates: { latitude: 37.774, longitude: -122.421 },
     category: 'hospital',
     distance: 500,
     isOpen: true,
@@ -217,7 +217,12 @@ export async function searchNearbyPlaces(
     distance: Math.round(
       Math.sqrt(
         Math.pow((place.coordinates.latitude - coordinates.latitude) * 111000, 2) +
-        Math.pow((place.coordinates.longitude - coordinates.longitude) * 111000 * Math.cos(coordinates.latitude * Math.PI / 180), 2)
+          Math.pow(
+            (place.coordinates.longitude - coordinates.longitude) *
+              111000 *
+              Math.cos((coordinates.latitude * Math.PI) / 180),
+            2
+          )
       )
     ),
   }))
@@ -247,9 +252,7 @@ export async function searchPlaces(
   // Simple text matching for mock data
   const lowerQuery = query.toLowerCase()
   let places = MOCK_PLACES.filter(
-    (p) =>
-      p.name.toLowerCase().includes(lowerQuery) ||
-      p.address.toLowerCase().includes(lowerQuery)
+    (p) => p.name.toLowerCase().includes(lowerQuery) || p.address.toLowerCase().includes(lowerQuery)
   )
 
   // Update distances if coordinates provided
@@ -259,7 +262,12 @@ export async function searchPlaces(
       distance: Math.round(
         Math.sqrt(
           Math.pow((place.coordinates.latitude - coordinates.latitude) * 111000, 2) +
-          Math.pow((place.coordinates.longitude - coordinates.longitude) * 111000 * Math.cos(coordinates.latitude * Math.PI / 180), 2)
+            Math.pow(
+              (place.coordinates.longitude - coordinates.longitude) *
+                111000 *
+                Math.cos((coordinates.latitude * Math.PI) / 180),
+              2
+            )
         )
       ),
     }))
@@ -275,16 +283,15 @@ export async function searchPlaces(
 /**
  * Format address for display.
  */
-export function formatAddress(address: GeocodedAddress, style: 'full' | 'short' | 'city' = 'full'): string {
+export function formatAddress(
+  address: GeocodedAddress,
+  style: 'full' | 'short' | 'city' = 'full'
+): string {
   switch (style) {
     case 'short':
-      return [address.street, address.city]
-        .filter(Boolean)
-        .join(', ')
+      return [address.street, address.city].filter(Boolean).join(', ')
     case 'city':
-      return [address.city, address.state, address.country]
-        .filter(Boolean)
-        .join(', ')
+      return [address.city, address.state, address.country].filter(Boolean).join(', ')
     case 'full':
     default:
       return address.formattedAddress

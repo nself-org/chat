@@ -1,28 +1,36 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Card } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useNotificationSettingsStore } from '@/stores/notification-settings-store';
-import type { EmailDigestFrequency, NotificationType, DayOfWeek } from '@/lib/notifications/notification-types';
+} from '@/components/ui/select'
+import { useNotificationSettingsStore } from '@/stores/notification-settings-store'
+import type {
+  EmailDigestFrequency,
+  NotificationType,
+  DayOfWeek,
+} from '@/lib/notifications/notification-types'
 
-const EMAIL_FREQUENCIES: Array<{ value: EmailDigestFrequency; label: string; description: string }> = [
+const EMAIL_FREQUENCIES: Array<{
+  value: EmailDigestFrequency
+  label: string
+  description: string
+}> = [
   { value: 'instant', label: 'Instant', description: 'As they happen' },
   { value: 'hourly', label: 'Hourly', description: 'Every hour' },
   { value: 'daily', label: 'Daily digest', description: 'Once per day' },
   { value: 'weekly', label: 'Weekly digest', description: 'Once per week' },
   { value: 'never', label: 'Never', description: 'Disable email' },
-];
+]
 
 const NOTIFICATION_TYPES: Array<{ value: NotificationType; label: string }> = [
   { value: 'mention', label: 'Mentions' },
@@ -30,7 +38,7 @@ const NOTIFICATION_TYPES: Array<{ value: NotificationType; label: string }> = [
   { value: 'thread_reply', label: 'Thread replies' },
   { value: 'channel_invite', label: 'Channel invites' },
   { value: 'announcement', label: 'Announcements' },
-];
+]
 
 const DAYS_OF_WEEK: Array<{ value: DayOfWeek; label: string }> = [
   { value: 0, label: 'Sunday' },
@@ -40,7 +48,7 @@ const DAYS_OF_WEEK: Array<{ value: DayOfWeek; label: string }> = [
   { value: 4, label: 'Thursday' },
   { value: 5, label: 'Friday' },
   { value: 6, label: 'Saturday' },
-];
+]
 
 export interface EmailNotificationSettingsPanelProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -51,13 +59,13 @@ export function EmailNotificationSettingsPanel({
   className,
   ...props
 }: EmailNotificationSettingsPanelProps) {
-  const emailSettings = useNotificationSettingsStore((state) => state.preferences.email);
-  const setEmailEnabled = useNotificationSettingsStore((state) => state.setEmailEnabled);
-  const setEmailFrequency = useNotificationSettingsStore((state) => state.setEmailFrequency);
-  const setEmailDigestTime = useNotificationSettingsStore((state) => state.setEmailDigestTime);
-  const setEmailDigestDay = useNotificationSettingsStore((state) => state.setEmailDigestDay);
-  const toggleEmailType = useNotificationSettingsStore((state) => state.toggleEmailType);
-  const updateEmailSettings = useNotificationSettingsStore((state) => state.updateEmailSettings);
+  const emailSettings = useNotificationSettingsStore((state) => state.preferences.email)
+  const setEmailEnabled = useNotificationSettingsStore((state) => state.setEmailEnabled)
+  const setEmailFrequency = useNotificationSettingsStore((state) => state.setEmailFrequency)
+  const setEmailDigestTime = useNotificationSettingsStore((state) => state.setEmailDigestTime)
+  const setEmailDigestDay = useNotificationSettingsStore((state) => state.setEmailDigestDay)
+  const toggleEmailType = useNotificationSettingsStore((state) => state.toggleEmailType)
+  const updateEmailSettings = useNotificationSettingsStore((state) => state.updateEmailSettings)
 
   return (
     <div className={cn('space-y-6', className)} {...props}>
@@ -68,9 +76,7 @@ export function EmailNotificationSettingsPanel({
             <Label htmlFor="email-enabled" className="text-base font-medium">
               Email Notifications
             </Label>
-            <p className="text-sm text-muted-foreground">
-              Receive notification emails
-            </p>
+            <p className="text-sm text-muted-foreground">Receive notification emails</p>
           </div>
           <Switch
             id="email-enabled"
@@ -81,17 +87,17 @@ export function EmailNotificationSettingsPanel({
       </Card>
 
       {/* Frequency */}
-      <Card className={cn('p-4', !emailSettings.enabled && 'opacity-50 pointer-events-none')}>
-        <h3 className="text-sm font-medium mb-4">Email Frequency</h3>
+      <Card className={cn('p-4', !emailSettings.enabled && 'pointer-events-none opacity-50')}>
+        <h3 className="mb-4 text-sm font-medium">Email Frequency</h3>
         <div className="space-y-2">
           {EMAIL_FREQUENCIES.map((freq) => (
             <label
               key={freq.value}
               className={cn(
-                'flex items-start gap-3 p-3 rounded-lg border cursor-pointer transition-colors',
+                'flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors',
                 emailSettings.digestFrequency === freq.value
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:bg-accent/50'
+                  ? 'bg-primary/5 border-primary'
+                  : 'hover:bg-accent/50 border-border'
               )}
             >
               <input
@@ -112,9 +118,10 @@ export function EmailNotificationSettingsPanel({
       </Card>
 
       {/* Digest Schedule */}
-      {(emailSettings.digestFrequency === 'daily' || emailSettings.digestFrequency === 'weekly') && (
-        <Card className={cn('p-4', !emailSettings.enabled && 'opacity-50 pointer-events-none')}>
-          <h3 className="text-sm font-medium mb-4">Digest Schedule</h3>
+      {(emailSettings.digestFrequency === 'daily' ||
+        emailSettings.digestFrequency === 'weekly') && (
+        <Card className={cn('p-4', !emailSettings.enabled && 'pointer-events-none opacity-50')}>
+          <h3 className="mb-4 text-sm font-medium">Digest Schedule</h3>
           <div className="space-y-4">
             <div>
               <Label htmlFor="digest-time" className="text-xs text-muted-foreground">
@@ -156,8 +163,8 @@ export function EmailNotificationSettingsPanel({
       )}
 
       {/* Notification Types */}
-      <Card className={cn('p-4', !emailSettings.enabled && 'opacity-50 pointer-events-none')}>
-        <h3 className="text-sm font-medium mb-4">Include in Emails</h3>
+      <Card className={cn('p-4', !emailSettings.enabled && 'pointer-events-none opacity-50')}>
+        <h3 className="mb-4 text-sm font-medium">Include in Emails</h3>
         <div className="space-y-3">
           {NOTIFICATION_TYPES.map((type) => (
             <div key={type.value} className="flex items-center justify-between">
@@ -175,15 +182,13 @@ export function EmailNotificationSettingsPanel({
       </Card>
 
       {/* Display Options */}
-      <Card className={cn('p-4', !emailSettings.enabled && 'opacity-50 pointer-events-none')}>
-        <h3 className="text-sm font-medium mb-4">Display Options</h3>
+      <Card className={cn('p-4', !emailSettings.enabled && 'pointer-events-none opacity-50')}>
+        <h3 className="mb-4 text-sm font-medium">Display Options</h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="email-preview">Include message preview</Label>
-              <p className="text-xs text-muted-foreground">
-                Show message content in emails
-              </p>
+              <p className="text-xs text-muted-foreground">Show message content in emails</p>
             </div>
             <Switch
               id="email-preview"
@@ -195,23 +200,21 @@ export function EmailNotificationSettingsPanel({
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="email-summary">Include activity summary</Label>
-              <p className="text-xs text-muted-foreground">
-                Add channel activity stats to digest
-              </p>
+              <p className="text-xs text-muted-foreground">Add channel activity stats to digest</p>
             </div>
             <Switch
               id="email-summary"
               checked={emailSettings.includeActivitySummary}
-              onCheckedChange={(includeActivitySummary) => updateEmailSettings({ includeActivitySummary })}
+              onCheckedChange={(includeActivitySummary) =>
+                updateEmailSettings({ includeActivitySummary })
+              }
             />
           </div>
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="email-unread">Include unread count</Label>
-              <p className="text-xs text-muted-foreground">
-                Show total unread count in emails
-              </p>
+              <p className="text-xs text-muted-foreground">Show total unread count in emails</p>
             </div>
             <Switch
               id="email-unread"
@@ -223,7 +226,7 @@ export function EmailNotificationSettingsPanel({
       </Card>
 
       {/* Urgent Override */}
-      <Card className={cn('p-4', !emailSettings.enabled && 'opacity-50 pointer-events-none')}>
+      <Card className={cn('p-4', !emailSettings.enabled && 'pointer-events-none opacity-50')}>
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
             <Label htmlFor="email-urgent" className="font-medium">
@@ -241,9 +244,9 @@ export function EmailNotificationSettingsPanel({
         </div>
       </Card>
     </div>
-  );
+  )
 }
 
-EmailNotificationSettingsPanel.displayName = 'EmailNotificationSettingsPanel';
+EmailNotificationSettingsPanel.displayName = 'EmailNotificationSettingsPanel'
 
-export default EmailNotificationSettingsPanel;
+export default EmailNotificationSettingsPanel

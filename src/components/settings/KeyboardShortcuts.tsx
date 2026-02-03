@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * Keyboard Shortcuts Settings Component
@@ -7,20 +7,15 @@
  * Includes conflict detection and shortcut recording.
  */
 
-import { useState, useCallback, useMemo, useEffect } from 'react';
-import { SettingsSection } from './settings-section';
-import { SettingsToggle } from './SettingsToggle';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { useState, useCallback, useMemo, useEffect } from 'react'
+import { SettingsSection } from './settings-section'
+import { SettingsToggle } from './SettingsToggle'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Dialog,
   DialogContent,
@@ -28,7 +23,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   useShortcutStore,
   selectShortcutsByCategory,
@@ -36,42 +31,33 @@ import {
   selectShortcutsEnabled,
   selectShowKeyboardHints,
   selectRecordingShortcut,
-} from '@/lib/keyboard/shortcut-store';
-import { ShortcutKey, ShortcutCategory, getCategories } from '@/lib/keyboard/shortcuts';
-import { formatShortcut, isMacOS } from '@/lib/keyboard/shortcut-utils';
-import {
-  Search,
-  RotateCcw,
-  AlertTriangle,
-  Info,
-  Keyboard,
-  Zap,
-  Check,
-  X,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
+} from '@/lib/keyboard/shortcut-store'
+import { ShortcutKey, ShortcutCategory, getCategories } from '@/lib/keyboard/shortcuts'
+import { formatShortcut, isMacOS } from '@/lib/keyboard/shortcut-utils'
+import { Search, RotateCcw, AlertTriangle, Info, Keyboard, Zap, Check, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface KeyboardShortcutsProps {
-  className?: string;
+  className?: string
 }
 
 /**
  * Keyboard Shortcuts Settings Component
  */
 export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<ShortcutCategory | 'All'>('All');
-  const [recordDialogOpen, setRecordDialogOpen] = useState(false);
-  const [recordedKeys, setRecordedKeys] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState<ShortcutCategory | 'All'>('All')
+  const [recordDialogOpen, setRecordDialogOpen] = useState(false)
+  const [recordedKeys, setRecordedKeys] = useState<string>('')
 
-  const isMac = useMemo(() => isMacOS(), []);
+  const isMac = useMemo(() => isMacOS(), [])
 
   // Store selectors
-  const shortcutsByCategory = useShortcutStore(selectShortcutsByCategory);
-  const conflicts = useShortcutStore(selectConflicts);
-  const shortcutsEnabled = useShortcutStore(selectShortcutsEnabled);
-  const showKeyboardHints = useShortcutStore(selectShowKeyboardHints);
-  const recordingShortcut = useShortcutStore(selectRecordingShortcut);
+  const shortcutsByCategory = useShortcutStore(selectShortcutsByCategory)
+  const conflicts = useShortcutStore(selectConflicts)
+  const shortcutsEnabled = useShortcutStore(selectShortcutsEnabled)
+  const showKeyboardHints = useShortcutStore(selectShowKeyboardHints)
+  const recordingShortcut = useShortcutStore(selectRecordingShortcut)
 
   // Store actions
   const {
@@ -87,35 +73,35 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
     recordKey,
     exportCustomizations,
     importCustomizations,
-  } = useShortcutStore();
+  } = useShortcutStore()
 
   // Get all shortcuts as flat array
   const allShortcuts = useMemo(() => {
-    return Object.values(shortcutsByCategory).flat();
-  }, [shortcutsByCategory]);
+    return Object.values(shortcutsByCategory).flat()
+  }, [shortcutsByCategory])
 
   // Filter shortcuts based on search and category
   const filteredShortcuts = useMemo(() => {
-    let shortcuts = allShortcuts;
+    let shortcuts = allShortcuts
 
     // Filter by category
     if (selectedCategory !== 'All') {
-      shortcuts = shortcuts.filter((s) => s.category === selectedCategory);
+      shortcuts = shortcuts.filter((s) => s.category === selectedCategory)
     }
 
     // Filter by search query
     if (searchQuery) {
-      const query = searchQuery.toLowerCase();
+      const query = searchQuery.toLowerCase()
       shortcuts = shortcuts.filter(
         (s) =>
           s.label.toLowerCase().includes(query) ||
           s.description?.toLowerCase().includes(query) ||
           s.effectiveKey.toLowerCase().includes(query)
-      );
+      )
     }
 
-    return shortcuts;
-  }, [allShortcuts, selectedCategory, searchQuery]);
+    return shortcuts
+  }, [allShortcuts, selectedCategory, searchQuery])
 
   // Group filtered shortcuts by category
   const groupedShortcuts = useMemo(() => {
@@ -125,112 +111,112 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
       Formatting: [],
       UI: [],
       Actions: [],
-    };
-
-    for (const shortcut of filteredShortcuts) {
-      grouped[shortcut.category].push(shortcut);
     }
 
-    return grouped;
-  }, [filteredShortcuts]);
+    for (const shortcut of filteredShortcuts) {
+      grouped[shortcut.category].push(shortcut)
+    }
+
+    return grouped
+  }, [filteredShortcuts])
 
   // Categories with shortcuts
   const categories = useMemo(() => {
-    return getCategories().filter((cat) => groupedShortcuts[cat].length > 0);
-  }, [groupedShortcuts]);
+    return getCategories().filter((cat) => groupedShortcuts[cat].length > 0)
+  }, [groupedShortcuts])
 
   // Handle recording keyboard shortcut
   const handleStartRecording = useCallback(
     (shortcutId: ShortcutKey) => {
-      startRecording(shortcutId);
-      setRecordDialogOpen(true);
-      setRecordedKeys('');
+      startRecording(shortcutId)
+      setRecordDialogOpen(true)
+      setRecordedKeys('')
     },
     [startRecording]
-  );
+  )
 
   const handleStopRecording = useCallback(() => {
-    stopRecording();
-    setRecordDialogOpen(false);
-    setRecordedKeys('');
-  }, [stopRecording]);
+    stopRecording()
+    setRecordDialogOpen(false)
+    setRecordedKeys('')
+  }, [stopRecording])
 
   const handleKeyRecord = useCallback(
     (event: KeyboardEvent) => {
-      if (!recordingShortcut) return;
+      if (!recordingShortcut) return
 
-      event.preventDefault();
-      event.stopPropagation();
+      event.preventDefault()
+      event.stopPropagation()
 
       // Build key combination
-      const keys: string[] = [];
-      if (event.metaKey || event.ctrlKey) keys.push('mod');
-      if (event.altKey) keys.push('alt');
-      if (event.shiftKey) keys.push('shift');
+      const keys: string[] = []
+      if (event.metaKey || event.ctrlKey) keys.push('mod')
+      if (event.altKey) keys.push('alt')
+      if (event.shiftKey) keys.push('shift')
 
       // Add main key (not a modifier)
       if (
         !['Control', 'Alt', 'Shift', 'Meta'].includes(event.key) &&
         event.key !== 'Unidentified'
       ) {
-        keys.push(event.key.toLowerCase());
+        keys.push(event.key.toLowerCase())
       }
 
       if (keys.length > 0) {
-        const keyCombo = keys.join('+');
-        setRecordedKeys(keyCombo);
+        const keyCombo = keys.join('+')
+        setRecordedKeys(keyCombo)
       }
     },
     [recordingShortcut]
-  );
+  )
 
   const handleSaveRecording = useCallback(() => {
     if (recordedKeys) {
-      const success = recordKey(recordedKeys);
+      const success = recordKey(recordedKeys)
       if (success) {
-        handleStopRecording();
+        handleStopRecording()
       }
     }
-  }, [recordedKeys, recordKey, handleStopRecording]);
+  }, [recordedKeys, recordKey, handleStopRecording])
 
   // Keyboard listener for recording
   useEffect(() => {
     if (recordDialogOpen && recordingShortcut) {
-      window.addEventListener('keydown', handleKeyRecord);
-      return () => window.removeEventListener('keydown', handleKeyRecord);
+      window.addEventListener('keydown', handleKeyRecord)
+      return () => window.removeEventListener('keydown', handleKeyRecord)
     }
-  }, [recordDialogOpen, recordingShortcut, handleKeyRecord]);
+  }, [recordDialogOpen, recordingShortcut, handleKeyRecord])
 
   // Export customizations
   const handleExport = useCallback(() => {
-    const json = exportCustomizations();
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'nchat-shortcuts.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  }, [exportCustomizations]);
+    const json = exportCustomizations()
+    const blob = new Blob([json], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'nchat-shortcuts.json'
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [exportCustomizations])
 
   // Import customizations
   const handleImport = useCallback(() => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.json'
     input.onchange = (e) => {
-      const file = (e.target as HTMLInputElement).files?.[0];
-      if (!file) return;
+      const file = (e.target as HTMLInputElement).files?.[0]
+      if (!file) return
 
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (e) => {
-        const json = e.target?.result as string;
-        importCustomizations(json);
-      };
-      reader.readAsText(file);
-    };
-    input.click();
-  }, [importCustomizations]);
+        const json = e.target?.result as string
+        importCustomizations(json)
+      }
+      reader.readAsText(file)
+    }
+    input.click()
+  }, [importCustomizations])
 
   return (
     <SettingsSection
@@ -262,8 +248,8 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
         <Alert variant="destructive" className="mt-4">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            {conflicts.length} shortcut conflict{conflicts.length > 1 ? 's' : ''} detected.
-            Multiple shortcuts are using the same key combination.
+            {conflicts.length} shortcut conflict{conflicts.length > 1 ? 's' : ''} detected. Multiple
+            shortcuts are using the same key combination.
           </AlertDescription>
         </Alert>
       )}
@@ -271,7 +257,7 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
       {/* Search and filters */}
       <div className="mt-6 space-y-4">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search shortcuts..."
             value={searchQuery}
@@ -304,9 +290,9 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
 
       {/* Shortcuts list */}
       <ScrollArea className="mt-6 h-[500px] rounded-lg border">
-        <div className="p-4 space-y-6">
+        <div className="space-y-6 p-4">
           {categories.length === 0 ? (
-            <div className="text-center py-8">
+            <div className="py-8 text-center">
               <p className="text-sm text-muted-foreground">
                 No shortcuts found matching your criteria
               </p>
@@ -314,23 +300,21 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
           ) : (
             categories.map((category) => (
               <div key={category}>
-                <h3 className="text-sm font-medium mb-3">{category}</h3>
+                <h3 className="mb-3 text-sm font-medium">{category}</h3>
                 <div className="space-y-2">
                   {groupedShortcuts[category].map((shortcut) => {
-                    const hasConflict = conflicts.some(
-                      (c) => c.shortcutId === shortcut.id
-                    );
+                    const hasConflict = conflicts.some((c) => c.shortcutId === shortcut.id)
 
                     return (
                       <div
                         key={shortcut.id}
                         className={cn(
-                          'flex items-center justify-between p-3 rounded-lg',
+                          'flex items-center justify-between rounded-lg p-3',
                           'hover:bg-muted/50 transition-colors',
                           hasConflict && 'bg-destructive/10'
                         )}
                       >
-                        <div className="flex-1 min-w-0">
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
                             <p className="text-sm font-medium">{shortcut.label}</p>
                             {shortcut.isCustomized && (
@@ -357,18 +341,18 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
                             )}
                           </div>
                           {shortcut.description && (
-                            <p className="text-xs text-muted-foreground mt-1">
+                            <p className="mt-1 text-xs text-muted-foreground">
                               {shortcut.description}
                             </p>
                           )}
                         </div>
 
-                        <div className="flex items-center gap-2 ml-4">
+                        <div className="ml-4 flex items-center gap-2">
                           {/* Key display */}
                           <kbd
                             className={cn(
-                              'inline-flex items-center gap-1 px-2 py-1 text-xs font-mono',
-                              'bg-muted border border-border rounded shadow-sm min-w-[80px]',
+                              'inline-flex items-center gap-1 px-2 py-1 font-mono text-xs',
+                              'min-w-[80px] rounded border border-border bg-muted shadow-sm',
                               'justify-center'
                             )}
                           >
@@ -445,7 +429,7 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
                           </div>
                         </div>
                       </div>
-                    );
+                    )
                   })}
                 </div>
               </div>
@@ -466,7 +450,7 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
         </div>
 
         <Button variant="outline" size="sm" onClick={resetAllToDefaults}>
-          <RotateCcw className="h-3 w-3 mr-2" />
+          <RotateCcw className="mr-2 h-3 w-3" />
           Reset All
         </Button>
       </div>
@@ -475,8 +459,8 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
       <Alert className="mt-6">
         <Info className="h-4 w-4" />
         <AlertDescription className="text-xs">
-          <p className="font-medium mb-1">Tips:</p>
-          <ul className="list-disc list-inside space-y-1">
+          <p className="mb-1 font-medium">Tips:</p>
+          <ul className="list-inside list-disc space-y-1">
             <li>Click the keyboard icon to record a new shortcut</li>
             <li>Use {isMac ? 'Cmd' : 'Ctrl'} for cross-platform compatibility</li>
             <li>Avoid common browser shortcuts to prevent conflicts</li>
@@ -495,10 +479,7 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
                 <>
                   Recording new shortcut for:{' '}
                   <span className="font-medium">
-                    {
-                      allShortcuts.find((s) => s.id === recordingShortcut)
-                        ?.label
-                    }
+                    {allShortcuts.find((s) => s.id === recordingShortcut)?.label}
                   </span>
                 </>
               )}
@@ -506,18 +487,16 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
           </DialogHeader>
 
           <div className="py-6">
-            <div className="text-center space-y-4">
-              <Keyboard className="h-12 w-12 mx-auto text-muted-foreground" />
-              <p className="text-sm text-muted-foreground">
-                Press your desired key combination...
-              </p>
+            <div className="space-y-4 text-center">
+              <Keyboard className="mx-auto h-12 w-12 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">Press your desired key combination...</p>
 
               {recordedKeys && (
                 <div className="flex justify-center">
                   <kbd
                     className={cn(
-                      'inline-flex items-center gap-1 px-4 py-2 text-base font-mono',
-                      'bg-primary text-primary-foreground border border-border rounded shadow-sm'
+                      'inline-flex items-center gap-1 px-4 py-2 font-mono text-base',
+                      'text-primary-foreground rounded border border-border bg-primary shadow-sm'
                     )}
                   >
                     {formatShortcut(recordedKeys, { useMacSymbols: isMac })}
@@ -531,16 +510,13 @@ export function KeyboardShortcuts({ className }: KeyboardShortcutsProps) {
             <Button variant="outline" onClick={handleStopRecording}>
               Cancel
             </Button>
-            <Button
-              onClick={handleSaveRecording}
-              disabled={!recordedKeys}
-            >
-              <Check className="h-4 w-4 mr-2" />
+            <Button onClick={handleSaveRecording} disabled={!recordedKeys}>
+              <Check className="mr-2 h-4 w-4" />
               Save
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </SettingsSection>
-  );
+  )
 }

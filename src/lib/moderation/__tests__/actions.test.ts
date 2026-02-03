@@ -301,12 +301,7 @@ describe('Moderation Actions', () => {
     })
 
     it('should warn user automatically', async () => {
-      const result = await actions.warnUser(
-        'user-123',
-        'system',
-        'AI warning',
-        true
-      )
+      const result = await actions.warnUser('user-123', 'system', 'AI warning', true)
 
       expect(result.success).toBe(true)
     })
@@ -373,13 +368,7 @@ describe('Moderation Actions', () => {
     })
 
     it('should mute user automatically', async () => {
-      const result = await actions.muteUser(
-        'user-123',
-        'system',
-        'AI mute',
-        30,
-        true
-      )
+      const result = await actions.muteUser('user-123', 'system', 'AI mute', 30, true)
 
       expect(result.success).toBe(true)
     })
@@ -391,11 +380,7 @@ describe('Moderation Actions', () => {
 
   describe('Unmute User', () => {
     it('should unmute user successfully', async () => {
-      const result = await actions.unmuteUser(
-        'user-123',
-        'moderator-789',
-        'Appeal approved'
-      )
+      const result = await actions.unmuteUser('user-123', 'moderator-789', 'Appeal approved')
 
       expect(result.success).toBe(true)
     })
@@ -488,13 +473,7 @@ describe('Moderation Actions', () => {
     })
 
     it('should ban user automatically', async () => {
-      const result = await actions.banUser(
-        'user-123',
-        'system',
-        'AI ban',
-        undefined,
-        true
-      )
+      const result = await actions.banUser('user-123', 'system', 'AI ban', undefined, true)
 
       expect(result.success).toBe(true)
     })
@@ -506,11 +485,7 @@ describe('Moderation Actions', () => {
 
   describe('Unban User', () => {
     it('should unban user successfully', async () => {
-      const result = await actions.unbanUser(
-        'user-123',
-        'moderator-789',
-        'Ban appeal approved'
-      )
+      const result = await actions.unbanUser('user-123', 'moderator-789', 'Ban appeal approved')
 
       expect(result.success).toBe(true)
     })
@@ -561,13 +536,7 @@ describe('Moderation Actions', () => {
     })
 
     it('should restore hidden content', async () => {
-      await actions.approveContent(
-        'message',
-        'msg-123',
-        'user-456',
-        'moderator-789',
-        'Approved'
-      )
+      await actions.approveContent('message', 'msg-123', 'user-456', 'moderator-789', 'Approved')
 
       expect(mockClient.mutate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -581,13 +550,7 @@ describe('Moderation Actions', () => {
     })
 
     it('should mark approve as non-reversible', async () => {
-      await actions.approveContent(
-        'message',
-        'msg-123',
-        'user-456',
-        'moderator-789',
-        'Approved'
-      )
+      await actions.approveContent('message', 'msg-123', 'user-456', 'moderator-789', 'Approved')
 
       expect(mockClient.mutate).toHaveBeenCalledWith(
         expect.objectContaining({
@@ -679,9 +642,7 @@ describe('Moderation Actions', () => {
     })
 
     it('should perform bulk ban operation', async () => {
-      const targets = [
-        { targetType: 'user' as const, targetId: 'user-1', targetUserId: 'user-1' },
-      ]
+      const targets = [{ targetType: 'user' as const, targetId: 'user-1', targetUserId: 'user-1' }]
 
       const result = await actions.bulkAction(
         'ban',
@@ -702,16 +663,15 @@ describe('Moderation Actions', () => {
 
       // Make second operation fail
       mockClient.mutate
-        .mockResolvedValueOnce({ data: { insert_nchat_moderation_actions_one: { id: 'action-1' } } })
-        .mockResolvedValueOnce({ data: { insert_nchat_moderation_actions_one: { id: 'action-1' } } })
+        .mockResolvedValueOnce({
+          data: { insert_nchat_moderation_actions_one: { id: 'action-1' } },
+        })
+        .mockResolvedValueOnce({
+          data: { insert_nchat_moderation_actions_one: { id: 'action-1' } },
+        })
         .mockRejectedValueOnce(new Error('Failed'))
 
-      const result = await actions.bulkAction(
-        'flag',
-        targets,
-        'moderator-789',
-        'Bulk flag'
-      )
+      const result = await actions.bulkAction('flag', targets, 'moderator-789', 'Bulk flag')
 
       expect(result.success).toBe(false)
       expect(result.successCount).toBe(1)
@@ -845,14 +805,7 @@ describe('Moderation Actions', () => {
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
       mockClient.mutate.mockRejectedValueOnce(new Error('Test error'))
 
-      await actions.flagContent(
-        'message',
-        'msg-123',
-        'user-456',
-        'moderator-789',
-        'Test',
-        false
-      )
+      await actions.flagContent('message', 'msg-123', 'user-456', 'moderator-789', 'Test', false)
 
       expect(consoleSpy).toHaveBeenCalled()
 
@@ -882,7 +835,7 @@ describe('Moderation Actions', () => {
       ]
 
       // Verify all types are defined
-      actionTypes.forEach(type => {
+      actionTypes.forEach((type) => {
         expect(typeof type).toBe('string')
       })
     })

@@ -19,6 +19,7 @@ import type {
   DeviceLinkRequest,
   PreKeyBundle,
 } from '@/types/encryption'
+
 import { EncryptionError, EncryptionErrorType } from '@/types/encryption'
 import {
   generateKeyPair,
@@ -35,6 +36,8 @@ import {
   KeyPair,
 } from './crypto-primitives'
 import { getIdentityManager } from './identity'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -169,10 +172,7 @@ export class DeviceKeyManager {
     await this.ensureInitialized()
 
     if (!this.localDevice) {
-      throw new EncryptionError(
-        EncryptionErrorType.KEY_NOT_FOUND,
-        'Local device not initialized'
-      )
+      throw new EncryptionError(EncryptionErrorType.KEY_NOT_FOUND, 'Local device not initialized')
     }
 
     return this.localDevice
@@ -230,10 +230,7 @@ export class DeviceKeyManager {
     await this.ensureInitialized()
 
     if (!this.localDevice) {
-      throw new EncryptionError(
-        EncryptionErrorType.KEY_NOT_FOUND,
-        'Local device not initialized'
-      )
+      throw new EncryptionError(EncryptionErrorType.KEY_NOT_FOUND, 'Local device not initialized')
     }
 
     this.localDevice.deviceName = name
@@ -250,10 +247,7 @@ export class DeviceKeyManager {
     await this.ensureInitialized()
 
     if (!this.localDevice) {
-      throw new EncryptionError(
-        EncryptionErrorType.KEY_NOT_FOUND,
-        'Local device not initialized'
-      )
+      throw new EncryptionError(EncryptionErrorType.KEY_NOT_FOUND, 'Local device not initialized')
     }
 
     // Generate a random code
@@ -279,12 +273,14 @@ export class DeviceKeyManager {
 
     // Create QR code data (code + secret, base64 encoded)
     const qrData = uint8ArrayToBase64(
-      new TextEncoder().encode(JSON.stringify({
-        code,
-        secret: uint8ArrayToBase64(secret),
-        deviceId: this.localDevice.deviceId,
-        deviceName: this.localDevice.deviceName,
-      }))
+      new TextEncoder().encode(
+        JSON.stringify({
+          code,
+          secret: uint8ArrayToBase64(secret),
+          deviceId: this.localDevice.deviceId,
+          deviceName: this.localDevice.deviceName,
+        })
+      )
     )
 
     return {
@@ -318,10 +314,7 @@ export class DeviceKeyManager {
    * @param qrData - The QR code data (optional, for QR scan)
    * @returns The new device's identity
    */
-  async completeLinking(
-    code: string,
-    qrData?: string
-  ): Promise<LocalDevice> {
+  async completeLinking(code: string, qrData?: string): Promise<LocalDevice> {
     await this.ensureInitialized()
 
     let linkData: { code: string; secret: string; deviceId: string; deviceName: string }
@@ -332,10 +325,7 @@ export class DeviceKeyManager {
         const decoded = new TextDecoder().decode(base64ToUint8Array(qrData))
         linkData = JSON.parse(decoded)
       } catch {
-        throw new EncryptionError(
-          EncryptionErrorType.INVALID_MESSAGE,
-          'Invalid QR code data'
-        )
+        throw new EncryptionError(EncryptionErrorType.INVALID_MESSAGE, 'Invalid QR code data')
       }
     } else {
       // Manual code entry - would need to fetch secret from server
@@ -347,10 +337,7 @@ export class DeviceKeyManager {
 
     // Verify the code matches
     if (linkData.code !== code) {
-      throw new EncryptionError(
-        EncryptionErrorType.INVALID_MESSAGE,
-        'Link code mismatch'
-      )
+      throw new EncryptionError(EncryptionErrorType.INVALID_MESSAGE, 'Link code mismatch')
     }
 
     // Generate new device identity if not already initialized
@@ -382,18 +369,12 @@ export class DeviceKeyManager {
     await this.ensureInitialized()
 
     if (!this.pendingLinkCode) {
-      throw new EncryptionError(
-        EncryptionErrorType.INVALID_MESSAGE,
-        'No pending link request'
-      )
+      throw new EncryptionError(EncryptionErrorType.INVALID_MESSAGE, 'No pending link request')
     }
 
     if (Date.now() > this.pendingLinkCode.expiresAt) {
       this.pendingLinkCode = null
-      throw new EncryptionError(
-        EncryptionErrorType.INVALID_MESSAGE,
-        'Link code expired'
-      )
+      throw new EncryptionError(EncryptionErrorType.INVALID_MESSAGE, 'Link code expired')
     }
 
     const deviceId = this.generateDeviceId()
@@ -433,10 +414,7 @@ export class DeviceKeyManager {
     await this.ensureInitialized()
 
     if (this.localDevice && deviceId === this.localDevice.deviceId) {
-      throw new EncryptionError(
-        EncryptionErrorType.INVALID_MESSAGE,
-        'Cannot unlink current device'
-      )
+      throw new EncryptionError(EncryptionErrorType.INVALID_MESSAGE, 'Cannot unlink current device')
     }
 
     this.linkedDevices.delete(deviceId)
@@ -612,7 +590,7 @@ export class DeviceKeyManager {
         lastSyncedAt: parsed.lastSyncedAt,
       }
     } catch (error) {
-      console.error('Failed to load device data:', error)
+      logger.error('Failed to load device data:', error)
       return null
     }
   }
@@ -662,7 +640,7 @@ export class DeviceKeyManager {
         })
       }
     } catch (error) {
-      console.error('Failed to load linked devices:', error)
+      logger.error('Failed to load linked devices:', error)
     }
   }
 

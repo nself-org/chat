@@ -50,15 +50,12 @@ export function TelegramFolders({
   className,
 }: TelegramFoldersProps) {
   // Always include "All Chats" as first folder
-  const allFolders = [
-    { id: 'all', name: 'All Chats' },
-    ...folders,
-  ]
+  const allFolders = [{ id: 'all', name: 'All Chats' }, ...folders]
 
   return (
     <div
       className={cn(
-        'flex items-center gap-1 px-2 py-1.5 overflow-x-auto',
+        'flex items-center gap-1 overflow-x-auto px-2 py-1.5',
         'bg-white dark:bg-[#17212B]',
         'border-b border-gray-200 dark:border-[#232E3C]',
         className
@@ -76,9 +73,9 @@ export function TelegramFolders({
       {/* Settings Button */}
       <button
         onClick={onSettingsClick}
-        className="flex-shrink-0 p-2 rounded-full text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#232E3C]"
+        className="flex-shrink-0 rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-[#232E3C] dark:hover:text-gray-200"
       >
-        <Settings className="w-4 h-4" />
+        <Settings className="h-4 w-4" />
       </button>
     </div>
   )
@@ -101,10 +98,10 @@ function FolderTab({
     <button
       onClick={onClick}
       className={cn(
-        'relative flex-shrink-0 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
+        'relative flex-shrink-0 rounded-lg px-4 py-2 text-sm font-medium transition-colors',
         isActive
           ? 'text-[#2AABEE]'
-          : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#232E3C]'
+          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-[#232E3C] dark:hover:text-gray-200'
       )}
     >
       <span className="flex items-center gap-1.5">
@@ -113,10 +110,8 @@ function FolderTab({
         {(folder.unreadCount ?? 0) > 0 && (
           <span
             className={cn(
-              'min-w-[18px] h-[18px] px-1 rounded-full text-xs font-bold flex items-center justify-center',
-              isActive
-                ? 'bg-[#2AABEE] text-white'
-                : 'bg-gray-400 text-white'
+              'flex h-[18px] min-w-[18px] items-center justify-center rounded-full px-1 text-xs font-bold',
+              isActive ? 'bg-[#2AABEE] text-white' : 'bg-gray-400 text-white'
             )}
           >
             {folder.unreadCount}
@@ -127,7 +122,7 @@ function FolderTab({
       {/* Active Indicator */}
       {isActive && (
         <div
-          className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 rounded-full"
+          className="absolute bottom-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full"
           style={{ backgroundColor: TELEGRAM_COLORS.telegramBlue }}
         />
       )}

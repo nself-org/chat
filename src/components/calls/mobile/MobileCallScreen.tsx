@@ -30,6 +30,8 @@ import { useMobilePiP } from '@/hooks/use-mobile-pip'
 import { useMobileOrientation } from '@/hooks/use-mobile-orientation'
 import { useBatteryStatus } from '@/hooks/use-battery-status'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -67,29 +69,29 @@ function VideoTile({ stream, name, isMuted, isSpeaking, isLocal }: VideoTileProp
   }, [stream])
 
   return (
-    <div className="relative aspect-video bg-gray-900 rounded-lg overflow-hidden">
+    <div className="relative aspect-video overflow-hidden rounded-lg bg-gray-900">
       <video
         ref={videoRef}
         autoPlay
         playsInline
         muted={isLocal}
-        className="w-full h-full object-cover"
+        className="h-full w-full object-cover"
       />
 
       {/* Name badge */}
-      <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-sm rounded-full px-3 py-1 flex items-center gap-2">
+      <div className="absolute bottom-2 left-2 flex items-center gap-2 rounded-full bg-black/70 px-3 py-1 backdrop-blur-sm">
         {isMuted && <MicOff size={12} className="text-red-500" />}
-        <span className="text-xs text-white font-medium">{name}</span>
+        <span className="text-xs font-medium text-white">{name}</span>
       </div>
 
       {/* Speaking indicator */}
       {isSpeaking && (
-        <div className="absolute inset-0 border-2 border-green-500 rounded-lg pointer-events-none" />
+        <div className="pointer-events-none absolute inset-0 rounded-lg border-2 border-green-500" />
       )}
 
       {/* Local indicator */}
       {isLocal && (
-        <div className="absolute top-2 right-2 bg-blue-500 text-white text-xs px-2 py-1 rounded-full">
+        <div className="absolute right-2 top-2 rounded-full bg-blue-500 px-2 py-1 text-xs text-white">
           You
         </div>
       )}
@@ -169,7 +171,7 @@ function TouchControl({
         onTouchCancel={handleTouchCancel}
         onClick={onPress}
         className={cn(
-          'relative w-16 h-16 rounded-full flex items-center justify-center text-white shadow-lg',
+          'relative flex h-16 w-16 items-center justify-center rounded-full text-white shadow-lg',
           'focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900',
           'transition-all duration-150',
           getBackgroundColor(),
@@ -262,7 +264,7 @@ export function MobileCallScreen({
         setIsFullscreen(false)
       }
     } catch (err) {
-      console.error('Failed to toggle fullscreen:', err)
+      logger.error('Failed to toggle fullscreen:', err)
     }
   }
 
@@ -285,7 +287,7 @@ export function MobileCallScreen({
   return (
     <motion.div
       className={cn(
-        'fixed inset-0 z-50 bg-gray-900 flex flex-col',
+        'fixed inset-0 z-50 flex flex-col bg-gray-900',
         'safe-area-inset', // Use safe area for notch/home indicator
         className
       )}
@@ -305,7 +307,7 @@ export function MobileCallScreen({
       >
         {/* Drag Handle */}
         <div className="flex justify-center py-2">
-          <div className="w-12 h-1 bg-white/30 rounded-full" />
+          <div className="h-1 w-12 rounded-full bg-white/30" />
         </div>
 
         {/* Header */}
@@ -319,19 +321,19 @@ export function MobileCallScreen({
             <button
               type="button"
               onClick={onMinimize}
-              className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10"
             >
               <ChevronDown size={20} className="text-white" />
             </button>
 
             {/* Call Info */}
             <div>
-              <h2 className="text-white font-semibold">
+              <h2 className="font-semibold text-white">
                 {participants.length === 1
                   ? participants[0].name
                   : `Group Call (${participants.length + 1})`}
               </h2>
-              <p className="text-white/60 text-sm">
+              <p className="text-sm text-white/60">
                 {activeCall.state === 'connected'
                   ? formatCallDuration(callDuration)
                   : activeCall.state}
@@ -343,7 +345,7 @@ export function MobileCallScreen({
           <div className="flex items-center gap-2">
             {/* Battery Warning */}
             {isLowBattery && (
-              <div className="text-xs text-yellow-400 bg-yellow-400/20 px-2 py-1 rounded-full">
+              <div className="rounded-full bg-yellow-400/20 px-2 py-1 text-xs text-yellow-400">
                 {batteryLevel}%
               </div>
             )}
@@ -352,7 +354,7 @@ export function MobileCallScreen({
             <button
               type="button"
               onClick={handleFullscreen}
-              className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10"
             >
               <Maximize2 size={18} className="text-white" />
             </button>
@@ -362,7 +364,7 @@ export function MobileCallScreen({
               <button
                 type="button"
                 onClick={onOpenMore}
-                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10"
               >
                 <MoreVertical size={18} className="text-white" />
               </button>
@@ -372,17 +374,10 @@ export function MobileCallScreen({
       </motion.div>
 
       {/* Video Grid */}
-      <div
-        className="flex-1 relative"
-        onClick={handleScreenTap}
-        onTouchStart={handleScreenTap}
-      >
+      <div className="relative flex-1" onClick={handleScreenTap} onTouchStart={handleScreenTap}>
         {isVideoCall ? (
           <div
-            className={cn(
-              'h-full w-full p-2',
-              isPortrait ? 'flex flex-col gap-2' : 'flex gap-2'
-            )}
+            className={cn('h-full w-full p-2', isPortrait ? 'flex flex-col gap-2' : 'flex gap-2')}
           >
             {/* Remote Streams */}
             {remoteStreams.map(([participantId, stream]) => {
@@ -403,8 +398,8 @@ export function MobileCallScreen({
             {localStream && isVideoEnabled && (
               <motion.div
                 className={cn(
-                  'absolute bottom-20 right-4 w-24 h-32 z-10',
-                  isPortrait ? 'w-24 h-32' : 'w-32 h-24'
+                  'absolute bottom-20 right-4 z-10 h-32 w-24',
+                  isPortrait ? 'h-32 w-24' : 'h-24 w-32'
                 )}
                 drag
                 dragConstraints={{
@@ -427,18 +422,14 @@ export function MobileCallScreen({
           </div>
         ) : (
           // Audio-only call - show avatar
-          <div className="h-full flex items-center justify-center">
+          <div className="flex h-full items-center justify-center">
             {participants[0] && (
               <div className="text-center">
-                <div className="w-32 h-32 rounded-full bg-gray-800 flex items-center justify-center mb-4">
+                <div className="mb-4 flex h-32 w-32 items-center justify-center rounded-full bg-gray-800">
                   <Users size={48} className="text-white" />
                 </div>
-                <h3 className="text-2xl text-white font-semibold">
-                  {participants[0].name}
-                </h3>
-                <p className="text-white/60 mt-2">
-                  {formatCallDuration(callDuration)}
-                </p>
+                <h3 className="text-2xl font-semibold text-white">{participants[0].name}</h3>
+                <p className="mt-2 text-white/60">{formatCallDuration(callDuration)}</p>
               </div>
             )}
           </div>
@@ -447,11 +438,11 @@ export function MobileCallScreen({
 
       {/* Bottom Controls */}
       <motion.div
-        className="flex-none pb-safe"
+        className="pb-safe flex-none"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: showControls ? 1 : 0, y: showControls ? 0 : 20 }}
       >
-        <div className="flex items-center justify-center gap-6 px-4 py-6 bg-gradient-to-t from-black/80 to-transparent">
+        <div className="flex items-center justify-center gap-6 bg-gradient-to-t from-black/80 to-transparent px-4 py-6">
           {/* Mute Toggle */}
           <TouchControl
             icon={isMuted ? <MicOff size={24} /> : <Mic size={24} />}
@@ -490,11 +481,7 @@ export function MobileCallScreen({
 
           {/* Picture-in-Picture (if supported) */}
           {isPiPSupported && isVideoCall && (
-            <TouchControl
-              icon={<Maximize2 size={24} />}
-              label="PiP"
-              onPress={enablePiP}
-            />
+            <TouchControl icon={<Maximize2 size={24} />} label="PiP" onPress={enablePiP} />
           )}
         </div>
       </motion.div>
@@ -502,14 +489,12 @@ export function MobileCallScreen({
       {/* Low Battery Warning */}
       {isLowBattery && activeCall.state === 'connected' && callDuration > 60 && (
         <motion.div
-          className="absolute top-20 left-4 right-4 bg-yellow-500/90 backdrop-blur-sm text-black rounded-lg p-3 text-sm"
+          className="absolute left-4 right-4 top-20 rounded-lg bg-yellow-500/90 p-3 text-sm text-black backdrop-blur-sm"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
         >
           <p className="font-medium">Low Battery ({batteryLevel}%)</p>
-          <p className="text-xs mt-1">
-            Consider switching to audio-only to save battery.
-          </p>
+          <p className="mt-1 text-xs">Consider switching to audio-only to save battery.</p>
         </motion.div>
       )}
     </motion.div>

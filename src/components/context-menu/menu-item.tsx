@@ -1,35 +1,36 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
-import { cn } from '@/lib/utils';
-import type { LucideIcon } from 'lucide-react';
+import * as React from 'react'
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
+import { cn } from '@/lib/utils'
+import type { LucideIcon } from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface MenuItemProps
-  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Item> {
+export interface MenuItemProps extends React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.Item
+> {
   /**
    * Icon to display before the label
    */
-  icon?: LucideIcon;
+  icon?: LucideIcon
 
   /**
    * Keyboard shortcut hint to display
    */
-  shortcut?: string;
+  shortcut?: string
 
   /**
    * Whether this is a destructive action (shows in red)
    */
-  danger?: boolean;
+  danger?: boolean
 
   /**
    * Whether to add left padding for items without icons (for alignment)
    */
-  inset?: boolean;
+  inset?: boolean
 }
 
 // ============================================================================
@@ -45,9 +46,9 @@ const MenuItem = React.forwardRef<
     disabled={disabled}
     className={cn(
       'relative flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors',
-      'focus:bg-accent focus:text-accent-foreground',
+      'focus:text-accent-foreground focus:bg-accent',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-      danger && 'text-destructive focus:bg-destructive/10 focus:text-destructive',
+      danger && 'focus:bg-destructive/10 text-destructive focus:text-destructive',
       inset && 'pl-8',
       className
     )}
@@ -66,25 +67,26 @@ const MenuItem = React.forwardRef<
       </span>
     )}
   </ContextMenuPrimitive.Item>
-));
+))
 
-MenuItem.displayName = 'MenuItem';
+MenuItem.displayName = 'MenuItem'
 
 // ============================================================================
 // Checkbox Menu Item
 // ============================================================================
 
-export interface MenuCheckboxItemProps
-  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.CheckboxItem> {
+export interface MenuCheckboxItemProps extends React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.CheckboxItem
+> {
   /**
    * Icon to display when checked
    */
-  icon?: LucideIcon;
+  icon?: LucideIcon
 
   /**
    * Keyboard shortcut hint to display
    */
-  shortcut?: string;
+  shortcut?: string
 }
 
 const MenuCheckboxItem = React.forwardRef<
@@ -95,7 +97,7 @@ const MenuCheckboxItem = React.forwardRef<
     ref={ref}
     className={cn(
       'relative flex cursor-default select-none items-center gap-2 rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
-      'focus:bg-accent focus:text-accent-foreground',
+      'focus:text-accent-foreground focus:bg-accent',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
@@ -123,25 +125,24 @@ const MenuCheckboxItem = React.forwardRef<
     </span>
     <span className="flex-1">{children}</span>
     {shortcut && (
-      <span className="ml-auto text-xs tracking-widest text-muted-foreground">
-        {shortcut}
-      </span>
+      <span className="ml-auto text-xs tracking-widest text-muted-foreground">{shortcut}</span>
     )}
   </ContextMenuPrimitive.CheckboxItem>
-));
+))
 
-MenuCheckboxItem.displayName = 'MenuCheckboxItem';
+MenuCheckboxItem.displayName = 'MenuCheckboxItem'
 
 // ============================================================================
 // Radio Menu Item
 // ============================================================================
 
-export interface MenuRadioItemProps
-  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.RadioItem> {
+export interface MenuRadioItemProps extends React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.RadioItem
+> {
   /**
    * Keyboard shortcut hint to display
    */
-  shortcut?: string;
+  shortcut?: string
 }
 
 const MenuRadioItem = React.forwardRef<
@@ -152,7 +153,7 @@ const MenuRadioItem = React.forwardRef<
     ref={ref}
     className={cn(
       'relative flex cursor-default select-none items-center gap-2 rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors',
-      'focus:bg-accent focus:text-accent-foreground',
+      'focus:text-accent-foreground focus:bg-accent',
       'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className
     )}
@@ -160,35 +161,31 @@ const MenuRadioItem = React.forwardRef<
   >
     <span className="absolute left-2 flex h-4 w-4 items-center justify-center">
       <ContextMenuPrimitive.ItemIndicator>
-        <svg
-          className="h-2 w-2 fill-current"
-          viewBox="0 0 24 24"
-        >
+        <svg className="h-2 w-2 fill-current" viewBox="0 0 24 24">
           <circle cx="12" cy="12" r="12" />
         </svg>
       </ContextMenuPrimitive.ItemIndicator>
     </span>
     <span className="flex-1">{children}</span>
     {shortcut && (
-      <span className="ml-auto text-xs tracking-widest text-muted-foreground">
-        {shortcut}
-      </span>
+      <span className="ml-auto text-xs tracking-widest text-muted-foreground">{shortcut}</span>
     )}
   </ContextMenuPrimitive.RadioItem>
-));
+))
 
-MenuRadioItem.displayName = 'MenuRadioItem';
+MenuRadioItem.displayName = 'MenuRadioItem'
 
 // ============================================================================
 // Menu Label
 // ============================================================================
 
-export interface MenuLabelProps
-  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.Label> {
+export interface MenuLabelProps extends React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.Label
+> {
   /**
    * Whether to add left padding (for alignment with items that have icons)
    */
-  inset?: boolean;
+  inset?: boolean
 }
 
 const MenuLabel = React.forwardRef<
@@ -204,12 +201,12 @@ const MenuLabel = React.forwardRef<
     )}
     {...props}
   />
-));
+))
 
-MenuLabel.displayName = 'MenuLabel';
+MenuLabel.displayName = 'MenuLabel'
 
 // ============================================================================
 // Exports
 // ============================================================================
 
-export { MenuItem, MenuCheckboxItem, MenuRadioItem, MenuLabel };
+export { MenuItem, MenuCheckboxItem, MenuRadioItem, MenuLabel }

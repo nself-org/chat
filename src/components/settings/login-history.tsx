@@ -36,13 +36,8 @@ type FilterType = 'all' | 'success' | 'failed'
 
 export function LoginHistory() {
   const { isDevMode } = useAuth()
-  const {
-    loginHistory,
-    loginHistoryTotal,
-    loginHistoryPage,
-    loadLoginHistory,
-    loadingHistory,
-  } = useSecurity()
+  const { loginHistory, loginHistoryTotal, loginHistoryPage, loadLoginHistory, loadingHistory } =
+    useSecurity()
 
   const [filter, setFilter] = useState<FilterType>('all')
 
@@ -52,10 +47,13 @@ export function LoginHistory() {
   }, [loadLoginHistory])
 
   // Filter change handler
-  const handleFilterChange = useCallback((value: string) => {
-    setFilter(value as FilterType)
-    loadLoginHistory(1)
-  }, [loadLoginHistory])
+  const handleFilterChange = useCallback(
+    (value: string) => {
+      setFilter(value as FilterType)
+      loadLoginHistory(1)
+    },
+    [loadLoginHistory]
+  )
 
   // Pagination handlers
   const handlePreviousPage = useCallback(() => {
@@ -174,9 +172,7 @@ export function LoginHistory() {
       {isDevMode && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            In development mode, login history is simulated.
-          </AlertDescription>
+          <AlertDescription>In development mode, login history is simulated.</AlertDescription>
         </Alert>
       )}
 
@@ -194,12 +190,7 @@ export function LoginHistory() {
           icon={CheckCircle2}
           variant="success"
         />
-        <StatCard
-          label="Failed"
-          value={stats.failed}
-          icon={XCircle}
-          variant="danger"
-        />
+        <StatCard label="Failed" value={stats.failed} icon={XCircle} variant="danger" />
       </div>
 
       {/* Filter */}
@@ -217,9 +208,7 @@ export function LoginHistory() {
             </SelectContent>
           </Select>
         </div>
-        <p className="text-sm text-muted-foreground">
-          {filteredHistory.length} results
-        </p>
+        <p className="text-sm text-muted-foreground">{filteredHistory.length} results</p>
       </div>
 
       {/* History List */}
@@ -230,8 +219,8 @@ export function LoginHistory() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-8 text-muted-foreground">
-          <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
+        <div className="py-8 text-center text-muted-foreground">
+          <Shield className="mx-auto mb-4 h-12 w-12 opacity-50" />
           <p>No login attempts found</p>
           <p className="text-sm">
             {filter !== 'all' ? 'Try changing the filter' : 'Login history will appear here'}
@@ -241,7 +230,7 @@ export function LoginHistory() {
 
       {/* Pagination */}
       {!isDevMode && loginHistoryTotal > 10 && (
-        <div className="flex items-center justify-between pt-4 border-t">
+        <div className="flex items-center justify-between border-t pt-4">
           <p className="text-sm text-muted-foreground">
             Page {loginHistoryPage} of {totalPages}
           </p>
@@ -301,7 +290,7 @@ function StatCard({ label, value, icon: Icon, variant }: StatCardProps) {
         <Icon className={cn('h-4 w-4', iconStyles[variant])} />
         <span className="text-sm font-medium">{label}</span>
       </div>
-      <p className="text-2xl font-bold mt-1">{value}</p>
+      <p className="mt-1 text-2xl font-bold">{value}</p>
     </div>
   )
 }
@@ -319,22 +308,19 @@ function LoginAttemptCard({ attempt }: LoginAttemptCardProps) {
     attempt.device.toLowerCase() === 'mobile'
       ? Smartphone
       : attempt.device.toLowerCase() === 'tablet'
-      ? Tablet
-      : Monitor
+        ? Tablet
+        : Monitor
 
   return (
     <div
       className={cn(
-        'flex items-start gap-4 p-4 rounded-lg border',
-        !attempt.success && 'bg-red-500/5 border-red-500/20'
+        'flex items-start gap-4 rounded-lg border p-4',
+        !attempt.success && 'border-red-500/20 bg-red-500/5'
       )}
     >
       {/* Status Icon */}
       <div
-        className={cn(
-          'rounded-full p-2',
-          attempt.success ? 'bg-green-500/10' : 'bg-red-500/10'
-        )}
+        className={cn('rounded-full p-2', attempt.success ? 'bg-green-500/10' : 'bg-red-500/10')}
       >
         {attempt.success ? (
           <CheckCircle2 className="h-5 w-5 text-green-600" />
@@ -344,8 +330,8 @@ function LoginAttemptCard({ attempt }: LoginAttemptCardProps) {
       </div>
 
       {/* Attempt Details */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="font-medium">
             {attempt.browser} on {attempt.os}
           </span>
@@ -353,8 +339,8 @@ function LoginAttemptCard({ attempt }: LoginAttemptCardProps) {
             variant={attempt.success ? 'secondary' : 'destructive'}
             className={cn(
               attempt.success
-                ? 'bg-green-500/10 text-green-600 border-green-500/20'
-                : 'bg-red-500/10 text-red-600 border-red-500/20'
+                ? 'border-green-500/20 bg-green-500/10 text-green-600'
+                : 'border-red-500/20 bg-red-500/10 text-red-600'
             )}
           >
             {attempt.success ? 'Successful' : 'Failed'}
@@ -362,7 +348,7 @@ function LoginAttemptCard({ attempt }: LoginAttemptCardProps) {
         </div>
 
         <div className="mt-2 grid gap-1 text-sm text-muted-foreground">
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex flex-wrap items-center gap-4">
             <span className="flex items-center gap-1">
               <DeviceIcon className="h-3 w-3" />
               {attempt.device}
@@ -400,7 +386,7 @@ function LoginAttemptCard({ attempt }: LoginAttemptCardProps) {
 
 function HistorySkeleton() {
   return (
-    <div className="flex items-start gap-4 p-4 rounded-lg border">
+    <div className="flex items-start gap-4 rounded-lg border p-4">
       <Skeleton className="h-9 w-9 rounded-full" />
       <div className="flex-1 space-y-2">
         <Skeleton className="h-5 w-48" />

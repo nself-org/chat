@@ -55,9 +55,7 @@ export function createRole(
   }
 
   // Check for duplicate names
-  const nameExists = existingRoles.some(
-    (r) => r.name.toLowerCase() === input.name.toLowerCase()
-  )
+  const nameExists = existingRoles.some((r) => r.name.toLowerCase() === input.name.toLowerCase())
   if (nameExists) {
     errors.push('A role with this name already exists')
   }
@@ -72,15 +70,10 @@ export function createRole(
     for (const permission of input.permissions) {
       if (isDangerousPermission(permission)) {
         if (!hasPermission(creatorPermissions, permission)) {
-          errors.push(
-            `Cannot grant "${permission}" - you don't have this permission`
-          )
+          errors.push(`Cannot grant "${permission}" - you don't have this permission`)
         }
       }
-      if (
-        requiresAdmin(permission) &&
-        !creatorPermissions.isAdmin
-      ) {
+      if (requiresAdmin(permission) && !creatorPermissions.isAdmin) {
         errors.push(`Cannot grant "${permission}" - requires administrator`)
       }
     }
@@ -94,8 +87,7 @@ export function createRole(
   }
 
   // Calculate position
-  const position =
-    input.position ?? calculateNewPosition(existingRoles)
+  const position = input.position ?? calculateNewPosition(existingRoles)
 
   // Ensure position is below creator's highest role
   if (position >= creatorPermissions.highestRole.position) {
@@ -193,13 +185,8 @@ export function updateRole(
     for (const permission of input.permissions) {
       if (!role.permissions.includes(permission)) {
         // New permission being added
-        if (
-          isDangerousPermission(permission) &&
-          !hasPermission(editorPermissions, permission)
-        ) {
-          errors.push(
-            `Cannot grant "${permission}" - you don't have this permission`
-          )
+        if (isDangerousPermission(permission) && !hasPermission(editorPermissions, permission)) {
+          errors.push(`Cannot grant "${permission}" - you don't have this permission`)
         }
       }
     }
@@ -207,10 +194,7 @@ export function updateRole(
     // Check if removing dangerous permissions
     for (const permission of role.permissions) {
       if (!input.permissions.includes(permission)) {
-        if (
-          permission === 'administrator' &&
-          !editorPermissions.isOwner
-        ) {
+        if (permission === 'administrator' && !editorPermissions.isOwner) {
           errors.push('Only owner can remove administrator permission')
         }
       }
@@ -390,11 +374,7 @@ export function removeRoleFromUser(
   }
 
   // Cannot remove own owner role
-  if (
-    role.id === 'owner' &&
-    role.isBuiltIn &&
-    userId === removerPermissions.userId
-  ) {
+  if (role.id === 'owner' && role.isBuiltIn && userId === removerPermissions.userId) {
     errors.push('Cannot remove your own owner role')
     return { success: false, errors }
   }
@@ -422,9 +402,7 @@ export function bulkAssignRoles(
   const errors: string[] = []
 
   // Validate roles
-  const roles = roleIds
-    .map((id) => allRoles.find((r) => r.id === id))
-    .filter(Boolean) as Role[]
+  const roles = roleIds.map((id) => allRoles.find((r) => r.id === id)).filter(Boolean) as Role[]
 
   if (roles.length !== roleIds.length) {
     errors.push('One or more roles not found')
@@ -570,9 +548,8 @@ export function getRoleStats(roles: Role[]): RoleStats {
     builtInRoles: roles.filter((r) => r.isBuiltIn).length,
     customRoles: roles.filter((r) => !r.isBuiltIn).length,
     rolesWithMembers: roles.filter((r) => (r.memberCount ?? 0) > 0).length,
-    rolesWithDangerousPermissions: roles.filter((r) =>
-      r.permissions.some(isDangerousPermission)
-    ).length,
+    rolesWithDangerousPermissions: roles.filter((r) => r.permissions.some(isDangerousPermission))
+      .length,
   }
 }
 

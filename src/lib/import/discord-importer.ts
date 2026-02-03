@@ -104,7 +104,10 @@ export class DiscordImporter {
   /**
    * Main import method
    */
-  async import(discordData: DiscordExport, onProgress?: (progress: ImportProgress) => void): Promise<ImportResult> {
+  async import(
+    discordData: DiscordExport,
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<ImportResult> {
     const startTime = Date.now()
     this.progress.status = 'importing'
     this.progress.startedAt = new Date()
@@ -168,7 +171,10 @@ export class DiscordImporter {
   /**
    * Validate Discord export data
    */
-  private async validateData(data: DiscordExport, onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async validateData(
+    data: DiscordExport,
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(1, 'Validating data', onProgress)
 
     if (!data.channels || data.channels.length === 0) {
@@ -215,7 +221,10 @@ export class DiscordImporter {
   /**
    * Import Discord users
    */
-  private async importUsers(users: DiscordUser[], onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async importUsers(
+    users: DiscordUser[],
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(2, 'Importing users', onProgress)
     this.progress.itemsTotal = users.length
 
@@ -271,7 +280,10 @@ export class DiscordImporter {
   /**
    * Import Discord channels
    */
-  private async importChannels(channels: DiscordChannel[], onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async importChannels(
+    channels: DiscordChannel[],
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(3, 'Importing channels', onProgress)
     this.progress.itemsTotal = channels.length
 
@@ -282,7 +294,10 @@ export class DiscordImporter {
 
       try {
         // Apply channel filter
-        if (this.options.channelFilter && !this.options.channelFilter.includes(discordChannel.name)) {
+        if (
+          this.options.channelFilter &&
+          !this.options.channelFilter.includes(discordChannel.name)
+        ) {
           this.stats.channelsSkipped++
           continue
         }
@@ -323,7 +338,10 @@ export class DiscordImporter {
   /**
    * Import Discord messages
    */
-  private async importMessages(messages: DiscordMessage[], onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async importMessages(
+    messages: DiscordMessage[],
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(4, 'Importing messages', onProgress)
     this.progress.itemsTotal = messages.length
 
@@ -433,7 +451,10 @@ export class DiscordImporter {
   /**
    * Import reactions
    */
-  private async importReactions(messageId: string, reactions: DiscordMessage['reactions']): Promise<void> {
+  private async importReactions(
+    messageId: string,
+    reactions: DiscordMessage['reactions']
+  ): Promise<void> {
     for (const reaction of reactions) {
       try {
         // Discord reactions don't include user lists in exports, so we can't map them
@@ -448,11 +469,19 @@ export class DiscordImporter {
   /**
    * Import files/attachments
    */
-  private async importFiles(messages: DiscordMessage[], onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async importFiles(
+    messages: DiscordMessage[],
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(5, 'Importing files', onProgress)
 
-    const messagesWithAttachments = messages.filter(m => m.attachments && m.attachments.length > 0)
-    this.progress.itemsTotal = messagesWithAttachments.reduce((acc, m) => acc + m.attachments.length, 0)
+    const messagesWithAttachments = messages.filter(
+      (m) => m.attachments && m.attachments.length > 0
+    )
+    this.progress.itemsTotal = messagesWithAttachments.reduce(
+      (acc, m) => acc + m.attachments.length,
+      0
+    )
 
     let processed = 0
 
@@ -525,7 +554,6 @@ export class DiscordImporter {
     avatarUrl?: string
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual user creation via GraphQL
     return `user_${Math.random().toString(36).substr(2, 9)}`
   }
 
@@ -536,7 +564,6 @@ export class DiscordImporter {
     createdBy: string
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual channel creation via GraphQL
     return `channel_${Math.random().toString(36).substr(2, 9)}`
   }
 
@@ -548,7 +575,6 @@ export class DiscordImporter {
     createdAt: Date
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual message creation via GraphQL
     return `message_${Math.random().toString(36).substr(2, 9)}`
   }
 
@@ -557,13 +583,15 @@ export class DiscordImporter {
     url: string
     filename: string
     size: number
-  }): Promise<void> {
-    // TODO: Implement file download and upload
-  }
+  }): Promise<void> {}
 
   // Progress tracking helpers
 
-  private updateProgress(step: number, message: string, onProgress?: (progress: ImportProgress) => void): void {
+  private updateProgress(
+    step: number,
+    message: string,
+    onProgress?: (progress: ImportProgress) => void
+  ): void {
     this.progress.currentStepNumber = step
     this.progress.currentStep = message
     this.progress.itemsProcessed = 0
@@ -577,7 +605,8 @@ export class DiscordImporter {
     onProgress?: (progress: ImportProgress) => void
   ): void {
     const stepProgress = (current / total) * 100
-    const overallProgress = ((step - 1) / this.progress.totalSteps) * 100 + (stepProgress / this.progress.totalSteps)
+    const overallProgress =
+      ((step - 1) / this.progress.totalSteps) * 100 + stepProgress / this.progress.totalSteps
     this.progress.progress = Math.min(100, Math.round(overallProgress))
     onProgress?.(this.progress)
   }

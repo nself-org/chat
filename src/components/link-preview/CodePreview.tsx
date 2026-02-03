@@ -19,12 +19,7 @@ export interface CodePreviewProps {
   children?: React.ReactNode
 }
 
-export function CodePreview({
-  data,
-  showEmbed = false,
-  className,
-  children,
-}: CodePreviewProps) {
+export function CodePreview({ data, showEmbed = false, className, children }: CodePreviewProps) {
   const handleClick = () => {
     window.open(data.url, '_blank', 'noopener,noreferrer')
   }
@@ -32,15 +27,21 @@ export function CodePreview({
   return (
     <div
       className={cn(
-        'group relative rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden',
-        'hover:border-primary/50 hover:shadow-md transition-all duration-200',
+        'group relative overflow-hidden rounded-lg border bg-card text-card-foreground shadow-sm',
+        'hover:border-primary/50 transition-all duration-200 hover:shadow-md',
         className
       )}
     >
       {/* Header */}
-      <div className="flex items-center gap-3 p-3 border-b bg-muted/50">
-        <div className="flex-shrink-0 w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <div className="bg-muted/50 flex items-center gap-3 border-b p-3">
+        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-muted">
+          <svg
+            className="h-4 w-4"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <polyline points="16 18 22 12 16 6" />
             <polyline points="8 6 2 12 8 18" />
           </svg>
@@ -50,7 +51,7 @@ export function CodePreview({
 
       {/* Content */}
       <div
-        className="p-3 cursor-pointer"
+        className="cursor-pointer p-3"
         onClick={handleClick}
         role="link"
         tabIndex={0}
@@ -66,18 +67,14 @@ export function CodePreview({
             <img
               src={data.image}
               alt={data.title || 'Code preview'}
-              className="w-24 h-16 rounded object-cover flex-shrink-0"
+              className="h-16 w-24 flex-shrink-0 rounded object-cover"
               loading="lazy"
             />
           )}
-          <div className="flex-1 min-w-0">
-            {data.title && (
-              <p className="font-semibold text-sm truncate">{data.title}</p>
-            )}
+          <div className="min-w-0 flex-1">
+            {data.title && <p className="truncate text-sm font-semibold">{data.title}</p>}
             {data.description && (
-              <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
-                {data.description}
-              </p>
+              <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{data.description}</p>
             )}
           </div>
         </div>
@@ -85,7 +82,7 @@ export function CodePreview({
 
       {/* Children (remove button, etc.) */}
       {children && (
-        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="absolute right-2 top-2 opacity-0 transition-opacity group-hover:opacity-100">
           {children}
         </div>
       )}

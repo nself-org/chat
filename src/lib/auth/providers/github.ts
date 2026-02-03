@@ -8,13 +8,9 @@
  */
 
 import { nhost } from '@/lib/nhost'
-import {
-  AuthProvider,
-  AuthProviderType,
-  AuthResult,
-  AuthError,
-  OAuthProviderConfig,
-} from './types'
+import { AuthProvider, AuthProviderType, AuthResult, AuthError, OAuthProviderConfig } from './types'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Configuration
@@ -77,7 +73,7 @@ export class GitHubProvider implements AuthProvider {
         requiresVerification: true,
       }
     } catch (err) {
-      console.error('GitHubProvider.authenticate error:', err)
+      logger.error('GitHubProvider.authenticate error:', err)
       return {
         success: false,
         error: {
@@ -160,7 +156,7 @@ export class GitHubProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('GitHubProvider.handleCallback error:', err)
+      logger.error('GitHubProvider.handleCallback error:', err)
       return {
         success: false,
         error: {
@@ -185,7 +181,7 @@ export class GitHubProvider implements AuthProvider {
         requiresVerification: true,
       }
     } catch (err) {
-      console.error('GitHubProvider.linkAccount error:', err)
+      logger.error('GitHubProvider.linkAccount error:', err)
       return {
         success: false,
         error: {
@@ -222,7 +218,7 @@ export class GitHubProvider implements AuthProvider {
 
       return { success: true }
     } catch (err) {
-      console.error('GitHubProvider.unlinkAccount error:', err)
+      logger.error('GitHubProvider.unlinkAccount error:', err)
       return {
         success: false,
         error: {
@@ -250,9 +246,7 @@ export class GitHubProvider implements AuthProvider {
       }
 
       const orgs = await response.json()
-      return orgs.some((o: { login: string }) =>
-        o.login.toLowerCase() === org.toLowerCase()
-      )
+      return orgs.some((o: { login: string }) => o.login.toLowerCase() === org.toLowerCase())
     } catch {
       return false
     }
@@ -261,13 +255,15 @@ export class GitHubProvider implements AuthProvider {
   /**
    * Get user's GitHub repositories (useful for integrations)
    */
-  async getRepositories(accessToken: string): Promise<Array<{
-    id: number
-    name: string
-    fullName: string
-    private: boolean
-    url: string
-  }>> {
+  async getRepositories(accessToken: string): Promise<
+    Array<{
+      id: number
+      name: string
+      fullName: string
+      private: boolean
+      url: string
+    }>
+  > {
     try {
       const response = await fetch('https://api.github.com/user/repos?per_page=100', {
         headers: {

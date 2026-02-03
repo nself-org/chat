@@ -18,6 +18,7 @@ import type {
   OneTimePreKey,
   EncryptionConfig,
 } from '@/types/encryption'
+
 import { EncryptionError, EncryptionErrorType, DEFAULT_ENCRYPTION_CONFIG } from '@/types/encryption'
 import {
   uint8ArrayToBase64,
@@ -28,6 +29,8 @@ import {
 import { X3DH, X3DHInitialMessage } from './key-exchange'
 import { getIdentityManager } from './identity'
 import { getSignedPreKeyManager } from './prekey'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -133,10 +136,7 @@ export class SessionManager {
    * @param preKeyBundle - The peer's prekey bundle
    * @returns The initial message to send with the first encrypted message
    */
-  async createSession(
-    peerId: string,
-    preKeyBundle: PreKeyBundle
-  ): Promise<X3DHInitialMessage> {
+  async createSession(peerId: string, preKeyBundle: PreKeyBundle): Promise<X3DHInitialMessage> {
     await this.ensureInitialized()
 
     const identityManager = getIdentityManager()
@@ -195,9 +195,7 @@ export class SessionManager {
     const identityKeyPair = await identityManager.getIdentityKeyPair()
 
     // Get the signed prekey that was used
-    const signedPreKey = await signedPreKeyManager.getSignedPreKey(
-      initialMessage.signedPreKeyId
-    )
+    const signedPreKey = await signedPreKeyManager.getSignedPreKey(initialMessage.signedPreKeyId)
 
     if (!signedPreKey) {
       throw new EncryptionError(
@@ -212,7 +210,7 @@ export class SessionManager {
       oneTimePreKey = await this.getOneTimePreKey(initialMessage.oneTimePreKeyId)
       if (!oneTimePreKey) {
         // One-time prekey may have been used already - proceed without it
-        console.warn(`One-time prekey ${initialMessage.oneTimePreKeyId} not found`)
+        logger.warn(`One-time prekey ${initialMessage.oneTimePreKeyId} not found`)
       }
     }
 
@@ -346,7 +344,8 @@ export class SessionManager {
         isActive: true,
         lastActivityAt: new Date(session.lastActivityAt),
         messageCount: session.sendingMessageNumber + session.receivingMessageNumber,
-        hasForwardSecrecy: session.sendingRatchetKey !== null || session.receivingRatchetKey !== null,
+        hasForwardSecrecy:
+          session.sendingRatchetKey !== null || session.receivingRatchetKey !== null,
       })
     }
 
@@ -555,7 +554,7 @@ export class SessionManager {
         }
         return
       } catch (error) {
-        console.error('Failed to load sessions from IndexedDB:', error)
+        logger.error('Failed to load sessions from IndexedDB:', error)
       }
     }
 
@@ -638,7 +637,7 @@ export class SessionManager {
       const serialized = this.serializeSessionState(sessionState)
       localStorage.setItem(SESSION_STORAGE_KEY_PREFIX + key, serialized)
     } catch (error) {
-      console.error('Failed to save session to localStorage:', error)
+      logger.error('Failed to save session to localStorage:', error)
     }
   }
 
@@ -656,7 +655,7 @@ export class SessionManager {
             this.sessions.set(sessionKey, this.deserializeSessionState(stored))
           }
         } catch (error) {
-          console.error(`Failed to load session ${key}:`, error)
+          logger.error(`Failed to load session ${key}:`, error)
         }
       }
     }
@@ -670,9 +669,15 @@ export class SessionManager {
       remoteIdentityKey: uint8ArrayToBase64(state.remoteIdentityKey),
       rootKey: uint8ArrayToBase64(state.rootKey),
       sendingChainKey: state.sendingChainKey ? uint8ArrayToBase64(state.sendingChainKey) : null,
-      receivingChainKey: state.receivingChainKey ? uint8ArrayToBase64(state.receivingChainKey) : null,
-      sendingRatchetKey: state.sendingRatchetKey ? uint8ArrayToBase64(state.sendingRatchetKey) : null,
-      receivingRatchetKey: state.receivingRatchetKey ? uint8ArrayToBase64(state.receivingRatchetKey) : null,
+      receivingChainKey: state.receivingChainKey
+        ? uint8ArrayToBase64(state.receivingChainKey)
+        : null,
+      sendingRatchetKey: state.sendingRatchetKey
+        ? uint8ArrayToBase64(state.sendingRatchetKey)
+        : null,
+      receivingRatchetKey: state.receivingRatchetKey
+        ? uint8ArrayToBase64(state.receivingRatchetKey)
+        : null,
       sendingMessageNumber: state.sendingMessageNumber,
       receivingMessageNumber: state.receivingMessageNumber,
       previousChainLength: state.previousChainLength,
@@ -698,17 +703,25 @@ export class SessionManager {
       remoteIdentityKey: base64ToUint8Array(parsed.remoteIdentityKey),
       rootKey: base64ToUint8Array(parsed.rootKey),
       sendingChainKey: parsed.sendingChainKey ? base64ToUint8Array(parsed.sendingChainKey) : null,
-      receivingChainKey: parsed.receivingChainKey ? base64ToUint8Array(parsed.receivingChainKey) : null,
-      sendingRatchetKey: parsed.sendingRatchetKey ? base64ToUint8Array(parsed.sendingRatchetKey) : null,
-      receivingRatchetKey: parsed.receivingRatchetKey ? base64ToUint8Array(parsed.receivingRatchetKey) : null,
+      receivingChainKey: parsed.receivingChainKey
+        ? base64ToUint8Array(parsed.receivingChainKey)
+        : null,
+      sendingRatchetKey: parsed.sendingRatchetKey
+        ? base64ToUint8Array(parsed.sendingRatchetKey)
+        : null,
+      receivingRatchetKey: parsed.receivingRatchetKey
+        ? base64ToUint8Array(parsed.receivingRatchetKey)
+        : null,
       sendingMessageNumber: parsed.sendingMessageNumber,
       receivingMessageNumber: parsed.receivingMessageNumber,
       previousChainLength: parsed.previousChainLength,
-      skippedMessageKeys: parsed.skippedMessageKeys.map((k: { ratchetKey: string; messageNumber: number; messageKey: string }) => ({
-        ratchetKey: k.ratchetKey,
-        messageNumber: k.messageNumber,
-        messageKey: base64ToUint8Array(k.messageKey),
-      })),
+      skippedMessageKeys: parsed.skippedMessageKeys.map(
+        (k: { ratchetKey: string; messageNumber: number; messageKey: string }) => ({
+          ratchetKey: k.ratchetKey,
+          messageNumber: k.messageNumber,
+          messageKey: base64ToUint8Array(k.messageKey),
+        })
+      ),
       createdAt: parsed.createdAt,
       lastActivityAt: parsed.lastActivityAt,
     }

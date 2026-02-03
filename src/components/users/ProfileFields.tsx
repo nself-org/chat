@@ -69,7 +69,7 @@ const ProfileFields = React.forwardRef<HTMLDivElement, ProfileFieldsProps>(
             <div key={field.key} className={cn('space-y-2', isCompact && 'space-y-1')}>
               <Label htmlFor={field.key} className={cn(isCompact && 'text-xs')}>
                 {field.label}
-                {field.required && <span className="text-destructive ml-1">*</span>}
+                {field.required && <span className="ml-1 text-destructive">*</span>}
               </Label>
               <Textarea
                 id={field.key}
@@ -86,7 +86,7 @@ const ProfileFields = React.forwardRef<HTMLDivElement, ProfileFieldsProps>(
               )}
               {error && <p className="text-xs text-destructive">{error}</p>}
               {field.maxLength && (
-                <p className="text-xs text-muted-foreground text-right">
+                <p className="text-right text-xs text-muted-foreground">
                   {(value as string).length}/{field.maxLength}
                 </p>
               )}
@@ -98,7 +98,7 @@ const ProfileFields = React.forwardRef<HTMLDivElement, ProfileFieldsProps>(
             <div key={field.key} className={cn('space-y-2', isCompact && 'space-y-1')}>
               <Label htmlFor={field.key} className={cn(isCompact && 'text-xs')}>
                 {field.label}
-                {field.required && <span className="text-destructive ml-1">*</span>}
+                {field.required && <span className="ml-1 text-destructive">*</span>}
               </Label>
               <Select
                 value={value as string}
@@ -109,7 +109,9 @@ const ProfileFields = React.forwardRef<HTMLDivElement, ProfileFieldsProps>(
                   id={field.key}
                   className={cn(error && 'border-destructive', isCompact && 'h-8 text-sm')}
                 >
-                  <SelectValue placeholder={field.placeholder || `Select ${field.label.toLowerCase()}`} />
+                  <SelectValue
+                    placeholder={field.placeholder || `Select ${field.label.toLowerCase()}`}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {field.options?.map((option) => (
@@ -159,7 +161,7 @@ const ProfileFields = React.forwardRef<HTMLDivElement, ProfileFieldsProps>(
             <div key={field.key} className={cn('space-y-2', isCompact && 'space-y-1')}>
               <Label htmlFor={field.key} className={cn(isCompact && 'text-xs')}>
                 {field.label}
-                {field.required && <span className="text-destructive ml-1">*</span>}
+                {field.required && <span className="ml-1 text-destructive">*</span>}
               </Label>
               <div className="relative">
                 <Input
@@ -168,13 +170,9 @@ const ProfileFields = React.forwardRef<HTMLDivElement, ProfileFieldsProps>(
                   value={value as string}
                   onChange={(e) => onChange(field.key, e.target.value)}
                   disabled={disabled}
-                  className={cn(
-                    error && 'border-destructive',
-                    isCompact && 'h-8 text-sm',
-                    'pr-10'
-                  )}
+                  className={cn(error && 'border-destructive', isCompact && 'h-8 text-sm', 'pr-10')}
                 />
-                <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Calendar className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               </div>
               {field.description && !error && (
                 <p className="text-xs text-muted-foreground">{field.description}</p>
@@ -189,7 +187,7 @@ const ProfileFields = React.forwardRef<HTMLDivElement, ProfileFieldsProps>(
             <div key={field.key} className={cn('space-y-2', isCompact && 'space-y-1')}>
               <Label htmlFor={field.key} className={cn(isCompact && 'text-xs')}>
                 {field.label}
-                {field.required && <span className="text-destructive ml-1">*</span>}
+                {field.required && <span className="ml-1 text-destructive">*</span>}
               </Label>
               <Input
                 id={field.key}
@@ -211,11 +209,7 @@ const ProfileFields = React.forwardRef<HTMLDivElement, ProfileFieldsProps>(
     }
 
     return (
-      <div
-        ref={ref}
-        className={cn('space-y-4', isCompact && 'space-y-3', className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('space-y-4', isCompact && 'space-y-3', className)} {...props}>
         {fields.map(renderField)}
       </div>
     )

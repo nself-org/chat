@@ -1,7 +1,15 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { Check, Download, Upload, AlertCircle, CheckCircle, ChevronRight, Loader2 } from 'lucide-react'
+import {
+  Check,
+  Download,
+  Upload,
+  AlertCircle,
+  CheckCircle,
+  ChevronRight,
+  Loader2,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { useWhiteLabelStore } from '@/stores/white-label-store'
@@ -9,20 +17,16 @@ import { BrandingExport } from './BrandingExport'
 import { BrandingImport } from './BrandingImport'
 import type { BrandingConfig } from '@/lib/white-label/branding-schema'
 
+import { logger } from '@/lib/logger'
+
 interface Step9ReviewProps {
   onComplete?: () => void
   className?: string
 }
 
 export function Step9Review({ onComplete, className }: Step9ReviewProps) {
-  const {
-    config,
-    steps,
-    generatedFavicons,
-    setConfig,
-    saveToLocalStorage,
-    markStepComplete,
-  } = useWhiteLabelStore()
+  const { config, steps, generatedFavicons, setConfig, saveToLocalStorage, markStepComplete } =
+    useWhiteLabelStore()
 
   const [activeTab, setActiveTab] = useState<'review' | 'export' | 'import'>('review')
   const [isSaving, setIsSaving] = useState(false)
@@ -39,16 +43,19 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
       await new Promise((resolve) => setTimeout(resolve, 500)) // Simulated delay
       onComplete?.()
     } catch (error) {
-      console.error('Failed to save:', error)
+      logger.error('Failed to save:', error)
     } finally {
       setIsSaving(false)
     }
   }, [saveToLocalStorage, onComplete])
 
-  const handleImport = useCallback((importedConfig: BrandingConfig) => {
-    setConfig(importedConfig)
-    setActiveTab('review')
-  }, [setConfig])
+  const handleImport = useCallback(
+    (importedConfig: BrandingConfig) => {
+      setConfig(importedConfig)
+      setActiveTab('review')
+    },
+    [setConfig]
+  )
 
   // Review sections
   const reviewSections = [
@@ -65,7 +72,13 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
       stepId: 'logo',
       items: [
         { label: 'Logo', value: config.logo.original ? 'Uploaded' : 'Not set' },
-        { label: 'Favicon', value: Object.keys(config.favicon.sizes || {}).length > 0 ? `${Object.keys(config.favicon.sizes).length} sizes generated` : 'Not set' },
+        {
+          label: 'Favicon',
+          value:
+            Object.keys(config.favicon.sizes || {}).length > 0
+              ? `${Object.keys(config.favicon.sizes).length} sizes generated`
+              : 'Not set',
+        },
       ],
       preview: config.logo.original ? (
         <img src={config.logo.original} alt="Logo" className="h-8 object-contain" />
@@ -81,13 +94,15 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
       ],
       preview: (
         <div className="flex gap-1">
-          {[config.colors.primary, config.colors.secondary, config.colors.accent].map((color, i) => (
-            <div
-              key={i}
-              className="w-6 h-6 rounded border border-zinc-200 dark:border-zinc-700"
-              style={{ backgroundColor: color }}
-            />
-          ))}
+          {[config.colors.primary, config.colors.secondary, config.colors.accent].map(
+            (color, i) => (
+              <div
+                key={i}
+                className="h-6 w-6 rounded border border-zinc-200 dark:border-zinc-700"
+                style={{ backgroundColor: color }}
+              />
+            )
+          )}
         </div>
       ),
     },
@@ -125,21 +140,19 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
     <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl mb-4 shadow-lg">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-green-400 to-green-600 shadow-lg">
           <Check className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-          Review & Export
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">Review & Export</h2>
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Review your branding configuration and export it for use in your app.
         </p>
       </div>
 
-      <div className="max-w-3xl mx-auto">
+      <div className="mx-auto max-w-3xl">
         {/* Progress summary */}
-        <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-4 mb-6">
-          <div className="flex items-center justify-between mb-2">
+        <div className="mb-6 rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/50">
+          <div className="mb-2 flex items-center justify-between">
             <span className="font-medium text-zinc-900 dark:text-white">
               Configuration Progress
             </span>
@@ -147,7 +160,7 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
               {completedSteps}/{totalSteps} steps completed
             </span>
           </div>
-          <div className="h-2 bg-zinc-200 dark:bg-zinc-700 rounded-full overflow-hidden">
+          <div className="h-2 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-700">
             <div
               className="h-full bg-green-500 transition-all"
               style={{ width: `${(completedSteps / totalSteps) * 100}%` }}
@@ -156,7 +169,7 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
         </div>
 
         {/* Tab buttons */}
-        <div className="flex gap-2 mb-6">
+        <div className="mb-6 flex gap-2">
           {[
             { id: 'review' as const, label: 'Review', icon: CheckCircle },
             { id: 'export' as const, label: 'Export', icon: Download },
@@ -167,10 +180,10 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
               type="button"
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                'flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all',
+                'flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all',
                 activeTab === tab.id
-                  ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300'
-                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                  ? 'dark:bg-sky-900/30 bg-sky-100 text-sky-700 dark:text-sky-300'
+                  : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
               )}
             >
               <tab.icon className="h-4 w-4" />
@@ -189,9 +202,9 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
               return (
                 <div
                   key={section.stepId}
-                  className="bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl overflow-hidden"
+                  className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800"
                 >
-                  <div className="flex items-center justify-between px-4 py-3 bg-zinc-50 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-700">
+                  <div className="flex items-center justify-between border-b border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-800/50">
                     <div className="flex items-center gap-2">
                       {isComplete ? (
                         <CheckCircle className="h-4 w-4 text-green-500" />
@@ -210,10 +223,12 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
                         <div key={index} className="flex items-center justify-between">
                           <dt className="text-sm text-zinc-500">{item.label}</dt>
                           <dd className="text-sm font-medium text-zinc-900 dark:text-white">
-                            {item.label === 'Primary' || item.label === 'Secondary' || item.label === 'Accent' ? (
+                            {item.label === 'Primary' ||
+                            item.label === 'Secondary' ||
+                            item.label === 'Accent' ? (
                               <div className="flex items-center gap-2">
                                 <div
-                                  className="w-4 h-4 rounded border border-zinc-200 dark:border-zinc-700"
+                                  className="h-4 w-4 rounded border border-zinc-200 dark:border-zinc-700"
                                   style={{ backgroundColor: item.value }}
                                 />
                                 <span className="font-mono text-xs">{item.value}</span>
@@ -241,12 +256,12 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
               >
                 {isSaving ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Saving...
                   </>
                 ) : (
                   <>
-                    <Check className="h-4 w-4 mr-2" />
+                    <Check className="mr-2 h-4 w-4" />
                     Save Configuration
                   </>
                 )}
@@ -256,16 +271,11 @@ export function Step9Review({ onComplete, className }: Step9ReviewProps) {
         )}
 
         {/* Export tab */}
-        {activeTab === 'export' && (
-          <BrandingExport config={config} favicons={generatedFavicons} />
-        )}
+        {activeTab === 'export' && <BrandingExport config={config} favicons={generatedFavicons} />}
 
         {/* Import tab */}
         {activeTab === 'import' && (
-          <BrandingImport
-            onImport={handleImport}
-            onCancel={() => setActiveTab('review')}
-          />
+          <BrandingImport onImport={handleImport} onCancel={() => setActiveTab('review')} />
         )}
       </div>
     </div>

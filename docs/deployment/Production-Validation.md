@@ -5,6 +5,7 @@ This document describes the production environment validation system that preven
 ## Overview
 
 The production validation system ensures that:
+
 1. All required environment variables are set
 2. Production URLs do not use localhost patterns
 3. Security secrets meet minimum requirements
@@ -15,6 +16,7 @@ The production validation system ensures that:
 **Location**: `scripts/validate-env.ts`
 
 **Usage**:
+
 ```bash
 # Validate current environment
 pnpm validate:env
@@ -30,17 +32,20 @@ pnpm validate:env:prod
 The following environment variables are **required** for production deployment:
 
 #### Frontend (Public)
+
 - `NEXT_PUBLIC_GRAPHQL_URL` - GraphQL endpoint
 - `NEXT_PUBLIC_AUTH_URL` - Authentication service endpoint
 - `NEXT_PUBLIC_STORAGE_URL` - File storage endpoint
 
 #### Backend (Server-side)
+
 - `HASURA_ADMIN_SECRET` - Admin secret for Hasura (minimum 32 characters)
 - `JWT_SECRET` - Secret for JWT signing (minimum 32 characters)
 
 ### Prohibited Localhost Patterns
 
 Production URLs cannot contain any of the following patterns:
+
 - `localhost`
 - `127.0.0.1`
 - `0.0.0.0`
@@ -48,11 +53,13 @@ Production URLs cannot contain any of the following patterns:
 - `host.docker.internal`
 
 **Example of invalid production URL**:
+
 ```bash
 NEXT_PUBLIC_GRAPHQL_URL=http://localhost:8080/v1/graphql  # ❌ Will fail validation
 ```
 
 **Example of valid production URL**:
+
 ```bash
 NEXT_PUBLIC_GRAPHQL_URL=https://graphql.example.com/v1/graphql  # ✓ Valid
 ```
@@ -60,11 +67,13 @@ NEXT_PUBLIC_GRAPHQL_URL=https://graphql.example.com/v1/graphql  # ✓ Valid
 ### Security Requirements
 
 1. **Development Auth**: Must be disabled in production
+
    ```bash
    NEXT_PUBLIC_USE_DEV_AUTH=false  # Required for production
    ```
 
 2. **JWT Secret**: Minimum 32 characters
+
    ```bash
    JWT_SECRET=your-super-secret-jwt-key-min-32-chars  # Minimum length enforced
    ```
@@ -77,10 +86,13 @@ NEXT_PUBLIC_GRAPHQL_URL=https://graphql.example.com/v1/graphql  # ✓ Valid
 ## Validation Levels
 
 ### 1. Public Environment Variables
+
 Validates format and structure of all `NEXT_PUBLIC_*` variables.
 
 ### 2. Environment Information
+
 Checks which services are configured:
+
 - GraphQL API
 - Authentication
 - Storage
@@ -89,14 +101,18 @@ Checks which services are configured:
 - Error tracking (optional)
 
 ### 3. Health Check
+
 Performs comprehensive health check:
+
 - Missing required variables
 - Localhost usage in production
 - Development features in production
 - Insecure configurations
 
 ### 4. Production Readiness (with `--production` flag)
+
 Strict validation that fails the build if any issues are found:
+
 - All required variables present
 - No localhost URLs
 - Security requirements met
@@ -119,6 +135,7 @@ The validation script is integrated into the CI/CD pipeline:
 ```
 
 The validation runs on:
+
 - Pushes to `main` branch
 - Pull requests to `main` or `develop` branches
 
@@ -127,6 +144,7 @@ The validation runs on:
 ## Example Output
 
 ### Success ✓
+
 ```
 ================================================================================
   ɳChat Environment Validation
@@ -167,6 +185,7 @@ The validation runs on:
 ```
 
 ### Failure ❌
+
 ```
 ================================================================================
   ɳChat Environment Validation
@@ -241,9 +260,9 @@ kind: ConfigMap
 metadata:
   name: nchat-config
 data:
-  NEXT_PUBLIC_GRAPHQL_URL: "https://graphql.example.com/v1/graphql"
-  NEXT_PUBLIC_AUTH_URL: "https://auth.example.com/v1/auth"
-  NEXT_PUBLIC_STORAGE_URL: "https://storage.example.com/v1/storage"
+  NEXT_PUBLIC_GRAPHQL_URL: 'https://graphql.example.com/v1/graphql'
+  NEXT_PUBLIC_AUTH_URL: 'https://auth.example.com/v1/auth'
+  NEXT_PUBLIC_STORAGE_URL: 'https://storage.example.com/v1/storage'
 ---
 apiVersion: v1
 kind: Secret
@@ -264,6 +283,7 @@ A comprehensive test suite verifies the validation works correctly:
 ```
 
 **Test cases**:
+
 1. ✓ Missing required variables (should fail)
 2. ✓ Localhost URLs in production (should fail)
 3. ✓ Short JWT secret (should fail)
@@ -302,11 +322,13 @@ A comprehensive test suite verifies the validation works correctly:
 ### Error: "Production URLs cannot use localhost"
 
 **Solution**: Replace localhost URLs with production endpoints:
+
 - Development: `http://localhost:8080` → Production: `https://api.example.com`
 
 ### Error: "JWT_SECRET must be at least 32 characters long"
 
 **Solution**: Generate a stronger secret:
+
 ```bash
 # Generate a 64-character random secret
 openssl rand -base64 48
@@ -315,6 +337,7 @@ openssl rand -base64 48
 ### Error: "NEXT_PUBLIC_USE_DEV_AUTH is enabled in production"
 
 **Solution**: Set to false in production environment:
+
 ```bash
 NEXT_PUBLIC_USE_DEV_AUTH=false
 ```

@@ -56,9 +56,11 @@ test.describe('Channel Management', () => {
 
         // Verify channel appears in list
         const newChannel = page.locator(`text=${channelName}`)
-        await expect(newChannel.first()).toBeVisible({ timeout: 5000 }).catch(() => {
-          // May not be visible if navigation occurred
-        })
+        await expect(newChannel.first())
+          .toBeVisible({ timeout: 5000 })
+          .catch(() => {
+            // May not be visible if navigation occurred
+          })
       }
     }
   })
@@ -77,7 +79,9 @@ test.describe('Channel Management', () => {
         await nameInput.fill(`private-${Date.now()}`)
 
         // Toggle private
-        const privateToggle = page.locator('input[type="checkbox"][name="private"], label:has-text("Private")')
+        const privateToggle = page.locator(
+          'input[type="checkbox"][name="private"], label:has-text("Private")'
+        )
         if (await privateToggle.isVisible()) {
           await privateToggle.click()
         }
@@ -116,7 +120,9 @@ test.describe('Channel Management', () => {
 
       // Check for settings panel/modal
       const settingsPanel = page.locator('[role="dialog"], .settings-panel, .modal')
-      await expect(settingsPanel.first()).toBeVisible({ timeout: 5000 }).catch(() => {})
+      await expect(settingsPanel.first())
+        .toBeVisible({ timeout: 5000 })
+        .catch(() => {})
     }
   })
 
@@ -167,7 +173,9 @@ test.describe('Channel Management', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for member count indicator
-    const memberCount = page.locator('[data-testid="member-count"], .member-count, text=/\\d+ members?/')
+    const memberCount = page.locator(
+      '[data-testid="member-count"], .member-count, text=/\\d+ members?/'
+    )
     const hasCount = await memberCount.isVisible().catch(() => false)
 
     // Just verify the page loaded

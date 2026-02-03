@@ -128,9 +128,7 @@ export function useSearchStickers(query: string) {
     ? packs.flatMap((pack) =>
         pack.stickers
           .filter((sticker) =>
-            sticker.keywords.some((keyword) =>
-              keyword.toLowerCase().includes(query.toLowerCase())
-            )
+            sticker.keywords.some((keyword) => keyword.toLowerCase().includes(query.toLowerCase()))
           )
           .map((sticker) => ({ ...sticker, pack }))
       )

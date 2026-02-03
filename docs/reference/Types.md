@@ -32,24 +32,24 @@ Source: `/Users/admin/Sites/nself-chat/src/types/`
 
 Location: `/src/types/`
 
-| File | Lines | Description |
-|------|-------|-------------|
-| `index.ts` | 795+ | Export barrel |
-| `user.ts` | | User-related types |
-| `channel.ts` | | Channel-related types |
-| `message.ts` | | Message-related types |
-| `attachment.ts` | | Attachment/upload types |
-| `notification.ts` | | Notification types |
-| `poll.ts` | | Poll/voting types |
-| `emoji.ts` | | Emoji/reaction types |
-| `search.ts` | | Search types |
-| `webhook.ts` | | Webhook types |
-| `bot.ts` | | Bot types |
-| `sticker.ts` | | Sticker types |
-| `api.ts` | | API/GraphQL types |
-| `socket.ts` | | Socket.io types |
-| `config.ts` | | Configuration types |
-| `gif.ts` | | GIF picker types |
+| File              | Lines | Description             |
+| ----------------- | ----- | ----------------------- |
+| `index.ts`        | 795+  | Export barrel           |
+| `user.ts`         |       | User-related types      |
+| `channel.ts`      |       | Channel-related types   |
+| `message.ts`      |       | Message-related types   |
+| `attachment.ts`   |       | Attachment/upload types |
+| `notification.ts` |       | Notification types      |
+| `poll.ts`         |       | Poll/voting types       |
+| `emoji.ts`        |       | Emoji/reaction types    |
+| `search.ts`       |       | Search types            |
+| `webhook.ts`      |       | Webhook types           |
+| `bot.ts`          |       | Bot types               |
+| `sticker.ts`      |       | Sticker types           |
+| `api.ts`          |       | API/GraphQL types       |
+| `socket.ts`       |       | Socket.io types         |
+| `config.ts`       |       | Configuration types     |
+| `gif.ts`          |       | GIF picker types        |
 
 ---
 
@@ -202,14 +202,14 @@ const UserRoleLevel = {
   admin: 1,
   moderator: 2,
   member: 3,
-  guest: 4
+  guest: 4,
 }
 
 const UserPresenceLabels = {
   online: 'Online',
   away: 'Away',
   dnd: 'Do Not Disturb',
-  offline: 'Offline'
+  offline: 'Offline',
 }
 
 const DefaultStatusPresets: UserStatusPreset[] = [
@@ -217,7 +217,7 @@ const DefaultStatusPresets: UserStatusPreset[] = [
   { emoji: '🚌', text: 'Commuting' },
   { emoji: '🤒', text: 'Out sick' },
   { emoji: '🌴', text: 'Vacationing' },
-  { emoji: '🏠', text: 'Working remotely' }
+  { emoji: '🏠', text: 'Working remotely' },
 ]
 ```
 
@@ -495,7 +495,13 @@ type MessageListItem = MessageGroup | DateSeparator | UnreadIndicator | NewMessa
 
 ```typescript
 interface SystemMessageData {
-  action: 'user_joined' | 'user_left' | 'channel_created' | 'channel_renamed' | 'pinned' | 'unpinned'
+  action:
+    | 'user_joined'
+    | 'user_left'
+    | 'channel_created'
+    | 'channel_renamed'
+    | 'pinned'
+    | 'unpinned'
   userId?: string
   oldValue?: string
   newValue?: string
@@ -633,7 +639,7 @@ interface UploadSettings {
 const DefaultUploadSettings: UploadSettings = {
   maxFileSize: 104857600, // 100MB
   maxFilesPerMessage: 10,
-  allowedMimeTypes: ['*/*']
+  allowedMimeTypes: ['*/*'],
 }
 ```
 
@@ -742,9 +748,9 @@ interface NotificationPreferences {
 interface NotificationSchedule {
   enabled: boolean
   startTime: string // HH:mm
-  endTime: string   // HH:mm
+  endTime: string // HH:mm
   timezone: string
-  days: number[]    // 0-6 (Sunday-Saturday)
+  days: number[] // 0-6 (Sunday-Saturday)
 }
 ```
 
@@ -818,7 +824,16 @@ Source: `/src/types/emoji.ts`
 ### Core Types
 
 ```typescript
-type StandardEmojiCategory = 'smileys' | 'people' | 'animals' | 'food' | 'travel' | 'activities' | 'objects' | 'symbols' | 'flags'
+type StandardEmojiCategory =
+  | 'smileys'
+  | 'people'
+  | 'animals'
+  | 'food'
+  | 'travel'
+  | 'activities'
+  | 'objects'
+  | 'symbols'
+  | 'flags'
 type EmojiCategory = StandardEmojiCategory | 'custom' | 'recent' | 'frequent'
 
 type SkinTone = 'default' | 'light' | 'medium-light' | 'medium' | 'medium-dark' | 'dark'
@@ -1408,16 +1423,11 @@ import type {
   Message,
   MessageType,
   AppConfig,
-  ThemeConfig
+  ThemeConfig,
 } from '@/types'
 
 // Import utility functions
-import {
-  isDirectMessage,
-  formatFileSize,
-  formatTypingIndicator,
-  isPollOpen
-} from '@/types'
+import { isDirectMessage, formatFileSize, formatTypingIndicator, isPollOpen } from '@/types'
 ```
 
 ### Type Path Aliases
@@ -1437,4 +1447,4 @@ Configured in `tsconfig.json`:
 
 ---
 
-*This document covers all TypeScript types defined in nself-chat. See individual type files for complete definitions.*
+_This document covers all TypeScript types defined in nself-chat. See individual type files for complete definitions._

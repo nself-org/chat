@@ -1,71 +1,67 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Edit2, Check, X } from 'lucide-react';
-import type { DirectMessage } from '@/lib/dm/dm-types';
-import { canModifyGroupSettings, getGroupDisplayName } from '@/lib/dm';
-import { useDMStore } from '@/stores/dm-store';
+import * as React from 'react'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Edit2, Check, X } from 'lucide-react'
+import type { DirectMessage } from '@/lib/dm/dm-types'
+import { canModifyGroupSettings, getGroupDisplayName } from '@/lib/dm'
+import { useDMStore } from '@/stores/dm-store'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface GroupDMNameProps {
-  dm: DirectMessage;
-  currentUserId: string;
-  editable?: boolean;
-  className?: string;
+  dm: DirectMessage
+  currentUserId: string
+  editable?: boolean
+  className?: string
 }
 
 // ============================================================================
 // Component
 // ============================================================================
 
-export function GroupDMName({
-  dm,
-  currentUserId,
-  editable = true,
-  className,
-}: GroupDMNameProps) {
-  const { updateDM } = useDMStore();
-  const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(dm.name || '');
+export function GroupDMName({ dm, currentUserId, editable = true, className }: GroupDMNameProps) {
+  const { updateDM } = useDMStore()
+  const [isEditing, setIsEditing] = useState(false)
+  const [name, setName] = useState(dm.name || '')
 
-  const canEdit = editable && canModifyGroupSettings(dm, currentUserId);
-  const displayName = getGroupDisplayName(dm, currentUserId);
+  const canEdit = editable && canModifyGroupSettings(dm, currentUserId)
+  const displayName = getGroupDisplayName(dm, currentUserId)
 
   const handleSave = async () => {
     if (!name.trim() || name === dm.name) {
-      setIsEditing(false);
-      setName(dm.name || '');
-      return;
+      setIsEditing(false)
+      setName(dm.name || '')
+      return
     }
 
     try {
-      updateDM(dm.id, { name: name.trim() });
-      // TODO: Call API to update
-      setIsEditing(false);
+      updateDM(dm.id, { name: name.trim() })
+      setIsEditing(false)
     } catch (error) {
-      console.error('Failed to update name:', error);
+      logger.error('Failed to update name:', error)
     }
-  };
+  }
 
   const handleCancel = () => {
-    setIsEditing(false);
-    setName(dm.name || '');
-  };
+    setIsEditing(false)
+    setName(dm.name || '')
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      handleSave();
+      handleSave()
     } else if (e.key === 'Escape') {
-      handleCancel();
+      handleCancel()
     }
-  };
+  }
 
   if (isEditing) {
     return (
@@ -79,41 +75,31 @@ export function GroupDMName({
           className="h-8"
           autoFocus
         />
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={handleSave}
-        >
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleSave}>
           <Check className="h-4 w-4 text-green-500" />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8"
-          onClick={handleCancel}
-        >
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleCancel}>
           <X className="h-4 w-4 text-destructive" />
         </Button>
       </div>
-    );
+    )
   }
 
   return (
-    <div className={cn('flex items-center gap-2 group', className)}>
-      <h2 className="font-semibold truncate">{displayName}</h2>
+    <div className={cn('group flex items-center gap-2', className)}>
+      <h2 className="truncate font-semibold">{displayName}</h2>
       {canEdit && (
         <Button
           variant="ghost"
           size="icon"
-          className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
           onClick={() => setIsEditing(true)}
         >
           <Edit2 className="h-3.5 w-3.5" />
         </Button>
       )}
     </div>
-  );
+  )
 }
 
-GroupDMName.displayName = 'GroupDMName';
+GroupDMName.displayName = 'GroupDMName'

@@ -5,10 +5,5 @@ import { AppLoader } from '@/components/loading'
  * Shows during initial app load and route transitions
  */
 export default function Loading() {
-  return (
-    <AppLoader
-      appName="nchat"
-      message="Loading..."
-    />
-  )
+  return <AppLoader appName="nchat" message="Loading..." />
 }

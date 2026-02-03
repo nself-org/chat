@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Loader2, AlertTriangle, Info, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { logger } from '@/lib/logger'
 import {
   BaseModal,
   ModalHeader,
@@ -94,7 +95,7 @@ export function ConfirmModal({
       await onConfirm()
       onOpenChange(false)
     } catch (error) {
-      console.error('Confirmation action failed:', error)
+      logger.error('Confirmation action failed:',  error)
     } finally {
       if (externalLoading === undefined) {
         setInternalLoading(false)
@@ -110,24 +111,19 @@ export function ConfirmModal({
   const config = VARIANT_CONFIG[variant]
 
   return (
-    <BaseModal
-      open={open}
-      onOpenChange={onOpenChange}
-      size={size}
-      showCloseButton={false}
-    >
+    <BaseModal open={open} onOpenChange={onOpenChange} size={size} showCloseButton={false}>
       <ModalHeader>
         <div className="flex items-start gap-4">
           <div
             className={cn(
-              'flex items-center justify-center h-10 w-10 rounded-full shrink-0',
+              'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
               config.iconBg,
               config.iconColor
             )}
           >
             {icon || config.icon}
           </div>
-          <div className="space-y-1.5 pt-0.5 flex-1">
+          <div className="flex-1 space-y-1.5 pt-0.5">
             <ModalTitle>{title}</ModalTitle>
             {message && typeof message === 'string' ? (
               <ModalDescription>{message}</ModalDescription>
@@ -138,17 +134,13 @@ export function ConfirmModal({
         </div>
       </ModalHeader>
 
-      {children && <ModalBody className="pt-4 pb-0">{children}</ModalBody>}
+      {children && <ModalBody className="pb-0 pt-4">{children}</ModalBody>}
 
       <ModalFooter className="pt-6">
         <Button variant="outline" onClick={handleCancel} disabled={loading}>
           {cancelText}
         </Button>
-        <Button
-          variant={config.buttonVariant}
-          onClick={handleConfirm}
-          disabled={loading}
-        >
+        <Button variant={config.buttonVariant} onClick={handleConfirm} disabled={loading}>
           {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {confirmText}
         </Button>
@@ -184,8 +176,7 @@ export function DeleteConfirmModal({
       onConfirm={onConfirm}
       title={title || `Delete ${itemName}?`}
       message={
-        message ||
-        `Are you sure you want to delete ${itemName}? This action cannot be undone.`
+        message || `Are you sure you want to delete ${itemName}? This action cannot be undone.`
       }
       confirmText="Delete"
       variant="destructive"
@@ -221,7 +212,7 @@ export function UnsavedChangesModal({
       await onSave()
       onOpenChange(false)
     } catch (error) {
-      console.error('Save failed:', error)
+      logger.error('Save failed:',  error)
     } finally {
       if (loading === undefined) {
         setIsLoading(false)
@@ -238,7 +229,7 @@ export function UnsavedChangesModal({
     <BaseModal open={open} onOpenChange={onOpenChange} size="sm" showCloseButton={false}>
       <ModalHeader>
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center h-10 w-10 rounded-full shrink-0 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-yellow-500/10 text-yellow-600 dark:text-yellow-500">
             <AlertTriangle className="h-5 w-5" />
           </div>
           <div className="space-y-1.5 pt-0.5">
@@ -250,7 +241,7 @@ export function UnsavedChangesModal({
         </div>
       </ModalHeader>
 
-      <ModalFooter className="pt-6 flex-col sm:flex-row">
+      <ModalFooter className="flex-col pt-6 sm:flex-row">
         {onDiscard && (
           <Button
             variant="ghost"
@@ -261,7 +252,7 @@ export function UnsavedChangesModal({
             Discard
           </Button>
         )}
-        <div className="flex gap-2 w-full sm:w-auto">
+        <div className="flex w-full gap-2 sm:w-auto">
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
@@ -270,11 +261,7 @@ export function UnsavedChangesModal({
           >
             Cancel
           </Button>
-          <Button
-            onClick={handleSave}
-            disabled={actualLoading}
-            className="flex-1 sm:flex-initial"
-          >
+          <Button onClick={handleSave} disabled={actualLoading} className="flex-1 sm:flex-initial">
             {actualLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Save
           </Button>

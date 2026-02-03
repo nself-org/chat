@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * DraftList - List all drafts
@@ -6,19 +6,19 @@
  * Displays a filterable, sortable list of all drafts
  */
 
-import * as React from 'react';
-import { useState, useCallback, useMemo } from 'react';
-import { Search, Filter, SortDesc, Trash2, X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import * as React from 'react'
+import { useState, useCallback, useMemo } from 'react'
+import { Search, Filter, SortDesc, Trash2, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -26,7 +26,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -36,11 +36,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { DraftCard } from './DraftCard';
-import { DraftEmpty, DraftSearchEmpty } from './DraftEmpty';
-import type { Draft, DraftContextType, DraftSortOptions } from '@/lib/drafts/draft-types';
-import { useDrafts } from '@/hooks/useDrafts';
+} from '@/components/ui/alert-dialog'
+import { DraftCard } from './DraftCard'
+import { DraftEmpty, DraftSearchEmpty } from './DraftEmpty'
+import type { Draft, DraftContextType, DraftSortOptions } from '@/lib/drafts/draft-types'
+import { useDrafts } from '@/hooks/useDrafts'
 
 // ============================================================================
 // Types
@@ -48,38 +48,38 @@ import { useDrafts } from '@/hooks/useDrafts';
 
 export interface DraftListProps {
   /** Context name resolver */
-  contextNameResolver?: (type: DraftContextType, id: string) => string;
+  contextNameResolver?: (type: DraftContextType, id: string) => string
   /** Show search */
-  showSearch?: boolean;
+  showSearch?: boolean
   /** Show filters */
-  showFilters?: boolean;
+  showFilters?: boolean
   /** Show sort */
-  showSort?: boolean;
+  showSort?: boolean
   /** Show clear all button */
-  showClearAll?: boolean;
+  showClearAll?: boolean
   /** Compact mode */
-  compact?: boolean;
+  compact?: boolean
   /** Max items to show (0 = all) */
-  maxItems?: number;
+  maxItems?: number
   /** Called when draft is selected/clicked */
-  onSelect?: (draft: Draft) => void;
+  onSelect?: (draft: Draft) => void
   /** Called when draft is restored */
-  onRestore?: (draft: Draft) => void;
+  onRestore?: (draft: Draft) => void
   /** Called when draft is sent */
-  onSend?: (draft: Draft) => void;
+  onSend?: (draft: Draft) => void
   /** Called when draft is deleted */
-  onDelete?: (draft: Draft) => void;
+  onDelete?: (draft: Draft) => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
 // Filter Types
 // ============================================================================
 
-type FilterContextType = 'all' | DraftContextType;
-type SortField = DraftSortOptions['field'];
-type SortDirection = DraftSortOptions['direction'];
+type FilterContextType = 'all' | DraftContextType
+type SortField = DraftSortOptions['field']
+type SortDirection = DraftSortOptions['direction']
 
 // ============================================================================
 // Component
@@ -100,13 +100,13 @@ export function DraftList({
   className,
 }: DraftListProps) {
   // Local state
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState<FilterContextType>('all');
-  const [filterHasAttachments, setFilterHasAttachments] = useState<boolean | undefined>(undefined);
-  const [filterIsReply, setFilterIsReply] = useState<boolean | undefined>(undefined);
-  const [sortField, setSortField] = useState<SortField>('lastModified');
-  const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
-  const [showClearAllDialog, setShowClearAllDialog] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('')
+  const [filterType, setFilterType] = useState<FilterContextType>('all')
+  const [filterHasAttachments, setFilterHasAttachments] = useState<boolean | undefined>(undefined)
+  const [filterIsReply, setFilterIsReply] = useState<boolean | undefined>(undefined)
+  const [sortField, setSortField] = useState<SortField>('lastModified')
+  const [sortDirection, setSortDirection] = useState<SortDirection>('desc')
+  const [showClearAllDialog, setShowClearAllDialog] = useState(false)
 
   // Get drafts from store
   const {
@@ -118,66 +118,63 @@ export function DraftList({
     deleteDraft,
     clearAll,
     hasDrafts,
-  } = useDrafts();
+  } = useDrafts()
 
   // Filter and sort drafts
   const filteredDrafts = useMemo(() => {
-    let result = [...allDrafts];
+    let result = [...allDrafts]
 
     // Filter by context type
     if (filterType !== 'all') {
-      result = result.filter((d) => d.contextType === filterType);
+      result = result.filter((d) => d.contextType === filterType)
     }
 
     // Filter by search term
     if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase();
-      result = result.filter((d) =>
-        d.content.toLowerCase().includes(term)
-      );
+      const term = searchTerm.toLowerCase()
+      result = result.filter((d) => d.content.toLowerCase().includes(term))
     }
 
     // Filter by attachments
     if (filterHasAttachments !== undefined) {
       result = result.filter((d) => {
-        const hasAttachments =
-          d.attachmentIds.length > 0 || (d.attachments?.length ?? 0) > 0;
-        return filterHasAttachments ? hasAttachments : !hasAttachments;
-      });
+        const hasAttachments = d.attachmentIds.length > 0 || (d.attachments?.length ?? 0) > 0
+        return filterHasAttachments ? hasAttachments : !hasAttachments
+      })
     }
 
     // Filter by reply
     if (filterIsReply !== undefined) {
       result = result.filter((d) =>
         filterIsReply ? d.replyToMessageId !== null : d.replyToMessageId === null
-      );
+      )
     }
 
     // Sort
     result.sort((a, b) => {
-      let comparison = 0;
+      let comparison = 0
 
       switch (sortField) {
         case 'lastModified':
-          comparison = a.lastModified - b.lastModified;
-          break;
+          comparison = a.lastModified - b.lastModified
+          break
         case 'createdAt':
-          comparison = a.createdAt - b.createdAt;
-          break;
+          comparison = a.createdAt - b.createdAt
+          break
         case 'contextName':
-          comparison = a.contextKey.localeCompare(b.contextKey);
-          break;
+          comparison = a.contextKey.localeCompare(b.contextKey)
+          break
       }
 
-      return sortDirection === 'desc' ? -comparison : comparison;
-    });
+      return sortDirection === 'desc' ? -comparison : comparison
+    })
 
     // Limit
     if (maxItems > 0) {
-      result = result.slice(0, maxItems);
+      result = result.slice(0, maxItems)
     }
 
-    return result;
+    return result
   }, [
     allDrafts,
     filterType,
@@ -187,49 +184,47 @@ export function DraftList({
     sortField,
     sortDirection,
     maxItems,
-  ]);
+  ])
 
   // Handlers
   const handleSearchClear = useCallback(() => {
-    setSearchTerm('');
-  }, []);
+    setSearchTerm('')
+  }, [])
 
   const handleDelete = useCallback(
     async (draft: Draft) => {
-      await deleteDraft(draft.contextKey);
-      onDelete?.(draft);
+      await deleteDraft(draft.contextKey)
+      onDelete?.(draft)
     },
     [deleteDraft, onDelete]
-  );
+  )
 
   const handleClearAll = useCallback(async () => {
-    await clearAll();
-    setShowClearAllDialog(false);
-  }, [clearAll]);
+    await clearAll()
+    setShowClearAllDialog(false)
+  }, [clearAll])
 
   const handleResetFilters = useCallback(() => {
-    setSearchTerm('');
-    setFilterType('all');
-    setFilterHasAttachments(undefined);
-    setFilterIsReply(undefined);
-  }, []);
+    setSearchTerm('')
+    setFilterType('all')
+    setFilterHasAttachments(undefined)
+    setFilterIsReply(undefined)
+  }, [])
 
   // Check if any filters are active
   const hasActiveFilters =
-    filterType !== 'all' ||
-    filterHasAttachments !== undefined ||
-    filterIsReply !== undefined;
+    filterType !== 'all' || filterHasAttachments !== undefined || filterIsReply !== undefined
 
   // Get context name
   const getContextName = useCallback(
     (draft: Draft) => {
       if (contextNameResolver) {
-        return contextNameResolver(draft.contextType, draft.contextId);
+        return contextNameResolver(draft.contextType, draft.contextId)
       }
-      return draft.contextId;
+      return draft.contextId
     },
     [contextNameResolver]
-  );
+  )
 
   // Counts for filter display
   const counts = {
@@ -237,15 +232,15 @@ export function DraftList({
     channel: channelDrafts.length,
     thread: threadDrafts.length,
     dm: dmDrafts.length,
-  };
+  }
 
   // Loading state
   if (isLoading) {
     return (
       <div className={cn('flex items-center justify-center p-8', className)}>
-        <div className="animate-spin h-8 w-8 border-2 border-primary border-t-transparent rounded-full" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
-    );
+    )
   }
 
   // Empty state
@@ -254,7 +249,7 @@ export function DraftList({
       <div className={className}>
         <DraftEmpty />
       </div>
-    );
+    )
   }
 
   return (
@@ -263,8 +258,8 @@ export function DraftList({
       <div className="flex flex-wrap items-center gap-2">
         {/* Search */}
         {showSearch && (
-          <div className="relative flex-1 min-w-[200px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <div className="relative min-w-[200px] flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search drafts..."
               value={searchTerm}
@@ -276,7 +271,7 @@ export function DraftList({
                 variant="ghost"
                 size="sm"
                 onClick={handleSearchClear}
-                className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7 p-0"
+                className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 p-0"
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -291,9 +286,7 @@ export function DraftList({
               <Button variant="outline" size="sm" className="gap-1.5">
                 <Filter className="h-4 w-4" />
                 Filter
-                {hasActiveFilters && (
-                  <span className="ml-1 h-2 w-2 rounded-full bg-primary" />
-                )}
+                {hasActiveFilters && <span className="ml-1 h-2 w-2 rounded-full bg-primary" />}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
@@ -328,17 +321,13 @@ export function DraftList({
               <DropdownMenuLabel>Options</DropdownMenuLabel>
               <DropdownMenuCheckboxItem
                 checked={filterHasAttachments === true}
-                onCheckedChange={(checked) =>
-                  setFilterHasAttachments(checked ? true : undefined)
-                }
+                onCheckedChange={(checked) => setFilterHasAttachments(checked ? true : undefined)}
               >
                 Has attachments
               </DropdownMenuCheckboxItem>
               <DropdownMenuCheckboxItem
                 checked={filterIsReply === true}
-                onCheckedChange={(checked) =>
-                  setFilterIsReply(checked ? true : undefined)
-                }
+                onCheckedChange={(checked) => setFilterIsReply(checked ? true : undefined)}
               >
                 Is a reply
               </DropdownMenuCheckboxItem>
@@ -365,13 +354,13 @@ export function DraftList({
           <Select
             value={`${sortField}:${sortDirection}`}
             onValueChange={(value) => {
-              const [field, direction] = value.split(':') as [SortField, SortDirection];
-              setSortField(field);
-              setSortDirection(direction);
+              const [field, direction] = value.split(':') as [SortField, SortDirection]
+              setSortField(field)
+              setSortDirection(direction)
             }}
           >
             <SelectTrigger className="w-[180px]">
-              <SortDesc className="h-4 w-4 mr-2" />
+              <SortDesc className="mr-2 h-4 w-4" />
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>
@@ -391,9 +380,9 @@ export function DraftList({
             variant="ghost"
             size="sm"
             onClick={() => setShowClearAllDialog(true)}
-            className="text-destructive hover:text-destructive ml-auto"
+            className="ml-auto text-destructive hover:text-destructive"
           >
-            <Trash2 className="h-4 w-4 mr-1.5" />
+            <Trash2 className="mr-1.5 h-4 w-4" />
             Clear all
           </Button>
         )}
@@ -444,15 +433,15 @@ export function DraftList({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete all drafts?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete all {allDrafts.length} drafts. This action
-              cannot be undone.
+              This will permanently delete all {allDrafts.length} drafts. This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleClearAll}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               Delete all
             </AlertDialogAction>
@@ -460,7 +449,7 @@ export function DraftList({
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  );
+  )
 }
 
-export default DraftList;
+export default DraftList

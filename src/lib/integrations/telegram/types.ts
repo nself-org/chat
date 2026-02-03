@@ -6,11 +6,7 @@
  */
 
 // Import types from parent for local use
-import type {
-  TelegramUser,
-  TelegramChat,
-  TelegramMessage,
-} from '../types'
+import type { TelegramUser, TelegramChat, TelegramMessage } from '../types'
 
 // Re-export types from parent for consumers
 export type {

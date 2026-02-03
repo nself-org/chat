@@ -85,7 +85,14 @@ export interface BotState {
 /**
  * Command argument types
  */
-export type CommandArgType = 'string' | 'number' | 'boolean' | 'user' | 'channel' | 'duration' | 'choice'
+export type CommandArgType =
+  | 'string'
+  | 'number'
+  | 'boolean'
+  | 'user'
+  | 'channel'
+  | 'duration'
+  | 'choice'
 
 /**
  * Command argument definition
@@ -397,7 +404,14 @@ export interface BotResponse {
 /**
  * Bot setting types
  */
-export type SettingType = 'string' | 'number' | 'boolean' | 'select' | 'multiselect' | 'channel' | 'role'
+export type SettingType =
+  | 'string'
+  | 'number'
+  | 'boolean'
+  | 'select'
+  | 'multiselect'
+  | 'channel'
+  | 'role'
 
 /**
  * Bot setting definition
@@ -485,11 +499,7 @@ export interface BotApi {
   deleteStorage(key: string): Promise<void>
 
   // Scheduling
-  scheduleMessage(
-    channelId: ChannelId,
-    response: BotResponse,
-    delay: number
-  ): Promise<string>
+  scheduleMessage(channelId: ChannelId, response: BotResponse, delay: number): Promise<string>
   cancelScheduledMessage(scheduleId: string): Promise<void>
 
   // Bot info

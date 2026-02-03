@@ -148,14 +148,17 @@ export function MobileDeployHelper({ onDeploy, className }: MobileDeployHelperPr
       case 'building':
       case 'uploading':
       case 'processing':
-        return <Clock className="h-5 w-5 text-blue-500 animate-pulse" />
+        return <Clock className="h-5 w-5 animate-pulse text-blue-500" />
       default:
         return <AlertCircle className="h-5 w-5 text-gray-400" />
     }
   }
 
   const getStatusBadge = (status: DeploymentStatus['status']) => {
-    const variants: Record<DeploymentStatus['status'], 'default' | 'secondary' | 'destructive' | 'outline'> = {
+    const variants: Record<
+      DeploymentStatus['status'],
+      'default' | 'secondary' | 'destructive' | 'outline'
+    > = {
       'not-started': 'secondary',
       building: 'default',
       uploading: 'default',
@@ -330,11 +333,7 @@ export function MobileDeployHelper({ onDeploy, className }: MobileDeployHelperPr
                 </a>
               </Button>
               <Button variant="outline" className="w-full justify-start" asChild>
-                <a
-                  href="https://play.google.com/console"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
+                <a href="https://play.google.com/console" target="_blank" rel="noopener noreferrer">
                   <ExternalLink className="mr-2 h-4 w-4" />
                   Open Google Play Console
                 </a>
@@ -532,10 +531,7 @@ export function MobileDeployHelper({ onDeploy, className }: MobileDeployHelperPr
                       size="sm"
                       variant="ghost"
                       onClick={() =>
-                        copyToClipboard(
-                          './scripts/deploy-mobile-android.sh --beta',
-                          'android-beta'
-                        )
+                        copyToClipboard('./scripts/deploy-mobile-android.sh --beta', 'android-beta')
                       }
                     >
                       {copied === 'android-beta' ? (
@@ -546,9 +542,7 @@ export function MobileDeployHelper({ onDeploy, className }: MobileDeployHelperPr
                     </Button>
                   </div>
                   <div className="flex items-center justify-between rounded-lg border bg-muted p-3">
-                    <code className="text-sm">
-                      ./scripts/deploy-mobile-android.sh --production
-                    </code>
+                    <code className="text-sm">./scripts/deploy-mobile-android.sh --production</code>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -620,9 +614,7 @@ export function MobileDeployHelper({ onDeploy, className }: MobileDeployHelperPr
           <Card>
             <CardHeader>
               <CardTitle>Deployment Guides</CardTitle>
-              <CardDescription>
-                Comprehensive guides and troubleshooting resources
-              </CardDescription>
+              <CardDescription>Comprehensive guides and troubleshooting resources</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
               <Button variant="outline" className="w-full justify-between" asChild>

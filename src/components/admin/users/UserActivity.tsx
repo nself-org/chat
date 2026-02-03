@@ -126,7 +126,7 @@ export function UserActivity({
       </CardHeader>
       <CardContent>
         {/* Filters */}
-        <div className="flex flex-wrap gap-4 mb-4">
+        <div className="mb-4 flex flex-wrap gap-4">
           <div className="flex items-center gap-2">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <Select value={typeFilter} onValueChange={setTypeFilter}>
@@ -172,7 +172,7 @@ export function UserActivity({
             ))}
           </div>
         ) : filteredActivities.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="py-8 text-center text-muted-foreground">
             <Calendar className="mx-auto h-12 w-12 opacity-50" />
             <p className="mt-2">No activity found</p>
           </div>
@@ -181,19 +181,16 @@ export function UserActivity({
             {filteredActivities.map((activity) => (
               <div
                 key={activity.id}
-                className="flex items-start gap-3 border-l-2 border-muted pl-4 hover:border-primary transition-colors"
+                className="flex items-start gap-3 border-l-2 border-muted pl-4 transition-colors hover:border-primary"
               >
                 <div className="flex-1">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <Badge
-                      variant="outline"
-                      className={getActivityTypeColor(activity.type)}
-                    >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant="outline" className={getActivityTypeColor(activity.type)}>
                       {activity.type.replace(/_/g, ' ')}
                     </Badge>
                     <span className="text-sm">{activity.description}</span>
                   </div>
-                  <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                  <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                     <span>{formatTimestamp(activity.createdAt)}</span>
                     {activity.ipAddress && (
                       <>

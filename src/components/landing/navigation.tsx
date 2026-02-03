@@ -11,7 +11,7 @@ export function Navigation() {
   const { branding, homepage, authPermissions } = config
 
   const navLinks = []
-  
+
   // Add navigation links based on enabled landing pages
   if (homepage.landingPages?.features) navLinks.push({ href: '#features', label: 'Features' })
   if (homepage.landingPages?.pricing) navLinks.push({ href: '#pricing', label: 'Pricing' })
@@ -21,9 +21,9 @@ export function Navigation() {
   if (homepage.landingPages?.docs) navLinks.push({ href: '/docs', label: 'Docs' })
 
   return (
-    <nav className="bg-background/80 backdrop-blur-md border-b sticky top-0 z-50">
+    <nav className="bg-background/80 sticky top-0 z-50 border-b backdrop-blur-md">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex h-16 items-center justify-between">
           {/* Logo & Brand */}
           <div className="flex items-center space-x-3">
             {branding.logo && (
@@ -35,12 +35,12 @@ export function Navigation() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden items-center space-x-8 md:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-foreground/70 hover:text-foreground transition-colors"
+                className="text-foreground/70 transition-colors hover:text-foreground"
               >
                 {link.label}
               </Link>
@@ -48,13 +48,13 @@ export function Navigation() {
           </div>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden items-center space-x-4 md:flex">
             <ThemeToggle />
-            
+
             <Button variant="ghost" asChild>
               <Link href="/auth/signin">Sign In</Link>
             </Button>
-            
+
             {authPermissions.mode !== 'admin-only' && (
               <Button asChild>
                 <Link href="/auth/signup">Get Started</Link>
@@ -63,11 +63,11 @@ export function Navigation() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center space-x-2">
+          <div className="flex items-center space-x-2 md:hidden">
             <ThemeToggle />
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 rounded-md text-foreground hover:bg-accent"
+              className="rounded-md p-2 text-foreground hover:bg-accent"
             >
               {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
@@ -76,24 +76,24 @@ export function Navigation() {
 
         {/* Mobile Navigation */}
         {isOpen && (
-          <div className="md:hidden py-4 border-t">
+          <div className="border-t py-4 md:hidden">
             <div className="flex flex-col space-y-3">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-foreground/70 hover:text-foreground transition-colors px-2 py-1"
+                  className="text-foreground/70 px-2 py-1 transition-colors hover:text-foreground"
                   onClick={() => setIsOpen(false)}
                 >
                   {link.label}
                 </Link>
               ))}
-              
-              <div className="flex flex-col space-y-2 pt-3 border-t">
+
+              <div className="flex flex-col space-y-2 border-t pt-3">
                 <Button variant="ghost" asChild className="justify-start">
                   <Link href="/auth/signin">Sign In</Link>
                 </Button>
-                
+
                 {authPermissions.mode !== 'admin-only' && (
                   <Button asChild className="justify-start">
                     <Link href="/auth/signup">Get Started</Link>

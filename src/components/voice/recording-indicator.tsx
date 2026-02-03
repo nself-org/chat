@@ -98,7 +98,7 @@ export const RecordingIndicator = memo(function RecordingIndicator({
   return (
     <div
       className={cn(
-        'flex items-center rounded-full bg-destructive/10',
+        'bg-destructive/10 flex items-center rounded-full',
         sizeStyles.gap,
         sizeStyles.container,
         className
@@ -119,11 +119,7 @@ export const RecordingIndicator = memo(function RecordingIndicator({
       <div className={cn('flex items-center', sizeStyles.gap)}>
         {/* Recording/Paused text */}
         <span
-          className={cn(
-            'font-medium text-destructive',
-            sizeStyles.text,
-            isPaused && 'opacity-70'
-          )}
+          className={cn('font-medium text-destructive', sizeStyles.text, isPaused && 'opacity-70')}
         >
           {statusText}
         </span>
@@ -131,10 +127,7 @@ export const RecordingIndicator = memo(function RecordingIndicator({
         {/* Timer */}
         {showTimer && (
           <span
-            className={cn(
-              'font-mono font-semibold tabular-nums text-destructive',
-              sizeStyles.text
-            )}
+            className={cn('font-mono font-semibold tabular-nums text-destructive', sizeStyles.text)}
           >
             {displayDuration}
           </span>
@@ -188,11 +181,7 @@ const RecordingDot = memo(function RecordingDot({
       )}
       {/* Core dot */}
       <span
-        className={cn(
-          'relative inline-flex rounded-full',
-          size,
-          isPaused && 'opacity-50'
-        )}
+        className={cn('relative inline-flex rounded-full', size, isPaused && 'opacity-50')}
         style={{ backgroundColor: color || 'rgb(239, 68, 68)' }}
       />
     </span>
@@ -228,11 +217,7 @@ export const CompactRecordingIndicator = memo(function CompactRecordingIndicator
   const displayDuration = formattedDuration || formatRecordingTime(duration)
 
   return (
-    <div
-      className={cn('flex items-center gap-1.5', className)}
-      role="status"
-      aria-live="polite"
-    >
+    <div className={cn('flex items-center gap-1.5', className)} role="status" aria-live="polite">
       <span className="relative flex h-2 w-2">
         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
         <span className="relative inline-flex h-2 w-2 rounded-full bg-destructive" />

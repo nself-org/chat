@@ -13,11 +13,7 @@ import {
   selectIsLoading,
   selectSettings,
 } from '@/stores/link-preview-store'
-import {
-  fetchPreview,
-  extractUrls,
-  isValidUrl,
-} from '@/lib/link-preview'
+import { fetchPreview, extractUrls, isValidUrl } from '@/lib/link-preview'
 import type { LinkPreviewData, FetchOptions } from '@/lib/link-preview'
 
 // ============================================================================
@@ -64,13 +60,7 @@ export function useLinkPreview(
   url: string | null | undefined,
   options: UseLinkPreviewOptions = {}
 ): UseLinkPreviewResult {
-  const {
-    autoFetch = true,
-    skipIfCached = true,
-    messageId = 'default',
-    onLoad,
-    onError,
-  } = options
+  const { autoFetch = true, skipIfCached = true, messageId = 'default', onLoad, onError } = options
 
   const store = useLinkPreviewStore()
   const settings = useLinkPreviewStore(selectSettings)
@@ -168,7 +158,7 @@ export function useLinkPreview(
   return {
     preview: previewEntry?.data ?? null,
     isLoading,
-    error: previewEntry?.status === 'error' ? previewEntry.error ?? null : null,
+    error: previewEntry?.status === 'error' ? (previewEntry.error ?? null) : null,
     isRemoved,
     fetch: fetchPreviewData,
     remove,
@@ -325,10 +315,7 @@ export interface UseExtractedUrlsOptions {
   messageId?: string
 }
 
-export function useExtractedUrls(
-  text: string,
-  options: UseExtractedUrlsOptions = {}
-) {
+export function useExtractedUrls(text: string, options: UseExtractedUrlsOptions = {}) {
   const { maxUrls = 5, autoFetch = true, messageId = 'default' } = options
 
   const urls = extractUrls(text).slice(0, maxUrls)

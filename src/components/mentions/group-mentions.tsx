@@ -95,8 +95,7 @@ const GROUP_MENTION_INFO: Record<string, GroupMentionInfo> = {
     type: 'everyone',
     label: '@everyone',
     description: 'Notifies all members of the workspace',
-    warningMessage:
-      'This will notify EVERYONE in the workspace. Use sparingly.',
+    warningMessage: 'This will notify EVERYONE in the workspace. Use sparingly.',
     icon: (
       <svg
         className="h-5 w-5"
@@ -164,7 +163,7 @@ export function GroupMentionGuard({
   if (!hasPermission) {
     if (showDisabled) {
       return (
-        <div className="opacity-50 pointer-events-none" aria-disabled="true">
+        <div className="pointer-events-none opacity-50" aria-disabled="true">
           {children}
         </div>
       )
@@ -227,9 +226,7 @@ export function GroupMentionConfirmDialog({
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     )
     const firstElement = focusableElements[0] as HTMLElement
-    const lastElement = focusableElements[
-      focusableElements.length - 1
-    ] as HTMLElement
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement
 
     firstElement?.focus()
 
@@ -265,11 +262,7 @@ export function GroupMentionConfirmDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onCancel}
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-black/50" onClick={onCancel} aria-hidden="true" />
 
       {/* Dialog */}
       <div
@@ -278,12 +271,12 @@ export function GroupMentionConfirmDialog({
         aria-modal="true"
         aria-labelledby="group-mention-title"
         aria-describedby="group-mention-description"
-        className="relative bg-background rounded-lg shadow-lg max-w-md w-full mx-4 p-6"
+        className="relative mx-4 w-full max-w-md rounded-lg bg-background p-6 shadow-lg"
       >
         {/* Icon */}
         <div
           className={cn(
-            'w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-4',
+            'mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full',
             getSeverityColor()
           )}
         >
@@ -291,21 +284,18 @@ export function GroupMentionConfirmDialog({
         </div>
 
         {/* Title */}
-        <h2
-          id="group-mention-title"
-          className="text-lg font-semibold text-center mb-2"
-        >
+        <h2 id="group-mention-title" className="mb-2 text-center text-lg font-semibold">
           Send {info.label} mention?
         </h2>
 
         {/* Description */}
         <p
           id="group-mention-description"
-          className="text-sm text-muted-foreground text-center mb-4"
+          className="mb-4 text-center text-sm text-muted-foreground"
         >
           {info.warningMessage}
           {memberCount !== undefined && (
-            <span className="block mt-1 font-medium">
+            <span className="mt-1 block font-medium">
               This will notify{' '}
               <span className="text-foreground">
                 {memberCount} {memberCount === 1 ? 'person' : 'people'}
@@ -317,7 +307,7 @@ export function GroupMentionConfirmDialog({
 
         {/* Warning for @everyone */}
         {type === 'everyone' && (
-          <div className="flex items-start gap-2 p-3 mb-4 rounded-md bg-destructive/10 text-destructive text-sm">
+          <div className="bg-destructive/10 mb-4 flex items-start gap-2 rounded-md p-3 text-sm text-destructive">
             <svg
               className="h-5 w-5 shrink-0"
               viewBox="0 0 24 24"
@@ -330,19 +320,15 @@ export function GroupMentionConfirmDialog({
               <line x1="12" y1="17" x2="12.01" y2="17" />
             </svg>
             <span>
-              @everyone notifications should be used sparingly. Consider using
-              @channel or @here instead.
+              @everyone notifications should be used sparingly. Consider using @channel or @here
+              instead.
             </span>
           </div>
         )}
 
         {/* Actions */}
         <div className="flex gap-3">
-          <Button
-            variant="outline"
-            className="flex-1"
-            onClick={onCancel}
-          >
+          <Button variant="outline" className="flex-1" onClick={onCancel}>
             Cancel
           </Button>
           <Button
@@ -385,8 +371,8 @@ export function GroupMentionBadge({ type, className }: GroupMentionBadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full',
-        'text-xs font-medium border',
+        'inline-flex items-center gap-1 rounded-full px-2 py-0.5',
+        'border text-xs font-medium',
         getBadgeColor(),
         className
       )}
@@ -449,13 +435,8 @@ export function GroupMentionIndicator({
   const label = getTargetLabel()
 
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2 text-sm text-muted-foreground',
-        className
-      )}
-    >
-      <span className="[&>svg]:h-4 [&>svg]:w-4 text-amber-500">{info.icon}</span>
+    <div className={cn('flex items-center gap-2 text-sm text-muted-foreground', className)}>
+      <span className="text-amber-500 [&>svg]:h-4 [&>svg]:w-4">{info.icon}</span>
       <span>
         {info.label} will notify{' '}
         {count !== undefined ? (
@@ -504,23 +485,17 @@ export function useGroupMentionDetection({
 
     // Get unique mention types
     const types = Array.from(
-      new Set(
-        matches.map((match) => getMentionType(match.replace('@', '')) as MentionType)
-      )
+      new Set(matches.map((match) => getMentionType(match.replace('@', '')) as MentionType))
     ).filter((type) => isSpecialMention(type))
 
     const hasGroupMention = types.length > 0
 
     // Check if all mentions are permitted
-    const canSend = isLoading
-      ? false
-      : types.every((type) => canUseGroupMention(type))
+    const canSend = isLoading ? false : types.every((type) => canUseGroupMention(type))
 
     // Determine if confirmation is needed (for @channel or @everyone)
     const needsConfirmation =
-      hasGroupMention &&
-      canSend &&
-      types.some((type) => type === 'channel' || type === 'everyone')
+      hasGroupMention && canSend && types.some((type) => type === 'channel' || type === 'everyone')
 
     return {
       hasGroupMention,
@@ -552,8 +527,8 @@ export function GroupMentionPermissionDenied({
   return (
     <div
       className={cn(
-        'flex items-start gap-2 p-3 rounded-md',
-        'bg-destructive/10 text-destructive text-sm',
+        'flex items-start gap-2 rounded-md p-3',
+        'bg-destructive/10 text-sm text-destructive',
         className
       )}
     >
@@ -570,8 +545,8 @@ export function GroupMentionPermissionDenied({
       <div>
         <p className="font-medium">Cannot use {info.label}</p>
         <p className="text-destructive/80">
-          You don't have permission to use {info.label} mentions in this
-          channel. Contact a channel admin if you need this permission.
+          You don't have permission to use {info.label} mentions in this channel. Contact a channel
+          admin if you need this permission.
         </p>
       </div>
     </div>

@@ -3,6 +3,7 @@
 This document provides a complete reference of all features configurable through the nChat setup wizard. This serves as the source of truth to prevent hallucinations about feature availability.
 
 ## Table of Contents
+
 - [Core Configuration](#core-configuration)
 - [Authentication Providers](#authentication-providers)
 - [Authentication Permissions](#authentication-permissions)
@@ -17,12 +18,14 @@ This document provides a complete reference of all features configurable through
 ## Core Configuration
 
 ### Owner Information
+
 - **name**: Owner's full name
 - **email**: Owner's email address (used for automatic owner role assignment)
 - **company**: Company/organization name (optional)
 - **role**: Owner's role/title (optional)
 
 ### Branding
+
 - **appName**: Application name (e.g., "nChat")
 - **tagline**: Application tagline (optional)
 - **logo**: Logo image URL (optional)
@@ -32,6 +35,7 @@ This document provides a complete reference of all features configurable through
 - **logoScale**: Logo display scale factor (0.5 to 2.0, default 1.0)
 
 ### Homepage Configuration
+
 - **mode**: Homepage behavior
   - `landing`: Show landing page
   - `redirect`: Redirect to specific route
@@ -52,10 +56,12 @@ This document provides a complete reference of all features configurable through
 ## Authentication Providers
 
 ### Basic Authentication
+
 - **emailPassword**: Traditional email/password authentication
 - **magicLinks**: Passwordless authentication via email links
 
 ### Social Authentication
+
 - **google**: Google OAuth
 - **facebook**: Facebook OAuth
 - **twitter**: Twitter/X OAuth
@@ -64,6 +70,7 @@ This document provides a complete reference of all features configurable through
 - **slack**: Slack OAuth
 
 ### Special Authentication
+
 - **idme**: ID.me verification with options for:
   - `allowMilitary`: Military personnel verification
   - `allowPolice`: Law enforcement verification
@@ -74,6 +81,7 @@ This document provides a complete reference of all features configurable through
 ## Authentication Permissions
 
 ### Access Modes
+
 - **allow-all**: Open registration for everyone
 - **verified-only**: Require email verification
 - **idme-roles**: Restrict to specific ID.me verified roles
@@ -81,6 +89,7 @@ This document provides a complete reference of all features configurable through
 - **admin-only**: Manual approval required for all users
 
 ### Permission Settings
+
 - **requireEmailVerification**: Require email verification
 - **allowedDomains**: List of allowed email domains
 - **allowedIdMeRoles**: Allowed ID.me roles (military, police, first-responder, government)
@@ -92,6 +101,7 @@ This document provides a complete reference of all features configurable through
 ## Messaging Features
 
 ### Core Messaging (`features` object)
+
 - **publicChannels**: Open channels visible to all members
 - **privateChannels**: Invite-only channels for teams
 - **directMessages**: 1-on-1 private conversations
@@ -101,6 +111,7 @@ This document provides a complete reference of all features configurable through
 - **videoConferencing**: Video calling support (defined in AppConfig)
 
 ### Extended Messaging (from features-step.tsx)
+
 - **groupMessages**: Private group conversations
 - **messageEditing**: Edit messages after sending
 - **messageDeleting**: Remove sent messages
@@ -109,11 +120,13 @@ This document provides a complete reference of all features configurable through
 ## Content & Media Features
 
 ### Core Media Features
+
 - **fileUploads**: Share documents and images
 - **reactions**: React to messages with emojis
 - **customEmojis**: Upload custom workspace emojis
 
 ### Extended Media Features (from features-step.tsx)
+
 - **imagePreview**: View images inline in chat
 - **linkPreviews**: Rich previews for shared links
 - **socialEmbeds**: Play videos from YouTube, Instagram, TikTok inline
@@ -124,10 +137,12 @@ This document provides a complete reference of all features configurable through
 ## Organization Features
 
 ### Core Organization
+
 - **search**: Search messages and files
 - **channelCategories**: Organize channels into categories (defined in AppConfig)
 
 ### Extended Organization (from features-step.tsx)
+
 - **mentions**: Tag users in messages with @mentions
 - **notifications**: Desktop and mobile notifications
 - **unreadIndicators**: Track unread messages
@@ -138,10 +153,12 @@ This document provides a complete reference of all features configurable through
 ## User Management Features
 
 ### Core User Management
+
 - **guestAccess**: Allow limited guest access
 - **inviteLinks**: Share links to join workspace
 
 ### Extended User Management (from features-step.tsx)
+
 - **userProfiles**: Profile pictures and bios
 - **userDirectory**: Browse all workspace members
 - **roles**: Admin, moderator, member roles
@@ -150,6 +167,7 @@ This document provides a complete reference of all features configurable through
 ## Integration Features
 
 ### Platform Integrations (defined in AppConfig)
+
 - **slack**:
   - `enabled`: Enable Slack integration
   - `importChannels`: Import channels from Slack
@@ -166,6 +184,7 @@ This document provides a complete reference of all features configurable through
   - `fileSharing`: Share files from Drive
 
 ### Developer Integrations (from features-step.tsx)
+
 - **webhooks**: Send notifications from external apps
 - **slashCommands**: Quick actions with / commands
 - **bots**: Add bots for automation
@@ -174,6 +193,7 @@ This document provides a complete reference of all features configurable through
 ## Administration Features
 
 ### Moderation & Safety (defined in AppConfig)
+
 - **autoModeration**: Automatic content moderation
 - **profanityFilter**: Filter inappropriate language
 - **spamDetection**: Detect and block spam
@@ -181,6 +201,7 @@ This document provides a complete reference of all features configurable through
 - **userBlocking**: Users can block each other
 
 ### Admin Tools (from features-step.tsx)
+
 - **moderation**: Delete inappropriate content
 - **userBanning**: Remove and block users
 - **exportData**: Download workspace data
@@ -190,6 +211,7 @@ This document provides a complete reference of all features configurable through
 ## Theme & Branding
 
 ### Theme Configuration
+
 - **preset**: Pre-defined theme presets
   - `nself`: Default nself theme
   - `slack`: Slack-like appearance
@@ -201,6 +223,7 @@ This document provides a complete reference of all features configurable through
   - `custom`: Custom theme
 
 ### Color Settings
+
 - **primaryColor**: Main brand color
 - **secondaryColor**: Secondary brand color
 - **accentColor**: Accent/highlight color
@@ -215,15 +238,18 @@ This document provides a complete reference of all features configurable through
 - **infoColor**: Information state color
 
 ### Typography
+
 - **fontFamily**: Font family selection
 - **fontSize**: Base font size
 - **fontWeight**: Default font weight
 
 ### Layout
+
 - **borderRadius**: Corner radius for UI elements
 - **spacing**: Spacing scale
 
 ### Landing Themes
+
 - **login-only**: Simple login page only
 - **simple-landing**: Basic landing page
 - **full-homepage**: Complete marketing site
@@ -247,6 +273,7 @@ This document provides a complete reference of all features configurable through
 ✅ **Fully Implemented (100+ Features)**:
 
 **Messaging (14 features)**
+
 - Channels (public, private, direct)
 - Message sending/receiving (real-time)
 - Message editing and deletion
@@ -263,6 +290,7 @@ This document provides a complete reference of all features configurable through
 - Message forwarding
 
 **Real-Time Features (8 features)**
+
 - Typing indicators
 - Read receipts
 - Online presence tracking
@@ -273,6 +301,7 @@ This document provides a complete reference of all features configurable through
 - Presence sync
 
 **Media & Files (10 features)**
+
 - File uploads (drag-drop, paste)
 - Image previews and gallery
 - Video playback
@@ -285,6 +314,7 @@ This document provides a complete reference of all features configurable through
 - Screen recording
 
 **Voice & Video (10 features)**
+
 - Voice calls (1-on-1 and group)
 - Video calls (1-on-1 and group)
 - Screen sharing
@@ -297,6 +327,7 @@ This document provides a complete reference of all features configurable through
 - Bandwidth optimization
 
 **Search & Discovery (7 features)**
+
 - Message search with filters
 - File search
 - User search
@@ -306,6 +337,7 @@ This document provides a complete reference of all features configurable through
 - Advanced filters (date, user, channel)
 
 **User Management (8 features)**
+
 - User profiles with avatars
 - User directory
 - Role-based access control (5 roles)
@@ -316,6 +348,7 @@ This document provides a complete reference of all features configurable through
 - Session management
 
 **Notifications (8 features)**
+
 - Desktop notifications
 - Sound alerts
 - Email notifications
@@ -326,6 +359,7 @@ This document provides a complete reference of all features configurable through
 - Unread count badges
 
 **Bots & Automation (8 features)**
+
 - Bot SDK framework
 - Slash commands
 - Webhooks (incoming/outgoing)
@@ -336,6 +370,7 @@ This document provides a complete reference of all features configurable through
 - Rate limiting
 
 **Internationalization (6 features)**
+
 - 6 language support
 - RTL support (Arabic)
 - Locale detection
@@ -344,6 +379,7 @@ This document provides a complete reference of all features configurable through
 - Message translation
 
 **Payments & Crypto (6 features)**
+
 - Stripe integration
 - Subscription management
 - Crypto wallet support (MetaMask, WalletConnect)
@@ -352,6 +388,7 @@ This document provides a complete reference of all features configurable through
 - Transaction history
 
 **Offline Mode (5 features)**
+
 - Service worker caching
 - Background sync
 - Offline queue
@@ -359,6 +396,7 @@ This document provides a complete reference of all features configurable through
 - Network detection
 
 **Security & Privacy (10 features)**
+
 - End-to-end encryption (DMs)
 - Two-factor authentication
 - Audit logging
@@ -371,6 +409,7 @@ This document provides a complete reference of all features configurable through
 - Auto-moderation
 
 **Administration (12 features)**
+
 - Admin dashboard
 - User management UI
 - Analytics with charts
@@ -385,6 +424,7 @@ This document provides a complete reference of all features configurable through
 - Error tracking
 
 **Accessibility (10 features)**
+
 - WCAG 2.1 AA compliance
 - Screen reader support
 - Keyboard navigation
@@ -397,6 +437,7 @@ This document provides a complete reference of all features configurable through
 - Skip links
 
 **Platform Support (7 features)**
+
 - Web (Next.js 15)
 - Desktop (Tauri)
 - Desktop (Electron)
@@ -406,6 +447,7 @@ This document provides a complete reference of all features configurable through
 - Docker/Kubernetes deployment
 
 **Developer Tools (8 features)**
+
 - GraphQL playground
 - API documentation
 - Webhook testing
@@ -418,6 +460,7 @@ This document provides a complete reference of all features configurable through
 ### Testing Coverage
 
 ✅ **Complete Test Suite (860+ tests)**:
+
 - 479 E2E tests (Playwright)
 - 381 integration tests
 - Unit tests for all hooks

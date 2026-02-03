@@ -9,6 +9,8 @@
 
 import { captureError, addSentryBreadcrumb } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -210,9 +212,7 @@ export class AnthropicClient {
   // Streaming Messages
   // ============================================================================
 
-  async *createMessageStream(
-    request: MessageRequest
-  ): AsyncGenerator<StreamEvent, void, unknown> {
+  async *createMessageStream(request: MessageRequest): AsyncGenerator<StreamEvent, void, unknown> {
     if (!this.config.enableStreaming) {
       throw new Error('Streaming is disabled in configuration')
     }
@@ -271,7 +271,7 @@ export class AnthropicClient {
                 return
               }
             } catch (error) {
-              console.error('Error parsing stream event:', error)
+              logger.error('Error parsing stream event:', error)
             }
           }
         }
@@ -324,11 +324,7 @@ export class AnthropicClient {
   // HTTP Request Methods
   // ============================================================================
 
-  private async makeRequest<T>(
-    endpoint: string,
-    body: any,
-    requestId: string
-  ): Promise<T> {
+  private async makeRequest<T>(endpoint: string, body: any, requestId: string): Promise<T> {
     const url = `${this.config.baseURL}${endpoint}`
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout)
@@ -487,12 +483,7 @@ export class AnthropicClient {
           error.data
         )
       default:
-        return new AnthropicError(
-          AnthropicErrorType.UNKNOWN,
-          errorMessage,
-          status,
-          error.data
-        )
+        return new AnthropicError(AnthropicErrorType.UNKNOWN, errorMessage, status, error.data)
     }
   }
 
@@ -540,9 +531,7 @@ export class AnthropicClient {
   /**
    * Helper to convert messages to Anthropic format
    */
-  static convertMessages(
-    messages: { role: string; content: string }[]
-  ): AnthropicMessage[] {
+  static convertMessages(messages: { role: string; content: string }[]): AnthropicMessage[] {
     return messages
       .filter((m) => m.role !== 'system')
       .map((m) => ({
@@ -554,9 +543,7 @@ export class AnthropicClient {
   /**
    * Helper to extract system message
    */
-  static extractSystemMessage(
-    messages: { role: string; content: string }[]
-  ): string | undefined {
+  static extractSystemMessage(messages: { role: string; content: string }[]): string | undefined {
     const systemMessage = messages.find((m) => m.role === 'system')
     return systemMessage?.content
   }

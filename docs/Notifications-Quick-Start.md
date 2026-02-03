@@ -17,7 +17,7 @@
 Add the notification bell to your header/navbar:
 
 ```tsx
-import { NotificationBell } from '@/components/notifications/notification-bell';
+import { NotificationBell } from '@/components/notifications/notification-bell'
 
 export function Header() {
   return (
@@ -25,7 +25,7 @@ export function Header() {
       {/* Your other header content */}
       <NotificationBell onClick={() => console.log('Bell clicked')} />
     </header>
-  );
+  )
 }
 ```
 
@@ -34,12 +34,12 @@ export function Header() {
 Show the inbox when the bell is clicked:
 
 ```tsx
-import { useState } from 'react';
-import { NotificationBell } from '@/components/notifications/notification-bell';
-import { NotificationCenter } from '@/components/notifications/notification-center';
+import { useState } from 'react'
+import { NotificationBell } from '@/components/notifications/notification-bell'
+import { NotificationCenter } from '@/components/notifications/notification-center'
 
 export function Header() {
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false)
 
   return (
     <header>
@@ -53,7 +53,7 @@ export function Header() {
         />
       )}
     </header>
-  );
+  )
 }
 ```
 
@@ -62,10 +62,10 @@ export function Header() {
 Create notifications programmatically:
 
 ```tsx
-import { useNotificationStore } from '@/stores/notification-store';
+import { useNotificationStore } from '@/stores/notification-store'
 
 function MyComponent() {
-  const addNotification = useNotificationStore((state) => state.addNotification);
+  const addNotification = useNotificationStore((state) => state.addNotification)
 
   const sendNotification = () => {
     addNotification({
@@ -85,10 +85,10 @@ function MyComponent() {
       isArchived: false,
       createdAt: new Date().toISOString(),
       actionUrl: '/chat/channel-123',
-    });
-  };
+    })
+  }
 
-  return <button onClick={sendNotification}>Send Test Notification</button>;
+  return <button onClick={sendNotification}>Send Test Notification</button>
 }
 ```
 
@@ -99,34 +99,34 @@ function MyComponent() {
 ### Enable Desktop Notifications
 
 ```tsx
-import { useNotifications } from '@/hooks/use-notifications';
+import { useNotifications } from '@/hooks/use-notifications'
 
 function NotificationSettings() {
-  const { requestDesktopPermission, desktopPermission } = useNotifications();
+  const { requestDesktopPermission, desktopPermission } = useNotifications()
 
   return (
     <button onClick={requestDesktopPermission}>
       {desktopPermission === 'granted' ? 'Enabled' : 'Enable Desktop Notifications'}
     </button>
-  );
+  )
 }
 ```
 
 ### Play Notification Sound
 
 ```tsx
-import { playNotificationSound } from '@/lib/notifications/notification-sounds';
+import { playNotificationSound } from '@/lib/notifications/notification-sounds'
 
-playNotificationSound('mention', 80); // soundId, volume (0-100)
+playNotificationSound('mention', 80) // soundId, volume (0-100)
 ```
 
 ### Set Quiet Hours
 
 ```tsx
-import { useNotificationStore } from '@/stores/notification-store';
+import { useNotificationStore } from '@/stores/notification-store'
 
 function QuietHoursSettings() {
-  const updatePreferences = useNotificationStore((state) => state.updatePreferences);
+  const updatePreferences = useNotificationStore((state) => state.updatePreferences)
 
   const enableDND = () => {
     updatePreferences({
@@ -137,22 +137,22 @@ function QuietHoursSettings() {
         days: [0, 1, 2, 3, 4, 5, 6], // All days
         allowMentionsBreakthrough: true,
       },
-    });
-  };
+    })
+  }
 
-  return <button onClick={enableDND}>Enable Quiet Hours</button>;
+  return <button onClick={enableDND}>Enable Quiet Hours</button>
 }
 ```
 
 ### Create Keyword Alert
 
 ```tsx
-import { createKeyword } from '@/lib/notifications/keyword-matcher';
-import { useNotificationStore } from '@/stores/notification-store';
+import { createKeyword } from '@/lib/notifications/keyword-matcher'
+import { useNotificationStore } from '@/stores/notification-store'
 
 function KeywordSettings() {
-  const updatePreferences = useNotificationStore((state) => state.updatePreferences);
-  const preferences = useNotificationStore((state) => state.preferences);
+  const updatePreferences = useNotificationStore((state) => state.updatePreferences)
+  const preferences = useNotificationStore((state) => state.preferences)
 
   const addKeyword = () => {
     const keyword = createKeyword('deployment', {
@@ -161,33 +161,33 @@ function KeywordSettings() {
       enabled: true,
       highlightColor: '#ef4444',
       soundId: 'alert',
-    });
+    })
 
     updatePreferences({
       keywords: [...preferences.keywords, keyword],
-    });
-  };
+    })
+  }
 
-  return <button onClick={addKeyword}>Add Keyword Alert</button>;
+  return <button onClick={addKeyword}>Add Keyword Alert</button>
 }
 ```
 
 ### Mute a Channel
 
 ```tsx
-import { useNotificationStore } from '@/stores/notification-store';
+import { useNotificationStore } from '@/stores/notification-store'
 
 function ChannelActions({ channelId }: { channelId: string }) {
-  const muteChannel = useNotificationStore((state) => state.muteChannel);
+  const muteChannel = useNotificationStore((state) => state.muteChannel)
 
   // Mute for 1 hour
   const handleMute = () => {
-    const until = new Date();
-    until.setHours(until.getHours() + 1);
-    muteChannel(channelId, until.toISOString());
-  };
+    const until = new Date()
+    until.setHours(until.getHours() + 1)
+    muteChannel(channelId, until.toISOString())
+  }
 
-  return <button onClick={handleMute}>Mute for 1 hour</button>;
+  return <button onClick={handleMute}>Mute for 1 hour</button>
 }
 ```
 
@@ -198,7 +198,7 @@ function ChannelActions({ channelId }: { channelId: string }) {
 ### Add Test Button (Development)
 
 ```tsx
-import { TestNotificationButton } from '@/components/notifications/test-notification-button';
+import { TestNotificationButton } from '@/components/notifications/test-notification-button'
 
 export function DevTools() {
   return (
@@ -206,13 +206,14 @@ export function DevTools() {
       <h3>Testing Tools</h3>
       <TestNotificationButton variant="outline" />
     </div>
-  );
+  )
 }
 ```
 
 ### Access Test Templates
 
 The test button includes 11 pre-built notification templates:
+
 - Mention (Normal, Urgent)
 - Direct Message (Normal, High)
 - Thread Reply
@@ -229,7 +230,7 @@ The test button includes 11 pre-built notification templates:
 ### Add Full Settings UI
 
 ```tsx
-import { NotificationSettings } from '@/components/notifications/NotificationSettings';
+import { NotificationSettings } from '@/components/notifications/NotificationSettings'
 
 export function SettingsPage() {
   return (
@@ -237,11 +238,12 @@ export function SettingsPage() {
       <h1>Notification Settings</h1>
       <NotificationSettings />
     </div>
-  );
+  )
 }
 ```
 
 Settings include:
+
 - Global enable/disable
 - Desktop notifications
 - Mobile push
@@ -260,15 +262,13 @@ Settings include:
 
 ```tsx
 async function fetchNotifications(userId: string) {
-  const response = await fetch(
-    `/api/notifications?userId=${userId}&limit=20&filter=all`
-  );
+  const response = await fetch(`/api/notifications?userId=${userId}&limit=20&filter=all`)
 
-  const data = await response.json();
+  const data = await response.json()
 
   if (data.success) {
-    console.log('Notifications:', data.data.notifications);
-    console.log('Unread count:', data.data.unreadCount);
+    console.log('Notifications:', data.data.notifications)
+    console.log('Unread count:', data.data.unreadCount)
   }
 }
 ```
@@ -284,12 +284,12 @@ async function createNotification(notification: any) {
       Authorization: `Bearer ${authToken}`,
     },
     body: JSON.stringify(notification),
-  });
+  })
 
-  const data = await response.json();
+  const data = await response.json()
 
   if (data.success) {
-    console.log('Created:', data.data);
+    console.log('Created:', data.data)
   }
 }
 ```
@@ -305,10 +305,10 @@ async function markAsRead(notificationIds: string[]) {
       notificationIds,
       isRead: true,
     }),
-  });
+  })
 
-  const data = await response.json();
-  console.log(`Marked ${data.data.affectedRows} as read`);
+  const data = await response.json()
+  console.log(`Marked ${data.data.affectedRows} as read`)
 }
 ```
 
@@ -319,8 +319,8 @@ async function markAsRead(notificationIds: string[]) {
 ### Subscribe to New Notifications (GraphQL)
 
 ```tsx
-import { useSubscription } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { useSubscription } from '@apollo/client'
+import { gql } from '@apollo/client'
 
 const NOTIFICATION_SUBSCRIPTION = gql`
   subscription OnNewNotification($userId: uuid!) {
@@ -336,20 +336,20 @@ const NOTIFICATION_SUBSCRIPTION = gql`
       created_at
     }
   }
-`;
+`
 
 function NotificationListener({ userId }: { userId: string }) {
   const { data } = useSubscription(NOTIFICATION_SUBSCRIPTION, {
     variables: { userId },
-  });
+  })
 
   // Handle new notification
   if (data) {
-    const notification = data.nchat_notifications[0];
-    console.log('New notification:', notification);
+    const notification = data.nchat_notifications[0]
+    console.log('New notification:', notification)
   }
 
-  return null;
+  return null
 }
 ```
 
@@ -360,15 +360,15 @@ function NotificationListener({ userId }: { userId: string }) {
 ### Play Different Sounds
 
 ```tsx
-import { playNotificationSound, NOTIFICATION_SOUNDS } from '@/lib/notifications/notification-sounds';
+import { playNotificationSound, NOTIFICATION_SOUNDS } from '@/lib/notifications/notification-sounds'
 
 // Play built-in sounds
-playNotificationSound('mention', 80);
-playNotificationSound('dm', 70);
-playNotificationSound('alert', 90);
+playNotificationSound('mention', 80)
+playNotificationSound('dm', 70)
+playNotificationSound('alert', 90)
 
 // List available sounds
-console.log(NOTIFICATION_SOUNDS);
+console.log(NOTIFICATION_SOUNDS)
 // [
 //   { id: 'mention', name: 'Mention', url: '/sounds/mention.mp3', ... },
 //   { id: 'dm', name: 'Direct Message', url: '/sounds/dm.mp3', ... },
@@ -379,18 +379,18 @@ console.log(NOTIFICATION_SOUNDS);
 ### Upload Custom Sound
 
 ```tsx
-import { uploadCustomSound } from '@/lib/notifications/sounds';
+import { uploadCustomSound } from '@/lib/notifications/sounds'
 
 async function handleSoundUpload(file: File) {
   const sound = await uploadCustomSound({
     name: 'My Custom Sound',
     file: file,
-  });
+  })
 
   if (sound) {
-    console.log('Uploaded:', sound.id);
+    console.log('Uploaded:', sound.id)
     // Use the sound
-    playNotificationSound(sound.id, 80);
+    playNotificationSound(sound.id, 80)
   }
 }
 ```
@@ -398,7 +398,7 @@ async function handleSoundUpload(file: File) {
 ### Create Sound Profile
 
 ```tsx
-import { createSoundProfile, setActiveProfile } from '@/lib/notifications/sounds';
+import { createSoundProfile, setActiveProfile } from '@/lib/notifications/sounds'
 
 // Create custom sound theme
 const profile = createSoundProfile(
@@ -414,10 +414,10 @@ const profile = createSoundProfile(
     description: 'My custom sound theme',
     volume: 70,
   }
-);
+)
 
 // Activate the profile
-setActiveProfile(profile.id);
+setActiveProfile(profile.id)
 ```
 
 ---
@@ -427,46 +427,46 @@ setActiveProfile(profile.id);
 ### Check if in Quiet Hours
 
 ```tsx
-import { isInQuietHours } from '@/lib/notifications/quiet-hours';
-import { useNotificationStore } from '@/stores/notification-store';
+import { isInQuietHours } from '@/lib/notifications/quiet-hours'
+import { useNotificationStore } from '@/stores/notification-store'
 
 function shouldShowNotification() {
-  const preferences = useNotificationStore((state) => state.preferences);
-  return !isInQuietHours(preferences.dndSchedule);
+  const preferences = useNotificationStore((state) => state.preferences)
+  return !isInQuietHours(preferences.dndSchedule)
 }
 ```
 
 ### Get Unread Count
 
 ```tsx
-import { useNotificationStore } from '@/stores/notification-store';
+import { useNotificationStore } from '@/stores/notification-store'
 
 function UnreadBadge() {
-  const unreadCount = useNotificationStore((state) => state.unreadCounts.total);
+  const unreadCount = useNotificationStore((state) => state.unreadCounts.total)
 
-  if (unreadCount === 0) return null;
+  if (unreadCount === 0) return null
 
-  return <span>{unreadCount}</span>;
+  return <span>{unreadCount}</span>
 }
 ```
 
 ### Filter Notifications
 
 ```tsx
-import { useNotificationStore } from '@/stores/notification-store';
+import { useNotificationStore } from '@/stores/notification-store'
 
 function MentionsList() {
   const notifications = useNotificationStore((state) =>
-    state.notifications.filter(n => n.type === 'mention' && !n.isRead)
-  );
+    state.notifications.filter((n) => n.type === 'mention' && !n.isRead)
+  )
 
   return (
     <div>
-      {notifications.map(notification => (
+      {notifications.map((notification) => (
         <div key={notification.id}>{notification.title}</div>
       ))}
     </div>
-  );
+  )
 }
 ```
 
@@ -478,26 +478,26 @@ function MentionsList() {
 
 ```typescript
 interface Notification {
-  id: string;
-  type: NotificationType;
-  priority: NotificationPriority;
-  title: string;
-  body: string;
+  id: string
+  type: NotificationType
+  priority: NotificationPriority
+  title: string
+  body: string
   actor?: {
-    id: string;
-    name: string;
-    avatarUrl?: string;
-  };
-  channelId?: string;
-  channelName?: string;
-  messageId?: string;
-  threadId?: string;
-  isRead: boolean;
-  isArchived: boolean;
-  createdAt: string;
-  readAt?: string;
-  actionUrl?: string;
-  metadata?: Record<string, unknown>;
+    id: string
+    name: string
+    avatarUrl?: string
+  }
+  channelId?: string
+  channelName?: string
+  messageId?: string
+  threadId?: string
+  isRead: boolean
+  isArchived: boolean
+  createdAt: string
+  readAt?: string
+  actionUrl?: string
+  metadata?: Record<string, unknown>
 }
 ```
 
@@ -513,9 +513,9 @@ type NotificationType =
   | 'channel_update'
   | 'system'
   | 'announcement'
-  | 'keyword';
+  | 'keyword'
 
-type NotificationPriority = 'low' | 'normal' | 'high' | 'urgent';
+type NotificationPriority = 'low' | 'normal' | 'high' | 'urgent'
 ```
 
 ---
@@ -525,44 +525,40 @@ type NotificationPriority = 'low' | 'normal' | 'high' | 'urgent';
 ### Show Toast on New Notification
 
 ```tsx
-import { useEffect } from 'react';
-import { useNotificationStore } from '@/stores/notification-store';
-import { toast } from '@/hooks/use-toast';
+import { useEffect } from 'react'
+import { useNotificationStore } from '@/stores/notification-store'
+import { toast } from '@/hooks/use-toast'
 
 function NotificationToast() {
-  const notifications = useNotificationStore((state) => state.notifications);
+  const notifications = useNotificationStore((state) => state.notifications)
 
   useEffect(() => {
-    const latest = notifications[0];
+    const latest = notifications[0]
     if (latest && !latest.isRead) {
       toast({
         title: latest.title,
         description: latest.body,
-      });
+      })
     }
-  }, [notifications]);
+  }, [notifications])
 
-  return null;
+  return null
 }
 ```
 
 ### Badge Component
 
 ```tsx
-import { useNotificationStore } from '@/stores/notification-store';
+import { useNotificationStore } from '@/stores/notification-store'
 
 function ChannelBadge({ channelId }: { channelId: string }) {
   const unread = useNotificationStore(
     (state) => state.unreadCounts.byChannel[channelId]?.unread || 0
-  );
+  )
 
-  if (unread === 0) return null;
+  if (unread === 0) return null
 
-  return (
-    <span className="badge">
-      {unread > 99 ? '99+' : unread}
-    </span>
-  );
+  return <span className="badge">{unread > 99 ? '99+' : unread}</span>
 }
 ```
 
@@ -574,17 +570,17 @@ function ChannelBadge({ channelId }: { channelId: string }) {
 
 ```tsx
 // 1. Check permission
-const permission = Notification.permission;
-console.log('Permission:', permission);
+const permission = Notification.permission
+console.log('Permission:', permission)
 
 // 2. Request permission
 if (permission === 'default') {
-  await Notification.requestPermission();
+  await Notification.requestPermission()
 }
 
 // 3. Check browser support
 if (!('Notification' in window)) {
-  console.error('Browser does not support notifications');
+  console.error('Browser does not support notifications')
 }
 ```
 
@@ -592,14 +588,14 @@ if (!('Notification' in window)) {
 
 ```tsx
 // 1. Check volume
-const preferences = useNotificationStore.getState().preferences;
-console.log('Volume:', preferences.soundVolume);
+const preferences = useNotificationStore.getState().preferences
+console.log('Volume:', preferences.soundVolume)
 
 // 2. Check if enabled
-console.log('Sound enabled:', preferences.soundEnabled);
+console.log('Sound enabled:', preferences.soundEnabled)
 
 // 3. Test sound manually
-playNotificationSound('mention', 80);
+playNotificationSound('mention', 80)
 ```
 
 ---

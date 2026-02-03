@@ -217,7 +217,9 @@ function getSeverityColor(severity: AuditEventSeverity): string {
   }
 }
 
-function getSeverityBadgeVariant(severity: AuditEventSeverity): 'default' | 'secondary' | 'destructive' | 'outline' {
+function getSeverityBadgeVariant(
+  severity: AuditEventSeverity
+): 'default' | 'secondary' | 'destructive' | 'outline' {
   switch (severity) {
     case 'info':
       return 'default'
@@ -336,7 +338,7 @@ export function EnhancedAuditLog() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-3xl font-bold">
             <FileText className="h-8 w-8" />
             Audit Log
           </h1>
@@ -346,15 +348,15 @@ export function EnhancedAuditLog() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleRefresh} disabled={isLoading}>
-            <RefreshCw className={cn('h-4 w-4 mr-2', isLoading && 'animate-spin')} />
+            <RefreshCw className={cn('mr-2 h-4 w-4', isLoading && 'animate-spin')} />
             Refresh
           </Button>
           <Button variant="outline" onClick={handleExportCSV}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
           <Button variant="outline" onClick={handleExportJSON}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export JSON
           </Button>
         </div>
@@ -406,7 +408,10 @@ export function EnhancedAuditLog() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">
-              {filteredEvents.filter((e) => e.severity === 'error' || e.severity === 'critical').length}
+              {
+                filteredEvents.filter((e) => e.severity === 'error' || e.severity === 'critical')
+                  .length
+              }
             </div>
             <p className="text-xs text-muted-foreground">Error events</p>
           </CardContent>
@@ -562,8 +567,8 @@ export function EnhancedAuditLog() {
         </Table>
 
         {filteredEvents.length === 0 && (
-          <div className="text-center py-12">
-            <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <div className="py-12 text-center">
+            <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
             <p className="text-lg font-medium">No events found</p>
             <p className="text-sm text-muted-foreground">
               Try adjusting your filters or search query
@@ -606,63 +611,68 @@ function EventDetailsDialog({ event, open, onClose }: EventDetailsDialogProps) {
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Event Details</DialogTitle>
-          <DialogDescription>
-            {event.timestamp.toLocaleString()}
-          </DialogDescription>
+          <DialogDescription>{event.timestamp.toLocaleString()}</DialogDescription>
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <h4 className="text-sm font-medium mb-2">Event Type</h4>
+              <h4 className="mb-2 text-sm font-medium">Event Type</h4>
               <Badge variant="outline">{event.type}</Badge>
             </div>
             <div>
-              <h4 className="text-sm font-medium mb-2">Severity</h4>
+              <h4 className="mb-2 text-sm font-medium">Severity</h4>
               <Badge variant={getSeverityBadgeVariant(event.severity)}>{event.severity}</Badge>
             </div>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Description</h4>
+            <h4 className="mb-2 text-sm font-medium">Description</h4>
             <p className="text-sm text-muted-foreground">{event.description}</p>
           </div>
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Actor</h4>
+            <h4 className="mb-2 text-sm font-medium">Actor</h4>
             <div className="text-sm">
               <p className="font-medium">{event.actor.displayName}</p>
               <p className="text-muted-foreground">@{event.actor.username}</p>
-              {event.actor.email && (
-                <p className="text-muted-foreground">{event.actor.email}</p>
-              )}
+              {event.actor.email && <p className="text-muted-foreground">{event.actor.email}</p>}
             </div>
           </div>
 
           {event.target && (
             <div>
-              <h4 className="text-sm font-medium mb-2">Target</h4>
+              <h4 className="mb-2 text-sm font-medium">Target</h4>
               <div className="text-sm">
-                <p><span className="text-muted-foreground">Type:</span> {event.target.type}</p>
-                <p><span className="text-muted-foreground">Name:</span> {event.target.name}</p>
-                <p><span className="text-muted-foreground">ID:</span> {event.target.id}</p>
+                <p>
+                  <span className="text-muted-foreground">Type:</span> {event.target.type}
+                </p>
+                <p>
+                  <span className="text-muted-foreground">Name:</span> {event.target.name}
+                </p>
+                <p>
+                  <span className="text-muted-foreground">ID:</span> {event.target.id}
+                </p>
               </div>
             </div>
           )}
 
           <div>
-            <h4 className="text-sm font-medium mb-2">Technical Details</h4>
-            <div className="text-sm space-y-1">
-              <p><span className="text-muted-foreground">IP Address:</span> {event.ipAddress || 'N/A'}</p>
+            <h4 className="mb-2 text-sm font-medium">Technical Details</h4>
+            <div className="space-y-1 text-sm">
+              <p>
+                <span className="text-muted-foreground">IP Address:</span>{' '}
+                {event.ipAddress || 'N/A'}
+              </p>
               {event.userAgent && (
-                <p className="text-muted-foreground text-xs break-all">{event.userAgent}</p>
+                <p className="break-all text-xs text-muted-foreground">{event.userAgent}</p>
               )}
             </div>
           </div>
 
           {event.metadata && (
             <div>
-              <h4 className="text-sm font-medium mb-2">Metadata</h4>
-              <pre className="text-xs bg-muted p-3 rounded-lg overflow-auto max-h-64">
+              <h4 className="mb-2 text-sm font-medium">Metadata</h4>
+              <pre className="max-h-64 overflow-auto rounded-lg bg-muted p-3 text-xs">
                 {JSON.stringify(event.metadata, null, 2)}
               </pre>
             </div>

@@ -97,15 +97,10 @@ export const MESSAGE_STATUS_FRAGMENT = gql`
  */
 export const GET_MESSAGE_EDIT_HISTORY = gql`
   query GetMessageEditHistory($messageId: uuid!) {
-    nchat_message_edits(
-      where: { message_id: { _eq: $messageId } }
-      order_by: { edited_at: desc }
-    ) {
+    nchat_message_edits(where: { message_id: { _eq: $messageId } }, order_by: { edited_at: desc }) {
       ...MessageEditHistory
     }
-    nchat_message_edits_aggregate(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    nchat_message_edits_aggregate(where: { message_id: { _eq: $messageId } }) {
       aggregate {
         count
       }
@@ -146,19 +141,14 @@ export const GET_MESSAGE_STATUS = gql`
  */
 export const GET_MESSAGE_READ_BY = gql`
   query GetMessageReadBy($messageId: uuid!) {
-    nchat_read_receipts(
-      where: { message_id: { _eq: $messageId } }
-      order_by: { read_at: asc }
-    ) {
+    nchat_read_receipts(where: { message_id: { _eq: $messageId } }, order_by: { read_at: asc }) {
       user_id
       read_at
       user {
         ...UserBasic
       }
     }
-    nchat_read_receipts_aggregate(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    nchat_read_receipts_aggregate(where: { message_id: { _eq: $messageId } }) {
       aggregate {
         count
       }
@@ -172,9 +162,7 @@ export const GET_MESSAGE_READ_BY = gql`
  */
 export const GET_MESSAGES_STATUS = gql`
   query GetMessagesStatus($messageIds: [uuid!]!) {
-    nchat_message_status(
-      where: { message_id: { _in: $messageIds } }
-    ) {
+    nchat_message_status(where: { message_id: { _in: $messageIds } }) {
       ...MessageStatus
     }
   }
@@ -210,11 +198,7 @@ export const GET_MESSAGES_READ_BY = gql`
  * (This is typically handled by a database trigger, but available for manual use)
  */
 export const SAVE_MESSAGE_EDIT = gql`
-  mutation SaveMessageEdit(
-    $messageId: uuid!
-    $content: String!
-    $editedBy: uuid!
-  ) {
+  mutation SaveMessageEdit($messageId: uuid!, $content: String!, $editedBy: uuid!) {
     insert_nchat_message_edits_one(
       object: {
         message_id: $messageId
@@ -266,11 +250,7 @@ export const UPDATE_MESSAGE_STATUS = gql`
  * Mark message as delivered
  */
 export const MARK_MESSAGE_DELIVERED = gql`
-  mutation MarkMessageDelivered(
-    $messageId: uuid!
-    $deliveredCount: Int
-    $totalRecipients: Int
-  ) {
+  mutation MarkMessageDelivered($messageId: uuid!, $deliveredCount: Int, $totalRecipients: Int) {
     insert_nchat_message_status_one(
       object: {
         message_id: $messageId
@@ -295,9 +275,7 @@ export const MARK_MESSAGE_DELIVERED = gql`
  */
 export const DELETE_MESSAGE_EDIT_HISTORY = gql`
   mutation DeleteMessageEditHistory($messageId: uuid!) {
-    delete_nchat_message_edits(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    delete_nchat_message_edits(where: { message_id: { _eq: $messageId } }) {
       affected_rows
     }
   }
@@ -324,9 +302,7 @@ export const MESSAGE_STATUS_SUBSCRIPTION = gql`
  */
 export const MESSAGES_STATUS_SUBSCRIPTION = gql`
   subscription MessagesStatusSubscription($messageIds: [uuid!]!) {
-    nchat_message_status(
-      where: { message_id: { _in: $messageIds } }
-    ) {
+    nchat_message_status(where: { message_id: { _in: $messageIds } }) {
       ...MessageStatus
     }
   }
@@ -377,9 +353,7 @@ export const MESSAGE_STATUS_STREAM_SUBSCRIPTION = gql`
     nchat_message_status_stream(
       cursor: { initial_value: { updated_at: "now()" } }
       batch_size: 10
-      where: {
-        message: { channel_id: { _eq: $channelId } }
-      }
+      where: { message: { channel_id: { _eq: $channelId } } }
     ) {
       message_id
       status
@@ -399,9 +373,7 @@ export const MESSAGE_STATUS_STREAM_SUBSCRIPTION = gql`
 /**
  * Transform GraphQL edit history to app format
  */
-export function transformEditHistory(
-  data: MessageEditHistoryRecord[]
-): Array<{
+export function transformEditHistory(data: MessageEditHistoryRecord[]): Array<{
   content: string
   editedAt: Date
   editedBy: string
@@ -416,9 +388,7 @@ export function transformEditHistory(
 /**
  * Transform GraphQL read receipts to app format
  */
-export function transformReadReceipts(
-  data: MessageReadByData[]
-): Array<{
+export function transformReadReceipts(data: MessageReadByData[]): Array<{
   user: {
     id: string
     username: string

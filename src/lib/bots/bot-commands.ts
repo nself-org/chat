@@ -13,6 +13,7 @@ import type {
   BotResponse,
   MessageContext,
 } from './bot-types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // COMMAND REGISTRY
@@ -194,7 +195,7 @@ export class CommandRegistry {
       this.setCooldown(command, ctx.user.id)
       return result
     } catch (error) {
-      console.error(`[CommandRegistry] Error executing '${ctx.command.name}':`, error)
+      logger.error(`[CommandRegistry] Error executing '${ctx.command.name}':`,  error)
       return {
         content: `An error occurred while executing the command.`,
         options: { ephemeral: true },

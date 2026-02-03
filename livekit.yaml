@@ -1,0 +1,102 @@
+# LiveKit Server Configuration for ɳChat
+# https://docs.livekit.io/deploy/configuration/
+
+# Port configuration
+port: 7880
+rtc:
+  port_range_start: 50000
+  port_range_end: 50100
+  use_external_ip: true
+  # For local dev, use localhost. For production, set to your server's public IP
+  # external_ip: "your-server-ip"
+
+# API keys (should be set via environment variables in production)
+# LIVEKIT_KEYS should be set as: "devkey:secret"
+keys:
+  devkey: secret
+
+# Room settings
+room:
+  # Maximum participants per room (adjust based on your needs)
+  max_participants: 100
+  # Empty room timeout (in seconds)
+  empty_timeout: 300
+  # Enable auto-create rooms
+  auto_create: true
+
+# Audio/Video codec settings
+rtc:
+  # Preferred codecs
+  video_codecs:
+    - VP8
+    - H264
+    - VP9
+  audio_codecs:
+    - OPUS
+  # Bitrate limits (in kbps)
+  video_bitrate: 3000
+  audio_bitrate: 128
+
+# TURN server configuration (for NAT traversal)
+turn:
+  enabled: true
+  port: 7882
+  # For production, configure proper TURN credentials
+  # realm: "livekit"
+  # tls_port: 5349
+
+# WebHook configuration (optional)
+# webhook:
+#   api_key: your_api_key
+#   urls:
+#     - https://your-server.com/api/livekit/webhook
+
+# Recording configuration (requires LiveKit Egress)
+# recording:
+#   enabled: true
+#   output_path: /recordings
+#   s3:
+#     access_key: ""
+#     secret: ""
+#     region: ""
+#     bucket: ""
+
+# Logging configuration
+logging:
+  level: info
+  # For production, set to 'warn' or 'error'
+  # level: warn
+  sample: false
+
+# Redis configuration (for distributed deployments)
+# redis:
+#   address: redis:6379
+#   db: 0
+#   username: ""
+#   password: ""
+
+# Metrics/Monitoring (Prometheus)
+# prometheus:
+#   enabled: false
+#   port: 6789
+
+# Region (for multi-region deployments)
+region: local
+
+# Node selector (for Kubernetes deployments)
+# node_selector:
+#   purpose: livekit
+
+# Limits
+limits:
+  # Max bytes per second for room
+  bytes_per_sec: 10000000  # 10 MB/s
+  # Max packets per second
+  packets_per_sec: 10000
+  # Max track bitrate
+  track_bitrate: 5000000   # 5 Mbps
+
+# Development/Debug settings
+# dev:
+#   # Disable authentication for local testing
+#   disable_authentication: false

@@ -1,39 +1,39 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { useNotificationStore } from '@/stores/notification-store';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { useNotificationStore } from '@/stores/notification-store'
 
 export interface NotificationBellProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   /**
    * Whether to show the unread badge
    * @default true
    */
-  showBadge?: boolean;
+  showBadge?: boolean
 
   /**
    * Maximum count to display in badge
    * @default 99
    */
-  maxBadgeCount?: number;
+  maxBadgeCount?: number
 
   /**
    * Whether to animate the bell when there are new notifications
    * @default true
    */
-  animateOnNew?: boolean;
+  animateOnNew?: boolean
 
   /**
    * Custom icon size
    * @default 20
    */
-  iconSize?: number;
+  iconSize?: number
 
   /**
    * Variant of the button
    */
-  variant?: 'default' | 'ghost' | 'outline';
+  variant?: 'default' | 'ghost' | 'outline'
 }
 
 /**
@@ -52,31 +52,27 @@ export function NotificationBell({
   onClick,
   ...props
 }: NotificationBellProps) {
-  const unreadCount = useNotificationStore((state) => state.unreadCounts.total);
-  const hasNewNotifications = useNotificationStore((state) => state.hasNewNotifications);
-  const toggleNotificationCenter = useNotificationStore((state) => state.toggleNotificationCenter);
-  const notificationCenterOpen = useNotificationStore((state) => state.notificationCenterOpen);
+  const unreadCount = useNotificationStore((state) => state.unreadCounts.total)
+  const hasNewNotifications = useNotificationStore((state) => state.hasNewNotifications)
+  const toggleNotificationCenter = useNotificationStore((state) => state.toggleNotificationCenter)
+  const notificationCenterOpen = useNotificationStore((state) => state.notificationCenterOpen)
 
   const handleClick = React.useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
-      toggleNotificationCenter();
-      onClick?.(e);
+      toggleNotificationCenter()
+      onClick?.(e)
     },
     [toggleNotificationCenter, onClick]
-  );
+  )
 
-  const displayCount = unreadCount > maxBadgeCount ? `${maxBadgeCount}+` : unreadCount.toString();
-  const shouldAnimate = animateOnNew && hasNewNotifications && unreadCount > 0;
+  const displayCount = unreadCount > maxBadgeCount ? `${maxBadgeCount}+` : unreadCount.toString()
+  const shouldAnimate = animateOnNew && hasNewNotifications && unreadCount > 0
 
   return (
     <Button
       variant={variant}
       size="icon"
-      className={cn(
-        'relative',
-        shouldAnimate && 'animate-wiggle',
-        className
-      )}
+      className={cn('relative', shouldAnimate && 'animate-wiggle', className)}
       onClick={handleClick}
       aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
       aria-expanded={notificationCenterOpen}
@@ -104,8 +100,8 @@ export function NotificationBell({
       {showBadge && unreadCount > 0 && (
         <span
           className={cn(
-            'absolute -top-1 -right-1 flex items-center justify-center',
-            'min-w-[18px] h-[18px] px-1 rounded-full',
+            'absolute -right-1 -top-1 flex items-center justify-center',
+            'h-[18px] min-w-[18px] rounded-full px-1',
             'bg-destructive text-destructive-foreground',
             'text-[10px] font-semibold',
             shouldAnimate && 'animate-pulse'
@@ -116,7 +112,7 @@ export function NotificationBell({
         </span>
       )}
     </Button>
-  );
+  )
 }
 
 /**
@@ -137,6 +133,6 @@ export function NotificationBell({
  * }
  */
 
-NotificationBell.displayName = 'NotificationBell';
+NotificationBell.displayName = 'NotificationBell'
 
-export default NotificationBell;
+export default NotificationBell

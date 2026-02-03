@@ -348,10 +348,7 @@ export function filterByActor(
 /**
  * Filter audit log entries by target
  */
-export function filterByTarget(
-  entries: AuditLogEntry[],
-  targetId: string
-): AuditLogEntry[] {
+export function filterByTarget(entries: AuditLogEntry[], targetId: string): AuditLogEntry[] {
   return entries.filter((entry) => entry.targetId === targetId)
 }
 
@@ -374,10 +371,7 @@ export function filterByDateRange(
 /**
  * Filter audit log entries by search query
  */
-export function filterBySearch(
-  entries: AuditLogEntry[],
-  search: string
-): AuditLogEntry[] {
+export function filterBySearch(entries: AuditLogEntry[], search: string): AuditLogEntry[] {
   if (!search || search.trim() === '') return entries
 
   const searchLower = search.toLowerCase().trim()
@@ -401,10 +395,7 @@ export function filterBySearch(
 /**
  * Apply all filters to audit log entries
  */
-export function applyFilters(
-  entries: AuditLogEntry[],
-  filters: AuditLogFilters
-): AuditLogEntry[] {
+export function applyFilters(entries: AuditLogEntry[], filters: AuditLogFilters): AuditLogEntry[] {
   let result = [...entries]
 
   if (filters.actorId || filters.actorEmail) {
@@ -537,10 +528,7 @@ export function queryAuditLog(
 /**
  * Export audit log to JSON format
  */
-export function exportToJson(
-  entries: AuditLogEntry[],
-  includeDetails: boolean = true
-): string {
+export function exportToJson(entries: AuditLogEntry[], includeDetails: boolean = true): string {
   const exportData = entries.map((entry) => {
     if (includeDetails) {
       return entry
@@ -556,10 +544,7 @@ export function exportToJson(
 /**
  * Export audit log to CSV format
  */
-export function exportToCsv(
-  entries: AuditLogEntry[],
-  includeDetails: boolean = true
-): string {
+export function exportToCsv(entries: AuditLogEntry[], includeDetails: boolean = true): string {
   const headers = ['id', 'timestamp', 'actorId', 'actorEmail', 'action', 'targetType', 'targetId']
   if (includeDetails) {
     headers.push('details')
@@ -587,10 +572,7 @@ export function exportToCsv(
 /**
  * Export audit log with options
  */
-export function exportAuditLog(
-  entries: AuditLogEntry[],
-  options: ExportOptions
-): ExportResult {
+export function exportAuditLog(entries: AuditLogEntry[], options: ExportOptions): ExportResult {
   let filteredEntries = [...entries]
 
   if (options.filters) {
@@ -699,9 +681,7 @@ export function formatAuditTimestamp(timestamp: string): string {
 /**
  * Get summary of audit log entries by action
  */
-export function getAuditSummary(
-  entries: AuditLogEntry[]
-): Record<AuditAction, number> {
+export function getAuditSummary(entries: AuditLogEntry[]): Record<AuditAction, number> {
   const summary: Partial<Record<AuditAction, number>> = {}
 
   for (const entry of entries) {

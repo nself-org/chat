@@ -8,11 +8,13 @@
 ## Files Created
 
 ### Database
+
 ```
 .backend/migrations/012_2fa_system.sql
 ```
 
 ### Utilities
+
 ```
 src/lib/2fa/totp.ts              # TOTP generation/verification
 src/lib/2fa/backup-codes.ts      # Backup code management
@@ -20,6 +22,7 @@ src/lib/2fa/device-fingerprint.ts # Device trust system
 ```
 
 ### API Routes
+
 ```
 src/app/api/auth/2fa/setup/route.ts
 src/app/api/auth/2fa/verify-setup/route.ts
@@ -31,12 +34,14 @@ src/app/api/auth/2fa/trusted-devices/route.ts
 ```
 
 ### Components
+
 ```
 src/components/auth/TwoFactorVerify.tsx  # Login verification modal
 src/components/settings/TwoFactorSettings.tsx (existing, updated)
 ```
 
 ### Hooks
+
 ```
 src/hooks/use-2fa.ts             # React hook for 2FA operations
 ```
@@ -46,12 +51,14 @@ src/hooks/use-2fa.ts             # React hook for 2FA operations
 ## Quick Commands
 
 ### Apply Migration
+
 ```bash
 cd .backend
 nself db migrate up
 ```
 
 ### Test 2FA Setup
+
 ```bash
 # Start services
 pnpm backend:start
@@ -62,6 +69,7 @@ http://localhost:3000/settings/security
 ```
 
 ### Check 2FA Status (SQL)
+
 ```sql
 -- Check if user has 2FA enabled
 SELECT user_has_2fa_enabled('user-uuid');
@@ -81,6 +89,7 @@ SELECT is_device_trusted('user-uuid', 'device-hash');
 ## API Usage Examples
 
 ### 1. Start Setup
+
 ```typescript
 POST /api/auth/2fa/setup
 Body: { userId: string, email: string }
@@ -96,6 +105,7 @@ Response: {
 ```
 
 ### 2. Verify and Enable
+
 ```typescript
 POST /api/auth/2fa/verify-setup
 Body: {
@@ -108,6 +118,7 @@ Response: { success: true }
 ```
 
 ### 3. Verify During Login
+
 ```typescript
 POST /api/auth/2fa/verify
 Body: {
@@ -122,6 +133,7 @@ Response: {
 ```
 
 ### 4. Get Status
+
 ```typescript
 GET /api/auth/2fa/status?userId={userId}
 Response: {
@@ -186,6 +198,7 @@ function Component() {
 ## Component Usage
 
 ### TwoFactorVerify (Login Modal)
+
 ```typescript
 import { TwoFactorVerify } from '@/components/auth/TwoFactorVerify'
 
@@ -211,6 +224,7 @@ function LoginPage() {
 ## Database Schema
 
 ### Tables
+
 ```sql
 nchat_user_2fa_settings (
   id, user_id, secret, is_enabled,
@@ -233,6 +247,7 @@ nchat_2fa_verification_attempts (
 ```
 
 ### Indexes
+
 - `idx_2fa_settings_user_id` - Fast user lookups
 - `idx_backup_codes_user_id` - Backup code queries
 - `idx_trusted_devices_user_id` - Device trust checks
@@ -258,16 +273,21 @@ nchat_2fa_verification_attempts (
 ## Common Issues
 
 ### Issue: QR code won't scan
+
 **Solution:** Use manual entry code: `setupData.manualEntryCode`
 
 ### Issue: "Invalid code" error
+
 **Solution:**
+
 1. Check server time (NTP sync)
 2. Use backup code instead
 3. Wait for next 30-second window
 
 ### Issue: Device not remembered
+
 **Solution:**
+
 1. Check localStorage enabled
 2. Verify device fingerprint consistent
 3. Check trusted_until not expired
@@ -314,6 +334,7 @@ nchat_2fa_verification_attempts (
 ## Monitoring Queries
 
 ### Check 2FA adoption
+
 ```sql
 SELECT
   COUNT(*) FILTER (WHERE is_enabled) as enabled_users,
@@ -323,6 +344,7 @@ FROM nchat_user_2fa_settings;
 ```
 
 ### Recent verification attempts
+
 ```sql
 SELECT
   created_at,
@@ -335,6 +357,7 @@ LIMIT 20;
 ```
 
 ### Users with low backup codes
+
 ```sql
 SELECT
   u.email,
@@ -351,10 +374,12 @@ ORDER BY remaining_codes;
 ## Support
 
 ### Documentation
+
 - Full Implementation: `docs/2FA-Implementation-Summary.md`
 - This Quick Reference: `docs/2FA-Quick-Reference.md`
 
 ### Resources
+
 - [RFC 6238 (TOTP)](https://datatracker.ietf.org/doc/html/rfc6238)
 - [Speakeasy Docs](https://github.com/speakeasyjs/speakeasy)
 - [Google Authenticator](https://support.google.com/accounts/answer/1066447)

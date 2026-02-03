@@ -4,12 +4,10 @@
  * Central registry for all slash commands (built-in and custom)
  */
 
-import type {
-  SlashCommand,
-  CommandCategory,
-  CommandSuggestion,
-} from './command-types'
+import type { SlashCommand, CommandCategory, CommandSuggestion } from './command-types'
 import { builtInCommands, builtInTriggerMap } from './built-in-commands'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Registry State
@@ -63,19 +61,14 @@ export function resetRegistry(): void {
 /**
  * Register a command in the registry
  */
-export function registerCommand(
-  command: SlashCommand,
-  isCustom = true
-): boolean {
+export function registerCommand(command: SlashCommand, isCustom = true): boolean {
   // Validate trigger doesn't conflict with existing commands
   const existingByTrigger = commandsByTrigger.get(command.trigger)
   if (existingByTrigger && existingByTrigger.id !== command.id) {
     // Allow custom commands to override built-in commands
     if (existingByTrigger.isBuiltIn && isCustom) {
       // Disable the built-in command
-      console.log(
-        `Custom command /${command.trigger} overriding built-in command`
-      )
+      // REMOVED: console.log(`Custom command /${command.trigger} overriding built-in command`)
     } else if (!existingByTrigger.isBuiltIn) {
       console.error(
         `Command trigger /${command.trigger} already registered by ${existingByTrigger.id}`
@@ -129,7 +122,7 @@ export function unregisterCommand(commandId: string): boolean {
 
   // Cannot unregister built-in commands
   if (command.isBuiltIn) {
-    console.error('Cannot unregister built-in commands')
+    logger.error('Cannot unregister built-in commands')
     return false
   }
 
@@ -220,9 +213,7 @@ export function getCustomCommands(): SlashCommand[] {
 /**
  * Get commands by category
  */
-export function getCommandsByCategory(
-  category: CommandCategory
-): SlashCommand[] {
+export function getCommandsByCategory(category: CommandCategory): SlashCommand[] {
   initializeRegistry()
   return (commandsByCategory.get(category) || []).filter((c) => c.isEnabled)
 }
@@ -325,9 +316,7 @@ export function getCommandSuggestions(
 
   // Filter by channel type
   if (channelType) {
-    candidates = candidates.filter((c) =>
-      c.channels.allowedTypes.includes(channelType)
-    )
+    candidates = candidates.filter((c) => c.channels.allowedTypes.includes(channelType))
   }
 
   // Filter by user role (simplified role hierarchy check)
@@ -360,9 +349,7 @@ export function getCommandSuggestions(
     }
 
     // Check aliases
-    const aliasMatch = command.aliases?.find((a) =>
-      a.startsWith(normalizedQuery)
-    )
+    const aliasMatch = command.aliases?.find((a) => a.startsWith(normalizedQuery))
     if (aliasMatch) {
       suggestions.push({
         command,
@@ -514,10 +501,7 @@ export function canUseCommandInChannel(
   }
 
   // Check specific channel allowlist
-  if (
-    command.channels.allowedChannels &&
-    !command.channels.allowedChannels.includes(channelId)
-  ) {
+  if (command.channels.allowedChannels && !command.channels.allowedChannels.includes(channelId)) {
     return {
       allowed: false,
       reason: 'This command is not available in this channel',

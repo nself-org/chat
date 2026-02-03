@@ -10,14 +10,14 @@
  * - File size validation
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useCallback, useState, useRef } from 'react';
-import { Upload, FileUp, AlertCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useAttachmentStore } from '@/stores/attachment-store';
-import { validateFiles, FileValidationOptions, formatFileSize } from '@/lib/upload/file-utils';
+import * as React from 'react'
+import { useCallback, useState, useRef } from 'react'
+import { Upload, FileUp, AlertCircle } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useAttachmentStore } from '@/stores/attachment-store'
+import { validateFiles, FileValidationOptions, formatFileSize } from '@/lib/upload/file-utils'
 
 // ============================================================================
 // Types
@@ -25,25 +25,25 @@ import { validateFiles, FileValidationOptions, formatFileSize } from '@/lib/uplo
 
 export interface FileUploadZoneProps {
   /** Callback when files are selected/dropped */
-  onFilesSelected: (files: File[]) => void;
+  onFilesSelected: (files: File[]) => void
   /** Accepted file types (e.g., 'image/*,video/*,.pdf') */
-  accept?: string;
+  accept?: string
   /** Allow multiple files */
-  multiple?: boolean;
+  multiple?: boolean
   /** Validation options */
-  validation?: FileValidationOptions;
+  validation?: FileValidationOptions
   /** Maximum number of files */
-  maxFiles?: number;
+  maxFiles?: number
   /** Whether the zone is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Variant style */
-  variant?: 'default' | 'compact' | 'inline';
+  variant?: 'default' | 'compact' | 'inline'
   /** Custom placeholder content */
-  children?: React.ReactNode;
+  children?: React.ReactNode
   /** Callback when validation errors occur */
-  onValidationError?: (errors: { file: File; error: string }[]) => void;
+  onValidationError?: (errors: { file: File; error: string }[]) => void
 }
 
 // ============================================================================
@@ -62,23 +62,23 @@ export function FileUploadZone({
   children,
   onValidationError,
 }: FileUploadZoneProps) {
-  const [isDragOver, setIsDragOver] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const dragCounterRef = useRef(0);
+  const [isDragOver, setIsDragOver] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const dragCounterRef = useRef(0)
 
-  const { setDragActive, dragActive } = useAttachmentStore();
+  const { setDragActive, dragActive } = useAttachmentStore()
 
   // Handle file selection
   const handleFiles = useCallback(
     (fileList: FileList | File[]) => {
-      setError(null);
-      const files = Array.from(fileList);
+      setError(null)
+      const files = Array.from(fileList)
 
       // Check max files
       if (maxFiles && files.length > maxFiles) {
-        setError(`Maximum ${maxFiles} files allowed`);
-        return;
+        setError(`Maximum ${maxFiles} files allowed`)
+        return
       }
 
       // Validate files
@@ -86,121 +86,121 @@ export function FileUploadZone({
         const { valid, invalid } = validateFiles(files, {
           ...validation,
           maxFiles,
-        });
+        })
 
         if (invalid.length > 0) {
-          onValidationError?.(invalid);
+          onValidationError?.(invalid)
           if (valid.length === 0) {
-            setError(invalid[0].error);
-            return;
+            setError(invalid[0].error)
+            return
           }
         }
 
         if (valid.length > 0) {
-          onFilesSelected(valid);
+          onFilesSelected(valid)
         }
       } else {
-        onFilesSelected(files);
+        onFilesSelected(files)
       }
     },
     [onFilesSelected, validation, maxFiles, onValidationError]
-  );
+  )
 
   // Handle drag events
   const handleDragEnter = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
 
-      if (disabled) return;
+      if (disabled) return
 
-      dragCounterRef.current++;
+      dragCounterRef.current++
       if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-        setIsDragOver(true);
-        setDragActive(true);
+        setIsDragOver(true)
+        setDragActive(true)
       }
     },
     [disabled, setDragActive]
-  );
+  )
 
   const handleDragLeave = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
 
-      dragCounterRef.current--;
+      dragCounterRef.current--
       if (dragCounterRef.current === 0) {
-        setIsDragOver(false);
-        setDragActive(false);
+        setIsDragOver(false)
+        setDragActive(false)
       }
     },
     [setDragActive]
-  );
+  )
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
+    e.preventDefault()
+    e.stopPropagation()
+  }, [])
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
+      e.preventDefault()
+      e.stopPropagation()
 
-      setIsDragOver(false);
-      setDragActive(false);
-      dragCounterRef.current = 0;
+      setIsDragOver(false)
+      setDragActive(false)
+      dragCounterRef.current = 0
 
-      if (disabled) return;
+      if (disabled) return
 
-      const { files } = e.dataTransfer;
+      const { files } = e.dataTransfer
       if (files && files.length > 0) {
-        handleFiles(files);
+        handleFiles(files)
       }
     },
     [disabled, handleFiles, setDragActive]
-  );
+  )
 
   // Handle click
   const handleClick = useCallback(() => {
     if (!disabled) {
-      inputRef.current?.click();
+      inputRef.current?.click()
     }
-  }, [disabled]);
+  }, [disabled])
 
   // Handle input change
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.target;
+      const { files } = e.target
       if (files && files.length > 0) {
-        handleFiles(files);
+        handleFiles(files)
       }
       // Reset input so same file can be selected again
-      e.target.value = '';
+      e.target.value = ''
     },
     [handleFiles]
-  );
+  )
 
   // Handle keyboard
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if ((e.key === 'Enter' || e.key === ' ') && !disabled) {
-        e.preventDefault();
-        inputRef.current?.click();
+        e.preventDefault()
+        inputRef.current?.click()
       }
     },
     [disabled]
-  );
+  )
 
   // Generate accept string for input
-  const inputAccept = accept || undefined;
+  const inputAccept = accept || undefined
 
   // Variant styles
   const variantStyles = {
     default: 'min-h-[200px] p-8',
     compact: 'min-h-[120px] p-4',
     inline: 'min-h-[60px] p-3',
-  };
+  }
 
   return (
     <div
@@ -208,7 +208,7 @@ export function FileUploadZone({
         'relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors duration-200',
         variantStyles[variant],
         isDragOver || dragActive
-          ? 'border-primary bg-primary/5'
+          ? 'bg-primary/5 border-primary'
           : 'border-muted-foreground/25 hover:border-muted-foreground/50',
         disabled && 'cursor-not-allowed opacity-50',
         !disabled && 'cursor-pointer',
@@ -251,11 +251,7 @@ export function FileUploadZone({
                 : 'bg-muted text-muted-foreground'
             )}
           >
-            {isDragOver ? (
-              <FileUp className="h-6 w-6" />
-            ) : (
-              <Upload className="h-6 w-6" />
-            )}
+            {isDragOver ? <FileUp className="h-6 w-6" /> : <Upload className="h-6 w-6" />}
           </div>
 
           {/* Text */}
@@ -276,19 +272,17 @@ export function FileUploadZone({
               <div className="text-xs text-muted-foreground">
                 {accept && (
                   <span>
-                    Accepted: {accept.split(',').map((t) => t.trim()).join(', ')}
+                    Accepted:{' '}
+                    {accept
+                      .split(',')
+                      .map((t) => t.trim())
+                      .join(', ')}
                   </span>
                 )}
                 {validation?.maxSize && (
-                  <span className="ml-2">
-                    Max size: {formatFileSize(validation.maxSize)}
-                  </span>
+                  <span className="ml-2">Max size: {formatFileSize(validation.maxSize)}</span>
                 )}
-                {maxFiles && (
-                  <span className="ml-2">
-                    Max files: {maxFiles}
-                  </span>
-                )}
+                {maxFiles && <span className="ml-2">Max files: {maxFiles}</span>}
               </div>
             </>
           )}
@@ -304,7 +298,7 @@ export function FileUploadZone({
 
       {/* Error message */}
       {error && (
-        <div className="absolute bottom-2 left-2 right-2 flex items-center gap-1.5 rounded bg-destructive/10 px-2 py-1 text-xs text-destructive">
+        <div className="bg-destructive/10 absolute bottom-2 left-2 right-2 flex items-center gap-1.5 rounded px-2 py-1 text-xs text-destructive">
           <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -312,10 +306,10 @@ export function FileUploadZone({
 
       {/* Drag overlay */}
       {(isDragOver || dragActive) && (
-        <div className="pointer-events-none absolute inset-0 rounded-lg bg-primary/5" />
+        <div className="bg-primary/5 pointer-events-none absolute inset-0 rounded-lg" />
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -324,13 +318,13 @@ export function FileUploadZone({
 
 export interface FileUploadOverlayProps {
   /** Callback when files are dropped */
-  onFilesDropped: (files: File[]) => void;
+  onFilesDropped: (files: File[]) => void
   /** Accepted file types */
-  accept?: string;
+  accept?: string
   /** Whether the overlay is active */
-  active?: boolean;
+  active?: boolean
   /** Custom class name */
-  className?: string;
+  className?: string
 }
 
 export function FileUploadOverlay({
@@ -339,80 +333,80 @@ export function FileUploadOverlay({
   active = false,
   className,
 }: FileUploadOverlayProps) {
-  const [isDragOver, setIsDragOver] = useState(false);
-  const dragCounterRef = useRef(0);
-  const { setDragActive } = useAttachmentStore();
+  const [isDragOver, setIsDragOver] = useState(false)
+  const dragCounterRef = useRef(0)
+  const { setDragActive } = useAttachmentStore()
 
   const handleDragEnter = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dragCounterRef.current++;
+      e.preventDefault()
+      e.stopPropagation()
+      dragCounterRef.current++
       if (e.dataTransfer.items && e.dataTransfer.items.length > 0) {
-        setIsDragOver(true);
-        setDragActive(true);
+        setIsDragOver(true)
+        setDragActive(true)
       }
     },
     [setDragActive]
-  );
+  )
 
   const handleDragLeave = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      dragCounterRef.current--;
+      e.preventDefault()
+      e.stopPropagation()
+      dragCounterRef.current--
       if (dragCounterRef.current === 0) {
-        setIsDragOver(false);
-        setDragActive(false);
+        setIsDragOver(false)
+        setDragActive(false)
       }
     },
     [setDragActive]
-  );
+  )
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }, []);
+    e.preventDefault()
+    e.stopPropagation()
+  }, [])
 
   const handleDrop = useCallback(
     (e: React.DragEvent) => {
-      e.preventDefault();
-      e.stopPropagation();
-      setIsDragOver(false);
-      setDragActive(false);
-      dragCounterRef.current = 0;
+      e.preventDefault()
+      e.stopPropagation()
+      setIsDragOver(false)
+      setDragActive(false)
+      dragCounterRef.current = 0
 
-      const { files } = e.dataTransfer;
+      const { files } = e.dataTransfer
       if (files && files.length > 0) {
         // Filter by accept if specified
-        let fileArray = Array.from(files);
+        let fileArray = Array.from(files)
         if (accept) {
-          const acceptedTypes = accept.split(',').map((t) => t.trim().toLowerCase());
+          const acceptedTypes = accept.split(',').map((t) => t.trim().toLowerCase())
           fileArray = fileArray.filter((file) => {
-            const mimeType = file.type.toLowerCase();
-            const extension = `.${file.name.split('.').pop()?.toLowerCase()}`;
+            const mimeType = file.type.toLowerCase()
+            const extension = `.${file.name.split('.').pop()?.toLowerCase()}`
             return acceptedTypes.some((type) => {
               if (type.endsWith('/*')) {
-                return mimeType.startsWith(type.slice(0, -1));
+                return mimeType.startsWith(type.slice(0, -1))
               }
-              return type === mimeType || type === extension;
-            });
-          });
+              return type === mimeType || type === extension
+            })
+          })
         }
         if (fileArray.length > 0) {
-          onFilesDropped(fileArray);
+          onFilesDropped(fileArray)
         }
       }
     },
     [accept, onFilesDropped, setDragActive]
-  );
+  )
 
-  if (!active && !isDragOver) return null;
+  if (!active && !isDragOver) return null
 
   return (
     <div
       className={cn(
-        'fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm transition-opacity',
+        'bg-background/80 fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm transition-opacity',
         isDragOver ? 'opacity-100' : 'opacity-0',
         className
       )}
@@ -421,21 +415,17 @@ export function FileUploadOverlay({
       onDragOver={handleDragOver}
       onDrop={handleDrop}
     >
-      <div className="flex flex-col items-center gap-4 rounded-xl border-2 border-dashed border-primary bg-primary/5 p-12">
-        <div className="rounded-full bg-primary/10 p-4">
+      <div className="bg-primary/5 flex flex-col items-center gap-4 rounded-xl border-2 border-dashed border-primary p-12">
+        <div className="bg-primary/10 rounded-full p-4">
           <FileUp className="h-12 w-12 text-primary" />
         </div>
         <div className="text-center">
           <p className="text-lg font-medium">Drop files to upload</p>
-          {accept && (
-            <p className="text-sm text-muted-foreground">
-              Accepted: {accept}
-            </p>
-          )}
+          {accept && <p className="text-sm text-muted-foreground">Accepted: {accept}</p>}
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default FileUploadZone;
+export default FileUploadZone

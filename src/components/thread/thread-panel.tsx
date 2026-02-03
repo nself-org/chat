@@ -7,12 +7,7 @@ import { GripVertical, Users } from 'lucide-react'
 import { useAuth } from '@/contexts/auth-context'
 import { useThread, type UseThreadOptions } from '@/hooks/use-thread'
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 import { ThreadHeader, ThreadHeaderCompact } from './thread-header'
@@ -53,9 +48,9 @@ export interface ThreadPanelProps {
 
 function ThreadPanelSkeleton() {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Header skeleton */}
-      <div className="border-b p-4 space-y-3">
+      <div className="space-y-3 border-b p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Skeleton className="h-5 w-5" />
@@ -76,10 +71,10 @@ function ThreadPanelSkeleton() {
       </div>
 
       {/* Messages skeleton */}
-      <div className="flex-1 p-4 space-y-4">
+      <div className="flex-1 space-y-4 p-4">
         {[1, 2, 3].map((i) => (
           <div key={i} className="flex items-start gap-3">
-            <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+            <Skeleton className="h-8 w-8 shrink-0 rounded-full" />
             <div className="flex-1 space-y-2">
               <Skeleton className="h-4 w-28" />
               <Skeleton className="h-4 w-3/4" />
@@ -104,13 +99,13 @@ function ResizeHandle({ className }: { className?: string }) {
   return (
     <PanelResizeHandle
       className={cn(
-        'group relative w-1.5 hover:w-2 bg-border/50 hover:bg-primary/20 transition-all duration-150',
+        'bg-border/50 hover:bg-primary/20 group relative w-1.5 transition-all duration-150 hover:w-2',
         'flex items-center justify-center',
         className
       )}
     >
       <div className="absolute inset-y-0 -left-1 -right-1 z-10" />
-      <GripVertical className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+      <GripVertical className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
     </PanelResizeHandle>
   )
 }
@@ -186,7 +181,7 @@ export function ThreadPanel({
   const panelContent = (
     <div
       className={cn(
-        'flex flex-col h-full bg-background border-l',
+        'flex h-full flex-col border-l bg-background',
         position === 'left' && 'border-l-0 border-r',
         className
       )}
@@ -196,10 +191,8 @@ export function ThreadPanel({
 
       {/* Error state */}
       {error && !loading && (
-        <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <p className="text-sm text-destructive mb-4">
-            Failed to load thread
-          </p>
+        <div className="flex flex-1 flex-col items-center justify-center p-8 text-center">
+          <p className="mb-4 text-sm text-destructive">Failed to load thread</p>
           <Button variant="outline" size="sm" onClick={onClose}>
             Close
           </Button>
@@ -384,7 +377,7 @@ export function ThreadSlideInPanel({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/20 z-40 md:hidden"
+        className="fixed inset-0 z-40 bg-black/20 md:hidden"
         onClick={onClose}
         aria-hidden="true"
       />

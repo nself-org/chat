@@ -30,7 +30,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:9090/-/healthy']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -43,8 +43,8 @@ services:
           cpus: '0.5'
           memory: 512M
     labels:
-      com.nself.service: "prometheus"
-      com.nself.environment: "production"
+      com.nself.service: 'prometheus'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Grafana - Visualization
@@ -73,7 +73,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:3000/api/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -86,8 +86,8 @@ services:
           cpus: '0.25'
           memory: 256M
     labels:
-      com.nself.service: "grafana"
-      com.nself.environment: "production"
+      com.nself.service: 'grafana'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Loki - Log Aggregation
@@ -103,7 +103,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3100/ready"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:3100/ready']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -116,8 +116,8 @@ services:
           cpus: '0.25'
           memory: 256M
     labels:
-      com.nself.service: "loki"
-      com.nself.environment: "production"
+      com.nself.service: 'loki'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Promtail - Log Shipper
@@ -144,8 +144,8 @@ services:
           cpus: '0.1'
           memory: 128M
     labels:
-      com.nself.service: "promtail"
-      com.nself.environment: "production"
+      com.nself.service: 'promtail'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # cAdvisor - Container Metrics
@@ -166,7 +166,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/healthz"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:8080/healthz']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -179,8 +179,8 @@ services:
           cpus: '0.1'
           memory: 128M
     labels:
-      com.nself.service: "cadvisor"
-      com.nself.environment: "production"
+      com.nself.service: 'cadvisor'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Node Exporter - System Metrics
@@ -201,7 +201,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9100/metrics"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:9100/metrics']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -214,8 +214,8 @@ services:
           cpus: '0.1'
           memory: 64M
     labels:
-      com.nself.service: "node-exporter"
-      com.nself.environment: "production"
+      com.nself.service: 'node-exporter'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Postgres Exporter - Database Metrics
@@ -225,13 +225,13 @@ services:
     container_name: nchat-postgres-exporter
     restart: unless-stopped
     environment:
-      DATA_SOURCE_NAME: "postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nchat}?sslmode=disable"
+      DATA_SOURCE_NAME: 'postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nchat}?sslmode=disable'
     depends_on:
       - postgres
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9187/metrics"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:9187/metrics']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -244,8 +244,8 @@ services:
           cpus: '0.1'
           memory: 64M
     labels:
-      com.nself.service: "postgres-exporter"
-      com.nself.environment: "production"
+      com.nself.service: 'postgres-exporter'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Redis Exporter - Cache Metrics
@@ -262,7 +262,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9121/metrics"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:9121/metrics']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -275,8 +275,8 @@ services:
           cpus: '0.1'
           memory: 64M
     labels:
-      com.nself.service: "redis-exporter"
-      com.nself.environment: "production"
+      com.nself.service: 'redis-exporter'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # AlertManager - Alert Routing (Optional)
@@ -294,7 +294,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9093/-/healthy"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:9093/-/healthy']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -307,8 +307,8 @@ services:
           cpus: '0.1'
           memory: 128M
     labels:
-      com.nself.service: "alertmanager"
-      com.nself.environment: "production"
+      com.nself.service: 'alertmanager'
+      com.nself.environment: 'production'
 
 # ============================================================================
 # Volumes

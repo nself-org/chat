@@ -27,19 +27,20 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { setupPin, getPinStrength, isValidPinFormat, type PinSettings } from '@/lib/security/pin'
+import { isBiometricAvailable, getBiometricType, registerBiometric } from '@/lib/security/biometric'
 import {
-  setupPin,
-  getPinStrength,
-  isValidPinFormat,
-  type PinSettings,
-} from '@/lib/security/pin'
-import {
-  isBiometricAvailable,
-  getBiometricType,
-  registerBiometric,
-} from '@/lib/security/biometric'
-import { Shield, Lock, Clock, Smartphone, Fingerprint, AlertCircle, CheckCircle2 } from 'lucide-react'
+  Shield,
+  Lock,
+  Clock,
+  Smartphone,
+  Fingerprint,
+  AlertCircle,
+  CheckCircle2,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -99,9 +100,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
   const isPinValid = isValidPinFormat(pin)
   const isPinConfirmed = confirmPin.length > 0 && pin === confirmPin
   const canProceed =
-    step === 'pin' ? isPinValid && isPinConfirmed :
-    step === 'options' ? true :
-    true
+    step === 'pin' ? isPinValid && isPinConfirmed : step === 'options' ? true : true
 
   // Handle PIN setup
   const handleSetupPin = async () => {
@@ -132,7 +131,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
         }
       }
     } catch (err) {
-      console.error('PIN setup error:', err)
+      logger.error('PIN setup error:', err)
       setError('An unexpected error occurred')
     } finally {
       setIsLoading(false)
@@ -164,7 +163,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
         onComplete(pinSettings.settings)
       }
     } catch (err) {
-      console.error('Biometric setup error:', err)
+      logger.error('Biometric setup error:', err)
       setError('Failed to setup biometric authentication')
     } finally {
       setIsLoading(false)
@@ -193,9 +192,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
           <Shield className="h-5 w-5" />
           Setup PIN Lock
         </CardTitle>
-        <CardDescription>
-          Create a 4-6 digit PIN to secure your account
-        </CardDescription>
+        <CardDescription>Create a 4-6 digit PIN to secure your account</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -313,10 +310,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
             Cancel
           </Button>
         )}
-        <Button
-          onClick={() => setStep('options')}
-          disabled={!canProceed || isLoading}
-        >
+        <Button onClick={() => setStep('options')} disabled={!canProceed || isLoading}>
           Next: Lock Options
         </Button>
       </CardFooter>
@@ -331,9 +325,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
           <Lock className="h-5 w-5" />
           Lock Options
         </CardTitle>
-        <CardDescription>
-          Configure when your app should lock
-        </CardDescription>
+        <CardDescription>Configure when your app should lock</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -347,11 +339,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
               Require PIN when you close and reopen the app
             </p>
           </div>
-          <Switch
-            id="lock-close"
-            checked={lockOnClose}
-            onCheckedChange={setLockOnClose}
-          />
+          <Switch id="lock-close" checked={lockOnClose} onCheckedChange={setLockOnClose} />
         </div>
 
         {/* Lock on background */}
@@ -392,9 +380,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
               <SelectItem value="60">1 hour</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-sm text-muted-foreground">
-            Lock after this period of inactivity
-          </p>
+          <p className="text-sm text-muted-foreground">Lock after this period of inactivity</p>
         </div>
 
         {/* Biometric option */}
@@ -405,9 +391,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
                 <Fingerprint className="h-4 w-4" />
                 Enable {biometricType}
               </Label>
-              <p className="text-sm text-muted-foreground">
-                Unlock with biometric authentication
-              </p>
+              <p className="text-sm text-muted-foreground">Unlock with biometric authentication</p>
             </div>
             <Switch
               id="biometric"
@@ -419,17 +403,10 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
       </CardContent>
 
       <CardFooter className="flex justify-between">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setStep('pin')}
-        >
+        <Button type="button" variant="outline" onClick={() => setStep('pin')}>
           Back
         </Button>
-        <Button
-          onClick={handleSetupPin}
-          disabled={isLoading}
-        >
+        <Button onClick={handleSetupPin} disabled={isLoading}>
           {biometricEnabled && biometricAvailable ? 'Next: Biometric Setup' : 'Complete Setup'}
         </Button>
       </CardFooter>
@@ -444,9 +421,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
           <Fingerprint className="h-5 w-5" />
           Setup {biometricType}
         </CardTitle>
-        <CardDescription>
-          Register your biometric authentication
-        </CardDescription>
+        <CardDescription>Register your biometric authentication</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-6">
@@ -458,30 +433,20 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
         )}
 
         <div className="flex flex-col items-center justify-center py-8 text-center">
-          <Smartphone className="h-16 w-16 text-muted-foreground mb-4" />
-          <p className="text-lg font-medium mb-2">
-            Ready to setup {biometricType}
-          </p>
-          <p className="text-sm text-muted-foreground max-w-md">
-            Click the button below to register your biometric authentication.
-            You will be prompted to use your device&apos;s biometric sensor.
+          <Smartphone className="mb-4 h-16 w-16 text-muted-foreground" />
+          <p className="mb-2 text-lg font-medium">Ready to setup {biometricType}</p>
+          <p className="max-w-md text-sm text-muted-foreground">
+            Click the button below to register your biometric authentication. You will be prompted
+            to use your device&apos;s biometric sensor.
           </p>
         </div>
       </CardContent>
 
       <CardFooter className="flex justify-between">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={handleSkipBiometric}
-          disabled={isLoading}
-        >
+        <Button type="button" variant="outline" onClick={handleSkipBiometric} disabled={isLoading}>
           Skip for now
         </Button>
-        <Button
-          onClick={handleBiometricSetup}
-          disabled={isLoading}
-        >
+        <Button onClick={handleBiometricSetup} disabled={isLoading}>
           Setup {biometricType}
         </Button>
       </CardFooter>
@@ -489,7 +454,7 @@ export function PinSetup({ userId, userName, onComplete, onCancel }: PinSetupPro
   )
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       {step === 'pin' && renderPinStep()}
       {step === 'options' && renderOptionsStep()}
       {step === 'biometric' && renderBiometricStep()}

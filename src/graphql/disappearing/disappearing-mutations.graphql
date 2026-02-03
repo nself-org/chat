@@ -7,11 +7,7 @@
 # =============================================================================
 
 # Enable disappearing messages for a channel
-mutation EnableDisappearingMessages(
-  $channelId: uuid!
-  $duration: Int!
-  $userId: uuid!
-) {
+mutation EnableDisappearingMessages($channelId: uuid!, $duration: Int!, $userId: uuid!) {
   insert_nchat_disappearing_settings_one(
     object: {
       channel_id: $channelId
@@ -194,11 +190,7 @@ mutation StartBurnTimer($messageId: uuid!, $expiresAt: timestamptz!) {
 mutation DeleteExpiredMessage($messageId: uuid!) {
   update_nchat_messages_by_pk(
     pk_columns: { id: $messageId }
-    _set: {
-      is_deleted: true
-      deleted_at: "now()"
-      content: ""
-    }
+    _set: { is_deleted: true, deleted_at: "now()", content: "" }
   ) {
     id
     is_deleted
@@ -210,11 +202,7 @@ mutation DeleteExpiredMessage($messageId: uuid!) {
 mutation BulkDeleteExpiredMessages($messageIds: [uuid!]!) {
   update_nchat_messages(
     where: { id: { _in: $messageIds } }
-    _set: {
-      is_deleted: true
-      deleted_at: "now()"
-      content: ""
-    }
+    _set: { is_deleted: true, deleted_at: "now()", content: "" }
   ) {
     affected_rows
     returning {
@@ -226,10 +214,7 @@ mutation BulkDeleteExpiredMessages($messageIds: [uuid!]!) {
 
 # Clear message content (for security)
 mutation ClearMessageContent($messageId: uuid!) {
-  update_nchat_messages_by_pk(
-    pk_columns: { id: $messageId }
-    _set: { content: "" }
-  ) {
+  update_nchat_messages_by_pk(pk_columns: { id: $messageId }, _set: { content: "" }) {
     id
   }
 }
@@ -239,14 +224,8 @@ mutation ClearMessageContent($messageId: uuid!) {
 # =============================================================================
 
 # Update user disappearing preferences
-mutation UpdateDisappearingPreferences(
-  $userId: uuid!
-  $preferences: nchat_users_set_input!
-) {
-  update_nchat_users_by_pk(
-    pk_columns: { id: $userId }
-    _set: $preferences
-  ) {
+mutation UpdateDisappearingPreferences($userId: uuid!, $preferences: nchat_users_set_input!) {
+  update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: $preferences) {
     id
     disappearing_dm_default
     disappearing_group_default
@@ -262,11 +241,7 @@ mutation UpdateDisappearingPreferences(
 # =============================================================================
 
 # Log screenshot detection
-mutation LogScreenshotDetection(
-  $channelId: uuid!
-  $userId: uuid!
-  $messageId: uuid
-) {
+mutation LogScreenshotDetection($channelId: uuid!, $userId: uuid!, $messageId: uuid) {
   insert_nchat_screenshot_logs_one(
     object: {
       channel_id: $channelId

@@ -346,9 +346,7 @@ export function createFormStep(
 /**
  * Create a condition step
  */
-export function createConditionStep(
-  position: Position = { x: 100, y: 100 }
-): ConditionStep {
+export function createConditionStep(position: Position = { x: 100, y: 100 }): ConditionStep {
   return createStep('condition', position) as ConditionStep
 }
 
@@ -431,10 +429,7 @@ export function createEndStep(
 /**
  * Clone a step with a new ID
  */
-export function cloneStep(
-  step: WorkflowStep,
-  offset: Position = { x: 50, y: 50 }
-): WorkflowStep {
+export function cloneStep(step: WorkflowStep, offset: Position = { x: 50, y: 50 }): WorkflowStep {
   return {
     ...step,
     id: generateStepId(step.type),

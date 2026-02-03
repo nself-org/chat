@@ -7,10 +7,7 @@ import { SettingsSkeleton } from '@/components/loading/settings-skeleton'
 export default function SettingsLoading() {
   return (
     <div className="h-screen bg-background">
-      <SettingsSkeleton
-        showNav
-        sectionCount={3}
-      />
+      <SettingsSkeleton showNav sectionCount={3} />
     </div>
   )
 }

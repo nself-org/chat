@@ -23,10 +23,7 @@ export const MARK_CHANNEL_READ = gql`
 export const UPDATE_LAST_READ = gql`
   mutation UpdateLastRead($channelId: uuid!, $userId: uuid!) {
     update_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
       _set: { last_read_at: "now()" }
     ) {
       affected_rows

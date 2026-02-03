@@ -70,15 +70,18 @@ Comprehensive end-to-end testing infrastructure for nself-chat mobile applicatio
 ### Device Configurations
 
 #### iOS Simulators
+
 - ✅ iPhone 15 Pro (primary)
 - ✅ iPhone 14 (secondary)
 - ✅ iPhone SE 3rd gen (small screen)
 
 #### Android Emulators
+
 - ✅ Pixel 5 API 34 (primary)
 - ✅ Pixel Tablet API 34 (tablet)
 
 #### Real Devices (BrowserStack)
+
 - ✅ iPhone 15 Pro Max (iOS 17)
 - ✅ Samsung Galaxy S23 (Android 13)
 
@@ -113,35 +116,35 @@ Comprehensive end-to-end testing infrastructure for nself-chat mobile applicatio
 
 ## 📊 Test Coverage Summary
 
-| Category | Test Files | Test Cases | Coverage |
-|----------|-----------|------------|----------|
-| Authentication | 1 | 25+ | Login, signup, logout, biometric, session |
-| Messaging | 1 | 35+ | Send, edit, delete, reply, react, threads |
-| Channels | 1 | 30+ | Create, join, leave, search, notifications |
-| Search | 1 | 25+ | Basic, semantic, filters, suggestions |
-| Attachments | 1 | 25+ | Photos, videos, documents, upload |
-| Notifications | 1 | 30+ | Push, badges, settings, deep links |
-| Offline Mode | 1 | 25+ | Queueing, sync, caching, 3G |
-| Deep Linking | 1 | 35+ | Channel, message, DM, thread, QR |
-| Network | 1 | 35+ | 3G, switching, rate limiting, WebSocket |
-| Performance | 1 | 30+ | Launch, transitions, latency, memory |
-| Setup/Utilities | 1 | - | Helpers, fixtures, test data |
-| **Total** | **11** | **295+** | **All critical flows** |
+| Category        | Test Files | Test Cases | Coverage                                   |
+| --------------- | ---------- | ---------- | ------------------------------------------ |
+| Authentication  | 1          | 25+        | Login, signup, logout, biometric, session  |
+| Messaging       | 1          | 35+        | Send, edit, delete, reply, react, threads  |
+| Channels        | 1          | 30+        | Create, join, leave, search, notifications |
+| Search          | 1          | 25+        | Basic, semantic, filters, suggestions      |
+| Attachments     | 1          | 25+        | Photos, videos, documents, upload          |
+| Notifications   | 1          | 30+        | Push, badges, settings, deep links         |
+| Offline Mode    | 1          | 25+        | Queueing, sync, caching, 3G                |
+| Deep Linking    | 1          | 35+        | Channel, message, DM, thread, QR           |
+| Network         | 1          | 35+        | 3G, switching, rate limiting, WebSocket    |
+| Performance     | 1          | 30+        | Launch, transitions, latency, memory       |
+| Setup/Utilities | 1          | -          | Helpers, fixtures, test data               |
+| **Total**       | **11**     | **295+**   | **All critical flows**                     |
 
 ## 🎯 Performance Benchmarks
 
 ### Target Metrics (All Tests Passing)
 
-| Metric | Target | Test Location |
-|--------|--------|---------------|
-| Cold Start | < 3s | performance.spec.ts |
-| Warm Start | < 1.5s | performance.spec.ts |
-| Login | < 5s | auth.spec.ts |
-| Navigate | < 2s | performance.spec.ts |
-| Send Message | < 2s | messaging.spec.ts |
-| Search | < 3s | search.spec.ts |
-| Semantic Search | < 5s | search.spec.ts |
-| Image Upload | < 8s | attachments.spec.ts |
+| Metric          | Target | Test Location       |
+| --------------- | ------ | ------------------- |
+| Cold Start      | < 3s   | performance.spec.ts |
+| Warm Start      | < 1.5s | performance.spec.ts |
+| Login           | < 5s   | auth.spec.ts        |
+| Navigate        | < 2s   | performance.spec.ts |
+| Send Message    | < 2s   | messaging.spec.ts   |
+| Search          | < 3s   | search.spec.ts      |
+| Semantic Search | < 5s   | search.spec.ts      |
+| Image Upload    | < 8s   | attachments.spec.ts |
 
 ## 🔧 Configuration Files
 
@@ -180,7 +183,7 @@ Comprehensive end-to-end testing infrastructure for nself-chat mobile applicatio
    - appium-uiautomator2-driver (^3.11.3)
    - jest-junit (^16.0.0)
    - jest-html-reporter (^3.10.2)
-   - + 10 more testing dependencies
+   - - 10 more testing dependencies
 
    Added scripts:
    - test:e2e:mobile
@@ -213,6 +216,7 @@ pnpm exec detox test e2e/mobile/auth.spec.ts --configuration ios.sim.debug
 ### CI/CD
 
 Tests run automatically on:
+
 - Pull requests (iOS simulator + Android emulator)
 - Push to main/develop
 - Daily schedule (BrowserStack real devices)
@@ -251,11 +255,13 @@ Tests run automatically on:
 ## 🎓 Key Features
 
 ### 1. Cross-Platform Testing
+
 - iOS simulators (iPhone 15 Pro, 14, SE)
 - Android emulators (Pixel 5, Tablet)
 - Real devices via BrowserStack
 
 ### 2. Network Simulation
+
 - Slow 3G simulation
 - Offline mode testing
 - Connection switching (WiFi ↔ cellular)
@@ -263,6 +269,7 @@ Tests run automatically on:
 - WebSocket reconnection
 
 ### 3. Performance Benchmarking
+
 - App launch time (cold/warm)
 - Screen transition time
 - Message send latency
@@ -271,6 +278,7 @@ Tests run automatically on:
 - Battery consumption (estimated)
 
 ### 4. Comprehensive Coverage
+
 - 295+ test cases
 - All critical user flows
 - Edge cases and error handling
@@ -278,6 +286,7 @@ Tests run automatically on:
 - Security testing (biometric auth)
 
 ### 5. CI/CD Integration
+
 - Automated on every PR
 - Daily real device testing
 - Performance regression detection
@@ -285,6 +294,7 @@ Tests run automatically on:
 - PR comments with results
 
 ### 6. Developer Experience
+
 - Helper utilities for common actions
 - Performance measurement framework
 - Network simulation helpers
@@ -313,12 +323,14 @@ Tests run automatically on:
 ## 📚 Resources
 
 ### Documentation
+
 - [Detox Docs](https://wix.github.io/Detox/)
 - [Appium Docs](https://appium.io/docs/)
 - [WebDriverIO Docs](https://webdriver.io/)
 - [BrowserStack App Automate](https://www.browserstack.com/app-automate)
 
 ### Test Files
+
 - See `/e2e/mobile/README.md` for detailed documentation
 - Each test file includes inline documentation
 - Helper classes are documented in `setup.ts`

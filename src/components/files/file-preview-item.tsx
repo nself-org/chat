@@ -4,12 +4,7 @@ import * as React from 'react'
 import { X, AlertCircle, RotateCcw, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { FileIcon } from './file-icon'
 import { UploadProgress, type UploadStatus } from './upload-progress'
 import {
@@ -166,11 +161,7 @@ export function FilePreviewItem({
             config.thumbnailSize
           )}
         >
-          <img
-            src={thumbnailUrl}
-            alt={file.name}
-            className="h-full w-full object-cover"
-          />
+          <img src={thumbnailUrl} alt={file.name} className="h-full w-full object-cover" />
           {/* Preview overlay */}
           {onPreview && status === 'completed' && (
             <button
@@ -192,16 +183,11 @@ export function FilePreviewItem({
             config.thumbnailSize
           )}
         >
-          <video
-            src={thumbnailUrl}
-            className="h-full w-full object-cover"
-            muted
-            playsInline
-          />
+          <video src={thumbnailUrl} className="h-full w-full object-cover" muted playsInline />
           {/* Play icon overlay */}
           <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-            <div className="h-4 w-4 rounded-full bg-white/90 pl-0.5 flex items-center justify-center">
-              <div className="border-l-[6px] border-t-[4px] border-b-[4px] border-l-gray-900 border-t-transparent border-b-transparent" />
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-white/90 pl-0.5">
+              <div className="border-b-[4px] border-l-[6px] border-t-[4px] border-b-transparent border-l-gray-900 border-t-transparent" />
             </div>
           </div>
         </div>
@@ -296,9 +282,7 @@ export function FilePreviewItem({
       )
     }
 
-    return buttons.length > 0 ? (
-      <div className="flex items-center gap-0.5">{buttons}</div>
-    ) : null
+    return buttons.length > 0 ? <div className="flex items-center gap-0.5">{buttons}</div> : null
   }
 
   return (
@@ -322,11 +306,7 @@ export function FilePreviewItem({
             <div className="min-w-0 flex-1">
               {/* File name */}
               <p
-                className={cn(
-                  'truncate font-medium',
-                  config.fontSize,
-                  config.nameMaxWidth
-                )}
+                className={cn('truncate font-medium', config.fontSize, config.nameMaxWidth)}
                 title={file.name}
               >
                 {file.name}
@@ -418,7 +398,7 @@ export function CompactFilePreviewItem({
   return (
     <div
       className={cn(
-        'group relative inline-flex items-center gap-1.5 rounded-md border bg-muted/50 px-2 py-1',
+        'bg-muted/50 group relative inline-flex items-center gap-1.5 rounded-md border px-2 py-1',
         status === 'error' && 'border-destructive/50',
         className
       )}
@@ -426,11 +406,7 @@ export function CompactFilePreviewItem({
     >
       {/* Thumbnail or icon */}
       {isImage && thumbnailUrl ? (
-        <img
-          src={thumbnailUrl}
-          alt={file.name}
-          className="h-4 w-4 rounded object-cover"
-        />
+        <img src={thumbnailUrl} alt={file.name} className="h-4 w-4 rounded object-cover" />
       ) : (
         <FileIcon file={file} size="xs" />
       )}

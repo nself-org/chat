@@ -259,9 +259,7 @@ export class AudioProcessor {
         try {
           await audioTrack.applyConstraints(this.getAudioConstraints())
         } catch (error) {
-          this.callbacks.onError?.(
-            error instanceof Error ? error : new Error(String(error))
-          )
+          this.callbacks.onError?.(error instanceof Error ? error : new Error(String(error)))
         }
       }
     }

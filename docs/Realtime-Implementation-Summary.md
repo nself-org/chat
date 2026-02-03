@@ -254,18 +254,14 @@ import { PresenceIndicator } from '@/components/user/PresenceIndicator'
 
 export function ChatRoom({ channelId, members }) {
   const { typingUsers } = useTyping(channelId)
-  const { getPresence } = usePresence(members.map(m => m.id))
+  const { getPresence } = usePresence(members.map((m) => m.id))
 
   return (
     <div>
       {/* Member list with presence */}
       {members.map((member) => (
         <div key={member.id}>
-          <PresenceIndicator
-            userId={member.id}
-            showTooltip
-            showLastSeen
-          />
+          <PresenceIndicator userId={member.id} showTooltip showLastSeen />
           {member.name}
         </div>
       ))}
@@ -277,11 +273,7 @@ export function ChatRoom({ channelId, members }) {
       <TypingIndicator users={typingUsers} />
 
       {/* Message input */}
-      <MessageInputWithTyping
-        channelId={channelId}
-        onSendMessage={handleSend}
-        showCharCount
-      />
+      <MessageInputWithTyping channelId={channelId} onSendMessage={handleSend} showCharCount />
     </div>
   )
 }
@@ -330,9 +322,9 @@ export const SOCKET_CONFIG = {
 
 ```typescript
 const typingConfig = {
-  debounceMs: 300,      // Debounce before stop
-  timeoutMs: 5000,      // Remove indicator timeout
-  throttleMs: 2000,     // Min time between events
+  debounceMs: 300, // Debounce before stop
+  timeoutMs: 5000, // Remove indicator timeout
+  throttleMs: 2000, // Min time between events
 }
 ```
 
@@ -340,8 +332,8 @@ const typingConfig = {
 
 ```typescript
 const presenceConfig = {
-  autoAwayTimeout: 300000,    // 5 minutes
-  heartbeatInterval: 30000,   // 30 seconds
+  autoAwayTimeout: 300000, // 5 minutes
+  heartbeatInterval: 30000, // 30 seconds
   trackLastSeen: true,
 }
 ```
@@ -443,6 +435,7 @@ artillery quick --count 100 --num 10 http://localhost:3001/socket.io/
 **Problem**: Won't connect
 
 **Solutions**:
+
 1. Check `NEXT_PUBLIC_SOCKET_URL` is set
 2. Verify backend is running on correct port
 3. Check browser console for errors
@@ -453,6 +446,7 @@ artillery quick --count 100 --num 10 http://localhost:3001/socket.io/
 **Problem**: Indicators not showing
 
 **Solutions**:
+
 1. Verify `channelId` matches
 2. Check both users are connected
 3. Look for throttling (2s limit)
@@ -463,6 +457,7 @@ artillery quick --count 100 --num 10 http://localhost:3001/socket.io/
 **Problem**: Slow delivery
 
 **Solutions**:
+
 1. Check network quality
 2. Monitor latency metrics
 3. Disable batching for critical messages

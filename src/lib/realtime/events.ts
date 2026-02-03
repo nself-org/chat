@@ -44,7 +44,7 @@ export const SOCKET_EVENTS = {
   STREAM_ERROR: 'stream:error',
 } as const
 
-export type SocketEvent = typeof SOCKET_EVENTS[keyof typeof SOCKET_EVENTS]
+export type SocketEvent = (typeof SOCKET_EVENTS)[keyof typeof SOCKET_EVENTS]
 
 export interface MessagePayload {
   id: string

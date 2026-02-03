@@ -46,6 +46,7 @@ chmod +x scripts/setup-media-server.sh
 ```
 
 The script will:
+
 1. Detect your public IP address
 2. Generate secure secrets
 3. Create configuration files
@@ -152,36 +153,32 @@ NEXT_PUBLIC_MEDIA_SERVER_WS=ws://localhost:3100
 
 ```typescript
 // src/lib/media/media-client.ts
-import { io, Socket } from 'socket.io-client';
-import { Device } from 'mediasoup-client';
+import { io, Socket } from 'socket.io-client'
+import { Device } from 'mediasoup-client'
 
 export class MediaClient {
-  private socket: Socket;
-  private device: Device;
+  private socket: Socket
+  private device: Device
 
   constructor(token: string) {
     this.socket = io(process.env.NEXT_PUBLIC_MEDIA_SERVER_WS!, {
       auth: { token },
       transports: ['websocket', 'polling'],
-    });
+    })
 
-    this.device = new Device();
+    this.device = new Device()
   }
 
   async joinRoom(roomId: string, userId: string, displayName: string) {
     return new Promise((resolve, reject) => {
-      this.socket.emit(
-        'join-room',
-        { roomId, userId, displayName },
-        (response: any) => {
-          if (response.error) {
-            reject(new Error(response.error));
-          } else {
-            resolve(response);
-          }
+      this.socket.emit('join-room', { roomId, userId, displayName }, (response: any) => {
+        if (response.error) {
+          reject(new Error(response.error))
+        } else {
+          resolve(response)
         }
-      );
-    });
+      })
+    })
   }
 
   // ... more methods
@@ -331,6 +328,7 @@ docker-compose -f docker-compose.media.yml --profile monitoring up -d
 ```
 
 Access dashboards:
+
 - **Prometheus**: http://localhost:9091
 - **Grafana**: http://localhost:3001 (admin/admin)
 
@@ -374,6 +372,7 @@ curl http://localhost:3100/metrics
 ```
 
 Key metrics:
+
 - `media_rooms_total` - Total active rooms
 - `media_participants_total` - Total active participants
 - `media_recordings_active` - Active recordings
@@ -395,11 +394,13 @@ docker stats nself-redis-media
 **Solution:**
 
 1. Check if service is running:
+
    ```bash
    docker ps | grep media-server
    ```
 
 2. Check logs:
+
    ```bash
    docker logs nself-media-server
    ```
@@ -414,6 +415,7 @@ docker stats nself-redis-media
 **Solution:**
 
 1. Test TURN connectivity:
+
    ```bash
    # Install coturn-utils
    sudo apt-get install coturn-utils
@@ -425,6 +427,7 @@ docker stats nself-redis-media
    ```
 
 2. Check external IP is set correctly:
+
    ```bash
    docker logs nself-coturn | grep "External IP"
    ```
@@ -436,6 +439,7 @@ docker stats nself-redis-media
 **Solution:**
 
 1. Adjust bandwidth settings in `config.ts`:
+
    ```typescript
    maxIncomingBitrate: 2000000,  // 2 Mbps
    initialAvailableOutgoingBitrate: 1500000,  // 1.5 Mbps
@@ -447,14 +451,14 @@ docker stats nself-redis-media
    const producer = await transport.produce({
      track: videoTrack,
      encodings: [
-       { maxBitrate: 100000 },   // Low
-       { maxBitrate: 500000 },   // Medium
-       { maxBitrate: 1500000 },  // High
+       { maxBitrate: 100000 }, // Low
+       { maxBitrate: 500000 }, // Medium
+       { maxBitrate: 1500000 }, // High
      ],
      codecOptions: {
        videoGoogleStartBitrate: 1000,
      },
-   });
+   })
    ```
 
 ### Issue: Recording Fails
@@ -462,11 +466,13 @@ docker stats nself-redis-media
 **Solution:**
 
 1. Check FFmpeg is installed:
+
    ```bash
    docker exec nself-media-server which ffmpeg
    ```
 
 2. Check recording directory permissions:
+
    ```bash
    docker exec nself-media-server ls -la /recordings
    ```
@@ -481,11 +487,13 @@ docker stats nself-redis-media
 **Solution:**
 
 1. Ensure Redis is running:
+
    ```bash
    docker ps | grep redis
    ```
 
 2. Test connection:
+
    ```bash
    docker exec nself-redis-media redis-cli ping
    ```
@@ -500,9 +508,11 @@ docker stats nself-redis-media
 ### REST Endpoints
 
 #### GET /api/health
+
 Health check endpoint.
 
 **Response:**
+
 ```json
 {
   "status": "healthy",
@@ -512,12 +522,15 @@ Health check endpoint.
 ```
 
 #### GET /api/stats
+
 Get server statistics (requires authentication).
 
 **Headers:**
+
 - `Authorization: Bearer <token>`
 
 **Response:**
+
 ```json
 {
   "workers": { "total": 4 },
@@ -530,9 +543,11 @@ Get server statistics (requires authentication).
 ```
 
 #### GET /api/ice-servers
+
 Get ICE server configuration (requires authentication).
 
 **Response:**
+
 ```json
 {
   "iceServers": [
@@ -547,9 +562,11 @@ Get ICE server configuration (requires authentication).
 ```
 
 #### POST /api/rooms/:roomId
+
 Create or get room.
 
 **Response:**
+
 ```json
 {
   "roomId": "room-123",
@@ -559,9 +576,11 @@ Create or get room.
 ```
 
 #### POST /api/rooms/:roomId/recordings
+
 Start recording.
 
 **Response:**
+
 ```json
 {
   "id": "recording-123",
@@ -636,6 +655,7 @@ media-server:
 ## Security Best Practices
 
 1. **Use Strong Secrets**
+
    ```bash
    openssl rand -base64 32
    ```
@@ -645,11 +665,13 @@ media-server:
    - Use HTTPS for media server API
 
 3. **Restrict CORS**
+
    ```bash
    CORS_ORIGIN=https://your-domain.com
    ```
 
 4. **Implement Rate Limiting**
+
    ```bash
    RATE_LIMIT_MAX_REQUESTS=100
    RATE_LIMIT_WINDOW_MS=60000
@@ -684,6 +706,7 @@ media-server:
 ## Support
 
 For issues or questions:
+
 - Check logs: `docker-compose -f docker-compose.media.yml logs -f`
 - Run tests: `./scripts/test-media-server.sh`
 - Review configuration: `.env.media` and `turnserver.conf`

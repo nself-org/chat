@@ -109,53 +109,41 @@ export function useMessageMutations() {
   const [unpinMessageMutation, { loading: unpinningMessage }] = useMutation(UNPIN_MESSAGE)
   const [starMessageMutation, { loading: starringMessage }] = useMutation(STAR_MESSAGE)
   const [unstarMessageMutation, { loading: unstarringMessage }] = useMutation(UNSTAR_MESSAGE)
-  const [forwardMessageMutation, { loading: forwardingMessage }] =
-    useMutation(FORWARD_MESSAGE)
+  const [forwardMessageMutation, { loading: forwardingMessage }] = useMutation(FORWARD_MESSAGE)
   const [markReadMutation, { loading: markingRead }] = useMutation(MARK_MESSAGE_READ)
   const [markUnreadMutation, { loading: markingUnread }] = useMutation(MARK_MESSAGE_UNREAD)
 
   // Thread Mutations
   const [createThreadMutation, { loading: creatingThread }] = useMutation(CREATE_THREAD)
-  const [replyToThreadMutation, { loading: replyingToThread }] =
-    useMutation(REPLY_TO_THREAD)
-  const [subscribeThreadMutation, { loading: subscribingThread }] =
-    useMutation(SUBSCRIBE_TO_THREAD)
-  const [unsubscribeThreadMutation, { loading: unsubscribingThread }] = useMutation(
-    UNSUBSCRIBE_FROM_THREAD
-  )
+  const [replyToThreadMutation, { loading: replyingToThread }] = useMutation(REPLY_TO_THREAD)
+  const [subscribeThreadMutation, { loading: subscribingThread }] = useMutation(SUBSCRIBE_TO_THREAD)
+  const [unsubscribeThreadMutation, { loading: unsubscribingThread }] =
+    useMutation(UNSUBSCRIBE_FROM_THREAD)
 
   // Attachment Mutations
   const [addAttachmentMutation, { loading: addingAttachment }] = useMutation(ADD_ATTACHMENT)
-  const [removeAttachmentMutation, { loading: removingAttachment }] =
-    useMutation(REMOVE_ATTACHMENT)
+  const [removeAttachmentMutation, { loading: removingAttachment }] = useMutation(REMOVE_ATTACHMENT)
 
   // Scheduled Message Mutations
-  const [scheduleMessageMutation, { loading: schedulingMessage }] =
-    useMutation(SCHEDULE_MESSAGE)
-  const [cancelScheduledMutation, { loading: cancellingScheduled }] = useMutation(
-    CANCEL_SCHEDULED_MESSAGE
-  )
-  const [updateScheduledMutation, { loading: updatingScheduled }] = useMutation(
-    UPDATE_SCHEDULED_MESSAGE
-  )
+  const [scheduleMessageMutation, { loading: schedulingMessage }] = useMutation(SCHEDULE_MESSAGE)
+  const [cancelScheduledMutation, { loading: cancellingScheduled }] =
+    useMutation(CANCEL_SCHEDULED_MESSAGE)
+  const [updateScheduledMutation, { loading: updatingScheduled }] =
+    useMutation(UPDATE_SCHEDULED_MESSAGE)
 
   // Typing Indicators
   const [startTypingMutation] = useMutation(START_TYPING)
   const [stopTypingMutation] = useMutation(STOP_TYPING)
 
   // Bulk Operations
-  const [deleteMultipleMutation, { loading: deletingMultiple }] = useMutation(
-    DELETE_MULTIPLE_MESSAGES
-  )
-  const [pinMultipleMutation, { loading: pinningMultiple }] =
-    useMutation(PIN_MULTIPLE_MESSAGES)
+  const [deleteMultipleMutation, { loading: deletingMultiple }] =
+    useMutation(DELETE_MULTIPLE_MESSAGES)
+  const [pinMultipleMutation, { loading: pinningMultiple }] = useMutation(PIN_MULTIPLE_MESSAGES)
 
   // Reaction Mutations
   const [addReactionMutation, { loading: addingReaction }] = useMutation(ADD_REACTION)
-  const [removeReactionMutation, { loading: removingReaction }] =
-    useMutation(REMOVE_REACTION)
-  const [toggleReactionMutation, { loading: togglingReaction }] =
-    useMutation(TOGGLE_REACTION)
+  const [removeReactionMutation, { loading: removingReaction }] = useMutation(REMOVE_REACTION)
+  const [toggleReactionMutation, { loading: togglingReaction }] = useMutation(TOGGLE_REACTION)
 
   // ============================================================================
   // Message CRUD Operations
@@ -181,7 +169,10 @@ export function useMessageMutations() {
           },
         })
 
-        logger.debug('Message sent', { userId: user.id, messageId: data.insert_nchat_messages_one.id })
+        logger.debug('Message sent', {
+          userId: user.id,
+          messageId: data.insert_nchat_messages_one.id,
+        })
         return data.insert_nchat_messages_one
       } catch (error) {
         logger.error('Failed to send message', error as Error, { userId: user.id })
@@ -657,7 +648,10 @@ export function useMessageMutations() {
           },
         })
 
-        logger.info('Message scheduled', { userId: user.id, messageId: data.insert_nchat_scheduled_messages_one.id })
+        logger.info('Message scheduled', {
+          userId: user.id,
+          messageId: data.insert_nchat_scheduled_messages_one.id,
+        })
         toast({
           title: 'Message scheduled',
           description: `Your message will be sent at ${new Date(input.scheduledFor).toLocaleString()}.`,
@@ -802,7 +796,10 @@ export function useMessageMutations() {
           variables: { messageIds },
         })
 
-        logger.info('Multiple messages deleted', { userId: user.id, count: data.delete_nchat_messages.affected_rows })
+        logger.info('Multiple messages deleted', {
+          userId: user.id,
+          count: data.delete_nchat_messages.affected_rows,
+        })
         toast({
           title: 'Messages deleted',
           description: `${data.delete_nchat_messages.affected_rows} messages have been removed.`,

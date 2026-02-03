@@ -38,7 +38,10 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 
     // Add transition class for smooth color changes
-    root.style.setProperty('transition', 'background-color 0.3s ease-in-out, color 0.3s ease-in-out')
+    root.style.setProperty(
+      'transition',
+      'background-color 0.3s ease-in-out, color 0.3s ease-in-out'
+    )
 
     root.classList.remove('light', 'dark')
 
@@ -98,13 +101,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <ThemeContext.Provider value={{
-      theme,
-      setTheme: handleSetTheme,
-      themeConfig,
-      updateThemeConfig,
-      isTransitioning
-    }}>
+    <ThemeContext.Provider
+      value={{
+        theme,
+        setTheme: handleSetTheme,
+        themeConfig,
+        updateThemeConfig,
+        isTransitioning,
+      }}
+    >
       {children}
     </ThemeContext.Provider>
   )

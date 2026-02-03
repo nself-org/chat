@@ -152,7 +152,7 @@ function MarkdownNode({
 
     case 'blockquote':
       return (
-        <blockquote className="border-l-4 border-muted-foreground/20 pl-4 italic my-4">
+        <blockquote className="border-muted-foreground/20 my-4 border-l-4 pl-4 italic">
           {node.content?.map((child, index) => (
             <MarkdownNode
               key={index}
@@ -168,7 +168,7 @@ function MarkdownNode({
 
     case 'bulletList':
       return (
-        <ul className="list-disc pl-6 my-4 space-y-1">
+        <ul className="my-4 list-disc space-y-1 pl-6">
           {node.content?.map((child, index) => (
             <MarkdownNode
               key={index}
@@ -184,7 +184,7 @@ function MarkdownNode({
 
     case 'orderedList':
       return (
-        <ol className="list-decimal pl-6 my-4 space-y-1">
+        <ol className="my-4 list-decimal space-y-1 pl-6">
           {node.content?.map((child, index) => (
             <MarkdownNode
               key={index}
@@ -226,7 +226,7 @@ function MarkdownNode({
           src={node.attrs?.src || ''}
           alt={node.attrs?.alt || ''}
           title={node.attrs?.title}
-          className="max-w-full h-auto rounded-lg my-4"
+          className="my-4 h-auto max-w-full rounded-lg"
         />
       )
 
@@ -293,9 +293,7 @@ function TextNode({ node, onLinkClick }: TextNodeProps) {
 
         case 'code':
           content = (
-            <code className="px-1.5 py-0.5 rounded bg-muted font-mono text-sm">
-              {content}
-            </code>
+            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">{content}</code>
           )
           break
 
@@ -304,7 +302,7 @@ function TextNode({ node, onLinkClick }: TextNodeProps) {
           content = (
             <a
               href={href}
-              className="text-primary underline hover:text-primary/80 cursor-pointer"
+              className="hover:text-primary/80 cursor-pointer text-primary underline"
               target="_blank"
               rel="noopener noreferrer"
               onClick={(e) => {
@@ -374,16 +372,18 @@ function CodeBlock({ language, code, syntaxHighlighting = true }: CodeBlockProps
 
   if (highlighted && syntaxHighlighting) {
     return (
-      <pre className="bg-muted rounded-lg p-4 my-4 overflow-x-auto">
+      <pre className="my-4 overflow-x-auto rounded-lg bg-muted p-4">
         <code className={`language-${language}`}>
-          {renderHighlightedCode(highlighted.children as Array<{ type: string; value?: string; children?: unknown[] }>)}
+          {renderHighlightedCode(
+            highlighted.children as Array<{ type: string; value?: string; children?: unknown[] }>
+          )}
         </code>
       </pre>
     )
   }
 
   return (
-    <pre className="bg-muted rounded-lg p-4 my-4 overflow-x-auto">
+    <pre className="my-4 overflow-x-auto rounded-lg bg-muted p-4">
       <code className={`language-${language}`}>{code}</code>
     </pre>
   )
@@ -430,7 +430,7 @@ function Mention({ userId, username, onClick }: MentionProps) {
   return (
     <span
       className={cn(
-        'mention mention-user inline-flex items-center px-1.5 py-0.5 rounded bg-primary/10 text-primary font-medium cursor-pointer hover:bg-primary/20 transition-colors',
+        'mention mention-user bg-primary/10 hover:bg-primary/20 inline-flex cursor-pointer items-center rounded px-1.5 py-0.5 font-medium text-primary transition-colors',
         onClick && 'cursor-pointer'
       )}
       data-id={userId}
@@ -457,8 +457,8 @@ function ChannelMention({ channelId, channelName, onClick }: ChannelMentionProps
   return (
     <span
       className={cn(
-        'mention mention-channel inline-flex items-center px-1.5 py-0.5 rounded bg-accent text-accent-foreground font-medium transition-colors',
-        onClick && 'cursor-pointer hover:bg-accent/80'
+        'mention mention-channel text-accent-foreground inline-flex items-center rounded bg-accent px-1.5 py-0.5 font-medium transition-colors',
+        onClick && 'hover:bg-accent/80 cursor-pointer'
       )}
       data-id={channelId}
       onClick={() => onClick?.(channelId, channelName)}
@@ -502,12 +502,12 @@ export function MarkdownPreview({
         {showToggle && (
           <button
             onClick={() => setMode('preview')}
-            className="absolute top-2 right-2 px-3 py-1 text-xs rounded bg-muted hover:bg-muted/80"
+            className="hover:bg-muted/80 absolute right-2 top-2 rounded bg-muted px-3 py-1 text-xs"
           >
             Preview
           </button>
         )}
-        <pre className="bg-muted rounded-lg p-4 overflow-x-auto font-mono text-sm">
+        <pre className="overflow-x-auto rounded-lg bg-muted p-4 font-mono text-sm">
           {rawContent}
         </pre>
       </div>
@@ -519,7 +519,7 @@ export function MarkdownPreview({
       {showToggle && (
         <button
           onClick={() => setMode('raw')}
-          className="absolute top-2 right-2 px-3 py-1 text-xs rounded bg-muted hover:bg-muted/80 z-10"
+          className="hover:bg-muted/80 absolute right-2 top-2 z-10 rounded bg-muted px-3 py-1 text-xs"
         >
           Raw
         </button>
@@ -564,14 +564,10 @@ export function CompactMarkdownRenderer({
   }, [jsonContent])
 
   const truncated = plainText.length > maxLength
-  const displayText = truncated
-    ? plainText.substring(0, maxLength).trim() + '...'
-    : plainText
+  const displayText = truncated ? plainText.substring(0, maxLength).trim() + '...' : plainText
 
   return (
-    <div className={cn('text-sm text-muted-foreground line-clamp-2', className)}>
-      {displayText}
-    </div>
+    <div className={cn('line-clamp-2 text-sm text-muted-foreground', className)}>{displayText}</div>
   )
 }
 

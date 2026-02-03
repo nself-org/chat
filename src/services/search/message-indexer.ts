@@ -89,9 +89,7 @@ export function transformMessageToDocument(
   const attachments = message.attachments || []
   const hasImage = attachments.some((a) => a.type === 'image')
   const hasVideo = attachments.some((a) => a.type === 'video')
-  const hasFile = attachments.some(
-    (a) => a.type === 'file' || a.type === 'audio'
-  )
+  const hasFile = attachments.some((a) => a.type === 'file' || a.type === 'audio')
 
   return {
     id: message.id,
@@ -170,9 +168,7 @@ export class MessageIndexer {
   /**
    * Index multiple messages at once
    */
-  async indexMessages(
-    messagesWithContext: MessageWithContext[]
-  ): Promise<BatchIndexingResult> {
+  async indexMessages(messagesWithContext: MessageWithContext[]): Promise<BatchIndexingResult> {
     const documents: MeiliMessageDocument[] = []
     const errors: { id: string; error: string }[] = []
 

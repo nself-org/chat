@@ -210,7 +210,8 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   // Toggle between light and dark
   const toggleColorScheme = () => {
-    const currentIsDark = colorScheme === 'system' ? systemColorScheme === 'dark' : colorScheme === 'dark'
+    const currentIsDark =
+      colorScheme === 'system' ? systemColorScheme === 'dark' : colorScheme === 'dark'
     setColorScheme(currentIsDark ? 'light' : 'dark')
   }
 

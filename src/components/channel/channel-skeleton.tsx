@@ -22,15 +22,7 @@ interface SkeletonPrimitiveProps {
 }
 
 function Skeleton({ className, style }: SkeletonPrimitiveProps) {
-  return (
-    <div
-      className={cn(
-        'animate-pulse rounded-md bg-muted',
-        className
-      )}
-      style={style}
-    />
-  )
+  return <div className={cn('animate-pulse rounded-md bg-muted', className)} style={style} />
 }
 
 // ============================================================================
@@ -47,7 +39,7 @@ function ChannelListSkeleton() {
 
       {/* Starred section */}
       <div className="space-y-1">
-        <div className="px-2 py-1 flex items-center gap-2">
+        <div className="flex items-center gap-2 px-2 py-1">
           <Skeleton className="h-3 w-3" />
           <Skeleton className="h-3 w-16" />
         </div>
@@ -61,7 +53,7 @@ function ChannelListSkeleton() {
 
       {/* Channels section */}
       <div className="space-y-1">
-        <div className="px-2 py-1 flex items-center gap-2">
+        <div className="flex items-center gap-2 px-2 py-1">
           <Skeleton className="h-3 w-3" />
           <Skeleton className="h-3 w-20" />
         </div>
@@ -75,7 +67,7 @@ function ChannelListSkeleton() {
 
       {/* Private section */}
       <div className="space-y-1">
-        <div className="px-2 py-1 flex items-center gap-2">
+        <div className="flex items-center gap-2 px-2 py-1">
           <Skeleton className="h-3 w-3" />
           <Skeleton className="h-3 w-14" />
         </div>
@@ -89,7 +81,7 @@ function ChannelListSkeleton() {
 
       {/* DMs section */}
       <div className="space-y-1">
-        <div className="px-2 py-1 flex items-center gap-2">
+        <div className="flex items-center gap-2 px-2 py-1">
           <Skeleton className="h-3 w-3" />
           <Skeleton className="h-3 w-28" />
         </div>
@@ -113,7 +105,7 @@ function ChannelListSkeleton() {
 
 function ChannelHeaderSkeleton() {
   return (
-    <div className="flex h-14 items-center justify-between px-4 border-b">
+    <div className="flex h-14 items-center justify-between border-b px-4">
       <div className="flex items-center gap-2">
         <Skeleton className="h-5 w-5" />
         <Skeleton className="h-5 w-32" />
@@ -135,15 +127,15 @@ function ChannelHeaderSkeleton() {
 
 function ChannelInfoPanelSkeleton() {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between h-14 px-4 border-b">
+      <div className="flex h-14 items-center justify-between border-b px-4">
         <Skeleton className="h-5 w-32" />
         <Skeleton className="h-8 w-8" />
       </div>
 
       {/* Channel Info */}
-      <div className="p-4 border-b">
+      <div className="border-b p-4">
         <div className="flex items-start gap-4">
           <Skeleton className="h-16 w-16 rounded-lg" />
           <div className="flex-1 space-y-2">
@@ -167,10 +159,10 @@ function ChannelInfoPanelSkeleton() {
       </div>
 
       {/* Content */}
-      <div className="flex-1 p-4 space-y-4">
+      <div className="flex-1 space-y-4 p-4">
         {[1, 2, 3, 4].map((i) => (
           <div key={i} className="flex items-start gap-3">
-            <Skeleton className="h-4 w-4 mt-0.5" />
+            <Skeleton className="mt-0.5 h-4 w-4" />
             <div className="flex-1 space-y-1">
               <Skeleton className="h-3 w-16" />
               <Skeleton className="h-4 w-full" />
@@ -188,7 +180,7 @@ function ChannelInfoPanelSkeleton() {
 
 function ChannelMembersSkeleton() {
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Search */}
       <div className="p-3">
         <Skeleton className="h-8 w-full" />
@@ -198,7 +190,7 @@ function ChannelMembersSkeleton() {
       <div className="px-3 py-1">
         <Skeleton className="h-3 w-20" />
       </div>
-      <div className="px-1 space-y-1">
+      <div className="space-y-1 px-1">
         {[1, 2, 3].map((i) => (
           <div key={i} className="flex items-center gap-3 px-3 py-2">
             <div className="relative">
@@ -213,10 +205,10 @@ function ChannelMembersSkeleton() {
       </div>
 
       {/* Offline section */}
-      <div className="px-3 py-1 mt-4">
+      <div className="mt-4 px-3 py-1">
         <Skeleton className="h-3 w-20" />
       </div>
-      <div className="px-1 space-y-1">
+      <div className="space-y-1 px-1">
         {[1, 2].map((i) => (
           <div key={i} className="flex items-center gap-3 px-3 py-2">
             <div className="relative">

@@ -10,13 +10,14 @@
 
 import { MeiliSearch, Index, Settings } from 'meilisearch'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Configuration Constants
 // ============================================================================
 
 /** MeiliSearch host URL */
-const MEILISEARCH_HOST =
-  process.env.NEXT_PUBLIC_MEILISEARCH_URL || 'http://search.localhost:7700'
+const MEILISEARCH_HOST = process.env.NEXT_PUBLIC_MEILISEARCH_URL || 'http://search.localhost:7700'
 
 /** MeiliSearch API key */
 const MEILISEARCH_API_KEY =
@@ -38,12 +39,7 @@ export type IndexName = (typeof INDEXES)[keyof typeof INDEXES]
 
 /** Settings for messages index */
 export const MESSAGES_INDEX_SETTINGS: Settings = {
-  searchableAttributes: [
-    'content',
-    'author_name',
-    'author_username',
-    'channel_name',
-  ],
+  searchableAttributes: ['content', 'author_name', 'author_username', 'channel_name'],
   filterableAttributes: [
     'channel_id',
     'author_id',
@@ -65,15 +61,7 @@ export const MESSAGES_INDEX_SETTINGS: Settings = {
     'mentions_here',
   ],
   sortableAttributes: ['created_at', 'updated_at'],
-  rankingRules: [
-    'words',
-    'typo',
-    'proximity',
-    'attribute',
-    'sort',
-    'exactness',
-    'created_at:desc',
-  ],
+  rankingRules: ['words', 'typo', 'proximity', 'attribute', 'sort', 'exactness', 'created_at:desc'],
   distinctAttribute: 'id',
   typoTolerance: {
     enabled: true,
@@ -109,14 +97,7 @@ export const FILES_INDEX_SETTINGS: Settings = {
     'extension',
   ],
   sortableAttributes: ['created_at', 'size', 'name'],
-  rankingRules: [
-    'words',
-    'typo',
-    'proximity',
-    'attribute',
-    'sort',
-    'exactness',
-  ],
+  rankingRules: ['words', 'typo', 'proximity', 'attribute', 'sort', 'exactness'],
   distinctAttribute: 'id',
   typoTolerance: {
     enabled: true,
@@ -125,30 +106,10 @@ export const FILES_INDEX_SETTINGS: Settings = {
 
 /** Settings for users index */
 export const USERS_INDEX_SETTINGS: Settings = {
-  searchableAttributes: [
-    'display_name',
-    'username',
-    'email',
-    'bio',
-    'job_title',
-    'department',
-  ],
-  filterableAttributes: [
-    'role',
-    'is_active',
-    'is_bot',
-    'created_at',
-    'last_seen_at',
-  ],
+  searchableAttributes: ['display_name', 'username', 'email', 'bio', 'job_title', 'department'],
+  filterableAttributes: ['role', 'is_active', 'is_bot', 'created_at', 'last_seen_at'],
   sortableAttributes: ['display_name', 'username', 'created_at', 'last_seen_at'],
-  rankingRules: [
-    'words',
-    'typo',
-    'proximity',
-    'attribute',
-    'sort',
-    'exactness',
-  ],
+  rankingRules: ['words', 'typo', 'proximity', 'attribute', 'sort', 'exactness'],
   distinctAttribute: 'id',
   typoTolerance: {
     enabled: true,
@@ -172,20 +133,8 @@ export const CHANNELS_INDEX_SETTINGS: Settings = {
     'category_id',
     'member_count',
   ],
-  sortableAttributes: [
-    'name',
-    'created_at',
-    'member_count',
-    'last_message_at',
-  ],
-  rankingRules: [
-    'words',
-    'typo',
-    'proximity',
-    'attribute',
-    'sort',
-    'exactness',
-  ],
+  sortableAttributes: ['name', 'created_at', 'member_count', 'last_message_at'],
+  rankingRules: ['words', 'typo', 'proximity', 'attribute', 'sort', 'exactness'],
   distinctAttribute: 'id',
   typoTolerance: {
     enabled: true,
@@ -377,11 +326,11 @@ export async function initializeIndexes(): Promise<{
       const index = client.index(config.name)
       await index.updateSettings(config.settings)
 
-      console.log(`[MeiliSearch] Index ${config.name} configured successfully`)
+      // REMOVED: console.log(`[MeiliSearch] Index ${config.name} configured successfully`)
     } catch (error) {
       const message = `Failed to configure index ${config.name}: ${error instanceof Error ? error.message : 'Unknown error'}`
       errors.push(message)
-      console.error(`[MeiliSearch] ${message}`)
+      logger.error(`[MeiliSearch] ${message}`)
     }
   }
 

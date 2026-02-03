@@ -33,6 +33,14 @@ import {
   rateLimitResponse,
   internalErrorResponse,
 } from './response'
+import { logger } from '@/lib/logger'
+import {
+  getRateLimitService,
+  checkEndpointRateLimit,
+  type RateLimitMetadata,
+  type UserTier,
+  type RateLimitResult,
+} from '@/services/rate-limit'
 
 // ============================================================================
 // Types
@@ -54,10 +62,10 @@ export interface RouteContext<TParams extends Record<string, string> = Record<st
   params: Promise<TParams>
 }
 
-export type ApiHandler<TRequest = NextRequest, TParams extends Record<string, string> = Record<string, string>> = (
-  request: TRequest,
-  context: RouteContext<TParams>
-) => Promise<NextResponse> | NextResponse
+export type ApiHandler<
+  TRequest = NextRequest,
+  TParams extends Record<string, string> = Record<string, string>,
+> = (request: TRequest, context: RouteContext<TParams>) => Promise<NextResponse> | NextResponse
 
 export type Middleware<TIn = NextRequest, TOut = NextRequest> = (
   handler: ApiHandler<TOut, any>
@@ -66,30 +74,6 @@ export type Middleware<TIn = NextRequest, TOut = NextRequest> = (
 // ============================================================================
 // Rate Limiting
 // ============================================================================
-
-interface RateLimitEntry {
-  count: number
-  resetAt: number
-}
-
-// In-memory rate limit store (in production, use Redis)
-const rateLimitStore = new Map<string, RateLimitEntry>()
-
-// Clean up expired entries periodically
-let cleanupInterval: NodeJS.Timeout | null = null
-
-function startCleanup() {
-  if (cleanupInterval) return
-
-  cleanupInterval = setInterval(() => {
-    const now = Date.now()
-    for (const [key, entry] of rateLimitStore.entries()) {
-      if (now > entry.resetAt) {
-        rateLimitStore.delete(key)
-      }
-    }
-  }, 60000) // Clean up every minute
-}
 
 /**
  * Get client IP address from request
@@ -105,58 +89,127 @@ export function getClientIp(request: NextRequest): string {
     return realIp
   }
 
+  const cfConnectingIp = request.headers.get('cf-connecting-ip')
+  if (cfConnectingIp) {
+    return cfConnectingIp.trim()
+  }
+
+  const vercelIp = request.headers.get('x-vercel-forwarded-for')
+  if (vercelIp) {
+    return vercelIp.split(',')[0].trim()
+  }
+
   return '127.0.0.1'
 }
 
 /**
- * Check if a request is rate limited
+ * Get user tier from request for rate limiting
  */
-export function checkRateLimit(
-  key: string,
-  limit: number,
-  windowSeconds: number
-): { limited: boolean; remaining: number; resetAt: number } {
-  startCleanup()
+function getUserTierFromRequest(request: NextRequest): UserTier | undefined {
+  // Check session cookie for role
+  const sessionCookie =
+    request.cookies.get('nchat-session')?.value ||
+    request.cookies.get('nhostSession')?.value ||
+    request.cookies.get('nchat-dev-session')?.value
 
-  const now = Date.now()
-  const entry = rateLimitStore.get(key)
-
-  if (!entry || now > entry.resetAt) {
-    // Create new entry
-    const resetAt = now + windowSeconds * 1000
-    rateLimitStore.set(key, { count: 1, resetAt })
-    return { limited: false, remaining: limit - 1, resetAt }
+  if (sessionCookie) {
+    try {
+      const parsed = JSON.parse(sessionCookie)
+      const role = parsed.role || parsed['x-hasura-default-role']
+      if (role === 'owner' || role === 'admin') return 'admin'
+      if (role === 'premium') return 'premium'
+      if (role === 'enterprise') return 'enterprise'
+      if (role === 'guest') return 'guest'
+      return 'member'
+    } catch {
+      // Ignore
+    }
   }
 
-  // Increment count
-  entry.count++
-  const limited = entry.count > limit
-  const remaining = Math.max(0, limit - entry.count)
+  // Check for internal service
+  const internalKey = request.headers.get('x-internal-key')
+  if (internalKey === process.env.INTERNAL_SERVICE_KEY) {
+    return 'internal'
+  }
 
-  return { limited, remaining, resetAt: entry.resetAt }
+  return undefined
+}
+
+/**
+ * Build rate limit metadata from request
+ */
+function buildRateLimitMetadata(request: NextRequest): RateLimitMetadata {
+  const userId = getUserIdFromRequest(request)
+  const ip = getClientIp(request)
+  const tier = getUserTierFromRequest(request)
+  const apiKey = request.headers.get('x-api-key') || undefined
+
+  return {
+    userId: userId || undefined,
+    ip,
+    userRole: tier,
+    path: new URL(request.url).pathname,
+    method: request.method,
+    apiKey,
+  }
+}
+
+/**
+ * Get user ID from request
+ */
+function getUserIdFromRequest(request: NextRequest): string | null {
+  const sessionCookie =
+    request.cookies.get('nchat-session')?.value ||
+    request.cookies.get('nhostSession')?.value ||
+    request.cookies.get('nchat-dev-session')?.value
+
+  if (sessionCookie) {
+    try {
+      const parsed = JSON.parse(sessionCookie)
+      return parsed.userId || parsed.sub || null
+    } catch {
+      // Ignore
+    }
+  }
+
+  const authHeader = request.headers.get('authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    try {
+      const token = authHeader.substring(7)
+      const parts = token.split('.')
+      if (parts.length === 3) {
+        const payload = JSON.parse(atob(parts[1]))
+        return payload.sub || payload.userId || null
+      }
+    } catch {
+      // Ignore
+    }
+  }
+
+  return null
 }
 
 /**
  * Rate limiting middleware
+ *
+ * Uses the centralized rate limit service with Redis support,
+ * automatic fallback to memory, user tier-based limits, and penalty box.
  */
 export interface RateLimitOptions {
-  /** Maximum requests per window */
+  /** Maximum requests per window (overrides default) */
   limit?: number
-  /** Window size in seconds */
+  /** Window size in seconds (overrides default) */
   window?: number
-  /** Custom key generator (default: IP-based) */
+  /** Custom key generator (default: auto from request) */
   keyGenerator?: (request: NextRequest) => string
   /** Skip rate limiting for certain conditions */
   skip?: (request: NextRequest) => boolean
+  /** Use distributed store (Redis) if available */
+  useDistributed?: boolean
 }
 
 export function withRateLimit(options: RateLimitOptions = {}): Middleware {
-  const {
-    limit = 100,
-    window = 60,
-    keyGenerator = (req) => `rl:${getClientIp(req)}`,
-    skip,
-  } = options
+  const { limit, window, skip, useDistributed = true } = options
 
   return (handler) => async (request, context) => {
     // Check if should skip rate limiting
@@ -164,26 +217,91 @@ export function withRateLimit(options: RateLimitOptions = {}): Middleware {
       return handler(request, context)
     }
 
-    const key = keyGenerator(request)
-    const result = checkRateLimit(key, limit, window)
-
-    if (result.limited) {
-      const retryAfter = Math.ceil((result.resetAt - Date.now()) / 1000)
-      return rateLimitResponse(retryAfter)
+    // Check for internal service bypass
+    const internalKey = request.headers.get('x-internal-key')
+    if (internalKey === process.env.INTERNAL_SERVICE_KEY) {
+      return handler(request, context)
     }
 
-    // Add rate limit headers to response
-    const response = await handler(request, context)
+    // Check for bypass token
+    const bypassToken = request.headers.get('x-ratelimit-bypass')
+    if (bypassToken === process.env.RATELIMIT_BYPASS_TOKEN) {
+      return handler(request, context)
+    }
 
-    response.headers.set('X-RateLimit-Limit', String(limit))
-    response.headers.set('X-RateLimit-Remaining', String(result.remaining))
-    response.headers.set(
-      'X-RateLimit-Reset',
-      String(Math.ceil(result.resetAt / 1000))
-    )
+    try {
+      const metadata = buildRateLimitMetadata(request)
+      const path = new URL(request.url).pathname
+      const method = request.method
 
-    return response
+      let result: RateLimitResult
+
+      if (useDistributed) {
+        // Use the distributed rate limit service
+        result = await checkEndpointRateLimit(path, method, metadata)
+      } else {
+        // Fall back to simple in-memory limiting
+        const service = getRateLimitService({ storeType: 'memory' })
+        result = await service.checkEndpoint(path, method, metadata)
+      }
+
+      // Check if blocked (penalty box)
+      if (!result.allowed && result.limit === 0) {
+        // In penalty box - return 403
+        return new NextResponse(
+          JSON.stringify({
+            success: false,
+            error: 'Access temporarily blocked',
+            errorCode: 'IP_BLOCKED',
+            retryAfter: result.retryAfter,
+          }),
+          {
+            status: 403,
+            headers: {
+              'Content-Type': 'application/json',
+              'Retry-After': String(result.retryAfter || 3600),
+            },
+          }
+        )
+      }
+
+      if (!result.allowed) {
+        const response = rateLimitResponse(result.retryAfter)
+
+        // Add detailed rate limit headers
+        response.headers.set('X-RateLimit-Limit', String(result.limit))
+        response.headers.set('X-RateLimit-Remaining', '0')
+        response.headers.set('X-RateLimit-Reset', String(result.reset))
+
+        return response
+      }
+
+      // Execute handler
+      const response = await handler(request, context)
+
+      // Add rate limit headers to successful response
+      response.headers.set('X-RateLimit-Limit', String(result.limit))
+      response.headers.set('X-RateLimit-Remaining', String(result.remaining))
+      response.headers.set('X-RateLimit-Reset', String(result.reset))
+
+      return response
+    } catch (error) {
+      logger.error('[withRateLimit] Error:',  error)
+      // On rate limit service error, allow request (fail open)
+      return handler(request, context)
+    }
   }
+}
+
+/**
+ * Strict rate limiting for sensitive endpoints (auth, password changes, etc.)
+ */
+export function withStrictRateLimit(options: RateLimitOptions = {}): Middleware {
+  return withRateLimit({
+    ...options,
+    // Sensitive endpoints never skip rate limiting
+    skip: () => false,
+  })
 }
 
 // ============================================================================
@@ -228,7 +346,7 @@ async function validateToken(token: string): Promise<AuthenticatedUser | null> {
     // Verify JWT token with Hasura/Nhost backend
     const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/user`, {
       headers: {
-        'Authorization': `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
 
@@ -251,7 +369,7 @@ async function validateToken(token: string): Promise<AuthenticatedUser | null> {
       avatarUrl: data.avatarUrl || data.metadata?.avatarUrl,
     }
   } catch (error) {
-    console.error('Token validation error:', error)
+    logger.error('Token validation error:',  error)
     return null
   }
 }
@@ -271,7 +389,7 @@ async function validateSession(sessionToken: string): Promise<AuthenticatedUser 
     // Verify session token with Nhost backend
     const response = await fetch(`${process.env.NEXT_PUBLIC_AUTH_URL}/user`, {
       headers: {
-        'Cookie': `nhost-session=${sessionToken}`,
+        Cookie: `nhost-session=${sessionToken}`,
       },
     })
 
@@ -294,7 +412,7 @@ async function validateSession(sessionToken: string): Promise<AuthenticatedUser 
       avatarUrl: data.avatarUrl || data.metadata?.avatarUrl,
     }
   } catch (error) {
-    console.error('Session validation error:', error)
+    logger.error('Session validation error:',  error)
     return null
   }
 }
@@ -342,9 +460,7 @@ function getDevUser(token: string): AuthenticatedUser | null {
 /**
  * Authentication middleware - requires valid authentication
  */
-export function withAuth(
-  handler: ApiHandler<AuthenticatedRequest>
-): ApiHandler {
+export function withAuth(handler: ApiHandler<AuthenticatedRequest>): ApiHandler {
   return async (request, context) => {
     const user = await getAuthenticatedUser(request)
 
@@ -417,7 +533,7 @@ export function withErrorHandler(handler: ApiHandler): ApiHandler {
     try {
       return await handler(request, context)
     } catch (error) {
-      console.error('API Error:', error)
+      logger.error('API Error:',  error)
 
       // Handle known error types
       if (error instanceof ApiError) {
@@ -432,7 +548,7 @@ export function withErrorHandler(handler: ApiHandler): ApiHandler {
       }
 
       // Log unexpected errors
-      console.error('Unexpected API error:', error)
+      logger.error('Unexpected API error:',  error)
 
       // Return generic error for unexpected errors
       return internalErrorResponse()
@@ -503,9 +619,9 @@ export function withLogging(handler: ApiHandler): ApiHandler {
 
       // Log successful requests (can be disabled in production)
       if (process.env.NODE_ENV === 'development') {
-        console.log(
-          `[API] ${logEntry.method} ${logEntry.path} ${logEntry.status} ${logEntry.duration}ms`
-        )
+        // REMOVED: console.log(
+        //   `[API] ${logEntry.method} ${logEntry.path} ${logEntry.status} ${logEntry.duration}ms`
+        // )
       }
 
       return response
@@ -514,7 +630,7 @@ export function withLogging(handler: ApiHandler): ApiHandler {
       logEntry.error = error instanceof Error ? error.message : 'Unknown error'
 
       // Always log errors
-      console.error(`[API ERROR] ${logEntry.method} ${logEntry.path}:`, error)
+      logger.error(`[API ERROR] ${logEntry.method} ${logEntry.path}:`,  error)
 
       throw error
     }
@@ -538,13 +654,16 @@ export function withLogging(handler: ApiHandler): ApiHandler {
  * )(actualHandler)
  * ```
  */
-export function compose<T extends NextRequest>(
+export function compose<
+  TRequest extends NextRequest = NextRequest,
+  TParams extends Record<string, string> = Record<string, string>,
+>(
   ...middlewares: Array<Middleware<any, any>>
-): (handler: ApiHandler<any>) => ApiHandler<T> {
+): (handler: ApiHandler<any, TParams>) => ApiHandler<TRequest, TParams> {
   return (handler) => {
     return middlewares.reduceRight((acc, middleware) => {
       return middleware(acc)
-    }, handler) as ApiHandler<T>
+    }, handler) as ApiHandler<TRequest, TParams>
   }
 }
 
@@ -624,7 +743,9 @@ function isOriginAllowed(requestOrigin: string | null, allowedOrigins: string | 
 
   // Wildcard allows all (NOT RECOMMENDED FOR PRODUCTION)
   if (allowedOrigins === '*') {
-    console.warn('[SECURITY WARNING] CORS configured with wildcard (*) - this is not secure for production')
+    console.warn(
+      '[SECURITY WARNING] CORS configured with wildcard (*) - this is not secure for production'
+    )
     return true
   }
 
@@ -651,7 +772,10 @@ function isOriginAllowed(requestOrigin: string | null, allowedOrigins: string | 
 /**
  * Get allowed origin for response header
  */
-function getAllowedOrigin(requestOrigin: string | null, allowedOrigins: string | string[]): string | null {
+function getAllowedOrigin(
+  requestOrigin: string | null,
+  allowedOrigins: string | string[]
+): string | null {
   // In production, never return '*' when credentials are used
   // Instead, return the specific origin if it's allowed
   if (!requestOrigin) return null
@@ -681,7 +805,7 @@ export function withCors(
 ): Middleware {
   const {
     origin = process.env.NODE_ENV === 'production'
-      ? (process.env.NEXT_PUBLIC_APP_URL || 'https://nchat.app')
+      ? process.env.NEXT_PUBLIC_APP_URL || 'https://nchat.app'
       : '*',
     methods = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     headers: allowedHeaders = ['Content-Type', 'Authorization'],
@@ -692,7 +816,7 @@ export function withCors(
   if (credentials && origin === '*') {
     throw new Error(
       '[SECURITY ERROR] Cannot use credentials with wildcard CORS origin. ' +
-      'Specify explicit origins when credentials are enabled.'
+        'Specify explicit origins when credentials are enabled.'
     )
   }
 
@@ -715,17 +839,17 @@ export function withCors(
           'Access-Control-Allow-Headers': allowedHeaders.join(', '),
           'Access-Control-Allow-Credentials': String(credentials),
           'Access-Control-Max-Age': '86400',
-          'Vary': 'Origin',
+          Vary: 'Origin',
         },
       })
     }
 
     // Reject actual request if origin not allowed and credentials required
     if (credentials && requestOrigin && !allowedOrigin) {
-      return new NextResponse(
-        JSON.stringify({ error: 'CORS origin not allowed' }),
-        { status: 403, headers: { 'Content-Type': 'application/json' } }
-      )
+      return new NextResponse(JSON.stringify({ error: 'CORS origin not allowed' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
 
     const response = await handler(request, context)

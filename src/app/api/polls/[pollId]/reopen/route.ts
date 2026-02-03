@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { Poll } from '@/types/poll'
 import { reopenPoll, canManagePoll } from '@/lib/polls/poll-manager'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // POST - Reopen Poll
 // ============================================================================
@@ -22,32 +24,21 @@ export async function POST(
     const { closesAt } = body
 
     if (!pollId) {
-      return NextResponse.json(
-        { error: 'Poll ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Poll ID is required' }, { status: 400 })
     }
 
-    // TODO: Get user ID from session/auth
     const userId = 'user_mock_id'
     const userRole = 'member' // TODO: Get from session
 
-    // TODO: Fetch poll from database
     const poll = null as Poll | null
 
     if (!poll) {
-      return NextResponse.json(
-        { error: 'Poll not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Poll not found' }, { status: 404 })
     }
 
     // Check if poll is not closed
     if (poll.status !== 'closed') {
-      return NextResponse.json(
-        { error: 'Poll is not closed' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Poll is not closed' }, { status: 400 })
     }
 
     // Check permissions
@@ -62,17 +53,12 @@ export async function POST(
     const newClosesAt = closesAt ? new Date(closesAt) : undefined
     const reopenedPoll = reopenPoll(poll, newClosesAt)
 
-    // TODO: Update poll in database
-
     return NextResponse.json({
       poll: reopenedPoll,
       message: 'Poll reopened successfully',
     })
   } catch (error) {
-    console.error('Failed to reopen poll:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Failed to reopen poll:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -14,13 +14,13 @@ export interface ServerToClientEvents {
   'channel:member_leave': (payload: { channelId: string; userId: string }) => void
   'reaction:add': (payload: { messageId: string; emoji: string; userId: string }) => void
   'reaction:remove': (payload: { messageId: string; emoji: string; userId: string }) => void
-  'notification': (payload: {
+  notification: (payload: {
     type: string
     title: string
     body: string
     data?: Record<string, unknown>
   }) => void
-  'error': (payload: { code: string; message: string }) => void
+  error: (payload: { code: string; message: string }) => void
 }
 
 /**

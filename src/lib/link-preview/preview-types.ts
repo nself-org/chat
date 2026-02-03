@@ -21,13 +21,7 @@ export type PreviewType =
   | 'code'
   | 'oembed'
 
-export type PreviewStatus =
-  | 'pending'
-  | 'loading'
-  | 'success'
-  | 'error'
-  | 'blocked'
-  | 'removed'
+export type PreviewStatus = 'pending' | 'loading' | 'success' | 'error' | 'blocked' | 'removed'
 
 export type OEmbedType = 'photo' | 'video' | 'link' | 'rich'
 
@@ -535,9 +529,12 @@ export type PreviewErrorCode = (typeof PREVIEW_ERROR_CODES)[keyof typeof PREVIEW
 
 export const URL_PATTERNS = {
   twitter: /^https?:\/\/(?:www\.)?(twitter|x)\.com\/\w+\/status\/(\d+)/i,
-  youtube: /^https?:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i,
-  github: /^https?:\/\/(?:www\.)?github\.com\/([^/]+)(?:\/([^/]+)(?:\/(issues|pull|discussions)\/(\d+))?)?/i,
-  spotify: /^https?:\/\/(?:open\.)?spotify\.com\/(track|album|playlist|artist|episode|show)\/([a-zA-Z0-9]+)/i,
+  youtube:
+    /^https?:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i,
+  github:
+    /^https?:\/\/(?:www\.)?github\.com\/([^/]+)(?:\/([^/]+)(?:\/(issues|pull|discussions)\/(\d+))?)?/i,
+  spotify:
+    /^https?:\/\/(?:open\.)?spotify\.com\/(track|album|playlist|artist|episode|show)\/([a-zA-Z0-9]+)/i,
   gist: /^https?:\/\/gist\.github\.com\/([^/]+)\/([a-f0-9]+)/i,
   codepen: /^https?:\/\/codepen\.io\/([^/]+)\/(?:pen|full|details)\/([^/]+)/i,
   codesandbox: /^https?:\/\/codesandbox\.io\/(?:s|embed)\/([^/?]+)/i,

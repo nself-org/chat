@@ -40,17 +40,20 @@
 ### System Requirements
 
 **Web Browser**:
+
 - Chrome 90+
 - Firefox 88+
 - Safari 14+
 - Edge 90+
 
 **Desktop App**:
+
 - Windows 10/11
 - macOS 11+
 - Linux (Ubuntu 20.04+, Fedora 34+)
 
 **Mobile App**:
+
 - iOS 14+
 - Android 8.0+
 
@@ -74,7 +77,7 @@
 1. Go to your ɳChat URL
 2. Enter your email and password
 3. Click **"Sign In"**
-4. *Optional*: Enable "Remember me" for quick access
+4. _Optional_: Enable "Remember me" for quick access
 
 ### Profile Setup
 
@@ -115,6 +118,7 @@ Channels are organized spaces for team communication. Think of them as chat room
 5. Click **"Create Channel"**
 
 **Channel Naming Tips**:
+
 - Use lowercase
 - Use hyphens for spaces (e.g., "project-alpha")
 - Keep names short and descriptive
@@ -123,22 +127,26 @@ Channels are organized spaces for team communication. Think of them as chat room
 ### Joining a Channel
 
 **Public Channels**:
+
 1. Click **"Browse Channels"** in the sidebar
 2. Find the channel you want
 3. Click **"Join"**
 
 **Private Channels**:
+
 - You must be invited by a channel member or admin
 
 ### Channel Settings
 
 Channel admins can:
+
 - Edit channel name and description
 - Manage members (add/remove)
 - Set channel permissions
 - Archive or delete the channel
 
 **To access channel settings**:
+
 1. Open the channel
 2. Click the channel name at the top
 3. Select **"Channel Settings"**
@@ -157,7 +165,7 @@ Channel admins can:
 
 Use markdown-style formatting:
 
-```
+````
 **Bold text**       → Bold text
 *Italic text*       → Italic text
 ~~Strikethrough~~   → Strikethrough
@@ -166,43 +174,51 @@ Use markdown-style formatting:
 > Quote             → Blockquote
 - List item         → Bullet list
 1. Numbered item    → Numbered list
-```
+````
 
 ### Mentions
 
 **Mention a user**:
+
 ```
 @username
 ```
+
 The user will receive a notification.
 
 **Mention everyone in a channel**:
+
 ```
 @channel
 ```
+
 Use sparingly! This notifies all channel members.
 
 **Mention here (online users only)**:
+
 ```
 @here
 ```
+
 Notifies only users currently online.
 
 ### Editing & Deleting Messages
 
 **Edit a message**:
+
 1. Hover over your message
 2. Click the **⋯** (more) button
 3. Select **"Edit"**
 4. Make changes and press Enter
 
 **Delete a message**:
+
 1. Hover over your message
 2. Click the **⋯** (more) button
 3. Select **"Delete"**
 4. Confirm deletion
 
-*Note: Edited messages show an "edited" indicator*
+_Note: Edited messages show an "edited" indicator_
 
 ### Scheduling Messages
 
@@ -214,6 +230,7 @@ Send messages at a specific time:
 4. Click **"Schedule Message"**
 
 **View scheduled messages**:
+
 - Click your profile → **"Scheduled Messages"**
 
 ### Forwarding Messages
@@ -233,11 +250,13 @@ Forward messages to other channels:
 ### Starting a Call
 
 **Voice Call**:
+
 1. Open a DM or channel
 2. Click the **📞 Call** button
 3. Wait for others to join
 
 **Video Call**:
+
 1. Open a DM or channel
 2. Click the **📹 Video** button
 3. Allow camera/microphone permissions
@@ -265,6 +284,7 @@ While on a call:
 ### Call Quality Tips
 
 For best call quality:
+
 - Use a wired internet connection (Ethernet)
 - Close unnecessary applications
 - Use headphones to prevent echo
@@ -278,15 +298,18 @@ For best call quality:
 ### Uploading Files
 
 **Drag & Drop**:
+
 1. Drag files into the message input
 2. Files will be uploaded automatically
 
 **Click to Upload**:
+
 1. Click the **📎** (attach) button
 2. Select files from your computer
 3. Files will be uploaded
 
 **Supported File Types**:
+
 - Images: JPG, PNG, GIF, WebP, SVG
 - Videos: MP4, WebM, MOV
 - Audio: MP3, WAV, OGG
@@ -296,6 +319,7 @@ For best call quality:
 ### File Previews
 
 ɳChat automatically generates previews for:
+
 - **Images**: Inline display with zoom
 - **Videos**: Inline player
 - **PDFs**: Document viewer
@@ -321,6 +345,7 @@ React to messages with emojis:
 4. Or type `:emoji_name:` and press Enter
 
 **Popular shortcuts**:
+
 - 👍 `:thumbsup:`
 - ❤️ `:heart:`
 - 😂 `:laughing:`
@@ -332,14 +357,17 @@ React to messages with emojis:
 Keep conversations organized with threads:
 
 **Start a thread**:
+
 1. Hover over a message
 2. Click **💬 Reply in thread**
 3. Type your reply
 
 **View threads**:
+
 - Click **"Threads"** in the sidebar to see all your threads
 
 **Thread notifications**:
+
 - Get notified when someone replies to a thread you're in
 
 ---
@@ -349,11 +377,13 @@ Keep conversations organized with threads:
 ### Searching Messages
 
 **Quick search**:
+
 1. Press **Cmd/Ctrl + K**
 2. Type your search query
 3. Press Enter
 
 **Advanced search**:
+
 - Use the search bar at the top
 - Apply filters:
   - `from:@username` - Messages from a specific user
@@ -364,6 +394,7 @@ Keep conversations organized with threads:
   - `after:2026-01-01` - Messages after a date
 
 **Examples**:
+
 ```
 project alpha from:@john
 meeting notes in:#general has:file
@@ -390,6 +421,7 @@ budget in:#finance after:2026-01-01
 ### Notification Settings
 
 **Global settings**:
+
 1. Click your profile → **"Settings"**
 2. Go to **"Notifications"**
 3. Configure:
@@ -399,6 +431,7 @@ budget in:#finance after:2026-01-01
    - Notification sounds
 
 **Per-channel settings**:
+
 1. Open the channel
 2. Click the channel name
 3. Select **"Notification Preferences"**
@@ -463,43 +496,43 @@ Get notified when specific words are mentioned:
 
 ### Essential Shortcuts
 
-| Action | Windows/Linux | Mac |
-|--------|--------------|-----|
-| Quick switcher | Ctrl + K | Cmd + K |
-| Search | Ctrl + F | Cmd + F |
-| New message | Ctrl + N | Cmd + N |
-| Mark as read | Esc | Esc |
-| Previous channel | Alt + ↑ | Opt + ↑ |
-| Next channel | Alt + ↓ | Opt + ↓ |
+| Action           | Windows/Linux | Mac     |
+| ---------------- | ------------- | ------- |
+| Quick switcher   | Ctrl + K      | Cmd + K |
+| Search           | Ctrl + F      | Cmd + F |
+| New message      | Ctrl + N      | Cmd + N |
+| Mark as read     | Esc           | Esc     |
+| Previous channel | Alt + ↑       | Opt + ↑ |
+| Next channel     | Alt + ↓       | Opt + ↓ |
 
 ### Messaging Shortcuts
 
-| Action | Windows/Linux | Mac |
-|--------|--------------|-----|
-| Send message | Enter | Enter |
-| New line | Shift + Enter | Shift + Enter |
+| Action            | Windows/Linux      | Mac                |
+| ----------------- | ------------------ | ------------------ |
+| Send message      | Enter              | Enter              |
+| New line          | Shift + Enter      | Shift + Enter      |
 | Edit last message | ↑ (in empty input) | ↑ (in empty input) |
-| Add reaction | Ctrl + Shift + \ | Cmd + Shift + \ |
-| Reply in thread | Ctrl + Shift + T | Cmd + Shift + T |
+| Add reaction      | Ctrl + Shift + \   | Cmd + Shift + \    |
+| Reply in thread   | Ctrl + Shift + T   | Cmd + Shift + T    |
 
 ### Formatting Shortcuts
 
-| Action | Windows/Linux | Mac |
-|--------|--------------|-----|
-| Bold | Ctrl + B | Cmd + B |
-| Italic | Ctrl + I | Cmd + I |
+| Action        | Windows/Linux    | Mac             |
+| ------------- | ---------------- | --------------- |
+| Bold          | Ctrl + B         | Cmd + B         |
+| Italic        | Ctrl + I         | Cmd + I         |
 | Strikethrough | Ctrl + Shift + X | Cmd + Shift + X |
-| Code | Ctrl + E | Cmd + E |
-| Link | Ctrl + Shift + U | Cmd + Shift + U |
+| Code          | Ctrl + E         | Cmd + E         |
+| Link          | Ctrl + Shift + U | Cmd + Shift + U |
 
 ### Call Shortcuts
 
-| Action | Shortcut |
-|--------|----------|
-| Mute/Unmute | Ctrl/Cmd + D |
-| Video On/Off | Ctrl/Cmd + E |
+| Action       | Shortcut             |
+| ------------ | -------------------- |
+| Mute/Unmute  | Ctrl/Cmd + D         |
+| Video On/Off | Ctrl/Cmd + E         |
 | Share Screen | Ctrl/Cmd + Shift + E |
-| End Call | Ctrl/Cmd + Shift + H |
+| End Call     | Ctrl/Cmd + Shift + H |
 
 ---
 
@@ -508,12 +541,14 @@ Get notified when specific words are mentioned:
 ### Installing the Mobile App
 
 **iOS**:
+
 1. Open the App Store
 2. Search for "ɳChat" or your company's custom app
 3. Tap **"Get"** → **"Install"**
 4. Open the app and sign in
 
 **Android**:
+
 1. Open the Google Play Store
 2. Search for "ɳChat" or your company's custom app
 3. Tap **"Install"**
@@ -577,6 +612,7 @@ Get notified when specific words are mentioned:
 **Problem**: Can't connect to ɳChat
 
 **Solutions**:
+
 1. Check your internet connection
 2. Try refreshing the page (Ctrl/Cmd + R)
 3. Clear browser cache and cookies
@@ -588,6 +624,7 @@ Get notified when specific words are mentioned:
 **Problem**: Not receiving notifications
 
 **Solutions**:
+
 1. Check notification settings in ɳChat
 2. Check browser notification permissions
 3. Check OS notification settings
@@ -599,6 +636,7 @@ Get notified when specific words are mentioned:
 **Problem**: Poor audio/video quality
 
 **Solutions**:
+
 1. Check your internet speed (need 1+ Mbps)
 2. Close other bandwidth-heavy applications
 3. Switch from Wi-Fi to Ethernet
@@ -610,6 +648,7 @@ Get notified when specific words are mentioned:
 **Problem**: Can't upload files
 
 **Solutions**:
+
 1. Check file size (max 100MB)
 2. Check file type (see supported types)
 3. Try a different browser
@@ -621,6 +660,7 @@ Get notified when specific words are mentioned:
 **Problem**: App crashes or freezes
 
 **Solutions**:
+
 1. Force quit and reopen the app
 2. Update to the latest version
 3. Clear app cache (in app settings)

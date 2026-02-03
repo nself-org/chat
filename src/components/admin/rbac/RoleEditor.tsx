@@ -55,16 +55,7 @@ import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Plus,
-  Trash2,
-  Edit,
-  Shield,
-  Users,
-  Star,
-  Copy,
-  AlertTriangle,
-} from 'lucide-react'
+import { Plus, Trash2, Edit, Shield, Users, Star, Copy, AlertTriangle } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import { RolePermissions } from '@/components/admin/roles/RolePermissions'
 
@@ -206,11 +197,11 @@ export function RoleEditor() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setShowTemplates(true)}>
-            <Star className="h-4 w-4 mr-2" />
+            <Star className="mr-2 h-4 w-4" />
             Templates
           </Button>
           <Button onClick={() => setIsCreating(true)}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Create Role
           </Button>
         </div>
@@ -223,10 +214,7 @@ export function RoleEditor() {
             <CardHeader>
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: role.color }}
-                  />
+                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: role.color }} />
                   <CardTitle>{role.name}</CardTitle>
                 </div>
                 <div className="flex gap-1">
@@ -242,9 +230,7 @@ export function RoleEditor() {
                   )}
                 </div>
               </div>
-              {role.description && (
-                <CardDescription>{role.description}</CardDescription>
-              )}
+              {role.description && <CardDescription>{role.description}</CardDescription>}
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between text-sm">
@@ -273,23 +259,15 @@ export function RoleEditor() {
                   }}
                   disabled={role.isSystem}
                 >
-                  <Edit className="h-4 w-4 mr-1" />
+                  <Edit className="mr-1 h-4 w-4" />
                   Edit
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDuplicateRole(role)}
-                >
+                <Button variant="outline" size="sm" onClick={() => handleDuplicateRole(role)}>
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
               {!role.isSystem && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDeleteRole(role.id)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => handleDeleteRole(role.id)}>
                   <Trash2 className="h-4 w-4 text-destructive" />
                 </Button>
               )}
@@ -301,13 +279,13 @@ export function RoleEditor() {
       {roles.length === 0 && (
         <Card>
           <CardContent className="py-12 text-center">
-            <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No Custom Roles</h3>
-            <p className="text-muted-foreground mb-4">
+            <Shield className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <h3 className="mb-2 text-lg font-semibold">No Custom Roles</h3>
+            <p className="mb-4 text-muted-foreground">
               Create custom roles with specific permissions
             </p>
             <Button onClick={() => setIsCreating(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Create Role
             </Button>
           </CardContent>
@@ -371,18 +349,19 @@ function RoleEditorDialog({ role, open, onClose, onSave }: RoleEditorDialogProps
   )
 
   const handleNameChange = (name: string) => {
-    const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+    const slug = name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
     setFormData({ ...formData, name, slug })
   }
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-4xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{role ? 'Edit Role' : 'Create Custom Role'}</DialogTitle>
-          <DialogDescription>
-            Configure role settings and permissions
-          </DialogDescription>
+          <DialogDescription>Configure role settings and permissions</DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="basic" className="w-full">
@@ -420,9 +399,7 @@ function RoleEditorDialog({ role, open, onClose, onSave }: RoleEditorDialogProps
               <Textarea
                 id="description"
                 value={formData.description}
-                onChange={(e) =>
-                  setFormData({ ...formData, description: e.target.value })
-                }
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 placeholder="Describe this role's purpose and responsibilities"
               />
             </div>
@@ -454,9 +431,7 @@ function RoleEditorDialog({ role, open, onClose, onSave }: RoleEditorDialogProps
                   min="1"
                   max="100"
                   value={formData.priority}
-                  onChange={(e) =>
-                    setFormData({ ...formData, priority: parseInt(e.target.value) })
-                  }
+                  onChange={(e) => setFormData({ ...formData, priority: parseInt(e.target.value) })}
                 />
               </div>
             </div>
@@ -465,9 +440,7 @@ function RoleEditorDialog({ role, open, onClose, onSave }: RoleEditorDialogProps
               <Label htmlFor="baseRole">Base Role (Optional)</Label>
               <Select
                 value={formData.baseRole}
-                onValueChange={(value) =>
-                  setFormData({ ...formData, baseRole: value as UserRole })
-                }
+                onValueChange={(value) => setFormData({ ...formData, baseRole: value as UserRole })}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="No base role" />
@@ -488,9 +461,7 @@ function RoleEditorDialog({ role, open, onClose, onSave }: RoleEditorDialogProps
               <Switch
                 id="isDefault"
                 checked={formData.isDefault}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, isDefault: checked })
-                }
+                onCheckedChange={(checked) => setFormData({ ...formData, isDefault: checked })}
               />
               <Label htmlFor="isDefault">Set as default role for new users</Label>
             </div>
@@ -499,7 +470,12 @@ function RoleEditorDialog({ role, open, onClose, onSave }: RoleEditorDialogProps
           <TabsContent value="permissions" className="space-y-4">
             <RolePermissions
               permissions={(formData.permissions || []) as unknown as Permission[]}
-              onChange={(permissions) => setFormData({ ...formData, permissions: permissions as unknown as AuthPermission[] })}
+              onChange={(permissions) =>
+                setFormData({
+                  ...formData,
+                  permissions: permissions as unknown as AuthPermission[],
+                })
+              }
               showDescriptions={true}
             />
           </TabsContent>
@@ -551,9 +527,7 @@ function RoleEditorDialog({ role, open, onClose, onSave }: RoleEditorDialogProps
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button onClick={() => onSave(formData)}>
-            {role ? 'Update Role' : 'Create Role'}
-          </Button>
+          <Button onClick={() => onSave(formData)}>{role ? 'Update Role' : 'Create Role'}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -576,9 +550,7 @@ function RoleTemplatesDialog({ open, onClose, onSelect }: RoleTemplatesDialogPro
       <DialogContent className="max-w-3xl">
         <DialogHeader>
           <DialogTitle>Role Templates</DialogTitle>
-          <DialogDescription>
-            Quick start with pre-configured role templates
-          </DialogDescription>
+          <DialogDescription>Quick start with pre-configured role templates</DialogDescription>
         </DialogHeader>
 
         <div className="grid gap-4 md:grid-cols-2">
@@ -590,7 +562,7 @@ function RoleTemplatesDialog({ open, onClose, onSelect }: RoleTemplatesDialogPro
                   {template.name}
                   {template.recommended && (
                     <Badge variant="default" className="text-xs">
-                      <Star className="h-3 w-3 mr-1" />
+                      <Star className="mr-1 h-3 w-3" />
                       Recommended
                     </Badge>
                   )}
@@ -603,17 +575,14 @@ function RoleTemplatesDialog({ open, onClose, onSelect }: RoleTemplatesDialogPro
                   <span className="font-medium">{template.permissions.length}</span>
                 </div>
                 {template.baseRole && (
-                  <div className="flex items-center justify-between text-sm mt-2">
+                  <div className="mt-2 flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Base Role:</span>
                     <Badge variant="secondary">{template.baseRole}</Badge>
                   </div>
                 )}
               </CardContent>
               <CardFooter>
-                <Button
-                  className="w-full"
-                  onClick={() => onSelect(template)}
-                >
+                <Button className="w-full" onClick={() => onSelect(template)}>
                   Use Template
                 </Button>
               </CardFooter>

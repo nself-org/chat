@@ -100,7 +100,7 @@ export function LinkImage({
     return (
       <div
         className={cn(
-          'relative overflow-hidden bg-muted rounded-t-lg',
+          'relative overflow-hidden rounded-t-lg bg-muted',
           aspectRatioClasses[computedAspectRatio],
           className
         )}
@@ -108,13 +108,7 @@ export function LinkImage({
       >
         <Skeleton className="absolute inset-0" />
         {src && (
-          <img
-            src={src}
-            alt=""
-            className="sr-only"
-            onLoad={handleLoad}
-            onError={handleError}
-          />
+          <img src={src} alt="" className="sr-only" onLoad={handleLoad} onError={handleError} />
         )}
       </div>
     )
@@ -125,14 +119,14 @@ export function LinkImage({
     return (
       <div
         className={cn(
-          'relative overflow-hidden bg-muted rounded-t-lg flex items-center justify-center',
+          'relative flex items-center justify-center overflow-hidden rounded-t-lg bg-muted',
           aspectRatioClasses[computedAspectRatio],
           className
         )}
         style={{ maxHeight }}
       >
         <svg
-          className="w-12 h-12 text-muted-foreground/50"
+          className="text-muted-foreground/50 h-12 w-12"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -151,7 +145,7 @@ export function LinkImage({
   return (
     <div
       className={cn(
-        'relative overflow-hidden bg-muted rounded-t-lg',
+        'relative overflow-hidden rounded-t-lg bg-muted',
         aspectRatioClasses[computedAspectRatio],
         className
       )}
@@ -160,10 +154,7 @@ export function LinkImage({
       <img
         src={src}
         alt={alt || 'Preview image'}
-        className={cn(
-          'w-full h-full transition-opacity duration-200',
-          layoutClasses[layout]
-        )}
+        className={cn('h-full w-full transition-opacity duration-200', layoutClasses[layout])}
         loading="lazy"
         onLoad={handleLoad}
         onError={handleError}

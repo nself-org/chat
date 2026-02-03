@@ -4,19 +4,19 @@
  * Sent when a user successfully changes their password.
  */
 
-import { Text, Section } from '@react-email/components';
-import * as React from 'react';
-import EmailButton from '../components/EmailButton';
-import EmailHeading from '../components/EmailHeading';
-import EmailLayout from '../components/EmailLayout';
+import { Text, Section } from '@react-email/components'
+import * as React from 'react'
+import EmailButton from '../components/EmailButton'
+import EmailHeading from '../components/EmailHeading'
+import EmailLayout from '../components/EmailLayout'
 
 interface PasswordChangedEmailProps {
-  userName?: string;
-  appName?: string;
-  logoUrl?: string;
-  supportUrl?: string;
-  ipAddress?: string;
-  timestamp?: Date;
+  userName?: string
+  appName?: string
+  logoUrl?: string
+  supportUrl?: string
+  ipAddress?: string
+  timestamp?: Date
 }
 
 export default function PasswordChangedEmail({
@@ -27,23 +27,16 @@ export default function PasswordChangedEmail({
   ipAddress,
   timestamp = new Date(),
 }: PasswordChangedEmailProps) {
-  const previewText = `Your ${appName} password was changed`;
+  const previewText = `Your ${appName} password was changed`
 
   return (
-    <EmailLayout
-      preview={previewText}
-      appName={appName}
-      logoUrl={logoUrl}
-    >
+    <EmailLayout preview={previewText} appName={appName} logoUrl={logoUrl}>
       <EmailHeading>Password Changed Successfully</EmailHeading>
 
-      {userName && (
-        <Text style={paragraph}>Hi {userName},</Text>
-      )}
+      {userName && <Text style={paragraph}>Hi {userName},</Text>}
 
       <Text style={paragraph}>
-        This email confirms that your {appName} password was successfully
-        changed.
+        This email confirms that your {appName} password was successfully changed.
       </Text>
 
       <Section style={infoSection}>
@@ -58,17 +51,15 @@ export default function PasswordChangedEmail({
       </Section>
 
       <Text style={warningText}>
-        ⚠️ If you didn't make this change, your account may be compromised.
-        Please contact our support team immediately.
+        ⚠️ If you didn't make this change, your account may be compromised. Please contact our
+        support team immediately.
       </Text>
 
       <EmailButton href={supportUrl} variant="danger">
         Report Unauthorized Change
       </EmailButton>
 
-      <Text style={paragraph}>
-        For your security, we recommend:
-      </Text>
+      <Text style={paragraph}>For your security, we recommend:</Text>
 
       <ul style={list}>
         <li style={listItem}>Using a unique, strong password</li>
@@ -82,7 +73,7 @@ export default function PasswordChangedEmail({
         The {appName} Security Team
       </Text>
     </EmailLayout>
-  );
+  )
 }
 
 // ============================================================================
@@ -94,7 +85,7 @@ const paragraph = {
   lineHeight: '1.6',
   color: '#334155',
   margin: '0 0 16px',
-};
+}
 
 const infoSection = {
   backgroundColor: '#f8fafc',
@@ -102,14 +93,14 @@ const infoSection = {
   borderRadius: '8px',
   padding: '16px',
   margin: '16px 0',
-};
+}
 
 const infoText = {
   fontSize: '14px',
   lineHeight: '1.5',
   color: '#64748b',
   margin: '0 0 8px',
-};
+}
 
 const warningText = {
   fontSize: '14px',
@@ -120,7 +111,7 @@ const warningText = {
   borderRadius: '6px',
   margin: '16px 0',
   borderLeft: '4px solid #dc2626',
-};
+}
 
 const list = {
   fontSize: '16px',
@@ -128,8 +119,8 @@ const list = {
   color: '#334155',
   margin: '0 0 16px',
   paddingLeft: '20px',
-};
+}
 
 const listItem = {
   marginBottom: '8px',
-};
+}

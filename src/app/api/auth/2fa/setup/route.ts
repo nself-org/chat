@@ -8,15 +8,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { generateTOTPSecret, generateQRCode, formatSecretForDisplay } from '@/lib/2fa/totp'
 import { generateBackupCodes } from '@/lib/2fa/backup-codes'
 
+import { logger } from '@/lib/logger'
+
 export async function POST(request: NextRequest) {
   try {
     const { userId, email } = await request.json()
 
     if (!userId || !email) {
-      return NextResponse.json(
-        { error: 'User ID and email are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'User ID and email are required' }, { status: 400 })
     }
 
     // Generate TOTP secret
@@ -45,10 +44,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('2FA setup error:', error)
-    return NextResponse.json(
-      { error: 'Failed to set up 2FA' },
-      { status: 500 }
-    )
+    logger.error('2FA setup error:', error)
+    return NextResponse.json({ error: 'Failed to set up 2FA' }, { status: 500 })
   }
 }

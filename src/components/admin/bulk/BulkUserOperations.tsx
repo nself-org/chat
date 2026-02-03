@@ -106,23 +106,23 @@ export function BulkUserOperations({
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="invite">
-              <UserPlus className="h-4 w-4 mr-1" />
+              <UserPlus className="mr-1 h-4 w-4" />
               Invite
             </TabsTrigger>
             <TabsTrigger value="suspend">
-              <UserX className="h-4 w-4 mr-1" />
+              <UserX className="mr-1 h-4 w-4" />
               Suspend
             </TabsTrigger>
             <TabsTrigger value="delete">
-              <Trash2 className="h-4 w-4 mr-1" />
+              <Trash2 className="mr-1 h-4 w-4" />
               Delete
             </TabsTrigger>
             <TabsTrigger value="roles">
-              <Shield className="h-4 w-4 mr-1" />
+              <Shield className="mr-1 h-4 w-4" />
               Roles
             </TabsTrigger>
             <TabsTrigger value="import-export">
-              <FileText className="h-4 w-4 mr-1" />
+              <FileText className="mr-1 h-4 w-4" />
               Import/Export
             </TabsTrigger>
           </TabsList>
@@ -248,7 +248,7 @@ function BulkInviteTab({ onOperationStart, onProcessingChange }: BulkInviteTabPr
           rows={6}
           className="mt-1.5"
         />
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="mt-1 text-xs text-muted-foreground">
           Separate emails with newlines, commas, or semicolons
         </p>
       </div>
@@ -293,7 +293,7 @@ function BulkInviteTab({ onOperationStart, onProcessingChange }: BulkInviteTabPr
       )}
 
       <Button onClick={handleInvite} className="w-full">
-        <UserPlus className="h-4 w-4 mr-2" />
+        <UserPlus className="mr-2 h-4 w-4" />
         Send Invitations
       </Button>
     </div>
@@ -367,8 +367,8 @@ function BulkSuspendTab({
   return (
     <div className="space-y-4">
       {selectedUsers.length === 0 ? (
-        <div className="text-center py-6 text-muted-foreground">
-          <UserX className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <div className="py-6 text-center text-muted-foreground">
+          <UserX className="mx-auto mb-2 h-12 w-12 opacity-50" />
           <p>No users selected</p>
           <p className="text-sm">Select users from the table to perform bulk suspension</p>
         </div>
@@ -412,8 +412,8 @@ function BulkSuspendTab({
             </Label>
           </div>
 
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-sm font-medium mb-1">Selected Users ({selectedUsers.length})</p>
+          <div className="rounded-lg bg-muted p-3">
+            <p className="mb-1 text-sm font-medium">Selected Users ({selectedUsers.length})</p>
             <div className="flex flex-wrap gap-1">
               {selectedUsers.slice(0, 5).map((user) => (
                 <Badge key={user.id} variant="secondary">
@@ -427,7 +427,7 @@ function BulkSuspendTab({
           </div>
 
           <Button onClick={() => setConfirmOpen(true)} variant="destructive" className="w-full">
-            <UserX className="h-4 w-4 mr-2" />
+            <UserX className="mr-2 h-4 w-4" />
             Suspend {selectedUsers.length} User{selectedUsers.length > 1 ? 's' : ''}
           </Button>
 
@@ -524,19 +524,19 @@ function BulkDeleteTab({
   return (
     <div className="space-y-4">
       {selectedUsers.length === 0 ? (
-        <div className="text-center py-6 text-muted-foreground">
-          <Trash2 className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <div className="py-6 text-center text-muted-foreground">
+          <Trash2 className="mx-auto mb-2 h-12 w-12 opacity-50" />
           <p>No users selected</p>
           <p className="text-sm">Select users from the table to perform bulk deletion</p>
         </div>
       ) : (
         <>
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+          <div className="bg-destructive/10 border-destructive/20 rounded-lg border p-4">
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+              <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-destructive" />
               <div>
                 <p className="font-medium text-destructive">Warning: Permanent Action</p>
-                <p className="text-sm text-destructive/90 mt-1">
+                <p className="text-destructive/90 mt-1 text-sm">
                   Deleting users is permanent and cannot be undone. User accounts, profiles, and
                   associated data will be permanently removed.
                 </p>
@@ -555,8 +555,8 @@ function BulkDeleteTab({
             </Label>
           </div>
 
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-sm font-medium mb-1">Users to Delete ({selectedUsers.length})</p>
+          <div className="rounded-lg bg-muted p-3">
+            <p className="mb-1 text-sm font-medium">Users to Delete ({selectedUsers.length})</p>
             <div className="flex flex-wrap gap-1">
               {selectedUsers.slice(0, 5).map((user) => (
                 <Badge key={user.id} variant="secondary">
@@ -570,7 +570,7 @@ function BulkDeleteTab({
           </div>
 
           <Button onClick={() => setConfirmOpen(true)} variant="destructive" className="w-full">
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete {selectedUsers.length} User{selectedUsers.length > 1 ? 's' : ''}
           </Button>
 
@@ -672,8 +672,8 @@ function BulkRoleAssignTab({
   return (
     <div className="space-y-4">
       {selectedUsers.length === 0 ? (
-        <div className="text-center py-6 text-muted-foreground">
-          <Shield className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <div className="py-6 text-center text-muted-foreground">
+          <Shield className="mx-auto mb-2 h-12 w-12 opacity-50" />
           <p>No users selected</p>
           <p className="text-sm">Select users from the table to assign roles in bulk</p>
         </div>
@@ -704,8 +704,8 @@ function BulkRoleAssignTab({
             </Label>
           </div>
 
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-sm font-medium mb-1">Selected Users ({selectedUsers.length})</p>
+          <div className="rounded-lg bg-muted p-3">
+            <p className="mb-1 text-sm font-medium">Selected Users ({selectedUsers.length})</p>
             <div className="flex flex-wrap gap-1">
               {selectedUsers.slice(0, 5).map((user) => (
                 <Badge key={user.id} variant="secondary">
@@ -719,7 +719,7 @@ function BulkRoleAssignTab({
           </div>
 
           <Button onClick={handleAssignRole} className="w-full">
-            <Shield className="h-4 w-4 mr-2" />
+            <Shield className="mr-2 h-4 w-4" />
             Assign Role to {selectedUsers.length} User{selectedUsers.length > 1 ? 's' : ''}
           </Button>
         </>
@@ -760,7 +760,7 @@ function ImportExportTab({ users, selectedUsers }: ImportExportTabProps) {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base">
               <Download className="h-4 w-4" />
               Export Users
             </CardTitle>
@@ -768,7 +768,7 @@ function ImportExportTab({ users, selectedUsers }: ImportExportTabProps) {
           </CardHeader>
           <CardContent>
             <Button onClick={handleExportSelected} className="w-full">
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="mr-2 h-4 w-4" />
               Export {selectedUsers.length > 0 ? `${selectedUsers.length} Selected` : 'All'} Users
             </Button>
           </CardContent>
@@ -776,7 +776,7 @@ function ImportExportTab({ users, selectedUsers }: ImportExportTabProps) {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base">
               <Upload className="h-4 w-4" />
               Import Users
             </CardTitle>
@@ -807,27 +807,26 @@ interface OperationProgressProps {
 }
 
 function OperationProgress({ operation }: OperationProgressProps) {
-  const progress = operation.totalItems > 0
-    ? (operation.processedItems / operation.totalItems) * 100
-    : 0
+  const progress =
+    operation.totalItems > 0 ? (operation.processedItems / operation.totalItems) * 100 : 0
 
   return (
-    <div className="mt-6 p-4 border rounded-lg bg-muted/50">
-      <div className="flex items-center justify-between mb-2">
+    <div className="bg-muted/50 mt-6 rounded-lg border p-4">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           {operation.status === 'completed' ? (
             <CheckCircle className="h-5 w-5 text-green-600" />
           ) : operation.status === 'failed' ? (
             <AlertCircle className="h-5 w-5 text-destructive" />
           ) : (
-            <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           )}
           <span className="font-medium">
             {operation.status === 'completed'
               ? 'Operation Completed'
               : operation.status === 'failed'
-              ? 'Operation Failed'
-              : 'Processing...'}
+                ? 'Operation Failed'
+                : 'Processing...'}
           </span>
         </div>
         <span className="text-sm text-muted-foreground">

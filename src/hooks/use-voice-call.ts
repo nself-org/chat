@@ -449,7 +449,14 @@ export function useVoiceCall(options: UseVoiceCallOptions): UseVoiceCallReturn {
 
       onCallStarted?.(callId)
     },
-    [incomingCalls, acceptCallAction, userId, initializeManagers, setupPeerConnection, onCallStarted]
+    [
+      incomingCalls,
+      acceptCallAction,
+      userId,
+      initializeManagers,
+      setupPeerConnection,
+      onCallStarted,
+    ]
   )
 
   const declineCall = useCallback(

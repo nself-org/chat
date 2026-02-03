@@ -217,7 +217,7 @@ export function ScheduledMessageItem({
     return (
       <div
         className={cn(
-          'flex items-center gap-3 p-2 rounded-lg border bg-card',
+          'flex items-center gap-3 rounded-lg border bg-card p-2',
           isProcessing && 'opacity-60',
           className
         )}
@@ -225,8 +225,8 @@ export function ScheduledMessageItem({
         <div className={cn('flex-shrink-0', statusConfig.className)}>
           <StatusIcon className="h-4 w-4" />
         </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm truncate">{truncateContent(message.content, 50)}</p>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm">{truncateContent(message.content, 50)}</p>
           <p className="text-xs text-muted-foreground">
             {relativeTime} - #{message.channel?.name || 'unknown'}
           </p>
@@ -274,14 +274,14 @@ export function ScheduledMessageItem({
     <>
       <div
         className={cn(
-          'p-4 rounded-lg border bg-card transition-colors',
+          'rounded-lg border bg-card p-4 transition-colors',
           'hover:border-accent-foreground/20',
-          isProcessing && 'opacity-60 pointer-events-none',
+          isProcessing && 'pointer-events-none opacity-60',
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-start justify-between gap-3 mb-3">
+        <div className="mb-3 flex items-start justify-between gap-3">
           <div className="flex items-center gap-2">
             <Badge variant={statusConfig.variant} className="gap-1">
               <StatusIcon className="h-3 w-3" />
@@ -342,7 +342,7 @@ export function ScheduledMessageItem({
 
         {/* Message Content */}
         <div className="mb-3">
-          <p className="text-sm whitespace-pre-wrap break-words">
+          <p className="whitespace-pre-wrap break-words text-sm">
             {truncateContent(message.content)}
           </p>
         </div>
@@ -356,9 +356,9 @@ export function ScheduledMessageItem({
 
         {/* Error Message (for failed status) */}
         {message.status === 'failed' && message.error_message && (
-          <div className="mt-3 p-2 rounded-md bg-destructive/10 border border-destructive/20">
+          <div className="bg-destructive/10 border-destructive/20 mt-3 rounded-md border p-2">
             <div className="flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
+              <AlertCircle className="mt-0.5 h-4 w-4 text-destructive" />
               <p className="text-sm text-destructive">{message.error_message}</p>
             </div>
           </div>
@@ -366,14 +366,9 @@ export function ScheduledMessageItem({
 
         {/* Quick Actions */}
         {isActionable && (onEdit || onSendNow || onCancel) && (
-          <div className="flex items-center gap-2 mt-4 pt-3 border-t">
+          <div className="mt-4 flex items-center gap-2 border-t pt-3">
             {onEdit && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleEdit}
-                disabled={isProcessing}
-              >
+              <Button variant="outline" size="sm" onClick={handleEdit} disabled={isProcessing}>
                 {isEditing ? (
                   <Loader2 className="mr-2 h-3 w-3 animate-spin" />
                 ) : (
@@ -403,7 +398,7 @@ export function ScheduledMessageItem({
                 size="sm"
                 onClick={() => setShowCancelDialog(true)}
                 disabled={isProcessing}
-                className="text-destructive hover:text-destructive hover:bg-destructive/10 ml-auto"
+                className="hover:bg-destructive/10 ml-auto text-destructive hover:text-destructive"
               >
                 {isCancelling ? (
                   <Loader2 className="mr-2 h-3 w-3 animate-spin" />
@@ -423,15 +418,15 @@ export function ScheduledMessageItem({
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel scheduled message?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will cancel the scheduled message and it will not be sent. This
-              action cannot be undone.
+              This will cancel the scheduled message and it will not be sent. This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Keep scheduled</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleCancel}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               Cancel message
             </AlertDialogAction>
@@ -445,8 +440,8 @@ export function ScheduledMessageItem({
           <AlertDialogHeader>
             <AlertDialogTitle>Send message now?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will send the message immediately instead of at the scheduled
-              time. The message will be sent to #{message.channel?.name || 'the channel'}.
+              This will send the message immediately instead of at the scheduled time. The message
+              will be sent to #{message.channel?.name || 'the channel'}.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

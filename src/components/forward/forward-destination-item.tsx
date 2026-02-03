@@ -10,8 +10,10 @@ import type { ForwardDestination } from '@/lib/forward/forward-store'
 // Types
 // ============================================================================
 
-export interface ForwardDestinationItemProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onSelect'> {
+export interface ForwardDestinationItemProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'onSelect'
+> {
   /** The destination to display */
   destination: ForwardDestination
   /** Whether this destination is selected */
@@ -35,10 +37,7 @@ export interface ForwardDestinationItemProps
 /**
  * Get the appropriate icon for a destination type
  */
-function getDestinationIcon(
-  type: ForwardDestination['type'],
-  isPrivate?: boolean
-) {
+function getDestinationIcon(type: ForwardDestination['type'], isPrivate?: boolean) {
   switch (type) {
     case 'direct':
       return MessageCircle
@@ -85,10 +84,7 @@ function getDestinationDisplayName(destination: ForwardDestination): string {
 // Component
 // ============================================================================
 
-export const ForwardDestinationItem = React.forwardRef<
-  HTMLDivElement,
-  ForwardDestinationItemProps
->(
+export const ForwardDestinationItem = React.forwardRef<HTMLDivElement, ForwardDestinationItemProps>(
   (
     {
       className,
@@ -135,7 +131,7 @@ export const ForwardDestinationItem = React.forwardRef<
           'hover:bg-accent focus:bg-accent focus:outline-none',
           isSelected && 'bg-accent',
           disabled && 'cursor-not-allowed opacity-50',
-          compact && 'py-1.5 gap-2',
+          compact && 'gap-2 py-1.5',
           className
         )}
         {...props}
@@ -147,7 +143,7 @@ export const ForwardDestinationItem = React.forwardRef<
               'flex h-5 w-5 shrink-0 items-center justify-center rounded border',
               'transition-colors',
               isSelected
-                ? 'border-primary bg-primary text-primary-foreground'
+                ? 'text-primary-foreground border-primary bg-primary'
                 : 'border-muted-foreground/30 bg-background'
             )}
           >
@@ -190,12 +186,7 @@ export const ForwardDestinationItem = React.forwardRef<
         {/* Destination Info */}
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span
-              className={cn(
-                'truncate font-medium',
-                compact ? 'text-sm' : 'text-sm'
-              )}
-            >
+            <span className={cn('truncate font-medium', compact ? 'text-sm' : 'text-sm')}>
               {displayName}
             </span>
             {destination.isPrivate && destination.type === 'channel' && (
@@ -215,9 +206,7 @@ export const ForwardDestinationItem = React.forwardRef<
 
         {/* Last Activity */}
         {showActivity && relativeTime && !compact && (
-          <span className="shrink-0 text-xs text-muted-foreground">
-            {relativeTime}
-          </span>
+          <span className="shrink-0 text-xs text-muted-foreground">{relativeTime}</span>
         )}
       </div>
     )
@@ -242,19 +231,12 @@ export function ForwardDestinationItemSkeleton({
   return (
     <div
       className={cn(
-        'flex items-center gap-3 rounded-lg px-3 py-2 animate-pulse',
-        compact && 'py-1.5 gap-2'
+        'flex animate-pulse items-center gap-3 rounded-lg px-3 py-2',
+        compact && 'gap-2 py-1.5'
       )}
     >
-      {showCheckbox && (
-        <div className="h-5 w-5 shrink-0 rounded border bg-muted" />
-      )}
-      <div
-        className={cn(
-          'shrink-0 rounded bg-muted',
-          compact ? 'h-6 w-6' : 'h-8 w-8'
-        )}
-      />
+      {showCheckbox && <div className="h-5 w-5 shrink-0 rounded border bg-muted" />}
+      <div className={cn('shrink-0 rounded bg-muted', compact ? 'h-6 w-6' : 'h-8 w-8')} />
       <div className="min-w-0 flex-1 space-y-1">
         <div className="h-4 w-24 rounded bg-muted" />
         {!compact && <div className="h-3 w-16 rounded bg-muted" />}

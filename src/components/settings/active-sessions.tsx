@@ -17,11 +17,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { useSecurity, type Session } from '@/lib/security/use-security'
-import {
-  formatLocation,
-  formatSessionTime,
-  getDeviceIcon,
-} from '@/lib/security/session-store'
+import { formatLocation, formatSessionTime, getDeviceIcon } from '@/lib/security/session-store'
 import { useAuth } from '@/contexts/auth-context'
 import { cn } from '@/lib/utils'
 import {
@@ -164,10 +160,7 @@ export function ActiveSessions() {
       {displayCurrentSession && (
         <div className="space-y-3">
           <h3 className="text-sm font-medium text-muted-foreground">Current Session</h3>
-          <SessionCard
-            session={displayCurrentSession}
-            isCurrent
-          />
+          <SessionCard session={displayCurrentSession} isCurrent />
         </div>
       )}
 
@@ -189,19 +182,17 @@ export function ActiveSessions() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Sign out all other sessions?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will sign you out of all devices except this one. You will
-                    need to sign in again on those devices.
+                    This will sign you out of all devices except this one. You will need to sign in
+                    again on those devices.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleRevokeAllOthers}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                   >
-                    {isRevoking ? (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    ) : null}
+                    {isRevoking ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                     Sign Out All
                   </AlertDialogAction>
                 </AlertDialogFooter>
@@ -224,12 +215,10 @@ export function ActiveSessions() {
 
       {/* No Other Sessions */}
       {otherSessions.length === 0 && (
-        <div className="text-center py-8 text-muted-foreground">
-          <Shield className="h-12 w-12 mx-auto mb-4 opacity-50" />
+        <div className="py-8 text-center text-muted-foreground">
+          <Shield className="mx-auto mb-4 h-12 w-12 opacity-50" />
           <p>No other active sessions</p>
-          <p className="text-sm">
-            You are only signed in on this device
-          </p>
+          <p className="text-sm">You are only signed in on this device</p>
         </div>
       )}
     </div>
@@ -247,49 +236,39 @@ interface SessionCardProps {
   isRevoking?: boolean
 }
 
-function SessionCard({
-  session,
-  isCurrent,
-  onRevoke,
-  isRevoking,
-}: SessionCardProps) {
+function SessionCard({ session, isCurrent, onRevoke, isRevoking }: SessionCardProps) {
   const DeviceIcon =
     session.device.toLowerCase() === 'mobile'
       ? Smartphone
       : session.device.toLowerCase() === 'tablet'
-      ? Tablet
-      : Monitor
+        ? Tablet
+        : Monitor
 
   return (
     <div
       className={cn(
-        'flex items-start gap-4 p-4 rounded-lg border',
+        'flex items-start gap-4 rounded-lg border p-4',
         isCurrent && 'bg-primary/5 border-primary/20'
       )}
     >
       {/* Device Icon */}
-      <div
-        className={cn(
-          'rounded-full p-2',
-          isCurrent ? 'bg-primary/10' : 'bg-muted'
-        )}
-      >
+      <div className={cn('rounded-full p-2', isCurrent ? 'bg-primary/10' : 'bg-muted')}>
         <DeviceIcon
-          className={cn(
-            'h-5 w-5',
-            isCurrent ? 'text-primary' : 'text-muted-foreground'
-          )}
+          className={cn('h-5 w-5', isCurrent ? 'text-primary' : 'text-muted-foreground')}
         />
       </div>
 
       {/* Session Details */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="font-medium">
             {session.browser} on {session.os}
           </span>
           {isCurrent && (
-            <Badge variant="secondary" className="bg-green-500/10 text-green-600 border-green-500/20">
+            <Badge
+              variant="secondary"
+              className="border-green-500/20 bg-green-500/10 text-green-600"
+            >
               <CheckCircle2 className="mr-1 h-3 w-3" />
               This device
             </Badge>
@@ -321,7 +300,7 @@ function SessionCard({
             <Button
               variant="ghost"
               size="sm"
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              className="hover:bg-destructive/10 text-destructive hover:text-destructive"
               disabled={isRevoking}
             >
               <LogOut className="h-4 w-4" />
@@ -331,15 +310,15 @@ function SessionCard({
             <AlertDialogHeader>
               <AlertDialogTitle>Sign out this session?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will sign you out of {session.browser} on {session.os}.
-                You will need to sign in again on that device.
+                This will sign you out of {session.browser} on {session.os}. You will need to sign
+                in again on that device.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={onRevoke}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               >
                 Sign Out
               </AlertDialogAction>
@@ -359,7 +338,7 @@ function SessionSkeleton({ isCurrent }: { isCurrent?: boolean }) {
   return (
     <div
       className={cn(
-        'flex items-start gap-4 p-4 rounded-lg border',
+        'flex items-start gap-4 rounded-lg border p-4',
         isCurrent && 'bg-primary/5 border-primary/20'
       )}
     >

@@ -17,19 +17,10 @@ import { canManageRole, sortRolesByPosition } from '@/lib/admin/roles/role-hiera
 import { PermissionToggleCompact } from './PermissionToggle'
 import { RoleBadge } from './RoleBadge'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import * as Icons from 'lucide-react'
 import { ChevronDown, AlertTriangle, Shield } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface PermissionMatrixProps {
   roles: Role[]
@@ -51,9 +42,7 @@ export function PermissionMatrix({
   onCategoryToggle,
   className,
 }: PermissionMatrixProps) {
-  const [localExpanded, setLocalExpanded] = React.useState<PermissionCategory[]>(
-    expandedCategories
-  )
+  const [localExpanded, setLocalExpanded] = React.useState<PermissionCategory[]>(expandedCategories)
 
   const expanded = onCategoryToggle ? expandedCategories : localExpanded
   const toggleCategory = (category: PermissionCategory) => {
@@ -61,9 +50,7 @@ export function PermissionMatrix({
       onCategoryToggle(category)
     } else {
       setLocalExpanded((prev) =>
-        prev.includes(category)
-          ? prev.filter((c) => c !== category)
-          : [...prev, category]
+        prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
       )
     }
   }
@@ -87,15 +74,8 @@ export function PermissionMatrix({
                 key={role.id}
                 className="flex w-28 shrink-0 flex-col items-center justify-center border-l p-2"
               >
-                <RoleBadge
-                  name={role.name}
-                  color={role.color}
-                  size="sm"
-                  showIcon={false}
-                />
-                <span className="mt-1 text-xs text-muted-foreground">
-                  #{role.position}
-                </span>
+                <RoleBadge name={role.name} color={role.color} size="sm" showIcon={false} />
+                <span className="mt-1 text-xs text-muted-foreground">#{role.position}</span>
               </div>
             ))}
           </div>
@@ -103,9 +83,7 @@ export function PermissionMatrix({
           {/* Permission categories */}
           {PERMISSION_GROUPS.map((group) => {
             const isExpanded = expanded.includes(group.category)
-            const CategoryIcon = Icons[
-              group.icon as keyof typeof Icons
-            ] as React.ElementType
+            const CategoryIcon = Icons[group.icon as keyof typeof Icons] as React.ElementType
 
             return (
               <Collapsible
@@ -114,17 +92,12 @@ export function PermissionMatrix({
                 onOpenChange={() => toggleCategory(group.category)}
               >
                 {/* Category header */}
-                <CollapsibleTrigger className="flex w-full items-center border-b bg-muted/50 hover:bg-muted/70">
+                <CollapsibleTrigger className="bg-muted/50 hover:bg-muted/70 flex w-full items-center border-b">
                   <div className="flex w-64 shrink-0 items-center gap-2 p-3">
                     <ChevronDown
-                      className={cn(
-                        'h-4 w-4 transition-transform',
-                        isExpanded && 'rotate-180'
-                      )}
+                      className={cn('h-4 w-4 transition-transform', isExpanded && 'rotate-180')}
                     />
-                    {CategoryIcon && (
-                      <CategoryIcon className="h-4 w-4 text-muted-foreground" />
-                    )}
+                    {CategoryIcon && <CategoryIcon className="h-4 w-4 text-muted-foreground" />}
                     <span className="font-medium">{group.name}</span>
                   </div>
                   {/* Role column headers for category */}
@@ -153,7 +126,7 @@ export function PermissionMatrix({
                     return (
                       <div
                         key={perm.id}
-                        className="flex border-b last:border-b-0 hover:bg-accent/30"
+                        className="hover:bg-accent/30 flex border-b last:border-b-0"
                       >
                         {/* Permission name */}
                         <TooltipProvider>
@@ -161,29 +134,19 @@ export function PermissionMatrix({
                             <TooltipTrigger asChild>
                               <div className="flex w-64 shrink-0 items-center gap-2 p-3 pl-8">
                                 {isDangerous && (
-                                  <AlertTriangle
-                                    size={14}
-                                    className="text-amber-500"
-                                  />
+                                  <AlertTriangle size={14} className="text-amber-500" />
                                 )}
                                 {perm.requiresAdmin && (
                                   <Shield size={14} className="text-blue-500" />
                                 )}
-                                <span
-                                  className={cn(
-                                    'text-sm',
-                                    isDangerous && 'text-amber-500'
-                                  )}
-                                >
+                                <span className={cn('text-sm', isDangerous && 'text-amber-500')}>
                                   {perm.name}
                                 </span>
                               </div>
                             </TooltipTrigger>
                             <TooltipContent side="right" className="max-w-xs">
                               <p className="font-medium">{perm.name}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {perm.description}
-                              </p>
+                              <p className="text-xs text-muted-foreground">{perm.description}</p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -193,8 +156,7 @@ export function PermissionMatrix({
                           const isEnabled = role.permissions.includes(perm.id)
                           const canEdit = canEditRole(role)
                           const canGrant =
-                            canEdit &&
-                            editorPermissions?.permissions.includes(perm.id)
+                            canEdit && editorPermissions?.permissions.includes(perm.id)
 
                           return (
                             <div
@@ -242,25 +204,20 @@ export function PermissionMatrixCompact({
   editorPermissions,
   className,
 }: PermissionMatrixCompactProps) {
-  const canEditRole = editorPermissions
-    ? canManageRole(editorPermissions.highestRole, role)
-    : false
+  const canEditRole = editorPermissions ? canManageRole(editorPermissions.highestRole, role) : false
 
   return (
     <div className={cn('space-y-4', className)}>
       <div className="flex items-center gap-3">
         <RoleBadge name={role.name} color={role.color} icon={role.icon} />
-        <span className="text-sm text-muted-foreground">
-          {role.permissions.length} permissions
-        </span>
+        <span className="text-sm text-muted-foreground">{role.permissions.length} permissions</span>
       </div>
 
       <div className="grid grid-cols-4 gap-2 sm:grid-cols-6 md:grid-cols-8">
         {Object.entries(PERMISSIONS).map(([id, perm]) => {
           const permission = id as Permission
           const isEnabled = role.permissions.includes(permission)
-          const canGrant =
-            canEditRole && editorPermissions?.permissions.includes(permission)
+          const canGrant = canEditRole && editorPermissions?.permissions.includes(permission)
 
           return (
             <PermissionToggleCompact

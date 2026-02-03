@@ -8,6 +8,7 @@
 
 import type { IdentityKeyPair } from '@/types/encryption'
 import { EncryptionError, EncryptionErrorType } from '@/types/encryption'
+import { logger } from '@/lib/logger'
 import {
   generateKeyPair,
   generateSigningKeyPair,
@@ -114,10 +115,7 @@ export class IdentityKeyManager {
     }
 
     if (!this.identityKeyPair) {
-      throw new EncryptionError(
-        EncryptionErrorType.KEY_NOT_FOUND,
-        'Identity key pair not found'
-      )
+      throw new EncryptionError(EncryptionErrorType.KEY_NOT_FOUND, 'Identity key pair not found')
     }
 
     return this.identityKeyPair
@@ -140,10 +138,7 @@ export class IdentityKeyManager {
     }
 
     if (this.registrationId === null) {
-      throw new EncryptionError(
-        EncryptionErrorType.KEY_NOT_FOUND,
-        'Registration ID not found'
-      )
+      throw new EncryptionError(EncryptionErrorType.KEY_NOT_FOUND, 'Registration ID not found')
     }
 
     return this.registrationId
@@ -232,13 +227,13 @@ export class IdentityKeyManager {
 
       // Validate required fields
       if (!parsed.publicKey || !parsed.privateKey || !parsed.registrationId) {
-        console.warn('Invalid identity key in storage')
+        logger.warn('Invalid identity key in storage')
         return null
       }
 
       return parsed
     } catch (error) {
-      console.error('Failed to load identity from storage:', error)
+      logger.error('Failed to load identity from storage:',  error)
       return null
     }
   }

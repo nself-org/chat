@@ -32,11 +32,7 @@ import {
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
 import { successResponse } from '@/lib/api/response'
-import {
-  applyRateLimit,
-  RATE_LIMIT_PRESETS,
-  getRateLimitHeaders,
-} from '@/lib/api/rate-limiter'
+import { applyRateLimit, RATE_LIMIT_PRESETS, getRateLimitHeaders } from '@/lib/api/rate-limiter'
 
 /**
  * GET - Get protected data (no CSRF required for GET)

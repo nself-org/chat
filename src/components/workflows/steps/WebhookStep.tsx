@@ -31,10 +31,7 @@ interface WebhookStepPropertiesProps {
   onUpdate: (config: Record<string, unknown>) => void
 }
 
-export function WebhookStepProperties({
-  step,
-  onUpdate,
-}: WebhookStepPropertiesProps) {
+export function WebhookStepProperties({ step, onUpdate }: WebhookStepPropertiesProps) {
   const config = step.config
 
   const handleAddHeader = () => {
@@ -64,10 +61,10 @@ export function WebhookStepProperties({
         <Input
           value={config.url || ''}
           onChange={(e) => onUpdate({ url: e.target.value })}
-          className="h-8 text-sm mt-1 font-mono"
+          className="mt-1 h-8 font-mono text-sm"
           placeholder="https://api.example.com/endpoint"
         />
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           Use {'{{variable}}'} to insert dynamic values
         </p>
       </div>
@@ -79,7 +76,7 @@ export function WebhookStepProperties({
           value={config.method}
           onValueChange={(value) => onUpdate({ method: value as HttpMethod })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -93,16 +90,11 @@ export function WebhookStepProperties({
       </div>
 
       {/* Headers */}
-      <div className="pt-2 border-t">
-        <div className="flex items-center justify-between mb-2">
+      <div className="border-t pt-2">
+        <div className="mb-2 flex items-center justify-between">
           <Label className="text-xs">Headers</Label>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6"
-            onClick={handleAddHeader}
-          >
-            <Plus className="h-3 w-3 mr-1" />
+          <Button variant="ghost" size="sm" className="h-6" onClick={handleAddHeader}>
+            <Plus className="mr-1 h-3 w-3" />
             Add
           </Button>
         </div>
@@ -114,13 +106,13 @@ export function WebhookStepProperties({
                 <Input
                   value={header.key}
                   onChange={(e) => handleUpdateHeader(index, { key: e.target.value })}
-                  className="h-6 text-xs flex-1"
+                  className="h-6 flex-1 text-xs"
                   placeholder="Header name"
                 />
                 <Input
                   value={header.value}
                   onChange={(e) => handleUpdateHeader(index, { value: e.target.value })}
-                  className="h-6 text-xs flex-1"
+                  className="h-6 flex-1 text-xs"
                   placeholder="Value"
                   type={header.isSecret ? 'password' : 'text'}
                 />
@@ -140,14 +132,14 @@ export function WebhookStepProperties({
 
       {/* Body (for POST, PUT, PATCH) */}
       {['POST', 'PUT', 'PATCH'].includes(config.method) && (
-        <div className="pt-2 border-t">
-          <div className="flex items-center justify-between mb-1">
+        <div className="border-t pt-2">
+          <div className="mb-1 flex items-center justify-between">
             <Label className="text-xs">Request Body</Label>
             <Select
               value={config.bodyType || 'json'}
               onValueChange={(value) => onUpdate({ bodyType: value })}
             >
-              <SelectTrigger className="h-6 text-xs w-20">
+              <SelectTrigger className="h-6 w-20 text-xs">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -160,26 +152,22 @@ export function WebhookStepProperties({
           <Textarea
             value={config.body || ''}
             onChange={(e) => onUpdate({ body: e.target.value })}
-            className="text-xs font-mono min-h-[80px] mt-1"
+            className="mt-1 min-h-[80px] font-mono text-xs"
             placeholder={
-              config.bodyType === 'json'
-                ? '{\n  "key": "{{variable}}"\n}'
-                : 'Request body...'
+              config.bodyType === 'json' ? '{\n  "key": "{{variable}}"\n}' : 'Request body...'
             }
           />
         </div>
       )}
 
       {/* Response handling */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <Label className="text-xs">Response Handling</Label>
 
-        <div className="flex items-center justify-between mt-2">
+        <div className="mt-2 flex items-center justify-between">
           <div>
             <p className="text-xs">Parse Response as JSON</p>
-            <p className="text-[10px] text-muted-foreground">
-              Store response in a variable
-            </p>
+            <p className="text-[10px] text-muted-foreground">Store response in a variable</p>
           </div>
           <Switch
             checked={config.parseResponse !== false}
@@ -193,7 +181,7 @@ export function WebhookStepProperties({
             <Input
               value={config.responseVariableName || ''}
               onChange={(e) => onUpdate({ responseVariableName: e.target.value })}
-              className="h-6 text-xs font-mono mt-1"
+              className="mt-1 h-6 font-mono text-xs"
               placeholder="webhookResponse"
             />
           </div>
@@ -201,10 +189,10 @@ export function WebhookStepProperties({
       </div>
 
       {/* Advanced options */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <Label className="text-xs">Advanced</Label>
 
-        <div className="grid grid-cols-2 gap-2 mt-2">
+        <div className="mt-2 grid grid-cols-2 gap-2">
           <div>
             <Label className="text-[10px]">Timeout (seconds)</Label>
             <Input
@@ -240,7 +228,7 @@ export function WebhookStepProperties({
                 .filter((n) => !isNaN(n))
               onUpdate({ expectedStatusCodes: codes.length > 0 ? codes : undefined })
             }}
-            className="h-6 text-xs mt-1"
+            className="mt-1 h-6 text-xs"
             placeholder="200, 201 (empty for any 2xx)"
           />
         </div>

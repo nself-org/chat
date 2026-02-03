@@ -9,17 +9,8 @@ import { Search, ChevronDown, ChevronRight, Info } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { builtInCommands, commandCategories } from '@/lib/slash-commands/built-in-commands'
 import type { CommandCategory, SlashCommand } from '@/lib/slash-commands/command-types'
 import { cn } from '@/lib/utils'
@@ -78,9 +69,7 @@ export function BuiltInCommands({ onSelectCommand }: BuiltInCommandsProps) {
     }
 
     // Sort commands within each category
-    Object.values(groups).forEach((cmds) =>
-      cmds.sort((a, b) => (a.order || 0) - (b.order || 0))
-    )
+    Object.values(groups).forEach((cmds) => cmds.sort((a, b) => (a.order || 0) - (b.order || 0)))
 
     return groups
   }, [filteredCommands])
@@ -142,7 +131,7 @@ export function BuiltInCommands({ onSelectCommand }: BuiltInCommandsProps) {
               <CollapsibleTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="w-full justify-between px-3 py-2 hover:bg-muted/50"
+                  className="hover:bg-muted/50 w-full justify-between px-3 py-2"
                 >
                   <div className="flex items-center gap-2">
                     {isExpanded ? (
@@ -202,7 +191,7 @@ function CommandRow({ command, isLast, onSelect }: CommandRowProps) {
   return (
     <div
       className={cn(
-        'flex items-center gap-4 px-4 py-3 transition-colors hover:bg-muted/30',
+        'hover:bg-muted/30 flex items-center gap-4 px-4 py-3 transition-colors',
         !isLast && 'border-b',
         onSelect && 'cursor-pointer'
       )}
@@ -214,8 +203,8 @@ function CommandRow({ command, isLast, onSelect }: CommandRowProps) {
       </div>
 
       {/* Description */}
-      <div className="flex-1 min-w-0">
-        <p className="text-sm truncate">{command.description}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm">{command.description}</p>
         {command.aliases && command.aliases.length > 0 && (
           <p className="text-xs text-muted-foreground">
             Aliases: {command.aliases.map((a) => `/${a}`).join(', ')}

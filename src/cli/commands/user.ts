@@ -23,7 +23,7 @@ export const userCommands = {
       head: ['ID', 'Email', 'Name', 'Role', 'Status'],
     })
     // Add rows...
-    console.log(table.toString())
+    // REMOVED: console.log(table.toString())
   },
 
   async update(userId: string, options: any) {

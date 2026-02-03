@@ -3,17 +3,17 @@
  * Handles generation, hashing, and verification of bot API tokens
  */
 
-import crypto from 'crypto';
+import crypto from 'crypto'
 
 /**
  * Token prefix for bot API tokens
  */
-export const BOT_TOKEN_PREFIX = 'nbot_';
+export const BOT_TOKEN_PREFIX = 'nbot_'
 
 /**
  * Token length (excluding prefix)
  */
-const TOKEN_LENGTH = 32; // 32 bytes = 64 hex characters
+const TOKEN_LENGTH = 32 // 32 bytes = 64 hex characters
 
 /**
  * Generate a new bot API token
@@ -26,9 +26,9 @@ const TOKEN_LENGTH = 32; // 32 bytes = 64 hex characters
  * // => 'nbot_a1b2c3d4e5f6...'
  */
 export function generateBotToken(): string {
-  const randomBytes = crypto.randomBytes(TOKEN_LENGTH);
-  const tokenBody = randomBytes.toString('hex');
-  return `${BOT_TOKEN_PREFIX}${tokenBody}`;
+  const randomBytes = crypto.randomBytes(TOKEN_LENGTH)
+  const tokenBody = randomBytes.toString('hex')
+  return `${BOT_TOKEN_PREFIX}${tokenBody}`
 }
 
 /**
@@ -44,13 +44,10 @@ export function generateBotToken(): string {
  */
 export function hashToken(token: string): string {
   if (!token.startsWith(BOT_TOKEN_PREFIX)) {
-    throw new Error('Invalid bot token format');
+    throw new Error('Invalid bot token format')
   }
 
-  return crypto
-    .createHash('sha256')
-    .update(token)
-    .digest('hex');
+  return crypto.createHash('sha256').update(token).digest('hex')
 }
 
 /**
@@ -69,16 +66,13 @@ export function hashToken(token: string): string {
  */
 export function verifyToken(token: string, hash: string): boolean {
   if (!token.startsWith(BOT_TOKEN_PREFIX)) {
-    return false;
+    return false
   }
 
-  const tokenHash = hashToken(token);
+  const tokenHash = hashToken(token)
 
   // Constant-time comparison to prevent timing attacks
-  return crypto.timingSafeEqual(
-    Buffer.from(tokenHash),
-    Buffer.from(hash)
-  );
+  return crypto.timingSafeEqual(Buffer.from(tokenHash), Buffer.from(hash))
 }
 
 /**
@@ -94,22 +88,22 @@ export function verifyToken(token: string, hash: string): boolean {
  */
 export function extractTokenFromHeader(authHeader: string | null | undefined): string | null {
   if (!authHeader) {
-    return null;
+    return null
   }
 
   // Handle "Bearer nbot_..." format
-  const bearerMatch = authHeader.match(/^Bearer\s+(nbot_[a-f0-9]{64})$/i);
+  const bearerMatch = authHeader.match(/^Bearer\s+(nbot_[a-f0-9]{64})$/i)
   if (bearerMatch) {
-    return bearerMatch[1];
+    return bearerMatch[1]
   }
 
   // Handle direct "nbot_..." format
-  const directMatch = authHeader.match(/^(nbot_[a-f0-9]{64})$/);
+  const directMatch = authHeader.match(/^(nbot_[a-f0-9]{64})$/)
   if (directMatch) {
-    return directMatch[1];
+    return directMatch[1]
   }
 
-  return null;
+  return null
 }
 
 /**
@@ -124,7 +118,7 @@ export function extractTokenFromHeader(authHeader: string | null | undefined): s
  * }
  */
 export function isValidTokenFormat(token: string): boolean {
-  return /^nbot_[a-f0-9]{64}$/.test(token);
+  return /^nbot_[a-f0-9]{64}$/.test(token)
 }
 
 /**
@@ -140,12 +134,12 @@ export function isValidTokenFormat(token: string): boolean {
  */
 export function maskToken(token: string): string {
   if (!token || token.length < 16) {
-    return '***';
+    return '***'
   }
 
-  const prefix = token.slice(0, 12);
-  const suffix = token.slice(-4);
-  return `${prefix}...${suffix}`;
+  const prefix = token.slice(0, 12)
+  const suffix = token.slice(-4)
+  return `${prefix}...${suffix}`
 }
 
 /**
@@ -156,11 +150,11 @@ export function maskToken(token: string): string {
  */
 export function isTokenExpired(expiresAt: Date | string | null | undefined): boolean {
   if (!expiresAt) {
-    return false; // No expiration = never expires
+    return false // No expiration = never expires
   }
 
-  const expiration = typeof expiresAt === 'string' ? new Date(expiresAt) : expiresAt;
-  return expiration.getTime() < Date.now();
+  const expiration = typeof expiresAt === 'string' ? new Date(expiresAt) : expiresAt
+  return expiration.getTime() < Date.now()
 }
 
 /**
@@ -170,7 +164,7 @@ export function isTokenExpired(expiresAt: Date | string | null | undefined): boo
  * @returns A random secret string
  */
 export function generateWebhookSecret(): string {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(32).toString('hex')
 }
 
 /**
@@ -185,10 +179,7 @@ export function generateWebhookSecret(): string {
  * // Include in header: X-Webhook-Signature: sha256=<signature>
  */
 export function signWebhookPayload(payload: string, secret: string): string {
-  return crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
+  return crypto.createHmac('sha256', secret).update(payload).digest('hex')
 }
 
 /**
@@ -212,15 +203,12 @@ export function verifyWebhookSignature(
   signature: string,
   secret: string
 ): boolean {
-  const expectedSignature = signWebhookPayload(payload, secret);
+  const expectedSignature = signWebhookPayload(payload, secret)
 
   try {
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    );
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))
   } catch {
-    return false;
+    return false
   }
 }
 
@@ -228,7 +216,7 @@ export function verifyWebhookSignature(
  * Rate limiting: Check if bot has exceeded rate limit
  * Uses a simple in-memory cache (should be replaced with Redis in production)
  */
-const rateLimitCache = new Map<string, number[]>();
+const rateLimitCache = new Map<string, number[]>()
 
 /**
  * Check rate limit for a bot
@@ -244,30 +232,30 @@ export function checkRateLimit(
   limit: number = 100,
   windowMs: number = 60000 // 1 minute
 ): { allowed: boolean; remaining: number; resetAt: number } {
-  const now = Date.now();
-  const resetAt = now + windowMs;
+  const now = Date.now()
+  const resetAt = now + windowMs
 
   // Get or create request timestamps for this bot
-  let timestamps = rateLimitCache.get(botId) || [];
+  let timestamps = rateLimitCache.get(botId) || []
 
   // Remove expired timestamps
-  timestamps = timestamps.filter(ts => ts > now - windowMs);
+  timestamps = timestamps.filter((ts) => ts > now - windowMs)
 
   // Check if limit exceeded
-  const allowed = timestamps.length < limit;
-  const remaining = Math.max(0, limit - timestamps.length - (allowed ? 1 : 0));
+  const allowed = timestamps.length < limit
+  const remaining = Math.max(0, limit - timestamps.length - (allowed ? 1 : 0))
 
   if (allowed) {
-    timestamps.push(now);
-    rateLimitCache.set(botId, timestamps);
+    timestamps.push(now)
+    rateLimitCache.set(botId, timestamps)
   }
 
-  return { allowed, remaining, resetAt };
+  return { allowed, remaining, resetAt }
 }
 
 /**
  * Clear rate limit cache (for testing)
  */
 export function clearRateLimitCache(): void {
-  rateLimitCache.clear();
+  rateLimitCache.clear()
 }

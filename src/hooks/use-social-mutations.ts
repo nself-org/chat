@@ -352,9 +352,8 @@ export function useSocialMutations() {
   // Invitation Mutations
   // ============================================================================
 
-  const [inviteToChannelMutation, { loading: invitingToChannel }] = useMutation(
-    INVITE_USER_TO_CHANNEL
-  )
+  const [inviteToChannelMutation, { loading: invitingToChannel }] =
+    useMutation(INVITE_USER_TO_CHANNEL)
 
   const inviteToChannel = useCallback(
     async (input: InviteToChannelInput) => {

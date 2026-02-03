@@ -11,6 +11,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 ### 1. User Management (`users.ts`)
 
 **Queries:**
+
 - `GET_USER` - Get a single user by ID, username, or email
 - `GET_USER_BY_ID` - Get user by ID (simple)
 - `GET_USER_PROFILE` - Get detailed user profile
@@ -24,6 +25,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `SEARCH_USERS_FOR_MENTION` - Search users for mentions
 
 **Mutations:**
+
 - `UPDATE_PROFILE` - Update user profile
 - `UPDATE_STATUS` - Update custom status message
 - `CLEAR_STATUS` - Clear user status
@@ -40,6 +42,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `UPDATE_USER_ROLE` - Update user role (admin only)
 
 **Subscriptions:**
+
 - `PRESENCE_SUBSCRIPTION` - Subscribe to user presence changes
 - `ALL_PRESENCE_SUBSCRIPTION` - Subscribe to all online users presence
 - `USERS_PRESENCE_SUBSCRIPTION` - Subscribe to specific users' presence
@@ -50,6 +53,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 ### 2. Direct Messages (`dms.ts`)
 
 **Queries:**
+
 - `GET_USER_DMS` - Get all DMs for the current user
 - `GET_DM` - Get a single DM by ID
 - `GET_DM_BY_SLUG` - Get a DM by slug
@@ -59,6 +63,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `SEARCH_DM_MESSAGES` - Search DM messages
 
 **Mutations:**
+
 - `CREATE_OR_GET_DM` - Create a new 1:1 DM or get existing one
 - `CREATE_GROUP_DM` - Create a new group DM
 - `UPDATE_DM_SETTINGS` - Update DM settings (group only)
@@ -77,6 +82,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `REMOVE_DM_REACTION` - Remove reaction from DM message
 
 **Subscriptions:**
+
 - `DM_LIST_SUBSCRIPTION` - Subscribe to DM list updates
 - `DM_SUBSCRIPTION` - Subscribe to a single DM updates
 - `DM_MESSAGES_SUBSCRIPTION` - Subscribe to new messages in a DM
@@ -86,6 +92,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 ### 3. Files (`files.ts`)
 
 **Queries:**
+
 - `GET_FILE` - Get a single file by ID
 - `GET_CHANNEL_FILES` - Get all files in a channel
 - `GET_FILES_BY_TYPE` - Get files by type (images, videos, documents, etc.)
@@ -97,6 +104,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `GET_RECENT_FILES` - Get recent files (workspace-wide)
 
 **Mutations:**
+
 - `REQUEST_UPLOAD_URL` - Request presigned URL for file upload
 - `CREATE_FILE` - Create file record after upload
 - `CREATE_FILES` - Create multiple files at once
@@ -111,6 +119,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `PROCESS_FILE` - Process uploaded file (thumbnails, metadata, etc.)
 
 **Subscriptions:**
+
 - `CHANNEL_FILES_SUBSCRIPTION` - Subscribe to new files in a channel
 - `FILE_UPLOAD_PROGRESS_SUBSCRIPTION` - Subscribe to file upload progress
 - `FILES_STREAM_SUBSCRIPTION` - Subscribe to file stream
@@ -118,6 +127,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 ### 4. Notifications (`notifications.ts`)
 
 **Queries:**
+
 - `GET_NOTIFICATIONS` - Get notifications for a user
 - `GET_UNREAD_COUNT` - Get unread notification count
 - `GET_UNREAD_BY_CHANNEL` - Get unread counts by channel
@@ -125,6 +135,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `GET_NOTIFICATIONS_GROUPED` - Get recent notifications grouped by type
 
 **Mutations:**
+
 - `MARK_AS_READ` - Mark a single notification as read
 - `MARK_MULTIPLE_AS_READ` - Mark multiple notifications as read
 - `MARK_ALL_AS_READ` - Mark all notifications as read
@@ -138,6 +149,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `UNREGISTER_PUSH_TOKEN` - Unregister push notification token
 
 **Subscriptions:**
+
 - `NOTIFICATION_SUBSCRIPTION` - Subscribe to new notifications
 - `UNREAD_COUNT_SUBSCRIPTION` - Subscribe to unread count changes
 - `NOTIFICATION_STREAM_SUBSCRIPTION` - Subscribe to notification stream
@@ -146,6 +158,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 ### 5. Reports (`reports.ts`)
 
 **Queries:**
+
 - `GET_REPORTS` - Get all reports (admin only)
 - `GET_USER_REPORTS` - Get user reports only (admin only)
 - `GET_MESSAGE_REPORTS` - Get message reports only (admin only)
@@ -158,6 +171,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `GET_PENDING_REPORTS_COUNT` - Get pending reports count
 
 **Mutations:**
+
 - `REPORT_USER` - Report a user
 - `REPORT_MESSAGE` - Report a message
 - `UPDATE_REPORT_STATUS` - Update report status (admin/moderator)
@@ -169,6 +183,7 @@ All GraphQL operations follow consistent patterns and use fragments for reusabil
 - `DELETE_REPORT` - Delete a report (admin only)
 
 **Subscriptions:**
+
 - `NEW_REPORTS_SUBSCRIPTION` - Subscribe to new reports (admin only)
 - `REPORT_STATUS_SUBSCRIPTION` - Subscribe to report status changes
 - `PENDING_REPORTS_COUNT_SUBSCRIPTION` - Subscribe to pending reports count
@@ -209,7 +224,7 @@ import { GET_USER_BY_ID, UPDATE_PROFILE } from '@/graphql'
 
 // Use in Apollo Client
 const { data } = useQuery(GET_USER_BY_ID, {
-  variables: { id: userId }
+  variables: { id: userId },
 })
 ```
 
@@ -220,7 +235,7 @@ import { users, dms, files } from '@/graphql'
 
 // Organized by domain
 const { data } = useQuery(users.GET_USER_BY_ID, {
-  variables: { id: userId }
+  variables: { id: userId },
 })
 ```
 

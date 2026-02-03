@@ -4,12 +4,7 @@
  * Converts exported data into various formats (JSON, CSV, HTML, PDF).
  */
 
-import type {
-  ExportData,
-  ExportedMessage,
-  MessageCSVRow,
-  HTMLExportOptions,
-} from './types'
+import type { ExportData, ExportedMessage, MessageCSVRow, HTMLExportOptions } from './types'
 
 // ============================================================================
 // JSON Formatter
@@ -28,15 +23,17 @@ export class JSONFormatter {
     return new ReadableStream({
       start(controller) {
         // Start JSON object and metadata
-        const header = JSON.stringify({
-          metadata: data.metadata,
-          channels: data.channels || [],
-          users: data.users || [],
-        }, null, 2)
-
-        controller.enqueue(
-          encoder.encode(header.slice(0, -1) + ',\n  "messages": [\n')
+        const header = JSON.stringify(
+          {
+            metadata: data.metadata,
+            channels: data.channels || [],
+            users: data.users || [],
+          },
+          null,
+          2
         )
+
+        controller.enqueue(encoder.encode(header.slice(0, -1) + ',\n  "messages": [\n'))
         hasStarted = true
       },
 
@@ -78,8 +75,8 @@ export class CSVFormatter {
 
     const csvLines = [
       headers.join(','),
-      ...rows.map(row =>
-        headers.map(header => this.escapeCSV(row[header as keyof MessageCSVRow])).join(',')
+      ...rows.map((row) =>
+        headers.map((header) => this.escapeCSV(row[header as keyof MessageCSVRow])).join(',')
       ),
     ]
 
@@ -129,7 +126,7 @@ export class CSVFormatter {
             row.reactions_count,
             row.thread_replies_count,
           ]
-          const line = values.map(v => self.escapeCSV(v)).join(',') + '\n'
+          const line = values.map((v) => self.escapeCSV(v)).join(',') + '\n'
           controller.enqueue(encoder.encode(line))
           messageIndex++
         } else {
@@ -156,7 +153,7 @@ export class CSVFormatter {
   }
 
   private convertToCSVRows(messages: ExportedMessage[]): MessageCSVRow[] {
-    return messages.map(msg => this.convertMessageToCSVRow(msg))
+    return messages.map((msg) => this.convertMessageToCSVRow(msg))
   }
 }
 
@@ -165,11 +162,14 @@ export class CSVFormatter {
 // ============================================================================
 
 export class HTMLFormatter {
-  format(data: ExportData, options: HTMLExportOptions = {
-    theme: 'light',
-    includeStyles: true,
-    standalone: true,
-  }): string {
+  format(
+    data: ExportData,
+    options: HTMLExportOptions = {
+      theme: 'light',
+      includeStyles: true,
+      standalone: true,
+    }
+  ): string {
     const styles = options.includeStyles ? this.getStyles(options.theme) : ''
     const metadata = this.formatMetadata(data.metadata)
     const messages = this.formatMessages(data.messages, options.theme)
@@ -421,7 +421,7 @@ export class HTMLFormatter {
   private formatMessages(messages: ExportedMessage[], theme: 'light' | 'dark'): string {
     return `
       <div class="messages">
-        ${messages.map(msg => this.formatMessage(msg)).join('\n')}
+        ${messages.map((msg) => this.formatMessage(msg)).join('\n')}
       </div>
     `
   }
@@ -434,28 +434,31 @@ export class HTMLFormatter {
 
     const attachments = message.attachments?.length
       ? `<div class="message-attachments">
-          ${message.attachments.map(att =>
-            `<a href="${att.url}" class="attachment">${att.fileName}</a>`
-          ).join('')}
+          ${message.attachments
+            .map((att) => `<a href="${att.url}" class="attachment">${att.fileName}</a>`)
+            .join('')}
         </div>`
       : ''
 
     const reactions = message.reactions?.length
       ? `<div class="message-reactions">
-          ${this.groupReactions(message.reactions).map(({ emoji, count }) =>
-            `<span class="reaction">${emoji} ${count}</span>`
-          ).join('')}
+          ${this.groupReactions(message.reactions)
+            .map(({ emoji, count }) => `<span class="reaction">${emoji} ${count}</span>`)
+            .join('')}
         </div>`
       : ''
 
     const thread = message.thread?.totalReplies
       ? `<div class="message-thread">
           <strong>${message.thread.totalReplies} ${message.thread.totalReplies === 1 ? 'reply' : 'replies'}</strong>
-          ${message.thread.replies.map(reply =>
-            `<div class="thread-reply">
+          ${message.thread.replies
+            .map(
+              (reply) =>
+                `<div class="thread-reply">
               <span class="thread-reply-author">${reply.username}:</span> ${reply.content}
             </div>`
-          ).join('')}
+            )
+            .join('')}
         </div>`
       : ''
 
@@ -481,13 +484,18 @@ export class HTMLFormatter {
     return div.innerHTML
   }
 
-  private groupReactions(reactions: ExportedMessage['reactions']): Array<{ emoji: string; count: number }> {
+  private groupReactions(
+    reactions: ExportedMessage['reactions']
+  ): Array<{ emoji: string; count: number }> {
     if (!reactions) return []
 
-    const grouped = reactions.reduce((acc, reaction) => {
-      acc[reaction.emoji] = (acc[reaction.emoji] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+    const grouped = reactions.reduce(
+      (acc, reaction) => {
+        acc[reaction.emoji] = (acc[reaction.emoji] || 0) + 1
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
     return Object.entries(grouped).map(([emoji, count]) => ({ emoji, count }))
   }

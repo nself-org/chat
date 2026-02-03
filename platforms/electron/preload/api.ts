@@ -5,163 +5,163 @@
  * All APIs are accessed through secure IPC channels.
  */
 
-import { ipcRenderer, IpcRendererEvent } from 'electron';
+import { ipcRenderer, IpcRendererEvent } from 'electron'
 
 // Type definitions for the exposed API
 export interface ElectronAPI {
   // Window controls
   window: {
-    show: () => Promise<boolean>;
-    hide: () => Promise<boolean>;
-    minimize: () => Promise<boolean>;
-    maximize: () => Promise<boolean>;
-    toggleFullscreen: () => Promise<boolean>;
-    isMaximized: () => Promise<boolean>;
-    isFullscreen: () => Promise<boolean>;
-    isFocused: () => Promise<boolean>;
-    setZoom: (level: number) => Promise<number>;
-    getZoom: () => Promise<number>;
-    zoomIn: () => Promise<number>;
-    zoomOut: () => Promise<number>;
-    resetZoom: () => Promise<number>;
-    reload: () => Promise<boolean>;
-    clearCache: () => Promise<boolean>;
-  };
+    show: () => Promise<boolean>
+    hide: () => Promise<boolean>
+    minimize: () => Promise<boolean>
+    maximize: () => Promise<boolean>
+    toggleFullscreen: () => Promise<boolean>
+    isMaximized: () => Promise<boolean>
+    isFullscreen: () => Promise<boolean>
+    isFocused: () => Promise<boolean>
+    setZoom: (level: number) => Promise<number>
+    getZoom: () => Promise<number>
+    zoomIn: () => Promise<number>
+    zoomOut: () => Promise<number>
+    resetZoom: () => Promise<number>
+    reload: () => Promise<boolean>
+    clearCache: () => Promise<boolean>
+  }
 
   // Settings store
   store: {
-    get: <T>(key: string) => Promise<T>;
-    set: <T>(key: string, value: T) => Promise<boolean>;
-    getAll: () => Promise<Record<string, unknown>>;
-    reset: () => Promise<boolean>;
-  };
+    get: <T>(key: string) => Promise<T>
+    set: <T>(key: string, value: T) => Promise<boolean>
+    getAll: () => Promise<Record<string, unknown>>
+    reset: () => Promise<boolean>
+  }
 
   // Notifications
   notifications: {
-    show: (options: NotificationOptions) => Promise<NotificationResult>;
-    getSettings: () => Promise<NotificationSettings>;
-    setSettings: (settings: Partial<NotificationSettings>) => Promise<boolean>;
-    isDndActive: () => Promise<boolean>;
-  };
+    show: (options: NotificationOptions) => Promise<NotificationResult>
+    getSettings: () => Promise<NotificationSettings>
+    setSettings: (settings: Partial<NotificationSettings>) => Promise<boolean>
+    isDndActive: () => Promise<boolean>
+  }
 
   // Tray
   tray: {
-    setUnreadCount: (count: number) => Promise<boolean>;
-    flashFrame: (flash: boolean) => Promise<boolean>;
-    updateMenu: () => Promise<boolean>;
-  };
+    setUnreadCount: (count: number) => Promise<boolean>
+    flashFrame: (flash: boolean) => Promise<boolean>
+    updateMenu: () => Promise<boolean>
+  }
 
   // Auto-start
   autostart: {
-    enable: () => Promise<boolean>;
-    disable: () => Promise<boolean>;
-    isEnabled: () => Promise<boolean>;
-  };
+    enable: () => Promise<boolean>
+    disable: () => Promise<boolean>
+    isEnabled: () => Promise<boolean>
+  }
 
   // Updates
   updates: {
-    check: () => Promise<unknown>;
-    download: () => Promise<void>;
-    install: () => Promise<boolean>;
-    getInfo: () => Promise<UpdateInfo>;
-  };
+    check: () => Promise<unknown>
+    download: () => Promise<void>
+    install: () => Promise<boolean>
+    getInfo: () => Promise<UpdateInfo>
+  }
 
   // Theme
   theme: {
-    getSystem: () => Promise<'light' | 'dark'>;
-    setNative: (theme: 'light' | 'dark' | 'system') => void;
-    onChanged: (callback: (theme: 'light' | 'dark') => void) => () => void;
-  };
+    getSystem: () => Promise<'light' | 'dark'>
+    setNative: (theme: 'light' | 'dark' | 'system') => void
+    onChanged: (callback: (theme: 'light' | 'dark') => void) => () => void
+  }
 
   // Shell
   shell: {
-    openExternal: (url: string) => Promise<boolean>;
-    openPath: (path: string) => Promise<string>;
-    showItemInFolder: (path: string) => Promise<boolean>;
-    beep: () => Promise<boolean>;
-  };
+    openExternal: (url: string) => Promise<boolean>
+    openPath: (path: string) => Promise<string>
+    showItemInFolder: (path: string) => Promise<boolean>
+    beep: () => Promise<boolean>
+  }
 
   // Clipboard
   clipboard: {
-    readText: () => Promise<string>;
-    writeText: (text: string) => Promise<boolean>;
-    readImage: () => Promise<string>;
-    writeImage: (dataUrl: string) => Promise<boolean>;
-    readHtml: () => Promise<string>;
-    writeHtml: (html: string) => Promise<boolean>;
-    clear: () => Promise<boolean>;
-  };
+    readText: () => Promise<string>
+    writeText: (text: string) => Promise<boolean>
+    readImage: () => Promise<string>
+    writeImage: (dataUrl: string) => Promise<boolean>
+    readHtml: () => Promise<string>
+    writeHtml: (html: string) => Promise<boolean>
+    clear: () => Promise<boolean>
+  }
 
   // Dialogs
   dialog: {
-    showOpen: (options: OpenDialogOptions) => Promise<OpenDialogResult>;
-    showSave: (options: SaveDialogOptions) => Promise<SaveDialogResult>;
-    showMessage: (options: MessageDialogOptions) => Promise<MessageDialogResult>;
-    showError: (title: string, content: string) => Promise<boolean>;
-  };
+    showOpen: (options: OpenDialogOptions) => Promise<OpenDialogResult>
+    showSave: (options: SaveDialogOptions) => Promise<SaveDialogResult>
+    showMessage: (options: MessageDialogOptions) => Promise<MessageDialogResult>
+    showError: (title: string, content: string) => Promise<boolean>
+  }
 
   // App info
   app: {
-    getVersion: () => Promise<string>;
-    getName: () => Promise<string>;
-    getPath: (name: string) => Promise<string>;
-    isPackaged: () => Promise<boolean>;
-    getLocale: () => Promise<string>;
-    quit: () => Promise<boolean>;
-  };
+    getVersion: () => Promise<string>
+    getName: () => Promise<string>
+    getPath: (name: string) => Promise<string>
+    isPackaged: () => Promise<boolean>
+    getLocale: () => Promise<string>
+    quit: () => Promise<boolean>
+  }
 
   // Platform info
   platform: {
-    getInfo: () => Promise<PlatformInfo>;
-    isMac: boolean;
-    isWindows: boolean;
-    isLinux: boolean;
-  };
+    getInfo: () => Promise<PlatformInfo>
+    isMac: boolean
+    isWindows: boolean
+    isLinux: boolean
+  }
 
   // Event listeners
-  on: (channel: string, callback: (...args: unknown[]) => void) => () => void;
-  once: (channel: string, callback: (...args: unknown[]) => void) => void;
-  removeAllListeners: (channel: string) => void;
+  on: (channel: string, callback: (...args: unknown[]) => void) => () => void
+  once: (channel: string, callback: (...args: unknown[]) => void) => void
+  removeAllListeners: (channel: string) => void
 }
 
 // Helper types
 export interface NotificationOptions {
-  title: string;
-  body: string;
-  icon?: string;
-  silent?: boolean;
-  data?: Record<string, unknown>;
+  title: string
+  body: string
+  icon?: string
+  silent?: boolean
+  data?: Record<string, unknown>
 }
 
 export interface NotificationResult {
-  shown: boolean;
-  reason?: 'disabled' | 'dnd' | 'no-support' | 'error';
+  shown: boolean
+  reason?: 'disabled' | 'dnd' | 'no-support' | 'error'
 }
 
 export interface NotificationSettings {
-  enabled: boolean;
-  sound: boolean;
-  showPreview: boolean;
-  doNotDisturb: boolean;
-  doNotDisturbStart?: string;
-  doNotDisturbEnd?: string;
+  enabled: boolean
+  sound: boolean
+  showPreview: boolean
+  doNotDisturb: boolean
+  doNotDisturbStart?: string
+  doNotDisturbEnd?: string
 }
 
 export interface UpdateInfo {
-  available: boolean;
-  version?: string;
-  releaseDate?: string;
-  releaseNotes?: string | null;
-  downloadProgress?: number;
-  downloaded: boolean;
-  error?: string;
+  available: boolean
+  version?: string
+  releaseDate?: string
+  releaseNotes?: string | null
+  downloadProgress?: number
+  downloaded: boolean
+  error?: string
 }
 
 export interface OpenDialogOptions {
-  title?: string;
-  defaultPath?: string;
-  buttonLabel?: string;
-  filters?: Array<{ name: string; extensions: string[] }>;
+  title?: string
+  defaultPath?: string
+  buttonLabel?: string
+  filters?: Array<{ name: string; extensions: string[] }>
   properties?: Array<
     | 'openFile'
     | 'openDirectory'
@@ -172,57 +172,57 @@ export interface OpenDialogOptions {
     | 'noResolveAliases'
     | 'treatPackageAsDirectory'
     | 'dontAddToRecent'
-  >;
+  >
 }
 
 export interface OpenDialogResult {
-  canceled: boolean;
-  filePaths: string[];
+  canceled: boolean
+  filePaths: string[]
 }
 
 export interface SaveDialogOptions {
-  title?: string;
-  defaultPath?: string;
-  buttonLabel?: string;
-  filters?: Array<{ name: string; extensions: string[] }>;
+  title?: string
+  defaultPath?: string
+  buttonLabel?: string
+  filters?: Array<{ name: string; extensions: string[] }>
   properties?: Array<
     | 'showHiddenFiles'
     | 'createDirectory'
     | 'treatPackageAsDirectory'
     | 'showOverwriteConfirmation'
     | 'dontAddToRecent'
-  >;
+  >
 }
 
 export interface SaveDialogResult {
-  canceled: boolean;
-  filePath?: string;
+  canceled: boolean
+  filePath?: string
 }
 
 export interface MessageDialogOptions {
-  type?: 'none' | 'info' | 'error' | 'question' | 'warning';
-  buttons?: string[];
-  defaultId?: number;
-  cancelId?: number;
-  title?: string;
-  message: string;
-  detail?: string;
-  checkboxLabel?: string;
-  checkboxChecked?: boolean;
+  type?: 'none' | 'info' | 'error' | 'question' | 'warning'
+  buttons?: string[]
+  defaultId?: number
+  cancelId?: number
+  title?: string
+  message: string
+  detail?: string
+  checkboxLabel?: string
+  checkboxChecked?: boolean
 }
 
 export interface MessageDialogResult {
-  response: number;
-  checkboxChecked?: boolean;
+  response: number
+  checkboxChecked?: boolean
 }
 
 export interface PlatformInfo {
-  platform: string;
-  arch: string;
-  version: string;
-  electronVersion: string;
-  chromeVersion: string;
-  nodeVersion: string;
+  platform: string
+  arch: string
+  version: string
+  electronVersion: string
+  chromeVersion: string
+  nodeVersion: string
 }
 
 // Allowed channels for event listeners
@@ -250,7 +250,7 @@ const ALLOWED_RECEIVE_CHANNELS = [
   'app:quick-switcher',
   'app:jump-to-conversation',
   'app:set-status',
-];
+]
 
 // Create the API object
 export function createElectronAPI(): ElectronAPI {
@@ -310,9 +310,9 @@ export function createElectronAPI(): ElectronAPI {
       getSystem: () => ipcRenderer.invoke('theme:get-system'),
       setNative: (theme) => ipcRenderer.send('theme:set-native', theme),
       onChanged: (callback) => {
-        const handler = (_event: IpcRendererEvent, theme: 'light' | 'dark') => callback(theme);
-        ipcRenderer.on('theme:changed', handler);
-        return () => ipcRenderer.removeListener('theme:changed', handler);
+        const handler = (_event: IpcRendererEvent, theme: 'light' | 'dark') => callback(theme)
+        ipcRenderer.on('theme:changed', handler)
+        return () => ipcRenderer.removeListener('theme:changed', handler)
       },
     },
 
@@ -358,28 +358,28 @@ export function createElectronAPI(): ElectronAPI {
 
     on: (channel, callback) => {
       if (!ALLOWED_RECEIVE_CHANNELS.includes(channel)) {
-        console.warn(`Channel "${channel}" is not in the allowed list`);
-        return () => {};
+        console.warn(`Channel "${channel}" is not in the allowed list`)
+        return () => {}
       }
 
-      const handler = (_event: IpcRendererEvent, ...args: unknown[]) => callback(...args);
-      ipcRenderer.on(channel, handler);
-      return () => ipcRenderer.removeListener(channel, handler);
+      const handler = (_event: IpcRendererEvent, ...args: unknown[]) => callback(...args)
+      ipcRenderer.on(channel, handler)
+      return () => ipcRenderer.removeListener(channel, handler)
     },
 
     once: (channel, callback) => {
       if (!ALLOWED_RECEIVE_CHANNELS.includes(channel)) {
-        console.warn(`Channel "${channel}" is not in the allowed list`);
-        return;
+        console.warn(`Channel "${channel}" is not in the allowed list`)
+        return
       }
 
-      ipcRenderer.once(channel, (_event, ...args) => callback(...args));
+      ipcRenderer.once(channel, (_event, ...args) => callback(...args))
     },
 
     removeAllListeners: (channel) => {
       if (ALLOWED_RECEIVE_CHANNELS.includes(channel)) {
-        ipcRenderer.removeAllListeners(channel);
+        ipcRenderer.removeAllListeners(channel)
       }
     },
-  };
+  }
 }

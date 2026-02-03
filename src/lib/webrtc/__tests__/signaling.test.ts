@@ -60,7 +60,7 @@ jest.mock('@/lib/realtime', () => {
       _triggerEvent: (event: string, payload: unknown) => {
         const eventListeners = listeners.get(event)
         if (eventListeners) {
-          eventListeners.forEach(cb => cb(payload))
+          eventListeners.forEach((cb) => cb(payload))
         }
       },
       _clearListeners: () => listeners.clear(),

@@ -37,6 +37,8 @@ import { cn } from '@/lib/utils'
 import { usePollCreator, useCreatePoll } from '@/lib/polls/use-poll'
 import type { PollSettings } from '@/lib/polls/poll-store'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -70,11 +72,11 @@ function PollOptionInput({
   disabled,
 }: PollOptionInputProps) {
   return (
-    <div className="flex items-center gap-2 group">
-      <div className="flex items-center justify-center w-6 h-6 text-xs text-muted-foreground">
-        <GripVertical className="h-4 w-4 opacity-50 group-hover:opacity-100 transition-opacity cursor-grab" />
+    <div className="group flex items-center gap-2">
+      <div className="flex h-6 w-6 items-center justify-center text-xs text-muted-foreground">
+        <GripVertical className="h-4 w-4 cursor-grab opacity-50 transition-opacity group-hover:opacity-100" />
       </div>
-      <div className="flex-1 relative">
+      <div className="relative flex-1">
         <Input
           placeholder={`Option ${index + 1}`}
           value={value}
@@ -125,14 +127,14 @@ function PollPreview({
   const totalVotes = previewVotes.reduce((a, b) => a + b, 0)
 
   return (
-    <div className="space-y-4 p-4 border rounded-xl bg-muted/30">
+    <div className="bg-muted/30 space-y-4 rounded-xl border p-4">
       <div className="flex items-start gap-3">
-        <div className="p-2 bg-primary/10 rounded-lg">
+        <div className="bg-primary/10 rounded-lg p-2">
           <BarChart3 className="h-5 w-5 text-primary" />
         </div>
-        <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-base">{question || 'Your question here...'}</h4>
-          <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+        <div className="min-w-0 flex-1">
+          <h4 className="text-base font-semibold">{question || 'Your question here...'}</h4>
+          <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
             <span>{totalVotes} votes</span>
             {endsAt && (
               <>
@@ -147,7 +149,8 @@ function PollPreview({
 
       <div className="space-y-2">
         {validOptions.map((option, index) => {
-          const percentage = totalVotes > 0 ? Math.round((previewVotes[index] / totalVotes) * 100) : 0
+          const percentage =
+            totalVotes > 0 ? Math.round((previewVotes[index] / totalVotes) * 100) : 0
           const isSelected = previewVote === index
 
           return (
@@ -156,10 +159,10 @@ function PollPreview({
               type="button"
               onClick={() => setPreviewVote(isSelected ? null : index)}
               className={cn(
-                'w-full text-left p-3 rounded-lg border transition-all relative overflow-hidden',
+                'relative w-full overflow-hidden rounded-lg border p-3 text-left transition-all',
                 isSelected
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border hover:border-primary/50 hover:bg-accent/50'
+                  ? 'bg-primary/5 border-primary'
+                  : 'hover:border-primary/50 hover:bg-accent/50 border-border'
               )}
             >
               {/* Progress background */}
@@ -190,25 +193,25 @@ function PollPreview({
       <div className="flex flex-wrap gap-2">
         {settings.allowMultipleVotes && (
           <Badge variant="secondary" className="text-xs">
-            <CheckCircle2 className="h-3 w-3 mr-1" />
+            <CheckCircle2 className="mr-1 h-3 w-3" />
             Multiple choices
           </Badge>
         )}
         {settings.isAnonymous && (
           <Badge variant="secondary" className="text-xs">
-            <EyeOff className="h-3 w-3 mr-1" />
+            <EyeOff className="mr-1 h-3 w-3" />
             Anonymous
           </Badge>
         )}
         {settings.allowAddOptions && (
           <Badge variant="secondary" className="text-xs">
-            <Plus className="h-3 w-3 mr-1" />
+            <Plus className="mr-1 h-3 w-3" />
             Users can add options
           </Badge>
         )}
       </div>
 
-      <p className="text-xs text-muted-foreground text-center">
+      <p className="text-center text-xs text-muted-foreground">
         This is a preview. Click options to see how voting works.
       </p>
     </div>
@@ -279,7 +282,7 @@ export function CreatePollModal({
         handleClose()
       }
     } catch (error) {
-      console.error('Failed to create poll:', error)
+      logger.error('Failed to create poll:', error)
     } finally {
       setSubmitting(false)
     }
@@ -313,7 +316,7 @@ export function CreatePollModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden sm:max-w-[550px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <BarChart3 className="h-5 w-5 text-primary" />
@@ -330,19 +333,19 @@ export function CreatePollModal({
         <div className="flex items-center gap-2 px-1">
           <div
             className={cn(
-              'flex-1 h-1 rounded-full transition-colors',
+              'h-1 flex-1 rounded-full transition-colors',
               step === 'create' ? 'bg-primary' : 'bg-primary/30'
             )}
           />
           <div
             className={cn(
-              'flex-1 h-1 rounded-full transition-colors',
+              'h-1 flex-1 rounded-full transition-colors',
               step === 'preview' ? 'bg-primary' : 'bg-muted'
             )}
           />
         </div>
 
-        <ScrollArea className="flex-1 -mx-6 px-6">
+        <ScrollArea className="-mx-6 flex-1 px-6">
           <div className="space-y-6 py-4">
             {step === 'create' ? (
               <>
@@ -360,9 +363,7 @@ export function CreatePollModal({
                     maxLength={500}
                     className="text-base"
                   />
-                  <p className="text-xs text-muted-foreground text-right">
-                    {question.length}/500
-                  </p>
+                  <p className="text-right text-xs text-muted-foreground">{question.length}/500</p>
                 </div>
 
                 {/* Options */}
@@ -399,7 +400,7 @@ export function CreatePollModal({
                       disabled={creating || submitting}
                       className="w-full"
                     >
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="mr-2 h-4 w-4" />
                       Add Option ({options.length}/10)
                     </Button>
                   )}
@@ -425,9 +426,7 @@ export function CreatePollModal({
                       <Switch
                         id="multiple-votes"
                         checked={settings.allowMultipleVotes}
-                        onCheckedChange={(checked) =>
-                          setSettings({ allowMultipleVotes: checked })
-                        }
+                        onCheckedChange={(checked) => setSettings({ allowMultipleVotes: checked })}
                         disabled={creating || submitting}
                       />
                     </div>
@@ -435,7 +434,10 @@ export function CreatePollModal({
                     {/* Anonymous voting */}
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
-                        <Label htmlFor="anonymous" className="cursor-pointer font-normal flex items-center gap-2">
+                        <Label
+                          htmlFor="anonymous"
+                          className="flex cursor-pointer items-center gap-2 font-normal"
+                        >
                           <EyeOff className="h-4 w-4" />
                           Anonymous voting
                         </Label>
@@ -454,7 +456,10 @@ export function CreatePollModal({
                     {/* Allow adding options */}
                     <div className="flex items-center justify-between">
                       <div className="space-y-0.5">
-                        <Label htmlFor="add-options" className="cursor-pointer font-normal flex items-center gap-2">
+                        <Label
+                          htmlFor="add-options"
+                          className="flex cursor-pointer items-center gap-2 font-normal"
+                        >
                           <Users className="h-4 w-4" />
                           Allow users to add options
                         </Label>
@@ -465,9 +470,7 @@ export function CreatePollModal({
                       <Switch
                         id="add-options"
                         checked={settings.allowAddOptions}
-                        onCheckedChange={(checked) =>
-                          setSettings({ allowAddOptions: checked })
-                        }
+                        onCheckedChange={(checked) => setSettings({ allowAddOptions: checked })}
                         disabled={creating || submitting}
                       />
                     </div>
@@ -497,12 +500,12 @@ export function CreatePollModal({
 
                 {/* Validation errors */}
                 {errors.length > 0 && (
-                  <div className="p-3 rounded-lg bg-destructive/10 border border-destructive/20">
-                    <div className="flex items-center gap-2 text-destructive text-sm">
+                  <div className="bg-destructive/10 border-destructive/20 rounded-lg border p-3">
+                    <div className="flex items-center gap-2 text-sm text-destructive">
                       <AlertCircle className="h-4 w-4" />
                       <span className="font-medium">Please fix the following:</span>
                     </div>
-                    <ul className="mt-2 text-sm text-destructive/80 list-disc list-inside">
+                    <ul className="text-destructive/80 mt-2 list-inside list-disc text-sm">
                       {errors.map((error, index) => (
                         <li key={index}>{error}</li>
                       ))}
@@ -527,22 +530,15 @@ export function CreatePollModal({
               <Button variant="outline" onClick={handleClose} disabled={submitting}>
                 Cancel
               </Button>
-              <Button
-                onClick={() => setStep('preview')}
-                disabled={!isValid || submitting}
-              >
+              <Button onClick={() => setStep('preview')} disabled={!isValid || submitting}>
                 Preview
-                <ChevronRight className="h-4 w-4 ml-2" />
+                <ChevronRight className="ml-2 h-4 w-4" />
               </Button>
             </>
           ) : (
             <>
-              <Button
-                variant="outline"
-                onClick={() => setStep('create')}
-                disabled={submitting}
-              >
-                <ChevronLeft className="h-4 w-4 mr-2" />
+              <Button variant="outline" onClick={() => setStep('create')} disabled={submitting}>
+                <ChevronLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
               <Button onClick={handleSubmit} disabled={!isValid || submitting}>

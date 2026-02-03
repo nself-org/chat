@@ -12,10 +12,7 @@ export { WebhookSettingsModal } from './webhook-settings-modal'
 export type { WebhookSettingsModalProps } from './webhook-settings-modal'
 
 export { WebhookDeliveries, RecentDeliveries } from './webhook-deliveries'
-export type {
-  WebhookDeliveriesProps,
-  RecentDeliveriesProps,
-} from './webhook-deliveries'
+export type { WebhookDeliveriesProps, RecentDeliveriesProps } from './webhook-deliveries'
 
 export { WebhookTestModal } from './webhook-test-modal'
 export type { WebhookTestModalProps } from './webhook-test-modal'

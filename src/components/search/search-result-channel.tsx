@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { Hash, Lock, Users, MessageSquare, LogIn, ExternalLink } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import type { ChannelSearchResult } from '@/stores/search-store';
-import { HighlightedText } from './search-result-message';
+import * as React from 'react'
+import { formatDistanceToNow } from 'date-fns'
+import { Hash, Lock, Users, MessageSquare, LogIn, ExternalLink } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import type { ChannelSearchResult } from '@/stores/search-store'
+import { HighlightedText } from './search-result-message'
 
 // ============================================================================
 // Types
@@ -15,19 +15,19 @@ import { HighlightedText } from './search-result-message';
 
 export interface SearchResultChannelProps {
   /** The channel search result data */
-  result: ChannelSearchResult;
+  result: ChannelSearchResult
   /** The search query to highlight */
-  query?: string;
+  query?: string
   /** Whether this result is currently selected/focused */
-  isSelected?: boolean;
+  isSelected?: boolean
   /** Callback when "Join" button is clicked */
-  onJoin?: (result: ChannelSearchResult) => void;
+  onJoin?: (result: ChannelSearchResult) => void
   /** Callback when "Open" button is clicked (for channels user is already in) */
-  onOpen?: (result: ChannelSearchResult) => void;
+  onOpen?: (result: ChannelSearchResult) => void
   /** Callback when the result is clicked */
-  onClick?: (result: ChannelSearchResult) => void;
+  onClick?: (result: ChannelSearchResult) => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -44,28 +44,26 @@ export function SearchResultChannel({
   className,
 }: SearchResultChannelProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
   const handleAction = (e: React.MouseEvent) => {
-    e.stopPropagation();
+    e.stopPropagation()
     if (result.isMember) {
-      onOpen?.(result);
+      onOpen?.(result)
     } else {
-      onJoin?.(result);
+      onJoin?.(result)
     }
-  };
+  }
 
   // Format last activity
   const lastActivityText = result.lastActivityAt
     ? `Active ${formatDistanceToNow(new Date(result.lastActivityAt), { addSuffix: true })}`
-    : 'No recent activity';
+    : 'No recent activity'
 
   // Format member count
   const memberCountText =
-    result.memberCount === 1
-      ? '1 member'
-      : `${result.memberCount.toLocaleString()} members`;
+    result.memberCount === 1 ? '1 member' : `${result.memberCount.toLocaleString()} members`
 
   return (
     <div
@@ -74,14 +72,14 @@ export function SearchResultChannel({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
         'group relative flex items-start gap-3 rounded-lg border p-3 transition-colors',
         'hover:bg-accent/50 cursor-pointer',
-        isSelected && 'bg-accent border-primary/50',
+        isSelected && 'border-primary/50 bg-accent',
         className
       )}
     >
@@ -92,11 +90,7 @@ export function SearchResultChannel({
           'bg-primary/10 text-primary'
         )}
       >
-        {result.isPrivate ? (
-          <Lock className="h-5 w-5" />
-        ) : (
-          <Hash className="h-5 w-5" />
-        )}
+        {result.isPrivate ? <Lock className="h-5 w-5" /> : <Hash className="h-5 w-5" />}
       </div>
 
       {/* Content */}
@@ -169,7 +163,7 @@ export function SearchResultChannel({
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -177,11 +171,11 @@ export function SearchResultChannel({
 // ============================================================================
 
 export interface CompactChannelResultProps {
-  result: ChannelSearchResult;
-  query?: string;
-  isSelected?: boolean;
-  onClick?: (result: ChannelSearchResult) => void;
-  className?: string;
+  result: ChannelSearchResult
+  query?: string
+  isSelected?: boolean
+  onClick?: (result: ChannelSearchResult) => void
+  className?: string
 }
 
 export function CompactChannelResult({
@@ -192,8 +186,8 @@ export function CompactChannelResult({
   className,
 }: CompactChannelResultProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
   return (
     <div
@@ -202,8 +196,8 @@ export function CompactChannelResult({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
@@ -226,11 +220,9 @@ export function CompactChannelResult({
       </span>
 
       {/* Member count */}
-      <span className="shrink-0 text-xs text-muted-foreground">
-        {result.memberCount} members
-      </span>
+      <span className="shrink-0 text-xs text-muted-foreground">{result.memberCount} members</span>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -238,14 +230,14 @@ export function CompactChannelResult({
 // ============================================================================
 
 export interface ChannelListItemProps {
-  result: ChannelSearchResult;
-  query?: string;
-  isSelected?: boolean;
-  isActive?: boolean;
-  unreadCount?: number;
-  hasMention?: boolean;
-  onClick?: (result: ChannelSearchResult) => void;
-  className?: string;
+  result: ChannelSearchResult
+  query?: string
+  isSelected?: boolean
+  isActive?: boolean
+  unreadCount?: number
+  hasMention?: boolean
+  onClick?: (result: ChannelSearchResult) => void
+  className?: string
 }
 
 export function ChannelListItem({
@@ -259,8 +251,8 @@ export function ChannelListItem({
   className,
 }: ChannelListItemProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
   return (
     <div
@@ -269,13 +261,13 @@ export function ChannelListItem({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
         'group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-        'hover:bg-accent cursor-pointer',
+        'cursor-pointer hover:bg-accent',
         isSelected && 'bg-accent',
         isActive && 'bg-accent/70 font-medium',
         className
@@ -283,11 +275,7 @@ export function ChannelListItem({
     >
       {/* Icon */}
       <span className="shrink-0 text-muted-foreground">
-        {result.isPrivate ? (
-          <Lock className="h-4 w-4" />
-        ) : (
-          <Hash className="h-4 w-4" />
-        )}
+        {result.isPrivate ? <Lock className="h-4 w-4" /> : <Hash className="h-4 w-4" />}
       </span>
 
       {/* Name */}
@@ -297,27 +285,20 @@ export function ChannelListItem({
           unreadCount > 0 && 'font-semibold text-foreground'
         )}
       >
-        {query ? (
-          <HighlightedText text={result.name} query={query} />
-        ) : (
-          result.name
-        )}
+        {query ? <HighlightedText text={result.name} query={query} /> : result.name}
       </span>
 
       {/* Unread badge */}
       {unreadCount > 0 && (
         <Badge
           variant={hasMention ? 'destructive' : 'secondary'}
-          className={cn(
-            'h-5 min-w-5 justify-center px-1.5 text-xs',
-            hasMention && 'animate-pulse'
-          )}
+          className={cn('h-5 min-w-5 justify-center px-1.5 text-xs', hasMention && 'animate-pulse')}
         >
           {unreadCount > 99 ? '99+' : unreadCount}
         </Badge>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -325,26 +306,19 @@ export function ChannelListItem({
 // ============================================================================
 
 export interface ChannelCardProps {
-  result: ChannelSearchResult;
-  onJoin?: (result: ChannelSearchResult) => void;
-  onOpen?: (result: ChannelSearchResult) => void;
-  className?: string;
+  result: ChannelSearchResult
+  onJoin?: (result: ChannelSearchResult) => void
+  onOpen?: (result: ChannelSearchResult) => void
+  className?: string
 }
 
-export function ChannelCard({
-  result,
-  onJoin,
-  onOpen,
-  className,
-}: ChannelCardProps) {
+export function ChannelCard({ result, onJoin, onOpen, className }: ChannelCardProps) {
   const lastActivityText = result.lastActivityAt
     ? `Active ${formatDistanceToNow(new Date(result.lastActivityAt), { addSuffix: true })}`
-    : 'No recent activity';
+    : 'No recent activity'
 
   const memberCountText =
-    result.memberCount === 1
-      ? '1 member'
-      : `${result.memberCount.toLocaleString()} members`;
+    result.memberCount === 1 ? '1 member' : `${result.memberCount.toLocaleString()} members`
 
   return (
     <div className={cn('w-72 rounded-lg border bg-popover p-4', className)}>
@@ -356,11 +330,7 @@ export function ChannelCard({
             'bg-primary/10 text-primary'
           )}
         >
-          {result.isPrivate ? (
-            <Lock className="h-6 w-6" />
-          ) : (
-            <Hash className="h-6 w-6" />
-          )}
+          {result.isPrivate ? <Lock className="h-6 w-6" /> : <Hash className="h-6 w-6" />}
         </div>
 
         <div className="min-w-0 flex-1">
@@ -406,18 +376,14 @@ export function ChannelCard({
             Open Channel
           </Button>
         ) : (
-          <Button
-            size="sm"
-            onClick={() => onJoin?.(result)}
-            className="w-full gap-1.5"
-          >
+          <Button size="sm" onClick={() => onJoin?.(result)} className="w-full gap-1.5">
             <LogIn className="h-4 w-4" />
             Join Channel
           </Button>
         )}
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -426,12 +392,7 @@ export function ChannelCard({
 
 export function ChannelResultSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex items-start gap-3 rounded-lg border p-3 animate-pulse',
-        className
-      )}
-    >
+    <div className={cn('flex animate-pulse items-start gap-3 rounded-lg border p-3', className)}>
       <div className="h-10 w-10 shrink-0 rounded-lg bg-muted" />
       <div className="min-w-0 flex-1 space-y-2">
         <div className="h-4 w-32 rounded bg-muted" />
@@ -442,7 +403,7 @@ export function ChannelResultSkeleton({ className }: { className?: string }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default SearchResultChannel;
+export default SearchResultChannel

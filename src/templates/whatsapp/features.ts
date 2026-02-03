@@ -11,51 +11,51 @@
  * WhatsApp Chat Types
  */
 export type WhatsAppChatType =
-  | 'individual'      // 1-on-1 chat
-  | 'group'           // Group chat (up to 1024 members)
-  | 'broadcast'       // Broadcast list
-  | 'community'       // Community (groups of groups)
-  | 'business'        // Business account chat
+  | 'individual' // 1-on-1 chat
+  | 'group' // Group chat (up to 1024 members)
+  | 'broadcast' // Broadcast list
+  | 'community' // Community (groups of groups)
+  | 'business' // Business account chat
 
 /**
  * WhatsApp Message Types
  */
 export type WhatsAppMessageType =
-  | 'text'            // Plain text message
-  | 'image'           // Image with optional caption
-  | 'video'           // Video with optional caption
-  | 'audio'           // Audio file
-  | 'voice'           // Voice note
-  | 'document'        // Document/file attachment
-  | 'sticker'         // Sticker
-  | 'gif'             // GIF
-  | 'location'        // Location share
-  | 'live-location'   // Live location share
-  | 'contact'         // Contact card
-  | 'poll'            // Poll
-  | 'view-once'       // View once media
-  | 'payment'         // Payment (placeholder)
-  | 'system'          // System message (joined, left, etc.)
+  | 'text' // Plain text message
+  | 'image' // Image with optional caption
+  | 'video' // Video with optional caption
+  | 'audio' // Audio file
+  | 'voice' // Voice note
+  | 'document' // Document/file attachment
+  | 'sticker' // Sticker
+  | 'gif' // GIF
+  | 'location' // Location share
+  | 'live-location' // Live location share
+  | 'contact' // Contact card
+  | 'poll' // Poll
+  | 'view-once' // View once media
+  | 'payment' // Payment (placeholder)
+  | 'system' // System message (joined, left, etc.)
 
 /**
  * WhatsApp Message Status (Read Receipts)
  */
 export type WhatsAppMessageStatus =
-  | 'pending'         // Clock icon - sending
-  | 'sent'            // Single gray check - sent to server
-  | 'delivered'       // Double gray check - delivered to recipient
-  | 'read'            // Double blue check - read by recipient
-  | 'failed'          // Red exclamation - failed to send
+  | 'pending' // Clock icon - sending
+  | 'sent' // Single gray check - sent to server
+  | 'delivered' // Double gray check - delivered to recipient
+  | 'read' // Double blue check - read by recipient
+  | 'failed' // Red exclamation - failed to send
 
 /**
  * WhatsApp User Status/Presence
  */
 export type WhatsAppPresence =
-  | 'online'          // Currently online
-  | 'typing'          // Typing...
-  | 'recording'       // Recording audio...
-  | 'last-seen'       // Last seen at [time]
-  | 'offline'         // Hidden or unavailable
+  | 'online' // Currently online
+  | 'typing' // Typing...
+  | 'recording' // Recording audio...
+  | 'last-seen' // Last seen at [time]
+  | 'offline' // Hidden or unavailable
 
 /**
  * WhatsApp Privacy Settings
@@ -74,11 +74,11 @@ export interface WhatsAppPrivacySettings {
  * WhatsApp Group Settings
  */
 export interface WhatsAppGroupSettings {
-  maxMembers: number           // Default: 1024
+  maxMembers: number // Default: 1024
   onlyAdminsCanSend: boolean
   onlyAdminsCanEditInfo: boolean
   onlyAdminsCanAddMembers: boolean
-  approvalRequired: boolean    // Require admin approval to join
+  approvalRequired: boolean // Require admin approval to join
   disappearingMessages: 'off' | '24h' | '7d' | '90d'
 }
 
@@ -111,7 +111,7 @@ export interface WhatsAppFeatures {
   // Chat Types
   individualChats: boolean
   groups: boolean
-  groupsMaxMembers: number       // Up to 1024
+  groupsMaxMembers: number // Up to 1024
   broadcastLists: boolean
   broadcastMaxRecipients: number // Up to 256
   communities: boolean
@@ -119,12 +119,12 @@ export interface WhatsAppFeatures {
   // Messaging
   textMessages: boolean
   voiceNotes: boolean
-  voiceNotesMaxDuration: number  // 15 minutes in seconds
+  voiceNotesMaxDuration: number // 15 minutes in seconds
   imageMessages: boolean
   videoMessages: boolean
-  videoMaxDuration: number       // 16 minutes in seconds
+  videoMaxDuration: number // 16 minutes in seconds
   documentMessages: boolean
-  documentMaxSize: number        // 2GB in bytes
+  documentMaxSize: number // 2GB in bytes
   locationSharing: boolean
   liveLocationSharing: boolean
   contactSharing: boolean
@@ -137,14 +137,14 @@ export interface WhatsAppFeatures {
   reactions: boolean
   reply: boolean
   forward: boolean
-  forwardLimit: number           // Max 5 chats at once
+  forwardLimit: number // Max 5 chats at once
   star: boolean
   copy: boolean
   deleteForMe: boolean
   deleteForEveryone: boolean
   deleteForEveryoneTimeout: number // Time limit for delete (48h+)
   edit: boolean
-  editTimeout: number            // 15 minutes after sending
+  editTimeout: number // 15 minutes after sending
 
   // Media Features
   viewOnce: boolean
@@ -161,7 +161,7 @@ export interface WhatsAppFeatures {
 
   // Read Receipts & Presence
   readReceipts: boolean
-  readReceiptsOptional: boolean  // Can be disabled
+  readReceiptsOptional: boolean // Can be disabled
   typing: boolean
   online: boolean
   lastSeen: boolean
@@ -172,8 +172,8 @@ export interface WhatsAppFeatures {
   statusPhotos: boolean
   statusVideos: boolean
   statusText: boolean
-  statusDuration: number         // 24 hours in seconds
-  statusMaxLength: number        // 30 seconds for videos
+  statusDuration: number // 24 hours in seconds
+  statusMaxLength: number // 30 seconds for videos
   statusMuted: boolean
   statusPrivacy: boolean
 
@@ -209,7 +209,7 @@ export const defaultWhatsAppFeatures: WhatsAppFeatures = {
   voiceNotesMaxDuration: 15 * 60, // 15 minutes
   imageMessages: true,
   videoMessages: true,
-  videoMaxDuration: 16 * 60,      // 16 minutes
+  videoMaxDuration: 16 * 60, // 16 minutes
   documentMessages: true,
   documentMaxSize: 2 * 1024 * 1024 * 1024, // 2GB
   locationSharing: true,
@@ -231,7 +231,7 @@ export const defaultWhatsAppFeatures: WhatsAppFeatures = {
   deleteForEveryone: true,
   deleteForEveryoneTimeout: 48 * 60 * 60 * 1000 + 8 * 60 * 1000, // ~2 days 8 min
   edit: true,
-  editTimeout: 15 * 60 * 1000,    // 15 minutes
+  editTimeout: 15 * 60 * 1000, // 15 minutes
 
   // Media Features
   viewOnce: true,
@@ -259,8 +259,8 @@ export const defaultWhatsAppFeatures: WhatsAppFeatures = {
   statusPhotos: true,
   statusVideos: true,
   statusText: true,
-  statusDuration: 24 * 60 * 60,   // 24 hours
-  statusMaxLength: 30,            // 30 seconds for videos
+  statusDuration: 24 * 60 * 60, // 24 hours
+  statusMaxLength: 30, // 30 seconds for videos
   statusMuted: true,
   statusPrivacy: true,
 
@@ -302,7 +302,7 @@ export interface WhatsAppMessage {
 
   // Forwarded
   isForwarded: boolean
-  forwardCount?: number  // Shows "Forwarded many times" after 4
+  forwardCount?: number // Shows "Forwarded many times" after 4
 
   // Starred
   isStarred: boolean
@@ -339,7 +339,7 @@ export interface WhatsAppMessage {
   // Voice note specific
   voiceNote?: {
     duration: number
-    waveform: number[]  // Audio waveform data for visualization
+    waveform: number[] // Audio waveform data for visualization
     isPlayed: boolean
   }
 
@@ -367,7 +367,7 @@ export interface WhatsAppMessage {
     options: {
       id: string
       text: string
-      votes: string[]  // User IDs
+      votes: string[] // User IDs
     }[]
     allowMultiple: boolean
     isAnonymous: boolean
@@ -454,12 +454,12 @@ export interface WhatsAppStatus {
 export interface WhatsAppStatusItem {
   id: string
   type: 'image' | 'video' | 'text'
-  content: string       // URL for media, text for text status
+  content: string // URL for media, text for text status
   caption?: string
-  backgroundColor?: string  // For text status
+  backgroundColor?: string // For text status
   textColor?: string
   font?: string
-  duration: number      // Display duration in seconds
+  duration: number // Display duration in seconds
   timestamp: Date
   viewedBy: string[]
 }

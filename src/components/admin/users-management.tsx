@@ -41,12 +41,10 @@ export function UsersManagement() {
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
-        
+
         <div className="space-y-4">
           {filteredUsers.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No users found
-            </div>
+            <div className="py-8 text-center text-muted-foreground">No users found</div>
           ) : (
             filteredUsers.map((user) => (
               <div
@@ -56,9 +54,7 @@ export function UsersManagement() {
                 <div className="flex items-center space-x-4">
                   <Avatar>
                     <AvatarImage src={user.avatarUrl} />
-                    <AvatarFallback>
-                      {user.displayName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
+                    <AvatarFallback>{user.displayName.charAt(0).toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div>
                     <p className="font-medium">{user.displayName}</p>
@@ -67,9 +63,9 @@ export function UsersManagement() {
                     </p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2">
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                  <span className="bg-primary/10 rounded-full px-3 py-1 text-xs font-medium text-primary">
                     {user.role}
                   </span>
                   <Button variant="outline" size="sm">

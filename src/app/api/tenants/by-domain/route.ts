@@ -8,41 +8,34 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getTenantService } from '@/lib/tenants/tenant-service'
 
+import { logger } from '@/lib/logger'
+
 export async function GET(request: NextRequest) {
   try {
     // Verify internal request
     const isInternalRequest = request.headers.get('X-Internal-Request') === 'true'
 
     if (!isInternalRequest) {
-      return NextResponse.json(
-        { error: 'Forbidden - internal use only' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Forbidden - internal use only' }, { status: 403 })
     }
 
     const { searchParams } = new URL(request.url)
     const domain = searchParams.get('domain')
 
     if (!domain) {
-      return NextResponse.json(
-        { error: 'Missing domain parameter' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing domain parameter' }, { status: 400 })
     }
 
     const tenantService = getTenantService()
     const tenant = await tenantService.getTenantByDomain(domain)
 
     if (!tenant) {
-      return NextResponse.json(
-        { error: 'Tenant not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Tenant not found' }, { status: 404 })
     }
 
     return NextResponse.json(tenant)
   } catch (error: any) {
-    console.error('Error fetching tenant by domain:', error)
+    logger.error('Error fetching tenant by domain:', error)
     return NextResponse.json(
       { error: 'Failed to fetch tenant', details: error.message },
       { status: 500 }

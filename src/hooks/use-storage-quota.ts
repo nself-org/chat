@@ -8,6 +8,8 @@ import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import type { StorageQuota, StorageUsageBreakdown, QuotaWarning } from '@/lib/storage/quota-manager'
 
+import { logger } from '@/lib/logger'
+
 interface UseStorageQuotaOptions {
   entityId?: string
   entityType?: 'user' | 'channel' | 'team'
@@ -29,9 +31,7 @@ interface UseStorageQuotaReturn {
 /**
  * Hook to manage storage quota and usage
  */
-export function useStorageQuota(
-  options: UseStorageQuotaOptions = {}
-): UseStorageQuotaReturn {
+export function useStorageQuota(options: UseStorageQuotaOptions = {}): UseStorageQuotaReturn {
   const { user } = useAuth()
   const {
     entityId: providedEntityId,
@@ -107,22 +107,25 @@ export function useStorageQuota(
     [entityId, entityType]
   )
 
-  const acknowledgeWarning = useCallback(async (warningId: string) => {
-    try {
-      const res = await fetch('/api/storage', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'acknowledge-warning',
-          warningId,
-        }),
-      })
-      if (!res.ok) throw new Error('Failed to acknowledge warning')
-      await refresh()
-    } catch (err) {
-      console.error('Failed to acknowledge warning:', err)
-    }
-  }, [refresh])
+  const acknowledgeWarning = useCallback(
+    async (warningId: string) => {
+      try {
+        const res = await fetch('/api/storage', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'acknowledge-warning',
+            warningId,
+          }),
+        })
+        if (!res.ok) throw new Error('Failed to acknowledge warning')
+        await refresh()
+      } catch (err) {
+        logger.error('Failed to acknowledge warning:', err)
+      }
+    },
+    [refresh]
+  )
 
   // Initial load
   useEffect(() => {
@@ -196,7 +199,7 @@ export function useQuotaCheck(entityType: 'user' | 'channel' | 'team' = 'user') 
           }),
         })
       } catch (err) {
-        console.error('Failed to record upload:', err)
+        logger.error('Failed to record upload:', err)
       }
     },
     [entityId, entityType]
@@ -218,7 +221,7 @@ export function useQuotaCheck(entityType: 'user' | 'channel' | 'team' = 'user') 
           }),
         })
       } catch (err) {
-        console.error('Failed to record deletion:', err)
+        logger.error('Failed to record deletion:', err)
       }
     },
     [entityId, entityType]

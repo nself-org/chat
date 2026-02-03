@@ -4,13 +4,7 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { isDevelopment } from '@/lib/environment'
-import {
-  AlertTriangle,
-  RefreshCw,
-  Home,
-  ArrowLeft,
-  HelpCircle,
-} from 'lucide-react'
+import { AlertTriangle, RefreshCw, Home, ArrowLeft, HelpCircle } from 'lucide-react'
 
 interface ErrorPageProps {
   error?: Error
@@ -92,13 +86,13 @@ export function ErrorPage({
   return (
     <div
       className={cn(
-        'min-h-screen flex flex-col items-center justify-center p-6',
+        'flex min-h-screen flex-col items-center justify-center p-6',
         'bg-gradient-to-b from-zinc-50 to-zinc-100',
         'dark:from-zinc-900 dark:to-zinc-950',
         className
       )}
     >
-      <div className="max-w-lg w-full text-center">
+      <div className="w-full max-w-lg text-center">
         {/* Status code */}
         {statusCode && (
           <div className="mb-4">
@@ -109,32 +103,32 @@ export function ErrorPage({
         )}
 
         {/* Icon */}
-        <div className="mb-6 inline-flex p-4 bg-red-100 dark:bg-red-900/30 rounded-full">
+        <div className="mb-6 inline-flex rounded-full bg-red-100 p-4 dark:bg-red-900/30">
           <AlertTriangle className="h-12 w-12 text-red-600 dark:text-red-400" />
         </div>
 
         {/* Title */}
-        <h1 className="text-2xl md:text-3xl font-bold text-zinc-900 dark:text-zinc-100 mb-3">
+        <h1 className="mb-3 text-2xl font-bold text-zinc-900 dark:text-zinc-100 md:text-3xl">
           {displayTitle}
         </h1>
 
         {/* Description */}
-        <p className="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">
+        <p className="mx-auto mb-8 max-w-md text-base text-zinc-600 dark:text-zinc-400">
           {displayDescription}
         </p>
 
         {/* Error details (dev only) */}
         {isDevelopment() && error && (
           <div className="mb-8 text-left">
-            <div className="p-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg">
-              <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+            <div className="rounded-lg bg-zinc-100 p-4 dark:bg-zinc-800">
+              <p className="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
                 Error Details (Development Only)
               </p>
-              <code className="text-xs text-red-600 dark:text-red-400 break-all">
+              <code className="break-all text-xs text-red-600 dark:text-red-400">
                 {error.message}
               </code>
               {error.stack && (
-                <pre className="mt-3 text-xs text-zinc-500 overflow-auto max-h-40">
+                <pre className="mt-3 max-h-40 overflow-auto text-xs text-zinc-500">
                   {error.stack}
                 </pre>
               )}
@@ -143,7 +137,7 @@ export function ErrorPage({
         )}
 
         {/* Action buttons */}
-        <div className="flex flex-wrap gap-3 justify-center">
+        <div className="flex flex-wrap justify-center gap-3">
           {showRetryButton && (
             <Button onClick={handleRetry} variant="default" size="lg" className="gap-2">
               <RefreshCw className="h-4 w-4" />
@@ -166,12 +160,7 @@ export function ErrorPage({
           )}
 
           {showSupportButton && (
-            <Button
-              asChild
-              variant="ghost"
-              size="lg"
-              className="gap-2"
-            >
+            <Button asChild variant="ghost" size="lg" className="gap-2">
               <a href={supportUrl}>
                 <HelpCircle className="h-4 w-4" />
                 Contact Support

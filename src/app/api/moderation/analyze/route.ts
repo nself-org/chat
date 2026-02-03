@@ -11,6 +11,8 @@ import { getSpamDetectorML } from '@/lib/moderation/spam-detector-ml'
 import { getContentClassifier } from '@/lib/moderation/content-classifier'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -29,10 +31,7 @@ export async function POST(request: NextRequest) {
     } = body
 
     if (!content || !contentId) {
-      return NextResponse.json(
-        { error: 'Content and contentId are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Content and contentId are required' }, { status: 400 })
     }
 
     // Initialize AI Moderator
@@ -40,12 +39,7 @@ export async function POST(request: NextRequest) {
     await moderator.initialize()
 
     // Analyze content
-    const analysis = await moderator.analyzeContent(
-      contentId,
-      contentType,
-      content,
-      metadata
-    )
+    const analysis = await moderator.analyzeContent(contentId, contentType, content, metadata)
 
     // Optional: Deep analysis with specialized detectors
     let toxicityAnalysis
@@ -70,21 +64,30 @@ export async function POST(request: NextRequest) {
     // Record violation if content is flagged
     if (analysis.shouldFlag && metadata?.userId) {
       const maxSeverity = Math.max(
-        ...analysis.detectedIssues.map(i => {
+        ...analysis.detectedIssues.map((i) => {
           switch (i.severity) {
-            case 'critical': return 4
-            case 'high': return 3
-            case 'medium': return 2
-            case 'low': return 1
-            default: return 0
+            case 'critical':
+              return 4
+            case 'high':
+              return 3
+            case 'medium':
+              return 2
+            case 'low':
+              return 1
+            default:
+              return 0
           }
         })
       )
 
-      const severity = maxSeverity === 4 ? 'critical'
-        : maxSeverity === 3 ? 'high'
-        : maxSeverity === 2 ? 'medium'
-        : 'low'
+      const severity =
+        maxSeverity === 4
+          ? 'critical'
+          : maxSeverity === 3
+            ? 'high'
+            : maxSeverity === 2
+              ? 'medium'
+              : 'low'
 
       await moderator.recordViolation(metadata.userId, severity)
     }
@@ -97,7 +100,7 @@ export async function POST(request: NextRequest) {
       classification,
     })
   } catch (error) {
-    console.error('Moderation analysis error:', error)
+    logger.error('Moderation analysis error:', error)
     captureError(error as Error, {
       tags: { feature: 'moderation', endpoint: 'analyze', version: 'v0.7.0' },
     })
@@ -137,7 +140,7 @@ export async function GET() {
       classifierConfig,
     })
   } catch (error) {
-    console.error('Get policy error:', error)
+    logger.error('Get policy error:', error)
     return NextResponse.json(
       {
         error: 'Failed to get policy',
@@ -181,7 +184,7 @@ export async function PUT(request: NextRequest) {
       message: 'Policy updated successfully',
     })
   } catch (error) {
-    console.error('Update policy error:', error)
+    logger.error('Update policy error:', error)
     return NextResponse.json(
       {
         error: 'Failed to update policy',

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * FilePreview - Universal file preview modal
@@ -12,10 +12,10 @@
  * - Other: Download prompt with file info
  */
 
-import * as React from 'react';
-import { useCallback, useState } from 'react';
-import { cn } from '@/lib/utils';
-import { MediaItem } from '@/lib/media/media-types';
+import * as React from 'react'
+import { useCallback, useState } from 'react'
+import { cn } from '@/lib/utils'
+import { MediaItem } from '@/lib/media/media-types'
 import {
   isImage,
   isVideo,
@@ -26,11 +26,11 @@ import {
   getFileTypeInfo,
   downloadFile,
   openInNewTab,
-} from '@/lib/media/file-preview';
-import { formatFileSize } from '@/lib/media/media-manager';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+} from '@/lib/media/file-preview'
+import { formatFileSize } from '@/lib/media/media-manager'
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   X,
   Download,
@@ -41,19 +41,19 @@ import {
   ChevronRight,
   ZoomIn,
   Maximize2,
-} from 'lucide-react';
+} from 'lucide-react'
 
 // Import viewers
-import { ImageViewer } from './ImageViewer';
-import { VideoPlayer } from './VideoPlayer';
-import { AudioPlayer } from './AudioPlayer';
-import { PDFViewer } from './PDFViewer';
-import { DocumentPreview } from './DocumentPreview';
-import { MediaInfo } from './MediaInfo';
+import { ImageViewer } from './ImageViewer'
+import { VideoPlayer } from './VideoPlayer'
+import { AudioPlayer } from './AudioPlayer'
+import { PDFViewer } from './PDFViewer'
+import { DocumentPreview } from './DocumentPreview'
+import { MediaInfo } from './MediaInfo'
 
 // Local helper - isPDF is not exported from file-preview
 function isPDF(mimeType: string): boolean {
-  return mimeType === 'application/pdf';
+  return mimeType === 'application/pdf'
 }
 
 // ============================================================================
@@ -61,17 +61,17 @@ function isPDF(mimeType: string): boolean {
 // ============================================================================
 
 export interface FilePreviewProps {
-  item: MediaItem;
-  items?: MediaItem[];
-  isOpen: boolean;
-  onClose: () => void;
-  onNext?: () => void;
-  onPrevious?: () => void;
-  onDownload?: () => void;
-  onShare?: () => void;
-  showNavigation?: boolean;
-  showInfo?: boolean;
-  className?: string;
+  item: MediaItem
+  items?: MediaItem[]
+  isOpen: boolean
+  onClose: () => void
+  onNext?: () => void
+  onPrevious?: () => void
+  onDownload?: () => void
+  onShare?: () => void
+  showNavigation?: boolean
+  showInfo?: boolean
+  className?: string
 }
 
 // ============================================================================
@@ -91,66 +91,67 @@ export function FilePreview({
   showInfo = false,
   className,
 }: FilePreviewProps) {
-  const [activeTab, setActiveTab] = useState<'preview' | 'info'>('preview');
-  const [imageZoom, setImageZoom] = useState(1);
-  const [imagePanX, setImagePanX] = useState(0);
-  const [imagePanY, setImagePanY] = useState(0);
-  const [imageRotation, setImageRotation] = useState(0);
-  const [videoPlaying, setVideoPlaying] = useState(false);
-  const [videoTime, setVideoTime] = useState(0);
-  const [videoVolume, setVideoVolume] = useState(1);
-  const [videoMuted, setVideoMuted] = useState(false);
-  const [videoRate, setVideoRate] = useState(1);
-  const [audioPlaying, setAudioPlaying] = useState(false);
-  const [audioTime, setAudioTime] = useState(0);
-  const [audioVolume, setAudioVolume] = useState(1);
-  const [audioMuted, setAudioMuted] = useState(false);
-  const [audioRate, setAudioRate] = useState(1);
+  const [activeTab, setActiveTab] = useState<'preview' | 'info'>('preview')
+  const [imageZoom, setImageZoom] = useState(1)
+  const [imagePanX, setImagePanX] = useState(0)
+  const [imagePanY, setImagePanY] = useState(0)
+  const [imageRotation, setImageRotation] = useState(0)
+  const [videoPlaying, setVideoPlaying] = useState(false)
+  const [videoTime, setVideoTime] = useState(0)
+  const [videoVolume, setVideoVolume] = useState(1)
+  const [videoMuted, setVideoMuted] = useState(false)
+  const [videoRate, setVideoRate] = useState(1)
+  const [audioPlaying, setAudioPlaying] = useState(false)
+  const [audioTime, setAudioTime] = useState(0)
+  const [audioVolume, setAudioVolume] = useState(1)
+  const [audioMuted, setAudioMuted] = useState(false)
+  const [audioRate, setAudioRate] = useState(1)
 
-  const fileInfo = getFileTypeInfo(item.mimeType);
-  const canPreview = isImage(item.mimeType) ||
+  const fileInfo = getFileTypeInfo(item.mimeType)
+  const canPreview =
+    isImage(item.mimeType) ||
     isVideo(item.mimeType) ||
     isAudio(item.mimeType) ||
     isPDF(item.mimeType) ||
     isTextBased(item.mimeType) ||
-    isCode(item.mimeType);
+    isCode(item.mimeType)
 
   // Determine current index
-  const currentIndex = items.findIndex((i) => i.id === item.id);
-  const hasPrevious = currentIndex > 0;
-  const hasNext = currentIndex < items.length - 1;
+  const currentIndex = items.findIndex((i) => i.id === item.id)
+  const hasPrevious = currentIndex > 0
+  const hasNext = currentIndex < items.length - 1
 
   // Download handler
   const handleDownload = useCallback(() => {
     if (onDownload) {
-      onDownload();
+      onDownload()
     } else {
-      downloadFile(item.url, item.fileName);
+      downloadFile(item.url, item.fileName)
     }
-  }, [item.url, item.fileName, onDownload]);
+  }, [item.url, item.fileName, onDownload])
 
   // Open in new tab
   const handleOpenExternal = useCallback(() => {
-    openInNewTab(item.url);
-  }, [item.url]);
+    openInNewTab(item.url)
+  }, [item.url])
 
   // Keyboard navigation
   React.useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) return
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && hasPrevious && onPrevious) onPrevious();
-      if (e.key === 'ArrowRight' && hasNext && onNext) onNext();
-      if (e.key === 'd' || e.key === 'D') handleDownload();
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft' && hasPrevious && onPrevious) onPrevious()
+      if (e.key === 'ArrowRight' && hasNext && onNext) onNext()
+      if (e.key === 'd' || e.key === 'D') handleDownload()
       if (e.key === 'i' || e.key === 'I') {
-        setActiveTab((t) => (t === 'preview' ? 'info' : 'preview'));
+        setActiveTab((t) => (t === 'preview' ? 'info' : 'preview'))
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, onClose, hasPrevious, hasNext, onPrevious, onNext, handleDownload]);
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, onClose, hasPrevious, hasNext, onPrevious, onNext, handleDownload])
 
   // Render preview based on file type
   const renderPreview = () => {
@@ -165,14 +166,14 @@ export function FilePreview({
           rotation={imageRotation}
           onZoomChange={setImageZoom}
           onPanChange={(x, y) => {
-            setImagePanX(x);
-            setImagePanY(y);
+            setImagePanX(x)
+            setImagePanY(y)
           }}
           onRotationChange={setImageRotation}
           onDownload={handleDownload}
           showControls={true}
         />
-      );
+      )
     }
 
     // Video
@@ -193,7 +194,7 @@ export function FilePreview({
           onDownload={handleDownload}
           showControls={true}
         />
-      );
+      )
     }
 
     // Audio
@@ -217,18 +218,12 @@ export function FilePreview({
             className="max-w-md"
           />
         </div>
-      );
+      )
     }
 
     // PDF
     if (isPDF(item.mimeType)) {
-      return (
-        <PDFViewer
-          item={item}
-          onDownload={handleDownload}
-          showControls={true}
-        />
-      );
+      return <PDFViewer item={item} onDownload={handleDownload} showControls={true} />
     }
 
     // Text/Code
@@ -239,14 +234,14 @@ export function FilePreview({
           onDownload={handleDownload}
           onOpenExternal={handleOpenExternal}
         />
-      );
+      )
     }
 
     // Unsupported - show download prompt
     return (
       <div className="flex h-full items-center justify-center p-8">
         <div className="max-w-md text-center">
-          <div className="mb-4 rounded-full bg-muted p-6 inline-block">
+          <div className="mb-4 inline-block rounded-full bg-muted p-6">
             <div className="h-16 w-16" style={{ color: fileInfo.color }}>
               📄
             </div>
@@ -256,12 +251,8 @@ export function FilePreview({
             Preview not available for {fileInfo.label}
           </p>
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground">
-              Size: {formatFileSize(item.fileSize)}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Type: {item.mimeType}
-            </p>
+            <p className="text-sm text-muted-foreground">Size: {formatFileSize(item.fileSize)}</p>
+            <p className="text-sm text-muted-foreground">Type: {item.mimeType}</p>
           </div>
           <div className="mt-6 flex justify-center gap-2">
             <Button onClick={handleDownload}>
@@ -275,21 +266,16 @@ export function FilePreview({
           </div>
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className={cn(
-          'max-w-7xl h-[90vh] p-0 gap-0 flex flex-col',
-          className
-        )}
-      >
+      <DialogContent className={cn('flex h-[90vh] max-w-7xl flex-col gap-0 p-0', className)}>
         {/* Header */}
-        <div className="flex items-center justify-between border-b px-4 py-3 flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center justify-between border-b px-4 py-3">
           {/* Left: File name */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <h2 className="truncate font-semibold">{item.fileName}</h2>
             <p className="text-xs text-muted-foreground">
               {fileInfo.label} • {formatFileSize(item.fileSize)}
@@ -315,12 +301,7 @@ export function FilePreview({
               </Button>
             )}
 
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleDownload}
-              title="Download (D)"
-            >
+            <Button variant="ghost" size="icon" onClick={handleDownload} title="Download (D)">
               <Download className="h-4 w-4" />
             </Button>
 
@@ -342,7 +323,11 @@ export function FilePreview({
         {/* Content */}
         <div className="flex-1 overflow-hidden">
           {showInfo ? (
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)} className="h-full flex flex-col">
+            <Tabs
+              value={activeTab}
+              onValueChange={(v) => setActiveTab(v as any)}
+              className="flex h-full flex-col"
+            >
               <TabsList className="w-full rounded-none border-b">
                 <TabsTrigger value="preview" className="flex-1">
                   Preview
@@ -351,10 +336,10 @@ export function FilePreview({
                   Info
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="preview" className="flex-1 mt-0 overflow-hidden">
+              <TabsContent value="preview" className="mt-0 flex-1 overflow-hidden">
                 {renderPreview()}
               </TabsContent>
-              <TabsContent value="info" className="flex-1 mt-0 overflow-hidden">
+              <TabsContent value="info" className="mt-0 flex-1 overflow-hidden">
                 <MediaInfo item={item} />
               </TabsContent>
             </Tabs>
@@ -370,7 +355,7 @@ export function FilePreview({
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute left-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-black/50 text-white hover:bg-black/70"
+                className="absolute left-4 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-black/50 text-white hover:bg-black/70"
                 onClick={onPrevious}
                 title="Previous (←)"
               >
@@ -382,7 +367,7 @@ export function FilePreview({
               <Button
                 variant="ghost"
                 size="icon"
-                className="absolute right-4 top-1/2 -translate-y-1/2 h-12 w-12 rounded-full bg-black/50 text-white hover:bg-black/70"
+                className="absolute right-4 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full bg-black/50 text-white hover:bg-black/70"
                 onClick={onNext}
                 title="Next (→)"
               >
@@ -400,7 +385,7 @@ export function FilePreview({
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
-export default FilePreview;
+export default FilePreview

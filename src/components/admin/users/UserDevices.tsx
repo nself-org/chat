@@ -100,9 +100,7 @@ export function UserDevices({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Known Devices</CardTitle>
-              <CardDescription>
-                Devices this user has logged in from
-              </CardDescription>
+              <CardDescription>Devices this user has logged in from</CardDescription>
             </div>
             <Button variant="outline" size="sm" onClick={onRefresh}>
               <RefreshCw className="mr-2 h-4 w-4" />
@@ -114,7 +112,7 @@ export function UserDevices({
           {isLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 border rounded-lg">
+                <div key={i} className="flex items-center gap-4 rounded-lg border p-4">
                   <div className="h-12 w-12 animate-pulse rounded-lg bg-muted" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
@@ -124,7 +122,7 @@ export function UserDevices({
               ))}
             </div>
           ) : devices.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="py-8 text-center text-muted-foreground">
               <Monitor className="mx-auto h-12 w-12 opacity-50" />
               <p className="mt-2">No devices recorded</p>
             </div>
@@ -134,8 +132,9 @@ export function UserDevices({
                 <div
                   key={device.id}
                   className={cn(
-                    'flex items-center justify-between p-4 border rounded-lg',
-                    device.isTrusted && 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/50'
+                    'flex items-center justify-between rounded-lg border p-4',
+                    device.isTrusted &&
+                      'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/50'
                   )}
                 >
                   <div className="flex items-center gap-4">
@@ -153,23 +152,24 @@ export function UserDevices({
                           {device.deviceName || `${device.deviceType} device`}
                         </span>
                         {device.isTrusted && (
-                          <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                          <Badge
+                            variant="secondary"
+                            className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                          >
                             <ShieldCheck className="mr-1 h-3 w-3" />
                             Trusted
                           </Badge>
                         )}
-                        {device.isVerified && (
-                          <Badge variant="secondary">
-                            Verified
-                          </Badge>
-                        )}
+                        {device.isVerified && <Badge variant="secondary">Verified</Badge>}
                       </div>
                       <div className="text-sm text-muted-foreground">
                         {device.browser && device.os && (
-                          <span>{device.browser} on {device.os}</span>
+                          <span>
+                            {device.browser} on {device.os}
+                          </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
+                      <div className="mt-1 flex items-center gap-4 text-xs text-muted-foreground">
                         {device.lastLocation && (
                           <span className="flex items-center gap-1">
                             <MapPin className="h-3 w-3" />
@@ -233,9 +233,8 @@ export function UserDevices({
           <AlertDialogHeader>
             <AlertDialogTitle>Remove Device</AlertDialogTitle>
             <AlertDialogDescription>
-              Remove <strong>{selectedDevice?.deviceName}</strong> from the user's
-              known devices. If they log in from this device again, it will be
-              added back to the list.
+              Remove <strong>{selectedDevice?.deviceName}</strong> from the user's known devices. If
+              they log in from this device again, it will be added back to the list.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -246,7 +245,7 @@ export function UserDevices({
                 handleRemoveDevice()
               }}
               disabled={isProcessing}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               Remove Device
             </AlertDialogAction>

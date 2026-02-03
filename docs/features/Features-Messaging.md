@@ -8,22 +8,22 @@ Complete guide to all messaging features in nself-chat.
 
 nself-chat provides 14 messaging features covering everything from basic text to voice messages.
 
-| Feature | Flag | Default |
-|---------|------|---------|
-| Edit Messages | `messages.edit` | Enabled |
-| Delete Messages | `messages.delete` | Enabled |
-| Reactions | `messages.reactions` | Enabled |
-| Threads | `messages.threads` | Enabled |
-| Pins | `messages.pins` | Enabled |
-| Bookmarks | `messages.bookmarks` | Enabled |
-| Forward | `messages.forward` | Enabled |
-| Schedule | `messages.schedule` | Enabled |
-| Voice Messages | `messages.voice` | Enabled |
-| Code Blocks | `messages.codeBlocks` | Enabled |
-| Markdown | `messages.markdown` | Enabled |
-| Link Previews | `messages.linkPreviews` | Enabled |
-| Mentions | `messages.mentions` | Enabled |
-| Quotes | `messages.quotes` | Enabled |
+| Feature         | Flag                    | Default |
+| --------------- | ----------------------- | ------- |
+| Edit Messages   | `messages.edit`         | Enabled |
+| Delete Messages | `messages.delete`       | Enabled |
+| Reactions       | `messages.reactions`    | Enabled |
+| Threads         | `messages.threads`      | Enabled |
+| Pins            | `messages.pins`         | Enabled |
+| Bookmarks       | `messages.bookmarks`    | Enabled |
+| Forward         | `messages.forward`      | Enabled |
+| Schedule        | `messages.schedule`     | Enabled |
+| Voice Messages  | `messages.voice`        | Enabled |
+| Code Blocks     | `messages.codeBlocks`   | Enabled |
+| Markdown        | `messages.markdown`     | Enabled |
+| Link Previews   | `messages.linkPreviews` | Enabled |
+| Mentions        | `messages.mentions`     | Enabled |
+| Quotes          | `messages.quotes`       | Enabled |
 
 ---
 
@@ -38,7 +38,7 @@ const editConfig = {
   enabled: true,
   timeWindow: 3600, // seconds (1 hour default)
   showEditHistory: true,
-  markAsEdited: true
+  markAsEdited: true,
 }
 ```
 
@@ -92,8 +92,8 @@ Allow users to remove their own messages.
 const deleteConfig = {
   enabled: true,
   timeWindow: 86400, // seconds (24 hours)
-  softDelete: true,  // Keep in database, hide from UI
-  adminCanDeleteAny: true
+  softDelete: true, // Keep in database, hide from UI
+  adminCanDeleteAny: true,
 }
 ```
 
@@ -127,11 +127,7 @@ function ReactionButton({ messageId }) {
 ### Reaction Display
 
 ```tsx
-<MessageReactions
-  reactions={message.reactions}
-  onReact={handleReact}
-  currentUserId={user.id}
-/>
+<MessageReactions reactions={message.reactions} onReact={handleReact} currentUserId={user.id} />
 ```
 
 ### Configuration
@@ -141,7 +137,7 @@ const reactionConfig = {
   enabled: true,
   maxPerMessage: 20,
   maxPerUser: 5,
-  allowCustomEmoji: true
+  allowCustomEmoji: true,
 }
 ```
 
@@ -181,10 +177,7 @@ function ThreadReply({ parentMessageId }) {
 ### Thread Panel
 
 ```tsx
-<ThreadPanel
-  messageId={selectedMessage.id}
-  onClose={() => setSelectedMessage(null)}
-/>
+<ThreadPanel messageId={selectedMessage.id} onClose={() => setSelectedMessage(null)} />
 ```
 
 ---
@@ -366,6 +359,7 @@ console.log(greeting)
 ### Supported Languages
 
 50+ languages including:
+
 - JavaScript/TypeScript
 - Python
 - Go
@@ -383,7 +377,7 @@ const codeBlockConfig = {
   lineNumbers: true,
   maxLines: 100,
   copyButton: true,
-  theme: 'github-dark'
+  theme: 'github-dark',
 }
 ```
 
@@ -395,16 +389,16 @@ Rich text formatting using Markdown.
 
 ### Supported Syntax
 
-| Syntax | Result |
-|--------|--------|
-| `**bold**` | **bold** |
-| `*italic*` | *italic* |
-| `~~strike~~` | ~~strike~~ |
-| `` `code` `` | `code` |
-| `[link](url)` | link |
-| `> quote` | blockquote |
-| `- item` | bullet list |
-| `1. item` | numbered list |
+| Syntax        | Result        |
+| ------------- | ------------- |
+| `**bold**`    | **bold**      |
+| `*italic*`    | _italic_      |
+| `~~strike~~`  | ~~strike~~    |
+| `` `code` ``  | `code`        |
+| `[link](url)` | link          |
+| `> quote`     | blockquote    |
+| `- item`      | bullet list   |
+| `1. item`     | numbered list |
 
 ### Configuration
 
@@ -413,7 +407,7 @@ const markdownConfig = {
   enabled: true,
   allowHtml: false,
   sanitize: true,
-  linkify: true
+  linkify: true,
 }
 ```
 
@@ -439,7 +433,7 @@ const linkPreviewConfig = {
   timeout: 5000,
   maxWidth: 400,
   showImage: true,
-  showDescription: true
+  showDescription: true,
 }
 ```
 
@@ -451,20 +445,17 @@ const linkPreviewConfig = {
 
 ### Mention Types
 
-| Type | Syntax | Description |
-|------|--------|-------------|
-| User | `@username` | Mention specific user |
-| Channel | `#channel` | Link to channel |
-| Everyone | `@everyone` | Notify all members |
-| Here | `@here` | Notify online members |
+| Type     | Syntax      | Description           |
+| -------- | ----------- | --------------------- |
+| User     | `@username` | Mention specific user |
+| Channel  | `#channel`  | Link to channel       |
+| Everyone | `@everyone` | Notify all members    |
+| Here     | `@here`     | Notify online members |
 
 ### Autocomplete
 
 ```tsx
-<MentionAutocomplete
-  onSelect={(mention) => insertMention(mention)}
-  filter={searchText}
-/>
+<MentionAutocomplete onSelect={(mention) => insertMention(mention)} filter={searchText} />
 ```
 
 ### Configuration
@@ -474,7 +465,7 @@ const mentionConfig = {
   enabled: true,
   allowEveryone: 'admin', // 'all' | 'admin' | 'none'
   allowHere: 'admin',
-  highlightStyle: 'background' // 'background' | 'bold' | 'color'
+  highlightStyle: 'background', // 'background' | 'bold' | 'color'
 }
 ```
 
@@ -496,10 +487,7 @@ My reply to this
 ### Quote Component
 
 ```tsx
-<QuotedMessage
-  originalMessage={quotedMessage}
-  onClick={() => scrollToMessage(quotedMessage.id)}
-/>
+<QuotedMessage originalMessage={quotedMessage} onClick={() => scrollToMessage(quotedMessage.id)} />
 ```
 
 ---
@@ -514,60 +502,60 @@ const messageConfig = {
   edit: {
     enabled: true,
     timeWindow: 3600,
-    showHistory: true
+    showHistory: true,
   },
 
   delete: {
     enabled: true,
     timeWindow: 86400,
-    softDelete: true
+    softDelete: true,
   },
 
   reactions: {
     enabled: true,
-    maxPerMessage: 20
+    maxPerMessage: 20,
   },
 
   threads: {
     enabled: true,
-    maxDepth: 1
+    maxDepth: 1,
   },
 
   pins: {
     enabled: true,
-    maxPerChannel: 50
+    maxPerChannel: 50,
   },
 
   bookmarks: {
     enabled: true,
-    maxPerUser: 1000
+    maxPerUser: 1000,
   },
 
   voice: {
     enabled: true,
     maxDuration: 300,
-    format: 'webm'
+    format: 'webm',
   },
 
   codeBlocks: {
     enabled: true,
-    lineNumbers: true
+    lineNumbers: true,
   },
 
   markdown: {
     enabled: true,
-    sanitize: true
+    sanitize: true,
   },
 
   linkPreviews: {
     enabled: true,
-    timeout: 5000
+    timeout: 5000,
   },
 
   mentions: {
     enabled: true,
-    allowEveryone: 'admin'
-  }
+    allowEveryone: 'admin',
+  },
 }
 ```
 

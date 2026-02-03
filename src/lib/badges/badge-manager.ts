@@ -18,6 +18,8 @@ import {
 import type { AuthUser } from '@/services/auth/auth-plugin.interface'
 import type { IdMeGroup } from '@/services/auth/providers/idme.provider'
 
+import { logger } from '@/lib/logger'
+
 // Storage key for user badges
 const BADGES_STORAGE_KEY = 'nchat-user-badges'
 
@@ -132,7 +134,8 @@ export const BADGE_RULES: BadgeRule[] = [
     id: 'idme-nurse',
     name: 'Healthcare Badge',
     description: 'Assign healthcare badge to verified healthcare workers',
-    condition: (_, ctx) => (ctx?.idmeGroups?.includes('nurse') || ctx?.idmeGroups?.includes('hospital')) ?? false,
+    condition: (_, ctx) =>
+      (ctx?.idmeGroups?.includes('nurse') || ctx?.idmeGroups?.includes('hospital')) ?? false,
     badge: 'nurse',
     autoAssign: true,
     autoRemove: true,
@@ -214,7 +217,7 @@ export class BadgeManager {
    * Get sorted badges for display
    */
   getDisplayBadges(userId: string, maxBadges?: number): UserBadge[] {
-    const badges = this.getUserBadges(userId).filter(b => b.visible)
+    const badges = this.getUserBadges(userId).filter((b) => b.visible)
     const sorted = getBadgesSortedByPriority(badges) as UserBadge[]
     return maxBadges ? sorted.slice(0, maxBadges) : sorted
   }
@@ -223,7 +226,7 @@ export class BadgeManager {
    * Check if user has a specific badge
    */
   hasBadge(userId: string, badgeId: BadgeId): boolean {
-    return this.getUserBadges(userId).some(b => b.id === badgeId)
+    return this.getUserBadges(userId).some((b) => b.id === badgeId)
   }
 
   /**
@@ -240,7 +243,7 @@ export class BadgeManager {
   ): UserBadge | null {
     const badge = getBadge(badgeId)
     if (!badge) {
-      console.error(`Badge not found: ${badgeId}`)
+      logger.error(`Badge not found: ${badgeId}`)
       return null
     }
 
@@ -270,7 +273,7 @@ export class BadgeManager {
    */
   removeBadge(userId: string, badgeId: BadgeId): boolean {
     const userBadges = this.userBadges.get(userId) || []
-    const index = userBadges.findIndex(b => b.id === badgeId)
+    const index = userBadges.findIndex((b) => b.id === badgeId)
 
     if (index === -1) {
       return false
@@ -366,7 +369,7 @@ export class BadgeManager {
    * Remove a custom badge rule
    */
   removeRule(ruleId: string): boolean {
-    const index = this.customRules.findIndex(r => r.id === ruleId)
+    const index = this.customRules.findIndex((r) => r.id === ruleId)
     if (index === -1) return false
     this.customRules.splice(index, 1)
     return true
@@ -376,7 +379,7 @@ export class BadgeManager {
    * Get badges by category for a user
    */
   getBadgesByCategory(userId: string, category: BadgeCategory): UserBadge[] {
-    return this.getUserBadges(userId).filter(b => b.category === category)
+    return this.getUserBadges(userId).filter((b) => b.category === category)
   }
 
   /**
@@ -395,7 +398,7 @@ export class BadgeManager {
     const now = new Date()
 
     for (const [userId, badges] of this.userBadges) {
-      const validBadges = badges.filter(b => {
+      const validBadges = badges.filter((b) => {
         if (b.expiresAt && b.expiresAt < now) {
           removedCount++
           return false
@@ -453,7 +456,7 @@ export class BadgeManager {
         const data = JSON.parse(stored)
         for (const [userId, badges] of Object.entries(data)) {
           // Rehydrate Date objects
-          const hydratedBadges = (badges as UserBadge[]).map(b => ({
+          const hydratedBadges = (badges as UserBadge[]).map((b) => ({
             ...b,
             assignedAt: new Date(b.assignedAt),
             expiresAt: b.expiresAt ? new Date(b.expiresAt) : undefined,
@@ -462,7 +465,7 @@ export class BadgeManager {
         }
       }
     } catch (error) {
-      console.error('Failed to load badges from storage:', error)
+      logger.error('Failed to load badges from storage:', error)
     }
   }
 
@@ -476,7 +479,7 @@ export class BadgeManager {
       }
       localStorage.setItem(BADGES_STORAGE_KEY, JSON.stringify(data))
     } catch (error) {
-      console.error('Failed to save badges to storage:', error)
+      logger.error('Failed to save badges to storage:', error)
     }
   }
 }

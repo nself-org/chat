@@ -6,7 +6,12 @@
 //
 // ===============================================================================
 
-import { TELEGRAM_COLORS, TELEGRAM_TYPOGRAPHY, TELEGRAM_BUBBLES, TELEGRAM_ANIMATIONS } from './config'
+import {
+  TELEGRAM_COLORS,
+  TELEGRAM_TYPOGRAPHY,
+  TELEGRAM_BUBBLES,
+  TELEGRAM_ANIMATIONS,
+} from './config'
 
 // -------------------------------------------------------------------------------
 // CSS Custom Properties
@@ -106,13 +111,9 @@ export function getAvatarColor(userId: string): string {
  */
 export function getBubbleBackground(isOwn: boolean, isDarkMode: boolean): string {
   if (isOwn) {
-    return isDarkMode
-      ? TELEGRAM_COLORS.bubbleOutgoingDark
-      : TELEGRAM_COLORS.bubbleOutgoing
+    return isDarkMode ? TELEGRAM_COLORS.bubbleOutgoingDark : TELEGRAM_COLORS.bubbleOutgoing
   }
-  return isDarkMode
-    ? TELEGRAM_COLORS.bubbleIncomingDark
-    : TELEGRAM_COLORS.bubbleIncoming
+  return isDarkMode ? TELEGRAM_COLORS.bubbleIncomingDark : TELEGRAM_COLORS.bubbleIncoming
 }
 
 /**

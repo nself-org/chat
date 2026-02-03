@@ -200,7 +200,10 @@ describe('updateAt', () => {
 
 describe('updateWhere', () => {
   it('should update matching item', () => {
-    const data = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }]
+    const data = [
+      { id: 1, name: 'a' },
+      { id: 2, name: 'b' },
+    ]
     const result = updateWhere(data, (item) => item.id === 1, { name: 'updated' })
     expect(result[0].name).toBe('updated')
   })
@@ -214,12 +217,21 @@ describe('updateWhere', () => {
 
 describe('flatten', () => {
   it('should flatten one level', () => {
-    const result = flatten([[1, 2], [3, [4, 5]]])
+    const result = flatten([
+      [1, 2],
+      [3, [4, 5]],
+    ])
     expect(result).toEqual([1, 2, 3, [4, 5]])
   })
 
   it('should flatten multiple levels', () => {
-    const result = flatten([[1, 2], [3, [4, 5]]], 2)
+    const result = flatten(
+      [
+        [1, 2],
+        [3, [4, 5]],
+      ],
+      2
+    )
     expect(result).toEqual([1, 2, 3, 4, 5])
   })
 })
@@ -375,7 +387,10 @@ describe('range', () => {
 describe('zip', () => {
   it('should zip arrays', () => {
     const result = zip([1, 2], ['a', 'b'])
-    expect(result).toEqual([[1, 'a'], [2, 'b']])
+    expect(result).toEqual([
+      [1, 'a'],
+      [2, 'b'],
+    ])
   })
 
   it('should handle different lengths', () => {
@@ -419,7 +434,10 @@ describe('some', () => {
 
 describe('toLookup', () => {
   it('should create lookup by key', () => {
-    const data = [{ id: 1, name: 'a' }, { id: 2, name: 'b' }]
+    const data = [
+      { id: 1, name: 'a' },
+      { id: 2, name: 'b' },
+    ]
     const result = toLookup(data, 'id')
     expect(result[1]).toEqual({ id: 1, name: 'a' })
     expect(result[2]).toEqual({ id: 2, name: 'b' })

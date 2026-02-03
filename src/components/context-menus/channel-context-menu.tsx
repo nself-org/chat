@@ -29,11 +29,7 @@ import {
   ContextMenuLabel,
 } from './context-menu-base'
 import { useAuth } from '@/contexts/auth-context'
-import {
-  useChannelStore,
-  type Channel,
-  type ChannelCategory,
-} from '@/stores/channel-store'
+import { useChannelStore, type Channel, type ChannelCategory } from '@/stores/channel-store'
 
 // ============================================================================
 // Types
@@ -85,8 +81,7 @@ export function ChannelContextMenu({
   const isDM = channel.type === 'direct' || channel.type === 'group'
 
   // Local state for notification preference (would normally come from a store)
-  const [notificationSetting, setNotificationSetting] =
-    React.useState<NotificationSetting>('all')
+  const [notificationSetting, setNotificationSetting] = React.useState<NotificationSetting>('all')
 
   const handleCopyLink = React.useCallback(() => {
     if (onCopyLink) {
@@ -157,10 +152,7 @@ export function ChannelContextMenu({
             Unstar channel
           </ContextMenuItemWithIcon>
         ) : (
-          <ContextMenuItemWithIcon
-            icon={<Star className="h-4 w-4" />}
-            onClick={handleStarToggle}
-          >
+          <ContextMenuItemWithIcon icon={<Star className="h-4 w-4" />} onClick={handleStarToggle}>
             Star channel
           </ContextMenuItemWithIcon>
         )}
@@ -176,15 +168,9 @@ export function ChannelContextMenu({
               value={notificationSetting}
               onValueChange={handleNotificationChange}
             >
-              <ContextMenuRadioItem value="all">
-                All messages
-              </ContextMenuRadioItem>
-              <ContextMenuRadioItem value="mentions">
-                Mentions only
-              </ContextMenuRadioItem>
-              <ContextMenuRadioItem value="nothing">
-                Nothing
-              </ContextMenuRadioItem>
+              <ContextMenuRadioItem value="all">All messages</ContextMenuRadioItem>
+              <ContextMenuRadioItem value="mentions">Mentions only</ContextMenuRadioItem>
+              <ContextMenuRadioItem value="nothing">Nothing</ContextMenuRadioItem>
             </ContextMenuRadioGroup>
           </ContextMenuSubContent>
         </ContextMenuSub>
@@ -212,10 +198,7 @@ export function ChannelContextMenu({
         )}
 
         {/* Copy link */}
-        <ContextMenuItemWithIcon
-          icon={<Link2 className="h-4 w-4" />}
-          onClick={handleCopyLink}
-        >
+        <ContextMenuItemWithIcon icon={<Link2 className="h-4 w-4" />} onClick={handleCopyLink}>
           Copy link
         </ContextMenuItemWithIcon>
 
@@ -228,9 +211,7 @@ export function ChannelContextMenu({
                 Move to category
               </ContextMenuSubTrigger>
               <ContextMenuSubContent className="w-48">
-                <ContextMenuItemWithIcon
-                  onClick={() => onMoveToCategory?.(channel, null)}
-                >
+                <ContextMenuItemWithIcon onClick={() => onMoveToCategory?.(channel, null)}>
                   No category
                 </ContextMenuItemWithIcon>
                 <ContextMenuSeparator />
@@ -240,9 +221,7 @@ export function ChannelContextMenu({
                     onClick={() => onMoveToCategory?.(channel, category.id)}
                   >
                     {category.name}
-                    {channel.categoryId === category.id && (
-                      <Check className="ml-auto h-4 w-4" />
-                    )}
+                    {channel.categoryId === category.id && <Check className="ml-auto h-4 w-4" />}
                   </ContextMenuItemWithIcon>
                 ))}
               </ContextMenuSubContent>

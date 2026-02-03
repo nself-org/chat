@@ -12,6 +12,8 @@ import {
 } from '@/lib/ai/embeddings'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60 // 1 minute timeout for batch operations
@@ -133,7 +135,7 @@ export async function POST(request: NextRequest) {
       generated: result.generated,
     } as EmbedResponse)
   } catch (error) {
-    console.error('Embedding generation error:', error)
+    logger.error('Embedding generation error:', error)
     captureError(error as Error, {
       tags: { api: 'ai-embed' },
       extra: {

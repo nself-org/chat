@@ -1,23 +1,23 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 import {
   type StatusDuration,
   DURATION_OPTIONS,
   getDurationOption,
   formatDurationRemaining,
-} from '@/lib/presence/presence-types';
+} from '@/lib/presence/presence-types'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Clock } from 'lucide-react';
+} from '@/components/ui/select'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Label } from '@/components/ui/label'
+import { Clock } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -27,29 +27,29 @@ export interface StatusDurationPickerProps {
   /**
    * Currently selected duration
    */
-  value: StatusDuration;
+  value: StatusDuration
 
   /**
    * Callback when duration changes
    */
-  onChange: (duration: StatusDuration) => void;
+  onChange: (duration: StatusDuration) => void
 
   /**
    * Display variant
    * @default 'select'
    */
-  variant?: 'select' | 'radio' | 'buttons';
+  variant?: 'select' | 'radio' | 'buttons'
 
   /**
    * Whether to show the preview of when it will clear
    * @default true
    */
-  showPreview?: boolean;
+  showPreview?: boolean
 
   /**
    * Additional class names
    */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -63,8 +63,8 @@ export function StatusDurationPicker({
   showPreview = true,
   className,
 }: StatusDurationPickerProps) {
-  const selectedOption = getDurationOption(value);
-  const expiresAt = selectedOption?.getExpiresAt();
+  const selectedOption = getDurationOption(value)
+  const expiresAt = selectedOption?.getExpiresAt()
 
   // Select variant
   if (variant === 'select') {
@@ -92,7 +92,7 @@ export function StatusDurationPicker({
           </p>
         )}
       </div>
-    );
+    )
   }
 
   // Radio variant
@@ -105,7 +105,7 @@ export function StatusDurationPicker({
               <RadioGroupItem value={option.value} id={`duration-${option.value}`} />
               <Label
                 htmlFor={`duration-${option.value}`}
-                className="text-sm font-normal cursor-pointer"
+                className="cursor-pointer text-sm font-normal"
               >
                 {option.label}
               </Label>
@@ -114,12 +114,12 @@ export function StatusDurationPicker({
         </RadioGroup>
 
         {showPreview && expiresAt && (
-          <p className="text-xs text-muted-foreground mt-2">
+          <p className="mt-2 text-xs text-muted-foreground">
             Status will clear in {formatDurationRemaining(expiresAt)}
           </p>
         )}
       </div>
-    );
+    )
   }
 
   // Buttons variant
@@ -131,10 +131,10 @@ export function StatusDurationPicker({
             key={option.value}
             onClick={() => onChange(option.value)}
             className={cn(
-              'px-2.5 py-1 text-xs rounded-full transition-colors',
+              'rounded-full px-2.5 py-1 text-xs transition-colors',
               'hover:bg-muted/80',
               value === option.value
-                ? 'bg-primary text-primary-foreground'
+                ? 'text-primary-foreground bg-primary'
                 : 'bg-muted text-muted-foreground'
             )}
           >
@@ -149,7 +149,7 @@ export function StatusDurationPicker({
         </p>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -157,25 +157,25 @@ export function StatusDurationPicker({
 // ============================================================================
 
 export interface DurationBadgeProps {
-  expiresAt: Date | string | null | undefined;
-  className?: string;
+  expiresAt: Date | string | null | undefined
+  className?: string
 }
 
 export function DurationBadge({ expiresAt, className }: DurationBadgeProps) {
   if (!expiresAt) {
-    return null;
+    return null
   }
 
-  const remaining = formatDurationRemaining(expiresAt);
+  const remaining = formatDurationRemaining(expiresAt)
 
   if (remaining === 'Expired') {
-    return null;
+    return null
   }
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs',
+        'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs',
         'bg-muted/50 text-muted-foreground',
         className
       )}
@@ -183,7 +183,7 @@ export function DurationBadge({ expiresAt, className }: DurationBadgeProps) {
       <Clock className="h-3 w-3" />
       {remaining}
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -191,9 +191,9 @@ export function DurationBadge({ expiresAt, className }: DurationBadgeProps) {
 // ============================================================================
 
 export interface DurationDisplayProps {
-  expiresAt: Date | string | null | undefined;
-  prefix?: string;
-  className?: string;
+  expiresAt: Date | string | null | undefined
+  prefix?: string
+  className?: string
 }
 
 export function DurationDisplay({
@@ -202,29 +202,21 @@ export function DurationDisplay({
   className,
 }: DurationDisplayProps) {
   if (!expiresAt) {
-    return (
-      <span className={cn('text-xs text-muted-foreground', className)}>
-        Does not expire
-      </span>
-    );
+    return <span className={cn('text-xs text-muted-foreground', className)}>Does not expire</span>
   }
 
-  const remaining = formatDurationRemaining(expiresAt);
+  const remaining = formatDurationRemaining(expiresAt)
 
   if (remaining === 'Expired') {
-    return (
-      <span className={cn('text-xs text-muted-foreground', className)}>
-        Expired
-      </span>
-    );
+    return <span className={cn('text-xs text-muted-foreground', className)}>Expired</span>
   }
 
   return (
-    <span className={cn('text-xs text-muted-foreground flex items-center gap-1', className)}>
+    <span className={cn('flex items-center gap-1 text-xs text-muted-foreground', className)}>
       <Clock className="h-3 w-3" />
       {prefix} {remaining}
     </span>
-  );
+  )
 }
 
-export default StatusDurationPicker;
+export default StatusDurationPicker

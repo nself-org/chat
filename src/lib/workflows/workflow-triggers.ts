@@ -297,10 +297,7 @@ export function validateCronExpression(cron: string): string[] {
 /**
  * Check if trigger filters match the context
  */
-export function matchTriggerFilters(
-  filters: TriggerFilter[],
-  context: WorkflowContext
-): boolean {
+export function matchTriggerFilters(filters: TriggerFilter[], context: WorkflowContext): boolean {
   if (!filters || filters.length === 0) {
     return true
   }
@@ -363,10 +360,7 @@ function getContextValue(path: string, context: WorkflowContext): unknown {
 /**
  * Check if a trigger should fire based on event and config
  */
-export function shouldTriggerFire(
-  trigger: TriggerStep,
-  event: TriggerEvent
-): boolean {
+export function shouldTriggerFire(trigger: TriggerStep, event: TriggerEvent): boolean {
   const config = trigger.config
 
   // Check if trigger type matches
@@ -545,7 +539,13 @@ export function describeCronExpression(cron: string): string {
   if (minute === '0' && hour === '0' && dayOfMonth === '*' && month === '*' && dayOfWeek === '*') {
     return 'Every day at midnight'
   }
-  if (minute === '0' && hour === '9' && dayOfMonth === '*' && month === '*' && dayOfWeek === '1-5') {
+  if (
+    minute === '0' &&
+    hour === '9' &&
+    dayOfMonth === '*' &&
+    month === '*' &&
+    dayOfWeek === '1-5'
+  ) {
     return 'Every weekday at 9:00 AM'
   }
   if (minute === '0' && hour === '9' && dayOfMonth === '*' && month === '*' && dayOfWeek === '1') {

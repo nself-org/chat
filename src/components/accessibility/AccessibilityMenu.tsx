@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Accessibility,
   Eye,
@@ -13,8 +13,8 @@ import {
   VolumeX,
   ZoomIn,
   ZoomOut,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,17 +24,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
   DropdownMenuCheckboxItem,
-} from '@/components/ui/dropdown-menu';
-import { useSettingsStore } from '@/stores/settings-store';
-import { cn } from '@/lib/utils';
+} from '@/components/ui/dropdown-menu'
+import { useSettingsStore } from '@/stores/settings-store'
+import { cn } from '@/lib/utils'
 
 export interface AccessibilityMenuProps {
   /** Show as icon button or full button */
-  variant?: 'icon' | 'button';
+  variant?: 'icon' | 'button'
   /** Button size */
-  size?: 'sm' | 'default' | 'lg';
+  size?: 'sm' | 'default' | 'lg'
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -65,31 +65,36 @@ export function AccessibilityMenu({
     toggleHighContrast,
     toggleReduceMotion,
     updateAccessibility,
-  } = useSettingsStore();
+  } = useSettingsStore()
 
-  const { appearance, accessibility } = settings;
+  const { appearance, accessibility } = settings
 
   // Font size cycle: small -> medium -> large -> extra-large -> small
   const cycleFontSize = () => {
-    const sizes: ('small' | 'medium' | 'large' | 'extra-large')[] = ['small', 'medium', 'large', 'extra-large'];
-    const currentIndex = sizes.indexOf(appearance.fontSize);
-    const nextIndex = (currentIndex + 1) % sizes.length;
-    setFontSize(sizes[nextIndex]);
-  };
+    const sizes: ('small' | 'medium' | 'large' | 'extra-large')[] = [
+      'small',
+      'medium',
+      'large',
+      'extra-large',
+    ]
+    const currentIndex = sizes.indexOf(appearance.fontSize)
+    const nextIndex = (currentIndex + 1) % sizes.length
+    setFontSize(sizes[nextIndex])
+  }
 
   const increaseFontSize = () => {
-    if (appearance.fontSize === 'small') setFontSize('medium');
-    else if (appearance.fontSize === 'medium') setFontSize('large');
-  };
+    if (appearance.fontSize === 'small') setFontSize('medium')
+    else if (appearance.fontSize === 'medium') setFontSize('large')
+  }
 
   const decreaseFontSize = () => {
-    if (appearance.fontSize === 'large') setFontSize('medium');
-    else if (appearance.fontSize === 'medium') setFontSize('small');
-  };
+    if (appearance.fontSize === 'large') setFontSize('medium')
+    else if (appearance.fontSize === 'medium') setFontSize('small')
+  }
 
   const toggleTheme = () => {
-    setTheme(appearance.theme === 'light' ? 'dark' : 'light');
-  };
+    setTheme(appearance.theme === 'light' ? 'dark' : 'light')
+  }
 
   return (
     <DropdownMenu>
@@ -102,9 +107,7 @@ export function AccessibilityMenu({
           title="Accessibility options"
         >
           <Accessibility className="h-5 w-5" />
-          {variant === 'button' && (
-            <span className="ml-2">Accessibility</span>
-          )}
+          {variant === 'button' && <span className="ml-2">Accessibility</span>}
           {/* Visual indicator when accessibility features are active */}
           {(accessibility.highContrast ||
             accessibility.reduceMotion ||
@@ -114,11 +117,7 @@ export function AccessibilityMenu({
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent
-        className="w-72"
-        align="end"
-        sideOffset={5}
-      >
+      <DropdownMenuContent className="w-72" align="end" sideOffset={5}>
         <DropdownMenuLabel className="flex items-center gap-2">
           <Accessibility className="h-4 w-4" />
           Accessibility Settings
@@ -131,10 +130,7 @@ export function AccessibilityMenu({
           <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
             Visual
           </DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={toggleTheme}
-            className="flex items-center justify-between"
-          >
+          <DropdownMenuItem onClick={toggleTheme} className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               {appearance.theme === 'light' ? (
                 <Sun className="h-4 w-4" />
@@ -164,9 +160,7 @@ export function AccessibilityMenu({
 
           <DropdownMenuCheckboxItem
             checked={accessibility.reduceTransparency}
-            onCheckedChange={(checked) =>
-              updateAccessibility({ reduceTransparency: checked })
-            }
+            onCheckedChange={(checked) => updateAccessibility({ reduceTransparency: checked })}
           >
             <div className="flex items-center gap-2">
               <Monitor className="h-4 w-4" />
@@ -210,9 +204,7 @@ export function AccessibilityMenu({
 
           <DropdownMenuCheckboxItem
             checked={accessibility.dyslexiaFont}
-            onCheckedChange={(checked) =>
-              updateAccessibility({ dyslexiaFont: checked })
-            }
+            onCheckedChange={(checked) => updateAccessibility({ dyslexiaFont: checked })}
           >
             <div className="flex items-center gap-2">
               <span className="font-mono">Aa</span>
@@ -240,9 +232,7 @@ export function AccessibilityMenu({
 
           <DropdownMenuCheckboxItem
             checked={accessibility.reduceMotion}
-            onCheckedChange={(checked) =>
-              updateAccessibility({ reduceMotion: checked })
-            }
+            onCheckedChange={(checked) => updateAccessibility({ reduceMotion: checked })}
           >
             <div className="flex items-center gap-2">
               <Monitor className="h-4 w-4" />
@@ -260,9 +250,7 @@ export function AccessibilityMenu({
           </DropdownMenuLabel>
           <DropdownMenuCheckboxItem
             checked={accessibility.screenReaderMode}
-            onCheckedChange={(checked) =>
-              updateAccessibility({ screenReaderMode: checked })
-            }
+            onCheckedChange={(checked) => updateAccessibility({ screenReaderMode: checked })}
           >
             <div className="flex items-center gap-2">
               {accessibility.screenReaderMode ? (
@@ -276,9 +264,7 @@ export function AccessibilityMenu({
 
           <DropdownMenuCheckboxItem
             checked={accessibility.announceMessages}
-            onCheckedChange={(checked) =>
-              updateAccessibility({ announceMessages: checked })
-            }
+            onCheckedChange={(checked) => updateAccessibility({ announceMessages: checked })}
           >
             <div className="flex items-center gap-2">
               <Volume2 className="h-4 w-4" />
@@ -288,9 +274,7 @@ export function AccessibilityMenu({
 
           <DropdownMenuCheckboxItem
             checked={accessibility.showKeyboardHints}
-            onCheckedChange={(checked) =>
-              updateAccessibility({ showKeyboardHints: checked })
-            }
+            onCheckedChange={(checked) => updateAccessibility({ showKeyboardHints: checked })}
           >
             <div className="flex items-center gap-2">
               <Keyboard className="h-4 w-4" />
@@ -300,9 +284,7 @@ export function AccessibilityMenu({
 
           <DropdownMenuCheckboxItem
             checked={accessibility.alwaysShowFocus}
-            onCheckedChange={(checked) =>
-              updateAccessibility({ alwaysShowFocus: checked })
-            }
+            onCheckedChange={(checked) => updateAccessibility({ alwaysShowFocus: checked })}
           >
             <div className="flex items-center gap-2">
               <Keyboard className="h-4 w-4" />
@@ -315,16 +297,13 @@ export function AccessibilityMenu({
 
         {/* More Settings Link */}
         <DropdownMenuItem asChild>
-          <a
-            href="/settings/accessibility"
-            className="w-full text-sm text-primary"
-          >
+          <a href="/settings/accessibility" className="w-full text-sm text-primary">
             View all accessibility settings →
           </a>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }
 
-export default AccessibilityMenu;
+export default AccessibilityMenu

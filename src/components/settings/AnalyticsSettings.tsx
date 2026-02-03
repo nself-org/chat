@@ -29,6 +29,8 @@ import { analyticsPrivacy } from '@/lib/analytics/privacy'
 import type { ConsentStatus, PrivacySettings } from '@/lib/analytics/types'
 import { analytics } from '@/lib/analytics/events'
 
+import { logger } from '@/lib/logger'
+
 export function AnalyticsSettings() {
   const [consent, setConsent] = useState<ConsentStatus>(analyticsPrivacy.getConsent())
   const [settings, setSettings] = useState<PrivacySettings>(analyticsPrivacy.getPrivacySettings())
@@ -52,7 +54,7 @@ export function AnalyticsSettings() {
       await analyticsPrivacy.setConsent({ [field]: value })
       setHasConsented(true)
     } catch (error) {
-      console.error('Failed to update consent:', error)
+      logger.error('Failed to update consent:', error)
     } finally {
       setSaving(false)
     }
@@ -66,7 +68,7 @@ export function AnalyticsSettings() {
       setSaving(true)
       await analyticsPrivacy.setPrivacySettings({ [field]: value })
     } catch (error) {
-      console.error('Failed to update settings:', error)
+      logger.error('Failed to update settings:', error)
     } finally {
       setSaving(false)
     }
@@ -79,7 +81,7 @@ export function AnalyticsSettings() {
       setConsent(analyticsPrivacy.getConsent())
       setHasConsented(true)
     } catch (error) {
-      console.error('Failed to accept all:', error)
+      logger.error('Failed to accept all:', error)
     } finally {
       setSaving(false)
     }
@@ -92,7 +94,7 @@ export function AnalyticsSettings() {
       setConsent(analyticsPrivacy.getConsent())
       setHasConsented(true)
     } catch (error) {
-      console.error('Failed to reject all:', error)
+      logger.error('Failed to reject all:', error)
     } finally {
       setSaving(false)
     }
@@ -109,7 +111,7 @@ export function AnalyticsSettings() {
       a.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      console.error('Failed to export data:', error)
+      logger.error('Failed to export data:', error)
     }
   }
 
@@ -124,7 +126,7 @@ export function AnalyticsSettings() {
       setConsent(analyticsPrivacy.getConsent())
       setHasConsented(false)
     } catch (error) {
-      console.error('Failed to clear data:', error)
+      logger.error('Failed to clear data:', error)
     } finally {
       setSaving(false)
     }
@@ -137,9 +139,7 @@ export function AnalyticsSettings() {
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Analytics & Privacy</h2>
-        <p className="text-muted-foreground">
-          Control what data we collect and how we use it
-        </p>
+        <p className="text-muted-foreground">Control what data we collect and how we use it</p>
       </div>
 
       {/* Consent Banner */}
@@ -274,9 +274,7 @@ export function AnalyticsSettings() {
             <Shield className="h-5 w-5" />
             Privacy Settings
           </CardTitle>
-          <CardDescription>
-            Additional privacy options for enhanced protection
-          </CardDescription>
+          <CardDescription>Additional privacy options for enhanced protection</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Anonymize IP */}
@@ -339,7 +337,7 @@ export function AnalyticsSettings() {
           <CardContent className="space-y-6">
             {/* What We Collect */}
             <div>
-              <h4 className="font-medium mb-2 text-green-600 dark:text-green-400">
+              <h4 className="mb-2 font-medium text-green-600 dark:text-green-400">
                 ✓ What We Collect
               </h4>
               <ul className="space-y-1 text-sm text-muted-foreground">
@@ -353,7 +351,7 @@ export function AnalyticsSettings() {
 
             {/* What We Don't Collect */}
             <div>
-              <h4 className="font-medium mb-2 text-red-600 dark:text-red-400">
+              <h4 className="mb-2 font-medium text-red-600 dark:text-red-400">
                 ✗ What We Don't Collect
               </h4>
               <ul className="space-y-1 text-sm text-muted-foreground">
@@ -367,7 +365,7 @@ export function AnalyticsSettings() {
 
             {/* How We Use It */}
             <div>
-              <h4 className="font-medium mb-2">How We Use Your Data</h4>
+              <h4 className="mb-2 font-medium">How We Use Your Data</h4>
               <ul className="space-y-1 text-sm text-muted-foreground">
                 {privacyInfo.howWeUseIt.map((item, i) => (
                   <li key={i}>• {item}</li>
@@ -379,7 +377,7 @@ export function AnalyticsSettings() {
 
             {/* Your Rights */}
             <div>
-              <h4 className="font-medium mb-2">Your Rights (GDPR)</h4>
+              <h4 className="mb-2 font-medium">Your Rights (GDPR)</h4>
               <ul className="space-y-1 text-sm text-muted-foreground">
                 {privacyInfo.yourRights.map((item, i) => (
                   <li key={i}>• {item}</li>

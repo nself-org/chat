@@ -26,6 +26,7 @@ import type {
   ChangePlanInput,
   UpdatePaymentMethodInput,
 } from './team-types'
+import { logger } from '@/lib/logger'
 
 /**
  * Team Settings Management
@@ -35,7 +36,6 @@ export class TeamManager {
    * Get team details
    */
   async getTeam(teamId: string): Promise<Team> {
-    // TODO: Replace with actual API call
     const response = await fetch(`/api/admin/team/${teamId}`)
     if (!response.ok) throw new Error('Failed to fetch team')
     return response.json()
@@ -219,7 +219,7 @@ export class TeamManager {
       if (!response.ok) throw new Error('Failed to fetch invitations')
       return response.json()
     } catch (error) {
-      console.error('Failed to fetch pending invitations:', error)
+      logger.error('Failed to fetch pending invitations:', error)
       return []
     }
   }
@@ -227,15 +227,11 @@ export class TeamManager {
   /**
    * Cancel Invitation
    */
-  async cancelInvitation(
-    teamId: string,
-    invitationId: string
-  ): Promise<TeamActionResult<void>> {
+  async cancelInvitation(teamId: string, invitationId: string): Promise<TeamActionResult<void>> {
     try {
-      const response = await fetch(
-        `/api/admin/team/${teamId}/invites/${invitationId}/cancel`,
-        { method: 'POST' }
-      )
+      const response = await fetch(`/api/admin/team/${teamId}/invites/${invitationId}/cancel`, {
+        method: 'POST',
+      })
 
       if (!response.ok) {
         const error = await response.json()
@@ -258,15 +254,11 @@ export class TeamManager {
   /**
    * Resend Invitation
    */
-  async resendInvitation(
-    teamId: string,
-    invitationId: string
-  ): Promise<TeamActionResult<void>> {
+  async resendInvitation(teamId: string, invitationId: string): Promise<TeamActionResult<void>> {
     try {
-      const response = await fetch(
-        `/api/admin/team/${teamId}/invites/${invitationId}/resend`,
-        { method: 'POST' }
-      )
+      const response = await fetch(`/api/admin/team/${teamId}/invites/${invitationId}/resend`, {
+        method: 'POST',
+      })
 
       if (!response.ok) {
         const error = await response.json()
@@ -295,7 +287,7 @@ export class TeamManager {
       if (!response.ok) throw new Error('Failed to fetch team members')
       return response.json()
     } catch (error) {
-      console.error('Failed to fetch team members:', error)
+      logger.error('Failed to fetch team members:', error)
       return []
     }
   }
@@ -405,7 +397,7 @@ export class TeamManager {
       if (!response.ok) throw new Error('Failed to fetch billing information')
       return response.json()
     } catch (error) {
-      console.error('Failed to fetch billing information:', error)
+      logger.error('Failed to fetch billing information:', error)
       return null
     }
   }
@@ -413,13 +405,16 @@ export class TeamManager {
   /**
    * Get Usage Statistics
    */
-  async getUsageStatistics(teamId: string, period: string = 'current'): Promise<UsageStatistics | null> {
+  async getUsageStatistics(
+    teamId: string,
+    period: string = 'current'
+  ): Promise<UsageStatistics | null> {
     try {
       const response = await fetch(`/api/admin/team/${teamId}/usage?period=${period}`)
       if (!response.ok) throw new Error('Failed to fetch usage statistics')
       return response.json()
     } catch (error) {
-      console.error('Failed to fetch usage statistics:', error)
+      logger.error('Failed to fetch usage statistics:', error)
       return null
     }
   }
@@ -571,7 +566,10 @@ export class TeamManager {
     }
 
     if (!/^[a-z0-9-]+$/.test(slug)) {
-      return { valid: false, error: 'Slug can only contain lowercase letters, numbers, and hyphens' }
+      return {
+        valid: false,
+        error: 'Slug can only contain lowercase letters, numbers, and hyphens',
+      }
     }
 
     if (slug.startsWith('-') || slug.endsWith('-')) {
@@ -625,7 +623,7 @@ export class TeamManager {
     const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
     const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
   }
 
   /**

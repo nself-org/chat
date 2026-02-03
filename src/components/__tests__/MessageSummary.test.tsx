@@ -50,10 +50,7 @@ const createMockThreadSummary = (overrides: Partial<ThreadSummary> = {}): Thread
   summary: 'This is a thread summary',
   messageCount: 8,
   participantCount: 3,
-  keyDecisions: [
-    'Decided to use React for the frontend',
-    'Agreed on daily standups at 9 AM',
-  ],
+  keyDecisions: ['Decided to use React for the frontend', 'Agreed on daily standups at 9 AM'],
   ...overrides,
 })
 

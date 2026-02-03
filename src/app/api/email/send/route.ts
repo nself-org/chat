@@ -5,7 +5,7 @@
  * POST /api/email/send
  */
 
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
 import {
   sendWelcomeEmail,
   sendEmailVerification,
@@ -18,7 +18,7 @@ import {
   sendEmailImmediate,
   getEmailQueueStatus,
   verifyEmailConfig,
-} from '@/lib/email/templates';
+} from '@/lib/email/templates'
 import type {
   EmailRecipient,
   EmailType,
@@ -32,22 +32,23 @@ import type {
   DigestEmailData,
   Email,
   EmailQueueOptions,
-} from '@/lib/email/types';
+} from '@/lib/email/types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface SendEmailRequest {
-  type: EmailType;
-  to: EmailRecipient;
-  data: any;
-  options?: EmailQueueOptions;
+  type: EmailType
+  to: EmailRecipient
+  data: any
+  options?: EmailQueueOptions
 }
 
 interface SendRawEmailRequest {
-  email: Email;
-  immediate?: boolean;
+  email: Email
+  immediate?: boolean
 }
 
 // ============================================================================
@@ -56,28 +57,28 @@ interface SendRawEmailRequest {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await request.json()
 
     // Handle raw email sending
     if ('email' in body) {
-      return handleRawEmail(body as SendRawEmailRequest);
+      return handleRawEmail(body as SendRawEmailRequest)
     }
 
     // Handle templated email sending
     if ('type' in body && 'to' in body && 'data' in body) {
-      return handleTemplatedEmail(body as SendEmailRequest);
+      return handleTemplatedEmail(body as SendEmailRequest)
     }
 
-    return NextResponse.json(
-      { error: 'Invalid request body' },
-      { status: 400 }
-    );
+    return NextResponse.json({ error: 'Invalid request body' }, { status: 400 })
   } catch (error) {
-    console.error('Email send error:', error);
+    logger.error('Email send error:', error)
     return NextResponse.json(
-      { error: 'Failed to send email', details: error instanceof Error ? error.message : 'Unknown error' },
+      {
+        error: 'Failed to send email',
+        details: error instanceof Error ? error.message : 'Unknown error',
+      },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -86,22 +87,22 @@ export async function POST(request: NextRequest) {
 // ============================================================================
 
 async function handleRawEmail(request: SendRawEmailRequest) {
-  const { email, immediate = false } = request;
+  const { email, immediate = false } = request
 
   if (immediate) {
-    const result = await sendEmailImmediate(email);
-    return NextResponse.json(result);
+    const result = await sendEmailImmediate(email)
+    return NextResponse.json(result)
   }
 
   // Queue email with default type
-  const { getEmailSender } = await import('@/lib/email/sender');
-  const sender = getEmailSender();
-  const emailId = await sender.queue(email, 'custom');
+  const { getEmailSender } = await import('@/lib/email/sender')
+  const sender = getEmailSender()
+  const emailId = await sender.queue(email, 'custom')
 
   return NextResponse.json({
     success: true,
     emailId,
-  });
+  })
 }
 
 // ============================================================================
@@ -109,55 +110,52 @@ async function handleRawEmail(request: SendRawEmailRequest) {
 // ============================================================================
 
 async function handleTemplatedEmail(request: SendEmailRequest) {
-  const { type, to, data, options } = request;
+  const { type, to, data, options } = request
 
-  let emailId: string;
+  let emailId: string
 
   switch (type) {
     case 'welcome':
-      emailId = await sendWelcomeEmail(to, data as WelcomeEmailData, options);
-      break;
+      emailId = await sendWelcomeEmail(to, data as WelcomeEmailData, options)
+      break
 
     case 'email-verification':
-      emailId = await sendEmailVerification(to, data as EmailVerificationData, options);
-      break;
+      emailId = await sendEmailVerification(to, data as EmailVerificationData, options)
+      break
 
     case 'password-reset':
-      emailId = await sendPasswordReset(to, data as PasswordResetData, options);
-      break;
+      emailId = await sendPasswordReset(to, data as PasswordResetData, options)
+      break
 
     case 'password-changed':
-      emailId = await sendPasswordChanged(to, data as PasswordChangedData, options);
-      break;
+      emailId = await sendPasswordChanged(to, data as PasswordChangedData, options)
+      break
 
     case 'new-login':
-      emailId = await sendNewLoginAlert(to, data as NewLoginData, options);
-      break;
+      emailId = await sendNewLoginAlert(to, data as NewLoginData, options)
+      break
 
     case 'mention-notification':
-      emailId = await sendMentionNotification(to, data as MentionNotificationData, options);
-      break;
+      emailId = await sendMentionNotification(to, data as MentionNotificationData, options)
+      break
 
     case 'dm-notification':
-      emailId = await sendDMNotification(to, data as DMNotificationData, options);
-      break;
+      emailId = await sendDMNotification(to, data as DMNotificationData, options)
+      break
 
     case 'digest':
-      emailId = await sendDigest(to, data as DigestEmailData, options);
-      break;
+      emailId = await sendDigest(to, data as DigestEmailData, options)
+      break
 
     default:
-      return NextResponse.json(
-        { error: `Unsupported email type: ${type}` },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: `Unsupported email type: ${type}` }, { status: 400 })
   }
 
   return NextResponse.json({
     success: true,
     emailId,
     type,
-  });
+  })
 }
 
 // ============================================================================
@@ -165,21 +163,21 @@ async function handleTemplatedEmail(request: SendEmailRequest) {
 // ============================================================================
 
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const action = searchParams.get('action');
+  const { searchParams } = new URL(request.url)
+  const action = searchParams.get('action')
 
   if (action === 'status') {
-    const status = getEmailQueueStatus();
-    return NextResponse.json(status);
+    const status = getEmailQueueStatus()
+    return NextResponse.json(status)
   }
 
   if (action === 'verify') {
-    const isValid = await verifyEmailConfig();
-    return NextResponse.json({ valid: isValid });
+    const isValid = await verifyEmailConfig()
+    return NextResponse.json({ valid: isValid })
   }
 
   return NextResponse.json(
     { error: 'Invalid action. Use ?action=status or ?action=verify' },
     { status: 400 }
-  );
+  )
 }

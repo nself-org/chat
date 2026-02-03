@@ -28,13 +28,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Select,
   SelectContent,
@@ -214,10 +208,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
   const addEnvVar = () => {
     setConfig((prev) => ({
       ...prev,
-      environmentVars: [
-        ...prev.environmentVars,
-        { key: '', value: '', isSecret: false },
-      ],
+      environmentVars: [...prev.environmentVars, { key: '', value: '', isSecret: false }],
     }))
   }
 
@@ -233,9 +224,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
   const updateEnvVar = (index: number, updates: Partial<EnvironmentVariable>) => {
     setConfig((prev) => ({
       ...prev,
-      environmentVars: prev.environmentVars.map((v, i) =>
-        i === index ? { ...v, ...updates } : v
-      ),
+      environmentVars: prev.environmentVars.map((v, i) => (i === index ? { ...v, ...updates } : v)),
     }))
   }
 
@@ -289,13 +278,11 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-2xl font-bold">
             <Settings className="h-6 w-6" />
             Bot Configuration
           </h2>
-          <p className="text-muted-foreground">
-            Configure triggers, permissions, and bot behavior
-          </p>
+          <p className="text-muted-foreground">Configure triggers, permissions, and bot behavior</p>
         </div>
         <Button onClick={handleSave} disabled={saving}>
           {saving ? (
@@ -343,9 +330,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Bot Triggers</CardTitle>
-                  <CardDescription>
-                    Configure when your bot should activate
-                  </CardDescription>
+                  <CardDescription>Configure when your bot should activate</CardDescription>
                 </div>
                 <Button onClick={addTrigger}>
                   <Plus className="mr-2 h-4 w-4" />
@@ -361,7 +346,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
                 </div>
               ) : (
                 config.triggers.map((trigger) => (
-                  <div key={trigger.id} className="rounded-lg border p-4 space-y-3">
+                  <div key={trigger.id} className="space-y-3 rounded-lg border p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 space-y-3">
                         <div className="flex items-center gap-4">
@@ -383,16 +368,12 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
                           </Select>
                           <Switch
                             checked={trigger.enabled}
-                            onCheckedChange={(enabled) =>
-                              updateTrigger(trigger.id, { enabled })
-                            }
+                            onCheckedChange={(enabled) => updateTrigger(trigger.id, { enabled })}
                           />
                         </div>
                         <Input
                           value={trigger.value}
-                          onChange={(e) =>
-                            updateTrigger(trigger.id, { value: e.target.value })
-                          }
+                          onChange={(e) => updateTrigger(trigger.id, { value: e.target.value })}
                           placeholder={
                             trigger.type === 'keyword'
                               ? 'Enter keyword...'
@@ -404,11 +385,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
                           }
                         />
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeTrigger(trigger.id)}
-                      >
+                      <Button variant="ghost" size="icon" onClick={() => removeTrigger(trigger.id)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>
@@ -424,9 +401,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
           <Card>
             <CardHeader>
               <CardTitle>Channel Scope</CardTitle>
-              <CardDescription>
-                Select which channels the bot can operate in
-              </CardDescription>
+              <CardDescription>Select which channels the bot can operate in</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -465,9 +440,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
                         className="flex items-center gap-2 rounded-lg border p-3"
                       >
                         <Checkbox
-                          checked={config.channelScope.channelIds.includes(
-                            channel.id
-                          )}
+                          checked={config.channelScope.channelIds.includes(channel.id)}
                           onCheckedChange={() => toggleChannel(channel.id)}
                         />
                         <Hash className="h-4 w-4 text-muted-foreground" />
@@ -486,9 +459,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
           <Card>
             <CardHeader>
               <CardTitle>Bot Permissions</CardTitle>
-              <CardDescription>
-                Grant permissions required for bot functionality
-              </CardDescription>
+              <CardDescription>Grant permissions required for bot functionality</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {Object.entries(permissionsByCategory).map(([category, perms]) => (
@@ -513,9 +484,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground">
-                            {permission.description}
-                          </p>
+                          <p className="text-sm text-muted-foreground">{permission.description}</p>
                         </div>
                       </div>
                     ))}
@@ -531,17 +500,13 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
           <Card>
             <CardHeader>
               <CardTitle>Rate Limiting</CardTitle>
-              <CardDescription>
-                Configure rate limits to prevent abuse
-              </CardDescription>
+              <CardDescription>Configure rate limits to prevent abuse</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label>Enable Rate Limiting</Label>
-                  <p className="text-sm text-muted-foreground">
-                    Limit bot actions per minute
-                  </p>
+                  <p className="text-sm text-muted-foreground">Limit bot actions per minute</p>
                 </div>
                 <Switch
                   checked={config.rateLimits.enabled}
@@ -611,11 +576,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowSecrets(!showSecrets)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => setShowSecrets(!showSecrets)}>
                     {showSecrets ? (
                       <EyeOff className="mr-2 h-4 w-4" />
                     ) : (
@@ -638,25 +599,19 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
                 </div>
               ) : (
                 config.environmentVars.map((envVar, index) => (
-                  <div key={index} className="rounded-lg border p-4 space-y-3">
+                  <div key={index} className="space-y-3 rounded-lg border p-4">
                     <div className="flex items-start gap-3">
                       <div className="flex-1 space-y-3">
                         <Input
                           placeholder="VARIABLE_NAME"
                           value={envVar.key}
-                          onChange={(e) =>
-                            updateEnvVar(index, { key: e.target.value })
-                          }
+                          onChange={(e) => updateEnvVar(index, { key: e.target.value })}
                         />
                         <Input
-                          type={
-                            envVar.isSecret && !showSecrets ? 'password' : 'text'
-                          }
+                          type={envVar.isSecret && !showSecrets ? 'password' : 'text'}
                           placeholder="value"
                           value={envVar.value}
-                          onChange={(e) =>
-                            updateEnvVar(index, { value: e.target.value })
-                          }
+                          onChange={(e) => updateEnvVar(index, { value: e.target.value })}
                         />
                         <div className="flex items-center space-x-2">
                           <Checkbox
@@ -671,11 +626,7 @@ export function BotConfig({ bot, channels = [], onSave }: BotConfigProps) {
                           </Label>
                         </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => removeEnvVar(index)}
-                      >
+                      <Button variant="ghost" size="icon" onClick={() => removeEnvVar(index)}>
                         <Trash2 className="h-4 w-4" />
                       </Button>
                     </div>

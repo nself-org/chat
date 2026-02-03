@@ -6,11 +6,7 @@ import { useMutation, useQuery } from '@apollo/client'
 import { useAuth } from '@/contexts/auth-context'
 import { useDMStore } from '@/stores/dm-store'
 import { useToast } from '@/hooks/use-toast'
-import {
-  GET_OR_CREATE_DM,
-  FIND_DM_BY_PARTICIPANTS,
-  GET_USER_DMS,
-} from '@/graphql/direct-messages'
+import { GET_OR_CREATE_DM, FIND_DM_BY_PARTICIPANTS, GET_USER_DMS } from '@/graphql/direct-messages'
 import { findExistingDM } from '@/lib/dm/dm-manager'
 import type { DirectMessage } from '@/lib/dm/dm-types'
 
@@ -21,20 +17,17 @@ export function useDirectMessages() {
   const router = useRouter()
   const { user } = useAuth()
   const { toast } = useToast()
-  const {
-    dms,
-    setDMs,
-    addDM,
-    setActiveDM,
-    setLoading,
-    setError,
-  } = useDMStore()
+  const { dms, setDMs, addDM, setActiveDM, setLoading, setError } = useDMStore()
 
   // Get or create DM mutation
   const [getOrCreateDMMutation, { loading: creating }] = useMutation(GET_OR_CREATE_DM)
 
   // Query user's DMs
-  const { loading: loadingDMs, error: queryError, refetch } = useQuery(GET_USER_DMS, {
+  const {
+    loading: loadingDMs,
+    error: queryError,
+    refetch,
+  } = useQuery(GET_USER_DMS, {
     variables: { userId: user?.id },
     skip: !user?.id,
     onCompleted: (data) => {

@@ -27,12 +27,7 @@ import {
   ChevronUp,
   X,
 } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Slider } from '@/components/ui/slider'
 import { useAnnotations } from '@/hooks/use-annotations'
 import type { AnnotationTool } from '@/lib/webrtc/screen-annotator'
@@ -79,7 +74,7 @@ function ToolButton({ tool, icon, label, active, onClick }: ToolButtonProps) {
             variant={active ? 'default' : 'ghost'}
             size="icon"
             onClick={onClick}
-            className={cn('h-8 w-8', active && 'bg-primary text-primary-foreground')}
+            className={cn('h-8 w-8', active && 'text-primary-foreground bg-primary')}
           >
             {icon}
           </Button>
@@ -171,27 +166,24 @@ export function ScreenShareOverlay({
   if (!enabled) return null
 
   return (
-    <div
-      ref={containerRef}
-      className={cn('absolute inset-0 pointer-events-none', className)}
-    >
+    <div ref={containerRef} className={cn('pointer-events-none absolute inset-0', className)}>
       {/* Canvas Overlay */}
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-auto cursor-crosshair"
+        className="pointer-events-auto absolute inset-0 h-full w-full cursor-crosshair"
         style={{ touchAction: 'none' }}
       />
 
       {/* Toolbar */}
-      <div className="absolute top-4 left-1/2 -translate-x-1/2 pointer-events-auto">
+      <div className="pointer-events-auto absolute left-1/2 top-4 -translate-x-1/2">
         <div
           className={cn(
-            'bg-background/95 backdrop-blur-sm border rounded-lg shadow-lg transition-all',
+            'bg-background/95 rounded-lg border shadow-lg backdrop-blur-sm transition-all',
             isMinimized ? 'p-2' : 'p-3'
           )}
         >
           {/* Header */}
-          <div className="flex items-center justify-between mb-2 gap-2">
+          <div className="mb-2 flex items-center justify-between gap-2">
             <div className="text-sm font-medium">Annotation Tools</div>
             <div className="flex items-center gap-1">
               <Button
@@ -207,12 +199,7 @@ export function ScreenShareOverlay({
                 )}
               </Button>
               {onClose && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onClose}
-                  className="h-6 w-6"
-                >
+                <Button variant="ghost" size="icon" onClick={onClose} className="h-6 w-6">
                   <X className="h-3 w-3" />
                 </Button>
               )}
@@ -223,7 +210,7 @@ export function ScreenShareOverlay({
           {!isMinimized && (
             <>
               {/* Drawing Tools */}
-              <div className="flex items-center gap-1 mb-2">
+              <div className="mb-2 flex items-center gap-1">
                 {tools.map(({ tool, icon, label }) => (
                   <ToolButton
                     key={tool}
@@ -237,7 +224,7 @@ export function ScreenShareOverlay({
               </div>
 
               {/* Color and Stroke */}
-              <div className="flex items-center gap-2 mb-2">
+              <div className="mb-2 flex items-center gap-2">
                 {/* Color Picker Button */}
                 <TooltipProvider>
                   <Tooltip>
@@ -262,7 +249,7 @@ export function ScreenShareOverlay({
                 </TooltipProvider>
 
                 {/* Stroke Width Slider */}
-                <div className="flex items-center gap-2 min-w-32">
+                <div className="flex min-w-32 items-center gap-2">
                   <span className="text-xs text-muted-foreground">Size:</span>
                   <Slider
                     value={[annotations.currentStrokeWidth]}
@@ -272,7 +259,7 @@ export function ScreenShareOverlay({
                     step={2}
                     className="flex-1"
                   />
-                  <span className="text-xs text-muted-foreground w-6 text-right">
+                  <span className="w-6 text-right text-xs text-muted-foreground">
                     {annotations.currentStrokeWidth}
                   </span>
                 </div>
@@ -280,7 +267,7 @@ export function ScreenShareOverlay({
 
               {/* Color Palette (when open) */}
               {showColorPicker && (
-                <div className="grid grid-cols-5 gap-1 mb-2 p-2 border rounded">
+                <div className="mb-2 grid grid-cols-5 gap-1 rounded border p-2">
                   {annotations.availableColors.map((color) => (
                     <button
                       key={color}
@@ -303,7 +290,7 @@ export function ScreenShareOverlay({
                     type="color"
                     value={annotations.currentColor}
                     onChange={(e) => annotations.setColor(e.target.value)}
-                    className="h-8 w-8 rounded border-2 border-gray-300 cursor-pointer"
+                    className="h-8 w-8 cursor-pointer rounded border-2 border-gray-300"
                     title="Custom color"
                   />
                 </div>
@@ -371,7 +358,7 @@ export function ScreenShareOverlay({
               </div>
 
               {/* Info */}
-              <div className="text-xs text-muted-foreground text-center mt-2">
+              <div className="mt-2 text-center text-xs text-muted-foreground">
                 {annotations.annotations.length} annotation
                 {annotations.annotations.length !== 1 ? 's' : ''}
               </div>

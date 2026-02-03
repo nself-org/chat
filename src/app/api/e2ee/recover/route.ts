@@ -1,0 +1,47 @@
+/**
+ * API Route: /api/e2ee/recover
+ * Recover E2EE using recovery code
+ */
+
+import { NextRequest, NextResponse } from 'next/server'
+import { getE2EEManager } from '@/lib/e2ee'
+import { getApolloClient } from '@/lib/apollo-client'
+
+import { logger } from '@/lib/logger'
+
+export async function POST(request: NextRequest) {
+  try {
+    const { recoveryCode, deviceId } = await request.json()
+
+    if (!recoveryCode) {
+      return NextResponse.json({ error: 'Recovery code is required' }, { status: 400 })
+    }
+
+    // Get Apollo client (with auth context)
+    const apolloClient = getApolloClient()
+
+    // Get E2EE manager
+    const e2eeManager = getE2EEManager(apolloClient)
+
+    // Recover E2EE
+    await e2eeManager.recover(recoveryCode, deviceId)
+
+    const status = e2eeManager.getStatus()
+
+    return NextResponse.json({
+      success: true,
+      status,
+      message: 'E2EE recovered successfully',
+    })
+  } catch (error: any) {
+    logger.error('E2EE recovery error:', error)
+
+    return NextResponse.json(
+      {
+        error: 'Failed to recover E2EE',
+        message: error.message,
+      },
+      { status: 500 }
+    )
+  }
+}

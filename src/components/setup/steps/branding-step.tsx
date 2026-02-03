@@ -6,8 +6,21 @@ import { EnhancedInput } from '@/components/ui/enhanced-input'
 import { Button } from '@/components/ui/button'
 import { IconGeneratorModal } from '@/components/setup/icon-generator-modal'
 import { LogoGeneratorModal } from '@/components/setup/logo-generator-modal'
-import { Type, Image, Globe, Building, Lightbulb, Upload, X, Sparkles, Wand2, RotateCcw } from 'lucide-react'
+import {
+  Type,
+  Image,
+  Globe,
+  Building,
+  Lightbulb,
+  Upload,
+  X,
+  Sparkles,
+  Wand2,
+  RotateCcw,
+} from 'lucide-react'
 import { defaultAppConfig } from '@/config/app-config'
+
+import { logger } from '@/lib/logger'
 
 interface BrandingStepProps {
   config: AppConfig
@@ -23,7 +36,7 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
     favicon: config.branding.favicon || '',
     companyName: config.branding.companyName || config.owner.company || '',
     websiteUrl: config.branding.websiteUrl || '',
-    logoScale: config.branding.logoScale || 1.0
+    logoScale: config.branding.logoScale || 1.0,
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -38,7 +51,7 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
-    
+
     if (!formData.appName.trim()) {
       newErrors.appName = 'App name is required'
     } else if (formData.appName.length < 2) {
@@ -66,9 +79,9 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
   const handleChange = (field: keyof typeof formData, value: string | number) => {
     const updated = { ...formData, [field]: value }
     setFormData(updated)
-    
+
     onUpdate({
-      branding: updated
+      branding: updated,
     })
   }
 
@@ -80,7 +93,7 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
       favicon: defaultAppConfig.branding.favicon || '',
       companyName: defaultAppConfig.branding.companyName || '',
       websiteUrl: defaultAppConfig.branding.websiteUrl || '',
-      logoScale: defaultAppConfig.branding.logoScale || 1.0
+      logoScale: defaultAppConfig.branding.logoScale || 1.0,
     }
     setFormData(defaults)
     setUploadedLogo(null)
@@ -89,9 +102,9 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
     setLogoSvg(null)
     if (logoInputRef.current) logoInputRef.current.value = ''
     if (iconInputRef.current) iconInputRef.current.value = ''
-    
+
     onUpdate({
-      branding: defaults
+      branding: defaults,
     })
   }
 
@@ -128,7 +141,7 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
       updateFavicon('/favicon.ico')
     }
   }
-  
+
   const updateFavicon = (url: string) => {
     let faviconLink = document.querySelector('link[rel="icon"]') as HTMLLinkElement
     if (!faviconLink) {
@@ -143,43 +156,43 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
     setUploadedIcon(dataUrl)
     setIconSvg(svgString || null)
     handleChange('favicon', dataUrl)
-    
+
     // Save SVG to public directory
     if (svgString) {
       fetch('/api/save-svg', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          svg: svgString, 
-          filename: 'icon.svg'
-        })
+        body: JSON.stringify({
+          svg: svgString,
+          filename: 'icon.svg',
+        }),
       }).catch(console.error)
     }
-    
+
     // Save variants if provided
     if (variants) {
       if (variants.lightSvg) {
         fetch('/api/save-svg', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            svg: variants.lightSvg, 
-            filename: 'icon-light.svg'
-          })
+          body: JSON.stringify({
+            svg: variants.lightSvg,
+            filename: 'icon-light.svg',
+          }),
         }).catch(console.error)
       }
       if (variants.darkSvg) {
         fetch('/api/save-svg', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            svg: variants.darkSvg, 
-            filename: 'icon-dark.svg'
-          })
+          body: JSON.stringify({
+            svg: variants.darkSvg,
+            filename: 'icon-dark.svg',
+          }),
         }).catch(console.error)
       }
     }
-    
+
     // Update favicon immediately
     updateFavicon(dataUrl)
   }
@@ -188,16 +201,16 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
     setUploadedLogo(dataUrl)
     setLogoSvg(svgString || null)
     handleChange('logo', dataUrl)
-    
+
     // Save SVG to public directory
     if (svgString) {
       fetch('/api/save-svg', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          svg: svgString, 
-          filename: 'logo.svg'
-        })
+        body: JSON.stringify({
+          svg: svgString,
+          filename: 'logo.svg',
+        }),
       }).catch(console.error)
     }
   }
@@ -213,15 +226,13 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
   }, [])
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-[#00D4FF] to-[#0EA5E9] rounded-xl mb-4 shadow-glow">
+    <div className="mx-auto max-w-2xl">
+      <div className="mb-8 text-center">
+        <div className="shadow-glow mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#00D4FF] to-[#0EA5E9]">
           <Type className="h-6 w-6 text-zinc-900" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-3">
-          App Branding
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-lg mx-auto">
+        <h2 className="mb-3 text-2xl font-bold text-zinc-900 dark:text-white">App Branding</h2>
+        <p className="mx-auto max-w-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
           Define your app's identity. This is how your platform will appear to users.
         </p>
       </div>
@@ -254,24 +265,27 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
         <div className="space-y-6">
           {/* Icon/Favicon Upload - Required */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-              Icon * <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">(Required)</span>
+            <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Icon *{' '}
+              <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
+                (Required)
+              </span>
             </label>
             {errors.icon && (
-              <p className="text-sm text-red-600 dark:text-red-400 mb-2">{errors.icon}</p>
+              <p className="mb-2 text-sm text-red-600 dark:text-red-400">{errors.icon}</p>
             )}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="md:col-span-1">
                 {uploadedIcon ? (
-                  <div className="relative bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4">
-                    <img 
-                      src={uploadedIcon} 
-                      alt="Icon preview" 
-                      className="max-h-20 mx-auto object-contain"
+                  <div className="relative rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                    <img
+                      src={uploadedIcon}
+                      alt="Icon preview"
+                      className="mx-auto max-h-20 object-contain"
                     />
                     <button
                       onClick={() => removeImage('icon')}
-                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                      className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white transition-colors hover:bg-red-600"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -280,18 +294,22 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                   <div className="space-y-3">
                     <div
                       onClick={() => iconInputRef.current?.click()}
-                      className="border-2 border-dashed border-sky-300 dark:border-sky-600 rounded-xl p-6 text-center cursor-pointer hover:border-sky-400 dark:hover:border-sky-500 transition-colors"
+                      className="cursor-pointer rounded-xl border-2 border-dashed border-sky-300 p-6 text-center transition-colors hover:border-sky-400 dark:border-sky-600 dark:hover:border-sky-500"
                     >
-                      <Upload className="h-8 w-8 mx-auto text-zinc-400 dark:text-zinc-500 mb-2" />
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400">Click to upload icon</p>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-1">Square image recommended</p>
+                      <Upload className="mx-auto mb-2 h-8 w-8 text-zinc-400 dark:text-zinc-500" />
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        Click to upload icon
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+                        Square image recommended
+                      </p>
                     </div>
                     <div className="relative">
                       <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t border-zinc-300 dark:border-zinc-600" />
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-white dark:bg-zinc-900 px-2 text-zinc-500">or</span>
+                        <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-900">or</span>
                       </div>
                     </div>
                     <Button
@@ -300,7 +318,7 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                       onClick={() => setShowIconGenerator(true)}
                       className="w-full"
                     >
-                      <Sparkles className="h-4 w-4 mr-2" />
+                      <Sparkles className="mr-2 h-4 w-4" />
                       Generate Icon
                     </Button>
                   </div>
@@ -313,35 +331,41 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                   className="hidden"
                 />
               </div>
-              <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-2">
+              <div className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
                 <p>Your app's icon will be used:</p>
-                <ul className="list-disc list-inside text-xs space-y-1">
+                <ul className="list-inside list-disc space-y-1 text-xs">
                   <li>As the favicon in browser tabs</li>
                   <li>Next to your app name in headers</li>
                   <li>As the app icon on mobile devices</li>
                 </ul>
-                <p className="text-xs">Upload a square image for best results. We'll automatically generate different sizes.</p>
+                <p className="text-xs">
+                  Upload a square image for best results. We'll automatically generate different
+                  sizes.
+                </p>
               </div>
             </div>
           </div>
 
           {/* Logo Upload - Optional */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
-              Logo <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">(Optional)</span>
+            <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Logo{' '}
+              <span className="text-xs font-normal text-zinc-500 dark:text-zinc-400">
+                (Optional)
+              </span>
             </label>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
               <div className="md:col-span-1">
                 {uploadedLogo ? (
-                  <div className="relative bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-xl p-4">
-                    <img 
-                      src={uploadedLogo} 
-                      alt="Logo preview" 
-                      className="max-h-20 mx-auto object-contain"
+                  <div className="relative rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                    <img
+                      src={uploadedLogo}
+                      alt="Logo preview"
+                      className="mx-auto max-h-20 object-contain"
                     />
                     <button
                       onClick={() => removeImage('logo')}
-                      className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                      className="absolute right-2 top-2 rounded-full bg-red-500 p-1 text-white transition-colors hover:bg-red-600"
                     >
                       <X className="h-3 w-3" />
                     </button>
@@ -350,18 +374,22 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                   <div className="space-y-3">
                     <div
                       onClick={() => logoInputRef.current?.click()}
-                      className="border-2 border-dashed border-zinc-300 dark:border-zinc-600 rounded-xl p-6 text-center cursor-pointer hover:border-sky-400 dark:hover:border-sky-500 transition-colors"
+                      className="cursor-pointer rounded-xl border-2 border-dashed border-zinc-300 p-6 text-center transition-colors hover:border-sky-400 dark:border-zinc-600 dark:hover:border-sky-500"
                     >
-                      <Upload className="h-8 w-8 mx-auto text-zinc-400 dark:text-zinc-500 mb-2" />
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400">Click to upload logo</p>
-                      <p className="text-xs text-zinc-500 dark:text-zinc-500 mt-1">PNG, JPG, SVG up to 5MB</p>
+                      <Upload className="mx-auto mb-2 h-8 w-8 text-zinc-400 dark:text-zinc-500" />
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400">
+                        Click to upload logo
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">
+                        PNG, JPG, SVG up to 5MB
+                      </p>
                     </div>
                     <div className="relative">
                       <div className="absolute inset-0 flex items-center">
                         <span className="w-full border-t border-zinc-300 dark:border-zinc-600" />
                       </div>
                       <div className="relative flex justify-center text-xs uppercase">
-                        <span className="bg-white dark:bg-zinc-900 px-2 text-zinc-500">or</span>
+                        <span className="bg-white px-2 text-zinc-500 dark:bg-zinc-900">or</span>
                       </div>
                     </div>
                     <Button
@@ -370,7 +398,7 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                       onClick={() => setShowLogoGenerator(true)}
                       className="w-full"
                     >
-                      <Wand2 className="h-4 w-4 mr-2" />
+                      <Wand2 className="mr-2 h-4 w-4" />
                       Generate Logo
                     </Button>
                   </div>
@@ -383,21 +411,23 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                   className="hidden"
                 />
               </div>
-              <div className="text-sm text-zinc-600 dark:text-zinc-400 space-y-2">
+              <div className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
                 <p>A logo is your brand name as an image:</p>
-                <ul className="list-disc list-inside text-xs space-y-1">
+                <ul className="list-inside list-disc space-y-1 text-xs">
                   <li>Replaces text app name in headers</li>
                   <li>Should include your brand name visually</li>
                   <li>Used where more space is available</li>
                 </ul>
-                <p className="text-xs font-medium">If no logo is provided, we'll display: [Icon] + App Name text</p>
+                <p className="text-xs font-medium">
+                  If no logo is provided, we'll display: [Icon] + App Name text
+                </p>
               </div>
             </div>
-            
+
             {/* Logo Size Slider - Only show if logo is uploaded */}
             {uploadedLogo && (
               <div className="mt-4">
-                <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+                <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
                   Logo Display Size
                 </label>
                 <div className="flex items-center gap-4">
@@ -409,10 +439,10 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                     step="0.1"
                     value={formData.logoScale}
                     onChange={(e) => handleChange('logoScale', parseFloat(e.target.value))}
-                    className="flex-1 h-2 bg-zinc-200 dark:bg-zinc-700 rounded-xl appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-sky-500 [&::-webkit-slider-thumb]:cursor-pointer [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:bg-sky-500 [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:cursor-pointer"
+                    className="h-2 flex-1 cursor-pointer appearance-none rounded-xl bg-zinc-200 dark:bg-zinc-700 [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4 [&::-moz-range-thumb]:cursor-pointer [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-sky-500 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-sky-500"
                   />
                   <span className="text-xs text-zinc-500">200%</span>
-                  <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300 min-w-[3rem] text-right">
+                  <span className="min-w-[3rem] text-right text-sm font-medium text-zinc-700 dark:text-zinc-300">
                     {Math.round(formData.logoScale * 100)}%
                   </span>
                 </div>
@@ -424,7 +454,7 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <EnhancedInput
               id="companyName"
@@ -453,20 +483,20 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/30 dark:to-sky-900/30 border border-sky-200 dark:border-sky-800 rounded-xl p-5">
+        <div className="dark:to-sky-900/30 rounded-xl border border-sky-200 bg-gradient-to-br from-sky-50 to-sky-100 p-5 dark:border-sky-800 dark:from-sky-950/30">
           <div className="flex gap-3">
-            <div className="flex-shrink-0 w-8 h-8 bg-sky-600 dark:bg-sky-500 rounded-xl flex items-center justify-center">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-sky-600 dark:bg-sky-500">
               <Type className="h-4 w-4 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-sky-900 dark:text-sky-100 mb-2">Live Preview</h3>
-              <div className="bg-white dark:bg-zinc-800 p-4 rounded-xl border border-sky-200 dark:border-sky-700">
+              <h3 className="mb-2 font-semibold text-sky-900 dark:text-sky-100">Live Preview</h3>
+              <div className="rounded-xl border border-sky-200 bg-white p-4 dark:border-sky-700 dark:bg-zinc-800">
                 <div className="flex items-center gap-3">
                   {uploadedLogo ? (
                     // If logo exists, show logo only (it should contain the brand name)
-                    <img 
-                      src={uploadedLogo} 
-                      alt="Logo" 
+                    <img
+                      src={uploadedLogo}
+                      alt="Logo"
                       className="w-auto object-contain"
                       style={{ height: `${32 * formData.logoScale}px` }}
                     />
@@ -474,23 +504,21 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
                     // If no logo, show icon + text name
                     <>
                       {uploadedIcon && (
-                        <img 
-                          src={uploadedIcon} 
-                          alt="Icon" 
-                          className="h-6 w-6 object-contain"
-                        />
+                        <img src={uploadedIcon} alt="Icon" className="h-6 w-6 object-contain" />
                       )}
-                      <div className="font-semibold text-lg text-zinc-900 dark:text-white">
+                      <div className="text-lg font-semibold text-zinc-900 dark:text-white">
                         {formData.appName || 'Your App Name'}
                       </div>
                     </>
                   )}
                 </div>
                 {formData.tagline && (
-                  <div className="text-sm text-zinc-600 dark:text-zinc-400 mt-1">{formData.tagline}</div>
+                  <div className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+                    {formData.tagline}
+                  </div>
                 )}
                 {formData.companyName && (
-                  <div className="text-xs text-zinc-600 dark:text-zinc-400 mt-3">
+                  <div className="mt-3 text-xs text-zinc-600 dark:text-zinc-400">
                     © {new Date().getFullYear()} {formData.companyName}
                   </div>
                 )}
@@ -501,10 +529,11 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
       </div>
 
       {/* Reset to Defaults - Only show if we have modified values */}
-      {(formData.appName !== defaultAppConfig.branding.appName || 
+      {(formData.appName !== defaultAppConfig.branding.appName ||
         formData.tagline !== defaultAppConfig.branding.tagline ||
-        uploadedIcon || uploadedLogo) && (
-        <div className="mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+        uploadedIcon ||
+        uploadedLogo) && (
+        <div className="mt-8 border-t border-zinc-200 pt-6 dark:border-zinc-700">
           <Button
             type="button"
             variant="outline"
@@ -516,14 +545,14 @@ export function BrandingStep({ config, onUpdate, onValidate }: BrandingStepProps
           </Button>
         </div>
       )}
-      
+
       {/* Icon Generator Modal */}
       <IconGeneratorModal
         isOpen={showIconGenerator}
         onClose={() => setShowIconGenerator(false)}
         onGenerate={handleGeneratedIcon}
       />
-      
+
       {/* Logo Generator Modal */}
       <LogoGeneratorModal
         isOpen={showLogoGenerator}

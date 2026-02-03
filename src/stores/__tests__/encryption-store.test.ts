@@ -627,15 +627,15 @@ describe('Encryption Store', () => {
           useEncryptionStore.getState().setChannelEncryptionStatus('channel-2', 'enabled')
 
           // Add some devices
-          useEncryptionStore.getState().addDeviceKey(
-            createTestDeviceKey({ deviceId: 'device-1', trustLevel: 'verified' })
-          )
-          useEncryptionStore.getState().addDeviceKey(
-            createTestDeviceKey({ deviceId: 'device-2', trustLevel: 'tofu' })
-          )
-          useEncryptionStore.getState().addDeviceKey(
-            createTestDeviceKey({ deviceId: 'device-3', trustLevel: 'blocked' })
-          )
+          useEncryptionStore
+            .getState()
+            .addDeviceKey(createTestDeviceKey({ deviceId: 'device-1', trustLevel: 'verified' }))
+          useEncryptionStore
+            .getState()
+            .addDeviceKey(createTestDeviceKey({ deviceId: 'device-2', trustLevel: 'tofu' }))
+          useEncryptionStore
+            .getState()
+            .addDeviceKey(createTestDeviceKey({ deviceId: 'device-3', trustLevel: 'blocked' }))
 
           // Create sessions
           useEncryptionStore.getState().createSession('session-1', 'peer-1')
@@ -672,9 +672,7 @@ describe('Encryption Store', () => {
           useEncryptionStore.getState().setKeyStatus('ready')
           useEncryptionStore.getState().setKeyFingerprint('0102')
           useEncryptionStore.getState().enableChannelEncryption('channel-1')
-          useEncryptionStore.getState().addDeviceKey(
-            createTestDeviceKey({ deviceId: 'device-1' })
-          )
+          useEncryptionStore.getState().addDeviceKey(createTestDeviceKey({ deviceId: 'device-1' }))
           useEncryptionStore.getState().createSession('session-1', 'peer-1')
           useEncryptionStore.getState().reset()
         })
@@ -709,15 +707,15 @@ describe('Encryption Store', () => {
         useEncryptionStore.getState().disableChannelEncryption('channel-2')
 
         // Add devices
-        useEncryptionStore.getState().addDeviceKey(
-          createTestDeviceKey({ deviceId: 'device-1', trustLevel: 'verified' })
-        )
-        useEncryptionStore.getState().addDeviceKey(
-          createTestDeviceKey({ deviceId: 'device-2', trustLevel: 'tofu' })
-        )
-        useEncryptionStore.getState().addDeviceKey(
-          createTestDeviceKey({ deviceId: 'device-3', trustLevel: 'blocked' })
-        )
+        useEncryptionStore
+          .getState()
+          .addDeviceKey(createTestDeviceKey({ deviceId: 'device-1', trustLevel: 'verified' }))
+        useEncryptionStore
+          .getState()
+          .addDeviceKey(createTestDeviceKey({ deviceId: 'device-2', trustLevel: 'tofu' }))
+        useEncryptionStore
+          .getState()
+          .addDeviceKey(createTestDeviceKey({ deviceId: 'device-3', trustLevel: 'blocked' }))
 
         // Add sessions
         useEncryptionStore.getState().createSession('session-1', 'peer-1')

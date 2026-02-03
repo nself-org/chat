@@ -81,14 +81,14 @@ We use analytics data to:
 
 ### Retention Periods
 
-| Data Type | Retention Period |
-|-----------|-----------------|
-| Analytics Events | 14 months |
-| Performance Data | 90 days |
-| Error Logs | 90 days |
-| Crash Reports | 90 days |
-| User Properties | Until deletion requested |
-| Session Data | 14 months |
+| Data Type        | Retention Period         |
+| ---------------- | ------------------------ |
+| Analytics Events | 14 months                |
+| Performance Data | 90 days                  |
+| Error Logs       | 90 days                  |
+| Crash Reports    | 90 days                  |
+| User Properties  | Until deletion requested |
+| Session Data     | 14 months                |
 
 ## Your Privacy Rights
 
@@ -116,6 +116,7 @@ You have the right to:
 ### How to Exercise Your Rights
 
 **Via App Settings:**
+
 1. Open Settings
 2. Go to Privacy & Security → Analytics Settings
 3. Toggle individual preferences or use "Reject All"
@@ -166,11 +167,11 @@ You can change your consent at any time:
 
 ### Third-Party Processors
 
-| Service | Purpose | Location | Privacy Policy |
-|---------|---------|----------|----------------|
-| Firebase Analytics | Usage tracking | USA | [Link](https://firebase.google.com/support/privacy) |
-| Firebase Crashlytics | Crash reporting | USA | [Link](https://firebase.google.com/support/privacy) |
-| Sentry | Error tracking | USA | [Link](https://sentry.io/privacy/) |
+| Service              | Purpose         | Location | Privacy Policy                                      |
+| -------------------- | --------------- | -------- | --------------------------------------------------- |
+| Firebase Analytics   | Usage tracking  | USA      | [Link](https://firebase.google.com/support/privacy) |
+| Firebase Crashlytics | Crash reporting | USA      | [Link](https://firebase.google.com/support/privacy) |
+| Sentry               | Error tracking  | USA      | [Link](https://sentry.io/privacy/)                  |
 
 All processors are GDPR-compliant and have signed Data Processing Agreements (DPAs).
 
@@ -179,6 +180,7 @@ All processors are GDPR-compliant and have signed Data Processing Agreements (DP
 ### IP Address Anonymization
 
 When enabled (default: ON), we:
+
 - Remove the last octet of IPv4 addresses
 - Remove the last 80 bits of IPv6 addresses
 - Example: `192.168.1.100` becomes `192.168.1.0`
@@ -186,6 +188,7 @@ When enabled (default: ON), we:
 ### User ID Anonymization
 
 When enabled (default: OFF), we:
+
 - Hash your user ID with SHA-256
 - Only store the hashed version
 - Cannot be reversed to identify you
@@ -197,6 +200,7 @@ nChat is not intended for children under 13 (or 16 in the EU). We do not knowing
 ## Do Not Track
 
 We respect browser "Do Not Track" (DNT) signals:
+
 - If DNT is enabled, we will not initialize analytics
 - Applies to web version only
 - Mobile users can use in-app settings
@@ -204,6 +208,7 @@ We respect browser "Do Not Track" (DNT) signals:
 ## Data Breach Notification
 
 In the unlikely event of a data breach:
+
 - We will notify affected users within 72 hours
 - We will notify relevant authorities as required by law
 - We will provide details about what data was affected
@@ -212,11 +217,13 @@ In the unlikely event of a data breach:
 ## Changes to This Policy
 
 We may update this policy to reflect:
+
 - Changes in analytics practices
 - New features or services
 - Legal or regulatory requirements
 
 When we update:
+
 - We will notify you in-app
 - We will update the "Last Updated" date
 - We will require re-consent if changes are material
@@ -237,6 +244,7 @@ Privacy Department
 ## Transparency Report
 
 We publish an annual transparency report showing:
+
 - Number of data access requests received
 - Number of deletion requests processed
 - Average response time
@@ -249,6 +257,7 @@ Latest report: [Link TBD]
 ### Tracking Technologies
 
 We use:
+
 - **Cookies**: Web version only, for session management
 - **Local Storage**: Store consent preferences
 - **SDK Integration**: Firebase and Sentry SDKs
@@ -257,6 +266,7 @@ We use:
 ### No Cross-Site Tracking
 
 We do NOT:
+
 - Track you across other websites or apps
 - Share data with advertisers
 - Build advertising profiles
@@ -265,6 +275,7 @@ We do NOT:
 ## Open Source
 
 Our analytics implementation is open source:
+
 - Source code: [GitHub TBD]
 - You can audit our tracking code
 - You can suggest privacy improvements

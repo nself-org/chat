@@ -1,17 +1,7 @@
 'use client'
 
 import { useState, useCallback, useRef, useEffect } from 'react'
-import {
-  Loader2,
-  Upload,
-  X,
-  Copy,
-  Check,
-  Hash,
-  AlertCircle,
-  RefreshCw,
-  Trash2,
-} from 'lucide-react'
+import { Loader2, Upload, X, Copy, Check, Hash, AlertCircle, RefreshCw, Trash2 } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -44,12 +34,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import {
@@ -278,9 +263,7 @@ export function WebhookSettingsModal({
                 {(error || validationError) && (
                   <Alert variant="destructive">
                     <AlertCircle className="h-4 w-4" />
-                    <AlertDescription>
-                      {error || validationError}
-                    </AlertDescription>
+                    <AlertDescription>{error || validationError}</AlertDescription>
                   </Alert>
                 )}
 
@@ -345,11 +328,7 @@ export function WebhookSettingsModal({
                 {/* Target Channel */}
                 <div className="space-y-2">
                   <Label htmlFor="edit-channel">Target Channel</Label>
-                  <Select
-                    value={channelId}
-                    onValueChange={setChannelId}
-                    disabled={isLoading}
-                  >
+                  <Select value={channelId} onValueChange={setChannelId} disabled={isLoading}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a channel" />
                     </SelectTrigger>
@@ -389,11 +368,7 @@ export function WebhookSettingsModal({
                 <div className="space-y-2">
                   <Label>Webhook URL</Label>
                   <div className="flex gap-2">
-                    <Input
-                      value={webhook.url}
-                      readOnly
-                      className="font-mono text-sm"
-                    />
+                    <Input value={webhook.url} readOnly className="font-mono text-sm" />
                     <TooltipProvider>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -449,8 +424,8 @@ export function WebhookSettingsModal({
                   Regenerate Webhook URL
                 </h4>
                 <p className="mt-1 text-sm text-orange-600 dark:text-orange-400">
-                  This will generate a new URL and invalidate the current one.
-                  Any existing integrations will stop working until updated.
+                  This will generate a new URL and invalidate the current one. Any existing
+                  integrations will stop working until updated.
                 </p>
                 <Button
                   variant="outline"
@@ -475,13 +450,11 @@ export function WebhookSettingsModal({
               <Separator />
 
               {/* Delete Webhook */}
-              <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
-                <h4 className="font-semibold text-destructive">
-                  Delete Webhook
-                </h4>
-                <p className="mt-1 text-sm text-destructive/80">
-                  Permanently delete this webhook. This action cannot be undone.
-                  All delivery history will also be deleted.
+              <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4">
+                <h4 className="font-semibold text-destructive">Delete Webhook</h4>
+                <p className="text-destructive/80 mt-1 text-sm">
+                  Permanently delete this webhook. This action cannot be undone. All delivery
+                  history will also be deleted.
                 </p>
                 <Button
                   variant="destructive"
@@ -508,23 +481,17 @@ export function WebhookSettingsModal({
       </Dialog>
 
       {/* Regenerate Confirmation Dialog */}
-      <AlertDialog
-        open={showRegenerateConfirm}
-        onOpenChange={setShowRegenerateConfirm}
-      >
+      <AlertDialog open={showRegenerateConfirm} onOpenChange={setShowRegenerateConfirm}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Regenerate Webhook URL?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will generate a new webhook URL. The current URL will stop
-              working immediately. Make sure to update any integrations that use
-              this webhook.
+              This will generate a new webhook URL. The current URL will stop working immediately.
+              Make sure to update any integrations that use this webhook.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isRegenerating}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={isRegenerating}>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleRegenerateUrl}
               disabled={isRegenerating}
@@ -549,9 +516,8 @@ export function WebhookSettingsModal({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Webhook?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete &quot;{webhook.name}&quot;? This
-              action cannot be undone. All delivery history will also be
-              permanently deleted.
+              Are you sure you want to delete &quot;{webhook.name}&quot;? This action cannot be
+              undone. All delivery history will also be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -559,7 +525,7 @@ export function WebhookSettingsModal({
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               {isDeleting ? (
                 <>

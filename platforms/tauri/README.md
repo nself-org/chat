@@ -15,6 +15,7 @@ Tauri offers several advantages over Electron:
 ## Features
 
 ### Core Features
+
 - **Native Window Management** - System-native windows with customizable decorations
 - **Global Keyboard Shortcuts** - Quick access shortcuts
 - **Native Notifications** - System notifications
@@ -27,6 +28,7 @@ Tauri offers several advantages over Electron:
 ### Platform-Specific Features
 
 #### macOS
+
 - Transparent titlebar
 - System theme integration
 - Dock badge for unread count
@@ -34,12 +36,14 @@ Tauri offers several advantages over Electron:
 - Touch Bar support
 
 #### Windows
+
 - Native Windows styling
 - Taskbar integration
 - Windows 10/11 notifications
 - System tray with proper icons
 
 #### Linux
+
 - GTK integration
 - Desktop notifications
 - Multiple package formats (AppImage, deb, rpm)
@@ -79,6 +83,7 @@ platforms/tauri/
 ### Linux Dependencies
 
 **Ubuntu/Debian:**
+
 ```bash
 sudo apt update
 sudo apt install libwebkit2gtk-4.1-dev \
@@ -93,6 +98,7 @@ sudo apt install libwebkit2gtk-4.1-dev \
 ```
 
 **Fedora/RHEL:**
+
 ```bash
 sudo dnf groupinstall "C Development Tools and Libraries"
 sudo dnf install webkit2gtk4.1-devel \
@@ -106,6 +112,7 @@ sudo dnf install webkit2gtk4.1-devel \
 ```
 
 **Arch Linux:**
+
 ```bash
 sudo pacman -Syu
 sudo pacman -S --needed \
@@ -148,6 +155,7 @@ cargo tauri dev
 ```
 
 This will:
+
 1. Start Next.js dev server on port 3000
 2. Launch Tauri app pointing to localhost:3000
 3. Enable hot reload for both frontend and Rust backend
@@ -155,6 +163,7 @@ This will:
 ### 4. Debug
 
 **Rust Backend:**
+
 ```bash
 # Enable debug logging
 RUST_LOG=debug pnpm tauri:dev
@@ -164,6 +173,7 @@ rust-lldb ./target/debug/nchat
 ```
 
 **Frontend:**
+
 - Open DevTools with `F12` or right-click → Inspect
 - Or programmatically: `window.__TAURI__.window.getCurrent().toggleDevtools()`
 
@@ -246,6 +256,7 @@ Edit `tauri.conf.json` to customize:
 ### macOS
 
 **For Development:**
+
 ```bash
 # Ad-hoc signing (works locally)
 pnpm tauri build
@@ -277,6 +288,7 @@ pnpm tauri build
 ### Windows
 
 **For Development:**
+
 ```bash
 # No signing needed
 pnpm tauri build
@@ -296,11 +308,13 @@ pnpm tauri build
 No signing required. However, you can sign packages:
 
 **For .deb:**
+
 ```bash
 dpkg-sig --sign builder package.deb
 ```
 
 **For .rpm:**
+
 ```bash
 rpm --addsign package.rpm
 ```
@@ -312,14 +326,17 @@ rpm --addsign package.rpm
 After building, find installers in `platforms/tauri/target/release/bundle/`:
 
 **macOS:**
+
 - `dmg/nchat-{version}.dmg` - Disk image
 - `macos/nchat.app` - Application bundle
 
 **Windows:**
+
 - `msi/nchat-{version}.msi` - MSI installer
 - `nsis/nchat-{version}-setup.exe` - NSIS installer
 
 **Linux:**
+
 - `deb/nchat-{version}.deb` - Debian package
 - `rpm/nchat-{version}.rpm` - Red Hat package
 - `appimage/nchat-{version}.AppImage` - AppImage (universal)
@@ -329,33 +346,35 @@ After building, find installers in `platforms/tauri/target/release/bundle/`:
 Tauri supports secure auto-updates with signature verification.
 
 **1. Generate Update Keys:**
+
 ```bash
 # Only needed once
 pnpm tauri signer generate -w ~/.tauri/nchat.key
 ```
 
 This generates:
+
 - Private key: `~/.tauri/nchat.key` (keep secure!)
 - Public key: Shown in console (add to `tauri.conf.json`)
 
 **2. Configure Updates:**
 
 In `tauri.conf.json`:
+
 ```json
 {
   "plugins": {
     "updater": {
       "active": true,
       "pubkey": "YOUR_PUBLIC_KEY_HERE",
-      "endpoints": [
-        "https://releases.nself.org/nchat/{{target}}/{{arch}}/{{current_version}}"
-      ]
+      "endpoints": ["https://releases.nself.org/nchat/{{target}}/{{arch}}/{{current_version}}"]
     }
   }
 }
 ```
 
 **3. Build with Signature:**
+
 ```bash
 # Private key is automatically used from ~/.tauri/nchat.key
 pnpm tauri build
@@ -364,6 +383,7 @@ pnpm tauri build
 **4. Publish Updates:**
 
 Upload the generated files to your update server:
+
 - The installer/bundle
 - The `.sig` signature file
 - A JSON manifest with version info
@@ -396,7 +416,7 @@ await invoke('maximize_window')
 await invoke('show_notification', {
   title: 'Hello',
   body: 'Message',
-  icon: '/path/to/icon.png'
+  icon: '/path/to/icon.png',
 })
 
 // Badge
@@ -419,7 +439,7 @@ await invoke('install_update')
 // Shortcuts
 await invoke('register_shortcut', {
   shortcut: 'Ctrl+Shift+X',
-  action: 'my_action'
+  action: 'my_action',
 })
 ```
 
@@ -444,6 +464,7 @@ Tauri's security model:
 **Linux only**
 
 **Solution:**
+
 ```bash
 # See Linux Dependencies section above
 sudo apt install libwebkit2gtk-4.1-dev
@@ -452,6 +473,7 @@ sudo apt install libwebkit2gtk-4.1-dev
 ### Build fails: "linker not found"
 
 **Solution:**
+
 ```bash
 # Install build tools
 # macOS
@@ -469,6 +491,7 @@ sudo apt install build-essential
 **Issue:** Missing libraries
 
 **Solution:**
+
 ```bash
 # Check missing libraries
 ldd ./nchat-app
@@ -482,6 +505,7 @@ sudo apt install <missing-library>
 **Issue:** Missing targets
 
 **Solution:**
+
 ```bash
 rustup target add aarch64-apple-darwin
 rustup target add x86_64-apple-darwin
@@ -492,6 +516,7 @@ rustup target add x86_64-apple-darwin
 **Issue:** Public key doesn't match private key
 
 **Solution:**
+
 1. Regenerate keys: `pnpm tauri signer generate`
 2. Update `tauri.conf.json` with new public key
 3. Rebuild app
@@ -501,11 +526,13 @@ rustup target add x86_64-apple-darwin
 GitHub Actions workflow: `.github/workflows/build-tauri.yml`
 
 **Trigger manually:**
+
 ```bash
 gh workflow run build-tauri.yml -f platform=all
 ```
 
 **Environment secrets needed:**
+
 - `TAURI_SIGNING_PRIVATE_KEY` - Private key for updates
 - `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` - Key password
 - `APPLE_CERTIFICATE` - Base64-encoded macOS certificate
@@ -517,14 +544,14 @@ gh workflow run build-tauri.yml -f platform=all
 
 ## Performance Comparison
 
-| Metric | Tauri | Electron |
-|--------|-------|----------|
-| Bundle Size | 15 MB | 120 MB |
-| Memory Usage | 80 MB | 200 MB |
-| Startup Time | 0.5s | 1.5s |
-| Binary Size | 8 MB | 80 MB |
+| Metric       | Tauri | Electron |
+| ------------ | ----- | -------- |
+| Bundle Size  | 15 MB | 120 MB   |
+| Memory Usage | 80 MB | 200 MB   |
+| Startup Time | 0.5s  | 1.5s     |
+| Binary Size  | 8 MB  | 80 MB    |
 
-*Approximate values for nchat app*
+_Approximate values for nchat app_
 
 ## Rust Development
 
@@ -550,6 +577,7 @@ pub fn run() {
 ### Adding New Commands
 
 1. Define command in `src/commands.rs`:
+
 ```rust
 #[tauri::command]
 pub async fn my_command(param: String) -> Result<String, String> {
@@ -558,6 +586,7 @@ pub async fn my_command(param: String) -> Result<String, String> {
 ```
 
 2. Register in `src/lib.rs`:
+
 ```rust
 .invoke_handler(tauri::generate_handler![
     commands::my_command,
@@ -566,6 +595,7 @@ pub async fn my_command(param: String) -> Result<String, String> {
 ```
 
 3. Call from frontend:
+
 ```typescript
 const result = await invoke('my_command', { param: 'hello' })
 ```

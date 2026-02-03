@@ -10,6 +10,8 @@
 
 import { captureError, addSentryBreadcrumb } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -26,12 +28,7 @@ export interface OpenAIConfig {
   enableStreaming?: boolean
 }
 
-export type OpenAIModel =
-  | 'gpt-4-turbo'
-  | 'gpt-4'
-  | 'gpt-3.5-turbo'
-  | 'gpt-4o'
-  | 'gpt-4o-mini'
+export type OpenAIModel = 'gpt-4-turbo' | 'gpt-4' | 'gpt-3.5-turbo' | 'gpt-4o' | 'gpt-4o-mini'
 
 export interface ChatMessage {
   role: 'system' | 'user' | 'assistant'
@@ -137,9 +134,7 @@ export class OpenAIClient {
   // Chat Completions
   // ============================================================================
 
-  async createChatCompletion(
-    request: ChatCompletionRequest
-  ): Promise<ChatCompletionResponse> {
+  async createChatCompletion(request: ChatCompletionRequest): Promise<ChatCompletionResponse> {
     const model = request.model || this.config.defaultModel
     const requestId = this.generateRequestId()
 
@@ -251,7 +246,7 @@ export class OpenAIClient {
               const parsed = JSON.parse(data) as StreamChunk
               yield parsed
             } catch (error) {
-              console.error('Error parsing stream chunk:', error)
+              logger.error('Error parsing stream chunk:', error)
             }
           }
         }
@@ -331,11 +326,7 @@ export class OpenAIClient {
   // HTTP Request Methods
   // ============================================================================
 
-  private async makeRequest<T>(
-    endpoint: string,
-    body: any,
-    requestId: string
-  ): Promise<T> {
+  private async makeRequest<T>(endpoint: string, body: any, requestId: string): Promise<T> {
     const url = `${this.config.baseURL}${endpoint}`
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout)
@@ -439,12 +430,7 @@ export class OpenAIClient {
   private categorizeError(error: any): OpenAIError {
     // Handle fetch/network errors
     if (error instanceof TypeError || error.name === 'NetworkError') {
-      return new OpenAIError(
-        OpenAIErrorType.NETWORK,
-        'Network error occurred',
-        undefined,
-        error
-      )
+      return new OpenAIError(OpenAIErrorType.NETWORK, 'Network error occurred', undefined, error)
     }
 
     // Handle timeout errors
@@ -465,20 +451,10 @@ export class OpenAIClient {
           error.data
         )
       case 429:
-        return new OpenAIError(
-          OpenAIErrorType.RATE_LIMIT,
-          'Rate limit exceeded',
-          429,
-          error.data
-        )
+        return new OpenAIError(OpenAIErrorType.RATE_LIMIT, 'Rate limit exceeded', 429, error.data)
       case 400:
       case 404:
-        return new OpenAIError(
-          OpenAIErrorType.INVALID_REQUEST,
-          errorMessage,
-          status,
-          error.data
-        )
+        return new OpenAIError(OpenAIErrorType.INVALID_REQUEST, errorMessage, status, error.data)
       case 500:
       case 502:
       case 503:
@@ -490,12 +466,7 @@ export class OpenAIClient {
           error.data
         )
       default:
-        return new OpenAIError(
-          OpenAIErrorType.UNKNOWN,
-          errorMessage,
-          status,
-          error.data
-        )
+        return new OpenAIError(OpenAIErrorType.UNKNOWN, errorMessage, status, error.data)
     }
   }
 

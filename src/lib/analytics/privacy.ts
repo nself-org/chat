@@ -8,6 +8,8 @@ import type { ConsentStatus, PrivacySettings } from './types'
 import { firebaseAnalytics } from './firebase'
 import { sentryMobile } from './sentry-mobile'
 
+import { logger } from '@/lib/logger'
+
 const STORAGE_KEY = 'analytics-consent'
 const PRIVACY_SETTINGS_KEY = 'analytics-privacy-settings'
 
@@ -29,7 +31,7 @@ class AnalyticsPrivacy {
       const consent = JSON.parse(stored) as ConsentStatus
       return consent
     } catch (error) {
-      console.error('Failed to get consent:', error)
+      logger.error('Failed to get consent:', error)
       return this.getDefaultConsent()
     }
   }
@@ -75,9 +77,9 @@ class AnalyticsPrivacy {
         await sentryMobile.close()
       }
 
-      console.log('Consent updated:', updated)
+      // REMOVED: console.log('Consent updated:', updated)
     } catch (error) {
-      console.error('Failed to set consent:', error)
+      logger.error('Failed to set consent:', error)
       throw error
     }
   }
@@ -136,7 +138,7 @@ class AnalyticsPrivacy {
 
       return JSON.parse(stored) as PrivacySettings
     } catch (error) {
-      console.error('Failed to get privacy settings:', error)
+      logger.error('Failed to get privacy settings:', error)
       return this.getDefaultPrivacySettings()
     }
   }
@@ -178,9 +180,9 @@ class AnalyticsPrivacy {
         crashReporting: !updated.optOutCrashReporting,
       })
 
-      console.log('Privacy settings updated:', updated)
+      // REMOVED: console.log('Privacy settings updated:', updated)
     } catch (error) {
-      console.error('Failed to update privacy settings:', error)
+      logger.error('Failed to update privacy settings:', error)
       throw error
     }
   }
@@ -202,9 +204,9 @@ class AnalyticsPrivacy {
       // Clear Sentry
       await sentryMobile.setUser(null)
 
-      console.log('All analytics data cleared')
+      // REMOVED: console.log('All analytics data cleared')
     } catch (error) {
-      console.error('Failed to clear analytics data:', error)
+      logger.error('Failed to clear analytics data:', error)
       throw error
     }
   }

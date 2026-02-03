@@ -42,19 +42,11 @@ export interface UpdateBookmarkVariables {
  * Get all bookmarks for a user
  */
 export const GET_BOOKMARKS = gql`
-  query GetBookmarks(
-    $userId: uuid!
-    $limit: Int = 50
-    $offset: Int = 0
-    $channelId: uuid
-  ) {
+  query GetBookmarks($userId: uuid!, $limit: Int = 50, $offset: Int = 0, $channelId: uuid) {
     nchat_bookmarks(
       where: {
         user_id: { _eq: $userId }
-        message: {
-          is_deleted: { _eq: false }
-          channel_id: { _eq: $channelId }
-        }
+        message: { is_deleted: { _eq: false }, channel_id: { _eq: $channelId } }
       }
       order_by: { created_at: desc }
       limit: $limit
@@ -63,10 +55,7 @@ export const GET_BOOKMARKS = gql`
       ...Bookmark
     }
     nchat_bookmarks_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        message: { is_deleted: { _eq: false } }
-      }
+      where: { user_id: { _eq: $userId }, message: { is_deleted: { _eq: false } } }
     ) {
       aggregate {
         count
@@ -82,10 +71,7 @@ export const GET_BOOKMARKS = gql`
 export const GET_BOOKMARK_COUNT = gql`
   query GetBookmarkCount($userId: uuid!) {
     nchat_bookmarks_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        message: { is_deleted: { _eq: false } }
-      }
+      where: { user_id: { _eq: $userId }, message: { is_deleted: { _eq: false } } }
     ) {
       aggregate {
         count
@@ -100,10 +86,7 @@ export const GET_BOOKMARK_COUNT = gql`
 export const CHECK_BOOKMARK = gql`
   query CheckBookmark($userId: uuid!, $messageId: uuid!) {
     nchat_bookmarks(
-      where: {
-        user_id: { _eq: $userId }
-        message_id: { _eq: $messageId }
-      }
+      where: { user_id: { _eq: $userId }, message_id: { _eq: $messageId } }
       limit: 1
     ) {
       id
@@ -118,18 +101,13 @@ export const CHECK_BOOKMARK = gql`
  */
 export const GET_BOOKMARKS_BY_CHANNEL = gql`
   query GetBookmarksByChannel($userId: uuid!) {
-    nchat_channel_members(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    nchat_channel_members(where: { user_id: { _eq: $userId } }) {
       channel {
         id
         name
         slug
         bookmarked_messages: messages(
-          where: {
-            bookmarks: { user_id: { _eq: $userId } }
-            is_deleted: { _eq: false }
-          }
+          where: { bookmarks: { user_id: { _eq: $userId } }, is_deleted: { _eq: false } }
           order_by: { created_at: desc }
           limit: 5
         ) {
@@ -155,18 +133,11 @@ export const GET_BOOKMARKS_BY_CHANNEL = gql`
  * Search bookmarks by note or message content
  */
 export const SEARCH_BOOKMARKS = gql`
-  query SearchBookmarks(
-    $userId: uuid!
-    $query: String!
-    $limit: Int = 20
-  ) {
+  query SearchBookmarks($userId: uuid!, $query: String!, $limit: Int = 20) {
     nchat_bookmarks(
       where: {
         user_id: { _eq: $userId }
-        _or: [
-          { note: { _ilike: $query } }
-          { message: { content: { _ilike: $query } } }
-        ]
+        _or: [{ note: { _ilike: $query } }, { message: { content: { _ilike: $query } } }]
         message: { is_deleted: { _eq: false } }
       }
       order_by: { created_at: desc }
@@ -184,10 +155,7 @@ export const SEARCH_BOOKMARKS = gql`
 export const GET_RECENT_BOOKMARKS = gql`
   query GetRecentBookmarks($userId: uuid!, $limit: Int = 10) {
     nchat_bookmarks(
-      where: {
-        user_id: { _eq: $userId }
-        message: { is_deleted: { _eq: false } }
-      }
+      where: { user_id: { _eq: $userId }, message: { is_deleted: { _eq: false } } }
       order_by: { created_at: desc }
       limit: $limit
     ) {
@@ -229,15 +197,8 @@ export const GET_RECENT_BOOKMARKS = gql`
 export const ADD_BOOKMARK = gql`
   mutation AddBookmark($userId: uuid!, $messageId: uuid!, $note: String) {
     insert_nchat_bookmarks_one(
-      object: {
-        user_id: $userId
-        message_id: $messageId
-        note: $note
-      }
-      on_conflict: {
-        constraint: nchat_bookmarks_user_id_message_id_key
-        update_columns: [note]
-      }
+      object: { user_id: $userId, message_id: $messageId, note: $note }
+      on_conflict: { constraint: nchat_bookmarks_user_id_message_id_key, update_columns: [note] }
     ) {
       id
       note
@@ -272,12 +233,7 @@ export const REMOVE_BOOKMARK = gql`
  */
 export const REMOVE_BOOKMARK_BY_MESSAGE = gql`
   mutation RemoveBookmarkByMessage($userId: uuid!, $messageId: uuid!) {
-    delete_nchat_bookmarks(
-      where: {
-        user_id: { _eq: $userId }
-        message_id: { _eq: $messageId }
-      }
-    ) {
+    delete_nchat_bookmarks(where: { user_id: { _eq: $userId }, message_id: { _eq: $messageId } }) {
       affected_rows
       returning {
         id
@@ -291,13 +247,7 @@ export const REMOVE_BOOKMARK_BY_MESSAGE = gql`
  */
 export const TOGGLE_BOOKMARK = gql`
   mutation ToggleBookmark($userId: uuid!, $messageId: uuid!, $note: String) {
-    toggle_bookmark(
-      args: {
-        p_user_id: $userId
-        p_message_id: $messageId
-        p_note: $note
-      }
-    ) {
+    toggle_bookmark(args: { p_user_id: $userId, p_message_id: $messageId, p_note: $note }) {
       action
       bookmark {
         id
@@ -313,10 +263,7 @@ export const TOGGLE_BOOKMARK = gql`
  */
 export const UPDATE_BOOKMARK = gql`
   mutation UpdateBookmark($bookmarkId: uuid!, $note: String!) {
-    update_nchat_bookmarks_by_pk(
-      pk_columns: { id: $bookmarkId }
-      _set: { note: $note }
-    ) {
+    update_nchat_bookmarks_by_pk(pk_columns: { id: $bookmarkId }, _set: { note: $note }) {
       id
       note
     }
@@ -328,9 +275,7 @@ export const UPDATE_BOOKMARK = gql`
  */
 export const DELETE_ALL_BOOKMARKS = gql`
   mutation DeleteAllBookmarks($userId: uuid!) {
-    delete_nchat_bookmarks(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    delete_nchat_bookmarks(where: { user_id: { _eq: $userId } }) {
       affected_rows
     }
   }
@@ -343,10 +288,7 @@ export const BULK_ADD_BOOKMARKS = gql`
   mutation BulkAddBookmarks($bookmarks: [nchat_bookmarks_insert_input!]!) {
     insert_nchat_bookmarks(
       objects: $bookmarks
-      on_conflict: {
-        constraint: nchat_bookmarks_user_id_message_id_key
-        update_columns: []
-      }
+      on_conflict: { constraint: nchat_bookmarks_user_id_message_id_key, update_columns: [] }
     ) {
       affected_rows
       returning {
@@ -362,9 +304,7 @@ export const BULK_ADD_BOOKMARKS = gql`
  */
 export const BULK_REMOVE_BOOKMARKS = gql`
   mutation BulkRemoveBookmarks($bookmarkIds: [uuid!]!) {
-    delete_nchat_bookmarks(
-      where: { id: { _in: $bookmarkIds } }
-    ) {
+    delete_nchat_bookmarks(where: { id: { _in: $bookmarkIds } }) {
       affected_rows
     }
   }
@@ -379,10 +319,7 @@ export const BULK_REMOVE_BOOKMARKS = gql`
  */
 export const BOOKMARKS_SUBSCRIPTION = gql`
   subscription BookmarksSubscription($userId: uuid!) {
-    nchat_bookmarks(
-      where: { user_id: { _eq: $userId } }
-      order_by: { created_at: desc }
-    ) {
+    nchat_bookmarks(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }) {
       id
       note
       created_at
@@ -404,10 +341,7 @@ export const BOOKMARKS_SUBSCRIPTION = gql`
 export const BOOKMARK_COUNT_SUBSCRIPTION = gql`
   subscription BookmarkCountSubscription($userId: uuid!) {
     nchat_bookmarks_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        message: { is_deleted: { _eq: false } }
-      }
+      where: { user_id: { _eq: $userId }, message: { is_deleted: { _eq: false } } }
     ) {
       aggregate {
         count
@@ -421,9 +355,7 @@ export const BOOKMARK_COUNT_SUBSCRIPTION = gql`
  */
 export const MESSAGE_BOOKMARK_SUBSCRIPTION = gql`
   subscription MessageBookmarkSubscription($messageId: uuid!) {
-    nchat_bookmarks(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    nchat_bookmarks(where: { message_id: { _eq: $messageId } }) {
       id
       user_id
       note

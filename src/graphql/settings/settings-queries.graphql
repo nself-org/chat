@@ -68,10 +68,7 @@ query GetSettingsMetadata($userId: uuid!) {
 
 # Get blocked users
 query GetBlockedUsers($userId: uuid!) {
-  nchat_blocked_users(
-    where: { blocker_id: { _eq: $userId } }
-    order_by: { created_at: desc }
-  ) {
+  nchat_blocked_users(where: { blocker_id: { _eq: $userId } }, order_by: { created_at: desc }) {
     id
     blocked_user_id
     created_at
@@ -86,10 +83,7 @@ query GetBlockedUsers($userId: uuid!) {
 
 # Get muted channels
 query GetMutedChannels($userId: uuid!) {
-  nchat_muted_channels(
-    where: { user_id: { _eq: $userId } }
-    order_by: { created_at: desc }
-  ) {
+  nchat_muted_channels(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }) {
     id
     channel_id
     muted_until
@@ -104,10 +98,7 @@ query GetMutedChannels($userId: uuid!) {
 
 # Get muted users
 query GetMutedUsers($userId: uuid!) {
-  nchat_muted_users(
-    where: { muter_id: { _eq: $userId } }
-    order_by: { created_at: desc }
-  ) {
+  nchat_muted_users(where: { muter_id: { _eq: $userId } }, order_by: { created_at: desc }) {
     id
     muted_user_id
     muted_until

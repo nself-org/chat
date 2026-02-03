@@ -175,6 +175,7 @@ bot('faq-bot')
 ### BotBuilder API
 
 #### `.name(name: string)`
+
 Set the bot's display name.
 
 ```typescript
@@ -182,6 +183,7 @@ Set the bot's display name.
 ```
 
 #### `.description(description: string)`
+
 Set the bot's description.
 
 ```typescript
@@ -189,6 +191,7 @@ Set the bot's description.
 ```
 
 #### `.version(version: string)`
+
 Set the bot's version (semantic versioning recommended).
 
 ```typescript
@@ -196,6 +199,7 @@ Set the bot's version (semantic versioning recommended).
 ```
 
 #### `.icon(icon: string)`
+
 Set the bot's icon (emoji or URL).
 
 ```typescript
@@ -203,6 +207,7 @@ Set the bot's icon (emoji or URL).
 ```
 
 #### `.permissions(...permissions: BotPermission[])`
+
 Set required permissions.
 
 ```typescript
@@ -210,6 +215,7 @@ Set required permissions.
 ```
 
 #### `.settings(settings: Record<string, unknown>)`
+
 Set bot configuration.
 
 ```typescript
@@ -220,6 +226,7 @@ Set bot configuration.
 ```
 
 #### `.command(name, description, handler)`
+
 Register a command handler.
 
 ```typescript
@@ -229,6 +236,7 @@ Register a command handler.
 ```
 
 #### `.onMessage(handler)`
+
 Handle incoming messages.
 
 ```typescript
@@ -240,6 +248,7 @@ Handle incoming messages.
 ```
 
 #### `.onUserJoin(handler)`
+
 Handle user join events.
 
 ```typescript
@@ -249,6 +258,7 @@ Handle user join events.
 ```
 
 #### `.onUserLeave(handler)`
+
 Handle user leave events.
 
 ```typescript
@@ -258,6 +268,7 @@ Handle user leave events.
 ```
 
 #### `.onReaction(handler)`
+
 Handle reaction events.
 
 ```typescript
@@ -267,6 +278,7 @@ Handle reaction events.
 ```
 
 #### `.onInit(handler)`
+
 Run code when bot initializes.
 
 ```typescript
@@ -279,6 +291,7 @@ Run code when bot initializes.
 ### Response Builders
 
 #### `text(content: string)`
+
 Send a simple text message.
 
 ```typescript
@@ -286,6 +299,7 @@ return text('Hello, world!')
 ```
 
 #### `embed()`
+
 Create a rich embed.
 
 ```typescript
@@ -300,6 +314,7 @@ return embed()
 ```
 
 #### `success(message: string)`
+
 Send a success message.
 
 ```typescript
@@ -307,6 +322,7 @@ return success('Operation completed successfully!')
 ```
 
 #### `error(message: string)`
+
 Send an error message.
 
 ```typescript
@@ -314,6 +330,7 @@ return error('Something went wrong!')
 ```
 
 #### `info(message: string)`
+
 Send an info message.
 
 ```typescript
@@ -321,6 +338,7 @@ return info('Here is some information...')
 ```
 
 #### `warning(message: string)`
+
 Send a warning message.
 
 ```typescript
@@ -332,6 +350,7 @@ return warning('Be careful!')
 The `api` parameter provides access to bot operations:
 
 #### `api.sendMessage(channelId, response)`
+
 Send a message to a channel.
 
 ```typescript
@@ -339,6 +358,7 @@ await api.sendMessage(ctx.channel.id, text('Hello!'))
 ```
 
 #### `api.replyToMessage(messageId, response)`
+
 Reply to a specific message.
 
 ```typescript
@@ -346,6 +366,7 @@ await api.replyToMessage(ctx.message.id, text('Replying!'))
 ```
 
 #### `api.addReaction(messageId, emoji)`
+
 Add a reaction to a message.
 
 ```typescript
@@ -353,6 +374,7 @@ await api.addReaction(ctx.message.id, '👍')
 ```
 
 #### `api.getChannel(channelId)`
+
 Get channel information.
 
 ```typescript
@@ -361,6 +383,7 @@ console.log(channel.name)
 ```
 
 #### `api.getUser(userId)`
+
 Get user information.
 
 ```typescript
@@ -369,6 +392,7 @@ console.log(user.displayName)
 ```
 
 #### `api.mentionUser(userId)`
+
 Create a user mention string.
 
 ```typescript
@@ -377,6 +401,7 @@ return text(`Hello ${mention}!`)
 ```
 
 #### `api.getStorage<T>(key)`
+
 Get value from persistent storage.
 
 ```typescript
@@ -384,6 +409,7 @@ const data = await api.getStorage<MyData>('my-key')
 ```
 
 #### `api.setStorage<T>(key, value)`
+
 Save value to persistent storage.
 
 ```typescript
@@ -391,6 +417,7 @@ await api.setStorage('my-key', { count: 42 })
 ```
 
 #### `api.deleteStorage(key)`
+
 Delete value from storage.
 
 ```typescript
@@ -398,6 +425,7 @@ await api.deleteStorage('my-key')
 ```
 
 #### `api.scheduleMessage(channelId, response, delay)`
+
 Schedule a message for later delivery.
 
 ```typescript
@@ -471,20 +499,15 @@ export default bot('faq-bot')
 
   .onMessage(async (ctx, api) => {
     const config = api.getBotConfig()
-    const faqs = config.settings?.faqs as FAQ[] || []
+    const faqs = (config.settings?.faqs as FAQ[]) || []
 
     const message = ctx.message.content.toLowerCase()
 
     // Find matching FAQ
-    const match = faqs.find(faq =>
-      faq.keywords.some(keyword => message.includes(keyword))
-    )
+    const match = faqs.find((faq) => faq.keywords.some((keyword) => message.includes(keyword)))
 
     if (match) {
-      return embed()
-        .title(`💡 ${match.question}`)
-        .description(match.answer)
-        .build()
+      return embed().title(`💡 ${match.question}`).description(match.answer).build()
     }
   })
 
@@ -506,11 +529,7 @@ export default bot('reminder-bot')
 
     const delay = parseDuration(time)
 
-    await api.scheduleMessage(
-      ctx.channel.id,
-      text(`⏰ Reminder: ${message}`),
-      delay
-    )
+    await api.scheduleMessage(ctx.channel.id, text(`⏰ Reminder: ${message}`), delay)
 
     return text(`Reminder set for ${time} from now!`)
   })
@@ -603,9 +622,7 @@ await api.setStorage('poll-count', {
 ### 7. Rate Limit External Calls
 
 ```typescript
-let lastApiCall = 0
-
-.onMessage(async (ctx, api) => {
+let lastApiCall = (0).onMessage(async (ctx, api) => {
   const now = Date.now()
 
   if (now - lastApiCall < 1000) {

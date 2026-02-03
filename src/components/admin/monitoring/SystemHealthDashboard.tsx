@@ -29,7 +29,20 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
-import { LineChart, Line, AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts'
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from 'recharts'
 import { cn } from '@/lib/utils'
 
 // ============================================================================
@@ -91,11 +104,7 @@ function generateMockMetrics(): SystemMetrics {
     cpu: {
       usage: Math.random() * 80 + 10,
       cores: 8,
-      loadAverage: [
-        Math.random() * 4,
-        Math.random() * 4,
-        Math.random() * 4,
-      ],
+      loadAverage: [Math.random() * 4, Math.random() * 4, Math.random() * 4],
     },
     memory: {
       total: 16000,
@@ -221,7 +230,9 @@ function getStatusColor(status: ServiceStatus['status']): string {
   }
 }
 
-function getStatusBadgeVariant(status: ServiceStatus['status']): 'default' | 'secondary' | 'destructive' {
+function getStatusBadgeVariant(
+  status: ServiceStatus['status']
+): 'default' | 'secondary' | 'destructive' {
   switch (status) {
     case 'healthy':
       return 'default'
@@ -303,11 +314,15 @@ export function SystemHealthDashboard() {
           <p className="text-muted-foreground">Real-time system monitoring and diagnostics</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge variant={autoRefresh ? 'default' : 'outline'} className="cursor-pointer" onClick={() => setAutoRefresh(!autoRefresh)}>
+          <Badge
+            variant={autoRefresh ? 'default' : 'outline'}
+            className="cursor-pointer"
+            onClick={() => setAutoRefresh(!autoRefresh)}
+          >
             {autoRefresh ? 'Auto-refresh ON' : 'Auto-refresh OFF'}
           </Badge>
           <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
-            <RefreshCw className={cn('h-4 w-4 mr-2', isLoading && 'animate-spin')} />
+            <RefreshCw className={cn('mr-2 h-4 w-4', isLoading && 'animate-spin')} />
             Refresh
           </Button>
         </div>
@@ -405,8 +420,24 @@ export function SystemHealthDashboard() {
                 <YAxis className="text-xs" />
                 <Tooltip />
                 <Legend />
-                <Area type="monotone" dataKey="cpu" stackId="1" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} name="CPU %" />
-                <Area type="monotone" dataKey="memory" stackId="2" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} name="Memory %" />
+                <Area
+                  type="monotone"
+                  dataKey="cpu"
+                  stackId="1"
+                  stroke="#8884d8"
+                  fill="#8884d8"
+                  fillOpacity={0.6}
+                  name="CPU %"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="memory"
+                  stackId="2"
+                  stroke="#82ca9d"
+                  fill="#82ca9d"
+                  fillOpacity={0.6}
+                  name="Memory %"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
@@ -425,7 +456,13 @@ export function SystemHealthDashboard() {
                 <YAxis className="text-xs" />
                 <Tooltip />
                 <Legend />
-                <Line type="monotone" dataKey="connections" stroke="#8884d8" strokeWidth={2} name="Connections" />
+                <Line
+                  type="monotone"
+                  dataKey="connections"
+                  stroke="#8884d8"
+                  strokeWidth={2}
+                  name="Connections"
+                />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -443,10 +480,19 @@ export function SystemHealthDashboard() {
             {services.map((service) => (
               <div
                 key={service.name}
-                className="flex items-center justify-between p-3 rounded-lg border"
+                className="flex items-center justify-between rounded-lg border p-3"
               >
                 <div className="flex items-center gap-3">
-                  <div className={cn('h-3 w-3 rounded-full', service.status === 'healthy' ? 'bg-green-500' : service.status === 'degraded' ? 'bg-yellow-500' : 'bg-red-500')} />
+                  <div
+                    className={cn(
+                      'h-3 w-3 rounded-full',
+                      service.status === 'healthy'
+                        ? 'bg-green-500'
+                        : service.status === 'degraded'
+                          ? 'bg-yellow-500'
+                          : 'bg-red-500'
+                    )}
+                  />
                   <div>
                     <p className="font-medium">{service.name}</p>
                     <p className="text-xs text-muted-foreground">
@@ -455,9 +501,7 @@ export function SystemHealthDashboard() {
                     </p>
                   </div>
                 </div>
-                <Badge variant={getStatusBadgeVariant(service.status)}>
-                  {service.status}
-                </Badge>
+                <Badge variant={getStatusBadgeVariant(service.status)}>{service.status}</Badge>
               </div>
             ))}
           </div>
@@ -467,7 +511,7 @@ export function SystemHealthDashboard() {
       {/* Database Metrics */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base">
             <Database className="h-4 w-4" />
             Database Performance
           </CardTitle>
@@ -517,10 +561,8 @@ function ResourceCard({ title, icon, value, unit, percentage, description }: Res
         {icon}
       </CardHeader>
       <CardContent>
-        <div className="flex items-baseline gap-1 mb-2">
-          <span className={cn('text-2xl font-bold', statusColor)}>
-            {value}
-          </span>
+        <div className="mb-2 flex items-baseline gap-1">
+          <span className={cn('text-2xl font-bold', statusColor)}>{value}</span>
           {unit && <span className="text-sm text-muted-foreground">{unit}</span>}
         </div>
         <Progress value={percentage} className="mb-2 h-2" />

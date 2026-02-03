@@ -20,13 +20,13 @@ import { NChatClient } from '@nchat/sdk'
 // Initialize the client
 const client = new NChatClient({
   apiUrl: 'https://api.nchat.example.com',
-  apiKey: 'your-api-key'
+  apiKey: 'your-api-key',
 })
 
 // Authenticate
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 // Set the user token
@@ -43,7 +43,7 @@ const channels = await client.channels.list()
 ```typescript
 const client = new NChatClient({
   apiUrl: 'https://api.nchat.example.com',
-  apiKey: 'your-api-key'
+  apiKey: 'your-api-key',
 })
 ```
 
@@ -58,13 +58,13 @@ const client = new NChatClient({
   debug: true, // Enable debug logging
   timeout: 30000, // Request timeout (30 seconds)
   headers: {
-    'X-Custom-Header': 'value'
+    'X-Custom-Header': 'value',
   },
   retry: {
     enabled: true,
     maxRetries: 3,
-    retryDelay: 1000
-  }
+    retryDelay: 1000,
+  },
 })
 ```
 
@@ -77,7 +77,7 @@ const { user, token, refreshToken } = await client.auth.signUp({
   email: 'newuser@example.com',
   password: 'SecurePassword123!',
   displayName: 'John Doe',
-  username: 'johndoe' // optional
+  username: 'johndoe', // optional
 })
 
 // Store the token
@@ -91,7 +91,7 @@ localStorage.setItem('nchat_refresh_token', refreshToken)
 ```typescript
 const { user, token, refreshToken } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 client.setToken(token)
@@ -158,7 +158,7 @@ const channel = await client.channels.create({
   name: 'general',
   description: 'General discussion',
   type: 'public',
-  category: 'general'
+  category: 'general',
 })
 ```
 
@@ -168,7 +168,7 @@ const channel = await client.channels.create({
 const { data: channels, pagination } = await client.channels.list({
   limit: 50,
   orderBy: 'created_at',
-  orderDirection: 'desc'
+  orderDirection: 'desc',
 })
 
 console.log(`Found ${channels.length} channels`)
@@ -188,7 +188,7 @@ console.log(channel.name, channel.memberCount)
 ```typescript
 await client.channels.update('channel-123', {
   name: 'New Name',
-  description: 'Updated description'
+  description: 'Updated description',
 })
 ```
 
@@ -239,28 +239,28 @@ await client.channels.unarchive('channel-123')
 // Simple text message
 const message = await client.messages.send({
   channelId: 'channel-123',
-  content: 'Hello, world!'
+  content: 'Hello, world!',
 })
 
 // Message with mentions
 await client.messages.send({
   channelId: 'channel-123',
   content: 'Hey @john, check this out!',
-  mentions: ['user-456']
+  mentions: ['user-456'],
 })
 
 // Reply in thread
 await client.messages.send({
   channelId: 'channel-123',
   content: 'This is a reply',
-  parentId: 'message-789'
+  parentId: 'message-789',
 })
 
 // Message with attachments
 await client.messages.send({
   channelId: 'channel-123',
   content: 'Check out this image',
-  attachments: ['attachment-id-1', 'attachment-id-2']
+  attachments: ['attachment-id-1', 'attachment-id-2'],
 })
 ```
 
@@ -277,14 +277,14 @@ console.log(message.content, message.user.displayName)
 const { data: messages, pagination } = await client.messages.list('channel-123', {
   limit: 50,
   orderBy: 'created_at',
-  orderDirection: 'desc'
+  orderDirection: 'desc',
 })
 
 // Pagination
 if (pagination.hasMore) {
   const { data: moreMessages } = await client.messages.list('channel-123', {
     limit: 50,
-    offset: pagination.offset + pagination.limit
+    offset: pagination.offset + pagination.limit,
   })
 }
 ```
@@ -293,7 +293,7 @@ if (pagination.hasMore) {
 
 ```typescript
 await client.messages.update('message-123', {
-  content: 'Updated message content'
+  content: 'Updated message content',
 })
 ```
 
@@ -327,7 +327,7 @@ await client.messages.unpin('message-123')
 
 ```typescript
 const { data: replies } = await client.messages.getThread('message-123', {
-  limit: 50
+  limit: 50,
 })
 ```
 
@@ -356,7 +356,7 @@ const user = await client.users.get('user-123')
 
 ```typescript
 const { data: users } = await client.users.list({
-  limit: 50
+  limit: 50,
 })
 ```
 
@@ -366,7 +366,7 @@ const { data: users } = await client.users.list({
 await client.users.update({
   displayName: 'New Name',
   avatarUrl: 'https://example.com/avatar.jpg',
-  status: 'Working on a project'
+  status: 'Working on a project',
 })
 ```
 
@@ -374,7 +374,7 @@ await client.users.update({
 
 ```typescript
 const { data: users } = await client.users.search('john', {
-  limit: 10
+  limit: 10,
 })
 ```
 
@@ -411,7 +411,7 @@ const webhook = await client.webhooks.create({
   name: 'My Webhook',
   url: 'https://example.com/webhook',
   events: ['message.created', 'message.updated', 'channel.created'],
-  secret: 'optional-secret' // For signature verification
+  secret: 'optional-secret', // For signature verification
 })
 
 console.log('Webhook ID:', webhook.id)
@@ -429,7 +429,7 @@ const { data: webhooks } = await client.webhooks.list()
 ```typescript
 await client.webhooks.update('webhook-123', {
   name: 'Updated Webhook',
-  isActive: false
+  isActive: false,
 })
 ```
 
@@ -462,7 +462,7 @@ const bot = await client.bots.create({
   name: 'Helper Bot',
   username: 'helperbot',
   description: 'A helpful bot',
-  permissions: ['send_messages', 'read_messages']
+  permissions: ['send_messages', 'read_messages'],
 })
 
 console.log('Bot ID:', bot.id)
@@ -474,7 +474,7 @@ console.log('Bot API key:', bot.apiKey)
 ```typescript
 await client.bots.sendMessage(bot.id, {
   channelId: 'channel-123',
-  content: 'Hello! I am a bot.'
+  content: 'Hello! I am a bot.',
 })
 ```
 
@@ -509,12 +509,12 @@ console.log('Total messages:', stats.messages.total)
 ```typescript
 // Get all users
 const { data: users } = await client.admin.getUsers({
-  limit: 100
+  limit: 100,
 })
 
 // Update user role
 await client.admin.updateUserRole('user-123', {
-  role: 'moderator'
+  role: 'moderator',
 })
 
 // Suspend user
@@ -543,13 +543,13 @@ import {
   AuthorizationError,
   ValidationError,
   RateLimitError,
-  NotFoundError
+  NotFoundError,
 } from '@nchat/sdk'
 
 try {
   await client.messages.send({
     channelId: 'invalid',
-    content: 'Test'
+    content: 'Test',
   })
 } catch (error) {
   if (error instanceof AuthenticationError) {

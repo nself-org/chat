@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
   DropdownMenuLabel,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu'
 import {
   Inbox,
   Mail,
@@ -22,19 +22,19 @@ import {
   Clock,
   SortAsc,
   MessageCircle,
-} from 'lucide-react';
-import type { DMFilterType, DMSortType } from '@/lib/dm/dm-types';
+} from 'lucide-react'
+import type { DMFilterType, DMSortType } from '@/lib/dm/dm-types'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface DMFiltersProps {
-  currentFilter: DMFilterType;
-  currentSort: DMSortType;
-  onFilterChange: (filter: DMFilterType) => void;
-  onSortChange: (sort: DMSortType) => void;
-  className?: string;
+  currentFilter: DMFilterType
+  currentSort: DMSortType
+  onFilterChange: (filter: DMFilterType) => void
+  onSortChange: (sort: DMSortType) => void
+  className?: string
 }
 
 // ============================================================================
@@ -42,26 +42,26 @@ interface DMFiltersProps {
 // ============================================================================
 
 const filterOptions: Array<{
-  value: DMFilterType;
-  label: string;
-  icon: React.ReactNode;
+  value: DMFilterType
+  label: string
+  icon: React.ReactNode
 }> = [
   { value: 'all', label: 'All', icon: <Inbox className="h-4 w-4" /> },
   { value: 'unread', label: 'Unread', icon: <Mail className="h-4 w-4" /> },
   { value: 'starred', label: 'Starred', icon: <Star className="h-4 w-4" /> },
   { value: 'archived', label: 'Archived', icon: <Archive className="h-4 w-4" /> },
   { value: 'muted', label: 'Muted', icon: <VolumeX className="h-4 w-4" /> },
-];
+]
 
 const sortOptions: Array<{
-  value: DMSortType;
-  label: string;
-  icon: React.ReactNode;
+  value: DMSortType
+  label: string
+  icon: React.ReactNode
 }> = [
   { value: 'recent', label: 'Most Recent', icon: <Clock className="h-4 w-4" /> },
   { value: 'unread', label: 'Unread First', icon: <MessageCircle className="h-4 w-4" /> },
   { value: 'alphabetical', label: 'Alphabetical', icon: <SortAsc className="h-4 w-4" /> },
-];
+]
 
 // ============================================================================
 // Component
@@ -74,8 +74,8 @@ export function DMFilters({
   onSortChange,
   className,
 }: DMFiltersProps) {
-  const currentFilterOption = filterOptions.find((f) => f.value === currentFilter);
-  const currentSortOption = sortOptions.find((s) => s.value === currentSort);
+  const currentFilterOption = filterOptions.find((f) => f.value === currentFilter)
+  const currentSortOption = sortOptions.find((s) => s.value === currentSort)
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
@@ -95,11 +95,7 @@ export function DMFilters({
             onValueChange={(value) => onFilterChange(value as DMFilterType)}
           >
             {filterOptions.map((option) => (
-              <DropdownMenuRadioItem
-                key={option.value}
-                value={option.value}
-                className="gap-2"
-              >
+              <DropdownMenuRadioItem key={option.value} value={option.value} className="gap-2">
                 {option.icon}
                 {option.label}
               </DropdownMenuRadioItem>
@@ -124,11 +120,7 @@ export function DMFilters({
             onValueChange={(value) => onSortChange(value as DMSortType)}
           >
             {sortOptions.map((option) => (
-              <DropdownMenuRadioItem
-                key={option.value}
-                value={option.value}
-                className="gap-2"
-              >
+              <DropdownMenuRadioItem key={option.value} value={option.value} className="gap-2">
                 {option.icon}
                 {option.label}
               </DropdownMenuRadioItem>
@@ -137,7 +129,7 @@ export function DMFilters({
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -145,10 +137,10 @@ export function DMFilters({
 // ============================================================================
 
 interface DMQuickFiltersProps {
-  currentFilter: DMFilterType;
-  onFilterChange: (filter: DMFilterType) => void;
-  unreadCount?: number;
-  className?: string;
+  currentFilter: DMFilterType
+  onFilterChange: (filter: DMFilterType) => void
+  unreadCount?: number
+  className?: string
 }
 
 export function DMQuickFilters({
@@ -169,15 +161,15 @@ export function DMQuickFilters({
         >
           {option.label}
           {option.value === 'unread' && unreadCount > 0 && (
-            <span className="ml-1 px-1.5 py-0.5 text-[10px] font-semibold bg-primary text-primary-foreground rounded-full">
+            <span className="text-primary-foreground ml-1 rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-semibold">
               {unreadCount > 99 ? '99+' : unreadCount}
             </span>
           )}
         </Button>
       ))}
     </div>
-  );
+  )
 }
 
-DMFilters.displayName = 'DMFilters';
-DMQuickFilters.displayName = 'DMQuickFilters';
+DMFilters.displayName = 'DMFilters'
+DMQuickFilters.displayName = 'DMQuickFilters'

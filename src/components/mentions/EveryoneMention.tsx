@@ -66,17 +66,7 @@ const GROUP_MENTION_CONFIG: Record<
 // ============================================================================
 
 export const EveryoneMention = forwardRef<HTMLSpanElement, EveryoneMentionProps>(
-  function EveryoneMention(
-    {
-      type,
-      onClick,
-      onHoverStart,
-      onHoverEnd,
-      className,
-      children,
-    },
-    ref
-  ) {
+  function EveryoneMention({ type, onClick, onHoverStart, onHoverEnd, className, children }, ref) {
     const config = GROUP_MENTION_CONFIG[type]
 
     const handleClick = (e: React.MouseEvent) => {
@@ -101,9 +91,9 @@ export const EveryoneMention = forwardRef<HTMLSpanElement, EveryoneMentionProps>
         tabIndex={onClick ? 0 : undefined}
         className={cn(
           'mention mention-group',
-          'inline-flex items-center px-1.5 py-0.5 rounded text-sm',
+          'inline-flex items-center rounded px-1.5 py-0.5 text-sm',
           'bg-warning/15 text-warning font-semibold',
-          onClick && 'cursor-pointer hover:bg-warning/25 transition-colors',
+          onClick && 'hover:bg-warning/25 cursor-pointer transition-colors',
           className
         )}
         data-mention-type={type}
@@ -169,10 +159,7 @@ export function EveryoneMentionCompact({
 
   return (
     <span
-      className={cn(
-        'text-warning font-semibold cursor-pointer hover:underline',
-        className
-      )}
+      className={cn('text-warning cursor-pointer font-semibold hover:underline', className)}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -218,17 +205,12 @@ export function GroupMentionInfoBadge({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 px-2 py-1 rounded-md',
+        'flex items-center gap-2 rounded-md px-2 py-1',
         'bg-warning/10 text-warning text-xs',
         className
       )}
     >
-      <svg
-        className="h-3.5 w-3.5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"

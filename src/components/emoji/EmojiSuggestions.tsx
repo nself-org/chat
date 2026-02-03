@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * EmojiSuggestions - Display emoji suggestions in a horizontal or vertical list
@@ -6,10 +6,10 @@
  * Used for showing quick emoji suggestions based on context or search
  */
 
-import { memo, useCallback } from 'react';
-import { cn } from '@/lib/utils';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import type { AutocompleteSuggestion } from '@/lib/emoji/emoji-types';
+import { memo, useCallback } from 'react'
+import { cn } from '@/lib/utils'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
+import type { AutocompleteSuggestion } from '@/lib/emoji/emoji-types'
 
 // ============================================================================
 // Types
@@ -17,21 +17,21 @@ import type { AutocompleteSuggestion } from '@/lib/emoji/emoji-types';
 
 export interface EmojiSuggestionsProps {
   /** List of suggestions to display */
-  suggestions: AutocompleteSuggestion[];
+  suggestions: AutocompleteSuggestion[]
   /** Called when an emoji is selected */
-  onSelect: (suggestion: AutocompleteSuggestion) => void;
+  onSelect: (suggestion: AutocompleteSuggestion) => void
   /** Layout direction */
-  direction?: 'horizontal' | 'vertical';
+  direction?: 'horizontal' | 'vertical'
   /** Show shortcode labels */
-  showLabels?: boolean;
+  showLabels?: boolean
   /** Size of emoji display */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Maximum items to show (horizontal only) */
-  maxItems?: number;
+  maxItems?: number
   /** Additional class name */
-  className?: string;
+  className?: string
   /** Empty state message */
-  emptyMessage?: string;
+  emptyMessage?: string
 }
 
 // ============================================================================
@@ -54,7 +54,7 @@ const sizeConfig = {
     button: 'w-12 h-12',
     gap: 'gap-2',
   },
-};
+}
 
 // ============================================================================
 // Component
@@ -70,19 +70,17 @@ export const EmojiSuggestions = memo(function EmojiSuggestions({
   className,
   emptyMessage = 'No suggestions',
 }: EmojiSuggestionsProps) {
-  const config = sizeConfig[size];
+  const config = sizeConfig[size]
 
   const handleSelect = useCallback(
     (suggestion: AutocompleteSuggestion) => {
-      onSelect(suggestion);
+      onSelect(suggestion)
     },
     [onSelect]
-  );
+  )
 
   // Apply max items limit
-  const displaySuggestions = maxItems
-    ? suggestions.slice(0, maxItems)
-    : suggestions;
+  const displaySuggestions = maxItems ? suggestions.slice(0, maxItems) : suggestions
 
   if (displaySuggestions.length === 0) {
     return (
@@ -94,7 +92,7 @@ export const EmojiSuggestions = memo(function EmojiSuggestions({
       >
         {emptyMessage}
       </div>
-    );
+    )
   }
 
   if (direction === 'horizontal') {
@@ -107,8 +105,8 @@ export const EmojiSuggestions = memo(function EmojiSuggestions({
               type="button"
               onClick={() => handleSelect(suggestion)}
               className={cn(
-                'flex-shrink-0 flex items-center justify-center rounded-md',
-                'hover:bg-accent transition-colors',
+                'flex flex-shrink-0 items-center justify-center rounded-md',
+                'transition-colors hover:bg-accent',
                 'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
                 config.button
               )}
@@ -118,7 +116,7 @@ export const EmojiSuggestions = memo(function EmojiSuggestions({
                 <img
                   src={suggestion.emoji}
                   alt={suggestion.displayName}
-                  className="w-5 h-5 object-contain"
+                  className="h-5 w-5 object-contain"
                 />
               ) : (
                 <span className={config.emoji}>{suggestion.emoji}</span>
@@ -127,14 +125,14 @@ export const EmojiSuggestions = memo(function EmojiSuggestions({
           ))}
 
           {maxItems && suggestions.length > maxItems && (
-            <span className="text-xs text-muted-foreground px-2">
+            <span className="px-2 text-xs text-muted-foreground">
               +{suggestions.length - maxItems}
             </span>
           )}
         </div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
-    );
+    )
   }
 
   // Vertical layout
@@ -146,8 +144,8 @@ export const EmojiSuggestions = memo(function EmojiSuggestions({
           type="button"
           onClick={() => handleSelect(suggestion)}
           className={cn(
-            'flex items-center gap-3 px-3 py-2 rounded-md w-full',
-            'hover:bg-accent transition-colors text-left',
+            'flex w-full items-center gap-3 rounded-md px-3 py-2',
+            'text-left transition-colors hover:bg-accent',
             'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1'
           )}
         >
@@ -156,7 +154,7 @@ export const EmojiSuggestions = memo(function EmojiSuggestions({
               <img
                 src={suggestion.emoji}
                 alt={suggestion.displayName}
-                className="w-5 h-5 object-contain"
+                className="h-5 w-5 object-contain"
               />
             ) : (
               suggestion.emoji
@@ -164,29 +162,25 @@ export const EmojiSuggestions = memo(function EmojiSuggestions({
           </span>
 
           {showLabels && (
-            <div className="flex-1 min-w-0">
-              <div className="font-medium truncate">
-                {suggestion.displayName}
-              </div>
-              <div className="text-xs text-muted-foreground truncate">
-                {suggestion.shortcode}
-              </div>
+            <div className="min-w-0 flex-1">
+              <div className="truncate font-medium">{suggestion.displayName}</div>
+              <div className="truncate text-xs text-muted-foreground">{suggestion.shortcode}</div>
             </div>
           )}
         </button>
       ))}
     </div>
-  );
-});
+  )
+})
 
 // ============================================================================
 // Inline Variant
 // ============================================================================
 
 export interface InlineEmojiSuggestionsProps {
-  suggestions: AutocompleteSuggestion[];
-  onSelect: (suggestion: AutocompleteSuggestion) => void;
-  className?: string;
+  suggestions: AutocompleteSuggestion[]
+  onSelect: (suggestion: AutocompleteSuggestion) => void
+  className?: string
 }
 
 export const InlineEmojiSuggestions = memo(function InlineEmojiSuggestions({
@@ -194,7 +188,7 @@ export const InlineEmojiSuggestions = memo(function InlineEmojiSuggestions({
   onSelect,
   className,
 }: InlineEmojiSuggestionsProps) {
-  if (suggestions.length === 0) return null;
+  if (suggestions.length === 0) return null
 
   return (
     <div className={cn('inline-flex items-center gap-0.5', className)}>
@@ -203,22 +197,18 @@ export const InlineEmojiSuggestions = memo(function InlineEmojiSuggestions({
           key={suggestion.id}
           type="button"
           onClick={() => onSelect(suggestion)}
-          className="p-1 hover:bg-accent rounded transition-colors"
+          className="rounded p-1 transition-colors hover:bg-accent"
           title={suggestion.displayName}
         >
           {suggestion.isCustom ? (
-            <img
-              src={suggestion.emoji}
-              alt={suggestion.displayName}
-              className="w-4 h-4"
-            />
+            <img src={suggestion.emoji} alt={suggestion.displayName} className="h-4 w-4" />
           ) : (
             <span className="text-base">{suggestion.emoji}</span>
           )}
         </button>
       ))}
     </div>
-  );
-});
+  )
+})
 
-export default EmojiSuggestions;
+export default EmojiSuggestions

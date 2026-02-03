@@ -2,13 +2,7 @@
 
 import { memo, forwardRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  ChevronLeft,
-  MoreVertical,
-  Search,
-  X,
-  Menu,
-} from 'lucide-react'
+import { ChevronLeft, MoreVertical, Search, X, Menu } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -108,7 +102,7 @@ export const MobileHeader = memo(
           'flex flex-col',
           !transparent && 'bg-background/95 backdrop-blur-lg',
           elevated && 'shadow-sm',
-          'border-b border-border/50',
+          'border-border/50 border-b',
           'safe-area-top',
           className
         )}
@@ -150,15 +144,9 @@ export const MobileHeader = memo(
             {(title || subtitle) && (
               <div className="min-w-0 flex-1 pl-1">
                 {title && (
-                  <h1 className="truncate text-base font-semibold leading-tight">
-                    {title}
-                  </h1>
+                  <h1 className="truncate text-base font-semibold leading-tight">{title}</h1>
                 )}
-                {subtitle && (
-                  <p className="truncate text-xs text-muted-foreground">
-                    {subtitle}
-                  </p>
-                )}
+                {subtitle && <p className="truncate text-xs text-muted-foreground">{subtitle}</p>}
               </div>
             )}
           </div>
@@ -179,9 +167,7 @@ export const MobileHeader = memo(
 
             {rightContent}
 
-            {rightActions.length > 0 && (
-              <HeaderActionsMenu actions={rightActions} />
-            )}
+            {rightActions.length > 0 && <HeaderActionsMenu actions={rightActions} />}
           </div>
         </div>
 
@@ -200,9 +186,7 @@ interface HeaderActionsMenuProps {
   actions: HeaderAction[]
 }
 
-const HeaderActionsMenu = memo(function HeaderActionsMenu({
-  actions,
-}: HeaderActionsMenuProps) {
+const HeaderActionsMenu = memo(function HeaderActionsMenu({ actions }: HeaderActionsMenuProps) {
   if (actions.length === 0) return null
 
   // Show single action directly
@@ -296,7 +280,7 @@ export const MobileSearchHeader = memo(function MobileSearchHeader({
         'sticky top-0 z-40',
         'flex h-14 items-center gap-2 px-2',
         'bg-background/95 backdrop-blur-lg',
-        'border-b border-border/50',
+        'border-border/50 border-b',
         className
       )}
       style={{ paddingTop: safeArea.top || 0 }}
@@ -321,11 +305,11 @@ export const MobileSearchHeader = memo(function MobileSearchHeader({
             placeholder={placeholder}
             autoFocus={autoFocus}
             className={cn(
-              'w-full h-10 pl-10 pr-10',
+              'h-10 w-full pl-10 pr-10',
               'rounded-full',
               'bg-muted/50',
               'text-sm placeholder:text-muted-foreground',
-              'focus:outline-none focus:ring-2 focus:ring-primary/20',
+              'focus:ring-primary/20 focus:outline-none focus:ring-2',
               'touch-manipulation'
             )}
           />
@@ -379,7 +363,7 @@ export const MobileChannelHeader = memo(function MobileChannelHeader({
       leftAction={
         <button
           onClick={onInfoClick}
-          className="flex min-w-0 flex-1 items-center gap-3 touch-manipulation"
+          className="flex min-w-0 flex-1 touch-manipulation items-center gap-3"
         >
           {/* Channel icon/avatar */}
           <div className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-muted">

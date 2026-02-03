@@ -70,6 +70,7 @@ if (!result.allowed) {
 ```
 
 **How it works:**
+
 - Stores timestamp for each request in a sorted set (Redis) or array (in-memory)
 - Removes requests outside the time window
 - Counts remaining requests in the current window
@@ -88,6 +89,7 @@ const result = await rateLimiter.checkTokenBucket('user:123', {
 ```
 
 **How it works:**
+
 - Tokens refill at a constant rate
 - Each request consumes 1 token
 - Allows bursts when tokens are available
@@ -99,33 +101,33 @@ Pre-configured rate limits for common scenarios:
 
 ```typescript
 // Authentication endpoints
-RATE_LIMIT_PRESETS.AUTH              // 5/min
-RATE_LIMIT_PRESETS.AUTH_SIGNUP       // 3/hour
-RATE_LIMIT_PRESETS.AUTH_RESET        // 3/15min
+RATE_LIMIT_PRESETS.AUTH // 5/min
+RATE_LIMIT_PRESETS.AUTH_SIGNUP // 3/hour
+RATE_LIMIT_PRESETS.AUTH_RESET // 3/15min
 
 // Message operations
-RATE_LIMIT_PRESETS.MESSAGE_SEND      // 10/min + 5 burst
-RATE_LIMIT_PRESETS.MESSAGE_EDIT      // 20/min
+RATE_LIMIT_PRESETS.MESSAGE_SEND // 10/min + 5 burst
+RATE_LIMIT_PRESETS.MESSAGE_EDIT // 20/min
 
 // File uploads
-RATE_LIMIT_PRESETS.FILE_UPLOAD       // 5/min
+RATE_LIMIT_PRESETS.FILE_UPLOAD // 5/min
 RATE_LIMIT_PRESETS.FILE_UPLOAD_LARGE // 2/5min
 
 // Search
-RATE_LIMIT_PRESETS.SEARCH            // 20/min + 10 burst
+RATE_LIMIT_PRESETS.SEARCH // 20/min + 10 burst
 
 // AI operations
-RATE_LIMIT_PRESETS.AI_QUERY          // 10/min
+RATE_LIMIT_PRESETS.AI_QUERY // 10/min
 
 // General API
-RATE_LIMIT_PRESETS.API_USER          // 100/min + 20 burst
-RATE_LIMIT_PRESETS.API_IP            // 500/min
+RATE_LIMIT_PRESETS.API_USER // 100/min + 20 burst
+RATE_LIMIT_PRESETS.API_IP // 500/min
 
 // Other
-RATE_LIMIT_PRESETS.GRAPHQL           // 100/min
-RATE_LIMIT_PRESETS.WEBHOOK           // 50/min
-RATE_LIMIT_PRESETS.EMAIL_SEND        // 10/hour
-RATE_LIMIT_PRESETS.EXPORT            // 3/hour
+RATE_LIMIT_PRESETS.GRAPHQL // 100/min
+RATE_LIMIT_PRESETS.WEBHOOK // 50/min
+RATE_LIMIT_PRESETS.EMAIL_SEND // 10/hour
+RATE_LIMIT_PRESETS.EXPORT // 3/hour
 ```
 
 ### Usage in API Routes
@@ -205,12 +207,14 @@ UPSTASH_REDIS_URL=rediss://...
 ```
 
 **Redis Benefits:**
+
 - Distributed rate limiting across multiple servers
 - Persistent rate limits (survive server restarts)
 - Better performance for high-traffic scenarios
 - Atomic operations with Lua scripts
 
 **In-Memory Benefits:**
+
 - No external dependencies
 - Zero latency
 - Good for development and low-traffic scenarios
@@ -297,17 +301,17 @@ import { ipBlocker, DEFAULT_BLOCK_RULES } from '@/lib/security/ip-blocker'
 ```typescript
 DEFAULT_BLOCK_RULES = {
   FAILED_LOGIN: {
-    threshold: 10,          // 10 failed attempts
-    windowSeconds: 900,     // in 15 minutes
+    threshold: 10, // 10 failed attempts
+    windowSeconds: 900, // in 15 minutes
     blockDurationSeconds: 3600, // block for 1 hour
   },
   RATE_LIMIT_ABUSE: {
-    threshold: 50,          // 50 rate limit hits
-    windowSeconds: 300,     // in 5 minutes
+    threshold: 50, // 50 rate limit hits
+    windowSeconds: 300, // in 5 minutes
     blockDurationSeconds: 7200, // block for 2 hours
   },
   SQL_INJECTION: {
-    threshold: 1,           // immediate block
+    threshold: 1, // immediate block
     windowSeconds: 60,
     blockDurationSeconds: 0, // permanent
   },
@@ -370,11 +374,7 @@ if (wasBlocked) {
 Temporary blocks for immediate abuse:
 
 ```typescript
-import {
-  addToPenaltyBox,
-  isInPenaltyBox,
-  removeFromPenaltyBox,
-} from '@/middleware/rate-limit'
+import { addToPenaltyBox, isInPenaltyBox, removeFromPenaltyBox } from '@/middleware/rate-limit'
 
 // Add IP to penalty box (1 hour)
 addToPenaltyBox('192.168.1.1', 3600)
@@ -582,7 +582,7 @@ export async function GET() {
   const blacklist = await ipBlocker.getBlacklist()
 
   return Response.json({
-    blocked: blocked.map(b => ({
+    blocked: blocked.map((b) => ({
       ip: b.ip,
       reason: b.reason,
       blockedAt: new Date(b.blockedAt).toISOString(),
@@ -609,12 +609,14 @@ See `/src/app/api/example-protected/route.ts` for a complete example implementin
 ### Rate Limit Not Working
 
 1. Check Redis connection:
+
    ```bash
    # Test Redis connection
    redis-cli ping
    ```
 
 2. Check logs for errors:
+
    ```bash
    # Look for [RateLimiter] errors
    ```

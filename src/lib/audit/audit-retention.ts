@@ -136,7 +136,11 @@ export function shouldRetainEntry(
   settings: AuditSettings,
   currentDate: Date = new Date()
 ): boolean {
-  const { retentionDays } = getApplicablePolicy(entry, settings.policies, settings.defaultRetentionDays)
+  const { retentionDays } = getApplicablePolicy(
+    entry,
+    settings.policies,
+    settings.defaultRetentionDays
+  )
   const entryDate = new Date(entry.timestamp)
   const ageInDays = (currentDate.getTime() - entryDate.getTime()) / (1000 * 60 * 60 * 24)
 

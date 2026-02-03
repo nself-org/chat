@@ -37,187 +37,192 @@ export interface StandupSession {
  * Create a standup bot instance
  */
 export function createStandupBot(): BotInstance {
-  return bot('standup-bot')
-    .name('Standup Bot')
-    .description('Automate daily standup meetings')
-    .version('1.0.0')
-    .icon('🗣️')
-    .permissions('read_messages', 'send_messages', 'mention_users')
+  return (
+    bot('standup-bot')
+      .name('Standup Bot')
+      .description('Automate daily standup meetings')
+      .version('1.0.0')
+      .icon('🗣️')
+      .permissions('read_messages', 'send_messages', 'mention_users')
 
-    .settings({
-      standupTime: '09:00',
-      standupChannel: 'general',
-      skipWeekends: true,
-      questions: {
-        yesterday: 'What did you accomplish yesterday?',
-        today: 'What will you work on today?',
-        blockers: 'Do you have any blockers?',
-      },
-      remindNonResponders: true,
-      reminderTime: '10:00',
-    })
+      .settings({
+        standupTime: '09:00',
+        standupChannel: 'general',
+        skipWeekends: true,
+        questions: {
+          yesterday: 'What did you accomplish yesterday?',
+          today: 'What will you work on today?',
+          blockers: 'Do you have any blockers?',
+        },
+        remindNonResponders: true,
+        reminderTime: '10:00',
+      })
 
-    // Start standup command
-    .command('standup', 'Start daily standup', async (ctx, api) => {
-      const config = api.getBotConfig()
-      const today = new Date().toISOString().split('T')[0]
+      // Start standup command
+      .command('standup', 'Start daily standup', async (ctx, api) => {
+        const config = api.getBotConfig()
+        const today = new Date().toISOString().split('T')[0]
 
-      // Check if standup already started today
-      const existingSession = await api.getStorage<StandupSession>(`standup:${today}`)
+        // Check if standup already started today
+        const existingSession = await api.getStorage<StandupSession>(`standup:${today}`)
 
-      if (existingSession && existingSession.status === 'active') {
-        return info('Standup In Progress', 'Standup is already in progress! Use `/mystandup` to submit your update.')
-      }
+        if (existingSession && existingSession.status === 'active') {
+          return info(
+            'Standup In Progress',
+            'Standup is already in progress! Use `/mystandup` to submit your update.'
+          )
+        }
 
-      // Create new standup session
-      const session: StandupSession = {
-        id: Math.random().toString(36).substring(7),
-        date: today,
-        channelId: ctx.channel.id,
-        responses: [],
-        status: 'active',
-        createdAt: new Date(),
-      }
+        // Create new standup session
+        const session: StandupSession = {
+          id: Math.random().toString(36).substring(7),
+          date: today,
+          channelId: ctx.channel.id,
+          responses: [],
+          status: 'active',
+          createdAt: new Date(),
+        }
 
-      await api.setStorage(`standup:${today}`, session)
+        await api.setStorage(`standup:${today}`, session)
 
-      const settings = (config.settings || {}) as { questions?: { yesterday?: string; today?: string; blockers?: string } }
-      const questions = settings.questions || {}
+        const settings = (config.settings || {}) as {
+          questions?: { yesterday?: string; today?: string; blockers?: string }
+        }
+        const questions = settings.questions || {}
 
-      return response()
-        .embed(
-          embed()
-            .title('🗣️ Daily Standup')
-            .description(
-              `Good morning team! Time for our daily standup.\n\n` +
-              `Please share:\n` +
-              `1️⃣ ${questions.yesterday || 'What did you accomplish yesterday?'}\n` +
-              `2️⃣ ${questions.today || 'What will you work on today?'}\n` +
-              `3️⃣ ${questions.blockers || 'Do you have any blockers?'}\n\n` +
-              `Use \`/mystandup\` to submit your update.`
-            )
-            .color('#3b82f6')
-            .footer(`${session.responses.length} responses so far`)
+        return response()
+          .embed(
+            embed()
+              .title('🗣️ Daily Standup')
+              .description(
+                `Good morning team! Time for our daily standup.\n\n` +
+                  `Please share:\n` +
+                  `1️⃣ ${questions.yesterday || 'What did you accomplish yesterday?'}\n` +
+                  `2️⃣ ${questions.today || 'What will you work on today?'}\n` +
+                  `3️⃣ ${questions.blockers || 'Do you have any blockers?'}\n\n` +
+                  `Use \`/mystandup\` to submit your update.`
+              )
+              .color('#3b82f6')
+              .footer(`${session.responses.length} responses so far`)
+          )
+          .build()
+      })
+
+      // Submit standup update
+      .command('mystandup', 'Submit your standup update', async (ctx, api) => {
+        const today = new Date().toISOString().split('T')[0]
+
+        const session = await api.getStorage<StandupSession>(`standup:${today}`)
+
+        if (!session || session.status !== 'active') {
+          return error('No active standup today. An admin can start one with `/standup`.')
+        }
+
+        // Check if user already responded
+        const existingResponse = session.responses.find((r) => r.userId === ctx.user.id)
+
+        if (existingResponse) {
+          return info(
+            'Already Submitted',
+            "You've already submitted your standup today.\n\n" +
+              'Use `/updatestandup` to update your response.'
+          )
+        }
+
+        // Collect responses
+        if (!ctx.args.yesterday || !ctx.args.today) {
+          return text(
+            'Usage: `/mystandup yesterday:<text> today:<text> [blockers:<text>]`\n\n' +
+              'Example:\n' +
+              '`/mystandup yesterday:"Fixed bugs" today:"New feature" blockers:"None"`'
+          )
+        }
+
+        const standupResponse: StandupResponse = {
+          userId: ctx.user.id,
+          userName: ctx.user.displayName,
+          yesterday: ctx.args.yesterday as string,
+          today: ctx.args.today as string,
+          blockers: (ctx.args.blockers as string) || 'None',
+          timestamp: new Date(),
+        }
+
+        session.responses.push(standupResponse)
+        await api.setStorage(`standup:${today}`, session)
+
+        return success(
+          `Thanks for your update! 🎉\n\n` +
+            `**Yesterday:** ${standupResponse.yesterday}\n` +
+            `**Today:** ${standupResponse.today}\n` +
+            `**Blockers:** ${standupResponse.blockers}\n\n` +
+            `${session.responses.length} team members have responded.`
         )
-        .build()
-    })
+      })
 
-    // Submit standup update
-    .command('mystandup', 'Submit your standup update', async (ctx, api) => {
-      const today = new Date().toISOString().split('T')[0]
+      // Update standup response
+      .command('updatestandup', 'Update your standup response', async (ctx, api) => {
+        const today = new Date().toISOString().split('T')[0]
+        const session = await api.getStorage<StandupSession>(`standup:${today}`)
 
-      const session = await api.getStorage<StandupSession>(`standup:${today}`)
+        if (!session || session.status !== 'active') {
+          return error('No active standup today.')
+        }
 
-      if (!session || session.status !== 'active') {
-        return error('No active standup today. An admin can start one with `/standup`.')
-      }
+        const responseIndex = session.responses.findIndex((r) => r.userId === ctx.user.id)
 
-      // Check if user already responded
-      const existingResponse = session.responses.find(r => r.userId === ctx.user.id)
+        if (responseIndex === -1) {
+          return error("You haven't submitted a standup yet. Use `/mystandup` first.")
+        }
 
-      if (existingResponse) {
-        return info(
-          'Already Submitted',
-          'You\'ve already submitted your standup today.\n\n' +
-          'Use `/updatestandup` to update your response.'
-        )
-      }
+        // Update response
+        const response = session.responses[responseIndex]
 
-      // Collect responses
-      if (!ctx.args.yesterday || !ctx.args.today) {
-        return text(
-          'Usage: `/mystandup yesterday:<text> today:<text> [blockers:<text>]`\n\n' +
-          'Example:\n' +
-          '`/mystandup yesterday:"Fixed bugs" today:"New feature" blockers:"None"`'
-        )
-      }
+        if (ctx.args.yesterday) response.yesterday = ctx.args.yesterday as string
+        if (ctx.args.today) response.today = ctx.args.today as string
+        if (ctx.args.blockers) response.blockers = ctx.args.blockers as string
 
-      const standupResponse: StandupResponse = {
-        userId: ctx.user.id,
-        userName: ctx.user.displayName,
-        yesterday: ctx.args.yesterday as string,
-        today: ctx.args.today as string,
-        blockers: (ctx.args.blockers as string) || 'None',
-        timestamp: new Date(),
-      }
+        response.timestamp = new Date()
 
-      session.responses.push(standupResponse)
-      await api.setStorage(`standup:${today}`, session)
+        await api.setStorage(`standup:${today}`, session)
 
-      return success(
-        `Thanks for your update! 🎉\n\n` +
-        `**Yesterday:** ${standupResponse.yesterday}\n` +
-        `**Today:** ${standupResponse.today}\n` +
-        `**Blockers:** ${standupResponse.blockers}\n\n` +
-        `${session.responses.length} team members have responded.`
-      )
-    })
+        return success('Your standup has been updated!')
+      })
 
-    // Update standup response
-    .command('updatestandup', 'Update your standup response', async (ctx, api) => {
-      const today = new Date().toISOString().split('T')[0]
-      const session = await api.getStorage<StandupSession>(`standup:${today}`)
+      // End standup and show summary
+      .command('endstandup', 'End standup and show summary', async (ctx, api) => {
+        const today = new Date().toISOString().split('T')[0]
+        const session = await api.getStorage<StandupSession>(`standup:${today}`)
 
-      if (!session || session.status !== 'active') {
-        return error('No active standup today.')
-      }
+        if (!session || session.status !== 'active') {
+          return error('No active standup today.')
+        }
 
-      const responseIndex = session.responses.findIndex(r => r.userId === ctx.user.id)
+        session.status = 'completed'
+        session.completedAt = new Date()
+        await api.setStorage(`standup:${today}`, session)
 
-      if (responseIndex === -1) {
-        return error('You haven\'t submitted a standup yet. Use `/mystandup` first.')
-      }
+        return renderStandupSummary(session)
+      })
 
-      // Update response
-      const response = session.responses[responseIndex]
+      // Show standup summary
+      .command('standupnotes', 'View standup summary', async (ctx, api) => {
+        const dateStr = (ctx.args.date as string) || new Date().toISOString().split('T')[0]
+        const session = await api.getStorage<StandupSession>(`standup:${dateStr}`)
 
-      if (ctx.args.yesterday) response.yesterday = ctx.args.yesterday as string
-      if (ctx.args.today) response.today = ctx.args.today as string
-      if (ctx.args.blockers) response.blockers = ctx.args.blockers as string
+        if (!session) {
+          return error(`No standup found for ${dateStr}`)
+        }
 
-      response.timestamp = new Date()
+        return renderStandupSummary(session)
+      })
 
-      await api.setStorage(`standup:${today}`, session)
+      .onInit(async (bot, api) => {
+        // REMOVED: console.log('[StandupBot] Initialized successfully')
+        // This would use the bot_scheduled_tasks table
+      })
 
-      return success('Your standup has been updated!')
-    })
-
-    // End standup and show summary
-    .command('endstandup', 'End standup and show summary', async (ctx, api) => {
-      const today = new Date().toISOString().split('T')[0]
-      const session = await api.getStorage<StandupSession>(`standup:${today}`)
-
-      if (!session || session.status !== 'active') {
-        return error('No active standup today.')
-      }
-
-      session.status = 'completed'
-      session.completedAt = new Date()
-      await api.setStorage(`standup:${today}`, session)
-
-      return renderStandupSummary(session)
-    })
-
-    // Show standup summary
-    .command('standupnotes', 'View standup summary', async (ctx, api) => {
-      const dateStr = (ctx.args.date as string) || new Date().toISOString().split('T')[0]
-      const session = await api.getStorage<StandupSession>(`standup:${dateStr}`)
-
-      if (!session) {
-        return error(`No standup found for ${dateStr}`)
-      }
-
-      return renderStandupSummary(session)
-    })
-
-    .onInit(async (bot, api) => {
-      console.log('[StandupBot] Initialized successfully')
-
-      // TODO: Set up scheduled task for daily standup
-      // This would use the bot_scheduled_tasks table
-    })
-
-    .build()
+      .build()
+  )
 }
 
 /**
@@ -228,19 +233,17 @@ function renderStandupSummary(session: StandupSession): any {
     .title(`📋 Standup Summary - ${formatDate(session.date)}`)
     .description(
       `**Status:** ${session.status === 'completed' ? '✅ Completed' : '⏳ In Progress'}\n` +
-      `**Responses:** ${session.responses.length}\n` +
-      `**Started:** ${formatTime(session.createdAt)}\n` +
-      (session.completedAt ? `**Ended:** ${formatTime(session.completedAt)}\n` : '')
+        `**Responses:** ${session.responses.length}\n` +
+        `**Started:** ${formatTime(session.createdAt)}\n` +
+        (session.completedAt ? `**Ended:** ${formatTime(session.completedAt)}\n` : '')
     )
     .color(session.status === 'completed' ? '#10b981' : '#f59e0b')
 
   // Add each team member's update
-  session.responses.forEach(r => {
+  session.responses.forEach((r) => {
     response.field(
       `👤 ${r.userName}`,
-      `**Yesterday:** ${r.yesterday}\n` +
-      `**Today:** ${r.today}\n` +
-      `**Blockers:** ${r.blockers}`,
+      `**Yesterday:** ${r.yesterday}\n` + `**Today:** ${r.today}\n` + `**Blockers:** ${r.blockers}`,
       false
     )
   })
@@ -302,13 +305,13 @@ export const standupBotTemplate = {
       skipWeekends: {
         type: 'boolean',
         title: 'Skip Weekends',
-        description: 'Don\'t run standups on Saturday and Sunday',
+        description: "Don't run standups on Saturday and Sunday",
         default: true,
       },
       remindNonResponders: {
         type: 'boolean',
         title: 'Remind Non-responders',
-        description: 'Send reminder to team members who haven\'t responded',
+        description: "Send reminder to team members who haven't responded",
         default: true,
       },
       reminderTime: {

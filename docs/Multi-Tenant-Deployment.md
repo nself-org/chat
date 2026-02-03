@@ -35,6 +35,7 @@ nself-chat uses **schema-level isolation** for tenant data:
 - Middleware resolves tenant from subdomain or custom domain
 
 **Benefits**:
+
 - ✅ Strong data isolation
 - ✅ Independent backups per tenant
 - ✅ Efficient resource usage
@@ -42,6 +43,7 @@ nself-chat uses **schema-level isolation** for tenant data:
 - ✅ Cost-effective scaling
 
 **Alternatives Considered**:
+
 - ❌ Separate database per tenant (too expensive at scale)
 - ❌ Shared schema with tenant_id (weaker isolation, risk of data leaks)
 
@@ -89,6 +91,7 @@ nself db migrate up 030_multi_tenant_system.sql
 ```
 
 This creates:
+
 - `public.tenants` - Tenant metadata
 - `public.tenant_usage` - Usage statistics
 - `public.tenant_settings` - Tenant configuration
@@ -223,6 +226,7 @@ Proxy: ✓ Proxied
 ### SSL Certificate (Required)
 
 **Option 1: Cloudflare (Recommended)**
+
 - Free wildcard SSL
 - Automatic renewal
 - DDoS protection
@@ -247,11 +251,13 @@ sudo certbot certonly --manual --preferred-challenges dns \
 To support custom domains (e.g., `chat.acme.com`):
 
 1. **Tenant provides DNS records**:
+
    ```
    CNAME: chat.acme.com → nchat.app
    ```
 
 2. **Add domain to tenant**:
+
    ```bash
    curl -X PUT https://api.nchat.app/tenants/{id} \
      -H "Authorization: Bearer {token}" \
@@ -259,6 +265,7 @@ To support custom domains (e.g., `chat.acme.com`):
    ```
 
 3. **Configure SSL** (if not using Cloudflare):
+
    ```bash
    # Add domain to SSL cert
    sudo certbot certonly --manual --preferred-challenges dns \
@@ -284,6 +291,7 @@ To support custom domains (e.g., `chat.acme.com`):
 ### 2. Create Products & Prices
 
 **Free Plan** (no charge):
+
 - No Stripe product needed
 - Handled in application logic
 
@@ -342,7 +350,7 @@ export const DEFAULT_PLANS: Record<BillingPlan, SubscriptionPlan> = {
   pro: {
     // ...
     stripePriceIdMonthly: 'price_xxx', // From Stripe
-    stripePriceIdYearly: 'price_yyy',  // From Stripe
+    stripePriceIdYearly: 'price_yyy', // From Stripe
   },
   enterprise: {
     // ...
@@ -592,6 +600,7 @@ psql -h localhost -U postgres -d nchat_multi \
 **Symptoms**: 404 error when accessing subdomain
 
 **Solutions**:
+
 1. Check DNS propagation: `nslookup acme.nchat.app`
 2. Verify tenant exists: `SELECT * FROM public.tenants WHERE slug = 'acme'`
 3. Check middleware logs for tenant resolution
@@ -602,6 +611,7 @@ psql -h localhost -U postgres -d nchat_multi \
 **Symptoms**: Subscription not updating after payment
 
 **Solutions**:
+
 1. Check webhook signature verification
 2. Verify `STRIPE_WEBHOOK_SECRET` is correct
 3. Check Stripe Dashboard → Webhooks → Events
@@ -612,6 +622,7 @@ psql -h localhost -U postgres -d nchat_multi \
 **Symptoms**: Tenant exceeds usage limits without restriction
 
 **Solutions**:
+
 1. Check limit enforcement middleware
 2. Verify usage tracking: `SELECT * FROM public.tenant_usage`
 3. Run limits check: `SELECT public.check_tenant_limits('{tenant_id}')`
@@ -622,6 +633,7 @@ psql -h localhost -U postgres -d nchat_multi \
 **Symptoms**: Tenant seeing data from another tenant
 
 **Critical Security Issue - Immediate Action Required**:
+
 1. Suspend all tenants immediately
 2. Review RLS policies: `SELECT * FROM pg_policies WHERE schemaname = 'public'`
 3. Check search_path configuration
@@ -691,6 +703,7 @@ const rateLimiter = new RateLimiter({
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/yourusername/nself-chat/issues
 - Documentation: https://docs.nchat.app
 - Email: support@nchat.app

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ConnectionStatus - Connection status indicator component
@@ -6,21 +6,21 @@
  * Shows a visual indicator of the current connection state.
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { useConnectionStatus } from '@/hooks/useConnectionStatus';
-import type { ConnectionState } from '@/lib/offline/offline-types';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { useConnectionStatus } from '@/hooks/useConnectionStatus'
+import type { ConnectionState } from '@/lib/offline/offline-types'
 
 // =============================================================================
 // Types
 // =============================================================================
 
 export interface ConnectionStatusProps {
-  className?: string;
-  showText?: boolean;
-  showQuality?: boolean;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'dot' | 'badge' | 'icon';
+  className?: string
+  showText?: boolean
+  showQuality?: boolean
+  size?: 'sm' | 'md' | 'lg'
+  variant?: 'dot' | 'badge' | 'icon'
 }
 
 // =============================================================================
@@ -30,45 +30,45 @@ export interface ConnectionStatusProps {
 function getStatusColor(state: ConnectionState): string {
   switch (state) {
     case 'online':
-      return 'bg-green-500';
+      return 'bg-green-500'
     case 'connecting':
     case 'reconnecting':
-      return 'bg-yellow-500';
+      return 'bg-yellow-500'
     case 'offline':
-      return 'bg-gray-400';
+      return 'bg-gray-400'
     case 'error':
-      return 'bg-red-500';
+      return 'bg-red-500'
     default:
-      return 'bg-gray-400';
+      return 'bg-gray-400'
   }
 }
 
 function getStatusTextColor(state: ConnectionState): string {
   switch (state) {
     case 'online':
-      return 'text-green-600 dark:text-green-400';
+      return 'text-green-600 dark:text-green-400'
     case 'connecting':
     case 'reconnecting':
-      return 'text-yellow-600 dark:text-yellow-400';
+      return 'text-yellow-600 dark:text-yellow-400'
     case 'offline':
-      return 'text-gray-500 dark:text-gray-400';
+      return 'text-gray-500 dark:text-gray-400'
     case 'error':
-      return 'text-red-600 dark:text-red-400';
+      return 'text-red-600 dark:text-red-400'
     default:
-      return 'text-gray-500';
+      return 'text-gray-500'
   }
 }
 
 function getDotSize(size: 'sm' | 'md' | 'lg'): string {
   switch (size) {
     case 'sm':
-      return 'h-2 w-2';
+      return 'h-2 w-2'
     case 'md':
-      return 'h-2.5 w-2.5';
+      return 'h-2.5 w-2.5'
     case 'lg':
-      return 'h-3 w-3';
+      return 'h-3 w-3'
     default:
-      return 'h-2.5 w-2.5';
+      return 'h-2.5 w-2.5'
   }
 }
 
@@ -90,31 +90,23 @@ export function ConnectionStatus({
     networkQualityText,
     isReconnecting,
     reconnectAttempts,
-  } = useConnectionStatus();
+  } = useConnectionStatus()
 
-  const dotSizeClass = getDotSize(size);
-  const statusColor = getStatusColor(state);
-  const textColor = getStatusTextColor(state);
-  const isPulsing = state === 'connecting' || state === 'reconnecting';
+  const dotSizeClass = getDotSize(size)
+  const statusColor = getStatusColor(state)
+  const textColor = getStatusTextColor(state)
+  const isPulsing = state === 'connecting' || state === 'reconnecting'
 
   if (variant === 'dot') {
     return (
       <div className={cn('flex items-center gap-2', className)}>
         <div className="relative">
           <div
-            className={cn(
-              'rounded-full',
-              dotSizeClass,
-              statusColor,
-              isPulsing && 'animate-pulse'
-            )}
+            className={cn('rounded-full', dotSizeClass, statusColor, isPulsing && 'animate-pulse')}
           />
           {isPulsing && (
             <div
-              className={cn(
-                'absolute inset-0 rounded-full animate-ping opacity-75',
-                statusColor
-              )}
+              className={cn('absolute inset-0 animate-ping rounded-full opacity-75', statusColor)}
             />
           )}
         </div>
@@ -122,19 +114,15 @@ export function ConnectionStatus({
           <span className={cn('text-sm font-medium', textColor)}>
             {stateText}
             {isReconnecting && reconnectAttempts > 0 && (
-              <span className="text-muted-foreground ml-1">
-                ({reconnectAttempts})
-              </span>
+              <span className="ml-1 text-muted-foreground">({reconnectAttempts})</span>
             )}
           </span>
         )}
         {showQuality && state === 'online' && networkQuality !== 'unknown' && (
-          <span className="text-xs text-muted-foreground">
-            ({networkQualityText})
-          </span>
+          <span className="text-xs text-muted-foreground">({networkQualityText})</span>
         )}
       </div>
-    );
+    )
   }
 
   if (variant === 'badge') {
@@ -151,17 +139,11 @@ export function ConnectionStatus({
         )}
       >
         <div
-          className={cn(
-            'h-1.5 w-1.5 rounded-full',
-            statusColor,
-            isPulsing && 'animate-pulse'
-          )}
+          className={cn('h-1.5 w-1.5 rounded-full', statusColor, isPulsing && 'animate-pulse')}
         />
-        <span className={cn('text-xs font-medium', textColor)}>
-          {stateText}
-        </span>
+        <span className={cn('text-xs font-medium', textColor)}>{stateText}</span>
       </div>
-    );
+    )
   }
 
   // Icon variant
@@ -174,12 +156,7 @@ export function ConnectionStatus({
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5 13l4 4L19 7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       )}
       {state === 'offline' && (
@@ -198,11 +175,7 @@ export function ConnectionStatus({
         </svg>
       )}
       {(state === 'connecting' || state === 'reconnecting') && (
-        <svg
-          className="h-4 w-4 text-yellow-500 animate-spin"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
+        <svg className="h-4 w-4 animate-spin text-yellow-500" fill="none" viewBox="0 0 24 24">
           <circle
             className="opacity-25"
             cx="12"
@@ -219,12 +192,7 @@ export function ConnectionStatus({
         </svg>
       )}
       {state === 'error' && (
-        <svg
-          className="h-4 w-4 text-red-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg className="h-4 w-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -233,11 +201,9 @@ export function ConnectionStatus({
           />
         </svg>
       )}
-      {showText && (
-        <span className={cn('text-sm', textColor)}>{stateText}</span>
-      )}
+      {showText && <span className={cn('text-sm', textColor)}>{stateText}</span>}
     </div>
-  );
+  )
 }
 
-export default ConnectionStatus;
+export default ConnectionStatus

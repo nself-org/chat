@@ -22,12 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { logger } from '@/lib/logger'
 import {
   Search,
   Copy,
@@ -101,23 +97,19 @@ function UserSearchResult({ user, selected, onToggle }: UserSearchResultProps) {
       onClick={onToggle}
       disabled={user.alreadyMember}
       className={cn(
-        'flex items-center gap-3 w-full px-3 py-2 rounded-md text-left transition-colors',
+        'flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
         selected && 'bg-primary/10',
-        user.alreadyMember
-          ? 'opacity-50 cursor-not-allowed'
-          : 'hover:bg-accent'
+        user.alreadyMember ? 'cursor-not-allowed opacity-50' : 'hover:bg-accent'
       )}
       data-testid={`user-result-${user.id}`}
     >
       <Avatar className="h-8 w-8">
         <AvatarImage src={user.avatarUrl} />
-        <AvatarFallback>
-          {user.displayName.charAt(0).toUpperCase()}
-        </AvatarFallback>
+        <AvatarFallback>{user.displayName.charAt(0).toUpperCase()}</AvatarFallback>
       </Avatar>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{user.displayName}</p>
-        <p className="text-xs text-muted-foreground truncate">@{user.username}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{user.displayName}</p>
+        <p className="truncate text-xs text-muted-foreground">@{user.username}</p>
       </div>
       {user.alreadyMember ? (
         <Badge variant="secondary" className="text-xs">
@@ -210,35 +202,38 @@ export function InviteModal({
   }, [open, users])
 
   // Search users
-  const handleSearch = React.useCallback(async (query: string) => {
-    setSearchQuery(query)
-    if (!onSearchUsers) {
-      // Filter local users if no search function provided
-      const filtered = users.filter(
-        (u) =>
-          u.displayName.toLowerCase().includes(query.toLowerCase()) ||
-          u.username.toLowerCase().includes(query.toLowerCase()) ||
-          u.email.toLowerCase().includes(query.toLowerCase())
-      )
-      setSearchResults(filtered)
-      return
-    }
+  const handleSearch = React.useCallback(
+    async (query: string) => {
+      setSearchQuery(query)
+      if (!onSearchUsers) {
+        // Filter local users if no search function provided
+        const filtered = users.filter(
+          (u) =>
+            u.displayName.toLowerCase().includes(query.toLowerCase()) ||
+            u.username.toLowerCase().includes(query.toLowerCase()) ||
+            u.email.toLowerCase().includes(query.toLowerCase())
+        )
+        setSearchResults(filtered)
+        return
+      }
 
-    if (!query.trim()) {
-      setSearchResults(users)
-      return
-    }
+      if (!query.trim()) {
+        setSearchResults(users)
+        return
+      }
 
-    setSearching(true)
-    try {
-      const results = await onSearchUsers(query)
-      setSearchResults(results)
-    } catch (error) {
-      console.error('Search failed:', error)
-    } finally {
-      setSearching(false)
-    }
-  }, [onSearchUsers, users])
+      setSearching(true)
+      try {
+        const results = await onSearchUsers(query)
+        setSearchResults(results)
+      } catch (error) {
+        logger.error('Search failed:',  error)
+      } finally {
+        setSearching(false)
+      }
+    },
+    [onSearchUsers, users]
+  )
 
   // Toggle user selection
   const toggleUser = (userId: string) => {
@@ -283,7 +278,7 @@ export function InviteModal({
       setSelectedUsers(new Set())
       onOpenChange(false)
     } catch (error) {
-      console.error('Invite failed:', error)
+      logger.error('Invite failed:',  error)
     } finally {
       setInviting(false)
     }
@@ -299,7 +294,7 @@ export function InviteModal({
       setEmails([])
       onOpenChange(false)
     } catch (error) {
-      console.error('Email invite failed:', error)
+      logger.error('Email invite failed:',  error)
     } finally {
       setInviting(false)
     }
@@ -313,7 +308,7 @@ export function InviteModal({
     try {
       await onGenerateLink(linkExpiry)
     } catch (error) {
-      console.error('Generate link failed:', error)
+      logger.error('Generate link failed:',  error)
     } finally {
       setGeneratingLink(false)
     }
@@ -328,13 +323,11 @@ export function InviteModal({
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (error) {
-      console.error('Copy failed:', error)
+      logger.error('Copy failed:',  error)
     }
   }
 
-  const title = inviteType === 'channel'
-    ? `Invite to #${channelName}`
-    : 'Invite to Workspace'
+  const title = inviteType === 'channel' ? `Invite to #${channelName}` : 'Invite to Workspace'
 
   const selectedUserObjects = React.useMemo(() => {
     return users.filter((u) => selectedUsers.has(u.id))
@@ -342,38 +335,40 @@ export function InviteModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-muted-foreground" />
             {title}
           </DialogTitle>
-          <DialogDescription>
-            Invite people to join and collaborate
-          </DialogDescription>
+          <DialogDescription>Invite people to join and collaborate</DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="flex flex-1 flex-col overflow-hidden"
+        >
           <TabsList className="w-full">
             <TabsTrigger value="users" className="flex-1" data-testid="tab-users">
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="mr-2 h-4 w-4" />
               Search Users
             </TabsTrigger>
             <TabsTrigger value="email" className="flex-1" data-testid="tab-email">
-              <Mail className="h-4 w-4 mr-2" />
+              <Mail className="mr-2 h-4 w-4" />
               Email
             </TabsTrigger>
             <TabsTrigger value="link" className="flex-1" data-testid="tab-link">
-              <Link className="h-4 w-4 mr-2" />
+              <Link className="mr-2 h-4 w-4" />
               Invite Link
             </TabsTrigger>
           </TabsList>
 
           {/* Users Tab */}
-          <TabsContent value="users" className="flex-1 overflow-hidden flex flex-col m-0 pt-4">
+          <TabsContent value="users" className="m-0 flex flex-1 flex-col overflow-hidden pt-4">
             {/* Selected Users */}
             {selectedUserObjects.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 p-2 border rounded-lg bg-muted/30 mb-4">
+              <div className="bg-muted/30 mb-4 flex flex-wrap gap-1.5 rounded-lg border p-2">
                 {selectedUserObjects.map((user) => (
                   <SelectedUserBadge
                     key={user.id}
@@ -386,7 +381,7 @@ export function InviteModal({
 
             {/* Search */}
             <div className="relative mb-4">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search by name or email..."
                 value={searchQuery}
@@ -396,7 +391,7 @@ export function InviteModal({
                 data-testid="user-search-input"
               />
               {searching && (
-                <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 animate-spin" />
+                <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin" />
               )}
             </div>
 
@@ -404,7 +399,7 @@ export function InviteModal({
             <ScrollArea className="flex-1">
               <div className="space-y-1">
                 {searchResults.length === 0 ? (
-                  <p className="text-sm text-muted-foreground text-center py-8">
+                  <p className="py-8 text-center text-sm text-muted-foreground">
                     {searchQuery ? 'No users found' : 'Start typing to search'}
                   </p>
                 ) : (
@@ -422,14 +417,14 @@ export function InviteModal({
 
             {/* Invite Button */}
             {onInviteUsers && (
-              <div className="pt-4 border-t mt-4">
+              <div className="mt-4 border-t pt-4">
                 <Button
                   onClick={handleInviteUsers}
                   disabled={selectedUsers.size === 0 || inviting || isLoading}
                   className="w-full"
                   data-testid="invite-users-button"
                 >
-                  {inviting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  {inviting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Invite {selectedUsers.size} {selectedUsers.size === 1 ? 'User' : 'Users'}
                 </Button>
               </div>
@@ -437,9 +432,9 @@ export function InviteModal({
           </TabsContent>
 
           {/* Email Tab */}
-          <TabsContent value="email" className="flex-1 overflow-hidden flex flex-col m-0 pt-4">
+          <TabsContent value="email" className="m-0 flex flex-1 flex-col overflow-hidden pt-4">
             {/* Email Input */}
-            <div className="space-y-2 mb-4">
+            <div className="mb-4 space-y-2">
               <Label htmlFor="email-input">Email Addresses</Label>
               <div className="flex gap-2">
                 <Input
@@ -470,9 +465,14 @@ export function InviteModal({
             {/* Email List */}
             {emails.length > 0 && (
               <div className="flex-1 overflow-auto">
-                <div className="flex flex-wrap gap-1.5 p-2 border rounded-lg bg-muted/30">
+                <div className="bg-muted/30 flex flex-wrap gap-1.5 rounded-lg border p-2">
                   {emails.map((email) => (
-                    <Badge key={email} variant="secondary" className="gap-1 pr-1" data-testid={`email-${email}`}>
+                    <Badge
+                      key={email}
+                      variant="secondary"
+                      className="gap-1 pr-1"
+                      data-testid={`email-${email}`}
+                    >
                       {email}
                       <button
                         type="button"
@@ -490,14 +490,14 @@ export function InviteModal({
 
             {/* Send Button */}
             {onInviteByEmail && (
-              <div className="pt-4 border-t mt-auto">
+              <div className="mt-auto border-t pt-4">
                 <Button
                   onClick={handleInviteByEmail}
                   disabled={emails.length === 0 || inviting || isLoading}
                   className="w-full"
                   data-testid="send-invites-button"
                 >
-                  {inviting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                  {inviting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Send {emails.length} {emails.length === 1 ? 'Invite' : 'Invites'}
                 </Button>
               </div>
@@ -505,10 +505,10 @@ export function InviteModal({
           </TabsContent>
 
           {/* Link Tab */}
-          <TabsContent value="link" className="flex-1 overflow-hidden flex flex-col m-0 pt-4">
+          <TabsContent value="link" className="m-0 flex flex-1 flex-col overflow-hidden pt-4">
             {/* Link Generation */}
             {onGenerateLink && (
-              <div className="space-y-4 mb-4">
+              <div className="mb-4 space-y-4">
                 <div className="space-y-2">
                   <Label>Link Expiration</Label>
                   <Select
@@ -537,9 +537,9 @@ export function InviteModal({
                   data-testid="generate-link-button"
                 >
                   {generatingLink ? (
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : (
-                    <RefreshCw className="h-4 w-4 mr-2" />
+                    <RefreshCw className="mr-2 h-4 w-4" />
                   )}
                   {inviteLink ? 'Generate New Link' : 'Generate Link'}
                 </Button>
@@ -549,7 +549,7 @@ export function InviteModal({
             {/* Current Link */}
             {inviteLink && (
               <div className="space-y-4">
-                <div className="p-4 border rounded-lg bg-muted/30 space-y-3">
+                <div className="bg-muted/30 space-y-3 rounded-lg border p-4">
                   <div className="flex items-center gap-2">
                     <Input
                       value={inviteLink.url}
@@ -603,7 +603,7 @@ export function InviteModal({
             )}
 
             {!inviteLink && !onGenerateLink && (
-              <p className="text-sm text-muted-foreground text-center py-8">
+              <p className="py-8 text-center text-sm text-muted-foreground">
                 No invite link available
               </p>
             )}

@@ -8,51 +8,51 @@
  */
 export interface ValidationResult {
   /** Whether the value is valid */
-  valid: boolean;
+  valid: boolean
   /** Error message if invalid */
-  error?: string;
+  error?: string
   /** Warning message (valid but not ideal) */
-  warning?: string;
+  warning?: string
 }
 
 /**
  * Password strength level
  */
-export type PasswordStrength = 'weak' | 'fair' | 'good' | 'strong';
+export type PasswordStrength = 'weak' | 'fair' | 'good' | 'strong'
 
 /**
  * Password validation options
  */
 export interface PasswordOptions {
   /** Minimum length (default: 8) */
-  minLength?: number;
+  minLength?: number
   /** Maximum length (default: 128) */
-  maxLength?: number;
+  maxLength?: number
   /** Require uppercase letter */
-  requireUppercase?: boolean;
+  requireUppercase?: boolean
   /** Require lowercase letter */
-  requireLowercase?: boolean;
+  requireLowercase?: boolean
   /** Require number */
-  requireNumber?: boolean;
+  requireNumber?: boolean
   /** Require special character */
-  requireSpecial?: boolean;
+  requireSpecial?: boolean
 }
 
 /**
  * Common email regex pattern (RFC 5322 simplified)
  */
 const EMAIL_REGEX =
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
 
 /**
  * Channel name regex (lowercase, numbers, hyphens, underscores)
  */
-const CHANNEL_NAME_REGEX = /^[a-z0-9][a-z0-9_-]*[a-z0-9]$|^[a-z0-9]$/;
+const CHANNEL_NAME_REGEX = /^[a-z0-9][a-z0-9_-]*[a-z0-9]$|^[a-z0-9]$/
 
 /**
  * Username regex (letters, numbers, underscores, periods)
  */
-const USERNAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_.]*[a-zA-Z0-9]$|^[a-zA-Z]$/;
+const USERNAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_.]*[a-zA-Z0-9]$|^[a-zA-Z]$/
 
 /**
  * Validate an email address
@@ -64,25 +64,25 @@ const USERNAME_REGEX = /^[a-zA-Z][a-zA-Z0-9_.]*[a-zA-Z0-9]$|^[a-zA-Z]$/;
  */
 export function validateEmail(email: string): ValidationResult {
   if (!email || typeof email !== 'string') {
-    return { valid: false, error: 'Email is required' };
+    return { valid: false, error: 'Email is required' }
   }
 
-  const trimmed = email.trim();
+  const trimmed = email.trim()
 
   if (trimmed.length === 0) {
-    return { valid: false, error: 'Email is required' };
+    return { valid: false, error: 'Email is required' }
   }
 
   if (trimmed.length > 254) {
-    return { valid: false, error: 'Email is too long' };
+    return { valid: false, error: 'Email is too long' }
   }
 
   if (!EMAIL_REGEX.test(trimmed)) {
-    return { valid: false, error: 'Invalid email format' };
+    return { valid: false, error: 'Invalid email format' }
   }
 
   // Check for common typos
-  const domain = trimmed.split('@')[1]?.toLowerCase();
+  const domain = trimmed.split('@')[1]?.toLowerCase()
   const typoWarnings: Record<string, string> = {
     'gmial.com': 'Did you mean gmail.com?',
     'gmal.com': 'Did you mean gmail.com?',
@@ -90,13 +90,13 @@ export function validateEmail(email: string): ValidationResult {
     'hotmal.com': 'Did you mean hotmail.com?',
     'yahooo.com': 'Did you mean yahoo.com?',
     'outlok.com': 'Did you mean outlook.com?',
-  };
-
-  if (domain && typoWarnings[domain]) {
-    return { valid: true, warning: typoWarnings[domain] };
   }
 
-  return { valid: true };
+  if (domain && typoWarnings[domain]) {
+    return { valid: true, warning: typoWarnings[domain] }
+  }
+
+  return { valid: true }
 }
 
 /**
@@ -119,34 +119,34 @@ export function validatePassword(
     requireLowercase = true,
     requireNumber = true,
     requireSpecial = false,
-  } = options;
+  } = options
 
   if (!password || typeof password !== 'string') {
-    return { valid: false, error: 'Password is required' };
+    return { valid: false, error: 'Password is required' }
   }
 
   if (password.length < minLength) {
-    return { valid: false, error: `Password must be at least ${minLength} characters` };
+    return { valid: false, error: `Password must be at least ${minLength} characters` }
   }
 
   if (password.length > maxLength) {
-    return { valid: false, error: `Password must be no more than ${maxLength} characters` };
+    return { valid: false, error: `Password must be no more than ${maxLength} characters` }
   }
 
   if (requireUppercase && !/[A-Z]/.test(password)) {
-    return { valid: false, error: 'Password must contain an uppercase letter' };
+    return { valid: false, error: 'Password must contain an uppercase letter' }
   }
 
   if (requireLowercase && !/[a-z]/.test(password)) {
-    return { valid: false, error: 'Password must contain a lowercase letter' };
+    return { valid: false, error: 'Password must contain a lowercase letter' }
   }
 
   if (requireNumber && !/[0-9]/.test(password)) {
-    return { valid: false, error: 'Password must contain a number' };
+    return { valid: false, error: 'Password must contain a number' }
   }
 
   if (requireSpecial && !/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
-    return { valid: false, error: 'Password must contain a special character' };
+    return { valid: false, error: 'Password must contain a special character' }
   }
 
   // Check for common weak passwords
@@ -158,15 +158,15 @@ export function validatePassword(
     'letmein',
     'welcome',
     'admin123',
-  ];
+  ]
   if (commonPasswords.includes(password.toLowerCase())) {
-    return { valid: false, error: 'This password is too common' };
+    return { valid: false, error: 'This password is too common' }
   }
 
   // Calculate strength
-  const strength = calculatePasswordStrength(password);
+  const strength = calculatePasswordStrength(password)
 
-  return { valid: true, strength };
+  return { valid: true, strength }
 }
 
 /**
@@ -175,31 +175,35 @@ export function validatePassword(
  * @returns Password strength level
  */
 export function calculatePasswordStrength(password: string): PasswordStrength {
-  let score = 0;
+  let score = 0
 
   // Length scoring
-  if (password.length >= 8) score += 1;
-  if (password.length >= 12) score += 1;
-  if (password.length >= 16) score += 1;
+  if (password.length >= 8) score += 1
+  if (password.length >= 12) score += 1
+  if (password.length >= 16) score += 1
 
   // Character variety scoring
-  if (/[a-z]/.test(password)) score += 1;
-  if (/[A-Z]/.test(password)) score += 1;
-  if (/[0-9]/.test(password)) score += 1;
-  if (/[^a-zA-Z0-9]/.test(password)) score += 2;
+  if (/[a-z]/.test(password)) score += 1
+  if (/[A-Z]/.test(password)) score += 1
+  if (/[0-9]/.test(password)) score += 1
+  if (/[^a-zA-Z0-9]/.test(password)) score += 2
 
   // Penalty for repetitive characters
-  if (/(.)\1{2,}/.test(password)) score -= 1;
+  if (/(.)\1{2,}/.test(password)) score -= 1
 
   // Penalty for sequential characters
-  if (/(?:abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(password)) {
-    score -= 1;
+  if (
+    /(?:abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz|012|123|234|345|456|567|678|789)/i.test(
+      password
+    )
+  ) {
+    score -= 1
   }
 
-  if (score <= 2) return 'weak';
-  if (score <= 4) return 'fair';
-  if (score <= 6) return 'good';
-  return 'strong';
+  if (score <= 2) return 'weak'
+  if (score <= 4) return 'fair'
+  if (score <= 6) return 'good'
+  return 'strong'
 }
 
 /**
@@ -215,36 +219,39 @@ export function validateChannelName(
   name: string,
   options: { minLength?: number; maxLength?: number } = {}
 ): ValidationResult {
-  const { minLength = 1, maxLength = 80 } = options;
+  const { minLength = 1, maxLength = 80 } = options
 
   if (!name || typeof name !== 'string') {
-    return { valid: false, error: 'Channel name is required' };
+    return { valid: false, error: 'Channel name is required' }
   }
 
-  const trimmed = name.trim();
+  const trimmed = name.trim()
 
   if (trimmed.length < minLength) {
-    return { valid: false, error: `Channel name must be at least ${minLength} character${minLength > 1 ? 's' : ''}` };
+    return {
+      valid: false,
+      error: `Channel name must be at least ${minLength} character${minLength > 1 ? 's' : ''}`,
+    }
   }
 
   if (trimmed.length > maxLength) {
-    return { valid: false, error: `Channel name must be no more than ${maxLength} characters` };
+    return { valid: false, error: `Channel name must be no more than ${maxLength} characters` }
   }
 
   if (!CHANNEL_NAME_REGEX.test(trimmed)) {
     return {
       valid: false,
       error: 'Channel name can only contain lowercase letters, numbers, hyphens, and underscores',
-    };
+    }
   }
 
   // Reserved names
-  const reserved = ['admin', 'system', 'bot', 'help', 'support', 'here', 'channel', 'everyone'];
+  const reserved = ['admin', 'system', 'bot', 'help', 'support', 'here', 'channel', 'everyone']
   if (reserved.includes(trimmed.toLowerCase())) {
-    return { valid: false, error: 'This channel name is reserved' };
+    return { valid: false, error: 'This channel name is reserved' }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
@@ -260,41 +267,52 @@ export function validateUsername(
   username: string,
   options: { minLength?: number; maxLength?: number } = {}
 ): ValidationResult {
-  const { minLength = 2, maxLength = 30 } = options;
+  const { minLength = 2, maxLength = 30 } = options
 
   if (!username || typeof username !== 'string') {
-    return { valid: false, error: 'Username is required' };
+    return { valid: false, error: 'Username is required' }
   }
 
-  const trimmed = username.trim();
+  const trimmed = username.trim()
 
   if (trimmed.length < minLength) {
-    return { valid: false, error: `Username must be at least ${minLength} characters` };
+    return { valid: false, error: `Username must be at least ${minLength} characters` }
   }
 
   if (trimmed.length > maxLength) {
-    return { valid: false, error: `Username must be no more than ${maxLength} characters` };
+    return { valid: false, error: `Username must be no more than ${maxLength} characters` }
   }
 
   if (!USERNAME_REGEX.test(trimmed)) {
     return {
       valid: false,
-      error: 'Username must start with a letter and can only contain letters, numbers, underscores, and periods',
-    };
+      error:
+        'Username must start with a letter and can only contain letters, numbers, underscores, and periods',
+    }
   }
 
   // Check for consecutive special characters
   if (/[_.]{2,}/.test(trimmed)) {
-    return { valid: false, error: 'Username cannot have consecutive special characters' };
+    return { valid: false, error: 'Username cannot have consecutive special characters' }
   }
 
   // Reserved usernames
-  const reserved = ['admin', 'administrator', 'system', 'bot', 'support', 'help', 'root', 'mod', 'moderator'];
+  const reserved = [
+    'admin',
+    'administrator',
+    'system',
+    'bot',
+    'support',
+    'help',
+    'root',
+    'mod',
+    'moderator',
+  ]
   if (reserved.includes(trimmed.toLowerCase())) {
-    return { valid: false, error: 'This username is reserved' };
+    return { valid: false, error: 'This username is reserved' }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
@@ -310,27 +328,30 @@ export function validateMessageLength(
   message: string,
   options: { minLength?: number; maxLength?: number; allowEmpty?: boolean } = {}
 ): ValidationResult {
-  const { minLength = 1, maxLength = 4000, allowEmpty = false } = options;
+  const { minLength = 1, maxLength = 4000, allowEmpty = false } = options
 
   if (message === null || message === undefined) {
-    return { valid: false, error: 'Message is required' };
+    return { valid: false, error: 'Message is required' }
   }
 
-  const trimmed = message.trim();
+  const trimmed = message.trim()
 
   if (!allowEmpty && trimmed.length === 0) {
-    return { valid: false, error: 'Message cannot be empty' };
+    return { valid: false, error: 'Message cannot be empty' }
   }
 
   if (trimmed.length < minLength && !allowEmpty) {
-    return { valid: false, error: `Message must be at least ${minLength} character${minLength > 1 ? 's' : ''}` };
+    return {
+      valid: false,
+      error: `Message must be at least ${minLength} character${minLength > 1 ? 's' : ''}`,
+    }
   }
 
   if (trimmed.length > maxLength) {
     return {
       valid: false,
       error: `Message is too long (${trimmed.length}/${maxLength} characters)`,
-    };
+    }
   }
 
   // Warn if approaching limit
@@ -338,10 +359,10 @@ export function validateMessageLength(
     return {
       valid: true,
       warning: `${maxLength - trimmed.length} characters remaining`,
-    };
+    }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
@@ -349,11 +370,11 @@ export function validateMessageLength(
  */
 export interface FileTypeConfig {
   /** Allowed MIME types */
-  mimeTypes?: string[];
+  mimeTypes?: string[]
   /** Allowed file extensions */
-  extensions?: string[];
+  extensions?: string[]
   /** Category presets to allow */
-  categories?: Array<'image' | 'video' | 'audio' | 'document' | 'archive'>;
+  categories?: Array<'image' | 'video' | 'audio' | 'document' | 'archive'>
 }
 
 /**
@@ -385,10 +406,15 @@ const FILE_CATEGORIES: Record<string, { mimeTypes: string[]; extensions: string[
     extensions: ['.pdf', '.doc', '.docx', '.xls', '.xlsx', '.txt', '.csv'],
   },
   archive: {
-    mimeTypes: ['application/zip', 'application/x-rar-compressed', 'application/x-7z-compressed', 'application/gzip'],
+    mimeTypes: [
+      'application/zip',
+      'application/x-rar-compressed',
+      'application/x-7z-compressed',
+      'application/gzip',
+    ],
     extensions: ['.zip', '.rar', '.7z', '.gz', '.tar'],
   },
-};
+}
 
 /**
  * Validate file type
@@ -402,44 +428,44 @@ export function validateFileType(
   file: { name: string; type?: string },
   config: FileTypeConfig = {}
 ): ValidationResult {
-  const { mimeTypes = [], extensions = [], categories = [] } = config;
+  const { mimeTypes = [], extensions = [], categories = [] } = config
 
   // If no config provided, allow all
   if (mimeTypes.length === 0 && extensions.length === 0 && categories.length === 0) {
-    return { valid: true };
+    return { valid: true }
   }
 
   // Build allowed lists from categories
-  const allowedMimeTypes = new Set(mimeTypes);
-  const allowedExtensions = new Set(extensions.map((e) => e.toLowerCase()));
+  const allowedMimeTypes = new Set(mimeTypes)
+  const allowedExtensions = new Set(extensions.map((e) => e.toLowerCase()))
 
   for (const category of categories) {
-    const cat = FILE_CATEGORIES[category];
+    const cat = FILE_CATEGORIES[category]
     if (cat) {
-      cat.mimeTypes.forEach((m) => allowedMimeTypes.add(m));
-      cat.extensions.forEach((e) => allowedExtensions.add(e));
+      cat.mimeTypes.forEach((m) => allowedMimeTypes.add(m))
+      cat.extensions.forEach((e) => allowedExtensions.add(e))
     }
   }
 
   // Check MIME type
   if (file.type && allowedMimeTypes.size > 0) {
     if (allowedMimeTypes.has(file.type)) {
-      return { valid: true };
+      return { valid: true }
     }
   }
 
   // Check extension
-  const ext = file.name.toLowerCase().match(/\.[^.]+$/)?.[0];
+  const ext = file.name.toLowerCase().match(/\.[^.]+$/)?.[0]
   if (ext && allowedExtensions.has(ext)) {
-    return { valid: true };
+    return { valid: true }
   }
 
   // Generate friendly error message
-  const allowedList = Array.from(allowedExtensions).join(', ');
+  const allowedList = Array.from(allowedExtensions).join(', ')
   return {
     valid: false,
     error: `File type not allowed. Allowed types: ${allowedList}`,
-  };
+  }
 }
 
 /**
@@ -458,30 +484,30 @@ export function validateFileSize(
   minSize: number = 0
 ): ValidationResult {
   if (typeof size !== 'number' || isNaN(size)) {
-    return { valid: false, error: 'Invalid file size' };
+    return { valid: false, error: 'Invalid file size' }
   }
 
   if (size < minSize) {
-    const minSizeMB = (minSize / (1024 * 1024)).toFixed(1);
-    return { valid: false, error: `File must be at least ${minSizeMB}MB` };
+    const minSizeMB = (minSize / (1024 * 1024)).toFixed(1)
+    return { valid: false, error: `File must be at least ${minSizeMB}MB` }
   }
 
   if (size > maxSize) {
-    const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1);
-    const actualSizeMB = (size / (1024 * 1024)).toFixed(1);
+    const maxSizeMB = (maxSize / (1024 * 1024)).toFixed(1)
+    const actualSizeMB = (size / (1024 * 1024)).toFixed(1)
     return {
       valid: false,
       error: `File is too large (${actualSizeMB}MB). Maximum size is ${maxSizeMB}MB`,
-    };
+    }
   }
 
   // Warn if approaching limit (>80%)
   if (size > maxSize * 0.8) {
-    const remaining = ((maxSize - size) / (1024 * 1024)).toFixed(1);
-    return { valid: true, warning: `File is large. ${remaining}MB remaining before limit.` };
+    const remaining = ((maxSize - size) / (1024 * 1024)).toFixed(1)
+    return { valid: true, warning: `File is large. ${remaining}MB remaining before limit.` }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
@@ -496,49 +522,49 @@ export function validateFileSize(
 export function validateUrl(
   url: string,
   options: {
-    requireHttps?: boolean;
-    allowedProtocols?: string[];
-    allowedDomains?: string[];
+    requireHttps?: boolean
+    allowedProtocols?: string[]
+    allowedDomains?: string[]
   } = {}
 ): ValidationResult {
-  const { requireHttps = false, allowedProtocols, allowedDomains } = options;
+  const { requireHttps = false, allowedProtocols, allowedDomains } = options
 
   if (!url || typeof url !== 'string') {
-    return { valid: false, error: 'URL is required' };
+    return { valid: false, error: 'URL is required' }
   }
 
-  let parsed: URL;
+  let parsed: URL
   try {
-    parsed = new URL(url);
+    parsed = new URL(url)
   } catch {
-    return { valid: false, error: 'Invalid URL format' };
+    return { valid: false, error: 'Invalid URL format' }
   }
 
   if (requireHttps && parsed.protocol !== 'https:') {
-    return { valid: false, error: 'URL must use HTTPS' };
+    return { valid: false, error: 'URL must use HTTPS' }
   }
 
   if (allowedProtocols && allowedProtocols.length > 0) {
-    const protocol = parsed.protocol.replace(':', '');
+    const protocol = parsed.protocol.replace(':', '')
     if (!allowedProtocols.includes(protocol)) {
       return {
         valid: false,
         error: `URL protocol must be one of: ${allowedProtocols.join(', ')}`,
-      };
+      }
     }
   }
 
   if (allowedDomains && allowedDomains.length > 0) {
-    const domain = parsed.hostname.toLowerCase();
+    const domain = parsed.hostname.toLowerCase()
     const isAllowed = allowedDomains.some(
       (d) => domain === d.toLowerCase() || domain.endsWith(`.${d.toLowerCase()}`)
-    );
+    )
     if (!isAllowed) {
-      return { valid: false, error: 'URL domain is not allowed' };
+      return { valid: false, error: 'URL domain is not allowed' }
     }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
@@ -551,28 +577,31 @@ export function validateDisplayName(
   name: string,
   options: { minLength?: number; maxLength?: number } = {}
 ): ValidationResult {
-  const { minLength = 1, maxLength = 50 } = options;
+  const { minLength = 1, maxLength = 50 } = options
 
   if (!name || typeof name !== 'string') {
-    return { valid: false, error: 'Display name is required' };
+    return { valid: false, error: 'Display name is required' }
   }
 
-  const trimmed = name.trim();
+  const trimmed = name.trim()
 
   if (trimmed.length < minLength) {
-    return { valid: false, error: `Display name must be at least ${minLength} character${minLength > 1 ? 's' : ''}` };
+    return {
+      valid: false,
+      error: `Display name must be at least ${minLength} character${minLength > 1 ? 's' : ''}`,
+    }
   }
 
   if (trimmed.length > maxLength) {
-    return { valid: false, error: `Display name must be no more than ${maxLength} characters` };
+    return { valid: false, error: `Display name must be no more than ${maxLength} characters` }
   }
 
   // Check for only special characters
   if (!/[a-zA-Z0-9]/.test(trimmed)) {
-    return { valid: false, error: 'Display name must contain at least one letter or number' };
+    return { valid: false, error: 'Display name must contain at least one letter or number' }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
@@ -581,15 +610,15 @@ export function validateDisplayName(
  * @returns Combined validation result
  */
 export function combineValidations(...results: ValidationResult[]): ValidationResult {
-  const errors: string[] = [];
-  const warnings: string[] = [];
+  const errors: string[] = []
+  const warnings: string[] = []
 
   for (const result of results) {
     if (!result.valid && result.error) {
-      errors.push(result.error);
+      errors.push(result.error)
     }
     if (result.warning) {
-      warnings.push(result.warning);
+      warnings.push(result.warning)
     }
   }
 
@@ -598,11 +627,11 @@ export function combineValidations(...results: ValidationResult[]): ValidationRe
       valid: false,
       error: errors.join('. '),
       ...(warnings.length > 0 && { warning: warnings.join('. ') }),
-    };
+    }
   }
 
   return {
     valid: true,
     ...(warnings.length > 0 && { warning: warnings.join('. ') }),
-  };
+  }
 }

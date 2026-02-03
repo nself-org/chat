@@ -2,15 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  X,
-  Code2,
-  Send,
-  Eye,
-  FileCode,
-  Loader2,
-  Sparkles,
-} from 'lucide-react'
+import { X, Code2, Send, Eye, FileCode, Loader2, Sparkles } from 'lucide-react'
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
@@ -36,10 +28,9 @@ import {
 } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { CodeBlock } from './CodeBlock'
-import {
-  getSupportedLanguages,
-  normalizeLanguage,
-} from '@/lib/markdown/syntax-highlighter'
+import { getSupportedLanguages, normalizeLanguage } from '@/lib/markdown/syntax-highlighter'
+
+import { logger } from '@/lib/logger'
 
 interface CodeSnippetModalProps {
   open: boolean
@@ -153,7 +144,7 @@ export function CodeSnippetModal({
       editor.commands.clearContent()
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to share snippet:', error)
+      logger.error('Failed to share snippet:', error)
     } finally {
       setIsSharing(false)
     }
@@ -266,11 +257,8 @@ export function CodeSnippetModal({
 
             {/* Edit Tab */}
             <TabsContent value="edit" className="mt-4">
-              <div className="rounded-lg border bg-muted/30">
-                <EditorContent
-                  editor={editor}
-                  className="code-editor-content"
-                />
+              <div className="bg-muted/30 rounded-lg border">
+                <EditorContent editor={editor} className="code-editor-content" />
               </div>
             </TabsContent>
 
@@ -284,7 +272,7 @@ export function CodeSnippetModal({
                   showLineNumbers
                 />
               ) : (
-                <div className="flex h-[300px] items-center justify-center rounded-lg border bg-muted/30 text-muted-foreground">
+                <div className="bg-muted/30 flex h-[300px] items-center justify-center rounded-lg border text-muted-foreground">
                   <div className="flex flex-col items-center gap-2">
                     <Code2 className="h-12 w-12 opacity-50" />
                     <p className="text-sm">No code to preview</p>
@@ -296,18 +284,10 @@ export function CodeSnippetModal({
         </div>
 
         <DialogFooter className="gap-2">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSharing}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSharing}>
             Cancel
           </Button>
-          <Button
-            onClick={handleShare}
-            disabled={!canShare || isSharing}
-            className="gap-2"
-          >
+          <Button onClick={handleShare} disabled={!canShare || isSharing} className="gap-2">
             {isSharing ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -324,10 +304,8 @@ export function CodeSnippetModal({
 
         {/* Keyboard shortcut hint */}
         <div className="text-center text-xs text-muted-foreground">
-          Press{' '}
-          <kbd className="rounded bg-muted px-1 font-mono">Cmd+Enter</kbd> or{' '}
-          <kbd className="rounded bg-muted px-1 font-mono">Ctrl+Enter</kbd> to
-          share
+          Press <kbd className="rounded bg-muted px-1 font-mono">Cmd+Enter</kbd> or{' '}
+          <kbd className="rounded bg-muted px-1 font-mono">Ctrl+Enter</kbd> to share
         </div>
       </DialogContent>
     </Dialog>
@@ -342,15 +320,14 @@ export function CodeSnippetSuggestions() {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="rounded-lg border border-primary/20 bg-primary/5 p-3"
+      className="border-primary/20 bg-primary/5 rounded-lg border p-3"
     >
       <div className="flex items-start gap-3">
         <Sparkles className="h-5 w-5 flex-shrink-0 text-primary" />
         <div className="flex-1 space-y-1">
           <p className="text-sm font-medium">AI Suggestions</p>
           <p className="text-xs text-muted-foreground">
-            Get AI-powered code completion and suggestions while typing. (Coming
-            soon)
+            Get AI-powered code completion and suggestions while typing. (Coming soon)
           </p>
         </div>
       </div>

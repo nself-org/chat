@@ -619,22 +619,18 @@ export const selectVerifiedDevices = (state: EncryptionStore) =>
 export const selectBlockedDevices = (state: EncryptionStore) =>
   Array.from(state.deviceKeys.values()).filter((d) => d.trustLevel === 'blocked')
 
-export const selectActiveSessions = (state: EncryptionStore) =>
-  Array.from(state.sessions.values())
+export const selectActiveSessions = (state: EncryptionStore) => Array.from(state.sessions.values())
 
 export const selectSessionsNeedingRotation = (state: EncryptionStore) =>
   Array.from(state.sessions.values()).filter((s) => s.needsRotation)
 
-export const selectKeyIsReady = (state: EncryptionStore) =>
-  state.keyStatus === 'ready'
+export const selectKeyIsReady = (state: EncryptionStore) => state.keyStatus === 'ready'
 
 export const selectHasEncryptionError = (state: EncryptionStore) =>
   state.globalStatus === 'error' || state.globalError !== null
 
-export const selectChannelEncryptionStatus =
-  (channelId: string) => (state: EncryptionStore) =>
-    state.encryptedChannels.get(channelId)?.status ?? 'disabled'
+export const selectChannelEncryptionStatus = (channelId: string) => (state: EncryptionStore) =>
+  state.encryptedChannels.get(channelId)?.status ?? 'disabled'
 
-export const selectDeviceTrustLevel =
-  (deviceId: string) => (state: EncryptionStore) =>
-    state.deviceKeys.get(deviceId)?.trustLevel ?? 'untrusted'
+export const selectDeviceTrustLevel = (deviceId: string) => (state: EncryptionStore) =>
+  state.deviceKeys.get(deviceId)?.trustLevel ?? 'untrusted'

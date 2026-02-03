@@ -1,52 +1,48 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Filter, X, ArrowUpDown, Star, Tag } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import * as React from 'react'
+import { Filter, X, ArrowUpDown, Star, Tag } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Badge } from '@/components/ui/badge';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import type { SavedFilters as SavedFiltersType, SavedSortBy, SavedSortOrder } from '@/lib/saved';
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Badge } from '@/components/ui/badge'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import type { SavedFilters as SavedFiltersType, SavedSortBy, SavedSortOrder } from '@/lib/saved'
 
 export interface SavedFiltersProps {
   /** Current filters */
-  filters: SavedFiltersType;
+  filters: SavedFiltersType
   /** Current sort field */
-  sortBy: SavedSortBy;
+  sortBy: SavedSortBy
   /** Current sort order */
-  sortOrder: SavedSortOrder;
+  sortOrder: SavedSortOrder
   /** Search query */
-  searchQuery: string;
+  searchQuery: string
   /** Available tags for filtering */
-  availableTags?: string[];
+  availableTags?: string[]
   /** Selected tags */
-  selectedTags: string[];
+  selectedTags: string[]
   /** Callback when filters change */
-  onFiltersChange: (filters: Partial<SavedFiltersType>) => void;
+  onFiltersChange: (filters: Partial<SavedFiltersType>) => void
   /** Callback when sort changes */
-  onSortChange: (sortBy: SavedSortBy, sortOrder: SavedSortOrder) => void;
+  onSortChange: (sortBy: SavedSortBy, sortOrder: SavedSortOrder) => void
   /** Callback when search changes */
-  onSearchChange: (query: string) => void;
+  onSearchChange: (query: string) => void
   /** Callback when tags selection changes */
-  onTagsChange: (tags: string[]) => void;
+  onTagsChange: (tags: string[]) => void
   /** Callback to clear filters */
-  onClearFilters: () => void;
+  onClearFilters: () => void
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -72,7 +68,7 @@ export function SavedFilters({
     filters.hasReminder ||
     filters.messageType ||
     filters.hasAttachments !== undefined ||
-    selectedTags.length > 0;
+    selectedTags.length > 0
 
   const activeFilterCount = [
     searchQuery,
@@ -81,15 +77,15 @@ export function SavedFilters({
     filters.messageType,
     filters.hasAttachments !== undefined,
     selectedTags.length > 0,
-  ].filter(Boolean).length;
+  ].filter(Boolean).length
 
   const toggleTag = (tag: string) => {
     if (selectedTags.includes(tag)) {
-      onTagsChange(selectedTags.filter((t) => t !== tag));
+      onTagsChange(selectedTags.filter((t) => t !== tag))
     } else {
-      onTagsChange([...selectedTags, tag]);
+      onTagsChange([...selectedTags, tag])
     }
-  };
+  }
 
   return (
     <div className={cn('space-y-3', className)}>
@@ -106,7 +102,7 @@ export function SavedFilters({
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+              className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2"
               onClick={() => onSearchChange('')}
             >
               <X className="h-3 w-3" />
@@ -118,15 +114,12 @@ export function SavedFilters({
         <Select
           value={`${sortBy}-${sortOrder}`}
           onValueChange={(value) => {
-            const [newSortBy, newSortOrder] = value.split('-') as [
-              SavedSortBy,
-              SavedSortOrder
-            ];
-            onSortChange(newSortBy, newSortOrder);
+            const [newSortBy, newSortOrder] = value.split('-') as [SavedSortBy, SavedSortOrder]
+            onSortChange(newSortBy, newSortOrder)
           }}
         >
-          <SelectTrigger className="w-[160px] h-8 text-sm">
-            <ArrowUpDown className="h-3 w-3 mr-2" />
+          <SelectTrigger className="h-8 w-[160px] text-sm">
+            <ArrowUpDown className="mr-2 h-3 w-3" />
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>
@@ -147,10 +140,7 @@ export function SavedFilters({
           onClick={() => onFiltersChange({ starredOnly: !filters.starredOnly })}
         >
           <Star
-            className={cn(
-              'h-3 w-3',
-              filters.starredOnly && 'text-yellow-500 fill-yellow-500'
-            )}
+            className={cn('h-3 w-3', filters.starredOnly && 'fill-yellow-500 text-yellow-500')}
           />
           Starred
         </Button>
@@ -164,7 +154,7 @@ export function SavedFilters({
               {activeFilterCount > 0 && (
                 <Badge
                   variant="secondary"
-                  className="h-5 w-5 p-0 flex items-center justify-center text-xs"
+                  className="flex h-5 w-5 items-center justify-center p-0 text-xs"
                 >
                   {activeFilterCount}
                 </Badge>
@@ -215,13 +205,12 @@ export function SavedFilters({
                     filters.hasAttachments === undefined
                       ? 'all'
                       : filters.hasAttachments
-                      ? 'with'
-                      : 'without'
+                        ? 'with'
+                        : 'without'
                   }
                   onValueChange={(value) =>
                     onFiltersChange({
-                      hasAttachments:
-                        value === 'all' ? undefined : value === 'with',
+                      hasAttachments: value === 'all' ? undefined : value === 'with',
                     })
                   }
                 >
@@ -237,13 +226,8 @@ export function SavedFilters({
               </div>
 
               {hasActiveFilters && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={onClearFilters}
-                  className="w-full"
-                >
-                  <X className="h-3 w-3 mr-1" />
+                <Button variant="ghost" size="sm" onClick={onClearFilters} className="w-full">
+                  <X className="mr-1 h-3 w-3" />
                   Clear all filters
                 </Button>
               )}
@@ -255,7 +239,7 @@ export function SavedFilters({
       {/* Tags filter */}
       {availableTags.length > 0 && (
         <div className="flex flex-wrap items-center gap-1">
-          <Tag className="h-3 w-3 text-muted-foreground mr-1" />
+          <Tag className="mr-1 h-3 w-3 text-muted-foreground" />
           {availableTags.slice(0, 10).map((tag) => (
             <Badge
               key={tag}
@@ -267,12 +251,10 @@ export function SavedFilters({
             </Badge>
           ))}
           {availableTags.length > 10 && (
-            <span className="text-xs text-muted-foreground">
-              +{availableTags.length - 10} more
-            </span>
+            <span className="text-xs text-muted-foreground">+{availableTags.length - 10} more</span>
           )}
         </div>
       )}
     </div>
-  );
+  )
 }

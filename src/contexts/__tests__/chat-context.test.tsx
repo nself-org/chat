@@ -65,7 +65,17 @@ const mockMessageStore = {
 }
 
 const mockUserStore = {
-  users: {} as Record<string, { id: string; username: string; displayName: string; avatarUrl?: string; presence: 'online' | 'away' | 'dnd' | 'offline'; lastSeenAt?: Date }>,
+  users: {} as Record<
+    string,
+    {
+      id: string
+      username: string
+      displayName: string
+      avatarUrl?: string
+      presence: 'online' | 'away' | 'dnd' | 'offline'
+      lastSeenAt?: Date
+    }
+  >,
   getUser: jest.fn(),
 }
 
@@ -181,9 +191,7 @@ describe('ChatContext', () => {
   it('throws error when useChat is used outside ChatProvider', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
 
-    expect(() => render(<TestComponent />)).toThrow(
-      'useChat must be used within a ChatProvider'
-    )
+    expect(() => render(<TestComponent />)).toThrow('useChat must be used within a ChatProvider')
 
     consoleSpy.mockRestore()
   })
@@ -465,9 +473,7 @@ describe('useActiveChannel hook', () => {
     mockChannelStore.activeChannelId = null
   })
 
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <ChatProvider>{children}</ChatProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => <ChatProvider>{children}</ChatProvider>
 
   it('returns null when no channel is active', () => {
     const { result } = renderHook(() => useActiveChannel(), { wrapper })
@@ -492,9 +498,7 @@ describe('useActiveThread hook', () => {
     mockChannelStore.activeChannelId = 'channel-1'
   })
 
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <ChatProvider>{children}</ChatProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => <ChatProvider>{children}</ChatProvider>
 
   it('returns null when no thread is active', () => {
     const { result } = renderHook(() => useActiveThread(), { wrapper })
@@ -504,9 +508,7 @@ describe('useActiveThread hook', () => {
 })
 
 describe('useTypingUsers hook', () => {
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <ChatProvider>{children}</ChatProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => <ChatProvider>{children}</ChatProvider>
 
   it('returns empty array for channel with no typing users', () => {
     const { result } = renderHook(() => useTypingUsers('channel-1'), { wrapper })
@@ -516,9 +518,7 @@ describe('useTypingUsers hook', () => {
 })
 
 describe('useUnreadCounts hook', () => {
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <ChatProvider>{children}</ChatProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => <ChatProvider>{children}</ChatProvider>
 
   it('returns unread state and count functions', () => {
     const { result } = renderHook(() => useUnreadCounts(), { wrapper })
@@ -538,9 +538,7 @@ describe('useUnreadCounts hook', () => {
 })
 
 describe('useConnectionState hook', () => {
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <ChatProvider>{children}</ChatProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => <ChatProvider>{children}</ChatProvider>
 
   it('returns connection state', () => {
     const { result } = renderHook(() => useConnectionState(), { wrapper })

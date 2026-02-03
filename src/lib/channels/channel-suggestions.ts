@@ -88,17 +88,11 @@ export function generateSuggestions(
   const suggestions: ChannelSuggestion[] = []
 
   // 1. Similar channels based on joined channels
-  const similarSuggestions = getSimilarChannelSuggestions(
-    candidateChannels,
-    joinedChannels
-  )
+  const similarSuggestions = getSimilarChannelSuggestions(candidateChannels, joinedChannels)
   suggestions.push(...similarSuggestions)
 
   // 2. Popular channels in same categories
-  const categorySuggestions = getCategorySuggestions(
-    candidateChannels,
-    joinedChannels
-  )
+  const categorySuggestions = getCategorySuggestions(candidateChannels, joinedChannels)
   suggestions.push(...categorySuggestions)
 
   // 3. Trending channels
@@ -109,10 +103,7 @@ export function generateSuggestions(
 
   // 4. Role-based suggestions
   if (userContext.role) {
-    const roleSuggestions = getRoleBasedSuggestions(
-      candidateChannels,
-      userContext.role
-    )
+    const roleSuggestions = getRoleBasedSuggestions(candidateChannels, userContext.role)
     suggestions.push(...roleSuggestions)
   }
 
@@ -126,19 +117,14 @@ export function generateSuggestions(
   }
 
   // 6. Default channels user hasn't joined
-  const defaultSuggestions = getDefaultChannelSuggestions(
-    candidateChannels,
-    joinedSet
-  )
+  const defaultSuggestions = getDefaultChannelSuggestions(candidateChannels, joinedSet)
   suggestions.push(...defaultSuggestions)
 
   // Deduplicate and merge scores
   const mergedSuggestions = mergeSuggestions(suggestions)
 
   // Sort by score and take top suggestions
-  return mergedSuggestions
-    .sort((a, b) => b.score - a.score)
-    .slice(0, maxSuggestions)
+  return mergedSuggestions.sort((a, b) => b.score - a.score).slice(0, maxSuggestions)
 }
 
 // ============================================================================
@@ -180,9 +166,7 @@ function getCategorySuggestions(
   candidates: Channel[],
   joinedChannels: Channel[]
 ): ChannelSuggestion[] {
-  const joinedCategories = new Set(
-    joinedChannels.map((c) => c.categoryId).filter(Boolean)
-  )
+  const joinedCategories = new Set(joinedChannels.map((c) => c.categoryId).filter(Boolean))
 
   return candidates
     .filter((c) => c.categoryId && joinedCategories.has(c.categoryId))
@@ -209,15 +193,12 @@ function getTrendingSuggestions(candidates: Channel[]): ChannelSuggestion[] {
         channel,
         score: (recency * 5 + channel.memberCount / 5) * TRENDING_BOOST,
         reason: 'trending' as SuggestionReason,
-        confidence: recency > 0.8 ? 'high' : 'medium' as const,
+        confidence: recency > 0.8 ? 'high' : ('medium' as const),
       }
     })
 }
 
-function getRoleBasedSuggestions(
-  candidates: Channel[],
-  role: string
-): ChannelSuggestion[] {
+function getRoleBasedSuggestions(candidates: Channel[], role: string): ChannelSuggestion[] {
   const roleKeywords = getRoleKeywords(role)
 
   return candidates
@@ -241,7 +222,8 @@ function getInterestBasedSuggestions(
 
   return candidates
     .map((channel) => {
-      const text = `${channel.name} ${channel.description || ''} ${channel.topic || ''}`.toLowerCase()
+      const text =
+        `${channel.name} ${channel.description || ''} ${channel.topic || ''}`.toLowerCase()
       const matchCount = interests.filter((interest) =>
         text.includes(interest.toLowerCase())
       ).length
@@ -251,7 +233,7 @@ function getInterestBasedSuggestions(
           channel,
           score: matchCount * WORD_MATCH_SCORE,
           reason: 'based-on-interests' as SuggestionReason,
-          confidence: matchCount >= 2 ? 'high' : 'low' as const,
+          confidence: matchCount >= 2 ? 'high' : ('low' as const),
         }
       }
       return null
@@ -356,9 +338,7 @@ function getRoleKeywords(role: string): string[] {
   return roleMap[role.toLowerCase()] || []
 }
 
-function mergeSuggestions(
-  suggestions: ChannelSuggestion[]
-): ChannelSuggestion[] {
+function mergeSuggestions(suggestions: ChannelSuggestion[]): ChannelSuggestion[] {
   const byChannelId = new Map<string, ChannelSuggestion>()
 
   for (const suggestion of suggestions) {
@@ -367,10 +347,7 @@ function mergeSuggestions(
       // Merge: take higher score, combine reasons
       existing.score = Math.max(existing.score, suggestion.score)
       // Keep the higher confidence
-      if (
-        getConfidenceValue(suggestion.confidence) >
-        getConfidenceValue(existing.confidence)
-      ) {
+      if (getConfidenceValue(suggestion.confidence) > getConfidenceValue(existing.confidence)) {
         existing.confidence = suggestion.confidence
       }
     } else {

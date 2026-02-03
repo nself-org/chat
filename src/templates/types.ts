@@ -307,7 +307,9 @@ export interface PlatformTemplate {
 /**
  * Partial template for extending/overriding
  */
-export type PartialTemplate = Partial<Omit<PlatformTemplate, 'theme' | 'layout' | 'features' | 'terminology' | 'animations'>> & {
+export type PartialTemplate = Partial<
+  Omit<PlatformTemplate, 'theme' | 'layout' | 'features' | 'terminology' | 'animations'>
+> & {
   theme?: {
     defaultMode?: 'light' | 'dark' | 'system'
     light?: Partial<ThemeColors>

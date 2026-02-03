@@ -383,11 +383,13 @@ src/
 ## Key Features Breakdown
 
 ### 1. Thread Creation
+
 ```
 Message → "Reply in thread" → CREATE_THREAD → New Thread
 ```
 
 ### 2. Thread Discovery
+
 ```
 Channel → GET_CHANNEL_THREADS → Thread List
 User → GET_USER_THREADS → My Threads
@@ -395,6 +397,7 @@ Search → SEARCH_CHANNEL_THREADS → Filtered Results
 ```
 
 ### 3. Thread Interaction
+
 ```
 View → GET_THREAD + GET_THREAD_MESSAGES → Display
 Reply → REPLY_TO_THREAD → Optimistic Update → Server Sync
@@ -402,6 +405,7 @@ Follow → JOIN_THREAD → Notifications Enabled
 ```
 
 ### 4. Thread Notifications
+
 ```
 New Reply → Subscription → Store Update → Badge Update
 Mention → Notification → Unread Count++
@@ -409,6 +413,7 @@ Mark Read → MARK_THREAD_READ → Badge Clear
 ```
 
 ### 5. Thread Search
+
 ```
 Query → SEARCH_CHANNEL_THREADS → Filtered List
 Activity → GET_THREAD_ACTIVITY_FEED → Recent Activity

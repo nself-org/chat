@@ -55,9 +55,7 @@ export interface UseCallQualityReturn {
 // Hook
 // =============================================================================
 
-export function useCallQuality(
-  options: UseCallQualityOptions = {}
-): UseCallQualityReturn {
+export function useCallQuality(options: UseCallQualityOptions = {}): UseCallQualityReturn {
   const { showAlerts = true, ...config } = options
   const { toast } = useToast()
 

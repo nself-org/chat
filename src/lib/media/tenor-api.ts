@@ -38,6 +38,7 @@ import type {
   TenorCategory,
   TenorCategoriesResponse,
 } from '@/types/gif'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Constants
@@ -464,7 +465,7 @@ export class TenorClient {
       await fetch(url)
     } catch (error) {
       // Non-critical - just log the error
-      console.error('Failed to register Tenor share:', error)
+      logger.error('Failed to register Tenor share:', error)
     }
   }
 
@@ -525,9 +526,7 @@ export class TenorClient {
    */
   getThumbnailUrl(gif: TenorGif): string {
     const formats = gif.media_formats
-    return (
-      formats.nanogif?.url || formats.tinygif?.url || formats.gifpreview?.url || gif.url
-    )
+    return formats.nanogif?.url || formats.tinygif?.url || formats.gifpreview?.url || gif.url
   }
 
   /**

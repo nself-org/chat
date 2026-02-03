@@ -48,6 +48,7 @@ Complete guide for building, signing, and deploying nchat desktop applications f
    - Export as `.pfx` file with password
 
 2. **Set Environment Variables**
+
    ```bash
    # Local development
    export WIN_CSC_LINK="/path/to/certificate.pfx"
@@ -70,6 +71,7 @@ Complete guide for building, signing, and deploying nchat desktop applications f
    - Create service principal
 
 2. **Install AzureSignTool**
+
    ```bash
    dotnet tool install --global AzureSignTool
    ```
@@ -129,6 +131,7 @@ After code signing, your application may still show SmartScreen warnings until i
    - Download .p8 key file
 
 2. **Set Environment Variables**
+
    ```bash
    export APPLE_API_KEY="/path/to/AuthKey_XXXXXXXXXX.p8"
    export APPLE_API_KEY_ID="XXXXXXXXXX"
@@ -155,6 +158,7 @@ base64 -i certificate.p12 -o certificate.b64
 ```
 
 GitHub Secrets:
+
 - `CSC_LINK`: Base64-encoded .p12 certificate
 - `CSC_KEY_PASSWORD`: Export password
 - `CSC_NAME`: Certificate name (e.g., "Developer ID Application: Your Name (TEAM_ID)")
@@ -310,10 +314,12 @@ git push origin v0.8.0
 Configure these in your repository settings (Settings > Secrets and variables > Actions):
 
 **Windows Code Signing:**
+
 - `WIN_CSC_LINK`: Base64-encoded .pfx certificate
 - `WIN_CSC_KEY_PASSWORD`: Certificate password
 
 **macOS Code Signing:**
+
 - `CSC_LINK`: Base64-encoded .p12 certificate
 - `CSC_KEY_PASSWORD`: Certificate password
 - `CSC_NAME`: Certificate name
@@ -321,17 +327,20 @@ Configure these in your repository settings (Settings > Secrets and variables > 
 
 **macOS Notarization (choose one method):**
 
-*Method 1: Apple ID*
+_Method 1: Apple ID_
+
 - `APPLE_ID`: Apple ID email
 - `APPLE_ID_PASSWORD`: App-specific password
 - `APPLE_TEAM_ID`: Team ID
 
-*Method 2: API Key (recommended)*
+_Method 2: API Key (recommended)_
+
 - `APPLE_API_KEY`: Base64-encoded .p8 file
 - `APPLE_API_KEY_ID`: Key ID
 - `APPLE_API_ISSUER`: Issuer ID
 
 **GitHub Release:**
+
 - `GITHUB_TOKEN`: Automatically provided by GitHub Actions
 
 #### Workflow Process
@@ -347,6 +356,7 @@ Configure these in your repository settings (Settings > Secrets and variables > 
 ### Direct Download
 
 Upload built packages to:
+
 - GitHub Releases (automated by CI)
 - Your own CDN or file server
 - S3 bucket
@@ -356,12 +366,14 @@ Upload built packages to:
 #### Windows
 
 **Winget**
+
 ```bash
 # Create winget manifest
 # Submit PR to: https://github.com/microsoft/winget-pkgs
 ```
 
 **Chocolatey**
+
 ```bash
 # Create nuspec file
 choco pack
@@ -369,6 +381,7 @@ choco push nchat.1.0.0.nupkg --source https://push.chocolatey.org/
 ```
 
 **Scoop**
+
 ```json
 {
   "version": "1.0.0",
@@ -388,6 +401,7 @@ choco push nchat.1.0.0.nupkg --source https://push.chocolatey.org/
 #### macOS
 
 **Homebrew Cask**
+
 ```bash
 # Create cask formula
 brew create --cask https://github.com/nself/nself-chat/releases/download/v1.0.0/nchat-1.0.0-mac-x64.dmg
@@ -398,18 +412,21 @@ brew create --cask https://github.com/nself/nself-chat/releases/download/v1.0.0/
 #### Linux
 
 **Snap Store**
+
 ```bash
 snapcraft
 snapcraft upload --release=stable nchat_1.0.0_amd64.snap
 ```
 
 **Flathub**
+
 ```bash
 # Create flatpak manifest
 # Submit to: https://github.com/flathub/flathub
 ```
 
 **AppImage Hub**
+
 - Upload to https://www.appimagehub.com/
 
 ### Auto-Update Server
@@ -418,6 +435,7 @@ The app uses electron-updater with GitHub Releases by default. For self-hosted u
 
 1. **Configure Update Server**
    Edit `electron-builder.yml`:
+
    ```yaml
    publish:
      - provider: generic
@@ -426,6 +444,7 @@ The app uses electron-updater with GitHub Releases by default. For self-hosted u
    ```
 
 2. **Server Structure**
+
    ```
    /releases/
      /latest.yml (or latest-mac.yml, latest-linux.yml)
@@ -465,6 +484,7 @@ The app uses electron-updater with GitHub Releases by default. For self-hosted u
 ### Testing on Clean Systems
 
 **Windows:**
+
 ```bash
 # Run in Windows Sandbox or VM
 # Check SmartScreen behavior
@@ -474,6 +494,7 @@ The app uses electron-updater with GitHub Releases by default. For self-hosted u
 ```
 
 **macOS:**
+
 ```bash
 # Test on both Intel and Apple Silicon
 # Verify Gatekeeper doesn't block
@@ -482,6 +503,7 @@ The app uses electron-updater with GitHub Releases by default. For self-hosted u
 ```
 
 **Linux:**
+
 ```bash
 # Test on Ubuntu, Fedora, Arch
 # Verify desktop file integration
@@ -530,6 +552,7 @@ echo "✅ All tests passed"
 ### Windows Issues
 
 **Error: SignTool not found**
+
 ```bash
 # Install Windows SDK
 # Or specify SignTool path
@@ -537,11 +560,13 @@ set SIGNTOOL_PATH=C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\si
 ```
 
 **SmartScreen Warning**
+
 - Expected for new applications without reputation
 - Use EV certificate for immediate trust
 - Or build reputation over time
 
 **NSIS Error**
+
 ```bash
 # Clear electron-builder cache
 rd /s /q %LOCALAPPDATA%\electron-builder\Cache
@@ -551,6 +576,7 @@ npm run dist:win
 ### macOS Issues
 
 **Notarization Failed: Invalid Developer ID**
+
 ```bash
 # Verify certificate name
 security find-identity -v -p codesigning
@@ -560,11 +586,13 @@ export CSC_NAME="Developer ID Application: Your Name (TEAM_ID)"
 ```
 
 **Notarization Timeout**
+
 - Notarization can take 10-60 minutes
 - Check status: `xcrun notarytool history --apple-id YOUR_APPLE_ID`
 - View logs: `xcrun notarytool log <submission-id> --apple-id YOUR_APPLE_ID`
 
 **Gatekeeper Blocks App**
+
 ```bash
 # Remove quarantine attribute (for testing only)
 xattr -cr /Applications/nchat.app
@@ -575,6 +603,7 @@ xattr -cr /Applications/nchat.app
 ### Linux Issues
 
 **AppImage Won't Run**
+
 ```bash
 # Make executable
 chmod +x nchat-*.AppImage
@@ -588,6 +617,7 @@ sudo apt-get install fuse libfuse2
 ```
 
 **.deb Install Fails**
+
 ```bash
 # Check dependencies
 dpkg -I nchat_*.deb
@@ -597,6 +627,7 @@ sudo apt-get install -f
 ```
 
 **Protocol Handler Not Working**
+
 ```bash
 # Re-register handler
 xdg-mime default nchat.desktop x-scheme-handler/nchat
@@ -608,11 +639,13 @@ xdg-open nchat://test
 ### Build Performance
 
 **Slow Builds**
+
 - Use `--dir` flag for faster development builds
 - Enable local caching
 - Use faster compression for dev builds
 
 **Large Package Size**
+
 - Review included node_modules
 - Use `asar` compression
 - Exclude unnecessary files in `electron-builder.yml`

@@ -9,6 +9,7 @@
  */
 
 import { nhost } from '@/lib/nhost'
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderType,
@@ -184,7 +185,7 @@ export class EmailPasswordProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('EmailPasswordProvider.authenticate error:', err)
+      logger.error('EmailPasswordProvider.authenticate error:',  err)
       return {
         success: false,
         error: {
@@ -292,7 +293,7 @@ export class EmailPasswordProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('EmailPasswordProvider.signUp error:', err)
+      logger.error('EmailPasswordProvider.signUp error:',  err)
       return {
         success: false,
         error: {
@@ -328,7 +329,7 @@ export class EmailPasswordProvider implements AuthProvider {
 
       return { success: true }
     } catch (err) {
-      console.error('EmailPasswordProvider.resetPassword error:', err)
+      logger.error('EmailPasswordProvider.resetPassword error:',  err)
       return {
         success: false,
         error: {
@@ -370,7 +371,7 @@ export class EmailPasswordProvider implements AuthProvider {
 
       return { success: true }
     } catch (err) {
-      console.error('EmailPasswordProvider.changePassword error:', err)
+      logger.error('EmailPasswordProvider.changePassword error:',  err)
       return {
         success: false,
         error: {
@@ -396,7 +397,7 @@ export class EmailPasswordProvider implements AuthProvider {
 
       return { success: true }
     } catch (err) {
-      console.error('EmailPasswordProvider.sendVerificationEmail error:', err)
+      logger.error('EmailPasswordProvider.sendVerificationEmail error:',  err)
       return {
         success: false,
         error: {

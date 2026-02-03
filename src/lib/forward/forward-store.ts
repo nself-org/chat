@@ -185,9 +185,7 @@ export const useForwardStore = create<ForwardStore>()(
         toggleDestination: (destination) =>
           set(
             (state) => {
-              const index = state.selectedDestinations.findIndex(
-                (d) => d.id === destination.id
-              )
+              const index = state.selectedDestinations.findIndex((d) => d.id === destination.id)
               if (index >= 0) {
                 state.selectedDestinations.splice(index, 1)
               } else if (state.selectedDestinations.length < MAX_SELECTED_DESTINATIONS) {
@@ -201,9 +199,7 @@ export const useForwardStore = create<ForwardStore>()(
         selectDestination: (destination) =>
           set(
             (state) => {
-              const exists = state.selectedDestinations.some(
-                (d) => d.id === destination.id
-              )
+              const exists = state.selectedDestinations.some((d) => d.id === destination.id)
               if (!exists && state.selectedDestinations.length < MAX_SELECTED_DESTINATIONS) {
                 state.selectedDestinations.push(destination)
               }
@@ -215,9 +211,7 @@ export const useForwardStore = create<ForwardStore>()(
         deselectDestination: (destinationId) =>
           set(
             (state) => {
-              const index = state.selectedDestinations.findIndex(
-                (d) => d.id === destinationId
-              )
+              const index = state.selectedDestinations.findIndex((d) => d.id === destinationId)
               if (index >= 0) {
                 state.selectedDestinations.splice(index, 1)
               }
@@ -249,9 +243,7 @@ export const useForwardStore = create<ForwardStore>()(
           set(
             (state) => {
               // Remove if already exists
-              const index = state.recentDestinations.findIndex(
-                (d) => d.id === destination.id
-              )
+              const index = state.recentDestinations.findIndex((d) => d.id === destination.id)
               if (index >= 0) {
                 state.recentDestinations.splice(index, 1)
               }
@@ -272,9 +264,7 @@ export const useForwardStore = create<ForwardStore>()(
         removeRecentDestination: (destinationId) =>
           set(
             (state) => {
-              const index = state.recentDestinations.findIndex(
-                (d) => d.id === destinationId
-              )
+              const index = state.recentDestinations.findIndex((d) => d.id === destinationId)
               if (index >= 0) {
                 state.recentDestinations.splice(index, 1)
               }
@@ -374,28 +364,22 @@ export const useForwardStore = create<ForwardStore>()(
 
 export const selectIsOpen = (state: ForwardStore) => state.isOpen
 
-export const selectMessageToForward = (state: ForwardStore) =>
-  state.messageToForward
+export const selectMessageToForward = (state: ForwardStore) => state.messageToForward
 
-export const selectSelectedDestinations = (state: ForwardStore) =>
-  state.selectedDestinations
+export const selectSelectedDestinations = (state: ForwardStore) => state.selectedDestinations
 
-export const selectSelectedCount = (state: ForwardStore) =>
-  state.selectedDestinations.length
+export const selectSelectedCount = (state: ForwardStore) => state.selectedDestinations.length
 
-export const selectIsDestinationSelected =
-  (destinationId: string) => (state: ForwardStore) =>
-    state.selectedDestinations.some((d) => d.id === destinationId)
+export const selectIsDestinationSelected = (destinationId: string) => (state: ForwardStore) =>
+  state.selectedDestinations.some((d) => d.id === destinationId)
 
 export const selectComment = (state: ForwardStore) => state.comment
 
-export const selectRecentDestinations = (state: ForwardStore) =>
-  state.recentDestinations
+export const selectRecentDestinations = (state: ForwardStore) => state.recentDestinations
 
 export const selectIsForwarding = (state: ForwardStore) => state.isForwarding
 
-export const selectForwardResults = (state: ForwardStore) =>
-  state.forwardResults
+export const selectForwardResults = (state: ForwardStore) => state.forwardResults
 
 export const selectHasSuccessfulForwards = (state: ForwardStore) =>
   state.forwardResults.some((r) => r.success)
@@ -406,6 +390,4 @@ export const selectHasFailedForwards = (state: ForwardStore) =>
 export const selectSearchQuery = (state: ForwardStore) => state.searchQuery
 
 export const selectCanForward = (state: ForwardStore) =>
-  state.selectedDestinations.length > 0 &&
-  state.messageToForward !== null &&
-  !state.isForwarding
+  state.selectedDestinations.length > 0 && state.messageToForward !== null && !state.isForwarding

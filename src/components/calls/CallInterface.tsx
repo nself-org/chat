@@ -202,7 +202,7 @@ export function CallInterface({
     return (
       <div className="fixed inset-0 z-50 flex flex-col bg-gray-900">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-gray-800/90 backdrop-blur-sm">
+        <div className="flex items-center justify-between bg-gray-800/90 px-4 py-3 backdrop-blur-sm">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
               <AvatarImage src={remoteUser.avatarUrl} alt={remoteUser.name} />
@@ -225,7 +225,7 @@ export function CallInterface({
 
           {/* Reconnecting indicator */}
           {isReconnecting && (
-            <div className="flex items-center gap-2 px-3 py-1 bg-yellow-500/20 rounded-full">
+            <div className="flex items-center gap-2 rounded-full bg-yellow-500/20 px-3 py-1">
               <div className="animate-spin">
                 <Wifi className="h-4 w-4 text-yellow-500" />
               </div>
@@ -235,24 +235,24 @@ export function CallInterface({
         </div>
 
         {/* Video Container */}
-        <div className="flex-1 relative bg-gray-950">
+        <div className="relative flex-1 bg-gray-950">
           {/* Remote Video */}
           <video
             ref={remoteVideoRef}
             autoPlay
             playsInline
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 h-full w-full object-cover"
           />
 
           {/* Local Video (Picture-in-Picture) */}
           {localStream && (
-            <div className="absolute top-4 right-4 w-32 h-24 rounded-lg overflow-hidden border-2 border-gray-700 shadow-xl">
+            <div className="absolute right-4 top-4 h-24 w-32 overflow-hidden rounded-lg border-2 border-gray-700 shadow-xl">
               <video
                 ref={localVideoRef}
                 autoPlay
                 playsInline
                 muted
-                className="w-full h-full object-cover mirror"
+                className="mirror h-full w-full object-cover"
               />
             </div>
           )}
@@ -261,7 +261,7 @@ export function CallInterface({
           {callState !== 'connected' && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-900/80">
               <div className="flex flex-col items-center gap-4">
-                <Avatar className="h-24 w-24 border-4 border-primary/50">
+                <Avatar className="border-primary/50 h-24 w-24 border-4">
                   <AvatarImage src={remoteUser.avatarUrl} alt={remoteUser.name} />
                   <AvatarFallback className="text-2xl">
                     {remoteUser.name
@@ -281,7 +281,7 @@ export function CallInterface({
         </div>
 
         {/* Controls */}
-        <div className="px-4 py-6 bg-gray-800/90 backdrop-blur-sm">
+        <div className="bg-gray-800/90 px-4 py-6 backdrop-blur-sm">
           <div className="flex items-center justify-center gap-4">
             {/* Mute */}
             <Button
@@ -290,8 +290,8 @@ export function CallInterface({
               className={cn(
                 'h-14 w-14 rounded-full transition-all',
                 isMuted
-                  ? 'bg-red-600 hover:bg-red-700 text-white'
-                  : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  ? 'bg-red-600 text-white hover:bg-red-700'
+                  : 'bg-gray-700 text-white hover:bg-gray-600'
               )}
               onClick={onToggleMute}
               title={isMuted ? 'Unmute' : 'Mute'}
@@ -306,8 +306,8 @@ export function CallInterface({
               className={cn(
                 'h-14 w-14 rounded-full transition-all',
                 !isVideoEnabled
-                  ? 'bg-red-600 hover:bg-red-700 text-white'
-                  : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  ? 'bg-red-600 text-white hover:bg-red-700'
+                  : 'bg-gray-700 text-white hover:bg-gray-600'
               )}
               onClick={onToggleVideo}
               title={isVideoEnabled ? 'Turn off camera' : 'Turn on camera'}
@@ -322,8 +322,8 @@ export function CallInterface({
               className={cn(
                 'h-14 w-14 rounded-full transition-all',
                 isScreenSharing
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                  : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  ? 'bg-blue-600 text-white hover:bg-blue-700'
+                  : 'bg-gray-700 text-white hover:bg-gray-600'
               )}
               onClick={onToggleScreenShare}
               title={isScreenSharing ? 'Stop sharing' : 'Share screen'}
@@ -340,7 +340,7 @@ export function CallInterface({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-14 w-14 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition-all"
+                className="h-14 w-14 rounded-full bg-gray-700 text-white transition-all hover:bg-gray-600"
                 onClick={onSettings}
                 title="Settings"
               >
@@ -352,7 +352,7 @@ export function CallInterface({
             <Button
               variant="ghost"
               size="icon"
-              className="h-16 w-16 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/50 transition-all hover:scale-105"
+              className="h-16 w-16 rounded-full bg-red-600 text-white shadow-lg shadow-red-600/50 transition-all hover:scale-105 hover:bg-red-700"
               onClick={onEndCall}
               title="End call"
             >
@@ -378,9 +378,9 @@ export function CallInterface({
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center gap-8 p-8">
         {/* Remote User Avatar */}
-        <Avatar className="h-40 w-40 border-4 border-primary/50">
+        <Avatar className="border-primary/50 h-40 w-40 border-4">
           <AvatarImage src={remoteUser.avatarUrl} alt={remoteUser.name} />
-          <AvatarFallback className="text-4xl font-semibold bg-primary text-primary-foreground">
+          <AvatarFallback className="text-primary-foreground bg-primary text-4xl font-semibold">
             {remoteUser.name
               .split(' ')
               .map((n) => n[0])
@@ -400,7 +400,7 @@ export function CallInterface({
 
         {/* Reconnecting indicator */}
         {isReconnecting && (
-          <div className="flex items-center gap-3 px-6 py-3 bg-yellow-500/20 rounded-full backdrop-blur-sm">
+          <div className="flex items-center gap-3 rounded-full bg-yellow-500/20 px-6 py-3 backdrop-blur-sm">
             <div className="animate-spin">
               <Wifi className="h-5 w-5 text-yellow-500" />
             </div>
@@ -411,7 +411,7 @@ export function CallInterface({
         )}
 
         {/* Controls */}
-        <div className="flex items-center gap-6 mt-8">
+        <div className="mt-8 flex items-center gap-6">
           {/* Mute */}
           <div className="flex flex-col items-center gap-2">
             <Button
@@ -420,8 +420,8 @@ export function CallInterface({
               className={cn(
                 'h-16 w-16 rounded-full transition-all',
                 isMuted
-                  ? 'bg-red-600 hover:bg-red-700 text-white'
-                  : 'bg-gray-700 hover:bg-gray-600 text-white'
+                  ? 'bg-red-600 text-white hover:bg-red-700'
+                  : 'bg-gray-700 text-white hover:bg-gray-600'
               )}
               onClick={onToggleMute}
             >
@@ -435,7 +435,7 @@ export function CallInterface({
             <Button
               variant="ghost"
               size="icon"
-              className="h-20 w-20 rounded-full bg-red-600 hover:bg-red-700 text-white shadow-lg shadow-red-600/50 transition-all hover:scale-105"
+              className="h-20 w-20 rounded-full bg-red-600 text-white shadow-lg shadow-red-600/50 transition-all hover:scale-105 hover:bg-red-700"
               onClick={onEndCall}
             >
               <PhoneOff className="h-8 w-8" />
@@ -449,7 +449,7 @@ export function CallInterface({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-16 w-16 rounded-full bg-gray-700 hover:bg-gray-600 text-white transition-all"
+                className="h-16 w-16 rounded-full bg-gray-700 text-white transition-all hover:bg-gray-600"
                 onClick={onSettings}
               >
                 <Settings className="h-7 w-7" />
@@ -461,11 +461,9 @@ export function CallInterface({
       </div>
 
       {/* Connection quality footer */}
-      <div className="absolute bottom-8 flex items-center gap-2 px-4 py-2 bg-gray-800/80 rounded-full backdrop-blur-sm">
+      <div className="absolute bottom-8 flex items-center gap-2 rounded-full bg-gray-800/80 px-4 py-2 backdrop-blur-sm">
         {getQualityIcon()}
-        <span className="text-xs text-gray-400 capitalize">
-          {connectionQuality} connection
-        </span>
+        <span className="text-xs capitalize text-gray-400">{connectionQuality} connection</span>
       </div>
     </div>
   )

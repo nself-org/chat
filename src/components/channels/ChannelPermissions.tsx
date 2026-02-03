@@ -2,16 +2,7 @@
 
 import * as React from 'react'
 import { useState } from 'react'
-import {
-  Shield,
-  Users,
-  MessageSquare,
-  FileText,
-  Heart,
-  AtSign,
-  Link2,
-  Loader2,
-} from 'lucide-react'
+import { Shield, Users, MessageSquare, FileText, Heart, AtSign, Link2, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -72,10 +63,7 @@ export function ChannelPermissions({
     messageRetention: null,
   })
 
-  const handlePermissionChange = (
-    key: keyof ChannelPermissionSettings,
-    value: any
-  ) => {
+  const handlePermissionChange = (key: keyof ChannelPermissionSettings, value: any) => {
     setPermissions((prev) => ({ ...prev, [key]: value }))
   }
 
@@ -159,9 +147,7 @@ export function ChannelPermissions({
             <Users className="h-5 w-5" />
             Membership
           </CardTitle>
-          <CardDescription>
-            Control who can join and invite others to this channel
-          </CardDescription>
+          <CardDescription>Control who can join and invite others to this channel</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Who can invite */}
@@ -187,9 +173,7 @@ export function ChannelPermissions({
             </div>
             <Switch
               checked={permissions.allowGuests}
-              onCheckedChange={(checked) =>
-                handlePermissionChange('allowGuests', checked)
-              }
+              onCheckedChange={(checked) => handlePermissionChange('allowGuests', checked)}
               disabled={!isAdmin}
             />
           </div>
@@ -199,9 +183,7 @@ export function ChannelPermissions({
       <Card>
         <CardHeader>
           <CardTitle>Rate Limiting</CardTitle>
-          <CardDescription>
-            Control message frequency and retention
-          </CardDescription>
+          <CardDescription>Control message frequency and retention</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Slow mode */}
@@ -244,10 +226,7 @@ export function ChannelPermissions({
             <Select
               value={String(permissions.messageRetention ?? 'forever')}
               onValueChange={(v) =>
-                handlePermissionChange(
-                  'messageRetention',
-                  v === 'forever' ? null : parseInt(v)
-                )
+                handlePermissionChange('messageRetention', v === 'forever' ? null : parseInt(v))
               }
               disabled={!isAdmin}
             >

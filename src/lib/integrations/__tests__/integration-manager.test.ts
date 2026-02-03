@@ -20,11 +20,7 @@ import {
   calculateTokenExpiry,
   tokenResponseToCredentials,
 } from '../integration-manager'
-import type {
-  IntegrationProvider,
-  IntegrationCredentials,
-  OAuthCallbackParams,
-} from '../types'
+import type { IntegrationProvider, IntegrationCredentials, OAuthCallbackParams } from '../types'
 
 // ============================================================================
 // Mock Setup
@@ -584,7 +580,9 @@ describe('Integration Manager', () => {
         storeOAuthState('stored-state', 'test-provider')
 
         await expect(
-          manager.handleOAuthCallback('https://app.example.com/callback?code=test&state=wrong-state')
+          manager.handleOAuthCallback(
+            'https://app.example.com/callback?code=test&state=wrong-state'
+          )
         ).rejects.toThrow('Invalid OAuth state')
       })
 
@@ -641,7 +639,9 @@ describe('Integration Manager', () => {
 
       it('should handle callback error', async () => {
         storeOAuthState('test-state', 'test-provider')
-        ;(mockProvider.handleCallback as jest.Mock).mockRejectedValue(new Error('Token exchange failed'))
+        ;(mockProvider.handleCallback as jest.Mock).mockRejectedValue(
+          new Error('Token exchange failed')
+        )
 
         await expect(
           manager.handleOAuthCallback(
@@ -823,9 +823,11 @@ describe('Integration Manager', () => {
       manager.updateIntegration('test-provider', { status: 'connected' })
 
       expect(listener).toHaveBeenCalled()
-      expect(listener).toHaveBeenCalledWith(expect.arrayContaining([
-        expect.objectContaining({ id: 'test-provider', status: 'connected' }),
-      ]))
+      expect(listener).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ id: 'test-provider', status: 'connected' }),
+        ])
+      )
     })
 
     it('should return unsubscribe function', () => {

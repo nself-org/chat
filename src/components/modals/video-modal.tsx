@@ -27,6 +27,8 @@ import {
 import { cn } from '@/lib/utils'
 import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
 
+import { logger } from '@/lib/logger'
+
 export interface VideoModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
@@ -274,7 +276,7 @@ export function VideoModal({
         await video.requestPictureInPicture()
       }
     } catch (err) {
-      console.error('PiP error:', err)
+      logger.error('PiP error:', err)
     }
   }, [])
 
@@ -357,10 +359,7 @@ export function VideoModal({
 
           <div
             ref={containerRef}
-            className={cn(
-              'relative w-full max-w-5xl mx-auto',
-              isFullscreen && 'max-w-none h-full'
-            )}
+            className={cn('relative mx-auto w-full max-w-5xl', isFullscreen && 'h-full max-w-none')}
           >
             {/* Video element */}
             <video
@@ -369,7 +368,7 @@ export function VideoModal({
               poster={poster}
               loop={loop}
               muted={isMuted}
-              className="w-full h-auto max-h-[80vh] bg-black"
+              className="h-auto max-h-[80vh] w-full bg-black"
               onClick={togglePlay}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
@@ -384,14 +383,14 @@ export function VideoModal({
             {/* Loading indicator */}
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/50">
-                <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+                <div className="h-12 w-12 animate-spin rounded-full border-4 border-white/20 border-t-white" />
               </div>
             )}
 
             {/* Error message */}
             {error && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/80">
-                <p className="text-white text-lg">{error}</p>
+                <p className="text-lg text-white">{error}</p>
               </div>
             )}
 
@@ -399,10 +398,10 @@ export function VideoModal({
             {!isPlaying && !isLoading && !error && (
               <button
                 onClick={togglePlay}
-                className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/40 transition-colors"
+                className="absolute inset-0 flex items-center justify-center bg-black/30 transition-colors hover:bg-black/40"
               >
-                <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                  <Play className="h-10 w-10 text-white ml-1" />
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm">
+                  <Play className="ml-1 h-10 w-10 text-white" />
                 </div>
               </button>
             )}
@@ -435,11 +434,7 @@ export function VideoModal({
                     onClick={togglePlay}
                     className="text-white hover:bg-white/20"
                   >
-                    {isPlaying ? (
-                      <Pause className="h-5 w-5" />
-                    ) : (
-                      <Play className="h-5 w-5" />
-                    )}
+                    {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
                   </Button>
 
                   {/* Skip buttons */}
@@ -476,7 +471,7 @@ export function VideoModal({
                         <Volume2 className="h-5 w-5" />
                       )}
                     </Button>
-                    <div className="w-20 hidden sm:block">
+                    <div className="hidden w-20 sm:block">
                       <Slider
                         value={[isMuted ? 0 : volume]}
                         max={1}
@@ -488,7 +483,7 @@ export function VideoModal({
                   </div>
 
                   {/* Time */}
-                  <span className="text-white text-sm font-mono ml-2">
+                  <span className="ml-2 font-mono text-sm text-white">
                     {formatTime(currentTime)} / {formatTime(duration)}
                   </span>
                 </div>
@@ -500,7 +495,7 @@ export function VideoModal({
                       <Button
                         variant="ghost"
                         size="sm"
-                        className="text-white hover:bg-white/20 text-xs font-mono"
+                        className="font-mono text-xs text-white hover:bg-white/20"
                       >
                         {playbackRate}x
                       </Button>
@@ -573,8 +568,8 @@ export function VideoModal({
 
             {/* Title */}
             {title && showControls && (
-              <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-black/60 to-transparent p-4">
-                <h3 className="text-white font-medium">{title}</h3>
+              <div className="absolute left-0 right-0 top-0 bg-gradient-to-b from-black/60 to-transparent p-4">
+                <h3 className="font-medium text-white">{title}</h3>
               </div>
             )}
           </div>

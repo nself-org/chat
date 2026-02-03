@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   Shield,
   Clock,
@@ -13,22 +13,22 @@ import {
   Trash2,
   BarChart3,
   Settings,
-} from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useComplianceStore, selectComplianceStats } from '@/stores/compliance-store';
-import type { ComplianceStandard } from '@/lib/compliance/compliance-types';
-import { getComplianceStandardInfo } from '@/lib/compliance/compliance-types';
+} from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useComplianceStore, selectComplianceStats } from '@/stores/compliance-store'
+import type { ComplianceStandard } from '@/lib/compliance/compliance-types'
+import { getComplianceStandardInfo } from '@/lib/compliance/compliance-types'
 
 interface StatCardProps {
-  title: string;
-  value: string | number;
-  description?: string;
-  icon: React.ReactNode;
-  trend?: 'up' | 'down' | 'neutral';
-  trendValue?: string;
+  title: string
+  value: string | number
+  description?: string
+  icon: React.ReactNode
+  trend?: 'up' | 'down' | 'neutral'
+  trendValue?: string
 }
 
 function StatCard({ title, value, description, icon, trend, trendValue }: StatCardProps) {
@@ -40,17 +40,15 @@ function StatCard({ title, value, description, icon, trend, trendValue }: StatCa
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
         {trend && trendValue && (
           <p
             className={`text-xs ${
               trend === 'up'
                 ? 'text-green-600'
                 : trend === 'down'
-                ? 'text-red-600'
-                : 'text-muted-foreground'
+                  ? 'text-red-600'
+                  : 'text-muted-foreground'
             }`}
           >
             {trendValue}
@@ -58,13 +56,13 @@ function StatCard({ title, value, description, icon, trend, trendValue }: StatCa
         )}
       </CardContent>
     </Card>
-  );
+  )
 }
 
 interface ComplianceBadgeDisplayProps {
-  standard: ComplianceStandard;
-  certified: boolean;
-  expirationDate?: Date;
+  standard: ComplianceStandard
+  certified: boolean
+  expirationDate?: Date
 }
 
 function ComplianceBadgeDisplay({
@@ -72,13 +70,13 @@ function ComplianceBadgeDisplay({
   certified,
   expirationDate,
 }: ComplianceBadgeDisplayProps) {
-  const info = getComplianceStandardInfo(standard);
+  const info = getComplianceStandardInfo(standard)
 
   return (
-    <div className="flex items-center justify-between p-4 border rounded-lg">
+    <div className="flex items-center justify-between rounded-lg border p-4">
       <div className="flex items-center gap-3">
         <div
-          className={`p-2 rounded-full ${
+          className={`rounded-full p-2 ${
             certified ? 'bg-green-100 text-green-600' : 'bg-gray-100 text-gray-400'
           }`}
         >
@@ -94,52 +92,46 @@ function ComplianceBadgeDisplay({
           {certified ? 'Certified' : 'Not Certified'}
         </Badge>
         {certified && expirationDate && (
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="mt-1 text-xs text-muted-foreground">
             Expires: {expirationDate.toLocaleDateString()}
           </p>
         )}
       </div>
     </div>
-  );
+  )
 }
 
 export function ComplianceDashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
-  const stats = useComplianceStore(selectComplianceStats);
-  const { legalHolds, exportRequests, deletionRequests } = useComplianceStore();
+  const [activeTab, setActiveTab] = useState('overview')
+  const stats = useComplianceStore(selectComplianceStats)
+  const { legalHolds, exportRequests, deletionRequests } = useComplianceStore()
 
-  const activeLegalHolds = legalHolds.filter((h) => h.status === 'active');
-  const pendingExports = exportRequests.filter((r) => r.status === 'pending');
-  const pendingDeletions = deletionRequests.filter((r) => r.status === 'pending');
+  const activeLegalHolds = legalHolds.filter((h) => h.status === 'active')
+  const pendingExports = exportRequests.filter((r) => r.status === 'pending')
+  const pendingDeletions = deletionRequests.filter((r) => r.status === 'pending')
 
-  const complianceStandards: ComplianceStandard[] = [
-    'gdpr',
-    'ccpa',
-    'hipaa',
-    'soc2',
-    'iso27001',
-  ];
+  const complianceStandards: ComplianceStandard[] = ['gdpr', 'ccpa', 'hipaa', 'soc2', 'iso27001']
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-3">
+          <h1 className="flex items-center gap-3 text-3xl font-bold">
             <Shield className="h-8 w-8" />
             Compliance Dashboard
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="mt-1 text-muted-foreground">
             Manage data retention, privacy, and regulatory compliance
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
-            <FileText className="h-4 w-4 mr-2" />
+            <FileText className="mr-2 h-4 w-4" />
             Generate Report
           </Button>
           <Button>
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="mr-2 h-4 w-4" />
             Settings
           </Button>
         </div>
@@ -210,9 +202,7 @@ export function ComplianceDashboard() {
                   <BarChart3 className="h-5 w-5" />
                   Compliance Status
                 </CardTitle>
-                <CardDescription>
-                  Current compliance posture across regulations
-                </CardDescription>
+                <CardDescription>Current compliance posture across regulations</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -220,11 +210,8 @@ export function ComplianceDashboard() {
                     <span>GDPR Compliance</span>
                     <span className="font-medium">85%</span>
                   </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-green-500 rounded-full"
-                      style={{ width: '85%' }}
-                    />
+                  <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                    <div className="h-full rounded-full bg-green-500" style={{ width: '85%' }} />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -232,11 +219,8 @@ export function ComplianceDashboard() {
                     <span>CCPA Compliance</span>
                     <span className="font-medium">90%</span>
                   </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-green-500 rounded-full"
-                      style={{ width: '90%' }}
-                    />
+                  <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                    <div className="h-full rounded-full bg-green-500" style={{ width: '90%' }} />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -244,11 +228,8 @@ export function ComplianceDashboard() {
                     <span>Data Retention</span>
                     <span className="font-medium">100%</span>
                   </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-green-500 rounded-full"
-                      style={{ width: '100%' }}
-                    />
+                  <div className="h-2 overflow-hidden rounded-full bg-gray-100">
+                    <div className="h-full rounded-full bg-green-500" style={{ width: '100%' }} />
                   </div>
                 </div>
               </CardContent>
@@ -266,7 +247,7 @@ export function ComplianceDashboard() {
               <CardContent>
                 <div className="space-y-4">
                   <div className="flex items-start gap-3">
-                    <div className="p-1 rounded-full bg-blue-100 text-blue-600">
+                    <div className="rounded-full bg-blue-100 p-1 text-blue-600">
                       <Download className="h-3 w-3" />
                     </div>
                     <div className="flex-1">
@@ -277,29 +258,25 @@ export function ComplianceDashboard() {
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="p-1 rounded-full bg-green-100 text-green-600">
+                    <div className="rounded-full bg-green-100 p-1 text-green-600">
                       <CheckCircle className="h-3 w-3" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">Retention policy updated</p>
-                      <p className="text-xs text-muted-foreground">
-                        Messages policy - 5 hours ago
-                      </p>
+                      <p className="text-xs text-muted-foreground">Messages policy - 5 hours ago</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="p-1 rounded-full bg-yellow-100 text-yellow-600">
+                    <div className="rounded-full bg-yellow-100 p-1 text-yellow-600">
                       <Lock className="h-3 w-3" />
                     </div>
                     <div className="flex-1">
                       <p className="text-sm font-medium">Legal hold created</p>
-                      <p className="text-xs text-muted-foreground">
-                        Matter #12345 - 1 day ago
-                      </p>
+                      <p className="text-xs text-muted-foreground">Matter #12345 - 1 day ago</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <div className="p-1 rounded-full bg-red-100 text-red-600">
+                    <div className="rounded-full bg-red-100 p-1 text-red-600">
                       <Trash2 className="h-3 w-3" />
                     </div>
                     <div className="flex-1">
@@ -322,20 +299,20 @@ export function ComplianceDashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-4">
-                <Button variant="outline" className="h-auto py-4 flex-col">
-                  <Clock className="h-6 w-6 mb-2" />
+                <Button variant="outline" className="h-auto flex-col py-4">
+                  <Clock className="mb-2 h-6 w-6" />
                   <span>Manage Retention</span>
                 </Button>
-                <Button variant="outline" className="h-auto py-4 flex-col">
-                  <Lock className="h-6 w-6 mb-2" />
+                <Button variant="outline" className="h-auto flex-col py-4">
+                  <Lock className="mb-2 h-6 w-6" />
                   <span>Legal Holds</span>
                 </Button>
-                <Button variant="outline" className="h-auto py-4 flex-col">
-                  <Users className="h-6 w-6 mb-2" />
+                <Button variant="outline" className="h-auto flex-col py-4">
+                  <Users className="mb-2 h-6 w-6" />
                   <span>User Requests</span>
                 </Button>
-                <Button variant="outline" className="h-auto py-4 flex-col">
-                  <FileText className="h-6 w-6 mb-2" />
+                <Button variant="outline" className="h-auto flex-col py-4">
+                  <FileText className="mb-2 h-6 w-6" />
                   <span>Generate Report</span>
                 </Button>
               </div>
@@ -372,14 +349,12 @@ export function ComplianceDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Pending Requests</CardTitle>
-              <CardDescription>
-                Data subject requests requiring action
-              </CardDescription>
+              <CardDescription>Data subject requests requiring action</CardDescription>
             </CardHeader>
             <CardContent>
               {pendingExports.length === 0 && pendingDeletions.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  <CheckCircle className="h-12 w-12 mx-auto mb-4 text-green-500" />
+                <div className="py-8 text-center text-muted-foreground">
+                  <CheckCircle className="mx-auto mb-4 h-12 w-12 text-green-500" />
                   <p>No pending requests</p>
                 </div>
               ) : (
@@ -387,15 +362,13 @@ export function ComplianceDashboard() {
                   {pendingExports.map((request) => (
                     <div
                       key={request.id}
-                      className="flex items-center justify-between p-4 border rounded-lg"
+                      className="flex items-center justify-between rounded-lg border p-4"
                     >
                       <div className="flex items-center gap-3">
                         <Download className="h-5 w-5 text-blue-500" />
                         <div>
                           <p className="font-medium">Data Export Request</p>
-                          <p className="text-sm text-muted-foreground">
-                            {request.userEmail}
-                          </p>
+                          <p className="text-sm text-muted-foreground">{request.userEmail}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -407,15 +380,13 @@ export function ComplianceDashboard() {
                   {pendingDeletions.map((request) => (
                     <div
                       key={request.id}
-                      className="flex items-center justify-between p-4 border rounded-lg"
+                      className="flex items-center justify-between rounded-lg border p-4"
                     >
                       <div className="flex items-center gap-3">
                         <Trash2 className="h-5 w-5 text-red-500" />
                         <div>
                           <p className="font-medium">Deletion Request</p>
-                          <p className="text-sm text-muted-foreground">
-                            {request.userEmail}
-                          </p>
+                          <p className="text-sm text-muted-foreground">{request.userEmail}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -434,13 +405,11 @@ export function ComplianceDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Audit Log</CardTitle>
-              <CardDescription>
-                Complete history of compliance-related actions
-              </CardDescription>
+              <CardDescription>Complete history of compliance-related actions</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="h-12 w-12 mx-auto mb-4" />
+              <div className="py-8 text-center text-muted-foreground">
+                <FileText className="mx-auto mb-4 h-12 w-12" />
                 <p>Audit log integration coming soon</p>
                 <Button variant="outline" className="mt-4">
                   Export Audit Log
@@ -451,5 +420,5 @@ export function ComplianceDashboard() {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

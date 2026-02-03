@@ -3,18 +3,11 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Role, Permission } from '@/lib/admin/roles/role-types'
-import {
-  detectPermissionConflicts,
-  PermissionConflict,
-} from '@/lib/admin/roles/role-inheritance'
+import { detectPermissionConflicts, PermissionConflict } from '@/lib/admin/roles/role-inheritance'
 import { PERMISSIONS } from '@/lib/admin/roles/permission-types'
 import { RoleBadge } from './RoleBadge'
 import { AlertTriangle, AlertCircle, Shield, Info, X } from 'lucide-react'
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from '@/components/ui/alert'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 
 interface PermissionConflictsProps {
@@ -35,29 +28,20 @@ export function PermissionConflicts({
   showAll = false,
   className,
 }: PermissionConflictsProps) {
-  const conflicts = React.useMemo(
-    () => detectPermissionConflicts(userRoles),
-    [userRoles]
-  )
+  const conflicts = React.useMemo(() => detectPermissionConflicts(userRoles), [userRoles])
 
   // Filter dismissed conflicts
   const visibleConflicts = showAll
     ? conflicts
-    : conflicts.filter(
-        (c) => !dismissedConflicts.includes(`${c.permission}-${c.type}`)
-      )
+    : conflicts.filter((c) => !dismissedConflicts.includes(`${c.permission}-${c.type}`))
 
   if (visibleConflicts.length === 0) {
     return null
   }
 
   // Group by type
-  const escalationConflicts = visibleConflicts.filter(
-    (c) => c.type === 'escalation'
-  )
-  const dangerousConflicts = visibleConflicts.filter(
-    (c) => c.type === 'dangerous'
-  )
+  const escalationConflicts = visibleConflicts.filter((c) => c.type === 'escalation')
+  const dangerousConflicts = visibleConflicts.filter((c) => c.type === 'dangerous')
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -74,8 +58,7 @@ export function PermissionConflicts({
                   conflict={conflict}
                   onDismiss={
                     onDismiss
-                      ? () =>
-                          onDismiss(`${conflict.permission}-${conflict.type}`)
+                      ? () => onDismiss(`${conflict.permission}-${conflict.type}`)
                       : undefined
                   }
                 />
@@ -89,9 +72,7 @@ export function PermissionConflicts({
       {dangerousConflicts.length > 0 && (
         <Alert className="border-amber-500/50 bg-amber-500/10">
           <Shield className="h-4 w-4 text-amber-500" />
-          <AlertTitle className="text-amber-500">
-            Sensitive Permissions Detected
-          </AlertTitle>
+          <AlertTitle className="text-amber-500">Sensitive Permissions Detected</AlertTitle>
           <AlertDescription>
             <div className="mt-2 space-y-2">
               {dangerousConflicts.map((conflict) => (
@@ -100,8 +81,7 @@ export function PermissionConflicts({
                   conflict={conflict}
                   onDismiss={
                     onDismiss
-                      ? () =>
-                          onDismiss(`${conflict.permission}-${conflict.type}`)
+                      ? () => onDismiss(`${conflict.permission}-${conflict.type}`)
                       : undefined
                   }
                 />
@@ -126,7 +106,7 @@ function ConflictItem({ conflict, onDismiss }: ConflictItemProps) {
   const permDef = PERMISSIONS[conflict.permission]
 
   return (
-    <div className="flex items-start justify-between gap-3 rounded-md bg-background/50 p-2">
+    <div className="bg-background/50 flex items-start justify-between gap-3 rounded-md p-2">
       <div className="flex-1">
         <div className="flex items-center gap-2">
           <span className="font-medium">{permDef?.name ?? conflict.permission}</span>
@@ -145,12 +125,7 @@ function ConflictItem({ conflict, onDismiss }: ConflictItemProps) {
         </div>
       </div>
       {onDismiss && (
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-6 w-6 shrink-0"
-          onClick={onDismiss}
-        >
+        <Button variant="ghost" size="icon" className="h-6 w-6 shrink-0" onClick={onDismiss}>
           <X size={14} />
         </Button>
       )}
@@ -170,19 +145,11 @@ export function PermissionConflictSummary({
   userRoles,
   className,
 }: PermissionConflictSummaryProps) {
-  const conflicts = React.useMemo(
-    () => detectPermissionConflicts(userRoles),
-    [userRoles]
-  )
+  const conflicts = React.useMemo(() => detectPermissionConflicts(userRoles), [userRoles])
 
   if (conflicts.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex items-center gap-2 text-sm text-green-500',
-          className
-        )}
-      >
+      <div className={cn('flex items-center gap-2 text-sm text-green-500', className)}>
         <div className="h-2 w-2 rounded-full bg-green-500" />
         No permission conflicts detected
       </div>
@@ -218,24 +185,12 @@ interface PermissionSecurityCheckProps {
   className?: string
 }
 
-export function PermissionSecurityCheck({
-  userRoles,
-  className,
-}: PermissionSecurityCheckProps) {
-  const conflicts = React.useMemo(
-    () => detectPermissionConflicts(userRoles),
-    [userRoles]
-  )
+export function PermissionSecurityCheck({ userRoles, className }: PermissionSecurityCheckProps) {
+  const conflicts = React.useMemo(() => detectPermissionConflicts(userRoles), [userRoles])
 
-  const hasAdministrator = userRoles.some((r) =>
-    r.permissions.includes('administrator')
-  )
-  const hasManageRoles = userRoles.some((r) =>
-    r.permissions.includes('manage_roles')
-  )
-  const hasManageServer = userRoles.some((r) =>
-    r.permissions.includes('manage_server')
-  )
+  const hasAdministrator = userRoles.some((r) => r.permissions.includes('administrator'))
+  const hasManageRoles = userRoles.some((r) => r.permissions.includes('manage_roles'))
+  const hasManageServer = userRoles.some((r) => r.permissions.includes('manage_server'))
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -247,9 +202,7 @@ export function PermissionSecurityCheck({
           label="Administrator"
           status={hasAdministrator ? 'warning' : 'ok'}
           description={
-            hasAdministrator
-              ? 'User has full administrator access'
-              : 'No administrator permission'
+            hasAdministrator ? 'User has full administrator access' : 'No administrator permission'
           }
         />
 
@@ -257,11 +210,7 @@ export function PermissionSecurityCheck({
         <SecurityCheckItem
           label="Role Management"
           status={hasManageRoles ? 'info' : 'ok'}
-          description={
-            hasManageRoles
-              ? 'Can create and manage roles'
-              : 'Cannot manage roles'
-          }
+          description={hasManageRoles ? 'Can create and manage roles' : 'Cannot manage roles'}
         />
 
         {/* Server management check */}
@@ -269,9 +218,7 @@ export function PermissionSecurityCheck({
           label="Server Settings"
           status={hasManageServer ? 'info' : 'ok'}
           description={
-            hasManageServer
-              ? 'Can modify server settings'
-              : 'Cannot modify server settings'
+            hasManageServer ? 'Can modify server settings' : 'Cannot modify server settings'
           }
         />
 
@@ -318,7 +265,7 @@ function SecurityCheckItem({ label, status, description }: SecurityCheckItemProp
       <div className={cn('h-2 w-2 rounded-full', statusColors[status])} />
       <div className="flex-1">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-sm">{label}</span>
+          <span className="text-sm font-medium">{label}</span>
           {Icon && <Icon size={14} className="text-muted-foreground" />}
         </div>
         <p className="text-xs text-muted-foreground">{description}</p>

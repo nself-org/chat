@@ -299,9 +299,7 @@ test.describe('Summary Generation', () => {
         await page.waitForTimeout(300)
 
         // Look for progress indicator
-        const progressText = page.locator(
-          'text=/\\d+%/, [data-testid="progress-percent"]'
-        )
+        const progressText = page.locator('text=/\\d+%/, [data-testid="progress-percent"]')
 
         const hasProgress = await progressText.isVisible().catch(() => false)
         expect(typeof hasProgress).toBe('boolean')
@@ -489,9 +487,7 @@ test.describe('Copy Summary to Clipboard', () => {
         await summarizeButton.click()
         await page.waitForTimeout(3000)
 
-        const copyButton = page.locator(
-          '[data-testid="copy-summary"], button:has-text("Copy")'
-        )
+        const copyButton = page.locator('[data-testid="copy-summary"], button:has-text("Copy")')
 
         if (await copyButton.isVisible()) {
           await copyButton.click()
@@ -504,9 +500,7 @@ test.describe('Copy Summary to Clipboard', () => {
           })
 
           // Check for success feedback
-          const successMessage = page.locator(
-            'text=/copied|success/i, [role="alert"], .toast'
-          )
+          const successMessage = page.locator('text=/copied|success/i, [role="alert"], .toast')
 
           const showsSuccess = await successMessage.isVisible().catch(() => false)
           expect(typeof showsSuccess).toBe('boolean')
@@ -850,9 +844,7 @@ test.describe('Summary Error Handling', () => {
       await page.waitForTimeout(1000)
 
       // Should show appropriate message (e.g., "No messages to summarize")
-      const emptyMessage = page.locator(
-        'text=/no messages|empty thread|nothing to summarize/i'
-      )
+      const emptyMessage = page.locator('text=/no messages|empty thread|nothing to summarize/i')
 
       const hasMessage = await emptyMessage.isVisible().catch(() => false)
       expect(typeof hasMessage).toBe('boolean')

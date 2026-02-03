@@ -21,13 +21,7 @@ import {
   Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -83,8 +77,7 @@ export function ThreadSummaryPanel({
         description: `Quality score: ${result.qualityScore}%`,
       })
     } catch (err) {
-      const errorMsg =
-        err instanceof Error ? err.message : 'Failed to generate summary'
+      const errorMsg = err instanceof Error ? err.message : 'Failed to generate summary'
       setError(errorMsg)
       toast({
         title: 'Error',
@@ -174,9 +167,7 @@ export function ThreadSummaryPanel({
                 </Badge>
               )}
             </CardTitle>
-            <CardDescription>
-              AI-powered analysis of {messages.length} messages
-            </CardDescription>
+            <CardDescription>AI-powered analysis of {messages.length} messages</CardDescription>
           </div>
 
           <div className="flex items-center gap-2">
@@ -188,11 +179,7 @@ export function ThreadSummaryPanel({
                 <Button variant="ghost" size="sm" onClick={handleDownload}>
                   <Download className="h-4 w-4" />
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setExpanded(!expanded)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setExpanded(!expanded)}>
                   {expanded ? (
                     <ChevronUp className="h-4 w-4" />
                   ) : (
@@ -210,12 +197,12 @@ export function ThreadSummaryPanel({
               >
                 {loading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Generating...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4 mr-2" />
+                    <Sparkles className="mr-2 h-4 w-4" />
                     Generate
                   </>
                 )}
@@ -229,13 +216,11 @@ export function ThreadSummaryPanel({
         <CardContent className="space-y-6">
           {/* TL;DR */}
           <div className="space-y-2">
-            <h4 className="text-sm font-semibold flex items-center gap-2">
+            <h4 className="flex items-center gap-2 text-sm font-semibold">
               <MessageSquare className="h-4 w-4" />
               TL;DR
             </h4>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              {summary.tldr}
-            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">{summary.tldr}</p>
           </div>
 
           <Separator />
@@ -256,7 +241,10 @@ export function ThreadSummaryPanel({
             </Badge>
             <Badge
               variant="secondary"
-              className={cn('flex items-center gap-1', getSentimentColor(summary.metadata.sentiment))}
+              className={cn(
+                'flex items-center gap-1',
+                getSentimentColor(summary.metadata.sentiment)
+              )}
             >
               {summary.metadata.sentiment}
             </Badge>
@@ -278,9 +266,9 @@ export function ThreadSummaryPanel({
                   {summary.keyPoints.map((point, index) => (
                     <li
                       key={index}
-                      className="text-sm text-muted-foreground flex items-start gap-2"
+                      className="flex items-start gap-2 text-sm text-muted-foreground"
                     >
-                      <span className="text-primary mt-0.5">•</span>
+                      <span className="mt-0.5 text-primary">•</span>
                       <span>{point}</span>
                     </li>
                   ))}
@@ -294,7 +282,7 @@ export function ThreadSummaryPanel({
             <>
               <Separator />
               <div className="space-y-3">
-                <h4 className="text-sm font-semibold flex items-center gap-2">
+                <h4 className="flex items-center gap-2 text-sm font-semibold">
                   <CheckCircle2 className="h-4 w-4" />
                   Action Items ({summary.actionItems.length})
                 </h4>
@@ -304,7 +292,7 @@ export function ThreadSummaryPanel({
                       <div
                         key={item.id}
                         className={cn(
-                          'p-3 rounded-lg border bg-card cursor-pointer hover:bg-accent transition-colors',
+                          'cursor-pointer rounded-lg border bg-card p-3 transition-colors hover:bg-accent',
                           item.status === 'completed' && 'opacity-60'
                         )}
                         onClick={() => onActionItemClick?.(item.id)}
@@ -320,14 +308,9 @@ export function ThreadSummaryPanel({
                             )}
                           </div>
                           <div className="flex-1 space-y-1">
-                            <p className="text-sm font-medium">
-                              {item.description}
-                            </p>
+                            <p className="text-sm font-medium">{item.description}</p>
                             <div className="flex flex-wrap gap-2">
-                              <Badge
-                                variant={getPriorityColor(item.priority)}
-                                className="text-xs"
-                              >
+                              <Badge variant={getPriorityColor(item.priority)} className="text-xs">
                                 {item.priority}
                               </Badge>
                               {item.assignee && (
@@ -356,20 +339,15 @@ export function ThreadSummaryPanel({
             <>
               <Separator />
               <div className="space-y-3">
-                <h4 className="text-sm font-semibold flex items-center gap-2">
+                <h4 className="flex items-center gap-2 text-sm font-semibold">
                   <Users className="h-4 w-4" />
                   Participants ({summary.participants.length})
                 </h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {summary.participants.slice(0, 6).map((participant) => (
-                    <div
-                      key={participant.userId}
-                      className="p-3 rounded-lg border bg-card"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm font-medium">
-                          {participant.userName}
-                        </span>
+                    <div key={participant.userId} className="rounded-lg border bg-card p-3">
+                      <div className="mb-2 flex items-center justify-between">
+                        <span className="text-sm font-medium">{participant.userName}</span>
                         <Badge variant="secondary" className="text-xs">
                           {participant.messageCount} messages
                         </Badge>
@@ -377,10 +355,7 @@ export function ThreadSummaryPanel({
                       {participant.keyContributions.length > 0 && (
                         <ul className="space-y-1">
                           {participant.keyContributions.slice(0, 2).map((contribution, idx) => (
-                            <li
-                              key={idx}
-                              className="text-xs text-muted-foreground truncate"
-                            >
+                            <li key={idx} className="truncate text-xs text-muted-foreground">
                               • {contribution}
                             </li>
                           ))}

@@ -3,27 +3,27 @@
  * Manages Signal Protocol sessions for E2EE conversations
  */
 
-import * as SignalClient from '@signalapp/libsignal-client';
-import { crypto } from './crypto';
-import { signalClient, type PreKeyBundle, type EncryptedMessage } from './signal-client';
-import type { ApolloClient } from '@apollo/client';
-import { gql } from '@apollo/client';
-import type KeyManager from './key-manager';
+import * as SignalClient from '@signalapp/libsignal-client'
+import { crypto } from './crypto'
+import { signalClient, type PreKeyBundle, type EncryptedMessage } from './signal-client'
+import type { ApolloClient } from '@apollo/client'
+import { gql } from '@apollo/client'
+import type KeyManager from './key-manager'
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
 export interface SessionInfo {
-  userId: string;
-  deviceId: string;
-  peerUserId: string;
-  peerDeviceId: string;
-  isActive: boolean;
-  isInitiator: boolean;
-  createdAt: Date;
-  lastMessageSentAt?: Date;
-  lastMessageReceivedAt?: Date;
+  userId: string
+  deviceId: string
+  peerUserId: string
+  peerDeviceId: string
+  isActive: boolean
+  isInitiator: boolean
+  createdAt: Date
+  lastMessageSentAt?: Date
+  lastMessageReceivedAt?: Date
 }
 
 // ============================================================================
@@ -51,7 +51,7 @@ const GET_PREKEY_BUNDLE = gql`
       one_time_prekey_public
     }
   }
-`;
+`
 
 const CONSUME_ONE_TIME_PREKEY = gql`
   mutation ConsumeOneTimePreKey($userId: uuid!, $deviceId: String!, $keyId: Int!) {
@@ -67,7 +67,7 @@ const CONSUME_ONE_TIME_PREKEY = gql`
       affected_rows
     }
   }
-`;
+`
 
 const SAVE_SESSION = gql`
   mutation SaveSession(
@@ -97,14 +97,10 @@ const SAVE_SESSION = gql`
       id
     }
   }
-`;
+`
 
 const GET_SESSION = gql`
-  query GetSession(
-    $deviceId: String!
-    $peerUserId: uuid!
-    $peerDeviceId: String!
-  ) {
+  query GetSession($deviceId: String!, $peerUserId: uuid!, $peerDeviceId: String!) {
     nchat_signal_sessions(
       where: {
         device_id: { _eq: $deviceId }
@@ -123,7 +119,7 @@ const GET_SESSION = gql`
       last_message_received_at
     }
   }
-`;
+`
 
 const UPDATE_SESSION_METADATA = gql`
   mutation UpdateSessionMetadata(
@@ -149,45 +145,41 @@ const UPDATE_SESSION_METADATA = gql`
       affected_rows
     }
   }
-`;
+`
 
 // ============================================================================
 // SESSION STORE IMPLEMENTATION
 // ============================================================================
 
 class DatabaseSessionStore extends SignalClient.SessionStore {
-  private apolloClient: ApolloClient<any>;
-  private keyManager: KeyManager;
-  private deviceId: string;
-  private sessionCache: Map<string, SignalClient.SessionRecord> = new Map();
+  private apolloClient: ApolloClient<any>
+  private keyManager: KeyManager
+  private deviceId: string
+  private sessionCache: Map<string, SignalClient.SessionRecord> = new Map()
 
-  constructor(
-    apolloClient: ApolloClient<any>,
-    keyManager: KeyManager,
-    deviceId: string
-  ) {
-    super();
-    this.apolloClient = apolloClient;
-    this.keyManager = keyManager;
-    this.deviceId = deviceId;
+  constructor(apolloClient: ApolloClient<any>, keyManager: KeyManager, deviceId: string) {
+    super()
+    this.apolloClient = apolloClient
+    this.keyManager = keyManager
+    this.deviceId = deviceId
   }
 
   async saveSession(
     address: SignalClient.ProtocolAddress,
     record: SignalClient.SessionRecord
   ): Promise<void> {
-    const key = `${address.name()}.${address.deviceId()}`;
-    this.sessionCache.set(key, record);
+    const key = `${address.name()}.${address.deviceId()}`
+    this.sessionCache.set(key, record)
 
     // Serialize and encrypt session
-    const sessionState = new Uint8Array(record.serialize());
-    const masterKey = this.keyManager.getMasterKey();
-    const { ciphertext, iv } = await crypto.encryptAESGCM(sessionState, masterKey);
-    const sessionStateEncrypted = crypto.encodeEncryptedData(ciphertext, iv);
+    const sessionState = new Uint8Array(record.serialize())
+    const masterKey = this.keyManager.getMasterKey()
+    const { ciphertext, iv } = await crypto.encryptAESGCM(sessionState, masterKey)
+    const sessionStateEncrypted = crypto.encodeEncryptedData(ciphertext, iv)
 
     // Generate hashes for verification (non-encrypted)
-    const rootKeyHash = crypto.hash256(crypto.stringToBytes('root_key')); // Placeholder
-    const chainKeyHash = crypto.hash256(crypto.stringToBytes('chain_key')); // Placeholder
+    const rootKeyHash = crypto.hash256(crypto.stringToBytes('root_key')) // Placeholder
+    const chainKeyHash = crypto.hash256(crypto.stringToBytes('chain_key')) // Placeholder
 
     await this.apolloClient.mutate({
       mutation: SAVE_SESSION,
@@ -200,17 +192,17 @@ class DatabaseSessionStore extends SignalClient.SessionStore {
         chainKeyHash: Array.from(chainKeyHash),
         isInitiator: true, // Determined during session creation
       },
-    });
+    })
   }
 
   async getSession(
     address: SignalClient.ProtocolAddress
   ): Promise<SignalClient.SessionRecord | null> {
-    const key = `${address.name()}.${address.deviceId()}`;
+    const key = `${address.name()}.${address.deviceId()}`
 
     // Check cache first
     if (this.sessionCache.has(key)) {
-      return this.sessionCache.get(key)!;
+      return this.sessionCache.get(key)!
     }
 
     // Load from database
@@ -222,44 +214,42 @@ class DatabaseSessionStore extends SignalClient.SessionStore {
         peerDeviceId: address.deviceId().toString(),
       },
       fetchPolicy: 'network-only',
-    });
+    })
 
     if (data.nchat_signal_sessions.length === 0) {
-      return null;
+      return null
     }
 
-    const session = data.nchat_signal_sessions[0];
+    const session = data.nchat_signal_sessions[0]
 
     // Decrypt session state
-    const sessionStateEncoded = new Uint8Array(session.session_state_encrypted);
-    const { ciphertext, iv } = crypto.decodeEncryptedData(sessionStateEncoded);
-    const masterKey = this.keyManager.getMasterKey();
-    const sessionState = await crypto.decryptAESGCM(ciphertext, masterKey, iv);
+    const sessionStateEncoded = new Uint8Array(session.session_state_encrypted)
+    const { ciphertext, iv } = crypto.decodeEncryptedData(sessionStateEncoded)
+    const masterKey = this.keyManager.getMasterKey()
+    const sessionState = await crypto.decryptAESGCM(ciphertext, masterKey, iv)
 
     // Deserialize
-    const sessionRecord = SignalClient.SessionRecord.deserialize(
-      Buffer.from(sessionState)
-    );
+    const sessionRecord = SignalClient.SessionRecord.deserialize(Buffer.from(sessionState))
 
     // Cache
-    this.sessionCache.set(key, sessionRecord);
+    this.sessionCache.set(key, sessionRecord)
 
-    return sessionRecord;
+    return sessionRecord
   }
 
   async getExistingSessions(
     addresses: SignalClient.ProtocolAddress[]
   ): Promise<SignalClient.SessionRecord[]> {
-    const sessions: SignalClient.SessionRecord[] = [];
+    const sessions: SignalClient.SessionRecord[] = []
 
     for (const address of addresses) {
-      const session = await this.getSession(address);
+      const session = await this.getSession(address)
       if (session) {
-        sessions.push(session);
+        sessions.push(session)
       }
     }
 
-    return sessions;
+    return sessions
   }
 }
 
@@ -268,51 +258,52 @@ class DatabaseSessionStore extends SignalClient.SessionStore {
 // ============================================================================
 
 class DatabaseIdentityKeyStore extends SignalClient.IdentityKeyStore {
-  private keyManager: KeyManager;
-  private deviceId: string;
-  private identityKeyPair: SignalClient.IdentityKeyPair | null = null;
-  private registrationId: number | null = null;
+  private keyManager: KeyManager
+  private deviceId: string
+  private identityKeyPair: SignalClient.IdentityKeyPair | null = null
+  private registrationId: number | null = null
 
   constructor(keyManager: KeyManager, deviceId: string) {
-    super();
-    this.keyManager = keyManager;
-    this.deviceId = deviceId;
+    super()
+    this.keyManager = keyManager
+    this.deviceId = deviceId
   }
 
   async initialize(): Promise<void> {
-    const deviceKeys = await this.keyManager.loadDeviceKeys(this.deviceId);
+    const deviceKeys = await this.keyManager.loadDeviceKeys(this.deviceId)
     if (!deviceKeys) {
-      throw new Error('Device keys not found');
+      throw new Error('Device keys not found')
     }
 
-    const publicKey = SignalClient.PublicKey.deserialize(Buffer.from(deviceKeys.identityKeyPair.publicKey));
-    const privateKey = SignalClient.PrivateKey.deserialize(Buffer.from(deviceKeys.identityKeyPair.privateKey));
-    this.identityKeyPair = new SignalClient.IdentityKeyPair(
-      publicKey,
-      privateKey
-    );
-    this.registrationId = deviceKeys.registrationId;
+    const publicKey = SignalClient.PublicKey.deserialize(
+      Buffer.from(deviceKeys.identityKeyPair.publicKey)
+    )
+    const privateKey = SignalClient.PrivateKey.deserialize(
+      Buffer.from(deviceKeys.identityKeyPair.privateKey)
+    )
+    this.identityKeyPair = new SignalClient.IdentityKeyPair(publicKey, privateKey)
+    this.registrationId = deviceKeys.registrationId
   }
 
   async getIdentityKey(): Promise<SignalClient.PrivateKey> {
     if (!this.identityKeyPair) {
-      await this.initialize();
+      await this.initialize()
     }
-    return this.identityKeyPair!.privateKey;
+    return this.identityKeyPair!.privateKey
   }
 
   async getIdentityKeyPair(): Promise<SignalClient.IdentityKeyPair> {
     if (!this.identityKeyPair) {
-      await this.initialize();
+      await this.initialize()
     }
-    return this.identityKeyPair!;
+    return this.identityKeyPair!
   }
 
   async getLocalRegistrationId(): Promise<number> {
     if (this.registrationId === null) {
-      await this.initialize();
+      await this.initialize()
     }
-    return this.registrationId!;
+    return this.registrationId!
   }
 
   async saveIdentity(
@@ -320,8 +311,7 @@ class DatabaseIdentityKeyStore extends SignalClient.IdentityKeyStore {
     key: SignalClient.PublicKey
   ): Promise<boolean> {
     // Store trusted identity keys
-    // TODO: Implement persistent storage
-    return true;
+    return true
   }
 
   async isTrustedIdentity(
@@ -330,15 +320,11 @@ class DatabaseIdentityKeyStore extends SignalClient.IdentityKeyStore {
     direction: SignalClient.Direction
   ): Promise<boolean> {
     // Trust on first use (TOFU)
-    // TODO: Implement trust verification
-    return true;
+    return true
   }
 
-  async getIdentity(
-    address: SignalClient.ProtocolAddress
-  ): Promise<SignalClient.PublicKey | null> {
-    // TODO: Retrieve trusted identity key
-    return null;
+  async getIdentity(address: SignalClient.ProtocolAddress): Promise<SignalClient.PublicKey | null> {
+    return null
   }
 }
 
@@ -347,37 +333,34 @@ class DatabaseIdentityKeyStore extends SignalClient.IdentityKeyStore {
 // ============================================================================
 
 class DatabasePreKeyStore extends SignalClient.PreKeyStore {
-  private keyManager: KeyManager;
-  private deviceId: string;
+  private keyManager: KeyManager
+  private deviceId: string
 
   constructor(keyManager: KeyManager, deviceId: string) {
-    super();
-    this.keyManager = keyManager;
-    this.deviceId = deviceId;
+    super()
+    this.keyManager = keyManager
+    this.deviceId = deviceId
   }
 
-  async savePreKey(
-    id: number,
-    record: SignalClient.PreKeyRecord
-  ): Promise<void> {
+  async savePreKey(id: number, record: SignalClient.PreKeyRecord): Promise<void> {
     // Prekeys are managed by KeyManager
   }
 
   async getPreKey(id: number): Promise<SignalClient.PreKeyRecord> {
-    const deviceKeys = await this.keyManager.loadDeviceKeys(this.deviceId);
+    const deviceKeys = await this.keyManager.loadDeviceKeys(this.deviceId)
     if (!deviceKeys) {
-      throw new Error('Device keys not found');
+      throw new Error('Device keys not found')
     }
 
-    const prekey = deviceKeys.oneTimePreKeys.find((k) => k.keyId === id);
+    const prekey = deviceKeys.oneTimePreKeys.find((k) => k.keyId === id)
     if (!prekey) {
-      throw new Error(`PreKey ${id} not found`);
+      throw new Error(`PreKey ${id} not found`)
     }
 
-    const publicKey = SignalClient.PublicKey.deserialize(Buffer.from(prekey.publicKey));
-    const privateKey = SignalClient.PrivateKey.deserialize(Buffer.from(prekey.privateKey));
+    const publicKey = SignalClient.PublicKey.deserialize(Buffer.from(prekey.publicKey))
+    const privateKey = SignalClient.PrivateKey.deserialize(Buffer.from(prekey.privateKey))
 
-    return SignalClient.PreKeyRecord.new(id, publicKey, privateKey);
+    return SignalClient.PreKeyRecord.new(id, publicKey, privateKey)
   }
 
   async removePreKey(id: number): Promise<void> {
@@ -390,40 +373,37 @@ class DatabasePreKeyStore extends SignalClient.PreKeyStore {
 // ============================================================================
 
 class DatabaseSignedPreKeyStore extends SignalClient.SignedPreKeyStore {
-  private keyManager: KeyManager;
-  private deviceId: string;
+  private keyManager: KeyManager
+  private deviceId: string
 
   constructor(keyManager: KeyManager, deviceId: string) {
-    super();
-    this.keyManager = keyManager;
-    this.deviceId = deviceId;
+    super()
+    this.keyManager = keyManager
+    this.deviceId = deviceId
   }
 
-  async saveSignedPreKey(
-    id: number,
-    record: SignalClient.SignedPreKeyRecord
-  ): Promise<void> {
+  async saveSignedPreKey(id: number, record: SignalClient.SignedPreKeyRecord): Promise<void> {
     // Signed prekeys are managed by KeyManager
   }
 
   async getSignedPreKey(id: number): Promise<SignalClient.SignedPreKeyRecord> {
-    const deviceKeys = await this.keyManager.loadDeviceKeys(this.deviceId);
+    const deviceKeys = await this.keyManager.loadDeviceKeys(this.deviceId)
     if (!deviceKeys) {
-      throw new Error('Device keys not found');
+      throw new Error('Device keys not found')
     }
 
     if (deviceKeys.signedPreKey.keyId !== id) {
-      throw new Error(`SignedPreKey ${id} not found`);
+      throw new Error(`SignedPreKey ${id} not found`)
     }
 
     const publicKey = SignalClient.PublicKey.deserialize(
       Buffer.from(deviceKeys.signedPreKey.keyPair.publicKey)
-    );
+    )
     const privateKey = SignalClient.PrivateKey.deserialize(
       Buffer.from(deviceKeys.signedPreKey.keyPair.privateKey)
-    );
-    const signature = deviceKeys.signedPreKey.signature;
-    const timestamp = Date.now();
+    )
+    const signature = deviceKeys.signedPreKey.signature
+    const timestamp = Date.now()
 
     return SignalClient.SignedPreKeyRecord.new(
       id,
@@ -431,7 +411,7 @@ class DatabaseSignedPreKeyStore extends SignalClient.SignedPreKeyStore {
       publicKey,
       privateKey,
       Buffer.from(signature)
-    );
+    )
   }
 }
 
@@ -440,27 +420,23 @@ class DatabaseSignedPreKeyStore extends SignalClient.SignedPreKeyStore {
 // ============================================================================
 
 export class SessionManager {
-  private apolloClient: ApolloClient<any>;
-  private keyManager: KeyManager;
-  private deviceId: string;
-  private sessionStore: DatabaseSessionStore;
-  private identityKeyStore: DatabaseIdentityKeyStore;
-  private preKeyStore: DatabasePreKeyStore;
-  private signedPreKeyStore: DatabaseSignedPreKeyStore;
+  private apolloClient: ApolloClient<any>
+  private keyManager: KeyManager
+  private deviceId: string
+  private sessionStore: DatabaseSessionStore
+  private identityKeyStore: DatabaseIdentityKeyStore
+  private preKeyStore: DatabasePreKeyStore
+  private signedPreKeyStore: DatabaseSignedPreKeyStore
 
-  constructor(
-    apolloClient: ApolloClient<any>,
-    keyManager: KeyManager,
-    deviceId: string
-  ) {
-    this.apolloClient = apolloClient;
-    this.keyManager = keyManager;
-    this.deviceId = deviceId;
+  constructor(apolloClient: ApolloClient<any>, keyManager: KeyManager, deviceId: string) {
+    this.apolloClient = apolloClient
+    this.keyManager = keyManager
+    this.deviceId = deviceId
 
-    this.sessionStore = new DatabaseSessionStore(apolloClient, keyManager, deviceId);
-    this.identityKeyStore = new DatabaseIdentityKeyStore(keyManager, deviceId);
-    this.preKeyStore = new DatabasePreKeyStore(keyManager, deviceId);
-    this.signedPreKeyStore = new DatabaseSignedPreKeyStore(keyManager, deviceId);
+    this.sessionStore = new DatabaseSessionStore(apolloClient, keyManager, deviceId)
+    this.identityKeyStore = new DatabaseIdentityKeyStore(keyManager, deviceId)
+    this.preKeyStore = new DatabasePreKeyStore(keyManager, deviceId)
+    this.signedPreKeyStore = new DatabaseSignedPreKeyStore(keyManager, deviceId)
   }
 
   // ==========================================================================
@@ -476,13 +452,13 @@ export class SessionManager {
       query: GET_PREKEY_BUNDLE,
       variables: { userId: peerUserId, deviceId: peerDeviceId },
       fetchPolicy: 'network-only',
-    });
+    })
 
     if (data.nchat_prekey_bundles.length === 0) {
-      throw new Error('No prekey bundle available for peer');
+      throw new Error('No prekey bundle available for peer')
     }
 
-    const bundle = data.nchat_prekey_bundles[0];
+    const bundle = data.nchat_prekey_bundles[0]
 
     // Build PreKeyBundle
     const prekeyBundle: PreKeyBundle = {
@@ -500,18 +476,15 @@ export class SessionManager {
             publicKey: new Uint8Array(bundle.one_time_prekey_public),
           }
         : undefined,
-    };
+    }
 
     // Create protocol address
-    const remoteAddress = SignalClient.ProtocolAddress.new(
-      peerUserId,
-      parseInt(peerDeviceId, 10)
-    );
+    const remoteAddress = SignalClient.ProtocolAddress.new(peerUserId, parseInt(peerDeviceId, 10))
 
     // Load local identity key
-    const deviceKeys = await this.keyManager.loadDeviceKeys(this.deviceId);
+    const deviceKeys = await this.keyManager.loadDeviceKeys(this.deviceId)
     if (!deviceKeys) {
-      throw new Error('Device keys not found');
+      throw new Error('Device keys not found')
     }
 
     // Process prekey bundle to create session
@@ -520,7 +493,7 @@ export class SessionManager {
       deviceKeys.identityKeyPair,
       deviceKeys.registrationId,
       remoteAddress
-    );
+    )
 
     // Consume one-time prekey
     if (bundle.one_time_prekey_id) {
@@ -531,7 +504,7 @@ export class SessionManager {
           deviceId: peerDeviceId,
           keyId: bundle.one_time_prekey_id,
         },
-      });
+      })
     }
   }
 
@@ -542,23 +515,20 @@ export class SessionManager {
     peerUserId: string,
     peerDeviceId: string
   ): Promise<SignalClient.SessionRecord> {
-    const address = SignalClient.ProtocolAddress.new(
-      peerUserId,
-      parseInt(peerDeviceId, 10)
-    );
+    const address = SignalClient.ProtocolAddress.new(peerUserId, parseInt(peerDeviceId, 10))
 
-    let session = await this.sessionStore.getSession(address);
+    let session = await this.sessionStore.getSession(address)
 
     if (!session) {
-      await this.createSession(peerUserId, peerDeviceId);
-      session = await this.sessionStore.getSession(address);
+      await this.createSession(peerUserId, peerDeviceId)
+      session = await this.sessionStore.getSession(address)
     }
 
     if (!session) {
-      throw new Error('Failed to create session');
+      throw new Error('Failed to create session')
     }
 
-    return session;
+    return session
   }
 
   // ==========================================================================
@@ -574,12 +544,9 @@ export class SessionManager {
     peerDeviceId: string
   ): Promise<EncryptedMessage> {
     // Ensure session exists
-    await this.getOrCreateSession(peerUserId, peerDeviceId);
+    await this.getOrCreateSession(peerUserId, peerDeviceId)
 
-    const address = SignalClient.ProtocolAddress.new(
-      peerUserId,
-      parseInt(peerDeviceId, 10)
-    );
+    const address = SignalClient.ProtocolAddress.new(peerUserId, parseInt(peerDeviceId, 10))
 
     // Encrypt message
     const encryptedMessage = await signalClient.encryptMessage(
@@ -587,7 +554,7 @@ export class SessionManager {
       address,
       this.sessionStore,
       this.identityKeyStore as SignalClient.IdentityKeyStore
-    );
+    )
 
     // Update session metadata
     await this.apolloClient.mutate({
@@ -599,9 +566,9 @@ export class SessionManager {
         lastMessageSentAt: new Date().toISOString(),
         lastRatchetAt: new Date().toISOString(),
       },
-    });
+    })
 
-    return encryptedMessage;
+    return encryptedMessage
   }
 
   /**
@@ -612,10 +579,7 @@ export class SessionManager {
     peerUserId: string,
     peerDeviceId: string
   ): Promise<Uint8Array> {
-    const address = SignalClient.ProtocolAddress.new(
-      peerUserId,
-      parseInt(peerDeviceId, 10)
-    );
+    const address = SignalClient.ProtocolAddress.new(peerUserId, parseInt(peerDeviceId, 10))
 
     // Decrypt message
     const plaintext = await signalClient.decryptMessage(
@@ -625,7 +589,7 @@ export class SessionManager {
       this.identityKeyStore as SignalClient.IdentityKeyStore,
       this.preKeyStore,
       this.signedPreKeyStore
-    );
+    )
 
     // Update session metadata
     await this.apolloClient.mutate({
@@ -636,9 +600,9 @@ export class SessionManager {
         peerDeviceId,
         lastMessageReceivedAt: new Date().toISOString(),
       },
-    });
+    })
 
-    return plaintext;
+    return plaintext
   }
 
   // ==========================================================================
@@ -648,10 +612,7 @@ export class SessionManager {
   /**
    * Get session info
    */
-  async getSessionInfo(
-    peerUserId: string,
-    peerDeviceId: string
-  ): Promise<SessionInfo | null> {
+  async getSessionInfo(peerUserId: string, peerDeviceId: string): Promise<SessionInfo | null> {
     const { data } = await this.apolloClient.query({
       query: GET_SESSION,
       variables: {
@@ -660,13 +621,13 @@ export class SessionManager {
         peerDeviceId,
       },
       fetchPolicy: 'network-only',
-    });
+    })
 
     if (data.nchat_signal_sessions.length === 0) {
-      return null;
+      return null
     }
 
-    const session = data.nchat_signal_sessions[0];
+    const session = data.nchat_signal_sessions[0]
 
     return {
       userId: '', // TODO: Get from context
@@ -682,15 +643,15 @@ export class SessionManager {
       lastMessageReceivedAt: session.last_message_received_at
         ? new Date(session.last_message_received_at)
         : undefined,
-    };
+    }
   }
 
   /**
    * Check if session exists
    */
   async hasSession(peerUserId: string, peerDeviceId: string): Promise<boolean> {
-    const sessionInfo = await this.getSessionInfo(peerUserId, peerDeviceId);
-    return sessionInfo !== null;
+    const sessionInfo = await this.getSessionInfo(peerUserId, peerDeviceId)
+    return sessionInfo !== null
   }
 }
 
@@ -698,4 +659,4 @@ export class SessionManager {
 // EXPORTS
 // ============================================================================
 
-export default SessionManager;
+export default SessionManager

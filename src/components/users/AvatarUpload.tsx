@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Camera, Trash2, Upload, Loader2 } from 'lucide-react'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -107,7 +109,7 @@ const AvatarUpload = React.forwardRef<HTMLDivElement, AvatarUploadProps>(
         } catch (err) {
           setError('Failed to upload image. Please try again.')
           setPreviewUrl(null)
-          console.error('Avatar upload error:', err)
+          logger.error('Avatar upload error:', err)
         } finally {
           setIsUploading(false)
           // Reset file input
@@ -129,7 +131,7 @@ const AvatarUpload = React.forwardRef<HTMLDivElement, AvatarUploadProps>(
         setPreviewUrl(null)
       } catch (err) {
         setError('Failed to remove image')
-        console.error('Avatar remove error:', err)
+        logger.error('Avatar remove error:', err)
       } finally {
         setIsUploading(false)
       }
@@ -146,7 +148,7 @@ const AvatarUpload = React.forwardRef<HTMLDivElement, AvatarUploadProps>(
     return (
       <div ref={ref} className={cn('flex items-center gap-4', className)} {...props}>
         {/* Avatar with overlay */}
-        <div className="relative group">
+        <div className="group relative">
           <Avatar className={cn(SIZE_CLASSES[size], 'border-2 border-muted')}>
             <AvatarImage src={displayUrl} alt="Avatar" />
             <AvatarFallback className="text-lg font-medium">
@@ -187,7 +189,7 @@ const AvatarUpload = React.forwardRef<HTMLDivElement, AvatarUploadProps>(
           {/* Loading indicator */}
           {isUploading && (
             <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60">
-              <Loader2 className="h-5 w-5 text-white animate-spin" />
+              <Loader2 className="h-5 w-5 animate-spin text-white" />
             </div>
           )}
         </div>

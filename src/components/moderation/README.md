@@ -79,6 +79,7 @@ function MyComponent() {
 ```
 
 **Features:**
+
 - Support for user, message, and channel reports
 - Category selection with priority indicators
 - Evidence attachment (links, screenshots, text)
@@ -122,6 +123,7 @@ function ModerationPage() {
 ```
 
 **Features:**
+
 - Filterable report list (status, priority, type)
 - Bulk actions (approve all, dismiss all)
 - Detailed report view with evidence
@@ -166,15 +168,15 @@ function MessageComponent({ message }) {
 
 Pre-configured categories with priority levels:
 
-| Category | Priority | Evidence Required | Auto-Escalate |
-|----------|----------|------------------|---------------|
-| Spam | Low | No | No |
-| Harassment | High | Yes | Yes |
-| Hate Speech | Urgent | Yes | Yes |
-| Inappropriate Content | Medium | Yes | No |
-| Impersonation | High | Yes | Yes |
-| Scam/Fraud | Urgent | Yes | Yes |
-| Other | Low | No | No |
+| Category              | Priority | Evidence Required | Auto-Escalate |
+| --------------------- | -------- | ----------------- | ------------- |
+| Spam                  | Low      | No                | No            |
+| Harassment            | High     | Yes               | Yes           |
+| Hate Speech           | Urgent   | Yes               | Yes           |
+| Inappropriate Content | Medium   | Yes               | No            |
+| Impersonation         | High     | Yes               | Yes           |
+| Scam/Fraud            | Urgent   | Yes               | Yes           |
+| Other                 | Low      | No                | No            |
 
 Add custom categories:
 
@@ -200,6 +202,7 @@ const handler = createReportHandler({
 List reports with filters.
 
 **Query Parameters:**
+
 - `status` - Filter by status (pending, in_review, resolved, dismissed, escalated)
 - `priority` - Filter by priority (urgent, high, medium, low)
 - `targetType` - Filter by type (user, message, channel)
@@ -210,6 +213,7 @@ List reports with filters.
 - `sortOrder` - Sort order (asc, desc)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -233,6 +237,7 @@ List reports with filters.
 Submit a new report.
 
 **Request Body:**
+
 ```json
 {
   "reporterId": "user-123",
@@ -253,6 +258,7 @@ Submit a new report.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -269,6 +275,7 @@ Submit a new report.
 Update report or process action.
 
 **Update Request:**
+
 ```json
 {
   "reportId": "report-123",
@@ -280,6 +287,7 @@ Update report or process action.
 ```
 
 **Action Request:**
+
 ```json
 {
   "reportId": "report-123",
@@ -291,6 +299,7 @@ Update report or process action.
 ```
 
 **Available Actions:**
+
 - `approve` - Approve report (no violation)
 - `dismiss` - Dismiss report (invalid/duplicate)
 - `escalate` - Escalate to higher priority
@@ -306,6 +315,7 @@ Update report or process action.
 Delete a report (admin only).
 
 **Query Parameters:**
+
 - `id` - Report ID
 
 ## Report Handler
@@ -419,6 +429,7 @@ const handler = createReportHandler({
 ```
 
 When a report matches an escalation rule:
+
 1. Priority is automatically elevated
 2. Status changes to "escalated"
 3. Designated roles are notified
@@ -536,6 +547,7 @@ pnpm test:e2e -- --grep "reporting"
 ## Support
 
 For questions or issues:
+
 - Documentation: `/docs/moderation/`
 - GitHub Issues: `https://github.com/your-org/nself-chat/issues`
 - Discord: `#moderation-support`

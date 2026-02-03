@@ -240,12 +240,9 @@ export function useScreenRecording(
   // Download Recording
   // ==========================================================================
 
-  const handleDownloadRecording = useCallback(
-    (recording: Recording, filename?: string): void => {
-      downloadRecording(recording, filename)
-    },
-    []
-  )
+  const handleDownloadRecording = useCallback((recording: Recording, filename?: string): void => {
+    downloadRecording(recording, filename)
+  }, [])
 
   // ==========================================================================
   // Delete Recording

@@ -2,15 +2,7 @@
 
 import * as React from 'react'
 import { useState } from 'react'
-import {
-  UserPlus,
-  Search,
-  Copy,
-  Check,
-  Link,
-  Mail,
-  Loader2,
-} from 'lucide-react'
+import { UserPlus, Search, Copy, Check, Link, Mail, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -126,9 +118,7 @@ export function ChannelInvite({
             <UserPlus className="h-5 w-5" />
             Invite to #{channel.name}
           </DialogTitle>
-          <DialogDescription>
-            Invite people to join this channel
-          </DialogDescription>
+          <DialogDescription>Invite people to join this channel</DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="users" className="mt-4">
@@ -141,7 +131,7 @@ export function ChannelInvite({
           {/* Invite Users */}
           <TabsContent value="users" className="space-y-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search users..."
                 value={searchQuery}
@@ -156,7 +146,7 @@ export function ChannelInvite({
                   <label
                     key={user.id}
                     className={cn(
-                      'flex items-center gap-3 p-2 rounded-md cursor-pointer',
+                      'flex cursor-pointer items-center gap-3 rounded-md p-2',
                       'hover:bg-accent',
                       selectedUsers.has(user.id) && 'bg-accent'
                     )}
@@ -167,34 +157,23 @@ export function ChannelInvite({
                     />
                     <Avatar className="h-8 w-8">
                       <AvatarImage src={user.avatarUrl} alt={user.displayName} />
-                      <AvatarFallback>
-                        {user.displayName.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
+                      <AvatarFallback>{user.displayName.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">
-                        {user.displayName}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        @{user.username}
-                      </p>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{user.displayName}</p>
+                      <p className="text-xs text-muted-foreground">@{user.username}</p>
                     </div>
                   </label>
                 ))}
 
                 {filteredUsers.length === 0 && (
-                  <p className="text-center text-sm text-muted-foreground py-8">
-                    No users found
-                  </p>
+                  <p className="py-8 text-center text-sm text-muted-foreground">No users found</p>
                 )}
               </div>
             </ScrollArea>
 
             <DialogFooter>
-              <Button
-                onClick={handleInvite}
-                disabled={selectedUsers.size === 0 || isInviting}
-              >
+              <Button onClick={handleInvite} disabled={selectedUsers.size === 0 || isInviting}>
                 {isInviting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Invite {selectedUsers.size > 0 && `(${selectedUsers.size})`}
               </Button>
@@ -209,11 +188,7 @@ export function ChannelInvite({
                 Share this link to invite people to this channel
               </p>
               <div className="flex gap-2">
-                <Input
-                  value={inviteLink}
-                  readOnly
-                  className="flex-1 text-xs"
-                />
+                <Input value={inviteLink} readOnly className="flex-1 text-xs" />
                 <Button variant="outline" size="icon" onClick={copyLink}>
                   {copied ? (
                     <Check className="h-4 w-4 text-green-500" />
@@ -224,14 +199,12 @@ export function ChannelInvite({
               </div>
             </div>
 
-            <div className="p-4 rounded-lg bg-muted/50 space-y-2">
+            <div className="bg-muted/50 space-y-2 rounded-lg p-4">
               <p className="text-sm font-medium">Link Settings</p>
               <div className="space-y-2 text-xs text-muted-foreground">
                 <p>- Link expires in 7 days</p>
                 <p>- Anyone with the link can join</p>
-                <p>
-                  - {channel.type === 'private' ? 'Requires approval' : 'Instant access'}
-                </p>
+                <p>- {channel.type === 'private' ? 'Requires approval' : 'Instant access'}</p>
               </div>
             </div>
           </TabsContent>

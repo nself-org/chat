@@ -34,10 +34,7 @@ export class AndroidWidgetWeb implements AndroidWidgetPlugin {
   /**
    * Update widget data (no-op on web)
    */
-  async updateWidget(_options: {
-    widgetId: number
-    data: AndroidWidgetData
-  }): Promise<void> {
+  async updateWidget(_options: { widgetId: number; data: AndroidWidgetData }): Promise<void> {
     console.log('Android widget update ignored on web')
   }
 

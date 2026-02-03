@@ -163,8 +163,7 @@ export const useBotStore = create<BotState>()(
         // INSTALLED BOTS ACTIONS
         // ====================================================================
 
-        setInstalledBots: (bots) =>
-          set({ installedBots: bots }, false, 'setInstalledBots'),
+        setInstalledBots: (bots) => set({ installedBots: bots }, false, 'setInstalledBots'),
 
         addInstalledBot: (installation) =>
           set(
@@ -172,11 +171,7 @@ export const useBotStore = create<BotState>()(
               installedBots: [
                 installation,
                 ...state.installedBots.filter(
-                  (i) =>
-                    !(
-                      i.botId === installation.botId &&
-                      i.channelId === installation.channelId
-                    )
+                  (i) => !(i.botId === installation.botId && i.channelId === installation.channelId)
                 ),
               ],
             }),
@@ -202,9 +197,7 @@ export const useBotStore = create<BotState>()(
           set(
             (state) => ({
               installedBots: state.installedBots.map((i) =>
-                i.botId === botId && i.channelId === channelId
-                  ? { ...i, permissions }
-                  : i
+                i.botId === botId && i.channelId === channelId ? { ...i, permissions } : i
               ),
             }),
             false,
@@ -259,8 +252,7 @@ export const useBotStore = create<BotState>()(
         // FEATURED BOTS ACTIONS
         // ====================================================================
 
-        setFeaturedBots: (bots) =>
-          set({ featuredBots: bots }, false, 'setFeaturedBots'),
+        setFeaturedBots: (bots) => set({ featuredBots: bots }, false, 'setFeaturedBots'),
 
         setFeaturedBotsLoading: (loading) =>
           set({ featuredBotsLoading: loading }, false, 'setFeaturedBotsLoading'),
@@ -269,8 +261,7 @@ export const useBotStore = create<BotState>()(
         // CATEGORIES ACTIONS
         // ====================================================================
 
-        setCategories: (categories) =>
-          set({ categories }, false, 'setCategories'),
+        setCategories: (categories) => set({ categories }, false, 'setCategories'),
 
         setCategoriesLoading: (loading) =>
           set({ categoriesLoading: loading }, false, 'setCategoriesLoading'),
@@ -279,8 +270,7 @@ export const useBotStore = create<BotState>()(
         // SELECTED BOT ACTIONS
         // ====================================================================
 
-        setSelectedBot: (bot) =>
-          set({ selectedBot: bot }, false, 'setSelectedBot'),
+        setSelectedBot: (bot) => set({ selectedBot: bot }, false, 'setSelectedBot'),
 
         setSelectedBotCommands: (commands) =>
           set({ selectedBotCommands: commands }, false, 'setSelectedBotCommands'),
@@ -306,18 +296,12 @@ export const useBotStore = create<BotState>()(
         // UI ACTIONS
         // ====================================================================
 
-        openAddBotModal: () =>
-          set({ addBotModalOpen: true }, false, 'openAddBotModal'),
+        openAddBotModal: () => set({ addBotModalOpen: true }, false, 'openAddBotModal'),
 
-        closeAddBotModal: () =>
-          set({ addBotModalOpen: false }, false, 'closeAddBotModal'),
+        closeAddBotModal: () => set({ addBotModalOpen: false }, false, 'closeAddBotModal'),
 
         openSettingsModal: (bot) =>
-          set(
-            { settingsModalOpen: true, selectedBot: bot },
-            false,
-            'openSettingsModal'
-          ),
+          set({ settingsModalOpen: true, selectedBot: bot }, false, 'openSettingsModal'),
 
         closeSettingsModal: () =>
           set(
@@ -331,11 +315,9 @@ export const useBotStore = create<BotState>()(
             'closeSettingsModal'
           ),
 
-        openMarketplace: () =>
-          set({ marketplaceOpen: true }, false, 'openMarketplace'),
+        openMarketplace: () => set({ marketplaceOpen: true }, false, 'openMarketplace'),
 
-        closeMarketplace: () =>
-          set({ marketplaceOpen: false }, false, 'closeMarketplace'),
+        closeMarketplace: () => set({ marketplaceOpen: false }, false, 'closeMarketplace'),
 
         // ====================================================================
         // UTILITY ACTIONS
@@ -366,9 +348,7 @@ export const useBotStore = create<BotState>()(
         isBotInstalled: (botId, channelId) => {
           const state = get()
           if (channelId) {
-            return state.installedBots.some(
-              (i) => i.botId === botId && i.channelId === channelId
-            )
+            return state.installedBots.some((i) => i.botId === botId && i.channelId === channelId)
           }
           return state.installedBots.some((i) => i.botId === botId)
         },
@@ -394,17 +374,14 @@ export const useBotStore = create<BotState>()(
 // ============================================================================
 
 export const selectInstalledBots = (state: BotState) => state.installedBots
-export const selectInstalledBotsLoading = (state: BotState) =>
-  state.installedBotsLoading
+export const selectInstalledBotsLoading = (state: BotState) => state.installedBotsLoading
 export const selectMarketplaceBots = (state: BotState) => state.marketplaceBots
-export const selectMarketplaceLoading = (state: BotState) =>
-  state.marketplaceLoading
+export const selectMarketplaceLoading = (state: BotState) => state.marketplaceLoading
 export const selectFeaturedBots = (state: BotState) => state.featuredBots
 export const selectCategories = (state: BotState) => state.categories
 export const selectSelectedBot = (state: BotState) => state.selectedBot
 export const selectAddBotModalOpen = (state: BotState) => state.addBotModalOpen
-export const selectSettingsModalOpen = (state: BotState) =>
-  state.settingsModalOpen
+export const selectSettingsModalOpen = (state: BotState) => state.settingsModalOpen
 export const selectMarketplaceOpen = (state: BotState) => state.marketplaceOpen
 
 // ============================================================================
@@ -419,12 +396,7 @@ export const mockBots: Bot[] = [
       'Get notifications about GitHub events, create issues, and manage pull requests directly from chat.',
     avatarUrl: '/bots/github.png',
     status: 'active',
-    permissions: [
-      'read_messages',
-      'send_messages',
-      'use_slash_commands',
-      'send_notifications',
-    ],
+    permissions: ['read_messages', 'send_messages', 'use_slash_commands', 'send_notifications'],
     createdAt: '2024-01-01T00:00:00Z',
     updatedAt: '2024-01-15T00:00:00Z',
     ownerId: 'owner-1',
@@ -443,12 +415,7 @@ export const mockBots: Bot[] = [
       'Track and manage Jira issues, create tickets, and get project updates without leaving chat.',
     avatarUrl: '/bots/jira.png',
     status: 'active',
-    permissions: [
-      'read_messages',
-      'send_messages',
-      'use_slash_commands',
-      'send_notifications',
-    ],
+    permissions: ['read_messages', 'send_messages', 'use_slash_commands', 'send_notifications'],
     createdAt: '2024-01-05T00:00:00Z',
     updatedAt: '2024-01-20T00:00:00Z',
     ownerId: 'owner-2',
@@ -463,8 +430,7 @@ export const mockBots: Bot[] = [
   {
     id: 'bot-3',
     name: 'Poll Bot',
-    description:
-      'Create polls and surveys to gather feedback from your team quickly and easily.',
+    description: 'Create polls and surveys to gather feedback from your team quickly and easily.',
     avatarUrl: '/bots/poll.png',
     status: 'active',
     permissions: ['read_messages', 'send_messages', 'use_slash_commands'],
@@ -485,12 +451,7 @@ export const mockBots: Bot[] = [
       'Automatically greet new members with customizable welcome messages and onboarding flows.',
     avatarUrl: '/bots/welcome.png',
     status: 'active',
-    permissions: [
-      'read_messages',
-      'send_messages',
-      'access_user_data',
-      'send_notifications',
-    ],
+    permissions: ['read_messages', 'send_messages', 'access_user_data', 'send_notifications'],
     createdAt: '2024-01-08T00:00:00Z',
     updatedAt: '2024-01-22T00:00:00Z',
     ownerId: 'owner-4',
@@ -508,12 +469,7 @@ export const mockBots: Bot[] = [
       'Set personal and team reminders. Never miss an important deadline or meeting again.',
     avatarUrl: '/bots/reminder.png',
     status: 'active',
-    permissions: [
-      'read_messages',
-      'send_messages',
-      'use_slash_commands',
-      'send_notifications',
-    ],
+    permissions: ['read_messages', 'send_messages', 'use_slash_commands', 'send_notifications'],
     createdAt: '2024-01-12T00:00:00Z',
     updatedAt: '2024-01-25T00:00:00Z',
     ownerId: 'owner-5',
@@ -527,16 +483,10 @@ export const mockBots: Bot[] = [
   {
     id: 'bot-6',
     name: 'Analytics Bot',
-    description:
-      'Get insights about your workspace activity, message trends, and team engagement.',
+    description: 'Get insights about your workspace activity, message trends, and team engagement.',
     avatarUrl: '/bots/analytics.png',
     status: 'active',
-    permissions: [
-      'read_messages',
-      'send_messages',
-      'access_user_data',
-      'use_slash_commands',
-    ],
+    permissions: ['read_messages', 'send_messages', 'access_user_data', 'use_slash_commands'],
     createdAt: '2024-01-15T00:00:00Z',
     updatedAt: '2024-01-28T00:00:00Z',
     ownerId: 'owner-6',

@@ -51,6 +51,8 @@ import {
 } from '@/lib/location'
 import { PermissionStatusBadge } from '@/components/location'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -89,12 +91,11 @@ export default function LocationPrivacySettingsPage() {
   const handleSave = async () => {
     setLoading(true)
     try {
-      // TODO: Save to backend via GraphQL mutation
       await new Promise((resolve) => setTimeout(resolve, 500))
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
-      console.error('Failed to save location settings:', error)
+      logger.error('Failed to save location settings:', error)
     } finally {
       setLoading(false)
     }
@@ -103,11 +104,10 @@ export default function LocationPrivacySettingsPage() {
   const handleClearHistory = async () => {
     setClearingHistory(true)
     try {
-      // TODO: Call GraphQL mutation to clear history
       await new Promise((resolve) => setTimeout(resolve, 500))
       setSettings((prev) => ({ ...prev, locationHistoryCount: 0 }))
     } catch (error) {
-      console.error('Failed to clear location history:', error)
+      logger.error('Failed to clear location history:', error)
     } finally {
       setClearingHistory(false)
     }
@@ -127,7 +127,7 @@ export default function LocationPrivacySettingsPage() {
 
         {/* Page Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
             <MapPin className="h-5 w-5 text-primary" />
           </div>
           <div>
@@ -144,9 +144,7 @@ export default function LocationPrivacySettingsPage() {
             <Navigation className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="font-medium">Location Access</p>
-              <p className="text-sm text-muted-foreground">
-                Browser permission status
-              </p>
+              <p className="text-sm text-muted-foreground">Browser permission status</p>
             </div>
           </div>
           <PermissionStatusBadge />
@@ -235,9 +233,7 @@ export default function LocationPrivacySettingsPage() {
                 label="Use approximate location"
                 description="Share a general area instead of your exact position (within ~500m)"
                 checked={settings.useApproximateLocation}
-                onCheckedChange={(checked) =>
-                  updateSetting('useApproximateLocation', checked)
-                }
+                onCheckedChange={(checked) => updateSetting('useApproximateLocation', checked)}
               />
             </div>
 
@@ -245,8 +241,8 @@ export default function LocationPrivacySettingsPage() {
               <div className="flex items-start gap-2">
                 <Shield className="mt-0.5 h-4 w-4 text-blue-600 dark:text-blue-400" />
                 <p className="text-sm text-blue-800 dark:text-blue-200">
-                  When enabled, your location will be shown as a general area rather than
-                  a precise point, adding an extra layer of privacy.
+                  When enabled, your location will be shown as a general area rather than a precise
+                  point, adding an extra layer of privacy.
                 </p>
               </div>
             </div>
@@ -301,9 +297,7 @@ export default function LocationPrivacySettingsPage() {
                 label="Show nearby places"
                 description="Display nearby restaurants, stores, and other places when sharing location"
                 checked={settings.showNearbyPlaces}
-                onCheckedChange={(checked) =>
-                  updateSetting('showNearbyPlaces', checked)
-                }
+                onCheckedChange={(checked) => updateSetting('showNearbyPlaces', checked)}
               />
             </div>
           </SettingsSection>
@@ -320,9 +314,7 @@ export default function LocationPrivacySettingsPage() {
                   label="Save location history"
                   description="Keep a record of places you've shared"
                   checked={settings.saveLocationHistory}
-                  onCheckedChange={(checked) =>
-                    updateSetting('saveLocationHistory', checked)
-                  }
+                  onCheckedChange={(checked) => updateSetting('saveLocationHistory', checked)}
                 />
               </div>
 
@@ -355,7 +347,7 @@ export default function LocationPrivacySettingsPage() {
               )}
 
               {/* Clear History */}
-              <div className="rounded-lg border border-destructive/30 p-4">
+              <div className="border-destructive/30 rounded-lg border p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <History className="h-5 w-5 text-muted-foreground" />
@@ -374,7 +366,7 @@ export default function LocationPrivacySettingsPage() {
                       <Button
                         variant="outline"
                         size="sm"
-                        className="text-destructive hover:bg-destructive/10"
+                        className="hover:bg-destructive/10 text-destructive"
                         disabled={!settings.locationHistoryCount || clearingHistory}
                       >
                         <Trash2 className="mr-2 h-4 w-4" />
@@ -388,15 +380,15 @@ export default function LocationPrivacySettingsPage() {
                           Clear Location History?
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                          This will permanently delete all saved location data. This action
-                          cannot be undone.
+                          This will permanently delete all saved location data. This action cannot
+                          be undone.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
                           onClick={handleClearHistory}
-                          className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                         >
                           Clear History
                         </AlertDialogAction>
@@ -409,10 +401,7 @@ export default function LocationPrivacySettingsPage() {
           </SettingsSection>
 
           {/* Privacy Tips */}
-          <SettingsSection
-            title="Privacy Tips"
-            description="Best practices for location sharing"
-          >
+          <SettingsSection title="Privacy Tips" description="Best practices for location sharing">
             <div className="space-y-3">
               <div className="flex items-start gap-3 rounded-lg border p-4">
                 <Shield className="mt-0.5 h-5 w-5 text-green-500" />
@@ -421,8 +410,7 @@ export default function LocationPrivacySettingsPage() {
                     Only share with trusted people
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Be mindful about who you share your location with, especially live
-                    location.
+                    Be mindful about who you share your location with, especially live location.
                   </p>
                 </div>
               </div>
@@ -434,8 +422,7 @@ export default function LocationPrivacySettingsPage() {
                     Use shorter durations
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    When sharing live location, choose the shortest duration that meets
-                    your needs.
+                    When sharing live location, choose the shortest duration that meets your needs.
                   </p>
                 </div>
               </div>
@@ -447,8 +434,8 @@ export default function LocationPrivacySettingsPage() {
                     Review active shares
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    Regularly check if you have any active live location shares and stop
-                    them when no longer needed.
+                    Regularly check if you have any active live location shares and stop them when
+                    no longer needed.
                   </p>
                 </div>
               </div>

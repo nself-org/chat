@@ -55,47 +55,30 @@ export function LoadingState({
       )
 
     case 'success':
-      return successContent ? (
-        <div className={className}>{successContent}</div>
-      ) : null
+      return successContent ? <div className={className}>{successContent}</div> : null
 
     case 'error':
       return (
         <div className={cn('flex flex-col items-center justify-center p-8', className)}>
-          {errorContent ?? (
-            <ErrorDisplay
-              error={error}
-              onRetry={onRetry}
-            />
-          )}
+          {errorContent ?? <ErrorDisplay error={error} onRetry={onRetry} />}
         </div>
       )
 
     case 'idle':
     default:
-      return idleContent ? (
-        <div className={className}>{idleContent}</div>
-      ) : null
+      return idleContent ? <div className={className}>{idleContent}</div> : null
   }
 }
 
 /**
  * Default error display component
  */
-function ErrorDisplay({
-  error,
-  onRetry,
-}: {
-  error?: Error | string
-  onRetry?: () => void
-}) {
+function ErrorDisplay({ error, onRetry }: { error?: Error | string; onRetry?: () => void }) {
   const errorMessage =
-    typeof error === 'string'
-      ? error
-      : error?.message ?? 'Something went wrong'
+    typeof error === 'string' ? error : (error?.message ?? 'Something went wrong')
 
   return (
-    <div className="flex flex-col items-center gap-4 max-w-md text-center">
+    <div className="flex max-w-md flex-col items-center gap-4 text-center">
       {/* Error icon */}
       <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/20">
         <svg
@@ -146,12 +129,7 @@ export function EmptyState({
   className?: string
 }) {
   return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center p-8 text-center',
-        className
-      )}
-    >
+    <div className={cn('flex flex-col items-center justify-center p-8 text-center', className)}>
       {/* Icon */}
       {icon && <div className="mb-4 text-muted-foreground">{icon}</div>}
 
@@ -159,11 +137,7 @@ export function EmptyState({
       <h3 className="mb-2 text-lg font-semibold">{title}</h3>
 
       {/* Description */}
-      {description && (
-        <p className="mb-4 max-w-md text-sm text-muted-foreground">
-          {description}
-        </p>
-      )}
+      {description && <p className="mb-4 max-w-md text-sm text-muted-foreground">{description}</p>}
 
       {/* Action */}
       {action}
@@ -195,9 +169,7 @@ export function DataWrapper<T>({
 }) {
   if (isLoading) {
     return (
-      <div className={className}>
-        {loadingSkeleton ?? <CenteredSpinner text="Loading..." />}
-      </div>
+      <div className={className}>{loadingSkeleton ?? <CenteredSpinner text="Loading..." />}</div>
     )
   }
 
@@ -212,12 +184,7 @@ export function DataWrapper<T>({
   if (!data) {
     return (
       <div className={className}>
-        {emptyState ?? (
-          <EmptyState
-            title="No data"
-            description="No data available to display"
-          />
-        )}
+        {emptyState ?? <EmptyState title="No data" description="No data available to display" />}
       </div>
     )
   }
@@ -249,9 +216,7 @@ export function ListWrapper<T>({
 }) {
   if (isLoading) {
     return (
-      <div className={className}>
-        {loadingSkeleton ?? <CenteredSpinner text="Loading..." />}
-      </div>
+      <div className={className}>{loadingSkeleton ?? <CenteredSpinner text="Loading..." />}</div>
     )
   }
 
@@ -266,12 +231,7 @@ export function ListWrapper<T>({
   if (!items || items.length === 0) {
     return (
       <div className={className}>
-        {emptyState ?? (
-          <EmptyState
-            title="No items"
-            description="No items to display"
-          />
-        )}
+        {emptyState ?? <EmptyState title="No items" description="No items to display" />}
       </div>
     )
   }
@@ -294,11 +254,7 @@ export function SkeletonWrapper({
   children: React.ReactNode
   className?: string
 }) {
-  return (
-    <div className={className}>
-      {isLoading ? skeleton : children}
-    </div>
-  )
+  return <div className={className}>{isLoading ? skeleton : children}</div>
 }
 
 /**
@@ -317,7 +273,7 @@ export function FadeTransition({
     <div
       className={cn(
         'transition-opacity duration-200',
-        isVisible ? 'opacity-100' : 'opacity-0 pointer-events-none',
+        isVisible ? 'opacity-100' : 'pointer-events-none opacity-0',
         className
       )}
     >
@@ -354,22 +310,13 @@ export function ConditionalRender({
 /**
  * Placeholder text skeleton
  */
-export function PlaceholderText({
-  lines = 3,
-  className,
-}: {
-  lines?: number
-  className?: string
-}) {
+export function PlaceholderText({ lines = 3, className }: { lines?: number; className?: string }) {
   return (
     <div className={cn('space-y-2', className)}>
       {Array.from({ length: lines }).map((_, i) => (
         <div
           key={i}
-          className={cn(
-            'h-4 rounded bg-muted animate-pulse',
-            i === lines - 1 ? 'w-3/4' : 'w-full'
-          )}
+          className={cn('h-4 animate-pulse rounded bg-muted', i === lines - 1 ? 'w-3/4' : 'w-full')}
         />
       ))}
     </div>
@@ -389,13 +336,13 @@ export function PlaceholderImage({
   return (
     <div
       className={cn(
-        'w-full rounded bg-muted animate-pulse flex items-center justify-center',
+        'flex w-full animate-pulse items-center justify-center rounded bg-muted',
         className
       )}
       style={{ aspectRatio }}
     >
       <svg
-        className="h-12 w-12 text-muted-foreground/50"
+        className="text-muted-foreground/50 h-12 w-12"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"

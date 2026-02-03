@@ -145,12 +145,7 @@ describe('Call Store', () => {
     describe('initiateCall', () => {
       it('should create an active call for voice', () => {
         act(() => {
-          useCallStore.getState().initiateCall(
-            'call-123',
-            'user-456',
-            'Bob',
-            'voice'
-          )
+          useCallStore.getState().initiateCall('call-123', 'user-456', 'Bob', 'voice')
         })
 
         const state = useCallStore.getState()
@@ -163,12 +158,7 @@ describe('Call Store', () => {
 
       it('should create an active call for video', () => {
         act(() => {
-          useCallStore.getState().initiateCall(
-            'call-123',
-            'user-456',
-            'Bob',
-            'video'
-          )
+          useCallStore.getState().initiateCall('call-123', 'user-456', 'Bob', 'video')
         })
 
         const state = useCallStore.getState()
@@ -178,12 +168,7 @@ describe('Call Store', () => {
 
       it('should add target user as participant', () => {
         act(() => {
-          useCallStore.getState().initiateCall(
-            'call-123',
-            'user-456',
-            'Bob',
-            'voice'
-          )
+          useCallStore.getState().initiateCall('call-123', 'user-456', 'Bob', 'voice')
         })
 
         const state = useCallStore.getState()
@@ -194,13 +179,9 @@ describe('Call Store', () => {
 
       it('should include channelId if provided', () => {
         act(() => {
-          useCallStore.getState().initiateCall(
-            'call-123',
-            'user-456',
-            'Bob',
-            'voice',
-            'channel-789'
-          )
+          useCallStore
+            .getState()
+            .initiateCall('call-123', 'user-456', 'Bob', 'voice', 'channel-789')
         })
 
         const state = useCallStore.getState()
@@ -209,12 +190,7 @@ describe('Call Store', () => {
 
       it('should set startedAt timestamp', () => {
         act(() => {
-          useCallStore.getState().initiateCall(
-            'call-123',
-            'user-456',
-            'Bob',
-            'voice'
-          )
+          useCallStore.getState().initiateCall('call-123', 'user-456', 'Bob', 'voice')
         })
 
         const state = useCallStore.getState()

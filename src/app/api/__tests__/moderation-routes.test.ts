@@ -175,15 +175,11 @@ jest.mock('@/lib/apollo-client', () => ({
       data: {
         queue_stats: {
           aggregate: { count: 100 },
-          nodes: [
-            { status: 'pending', priority: 'high', auto_action: 'none' },
-          ],
+          nodes: [{ status: 'pending', priority: 'high', auto_action: 'none' }],
         },
         action_stats: {
           aggregate: { count: 50 },
-          nodes: [
-            { action_type: 'warned', is_automated: false },
-          ],
+          nodes: [{ action_type: 'warned', is_automated: false }],
         },
         pending_items: { aggregate: { count: 10 } },
         high_priority: { aggregate: { count: 5 } },
@@ -445,7 +441,8 @@ describe('Moderation API Routes', () => {
       const { getAIModerator } = require('@/lib/moderation/ai-moderator')
       getAIModerator.mockReturnValueOnce({
         initialize: jest.fn().mockResolvedValue(undefined),
-        analyzeContent: jest.fn()
+        analyzeContent: jest
+          .fn()
           .mockResolvedValueOnce({ shouldFlag: false })
           .mockRejectedValueOnce(new Error('Analysis failed')),
         recordViolation: jest.fn(),
@@ -781,7 +778,9 @@ describe('Moderation API Routes', () => {
     })
 
     it('should support custom limit and offset', async () => {
-      const request = new NextRequest('http://localhost:3000/api/moderation/queue?limit=10&offset=5')
+      const request = new NextRequest(
+        'http://localhost:3000/api/moderation/queue?limit=10&offset=5'
+      )
 
       const response = await queueGet(request)
       const data = await response.json()

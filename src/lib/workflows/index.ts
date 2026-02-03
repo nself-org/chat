@@ -245,14 +245,6 @@ export {
 // Executor
 // ============================================================================
 
-export {
-  WorkflowExecutor,
-  getExecutor,
-  createExecutor,
-} from './workflow-executor'
+export { WorkflowExecutor, getExecutor, createExecutor } from './workflow-executor'
 
-export type {
-  ExecutorConfig,
-  StepResult,
-  StepHandler,
-} from './workflow-executor'
+export type { ExecutorConfig, StepResult, StepHandler } from './workflow-executor'

@@ -83,9 +83,7 @@ export function DiscordChannelSidebar({
   onSettingsClick,
   className,
 }: DiscordChannelSidebarProps) {
-  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(
-    new Set()
-  )
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set())
 
   const toggleCategory = (categoryId: string) => {
     setCollapsedCategories((prev) => {
@@ -101,20 +99,20 @@ export function DiscordChannelSidebar({
 
   return (
     <div
-      className={cn('flex flex-col h-full', className)}
+      className={cn('flex h-full flex-col', className)}
       style={{ backgroundColor: discordColors.gray750 }}
     >
       {/* Server Header */}
       <button
-        className="flex items-center justify-between px-4 h-12 border-b shadow-sm hover:bg-[#35373C] transition-colors"
+        className="flex h-12 items-center justify-between border-b px-4 shadow-sm transition-colors hover:bg-[#35373C]"
         style={{ borderColor: discordColors.gray850 }}
       >
-        <span className="font-semibold text-white truncate">{serverName}</span>
-        <ChevronDown className="w-4 h-4 text-white flex-shrink-0" />
+        <span className="truncate font-semibold text-white">{serverName}</span>
+        <ChevronDown className="h-4 w-4 flex-shrink-0 text-white" />
       </button>
 
       {/* Channel List */}
-      <div className="flex-1 overflow-y-auto pt-4 px-2">
+      <div className="flex-1 overflow-y-auto px-2 pt-4">
         {categories.map((category) => (
           <Category
             key={category.id}
@@ -162,16 +160,12 @@ function Category({
       {/* Category Header */}
       <button
         onClick={onToggle}
-        className="flex items-center gap-1 w-full px-1 mb-1 text-xs font-semibold uppercase tracking-wide text-gray-400 hover:text-gray-200 transition-colors"
+        className="mb-1 flex w-full items-center gap-1 px-1 text-xs font-semibold uppercase tracking-wide text-gray-400 transition-colors hover:text-gray-200"
       >
-        {isCollapsed ? (
-          <ChevronRight className="w-3 h-3" />
-        ) : (
-          <ChevronDown className="w-3 h-3" />
-        )}
+        {isCollapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
         <span>{category.name}</span>
-        <button className="ml-auto p-1 rounded hover:bg-white/10">
-          <Plus className="w-3 h-3" />
+        <button className="ml-auto rounded p-1 hover:bg-white/10">
+          <Plus className="h-3 w-3" />
         </button>
       </button>
 
@@ -211,17 +205,17 @@ function ChannelItem({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-1.5 w-full px-2 py-1.5 rounded',
-        'transition-colors text-sm',
+        'flex w-full items-center gap-1.5 rounded px-2 py-1.5',
+        'text-sm transition-colors',
         isActive
           ? 'bg-[#404249] text-white'
           : hasUnread
-          ? 'text-white hover:bg-[#35373C]'
-          : 'text-gray-400 hover:bg-[#35373C] hover:text-gray-200'
+            ? 'text-white hover:bg-[#35373C]'
+            : 'text-gray-400 hover:bg-[#35373C] hover:text-gray-200'
       )}
     >
-      <Icon className="w-5 h-5 flex-shrink-0 opacity-60" />
-      <span className={cn('truncate flex-1 text-left', hasUnread && 'font-medium')}>
+      <Icon className="h-5 w-5 flex-shrink-0 opacity-60" />
+      <span className={cn('flex-1 truncate text-left', hasUnread && 'font-medium')}>
         {channel.name}
       </span>
 
@@ -233,7 +227,7 @@ function ChannelItem({
       {/* Mention Badge */}
       {hasMention && (
         <span
-          className="min-w-[16px] h-4 px-1 rounded-full text-xs font-bold flex items-center justify-center text-white"
+          className="flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-xs font-bold text-white"
           style={{ backgroundColor: discordColors.red }}
         >
           {channel.mentionCount}
@@ -268,12 +262,12 @@ function UserPanel({
     >
       {/* Avatar with Status */}
       <div className="relative">
-        <div className="w-8 h-8 rounded-full overflow-hidden">
+        <div className="h-8 w-8 overflow-hidden rounded-full">
           {user.avatar ? (
-            <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
+            <img src={user.avatar} alt={user.name} className="h-full w-full object-cover" />
           ) : (
             <div
-              className="w-full h-full flex items-center justify-center text-white font-medium"
+              className="flex h-full w-full items-center justify-center font-medium text-white"
               style={{ backgroundColor: discordColors.blurple }}
             >
               {user.name[0]?.toUpperCase()}
@@ -281,7 +275,7 @@ function UserPanel({
           )}
         </div>
         <span
-          className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2"
+          className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2"
           style={{
             backgroundColor: statusColors[user.status],
             borderColor: discordColors.gray800,
@@ -290,9 +284,9 @@ function UserPanel({
       </div>
 
       {/* Name */}
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium text-white truncate">{user.name}</div>
-        <div className="text-xs text-gray-400 truncate">
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium text-white">{user.name}</div>
+        <div className="truncate text-xs text-gray-400">
           {user.discriminator ? `#${user.discriminator}` : 'Online'}
         </div>
       </div>
@@ -302,30 +296,26 @@ function UserPanel({
         <button
           onClick={onMuteToggle}
           className={cn(
-            'p-1.5 rounded hover:bg-[#35373C]',
+            'rounded p-1.5 hover:bg-[#35373C]',
             user.isMuted ? 'text-red-400' : 'text-gray-400'
           )}
         >
-          {user.isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+          {user.isMuted ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
         </button>
         <button
           onClick={onDeafenToggle}
           className={cn(
-            'p-1.5 rounded hover:bg-[#35373C]',
+            'rounded p-1.5 hover:bg-[#35373C]',
             user.isDeafened ? 'text-red-400' : 'text-gray-400'
           )}
         >
-          {user.isDeafened ? (
-            <VolumeX className="w-5 h-5" />
-          ) : (
-            <Headphones className="w-5 h-5" />
-          )}
+          {user.isDeafened ? <VolumeX className="h-5 w-5" /> : <Headphones className="h-5 w-5" />}
         </button>
         <button
           onClick={onSettingsClick}
-          className="p-1.5 rounded hover:bg-[#35373C] text-gray-400"
+          className="rounded p-1.5 text-gray-400 hover:bg-[#35373C]"
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="h-5 w-5" />
         </button>
       </div>
     </div>

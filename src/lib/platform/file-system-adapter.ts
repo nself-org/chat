@@ -6,12 +6,7 @@
  * and desktop (Node fs via Electron/Tauri).
  */
 
-import {
-  Platform,
-  detectPlatform,
-  hasFileSystemAccessAPI,
-  isBrowser,
-} from './platform-detector';
+import { Platform, detectPlatform, hasFileSystemAccessAPI, isBrowser } from './platform-detector'
 
 // ============================================================================
 // Types
@@ -20,37 +15,31 @@ import {
 /**
  * File encoding types
  */
-export type FileEncoding = 'utf8' | 'base64' | 'binary';
+export type FileEncoding = 'utf8' | 'base64' | 'binary'
 
 /**
  * Directory types for mobile platforms
  */
-export type Directory =
-  | 'documents'
-  | 'data'
-  | 'cache'
-  | 'external'
-  | 'library'
-  | 'temp';
+export type Directory = 'documents' | 'data' | 'cache' | 'external' | 'library' | 'temp'
 
 /**
  * File info structure
  */
 export interface FileInfo {
   /** File name */
-  name: string;
+  name: string
   /** Full path */
-  path: string;
+  path: string
   /** File size in bytes */
-  size: number;
+  size: number
   /** MIME type */
-  type: string;
+  type: string
   /** Last modified timestamp */
-  lastModified: number;
+  lastModified: number
   /** Is directory */
-  isDirectory: boolean;
+  isDirectory: boolean
   /** Is file */
-  isFile: boolean;
+  isFile: boolean
 }
 
 /**
@@ -58,9 +47,9 @@ export interface FileInfo {
  */
 export interface ReadOptions {
   /** File encoding */
-  encoding?: FileEncoding;
+  encoding?: FileEncoding
   /** Directory (for mobile) */
-  directory?: Directory;
+  directory?: Directory
 }
 
 /**
@@ -68,13 +57,13 @@ export interface ReadOptions {
  */
 export interface WriteOptions {
   /** File encoding */
-  encoding?: FileEncoding;
+  encoding?: FileEncoding
   /** Directory (for mobile) */
-  directory?: Directory;
+  directory?: Directory
   /** Create directory if not exists */
-  recursive?: boolean;
+  recursive?: boolean
   /** Append to file instead of overwrite */
-  append?: boolean;
+  append?: boolean
 }
 
 /**
@@ -82,11 +71,11 @@ export interface WriteOptions {
  */
 export interface FilePickerOptions {
   /** Accepted file types (MIME types or extensions) */
-  accept?: string[];
+  accept?: string[]
   /** Allow multiple file selection */
-  multiple?: boolean;
+  multiple?: boolean
   /** Starting directory (desktop only) */
-  startIn?: string;
+  startIn?: string
 }
 
 /**
@@ -94,11 +83,11 @@ export interface FilePickerOptions {
  */
 export interface SaveFileOptions {
   /** Suggested file name */
-  suggestedName?: string;
+  suggestedName?: string
   /** Accepted file types */
-  accept?: string[];
+  accept?: string[]
   /** Starting directory (desktop only) */
-  startIn?: string;
+  startIn?: string
 }
 
 /**
@@ -106,9 +95,9 @@ export interface SaveFileOptions {
  */
 export interface DirectoryPickerOptions {
   /** Starting directory */
-  startIn?: string;
+  startIn?: string
   /** Mode (read or readwrite) */
-  mode?: 'read' | 'readwrite';
+  mode?: 'read' | 'readwrite'
 }
 
 /**
@@ -116,33 +105,33 @@ export interface DirectoryPickerOptions {
  */
 export interface FileSystemAdapter {
   /** Read file contents */
-  readFile(path: string, options?: ReadOptions): Promise<string | ArrayBuffer>;
+  readFile(path: string, options?: ReadOptions): Promise<string | ArrayBuffer>
   /** Write file contents */
-  writeFile(path: string, data: string | ArrayBuffer, options?: WriteOptions): Promise<void>;
+  writeFile(path: string, data: string | ArrayBuffer, options?: WriteOptions): Promise<void>
   /** Delete file */
-  deleteFile(path: string, options?: { directory?: Directory }): Promise<void>;
+  deleteFile(path: string, options?: { directory?: Directory }): Promise<void>
   /** Check if file exists */
-  exists(path: string, options?: { directory?: Directory }): Promise<boolean>;
+  exists(path: string, options?: { directory?: Directory }): Promise<boolean>
   /** Get file info */
-  stat(path: string, options?: { directory?: Directory }): Promise<FileInfo>;
+  stat(path: string, options?: { directory?: Directory }): Promise<FileInfo>
   /** List directory contents */
-  readDir(path: string, options?: { directory?: Directory }): Promise<FileInfo[]>;
+  readDir(path: string, options?: { directory?: Directory }): Promise<FileInfo[]>
   /** Create directory */
-  mkdir(path: string, options?: WriteOptions): Promise<void>;
+  mkdir(path: string, options?: WriteOptions): Promise<void>
   /** Delete directory */
-  rmdir(path: string, options?: { directory?: Directory; recursive?: boolean }): Promise<void>;
+  rmdir(path: string, options?: { directory?: Directory; recursive?: boolean }): Promise<void>
   /** Copy file */
-  copy(source: string, destination: string, options?: { directory?: Directory }): Promise<void>;
+  copy(source: string, destination: string, options?: { directory?: Directory }): Promise<void>
   /** Move/rename file */
-  move(source: string, destination: string, options?: { directory?: Directory }): Promise<void>;
+  move(source: string, destination: string, options?: { directory?: Directory }): Promise<void>
   /** Open file picker dialog */
-  pickFile?(options?: FilePickerOptions): Promise<File[]>;
+  pickFile?(options?: FilePickerOptions): Promise<File[]>
   /** Open save dialog */
-  saveFile?(data: string | ArrayBuffer, options?: SaveFileOptions): Promise<boolean>;
+  saveFile?(data: string | ArrayBuffer, options?: SaveFileOptions): Promise<boolean>
   /** Open directory picker */
-  pickDirectory?(options?: DirectoryPickerOptions): Promise<string | null>;
+  pickDirectory?(options?: DirectoryPickerOptions): Promise<string | null>
   /** Check if file system access is available */
-  isAvailable(): boolean;
+  isAvailable(): boolean
 }
 
 /**
@@ -150,71 +139,92 @@ export interface FileSystemAdapter {
  */
 interface FileSystemWindowExtras {
   showOpenFilePicker?: (options?: {
-    multiple?: boolean;
-    types?: { description?: string; accept: Record<string, string[]> }[];
-    startIn?: FileSystemHandle | string;
-  }) => Promise<FileSystemFileHandle[]>;
+    multiple?: boolean
+    types?: { description?: string; accept: Record<string, string[]> }[]
+    startIn?: FileSystemHandle | string
+  }) => Promise<FileSystemFileHandle[]>
   showSaveFilePicker?: (options?: {
-    suggestedName?: string;
-    types?: { description?: string; accept: Record<string, string[]> }[];
-    startIn?: FileSystemHandle | string;
-  }) => Promise<FileSystemFileHandle>;
+    suggestedName?: string
+    types?: { description?: string; accept: Record<string, string[]> }[]
+    startIn?: FileSystemHandle | string
+  }) => Promise<FileSystemFileHandle>
   showDirectoryPicker?: (options?: {
-    startIn?: FileSystemHandle | string;
-    mode?: 'read' | 'readwrite';
-  }) => Promise<FileSystemDirectoryHandle>;
+    startIn?: FileSystemHandle | string
+    mode?: 'read' | 'readwrite'
+  }) => Promise<FileSystemDirectoryHandle>
   Capacitor?: {
     Plugins?: {
       Filesystem?: {
-        readFile: (opts: { path: string; directory?: string; encoding?: string }) => Promise<{ data: string }>;
-        writeFile: (opts: { path: string; data: string; directory?: string; encoding?: string; recursive?: boolean }) => Promise<void>;
-        deleteFile: (opts: { path: string; directory?: string }) => Promise<void>;
+        readFile: (opts: {
+          path: string
+          directory?: string
+          encoding?: string
+        }) => Promise<{ data: string }>
+        writeFile: (opts: {
+          path: string
+          data: string
+          directory?: string
+          encoding?: string
+          recursive?: boolean
+        }) => Promise<void>
+        deleteFile: (opts: { path: string; directory?: string }) => Promise<void>
         stat: (opts: { path: string; directory?: string }) => Promise<{
-          type: string;
-          size: number;
-          mtime: number;
-          uri: string;
-        }>;
-        readdir: (opts: { path: string; directory?: string }) => Promise<{ files: { name: string; type: string; size: number; mtime: number; uri: string }[] }>;
-        mkdir: (opts: { path: string; directory?: string; recursive?: boolean }) => Promise<void>;
-        rmdir: (opts: { path: string; directory?: string; recursive?: boolean }) => Promise<void>;
-        copy: (opts: { from: string; to: string; directory?: string }) => Promise<void>;
-        rename: (opts: { from: string; to: string; directory?: string }) => Promise<void>;
-      };
-    };
-  };
+          type: string
+          size: number
+          mtime: number
+          uri: string
+        }>
+        readdir: (opts: { path: string; directory?: string }) => Promise<{
+          files: { name: string; type: string; size: number; mtime: number; uri: string }[]
+        }>
+        mkdir: (opts: { path: string; directory?: string; recursive?: boolean }) => Promise<void>
+        rmdir: (opts: { path: string; directory?: string; recursive?: boolean }) => Promise<void>
+        copy: (opts: { from: string; to: string; directory?: string }) => Promise<void>
+        rename: (opts: { from: string; to: string; directory?: string }) => Promise<void>
+      }
+    }
+  }
   electron?: {
     fs?: {
-      readFile: (path: string, encoding?: string) => Promise<string | Buffer>;
-      writeFile: (path: string, data: string | Buffer) => Promise<void>;
-      unlink: (path: string) => Promise<void>;
-      stat: (path: string) => Promise<{ size: number; mtime: Date; isDirectory: () => boolean; isFile: () => boolean }>;
-      readdir: (path: string) => Promise<string[]>;
-      mkdir: (path: string, options?: { recursive?: boolean }) => Promise<void>;
-      rmdir: (path: string, options?: { recursive?: boolean }) => Promise<void>;
-      copyFile: (src: string, dest: string) => Promise<void>;
-      rename: (oldPath: string, newPath: string) => Promise<void>;
-      exists: (path: string) => Promise<boolean>;
-    };
+      readFile: (path: string, encoding?: string) => Promise<string | Buffer>
+      writeFile: (path: string, data: string | Buffer) => Promise<void>
+      unlink: (path: string) => Promise<void>
+      stat: (
+        path: string
+      ) => Promise<{ size: number; mtime: Date; isDirectory: () => boolean; isFile: () => boolean }>
+      readdir: (path: string) => Promise<string[]>
+      mkdir: (path: string, options?: { recursive?: boolean }) => Promise<void>
+      rmdir: (path: string, options?: { recursive?: boolean }) => Promise<void>
+      copyFile: (src: string, dest: string) => Promise<void>
+      rename: (oldPath: string, newPath: string) => Promise<void>
+      exists: (path: string) => Promise<boolean>
+    }
     dialog?: {
-      showOpenDialog: (options: Record<string, unknown>) => Promise<{ canceled: boolean; filePaths: string[] }>;
-      showSaveDialog: (options: Record<string, unknown>) => Promise<{ canceled: boolean; filePath?: string }>;
-    };
-  };
+      showOpenDialog: (
+        options: Record<string, unknown>
+      ) => Promise<{ canceled: boolean; filePaths: string[] }>
+      showSaveDialog: (
+        options: Record<string, unknown>
+      ) => Promise<{ canceled: boolean; filePath?: string }>
+    }
+  }
   __TAURI__?: {
-    core: { invoke: <T>(cmd: string, args?: Record<string, unknown>) => Promise<T> };
-    event: { listen: <T>(event: string, handler: (event: { payload: T }) => void) => Promise<() => void>; emit: (event: string, payload?: unknown) => Promise<void> };
+    core: { invoke: <T>(cmd: string, args?: Record<string, unknown>) => Promise<T> }
+    event: {
+      listen: <T>(event: string, handler: (event: { payload: T }) => void) => Promise<() => void>
+      emit: (event: string, payload?: unknown) => Promise<void>
+    }
     fs?: {
-      readDir: (path: string, options?: unknown) => Promise<unknown>;
-      readFile: (path: string, options?: unknown) => Promise<unknown>;
-      writeFile: (path: string, contents: unknown, options?: unknown) => Promise<void>;
-      removeFile: (path: string) => Promise<void>;
-      exists: (path: string) => Promise<boolean>;
-    };
-  };
+      readDir: (path: string, options?: unknown) => Promise<unknown>
+      readFile: (path: string, options?: unknown) => Promise<unknown>
+      writeFile: (path: string, contents: unknown, options?: unknown) => Promise<void>
+      removeFile: (path: string) => Promise<void>
+      exists: (path: string) => Promise<boolean>
+    }
+  }
 }
 
-type FileSystemWindow = Window & FileSystemWindowExtras;
+type FileSystemWindow = Window & FileSystemWindowExtras
 
 // ============================================================================
 // Web File System Adapter
@@ -224,66 +234,68 @@ type FileSystemWindow = Window & FileSystemWindowExtras;
  * Web File System Access API adapter
  */
 export class WebFileSystemAdapter implements FileSystemAdapter {
-  private fileHandles: Map<string, FileSystemFileHandle> = new Map();
+  private fileHandles: Map<string, FileSystemFileHandle> = new Map()
 
   isAvailable(): boolean {
-    return hasFileSystemAccessAPI();
+    return hasFileSystemAccessAPI()
   }
 
   async readFile(path: string, options?: ReadOptions): Promise<string | ArrayBuffer> {
-    const handle = this.fileHandles.get(path);
+    const handle = this.fileHandles.get(path)
     if (!handle) {
-      throw new Error(`File not found: ${path}. Use pickFile() first.`);
+      throw new Error(`File not found: ${path}. Use pickFile() first.`)
     }
 
-    const file = await handle.getFile();
+    const file = await handle.getFile()
     if (options?.encoding === 'base64' || options?.encoding === 'binary') {
-      return file.arrayBuffer();
+      return file.arrayBuffer()
     }
-    return file.text();
+    return file.text()
   }
 
   async writeFile(path: string, data: string | ArrayBuffer, options?: WriteOptions): Promise<void> {
-    let handle = this.fileHandles.get(path);
+    let handle = this.fileHandles.get(path)
 
     if (!handle) {
       // Try to create through save dialog
-      const result = await this.saveFile(data, { suggestedName: path.split('/').pop() });
+      const result = await this.saveFile(data, { suggestedName: path.split('/').pop() })
       if (!result) {
-        throw new Error('File save cancelled');
+        throw new Error('File save cancelled')
       }
-      return;
+      return
     }
 
-    const writable = await handle.createWritable();
+    const writable = await handle.createWritable()
     try {
       if (options?.append) {
-        const file = await handle.getFile();
-        const existingData = await file.text();
-        await writable.write(existingData + (typeof data === 'string' ? data : new TextDecoder().decode(data)));
+        const file = await handle.getFile()
+        const existingData = await file.text()
+        await writable.write(
+          existingData + (typeof data === 'string' ? data : new TextDecoder().decode(data))
+        )
       } else {
-        await writable.write(data);
+        await writable.write(data)
       }
     } finally {
-      await writable.close();
+      await writable.close()
     }
   }
 
   async deleteFile(_path: string): Promise<void> {
-    throw new Error('Web File System API does not support file deletion');
+    throw new Error('Web File System API does not support file deletion')
   }
 
   async exists(path: string): Promise<boolean> {
-    return this.fileHandles.has(path);
+    return this.fileHandles.has(path)
   }
 
   async stat(path: string): Promise<FileInfo> {
-    const handle = this.fileHandles.get(path);
+    const handle = this.fileHandles.get(path)
     if (!handle) {
-      throw new Error(`File not found: ${path}`);
+      throw new Error(`File not found: ${path}`)
     }
 
-    const file = await handle.getFile();
+    const file = await handle.getFile()
     return {
       name: file.name,
       path: path,
@@ -292,34 +304,34 @@ export class WebFileSystemAdapter implements FileSystemAdapter {
       lastModified: file.lastModified,
       isDirectory: false,
       isFile: true,
-    };
+    }
   }
 
   async readDir(_path: string): Promise<FileInfo[]> {
-    throw new Error('Web File System API directory listing requires directory handle');
+    throw new Error('Web File System API directory listing requires directory handle')
   }
 
   async mkdir(_path: string): Promise<void> {
-    throw new Error('Web File System API does not support directory creation');
+    throw new Error('Web File System API does not support directory creation')
   }
 
   async rmdir(_path: string): Promise<void> {
-    throw new Error('Web File System API does not support directory deletion');
+    throw new Error('Web File System API does not support directory deletion')
   }
 
   async copy(_source: string, _destination: string): Promise<void> {
-    throw new Error('Web File System API does not support file copy');
+    throw new Error('Web File System API does not support file copy')
   }
 
   async move(_source: string, _destination: string): Promise<void> {
-    throw new Error('Web File System API does not support file move');
+    throw new Error('Web File System API does not support file move')
   }
 
   async pickFile(options?: FilePickerOptions): Promise<File[]> {
-    const win = window as FileSystemWindow;
+    const win = window as FileSystemWindow
     if (!win.showOpenFilePicker) {
       // Fallback to input element
-      return this.pickFileViaInput(options);
+      return this.pickFileViaInput(options)
     }
 
     try {
@@ -328,47 +340,47 @@ export class WebFileSystemAdapter implements FileSystemAdapter {
         types: options?.accept?.map((type) => ({
           accept: { [type]: type.startsWith('.') ? [type] : [] },
         })),
-      });
+      })
 
-      const files: File[] = [];
+      const files: File[] = []
       for (const handle of handles) {
-        const file = await handle.getFile();
-        this.fileHandles.set(file.name, handle);
-        files.push(file);
+        const file = await handle.getFile()
+        this.fileHandles.set(file.name, handle)
+        files.push(file)
       }
 
-      return files;
+      return files
     } catch (error) {
       if ((error as Error).name === 'AbortError') {
-        return [];
+        return []
       }
-      throw error;
+      throw error
     }
   }
 
   private async pickFileViaInput(options?: FilePickerOptions): Promise<File[]> {
     return new Promise((resolve) => {
-      const input = document.createElement('input');
-      input.type = 'file';
-      input.multiple = options?.multiple ?? false;
+      const input = document.createElement('input')
+      input.type = 'file'
+      input.multiple = options?.multiple ?? false
       if (options?.accept) {
-        input.accept = options.accept.join(',');
+        input.accept = options.accept.join(',')
       }
 
       input.onchange = () => {
-        const files = Array.from(input.files || []);
-        resolve(files);
-      };
+        const files = Array.from(input.files || [])
+        resolve(files)
+      }
 
-      input.click();
-    });
+      input.click()
+    })
   }
 
   async saveFile(data: string | ArrayBuffer, options?: SaveFileOptions): Promise<boolean> {
-    const win = window as FileSystemWindow;
+    const win = window as FileSystemWindow
     if (!win.showSaveFilePicker) {
       // Fallback to download link
-      return this.saveFileViaDownload(data, options);
+      return this.saveFileViaDownload(data, options)
     }
 
     try {
@@ -377,53 +389,52 @@ export class WebFileSystemAdapter implements FileSystemAdapter {
         types: options?.accept?.map((type) => ({
           accept: { [type]: type.startsWith('.') ? [type] : [] },
         })),
-      });
+      })
 
-      const writable = await handle.createWritable();
-      await writable.write(data);
-      await writable.close();
+      const writable = await handle.createWritable()
+      await writable.write(data)
+      await writable.close()
 
-      this.fileHandles.set(handle.name, handle);
-      return true;
+      this.fileHandles.set(handle.name, handle)
+      return true
     } catch (error) {
       if ((error as Error).name === 'AbortError') {
-        return false;
+        return false
       }
-      throw error;
+      throw error
     }
   }
 
   private saveFileViaDownload(data: string | ArrayBuffer, options?: SaveFileOptions): boolean {
-    const blob = data instanceof ArrayBuffer
-      ? new Blob([data])
-      : new Blob([data], { type: 'text/plain' });
+    const blob =
+      data instanceof ArrayBuffer ? new Blob([data]) : new Blob([data], { type: 'text/plain' })
 
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = options?.suggestedName || 'download';
-    link.click();
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = options?.suggestedName || 'download'
+    link.click()
 
-    URL.revokeObjectURL(url);
-    return true;
+    URL.revokeObjectURL(url)
+    return true
   }
 
   async pickDirectory(options?: DirectoryPickerOptions): Promise<string | null> {
-    const win = window as FileSystemWindow;
+    const win = window as FileSystemWindow
     if (!win.showDirectoryPicker) {
-      return null;
+      return null
     }
 
     try {
       const handle = await win.showDirectoryPicker({
         mode: options?.mode,
-      });
-      return handle.name;
+      })
+      return handle.name
     } catch (error) {
       if ((error as Error).name === 'AbortError') {
-        return null;
+        return null
       }
-      throw error;
+      throw error
     }
   }
 }
@@ -436,78 +447,79 @@ export class WebFileSystemAdapter implements FileSystemAdapter {
  * Capacitor Filesystem adapter for mobile
  */
 export class CapacitorFileSystemAdapter implements FileSystemAdapter {
-  private getFilesystem(): NonNullable<NonNullable<FileSystemWindow['Capacitor']>['Plugins']>['Filesystem'] | null {
-    const win = typeof window !== 'undefined' ? (window as FileSystemWindow) : null;
-    return win?.Capacitor?.Plugins?.Filesystem ?? null;
+  private getFilesystem():
+    | NonNullable<NonNullable<FileSystemWindow['Capacitor']>['Plugins']>['Filesystem']
+    | null {
+    const win = typeof window !== 'undefined' ? (window as FileSystemWindow) : null
+    return win?.Capacitor?.Plugins?.Filesystem ?? null
   }
 
   private mapDirectory(dir?: Directory): string {
     switch (dir) {
       case 'documents':
-        return 'DOCUMENTS';
+        return 'DOCUMENTS'
       case 'data':
-        return 'DATA';
+        return 'DATA'
       case 'cache':
-        return 'CACHE';
+        return 'CACHE'
       case 'external':
-        return 'EXTERNAL';
+        return 'EXTERNAL'
       case 'library':
-        return 'LIBRARY';
+        return 'LIBRARY'
       case 'temp':
-        return 'CACHE';
+        return 'CACHE'
       default:
-        return 'DATA';
+        return 'DATA'
     }
   }
 
   isAvailable(): boolean {
-    return !!this.getFilesystem();
+    return !!this.getFilesystem()
   }
 
   async readFile(path: string, options?: ReadOptions): Promise<string | ArrayBuffer> {
-    const Filesystem = this.getFilesystem();
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
-    const encoding = options?.encoding === 'binary' || options?.encoding === 'base64'
-      ? undefined
-      : 'utf8';
+    const encoding =
+      options?.encoding === 'binary' || options?.encoding === 'base64' ? undefined : 'utf8'
 
     const { data } = await Filesystem.readFile({
       path,
       directory: this.mapDirectory(options?.directory),
       encoding,
-    });
+    })
 
     if (options?.encoding === 'base64') {
       // Convert base64 to ArrayBuffer
-      const binary = atob(data);
-      const bytes = new Uint8Array(binary.length);
+      const binary = atob(data)
+      const bytes = new Uint8Array(binary.length)
       for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i);
+        bytes[i] = binary.charCodeAt(i)
       }
-      return bytes.buffer;
+      return bytes.buffer
     }
 
-    return data;
+    return data
   }
 
   async writeFile(path: string, data: string | ArrayBuffer, options?: WriteOptions): Promise<void> {
-    const Filesystem = this.getFilesystem();
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
-    let dataString: string;
-    let encoding = 'utf8';
+    let dataString: string
+    let encoding = 'utf8'
 
     if (data instanceof ArrayBuffer) {
-      const bytes = new Uint8Array(data);
-      dataString = btoa(String.fromCharCode(...bytes));
-      encoding = 'base64' as unknown as string;
+      const bytes = new Uint8Array(data)
+      dataString = btoa(String.fromCharCode(...bytes))
+      encoding = 'base64' as unknown as string
     } else {
-      dataString = data;
+      dataString = data
     }
 
     await Filesystem.writeFile({
@@ -516,40 +528,40 @@ export class CapacitorFileSystemAdapter implements FileSystemAdapter {
       directory: this.mapDirectory(options?.directory),
       encoding,
       recursive: options?.recursive,
-    });
+    })
   }
 
   async deleteFile(path: string, options?: { directory?: Directory }): Promise<void> {
-    const Filesystem = this.getFilesystem();
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
     await Filesystem.deleteFile({
       path,
       directory: this.mapDirectory(options?.directory),
-    });
+    })
   }
 
   async exists(path: string, options?: { directory?: Directory }): Promise<boolean> {
     try {
-      await this.stat(path, options);
-      return true;
+      await this.stat(path, options)
+      return true
     } catch {
-      return false;
+      return false
     }
   }
 
   async stat(path: string, options?: { directory?: Directory }): Promise<FileInfo> {
-    const Filesystem = this.getFilesystem();
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
     const result = await Filesystem.stat({
       path,
       directory: this.mapDirectory(options?.directory),
-    });
+    })
 
     return {
       name: path.split('/').pop() || '',
@@ -559,19 +571,19 @@ export class CapacitorFileSystemAdapter implements FileSystemAdapter {
       lastModified: result.mtime,
       isDirectory: result.type === 'directory',
       isFile: result.type === 'file',
-    };
+    }
   }
 
   async readDir(path: string, options?: { directory?: Directory }): Promise<FileInfo[]> {
-    const Filesystem = this.getFilesystem();
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
     const { files } = await Filesystem.readdir({
       path,
       directory: this.mapDirectory(options?.directory),
-    });
+    })
 
     return files.map((file) => ({
       name: file.name,
@@ -581,59 +593,70 @@ export class CapacitorFileSystemAdapter implements FileSystemAdapter {
       lastModified: file.mtime,
       isDirectory: file.type === 'directory',
       isFile: file.type === 'file',
-    }));
+    }))
   }
 
   async mkdir(path: string, options?: WriteOptions): Promise<void> {
-    const Filesystem = this.getFilesystem();
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
     await Filesystem.mkdir({
       path,
       directory: this.mapDirectory(options?.directory),
       recursive: options?.recursive,
-    });
+    })
   }
 
-  async rmdir(path: string, options?: { directory?: Directory; recursive?: boolean }): Promise<void> {
-    const Filesystem = this.getFilesystem();
+  async rmdir(
+    path: string,
+    options?: { directory?: Directory; recursive?: boolean }
+  ): Promise<void> {
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
     await Filesystem.rmdir({
       path,
       directory: this.mapDirectory(options?.directory),
       recursive: options?.recursive,
-    });
+    })
   }
 
-  async copy(source: string, destination: string, options?: { directory?: Directory }): Promise<void> {
-    const Filesystem = this.getFilesystem();
+  async copy(
+    source: string,
+    destination: string,
+    options?: { directory?: Directory }
+  ): Promise<void> {
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
     await Filesystem.copy({
       from: source,
       to: destination,
       directory: this.mapDirectory(options?.directory),
-    });
+    })
   }
 
-  async move(source: string, destination: string, options?: { directory?: Directory }): Promise<void> {
-    const Filesystem = this.getFilesystem();
+  async move(
+    source: string,
+    destination: string,
+    options?: { directory?: Directory }
+  ): Promise<void> {
+    const Filesystem = this.getFilesystem()
     if (!Filesystem) {
-      throw new Error('Capacitor Filesystem not available');
+      throw new Error('Capacitor Filesystem not available')
     }
 
     await Filesystem.rename({
       from: source,
       to: destination,
       directory: this.mapDirectory(options?.directory),
-    });
+    })
   }
 }
 
@@ -646,69 +669,68 @@ export class CapacitorFileSystemAdapter implements FileSystemAdapter {
  */
 export class ElectronFileSystemAdapter implements FileSystemAdapter {
   private getElectron(): FileSystemWindow['electron'] | null {
-    const win = typeof window !== 'undefined' ? (window as FileSystemWindow) : null;
-    return win?.electron ?? null;
+    const win = typeof window !== 'undefined' ? (window as FileSystemWindow) : null
+    return win?.electron ?? null
   }
 
   isAvailable(): boolean {
-    return !!this.getElectron()?.fs;
+    return !!this.getElectron()?.fs
   }
 
   async readFile(path: string, options?: ReadOptions): Promise<string | ArrayBuffer> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    const encoding = options?.encoding === 'binary' || options?.encoding === 'base64'
-      ? undefined
-      : 'utf8';
+    const encoding =
+      options?.encoding === 'binary' || options?.encoding === 'base64' ? undefined : 'utf8'
 
-    const data = await electron.fs.readFile(path, encoding);
+    const data = await electron.fs.readFile(path, encoding)
 
     if (typeof data === 'string') {
-      return data;
+      return data
     }
 
     // Convert Buffer to ArrayBuffer
-    return (data as { buffer: ArrayBuffer }).buffer;
+    return (data as { buffer: ArrayBuffer }).buffer
   }
 
   async writeFile(path: string, data: string | ArrayBuffer): Promise<void> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    await electron.fs.writeFile(path, data as string);
+    await electron.fs.writeFile(path, data as string)
   }
 
   async deleteFile(path: string): Promise<void> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    await electron.fs.unlink(path);
+    await electron.fs.unlink(path)
   }
 
   async exists(path: string): Promise<boolean> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      return false;
+      return false
     }
 
-    return electron.fs.exists(path);
+    return electron.fs.exists(path)
   }
 
   async stat(path: string): Promise<FileInfo> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    const stats = await electron.fs.stat(path);
-    const name = path.split(/[/\\]/).pop() || '';
+    const stats = await electron.fs.stat(path)
+    const name = path.split(/[/\\]/).pop() || ''
 
     return {
       name,
@@ -718,71 +740,71 @@ export class ElectronFileSystemAdapter implements FileSystemAdapter {
       lastModified: stats.mtime.getTime(),
       isDirectory: stats.isDirectory(),
       isFile: stats.isFile(),
-    };
+    }
   }
 
   async readDir(path: string): Promise<FileInfo[]> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    const names = await electron.fs.readdir(path);
-    const infos: FileInfo[] = [];
+    const names = await electron.fs.readdir(path)
+    const infos: FileInfo[] = []
 
     for (const name of names) {
-      const filePath = `${path}/${name}`;
+      const filePath = `${path}/${name}`
       try {
-        const info = await this.stat(filePath);
-        infos.push(info);
+        const info = await this.stat(filePath)
+        infos.push(info)
       } catch {
         // Skip files that can't be stat'd
       }
     }
 
-    return infos;
+    return infos
   }
 
   async mkdir(path: string, options?: WriteOptions): Promise<void> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    await electron.fs.mkdir(path, { recursive: options?.recursive });
+    await electron.fs.mkdir(path, { recursive: options?.recursive })
   }
 
   async rmdir(path: string, options?: { recursive?: boolean }): Promise<void> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    await electron.fs.rmdir(path, { recursive: options?.recursive });
+    await electron.fs.rmdir(path, { recursive: options?.recursive })
   }
 
   async copy(source: string, destination: string): Promise<void> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    await electron.fs.copyFile(source, destination);
+    await electron.fs.copyFile(source, destination)
   }
 
   async move(source: string, destination: string): Promise<void> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.fs) {
-      throw new Error('Electron fs not available');
+      throw new Error('Electron fs not available')
     }
 
-    await electron.fs.rename(source, destination);
+    await electron.fs.rename(source, destination)
   }
 
   async pickFile(options?: FilePickerOptions): Promise<File[]> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.dialog) {
-      return [];
+      return []
     }
 
     const result = await electron.dialog.showOpenDialog({
@@ -791,39 +813,39 @@ export class ElectronFileSystemAdapter implements FileSystemAdapter {
         name: ext,
         extensions: [ext.replace('.', '')],
       })),
-    });
+    })
 
     if (result.canceled) {
-      return [];
+      return []
     }
 
     // Create File objects from paths
-    const files: File[] = [];
+    const files: File[] = []
     for (const filePath of result.filePaths) {
-      const data = await this.readFile(filePath);
-      const name = filePath.split(/[/\\]/).pop() || '';
-      files.push(new File([data], name));
+      const data = await this.readFile(filePath)
+      const name = filePath.split(/[/\\]/).pop() || ''
+      files.push(new File([data], name))
     }
 
-    return files;
+    return files
   }
 
   async saveFile(data: string | ArrayBuffer, options?: SaveFileOptions): Promise<boolean> {
-    const electron = this.getElectron();
+    const electron = this.getElectron()
     if (!electron?.dialog || !electron?.fs) {
-      return false;
+      return false
     }
 
     const result = await electron.dialog.showSaveDialog({
       defaultPath: options?.suggestedName,
-    });
+    })
 
     if (result.canceled || !result.filePath) {
-      return false;
+      return false
     }
 
-    await electron.fs.writeFile(result.filePath, data as string);
-    return true;
+    await electron.fs.writeFile(result.filePath, data as string)
+    return true
   }
 }
 
@@ -836,47 +858,47 @@ export class ElectronFileSystemAdapter implements FileSystemAdapter {
  */
 export class NoopFileSystemAdapter implements FileSystemAdapter {
   isAvailable(): boolean {
-    return false;
+    return false
   }
 
   async readFile(_path: string): Promise<string> {
-    throw new Error('File system not available');
+    throw new Error('File system not available')
   }
 
   async writeFile(_path: string, _data: string | ArrayBuffer): Promise<void> {
-    throw new Error('File system not available');
+    throw new Error('File system not available')
   }
 
   async deleteFile(_path: string): Promise<void> {
-    throw new Error('File system not available');
+    throw new Error('File system not available')
   }
 
   async exists(_path: string): Promise<boolean> {
-    return false;
+    return false
   }
 
   async stat(_path: string): Promise<FileInfo> {
-    throw new Error('File system not available');
+    throw new Error('File system not available')
   }
 
   async readDir(_path: string): Promise<FileInfo[]> {
-    return [];
+    return []
   }
 
   async mkdir(_path: string): Promise<void> {
-    throw new Error('File system not available');
+    throw new Error('File system not available')
   }
 
   async rmdir(_path: string): Promise<void> {
-    throw new Error('File system not available');
+    throw new Error('File system not available')
   }
 
   async copy(_source: string, _destination: string): Promise<void> {
-    throw new Error('File system not available');
+    throw new Error('File system not available')
   }
 
   async move(_source: string, _destination: string): Promise<void> {
-    throw new Error('File system not available');
+    throw new Error('File system not available')
   }
 }
 
@@ -888,20 +910,20 @@ export class NoopFileSystemAdapter implements FileSystemAdapter {
  * Detect the best file system backend for the current platform
  */
 export function detectFileSystemBackend(): 'web' | 'capacitor' | 'electron' | 'tauri' | 'none' {
-  const platform = detectPlatform();
-  const win = typeof window !== 'undefined' ? (window as FileSystemWindow) : null;
+  const platform = detectPlatform()
+  const win = typeof window !== 'undefined' ? (window as FileSystemWindow) : null
 
   switch (platform) {
     case Platform.ELECTRON:
-      return win?.electron?.fs ? 'electron' : 'web';
+      return win?.electron?.fs ? 'electron' : 'web'
     case Platform.TAURI:
-      return win?.__TAURI__?.fs ? 'tauri' : 'web';
+      return win?.__TAURI__?.fs ? 'tauri' : 'web'
     case Platform.IOS:
     case Platform.ANDROID:
-      return win?.Capacitor?.Plugins?.Filesystem ? 'capacitor' : 'none';
+      return win?.Capacitor?.Plugins?.Filesystem ? 'capacitor' : 'none'
     case Platform.WEB:
     default:
-      return hasFileSystemAccessAPI() ? 'web' : 'none';
+      return hasFileSystemAccessAPI() ? 'web' : 'none'
   }
 }
 
@@ -909,18 +931,18 @@ export function detectFileSystemBackend(): 'web' | 'capacitor' | 'electron' | 't
  * Create a file system adapter for the current platform
  */
 export function createFileSystemAdapter(): FileSystemAdapter {
-  const backend = detectFileSystemBackend();
+  const backend = detectFileSystemBackend()
 
   switch (backend) {
     case 'electron':
-      return new ElectronFileSystemAdapter();
+      return new ElectronFileSystemAdapter()
     case 'capacitor':
-      return new CapacitorFileSystemAdapter();
+      return new CapacitorFileSystemAdapter()
     case 'web':
-      return new WebFileSystemAdapter();
+      return new WebFileSystemAdapter()
     case 'none':
     default:
-      return new NoopFileSystemAdapter();
+      return new NoopFileSystemAdapter()
   }
 }
 
@@ -928,23 +950,23 @@ export function createFileSystemAdapter(): FileSystemAdapter {
 // Singleton Instance
 // ============================================================================
 
-let defaultAdapter: FileSystemAdapter | null = null;
+let defaultAdapter: FileSystemAdapter | null = null
 
 /**
  * Get the default file system adapter
  */
 export function getFileSystemAdapter(): FileSystemAdapter {
   if (!defaultAdapter) {
-    defaultAdapter = createFileSystemAdapter();
+    defaultAdapter = createFileSystemAdapter()
   }
-  return defaultAdapter;
+  return defaultAdapter
 }
 
 /**
  * Reset the default file system adapter
  */
 export function resetFileSystemAdapter(): void {
-  defaultAdapter = null;
+  defaultAdapter = null
 }
 
 // ============================================================================
@@ -963,6 +985,6 @@ export const FileSystem = {
   detectFileSystemBackend,
   getFileSystemAdapter,
   resetFileSystemAdapter,
-};
+}
 
-export default FileSystem;
+export default FileSystem

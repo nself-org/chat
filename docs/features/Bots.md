@@ -36,8 +36,8 @@ export class MyBot implements Bot {
       {
         name: 'hello',
         description: 'Say hello',
-        usage: '/hello [name]'
-      }
+        usage: '/hello [name]',
+      },
     ]
   }
 
@@ -49,7 +49,7 @@ export class MyBot implements Bot {
     if (ctx.message.content.toLowerCase().includes('hello bot')) {
       return {
         type: 'message',
-        content: `Hi there, ${ctx.user.displayName}! 👋`
+        content: `Hi there, ${ctx.user.displayName}! 👋`,
       }
     }
 
@@ -61,20 +61,20 @@ export class MyBot implements Bot {
       const name = args.join(' ') || ctx.user.displayName
       return {
         type: 'message',
-        content: `Hello, ${name}! 🎉`
+        content: `Hello, ${name}! 🎉`,
       }
     }
 
     return {
       type: 'message',
-      content: 'Unknown command'
+      content: 'Unknown command',
     }
   }
 
   async onMention(ctx: BotContext): Promise<BotResponse> {
     return {
       type: 'message',
-      content: `You called? I'm ${this.name}. Use /hello to say hi!`
+      content: `You called? I'm ${this.name}. Use /hello to say hi!`,
     }
   }
 }
@@ -97,11 +97,11 @@ registerBot(new MyBot())
 ```typescript
 interface Bot {
   // Required properties
-  readonly id: string           // Unique identifier
-  readonly name: string         // Display name
-  readonly description: string  // Short description
-  readonly avatar: string       // Emoji or image URL
-  readonly version: string      // Semantic version
+  readonly id: string // Unique identifier
+  readonly name: string // Display name
+  readonly description: string // Short description
+  readonly avatar: string // Emoji or image URL
+  readonly version: string // Semantic version
 
   // Required methods
   getCommands(): BotCommand[]
@@ -185,7 +185,7 @@ interface BotContext {
 ```typescript
 return {
   type: 'message',
-  content: 'Hello, World!'
+  content: 'Hello, World!',
 }
 ```
 
@@ -200,11 +200,11 @@ return {
     color: '#6366f1',
     fields: [
       { name: 'Option A', value: '45%', inline: true },
-      { name: 'Option B', value: '55%', inline: true }
+      { name: 'Option B', value: '55%', inline: true },
     ],
     footer: 'Vote closed',
-    timestamp: new Date().toISOString()
-  }
+    timestamp: new Date().toISOString(),
+  },
 }
 ```
 
@@ -214,7 +214,7 @@ return {
 return {
   type: 'message',
   content: 'Only you can see this',
-  ephemeral: true
+  ephemeral: true,
 }
 ```
 
@@ -228,9 +228,9 @@ return {
     {
       type: 'file',
       url: 'https://example.com/file.pdf',
-      name: 'document.pdf'
-    }
-  ]
+      name: 'document.pdf',
+    },
+  ],
 }
 ```
 
@@ -245,15 +245,15 @@ return {
       type: 'button',
       label: 'Option A',
       style: 'primary',
-      action: 'select_a'
+      action: 'select_a',
     },
     {
       type: 'button',
       label: 'Option B',
       style: 'secondary',
-      action: 'select_b'
-    }
-  ]
+      action: 'select_b',
+    },
+  ],
 }
 ```
 
@@ -342,8 +342,8 @@ const myBot = BotBuilder.create('weather-bot')
       content: {
         title: `Weather in ${location}`,
         description: `${weather.temp}°F - ${weather.condition}`,
-        color: '#3b82f6'
-      }
+        color: '#3b82f6',
+      },
     }
   })
 
@@ -355,7 +355,7 @@ const myBot = BotBuilder.create('weather-bot')
     if (ctx.message.content.includes('weather')) {
       return {
         type: 'message',
-        content: 'Try /weather <city> to get the forecast!'
+        content: 'Try /weather <city> to get the forecast!',
       }
     }
     return null
@@ -457,14 +457,14 @@ class EventBot implements Bot {
   async onMemberJoin(ctx: BotContext): Promise<BotResponse | null> {
     return {
       type: 'message',
-      content: `Welcome to the team, ${ctx.newMember.displayName}! 🎉`
+      content: `Welcome to the team, ${ctx.newMember.displayName}! 🎉`,
     }
   }
 
   async onMemberLeave(ctx: BotContext): Promise<BotResponse | null> {
     return {
       type: 'message',
-      content: `${ctx.leftMember.displayName} has left the channel.`
+      content: `${ctx.leftMember.displayName} has left the channel.`,
     }
   }
 
@@ -491,7 +491,7 @@ const botConfig = {
   defaultBots: ['hello-bot'],
   maxBotsPerChannel: 10,
   botPrefix: '/',
-  allowCustomBots: true
+  allowCustomBots: true,
 }
 ```
 

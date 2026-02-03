@@ -13,7 +13,13 @@ import { useState, createContext, useContext, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import type { TemplateId } from '@/templates/types'
 import { templateRegistry } from '@/templates'
-import { demoUsers, demoChannels, demoMessages, getDemoUser, getChannelMessages } from '@/lib/demo/sample-data'
+import {
+  demoUsers,
+  demoChannels,
+  demoMessages,
+  getDemoUser,
+  getChannelMessages,
+} from '@/lib/demo/sample-data'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -114,7 +120,8 @@ export function DemoMode({
 // -------------------------------------------------------------------------------
 
 function DemoControls() {
-  const { currentTemplate, setTemplate, activeChannelId, setActiveChannelId, channels } = useDemoMode()
+  const { currentTemplate, setTemplate, activeChannelId, setActiveChannelId, channels } =
+    useDemoMode()
 
   const templateOptions: { id: TemplateId; name: string; color: string }[] = [
     { id: 'default', name: 'nself', color: '#00D4FF' },
@@ -127,18 +134,18 @@ function DemoControls() {
   return (
     <div
       className={cn(
-        'fixed top-4 right-4 z-50 p-4 rounded-xl',
-        'bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm',
-        'border border-gray-200 dark:border-gray-700 shadow-lg'
+        'fixed right-4 top-4 z-50 rounded-xl p-4',
+        'bg-white/90 backdrop-blur-sm dark:bg-gray-900/90',
+        'border border-gray-200 shadow-lg dark:border-gray-700'
       )}
     >
-      <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">
+      <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
         Demo Controls
       </div>
 
       {/* Template Selector */}
       <div className="mb-3">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Template
         </label>
         <div className="flex gap-1">
@@ -147,8 +154,8 @@ function DemoControls() {
               key={option.id}
               onClick={() => setTemplate(option.id)}
               className={cn(
-                'w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold text-white transition-transform',
-                currentTemplate === option.id && 'ring-2 ring-offset-2 ring-gray-400 scale-110'
+                'flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold text-white transition-transform',
+                currentTemplate === option.id && 'scale-110 ring-2 ring-gray-400 ring-offset-2'
               )}
               style={{ backgroundColor: option.color }}
               title={option.name}
@@ -161,13 +168,13 @@ function DemoControls() {
 
       {/* Channel Selector */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+        <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
           Channel
         </label>
         <select
           value={activeChannelId || ''}
           onChange={(e) => setActiveChannelId(e.target.value || null)}
-          className="w-full px-2 py-1 text-sm rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+          className="w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm dark:border-gray-600 dark:bg-gray-800"
         >
           {channels.map((channel) => (
             <option key={channel.id} value={channel.id}>
@@ -178,9 +185,9 @@ function DemoControls() {
       </div>
 
       {/* Demo Mode Badge */}
-      <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+      <div className="mt-3 border-t border-gray-200 pt-3 dark:border-gray-700">
         <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-          <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+          <span className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
           Demo Mode Active
         </div>
       </div>

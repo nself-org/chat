@@ -9,6 +9,7 @@ This directory contains comprehensive deployment guides for nchat (nself-chat).
 ### 🌐 Production Deployment (Comprehensive)
 
 **[production-deployment.md](./production-deployment.md)** - **START HERE FOR PRODUCTION**
+
 - Complete production deployment guide (2,740 lines)
 - Multiple deployment options (VPS, Kubernetes, Serverless)
 - Cloud provider comparisons (AWS, GCP, DigitalOcean, Hetzner, Oracle, etc.)
@@ -21,6 +22,7 @@ This directory contains comprehensive deployment guides for nchat (nself-chat).
 - Cost optimization strategies
 
 **[quick-reference.md](./quick-reference.md)** - **QUICK START COMMANDS**
+
 - Quick reference companion to production guide
 - Essential commands and common patterns
 - Common issues and fast solutions
@@ -30,18 +32,21 @@ This directory contains comprehensive deployment guides for nchat (nself-chat).
 ### ☁️ Platform-Specific Guides
 
 **[vercel-deployment.md](./vercel-deployment.md)** - Serverless deployment
+
 - One-click deployment to Vercel
 - Step-by-step guide for beginners
 - Environment configuration
 - Preview deployments
 
 **[mobile-deployment.md](./mobile-deployment.md)** - Mobile apps
+
 - iOS deployment (Capacitor)
 - Android deployment (Capacitor)
 - React Native setup
 - App store submission
 
 **[desktop-deployment.md](./desktop-deployment.md)** - Desktop apps
+
 - Electron deployment (Windows, macOS, Linux)
 - Tauri deployment (lightweight alternative)
 - Code signing and auto-updates
@@ -62,6 +67,7 @@ This directory contains comprehensive deployment guides for nchat (nself-chat).
 ### For Production (Self-Hosted)
 
 **[Production Deployment Guide](./production-deployment.md)** - Complete guide covering:
+
 - **Budget Option** (~$6-10/month): Hetzner VPS or Oracle Free Tier
 - **Standard Option** (~$100-200/month): DigitalOcean Kubernetes
 - **Enterprise Option** ($500+/month): Multi-region Kubernetes
@@ -71,6 +77,7 @@ This directory contains comprehensive deployment guides for nchat (nself-chat).
 ### For Quick Testing/Serverless
 
 **[Vercel Deployment](./vercel-deployment.md)** - Easiest deployment:
+
 1. **Zero Configuration**: Works out-of-the-box with Next.js
 2. **Free Tier**: Generous free tier for hobby projects
 3. **Automatic SSL**: Free HTTPS certificates
@@ -89,13 +96,13 @@ This directory contains comprehensive deployment guides for nchat (nself-chat).
 
 ## 📊 Deployment Options Comparison
 
-| Platform | Difficulty | Cost/mo | Users | Setup Time | Best For |
-|----------|-----------|---------|-------|------------|----------|
-| **Oracle Free** 🆓 | Beginner | $0 | <500 | 30 min | Learning, MVP |
-| **Hetzner VPS** ⭐ | Intermediate | $6-13 | <1K | 45 min | Budget production |
-| **Vercel** | Beginner | $0-40 | <10K | 15 min | Quick deploys |
-| **DigitalOcean K8s** | Advanced | $100-500 | 1K-10K | 2 hours | Production |
-| **AWS/GCP** | Expert | $500+ | 10K+ | 1 week | Enterprise |
+| Platform             | Difficulty   | Cost/mo  | Users  | Setup Time | Best For          |
+| -------------------- | ------------ | -------- | ------ | ---------- | ----------------- |
+| **Oracle Free** 🆓   | Beginner     | $0       | <500   | 30 min     | Learning, MVP     |
+| **Hetzner VPS** ⭐   | Intermediate | $6-13    | <1K    | 45 min     | Budget production |
+| **Vercel**           | Beginner     | $0-40    | <10K   | 15 min     | Quick deploys     |
+| **DigitalOcean K8s** | Advanced     | $100-500 | 1K-10K | 2 hours    | Production        |
+| **AWS/GCP**          | Expert       | $500+    | 10K+   | 1 week     | Enterprise        |
 
 **Legend**: ⭐ = Recommended, 🆓 = Free tier available
 

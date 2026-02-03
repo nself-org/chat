@@ -28,9 +28,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 // Lazy load heavy chart component (recharts)
 const ActivityChart = dynamic(
-  () => import('@/components/admin/activity-chart').then(mod => ({ default: mod.ActivityChart })),
+  () => import('@/components/admin/activity-chart').then((mod) => ({ default: mod.ActivityChart })),
   { loading: () => <ChartSkeleton />, ssr: false }
-);
+)
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -79,7 +79,13 @@ const mockChannelData: {
   createdAt: string
   lastActivityAt: string
   createdBy: { id: string; name: string; avatarUrl: string }
-  members: { id: string; name: string; username: string; role: 'admin' | 'member'; avatarUrl: string }[]
+  members: {
+    id: string
+    name: string
+    username: string
+    role: 'admin' | 'member'
+    avatarUrl: string
+  }[]
   stats: { messagesThisWeek: number; activeMembers: number; averageResponseTime: string }
 } = {
   id: '4',
@@ -171,9 +177,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
   const handleMemberRoleChange = (memberId: string, newRole: MemberRole) => {
     setChannelData((prev) => ({
       ...prev,
-      members: prev.members.map((m) =>
-        m.id === memberId ? { ...m, role: newRole } : m
-      ),
+      members: prev.members.map((m) => (m.id === memberId ? { ...m, role: newRole } : m)),
     }))
   }
 
@@ -211,13 +215,9 @@ export default function ChannelDetailPage({ params }: PageProps) {
             <div className="flex items-center gap-2">
               <TypeIcon className="h-6 w-6 text-muted-foreground" />
               <h1 className="text-3xl font-bold">{channelData.name}</h1>
-              {channelData.isArchived && (
-                <Badge variant="secondary">Archived</Badge>
-              )}
+              {channelData.isArchived && <Badge variant="secondary">Archived</Badge>}
             </div>
-            <p className="text-muted-foreground">
-              Manage channel settings and members
-            </p>
+            <p className="text-muted-foreground">Manage channel settings and members</p>
           </div>
           <div className="flex gap-2">
             {isEditing ? (
@@ -232,10 +232,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
               </>
             ) : (
               <>
-                <Button
-                  variant="outline"
-                  onClick={() => setArchiveDialogOpen(true)}
-                >
+                <Button variant="outline" onClick={() => setArchiveDialogOpen(true)}>
                   <Archive className="mr-2 h-4 w-4" />
                   {channelData.isArchived ? 'Unarchive' : 'Archive'}
                 </Button>
@@ -273,9 +270,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
             </CardHeader>
             <CardContent className="space-y-4">
               {channelData.description && (
-                <p className="text-sm text-muted-foreground">
-                  {channelData.description}
-                </p>
+                <p className="text-sm text-muted-foreground">{channelData.description}</p>
               )}
               <Separator />
               <div className="space-y-3">
@@ -289,9 +284,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span>
-                    Created {new Date(channelData.createdAt).toLocaleDateString()}
-                  </span>
+                  <span>Created {new Date(channelData.createdAt).toLocaleDateString()}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-4 w-4 text-muted-foreground" />
@@ -334,9 +327,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
                   <Card>
                     <CardHeader className="pb-2">
                       <CardDescription>Active Members</CardDescription>
-                      <CardTitle className="text-2xl">
-                        {channelData.stats.activeMembers}
-                      </CardTitle>
+                      <CardTitle className="text-2xl">{channelData.stats.activeMembers}</CardTitle>
                     </CardHeader>
                   </Card>
                   <Card>
@@ -386,9 +377,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
                             </Avatar>
                             <div>
                               <p className="text-sm font-medium">{member.name}</p>
-                              <p className="text-xs text-muted-foreground">
-                                @{member.username}
-                              </p>
+                              <p className="text-xs text-muted-foreground">@{member.username}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
@@ -446,9 +435,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
                   <Card>
                     <CardHeader>
                       <CardTitle>Edit Channel</CardTitle>
-                      <CardDescription>
-                        Update channel settings
-                      </CardDescription>
+                      <CardDescription>Update channel settings</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
@@ -511,9 +498,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
                   <Card>
                     <CardHeader>
                       <CardTitle>Channel Settings</CardTitle>
-                      <CardDescription>
-                        Current channel configuration
-                      </CardDescription>
+                      <CardDescription>Current channel configuration</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="grid gap-4 md:grid-cols-2">
@@ -523,9 +508,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
                         </div>
                         <div className="rounded-lg border p-4">
                           <Label className="text-muted-foreground">Type</Label>
-                          <p className="mt-1 font-medium capitalize">
-                            {channelData.type}
-                          </p>
+                          <p className="mt-1 font-medium capitalize">{channelData.type}</p>
                         </div>
                       </div>
                       {channelData.description && (
@@ -541,9 +524,7 @@ export default function ChannelDetailPage({ params }: PageProps) {
                 <Card>
                   <CardHeader>
                     <CardTitle>Danger Zone</CardTitle>
-                    <CardDescription>
-                      Irreversible and destructive actions
-                    </CardDescription>
+                    <CardDescription>Irreversible and destructive actions</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-center justify-between rounded-lg border border-orange-200 bg-orange-50 p-4 dark:border-orange-800 dark:bg-orange-950">
@@ -553,25 +534,19 @@ export default function ChannelDetailPage({ params }: PageProps) {
                           Hide this channel from the channel list. Can be restored later.
                         </p>
                       </div>
-                      <Button
-                        variant="outline"
-                        onClick={() => setArchiveDialogOpen(true)}
-                      >
+                      <Button variant="outline" onClick={() => setArchiveDialogOpen(true)}>
                         <Archive className="mr-2 h-4 w-4" />
                         {channelData.isArchived ? 'Unarchive' : 'Archive'}
                       </Button>
                     </div>
-                    <div className="flex items-center justify-between rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+                    <div className="border-destructive/50 bg-destructive/10 flex items-center justify-between rounded-lg border p-4">
                       <div>
                         <p className="font-medium">Delete Channel</p>
                         <p className="text-sm text-muted-foreground">
                           Permanently delete this channel and all messages.
                         </p>
                       </div>
-                      <Button
-                        variant="destructive"
-                        onClick={() => setDeleteDialogOpen(true)}
-                      >
+                      <Button variant="destructive" onClick={() => setDeleteDialogOpen(true)}>
                         <Trash2 className="mr-2 h-4 w-4" />
                         Delete
                       </Button>
@@ -611,16 +586,15 @@ export default function ChannelDetailPage({ params }: PageProps) {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Channel</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete #{channelData.name}? This action
-                cannot be undone. All messages in this channel will be
-                permanently deleted.
+                Are you sure you want to delete #{channelData.name}? This action cannot be undone.
+                All messages in this channel will be permanently deleted.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleDelete}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               >
                 Delete Channel
               </AlertDialogAction>

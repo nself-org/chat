@@ -236,21 +236,14 @@ export function CreateInviteModal({
                 <Users className="h-4 w-4 text-muted-foreground" />
                 <Label>Maximum uses</Label>
               </div>
-              <Select
-                value={maxUsesOption}
-                onValueChange={setMaxUsesOption}
-                disabled={isCreating}
-              >
+              <Select value={maxUsesOption} onValueChange={setMaxUsesOption} disabled={isCreating}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select max uses" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="none">No limit</SelectItem>
                   {MAX_USES_OPTIONS.filter((o) => o.value !== null).map((option) => (
-                    <SelectItem
-                      key={option.value!.toString()}
-                      value={option.value!.toString()}
-                    >
+                    <SelectItem key={option.value!.toString()} value={option.value!.toString()}>
                       {option.label}
                     </SelectItem>
                   ))}
@@ -262,26 +255,26 @@ export function CreateInviteModal({
             </div>
 
             {/* Summary */}
-            <div className="rounded-xl bg-muted/50 p-4 space-y-2">
+            <div className="bg-muted/50 space-y-2 rounded-xl p-4">
               <p className="text-sm font-medium">Invite Summary</p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">
-                  <Clock className="h-3 w-3 mr-1" />
+                  <Clock className="mr-1 h-3 w-3" />
                   {getExpirationLabel(expirationOption)}
                 </Badge>
                 <Badge variant="secondary">
-                  <Users className="h-3 w-3 mr-1" />
+                  <Users className="mr-1 h-3 w-3" />
                   {getMaxUsesLabel(maxUsesOption)}
                 </Badge>
                 {type === 'channel' && (
                   <Badge variant="secondary">
-                    <Hash className="h-3 w-3 mr-1" />
+                    <Hash className="mr-1 h-3 w-3" />
                     {channelName || 'Channel'}
                   </Badge>
                 )}
                 {type === 'workspace' && (
                   <Badge variant="secondary">
-                    <Globe className="h-3 w-3 mr-1" />
+                    <Globe className="mr-1 h-3 w-3" />
                     Workspace
                   </Badge>
                 )}
@@ -290,15 +283,11 @@ export function CreateInviteModal({
 
             {/* Error */}
             {createError && (
-              <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-4 flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+              <div className="bg-destructive/10 border-destructive/20 flex items-start gap-3 rounded-xl border p-4">
+                <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
                 <div>
-                  <p className="text-sm font-medium text-destructive">
-                    Failed to create invite
-                  </p>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {createError}
-                  </p>
+                  <p className="text-sm font-medium text-destructive">Failed to create invite</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{createError}</p>
                 </div>
               </div>
             )}
@@ -309,13 +298,11 @@ export function CreateInviteModal({
             {createdInvite && (
               <>
                 {/* Success Message */}
-                <div className="rounded-xl bg-green-500/10 border border-green-500/20 p-4 flex items-start gap-3">
-                  <Check className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 rounded-xl border border-green-500/20 bg-green-500/10 p-4">
+                  <Check className="mt-0.5 h-5 w-5 shrink-0 text-green-600" />
                   <div>
-                    <p className="text-sm font-medium text-green-600">
-                      Invite link created!
-                    </p>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <p className="text-sm font-medium text-green-600">Invite link created!</p>
+                    <p className="mt-1 text-sm text-muted-foreground">
                       Share this link with others to invite them
                     </p>
                   </div>
@@ -354,17 +341,10 @@ export function CreateInviteModal({
         <DialogFooter className="gap-2 sm:gap-0">
           {activeTab === 'settings' && (
             <>
-              <Button
-                variant="outline"
-                onClick={() => onOpenChange(false)}
-                disabled={isCreating}
-              >
+              <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isCreating}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleCreate}
-                disabled={isCreating}
-              >
+              <Button onClick={handleCreate} disabled={isCreating}>
                 {isCreating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

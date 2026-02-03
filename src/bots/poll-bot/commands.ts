@@ -30,7 +30,7 @@ export const pollCommand: CommandHandler = async (
   const question = ctx.args.question as string
   const optionsRaw = ctx.args.options as string
   const durationStr = ctx.args.duration as string | undefined
-  const isAnonymous = ctx.args.anonymous as boolean || false
+  const isAnonymous = (ctx.args.anonymous as boolean) || false
 
   if (!question || !optionsRaw) {
     return error(
@@ -40,7 +40,10 @@ export const pollCommand: CommandHandler = async (
   }
 
   // Parse options
-  const options = optionsRaw.split('|').map((o) => o.trim()).filter((o) => o.length > 0)
+  const options = optionsRaw
+    .split('|')
+    .map((o) => o.trim())
+    .filter((o) => o.length > 0)
 
   if (options.length < 2) {
     return error(
@@ -50,10 +53,7 @@ export const pollCommand: CommandHandler = async (
   }
 
   if (options.length > maxOptions) {
-    return error(
-      'Too many options',
-      `Maximum ${maxOptions} options allowed.`
-    )
+    return error('Too many options', `Maximum ${maxOptions} options allowed.`)
   }
 
   // Parse duration
@@ -61,10 +61,7 @@ export const pollCommand: CommandHandler = async (
   if (durationStr) {
     const parsed = parseDuration(durationStr)
     if (!parsed) {
-      return error(
-        'Invalid duration',
-        'Use formats like: 30m, 1h, 24h, 1d, 1w'
-      )
+      return error('Invalid duration', 'Use formats like: 30m, 1h, 24h, 1d, 1w')
     }
     duration = parsed
   } else {
@@ -91,10 +88,7 @@ export const pollCommand: CommandHandler = async (
   let instructions = '\n**How to vote:** React with the corresponding number emoji\n'
   instructions += options.map((opt, i) => `${POLL_EMOJIS[i]} ${opt}`).join('\n')
 
-  return response()
-    .embed(pollEmbed)
-    .text(instructions)
-    .build()
+  return response().embed(pollEmbed).text(instructions).build()
 }
 
 /**
@@ -108,10 +102,7 @@ export const quickpollCommand: CommandHandler = async (
   const question = ctx.args.question as string
 
   if (!question) {
-    return error(
-      'Missing question',
-      'Usage: `/quickpoll "Your yes/no question?"`'
-    )
+    return error('Missing question', 'Usage: `/quickpoll "Your yes/no question?"`')
   }
 
   const config = api.getBotConfig()
@@ -119,13 +110,7 @@ export const quickpollCommand: CommandHandler = async (
   const duration = parseDuration(defaultDuration) || undefined
 
   const tempMessageId = `temp_${Date.now()}`
-  const poll = createYesNoPoll(
-    ctx.channel.id,
-    tempMessageId,
-    ctx.user.id,
-    question,
-    duration
-  )
+  const poll = createYesNoPoll(ctx.channel.id, tempMessageId, ctx.user.id, question, duration)
 
   return response()
     .embed(

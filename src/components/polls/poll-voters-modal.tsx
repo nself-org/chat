@@ -56,22 +56,20 @@ function VoterItem({ voter }: { voter: Voter }) {
   })
 
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors">
+    <div className="hover:bg-accent/50 flex items-center gap-3 rounded-lg p-3 transition-colors">
       <Avatar className="h-10 w-10">
         <AvatarImage src={voter.user.avatar_url || undefined} />
         <AvatarFallback>
           {voter.user.display_name?.charAt(0) || voter.user.username?.charAt(0) || '?'}
         </AvatarFallback>
       </Avatar>
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm truncate">
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">
           {voter.user.display_name || voter.user.username}
         </p>
-        <p className="text-xs text-muted-foreground truncate">
-          @{voter.user.username}
-        </p>
+        <p className="truncate text-xs text-muted-foreground">@{voter.user.username}</p>
       </div>
-      <div className="text-right text-xs text-muted-foreground flex-shrink-0">
+      <div className="flex-shrink-0 text-right text-xs text-muted-foreground">
         <p>{formattedDate}</p>
         <p>{formattedTime}</p>
       </div>
@@ -147,10 +145,7 @@ export function PollVotersModal({
           if (!fetchMoreResult) return prev
           return {
             ...prev,
-            nchat_poll_votes: [
-              ...prev.nchat_poll_votes,
-              ...fetchMoreResult.nchat_poll_votes,
-            ],
+            nchat_poll_votes: [...prev.nchat_poll_votes, ...fetchMoreResult.nchat_poll_votes],
           }
         },
       })
@@ -161,7 +156,7 @@ export function PollVotersModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[450px] max-h-[80vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[80vh] flex-col overflow-hidden sm:max-w-[450px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Users className="h-5 w-5 text-primary" />
@@ -176,14 +171,14 @@ export function PollVotersModal({
         {/* Stats */}
         <div className="flex items-center gap-4 py-2">
           <Badge variant="secondary" className="text-sm">
-            <Users className="h-3 w-3 mr-1" />
+            <Users className="mr-1 h-3 w-3" />
             {totalCount} voter{totalCount !== 1 ? 's' : ''}
           </Badge>
         </div>
 
         {/* Search */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search voters..."
             value={searchQuery}
@@ -193,7 +188,7 @@ export function PollVotersModal({
         </div>
 
         {/* Voters List */}
-        <ScrollArea className="flex-1 -mx-6">
+        <ScrollArea className="-mx-6 flex-1">
           <div className="px-6">
             {loading && voters.length === 0 && (
               <div className="space-y-1">
@@ -211,7 +206,7 @@ export function PollVotersModal({
 
             {!loading && !error && filteredVoters.length === 0 && (
               <div className="py-8 text-center">
-                <Users className="h-12 w-12 mx-auto text-muted-foreground/50 mb-2" />
+                <Users className="text-muted-foreground/50 mx-auto mb-2 h-12 w-12" />
                 <p className="text-sm text-muted-foreground">
                   {searchQuery ? 'No voters match your search' : 'No voters yet'}
                 </p>
@@ -229,13 +224,10 @@ export function PollVotersModal({
             {/* Load More */}
             {hasMore && !searchQuery && (
               <div className="py-4 text-center">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleLoadMore}
-                  disabled={loadingMore}
-                >
-                  {loadingMore ? 'Loading...' : `Load More (${totalCount - voters.length} remaining)`}
+                <Button variant="outline" size="sm" onClick={handleLoadMore} disabled={loadingMore}>
+                  {loadingMore
+                    ? 'Loading...'
+                    : `Load More (${totalCount - voters.length} remaining)`}
                 </Button>
               </div>
             )}

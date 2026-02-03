@@ -14,11 +14,7 @@ interface BrandingImportProps {
   className?: string
 }
 
-export function BrandingImport({
-  onImport,
-  onCancel,
-  className,
-}: BrandingImportProps) {
+export function BrandingImport({ onImport, onCancel, className }: BrandingImportProps) {
   const inputRef = useRef<HTMLInputElement>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -58,15 +54,18 @@ export function BrandingImport({
     }
   }, [])
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
+  const handleDrop = useCallback(
+    (e: React.DragEvent) => {
+      e.preventDefault()
+      setIsDragging(false)
 
-    const file = e.dataTransfer.files[0]
-    if (file) {
-      processFile(file)
-    }
-  }, [processFile])
+      const file = e.dataTransfer.files[0]
+      if (file) {
+        processFile(file)
+      }
+    },
+    [processFile]
+  )
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -78,12 +77,15 @@ export function BrandingImport({
     setIsDragging(false)
   }, [])
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      processFile(file)
-    }
-  }, [processFile])
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        processFile(file)
+      }
+    },
+    [processFile]
+  )
 
   const handleConfirmImport = useCallback(() => {
     if (previewConfig) {
@@ -111,24 +113,22 @@ export function BrandingImport({
             onDragLeave={handleDragLeave}
             onClick={() => inputRef.current?.click()}
             className={cn(
-              'border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all',
+              'cursor-pointer rounded-xl border-2 border-dashed p-8 text-center transition-all',
               isDragging
                 ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/30'
-                : 'border-zinc-300 dark:border-zinc-600 hover:border-sky-400 dark:hover:border-sky-500',
+                : 'border-zinc-300 hover:border-sky-400 dark:border-zinc-600 dark:hover:border-sky-500',
               isProcessing && 'pointer-events-none opacity-50'
             )}
           >
             {isProcessing ? (
-              <Loader2 className="h-10 w-10 mx-auto text-sky-500 animate-spin" />
+              <Loader2 className="mx-auto h-10 w-10 animate-spin text-sky-500" />
             ) : (
-              <FileJson className="h-10 w-10 mx-auto text-zinc-400 dark:text-zinc-500" />
+              <FileJson className="mx-auto h-10 w-10 text-zinc-400 dark:text-zinc-500" />
             )}
             <p className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
               {isProcessing ? 'Processing...' : 'Drop your branding.json file here'}
             </p>
-            <p className="mt-1 text-xs text-zinc-500">
-              or click to browse
-            </p>
+            <p className="mt-1 text-xs text-zinc-500">or click to browse</p>
           </div>
 
           <input
@@ -140,8 +140,8 @@ export function BrandingImport({
           />
 
           {error && (
-            <div className="flex items-start gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <AlertCircle className="h-4 w-4 text-red-500 flex-shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20">
+              <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-red-500" />
               <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
             </div>
           )}
@@ -153,14 +153,14 @@ export function BrandingImport({
         <div className="space-y-4">
           {/* Validation warnings */}
           {validationErrors.length > 0 && (
-            <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+            <div className="rounded-lg border border-yellow-200 bg-yellow-50 p-3 dark:border-yellow-800 dark:bg-yellow-900/20">
               <div className="flex items-start gap-2">
-                <AlertCircle className="h-4 w-4 text-yellow-500 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0 text-yellow-500" />
                 <div>
                   <p className="text-sm font-medium text-yellow-700 dark:text-yellow-400">
                     Validation warnings
                   </p>
-                  <ul className="mt-1 text-xs text-yellow-600 dark:text-yellow-500 list-disc list-inside">
+                  <ul className="mt-1 list-inside list-disc text-xs text-yellow-600 dark:text-yellow-500">
                     {validationErrors.map((err, i) => (
                       <li key={i}>{err}</li>
                     ))}
@@ -171,35 +171,31 @@ export function BrandingImport({
           )}
 
           {/* Config preview */}
-          <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden">
-            <div className="bg-zinc-50 dark:bg-zinc-800 px-4 py-3 border-b border-zinc-200 dark:border-zinc-700">
-              <h3 className="font-medium text-zinc-900 dark:text-white">
-                Import Preview
-              </h3>
+          <div className="overflow-hidden rounded-xl border border-zinc-200 dark:border-zinc-700">
+            <div className="border-b border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-700 dark:bg-zinc-800">
+              <h3 className="font-medium text-zinc-900 dark:text-white">Import Preview</h3>
             </div>
-            <div className="p-4 space-y-4">
+            <div className="space-y-4 p-4">
               {/* App info */}
               <div className="flex items-start gap-4">
                 {previewConfig.logo.original && (
                   <img
                     src={previewConfig.logo.original}
                     alt="Logo"
-                    className="w-12 h-12 rounded-lg object-contain bg-zinc-100 dark:bg-zinc-800"
+                    className="h-12 w-12 rounded-lg bg-zinc-100 object-contain dark:bg-zinc-800"
                   />
                 )}
                 <div>
                   <h4 className="font-semibold text-zinc-900 dark:text-white">
                     {previewConfig.appInfo.appName}
                   </h4>
-                  <p className="text-sm text-zinc-500">
-                    {previewConfig.appInfo.tagline}
-                  </p>
+                  <p className="text-sm text-zinc-500">{previewConfig.appInfo.tagline}</p>
                 </div>
               </div>
 
               {/* Colors preview */}
               <div>
-                <p className="text-xs text-zinc-500 mb-2">Colors</p>
+                <p className="mb-2 text-xs text-zinc-500">Colors</p>
                 <div className="flex gap-1">
                   {[
                     previewConfig.colors.primary,
@@ -210,7 +206,7 @@ export function BrandingImport({
                   ].map((color, i) => (
                     <div
                       key={i}
-                      className="w-8 h-8 rounded border border-zinc-200 dark:border-zinc-700"
+                      className="h-8 w-8 rounded border border-zinc-200 dark:border-zinc-700"
                       style={{ backgroundColor: color }}
                       title={color}
                     />
@@ -220,7 +216,7 @@ export function BrandingImport({
 
               {/* Typography preview */}
               <div>
-                <p className="text-xs text-zinc-500 mb-2">Typography</p>
+                <p className="mb-2 text-xs text-zinc-500">Typography</p>
                 <div className="space-y-1">
                   <p className="text-sm">
                     <span className="text-zinc-500">Heading:</span>{' '}
@@ -234,7 +230,7 @@ export function BrandingImport({
               </div>
 
               {/* Metadata */}
-              <div className="pt-3 border-t border-zinc-200 dark:border-zinc-700">
+              <div className="border-t border-zinc-200 pt-3 dark:border-zinc-700">
                 <p className="text-xs text-zinc-500">
                   Version: {previewConfig.metadata.version}
                   {previewConfig.metadata.exportedFrom && (
@@ -247,21 +243,12 @@ export function BrandingImport({
 
           {/* Action buttons */}
           <div className="flex gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleReset}
-              className="flex-1"
-            >
-              <X className="h-4 w-4 mr-2" />
+            <Button type="button" variant="outline" onClick={handleReset} className="flex-1">
+              <X className="mr-2 h-4 w-4" />
               Cancel
             </Button>
-            <Button
-              type="button"
-              onClick={handleConfirmImport}
-              className="flex-1"
-            >
-              <Check className="h-4 w-4 mr-2" />
+            <Button type="button" onClick={handleConfirmImport} className="flex-1">
+              <Check className="mr-2 h-4 w-4" />
               Import Configuration
             </Button>
           </div>
@@ -270,12 +257,7 @@ export function BrandingImport({
 
       {/* Cancel button when not previewing */}
       {!previewConfig && onCancel && (
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          className="w-full"
-        >
+        <Button type="button" variant="outline" onClick={onCancel} className="w-full">
           Cancel
         </Button>
       )}

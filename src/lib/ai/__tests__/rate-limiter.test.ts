@@ -63,12 +63,15 @@ const mockCache = {
 
   async srem(key: string, member: string): Promise<void> {
     const current = this.data.get(key) || []
-    this.data.set(key, current.filter((m: string) => m !== member))
+    this.data.set(
+      key,
+      current.filter((m: string) => m !== member)
+    )
   },
 
   async keys(pattern: string): Promise<string[]> {
     const regex = new RegExp(pattern.replace(/\*/g, '.*'))
-    return Array.from(this.data.keys()).filter(key => regex.test(key))
+    return Array.from(this.data.keys()).filter((key) => regex.test(key))
   },
 
   async exists(key: string): Promise<boolean> {

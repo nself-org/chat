@@ -17,16 +17,19 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 ### 1. Core E2EE Infrastructure ✅
 
 **Dependencies Installed**:
+
 - `@signalapp/libsignal-client` v0.86.16 - Official Signal Protocol library
 - `@noble/curves` v2.0.1 - Elliptic curve cryptography
 - `@noble/hashes` v2.0.1 - Cryptographic hash functions
 
 **Database Schema** (1 Migration):
+
 - `/Users/admin/Sites/nself-chat/.backend/migrations/014_e2ee_system.sql`
 - 8 tables, 5 functions, 8 RLS policies, 4 triggers
 - ~1,200 lines of SQL
 
 **Core Libraries** (6 Files):
+
 1. `/src/lib/e2ee/index.ts` - E2EE Manager (400 lines)
 2. `/src/lib/e2ee/crypto.ts` - Crypto utilities (500 lines)
 3. `/src/lib/e2ee/signal-client.ts` - Signal wrapper (400 lines)
@@ -43,6 +46,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 **File**: `/src/graphql/e2ee.ts` (750 lines)
 
 **Queries** (11):
+
 - GET_MASTER_KEY_INFO
 - GET_IDENTITY_KEYS
 - GET_USER_DEVICES
@@ -56,6 +60,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 - GET_E2EE_AUDIT_LOG
 
 **Mutations** (13):
+
 - SAVE_MASTER_KEY
 - SAVE_IDENTITY_KEY
 - SAVE_SIGNED_PREKEY
@@ -71,6 +76,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 - REFRESH_PREKEY_BUNDLES
 
 **Subscriptions** (2):
+
 - SUBSCRIBE_PREKEY_REQUESTS
 - SUBSCRIBE_SESSION_UPDATES
 
@@ -79,6 +85,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 ### 3. API Routes ✅
 
 **4 Routes Created**:
+
 1. `POST /api/e2ee/initialize` - Initialize E2EE with password
 2. `POST /api/e2ee/recover` - Recover using recovery code
 3. `POST /api/e2ee/safety-number` - Generate/verify safety numbers
@@ -91,6 +98,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 ### 4. React Hooks ✅
 
 **2 Hooks Created**:
+
 1. `/src/hooks/use-e2ee.ts` (250 lines)
    - Initialize/recover E2EE
    - Encrypt/decrypt messages
@@ -110,6 +118,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 ### 5. UI Components ✅
 
 **3 Components Created**:
+
 1. `/src/components/e2ee/E2EESetup.tsx` (200 lines)
    - Password setup wizard
    - Recovery code display
@@ -132,6 +141,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 ### 6. Documentation ✅
 
 **4 Comprehensive Guides**:
+
 1. `/docs/E2EE-Implementation.md` (1,400 lines)
    - Complete implementation guide
    - Architecture overview
@@ -162,16 +172,16 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 
 ## Code Statistics
 
-| Category | Files | Lines of Code |
-|----------|-------|---------------|
-| Database Schema | 1 | 1,200 |
-| Core Libraries | 6 | 2,550 |
-| GraphQL | 1 | 750 |
-| API Routes | 4 | 400 |
-| React Hooks | 2 | 500 |
-| UI Components | 3 | 500 |
-| Documentation | 4 | 4,000 |
-| **Total** | **21** | **9,900** |
+| Category        | Files  | Lines of Code |
+| --------------- | ------ | ------------- |
+| Database Schema | 1      | 1,200         |
+| Core Libraries  | 6      | 2,550         |
+| GraphQL         | 1      | 750           |
+| API Routes      | 4      | 400           |
+| React Hooks     | 2      | 500           |
+| UI Components   | 3      | 500           |
+| Documentation   | 4      | 4,000         |
+| **Total**       | **21** | **9,900**     |
 
 ---
 
@@ -205,14 +215,14 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 
 ### Cryptographic Algorithms ✅
 
-| Purpose | Algorithm | Key Size | Notes |
-|---------|-----------|----------|-------|
-| Key Exchange | X3DH | Curve25519 | Extended Triple DH |
-| Message Encryption | Double Ratchet | Curve25519 | Continuous ratcheting |
-| Symmetric Encryption | AES-GCM | 256-bit | Authenticated encryption |
-| Key Derivation | PBKDF2-SHA256 | 32 bytes | 100,000 iterations |
-| Digital Signatures | Ed25519 | 256-bit | Prekey signing |
-| Hashing | SHA-256/512 | 256/512-bit | Fingerprints |
+| Purpose              | Algorithm      | Key Size    | Notes                    |
+| -------------------- | -------------- | ----------- | ------------------------ |
+| Key Exchange         | X3DH           | Curve25519  | Extended Triple DH       |
+| Message Encryption   | Double Ratchet | Curve25519  | Continuous ratcheting    |
+| Symmetric Encryption | AES-GCM        | 256-bit     | Authenticated encryption |
+| Key Derivation       | PBKDF2-SHA256  | 32 bytes    | 100,000 iterations       |
+| Digital Signatures   | Ed25519        | 256-bit     | Prekey signing           |
+| Hashing              | SHA-256/512    | 256/512-bit | Fingerprints             |
 
 ---
 
@@ -230,6 +240,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 8. **nchat_e2ee_audit_log** - Audit trail (metadata only)
 
 **Additional Objects**:
+
 - 5 Functions (key rotation, session management)
 - 8 RLS Policies (row-level security)
 - 4 Triggers (auto-refresh, last-used tracking)
@@ -332,6 +343,7 @@ nself-chat v0.4.0 now includes production-ready end-to-end encryption (E2EE) usi
 **Location**: Authentication flow
 
 **Integration**:
+
 ```typescript
 import { E2EESetup } from '@/components/e2ee/E2EESetup';
 
@@ -347,16 +359,17 @@ import { E2EESetup } from '@/components/e2ee/E2EESetup';
 **Location**: Message input component
 
 **Integration**:
+
 ```typescript
-import { encryptMessageForSending } from '@/lib/e2ee/message-encryption';
+import { encryptMessageForSending } from '@/lib/e2ee/message-encryption'
 
 const payload = await encryptMessageForSending(
   plaintext,
   { recipientUserId, isDirectMessage: true },
   apolloClient
-);
+)
 
-const messageData = prepareMessageForStorage(payload);
+const messageData = prepareMessageForStorage(payload)
 // Insert into database
 ```
 
@@ -365,10 +378,11 @@ const messageData = prepareMessageForStorage(payload);
 **Location**: Message list component
 
 **Integration**:
-```typescript
-import { extractMessageContent } from '@/lib/e2ee/message-encryption';
 
-const plaintext = await extractMessageContent(message, apolloClient);
+```typescript
+import { extractMessageContent } from '@/lib/e2ee/message-encryption'
+
+const plaintext = await extractMessageContent(message, apolloClient)
 // Display plaintext
 ```
 
@@ -377,10 +391,10 @@ const plaintext = await extractMessageContent(message, apolloClient);
 **Location**: User profile/settings
 
 **Integration**:
-```tsx
-import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay';
 
-<SafetyNumberDisplay
+```tsx
+import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay'
+;<SafetyNumberDisplay
   localUserId={currentUser.id}
   peerUserId={peer.id}
   peerDeviceId={peer.deviceId}
@@ -394,14 +408,10 @@ import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay';
 **Location**: Message bubbles
 
 **Integration**:
-```tsx
-import { E2EEStatus } from '@/components/e2ee/E2EEStatus';
 
-<E2EEStatus
-  isEncrypted={message.is_encrypted}
-  isVerified={contact.is_verified}
-  variant="icon"
-/>
+```tsx
+import { E2EEStatus } from '@/components/e2ee/E2EEStatus'
+;<E2EEStatus isEncrypted={message.is_encrypted} isVerified={contact.is_verified} variant="icon" />
 ```
 
 ---
@@ -413,6 +423,7 @@ import { E2EEStatus } from '@/components/e2ee/E2EEStatus';
 **Status**: Core crypto functions tested
 
 **Files**:
+
 - `src/lib/e2ee/__tests__/crypto.test.ts` (to be created)
 - `src/lib/e2ee/__tests__/signal-client.test.ts` (to be created)
 
@@ -436,13 +447,13 @@ import { E2EEStatus } from '@/components/e2ee/E2EEStatus';
 
 ### Benchmarks (Average)
 
-| Operation | Time | Impact |
-|-----------|------|--------|
-| Key generation | 100ms | One-time per device |
-| X3DH key exchange | 50ms | First message only |
-| Message encryption | 5ms | Per message |
-| Message decryption | 5ms | Per message |
-| Safety number generation | 10ms | On demand |
+| Operation                | Time  | Impact              |
+| ------------------------ | ----- | ------------------- |
+| Key generation           | 100ms | One-time per device |
+| X3DH key exchange        | 50ms  | First message only  |
+| Message encryption       | 5ms   | Per message         |
+| Message decryption       | 5ms   | Per message         |
+| Safety number generation | 10ms  | On demand           |
 
 **Total Overhead**: ~5ms per message (negligible)
 
@@ -473,12 +484,14 @@ import { E2EEStatus } from '@/components/e2ee/E2EEStatus';
 ### Threat Model ✅
 
 **Protected Against**:
+
 - Passive network adversary
 - Active MITM attack (with safety number verification)
 - Compromised server
 - Key compromise (PFS + FS)
 
 **Not Protected Against**:
+
 - Endpoint compromise (device malware)
 - Physical device access
 - Metadata analysis
@@ -582,6 +595,7 @@ nself-chat v0.4.0 now includes a complete, production-ready end-to-end encryptio
 - Complete documentation
 
 **Total Implementation**:
+
 - **21 files** created
 - **~9,900 lines** of code
 - **8 database tables**

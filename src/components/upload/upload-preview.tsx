@@ -9,10 +9,10 @@
  * - Error state with retry
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useMemo } from 'react';
+import * as React from 'react'
+import { useMemo } from 'react'
 import {
   X,
   AlertCircle,
@@ -25,12 +25,12 @@ import {
   File,
   FolderArchive,
   Loader2,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Progress } from '@/components/ui/progress';
-import { Button } from '@/components/ui/button';
-import { FileType, UploadStatus } from '@/stores/attachment-store';
-import { formatFileSize, truncateFileName, getFileTypeColor } from '@/lib/upload/file-utils';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/button'
+import { FileType, UploadStatus } from '@/stores/attachment-store'
+import { formatFileSize, truncateFileName, getFileTypeColor } from '@/lib/upload/file-utils'
 
 // ============================================================================
 // Types
@@ -38,35 +38,35 @@ import { formatFileSize, truncateFileName, getFileTypeColor } from '@/lib/upload
 
 export interface UploadPreviewProps {
   /** Unique identifier */
-  id: string;
+  id: string
   /** File name */
-  fileName: string;
+  fileName: string
   /** File size in bytes */
-  fileSize: number;
+  fileSize: number
   /** File type category */
-  fileType: FileType;
+  fileType: FileType
   /** MIME type */
-  mimeType?: string;
+  mimeType?: string
   /** Upload status */
-  status: UploadStatus;
+  status: UploadStatus
   /** Upload progress (0-100) */
-  progress?: number;
+  progress?: number
   /** Preview URL (blob URL for images/videos) */
-  previewUrl?: string | null;
+  previewUrl?: string | null
   /** Error message if failed */
-  error?: string | null;
+  error?: string | null
   /** Callback to remove/cancel */
-  onRemove?: (id: string) => void;
+  onRemove?: (id: string) => void
   /** Callback to retry failed upload */
-  onRetry?: (id: string) => void;
+  onRetry?: (id: string) => void
   /** Callback when preview is clicked */
-  onClick?: (id: string) => void;
+  onClick?: (id: string) => void
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Preview size */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Show file info below preview */
-  showInfo?: boolean;
+  showInfo?: boolean
 }
 
 // ============================================================================
@@ -74,21 +74,21 @@ export interface UploadPreviewProps {
 // ============================================================================
 
 function FileTypeIcon({ fileType, className }: { fileType: FileType; className?: string }) {
-  const iconClass = cn('h-6 w-6', getFileTypeColor(fileType), className);
+  const iconClass = cn('h-6 w-6', getFileTypeColor(fileType), className)
 
   switch (fileType) {
     case 'image':
-      return <ImageIcon className={iconClass} />;
+      return <ImageIcon className={iconClass} />
     case 'video':
-      return <FileVideo className={iconClass} />;
+      return <FileVideo className={iconClass} />
     case 'audio':
-      return <FileAudio className={iconClass} />;
+      return <FileAudio className={iconClass} />
     case 'document':
-      return <FileText className={iconClass} />;
+      return <FileText className={iconClass} />
     case 'archive':
-      return <FolderArchive className={iconClass} />;
+      return <FolderArchive className={iconClass} />
     default:
-      return <File className={iconClass} />;
+      return <File className={iconClass} />
   }
 }
 
@@ -96,13 +96,13 @@ function StatusIcon({ status }: { status: UploadStatus }) {
   switch (status) {
     case 'uploading':
     case 'processing':
-      return <Loader2 className="h-4 w-4 animate-spin text-primary" />;
+      return <Loader2 className="h-4 w-4 animate-spin text-primary" />
     case 'completed':
-      return <CheckCircle2 className="h-4 w-4 text-green-500" />;
+      return <CheckCircle2 className="h-4 w-4 text-green-500" />
     case 'failed':
-      return <AlertCircle className="h-4 w-4 text-destructive" />;
+      return <AlertCircle className="h-4 w-4 text-destructive" />
     default:
-      return null;
+      return null
   }
 }
 
@@ -130,23 +130,23 @@ export function UploadPreview({
   const sizeConfig = useMemo(() => {
     switch (size) {
       case 'sm':
-        return { container: 'w-20 h-20', preview: 'w-16 h-16', icon: 'h-5 w-5' };
+        return { container: 'w-20 h-20', preview: 'w-16 h-16', icon: 'h-5 w-5' }
       case 'lg':
-        return { container: 'w-40 h-40', preview: 'w-36 h-36', icon: 'h-8 w-8' };
+        return { container: 'w-40 h-40', preview: 'w-36 h-36', icon: 'h-8 w-8' }
       default:
-        return { container: 'w-28 h-28', preview: 'w-24 h-24', icon: 'h-6 w-6' };
+        return { container: 'w-28 h-28', preview: 'w-24 h-24', icon: 'h-6 w-6' }
     }
-  }, [size]);
+  }, [size])
 
   // Determine if we can show image preview
-  const canShowImagePreview = fileType === 'image' && previewUrl;
-  const canShowVideoPreview = fileType === 'video' && previewUrl;
+  const canShowImagePreview = fileType === 'image' && previewUrl
+  const canShowVideoPreview = fileType === 'video' && previewUrl
 
   // Is the upload in progress
-  const isUploading = status === 'uploading' || status === 'processing' || status === 'queued';
-  const isPending = status === 'pending';
-  const isFailed = status === 'failed';
-  const isCompleted = status === 'completed';
+  const isUploading = status === 'uploading' || status === 'processing' || status === 'queued'
+  const isPending = status === 'pending'
+  const isFailed = status === 'failed'
+  const isCompleted = status === 'completed'
 
   return (
     <div
@@ -170,28 +170,19 @@ export function UploadPreview({
         tabIndex={onClick ? 0 : undefined}
         onKeyDown={(e) => {
           if (onClick && (e.key === 'Enter' || e.key === ' ')) {
-            e.preventDefault();
-            onClick(id);
+            e.preventDefault()
+            onClick(id)
           }
         }}
       >
         {/* Image Preview */}
         {canShowImagePreview && (
-          <img
-            src={previewUrl}
-            alt={fileName}
-            className="h-full w-full object-cover"
-          />
+          <img src={previewUrl} alt={fileName} className="h-full w-full object-cover" />
         )}
 
         {/* Video Preview */}
         {canShowVideoPreview && (
-          <video
-            src={previewUrl}
-            className="h-full w-full object-cover"
-            muted
-            preload="metadata"
-          />
+          <video src={previewUrl} className="h-full w-full object-cover" muted preload="metadata" />
         )}
 
         {/* File Type Icon (for non-previewable files) */}
@@ -201,7 +192,7 @@ export function UploadPreview({
 
         {/* Progress Overlay */}
         {isUploading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+          <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
             <div className="flex flex-col items-center gap-1">
               <Loader2 className="h-5 w-5 animate-spin text-primary" />
               <span className="text-xs font-medium">{progress}%</span>
@@ -211,14 +202,14 @@ export function UploadPreview({
 
         {/* Pending Overlay */}
         {isPending && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/30">
-            <div className="h-3 w-3 rounded-full bg-muted-foreground/50" />
+          <div className="bg-background/30 absolute inset-0 flex items-center justify-center">
+            <div className="bg-muted-foreground/50 h-3 w-3 rounded-full" />
           </div>
         )}
 
         {/* Error Overlay */}
         {isFailed && (
-          <div className="absolute inset-0 flex items-center justify-center bg-destructive/10">
+          <div className="bg-destructive/10 absolute inset-0 flex items-center justify-center">
             <AlertCircle className="h-5 w-5 text-destructive" />
           </div>
         )}
@@ -235,12 +226,12 @@ export function UploadPreview({
           <button
             type="button"
             onClick={(e) => {
-              e.stopPropagation();
-              onRemove(id);
+              e.stopPropagation()
+              onRemove(id)
             }}
             className={cn(
               'absolute -right-1 -top-1 rounded-full bg-background p-0.5 shadow-md transition-opacity',
-              'opacity-0 group-hover:opacity-100 focus:opacity-100',
+              'opacity-0 focus:opacity-100 group-hover:opacity-100',
               'hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring'
             )}
             aria-label="Remove file"
@@ -254,8 +245,8 @@ export function UploadPreview({
           <button
             type="button"
             onClick={(e) => {
-              e.stopPropagation();
-              onRetry(id);
+              e.stopPropagation()
+              onRetry(id)
             }}
             className="absolute bottom-1 left-1 rounded-full bg-background p-1 shadow-md hover:bg-muted"
             aria-label="Retry upload"
@@ -268,25 +259,15 @@ export function UploadPreview({
       {/* File Info */}
       {showInfo && (
         <div className="w-full text-center">
-          <p
-            className="truncate text-xs font-medium"
-            title={fileName}
-          >
+          <p className="truncate text-xs font-medium" title={fileName}>
             {truncateFileName(fileName, 15)}
           </p>
-          <p className="text-xs text-muted-foreground">
-            {formatFileSize(fileSize)}
-          </p>
+          <p className="text-xs text-muted-foreground">{formatFileSize(fileSize)}</p>
         </div>
       )}
 
       {/* Progress Bar (below preview) */}
-      {isUploading && size !== 'sm' && (
-        <Progress
-          value={progress}
-          className="h-1 w-full"
-        />
-      )}
+      {isUploading && size !== 'sm' && <Progress value={progress} className="h-1 w-full" />}
 
       {/* Error Message */}
       {isFailed && error && size !== 'sm' && (
@@ -295,7 +276,7 @@ export function UploadPreview({
         </p>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -304,9 +285,9 @@ export function UploadPreview({
 
 export interface UploadPreviewListItemProps extends Omit<UploadPreviewProps, 'size' | 'showInfo'> {
   /** Show cancel button during upload */
-  showCancel?: boolean;
+  showCancel?: boolean
   /** Callback to cancel upload */
-  onCancel?: (id: string) => void;
+  onCancel?: (id: string) => void
 }
 
 export function UploadPreviewListItem({
@@ -325,12 +306,12 @@ export function UploadPreviewListItem({
   onClick,
   className,
 }: UploadPreviewListItemProps) {
-  const isUploading = status === 'uploading' || status === 'processing' || status === 'queued';
-  const isFailed = status === 'failed';
-  const isCompleted = status === 'completed';
+  const isUploading = status === 'uploading' || status === 'processing' || status === 'queued'
+  const isFailed = status === 'failed'
+  const isCompleted = status === 'completed'
 
   // Image preview for images
-  const canShowImagePreview = fileType === 'image' && previewUrl;
+  const canShowImagePreview = fileType === 'image' && previewUrl
 
   return (
     <div
@@ -338,7 +319,7 @@ export function UploadPreviewListItem({
         'group flex items-center gap-3 rounded-lg border p-2 transition-colors',
         isFailed && 'border-destructive/50 bg-destructive/5',
         isCompleted && 'border-green-500/50 bg-green-500/5',
-        onClick && 'cursor-pointer hover:bg-muted/50',
+        onClick && 'hover:bg-muted/50 cursor-pointer',
         className
       )}
       onClick={() => onClick?.(id)}
@@ -348,11 +329,7 @@ export function UploadPreviewListItem({
       {/* Preview Thumbnail */}
       <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded bg-muted">
         {canShowImagePreview ? (
-          <img
-            src={previewUrl}
-            alt={fileName}
-            className="h-full w-full object-cover"
-          />
+          <img src={previewUrl} alt={fileName} className="h-full w-full object-cover" />
         ) : (
           <div className="flex h-full w-full items-center justify-center">
             <FileTypeIcon fileType={fileType} className="h-5 w-5" />
@@ -361,7 +338,7 @@ export function UploadPreviewListItem({
 
         {/* Status overlay */}
         {isUploading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/50">
+          <div className="bg-background/50 absolute inset-0 flex items-center justify-center">
             <Loader2 className="h-4 w-4 animate-spin text-primary" />
           </div>
         )}
@@ -375,15 +352,11 @@ export function UploadPreviewListItem({
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <span>{formatFileSize(fileSize)}</span>
           {isUploading && <span>{progress}%</span>}
-          {isFailed && error && (
-            <span className="text-destructive">{error}</span>
-          )}
+          {isFailed && error && <span className="text-destructive">{error}</span>}
         </div>
 
         {/* Progress Bar */}
-        {isUploading && (
-          <Progress value={progress} className="mt-1 h-1" />
-        )}
+        {isUploading && <Progress value={progress} className="mt-1 h-1" />}
       </div>
 
       {/* Status & Actions */}
@@ -397,8 +370,8 @@ export function UploadPreviewListItem({
             size="icon"
             className="h-7 w-7"
             onClick={(e) => {
-              e.stopPropagation();
-              onRetry(id);
+              e.stopPropagation()
+              onRetry(id)
             }}
             aria-label="Retry upload"
           >
@@ -413,8 +386,8 @@ export function UploadPreviewListItem({
             size="icon"
             className="h-7 w-7"
             onClick={(e) => {
-              e.stopPropagation();
-              onCancel(id);
+              e.stopPropagation()
+              onCancel(id)
             }}
             aria-label="Cancel upload"
           >
@@ -429,8 +402,8 @@ export function UploadPreviewListItem({
             size="icon"
             className="h-7 w-7 opacity-0 group-hover:opacity-100"
             onClick={(e) => {
-              e.stopPropagation();
-              onRemove(id);
+              e.stopPropagation()
+              onRemove(id)
             }}
             aria-label="Remove file"
           >
@@ -439,7 +412,7 @@ export function UploadPreviewListItem({
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default UploadPreview;
+export default UploadPreview

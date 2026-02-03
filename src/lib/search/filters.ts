@@ -388,13 +388,15 @@ export class SearchFilterBuilder {
     if (this.filters.content?.isEdited !== undefined) {
       this.addWhere(`m.is_edited = $${this.paramIndex}`, this.filters.content.isEdited)
     }
-    if (this.filters.content?.isDeleted === false || this.filters.content?.isDeleted === undefined) {
+    if (
+      this.filters.content?.isDeleted === false ||
+      this.filters.content?.isDeleted === undefined
+    ) {
       this.addWhere(`m.is_deleted = FALSE`)
     }
 
-    const whereClause = this.whereClauses.length > 0
-      ? `WHERE ${this.whereClauses.join(' AND ')}`
-      : ''
+    const whereClause =
+      this.whereClauses.length > 0 ? `WHERE ${this.whereClauses.join(' AND ')}` : ''
 
     return {
       sql: whereClause,

@@ -9,11 +9,7 @@ export { EditHistory, EditHistoryPanel } from './EditHistory'
 export type { EditHistoryProps, EditHistoryPanelProps } from './EditHistory'
 
 // List components
-export {
-  EditHistoryList,
-  HistoryTimeline,
-  HistoryStats,
-} from './EditHistoryList'
+export { EditHistoryList, HistoryTimeline, HistoryStats } from './EditHistoryList'
 export type {
   EditHistoryListProps,
   HistoryTimelineProps,
@@ -21,15 +17,8 @@ export type {
 } from './EditHistoryList'
 
 // Item components
-export {
-  EditHistoryItem,
-  EditHistoryItemSkeleton,
-  CompactHistoryItem,
-} from './EditHistoryItem'
-export type {
-  EditHistoryItemProps,
-  CompactHistoryItemProps,
-} from './EditHistoryItem'
+export { EditHistoryItem, EditHistoryItemSkeleton, CompactHistoryItem } from './EditHistoryItem'
+export type { EditHistoryItemProps, CompactHistoryItemProps } from './EditHistoryItem'
 
 // Diff components
 export {
@@ -50,12 +39,7 @@ export type {
 } from './EditDiff'
 
 // Timestamp components
-export {
-  EditTimestamp,
-  TimeRange,
-  VersionTimestamp,
-  EditTiming,
-} from './EditTimestamp'
+export { EditTimestamp, TimeRange, VersionTimestamp, EditTiming } from './EditTimestamp'
 export type {
   EditTimestampProps,
   TimeRangeProps,
@@ -64,16 +48,8 @@ export type {
 } from './EditTimestamp'
 
 // Indicator components
-export {
-  EditedIndicator,
-  EditedBadge,
-  EditedText,
-} from './EditedIndicator'
-export type {
-  EditedIndicatorProps,
-  EditedBadgeProps,
-  EditedTextProps,
-} from './EditedIndicator'
+export { EditedIndicator, EditedBadge, EditedText } from './EditedIndicator'
+export type { EditedIndicatorProps, EditedBadgeProps, EditedTextProps } from './EditedIndicator'
 
 // Original message components
 export {
@@ -90,11 +66,7 @@ export type {
 } from './OriginalMessage'
 
 // Comparison components
-export {
-  VersionComparison,
-  QuickComparison,
-  TabbedVersionView,
-} from './VersionComparison'
+export { VersionComparison, QuickComparison, TabbedVersionView } from './VersionComparison'
 export type {
   VersionComparisonProps,
   QuickComparisonProps,
@@ -103,11 +75,7 @@ export type {
 
 // Admin components
 export { RestoreVersion, RestoreButton, RestoreSuccess } from './RestoreVersion'
-export type {
-  RestoreVersionProps,
-  RestoreButtonProps,
-  RestoreSuccessProps,
-} from './RestoreVersion'
+export type { RestoreVersionProps, RestoreButtonProps, RestoreSuccessProps } from './RestoreVersion'
 
 export { DeleteHistory, DeleteVersions } from './DeleteHistory'
 export type { DeleteHistoryProps, DeleteVersionsProps } from './DeleteHistory'

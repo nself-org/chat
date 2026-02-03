@@ -59,9 +59,7 @@ export const CHANNEL_DETAILS_SUBSCRIPTION = gql`
 
 export const CHANNEL_MEMBERS_SUBSCRIPTION = gql`
   subscription ChannelMembers($channelId: uuid!) {
-    nchat_channel_members(
-      where: { channel_id: { _eq: $channelId } }
-    ) {
+    nchat_channel_members(where: { channel_id: { _eq: $channelId } }) {
       user_id
       role
       joined_at

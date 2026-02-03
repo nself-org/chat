@@ -21,7 +21,7 @@ pnpm validate:env:prod
 **What it checks:**
 
 1. **Public Environment Variables**
-   - All required NEXT_PUBLIC_* variables are properly formatted
+   - All required NEXT*PUBLIC*\* variables are properly formatted
    - URLs are valid and properly configured
 
 2. **Production Requirements** (with `--production` flag)

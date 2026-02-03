@@ -47,9 +47,7 @@ export function SimpleColorChanger() {
           <span className="font-mono text-sm">{theme.colors.primaryColor}</span>
         </div>
 
-        {isModified && (
-          <Badge variant="secondary">Unsaved changes</Badge>
-        )}
+        {isModified && <Badge variant="secondary">Unsaved changes</Badge>}
 
         <Button onClick={handleSave} disabled={!isModified}>
           Save Theme
@@ -99,11 +97,7 @@ export function PresetSwitcher() {
 export function FontCustomizer() {
   const { theme, setFontFamily, setFontScale } = useThemeCustomizer()
 
-  const fonts = [
-    'Inter, system-ui, sans-serif',
-    'Georgia, serif',
-    '"Courier New", monospace',
-  ]
+  const fonts = ['Inter, system-ui, sans-serif', 'Georgia, serif', '"Courier New", monospace']
 
   return (
     <Card className="p-6">
@@ -159,8 +153,7 @@ export function FontCustomizer() {
  * Example 4: Import/Export
  */
 export function ThemeImportExport() {
-  const { exportJSON, importJSON, downloadJSON, copyJSON, generateShareURL } =
-    useThemeCustomizer()
+  const { exportJSON, importJSON, downloadJSON, copyJSON, generateShareURL } = useThemeCustomizer()
   const { toast } = useToast()
   const [importText, setImportText] = useState('')
 
@@ -222,11 +215,7 @@ export function ThemeImportExport() {
             className="w-full rounded border p-2 font-mono text-sm"
             rows={4}
           />
-          <Button
-            onClick={handleImport}
-            disabled={!importText.trim()}
-            className="mt-2"
-          >
+          <Button onClick={handleImport} disabled={!importText.trim()} className="mt-2">
             <Upload className="mr-2 h-4 w-4" />
             Import Theme
           </Button>
@@ -244,9 +233,7 @@ export function ThemeCustomizerExamples() {
     <div className="container mx-auto max-w-4xl space-y-6 py-8">
       <div>
         <h1 className="text-3xl font-bold">Theme Customizer Examples</h1>
-        <p className="text-muted-foreground">
-          Various ways to use the theme customization system
-        </p>
+        <p className="text-muted-foreground">Various ways to use the theme customization system</p>
       </div>
 
       <SimpleColorChanger />

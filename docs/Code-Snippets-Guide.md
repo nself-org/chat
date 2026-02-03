@@ -23,11 +23,11 @@ Renders inline code with monospace font and background highlighting.
 
 ```tsx
 import { InlineCode } from '@/components/chat/InlineCode'
-
-<InlineCode>const greeting = "Hello"</InlineCode>
+;<InlineCode>const greeting = "Hello"</InlineCode>
 ```
 
 **Features**:
+
 - Monospace font
 - Background highlight
 - Click to copy
@@ -41,8 +41,7 @@ Full-featured code block with syntax highlighting.
 
 ```tsx
 import { CodeBlock } from '@/components/chat/CodeBlock'
-
-<CodeBlock
+;<CodeBlock
   code={sourceCode}
   language="typescript"
   filename="example.ts"
@@ -53,16 +52,17 @@ import { CodeBlock } from '@/components/chat/CodeBlock'
 
 **Props**:
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `code` | `string` | required | Source code to highlight |
-| `language` | `string` | auto-detect | Programming language |
-| `filename` | `string` | undefined | Display filename in header |
-| `showLineNumbers` | `boolean` | `true` | Show line numbers |
-| `maxHeight` | `number` | `500` | Max height in pixels |
-| `onExpand` | `function` | undefined | Callback for expand button |
+| Prop              | Type       | Default     | Description                |
+| ----------------- | ---------- | ----------- | -------------------------- |
+| `code`            | `string`   | required    | Source code to highlight   |
+| `language`        | `string`   | auto-detect | Programming language       |
+| `filename`        | `string`   | undefined   | Display filename in header |
+| `showLineNumbers` | `boolean`  | `true`      | Show line numbers          |
+| `maxHeight`       | `number`   | `500`       | Max height in pixels       |
+| `onExpand`        | `function` | undefined   | Callback for expand button |
 
 **Features**:
+
 - Syntax highlighting for 100+ languages
 - Line numbers with hover effects
 - Copy button with success feedback
@@ -86,11 +86,11 @@ const handleShare = async (snippet: CodeSnippet) => {
   // Send snippet to backend
   await sendMessage({
     type: 'code',
-    ...snippet
+    ...snippet,
   })
 }
 
-<CodeSnippetModal
+;<CodeSnippetModal
   open={open}
   onOpenChange={setOpen}
   onShare={handleShare}
@@ -99,6 +99,7 @@ const handleShare = async (snippet: CodeSnippet) => {
 ```
 
 **Features**:
+
 - Title and description fields
 - Language selector (100+ languages, grouped by category)
 - TipTap code editor with syntax highlighting
@@ -110,6 +111,7 @@ const handleShare = async (snippet: CodeSnippet) => {
 The system supports 100+ languages including:
 
 ### Web Technologies
+
 - JavaScript (js, jsx)
 - TypeScript (ts, tsx)
 - HTML/XML
@@ -117,6 +119,7 @@ The system supports 100+ languages including:
 - Vue, Svelte
 
 ### Backend Languages
+
 - Python (py)
 - Java
 - Go (golang)
@@ -127,6 +130,7 @@ The system supports 100+ languages including:
 - C# (cs)
 
 ### Shell & Config
+
 - Bash (sh, shell, zsh)
 - PowerShell (ps1)
 - JSON
@@ -135,11 +139,13 @@ The system supports 100+ languages including:
 - XML
 
 ### Databases
+
 - SQL
 - PostgreSQL (pgsql)
 - MongoDB
 
 ### Other
+
 - Markdown (md)
 - Diff/Patch
 - Dockerfile
@@ -164,10 +170,7 @@ Highlight code with syntax highlighting.
 ```typescript
 import { highlightCode } from '@/lib/markdown/syntax-highlighter'
 
-const { html, language } = highlightCode(
-  'const x = 42',
-  'javascript'
-)
+const { html, language } = highlightCode('const x = 42', 'javascript')
 // html: highlighted HTML string
 // language: detected or provided language
 ```
@@ -215,11 +218,13 @@ const display = getLanguageDisplayName('js')
 Users can write code in messages using markdown syntax:
 
 **Inline code**:
+
 ```
 Use `const x = 42` for constants.
 ```
 
 **Code blocks**:
+
 ````
 ```javascript
 function greet(name) {
@@ -229,6 +234,7 @@ function greet(name) {
 ````
 
 **With filename**:
+
 ````
 ```typescript:src/utils/helper.ts
 export function helper() {
@@ -243,14 +249,11 @@ The `MessageContent` component automatically parses and renders code:
 
 ```tsx
 import { MessageContent } from '@/components/chat/message-content'
-
-<MessageContent
-  content={message.content}
-  type="text"
-/>
+;<MessageContent content={message.content} type="text" />
 ```
 
 Code blocks in the content will be automatically:
+
 1. Detected (triple backticks)
 2. Language identified
 3. Syntax highlighted
@@ -274,6 +277,7 @@ The system includes comprehensive syntax highlighting styles:
 ### Theme Support
 
 The highlighting automatically adapts to:
+
 - System theme preference
 - App theme setting
 - Dark/light mode toggle
@@ -312,6 +316,7 @@ import { CodeSnippetsExample } from '@/components/chat/code-snippets-example'
 ### For Users
 
 1. **Always specify language** for better highlighting:
+
    ````
    ```typescript
    // Good - language specified
@@ -341,14 +346,13 @@ import { CodeSnippetsExample } from '@/components/chat/code-snippets-example'
 ### Optimization Tips
 
 1. **Memoize highlighted code**:
+
    ```tsx
-   const highlightedCode = useMemo(
-     () => highlightCode(code, language),
-     [code, language]
-   )
+   const highlightedCode = useMemo(() => highlightCode(code, language), [code, language])
    ```
 
 2. **Virtual scrolling** for long code blocks:
+
    ```tsx
    import { useVirtualizer } from '@tanstack/react-virtual'
    ```
@@ -374,13 +378,13 @@ The code highlighting system is fully accessible:
 
 ```typescript
 interface CodeBlockProps {
-  code: string                    // Source code (required)
-  language?: string               // Language identifier
-  filename?: string               // Display filename
-  showLineNumbers?: boolean       // Show line numbers (default: true)
-  maxHeight?: number              // Max height in pixels (default: 500)
-  className?: string              // Additional CSS classes
-  onExpand?: () => void          // Callback for expand button
+  code: string // Source code (required)
+  language?: string // Language identifier
+  filename?: string // Display filename
+  showLineNumbers?: boolean // Show line numbers (default: true)
+  maxHeight?: number // Max height in pixels (default: 500)
+  className?: string // Additional CSS classes
+  onExpand?: () => void // Callback for expand button
 }
 ```
 
@@ -388,10 +392,10 @@ interface CodeBlockProps {
 
 ```typescript
 interface CodeSnippet {
-  title: string                   // Snippet title
-  language: string                // Programming language
-  code: string                    // Source code
-  description?: string            // Optional description
+  title: string // Snippet title
+  language: string // Programming language
+  code: string // Source code
+  description?: string // Optional description
 }
 ```
 
@@ -399,11 +403,11 @@ interface CodeSnippet {
 
 ```typescript
 interface LanguageInfo {
-  name: string                    // Canonical name (e.g., 'javascript')
-  aliases: string[]               // Alternative names (e.g., ['js', 'jsx'])
-  displayName: string             // Display name (e.g., 'JavaScript')
-  extension: string               // File extension (e.g., '.js')
-  category: string                // Category (e.g., 'Web', 'Backend')
+  name: string // Canonical name (e.g., 'javascript')
+  aliases: string[] // Alternative names (e.g., ['js', 'jsx'])
+  displayName: string // Display name (e.g., 'JavaScript')
+  extension: string // File extension (e.g., '.js')
+  category: string // Category (e.g., 'Web', 'Backend')
 }
 ```
 
@@ -412,6 +416,7 @@ interface LanguageInfo {
 ### Language not highlighting correctly
 
 **Solution**: Check if language is supported:
+
 ```typescript
 import { isLanguageSupported } from '@/lib/markdown/syntax-highlighter'
 
@@ -423,6 +428,7 @@ if (!isLanguageSupported('mylang')) {
 ### Colors look wrong in dark mode
 
 **Solution**: Clear browser cache and ensure CSS is loaded:
+
 ```bash
 # Rebuild CSS
 pnpm build
@@ -431,6 +437,7 @@ pnpm build
 ### Copy button not working
 
 **Solution**: Check clipboard permissions:
+
 ```typescript
 // Modern browsers require HTTPS or localhost
 navigator.clipboard.writeText(code)
@@ -439,6 +446,7 @@ navigator.clipboard.writeText(code)
 ### Performance issues with large files
 
 **Solution**: Use maxHeight and collapse features:
+
 ```tsx
 <CodeBlock
   code={largeCode}

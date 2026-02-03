@@ -36,11 +36,13 @@ Unit tests verify individual components, functions, and modules work correctly i
 **Location**: `src/**/__tests__/*.test.{ts,tsx}`
 
 **Examples**:
+
 - `src/components/ui/__tests__/button.test.tsx`
 - `src/hooks/__tests__/use-messages.test.ts`
 - `src/lib/__tests__/utils.test.ts`
 
 **When to write**:
+
 - Testing UI components
 - Testing custom hooks
 - Testing utility functions
@@ -53,10 +55,12 @@ Integration tests verify multiple units work together correctly.
 **Location**: `src/__tests__/integration/*.test.{ts,tsx}`
 
 **Examples**:
+
 - `src/__tests__/integration/chat-flow.test.tsx`
 - `src/app/api/__tests__/config.test.ts`
 
 **When to write**:
+
 - Testing API routes
 - Testing complex component interactions
 - Testing data flow between components
@@ -69,11 +73,13 @@ E2E tests verify complete user workflows in a real browser.
 **Location**: `e2e/*.spec.ts`
 
 **Examples**:
+
 - `e2e/auth.spec.ts`
 - `e2e/chat.spec.ts`
 - `e2e/message-sending.spec.ts`
 
 **When to write**:
+
 - Testing critical user journeys
 - Testing multi-page workflows
 - Testing real browser interactions
@@ -139,6 +145,7 @@ pnpm test:e2e --debug
 ### CI/CD
 
 Tests run automatically on:
+
 - Every push to any branch
 - Every pull request
 - Before deployments
@@ -257,6 +264,7 @@ open coverage/lcov-report/index.html
 ### Coverage Goals
 
 We aim for:
+
 - **80%+ overall coverage**
 - **90%+ coverage for critical paths**:
   - Authentication
@@ -267,6 +275,7 @@ We aim for:
 ### What to Cover
 
 **High Priority**:
+
 - ✅ User authentication and authorization
 - ✅ Message CRUD operations
 - ✅ Channel CRUD operations
@@ -275,12 +284,14 @@ We aim for:
 - ✅ Search functionality
 
 **Medium Priority**:
+
 - ✅ UI components
 - ✅ Utility functions
 - ✅ Data transformations
 - ✅ Form validations
 
 **Lower Priority**:
+
 - ✅ Styling and animations
 - ✅ Static pages
 - ✅ Documentation pages
@@ -290,6 +301,7 @@ We aim for:
 ### General Guidelines
 
 1. **Test Behavior, Not Implementation**
+
    ```typescript
    // ❌ Bad - Testing implementation details
    expect(component.state.count).toBe(5)
@@ -299,6 +311,7 @@ We aim for:
    ```
 
 2. **Use Descriptive Test Names**
+
    ```typescript
    // ❌ Bad
    it('works', () => {})
@@ -308,6 +321,7 @@ We aim for:
    ```
 
 3. **Arrange-Act-Assert Pattern**
+
    ```typescript
    it('should increment counter', () => {
      // Arrange
@@ -332,6 +346,7 @@ We aim for:
 ### Component Testing
 
 1. **Test User Interactions**
+
    ```typescript
    it('should submit form when enter is pressed', async () => {
      const onSubmit = jest.fn()
@@ -343,6 +358,7 @@ We aim for:
    ```
 
 2. **Test Accessibility**
+
    ```typescript
    it('should have accessible label', () => {
      render(<Input label="Email" />)
@@ -362,12 +378,14 @@ We aim for:
 ### Hook Testing
 
 1. **Use renderHook**
+
    ```typescript
    const { result } = renderHook(() => useCustomHook())
    expect(result.current.value).toBe(initialValue)
    ```
 
 2. **Test Async Hooks**
+
    ```typescript
    const { result } = renderHook(() => useAsync())
    await waitFor(() => {
@@ -376,11 +394,9 @@ We aim for:
    ```
 
 3. **Test Hook Updates**
+
    ```typescript
-   const { result, rerender } = renderHook(
-     ({ id }) => useData(id),
-     { initialProps: { id: 1 } }
-   )
+   const { result, rerender } = renderHook(({ id }) => useData(id), { initialProps: { id: 1 } })
 
    rerender({ id: 2 })
    expect(result.current.data.id).toBe(2)
@@ -389,6 +405,7 @@ We aim for:
 ### E2E Testing
 
 1. **Wait for Elements**
+
    ```typescript
    // ✅ Good
    await expect(page.locator('text=Success')).toBeVisible({ timeout: 5000 })
@@ -398,6 +415,7 @@ We aim for:
    ```
 
 2. **Use Data Test IDs**
+
    ```typescript
    // Component
    <button data-testid="submit-button">Submit</button>

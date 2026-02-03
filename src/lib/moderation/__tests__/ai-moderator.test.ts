@@ -132,11 +132,7 @@ describe('AI Moderator Core', () => {
         detectedLabels: ['insult'],
       })
 
-      const result = await moderator.analyzeContent(
-        'content-2',
-        'text',
-        'You are an idiot'
-      )
+      const result = await moderator.analyzeContent('content-2', 'text', 'You are an idiot')
 
       expect(result.toxicity.isToxic).toBe(true)
       expect(result.detectedIssues.length).toBeGreaterThan(0)
@@ -162,7 +158,7 @@ describe('AI Moderator Core', () => {
 
       expect(result.spam.isSpam).toBe(true)
       expect(result.spam.spamScore).toBe(0.8)
-      expect(result.detectedIssues.some(i => i.category === 'spam')).toBe(true)
+      expect(result.detectedIssues.some((i) => i.category === 'spam')).toBe(true)
     })
 
     it('should analyze profanity content', async () => {
@@ -183,7 +179,7 @@ describe('AI Moderator Core', () => {
       )
 
       expect(result.profanity.hasProfanity).toBe(true)
-      expect(result.detectedIssues.some(i => i.category === 'profanity')).toBe(true)
+      expect(result.detectedIssues.some((i) => i.category === 'profanity')).toBe(true)
     })
 
     it('should detect NSFW images', async () => {
@@ -197,15 +193,12 @@ describe('AI Moderator Core', () => {
         detectedLabels: ['porn'],
       })
 
-      const result = await moderator.analyzeContent(
-        'content-5',
-        'image',
-        'Image description',
-        { attachments: ['https://example.com/image.jpg'] }
-      )
+      const result = await moderator.analyzeContent('content-5', 'image', 'Image description', {
+        attachments: ['https://example.com/image.jpg'],
+      })
 
       expect(result.nsfw?.isNSFW).toBe(true)
-      expect(result.detectedIssues.some(i => i.category === 'nsfw')).toBe(true)
+      expect(result.detectedIssues.some((i) => i.category === 'nsfw')).toBe(true)
     })
 
     it('should handle whitelisted users', async () => {
@@ -277,11 +270,7 @@ describe('AI Moderator Core', () => {
         sanitizedText: '',
       })
 
-      const result = await moderator.analyzeContent(
-        'content-8',
-        'text',
-        'Multiple detections'
-      )
+      const result = await moderator.analyzeContent('content-8', 'text', 'Multiple detections')
 
       expect(result.confidenceScore).toBeGreaterThan(0.6)
     })
@@ -302,11 +291,7 @@ describe('AI Moderator Core', () => {
         reasons: [],
       })
 
-      const result = await moderator.analyzeContent(
-        'content-9',
-        'text',
-        'Clean message'
-      )
+      const result = await moderator.analyzeContent('content-9', 'text', 'Clean message')
 
       expect(result.confidenceScore).toBeLessThan(0.5)
     })
@@ -362,11 +347,7 @@ describe('AI Moderator Core', () => {
         detectedLabels: ['insult'],
       })
 
-      const result = await flagModerator.analyzeContent(
-        'content-11',
-        'text',
-        'Moderately toxic'
-      )
+      const result = await flagModerator.analyzeContent('content-11', 'text', 'Moderately toxic')
 
       expect(result.shouldFlag).toBe(true)
       expect(result.autoAction).toBe('flag')
@@ -392,11 +373,7 @@ describe('AI Moderator Core', () => {
         detectedLabels: ['severe_toxicity'],
       })
 
-      const result = await hideModerator.analyzeContent(
-        'content-12',
-        'text',
-        'Very toxic content'
-      )
+      const result = await hideModerator.analyzeContent('content-12', 'text', 'Very toxic content')
 
       expect(result.shouldHide).toBe(true)
       expect(result.autoAction).toBe('hide')
@@ -422,11 +399,7 @@ describe('AI Moderator Core', () => {
         detectedLabels: ['insult'],
       })
 
-      const result = await warnModerator.analyzeContent(
-        'content-13',
-        'text',
-        'Insulting content'
-      )
+      const result = await warnModerator.analyzeContent('content-13', 'text', 'Insulting content')
 
       expect(result.shouldWarn).toBe(true)
       expect(result.autoAction).toBe('warn')
@@ -452,11 +425,7 @@ describe('AI Moderator Core', () => {
         detectedLabels: ['threat'],
       })
 
-      const result = await muteModerator.analyzeContent(
-        'content-14',
-        'text',
-        'Threatening content'
-      )
+      const result = await muteModerator.analyzeContent('content-14', 'text', 'Threatening content')
 
       expect(result.shouldMute).toBe(true)
       expect(result.autoAction).toBe('mute')
@@ -533,12 +502,9 @@ describe('AI Moderator Core', () => {
       await moderator.recordViolation('user-1', 'medium')
 
       // Access internal state through analyze (which uses getUserHistory)
-      const result = await moderator.analyzeContent(
-        'content-17',
-        'text',
-        'Test content',
-        { userId: 'user-1' }
-      )
+      const result = await moderator.analyzeContent('content-17', 'text', 'Test content', {
+        userId: 'user-1',
+      })
 
       expect(result.metadata?.userId).toBe('user-1')
     })
@@ -550,12 +516,9 @@ describe('AI Moderator Core', () => {
 
       // Trust score should decrease with each violation
       // (tested indirectly through analysis)
-      const result = await moderator.analyzeContent(
-        'content-18',
-        'text',
-        'Test',
-        { userId: 'user-2' }
-      )
+      const result = await moderator.analyzeContent('content-18', 'text', 'Test', {
+        userId: 'user-2',
+      })
 
       expect(result.contentId).toBe('content-18')
     })
@@ -603,12 +566,9 @@ describe('AI Moderator Core', () => {
   describe('Trust Score Calculation', () => {
     it('should start with trust score of 100', async () => {
       // New user should have high trust
-      const result = await moderator.analyzeContent(
-        'content-20',
-        'text',
-        'First message',
-        { userId: 'new-user' }
-      )
+      const result = await moderator.analyzeContent('content-20', 'text', 'First message', {
+        userId: 'new-user',
+      })
 
       expect(result.contentId).toBe('content-20')
     })
@@ -620,12 +580,9 @@ describe('AI Moderator Core', () => {
       await moderator.recordViolation('user-4', 'critical') // -30
 
       // Trust score should be 100 - 5 - 10 - 20 - 30 = 35
-      const result = await moderator.analyzeContent(
-        'content-21',
-        'text',
-        'Test',
-        { userId: 'user-4' }
-      )
+      const result = await moderator.analyzeContent('content-21', 'text', 'Test', {
+        userId: 'user-4',
+      })
 
       expect(result.contentId).toBe('content-21')
     })
@@ -636,12 +593,9 @@ describe('AI Moderator Core', () => {
         await moderator.recordViolation('user-5', 'critical')
       }
 
-      const result = await moderator.analyzeContent(
-        'content-22',
-        'text',
-        'Test',
-        { userId: 'user-5' }
-      )
+      const result = await moderator.analyzeContent('content-22', 'text', 'Test', {
+        userId: 'user-5',
+      })
 
       expect(result.contentId).toBe('content-22')
     })
@@ -663,7 +617,7 @@ describe('AI Moderator Core', () => {
         'content-23',
         'text',
         0.2, // actual
-        0.8  // predicted
+        0.8 // predicted
       )
 
       expect(consoleSpy).toHaveBeenCalledWith(
@@ -687,12 +641,7 @@ describe('AI Moderator Core', () => {
 
       const consoleSpy = jest.spyOn(console, 'log').mockImplementation()
 
-      await noLearningModerator.recordFalsePositive(
-        'content-24',
-        'text',
-        0.2,
-        0.8
-      )
+      await noLearningModerator.recordFalsePositive('content-24', 'text', 0.2, 0.8)
 
       expect(consoleSpy).not.toHaveBeenCalled()
 
@@ -771,11 +720,7 @@ describe('AI Moderator Core', () => {
         detectedLabels: [],
       })
 
-      const result = await moderator.analyzeContent(
-        'content-25',
-        'text',
-        'Critical content'
-      )
+      const result = await moderator.analyzeContent('content-25', 'text', 'Critical content')
 
       expect(result.priority).toBe('critical')
     })
@@ -790,11 +735,7 @@ describe('AI Moderator Core', () => {
         detectedLabels: [],
       })
 
-      const result = await moderator.analyzeContent(
-        'content-26',
-        'text',
-        'High priority content'
-      )
+      const result = await moderator.analyzeContent('content-26', 'text', 'High priority content')
 
       expect(result.priority).toBe('high')
     })
@@ -809,21 +750,13 @@ describe('AI Moderator Core', () => {
         detectedLabels: [],
       })
 
-      const result = await moderator.analyzeContent(
-        'content-27',
-        'text',
-        'Medium priority content'
-      )
+      const result = await moderator.analyzeContent('content-27', 'text', 'Medium priority content')
 
       expect(result.priority).toBe('medium')
     })
 
     it('should assign low priority for low scores', async () => {
-      const result = await moderator.analyzeContent(
-        'content-28',
-        'text',
-        'Clean content'
-      )
+      const result = await moderator.analyzeContent('content-28', 'text', 'Clean content')
 
       expect(result.priority).toBe('low')
     })

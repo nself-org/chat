@@ -179,8 +179,18 @@ export async function createLogoVariants(
   const { lightBackground = '#FFFFFF', darkBackground = '#18181B', size = 512 } = options
 
   const original = await processLogo(source, { maxWidth: size, maxHeight: size })
-  const light = await processLogo(source, { maxWidth: size, maxHeight: size, backgroundColor: lightBackground, padding: 20 })
-  const dark = await processLogo(source, { maxWidth: size, maxHeight: size, backgroundColor: darkBackground, padding: 20 })
+  const light = await processLogo(source, {
+    maxWidth: size,
+    maxHeight: size,
+    backgroundColor: lightBackground,
+    padding: 20,
+  })
+  const dark = await processLogo(source, {
+    maxWidth: size,
+    maxHeight: size,
+    backgroundColor: darkBackground,
+    padding: 20,
+  })
 
   return { original, light, dark }
 }
@@ -348,7 +358,9 @@ export async function getDominantColor(source: string | File): Promise<string> {
   const imageData = ctx.getImageData(0, 0, sampleSize, sampleSize)
   const data = imageData.data
 
-  let r = 0, g = 0, b = 0
+  let r = 0,
+    g = 0,
+    b = 0
   let count = 0
 
   for (let i = 0; i < data.length; i += 4) {
@@ -374,14 +386,23 @@ export async function getDominantColor(source: string | File): Promise<string> {
  * Validate if a file is a valid image
  */
 export function isValidImageFile(file: File): boolean {
-  const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml', 'image/gif']
+  const validTypes = [
+    'image/png',
+    'image/jpeg',
+    'image/jpg',
+    'image/webp',
+    'image/svg+xml',
+    'image/gif',
+  ]
   return validTypes.includes(file.type)
 }
 
 /**
  * Get image dimensions from a file or data URL
  */
-export async function getImageDimensions(source: string | File): Promise<{ width: number; height: number }> {
+export async function getImageDimensions(
+  source: string | File
+): Promise<{ width: number; height: number }> {
   const img = await loadImage(source)
   return { width: img.width, height: img.height }
 }

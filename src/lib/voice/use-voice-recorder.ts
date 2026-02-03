@@ -132,7 +132,7 @@ export function formatDuration(seconds: number): string {
  *   } = useVoiceRecorder({
  *     maxDuration: 60, // 1 minute max
  *     onStop: (blob, duration) => {
- *       console.log('Recording complete:', blob, duration)
+ *       // console.log('Recording complete:', blob, duration)
  *     },
  *   })
  *
@@ -148,9 +148,7 @@ export function formatDuration(seconds: number): string {
  * }
  * ```
  */
-export function useVoiceRecorder(
-  options: UseVoiceRecorderOptions = {}
-): UseVoiceRecorderReturn {
+export function useVoiceRecorder(options: UseVoiceRecorderOptions = {}): UseVoiceRecorderReturn {
   const {
     recorderOptions,
     waveformOptions,
@@ -329,15 +327,7 @@ export function useVoiceRecorder(
       await analyzer.start()
       analyzerRef.current = analyzer
     }
-  }, [
-    audioUrl,
-    recorderOptions,
-    waveformOptions,
-    handleError,
-    onStart,
-    onStop,
-    onWaveformUpdate,
-  ])
+  }, [audioUrl, recorderOptions, waveformOptions, handleError, onStart, onStop, onWaveformUpdate])
 
   const stopRecording = useCallback(async (): Promise<Blob | null> => {
     if (!recorderRef.current) {

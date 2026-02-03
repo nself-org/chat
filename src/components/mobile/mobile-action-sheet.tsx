@@ -162,18 +162,14 @@ export const MobileActionSheet = memo(function MobileActionSheet({
           >
             {/* Drag handle */}
             <div className="flex justify-center py-3">
-              <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+              <div className="bg-muted-foreground/30 h-1 w-10 rounded-full" />
             </div>
 
             {/* Header */}
             {(title || message) && (
               <div className="border-b px-6 pb-4 text-center">
-                {title && (
-                  <h3 className="text-base font-semibold">{title}</h3>
-                )}
-                {message && (
-                  <p className="mt-1 text-sm text-muted-foreground">{message}</p>
-                )}
+                {title && <h3 className="text-base font-semibold">{title}</h3>}
+                {message && <p className="mt-1 text-sm text-muted-foreground">{message}</p>}
               </div>
             )}
 
@@ -196,12 +192,7 @@ export const MobileActionSheet = memo(function MobileActionSheet({
                 <Button
                   variant="outline"
                   onClick={handleCancel}
-                  className={cn(
-                    'w-full h-12',
-                    'rounded-xl',
-                    'font-semibold',
-                    'touch-manipulation'
-                  )}
+                  className={cn('h-12 w-full', 'rounded-xl', 'font-semibold', 'touch-manipulation')}
                 >
                   {cancelLabel}
                 </Button>
@@ -241,16 +232,14 @@ const ActionSheetButton = memo(function ActionSheetButton({
         'bg-muted/30 hover:bg-muted/50',
         'transition-colors duration-150',
         'touch-manipulation',
-        'disabled:opacity-50 disabled:cursor-not-allowed',
+        'disabled:cursor-not-allowed disabled:opacity-50',
         option.destructive && 'text-destructive',
         isFirst && 'rounded-t-xl',
         isLast && 'rounded-b-xl',
-        !isLast && 'border-b border-border/50'
+        !isLast && 'border-border/50 border-b'
       )}
     >
-      {option.icon && (
-        <span className="shrink-0">{option.icon}</span>
-      )}
+      {option.icon && <span className="shrink-0">{option.icon}</span>}
       <span className="font-medium">{option.label}</span>
     </button>
   )
@@ -352,15 +341,13 @@ export const StandaloneActionSheet = memo(function StandaloneActionSheet({
             style={{ paddingBottom: safeArea.bottom || 8 }}
           >
             <div className="flex justify-center py-3">
-              <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+              <div className="bg-muted-foreground/30 h-1 w-10 rounded-full" />
             </div>
 
             {(title || message) && (
               <div className="border-b px-6 pb-4 text-center">
                 {title && <h3 className="text-base font-semibold">{title}</h3>}
-                {message && (
-                  <p className="mt-1 text-sm text-muted-foreground">{message}</p>
-                )}
+                {message && <p className="mt-1 text-sm text-muted-foreground">{message}</p>}
               </div>
             )}
 
@@ -380,7 +367,7 @@ export const StandaloneActionSheet = memo(function StandaloneActionSheet({
               <Button
                 variant="outline"
                 onClick={onClose}
-                className="w-full h-12 rounded-xl font-semibold touch-manipulation"
+                className="h-12 w-full touch-manipulation rounded-xl font-semibold"
               >
                 {cancelLabel}
               </Button>

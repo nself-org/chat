@@ -8,10 +8,12 @@
 'use client'
 
 import React, { useEffect, useState, useRef } from 'react'
-import {Phone, PhoneOff, Video} from 'lucide-react'
+import { Phone, PhoneOff, Video } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+
+import { logger } from '@/lib/logger'
 
 // =============================================================================
 // Types
@@ -55,9 +57,7 @@ export function IncomingCallModal({
     audioRef.current.loop = true
     audioRef.current.volume = ringVolume
 
-    audioRef.current
-      .play()
-      .catch((err) => console.error('Failed to play ringtone:', err))
+    audioRef.current.play().catch((err) => logger.error('Failed to play ringtone:', err))
 
     // Vibrate on mobile
     if (navigator.vibrate) {
@@ -143,7 +143,7 @@ export function IncomingCallModal({
           {/* Pulsing outer ring */}
           <div
             className={cn(
-              'absolute inset-0 rounded-full bg-primary/30 transition-transform duration-1000',
+              'bg-primary/30 absolute inset-0 rounded-full transition-transform duration-1000',
               isRinging ? 'scale-125 opacity-0' : 'scale-100 opacity-100'
             )}
             style={{
@@ -157,7 +157,7 @@ export function IncomingCallModal({
           {/* Middle ring */}
           <div
             className={cn(
-              'absolute inset-0 rounded-full bg-primary/20 transition-transform duration-1000',
+              'bg-primary/20 absolute inset-0 rounded-full transition-transform duration-1000',
               isRinging ? 'scale-110 opacity-0' : 'scale-100 opacity-100'
             )}
             style={{
@@ -169,9 +169,9 @@ export function IncomingCallModal({
           />
 
           {/* Avatar */}
-          <Avatar className="h-40 w-40 border-4 border-primary/50">
+          <Avatar className="border-primary/50 h-40 w-40 border-4">
             <AvatarImage src={callerAvatarUrl} alt={callerName} />
-            <AvatarFallback className="text-4xl font-semibold bg-primary text-primary-foreground">
+            <AvatarFallback className="text-primary-foreground bg-primary text-4xl font-semibold">
               {initials}
             </AvatarFallback>
           </Avatar>
@@ -201,13 +201,13 @@ export function IncomingCallModal({
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-6 mt-8">
+        <div className="mt-8 flex items-center gap-6">
           {/* Decline Button */}
           <div className="flex flex-col items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
-              className="h-16 w-16 rounded-full bg-red-600 hover:bg-red-700 text-white transition-transform hover:scale-110"
+              className="h-16 w-16 rounded-full bg-red-600 text-white transition-transform hover:scale-110 hover:bg-red-700"
               onClick={handleDecline}
             >
               <PhoneOff className="h-7 w-7" />
@@ -220,7 +220,7 @@ export function IncomingCallModal({
             <Button
               variant="ghost"
               size="icon"
-              className="h-20 w-20 rounded-full bg-green-600 hover:bg-green-700 text-white transition-transform hover:scale-110 shadow-lg shadow-green-600/50"
+              className="h-20 w-20 rounded-full bg-green-600 text-white shadow-lg shadow-green-600/50 transition-transform hover:scale-110 hover:bg-green-700"
               onClick={() => handleAccept(false)}
             >
               <Phone className="h-8 w-8" />
@@ -236,7 +236,7 @@ export function IncomingCallModal({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-16 w-16 rounded-full bg-blue-600 hover:bg-blue-700 text-white transition-transform hover:scale-110"
+                className="h-16 w-16 rounded-full bg-blue-600 text-white transition-transform hover:scale-110 hover:bg-blue-700"
                 onClick={() => handleAccept(true)}
               >
                 <Video className="h-7 w-7" />

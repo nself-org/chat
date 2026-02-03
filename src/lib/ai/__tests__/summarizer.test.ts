@@ -409,7 +409,8 @@ describe('ThreadSummarizer', () => {
       const messages = [
         {
           id: 'msg-1',
-          content: 'We need to complete the following tasks: 1) Update the database schema 2) Write migration scripts',
+          content:
+            'We need to complete the following tasks: 1) Update the database schema 2) Write migration scripts',
           userId: 'user-1',
           userName: 'User 1',
           channelId: 'channel-1',

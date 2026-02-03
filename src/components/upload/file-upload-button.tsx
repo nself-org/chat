@@ -8,10 +8,10 @@
  * - Support for different file categories
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useCallback, useRef } from 'react';
+import * as React from 'react'
+import { useCallback, useRef } from 'react'
 import {
   Paperclip,
   Image,
@@ -21,51 +21,54 @@ import {
   File,
   FolderArchive,
   Plus,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
+} from '@/components/ui/dropdown-menu'
+import { cn } from '@/lib/utils'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export type FileCategory = 'all' | 'images' | 'videos' | 'audio' | 'documents' | 'archives';
+export type FileCategory = 'all' | 'images' | 'videos' | 'audio' | 'documents' | 'archives'
 
 export interface FileUploadButtonProps {
   /** Callback when files are selected */
-  onFilesSelected: (files: File[]) => void;
+  onFilesSelected: (files: File[]) => void
   /** Allow multiple files */
-  multiple?: boolean;
+  multiple?: boolean
   /** Whether the button is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Show dropdown menu for file types */
-  showMenu?: boolean;
+  showMenu?: boolean
   /** Default file category */
-  defaultCategory?: FileCategory;
+  defaultCategory?: FileCategory
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Button variant */
-  variant?: 'default' | 'outline' | 'ghost' | 'secondary';
+  variant?: 'default' | 'outline' | 'ghost' | 'secondary'
   /** Button size */
-  size?: 'default' | 'sm' | 'lg' | 'icon';
+  size?: 'default' | 'sm' | 'lg' | 'icon'
   /** Custom trigger content */
-  children?: React.ReactNode;
+  children?: React.ReactNode
   /** Tooltip text */
-  tooltip?: string;
+  tooltip?: string
 }
 
 // ============================================================================
 // Constants
 // ============================================================================
 
-const FILE_CATEGORIES: Record<FileCategory, { accept: string; label: string; icon: React.ReactNode }> = {
+const FILE_CATEGORIES: Record<
+  FileCategory,
+  { accept: string; label: string; icon: React.ReactNode }
+> = {
   all: {
     accept: '*/*',
     label: 'All Files',
@@ -96,7 +99,7 @@ const FILE_CATEGORIES: Record<FileCategory, { accept: string; label: string; ico
     label: 'Archives',
     icon: <FolderArchive className="h-4 w-4" />,
   },
-};
+}
 
 // ============================================================================
 // Component
@@ -114,41 +117,44 @@ export function FileUploadButton({
   children,
   tooltip,
 }: FileUploadButtonProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const currentCategoryRef = useRef<FileCategory>(defaultCategory);
+  const inputRef = useRef<HTMLInputElement>(null)
+  const currentCategoryRef = useRef<FileCategory>(defaultCategory)
 
   // Handle file selection
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.target;
+      const { files } = e.target
       if (files && files.length > 0) {
-        onFilesSelected(Array.from(files));
+        onFilesSelected(Array.from(files))
       }
       // Reset input so same file can be selected again
-      e.target.value = '';
+      e.target.value = ''
     },
     [onFilesSelected]
-  );
+  )
 
   // Open file picker with category
-  const openFilePicker = useCallback((category: FileCategory = defaultCategory) => {
-    if (inputRef.current && !disabled) {
-      currentCategoryRef.current = category;
-      inputRef.current.accept = FILE_CATEGORIES[category].accept;
-      inputRef.current.click();
-    }
-  }, [defaultCategory, disabled]);
+  const openFilePicker = useCallback(
+    (category: FileCategory = defaultCategory) => {
+      if (inputRef.current && !disabled) {
+        currentCategoryRef.current = category
+        inputRef.current.accept = FILE_CATEGORIES[category].accept
+        inputRef.current.click()
+      }
+    },
+    [defaultCategory, disabled]
+  )
 
   // Handle menu item click
   const handleMenuItemClick = useCallback(
     (category: FileCategory) => {
-      openFilePicker(category);
+      openFilePicker(category)
     },
     [openFilePicker]
-  );
+  )
 
   // Render button content
-  const buttonContent = children || <Paperclip className="h-4 w-4" />;
+  const buttonContent = children || <Paperclip className="h-4 w-4" />
 
   // Simple button without menu
   if (!showMenu) {
@@ -176,7 +182,7 @@ export function FileUploadButton({
           {buttonContent}
         </Button>
       </>
-    );
+    )
   }
 
   // Button with dropdown menu
@@ -233,7 +239,7 @@ export function FileUploadButton({
         </DropdownMenuContent>
       </DropdownMenu>
     </>
-  );
+  )
 }
 
 // ============================================================================
@@ -242,17 +248,17 @@ export function FileUploadButton({
 
 export interface CompactUploadButtonProps {
   /** Callback when files are selected */
-  onFilesSelected: (files: File[]) => void;
+  onFilesSelected: (files: File[]) => void
   /** Allow multiple files */
-  multiple?: boolean;
+  multiple?: boolean
   /** Whether the button is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Accept file types */
-  accept?: string;
+  accept?: string
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Label text */
-  label?: string;
+  label?: string
 }
 
 export function CompactUploadButton({
@@ -263,18 +269,18 @@ export function CompactUploadButton({
   className,
   label = 'Attach',
 }: CompactUploadButtonProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.target;
+      const { files } = e.target
       if (files && files.length > 0) {
-        onFilesSelected(Array.from(files));
+        onFilesSelected(Array.from(files))
       }
-      e.target.value = '';
+      e.target.value = ''
     },
     [onFilesSelected]
-  );
+  )
 
   return (
     <>
@@ -301,7 +307,7 @@ export function CompactUploadButton({
         <span>{label}</span>
       </button>
     </>
-  );
+  )
 }
 
 // ============================================================================
@@ -310,17 +316,17 @@ export function CompactUploadButton({
 
 export interface IconUploadButtonProps {
   /** Callback when files are selected */
-  onFilesSelected: (files: File[]) => void;
+  onFilesSelected: (files: File[]) => void
   /** Allow multiple files */
-  multiple?: boolean;
+  multiple?: boolean
   /** Whether the button is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Accept file types */
-  accept?: string;
+  accept?: string
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Icon size */
-  iconSize?: number;
+  iconSize?: number
 }
 
 export function IconUploadButton({
@@ -331,18 +337,18 @@ export function IconUploadButton({
   className,
   iconSize = 20,
 }: IconUploadButtonProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      const { files } = e.target;
+      const { files } = e.target
       if (files && files.length > 0) {
-        onFilesSelected(Array.from(files));
+        onFilesSelected(Array.from(files))
       }
-      e.target.value = '';
+      e.target.value = ''
     },
     [onFilesSelected]
-  );
+  )
 
   return (
     <>
@@ -369,7 +375,7 @@ export function IconUploadButton({
         <Paperclip style={{ width: iconSize, height: iconSize }} />
       </button>
     </>
-  );
+  )
 }
 
-export default FileUploadButton;
+export default FileUploadButton

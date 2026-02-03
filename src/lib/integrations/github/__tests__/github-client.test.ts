@@ -156,10 +156,7 @@ describe('GitHubApiClient', () => {
 
       await client.get('/user/repos', { type: 'all', sort: 'updated' })
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('type=all'),
-        expect.anything()
-      )
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('type=all'), expect.anything())
       expect(mockFetch).toHaveBeenCalledWith(
         expect.stringContaining('sort=updated'),
         expect.anything()
@@ -167,9 +164,7 @@ describe('GitHubApiClient', () => {
     })
 
     it('should throw GitHubApiError on API error', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ message: 'Not Found' }, false, 404)
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ message: 'Not Found' }, false, 404))
 
       await expect(client.get('/repos/owner/repo')).rejects.toThrow(GitHubApiError)
     })
@@ -281,9 +276,7 @@ describe('GitHubApiClient', () => {
 
   describe('updateIssue', () => {
     it('should update issue', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ...mockGitHubIssue, state: 'closed' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ...mockGitHubIssue, state: 'closed' }))
 
       const issue = await client.updateIssue('testuser', 'test-repo', 42, {
         state: 'closed',
@@ -394,11 +387,7 @@ describe('Webhook Utilities', () => {
 
     it('should attempt to verify valid signature format', async () => {
       // Note: This will fail because our mock doesn't produce matching signatures
-      const isValid = await verifyWebhookSignature(
-        'payload',
-        'sha256=abc123',
-        'secret'
-      )
+      const isValid = await verifyWebhookSignature('payload', 'sha256=abc123', 'secret')
       expect(isValid).toBe(false) // Won't match mock signature
     })
   })
@@ -554,10 +543,7 @@ describe('Link Unfurling', () => {
     it('should unfurl issue URL', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse(mockGitHubIssue))
 
-      const result = await unfurlGitHubUrl(
-        'https://github.com/owner/repo/issues/42',
-        client
-      )
+      const result = await unfurlGitHubUrl('https://github.com/owner/repo/issues/42', client)
 
       expect(result?.type).toBe('issue')
       expect(result?.title).toContain('#42')
@@ -567,24 +553,16 @@ describe('Link Unfurling', () => {
     it('should unfurl PR URL', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse(mockGitHubPR))
 
-      const result = await unfurlGitHubUrl(
-        'https://github.com/owner/repo/pull/43',
-        client
-      )
+      const result = await unfurlGitHubUrl('https://github.com/owner/repo/pull/43', client)
 
       expect(result?.type).toBe('pull_request')
       expect(result?.title).toContain('#43')
     })
 
     it('should unfurl merged PR as merged', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ...mockGitHubPR, merged: true })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ...mockGitHubPR, merged: true }))
 
-      const result = await unfurlGitHubUrl(
-        'https://github.com/owner/repo/pull/43',
-        client
-      )
+      const result = await unfurlGitHubUrl('https://github.com/owner/repo/pull/43', client)
 
       expect(result?.state).toBe('merged')
     })
@@ -592,10 +570,7 @@ describe('Link Unfurling', () => {
     it('should unfurl repository URL', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse(mockGitHubRepo))
 
-      const result = await unfurlGitHubUrl(
-        'https://github.com/owner/repo',
-        client
-      )
+      const result = await unfurlGitHubUrl('https://github.com/owner/repo', client)
 
       expect(result?.type).toBe('repository')
       expect(result?.title).toBe('testuser/test-repo')
@@ -604,20 +579,14 @@ describe('Link Unfurling', () => {
     it('should unfurl user URL', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse(mockGitHubUser))
 
-      const result = await unfurlGitHubUrl(
-        'https://github.com/testuser',
-        client
-      )
+      const result = await unfurlGitHubUrl('https://github.com/testuser', client)
 
       expect(result?.type).toBe('user')
       expect(result?.title).toBe('testuser')
     })
 
     it('should return null for unknown URL', async () => {
-      const result = await unfurlGitHubUrl(
-        'https://example.com/not-github',
-        client
-      )
+      const result = await unfurlGitHubUrl('https://example.com/not-github', client)
 
       expect(result).toBeNull()
     })
@@ -625,10 +594,7 @@ describe('Link Unfurling', () => {
     it('should return null on API error', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse({ message: 'Not Found' }, false, 404))
 
-      const result = await unfurlGitHubUrl(
-        'https://github.com/owner/repo/issues/999',
-        client
-      )
+      const result = await unfurlGitHubUrl('https://github.com/owner/repo/issues/999', client)
 
       expect(result).toBeNull()
     })
@@ -711,19 +677,17 @@ describe('GitHubIntegrationProvider', () => {
     })
 
     it('should throw error on missing code', async () => {
-      await expect(
-        provider.handleCallback({ code: '', state: 'test' })
-      ).rejects.toThrow('Missing authorization code')
+      await expect(provider.handleCallback({ code: '', state: 'test' })).rejects.toThrow(
+        'Missing authorization code'
+      )
     })
 
     it('should throw error on API error', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ error: 'bad_verification_code' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ error: 'bad_verification_code' }))
 
-      await expect(
-        provider.handleCallback({ code: 'bad', state: 'test' })
-      ).rejects.toThrow('bad_verification_code')
+      await expect(provider.handleCallback({ code: 'bad', state: 'test' })).rejects.toThrow(
+        'bad_verification_code'
+      )
     })
   })
 
@@ -765,7 +729,9 @@ describe('GitHubIntegrationProvider', () => {
     })
 
     it('should return false for invalid credentials', async () => {
-      mockFetch.mockResolvedValueOnce(createMockResponse({ message: 'Bad credentials' }, false, 401))
+      mockFetch.mockResolvedValueOnce(
+        createMockResponse({ message: 'Bad credentials' }, false, 401)
+      )
 
       const isValid = await provider.validateCredentials(mockCredentials)
 
@@ -813,9 +779,7 @@ describe('GitHubIntegrationProvider', () => {
     })
 
     it('should throw error for missing event type', async () => {
-      await expect(
-        provider.handleWebhook({}, '{}')
-      ).rejects.toThrow('Missing event type header')
+      await expect(provider.handleWebhook({}, '{}')).rejects.toThrow('Missing event type header')
     })
   })
 
@@ -836,12 +800,10 @@ describe('GitHubIntegrationProvider', () => {
     it('should create issue', async () => {
       mockFetch.mockResolvedValueOnce(createMockResponse(mockGitHubIssue))
 
-      const issue = await provider.createIssueFromMessage(
-        mockCredentials,
-        'owner',
-        'repo',
-        { title: 'New Issue', body: 'Body' }
-      )
+      const issue = await provider.createIssueFromMessage(mockCredentials, 'owner', 'repo', {
+        title: 'New Issue',
+        body: 'Body',
+      })
 
       expect(issue.title).toBe('Test Issue')
     })

@@ -29,9 +29,11 @@ The complete offline and sync system has been successfully implemented for nself
 ### 1. Core Infrastructure ✅
 
 #### File: `/src/lib/offline/indexed-db.ts`
+
 **Status:** ✅ Complete (646 lines)
 
 **Features:**
+
 - Promise-based IndexedDB wrapper class
 - Automatic database initialization and migration
 - CRUD operations (get, getAll, put, putMany, delete, clear)
@@ -40,6 +42,7 @@ The complete offline and sync system has been successfully implemented for nself
 - Error handling with proper error messages
 
 **Highlights:**
+
 ```typescript
 - IndexedDBWrapper class with full CRUD operations
 - Support for multiple object stores
@@ -51,9 +54,11 @@ The complete offline and sync system has been successfully implemented for nself
 ---
 
 #### File: `/src/lib/offline/offline-storage.ts`
+
 **Status:** ✅ Complete (708 lines)
 
 **Features:**
+
 - Database schema configuration
 - 7 object stores:
   - `channels` - Channel data with type/cachedAt/lastMessageAt indexes
@@ -74,26 +79,28 @@ The complete offline and sync system has been successfully implemented for nself
 - Batch operations support
 
 **Database Schema:**
+
 ```typescript
 DB_NAME: 'nchat-offline'
 DB_VERSION: 1
 
-Stores:
-  - channels (id, type, cachedAt, lastMessageAt)
-  - messages (id, channelId, createdAt, senderId, isPending)
-  - users (id, username, status, cachedAt)
-  - queue (id, type, status, priority, createdAt, channelId)
-  - cache_meta (key, expiresAt, lastAccessedAt)
-  - attachments (id, messageId)
-  - settings (key)
+Stores: -channels(id, type, cachedAt, lastMessageAt) -
+  messages(id, channelId, createdAt, senderId, isPending) -
+  users(id, username, status, cachedAt) -
+  queue(id, type, status, priority, createdAt, channelId) -
+  cache_meta(key, expiresAt, lastAccessedAt) -
+  attachments(id, messageId) -
+  settings(key)
 ```
 
 ---
 
 #### File: `/src/lib/offline/offline-types.ts`
+
 **Status:** ✅ Complete (496 lines)
 
 **Features:**
+
 - Comprehensive type definitions:
   - Connection types (ConnectionState, NetworkQuality, ConnectionType)
   - Queue types (QueuedAction, QueuedSendMessage, etc.)
@@ -110,9 +117,11 @@ Stores:
 ### 2. Network Detection ✅
 
 #### File: `/src/lib/offline/network-detector.ts`
+
 **Status:** ✅ Complete (497 lines)
 
 **Features:**
+
 - **Network Information API Integration**:
   - Downlink speed measurement
   - Effective connection type (slow-2g, 2g, 3g, 4g)
@@ -141,6 +150,7 @@ Stores:
   - Check data saver mode
 
 **Key Implementation:**
+
 ```typescript
 class NetworkDetector {
   - subscribe(listener): unsubscribe function
@@ -161,9 +171,11 @@ class NetworkDetector {
 ### 3. Sync Management ✅
 
 #### File: `/src/lib/offline/sync-manager.ts`
+
 **Status:** ✅ Complete (635 lines)
 
 **Features:**
+
 - **Sync Operations**:
   - Full sync - Complete data synchronization
   - Incremental sync - Only new data since last sync
@@ -198,44 +210,48 @@ class NetworkDetector {
   - Priority channels
 
 **Configuration:**
+
 ```typescript
 interface SyncManagerConfig {
-  autoSync: boolean            // Default: true
-  syncInterval: number         // Default: 30000ms (30s)
-  syncOnReconnect: boolean     // Default: true
-  backgroundSync: boolean      // Default: true
-  batteryThreshold: number     // Default: 20%
-  batchSize: number           // Default: 100
-  priorityChannels: string[]  // Default: []
+  autoSync: boolean // Default: true
+  syncInterval: number // Default: 30000ms (30s)
+  syncOnReconnect: boolean // Default: true
+  backgroundSync: boolean // Default: true
+  batteryThreshold: number // Default: 20%
+  batchSize: number // Default: 100
+  priorityChannels: string[] // Default: []
 }
 ```
 
 **Usage:**
+
 ```typescript
-const syncManager = getSyncManager();
-await syncManager.initialize();
+const syncManager = getSyncManager()
+await syncManager.initialize()
 
 // Full sync
-await syncManager.fullSync();
+await syncManager.fullSync()
 
 // Incremental sync
-await syncManager.incrementalSync();
+await syncManager.incrementalSync()
 
 // Sync specific channel
-await syncManager.syncChannel('channel-id');
+await syncManager.syncChannel('channel-id')
 
 // Subscribe to events
 syncManager.subscribe((event) => {
-  console.log(event.type, event.data);
-});
+  console.log(event.type, event.data)
+})
 ```
 
 ---
 
 #### File: `/src/lib/offline/sync-queue.ts`
+
 **Status:** ✅ Complete (725 lines)
 
 **Features:**
+
 - **Queue Management**:
   - Add items with priority
   - Get pending/failed items
@@ -266,15 +282,16 @@ syncManager.subscribe((event) => {
   - Max queue size
 
 **Configuration:**
+
 ```typescript
 interface SyncQueueConfig {
-  maxRetries: number        // Default: 5
-  retryBaseDelay: number    // Default: 1000ms
-  retryMaxDelay: number     // Default: 30000ms
-  autoProcess: boolean      // Default: false
-  processInterval: number   // Default: 5000ms
-  maxConcurrent: number     // Default: 3
-  maxQueueSize: number      // Default: 1000
+  maxRetries: number // Default: 5
+  retryBaseDelay: number // Default: 1000ms
+  retryMaxDelay: number // Default: 30000ms
+  autoProcess: boolean // Default: false
+  processInterval: number // Default: 5000ms
+  maxConcurrent: number // Default: 3
+  maxQueueSize: number // Default: 1000
 }
 ```
 
@@ -283,9 +300,11 @@ interface SyncQueueConfig {
 ### 4. Conflict Resolution ✅
 
 #### File: `/src/lib/offline/conflict-resolver.ts`
+
 **Status:** ✅ Complete (501 lines)
 
 **Features:**
+
 - **Conflict Types**:
   - Concurrent edit - Same item edited on multiple devices
   - Delete-edit - Item deleted on one device, edited on another
@@ -314,34 +333,36 @@ interface SyncQueueConfig {
   - Return resolved value
 
 **Conflict Types:**
+
 ```typescript
 type ConflictType =
-  | 'concurrent_edit'  // Same item edited on multiple devices
-  | 'delete_edit'      // Item deleted on one, edited on another
-  | 'duplicate'        // Duplicate creation
+  | 'concurrent_edit' // Same item edited on multiple devices
+  | 'delete_edit' // Item deleted on one, edited on another
+  | 'duplicate' // Duplicate creation
   | 'version_mismatch' // Version conflict
 ```
 
 **Usage:**
+
 ```typescript
-const resolver = getConflictResolver();
+const resolver = getConflictResolver()
 
 // Auto resolve
-const resolution = await resolver.autoResolve(conflict);
+const resolution = await resolver.autoResolve(conflict)
 
 // Manual strategy
-const resolution = await resolver.resolve(conflict, 'last_write_wins');
+const resolution = await resolver.resolve(conflict, 'last_write_wins')
 
 // Set user choice callback
 resolver.setUserChoiceCallback(async (conflict) => {
   // Show UI and return user choice
-  return await showConflictDialog(conflict);
-});
+  return await showConflictDialog(conflict)
+})
 
 // Tombstone management
-const tombstones = getTombstoneStore();
-tombstones.add({ id, itemType, deletedAt, deletedBy });
-const isDeleted = tombstones.isDeleted(id);
+const tombstones = getTombstoneStore()
+tombstones.add({ id, itemType, deletedAt, deletedBy })
+const isDeleted = tombstones.isDeleted(id)
 ```
 
 ---
@@ -349,9 +370,11 @@ const isDeleted = tombstones.isDeleted(id);
 ### 5. Attachment Caching ✅
 
 #### File: `/src/lib/offline/attachment-cache.ts`
+
 **Status:** ✅ Complete (557 lines)
 
 **Features:**
+
 - **Cache Management**:
   - Configurable size limits (default: 100MB)
   - Per-file size limit (default: 25MB)
@@ -385,45 +408,51 @@ const isDeleted = tombstones.isDeleted(id);
   - Set max size
 
 **Configuration:**
+
 ```typescript
 interface AttachmentCacheConfig {
-  maxSize: number              // Default: 100MB
-  maxFileSize: number          // Default: 25MB
-  generateThumbnails: boolean  // Default: true
-  thumbnailWidth: number       // Default: 200
-  thumbnailHeight: number      // Default: 200
-  thumbnailQuality: number     // Default: 0.7
+  maxSize: number // Default: 100MB
+  maxFileSize: number // Default: 25MB
+  generateThumbnails: boolean // Default: true
+  thumbnailWidth: number // Default: 200
+  thumbnailHeight: number // Default: 200
+  thumbnailQuality: number // Default: 0.7
 }
 ```
 
 **Usage:**
+
 ```typescript
-const cache = getAttachmentCache();
-await cache.initialize();
+const cache = getAttachmentCache()
+await cache.initialize()
 
 // Download and cache
-const attachment = await cache.download(url, {
-  id: 'att-1',
-  messageId: 'msg-1',
-  channelId: 'ch-1',
-  name: 'image.jpg',
-  type: 'image/jpeg',
-  size: 12345
-}, (progress) => {
-  console.log(`${progress.percent}%`);
-});
+const attachment = await cache.download(
+  url,
+  {
+    id: 'att-1',
+    messageId: 'msg-1',
+    channelId: 'ch-1',
+    name: 'image.jpg',
+    type: 'image/jpeg',
+    size: 12345,
+  },
+  (progress) => {
+    console.log(`${progress.percent}%`)
+  }
+)
 
 // Get cached attachment
-const cached = await cache.get('att-1');
+const cached = await cache.get('att-1')
 
 // Get data URL
-const dataUrl = await cache.getDataUrl('att-1');
+const dataUrl = await cache.getDataUrl('att-1')
 
 // Get thumbnail
-const thumbnail = await cache.getThumbnailDataUrl('att-1');
+const thumbnail = await cache.getThumbnailDataUrl('att-1')
 
 // Statistics
-const stats = await cache.getStats();
+const stats = await cache.getStats()
 ```
 
 ---
@@ -431,9 +460,11 @@ const stats = await cache.getStats();
 ### 6. React Integration ✅
 
 #### File: `/src/hooks/use-offline.ts`
+
 **Status:** ✅ Complete (367 lines)
 
 **Features:**
+
 - **Complete State Management**:
   - Network status (isOnline, connectionInfo)
   - Sync state (isSyncing, syncState, lastSyncAt)
@@ -459,6 +490,7 @@ const stats = await cache.getStats();
   - `usePendingCount()` - Pending queue count
 
 **Usage:**
+
 ```typescript
 function ChatView() {
   const { state, actions } = useOffline();
@@ -484,9 +516,11 @@ function ChatView() {
 ---
 
 #### File: `/src/hooks/use-sync.ts`
+
 **Status:** ✅ Complete (193 lines)
 
 **Features:**
+
 - **Sync Operations**:
   - `syncNow()` - Incremental sync
   - `fullSync()` - Complete sync
@@ -508,6 +542,7 @@ function ChatView() {
   - `useSyncTrigger()` - Simple sync trigger
 
 **Usage:**
+
 ```typescript
 function SyncButton() {
   const { isSyncing, syncNow, state } = useSync();
@@ -525,9 +560,11 @@ function SyncButton() {
 ### 7. UI Components ✅
 
 #### File: `/src/components/ui/offline-indicator.tsx`
+
 **Status:** ✅ Complete (342 lines)
 
 **Features:**
+
 - **Variants**:
   - Default - Full indicator with details
   - Compact - Small floating indicator
@@ -551,6 +588,7 @@ function SyncButton() {
   - Dismissible with X button
 
 **Components:**
+
 ```typescript
 // Full indicator
 <OfflineIndicator
@@ -566,9 +604,11 @@ function SyncButton() {
 ---
 
 #### File: `/src/components/ui/sync-progress.tsx`
+
 **Status:** ✅ Complete (296 lines)
 
 **Features:**
+
 - **Variants**:
   - Default - Card with progress bar
   - Compact - Inline status
@@ -591,6 +631,7 @@ function SyncButton() {
   - Centered card
 
 **Components:**
+
 ```typescript
 // Default progress
 <SyncProgress detailed={true} />
@@ -610,9 +651,11 @@ function SyncButton() {
 ### 8. Service Worker ✅
 
 #### File: `/public/sw.js`
+
 **Status:** ✅ Complete (113 lines)
 
 **Features:**
+
 - **Cache Management**:
   - Static cache - App shell files
   - Dynamic cache - Dynamic content
@@ -632,6 +675,7 @@ function SyncButton() {
   - Default fallback
 
 **Cache Strategies:**
+
 ```javascript
 // Images: Cache First
 /\.(png|jpg|jpeg|gif|svg|webp)$/i
@@ -821,42 +865,49 @@ Everything else
 ## Architecture Highlights
 
 ### 1. **Type Safety**
+
 - Full TypeScript coverage
 - Comprehensive type definitions
 - Generic type support
 - Interface segregation
 
 ### 2. **Modular Design**
+
 - 16 focused modules
 - Clear separation of concerns
 - Singleton patterns where appropriate
 - Easy to test and maintain
 
 ### 3. **Event-Driven**
+
 - Subscribe/unsubscribe pattern
 - Event types for all operations
 - Listener error isolation
 - Immediate notification on subscribe
 
 ### 4. **Performance Optimized**
+
 - IndexedDB for fast storage
 - LRU cache eviction
 - Batch operations
 - Concurrent request limiting
 
 ### 5. **Error Handling**
+
 - Try-catch throughout
 - Proper error messages
 - Retry mechanisms
 - Graceful degradation
 
 ### 6. **React Integration**
+
 - Custom hooks
 - Automatic state updates
 - Component-ready
 - TypeScript support
 
 ### 7. **Progressive Enhancement**
+
 - Works without Network Information API
 - Works without Battery API
 - Fallback mechanisms
@@ -906,249 +957,259 @@ Database: nchat-offline (v1)
 ### Core Managers
 
 #### SyncManager
+
 ```typescript
-const syncManager = getSyncManager(config);
-await syncManager.initialize();
+const syncManager = getSyncManager(config)
+await syncManager.initialize()
 
 // Operations
-await syncManager.fullSync();
-await syncManager.incrementalSync();
-await syncManager.syncChannel(channelId);
-await syncManager.flushQueue();
+await syncManager.fullSync()
+await syncManager.incrementalSync()
+await syncManager.syncChannel(channelId)
+await syncManager.flushQueue()
 
 // Control
-syncManager.pause();
-syncManager.resume();
-syncManager.startAutoSync();
-syncManager.stopAutoSync();
+syncManager.pause()
+syncManager.resume()
+syncManager.startAutoSync()
+syncManager.stopAutoSync()
 
 // State
-const state = syncManager.getState();
-const isSyncing = syncManager.isSyncInProgress();
+const state = syncManager.getState()
+const isSyncing = syncManager.isSyncInProgress()
 
 // Events
 const unsubscribe = syncManager.subscribe((event) => {
-  console.log(event.type, event.data);
-});
+  console.log(event.type, event.data)
+})
 
 // Config
-syncManager.setConfig({ syncInterval: 60000 });
-const config = syncManager.getConfig();
+syncManager.setConfig({ syncInterval: 60000 })
+const config = syncManager.getConfig()
 ```
 
 #### SyncQueue
+
 ```typescript
-const queue = getSyncQueue(config);
-await queue.initialize();
+const queue = getSyncQueue(config)
+await queue.initialize()
 
 // Add items
 await queue.add('message', 'create', messageData, {
   priority: 10,
-  channelId: 'ch-1'
-});
+  channelId: 'ch-1',
+})
 
 // Process
-const result = await queue.process();
-await queue.retryFailed();
+const result = await queue.process()
+await queue.retryFailed()
 
 // Query
-const pending = await queue.getPending();
-const failed = await queue.getFailed();
-const count = await queue.countPending();
+const pending = await queue.getPending()
+const failed = await queue.getFailed()
+const count = await queue.countPending()
 
 // Processors
 queue.registerProcessor('message', async (item) => {
-  await sendMessageToServer(item.data);
-});
+  await sendMessageToServer(item.data)
+})
 
 // Events
 queue.subscribe((event) => {
   if (event.type === 'item_completed') {
-    console.log('Item completed:', event.item);
+    console.log('Item completed:', event.item)
   }
-});
+})
 ```
 
 #### ConflictResolver
+
 ```typescript
-const resolver = getConflictResolver();
+const resolver = getConflictResolver()
 
 // Auto resolve
-const resolution = await resolver.autoResolve(conflict);
+const resolution = await resolver.autoResolve(conflict)
 
 // Manual strategy
-const resolution = await resolver.resolve(conflict, 'last_write_wins');
+const resolution = await resolver.resolve(conflict, 'last_write_wins')
 
 // Batch resolve
-const resolutions = await resolver.resolveMany(conflicts, 'merge');
+const resolutions = await resolver.resolveMany(conflicts, 'merge')
 
 // User choice
 resolver.setUserChoiceCallback(async (conflict) => {
-  return await showConflictUI(conflict);
-});
+  return await showConflictUI(conflict)
+})
 
 // Detect conflicts
-const conflict = resolver.detectConflict(local, remote);
+const conflict = resolver.detectConflict(local, remote)
 ```
 
 #### AttachmentCache
+
 ```typescript
-const cache = getAttachmentCache(config);
-await cache.initialize();
+const cache = getAttachmentCache(config)
+await cache.initialize()
 
 // Download and cache
 const attachment = await cache.download(url, info, (progress) => {
-  console.log(`${progress.percent}%`);
-});
+  console.log(`${progress.percent}%`)
+})
 
 // Get
-const cached = await cache.get(id);
-const byMessage = await cache.getByMessage(messageId);
+const cached = await cache.get(id)
+const byMessage = await cache.getByMessage(messageId)
 
 // URLs
-const dataUrl = await cache.getDataUrl(id);
-const thumbnail = await cache.getThumbnailDataUrl(id);
+const dataUrl = await cache.getDataUrl(id)
+const thumbnail = await cache.getThumbnailDataUrl(id)
 
 // Management
-const stats = await cache.getStats();
-await cache.setMaxSize(150 * 1024 * 1024); // 150MB
-await cache.clear();
+const stats = await cache.getStats()
+await cache.setMaxSize(150 * 1024 * 1024) // 150MB
+await cache.clear()
 ```
 
 #### NetworkDetector
+
 ```typescript
-const detector = getNetworkDetector();
+const detector = getNetworkDetector()
 
 // State
-const isOnline = detector.isOnline();
-const quality = detector.getQuality();
-const info = detector.getInfo();
+const isOnline = detector.isOnline()
+const quality = detector.getQuality()
+const info = detector.getInfo()
 
 // Checks
-const isConnected = await detector.checkConnectivity();
-const isSlow = detector.isSlowConnection();
-const saveData = detector.isSaveDataEnabled();
+const isConnected = await detector.checkConnectivity()
+const isSlow = detector.isSlowConnection()
+const saveData = detector.isSaveDataEnabled()
 
 // Monitor
-detector.startPeriodicCheck(10000, '/api/health');
-detector.stopPeriodicCheck();
+detector.startPeriodicCheck(10000, '/api/health')
+detector.stopPeriodicCheck()
 
 // Subscribe
 const unsubscribe = detector.subscribe((info) => {
-  console.log('Connection:', info.state, info.quality);
-});
+  console.log('Connection:', info.state, info.quality)
+})
 ```
 
 ### React Hooks
 
 #### useOffline
+
 ```typescript
-const { state, actions } = useOffline();
+const { state, actions } = useOffline()
 
 // State
-state.isOnline            // boolean
-state.connectionInfo      // ConnectionInfo
-state.isSyncing          // boolean
-state.syncState          // SyncState
-state.lastSyncAt         // Date | null
-state.pendingCount       // number
-state.queuedActions      // QueuedAction[]
-state.cacheStats         // { channels, messages, users, queue, size }
+state.isOnline // boolean
+state.connectionInfo // ConnectionInfo
+state.isSyncing // boolean
+state.syncState // SyncState
+state.lastSyncAt // Date | null
+state.pendingCount // number
+state.queuedActions // QueuedAction[]
+state.cacheStats // { channels, messages, users, queue, size }
 
 // Actions
-await actions.checkConnectivity();
-await actions.syncNow();
-actions.pauseSync();
-actions.resumeSync();
-await actions.retryFailed();
-await actions.clearQueue();
-await actions.clearCache();
-await actions.refreshStats();
+await actions.checkConnectivity()
+await actions.syncNow()
+actions.pauseSync()
+actions.resumeSync()
+await actions.retryFailed()
+await actions.clearQueue()
+await actions.clearCache()
+await actions.refreshStats()
 ```
 
 #### useSync
+
 ```typescript
-const sync = useSync();
+const sync = useSync()
 
 // State
-sync.state       // SyncState (full)
-sync.isSyncing   // boolean
-sync.error       // string | null
+sync.state // SyncState (full)
+sync.isSyncing // boolean
+sync.error // string | null
 
 // Actions
-await sync.syncNow();
-await sync.fullSync();
-await sync.syncChannel(id);
-await sync.flushQueue();
-sync.pause();
-sync.resume();
-sync.setAutoSync(true);
-sync.setSyncInterval(60000);
+await sync.syncNow()
+await sync.fullSync()
+await sync.syncChannel(id)
+await sync.flushQueue()
+sync.pause()
+sync.resume()
+sync.setAutoSync(true)
+sync.setSyncInterval(60000)
 ```
 
 ### Storage APIs
 
 #### channelStorage
+
 ```typescript
 // Get
-const channel = await channelStorage.get(id);
-const all = await channelStorage.getAll();
-const public = await channelStorage.getByType('public');
+const channel = await channelStorage.get(id)
+const all = await channelStorage.getAll()
+const public = await channelStorage.getByType('public')
 
 // Save
-await channelStorage.save(channel);
-await channelStorage.saveMany(channels);
+await channelStorage.save(channel)
+await channelStorage.saveMany(channels)
 
 // Delete
-await channelStorage.remove(id);
-await channelStorage.clear();
+await channelStorage.remove(id)
+await channelStorage.clear()
 
 // Count
-const count = await channelStorage.count();
+const count = await channelStorage.count()
 ```
 
 #### messageStorage
+
 ```typescript
 // Get
-const message = await messageStorage.get(id);
-const messages = await messageStorage.getByChannel(channelId, limit);
-const pending = await messageStorage.getPending();
+const message = await messageStorage.get(id)
+const messages = await messageStorage.getByChannel(channelId, limit)
+const pending = await messageStorage.getPending()
 
 // Save
-await messageStorage.save(message);
-await messageStorage.saveMany(messages);
+await messageStorage.save(message)
+await messageStorage.saveMany(messages)
 
 // Delete
-await messageStorage.remove(id);
-await messageStorage.removeByChannel(channelId);
-await messageStorage.clear();
+await messageStorage.remove(id)
+await messageStorage.removeByChannel(channelId)
+await messageStorage.clear()
 
 // Count
-const count = await messageStorage.count();
-const channelCount = await messageStorage.countByChannel(channelId);
+const count = await messageStorage.count()
+const channelCount = await messageStorage.countByChannel(channelId)
 ```
 
 #### queueStorage
+
 ```typescript
 // Get
-const action = await queueStorage.get(id);
-const all = await queueStorage.getAll();
-const pending = await queueStorage.getPending();
-const byType = await queueStorage.getByType('send_message');
-const byChannel = await queueStorage.getByChannel(channelId);
+const action = await queueStorage.get(id)
+const all = await queueStorage.getAll()
+const pending = await queueStorage.getPending()
+const byType = await queueStorage.getByType('send_message')
+const byChannel = await queueStorage.getByChannel(channelId)
 
 // Add/Update
-await queueStorage.add(action);
-await queueStorage.update(id, { status: 'completed' });
+await queueStorage.add(action)
+await queueStorage.update(id, { status: 'completed' })
 
 // Delete
-await queueStorage.remove(id);
-await queueStorage.removeCompleted();
-await queueStorage.clear();
+await queueStorage.remove(id)
+await queueStorage.removeCompleted()
+await queueStorage.clear()
 
 // Count
-const total = await queueStorage.count();
-const pendingCount = await queueStorage.countPending();
+const total = await queueStorage.count()
+const pendingCount = await queueStorage.countPending()
 ```
 
 ---
@@ -1161,19 +1222,19 @@ const pendingCount = await queueStorage.countPending();
 const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
   // Cache settings
   cacheEnabled: true,
-  maxCacheSize: 50 * 1024 * 1024,  // 50MB
-  maxCacheAge: 7 * 24 * 60 * 60 * 1000,  // 7 days
+  maxCacheSize: 50 * 1024 * 1024, // 50MB
+  maxCacheAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   cacheChannelMessages: 100,
   cacheChannels: 50,
 
   // Queue settings
   queueEnabled: true,
   maxQueueSize: 100,
-  maxQueueAge: 24 * 60 * 60 * 1000,  // 24 hours
+  maxQueueAge: 24 * 60 * 60 * 1000, // 24 hours
 
   // Sync settings
   autoSync: true,
-  syncInterval: 30 * 1000,  // 30 seconds
+  syncInterval: 30 * 1000, // 30 seconds
   syncOnReconnect: true,
   backgroundSync: true,
 
@@ -1193,9 +1254,9 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
   networkCheckUrl: '/api/health',
 
   // Storage settings
-  storageWarningThreshold: 40 * 1024 * 1024,  // 40MB
-  storageCriticalThreshold: 48 * 1024 * 1024,  // 48MB
-};
+  storageWarningThreshold: 40 * 1024 * 1024, // 40MB
+  storageCriticalThreshold: 48 * 1024 * 1024, // 48MB
+}
 ```
 
 ---
@@ -1203,6 +1264,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 ## Testing Recommendations
 
 ### Unit Tests
+
 ```typescript
 // Network detection
 ✓ Network state changes
@@ -1232,6 +1294,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 ```
 
 ### Integration Tests
+
 ```typescript
 // Offline workflow
 ✓ Go offline
@@ -1255,6 +1318,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 ```
 
 ### E2E Tests
+
 ```typescript
 // Complete user flow
 ✓ User goes offline
@@ -1275,46 +1339,49 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 
 ### Expected Performance
 
-| Operation | Time | Notes |
-|-----------|------|-------|
-| IndexedDB write | <10ms | Single message |
-| IndexedDB read | <5ms | Query by index |
-| Sync queue item | <20ms | Add to queue |
-| Network check | <100ms | Ping request |
-| Full sync | 1-5s | Depends on data size |
-| Incremental sync | <500ms | Recent changes only |
-| Attachment cache | <50ms | Store blob |
-| Thumbnail generation | 100-300ms | Image processing |
-| LRU eviction | <100ms | 10 attachments |
+| Operation            | Time      | Notes                |
+| -------------------- | --------- | -------------------- |
+| IndexedDB write      | <10ms     | Single message       |
+| IndexedDB read       | <5ms      | Query by index       |
+| Sync queue item      | <20ms     | Add to queue         |
+| Network check        | <100ms    | Ping request         |
+| Full sync            | 1-5s      | Depends on data size |
+| Incremental sync     | <500ms    | Recent changes only  |
+| Attachment cache     | <50ms     | Store blob           |
+| Thumbnail generation | 100-300ms | Image processing     |
+| LRU eviction         | <100ms    | 10 attachments       |
 
 ### Storage Usage
 
-| Data Type | Avg Size | Max Items | Total |
-|-----------|----------|-----------|-------|
-| Channel | 500B | 50 | 25KB |
-| Message | 1KB | 5000 | 5MB |
-| User | 300B | 200 | 60KB |
-| Queue item | 500B | 100 | 50KB |
-| Attachment | Variable | LRU | 100MB |
-| **Total** | | | **~105MB** |
+| Data Type  | Avg Size | Max Items | Total      |
+| ---------- | -------- | --------- | ---------- |
+| Channel    | 500B     | 50        | 25KB       |
+| Message    | 1KB      | 5000      | 5MB        |
+| User       | 300B     | 200       | 60KB       |
+| Queue item | 500B     | 100       | 50KB       |
+| Attachment | Variable | LRU       | 100MB      |
+| **Total**  |          |           | **~105MB** |
 
 ---
 
 ## Browser Compatibility
 
 ### Core Features
+
 - ✅ Chrome 90+
 - ✅ Firefox 88+
 - ✅ Safari 14+
 - ✅ Edge 90+
 
 ### Advanced Features
+
 - ✅ Network Information API - Chrome, Edge (limited Safari/Firefox)
 - ✅ Battery API - Chrome, Edge (not Safari/Firefox)
 - ✅ Service Worker - All modern browsers
 - ✅ IndexedDB - All modern browsers
 
 ### Fallbacks
+
 - Network quality - Falls back to RTT measurement
 - Battery status - Continues without battery awareness
 - Service Worker - App still works without SW
@@ -1324,6 +1391,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 ## Deployment Checklist
 
 ### Pre-Deployment
+
 - [x] All TypeScript compiles without errors
 - [x] IndexedDB schema is finalized
 - [x] Service Worker registered correctly
@@ -1332,6 +1400,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 - [x] Logging is appropriate for production
 
 ### Deployment
+
 - [ ] Set production sync interval
 - [ ] Configure API health check endpoint
 - [ ] Set appropriate cache sizes for production
@@ -1342,6 +1411,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 - [ ] Test offline-to-online transition
 
 ### Post-Deployment
+
 - [ ] Monitor sync success rates
 - [ ] Track queue processing times
 - [ ] Watch for IndexedDB errors
@@ -1355,6 +1425,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 ## Next Steps
 
 ### Short-term Enhancements
+
 1. Add GraphQL integration for actual data fetching
 2. Implement real server API calls in processors
 3. Add analytics tracking for offline usage
@@ -1362,6 +1433,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 5. Add user notifications for sync status
 
 ### Medium-term Improvements
+
 1. Implement differential sync for large datasets
 2. Add compression for cached data
 3. Implement partial attachment downloads
@@ -1369,6 +1441,7 @@ const DEFAULT_OFFLINE_CONFIG: OfflineConfig = {
 5. Implement smart prefetching
 
 ### Long-term Goals
+
 1. Implement CRDTs for better conflict resolution
 2. Add multi-device sync coordination
 3. Implement mesh networking for peer-to-peer

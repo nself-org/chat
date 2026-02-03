@@ -38,6 +38,7 @@ Then update the Sessions tab content:
 ### Why This Approach?
 
 The new `SessionManagement` component includes:
+
 - All features from `ActiveSessions`
 - Enhanced security notifications
 - Suspicious activity detection
@@ -181,9 +182,9 @@ export function MyCustomSessionView() {
 import { sessionManager } from '@/lib/auth/session-manager'
 
 sessionManager.updateConfig({
-  sessionTimeout: 1440,      // 24 hours
-  idleTimeout: 60,           // 1 hour
-  rememberMeDuration: 90,    // 90 days
+  sessionTimeout: 1440, // 24 hours
+  idleTimeout: 60, // 1 hour
+  rememberMeDuration: 90, // 90 days
   maxConcurrentSessions: 20, // 20 sessions max
 })
 ```
@@ -192,8 +193,8 @@ sessionManager.updateConfig({
 
 ```typescript
 sessionManager.updateConfig({
-  suspiciousActivityThreshold: 80,  // Stricter (only flag high-risk)
-  geoAnomalyDistanceKm: 1000,       // 1000km before alert
+  suspiciousActivityThreshold: 80, // Stricter (only flag high-risk)
+  geoAnomalyDistanceKm: 1000, // 1000km before alert
   detectSuspiciousActivity: true,
   detectGeoAnomaly: true,
   notifyNewLogin: true,
@@ -396,6 +397,7 @@ Before deploying to production:
 ### High Security Scores
 
 This is expected if:
+
 - Testing from multiple locations rapidly
 - Using different browsers/devices
 - Logging in at unusual times

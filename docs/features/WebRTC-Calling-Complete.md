@@ -198,6 +198,7 @@ nself db migrate up
 ```
 
 This creates the following tables:
+
 - `nchat_calls`
 - `nchat_call_participants`
 - `nchat_call_events`
@@ -338,6 +339,7 @@ CREATE TYPE nchat_call_participant_status AS ENUM (
 Initiates a new voice or video call.
 
 **Request Body:**
+
 ```json
 {
   "callId": "call-uuid",
@@ -349,6 +351,7 @@ Initiates a new voice or video call.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -366,6 +369,7 @@ Initiates a new voice or video call.
 Accepts an incoming call.
 
 **Request Body:**
+
 ```json
 {
   "callId": "call-uuid"
@@ -373,6 +377,7 @@ Accepts an incoming call.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -391,6 +396,7 @@ Accepts an incoming call.
 Declines an incoming call.
 
 **Request Body:**
+
 ```json
 {
   "callId": "call-uuid",
@@ -403,10 +409,11 @@ Declines an incoming call.
 Ends an active call.
 
 **Request Body:**
+
 ```json
 {
   "callId": "call-uuid",
-  "duration": 120,  // seconds
+  "duration": 120, // seconds
   "reason": "completed"
 }
 ```
@@ -430,6 +437,7 @@ import { CallInvitation } from '@/components/calls/CallInvitation'
 ```
 
 **Features:**
+
 - Full-screen overlay for incoming calls
 - Caller information display
 - Accept/Decline buttons
@@ -452,6 +460,7 @@ import { VideoCallModal } from '@/components/calls/VideoCallModal'
 ```
 
 **Features:**
+
 - Full-screen video interface
 - Grid and speaker view layouts
 - Video controls (mute, camera, screen share, end)
@@ -643,6 +652,7 @@ INSERT INTO nchat_ice_servers (
 ```
 
 Default STUN servers are automatically seeded:
+
 - stun:stun.l.google.com:19302
 - stun:stun1.l.google.com:19302
 - stun:stun2.l.google.com:19302
@@ -715,6 +725,7 @@ pnpm test:e2e tests/e2e/calls.spec.ts
 **Problem:** Camera or microphone not working.
 
 **Solution:**
+
 - Check browser permissions
 - Ensure HTTPS or localhost
 - Verify device availability with `navigator.mediaDevices.enumerateDevices()`
@@ -725,6 +736,7 @@ pnpm test:e2e tests/e2e/calls.spec.ts
 **Problem:** WebRTC connection fails to establish.
 
 **Solution:**
+
 - Verify STUN/TURN server configuration
 - Check firewall settings (UDP ports)
 - Test with different network conditions
@@ -735,6 +747,7 @@ pnpm test:e2e tests/e2e/calls.spec.ts
 **Problem:** Low video quality or choppy audio.
 
 **Solution:**
+
 - Check network bandwidth
 - Enable adaptive bitrate
 - Reduce video quality preset
@@ -745,6 +758,7 @@ pnpm test:e2e tests/e2e/calls.spec.ts
 **Problem:** Audio echo during calls.
 
 **Solution:**
+
 - Use headphones
 - Enable echo cancellation
 - Check for multiple audio sources
@@ -777,8 +791,8 @@ const constraints = {
     width: { ideal: 1280 },
     height: { ideal: 720 },
     frameRate: { ideal: 30, max: 60 },
-    bitrate: { target: 1000000, max: 2500000 } // bps
-  }
+    bitrate: { target: 1000000, max: 2500000 }, // bps
+  },
 }
 ```
 
@@ -793,7 +807,7 @@ const simulcastConfig = {
     { rid: 'high', maxBitrate: 2500000, scaleResolutionDownBy: 1 },
     { rid: 'medium', maxBitrate: 800000, scaleResolutionDownBy: 2 },
     { rid: 'low', maxBitrate: 200000, scaleResolutionDownBy: 4 },
-  ]
+  ],
 }
 ```
 
@@ -849,18 +863,21 @@ WHERE id = call_id
 ## Roadmap
 
 ### v0.4.1 (Q1 2026)
+
 - [ ] Call transfer support
 - [ ] Call hold/resume
 - [ ] Conference bridge numbers
 - [ ] Voicemail system
 
 ### v0.4.2 (Q2 2026)
+
 - [ ] Advanced call analytics
 - [ ] AI-powered noise suppression
 - [ ] Virtual backgrounds
 - [ ] Live transcription/captions
 
 ### v0.5.0 (Q3 2026)
+
 - [ ] SIP gateway integration
 - [ ] PSTN calling support
 - [ ] Advanced call routing
@@ -871,16 +888,19 @@ WHERE id = call_id
 ## Support and Resources
 
 ### Documentation
+
 - [Voice Calling Quick Start](./Voice-Calling-Quick-Start.md)
 - [Media Server Setup](./Media-Server-Setup.md)
 - [WebRTC Best Practices](../guides/WebRTC-Best-Practices.md)
 
 ### Community
+
 - GitHub Issues: https://github.com/your-org/nself-chat/issues
 - Discord: https://discord.gg/nself-chat
 - Email: support@nself.chat
 
 ### Credits
+
 - Built with [MediaSoup](https://mediasoup.org/)
 - WebRTC implementation based on [Simple Peer](https://github.com/feross/simple-peer)
 - UI components from [Radix UI](https://www.radix-ui.com/)

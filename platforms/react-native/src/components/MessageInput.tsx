@@ -120,10 +120,7 @@ export function MessageInput({
             <Text style={[styles.replyLabel, { color: theme.colors.primary }]}>
               Replying to {replyTo.senderId}
             </Text>
-            <Text
-              style={[styles.replyText, { color: theme.colors.muted }]}
-              numberOfLines={1}
-            >
+            <Text style={[styles.replyText, { color: theme.colors.muted }]} numberOfLines={1}>
               {replyTo.content}
             </Text>
           </View>
@@ -140,33 +137,25 @@ export function MessageInput({
             <View style={[styles.attachmentIcon, { backgroundColor: theme.colors.primary }]}>
               <Text style={{ color: '#FFFFFF' }}>image</Text>
             </View>
-            <Text style={[styles.attachmentLabel, { color: theme.colors.text }]}>
-              Photo
-            </Text>
+            <Text style={[styles.attachmentLabel, { color: theme.colors.text }]}>Photo</Text>
           </Pressable>
           <Pressable style={styles.attachmentOption}>
             <View style={[styles.attachmentIcon, { backgroundColor: theme.colors.secondary }]}>
               <Text style={{ color: '#FFFFFF' }}>video</Text>
             </View>
-            <Text style={[styles.attachmentLabel, { color: theme.colors.text }]}>
-              Video
-            </Text>
+            <Text style={[styles.attachmentLabel, { color: theme.colors.text }]}>Video</Text>
           </Pressable>
           <Pressable style={styles.attachmentOption}>
             <View style={[styles.attachmentIcon, { backgroundColor: theme.colors.accent }]}>
               <Text style={{ color: '#FFFFFF' }}>file</Text>
             </View>
-            <Text style={[styles.attachmentLabel, { color: theme.colors.text }]}>
-              File
-            </Text>
+            <Text style={[styles.attachmentLabel, { color: theme.colors.text }]}>File</Text>
           </Pressable>
           <Pressable style={styles.attachmentOption}>
             <View style={[styles.attachmentIcon, { backgroundColor: theme.colors.success }]}>
               <Text style={{ color: '#FFFFFF' }}>location</Text>
             </View>
-            <Text style={[styles.attachmentLabel, { color: theme.colors.text }]}>
-              Location
-            </Text>
+            <Text style={[styles.attachmentLabel, { color: theme.colors.text }]}>Location</Text>
           </Pressable>
         </View>
       )}
@@ -233,9 +222,7 @@ export function MessageInput({
                   : 1,
               }}
             >
-              <Text style={{ color: isRecording ? '#FFFFFF' : theme.colors.muted }}>
-                mic
-              </Text>
+              <Text style={{ color: isRecording ? '#FFFFFF' : theme.colors.muted }}>mic</Text>
             </Animated.View>
           </Pressable>
         )}

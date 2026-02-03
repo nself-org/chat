@@ -10,7 +10,7 @@ import type {
   ActivityFilters,
   ActivityCategory,
   ActivityType,
-} from './activity-types';
+} from './activity-types'
 
 // =============================================================================
 // Filter Functions
@@ -19,68 +19,53 @@ import type {
 /**
  * Filter activities by category
  */
-export function filterByCategory(
-  activities: Activity[],
-  category: ActivityCategory
-): Activity[] {
+export function filterByCategory(activities: Activity[], category: ActivityCategory): Activity[] {
   if (category === 'all') {
-    return activities;
+    return activities
   }
-  return activities.filter((activity) => activity.category === category);
+  return activities.filter((activity) => activity.category === category)
 }
 
 /**
  * Filter activities by types
  */
-export function filterByTypes(
-  activities: Activity[],
-  types: ActivityType[]
-): Activity[] {
+export function filterByTypes(activities: Activity[], types: ActivityType[]): Activity[] {
   if (types.length === 0) {
-    return activities;
+    return activities
   }
-  return activities.filter((activity) => types.includes(activity.type));
+  return activities.filter((activity) => types.includes(activity.type))
 }
 
 /**
  * Filter activities by channel IDs
  */
-export function filterByChannels(
-  activities: Activity[],
-  channelIds: string[]
-): Activity[] {
+export function filterByChannels(activities: Activity[], channelIds: string[]): Activity[] {
   if (channelIds.length === 0) {
-    return activities;
+    return activities
   }
   return activities.filter((activity) => {
     if ('channel' in activity && activity.channel) {
-      return channelIds.includes(activity.channel.id);
+      return channelIds.includes(activity.channel.id)
     }
-    return false;
-  });
+    return false
+  })
 }
 
 /**
  * Filter activities by user IDs (actors)
  */
-export function filterByUsers(
-  activities: Activity[],
-  userIds: string[]
-): Activity[] {
+export function filterByUsers(activities: Activity[], userIds: string[]): Activity[] {
   if (userIds.length === 0) {
-    return activities;
+    return activities
   }
-  return activities.filter((activity) => userIds.includes(activity.actor.id));
+  return activities.filter((activity) => userIds.includes(activity.actor.id))
 }
 
 /**
  * Filter activities by read status
  */
-export function filterByReadStatus(
-  activities: Activity[],
-  isRead: boolean
-): Activity[] {
-  return activities.filter((activity) => activity.isRead === isRead);
+export function filterByReadStatus(activities: Activity[], isRead: boolean): Activity[] {
+  return activities.filter((activity) => activity.isRead === isRead)
 }
 
 /**
@@ -91,9 +76,9 @@ export function filterByPriority(
   priorities: Activity['priority'][]
 ): Activity[] {
   if (priorities.length === 0) {
-    return activities;
+    return activities
   }
-  return activities.filter((activity) => priorities.includes(activity.priority));
+  return activities.filter((activity) => priorities.includes(activity.priority))
 }
 
 /**
@@ -105,133 +90,127 @@ export function filterByDateRange(
   dateTo?: string
 ): Activity[] {
   return activities.filter((activity) => {
-    const activityDate = new Date(activity.createdAt);
+    const activityDate = new Date(activity.createdAt)
 
     if (dateFrom) {
-      const from = new Date(dateFrom);
+      const from = new Date(dateFrom)
       if (activityDate < from) {
-        return false;
+        return false
       }
     }
 
     if (dateTo) {
-      const to = new Date(dateTo);
+      const to = new Date(dateTo)
       if (activityDate > to) {
-        return false;
+        return false
       }
     }
 
-    return true;
-  });
+    return true
+  })
 }
 
 /**
  * Filter activities by search query
  * Searches in message content, channel name, actor name, etc.
  */
-export function filterBySearchQuery(
-  activities: Activity[],
-  query: string
-): Activity[] {
+export function filterBySearchQuery(activities: Activity[], query: string): Activity[] {
   if (!query.trim()) {
-    return activities;
+    return activities
   }
 
-  const normalizedQuery = query.toLowerCase().trim();
+  const normalizedQuery = query.toLowerCase().trim()
 
   return activities.filter((activity) => {
     // Search in actor name
     if (activity.actor.displayName?.toLowerCase().includes(normalizedQuery)) {
-      return true;
+      return true
     }
     if (activity.actor.username?.toLowerCase().includes(normalizedQuery)) {
-      return true;
+      return true
     }
 
     // Search in channel name
     if ('channel' in activity && activity.channel) {
       if (activity.channel.name.toLowerCase().includes(normalizedQuery)) {
-        return true;
+        return true
       }
     }
 
     // Search in message content
     if ('message' in activity && activity.message) {
       if (activity.message.content.toLowerCase().includes(normalizedQuery)) {
-        return true;
+        return true
       }
     }
 
     // Search in file name
     if (activity.type === 'file_shared') {
       if (activity.file.name.toLowerCase().includes(normalizedQuery)) {
-        return true;
+        return true
       }
     }
 
     // Search in task title
     if (activity.type === 'task_completed' || activity.type === 'task_assigned') {
       if (activity.task.title.toLowerCase().includes(normalizedQuery)) {
-        return true;
+        return true
       }
     }
 
     // Search in system activity
     if (activity.type === 'system') {
       if (activity.title.toLowerCase().includes(normalizedQuery)) {
-        return true;
+        return true
       }
       if (activity.body.toLowerCase().includes(normalizedQuery)) {
-        return true;
+        return true
       }
     }
 
-    return false;
-  });
+    return false
+  })
 }
 
 /**
  * Apply all filters to activities
  */
-export function applyFilters(
-  activities: Activity[],
-  filters: ActivityFilters
-): Activity[] {
-  let filtered = activities;
+export function applyFilters(activities: Activity[], filters: ActivityFilters): Activity[] {
+  let filtered = activities
 
   if (filters.category) {
-    filtered = filterByCategory(filtered, filters.category);
+    filtered = filterByCategory(filtered, filters.category)
   }
 
   if (filters.types && filters.types.length > 0) {
-    filtered = filterByTypes(filtered, filters.types);
+    filtered = filterByTypes(filtered, filters.types)
   }
 
   if (filters.channelIds && filters.channelIds.length > 0) {
-    filtered = filterByChannels(filtered, filters.channelIds);
+    filtered = filterByChannels(filtered, filters.channelIds)
   }
 
   if (filters.userIds && filters.userIds.length > 0) {
-    filtered = filterByUsers(filtered, filters.userIds);
+    filtered = filterByUsers(filtered, filters.userIds)
   }
 
   if (typeof filters.isRead === 'boolean') {
-    filtered = filterByReadStatus(filtered, filters.isRead);
+    filtered = filterByReadStatus(filtered, filters.isRead)
   }
 
   if (filters.priority && filters.priority.length > 0) {
-    filtered = filterByPriority(filtered, filters.priority);
+    filtered = filterByPriority(filtered, filters.priority)
   }
 
   if (filters.dateFrom || filters.dateTo) {
-    filtered = filterByDateRange(filtered, filters.dateFrom, filters.dateTo);
+    filtered = filterByDateRange(filtered, filters.dateFrom, filters.dateTo)
   }
 
   if (filters.searchQuery) {
-    filtered = filterBySearchQuery(filtered, filters.searchQuery);
+    filtered = filterBySearchQuery(filtered, filters.searchQuery)
   }
 
-  return filtered;
+  return filtered
 }
 
 // =============================================================================
@@ -261,19 +240,19 @@ export const ACTIVITY_TYPE_TO_CATEGORY: Record<ActivityType, ActivityCategory> =
   task_assigned: 'tasks',
   integration_event: 'integrations',
   system: 'all',
-};
+}
 
 /**
  * Get activity types for a category
  */
 export function getTypesForCategory(category: ActivityCategory): ActivityType[] {
   if (category === 'all') {
-    return Object.keys(ACTIVITY_TYPE_TO_CATEGORY) as ActivityType[];
+    return Object.keys(ACTIVITY_TYPE_TO_CATEGORY) as ActivityType[]
   }
 
   return (Object.entries(ACTIVITY_TYPE_TO_CATEGORY) as [ActivityType, ActivityCategory][])
     .filter(([_, cat]) => cat === category)
-    .map(([type]) => type);
+    .map(([type]) => type)
 }
 
 /**
@@ -291,9 +270,9 @@ export function getCategoryLabel(category: ActivityCategory): string {
     calls: 'Calls',
     tasks: 'Tasks',
     integrations: 'Integrations',
-  };
+  }
 
-  return labels[category] || category;
+  return labels[category] || category
 }
 
 /**
@@ -311,23 +290,21 @@ export function getAllCategories(): ActivityCategory[] {
     'calls',
     'tasks',
     'integrations',
-  ];
+  ]
 }
 
 /**
  * Get categories with activities
  */
-export function getCategoriesWithActivities(
-  activities: Activity[]
-): ActivityCategory[] {
-  const categories = new Set<ActivityCategory>();
-  categories.add('all'); // Always include 'all'
+export function getCategoriesWithActivities(activities: Activity[]): ActivityCategory[] {
+  const categories = new Set<ActivityCategory>()
+  categories.add('all') // Always include 'all'
 
   activities.forEach((activity) => {
-    categories.add(activity.category);
-  });
+    categories.add(activity.category)
+  })
 
-  return Array.from(categories);
+  return Array.from(categories)
 }
 
 // =============================================================================
@@ -341,11 +318,10 @@ export function getUnreadCountByCategory(
   activities: Activity[],
   category: ActivityCategory
 ): number {
-  const filtered = category === 'all'
-    ? activities
-    : activities.filter((a) => a.category === category);
+  const filtered =
+    category === 'all' ? activities : activities.filter((a) => a.category === category)
 
-  return filtered.filter((a) => !a.isRead).length;
+  return filtered.filter((a) => !a.isRead).length
 }
 
 /**
@@ -365,18 +341,18 @@ export function getCountsByCategory(
     calls: { total: 0, unread: 0 },
     tasks: { total: 0, unread: 0 },
     integrations: { total: 0, unread: 0 },
-  };
+  }
 
   activities.forEach((activity) => {
-    const category = activity.category;
-    counts[category].total++;
+    const category = activity.category
+    counts[category].total++
     if (!activity.isRead) {
-      counts[category].unread++;
-      counts.all.unread++;
+      counts[category].unread++
+      counts.all.unread++
     }
-  });
+  })
 
-  return counts;
+  return counts
 }
 
 // =============================================================================
@@ -401,13 +377,13 @@ export const QUICK_FILTERS = {
   highPriority: {
     priority: ['high', 'urgent'] as Activity['priority'][],
   },
-} as const;
+} as const
 
 /**
  * Get a quick filter by name
  */
 export function getQuickFilter(name: keyof typeof QUICK_FILTERS): ActivityFilters {
-  return QUICK_FILTERS[name] as ActivityFilters;
+  return QUICK_FILTERS[name] as ActivityFilters
 }
 
 /**
@@ -422,8 +398,8 @@ export function combineFilters(...filters: ActivityFilters[]): ActivityFilters {
       channelIds: [...(combined.channelIds || []), ...(filter.channelIds || [])],
       userIds: [...(combined.userIds || []), ...(filter.userIds || [])],
       priority: [...(combined.priority || []), ...(filter.priority || [])],
-    };
-  }, {} as ActivityFilters);
+    }
+  }, {} as ActivityFilters)
 }
 
 /**
@@ -440,12 +416,12 @@ export function hasActiveFilters(filters: ActivityFilters): boolean {
     filters.dateFrom !== undefined ||
     filters.dateTo !== undefined ||
     (filters.searchQuery !== undefined && filters.searchQuery.trim() !== '')
-  );
+  )
 }
 
 /**
  * Clear all filters (return to defaults)
  */
 export function clearFilters(): ActivityFilters {
-  return {};
+  return {}
 }

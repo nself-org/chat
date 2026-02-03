@@ -73,6 +73,7 @@ platforms/capacitor/
 ### Overview
 
 CallKit provides native iOS call integration, including:
+
 - System-level call screen
 - Lock screen call UI
 - Call history integration
@@ -84,6 +85,7 @@ CallKit provides native iOS call integration, including:
 #### 1. Enable CallKit Capability
 
 In Xcode, go to your project settings:
+
 - Select your target
 - Go to "Signing & Capabilities"
 - Add "Voice over IP" background mode
@@ -190,6 +192,7 @@ CallKit.addListener('callMuteChanged', (data) => {
 ### Overview
 
 Android Telecom Framework provides:
+
 - System-level call UI
 - Integration with system dialer
 - Call history
@@ -281,6 +284,7 @@ function CallScreen() {
 #### Native PiP (iOS/Android)
 
 The native implementations use:
+
 - **iOS**: `AVPictureInPictureController`
 - **Android**: `enterPictureInPictureMode()`
 
@@ -324,6 +328,7 @@ Keep calls active when the app is in the background or screen is locked.
 ### iOS Background Modes
 
 Configured in Info.plist:
+
 ```xml
 <key>UIBackgroundModes</key>
 <array>
@@ -525,12 +530,12 @@ function CallScreen() {
 
 ### Quality Levels
 
-| Battery Level | Video Quality | Frame Rate | Resolution |
-|--------------|---------------|------------|------------|
-| > 30% (or charging) | High | 30 fps | 720p |
-| 20-30% | Medium | 24 fps | 480p |
-| 10-20% | Low | 20 fps | 360p |
-| < 10% | Audio Only | N/A | N/A |
+| Battery Level       | Video Quality | Frame Rate | Resolution |
+| ------------------- | ------------- | ---------- | ---------- |
+| > 30% (or charging) | High          | 30 fps     | 720p       |
+| 20-30%              | Medium        | 24 fps     | 480p       |
+| 10-20%              | Low           | 20 fps     | 360p       |
+| < 10%               | Audio Only    | N/A        | N/A        |
 
 ### Battery-Saving Features
 
@@ -605,6 +610,7 @@ peerConnection.getStats().then((stats) => {
 ### Touch Target Sizes
 
 All interactive elements meet minimum touch target size:
+
 - **Minimum Size**: 44x44 pixels (Apple HIG)
 - **Preferred Size**: 48x48 pixels (Material Design)
 - **Spacing**: 8px minimum between targets
@@ -747,6 +753,7 @@ async function initiateCall(targetUser, callType) {
 **Issue**: CallKit UI not appearing
 
 **Solutions**:
+
 1. Check background modes are enabled in Xcode
 2. Verify CallKit initialization
 3. Check for correct entitlements
@@ -765,6 +772,7 @@ if (status.state !== 'granted') {
 **Issue**: Cannot make calls on Android
 
 **Solutions**:
+
 1. Request permissions at runtime
 2. Add all required permissions to manifest
 3. For Android 12+, add `READ_PHONE_NUMBERS`
@@ -782,6 +790,7 @@ if (!granted) {
 **Issue**: Picture-in-Picture mode fails
 
 **Solutions**:
+
 1. Check browser/OS support
 2. Verify video element exists
 3. Check PiP permissions
@@ -799,6 +808,7 @@ if (!isPiPSupported) {
 **Issue**: Calls end when app is backgrounded
 
 **Solutions**:
+
 1. Verify background modes configured
 2. Check WebRTC connection keepalive
 3. Implement reconnection logic
@@ -817,6 +827,7 @@ peerConnection.addEventListener('connectionstatechange', () => {
 **Issue**: Calls drain battery quickly
 
 **Solutions**:
+
 1. Enable battery optimization
 2. Reduce video quality
 3. Use audio-only mode
@@ -897,4 +908,4 @@ if (isLowBattery) {
 
 ---
 
-*Last Updated: January 30, 2026*
+_Last Updated: January 30, 2026_

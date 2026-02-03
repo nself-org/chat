@@ -4,9 +4,9 @@
  * Zustand store for managing pinned messages state.
  */
 
-import { create } from 'zustand';
-import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { create } from 'zustand'
+import { devtools, subscribeWithSelector } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 import type {
   PinnedMessage,
   PinConfig,
@@ -14,13 +14,13 @@ import type {
   PinSortBy,
   PinSortOrder,
   ChannelPinStats,
-} from '@/lib/pinned';
+} from '@/lib/pinned'
 import {
   DEFAULT_PIN_CONFIG,
   filterPinnedMessages,
   sortPinnedMessages,
   calculatePinStats,
-} from '@/lib/pinned';
+} from '@/lib/pinned'
 
 // ============================================================================
 // Types
@@ -28,92 +28,88 @@ import {
 
 export interface PinnedState {
   // Pinned messages by channel
-  pinnedByChannel: Map<string, PinnedMessage[]>;
+  pinnedByChannel: Map<string, PinnedMessage[]>
 
   // Channel configurations
-  channelConfigs: Map<string, PinConfig>;
+  channelConfigs: Map<string, PinConfig>
 
   // Current channel (for panel)
-  activeChannelId: string | null;
+  activeChannelId: string | null
 
   // Panel state
-  isPanelOpen: boolean;
-  isConfirmUnpinOpen: boolean;
-  pinToUnpin: PinnedMessage | null;
+  isPanelOpen: boolean
+  isConfirmUnpinOpen: boolean
+  pinToUnpin: PinnedMessage | null
 
   // Filters & sorting
-  filters: PinFilters;
-  sortBy: PinSortBy;
-  sortOrder: PinSortOrder;
+  filters: PinFilters
+  sortBy: PinSortBy
+  sortOrder: PinSortOrder
 
   // Loading states
-  isLoading: boolean;
-  isLoadingChannel: string | null;
-  isPinning: boolean;
-  isUnpinning: boolean;
-  error: string | null;
+  isLoading: boolean
+  isLoadingChannel: string | null
+  isPinning: boolean
+  isUnpinning: boolean
+  error: string | null
 
   // Pagination
-  hasMore: boolean;
-  cursor: number;
+  hasMore: boolean
+  cursor: number
 }
 
 export interface PinnedActions {
   // Pinned message operations
-  setPinnedMessages: (channelId: string, messages: PinnedMessage[]) => void;
-  addPinnedMessage: (channelId: string, message: PinnedMessage) => void;
-  removePinnedMessage: (channelId: string, messageId: string) => void;
-  updatePinnedMessage: (
-    channelId: string,
-    pinId: string,
-    updates: Partial<PinnedMessage>
-  ) => void;
-  reorderPinnedMessages: (channelId: string, pinIds: string[]) => void;
-  clearChannelPins: (channelId: string) => void;
+  setPinnedMessages: (channelId: string, messages: PinnedMessage[]) => void
+  addPinnedMessage: (channelId: string, message: PinnedMessage) => void
+  removePinnedMessage: (channelId: string, messageId: string) => void
+  updatePinnedMessage: (channelId: string, pinId: string, updates: Partial<PinnedMessage>) => void
+  reorderPinnedMessages: (channelId: string, pinIds: string[]) => void
+  clearChannelPins: (channelId: string) => void
 
   // Get operations
-  getPinnedMessages: (channelId: string) => PinnedMessage[];
-  getPinnedMessage: (channelId: string, messageId: string) => PinnedMessage | undefined;
-  isMessagePinned: (channelId: string, messageId: string) => boolean;
-  getChannelPinStats: (channelId: string) => ChannelPinStats;
-  getFilteredPinnedMessages: (channelId: string) => PinnedMessage[];
+  getPinnedMessages: (channelId: string) => PinnedMessage[]
+  getPinnedMessage: (channelId: string, messageId: string) => PinnedMessage | undefined
+  isMessagePinned: (channelId: string, messageId: string) => boolean
+  getChannelPinStats: (channelId: string) => ChannelPinStats
+  getFilteredPinnedMessages: (channelId: string) => PinnedMessage[]
 
   // Configuration
-  setChannelConfig: (channelId: string, config: Partial<PinConfig>) => void;
-  getChannelConfig: (channelId: string) => PinConfig;
+  setChannelConfig: (channelId: string, config: Partial<PinConfig>) => void
+  getChannelConfig: (channelId: string) => PinConfig
 
   // Panel state
-  setActiveChannel: (channelId: string | null) => void;
-  openPanel: (channelId?: string) => void;
-  closePanel: () => void;
-  togglePanel: () => void;
+  setActiveChannel: (channelId: string | null) => void
+  openPanel: (channelId?: string) => void
+  closePanel: () => void
+  togglePanel: () => void
 
   // Unpin confirmation
-  openUnpinConfirm: (pin: PinnedMessage) => void;
-  closeUnpinConfirm: () => void;
+  openUnpinConfirm: (pin: PinnedMessage) => void
+  closeUnpinConfirm: () => void
 
   // Filters & sorting
-  setFilters: (filters: Partial<PinFilters>) => void;
-  clearFilters: () => void;
-  setSortBy: (sortBy: PinSortBy) => void;
-  setSortOrder: (sortOrder: PinSortOrder) => void;
+  setFilters: (filters: Partial<PinFilters>) => void
+  clearFilters: () => void
+  setSortBy: (sortBy: PinSortBy) => void
+  setSortOrder: (sortOrder: PinSortOrder) => void
 
   // Loading/error
-  setLoading: (loading: boolean) => void;
-  setLoadingChannel: (channelId: string | null) => void;
-  setPinning: (pinning: boolean) => void;
-  setUnpinning: (unpinning: boolean) => void;
-  setError: (error: string | null) => void;
+  setLoading: (loading: boolean) => void
+  setLoadingChannel: (channelId: string | null) => void
+  setPinning: (pinning: boolean) => void
+  setUnpinning: (unpinning: boolean) => void
+  setError: (error: string | null) => void
 
   // Pagination
-  setHasMore: (hasMore: boolean) => void;
-  setCursor: (cursor: number) => void;
+  setHasMore: (hasMore: boolean) => void
+  setCursor: (cursor: number) => void
 
   // Utility
-  resetStore: () => void;
+  resetStore: () => void
 }
 
-export type PinnedStore = PinnedState & PinnedActions;
+export type PinnedStore = PinnedState & PinnedActions
 
 // ============================================================================
 // Initial State
@@ -136,7 +132,7 @@ const initialState: PinnedState = {
   error: null,
   hasMore: false,
   cursor: 0,
-};
+}
 
 // ============================================================================
 // Store
@@ -152,7 +148,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setPinnedMessages: (channelId, messages) =>
           set(
             (state) => {
-              state.pinnedByChannel.set(channelId, messages);
+              state.pinnedByChannel.set(channelId, messages)
             },
             false,
             'pinned/setPinnedMessages'
@@ -161,8 +157,8 @@ export const usePinnedStore = create<PinnedStore>()(
         addPinnedMessage: (channelId, message) =>
           set(
             (state) => {
-              const existing = state.pinnedByChannel.get(channelId) ?? [];
-              state.pinnedByChannel.set(channelId, [...existing, message]);
+              const existing = state.pinnedByChannel.get(channelId) ?? []
+              state.pinnedByChannel.set(channelId, [...existing, message])
             },
             false,
             'pinned/addPinnedMessage'
@@ -171,11 +167,11 @@ export const usePinnedStore = create<PinnedStore>()(
         removePinnedMessage: (channelId, messageId) =>
           set(
             (state) => {
-              const existing = state.pinnedByChannel.get(channelId) ?? [];
+              const existing = state.pinnedByChannel.get(channelId) ?? []
               state.pinnedByChannel.set(
                 channelId,
                 existing.filter((p) => p.messageId !== messageId)
-              );
+              )
             },
             false,
             'pinned/removePinnedMessage'
@@ -184,11 +180,11 @@ export const usePinnedStore = create<PinnedStore>()(
         updatePinnedMessage: (channelId, pinId, updates) =>
           set(
             (state) => {
-              const existing = state.pinnedByChannel.get(channelId) ?? [];
-              const index = existing.findIndex((p) => p.id === pinId);
+              const existing = state.pinnedByChannel.get(channelId) ?? []
+              const index = existing.findIndex((p) => p.id === pinId)
               if (index !== -1) {
-                existing[index] = { ...existing[index], ...updates };
-                state.pinnedByChannel.set(channelId, existing);
+                existing[index] = { ...existing[index], ...updates }
+                state.pinnedByChannel.set(channelId, existing)
               }
             },
             false,
@@ -198,20 +194,20 @@ export const usePinnedStore = create<PinnedStore>()(
         reorderPinnedMessages: (channelId, pinIds) =>
           set(
             (state) => {
-              const existing = state.pinnedByChannel.get(channelId) ?? [];
-              const pinMap = new Map(existing.map((p) => [p.id, p]));
+              const existing = state.pinnedByChannel.get(channelId) ?? []
+              const pinMap = new Map(existing.map((p) => [p.id, p]))
 
               const reordered = pinIds
                 .map((id, index) => {
-                  const pin = pinMap.get(id);
+                  const pin = pinMap.get(id)
                   if (pin) {
-                    return { ...pin, position: index };
+                    return { ...pin, position: index }
                   }
-                  return null;
+                  return null
                 })
-                .filter((p): p is PinnedMessage => p !== null);
+                .filter((p): p is PinnedMessage => p !== null)
 
-              state.pinnedByChannel.set(channelId, reordered);
+              state.pinnedByChannel.set(channelId, reordered)
             },
             false,
             'pinned/reorderPinnedMessages'
@@ -220,7 +216,7 @@ export const usePinnedStore = create<PinnedStore>()(
         clearChannelPins: (channelId) =>
           set(
             (state) => {
-              state.pinnedByChannel.delete(channelId);
+              state.pinnedByChannel.delete(channelId)
             },
             false,
             'pinned/clearChannelPins'
@@ -228,38 +224,38 @@ export const usePinnedStore = create<PinnedStore>()(
 
         // Get operations
         getPinnedMessages: (channelId) => {
-          return get().pinnedByChannel.get(channelId) ?? [];
+          return get().pinnedByChannel.get(channelId) ?? []
         },
 
         getPinnedMessage: (channelId, messageId) => {
-          const pins = get().pinnedByChannel.get(channelId) ?? [];
-          return pins.find((p) => p.messageId === messageId);
+          const pins = get().pinnedByChannel.get(channelId) ?? []
+          return pins.find((p) => p.messageId === messageId)
         },
 
         isMessagePinned: (channelId, messageId) => {
-          const pins = get().pinnedByChannel.get(channelId) ?? [];
-          return pins.some((p) => p.messageId === messageId);
+          const pins = get().pinnedByChannel.get(channelId) ?? []
+          return pins.some((p) => p.messageId === messageId)
         },
 
         getChannelPinStats: (channelId) => {
-          const pins = get().pinnedByChannel.get(channelId) ?? [];
-          const config = get().getChannelConfig(channelId);
-          return calculatePinStats(pins, channelId, config.maxPins);
+          const pins = get().pinnedByChannel.get(channelId) ?? []
+          const config = get().getChannelConfig(channelId)
+          return calculatePinStats(pins, channelId, config.maxPins)
         },
 
         getFilteredPinnedMessages: (channelId) => {
-          const state = get();
-          let pins = state.pinnedByChannel.get(channelId) ?? [];
+          const state = get()
+          let pins = state.pinnedByChannel.get(channelId) ?? []
 
           // Apply filters
           if (Object.keys(state.filters).length > 0) {
-            pins = filterPinnedMessages(pins, state.filters);
+            pins = filterPinnedMessages(pins, state.filters)
           }
 
           // Apply sorting
-          pins = sortPinnedMessages(pins, state.sortBy, state.sortOrder);
+          pins = sortPinnedMessages(pins, state.sortBy, state.sortOrder)
 
-          return pins;
+          return pins
         },
 
         // Configuration
@@ -268,22 +264,22 @@ export const usePinnedStore = create<PinnedStore>()(
             (state) => {
               const existing = state.channelConfigs.get(channelId) ?? {
                 ...DEFAULT_PIN_CONFIG,
-              };
-              state.channelConfigs.set(channelId, { ...existing, ...config });
+              }
+              state.channelConfigs.set(channelId, { ...existing, ...config })
             },
             false,
             'pinned/setChannelConfig'
           ),
 
         getChannelConfig: (channelId) => {
-          return get().channelConfigs.get(channelId) ?? { ...DEFAULT_PIN_CONFIG };
+          return get().channelConfigs.get(channelId) ?? { ...DEFAULT_PIN_CONFIG }
         },
 
         // Panel state
         setActiveChannel: (channelId) =>
           set(
             (state) => {
-              state.activeChannelId = channelId;
+              state.activeChannelId = channelId
             },
             false,
             'pinned/setActiveChannel'
@@ -292,9 +288,9 @@ export const usePinnedStore = create<PinnedStore>()(
         openPanel: (channelId) =>
           set(
             (state) => {
-              state.isPanelOpen = true;
+              state.isPanelOpen = true
               if (channelId) {
-                state.activeChannelId = channelId;
+                state.activeChannelId = channelId
               }
             },
             false,
@@ -304,7 +300,7 @@ export const usePinnedStore = create<PinnedStore>()(
         closePanel: () =>
           set(
             (state) => {
-              state.isPanelOpen = false;
+              state.isPanelOpen = false
             },
             false,
             'pinned/closePanel'
@@ -313,7 +309,7 @@ export const usePinnedStore = create<PinnedStore>()(
         togglePanel: () =>
           set(
             (state) => {
-              state.isPanelOpen = !state.isPanelOpen;
+              state.isPanelOpen = !state.isPanelOpen
             },
             false,
             'pinned/togglePanel'
@@ -323,8 +319,8 @@ export const usePinnedStore = create<PinnedStore>()(
         openUnpinConfirm: (pin) =>
           set(
             (state) => {
-              state.isConfirmUnpinOpen = true;
-              state.pinToUnpin = pin;
+              state.isConfirmUnpinOpen = true
+              state.pinToUnpin = pin
             },
             false,
             'pinned/openUnpinConfirm'
@@ -333,8 +329,8 @@ export const usePinnedStore = create<PinnedStore>()(
         closeUnpinConfirm: () =>
           set(
             (state) => {
-              state.isConfirmUnpinOpen = false;
-              state.pinToUnpin = null;
+              state.isConfirmUnpinOpen = false
+              state.pinToUnpin = null
             },
             false,
             'pinned/closeUnpinConfirm'
@@ -344,7 +340,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setFilters: (filters) =>
           set(
             (state) => {
-              state.filters = { ...state.filters, ...filters };
+              state.filters = { ...state.filters, ...filters }
             },
             false,
             'pinned/setFilters'
@@ -353,7 +349,7 @@ export const usePinnedStore = create<PinnedStore>()(
         clearFilters: () =>
           set(
             (state) => {
-              state.filters = {};
+              state.filters = {}
             },
             false,
             'pinned/clearFilters'
@@ -362,7 +358,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setSortBy: (sortBy) =>
           set(
             (state) => {
-              state.sortBy = sortBy;
+              state.sortBy = sortBy
             },
             false,
             'pinned/setSortBy'
@@ -371,7 +367,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setSortOrder: (sortOrder) =>
           set(
             (state) => {
-              state.sortOrder = sortOrder;
+              state.sortOrder = sortOrder
             },
             false,
             'pinned/setSortOrder'
@@ -381,7 +377,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setLoading: (loading) =>
           set(
             (state) => {
-              state.isLoading = loading;
+              state.isLoading = loading
             },
             false,
             'pinned/setLoading'
@@ -390,7 +386,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setLoadingChannel: (channelId) =>
           set(
             (state) => {
-              state.isLoadingChannel = channelId;
+              state.isLoadingChannel = channelId
             },
             false,
             'pinned/setLoadingChannel'
@@ -399,7 +395,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setPinning: (pinning) =>
           set(
             (state) => {
-              state.isPinning = pinning;
+              state.isPinning = pinning
             },
             false,
             'pinned/setPinning'
@@ -408,7 +404,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setUnpinning: (unpinning) =>
           set(
             (state) => {
-              state.isUnpinning = unpinning;
+              state.isUnpinning = unpinning
             },
             false,
             'pinned/setUnpinning'
@@ -417,7 +413,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setError: (error) =>
           set(
             (state) => {
-              state.error = error;
+              state.error = error
             },
             false,
             'pinned/setError'
@@ -427,7 +423,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setHasMore: (hasMore) =>
           set(
             (state) => {
-              state.hasMore = hasMore;
+              state.hasMore = hasMore
             },
             false,
             'pinned/setHasMore'
@@ -436,7 +432,7 @@ export const usePinnedStore = create<PinnedStore>()(
         setCursor: (cursor) =>
           set(
             (state) => {
-              state.cursor = cursor;
+              state.cursor = cursor
             },
             false,
             'pinned/setCursor'
@@ -457,20 +453,20 @@ export const usePinnedStore = create<PinnedStore>()(
     ),
     { name: 'pinned-store' }
   )
-);
+)
 
 // ============================================================================
 // Selectors
 // ============================================================================
 
 export const selectPinnedCount = (channelId: string) => (state: PinnedStore) =>
-  (state.pinnedByChannel.get(channelId) ?? []).length;
+  (state.pinnedByChannel.get(channelId) ?? []).length
 
 export const selectHasPinnedMessages = (channelId: string) => (state: PinnedStore) =>
-  (state.pinnedByChannel.get(channelId) ?? []).length > 0;
+  (state.pinnedByChannel.get(channelId) ?? []).length > 0
 
-export const selectIsPanelOpen = (state: PinnedStore) => state.isPanelOpen;
+export const selectIsPanelOpen = (state: PinnedStore) => state.isPanelOpen
 
-export const selectIsLoading = (state: PinnedStore) => state.isLoading;
+export const selectIsLoading = (state: PinnedStore) => state.isLoading
 
-export const selectError = (state: PinnedStore) => state.error;
+export const selectError = (state: PinnedStore) => state.error

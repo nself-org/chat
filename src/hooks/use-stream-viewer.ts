@@ -71,9 +71,7 @@ export interface UseStreamViewerReturn {
 // Hook
 // ============================================================================
 
-export function useStreamViewer(
-  options: UseStreamViewerOptions
-): UseStreamViewerReturn {
+export function useStreamViewer(options: UseStreamViewerOptions): UseStreamViewerReturn {
   const { streamId, autoStart = true, lowLatencyMode = true, onStreamEnded, onError } = options
   const { user } = useAuth()
   const { isConnected, emit, subscribe } = useSocket()
@@ -119,7 +117,8 @@ export function useStreamViewer(
       }
 
       // Get HLS manifest URL
-      const manifestUrl = streamData.hlsManifestUrl ?? await streamManagerRef.current.getHlsManifestUrl(streamId)
+      const manifestUrl =
+        streamData.hlsManifestUrl ?? (await streamManagerRef.current.getHlsManifestUrl(streamId))
 
       if (!manifestUrl) {
         throw new Error('Stream manifest not available')
@@ -138,9 +137,7 @@ export function useStreamViewer(
             analyticsRef.current.trackEvent('player:error', { error: err.details })
           },
           onQualityChange: (level) => {
-            setCurrentQuality(
-              playerRef.current?.levelToQuality(level.level) ?? 'auto'
-            )
+            setCurrentQuality(playerRef.current?.levelToQuality(level.level) ?? 'auto')
             analyticsRef.current.trackQualityChange(currentQuality, level.name as StreamQuality)
           },
           onStats: (newStats) => {
@@ -297,15 +294,12 @@ export function useStreamViewer(
       }
     )
 
-    const unsubStreamEnd = subscribe<{ streamId: string; reason: string }>(
-      'stream:end',
-      (data) => {
-        if (data.streamId === streamId) {
-          onStreamEnded?.()
-          analyticsRef.current.trackEvent('stream:ended', { reason: data.reason })
-        }
+    const unsubStreamEnd = subscribe<{ streamId: string; reason: string }>('stream:end', (data) => {
+      if (data.streamId === streamId) {
+        onStreamEnded?.()
+        analyticsRef.current.trackEvent('stream:ended', { reason: data.reason })
       }
-    )
+    })
 
     return () => {
       unsubViewerCount()

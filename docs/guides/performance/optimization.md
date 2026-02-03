@@ -27,16 +27,16 @@ This guide provides comprehensive strategies for optimizing nself-chat performan
 
 ### Performance Goals
 
-| Metric | Target | Current | Status |
-|--------|--------|---------|--------|
-| Lighthouse Performance | ≥90 | TBD | 🟡 In Progress |
-| Lighthouse Accessibility | ≥90 | TBD | 🟡 In Progress |
-| Lighthouse Best Practices | ≥90 | TBD | 🟡 In Progress |
-| Lighthouse SEO | ≥90 | TBD | 🟡 In Progress |
-| First Contentful Paint (FCP) | <1.8s | TBD | 🟡 In Progress |
-| Largest Contentful Paint (LCP) | <2.5s | TBD | 🟡 In Progress |
-| Cumulative Layout Shift (CLS) | <0.1 | TBD | 🟡 In Progress |
-| Total Bundle Size | <500KB | ~103KB initial | ✅ Good |
+| Metric                         | Target | Current        | Status         |
+| ------------------------------ | ------ | -------------- | -------------- |
+| Lighthouse Performance         | ≥90    | TBD            | 🟡 In Progress |
+| Lighthouse Accessibility       | ≥90    | TBD            | 🟡 In Progress |
+| Lighthouse Best Practices      | ≥90    | TBD            | 🟡 In Progress |
+| Lighthouse SEO                 | ≥90    | TBD            | 🟡 In Progress |
+| First Contentful Paint (FCP)   | <1.8s  | TBD            | 🟡 In Progress |
+| Largest Contentful Paint (LCP) | <2.5s  | TBD            | 🟡 In Progress |
+| Cumulative Layout Shift (CLS)  | <0.1   | TBD            | 🟡 In Progress |
+| Total Bundle Size              | <500KB | ~103KB initial | ✅ Good        |
 
 ---
 
@@ -52,13 +52,14 @@ pnpm build:analyze
 ```
 
 **Key Findings** (as of 2026-01-31):
+
 - Initial bundle: ~103KB (shared chunks)
 - Largest route: `/chat/channel/[slug]` at 262KB (581KB total)
 - Heavy dependencies identified:
   - recharts (~100KB) - Used only in admin
-  - @tiptap/* (~50KB) - Rich text editor
+  - @tiptap/\* (~50KB) - Rich text editor
   - mediasoup (~40KB) - Video calls
-  - @tensorflow/* (~200KB+) - AI moderation
+  - @tensorflow/\* (~200KB+) - AI moderation
 
 ### 2. Dynamic Imports (Implemented)
 
@@ -84,6 +85,7 @@ import { ActivityChart } from '@/components/admin/activity-chart'
 **Centralized Dynamic Imports**: `/src/lib/performance/dynamic-imports.ts`
 
 Components with dynamic imports:
+
 - ✅ Admin dashboard charts (recharts)
 - ✅ Rich text editor (TipTap)
 - ✅ Video/audio calls (WebRTC stack)
@@ -152,13 +154,13 @@ splitChunks: {
 ```json
 {
   "to-remove": [
-    "@hookform/resolvers",  // Not used (using custom validation)
-    "@noble/curves",        // Unused crypto library
-    "canvas",              // Server-side only
-    "dashjs",              // Unused media library
-    "simple-peer",         // Using mediasoup instead
-    "rxjs",                // Not using observables
-    "tippy.js"             // Using Radix tooltips
+    "@hookform/resolvers", // Not used (using custom validation)
+    "@noble/curves", // Unused crypto library
+    "canvas", // Server-side only
+    "dashjs", // Unused media library
+    "simple-peer", // Using mediasoup instead
+    "rxjs", // Not using observables
+    "tippy.js" // Using Radix tooltips
   ]
 }
 ```
@@ -234,7 +236,7 @@ Images below the fold should lazy load:
   alt="Screenshot"
   width={800}
   height={600}
-  loading="lazy"  // Don't block initial render
+  loading="lazy" // Don't block initial render
 />
 ```
 
@@ -306,7 +308,7 @@ const userLoader = createUserLoader(apolloClient)
 
 // Instead of N queries
 const users = await Promise.all(
-  userIds.map(id => client.query({ query: GET_USER, variables: { id } }))
+  userIds.map((id) => client.query({ query: GET_USER, variables: { id } }))
 )
 
 // Batch into 1 query
@@ -314,6 +316,7 @@ const users = await userLoader.loadMany(userIds)
 ```
 
 **Pre-configured Loaders**:
+
 - `createUserLoader` - Batch user queries
 - `createChannelLoader` - Batch channel queries
 - `createMessageLoader` - Batch message queries
@@ -407,7 +410,7 @@ export default function RootLayout({ children }) {
         <WebVitalsTracker
           enabled={true}
           providers={['console', 'sentry', 'ga4']}
-          sampleRate={1.0}  // 100% in dev, reduce in prod
+          sampleRate={1.0} // 100% in dev, reduce in prod
           debug={process.env.NODE_ENV === 'development'}
         />
         {children}
@@ -418,6 +421,7 @@ export default function RootLayout({ children }) {
 ```
 
 **Metrics Tracked**:
+
 - ✅ Largest Contentful Paint (LCP)
 - ✅ First Input Delay (FID)
 - ✅ Cumulative Layout Shift (CLS)
@@ -433,11 +437,9 @@ export default function RootLayout({ children }) {
 import { performanceMonitor, measureAsync } from '@/lib/performance/monitoring'
 
 // Measure async operations
-const messages = await measureAsync(
-  'api_get_messages',
-  () => fetchMessages(channelId),
-  { channelId }
-)
+const messages = await measureAsync('api_get_messages', () => fetchMessages(channelId), {
+  channelId,
+})
 
 // Measure component render
 useEffect(() => {
@@ -466,6 +468,7 @@ const THRESHOLDS = {
 ```
 
 Alerts are sent to:
+
 - Console (development)
 - Sentry (production)
 - Google Analytics (optional)
@@ -480,6 +483,7 @@ Alerts are sent to:
 Next.js automatically splits by route. Each page is a separate chunk.
 
 **Current Split** (from build output):
+
 - `/chat/channel/[slug]`: 262KB (largest)
 - `/setup/[step]`: 52.1KB
 - `/admin`: Dynamic loaded
@@ -599,10 +603,7 @@ self.addEventListener('install', (event) => {
 
 ```tsx
 // Memoize expensive computations
-const sortedMessages = useMemo(
-  () => messages.sort((a, b) => a.createdAt - b.createdAt),
-  [messages]
-)
+const sortedMessages = useMemo(() => messages.sort((a, b) => a.createdAt - b.createdAt), [messages])
 
 // Memoize callbacks
 const handleSend = useCallback(
@@ -613,9 +614,12 @@ const handleSend = useCallback(
 )
 
 // Memoize components
-const MessageItem = memo(({ message }) => {
-  return <div>{message.content}</div>
-}, (prev, next) => prev.message.id === next.message.id)
+const MessageItem = memo(
+  ({ message }) => {
+    return <div>{message.content}</div>
+  },
+  (prev, next) => prev.message.id === next.message.id
+)
 ```
 
 **Virtual Scrolling**:
@@ -629,8 +633,8 @@ function MessageList({ messages }) {
   const virtualizer = useVirtualizer({
     count: messages.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 80,  // Estimated message height
-    overscan: 5,  // Render 5 extra items
+    estimateSize: () => 80, // Estimated message height
+    overscan: 5, // Render 5 extra items
   })
 
   return (
@@ -739,6 +743,7 @@ ANALYZE=true pnpm build
 ### 3. Performance DevTools
 
 **Chrome DevTools**:
+
 1. Open DevTools (F12)
 2. Performance tab
 3. Click Record (⚫)
@@ -747,6 +752,7 @@ ANALYZE=true pnpm build
 6. Analyze flame chart
 
 **React DevTools Profiler**:
+
 1. Install React DevTools extension
 2. Click Profiler tab
 3. Click Record (⚫)
@@ -852,14 +858,14 @@ ANALYZE=true pnpm build
 
 ## Performance Budget
 
-| Resource | Budget | Current | Status |
-|----------|--------|---------|--------|
-| JavaScript (initial) | < 200KB | 103KB | ✅ |
-| JavaScript (route) | < 300KB | 262KB | ⚠️ |
-| CSS | < 50KB | TBD | 🟡 |
-| Images (page) | < 500KB | TBD | 🟡 |
-| Fonts | < 100KB | ~50KB | ✅ |
-| Total (initial) | < 500KB | ~153KB | ✅ |
+| Resource             | Budget  | Current | Status |
+| -------------------- | ------- | ------- | ------ |
+| JavaScript (initial) | < 200KB | 103KB   | ✅     |
+| JavaScript (route)   | < 300KB | 262KB   | ⚠️     |
+| CSS                  | < 50KB  | TBD     | 🟡     |
+| Images (page)        | < 500KB | TBD     | 🟡     |
+| Fonts                | < 100KB | ~50KB   | ✅     |
+| Total (initial)      | < 500KB | ~153KB  | ✅     |
 
 ---
 

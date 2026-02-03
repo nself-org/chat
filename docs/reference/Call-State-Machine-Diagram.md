@@ -64,89 +64,108 @@ Visual representation of the call state machine and valid transitions.
 ## State Descriptions
 
 ### idle
+
 **Description**: No active call
 **Can Transition To**: initiating
 **Typical Duration**: N/A (waiting state)
 **Actions**: None
 
 ### initiating
+
 **Description**: Creating call, getting media, initializing connection
 **Can Transition To**: ringing, connecting, ending, ended
 **Typical Duration**: 1-2 seconds
 **Actions**:
+
 - Request microphone/camera permissions
 - Get local media stream
 - Create RTCPeerConnection
 - Generate call ID
 
 ### ringing
+
 **Description**: Calling recipient, waiting for answer
 **Can Transition To**: connecting, ending, ended
 **Typical Duration**: Up to 30 seconds (timeout)
 **Actions**:
+
 - Send call invitation
 - Play ring back tone
 - Wait for acceptance
 
 ### connecting
+
 **Description**: WebRTC negotiation in progress (offer/answer exchange)
 **Can Transition To**: connected, ending, ended
 **Typical Duration**: 2-5 seconds
 **Actions**:
+
 - Exchange SDP offers/answers
 - Gather ICE candidates
 - Establish peer connection
 
 ### connected
+
 **Description**: Call is active, media flowing
 **Can Transition To**: held, transferring, reconnecting, ending, ended
 **Typical Duration**: Varies (minutes to hours)
 **Actions**:
+
 - Stream audio/video
 - Monitor quality
 - Handle media controls (mute, video toggle)
 
 ### held
+
 **Description**: Call on hold, media paused
 **Can Transition To**: connected, transferring, ending, ended
 **Typical Duration**: Varies
 **Actions**:
+
 - Mute audio
 - Pause video
 - Show "on hold" status
 
 ### transferring
+
 **Description**: Call being transferred to another user
 **Can Transition To**: connected, ending, ended
 **Typical Duration**: 2-5 seconds
 **Actions**:
+
 - Coordinate with transfer target
 - Hand off media streams
 - Notify participants
 
 ### reconnecting
+
 **Description**: Network issue, attempting to reconnect
 **Can Transition To**: connected, ending, ended
 **Typical Duration**: Up to 10 seconds
 **Actions**:
+
 - Monitor ICE connection state
 - Attempt to reestablish connection
 - Show reconnecting UI
 
 ### ending
+
 **Description**: Hanging up, cleaning up resources
 **Can Transition To**: ended
 **Typical Duration**: <1 second
 **Actions**:
+
 - Close peer connection
 - Stop media streams
 - Send end call signal
 
 ### ended
+
 **Description**: Call has ended, showing summary
 **Can Transition To**: idle
 **Typical Duration**: Brief (UI shows call ended)
 **Actions**:
+
 - Display call duration
 - Save call history
 - Release resources
@@ -155,36 +174,37 @@ Visual representation of the call state machine and valid transitions.
 
 ### Valid Transitions
 
-| From State | Valid Next States | Triggers |
-|------------|-------------------|----------|
-| idle | initiating | User initiates call |
-| initiating | ringing | Invitation sent (1-on-1) |
-| initiating | connecting | Direct connection (group) |
-| initiating | ending | User cancels |
-| initiating | ended | Error during setup |
-| ringing | connecting | Recipient answered |
-| ringing | ending | User hangs up or timeout |
-| ringing | ended | Recipient declined |
-| connecting | connected | WebRTC established |
-| connecting | ending | Connection failed |
-| connecting | ended | Fatal error |
-| connected | held | User puts on hold |
-| connected | transferring | User transfers call |
-| connected | reconnecting | Network issue |
-| connected | ending | User hangs up |
-| held | connected | User resumes |
-| held | transferring | Transfer while held |
-| held | ending | User ends held call |
-| transferring | connected | Transfer complete |
-| transferring | ending | Transfer cancelled |
-| reconnecting | connected | Reconnected |
-| reconnecting | ending | Reconnection failed |
-| ending | ended | Cleanup complete |
-| ended | idle | Reset to idle |
+| From State   | Valid Next States | Triggers                  |
+| ------------ | ----------------- | ------------------------- |
+| idle         | initiating        | User initiates call       |
+| initiating   | ringing           | Invitation sent (1-on-1)  |
+| initiating   | connecting        | Direct connection (group) |
+| initiating   | ending            | User cancels              |
+| initiating   | ended             | Error during setup        |
+| ringing      | connecting        | Recipient answered        |
+| ringing      | ending            | User hangs up or timeout  |
+| ringing      | ended             | Recipient declined        |
+| connecting   | connected         | WebRTC established        |
+| connecting   | ending            | Connection failed         |
+| connecting   | ended             | Fatal error               |
+| connected    | held              | User puts on hold         |
+| connected    | transferring      | User transfers call       |
+| connected    | reconnecting      | Network issue             |
+| connected    | ending            | User hangs up             |
+| held         | connected         | User resumes              |
+| held         | transferring      | Transfer while held       |
+| held         | ending            | User ends held call       |
+| transferring | connected         | Transfer complete         |
+| transferring | ending            | Transfer cancelled        |
+| reconnecting | connected         | Reconnected               |
+| reconnecting | ending            | Reconnection failed       |
+| ending       | ended             | Cleanup complete          |
+| ended        | idle              | Reset to idle             |
 
 ### Invalid Transitions
 
 These transitions are **not allowed**:
+
 - idle → connected (must go through initiating)
 - ringing → held (can't hold unanswered call)
 - ended → connected (can't revive ended call)
@@ -195,6 +215,7 @@ These transitions are **not allowed**:
 The state machine tracks three types of duration:
 
 ### 1. Current State Duration
+
 Time spent in the current state (since last transition).
 
 ```typescript
@@ -202,6 +223,7 @@ const stateDuration = machine.getCurrentStateDuration() // milliseconds
 ```
 
 ### 2. Total Call Duration
+
 Total time from idle → initiating until now.
 
 ```typescript
@@ -209,6 +231,7 @@ const totalDuration = machine.getTotalDuration() // milliseconds
 ```
 
 ### 3. Connected Duration
+
 Total time spent in "connected" state (excludes held, reconnecting).
 
 ```typescript
@@ -390,6 +413,7 @@ const history = machine.getHistory()
 ```
 
 This history is useful for:
+
 - Debugging state issues
 - Analyzing call flows
 - Calculating durations
@@ -445,7 +469,7 @@ machine.on('enter:ended', () => {
   saveCallHistory({
     connectedDuration,
     totalDuration,
-    history: machine.getHistory()
+    history: machine.getHistory(),
   })
 
   // Reset for next call
@@ -467,7 +491,7 @@ const machine = createCallStateMachine({
   },
   onInvalidTransition: (from, to) => {
     console.error('[State] Invalid:', from, '->', to)
-  }
+  },
 })
 ```
 

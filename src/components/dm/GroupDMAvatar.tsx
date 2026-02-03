@@ -1,24 +1,20 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import type { DirectMessage, DMParticipant } from '@/lib/dm/dm-types';
-import {
-  getOtherParticipants,
-  generateGroupAvatarUrls,
-  getGroupInitials,
-} from '@/lib/dm';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import type { DirectMessage, DMParticipant } from '@/lib/dm/dm-types'
+import { getOtherParticipants, generateGroupAvatarUrls, getGroupInitials } from '@/lib/dm'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface GroupDMAvatarProps {
-  dm: DirectMessage;
-  currentUserId: string;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
-  className?: string;
+  dm: DirectMessage
+  currentUserId: string
+  size?: 'sm' | 'md' | 'lg' | 'xl'
+  className?: string
 }
 
 // ============================================================================
@@ -54,19 +50,14 @@ const sizeConfig = {
     text: 'text-2xl',
     gridText: 'text-sm',
   },
-};
+}
 
 // ============================================================================
 // Component
 // ============================================================================
 
-export function GroupDMAvatar({
-  dm,
-  currentUserId,
-  size = 'md',
-  className,
-}: GroupDMAvatarProps) {
-  const config = sizeConfig[size];
+export function GroupDMAvatar({ dm, currentUserId, size = 'md', className }: GroupDMAvatarProps) {
+  const config = sizeConfig[size]
 
   // If the group has a custom avatar, use it
   if (dm.avatarUrl) {
@@ -77,13 +68,13 @@ export function GroupDMAvatar({
           {getGroupInitials(dm.name || 'Group')}
         </AvatarFallback>
       </Avatar>
-    );
+    )
   }
 
   // For 1:1 DMs, show the other person's avatar
   if (dm.type === 'direct') {
-    const others = getOtherParticipants(dm, currentUserId);
-    const other = others[0];
+    const others = getOtherParticipants(dm, currentUserId)
+    const other = others[0]
     if (other) {
       return (
         <Avatar className={cn(config.single, className)}>
@@ -92,13 +83,13 @@ export function GroupDMAvatar({
             {other.user.displayName.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-      );
+      )
     }
   }
 
   // For group DMs, show combined avatars
-  const avatarUrls = generateGroupAvatarUrls(dm.participants, currentUserId, 4);
-  const initials = getGroupInitials(dm.name || 'Group');
+  const avatarUrls = generateGroupAvatarUrls(dm.participants, currentUserId, 4)
+  const initials = getGroupInitials(dm.name || 'Group')
 
   // No avatars available
   if (avatarUrls.length === 0) {
@@ -106,7 +97,7 @@ export function GroupDMAvatar({
       <Avatar className={cn(config.single, className)}>
         <AvatarFallback className={config.text}>{initials}</AvatarFallback>
       </Avatar>
-    );
+    )
   }
 
   // Single avatar
@@ -116,7 +107,7 @@ export function GroupDMAvatar({
         <AvatarImage src={avatarUrls[0]} />
         <AvatarFallback className={config.text}>{initials}</AvatarFallback>
       </Avatar>
-    );
+    )
   }
 
   // Grid layout for multiple avatars
@@ -128,8 +119,8 @@ export function GroupDMAvatar({
           className={cn(
             'absolute border border-background',
             config.grid,
-            index === 0 && 'top-0 left-0',
-            index === 1 && 'top-0 right-0',
+            index === 0 && 'left-0 top-0',
+            index === 1 && 'right-0 top-0',
             index === 2 && 'bottom-0 left-0',
             index === 3 && 'bottom-0 right-0',
             avatarUrls.length === 2 && index === 1 && 'top-1/2 -translate-y-1/2',
@@ -143,7 +134,7 @@ export function GroupDMAvatar({
         </Avatar>
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -151,11 +142,11 @@ export function GroupDMAvatar({
 // ============================================================================
 
 interface StackedAvatarsProps {
-  participants: DMParticipant[];
-  currentUserId: string;
-  max?: number;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
+  participants: DMParticipant[]
+  currentUserId: string
+  max?: number
+  size?: 'sm' | 'md' | 'lg'
+  className?: string
 }
 
 export function StackedAvatars({
@@ -165,28 +156,24 @@ export function StackedAvatars({
   size = 'md',
   className,
 }: StackedAvatarsProps) {
-  const others = participants.filter((p) => p.userId !== currentUserId);
-  const displayed = others.slice(0, max);
-  const remaining = others.length - max;
+  const others = participants.filter((p) => p.userId !== currentUserId)
+  const displayed = others.slice(0, max)
+  const remaining = others.length - max
 
   const sizeClasses = {
     sm: { avatar: 'h-6 w-6', text: 'text-[10px]', overlap: '-ml-2' },
     md: { avatar: 'h-8 w-8', text: 'text-xs', overlap: '-ml-3' },
     lg: { avatar: 'h-10 w-10', text: 'text-sm', overlap: '-ml-4' },
-  };
+  }
 
-  const config = sizeClasses[size];
+  const config = sizeClasses[size]
 
   return (
     <div className={cn('flex items-center', className)}>
       {displayed.map((participant, index) => (
         <Avatar
           key={participant.userId}
-          className={cn(
-            config.avatar,
-            'border-2 border-background',
-            index > 0 && config.overlap
-          )}
+          className={cn(config.avatar, 'border-2 border-background', index > 0 && config.overlap)}
         >
           <AvatarImage src={participant.user.avatarUrl || undefined} />
           <AvatarFallback className={config.text}>
@@ -199,7 +186,7 @@ export function StackedAvatars({
           className={cn(
             config.avatar,
             config.overlap,
-            'rounded-full bg-muted border-2 border-background flex items-center justify-center',
+            'flex items-center justify-center rounded-full border-2 border-background bg-muted',
             config.text,
             'font-medium'
           )}
@@ -208,8 +195,8 @@ export function StackedAvatars({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-GroupDMAvatar.displayName = 'GroupDMAvatar';
-StackedAvatars.displayName = 'StackedAvatars';
+GroupDMAvatar.displayName = 'GroupDMAvatar'
+StackedAvatars.displayName = 'StackedAvatars'

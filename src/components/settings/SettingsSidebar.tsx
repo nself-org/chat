@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   User,
   Palette,
@@ -15,19 +15,19 @@ import {
   Lock,
   Keyboard,
   ArrowLeft,
-} from 'lucide-react';
+} from 'lucide-react'
 
 interface NavItem {
-  title: string;
-  href: string;
-  icon: React.ElementType;
-  description?: string;
-  badge?: string;
+  title: string
+  href: string
+  icon: React.ElementType
+  description?: string
+  badge?: string
 }
 
 interface NavGroup {
-  title: string;
-  items: NavItem[];
+  title: string
+  items: NavItem[]
 }
 
 const navGroups: NavGroup[] = [
@@ -106,25 +106,20 @@ const navGroups: NavGroup[] = [
       },
     ],
   },
-];
+]
 
 interface SettingsSidebarProps {
-  className?: string;
+  className?: string
 }
 
 /**
  * SettingsSidebar - Settings navigation sidebar
  */
 export function SettingsSidebar({ className }: SettingsSidebarProps) {
-  const pathname = usePathname();
+  const pathname = usePathname()
 
   return (
-    <aside
-      className={cn(
-        'hidden w-64 border-r bg-card md:block',
-        className
-      )}
-    >
+    <aside className={cn('hidden w-64 border-r bg-card md:block', className)}>
       <div className="sticky top-0 flex h-screen flex-col">
         {/* Header */}
         <div className="flex h-14 items-center border-b px-4">
@@ -147,8 +142,8 @@ export function SettingsSidebar({ className }: SettingsSidebarProps) {
                 </h3>
                 <div className="space-y-1">
                   {group.items.map((item) => {
-                    const isActive = pathname === item.href;
-                    const Icon = item.icon;
+                    const isActive = pathname === item.href
+                    const Icon = item.icon
 
                     return (
                       <Link
@@ -157,7 +152,7 @@ export function SettingsSidebar({ className }: SettingsSidebarProps) {
                         className={cn(
                           'group flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
                           isActive
-                            ? 'bg-primary text-primary-foreground'
+                            ? 'text-primary-foreground bg-primary'
                             : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         )}
                       >
@@ -172,13 +167,13 @@ export function SettingsSidebar({ className }: SettingsSidebarProps) {
                         <div className="flex-1 truncate">
                           <span className="font-medium">{item.title}</span>
                           {item.badge && (
-                            <span className="ml-2 rounded-full bg-primary/20 px-1.5 py-0.5 text-xs">
+                            <span className="bg-primary/20 ml-2 rounded-full px-1.5 py-0.5 text-xs">
                               {item.badge}
                             </span>
                           )}
                         </div>
                       </Link>
-                    );
+                    )
                   })}
                 </div>
               </div>
@@ -187,5 +182,5 @@ export function SettingsSidebar({ className }: SettingsSidebarProps) {
         </ScrollArea>
       </div>
     </aside>
-  );
+  )
 }

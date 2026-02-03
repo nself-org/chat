@@ -6,18 +6,14 @@ import { cn } from '@/lib/utils'
 import { SearchInput } from '@/components/search/search-input'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import {
-  ForwardDestinationItem,
-  ForwardDestinationItemSkeleton,
-} from './forward-destination-item'
+import { ForwardDestinationItem, ForwardDestinationItemSkeleton } from './forward-destination-item'
 import type { ForwardDestination } from '@/lib/forward/forward-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface ForwardDestinationListProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface ForwardDestinationListProps extends React.HTMLAttributes<HTMLDivElement> {
   /** Recent destinations for quick access */
   recentDestinations?: ForwardDestination[]
   /** All available channels */
@@ -74,10 +70,7 @@ function SectionHeader({ icon, title, count }: SectionHeaderProps) {
 // Component
 // ============================================================================
 
-export const ForwardDestinationList = React.forwardRef<
-  HTMLDivElement,
-  ForwardDestinationListProps
->(
+export const ForwardDestinationList = React.forwardRef<HTMLDivElement, ForwardDestinationListProps>(
   (
     {
       className,
@@ -103,9 +96,7 @@ export const ForwardDestinationList = React.forwardRef<
       if (!searchQuery) return channels
       const query = searchQuery.toLowerCase()
       return channels.filter(
-        (ch) =>
-          ch.name.toLowerCase().includes(query) ||
-          ch.slug?.toLowerCase().includes(query)
+        (ch) => ch.name.toLowerCase().includes(query) || ch.slug?.toLowerCase().includes(query)
       )
     }, [channels, searchQuery])
 
@@ -115,9 +106,7 @@ export const ForwardDestinationList = React.forwardRef<
       return directMessages.filter(
         (dm) =>
           dm.name.toLowerCase().includes(query) ||
-          dm.members?.some((m) =>
-            m.displayName.toLowerCase().includes(query)
-          )
+          dm.members?.some((m) => m.displayName.toLowerCase().includes(query))
       )
     }, [directMessages, searchQuery])
 
@@ -127,24 +116,19 @@ export const ForwardDestinationList = React.forwardRef<
       return recentDestinations.filter(
         (d) =>
           d.name.toLowerCase().includes(query) ||
-          d.members?.some((m) =>
-            m.displayName.toLowerCase().includes(query)
-          )
+          d.members?.some((m) => m.displayName.toLowerCase().includes(query))
       )
     }, [recentDestinations, searchQuery])
 
     // Check if a destination is selected
     const isSelected = React.useCallback(
-      (destinationId: string) =>
-        selectedDestinations.some((d) => d.id === destinationId),
+      (destinationId: string) => selectedDestinations.some((d) => d.id === destinationId),
       [selectedDestinations]
     )
 
     // Check if we have any results
     const hasResults =
-      filteredChannels.length > 0 ||
-      filteredDMs.length > 0 ||
-      filteredRecent.length > 0
+      filteredChannels.length > 0 || filteredDMs.length > 0 || filteredRecent.length > 0
 
     return (
       <div ref={ref} className={cn('flex flex-col', className)} {...props}>
@@ -185,38 +169,33 @@ export const ForwardDestinationList = React.forwardRef<
                 </div>
                 <p className="text-sm text-muted-foreground">{emptyMessage}</p>
                 {searchQuery && (
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Try a different search term
-                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">Try a different search term</p>
                 )}
               </div>
             )}
 
             {/* Recent Destinations */}
-            {!isLoading &&
-              showRecent &&
-              filteredRecent.length > 0 &&
-              !searchQuery && (
-                <div className="mb-2">
-                  <SectionHeader
-                    icon={<History className="h-3 w-3" />}
-                    title="Recent"
-                    count={filteredRecent.length}
-                  />
-                  <div className="space-y-0.5 px-1">
-                    {filteredRecent.map((destination) => (
-                      <ForwardDestinationItem
-                        key={destination.id}
-                        destination={destination}
-                        isSelected={isSelected(destination.id)}
-                        onSelectDestination={onToggleDestination}
-                        showActivity={false}
-                        compact
-                      />
-                    ))}
-                  </div>
+            {!isLoading && showRecent && filteredRecent.length > 0 && !searchQuery && (
+              <div className="mb-2">
+                <SectionHeader
+                  icon={<History className="h-3 w-3" />}
+                  title="Recent"
+                  count={filteredRecent.length}
+                />
+                <div className="space-y-0.5 px-1">
+                  {filteredRecent.map((destination) => (
+                    <ForwardDestinationItem
+                      key={destination.id}
+                      destination={destination}
+                      isSelected={isSelected(destination.id)}
+                      onSelectDestination={onToggleDestination}
+                      showActivity={false}
+                      compact
+                    />
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
 
             {/* Channels */}
             {!isLoading && filteredChannels.length > 0 && (
@@ -267,12 +246,8 @@ export const ForwardDestinationList = React.forwardRef<
           <>
             <Separator />
             <div className="flex items-center justify-between px-3 py-2 text-sm">
-              <span className="text-muted-foreground">
-                {selectedDestinations.length} selected
-              </span>
-              <span className="text-xs text-muted-foreground">
-                Max 10 destinations
-              </span>
+              <span className="text-muted-foreground">{selectedDestinations.length} selected</span>
+              <span className="text-xs text-muted-foreground">Max 10 destinations</span>
             </div>
           </>
         )}

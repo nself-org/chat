@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { SettingsSection } from './settings-section';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { AlertTriangle, Trash2 } from 'lucide-react';
+import { useState } from 'react'
+import { SettingsSection } from './settings-section'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { AlertTriangle, Trash2 } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,38 +16,39 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { useAuth } from '@/contexts/auth-context';
+} from '@/components/ui/alert-dialog'
+import { useAuth } from '@/contexts/auth-context'
+
+import { logger } from '@/lib/logger'
 
 interface DeleteAccountProps {
-  className?: string;
+  className?: string
 }
 
 /**
  * DeleteAccount - Permanently delete account
  */
 export function DeleteAccount({ className }: DeleteAccountProps) {
-  const { signOut } = useAuth();
-  const [isOpen, setIsOpen] = useState(false);
-  const [confirmation, setConfirmation] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { signOut } = useAuth()
+  const [isOpen, setIsOpen] = useState(false)
+  const [confirmation, setConfirmation] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleDelete = async () => {
-    if (confirmation !== 'DELETE') return;
+    if (confirmation !== 'DELETE') return
 
-    setLoading(true);
+    setLoading(true)
 
     try {
-      // TODO: Implement actual account deletion
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await new Promise((resolve) => setTimeout(resolve, 1500))
 
-      await signOut();
+      await signOut()
     } catch (error) {
-      console.error('Failed to delete account:', error);
+      logger.error('Failed to delete account:', error)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
     <SettingsSection
@@ -55,15 +56,14 @@ export function DeleteAccount({ className }: DeleteAccountProps) {
       description="Irreversible and destructive actions"
       className={className}
     >
-      <div className="rounded-lg border border-destructive/50 bg-destructive/5 p-4">
+      <div className="border-destructive/50 bg-destructive/5 rounded-lg border p-4">
         <div className="flex items-start gap-3">
           <AlertTriangle className="mt-0.5 h-5 w-5 text-destructive" />
           <div className="flex-1">
             <p className="font-medium text-destructive">Delete Account</p>
             <p className="mt-1 text-sm text-muted-foreground">
-              Permanently delete your account and all associated data. This action
-              cannot be undone. All your messages, channels, and settings will be
-              permanently removed.
+              Permanently delete your account and all associated data. This action cannot be undone.
+              All your messages, channels, and settings will be permanently removed.
             </p>
 
             <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
@@ -81,9 +81,8 @@ export function DeleteAccount({ className }: DeleteAccountProps) {
                   </AlertDialogTitle>
                   <AlertDialogDescription className="space-y-3">
                     <p>
-                      This action <strong>cannot be undone</strong>. This will
-                      permanently delete your account and remove all your data from
-                      our servers.
+                      This action <strong>cannot be undone</strong>. This will permanently delete
+                      your account and remove all your data from our servers.
                     </p>
                     <ul className="list-inside list-disc space-y-1 text-sm">
                       <li>All your messages will be deleted</li>
@@ -96,8 +95,7 @@ export function DeleteAccount({ className }: DeleteAccountProps) {
 
                 <div className="space-y-2 py-4">
                   <Label htmlFor="delete-confirm" className="text-sm font-medium">
-                    Type <strong className="text-destructive">DELETE</strong> to
-                    confirm
+                    Type <strong className="text-destructive">DELETE</strong> to confirm
                   </Label>
                   <Input
                     id="delete-confirm"
@@ -110,16 +108,13 @@ export function DeleteAccount({ className }: DeleteAccountProps) {
                 </div>
 
                 <AlertDialogFooter>
-                  <AlertDialogCancel
-                    onClick={() => setConfirmation('')}
-                    disabled={loading}
-                  >
+                  <AlertDialogCancel onClick={() => setConfirmation('')} disabled={loading}>
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleDelete}
                     disabled={confirmation !== 'DELETE' || loading}
-                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                   >
                     {loading ? (
                       <>
@@ -140,5 +135,5 @@ export function DeleteAccount({ className }: DeleteAccountProps) {
         </div>
       </div>
     </SettingsSection>
-  );
+  )
 }

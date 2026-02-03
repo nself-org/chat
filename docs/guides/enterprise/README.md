@@ -27,39 +27,39 @@ nself-chat provides enterprise-grade features for organizations requiring advanc
 
 ## Feature Matrix
 
-| Feature | Community | Professional | Enterprise |
-|---------|-----------|--------------|------------|
-| **Authentication** | | | |
-| Email/Password | ✅ | ✅ | ✅ |
-| Social Login (OAuth) | ✅ | ✅ | ✅ |
-| SSO/SAML | ❌ | ✅ | ✅ |
-| Multiple SSO Providers | ❌ | ❌ | ✅ |
-| JIT Provisioning | ❌ | ✅ | ✅ |
-| **Authorization** | | | |
-| Basic Roles (5) | ✅ | ✅ | ✅ |
-| Custom Roles | ❌ | ✅ (10) | ✅ (Unlimited) |
-| Role Templates | ❌ | ✅ | ✅ |
-| Permission Inheritance | ❌ | ✅ | ✅ |
-| Time-Limited Roles | ❌ | ❌ | ✅ |
-| **Audit & Compliance** | | | |
-| Basic Audit Logs | ✅ | ✅ | ✅ |
-| Tamper-Proof Logging | ❌ | ✅ | ✅ |
-| Advanced Search | ❌ | ✅ | ✅ |
-| Export Formats | 1 | 3 | 5+ |
-| Retention Policies | ❌ | ✅ | ✅ |
-| Compliance Presets | ❌ | ❌ | ✅ |
-| **Security** | | | |
-| 2FA/MFA | ✅ | ✅ | ✅ |
-| IP Whitelisting | ❌ | ❌ | ✅ |
-| Geo-Blocking | ❌ | ❌ | ✅ |
-| Advanced Rate Limiting | ❌ | ✅ | ✅ |
-| Suspicious Activity Detection | ❌ | ✅ | ✅ |
-| **Support** | | | |
-| Community Forums | ✅ | ✅ | ✅ |
-| Email Support | ❌ | ✅ | ✅ |
-| Priority Support | ❌ | ❌ | ✅ |
-| Dedicated Account Manager | ❌ | ❌ | ✅ |
-| SLA Guarantee | ❌ | ❌ | 99.9% |
+| Feature                       | Community | Professional | Enterprise     |
+| ----------------------------- | --------- | ------------ | -------------- |
+| **Authentication**            |           |              |                |
+| Email/Password                | ✅        | ✅           | ✅             |
+| Social Login (OAuth)          | ✅        | ✅           | ✅             |
+| SSO/SAML                      | ❌        | ✅           | ✅             |
+| Multiple SSO Providers        | ❌        | ❌           | ✅             |
+| JIT Provisioning              | ❌        | ✅           | ✅             |
+| **Authorization**             |           |              |                |
+| Basic Roles (5)               | ✅        | ✅           | ✅             |
+| Custom Roles                  | ❌        | ✅ (10)      | ✅ (Unlimited) |
+| Role Templates                | ❌        | ✅           | ✅             |
+| Permission Inheritance        | ❌        | ✅           | ✅             |
+| Time-Limited Roles            | ❌        | ❌           | ✅             |
+| **Audit & Compliance**        |           |              |                |
+| Basic Audit Logs              | ✅        | ✅           | ✅             |
+| Tamper-Proof Logging          | ❌        | ✅           | ✅             |
+| Advanced Search               | ❌        | ✅           | ✅             |
+| Export Formats                | 1         | 3            | 5+             |
+| Retention Policies            | ❌        | ✅           | ✅             |
+| Compliance Presets            | ❌        | ❌           | ✅             |
+| **Security**                  |           |              |                |
+| 2FA/MFA                       | ✅        | ✅           | ✅             |
+| IP Whitelisting               | ❌        | ❌           | ✅             |
+| Geo-Blocking                  | ❌        | ❌           | ✅             |
+| Advanced Rate Limiting        | ❌        | ✅           | ✅             |
+| Suspicious Activity Detection | ❌        | ✅           | ✅             |
+| **Support**                   |           |              |                |
+| Community Forums              | ✅        | ✅           | ✅             |
+| Email Support                 | ❌        | ✅           | ✅             |
+| Priority Support              | ❌        | ❌           | ✅             |
+| Dedicated Account Manager     | ❌        | ❌           | ✅             |
+| SLA Guarantee                 | ❌        | ❌           | 99.9%          |
 
 ## Quick Start
 
@@ -75,19 +75,19 @@ const config = {
       allowedProviders: ['okta', 'azure-ad'],
       enforceSSO: false,
       jitProvisioning: true,
-      defaultRole: 'member'
+      defaultRole: 'member',
     },
     rbac: {
       customRolesEnabled: true,
       maxCustomRoles: 50,
-      roleInheritance: true
+      roleInheritance: true,
     },
     audit: {
       enabled: true,
       tamperProof: true,
-      retentionDays: 365
-    }
-  }
+      retentionDays: 365,
+    },
+  },
 }
 ```
 
@@ -184,6 +184,7 @@ See [Audit Logging Guide](./Audit-Logging.md) for detailed instructions.
 nself-chat can be configured to meet SOC 2 requirements:
 
 **Trust Service Criteria**:
+
 - ✅ Security: Access controls, encryption, monitoring
 - ✅ Availability: 99.9% uptime SLA
 - ✅ Processing Integrity: Data validation and error handling
@@ -191,6 +192,7 @@ nself-chat can be configured to meet SOC 2 requirements:
 - ✅ Privacy: GDPR-compliant data handling
 
 **Configuration**:
+
 ```typescript
 compliance: {
   mode: 'soc2',
@@ -217,6 +219,7 @@ Full GDPR compliance features:
 - **Privacy by Design**: Privacy-first architecture
 
 **Configuration**:
+
 ```typescript
 compliance: {
   mode: 'gdpr',
@@ -237,6 +240,7 @@ Healthcare-compliant configuration:
 - **Security Risk Analysis**: Regular assessments
 
 **Configuration**:
+
 ```typescript
 compliance: {
   mode: 'hipaa',
@@ -317,11 +321,11 @@ Payment card industry compliance:
 
 ### Pricing Tiers
 
-| Tier | Users | Price | Features |
-|------|-------|-------|----------|
-| Community | Unlimited | Free | Basic features |
+| Tier         | Users     | Price  | Features               |
+| ------------ | --------- | ------ | ---------------------- |
+| Community    | Unlimited | Free   | Basic features         |
 | Professional | Up to 100 | $99/mo | SSO, Custom Roles (10) |
-| Enterprise | Unlimited | Custom | All features, SLA |
+| Enterprise   | Unlimited | Custom | All features, SLA      |
 
 ### Self-Hosting
 

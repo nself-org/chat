@@ -1,15 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import {
-  Search,
-  Bot,
-  Sparkles,
-  Filter,
-  X,
-  ChevronRight,
-  Loader2,
-} from 'lucide-react'
+import { Search, Bot, Sparkles, Filter, X, ChevronRight, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
@@ -112,9 +104,7 @@ export function BotMarketplace({
       case 'rating':
         return (b.rating || 0) - (a.rating || 0)
       case 'newest':
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       case 'name':
         return a.name.localeCompare(b.name)
       default:
@@ -126,23 +116,21 @@ export function BotMarketplace({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent side="right" className="w-full sm:max-w-2xl p-0">
-        <div className="flex flex-col h-full">
+      <SheetContent side="right" className="w-full p-0 sm:max-w-2xl">
+        <div className="flex h-full flex-col">
           {/* Header */}
-          <SheetHeader className="p-6 pb-4 border-b">
+          <SheetHeader className="border-b p-6 pb-4">
             <SheetTitle className="flex items-center gap-2">
               <Bot className="h-5 w-5" />
               Bot Marketplace
             </SheetTitle>
-            <SheetDescription>
-              Discover and install bots to enhance your workspace
-            </SheetDescription>
+            <SheetDescription>Discover and install bots to enhance your workspace</SheetDescription>
           </SheetHeader>
 
           {/* Search and Filters */}
-          <div className="p-4 border-b space-y-3">
+          <div className="space-y-3 border-b p-4">
             <form onSubmit={handleSearchSubmit} className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search bots..."
                 value={localSearch}
@@ -161,12 +149,9 @@ export function BotMarketplace({
             </form>
 
             <div className="flex items-center gap-2">
-              <Select
-                value={sortBy}
-                onValueChange={(v) => setSortBy(v as SortOption)}
-              >
+              <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
                 <SelectTrigger className="w-[140px]">
-                  <Filter className="h-4 w-4 mr-2" />
+                  <Filter className="mr-2 h-4 w-4" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -180,11 +165,10 @@ export function BotMarketplace({
               {selectedCategory && (
                 <Badge
                   variant="secondary"
-                  className="cursor-pointer hover:bg-secondary/80"
+                  className="hover:bg-secondary/80 cursor-pointer"
                   onClick={() => onFilterCategory(undefined)}
                 >
-                  {categories.find((c) => c.slug === selectedCategory)?.name ||
-                    selectedCategory}
+                  {categories.find((c) => c.slug === selectedCategory)?.name || selectedCategory}
                   <X className="ml-1 h-3 w-3" />
                 </Badge>
               )}
@@ -193,11 +177,11 @@ export function BotMarketplace({
 
           {/* Content */}
           <ScrollArea className="flex-1">
-            <div className="p-4 space-y-6">
+            <div className="space-y-6 p-4">
               {/* Featured Section (only shown when no filters) */}
               {!searchQuery && !selectedCategory && featuredBots.length > 0 && (
                 <section>
-                  <h3 className="flex items-center gap-2 font-semibold mb-3">
+                  <h3 className="mb-3 flex items-center gap-2 font-semibold">
                     <Sparkles className="h-4 w-4 text-amber-500" />
                     Featured Bots
                   </h3>
@@ -219,14 +203,14 @@ export function BotMarketplace({
               {/* Categories */}
               {!searchQuery && categories.length > 0 && (
                 <section>
-                  <h3 className="font-semibold mb-3">Categories</h3>
+                  <h3 className="mb-3 font-semibold">Categories</h3>
                   <div className="grid grid-cols-2 gap-2">
                     {categories.map((category) => (
                       <button
                         key={category.id}
                         onClick={() => handleCategoryClick(category.slug)}
                         className={cn(
-                          'flex items-center justify-between p-3 rounded-lg border text-left transition-colors',
+                          'flex items-center justify-between rounded-lg border p-3 text-left transition-colors',
                           selectedCategory === category.slug
                             ? 'bg-primary/10 border-primary'
                             : 'hover:bg-muted'
@@ -234,9 +218,7 @@ export function BotMarketplace({
                       >
                         <div>
                           <p className="font-medium">{category.name}</p>
-                          <p className="text-sm text-muted-foreground">
-                            {category.botsCount} bots
-                          </p>
+                          <p className="text-sm text-muted-foreground">{category.botsCount} bots</p>
                         </div>
                         <ChevronRight className="h-4 w-4 text-muted-foreground" />
                       </button>
@@ -247,18 +229,15 @@ export function BotMarketplace({
 
               {/* All Bots / Search Results */}
               <section>
-                <div className="flex items-center justify-between mb-3">
+                <div className="mb-3 flex items-center justify-between">
                   <h3 className="font-semibold">
                     {searchQuery
                       ? `Search results for "${searchQuery}"`
                       : selectedCategory
-                        ? categories.find((c) => c.slug === selectedCategory)
-                            ?.name || 'Bots'
+                        ? categories.find((c) => c.slug === selectedCategory)?.name || 'Bots'
                         : 'All Bots'}
                   </h3>
-                  <span className="text-sm text-muted-foreground">
-                    {totalCount} bots
-                  </span>
+                  <span className="text-sm text-muted-foreground">{totalCount} bots</span>
                 </div>
 
                 {loading && bots.length === 0 ? (
@@ -268,8 +247,8 @@ export function BotMarketplace({
                     <BotCardSkeleton />
                   </div>
                 ) : sortedBots.length === 0 ? (
-                  <div className="text-center py-12">
-                    <Bot className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                  <div className="py-12 text-center">
+                    <Bot className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
                     <p className="font-medium">No bots found</p>
                     <p className="text-sm text-muted-foreground">
                       Try adjusting your search or filters
@@ -295,11 +274,7 @@ export function BotMarketplace({
                     )}
 
                     {hasMore && onLoadMore && !loading && (
-                      <Button
-                        variant="outline"
-                        className="w-full"
-                        onClick={onLoadMore}
-                      >
+                      <Button variant="outline" className="w-full" onClick={onLoadMore}>
                         Load More
                       </Button>
                     )}
@@ -354,9 +329,7 @@ export function BotMarketplaceInline({
       case 'rating':
         return (b.rating || 0) - (a.rating || 0)
       case 'newest':
-        return (
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       case 'name':
         return a.name.localeCompare(b.name)
       default:
@@ -369,9 +342,9 @@ export function BotMarketplaceInline({
   return (
     <div className={cn('space-y-6', className)}>
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row">
         <form onSubmit={handleSearchSubmit} className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search bots..."
             value={localSearch}
@@ -380,10 +353,7 @@ export function BotMarketplaceInline({
           />
         </form>
 
-        <Select
-          value={sortBy}
-          onValueChange={(v) => setSortBy(v as SortOption)}
-        >
+        <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortOption)}>
           <SelectTrigger className="w-[160px]">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
@@ -412,9 +382,7 @@ export function BotMarketplaceInline({
               variant={selectedCategory === category.slug ? 'default' : 'outline'}
               size="sm"
               onClick={() =>
-                onFilterCategory(
-                  selectedCategory === category.slug ? undefined : category.slug
-                )
+                onFilterCategory(selectedCategory === category.slug ? undefined : category.slug)
               }
             >
               {category.name}
@@ -426,7 +394,7 @@ export function BotMarketplaceInline({
       {/* Featured Bots */}
       {!searchQuery && !selectedCategory && featuredBots.length > 0 && (
         <section>
-          <h3 className="flex items-center gap-2 font-semibold mb-4">
+          <h3 className="mb-4 flex items-center gap-2 font-semibold">
             <Sparkles className="h-4 w-4 text-amber-500" />
             Featured Bots
           </h3>
@@ -446,7 +414,7 @@ export function BotMarketplaceInline({
 
       {/* All Bots */}
       <section>
-        <div className="flex items-center justify-between mb-4">
+        <div className="mb-4 flex items-center justify-between">
           <h3 className="font-semibold">
             {searchQuery
               ? `Search results`
@@ -466,12 +434,10 @@ export function BotMarketplaceInline({
             ))}
           </div>
         ) : sortedBots.length === 0 ? (
-          <div className="text-center py-12 rounded-lg border border-dashed">
-            <Bot className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+          <div className="rounded-lg border border-dashed py-12 text-center">
+            <Bot className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
             <p className="font-medium">No bots found</p>
-            <p className="text-sm text-muted-foreground">
-              Try adjusting your search or filters
-            </p>
+            <p className="text-sm text-muted-foreground">Try adjusting your search or filters</p>
           </div>
         ) : (
           <>
@@ -488,7 +454,7 @@ export function BotMarketplaceInline({
             </div>
 
             {hasMore && onLoadMore && (
-              <div className="flex justify-center mt-6">
+              <div className="mt-6 flex justify-center">
                 <Button variant="outline" onClick={onLoadMore} disabled={loading}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Load More

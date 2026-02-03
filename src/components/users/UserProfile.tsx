@@ -88,22 +88,22 @@ const UserProfile = React.forwardRef<HTMLDivElement, UserProfileProps>(
 
     if (isLoading) {
       return (
-        <div ref={ref} className={cn('flex flex-col h-full', className)} {...props}>
+        <div ref={ref} className={cn('flex h-full flex-col', className)} {...props}>
           {/* Header skeleton */}
           <div className="relative">
             <Skeleton className="h-32 w-full" />
-            <div className="px-6 pb-4 -mt-12">
+            <div className="-mt-12 px-6 pb-4">
               <div className="flex items-end gap-4">
                 <Skeleton className="h-24 w-24 rounded-full" />
                 <div className="flex-1 pb-2">
-                  <Skeleton className="h-6 w-40 mb-2" />
+                  <Skeleton className="mb-2 h-6 w-40" />
                   <Skeleton className="h-4 w-24" />
                 </div>
               </div>
             </div>
           </div>
           {/* Content skeleton */}
-          <div className="flex-1 p-6 space-y-4">
+          <div className="flex-1 space-y-4 p-6">
             <Skeleton className="h-20 w-full" />
             <Skeleton className="h-20 w-full" />
             <Skeleton className="h-20 w-full" />
@@ -117,13 +117,13 @@ const UserProfile = React.forwardRef<HTMLDivElement, UserProfileProps>(
         <div
           ref={ref}
           className={cn(
-            'flex flex-col items-center justify-center h-full text-center p-6',
+            'flex h-full flex-col items-center justify-center p-6 text-center',
             className
           )}
           {...props}
         >
-          <User className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">User not found</h3>
+          <User className="mb-4 h-12 w-12 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-medium">User not found</h3>
           <p className="text-sm text-muted-foreground">
             The user you are looking for does not exist or has been removed.
           </p>
@@ -132,7 +132,7 @@ const UserProfile = React.forwardRef<HTMLDivElement, UserProfileProps>(
     }
 
     return (
-      <div ref={ref} className={cn('flex flex-col h-full', className)} {...props}>
+      <div ref={ref} className={cn('flex h-full flex-col', className)} {...props}>
         {/* Profile header */}
         <UserProfileHeader
           user={user}
@@ -145,38 +145,38 @@ const UserProfile = React.forwardRef<HTMLDivElement, UserProfileProps>(
         />
 
         {/* Tabbed content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="flex flex-1 flex-col">
           <div className="border-b px-6">
-            <TabsList className="w-full justify-start h-auto p-0 bg-transparent">
+            <TabsList className="h-auto w-full justify-start bg-transparent p-0">
               <TabsTrigger
                 value="about"
-                className="px-4 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
               >
-                <User className="h-4 w-4 mr-2" />
+                <User className="mr-2 h-4 w-4" />
                 About
               </TabsTrigger>
               <TabsTrigger
                 value="activity"
-                className="px-4 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
               >
-                <Activity className="h-4 w-4 mr-2" />
+                <Activity className="mr-2 h-4 w-4" />
                 Activity
               </TabsTrigger>
               {!isOwnProfile && sharedChannels.length > 0 && (
                 <TabsTrigger
                   value="channels"
-                  className="px-4 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                  className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
                 >
-                  <Hash className="h-4 w-4 mr-2" />
+                  <Hash className="mr-2 h-4 w-4" />
                   Channels ({sharedChannels.length})
                 </TabsTrigger>
               )}
               {!isOwnProfile && sharedFiles.length > 0 && (
                 <TabsTrigger
                   value="files"
-                  className="px-4 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent"
+                  className="rounded-none border-b-2 border-transparent px-4 py-3 data-[state=active]:border-primary data-[state=active]:bg-transparent"
                 >
-                  <FileText className="h-4 w-4 mr-2" />
+                  <FileText className="mr-2 h-4 w-4" />
                   Files ({sharedFiles.length})
                 </TabsTrigger>
               )}
@@ -189,18 +189,12 @@ const UserProfile = React.forwardRef<HTMLDivElement, UserProfileProps>(
             </TabsContent>
 
             <TabsContent value="activity" className="m-0">
-              <UserProfileActivity
-                activities={recentActivity}
-                onChannelClick={onChannelClick}
-              />
+              <UserProfileActivity activities={recentActivity} onChannelClick={onChannelClick} />
             </TabsContent>
 
             {!isOwnProfile && (
               <TabsContent value="channels" className="m-0">
-                <UserProfileChannels
-                  channels={sharedChannels}
-                  onChannelClick={onChannelClick}
-                />
+                <UserProfileChannels channels={sharedChannels} onChannelClick={onChannelClick} />
               </TabsContent>
             )}
 

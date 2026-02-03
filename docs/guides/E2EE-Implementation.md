@@ -113,6 +113,7 @@ src/
 ### Tables
 
 #### 1. `nchat_user_master_keys`
+
 Stores user's master key info (password-derived).
 
 ```sql
@@ -124,6 +125,7 @@ Stores user's master key info (password-derived).
 ```
 
 #### 2. `nchat_identity_keys`
+
 Long-term identity keys (one per device).
 
 ```sql
@@ -134,6 +136,7 @@ Long-term identity keys (one per device).
 ```
 
 #### 3. `nchat_signed_prekeys`
+
 Signed prekeys (rotated weekly).
 
 ```sql
@@ -145,6 +148,7 @@ Signed prekeys (rotated weekly).
 ```
 
 #### 4. `nchat_one_time_prekeys`
+
 One-time prekeys (consumed once, 100 per device).
 
 ```sql
@@ -157,6 +161,7 @@ One-time prekeys (consumed once, 100 per device).
 ```
 
 #### 5. `nchat_signal_sessions`
+
 Double Ratchet session state.
 
 ```sql
@@ -172,6 +177,7 @@ Double Ratchet session state.
 ```
 
 #### 6. `nchat_safety_numbers`
+
 Safety numbers for identity verification.
 
 ```sql
@@ -184,6 +190,7 @@ Safety numbers for identity verification.
 ```
 
 #### 7. `nchat_sender_keys` (for groups)
+
 Sender keys for efficient group encryption.
 
 ```sql
@@ -195,6 +202,7 @@ Sender keys for efficient group encryption.
 ```
 
 #### 8. `nchat_e2ee_audit_log`
+
 Audit log for E2EE events (non-sensitive metadata only).
 
 ```sql
@@ -344,6 +352,7 @@ Audit log for E2EE events (non-sensitive metadata only).
 Initialize E2EE for the current user.
 
 **Request:**
+
 ```json
 {
   "password": "strong-password",
@@ -352,6 +361,7 @@ Initialize E2EE for the current user.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -371,6 +381,7 @@ Initialize E2EE for the current user.
 Recover E2EE using recovery code.
 
 **Request:**
+
 ```json
 {
   "recoveryCode": "alpha-bravo-charlie-...",
@@ -379,6 +390,7 @@ Recover E2EE using recovery code.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -396,6 +408,7 @@ Recover E2EE using recovery code.
 Generate or verify safety numbers.
 
 **Request (Generate):**
+
 ```json
 {
   "action": "generate",
@@ -406,6 +419,7 @@ Generate or verify safety numbers.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -420,6 +434,7 @@ Generate or verify safety numbers.
 Replenish one-time prekeys.
 
 **Request:**
+
 ```json
 {
   "count": 50
@@ -427,6 +442,7 @@ Replenish one-time prekeys.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -534,9 +550,8 @@ function SafetyNumberView() {
 Setup wizard component.
 
 ```tsx
-import { E2EESetup } from '@/components/e2ee/E2EESetup';
-
-<E2EESetup
+import { E2EESetup } from '@/components/e2ee/E2EESetup'
+;<E2EESetup
   onComplete={() => console.log('Setup complete')}
   onCancel={() => console.log('Setup cancelled')}
 />
@@ -547,9 +562,8 @@ import { E2EESetup } from '@/components/e2ee/E2EESetup';
 Display and verify safety numbers.
 
 ```tsx
-import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay';
-
-<SafetyNumberDisplay
+import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay'
+;<SafetyNumberDisplay
   localUserId="user-1"
   peerUserId="user-2"
   peerDeviceId="device-abc"
@@ -686,10 +700,10 @@ export function MessageList({ messages }: Props) {
 
 ```tsx
 // src/components/chat/user-profile.tsx
-import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay';
+import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay'
 
 export function UserProfile({ userId, deviceId, name }: Props) {
-  const { user } = useAuth();
+  const { user } = useAuth()
 
   return (
     <div>
@@ -702,7 +716,7 @@ export function UserProfile({ userId, deviceId, name }: Props) {
         onVerified={() => toast('Identity verified!')}
       />
     </div>
-  );
+  )
 }
 ```
 
@@ -750,20 +764,23 @@ export function UserProfile({ userId, deviceId, name }: Props) {
 **Cause**: User hasn't set up E2EE yet.
 
 **Solution**:
+
 ```typescript
-const { initialize } = useE2EE();
-await initialize('password');
+const { initialize } = useE2EE()
+await initialize('password')
 ```
 
 ### "Failed to decrypt message"
 
 **Causes**:
+
 1. Session not established
 2. Out-of-order message delivery
 3. Corrupted session state
 4. Wrong device ID
 
 **Solutions**:
+
 1. Check if session exists: `await hasSession(userId, deviceId)`
 2. Recreate session: Delete old session, initiate new X3DH
 3. Verify sender device ID is correct
@@ -785,9 +802,10 @@ await initialize('password');
 **Cause**: < 20 one-time prekeys remaining.
 
 **Solution**: Automatic replenishment will trigger. Manual:
+
 ```typescript
-const { replenishOneTimePreKeys } = useE2EE();
-await replenishOneTimePreKeys(50);
+const { replenishOneTimePreKeys } = useE2EE()
+await replenishOneTimePreKeys(50)
 ```
 
 ---

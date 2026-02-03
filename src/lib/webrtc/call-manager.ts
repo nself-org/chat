@@ -13,6 +13,8 @@ import { CallStateMachine, type CallState, type CallEndReason } from '../calls/c
 import { CallInvitationManager } from '../calls/call-invitation'
 import { getIceServers } from './servers'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -58,7 +60,13 @@ export interface CallManagerCallbacks {
 // Call Manager Class
 // =============================================================================
 
-type ResolvedCallManagerConfig = Required<Pick<CallManagerConfig, 'userId' | 'userName' | 'iceServers' | 'ringToneUrl' | 'ringVolume' | 'ringTimeout'>> & Pick<CallManagerConfig, 'userAvatarUrl' | 'onStateChange' | 'onError'>
+type ResolvedCallManagerConfig = Required<
+  Pick<
+    CallManagerConfig,
+    'userId' | 'userName' | 'iceServers' | 'ringToneUrl' | 'ringVolume' | 'ringTimeout'
+  >
+> &
+  Pick<CallManagerConfig, 'userAvatarUrl' | 'onStateChange' | 'onError'>
 
 export class CallManager extends EventEmitter {
   private config: ResolvedCallManagerConfig
@@ -179,9 +187,10 @@ export class CallManager extends EventEmitter {
       this.stateMachine!.transition('initiating', 'User initiated call')
 
       // Get user media
-      const stream = callType === 'video'
-        ? await this.mediaManager!.getVideoStream()
-        : await this.mediaManager!.getAudioOnlyStream()
+      const stream =
+        callType === 'video'
+          ? await this.mediaManager!.getVideoStream()
+          : await this.mediaManager!.getAudioOnlyStream()
 
       this.emit('local-stream', stream)
       this.callbacks.onLocalStream?.(stream)
@@ -333,9 +342,7 @@ export class CallManager extends EventEmitter {
     }
 
     const callId = this.currentCall.callId
-    const duration = this.callStartTime
-      ? Math.floor((Date.now() - this.callStartTime) / 1000)
-      : 0
+    const duration = this.callStartTime ? Math.floor((Date.now() - this.callStartTime) / 1000) : 0
 
     // Transition state
     this.stateMachine!.transition('ending', `Call ending: ${reason}`)
@@ -371,11 +378,7 @@ export class CallManager extends EventEmitter {
     const newState = this.mediaManager.toggleAudio()
 
     if (this.currentCall) {
-      this.signaling!.notifyMuteChange(
-        this.currentCall.callId,
-        this.config.userId,
-        !newState
-      )
+      this.signaling!.notifyMuteChange(this.currentCall.callId, this.config.userId, !newState)
     }
 
     return newState
@@ -387,11 +390,7 @@ export class CallManager extends EventEmitter {
     const newState = this.mediaManager.toggleVideo()
 
     if (this.currentCall) {
-      this.signaling!.notifyVideoChange(
-        this.currentCall.callId,
-        this.config.userId,
-        newState
-      )
+      this.signaling!.notifyVideoChange(this.currentCall.callId, this.config.userId, newState)
     }
 
     return newState
@@ -414,10 +413,7 @@ export class CallManager extends EventEmitter {
 
       // Notify
       if (this.currentCall) {
-        this.signaling!.notifyScreenShareStarted(
-          this.currentCall.callId,
-          this.config.userId
-        )
+        this.signaling!.notifyScreenShareStarted(this.currentCall.callId, this.config.userId)
       }
 
       // Handle track end (user stopped sharing)
@@ -433,10 +429,7 @@ export class CallManager extends EventEmitter {
     this.mediaManager.stopScreenShare()
 
     if (this.currentCall) {
-      this.signaling!.notifyScreenShareStopped(
-        this.currentCall.callId,
-        this.config.userId
-      )
+      this.signaling!.notifyScreenShareStopped(this.currentCall.callId, this.config.userId)
     }
   }
 
@@ -511,7 +504,7 @@ export class CallManager extends EventEmitter {
     try {
       await this.peerConnection.addIceCandidate(payload.candidate)
     } catch (error) {
-      console.error('Error adding ICE candidate:', error)
+      logger.error('Error adding ICE candidate:', error)
     }
   }
 
@@ -589,7 +582,7 @@ export class CallManager extends EventEmitter {
           })
         }
       } catch (error) {
-        console.error('ICE restart failed:', error)
+        logger.error('ICE restart failed:', error)
       }
     }
   }
@@ -599,7 +592,7 @@ export class CallManager extends EventEmitter {
   // ===========================================================================
 
   private handleError(error: Error): void {
-    console.error('Call error:', error)
+    logger.error('Call error:', error)
     this.emit('error', error)
     this.callbacks.onError?.(error)
     this.config.onError?.(error)
@@ -614,7 +607,7 @@ export class CallManager extends EventEmitter {
   }
 
   private handleTrackEnded(track: MediaStreamTrack): void {
-    console.log('Track ended:', track.kind, track.id)
+    // REMOVED: console.log('Track ended:', track.kind, track.id)
   }
 
   // ===========================================================================

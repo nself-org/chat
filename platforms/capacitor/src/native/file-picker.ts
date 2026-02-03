@@ -3,21 +3,21 @@
  * Handles document and media file selection
  */
 
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem';
-import { Capacitor } from '@capacitor/core';
+import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
+import { Capacitor } from '@capacitor/core'
 
 export interface PickedFile {
-  uri: string;
-  name: string;
-  type: string;
-  size: number;
-  base64?: string;
+  uri: string
+  name: string
+  type: string
+  size: number
+  base64?: string
 }
 
 export interface FilePickerOptions {
-  multiple?: boolean;
-  types?: string[]; // MIME types or file extensions
-  maxSize?: number; // Max file size in bytes
+  multiple?: boolean
+  types?: string[] // MIME types or file extensions
+  maxSize?: number // Max file size in bytes
 }
 
 class FilePickerService {
@@ -50,11 +50,11 @@ class FilePickerService {
       //   };
       // }
 
-      console.log('File picker called with options:', options);
-      return null; // Placeholder
+      console.log('File picker called with options:', options)
+      return null // Placeholder
     } catch (error) {
-      console.error('Error picking file:', error);
-      return null;
+      console.error('Error picking file:', error)
+      return null
     }
   }
 
@@ -78,11 +78,11 @@ class FilePickerService {
       //   base64: file.data,
       // }));
 
-      console.log('Multiple file picker called with options:', options);
-      return []; // Placeholder
+      console.log('Multiple file picker called with options:', options)
+      return [] // Placeholder
     } catch (error) {
-      console.error('Error picking files:', error);
-      return [];
+      console.error('Error picking files:', error)
+      return []
     }
   }
 
@@ -92,7 +92,7 @@ class FilePickerService {
   async pickImage(): Promise<PickedFile | null> {
     return this.pickFile({
       types: ['image/*'],
-    });
+    })
   }
 
   /**
@@ -101,7 +101,7 @@ class FilePickerService {
   async pickVideo(): Promise<PickedFile | null> {
     return this.pickFile({
       types: ['video/*'],
-    });
+    })
   }
 
   /**
@@ -110,7 +110,7 @@ class FilePickerService {
   async pickAudio(): Promise<PickedFile | null> {
     return this.pickFile({
       types: ['audio/*'],
-    });
+    })
   }
 
   /**
@@ -126,7 +126,7 @@ class FilePickerService {
         'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         'text/plain',
       ],
-    });
+    })
   }
 
   /**
@@ -138,12 +138,12 @@ class FilePickerService {
         path: filepath,
         directory: Directory.Data,
         encoding: Encoding.UTF8,
-      });
+      })
 
-      return contents.data as string;
+      return contents.data as string
     } catch (error) {
-      console.error('Error reading file as text:', error);
-      return null;
+      console.error('Error reading file as text:', error)
+      return null
     }
   }
 
@@ -155,12 +155,12 @@ class FilePickerService {
       const contents = await Filesystem.readFile({
         path: filepath,
         directory: Directory.Data,
-      });
+      })
 
-      return contents.data;
+      return contents.data
     } catch (error) {
-      console.error('Error reading file as base64:', error);
-      return null;
+      console.error('Error reading file as base64:', error)
+      return null
     }
   }
 
@@ -172,15 +172,15 @@ class FilePickerService {
       const stat = await Filesystem.stat({
         path: filepath,
         directory: Directory.Data,
-      });
+      })
 
       return {
         size: stat.size,
         type: stat.type,
-      };
+      }
     } catch (error) {
-      console.error('Error getting file info:', error);
-      return null;
+      console.error('Error getting file info:', error)
+      return null
     }
   }
 
@@ -188,7 +188,7 @@ class FilePickerService {
    * Validate file size
    */
   validateFileSize(size: number, maxSize: number): boolean {
-    return size <= maxSize;
+    return size <= maxSize
   }
 
   /**
@@ -197,31 +197,31 @@ class FilePickerService {
   validateFileType(type: string, allowedTypes: string[]): boolean {
     return allowedTypes.some((allowedType) => {
       if (allowedType.endsWith('/*')) {
-        const category = allowedType.split('/')[0];
-        return type.startsWith(`${category}/`);
+        const category = allowedType.split('/')[0]
+        return type.startsWith(`${category}/`)
       }
-      return type === allowedType;
-    });
+      return type === allowedType
+    })
   }
 
   /**
    * Format file size for display
    */
   formatFileSize(bytes: number): string {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return '0 Bytes'
 
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`
   }
 
   /**
    * Get file extension from filename
    */
   getFileExtension(filename: string): string {
-    return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2);
+    return filename.slice(((filename.lastIndexOf('.') - 1) >>> 0) + 2)
   }
 
   /**
@@ -263,30 +263,30 @@ class FilePickerService {
       zip: 'application/zip',
       rar: 'application/x-rar-compressed',
       '7z': 'application/x-7z-compressed',
-    };
+    }
 
-    return mimeTypes[extension.toLowerCase()] || 'application/octet-stream';
+    return mimeTypes[extension.toLowerCase()] || 'application/octet-stream'
   }
 
   /**
    * Check if file is an image
    */
   isImage(type: string): boolean {
-    return type.startsWith('image/');
+    return type.startsWith('image/')
   }
 
   /**
    * Check if file is a video
    */
   isVideo(type: string): boolean {
-    return type.startsWith('video/');
+    return type.startsWith('video/')
   }
 
   /**
    * Check if file is audio
    */
   isAudio(type: string): boolean {
-    return type.startsWith('audio/');
+    return type.startsWith('audio/')
   }
 
   /**
@@ -299,9 +299,9 @@ class FilePickerService {
       type.includes('excel') ||
       type.includes('powerpoint') ||
       type === 'text/plain'
-    );
+    )
   }
 }
 
 // Export singleton instance
-export const filePicker = new FilePickerService();
+export const filePicker = new FilePickerService()

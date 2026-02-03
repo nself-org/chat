@@ -115,11 +115,7 @@ mutation ReactivateUser($userId: uuid!) {
 }
 
 # Ban user
-mutation BanUser(
-  $userId: uuid!
-  $reason: String!
-  $bannedUntil: timestamptz
-) {
+mutation BanUser($userId: uuid!, $reason: String!, $bannedUntil: timestamptz) {
   update_nchat_users_by_pk(
     pk_columns: { id: $userId }
     _set: {
@@ -192,11 +188,7 @@ mutation CreateBanRecord(
 mutation UpdateBanRecord($banId: uuid!, $unbannedById: uuid!) {
   update_nchat_user_bans_by_pk(
     pk_columns: { id: $banId }
-    _set: {
-      is_active: false
-      unbanned_at: "now()"
-      unbanned_by: $unbannedById
-    }
+    _set: { is_active: false, unbanned_at: "now()", unbanned_by: $unbannedById }
   ) {
     id
     is_active
@@ -217,11 +209,7 @@ mutation DeleteUser($userId: uuid!) {
 mutation SoftDeleteUser($userId: uuid!) {
   update_nchat_users_by_pk(
     pk_columns: { id: $userId }
-    _set: {
-      is_active: false
-      deleted_at: "now()"
-      updated_at: "now()"
-    }
+    _set: { is_active: false, deleted_at: "now()", updated_at: "now()" }
   ) {
     id
     is_active
@@ -288,11 +276,7 @@ mutation RevokeInvite($inviteId: uuid!) {
 mutation AcceptInvite($inviteId: uuid!, $acceptedByUserId: uuid!) {
   update_nchat_user_invites_by_pk(
     pk_columns: { id: $inviteId }
-    _set: {
-      status: "accepted"
-      accepted_at: "now()"
-      accepted_by: $acceptedByUserId
-    }
+    _set: { status: "accepted", accepted_at: "now()", accepted_by: $acceptedByUserId }
   ) {
     id
     status
@@ -338,10 +322,7 @@ mutation CreateInviteLink(
 
 # Increment invite link usage
 mutation IncrementInviteLinkUsage($linkId: uuid!) {
-  update_nchat_invite_links_by_pk(
-    pk_columns: { id: $linkId }
-    _inc: { current_uses: 1 }
-  ) {
+  update_nchat_invite_links_by_pk(pk_columns: { id: $linkId }, _inc: { current_uses: 1 }) {
     id
     current_uses
     max_uses
@@ -350,10 +331,7 @@ mutation IncrementInviteLinkUsage($linkId: uuid!) {
 
 # Deactivate invite link
 mutation DeactivateInviteLink($linkId: uuid!) {
-  update_nchat_invite_links_by_pk(
-    pk_columns: { id: $linkId }
-    _set: { is_active: false }
-  ) {
+  update_nchat_invite_links_by_pk(pk_columns: { id: $linkId }, _set: { is_active: false }) {
     id
     is_active
   }
@@ -369,10 +347,7 @@ mutation DeleteInviteLink($linkId: uuid!) {
 
 # Revoke user session
 mutation RevokeUserSession($sessionId: uuid!) {
-  update_nchat_user_sessions_by_pk(
-    pk_columns: { id: $sessionId }
-    _set: { status: "revoked" }
-  ) {
+  update_nchat_user_sessions_by_pk(pk_columns: { id: $sessionId }, _set: { status: "revoked" }) {
     id
     status
   }
@@ -389,18 +364,9 @@ mutation RevokeAllUserSessions($userId: uuid!) {
 }
 
 # Start impersonation session
-mutation StartImpersonation(
-  $adminId: uuid!
-  $targetUserId: uuid!
-  $reason: String!
-) {
+mutation StartImpersonation($adminId: uuid!, $targetUserId: uuid!, $reason: String!) {
   insert_nchat_impersonation_sessions_one(
-    object: {
-      admin_id: $adminId
-      target_user_id: $targetUserId
-      reason: $reason
-      is_active: true
-    }
+    object: { admin_id: $adminId, target_user_id: $targetUserId, reason: $reason, is_active: true }
   ) {
     id
     admin_id
@@ -459,10 +425,7 @@ mutation LogUserActivity(
 
 # Bulk update users
 mutation BulkUpdateUsers($userIds: [uuid!]!, $updates: nchat_users_set_input!) {
-  update_nchat_users(
-    where: { id: { _in: $userIds } }
-    _set: $updates
-  ) {
+  update_nchat_users(where: { id: { _in: $userIds } }, _set: $updates) {
     affected_rows
     returning {
       id
@@ -485,10 +448,7 @@ mutation BulkDeleteUsers($userIds: [uuid!]!) {
 
 # Update last seen
 mutation UpdateLastSeen($userId: uuid!) {
-  update_nchat_users_by_pk(
-    pk_columns: { id: $userId }
-    _set: { last_seen_at: "now()" }
-  ) {
+  update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { last_seen_at: "now()" }) {
     id
     last_seen_at
   }
@@ -516,10 +476,7 @@ mutation RemoveUserDevice($deviceId: uuid!) {
 
 # Trust user device
 mutation TrustUserDevice($deviceId: uuid!) {
-  update_nchat_user_devices_by_pk(
-    pk_columns: { id: $deviceId }
-    _set: { is_trusted: true }
-  ) {
+  update_nchat_user_devices_by_pk(pk_columns: { id: $deviceId }, _set: { is_trusted: true }) {
     id
     is_trusted
   }

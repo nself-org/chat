@@ -45,6 +45,7 @@ cat package.json | grep version
 ```
 
 **Compatible versions:**
+
 - ✅ v0.7.0 → v0.8.0 (direct upgrade)
 - ✅ v0.7.1 → v0.8.0 (direct upgrade)
 - ⚠️ v0.6.x → v0.8.0 (upgrade to v0.7.0 first)
@@ -291,6 +292,7 @@ pnpm run open:ios
 ```
 
 **Deployment timeline:**
+
 - Build: ~5 minutes
 - Archive: ~10 minutes
 - Upload: ~15 minutes
@@ -319,6 +321,7 @@ cd android
 ```
 
 **Deployment timeline:**
+
 - Build: ~5 minutes
 - Sign: ~2 minutes
 - Upload: ~10 minutes
@@ -354,6 +357,7 @@ gh release create v0.8.0 \
 ```
 
 **Deployment timeline:**
+
 - Build: ~15 minutes (all platforms)
 - Upload: ~10 minutes
 - Available immediately
@@ -467,6 +471,7 @@ vercel rollback
 **Symptom:** `pnpm build` fails with errors
 
 **Solution:**
+
 ```bash
 # Clear cache
 rm -rf .next node_modules
@@ -483,6 +488,7 @@ pnpm build
 **Symptom:** `pnpm install` shows peer dependency warnings
 
 **Solution:**
+
 ```bash
 # Use legacy peer deps
 pnpm install --legacy-peer-deps
@@ -497,6 +503,7 @@ corepack prepare pnpm@9.15.4 --activate
 **Symptom:** Mobile features not working
 
 **Solution:**
+
 ```bash
 # Verify env vars are set
 env | grep NEXT_PUBLIC
@@ -513,6 +520,7 @@ pnpm build
 **Symptom:** iOS/Android build fails
 
 **Solution:**
+
 ```bash
 # iOS: Clean and rebuild
 cd platforms/capacitor/ios/App
@@ -541,6 +549,7 @@ If you encounter issues:
 Use this checklist to track your upgrade:
 
 ### Pre-Upgrade
+
 - [ ] Verify current version (v0.7.0+)
 - [ ] Read release documentation
 - [ ] Backup database
@@ -549,6 +558,7 @@ Use this checklist to track your upgrade:
 - [ ] Test in staging (recommended)
 
 ### Upgrade
+
 - [ ] Pull latest code (v0.8.0)
 - [ ] Install dependencies
 - [ ] Update environment variables (optional)
@@ -559,6 +569,7 @@ Use this checklist to track your upgrade:
 - [ ] Monitor logs
 
 ### Mobile Deployment (Optional)
+
 - [ ] Build iOS app
 - [ ] Submit to App Store
 - [ ] Build Android app
@@ -567,6 +578,7 @@ Use this checklist to track your upgrade:
 - [ ] Upload to GitHub Releases
 
 ### Post-Upgrade
+
 - [ ] Verify all features work
 - [ ] Check performance
 - [ ] Monitor analytics
@@ -575,6 +587,7 @@ Use this checklist to track your upgrade:
 - [ ] Update documentation
 
 ### Rollback Plan
+
 - [ ] Document rollback procedure
 - [ ] Test rollback in staging
 - [ ] Keep v0.7.0 backup available
@@ -584,12 +597,14 @@ Use this checklist to track your upgrade:
 ## Timeline Estimate
 
 ### Web App Only
+
 - **Pre-upgrade:** 10 minutes
 - **Upgrade:** 10 minutes
 - **Verification:** 10 minutes
 - **Total:** ~30 minutes
 
 ### Web + Mobile Apps
+
 - **Web upgrade:** 30 minutes
 - **iOS build + submit:** 30 minutes
 - **Android build + submit:** 30 minutes
@@ -597,6 +612,7 @@ Use this checklist to track your upgrade:
 - **Total:** ~2 hours
 
 ### Including Review
+
 - **Web upgrade:** 30 minutes (immediate)
 - **iOS review:** 1-3 days
 - **Android review:** 1-7 days

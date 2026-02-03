@@ -48,7 +48,9 @@ export function useMobile(options: MobileDetectionOptions = {}): DeviceInfo {
     onChange,
   } = options
 
-  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>(() => getDeviceInfo(mobileBreakpoint, tabletBreakpoint))
+  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo>(() =>
+    getDeviceInfo(mobileBreakpoint, tabletBreakpoint)
+  )
 
   const updateDeviceInfo = useCallback(() => {
     const newInfo = getDeviceInfo(mobileBreakpoint, tabletBreakpoint)
@@ -153,7 +155,8 @@ function getDeviceInfo(mobileBreakpoint: number, tabletBreakpoint: number): Devi
     navigator.msMaxTouchPoints > 0
 
   // OS detection
-  const isIOS = /iphone|ipad|ipod/.test(userAgent) ||
+  const isIOS =
+    /iphone|ipad|ipod/.test(userAgent) ||
     (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) // iPad Pro
   const isAndroid = /android/.test(userAgent)
 
@@ -193,7 +196,8 @@ function detectNotch(): boolean {
 
   // Check for iOS devices with notch using safe area insets
   const root = document.documentElement
-  const safeAreaTop = getComputedStyle(root).getPropertyValue('--sat') ||
+  const safeAreaTop =
+    getComputedStyle(root).getPropertyValue('--sat') ||
     getComputedStyle(root).getPropertyValue('env(safe-area-inset-top)')
 
   if (safeAreaTop && parseInt(safeAreaTop) > 20) {

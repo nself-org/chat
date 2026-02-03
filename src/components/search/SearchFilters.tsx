@@ -38,9 +38,9 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
             variant="ghost"
             size="sm"
             onClick={clearFilters}
-            className="h-auto py-1 px-2 text-xs"
+            className="h-auto px-2 py-1 text-xs"
           >
-            <X className="h-3 w-3 mr-1" />
+            <X className="mr-1 h-3 w-3" />
             Clear All
           </Button>
         )}
@@ -49,7 +49,7 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
       <div className="grid grid-cols-2 gap-4">
         {/* Date Range */}
         <div className="space-y-2">
-          <Label htmlFor="dateFrom" className="text-xs flex items-center gap-1">
+          <Label htmlFor="dateFrom" className="flex items-center gap-1 text-xs">
             <Calendar className="h-3 w-3" />
             From Date
           </Label>
@@ -63,7 +63,7 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="dateTo" className="text-xs flex items-center gap-1">
+          <Label htmlFor="dateTo" className="flex items-center gap-1 text-xs">
             <Calendar className="h-3 w-3" />
             To Date
           </Label>
@@ -78,7 +78,7 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
 
         {/* Channel Filter */}
         <div className="space-y-2">
-          <Label htmlFor="channelIds" className="text-xs flex items-center gap-1">
+          <Label htmlFor="channelIds" className="flex items-center gap-1 text-xs">
             <Hash className="h-3 w-3" />
             Channels
           </Label>
@@ -87,7 +87,15 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
             type="text"
             placeholder="channel-id-1, channel-id-2"
             value={(filters.channelIds as string[])?.join(', ') || ''}
-            onChange={(e) => updateFilter('channelIds', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+            onChange={(e) =>
+              updateFilter(
+                'channelIds',
+                e.target.value
+                  .split(',')
+                  .map((s) => s.trim())
+                  .filter(Boolean)
+              )
+            }
             className="h-8 text-xs"
           />
           <p className="text-[10px] text-muted-foreground">
@@ -97,7 +105,7 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
 
         {/* User Filter */}
         <div className="space-y-2">
-          <Label htmlFor="userIds" className="text-xs flex items-center gap-1">
+          <Label htmlFor="userIds" className="flex items-center gap-1 text-xs">
             <User className="h-3 w-3" />
             Users
           </Label>
@@ -106,7 +114,15 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
             type="text"
             placeholder="user-id-1, user-id-2"
             value={(filters.userIds as string[])?.join(', ') || ''}
-            onChange={(e) => updateFilter('userIds', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
+            onChange={(e) =>
+              updateFilter(
+                'userIds',
+                e.target.value
+                  .split(',')
+                  .map((s) => s.trim())
+                  .filter(Boolean)
+              )
+            }
             className="h-8 text-xs"
           />
           <p className="text-[10px] text-muted-foreground">
@@ -117,7 +133,7 @@ export function SearchFilters({ filters, onChange }: SearchFiltersProps) {
 
       {/* Content Type Filters */}
       <div className="space-y-2">
-        <Label className="text-xs flex items-center gap-1">
+        <Label className="flex items-center gap-1 text-xs">
           <FileType className="h-3 w-3" />
           Content Types
         </Label>

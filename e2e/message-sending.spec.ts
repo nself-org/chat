@@ -26,7 +26,9 @@ test.describe('Message Sending', () => {
   })
 
   test('should send a text message', async ({ page }) => {
-    const messageInput = page.locator('[data-testid="message-input"], [contenteditable="true"], textarea')
+    const messageInput = page.locator(
+      '[data-testid="message-input"], [contenteditable="true"], textarea'
+    )
 
     if (await messageInput.isVisible()) {
       const testMessage = `Test message ${Date.now()}`
@@ -44,9 +46,11 @@ test.describe('Message Sending', () => {
 
       // Verify message appears
       const sentMessage = page.locator(`text=${testMessage}`)
-      await expect(sentMessage.first()).toBeVisible({ timeout: 5000 }).catch(() => {
-        // Message may have been sent but scrolled out of view
-      })
+      await expect(sentMessage.first())
+        .toBeVisible({ timeout: 5000 })
+        .catch(() => {
+          // Message may have been sent but scrolled out of view
+        })
     }
   })
 
@@ -110,7 +114,9 @@ test.describe('Message Sending', () => {
 
           // Check for edited indicator
           const editedIndicator = page.locator('text=/edited|Edited/')
-          await expect(editedIndicator.first()).toBeVisible({ timeout: 5000 }).catch(() => {})
+          await expect(editedIndicator.first())
+            .toBeVisible({ timeout: 5000 })
+            .catch(() => {})
         }
       }
     }
@@ -139,7 +145,9 @@ test.describe('Message Sending', () => {
           await deleteButton.click()
 
           // Confirm deletion
-          const confirmButton = page.locator('button:has-text("Confirm"), button:has-text("Delete")')
+          const confirmButton = page.locator(
+            'button:has-text("Confirm"), button:has-text("Delete")'
+          )
           if (await confirmButton.isVisible()) {
             await confirmButton.click()
           }
@@ -172,7 +180,9 @@ test.describe('Message Sending', () => {
         await sentMessage.hover()
 
         // Look for reaction button
-        const reactionButton = page.locator('button[aria-label*="React"], button[aria-label*="emoji"]')
+        const reactionButton = page.locator(
+          'button[aria-label*="React"], button[aria-label*="emoji"]'
+        )
         if (await reactionButton.isVisible()) {
           await reactionButton.click()
 
@@ -241,7 +251,9 @@ test.describe('Message Sending', () => {
 
           // Thread panel should open
           const threadPanel = page.locator('[data-testid="thread-panel"], .thread-panel, aside')
-          await expect(threadPanel.first()).toBeVisible({ timeout: 5000 }).catch(() => {})
+          await expect(threadPanel.first())
+            .toBeVisible({ timeout: 5000 })
+            .catch(() => {})
         }
       }
     }
@@ -265,9 +277,11 @@ test.describe('Message Sending', () => {
       // Check for typing indicator in first tab
       await page.waitForTimeout(1000)
       const typingIndicator = page.locator('text=/typing|is typing/i')
-      await expect(typingIndicator.first()).toBeVisible({ timeout: 5000 }).catch(() => {
-        // Typing indicators may not work without WebSocket
-      })
+      await expect(typingIndicator.first())
+        .toBeVisible({ timeout: 5000 })
+        .catch(() => {
+          // Typing indicators may not work without WebSocket
+        })
     }
 
     await page2.close()

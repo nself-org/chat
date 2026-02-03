@@ -6,7 +6,16 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Sparkles, Clock, Users, MessageSquare, ChevronDown, ChevronUp, Loader2, AlertCircle } from 'lucide-react'
+import {
+  Sparkles,
+  Clock,
+  Users,
+  MessageSquare,
+  ChevronDown,
+  ChevronUp,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -162,8 +171,8 @@ export function MessageSummary({
             <h4 className="text-sm font-medium">Key Points</h4>
             <ul className="space-y-1">
               {digest.keyPoints.map((point, index) => (
-                <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
+                <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <span className="mt-1 text-primary">•</span>
                   <span>{point}</span>
                 </li>
               ))}
@@ -212,8 +221,8 @@ export function MessageSummary({
             <h4 className="text-sm font-medium">Key Decisions</h4>
             <ul className="space-y-1">
               {threadSummary.keyDecisions.map((decision, index) => (
-                <li key={index} className="text-sm text-muted-foreground flex items-start gap-2">
-                  <span className="text-primary mt-1">•</span>
+                <li key={index} className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <span className="mt-1 text-primary">•</span>
                   <span>{decision}</span>
                 </li>
               ))}
@@ -300,12 +309,12 @@ export function MessageSummary({
               >
                 {loading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Generating...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4 mr-2" />
+                    <Sparkles className="mr-2 h-4 w-4" />
                     Generate
                   </>
                 )}
@@ -328,12 +337,12 @@ export function MessageSummary({
             >
               {expanded ? (
                 <>
-                  <ChevronUp className="h-4 w-4 mr-2" />
+                  <ChevronUp className="mr-2 h-4 w-4" />
                   Show Less
                 </>
               ) : (
                 <>
-                  <ChevronDown className="h-4 w-4 mr-2" />
+                  <ChevronDown className="mr-2 h-4 w-4" />
                   Show More
                 </>
               )}

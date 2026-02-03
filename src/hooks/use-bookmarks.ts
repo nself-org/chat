@@ -63,6 +63,7 @@ import type {
   BookmarkExportFormat,
   BookmarkExportOptions,
 } from '@/types/bookmark'
+
 import { exportBookmarksToJSON, exportBookmarksToCSV } from '@/types/bookmark'
 
 // ============================================================================
@@ -121,9 +122,7 @@ export function useBookmarks(filter?: BookmarkFilter, sortBy?: BookmarkSortBy) {
     if (filter?.dateRange) {
       filtered = filtered.filter((b) => {
         const date = new Date(b.bookmarked_at)
-        return (
-          date >= filter.dateRange!.start && date <= filter.dateRange!.end
-        )
+        return date >= filter.dateRange!.start && date <= filter.dateRange!.end
       })
     }
 
@@ -131,16 +130,26 @@ export function useBookmarks(filter?: BookmarkFilter, sortBy?: BookmarkSortBy) {
     if (sortBy) {
       switch (sortBy) {
         case 'bookmarked_at_desc':
-          filtered.sort((a, b) => new Date(b.bookmarked_at).getTime() - new Date(a.bookmarked_at).getTime())
+          filtered.sort(
+            (a, b) => new Date(b.bookmarked_at).getTime() - new Date(a.bookmarked_at).getTime()
+          )
           break
         case 'bookmarked_at_asc':
-          filtered.sort((a, b) => new Date(a.bookmarked_at).getTime() - new Date(b.bookmarked_at).getTime())
+          filtered.sort(
+            (a, b) => new Date(a.bookmarked_at).getTime() - new Date(b.bookmarked_at).getTime()
+          )
           break
         case 'message_created_at_desc':
-          filtered.sort((a, b) => new Date(b.message.created_at).getTime() - new Date(a.message.created_at).getTime())
+          filtered.sort(
+            (a, b) =>
+              new Date(b.message.created_at).getTime() - new Date(a.message.created_at).getTime()
+          )
           break
         case 'message_created_at_asc':
-          filtered.sort((a, b) => new Date(a.message.created_at).getTime() - new Date(b.message.created_at).getTime())
+          filtered.sort(
+            (a, b) =>
+              new Date(a.message.created_at).getTime() - new Date(b.message.created_at).getTime()
+          )
           break
         case 'channel_name':
           filtered.sort((a, b) => a.message.channel.name.localeCompare(b.message.channel.name))
@@ -259,7 +268,10 @@ export function useBookmarkMutations() {
           },
         })
 
-        logger.debug('Bookmark added', { userId: user.id, bookmarkId: data.insert_nchat_bookmarks_one.id })
+        logger.debug('Bookmark added', {
+          userId: user.id,
+          bookmarkId: data.insert_nchat_bookmarks_one.id,
+        })
         toast({
           title: 'Message bookmarked',
           description: 'Message has been added to your bookmarks.',
@@ -526,7 +538,10 @@ export function useBookmarkMutations() {
           variables: { bookmarks },
         })
 
-        logger.info('Bookmarks added', { userId: user.id, count: data.insert_nchat_bookmarks.affected_rows })
+        logger.info('Bookmarks added', {
+          userId: user.id,
+          count: data.insert_nchat_bookmarks.affected_rows,
+        })
         toast({
           title: 'Bookmarks added',
           description: `${data.insert_nchat_bookmarks.affected_rows} messages have been bookmarked.`,
@@ -559,7 +574,10 @@ export function useBookmarkMutations() {
           variables: { bookmarkIds },
         })
 
-        logger.info('Bookmarks removed', { userId: user.id, count: data.delete_nchat_bookmarks.affected_rows })
+        logger.info('Bookmarks removed', {
+          userId: user.id,
+          count: data.delete_nchat_bookmarks.affected_rows,
+        })
         toast({
           title: 'Bookmarks removed',
           description: `${data.delete_nchat_bookmarks.affected_rows} bookmarks have been removed.`,
@@ -664,7 +682,10 @@ export function useBookmarkCollectionMutations() {
           },
         })
 
-        logger.info('Collection created', { userId: user.id, collectionId: data.insert_nchat_bookmark_collections_one.id })
+        logger.info('Collection created', {
+          userId: user.id,
+          collectionId: data.insert_nchat_bookmark_collections_one.id,
+        })
         toast({
           title: 'Collection created',
           description: `Collection "${input.name}" has been created.`,
@@ -736,7 +757,10 @@ export function useBookmarkCollectionMutations() {
           description: 'Your collection has been deleted.',
         })
       } catch (error) {
-        logger.error('Failed to delete collection', error as Error, { userId: user.id, collectionId })
+        logger.error('Failed to delete collection', error as Error, {
+          userId: user.id,
+          collectionId,
+        })
         toast({
           title: 'Delete failed',
           description: 'Could not delete the collection. Please try again.',
@@ -819,7 +843,10 @@ export function useSavedMessageMutations() {
           },
         })
 
-        logger.info('Message saved', { userId: user.id, savedMessageId: data.insert_nchat_saved_messages_one.id })
+        logger.info('Message saved', {
+          userId: user.id,
+          savedMessageId: data.insert_nchat_saved_messages_one.id,
+        })
         toast({
           title: 'Message saved',
           description: 'Message has been saved to your personal space.',

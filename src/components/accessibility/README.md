@@ -13,6 +13,7 @@ Quick access dropdown menu for common accessibility settings.
 **Location**: `./AccessibilityMenu.tsx`
 
 **Usage**:
+
 ```tsx
 import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu';
 
@@ -24,6 +25,7 @@ import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu'
 ```
 
 **Features**:
+
 - Theme toggle (light/dark)
 - Font size adjustment
 - High contrast mode
@@ -42,6 +44,7 @@ Navigation skip links for keyboard users.
 **Location**: `./skip-links.tsx`
 
 **Usage**:
+
 ```tsx
 import { SkipLinks } from '@/components/accessibility/skip-links';
 
@@ -58,6 +61,7 @@ import { SkipLinks } from '@/components/accessibility/skip-links';
 ```
 
 **Default Links**:
+
 1. Skip to main content
 2. Skip to sidebar
 3. Skip to message input
@@ -71,31 +75,29 @@ ARIA live region for screen reader announcements.
 **Location**: `./live-region.tsx`
 
 **Usage**:
+
 ```tsx
-import { LiveRegion, useAnnouncer } from '@/components/accessibility/live-region';
+import { LiveRegion, useAnnouncer } from '@/components/accessibility/live-region'
 
 // Direct usage
-<LiveRegion
-  message="New message received"
-  politeness="polite"
-  clearOnAnnounce
-/>
+;<LiveRegion message="New message received" politeness="polite" clearOnAnnounce />
 
 // Using hook (recommended)
 function MyComponent() {
-  const { announce } = useAnnouncer();
+  const { announce } = useAnnouncer()
 
   const handleSuccess = () => {
-    announce('Action completed successfully', 'polite');
-  };
+    announce('Action completed successfully', 'polite')
+  }
 
   const handleError = () => {
-    announce('An error occurred', 'assertive');
-  };
+    announce('An error occurred', 'assertive')
+  }
 }
 ```
 
 **Politeness Levels**:
+
 - `polite` - Wait for user to pause before announcing
 - `assertive` - Interrupt user immediately
 - `off` - Don't announce
@@ -109,6 +111,7 @@ Hide content visually while keeping it accessible to screen readers.
 **Location**: `./visually-hidden.tsx`
 
 **Usage**:
+
 ```tsx
 import { VisuallyHidden } from '@/components/accessibility/visually-hidden';
 
@@ -135,6 +138,7 @@ import { VisuallyHidden } from '@/components/accessibility/visually-hidden';
 ```
 
 **Common Use Cases**:
+
 - Additional context for screen readers
 - Skip links
 - Hidden form labels
@@ -149,17 +153,16 @@ Trap focus within a component (for modals, dropdowns).
 **Location**: `./focus-trap.tsx`
 
 **Usage**:
-```tsx
-import { FocusTrap } from '@/components/accessibility/focus-trap';
 
-<FocusTrap active={isOpen} restoreFocus>
-  <Modal>
-    {/* Modal content */}
-  </Modal>
+```tsx
+import { FocusTrap } from '@/components/accessibility/focus-trap'
+;<FocusTrap active={isOpen} restoreFocus>
+  <Modal>{/* Modal content */}</Modal>
 </FocusTrap>
 ```
 
 **Props**:
+
 - `active` - Whether focus trap is active
 - `restoreFocus` - Restore focus when deactivated
 - `initialFocus` - Element to focus on activation
@@ -174,6 +177,7 @@ Icon with proper accessibility attributes.
 **Location**: `./accessible-icon.tsx`
 
 **Usage**:
+
 ```tsx
 import { AccessibleIcon } from '@/components/accessibility/accessible-icon';
 
@@ -189,6 +193,7 @@ import { AccessibleIcon } from '@/components/accessibility/accessible-icon';
 ```
 
 **When to Use**:
+
 - Icons that convey meaning should have labels
 - Purely decorative icons should have empty label
 - Icons in buttons need labels (unless button has text)
@@ -204,14 +209,15 @@ Manage global keyboard shortcuts.
 **Location**: `@/hooks/use-keyboard-shortcuts`
 
 **Usage**:
+
 ```tsx
-import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts';
+import { useKeyboardShortcuts } from '@/hooks/use-keyboard-shortcuts'
 
 function MyComponent() {
   const { registerShortcut, unregisterShortcut } = useKeyboardShortcuts({
     enabled: true,
     ignoreInputFields: true,
-  });
+  })
 
   useEffect(() => {
     const shortcut = registerShortcut({
@@ -221,14 +227,15 @@ function MyComponent() {
       handler: () => setIsOpen(true),
       preventDefault: true,
       category: 'Actions',
-    });
+    })
 
-    return () => unregisterShortcut(shortcut.id);
-  }, []);
+    return () => unregisterShortcut(shortcut.id)
+  }, [])
 }
 ```
 
 **Features**:
+
 - Cross-platform (Cmd on Mac, Ctrl on Windows/Linux)
 - Automatic input field detection
 - Category grouping
@@ -243,25 +250,23 @@ Manage focus state and behavior.
 **Location**: `@/hooks/use-focus-management`
 
 **Usage**:
+
 ```tsx
-import { useFocusManagement } from '@/hooks/use-focus-management';
+import { useFocusManagement } from '@/hooks/use-focus-management'
 
 function Modal() {
   const { focusRef, setFocus } = useFocusManagement({
     autoFocus: true,
     restoreFocus: true,
     trapFocus: true,
-  });
+  })
 
-  return (
-    <div ref={focusRef}>
-      {/* Modal content */}
-    </div>
-  );
+  return <div ref={focusRef}>{/* Modal content */}</div>
 }
 ```
 
 **Options**:
+
 - `autoFocus` - Focus on mount
 - `restoreFocus` - Restore focus on unmount
 - `trapFocus` - Trap focus within element
@@ -275,32 +280,30 @@ Arrow key navigation in lists.
 **Location**: `@/hooks/use-focus-management`
 
 **Usage**:
+
 ```tsx
-import { useRovingTabIndex } from '@/hooks/use-focus-management';
+import { useRovingTabIndex } from '@/hooks/use-focus-management'
 
 function ChannelList({ channels }) {
   const { containerRef, currentIndex, focusElement } = useRovingTabIndex({
     orientation: 'vertical',
     loop: true,
-  });
+  })
 
   return (
     <div ref={containerRef}>
       {channels.map((channel, index) => (
-        <a
-          key={channel.id}
-          href={`/channel/${channel.id}`}
-          tabIndex={index === 0 ? 0 : -1}
-        >
+        <a key={channel.id} href={`/channel/${channel.id}`} tabIndex={index === 0 ? 0 : -1}>
           {channel.name}
         </a>
       ))}
     </div>
-  );
+  )
 }
 ```
 
 **Options**:
+
 - `orientation` - `vertical`, `horizontal`, or `both`
 - `loop` - Loop back to start/end
 - `onIndexChange` - Callback when index changes
@@ -385,18 +388,18 @@ Announce loading states:
 
 ```tsx
 // ✅ Good
-<button disabled={isLoading} aria-busy={isLoading}>
+;<button disabled={isLoading} aria-busy={isLoading}>
   {isLoading ? 'Loading...' : 'Submit'}
 </button>
 
 // ✅ Better - with announcement
-const { announce } = useAnnouncer();
+const { announce } = useAnnouncer()
 
 const handleSubmit = async () => {
-  announce('Submitting form', 'polite');
-  await submit();
-  announce('Form submitted successfully', 'polite');
-};
+  announce('Submitting form', 'polite')
+  await submit()
+  announce('Form submitted successfully', 'polite')
+}
 ```
 
 ### 6. Focus Management
@@ -409,13 +412,13 @@ Manage focus in modals:
   <DialogContent
     onOpenAutoFocus={(e) => {
       // Focus first input
-      e.preventDefault();
-      firstInputRef.current?.focus();
+      e.preventDefault()
+      firstInputRef.current?.focus()
     }}
     onCloseAutoFocus={(e) => {
       // Focus trigger button
-      e.preventDefault();
-      triggerRef.current?.focus();
+      e.preventDefault()
+      triggerRef.current?.focus()
     }}
   >
     {/* Content */}

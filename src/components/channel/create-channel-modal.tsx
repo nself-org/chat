@@ -2,13 +2,7 @@
 
 import * as React from 'react'
 import { useState, useEffect } from 'react'
-import {
-  Hash,
-  Lock,
-  Info,
-  Users,
-  X,
-} from 'lucide-react'
+import { Hash, Lock, Info, Users, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -34,6 +28,8 @@ import {
 } from '@/components/ui/select'
 import { useChannelStore, type Channel, type ChannelCategory } from '@/stores/channel-store'
 import { useAuth } from '@/contexts/auth-context'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -107,8 +103,7 @@ export function CreateChannelModal({
       .filter(
         (u) =>
           !selectedMembers.some((m) => m.id === u.id) &&
-          (u.displayName.toLowerCase().includes(query) ||
-            u.username.toLowerCase().includes(query))
+          (u.displayName.toLowerCase().includes(query) || u.username.toLowerCase().includes(query))
       )
       .slice(0, 5)
   }, [memberSearch, selectedMembers])
@@ -168,7 +163,7 @@ export function CreateChannelModal({
       onOpenChange(false)
     } catch (err) {
       setError('Failed to create channel. Please try again.')
-      console.error('Create channel error:', err)
+      logger.error('Create channel error:', err)
     } finally {
       setIsLoading(false)
     }
@@ -193,14 +188,15 @@ export function CreateChannelModal({
               Create a channel
             </DialogTitle>
             <DialogDescription>
-              Channels are where your team communicates. They&apos;re best when organized around a topic.
+              Channels are where your team communicates. They&apos;re best when organized around a
+              topic.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             {/* Error Message */}
             {error && (
-              <div className="bg-destructive/10 text-destructive text-sm p-3 rounded-md">
+              <div className="bg-destructive/10 rounded-md p-3 text-sm text-destructive">
                 {error}
               </div>
             )}
@@ -250,7 +246,10 @@ export function CreateChannelModal({
             {categories.length > 0 && (
               <div className="space-y-2">
                 <Label>Category</Label>
-                <Select value={categoryId || 'none'} onValueChange={(v) => setCategoryId(v === 'none' ? undefined : v)}>
+                <Select
+                  value={categoryId || 'none'}
+                  onValueChange={(v) => setCategoryId(v === 'none' ? undefined : v)}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder="Select a category" />
                   </SelectTrigger>
@@ -285,7 +284,7 @@ export function CreateChannelModal({
               <div className="space-y-2">
                 <Label>Add members</Label>
                 <div className="relative">
-                  <Users className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Users className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   <Input
                     value={memberSearch}
                     onChange={(e) => setMemberSearch(e.target.value)}
@@ -302,7 +301,7 @@ export function CreateChannelModal({
                         <button
                           key={u.id}
                           type="button"
-                          className="w-full flex items-center gap-2 p-2 hover:bg-accent rounded-md transition-colors"
+                          className="flex w-full items-center gap-2 rounded-md p-2 transition-colors hover:bg-accent"
                           onClick={() => handleAddMember(u)}
                         >
                           <Avatar className="h-6 w-6">
@@ -313,7 +312,7 @@ export function CreateChannelModal({
                           </Avatar>
                           <div className="flex-1 text-left">
                             <span className="text-sm">{u.displayName}</span>
-                            <span className="text-xs text-muted-foreground ml-1">
+                            <span className="ml-1 text-xs text-muted-foreground">
                               @{u.username}
                             </span>
                           </div>
@@ -327,11 +326,7 @@ export function CreateChannelModal({
                 {selectedMembers.length > 0 && (
                   <div className="flex flex-wrap gap-1">
                     {selectedMembers.map((m) => (
-                      <Badge
-                        key={m.id}
-                        variant="secondary"
-                        className="pl-1 pr-0.5 py-0.5 gap-1"
-                      >
+                      <Badge key={m.id} variant="secondary" className="gap-1 py-0.5 pl-1 pr-0.5">
                         <Avatar className="h-4 w-4">
                           <AvatarImage src={m.avatarUrl} />
                           <AvatarFallback className="text-[8px]">
@@ -342,7 +337,7 @@ export function CreateChannelModal({
                         <button
                           type="button"
                           onClick={() => handleRemoveMember(m.id)}
-                          className="p-0.5 rounded hover:bg-muted transition-colors"
+                          className="rounded p-0.5 transition-colors hover:bg-muted"
                         >
                           <X className="h-3 w-3" />
                         </button>
@@ -354,8 +349,8 @@ export function CreateChannelModal({
             )}
 
             {/* Info Note */}
-            <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 p-3 rounded-md">
-              <Info className="h-4 w-4 flex-shrink-0 mt-0.5" />
+            <div className="bg-muted/50 flex items-start gap-2 rounded-md p-3 text-xs text-muted-foreground">
+              <Info className="mt-0.5 h-4 w-4 flex-shrink-0" />
               <p>
                 {isPrivate
                   ? 'Only people you add will be able to see this channel. You can always add more people later.'
@@ -365,11 +360,7 @@ export function CreateChannelModal({
           </div>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading || !name.trim()}>

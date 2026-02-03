@@ -63,10 +63,7 @@ export function UserAvatar({
   const content = (
     <View style={[styles.container, containerStyle]}>
       {user?.avatarUrl ? (
-        <Image
-          source={{ uri: user.avatarUrl }}
-          style={[styles.image, containerStyle]}
-        />
+        <Image source={{ uri: user.avatarUrl }} style={[styles.image, containerStyle]} />
       ) : (
         <View style={[styles.placeholder, containerStyle, { backgroundColor }]}>
           <Text style={[styles.initials, { fontSize: textSize }]}>{initials}</Text>

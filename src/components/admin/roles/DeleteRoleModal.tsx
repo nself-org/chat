@@ -30,7 +30,10 @@ interface DeleteRoleModalProps {
   role: Role | null
   memberCount?: number
   availableRoles?: Role[] // Roles to migrate members to
-  onDelete: (roleId: string, migrateToRoleId?: string) => Promise<{ success: boolean; errors: string[] }>
+  onDelete: (
+    roleId: string,
+    migrateToRoleId?: string
+  ) => Promise<{ success: boolean; errors: string[] }>
 }
 
 /**
@@ -74,10 +77,7 @@ export function DeleteRoleModal({
     setErrors([])
 
     try {
-      const result = await onDelete(
-        role.id,
-        hasMembersToMigrate ? migrateToRoleId : undefined
-      )
+      const result = await onDelete(role.id, hasMembersToMigrate ? migrateToRoleId : undefined)
 
       if (result.success) {
         onOpenChange(false)
@@ -91,9 +91,7 @@ export function DeleteRoleModal({
     }
   }
 
-  const filteredRoles = availableRoles.filter(
-    (r) => r.id !== role.id && !r.isBuiltIn
-  )
+  const filteredRoles = availableRoles.filter((r) => r.id !== role.id && !r.isBuiltIn)
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -104,41 +102,27 @@ export function DeleteRoleModal({
             Delete Role
           </AlertDialogTitle>
           <AlertDialogDescription className="space-y-4">
-            <p>
-              Are you sure you want to delete this role? This action cannot be
-              undone.
-            </p>
+            <p>Are you sure you want to delete this role? This action cannot be undone.</p>
 
             <div className="flex items-center gap-3 rounded-lg border p-3">
-              <RoleBadge
-                name={role.name}
-                color={role.color}
-                icon={role.icon}
-                size="lg"
-              />
-              {role.description && (
-                <span className="text-sm">{role.description}</span>
-              )}
+              <RoleBadge name={role.name} color={role.color} icon={role.icon} size="lg" />
+              {role.description && <span className="text-sm">{role.description}</span>}
             </div>
 
             {/* Member migration */}
             {hasMembersToMigrate && (
-              <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-4 space-y-3">
+              <div className="space-y-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
                 <div className="flex items-center gap-2 text-amber-500">
                   <Users size={16} />
                   <span className="font-medium">
-                    {memberCount} member{memberCount !== 1 ? 's' : ''} will lose
-                    this role
+                    {memberCount} member{memberCount !== 1 ? 's' : ''} will lose this role
                   </span>
                 </div>
 
                 {filteredRoles.length > 0 && (
                   <div className="space-y-2">
                     <Label>Migrate members to another role (optional)</Label>
-                    <Select
-                      value={migrateToRoleId}
-                      onValueChange={setMigrateToRoleId}
-                    >
+                    <Select value={migrateToRoleId} onValueChange={setMigrateToRoleId}>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a role..." />
                       </SelectTrigger>
@@ -168,8 +152,7 @@ export function DeleteRoleModal({
             {/* Confirmation input */}
             <div className="space-y-2">
               <Label htmlFor="confirm">
-                Type <strong className="text-foreground">{role.name}</strong> to
-                confirm
+                Type <strong className="text-foreground">{role.name}</strong> to confirm
               </Label>
               <Input
                 id="confirm"
@@ -182,7 +165,7 @@ export function DeleteRoleModal({
 
             {/* Errors */}
             {errors.length > 0 && (
-              <div className="rounded-lg border border-destructive bg-destructive/10 p-3">
+              <div className="bg-destructive/10 rounded-lg border border-destructive p-3">
                 <ul className="list-inside list-disc text-sm text-destructive">
                   {errors.map((error, i) => (
                     <li key={i}>{error}</li>
@@ -197,7 +180,7 @@ export function DeleteRoleModal({
           <AlertDialogAction
             onClick={handleDelete}
             disabled={!isConfirmed || isDeleting}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
           >
             {isDeleting ? 'Deleting...' : 'Delete Role'}
           </AlertDialogAction>

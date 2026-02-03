@@ -7,12 +7,7 @@
   "icon": "chart-bar",
   "homepage": "https://github.com/nself/nchat",
   "repository": "https://github.com/nself/nchat",
-  "permissions": [
-    "read_messages",
-    "send_messages",
-    "add_reactions",
-    "manage_reactions"
-  ],
+  "permissions": ["read_messages", "send_messages", "add_reactions", "manage_reactions"],
   "commands": [
     {
       "name": "poll",
@@ -81,9 +76,7 @@
           "required": true
         }
       ],
-      "examples": [
-        "/pollresults abc123"
-      ]
+      "examples": ["/pollresults abc123"]
     },
     {
       "name": "endpoll",
@@ -96,9 +89,7 @@
           "required": true
         }
       ],
-      "examples": [
-        "/endpoll abc123"
-      ]
+      "examples": ["/endpoll abc123"]
     }
   ],
   "triggers": [

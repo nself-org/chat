@@ -234,9 +234,7 @@ export function getSiblings(root: OrgNode, userId: string): ExtendedUserProfile[
   if (path.length < 2) return []
 
   const parent = path[path.length - 2]
-  return parent.directReports
-    .filter((node) => node.user.id !== userId)
-    .map((node) => node.user)
+  return parent.directReports.filter((node) => node.user.id !== userId).map((node) => node.user)
 }
 
 // ============================================================================
@@ -253,9 +251,7 @@ export function toggleNodeExpansion(root: OrgNode, userId: string): OrgNode {
 
   return {
     ...root,
-    directReports: root.directReports.map((child) =>
-      toggleNodeExpansion(child, userId)
-    ),
+    directReports: root.directReports.map((child) => toggleNodeExpansion(child, userId)),
   }
 }
 
@@ -267,9 +263,7 @@ export function expandToDepth(root: OrgNode, depth: number): OrgNode {
     return {
       ...node,
       isExpanded: currentDepth < depth,
-      directReports: node.directReports.map((child) =>
-        expand(child, currentDepth + 1)
-      ),
+      directReports: node.directReports.map((child) => expand(child, currentDepth + 1)),
     }
   }
 
@@ -381,9 +375,7 @@ export function getUsersAtDepth(root: OrgNode, depth: number): ExtendedUserProfi
  * Convert org chart to flat list of relationships
  */
 export function orgChartToRelationships(root: OrgNode): OrgRelationship[] {
-  const relationships: OrgRelationship[] = [
-    { userId: root.user.id, managerId: null },
-  ]
+  const relationships: OrgRelationship[] = [{ userId: root.user.id, managerId: null }]
 
   function traverse(node: OrgNode) {
     node.directReports.forEach((child) => {

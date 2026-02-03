@@ -29,7 +29,10 @@ import type {
   ImportError,
   ImportWarning,
 } from '@/lib/import-export/types'
-import { createDefaultImportConfig, estimateImportDuration } from '@/lib/import-export/import-service'
+import {
+  createDefaultImportConfig,
+  estimateImportDuration,
+} from '@/lib/import-export/import-service'
 
 // ============================================================================
 // TYPES
@@ -169,7 +172,8 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
       currentStep: 0,
       totalSteps: 5,
       itemsProcessed: 0,
-      totalItems: preview.stats.totalUsers + preview.stats.totalChannels + preview.stats.totalMessages,
+      totalItems:
+        preview.stats.totalUsers + preview.stats.totalChannels + preview.stats.totalMessages,
       errors: [],
       warnings: [],
     })
@@ -195,8 +199,10 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
         status: 'completed',
         currentStep: 5,
         totalSteps: 5,
-        itemsProcessed: preview.stats.totalUsers + preview.stats.totalChannels + preview.stats.totalMessages,
-        totalItems: preview.stats.totalUsers + preview.stats.totalChannels + preview.stats.totalMessages,
+        itemsProcessed:
+          preview.stats.totalUsers + preview.stats.totalChannels + preview.stats.totalMessages,
+        totalItems:
+          preview.stats.totalUsers + preview.stats.totalChannels + preview.stats.totalMessages,
         errors: result.errors || [],
         warnings: result.warnings || [],
       })
@@ -226,34 +232,27 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
   }
 
   const renderStepIndicator = () => (
-    <div className="flex items-center justify-between mb-8">
+    <div className="mb-8 flex items-center justify-between">
       {WIZARD_STEPS.map((step, index) => (
         <React.Fragment key={step.id}>
           <div className="flex flex-col items-center">
             <div
               className={cn(
-                'w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium',
+                'flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium',
                 index < currentStep
-                  ? 'bg-primary text-primary-foreground'
+                  ? 'text-primary-foreground bg-primary'
                   : index === currentStep
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'text-primary-foreground bg-primary'
                     : 'bg-muted text-muted-foreground'
               )}
             >
-              {index < currentStep ? (
-                <CheckCircle2 className="h-5 w-5" />
-              ) : (
-                index + 1
-              )}
+              {index < currentStep ? <CheckCircle2 className="h-5 w-5" /> : index + 1}
             </div>
-            <span className="text-xs mt-2 text-center max-w-[80px]">{step.title}</span>
+            <span className="mt-2 max-w-[80px] text-center text-xs">{step.title}</span>
           </div>
           {index < WIZARD_STEPS.length - 1 && (
             <div
-              className={cn(
-                'flex-1 h-0.5 mx-2',
-                index < currentStep ? 'bg-primary' : 'bg-muted'
-              )}
+              className={cn('mx-2 h-0.5 flex-1', index < currentStep ? 'bg-primary' : 'bg-muted')}
             />
           )}
         </React.Fragment>
@@ -263,7 +262,7 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
 
   const renderSourceStep = () => (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
         <SourceCard
           title="Slack"
           description="Import from a Slack workspace export"
@@ -303,7 +302,7 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Errors found</AlertTitle>
           <AlertDescription>
-            <ul className="list-disc list-inside mt-2">
+            <ul className="mt-2 list-inside list-disc">
               {errors.map((error, index) => (
                 <li key={index}>{error.message}</li>
               ))}
@@ -317,7 +316,7 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Warnings</AlertTitle>
           <AlertDescription>
-            <ul className="list-disc list-inside mt-2">
+            <ul className="mt-2 list-inside list-disc">
               {warnings.map((warning, index) => (
                 <li key={index}>{warning.message}</li>
               ))}
@@ -423,27 +422,27 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
         <CardContent>
           <div className="space-y-4">
             {config?.options.importUsers && (
-              <div className="flex justify-between py-2 border-b">
+              <div className="flex justify-between border-b py-2">
                 <span>Users</span>
                 <span className="font-medium">{preview?.stats.totalUsers || 0}</span>
               </div>
             )}
             {config?.options.importChannels && (
-              <div className="flex justify-between py-2 border-b">
+              <div className="flex justify-between border-b py-2">
                 <span>Channels</span>
                 <span className="font-medium">{preview?.stats.totalChannels || 0}</span>
               </div>
             )}
             {config?.options.importMessages && (
-              <div className="flex justify-between py-2 border-b">
+              <div className="flex justify-between border-b py-2">
                 <span>Messages</span>
                 <span className="font-medium">{preview?.stats.totalMessages || 0}</span>
               </div>
             )}
             {preview?.stats.dateRange.earliest && (
-              <div className="flex justify-between py-2 border-b">
+              <div className="flex justify-between border-b py-2">
                 <span>Date Range</span>
-                <span className="font-medium text-sm">
+                <span className="text-sm font-medium">
                   {new Date(preview.stats.dateRange.earliest).toLocaleDateString()} -{' '}
                   {preview.stats.dateRange.latest
                     ? new Date(preview.stats.dateRange.latest).toLocaleDateString()
@@ -472,7 +471,7 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>{errors.length > 0 ? 'Errors' : 'Warnings'}</AlertTitle>
           <AlertDescription>
-            <ul className="list-disc list-inside mt-2">
+            <ul className="mt-2 list-inside list-disc">
               {errors.map((error, index) => (
                 <li key={`error-${index}`} className="text-destructive">
                   {error.message}
@@ -493,8 +492,8 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
       {!progress || progress.status === 'pending' ? (
         <Card>
           <CardContent className="pt-6">
-            <div className="text-center space-y-4">
-              <div className="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center">
+            <div className="space-y-4 text-center">
+              <div className="bg-primary/10 mx-auto flex h-16 w-16 items-center justify-center rounded-full">
                 <Upload className="h-8 w-8 text-primary" />
               </div>
               <div>
@@ -540,18 +539,14 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
                 <Alert>
                   <CheckCircle2 className="h-4 w-4" />
                   <AlertTitle>Success</AlertTitle>
-                  <AlertDescription>
-                    Your data has been imported successfully.
-                  </AlertDescription>
+                  <AlertDescription>Your data has been imported successfully.</AlertDescription>
                 </Alert>
               )}
               {progress.status === 'failed' && progress.errors.length > 0 && (
                 <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
                   <AlertTitle>Import Failed</AlertTitle>
-                  <AlertDescription>
-                    {progress.errors[0].message}
-                  </AlertDescription>
+                  <AlertDescription>{progress.errors[0].message}</AlertDescription>
                 </Alert>
               )}
             </div>
@@ -584,9 +579,11 @@ export function ImportWizard({ onComplete, onCancel }: ImportWizardProps) {
 
       <div className="min-h-[400px]">{renderCurrentStep()}</div>
 
-      <div className="flex justify-between pt-4 border-t">
+      <div className="flex justify-between border-t pt-4">
         <Button variant="outline" onClick={currentStep === 0 ? onCancel : handleBack}>
-          {currentStep === 0 ? 'Cancel' : (
+          {currentStep === 0 ? (
+            'Cancel'
+          ) : (
             <>
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back
@@ -628,16 +625,16 @@ function SourceCard({ title, description, icon, selected, onClick }: SourceCardP
     <Card
       className={cn(
         'cursor-pointer transition-all hover:border-primary',
-        selected && 'border-primary bg-primary/5'
+        selected && 'bg-primary/5 border-primary'
       )}
       onClick={onClick}
     >
       <CardContent className="pt-6">
-        <div className="flex flex-col items-center text-center space-y-2">
+        <div className="flex flex-col items-center space-y-2 text-center">
           <div
             className={cn(
-              'p-3 rounded-full',
-              selected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+              'rounded-full p-3',
+              selected ? 'text-primary-foreground bg-primary' : 'bg-muted'
             )}
           >
             {icon}
@@ -680,8 +677,8 @@ function FileUploader({ source, onFileSelect, isProcessing, file }: FileUploader
   return (
     <div
       className={cn(
-        'border-2 border-dashed rounded-lg p-8 text-center transition-colors',
-        isProcessing ? 'opacity-50' : 'hover:border-primary cursor-pointer'
+        'rounded-lg border-2 border-dashed p-8 text-center transition-colors',
+        isProcessing ? 'opacity-50' : 'cursor-pointer hover:border-primary'
       )}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
@@ -697,12 +694,12 @@ function FileUploader({ source, onFileSelect, isProcessing, file }: FileUploader
       />
       {isProcessing ? (
         <div className="space-y-2">
-          <Loader2 className="h-10 w-10 mx-auto animate-spin text-primary" />
+          <Loader2 className="mx-auto h-10 w-10 animate-spin text-primary" />
           <p>Processing file...</p>
         </div>
       ) : file ? (
         <div className="space-y-2">
-          <CheckCircle2 className="h-10 w-10 mx-auto text-green-500" />
+          <CheckCircle2 className="mx-auto h-10 w-10 text-green-500" />
           <p className="font-medium">{file.name}</p>
           <p className="text-sm text-muted-foreground">
             {formatFileSize(file.size)} - Click to change
@@ -710,7 +707,7 @@ function FileUploader({ source, onFileSelect, isProcessing, file }: FileUploader
         </div>
       ) : (
         <div className="space-y-2">
-          <Upload className="h-10 w-10 mx-auto text-muted-foreground" />
+          <Upload className="mx-auto h-10 w-10 text-muted-foreground" />
           <p className="font-medium">Drop your file here or click to browse</p>
           <p className="text-sm text-muted-foreground">
             {source === 'slack'
@@ -736,7 +733,7 @@ function StatCard({ icon, label, value }: StatCardProps) {
     <Card>
       <CardContent className="pt-4">
         <div className="flex items-center gap-3">
-          <div className="p-2 bg-muted rounded-full">{icon}</div>
+          <div className="rounded-full bg-muted p-2">{icon}</div>
           <div>
             <p className="text-2xl font-bold">{value.toLocaleString()}</p>
             <p className="text-sm text-muted-foreground">{label}</p>

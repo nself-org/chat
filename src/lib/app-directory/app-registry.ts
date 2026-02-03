@@ -4,9 +4,9 @@
  * Contains built-in apps and sample integrations for demonstration
  */
 
-import type { App, AppDeveloper, AppCategory } from './app-types';
-import { CATEGORY_IDS } from './app-categories';
-import { createPermission } from './app-permissions';
+import type { App, AppDeveloper, AppCategory } from './app-types'
+import { CATEGORY_IDS } from './app-categories'
+import { createPermission } from './app-permissions'
 
 // ============================================================================
 // Developer Profiles
@@ -19,7 +19,7 @@ const NCHAT_DEVELOPER: AppDeveloper = {
   website: 'https://nchat.dev',
   verified: true,
   avatarUrl: '/images/nchat-logo.svg',
-};
+}
 
 const GITHUB_DEVELOPER: AppDeveloper = {
   id: 'github',
@@ -28,7 +28,7 @@ const GITHUB_DEVELOPER: AppDeveloper = {
   website: 'https://github.com',
   verified: true,
   avatarUrl: '/images/apps/github-logo.svg',
-};
+}
 
 const JIRA_DEVELOPER: AppDeveloper = {
   id: 'atlassian',
@@ -37,7 +37,7 @@ const JIRA_DEVELOPER: AppDeveloper = {
   website: 'https://atlassian.com',
   verified: true,
   avatarUrl: '/images/apps/atlassian-logo.svg',
-};
+}
 
 const GOOGLE_DEVELOPER: AppDeveloper = {
   id: 'google',
@@ -46,7 +46,7 @@ const GOOGLE_DEVELOPER: AppDeveloper = {
   website: 'https://google.com',
   verified: true,
   avatarUrl: '/images/apps/google-logo.svg',
-};
+}
 
 const TRELLO_DEVELOPER: AppDeveloper = {
   id: 'trello',
@@ -55,7 +55,7 @@ const TRELLO_DEVELOPER: AppDeveloper = {
   website: 'https://trello.com',
   verified: true,
   avatarUrl: '/images/apps/trello-logo.svg',
-};
+}
 
 // ============================================================================
 // Helper to create category reference
@@ -70,7 +70,7 @@ function makeCategory(id: string, name: string): AppCategory {
     icon: 'Box',
     color: '#6b7280',
     appCount: 0,
-  };
+  }
 }
 
 // ============================================================================
@@ -120,7 +120,13 @@ Features:
       { version: '1.1.0', releaseDate: '2024-01-01', changelog: 'Multiple choice polls' },
       { version: '1.0.0', releaseDate: '2023-12-01', changelog: 'Initial release' },
     ],
-    stats: { installs: 15420, activeInstalls: 12350, rating: 4.8, ratingCount: 523, reviewCount: 156 },
+    stats: {
+      installs: 15420,
+      activeInstalls: 12350,
+      rating: 4.8,
+      ratingCount: 523,
+      reviewCount: 156,
+    },
     links: { documentation: 'https://docs.nchat.dev/apps/polls' },
     requirements: {},
     features: ['Slash commands', 'Real-time updates', 'Anonymous voting', 'Results export'],
@@ -169,7 +175,13 @@ Features:
       { version: '2.0.1', releaseDate: '2024-01-10', changelog: 'Bug fixes' },
       { version: '2.0.0', releaseDate: '2024-01-01', changelog: 'Added recurring reminders' },
     ],
-    stats: { installs: 23150, activeInstalls: 19800, rating: 4.7, ratingCount: 892, reviewCount: 234 },
+    stats: {
+      installs: 23150,
+      activeInstalls: 19800,
+      rating: 4.7,
+      ratingCount: 892,
+      reviewCount: 234,
+    },
     links: { documentation: 'https://docs.nchat.dev/apps/reminders' },
     requirements: {},
     features: ['Slash commands', 'Natural language', 'Recurring', 'Push notifications'],
@@ -216,7 +228,13 @@ Features:
     screenshots: [],
     currentVersion: '1.0.0',
     versions: [{ version: '1.0.0', releaseDate: '2023-12-15', changelog: 'Initial release' }],
-    stats: { installs: 31200, activeInstalls: 28500, rating: 4.9, ratingCount: 1523, reviewCount: 412 },
+    stats: {
+      installs: 31200,
+      activeInstalls: 28500,
+      rating: 4.9,
+      ratingCount: 1523,
+      reviewCount: 412,
+    },
     links: { website: 'https://giphy.com' },
     requirements: {},
     features: ['GIF search', 'Trending GIFs', 'Content filtering'],
@@ -366,7 +384,7 @@ Features:
     verified: true,
     builtIn: true,
   },
-];
+]
 
 // ============================================================================
 // Integration Apps
@@ -406,7 +424,12 @@ Features:
       createPermission('webhooks:receive', 'required', 'To receive GitHub events'),
     ],
     screenshots: [
-      { id: '1', url: '/images/apps/github/screenshot-1.png', caption: 'PR notifications', order: 1 },
+      {
+        id: '1',
+        url: '/images/apps/github/screenshot-1.png',
+        caption: 'PR notifications',
+        order: 1,
+      },
       { id: '2', url: '/images/apps/github/screenshot-2.png', caption: 'Issue updates', order: 2 },
       { id: '3', url: '/images/apps/github/screenshot-3.png', caption: 'Configuration', order: 3 },
     ],
@@ -415,7 +438,13 @@ Features:
       { version: '3.2.0', releaseDate: '2024-01-12', changelog: 'GitHub Actions notifications' },
       { version: '3.1.0', releaseDate: '2024-01-01', changelog: 'Code review improvements' },
     ],
-    stats: { installs: 45600, activeInstalls: 42100, rating: 4.9, ratingCount: 2341, reviewCount: 678 },
+    stats: {
+      installs: 45600,
+      activeInstalls: 42100,
+      rating: 4.9,
+      ratingCount: 2341,
+      reviewCount: 678,
+    },
     links: {
       website: 'https://github.com',
       documentation: 'https://docs.github.com/en/integrations',
@@ -463,10 +492,14 @@ Features:
     ],
     screenshots: [],
     currentVersion: '2.1.0',
-    versions: [
-      { version: '2.1.0', releaseDate: '2024-01-08', changelog: 'Sprint tracking' },
-    ],
-    stats: { installs: 34200, activeInstalls: 29800, rating: 4.7, ratingCount: 1876, reviewCount: 523 },
+    versions: [{ version: '2.1.0', releaseDate: '2024-01-08', changelog: 'Sprint tracking' }],
+    stats: {
+      installs: 34200,
+      activeInstalls: 29800,
+      rating: 4.7,
+      ratingCount: 1876,
+      reviewCount: 523,
+    },
     links: {
       website: 'https://www.atlassian.com/software/jira',
       documentation: 'https://support.atlassian.com/jira-software-cloud/',
@@ -513,10 +546,14 @@ Features:
     ],
     screenshots: [],
     currentVersion: '1.5.0',
-    versions: [
-      { version: '1.5.0', releaseDate: '2024-01-05', changelog: 'Improved previews' },
-    ],
-    stats: { installs: 28900, activeInstalls: 25400, rating: 4.6, ratingCount: 1234, reviewCount: 345 },
+    versions: [{ version: '1.5.0', releaseDate: '2024-01-05', changelog: 'Improved previews' }],
+    stats: {
+      installs: 28900,
+      activeInstalls: 25400,
+      rating: 4.6,
+      ratingCount: 1234,
+      reviewCount: 345,
+    },
     links: {
       website: 'https://drive.google.com',
     },
@@ -563,10 +600,14 @@ Features:
     ],
     screenshots: [],
     currentVersion: '1.3.0',
-    versions: [
-      { version: '1.3.0', releaseDate: '2024-01-02', changelog: 'Due date reminders' },
-    ],
-    stats: { installs: 19500, activeInstalls: 16800, rating: 4.5, ratingCount: 876, reviewCount: 234 },
+    versions: [{ version: '1.3.0', releaseDate: '2024-01-02', changelog: 'Due date reminders' }],
+    stats: {
+      installs: 19500,
+      activeInstalls: 16800,
+      rating: 4.5,
+      ratingCount: 876,
+      reviewCount: 234,
+    },
     links: {
       website: 'https://trello.com',
     },
@@ -612,10 +653,14 @@ Features:
     ],
     screenshots: [],
     currentVersion: '2.0.0',
-    versions: [
-      { version: '2.0.0', releaseDate: '2024-01-10', changelog: 'Status sync' },
-    ],
-    stats: { installs: 22100, activeInstalls: 19200, rating: 4.7, ratingCount: 1456, reviewCount: 389 },
+    versions: [{ version: '2.0.0', releaseDate: '2024-01-10', changelog: 'Status sync' }],
+    stats: {
+      installs: 22100,
+      activeInstalls: 19200,
+      rating: 4.7,
+      ratingCount: 1456,
+      reviewCount: 389,
+    },
     links: {
       website: 'https://calendar.google.com',
     },
@@ -667,10 +712,14 @@ Features:
     ],
     screenshots: [],
     currentVersion: '1.4.0',
-    versions: [
-      { version: '1.4.0', releaseDate: '2024-01-08', changelog: 'Recording links' },
-    ],
-    stats: { installs: 38700, activeInstalls: 35200, rating: 4.8, ratingCount: 2134, reviewCount: 567 },
+    versions: [{ version: '1.4.0', releaseDate: '2024-01-08', changelog: 'Recording links' }],
+    stats: {
+      installs: 38700,
+      activeInstalls: 35200,
+      rating: 4.8,
+      ratingCount: 2134,
+      reviewCount: 567,
+    },
     links: {
       website: 'https://zoom.us',
     },
@@ -722,10 +771,14 @@ Features:
     ],
     screenshots: [],
     currentVersion: '2.2.0',
-    versions: [
-      { version: '2.2.0', releaseDate: '2024-01-06', changelog: 'Pipeline reports' },
-    ],
-    stats: { installs: 15800, activeInstalls: 13500, rating: 4.4, ratingCount: 876, reviewCount: 234 },
+    versions: [{ version: '2.2.0', releaseDate: '2024-01-06', changelog: 'Pipeline reports' }],
+    stats: {
+      installs: 15800,
+      activeInstalls: 13500,
+      rating: 4.4,
+      ratingCount: 876,
+      reviewCount: 234,
+    },
     links: {
       website: 'https://salesforce.com',
     },
@@ -777,10 +830,14 @@ Features:
     ],
     screenshots: [],
     currentVersion: '1.6.0',
-    versions: [
-      { version: '1.6.0', releaseDate: '2024-01-04', changelog: 'SLA alerts' },
-    ],
-    stats: { installs: 12400, activeInstalls: 10800, rating: 4.5, ratingCount: 654, reviewCount: 178 },
+    versions: [{ version: '1.6.0', releaseDate: '2024-01-04', changelog: 'SLA alerts' }],
+    stats: {
+      installs: 12400,
+      activeInstalls: 10800,
+      rating: 4.5,
+      ratingCount: 654,
+      reviewCount: 178,
+    },
     links: {
       website: 'https://zendesk.com',
     },
@@ -793,13 +850,13 @@ Features:
     verified: true,
     builtIn: false,
   },
-];
+]
 
 // ============================================================================
 // All Apps
 // ============================================================================
 
-export const ALL_APPS: App[] = [...BUILT_IN_APPS, ...INTEGRATION_APPS];
+export const ALL_APPS: App[] = [...BUILT_IN_APPS, ...INTEGRATION_APPS]
 
 // ============================================================================
 // Registry Functions
@@ -809,51 +866,49 @@ export const ALL_APPS: App[] = [...BUILT_IN_APPS, ...INTEGRATION_APPS];
  * Get all apps
  */
 export function getAllApps(): App[] {
-  return ALL_APPS;
+  return ALL_APPS
 }
 
 /**
  * Get app by ID
  */
 export function getAppById(appId: string): App | undefined {
-  return ALL_APPS.find((app) => app.id === appId);
+  return ALL_APPS.find((app) => app.id === appId)
 }
 
 /**
  * Get app by slug
  */
 export function getAppBySlug(slug: string): App | undefined {
-  return ALL_APPS.find((app) => app.slug === slug);
+  return ALL_APPS.find((app) => app.slug === slug)
 }
 
 /**
  * Get apps by category
  */
 export function getAppsByCategory(categoryId: string): App[] {
-  return ALL_APPS.filter((app) =>
-    app.categories.some((cat) => cat.id === categoryId)
-  );
+  return ALL_APPS.filter((app) => app.categories.some((cat) => cat.id === categoryId))
 }
 
 /**
  * Get built-in apps only
  */
 export function getBuiltInApps(): App[] {
-  return ALL_APPS.filter((app) => app.builtIn);
+  return ALL_APPS.filter((app) => app.builtIn)
 }
 
 /**
  * Get integration apps only
  */
 export function getIntegrationApps(): App[] {
-  return ALL_APPS.filter((app) => !app.builtIn);
+  return ALL_APPS.filter((app) => !app.builtIn)
 }
 
 /**
  * Get featured apps
  */
 export function getFeaturedApps(): App[] {
-  return ALL_APPS.filter((app) => app.featured);
+  return ALL_APPS.filter((app) => app.featured)
 }
 
 /**
@@ -862,7 +917,7 @@ export function getFeaturedApps(): App[] {
 export function getPopularApps(limit: number = 10): App[] {
   return [...ALL_APPS]
     .sort((a, b) => b.stats.activeInstalls - a.stats.activeInstalls)
-    .slice(0, limit);
+    .slice(0, limit)
 }
 
 /**
@@ -871,7 +926,7 @@ export function getPopularApps(limit: number = 10): App[] {
 export function getRecentApps(limit: number = 10): App[] {
   return [...ALL_APPS]
     .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
-    .slice(0, limit);
+    .slice(0, limit)
 }
 
 /**
@@ -881,19 +936,19 @@ export function getTopRatedApps(limit: number = 10): App[] {
   return [...ALL_APPS]
     .filter((app) => app.stats.ratingCount >= 50) // Minimum ratings for fairness
     .sort((a, b) => b.stats.rating - a.stats.rating)
-    .slice(0, limit);
+    .slice(0, limit)
 }
 
 /**
  * Get apps by type
  */
 export function getAppsByType(type: App['type']): App[] {
-  return ALL_APPS.filter((app) => app.type === type);
+  return ALL_APPS.filter((app) => app.type === type)
 }
 
 /**
  * Get free apps
  */
 export function getFreeApps(): App[] {
-  return ALL_APPS.filter((app) => app.pricing === 'free');
+  return ALL_APPS.filter((app) => app.pricing === 'free')
 }

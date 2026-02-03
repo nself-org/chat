@@ -10,12 +10,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
-import {
-  type UserRole,
-  hasRoleOrHigher,
-  getRoleMetadata,
-  ROLE_METADATA,
-} from '@/lib/auth/roles'
+import { type UserRole, hasRoleOrHigher, getRoleMetadata, ROLE_METADATA } from '@/lib/auth/roles'
 import { type Permission, hasPermission } from '@/lib/auth/permissions'
 import { AuthGuard } from './auth-guard'
 
@@ -60,8 +55,8 @@ function DefaultAccessDenied({
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <div className="w-full max-w-md rounded-lg border border-destructive/20 bg-card p-6 text-center shadow-lg">
-        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+      <div className="border-destructive/20 w-full max-w-md rounded-lg border bg-card p-6 text-center shadow-lg">
+        <div className="bg-destructive/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
           <svg
             className="h-8 w-8 text-destructive"
             fill="none"
@@ -77,32 +72,24 @@ function DefaultAccessDenied({
           </svg>
         </div>
 
-        <h2 className="mb-2 text-xl font-semibold text-foreground">
-          Access Denied
-        </h2>
+        <h2 className="mb-2 text-xl font-semibold text-foreground">Access Denied</h2>
 
         <p className="mb-4 text-muted-foreground">
           You don&apos;t have permission to access this page.
         </p>
 
         {requiredRole && (
-          <div className="mb-4 rounded-md bg-muted/50 p-3 text-sm">
+          <div className="bg-muted/50 mb-4 rounded-md p-3 text-sm">
             <p className="text-muted-foreground">
               Required role:{' '}
-              <span
-                className="font-medium"
-                style={{ color: roleInfo?.color }}
-              >
+              <span className="font-medium" style={{ color: roleInfo?.color }}>
                 {roleInfo?.label}
               </span>
             </p>
             {userRole && (
               <p className="mt-1 text-muted-foreground">
                 Your role:{' '}
-                <span
-                  className="font-medium"
-                  style={{ color: userRoleInfo?.color }}
-                >
+                <span className="font-medium" style={{ color: userRoleInfo?.color }}>
                   {userRoleInfo?.label}
                 </span>
               </p>
@@ -110,16 +97,16 @@ function DefaultAccessDenied({
           </div>
         )}
 
-        <div className="flex gap-2 justify-center">
+        <div className="flex justify-center gap-2">
           <button
             onClick={() => router.back()}
-            className="rounded-md bg-secondary px-4 py-2 text-sm font-medium text-secondary-foreground hover:bg-secondary/80"
+            className="text-secondary-foreground hover:bg-secondary/80 rounded-md bg-secondary px-4 py-2 text-sm font-medium"
           >
             Go Back
           </button>
           <button
             onClick={() => router.push('/chat')}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="text-primary-foreground hover:bg-primary/90 rounded-md bg-primary px-4 py-2 text-sm font-medium"
           >
             Go to Chat
           </button>
@@ -171,7 +158,13 @@ export function RoleGuard({
       authorized = anyPermissions.some((p) => hasPermission(userRole, p))
     } else if (allPermissions && userRole) {
       authorized = allPermissions.every((p) => hasPermission(userRole, p))
-    } else if (!requiredRole && !allowedRoles && !requiredPermission && !anyPermissions && !allPermissions) {
+    } else if (
+      !requiredRole &&
+      !allowedRoles &&
+      !requiredPermission &&
+      !anyPermissions &&
+      !allPermissions
+    ) {
       // No requirements specified, just needs auth (or not if requireAuth is false)
       authorized = requireAuth ? !!user : true
     }
@@ -216,10 +209,7 @@ export function RoleGuard({
   if (!isAuthorized && !redirectTo) {
     return (
       accessDeniedComponent ?? (
-        <DefaultAccessDenied
-          requiredRole={requiredRole}
-          userRole={user?.role ?? null}
-        />
+        <DefaultAccessDenied requiredRole={requiredRole} userRole={user?.role ?? null} />
       )
     )
   }

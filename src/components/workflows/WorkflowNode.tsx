@@ -47,11 +47,7 @@ const stepIcons: Record<string, React.ComponentType<{ className?: string }>> = {
   end: Square,
 }
 
-export function WorkflowNode({
-  step,
-  isSelected,
-  className,
-}: WorkflowNodeProps) {
+export function WorkflowNode({ step, isSelected, className }: WorkflowNodeProps) {
   const nodeRef = React.useRef<HTMLDivElement>(null)
   const [isDragging, setIsDragging] = React.useState(false)
   const [dragOffset, setDragOffset] = React.useState<Position>({ x: 0, y: 0 })
@@ -186,7 +182,7 @@ export function WorkflowNode({
         'transition-shadow',
         getNodeColor(),
         isSelected && 'ring-2 ring-primary ring-offset-2 ring-offset-background',
-        isDragging && 'shadow-lg cursor-grabbing opacity-90',
+        isDragging && 'cursor-grabbing opacity-90 shadow-lg',
         !isDragging && 'cursor-grab hover:shadow-md',
         isConnecting && 'cursor-crosshair',
         className
@@ -204,30 +200,30 @@ export function WorkflowNode({
         <div
           className={cn(
             'node-handle absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2',
-            'w-3 h-3 rounded-full border-2 border-muted-foreground bg-background',
-            'hover:bg-primary hover:border-primary transition-colors cursor-crosshair'
+            'h-3 w-3 rounded-full border-2 border-muted-foreground bg-background',
+            'cursor-crosshair transition-colors hover:border-primary hover:bg-primary'
           )}
           onClick={(e) => handleInputClick(e)}
         />
       )}
 
       {/* Header */}
-      <div className="flex items-center gap-2 px-3 py-2 border-b border-border/50">
+      <div className="border-border/50 flex items-center gap-2 border-b px-3 py-2">
         <GripVertical className="h-4 w-4 text-muted-foreground" />
         <Icon className="h-4 w-4 text-foreground" />
-        <span className="text-sm font-medium truncate flex-1">{step.name}</span>
+        <span className="flex-1 truncate text-sm font-medium">{step.name}</span>
       </div>
 
       {/* Content */}
       <div className="px-3 py-2">
-        <p className="text-xs text-muted-foreground line-clamp-2">
+        <p className="line-clamp-2 text-xs text-muted-foreground">
           {step.description || getStepDescription(step)}
         </p>
       </div>
 
       {/* Output handles */}
       {outputHandles.length > 0 && (
-        <div className="absolute right-0 top-0 bottom-0 flex flex-col justify-center gap-2 translate-x-1/2 py-4">
+        <div className="absolute bottom-0 right-0 top-0 flex translate-x-1/2 flex-col justify-center gap-2 py-4">
           {outputHandles.map((handle, index) => (
             <div
               key={handle}
@@ -238,8 +234,8 @@ export function WorkflowNode({
             >
               <div
                 className={cn(
-                  'w-3 h-3 rounded-full border-2 bg-background',
-                  'hover:bg-primary hover:border-primary transition-colors cursor-crosshair',
+                  'h-3 w-3 rounded-full border-2 bg-background',
+                  'cursor-crosshair transition-colors hover:border-primary hover:bg-primary',
                   handle === 'true' && 'border-green-500',
                   handle === 'false' && 'border-red-500',
                   handle === 'default' && 'border-muted-foreground',
@@ -248,7 +244,7 @@ export function WorkflowNode({
                 onClick={(e) => handleOutputClick(e, handle)}
               />
               {outputHandles.length > 1 && (
-                <span className="absolute left-4 text-[10px] text-muted-foreground whitespace-nowrap">
+                <span className="absolute left-4 whitespace-nowrap text-[10px] text-muted-foreground">
                   {handle}
                 </span>
               )}

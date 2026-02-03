@@ -84,12 +84,12 @@ import { use2FA } from '@/hooks/use-2fa'
 
 function MyComponent() {
   const {
-    status,           // 2FA status object
-    loading,          // Loading state
-    isEnabled,        // Quick check if enabled
-    startSetup,       // Initialize setup
-    verifyAndEnable,  // Verify and enable
-    disable,          // Disable 2FA
+    status, // 2FA status object
+    loading, // Loading state
+    isEnabled, // Quick check if enabled
+    startSetup, // Initialize setup
+    verifyAndEnable, // Verify and enable
+    disable, // Disable 2FA
     regenerateBackupCodes,
     removeTrustedDevice,
   } = use2FA()
@@ -133,6 +133,7 @@ function MyComponent() {
 ### Managing 2FA
 
 **In Settings > Security:**
+
 - View 2FA status
 - See backup codes remaining
 - Regenerate backup codes
@@ -143,46 +144,54 @@ function MyComponent() {
 ## 🔑 API Endpoints
 
 ### Check Status
+
 ```bash
 GET /api/auth/2fa/status?userId={uuid}
 ```
 
 ### Start Setup
+
 ```bash
 POST /api/auth/2fa/setup
 Body: { userId, email }
 ```
 
 ### Verify & Enable
+
 ```bash
 POST /api/auth/2fa/verify-setup
 Body: { userId, secret, code, backupCodes }
 ```
 
 ### Verify Login
+
 ```bash
 POST /api/auth/2fa/verify
 Body: { userId, code, rememberDevice }
 ```
 
 ### Disable
+
 ```bash
 POST /api/auth/2fa/disable
 Body: { userId, password }
 ```
 
 ### Regenerate Codes
+
 ```bash
 POST /api/auth/2fa/backup-codes
 Body: { userId, password }
 ```
 
 ### List Devices
+
 ```bash
 GET /api/auth/2fa/trusted-devices?userId={uuid}
 ```
 
 ### Remove Device
+
 ```bash
 DELETE /api/auth/2fa/trusted-devices?id={uuid}
 ```
@@ -201,17 +210,12 @@ DELETE /api/auth/2fa/trusted-devices?id={uuid}
 ### TOTP
 
 ```typescript
-import {
-  generateTOTPSecret,
-  generateQRCode,
-  verifyTOTP,
-  getRemainingSeconds
-} from '@/lib/2fa/totp'
+import { generateTOTPSecret, generateQRCode, verifyTOTP, getRemainingSeconds } from '@/lib/2fa/totp'
 
 // Generate secret
 const { secret, base32, otpauthUrl } = generateTOTPSecret({
   name: 'user@example.com',
-  issuer: 'nchat'
+  issuer: 'nchat',
 })
 
 // Generate QR code
@@ -231,7 +235,7 @@ import {
   generateBackupCodes,
   hashBackupCode,
   verifyBackupCode,
-  formatBackupCodesForDownload
+  formatBackupCodesForDownload,
 } from '@/lib/2fa/backup-codes'
 
 // Generate codes
@@ -253,7 +257,7 @@ const text = formatBackupCodesForDownload(codes, 'user@example.com')
 import {
   getCurrentDeviceFingerprint,
   createDeviceRecord,
-  getDeviceTrustExpiry
+  getDeviceTrustExpiry,
 } from '@/lib/2fa/device-fingerprint'
 
 // Get current device fingerprint
@@ -328,16 +332,19 @@ return codes
 ## 🐛 Troubleshooting
 
 ### "Invalid code" errors
+
 - Check device time is accurate (TOTP is time-based)
 - Code expires every 30 seconds
 - Verify correct secret was scanned
 
 ### Device not remembered
+
 - Check cookies/localStorage enabled
 - Private browsing clears device trust
 - Each browser is a separate device
 
 ### QR code won't scan
+
 - Ensure good lighting and camera focus
 - Try manual entry instead
 - QR code should be 300x300px minimum

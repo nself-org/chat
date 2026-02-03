@@ -8,18 +8,18 @@ Version: v0.4.2 | Last Updated: February 1, 2026
 
 ## Quick Navigation
 
-| Document | Description | Lines |
-|----------|-------------|-------|
-| **[Overview](./Overview.md)** | What is nself CLI, why use it, features | 763 |
-| **[Installation](./Installation.md)** | How to install on macOS/Linux/Windows | 836 |
-| **[Quick Start](./Quick-Start.md)** | Get started in 5 minutes | 567 |
-| **[Commands](./Commands.md)** | Complete command reference | 1,229 |
-| **[Services](./Services.md)** | All available services documentation | 1,682 |
-| **[Configuration](./Configuration.md)** | How to configure nself projects | Coming Soon |
-| **[Migrations](./Migrations.md)** | Database migration management | Coming Soon |
-| **[Troubleshooting](./Troubleshooting.md)** | Common issues and solutions | Coming Soon |
-| **[Architecture](./Architecture.md)** | How nself CLI works internally | Coming Soon |
-| **[API Reference](./API-Reference.md)** | nself CLI API reference | Coming Soon |
+| Document                                    | Description                             | Lines       |
+| ------------------------------------------- | --------------------------------------- | ----------- |
+| **[Overview](./Overview.md)**               | What is nself CLI, why use it, features | 763         |
+| **[Installation](./Installation.md)**       | How to install on macOS/Linux/Windows   | 836         |
+| **[Quick Start](./Quick-Start.md)**         | Get started in 5 minutes                | 567         |
+| **[Commands](./Commands.md)**               | Complete command reference              | 1,229       |
+| **[Services](./Services.md)**               | All available services documentation    | 1,682       |
+| **[Configuration](./Configuration.md)**     | How to configure nself projects         | Coming Soon |
+| **[Migrations](./Migrations.md)**           | Database migration management           | Coming Soon |
+| **[Troubleshooting](./Troubleshooting.md)** | Common issues and solutions             | Coming Soon |
+| **[Architecture](./Architecture.md)**       | How nself CLI works internally          | Coming Soon |
+| **[API Reference](./API-Reference.md)**     | nself CLI API reference                 | Coming Soon |
 
 **Total Documentation:** 5,077+ lines across 10 comprehensive guides
 
@@ -38,6 +38,7 @@ nself start
 ```
 
 **You now have:**
+
 - ✅ PostgreSQL 16 with 60+ extensions
 - ✅ Hasura GraphQL Engine (instant API)
 - ✅ Nhost Auth (complete authentication)
@@ -168,16 +169,16 @@ nself urls
 
 Enable additional services as needed:
 
-| Service | Enable Via | Purpose |
-|---------|------------|---------|
-| **MinIO** | `MINIO_ENABLED=true` | S3-compatible object storage |
-| **Redis** | `REDIS_ENABLED=true` | Caching and session management |
-| **Mailpit** | `MAILPIT_ENABLED=true` | Email testing (dev) |
-| **MeiliSearch** | `MEILISEARCH_ENABLED=true` | Full-text search |
-| **Functions** | `FUNCTIONS_ENABLED=true` | Serverless functions |
-| **MLflow** | `MLFLOW_ENABLED=true` | ML experiment tracking |
-| **Monitoring** | `MONITORING_ENABLED=true` | Full observability stack (10 services) |
-| **nself-admin** | `NSELF_ADMIN_ENABLED=true` | Web admin panel (port 3021) |
+| Service         | Enable Via                 | Purpose                                |
+| --------------- | -------------------------- | -------------------------------------- |
+| **MinIO**       | `MINIO_ENABLED=true`       | S3-compatible object storage           |
+| **Redis**       | `REDIS_ENABLED=true`       | Caching and session management         |
+| **Mailpit**     | `MAILPIT_ENABLED=true`     | Email testing (dev)                    |
+| **MeiliSearch** | `MEILISEARCH_ENABLED=true` | Full-text search                       |
+| **Functions**   | `FUNCTIONS_ENABLED=true`   | Serverless functions                   |
+| **MLflow**      | `MLFLOW_ENABLED=true`      | ML experiment tracking                 |
+| **Monitoring**  | `MONITORING_ENABLED=true`  | Full observability stack (10 services) |
+| **nself-admin** | `NSELF_ADMIN_ENABLED=true` | Web admin panel (port 3021)            |
 
 [Learn more →](./Services.md#optional-services)
 
@@ -216,24 +217,24 @@ nself upgrade            # Update nself CLI
 
 ### Service URLs
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| **GraphQL API** | http://api.localhost/v1/graphql | Main API endpoint |
-| **Hasura Console** | http://localhost:8080/console | GraphQL admin UI |
-| **Auth API** | http://auth.localhost/v1/auth | Authentication endpoints |
-| **Storage API** | http://storage.localhost/v1/storage | File upload/download |
-| **Email Testing** | http://localhost:8025 | Mailpit web UI |
-| **MinIO Console** | http://localhost:9001 | Object storage admin |
-| **PostgreSQL** | localhost:5432 | Database connection |
-| **Redis** | localhost:6379 | Cache connection |
+| Service            | URL                                 | Purpose                  |
+| ------------------ | ----------------------------------- | ------------------------ |
+| **GraphQL API**    | http://api.localhost/v1/graphql     | Main API endpoint        |
+| **Hasura Console** | http://localhost:8080/console       | GraphQL admin UI         |
+| **Auth API**       | http://auth.localhost/v1/auth       | Authentication endpoints |
+| **Storage API**    | http://storage.localhost/v1/storage | File upload/download     |
+| **Email Testing**  | http://localhost:8025               | Mailpit web UI           |
+| **MinIO Console**  | http://localhost:9001               | Object storage admin     |
+| **PostgreSQL**     | localhost:5432                      | Database connection      |
+| **Redis**          | localhost:6379                      | Cache connection         |
 
 ### Default Credentials
 
-| Service | Username | Password |
-|---------|----------|----------|
-| **PostgreSQL** | postgres | postgres-dev-password |
-| **Hasura Admin** | - | hasura-admin-secret-dev |
-| **MinIO** | minioadmin | minioadmin |
+| Service          | Username   | Password                |
+| ---------------- | ---------- | ----------------------- |
+| **PostgreSQL**   | postgres   | postgres-dev-password   |
+| **Hasura Admin** | -          | hasura-admin-secret-dev |
+| **MinIO**        | minioadmin | minioadmin              |
 
 ---
 
@@ -356,14 +357,14 @@ Stack:
 
 ## Comparison with Alternatives
 
-| Feature | nself CLI | Firebase | Supabase | AWS Amplify |
-|---------|-----------|----------|----------|-------------|
-| **Hosting** | Self-hosted | Cloud only | Both | AWS only |
-| **Cost** | Free | Pay per use | Free tier | Pay per use |
-| **Lock-in** | None | High | Low | High |
-| **Database** | PostgreSQL | Firestore | PostgreSQL | DynamoDB |
-| **GraphQL** | Hasura | No | PostgREST | AppSync |
-| **Setup Time** | 2 minutes | 5 minutes | 10 minutes | 30 minutes |
+| Feature        | nself CLI   | Firebase    | Supabase   | AWS Amplify |
+| -------------- | ----------- | ----------- | ---------- | ----------- |
+| **Hosting**    | Self-hosted | Cloud only  | Both       | AWS only    |
+| **Cost**       | Free        | Pay per use | Free tier  | Pay per use |
+| **Lock-in**    | None        | High        | Low        | High        |
+| **Database**   | PostgreSQL  | Firestore   | PostgreSQL | DynamoDB    |
+| **GraphQL**    | Hasura      | No          | PostgREST  | AppSync     |
+| **Setup Time** | 2 minutes   | 5 minutes   | 10 minutes | 30 minutes  |
 
 [Detailed comparison →](./Overview.md#comparison-with-alternatives)
 
@@ -385,6 +386,7 @@ Explore real-world implementations:
 ### Common Issues
 
 **Services won't start:**
+
 ```bash
 # Check Docker is running
 docker ps
@@ -397,6 +399,7 @@ nself logs
 ```
 
 **Can't access URLs:**
+
 ```bash
 # Check nginx
 docker ps | grep nginx
@@ -406,6 +409,7 @@ nself restart
 ```
 
 **Out of memory:**
+
 ```bash
 # Increase Docker memory
 # Docker Desktop → Settings → Resources → Memory → 8GB+
@@ -463,4 +467,4 @@ nself CLI is open source under the MIT License.
 
 ---
 
-*This documentation is for nself CLI v0.4.2. Last updated: February 1, 2026.*
+_This documentation is for nself CLI v0.4.2. Last updated: February 1, 2026._

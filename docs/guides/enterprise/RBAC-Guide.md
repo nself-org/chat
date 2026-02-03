@@ -44,6 +44,7 @@ Owner (100)
 - **Permissions**: All system permissions
 
 **Capabilities**:
+
 - Transfer ownership
 - Configure system settings
 - Manage all users and roles
@@ -56,6 +57,7 @@ Owner (100)
 - **Permissions**: All except ownership transfer
 
 **Capabilities**:
+
 - Manage users (create, edit, delete, ban)
 - Manage channels (all operations)
 - Configure integrations
@@ -68,6 +70,7 @@ Owner (100)
 - **Permissions**: Content moderation and channel management
 
 **Capabilities**:
+
 - Create and manage channels
 - Delete messages (any user)
 - Mute/kick users
@@ -81,6 +84,7 @@ Owner (100)
 - **Permissions**: Standard chat functionality
 
 **Capabilities**:
+
 - Send messages
 - Create threads
 - Upload files
@@ -94,6 +98,7 @@ Owner (100)
 - **Permissions**: Read-only access
 
 **Capabilities**:
+
 - View channels (invited only)
 - React to messages
 - Download files
@@ -144,6 +149,7 @@ Custom roles can inherit from:
 3. **Explicit Permissions**: Add additional specific permissions
 
 **Example**:
+
 ```typescript
 {
   name: "Community Manager",
@@ -161,51 +167,51 @@ Custom roles can inherit from:
 
 #### 1. Channel Permissions
 
-| Permission | Description | Min Role |
-|-----------|-------------|----------|
-| `channel:create` | Create new channels | Moderator |
-| `channel:delete` | Delete channels | Admin |
-| `channel:update` | Edit channel settings | Moderator |
-| `channel:manage_permissions` | Manage channel-specific permissions | Admin |
-| `channel:archive` | Archive/unarchive channels | Admin |
+| Permission                   | Description                         | Min Role  |
+| ---------------------------- | ----------------------------------- | --------- |
+| `channel:create`             | Create new channels                 | Moderator |
+| `channel:delete`             | Delete channels                     | Admin     |
+| `channel:update`             | Edit channel settings               | Moderator |
+| `channel:manage_permissions` | Manage channel-specific permissions | Admin     |
+| `channel:archive`            | Archive/unarchive channels          | Admin     |
 
 #### 2. Message Permissions
 
-| Permission | Description | Min Role |
-|-----------|-------------|----------|
-| `message:send` | Send messages | Member |
-| `message:edit_own` | Edit own messages | Member |
-| `message:edit_any` | Edit any message | Moderator |
+| Permission           | Description        | Min Role  |
+| -------------------- | ------------------ | --------- |
+| `message:send`       | Send messages      | Member    |
+| `message:edit_own`   | Edit own messages  | Member    |
+| `message:edit_any`   | Edit any message   | Moderator |
 | `message:delete_any` | Delete any message | Moderator |
-| `message:pin` | Pin messages | Moderator |
-| `message:schedule` | Schedule messages | Moderator |
+| `message:pin`        | Pin messages       | Moderator |
+| `message:schedule`   | Schedule messages  | Moderator |
 
 #### 3. User Permissions
 
-| Permission | Description | Min Role |
-|-----------|-------------|----------|
-| `user:invite` | Invite new users | Member |
-| `user:ban` | Ban users | Admin |
-| `user:assign_role` | Assign roles | Admin |
-| `user:view_activity` | View user activity | Admin |
+| Permission           | Description        | Min Role |
+| -------------------- | ------------------ | -------- |
+| `user:invite`        | Invite new users   | Member   |
+| `user:ban`           | Ban users          | Admin    |
+| `user:assign_role`   | Assign roles       | Admin    |
+| `user:view_activity` | View user activity | Admin    |
 
 #### 4. Admin Permissions
 
-| Permission | Description | Min Role |
-|-----------|-------------|----------|
-| `admin:dashboard` | Access admin dashboard | Admin |
-| `admin:users` | Manage users | Admin |
-| `admin:settings` | Configure settings | Admin |
-| `admin:audit_log` | View audit logs | Admin |
-| `admin:webhooks` | Manage webhooks | Admin |
+| Permission        | Description            | Min Role |
+| ----------------- | ---------------------- | -------- |
+| `admin:dashboard` | Access admin dashboard | Admin    |
+| `admin:users`     | Manage users           | Admin    |
+| `admin:settings`  | Configure settings     | Admin    |
+| `admin:audit_log` | View audit logs        | Admin    |
+| `admin:webhooks`  | Manage webhooks        | Admin    |
 
 #### 5. System Permissions
 
-| Permission | Description | Min Role |
-|-----------|-------------|----------|
-| `system:config` | System configuration | Owner |
-| `system:transfer_ownership` | Transfer ownership | Owner |
-| `system:backup` | Backup/restore | Owner |
+| Permission                  | Description          | Min Role |
+| --------------------------- | -------------------- | -------- |
+| `system:config`             | System configuration | Owner    |
+| `system:transfer_ownership` | Transfer ownership   | Owner    |
+| `system:backup`             | Backup/restore       | Owner    |
 
 ### Permission Resolution
 
@@ -230,6 +236,7 @@ Pre-configured templates for common scenarios:
 Ideal for community engagement leaders who manage channels and moderate content.
 
 **Key Permissions**:
+
 - Create/update channels
 - Delete any message
 - Invite users
@@ -245,6 +252,7 @@ Ideal for community engagement leaders who manage channels and moderate content.
 Focused on content safety and moderation.
 
 **Key Permissions**:
+
 - Delete/edit any message
 - Mute/kick users
 - View reports
@@ -260,6 +268,7 @@ Focused on content safety and moderation.
 Customer support with read access to user information.
 
 **Key Permissions**:
+
 - View user profiles
 - View user activity
 - Send messages
@@ -275,6 +284,7 @@ Customer support with read access to user information.
 API and integration management.
 
 **Key Permissions**:
+
 - Manage webhooks
 - Manage integrations
 - View analytics
@@ -289,6 +299,7 @@ API and integration management.
 Analytics and reporting access.
 
 **Key Permissions**:
+
 - View analytics
 - View audit logs
 - View user activity
@@ -303,6 +314,7 @@ Analytics and reporting access.
 Manage specific channels without full moderation.
 
 **Key Permissions**:
+
 - Create/update/delete channels
 - Manage channel permissions
 - Pin messages
@@ -360,6 +372,7 @@ Test new roles in a staging environment:
 Separate concerns into multiple roles:
 
 Instead of one "Power User" role:
+
 - Create "Content Manager" for content
 - Create "Community Manager" for engagement
 - Create "Support Agent" for customer service
@@ -462,13 +475,15 @@ Create a role that inherits from multiple sources:
 ```graphql
 # Create custom role
 mutation CreateRole {
-  createRole(input: {
-    name: "Content Manager"
-    slug: "content-manager"
-    baseRole: MODERATOR
-    permissions: ["channel:create", "message:delete_any"]
-    priority: 55
-  }) {
+  createRole(
+    input: {
+      name: "Content Manager"
+      slug: "content-manager"
+      baseRole: MODERATOR
+      permissions: ["channel:create", "message:delete_any"]
+      priority: 55
+    }
+  ) {
     id
     name
     permissions
@@ -477,11 +492,7 @@ mutation CreateRole {
 
 # Assign role to user
 mutation AssignRole {
-  assignRole(input: {
-    userId: "user-123"
-    roleId: "role-456"
-    expiresAt: "2026-12-31T23:59:59Z"
-  }) {
+  assignRole(input: { userId: "user-123", roleId: "role-456", expiresAt: "2026-12-31T23:59:59Z" }) {
     id
     userId
     roleId
@@ -491,10 +502,7 @@ mutation AssignRole {
 
 # Check user permission
 query CheckPermission {
-  userHasPermission(
-    userId: "user-123"
-    permission: "message:delete_any"
-  )
+  userHasPermission(userId: "user-123", permission: "message:delete_any")
 }
 ```
 
@@ -523,6 +531,7 @@ GET /api/users/{userId}/permissions
 ### From Fixed Roles to Custom Roles
 
 1. **Audit Current Usage**
+
    ```sql
    SELECT role, COUNT(*) as user_count
    FROM users

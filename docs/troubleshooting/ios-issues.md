@@ -22,6 +22,7 @@ Comprehensive troubleshooting guide for iOS deployment and development issues.
 ### Issue: "No valid iOS Distribution certificate found"
 
 **Symptoms**:
+
 ```
 error: No valid iOS Distribution signing identity found
 ```
@@ -29,6 +30,7 @@ error: No valid iOS Distribution signing identity found
 **Solutions**:
 
 1. **Check installed certificates**:
+
 ```bash
 security find-identity -v -p codesigning
 
@@ -49,6 +51,7 @@ security find-identity -v -p codesigning
    - If missing private key, re-create certificate with proper CSR
 
 4. **Reset signing**:
+
 ```bash
 # Remove duplicate certificates
 security delete-certificate -c "iPhone Distribution"
@@ -62,6 +65,7 @@ security delete-certificate -c "iPhone Distribution"
 ### Issue: "Provisioning profile doesn't include signing certificate"
 
 **Symptoms**:
+
 ```
 error: Provisioning profile "..." doesn't include signing certificate "..."
 ```
@@ -75,6 +79,7 @@ error: Provisioning profile "..." doesn't include signing certificate "..."
    - Download and install new profile
 
 2. **Install provisioning profile**:
+
 ```bash
 # Download from developer portal
 # Double-click to install
@@ -86,6 +91,7 @@ ls ~/Library/MobileDevice/Provisioning\ Profiles/
 ```
 
 3. **Clean Xcode cache**:
+
 ```bash
 rm -rf ~/Library/Developer/Xcode/DerivedData/*
 rm -rf ~/Library/Developer/Xcode/Archives/*
@@ -101,6 +107,7 @@ rm -rf ~/Library/Developer/Xcode/Archives/*
 ### Issue: "The executable was signed with invalid entitlements"
 
 **Symptoms**:
+
 ```
 error: The executable was signed with invalid entitlements.
 error: The entitlements specified in your application's Code Signing Entitlements file are invalid, not permitted, or do not match those specified in your provisioning profile.
@@ -109,6 +116,7 @@ error: The entitlements specified in your application's Code Signing Entitlement
 **Solutions**:
 
 1. **Check entitlements file**:
+
 ```bash
 cd platforms/capacitor/ios/App/App
 cat App.entitlements
@@ -120,6 +128,7 @@ cat App.entitlements
 2. **Common entitlement mismatches**:
 
 **Push Notifications:**
+
 ```xml
 <!-- App.entitlements -->
 <key>aps-environment</key>
@@ -127,6 +136,7 @@ cat App.entitlements
 ```
 
 **Associated Domains:**
+
 ```xml
 <key>com.apple.developer.associated-domains</key>
 <array>
@@ -135,6 +145,7 @@ cat App.entitlements
 ```
 
 **App Groups:**
+
 ```xml
 <key>com.apple.security.application-groups</key>
 <array>
@@ -158,6 +169,7 @@ cat App.entitlements
 ### Issue: "Code signing is required for product type 'Application'"
 
 **Symptoms**:
+
 ```
 error: Code signing is required for product type 'Application' in SDK 'iOS 17.2'
 ```
@@ -176,6 +188,7 @@ error: Code signing is required for product type 'Application' in SDK 'iOS 17.2'
    - Ensure Signing Certificate is selected
 
 3. **Verify signing settings in build settings**:
+
 ```bash
 # Check project.pbxproj
 cd platforms/capacitor/ios/App
@@ -194,6 +207,7 @@ grep "CODE_SIGN" App.xcodeproj/project.pbxproj
 ### Issue: "Command PhaseScriptExecution failed with a nonzero exit code"
 
 **Symptoms**:
+
 ```
 error: Command PhaseScriptExecution failed with a nonzero exit code
 ```
@@ -208,6 +222,7 @@ error: Command PhaseScriptExecution failed with a nonzero exit code
 2. **Common script issues**:
 
 **CocoaPods script:**
+
 ```bash
 # Should be present in Build Phases
 # If missing, run:
@@ -216,12 +231,14 @@ pod install
 ```
 
 **Capacitor script:**
+
 ```bash
 # Ensure Capacitor scripts are present
 # Should see: [CP] Copy Pods Resources
 ```
 
 3. **Clean and rebuild**:
+
 ```bash
 cd platforms/capacitor/ios
 rm -rf App/Pods
@@ -235,6 +252,7 @@ pod install
 ```
 
 4. **Check script permissions**:
+
 ```bash
 # Make scripts executable
 chmod +x platforms/capacitor/ios/App/App/build-scripts/*.sh
@@ -245,6 +263,7 @@ chmod +x platforms/capacitor/ios/App/App/build-scripts/*.sh
 ### Issue: "Module 'XXX' not found"
 
 **Symptoms**:
+
 ```
 error: Module 'Capacitor' not found
 error: Module 'CapacitorCordova' not found
@@ -253,6 +272,7 @@ error: Module 'CapacitorCordova' not found
 **Solutions**:
 
 1. **Reinstall pods**:
+
 ```bash
 cd platforms/capacitor/ios/App
 rm -rf Pods Podfile.lock
@@ -261,12 +281,14 @@ pod install
 ```
 
 2. **Sync Capacitor**:
+
 ```bash
 cd platforms/capacitor
 npx cap sync ios
 ```
 
 3. **Check Podfile**:
+
 ```ruby
 # platforms/capacitor/ios/App/Podfile
 platform :ios, '14.0'
@@ -289,6 +311,7 @@ end
 ### Issue: "Undefined symbols for architecture arm64"
 
 **Symptoms**:
+
 ```
 Undefined symbols for architecture arm64:
   "_OBJC_CLASS_$_SomeClass", referenced from:
@@ -302,6 +325,7 @@ Undefined symbols for architecture arm64:
    - Add missing framework
 
 2. **Pod installation issue**:
+
 ```bash
 cd platforms/capacitor/ios/App
 pod deintegrate
@@ -314,6 +338,7 @@ pod install --repo-update
    - Valid Architectures: arm64
 
 4. **Clean derived data**:
+
 ```bash
 rm -rf ~/Library/Developer/Xcode/DerivedData
 ```
@@ -323,6 +348,7 @@ rm -rf ~/Library/Developer/Xcode/DerivedData
 ### Issue: "The app ID cannot be registered to your development team"
 
 **Symptoms**:
+
 ```
 error: The app ID "io.nself.chat" cannot be registered to your development team. Change your bundle identifier to a unique string.
 ```
@@ -351,6 +377,7 @@ error: The app ID "io.nself.chat" cannot be registered to your development team.
 ### Issue: Xcode cannot find Swift compiler
 
 **Symptoms**:
+
 ```
 error: unable to find utility "swiftc", not a developer tool or in PATH
 ```
@@ -358,12 +385,14 @@ error: unable to find utility "swiftc", not a developer tool or in PATH
 **Solutions**:
 
 1. **Set command line tools**:
+
 ```bash
 sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
 sudo xcode-select --install
 ```
 
 2. **Verify installation**:
+
 ```bash
 xcode-select -p
 # Should show: /Applications/Xcode.app/Contents/Developer
@@ -379,6 +408,7 @@ xcrun --find swiftc
 ### Issue: "Failed to prepare device for development"
 
 **Symptoms**:
+
 ```
 error: Failed to prepare device for development.
 error: This operation can fail if the version of the OS on the device is incompatible with the installed version of Xcode.
@@ -395,6 +425,7 @@ error: This operation can fail if the version of the OS on the device is incompa
    - Download iOS support files for your device version
 
 3. **Manually download support files**:
+
 ```bash
 # Download from https://github.com/filsv/iOSDeviceSupport
 # Extract to:
@@ -411,6 +442,7 @@ error: This operation can fail if the version of the OS on the device is incompa
 ### Issue: Xcode freezes during indexing
 
 **Symptoms**:
+
 - Xcode becomes unresponsive
 - "Indexing..." never completes
 - High CPU usage
@@ -418,16 +450,19 @@ error: This operation can fail if the version of the OS on the device is incompa
 **Solutions**:
 
 1. **Delete derived data**:
+
 ```bash
 rm -rf ~/Library/Developer/Xcode/DerivedData/*
 ```
 
 2. **Delete module cache**:
+
 ```bash
 rm -rf ~/Library/Developer/Xcode/DerivedData/ModuleCache.noindex
 ```
 
 3. **Disable indexing temporarily**:
+
 ```bash
 # Disable
 defaults write com.apple.dt.XCODEBuild IDEIndexDisable -bool YES
@@ -445,6 +480,7 @@ defaults delete com.apple.dt.XCODEBuild IDEIndexDisable
 ### Issue: "Unable to find a specification for pod"
 
 **Symptoms**:
+
 ```
 [!] Unable to find a specification for `Capacitor`
 ```
@@ -452,17 +488,20 @@ defaults delete com.apple.dt.XCODEBuild IDEIndexDisable
 **Solutions**:
 
 1. **Update CocoaPods repo**:
+
 ```bash
 pod repo update
 ```
 
 2. **Install pods with repo update**:
+
 ```bash
 cd platforms/capacitor/ios/App
 pod install --repo-update
 ```
 
 3. **Clear CocoaPods cache**:
+
 ```bash
 pod cache clean --all
 pod deintegrate
@@ -470,6 +509,7 @@ pod install
 ```
 
 4. **Check Podfile sources**:
+
 ```ruby
 # Add at top of Podfile
 source 'https://cdn.cocoapods.org/'
@@ -480,6 +520,7 @@ source 'https://cdn.cocoapods.org/'
 ### Issue: "The platform of the target is not compatible"
 
 **Symptoms**:
+
 ```
 [!] The platform of the target `App` (iOS 14.0) is not compatible with `SomePod` which has a minimum requirement of iOS 15.0.
 ```
@@ -487,12 +528,14 @@ source 'https://cdn.cocoapods.org/'
 **Solutions**:
 
 1. **Update platform version**:
+
 ```ruby
 # Edit Podfile
 platform :ios, '15.0'  # Increase version
 ```
 
 2. **Run pod install**:
+
 ```bash
 cd platforms/capacitor/ios/App
 pod install
@@ -507,6 +550,7 @@ pod install
 ### Issue: "CocoaPods could not find compatible versions"
 
 **Symptoms**:
+
 ```
 [!] CocoaPods could not find compatible versions for pod "Firebase/Core":
   In Podfile:
@@ -518,18 +562,21 @@ pod install
 **Solutions**:
 
 1. **Update minimum deployment target**:
+
 ```ruby
 # Podfile
 platform :ios, '13.0'  # Or higher as required
 ```
 
 2. **Update pod versions**:
+
 ```ruby
 # Use specific compatible versions
 pod 'Firebase/Core', '~> 9.0'  # Use older version
 ```
 
 3. **Update all pods**:
+
 ```bash
 pod update
 ```
@@ -538,9 +585,10 @@ pod update
 
 ## Provisioning Profile Issues
 
-### Issue: "No provisioning profile found matching"**
+### Issue: "No provisioning profile found matching"\*\*
 
 **Symptoms**:
+
 ```
 error: Provisioning profile "..." doesn't include signing certificate "..."
 ```
@@ -567,6 +615,7 @@ error: Provisioning profile "..." doesn't include signing certificate "..."
 ### Issue: "Provisioning profile has expired"
 
 **Symptoms**:
+
 ```
 error: Provisioning profile "..." has expired
 ```
@@ -580,6 +629,7 @@ error: Provisioning profile "..." has expired
    - Download and install
 
 2. **Check expiration dates**:
+
 ```bash
 # List all profiles and expiration dates
 ls ~/Library/MobileDevice/Provisioning\ Profiles/ | while read profile; do
@@ -588,6 +638,7 @@ done
 ```
 
 3. **Delete expired profiles**:
+
 ```bash
 # Remove all provisioning profiles
 rm ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision
@@ -602,6 +653,7 @@ rm ~/Library/MobileDevice/Provisioning\ Profiles/*.mobileprovision
 ### Issue: "Invalid Bundle - Missing Info.plist values"
 
 **Symptoms**:
+
 ```
 ERROR ITMS-90474: "Invalid Bundle. iPad Multitasking support requires these orientations: 'UIInterfaceOrientationPortrait,UIInterfaceOrientationPortraitUpsideDown,UIInterfaceOrientationLandscapeLeft,UIInterfaceOrientationLandscapeRight'."
 ```
@@ -609,6 +661,7 @@ ERROR ITMS-90474: "Invalid Bundle. iPad Multitasking support requires these orie
 **Solutions**:
 
 1. **Add required Info.plist entries**:
+
 ```xml
 <!-- Info.plist -->
 <key>UISupportedInterfaceOrientations~ipad</key>
@@ -629,6 +682,7 @@ ERROR ITMS-90474: "Invalid Bundle. iPad Multitasking support requires these orie
 ### Issue: "Missing required icon file"
 
 **Symptoms**:
+
 ```
 ERROR ITMS-90717: "Invalid App Store Icon. The App Store Icon in the asset catalog in 'App.app' can't be transparent nor contain an alpha channel."
 ```
@@ -641,6 +695,7 @@ ERROR ITMS-90717: "Invalid App Store Icon. The App Store Icon in the asset catal
    - Size must be exactly 1024x1024
 
 2. **Regenerate icons**:
+
 ```bash
 # Use tool like app-icon.co or create manually
 # Place in:
@@ -651,6 +706,7 @@ npx @capacitor/assets generate --ios
 ```
 
 3. **Verify icon**:
+
 ```bash
 # Check if icon has alpha channel
 sips -g hasAlpha icon-1024.png
@@ -662,6 +718,7 @@ sips -g hasAlpha icon-1024.png
 ### Issue: "Missing Privacy Usage Descriptions"
 
 **Symptoms**:
+
 ```
 ERROR ITMS-90683: "Missing Purpose String in Info.plist. Your app's code references one or more APIs that access sensitive user data. The app's Info.plist file should contain a NSCameraUsageDescription key with a user-facing purpose string explaining clearly and completely why your app needs the data."
 ```
@@ -707,6 +764,7 @@ ERROR ITMS-90683: "Missing Purpose String in Info.plist. Your app's code referen
 ### Issue: Build stuck in "Processing"
 
 **Symptoms**:
+
 - Build uploaded successfully
 - Shows "Processing" status for hours
 - Never becomes available for testing
@@ -735,6 +793,7 @@ ERROR ITMS-90683: "Missing Purpose String in Info.plist. Your app's code referen
 ### Issue: "Could not install app on device"
 
 **Symptoms**:
+
 ```
 Unable to install "nChat"
 This app could not be installed at this time.
@@ -766,6 +825,7 @@ This app could not be installed at this time.
 ### Issue: "The software is not notarized"
 
 **Symptoms**:
+
 ```
 "nchat.app" cannot be opened because the developer cannot be verified.
 ```
@@ -773,6 +833,7 @@ This app could not be installed at this time.
 **Solutions**:
 
 1. **Notarize the app**:
+
 ```bash
 # Archive app
 xcodebuild archive -workspace App.xcworkspace -scheme App -archivePath build/App.xcarchive
@@ -792,6 +853,7 @@ xcrun stapler staple build/export/App.ipa
 ```
 
 2. **Check notarization status**:
+
 ```bash
 xcrun notarytool history \
   --apple-id "your@apple.id" \
@@ -800,6 +862,7 @@ xcrun notarytool history \
 ```
 
 3. **View notarization log**:
+
 ```bash
 xcrun notarytool log <submission-id> \
   --apple-id "your@apple.id" \
@@ -814,6 +877,7 @@ xcrun notarytool log <submission-id> \
 ### Issue: App crashes on launch
 
 **Symptoms**:
+
 - App opens briefly then crashes
 - Black screen then crashes
 - Immediate crash on tap
@@ -829,24 +893,31 @@ xcrun notarytool log <submission-id> \
 2. **Common crash causes**:
 
 **Missing framework:**
+
 ```
 dyld: Library not loaded: @rpath/Framework.framework/Framework
 ```
+
 Solution: Embed framework (Target > General > Frameworks)
 
 **Entitlement error:**
+
 ```
 Process launch failed: Security
 ```
+
 Solution: Check entitlements match provisioning profile
 
 **Code signing issue:**
+
 ```
 Code signature not valid for use in process
 ```
+
 Solution: Re-sign app with correct certificate
 
 3. **Test in simulator first**:
+
 ```bash
 # Build for simulator
 xcodebuild -workspace App.xcworkspace \
@@ -862,6 +933,7 @@ xcodebuild -workspace App.xcworkspace \
 ### Issue: Push notifications not working
 
 **Symptoms**:
+
 - App doesn't register for push
 - Notifications don't arrive
 - Device token not generated
@@ -873,6 +945,7 @@ xcodebuild -workspace App.xcworkspace \
    - Background Modes > Remote notifications enabled
 
 2. **Check entitlements**:
+
 ```xml
 <!-- App.entitlements -->
 <key>aps-environment</key>
@@ -884,6 +957,7 @@ xcodebuild -workspace App.xcworkspace \
    - Ensure key is uploaded to Firebase/backend
 
 4. **Test registration**:
+
 ```swift
 // In AppDelegate
 func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -897,6 +971,7 @@ func application(_ application: UIApplication, didFailToRegisterForRemoteNotific
 ```
 
 5. **Check Info.plist**:
+
 ```xml
 <key>UIBackgroundModes</key>
 <array>

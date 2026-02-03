@@ -18,11 +18,13 @@ Technical reference documentation, quick start guides, and architecture diagrams
 Quick reference guides for rapid feature implementation:
 
 #### Security Features
+
 - **[E2EE Quick Reference](E2EE-Quick-Reference.md)** - End-to-end encryption implementation
 - **[2FA Quick Reference](2FA-Quick-Reference.md)** - Two-factor authentication setup
 - **[PIN Lock Quick Start](PIN-LOCK-QUICK-START.md)** - PIN lock implementation
 
 #### Communication Features
+
 - **[Voice Calling Quick Start](Voice-Calling-Quick-Start.md)** - Voice call implementation
 - **[Call Management Quick Reference](Call-Management-Quick-Reference.md)** - Call state and management
 - **[Mobile Calls Quick Reference](Mobile-Calls-Quick-Reference.md)** - Mobile call optimizations
@@ -30,11 +32,13 @@ Quick reference guides for rapid feature implementation:
 - **[Live Streaming Quick Start](Live-Streaming-Quick-Start.md)** - Live streaming implementation
 
 #### Messaging Features
+
 - **[Advanced Messaging Quick Reference](advanced-messaging-quick-reference.md)** - Rich messaging features
 - **[Polls Quick Start](Polls-Quick-Start.md)** - Poll creation and management
 - **[Social Media Quick Reference](Social-Media-Quick-Reference.md)** - Social embeds and previews
 
 #### Utilities
+
 - **[Search Quick Start](Search-Quick-Start.md)** - Full-text search implementation
 
 ### State Machines
@@ -46,17 +50,20 @@ Quick reference guides for rapid feature implementation:
 ### For Developers
 
 **Starting a New Feature:**
+
 1. Check the relevant Quick Reference guide for implementation patterns
 2. Review [Architecture](Architecture.md) to understand system design
 3. Consult [Database Schema](Database-Schema.md) for data models
 4. Reference [Types](Types.md) for TypeScript definitions
 
 **Understanding the Codebase:**
+
 1. Start with [Project Structure](Project-Structure.md) to navigate the code
 2. Review [Architecture Diagrams](ARCHITECTURE-DIAGRAMS.md) for visual overview
 3. Check [SPORT Reference](SPORT.md) for best practices
 
 **Debugging and Optimization:**
+
 1. Use [Call State Machine Diagram](Call-State-Machine-Diagram.md) for call issues
 2. Consult [SPORT Reference](SPORT.md) for performance optimization
 3. Review relevant Quick Reference for feature-specific debugging
@@ -79,11 +86,13 @@ Quick reference guides for rapid feature implementation:
 ### By Feature Category
 
 **Security & Authentication:**
+
 - [E2EE Quick Reference](E2EE-Quick-Reference.md)
 - [2FA Quick Reference](2FA-Quick-Reference.md)
 - [PIN Lock Quick Start](PIN-LOCK-QUICK-START.md)
 
 **Real-Time Communication:**
+
 - [Voice Calling Quick Start](Voice-Calling-Quick-Start.md)
 - [Call Management Quick Reference](Call-Management-Quick-Reference.md)
 - [Mobile Calls Quick Reference](Mobile-Calls-Quick-Reference.md)
@@ -91,6 +100,7 @@ Quick reference guides for rapid feature implementation:
 - [Live Streaming Quick Start](Live-Streaming-Quick-Start.md)
 
 **Messaging & Content:**
+
 - [Advanced Messaging Quick Reference](advanced-messaging-quick-reference.md)
 - [Polls Quick Start](Polls-Quick-Start.md)
 - [Social Media Quick Reference](Social-Media-Quick-Reference.md)
@@ -99,16 +109,19 @@ Quick reference guides for rapid feature implementation:
 ### By Complexity
 
 **Beginner-Friendly:**
+
 - [Search Quick Start](Search-Quick-Start.md)
 - [Polls Quick Start](Polls-Quick-Start.md)
 - [PIN Lock Quick Start](PIN-LOCK-QUICK-START.md)
 
 **Intermediate:**
+
 - [Social Media Quick Reference](Social-Media-Quick-Reference.md)
 - [Advanced Messaging Quick Reference](advanced-messaging-quick-reference.md)
 - [2FA Quick Reference](2FA-Quick-Reference.md)
 
 **Advanced:**
+
 - [E2EE Quick Reference](E2EE-Quick-Reference.md)
 - [Voice Calling Quick Start](Voice-Calling-Quick-Start.md)
 - [Live Streaming Quick Start](Live-Streaming-Quick-Start.md)

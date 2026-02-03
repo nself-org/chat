@@ -10,6 +10,8 @@ import { getTenantService } from '@/lib/tenants/tenant-service'
 import type { CreateTenantRequest } from '@/lib/tenants/types'
 import { z } from 'zod'
 
+import { logger } from '@/lib/logger'
+
 const createTenantSchema = z.object({
   name: z.string().min(2).max(255),
   slug: z
@@ -58,14 +60,11 @@ export async function POST(request: NextRequest) {
       createdAt: tenant.createdAt,
     })
   } catch (error: any) {
-    console.error('Error creating tenant:', error)
+    logger.error('Error creating tenant:', error)
 
     // Check for specific error types
     if (error.message?.includes('already exists')) {
-      return NextResponse.json(
-        { error: 'A tenant with this slug already exists' },
-        { status: 409 }
-      )
+      return NextResponse.json({ error: 'A tenant with this slug already exists' }, { status: 409 })
     }
 
     return NextResponse.json(

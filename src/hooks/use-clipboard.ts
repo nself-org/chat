@@ -2,6 +2,8 @@
 
 import { useState, useCallback } from 'react'
 
+import { logger } from '@/lib/logger'
+
 interface UseCopyToClipboardResult {
   /** The last copied text, or null if nothing has been copied */
   copiedText: string | null
@@ -48,7 +50,7 @@ export function useCopyToClipboard(): UseCopyToClipboardResult {
         const copyError = err instanceof Error ? err : new Error('Failed to copy')
         setError(copyError)
         setCopiedText(null)
-        console.warn('Copy to clipboard failed:', copyError)
+        logger.warn('Copy to clipboard failed:', { context: copyError })
         return false
       }
     }
@@ -62,7 +64,7 @@ export function useCopyToClipboard(): UseCopyToClipboardResult {
       const copyError = err instanceof Error ? err : new Error('Failed to copy')
       setError(copyError)
       setCopiedText(null)
-      console.warn('Copy to clipboard failed:', copyError)
+      logger.warn('Copy to clipboard failed:', { context: copyError })
       return false
     }
   }, [])

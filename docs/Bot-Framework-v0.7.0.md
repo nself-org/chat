@@ -19,6 +19,7 @@ The Bot Framework for nself-chat provides a comprehensive system for creating, m
 **File**: `.backend/migrations/028_bot_framework_v0.7.0.sql`
 
 **Tables Created:**
+
 - `nchat_bots` (enhanced) - Bot definitions with code storage
 - `nchat_bot_versions` - Version history and snapshots
 - `nchat_bot_state` - Persistent key-value state storage
@@ -28,6 +29,7 @@ The Bot Framework for nself-chat provides a comprehensive system for creating, m
 - `nchat_bot_scheduled_tasks` - Cron/scheduled task management
 
 **Key Features:**
+
 - ✅ Bot versioning with code snapshots
 - ✅ Persistent state with expiration support
 - ✅ Event logging for debugging
@@ -40,6 +42,7 @@ The Bot Framework for nself-chat provides a comprehensive system for creating, m
 ### 2. Bot SDK ✅
 
 **Files:**
+
 - `src/lib/bots/bot-sdk.ts` - Enhanced SDK with versioning
 - `src/lib/bots/bot-runtime.ts` - Existing runtime
 - `src/lib/bots/bot-types.ts` - Existing type definitions
@@ -48,6 +51,7 @@ The Bot Framework for nself-chat provides a comprehensive system for creating, m
 - `src/lib/bots/bot-events.ts` - Event handling
 
 **SDK Features:**
+
 - ✅ Fluent bot builder API
 - ✅ TypeScript-first with full type safety
 - ✅ Event system (message, command, reaction, user events)
@@ -60,6 +64,7 @@ The Bot Framework for nself-chat provides a comprehensive system for creating, m
 - ✅ Class-based bot support with decorators
 
 **Example Usage:**
+
 ```typescript
 import { bot, text, embed } from '@/lib/bots/bot-sdk'
 
@@ -70,10 +75,7 @@ export default bot('my-bot')
     return text(`Hello, ${ctx.user.displayName}!`)
   })
   .onUserJoin((ctx, api) => {
-    return embed()
-      .title('Welcome!')
-      .description(`Welcome ${ctx.user.displayName}!`)
-      .build()
+    return embed().title('Welcome!').description(`Welcome ${ctx.user.displayName}!`).build()
   })
   .build()
 ```
@@ -81,6 +83,7 @@ export default bot('my-bot')
 ### 3. Pre-built Templates ✅
 
 **Files:**
+
 - `src/lib/bots/templates/welcome-bot.ts` - User onboarding
 - `src/lib/bots/templates/faq-bot.ts` - Knowledge base Q&A
 - `src/lib/bots/templates/poll-bot.ts` - Polls and surveys
@@ -91,6 +94,7 @@ export default bot('my-bot')
 **Template Features:**
 
 #### Welcome Bot
+
 - ✅ Customizable welcome messages with placeholders
 - ✅ Optional DM to new members
 - ✅ Channel-specific configurations
@@ -98,6 +102,7 @@ export default bot('my-bot')
 - ✅ Rules display option
 
 #### FAQ Bot
+
 - ✅ Keyword-based question matching
 - ✅ Add/edit/delete FAQs via commands
 - ✅ Category organization
@@ -105,6 +110,7 @@ export default bot('my-bot')
 - ✅ Analytics tracking (use count)
 
 #### Poll Bot
+
 - ✅ Create polls with multiple options
 - ✅ Real-time vote tracking
 - ✅ Anonymous or public voting
@@ -113,6 +119,7 @@ export default bot('my-bot')
 - ✅ Results visualization
 
 #### Scheduler Bot
+
 - ✅ One-time or recurring reminders
 - ✅ Schedule messages for future delivery
 - ✅ Meeting reminders
@@ -120,6 +127,7 @@ export default bot('my-bot')
 - ✅ Natural language time parsing
 
 #### Standup Bot
+
 - ✅ Scheduled daily standup prompts
 - ✅ Collect responses from team members
 - ✅ Generate standup summaries
@@ -132,6 +140,7 @@ export default bot('my-bot')
 **Endpoints Implemented:**
 
 #### Bot Management
+
 - `GET /api/bots` - List all bots (with filtering)
 - `POST /api/bots` - Create new bot
 - `GET /api/bots/[id]` - Get bot by ID
@@ -141,11 +150,13 @@ export default bot('my-bot')
 - `GET /api/bots/[id]/logs` - Get bot event logs
 
 #### Template Management
+
 - `GET /api/bots/templates` - List all templates
 - `POST /api/bots/templates` - Create custom template
 - `POST /api/bots/templates/[id]/instantiate` - Create bot from template
 
 **API Features:**
+
 - ✅ RESTful design
 - ✅ Pagination support
 - ✅ Filtering and search
@@ -158,6 +169,7 @@ export default bot('my-bot')
 **File**: `src/components/admin/bots/BotEditor.tsx`
 
 **Features:**
+
 - ✅ Multi-tab interface (Code, Config, Events, Permissions)
 - ✅ Code editor with syntax highlighting
 - ✅ Template selection dropdown
@@ -171,6 +183,7 @@ export default bot('my-bot')
 - ✅ Permission management UI
 
 **UI Tabs:**
+
 1. **Code** - Write/edit bot code with templates
 2. **Configuration** - Bot settings (name, description, test mode)
 3. **Events** - Subscribe to bot events
@@ -181,6 +194,7 @@ export default bot('my-bot')
 **File**: `docs/guides/development/bot-sdk.md`
 
 **Sections:**
+
 - ✅ Introduction and features
 - ✅ Getting started guide
 - ✅ Core concepts explanation
@@ -243,18 +257,21 @@ Bot SDK (bot(), command(), etc.)
 ## Security Features
 
 ### Sandbox Execution
+
 - ✅ Isolated execution environment
 - ✅ Configurable timeout (default 5000ms)
 - ✅ Rate limiting per bot (default 60/min)
 - ✅ Permission-based access control
 
 ### Permission System
+
 - ✅ Granular permissions (`read_messages`, `send_messages`, etc.)
 - ✅ Dangerous permission warnings in UI
 - ✅ Row-level security in database
 - ✅ Permission validation before execution
 
 ### State Management
+
 - ✅ Scoped to bot instance
 - ✅ Automatic expiration support
 - ✅ Cleanup function for expired state
@@ -265,12 +282,14 @@ Bot SDK (bot(), command(), etc.)
 ## Analytics & Monitoring
 
 ### Event Logging
+
 - ✅ All bot events logged to `nchat_bot_events`
 - ✅ Execution time tracking
 - ✅ Success/error status
 - ✅ Associated channel/user/message IDs
 
 ### Analytics Aggregation
+
 - ✅ Daily stats in `nchat_bot_analytics`
 - ✅ Messages processed count
 - ✅ Commands executed count
@@ -278,6 +297,7 @@ Bot SDK (bot(), command(), etc.)
 - ✅ Average response time
 
 ### Runtime Statistics
+
 - ✅ Total bots count
 - ✅ Active bots count
 - ✅ Total messages processed
@@ -289,13 +309,16 @@ Bot SDK (bot(), command(), etc.)
 ## Testing
 
 ### Test Mode
+
 - ✅ Sandbox execution without side effects
 - ✅ Dry-run capability
 - ✅ Output capture for debugging
 - ✅ Error detection and reporting
 
 ### Template Testing
+
 Each template includes:
+
 - ✅ Example configurations
 - ✅ Test commands
 - ✅ Expected behaviors documented
@@ -305,18 +328,21 @@ Each template includes:
 ## Performance Optimizations
 
 ### Database
+
 - ✅ Indexes on frequently queried columns
 - ✅ Partitioning for event logs (future)
 - ✅ Automatic cleanup of expired data
 - ✅ Efficient RLS policies
 
 ### Runtime
+
 - ✅ Bot instance caching
 - ✅ Event queue for high load
 - ✅ Rate limiting per bot
 - ✅ Configurable timeouts
 
 ### Storage
+
 - ✅ JSONB for flexible config
 - ✅ Indexed state keys
 - ✅ Expiration-based cleanup
@@ -401,6 +427,7 @@ const customBot = bot('custom-bot')
 ## Future Enhancements
 
 ### Planned for v0.8.0
+
 - [ ] Visual bot builder (drag-and-drop)
 - [ ] Bot marketplace
 - [ ] Real-time collaboration on bot editing
@@ -409,6 +436,7 @@ const customBot = bot('custom-bot')
 - [ ] A/B testing for bots
 
 ### Planned for v0.9.0
+
 - [ ] Bot categories and tags
 - [ ] Bot cloning/forking
 - [ ] Export/import bot definitions
@@ -443,6 +471,7 @@ For issues, questions, or contributions:
 ### v0.7.0 (2026-01-31)
 
 **Added:**
+
 - Complete Bot Framework implementation
 - 5 pre-built bot templates
 - Bot versioning system
@@ -455,12 +484,14 @@ For issues, questions, or contributions:
 - Comprehensive documentation
 
 **Enhanced:**
+
 - Bot SDK with versioning support
 - Bot Runtime with lifecycle management
 - Database schema with new tables
 - Type safety across the board
 
 **Fixed:**
+
 - N/A (initial release)
 
 ---

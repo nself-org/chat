@@ -225,6 +225,7 @@ src/
 **1. Configure Capabilities**
 
 In Xcode, enable:
+
 - Background Modes → Voice over IP
 - Push Notifications
 
@@ -362,12 +363,12 @@ Same API as iOS CallKit - the platform-specific implementation is handled automa
 
 The system automatically adjusts video quality based on battery level:
 
-| Battery Level | Frame Rate | Resolution | Action |
-|--------------|-----------|-----------|--------|
-| 100% - 30% | 30 fps | 720p | High quality |
-| 30% - 20% | 24 fps | 480p | Medium quality |
-| 20% - 10% | 20 fps | 360p | Low quality |
-| Below 10% | 15 fps | 240p | Audio-only suggested |
+| Battery Level | Frame Rate | Resolution | Action               |
+| ------------- | ---------- | ---------- | -------------------- |
+| 100% - 30%    | 30 fps     | 720p       | High quality         |
+| 30% - 20%     | 24 fps     | 480p       | Medium quality       |
+| 20% - 10%     | 20 fps     | 360p       | Low quality          |
+| Below 10%     | 15 fps     | 240p       | Audio-only suggested |
 
 ### Manual Battery Saving
 
@@ -450,6 +451,7 @@ toast({ title: message })
 ### Auto-Enable PiP
 
 PiP automatically activates when:
+
 - App goes to background during a call
 - User navigates away from call screen
 - User swipes down on call screen
@@ -610,18 +612,14 @@ const token = voipPushManager.getToken()
 // Server-side: Send VoIP push when call initiated
 import { sendVoIPPush } from '@/lib/voip-push'
 
-await sendVoIPPush(
-  userToken,
-  'ios',
-  {
-    type: 'incoming_call',
-    callId: 'call-123',
-    callerId: 'user-456',
-    callerName: 'John Doe',
-    callerAvatarUrl: 'https://example.com/avatar.jpg',
-    callType: 'video',
-  }
-)
+await sendVoIPPush(userToken, 'ios', {
+  type: 'incoming_call',
+  callId: 'call-123',
+  callerId: 'user-456',
+  callerName: 'John Doe',
+  callerAvatarUrl: 'https://example.com/avatar.jpg',
+  callType: 'video',
+})
 ```
 
 ---
@@ -634,11 +632,11 @@ await sendVoIPPush(
 
 ```typescript
 interface MobileCallOptimizationOptions {
-  autoBatteryOptimization?: boolean  // Default: true
-  autoEnablePiP?: boolean           // Default: true
-  lockOrientation?: boolean          // Default: true
-  enableNativeCallUI?: boolean       // Default: true
-  enableVoIPPush?: boolean           // Default: true
+  autoBatteryOptimization?: boolean // Default: true
+  autoEnablePiP?: boolean // Default: true
+  lockOrientation?: boolean // Default: true
+  enableNativeCallUI?: boolean // Default: true
+  enableVoIPPush?: boolean // Default: true
 }
 ```
 
@@ -667,12 +665,12 @@ interface UseMobileCallOptimizationReturn {
 
 ```typescript
 interface UseBatteryStatusReturn {
-  batteryLevel: number                // 0-100
+  batteryLevel: number // 0-100
   isCharging: boolean
-  chargingTime: number | null         // seconds
-  dischargingTime: number | null      // seconds
-  isLowBattery: boolean               // <20%
-  isCriticalBattery: boolean          // <10%
+  chargingTime: number | null // seconds
+  dischargingTime: number | null // seconds
+  isLowBattery: boolean // <20%
+  isCriticalBattery: boolean // <10%
   isSupported: boolean
   suggestedVideoQuality: 'high' | 'medium' | 'low' | 'audio-only'
 }
@@ -718,11 +716,13 @@ interface UseMobileOrientationReturn {
 **Minimum Version**: iOS 10.0+ (CallKit)
 
 **Known Issues**:
+
 - CallKit requires physical device for testing (not simulator)
 - VoIP push requires Apple Developer account and certificates
 - Background audio requires proper audio session configuration
 
 **Best Practices**:
+
 - Always handle CallKit delegate methods
 - Configure audio session before starting call
 - Test on multiple iOS versions
@@ -732,11 +732,13 @@ interface UseMobileOrientationReturn {
 **Minimum Version**: Android 6.0+ (API 23) for Telecom API
 
 **Known Issues**:
+
 - Telecom permissions must be requested at runtime
 - Some manufacturers have aggressive battery optimization
 - Connection service must be declared in manifest
 
 **Best Practices**:
+
 - Request all required permissions before initiating call
 - Add to battery optimization whitelist
 - Test on multiple Android versions and manufacturers
@@ -746,12 +748,14 @@ interface UseMobileOrientationReturn {
 **PiP Support**: Chrome 70+, Safari 13.1+, Edge 79+
 
 **Limitations**:
+
 - No native call UI
 - No VoIP push notifications
 - Limited battery API support
 - No orientation lock on most browsers
 
 **Fallbacks**:
+
 - Browser notifications for incoming calls
 - Manual PiP activation
 - Estimated battery level (100% if API unavailable)
@@ -765,6 +769,7 @@ interface UseMobileOrientationReturn {
 **Problem**: CallKit not showing system UI
 
 **Solution**:
+
 1. Check Info.plist has VoIP background mode
 2. Ensure running on physical device (not simulator)
 3. Verify CallKit is initialized before reporting call
@@ -781,6 +786,7 @@ console.log('CallKit supported:', supported)
 **Problem**: Missing required permissions
 
 **Solution**:
+
 1. Request permissions before configuring Telecom
 2. Check AndroidManifest.xml has all required permissions
 3. Handle permission denial gracefully
@@ -800,6 +806,7 @@ if (!granted) {
 **Problem**: Video quality not adjusting
 
 **Solution**:
+
 1. Check Battery API support
 2. Verify media stream has video track
 3. Check constraints are being applied
@@ -816,6 +823,7 @@ if (!isSupported) {
 **Problem**: PiP not entering when backgrounded
 
 **Solution**:
+
 1. Check PiP support on device/browser
 2. Verify video element exists
 3. Check document visibility API
@@ -835,6 +843,7 @@ if (error) {
 **Problem**: App not waking on incoming call
 
 **Solution**:
+
 1. Verify push token is sent to server
 2. Check APNs/FCM credentials
 3. Ensure payload format is correct
@@ -852,22 +861,22 @@ console.log('Push token:', token)
 
 ### Battery Impact
 
-| Scenario | Battery Drain Rate |
-|----------|-------------------|
-| Audio-only call | ~1-2% per 10 min |
-| Video call (720p, 30fps) | ~5-8% per 10 min |
-| Video call (480p, 24fps) | ~3-5% per 10 min |
-| Video call (360p, 20fps) | ~2-4% per 10 min |
-| Battery saving mode | ~1-2% per 10 min |
+| Scenario                 | Battery Drain Rate |
+| ------------------------ | ------------------ |
+| Audio-only call          | ~1-2% per 10 min   |
+| Video call (720p, 30fps) | ~5-8% per 10 min   |
+| Video call (480p, 24fps) | ~3-5% per 10 min   |
+| Video call (360p, 20fps) | ~2-4% per 10 min   |
+| Battery saving mode      | ~1-2% per 10 min   |
 
 ### Network Usage
 
-| Quality | Bandwidth (Video) | Bandwidth (Audio) |
-|---------|------------------|-------------------|
-| High (720p, 30fps) | ~1.5 Mbps | ~50 Kbps |
-| Medium (480p, 24fps) | ~800 Kbps | ~50 Kbps |
-| Low (360p, 20fps) | ~400 Kbps | ~50 Kbps |
-| Audio-only | - | ~50 Kbps |
+| Quality              | Bandwidth (Video) | Bandwidth (Audio) |
+| -------------------- | ----------------- | ----------------- |
+| High (720p, 30fps)   | ~1.5 Mbps         | ~50 Kbps          |
+| Medium (480p, 24fps) | ~800 Kbps         | ~50 Kbps          |
+| Low (360p, 20fps)    | ~400 Kbps         | ~50 Kbps          |
+| Audio-only           | -                 | ~50 Kbps          |
 
 ---
 
@@ -894,6 +903,7 @@ console.log('Push token:', token)
 ## Support
 
 For issues or questions:
+
 1. Check [Troubleshooting](#troubleshooting) section above
 2. Review [Common Issues](/docs/troubleshooting/Common-Issues.md)
 3. Open GitHub issue with:

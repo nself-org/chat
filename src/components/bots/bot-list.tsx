@@ -154,7 +154,7 @@ export function BotList({
                   <TableRow key={installation.id}>
                     <TableCell>
                       <div
-                        className="flex items-center gap-3 cursor-pointer"
+                        className="flex cursor-pointer items-center gap-3"
                         onClick={() => onViewDetails?.(bot)}
                       >
                         <Avatar className="h-10 w-10">
@@ -166,11 +166,9 @@ export function BotList({
                         <div>
                           <div className="flex items-center gap-1.5">
                             <span className="font-medium">{bot.name}</span>
-                            {bot.verified && (
-                              <CheckCircle className="h-3.5 w-3.5 text-primary" />
-                            )}
+                            {bot.verified && <CheckCircle className="h-3.5 w-3.5 text-primary" />}
                           </div>
-                          <p className="text-sm text-muted-foreground line-clamp-1">
+                          <p className="line-clamp-1 text-sm text-muted-foreground">
                             {bot.description}
                           </p>
                         </div>
@@ -201,9 +199,7 @@ export function BotList({
                             <span>{installation.channel.name}</span>
                           </div>
                         ) : (
-                          <span className="text-sm text-muted-foreground">
-                            All channels
-                          </span>
+                          <span className="text-sm text-muted-foreground">All channels</span>
                         )}
                       </TableCell>
                     )}
@@ -228,9 +224,7 @@ export function BotList({
                           <DropdownMenuSeparator />
                           <DropdownMenuItem
                             className="text-destructive focus:text-destructive"
-                            onClick={() =>
-                              onRemove?.(bot.id, installation.channelId)
-                            }
+                            onClick={() => onRemove?.(bot.id, installation.channelId)}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
                             Remove
@@ -256,13 +250,12 @@ export function BotList({
 function EmptyState({ message }: { message: string }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-lg border border-dashed p-8 text-center">
-      <div className="rounded-full bg-muted p-3 mb-4">
+      <div className="mb-4 rounded-full bg-muted p-3">
         <Bot className="h-6 w-6 text-muted-foreground" />
       </div>
-      <h3 className="font-medium mb-1">{message}</h3>
-      <p className="text-sm text-muted-foreground max-w-sm">
-        Add bots to automate tasks, integrate with other services, and enhance
-        your workspace.
+      <h3 className="mb-1 font-medium">{message}</h3>
+      <p className="max-w-sm text-sm text-muted-foreground">
+        Add bots to automate tasks, integrate with other services, and enhance your workspace.
       </p>
     </div>
   )
@@ -334,7 +327,7 @@ export function BotListCards({
     return (
       <div className={cn('grid gap-4 sm:grid-cols-2 lg:grid-cols-3', className)}>
         {[1, 2, 3].map((i) => (
-          <div key={i} className="rounded-lg border p-4 space-y-3">
+          <div key={i} className="space-y-3 rounded-lg border p-4">
             <div className="flex items-center gap-3">
               <Skeleton className="h-10 w-10 rounded-full" />
               <div className="space-y-2">
@@ -364,13 +357,10 @@ export function BotListCards({
         if (!bot) return null
 
         return (
-          <div
-            key={installation.id}
-            className="rounded-lg border bg-card p-4 space-y-3"
-          >
+          <div key={installation.id} className="space-y-3 rounded-lg border bg-card p-4">
             <div className="flex items-start justify-between">
               <div
-                className="flex items-center gap-3 cursor-pointer"
+                className="flex cursor-pointer items-center gap-3"
                 onClick={() => onViewDetails?.(bot)}
               >
                 <Avatar className="h-10 w-10">
@@ -382,14 +372,9 @@ export function BotListCards({
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="font-medium">{bot.name}</span>
-                    {bot.verified && (
-                      <CheckCircle className="h-3.5 w-3.5 text-primary" />
-                    )}
+                    {bot.verified && <CheckCircle className="h-3.5 w-3.5 text-primary" />}
                   </div>
-                  <Badge
-                    variant={getBotStatusBadgeVariant(bot.status)}
-                    className="mt-1"
-                  >
+                  <Badge variant={getBotStatusBadgeVariant(bot.status)} className="mt-1">
                     {bot.status}
                   </Badge>
                 </div>
@@ -417,17 +402,11 @@ export function BotListCards({
               </DropdownMenu>
             </div>
 
-            <p className="text-sm text-muted-foreground line-clamp-2">
-              {bot.description}
-            </p>
+            <p className="line-clamp-2 text-sm text-muted-foreground">{bot.description}</p>
 
-            <div className="flex items-center justify-between pt-2 border-t">
+            <div className="flex items-center justify-between border-t pt-2">
               <BotPermissionsSummary permissions={installation.permissions} />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onConfigure?.(bot)}
-              >
+              <Button variant="outline" size="sm" onClick={() => onConfigure?.(bot)}>
                 Configure
               </Button>
             </div>

@@ -110,9 +110,7 @@ describe('useEncryptedChannel', () => {
     })
 
     it('should auto-enable encryption when option is set', async () => {
-      const { result } = renderHook(() =>
-        useEncryptedChannel('channel-1', { autoEnable: true })
-      )
+      const { result } = renderHook(() => useEncryptedChannel('channel-1', { autoEnable: true }))
 
       await waitFor(() => {
         expect(result.current.isEncrypted).toBe(true)
@@ -189,9 +187,7 @@ describe('useEncryptedChannel', () => {
 
     it('should call onMessageEncrypted callback', async () => {
       const onMessageEncrypted = jest.fn()
-      const { result } = renderHook(() =>
-        useEncryptedChannel('channel-1', { onMessageEncrypted })
-      )
+      const { result } = renderHook(() => useEncryptedChannel('channel-1', { onMessageEncrypted }))
 
       await act(async () => {
         await result.current.enableEncryption()
@@ -278,9 +274,7 @@ describe('useEncryptedChannel', () => {
 
     it('should call onMessageDecrypted callback', async () => {
       const onMessageDecrypted = jest.fn()
-      const { result } = renderHook(() =>
-        useEncryptedChannel('channel-1', { onMessageDecrypted })
-      )
+      const { result } = renderHook(() => useEncryptedChannel('channel-1', { onMessageDecrypted }))
 
       await act(async () => {
         await result.current.enableEncryption()
@@ -361,9 +355,7 @@ describe('useEncryptedChannel', () => {
 
     it('should call onError callback', async () => {
       const onError = jest.fn()
-      const { result } = renderHook(() =>
-        useEncryptedChannel('channel-1', { onError })
-      )
+      const { result } = renderHook(() => useEncryptedChannel('channel-1', { onError }))
 
       await act(async () => {
         await result.current.encryptMessage('Hello')
@@ -374,9 +366,7 @@ describe('useEncryptedChannel', () => {
 
     it('should call onStatusChange callback', async () => {
       const onStatusChange = jest.fn()
-      const { result } = renderHook(() =>
-        useEncryptedChannel('channel-1', { onStatusChange })
-      )
+      const { result } = renderHook(() => useEncryptedChannel('channel-1', { onStatusChange }))
 
       await act(async () => {
         await result.current.enableEncryption()
@@ -406,10 +396,9 @@ describe('useEncryptedChannel', () => {
     })
 
     it('should handle channel ID change', () => {
-      const { result, rerender } = renderHook(
-        ({ channelId }) => useEncryptedChannel(channelId),
-        { initialProps: { channelId: 'channel-1' } }
-      )
+      const { result, rerender } = renderHook(({ channelId }) => useEncryptedChannel(channelId), {
+        initialProps: { channelId: 'channel-1' },
+      })
 
       // Enable encryption for channel-1
       act(() => {

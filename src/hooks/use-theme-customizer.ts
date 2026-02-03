@@ -11,6 +11,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useAppConfig } from '@/contexts/app-config-context'
 import type { AppConfig } from '@/config/app-config'
 import { ThemeColors } from '@/lib/theme-presets'
+import { logger } from '@/lib/logger'
 import {
   CustomThemeConfig,
   defaultCustomTheme,
@@ -124,7 +125,7 @@ export function useThemeCustomizer(): UseThemeCustomizerReturn {
         setOriginalTheme(configTheme)
         applyCustomTheme(configTheme)
       } catch (error) {
-        console.error('Failed to initialize theme:', error)
+        logger.error('Failed to initialize theme:',  error)
         setTheme(defaultCustomTheme)
         setOriginalTheme(defaultCustomTheme)
       } finally {
@@ -263,21 +264,24 @@ export function useThemeCustomizer(): UseThemeCustomizerReturn {
   /**
    * Load a preset theme
    */
-  const loadPreset = useCallback((presetKey: string, colorScheme?: 'light' | 'dark') => {
-    const scheme = colorScheme || theme.colorScheme
-    const actualScheme = scheme === 'system' ? 'dark' : scheme
-    const presetTheme = createThemeFromPreset(presetKey, actualScheme)
+  const loadPreset = useCallback(
+    (presetKey: string, colorScheme?: 'light' | 'dark') => {
+      const scheme = colorScheme || theme.colorScheme
+      const actualScheme = scheme === 'system' ? 'dark' : scheme
+      const presetTheme = createThemeFromPreset(presetKey, actualScheme)
 
-    setTheme((prev) => ({
-      ...presetTheme,
-      // Preserve user customizations for non-color properties
-      fontFamily: prev.fontFamily,
-      fontScale: prev.fontScale,
-      borderRadius: prev.borderRadius,
-      spacingScale: prev.spacingScale,
-      customCSS: prev.customCSS,
-    }))
-  }, [theme.colorScheme])
+      setTheme((prev) => ({
+        ...presetTheme,
+        // Preserve user customizations for non-color properties
+        fontFamily: prev.fontFamily,
+        fontScale: prev.fontScale,
+        borderRadius: prev.borderRadius,
+        spacingScale: prev.spacingScale,
+        customCSS: prev.customCSS,
+      }))
+    },
+    [theme.colorScheme]
+  )
 
   /**
    * Reset to original preset
@@ -325,7 +329,7 @@ export function useThemeCustomizer(): UseThemeCustomizerReturn {
       setOriginalTheme(theme)
       setIsModified(false)
     } catch (error) {
-      console.error('Failed to save theme:', error)
+      logger.error('Failed to save theme:',  error)
       throw error
     }
   }, [theme, updateConfig])
@@ -368,7 +372,7 @@ export function useThemeCustomizer(): UseThemeCustomizerReturn {
       setTheme(importedTheme)
       applyCustomTheme(importedTheme)
     } catch (error) {
-      console.error('Failed to import theme:', error)
+      logger.error('Failed to import theme:',  error)
       throw error
     }
   }, [])

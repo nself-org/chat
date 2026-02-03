@@ -16,9 +16,7 @@ export function SettingsManagement() {
     messageRetentionDays: 0,
   })
 
-  const handleSave = () => {
-    // TODO: Save settings to backend
-  }
+  const handleSave = () => {}
 
   return (
     <Card>
@@ -36,7 +34,7 @@ export function SettingsManagement() {
               onChange={(e) => setSettings({ ...settings, appName: e.target.value })}
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="appTagline">Tagline</Label>
             <Input
@@ -45,13 +43,11 @@ export function SettingsManagement() {
               onChange={(e) => setSettings({ ...settings, appTagline: e.target.value })}
             />
           </div>
-          
+
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="allowRegistration">Allow Registration</Label>
-              <p className="text-sm text-muted-foreground">
-                Allow new users to sign up
-              </p>
+              <p className="text-sm text-muted-foreground">Allow new users to sign up</p>
             </div>
             <Switch
               id="allowRegistration"
@@ -61,19 +57,17 @@ export function SettingsManagement() {
               }
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="maxFileSize">Max File Size (MB)</Label>
             <Input
               id="maxFileSize"
               type="number"
               value={settings.maxFileSize}
-              onChange={(e) =>
-                setSettings({ ...settings, maxFileSize: parseInt(e.target.value) })
-              }
+              onChange={(e) => setSettings({ ...settings, maxFileSize: parseInt(e.target.value) })}
             />
           </div>
-          
+
           <div className="space-y-2">
             <Label htmlFor="messageRetention">Message Retention (days)</Label>
             <Input
@@ -84,12 +78,10 @@ export function SettingsManagement() {
                 setSettings({ ...settings, messageRetentionDays: parseInt(e.target.value) })
               }
             />
-            <p className="text-sm text-muted-foreground">
-              0 means messages are kept forever
-            </p>
+            <p className="text-sm text-muted-foreground">0 means messages are kept forever</p>
           </div>
         </div>
-        
+
         <Button onClick={handleSave}>Save Settings</Button>
       </CardContent>
     </Card>

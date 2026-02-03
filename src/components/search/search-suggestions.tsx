@@ -1,26 +1,12 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import {
-  Clock,
-  TrendingUp,
-  X,
-  Hash,
-  User,
-  FileIcon,
-  Search,
-  Trash2,
-  Sparkles,
-} from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  useSearchStore,
-  type RecentSearch,
-  type HasFilter,
-} from '@/stores/search-store';
+import * as React from 'react'
+import { Clock, TrendingUp, X, Hash, User, FileIcon, Search, Trash2, Sparkles } from 'lucide-react'
+import { formatDistanceToNow } from 'date-fns'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useSearchStore, type RecentSearch, type HasFilter } from '@/stores/search-store'
 
 // ============================================================================
 // Types
@@ -28,17 +14,17 @@ import {
 
 export interface SearchSuggestionsProps {
   /** Additional class names */
-  className?: string;
+  className?: string
   /** Callback when a suggestion is selected */
-  onSelect?: (query: string, filters?: Partial<{ has: HasFilter[] }>) => void;
+  onSelect?: (query: string, filters?: Partial<{ has: HasFilter[] }>) => void
   /** Callback when a quick action is selected */
-  onQuickAction?: (action: QuickAction) => void;
+  onQuickAction?: (action: QuickAction) => void
   /** Whether to show the popular searches section */
-  showPopular?: boolean;
+  showPopular?: boolean
   /** Whether to show the quick actions section */
-  showQuickActions?: boolean;
+  showQuickActions?: boolean
   /** Maximum height of the suggestions container */
-  maxHeight?: number | string;
+  maxHeight?: number | string
 }
 
 export type QuickAction =
@@ -47,18 +33,18 @@ export type QuickAction =
   | 'search-people'
   | 'search-channels'
   | 'search-links'
-  | 'search-images';
+  | 'search-images'
 
 // ============================================================================
 // Quick Action Configuration
 // ============================================================================
 
 const quickActions: {
-  id: QuickAction;
-  label: string;
-  icon: React.ElementType;
-  query?: string;
-  filters?: { has: HasFilter[] };
+  id: QuickAction
+  label: string
+  icon: React.ElementType
+  query?: string
+  filters?: { has: HasFilter[] }
 }[] = [
   { id: 'search-messages', label: 'Search messages', icon: Search },
   { id: 'search-files', label: 'Search files', icon: FileIcon, filters: { has: ['file'] } },
@@ -66,7 +52,7 @@ const quickActions: {
   { id: 'search-channels', label: 'Browse channels', icon: Hash },
   { id: 'search-links', label: 'Find links', icon: Sparkles, filters: { has: ['link'] } },
   { id: 'search-images', label: 'Find images', icon: Sparkles, filters: { has: ['image'] } },
-];
+]
 
 // ============================================================================
 // Popular Searches (Static for now, could be API-driven)
@@ -78,7 +64,7 @@ const popularSearches = [
   'design review',
   'bug fix',
   'deployment',
-];
+]
 
 // ============================================================================
 // Main Component
@@ -92,29 +78,29 @@ export function SearchSuggestions({
   showQuickActions = true,
   maxHeight = 400,
 }: SearchSuggestionsProps) {
-  const recentSearches = useSearchStore((state) => state.recentSearches);
-  const removeRecentSearch = useSearchStore((state) => state.removeRecentSearch);
-  const clearRecentSearches = useSearchStore((state) => state.clearRecentSearches);
+  const recentSearches = useSearchStore((state) => state.recentSearches)
+  const removeRecentSearch = useSearchStore((state) => state.removeRecentSearch)
+  const clearRecentSearches = useSearchStore((state) => state.clearRecentSearches)
 
   const handleSelectRecent = (search: RecentSearch) => {
-    onSelect?.(search.query, search.filters);
-  };
+    onSelect?.(search.query, search.filters)
+  }
 
   const handleSelectPopular = (query: string) => {
-    onSelect?.(query);
-  };
+    onSelect?.(query)
+  }
 
   const handleQuickAction = (action: (typeof quickActions)[0]) => {
     if (action.filters) {
-      onSelect?.('', action.filters);
+      onSelect?.('', action.filters)
     }
-    onQuickAction?.(action.id);
-  };
+    onQuickAction?.(action.id)
+  }
 
   const handleRemoveRecent = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    removeRecentSearch(id);
-  };
+    e.stopPropagation()
+    removeRecentSearch(id)
+  }
 
   return (
     <ScrollArea style={{ maxHeight }} className={cn('px-2', className)}>
@@ -223,7 +209,7 @@ export function SearchSuggestions({
         </section>
       </div>
     </ScrollArea>
-  );
+  )
 }
 
 // ============================================================================
@@ -231,22 +217,22 @@ export function SearchSuggestions({
 // ============================================================================
 
 interface RecentSearchItemProps {
-  search: RecentSearch;
-  onClick: () => void;
-  onRemove: (e: React.MouseEvent) => void;
+  search: RecentSearch
+  onClick: () => void
+  onRemove: (e: React.MouseEvent) => void
 }
 
 function RecentSearchItem({ search, onClick, onRemove }: RecentSearchItemProps) {
   const timeAgo = formatDistanceToNow(new Date(search.timestamp), {
     addSuffix: true,
-  });
+  })
 
   // Count active filters
   const filterCount = Object.values(search.filters).reduce((count, val) => {
-    if (Array.isArray(val)) return count + val.length;
-    if (val) return count + 1;
-    return count;
-  }, 0);
+    if (Array.isArray(val)) return count + val.length
+    if (val) return count + 1
+    return count
+  }, 0)
 
   return (
     <button
@@ -277,7 +263,7 @@ function RecentSearchItem({ search, onClick, onRemove }: RecentSearchItemProps) 
         <X className="h-3 w-3" />
       </button>
     </button>
-  );
+  )
 }
 
 // ============================================================================
@@ -285,29 +271,25 @@ function RecentSearchItem({ search, onClick, onRemove }: RecentSearchItemProps) 
 // ============================================================================
 
 interface QuickActionButtonProps {
-  icon: React.ElementType;
-  label: string;
-  onClick: () => void;
+  icon: React.ElementType
+  label: string
+  onClick: () => void
 }
 
-function QuickActionButton({
-  icon: Icon,
-  label,
-  onClick,
-}: QuickActionButtonProps) {
+function QuickActionButton({ icon: Icon, label, onClick }: QuickActionButtonProps) {
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
         'flex items-center gap-2 rounded-lg border p-3 text-left',
-        'transition-colors hover:bg-accent hover:border-accent'
+        'transition-colors hover:border-accent hover:bg-accent'
       )}
     >
       <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
       <span className="text-sm">{label}</span>
     </button>
-  );
+  )
 }
 
 // ============================================================================
@@ -315,9 +297,9 @@ function QuickActionButton({
 // ============================================================================
 
 interface SuggestedFilterProps {
-  label: string;
-  description: string;
-  onClick: () => void;
+  label: string
+  description: string
+  onClick: () => void
 }
 
 function SuggestedFilter({ label, description, onClick }: SuggestedFilterProps) {
@@ -330,14 +312,10 @@ function SuggestedFilter({ label, description, onClick }: SuggestedFilterProps) 
         'text-sm transition-colors hover:bg-accent'
       )}
     >
-      <code className="shrink-0 rounded bg-muted px-1.5 py-0.5 text-xs font-mono">
-        {label}
-      </code>
-      <span className="min-w-0 flex-1 truncate text-muted-foreground">
-        {description}
-      </span>
+      <code className="shrink-0 rounded bg-muted px-1.5 py-0.5 font-mono text-xs">{label}</code>
+      <span className="min-w-0 flex-1 truncate text-muted-foreground">{description}</span>
     </button>
-  );
+  )
 }
 
 // ============================================================================
@@ -345,21 +323,17 @@ function SuggestedFilter({ label, description, onClick }: SuggestedFilterProps) 
 // ============================================================================
 
 export interface CompactSuggestionsProps {
-  className?: string;
-  onSelect?: (query: string) => void;
-  maxItems?: number;
+  className?: string
+  onSelect?: (query: string) => void
+  maxItems?: number
 }
 
-export function CompactSuggestions({
-  className,
-  onSelect,
-  maxItems = 5,
-}: CompactSuggestionsProps) {
-  const recentSearches = useSearchStore((state) => state.recentSearches);
-  const displaySearches = recentSearches.slice(0, maxItems);
+export function CompactSuggestions({ className, onSelect, maxItems = 5 }: CompactSuggestionsProps) {
+  const recentSearches = useSearchStore((state) => state.recentSearches)
+  const displaySearches = recentSearches.slice(0, maxItems)
 
   if (displaySearches.length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -379,7 +353,7 @@ export function CompactSuggestions({
         </button>
       ))}
     </div>
-  );
+  )
 }
 
-export default SearchSuggestions;
+export default SearchSuggestions

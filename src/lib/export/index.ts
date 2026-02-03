@@ -10,4 +10,10 @@ export * from './formatters'
 
 // Re-export commonly used items
 export { DataExporter } from './data-exporter'
-export { getFormatter, JSONFormatter, CSVFormatter, HTMLFormatter, PDFFormatter } from './formatters'
+export {
+  getFormatter,
+  JSONFormatter,
+  CSVFormatter,
+  HTMLFormatter,
+  PDFFormatter,
+} from './formatters'

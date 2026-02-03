@@ -7,6 +7,8 @@
 
 import * as Sentry from '@sentry/nextjs'
 
+import { logger } from '@/lib/logger'
+
 // Only initialize Sentry if DSN is configured
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
 
@@ -48,7 +50,7 @@ if (SENTRY_DSN) {
         // Remove sensitive headers
         const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key']
         if (event.request.headers) {
-          sensitiveHeaders.forEach(header => {
+          sensitiveHeaders.forEach((header) => {
             if (event.request?.headers?.[header]) {
               event.request.headers[header] = '[Filtered]'
             }
@@ -58,9 +60,10 @@ if (SENTRY_DSN) {
         // Remove sensitive query parameters
         const sensitiveParams = ['token', 'password', 'secret', 'apiKey', 'api_key']
         if (event.request.query_string && event.request) {
-          const queryString = typeof event.request.query_string === 'string' ? event.request.query_string : ''
+          const queryString =
+            typeof event.request.query_string === 'string' ? event.request.query_string : ''
           if (queryString) {
-            sensitiveParams.forEach(param => {
+            sensitiveParams.forEach((param) => {
               const regex = new RegExp(`(${param}=)[^&]+`, 'gi')
               if (event.request && typeof event.request.query_string === 'string') {
                 event.request.query_string = queryString.replace(regex, '$1[Filtered]')
@@ -72,13 +75,20 @@ if (SENTRY_DSN) {
 
       // Filter sensitive breadcrumb data
       if (event.breadcrumbs) {
-        event.breadcrumbs = event.breadcrumbs.map(breadcrumb => {
+        event.breadcrumbs = event.breadcrumbs.map((breadcrumb) => {
           if (breadcrumb.data) {
             // Filter sensitive data in breadcrumbs
             const filtered = { ...breadcrumb.data }
-            const sensitiveKeys = ['password', 'token', 'secret', 'apiKey', 'api_key', 'authorization']
+            const sensitiveKeys = [
+              'password',
+              'token',
+              'secret',
+              'apiKey',
+              'api_key',
+              'authorization',
+            ]
 
-            sensitiveKeys.forEach(key => {
+            sensitiveKeys.forEach((key) => {
               if (filtered[key]) {
                 filtered[key] = '[Filtered]'
               }
@@ -116,7 +126,6 @@ if (SENTRY_DSN) {
     integrations: [
       // Prisma integration (if using Prisma)
       // new Sentry.Integrations.Prisma({ client: prisma }),
-
       // Node profiling (requires @sentry/profiling-node)
       // new ProfilingIntegration(),
     ],
@@ -133,11 +142,11 @@ if (SENTRY_DSN) {
 
   // Log initialization (only in development)
   if (process.env.NODE_ENV === 'development') {
-    console.log('[Sentry] Server-side monitoring initialized')
+    // REMOVED: console.log('[Sentry] Server-side monitoring initialized')
   }
 } else {
   // Log warning if DSN is not configured (only in production)
   if (process.env.NODE_ENV === 'production') {
-    console.warn('[Sentry] DSN not configured - error tracking disabled')
+    logger.warn('[Sentry] DSN not configured - error tracking disabled')
   }
 }

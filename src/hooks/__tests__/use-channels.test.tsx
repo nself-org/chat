@@ -131,9 +131,7 @@ describe('useChannels hook', () => {
   ]
 
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks}>
-      {children}
-    </MockedProvider>
+    <MockedProvider mocks={mocks}>{children}</MockedProvider>
   )
 
   it('fetches channels successfully', async () => {
@@ -164,9 +162,7 @@ describe('useChannels hook', () => {
     ]
 
     const emptyWrapper = ({ children }: { children: ReactNode }) => (
-      <MockedProvider mocks={emptyMocks}>
-        {children}
-      </MockedProvider>
+      <MockedProvider mocks={emptyMocks}>{children}</MockedProvider>
     )
 
     const { result } = renderHook(() => useChannels(), { wrapper: emptyWrapper })
@@ -190,9 +186,7 @@ describe('useChannels hook', () => {
     ]
 
     const errorWrapper = ({ children }: { children: ReactNode }) => (
-      <MockedProvider mocks={errorMocks}>
-        {children}
-      </MockedProvider>
+      <MockedProvider mocks={errorMocks}>{children}</MockedProvider>
     )
 
     const { result } = renderHook(() => useChannels(), { wrapper: errorWrapper })
@@ -221,9 +215,7 @@ describe('useChannel hook', () => {
   ]
 
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={mocks}>
-      {children}
-    </MockedProvider>
+    <MockedProvider mocks={mocks}>{children}</MockedProvider>
   )
 
   it('fetches channel by slug', async () => {
@@ -261,9 +253,7 @@ describe('useChannel hook', () => {
     ]
 
     const notFoundWrapper = ({ children }: { children: ReactNode }) => (
-      <MockedProvider mocks={notFoundMocks}>
-        {children}
-      </MockedProvider>
+      <MockedProvider mocks={notFoundMocks}>{children}</MockedProvider>
     )
 
     const { result } = renderHook(() => useChannel('non-existent'), {
@@ -305,9 +295,7 @@ describe('useCreateChannel hook', () => {
   }
 
   const wrapper = ({ children }: { children: ReactNode }) => (
-    <MockedProvider mocks={[createChannelMock]}>
-      {children}
-    </MockedProvider>
+    <MockedProvider mocks={[createChannelMock]}>{children}</MockedProvider>
   )
 
   it('provides createChannel function', () => {

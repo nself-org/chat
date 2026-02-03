@@ -24,9 +24,7 @@ export function useTenantManagement() {
   /**
    * Create a new tenant
    */
-  const createTenant = async (
-    data: CreateTenantRequest
-  ): Promise<Tenant | null> => {
+  const createTenant = async (data: CreateTenantRequest): Promise<Tenant | null> => {
     try {
       setIsLoading(true)
       setError(null)
@@ -55,10 +53,7 @@ export function useTenantManagement() {
   /**
    * Update tenant
    */
-  const updateTenant = async (
-    id: string,
-    data: UpdateTenantRequest
-  ): Promise<Tenant | null> => {
+  const updateTenant = async (id: string, data: UpdateTenantRequest): Promise<Tenant | null> => {
     try {
       setIsLoading(true)
       setError(null)
@@ -163,9 +158,7 @@ export function useTenantBillingOperations() {
   /**
    * Create billing portal session
    */
-  const createPortalSession = async (
-    returnUrl: string
-  ): Promise<{ url: string } | null> => {
+  const createPortalSession = async (returnUrl: string): Promise<{ url: string } | null> => {
     try {
       setIsLoading(true)
       setError(null)
@@ -194,10 +187,7 @@ export function useTenantBillingOperations() {
   /**
    * Upgrade plan
    */
-  const upgradePlan = async (
-    plan: BillingPlan,
-    interval: BillingInterval
-  ): Promise<boolean> => {
+  const upgradePlan = async (plan: BillingPlan, interval: BillingInterval): Promise<boolean> => {
     try {
       setIsLoading(true)
       setError(null)
@@ -225,9 +215,7 @@ export function useTenantBillingOperations() {
   /**
    * Cancel subscription
    */
-  const cancelSubscription = async (
-    immediately: boolean = false
-  ): Promise<boolean> => {
+  const cancelSubscription = async (immediately: boolean = false): Promise<boolean> => {
     try {
       setIsLoading(true)
       setError(null)

@@ -11,12 +11,7 @@ Visual reference for all unread indicator components and their usage contexts.
 **Usage**: Show unread count on channel items in sidebar
 
 ```tsx
-<UnreadBadge
-  unreadCount={5}
-  mentionCount={2}
-  size="sm"
-  position="inline"
-/>
+<UnreadBadge unreadCount={5} mentionCount={2} size="sm" position="inline" />
 ```
 
 **Visual States**:
@@ -36,11 +31,13 @@ Visual reference for all unread indicator components and their usage contexts.
 ```
 
 **Color Coding**:
+
 - 🔴 Red = Has mentions (`@user`, `@everyone`, `@here`)
 - 🔵 Blue/Gray = Has unread (no mentions)
 - ⚪ None = No unread
 
 **Sizes**:
+
 - `sm`: 16px height (default for sidebar)
 - `md`: 20px height (for headers)
 - `lg`: 24px height (for emphasis)
@@ -52,11 +49,7 @@ Visual reference for all unread indicator components and their usage contexts.
 **Usage**: Subtle indicator when count isn't needed
 
 ```tsx
-<UnreadDot
-  unreadCount={3}
-  mentionCount={1}
-  size="sm"
-/>
+<UnreadDot unreadCount={3} mentionCount={1} size="sm" />
 ```
 
 **Visual States**:
@@ -70,6 +63,7 @@ Visual reference for all unread indicator components and their usage contexts.
 ```
 
 **Best For**:
+
 - Muted channels (show indicator but not count)
 - Compact views
 - Mobile interfaces
@@ -82,10 +76,7 @@ Visual reference for all unread indicator components and their usage contexts.
 **Usage**: Visual separator showing where unread messages start
 
 ```tsx
-<UnreadLine
-  count={10}
-  label="New Messages"
-/>
+<UnreadLine count={10} label="New Messages" />
 ```
 
 **Visual Appearance**:
@@ -105,12 +96,14 @@ Visual reference for all unread indicator components and their usage contexts.
 ```
 
 **Styling**:
+
 - Red horizontal line
 - Centered label with background
 - Bell icon
 - Count + custom text
 
 **Animation**:
+
 - Fades in from above
 - Subtle slide down
 
@@ -162,6 +155,7 @@ Read:
 ```
 
 **States**:
+
 - **Active**: Highlighted background + accent bar
 - **Unread**: Bold text + badge
 - **Mention**: Bold text + red badge
@@ -187,6 +181,7 @@ Read:
 **Visual Variants**:
 
 **Default** (Full featured):
+
 ```
 ┌─────────────────────────────────┐
 │                                 │
@@ -200,6 +195,7 @@ Read:
 ```
 
 **Compact** (Icon only):
+
 ```
 ┌─────────────────────────────────┐
 │                                 │
@@ -213,6 +209,7 @@ Read:
 ```
 
 **Minimal** (Subtle):
+
 ```
 ┌─────────────────────────────────┐
 │                                 │
@@ -224,11 +221,13 @@ Read:
 ```
 
 **Colors**:
+
 - 🔴 Red background = Has mentions
 - 🔵 Blue background = Has unread (no mentions)
 - ⚪ Default background = Jump to latest
 
 **Position Options**:
+
 - `bottom-center` (default)
 - `bottom-right`
 - `bottom-left`
@@ -261,6 +260,7 @@ Mentioned Message:
 ```
 
 **Styling**:
+
 - Left border: 4px solid red
 - Background: `bg-red-500/10` (light) / `bg-red-500/20` (dark)
 - Full message width
@@ -385,31 +385,25 @@ Mentioned Message:
 ## Color Palette
 
 ### Light Mode
+
 ```css
 /* Regular unread */
---unread-bg: rgba(59, 130, 246, 0.1)     /* blue-500/10 */
---unread-badge: rgba(59, 130, 246, 1)    /* blue-500 */
---unread-text: rgba(59, 130, 246, 1)     /* blue-500 */
-
-/* Mentions */
---mention-bg: rgba(239, 68, 68, 0.1)     /* red-500/10 */
---mention-badge: rgba(239, 68, 68, 1)    /* red-500 */
---mention-text: rgba(255, 255, 255, 1)   /* white */
---mention-border: rgba(239, 68, 68, 1)   /* red-500 */
+--unread-bg: rgba(59, 130, 246, 0.1) /* blue-500/10 */ --unread-badge: rgba(59, 130, 246, 1)
+  /* blue-500 */ --unread-text: rgba(59, 130, 246, 1) /* blue-500 */ /* Mentions */
+  --mention-bg: rgba(239, 68, 68, 0.1) /* red-500/10 */ --mention-badge: rgba(239, 68, 68, 1)
+  /* red-500 */ --mention-text: rgba(255, 255, 255, 1) /* white */
+  --mention-border: rgba(239, 68, 68, 1) /* red-500 */;
 ```
 
 ### Dark Mode
+
 ```css
 /* Regular unread */
---unread-bg: rgba(59, 130, 246, 0.2)     /* blue-500/20 */
---unread-badge: rgba(59, 130, 246, 1)    /* blue-500 */
---unread-text: rgba(96, 165, 250, 1)     /* blue-400 */
-
-/* Mentions */
---mention-bg: rgba(239, 68, 68, 0.2)     /* red-500/20 */
---mention-badge: rgba(239, 68, 68, 1)    /* red-500 */
---mention-text: rgba(255, 255, 255, 1)   /* white */
---mention-border: rgba(239, 68, 68, 1)   /* red-500 */
+--unread-bg: rgba(59, 130, 246, 0.2) /* blue-500/20 */ --unread-badge: rgba(59, 130, 246, 1)
+  /* blue-500 */ --unread-text: rgba(96, 165, 250, 1) /* blue-400 */ /* Mentions */
+  --mention-bg: rgba(239, 68, 68, 0.2) /* red-500/20 */ --mention-badge: rgba(239, 68, 68, 1)
+  /* red-500 */ --mention-text: rgba(255, 255, 255, 1) /* white */
+  --mention-border: rgba(239, 68, 68, 1) /* red-500 */;
 ```
 
 ---
@@ -417,13 +411,10 @@ Mentioned Message:
 ## Animations
 
 ### Badge Entrance
+
 ```tsx
 // Framer Motion
-<motion.div
-  initial={{ scale: 0 }}
-  animate={{ scale: 1 }}
-  exit={{ scale: 0 }}
->
+<motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }}>
   <Badge />
 </motion.div>
 ```
@@ -431,6 +422,7 @@ Mentioned Message:
 **Effect**: Pop in from center
 
 ### Jump Button Entrance
+
 ```tsx
 <motion.div
   initial={{ opacity: 0, y: 20, scale: 0.9 }}
@@ -445,11 +437,9 @@ Mentioned Message:
 **Effect**: Slide up with spring bounce
 
 ### Unread Line Entrance
+
 ```tsx
-<motion.div
-  initial={{ opacity: 0, y: -10 }}
-  animate={{ opacity: 1, y: 0 }}
->
+<motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
   <UnreadLine />
 </motion.div>
 ```
@@ -461,18 +451,21 @@ Mentioned Message:
 ## Responsive Behavior
 
 ### Desktop (>1024px)
+
 - Full badges with counts
 - Default jump button variant
 - Sidebar always visible
 - Hover states active
 
 ### Tablet (768px - 1024px)
+
 - Compact badges
 - Compact jump button
 - Collapsible sidebar
 - Touch-friendly targets
 
 ### Mobile (<768px)
+
 - Dot indicators (no counts in tight spaces)
 - Minimal jump button
 - Swipe gestures
@@ -517,6 +510,7 @@ Esc          → Mark channel as read
 ### Focus Indicators
 
 All interactive elements have visible focus rings:
+
 ```css
 .focus-visible {
   outline: 2px solid var(--ring);
@@ -577,6 +571,7 @@ export const MentionBadgeStory = {
 ```
 
 ### Visual Testing Tools
+
 - Percy (visual regression)
 - Chromatic (Storybook)
 - Playwright (E2E screenshots)

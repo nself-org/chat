@@ -1,35 +1,32 @@
-'use client';
+'use client'
 
 /**
  * AudioRoom - Audio-only meeting room
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Meeting, RemoteParticipant, LocalUserState } from '@/lib/meetings/meeting-types';
-import { MeetingControls } from './MeetingControls';
-import { useMeetingStore, selectRoomState, selectLocalUser, selectRemoteParticipants } from '@/stores/meeting-store';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Meeting, RemoteParticipant, LocalUserState } from '@/lib/meetings/meeting-types'
+import { MeetingControls } from './MeetingControls'
 import {
-  Phone,
-  Mic,
-  MicOff,
-  Volume2,
-  VolumeX,
-  Loader2,
-  AlertCircle,
-} from 'lucide-react';
+  useMeetingStore,
+  selectRoomState,
+  selectLocalUser,
+  selectRemoteParticipants,
+} from '@/stores/meeting-store'
+import { Phone, Mic, MicOff, Volume2, VolumeX, Loader2, AlertCircle } from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface AudioRoomProps {
-  meeting: Meeting;
-  onLeave?: () => void;
-  onEnd?: () => void;
+  meeting: Meeting
+  onLeave?: () => void
+  onEnd?: () => void
 }
 
 // ============================================================================
@@ -37,19 +34,19 @@ interface AudioRoomProps {
 // ============================================================================
 
 export function AudioRoom({ meeting, onLeave, onEnd }: AudioRoomProps) {
-  const roomState = useMeetingStore(selectRoomState);
-  const localUser = useMeetingStore(selectLocalUser);
-  const remoteParticipants = useMeetingStore(selectRemoteParticipants);
-  const { setConnected, setConnectionError } = useMeetingStore();
+  const roomState = useMeetingStore(selectRoomState)
+  const localUser = useMeetingStore(selectLocalUser)
+  const remoteParticipants = useMeetingStore(selectRemoteParticipants)
+  const { setConnected, setConnectionError } = useMeetingStore()
 
   // Simulate connection
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      setConnected(true);
-    }, 1500);
+      setConnected(true)
+    }, 1500)
 
-    return () => clearTimeout(timer);
-  }, [setConnected]);
+    return () => clearTimeout(timer)
+  }, [setConnected])
 
   // Get initials
   const getInitials = (name: string) => {
@@ -58,39 +55,37 @@ export function AudioRoom({ meeting, onLeave, onEnd }: AudioRoomProps) {
       .map((n) => n[0])
       .join('')
       .toUpperCase()
-      .slice(0, 2);
-  };
+      .slice(0, 2)
+  }
 
   // Connection states
   if (roomState?.isConnecting) {
     return (
-      <div className="flex flex-col items-center justify-center h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+      <div className="flex h-full flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 text-white">
         <div className="relative">
-          <Phone className="h-16 w-16 mb-4" />
-          <Loader2 className="h-6 w-6 animate-spin absolute -bottom-1 -right-1" />
+          <Phone className="mb-4 h-16 w-16" />
+          <Loader2 className="absolute -bottom-1 -right-1 h-6 w-6 animate-spin" />
         </div>
-        <h2 className="text-xl font-semibold mb-2">Connecting to audio...</h2>
+        <h2 className="mb-2 text-xl font-semibold">Connecting to audio...</h2>
         <p className="text-gray-400">{meeting.title}</p>
       </div>
-    );
+    )
   }
 
   if (roomState?.connectionError) {
     return (
-      <div className="flex flex-col items-center justify-center h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-        <AlertCircle className="h-12 w-12 text-red-500 mb-4" />
-        <h2 className="text-xl font-semibold mb-2">Connection Error</h2>
-        <p className="text-gray-400 mb-4">{roomState.connectionError}</p>
+      <div className="flex h-full flex-col items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+        <AlertCircle className="mb-4 h-12 w-12 text-red-500" />
+        <h2 className="mb-2 text-xl font-semibold">Connection Error</h2>
+        <p className="mb-4 text-gray-400">{roomState.connectionError}</p>
         <div className="flex gap-2">
           <Button variant="outline" onClick={onLeave}>
             Leave
           </Button>
-          <Button onClick={() => setConnectionError(null)}>
-            Retry
-          </Button>
+          <Button onClick={() => setConnectionError(null)}>Retry</Button>
         </div>
       </div>
-    );
+    )
   }
 
   const allParticipants = [
@@ -110,33 +105,28 @@ export function AudioRoom({ meeting, onLeave, onEnd }: AudioRoomProps) {
       isMuted: p.isMuted,
       isSpeaking: p.isSpeaking,
     })),
-  ];
+  ]
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="flex h-full flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-white">
       {/* Header */}
       <div className="flex items-center justify-center py-6">
         <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-2">
+          <div className="mb-2 flex items-center justify-center gap-2">
             <Phone className="h-5 w-5" />
             <h2 className="font-semibold">{meeting.title}</h2>
           </div>
           {meeting.status === 'live' && (
-            <Badge className="bg-red-500 text-white animate-pulse">
-              LIVE
-            </Badge>
+            <Badge className="animate-pulse bg-red-500 text-white">LIVE</Badge>
           )}
         </div>
       </div>
 
       {/* Participants Grid */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <div className="flex flex-wrap justify-center gap-8 max-w-4xl">
+      <div className="flex flex-1 items-center justify-center p-8">
+        <div className="flex max-w-4xl flex-wrap justify-center gap-8">
           {allParticipants.map((participant) => (
-            <div
-              key={participant.id}
-              className="flex flex-col items-center"
-            >
+            <div key={participant.id} className="flex flex-col items-center">
               {/* Avatar with speaking indicator */}
               <div className="relative">
                 <Avatar
@@ -148,7 +138,7 @@ export function AudioRoom({ meeting, onLeave, onEnd }: AudioRoomProps) {
                   )}
                 >
                   <AvatarImage src={participant.avatarUrl || undefined} />
-                  <AvatarFallback className="text-2xl bg-gray-700">
+                  <AvatarFallback className="bg-gray-700 text-2xl">
                     {getInitials(participant.displayName)}
                   </AvatarFallback>
                 </Avatar>
@@ -156,10 +146,8 @@ export function AudioRoom({ meeting, onLeave, onEnd }: AudioRoomProps) {
                 {/* Mute indicator */}
                 <div
                   className={cn(
-                    'absolute -bottom-1 -right-1 h-8 w-8 rounded-full flex items-center justify-center',
-                    participant.isMuted
-                      ? 'bg-red-500'
-                      : 'bg-green-500'
+                    'absolute -bottom-1 -right-1 flex h-8 w-8 items-center justify-center rounded-full',
+                    participant.isMuted ? 'bg-red-500' : 'bg-green-500'
                   )}
                 >
                   {participant.isMuted ? (
@@ -171,7 +159,7 @@ export function AudioRoom({ meeting, onLeave, onEnd }: AudioRoomProps) {
 
                 {/* Speaking animation */}
                 {participant.isSpeaking && !participant.isMuted && (
-                  <div className="absolute inset-0 rounded-full animate-ping bg-green-500/20" />
+                  <div className="absolute inset-0 animate-ping rounded-full bg-green-500/20" />
                 )}
               </div>
 
@@ -186,11 +174,11 @@ export function AudioRoom({ meeting, onLeave, onEnd }: AudioRoomProps) {
       </div>
 
       {/* Audio Visualizer Placeholder */}
-      <div className="flex items-center justify-center gap-1 h-16 px-8">
+      <div className="flex h-16 items-center justify-center gap-1 px-8">
         {Array.from({ length: 20 }).map((_, i) => (
           <div
             key={i}
-            className="w-1 bg-primary/60 rounded-full transition-all"
+            className="bg-primary/60 w-1 rounded-full transition-all"
             style={{
               height: `${Math.random() * 32 + 8}px`,
               animationDelay: `${i * 50}ms`,
@@ -200,12 +188,7 @@ export function AudioRoom({ meeting, onLeave, onEnd }: AudioRoomProps) {
       </div>
 
       {/* Controls */}
-      <MeetingControls
-        meeting={meeting}
-        variant="audio"
-        onLeave={onLeave}
-        onEnd={onEnd}
-      />
+      <MeetingControls meeting={meeting} variant="audio" onLeave={onLeave} onEnd={onEnd} />
     </div>
-  );
+  )
 }

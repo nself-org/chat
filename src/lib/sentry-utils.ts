@@ -5,6 +5,7 @@
  */
 
 import * as Sentry from '@sentry/nextjs'
+import { logger } from '@/lib/logger'
 
 /**
  * Set user context in Sentry
@@ -103,12 +104,15 @@ export async function trackTransaction<T>(
   operation: string,
   callback: () => Promise<T>
 ): Promise<T> {
-  return await Sentry.startSpan({
-    name,
-    op: operation,
-  }, async () => {
-    return await callback()
-  })
+  return await Sentry.startSpan(
+    {
+      name,
+      op: operation,
+    },
+    async () => {
+      return await callback()
+    }
+  )
 }
 
 /**
@@ -144,7 +148,7 @@ export function optOutOfTracking(): void {
     // Close current Sentry client
     Sentry.close()
   } catch (error) {
-    console.error('Failed to opt out of tracking:', error)
+    logger.error('Failed to opt out of tracking:', error)
   }
 }
 
@@ -158,7 +162,7 @@ export function optInToTracking(): void {
     window.localStorage.removeItem('sentry-opt-out')
     // Note: User needs to refresh page for Sentry to reinitialize
   } catch (error) {
-    console.error('Failed to opt in to tracking:', error)
+    logger.error('Failed to opt in to tracking:', error)
   }
 }
 
@@ -244,6 +248,8 @@ async function uploadFile(file: File) {
  */
 export const performanceTrackingExample = `
 import { trackTransaction } from '@/lib/sentry-utils'
+
+import { logger } from '@/lib/logger'
 
 async function loadDashboard() {
   return trackTransaction(

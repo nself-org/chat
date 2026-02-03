@@ -31,9 +31,7 @@ export function ChannelSkeleton({
           {/* First category */}
           <ChannelCategorySkeleton itemCount={3} compact={compact} />
           {/* Second category */}
-          {count > 3 && (
-            <ChannelCategorySkeleton itemCount={count - 3} compact={compact} />
-          )}
+          {count > 3 && <ChannelCategorySkeleton itemCount={count - 3} compact={compact} />}
         </>
       ) : (
         Array.from({ length: count }).map((_, i) => (
@@ -77,15 +75,10 @@ export function ChannelSkeletonItem({
       <Skeleton className={cn('shrink-0', compact ? 'h-3 w-3' : 'h-4 w-4')} />
 
       {/* Channel name */}
-      <LineSkeleton
-        width={80 + Math.random() * 40}
-        height={compact ? 12 : 14}
-      />
+      <LineSkeleton width={80 + Math.random() * 40} height={compact ? 12 : 14} />
 
       {/* Unread badge */}
-      {showUnread && (
-        <Skeleton className="ml-auto h-4 w-6 rounded-full" />
-      )}
+      {showUnread && <Skeleton className="ml-auto h-4 w-6 rounded-full" />}
     </div>
   )
 }
@@ -118,11 +111,7 @@ export function ChannelCategorySkeleton({
       {/* Channels */}
       <div className={cn('flex flex-col', compact ? 'gap-0.5' : 'gap-1')}>
         {Array.from({ length: itemCount }).map((_, i) => (
-          <ChannelSkeletonItem
-            key={i}
-            compact={compact}
-            showUnread={i === 0}
-          />
+          <ChannelSkeletonItem key={i} compact={compact} showUnread={i === 0} />
         ))}
       </div>
     </div>
@@ -181,10 +170,7 @@ export function NestedChannelSkeleton({
         }}
       />
 
-      <ChannelSkeletonItem
-        compact={compact}
-        indent={depth}
-      />
+      <ChannelSkeletonItem compact={compact} indent={depth} />
     </div>
   )
 }
@@ -241,11 +227,7 @@ export function DirectMessagesSkeleton({
 /**
  * Single direct message item skeleton
  */
-export function DirectMessageSkeletonItem({
-  className,
-}: {
-  className?: string
-}) {
+export function DirectMessageSkeletonItem({ className }: { className?: string }) {
   return (
     <div className={cn('flex items-center gap-2 px-3 py-1.5', className)}>
       {/* Avatar */}

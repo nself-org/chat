@@ -56,22 +56,22 @@ Main editor component with toolbar, suggestions, and send button.
 
 ```tsx
 <RichEditor
-  value={content}                    // Initial content (HTML or JSON)
-  onChange={(html, json) => {}}      // Content change callback
-  onSubmit={(html, json) => {}}      // Submit callback (Enter key)
-  placeholder="Type a message..."    // Placeholder text
-  maxLength={4000}                   // Character limit
-  autoFocus={false}                  // Auto-focus on mount
-  disabled={false}                   // Disabled state
-  users={[]}                         // Users for @mentions
-  channels={[]}                      // Channels for #mentions
-  emojis={[]}                        // Custom emojis (defaults provided)
-  showToolbar={true}                 // Show formatting toolbar
-  showSendButton={true}              // Show send button
-  showCharacterCount={true}          // Show character count
-  sendButtonText="Send"              // Custom send button text
-  minHeight={80}                     // Minimum editor height
-  maxHeight={300}                    // Maximum editor height
+  value={content} // Initial content (HTML or JSON)
+  onChange={(html, json) => {}} // Content change callback
+  onSubmit={(html, json) => {}} // Submit callback (Enter key)
+  placeholder="Type a message..." // Placeholder text
+  maxLength={4000} // Character limit
+  autoFocus={false} // Auto-focus on mount
+  disabled={false} // Disabled state
+  users={[]} // Users for @mentions
+  channels={[]} // Channels for #mentions
+  emojis={[]} // Custom emojis (defaults provided)
+  showToolbar={true} // Show formatting toolbar
+  showSendButton={true} // Show send button
+  showCharacterCount={true} // Show character count
+  sendButtonText="Send" // Custom send button text
+  minHeight={80} // Minimum editor height
+  maxHeight={300} // Maximum editor height
 />
 ```
 
@@ -80,11 +80,7 @@ Main editor component with toolbar, suggestions, and send button.
 Minimal editor without toolbar or send button.
 
 ```tsx
-<SimpleEditor
-  value={content}
-  onChange={(html) => {}}
-  placeholder="Write something..."
-/>
+<SimpleEditor value={content} onChange={(html) => {}} placeholder="Write something..." />
 ```
 
 ### EditorToolbar
@@ -111,11 +107,7 @@ Autocomplete dropdown components for suggestions.
 Syntax-highlighted code block with language selector and copy button.
 
 ```tsx
-<CodeBlock
-  code={codeString}
-  language="typescript"
-  showLineNumbers={true}
-/>
+<CodeBlock code={codeString} language="typescript" showLineNumbers={true} />
 ```
 
 ### LinkDialog
@@ -193,19 +185,19 @@ The editor uses these TipTap extensions:
 
 ## Keyboard Shortcuts
 
-| Action | Shortcut |
-|--------|----------|
-| Bold | Ctrl/Cmd + B |
-| Italic | Ctrl/Cmd + I |
-| Underline | Ctrl/Cmd + U |
-| Strikethrough | Ctrl/Cmd + Shift + S |
-| Inline Code | Ctrl/Cmd + E |
-| Link | Ctrl/Cmd + K |
-| Submit | Enter |
-| New Line | Shift + Enter |
-| Cancel Suggestion | Escape |
-| Navigate Suggestion | Arrow Up/Down |
-| Select Suggestion | Enter |
+| Action              | Shortcut             |
+| ------------------- | -------------------- |
+| Bold                | Ctrl/Cmd + B         |
+| Italic              | Ctrl/Cmd + I         |
+| Underline           | Ctrl/Cmd + U         |
+| Strikethrough       | Ctrl/Cmd + Shift + S |
+| Inline Code         | Ctrl/Cmd + E         |
+| Link                | Ctrl/Cmd + K         |
+| Submit              | Enter                |
+| New Line            | Shift + Enter        |
+| Cancel Suggestion   | Escape               |
+| Navigate Suggestion | Arrow Up/Down        |
+| Select Suggestion   | Enter                |
 
 ## Styling
 
@@ -216,6 +208,7 @@ import '@/components/editor/editor.css'
 ```
 
 The CSS includes:
+
 - Editor content styling
 - Placeholder styling
 - Mention styling (@user, #channel)

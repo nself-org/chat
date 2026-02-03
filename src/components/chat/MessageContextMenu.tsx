@@ -55,11 +55,7 @@ import {
   ContextMenuRadioItem,
   ContextMenuLabel,
 } from '@/components/ui/context-menu'
-import type {
-  Message,
-  MessageAction,
-  MessageActionPermissions,
-} from '@/types/message'
+import type { Message, MessageAction, MessageActionPermissions } from '@/types/message'
 
 // ============================================================================
 // Types
@@ -158,7 +154,6 @@ export function MessageContextMenu({
   }
 
   const handleRemindMe = (time: string) => {
-    // TODO: Implement remind me functionality
     onAction('mark-unread') // For now, mark as unread
   }
 
@@ -289,9 +284,7 @@ export function MessageContextMenu({
 
         {/* Pin / Unpin */}
         {permissions.canPin && (
-          <ContextMenuItem
-            onClick={() => onAction(message.isPinned ? 'unpin' : 'pin')}
-          >
+          <ContextMenuItem onClick={() => onAction(message.isPinned ? 'unpin' : 'pin')}>
             {message.isPinned ? (
               <>
                 <PinOff className="mr-2 h-4 w-4" />
@@ -311,9 +304,7 @@ export function MessageContextMenu({
         {/* Bookmark */}
         {permissions.canBookmark && (
           <ContextMenuItem
-            onClick={() =>
-              onAction(message.isBookmarked ? 'unbookmark' : 'bookmark')
-            }
+            onClick={() => onAction(message.isBookmarked ? 'unbookmark' : 'bookmark')}
           >
             {message.isBookmarked ? (
               <>
@@ -386,26 +377,14 @@ export function MessageContextMenu({
                   Remind me
                 </ContextMenuSubTrigger>
                 <ContextMenuSubContent>
-                  <ContextMenuRadioGroup
-                    value={remindTime}
-                    onValueChange={setRemindTime}
-                  >
-                    <ContextMenuRadioItem
-                      value="30m"
-                      onClick={() => handleRemindMe('30m')}
-                    >
+                  <ContextMenuRadioGroup value={remindTime} onValueChange={setRemindTime}>
+                    <ContextMenuRadioItem value="30m" onClick={() => handleRemindMe('30m')}>
                       In 30 minutes
                     </ContextMenuRadioItem>
-                    <ContextMenuRadioItem
-                      value="1h"
-                      onClick={() => handleRemindMe('1h')}
-                    >
+                    <ContextMenuRadioItem value="1h" onClick={() => handleRemindMe('1h')}>
                       In 1 hour
                     </ContextMenuRadioItem>
-                    <ContextMenuRadioItem
-                      value="3h"
-                      onClick={() => handleRemindMe('3h')}
-                    >
+                    <ContextMenuRadioItem value="3h" onClick={() => handleRemindMe('3h')}>
                       In 3 hours
                     </ContextMenuRadioItem>
                     <ContextMenuRadioItem
@@ -456,13 +435,11 @@ export function MessageContextMenu({
                 <ContextMenuSeparator />
                 <div className="px-2 py-2 text-xs text-muted-foreground">
                   <div>
-                    <strong>Sent:</strong>{' '}
-                    {new Date(message.createdAt).toLocaleString()}
+                    <strong>Sent:</strong> {new Date(message.createdAt).toLocaleString()}
                   </div>
                   {message.isEdited && message.editedAt && (
                     <div>
-                      <strong>Edited:</strong>{' '}
-                      {new Date(message.editedAt).toLocaleString()}
+                      <strong>Edited:</strong> {new Date(message.editedAt).toLocaleString()}
                     </div>
                   )}
                 </div>
@@ -476,17 +453,13 @@ export function MessageContextMenu({
           <>
             <ContextMenuSeparator />
             <ContextMenuItem onClick={onEnterSelectionMode}>
-              <ContextMenuCheckboxItem checked={isSelected}>
-                Select message
-              </ContextMenuCheckboxItem>
+              <ContextMenuCheckboxItem checked={isSelected}>Select message</ContextMenuCheckboxItem>
             </ContextMenuItem>
           </>
         )}
 
         {/* Destructive Actions */}
-        {(permissions.canReport || permissions.canDelete) && (
-          <ContextMenuSeparator />
-        )}
+        {(permissions.canReport || permissions.canDelete) && <ContextMenuSeparator />}
 
         {/* Report */}
         {permissions.canReport && (
@@ -503,7 +476,7 @@ export function MessageContextMenu({
         {permissions.canDelete && (
           <ContextMenuItem
             onClick={() => onAction('delete')}
-            className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            className="focus:bg-destructive/10 text-destructive focus:text-destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Delete message
@@ -569,10 +542,7 @@ export function SimpleMessageContextMenu({
         {permissions.canDelete && (
           <>
             <ContextMenuSeparator />
-            <ContextMenuItem
-              onClick={() => onAction('delete')}
-              className="text-destructive"
-            >
+            <ContextMenuItem onClick={() => onAction('delete')} className="text-destructive">
               <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </ContextMenuItem>

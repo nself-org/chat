@@ -166,27 +166,18 @@ export function FilePreviewList({
   if (variant === 'horizontal') {
     return (
       <ScrollArea className={cn('w-full', className)}>
-        <div className={getLayoutClasses()}>
-          {files.map(renderFileItem)}
-        </div>
+        <div className={getLayoutClasses()}>{files.map(renderFileItem)}</div>
         <ScrollBar orientation="horizontal" />
       </ScrollArea>
     )
   }
 
   // Other variants with optional vertical scroll
-  const content = (
-    <div className={getLayoutClasses()}>
-      {files.map(renderFileItem)}
-    </div>
-  )
+  const content = <div className={getLayoutClasses()}>{files.map(renderFileItem)}</div>
 
   if (maxHeight) {
     return (
-      <ScrollArea
-        className={cn('w-full', className)}
-        style={{ maxHeight }}
-      >
+      <ScrollArea className={cn('w-full', className)} style={{ maxHeight }}>
         {content}
       </ScrollArea>
     )
@@ -209,10 +200,7 @@ export function getFileListStats(files: FileUploadState[]) {
     .filter((f) => f.status === 'completed')
     .reduce((sum, f) => sum + f.file.size, 0)
 
-  const overallProgress =
-    total > 0
-      ? files.reduce((sum, f) => sum + f.progress, 0) / total
-      : 0
+  const overallProgress = total > 0 ? files.reduce((sum, f) => sum + f.progress, 0) / total : 0
 
   return {
     total,
@@ -262,21 +250,14 @@ export function FilePreviewListHeader({
   }
 
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between border-b pb-2',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between border-b pb-2', className)}>
       <div className="flex items-center gap-2">
         <h4 className="text-sm font-medium">{title}</h4>
         {showStats && (
           <span className="text-xs text-muted-foreground">
             {stats.completed}/{stats.total}
             {stats.hasErrors && (
-              <span className="ml-1 text-destructive">
-                ({stats.failed} failed)
-              </span>
+              <span className="ml-1 text-destructive">({stats.failed} failed)</span>
             )}
           </span>
         )}
@@ -285,10 +266,7 @@ export function FilePreviewListHeader({
       <div className="flex items-center gap-2">
         {/* Retry failed button */}
         {stats.hasErrors && onRetryFailed && (
-          <button
-            onClick={onRetryFailed}
-            className="text-xs text-primary hover:underline"
-          >
+          <button onClick={onRetryFailed} className="text-xs text-primary hover:underline">
             Retry failed
           </button>
         )}

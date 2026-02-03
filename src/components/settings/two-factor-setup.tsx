@@ -160,20 +160,20 @@ export function TwoFactorSetup() {
     return (
       <div className="space-y-6">
         {/* Status Card */}
-        <div className="flex items-start gap-4 p-4 rounded-lg bg-green-500/10 border border-green-500/20">
+        <div className="flex items-start gap-4 rounded-lg border border-green-500/20 bg-green-500/10 p-4">
           <div className="rounded-full bg-green-500/20 p-2">
             <Shield className="h-5 w-5 text-green-600" />
           </div>
           <div className="flex-1">
             <h3 className="font-medium text-green-600">Two-Factor Authentication Enabled</h3>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="mt-1 text-sm text-muted-foreground">
               Your account is protected with an additional layer of security.
             </p>
           </div>
         </div>
 
         {/* Backup Codes Status */}
-        <div className="flex items-center justify-between p-4 rounded-lg border">
+        <div className="flex items-center justify-between rounded-lg border p-4">
           <div className="flex items-center gap-3">
             <Key className="h-5 w-5 text-muted-foreground" />
             <div>
@@ -200,10 +200,7 @@ export function TwoFactorSetup() {
 
         {/* Disable Button */}
         <div className="flex justify-end">
-          <Button
-            variant="destructive"
-            onClick={() => setShowDisableDialog(true)}
-          >
+          <Button variant="destructive" onClick={() => setShowDisableDialog(true)}>
             Disable Two-Factor Authentication
           </Button>
         </div>
@@ -214,16 +211,16 @@ export function TwoFactorSetup() {
             <DialogHeader>
               <DialogTitle>Disable Two-Factor Authentication</DialogTitle>
               <DialogDescription>
-                This will remove the extra layer of security from your account.
-                Enter your password to confirm.
+                This will remove the extra layer of security from your account. Enter your password
+                to confirm.
               </DialogDescription>
             </DialogHeader>
 
             <Alert variant="destructive">
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                Disabling 2FA will make your account less secure. Make sure you
-                have a strong password.
+                Disabling 2FA will make your account less secure. Make sure you have a strong
+                password.
               </AlertDescription>
             </Alert>
 
@@ -262,10 +259,7 @@ export function TwoFactorSetup() {
             )}
 
             <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setShowDisableDialog(false)}
-              >
+              <Button variant="outline" onClick={() => setShowDisableDialog(false)}>
                 Cancel
               </Button>
               <Button
@@ -273,9 +267,7 @@ export function TwoFactorSetup() {
                 onClick={handleDisable}
                 disabled={!disablePassword || isDisabling2FA}
               >
-                {isDisabling2FA ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
+                {isDisabling2FA ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Disable 2FA
               </Button>
             </DialogFooter>
@@ -288,12 +280,12 @@ export function TwoFactorSetup() {
             <DialogHeader>
               <DialogTitle>New Backup Codes Generated</DialogTitle>
               <DialogDescription>
-                Your old backup codes have been invalidated. Save these new codes
-                in a secure location.
+                Your old backup codes have been invalidated. Save these new codes in a secure
+                location.
               </DialogDescription>
             </DialogHeader>
 
-            <div className="grid grid-cols-2 gap-2 p-4 bg-muted rounded-lg font-mono text-sm">
+            <div className="grid grid-cols-2 gap-2 rounded-lg bg-muted p-4 font-mono text-sm">
               {newBackupCodes?.map((code, index) => (
                 <div key={index} className="py-1">
                   {code}
@@ -302,11 +294,7 @@ export function TwoFactorSetup() {
             </div>
 
             <div className="flex gap-2">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={handleCopyBackupCodes}
-              >
+              <Button variant="outline" className="flex-1" onClick={handleCopyBackupCodes}>
                 {copiedCodes ? (
                   <Check className="mr-2 h-4 w-4" />
                 ) : (
@@ -314,20 +302,14 @@ export function TwoFactorSetup() {
                 )}
                 {copiedCodes ? 'Copied!' : 'Copy'}
               </Button>
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={handleDownloadBackupCodes}
-              >
+              <Button variant="outline" className="flex-1" onClick={handleDownloadBackupCodes}>
                 <Download className="mr-2 h-4 w-4" />
                 Download
               </Button>
             </div>
 
             <DialogFooter>
-              <Button onClick={() => setShowBackupCodesDialog(false)}>
-                Done
-              </Button>
+              <Button onClick={() => setShowBackupCodesDialog(false)}>Done</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -351,24 +333,22 @@ export function TwoFactorSetup() {
       {/* Initial State - Not enabled */}
       {setupStep === 'initial' && (
         <div className="space-y-6">
-          <div className="flex items-start gap-4 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+          <div className="flex items-start gap-4 rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-4">
             <div className="rounded-full bg-yellow-500/20 p-2">
               <AlertTriangle className="h-5 w-5 text-yellow-600" />
             </div>
             <div className="flex-1">
-              <h3 className="font-medium text-yellow-600">
-                Two-Factor Authentication Not Enabled
-              </h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                Add an extra layer of security to your account by requiring a
-                verification code in addition to your password.
+              <h3 className="font-medium text-yellow-600">Two-Factor Authentication Not Enabled</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Add an extra layer of security to your account by requiring a verification code in
+                addition to your password.
               </p>
             </div>
           </div>
 
           <div className="space-y-4">
             <h4 className="font-medium">How it works:</h4>
-            <ol className="list-decimal list-inside space-y-2 text-sm text-muted-foreground">
+            <ol className="list-inside list-decimal space-y-2 text-sm text-muted-foreground">
               <li>Download an authenticator app like Google Authenticator or Authy</li>
               <li>Scan the QR code with your authenticator app</li>
               <li>Enter the 6-digit code to verify setup</li>
@@ -391,14 +371,14 @@ export function TwoFactorSetup() {
       {setupStep === 'qr' && twoFactorSetupData && (
         <div className="space-y-6">
           <div className="text-center">
-            <h3 className="font-medium mb-2">Scan QR Code</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <h3 className="mb-2 font-medium">Scan QR Code</h3>
+            <p className="mb-4 text-sm text-muted-foreground">
               Use your authenticator app to scan this QR code
             </p>
 
             {/* QR Code Placeholder - In production, use a QR code library */}
-            <div className="inline-flex items-center justify-center p-4 bg-white rounded-lg border">
-              <div className="w-48 h-48 flex items-center justify-center bg-muted rounded">
+            <div className="inline-flex items-center justify-center rounded-lg border bg-white p-4">
+              <div className="flex h-48 w-48 items-center justify-center rounded bg-muted">
                 <QrCode className="h-24 w-24 text-muted-foreground" />
               </div>
             </div>
@@ -406,18 +386,14 @@ export function TwoFactorSetup() {
 
           {/* Manual Entry */}
           <div className="space-y-2">
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-center text-sm text-muted-foreground">
               Or enter this code manually:
             </p>
-            <div className="flex items-center gap-2 justify-center">
-              <code className="px-3 py-2 bg-muted rounded font-mono text-sm">
+            <div className="flex items-center justify-center gap-2">
+              <code className="rounded bg-muted px-3 py-2 font-mono text-sm">
                 {twoFactorSetupData.secret}
               </code>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={handleCopySecret}
-              >
+              <Button variant="ghost" size="sm" onClick={handleCopySecret}>
                 {copiedSecret ? (
                   <Check className="h-4 w-4 text-green-600" />
                 ) : (
@@ -431,9 +407,7 @@ export function TwoFactorSetup() {
             <Button variant="outline" onClick={handleCancel}>
               Cancel
             </Button>
-            <Button onClick={() => setSetupStep('verify')}>
-              Continue
-            </Button>
+            <Button onClick={() => setSetupStep('verify')}>Continue</Button>
           </div>
         </div>
       )}
@@ -442,13 +416,13 @@ export function TwoFactorSetup() {
       {setupStep === 'verify' && (
         <div className="space-y-6">
           <div className="text-center">
-            <h3 className="font-medium mb-2">Verify Setup</h3>
+            <h3 className="mb-2 font-medium">Verify Setup</h3>
             <p className="text-sm text-muted-foreground">
               Enter the 6-digit code from your authenticator app
             </p>
           </div>
 
-          <div className="max-w-xs mx-auto">
+          <div className="mx-auto max-w-xs">
             <Label htmlFor="verification-code" className="sr-only">
               Verification Code
             </Label>
@@ -460,7 +434,7 @@ export function TwoFactorSetup() {
               value={verificationCode}
               onChange={(e) => setVerificationCode(e.target.value.replace(/\D/g, ''))}
               placeholder="000000"
-              className="text-center text-2xl tracking-widest font-mono"
+              className="text-center font-mono text-2xl tracking-widest"
               autoFocus
             />
           </div>
@@ -480,9 +454,7 @@ export function TwoFactorSetup() {
               onClick={handleVerify}
               disabled={verificationCode.length !== 6 || isVerifying2FA}
             >
-              {isVerifying2FA ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : null}
+              {isVerifying2FA ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               Verify
             </Button>
           </div>
@@ -492,15 +464,15 @@ export function TwoFactorSetup() {
       {/* Backup Codes Step */}
       {setupStep === 'backup' && twoFactorSetupData && (
         <div className="space-y-6">
-          <Alert className="bg-amber-500/10 border-amber-500/20">
+          <Alert className="border-amber-500/20 bg-amber-500/10">
             <AlertTriangle className="h-4 w-4 text-amber-600" />
             <AlertDescription className="text-amber-600">
-              Save these backup codes in a secure location. You will need them if
-              you lose access to your authenticator app.
+              Save these backup codes in a secure location. You will need them if you lose access to
+              your authenticator app.
             </AlertDescription>
           </Alert>
 
-          <div className="grid grid-cols-2 gap-2 p-4 bg-muted rounded-lg font-mono text-sm">
+          <div className="grid grid-cols-2 gap-2 rounded-lg bg-muted p-4 font-mono text-sm">
             {twoFactorSetupData.backupCodes.map((code, index) => (
               <div key={index} className="py-1">
                 {code}
@@ -509,49 +481,33 @@ export function TwoFactorSetup() {
           </div>
 
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={handleCopyBackupCodes}
-            >
-              {copiedCodes ? (
-                <Check className="mr-2 h-4 w-4" />
-              ) : (
-                <Copy className="mr-2 h-4 w-4" />
-              )}
+            <Button variant="outline" className="flex-1" onClick={handleCopyBackupCodes}>
+              {copiedCodes ? <Check className="mr-2 h-4 w-4" /> : <Copy className="mr-2 h-4 w-4" />}
               {copiedCodes ? 'Copied!' : 'Copy Codes'}
             </Button>
-            <Button
-              variant="outline"
-              className="flex-1"
-              onClick={handleDownloadBackupCodes}
-            >
+            <Button variant="outline" className="flex-1" onClick={handleDownloadBackupCodes}>
               <Download className="mr-2 h-4 w-4" />
               Download
             </Button>
           </div>
 
           <div className="flex justify-end">
-            <Button onClick={handleComplete}>
-              I've Saved My Backup Codes
-            </Button>
+            <Button onClick={handleComplete}>I've Saved My Backup Codes</Button>
           </div>
         </div>
       )}
 
       {/* Complete Step */}
       {setupStep === 'complete' && (
-        <div className="text-center space-y-4 py-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-500/10">
+        <div className="space-y-4 py-8 text-center">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
             <Check className="h-8 w-8 text-green-600" />
           </div>
           <div>
-            <h3 className="font-medium text-lg text-green-600">
+            <h3 className="text-lg font-medium text-green-600">
               Two-Factor Authentication Enabled
             </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-              Your account is now more secure
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">Your account is now more secure</p>
           </div>
         </div>
       )}

@@ -1,40 +1,40 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Coins, RefreshCw, Send } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { useTokens } from '@/hooks/use-tokens';
-import { useWalletStore } from '@/stores/wallet-store';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { Coins, RefreshCw, Send } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { useTokens } from '@/hooks/use-tokens'
+import { useWalletStore } from '@/stores/wallet-store'
+import { cn } from '@/lib/utils'
 
 interface TokenListProps {
-  className?: string;
-  onTokenSelect?: (tokenAddress: string) => void;
+  className?: string
+  onTokenSelect?: (tokenAddress: string) => void
 }
 
 export function TokenList({ className, onTokenSelect }: TokenListProps) {
-  const { tokens, isLoadingTokens, fetchCommonTokens } = useTokens();
-  const { setTransactionModalOpen, setSelectedToken } = useWalletStore();
+  const { tokens, isLoadingTokens, fetchCommonTokens } = useTokens()
+  const { setTransactionModalOpen, setSelectedToken } = useWalletStore()
 
   const handleRefresh = async () => {
-    await fetchCommonTokens();
-  };
+    await fetchCommonTokens()
+  }
 
   const handleTokenClick = (tokenAddress: string) => {
     if (onTokenSelect) {
-      onTokenSelect(tokenAddress);
+      onTokenSelect(tokenAddress)
     }
-  };
+  }
 
   const handleSendToken = (token: (typeof tokens)[0]) => {
-    setSelectedToken(token);
-    setTransactionModalOpen(true);
-  };
+    setSelectedToken(token)
+    setTransactionModalOpen(true)
+  }
 
   React.useEffect(() => {
-    fetchCommonTokens();
-  }, [fetchCommonTokens]);
+    fetchCommonTokens()
+  }, [fetchCommonTokens])
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -43,12 +43,7 @@ export function TokenList({ className, onTokenSelect }: TokenListProps) {
           <Coins className="h-5 w-5" />
           Tokens
         </h3>
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleRefresh}
-          disabled={isLoadingTokens}
-        >
+        <Button variant="ghost" size="sm" onClick={handleRefresh} disabled={isLoadingTokens}>
           <RefreshCw className={cn('h-4 w-4', isLoadingTokens && 'animate-spin')} />
         </Button>
       </div>
@@ -69,11 +64,11 @@ export function TokenList({ className, onTokenSelect }: TokenListProps) {
         </div>
       ) : (
         <ScrollArea className="h-[400px] rounded-lg border">
-          <div className="p-4 space-y-2">
+          <div className="space-y-2 p-4">
             {tokens.map((token) => (
               <div
                 key={`${token.token.chainId}-${token.token.address}`}
-                className="flex items-center justify-between rounded-lg border bg-card p-3 hover:bg-accent transition-colors cursor-pointer"
+                className="flex cursor-pointer items-center justify-between rounded-lg border bg-card p-3 transition-colors hover:bg-accent"
                 onClick={() => handleTokenClick(token.token.address)}
               >
                 <div className="flex items-center gap-3">
@@ -84,7 +79,7 @@ export function TokenList({ className, onTokenSelect }: TokenListProps) {
                       className="h-8 w-8 rounded-full"
                     />
                   ) : (
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs font-bold">
+                    <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold">
                       {token.token.symbol.slice(0, 2)}
                     </div>
                   )}
@@ -102,8 +97,8 @@ export function TokenList({ className, onTokenSelect }: TokenListProps) {
                     variant="ghost"
                     size="icon"
                     onClick={(e) => {
-                      e.stopPropagation();
-                      handleSendToken(token);
+                      e.stopPropagation()
+                      handleSendToken(token)
                     }}
                   >
                     <Send className="h-4 w-4" />
@@ -115,5 +110,5 @@ export function TokenList({ className, onTokenSelect }: TokenListProps) {
         </ScrollArea>
       )}
     </div>
-  );
+  )
 }

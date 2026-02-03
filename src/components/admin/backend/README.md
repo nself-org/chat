@@ -9,6 +9,7 @@ React components for managing nself CLI backend from the nchat admin UI.
 Real-time status dashboard for all nself backend services.
 
 **Features**:
+
 - Service health monitoring (healthy, unhealthy, starting, stopped)
 - Resource usage (CPU, memory)
 - Service uptime tracking
@@ -17,6 +18,7 @@ Real-time status dashboard for all nself backend services.
 - Direct link to nself Admin UI
 
 **Usage**:
+
 ```tsx
 import { BackendStatus } from '@/components/admin/backend/BackendStatus'
 
@@ -78,6 +80,7 @@ const fetchServiceStatus = async () => {
 Database management interface for migrations, backups, and operations.
 
 **Features**:
+
 - Database statistics (size, tables, connections)
 - Migration management (view, run, rollback)
 - Backup creation and restoration
@@ -87,6 +90,7 @@ Database management interface for migrations, backups, and operations.
 - Recent backup history
 
 **Usage**:
+
 ```tsx
 import { DatabaseManager } from '@/components/admin/backend/DatabaseManager'
 
@@ -118,7 +122,7 @@ export async function POST() {
     return Response.json({
       success: true,
       output: stdout,
-      error: stderr
+      error: stderr,
     })
   } catch (error) {
     console.error('Failed to run migrations:', error)
@@ -272,14 +276,14 @@ export async function GET() {
 
       // Cleanup
       return () => clearInterval(interval)
-    }
+    },
   })
 
   return new Response(stream, {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
+      Connection: 'keep-alive',
     },
   })
 }
@@ -333,4 +337,4 @@ export async function GET() {
 
 ---
 
-*Version: 1.0.0 | Date: January 31, 2026*
+_Version: 1.0.0 | Date: January 31, 2026_

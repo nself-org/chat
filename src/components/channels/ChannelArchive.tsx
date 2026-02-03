@@ -2,12 +2,7 @@
 
 import * as React from 'react'
 import { useState } from 'react'
-import {
-  Archive,
-  ArchiveRestore,
-  AlertTriangle,
-  Loader2,
-} from 'lucide-react'
+import { Archive, ArchiveRestore, AlertTriangle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -76,16 +71,14 @@ export function ChannelArchive({
             <Archive className="h-5 w-5" />
             Channel Archived
           </CardTitle>
-          <CardDescription>
-            This channel was archived and is now read-only
-          </CardDescription>
+          <CardDescription>This channel was archived and is now read-only</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="p-4 rounded-lg bg-yellow-500/10 space-y-2">
+          <div className="space-y-2 rounded-lg bg-yellow-500/10 p-4">
             <p className="text-sm">
               <strong>What this means:</strong>
             </p>
-            <ul className="text-sm text-muted-foreground space-y-1">
+            <ul className="space-y-1 text-sm text-muted-foreground">
               <li>- No new messages can be sent</li>
               <li>- All existing messages are preserved</li>
               <li>- Members can still read the message history</li>
@@ -105,8 +98,8 @@ export function ChannelArchive({
                 <AlertDialogHeader>
                   <AlertDialogTitle>Unarchive channel?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will restore #{channel.name} to an active channel. Members
-                    will be able to send messages again.
+                    This will restore #{channel.name} to an active channel. Members will be able to
+                    send messages again.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
@@ -140,12 +133,12 @@ export function ChannelArchive({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="p-4 rounded-lg bg-muted space-y-2">
-          <p className="text-sm font-medium flex items-center gap-2">
+        <div className="space-y-2 rounded-lg bg-muted p-4">
+          <p className="flex items-center gap-2 text-sm font-medium">
             <AlertTriangle className="h-4 w-4 text-yellow-500" />
             Before you archive:
           </p>
-          <ul className="text-sm text-muted-foreground space-y-1">
+          <ul className="space-y-1 text-sm text-muted-foreground">
             <li>- Members will be notified of the archive</li>
             <li>- All message history will be preserved</li>
             <li>- Channel can be unarchived at any time</li>
@@ -164,9 +157,8 @@ export function ChannelArchive({
             <AlertDialogHeader>
               <AlertDialogTitle>Archive #{channel.name}?</AlertDialogTitle>
               <AlertDialogDescription>
-                This will archive the channel. No one will be able to send new
-                messages, but the history will be preserved and the channel can
-                be unarchived later.
+                This will archive the channel. No one will be able to send new messages, but the
+                history will be preserved and the channel can be unarchived later.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>

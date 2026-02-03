@@ -5,15 +5,7 @@
  */
 
 import { useState, useMemo } from 'react'
-import {
-  Shield,
-  UserCog,
-  Settings,
-  Ban,
-  UserCheck,
-  Sliders,
-  Users,
-} from 'lucide-react'
+import { Shield, UserCog, Settings, Ban, UserCheck, Sliders, Users } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -132,21 +124,14 @@ function calculateAdminSummary(entries: AuditLogEntry[]): AdminSummary {
 // Component
 // ============================================================================
 
-export function AuditAdminActions({
-  entries,
-  onEntryClick,
-  className,
-}: AuditAdminActionsProps) {
+export function AuditAdminActions({ entries, onEntryClick, className }: AuditAdminActionsProps) {
   const [viewMode, setViewMode] = useState<'timeline' | 'cards'>('timeline')
   const [actionFilter, setActionFilter] = useState<string>('all')
   const [adminFilter, setAdminFilter] = useState<string>('all')
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month' | 'all'>('week')
 
   // Filter to admin events only
-  const adminEntries = useMemo(
-    () => entries.filter((e) => e.category === 'admin'),
-    [entries]
-  )
+  const adminEntries = useMemo(() => entries.filter((e) => e.category === 'admin'), [entries])
 
   // Get unique admins for filter
   const uniqueAdmins = useMemo(() => {
@@ -207,29 +192,27 @@ export function AuditAdminActions({
             <Shield className="h-5 w-5" />
             Admin Actions Overview
           </CardTitle>
-          <CardDescription>
-            Track administrative changes and moderation actions
-          </CardDescription>
+          <CardDescription>Track administrative changes and moderation actions</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 rounded-lg bg-muted/50">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="bg-muted/50 rounded-lg p-4 text-center">
               <p className="text-3xl font-bold">{summary.totalActions}</p>
               <p className="text-sm text-muted-foreground">Total Actions</p>
             </div>
-            <div className="text-center p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20">
+            <div className="rounded-lg bg-blue-50 p-4 text-center dark:bg-blue-900/20">
               <p className="text-3xl font-bold text-blue-600 dark:text-blue-400">
                 {summary.roleChanges}
               </p>
               <p className="text-sm text-muted-foreground">Role Changes</p>
             </div>
-            <div className="text-center p-4 rounded-lg bg-purple-50 dark:bg-purple-900/20">
+            <div className="rounded-lg bg-purple-50 p-4 text-center dark:bg-purple-900/20">
               <p className="text-3xl font-bold text-purple-600 dark:text-purple-400">
                 {summary.settingsChanges}
               </p>
               <p className="text-sm text-muted-foreground">Settings Changed</p>
             </div>
-            <div className="text-center p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
+            <div className="rounded-lg bg-red-50 p-4 text-center dark:bg-red-900/20">
               <p className="text-3xl font-bold text-red-600 dark:text-red-400">
                 {summary.userBans}
               </p>
@@ -240,10 +223,10 @@ export function AuditAdminActions({
       </Card>
 
       {/* Action Breakdown */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <UserCog className="h-4 w-4 text-blue-500" />
               <span className="text-sm text-muted-foreground">Role Changes</span>
             </div>
@@ -252,7 +235,7 @@ export function AuditAdminActions({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <Shield className="h-4 w-4 text-purple-500" />
               <span className="text-sm text-muted-foreground">Permissions</span>
             </div>
@@ -261,7 +244,7 @@ export function AuditAdminActions({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <Settings className="h-4 w-4 text-gray-500" />
               <span className="text-sm text-muted-foreground">Config Updates</span>
             </div>
@@ -270,7 +253,7 @@ export function AuditAdminActions({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <Sliders className="h-4 w-4 text-green-500" />
               <span className="text-sm text-muted-foreground">Feature Toggles</span>
             </div>
@@ -283,7 +266,7 @@ export function AuditAdminActions({
       {summary.topAdmins.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base">
               <Users className="h-4 w-4" />
               Most Active Administrators
             </CardTitle>
@@ -293,11 +276,9 @@ export function AuditAdminActions({
               {summary.topAdmins.map((admin, index) => (
                 <div
                   key={admin.id}
-                  className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2"
+                  className="bg-muted/50 flex items-center gap-2 rounded-lg px-3 py-2"
                 >
-                  <span className="text-sm font-medium text-muted-foreground">
-                    #{index + 1}
-                  </span>
+                  <span className="text-sm font-medium text-muted-foreground">#{index + 1}</span>
                   <Avatar className="h-6 w-6">
                     <AvatarFallback className="text-xs">
                       {admin.name.charAt(0).toUpperCase()}
@@ -349,10 +330,7 @@ export function AuditAdminActions({
             </Select>
           )}
 
-          <Select
-            value={timeRange}
-            onValueChange={(v) => setTimeRange(v as typeof timeRange)}
-          >
+          <Select value={timeRange} onValueChange={(v) => setTimeRange(v as typeof timeRange)}>
             <SelectTrigger className="w-[130px]">
               <SelectValue placeholder="Time range" />
             </SelectTrigger>
@@ -387,7 +365,7 @@ export function AuditAdminActions({
       {filteredEntries.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <Shield className="mx-auto mb-2 h-8 w-8 opacity-50" />
             <p>No admin actions found for the selected filters</p>
           </CardContent>
         </Card>
@@ -399,13 +377,9 @@ export function AuditAdminActions({
           maxHeight="500px"
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {filteredEntries.map((entry) => (
-            <AuditEventCard
-              key={entry.id}
-              entry={entry}
-              onClick={() => onEntryClick?.(entry)}
-            />
+            <AuditEventCard key={entry.id} entry={entry} onClick={() => onEntryClick?.(entry)} />
           ))}
         </div>
       )}

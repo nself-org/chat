@@ -17,11 +17,13 @@ Comprehensive performance optimizations have been implemented across the nself-c
 ### 1. Bundle Size Optimization ✅
 
 **Current Status**:
+
 - Initial bundle: **103KB** (shared chunks)
 - Largest route: 262KB (`/chat/channel/[slug]`)
 - Target: <500KB total
 
 **Improvements**:
+
 - ✅ Bundle analyzer configured (`pnpm build:analyze`)
 - ✅ Dynamic imports for 15+ heavy components
 - ✅ Webpack chunk splitting optimized (7 cache groups)
@@ -29,12 +31,14 @@ Comprehensive performance optimizations have been implemented across the nself-c
 - ✅ Tree shaking enabled
 
 **Files**:
+
 - `/src/lib/performance/dynamic-imports.ts` - Centralized dynamic imports
 - `/next.config.js` - Webpack optimization config
 
 ### 2. Database Query Optimization ✅
 
 **Improvements**:
+
 - ✅ **50+ indexes** created for common queries
 - ✅ Partial indexes for recent data (90 days)
 - ✅ Full-text search indexes (GIN)
@@ -42,10 +46,12 @@ Comprehensive performance optimizations have been implemented across the nself-c
 - ✅ Optimized GraphQL fragments
 
 **Files**:
+
 - `/.backend/migrations/014_performance_indexes.sql` - Database indexes
 - `/src/lib/performance/query-batching.ts` - DataLoader implementation
 
 **Key Indexes**:
+
 ```sql
 -- Messages by channel (most common)
 idx_messages_channel_created
@@ -60,6 +66,7 @@ idx_messages_content_search
 ### 3. Performance Monitoring ✅
 
 **Improvements**:
+
 - ✅ Web Vitals tracking (LCP, FID, CLS, INP, TTFB, FCP)
 - ✅ Custom performance metrics
 - ✅ Automatic threshold alerts
@@ -67,11 +74,13 @@ idx_messages_content_search
 - ✅ Performance budgets defined
 
 **Files**:
+
 - `/src/lib/performance/web-vitals.tsx` - Web Vitals tracking
 - `/src/lib/performance/monitoring.ts` - Custom metrics & monitoring
 - `/src/app/layout.tsx` - Integrated Web Vitals tracker
 
 **Metrics Tracked**:
+
 - Core Web Vitals (all 6 metrics)
 - API call performance
 - Component render times
@@ -82,6 +91,7 @@ idx_messages_content_search
 ### 4. Code Splitting ✅
 
 **Dynamic Imports Implemented**:
+
 - ✅ Admin dashboard (recharts ~100KB)
 - ✅ Rich text editor (TipTap ~50KB)
 - ✅ Video/audio calls (WebRTC stack)
@@ -93,6 +103,7 @@ idx_messages_content_search
 - ✅ API documentation (Swagger UI ~200KB)
 
 **Webpack Chunks**:
+
 - `framework` - React/Next.js core
 - `ui` - Radix UI components
 - `graphql` - Apollo/GraphQL
@@ -104,6 +115,7 @@ idx_messages_content_search
 ### 5. Next.js Optimizations ✅
 
 **Configured in `next.config.js`**:
+
 - ✅ Image optimization (AVIF/WebP)
 - ✅ Compression enabled
 - ✅ Console removal in production
@@ -113,6 +125,7 @@ idx_messages_content_search
 - ✅ Standalone output for Docker
 
 **Image Settings**:
+
 ```javascript
 formats: ['image/avif', 'image/webp']
 deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840]
@@ -123,14 +136,14 @@ minimumCacheTTL: 60
 
 ## Performance Budget
 
-| Resource | Budget | Current | Status |
-|----------|--------|---------|--------|
-| JavaScript (initial) | <200KB | 103KB | ✅ Excellent |
-| JavaScript (route) | <300KB | 262KB | ⚠️ Acceptable |
-| CSS | <50KB | TBD | 🟡 To measure |
-| Images (page) | <500KB | TBD | 🟡 To measure |
-| Fonts | <100KB | ~50KB | ✅ Good |
-| Total (initial) | <500KB | ~153KB | ✅ Excellent |
+| Resource             | Budget | Current | Status        |
+| -------------------- | ------ | ------- | ------------- |
+| JavaScript (initial) | <200KB | 103KB   | ✅ Excellent  |
+| JavaScript (route)   | <300KB | 262KB   | ⚠️ Acceptable |
+| CSS                  | <50KB  | TBD     | 🟡 To measure |
+| Images (page)        | <500KB | TBD     | 🟡 To measure |
+| Fonts                | <100KB | ~50KB   | ✅ Good       |
+| Total (initial)      | <500KB | ~153KB  | ✅ Excellent  |
 
 ---
 
@@ -208,18 +221,21 @@ const users = await userLoader.loadMany([userId1, userId2, userId3])
 ## Next Steps
 
 ### Immediate (This Week)
+
 - [ ] Run Lighthouse audit and document baseline
 - [ ] Test Web Vitals tracking in production
 - [ ] Measure actual bundle sizes in production
 - [ ] Verify database indexes are being used
 
 ### Short-term (Next Sprint)
+
 - [ ] Implement virtual scrolling for message lists
 - [ ] Optimize image loading (convert to WebP/AVIF)
 - [ ] Remove unused dependencies (identified in analysis)
 - [ ] Add service worker for offline support
 
 ### Long-term (Future Sprints)
+
 - [ ] Implement edge caching with CDN
 - [ ] Add Redis caching for frequently accessed data
 - [ ] Optimize WebRTC video quality based on bandwidth
@@ -273,23 +289,23 @@ SELECT * FROM pg_stat_user_indexes WHERE idx_scan = 0;
 
 ### Web Vitals
 
-| Metric | Good | Needs Improvement | Poor |
-|--------|------|-------------------|------|
-| LCP | ≤2.5s | ≤4.0s | >4.0s |
-| FID | ≤100ms | ≤300ms | >300ms |
-| CLS | ≤0.1 | ≤0.25 | >0.25 |
-| INP | ≤200ms | ≤500ms | >500ms |
-| TTFB | ≤800ms | ≤1800ms | >1800ms |
-| FCP | ≤1.8s | ≤3.0s | >3.0s |
+| Metric | Good   | Needs Improvement | Poor    |
+| ------ | ------ | ----------------- | ------- |
+| LCP    | ≤2.5s  | ≤4.0s             | >4.0s   |
+| FID    | ≤100ms | ≤300ms            | >300ms  |
+| CLS    | ≤0.1   | ≤0.25             | >0.25   |
+| INP    | ≤200ms | ≤500ms            | >500ms  |
+| TTFB   | ≤800ms | ≤1800ms           | >1800ms |
+| FCP    | ≤1.8s  | ≤3.0s             | >3.0s   |
 
 ### Custom Metrics
 
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| Page Load | 3000ms | 5000ms |
-| API Call | 1000ms | 3000ms |
-| Component Render | 100ms | 300ms |
-| Memory Usage | 100MB | 200MB |
+| Metric           | Warning | Critical |
+| ---------------- | ------- | -------- |
+| Page Load        | 3000ms  | 5000ms   |
+| API Call         | 1000ms  | 3000ms   |
+| Component Render | 100ms   | 300ms    |
+| Memory Usage     | 100MB   | 200MB    |
 
 ---
 
@@ -312,6 +328,7 @@ SELECT * FROM pg_stat_user_indexes WHERE idx_scan = 0;
 ✅ **Documentation**: Comprehensive guide with examples and best practices
 
 **Impact**:
+
 - Reduced initial bundle from ~200KB to 103KB (48% reduction)
 - Database queries optimized with strategic indexing
 - Real-time performance monitoring with automatic alerts

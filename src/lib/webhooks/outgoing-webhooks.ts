@@ -8,6 +8,8 @@
 import { getWebhookQueueManager, type OutgoingWebhookPayload } from './webhook-queue'
 import { v4 as uuidv4 } from 'uuid'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -100,7 +102,7 @@ export const WEBHOOK_EVENTS = {
   INTEGRATION_DISCONNECTED: 'integration.disconnected',
 } as const
 
-export type WebhookEventType = typeof WEBHOOK_EVENTS[keyof typeof WEBHOOK_EVENTS]
+export type WebhookEventType = (typeof WEBHOOK_EVENTS)[keyof typeof WEBHOOK_EVENTS]
 
 // ============================================================================
 // Outgoing Webhook Manager
@@ -291,7 +293,7 @@ export class OutgoingWebhookManager {
         this.updateDeliveryStats(webhook.id, result.success)
       })
     } catch (error) {
-      console.error(`Failed to queue webhook ${webhook.id}:`, error)
+      logger.error(`Failed to queue webhook ${webhook.id}:`, error)
       this.updateDeliveryStats(webhook.id, false)
       throw error
     }
@@ -439,7 +441,7 @@ export class OutgoingWebhookManager {
         })
       }
     } catch (error) {
-      console.error('Error loading webhooks from storage:', error)
+      logger.error('Error loading webhooks from storage:', error)
     }
   }
 
@@ -455,7 +457,7 @@ export class OutgoingWebhookManager {
       const webhooks = Array.from(this.webhooks.values())
       localStorage.setItem(this.storageKey, JSON.stringify(webhooks))
     } catch (error) {
-      console.error('Error saving webhooks to storage:', error)
+      logger.error('Error saving webhooks to storage:', error)
     }
   }
 

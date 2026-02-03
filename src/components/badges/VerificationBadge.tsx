@@ -8,11 +8,7 @@
  */
 
 import React from 'react'
-import {
-  Badge as BadgeType,
-  BADGE_DEFINITIONS,
-  idmeGroupToBadge,
-} from '@/lib/badges/badge-types'
+import { Badge as BadgeType, BADGE_DEFINITIONS, idmeGroupToBadge } from '@/lib/badges/badge-types'
 import { UserBadge, BadgeSize } from './UserBadge'
 import type { IdMeGroup } from '@/services/auth/providers/idme.provider'
 
@@ -194,16 +190,9 @@ export function VerificationInfo({
   return (
     <div className={`flex items-center gap-2 ${className}`}>
       {showBadge && badge && (
-        <VerificationBadge
-          level={level}
-          idmeGroups={idmeGroups}
-          size="sm"
-          showTooltip={false}
-        />
+        <VerificationBadge level={level} idmeGroups={idmeGroups} size="sm" showTooltip={false} />
       )}
-      <span className={`text-sm font-medium ${statusColors[level]}`}>
-        {displayText}
-      </span>
+      <span className={`text-sm font-medium ${statusColors[level]}`}>{displayText}</span>
     </div>
   )
 }
@@ -227,7 +216,7 @@ export function IdMeVerificationBadges({
   }
 
   const badges = groups
-    .map(group => {
+    .map((group) => {
       const badgeId = idmeGroupToBadge[group]
       return badgeId ? BADGE_DEFINITIONS[badgeId] : null
     })
@@ -239,13 +228,7 @@ export function IdMeVerificationBadges({
   return (
     <div className={`flex flex-wrap items-center gap-1 ${className}`}>
       {badges.map((badge) => (
-        <UserBadge
-          key={badge.id}
-          badge={badge}
-          size={size}
-          showLabel={false}
-          showTooltip={true}
-        />
+        <UserBadge key={badge.id} badge={badge} size={size} showLabel={false} showTooltip={true} />
       ))}
       {hiddenCount > 0 && (
         <span

@@ -11,8 +11,11 @@ import type {
   EditHistorySummary,
   EditHistorySettings,
 } from './history-types'
+
 import { DEFAULT_EDIT_HISTORY_SETTINGS } from './history-types'
 import type { MessageUser } from '@/types/message'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Local Storage Keys
@@ -41,7 +44,7 @@ export function loadHistorySettings(): EditHistorySettings {
       return { ...DEFAULT_EDIT_HISTORY_SETTINGS, ...parsed }
     }
   } catch (error) {
-    console.error('Failed to load edit history settings:', error)
+    logger.error('Failed to load edit history settings:', error)
   }
 
   return { ...DEFAULT_EDIT_HISTORY_SETTINGS }
@@ -56,16 +59,14 @@ export function saveHistorySettings(settings: EditHistorySettings): void {
   try {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
   } catch (error) {
-    console.error('Failed to save edit history settings:', error)
+    logger.error('Failed to save edit history settings:', error)
   }
 }
 
 /**
  * Update specific settings.
  */
-export function updateHistorySettings(
-  updates: Partial<EditHistorySettings>
-): EditHistorySettings {
+export function updateHistorySettings(updates: Partial<EditHistorySettings>): EditHistorySettings {
   const current = loadHistorySettings()
   const updated = { ...current, ...updates }
   saveHistorySettings(updated)
@@ -97,7 +98,7 @@ function loadHistoryCache(): HistoryCache {
       return JSON.parse(stored)
     }
   } catch (error) {
-    console.error('Failed to load history cache:', error)
+    logger.error('Failed to load history cache:', error)
   }
 
   return {}
@@ -120,16 +121,14 @@ function saveHistoryCache(cache: HistoryCache): void {
     }
     localStorage.setItem(CACHE_KEY, JSON.stringify(cleaned))
   } catch (error) {
-    console.error('Failed to save history cache:', error)
+    logger.error('Failed to save history cache:', error)
   }
 }
 
 /**
  * Get cached history for a message.
  */
-export function getCachedHistory(
-  messageId: string
-): MessageEditHistory | null {
+export function getCachedHistory(messageId: string): MessageEditHistory | null {
   const cache = loadHistoryCache()
   const entry = cache[messageId]
 
@@ -147,9 +146,7 @@ export function getCachedHistory(
   return {
     ...entry.history,
     createdAt: new Date(entry.history.createdAt),
-    lastEditedAt: entry.history.lastEditedAt
-      ? new Date(entry.history.lastEditedAt)
-      : null,
+    lastEditedAt: entry.history.lastEditedAt ? new Date(entry.history.lastEditedAt) : null,
     versions: entry.history.versions.map((v) => ({
       ...v,
       createdAt: new Date(v.createdAt),
@@ -193,9 +190,7 @@ export function clearHistoryCache(): void {
 /**
  * Serialize history for storage/transmission.
  */
-export function serializeHistory(
-  history: MessageEditHistory
-): Record<string, unknown> {
+export function serializeHistory(history: MessageEditHistory): Record<string, unknown> {
   return {
     ...history,
     createdAt: history.createdAt.toISOString(),
@@ -210,15 +205,11 @@ export function serializeHistory(
 /**
  * Deserialize history from storage/transmission.
  */
-export function deserializeHistory(
-  data: Record<string, unknown>
-): MessageEditHistory {
-  const versions = (data.versions as Array<Record<string, unknown>>).map(
-    (v) => ({
-      ...v,
-      createdAt: new Date(v.createdAt as string),
-    })
-  ) as MessageVersion[]
+export function deserializeHistory(data: Record<string, unknown>): MessageEditHistory {
+  const versions = (data.versions as Array<Record<string, unknown>>).map((v) => ({
+    ...v,
+    createdAt: new Date(v.createdAt as string),
+  })) as MessageVersion[]
 
   return {
     messageId: data.messageId as string,
@@ -229,9 +220,7 @@ export function deserializeHistory(
     editCount: data.editCount as number,
     author: data.author as MessageUser,
     createdAt: new Date(data.createdAt as string),
-    lastEditedAt: data.lastEditedAt
-      ? new Date(data.lastEditedAt as string)
-      : null,
+    lastEditedAt: data.lastEditedAt ? new Date(data.lastEditedAt as string) : null,
     lastEditedBy: (data.lastEditedBy as MessageUser) ?? null,
   }
 }
@@ -317,9 +306,7 @@ export function addVersionToHistory(
 /**
  * Get edit summary from history.
  */
-export function getEditSummary(
-  history: MessageEditHistory | null
-): EditHistorySummary {
+export function getEditSummary(history: MessageEditHistory | null): EditHistorySummary {
   if (!history) {
     return {
       isEdited: false,
@@ -348,27 +335,25 @@ export function getVersion(
   history: MessageEditHistory,
   versionNumber: number
 ): MessageVersion | null {
-  return (
-    history.versions.find((v) => v.versionNumber === versionNumber) ?? null
-  )
+  return history.versions.find((v) => v.versionNumber === versionNumber) ?? null
 }
 
 /**
  * Get the original version.
  */
-export function getOriginalVersion(
-  history: MessageEditHistory
-): MessageVersion | null {
+export function getOriginalVersion(history: MessageEditHistory): MessageVersion | null {
   return history.versions.find((v) => v.isOriginal) ?? history.versions[0] ?? null
 }
 
 /**
  * Get the current version.
  */
-export function getCurrentVersion(
-  history: MessageEditHistory
-): MessageVersion | null {
-  return history.versions.find((v) => v.isCurrent) ?? history.versions[history.versions.length - 1] ?? null
+export function getCurrentVersion(history: MessageEditHistory): MessageVersion | null {
+  return (
+    history.versions.find((v) => v.isCurrent) ??
+    history.versions[history.versions.length - 1] ??
+    null
+  )
 }
 
 /**
@@ -420,10 +405,7 @@ export function clearHistory(
 /**
  * Trim history to max versions.
  */
-export function trimHistory(
-  history: MessageEditHistory,
-  maxVersions: number
-): MessageEditHistory {
+export function trimHistory(history: MessageEditHistory, maxVersions: number): MessageEditHistory {
   if (maxVersions <= 0 || history.versions.length <= maxVersions) {
     return history
   }

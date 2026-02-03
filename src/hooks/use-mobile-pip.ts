@@ -8,6 +8,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useCallStore } from '@/stores/call-store'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -59,7 +61,7 @@ async function enterNativePiP(videoElement: HTMLVideoElement): Promise<void> {
         await PiPPlugin.enterPiP()
         return
       } catch (err) {
-        console.error('Native PiP failed:', err)
+        logger.error('Native PiP failed:', err)
       }
     }
   }
@@ -69,7 +71,7 @@ async function enterNativePiP(videoElement: HTMLVideoElement): Promise<void> {
     try {
       await videoElement.requestPictureInPicture()
     } catch (err) {
-      console.error('Web PiP failed:', err)
+      logger.error('Web PiP failed:', err)
       throw err
     }
   } else {
@@ -87,7 +89,7 @@ async function exitNativePiP(): Promise<void> {
         await PiPPlugin.exitPiP()
         return
       } catch (err) {
-        console.error('Native PiP exit failed:', err)
+        logger.error('Native PiP exit failed:', err)
       }
     }
   }
@@ -97,7 +99,7 @@ async function exitNativePiP(): Promise<void> {
     try {
       await document.exitPictureInPicture()
     } catch (err) {
-      console.error('Web PiP exit failed:', err)
+      logger.error('Web PiP exit failed:', err)
       throw err
     }
   }
@@ -178,7 +180,7 @@ export function useMobilePiP(): UseMobilePiPReturn {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to enable PiP'
       setError(message)
-      console.error('PiP error:', err)
+      logger.error('PiP error:', err)
     }
   }, [isPiPSupported, activeCall, setPictureInPicture])
 
@@ -194,7 +196,7 @@ export function useMobilePiP(): UseMobilePiPReturn {
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to disable PiP'
       setError(message)
-      console.error('PiP disable error:', err)
+      logger.error('PiP disable error:', err)
     }
   }, [isPiPActive, setPictureInPicture])
 

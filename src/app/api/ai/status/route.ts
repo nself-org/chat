@@ -8,6 +8,8 @@ import { NextResponse } from 'next/server'
 import { getMessageSummarizer } from '@/lib/ai/message-summarizer'
 import { getSmartSearch } from '@/lib/ai/smart-search'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -47,7 +49,7 @@ export async function GET() {
 
     return NextResponse.json(status)
   } catch (error) {
-    console.error('AI status check error:', error)
+    logger.error('AI status check error:', error)
 
     return NextResponse.json(
       {

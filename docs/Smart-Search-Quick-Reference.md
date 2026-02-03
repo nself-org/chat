@@ -177,6 +177,7 @@ console.log(`Hit rate: ${(stats.hitRate * 100).toFixed(1)}%`)
 ```
 
 text-embedding-3-small: $0.02/1M tokens
+
 - 1K messages (~50 tokens each) = $0.001
 - 10K messages = $0.01
 - 100K messages = $0.10

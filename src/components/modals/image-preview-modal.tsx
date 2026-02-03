@@ -1,11 +1,7 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import {
   X,
@@ -191,10 +187,10 @@ export function ImagePreviewModal({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className={cn(
-          'p-0 gap-0 bg-black/95 border-none',
+          'gap-0 border-none bg-black/95 p-0',
           isFullscreen
-            ? 'max-w-none w-screen h-screen rounded-none'
-            : 'max-w-[90vw] max-h-[90vh] w-auto h-auto'
+            ? 'h-screen w-screen max-w-none rounded-none'
+            : 'h-auto max-h-[90vh] w-auto max-w-[90vw]'
         )}
         onPointerDownOutside={(e) => e.preventDefault()}
       >
@@ -203,15 +199,13 @@ export function ImagePreviewModal({
         </VisuallyHidden.Root>
 
         {/* Top toolbar */}
-        <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4 bg-gradient-to-b from-black/50 to-transparent">
+        <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-between bg-gradient-to-b from-black/50 to-transparent p-4">
           <div className="flex items-center gap-2">
             {currentImage.name && (
-              <span className="text-white text-sm font-medium">
-                {currentImage.name}
-              </span>
+              <span className="text-sm font-medium text-white">{currentImage.name}</span>
             )}
             {hasMultipleImages && (
-              <span className="text-white/60 text-sm">
+              <span className="text-sm text-white/60">
                 {currentIndex + 1} / {images.length}
               </span>
             )}
@@ -227,9 +221,7 @@ export function ImagePreviewModal({
             >
               <ZoomOut className="h-4 w-4" />
             </Button>
-            <span className="text-white text-sm w-12 text-center">
-              {Math.round(zoom * 100)}%
-            </span>
+            <span className="w-12 text-center text-sm text-white">{Math.round(zoom * 100)}%</span>
             <Button
               variant="ghost"
               size="icon"
@@ -253,11 +245,7 @@ export function ImagePreviewModal({
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="text-white hover:bg-white/20"
             >
-              {isFullscreen ? (
-                <Minimize2 className="h-4 w-4" />
-              ) : (
-                <Maximize2 className="h-4 w-4" />
-              )}
+              {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
             <Button
               variant="ghost"
@@ -282,7 +270,7 @@ export function ImagePreviewModal({
         <div
           className={cn(
             'flex items-center justify-center overflow-hidden',
-            isFullscreen ? 'w-screen h-screen' : 'w-full h-[70vh]',
+            isFullscreen ? 'h-screen w-screen' : 'h-[70vh] w-full',
             zoom > 1 ? 'cursor-grab' : 'cursor-default',
             isDragging && 'cursor-grabbing'
           )}
@@ -295,7 +283,7 @@ export function ImagePreviewModal({
           <img
             src={currentImage.url}
             alt={currentImage.name || 'Preview'}
-            className="max-w-full max-h-full object-contain select-none"
+            className="max-h-full max-w-full select-none object-contain"
             style={{
               transform: `scale(${zoom}) rotate(${rotation}deg) translate(${position.x / zoom}px, ${position.y / zoom}px)`,
               transition: isDragging ? 'none' : 'transform 0.2s ease-out',
@@ -311,7 +299,7 @@ export function ImagePreviewModal({
               variant="ghost"
               size="icon"
               onClick={handlePrevious}
-              className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 h-12 w-12"
+              className="absolute left-4 top-1/2 h-12 w-12 -translate-y-1/2 text-white hover:bg-white/20"
             >
               <ChevronLeft className="h-8 w-8" />
             </Button>
@@ -319,7 +307,7 @@ export function ImagePreviewModal({
               variant="ghost"
               size="icon"
               onClick={handleNext}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 h-12 w-12"
+              className="absolute right-4 top-1/2 h-12 w-12 -translate-y-1/2 text-white hover:bg-white/20"
             >
               <ChevronRight className="h-8 w-8" />
             </Button>
@@ -328,7 +316,7 @@ export function ImagePreviewModal({
 
         {/* Thumbnail strip */}
         {hasMultipleImages && images.length <= 10 && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/50 to-transparent">
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent p-4">
             <div className="flex justify-center gap-2">
               {images.map((image, index) => (
                 <button
@@ -338,16 +326,16 @@ export function ImagePreviewModal({
                     resetView()
                   }}
                   className={cn(
-                    'w-12 h-12 rounded-lg overflow-hidden border-2 transition-all',
+                    'h-12 w-12 overflow-hidden rounded-lg border-2 transition-all',
                     index === currentIndex
-                      ? 'border-white scale-110'
+                      ? 'scale-110 border-white'
                       : 'border-transparent opacity-60 hover:opacity-100'
                   )}
                 >
                   <img
                     src={image.url}
                     alt={image.name || `Thumbnail ${index + 1}`}
-                    className="w-full h-full object-cover"
+                    className="h-full w-full object-cover"
                   />
                 </button>
               ))}

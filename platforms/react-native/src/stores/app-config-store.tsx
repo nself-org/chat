@@ -2,7 +2,14 @@
  * App Config Store - Application configuration state
  */
 
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  ReactNode,
+} from 'react'
 import { MMKV } from 'react-native-mmkv'
 
 import { STORAGE_KEYS } from '@shared/constants'
@@ -71,16 +78,19 @@ export function AppConfigProvider({ children }: AppConfigProviderProps) {
     }
   }
 
-  const updateConfig = useCallback(async (updates: Partial<AppConfig>) => {
-    try {
-      const newConfig = { ...config, ...updates }
-      storage.set(STORAGE_KEYS.APP_CONFIG, JSON.stringify(newConfig))
-      setConfig(newConfig)
-    } catch (error) {
-      console.error('Failed to update config:', error)
-      throw error
-    }
-  }, [config])
+  const updateConfig = useCallback(
+    async (updates: Partial<AppConfig>) => {
+      try {
+        const newConfig = { ...config, ...updates }
+        storage.set(STORAGE_KEYS.APP_CONFIG, JSON.stringify(newConfig))
+        setConfig(newConfig)
+      } catch (error) {
+        console.error('Failed to update config:', error)
+        throw error
+      }
+    },
+    [config]
+  )
 
   const resetConfig = useCallback(async () => {
     try {

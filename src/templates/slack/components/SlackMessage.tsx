@@ -12,14 +12,7 @@
 import { ReactNode, useState } from 'react'
 import { cn } from '@/lib/utils'
 import { slackColors } from '../config'
-import {
-  Smile,
-  MessageCircle,
-  Share,
-  Bookmark,
-  MoreHorizontal,
-  Pin,
-} from 'lucide-react'
+import { Smile, MessageCircle, Share, Bookmark, MoreHorizontal, Pin } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -85,32 +78,32 @@ function MessageActions({
     <div
       className={cn(
         'absolute -top-4 right-4 flex items-center gap-0.5 p-0.5',
-        'bg-white dark:bg-[#222529] rounded-lg shadow-md border border-gray-200 dark:border-[#35383C]',
-        'opacity-0 group-hover:opacity-100 transition-opacity'
+        'rounded-lg border border-gray-200 bg-white shadow-md dark:border-[#35383C] dark:bg-[#222529]',
+        'opacity-0 transition-opacity group-hover:opacity-100'
       )}
     >
       <ActionButton
-        icon={<Smile className="w-4 h-4" />}
+        icon={<Smile className="h-4 w-4" />}
         onClick={() => onReactionAdd?.('👍')}
         tooltip="Add reaction"
       />
       <ActionButton
-        icon={<MessageCircle className="w-4 h-4" />}
+        icon={<MessageCircle className="h-4 w-4" />}
         onClick={onThreadClick}
         tooltip="Reply in thread"
       />
       <ActionButton
-        icon={<Share className="w-4 h-4" />}
+        icon={<Share className="h-4 w-4" />}
         onClick={onShareClick}
         tooltip="Share message"
       />
       <ActionButton
-        icon={<Bookmark className="w-4 h-4" />}
+        icon={<Bookmark className="h-4 w-4" />}
         onClick={onBookmarkClick}
         tooltip="Save for later"
       />
       <ActionButton
-        icon={<MoreHorizontal className="w-4 h-4" />}
+        icon={<MoreHorizontal className="h-4 w-4" />}
         onClick={onMoreClick}
         tooltip="More actions"
       />
@@ -131,29 +124,23 @@ function ActionButton({
     <button
       onClick={onClick}
       title={tooltip}
-      className="p-1.5 rounded hover:bg-gray-100 dark:hover:bg-[#35383C] text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+      className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-[#35383C] dark:hover:text-gray-200"
     >
       {icon}
     </button>
   )
 }
 
-function ReactionPill({
-  reaction,
-  onClick,
-}: {
-  reaction: SlackReaction
-  onClick?: () => void
-}) {
+function ReactionPill({ reaction, onClick }: { reaction: SlackReaction; onClick?: () => void }) {
   return (
     <button
       onClick={onClick}
       className={cn(
-        'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs',
+        'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs',
         'border transition-colors',
         reaction.hasReacted
-          ? 'bg-[#E8F5FA] border-[#1264A3] text-[#1264A3]'
-          : 'bg-white dark:bg-[#222529] border-gray-200 dark:border-[#35383C] text-gray-700 dark:text-gray-300 hover:border-[#1264A3]'
+          ? 'border-[#1264A3] bg-[#E8F5FA] text-[#1264A3]'
+          : 'border-gray-200 bg-white text-gray-700 hover:border-[#1264A3] dark:border-[#35383C] dark:bg-[#222529] dark:text-gray-300'
       )}
     >
       <span>{reaction.emoji}</span>
@@ -225,16 +212,12 @@ export function SlackMessage({
       <div className="flex gap-2">
         {/* Avatar */}
         {isFirstInGroup ? (
-          <div className="flex-shrink-0 w-9 h-9">
+          <div className="h-9 w-9 flex-shrink-0">
             {userAvatar ? (
-              <img
-                src={userAvatar}
-                alt={userName}
-                className="w-9 h-9 rounded object-cover"
-              />
+              <img src={userAvatar} alt={userName} className="h-9 w-9 rounded object-cover" />
             ) : (
               <div
-                className="w-9 h-9 rounded flex items-center justify-center text-white font-bold text-sm"
+                className="flex h-9 w-9 items-center justify-center rounded text-sm font-bold text-white"
                 style={{ backgroundColor: slackColors.aubergine }}
               >
                 {userName[0]?.toUpperCase()}
@@ -242,17 +225,17 @@ export function SlackMessage({
             )}
           </div>
         ) : (
-          <div className="flex-shrink-0 w-9 flex items-center justify-center opacity-0 group-hover:opacity-100 text-xs text-gray-400">
+          <div className="flex w-9 flex-shrink-0 items-center justify-center text-xs text-gray-400 opacity-0 group-hover:opacity-100">
             {formatTimestamp(timestamp).split(' ')[0]}
           </div>
         )}
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           {/* Header (only for first message in group) */}
           {isFirstInGroup && (
-            <div className="flex items-baseline gap-2 mb-0.5">
-              <button className="font-bold text-gray-900 dark:text-white hover:underline">
+            <div className="mb-0.5 flex items-baseline gap-2">
+              <button className="font-bold text-gray-900 hover:underline dark:text-white">
                 {userName}
               </button>
               <span className="text-xs text-gray-500 dark:text-gray-400">
@@ -260,7 +243,7 @@ export function SlackMessage({
               </span>
               {isPinned && (
                 <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
-                  <Pin className="w-3 h-3" />
+                  <Pin className="h-3 w-3" />
                   Pinned
                 </span>
               )}
@@ -268,11 +251,9 @@ export function SlackMessage({
           )}
 
           {/* Message Text */}
-          <div className="text-gray-900 dark:text-gray-100 whitespace-pre-wrap break-words">
+          <div className="whitespace-pre-wrap break-words text-gray-900 dark:text-gray-100">
             {content}
-            {isEdited && (
-              <span className="text-xs text-gray-400 ml-1">(edited)</span>
-            )}
+            {isEdited && <span className="ml-1 text-xs text-gray-400">(edited)</span>}
           </div>
 
           {/* Attachments */}
@@ -281,13 +262,13 @@ export function SlackMessage({
               {attachments.map((attachment, index) => (
                 <div
                   key={index}
-                  className="rounded-lg border border-gray-200 dark:border-[#35383C] overflow-hidden max-w-md"
+                  className="max-w-md overflow-hidden rounded-lg border border-gray-200 dark:border-[#35383C]"
                 >
                   {attachment.type === 'image' && (
                     <img
                       src={attachment.url}
                       alt={attachment.name || 'Image'}
-                      className="max-w-full h-auto"
+                      className="h-auto max-w-full"
                     />
                   )}
                 </div>
@@ -297,7 +278,7 @@ export function SlackMessage({
 
           {/* Reactions */}
           {reactions.length > 0 && (
-            <div className="flex flex-wrap gap-1 mt-2">
+            <div className="mt-2 flex flex-wrap gap-1">
               {reactions.map((reaction, index) => (
                 <ReactionPill
                   key={index}
@@ -311,9 +292,9 @@ export function SlackMessage({
               ))}
               <button
                 onClick={() => onReactionAdd?.('👍')}
-                className="inline-flex items-center justify-center w-6 h-6 rounded-full border border-dashed border-gray-300 dark:border-[#35383C] text-gray-400 hover:border-[#1264A3] hover:text-[#1264A3]"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-dashed border-gray-300 text-gray-400 hover:border-[#1264A3] hover:text-[#1264A3] dark:border-[#35383C]"
               >
-                <Smile className="w-3.5 h-3.5" />
+                <Smile className="h-3.5 w-3.5" />
               </button>
             </div>
           )}
@@ -322,13 +303,13 @@ export function SlackMessage({
           {threadCount && threadCount > 0 && (
             <button
               onClick={onThreadClick}
-              className="flex items-center gap-2 mt-2 text-sm text-[#1264A3] hover:underline"
+              className="mt-2 flex items-center gap-2 text-sm text-[#1264A3] hover:underline"
             >
               <div className="flex -space-x-1">
                 {threadParticipants.slice(0, 3).map((participant, index) => (
                   <div
                     key={index}
-                    className="w-5 h-5 rounded bg-gray-300 border-2 border-white dark:border-[#1A1D21]"
+                    className="h-5 w-5 rounded border-2 border-white bg-gray-300 dark:border-[#1A1D21]"
                   />
                 ))}
               </div>

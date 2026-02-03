@@ -73,7 +73,8 @@ export const discordColors = {
 export const discordTypography = {
   // Discord uses gg sans as primary font (we use similar alternatives)
   fontFamily: '"gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  fontFamilyCode: 'Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace',
+  fontFamilyCode:
+    'Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace',
   fontFamilyHeadline: '"gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
 
   // Font sizes
@@ -338,16 +339,7 @@ export const discordTemplate: PlatformTemplate = {
     gifPicker: true,
 
     // Message actions
-    messageActions: [
-      'react',
-      'reply',
-      'thread',
-      'pin',
-      'edit',
-      'delete',
-      'copy',
-      'report',
-    ],
+    messageActions: ['react', 'reply', 'thread', 'pin', 'edit', 'delete', 'copy', 'report'],
     showActionsOnHover: true,
 
     // Real-time

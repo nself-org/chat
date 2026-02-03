@@ -36,95 +36,95 @@ import type {
   TaskAssignedActivity,
   IntegrationEventActivity,
   SystemActivity,
-} from './activity-types';
+} from './activity-types'
 
 // =============================================================================
 // Types for Raw Data
 // =============================================================================
 
 export interface RawUser {
-  id: string;
-  username?: string;
-  display_name?: string;
-  displayName?: string;
-  avatar_url?: string;
-  avatarUrl?: string;
-  email?: string;
+  id: string
+  username?: string
+  display_name?: string
+  displayName?: string
+  avatar_url?: string
+  avatarUrl?: string
+  email?: string
 }
 
 export interface RawChannel {
-  id: string;
-  name: string;
-  slug: string;
-  type: string;
-  is_archived?: boolean;
-  isArchived?: boolean;
+  id: string
+  name: string
+  slug: string
+  type: string
+  is_archived?: boolean
+  isArchived?: boolean
 }
 
 export interface RawMessage {
-  id: string;
-  content: string;
-  user_id?: string;
-  userId?: string;
-  channel_id?: string;
-  channelId?: string;
-  thread_id?: string;
-  threadId?: string;
-  created_at?: string;
-  createdAt?: string;
-  user?: RawUser;
+  id: string
+  content: string
+  user_id?: string
+  userId?: string
+  channel_id?: string
+  channelId?: string
+  thread_id?: string
+  threadId?: string
+  created_at?: string
+  createdAt?: string
+  user?: RawUser
 }
 
 export interface RawThread {
-  id: string;
-  channel_id?: string;
-  channelId?: string;
-  parent_message_id?: string;
-  parentMessageId?: string;
-  message_count?: number;
-  messageCount?: number;
-  reply_count?: number;
-  replyCount?: number;
-  participant_count?: number;
-  participantCount?: number;
+  id: string
+  channel_id?: string
+  channelId?: string
+  parent_message_id?: string
+  parentMessageId?: string
+  message_count?: number
+  messageCount?: number
+  reply_count?: number
+  replyCount?: number
+  participant_count?: number
+  participantCount?: number
 }
 
 export interface RawFile {
-  id: string;
-  name?: string;
-  file_name?: string;
-  fileName?: string;
-  type?: string;
-  file_type?: string;
-  fileType?: string;
-  mime_type?: string;
-  mimeType?: string;
-  size?: number;
-  file_size?: number;
-  fileSize?: number;
-  url?: string;
-  file_url?: string;
-  fileUrl?: string;
-  thumbnail_url?: string;
-  thumbnailUrl?: string;
+  id: string
+  name?: string
+  file_name?: string
+  fileName?: string
+  type?: string
+  file_type?: string
+  fileType?: string
+  mime_type?: string
+  mimeType?: string
+  size?: number
+  file_size?: number
+  fileSize?: number
+  url?: string
+  file_url?: string
+  fileUrl?: string
+  thumbnail_url?: string
+  thumbnailUrl?: string
 }
 
 export interface RawNotification {
-  id: string;
-  type: string;
-  title?: string;
-  body?: string;
-  data?: Record<string, unknown>;
-  is_read?: boolean;
-  isRead?: boolean;
-  read_at?: string;
-  readAt?: string;
-  created_at?: string;
-  createdAt?: string;
-  actor?: RawUser;
-  channel?: RawChannel;
-  message?: RawMessage;
-  thread?: RawThread;
+  id: string
+  type: string
+  title?: string
+  body?: string
+  data?: Record<string, unknown>
+  is_read?: boolean
+  isRead?: boolean
+  read_at?: string
+  readAt?: string
+  created_at?: string
+  createdAt?: string
+  actor?: RawUser
+  channel?: RawChannel
+  message?: RawMessage
+  thread?: RawThread
 }
 
 // =============================================================================
@@ -141,7 +141,7 @@ export function transformUser(raw: RawUser): ActivityActor {
     displayName: raw.display_name || raw.displayName || raw.username || 'Unknown',
     avatarUrl: raw.avatar_url || raw.avatarUrl,
     email: raw.email,
-  };
+  }
 }
 
 /**
@@ -154,14 +154,14 @@ export function transformChannel(raw: RawChannel): ActivityChannel {
     slug: raw.slug,
     type: raw.type as 'public' | 'private' | 'direct',
     isArchived: raw.is_archived || raw.isArchived,
-  };
+  }
 }
 
 /**
  * Transform raw message data to ActivityMessage
  */
 export function transformMessage(raw: RawMessage): ActivityMessage {
-  const content = raw.content || '';
+  const content = raw.content || ''
   return {
     id: raw.id,
     content,
@@ -171,7 +171,7 @@ export function transformMessage(raw: RawMessage): ActivityMessage {
     threadId: raw.thread_id || raw.threadId,
     createdAt: raw.created_at || raw.createdAt || new Date().toISOString(),
     user: raw.user ? transformUser(raw.user) : undefined,
-  };
+  }
 }
 
 /**
@@ -184,7 +184,7 @@ export function transformThread(raw: RawThread): ActivityThread {
     parentMessageId: raw.parent_message_id || raw.parentMessageId || '',
     replyCount: raw.message_count || raw.messageCount || raw.reply_count || raw.replyCount || 0,
     participantCount: raw.participant_count || raw.participantCount || 0,
-  };
+  }
 }
 
 /**
@@ -199,7 +199,7 @@ export function transformFile(raw: RawFile): ActivityFile {
     size: raw.size || raw.file_size || raw.fileSize || 0,
     url: raw.url || raw.file_url || raw.fileUrl || '',
     thumbnailUrl: raw.thumbnail_url || raw.thumbnailUrl,
-  };
+  }
 }
 
 // =============================================================================
@@ -210,32 +210,35 @@ export function transformFile(raw: RawFile): ActivityFile {
  * Generate a unique activity ID
  */
 export function generateActivityId(type: ActivityType, refId: string): string {
-  return `${type}-${refId}-${Date.now()}`;
+  return `${type}-${refId}-${Date.now()}`
 }
 
 /**
  * Determine priority from notification type
  */
-export function determinePriority(type: ActivityType, data?: Record<string, unknown>): ActivityPriority {
+export function determinePriority(
+  type: ActivityType,
+  data?: Record<string, unknown>
+): ActivityPriority {
   // High priority types
   if (type === 'mention') {
-    const mentionType = data?.mentionType;
+    const mentionType = data?.mentionType
     if (mentionType === 'everyone' || mentionType === 'here') {
-      return 'high';
+      return 'high'
     }
-    return 'normal';
+    return 'normal'
   }
 
   if (type === 'reminder_due' || type === 'task_assigned') {
-    return 'high';
+    return 'high'
   }
 
   // Low priority types
   if (type === 'member_joined' || type === 'member_left' || type === 'reaction') {
-    return 'low';
+    return 'low'
   }
 
-  return 'normal';
+  return 'normal'
 }
 
 /**
@@ -262,9 +265,9 @@ export function determineCategory(type: ActivityType): ActivityCategory {
     task_assigned: 'tasks',
     integration_event: 'integrations',
     system: 'all',
-  };
+  }
 
-  return categoryMap[type] || 'all';
+  return categoryMap[type] || 'all'
 }
 
 // =============================================================================
@@ -290,7 +293,7 @@ export function createMessageActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -314,7 +317,7 @@ export function createReactionActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -340,7 +343,7 @@ export function createMentionActivity(
     thread,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -364,7 +367,7 @@ export function createReplyActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -388,7 +391,7 @@ export function createThreadReplyActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -408,7 +411,7 @@ export function createChannelCreatedActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -428,7 +431,7 @@ export function createChannelArchivedActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -450,7 +453,7 @@ export function createMemberJoinedActivity(
     invitedBy,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -474,7 +477,7 @@ export function createMemberLeftActivity(
     removedBy,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -498,7 +501,7 @@ export function createFileSharedActivity(
     message,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -520,7 +523,7 @@ export function createCallStartedActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -542,7 +545,7 @@ export function createCallEndedActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -566,7 +569,7 @@ export function createReminderDueActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -588,7 +591,7 @@ export function createTaskCompletedActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -612,7 +615,7 @@ export function createTaskAssignedActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -634,7 +637,7 @@ export function createIntegrationEventActivity(
     channel,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 /**
@@ -660,7 +663,7 @@ export function createSystemActivity(
     actionUrl,
     createdAt: options?.createdAt || new Date().toISOString(),
     isRead: options?.isRead ?? false,
-  };
+  }
 }
 
 // =============================================================================
@@ -671,71 +674,79 @@ export function createSystemActivity(
  * Convert a raw notification to an activity
  */
 export function notificationToActivity(notification: RawNotification): Activity | null {
-  const type = notification.type as ActivityType;
+  const type = notification.type as ActivityType
   const actor = notification.actor
     ? transformUser(notification.actor)
-    : { id: 'unknown', displayName: 'Unknown' };
-  const channel = notification.channel ? transformChannel(notification.channel) : null;
-  const message = notification.message ? transformMessage(notification.message) : null;
-  const thread = notification.thread ? transformThread(notification.thread) : null;
+    : { id: 'unknown', displayName: 'Unknown' }
+  const channel = notification.channel ? transformChannel(notification.channel) : null
+  const message = notification.message ? transformMessage(notification.message) : null
+  const thread = notification.thread ? transformThread(notification.thread) : null
 
   const baseOptions = {
     id: notification.id,
     createdAt: notification.created_at || notification.createdAt,
     isRead: notification.is_read || notification.isRead || false,
-  };
+  }
 
   switch (type) {
     case 'message':
-      if (!message || !channel) return null;
-      return createMessageActivity(actor, message, channel, baseOptions);
+      if (!message || !channel) return null
+      return createMessageActivity(actor, message, channel, baseOptions)
 
     case 'reaction':
-      if (!message || !channel) return null;
-      const emoji = (notification.data?.emoji as string) || '';
-      return createReactionActivity(actor, emoji, message, channel, baseOptions);
+      if (!message || !channel) return null
+      const emoji = (notification.data?.emoji as string) || ''
+      return createReactionActivity(actor, emoji, message, channel, baseOptions)
 
     case 'mention':
-      if (!message || !channel) return null;
-      const mentionType = (notification.data?.mentionType as 'user' | 'everyone' | 'here' | 'channel') || 'user';
-      return createMentionActivity(actor, mentionType, message, channel, thread || undefined, baseOptions);
+      if (!message || !channel) return null
+      const mentionType =
+        (notification.data?.mentionType as 'user' | 'everyone' | 'here' | 'channel') || 'user'
+      return createMentionActivity(
+        actor,
+        mentionType,
+        message,
+        channel,
+        thread || undefined,
+        baseOptions
+      )
 
     case 'reply':
-      if (!message || !channel) return null;
+      if (!message || !channel) return null
       const parentMessage = notification.data?.parentMessage
         ? transformMessage(notification.data.parentMessage as RawMessage)
-        : message;
-      return createReplyActivity(actor, message, parentMessage, channel, baseOptions);
+        : message
+      return createReplyActivity(actor, message, parentMessage, channel, baseOptions)
 
     case 'thread_reply':
-      if (!message || !channel || !thread) return null;
-      return createThreadReplyActivity(actor, message, thread, channel, baseOptions);
+      if (!message || !channel || !thread) return null
+      return createThreadReplyActivity(actor, message, thread, channel, baseOptions)
 
     case 'channel_created':
-      if (!channel) return null;
-      return createChannelCreatedActivity(actor, channel, baseOptions);
+      if (!channel) return null
+      return createChannelCreatedActivity(actor, channel, baseOptions)
 
     case 'member_joined':
-      if (!channel) return null;
+      if (!channel) return null
       const invitedBy = notification.data?.invitedBy
         ? transformUser(notification.data.invitedBy as RawUser)
-        : undefined;
-      return createMemberJoinedActivity(actor, channel, invitedBy, baseOptions);
+        : undefined
+      return createMemberJoinedActivity(actor, channel, invitedBy, baseOptions)
 
     case 'member_left':
-      if (!channel) return null;
-      const reason = (notification.data?.reason as 'left' | 'kicked' | 'banned') || 'left';
+      if (!channel) return null
+      const reason = (notification.data?.reason as 'left' | 'kicked' | 'banned') || 'left'
       const removedBy = notification.data?.removedBy
         ? transformUser(notification.data.removedBy as RawUser)
-        : undefined;
-      return createMemberLeftActivity(actor, channel, reason, removedBy, baseOptions);
+        : undefined
+      return createMemberLeftActivity(actor, channel, reason, removedBy, baseOptions)
 
     case 'file_shared':
-      if (!channel) return null;
+      if (!channel) return null
       const file = notification.data?.file
         ? transformFile(notification.data.file as RawFile)
-        : { id: '', name: 'Unknown', type: 'file', mimeType: '', size: 0, url: '' };
-      return createFileSharedActivity(actor, file, channel, message || undefined, baseOptions);
+        : { id: '', name: 'Unknown', type: 'file', mimeType: '', size: 0, url: '' }
+      return createFileSharedActivity(actor, file, channel, message || undefined, baseOptions)
 
     case 'system':
       return createSystemActivity(
@@ -743,7 +754,7 @@ export function notificationToActivity(notification: RawNotification): Activity 
         notification.body || '',
         notification.data?.actionUrl as string | undefined,
         baseOptions
-      );
+      )
 
     default:
       // For unknown types, create a system activity
@@ -752,7 +763,7 @@ export function notificationToActivity(notification: RawNotification): Activity 
         notification.body || '',
         undefined,
         baseOptions
-      );
+      )
   }
 }
 
@@ -762,5 +773,5 @@ export function notificationToActivity(notification: RawNotification): Activity 
 export function notificationsToActivities(notifications: RawNotification[]): Activity[] {
   return notifications
     .map(notificationToActivity)
-    .filter((activity): activity is Activity => activity !== null);
+    .filter((activity): activity is Activity => activity !== null)
 }

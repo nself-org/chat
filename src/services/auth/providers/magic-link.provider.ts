@@ -7,6 +7,7 @@
  * - No password required
  */
 
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderMetadata,
@@ -87,7 +88,10 @@ export class MagicLinkProvider extends BaseAuthProvider {
     )
   }
 
-  async signUp(credentials: AuthCredentials, metadata?: Record<string, unknown>): Promise<AuthResult> {
+  async signUp(
+    credentials: AuthCredentials,
+    metadata?: Record<string, unknown>
+  ): Promise<AuthResult> {
     if (!this.extendedConfig.allowSignUp) {
       return this.createErrorResult(
         this.createError('SIGNUP_DISABLED', 'Sign up is not allowed with magic links')
@@ -139,7 +143,10 @@ export class MagicLinkProvider extends BaseAuthProvider {
         const data = await response.json()
         return {
           success: false,
-          error: this.createError('SEND_FAILED', data.error?.message || 'Failed to send magic link'),
+          error: this.createError(
+            'SEND_FAILED',
+            data.error?.message || 'Failed to send magic link'
+          ),
         }
       }
 
@@ -147,7 +154,7 @@ export class MagicLinkProvider extends BaseAuthProvider {
 
       return { success: true }
     } catch (error) {
-      console.error('Magic link send error:', error)
+      logger.error('Magic link send error:',  error)
       return {
         success: false,
         error: this.createError('NETWORK_ERROR', 'Failed to send magic link'),
@@ -162,7 +169,7 @@ export class MagicLinkProvider extends BaseAuthProvider {
         headers: this.getAuthHeaders(),
       })
     } catch (error) {
-      console.error('Sign out error:', error)
+      logger.error('Sign out error:',  error)
     }
 
     this.pendingEmail = null
@@ -200,10 +207,8 @@ export class MagicLinkProvider extends BaseAuthProvider {
         data.session.refreshToken
       )
     } catch (error) {
-      console.error('Token refresh error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to refresh token')
-      )
+      logger.error('Token refresh error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to refresh token'))
     }
   }
 
@@ -225,7 +230,10 @@ export class MagicLinkProvider extends BaseAuthProvider {
 
       if (!response.ok) {
         return this.createErrorResult(
-          this.createError('VERIFICATION_FAILED', data.error?.message || 'Magic link verification failed')
+          this.createError(
+            'VERIFICATION_FAILED',
+            data.error?.message || 'Magic link verification failed'
+          )
         )
       }
 
@@ -243,7 +251,7 @@ export class MagicLinkProvider extends BaseAuthProvider {
 
       return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
     } catch (error) {
-      console.error('Magic link verification error:', error)
+      logger.error('Magic link verification error:',  error)
       return this.createErrorResult(
         this.createError('NETWORK_ERROR', 'Failed to verify magic link')
       )
@@ -258,7 +266,7 @@ export class MagicLinkProvider extends BaseAuthProvider {
     const type = params.get('type')
 
     if (token && type === 'magicLink') {
-      this.verifyMagicLink(token).then(result => {
+      this.verifyMagicLink(token).then((result) => {
         if (result.success) {
           // Clean up URL
           const url = new URL(window.location.href)
@@ -277,7 +285,11 @@ export class MagicLinkProvider extends BaseAuthProvider {
   }
 
   private getAuthApiUrl(): string {
-    return this.extendedConfig.authApiUrl || process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1'
+    return (
+      this.extendedConfig.authApiUrl ||
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      'http://localhost:4000/v1'
+    )
   }
 
   private getRedirectUrl(): string {
@@ -299,12 +311,14 @@ export class MagicLinkProvider extends BaseAuthProvider {
     return {
       id: userData.id as string,
       email: userData.email as string,
-      username: (userData.displayName as string)?.replace(/\s+/g, '_').toLowerCase() || (userData.email as string).split('@')[0],
-      displayName: userData.displayName as string || (userData.email as string).split('@')[0],
+      username:
+        (userData.displayName as string)?.replace(/\s+/g, '_').toLowerCase() ||
+        (userData.email as string).split('@')[0],
+      displayName: (userData.displayName as string) || (userData.email as string).split('@')[0],
       avatarUrl: userData.avatarUrl as string | undefined,
       role: (userData.defaultRole as AuthUser['role']) || 'member',
       emailVerified: true, // Magic link verifies email
-      metadata: userData.metadata as Record<string, unknown> || {},
+      metadata: (userData.metadata as Record<string, unknown>) || {},
       createdAt: userData.createdAt as string,
       lastLoginAt: new Date().toISOString(),
     }
@@ -312,10 +326,13 @@ export class MagicLinkProvider extends BaseAuthProvider {
 
   private persistSession(session: { accessToken: string; refreshToken: string }): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem('nchat-magic-link-session', JSON.stringify({
-      ...session,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-magic-link-session',
+      JSON.stringify({
+        ...session,
+        timestamp: Date.now(),
+      })
+    )
   }
 
   private getStoredSession(): { accessToken: string; refreshToken: string } | null {

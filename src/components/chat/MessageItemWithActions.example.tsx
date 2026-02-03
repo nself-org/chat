@@ -39,7 +39,6 @@ export function MessageWithActions({ message }: { message: Message }) {
     },
     onDeleteMessage: async (id) => {
       console.log('Delete:', id)
-      // TODO: Call GraphQL mutation
     },
   })
 
@@ -84,12 +83,7 @@ export function MessageListWithBulk({
   channelId: string
   messages: Message[]
 }) {
-  const {
-    handleAction,
-    getPermissions,
-    selection,
-    bulkHandlers,
-  } = useMessageActions({
+  const { handleAction, getPermissions, selection, bulkHandlers } = useMessageActions({
     channelId,
     enableBulkOperations: true,
     onReplyMessage: (message) => {
@@ -106,9 +100,7 @@ export function MessageListWithBulk({
     },
   })
 
-  const selectedMessages = messages.filter((m) =>
-    selection.selectedMessages.has(m.id)
-  )
+  const selectedMessages = messages.filter((m) => selection.selectedMessages.has(m.id))
 
   return (
     <div className="relative">
@@ -118,9 +110,7 @@ export function MessageListWithBulk({
           <div className="sticky top-0 z-20 p-4">
             <BulkMessageActions
               selectedCount={selection.selectedMessages.size}
-              onDelete={() =>
-                bulkHandlers.onBulkDelete(Array.from(selection.selectedMessages))
-              }
+              onDelete={() => bulkHandlers.onBulkDelete(Array.from(selection.selectedMessages))}
               onForward={() => bulkHandlers.onBulkForward(selectedMessages)}
               onCopy={() => bulkHandlers.onBulkCopy(selectedMessages)}
               onClearSelection={selection.clearSelection}
@@ -235,9 +225,7 @@ export function MobileMessageList({
           <MessageActions
             message={selectedMessage}
             permissions={getPermissions(selectedMessage)}
-            onAction={(action, data) =>
-              handleAction(action, selectedMessage, data)
-            }
+            onAction={(action, data) => handleAction(action, selectedMessage, data)}
             variant="mobile"
             onClose={() => setSelectedMessage(null)}
           />
@@ -277,7 +265,7 @@ export function ThreadMessageList({
             permissions={permissions}
             onAction={(action, data) => handleAction(action, message, data)}
           >
-            <div className="group relative hover:bg-muted/30">
+            <div className="hover:bg-muted/30 group relative">
               <MessageItem message={message} isCompact />
 
               {/* Compact actions on hover */}
@@ -285,9 +273,7 @@ export function ThreadMessageList({
                 <MessageActions
                   message={message}
                   permissions={permissions}
-                  onAction={(action, data) =>
-                    handleAction(action, message, data)
-                  }
+                  onAction={(action, data) => handleAction(action, message, data)}
                   variant="compact"
                 />
               </div>

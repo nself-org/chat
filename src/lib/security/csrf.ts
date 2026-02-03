@@ -11,6 +11,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { randomBytes, createHmac } from 'crypto'
 import { ApiError } from '@/lib/api/middleware'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Configuration
 // ============================================================================
@@ -43,9 +45,9 @@ function getCsrfSecret(): string {
   // Development warnings
   if (process.env.NODE_ENV !== 'production') {
     if (!csrfSecret) {
-      console.warn('WARNING: CSRF_SECRET not set - using development-only default')
+      logger.warn('WARNING: CSRF_SECRET not set - using development-only default')
     } else if (csrfSecret.length < 32) {
-      console.warn('WARNING: CSRF_SECRET is too short - use at least 32 characters')
+      logger.warn('WARNING: CSRF_SECRET is too short - use at least 32 characters')
     }
   }
 
@@ -91,9 +93,7 @@ export function generateCsrfToken(): string {
  * @returns Signed token (token:signature)
  */
 function signToken(token: string): string {
-  const signature = createHmac('sha256', CSRF_CONFIG.SECRET)
-    .update(token)
-    .digest('hex')
+  const signature = createHmac('sha256', CSRF_CONFIG.SECRET).update(token).digest('hex')
 
   return `${token}:${signature}`
 }
@@ -113,9 +113,7 @@ function verifyToken(signedToken: string): string | null {
 
   const [token, signature] = parts
 
-  const expectedSignature = createHmac('sha256', CSRF_CONFIG.SECRET)
-    .update(token)
-    .digest('hex')
+  const expectedSignature = createHmac('sha256', CSRF_CONFIG.SECRET).update(token).digest('hex')
 
   // Constant-time comparison to prevent timing attacks
   if (!timingSafeEqual(signature, expectedSignature)) {

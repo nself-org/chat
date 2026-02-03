@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
 /**
  * FileUploadChart - Shows file upload statistics
  */
 
-import * as React from 'react';
-import { format } from 'date-fns';
+import * as React from 'react'
+import { format } from 'date-fns'
 import {
   Area,
   AreaChart,
@@ -22,20 +22,20 @@ import {
   XAxis,
   YAxis,
   Legend,
-} from 'recharts';
+} from 'recharts'
 
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface FileUploadChartProps {
-  height?: number;
-  variant?: 'timeline' | 'types' | 'combined';
-  className?: string;
+  height?: number
+  variant?: 'timeline' | 'types' | 'combined'
+  className?: string
 }
 
 // ============================================================================
@@ -51,7 +51,7 @@ const TYPE_COLORS: Record<string, string> = {
   Presentations: '#ec4899',
   Archives: '#6366f1',
   Other: '#9ca3af',
-};
+}
 
 // ============================================================================
 // Helper Functions
@@ -59,15 +59,15 @@ const TYPE_COLORS: Record<string, string> = {
 
 function formatFileSize(bytes: number): string {
   if (bytes >= 1073741824) {
-    return `${(bytes / 1073741824).toFixed(1)} GB`;
+    return `${(bytes / 1073741824).toFixed(1)} GB`
   }
   if (bytes >= 1048576) {
-    return `${(bytes / 1048576).toFixed(1)} MB`;
+    return `${(bytes / 1048576).toFixed(1)} MB`
   }
   if (bytes >= 1024) {
-    return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / 1024).toFixed(1)} KB`
   }
-  return `${bytes} B`;
+  return `${bytes} B`
 }
 
 // ============================================================================
@@ -75,22 +75,22 @@ function formatFileSize(bytes: number): string {
 // ============================================================================
 
 interface TimelineTooltipProps {
-  active?: boolean;
+  active?: boolean
   payload?: Array<{
-    name: string;
-    value: number;
+    name: string
+    value: number
     payload: {
-      date: string;
-      count: number;
-      totalSize: number;
-    };
-  }>;
+      date: string
+      count: number
+      totalSize: number
+    }
+  }>
 }
 
 function TimelineTooltip({ active, payload }: TimelineTooltipProps) {
-  if (!active || !payload || !payload.length) return null;
+  if (!active || !payload || !payload.length) return null
 
-  const data = payload[0].payload;
+  const data = payload[0].payload
 
   return (
     <div className="rounded-lg border bg-background p-3 shadow-md">
@@ -106,26 +106,26 @@ function TimelineTooltip({ active, payload }: TimelineTooltipProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 interface TypeTooltipProps {
-  active?: boolean;
+  active?: boolean
   payload?: Array<{
-    name: string;
-    value: number;
+    name: string
+    value: number
     payload: {
-      name: string;
-      value: number;
-      percentage: number;
-    };
-  }>;
+      name: string
+      value: number
+      percentage: number
+    }
+  }>
 }
 
 function TypeTooltip({ active, payload }: TypeTooltipProps) {
-  if (!active || !payload || !payload.length) return null;
+  if (!active || !payload || !payload.length) return null
 
-  const data = payload[0].payload;
+  const data = payload[0].payload
 
   return (
     <div className="rounded-lg border bg-background p-3 shadow-md">
@@ -141,7 +141,7 @@ function TypeTooltip({ active, payload }: TypeTooltipProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -153,32 +153,32 @@ export function FileUploadChart({
   variant = 'timeline',
   className,
 }: FileUploadChartProps) {
-  const { fileUploads, isLoading } = useAnalyticsStore();
+  const { fileUploads, isLoading } = useAnalyticsStore()
 
   // Timeline data
   const timelineData = React.useMemo(() => {
-    if (!fileUploads || fileUploads.length === 0) return [];
+    if (!fileUploads || fileUploads.length === 0) return []
 
     return fileUploads.map((upload) => ({
       date: format(new Date(upload.timestamp), 'MMM d'),
       count: upload.count,
       totalSize: upload.totalSize,
-    }));
-  }, [fileUploads]);
+    }))
+  }, [fileUploads])
 
   // File type breakdown
   const typeData = React.useMemo(() => {
-    if (!fileUploads || fileUploads.length === 0) return [];
+    if (!fileUploads || fileUploads.length === 0) return []
 
-    const aggregated: Record<string, number> = {};
+    const aggregated: Record<string, number> = {}
 
     fileUploads.forEach((upload) => {
       Object.entries(upload.fileTypes).forEach(([type, count]) => {
-        aggregated[type] = (aggregated[type] || 0) + count;
-      });
-    });
+        aggregated[type] = (aggregated[type] || 0) + count
+      })
+    })
 
-    const total = Object.values(aggregated).reduce((sum, count) => sum + count, 0);
+    const total = Object.values(aggregated).reduce((sum, count) => sum + count, 0)
 
     return Object.entries(aggregated)
       .map(([name, value]) => ({
@@ -187,29 +187,26 @@ export function FileUploadChart({
         percentage: total > 0 ? (value / total) * 100 : 0,
         color: TYPE_COLORS[name] || TYPE_COLORS.Other,
       }))
-      .sort((a, b) => b.value - a.value);
-  }, [fileUploads]);
+      .sort((a, b) => b.value - a.value)
+  }, [fileUploads])
 
   if (isLoading) {
     return (
       <div className={cn('w-full', className)} style={{ height }}>
         <Skeleton className="h-full w-full" />
       </div>
-    );
+    )
   }
 
   if (fileUploads.length === 0) {
     return (
       <div
-        className={cn(
-          'flex items-center justify-center text-muted-foreground',
-          className
-        )}
+        className={cn('flex items-center justify-center text-muted-foreground', className)}
         style={{ height }}
       >
         No file upload data available
       </div>
-    );
+    )
   }
 
   if (variant === 'types') {
@@ -239,7 +236,7 @@ export function FileUploadChart({
           </PieChart>
         </ResponsiveContainer>
       </div>
-    );
+    )
   }
 
   if (variant === 'combined') {
@@ -273,13 +270,7 @@ export function FileUploadChart({
             />
             <Tooltip content={<TimelineTooltip />} />
             <Legend />
-            <Bar
-              yAxisId="left"
-              dataKey="count"
-              name="Files"
-              fill="#6366f1"
-              radius={[4, 4, 0, 0]}
-            />
+            <Bar yAxisId="left" dataKey="count" name="Files" fill="#6366f1" radius={[4, 4, 0, 0]} />
             <Line
               yAxisId="right"
               type="monotone"
@@ -292,7 +283,7 @@ export function FileUploadChart({
           </ComposedChart>
         </ResponsiveContainer>
       </div>
-    );
+    )
   }
 
   // Default timeline variant
@@ -326,7 +317,7 @@ export function FileUploadChart({
         </AreaChart>
       </ResponsiveContainer>
     </div>
-  );
+  )
 }
 
-export default FileUploadChart;
+export default FileUploadChart

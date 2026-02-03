@@ -22,7 +22,7 @@ import {
   BarChart3,
   AlertCircle,
   Trash2,
-  RotateCcw
+  RotateCcw,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
@@ -39,7 +39,7 @@ import {
   canVoteInPoll,
   formatPollClosingTime,
   getWinningOptions,
-  calculatePollPercentages
+  calculatePollPercentages,
 } from '@/types/poll'
 
 interface PollMessageProps {
@@ -67,7 +67,7 @@ export function PollMessage({
   onDeletePoll,
   onAddOption,
   onExportResults,
-  className
+  className,
 }: PollMessageProps) {
   const { toast } = useToast()
   const [selectedOptions, setSelectedOptions] = useState<Set<string>>(new Set())
@@ -109,27 +109,30 @@ export function PollMessage({
   }, [poll.currentUserVote])
 
   // Handle option toggle
-  const handleToggleOption = useCallback((optionId: string) => {
-    if (!canVote) return
+  const handleToggleOption = useCallback(
+    (optionId: string) => {
+      if (!canVote) return
 
-    setSelectedOptions(prev => {
-      const newSet = new Set(prev)
-      if (newSet.has(optionId)) {
-        newSet.delete(optionId)
-      } else {
-        // Single choice - clear others
-        if (!poll.settings.allowMultiple) {
-          newSet.clear()
+      setSelectedOptions((prev) => {
+        const newSet = new Set(prev)
+        if (newSet.has(optionId)) {
+          newSet.delete(optionId)
+        } else {
+          // Single choice - clear others
+          if (!poll.settings.allowMultiple) {
+            newSet.clear()
+          }
+          // Check max selections
+          if (poll.settings.maxSelections && newSet.size >= poll.settings.maxSelections) {
+            return prev
+          }
+          newSet.add(optionId)
         }
-        // Check max selections
-        if (poll.settings.maxSelections && newSet.size >= poll.settings.maxSelections) {
-          return prev
-        }
-        newSet.add(optionId)
-      }
-      return newSet
-    })
-  }, [canVote, poll.settings])
+        return newSet
+      })
+    },
+    [canVote, poll.settings]
+  )
 
   // Handle vote submission
   const handleVote = useCallback(async () => {
@@ -250,7 +253,7 @@ export function PollMessage({
     if (!onAddOption || !newOptionText.trim()) return
 
     const trimmedText = newOptionText.trim()
-    if (poll.options.some(opt => opt.text.toLowerCase() === trimmedText.toLowerCase())) {
+    if (poll.options.some((opt) => opt.text.toLowerCase() === trimmedText.toLowerCase())) {
       toast({
         title: 'Duplicate option',
         description: 'This option already exists',
@@ -303,7 +306,7 @@ export function PollMessage({
     if (!poll.currentUserVote) return selectedOptions.size > 0
     const currentVotes = new Set(poll.currentUserVote.optionIds)
     if (currentVotes.size !== selectedOptions.size) return true
-    return Array.from(selectedOptions).some(id => !currentVotes.has(id))
+    return Array.from(selectedOptions).some((id) => !currentVotes.has(id))
   }, [poll.currentUserVote, selectedOptions])
 
   // Get status badge
@@ -321,12 +324,12 @@ export function PollMessage({
   }
 
   return (
-    <div className={cn('border rounded-lg bg-card overflow-hidden', className)}>
+    <div className={cn('overflow-hidden rounded-lg border bg-card', className)}>
       {/* Header */}
-      <div className="p-4 space-y-3">
+      <div className="space-y-3 p-4">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 space-y-1">
-            <h4 className="font-semibold text-base leading-tight">{poll.question}</h4>
+            <h4 className="text-base font-semibold leading-tight">{poll.question}</h4>
             {poll.description && (
               <p className="text-sm text-muted-foreground">{poll.description}</p>
             )}
@@ -335,14 +338,18 @@ export function PollMessage({
         </div>
 
         {/* Metadata */}
-        <div className="flex items-center gap-4 text-xs text-muted-foreground flex-wrap">
+        <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Users className="h-3 w-3" />
-            <span>{poll.totalVoters} {poll.totalVoters === 1 ? 'voter' : 'voters'}</span>
+            <span>
+              {poll.totalVoters} {poll.totalVoters === 1 ? 'voter' : 'voters'}
+            </span>
           </div>
           <div className="flex items-center gap-1">
             <BarChart3 className="h-3 w-3" />
-            <span>{poll.totalVotes} {poll.totalVotes === 1 ? 'vote' : 'votes'}</span>
+            <span>
+              {poll.totalVotes} {poll.totalVotes === 1 ? 'vote' : 'votes'}
+            </span>
           </div>
           {poll.closesAt && poll.status === 'active' && (
             <div className="flex items-center gap-1">
@@ -368,15 +375,14 @@ export function PollMessage({
       <Separator />
 
       {/* Options */}
-      <div className="p-4 space-y-2">
+      <div className="space-y-2 p-4">
         <AnimatePresence mode="popLayout">
           {poll.options.map((option, index) => {
             const isSelected = selectedOptions.has(option.id)
-            const isWinning = winningOptions.some(w => w.id === option.id)
+            const isWinning = winningOptions.some((w) => w.id === option.id)
             const userVoted = poll.currentUserVote?.optionIds.includes(option.id) || false
-            const percentage = poll.totalVotes > 0
-              ? Math.round((option.voteCount / poll.totalVotes) * 100)
-              : 0
+            const percentage =
+              poll.totalVotes > 0 ? Math.round((option.voteCount / poll.totalVotes) * 100) : 0
 
             return (
               <motion.div
@@ -391,9 +397,9 @@ export function PollMessage({
                   onClick={() => handleToggleOption(option.id)}
                   disabled={!canVote || isVoting}
                   className={cn(
-                    'w-full text-left p-3 rounded-md border transition-all relative overflow-hidden group',
-                    'focus:outline-none focus:ring-2 focus:ring-primary/50',
-                    isSelected && 'border-primary bg-primary/5',
+                    'group relative w-full overflow-hidden rounded-md border p-3 text-left transition-all',
+                    'focus:ring-primary/50 focus:outline-none focus:ring-2',
+                    isSelected && 'bg-primary/5 border-primary',
                     userVoted && !isOpen && 'bg-primary/10 border-primary/50',
                     canVote && 'hover:border-primary/50 cursor-pointer',
                     !canVote && 'cursor-default'
@@ -402,7 +408,7 @@ export function PollMessage({
                   {/* Progress bar background */}
                   <div
                     className={cn(
-                      'absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent transition-all duration-500',
+                      'from-primary/10 absolute inset-0 bg-gradient-to-r to-transparent transition-all duration-500',
                       isWinning && poll.totalVotes > 0 && 'from-primary/20'
                     )}
                     style={{ width: `${percentage}%` }}
@@ -410,46 +416,48 @@ export function PollMessage({
 
                   {/* Content */}
                   <div className="relative flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
                       {/* Checkbox/Radio */}
                       {canVote ? (
                         poll.settings.allowMultiple ? (
                           isSelected ? (
-                            <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
+                            <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                           ) : (
-                            <Circle className="h-5 w-5 text-muted-foreground shrink-0 group-hover:text-primary/50" />
+                            <Circle className="group-hover:text-primary/50 h-5 w-5 shrink-0 text-muted-foreground" />
                           )
                         ) : (
-                          <div className={cn(
-                            'h-5 w-5 rounded-full border-2 shrink-0 transition-colors',
-                            isSelected
-                              ? 'border-primary bg-primary'
-                              : 'border-muted-foreground group-hover:border-primary/50'
-                          )}>
+                          <div
+                            className={cn(
+                              'h-5 w-5 shrink-0 rounded-full border-2 transition-colors',
+                              isSelected
+                                ? 'border-primary bg-primary'
+                                : 'group-hover:border-primary/50 border-muted-foreground'
+                            )}
+                          >
                             {isSelected && (
-                              <div className="h-full w-full rounded-full bg-background scale-50" />
+                              <div className="h-full w-full scale-50 rounded-full bg-background" />
                             )}
                           </div>
                         )
                       ) : (
-                        userVoted && <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
+                        userVoted && <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                       )}
 
                       {/* Option text */}
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2">
                           {option.emoji && <span className="text-lg">{option.emoji}</span>}
-                          <span className="font-medium truncate">{option.text}</span>
+                          <span className="truncate font-medium">{option.text}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* Stats */}
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex shrink-0 items-center gap-2">
                       {isWinning && poll.totalVotes > 0 && (
                         <TrendingUp className="h-4 w-4 text-primary" />
                       )}
-                      <span className="text-sm font-semibold min-w-[3ch] text-right">
+                      <span className="min-w-[3ch] text-right text-sm font-semibold">
                         {percentage}%
                       </span>
                       {!poll.settings.isAnonymous && option.voteCount > 0 && (
@@ -461,7 +469,9 @@ export function PollMessage({
                               </Badge>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>{option.voteCount} {option.voteCount === 1 ? 'vote' : 'votes'}</p>
+                              <p>
+                                {option.voteCount} {option.voteCount === 1 ? 'vote' : 'votes'}
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -545,7 +555,7 @@ export function PollMessage({
                 onClick={() => setShowAddOption(true)}
                 className="w-full"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Add an option
               </Button>
             )}
@@ -557,7 +567,7 @@ export function PollMessage({
       {(canVote || hasVoted || canManage) && (
         <>
           <Separator />
-          <div className="p-4 space-y-2">
+          <div className="space-y-2 p-4">
             {/* Voting Actions */}
             {canVote && (
               <div className="flex items-center justify-between gap-2">
@@ -610,17 +620,13 @@ export function PollMessage({
                     onClick={handleReopenPoll}
                     disabled={isManaging}
                   >
-                    <RotateCcw className="h-4 w-4 mr-2" />
+                    <RotateCcw className="mr-2 h-4 w-4" />
                     Reopen Poll
                   </Button>
                 )}
                 {onExportResults && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleExportResults}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
+                  <Button variant="outline" size="sm" onClick={handleExportResults}>
+                    <Download className="mr-2 h-4 w-4" />
                     Export Results
                   </Button>
                 )}
@@ -630,9 +636,9 @@ export function PollMessage({
                     size="sm"
                     onClick={handleDeletePoll}
                     disabled={isManaging}
-                    className="text-destructive hover:bg-destructive/10"
+                    className="hover:bg-destructive/10 text-destructive"
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="mr-2 h-4 w-4" />
                     Delete Poll
                   </Button>
                 )}
@@ -646,19 +652,20 @@ export function PollMessage({
       {poll.status === 'closed' && poll.totalVotes > 0 && (
         <>
           <Separator />
-          <div className="p-4 bg-muted/50">
+          <div className="bg-muted/50 p-4">
             <div className="text-sm">
               {hasMultipleWinners ? (
                 <p>
                   <span className="font-semibold">Tie:</span>{' '}
-                  {winningOptions.map(o => o.text).join(', ')} are tied with{' '}
-                  {winningOptions[0]?.voteCount} vote{winningOptions[0]?.voteCount !== 1 ? 's' : ''} each
+                  {winningOptions.map((o) => o.text).join(', ')} are tied with{' '}
+                  {winningOptions[0]?.voteCount} vote{winningOptions[0]?.voteCount !== 1 ? 's' : ''}{' '}
+                  each
                 </p>
               ) : winningOptions[0] ? (
                 <p>
-                  <span className="font-semibold">Winner:</span>{' '}
-                  {winningOptions[0].text} with {winningOptions[0].voteCount}{' '}
-                  vote{winningOptions[0].voteCount !== 1 ? 's' : ''} ({winningOptions[0].percentage}%)
+                  <span className="font-semibold">Winner:</span> {winningOptions[0].text} with{' '}
+                  {winningOptions[0].voteCount} vote{winningOptions[0].voteCount !== 1 ? 's' : ''} (
+                  {winningOptions[0].percentage}%)
                 </p>
               ) : null}
             </div>

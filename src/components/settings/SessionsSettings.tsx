@@ -1,16 +1,25 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { SettingsSection } from './settings-section';
-import { Button } from '@/components/ui/button';
-import { Check, Monitor, Smartphone, Tablet, Globe, MoreVertical, LogOut, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useState } from 'react'
+import { SettingsSection } from './settings-section'
+import { Button } from '@/components/ui/button'
+import {
+  Check,
+  Monitor,
+  Smartphone,
+  Tablet,
+  Globe,
+  MoreVertical,
+  LogOut,
+  AlertCircle,
+} from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,23 +29,23 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { cn } from '@/lib/utils';
-import { formatDistanceToNow } from 'date-fns';
+} from '@/components/ui/alert-dialog'
+import { cn } from '@/lib/utils'
+import { formatDistanceToNow } from 'date-fns'
 
 interface Session {
-  id: string;
-  device: string;
-  deviceType: 'desktop' | 'mobile' | 'tablet' | 'unknown';
-  browser: string;
-  location: string;
-  ip: string;
-  lastActive: Date;
-  isCurrent: boolean;
+  id: string
+  device: string
+  deviceType: 'desktop' | 'mobile' | 'tablet' | 'unknown'
+  browser: string
+  location: string
+  ip: string
+  lastActive: Date
+  isCurrent: boolean
 }
 
 interface SessionsSettingsProps {
-  className?: string;
+  className?: string
 }
 
 // Mock sessions data
@@ -71,58 +80,56 @@ const mockSessions: Session[] = [
     lastActive: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
     isCurrent: false,
   },
-];
+]
 
 const deviceIcons = {
   desktop: Monitor,
   mobile: Smartphone,
   tablet: Tablet,
   unknown: Globe,
-};
+}
 
 /**
  * SessionsSettings - Manage active sessions
  */
 export function SessionsSettings({ className }: SessionsSettingsProps) {
-  const [sessions, setSessions] = useState<Session[]>(mockSessions);
-  const [loading, setLoading] = useState<string | null>(null);
-  const [revokeAllOpen, setRevokeAllOpen] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [sessions, setSessions] = useState<Session[]>(mockSessions)
+  const [loading, setLoading] = useState<string | null>(null)
+  const [revokeAllOpen, setRevokeAllOpen] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleRevokeSession = async (sessionId: string) => {
-    setLoading(sessionId);
-    setError(null);
+    setLoading(sessionId)
+    setError(null)
 
     try {
-      // TODO: Implement actual session revocation
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
-      setSessions((prev) => prev.filter((s) => s.id !== sessionId));
+      setSessions((prev) => prev.filter((s) => s.id !== sessionId))
     } catch {
-      setError('Failed to revoke session');
+      setError('Failed to revoke session')
     } finally {
-      setLoading(null);
+      setLoading(null)
     }
-  };
+  }
 
   const handleRevokeAllOthers = async () => {
-    setLoading('all');
-    setError(null);
+    setLoading('all')
+    setError(null)
 
     try {
-      // TODO: Implement actual revoke all sessions
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      setSessions((prev) => prev.filter((s) => s.isCurrent));
-      setRevokeAllOpen(false);
+      setSessions((prev) => prev.filter((s) => s.isCurrent))
+      setRevokeAllOpen(false)
     } catch {
-      setError('Failed to revoke sessions');
+      setError('Failed to revoke sessions')
     } finally {
-      setLoading(null);
+      setLoading(null)
     }
-  };
+  }
 
-  const otherSessions = sessions.filter((s) => !s.isCurrent);
+  const otherSessions = sessions.filter((s) => !s.isCurrent)
 
   return (
     <SettingsSection
@@ -139,23 +146,22 @@ export function SessionsSettings({ className }: SessionsSettingsProps) {
 
       <div className="space-y-3">
         {sessions.map((session) => {
-          const DeviceIcon = deviceIcons[session.deviceType];
+          const DeviceIcon = deviceIcons[session.deviceType]
 
           return (
             <div
               key={session.id}
               className={cn(
                 'flex items-center justify-between rounded-lg border p-4',
-                session.isCurrent && 'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950'
+                session.isCurrent &&
+                  'border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950'
               )}
             >
               <div className="flex items-center gap-3">
                 <div
                   className={cn(
                     'flex h-10 w-10 items-center justify-center rounded-lg',
-                    session.isCurrent
-                      ? 'bg-green-100 dark:bg-green-900'
-                      : 'bg-muted'
+                    session.isCurrent ? 'bg-green-100 dark:bg-green-900' : 'bg-muted'
                   )}
                 >
                   <DeviceIcon
@@ -191,11 +197,7 @@ export function SessionsSettings({ className }: SessionsSettingsProps) {
               {!session.isCurrent && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      disabled={loading === session.id}
-                    >
+                    <Button variant="ghost" size="sm" disabled={loading === session.id}>
                       {loading === session.id ? (
                         <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                       ) : (
@@ -215,7 +217,7 @@ export function SessionsSettings({ className }: SessionsSettingsProps) {
                 </DropdownMenu>
               )}
             </div>
-          );
+          )
         })}
       </div>
 
@@ -238,15 +240,15 @@ export function SessionsSettings({ className }: SessionsSettingsProps) {
             <AlertDialogTitle>Sign out of all other sessions?</AlertDialogTitle>
             <AlertDialogDescription>
               This will sign you out of {otherSessions.length} other{' '}
-              {otherSessions.length === 1 ? 'session' : 'sessions'}. You will need to
-              sign in again on those devices.
+              {otherSessions.length === 1 ? 'session' : 'sessions'}. You will need to sign in again
+              on those devices.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleRevokeAllOthers}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               {loading === 'all' ? 'Signing out...' : 'Sign out all'}
             </AlertDialogAction>
@@ -254,5 +256,5 @@ export function SessionsSettings({ className }: SessionsSettingsProps) {
         </AlertDialogContent>
       </AlertDialog>
     </SettingsSection>
-  );
+  )
 }

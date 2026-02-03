@@ -39,25 +39,12 @@ export interface PermissionContext {
 /**
  * Condition types for permission rules
  */
-export type ConditionType =
-  | 'role'
-  | 'permission'
-  | 'owner'
-  | 'custom'
-  | 'time'
-  | 'resource'
+export type ConditionType = 'role' | 'permission' | 'owner' | 'custom' | 'time' | 'resource'
 
 /**
  * Resource types that can have permissions
  */
-export type ResourceType =
-  | 'message'
-  | 'channel'
-  | 'user'
-  | 'role'
-  | 'file'
-  | 'thread'
-  | 'reaction'
+export type ResourceType = 'message' | 'channel' | 'user' | 'role' | 'file' | 'thread' | 'reaction'
 
 /**
  * A single permission condition
@@ -280,10 +267,7 @@ export class PermissionBuilder {
   /**
    * Add a custom condition
    */
-  requireCustom(
-    description: string,
-    evaluate: (context: PermissionContext) => boolean
-  ): this {
+  requireCustom(description: string, evaluate: (context: PermissionContext) => boolean): this {
     this._conditions.push(customCondition(description, evaluate))
     return this
   }
@@ -475,8 +459,7 @@ export class PermissionRuleEngine {
   private evaluateRule(rule: PermissionRule, context: PermissionContext): PermissionResult {
     const results = rule.conditions.map((cond) => cond.evaluate(context))
 
-    const allowed =
-      rule.mode === 'all' ? results.every((r) => r) : results.some((r) => r)
+    const allowed = rule.mode === 'all' ? results.every((r) => r) : results.some((r) => r)
 
     return {
       allowed,
@@ -754,10 +737,7 @@ export function createUserPermissionRules(): PermissionRule[] {
       .description('Allow banning users (except owner)')
       .forPermission(PERMISSIONS.USER_BAN)
       .requireRole('admin')
-      .requireCustom(
-        'Cannot ban owner',
-        (ctx) => ctx.metadata?.targetRole !== 'owner'
-      )
+      .requireCustom('Cannot ban owner', (ctx) => ctx.metadata?.targetRole !== 'owner')
       .build(),
 
     // Kick users (moderator+, cannot kick owner)
@@ -766,10 +746,7 @@ export function createUserPermissionRules(): PermissionRule[] {
       .description('Allow kicking users (except owner)')
       .forPermission(PERMISSIONS.USER_KICK)
       .requireRole('moderator')
-      .requireCustom(
-        'Cannot kick owner',
-        (ctx) => ctx.metadata?.targetRole !== 'owner'
-      )
+      .requireCustom('Cannot kick owner', (ctx) => ctx.metadata?.targetRole !== 'owner')
       .build(),
 
     // Mute users
@@ -778,10 +755,7 @@ export function createUserPermissionRules(): PermissionRule[] {
       .description('Allow muting users')
       .forPermission(PERMISSIONS.USER_MUTE)
       .requireRole('moderator')
-      .requireCustom(
-        'Cannot mute owner',
-        (ctx) => ctx.metadata?.targetRole !== 'owner'
-      )
+      .requireCustom('Cannot mute owner', (ctx) => ctx.metadata?.targetRole !== 'owner')
       .build(),
   ]
 }

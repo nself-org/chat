@@ -19,31 +19,25 @@ export { createStandupBot, _standupBot as standupBotTemplate }
 /**
  * All available templates
  */
-export const allTemplates = [
-  _welcomeBot,
-  _faqBot,
-  _pollBot,
-  _schedulerBot,
-  _standupBot,
-] as const
+export const allTemplates = [_welcomeBot, _faqBot, _pollBot, _schedulerBot, _standupBot] as const
 
 /**
  * Get template by ID
  */
 export function getTemplate(id: string) {
-  return allTemplates.find(t => t.id === id)
+  return allTemplates.find((t) => t.id === id)
 }
 
 /**
  * Get templates by category
  */
 export function getTemplatesByCategory(category: string) {
-  return allTemplates.filter(t => t.category === category)
+  return allTemplates.filter((t) => t.category === category)
 }
 
 /**
  * Get featured templates
  */
 export function getFeaturedTemplates() {
-  return allTemplates.filter(t => t.isFeatured)
+  return allTemplates.filter((t) => t.isFeatured)
 }

@@ -11,6 +11,8 @@ import {
 } from '@/lib/ai/sentiment-analyzer'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -36,10 +38,7 @@ export async function POST(request: NextRequest) {
     const body = (await request.json()) as SentimentRequest
 
     // Validate request
-    if (
-      !body.message &&
-      (!body.messages || !Array.isArray(body.messages))
-    ) {
+    if (!body.message && (!body.messages || !Array.isArray(body.messages))) {
       return NextResponse.json(
         {
           success: false,
@@ -70,10 +69,7 @@ export async function POST(request: NextRequest) {
           )
         }
 
-        const analysis = await analyzer.analyzeMessage(
-          body.message,
-          body.options
-        )
+        const analysis = await analyzer.analyzeMessage(body.message, body.options)
         result.result = analysis
         break
       }
@@ -115,13 +111,10 @@ export async function POST(request: NextRequest) {
           )
         }
 
-        const moraleReport = await analyzer.generateMoraleReport(
-          body.messages,
-          {
-            start: new Date(body.period.start),
-            end: new Date(body.period.end),
-          }
-        )
+        const moraleReport = await analyzer.generateMoraleReport(body.messages, {
+          start: new Date(body.period.start),
+          end: new Date(body.period.end),
+        })
         result.moraleReport = moraleReport
         break
       }
@@ -139,7 +132,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Sentiment analysis error:', error)
+    logger.error('Sentiment analysis error:', error)
     captureError(error as Error, {
       tags: { api: 'ai-sentiment' },
       extra: { requestBody: request.body },
@@ -148,8 +141,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         success: false,
-        error:
-          error instanceof Error ? error.message : 'Sentiment analysis failed',
+        error: error instanceof Error ? error.message : 'Sentiment analysis failed',
       } as SentimentResponse,
       { status: 500 }
     )

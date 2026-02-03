@@ -6,14 +6,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { ApolloClient, InMemoryCache, HttpLink, gql } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 const apolloClient = new ApolloClient({
   link: new HttpLink({
     uri: process.env.NEXT_PUBLIC_GRAPHQL_URL,
     headers: {
-      'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET || ''
-    }
+      'x-hasura-admin-secret': process.env.HASURA_ADMIN_SECRET || '',
+    },
   }),
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 })
 
 /**
@@ -40,16 +42,13 @@ export async function GET(request: NextRequest) {
           }
         }
       `,
-      fetchPolicy: 'network-only'
+      fetchPolicy: 'network-only',
     })
 
     return NextResponse.json(data.nchat_social_accounts)
   } catch (error) {
-    console.error('Get social accounts error:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch social accounts' },
-      { status: 500 }
-    )
+    logger.error('Get social accounts error:', error)
+    return NextResponse.json({ error: 'Failed to fetch social accounts' }, { status: 500 })
   }
 }
 
@@ -87,18 +86,15 @@ export async function POST(request: NextRequest) {
           refresh_token_encrypted: body.refresh_token_encrypted,
           token_expires_at: body.token_expires_at,
           is_active: true,
-          created_by: body.created_by || '00000000-0000-0000-0000-000000000000' // System user
-        }
-      }
+          created_by: body.created_by || '00000000-0000-0000-0000-000000000000', // System user
+        },
+      },
     })
 
     return NextResponse.json(data.insert_nchat_social_accounts_one)
   } catch (error) {
-    console.error('Create social account error:', error)
-    return NextResponse.json(
-      { error: 'Failed to create social account' },
-      { status: 500 }
-    )
+    logger.error('Create social account error:', error)
+    return NextResponse.json({ error: 'Failed to create social account' }, { status: 500 })
   }
 }
 
@@ -123,15 +119,12 @@ export async function DELETE(request: NextRequest) {
           }
         }
       `,
-      variables: { id }
+      variables: { id },
     })
 
     return NextResponse.json(data.delete_nchat_social_accounts_by_pk)
   } catch (error) {
-    console.error('Delete social account error:', error)
-    return NextResponse.json(
-      { error: 'Failed to delete social account' },
-      { status: 500 }
-    )
+    logger.error('Delete social account error:', error)
+    return NextResponse.json({ error: 'Failed to delete social account' }, { status: 500 })
   }
 }

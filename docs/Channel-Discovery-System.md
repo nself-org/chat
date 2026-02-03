@@ -60,6 +60,7 @@ Channel Discovery System
 Comprehensive channel browsing interface with multiple views and features.
 
 **Features**:
+
 - ✅ Tabbed interface (Discover, Browse All, Categories)
 - ✅ Grid and list layout toggle
 - ✅ Search integration
@@ -74,10 +75,10 @@ Comprehensive channel browsing interface with multiple views and features.
 - ✅ Refresh functionality
 
 **Usage**:
+
 ```tsx
 import { ChannelBrowser } from '@/components/channels/ChannelBrowser'
-
-<ChannelBrowser
+;<ChannelBrowser
   channels={channels}
   joinedChannelIds={joinedChannelIds}
   isLoading={false}
@@ -104,6 +105,7 @@ import { ChannelBrowser } from '@/components/channels/ChannelBrowser'
 Hierarchical channel directory with tree, grid, and list views.
 
 **Features**:
+
 - ✅ Tree view with collapsible categories
 - ✅ Grid view with category grouping
 - ✅ List view with flat display
@@ -115,10 +117,10 @@ Hierarchical channel directory with tree, grid, and list views.
 - ✅ Activity indicators
 
 **Usage**:
+
 ```tsx
 import { ChannelDirectory } from '@/components/channels/ChannelDirectory'
-
-<ChannelDirectory
+;<ChannelDirectory
   channels={channels}
   joinedChannelIds={joinedChannelIds}
   showSearch={true}
@@ -137,11 +139,13 @@ import { ChannelDirectory } from '@/components/channels/ChannelDirectory'
 Reusable channel display card with multiple variants.
 
 **Variants**:
+
 - **default**: Full card with stats
 - **compact**: Condensed horizontal layout
 - **featured**: Highlighted with gradient background
 
 **Features**:
+
 - ✅ Channel name, icon, description
 - ✅ Member count
 - ✅ Activity level badge
@@ -152,10 +156,10 @@ Reusable channel display card with multiple variants.
 - ✅ Click to navigate
 
 **Usage**:
+
 ```tsx
 import { ChannelCard } from '@/components/channels/ChannelCard'
-
-<ChannelCard
+;<ChannelCard
   channel={channel}
   isJoined={false}
   isFeatured={true}
@@ -176,6 +180,7 @@ import { ChannelCard } from '@/components/channels/ChannelCard'
 Complete invitation system with multiple invite methods.
 
 **Features**:
+
 - ✅ Invite users from directory
 - ✅ Generate invite links
 - ✅ Email invitations
@@ -186,15 +191,10 @@ Complete invitation system with multiple invite methods.
 - ✅ Bulk selection
 
 **Usage**:
+
 ```tsx
 import { ChannelInvite } from '@/components/channels/ChannelInvite'
-
-<ChannelInvite
-  channel={channel}
-  open={isOpen}
-  onOpenChange={setIsOpen}
-  onInvite={handleInvite}
-/>
+;<ChannelInvite channel={channel} open={isOpen} onOpenChange={setIsOpen} onInvite={handleInvite} />
 ```
 
 ### 5. Discovery Hook
@@ -204,6 +204,7 @@ import { ChannelInvite } from '@/components/channels/ChannelInvite'
 React hook for channel discovery with comprehensive state management.
 
 **Features**:
+
 - ✅ Auto-fetch channels
 - ✅ Real-time updates (optional)
 - ✅ Advanced filtering
@@ -217,6 +218,7 @@ React hook for channel discovery with comprehensive state management.
 - ✅ Loading states
 
 **Usage**:
+
 ```tsx
 import { useChannelDiscovery } from '@/hooks/use-channel-discovery'
 
@@ -263,6 +265,7 @@ RESTful API endpoint for channel discovery.
 **Endpoint**: `GET /api/channels/discover`
 
 **Query Parameters**:
+
 - `q` - Search query
 - `category` - Category ID filter
 - `type` - Channel type (public, private, all)
@@ -275,6 +278,7 @@ RESTful API endpoint for channel discovery.
 - `includeRecommendations` - Include recommendations (boolean)
 
 **Response**:
+
 ```json
 {
   "channels": [...],
@@ -305,16 +309,16 @@ RESTful API endpoint for channel discovery.
 
 Predefined categories for channel organization:
 
-| Category | Icon | Color | Description |
-|----------|------|-------|-------------|
-| General | MessageSquare | #6366f1 | General discussion and announcements |
-| Announcements | Megaphone | #f59e0b | Important announcements and updates |
-| Teams | Users | #10b981 | Team-specific channels |
-| Projects | FolderKanban | #8b5cf6 | Project discussions and updates |
-| Support | HelpCircle | #ef4444 | Help and support channels |
-| Social | Coffee | #ec4899 | Casual conversations and social |
-| Resources | BookOpen | #06b6d4 | Shared resources and documentation |
-| Archived | Archive | #64748b | Archived and inactive channels |
+| Category      | Icon          | Color   | Description                          |
+| ------------- | ------------- | ------- | ------------------------------------ |
+| General       | MessageSquare | #6366f1 | General discussion and announcements |
+| Announcements | Megaphone     | #f59e0b | Important announcements and updates  |
+| Teams         | Users         | #10b981 | Team-specific channels               |
+| Projects      | FolderKanban  | #8b5cf6 | Project discussions and updates      |
+| Support       | HelpCircle    | #ef4444 | Help and support channels            |
+| Social        | Coffee        | #ec4899 | Casual conversations and social      |
+| Resources     | BookOpen      | #06b6d4 | Shared resources and documentation   |
+| Archived      | Archive       | #64748b | Archived and inactive channels       |
 
 ---
 
@@ -324,18 +328,18 @@ Predefined categories for channel organization:
 
 ```typescript
 interface DiscoveryFilters {
-  query?: string                    // Search text
+  query?: string // Search text
   type?: 'public' | 'private' | 'all' // Channel type
-  categoryId?: string               // Category filter
-  sortBy?: DiscoverySortOption      // Sort field
-  sortDirection?: 'asc' | 'desc'    // Sort order
-  hasActivity?: boolean             // Active channels only
-  memberCountMin?: number           // Min members
-  memberCountMax?: number           // Max members
-  createdAfter?: Date              // Created after date
-  createdBefore?: Date             // Created before date
-  excludeJoined?: boolean          // Exclude joined
-  excludePrivate?: boolean         // Exclude private
+  categoryId?: string // Category filter
+  sortBy?: DiscoverySortOption // Sort field
+  sortDirection?: 'asc' | 'desc' // Sort order
+  hasActivity?: boolean // Active channels only
+  memberCountMin?: number // Min members
+  memberCountMax?: number // Max members
+  createdAfter?: Date // Created after date
+  createdBefore?: Date // Created before date
+  excludeJoined?: boolean // Exclude joined
+  excludePrivate?: boolean // Exclude private
 }
 ```
 
@@ -354,13 +358,13 @@ Predefined filter combinations:
 
 ```typescript
 type QuickFilterType =
-  | 'all'       // All channels
-  | 'public'    // Public channels only
-  | 'private'   // Private channels only
-  | 'active'    // Recently active
-  | 'new'       // Recently created
-  | 'popular'   // Most members
-  | 'trending'  // Trending now
+  | 'all' // All channels
+  | 'public' // Public channels only
+  | 'private' // Private channels only
+  | 'active' // Recently active
+  | 'new' // Recently created
+  | 'popular' // Most members
+  | 'trending' // Trending now
 ```
 
 ---
@@ -415,12 +419,12 @@ The system tracks comprehensive channel statistics:
 
 ```typescript
 interface DiscoveryStats {
-  totalChannels: number      // Total channel count
-  publicChannels: number     // Public channel count
-  privateChannels: number    // Private channel count
-  totalMembers: number       // Total membership count
-  activeToday: number        // Active in last 24h
-  newThisWeek: number        // Created in last 7 days
+  totalChannels: number // Total channel count
+  publicChannels: number // Public channel count
+  privateChannels: number // Private channel count
+  totalMembers: number // Total membership count
+  activeToday: number // Active in last 24h
+  newThisWeek: number // Created in last 7 days
 }
 ```
 
@@ -467,15 +471,11 @@ export default function ChannelsPage() {
 ### 2. With Custom Filters
 
 ```tsx
-const {
-  channels,
-  setFilters,
-  applyQuickFilter
-} = useChannelDiscovery({
+const { channels, setFilters, applyQuickFilter } = useChannelDiscovery({
   initialFilters: {
     type: 'public',
     sortBy: 'activity',
-  }
+  },
 })
 
 // Apply quick filter
@@ -632,6 +632,7 @@ npm run test:e2e -- --grep "channel discovery"
 ## Future Enhancements
 
 ### Phase 1 (Current)
+
 - ✅ Basic discovery
 - ✅ Filtering and sorting
 - ✅ Categories
@@ -639,6 +640,7 @@ npm run test:e2e -- --grep "channel discovery"
 - ✅ Invitations
 
 ### Phase 2 (Planned)
+
 - [ ] AI-powered recommendations
 - [ ] Channel analytics dashboard
 - [ ] Advanced search (boolean operators)
@@ -646,6 +648,7 @@ npm run test:e2e -- --grep "channel discovery"
 - [ ] Channel collections
 
 ### Phase 3 (Future)
+
 - [ ] Channel ratings/reviews
 - [ ] Channel verification badges
 - [ ] Cross-workspace discovery
@@ -666,6 +669,7 @@ npm run test:e2e -- --grep "channel discovery"
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: [nself-chat/issues](https://github.com/nself-chat/issues)
 - Documentation: [nself-chat.dev/docs](https://nself-chat.dev/docs)
 - Discord: [nself-chat Discord](https://discord.gg/nself-chat)

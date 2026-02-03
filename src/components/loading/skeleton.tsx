@@ -10,20 +10,9 @@ interface SkeletonBaseProps extends React.HTMLAttributes<HTMLDivElement> {
 /**
  * Base skeleton component with pulse animation
  */
-export function Skeleton({
-  className,
-  animate = true,
-  ...props
-}: SkeletonBaseProps) {
+export function Skeleton({ className, animate = true, ...props }: SkeletonBaseProps) {
   return (
-    <div
-      className={cn(
-        'rounded-md bg-muted',
-        animate && 'animate-pulse',
-        className
-      )}
-      {...props}
-    />
+    <div className={cn('rounded-md bg-muted', animate && 'animate-pulse', className)} {...props} />
   )
 }
 
@@ -76,17 +65,12 @@ interface CircleSkeletonProps extends SkeletonBaseProps {
 /**
  * Circle skeleton for avatars and icons
  */
-export function CircleSkeleton({
-  size = 40,
-  className,
-  style,
-  ...props
-}: CircleSkeletonProps) {
+export function CircleSkeleton({ size = 40, className, style, ...props }: CircleSkeletonProps) {
   const dimension = typeof size === 'number' ? `${size}px` : size
 
   return (
     <Skeleton
-      className={cn('rounded-full shrink-0', className)}
+      className={cn('shrink-0 rounded-full', className)}
       style={{
         width: dimension,
         height: dimension,
@@ -151,11 +135,7 @@ export function TextBlockSkeleton({
   ...props
 }: TextBlockSkeletonProps) {
   return (
-    <div
-      className={cn('flex flex-col', className)}
-      style={{ gap: `${gap}px` }}
-      {...props}
-    >
+    <div className={cn('flex flex-col', className)} style={{ gap: `${gap}px` }} {...props}>
       {Array.from({ length: lines }).map((_, i) => (
         <LineSkeleton
           key={i}
@@ -191,11 +171,7 @@ export function SkeletonGroup({
 }: SkeletonGroupProps) {
   return (
     <div
-      className={cn(
-        'flex',
-        direction === 'vertical' ? 'flex-col' : 'flex-row',
-        className
-      )}
+      className={cn('flex', direction === 'vertical' ? 'flex-col' : 'flex-row', className)}
       style={{ gap: `${gap}px` }}
       {...props}
     >
@@ -210,10 +186,7 @@ export function SkeletonGroup({
  * Shimmer animation variant for skeleton
  * Uses a gradient animation instead of pulse
  */
-export function ShimmerSkeleton({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) {
+export function ShimmerSkeleton({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(

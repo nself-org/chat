@@ -42,7 +42,7 @@ export function FeaturesSection() {
       icon: Shield,
       enabled: true,
     },
-  ].filter(feature => feature.enabled)
+  ].filter((feature) => feature.enabled)
 
   if (availableFeatures.length === 0) {
     return null
@@ -59,7 +59,7 @@ export function FeaturesSection() {
             Powerful features designed to help teams communicate and collaborate effectively.
           </p>
         </div>
-        
+
         <div className="mx-auto mt-16 max-w-2xl sm:mt-20 lg:mt-24 lg:max-w-none">
           <div className="grid max-w-xl grid-cols-1 gap-x-8 gap-y-16 lg:max-w-none lg:grid-cols-3">
             {availableFeatures.map((feature) => (

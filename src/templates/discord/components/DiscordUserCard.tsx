@@ -90,10 +90,7 @@ export function DiscordUserCard({
 
   return (
     <div
-      className={cn(
-        'w-[340px] rounded-lg overflow-hidden shadow-xl',
-        className
-      )}
+      className={cn('w-[340px] overflow-hidden rounded-lg shadow-xl', className)}
       style={{ backgroundColor: discordColors.gray900 }}
     >
       {/* Banner */}
@@ -111,14 +108,15 @@ export function DiscordUserCard({
       <div className="relative px-4 pb-4">
         {/* Avatar */}
         <div className="relative -mt-8 mb-3">
-          <div className="w-[80px] h-[80px] rounded-full overflow-hidden border-[6px]"
+          <div
+            className="h-[80px] w-[80px] overflow-hidden rounded-full border-[6px]"
             style={{ borderColor: discordColors.gray900 }}
           >
             {user.avatar ? (
-              <img src={user.avatar} alt={user.username} className="w-full h-full object-cover" />
+              <img src={user.avatar} alt={user.username} className="h-full w-full object-cover" />
             ) : (
               <div
-                className="w-full h-full flex items-center justify-center text-white font-bold text-2xl"
+                className="flex h-full w-full items-center justify-center text-2xl font-bold text-white"
                 style={{ backgroundColor: discordColors.blurple }}
               >
                 {user.username[0]?.toUpperCase()}
@@ -127,7 +125,7 @@ export function DiscordUserCard({
           </div>
           {/* Status Indicator */}
           <span
-            className="absolute bottom-0.5 right-0.5 w-6 h-6 rounded-full border-4"
+            className="absolute bottom-0.5 right-0.5 h-6 w-6 rounded-full border-4"
             style={{
               backgroundColor: statusColors[user.status],
               borderColor: discordColors.gray900,
@@ -136,13 +134,11 @@ export function DiscordUserCard({
         </div>
 
         {/* Badges Row */}
-        <div className="flex items-center gap-1 mb-2">
-          {user.isPremium && (
-            <NitroBadge />
-          )}
+        <div className="mb-2 flex items-center gap-1">
+          {user.isPremium && <NitroBadge />}
           {user.isBot && (
             <span
-              className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase"
+              className="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase"
               style={{ backgroundColor: discordColors.blurple, color: 'white' }}
             >
               BOT
@@ -160,17 +156,17 @@ export function DiscordUserCard({
             {user.discriminator && `#${user.discriminator}`}
           </div>
           {user.customStatus && (
-            <div className="text-sm text-gray-300 mt-1">{user.customStatus}</div>
+            <div className="mt-1 text-sm text-gray-300">{user.customStatus}</div>
           )}
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-gray-700 mb-3" />
+        <div className="mb-3 h-px bg-gray-700" />
 
         {/* About Me */}
         {user.bio && (
           <Section title="ABOUT ME">
-            <p className="text-sm text-gray-300 whitespace-pre-wrap">{user.bio}</p>
+            <p className="whitespace-pre-wrap text-sm text-gray-300">{user.bio}</p>
           </Section>
         )}
 
@@ -194,13 +190,10 @@ export function DiscordUserCard({
               {roles.map((role) => (
                 <span
                   key={role.id}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs"
+                  className="inline-flex items-center gap-1 rounded px-2 py-0.5 text-xs"
                   style={{ backgroundColor: discordColors.gray800 }}
                 >
-                  <span
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: role.color }}
-                  />
+                  <span className="h-3 w-3 rounded-full" style={{ backgroundColor: role.color }} />
                   <span className="text-gray-300">{role.name}</span>
                 </span>
               ))}
@@ -221,7 +214,7 @@ export function DiscordUserCard({
 
         {/* Message Input */}
         <div
-          className="mt-3 p-2 rounded text-sm text-gray-500"
+          className="mt-3 rounded p-2 text-sm text-gray-500"
           style={{ backgroundColor: discordColors.gray800 }}
         >
           Message @{user.username}
@@ -238,7 +231,7 @@ export function DiscordUserCard({
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="mb-3">
-      <h4 className="text-xs font-semibold text-gray-400 uppercase mb-1">{title}</h4>
+      <h4 className="mb-1 text-xs font-semibold uppercase text-gray-400">{title}</h4>
       {children}
     </div>
   )
@@ -247,7 +240,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 function NitroBadge() {
   return (
     <div
-      className="px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase"
+      className="rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase"
       style={{
         background: 'linear-gradient(90deg, #ff73fa 0%, #ffc0cb 100%)',
         color: 'white',

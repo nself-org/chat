@@ -49,8 +49,8 @@ const createMockMediaStreamTrack = (kind: 'audio' | 'video' = 'audio'): MediaStr
 }
 
 const createMockMediaStream = (tracks: MediaStreamTrack[] = []): MediaStream => {
-  const audioTracks = tracks.filter(t => t.kind === 'audio')
-  const videoTracks = tracks.filter(t => t.kind === 'video')
+  const audioTracks = tracks.filter((t) => t.kind === 'audio')
+  const videoTracks = tracks.filter((t) => t.kind === 'video')
 
   return {
     id: `stream-${Date.now()}`,
@@ -251,7 +251,7 @@ describe('MediaManager', () => {
       const manager = new MediaManager()
       await manager.enumerateDevices()
       const devices = manager.getAudioInputDevices()
-      expect(devices.every(d => d.kind === 'audioinput')).toBe(true)
+      expect(devices.every((d) => d.kind === 'audioinput')).toBe(true)
     })
   })
 
@@ -260,7 +260,7 @@ describe('MediaManager', () => {
       const manager = new MediaManager()
       await manager.enumerateDevices()
       const devices = manager.getAudioOutputDevices()
-      expect(devices.every(d => d.kind === 'audiooutput')).toBe(true)
+      expect(devices.every((d) => d.kind === 'audiooutput')).toBe(true)
     })
   })
 
@@ -269,7 +269,7 @@ describe('MediaManager', () => {
       const manager = new MediaManager()
       await manager.enumerateDevices()
       const devices = manager.getVideoInputDevices()
-      expect(devices.every(d => d.kind === 'videoinput')).toBe(true)
+      expect(devices.every((d) => d.kind === 'videoinput')).toBe(true)
     })
   })
 
@@ -618,9 +618,7 @@ describe('MediaManager', () => {
 
     it('should throw if no active stream', async () => {
       const manager = new MediaManager()
-      await expect(manager.switchAudioDevice('device')).rejects.toThrow(
-        'No active stream'
-      )
+      await expect(manager.switchAudioDevice('device')).rejects.toThrow('No active stream')
     })
   })
 
@@ -647,9 +645,7 @@ describe('MediaManager', () => {
 
     it('should throw if no active stream', async () => {
       const manager = new MediaManager()
-      await expect(manager.switchVideoDevice('device')).rejects.toThrow(
-        'No active stream'
-      )
+      await expect(manager.switchVideoDevice('device')).rejects.toThrow('No active stream')
     })
   })
 
@@ -668,15 +664,14 @@ describe('MediaManager', () => {
       const element = {} as HTMLMediaElement
       const manager = new MediaManager()
 
-      await expect(manager.setAudioOutput('device', element)).rejects.toThrow(
-        'not supported'
-      )
+      await expect(manager.setAudioOutput('device', element)).rejects.toThrow('not supported')
     })
   })
 
   describe('checkPermissions()', () => {
     it('should check media permissions', async () => {
-      const mockQuery = jest.fn()
+      const mockQuery = jest
+        .fn()
         .mockResolvedValueOnce({ state: 'granted' })
         .mockResolvedValueOnce({ state: 'denied' })
 
@@ -798,9 +793,7 @@ describe('MediaManager', () => {
 
     it('should throw if no video track', async () => {
       const manager = new MediaManager()
-      await expect(manager.applyVideoConstraints({})).rejects.toThrow(
-        'No video track available'
-      )
+      await expect(manager.applyVideoConstraints({})).rejects.toThrow('No video track available')
     })
   })
 

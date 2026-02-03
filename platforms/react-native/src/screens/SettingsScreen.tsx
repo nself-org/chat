@@ -3,15 +3,7 @@
  */
 
 import React, { useCallback } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  Switch,
-  Alert,
-} from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Pressable, Switch, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -51,18 +43,14 @@ export function SettingsScreen() {
   const [hapticsEnabled, setHapticsEnabled] = React.useState(true)
 
   const handleSignOut = useCallback(() => {
-    Alert.alert(
-      'Sign Out',
-      'Are you sure you want to sign out?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Sign Out',
-          style: 'destructive',
-          onPress: signOut,
-        },
-      ]
-    )
+    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Sign Out',
+        style: 'destructive',
+        onPress: signOut,
+      },
+    ])
   }, [signOut])
 
   const handleDeleteAccount = useCallback(() => {
@@ -144,15 +132,11 @@ export function SettingsScreen() {
           label: 'Theme',
           value: colorScheme === 'system' ? 'System' : colorScheme === 'dark' ? 'Dark' : 'Light',
           onPress: () => {
-            Alert.alert(
-              'Theme',
-              'Choose your preferred theme',
-              [
-                { text: 'System', onPress: () => setColorScheme('system') },
-                { text: 'Light', onPress: () => setColorScheme('light') },
-                { text: 'Dark', onPress: () => setColorScheme('dark') },
-              ]
-            )
+            Alert.alert('Theme', 'Choose your preferred theme', [
+              { text: 'System', onPress: () => setColorScheme('system') },
+              { text: 'Light', onPress: () => setColorScheme('light') },
+              { text: 'Dark', onPress: () => setColorScheme('dark') },
+            ])
           },
         },
       ],
@@ -281,10 +265,7 @@ export function SettingsScreen() {
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: insets.bottom + 20 },
-        ]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 20 }]}
       >
         {/* Profile Card */}
         <Pressable
@@ -296,9 +277,7 @@ export function SettingsScreen() {
             <Text style={[styles.profileName, { color: theme.colors.text }]}>
               {user?.displayName || 'User'}
             </Text>
-            <Text style={[styles.profileEmail, { color: theme.colors.muted }]}>
-              {user?.email}
-            </Text>
+            <Text style={[styles.profileEmail, { color: theme.colors.muted }]}>{user?.email}</Text>
           </View>
         </Pressable>
 
@@ -309,9 +288,7 @@ export function SettingsScreen() {
               {section.title}
             </Text>
             <View style={[styles.sectionContent, { backgroundColor: theme.colors.surface }]}>
-              {section.items.map((item, index) =>
-                renderItem(item, index, section.items.length)
-              )}
+              {section.items.map((item, index) => renderItem(item, index, section.items.length))}
             </View>
           </View>
         ))}

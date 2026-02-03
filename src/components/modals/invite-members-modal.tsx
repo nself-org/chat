@@ -16,17 +16,10 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
-import {
-  UserPlus,
-  X,
-  Search,
-  Loader2,
-  Link2,
-  Copy,
-  Check,
-  Mail,
-} from 'lucide-react'
+import { UserPlus, X, Search, Loader2, Link2, Copy, Check, Mail } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+import { logger } from '@/lib/logger'
 
 export interface InvitableUser {
   id: string
@@ -75,9 +68,7 @@ export function InviteMembersModal({
     if (!searchQuery) return availableUsers
     const query = searchQuery.toLowerCase()
     return availableUsers.filter(
-      (user) =>
-        user.name.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query)
+      (user) => user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query)
     )
   }, [availableUsers, searchQuery])
 
@@ -87,9 +78,7 @@ export function InviteMembersModal({
 
   const handleUserToggle = (userId: string) => {
     setSelectedUsers((prev) =>
-      prev.includes(userId)
-        ? prev.filter((id) => id !== userId)
-        : [...prev, userId]
+      prev.includes(userId) ? prev.filter((id) => id !== userId) : [...prev, userId]
     )
   }
 
@@ -105,7 +94,7 @@ export function InviteMembersModal({
       await onInvite(selectedUsers)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to invite members:', error)
+      logger.error('Failed to invite members:', error)
     } finally {
       setSubmitting(false)
     }
@@ -118,38 +107,33 @@ export function InviteMembersModal({
       setLinkCopied(true)
       setTimeout(() => setLinkCopied(false), 2000)
     } catch (error) {
-      console.error('Failed to copy link:', error)
+      logger.error('Failed to copy link:', error)
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <UserPlus className="h-5 w-5 text-muted-foreground" />
             Invite members
           </DialogTitle>
           <DialogDescription>
-            Add people to {targetName}. They will be able to see all messages
-            and files.
+            Add people to {targetName}. They will be able to see all messages and files.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 -mx-6 px-6 space-y-4 overflow-hidden flex flex-col">
+        <div className="-mx-6 flex flex-1 flex-col space-y-4 overflow-hidden px-6">
           {/* Selected users */}
           {selectedUserObjects.length > 0 && (
             <div className="space-y-2">
               <Label className="text-xs text-muted-foreground">
                 Selected ({selectedUserObjects.length})
               </Label>
-              <div className="flex flex-wrap gap-1.5 p-2 border rounded-xl bg-muted/30">
+              <div className="bg-muted/30 flex flex-wrap gap-1.5 rounded-xl border p-2">
                 {selectedUserObjects.map((user) => (
-                  <Badge
-                    key={user.id}
-                    variant="secondary"
-                    className="gap-1 pr-1"
-                  >
+                  <Badge key={user.id} variant="secondary" className="gap-1 pr-1">
                     <Avatar className="h-4 w-4">
                       <AvatarImage src={user.avatarUrl} />
                       <AvatarFallback className="text-[10px]">
@@ -172,7 +156,7 @@ export function InviteMembersModal({
 
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search by name or email..."
               value={searchQuery}
@@ -183,14 +167,14 @@ export function InviteMembersModal({
           </div>
 
           {/* User list */}
-          <ScrollArea className="flex-1 border rounded-xl">
+          <ScrollArea className="flex-1 rounded-xl border">
             {isLoading ? (
               <div className="flex items-center justify-center py-8">
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
             ) : filteredUsers.length === 0 ? (
-              <div className="text-center py-8">
-                <Mail className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
+              <div className="py-8 text-center">
+                <Mail className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
                 <p className="text-sm text-muted-foreground">
                   {searchQuery
                     ? 'No users found matching your search'
@@ -205,22 +189,18 @@ export function InviteMembersModal({
                     type="button"
                     onClick={() => handleUserToggle(user.id)}
                     className={cn(
-                      'flex items-center gap-3 w-full px-3 py-2.5 rounded-lg hover:bg-accent transition-colors text-left',
+                      'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-accent',
                       selectedUsers.includes(user.id) && 'bg-accent'
                     )}
                     disabled={isLoading || submitting}
                   >
                     <Avatar className="h-9 w-9">
                       <AvatarImage src={user.avatarUrl} />
-                      <AvatarFallback>
-                        {user.name.charAt(0).toUpperCase()}
-                      </AvatarFallback>
+                      <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                     </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium truncate">{user.name}</p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {user.email}
-                      </p>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-medium">{user.name}</p>
+                      <p className="truncate text-xs text-muted-foreground">{user.email}</p>
                     </div>
                     {user.role && (
                       <Badge variant="outline" className="text-xs">
@@ -228,8 +208,8 @@ export function InviteMembersModal({
                       </Badge>
                     )}
                     {selectedUsers.includes(user.id) && (
-                      <div className="h-5 w-5 rounded-full bg-primary flex items-center justify-center">
-                        <Check className="h-3 w-3 text-primary-foreground" />
+                      <div className="flex h-5 w-5 items-center justify-center rounded-full bg-primary">
+                        <Check className="text-primary-foreground h-3 w-3" />
                       </div>
                     )}
                   </button>
@@ -251,11 +231,7 @@ export function InviteMembersModal({
                   Anyone with this link can join {targetName}
                 </p>
                 <div className="flex gap-2">
-                  <Input
-                    value={inviteLink}
-                    readOnly
-                    className="flex-1 text-xs bg-muted"
-                  />
+                  <Input value={inviteLink} readOnly className="flex-1 bg-muted text-xs" />
                   <Button
                     variant="outline"
                     size="icon"
@@ -274,12 +250,8 @@ export function InviteMembersModal({
           )}
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0 mt-4">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={submitting}
-          >
+        <DialogFooter className="mt-4 gap-2 sm:gap-0">
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={submitting}>
             Cancel
           </Button>
           <Button

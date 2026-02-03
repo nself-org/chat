@@ -1,40 +1,42 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import * as ContextMenuPrimitive from '@radix-ui/react-context-menu';
-import { ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { LucideIcon } from 'lucide-react';
+import * as React from 'react'
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
+import { ChevronRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { LucideIcon } from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface MenuSubmenuProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
-export interface MenuSubmenuTriggerProps
-  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubTrigger> {
+export interface MenuSubmenuTriggerProps extends React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.SubTrigger
+> {
   /**
    * Icon to display before the label
    */
-  icon?: LucideIcon;
+  icon?: LucideIcon
 
   /**
    * Whether to add left padding (for alignment)
    */
-  inset?: boolean;
+  inset?: boolean
 }
 
-export interface MenuSubmenuContentProps
-  extends React.ComponentPropsWithoutRef<typeof ContextMenuPrimitive.SubContent> {}
+export interface MenuSubmenuContentProps extends React.ComponentPropsWithoutRef<
+  typeof ContextMenuPrimitive.SubContent
+> {}
 
 // ============================================================================
 // Components
 // ============================================================================
 
-const MenuSubmenu = ContextMenuPrimitive.Sub;
+const MenuSubmenu = ContextMenuPrimitive.Sub
 
 const MenuSubmenuTrigger = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.SubTrigger>,
@@ -44,8 +46,8 @@ const MenuSubmenuTrigger = React.forwardRef<
     ref={ref}
     className={cn(
       'flex cursor-default select-none items-center gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors',
-      'focus:bg-accent focus:text-accent-foreground',
-      'data-[state=open]:bg-accent data-[state=open]:text-accent-foreground',
+      'focus:text-accent-foreground focus:bg-accent',
+      'data-[state=open]:text-accent-foreground data-[state=open]:bg-accent',
       inset && 'pl-8',
       className
     )}
@@ -55,9 +57,9 @@ const MenuSubmenuTrigger = React.forwardRef<
     <span className="flex-1">{children}</span>
     <ChevronRight className="ml-auto h-4 w-4" />
   </ContextMenuPrimitive.SubTrigger>
-));
+))
 
-MenuSubmenuTrigger.displayName = 'MenuSubmenuTrigger';
+MenuSubmenuTrigger.displayName = 'MenuSubmenuTrigger'
 
 const MenuSubmenuContent = React.forwardRef<
   React.ElementRef<typeof ContextMenuPrimitive.SubContent>,
@@ -76,18 +78,18 @@ const MenuSubmenuContent = React.forwardRef<
     )}
     {...props}
   />
-));
+))
 
-MenuSubmenuContent.displayName = 'MenuSubmenuContent';
+MenuSubmenuContent.displayName = 'MenuSubmenuContent'
 
 // ============================================================================
 // Radio Group
 // ============================================================================
 
-const MenuRadioGroup = ContextMenuPrimitive.RadioGroup;
+const MenuRadioGroup = ContextMenuPrimitive.RadioGroup
 
 // ============================================================================
 // Exports
 // ============================================================================
 
-export { MenuSubmenu, MenuSubmenuTrigger, MenuSubmenuContent, MenuRadioGroup };
+export { MenuSubmenu, MenuSubmenuTrigger, MenuSubmenuContent, MenuRadioGroup }

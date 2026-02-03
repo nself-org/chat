@@ -10,12 +10,7 @@
 import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 // ============================================================================
 // Types
@@ -419,10 +414,7 @@ export const MessageEncryptionIndicator: React.FC<MessageEncryptionIndicatorProp
   if (isDecryptionFailed) {
     return (
       <span
-        className={cn(
-          'inline-flex items-center gap-1 text-xs text-red-500',
-          className
-        )}
+        className={cn('inline-flex items-center gap-1 text-xs text-red-500', className)}
         title="Failed to decrypt message"
         data-testid="message-decryption-failed"
       >

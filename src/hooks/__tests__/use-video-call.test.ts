@@ -652,9 +652,7 @@ describe('useVideoCall', () => {
   describe('Callbacks', () => {
     it('should call onCallStarted', async () => {
       const onCallStarted = jest.fn()
-      const { result } = renderHook(() =>
-        useVideoCall({ ...defaultOptions, onCallStarted })
-      )
+      const { result } = renderHook(() => useVideoCall({ ...defaultOptions, onCallStarted }))
 
       await act(async () => {
         await result.current.startCall('target-user', 'Target User')
@@ -681,9 +679,7 @@ describe('useVideoCall', () => {
         initiatorId: 'user-123',
       }
 
-      const { result } = renderHook(() =>
-        useVideoCall({ ...defaultOptions, onCallEnded })
-      )
+      const { result } = renderHook(() => useVideoCall({ ...defaultOptions, onCallEnded }))
 
       act(() => {
         result.current.endCall()

@@ -2,12 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
-import {
-  Menu,
-  X,
-  ChevronRight,
-  Home,
-} from 'lucide-react'
+import { Menu, X, ChevronRight, Home } from 'lucide-react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -98,10 +93,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     <div className="flex h-screen overflow-hidden bg-background">
       {/* Desktop Sidebar */}
       <div className="hidden md:flex">
-        <AdminSidebar
-          collapsed={sidebarCollapsed}
-          onCollapse={setSidebarCollapsed}
-        />
+        <AdminSidebar collapsed={sidebarCollapsed} onCollapse={setSidebarCollapsed} />
       </div>
 
       {/* Mobile Sidebar Overlay */}
@@ -157,10 +149,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
               <div key={index} className="flex items-center">
                 <ChevronRight className="mx-2 h-4 w-4 text-muted-foreground" />
                 {crumb.href ? (
-                  <Link
-                    href={crumb.href}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
+                  <Link href={crumb.href} className="text-muted-foreground hover:text-foreground">
                     {crumb.label}
                   </Link>
                 ) : (
@@ -172,19 +161,15 @@ export function AdminLayout({ children }: AdminLayoutProps) {
 
           {/* User Info */}
           <div className="ml-auto flex items-center gap-2">
-            <span className="text-sm text-muted-foreground">
-              {user.displayName}
-            </span>
-            <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+            <span className="text-sm text-muted-foreground">{user.displayName}</span>
+            <span className="bg-primary/10 rounded-full px-2 py-0.5 text-xs font-medium text-primary">
               {user.role}
             </span>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-auto p-4 lg:p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-auto p-4 lg:p-6">{children}</main>
       </div>
     </div>
   )

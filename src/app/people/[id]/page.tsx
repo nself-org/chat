@@ -3,11 +3,18 @@
 import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
-import { UserProfile, type Channel, type SharedFile, type ActivityItem } from '@/components/users/UserProfile'
+import {
+  UserProfile,
+  type Channel,
+  type SharedFile,
+  type ActivityItem,
+} from '@/components/users/UserProfile'
 import { type ExtendedUserProfile } from '@/components/users/UserCard'
 import { useUserDirectoryStore } from '@/stores/user-directory-store'
 import { Button } from '@/components/ui/button'
 import { ArrowLeft } from 'lucide-react'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Mock Data for Development
@@ -33,9 +40,19 @@ const MOCK_USER: ExtendedUserProfile = {
   timezone: 'America/Los_Angeles',
   phone: '+1 (415) 555-0123',
   badges: [
-    { id: '1', name: 'Founder', description: 'Original founder of the workspace', color: '#F59E0B' },
+    {
+      id: '1',
+      name: 'Founder',
+      description: 'Original founder of the workspace',
+      color: '#F59E0B',
+    },
     { id: '2', name: 'Verified', description: 'Verified account', color: '#3B82F6' },
-    { id: '3', name: 'Top Contributor', description: 'Most active member this month', color: '#22C55E' },
+    {
+      id: '3',
+      name: 'Top Contributor',
+      description: 'Most active member this month',
+      color: '#22C55E',
+    },
   ],
   socialLinks: [
     { platform: 'Twitter', url: 'https://twitter.com/sarahowner' },
@@ -47,7 +64,13 @@ const MOCK_USER: ExtendedUserProfile = {
 const MOCK_SHARED_CHANNELS: Channel[] = [
   { id: '1', name: 'general', description: 'General discussion', memberCount: 150 },
   { id: '2', name: 'announcements', description: 'Important updates', memberCount: 150 },
-  { id: '3', name: 'engineering', description: 'Engineering team chat', memberCount: 45, isPrivate: true },
+  {
+    id: '3',
+    name: 'engineering',
+    description: 'Engineering team chat',
+    memberCount: 45,
+    isPrivate: true,
+  },
   { id: '4', name: 'design', description: 'Design discussions', memberCount: 20 },
 ]
 
@@ -158,7 +181,7 @@ export default function UserProfilePage() {
         setSharedFiles(MOCK_SHARED_FILES)
         setRecentActivity(MOCK_ACTIVITY)
       } catch (err) {
-        console.error('Failed to load profile:', err)
+        logger.error('Failed to load profile:', err)
         setProfileUser(null)
       } finally {
         setIsLoading(false)
@@ -174,14 +197,10 @@ export default function UserProfilePage() {
   }, [userId, setLoadingProfile, viewProfile])
 
   // Handle message
-  const handleMessage = () => {
-    // TODO: Navigate to or open DM
-  }
+  const handleMessage = () => {}
 
   // Handle call
-  const handleCall = () => {
-    // TODO: Implement call feature
-  }
+  const handleCall = () => {}
 
   // Handle block
   const handleBlock = () => {
@@ -198,9 +217,7 @@ export default function UserProfilePage() {
   }
 
   // Handle report
-  const handleReport = () => {
-    // TODO: Open report modal
-  }
+  const handleReport = () => {}
 
   // Handle edit profile
   const handleEditProfile = () => {
@@ -213,26 +230,18 @@ export default function UserProfilePage() {
   }
 
   // Handle file click
-  const handleFileClick = (file: SharedFile) => {
-    // TODO: Open file preview or download
-  }
+  const handleFileClick = (file: SharedFile) => {}
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="flex h-screen flex-col bg-background">
       {/* Header with back button */}
       <header className="flex-shrink-0 border-b">
         <div className="flex items-center gap-4 p-4">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => router.back()}
-          >
+          <Button variant="ghost" size="icon" onClick={() => router.back()}>
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-lg font-semibold">
-              {isOwnProfile ? 'Your Profile' : 'Profile'}
-            </h1>
+            <h1 className="text-lg font-semibold">{isOwnProfile ? 'Your Profile' : 'Profile'}</h1>
           </div>
         </div>
       </header>

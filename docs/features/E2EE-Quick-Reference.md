@@ -45,10 +45,10 @@ function MyComponent() {
 ### 3. Send Encrypted Message
 
 ```typescript
-import { encryptMessageForSending } from '@/lib/e2ee/message-encryption';
-import { useApolloClient } from '@apollo/client';
+import { encryptMessageForSending } from '@/lib/e2ee/message-encryption'
+import { useApolloClient } from '@apollo/client'
 
-const apolloClient = useApolloClient();
+const apolloClient = useApolloClient()
 
 const payload = await encryptMessageForSending(
   'Hello, World!',
@@ -58,15 +58,15 @@ const payload = await encryptMessageForSending(
     isDirectMessage: true,
   },
   apolloClient
-);
+)
 ```
 
 ### 4. Decrypt Message
 
 ```typescript
-import { extractMessageContent } from '@/lib/e2ee/message-encryption';
+import { extractMessageContent } from '@/lib/e2ee/message-encryption'
 
-const plaintext = await extractMessageContent(message, apolloClient);
+const plaintext = await extractMessageContent(message, apolloClient)
 ```
 
 ---
@@ -76,40 +76,40 @@ const plaintext = await extractMessageContent(message, apolloClient);
 ### Check E2EE Status
 
 ```typescript
-const { status, isInitialized, isEnabled } = useE2EEContext();
+const { status, isInitialized, isEnabled } = useE2EEContext()
 
-console.log('Initialized:', isInitialized);
-console.log('Device ID:', status.deviceId);
+console.log('Initialized:', isInitialized)
+console.log('Device ID:', status.deviceId)
 ```
 
 ### Generate Safety Number
 
 ```typescript
-const { generateSafetyNumber, formatSafetyNumber } = useE2EEContext();
+const { generateSafetyNumber, formatSafetyNumber } = useE2EEContext()
 
-const safetyNumber = await generateSafetyNumber(peerUserId, peerIdentityKey);
-const formatted = formatSafetyNumber(safetyNumber);
+const safetyNumber = await generateSafetyNumber(peerUserId, peerIdentityKey)
+const formatted = formatSafetyNumber(safetyNumber)
 // Output: "12345 67890 12345 67890 ..." (60 digits)
 ```
 
 ### Rotate Keys
 
 ```typescript
-const { rotateSignedPreKey, replenishOneTimePreKeys } = useE2EEContext();
+const { rotateSignedPreKey, replenishOneTimePreKeys } = useE2EEContext()
 
 // Rotate signed prekey (weekly)
-await rotateSignedPreKey();
+await rotateSignedPreKey()
 
 // Replenish one-time prekeys (when low)
-await replenishOneTimePreKeys(50);
+await replenishOneTimePreKeys(50)
 ```
 
 ### Recover E2EE
 
 ```typescript
-const { recover } = useE2EEContext();
+const { recover } = useE2EEContext()
 
-await recover('alpha-bravo-charlie-delta-...');
+await recover('alpha-bravo-charlie-delta-...')
 ```
 
 ---
@@ -121,10 +121,7 @@ await recover('alpha-bravo-charlie-delta-...');
 ```graphql
 query GetPreKeyBundle($userId: uuid!, $deviceId: String!) {
   nchat_prekey_bundles(
-    where: {
-      user_id: { _eq: $userId }
-      device_id: { _eq: $deviceId }
-    }
+    where: { user_id: { _eq: $userId }, device_id: { _eq: $deviceId } }
     limit: 1
   ) {
     identity_key_public
@@ -155,7 +152,12 @@ query GetSession($deviceId: String!, $peerUserId: uuid!, $peerDeviceId: String!)
 ### Save Message
 
 ```graphql
-mutation SendMessage($channelId: uuid!, $content: String!, $isEncrypted: Boolean!, $encryptedPayload: [Int!]) {
+mutation SendMessage(
+  $channelId: uuid!
+  $content: String!
+  $isEncrypted: Boolean!
+  $encryptedPayload: [Int!]
+) {
   insert_nchat_messages_one(
     object: {
       channel_id: $channelId
@@ -215,14 +217,14 @@ import { SafetyNumberDisplay } from '@/components/e2ee/SafetyNumberDisplay';
 
 ```typescript
 try {
-  await initialize(password);
+  await initialize(password)
 } catch (error) {
   if (error.message === 'Invalid password') {
-    alert('Wrong password');
+    alert('Wrong password')
   } else if (error.message === 'E2EE not initialized') {
-    alert('Please set up E2EE first');
+    alert('Please set up E2EE first')
   } else if (error.message === 'No prekey bundle available') {
-    alert('Recipient has not enabled E2EE');
+    alert('Recipient has not enabled E2EE')
   }
 }
 ```
@@ -231,11 +233,11 @@ try {
 
 ```typescript
 // If decryption fails, try re-establishing session
-const { hasSession } = useE2EEContext();
+const { hasSession } = useE2EEContext()
 
 if (!(await hasSession(peerUserId, peerDeviceId))) {
   // Send a new PreKey message to establish session
-  await sendNewMessage();
+  await sendNewMessage()
 }
 ```
 
@@ -245,14 +247,14 @@ if (!(await hasSession(peerUserId, peerDeviceId))) {
 
 ```typescript
 interface EncryptionConfig {
-  enabled: boolean;                        // Enable/disable E2EE globally
-  enforceForPrivateChannels: boolean;      // Force private channels to be encrypted
-  enforceForDirectMessages: boolean;       // Force DMs to be encrypted
-  allowUnencryptedPublicChannels: boolean; // Allow public channels unencrypted
-  enableSafetyNumbers: boolean;            // Show safety number UI
-  requireDeviceVerification: boolean;      // Require device verification
-  automaticKeyRotation: boolean;           // Auto-rotate signed prekeys
-  keyRotationDays: number;                 // Days between rotations (default: 7)
+  enabled: boolean // Enable/disable E2EE globally
+  enforceForPrivateChannels: boolean // Force private channels to be encrypted
+  enforceForDirectMessages: boolean // Force DMs to be encrypted
+  allowUnencryptedPublicChannels: boolean // Allow public channels unencrypted
+  enableSafetyNumbers: boolean // Show safety number UI
+  requireDeviceVerification: boolean // Require device verification
+  automaticKeyRotation: boolean // Auto-rotate signed prekeys
+  keyRotationDays: number // Days between rotations (default: 7)
 }
 ```
 
@@ -271,7 +273,7 @@ interface EncryptionConfig {
 
 ```typescript
 // Generate 100 one-time prekeys at once
-await manager.replenishOneTimePreKeys(100);
+await manager.replenishOneTimePreKeys(100)
 ```
 
 ### 3. Lazy Initialization
@@ -316,8 +318,8 @@ NEXT_PUBLIC_E2EE_DEBUG=true
 
 ```typescript
 // In browser console
-const manager = getE2EEManager(apolloClient);
-console.log(manager.getStatus());
+const manager = getE2EEManager(apolloClient)
+console.log(manager.getStatus())
 ```
 
 ### View Encrypted Message
@@ -405,35 +407,35 @@ Response:
 ```typescript
 // E2EE Status
 interface E2EEStatus {
-  initialized: boolean;
-  masterKeyInitialized: boolean;
-  deviceKeysGenerated: boolean;
-  deviceId?: string;
+  initialized: boolean
+  masterKeyInitialized: boolean
+  deviceKeysGenerated: boolean
+  deviceId?: string
 }
 
 // Encrypted Message Payload
 interface EncryptedMessagePayload {
-  isEncrypted: boolean;
-  encryptedContent?: Uint8Array;
-  messageType?: 'PreKey' | 'Normal';
-  senderDeviceId?: string;
-  plainContent?: string;
+  isEncrypted: boolean
+  encryptedContent?: Uint8Array
+  messageType?: 'PreKey' | 'Normal'
+  senderDeviceId?: string
+  plainContent?: string
 }
 
 // Message Encryption Options
 interface MessageEncryptionOptions {
-  recipientUserId: string;
-  recipientDeviceId?: string;
-  channelId?: string;
-  isDirectMessage: boolean;
+  recipientUserId: string
+  recipientDeviceId?: string
+  channelId?: string
+  isDirectMessage: boolean
 }
 
 // Safety Number Display Props
 interface SafetyNumberDisplayProps {
-  peerUserId: string;
-  peerName: string;
-  peerIdentityKey: Uint8Array;
-  onVerify?: () => void;
+  peerUserId: string
+  peerName: string
+  peerIdentityKey: Uint8Array
+  onVerify?: () => void
 }
 ```
 
@@ -443,20 +445,20 @@ interface SafetyNumberDisplayProps {
 
 ```typescript
 // Crypto
-const PBKDF2_ITERATIONS = 100000;
-const SALT_LENGTH = 32;
-const KEY_LENGTH = 32;
-const IV_LENGTH = 12;
-const AUTH_TAG_LENGTH = 16;
+const PBKDF2_ITERATIONS = 100000
+const SALT_LENGTH = 32
+const KEY_LENGTH = 32
+const IV_LENGTH = 12
+const AUTH_TAG_LENGTH = 16
 
 // Key Management
-const DEFAULT_ONE_TIME_PREKEYS = 100;
-const MIN_ONE_TIME_PREKEYS = 20;
-const SIGNED_PREKEY_ROTATION_DAYS = 7;
+const DEFAULT_ONE_TIME_PREKEYS = 100
+const MIN_ONE_TIME_PREKEYS = 20
+const SIGNED_PREKEY_ROTATION_DAYS = 7
 
 // Safety Number
-const SAFETY_NUMBER_LENGTH = 60;
-const SAFETY_NUMBER_VERSION = 1;
+const SAFETY_NUMBER_LENGTH = 60
+const SAFETY_NUMBER_VERSION = 1
 ```
 
 ---
@@ -472,13 +474,13 @@ const SAFETY_NUMBER_VERSION = 1;
 
 ## Quick Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| "E2EE not initialized" | Run `initialize(password)` |
-| "Failed to decrypt" | Re-establish session |
-| "No prekey bundle" | Ask recipient to enable E2EE |
-| "Master key not found" | Use recovery code |
-| "Out of prekeys" | Auto-replenished (wait) |
+| Problem                | Solution                     |
+| ---------------------- | ---------------------------- |
+| "E2EE not initialized" | Run `initialize(password)`   |
+| "Failed to decrypt"    | Re-establish session         |
+| "No prekey bundle"     | Ask recipient to enable E2EE |
+| "Master key not found" | Use recovery code            |
+| "Out of prekeys"       | Auto-replenished (wait)      |
 
 ---
 

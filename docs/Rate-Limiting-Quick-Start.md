@@ -57,20 +57,15 @@ export async function POST(request: NextRequest) {
 
 ```typescript
 // src/app/api/protected/route.ts
-import {
-  compose,
-  withErrorHandler,
-  withAuth,
-  withLogging,
-} from '@/lib/api/middleware'
+import { compose, withErrorHandler, withAuth, withLogging } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
 
 // Stack multiple protections
 export const POST = compose(
-  withErrorHandler,      // Catch errors
-  withLogging,          // Log requests
-  withCsrfProtection,   // Prevent CSRF
-  withAuth              // Require auth
+  withErrorHandler, // Catch errors
+  withLogging, // Log requests
+  withCsrfProtection, // Prevent CSRF
+  withAuth // Require auth
 )(async (request, context) => {
   // Your handler - fully protected!
   return Response.json({ success: true })
@@ -121,9 +116,7 @@ const makeRequest = async () => {
     const retryAfter = response.headers.get('Retry-After')
 
     // Show user-friendly message
-    toast.error(
-      `Too many requests. Please wait ${retryAfter} seconds.`
-    )
+    toast.error(`Too many requests. Please wait ${retryAfter} seconds.`)
 
     // Optional: Auto-retry after delay
     setTimeout(() => makeRequest(), parseInt(retryAfter) * 1000)
@@ -142,7 +135,7 @@ await fetch('/api/admin/ip-blocks', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   },
   body: JSON.stringify({
     ip: '192.168.1.1',
@@ -152,9 +145,9 @@ await fetch('/api/admin/ip-blocks', {
 })
 
 // View all blocked IPs
-const { blocked, whitelist, blacklist, stats } = await fetch(
-  '/api/admin/ip-blocks'
-).then(r => r.json())
+const { blocked, whitelist, blacklist, stats } = await fetch('/api/admin/ip-blocks').then((r) =>
+  r.json()
+)
 
 // Unblock an IP
 await fetch('/api/admin/ip-blocks?ip=192.168.1.1', {
@@ -196,18 +189,11 @@ export async function POST(request: NextRequest) {
 
   if (loginFailed) {
     // Record the abuse event
-    const wasBlocked = await recordAbuseFromRequest(
-      request,
-      'FAILED_LOGIN',
-      'medium'
-    )
+    const wasBlocked = await recordAbuseFromRequest(request, 'FAILED_LOGIN', 'medium')
 
     if (wasBlocked) {
       // IP was auto-blocked due to too many failures
-      return Response.json(
-        { error: 'IP blocked due to abuse' },
-        { status: 403 }
-      )
+      return Response.json({ error: 'IP blocked due to abuse' }, { status: 403 })
     }
   }
 }
@@ -219,41 +205,41 @@ export async function POST(request: NextRequest) {
 import { RATE_LIMIT_PRESETS } from '@/lib/api/rate-limiter'
 
 // Authentication
-RATE_LIMIT_PRESETS.AUTH              // 5/min
-RATE_LIMIT_PRESETS.AUTH_SIGNUP       // 3/hour
-RATE_LIMIT_PRESETS.AUTH_RESET        // 3/15min
+RATE_LIMIT_PRESETS.AUTH // 5/min
+RATE_LIMIT_PRESETS.AUTH_SIGNUP // 3/hour
+RATE_LIMIT_PRESETS.AUTH_RESET // 3/15min
 
 // Messaging
-RATE_LIMIT_PRESETS.MESSAGE_SEND      // 10/min + 5 burst
-RATE_LIMIT_PRESETS.MESSAGE_EDIT      // 20/min
+RATE_LIMIT_PRESETS.MESSAGE_SEND // 10/min + 5 burst
+RATE_LIMIT_PRESETS.MESSAGE_EDIT // 20/min
 
 // File Operations
-RATE_LIMIT_PRESETS.FILE_UPLOAD       // 5/min
+RATE_LIMIT_PRESETS.FILE_UPLOAD // 5/min
 RATE_LIMIT_PRESETS.FILE_UPLOAD_LARGE // 2/5min
 
 // Search & AI
-RATE_LIMIT_PRESETS.SEARCH            // 20/min + 10 burst
-RATE_LIMIT_PRESETS.AI_QUERY          // 10/min
+RATE_LIMIT_PRESETS.SEARCH // 20/min + 10 burst
+RATE_LIMIT_PRESETS.AI_QUERY // 10/min
 
 // General
-RATE_LIMIT_PRESETS.API_USER          // 100/min + 20 burst
-RATE_LIMIT_PRESETS.API_IP            // 500/min
-RATE_LIMIT_PRESETS.GRAPHQL           // 100/min
-RATE_LIMIT_PRESETS.WEBHOOK           // 50/min
+RATE_LIMIT_PRESETS.API_USER // 100/min + 20 burst
+RATE_LIMIT_PRESETS.API_IP // 500/min
+RATE_LIMIT_PRESETS.GRAPHQL // 100/min
+RATE_LIMIT_PRESETS.WEBHOOK // 50/min
 ```
 
 ## Automatic IP Blocking Rules
 
 The system automatically blocks IPs based on these patterns:
 
-| Rule | Threshold | Window | Block Duration |
-|------|-----------|--------|----------------|
-| FAILED_LOGIN | 10 failures | 15 min | 1 hour |
-| RATE_LIMIT_ABUSE | 50 violations | 5 min | 2 hours |
-| CSRF_VIOLATION | 3 violations | 5 min | 2 hours |
-| SPAM_DETECTED | 20 messages | 1 hour | 12 hours |
-| SQL_INJECTION | 1 attempt | instant | permanent |
-| XSS_ATTEMPT | 1 attempt | instant | permanent |
+| Rule             | Threshold     | Window  | Block Duration |
+| ---------------- | ------------- | ------- | -------------- |
+| FAILED_LOGIN     | 10 failures   | 15 min  | 1 hour         |
+| RATE_LIMIT_ABUSE | 50 violations | 5 min   | 2 hours        |
+| CSRF_VIOLATION   | 3 violations  | 5 min   | 2 hours        |
+| SPAM_DETECTED    | 20 messages   | 1 hour  | 12 hours       |
+| SQL_INJECTION    | 1 attempt     | instant | permanent      |
+| XSS_ATTEMPT      | 1 attempt     | instant | permanent      |
 
 ## Middleware Layers (Automatic)
 
@@ -299,9 +285,7 @@ export async function POST(request: NextRequest) {
 ### Pattern 2: Authenticated endpoint with user-based limiting
 
 ```typescript
-export const POST = compose(
-  withAuth
-)(async (request: AuthenticatedRequest) => {
+export const POST = compose(withAuth)(async (request: AuthenticatedRequest) => {
   const result = await applyRateLimit(
     request,
     RATE_LIMIT_PRESETS.MESSAGE_SEND,
@@ -320,10 +304,10 @@ export const POST = compose(
 
 ```typescript
 export const POST = compose(
-  withErrorHandler,      // Handle errors
-  withLogging,          // Log requests
-  withCsrfProtection,   // CSRF check
-  withAuth              // Auth check
+  withErrorHandler, // Handle errors
+  withLogging, // Log requests
+  withCsrfProtection, // CSRF check
+  withAuth // Auth check
 )(async (request: AuthenticatedRequest) => {
   // Rate limit after auth
   const result = await applyRateLimit(
@@ -348,10 +332,7 @@ export const POST = compose(
 import { rateLimiter } from '@/lib/api/rate-limiter'
 
 // Get status without incrementing counter
-const status = await rateLimiter.status(
-  'user:123',
-  RATE_LIMIT_PRESETS.MESSAGE_SEND
-)
+const status = await rateLimiter.status('user:123', RATE_LIMIT_PRESETS.MESSAGE_SEND)
 
 console.log('Remaining:', status.remaining)
 console.log('Reset at:', new Date(status.reset * 1000))
@@ -402,16 +383,19 @@ clearAllRateLimits()
 Common issues and solutions:
 
 **Rate limits not working?**
+
 - Check Redis connection
 - Verify environment variables
 - Check logs for errors
 
 **Too many false positives?**
+
 - Adjust thresholds
 - Add IPs to whitelist
 - Review block rules
 
 **Performance issues?**
+
 - Use Redis instead of in-memory
 - Adjust cleanup intervals
 - Check Redis memory usage

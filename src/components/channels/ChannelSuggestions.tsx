@@ -64,9 +64,7 @@ export function ChannelSuggestions({
       excludeJoined: true,
     })
 
-    return allSuggestions
-      .filter((s) => !dismissedIds.has(s.channel.id))
-      .slice(0, limit)
+    return allSuggestions.filter((s) => !dismissedIds.has(s.channel.id)).slice(0, limit)
   }, [channels, userContext, limit, dismissedIds])
 
   const handleRefresh = async () => {
@@ -92,7 +90,8 @@ export function ChannelSuggestions({
             Suggested for You
           </CardTitle>
           <CardDescription>
-            No suggestions available at the moment. Join some channels to get personalized recommendations.
+            No suggestions available at the moment. Join some channels to get personalized
+            recommendations.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -112,8 +111,8 @@ export function ChannelSuggestions({
                 onJoin={onJoin}
                 onLeave={onLeave}
               />
-              <div className="flex items-center justify-between mt-1 px-3">
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <div className="mt-1 flex items-center justify-between px-3">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Lightbulb className="h-3 w-3" />
                   {getSuggestionReasonText(suggestion.reason)}
                 </span>
@@ -134,7 +133,7 @@ export function ChannelSuggestions({
 
     if (layout === 'grid') {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {suggestions.map((suggestion) => (
             <div key={suggestion.channel.id} className="relative">
               <ChannelCard
@@ -144,9 +143,9 @@ export function ChannelSuggestions({
                 onJoin={onJoin}
                 onLeave={onLeave}
               />
-              <div className="flex items-center justify-between mt-2">
+              <div className="mt-2 flex items-center justify-between">
                 <Badge variant="outline" className="text-xs">
-                  <Lightbulb className="h-3 w-3 mr-1" />
+                  <Lightbulb className="mr-1 h-3 w-3" />
                   {getSuggestionReasonText(suggestion.reason)}
                 </Badge>
                 <Button
@@ -177,8 +176,8 @@ export function ChannelSuggestions({
                 onJoin={onJoin}
                 onLeave={onLeave}
               />
-              <div className="flex items-center justify-between mt-2">
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
+              <div className="mt-2 flex items-center justify-between">
+                <span className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Lightbulb className="h-3 w-3" />
                   {getSuggestionReasonText(suggestion.reason)}
                 </span>
@@ -211,15 +210,8 @@ export function ChannelSuggestions({
         </div>
         <div className="flex items-center gap-2">
           {showRefresh && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={isRefreshing}
-            >
-              <RefreshCw
-                className={cn('h-4 w-4 mr-1', isRefreshing && 'animate-spin')}
-              />
+            <Button variant="ghost" size="sm" onClick={handleRefresh} disabled={isRefreshing}>
+              <RefreshCw className={cn('mr-1 h-4 w-4', isRefreshing && 'animate-spin')} />
               Refresh
             </Button>
           )}

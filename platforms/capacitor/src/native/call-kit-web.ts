@@ -5,7 +5,13 @@
  * native call integration. Uses browser notifications as fallback.
  */
 
-import type { CallKitPlugin, IncomingCallData, StartCallOptions, ReportCallEndedOptions, CallUpdate } from './call-kit'
+import type {
+  CallKitPlugin,
+  IncomingCallData,
+  StartCallOptions,
+  ReportCallEndedOptions,
+  CallUpdate,
+} from './call-kit'
 
 export class CallKitWeb implements CallKitPlugin {
   private notificationPermission: NotificationPermission = 'default'

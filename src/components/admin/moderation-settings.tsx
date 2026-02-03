@@ -16,6 +16,8 @@ import { Separator } from '@/components/ui/separator'
 import { toast } from 'sonner'
 import type { ModerationConfig } from '@/lib/moderation/moderation-service'
 
+import { logger } from '@/lib/logger'
+
 export function ModerationSettings() {
   const [config, setConfig] = useState<ModerationConfig>({
     toxicThreshold: 0.7,
@@ -49,7 +51,7 @@ export function ModerationSettings() {
       //   body: JSON.stringify({ config, customBlockedWords, customAllowedWords })
       // })
     } catch (error) {
-      console.error('Error saving settings:', error)
+      logger.error('Error saving settings:', error)
       toast.error('Failed to save settings')
     } finally {
       setSaving(false)
@@ -68,9 +70,7 @@ export function ModerationSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Detection Features</CardTitle>
-          <CardDescription>
-            Enable or disable specific detection modules
-          </CardDescription>
+          <CardDescription>Enable or disable specific detection modules</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
@@ -99,9 +99,7 @@ export function ModerationSettings() {
             </div>
             <Switch
               checked={config.enableNSFWDetection}
-              onCheckedChange={(checked) =>
-                setConfig({ ...config, enableNSFWDetection: checked })
-              }
+              onCheckedChange={(checked) => setConfig({ ...config, enableNSFWDetection: checked })}
             />
           </div>
 
@@ -116,9 +114,7 @@ export function ModerationSettings() {
             </div>
             <Switch
               checked={config.enableSpamDetection}
-              onCheckedChange={(checked) =>
-                setConfig({ ...config, enableSpamDetection: checked })
-              }
+              onCheckedChange={(checked) => setConfig({ ...config, enableSpamDetection: checked })}
             />
           </div>
 
@@ -144,9 +140,7 @@ export function ModerationSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Detection Thresholds</CardTitle>
-          <CardDescription>
-            Adjust sensitivity for each detection type (0-100%)
-          </CardDescription>
+          <CardDescription>Adjust sensitivity for each detection type (0-100%)</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
@@ -158,9 +152,7 @@ export function ModerationSettings() {
             </div>
             <Slider
               value={[config.toxicThreshold * 100]}
-              onValueChange={([value]) =>
-                setConfig({ ...config, toxicThreshold: value / 100 })
-              }
+              onValueChange={([value]) => setConfig({ ...config, toxicThreshold: value / 100 })}
               min={0}
               max={100}
               step={5}
@@ -173,15 +165,11 @@ export function ModerationSettings() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label>NSFW Threshold</Label>
-              <span className="text-sm font-medium">
-                {Math.round(config.nsfwThreshold * 100)}%
-              </span>
+              <span className="text-sm font-medium">{Math.round(config.nsfwThreshold * 100)}%</span>
             </div>
             <Slider
               value={[config.nsfwThreshold * 100]}
-              onValueChange={([value]) =>
-                setConfig({ ...config, nsfwThreshold: value / 100 })
-              }
+              onValueChange={([value]) => setConfig({ ...config, nsfwThreshold: value / 100 })}
               min={0}
               max={100}
               step={5}
@@ -191,15 +179,11 @@ export function ModerationSettings() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label>Spam Threshold</Label>
-              <span className="text-sm font-medium">
-                {Math.round(config.spamThreshold * 100)}%
-              </span>
+              <span className="text-sm font-medium">{Math.round(config.spamThreshold * 100)}%</span>
             </div>
             <Slider
               value={[config.spamThreshold * 100]}
-              onValueChange={([value]) =>
-                setConfig({ ...config, spamThreshold: value / 100 })
-              }
+              onValueChange={([value]) => setConfig({ ...config, spamThreshold: value / 100 })}
               min={0}
               max={100}
               step={5}
@@ -215,9 +199,7 @@ export function ModerationSettings() {
             </div>
             <Slider
               value={[config.profanityThreshold * 100]}
-              onValueChange={([value]) =>
-                setConfig({ ...config, profanityThreshold: value / 100 })
-              }
+              onValueChange={([value]) => setConfig({ ...config, profanityThreshold: value / 100 })}
               min={0}
               max={100}
               step={5}
@@ -229,9 +211,7 @@ export function ModerationSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Automated Actions</CardTitle>
-          <CardDescription>
-            Configure automatic responses to detected violations
-          </CardDescription>
+          <CardDescription>Configure automatic responses to detected violations</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
@@ -243,9 +223,7 @@ export function ModerationSettings() {
             </div>
             <Switch
               checked={config.autoFlag}
-              onCheckedChange={(checked) =>
-                setConfig({ ...config, autoFlag: checked })
-              }
+              onCheckedChange={(checked) => setConfig({ ...config, autoFlag: checked })}
             />
           </div>
 
@@ -260,9 +238,7 @@ export function ModerationSettings() {
             </div>
             <Switch
               checked={config.autoHide}
-              onCheckedChange={(checked) =>
-                setConfig({ ...config, autoHide: checked })
-              }
+              onCheckedChange={(checked) => setConfig({ ...config, autoHide: checked })}
             />
           </div>
 
@@ -277,9 +253,7 @@ export function ModerationSettings() {
             </div>
             <Switch
               checked={config.autoWarn}
-              onCheckedChange={(checked) =>
-                setConfig({ ...config, autoWarn: checked })
-              }
+              onCheckedChange={(checked) => setConfig({ ...config, autoWarn: checked })}
             />
           </div>
 
@@ -294,9 +268,7 @@ export function ModerationSettings() {
             </div>
             <Switch
               checked={config.autoMute}
-              onCheckedChange={(checked) =>
-                setConfig({ ...config, autoMute: checked })
-              }
+              onCheckedChange={(checked) => setConfig({ ...config, autoMute: checked })}
             />
           </div>
         </CardContent>
@@ -305,9 +277,7 @@ export function ModerationSettings() {
       <Card>
         <CardHeader>
           <CardTitle>Custom Word Lists</CardTitle>
-          <CardDescription>
-            Add custom words to block or allow
-          </CardDescription>
+          <CardDescription>Add custom words to block or allow</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">

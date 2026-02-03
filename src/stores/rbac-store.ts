@@ -9,12 +9,7 @@ import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
 
-import {
-  type Role,
-  type Permission,
-  PERMISSIONS,
-  ROLE_HIERARCHY,
-} from '@/types/rbac'
+import { type Role, type Permission, PERMISSIONS, ROLE_HIERARCHY } from '@/types/rbac'
 import {
   type PermissionResult,
   type PermissionContext,
@@ -31,16 +26,8 @@ import {
   ChannelPermissionManager,
   createChannelPermissionManager,
 } from '@/lib/rbac/channel-permissions'
-import {
-  type CacheKey,
-  PermissionCache,
-  createPermissionCache,
-} from '@/lib/rbac/permission-cache'
-import {
-  type AuditLogEntry,
-  AuditLogger,
-  createAuditLogger,
-} from '@/lib/rbac/audit-logger'
+import { type CacheKey, PermissionCache, createPermissionCache } from '@/lib/rbac/permission-cache'
+import { type AuditLogEntry, AuditLogger, createAuditLogger } from '@/lib/rbac/audit-logger'
 import { hasPermission as checkRolePermission, getRolePermissions } from '@/lib/rbac/permissions'
 
 // ============================================================================
@@ -114,7 +101,11 @@ interface RBACActions {
   checkPermission: (permission: Permission, options?: PermissionCheckOptions) => PermissionResult
   hasAnyPermission: (permissions: Permission[], options?: PermissionCheckOptions) => boolean
   hasAllPermissions: (permissions: Permission[], options?: PermissionCheckOptions) => boolean
-  canManageUser: (targetUserId: string, targetRole: Role, action: 'ban' | 'kick' | 'mute' | 'demote') => PermissionResult
+  canManageUser: (
+    targetUserId: string,
+    targetRole: Role,
+    action: 'ban' | 'kick' | 'mute' | 'demote'
+  ) => PermissionResult
 
   // Channel permissions
   setChannelOverride: (override: ChannelPermissionOverride) => void
@@ -124,7 +115,11 @@ interface RBACActions {
   getEffectiveChannelPermissions: (channelId: string) => EffectiveChannelPermissions | null
 
   // Channel bans
-  banFromChannel: (channelId: string, userId: string, options?: { reason?: string; duration?: number }) => void
+  banFromChannel: (
+    channelId: string,
+    userId: string,
+    options?: { reason?: string; duration?: number }
+  ) => void
   unbanFromChannel: (channelId: string, userId: string) => void
   isChannelBanned: (channelId: string, userId: string) => boolean
   getChannelBans: (channelId: string) => ChannelBan[]
@@ -294,7 +289,8 @@ export const useRBACStore = create<RBACStore>()(
 
       checkPermission: (permission, options = {}) => {
         const state = get()
-        const { currentUserId, currentUserRole, ruleEngine, cache, auditLogger, auditEnabled } = state
+        const { currentUserId, currentUserRole, ruleEngine, cache, auditLogger, auditEnabled } =
+          state
 
         if (!currentUserId || !currentUserRole) {
           return { allowed: false, reason: 'No user logged in', deniedBy: 'no-user' }
@@ -393,7 +389,11 @@ export const useRBACStore = create<RBACStore>()(
 
         // Owner protection
         if (targetRole === 'owner') {
-          const result = { allowed: false, reason: 'Cannot modify owner', deniedBy: 'owner-protection' }
+          const result = {
+            allowed: false,
+            reason: 'Cannot modify owner',
+            deniedBy: 'owner-protection',
+          }
           if (auditEnabled) {
             auditLogger.logAccessDenied({
               userId: currentUserId,
@@ -649,8 +649,7 @@ export const useRBACStore = create<RBACStore>()(
           'rbac/setError'
         ),
 
-      reset: () =>
-        set(() => createInitialState(), false, 'rbac/reset'),
+      reset: () => set(() => createInitialState(), false, 'rbac/reset'),
     })),
     { name: 'rbac-store' }
   )
@@ -688,21 +687,30 @@ export const selectCacheStats = (state: RBACStore) => state.getCacheStats()
 /**
  * Hook to check a single permission
  */
-export function useHasPermission(permission: Permission, options?: PermissionCheckOptions): boolean {
+export function useHasPermission(
+  permission: Permission,
+  options?: PermissionCheckOptions
+): boolean {
   return useRBACStore((state) => state.hasPermission(permission, options))
 }
 
 /**
  * Hook to check multiple permissions (any)
  */
-export function useHasAnyPermission(permissions: Permission[], options?: PermissionCheckOptions): boolean {
+export function useHasAnyPermission(
+  permissions: Permission[],
+  options?: PermissionCheckOptions
+): boolean {
   return useRBACStore((state) => state.hasAnyPermission(permissions, options))
 }
 
 /**
  * Hook to check multiple permissions (all)
  */
-export function useHasAllPermissions(permissions: Permission[], options?: PermissionCheckOptions): boolean {
+export function useHasAllPermissions(
+  permissions: Permission[],
+  options?: PermissionCheckOptions
+): boolean {
   return useRBACStore((state) => state.hasAllPermissions(permissions, options))
 }
 

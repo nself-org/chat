@@ -6,29 +6,29 @@
 
 export interface LocaleConfig {
   /** ISO 639-1 language code */
-  code: string;
+  code: string
   /** Native language name */
-  name: string;
+  name: string
   /** English language name */
-  englishName: string;
+  englishName: string
   /** ISO 15924 script code */
-  script: 'Latn' | 'Arab' | 'Hans' | 'Hant' | 'Jpan' | 'Cyrl' | 'Hebr';
+  script: 'Latn' | 'Arab' | 'Hans' | 'Hant' | 'Jpan' | 'Cyrl' | 'Hebr'
   /** Text direction */
-  direction: 'ltr' | 'rtl';
+  direction: 'ltr' | 'rtl'
   /** BCP 47 language tag */
-  bcp47: string;
+  bcp47: string
   /** Flag emoji (optional, for display) */
-  flag?: string;
+  flag?: string
   /** Date-fns locale identifier */
-  dateFnsLocale: string;
+  dateFnsLocale: string
   /** Number format locale */
-  numberLocale: string;
+  numberLocale: string
   /** Plural rule type (CLDR) */
-  pluralRule: 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
+  pluralRule: 'zero' | 'one' | 'two' | 'few' | 'many' | 'other'
   /** Whether this locale is fully translated */
-  isComplete: boolean;
+  isComplete: boolean
   /** Translation completion percentage */
-  completionPercent: number;
+  completionPercent: number
 }
 
 /**
@@ -161,77 +161,73 @@ export const SUPPORTED_LOCALES: Record<string, LocaleConfig> = {
     isComplete: true,
     completionPercent: 100,
   },
-} as const;
+} as const
 
 /**
  * Default locale code
  */
-export const DEFAULT_LOCALE = 'en';
+export const DEFAULT_LOCALE = 'en'
 
 /**
  * Fallback locale code (used when translation is missing)
  */
-export const FALLBACK_LOCALE = 'en';
+export const FALLBACK_LOCALE = 'en'
 
 /**
  * RTL locale codes
  */
 export const RTL_LOCALES = Object.entries(SUPPORTED_LOCALES)
   .filter(([, config]) => config.direction === 'rtl')
-  .map(([code]) => code);
+  .map(([code]) => code)
 
 /**
  * LTR locale codes
  */
 export const LTR_LOCALES = Object.entries(SUPPORTED_LOCALES)
   .filter(([, config]) => config.direction === 'ltr')
-  .map(([code]) => code);
+  .map(([code]) => code)
 
 /**
  * All locale codes as array
  */
-export const LOCALE_CODES = Object.keys(SUPPORTED_LOCALES);
+export const LOCALE_CODES = Object.keys(SUPPORTED_LOCALES)
 
 /**
  * Type for valid locale codes
  */
-export type LocaleCode = keyof typeof SUPPORTED_LOCALES;
+export type LocaleCode = keyof typeof SUPPORTED_LOCALES
 
 /**
  * Check if a locale code is valid
  */
 export function isValidLocale(code: string): code is LocaleCode {
-  return code in SUPPORTED_LOCALES;
+  return code in SUPPORTED_LOCALES
 }
 
 /**
  * Get locale config by code
  */
 export function getLocaleConfig(code: string): LocaleConfig | undefined {
-  return SUPPORTED_LOCALES[code];
+  return SUPPORTED_LOCALES[code]
 }
 
 /**
  * Get all locales sorted by English name
  */
 export function getSortedLocales(): LocaleConfig[] {
-  return Object.values(SUPPORTED_LOCALES).sort((a, b) =>
-    a.englishName.localeCompare(b.englishName)
-  );
+  return Object.values(SUPPORTED_LOCALES).sort((a, b) => a.englishName.localeCompare(b.englishName))
 }
 
 /**
  * Get complete locales only
  */
 export function getCompleteLocales(): LocaleConfig[] {
-  return Object.values(SUPPORTED_LOCALES).filter((locale) => locale.isComplete);
+  return Object.values(SUPPORTED_LOCALES).filter((locale) => locale.isComplete)
 }
 
 /**
  * Get locales by direction
  */
 export function getLocalesByDirection(direction: 'ltr' | 'rtl'): LocaleConfig[] {
-  return Object.values(SUPPORTED_LOCALES).filter(
-    (locale) => locale.direction === direction
-  );
+  return Object.values(SUPPORTED_LOCALES).filter((locale) => locale.direction === direction)
 }

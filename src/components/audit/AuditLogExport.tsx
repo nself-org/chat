@@ -5,14 +5,7 @@
  */
 
 import { useState } from 'react'
-import {
-  Download,
-  FileJson,
-  FileSpreadsheet,
-  Calendar,
-  Check,
-  Loader2,
-} from 'lucide-react'
+import { Download, FileJson, FileSpreadsheet, Calendar, Check, Loader2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
@@ -37,6 +30,8 @@ import {
 
 import type { AuditLogEntry, ExportFormat, AuditLogFilters } from '@/lib/audit/audit-types'
 import { exportAndDownloadAuditLogs, defaultExportTemplates } from '@/lib/audit/audit-export'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -83,12 +78,13 @@ export function AuditLogExport({
         format,
         includeMetadata,
         filters: useFilters ? filters : undefined,
-        dateRange: useDateRange && startDate && endDate
-          ? {
-              start: new Date(startDate),
-              end: new Date(endDate),
-            }
-          : undefined,
+        dateRange:
+          useDateRange && startDate && endDate
+            ? {
+                start: new Date(startDate),
+                end: new Date(endDate),
+              }
+            : undefined,
       }
 
       const result = await exportAndDownloadAuditLogs(entries, exportOptions)
@@ -103,7 +99,7 @@ export function AuditLogExport({
         onExportComplete(result.filename, result.recordCount)
       }
     } catch (error) {
-      console.error('Export failed:', error)
+      logger.error('Export failed:', error)
     } finally {
       setIsExporting(false)
     }
@@ -139,7 +135,7 @@ export function AuditLogExport({
         {exportComplete && exportResult ? (
           <div className="py-6">
             <div className="flex flex-col items-center gap-4">
-              <div className="h-12 w-12 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
                 <Check className="h-6 w-6 text-green-600 dark:text-green-400" />
               </div>
               <div className="text-center">
@@ -160,11 +156,11 @@ export function AuditLogExport({
                   <Button
                     key={f}
                     variant={format === f ? 'default' : 'outline'}
-                    className="flex flex-col gap-1 h-auto py-3"
+                    className="flex h-auto flex-col gap-1 py-3"
                     onClick={() => setFormat(f)}
                   >
                     {formatIcons[f]}
-                    <span className="uppercase text-xs">{f}</span>
+                    <span className="text-xs uppercase">{f}</span>
                   </Button>
                 ))}
               </div>
@@ -175,9 +171,7 @@ export function AuditLogExport({
               <Label>Quick Templates</Label>
               <Select
                 onValueChange={(templateId) => {
-                  const template = defaultExportTemplates.find(
-                    (t) => t.id === templateId
-                  )
+                  const template = defaultExportTemplates.find((t) => t.id === templateId)
                   if (template) {
                     setFormat(template.format)
                     setIncludeMetadata(template.includeMetadata)
@@ -220,11 +214,7 @@ export function AuditLogExport({
                   <Label htmlFor="use-filters" className="cursor-pointer">
                     Apply current filters
                   </Label>
-                  <Switch
-                    id="use-filters"
-                    checked={useFilters}
-                    onCheckedChange={setUseFilters}
-                  />
+                  <Switch id="use-filters" checked={useFilters} onCheckedChange={setUseFilters} />
                 </div>
               )}
 
@@ -292,12 +282,12 @@ export function AuditLogExport({
             <Button onClick={handleExport} disabled={isExporting}>
               {isExporting ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Exporting...
                 </>
               ) : (
                 <>
-                  <Download className="h-4 w-4 mr-2" />
+                  <Download className="mr-2 h-4 w-4" />
                   Export
                 </>
               )}

@@ -27,6 +27,8 @@
 
 import { ApolloClient, InMemoryCache, HttpLink, NormalizedCacheObject } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Security Validation
 // ============================================================================
@@ -38,7 +40,7 @@ function enforceServerSide(): void {
   if (typeof window !== 'undefined') {
     throw new Error(
       'SECURITY VIOLATION: Admin GraphQL client can only be used server-side. ' +
-      'This code attempted to run in the browser, which would expose admin credentials.'
+        'This code attempted to run in the browser, which would expose admin credentials.'
     )
   }
 }
@@ -52,10 +54,10 @@ function validateEnvironment(): {
 } {
   // Skip validation during build
   if (process.env.SKIP_ENV_VALIDATION === 'true') {
-    console.warn('SKIP_ENV_VALIDATION is true, using dummy credentials for admin client')
+    logger.warn('SKIP_ENV_VALIDATION is true, using dummy credentials for admin client')
     return {
       graphqlUrl: 'http://localhost:8080/v1/graphql',
-      adminSecret: 'dummy-secret-for-build-only-must-be-at-least-32-chars'
+      adminSecret: 'dummy-secret-for-build-only-must-be-at-least-32-chars',
     }
   }
 
@@ -63,22 +65,18 @@ function validateEnvironment(): {
   const adminSecret = process.env.HASURA_ADMIN_SECRET
 
   if (!graphqlUrl) {
-    throw new Error(
-      'FATAL: NEXT_PUBLIC_GRAPHQL_URL environment variable must be set'
-    )
+    throw new Error('FATAL: NEXT_PUBLIC_GRAPHQL_URL environment variable must be set')
   }
 
   if (!adminSecret) {
     throw new Error(
       'FATAL: HASURA_ADMIN_SECRET environment variable must be set. ' +
-      'This is required for server-side admin operations.'
+        'This is required for server-side admin operations.'
     )
   }
 
   if (process.env.NODE_ENV === 'production' && adminSecret.length < 32) {
-    throw new Error(
-      'FATAL: HASURA_ADMIN_SECRET must be at least 32 characters in production'
-    )
+    throw new Error('FATAL: HASURA_ADMIN_SECRET must be at least 32 characters in production')
   }
 
   return { graphqlUrl, adminSecret }
@@ -182,10 +180,10 @@ export function resetAdminClient(): void {
  * @param variables - Query variables
  * @returns Query result
  */
-export async function adminQuery<TData = any, TVariables extends Record<string, any> = Record<string, any>>(
-  query: any,
-  variables?: TVariables
-): Promise<{ data: TData | null; errors?: readonly any[] }> {
+export async function adminQuery<
+  TData = any,
+  TVariables extends Record<string, any> = Record<string, any>,
+>(query: any, variables?: TVariables): Promise<{ data: TData | null; errors?: readonly any[] }> {
   enforceServerSide()
 
   const client = getAdminClient()
@@ -209,10 +207,10 @@ export async function adminQuery<TData = any, TVariables extends Record<string, 
  * @param variables - Mutation variables
  * @returns Mutation result
  */
-export async function adminMutate<TData = any, TVariables extends Record<string, any> = Record<string, any>>(
-  mutation: any,
-  variables?: TVariables
-): Promise<{ data: TData | null; errors?: readonly any[] }> {
+export async function adminMutate<
+  TData = any,
+  TVariables extends Record<string, any> = Record<string, any>,
+>(mutation: any, variables?: TVariables): Promise<{ data: TData | null; errors?: readonly any[] }> {
   enforceServerSide()
 
   const client = getAdminClient()
@@ -234,7 +232,9 @@ export async function adminMutate<TData = any, TVariables extends Record<string,
 /**
  * Check if a GraphQL result has errors
  */
-export function hasGraphQLErrors(result: { errors?: readonly any[] }): result is { errors: readonly any[] } {
+export function hasGraphQLErrors(result: {
+  errors?: readonly any[]
+}): result is { errors: readonly any[] } {
   return Array.isArray(result.errors) && result.errors.length > 0
 }
 
@@ -246,5 +246,5 @@ export function getGraphQLErrorMessage(result: { errors?: readonly any[] }): str
     return 'Unknown error'
   }
 
-  return result.errors.map(err => err.message).join(', ')
+  return result.errors.map((err) => err.message).join(', ')
 }

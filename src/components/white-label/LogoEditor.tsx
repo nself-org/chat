@@ -1,10 +1,25 @@
 'use client'
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { ZoomIn, ZoomOut, RotateCw, FlipHorizontal, FlipVertical, Undo, Check, X } from 'lucide-react'
+import {
+  ZoomIn,
+  ZoomOut,
+  RotateCw,
+  FlipHorizontal,
+  FlipVertical,
+  Undo,
+  Check,
+  X,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { cropLogo, resizeLogo, loadImage, type ProcessedLogo } from '@/lib/white-label/logo-processor'
+import { logger } from '@/lib/logger'
+import {
+  cropLogo,
+  resizeLogo,
+  loadImage,
+  type ProcessedLogo,
+} from '@/lib/white-label/logo-processor'
 
 interface LogoEditorProps {
   src: string
@@ -126,42 +141,48 @@ export function LogoEditor({
   }, [image, transform, aspectRatio])
 
   const handleZoomIn = useCallback(() => {
-    setTransform(prev => ({ ...prev, scale: Math.min(prev.scale + 0.1, 3) }))
+    setTransform((prev) => ({ ...prev, scale: Math.min(prev.scale + 0.1, 3) }))
   }, [])
 
   const handleZoomOut = useCallback(() => {
-    setTransform(prev => ({ ...prev, scale: Math.max(prev.scale - 0.1, 0.1) }))
+    setTransform((prev) => ({ ...prev, scale: Math.max(prev.scale - 0.1, 0.1) }))
   }, [])
 
   const handleRotate = useCallback(() => {
-    setTransform(prev => ({ ...prev, rotation: (prev.rotation + 90) % 360 }))
+    setTransform((prev) => ({ ...prev, rotation: (prev.rotation + 90) % 360 }))
   }, [])
 
   const handleFlipX = useCallback(() => {
-    setTransform(prev => ({ ...prev, flipX: !prev.flipX }))
+    setTransform((prev) => ({ ...prev, flipX: !prev.flipX }))
   }, [])
 
   const handleFlipY = useCallback(() => {
-    setTransform(prev => ({ ...prev, flipY: !prev.flipY }))
+    setTransform((prev) => ({ ...prev, flipY: !prev.flipY }))
   }, [])
 
   const handleReset = useCallback(() => {
     setTransform(DEFAULT_TRANSFORM)
   }, [])
 
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
-    setIsDragging(true)
-    setDragStart({ x: e.clientX - transform.offsetX, y: e.clientY - transform.offsetY })
-  }, [transform.offsetX, transform.offsetY])
+  const handleMouseDown = useCallback(
+    (e: React.MouseEvent) => {
+      setIsDragging(true)
+      setDragStart({ x: e.clientX - transform.offsetX, y: e.clientY - transform.offsetY })
+    },
+    [transform.offsetX, transform.offsetY]
+  )
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
-    if (!isDragging) return
-    setTransform(prev => ({
-      ...prev,
-      offsetX: e.clientX - dragStart.x,
-      offsetY: e.clientY - dragStart.y,
-    }))
-  }, [isDragging, dragStart])
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent) => {
+      if (!isDragging) return
+      setTransform((prev) => ({
+        ...prev,
+        offsetX: e.clientX - dragStart.x,
+        offsetY: e.clientY - dragStart.y,
+      }))
+    },
+    [isDragging, dragStart]
+  )
 
   const handleMouseUp = useCallback(() => {
     setIsDragging(false)
@@ -209,7 +230,7 @@ export function LogoEditor({
 
       onSave(result)
     } catch (error) {
-      console.error('Failed to save logo:', error)
+      logger.error('Failed to save logo:',  error)
     } finally {
       setIsProcessing(false)
     }
@@ -218,7 +239,7 @@ export function LogoEditor({
   return (
     <div className={cn('space-y-4', className)}>
       {/* Canvas */}
-      <div className="relative rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+      <div className="relative overflow-hidden rounded-xl border border-zinc-200 bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-800">
         <canvas
           ref={canvasRef}
           width={400}
@@ -242,16 +263,10 @@ export function LogoEditor({
         >
           <ZoomOut className="h-4 w-4" />
         </Button>
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={handleZoomIn}
-          title="Zoom in"
-        >
+        <Button type="button" variant="outline" size="icon" onClick={handleZoomIn} title="Zoom in">
           <ZoomIn className="h-4 w-4" />
         </Button>
-        <div className="w-px h-6 bg-zinc-200 dark:bg-zinc-700 mx-1" />
+        <div className="mx-1 h-6 w-px bg-zinc-200 dark:bg-zinc-700" />
         <Button
           type="button"
           variant="outline"
@@ -279,14 +294,8 @@ export function LogoEditor({
         >
           <FlipVertical className="h-4 w-4" />
         </Button>
-        <div className="w-px h-6 bg-zinc-200 dark:bg-zinc-700 mx-1" />
-        <Button
-          type="button"
-          variant="outline"
-          size="icon"
-          onClick={handleReset}
-          title="Reset"
-        >
+        <div className="mx-1 h-6 w-px bg-zinc-200 dark:bg-zinc-700" />
+        <Button type="button" variant="outline" size="icon" onClick={handleReset} title="Reset">
           <Undo className="h-4 w-4" />
         </Button>
       </div>
@@ -305,16 +314,11 @@ export function LogoEditor({
           className="flex-1"
           disabled={isProcessing}
         >
-          <X className="h-4 w-4 mr-2" />
+          <X className="mr-2 h-4 w-4" />
           Cancel
         </Button>
-        <Button
-          type="button"
-          onClick={handleSave}
-          className="flex-1"
-          disabled={isProcessing}
-        >
-          <Check className="h-4 w-4 mr-2" />
+        <Button type="button" onClick={handleSave} className="flex-1" disabled={isProcessing}>
+          <Check className="mr-2 h-4 w-4" />
           {isProcessing ? 'Processing...' : 'Apply'}
         </Button>
       </div>

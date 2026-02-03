@@ -3,16 +3,7 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Database,
-  Upload,
-  Download,
-  Play,
-  RotateCcw,
-  FileCode,
-  Users,
-  Table
-} from 'lucide-react'
+import { Database, Upload, Download, Play, RotateCcw, FileCode, Users, Table } from 'lucide-react'
 import { useState } from 'react'
 
 interface Migration {
@@ -28,51 +19,51 @@ export function DatabaseManager() {
       id: '001',
       name: 'create_users_table',
       status: 'applied',
-      appliedAt: '2026-01-25 10:30:00'
+      appliedAt: '2026-01-25 10:30:00',
     },
     {
       id: '002',
       name: 'create_channels_table',
       status: 'applied',
-      appliedAt: '2026-01-26 14:15:00'
+      appliedAt: '2026-01-26 14:15:00',
     },
     {
       id: '003',
       name: 'create_messages_table',
       status: 'applied',
-      appliedAt: '2026-01-27 09:45:00'
+      appliedAt: '2026-01-27 09:45:00',
     },
     {
       id: '004',
       name: 'add_message_reactions',
-      status: 'pending'
-    }
+      status: 'pending',
+    },
   ])
 
   const [dbStats, setDbStats] = useState({
     size: '256 MB',
     tables: 15,
     connections: 12,
-    maxConnections: 100
+    maxConnections: 100,
   })
 
   const handleRunMigrations = async () => {
     // In production: execute `nself db migrate up` via API
-    console.log('Running migrations...')
+    // REMOVED: console.log('Running migrations...')
   }
 
   const handleBackup = async () => {
     // In production: execute `nself db backup` via API
-    console.log('Creating backup...')
+    // REMOVED: console.log('Creating backup...')
   }
 
   const handleSeed = async () => {
     // In production: execute `nself db seed` via API
-    console.log('Seeding database...')
+    // REMOVED: console.log('Seeding database...')
   }
 
-  const pendingCount = migrations.filter(m => m.status === 'pending').length
-  const appliedCount = migrations.filter(m => m.status === 'applied').length
+  const pendingCount = migrations.filter((m) => m.status === 'pending').length
+  const appliedCount = migrations.filter((m) => m.status === 'applied').length
 
   return (
     <div className="space-y-4">
@@ -127,15 +118,11 @@ export function DatabaseManager() {
             </div>
             <div className="flex gap-2">
               <Button size="sm" variant="outline">
-                <FileCode className="h-4 w-4 mr-2" />
+                <FileCode className="mr-2 h-4 w-4" />
                 Create Migration
               </Button>
-              <Button
-                size="sm"
-                onClick={handleRunMigrations}
-                disabled={pendingCount === 0}
-              >
-                <Play className="h-4 w-4 mr-2" />
+              <Button size="sm" onClick={handleRunMigrations} disabled={pendingCount === 0}>
+                <Play className="mr-2 h-4 w-4" />
                 Run Migrations ({pendingCount})
               </Button>
             </div>
@@ -146,17 +133,24 @@ export function DatabaseManager() {
             {migrations.map((migration) => (
               <div
                 key={migration.id}
-                className="flex items-center justify-between p-3 border rounded-lg"
+                className="flex items-center justify-between rounded-lg border p-3"
               >
                 <div className="flex items-center gap-3">
-                  <Badge variant={
-                    migration.status === 'applied' ? 'default' :
-                    migration.status === 'pending' ? 'secondary' : 'destructive'
-                  }>
+                  <Badge
+                    variant={
+                      migration.status === 'applied'
+                        ? 'default'
+                        : migration.status === 'pending'
+                          ? 'secondary'
+                          : 'destructive'
+                    }
+                  >
                     {migration.status}
                   </Badge>
                   <div>
-                    <p className="font-medium">{migration.id}_{migration.name}</p>
+                    <p className="font-medium">
+                      {migration.id}_{migration.name}
+                    </p>
                     {migration.appliedAt && (
                       <p className="text-xs text-muted-foreground">
                         Applied: {migration.appliedAt}
@@ -183,35 +177,35 @@ export function DatabaseManager() {
         </CardHeader>
         <CardContent className="grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           <Button variant="outline" onClick={handleBackup}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Create Backup
           </Button>
           <Button variant="outline">
-            <Upload className="h-4 w-4 mr-2" />
+            <Upload className="mr-2 h-4 w-4" />
             Restore Backup
           </Button>
           <Button variant="outline" onClick={handleSeed}>
-            <Users className="h-4 w-4 mr-2" />
+            <Users className="mr-2 h-4 w-4" />
             Seed Data
           </Button>
           <Button variant="outline">
-            <Table className="h-4 w-4 mr-2" />
+            <Table className="mr-2 h-4 w-4" />
             Generate Types
           </Button>
           <Button variant="outline">
-            <Database className="h-4 w-4 mr-2" />
+            <Database className="mr-2 h-4 w-4" />
             Database Shell
           </Button>
           <Button variant="outline">
-            <FileCode className="h-4 w-4 mr-2" />
+            <FileCode className="mr-2 h-4 w-4" />
             View Schema
           </Button>
           <Button variant="outline">
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export Data
           </Button>
           <Button variant="outline">
-            <Upload className="h-4 w-4 mr-2" />
+            <Upload className="mr-2 h-4 w-4" />
             Import Data
           </Button>
         </CardContent>
@@ -232,7 +226,7 @@ export function DatabaseManager() {
             ].map((backup) => (
               <div
                 key={backup.name}
-                className="flex items-center justify-between p-3 border rounded-lg"
+                className="flex items-center justify-between rounded-lg border p-3"
               >
                 <div>
                   <p className="font-medium">{backup.name}</p>

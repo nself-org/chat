@@ -7,6 +7,8 @@
 
 import { useState, useEffect, useCallback } from 'react'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -78,7 +80,7 @@ async function lockOrientationNative(orientation: OrientationType): Promise<void
         await ScreenOrientation.lock({ orientation: lockType })
         return
       } catch (err) {
-        console.error('Capacitor orientation lock failed:', err)
+        logger.error('Capacitor orientation lock failed:', err)
       }
     }
   }
@@ -87,13 +89,10 @@ async function lockOrientationNative(orientation: OrientationType): Promise<void
   const screenOrientation: any = window.screen?.orientation
   if (screenOrientation?.lock) {
     try {
-      const lockType =
-        orientation === 'portrait'
-          ? 'portrait-primary'
-          : 'landscape-primary'
+      const lockType = orientation === 'portrait' ? 'portrait-primary' : 'landscape-primary'
       await screenOrientation.lock(lockType)
     } catch (err) {
-      console.error('Screen Orientation API lock failed:', err)
+      logger.error('Screen Orientation API lock failed:', err)
       throw err
     }
   } else {
@@ -111,7 +110,7 @@ async function unlockOrientationNative(): Promise<void> {
         await ScreenOrientation.unlock()
         return
       } catch (err) {
-        console.error('Capacitor orientation unlock failed:', err)
+        logger.error('Capacitor orientation unlock failed:', err)
       }
     }
   }
@@ -121,7 +120,7 @@ async function unlockOrientationNative(): Promise<void> {
     try {
       window.screen.orientation.unlock()
     } catch (err) {
-      console.error('Screen Orientation API unlock failed:', err)
+      logger.error('Screen Orientation API unlock failed:', err)
       throw err
     }
   }
@@ -132,9 +131,7 @@ async function unlockOrientationNative(): Promise<void> {
 // =============================================================================
 
 export function useMobileOrientation(): UseMobileOrientationReturn {
-  const [orientation, setOrientation] = useState<OrientationType>(() =>
-    getCurrentOrientation()
-  )
+  const [orientation, setOrientation] = useState<OrientationType>(() => getCurrentOrientation())
   const [isOrientationLockSupported, setIsOrientationLockSupported] = useState(false)
 
   // Check support on mount
@@ -169,28 +166,28 @@ export function useMobileOrientation(): UseMobileOrientationReturn {
   // Lock to portrait
   const lockPortrait = useCallback(async () => {
     if (!isOrientationLockSupported) {
-      console.warn('Orientation lock not supported')
+      logger.warn('Orientation lock not supported')
       return
     }
 
     try {
       await lockOrientationNative('portrait')
     } catch (err) {
-      console.error('Failed to lock to portrait:', err)
+      logger.error('Failed to lock to portrait:', err)
     }
   }, [isOrientationLockSupported])
 
   // Lock to landscape
   const lockLandscape = useCallback(async () => {
     if (!isOrientationLockSupported) {
-      console.warn('Orientation lock not supported')
+      logger.warn('Orientation lock not supported')
       return
     }
 
     try {
       await lockOrientationNative('landscape')
     } catch (err) {
-      console.error('Failed to lock to landscape:', err)
+      logger.error('Failed to lock to landscape:', err)
     }
   }, [isOrientationLockSupported])
 
@@ -203,7 +200,7 @@ export function useMobileOrientation(): UseMobileOrientationReturn {
     try {
       await unlockOrientationNative()
     } catch (err) {
-      console.error('Failed to unlock orientation:', err)
+      logger.error('Failed to unlock orientation:', err)
     }
   }, [isOrientationLockSupported])
 

@@ -9,12 +9,8 @@ describe('cn utility function', () => {
   it('handles conditional classes', () => {
     const isActive = true
     const isDisabled = false
-    
-    const result = cn(
-      'base',
-      isActive && 'active',
-      isDisabled && 'disabled'
-    )
+
+    const result = cn('base', isActive && 'active', isDisabled && 'disabled')
     expect(result).toBe('base active')
   })
 
@@ -36,18 +32,15 @@ describe('cn utility function', () => {
 
   it('handles objects with boolean values', () => {
     const result = cn({
-      'base': true,
-      'active': true,
-      'disabled': false,
+      base: true,
+      active: true,
+      disabled: false,
     })
     expect(result).toBe('base active')
   })
 
   it('merges complex Tailwind utilities', () => {
-    const result = cn(
-      'text-red-500 hover:text-blue-500',
-      'text-green-500'
-    )
+    const result = cn('text-red-500 hover:text-blue-500', 'text-green-500')
     // tailwind-merge should keep the last text color
     expect(result).toBe('hover:text-blue-500 text-green-500')
   })

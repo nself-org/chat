@@ -7,15 +7,7 @@ import { cn } from '@/lib/utils'
 import { type ActivityItem, type Channel } from './UserProfile'
 import { Button } from '@/components/ui/button'
 import { formatDistanceToNow } from 'date-fns'
-import {
-  MessageSquare,
-  Heart,
-  FileText,
-  Hash,
-  UserPlus,
-  Circle,
-  Activity,
-} from 'lucide-react'
+import { MessageSquare, Heart, FileText, Hash, UserPlus, Circle, Activity } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -70,16 +62,7 @@ function getActivityColor(type: ActivityItem['type']) {
 // ============================================================================
 
 const UserProfileActivity = React.forwardRef<HTMLDivElement, UserProfileActivityProps>(
-  (
-    {
-      className,
-      activities,
-      onChannelClick,
-      showLimit = 20,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, activities, onChannelClick, showLimit = 20, ...props }, ref) => {
     const [showAll, setShowAll] = React.useState(false)
     const displayedActivities = showAll ? activities : activities.slice(0, showLimit)
     const hasMore = activities.length > showLimit
@@ -88,15 +71,12 @@ const UserProfileActivity = React.forwardRef<HTMLDivElement, UserProfileActivity
       return (
         <div
           ref={ref}
-          className={cn(
-            'flex flex-col items-center justify-center py-12 text-center',
-            className
-          )}
+          className={cn('flex flex-col items-center justify-center py-12 text-center', className)}
           {...props}
         >
-          <Activity className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">No recent activity</h3>
-          <p className="text-sm text-muted-foreground max-w-sm">
+          <Activity className="mb-4 h-12 w-12 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-medium">No recent activity</h3>
+          <p className="max-w-sm text-sm text-muted-foreground">
             Activity will appear here when this user sends messages, reacts, or uploads files.
           </p>
         </div>
@@ -126,24 +106,24 @@ const UserProfileActivity = React.forwardRef<HTMLDivElement, UserProfileActivity
         <div className="space-y-6">
           {Object.entries(groupedActivities).map(([date, dateActivities]) => (
             <div key={date}>
-              <h3 className="text-sm font-medium text-muted-foreground mb-3 sticky top-0 bg-background py-1">
+              <h3 className="sticky top-0 mb-3 bg-background py-1 text-sm font-medium text-muted-foreground">
                 {date}
               </h3>
               <div className="space-y-3">
                 {dateActivities.map((activity) => (
                   <div
                     key={activity.id}
-                    className="flex items-start gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                    className="hover:bg-muted/50 flex items-start gap-3 rounded-lg p-3 transition-colors"
                   >
                     <div
                       className={cn(
-                        'flex items-center justify-center h-8 w-8 rounded-full',
+                        'flex h-8 w-8 items-center justify-center rounded-full',
                         getActivityColor(activity.type)
                       )}
                     >
                       {getActivityIcon(activity.type)}
                     </div>
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="text-sm">
                         {activity.description}
                         {activity.channelName && activity.channelId && (
@@ -154,14 +134,14 @@ const UserProfileActivity = React.forwardRef<HTMLDivElement, UserProfileActivity
                                 name: activity.channelName!,
                               })
                             }
-                            className="inline-flex items-center gap-1 ml-1 text-primary hover:underline"
+                            className="ml-1 inline-flex items-center gap-1 text-primary hover:underline"
                           >
                             <Hash className="h-3 w-3" />
                             {activity.channelName}
                           </button>
                         )}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-1">
+                      <p className="mt-1 text-xs text-muted-foreground">
                         {formatDistanceToNow(activity.timestamp, { addSuffix: true })}
                       </p>
                     </div>
@@ -174,10 +154,7 @@ const UserProfileActivity = React.forwardRef<HTMLDivElement, UserProfileActivity
 
         {hasMore && (
           <div className="mt-6 text-center">
-            <Button
-              variant="outline"
-              onClick={() => setShowAll(!showAll)}
-            >
+            <Button variant="outline" onClick={() => setShowAll(!showAll)}>
               {showAll ? 'Show Less' : `Show ${activities.length - showLimit} More`}
             </Button>
           </div>

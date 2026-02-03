@@ -7,6 +7,8 @@
 
 import { EventEmitter } from 'events'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -15,11 +17,11 @@ import { EventEmitter } from 'events'
  * User availability status
  */
 export type UserStatus =
-  | 'online'      // Available for calls
-  | 'busy'        // In a call
-  | 'away'        // Idle (no activity for a while)
-  | 'dnd'         // Do Not Disturb (explicit)
-  | 'offline'     // Not connected
+  | 'online' // Available for calls
+  | 'busy' // In a call
+  | 'away' // Idle (no activity for a while)
+  | 'dnd' // Do Not Disturb (explicit)
+  | 'offline' // Not connected
 
 /**
  * Status with metadata
@@ -101,14 +103,10 @@ export class CallStatusManager extends EventEmitter {
   /**
    * Set user status
    */
-  setStatus(
-    userId: string,
-    status: UserStatus,
-    customMessage?: string
-  ): boolean {
+  setStatus(userId: string, status: UserStatus, customMessage?: string): boolean {
     const current = this.statuses.get(userId)
     if (!current) {
-      console.warn(`User ${userId} not initialized`)
+      logger.warn(`User ${userId} not initialized`)
       return false
     }
 
@@ -157,7 +155,7 @@ export class CallStatusManager extends EventEmitter {
   startCall(userId: string, callId: string): boolean {
     const status = this.statuses.get(userId)
     if (!status) {
-      console.warn(`User ${userId} not initialized`)
+      logger.warn(`User ${userId} not initialized`)
       return false
     }
 
@@ -180,7 +178,7 @@ export class CallStatusManager extends EventEmitter {
   endCall(userId: string): boolean {
     const status = this.statuses.get(userId)
     if (!status) {
-      console.warn(`User ${userId} not initialized`)
+      logger.warn(`User ${userId} not initialized`)
       return false
     }
 
@@ -221,11 +219,7 @@ export class CallStatusManager extends EventEmitter {
     }
 
     // Check call waiting
-    if (
-      status.inCall &&
-      status.availableForCallWaiting &&
-      this.config.enableCallWaiting
-    ) {
+    if (status.inCall && status.availableForCallWaiting && this.config.enableCallWaiting) {
       // Check concurrent calls limit
       // In real implementation, would check active calls count
       return true
@@ -335,27 +329,21 @@ export class CallStatusManager extends EventEmitter {
    * Get users by status
    */
   getUsersByStatus(status: UserStatus): UserCallStatus[] {
-    return Array.from(this.statuses.values()).filter(
-      (s) => s.status === status
-    )
+    return Array.from(this.statuses.values()).filter((s) => s.status === status)
   }
 
   /**
    * Get available users
    */
   getAvailableUsers(): UserCallStatus[] {
-    return Array.from(this.statuses.values()).filter((s) =>
-      this.isAvailable(s.userId)
-    )
+    return Array.from(this.statuses.values()).filter((s) => this.isAvailable(s.userId))
   }
 
   /**
    * Get busy users
    */
   getBusyUsers(): UserCallStatus[] {
-    return Array.from(this.statuses.values()).filter((s) =>
-      this.isBusy(s.userId)
-    )
+    return Array.from(this.statuses.values()).filter((s) => this.isBusy(s.userId))
   }
 
   /**
@@ -463,8 +451,6 @@ export class CallStatusManager extends EventEmitter {
 /**
  * Create a new call status manager
  */
-export function createStatusManager(
-  config?: StatusManagerConfig
-): CallStatusManager {
+export function createStatusManager(config?: StatusManagerConfig): CallStatusManager {
   return new CallStatusManager(config)
 }

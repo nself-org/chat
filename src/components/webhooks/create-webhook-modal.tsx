@@ -22,12 +22,7 @@ import {
 } from '@/components/ui/select'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { CreateWebhookFormData, Webhook, copyWebhookUrl } from '@/lib/webhooks'
 
@@ -185,19 +180,16 @@ export function CreateWebhookModal({
               Webhook Created Successfully
             </DialogTitle>
             <DialogDescription>
-              Your webhook has been created. Copy the URL below to use it in your
-              integrations.
+              Your webhook has been created. Copy the URL below to use it in your integrations.
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             {/* Webhook Preview */}
-            <div className="flex items-center gap-3 rounded-lg border bg-muted/50 p-4">
+            <div className="bg-muted/50 flex items-center gap-3 rounded-lg border p-4">
               <Avatar className="h-12 w-12">
                 <AvatarImage src={createdWebhook.avatar_url} />
-                <AvatarFallback>
-                  {getInitials(createdWebhook.name)}
-                </AvatarFallback>
+                <AvatarFallback>{getInitials(createdWebhook.name)}</AvatarFallback>
               </Avatar>
               <div>
                 <p className="font-semibold">{createdWebhook.name}</p>
@@ -211,19 +203,11 @@ export function CreateWebhookModal({
             <div className="space-y-2">
               <Label>Webhook URL</Label>
               <div className="flex gap-2">
-                <Input
-                  value={createdWebhook.url}
-                  readOnly
-                  className="font-mono text-sm"
-                />
+                <Input value={createdWebhook.url} readOnly className="font-mono text-sm" />
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={handleCopyUrl}
-                      >
+                      <Button variant="outline" size="icon" onClick={handleCopyUrl}>
                         {copied ? (
                           <Check className="h-4 w-4 text-green-500" />
                         ) : (
@@ -238,8 +222,7 @@ export function CreateWebhookModal({
                 </TooltipProvider>
               </div>
               <p className="text-xs text-muted-foreground">
-                Keep this URL secret. Anyone with this URL can post messages to
-                your channel.
+                Keep this URL secret. Anyone with this URL can post messages to your channel.
               </p>
             </div>
           </div>
@@ -263,8 +246,7 @@ export function CreateWebhookModal({
           <DialogHeader>
             <DialogTitle>Create Webhook</DialogTitle>
             <DialogDescription>
-              Create a webhook to allow external services to post messages to a
-              channel.
+              Create a webhook to allow external services to post messages to a channel.
             </DialogDescription>
           </DialogHeader>
 
@@ -342,11 +324,7 @@ export function CreateWebhookModal({
             {/* Target Channel */}
             <div className="space-y-2">
               <Label htmlFor="channel">Target Channel *</Label>
-              <Select
-                value={channelId}
-                onValueChange={setChannelId}
-                disabled={isLoading}
-              >
+              <Select value={channelId} onValueChange={setChannelId} disabled={isLoading}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a channel" />
                 </SelectTrigger>
@@ -362,9 +340,7 @@ export function CreateWebhookModal({
                           <Hash className="h-4 w-4 text-muted-foreground" />
                           <span>{channel.name}</span>
                           {channel.is_private && (
-                            <span className="text-xs text-muted-foreground">
-                              (private)
-                            </span>
+                            <span className="text-xs text-muted-foreground">(private)</span>
                           )}
                         </div>
                       </SelectItem>
@@ -379,12 +355,7 @@ export function CreateWebhookModal({
           </div>
 
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleClose}
-              disabled={isLoading}
-            >
+            <Button type="button" variant="outline" onClick={handleClose} disabled={isLoading}>
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading || !name || !channelId}>

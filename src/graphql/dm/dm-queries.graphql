@@ -129,10 +129,7 @@ fragment DMMessageFull on nchat_dm_messages {
 # Get all DMs for the current user
 query GetUserDMs($userId: uuid!, $status: String = "active", $limit: Int = 50, $offset: Int = 0) {
   nchat_dm_participants(
-    where: {
-      user_id: { _eq: $userId }
-      dm: { status: { _eq: $status } }
-    }
+    where: { user_id: { _eq: $userId }, dm: { status: { _eq: $status } } }
     order_by: { dm: { last_message_at: desc_nulls_last } }
     limit: $limit
     offset: $offset
@@ -147,10 +144,7 @@ query GetUserDMs($userId: uuid!, $status: String = "active", $limit: Int = 50, $
     muted_until
   }
   nchat_dm_participants_aggregate(
-    where: {
-      user_id: { _eq: $userId }
-      dm: { status: { _eq: $status } }
-    }
+    where: { user_id: { _eq: $userId }, dm: { status: { _eq: $status } } }
   ) {
     aggregate {
       count
@@ -173,10 +167,7 @@ query GetDM($id: uuid!) {
 
 # Get a DM by slug
 query GetDMBySlug($slug: String!) {
-  nchat_direct_messages(
-    where: { slug: { _eq: $slug } }
-    limit: 1
-  ) {
+  nchat_direct_messages(where: { slug: { _eq: $slug } }, limit: 1) {
     ...DirectMessageFull
   }
 }
@@ -198,29 +189,15 @@ query CheckExistingDM($userId1: uuid!, $userId2: uuid!) {
 }
 
 # Get DM messages with pagination
-query GetDMMessages(
-  $dmId: uuid!
-  $limit: Int = 50
-  $cursor: timestamptz
-  $order: order_by = desc
-) {
+query GetDMMessages($dmId: uuid!, $limit: Int = 50, $cursor: timestamptz, $order: order_by = desc) {
   nchat_dm_messages(
-    where: {
-      dm_id: { _eq: $dmId }
-      is_deleted: { _eq: false }
-      created_at: { _lt: $cursor }
-    }
+    where: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false }, created_at: { _lt: $cursor } }
     order_by: { created_at: $order }
     limit: $limit
   ) {
     ...DMMessageFull
   }
-  nchat_dm_messages_aggregate(
-    where: {
-      dm_id: { _eq: $dmId }
-      is_deleted: { _eq: false }
-    }
-  ) {
+  nchat_dm_messages_aggregate(where: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false } }) {
     aggregate {
       count
     }
@@ -230,11 +207,7 @@ query GetDMMessages(
 # Get pinned messages in a DM
 query GetDMPinnedMessages($dmId: uuid!) {
   nchat_dm_messages(
-    where: {
-      dm_id: { _eq: $dmId }
-      is_pinned: { _eq: true }
-      is_deleted: { _eq: false }
-    }
+    where: { dm_id: { _eq: $dmId }, is_pinned: { _eq: true }, is_deleted: { _eq: false } }
     order_by: { created_at: desc }
   ) {
     ...DMMessageFull
@@ -245,10 +218,7 @@ query GetDMPinnedMessages($dmId: uuid!) {
 query GetDMSharedFiles($dmId: uuid!, $limit: Int = 50, $offset: Int = 0) {
   nchat_dm_attachments(
     where: {
-      message: {
-        dm_id: { _eq: $dmId }
-        is_deleted: { _eq: false }
-      }
+      message: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false } }
       file_type: { _nlike: "image/%" }
     }
     order_by: { created_at: desc }
@@ -275,10 +245,7 @@ query GetDMSharedFiles($dmId: uuid!, $limit: Int = 50, $offset: Int = 0) {
 query GetDMMedia($dmId: uuid!, $limit: Int = 50, $offset: Int = 0) {
   nchat_dm_attachments(
     where: {
-      message: {
-        dm_id: { _eq: $dmId }
-        is_deleted: { _eq: false }
-      }
+      message: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false } }
       file_type: { _ilike: "image/%" }
     }
     order_by: { created_at: desc }
@@ -302,18 +269,9 @@ query GetDMMedia($dmId: uuid!, $limit: Int = 50, $offset: Int = 0) {
 }
 
 # Search DM messages
-query SearchDMMessages(
-  $dmId: uuid!
-  $query: String!
-  $limit: Int = 20
-  $offset: Int = 0
-) {
+query SearchDMMessages($dmId: uuid!, $query: String!, $limit: Int = 20, $offset: Int = 0) {
   nchat_dm_messages(
-    where: {
-      dm_id: { _eq: $dmId }
-      is_deleted: { _eq: false }
-      content: { _ilike: $query }
-    }
+    where: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false }, content: { _ilike: $query } }
     order_by: { created_at: desc }
     limit: $limit
     offset: $offset
@@ -340,21 +298,11 @@ query GetDMUnreadCount($dmId: uuid!, $userId: uuid!, $lastReadAt: timestamptz!) 
 
 # Get total unread count across all DMs
 query GetTotalDMUnreadCount($userId: uuid!) {
-  nchat_dm_participants(
-    where: {
-      user_id: { _eq: $userId }
-      dm: { status: { _eq: "active" } }
-    }
-  ) {
+  nchat_dm_participants(where: { user_id: { _eq: $userId }, dm: { status: { _eq: "active" } } }) {
     dm_id
     last_read_at
     dm {
-      messages_aggregate(
-        where: {
-          is_deleted: { _eq: false }
-          user_id: { _neq: $userId }
-        }
-      ) {
+      messages_aggregate(where: { is_deleted: { _eq: false }, user_id: { _neq: $userId } }) {
         aggregate {
           count
         }
@@ -376,10 +324,7 @@ query GetDMParticipants($dmId: uuid!) {
 # Get archived DMs
 query GetArchivedDMs($userId: uuid!, $limit: Int = 50, $offset: Int = 0) {
   nchat_dm_participants(
-    where: {
-      user_id: { _eq: $userId }
-      dm: { status: { _eq: "archived" } }
-    }
+    where: { user_id: { _eq: $userId }, dm: { status: { _eq: "archived" } } }
     order_by: { dm: { archived_at: desc } }
     limit: $limit
     offset: $offset
@@ -392,10 +337,7 @@ query GetArchivedDMs($userId: uuid!, $limit: Int = 50, $offset: Int = 0) {
 
 # Get read receipts for a message
 query GetDMReadReceipts($messageId: uuid!) {
-  nchat_dm_read_receipts(
-    where: { message_id: { _eq: $messageId } }
-    order_by: { read_at: desc }
-  ) {
+  nchat_dm_read_receipts(where: { message_id: { _eq: $messageId } }, order_by: { read_at: desc }) {
     id
     user_id
     message_id

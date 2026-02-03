@@ -5,12 +5,7 @@
  * Permissions are granular access controls for specific actions.
  */
 
-import {
-  UserRole,
-  hasRoleOrHigher,
-  getRoleLevel,
-  ROLE_LEVELS,
-} from './roles'
+import { UserRole, hasRoleOrHigher, getRoleLevel, ROLE_LEVELS } from './roles'
 
 /**
  * All available permissions in the system

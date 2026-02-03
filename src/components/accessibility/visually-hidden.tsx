@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
 export interface VisuallyHiddenProps extends React.HTMLAttributes<HTMLSpanElement> {
   /** Content to hide visually but keep accessible to screen readers */
-  children: React.ReactNode;
+  children: React.ReactNode
   /** HTML element to render */
-  as?: React.ElementType;
+  as?: React.ElementType
   /** Whether to show content when focused (for skip links) */
-  showOnFocus?: boolean;
+  showOnFocus?: boolean
 }
 
 /**
@@ -34,7 +34,7 @@ export function VisuallyHidden({
     'm-[-1px]',
     '[clip:rect(0,0,0,0)]',
     className
-  );
+  )
 
   const focusableStyles = cn(
     baseStyles,
@@ -47,13 +47,13 @@ export function VisuallyHidden({
       'focus:m-0',
       'focus:[clip:auto]',
     ]
-  );
+  )
 
   return (
     <Component className={showOnFocus ? focusableStyles : baseStyles} {...props}>
       {children}
     </Component>
-  );
+  )
 }
 
 /**
@@ -69,12 +69,12 @@ export const visuallyHiddenStyles: React.CSSProperties = {
   clip: 'rect(0, 0, 0, 0)',
   whiteSpace: 'nowrap',
   border: 0,
-};
+}
 
 /**
  * CSS class string for use with className prop
  */
-export const visuallyHiddenClassName = 'sr-only';
+export const visuallyHiddenClassName = 'sr-only'
 
 /**
  * Hook for conditionally hiding content
@@ -83,25 +83,21 @@ export function useVisuallyHidden(hidden: boolean = true) {
   return {
     style: hidden ? visuallyHiddenStyles : undefined,
     className: hidden ? visuallyHiddenClassName : undefined,
-  };
+  }
 }
 
 /**
  * VisuallyHiddenInput for accessible form inputs
  * Useful for custom checkboxes, radios, file inputs
  */
-export interface VisuallyHiddenInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface VisuallyHiddenInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   /** Label for the input (required for accessibility) */
-  'aria-label'?: string;
+  'aria-label'?: string
   /** ID of the labelling element */
-  'aria-labelledby'?: string;
+  'aria-labelledby'?: string
 }
 
-export function VisuallyHiddenInput({
-  className,
-  ...props
-}: VisuallyHiddenInputProps) {
+export function VisuallyHiddenInput({ className, ...props }: VisuallyHiddenInputProps) {
   return (
     <input
       className={cn(
@@ -119,7 +115,7 @@ export function VisuallyHiddenInput({
       )}
       {...props}
     />
-  );
+  )
 }
 
-export default VisuallyHidden;
+export default VisuallyHidden

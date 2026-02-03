@@ -125,12 +125,7 @@ query GetApps(
   $limit: Int = 20
   $offset: Int = 0
 ) {
-  nchat_apps(
-    where: $where
-    order_by: $orderBy
-    limit: $limit
-    offset: $offset
-  ) {
+  nchat_apps(where: $where, order_by: $orderBy, limit: $limit, offset: $offset) {
     ...AppBasic
     categories {
       category {
@@ -149,15 +144,7 @@ query GetApps(
 
 # Get a single app by ID or slug
 query GetApp($id: uuid, $slug: String) {
-  nchat_apps(
-    where: {
-      _or: [
-        { id: { _eq: $id } }
-        { slug: { _eq: $slug } }
-      ]
-    }
-    limit: 1
-  ) {
+  nchat_apps(where: { _or: [{ id: { _eq: $id } }, { slug: { _eq: $slug } }] }, limit: 1) {
     ...AppFull
   }
 }
@@ -165,11 +152,7 @@ query GetApp($id: uuid, $slug: String) {
 # Get featured apps
 query GetFeaturedApps($limit: Int = 6) {
   nchat_apps(
-    where: {
-      featured: { _eq: true }
-      status: { _eq: "active" }
-      visibility: { _eq: "public" }
-    }
+    where: { featured: { _eq: true }, status: { _eq: "active" }, visibility: { _eq: "public" } }
     order_by: { install_count: desc }
     limit: $limit
   ) {
@@ -186,10 +169,7 @@ query GetFeaturedApps($limit: Int = 6) {
 # Get popular apps
 query GetPopularApps($limit: Int = 10) {
   nchat_apps(
-    where: {
-      status: { _eq: "active" }
-      visibility: { _eq: "public" }
-    }
+    where: { status: { _eq: "active" }, visibility: { _eq: "public" } }
     order_by: { active_install_count: desc }
     limit: $limit
   ) {
@@ -206,10 +186,7 @@ query GetPopularApps($limit: Int = 10) {
 # Get recently updated apps
 query GetRecentApps($limit: Int = 10) {
   nchat_apps(
-    where: {
-      status: { _eq: "active" }
-      visibility: { _eq: "public" }
-    }
+    where: { status: { _eq: "active" }, visibility: { _eq: "public" } }
     order_by: { updated_at: desc }
     limit: $limit
   ) {
@@ -327,11 +304,7 @@ query GetAppCategories {
     description
     icon
     color
-    apps_aggregate(
-      where: {
-        app: { status: { _eq: "active" }, visibility: { _eq: "public" } }
-      }
-    ) {
+    apps_aggregate(where: { app: { status: { _eq: "active" }, visibility: { _eq: "public" } } }) {
       aggregate {
         count
       }
@@ -342,10 +315,7 @@ query GetAppCategories {
 # Get user's installed apps
 query GetInstalledApps($userId: uuid!) {
   nchat_app_installations(
-    where: {
-      user_id: { _eq: $userId }
-      status: { _eq: "active" }
-    }
+    where: { user_id: { _eq: $userId }, status: { _eq: "active" } }
     order_by: { installed_at: desc }
   ) {
     ...AppInstallation
@@ -354,13 +324,7 @@ query GetInstalledApps($userId: uuid!) {
 
 # Get a specific installation
 query GetInstallation($appId: uuid!, $userId: uuid!) {
-  nchat_app_installations(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-    }
-    limit: 1
-  ) {
+  nchat_app_installations(where: { app_id: { _eq: $appId }, user_id: { _eq: $userId } }, limit: 1) {
     ...AppInstallation
   }
 }
@@ -392,37 +356,27 @@ query GetAppRatings(
 
 # Get rating distribution for an app
 query GetAppRatingDistribution($appId: uuid!) {
-  rating_1: nchat_app_ratings_aggregate(
-    where: { app_id: { _eq: $appId }, rating: { _eq: 1 } }
-  ) {
+  rating_1: nchat_app_ratings_aggregate(where: { app_id: { _eq: $appId }, rating: { _eq: 1 } }) {
     aggregate {
       count
     }
   }
-  rating_2: nchat_app_ratings_aggregate(
-    where: { app_id: { _eq: $appId }, rating: { _eq: 2 } }
-  ) {
+  rating_2: nchat_app_ratings_aggregate(where: { app_id: { _eq: $appId }, rating: { _eq: 2 } }) {
     aggregate {
       count
     }
   }
-  rating_3: nchat_app_ratings_aggregate(
-    where: { app_id: { _eq: $appId }, rating: { _eq: 3 } }
-  ) {
+  rating_3: nchat_app_ratings_aggregate(where: { app_id: { _eq: $appId }, rating: { _eq: 3 } }) {
     aggregate {
       count
     }
   }
-  rating_4: nchat_app_ratings_aggregate(
-    where: { app_id: { _eq: $appId }, rating: { _eq: 4 } }
-  ) {
+  rating_4: nchat_app_ratings_aggregate(where: { app_id: { _eq: $appId }, rating: { _eq: 4 } }) {
     aggregate {
       count
     }
   }
-  rating_5: nchat_app_ratings_aggregate(
-    where: { app_id: { _eq: $appId }, rating: { _eq: 5 } }
-  ) {
+  rating_5: nchat_app_ratings_aggregate(where: { app_id: { _eq: $appId }, rating: { _eq: 5 } }) {
     aggregate {
       count
     }
@@ -453,13 +407,7 @@ query GetRelatedApps($appId: uuid!, $categoryIds: [uuid!]!, $limit: Int = 6) {
 
 # Check if user has rated an app
 query GetUserAppRating($appId: uuid!, $userId: uuid!) {
-  nchat_app_ratings(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-    }
-    limit: 1
-  ) {
+  nchat_app_ratings(where: { app_id: { _eq: $appId }, user_id: { _eq: $userId } }, limit: 1) {
     id
     rating
     review

@@ -1,13 +1,17 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { useNotificationSettingsStore } from '@/stores/notification-settings-store';
-import { isDesktopAvailable, getDesktopPermission, requestDesktopPermission } from '@/lib/notifications/notification-channels';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Card } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { useNotificationSettingsStore } from '@/stores/notification-settings-store'
+import {
+  isDesktopAvailable,
+  getDesktopPermission,
+  requestDesktopPermission,
+} from '@/lib/notifications/notification-channels'
 
 export interface DesktopNotificationSettingsPanelProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -18,59 +22,55 @@ export function DesktopNotificationSettingsPanel({
   className,
   ...props
 }: DesktopNotificationSettingsPanelProps) {
-  const desktopSettings = useNotificationSettingsStore((state) => state.preferences.desktop);
-  const setDesktopEnabled = useNotificationSettingsStore((state) => state.setDesktopEnabled);
-  const setDesktopPermission = useNotificationSettingsStore((state) => state.setDesktopPermission);
-  const updateDesktopSettings = useNotificationSettingsStore((state) => state.updateDesktopSettings);
+  const desktopSettings = useNotificationSettingsStore((state) => state.preferences.desktop)
+  const setDesktopEnabled = useNotificationSettingsStore((state) => state.setDesktopEnabled)
+  const setDesktopPermission = useNotificationSettingsStore((state) => state.setDesktopPermission)
+  const updateDesktopSettings = useNotificationSettingsStore((state) => state.updateDesktopSettings)
 
-  const [isAvailable, setIsAvailable] = React.useState(false);
-  const [permission, setPermission] = React.useState<NotificationPermission | 'unavailable'>('default');
+  const [isAvailable, setIsAvailable] = React.useState(false)
+  const [permission, setPermission] = React.useState<NotificationPermission | 'unavailable'>(
+    'default'
+  )
 
   React.useEffect(() => {
-    setIsAvailable(isDesktopAvailable());
-    setPermission(getDesktopPermission());
-  }, []);
+    setIsAvailable(isDesktopAvailable())
+    setPermission(getDesktopPermission())
+  }, [])
 
   const handleRequestPermission = async () => {
-    const result = await requestDesktopPermission();
-    setPermission(result);
-    setDesktopPermission(result);
+    const result = await requestDesktopPermission()
+    setPermission(result)
+    setDesktopPermission(result)
     if (result === 'granted') {
-      setDesktopEnabled(true);
+      setDesktopEnabled(true)
     }
-  };
+  }
 
   if (!isAvailable) {
     return (
       <Card className={cn('p-4', className)} {...props}>
-        <div className="text-center py-6 text-muted-foreground">
+        <div className="py-6 text-center text-muted-foreground">
           <p>Desktop notifications are not available in this browser.</p>
         </div>
       </Card>
-    );
+    )
   }
 
   return (
     <div className={cn('space-y-6', className)} {...props}>
       {/* Permission Status */}
       {permission !== 'granted' && (
-        <Card className="p-4 border-amber-200 bg-amber-50 dark:border-amber-900 dark:bg-amber-950">
+        <Card className="border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
           <div className="flex items-center justify-between">
             <div>
-              <p className="font-medium text-amber-800 dark:text-amber-200">
-                Permission Required
-              </p>
+              <p className="font-medium text-amber-800 dark:text-amber-200">Permission Required</p>
               <p className="text-sm text-amber-700 dark:text-amber-300">
                 {permission === 'denied'
                   ? 'Desktop notifications are blocked. Please enable them in browser settings.'
                   : 'Allow desktop notifications to receive alerts.'}
               </p>
             </div>
-            {permission !== 'denied' && (
-              <Button onClick={handleRequestPermission}>
-                Enable
-              </Button>
-            )}
+            {permission !== 'denied' && <Button onClick={handleRequestPermission}>Enable</Button>}
           </div>
         </Card>
       )}
@@ -82,9 +82,7 @@ export function DesktopNotificationSettingsPanel({
             <Label htmlFor="desktop-enabled" className="text-base font-medium">
               Desktop Notifications
             </Label>
-            <p className="text-sm text-muted-foreground">
-              Show notifications on your desktop
-            </p>
+            <p className="text-sm text-muted-foreground">Show notifications on your desktop</p>
           </div>
           <Switch
             id="desktop-enabled"
@@ -96,8 +94,13 @@ export function DesktopNotificationSettingsPanel({
       </Card>
 
       {/* Display Options */}
-      <Card className={cn('p-4', (!desktopSettings.enabled || permission !== 'granted') && 'opacity-50 pointer-events-none')}>
-        <h3 className="text-sm font-medium mb-4">Display Options</h3>
+      <Card
+        className={cn(
+          'p-4',
+          (!desktopSettings.enabled || permission !== 'granted') && 'pointer-events-none opacity-50'
+        )}
+      >
+        <h3 className="mb-4 text-sm font-medium">Display Options</h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
@@ -143,7 +146,9 @@ export function DesktopNotificationSettingsPanel({
             <Switch
               id="desktop-interaction"
               checked={desktopSettings.requireInteraction}
-              onCheckedChange={(requireInteraction) => updateDesktopSettings({ requireInteraction })}
+              onCheckedChange={(requireInteraction) =>
+                updateDesktopSettings({ requireInteraction })
+              }
             />
           </div>
 
@@ -161,9 +166,9 @@ export function DesktopNotificationSettingsPanel({
         </div>
       </Card>
     </div>
-  );
+  )
 }
 
-DesktopNotificationSettingsPanel.displayName = 'DesktopNotificationSettingsPanel';
+DesktopNotificationSettingsPanel.displayName = 'DesktopNotificationSettingsPanel'
 
-export default DesktopNotificationSettingsPanel;
+export default DesktopNotificationSettingsPanel

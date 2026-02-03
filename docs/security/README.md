@@ -9,9 +9,11 @@ Comprehensive security documentation for nself-chat.
 ### Security Overview
 
 #### [🔐 Security Overview](SECURITY)
+
 Complete security architecture and features.
 
 **Topics:**
+
 - Security architecture
 - Authentication mechanisms
 - Authorization model
@@ -24,9 +26,11 @@ Complete security architecture and features.
 ---
 
 #### [🛡️ Security Audit](SECURITY-AUDIT)
+
 Independent security audit results and recommendations.
 
 **Topics:**
+
 - Vulnerability assessment
 - Penetration testing results
 - Security recommendations
@@ -37,9 +41,11 @@ Independent security audit results and recommendations.
 ---
 
 #### [📋 Security Best Practices](security-best-practices)
+
 Security checklist and best practices.
 
 **Topics:**
+
 - Configuration hardening
 - Deployment security
 - Operational security
@@ -51,9 +57,11 @@ Security checklist and best practices.
 ---
 
 #### [⚡ Performance Optimization](PERFORMANCE-OPTIMIZATION)
+
 Security performance optimization strategies.
 
 **Topics:**
+
 - Balancing security and performance
 - Encryption performance
 - Caching strategies
@@ -66,9 +74,11 @@ Security performance optimization strategies.
 ### Authentication & Authorization
 
 #### [🔒 Two-Factor Authentication (2FA)](2FA-Implementation-Summary)
+
 TOTP-based two-factor authentication.
 
 **Features:**
+
 - QR code setup
 - Authenticator app support (Google, Authy, etc.)
 - 10 backup codes per user
@@ -81,9 +91,11 @@ TOTP-based two-factor authentication.
 ---
 
 #### [🔐 PIN Lock System](PIN-LOCK-SYSTEM)
+
 PIN lock and biometric authentication for app locking.
 
 **Features:**
+
 - 4-6 digit PIN setup
 - Lock on app close/background
 - Auto-lock after timeout (configurable)
@@ -101,9 +113,11 @@ PIN lock and biometric authentication for app locking.
 ### Encryption
 
 #### [🔐 End-to-End Encryption (E2EE)](E2EE-Implementation-Summary)
+
 Military-grade end-to-end encryption using Signal Protocol.
 
 **Features:**
+
 - Signal Protocol implementation
 - Forward secrecy
 - Device verification
@@ -123,9 +137,11 @@ Military-grade end-to-end encryption using Signal Protocol.
 ### Security Implementation
 
 #### [🔒 Security Implementation Summary](SECURITY-IMPLEMENTATION-SUMMARY)
+
 Complete security features implementation overview.
 
 **Features:**
+
 - Authentication mechanisms (11 providers)
 - Authorization (RBAC)
 - Data encryption (at rest and in transit)
@@ -137,9 +153,11 @@ Complete security features implementation overview.
 ---
 
 #### [⚡ Security Quick Reference](SECURITY-QUICK-REFERENCE)
+
 Quick reference for security features and commands.
 
 **Topics:**
+
 - Security commands
 - Configuration options
 - Common operations
@@ -150,6 +168,7 @@ Quick reference for security features and commands.
 ## 🔐 Security Features by Category
 
 ### Authentication
+
 - ✅ **Email/Password** - Traditional authentication
 - ✅ **Magic Links** - Passwordless email login
 - ✅ **Social OAuth** - Google, Facebook, Twitter, GitHub, Discord, Slack
@@ -162,6 +181,7 @@ Quick reference for security features and commands.
 ---
 
 ### Authorization
+
 - ✅ **Role-Based Access Control (RBAC)** - 5 roles with granular permissions
 - ✅ **Row-Level Security (RLS)** - Database-level access control
 - ✅ **Channel Permissions** - Per-channel access rules
@@ -172,6 +192,7 @@ Quick reference for security features and commands.
 ---
 
 ### Encryption
+
 - ✅ **E2EE Messaging** - End-to-end encrypted messages
 - ✅ **E2EE Files** - Encrypted file sharing
 - ✅ **E2EE Calls** - Encrypted voice/video calls
@@ -183,6 +204,7 @@ Quick reference for security features and commands.
 ---
 
 ### Session Security
+
 - ✅ **PIN Lock** - Lock app with PIN
 - ✅ **Biometric Unlock** - Fingerprint/face unlock
 - ✅ **Auto-Lock** - Configurable timeout
@@ -194,6 +216,7 @@ Quick reference for security features and commands.
 ---
 
 ### Data Protection
+
 - ✅ **Backup & Recovery** - Automated backups
 - ✅ **Audit Logging** - Complete audit trail
 - ✅ **Data Retention** - Configurable retention policies
@@ -205,6 +228,7 @@ Quick reference for security features and commands.
 ---
 
 ### Network Security
+
 - ✅ **Rate Limiting** - Prevent abuse
 - ✅ **DDoS Protection** - Built-in protections
 - ✅ **CSP Headers** - Content Security Policy
@@ -218,6 +242,7 @@ Quick reference for security features and commands.
 ## 🛡️ Compliance Features
 
 ### GDPR Compliance
+
 - ✅ User consent management
 - ✅ Data export functionality
 - ✅ Right to be forgotten
@@ -226,6 +251,7 @@ Quick reference for security features and commands.
 - ✅ Data processing agreements
 
 ### HIPAA Compliance (with configuration)
+
 - ✅ Audit logging
 - ✅ Access controls
 - ✅ Encryption at rest and in transit
@@ -234,6 +260,7 @@ Quick reference for security features and commands.
 - ✅ Emergency access
 
 ### SOC 2 Readiness
+
 - ✅ Security monitoring
 - ✅ Change management
 - ✅ Incident response
@@ -247,17 +274,20 @@ Quick reference for security features and commands.
 ## 🔒 Security by Role
 
 ### For End Users
+
 - **[User Security Guide](../guides/USER-GUIDE#security)** - Personal security
 - **[2FA Setup](2FA-Implementation-Summary)** - Enable 2FA
 - **[PIN Lock Setup](PIN-LOCK-SYSTEM)** - Lock your app
 - **[Device Management](PIN-LOCK-SYSTEM#device-management)** - Manage devices
 
 ### For Developers
+
 - **[E2EE Implementation](../guides/E2EE-Implementation)** - Add encryption
 - **[Security Best Practices](security-best-practices)** - Secure coding
 - **[API Security](../api/authentication)** - Secure API usage
 
 ### For Administrators
+
 - **[Security Configuration](SECURITY)** - Configure security
 - **[RBAC Setup](../guides/enterprise/RBAC-Guide)** - Configure roles
 - **[Audit Logging](../guides/enterprise/Audit-Logging)** - Monitor activity
@@ -268,6 +298,7 @@ Quick reference for security features and commands.
 ## 🎯 Security Checklist
 
 ### Pre-Deployment
+
 - [ ] Configure SSL/TLS certificates
 - [ ] Enable 2FA for admin accounts
 - [ ] Configure firewall rules
@@ -278,6 +309,7 @@ Quick reference for security features and commands.
 - [ ] Configure audit logging
 
 ### Post-Deployment
+
 - [ ] Verify SSL certificate
 - [ ] Test authentication flows
 - [ ] Verify E2EE functionality
@@ -294,6 +326,7 @@ Quick reference for security features and commands.
 ## 🚨 Security Incidents
 
 ### Incident Response
+
 1. **Detect** - Monitor logs and alerts
 2. **Contain** - Isolate affected systems
 3. **Investigate** - Analyze incident
@@ -302,9 +335,11 @@ Quick reference for security features and commands.
 6. **Review** - Post-incident analysis
 
 ### Reporting Security Issues
+
 **DO NOT** open public GitHub issues for security vulnerabilities.
 
 **Instead:**
+
 - Email: security@nself.org
 - PGP Key: Available on request
 - Response time: 24-48 hours
@@ -314,6 +349,7 @@ Quick reference for security features and commands.
 ## 📊 Security Metrics
 
 ### Key Metrics to Monitor
+
 - Failed authentication attempts
 - 2FA adoption rate
 - E2EE message percentage
@@ -322,6 +358,7 @@ Quick reference for security features and commands.
 - Security scan results
 
 **Tools:**
+
 - Sentry for error tracking
 - Grafana for metrics
 - Prometheus for monitoring
@@ -331,6 +368,7 @@ Quick reference for security features and commands.
 ## 🔐 Cryptography
 
 ### Encryption Algorithms
+
 - **E2EE:** Signal Protocol (X3DH + Double Ratchet)
 - **Transport:** TLS 1.3
 - **Password Hashing:** bcrypt (cost factor 12)
@@ -338,6 +376,7 @@ Quick reference for security features and commands.
 - **File Encryption:** AES-256-GCM
 
 ### Key Management
+
 - **Key Generation:** Cryptographically secure random
 - **Key Storage:** Encrypted key store
 - **Key Rotation:** Automatic for session keys
@@ -352,18 +391,22 @@ Quick reference for security features and commands.
 ### Common Issues
 
 #### 2FA Not Working
+
 **Symptom:** 2FA code rejected
 **Solution:** Check time sync on device, regenerate codes
 
 #### E2EE Keys Lost
+
 **Symptom:** Can't decrypt old messages
 **Solution:** Restore from backup or device
 
 #### Session Expired
+
 **Symptom:** Forced logout
 **Solution:** Increase session timeout in config
 
 #### Rate Limited
+
 **Symptom:** Request blocked
 **Solution:** Wait for rate limit reset or contact admin
 

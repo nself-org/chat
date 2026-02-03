@@ -6,9 +6,7 @@ import type { UserProfile, UserRole, PresenceStatus } from '@/stores/user-store'
 // Test Data Factory
 // ============================================================================
 
-const createMockMember = (
-  overrides: Partial<UserProfile> = {}
-): UserProfile => ({
+const createMockMember = (overrides: Partial<UserProfile> = {}): UserProfile => ({
   id: 'user-1',
   username: 'testuser',
   displayName: 'Test User',
@@ -169,7 +167,7 @@ describe('MemberList', () => {
     })
 
     it('does not render empty role groups', () => {
-      const membersOnly = mockMembers.filter(m => m.role === 'member')
+      const membersOnly = mockMembers.filter((m) => m.role === 'member')
       render(<MemberList members={membersOnly} />)
 
       // Owner group should not exist
@@ -218,9 +216,7 @@ describe('MemberList', () => {
       const viewProfileButton = screen.getByText('View Profile')
       fireEvent.click(viewProfileButton)
 
-      expect(onMemberClick).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'member-1' })
-      )
+      expect(onMemberClick).toHaveBeenCalledWith(expect.objectContaining({ id: 'member-1' }))
     })
 
     it('calls onStartDM when Message is clicked', () => {
@@ -235,9 +231,7 @@ describe('MemberList', () => {
       const messageButton = screen.getByText('Message')
       fireEvent.click(messageButton)
 
-      expect(onStartDM).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'member-1' })
-      )
+      expect(onStartDM).toHaveBeenCalledWith(expect.objectContaining({ id: 'member-1' }))
     })
   })
 
@@ -348,7 +342,7 @@ describe('MemberList', () => {
 
       // Get all member names in order
       const memberNames = screen.getAllByText(/Zach|Alice|Bob/)
-      const nameTexts = memberNames.map(el => el.textContent)
+      const nameTexts = memberNames.map((el) => el.textContent)
 
       // Online members (Bob, Zach) should come before offline (Alice)
       // And should be sorted alphabetically within presence groups

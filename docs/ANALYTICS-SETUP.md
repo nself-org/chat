@@ -183,6 +183,7 @@ export SENTRY_PROPERTIES=../sentry.properties
 ### 1. Add google-services.json
 
 Copy `google-services.json` to:
+
 ```
 platforms/capacitor/android/app/google-services.json
 ```
@@ -190,6 +191,7 @@ platforms/capacitor/android/app/google-services.json
 ### 2. Configure build.gradle
 
 The build.gradle is already configured with:
+
 - Firebase plugins
 - Sentry plugin
 - Required dependencies
@@ -312,10 +314,12 @@ useEffect(() => {
 ### 1. Enable Debug Mode
 
 **iOS**:
+
 1. In Xcode, Edit Scheme → Run → Arguments
 2. Add argument: `-FIRDebugEnabled`
 
 **Android**:
+
 ```bash
 adb shell setprop debug.firebase.analytics.app io.nself.chat
 ```
@@ -323,11 +327,13 @@ adb shell setprop debug.firebase.analytics.app io.nself.chat
 ### 2. Verify Events
 
 **Firebase**:
+
 1. Open Firebase Console
 2. Go to Analytics → DebugView
 3. Should see events in real-time
 
 **Sentry**:
+
 1. Open Sentry dashboard
 2. Go to Issues
 3. Trigger a test error:
@@ -341,11 +347,13 @@ sentryMobile.captureMessage('Test message', 'info')
 ### 3. Test Crash Reporting
 
 **iOS**:
+
 ```swift
 fatalError("Test crash")
 ```
 
 **Android**:
+
 ```kotlin
 throw RuntimeException("Test crash")
 ```
@@ -359,6 +367,7 @@ Should appear in Firebase Crashlytics and Sentry within a few minutes.
 **Issue**: Events not appearing in Firebase Console
 
 **Solutions**:
+
 1. Check `GoogleService-Info.plist` / `google-services.json` is correctly placed
 2. Verify app is in debug mode
 3. Wait up to 24 hours for production data
@@ -369,6 +378,7 @@ Should appear in Firebase Crashlytics and Sentry within a few minutes.
 **Issue**: Errors not appearing in Sentry
 
 **Solutions**:
+
 1. Verify DSN is correct
 2. Check network connectivity
 3. Ensure Sentry is initialized before errors occur
@@ -379,6 +389,7 @@ Should appear in Firebase Crashlytics and Sentry within a few minutes.
 **Issue**: Build fails with Firebase/Sentry errors
 
 **Solutions**:
+
 ```bash
 cd platforms/capacitor/ios/App
 pod deintegrate
@@ -390,6 +401,7 @@ pod install
 **Issue**: Build fails with Firebase/Sentry errors
 
 **Solutions**:
+
 ```bash
 cd platforms/capacitor/android
 ./gradlew clean
@@ -401,6 +413,7 @@ cd platforms/capacitor/android
 **Issue**: User consent resets on app restart
 
 **Solutions**:
+
 1. Check localStorage permissions
 2. Verify Capacitor Preferences plugin is installed
 3. Check for errors in console
@@ -453,6 +466,7 @@ cd platforms/capacitor/android
 ## Support
 
 For issues:
+
 1. Check [Common Issues](../COMMON-ISSUES.md)
 2. Search GitHub issues
 3. Contact: dev@nself.org

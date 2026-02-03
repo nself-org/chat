@@ -85,7 +85,7 @@ describe('Spam Detector ML', () => {
     })
 
     it('should detect excessive punctuation', async () => {
-      const result = await detector.analyze('Buy now!!! Don\'t miss out!!! Act now!!!')
+      const result = await detector.analyze("Buy now!!! Don't miss out!!! Act now!!!")
 
       expect(result.spamTypes).toContain('excessive_punctuation')
       expect(result.reasons).toContain(expect.stringContaining('punctuation'))
@@ -230,7 +230,7 @@ describe('Spam Detector ML', () => {
     })
 
     it('should detect urgency phrases', async () => {
-      const text = 'Act now! Expires soon! Last chance! Don\'t miss out!'
+      const text = "Act now! Expires soon! Last chance! Don't miss out!"
 
       const result = await detector.analyze(text)
 

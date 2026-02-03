@@ -82,3 +82,12 @@ playwright-report
 
 # Lighthouse
 .lighthouseci
+
+# Helm templates (contain template syntax)
+deploy/helm/**/*.yaml
+deploy/helm/**/*.tpl
+
+# Platform-specific config files (may have special formatting)
+platforms/**/electron-builder.yml
+platforms/**/capacitor.config.ts
+platforms/**/tauri.conf.json

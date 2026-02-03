@@ -3,14 +3,7 @@
  */
 
 import React, { useCallback } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  Pressable,
-  Alert,
-} from 'react-native'
+import { View, Text, StyleSheet, ScrollView, Pressable, Alert } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -61,33 +54,25 @@ export function ProfileScreen() {
   }, [])
 
   const handleBlock = useCallback(() => {
-    Alert.alert(
-      'Block User',
-      `Are you sure you want to block ${user?.displayName}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Block',
-          style: 'destructive',
-          onPress: () => {
-            // Block user
-          },
+    Alert.alert('Block User', `Are you sure you want to block ${user?.displayName}?`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Block',
+        style: 'destructive',
+        onPress: () => {
+          // Block user
         },
-      ]
-    )
+      },
+    ])
   }, [user])
 
   const handleReport = useCallback(() => {
-    Alert.alert(
-      'Report User',
-      'Why are you reporting this user?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Spam', onPress: () => {} },
-        { text: 'Harassment', onPress: () => {} },
-        { text: 'Other', onPress: () => {} },
-      ]
-    )
+    Alert.alert('Report User', 'Why are you reporting this user?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Spam', onPress: () => {} },
+      { text: 'Harassment', onPress: () => {} },
+      { text: 'Other', onPress: () => {} },
+    ])
   }, [])
 
   const actions: ProfileAction[] = isOwnProfile
@@ -125,24 +110,15 @@ export function ProfileScreen() {
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[
-          styles.content,
-          { paddingBottom: insets.bottom + 20 },
-        ]}
+        contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + 20 }]}
       >
         {/* Profile Header */}
         <View style={styles.profileHeader}>
-          <UserAvatar
-            user={user}
-            size={120}
-            showStatus
-          />
+          <UserAvatar user={user} size={120} showStatus />
           <Text style={[styles.displayName, { color: theme.colors.text }]}>
             {user?.displayName || 'Loading...'}
           </Text>
-          <Text style={[styles.email, { color: theme.colors.muted }]}>
-            {user?.email}
-          </Text>
+          <Text style={[styles.email, { color: theme.colors.muted }]}>{user?.email}</Text>
           {user?.status && (
             <View style={[styles.statusBadge, { backgroundColor: theme.colors.surface }]}>
               <View
@@ -173,18 +149,10 @@ export function ProfileScreen() {
             {actions.map((action, index) => (
               <Pressable
                 key={action.label}
-                style={[
-                  styles.actionButton,
-                  { backgroundColor: theme.colors.surface },
-                ]}
+                style={[styles.actionButton, { backgroundColor: theme.colors.surface }]}
                 onPress={action.onPress}
               >
-                <View
-                  style={[
-                    styles.actionIcon,
-                    { backgroundColor: theme.colors.primary + '20' },
-                  ]}
-                >
+                <View style={[styles.actionIcon, { backgroundColor: theme.colors.primary + '20' }]}>
                   <Text style={{ color: theme.colors.primary }}>{action.icon}</Text>
                 </View>
                 <Text style={[styles.actionLabel, { color: theme.colors.text }]}>
@@ -198,9 +166,7 @@ export function ProfileScreen() {
         {/* About Section */}
         {user?.role && (
           <View style={[styles.section, { backgroundColor: theme.colors.surface }]}>
-            <Text style={[styles.sectionTitle, { color: theme.colors.muted }]}>
-              About
-            </Text>
+            <Text style={[styles.sectionTitle, { color: theme.colors.muted }]}>About</Text>
             <View style={styles.infoRow}>
               <Text style={[styles.infoLabel, { color: theme.colors.muted }]}>Role</Text>
               <Text style={[styles.infoValue, { color: theme.colors.text }]}>
@@ -209,9 +175,7 @@ export function ProfileScreen() {
             </View>
             {user.createdAt && (
               <View style={styles.infoRow}>
-                <Text style={[styles.infoLabel, { color: theme.colors.muted }]}>
-                  Member since
-                </Text>
+                <Text style={[styles.infoLabel, { color: theme.colors.muted }]}>Member since</Text>
                 <Text style={[styles.infoValue, { color: theme.colors.text }]}>
                   {new Date(user.createdAt).toLocaleDateString()}
                 </Text>

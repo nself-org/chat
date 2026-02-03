@@ -5,64 +5,64 @@
  * first responders, government employees, teachers, and students.
  */
 
-import { AuthProvider, AuthResult, AuthCredentials, BaseProviderConfig } from './types';
+import { AuthProvider, AuthResult, AuthCredentials, BaseProviderConfig } from './types'
 
 export interface IDmeConfig extends BaseProviderConfig {
-  clientId: string;
-  clientSecret: string;
-  redirectUri: string;
-  scope: string[];
-  sandbox?: boolean;
+  clientId: string
+  clientSecret: string
+  redirectUri: string
+  scope: string[]
+  sandbox?: boolean
 }
 
 export interface IDmeVerification {
-  verified: boolean;
-  groups: IDmeGroup[];
-  attributes: IDmeAttributes;
+  verified: boolean
+  groups: IDmeGroup[]
+  attributes: IDmeAttributes
 }
 
 export interface IDmeGroup {
-  id: string;
-  name: string;
-  type: 'military' | 'veteran' | 'first_responder' | 'government' | 'teacher' | 'student' | 'nurse';
-  verified: boolean;
-  verifiedAt?: string;
+  id: string
+  name: string
+  type: 'military' | 'veteran' | 'first_responder' | 'government' | 'teacher' | 'student' | 'nurse'
+  verified: boolean
+  verifiedAt?: string
 }
 
 export interface IDmeAttributes {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  birthDate?: string;
-  zip?: string;
-  affiliation?: string;
-  branch?: string;
-  serviceEra?: string;
+  firstName?: string
+  lastName?: string
+  email?: string
+  birthDate?: string
+  zip?: string
+  affiliation?: string
+  branch?: string
+  serviceEra?: string
 }
 
-const IDME_BASE_URL = 'https://api.id.me';
-const IDME_SANDBOX_URL = 'https://api.idmelabs.com';
+const IDME_BASE_URL = 'https://api.id.me'
+const IDME_SANDBOX_URL = 'https://api.idmelabs.com'
 
 export class IDmeAuthProvider implements AuthProvider {
-  private config: IDmeConfig;
-  private baseUrl: string;
-  readonly type = 'idme' as const;
+  private config: IDmeConfig
+  private baseUrl: string
+  readonly type = 'idme' as const
 
   constructor(config: IDmeConfig) {
-    this.config = config;
-    this.baseUrl = config.sandbox ? IDME_SANDBOX_URL : IDME_BASE_URL;
+    this.config = config
+    this.baseUrl = config.sandbox ? IDME_SANDBOX_URL : IDME_BASE_URL
   }
 
   get name() {
-    return 'ID.me';
+    return 'ID.me'
   }
 
   get icon() {
-    return 'idme';
+    return 'idme'
   }
 
   isConfigured(): boolean {
-    return !!(this.config.clientId && this.config.clientSecret && this.config.redirectUri);
+    return !!(this.config.clientId && this.config.clientSecret && this.config.redirectUri)
   }
 
   /**
@@ -75,18 +75,18 @@ export class IDmeAuthProvider implements AuthProvider {
       response_type: 'code',
       scope: this.config.scope.join(' '),
       state,
-    });
+    })
 
-    return `${this.baseUrl}/oauth/authorize?${params.toString()}`;
+    return `${this.baseUrl}/oauth/authorize?${params.toString()}`
   }
 
   /**
    * Exchange authorization code for tokens
    */
   async exchangeCode(code: string): Promise<{
-    accessToken: string;
-    refreshToken?: string;
-    expiresIn: number;
+    accessToken: string
+    refreshToken?: string
+    expiresIn: number
   }> {
     const response = await fetch(`${this.baseUrl}/oauth/token`, {
       method: 'POST',
@@ -100,18 +100,18 @@ export class IDmeAuthProvider implements AuthProvider {
         grant_type: 'authorization_code',
         redirect_uri: this.config.redirectUri,
       }),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error('Failed to exchange ID.me authorization code');
+      throw new Error('Failed to exchange ID.me authorization code')
     }
 
-    const data = await response.json();
+    const data = await response.json()
     return {
       accessToken: data.access_token,
       refreshToken: data.refresh_token,
       expiresIn: data.expires_in,
-    };
+    }
   }
 
   /**
@@ -122,20 +122,20 @@ export class IDmeAuthProvider implements AuthProvider {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    });
+    })
 
     if (!response.ok) {
-      throw new Error('Failed to fetch ID.me user profile');
+      throw new Error('Failed to fetch ID.me user profile')
     }
 
-    const data = await response.json();
+    const data = await response.json()
     return {
       firstName: data.fname,
       lastName: data.lname,
       email: data.email,
       birthDate: data.birth_date,
       zip: data.zip,
-    };
+    }
   }
 
   /**
@@ -146,14 +146,14 @@ export class IDmeAuthProvider implements AuthProvider {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    });
+    })
 
     if (!response.ok) {
-      throw new Error('Failed to fetch ID.me verifications');
+      throw new Error('Failed to fetch ID.me verifications')
     }
 
-    const data = await response.json();
-    const groups: IDmeGroup[] = [];
+    const data = await response.json()
+    const groups: IDmeGroup[] = []
 
     // Parse verification groups
     if (data.military) {
@@ -163,7 +163,7 @@ export class IDmeAuthProvider implements AuthProvider {
         type: 'military',
         verified: true,
         verifiedAt: data.military.verified_at,
-      });
+      })
     }
 
     if (data.veteran) {
@@ -173,7 +173,7 @@ export class IDmeAuthProvider implements AuthProvider {
         type: 'veteran',
         verified: true,
         verifiedAt: data.veteran.verified_at,
-      });
+      })
     }
 
     if (data.first_responder) {
@@ -183,7 +183,7 @@ export class IDmeAuthProvider implements AuthProvider {
         type: 'first_responder',
         verified: true,
         verifiedAt: data.first_responder.verified_at,
-      });
+      })
     }
 
     if (data.government) {
@@ -193,7 +193,7 @@ export class IDmeAuthProvider implements AuthProvider {
         type: 'government',
         verified: true,
         verifiedAt: data.government.verified_at,
-      });
+      })
     }
 
     if (data.teacher) {
@@ -203,7 +203,7 @@ export class IDmeAuthProvider implements AuthProvider {
         type: 'teacher',
         verified: true,
         verifiedAt: data.teacher.verified_at,
-      });
+      })
     }
 
     if (data.student) {
@@ -213,7 +213,7 @@ export class IDmeAuthProvider implements AuthProvider {
         type: 'student',
         verified: true,
         verifiedAt: data.student.verified_at,
-      });
+      })
     }
 
     if (data.nurse) {
@@ -223,7 +223,7 @@ export class IDmeAuthProvider implements AuthProvider {
         type: 'nurse',
         verified: true,
         verifiedAt: data.nurse.verified_at,
-      });
+      })
     }
 
     return {
@@ -234,7 +234,7 @@ export class IDmeAuthProvider implements AuthProvider {
         branch: data.branch,
         serviceEra: data.service_era,
       },
-    };
+    }
   }
 
   /**
@@ -250,26 +250,26 @@ export class IDmeAuthProvider implements AuthProvider {
           code: 'invalid_credentials',
           message: 'OAuth authorization code is required for ID.me authentication',
         },
-      };
+      }
     }
 
-    const code = credentials.code;
+    const code = credentials.code
 
     // Exchange code for tokens
-    const tokens = await this.exchangeCode(code);
+    const tokens = await this.exchangeCode(code)
 
     // Get user profile
-    const profile = await this.getUserProfile(tokens.accessToken);
+    const profile = await this.getUserProfile(tokens.accessToken)
 
     // Get verifications
-    const verifications = await this.getVerifications(tokens.accessToken);
+    const verifications = await this.getVerifications(tokens.accessToken)
 
     // Determine badges based on verifications
     const badges = verifications.groups.map((group) => ({
       type: group.type,
       name: group.name,
       verifiedAt: group.verifiedAt,
-    }));
+    }))
 
     return {
       success: true,
@@ -308,7 +308,7 @@ export class IDmeAuthProvider implements AuthProvider {
           },
         },
       },
-    };
+    }
   }
 
   /**
@@ -325,7 +325,7 @@ export class IDmeAuthProvider implements AuthProvider {
         client_secret: this.config.clientSecret,
         token: accessToken,
       }),
-    });
+    })
   }
 }
 
@@ -341,7 +341,7 @@ export const IDME_SCOPES = {
   openid: 'openid',
   email: 'email',
   profile: 'profile',
-} as const;
+} as const
 
 // Helper to create ID.me provider with common configuration
 export function createIDmeProvider(
@@ -349,8 +349,8 @@ export function createIDmeProvider(
   clientSecret: string,
   redirectUri: string,
   options?: {
-    sandbox?: boolean;
-    groups?: (keyof typeof IDME_SCOPES)[];
+    sandbox?: boolean
+    groups?: (keyof typeof IDME_SCOPES)[]
   }
 ): IDmeAuthProvider {
   const scopes = [
@@ -358,7 +358,7 @@ export function createIDmeProvider(
     IDME_SCOPES.email,
     IDME_SCOPES.profile,
     ...(options?.groups?.map((g) => IDME_SCOPES[g]) || []),
-  ];
+  ]
 
   return new IDmeAuthProvider({
     enabled: true,
@@ -369,5 +369,5 @@ export function createIDmeProvider(
     redirectUri,
     scope: scopes,
     sandbox: options?.sandbox,
-  });
+  })
 }

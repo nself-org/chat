@@ -71,15 +71,17 @@ export const DarkModeToggle = memo(function DarkModeToggle({
             transition={{ duration: 0.2 }}
           >
             {isDark ? (
-              <Moon className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')} />
+              <Moon
+                className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')}
+              />
             ) : (
-              <Sun className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')} />
+              <Sun
+                className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')}
+              />
             )}
           </motion.div>
         </AnimatePresence>
-        {showLabel && (
-          <span className="ml-2">{isDark ? 'Dark' : 'Light'}</span>
-        )}
+        {showLabel && <span className="ml-2">{isDark ? 'Dark' : 'Light'}</span>}
       </Button>
     )
   }
@@ -97,9 +99,7 @@ export const DarkModeToggle = memo(function DarkModeToggle({
         aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       >
         {showLabel && (
-          <span className="text-sm font-medium">
-            {isDark ? 'Dark mode' : 'Light mode'}
-          </span>
+          <span className="text-sm font-medium">{isDark ? 'Dark mode' : 'Light mode'}</span>
         )}
         <div
           className={cn(
@@ -157,17 +157,21 @@ export const DarkModeToggle = memo(function DarkModeToggle({
               transition={{ duration: 0.2 }}
             >
               {colorScheme === 'system' ? (
-                <Monitor className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')} />
+                <Monitor
+                  className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')}
+                />
               ) : isDark ? (
-                <Moon className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')} />
+                <Moon
+                  className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')}
+                />
               ) : (
-                <Sun className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')} />
+                <Sun
+                  className={cn('h-5 w-5', size === 'sm' && 'h-4 w-4', size === 'lg' && 'h-6 w-6')}
+                />
               )}
             </motion.div>
           </AnimatePresence>
-          {showLabel && (
-            <span className="ml-2 capitalize">{colorScheme}</span>
-          )}
+          {showLabel && <span className="ml-2 capitalize">{colorScheme}</span>}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
@@ -219,13 +223,7 @@ const ThemeMenuItem = memo(function ThemeMenuItem({
   const Icon = icons[scheme]
 
   return (
-    <DropdownMenuItem
-      onClick={onClick}
-      className={cn(
-        'cursor-pointer',
-        isActive && 'bg-accent'
-      )}
-    >
+    <DropdownMenuItem onClick={onClick} className={cn('cursor-pointer', isActive && 'bg-accent')}>
       <Icon className="mr-2 h-4 w-4" />
       <span className="capitalize">{scheme}</span>
       {isActive && (
@@ -262,7 +260,7 @@ export const CompactDarkModeToggle = memo(function CompactDarkModeToggle({
       className={cn(
         'relative flex h-11 w-11 items-center justify-center rounded-full',
         'touch-manipulation select-none',
-        'bg-muted transition-colors hover:bg-muted/80',
+        'hover:bg-muted/80 bg-muted transition-colors',
         'focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
         className
       )}

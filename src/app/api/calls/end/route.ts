@@ -16,6 +16,8 @@ import {
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -33,10 +35,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
 
     // Validate required fields
     if (!body.callId) {
-      return NextResponse.json(
-        { error: 'Missing required field: callId' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required field: callId' }, { status: 400 })
     }
 
     // End the call
@@ -49,7 +48,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
     })
 
     if (endResult.errors) {
-      console.error('Failed to end call:', endResult.errors)
+      logger.error('Failed to end call:', endResult.errors)
       return NextResponse.json(
         { error: 'Failed to end call', details: endResult.errors },
         { status: 500 }
@@ -66,7 +65,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
     })
 
     if (leaveResult.errors) {
-      console.error('Failed to leave call:', leaveResult.errors)
+      logger.error('Failed to leave call:', leaveResult.errors)
       // Non-fatal, continue
     }
 
@@ -75,7 +74,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
       call: endResult.data?.update_nchat_calls?.returning?.[0],
     })
   } catch (error) {
-    console.error('Error ending call:', error)
+    logger.error('Error ending call:', error)
     return NextResponse.json(
       {
         error: 'Internal server error',

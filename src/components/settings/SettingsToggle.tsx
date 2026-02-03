@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import { cn } from '@/lib/utils';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles } from 'lucide-react';
+import { cn } from '@/lib/utils'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Sparkles } from 'lucide-react'
 
 interface SettingsToggleProps {
-  id: string;
-  label: string;
-  description?: string;
-  checked: boolean;
-  onCheckedChange: (checked: boolean) => void;
-  disabled?: boolean;
-  premium?: boolean;
-  className?: string;
+  id: string
+  label: string
+  description?: string
+  checked: boolean
+  onCheckedChange: (checked: boolean) => void
+  disabled?: boolean
+  premium?: boolean
+  className?: string
 }
 
 /**
@@ -56,9 +56,7 @@ export function SettingsToggle({
             </Badge>
           )}
         </div>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       <Switch
         id={id}
@@ -68,5 +66,5 @@ export function SettingsToggle({
         aria-describedby={description ? `${id}-description` : undefined}
       />
     </div>
-  );
+  )
 }

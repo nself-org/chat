@@ -7,6 +7,7 @@
  * - Requires Telegram Bot Token
  */
 
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderMetadata,
@@ -98,7 +99,10 @@ export class TelegramProvider extends BaseAuthProvider {
     }
   }
 
-  async signUp(credentials: AuthCredentials, metadata?: Record<string, unknown>): Promise<AuthResult> {
+  async signUp(
+    credentials: AuthCredentials,
+    metadata?: Record<string, unknown>
+  ): Promise<AuthResult> {
     // For Telegram, signUp is the same as signIn
     return this.signIn(credentials)
   }
@@ -110,7 +114,7 @@ export class TelegramProvider extends BaseAuthProvider {
         headers: this.getAuthHeaders(),
       })
     } catch (error) {
-      console.error('Sign out error:', error)
+      logger.error('Sign out error:',  error)
     }
 
     this.clearSession()
@@ -147,10 +151,8 @@ export class TelegramProvider extends BaseAuthProvider {
         data.session.refreshToken
       )
     } catch (error) {
-      console.error('Token refresh error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to refresh token')
-      )
+      logger.error('Token refresh error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to refresh token'))
     }
   }
 
@@ -166,7 +168,7 @@ export class TelegramProvider extends BaseAuthProvider {
     if (typeof window === 'undefined') return
 
     if (!this.extendedConfig.botUsername) {
-      console.error('Telegram bot username is required')
+      logger.error('Telegram bot username is required')
       return
     }
 
@@ -185,7 +187,7 @@ export class TelegramProvider extends BaseAuthProvider {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const win = window as any
     win.onTelegramAuth = (user: TelegramAuthData) => {
-      this.verifyTelegramAuth(user).then(result => {
+      this.verifyTelegramAuth(user).then((result) => {
         if (result.success) {
           // Notify listeners
           this.emitEvent({
@@ -203,7 +205,10 @@ export class TelegramProvider extends BaseAuthProvider {
     script.setAttribute('data-telegram-login', this.extendedConfig.botUsername || '')
     script.setAttribute('data-size', 'large')
     script.setAttribute('data-onauth', 'onTelegramAuth(user)')
-    script.setAttribute('data-request-access', this.extendedConfig.requestWriteAccess ? 'write' : 'read')
+    script.setAttribute(
+      'data-request-access',
+      this.extendedConfig.requestWriteAccess ? 'write' : 'read'
+    )
 
     if (this.extendedConfig.cornerRadius !== undefined) {
       script.setAttribute('data-radius', String(this.extendedConfig.cornerRadius))
@@ -261,7 +266,7 @@ export class TelegramProvider extends BaseAuthProvider {
 
       return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
     } catch (error) {
-      console.error('Telegram auth verification error:', error)
+      logger.error('Telegram auth verification error:',  error)
       return this.createErrorResult(
         this.createError('NETWORK_ERROR', 'Failed to verify Telegram authentication')
       )
@@ -277,20 +282,24 @@ export class TelegramProvider extends BaseAuthProvider {
       try {
         const resultStr = hash.split('tgAuthResult=')[1]
         const authData = JSON.parse(decodeURIComponent(resultStr))
-        this.verifyTelegramAuth(authData).then(result => {
+        this.verifyTelegramAuth(authData).then((result) => {
           if (result.success) {
             // Clean up URL
             window.history.replaceState({}, '', window.location.pathname + window.location.search)
           }
         })
       } catch (error) {
-        console.error('Failed to parse Telegram callback:', error)
+        logger.error('Failed to parse Telegram callback:',  error)
       }
     }
   }
 
   private getAuthApiUrl(): string {
-    return this.extendedConfig.authApiUrl || process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1'
+    return (
+      this.extendedConfig.authApiUrl ||
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      'http://localhost:4000/v1'
+    )
   }
 
   private getAuthHeaders(): Record<string, string> {
@@ -301,19 +310,23 @@ export class TelegramProvider extends BaseAuthProvider {
     }
   }
 
-  private mapUserResponse(userData: Record<string, unknown>, telegramData: TelegramAuthData): AuthUser {
-    const displayName = telegramData.first_name + (telegramData.last_name ? ` ${telegramData.last_name}` : '')
+  private mapUserResponse(
+    userData: Record<string, unknown>,
+    telegramData: TelegramAuthData
+  ): AuthUser {
+    const displayName =
+      telegramData.first_name + (telegramData.last_name ? ` ${telegramData.last_name}` : '')
 
     return {
-      id: userData.id as string || String(telegramData.id),
-      email: userData.email as string || `${telegramData.id}@telegram.placeholder`,
+      id: (userData.id as string) || String(telegramData.id),
+      email: (userData.email as string) || `${telegramData.id}@telegram.placeholder`,
       username: telegramData.username || `tg_${telegramData.id}`,
-      displayName: userData.displayName as string || displayName,
-      avatarUrl: telegramData.photo_url || userData.avatarUrl as string | undefined,
+      displayName: (userData.displayName as string) || displayName,
+      avatarUrl: telegramData.photo_url || (userData.avatarUrl as string | undefined),
       role: (userData.defaultRole as AuthUser['role']) || 'member',
       emailVerified: false,
       metadata: {
-        ...(userData.metadata as Record<string, unknown> || {}),
+        ...((userData.metadata as Record<string, unknown>) || {}),
         provider: 'telegram',
         telegramId: telegramData.id,
         telegramUsername: telegramData.username,
@@ -325,10 +338,13 @@ export class TelegramProvider extends BaseAuthProvider {
 
   private persistSession(session: { accessToken: string; refreshToken: string }): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem('nchat-telegram-session', JSON.stringify({
-      ...session,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-telegram-session',
+      JSON.stringify({
+        ...session,
+        timestamp: Date.now(),
+      })
+    )
   }
 
   private getStoredSession(): { accessToken: string; refreshToken: string } | null {

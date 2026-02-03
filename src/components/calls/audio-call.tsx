@@ -1,23 +1,23 @@
-'use client';
+'use client'
 
 /**
  * Audio Call Component
  * Provides audio-only call functionality
  */
 
-import * as React from 'react';
-import { useState, useEffect, useRef } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Phone, PhoneOff, Mic, MicOff, Volume2, VolumeX } from 'lucide-react';
+import * as React from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Phone, PhoneOff, Mic, MicOff, Volume2, VolumeX } from 'lucide-react'
 
 export interface AudioCallProps {
-  participantId: string;
-  participantName: string;
-  participantAvatar?: string;
-  onEnd?: () => void;
-  className?: string;
+  participantId: string
+  participantName: string
+  participantAvatar?: string
+  onEnd?: () => void
+  className?: string
 }
 
 export function AudioCall({
@@ -27,35 +27,35 @@ export function AudioCall({
   onEnd,
   className,
 }: AudioCallProps) {
-  const [isMuted, setIsMuted] = useState(false);
-  const [isSpeakerOn, setIsSpeakerOn] = useState(true);
-  const [callDuration, setCallDuration] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [isMuted, setIsMuted] = useState(false)
+  const [isSpeakerOn, setIsSpeakerOn] = useState(true)
+  const [callDuration, setCallDuration] = useState(0)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
-      setCallDuration((prev) => prev + 1);
-    }, 1000);
+      setCallDuration((prev) => prev + 1)
+    }, 1000)
 
     return () => {
       if (timerRef.current) {
-        clearInterval(timerRef.current);
+        clearInterval(timerRef.current)
       }
-    };
-  }, []);
+    }
+  }, [])
 
   const formatDuration = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
+  }
 
   const handleEndCall = () => {
     if (timerRef.current) {
-      clearInterval(timerRef.current);
+      clearInterval(timerRef.current)
     }
-    onEnd?.();
-  };
+    onEnd?.()
+  }
 
   return (
     <div className={cn('flex flex-col items-center justify-center p-8', className)}>
@@ -73,7 +73,7 @@ export function AudioCall({
         <Button
           variant={isMuted ? 'destructive' : 'secondary'}
           size="lg"
-          className="rounded-full h-14 w-14"
+          className="h-14 w-14 rounded-full"
           onClick={() => setIsMuted(!isMuted)}
         >
           {isMuted ? <MicOff className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
@@ -82,7 +82,7 @@ export function AudioCall({
         <Button
           variant="destructive"
           size="lg"
-          className="rounded-full h-16 w-16"
+          className="h-16 w-16 rounded-full"
           onClick={handleEndCall}
         >
           <PhoneOff className="h-7 w-7" />
@@ -91,14 +91,14 @@ export function AudioCall({
         <Button
           variant={isSpeakerOn ? 'secondary' : 'outline'}
           size="lg"
-          className="rounded-full h-14 w-14"
+          className="h-14 w-14 rounded-full"
           onClick={() => setIsSpeakerOn(!isSpeakerOn)}
         >
           {isSpeakerOn ? <Volume2 className="h-6 w-6" /> : <VolumeX className="h-6 w-6" />}
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
-export default AudioCall;
+export default AudioCall

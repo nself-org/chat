@@ -10,15 +10,15 @@ export interface SpamAnalysis {
 
   // Detected spam types
   spamTypes: Array<
-    'link_spam' |
-    'promotional' |
-    'repetitive' |
-    'excessive_caps' |
-    'excessive_punctuation' |
-    'shortened_urls' |
-    'suspicious_patterns' |
-    'flooding' |
-    'duplicate_content'
+    | 'link_spam'
+    | 'promotional'
+    | 'repetitive'
+    | 'excessive_caps'
+    | 'excessive_punctuation'
+    | 'shortened_urls'
+    | 'suspicious_patterns'
+    | 'flooding'
+    | 'duplicate_content'
   >
 
   // Detailed reasons
@@ -137,7 +137,7 @@ export class SpamDetectorML {
 
     // Prizes/Giveaways
     'you won',
-    'you\'ve won',
+    "you've won",
     'congratulations you',
     'claim your',
     'free gift',
@@ -147,7 +147,7 @@ export class SpamDetectorML {
     // Urgency
     'expires soon',
     'hurry',
-    'don\'t miss',
+    "don't miss",
     'last chance',
     'today only',
     'limited time only',
@@ -259,13 +259,19 @@ export class SpamDetectorML {
         metadata.trustScore
       )
 
-      if (this.config.enableFloodDetection && userBehavior.messageRate > this.config.messageRateThreshold) {
+      if (
+        this.config.enableFloodDetection &&
+        userBehavior.messageRate > this.config.messageRateThreshold
+      ) {
         spamTypes.push('flooding')
         reasons.push(`High message rate: ${userBehavior.messageRate.toFixed(1)} msgs/min`)
         spamScore += 0.4
       }
 
-      if (this.config.enableDuplicateDetection && userBehavior.duplicateMessages >= this.config.maxDuplicateMessages) {
+      if (
+        this.config.enableDuplicateDetection &&
+        userBehavior.duplicateMessages >= this.config.maxDuplicateMessages
+      ) {
         spamTypes.push('duplicate_content')
         reasons.push(`Duplicate messages: ${userBehavior.duplicateMessages}`)
         spamScore += 0.3
@@ -313,7 +319,8 @@ export class SpamDetectorML {
     const linkCount = links.length
 
     // Shortened URL detection
-    const shortenedUrlRegex = /(bit\.ly|tinyurl\.com|t\.co|goo\.gl|ow\.ly|short\.link|tiny\.cc|is\.gd|buff\.ly)/gi
+    const shortenedUrlRegex =
+      /(bit\.ly|tinyurl\.com|t\.co|goo\.gl|ow\.ly|short\.link|tiny\.cc|is\.gd|buff\.ly)/gi
     const shortenedUrls = (text.match(shortenedUrlRegex) || []).length
 
     // Caps ratio
@@ -332,7 +339,7 @@ export class SpamDetectorML {
 
     // Spam phrases
     const lowerText = text.toLowerCase()
-    const spamPhrases = this.spamPhrases.filter(phrase => lowerText.includes(phrase))
+    const spamPhrases = this.spamPhrases.filter((phrase) => lowerText.includes(phrase))
 
     return {
       linkCount,
@@ -363,9 +370,9 @@ export class SpamDetectorML {
     // Check if links are whitelisted
     const urlRegex = /(https?:\/\/([^\s/]+)[^\s]*)/gi
     const matches = [...text.matchAll(urlRegex)]
-    const nonWhitelistedLinks = matches.filter(match => {
+    const nonWhitelistedLinks = matches.filter((match) => {
       const domain = match[2]
-      return !this.config.whitelistedDomains.some(wd => domain.includes(wd))
+      return !this.config.whitelistedDomains.some((wd) => domain.includes(wd))
     })
 
     if (nonWhitelistedLinks.length > 0 && nonWhitelistedLinks.length === patterns.linkCount) {
@@ -406,7 +413,7 @@ export class SpamDetectorML {
     }
 
     // Promotional keywords
-    const promotionalMatches = this.promotionalKeywords.filter(kw => lowerText.includes(kw))
+    const promotionalMatches = this.promotionalKeywords.filter((kw) => lowerText.includes(kw))
     if (promotionalMatches.length >= 2) {
       score += 0.3
       reasons.push(`Promotional keywords: ${promotionalMatches.slice(0, 3).join(', ')}`)
@@ -461,7 +468,12 @@ export class SpamDetectorML {
     const repeatedWords = Array.from(wordCounts.entries()).filter(([_, count]) => count >= 3)
     if (repeatedWords.length > 0) {
       score += 0.2
-      reasons.push(`Repeated words: ${repeatedWords.map(([w]) => w).slice(0, 3).join(', ')}`)
+      reasons.push(
+        `Repeated words: ${repeatedWords
+          .map(([w]) => w)
+          .slice(0, 3)
+          .join(', ')}`
+      )
     }
 
     return {
@@ -509,7 +521,8 @@ export class SpamDetectorML {
     }
 
     // Check for emoji spam
-    const emojiRegex = /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu
+    const emojiRegex =
+      /[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}]/gu
     const emojiMatches = text.match(emojiRegex) || []
     if (emojiMatches.length > 10) {
       score += 0.2
@@ -556,19 +569,16 @@ export class SpamDetectorML {
 
     // Clean old messages (keep last hour)
     history.recentMessages = history.recentMessages.filter(
-      m => now - m.timestamp < this.historyTTL
+      (m) => now - m.timestamp < this.historyTTL
     )
 
     // Calculate message rate (messages per minute)
     const timeWindow = now - history.firstMessageAt
-    const messageRate = timeWindow > 0
-      ? (history.messageCount / timeWindow) * 60 * 1000
-      : 0
+    const messageRate = timeWindow > 0 ? (history.messageCount / timeWindow) * 60 * 1000 : 0
 
     // Count duplicate messages
-    const duplicateMessages = history.recentMessages.filter(
-      m => m.content === currentMessage
-    ).length - 1 // Exclude current message
+    const duplicateMessages =
+      history.recentMessages.filter((m) => m.content === currentMessage).length - 1 // Exclude current message
 
     // Update history
     this.userHistory.set(userId, history)

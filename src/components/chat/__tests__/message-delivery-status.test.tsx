@@ -127,11 +127,7 @@ describe('Message Delivery Status Components', () => {
 
     it('should not render for other users messages (except failed)', () => {
       const { container } = render(
-        <MessageDeliveryStatus
-          {...defaultProps}
-          messageUserId="user-2"
-          currentUserId="user-1"
-        />
+        <MessageDeliveryStatus {...defaultProps} messageUserId="user-2" currentUserId="user-1" />
       )
       expect(container.firstChild).toBeNull()
     })
@@ -216,9 +212,7 @@ describe('Message Delivery Status Components', () => {
           useDeliveryStatusStore.getState().markSent('msg-1')
         })
 
-        const { container } = render(
-          <MessageDeliveryStatus {...defaultProps} size="sm" />
-        )
+        const { container } = render(<MessageDeliveryStatus {...defaultProps} size="sm" />)
 
         expect(container.querySelector('svg')).toHaveClass('h-3', 'w-3')
       })
@@ -228,9 +222,7 @@ describe('Message Delivery Status Components', () => {
           useDeliveryStatusStore.getState().markSent('msg-1')
         })
 
-        const { container } = render(
-          <MessageDeliveryStatus {...defaultProps} size="md" />
-        )
+        const { container } = render(<MessageDeliveryStatus {...defaultProps} size="md" />)
 
         expect(container.querySelector('svg')).toHaveClass('h-4', 'w-4')
       })
@@ -240,9 +232,7 @@ describe('Message Delivery Status Components', () => {
           useDeliveryStatusStore.getState().markSent('msg-1')
         })
 
-        const { container } = render(
-          <MessageDeliveryStatus {...defaultProps} size="lg" />
-        )
+        const { container } = render(<MessageDeliveryStatus {...defaultProps} size="lg" />)
 
         expect(container.querySelector('svg')).toHaveClass('h-5', 'w-5')
       })

@@ -18,9 +18,7 @@ export class BotManagementPage {
   constructor(page: Page) {
     this.page = page
     this.botList = page.locator('[data-testid="bot-list"], .bot-list')
-    this.createButton = page.locator(
-      'button:has-text("Create Bot"), [data-testid="create-bot"]'
-    )
+    this.createButton = page.locator('button:has-text("Create Bot"), [data-testid="create-bot"]')
     this.templateSelector = page.locator(
       '[data-testid="template-selector"], select[name="template"]'
     )
@@ -28,9 +26,7 @@ export class BotManagementPage {
       '[data-testid="code-editor"], .monaco-editor, textarea[name="code"]'
     )
     this.testPanel = page.locator('[data-testid="test-panel"], .test-panel')
-    this.analyticsPanel = page.locator(
-      '[data-testid="analytics-panel"], .analytics-panel'
-    )
+    this.analyticsPanel = page.locator('[data-testid="analytics-panel"], .analytics-panel')
   }
 
   async goto() {
@@ -42,14 +38,10 @@ export class BotManagementPage {
     await this.createButton.click()
     await this.page.waitForTimeout(300)
 
-    const nameInput = this.page.locator(
-      'input[name="name"], [data-testid="bot-name"]'
-    )
+    const nameInput = this.page.locator('input[name="name"], [data-testid="bot-name"]')
     await nameInput.fill(name)
 
-    const submitButton = this.page.locator(
-      'button[type="submit"], button:has-text("Create")'
-    )
+    const submitButton = this.page.locator('button[type="submit"], button:has-text("Create")')
     await submitButton.click()
     await this.page.waitForLoadState('networkidle')
   }
@@ -66,23 +58,17 @@ export class BotManagementPage {
     await this.page.waitForTimeout(300)
 
     // Fill in bot name
-    const nameInput = this.page.locator(
-      'input[name="name"], [data-testid="bot-name"]'
-    )
+    const nameInput = this.page.locator('input[name="name"], [data-testid="bot-name"]')
     await nameInput.fill(name)
 
     // Submit
-    const submitButton = this.page.locator(
-      'button[type="submit"], button:has-text("Create")'
-    )
+    const submitButton = this.page.locator('button[type="submit"], button:has-text("Create")')
     await submitButton.click()
     await this.page.waitForLoadState('networkidle')
   }
 
   async selectBot(botName: string) {
-    const bot = this.page.locator(
-      `[data-testid="bot-item"]:has-text("${botName}")`
-    )
+    const bot = this.page.locator(`[data-testid="bot-item"]:has-text("${botName}")`)
     await bot.click()
     await this.page.waitForLoadState('networkidle')
   }
@@ -101,18 +87,14 @@ export class BotManagementPage {
   }
 
   async saveBotCode() {
-    const saveButton = this.page.locator(
-      'button:has-text("Save"), [data-testid="save-bot"]'
-    )
+    const saveButton = this.page.locator('button:has-text("Save"), [data-testid="save-bot"]')
     await saveButton.click()
     await this.page.waitForTimeout(500)
   }
 
   async testBot(testMessage: string) {
     // Open test panel if not already open
-    const testButton = this.page.locator(
-      'button:has-text("Test"), [data-testid="test-bot"]'
-    )
+    const testButton = this.page.locator('button:has-text("Test"), [data-testid="test-bot"]')
     await testButton.click()
     await this.page.waitForTimeout(300)
 
@@ -123,17 +105,13 @@ export class BotManagementPage {
     await testInput.fill(testMessage)
 
     // Send test
-    const sendButton = this.page.locator(
-      '[data-testid="send-test"], button:has-text("Send")'
-    )
+    const sendButton = this.page.locator('[data-testid="send-test"], button:has-text("Send")')
     await sendButton.click()
     await this.page.waitForTimeout(1000)
   }
 
   async getBotResponse(): Promise<string> {
-    const response = this.page.locator(
-      '[data-testid="bot-response"], .bot-response'
-    )
+    const response = this.page.locator('[data-testid="bot-response"], .bot-response')
     return (await response.textContent()) || ''
   }
 
@@ -148,9 +126,7 @@ export class BotManagementPage {
   }
 
   async getAnalyticMetric(metric: 'calls' | 'errors' | 'responseTime'): Promise<string> {
-    const metricElement = this.page.locator(
-      `[data-testid="metric-${metric}"], .metric-${metric}`
-    )
+    const metricElement = this.page.locator(`[data-testid="metric-${metric}"], .metric-${metric}`)
     return (await metricElement.textContent()) || '0'
   }
 
@@ -169,9 +145,7 @@ export class BotManagementPage {
   async deleteBot(botName: string, confirm: boolean = false) {
     await this.selectBot(botName)
 
-    const deleteButton = this.page.locator(
-      'button:has-text("Delete"), [data-testid="delete-bot"]'
-    )
+    const deleteButton = this.page.locator('button:has-text("Delete"), [data-testid="delete-bot"]')
     await deleteButton.click()
     await this.page.waitForTimeout(300)
 
@@ -192,9 +166,7 @@ export class BotManagementPage {
   }
 
   async configureTriggers(triggers: string[]) {
-    const triggersInput = this.page.locator(
-      '[data-testid="bot-triggers"], input[name="triggers"]'
-    )
+    const triggersInput = this.page.locator('[data-testid="bot-triggers"], input[name="triggers"]')
     await triggersInput.fill(triggers.join(', '))
     await this.page.waitForTimeout(300)
   }

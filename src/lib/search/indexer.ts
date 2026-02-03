@@ -6,6 +6,8 @@
 
 import { getIndex, INDEX_NAMES } from './meilisearch-client'
 
+import { logger } from '@/lib/logger'
+
 // Type definitions for indexed documents
 export interface MessageDocument {
   id: string
@@ -72,7 +74,7 @@ export async function indexMessage(message: MessageDocument): Promise<void> {
     const index = getIndex(INDEX_NAMES.MESSAGES)
     await index.addDocuments([message], { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error indexing message:', error)
+    logger.error('Error indexing message:', error)
     throw error
   }
 }
@@ -87,7 +89,7 @@ export async function indexMessages(messages: MessageDocument[]): Promise<void> 
     const index = getIndex(INDEX_NAMES.MESSAGES)
     await index.addDocuments(messages, { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error indexing messages:', error)
+    logger.error('Error indexing messages:', error)
     throw error
   }
 }
@@ -95,12 +97,14 @@ export async function indexMessages(messages: MessageDocument[]): Promise<void> 
 /**
  * Update a message in the index
  */
-export async function updateMessage(message: Partial<MessageDocument> & { id: string }): Promise<void> {
+export async function updateMessage(
+  message: Partial<MessageDocument> & { id: string }
+): Promise<void> {
   try {
     const index = getIndex(INDEX_NAMES.MESSAGES)
     await index.updateDocuments([message], { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error updating message:', error)
+    logger.error('Error updating message:', error)
     throw error
   }
 }
@@ -113,7 +117,7 @@ export async function indexFile(file: FileDocument): Promise<void> {
     const index = getIndex(INDEX_NAMES.FILES)
     await index.addDocuments([file], { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error indexing file:', error)
+    logger.error('Error indexing file:', error)
     throw error
   }
 }
@@ -128,7 +132,7 @@ export async function indexFiles(files: FileDocument[]): Promise<void> {
     const index = getIndex(INDEX_NAMES.FILES)
     await index.addDocuments(files, { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error indexing files:', error)
+    logger.error('Error indexing files:', error)
     throw error
   }
 }
@@ -141,7 +145,7 @@ export async function indexUser(user: UserDocument): Promise<void> {
     const index = getIndex(INDEX_NAMES.USERS)
     await index.addDocuments([user], { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error indexing user:', error)
+    logger.error('Error indexing user:', error)
     throw error
   }
 }
@@ -156,7 +160,7 @@ export async function indexUsers(users: UserDocument[]): Promise<void> {
     const index = getIndex(INDEX_NAMES.USERS)
     await index.addDocuments(users, { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error indexing users:', error)
+    logger.error('Error indexing users:', error)
     throw error
   }
 }
@@ -169,7 +173,7 @@ export async function indexChannel(channel: ChannelDocument): Promise<void> {
     const index = getIndex(INDEX_NAMES.CHANNELS)
     await index.addDocuments([channel], { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error indexing channel:', error)
+    logger.error('Error indexing channel:', error)
     throw error
   }
 }
@@ -184,7 +188,7 @@ export async function indexChannels(channels: ChannelDocument[]): Promise<void> 
     const index = getIndex(INDEX_NAMES.CHANNELS)
     await index.addDocuments(channels, { primaryKey: 'id' })
   } catch (error) {
-    console.error('Error indexing channels:', error)
+    logger.error('Error indexing channels:', error)
     throw error
   }
 }
@@ -193,14 +197,14 @@ export async function indexChannels(channels: ChannelDocument[]): Promise<void> 
  * Delete a document from an index
  */
 export async function deleteFromIndex(
-  indexName: typeof INDEX_NAMES[keyof typeof INDEX_NAMES],
+  indexName: (typeof INDEX_NAMES)[keyof typeof INDEX_NAMES],
   id: string
 ): Promise<void> {
   try {
     const index = getIndex(indexName)
     await index.deleteDocument(id)
   } catch (error) {
-    console.error(`Error deleting document ${id} from ${indexName}:`, error)
+    logger.error(`Error deleting document ${id} from ${indexName}:`, error)
     throw error
   }
 }
@@ -209,7 +213,7 @@ export async function deleteFromIndex(
  * Delete multiple documents from an index
  */
 export async function deleteMultipleFromIndex(
-  indexName: typeof INDEX_NAMES[keyof typeof INDEX_NAMES],
+  indexName: (typeof INDEX_NAMES)[keyof typeof INDEX_NAMES],
   ids: string[]
 ): Promise<void> {
   if (ids.length === 0) return
@@ -218,7 +222,7 @@ export async function deleteMultipleFromIndex(
     const index = getIndex(indexName)
     await index.deleteDocuments(ids)
   } catch (error) {
-    console.error(`Error deleting documents from ${indexName}:`, error)
+    logger.error(`Error deleting documents from ${indexName}:`, error)
     throw error
   }
 }
@@ -227,12 +231,14 @@ export async function deleteMultipleFromIndex(
  * Reindex all messages from database
  * This should be called periodically or when doing a full reindex
  */
-export async function reindexAllMessages(fetchMessages: () => Promise<MessageDocument[]>): Promise<void> {
+export async function reindexAllMessages(
+  fetchMessages: () => Promise<MessageDocument[]>
+): Promise<void> {
   try {
     const messages = await fetchMessages()
     await indexMessages(messages)
   } catch (error) {
-    console.error('Error reindexing messages:', error)
+    logger.error('Error reindexing messages:', error)
     throw error
   }
 }
@@ -245,7 +251,7 @@ export async function reindexAllFiles(fetchFiles: () => Promise<FileDocument[]>)
     const files = await fetchFiles()
     await indexFiles(files)
   } catch (error) {
-    console.error('Error reindexing files:', error)
+    logger.error('Error reindexing files:', error)
     throw error
   }
 }
@@ -258,7 +264,7 @@ export async function reindexAllUsers(fetchUsers: () => Promise<UserDocument[]>)
     const users = await fetchUsers()
     await indexUsers(users)
   } catch (error) {
-    console.error('Error reindexing users:', error)
+    logger.error('Error reindexing users:', error)
     throw error
   }
 }
@@ -266,12 +272,14 @@ export async function reindexAllUsers(fetchUsers: () => Promise<UserDocument[]>)
 /**
  * Reindex all channels from database
  */
-export async function reindexAllChannels(fetchChannels: () => Promise<ChannelDocument[]>): Promise<void> {
+export async function reindexAllChannels(
+  fetchChannels: () => Promise<ChannelDocument[]>
+): Promise<void> {
   try {
     const channels = await fetchChannels()
     await indexChannels(channels)
   } catch (error) {
-    console.error('Error reindexing channels:', error)
+    logger.error('Error reindexing channels:', error)
     throw error
   }
 }

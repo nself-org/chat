@@ -1,30 +1,26 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles, Check, Pipette } from 'lucide-react';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { presetColors } from '@/lib/settings/settings-defaults';
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Sparkles, Check, Pipette } from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { presetColors } from '@/lib/settings/settings-defaults'
 
 interface SettingsColorPickerProps {
-  id: string;
-  label: string;
-  description?: string;
-  value: string;
-  onChange: (color: string) => void;
-  presets?: string[];
-  allowCustom?: boolean;
-  disabled?: boolean;
-  premium?: boolean;
-  className?: string;
+  id: string
+  label: string
+  description?: string
+  value: string
+  onChange: (color: string) => void
+  presets?: string[]
+  allowCustom?: boolean
+  disabled?: boolean
+  premium?: boolean
+  className?: string
 }
 
 /**
@@ -42,27 +38,27 @@ export function SettingsColorPicker({
   premium = false,
   className,
 }: SettingsColorPickerProps) {
-  const [customColor, setCustomColor] = useState(value);
-  const [isOpen, setIsOpen] = useState(false);
+  const [customColor, setCustomColor] = useState(value)
+  const [isOpen, setIsOpen] = useState(false)
 
   const handlePresetClick = (color: string) => {
-    onChange(color);
-    setCustomColor(color);
-  };
+    onChange(color)
+    setCustomColor(color)
+  }
 
   const handleCustomChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const color = e.target.value;
-    setCustomColor(color);
+    const color = e.target.value
+    setCustomColor(color)
     if (/^#[0-9a-fA-F]{6}$/.test(color)) {
-      onChange(color);
+      onChange(color)
     }
-  };
+  }
 
   const handleNativeColorChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const color = e.target.value;
-    setCustomColor(color);
-    onChange(color);
-  };
+    const color = e.target.value
+    setCustomColor(color)
+    onChange(color)
+  }
 
   return (
     <div
@@ -90,9 +86,7 @@ export function SettingsColorPicker({
             </Badge>
           )}
         </div>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
 
       <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -107,9 +101,7 @@ export function SettingsColorPicker({
               className="h-5 w-5 rounded-md border shadow-sm"
               style={{ backgroundColor: value }}
             />
-            <span className="flex-1 text-left font-mono text-sm uppercase">
-              {value}
-            </span>
+            <span className="flex-1 text-left font-mono text-sm uppercase">{value}</span>
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-[280px]" align="end">
@@ -146,9 +138,7 @@ export function SettingsColorPicker({
             {/* Custom Color */}
             {allowCustom && (
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">
-                  Custom Color
-                </Label>
+                <Label className="text-xs text-muted-foreground">Custom Color</Label>
                 <div className="flex gap-2">
                   <div className="relative flex-1">
                     <Input
@@ -161,7 +151,7 @@ export function SettingsColorPicker({
                     />
                   </div>
                   <label className="cursor-pointer">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-muted hover:bg-muted/80">
+                    <div className="hover:bg-muted/80 flex h-10 w-10 items-center justify-center rounded-md border bg-muted">
                       <Pipette className="h-4 w-4 text-muted-foreground" />
                     </div>
                     <input
@@ -178,26 +168,23 @@ export function SettingsColorPicker({
             {/* Preview */}
             <div className="space-y-2">
               <Label className="text-xs text-muted-foreground">Preview</Label>
-              <div
-                className="h-12 rounded-md shadow-inner"
-                style={{ backgroundColor: value }}
-              />
+              <div className="h-12 rounded-md shadow-inner" style={{ backgroundColor: value }} />
             </div>
           </div>
         </PopoverContent>
       </Popover>
     </div>
-  );
+  )
 }
 
 /**
  * Check if a color is light (for contrast)
  */
 function isLightColor(color: string): boolean {
-  const hex = color.replace('#', '');
-  const r = parseInt(hex.substring(0, 2), 16);
-  const g = parseInt(hex.substring(2, 4), 16);
-  const b = parseInt(hex.substring(4, 6), 16);
-  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.5;
+  const hex = color.replace('#', '')
+  const r = parseInt(hex.substring(0, 2), 16)
+  const g = parseInt(hex.substring(2, 4), 16)
+  const b = parseInt(hex.substring(4, 6), 16)
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255
+  return luminance > 0.5
 }

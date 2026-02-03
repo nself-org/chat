@@ -112,9 +112,11 @@ export const SafeAreaInset = memo(function SafeAreaInset({
   return (
     <div
       className={cn('safe-area-inset', className)}
-      style={{
-        [property]: `env(safe-area-inset-${edge})`,
-      } as CSSProperties}
+      style={
+        {
+          [property]: `env(safe-area-inset-${edge})`,
+        } as CSSProperties
+      }
     />
   )
 })
@@ -201,7 +203,7 @@ export const FixedTopBar = memo(function FixedTopBar({
 }) {
   return (
     <div
-      className={cn('fixed top-0 left-0 right-0 z-50', className)}
+      className={cn('fixed left-0 right-0 top-0 z-50', className)}
       style={{
         paddingTop: 'env(safe-area-inset-top)',
       }}
@@ -297,9 +299,9 @@ export function getSafeAreaStyle(
   const style: CSSProperties = {}
 
   edges.forEach((edge) => {
-    const property = (mode === 'padding'
-      ? `padding${capitalize(edge)}`
-      : `margin${capitalize(edge)}`) as keyof CSSProperties
+    const property = (
+      mode === 'padding' ? `padding${capitalize(edge)}` : `margin${capitalize(edge)}`
+    ) as keyof CSSProperties
 
     // @ts-ignore
     style[property] = `env(safe-area-inset-${edge})`

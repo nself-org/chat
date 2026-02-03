@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * CommandIcon
@@ -6,9 +6,9 @@
  * Renders an icon for a command, supporting both Lucide icons and custom icons.
  */
 
-import * as React from 'react';
-import { type LucideIcon, Hash } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { type LucideIcon, Hash } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 // ============================================================================
 // Types
@@ -16,13 +16,13 @@ import { cn } from '@/lib/utils';
 
 export interface CommandIconProps {
   /** Icon component or name */
-  icon?: LucideIcon | string;
+  icon?: LucideIcon | string
   /** Icon size */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Additional CSS classes */
-  className?: string;
+  className?: string
   /** Color override */
-  color?: string;
+  color?: string
 }
 
 // ============================================================================
@@ -33,26 +33,21 @@ const sizeClasses = {
   sm: 'h-3.5 w-3.5',
   md: 'h-4 w-4',
   lg: 'h-5 w-5',
-};
+}
 
 const containerClasses = {
   sm: 'h-6 w-6',
   md: 'h-7 w-7',
   lg: 'h-8 w-8',
-};
+}
 
 // ============================================================================
 // Component
 // ============================================================================
 
-export function CommandIcon({
-  icon,
-  size = 'md',
-  className,
-  color,
-}: CommandIconProps) {
-  const IconComponent = typeof icon === 'function' ? icon : null;
-  const iconString = typeof icon === 'string' ? icon : null;
+export function CommandIcon({ icon, size = 'md', className, color }: CommandIconProps) {
+  const IconComponent = typeof icon === 'function' ? icon : null
+  const iconString = typeof icon === 'string' ? icon : null
 
   // If no icon provided, use default hash icon
   if (!IconComponent && !iconString) {
@@ -69,7 +64,7 @@ export function CommandIcon({
           style={color ? { color } : undefined}
         />
       </div>
-    );
+    )
   }
 
   // Render Lucide icon
@@ -87,13 +82,13 @@ export function CommandIcon({
           style={color ? { color } : undefined}
         />
       </div>
-    );
+    )
   }
 
   // Render emoji or string icon
   if (iconString) {
     // Check if it's an emoji (single character or emoji sequence)
-    const isEmoji = /\p{Emoji}/u.test(iconString);
+    const isEmoji = /\p{Emoji}/u.test(iconString)
 
     if (isEmoji) {
       return (
@@ -108,7 +103,7 @@ export function CommandIcon({
             {iconString}
           </span>
         </div>
-      );
+      )
     }
 
     // Otherwise render as text abbreviation
@@ -124,10 +119,10 @@ export function CommandIcon({
       >
         {iconString.slice(0, 2).toUpperCase()}
       </div>
-    );
+    )
   }
 
-  return null;
+  return null
 }
 
-export default CommandIcon;
+export default CommandIcon

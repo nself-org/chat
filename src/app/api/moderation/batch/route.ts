@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getAIModerator } from '@/lib/moderation/ai-moderator'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60 // 60 seconds for batch processing
@@ -33,18 +35,12 @@ export async function POST(request: NextRequest) {
     const { items, policy, maxConcurrency = 10 } = body
 
     if (!items || !Array.isArray(items) || items.length === 0) {
-      return NextResponse.json(
-        { error: 'Items array is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Items array is required' }, { status: 400 })
     }
 
     // Limit batch size
     if (items.length > 100) {
-      return NextResponse.json(
-        { error: 'Maximum batch size is 100 items' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Maximum batch size is 100 items' }, { status: 400 })
     }
 
     // Initialize AI Moderator
@@ -73,21 +69,30 @@ export async function POST(request: NextRequest) {
           // Record violation if needed
           if (analysis.shouldFlag && item.metadata?.userId) {
             const maxSeverity = Math.max(
-              ...analysis.detectedIssues.map(i => {
+              ...analysis.detectedIssues.map((i) => {
                 switch (i.severity) {
-                  case 'critical': return 4
-                  case 'high': return 3
-                  case 'medium': return 2
-                  case 'low': return 1
-                  default: return 0
+                  case 'critical':
+                    return 4
+                  case 'high':
+                    return 3
+                  case 'medium':
+                    return 2
+                  case 'low':
+                    return 1
+                  default:
+                    return 0
                 }
               })
             )
 
-            const severity = maxSeverity === 4 ? 'critical'
-              : maxSeverity === 3 ? 'high'
-              : maxSeverity === 2 ? 'medium'
-              : 'low'
+            const severity =
+              maxSeverity === 4
+                ? 'critical'
+                : maxSeverity === 3
+                  ? 'high'
+                  : maxSeverity === 2
+                    ? 'medium'
+                    : 'low'
 
             await moderator.recordViolation(item.metadata.userId, severity)
           }
@@ -115,13 +120,13 @@ export async function POST(request: NextRequest) {
     }
 
     const batchProcessingTime = Date.now() - batchStartTime
-    const successCount = results.filter(r => r.success).length
-    const failureCount = results.filter(r => !r.success).length
+    const successCount = results.filter((r) => r.success).length
+    const failureCount = results.filter((r) => !r.success).length
 
     // Calculate statistics
-    const flaggedCount = results.filter(r => r.success && r.analysis?.shouldFlag).length
+    const flaggedCount = results.filter((r) => r.success && r.analysis?.shouldFlag).length
     const highPriorityCount = results.filter(
-      r => r.success && (r.analysis?.priority === 'high' || r.analysis?.priority === 'critical')
+      (r) => r.success && (r.analysis?.priority === 'high' || r.analysis?.priority === 'critical')
     ).length
 
     return NextResponse.json({
@@ -139,7 +144,7 @@ export async function POST(request: NextRequest) {
       errors: errors.length > 0 ? errors : undefined,
     })
   } catch (error) {
-    console.error('Batch moderation error:', error)
+    logger.error('Batch moderation error:', error)
     captureError(error as Error, {
       tags: { feature: 'moderation', endpoint: 'batch' },
     })

@@ -168,7 +168,7 @@ export class WelcomeBot implements Bot {
     if (!message) {
       return {
         type: 'message',
-        content: `Usage: \`/welcomemessage <your message>\`\n\nPlaceholders:\n• \`{user}\` - New member's name\n• \`{channel}\` - Channel name\n• \`{server}\` - Server name\n\nExample:\n\`/welcomemessage Welcome {user}! Glad to have you in {channel}!\``,
+        content: `Usage: `/welcomemessage <your message>`\n\nPlaceholders:\n• `{user}` - New member's name\n• `{channel}` - Channel name\n• `{server}` - Server name\n\nExample:\n`/welcomemessage Welcome {user}! Glad to have you in {channel}!``,
       };
     }
 

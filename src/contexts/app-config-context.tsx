@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, useEffect } from 'react'
 import { AppConfig, defaultAppConfig } from '@/config/app-config'
 import { isDevelopment } from '@/lib/environment'
 
+import { logger } from '@/lib/logger'
+
 interface AppConfigContextType {
   config: AppConfig
   updateConfig: (updates: Partial<AppConfig>) => Promise<AppConfig>
@@ -40,17 +42,17 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
           const serverConfig = await response.json()
           const finalConfig = {
             ...defaultAppConfig,
-            ...serverConfig
+            ...serverConfig,
           }
           setConfig(finalConfig)
           localStorage.setItem('app-config', JSON.stringify(finalConfig))
         }
       } catch (apiError) {
         // If API fails, use localStorage or defaults
-        console.warn('API config load failed, using local/default config:', apiError)
+        logger.warn('API config load failed, using local/default config', { error: apiError })
       }
     } catch (error) {
-      console.warn('Failed to load app config:', error)
+      logger.warn('Failed to load app config', { error })
     } finally {
       setIsLoading(false)
     }
@@ -62,36 +64,36 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
       ...updates,
       setup: {
         ...config.setup,
-        ...(updates.setup || {})
+        ...(updates.setup || {}),
       },
       owner: {
         ...config.owner,
-        ...(updates.owner || {})
+        ...(updates.owner || {}),
       },
       branding: {
         ...config.branding,
-        ...(updates.branding || {})
+        ...(updates.branding || {}),
       },
       theme: {
         ...config.theme,
-        ...(updates.theme || {})
+        ...(updates.theme || {}),
       },
       homepage: {
         ...config.homepage,
-        ...(updates.homepage || {})
+        ...(updates.homepage || {}),
       },
       authProviders: {
         ...config.authProviders,
-        ...(updates.authProviders || {})
+        ...(updates.authProviders || {}),
       },
       authPermissions: {
         ...config.authPermissions,
-        ...(updates.authPermissions || {})
+        ...(updates.authPermissions || {}),
       },
       features: {
         ...config.features,
-        ...(updates.features || {})
-      }
+        ...(updates.features || {}),
+      },
     }
 
     // Update state immediately for responsiveness
@@ -105,10 +107,10 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
       await fetch('/api/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newConfig)
+        body: JSON.stringify(newConfig),
       })
     } catch (error) {
-      console.error('Failed to save config to database:', error)
+      logger.error('Failed to save config to database:',  error)
       // Don't throw - we already saved locally
     }
 
@@ -129,14 +131,14 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch('/api/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(config)
+        body: JSON.stringify(config),
       })
 
       if (!response.ok) {
         throw new Error('Failed to save configuration to database')
       }
     } catch (error) {
-      console.error('Failed to save app config:', error)
+      logger.error('Failed to save app config:',  error)
       throw error
     }
   }
@@ -149,11 +151,7 @@ export function AppConfigProvider({ children }: { children: React.ReactNode }) {
     saveConfig,
   }
 
-  return (
-    <AppConfigContext.Provider value={value}>
-      {children}
-    </AppConfigContext.Provider>
-  )
+  return <AppConfigContext.Provider value={value}>{children}</AppConfigContext.Provider>
 }
 
 export function useAppConfig() {

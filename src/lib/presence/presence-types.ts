@@ -11,7 +11,7 @@
 /**
  * Core presence status values
  */
-export type PresenceStatus = 'online' | 'away' | 'dnd' | 'invisible' | 'offline';
+export type PresenceStatus = 'online' | 'away' | 'dnd' | 'invisible' | 'offline'
 
 /**
  * Status colors for UI display
@@ -22,7 +22,7 @@ export const PRESENCE_COLORS: Record<PresenceStatus, string> = {
   dnd: '#EF4444', // red-500
   invisible: '#6B7280', // gray-500
   offline: '#6B7280', // gray-500
-};
+}
 
 /**
  * Status labels for display
@@ -33,7 +33,7 @@ export const PRESENCE_LABELS: Record<PresenceStatus, string> = {
   dnd: 'Do Not Disturb',
   invisible: 'Invisible',
   offline: 'Offline',
-};
+}
 
 /**
  * Status descriptions
@@ -44,7 +44,7 @@ export const PRESENCE_DESCRIPTIONS: Record<PresenceStatus, string> = {
   dnd: 'You will not receive notifications',
   invisible: 'You appear offline but can still use the app',
   offline: 'You are disconnected',
-};
+}
 
 // ============================================================================
 // Activity Types
@@ -61,16 +61,16 @@ export type ActivityType =
   | 'out_sick'
   | 'vacationing'
   | 'working_remotely'
-  | 'custom';
+  | 'custom'
 
 /**
  * Preset activities with their details
  */
 export interface PresetActivity {
-  type: ActivityType;
-  emoji: string;
-  text: string;
-  defaultDuration?: StatusDuration;
+  type: ActivityType
+  emoji: string
+  text: string
+  defaultDuration?: StatusDuration
 }
 
 /**
@@ -85,14 +85,14 @@ export const PRESET_ACTIVITIES: PresetActivity[] = [
   { type: 'vacationing', emoji: '🌴', text: 'Vacationing', defaultDuration: 'indefinite' },
   { type: 'working_remotely', emoji: '🏠', text: 'Working remotely', defaultDuration: 'today' },
   { type: 'custom', emoji: '✏️', text: 'Set a custom status', defaultDuration: 'indefinite' },
-];
+]
 
 /**
  * Get preset activity by type
  */
 export const getPresetActivity = (type: ActivityType): PresetActivity | undefined => {
-  return PRESET_ACTIVITIES.find((a) => a.type === type);
-};
+  return PRESET_ACTIVITIES.find((a) => a.type === type)
+}
 
 // ============================================================================
 // Duration Types
@@ -109,37 +109,37 @@ export type StatusDuration =
   | 'today'
   | 'this_week'
   | 'indefinite'
-  | 'custom';
+  | 'custom'
 
 /**
  * Duration option with label and calculation
  */
 export interface DurationOption {
-  value: StatusDuration;
-  label: string;
-  getExpiresAt: () => Date | null;
+  value: StatusDuration
+  label: string
+  getExpiresAt: () => Date | null
 }
 
 /**
  * Get end of today
  */
 const getEndOfToday = (): Date => {
-  const date = new Date();
-  date.setHours(23, 59, 59, 999);
-  return date;
-};
+  const date = new Date()
+  date.setHours(23, 59, 59, 999)
+  return date
+}
 
 /**
  * Get end of week (Sunday)
  */
 const getEndOfWeek = (): Date => {
-  const date = new Date();
-  const day = date.getDay();
-  const daysUntilSunday = 7 - day;
-  date.setDate(date.getDate() + daysUntilSunday);
-  date.setHours(23, 59, 59, 999);
-  return date;
-};
+  const date = new Date()
+  const day = date.getDay()
+  const daysUntilSunday = 7 - day
+  date.setDate(date.getDate() + daysUntilSunday)
+  date.setHours(23, 59, 59, 999)
+  return date
+}
 
 /**
  * Duration options with labels and expiration calculators
@@ -180,14 +180,14 @@ export const DURATION_OPTIONS: DurationOption[] = [
     label: "Don't clear",
     getExpiresAt: () => null,
   },
-];
+]
 
 /**
  * Get duration option by value
  */
 export const getDurationOption = (value: StatusDuration): DurationOption | undefined => {
-  return DURATION_OPTIONS.find((d) => d.value === value);
-};
+  return DURATION_OPTIONS.find((d) => d.value === value)
+}
 
 // ============================================================================
 // Custom Status Types
@@ -197,22 +197,42 @@ export const getDurationOption = (value: StatusDuration): DurationOption | undef
  * Custom status structure
  */
 export interface CustomStatus {
-  emoji?: string;
-  text?: string;
-  expiresAt?: Date | null;
-  activity?: ActivityType;
+  emoji?: string
+  text?: string
+  expiresAt?: Date | null
+  activity?: ActivityType
 }
 
 /**
  * Frequently used emojis for status
  */
 export const COMMON_STATUS_EMOJIS = [
-  '😊', '👋', '🙂', '😁', '🎉',
-  '💼', '📅', '📞', '🎯', '💻',
-  '🏠', '🚗', '✈️', '🌴', '🤒',
-  '🎵', '🎮', '📚', '🍔', '☕',
-  '🔇', '⏰', '🔒', '✨', '🌙',
-];
+  '😊',
+  '👋',
+  '🙂',
+  '😁',
+  '🎉',
+  '💼',
+  '📅',
+  '📞',
+  '🎯',
+  '💻',
+  '🏠',
+  '🚗',
+  '✈️',
+  '🌴',
+  '🤒',
+  '🎵',
+  '🎮',
+  '📚',
+  '🍔',
+  '☕',
+  '🔇',
+  '⏰',
+  '🔒',
+  '✨',
+  '🌙',
+]
 
 // ============================================================================
 // Presence Data Types
@@ -222,35 +242,35 @@ export const COMMON_STATUS_EMOJIS = [
  * Full user presence data
  */
 export interface UserPresence {
-  userId: string;
-  status: PresenceStatus;
-  customStatus?: CustomStatus;
-  lastSeenAt?: Date;
-  device?: string;
-  isTyping?: boolean;
-  typingInContext?: string;
+  userId: string
+  status: PresenceStatus
+  customStatus?: CustomStatus
+  lastSeenAt?: Date
+  device?: string
+  isTyping?: boolean
+  typingInContext?: string
 }
 
 /**
  * Presence update event
  */
 export interface PresenceUpdate {
-  userId: string;
-  status: PresenceStatus;
-  customStatus?: CustomStatus;
-  timestamp: Date;
+  userId: string
+  status: PresenceStatus
+  customStatus?: CustomStatus
+  timestamp: Date
 }
 
 /**
  * Typing status
  */
 export interface TypingStatus {
-  userId: string;
-  userName: string;
-  userAvatar?: string;
-  channelId?: string;
-  threadId?: string;
-  startedAt: Date;
+  userId: string
+  userName: string
+  userAvatar?: string
+  channelId?: string
+  threadId?: string
+  startedAt: Date
 }
 
 // ============================================================================
@@ -265,37 +285,37 @@ export interface PresenceSettings {
    * Auto-away settings
    */
   autoAway: {
-    enabled: boolean;
-    timeout: number; // minutes
-    setStatus: PresenceStatus;
-  };
+    enabled: boolean
+    timeout: number // minutes
+    setStatus: PresenceStatus
+  }
 
   /**
    * Idle detection settings
    */
   idleDetection: {
-    enabled: boolean;
-    timeout: number; // minutes
-  };
+    enabled: boolean
+    timeout: number // minutes
+  }
 
   /**
    * Privacy settings
    */
   privacy: {
-    showLastSeen: boolean;
-    showTypingIndicator: boolean;
-    shareActivityStatus: boolean;
-  };
+    showLastSeen: boolean
+    showTypingIndicator: boolean
+    shareActivityStatus: boolean
+  }
 
   /**
    * Do Not Disturb settings
    */
   dndSchedule: {
-    enabled: boolean;
-    startTime: string; // HH:MM
-    endTime: string; // HH:MM
-    days: number[]; // 0-6, Sunday = 0
-  };
+    enabled: boolean
+    startTime: string // HH:MM
+    endTime: string // HH:MM
+    days: number[] // 0-6, Sunday = 0
+  }
 }
 
 /**
@@ -322,7 +342,7 @@ export const DEFAULT_PRESENCE_SETTINGS: PresenceSettings = {
     endTime: '08:00',
     days: [0, 1, 2, 3, 4, 5, 6], // all days
   },
-};
+}
 
 // ============================================================================
 // Utility Functions
@@ -332,84 +352,84 @@ export const DEFAULT_PRESENCE_SETTINGS: PresenceSettings = {
  * Get presence color by status
  */
 export const getPresenceColor = (status: PresenceStatus): string => {
-  return PRESENCE_COLORS[status] ?? PRESENCE_COLORS.offline;
-};
+  return PRESENCE_COLORS[status] ?? PRESENCE_COLORS.offline
+}
 
 /**
  * Get presence label by status
  */
 export const getPresenceLabel = (status: PresenceStatus): string => {
-  return PRESENCE_LABELS[status] ?? PRESENCE_LABELS.offline;
-};
+  return PRESENCE_LABELS[status] ?? PRESENCE_LABELS.offline
+}
 
 /**
  * Get presence description by status
  */
 export const getPresenceDescription = (status: PresenceStatus): string => {
-  return PRESENCE_DESCRIPTIONS[status] ?? PRESENCE_DESCRIPTIONS.offline;
-};
+  return PRESENCE_DESCRIPTIONS[status] ?? PRESENCE_DESCRIPTIONS.offline
+}
 
 /**
  * Check if status is considered "active" (not offline or invisible)
  */
 export const isActiveStatus = (status: PresenceStatus): boolean => {
-  return status === 'online' || status === 'away' || status === 'dnd';
-};
+  return status === 'online' || status === 'away' || status === 'dnd'
+}
 
 /**
  * Check if status should show as online to others
  */
 export const isVisibleOnline = (status: PresenceStatus): boolean => {
-  return status !== 'offline' && status !== 'invisible';
-};
+  return status !== 'offline' && status !== 'invisible'
+}
 
 /**
  * Check if custom status has expired
  */
 export const isStatusExpired = (customStatus: CustomStatus | undefined): boolean => {
-  if (!customStatus?.expiresAt) return false;
-  return new Date(customStatus.expiresAt) < new Date();
-};
+  if (!customStatus?.expiresAt) return false
+  return new Date(customStatus.expiresAt) < new Date()
+}
 
 /**
  * Format last seen time
  */
 export const formatLastSeen = (lastSeenAt: Date | string | undefined): string => {
-  if (!lastSeenAt) return 'Never';
+  if (!lastSeenAt) return 'Never'
 
-  const date = typeof lastSeenAt === 'string' ? new Date(lastSeenAt) : lastSeenAt;
-  const now = new Date();
-  const diffMs = now.getTime() - date.getTime();
-  const diffMins = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const date = typeof lastSeenAt === 'string' ? new Date(lastSeenAt) : lastSeenAt
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMins = Math.floor(diffMs / (1000 * 60))
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
 
-  if (diffMins < 1) return 'Just now';
-  if (diffMins < 60) return `${diffMins}m ago`;
-  if (diffHours < 24) return `${diffHours}h ago`;
-  if (diffDays === 1) return 'Yesterday';
-  if (diffDays < 7) return `${diffDays}d ago`;
+  if (diffMins < 1) return 'Just now'
+  if (diffMins < 60) return `${diffMins}m ago`
+  if (diffHours < 24) return `${diffHours}h ago`
+  if (diffDays === 1) return 'Yesterday'
+  if (diffDays < 7) return `${diffDays}d ago`
 
-  return date.toLocaleDateString();
-};
+  return date.toLocaleDateString()
+}
 
 /**
  * Format status duration remaining
  */
 export const formatDurationRemaining = (expiresAt: Date | string | null | undefined): string => {
-  if (!expiresAt) return '';
+  if (!expiresAt) return ''
 
-  const date = typeof expiresAt === 'string' ? new Date(expiresAt) : expiresAt;
-  const now = new Date();
-  const diffMs = date.getTime() - now.getTime();
+  const date = typeof expiresAt === 'string' ? new Date(expiresAt) : expiresAt
+  const now = new Date()
+  const diffMs = date.getTime() - now.getTime()
 
-  if (diffMs <= 0) return 'Expired';
+  if (diffMs <= 0) return 'Expired'
 
-  const diffMins = Math.floor(diffMs / (1000 * 60));
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  const diffMins = Math.floor(diffMs / (1000 * 60))
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
 
-  if (diffMins < 60) return `${diffMins}m`;
-  if (diffHours < 24) return `${diffHours}h`;
-  return `${diffDays}d`;
-};
+  if (diffMins < 60) return `${diffMins}m`
+  if (diffHours < 24) return `${diffHours}h`
+  return `${diffDays}d`
+}

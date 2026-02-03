@@ -10,15 +10,9 @@ import {
   SettingsRow,
   SimpleNotificationToggle,
 } from '@/components/settings'
-import {
-  Shield,
-  Eye,
-  Check,
-  Edit3,
-  Users,
-  Lock,
-  Globe,
-} from 'lucide-react'
+import { Shield, Eye, Check, Edit3, Users, Lock, Globe } from 'lucide-react'
+
+import { logger } from '@/lib/logger'
 
 interface PrivacySettings {
   // Who can DM
@@ -58,10 +52,7 @@ export default function PrivacySettingsPage() {
   const [loading, setLoading] = useState(false)
   const [saved, setSaved] = useState(false)
 
-  const updateSetting = <K extends keyof PrivacySettings>(
-    key: K,
-    value: PrivacySettings[K]
-  ) => {
+  const updateSetting = <K extends keyof PrivacySettings>(key: K, value: PrivacySettings[K]) => {
     setSettings((prev) => ({ ...prev, [key]: value }))
     setSaved(false)
   }
@@ -69,12 +60,11 @@ export default function PrivacySettingsPage() {
   const handleSave = async () => {
     setLoading(true)
     try {
-      // TODO: Save to backend
       await new Promise((resolve) => setTimeout(resolve, 500))
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
-      console.error('Failed to save privacy settings:', error)
+      logger.error('Failed to save privacy settings:', error)
     } finally {
       setLoading(false)
     }
@@ -85,7 +75,7 @@ export default function PrivacySettingsPage() {
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
             <Shield className="h-5 w-5 text-primary" />
           </div>
           <div>
@@ -112,10 +102,7 @@ export default function PrivacySettingsPage() {
                 <RadioGroup
                   value={settings.dmPermission}
                   onValueChange={(value) =>
-                    updateSetting(
-                      'dmPermission',
-                      value as PrivacySettings['dmPermission']
-                    )
+                    updateSetting('dmPermission', value as PrivacySettings['dmPermission'])
                   }
                   className="space-y-3"
                 >
@@ -154,10 +141,7 @@ export default function PrivacySettingsPage() {
                   <div className="flex items-start space-x-3 rounded-lg border p-4">
                     <RadioGroupItem value="none" id="dm-none" />
                     <div className="flex-1">
-                      <Label
-                        htmlFor="dm-none"
-                        className="flex cursor-pointer items-center gap-2"
-                      >
+                      <Label htmlFor="dm-none" className="flex cursor-pointer items-center gap-2">
                         <Lock className="h-4 w-4 text-muted-foreground" />
                         <span className="font-medium">No one</span>
                       </Label>
@@ -187,9 +171,7 @@ export default function PrivacySettingsPage() {
                 label="Show online status"
                 description="Let others see when you're online"
                 checked={settings.showOnlineStatus}
-                onCheckedChange={(checked) =>
-                  updateSetting('showOnlineStatus', checked)
-                }
+                onCheckedChange={(checked) => updateSetting('showOnlineStatus', checked)}
               />
 
               <SimpleNotificationToggle
@@ -197,9 +179,7 @@ export default function PrivacySettingsPage() {
                 label="Show last seen"
                 description="Let others see when you were last active"
                 checked={settings.showLastSeen}
-                onCheckedChange={(checked) =>
-                  updateSetting('showLastSeen', checked)
-                }
+                onCheckedChange={(checked) => updateSetting('showLastSeen', checked)}
                 disabled={!settings.showOnlineStatus}
               />
             </div>
@@ -216,9 +196,7 @@ export default function PrivacySettingsPage() {
                 label="Read receipts"
                 description="Let others know when you've read their messages. If disabled, you also won't see when others read your messages."
                 checked={settings.readReceipts}
-                onCheckedChange={(checked) =>
-                  updateSetting('readReceipts', checked)
-                }
+                onCheckedChange={(checked) => updateSetting('readReceipts', checked)}
               />
 
               <SimpleNotificationToggle
@@ -226,17 +204,15 @@ export default function PrivacySettingsPage() {
                 label="Typing indicators"
                 description="Show when you're typing a message. If disabled, you also won't see when others are typing."
                 checked={settings.typingIndicators}
-                onCheckedChange={(checked) =>
-                  updateSetting('typingIndicators', checked)
-                }
+                onCheckedChange={(checked) => updateSetting('typingIndicators', checked)}
               />
             </div>
 
             {/* Info about reciprocal settings */}
             <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950">
               <p className="text-sm text-blue-800 dark:text-blue-200">
-                <strong>Note:</strong> These settings are reciprocal. If you disable
-                read receipts, you won't see read receipts from others either.
+                <strong>Note:</strong> These settings are reciprocal. If you disable read receipts,
+                you won't see read receipts from others either.
               </p>
             </div>
           </SettingsSection>
@@ -255,10 +231,7 @@ export default function PrivacySettingsPage() {
               <RadioGroup
                 value={settings.profileVisibility}
                 onValueChange={(value) =>
-                  updateSetting(
-                    'profileVisibility',
-                    value as PrivacySettings['profileVisibility']
-                  )
+                  updateSetting('profileVisibility', value as PrivacySettings['profileVisibility'])
                 }
                 className="space-y-3"
               >
@@ -266,9 +239,7 @@ export default function PrivacySettingsPage() {
                   <RadioGroupItem value="public" id="profile-public" />
                   <Label htmlFor="profile-public" className="flex-1 cursor-pointer">
                     <div className="font-medium">Public</div>
-                    <p className="text-sm text-muted-foreground">
-                      Anyone can view your profile
-                    </p>
+                    <p className="text-sm text-muted-foreground">Anyone can view your profile</p>
                   </Label>
                 </div>
 
@@ -314,19 +285,14 @@ export default function PrivacySettingsPage() {
           </SettingsSection>
 
           {/* Activity Status */}
-          <SettingsSection
-            title="Activity"
-            description="Control visibility of your activity"
-          >
+          <SettingsSection title="Activity" description="Control visibility of your activity">
             <div className="rounded-lg border p-4">
               <SimpleNotificationToggle
                 id="show-activity"
                 label="Show activity status"
                 description="Let others see what channels you're active in"
                 checked={settings.showActivity}
-                onCheckedChange={(checked) =>
-                  updateSetting('showActivity', checked)
-                }
+                onCheckedChange={(checked) => updateSetting('showActivity', checked)}
               />
             </div>
           </SettingsSection>

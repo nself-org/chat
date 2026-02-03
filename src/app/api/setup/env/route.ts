@@ -9,6 +9,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { generateEnvFile, envToConfig } from '@/lib/setup/environment-detector'
 
+import { logger } from '@/lib/logger'
+
 const PROJECT_ROOT = process.cwd()
 
 /**
@@ -28,7 +30,7 @@ export async function GET() {
       variables: getPublicEnvVars(),
     })
   } catch (error) {
-    console.error('Env detection error:', error)
+    logger.error('Env detection error:', error)
     return NextResponse.json(
       { error: 'Failed to detect environment', details: String(error) },
       { status: 500 }
@@ -47,28 +49,19 @@ export async function POST(request: NextRequest) {
 
     switch (action) {
       case 'generate':
-        return NextResponse.json(
-          await generateEnv(config, environment, backendUrls)
-        )
+        return NextResponse.json(await generateEnv(config, environment, backendUrls))
 
       case 'save':
-        return NextResponse.json(
-          await saveEnvFile(config, environment, backendUrls)
-        )
+        return NextResponse.json(await saveEnvFile(config, environment, backendUrls))
 
       case 'preview':
-        return NextResponse.json(
-          previewEnvFile(config, environment, backendUrls)
-        )
+        return NextResponse.json(previewEnvFile(config, environment, backendUrls))
 
       default:
-        return NextResponse.json(
-          { error: `Unknown action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
     }
   } catch (error) {
-    console.error('Env generation error:', error)
+    logger.error('Env generation error:', error)
     return NextResponse.json(
       { error: 'Environment generation failed', details: String(error) },
       { status: 500 }
@@ -80,7 +73,8 @@ export async function POST(request: NextRequest) {
  * Detect existing .env files
  */
 async function detectEnvFiles() {
-  const files: Record<string, { exists: boolean; path: string; size?: number; modified?: string }> = {}
+  const files: Record<string, { exists: boolean; path: string; size?: number; modified?: string }> =
+    {}
 
   const envFileNames = [
     { name: 'local', file: '.env.local' },
@@ -142,7 +136,7 @@ async function generateEnv(
     content,
     environment,
     lineCount: content.split('\n').length,
-    variableCount: content.split('\n').filter(l => l.includes('=')).length,
+    variableCount: content.split('\n').filter((l) => l.includes('=')).length,
   }
 }
 
@@ -200,7 +194,7 @@ async function saveEnvFile(
     path: filePath,
     environment,
     lineCount: content.split('\n').length,
-    variableCount: content.split('\n').filter(l => l.includes('=')).length,
+    variableCount: content.split('\n').filter((l) => l.includes('=')).length,
     message: `Environment file saved to ${filename}`,
   }
 }

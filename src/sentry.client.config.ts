@@ -9,6 +9,8 @@
 
 import * as Sentry from '@sentry/nextjs'
 
+import { logger } from '@/lib/logger'
+
 // Only initialize Sentry if DSN is configured
 const SENTRY_DSN = process.env.NEXT_PUBLIC_SENTRY_DSN
 
@@ -47,7 +49,7 @@ if (SENTRY_DSN) {
         // Remove sensitive headers
         const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key']
         if (event.request.headers) {
-          sensitiveHeaders.forEach(header => {
+          sensitiveHeaders.forEach((header) => {
             if (event.request?.headers?.[header]) {
               event.request.headers[header] = '[Filtered]'
             }
@@ -56,10 +58,18 @@ if (SENTRY_DSN) {
 
         // Remove sensitive form data
         if (event.request.data && typeof event.request.data === 'object') {
-          const sensitiveFields = ['password', 'token', 'secret', 'apiKey', 'api_key', 'creditCard', 'ssn']
+          const sensitiveFields = [
+            'password',
+            'token',
+            'secret',
+            'apiKey',
+            'api_key',
+            'creditCard',
+            'ssn',
+          ]
           const filtered = { ...event.request.data }
 
-          sensitiveFields.forEach(field => {
+          sensitiveFields.forEach((field) => {
             if (filtered[field]) {
               filtered[field] = '[Filtered]'
             }
@@ -71,12 +81,19 @@ if (SENTRY_DSN) {
 
       // Filter sensitive breadcrumb data
       if (event.breadcrumbs) {
-        event.breadcrumbs = event.breadcrumbs.map(breadcrumb => {
+        event.breadcrumbs = event.breadcrumbs.map((breadcrumb) => {
           if (breadcrumb.data) {
             const filtered = { ...breadcrumb.data }
-            const sensitiveKeys = ['password', 'token', 'secret', 'apiKey', 'api_key', 'authorization']
+            const sensitiveKeys = [
+              'password',
+              'token',
+              'secret',
+              'apiKey',
+              'api_key',
+              'authorization',
+            ]
 
-            sensitiveKeys.forEach(key => {
+            sensitiveKeys.forEach((key) => {
               if (filtered[key]) {
                 filtered[key] = '[Filtered]'
               }
@@ -125,12 +142,7 @@ if (SENTRY_DSN) {
     ],
 
     // Deny URLs - don't track errors from these sources
-    denyUrls: [
-      /extensions\//i,
-      /^chrome:\/\//i,
-      /^chrome-extension:\/\//i,
-      /^moz-extension:\/\//i,
-    ],
+    denyUrls: [/extensions\//i, /^chrome:\/\//i, /^chrome-extension:\/\//i, /^moz-extension:\/\//i],
 
     // Integrations
     integrations: [
@@ -179,11 +191,11 @@ if (SENTRY_DSN) {
 
   // Log initialization (only in development)
   if (process.env.NODE_ENV === 'development') {
-    console.log('[Sentry] Client-side monitoring initialized')
+    // REMOVED: console.log('[Sentry] Client-side monitoring initialized')
   }
 } else {
   // Log warning if DSN is not configured (only in production)
   if (process.env.NODE_ENV === 'production') {
-    console.warn('[Sentry] DSN not configured - error tracking disabled')
+    logger.warn('[Sentry] DSN not configured - error tracking disabled')
   }
 }

@@ -77,8 +77,12 @@ describe('useChannelMessages', () => {
     // Default mutation mocks - called 3 times for send, update, delete
     mockUseMutation
       .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<typeof useMutation>)
-      .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<typeof useMutation>)
-      .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<typeof useMutation>)
+      .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<
+        typeof useMutation
+      >)
+      .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<
+        typeof useMutation
+      >)
   })
 
   // ==========================================================================
@@ -299,7 +303,10 @@ describe('useChannelMessages', () => {
 
   describe('updateMessage', () => {
     it('should call mutation with correct variables', async () => {
-      const updatedMessage = { ...createMockMessage('msg-1', 'Updated content'), updated_at: new Date().toISOString() }
+      const updatedMessage = {
+        ...createMockMessage('msg-1', 'Updated content'),
+        updated_at: new Date().toISOString(),
+      }
       mockUpdateMessage.mockResolvedValue({
         data: { update_nchat_messages_by_pk: updatedMessage },
       })
@@ -319,7 +326,10 @@ describe('useChannelMessages', () => {
     })
 
     it('should return the updated message on success', async () => {
-      const updatedMessage = { ...createMockMessage('msg-1', 'Updated content'), updated_at: new Date().toISOString() }
+      const updatedMessage = {
+        ...createMockMessage('msg-1', 'Updated content'),
+        updated_at: new Date().toISOString(),
+      }
       mockUpdateMessage.mockResolvedValue({
         data: { update_nchat_messages_by_pk: updatedMessage },
       })
@@ -335,7 +345,10 @@ describe('useChannelMessages', () => {
     })
 
     it('should work even when channelId is null', async () => {
-      const updatedMessage = { ...createMockMessage('msg-1', 'Updated content'), updated_at: new Date().toISOString() }
+      const updatedMessage = {
+        ...createMockMessage('msg-1', 'Updated content'),
+        updated_at: new Date().toISOString(),
+      }
       mockUpdateMessage.mockResolvedValue({
         data: { update_nchat_messages_by_pk: updatedMessage },
       })
@@ -418,10 +431,9 @@ describe('useChannelMessages', () => {
 
   describe('channel changes', () => {
     it('should resubscribe when channelId changes', () => {
-      const { rerender } = renderHook(
-        ({ channelId }) => useChannelMessages(channelId),
-        { initialProps: { channelId: 'channel-1' as string | null } }
-      )
+      const { rerender } = renderHook(({ channelId }) => useChannelMessages(channelId), {
+        initialProps: { channelId: 'channel-1' as string | null },
+      })
 
       expect(mockUseSubscription).toHaveBeenLastCalledWith(
         expect.anything(),
@@ -432,9 +444,15 @@ describe('useChannelMessages', () => {
 
       // Reset mocks for rerender
       mockUseMutation
-        .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       rerender({ channelId: 'channel-2' })
 
@@ -447,16 +465,21 @@ describe('useChannelMessages', () => {
     })
 
     it('should skip subscription when channelId becomes null', () => {
-      const { rerender } = renderHook(
-        ({ channelId }) => useChannelMessages(channelId),
-        { initialProps: { channelId: 'channel-1' as string | null } }
-      )
+      const { rerender } = renderHook(({ channelId }) => useChannelMessages(channelId), {
+        initialProps: { channelId: 'channel-1' as string | null },
+      })
 
       // Reset mocks for rerender
       mockUseMutation
-        .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       rerender({ channelId: null })
 
@@ -485,9 +508,15 @@ describe('useChannelMessages', () => {
 
       // Reset mocks for rerender
       mockUseMutation
-        .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       rerender()
 
@@ -504,9 +533,15 @@ describe('useChannelMessages', () => {
 
       // Reset mocks for rerender
       mockUseMutation
-        .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockSendMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockDeleteMessage, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       rerender()
 

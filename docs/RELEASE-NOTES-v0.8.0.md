@@ -17,6 +17,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 ### 📱 Mobile Applications
 
 **iOS App (Capacitor)**
+
 - Native iOS application with Capacitor 6.x
 - CallKit integration for native calling experience
 - Face ID / Touch ID biometric authentication
@@ -27,6 +28,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - iOS 14.0+ support
 
 **Android App (Capacitor)**
+
 - Native Android application with Capacitor 6.x
 - Firebase Cloud Messaging (FCM) for push notifications
 - Fingerprint authentication support
@@ -39,6 +41,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 ### 💻 Desktop Applications
 
 **Electron Apps**
+
 - Windows desktop application (.exe installer)
 - macOS desktop application (.dmg installer)
 - Linux desktop application (.AppImage, .deb, .rpm)
@@ -49,6 +52,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Window state persistence
 
 **Alternative: Tauri**
+
 - Lightweight Rust-based desktop apps
 - Smaller bundle size (5-15MB vs 100-200MB)
 - Uses system webview
@@ -57,18 +61,21 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 ### 📴 Offline Mode
 
 **Message Caching**
+
 - Cache last 1000 messages per channel
 - Automatic cache management with LRU eviction
 - Persist to IndexedDB for offline access
 - Smart cache invalidation
 
 **Attachment Caching**
+
 - 100MB default cache limit (configurable)
 - LRU eviction policy for attachments
 - Support for images, videos, documents, audio
 - Automatic cleanup of old files
 
 **Offline Queue**
+
 - Queue messages sent while offline
 - Automatic sync when connection restored
 - Priority-based queue processing
@@ -76,6 +83,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Conflict resolution
 
 **Background Sync**
+
 - iOS: Background App Refresh (15-minute intervals)
 - Android: WorkManager for reliable background sync
 - Battery-aware sync (respects low battery mode)
@@ -83,6 +91,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Network-aware (WiFi vs cellular)
 
 **Conflict Resolution**
+
 - Last-write-wins strategy for simple conflicts
 - Merge strategy for compatible changes
 - User prompt for complex conflicts
@@ -91,6 +100,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 ### 🎨 Mobile UI Optimizations
 
 **Virtual Scrolling**
+
 - Handles 10,000+ messages at 60fps
 - Uses @tanstack/react-virtual
 - Dynamic row heights
@@ -98,6 +108,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Memory efficient (renders only visible items)
 
 **Dark Mode**
+
 - System preference detection
 - Manual override option
 - Smooth transitions
@@ -105,6 +116,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Three variants: button, dropdown, switch
 
 **Long-Press Menus**
+
 - Context menus with haptic feedback
 - Customizable press duration (default 500ms)
 - Smart positioning (avoids screen edges)
@@ -113,6 +125,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Keyboard accessible
 
 **Pinch-to-Zoom**
+
 - Pinch gesture support (1x to 4x zoom)
 - Double-tap to zoom
 - Pan when zoomed
@@ -122,6 +135,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Fullscreen mode
 
 **Pull-to-Refresh**
+
 - Native pull-to-refresh gesture
 - Loading indicators
 - Haptic feedback
@@ -129,6 +143,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Works with virtual scrolling
 
 **Skeleton Loaders**
+
 - Multiple skeleton types (message, channel, user, etc.)
 - Animation variants (pulse, wave)
 - Dark mode compatible
@@ -138,6 +153,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 ### 📷 Media Features
 
 **Camera Integration**
+
 - Take photos directly in-app
 - Record videos with controls
 - Front/back camera switching
@@ -147,6 +163,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Android: CameraX
 
 **Photo Library**
+
 - Pick photos from gallery
 - Multi-select support
 - Photo metadata access
@@ -155,6 +172,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Android: MediaStore
 
 **Video Player**
+
 - Custom video player controls
 - Playback speed control
 - Fullscreen support
@@ -163,6 +181,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - Volume control
 
 **Audio Recording**
+
 - Voice message recording
 - Waveform visualization
 - Pause/resume support
@@ -171,6 +190,7 @@ Version 0.8.0 is a major release that brings ɳChat to mobile and desktop platfo
 - File size limits
 
 **File Picker**
+
 - Native file selection
 - Multi-select support
 - File type filtering
@@ -234,6 +254,7 @@ No migration required. The v0.8.0 release is additive only.
 To use the new mobile/desktop features:
 
 1. **For Mobile Development:**
+
    ```bash
    cd platforms/capacitor
    pnpm install
@@ -242,6 +263,7 @@ To use the new mobile/desktop features:
    ```
 
 2. **For Desktop Development:**
+
    ```bash
    pnpm install
    pnpm electron:dev
@@ -283,19 +305,23 @@ To use the new mobile/desktop features:
 ## Known Issues
 
 ### iOS
+
 - Background sync limited to 15-minute intervals by iOS
 - Push notification sounds require app in foreground (iOS limitation)
 - Large file uploads may timeout (working on chunked uploads)
 
 ### Android
+
 - Some devices have issues with background sync (device-specific)
 - Camera permission dialog may appear multiple times on some devices
 
 ### Desktop
+
 - Auto-updater not yet implemented (manual updates required)
 - System tray icon may not appear on some Linux distros
 
 ### General
+
 - Offline conflict resolution UI needs polish
 - First sync after long offline period may be slow
 - Large attachment cache may cause storage warnings
@@ -317,6 +343,7 @@ pnpm build
 ### Mobile (New in 0.8.0)
 
 **First Time Setup:**
+
 ```bash
 # iOS
 cd platforms/capacitor
@@ -331,6 +358,7 @@ pnpm run open:android
 ```
 
 **Updating:**
+
 ```bash
 git pull origin main
 pnpm build
@@ -353,16 +381,19 @@ pnpm electron:build
 ### Tested Platforms
 
 **Web:**
+
 - ✅ Chrome 120+
 - ✅ Firefox 120+
 - ✅ Safari 17+
 - ✅ Edge 120+
 
 **Mobile:**
+
 - ✅ iOS 14.0 - 17.2 (simulators and devices)
 - ✅ Android 7.0 - 14.0 (emulators and devices)
 
 **Desktop:**
+
 - ✅ Windows 10, 11
 - ✅ macOS 12+
 - ✅ Ubuntu 22.04, Fedora 39
@@ -406,6 +437,7 @@ Special thanks to all contributors to v0.8.0:
 **Focus**: Testing, Refinement, and Stability
 
 Planned features:
+
 - App Store and Play Store submission preparation
 - Performance optimization for low-end devices
 - Improved offline conflict resolution UI

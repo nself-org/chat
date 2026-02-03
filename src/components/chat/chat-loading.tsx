@@ -55,12 +55,7 @@ function MessageSkeletonItem({
   return (
     <div className={cn('flex gap-3', compact && 'gap-2')}>
       {showAvatar && (
-        <Skeleton
-          className={cn(
-            'shrink-0 rounded-full',
-            compact ? 'h-6 w-6' : 'h-9 w-9'
-          )}
-        />
+        <Skeleton className={cn('shrink-0 rounded-full', compact ? 'h-6 w-6' : 'h-9 w-9')} />
       )}
       <div className="flex-1 space-y-2">
         {showAvatar && (
@@ -128,7 +123,7 @@ function InputSkeleton() {
   return (
     <div className="border-t p-4">
       <div className="flex gap-2">
-        <Skeleton className="flex-1 h-10 rounded-md" />
+        <Skeleton className="h-10 flex-1 rounded-md" />
         <Skeleton className="h-10 w-20 rounded-md" />
       </div>
     </div>
@@ -174,7 +169,7 @@ export function ChatLoading({
       {showHeader && <HeaderSkeleton />}
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-hidden p-4 space-y-4">
+      <div className="flex-1 space-y-4 overflow-hidden p-4">
         {messageGroups.map((group, index) =>
           group.type === 'date' ? (
             <DateSeparatorSkeleton key={`date-${index}`} />
@@ -196,15 +191,10 @@ export function ChatLoading({
 
 export function ChatLoadingSpinner({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-center py-8',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-center py-8', className)}>
       <div className="flex items-center gap-2 text-muted-foreground">
         <svg
-          className="animate-spin h-5 w-5"
+          className="h-5 w-5 animate-spin"
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
@@ -235,17 +225,21 @@ export function ChatLoadingSpinner({ className }: { className?: string }) {
 
 export function LoadingMoreIndicator({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-center py-4 border-b',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-center border-b py-4', className)}>
       <div className="flex items-center gap-2 text-muted-foreground">
         <div className="flex gap-1">
-          <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="w-2 h-2 rounded-full bg-current animate-bounce" style={{ animationDelay: '300ms' }} />
+          <span
+            className="h-2 w-2 animate-bounce rounded-full bg-current"
+            style={{ animationDelay: '0ms' }}
+          />
+          <span
+            className="h-2 w-2 animate-bounce rounded-full bg-current"
+            style={{ animationDelay: '150ms' }}
+          />
+          <span
+            className="h-2 w-2 animate-bounce rounded-full bg-current"
+            style={{ animationDelay: '300ms' }}
+          />
         </div>
         <span className="text-xs">Loading more messages</span>
       </div>

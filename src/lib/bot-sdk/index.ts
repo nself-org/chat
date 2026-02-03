@@ -96,12 +96,7 @@ export {
 // COMMAND REGISTRY
 // ============================================================================
 
-export {
-  CommandRegistry,
-  createCommandRegistry,
-  defineCommand,
-  param,
-} from './command-registry'
+export { CommandRegistry, createCommandRegistry, defineCommand, param } from './command-registry'
 
 export type {
   RegisteredCommand,

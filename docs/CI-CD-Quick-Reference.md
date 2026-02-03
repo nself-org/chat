@@ -74,6 +74,7 @@ gh run download <run-id>
 ## Required Secrets
 
 ### iOS/macOS
+
 ```
 APPLE_ID
 APPLE_PASSWORD / APPLE_APP_SPECIFIC_PASSWORD
@@ -86,6 +87,7 @@ MAC_CERTS_PASSWORD
 ```
 
 ### Android
+
 ```
 KEYSTORE_FILE
 KEYSTORE_PASSWORD
@@ -95,6 +97,7 @@ PLAY_STORE_JSON_KEY
 ```
 
 ### Desktop
+
 ```
 WIN_CERTS (Windows)
 WIN_CSC_KEY_PASSWORD (Windows)
@@ -103,6 +106,7 @@ GPG_PASSPHRASE (Linux)
 ```
 
 ### Notifications
+
 ```
 SLACK_WEBHOOK_URL
 SENDGRID_API_KEY (optional)
@@ -113,13 +117,13 @@ RELEASE_EMAIL_TO (optional)
 
 ## Workflows Trigger Matrix
 
-| Workflow | Push (main) | Push (develop) | PR | Tag | Manual |
-|----------|-------------|----------------|-----|-----|--------|
-| PR Checks | ❌ | ❌ | ✅ | ❌ | ❌ |
-| iOS Build | ✅ | ✅ | ✅ | ❌ | ✅ |
-| Android Build | ✅ | ✅ | ✅ | ❌ | ✅ |
-| Desktop Build | ✅ | ✅ | ✅ | ❌ | ✅ |
-| Release | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Workflow      | Push (main) | Push (develop) | PR  | Tag | Manual |
+| ------------- | ----------- | -------------- | --- | --- | ------ |
+| PR Checks     | ❌          | ❌             | ✅  | ❌  | ❌     |
+| iOS Build     | ✅          | ✅             | ✅  | ❌  | ✅     |
+| Android Build | ✅          | ✅             | ✅  | ❌  | ✅     |
+| Desktop Build | ✅          | ✅             | ✅  | ❌  | ✅     |
+| Release       | ❌          | ❌             | ❌  | ✅  | ✅     |
 
 ---
 
@@ -165,18 +169,18 @@ Format: `<type>(<scope>): <description>`
 
 ### Types
 
-| Type | Description | Changelog Section |
-|------|-------------|-------------------|
-| `feat` | New feature | ✨ Features |
-| `fix` | Bug fix | 🐛 Bug Fixes |
-| `perf` | Performance improvement | ⚡ Performance |
-| `security` | Security fix | 🔒 Security |
-| `docs` | Documentation | 📚 Documentation |
-| `refactor` | Code refactoring | ♻️ Refactoring |
-| `test` | Test changes | 🧪 Tests |
-| `build` | Build system | 🔨 Build |
-| `ci` | CI/CD changes | 👷 CI/CD |
-| `chore` | Maintenance | (Other) |
+| Type       | Description             | Changelog Section |
+| ---------- | ----------------------- | ----------------- |
+| `feat`     | New feature             | ✨ Features       |
+| `fix`      | Bug fix                 | 🐛 Bug Fixes      |
+| `perf`     | Performance improvement | ⚡ Performance    |
+| `security` | Security fix            | 🔒 Security       |
+| `docs`     | Documentation           | 📚 Documentation  |
+| `refactor` | Code refactoring        | ♻️ Refactoring    |
+| `test`     | Test changes            | 🧪 Tests          |
+| `build`    | Build system            | 🔨 Build          |
+| `ci`       | CI/CD changes           | 👷 CI/CD          |
+| `chore`    | Maintenance             | (Other)           |
 
 ### Examples
 

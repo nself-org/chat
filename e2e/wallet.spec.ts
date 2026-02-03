@@ -86,9 +86,11 @@ test.describe('MetaMask Wallet Connection', () => {
     await page.waitForLoadState('networkidle')
 
     // If MetaMask is not installed, should show appropriate message
-    const metamaskButton = page.locator(
-      'button:has-text("MetaMask"), button:has-text("Connect MetaMask"), [data-testid="connect-metamask"]'
-    ).first()
+    const metamaskButton = page
+      .locator(
+        'button:has-text("MetaMask"), button:has-text("Connect MetaMask"), [data-testid="connect-metamask"]'
+      )
+      .first()
 
     const notInstalledMessage = page.locator(
       'text=/MetaMask not installed|install.*MetaMask|download MetaMask/i'
@@ -107,9 +109,11 @@ test.describe('MetaMask Wallet Connection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const metamaskButton = page.locator(
-      'button:has-text("MetaMask"), button:has-text("Connect MetaMask"), [data-testid="connect-metamask"]'
-    ).first()
+    const metamaskButton = page
+      .locator(
+        'button:has-text("MetaMask"), button:has-text("Connect MetaMask"), [data-testid="connect-metamask"]'
+      )
+      .first()
 
     if (await metamaskButton.isVisible()) {
       await metamaskButton.click()
@@ -125,15 +129,13 @@ test.describe('MetaMask Wallet Connection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const metamaskButton = page.locator(
-      'button:has-text("MetaMask"), [data-testid="connect-metamask"]'
-    ).first()
+    const metamaskButton = page
+      .locator('button:has-text("MetaMask"), [data-testid="connect-metamask"]')
+      .first()
 
     if (await metamaskButton.isVisible()) {
       // Look for loading indicator
-      const loader = page.locator(
-        '.loading, .spinner, [aria-busy="true"], [data-testid="loading"]'
-      )
+      const loader = page.locator('.loading, .spinner, [aria-busy="true"], [data-testid="loading"]')
 
       // Loader may appear
       const count = await loader.count()
@@ -162,9 +164,7 @@ test.describe('MetaMask Wallet Connection', () => {
 
     // User rejection would be handled by MetaMask UI
     // Test that error message could appear
-    const errorMessage = page.locator(
-      '[role="alert"], text=/rejected|denied|user declined/i'
-    )
+    const errorMessage = page.locator('[role="alert"], text=/rejected|denied|user declined/i')
 
     // May show error
     const count = await errorMessage.count()
@@ -194,18 +194,16 @@ test.describe('WalletConnect Connection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const walletConnectButton = page.locator(
-      'button:has-text("WalletConnect"), [data-testid="connect-walletconnect"]'
-    ).first()
+    const walletConnectButton = page
+      .locator('button:has-text("WalletConnect"), [data-testid="connect-walletconnect"]')
+      .first()
 
     if (await walletConnectButton.isVisible()) {
       await walletConnectButton.click()
       await page.waitForTimeout(500)
 
       // Look for QR code
-      const qrCode = page.locator(
-        'canvas, [data-testid="qr-code"], img[alt*="QR"]'
-      )
+      const qrCode = page.locator('canvas, [data-testid="qr-code"], img[alt*="QR"]')
 
       const isVisible = await qrCode.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -216,9 +214,9 @@ test.describe('WalletConnect Connection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const walletConnectButton = page.locator(
-      'button:has-text("WalletConnect"), [data-testid="connect-walletconnect"]'
-    ).first()
+    const walletConnectButton = page
+      .locator('button:has-text("WalletConnect"), [data-testid="connect-walletconnect"]')
+      .first()
 
     if (await walletConnectButton.isVisible()) {
       await walletConnectButton.click()
@@ -238,9 +236,9 @@ test.describe('WalletConnect Connection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const walletConnectButton = page.locator(
-      'button:has-text("WalletConnect"), [data-testid="connect-walletconnect"]'
-    ).first()
+    const walletConnectButton = page
+      .locator('button:has-text("WalletConnect"), [data-testid="connect-walletconnect"]')
+      .first()
 
     if (await walletConnectButton.isVisible()) {
       await walletConnectButton.click()
@@ -260,18 +258,20 @@ test.describe('WalletConnect Connection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const walletConnectButton = page.locator(
-      'button:has-text("WalletConnect"), [data-testid="connect-walletconnect"]'
-    ).first()
+    const walletConnectButton = page
+      .locator('button:has-text("WalletConnect"), [data-testid="connect-walletconnect"]')
+      .first()
 
     if (await walletConnectButton.isVisible()) {
       await walletConnectButton.click()
       await page.waitForTimeout(500)
 
       // Find close button
-      const closeButton = page.locator(
-        'button[aria-label="Close"], button[aria-label*="close"], [data-testid="close-modal"]'
-      ).first()
+      const closeButton = page
+        .locator(
+          'button[aria-label="Close"], button[aria-label*="close"], [data-testid="close-modal"]'
+        )
+        .first()
 
       if (await closeButton.isVisible()) {
         await closeButton.click()
@@ -311,9 +311,7 @@ test.describe('Wallet Balance Viewing', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for ETH, MATIC, etc.
-    const nativeCurrency = page.locator(
-      'text=/ETH|MATIC|BNB|OPT|ARB/i'
-    )
+    const nativeCurrency = page.locator('text=/ETH|MATIC|BNB|OPT|ARB/i')
 
     // May show currency
     const count = await nativeCurrency.count()
@@ -325,9 +323,7 @@ test.describe('Wallet Balance Viewing', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for USD value
-    const usdBalance = page.locator(
-      'text=/\\$[0-9,]+\\.\\d{2}|USD/i'
-    )
+    const usdBalance = page.locator('text=/\\$[0-9,]+\\.\\d{2}|USD/i')
 
     // May show USD value
     const count = await usdBalance.count()
@@ -356,15 +352,13 @@ test.describe('Wallet Balance Viewing', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const refreshButton = page.locator(
-      'button[aria-label*="refresh"], [data-testid="refresh-balance"]'
-    ).first()
+    const refreshButton = page
+      .locator('button[aria-label*="refresh"], [data-testid="refresh-balance"]')
+      .first()
 
     if (await refreshButton.isVisible()) {
       // Look for loader
-      const loader = page.locator(
-        '.loading, .spinner, [aria-busy="true"]'
-      )
+      const loader = page.locator('.loading, .spinner, [aria-busy="true"]')
 
       // Loader may briefly appear
       const count = await loader.count()
@@ -408,9 +402,7 @@ test.describe('Send Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
@@ -427,9 +419,7 @@ test.describe('Send Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
@@ -449,9 +439,7 @@ test.describe('Send Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
@@ -471,9 +459,7 @@ test.describe('Send Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
@@ -493,18 +479,18 @@ test.describe('Send Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
       await page.waitForTimeout(500)
 
       // Enter invalid address
-      const recipientInput = page.locator(
-        'input[placeholder*="address"], input[placeholder*="recipient"], [data-testid="recipient-address"]'
-      ).first()
+      const recipientInput = page
+        .locator(
+          'input[placeholder*="address"], input[placeholder*="recipient"], [data-testid="recipient-address"]'
+        )
+        .first()
 
       if (await recipientInput.isVisible()) {
         await recipientInput.fill('invalid-address')
@@ -512,9 +498,7 @@ test.describe('Send Crypto Payment', () => {
         await page.waitForTimeout(300)
 
         // Should show validation error
-        const error = page.locator(
-          '[role="alert"], text=/invalid.*address|invalid/i'
-        )
+        const error = page.locator('[role="alert"], text=/invalid.*address|invalid/i')
 
         const count = await error.count()
         expect(count).toBeGreaterThanOrEqual(0)
@@ -526,18 +510,14 @@ test.describe('Send Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
       await page.waitForTimeout(500)
 
       // Look for gas fee display
-      const gasFee = page.locator(
-        '[data-testid="gas-fee"], text=/gas|fee|Gwei/i'
-      )
+      const gasFee = page.locator('[data-testid="gas-fee"], text=/gas|fee|Gwei/i')
 
       const count = await gasFee.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -548,18 +528,14 @@ test.describe('Send Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
       await page.waitForTimeout(500)
 
       // Look for total display
-      const total = page.locator(
-        '[data-testid="total-amount"], text=/Total|Including/i'
-      )
+      const total = page.locator('[data-testid="total-amount"], text=/Total|Including/i')
 
       const count = await total.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -570,9 +546,7 @@ test.describe('Send Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
@@ -611,9 +585,9 @@ test.describe('Receive Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const receiveButton = page.locator(
-      'button:has-text("Receive"), [data-testid="receive-button"]'
-    ).first()
+    const receiveButton = page
+      .locator('button:has-text("Receive"), [data-testid="receive-button"]')
+      .first()
 
     if (await receiveButton.isVisible()) {
       await receiveButton.click()
@@ -633,18 +607,16 @@ test.describe('Receive Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const receiveButton = page.locator(
-      'button:has-text("Receive"), [data-testid="receive-button"]'
-    ).first()
+    const receiveButton = page
+      .locator('button:has-text("Receive"), [data-testid="receive-button"]')
+      .first()
 
     if (await receiveButton.isVisible()) {
       await receiveButton.click()
       await page.waitForTimeout(500)
 
       // Look for QR code
-      const qrCode = page.locator(
-        'canvas, [data-testid="receive-qr"], img[alt*="QR"]'
-      )
+      const qrCode = page.locator('canvas, [data-testid="receive-qr"], img[alt*="QR"]')
 
       const isVisible = await qrCode.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -655,9 +627,9 @@ test.describe('Receive Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const receiveButton = page.locator(
-      'button:has-text("Receive"), [data-testid="receive-button"]'
-    ).first()
+    const receiveButton = page
+      .locator('button:has-text("Receive"), [data-testid="receive-button"]')
+      .first()
 
     if (await receiveButton.isVisible()) {
       await receiveButton.click()
@@ -673,9 +645,7 @@ test.describe('Receive Crypto Payment', () => {
         await page.waitForTimeout(300)
 
         // Should show confirmation
-        const copied = page.locator(
-          'text=/copied|copied to clipboard/i'
-        )
+        const copied = page.locator('text=/copied|copied to clipboard/i')
 
         const count = await copied.count()
         expect(count).toBeGreaterThanOrEqual(0)
@@ -687,9 +657,9 @@ test.describe('Receive Crypto Payment', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const receiveButton = page.locator(
-      'button:has-text("Receive"), [data-testid="receive-button"]'
-    ).first()
+    const receiveButton = page
+      .locator('button:has-text("Receive"), [data-testid="receive-button"]')
+      .first()
 
     if (await receiveButton.isVisible()) {
       await receiveButton.click()
@@ -729,9 +699,9 @@ test.describe('Wallet Disconnection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const disconnectButton = page.locator(
-      'button:has-text("Disconnect"), [data-testid="disconnect-button"]'
-    ).first()
+    const disconnectButton = page
+      .locator('button:has-text("Disconnect"), [data-testid="disconnect-button"]')
+      .first()
 
     if (await disconnectButton.isVisible()) {
       await disconnectButton.click()
@@ -746,18 +716,16 @@ test.describe('Wallet Disconnection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const disconnectButton = page.locator(
-      'button:has-text("Disconnect"), [data-testid="disconnect-button"]'
-    ).first()
+    const disconnectButton = page
+      .locator('button:has-text("Disconnect"), [data-testid="disconnect-button"]')
+      .first()
 
     if (await disconnectButton.isVisible()) {
       await disconnectButton.click()
       await page.waitForTimeout(500)
 
       // May show confirmation dialog
-      const confirmation = page.locator(
-        '[role="alertdialog"], text=/confirm|are you sure/i'
-      )
+      const confirmation = page.locator('[role="alertdialog"], text=/confirm|are you sure/i')
 
       const count = await confirmation.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -768,9 +736,9 @@ test.describe('Wallet Disconnection', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const disconnectButton = page.locator(
-      'button:has-text("Disconnect"), [data-testid="disconnect-button"]'
-    ).first()
+    const disconnectButton = page
+      .locator('button:has-text("Disconnect"), [data-testid="disconnect-button"]')
+      .first()
 
     if (await disconnectButton.isVisible()) {
       await disconnectButton.click()
@@ -811,9 +779,9 @@ test.describe('Switch Wallet Accounts', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for account list
-    const accountSwitcher = page.locator(
-      '[data-testid="account-switcher"], button:has-text("0x"), [role="combobox"]'
-    ).first()
+    const accountSwitcher = page
+      .locator('[data-testid="account-switcher"], button:has-text("0x"), [role="combobox"]')
+      .first()
 
     if (await accountSwitcher.isVisible()) {
       await accountSwitcher.click()
@@ -833,9 +801,9 @@ test.describe('Switch Wallet Accounts', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const accountSwitcher = page.locator(
-      '[data-testid="account-switcher"], button:has-text("0x")'
-    ).first()
+    const accountSwitcher = page
+      .locator('[data-testid="account-switcher"], button:has-text("0x")')
+      .first()
 
     if (await accountSwitcher.isVisible()) {
       await accountSwitcher.click()
@@ -858,15 +826,13 @@ test.describe('Switch Wallet Accounts', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const accountSwitcher = page.locator(
-      '[data-testid="account-switcher"], button:has-text("0x")'
-    ).first()
+    const accountSwitcher = page
+      .locator('[data-testid="account-switcher"], button:has-text("0x")')
+      .first()
 
     if (await accountSwitcher.isVisible()) {
       // Get initial balance
-      const initialBalance = await page
-        .locator('[data-testid="wallet-balance"]')
-        .textContent()
+      const initialBalance = await page.locator('[data-testid="wallet-balance"]').textContent()
 
       await accountSwitcher.click()
       await page.waitForTimeout(300)
@@ -925,9 +891,7 @@ test.describe('Wallet Transaction History', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for tx type indicator
-    const txType = page.locator(
-      '[data-testid="tx-type"], text=/sent|received|incoming|outgoing/i'
-    )
+    const txType = page.locator('[data-testid="tx-type"], text=/sent|received|incoming|outgoing/i')
 
     const count = await txType.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -938,9 +902,7 @@ test.describe('Wallet Transaction History', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for amount display
-    const txAmount = page.locator(
-      '[data-testid="tx-amount"], text=/\\d+\\.\\d+ (ETH|MATIC|USD)/i'
-    )
+    const txAmount = page.locator('[data-testid="tx-amount"], text=/\\d+\\.\\d+ (ETH|MATIC|USD)/i')
 
     const count = await txAmount.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -951,9 +913,7 @@ test.describe('Wallet Transaction History', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for status badge
-    const txStatus = page.locator(
-      '[data-testid="tx-status"], text=/confirmed|pending|failed/i'
-    )
+    const txStatus = page.locator('[data-testid="tx-status"], text=/confirmed|pending|failed/i')
 
     const count = await txStatus.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -977,18 +937,14 @@ test.describe('Wallet Transaction History', () => {
     await page.waitForLoadState('networkidle')
 
     // Click on transaction item
-    const transaction = page.locator(
-      '[data-testid="transaction-item"], .transaction-item'
-    ).first()
+    const transaction = page.locator('[data-testid="transaction-item"], .transaction-item').first()
 
     if (await transaction.isVisible()) {
       await transaction.click()
       await page.waitForTimeout(500)
 
       // Details should show
-      const details = page.locator(
-        '[data-testid="tx-details"], text=/Hash|From|To|Gas/i'
-      )
+      const details = page.locator('[data-testid="tx-details"], text=/Hash|From|To|Gas/i')
 
       const count = await details.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -1000,9 +956,11 @@ test.describe('Wallet Transaction History', () => {
     await page.waitForLoadService('networkidle')
 
     // Look for explorer link
-    const explorerLink = page.locator(
-      'a[href*="etherscan"], a[href*="polygonscan"], [aria-label*="explorer"], [data-testid="view-explorer"]'
-    ).first()
+    const explorerLink = page
+      .locator(
+        'a[href*="etherscan"], a[href*="polygonscan"], [aria-label*="explorer"], [data-testid="view-explorer"]'
+      )
+      .first()
 
     if (await explorerLink.isVisible()) {
       // Check href
@@ -1025,9 +983,9 @@ test.describe('Wallet Transaction History', () => {
       await page.waitForTimeout(300)
 
       // Select filter option
-      const filterOption = page.locator(
-        'button:has-text("Sent"), [role="option"]:has-text("Sent")'
-      ).first()
+      const filterOption = page
+        .locator('button:has-text("Sent"), [role="option"]:has-text("Sent")')
+        .first()
 
       if (await filterOption.isVisible()) {
         await filterOption.click()
@@ -1061,9 +1019,9 @@ test.describe('Multi-Chain Support', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const chainSwitcher = page.locator(
-      '[data-testid="chain-switcher"], button:has-text("Ethereum"), [role="combobox"]'
-    ).first()
+    const chainSwitcher = page
+      .locator('[data-testid="chain-switcher"], button:has-text("Ethereum"), [role="combobox"]')
+      .first()
 
     if (await chainSwitcher.isVisible()) {
       await chainSwitcher.click()
@@ -1083,17 +1041,17 @@ test.describe('Multi-Chain Support', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const chainSwitcher = page.locator(
-      '[data-testid="chain-switcher"], button:has-text("Ethereum")'
-    ).first()
+    const chainSwitcher = page
+      .locator('[data-testid="chain-switcher"], button:has-text("Ethereum")')
+      .first()
 
     if (await chainSwitcher.isVisible()) {
       await chainSwitcher.click()
       await page.waitForTimeout(300)
 
-      const ethereumOption = page.locator(
-        'button:has-text("Ethereum Mainnet"), [role="option"]:has-text("Ethereum")'
-      ).first()
+      const ethereumOption = page
+        .locator('button:has-text("Ethereum Mainnet"), [role="option"]:has-text("Ethereum")')
+        .first()
 
       if (await ethereumOption.isVisible()) {
         await ethereumOption.click()
@@ -1108,17 +1066,17 @@ test.describe('Multi-Chain Support', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const chainSwitcher = page.locator(
-      '[data-testid="chain-switcher"], button:has-text("Polygon"), [role="combobox"]'
-    ).first()
+    const chainSwitcher = page
+      .locator('[data-testid="chain-switcher"], button:has-text("Polygon"), [role="combobox"]')
+      .first()
 
     if (await chainSwitcher.isVisible()) {
       await chainSwitcher.click()
       await page.waitForTimeout(300)
 
-      const polygonOption = page.locator(
-        'button:has-text("Polygon"), [role="option"]:has-text("Polygon")'
-      ).first()
+      const polygonOption = page
+        .locator('button:has-text("Polygon"), [role="option"]:has-text("Polygon")')
+        .first()
 
       if (await polygonOption.isVisible()) {
         await polygonOption.click()
@@ -1133,17 +1091,15 @@ test.describe('Multi-Chain Support', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const chainSwitcher = page.locator(
-      '[data-testid="chain-switcher"], [role="combobox"]'
-    ).first()
+    const chainSwitcher = page.locator('[data-testid="chain-switcher"], [role="combobox"]').first()
 
     if (await chainSwitcher.isVisible()) {
       await chainSwitcher.click()
       await page.waitForTimeout(300)
 
-      const sepoliaOption = page.locator(
-        'button:has-text("Sepolia"), [role="option"]:has-text("Sepolia")'
-      ).first()
+      const sepoliaOption = page
+        .locator('button:has-text("Sepolia"), [role="option"]:has-text("Sepolia")')
+        .first()
 
       if (await sepoliaOption.isVisible()) {
         await sepoliaOption.click()
@@ -1159,13 +1115,9 @@ test.describe('Multi-Chain Support', () => {
     await page.waitForLoadState('networkidle')
 
     // Get initial balance
-    const initialBalance = await page
-      .locator('[data-testid="wallet-balance"]')
-      .textContent()
+    const initialBalance = await page.locator('[data-testid="wallet-balance"]').textContent()
 
-    const chainSwitcher = page.locator(
-      '[data-testid="chain-switcher"]'
-    ).first()
+    const chainSwitcher = page.locator('[data-testid="chain-switcher"]').first()
 
     if (await chainSwitcher.isVisible()) {
       await chainSwitcher.click()
@@ -1178,9 +1130,7 @@ test.describe('Multi-Chain Support', () => {
         await page.waitForTimeout(1000)
 
         // Balance may change
-        const newBalance = await page
-          .locator('[data-testid="wallet-balance"]')
-          .textContent()
+        const newBalance = await page.locator('[data-testid="wallet-balance"]').textContent()
 
         expect(typeof newBalance).toBe('string')
       }
@@ -1191,18 +1141,14 @@ test.describe('Multi-Chain Support', () => {
     await page.goto('/wallet')
     await page.waitForLoadState('networkidle')
 
-    const sendButton = page.locator(
-      'button:has-text("Send"), [data-testid="send-button"]'
-    ).first()
+    const sendButton = page.locator('button:has-text("Send"), [data-testid="send-button"]').first()
 
     if (await sendButton.isVisible()) {
       await sendButton.click()
       await page.waitForTimeout(500)
 
       // Look for gas price
-      const gasPrice = page.locator(
-        '[data-testid="gas-fee"], text=/Gwei|Gas|Fee/i'
-      )
+      const gasPrice = page.locator('[data-testid="gas-fee"], text=/Gwei|Gas|Fee/i')
 
       const count = await gasPrice.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -1214,9 +1160,7 @@ test.describe('Multi-Chain Support', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for chains list
-    const chainsList = page.locator(
-      '[data-testid="supported-chains"], section:has-text("Chain")'
-    )
+    const chainsList = page.locator('[data-testid="supported-chains"], section:has-text("Chain")')
 
     const isVisible = await chainsList.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')

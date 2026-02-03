@@ -168,10 +168,7 @@ export class SmartSearch {
         : await this.keywordSearch(query, filteredMessages, options)
 
       // Apply ranking
-      const rankedResults = this.rankResults(
-        results,
-        options.rankBy || 'relevance'
-      )
+      const rankedResults = this.rankResults(results, options.rankBy || 'relevance')
 
       // Apply limit
       const limit = options.limit || DEFAULT_SEARCH_LIMIT
@@ -257,9 +254,7 @@ export class SmartSearch {
       }
 
       // Calculate keyword overlap score
-      const matchedTerms = queryTerms.filter((term) =>
-        contentTerms.includes(term)
-      )
+      const matchedTerms = queryTerms.filter((term) => contentTerms.includes(term))
       const score = matchedTerms.length / queryTerms.length
 
       if (score > 0) {
@@ -330,8 +325,7 @@ export class SmartSearch {
     }
 
     const model = this.config.embeddingModel || DEFAULT_OPENAI_EMBEDDING_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.openai.com/v1/embeddings'
+    const endpoint = this.config.endpoint || 'https://api.openai.com/v1/embeddings'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -370,9 +364,7 @@ export class SmartSearch {
     }
 
     // Normalize to unit vector
-    const magnitude = Math.sqrt(
-      embedding.reduce((sum, val) => sum + val * val, 0)
-    )
+    const magnitude = Math.sqrt(embedding.reduce((sum, val) => sum + val * val, 0))
     return magnitude > 0 ? embedding.map((val) => val / magnitude) : embedding
   }
 
@@ -489,8 +481,7 @@ export class SmartSearch {
       case 'date':
         return results.sort(
           (a, b) =>
-            new Date(b.message.createdAt).getTime() -
-            new Date(a.message.createdAt).getTime()
+            new Date(b.message.createdAt).getTime() - new Date(a.message.createdAt).getTime()
         )
 
       case 'hybrid':
@@ -498,9 +489,7 @@ export class SmartSearch {
         const now = Date.now()
         return results
           .map((result) => {
-            const age =
-              (now - new Date(result.message.createdAt).getTime()) /
-              (1000 * 60 * 60 * 24) // days
+            const age = (now - new Date(result.message.createdAt).getTime()) / (1000 * 60 * 60 * 24) // days
             const recencyScore = Math.exp(-age / 30) // Decay over ~30 days
             const hybridScore = result.score * 0.7 + recencyScore * 0.3
             return { ...result, score: hybridScore }
@@ -521,20 +510,12 @@ export class SmartSearch {
     contextSize: number
   ): SearchResult[] {
     return results.map((result) => {
-      const messageIndex = allMessages.findIndex(
-        (m) => m.id === result.message.id
-      )
+      const messageIndex = allMessages.findIndex((m) => m.id === result.message.id)
 
       if (messageIndex === -1) return result
 
-      const before = allMessages.slice(
-        Math.max(0, messageIndex - contextSize),
-        messageIndex
-      )
-      const after = allMessages.slice(
-        messageIndex + 1,
-        messageIndex + 1 + contextSize
-      )
+      const before = allMessages.slice(Math.max(0, messageIndex - contextSize), messageIndex)
+      const after = allMessages.slice(messageIndex + 1, messageIndex + 1 + contextSize)
 
       return {
         ...result,

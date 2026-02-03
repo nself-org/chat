@@ -39,7 +39,7 @@ import { mockEnv } from './test-utils'
 describe('Component with env', () => {
   mockEnv({
     NEXT_PUBLIC_APP_NAME: 'Test App',
-    NEXT_PUBLIC_ENV: 'test'
+    NEXT_PUBLIC_ENV: 'test',
   })
 
   it('uses environment variables', () => {
@@ -153,18 +153,14 @@ describe('Timed operations', () => {
   it('logs slow operations', async () => {
     jest.useFakeTimers()
 
-    const slowFn = () =>
-      new Promise(resolve => setTimeout(() => resolve('done'), 2000))
+    const slowFn = () => new Promise((resolve) => setTimeout(() => resolve('done'), 2000))
 
     const promise = timeAsync('slow-op', slowFn)
     jest.advanceTimersByTime(2000)
 
     await promise
 
-    expect(logger.warn).toHaveBeenCalledWith(
-      expect.stringContaining('slow'),
-      expect.any(Object)
-    )
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('slow'), expect.any(Object))
 
     jest.useRealTimers()
   })
@@ -323,10 +319,9 @@ describe('useDebounce', () => {
   })
 
   it('debounces value updates', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value, 500),
-      { initialProps: { value: 'initial' } }
-    )
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 500), {
+      initialProps: { value: 'initial' },
+    })
 
     expect(result.current).toBe('initial')
 
@@ -373,9 +368,7 @@ describe('API Retry', () => {
   it('throws after max retries', async () => {
     fetchMock.mockResponse('', { status: 500 })
 
-    await expect(
-      retryFetch('/api/data', {}, { maxRetries: 2 })
-    ).rejects.toThrow()
+    await expect(retryFetch('/api/data', {}, { maxRetries: 2 })).rejects.toThrow()
 
     expect(fetchMock).toHaveBeenCalledTimes(3) // initial + 2 retries
   })
@@ -384,11 +377,15 @@ describe('API Retry', () => {
     fetchMock.mockResponse('', { status: 404 })
 
     await expect(
-      retryFetch('/api/data', {}, {
-        shouldRetry: (error) => {
-          return error.status >= 500
+      retryFetch(
+        '/api/data',
+        {},
+        {
+          shouldRetry: (error) => {
+            return error.status >= 500
+          },
         }
-      })
+      )
     ).rejects.toThrow()
 
     expect(fetchMock).toHaveBeenCalledTimes(1) // No retries
@@ -794,6 +791,7 @@ pnpm test:watch
 ---
 
 **See Also**:
+
 - [Utilities Documentation](./README.md)
 - [Integration Examples](./integration-examples.md)
 - [Contributing Guide](../../CONTRIBUTING.md)

@@ -45,7 +45,9 @@ export interface UseScreenShareReturn {
   error: string | null
 
   // Actions
-  startScreenShare: (options?: ScreenShareOptions | ScreenCaptureOptions) => Promise<MediaStream | null>
+  startScreenShare: (
+    options?: ScreenShareOptions | ScreenCaptureOptions
+  ) => Promise<MediaStream | null>
   stopScreenShare: () => void
 
   // Advanced features (when useAdvancedCapture is true)
@@ -133,7 +135,9 @@ export function useScreenShare(options: UseScreenShareOptions = {}): UseScreenSh
   // ==========================================================================
 
   const startScreenShare = useCallback(
-    async (shareOptions: ScreenShareOptions | ScreenCaptureOptions = DEFAULT_SCREEN_SHARE_OPTIONS) => {
+    async (
+      shareOptions: ScreenShareOptions | ScreenCaptureOptions = DEFAULT_SCREEN_SHARE_OPTIONS
+    ) => {
       if (!isSupported) {
         const err = new Error('Screen sharing is not supported in this browser')
         setError(err.message)

@@ -51,11 +51,7 @@ interface UseEmojiReturn {
   // Reaction mutations
   addReaction: (messageId: string, emoji: string) => Promise<void>
   removeReaction: (messageId: string, emoji: string) => Promise<void>
-  toggleReaction: (
-    messageId: string,
-    emoji: string,
-    hasReacted: boolean
-  ) => Promise<void>
+  toggleReaction: (messageId: string, emoji: string, hasReacted: boolean) => Promise<void>
 
   // Loading states
   isAddingReaction: boolean
@@ -74,10 +70,7 @@ export function useEmoji(options: UseEmojiOptions = {}): UseEmojiReturn {
   const { user } = useAuth()
 
   // Local storage for recent emojis
-  const [storedRecent, setStoredRecent] = useLocalStorage<string[]>(
-    RECENT_EMOJIS_KEY,
-    []
-  )
+  const [storedRecent, setStoredRecent] = useLocalStorage<string[]>(RECENT_EMOJIS_KEY, [])
 
   // Local storage for frequent emojis
   const [storedFrequent, setStoredFrequent] = useLocalStorage<FrequentEmoji[]>(
@@ -105,10 +98,8 @@ export function useEmoji(options: UseEmojiOptions = {}): UseEmojiReturn {
   const setSkinToneValue = persistSkinTone ? setStoredSkinTone : setMemorySkinTone
 
   // GraphQL mutations
-  const [addReactionMutation, { loading: isAddingReaction }] =
-    useMutation(ADD_REACTION)
-  const [removeReactionMutation, { loading: isRemovingReaction }] =
-    useMutation(REMOVE_REACTION)
+  const [addReactionMutation, { loading: isAddingReaction }] = useMutation(ADD_REACTION)
+  const [removeReactionMutation, { loading: isRemovingReaction }] = useMutation(REMOVE_REACTION)
 
   // Add emoji to recent list
   const addToRecent = useCallback(
@@ -129,19 +120,12 @@ export function useEmoji(options: UseEmojiOptions = {}): UseEmojiReturn {
 
         if (existing) {
           return prev
-            .map((e) =>
-              e.emoji === emoji
-                ? { ...e, count: e.count + 1, lastUsed: now }
-                : e
-            )
+            .map((e) => (e.emoji === emoji ? { ...e, count: e.count + 1, lastUsed: now } : e))
             .sort((a, b) => b.count - a.count)
             .slice(0, maxFrequent)
         }
 
-        return [
-          ...prev,
-          { emoji, count: 1, lastUsed: now },
-        ]
+        return [...prev, { emoji, count: 1, lastUsed: now }]
           .sort((a, b) => b.count - a.count)
           .slice(0, maxFrequent)
       })
@@ -155,9 +139,7 @@ export function useEmoji(options: UseEmojiOptions = {}): UseEmojiReturn {
   }, [setRecentEmojis])
 
   // Get frequently used emojis (sorted by count)
-  const frequentEmojis = frequentData
-    .sort((a, b) => b.count - a.count)
-    .map((e) => e.emoji)
+  const frequentEmojis = frequentData.sort((a, b) => b.count - a.count).map((e) => e.emoji)
 
   // Get count for specific emoji
   const getEmojiCount = useCallback(
@@ -285,10 +267,7 @@ export function useEmoji(options: UseEmojiOptions = {}): UseEmojiReturn {
 
 // Simplified hook for just emoji selection (no reactions)
 export function useEmojiPicker() {
-  const [storedRecent, setStoredRecent] = useLocalStorage<string[]>(
-    RECENT_EMOJIS_KEY,
-    []
-  )
+  const [storedRecent, setStoredRecent] = useLocalStorage<string[]>(RECENT_EMOJIS_KEY, [])
   const [storedSkinTone, setStoredSkinTone] = useLocalStorage<SkinTones>(
     SKIN_TONE_KEY,
     SkinTones.NEUTRAL

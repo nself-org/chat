@@ -47,6 +47,7 @@ import type {
   WebhookDelivery,
   DeliveryStatus,
 } from '@/lib/webhooks/types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Configuration
@@ -161,11 +162,7 @@ function validateToken(webhook: Webhook, token: string | null): boolean {
 /**
  * Validate webhook signature (for secure webhooks)
  */
-function validateSignature(
-  payload: string,
-  signature: string | null,
-  secret: string
-): boolean {
+function validateSignature(payload: string, signature: string | null, secret: string): boolean {
   if (!signature) return false
 
   // Support multiple signature formats
@@ -179,15 +176,10 @@ function validateSignature(
     providedHash = signature.substring(5)
   }
 
-  const expectedHash = createHmac(algorithm, secret)
-    .update(payload)
-    .digest('hex')
+  const expectedHash = createHmac(algorithm, secret).update(payload).digest('hex')
 
   try {
-    return timingSafeEqual(
-      Buffer.from(providedHash, 'hex'),
-      Buffer.from(expectedHash, 'hex')
-    )
+    return timingSafeEqual(Buffer.from(providedHash, 'hex'), Buffer.from(expectedHash, 'hex'))
   } catch {
     return false
   }
@@ -318,10 +310,7 @@ async function updateWebhookLastUsed(webhookId: string): Promise<void> {
 // GET Handler - Webhook Info
 // ============================================================================
 
-async function handleGet(
-  request: NextRequest,
-  context: RouteContext
-): Promise<NextResponse> {
+async function handleGet(request: NextRequest, context: RouteContext): Promise<NextResponse> {
   const params = await context.params
   const id = params.id || ''
   const { searchParams } = new URL(request.url)
@@ -355,10 +344,7 @@ async function handleGet(
 // POST Handler - Receive Webhook
 // ============================================================================
 
-async function handlePost(
-  request: NextRequest,
-  context: RouteContext
-): Promise<NextResponse> {
+async function handlePost(request: NextRequest, context: RouteContext): Promise<NextResponse> {
   const params = await context.params
   const id = params.id || ''
   const { searchParams } = new URL(request.url)
@@ -409,21 +395,15 @@ async function handlePost(
   })
 
   // Optional: Validate signature if provided
-  const signature = request.headers.get('x-webhook-signature') ||
+  const signature =
+    request.headers.get('x-webhook-signature') ||
     request.headers.get('x-hub-signature-256') ||
     request.headers.get('x-hub-signature')
 
   if (signature) {
     const isValid = validateSignature(bodyText, signature, CONFIG.WEBHOOK_SECRET)
     if (!isValid) {
-      await recordDelivery(
-        webhook,
-        'failed',
-        bodyText,
-        requestHeaders,
-        401,
-        'Invalid signature'
-      )
+      await recordDelivery(webhook, 'failed', bodyText, requestHeaders, 401, 'Invalid signature')
       return unauthorizedResponse('Invalid webhook signature', 'INVALID_SIGNATURE')
     }
   }
@@ -431,14 +411,7 @@ async function handlePost(
   // Validate payload
   const validation = validatePayload(body)
   if (!validation.valid) {
-    await recordDelivery(
-      webhook,
-      'failed',
-      bodyText,
-      requestHeaders,
-      400,
-      validation.error
-    )
+    await recordDelivery(webhook, 'failed', bodyText, requestHeaders, 400, validation.error)
     return badRequestResponse(validation.error, 'INVALID_PAYLOAD')
   }
 
@@ -450,13 +423,7 @@ async function handlePost(
     await updateWebhookLastUsed(webhookId)
 
     // Record successful delivery
-    await recordDelivery(
-      webhook,
-      'success',
-      bodyText,
-      requestHeaders,
-      200
-    )
+    await recordDelivery(webhook, 'success', bodyText, requestHeaders, 200)
 
     return successResponse({
       success: true,
@@ -464,7 +431,7 @@ async function handlePost(
       channelId: webhook.channel_id,
     })
   } catch (error) {
-    console.error('Error processing webhook:', error)
+    logger.error('Error processing webhook:', error)
 
     // Record failed delivery
     await recordDelivery(
@@ -484,24 +451,15 @@ async function handlePost(
 // Export Handlers
 // ============================================================================
 
-export async function GET(
-  request: NextRequest,
-  context: RouteContext
-): Promise<NextResponse> {
-  return compose(
-    withErrorHandler,
-    withRateLimit({ limit: 60, window: 60 })
-  )(handleGet)(request, context)
+export async function GET(request: NextRequest, context: RouteContext): Promise<NextResponse> {
+  return compose(withErrorHandler, withRateLimit({ limit: 60, window: 60 }))(handleGet)(
+    request,
+    context
+  )
 }
 
-export async function POST(
-  request: NextRequest,
-  context: RouteContext
-): Promise<NextResponse> {
-  return compose(
-    withErrorHandler,
-    withRateLimit(CONFIG.RATE_LIMIT)
-  )(handlePost)(request, context)
+export async function POST(request: NextRequest, context: RouteContext): Promise<NextResponse> {
+  return compose(withErrorHandler, withRateLimit(CONFIG.RATE_LIMIT))(handlePost)(request, context)
 }
 
 // ============================================================================

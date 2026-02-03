@@ -109,12 +109,7 @@ export function useInfiniteScroll(
   ref: RefObject<HTMLElement | null>
   loading: boolean
 } {
-  const {
-    threshold = 0.1,
-    hasMore = true,
-    loading = false,
-    rootMargin = '100px',
-  } = options
+  const { threshold = 0.1, hasMore = true, loading = false, rootMargin = '100px' } = options
 
   const [isLoading, setIsLoading] = useState(loading)
   const ref = useRef<HTMLElement>(null)

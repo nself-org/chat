@@ -21,37 +21,31 @@ import {
 // Variants
 // ============================================================================
 
-const emptyStateVariants = cva(
-  'flex flex-col items-center justify-center text-center',
-  {
-    variants: {
-      size: {
-        sm: 'py-8 px-4',
-        md: 'py-12 px-6',
-        lg: 'py-16 px-8',
-      },
+const emptyStateVariants = cva('flex flex-col items-center justify-center text-center', {
+  variants: {
+    size: {
+      sm: 'py-8 px-4',
+      md: 'py-12 px-6',
+      lg: 'py-16 px-8',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-)
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
 
-const iconContainerVariants = cva(
-  'flex items-center justify-center rounded-full bg-muted mb-4',
-  {
-    variants: {
-      size: {
-        sm: 'h-12 w-12',
-        md: 'h-16 w-16',
-        lg: 'h-20 w-20',
-      },
+const iconContainerVariants = cva('flex items-center justify-center rounded-full bg-muted mb-4', {
+  variants: {
+    size: {
+      sm: 'h-12 w-12',
+      md: 'h-16 w-16',
+      lg: 'h-20 w-20',
     },
-    defaultVariants: {
-      size: 'md',
-    },
-  }
-)
+  },
+  defaultVariants: {
+    size: 'md',
+  },
+})
 
 const iconVariants = cva('text-muted-foreground', {
   variants: {
@@ -82,8 +76,7 @@ export type EmptyStateType =
   | 'custom'
 
 export interface EmptyStateProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof emptyStateVariants> {
+  extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof emptyStateVariants> {
   type?: EmptyStateType
   icon?: LucideIcon
   title?: string
@@ -124,7 +117,7 @@ const PRESETS: Record<
   'no-results': {
     icon: Search,
     title: 'No results found',
-    description: 'Try adjusting your search or filters to find what you\'re looking for',
+    description: "Try adjusting your search or filters to find what you're looking for",
   },
   'no-members': {
     icon: Users,
@@ -171,7 +164,7 @@ export function EmptyState({
   const preset = type !== 'custom' ? PRESETS[type] : null
   const Icon = CustomIcon || preset?.icon || Inbox
   const title = customTitle || preset?.title || 'Nothing here'
-  const description = customDescription || preset?.description || 'There\'s nothing to display'
+  const description = customDescription || preset?.description || "There's nothing to display"
 
   return (
     <div
@@ -198,7 +191,7 @@ export function EmptyState({
 
       <p
         className={cn(
-          'mt-1 text-muted-foreground max-w-sm',
+          'mt-1 max-w-sm text-muted-foreground',
           size === 'sm' && 'text-xs',
           size === 'lg' && 'text-base'
         )}
@@ -208,7 +201,10 @@ export function EmptyState({
       </p>
 
       {(action || secondaryAction) && (
-        <div className="mt-6 flex flex-col sm:flex-row items-center gap-3" data-testid="empty-state-actions">
+        <div
+          className="mt-6 flex flex-col items-center gap-3 sm:flex-row"
+          data-testid="empty-state-actions"
+        >
           {action && (
             <Button
               onClick={action.onClick}

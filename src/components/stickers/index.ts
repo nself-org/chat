@@ -61,12 +61,6 @@ export {
   type StickerMessagePreviewProps,
 } from './sticker-message'
 
-export {
-  ManageStickersModal,
-  type ManageStickersModalProps,
-} from './manage-stickers-modal'
+export { ManageStickersModal, type ManageStickersModalProps } from './manage-stickers-modal'
 
-export {
-  AddStickerPackModal,
-  type AddStickerPackModalProps,
-} from './add-sticker-pack-modal'
+export { AddStickerPackModal, type AddStickerPackModalProps } from './add-sticker-pack-modal'

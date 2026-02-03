@@ -50,7 +50,7 @@ const mockCache = {
 
   async keys(pattern: string): Promise<string[]> {
     const regex = new RegExp(pattern.replace(/\*/g, '.*'))
-    return Array.from(this.data.keys()).filter(key => regex.test(key))
+    return Array.from(this.data.keys()).filter((key) => regex.test(key))
   },
 
   clear() {
@@ -146,9 +146,13 @@ describe('ResponseCache', () => {
     })
 
     it('should store metadata', async () => {
-      await cache.set('key1', { data: 'test' }, {
-        metadata: { source: 'api', version: 1 },
-      })
+      await cache.set(
+        'key1',
+        { data: 'test' },
+        {
+          metadata: { source: 'api', version: 1 },
+        }
+      )
 
       const cacheKey = cache['generateCacheKey']('key1')
       const cached = await mockCache.get<CachedResponse>(cacheKey)
@@ -396,9 +400,7 @@ describe('ResponseCache', () => {
     it('should handle Redis set errors gracefully', async () => {
       jest.spyOn(mockCache, 'set').mockRejectedValueOnce(new Error('Redis error'))
 
-      await expect(
-        cache.set('key1', { data: 'test' })
-      ).resolves.not.toThrow()
+      await expect(cache.set('key1', { data: 'test' })).resolves.not.toThrow()
     })
   })
 

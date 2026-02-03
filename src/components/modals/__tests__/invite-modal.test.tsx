@@ -24,9 +24,21 @@ Object.assign(navigator, {
 // ============================================================================
 
 const mockUsers: InviteUser[] = [
-  { id: '1', displayName: 'Alice Smith', username: 'alice', email: 'alice@example.com', avatarUrl: 'https://example.com/alice.jpg' },
+  {
+    id: '1',
+    displayName: 'Alice Smith',
+    username: 'alice',
+    email: 'alice@example.com',
+    avatarUrl: 'https://example.com/alice.jpg',
+  },
   { id: '2', displayName: 'Bob Jones', username: 'bob', email: 'bob@example.com' },
-  { id: '3', displayName: 'Charlie Brown', username: 'charlie', email: 'charlie@example.com', alreadyMember: true },
+  {
+    id: '3',
+    displayName: 'Charlie Brown',
+    username: 'charlie',
+    email: 'charlie@example.com',
+    alreadyMember: true,
+  },
 ]
 
 const mockInviteLink: InviteLink = {
@@ -234,11 +246,7 @@ describe('InviteModal', () => {
       const onInviteUsers = jest.fn().mockResolvedValue(undefined)
 
       render(
-        <InviteModal
-          {...defaultProps}
-          onOpenChange={onOpenChange}
-          onInviteUsers={onInviteUsers}
-        />
+        <InviteModal {...defaultProps} onOpenChange={onOpenChange} onInviteUsers={onInviteUsers} />
       )
 
       await userEvent.click(screen.getByTestId('user-result-1'))
@@ -412,11 +420,7 @@ describe('InviteModal', () => {
 
     it('displays existing invite link', async () => {
       render(
-        <InviteModal
-          {...defaultProps}
-          inviteLink={mockInviteLink}
-          onGenerateLink={jest.fn()}
-        />
+        <InviteModal {...defaultProps} inviteLink={mockInviteLink} onGenerateLink={jest.fn()} />
       )
       await userEvent.click(screen.getByTestId('tab-link'))
 
@@ -426,11 +430,7 @@ describe('InviteModal', () => {
 
     it('shows expiry info for link', async () => {
       render(
-        <InviteModal
-          {...defaultProps}
-          inviteLink={mockInviteLink}
-          onGenerateLink={jest.fn()}
-        />
+        <InviteModal {...defaultProps} inviteLink={mockInviteLink} onGenerateLink={jest.fn()} />
       )
       await userEvent.click(screen.getByTestId('tab-link'))
 
@@ -439,11 +439,7 @@ describe('InviteModal', () => {
 
     it('shows usage count for link', async () => {
       render(
-        <InviteModal
-          {...defaultProps}
-          inviteLink={mockInviteLink}
-          onGenerateLink={jest.fn()}
-        />
+        <InviteModal {...defaultProps} inviteLink={mockInviteLink} onGenerateLink={jest.fn()} />
       )
       await userEvent.click(screen.getByTestId('tab-link'))
 
@@ -452,28 +448,18 @@ describe('InviteModal', () => {
 
     it('copies link to clipboard', async () => {
       render(
-        <InviteModal
-          {...defaultProps}
-          inviteLink={mockInviteLink}
-          onGenerateLink={jest.fn()}
-        />
+        <InviteModal {...defaultProps} inviteLink={mockInviteLink} onGenerateLink={jest.fn()} />
       )
       await userEvent.click(screen.getByTestId('tab-link'))
 
       await userEvent.click(screen.getByTestId('copy-link-button'))
 
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
-        'https://nchat.app/invite/abc123'
-      )
+      expect(navigator.clipboard.writeText).toHaveBeenCalledWith('https://nchat.app/invite/abc123')
     })
 
     it('shows check icon after copy', async () => {
       render(
-        <InviteModal
-          {...defaultProps}
-          inviteLink={mockInviteLink}
-          onGenerateLink={jest.fn()}
-        />
+        <InviteModal {...defaultProps} inviteLink={mockInviteLink} onGenerateLink={jest.fn()} />
       )
       await userEvent.click(screen.getByTestId('tab-link'))
 
@@ -572,9 +558,7 @@ describe('UserSearchResult', () => {
   const mockUser = mockUsers[0]
 
   it('renders user info', () => {
-    render(
-      <UserSearchResult user={mockUser} selected={false} onToggle={jest.fn()} />
-    )
+    render(<UserSearchResult user={mockUser} selected={false} onToggle={jest.fn()} />)
 
     expect(screen.getByText('Alice Smith')).toBeInTheDocument()
     expect(screen.getByText('@alice')).toBeInTheDocument()
@@ -582,18 +566,14 @@ describe('UserSearchResult', () => {
 
   it('calls onToggle when clicked', async () => {
     const onToggle = jest.fn()
-    render(
-      <UserSearchResult user={mockUser} selected={false} onToggle={onToggle} />
-    )
+    render(<UserSearchResult user={mockUser} selected={false} onToggle={onToggle} />)
 
     await userEvent.click(screen.getByTestId('user-result-1'))
     expect(onToggle).toHaveBeenCalled()
   })
 
   it('shows Selected badge when selected', () => {
-    render(
-      <UserSearchResult user={mockUser} selected={true} onToggle={jest.fn()} />
-    )
+    render(<UserSearchResult user={mockUser} selected={true} onToggle={jest.fn()} />)
 
     expect(screen.getByText('Selected')).toBeInTheDocument()
   })

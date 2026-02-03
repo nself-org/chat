@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import { TrendingUp, ChevronRight} from 'lucide-react'
+import { TrendingUp, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
@@ -57,12 +57,12 @@ export function PopularChannels({
           {popularChannels.map((channel, index) => (
             <div
               key={channel.id}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50 transition-colors"
+              className="hover:bg-accent/50 flex items-center gap-3 rounded-lg p-3 transition-colors"
             >
-              <span className="text-lg font-bold text-muted-foreground w-6 text-center">
+              <span className="w-6 text-center text-lg font-bold text-muted-foreground">
                 {index + 1}
               </span>
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <ChannelCard
                   channel={channel}
                   isJoined={joinedChannelIds.has(channel.id)}
@@ -79,7 +79,7 @@ export function PopularChannels({
 
     if (layout === 'grid') {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {popularChannels.map((channel) => (
             <ChannelCard
               key={channel.id}
@@ -122,7 +122,8 @@ export function PopularChannels({
           <TrendingUp className="h-5 w-5 text-orange-500" />
           <h2 className="text-lg font-semibold">Popular Channels</h2>
           <span className="text-sm text-muted-foreground">
-            ({formatMemberCount(popularChannels.reduce((sum, c) => sum + c.memberCount, 0))} total members)
+            ({formatMemberCount(popularChannels.reduce((sum, c) => sum + c.memberCount, 0))} total
+            members)
           </span>
         </div>
         {showViewAll && (

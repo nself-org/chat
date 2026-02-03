@@ -225,18 +225,17 @@ export class ChannelDigestGenerator {
       const timeRange = this.extractTimeRange(messages, options)
 
       // Generate components in parallel
-      const [digest, topMessages, highlights, trendingTopics, statistics] =
-        await Promise.all([
-          this.generateDigestSummary(messages, options),
-          this.extractTopMessages(messages, options.maxTopMessages),
-          this.extractHighlights(messages, options.maxHighlights),
-          options.includeTrending !== false
-            ? this.extractTrendingTopics(messages, options.maxTopics)
-            : Promise.resolve([]),
-          options.includeStatistics !== false
-            ? this.calculateStatistics(messages)
-            : Promise.resolve(this.createEmptyStatistics()),
-        ])
+      const [digest, topMessages, highlights, trendingTopics, statistics] = await Promise.all([
+        this.generateDigestSummary(messages, options),
+        this.extractTopMessages(messages, options.maxTopMessages),
+        this.extractHighlights(messages, options.maxHighlights),
+        options.includeTrending !== false
+          ? this.extractTrendingTopics(messages, options.maxTopics)
+          : Promise.resolve([]),
+        options.includeStatistics !== false
+          ? this.calculateStatistics(messages)
+          : Promise.resolve(this.createEmptyStatistics()),
+      ])
 
       // Calculate next digest schedule
       const schedule = this.calculateNextSchedule(options.period)
@@ -309,13 +308,7 @@ export class ChannelDigestGenerator {
       if (/\b(yes|no|sure|okay|agreed)\b/i.test(msg.content)) score += 10
 
       // Decision indicators
-      const decisionWords = [
-        'decided',
-        'agreed',
-        'will do',
-        "let's",
-        'approved',
-      ]
+      const decisionWords = ['decided', 'agreed', 'will do', "let's", 'approved']
       if (decisionWords.some((w) => msg.content.toLowerCase().includes(w))) {
         score += 25
       }
@@ -329,9 +322,7 @@ export class ChannelDigestGenerator {
     })
 
     // Sort by score and get top N
-    const topScored = scoredMessages
-      .sort((a, b) => b.score - a.score)
-      .slice(0, maxMessages)
+    const topScored = scoredMessages.sort((a, b) => b.score - a.score).slice(0, maxMessages)
 
     return topScored.map(({ message, score }) => {
       let reason = 'High engagement'
@@ -444,8 +435,7 @@ export class ChannelDigestGenerator {
 
     // Calculate average response time (simplified)
     const sortedMessages = [...messages].sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     )
     let totalResponseTime = 0
     let responseCount = 0
@@ -461,26 +451,11 @@ export class ChannelDigestGenerator {
       }
     }
 
-    const averageResponseTime =
-      responseCount > 0 ? totalResponseTime / responseCount / 60000 : 0
+    const averageResponseTime = responseCount > 0 ? totalResponseTime / responseCount / 60000 : 0
 
     // Basic sentiment (would be enhanced by sentiment-analyzer.ts)
-    const positiveWords = [
-      'great',
-      'good',
-      'awesome',
-      'excellent',
-      'thanks',
-      'perfect',
-    ]
-    const negativeWords = [
-      'bad',
-      'issue',
-      'problem',
-      'error',
-      'failed',
-      'wrong',
-    ]
+    const positiveWords = ['great', 'good', 'awesome', 'excellent', 'thanks', 'perfect']
+    const negativeWords = ['bad', 'issue', 'problem', 'error', 'failed', 'wrong']
 
     let positive = 0
     let negative = 0
@@ -511,20 +486,11 @@ export class ChannelDigestGenerator {
   /**
    * Build digest prompt
    */
-  private buildDigestPrompt(
-    messages: Message[],
-    options: ChannelDigestOptions
-  ): string {
+  private buildDigestPrompt(messages: Message[], options: ChannelDigestOptions): string {
     const periodLabel =
-      options.period === 'daily'
-        ? 'day'
-        : options.period === 'weekly'
-          ? 'week'
-          : 'period'
+      options.period === 'daily' ? 'day' : options.period === 'weekly' ? 'week' : 'period'
 
-    const content = messages
-      .map((m) => `${m.userName || 'User'}: ${m.content}`)
-      .join('\n')
+    const content = messages.map((m) => `${m.userName || 'User'}: ${m.content}`).join('\n')
 
     return `Create a comprehensive digest summary of this channel's activity over the ${periodLabel}. Include:
 - Main themes and discussions
@@ -577,18 +543,14 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
   /**
    * Generate with OpenAI
    */
-  private async generateWithOpenAI(
-    prompt: string,
-    maxTokens: number
-  ): Promise<string> {
+  private async generateWithOpenAI(prompt: string, maxTokens: number): Promise<string> {
     const apiKey = this.config.apiKey || this.getAPIKey()
     if (!apiKey) {
       throw new Error('OpenAI API key not configured')
     }
 
     const model = this.config.model || DEFAULT_OPENAI_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
+    const endpoint = this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -622,18 +584,14 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
   /**
    * Generate with Anthropic
    */
-  private async generateWithAnthropic(
-    prompt: string,
-    maxTokens: number
-  ): Promise<string> {
+  private async generateWithAnthropic(prompt: string, maxTokens: number): Promise<string> {
     const apiKey = this.config.apiKey || this.getAPIKey()
     if (!apiKey) {
       throw new Error('Anthropic API key not configured')
     }
 
     const model = this.config.model || DEFAULT_ANTHROPIC_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.anthropic.com/v1/messages'
+    const endpoint = this.config.endpoint || 'https://api.anthropic.com/v1/messages'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -674,9 +632,7 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
       const summary = parts[1] || line
       const indices = parts[2]?.match(/\d+/g)?.map(Number) || []
 
-      const relatedMessages = indices
-        .map((i) => messages[i]?.id)
-        .filter(Boolean) as string[]
+      const relatedMessages = indices.map((i) => messages[i]?.id).filter(Boolean) as string[]
 
       return {
         id: `highlight-${index}-${Date.now()}`,
@@ -706,18 +662,14 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
 
       // Find messages mentioning this topic
       const topicLower = topic.toLowerCase()
-      const relatedMessages = messages.filter((m) =>
-        m.content.toLowerCase().includes(topicLower)
-      )
+      const relatedMessages = messages.filter((m) => m.content.toLowerCase().includes(topicLower))
 
       return {
         topic,
         mentions: relatedMessages.length,
         trend,
         relatedKeywords: keywords,
-        firstMentioned: relatedMessages[0]
-          ? new Date(relatedMessages[0].createdAt)
-          : new Date(),
+        firstMentioned: relatedMessages[0] ? new Date(relatedMessages[0].createdAt) : new Date(),
         lastMentioned: relatedMessages[relatedMessages.length - 1]
           ? new Date(relatedMessages[relatedMessages.length - 1].createdAt)
           : new Date(),
@@ -729,27 +681,19 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
   /**
    * Extract time range
    */
-  private extractTimeRange(
-    messages: Message[],
-    options: ChannelDigestOptions
-  ): TimeRange {
+  private extractTimeRange(messages: Message[], options: ChannelDigestOptions): TimeRange {
     if (options.customRange) {
-      const duration =
-        options.customRange.end.getTime() - options.customRange.start.getTime()
+      const duration = options.customRange.end.getTime() - options.customRange.start.getTime()
       return {
         start: options.customRange.start,
         end: options.customRange.end,
         duration,
-        label: this.formatDateRange(
-          options.customRange.start,
-          options.customRange.end
-        ),
+        label: this.formatDateRange(options.customRange.start, options.customRange.end),
       }
     }
 
     const sorted = [...messages].sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     )
 
     const start = new Date(sorted[0].createdAt)
@@ -784,9 +728,7 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
   /**
    * Calculate next schedule
    */
-  private calculateNextSchedule(
-    period: 'daily' | 'weekly' | 'custom'
-  ): DigestSchedule {
+  private calculateNextSchedule(period: 'daily' | 'weekly' | 'custom'): DigestSchedule {
     const now = new Date()
     const nextRun = new Date(now)
 
@@ -814,14 +756,10 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
     const requests = this.requestCounter.get(channelId) || []
 
     // Clean old requests (older than 24 hours)
-    const recentRequests = requests.filter(
-      (timestamp) => now - timestamp < 24 * 60 * 60 * 1000
-    )
+    const recentRequests = requests.filter((timestamp) => now - timestamp < 24 * 60 * 60 * 1000)
 
     // Check hourly limit
-    const lastHourRequests = recentRequests.filter(
-      (timestamp) => now - timestamp < 60 * 60 * 1000
-    )
+    const lastHourRequests = recentRequests.filter((timestamp) => now - timestamp < 60 * 60 * 1000)
 
     if (lastHourRequests.length >= this.config.rateLimit!.maxRequestsPerHour) {
       return false
@@ -847,20 +785,14 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
   /**
    * Local fallback methods
    */
-  private generateLocalDigestSummary(
-    messages: Message[],
-    options: ChannelDigestOptions
-  ): string {
+  private generateLocalDigestSummary(messages: Message[], options: ChannelDigestOptions): string {
     const users = new Set(messages.map((m) => m.userName || 'User'))
     const period = options.period
 
     return `Channel ${period} digest: ${messages.length} messages from ${users.size} participants. Main discussion topics included general conversation and updates.`
   }
 
-  private extractLocalHighlights(
-    messages: Message[],
-    maxHighlights: number
-  ): Highlight[] {
+  private extractLocalHighlights(messages: Message[], maxHighlights: number): Highlight[] {
     return messages.slice(0, maxHighlights).map((msg, index) => ({
       id: `highlight-${index}`,
       type: 'discussion' as const,
@@ -871,24 +803,10 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
     }))
   }
 
-  private extractLocalTopics(
-    messages: Message[],
-    maxTopics: number
-  ): TrendingTopic[] {
+  private extractLocalTopics(messages: Message[], maxTopics: number): TrendingTopic[] {
     // Simple word frequency analysis
     const wordCounts = new Map<string, number>()
-    const stopWords = new Set([
-      'the',
-      'is',
-      'at',
-      'which',
-      'on',
-      'a',
-      'an',
-      'and',
-      'or',
-      'but',
-    ])
+    const stopWords = new Set(['the', 'is', 'at', 'which', 'on', 'a', 'an', 'and', 'or', 'but'])
 
     messages.forEach((msg) => {
       const words = msg.content
@@ -938,10 +856,7 @@ Topics (format: TOPIC | KEYWORDS | TREND):`
     }
   }
 
-  private createEmptyDigest(
-    channelId: string,
-    options: ChannelDigestOptions
-  ): ChannelDigestResult {
+  private createEmptyDigest(channelId: string, options: ChannelDigestOptions): ChannelDigestResult {
     const now = new Date()
 
     return {

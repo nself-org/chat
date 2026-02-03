@@ -43,7 +43,7 @@ export const backupCommands = {
     const table = new Table({
       head: ['File', 'Size', 'Date'],
     })
-    console.log(table.toString())
+    // REMOVED: console.log(table.toString())
   },
 
   async delete(file: string, options: any) {

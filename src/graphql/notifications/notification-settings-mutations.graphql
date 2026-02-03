@@ -10,10 +10,7 @@
 mutation UpdateNotificationPreferences($userId: uuid!, $preferences: jsonb!) {
   update_nchat_users_by_pk(
     pk_columns: { id: $userId }
-    _set: {
-      notification_preferences: $preferences
-      updated_at: "now()"
-    }
+    _set: { notification_preferences: $preferences, updated_at: "now()" }
   ) {
     id
     notification_preferences
@@ -28,10 +25,7 @@ mutation UpdateNotificationPreferences($userId: uuid!, $preferences: jsonb!) {
 mutation UpdateGlobalNotifications($userId: uuid!, $enabled: Boolean!) {
   update_nchat_users_by_pk(
     pk_columns: { id: $userId }
-    _set: {
-      notifications_enabled: $enabled
-      updated_at: "now()"
-    }
+    _set: { notifications_enabled: $enabled, updated_at: "now()" }
   ) {
     id
     notifications_enabled
@@ -194,10 +188,7 @@ mutation UpdateChannelNotificationSettings(
   $overrideGlobal: Boolean!
 ) {
   update_nchat_channel_members(
-    where: {
-      channel_id: { _eq: $channelId }
-      user_id: { _eq: $userId }
-    }
+    where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
     _set: {
       notification_level: $level
       muted_until: $mutedUntil
@@ -222,16 +213,9 @@ mutation UpdateChannelNotificationSettings(
 # Mute Channel
 # ----------------------------------------------------------------------------
 
-mutation MuteChannel(
-  $channelId: uuid!
-  $userId: uuid!
-  $mutedUntil: timestamptz
-) {
+mutation MuteChannel($channelId: uuid!, $userId: uuid!, $mutedUntil: timestamptz) {
   update_nchat_channel_members(
-    where: {
-      channel_id: { _eq: $channelId }
-      user_id: { _eq: $userId }
-    }
+    where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
     _set: {
       notification_level: "nothing"
       muted_until: $mutedUntil
@@ -255,15 +239,8 @@ mutation MuteChannel(
 
 mutation UnmuteChannel($channelId: uuid!, $userId: uuid!) {
   update_nchat_channel_members(
-    where: {
-      channel_id: { _eq: $channelId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      notification_level: "all"
-      muted_until: null
-      updated_at: "now()"
-    }
+    where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
+    _set: { notification_level: "all", muted_until: null, updated_at: "now()" }
   ) {
     affected_rows
     returning {
@@ -516,11 +493,7 @@ mutation UpdateDMSettings(
 # Mute DM Conversation
 # ----------------------------------------------------------------------------
 
-mutation MuteDMConversation(
-  $userId: uuid!
-  $conversationId: uuid!
-  $mutedUntil: timestamptz
-) {
+mutation MuteDMConversation($userId: uuid!, $conversationId: uuid!, $mutedUntil: timestamptz) {
   insert_nchat_dm_settings_one(
     object: {
       user_id: $userId
@@ -546,14 +519,8 @@ mutation MuteDMConversation(
 
 mutation UnmuteDMConversation($userId: uuid!, $conversationId: uuid!) {
   update_nchat_dm_settings(
-    where: {
-      user_id: { _eq: $userId }
-      conversation_id: { _eq: $conversationId }
-    }
-    _set: {
-      notifications_enabled: true
-      muted_until: null
-    }
+    where: { user_id: { _eq: $userId }, conversation_id: { _eq: $conversationId } }
+    _set: { notifications_enabled: true, muted_until: null }
   ) {
     affected_rows
     returning {
@@ -571,10 +538,7 @@ mutation UnmuteDMConversation($userId: uuid!, $conversationId: uuid!) {
 mutation MarkNotificationRead($notificationId: uuid!) {
   update_nchat_notifications_by_pk(
     pk_columns: { id: $notificationId }
-    _set: {
-      is_read: true
-      read_at: "now()"
-    }
+    _set: { is_read: true, read_at: "now()" }
   ) {
     id
     is_read
@@ -588,15 +552,8 @@ mutation MarkNotificationRead($notificationId: uuid!) {
 
 mutation MarkAllNotificationsRead($userId: uuid!, $channelId: uuid) {
   update_nchat_notifications(
-    where: {
-      user_id: { _eq: $userId }
-      is_read: { _eq: false }
-      channel_id: { _eq: $channelId }
-    }
-    _set: {
-      is_read: true
-      read_at: "now()"
-    }
+    where: { user_id: { _eq: $userId }, is_read: { _eq: false }, channel_id: { _eq: $channelId } }
+    _set: { is_read: true, read_at: "now()" }
   ) {
     affected_rows
   }
@@ -622,11 +579,7 @@ mutation ArchiveNotification($notificationId: uuid!) {
 
 mutation ArchiveAllReadNotifications($userId: uuid!) {
   update_nchat_notifications(
-    where: {
-      user_id: { _eq: $userId }
-      is_read: { _eq: true }
-      is_archived: { _eq: false }
-    }
+    where: { user_id: { _eq: $userId }, is_read: { _eq: true }, is_archived: { _eq: false } }
     _set: { is_archived: true }
   ) {
     affected_rows

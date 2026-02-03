@@ -19,9 +19,7 @@ query GetEnabledCommands($userRole: String!) {
       is_enabled: { _eq: true }
       _or: [
         { min_role: { _eq: "guest" } }
-        { min_role: { _eq: "member" }, _and: [{ _or: [
-          { _not: { min_role: { _eq: "guest" } } }
-        ] }] }
+        { min_role: { _eq: "member" }, _and: [{ _or: [{ _not: { min_role: { _eq: "guest" } } }] }] }
         # Role hierarchy handled in application layer
       ]
     }
@@ -41,12 +39,7 @@ query GetCommand($id: uuid!) {
 # Get command by trigger
 query GetCommandByTrigger($trigger: String!) {
   nchat_commands(
-    where: {
-      _or: [
-        { trigger: { _eq: $trigger } }
-        { aliases: { _contains: $trigger } }
-      ]
-    }
+    where: { _or: [{ trigger: { _eq: $trigger } }, { aliases: { _contains: $trigger } }] }
     limit: 1
   ) {
     ...CommandFull
@@ -56,10 +49,7 @@ query GetCommandByTrigger($trigger: String!) {
 # Get commands by category
 query GetCommandsByCategory($category: String!) {
   nchat_commands(
-    where: {
-      category: { _eq: $category }
-      is_enabled: { _eq: true }
-    }
+    where: { category: { _eq: $category }, is_enabled: { _eq: true } }
     order_by: [{ order: asc_nulls_last }, { name: asc }]
   ) {
     ...CommandBasic

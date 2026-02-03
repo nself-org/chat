@@ -99,7 +99,15 @@ export interface CallStateChangedEvent extends CallEvent {
  */
 export interface CallEndedEvent extends CallEvent {
   type: 'call:ended'
-  reason: 'completed' | 'declined' | 'missed' | 'busy' | 'timeout' | 'error' | 'network' | 'cancelled'
+  reason:
+    | 'completed'
+    | 'declined'
+    | 'missed'
+    | 'busy'
+    | 'timeout'
+    | 'error'
+    | 'network'
+    | 'cancelled'
   duration: number // milliseconds
 }
 
@@ -134,7 +142,12 @@ export interface QualityAlertEvent extends CallEvent {
  * Invitation event
  */
 export interface InvitationEvent extends CallEvent {
-  type: 'call:invitation-received' | 'call:invitation-accepted' | 'call:invitation-declined' | 'call:invitation-missed' | 'call:invitation-cancelled'
+  type:
+    | 'call:invitation-received'
+    | 'call:invitation-accepted'
+    | 'call:invitation-declined'
+    | 'call:invitation-missed'
+    | 'call:invitation-cancelled'
   invitation: CallInvitation
 }
 
@@ -235,14 +248,12 @@ export class CallEventEmitter extends EventEmitter {
   /**
    * Get event history
    */
-  getHistory(
-    filter?: {
-      callId?: string
-      type?: CallEventType | CallEventType[]
-      userId?: string
-      since?: Date
-    }
-  ): AnyCallEvent[] {
+  getHistory(filter?: {
+    callId?: string
+    type?: CallEventType | CallEventType[]
+    userId?: string
+    since?: Date
+  }): AnyCallEvent[] {
     let events = [...this.history]
 
     if (filter) {
@@ -294,10 +305,7 @@ export class CallEventEmitter extends EventEmitter {
   /**
    * Type-safe event listener
    */
-  onCallEvent<K extends CallEventType>(
-    event: K,
-    handler: CallEventHandlers[K]
-  ): void {
+  onCallEvent<K extends CallEventType>(event: K, handler: CallEventHandlers[K]): void {
     if (handler) {
       this.on(event, handler as (...args: any[]) => void)
     }
@@ -306,10 +314,7 @@ export class CallEventEmitter extends EventEmitter {
   /**
    * Type-safe one-time event listener
    */
-  onceCallEvent<K extends CallEventType>(
-    event: K,
-    handler: CallEventHandlers[K]
-  ): void {
+  onceCallEvent<K extends CallEventType>(event: K, handler: CallEventHandlers[K]): void {
     if (handler) {
       this.once(event, handler as (...args: any[]) => void)
     }
@@ -318,10 +323,7 @@ export class CallEventEmitter extends EventEmitter {
   /**
    * Remove event listener
    */
-  offCallEvent<K extends CallEventType>(
-    event: K,
-    handler: CallEventHandlers[K]
-  ): void {
+  offCallEvent<K extends CallEventType>(event: K, handler: CallEventHandlers[K]): void {
     if (handler) {
       this.off(event, handler as (...args: any[]) => void)
     }
@@ -483,9 +485,7 @@ export async function logCallEventToDatabase(event: AnyCallEvent): Promise<void>
 /**
  * Subscribe to multiple events
  */
-export function subscribeToCallEvents(
-  handlers: Partial<CallEventHandlers>
-): () => void {
+export function subscribeToCallEvents(handlers: Partial<CallEventHandlers>): () => void {
   const emitter = getCallEventEmitter()
 
   // Add handlers
@@ -508,13 +508,11 @@ export function subscribeToCallEvents(
 /**
  * Create event logger
  */
-export function createEventLogger(
-  filter?: {
-    types?: CallEventType[]
-    logToConsole?: boolean
-    logToDatabase?: boolean
-  }
-): () => void {
+export function createEventLogger(filter?: {
+  types?: CallEventType[]
+  logToConsole?: boolean
+  logToDatabase?: boolean
+}): () => void {
   const { types, logToConsole = true, logToDatabase = false } = filter || {}
 
   const handler: CallEventHandler = (event) => {

@@ -200,9 +200,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
           <Card>
             <CardHeader>
               <CardTitle>Profile Photos</CardTitle>
-              <CardDescription>
-                Upload a profile picture and cover photo
-              </CardDescription>
+              <CardDescription>Upload a profile picture and cover photo</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <CoverPhotoUpload
@@ -225,9 +223,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
           <Card>
             <CardHeader>
               <CardTitle>Basic Information</CardTitle>
-              <CardDescription>
-                Your public profile information
-              </CardDescription>
+              <CardDescription>Your public profile information</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -263,9 +259,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
                       className={errors.username ? 'border-destructive' : ''}
                     />
                   </div>
-                  {errors.username && (
-                    <p className="text-xs text-destructive">{errors.username}</p>
-                  )}
+                  {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
                 </div>
               </div>
 
@@ -321,9 +315,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
           <Card>
             <CardHeader>
               <CardTitle>Work Information</CardTitle>
-              <CardDescription>
-                Your role and team details
-              </CardDescription>
+              <CardDescription>Your role and team details</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -367,9 +359,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
           <Card>
             <CardHeader>
               <CardTitle>Contact & Location</CardTitle>
-              <CardDescription>
-                How others can reach you
-              </CardDescription>
+              <CardDescription>How others can reach you</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -420,9 +410,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
                     disabled={isLoading}
                     className={errors.website ? 'border-destructive' : ''}
                   />
-                  {errors.website && (
-                    <p className="text-xs text-destructive">{errors.website}</p>
-                  )}
+                  {errors.website && <p className="text-xs text-destructive">{errors.website}</p>}
                 </div>
               </div>
             </CardContent>
@@ -432,9 +420,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
           <Card>
             <CardHeader>
               <CardTitle>Social Links</CardTitle>
-              <CardDescription>
-                Connect your social profiles
-              </CardDescription>
+              <CardDescription>Connect your social profiles</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {formData.socialLinks.map((link, index) => (
@@ -479,7 +465,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
                 onClick={handleAddSocialLink}
                 disabled={isLoading}
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Add Link
               </Button>
             </CardContent>
@@ -490,9 +476,7 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
             <Card>
               <CardHeader>
                 <CardTitle>Additional Information</CardTitle>
-                <CardDescription>
-                  Custom profile fields
-                </CardDescription>
+                <CardDescription>Custom profile fields</CardDescription>
               </CardHeader>
               <CardContent>
                 <ProfileFields
@@ -514,17 +498,12 @@ const EditProfile = React.forwardRef<HTMLDivElement, EditProfileProps>(
 
           {/* Action buttons */}
           <div className="flex items-center justify-end gap-3 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onCancel}
-              disabled={isSaving}
-            >
-              <X className="h-4 w-4 mr-2" />
+            <Button type="button" variant="outline" onClick={onCancel} disabled={isSaving}>
+              <X className="mr-2 h-4 w-4" />
               Cancel
             </Button>
             <Button type="submit" disabled={isSaving || isLoading}>
-              <Save className="h-4 w-4 mr-2" />
+              <Save className="mr-2 h-4 w-4" />
               {isSaving ? 'Saving...' : 'Save Changes'}
             </Button>
           </div>

@@ -15,12 +15,7 @@ import {
   SLACK_TOKEN_URL,
   SLACK_DEFAULT_SCOPES,
 } from '../slack-client'
-import type {
-  IntegrationCredentials,
-  SlackChannel,
-  SlackUser,
-  SlackMessage,
-} from '../../types'
+import type { IntegrationCredentials, SlackChannel, SlackUser, SlackMessage } from '../../types'
 
 // ============================================================================
 // Mock Setup
@@ -109,9 +104,7 @@ describe('SlackApiClient', () => {
 
   describe('get', () => {
     it('should make authenticated GET request', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: true, data: 'test' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true, data: 'test' }))
 
       await client.get('test.method')
 
@@ -127,9 +120,7 @@ describe('SlackApiClient', () => {
     })
 
     it('should include query parameters', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: true })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true }))
 
       await client.get('test.method', { key: 'value', another: 'param' })
 
@@ -144,9 +135,7 @@ describe('SlackApiClient', () => {
     })
 
     it('should throw SlackApiError on API error', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: false, error: 'invalid_auth' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, error: 'invalid_auth' }))
 
       await expect(client.get('test.method')).rejects.toThrow(SlackApiError)
       await expect(client.get('test.method')).rejects.toThrow('invalid_auth')
@@ -155,9 +144,7 @@ describe('SlackApiClient', () => {
 
   describe('post', () => {
     it('should make authenticated POST request', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: true })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true }))
 
       await client.post('test.method', { data: 'test' })
 
@@ -175,9 +162,7 @@ describe('SlackApiClient', () => {
     })
 
     it('should throw SlackApiError on API error', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: false, error: 'channel_not_found' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, error: 'channel_not_found' }))
 
       await expect(client.post('chat.postMessage')).rejects.toThrow(SlackApiError)
     })
@@ -576,29 +561,25 @@ describe('SlackIntegrationProvider', () => {
     })
 
     it('should throw error on missing code', async () => {
-      await expect(
-        provider.handleCallback({ code: '', state: 'test' })
-      ).rejects.toThrow('Missing authorization code')
+      await expect(provider.handleCallback({ code: '', state: 'test' })).rejects.toThrow(
+        'Missing authorization code'
+      )
     })
 
     it('should throw error on API error', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: false, error: 'invalid_code' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, error: 'invalid_code' }))
 
-      await expect(
-        provider.handleCallback({ code: 'bad-code', state: 'test' })
-      ).rejects.toThrow('invalid_code')
+      await expect(provider.handleCallback({ code: 'bad-code', state: 'test' })).rejects.toThrow(
+        'invalid_code'
+      )
     })
 
     it('should throw error on missing access token', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: true })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: true }))
 
-      await expect(
-        provider.handleCallback({ code: 'test', state: 'test' })
-      ).rejects.toThrow('No access token in response')
+      await expect(provider.handleCallback({ code: 'test', state: 'test' })).rejects.toThrow(
+        'No access token in response'
+      )
     })
   })
 
@@ -619,19 +600,15 @@ describe('SlackIntegrationProvider', () => {
     })
 
     it('should throw error without refresh token', async () => {
-      await expect(
-        provider.refreshToken({ accessToken: 'test' })
-      ).rejects.toThrow('No refresh token available')
+      await expect(provider.refreshToken({ accessToken: 'test' })).rejects.toThrow(
+        'No refresh token available'
+      )
     })
 
     it('should throw error on API error', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: false, error: 'token_revoked' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, error: 'token_revoked' }))
 
-      await expect(
-        provider.refreshToken(mockCredentials)
-      ).rejects.toThrow('token_revoked')
+      await expect(provider.refreshToken(mockCredentials)).rejects.toThrow('token_revoked')
     })
   })
 
@@ -688,9 +665,7 @@ describe('SlackIntegrationProvider', () => {
     })
 
     it('should return false for invalid credentials', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ ok: false, error: 'invalid_auth' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ ok: false, error: 'invalid_auth' }))
 
       const isValid = await provider.validateCredentials(mockCredentials)
 
@@ -763,11 +738,7 @@ describe('SlackIntegrationProvider', () => {
         })
       )
 
-      const message = await provider.forwardMessage(
-        mockCredentials,
-        'C12345',
-        'Forwarded message'
-      )
+      const message = await provider.forwardMessage(mockCredentials, 'C12345', 'Forwarded message')
 
       expect(message.text).toBe('Hello, World!')
     })
@@ -858,9 +829,7 @@ describe('SlackIntegrationProvider', () => {
             response_metadata: {},
           })
         )
-        .mockResolvedValueOnce(
-          createMockResponse({ ok: false, error: 'channel_not_found' })
-        )
+        .mockResolvedValueOnce(createMockResponse({ ok: false, error: 'channel_not_found' }))
 
       const result = await provider.importHistory(mockCredentials)
 

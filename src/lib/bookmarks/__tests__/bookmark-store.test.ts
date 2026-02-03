@@ -307,10 +307,7 @@ describe('Bookmark Store', () => {
 
     describe('clearAllBookmarks', () => {
       it('should clear all bookmarks', () => {
-        const bookmarks = [
-          createTestBookmark({ id: 'bm-1' }),
-          createTestBookmark({ id: 'bm-2' }),
-        ]
+        const bookmarks = [createTestBookmark({ id: 'bm-1' }), createTestBookmark({ id: 'bm-2' })]
 
         act(() => {
           useBookmarkStore.getState().setBookmarks(bookmarks)
@@ -988,10 +985,7 @@ describe('Bookmark Store', () => {
   describe('Selectors', () => {
     describe('selectAllBookmarks', () => {
       it('should return all bookmarks as array', () => {
-        const bookmarks = [
-          createTestBookmark({ id: 'bm-1' }),
-          createTestBookmark({ id: 'bm-2' }),
-        ]
+        const bookmarks = [createTestBookmark({ id: 'bm-1' }), createTestBookmark({ id: 'bm-2' })]
 
         act(() => {
           useBookmarkStore.getState().setBookmarks(bookmarks)
@@ -1015,10 +1009,7 @@ describe('Bookmark Store', () => {
 
     describe('selectAllFolders', () => {
       it('should return all folders as array', () => {
-        const folders = [
-          createTestFolder({ id: 'f-1' }),
-          createTestFolder({ id: 'f-2' }),
-        ]
+        const folders = [createTestFolder({ id: 'f-1' }), createTestFolder({ id: 'f-2' })]
 
         act(() => {
           useBookmarkStore.getState().setFolders(folders)
@@ -1031,10 +1022,7 @@ describe('Bookmark Store', () => {
 
     describe('selectFolderCount', () => {
       it('should return folder count', () => {
-        const folders = [
-          createTestFolder({ id: 'f-1' }),
-          createTestFolder({ id: 'f-2' }),
-        ]
+        const folders = [createTestFolder({ id: 'f-1' }), createTestFolder({ id: 'f-2' })]
 
         act(() => {
           useBookmarkStore.getState().setFolders(folders)
@@ -1083,11 +1071,15 @@ describe('Bookmark Store', () => {
         const bookmarks = [
           createTestBookmark({
             id: 'bm-1',
-            message: createTestMessage({ channel: { id: 'ch-1', name: 'General', slug: 'general' } }),
+            message: createTestMessage({
+              channel: { id: 'ch-1', name: 'General', slug: 'general' },
+            }),
           }),
           createTestBookmark({
             id: 'bm-2',
-            message: createTestMessage({ channel: { id: 'ch-1', name: 'General', slug: 'general' } }),
+            message: createTestMessage({
+              channel: { id: 'ch-1', name: 'General', slug: 'general' },
+            }),
           }),
           createTestBookmark({
             id: 'bm-3',
@@ -1110,11 +1102,15 @@ describe('Bookmark Store', () => {
         const bookmarks = [
           createTestBookmark({
             id: 'bm-1',
-            message: createTestMessage({ channel: { id: 'ch-1', name: 'General', slug: 'general' } }),
+            message: createTestMessage({
+              channel: { id: 'ch-1', name: 'General', slug: 'general' },
+            }),
           }),
           createTestBookmark({
             id: 'bm-2',
-            message: createTestMessage({ channel: { id: 'ch-1', name: 'General', slug: 'general' } }),
+            message: createTestMessage({
+              channel: { id: 'ch-1', name: 'General', slug: 'general' },
+            }),
           }),
           createTestBookmark({
             id: 'bm-3',

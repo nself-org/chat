@@ -5,9 +5,9 @@
  * Supports forwarding with attribution, as copy, or as quote.
  */
 
-import { create } from 'zustand';
-import { devtools, subscribeWithSelector } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { create } from 'zustand'
+import { devtools, subscribeWithSelector } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 // ============================================================================
 // Types
@@ -17,52 +17,52 @@ import { immer } from 'zustand/middleware/immer';
  * Forwarding mode
  */
 export type ForwardingMode =
-  | 'forward'      // Forward with attribution
-  | 'copy'         // Copy without attribution
-  | 'quote';       // Quote with reply context
+  | 'forward' // Forward with attribution
+  | 'copy' // Copy without attribution
+  | 'quote' // Quote with reply context
 
 /**
  * Forward destination type
  */
-export type ForwardDestinationType = 'channel' | 'user' | 'thread';
+export type ForwardDestinationType = 'channel' | 'user' | 'thread'
 
 /**
  * Forward destination
  */
 export interface ForwardDestination {
   /** Destination type */
-  type: ForwardDestinationType;
+  type: ForwardDestinationType
   /** Destination ID (channel ID, user ID, or thread ID) */
-  id: string;
+  id: string
   /** Display name for the destination */
-  name: string;
+  name: string
   /** Avatar/icon URL */
-  avatarUrl?: string;
+  avatarUrl?: string
   /** Whether this is a private/DM destination */
-  isPrivate?: boolean;
+  isPrivate?: boolean
 }
 
 /**
  * User who originally sent the message
  */
 export interface MessageAuthor {
-  id: string;
-  username: string;
-  displayName: string;
-  avatarUrl?: string;
+  id: string
+  username: string
+  displayName: string
+  avatarUrl?: string
 }
 
 /**
  * Message attachment for forwarding
  */
 export interface ForwardAttachment {
-  id: string;
-  type: 'image' | 'video' | 'audio' | 'file';
-  name: string;
-  url: string;
-  size?: number;
-  mimeType?: string;
-  previewUrl?: string;
+  id: string
+  type: 'image' | 'video' | 'audio' | 'file'
+  name: string
+  url: string
+  size?: number
+  mimeType?: string
+  previewUrl?: string
 }
 
 /**
@@ -70,25 +70,25 @@ export interface ForwardAttachment {
  */
 export interface ForwardableMessage {
   /** Message ID */
-  id: string;
+  id: string
   /** Message content */
-  content: string;
+  content: string
   /** Original author */
-  author: MessageAuthor;
+  author: MessageAuthor
   /** Source channel ID */
-  channelId: string;
+  channelId: string
   /** Source channel name */
-  channelName?: string;
+  channelName?: string
   /** Message timestamp */
-  createdAt: number;
+  createdAt: number
   /** Attachments */
-  attachments?: ForwardAttachment[];
+  attachments?: ForwardAttachment[]
   /** Whether this message was already forwarded */
-  isForwarded?: boolean;
+  isForwarded?: boolean
   /** Original message ID if this was forwarded */
-  originalMessageId?: string;
+  originalMessageId?: string
   /** Thread ID if in a thread */
-  threadId?: string;
+  threadId?: string
 }
 
 /**
@@ -96,19 +96,19 @@ export interface ForwardableMessage {
  */
 export interface ForwardRequest {
   /** Unique request ID */
-  id: string;
+  id: string
   /** Messages to forward */
-  messages: ForwardableMessage[];
+  messages: ForwardableMessage[]
   /** Destinations to forward to */
-  destinations: ForwardDestination[];
+  destinations: ForwardDestination[]
   /** Forwarding mode */
-  mode: ForwardingMode;
+  mode: ForwardingMode
   /** Additional comment/context */
-  comment?: string;
+  comment?: string
   /** User initiating the forward */
-  forwardedBy: string;
+  forwardedBy: string
   /** When the forward was initiated */
-  createdAt: number;
+  createdAt: number
 }
 
 /**
@@ -116,13 +116,13 @@ export interface ForwardRequest {
  */
 export interface ForwardResult {
   /** Destination */
-  destination: ForwardDestination;
+  destination: ForwardDestination
   /** Whether the forward succeeded */
-  success: boolean;
+  success: boolean
   /** New message ID(s) created */
-  messageIds?: string[];
+  messageIds?: string[]
   /** Error message if failed */
-  error?: string;
+  error?: string
 }
 
 /**
@@ -130,13 +130,13 @@ export interface ForwardResult {
  */
 export interface ForwardOperationResult {
   /** Original request */
-  request: ForwardRequest;
+  request: ForwardRequest
   /** Results per destination */
-  results: ForwardResult[];
+  results: ForwardResult[]
   /** Total success count */
-  successCount: number;
+  successCount: number
   /** Total failure count */
-  failureCount: number;
+  failureCount: number
 }
 
 /**
@@ -144,23 +144,23 @@ export interface ForwardOperationResult {
  */
 export interface ForwardModalState {
   /** Whether the modal is open */
-  isOpen: boolean;
+  isOpen: boolean
   /** Messages being forwarded */
-  messages: ForwardableMessage[];
+  messages: ForwardableMessage[]
   /** Selected destinations */
-  selectedDestinations: ForwardDestination[];
+  selectedDestinations: ForwardDestination[]
   /** Current forwarding mode */
-  mode: ForwardingMode;
+  mode: ForwardingMode
   /** Optional comment */
-  comment: string;
+  comment: string
   /** Search query for destinations */
-  searchQuery: string;
+  searchQuery: string
   /** Recent forward destinations */
-  recentDestinations: ForwardDestination[];
+  recentDestinations: ForwardDestination[]
   /** Whether forwarding is in progress */
-  isForwarding: boolean;
+  isForwarding: boolean
   /** Current step in modal flow */
-  step: 'select-messages' | 'select-destinations' | 'confirm';
+  step: 'select-messages' | 'select-destinations' | 'confirm'
 }
 
 // ============================================================================
@@ -169,69 +169,69 @@ export interface ForwardModalState {
 
 export interface ForwardingState {
   /** Modal state */
-  modal: ForwardModalState;
+  modal: ForwardModalState
   /** Recent forward history */
-  forwardHistory: ForwardOperationResult[];
+  forwardHistory: ForwardOperationResult[]
   /** Maximum history entries */
-  maxHistoryEntries: number;
+  maxHistoryEntries: number
 }
 
 export interface ForwardingActions {
   // Modal operations
-  openForwardModal: (messages: ForwardableMessage[]) => void;
-  closeForwardModal: () => void;
-  setForwardingMode: (mode: ForwardingMode) => void;
-  setComment: (comment: string) => void;
-  setSearchQuery: (query: string) => void;
-  setStep: (step: ForwardModalState['step']) => void;
+  openForwardModal: (messages: ForwardableMessage[]) => void
+  closeForwardModal: () => void
+  setForwardingMode: (mode: ForwardingMode) => void
+  setComment: (comment: string) => void
+  setSearchQuery: (query: string) => void
+  setStep: (step: ForwardModalState['step']) => void
 
   // Destination selection
-  addDestination: (destination: ForwardDestination) => void;
-  removeDestination: (destinationId: string) => void;
-  clearDestinations: () => void;
-  toggleDestination: (destination: ForwardDestination) => void;
+  addDestination: (destination: ForwardDestination) => void
+  removeDestination: (destinationId: string) => void
+  clearDestinations: () => void
+  toggleDestination: (destination: ForwardDestination) => void
 
   // Message selection
-  addMessage: (message: ForwardableMessage) => void;
-  removeMessage: (messageId: string) => void;
-  clearMessages: () => void;
+  addMessage: (message: ForwardableMessage) => void
+  removeMessage: (messageId: string) => void
+  clearMessages: () => void
 
   // Forward execution
-  startForwarding: () => void;
-  finishForwarding: (result: ForwardOperationResult) => void;
+  startForwarding: () => void
+  finishForwarding: (result: ForwardOperationResult) => void
 
   // History
-  addToHistory: (result: ForwardOperationResult) => void;
-  clearHistory: () => void;
+  addToHistory: (result: ForwardOperationResult) => void
+  clearHistory: () => void
 
   // Recent destinations
-  addRecentDestination: (destination: ForwardDestination) => void;
-  clearRecentDestinations: () => void;
+  addRecentDestination: (destination: ForwardDestination) => void
+  clearRecentDestinations: () => void
 
   // Utility
-  reset: () => void;
+  reset: () => void
 }
 
-export type ForwardingStore = ForwardingState & ForwardingActions;
+export type ForwardingStore = ForwardingState & ForwardingActions
 
 // ============================================================================
 // Constants
 // ============================================================================
 
 /** Maximum number of messages that can be forwarded at once */
-export const MAX_FORWARD_MESSAGES = 50;
+export const MAX_FORWARD_MESSAGES = 50
 
 /** Maximum number of destinations for a single forward */
-export const MAX_FORWARD_DESTINATIONS = 10;
+export const MAX_FORWARD_DESTINATIONS = 10
 
 /** Maximum comment length */
-export const MAX_FORWARD_COMMENT_LENGTH = 500;
+export const MAX_FORWARD_COMMENT_LENGTH = 500
 
 /** Maximum recent destinations to store */
-export const MAX_RECENT_DESTINATIONS = 10;
+export const MAX_RECENT_DESTINATIONS = 10
 
 /** Maximum history entries */
-export const MAX_HISTORY_ENTRIES = 50;
+export const MAX_HISTORY_ENTRIES = 50
 
 // ============================================================================
 // Initial State
@@ -247,13 +247,13 @@ const initialModalState: ForwardModalState = {
   recentDestinations: [],
   isForwarding: false,
   step: 'select-destinations',
-};
+}
 
 const initialState: ForwardingState = {
   modal: { ...initialModalState },
   forwardHistory: [],
   maxHistoryEntries: MAX_HISTORY_ENTRIES,
-};
+}
 
 // ============================================================================
 // Utilities
@@ -263,7 +263,7 @@ const initialState: ForwardingState = {
  * Generate a unique forward request ID
  */
 export function generateForwardRequestId(): string {
-  return `fwd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  return `fwd_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 }
 
 /**
@@ -284,7 +284,7 @@ export function createForwardRequest(
     comment,
     forwardedBy,
     createdAt: Date.now(),
-  };
+  }
 }
 
 /**
@@ -299,25 +299,25 @@ export function formatForwardedContent(
       return {
         content: message.content,
         attribution: `Forwarded from ${message.author.displayName}`,
-      };
+      }
 
     case 'copy':
       return {
         content: message.content,
-      };
+      }
 
     case 'quote':
       // Format as a quote block
       const quotedContent = message.content
         .split('\n')
         .map((line) => `> ${line}`)
-        .join('\n');
+        .join('\n')
       return {
         content: `${quotedContent}\n\n— ${message.author.displayName}`,
-      };
+      }
 
     default:
-      return { content: message.content };
+      return { content: message.content }
   }
 }
 
@@ -329,32 +329,32 @@ export function validateForwardRequest(
   destinations: ForwardDestination[],
   comment?: string
 ): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
+  const errors: string[] = []
 
   if (messages.length === 0) {
-    errors.push('At least one message is required');
+    errors.push('At least one message is required')
   }
 
   if (messages.length > MAX_FORWARD_MESSAGES) {
-    errors.push(`Cannot forward more than ${MAX_FORWARD_MESSAGES} messages at once`);
+    errors.push(`Cannot forward more than ${MAX_FORWARD_MESSAGES} messages at once`)
   }
 
   if (destinations.length === 0) {
-    errors.push('At least one destination is required');
+    errors.push('At least one destination is required')
   }
 
   if (destinations.length > MAX_FORWARD_DESTINATIONS) {
-    errors.push(`Cannot forward to more than ${MAX_FORWARD_DESTINATIONS} destinations at once`);
+    errors.push(`Cannot forward to more than ${MAX_FORWARD_DESTINATIONS} destinations at once`)
   }
 
   if (comment && comment.length > MAX_FORWARD_COMMENT_LENGTH) {
-    errors.push(`Comment exceeds maximum length of ${MAX_FORWARD_COMMENT_LENGTH} characters`);
+    errors.push(`Comment exceeds maximum length of ${MAX_FORWARD_COMMENT_LENGTH} characters`)
   }
 
   return {
     valid: errors.length === 0,
     errors,
-  };
+  }
 }
 
 /**
@@ -362,19 +362,16 @@ export function validateForwardRequest(
  */
 export function canForwardMessage(message: ForwardableMessage): boolean {
   // Messages can generally be forwarded unless they have restrictions
-  return true;
+  return true
 }
 
 /**
  * Check if user can forward to a destination
  */
-export function canForwardToDestination(
-  destination: ForwardDestination,
-  _userId: string
-): boolean {
+export function canForwardToDestination(destination: ForwardDestination, _userId: string): boolean {
   // Check if user has permission to send to this destination
   // This would typically check channel membership, DM permissions, etc.
-  return true;
+  return true
 }
 
 /**
@@ -383,13 +380,13 @@ export function canForwardToDestination(
 export function getDestinationDisplayText(destination: ForwardDestination): string {
   switch (destination.type) {
     case 'channel':
-      return `#${destination.name}`;
+      return `#${destination.name}`
     case 'user':
-      return `@${destination.name}`;
+      return `@${destination.name}`
     case 'thread':
-      return `Thread: ${destination.name}`;
+      return `Thread: ${destination.name}`
     default:
-      return destination.name;
+      return destination.name
   }
 }
 
@@ -399,13 +396,13 @@ export function getDestinationDisplayText(destination: ForwardDestination): stri
 export function getForwardModeDisplayText(mode: ForwardingMode): string {
   switch (mode) {
     case 'forward':
-      return 'Forward with attribution';
+      return 'Forward with attribution'
     case 'copy':
-      return 'Copy without attribution';
+      return 'Copy without attribution'
     case 'quote':
-      return 'Quote message';
+      return 'Quote message'
     default:
-      return 'Forward';
+      return 'Forward'
   }
 }
 
@@ -415,13 +412,13 @@ export function getForwardModeDisplayText(mode: ForwardingMode): string {
 export function getForwardModeDescription(mode: ForwardingMode): string {
   switch (mode) {
     case 'forward':
-      return 'Recipients will see who originally sent the message';
+      return 'Recipients will see who originally sent the message'
     case 'copy':
-      return 'Message will appear as if you wrote it';
+      return 'Message will appear as if you wrote it'
     case 'quote':
-      return 'Message will be quoted with a reply link';
+      return 'Message will be quoted with a reply link'
     default:
-      return '';
+      return ''
   }
 }
 
@@ -433,13 +430,13 @@ export function sortDestinations(destinations: ForwardDestination[]): ForwardDes
     channel: 0,
     user: 1,
     thread: 2,
-  };
+  }
 
   return [...destinations].sort((a, b) => {
-    const typeCompare = typeOrder[a.type] - typeOrder[b.type];
-    if (typeCompare !== 0) return typeCompare;
-    return a.name.localeCompare(b.name);
-  });
+    const typeCompare = typeOrder[a.type] - typeOrder[b.type]
+    if (typeCompare !== 0) return typeCompare
+    return a.name.localeCompare(b.name)
+  })
 }
 
 /**
@@ -449,14 +446,14 @@ export function filterDestinations(
   destinations: ForwardDestination[],
   query: string
 ): ForwardDestination[] {
-  if (!query.trim()) return destinations;
+  if (!query.trim()) return destinations
 
-  const lowerQuery = query.toLowerCase().trim();
+  const lowerQuery = query.toLowerCase().trim()
 
   return destinations.filter((dest) => {
-    const name = dest.name.toLowerCase();
-    return name.includes(lowerQuery);
-  });
+    const name = dest.name.toLowerCase()
+    return name.includes(lowerQuery)
+  })
 }
 
 /**
@@ -466,9 +463,7 @@ export function isDestinationSelected(
   destination: ForwardDestination,
   selectedDestinations: ForwardDestination[]
 ): boolean {
-  return selectedDestinations.some(
-    (d) => d.type === destination.type && d.id === destination.id
-  );
+  return selectedDestinations.some((d) => d.type === destination.type && d.id === destination.id)
 }
 
 /**
@@ -479,11 +474,11 @@ export function getForwardSummary(
   destinationCount: number,
   mode: ForwardingMode
 ): string {
-  const messageText = messageCount === 1 ? '1 message' : `${messageCount} messages`;
-  const destText = destinationCount === 1 ? '1 destination' : `${destinationCount} destinations`;
-  const modeText = mode === 'forward' ? 'forwarding' : mode === 'copy' ? 'copying' : 'quoting';
+  const messageText = messageCount === 1 ? '1 message' : `${messageCount} messages`
+  const destText = destinationCount === 1 ? '1 destination' : `${destinationCount} destinations`
+  const modeText = mode === 'forward' ? 'forwarding' : mode === 'copy' ? 'copying' : 'quoting'
 
-  return `${modeText} ${messageText} to ${destText}`;
+  return `${modeText} ${messageText} to ${destText}`
 }
 
 // ============================================================================
@@ -503,14 +498,14 @@ export const useForwardingStore = create<ForwardingStore>()(
         openForwardModal: (messages) =>
           set(
             (state) => {
-              state.modal.isOpen = true;
-              state.modal.messages = messages;
-              state.modal.selectedDestinations = [];
-              state.modal.mode = 'forward';
-              state.modal.comment = '';
-              state.modal.searchQuery = '';
-              state.modal.isForwarding = false;
-              state.modal.step = 'select-destinations';
+              state.modal.isOpen = true
+              state.modal.messages = messages
+              state.modal.selectedDestinations = []
+              state.modal.mode = 'forward'
+              state.modal.comment = ''
+              state.modal.searchQuery = ''
+              state.modal.isForwarding = false
+              state.modal.step = 'select-destinations'
             },
             false,
             'forwarding/openModal'
@@ -519,7 +514,10 @@ export const useForwardingStore = create<ForwardingStore>()(
         closeForwardModal: () =>
           set(
             (state) => {
-              state.modal = { ...initialModalState, recentDestinations: state.modal.recentDestinations };
+              state.modal = {
+                ...initialModalState,
+                recentDestinations: state.modal.recentDestinations,
+              }
             },
             false,
             'forwarding/closeModal'
@@ -528,7 +526,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         setForwardingMode: (mode) =>
           set(
             (state) => {
-              state.modal.mode = mode;
+              state.modal.mode = mode
             },
             false,
             'forwarding/setMode'
@@ -537,7 +535,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         setComment: (comment) =>
           set(
             (state) => {
-              state.modal.comment = comment.slice(0, MAX_FORWARD_COMMENT_LENGTH);
+              state.modal.comment = comment.slice(0, MAX_FORWARD_COMMENT_LENGTH)
             },
             false,
             'forwarding/setComment'
@@ -546,7 +544,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         setSearchQuery: (query) =>
           set(
             (state) => {
-              state.modal.searchQuery = query;
+              state.modal.searchQuery = query
             },
             false,
             'forwarding/setSearchQuery'
@@ -555,7 +553,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         setStep: (step) =>
           set(
             (state) => {
-              state.modal.step = step;
+              state.modal.step = step
             },
             false,
             'forwarding/setStep'
@@ -569,10 +567,10 @@ export const useForwardingStore = create<ForwardingStore>()(
           set(
             (state) => {
               if (state.modal.selectedDestinations.length >= MAX_FORWARD_DESTINATIONS) {
-                return;
+                return
               }
               if (!isDestinationSelected(destination, state.modal.selectedDestinations)) {
-                state.modal.selectedDestinations.push(destination);
+                state.modal.selectedDestinations.push(destination)
               }
             },
             false,
@@ -584,7 +582,7 @@ export const useForwardingStore = create<ForwardingStore>()(
             (state) => {
               state.modal.selectedDestinations = state.modal.selectedDestinations.filter(
                 (d) => d.id !== destinationId
-              );
+              )
             },
             false,
             'forwarding/removeDestination'
@@ -593,7 +591,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         clearDestinations: () =>
           set(
             (state) => {
-              state.modal.selectedDestinations = [];
+              state.modal.selectedDestinations = []
             },
             false,
             'forwarding/clearDestinations'
@@ -604,11 +602,11 @@ export const useForwardingStore = create<ForwardingStore>()(
             (state) => {
               const index = state.modal.selectedDestinations.findIndex(
                 (d) => d.type === destination.type && d.id === destination.id
-              );
+              )
               if (index >= 0) {
-                state.modal.selectedDestinations.splice(index, 1);
+                state.modal.selectedDestinations.splice(index, 1)
               } else if (state.modal.selectedDestinations.length < MAX_FORWARD_DESTINATIONS) {
-                state.modal.selectedDestinations.push(destination);
+                state.modal.selectedDestinations.push(destination)
               }
             },
             false,
@@ -623,10 +621,10 @@ export const useForwardingStore = create<ForwardingStore>()(
           set(
             (state) => {
               if (state.modal.messages.length >= MAX_FORWARD_MESSAGES) {
-                return;
+                return
               }
               if (!state.modal.messages.some((m) => m.id === message.id)) {
-                state.modal.messages.push(message);
+                state.modal.messages.push(message)
               }
             },
             false,
@@ -636,7 +634,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         removeMessage: (messageId) =>
           set(
             (state) => {
-              state.modal.messages = state.modal.messages.filter((m) => m.id !== messageId);
+              state.modal.messages = state.modal.messages.filter((m) => m.id !== messageId)
             },
             false,
             'forwarding/removeMessage'
@@ -645,7 +643,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         clearMessages: () =>
           set(
             (state) => {
-              state.modal.messages = [];
+              state.modal.messages = []
             },
             false,
             'forwarding/clearMessages'
@@ -658,7 +656,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         startForwarding: () =>
           set(
             (state) => {
-              state.modal.isForwarding = true;
+              state.modal.isForwarding = true
             },
             false,
             'forwarding/start'
@@ -667,12 +665,12 @@ export const useForwardingStore = create<ForwardingStore>()(
         finishForwarding: (result) =>
           set(
             (state) => {
-              state.modal.isForwarding = false;
+              state.modal.isForwarding = false
 
               // Add to history
-              state.forwardHistory.unshift(result);
+              state.forwardHistory.unshift(result)
               if (state.forwardHistory.length > state.maxHistoryEntries) {
-                state.forwardHistory = state.forwardHistory.slice(0, state.maxHistoryEntries);
+                state.forwardHistory = state.forwardHistory.slice(0, state.maxHistoryEntries)
               }
 
               // Add successful destinations to recent
@@ -680,23 +678,23 @@ export const useForwardingStore = create<ForwardingStore>()(
                 if (r.success) {
                   const existing = state.modal.recentDestinations.findIndex(
                     (d) => d.type === r.destination.type && d.id === r.destination.id
-                  );
+                  )
                   if (existing >= 0) {
-                    state.modal.recentDestinations.splice(existing, 1);
+                    state.modal.recentDestinations.splice(existing, 1)
                   }
-                  state.modal.recentDestinations.unshift(r.destination);
+                  state.modal.recentDestinations.unshift(r.destination)
                   if (state.modal.recentDestinations.length > MAX_RECENT_DESTINATIONS) {
                     state.modal.recentDestinations = state.modal.recentDestinations.slice(
                       0,
                       MAX_RECENT_DESTINATIONS
-                    );
+                    )
                   }
                 }
               }
 
               // Close modal if all successful
               if (result.failureCount === 0) {
-                state.modal.isOpen = false;
+                state.modal.isOpen = false
               }
             },
             false,
@@ -710,9 +708,9 @@ export const useForwardingStore = create<ForwardingStore>()(
         addToHistory: (result) =>
           set(
             (state) => {
-              state.forwardHistory.unshift(result);
+              state.forwardHistory.unshift(result)
               if (state.forwardHistory.length > state.maxHistoryEntries) {
-                state.forwardHistory = state.forwardHistory.slice(0, state.maxHistoryEntries);
+                state.forwardHistory = state.forwardHistory.slice(0, state.maxHistoryEntries)
               }
             },
             false,
@@ -722,7 +720,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         clearHistory: () =>
           set(
             (state) => {
-              state.forwardHistory = [];
+              state.forwardHistory = []
             },
             false,
             'forwarding/clearHistory'
@@ -737,16 +735,16 @@ export const useForwardingStore = create<ForwardingStore>()(
             (state) => {
               const existing = state.modal.recentDestinations.findIndex(
                 (d) => d.type === destination.type && d.id === destination.id
-              );
+              )
               if (existing >= 0) {
-                state.modal.recentDestinations.splice(existing, 1);
+                state.modal.recentDestinations.splice(existing, 1)
               }
-              state.modal.recentDestinations.unshift(destination);
+              state.modal.recentDestinations.unshift(destination)
               if (state.modal.recentDestinations.length > MAX_RECENT_DESTINATIONS) {
                 state.modal.recentDestinations = state.modal.recentDestinations.slice(
                   0,
                   MAX_RECENT_DESTINATIONS
-                );
+                )
               }
             },
             false,
@@ -756,7 +754,7 @@ export const useForwardingStore = create<ForwardingStore>()(
         clearRecentDestinations: () =>
           set(
             (state) => {
-              state.modal.recentDestinations = [];
+              state.modal.recentDestinations = []
             },
             false,
             'forwarding/clearRecentDestinations'
@@ -778,40 +776,41 @@ export const useForwardingStore = create<ForwardingStore>()(
     ),
     { name: 'forwarding-store' }
   )
-);
+)
 
 // ============================================================================
 // Selectors
 // ============================================================================
 
-export const selectIsForwardModalOpen = (state: ForwardingStore) => state.modal.isOpen;
+export const selectIsForwardModalOpen = (state: ForwardingStore) => state.modal.isOpen
 
-export const selectForwardMessages = (state: ForwardingStore) => state.modal.messages;
+export const selectForwardMessages = (state: ForwardingStore) => state.modal.messages
 
-export const selectSelectedDestinations = (state: ForwardingStore) => state.modal.selectedDestinations;
+export const selectSelectedDestinations = (state: ForwardingStore) =>
+  state.modal.selectedDestinations
 
-export const selectForwardingMode = (state: ForwardingStore) => state.modal.mode;
+export const selectForwardingMode = (state: ForwardingStore) => state.modal.mode
 
-export const selectForwardComment = (state: ForwardingStore) => state.modal.comment;
+export const selectForwardComment = (state: ForwardingStore) => state.modal.comment
 
-export const selectForwardSearchQuery = (state: ForwardingStore) => state.modal.searchQuery;
+export const selectForwardSearchQuery = (state: ForwardingStore) => state.modal.searchQuery
 
-export const selectRecentDestinations = (state: ForwardingStore) => state.modal.recentDestinations;
+export const selectRecentDestinations = (state: ForwardingStore) => state.modal.recentDestinations
 
-export const selectIsForwarding = (state: ForwardingStore) => state.modal.isForwarding;
+export const selectIsForwarding = (state: ForwardingStore) => state.modal.isForwarding
 
-export const selectForwardStep = (state: ForwardingStore) => state.modal.step;
+export const selectForwardStep = (state: ForwardingStore) => state.modal.step
 
-export const selectForwardHistory = (state: ForwardingStore) => state.forwardHistory;
+export const selectForwardHistory = (state: ForwardingStore) => state.forwardHistory
 
 export const selectCanForward = (state: ForwardingStore) =>
   state.modal.messages.length > 0 &&
   state.modal.selectedDestinations.length > 0 &&
-  !state.modal.isForwarding;
+  !state.modal.isForwarding
 
 export const selectForwardValidation = (state: ForwardingStore) =>
   validateForwardRequest(
     state.modal.messages,
     state.modal.selectedDestinations,
     state.modal.comment
-  );
+  )

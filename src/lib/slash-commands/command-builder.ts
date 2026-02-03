@@ -165,9 +165,7 @@ export class CommandBuilder {
     validation?: ArgumentValidation
     autocomplete?: AutocompleteConfig
   }): this {
-    const position = this.command.arguments?.filter(
-      (a) => a.position !== undefined
-    ).length ?? 0
+    const position = this.command.arguments?.filter((a) => a.position !== undefined).length ?? 0
 
     const arg: CommandArgument = {
       id: config.name.toLowerCase().replace(/\s+/g, '_'),
@@ -243,11 +241,7 @@ export class CommandBuilder {
   /**
    * Add a user mention argument
    */
-  addUserArg(
-    name: string,
-    description: string,
-    required = true
-  ): this {
+  addUserArg(name: string, description: string, required = true): this {
     return this.addArgument({
       name,
       type: 'user',
@@ -263,11 +257,7 @@ export class CommandBuilder {
   /**
    * Add a channel mention argument
    */
-  addChannelArg(
-    name: string,
-    description: string,
-    required = true
-  ): this {
+  addChannelArg(name: string, description: string, required = true): this {
     return this.addArgument({
       name,
       type: 'channel',
@@ -309,11 +299,7 @@ export class CommandBuilder {
   /**
    * Add a duration argument
    */
-  addDurationArg(
-    name: string,
-    description: string,
-    required = false
-  ): this {
+  addDurationArg(name: string, description: string, required = false): this {
     return this.addArgument({
       name,
       type: 'duration',
@@ -325,11 +311,7 @@ export class CommandBuilder {
   /**
    * Add a "rest" argument that captures remaining text
    */
-  addRestArg(
-    name: string,
-    description: string,
-    required = false
-  ): this {
+  addRestArg(name: string, description: string, required = false): this {
     return this.addArgument({
       name,
       type: 'rest',
@@ -442,9 +424,7 @@ export class CommandBuilder {
   /**
    * Allow in specific channel types
    */
-  allowInChannelTypes(
-    ...types: ('public' | 'private' | 'direct' | 'group')[]
-  ): this {
+  allowInChannelTypes(...types: ('public' | 'private' | 'direct' | 'group')[]): this {
     this.command.channels = {
       ...this.command.channels!,
       allowedTypes: types,
@@ -590,11 +570,7 @@ export class CommandBuilder {
   /**
    * Set action to update user status
    */
-  updateStatus(status: {
-    text: string
-    emoji?: string
-    expiry?: string
-  }): this {
+  updateStatus(status: { text: string; emoji?: string; expiry?: string }): this {
     this.command.actionType = 'status'
     this.command.action = {
       type: 'status',
@@ -779,10 +755,7 @@ export function createMessageCommand(
   message: string,
   description: string
 ): CommandBuilder {
-  return createCommand(trigger)
-    .description(description)
-    .sendMessage(message)
-    .category('custom')
+  return createCommand(trigger).description(description).sendMessage(message).category('custom')
 }
 
 /**
@@ -810,8 +783,5 @@ export function createNavigationCommand(
   url: string,
   description: string
 ): CommandBuilder {
-  return createCommand(trigger)
-    .description(description)
-    .navigate(url)
-    .category('utility')
+  return createCommand(trigger).description(description).navigate(url).category('utility')
 }

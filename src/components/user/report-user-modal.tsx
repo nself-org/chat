@@ -27,15 +27,7 @@ import { useMutation } from '@apollo/client'
 import { REPORT_USER } from '@/graphql/moderation'
 import { useAuth } from '@/contexts/auth-context'
 import { cn } from '@/lib/utils'
-import {
-  Flag,
-  Loader2,
-  CheckCircle2,
-  Upload,
-  X,
-  ImageIcon,
-  AlertTriangle,
-} from 'lucide-react'
+import { Flag, Loader2, CheckCircle2, Upload, X, ImageIcon, AlertTriangle } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -210,8 +202,7 @@ export function ReportUserModal({
           handleOpenChange(false)
         }, 2000)
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to submit report'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to submit report'
         setSubmitError(errorMessage)
       } finally {
         setSubmitting(false)
@@ -240,20 +231,20 @@ export function ReportUserModal({
         {submitSuccess ? (
           // Success state
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
               <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Report Submitted</h3>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Thank you for helping keep our community safe. We will review your
-              report and take appropriate action.
+            <h3 className="mb-2 text-lg font-semibold">Report Submitted</h3>
+            <p className="max-w-xs text-sm text-muted-foreground">
+              Thank you for helping keep our community safe. We will review your report and take
+              appropriate action.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
+              <div className="mb-2 flex items-center gap-3">
+                <div className="bg-destructive/10 flex h-10 w-10 items-center justify-center rounded-full">
                   <Flag className="h-5 w-5 text-destructive" />
                 </div>
                 <DialogTitle>Report User</DialogTitle>
@@ -265,21 +256,14 @@ export function ReportUserModal({
 
             <div className="space-y-6 py-4">
               {/* User being reported */}
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+              <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={targetUser.avatarUrl}
-                    alt={targetUser.displayName}
-                  />
-                  <AvatarFallback>
-                    {getInitials(targetUser.displayName)}
-                  </AvatarFallback>
+                  <AvatarImage src={targetUser.avatarUrl} alt={targetUser.displayName} />
+                  <AvatarFallback>{getInitials(targetUser.displayName)}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium truncate">{targetUser.displayName}</p>
-                  <p className="text-sm text-muted-foreground truncate">
-                    @{targetUser.username}
-                  </p>
+                  <p className="truncate font-medium">{targetUser.displayName}</p>
+                  <p className="truncate text-sm text-muted-foreground">@{targetUser.username}</p>
                 </div>
               </div>
 
@@ -297,23 +281,16 @@ export function ReportUserModal({
                       <div
                         key={reason.value}
                         className={cn(
-                          'flex items-start space-x-3 p-3 rounded-lg border transition-colors cursor-pointer',
+                          'flex cursor-pointer items-start space-x-3 rounded-lg border p-3 transition-colors',
                           selectedReason === reason.value
-                            ? 'border-primary bg-primary/5'
-                            : 'border-transparent hover:bg-muted/50'
+                            ? 'bg-primary/5 border-primary'
+                            : 'hover:bg-muted/50 border-transparent'
                         )}
                       >
-                        <RadioGroupItem
-                          value={reason.value}
-                          id={reason.value}
-                          className="mt-0.5"
-                        />
-                        <Label
-                          htmlFor={reason.value}
-                          className="flex-1 cursor-pointer"
-                        >
+                        <RadioGroupItem value={reason.value} id={reason.value} className="mt-0.5" />
+                        <Label htmlFor={reason.value} className="flex-1 cursor-pointer">
                           <span className="font-medium">{reason.label}</span>
-                          <p className="text-xs text-muted-foreground mt-0.5">
+                          <p className="mt-0.5 text-xs text-muted-foreground">
                             {reason.description}
                           </p>
                         </Label>
@@ -337,31 +314,27 @@ export function ReportUserModal({
                   maxLength={1000}
                   className="resize-none"
                 />
-                <p className="text-xs text-muted-foreground text-right">
-                  {details.length}/1000
-                </p>
+                <p className="text-right text-xs text-muted-foreground">{details.length}/1000</p>
               </div>
 
               {/* Evidence upload */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium">
-                  Evidence / Screenshots (optional)
-                </Label>
+                <Label className="text-sm font-medium">Evidence / Screenshots (optional)</Label>
                 <div className="flex flex-wrap gap-2">
                   {evidenceUrls.map((url, index) => (
                     <div
                       key={index}
-                      className="relative group w-16 h-16 rounded-lg overflow-hidden border"
+                      className="group relative h-16 w-16 overflow-hidden rounded-lg border"
                     >
                       <img
                         src={url}
                         alt={`Evidence ${index + 1}`}
-                        className="w-full h-full object-cover"
+                        className="h-full w-full object-cover"
                       />
                       <button
                         type="button"
                         onClick={() => handleRemoveEvidence(index)}
-                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
                       >
                         <X className="h-4 w-4 text-white" />
                       </button>
@@ -372,16 +345,14 @@ export function ReportUserModal({
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploading}
-                      className="flex flex-col items-center justify-center w-16 h-16 rounded-lg border-2 border-dashed hover:border-primary hover:bg-muted/50 transition-colors"
+                      className="hover:bg-muted/50 flex h-16 w-16 flex-col items-center justify-center rounded-lg border-2 border-dashed transition-colors hover:border-primary"
                     >
                       {isUploading ? (
                         <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
                       ) : (
                         <>
                           <Upload className="h-4 w-4 text-muted-foreground" />
-                          <span className="text-[10px] text-muted-foreground mt-1">
-                            Add
-                          </span>
+                          <span className="mt-1 text-[10px] text-muted-foreground">Add</span>
                         </>
                       )}
                     </button>
@@ -395,7 +366,7 @@ export function ReportUserModal({
                   onChange={handleFileSelect}
                   className="hidden"
                 />
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <p className="flex items-center gap-1 text-xs text-muted-foreground">
                   <ImageIcon className="h-3 w-3" />
                   Up to 5 images, max 5MB each
                 </p>
@@ -403,7 +374,7 @@ export function ReportUserModal({
 
               {/* Error message */}
               {submitError && (
-                <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive text-sm rounded-lg">
+                <div className="bg-destructive/10 flex items-center gap-2 rounded-lg p-3 text-sm text-destructive">
                   <AlertTriangle className="h-4 w-4 flex-shrink-0" />
                   {submitError}
                 </div>

@@ -188,12 +188,8 @@ export function getStatusLabel(status: string, name?: string): string {
  * getCountLabel(1, 'message', 'messages');
  * // Returns: '1 message'
  */
-export function getCountLabel(
-  count: number,
-  singular: string,
-  plural?: string
-): string {
-  const word = count === 1 ? singular : (plural || `${singular}s`)
+export function getCountLabel(count: number, singular: string, plural?: string): string {
+  const word = count === 1 ? singular : plural || `${singular}s`
   return `${count} ${word}`
 }
 

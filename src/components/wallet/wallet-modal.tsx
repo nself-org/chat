@@ -1,26 +1,26 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Wallet, AlertCircle, CheckCircle2, ExternalLink, Copy, LogOut } from 'lucide-react';
+import * as React from 'react'
+import { Wallet, AlertCircle, CheckCircle2, ExternalLink, Copy, LogOut } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { useWallet } from '@/hooks/use-wallet';
-import { useWalletStore } from '@/stores/wallet-store';
-import { cn } from '@/lib/utils';
-import { toast } from 'sonner';
-import type { WalletProvider } from '@/lib/wallet/wallet-connector';
+} from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
+import { useWallet } from '@/hooks/use-wallet'
+import { useWalletStore } from '@/stores/wallet-store'
+import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
+import type { WalletProvider } from '@/lib/wallet/wallet-connector'
 
 const WALLET_PROVIDERS: Array<{
-  id: WalletProvider;
-  name: string;
-  icon: string;
-  description: string;
+  id: WalletProvider
+  name: string
+  icon: string
+  description: string
 }> = [
   {
     id: 'metamask',
@@ -40,10 +40,10 @@ const WALLET_PROVIDERS: Array<{
     icon: '🔗',
     description: 'Scan QR code with your mobile wallet',
   },
-];
+]
 
 export function WalletModal() {
-  const { isWalletModalOpen, setWalletModalOpen } = useWalletStore();
+  const { isWalletModalOpen, setWalletModalOpen } = useWalletStore()
   const {
     isConnected,
     address,
@@ -55,51 +55,51 @@ export function WalletModal() {
     formatAddress,
     weiToEther,
     getAvailableProviders,
-  } = useWallet();
+  } = useWallet()
 
-  const [selectedProvider, setSelectedProvider] = React.useState<WalletProvider | null>(null);
-  const availableProviders = getAvailableProviders();
+  const [selectedProvider, setSelectedProvider] = React.useState<WalletProvider | null>(null)
+  const availableProviders = getAvailableProviders()
 
   const handleConnect = async (provider: WalletProvider) => {
-    setSelectedProvider(provider);
-    const result = await connect({ provider });
+    setSelectedProvider(provider)
+    const result = await connect({ provider })
 
     if (result.success) {
-      toast.success('Wallet connected successfully');
-      setWalletModalOpen(false);
+      toast.success('Wallet connected successfully')
+      setWalletModalOpen(false)
     } else {
-      toast.error(result.error ?? 'Failed to connect wallet');
+      toast.error(result.error ?? 'Failed to connect wallet')
     }
 
-    setSelectedProvider(null);
-  };
+    setSelectedProvider(null)
+  }
 
   const handleDisconnect = async () => {
-    await disconnect();
-    toast.success('Wallet disconnected');
-    setWalletModalOpen(false);
-  };
+    await disconnect()
+    toast.success('Wallet disconnected')
+    setWalletModalOpen(false)
+  }
 
   const handleCopyAddress = () => {
     if (address) {
-      navigator.clipboard.writeText(address);
-      toast.success('Address copied to clipboard');
+      navigator.clipboard.writeText(address)
+      toast.success('Address copied to clipboard')
     }
-  };
+  }
 
   const getBlockExplorerUrl = () => {
-    if (!address || !chainId) return null;
+    if (!address || !chainId) return null
 
     const explorers: Record<string, string> = {
       '0x1': 'https://etherscan.io',
       '0x89': 'https://polygonscan.com',
       '0xa4b1': 'https://arbiscan.io',
       '0x2105': 'https://basescan.org',
-    };
+    }
 
-    const explorer = explorers[chainId];
-    return explorer ? `${explorer}/address/${address}` : null;
-  };
+    const explorer = explorers[chainId]
+    return explorer ? `${explorer}/address/${address}` : null
+  }
 
   return (
     <Dialog open={isWalletModalOpen} onOpenChange={setWalletModalOpen}>
@@ -110,14 +110,12 @@ export function WalletModal() {
             {isConnected ? 'Your Wallet' : 'Connect Wallet'}
           </DialogTitle>
           <DialogDescription>
-            {isConnected
-              ? 'Manage your wallet connection'
-              : 'Choose a wallet provider to connect'}
+            {isConnected ? 'Manage your wallet connection' : 'Choose a wallet provider to connect'}
           </DialogDescription>
         </DialogHeader>
 
         {error && (
-          <div className="flex items-start gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm">
+          <div className="border-destructive/50 bg-destructive/10 flex items-start gap-2 rounded-lg border p-3 text-sm">
             <AlertCircle className="h-4 w-4 text-destructive" />
             <p className="flex-1 text-destructive">{error}</p>
           </div>
@@ -126,7 +124,7 @@ export function WalletModal() {
         {isConnected && address ? (
           <div className="space-y-4">
             {/* Connected Status */}
-            <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3">
+            <div className="bg-muted/50 flex items-center gap-2 rounded-lg border p-3">
               <CheckCircle2 className="h-4 w-4 text-green-600" />
               <span className="text-sm font-medium">Connected</span>
             </div>
@@ -189,11 +187,7 @@ export function WalletModal() {
             )}
 
             {/* Disconnect Button */}
-            <Button
-              variant="destructive"
-              className="w-full gap-2"
-              onClick={handleDisconnect}
-            >
+            <Button variant="destructive" className="w-full gap-2" onClick={handleDisconnect}>
               <LogOut className="h-4 w-4" />
               Disconnect
             </Button>
@@ -201,8 +195,8 @@ export function WalletModal() {
         ) : (
           <div className="space-y-3">
             {WALLET_PROVIDERS.map((provider) => {
-              const isAvailable = availableProviders.includes(provider.id);
-              const isConnecting = selectedProvider === provider.id;
+              const isAvailable = availableProviders.includes(provider.id)
+              const isConnecting = selectedProvider === provider.id
 
               return (
                 <button
@@ -212,7 +206,7 @@ export function WalletModal() {
                   className={cn(
                     'w-full rounded-lg border p-4 text-left transition-colors',
                     isAvailable
-                      ? 'hover:bg-accent hover:border-primary'
+                      ? 'hover:border-primary hover:bg-accent'
                       : 'cursor-not-allowed opacity-50',
                     isConnecting && 'border-primary bg-accent'
                   )}
@@ -231,7 +225,7 @@ export function WalletModal() {
                     </div>
                   </div>
                 </button>
-              );
+              )
             })}
 
             <p className="text-center text-xs text-muted-foreground">
@@ -241,5 +235,5 @@ export function WalletModal() {
         )}
       </DialogContent>
     </Dialog>
-  );
+  )
 }

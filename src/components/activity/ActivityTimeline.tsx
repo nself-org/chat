@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ActivityTimeline Component
@@ -6,50 +6,39 @@
  * Timeline view for activities with connectors
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { ActivityIcon } from './ActivityIcon';
-import { ActivityAvatar } from './ActivityAvatar';
-import { ActivityDate } from './ActivityDate';
-import {
-  formatActivityText,
-  formatAggregatedActivityText,
-} from '@/lib/activity/activity-formatter';
-import { isAggregatedActivity } from '@/lib/activity/activity-aggregator';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { ActivityIcon } from './ActivityIcon'
+import { ActivityAvatar } from './ActivityAvatar'
+import { ActivityDate } from './ActivityDate'
+import { formatActivityText, formatAggregatedActivityText } from '@/lib/activity/activity-formatter'
+import { isAggregatedActivity } from '@/lib/activity/activity-aggregator'
 import type {
   Activity,
   AggregatedActivity,
   ActivityTimelineProps,
-} from '@/lib/activity/activity-types';
+} from '@/lib/activity/activity-types'
 
 interface TimelineItemProps {
-  activity: Activity | AggregatedActivity;
-  showConnector: boolean;
-  isLast: boolean;
-  onClick?: () => void;
+  activity: Activity | AggregatedActivity
+  showConnector: boolean
+  isLast: boolean
+  onClick?: () => void
 }
 
-function TimelineItem({
-  activity,
-  showConnector,
-  isLast,
-  onClick,
-}: TimelineItemProps) {
-  const isAggregated = isAggregatedActivity(activity);
-  const isRead = activity.isRead;
-  const createdAt = isAggregated ? activity.latestAt : activity.createdAt;
+function TimelineItem({ activity, showConnector, isLast, onClick }: TimelineItemProps) {
+  const isAggregated = isAggregatedActivity(activity)
+  const isRead = activity.isRead
+  const createdAt = isAggregated ? activity.latestAt : activity.createdAt
   const activityText = isAggregated
     ? formatAggregatedActivityText(activity)
-    : formatActivityText(activity);
+    : formatActivityText(activity)
 
   return (
     <div className="relative flex gap-4">
       {/* Timeline line */}
       {showConnector && !isLast && (
-        <div
-          className="absolute left-4 top-10 bottom-0 w-0.5 bg-border"
-          aria-hidden="true"
-        />
+        <div className="absolute bottom-0 left-4 top-10 w-0.5 bg-border" aria-hidden="true" />
       )}
 
       {/* Icon */}
@@ -59,10 +48,7 @@ function TimelineItem({
 
       {/* Content */}
       <div
-        className={cn(
-          'flex-1 min-w-0 pb-6',
-          onClick && 'cursor-pointer'
-        )}
+        className={cn('min-w-0 flex-1 pb-6', onClick && 'cursor-pointer')}
         onClick={onClick}
         role={onClick ? 'button' : undefined}
         tabIndex={onClick ? 0 : undefined}
@@ -70,8 +56,8 @@ function TimelineItem({
           onClick
             ? (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  onClick();
+                  e.preventDefault()
+                  onClick()
                 }
               }
             : undefined
@@ -79,7 +65,7 @@ function TimelineItem({
       >
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2 flex-wrap">
+          <div className="flex flex-wrap items-center gap-2">
             {/* Avatar */}
             {isAggregated ? (
               <ActivityAvatar
@@ -92,14 +78,7 @@ function TimelineItem({
             )}
 
             {/* Text */}
-            <p
-              className={cn(
-                'text-sm',
-                !isRead && 'font-medium'
-              )}
-            >
-              {activityText}
-            </p>
+            <p className={cn('text-sm', !isRead && 'font-medium')}>{activityText}</p>
           </div>
 
           {/* Timestamp */}
@@ -113,26 +92,23 @@ function TimelineItem({
           (activity.type === 'mention' ||
             activity.type === 'reply' ||
             activity.type === 'thread_reply') && (
-            <div className="mt-2 ml-8 p-2 rounded-md bg-muted/50 text-sm text-muted-foreground line-clamp-2">
+            <div className="bg-muted/50 ml-8 mt-2 line-clamp-2 rounded-md p-2 text-sm text-muted-foreground">
               {activity.message.contentPreview || activity.message.content}
             </div>
           )}
 
         {/* Aggregated count */}
         {isAggregated && activity.count > 1 && (
-          <p className="mt-1 ml-8 text-xs text-muted-foreground">
-            and {activity.count - 1} more{' '}
-            {activity.count - 1 === 1 ? 'activity' : 'activities'}
+          <p className="ml-8 mt-1 text-xs text-muted-foreground">
+            and {activity.count - 1} more {activity.count - 1 === 1 ? 'activity' : 'activities'}
           </p>
         )}
 
         {/* Unread indicator */}
-        {!isRead && (
-          <div className="absolute left-0 top-0 w-1 h-8 bg-primary rounded-r-full" />
-        )}
+        {!isRead && <div className="absolute left-0 top-0 h-8 w-1 rounded-r-full bg-primary" />}
       </div>
     </div>
-  );
+  )
 }
 
 export function ActivityTimeline({
@@ -142,7 +118,7 @@ export function ActivityTimeline({
   onActivityClick,
 }: ActivityTimelineProps) {
   if (activities.length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -157,7 +133,7 @@ export function ActivityTimeline({
         />
       ))}
     </div>
-  );
+  )
 }
 
-export default ActivityTimeline;
+export default ActivityTimeline

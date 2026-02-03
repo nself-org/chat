@@ -316,7 +316,6 @@ afterSign: scripts/notarize.js
 afterPack: scripts/after-pack.js
 
 # Compression and optimization
-compression: maximum
 removePackageScripts: true
 removePackageKeywords: true
 includePdb: false

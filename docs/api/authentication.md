@@ -71,7 +71,7 @@ curl -X POST https://api.nchat.example.com/api/auth/signup \
 const { user, token } = await client.auth.signUp({
   email: 'user@example.com',
   password: 'SecurePassword123!',
-  displayName: 'John Doe'
+  displayName: 'John Doe',
 })
 
 client.setToken(token)
@@ -97,7 +97,9 @@ Authenticate an existing user.
 ```json
 {
   "data": {
-    "user": { /* user object */ },
+    "user": {
+      /* user object */
+    },
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
     "refreshToken": "refresh-token-here",
     "expiresAt": "2024-01-02T12:00:00Z"
@@ -111,7 +113,7 @@ Authenticate an existing user.
 ```typescript
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'SecurePassword123!'
+  password: 'SecurePassword123!',
 })
 
 client.setToken(token)
@@ -364,7 +366,7 @@ Authorization: Bearer <token>
   "data": {
     "backupCodes": [
       "ABCD-1234-EFGH",
-      "IJKL-5678-MNOP",
+      "IJKL-5678-MNOP"
       // ... 8 more codes
     ]
   },
@@ -400,7 +402,9 @@ After signing in with email/password, if 2FA is enabled:
 ```json
 {
   "data": {
-    "user": { /* user object */ },
+    "user": {
+      /* user object */
+    },
     "token": "access-token",
     "refreshToken": "refresh-token"
   },
@@ -485,7 +489,9 @@ After user authorizes, they're redirected back with a code:
 ```json
 {
   "data": {
-    "user": { /* user object */ },
+    "user": {
+      /* user object */
+    },
     "token": "access-token",
     "refreshToken": "refresh-token",
     "isNewUser": false
@@ -596,16 +602,16 @@ Authorization: Bearer <token>
 
 Available scopes for API keys:
 
-| Scope | Description |
-|-------|-------------|
-| `read:messages` | Read messages |
-| `write:messages` | Send and edit messages |
-| `delete:messages` | Delete messages |
-| `read:channels` | List and view channels |
-| `write:channels` | Create and edit channels |
-| `read:users` | View user profiles |
-| `write:users` | Update user profiles |
-| `admin:*` | Full administrative access |
+| Scope             | Description                |
+| ----------------- | -------------------------- |
+| `read:messages`   | Read messages              |
+| `write:messages`  | Send and edit messages     |
+| `delete:messages` | Delete messages            |
+| `read:channels`   | List and view channels     |
+| `write:channels`  | Create and edit channels   |
+| `read:users`      | View user profiles         |
+| `write:users`     | Update user profiles       |
+| `admin:*`         | Full administrative access |
 
 ## Error Responses
 

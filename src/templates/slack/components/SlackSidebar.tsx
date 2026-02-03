@@ -24,7 +24,7 @@ import {
   Bookmark,
   MoreHorizontal,
   Search,
-  Edit
+  Edit,
 } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
@@ -81,14 +81,14 @@ function SidebarSection({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex items-center w-full px-4 py-1 text-sm font-medium',
-          'text-white/70 hover:text-white transition-colors'
+          'flex w-full items-center px-4 py-1 text-sm font-medium',
+          'text-white/70 transition-colors hover:text-white'
         )}
       >
         {isOpen ? (
-          <ChevronDown className="w-3 h-3 mr-1" />
+          <ChevronDown className="mr-1 h-3 w-3" />
         ) : (
-          <ChevronRight className="w-3 h-3 mr-1" />
+          <ChevronRight className="mr-1 h-3 w-3" />
         )}
         <span>{title}</span>
         {onAdd && (
@@ -97,9 +97,9 @@ function SidebarSection({
               e.stopPropagation()
               onAdd()
             }}
-            className="ml-auto p-1 rounded hover:bg-white/10"
+            className="ml-auto rounded p-1 hover:bg-white/10"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="h-3.5 w-3.5" />
           </button>
         )}
       </button>
@@ -125,7 +125,7 @@ function PresenceIndicator({ status }: { status: SlackDMItem['status'] }) {
 
   return (
     <span
-      className="w-2.5 h-2.5 rounded-full flex-shrink-0"
+      className="h-2.5 w-2.5 flex-shrink-0 rounded-full"
       style={{
         backgroundColor: colors[status || 'offline'],
         border: `2px solid ${borderColors[status || 'offline']}`,
@@ -150,46 +150,41 @@ export function SlackSidebar({
 }: SlackSidebarProps) {
   return (
     <div
-      className={cn(
-        'flex flex-col h-full text-white',
-        className
-      )}
+      className={cn('flex h-full flex-col text-white', className)}
       style={{ backgroundColor: slackColors.aubergine }}
     >
       {/* Workspace Header */}
       <div
-        className="flex items-center justify-between px-4 border-b"
+        className="flex items-center justify-between border-b px-4"
         style={{
           height: 49,
           borderColor: 'rgba(255, 255, 255, 0.1)',
         }}
       >
-        <button className="flex items-center gap-2 hover:bg-white/10 rounded p-1 -ml-1">
+        <button className="-ml-1 flex items-center gap-2 rounded p-1 hover:bg-white/10">
           {workspaceIcon || (
             <div
-              className="w-6 h-6 rounded flex items-center justify-center text-sm font-bold"
+              className="flex h-6 w-6 items-center justify-center rounded text-sm font-bold"
               style={{ backgroundColor: slackColors.aubergineLight }}
             >
               {workspaceName[0]?.toUpperCase()}
             </div>
           )}
-          <span className="font-bold text-lg truncate max-w-[160px]">
-            {workspaceName}
-          </span>
-          <ChevronDown className="w-4 h-4 opacity-70" />
+          <span className="max-w-[160px] truncate text-lg font-bold">{workspaceName}</span>
+          <ChevronDown className="h-4 w-4 opacity-70" />
         </button>
-        <button className="p-1.5 rounded hover:bg-white/10">
-          <Edit className="w-4 h-4" />
+        <button className="rounded p-1.5 hover:bg-white/10">
+          <Edit className="h-4 w-4" />
         </button>
       </div>
 
       {/* Navigation */}
-      <div className="px-2 py-3 border-b" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
-        <NavItem icon={<MessageSquare className="w-4 h-4" />} label="Threads" />
-        <NavItem icon={<Home className="w-4 h-4" />} label="All DMs" />
-        <NavItem icon={<Bell className="w-4 h-4" />} label="Activity" badge={3} />
-        <NavItem icon={<Bookmark className="w-4 h-4" />} label="Later" />
-        <NavItem icon={<MoreHorizontal className="w-4 h-4" />} label="More" />
+      <div className="border-b px-2 py-3" style={{ borderColor: 'rgba(255, 255, 255, 0.1)' }}>
+        <NavItem icon={<MessageSquare className="h-4 w-4" />} label="Threads" />
+        <NavItem icon={<Home className="h-4 w-4" />} label="All DMs" />
+        <NavItem icon={<Bell className="h-4 w-4" />} label="Activity" badge={3} />
+        <NavItem icon={<Bookmark className="h-4 w-4" />} label="Later" />
+        <NavItem icon={<MoreHorizontal className="h-4 w-4" />} label="More" />
       </div>
 
       {/* Channels & DMs */}
@@ -222,27 +217,19 @@ export function SlackSidebar({
   )
 }
 
-function NavItem({
-  icon,
-  label,
-  badge,
-}: {
-  icon: ReactNode
-  label: string
-  badge?: number
-}) {
+function NavItem({ icon, label, badge }: { icon: ReactNode; label: string; badge?: number }) {
   return (
     <button
       className={cn(
-        'flex items-center gap-2 w-full px-3 py-1 rounded',
-        'text-white/90 hover:bg-white/10 transition-colors'
+        'flex w-full items-center gap-2 rounded px-3 py-1',
+        'text-white/90 transition-colors hover:bg-white/10'
       )}
     >
       {icon}
       <span className="text-sm">{label}</span>
       {badge && badge > 0 && (
         <span
-          className="ml-auto text-xs font-bold px-1.5 rounded"
+          className="ml-auto rounded px-1.5 text-xs font-bold"
           style={{ backgroundColor: slackColors.red }}
         >
           {badge}
@@ -267,24 +254,24 @@ function ChannelItem({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-2 w-full px-3 py-1 rounded text-sm',
+        'flex w-full items-center gap-2 rounded px-3 py-1 text-sm',
         'transition-colors',
         isActive
           ? 'bg-[#1264A3] text-white'
           : hasUnread
-          ? 'text-white font-medium hover:bg-white/10'
-          : 'text-white/70 hover:bg-white/10 hover:text-white'
+            ? 'font-medium text-white hover:bg-white/10'
+            : 'text-white/70 hover:bg-white/10 hover:text-white'
       )}
     >
       {channel.isPrivate ? (
-        <Lock className="w-4 h-4 flex-shrink-0" />
+        <Lock className="h-4 w-4 flex-shrink-0" />
       ) : (
-        <Hash className="w-4 h-4 flex-shrink-0" />
+        <Hash className="h-4 w-4 flex-shrink-0" />
       )}
       <span className="truncate">{channel.name}</span>
       {(channel.mentionCount ?? 0) > 0 && (
         <span
-          className="ml-auto text-xs font-bold px-1.5 rounded"
+          className="ml-auto rounded px-1.5 text-xs font-bold"
           style={{ backgroundColor: slackColors.red }}
         >
           {channel.mentionCount}
@@ -309,20 +296,18 @@ function DMItem({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-2 w-full px-3 py-1 rounded text-sm',
+        'flex w-full items-center gap-2 rounded px-3 py-1 text-sm',
         'transition-colors',
         isActive
           ? 'bg-[#1264A3] text-white'
           : hasUnread
-          ? 'text-white font-medium hover:bg-white/10'
-          : 'text-white/70 hover:bg-white/10 hover:text-white'
+            ? 'font-medium text-white hover:bg-white/10'
+            : 'text-white/70 hover:bg-white/10 hover:text-white'
       )}
     >
       <PresenceIndicator status={dm.status} />
       <span className="truncate">{dm.name}</span>
-      {hasUnread && (
-        <span className="ml-auto w-2 h-2 rounded-full bg-white" />
-      )}
+      {hasUnread && <span className="ml-auto h-2 w-2 rounded-full bg-white" />}
     </button>
   )
 }

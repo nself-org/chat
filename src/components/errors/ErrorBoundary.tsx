@@ -14,6 +14,8 @@ import { handleErrorBoundaryError } from '@/lib/errors/error-handler'
 import { AppError, ErrorSeverity } from '@/lib/errors/error-types'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Error Boundary Props
 // ============================================================================
@@ -46,10 +48,7 @@ interface ErrorBoundaryState {
 // Error Boundary Component
 // ============================================================================
 
-export class ErrorBoundary extends React.Component<
-  ErrorBoundaryProps,
-  ErrorBoundaryState
-> {
+export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
   constructor(props: ErrorBoundaryProps) {
     super(props)
     this.state = {
@@ -118,11 +117,7 @@ export class ErrorBoundary extends React.Component<
 // Default Error Fallback Components
 // ============================================================================
 
-export function DefaultErrorFallback({
-  error,
-  resetError,
-  level,
-}: ErrorFallbackProps) {
+export function DefaultErrorFallback({ error, resetError, level }: ErrorFallbackProps) {
   // Different layouts based on error level
   switch (level) {
     case 'app':
@@ -151,16 +146,10 @@ function AppLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'level'>)
         {/* Icon */}
         <div className="mb-6 flex justify-center">
           <div
-            className={cn(
-              'rounded-full p-4',
-              isCritical ? 'bg-destructive/10' : 'bg-warning/10'
-            )}
+            className={cn('rounded-full p-4', isCritical ? 'bg-destructive/10' : 'bg-warning/10')}
           >
             <AlertTriangle
-              className={cn(
-                'h-12 w-12',
-                isCritical ? 'text-destructive' : 'text-warning'
-              )}
+              className={cn('h-12 w-12', isCritical ? 'text-destructive' : 'text-warning')}
             />
           </div>
         </div>
@@ -171,16 +160,12 @@ function AppLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'level'>)
         </h1>
 
         {/* Description */}
-        <p className="mb-6 text-muted-foreground">
-          {error.userMessage}
-        </p>
+        <p className="mb-6 text-muted-foreground">{error.userMessage}</p>
 
         {/* Error details (dev mode) */}
         {process.env.NODE_ENV === 'development' && (
           <details className="mb-6 rounded-lg border border-border bg-muted p-4 text-left">
-            <summary className="cursor-pointer font-medium text-foreground">
-              Error Details
-            </summary>
+            <summary className="cursor-pointer font-medium text-foreground">Error Details</summary>
             <div className="mt-2 space-y-2 text-sm text-muted-foreground">
               <p>
                 <strong>Message:</strong> {error.message}
@@ -212,21 +197,13 @@ function AppLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'level'>)
             Try Again
           </Button>
 
-          <Button
-            onClick={() => (window.location.href = '/')}
-            variant="outline"
-            className="gap-2"
-          >
+          <Button onClick={() => (window.location.href = '/')} variant="outline" className="gap-2">
             <Home className="h-4 w-4" />
             Go Home
           </Button>
 
           {process.env.NODE_ENV === 'development' && (
-            <Button
-              onClick={() => console.error('Error:', error)}
-              variant="ghost"
-              className="gap-2"
-            >
+            <Button onClick={() => logger.error('Error:', error)} variant="ghost" className="gap-2">
               <Bug className="h-4 w-4" />
               Log to Console
             </Button>
@@ -261,9 +238,7 @@ function PageLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'level'>
           <AlertTriangle className="h-10 w-10 text-destructive" />
         </div>
 
-        <h2 className="mb-2 text-xl font-semibold text-foreground">
-          Page Error
-        </h2>
+        <h2 className="mb-2 text-xl font-semibold text-foreground">Page Error</h2>
 
         <p className="mb-4 text-muted-foreground">{error.userMessage}</p>
 
@@ -273,11 +248,7 @@ function PageLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'level'>
             Retry
           </Button>
 
-          <Button
-            onClick={() => window.history.back()}
-            variant="outline"
-            size="sm"
-          >
+          <Button onClick={() => window.history.back()} variant="outline" size="sm">
             Go Back
           </Button>
         </div>
@@ -292,17 +263,13 @@ function PageLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'level'>
 
 function SectionLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'level'>) {
   return (
-    <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-6">
+    <div className="border-destructive/20 bg-destructive/5 rounded-lg border p-6">
       <div className="flex items-start gap-3">
         <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-destructive" />
 
         <div className="flex-1">
-          <h3 className="mb-1 font-medium text-foreground">
-            Error Loading Section
-          </h3>
-          <p className="mb-3 text-sm text-muted-foreground">
-            {error.userMessage}
-          </p>
+          <h3 className="mb-1 font-medium text-foreground">Error Loading Section</h3>
+          <p className="mb-3 text-sm text-muted-foreground">{error.userMessage}</p>
 
           <Button onClick={resetError} variant="outline" size="sm" className="gap-2">
             <RefreshCw className="h-3 w-3" />
@@ -320,16 +287,11 @@ function SectionLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'leve
 
 function ComponentLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'level'>) {
   return (
-    <div className="rounded-md border border-destructive/20 bg-destructive/5 p-4">
+    <div className="border-destructive/20 bg-destructive/5 rounded-md border p-4">
       <div className="flex items-center gap-2">
         <AlertTriangle className="h-4 w-4 flex-shrink-0 text-destructive" />
         <p className="flex-1 text-sm text-foreground">{error.userMessage}</p>
-        <Button
-          onClick={resetError}
-          variant="ghost"
-          size="sm"
-          className="h-7 gap-1 text-xs"
-        >
+        <Button onClick={resetError} variant="ghost" size="sm" className="h-7 gap-1 text-xs">
           <RefreshCw className="h-3 w-3" />
           Retry
         </Button>
@@ -342,7 +304,11 @@ function ComponentLevelError({ error, resetError }: Omit<ErrorFallbackProps, 'le
 // Convenience Wrappers
 // ============================================================================
 
-export function AppErrorBoundary({ children, onError, onReset }: Omit<ErrorBoundaryProps, 'level'>) {
+export function AppErrorBoundary({
+  children,
+  onError,
+  onReset,
+}: Omit<ErrorBoundaryProps, 'level'>) {
   return (
     <ErrorBoundary level="app" onError={onError} onReset={onReset}>
       {children}
@@ -350,7 +316,11 @@ export function AppErrorBoundary({ children, onError, onReset }: Omit<ErrorBound
   )
 }
 
-export function PageErrorBoundary({ children, onError, onReset }: Omit<ErrorBoundaryProps, 'level'>) {
+export function PageErrorBoundary({
+  children,
+  onError,
+  onReset,
+}: Omit<ErrorBoundaryProps, 'level'>) {
   return (
     <ErrorBoundary level="page" onError={onError} onReset={onReset}>
       {children}
@@ -358,7 +328,11 @@ export function PageErrorBoundary({ children, onError, onReset }: Omit<ErrorBoun
   )
 }
 
-export function SectionErrorBoundary({ children, onError, onReset }: Omit<ErrorBoundaryProps, 'level'>) {
+export function SectionErrorBoundary({
+  children,
+  onError,
+  onReset,
+}: Omit<ErrorBoundaryProps, 'level'>) {
   return (
     <ErrorBoundary level="section" onError={onError} onReset={onReset}>
       {children}
@@ -366,7 +340,11 @@ export function SectionErrorBoundary({ children, onError, onReset }: Omit<ErrorB
   )
 }
 
-export function ComponentErrorBoundary({ children, onError, onReset }: Omit<ErrorBoundaryProps, 'level'>) {
+export function ComponentErrorBoundary({
+  children,
+  onError,
+  onReset,
+}: Omit<ErrorBoundaryProps, 'level'>) {
   return (
     <ErrorBoundary level="component" onError={onError} onReset={onReset}>
       {children}

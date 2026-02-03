@@ -43,12 +43,12 @@ cd terraform && terraform apply
 
 ## Deployment Options
 
-| Option | Best For | Complexity | Scale |
-|--------|----------|------------|-------|
-| **Docker Compose** | Local dev, small teams | Low | 1-10 users |
-| **Kubernetes** | Production, enterprise | Medium | 10-10,000+ users |
-| **Terraform + K8s** | Full infrastructure | High | 100-100,000+ users |
-| **Managed Platforms** | Quick deployment | Low | Variable |
+| Option                | Best For               | Complexity | Scale              |
+| --------------------- | ---------------------- | ---------- | ------------------ |
+| **Docker Compose**    | Local dev, small teams | Low        | 1-10 users         |
+| **Kubernetes**        | Production, enterprise | Medium     | 10-10,000+ users   |
+| **Terraform + K8s**   | Full infrastructure    | High       | 100-100,000+ users |
+| **Managed Platforms** | Quick deployment       | Low        | Variable           |
 
 ## Directory Structure
 
@@ -106,6 +106,7 @@ deploy/
 ### 1. Development Environment
 
 **Requirements:**
+
 - Docker Desktop or Docker Engine
 - Docker Compose v2.0+
 - 8GB RAM minimum
@@ -124,6 +125,7 @@ curl http://localhost:3000/api/health
 ```
 
 **Services:**
+
 - Application: http://localhost:3000
 - Hasura Console: http://localhost:8080
 - MinIO Console: http://localhost:9001
@@ -132,6 +134,7 @@ curl http://localhost:3000/api/health
 ### 2. Staging Environment
 
 **Requirements:**
+
 - Kubernetes cluster (1.24+)
 - kubectl configured
 - Helm 3.0+
@@ -163,6 +166,7 @@ kubectl logs -f deployment/nself-chat -n nself-chat
 ### 3. Production Environment
 
 **Requirements:**
+
 - Kubernetes cluster (1.24+) with 3+ nodes
 - kubectl configured
 - Helm 3.0+
@@ -229,11 +233,13 @@ helm install nself-chat ./helm/nself-chat \
 ### Method 1: Docker Compose (Development)
 
 **Pros:**
+
 - Fast setup
 - Easy debugging
 - Local development
 
 **Cons:**
+
 - Not scalable
 - Single-host only
 - No high availability
@@ -241,17 +247,20 @@ helm install nself-chat ./helm/nself-chat \
 **Steps:**
 
 1. **Prepare environment:**
+
    ```bash
    cp docker/.env.development .env.local
    # Edit .env.local with your settings
    ```
 
 2. **Start services:**
+
    ```bash
    docker compose up -d
    ```
 
 3. **Initialize database:**
+
    ```bash
    docker compose exec nchat pnpm db:migrate
    docker compose exec nchat pnpm db:seed
@@ -264,12 +273,14 @@ helm install nself-chat ./helm/nself-chat \
 ### Method 2: Kubernetes (Staging/Production)
 
 **Pros:**
+
 - Highly scalable
 - High availability
 - Auto-healing
 - Rolling updates
 
 **Cons:**
+
 - Complex setup
 - Requires K8s knowledge
 - Higher resource needs
@@ -277,6 +288,7 @@ helm install nself-chat ./helm/nself-chat \
 **Steps:**
 
 1. **Prepare cluster:**
+
    ```bash
    # Create namespace
    kubectl create namespace nself-chat
@@ -290,6 +302,7 @@ helm install nself-chat ./helm/nself-chat \
    ```
 
 2. **Configure secrets:**
+
    ```bash
    # Create secrets from file
    kubectl create secret generic nself-chat-secrets \
@@ -298,6 +311,7 @@ helm install nself-chat ./helm/nself-chat \
    ```
 
 3. **Deploy database:**
+
    ```bash
    kubectl apply -f k8s/postgres-statefulset.yaml
    kubectl apply -f k8s/redis-deployment.yaml
@@ -305,6 +319,7 @@ helm install nself-chat ./helm/nself-chat \
    ```
 
 4. **Deploy application:**
+
    ```bash
    kubectl apply -f k8s/deployment.yaml
    kubectl apply -f k8s/service.yaml
@@ -313,6 +328,7 @@ helm install nself-chat ./helm/nself-chat \
    ```
 
 5. **Deploy monitoring:**
+
    ```bash
    kubectl apply -f k8s/monitoring/
    ```
@@ -326,18 +342,21 @@ helm install nself-chat ./helm/nself-chat \
 ### Method 3: Helm Charts
 
 **Pros:**
+
 - Templated configurations
 - Easy upgrades
 - Version management
 - Reusable
 
 **Cons:**
+
 - Learning curve
 - Template complexity
 
 **Steps:**
 
 1. **Install chart:**
+
    ```bash
    helm install nself-chat ./helm/nself-chat \
      -f helm/nself-chat/values-production.yaml \
@@ -346,6 +365,7 @@ helm install nself-chat ./helm/nself-chat \
    ```
 
 2. **Upgrade release:**
+
    ```bash
    helm upgrade nself-chat ./helm/nself-chat \
      -f helm/nself-chat/values-production.yaml \
@@ -360,12 +380,14 @@ helm install nself-chat ./helm/nself-chat \
 ### Method 4: Terraform + Kubernetes
 
 **Pros:**
+
 - Full infrastructure automation
 - Reproducible environments
 - State management
 - Multi-cloud support
 
 **Cons:**
+
 - Highest complexity
 - Requires Terraform knowledge
 - State management needed
@@ -373,12 +395,14 @@ helm install nself-chat ./helm/nself-chat \
 **Steps:**
 
 1. **Configure backend:**
+
    ```bash
    # Edit terraform/main.tf backend configuration
    # Set up S3 bucket and DynamoDB table for state
    ```
 
 2. **Set variables:**
+
    ```bash
    # Create terraform/terraform.tfvars
    cat > terraform/terraform.tfvars <<EOF
@@ -390,6 +414,7 @@ helm install nself-chat ./helm/nself-chat \
    ```
 
 3. **Deploy infrastructure:**
+
    ```bash
    cd terraform
    terraform init
@@ -398,6 +423,7 @@ helm install nself-chat ./helm/nself-chat \
    ```
 
 4. **Configure kubectl:**
+
    ```bash
    aws eks update-kubeconfig --name nself-chat-prod --region us-east-1
    ```
@@ -416,6 +442,7 @@ helm install nself-chat ./helm/nself-chat \
 ### Prometheus Metrics
 
 Access Prometheus:
+
 ```bash
 kubectl port-forward svc/prometheus 9090:9090 -n nself-chat
 # Open http://localhost:9090
@@ -424,6 +451,7 @@ kubectl port-forward svc/prometheus 9090:9090 -n nself-chat
 ### Grafana Dashboards
 
 Access Grafana:
+
 ```bash
 kubectl port-forward svc/grafana 3000:3000 -n nself-chat
 # Open http://localhost:3000
@@ -431,6 +459,7 @@ kubectl port-forward svc/grafana 3000:3000 -n nself-chat
 ```
 
 Pre-configured dashboards:
+
 - Application Metrics
 - Database Performance
 - Redis Metrics
@@ -441,6 +470,7 @@ Pre-configured dashboards:
 Configure alerts in `k8s/monitoring/alertmanager-config.yaml`
 
 Alerts configured:
+
 - High error rate
 - High response time
 - Application down
@@ -531,6 +561,7 @@ kubectl get hpa -n nself-chat
 ### Secrets Management
 
 **DO NOT** commit secrets to Git. Use:
+
 - Kubernetes Secrets
 - AWS Secrets Manager
 - HashiCorp Vault
@@ -539,6 +570,7 @@ kubectl get hpa -n nself-chat
 ### Network Policies
 
 Apply network policies to restrict pod communication:
+
 ```bash
 kubectl apply -f k8s/networkpolicy.yaml
 ```
@@ -546,12 +578,14 @@ kubectl apply -f k8s/networkpolicy.yaml
 ### SSL/TLS
 
 Ensure all external traffic uses HTTPS:
+
 - Configure cert-manager for Let's Encrypt
 - Or provide your own certificates
 
 ### RBAC
 
 Review and apply least-privilege RBAC:
+
 ```bash
 kubectl apply -f k8s/rbac.yaml
 ```
@@ -561,16 +595,19 @@ kubectl apply -f k8s/rbac.yaml
 ### Database Backups
 
 Automated backups configured via:
+
 - Kubernetes CronJob (k8s/postgres-statefulset.yaml)
 - RDS automated backups (Terraform)
 
 Manual backup:
+
 ```bash
 kubectl exec -it postgres-0 -n nself-chat -- \
   pg_dump -U nchat_user nchat > backup.sql
 ```
 
 Restore:
+
 ```bash
 kubectl exec -i postgres-0 -n nself-chat -- \
   psql -U nchat_user nchat < backup.sql
@@ -588,10 +625,12 @@ kubectl exec -i postgres-0 -n nself-chat -- \
 ### Horizontal Scaling
 
 Automatically handled by HPA based on:
+
 - CPU usage > 70%
 - Memory usage > 80%
 
 Manual scaling:
+
 ```bash
 kubectl scale deployment/nself-chat --replicas=10 -n nself-chat
 ```
@@ -603,6 +642,7 @@ Update resource requests/limits in deployment.yaml or Helm values.
 ### Database Scaling
 
 For RDS:
+
 ```bash
 terraform apply -var="db_instance_class=db.r5.2xlarge"
 ```
@@ -629,6 +669,7 @@ Use `docker compose` with local resources.
 ## Support
 
 For deployment issues:
+
 - Check logs: `kubectl logs -f deployment/nself-chat -n nself-chat`
 - Review events: `kubectl get events -n nself-chat`
 - Consult runbook: `RUNBOOK.md`

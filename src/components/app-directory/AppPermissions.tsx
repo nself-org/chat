@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Eye,
   MessageSquare,
@@ -14,16 +14,11 @@ import {
   Shield,
   AlertTriangle,
   CheckCircle,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   getPermissionDefinition,
   getPermissionGroup,
@@ -32,15 +27,15 @@ import {
   getPermissionsSummary,
   PERMISSION_GROUPS,
   type PermissionGroup,
-} from '@/lib/app-directory/app-permissions';
-import type { AppPermission, PermissionScope } from '@/lib/app-directory/app-types';
+} from '@/lib/app-directory/app-permissions'
+import type { AppPermission, PermissionScope } from '@/lib/app-directory/app-types'
 
 interface AppPermissionsProps {
-  permissions: AppPermission[];
-  interactive?: boolean;
-  selectedPermissions?: PermissionScope[];
-  onPermissionToggle?: (scope: PermissionScope, selected: boolean) => void;
-  className?: string;
+  permissions: AppPermission[]
+  interactive?: boolean
+  selectedPermissions?: PermissionScope[]
+  onPermissionToggle?: (scope: PermissionScope, selected: boolean) => void
+  className?: string
 }
 
 // Icon mapping for permission groups
@@ -54,7 +49,7 @@ const GROUP_ICONS: Record<string, React.ComponentType<{ className?: string }>> =
   commands: Terminal,
   identity: User,
   admin: Settings,
-};
+}
 
 export function AppPermissions({
   permissions,
@@ -63,17 +58,17 @@ export function AppPermissions({
   onPermissionToggle,
   className,
 }: AppPermissionsProps) {
-  const groupedPermissions = groupPermissions(permissions);
-  const summary = getPermissionsSummary(permissions);
+  const groupedPermissions = groupPermissions(permissions)
+  const summary = getPermissionsSummary(permissions)
 
   // Convert Map to array for rendering
-  const groups = Array.from(groupedPermissions.entries());
+  const groups = Array.from(groupedPermissions.entries())
 
   return (
     <div className={cn('space-y-4', className)}>
       {/* Summary */}
-      <div className="flex items-center gap-4 p-3 bg-muted rounded-lg">
-        <Shield className="w-5 h-5 text-muted-foreground" />
+      <div className="flex items-center gap-4 rounded-lg bg-muted p-3">
+        <Shield className="h-5 w-5 text-muted-foreground" />
         <div className="flex-1">
           <p className="text-sm font-medium">
             {summary.total} permission{summary.total !== 1 ? 's' : ''} requested
@@ -87,7 +82,7 @@ export function AppPermissions({
             <Tooltip>
               <TooltipTrigger>
                 <Badge variant="destructive" className="gap-1">
-                  <AlertTriangle className="w-3 h-3" />
+                  <AlertTriangle className="h-3 w-3" />
                   {summary.highRisk} sensitive
                 </Badge>
               </TooltipTrigger>
@@ -116,24 +111,24 @@ export function AppPermissions({
       {/* Permission Legend */}
       <div className="flex items-center gap-4 pt-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-destructive" />
+          <div className="h-2 w-2 rounded-full bg-destructive" />
           <span>Required</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 rounded-full bg-muted-foreground" />
+          <div className="h-2 w-2 rounded-full bg-muted-foreground" />
           <span>Optional</span>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 interface PermissionGroupCardProps {
-  group: PermissionGroup;
-  permissions: AppPermission[];
-  interactive: boolean;
-  selectedPermissions: PermissionScope[];
-  onPermissionToggle?: (scope: PermissionScope, selected: boolean) => void;
+  group: PermissionGroup
+  permissions: AppPermission[]
+  interactive: boolean
+  selectedPermissions: PermissionScope[]
+  onPermissionToggle?: (scope: PermissionScope, selected: boolean) => void
 }
 
 function PermissionGroupCard({
@@ -143,21 +138,21 @@ function PermissionGroupCard({
   selectedPermissions,
   onPermissionToggle,
 }: PermissionGroupCardProps) {
-  const Icon = GROUP_ICONS[group.id] || Shield;
+  const Icon = GROUP_ICONS[group.id] || Shield
 
   const riskColors = {
     low: 'text-green-500 bg-green-500/10',
     medium: 'text-yellow-500 bg-yellow-500/10',
     high: 'text-red-500 bg-red-500/10',
-  };
+  }
 
   return (
     <Card>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className={cn('p-2 rounded-lg', riskColors[group.riskLevel])}>
-              <Icon className="w-4 h-4" />
+            <div className={cn('rounded-lg p-2', riskColors[group.riskLevel])}>
+              <Icon className="h-4 w-4" />
             </div>
             <div>
               <CardTitle className="text-sm font-medium">{group.name}</CardTitle>
@@ -185,70 +180,63 @@ function PermissionGroupCard({
               permission={permission}
               interactive={interactive}
               isSelected={selectedPermissions.includes(permission.scope)}
-              onToggle={(selected) =>
-                onPermissionToggle?.(permission.scope, selected)
-              }
+              onToggle={(selected) => onPermissionToggle?.(permission.scope, selected)}
             />
           ))}
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 interface PermissionItemProps {
-  permission: AppPermission;
-  interactive: boolean;
-  isSelected: boolean;
-  onToggle: (selected: boolean) => void;
+  permission: AppPermission
+  interactive: boolean
+  isSelected: boolean
+  onToggle: (selected: boolean) => void
 }
 
-function PermissionItem({
-  permission,
-  interactive,
-  isSelected,
-  onToggle,
-}: PermissionItemProps) {
-  const definition = getPermissionDefinition(permission.scope);
-  const isRequired = permission.level === 'required';
-  const riskLevel = getPermissionRiskLevel(permission.scope);
+function PermissionItem({ permission, interactive, isSelected, onToggle }: PermissionItemProps) {
+  const definition = getPermissionDefinition(permission.scope)
+  const isRequired = permission.level === 'required'
+  const riskLevel = getPermissionRiskLevel(permission.scope)
 
   const content = (
     <div
       className={cn(
-        'flex items-start gap-3 p-2 rounded-lg transition-colors',
+        'flex items-start gap-3 rounded-lg p-2 transition-colors',
         interactive && !isRequired && 'cursor-pointer hover:bg-muted',
         interactive && isSelected && 'bg-primary/5',
         !interactive && 'bg-muted/50'
       )}
       onClick={() => {
         if (interactive && !isRequired) {
-          onToggle(!isSelected);
+          onToggle(!isSelected)
         }
       }}
     >
       {interactive && (
         <div className="pt-0.5">
           {isRequired ? (
-            <div className="w-4 h-4 rounded border border-primary bg-primary flex items-center justify-center">
-              <CheckCircle className="w-3 h-3 text-primary-foreground" />
+            <div className="flex h-4 w-4 items-center justify-center rounded border border-primary bg-primary">
+              <CheckCircle className="text-primary-foreground h-3 w-3" />
             </div>
           ) : (
             <input
               type="checkbox"
               checked={isSelected}
               onChange={(e) => onToggle(e.target.checked)}
-              className="w-4 h-4 rounded border-input"
+              className="h-4 w-4 rounded border-input"
               onClick={(e) => e.stopPropagation()}
             />
           )}
         </div>
       )}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">{definition.label}</span>
           {isRequired && (
-            <Badge variant="secondary" className="text-xs px-1.5">
+            <Badge variant="secondary" className="px-1.5 text-xs">
               Required
             </Badge>
           )}
@@ -256,7 +244,7 @@ function PermissionItem({
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger>
-                  <AlertTriangle className="w-3 h-3 text-destructive" />
+                  <AlertTriangle className="h-3 w-3 text-destructive" />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>This is a sensitive permission</p>
@@ -267,37 +255,31 @@ function PermissionItem({
         </div>
         <p className="text-xs text-muted-foreground">{definition.description}</p>
         {permission.reason && (
-          <p className="text-xs text-muted-foreground mt-1 italic">
-            Why: {permission.reason}
-          </p>
+          <p className="mt-1 text-xs italic text-muted-foreground">Why: {permission.reason}</p>
         )}
       </div>
     </div>
-  );
+  )
 
-  return content;
+  return content
 }
 
 // Compact permission display for cards/lists
 interface PermissionBadgesProps {
-  permissions: AppPermission[];
-  max?: number;
-  className?: string;
+  permissions: AppPermission[]
+  max?: number
+  className?: string
 }
 
-export function PermissionBadges({
-  permissions,
-  max = 3,
-  className,
-}: PermissionBadgesProps) {
-  const displayPermissions = permissions.slice(0, max);
-  const remaining = permissions.length - max;
+export function PermissionBadges({ permissions, max = 3, className }: PermissionBadgesProps) {
+  const displayPermissions = permissions.slice(0, max)
+  const remaining = permissions.length - max
 
   return (
     <div className={cn('flex flex-wrap gap-1', className)}>
       {displayPermissions.map((permission) => {
-        const definition = getPermissionDefinition(permission.scope);
-        const riskLevel = getPermissionRiskLevel(permission.scope);
+        const definition = getPermissionDefinition(permission.scope)
+        const riskLevel = getPermissionRiskLevel(permission.scope)
         return (
           <Badge
             key={permission.scope}
@@ -310,7 +292,7 @@ export function PermissionBadges({
           >
             {definition.label}
           </Badge>
-        );
+        )
       })}
       {remaining > 0 && (
         <Badge variant="outline" className="text-xs">
@@ -318,5 +300,5 @@ export function PermissionBadges({
         </Badge>
       )}
     </div>
-  );
+  )
 }

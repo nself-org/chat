@@ -47,9 +47,7 @@ export function Header({
         <View style={styles.left}>
           {onBackPress && (
             <Pressable style={styles.backButton} onPress={onBackPress}>
-              <Text style={[styles.backIcon, { color: theme.colors.primary }]}>
-                chevron-left
-              </Text>
+              <Text style={[styles.backIcon, { color: theme.colors.primary }]}>chevron-left</Text>
             </Pressable>
           )}
         </View>
@@ -57,18 +55,13 @@ export function Header({
         {/* Center Section */}
         <View style={styles.center}>
           <Text
-            style={[
-              large ? styles.titleLarge : styles.title,
-              { color: theme.colors.text },
-            ]}
+            style={[large ? styles.titleLarge : styles.title, { color: theme.colors.text }]}
             numberOfLines={1}
           >
             {title}
           </Text>
           {subtitle && (
-            <Text style={[styles.subtitle, { color: theme.colors.muted }]}>
-              {subtitle}
-            </Text>
+            <Text style={[styles.subtitle, { color: theme.colors.muted }]}>{subtitle}</Text>
           )}
         </View>
 

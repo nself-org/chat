@@ -75,43 +75,40 @@ export function SlackHeader({
       style={{ height: 49 }}
     >
       {/* Left: Channel Info */}
-      <div className="flex items-center gap-2 min-w-0">
-        <button className="flex items-center gap-1 hover:bg-gray-100 dark:hover:bg-[#35383C] rounded px-2 py-1 -ml-2">
+      <div className="flex min-w-0 items-center gap-2">
+        <button className="-ml-2 flex items-center gap-1 rounded px-2 py-1 hover:bg-gray-100 dark:hover:bg-[#35383C]">
           {isPrivate ? (
-            <Lock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            <Lock className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           ) : (
-            <Hash className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+            <Hash className="h-4 w-4 text-gray-600 dark:text-gray-400" />
           )}
-          <span className="font-bold text-lg text-gray-900 dark:text-white truncate">
+          <span className="truncate text-lg font-bold text-gray-900 dark:text-white">
             {channelName}
           </span>
-          <ChevronDown className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
+          <ChevronDown className="h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400" />
         </button>
 
         {/* Star button */}
         <button
           onClick={onStarClick}
           className={cn(
-            'p-1 rounded hover:bg-gray-100 dark:hover:bg-[#35383C]',
+            'rounded p-1 hover:bg-gray-100 dark:hover:bg-[#35383C]',
             isStarred ? 'text-yellow-500' : 'text-gray-400'
           )}
         >
-          <Star
-            className="w-4 h-4"
-            fill={isStarred ? 'currentColor' : 'none'}
-          />
+          <Star className="h-4 w-4" fill={isStarred ? 'currentColor' : 'none'} />
         </button>
 
         {/* Divider */}
-        <div className="w-px h-5 bg-gray-200 dark:bg-[#35383C] mx-1" />
+        <div className="mx-1 h-5 w-px bg-gray-200 dark:bg-[#35383C]" />
 
         {/* Members */}
         {memberCount !== undefined && (
           <button
             onClick={onMembersClick}
-            className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
-            <Users className="w-4 h-4" />
+            <Users className="h-4 w-4" />
             <span>{memberCount}</span>
           </button>
         )}
@@ -120,9 +117,9 @@ export function SlackHeader({
         {pinnedCount !== undefined && pinnedCount > 0 && (
           <button
             onClick={onPinnedClick}
-            className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+            className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white"
           >
-            <Pin className="w-4 h-4" />
+            <Pin className="h-4 w-4" />
             <span>{pinnedCount}</span>
           </button>
         )}
@@ -130,8 +127,8 @@ export function SlackHeader({
         {/* Description */}
         {channelDescription && (
           <>
-            <div className="w-px h-5 bg-gray-200 dark:bg-[#35383C] mx-1" />
-            <span className="text-sm text-gray-500 dark:text-gray-400 truncate max-w-[200px]">
+            <div className="mx-1 h-5 w-px bg-gray-200 dark:bg-[#35383C]" />
+            <span className="max-w-[200px] truncate text-sm text-gray-500 dark:text-gray-400">
               {channelDescription}
             </span>
           </>
@@ -144,25 +141,25 @@ export function SlackHeader({
         <button
           onClick={onHuddleClick}
           className={cn(
-            'flex items-center gap-1 px-3 py-1.5 rounded',
+            'flex items-center gap-1 rounded px-3 py-1.5',
             'text-sm text-gray-700 dark:text-gray-300',
             'hover:bg-gray-100 dark:hover:bg-[#35383C]',
             'border border-gray-300 dark:border-[#35383C]'
           )}
         >
-          <Headphones className="w-4 h-4" />
+          <Headphones className="h-4 w-4" />
           <span>Huddle</span>
         </button>
 
         {/* Divider */}
-        <div className="w-px h-5 bg-gray-200 dark:bg-[#35383C] mx-1" />
+        <div className="mx-1 h-5 w-px bg-gray-200 dark:bg-[#35383C]" />
 
         {/* Icon buttons */}
         <button
           onClick={onSearchClick}
-          className="p-2 rounded hover:bg-gray-100 dark:hover:bg-[#35383C] text-gray-600 dark:text-gray-400"
+          className="rounded p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-[#35383C]"
         >
-          <Search className="w-4 h-4" />
+          <Search className="h-4 w-4" />
         </button>
       </div>
     </header>

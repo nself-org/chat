@@ -36,10 +36,12 @@ nself-chat supports deployment to both iOS and Android platforms using Capacitor
 ### Deployment Tracks
 
 **iOS:**
+
 - TestFlight (Internal/External testing)
 - App Store Production
 
 **Android:**
+
 - Internal Testing (immediate rollout)
 - Closed Testing (Beta, requires opt-in)
 - Open Testing (Public beta)
@@ -111,6 +113,7 @@ cd /path/to/nself-chat
 ```
 
 The script will:
+
 1. Run tests
 2. Build web assets
 3. Sync to iOS platform
@@ -140,6 +143,7 @@ After upload completes (10-30 minutes for processing):
 5. They can install via TestFlight app
 
 **Internal Testing:**
+
 - Up to 100 testers
 - No App Review required
 - Immediate availability after processing
@@ -154,6 +158,7 @@ After upload completes (10-30 minutes for processing):
 5. Wait for approval (1-2 days)
 
 **External Testing:**
+
 - Requires Beta App Review
 - Public link available after approval
 - 90-day expiration
@@ -179,6 +184,7 @@ After upload completes (10-30 minutes for processing):
 See [iOS Screenshots](#ios-screenshots) section for requirements.
 
 Required sizes:
+
 - 6.7" Display (iPhone 14 Pro Max): 1290 x 2796 px
 - 6.5" Display (iPhone 11 Pro Max): 1242 x 2688 px
 - 5.5" Display (iPhone 8 Plus): 1242 x 2208 px
@@ -204,6 +210,7 @@ Minimum 3 screenshots per size, maximum 10.
 5. Submit for Review
 
 **Review Timeline:**
+
 - 24-48 hours typically
 - May be faster or slower depending on complexity
 - Check status in App Store Connect
@@ -211,6 +218,7 @@ Minimum 3 screenshots per size, maximum 10.
 #### Step 5: Release
 
 After approval:
+
 - **Manual**: Click "Release This Version" when ready
 - **Automatic**: Released immediately upon approval
 - **Scheduled**: Released at specified date/time
@@ -227,6 +235,7 @@ The deployment script uses automatic signing by default:
 ```
 
 Xcode will:
+
 - Create/download required certificates
 - Create/download provisioning profiles
 - Handle signing automatically
@@ -264,15 +273,18 @@ If you need manual control:
 #### Code Signing Troubleshooting
 
 **"No signing certificate found"**
+
 - Install certificates from developer.apple.com
 - Check in Xcode → Preferences → Accounts → Download Manual Profiles
 
 **"No provisioning profile found"**
+
 - Create provisioning profile in developer portal
 - Ensure it includes your device UDIDs (for development)
 - Download and install in Xcode
 
 **"Code signing entitlements don't match"**
+
 - Check App ID capabilities
 - Regenerate provisioning profile
 - Clean build folder and rebuild
@@ -283,14 +295,15 @@ If you need manual control:
 
 Apple requires screenshots for multiple device sizes:
 
-| Device | Resolution | Orientation |
-|--------|------------|-------------|
-| 6.7" (iPhone 14 Pro Max) | 1290 x 2796 px | Portrait |
-| 6.5" (iPhone 11 Pro Max) | 1242 x 2688 px | Portrait |
-| 5.5" (iPhone 8 Plus) | 1242 x 2208 px | Portrait |
-| 12.9" iPad Pro | 2048 x 2732 px | Portrait |
+| Device                   | Resolution     | Orientation |
+| ------------------------ | -------------- | ----------- |
+| 6.7" (iPhone 14 Pro Max) | 1290 x 2796 px | Portrait    |
+| 6.5" (iPhone 11 Pro Max) | 1242 x 2688 px | Portrait    |
+| 5.5" (iPhone 8 Plus)     | 1242 x 2208 px | Portrait    |
+| 12.9" iPad Pro           | 2048 x 2732 px | Portrait    |
 
 **Notes:**
+
 - Minimum 3 screenshots, maximum 10 per size
 - PNG or JPEG format
 - RGB color space
@@ -300,6 +313,7 @@ Apple requires screenshots for multiple device sizes:
 #### Creating Screenshots
 
 **Method 1: Simulator**
+
 ```bash
 # Start iOS Simulator
 cd platforms/capacitor
@@ -313,6 +327,7 @@ npx cap open ios
 ```
 
 **Method 2: Actual Device**
+
 ```bash
 # Connect device via USB
 # Take screenshots on device (Power + Volume Up)
@@ -320,6 +335,7 @@ npx cap open ios
 ```
 
 **Method 3: Automated (Fastlane Snapshot)**
+
 ```bash
 # Install fastlane
 gem install fastlane
@@ -336,6 +352,7 @@ fastlane snapshot
 #### Screenshot Guidelines
 
 **Content Guidelines:**
+
 - Show actual app functionality
 - Use realistic data (not Lorem Ipsum)
 - Avoid offensive content
@@ -343,12 +360,14 @@ fastlane snapshot
 - Localize for each language
 
 **Technical Guidelines:**
+
 - High quality, sharp images
 - Proper color calibration
 - No pixelation or artifacts
 - Consistent status bar (can be hidden or standardized)
 
 **Best Practices:**
+
 - First screenshot is most important (shows in search)
 - Show key features in order of importance
 - Use captions to explain features
@@ -463,6 +482,7 @@ echo "ANDROID_KEY_PASSWORD=your-password" >> .env.local
 7. Share internal testing link with team
 
 **Internal Testing Features:**
+
 - Up to 100 testers
 - Immediate availability (no review)
 - Can test for up to 90 days
@@ -481,6 +501,7 @@ echo "ANDROID_KEY_PASSWORD=your-password" >> .env.local
 9. Create opt-in URL for beta testers
 
 **Closed Testing Features:**
+
 - Up to 100,000 testers
 - Requires Pre-launch report review
 - Opt-in via link
@@ -539,6 +560,7 @@ See [Android Screenshots](#android-screenshots) for requirements.
 6. Submit for review
 
 **Review Timeline:**
+
 - Usually 1-7 days
 - First submission may take longer
 - Subsequent updates faster
@@ -559,10 +581,12 @@ Instead of releasing to 100%, you can:
 #### Understanding Android Signing
 
 Android requires two types of keys:
+
 1. **Upload Key**: Used to sign APKs/AABs uploaded to Play Store
 2. **App Signing Key**: Google manages this for Play App Signing
 
 **Play App Signing (Recommended):**
+
 - Google manages your app signing key
 - You keep your upload key
 - Benefits:
@@ -578,6 +602,7 @@ When you first upload:
 2. You can upload your own signing key
 
 **Recommended: Let Google generate**
+
 - More secure
 - Easier upload key reset
 - No action needed
@@ -649,17 +674,19 @@ jarsigner -verify -verbose -certs \
 
 Google Play requires screenshots for phone and tablet:
 
-| Device Type | Min Resolution | Max Resolution | Quantity |
-|-------------|----------------|----------------|----------|
-| Phone | 320 x 320 px | 3,840 x 3,840 px | 2-8 |
-| 7" Tablet | 320 x 320 px | 3,840 x 3,840 px | 0-8 |
-| 10" Tablet | 320 x 320 px | 3,840 x 3,840 px | 0-8 |
+| Device Type | Min Resolution | Max Resolution   | Quantity |
+| ----------- | -------------- | ---------------- | -------- |
+| Phone       | 320 x 320 px   | 3,840 x 3,840 px | 2-8      |
+| 7" Tablet   | 320 x 320 px   | 3,840 x 3,840 px | 0-8      |
+| 10" Tablet  | 320 x 320 px   | 3,840 x 3,840 px | 0-8      |
 
 **Common Sizes:**
+
 - Phone: 1080 x 1920 px (16:9) or 1080 x 2340 px (19.5:9)
 - Tablet: 1200 x 1920 px or 2560 x 1600 px
 
 **Notes:**
+
 - PNG or JPEG format
 - 16:9 or 9:16 aspect ratio recommended
 - Can upload up to 8 per device type
@@ -668,6 +695,7 @@ Google Play requires screenshots for phone and tablet:
 #### Creating Screenshots
 
 **Method 1: Emulator**
+
 ```bash
 # Start Android emulator
 cd platforms/capacitor
@@ -682,6 +710,7 @@ npx cap open android
 ```
 
 **Method 2: Actual Device**
+
 ```bash
 # Connect device via USB
 # Enable USB Debugging
@@ -691,6 +720,7 @@ adb pull /sdcard/Screenshots/ ./screenshots/
 ```
 
 **Method 3: Automated (Fastlane Screengrab)**
+
 ```bash
 # Install fastlane
 gem install fastlane
@@ -707,6 +737,7 @@ fastlane screengrab
 #### Screenshot Guidelines
 
 **Content Guidelines:**
+
 - Show actual app functionality
 - Use realistic, appropriate content
 - Avoid graphic violence or adult content
@@ -714,6 +745,7 @@ fastlane screengrab
 - Localize for supported languages
 
 **Technical Guidelines:**
+
 - High resolution (1080p or higher recommended)
 - Sharp, clear images
 - Proper color reproduction
@@ -721,6 +753,7 @@ fastlane screengrab
 - No device chrome (just app content)
 
 **Best Practices:**
+
 - First screenshot is most important
 - Show key features first
 - Use captions to explain features
@@ -738,6 +771,7 @@ Required for Play Store listing:
 - **No device frames**: Just app branding/features
 
 Create feature graphic with:
+
 - App logo
 - Tagline
 - Key feature preview
@@ -1048,6 +1082,7 @@ jobs:
 Add these secrets to your GitHub repository:
 
 **iOS:**
+
 - `APPLE_TEAM_ID`: Your Apple Team ID
 - `APPLE_ID`: Your Apple ID email
 - `APP_SPECIFIC_PASSWORD`: App-specific password
@@ -1055,6 +1090,7 @@ Add these secrets to your GitHub repository:
 - `IOS_CERT_PASSWORD`: Certificate password
 
 **Android:**
+
 - `ANDROID_KEYSTORE_BASE64`: Keystore file (base64 encoded)
 - `ANDROID_KEYSTORE_PASSWORD`: Keystore password
 - `ANDROID_KEY_ALIAS`: Key alias
@@ -1070,6 +1106,7 @@ See the dedicated [Mobile Deployment Troubleshooting Guide](./mobile-deployment-
 ### Quick Fixes
 
 **iOS build fails:**
+
 ```bash
 # Clean build
 cd platforms/capacitor/ios
@@ -1081,6 +1118,7 @@ pod install --repo-update
 ```
 
 **Android build fails:**
+
 ```bash
 # Clean build
 cd platforms/capacitor/android
@@ -1091,6 +1129,7 @@ cd platforms/capacitor/android
 ```
 
 **Code signing errors:**
+
 ```bash
 # iOS: Reset signing
 # Open in Xcode and disable/enable automatic signing

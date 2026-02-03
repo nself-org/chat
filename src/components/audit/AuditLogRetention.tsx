@@ -5,17 +5,7 @@
  */
 
 import { useState } from 'react'
-import {
-  Archive,
-  Plus,
-  Trash2,
-  Edit,
-  Save,
-  X,
-  Clock,
-  Shield,
-  Check,
-} from 'lucide-react'
+import { Archive, Plus, Trash2, Edit, Save, X, Clock, Shield, Check } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -148,12 +138,10 @@ export function AuditLogRetention({
             <Clock className="h-5 w-5" />
             Global Retention Settings
           </CardTitle>
-          <CardDescription>
-            Configure default retention periods for all audit logs
-          </CardDescription>
+          <CardDescription>Configure default retention periods for all audit logs</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="space-y-2">
               <Label htmlFor="default-retention">Default Retention (days)</Label>
               <Input
@@ -204,7 +192,7 @@ export function AuditLogRetention({
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-4 border-t">
+          <div className="flex items-center justify-between border-t pt-4">
             <div>
               <Label htmlFor="archive-enabled" className="cursor-pointer">
                 Enable Archival
@@ -216,9 +204,7 @@ export function AuditLogRetention({
             <Switch
               id="archive-enabled"
               checked={settings.archiveEnabled}
-              onCheckedChange={(checked) =>
-                onSettingsChange({ archiveEnabled: checked })
-              }
+              onCheckedChange={(checked) => onSettingsChange({ archiveEnabled: checked })}
             />
           </div>
 
@@ -229,16 +215,14 @@ export function AuditLogRetention({
                 id="archive-location"
                 placeholder="s3://bucket/audit-archives/"
                 value={settings.archiveLocation || ''}
-                onChange={(e) =>
-                  onSettingsChange({ archiveLocation: e.target.value })
-                }
+                onChange={(e) => onSettingsChange({ archiveLocation: e.target.value })}
               />
             </div>
           )}
 
           {/* Compliance Suggestions */}
-          <div className="pt-4 border-t">
-            <Label className="text-sm mb-2 block">Compliance Presets</Label>
+          <div className="border-t pt-4">
+            <Label className="mb-2 block text-sm">Compliance Presets</Label>
             <div className="flex flex-wrap gap-2">
               {(['gdpr', 'hipaa', 'sox', 'pci'] as const).map((compliance) => (
                 <Button
@@ -250,9 +234,10 @@ export function AuditLogRetention({
                       defaultRetentionDays: getSuggestedRetentionForCompliance(compliance),
                     })
                   }
-                  className="uppercase text-xs"
+                  className="text-xs uppercase"
                 >
-                  {compliance} ({formatRetentionPeriod(getSuggestedRetentionForCompliance(compliance))})
+                  {compliance} (
+                  {formatRetentionPeriod(getSuggestedRetentionForCompliance(compliance))})
                 </Button>
               ))}
             </div>
@@ -273,14 +258,14 @@ export function AuditLogRetention({
             </CardDescription>
           </div>
           <Button onClick={() => setIsAddingPolicy(true)} size="sm">
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className="mr-1 h-4 w-4" />
             Add Policy
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Quick Add Presets */}
-          <div className="flex flex-wrap gap-2 pb-4 border-b">
-            <span className="text-sm text-muted-foreground mr-2">Quick add:</span>
+          <div className="flex flex-wrap gap-2 border-b pb-4">
+            <span className="mr-2 text-sm text-muted-foreground">Quick add:</span>
             {Object.keys(presetPolicies).map((preset) => (
               <Button
                 key={preset}
@@ -297,16 +282,14 @@ export function AuditLogRetention({
           {/* Add New Policy Form */}
           {isAddingPolicy && (
             <Card className="border-dashed">
-              <CardContent className="pt-4 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="space-y-4 pt-4">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <div className="space-y-2">
                     <Label>Policy Name</Label>
                     <Input
                       placeholder="e.g., Security Events"
                       value={newPolicy.name}
-                      onChange={(e) =>
-                        setNewPolicy({ ...newPolicy, name: e.target.value })
-                      }
+                      onChange={(e) => setNewPolicy({ ...newPolicy, name: e.target.value })}
                     />
                   </div>
                   <div className="space-y-2">
@@ -379,15 +362,12 @@ export function AuditLogRetention({
                 </div>
 
                 <div className="flex justify-end gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={() => setIsAddingPolicy(false)}
-                  >
-                    <X className="h-4 w-4 mr-1" />
+                  <Button variant="outline" onClick={() => setIsAddingPolicy(false)}>
+                    <X className="mr-1 h-4 w-4" />
                     Cancel
                   </Button>
                   <Button onClick={handleAddPolicy}>
-                    <Check className="h-4 w-4 mr-1" />
+                    <Check className="mr-1 h-4 w-4" />
                     Add Policy
                   </Button>
                 </div>
@@ -397,10 +377,13 @@ export function AuditLogRetention({
 
           {/* Existing Policies */}
           {settings.policies.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              <Archive className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <div className="py-8 text-center text-muted-foreground">
+              <Archive className="mx-auto mb-2 h-8 w-8 opacity-50" />
               <p>No custom retention policies</p>
-              <p className="text-sm">Default retention of {formatRetentionPeriod(settings.defaultRetentionDays)} applies to all events</p>
+              <p className="text-sm">
+                Default retention of {formatRetentionPeriod(settings.defaultRetentionDays)} applies
+                to all events
+              </p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -408,16 +391,14 @@ export function AuditLogRetention({
                 <div
                   key={policy.id}
                   className={cn(
-                    'flex items-center justify-between p-3 rounded-lg border',
+                    'flex items-center justify-between rounded-lg border p-3',
                     policy.enabled ? 'bg-card' : 'bg-muted/50 opacity-70'
                   )}
                 >
                   <div className="flex items-center gap-3">
                     <Switch
                       checked={policy.enabled}
-                      onCheckedChange={(checked) =>
-                        onPolicyUpdate(policy.id, { enabled: checked })
-                      }
+                      onCheckedChange={(checked) => onPolicyUpdate(policy.id, { enabled: checked })}
                     />
                     <div>
                       <div className="flex items-center gap-2">
@@ -427,12 +408,12 @@ export function AuditLogRetention({
                         </Badge>
                         {policy.archiveEnabled && (
                           <Badge variant="outline">
-                            <Archive className="h-3 w-3 mr-1" />
+                            <Archive className="mr-1 h-3 w-3" />
                             Archive
                           </Badge>
                         )}
                       </div>
-                      <div className="flex flex-wrap gap-1 mt-1">
+                      <div className="mt-1 flex flex-wrap gap-1">
                         {policy.categories?.map((cat) => (
                           <Badge key={cat} variant="outline" className="text-xs">
                             {categoryDisplayNames[cat]}

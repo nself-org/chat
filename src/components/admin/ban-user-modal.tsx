@@ -146,7 +146,7 @@ export function BanUserModal({
 
         <form onSubmit={handleSubmit}>
           {/* User Info */}
-          <div className="mb-6 flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
+          <div className="bg-muted/50 mb-6 flex items-center gap-3 rounded-lg border p-3">
             <Avatar className="h-10 w-10">
               <AvatarImage src={user.avatarUrl} alt={user.displayName} />
               <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
@@ -215,16 +215,12 @@ export function BanUserModal({
                   Send an email notification about the ban
                 </p>
               </div>
-              <Switch
-                id="notifyUser"
-                checked={notifyUser}
-                onCheckedChange={setNotifyUser}
-              />
+              <Switch id="notifyUser" checked={notifyUser} onCheckedChange={setNotifyUser} />
             </div>
 
             {/* Error */}
             {error && (
-              <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+              <div className="border-destructive/50 bg-destructive/10 flex items-center gap-2 rounded-lg border p-3 text-sm text-destructive">
                 <AlertTriangle className="h-4 w-4" />
                 {error}
               </div>

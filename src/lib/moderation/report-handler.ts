@@ -86,10 +86,7 @@ export interface ReportHandlerConfig {
   actionExecutors: Partial<Record<ReportAction, ActionExecutor>>
 }
 
-export type ActionExecutor = (
-  context: ReportActionContext,
-  report: Report
-) => Promise<ActionResult>
+export type ActionExecutor = (context: ReportActionContext, report: Report) => Promise<ActionResult>
 
 // ============================================================================
 // Default Configuration
@@ -185,9 +182,7 @@ export class ReportHandler {
       action: 'review',
       newStatus: report.status,
       message: 'Report submitted successfully',
-      notifications: this.notificationQueue.filter((n) =>
-        n.subject.includes(report.id)
-      ),
+      notifications: this.notificationQueue.filter((n) => n.subject.includes(report.id)),
     }
   }
 
@@ -270,10 +265,7 @@ export class ReportHandler {
   /**
    * Approves a report (no action needed on content)
    */
-  private async approveReport(
-    context: ReportActionContext,
-    report: Report
-  ): Promise<ActionResult> {
+  private async approveReport(context: ReportActionContext, report: Report): Promise<ActionResult> {
     const updateResult = this.queue.updateReport(
       report.id,
       {
@@ -305,10 +297,7 @@ export class ReportHandler {
   /**
    * Dismisses a report (invalid or duplicate)
    */
-  private async dismissReport(
-    context: ReportActionContext,
-    report: Report
-  ): Promise<ActionResult> {
+  private async dismissReport(context: ReportActionContext, report: Report): Promise<ActionResult> {
     const updateResult = this.queue.updateReport(
       report.id,
       {
@@ -345,11 +334,7 @@ export class ReportHandler {
     report: Report
   ): Promise<ActionResult> {
     const newPriority: ReportPriority =
-      report.priority === 'low'
-        ? 'medium'
-        : report.priority === 'medium'
-        ? 'high'
-        : 'urgent'
+      report.priority === 'low' ? 'medium' : report.priority === 'medium' ? 'high' : 'urgent'
 
     const updateResult = this.queue.updateReport(
       report.id,
@@ -391,10 +376,7 @@ export class ReportHandler {
   /**
    * Removes reported content
    */
-  private async removeContent(
-    context: ReportActionContext,
-    report: Report
-  ): Promise<ActionResult> {
+  private async removeContent(context: ReportActionContext, report: Report): Promise<ActionResult> {
     // In a real implementation, this would call the appropriate API
     // to delete/hide the content (message, user profile, channel, etc.)
 
@@ -429,10 +411,7 @@ export class ReportHandler {
   /**
    * Warns a user
    */
-  private async warnUser(
-    context: ReportActionContext,
-    report: Report
-  ): Promise<ActionResult> {
+  private async warnUser(context: ReportActionContext, report: Report): Promise<ActionResult> {
     // In a real implementation, this would send a warning notification
     // to the user and log it in their moderation history
 
@@ -467,10 +446,7 @@ export class ReportHandler {
   /**
    * Mutes a user
    */
-  private async muteUser(
-    context: ReportActionContext,
-    report: Report
-  ): Promise<ActionResult> {
+  private async muteUser(context: ReportActionContext, report: Report): Promise<ActionResult> {
     // In a real implementation, this would call the mute API
 
     const updateResult = this.queue.updateReport(
@@ -504,10 +480,7 @@ export class ReportHandler {
   /**
    * Bans a user
    */
-  private async banUser(
-    context: ReportActionContext,
-    report: Report
-  ): Promise<ActionResult> {
+  private async banUser(context: ReportActionContext, report: Report): Promise<ActionResult> {
     // In a real implementation, this would call the ban API
 
     const updateResult = this.queue.updateReport(
@@ -541,10 +514,7 @@ export class ReportHandler {
   /**
    * Assigns a report to a moderator
    */
-  private async assignReport(
-    context: ReportActionContext,
-    report: Report
-  ): Promise<ActionResult> {
+  private async assignReport(context: ReportActionContext, report: Report): Promise<ActionResult> {
     const updateResult = this.queue.updateReport(
       report.id,
       {
@@ -577,10 +547,7 @@ export class ReportHandler {
   /**
    * Resolves a report
    */
-  private async resolveReport(
-    context: ReportActionContext,
-    report: Report
-  ): Promise<ActionResult> {
+  private async resolveReport(context: ReportActionContext, report: Report): Promise<ActionResult> {
     const updateResult = this.queue.updateReport(
       report.id,
       {
@@ -613,9 +580,7 @@ export class ReportHandler {
    * Checks if a report should be auto-escalated
    */
   private async checkEscalation(report: Report): Promise<void> {
-    const rule = this.config.escalationRules.find(
-      (r) => r.categoryId === report.categoryId
-    )
+    const rule = this.config.escalationRules.find((r) => r.categoryId === report.categoryId)
 
     if (!rule || !rule.autoEscalate) {
       return
@@ -777,9 +742,7 @@ export class ReportHandler {
 /**
  * Creates a report handler with default configuration
  */
-export function createReportHandler(
-  config?: Partial<ReportHandlerConfig>
-): ReportHandler {
+export function createReportHandler(config?: Partial<ReportHandlerConfig>): ReportHandler {
   return new ReportHandler(config)
 }
 

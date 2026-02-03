@@ -30,7 +30,7 @@
  * ```
  */
 
-import {NextRequest, NextResponse} from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import {
   successResponse,
   badRequestResponse,
@@ -361,10 +361,7 @@ async function handlePostReminders(request: AuthenticatedRequest): Promise<NextR
 /**
  * Handle reminder actions (complete, dismiss, snooze, unsnooze)
  */
-async function handleReminderAction(
-  userId: string,
-  action: ReminderAction
-): Promise<NextResponse> {
+async function handleReminderAction(userId: string, action: ReminderAction): Promise<NextResponse> {
   const { action: actionType, id, snoozeDuration } = action
 
   if (!id) {
@@ -518,4 +515,6 @@ export const PUT = withErrorHandler(withAuth(withCsrfProtection(csrfWrapped(hand
 /**
  * DELETE /api/reminders
  */
-export const DELETE = withErrorHandler(withAuth(withCsrfProtection(csrfWrapped(handleDeleteReminders))))
+export const DELETE = withErrorHandler(
+  withAuth(withCsrfProtection(csrfWrapped(handleDeleteReminders)))
+)

@@ -24,6 +24,7 @@ Comprehensive code examples for integrating with the nself-chat Bot API in multi
 All Bot API requests require authentication via Bearer token in the `Authorization` header.
 
 ### Token Format
+
 ```
 Authorization: Bearer nbot_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
 ```
@@ -52,16 +53,16 @@ curl -X POST https://your-domain.com/api/bots/send-message \
 ### JavaScript/TypeScript (Node.js)
 
 ```javascript
-const fetch = require('node-fetch');
+const fetch = require('node-fetch')
 
-const BOT_TOKEN = 'nbot_YOUR_TOKEN_HERE';
-const API_URL = 'https://your-domain.com/api/bots';
+const BOT_TOKEN = 'nbot_YOUR_TOKEN_HERE'
+const API_URL = 'https://your-domain.com/api/bots'
 
 async function sendMessage(channelId, content) {
   const response = await fetch(`${API_URL}/send-message`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${BOT_TOKEN}`,
+      Authorization: `Bearer ${BOT_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -69,87 +70,88 @@ async function sendMessage(channelId, content) {
       content: content,
       type: 'text',
     }),
-  });
+  })
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(`Failed to send message: ${error.message}`);
+    const error = await response.json()
+    throw new Error(`Failed to send message: ${error.message}`)
   }
 
-  return await response.json();
+  return await response.json()
 }
 
 // Usage
 sendMessage('550e8400-e29b-41d4-a716-446655440000', 'Hello from my bot!')
-  .then(data => console.log('Message sent:', data))
-  .catch(err => console.error('Error:', err));
+  .then((data) => console.log('Message sent:', data))
+  .catch((err) => console.error('Error:', err))
 ```
 
 ### JavaScript/TypeScript (with async/await class)
 
 ```typescript
-import fetch, { Response } from 'node-fetch';
+import fetch, { Response } from 'node-fetch'
 
 interface SendMessageParams {
-  channel_id: string;
-  content: string;
-  type?: 'text' | 'system' | 'announcement';
-  reply_to_id?: string;
+  channel_id: string
+  content: string
+  type?: 'text' | 'system' | 'announcement'
+  reply_to_id?: string
 }
 
 interface Message {
-  id: string;
-  channel_id: string;
-  content: string;
-  type: string;
-  created_at: string;
+  id: string
+  channel_id: string
+  content: string
+  type: string
+  created_at: string
 }
 
 class NchatBotClient {
-  private token: string;
-  private baseUrl: string;
+  private token: string
+  private baseUrl: string
 
   constructor(token: string, baseUrl: string = 'https://your-domain.com/api/bots') {
-    this.token = token;
-    this.baseUrl = baseUrl;
+    this.token = token
+    this.baseUrl = baseUrl
   }
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const response = await fetch(`${this.baseUrl}${endpoint}`, {
       ...options,
       headers: {
-        'Authorization': `Bearer ${this.token}`,
+        Authorization: `Bearer ${this.token}`,
         'Content-Type': 'application/json',
         ...options.headers,
       },
-    });
+    })
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(`API Error: ${error.message}`);
+      const error = await response.json()
+      throw new Error(`API Error: ${error.message}`)
     }
 
-    return await response.json();
+    return await response.json()
   }
 
   async sendMessage(params: SendMessageParams): Promise<Message> {
     return this.request<Message>('/send-message', {
       method: 'POST',
       body: JSON.stringify(params),
-    });
+    })
   }
 }
 
 // Usage
-const bot = new NchatBotClient('nbot_YOUR_TOKEN_HERE');
+const bot = new NchatBotClient('nbot_YOUR_TOKEN_HERE')
 
-bot.sendMessage({
-  channel_id: '550e8400-e29b-41d4-a716-446655440000',
-  content: 'Hello from my TypeScript bot!',
-  type: 'text',
-})
-  .then(message => console.log('Message sent:', message))
-  .catch(err => console.error('Error:', err));
+bot
+  .sendMessage({
+    channel_id: '550e8400-e29b-41d4-a716-446655440000',
+    content: 'Hello from my TypeScript bot!',
+    type: 'text',
+  })
+  .then((message) => console.log('Message sent:', message))
+  .catch((err) => console.error('Error:', err))
 ```
 
 ### Python
@@ -468,7 +470,7 @@ async function createChannel(name, description, isPrivate = false) {
   const response = await fetch(`${API_URL}/create-channel`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${BOT_TOKEN}`,
+      Authorization: `Bearer ${BOT_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
@@ -476,19 +478,19 @@ async function createChannel(name, description, isPrivate = false) {
       description: description,
       is_private: isPrivate,
     }),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`Failed to create channel: ${await response.text()}`);
+    throw new Error(`Failed to create channel: ${await response.text()}`)
   }
 
-  return await response.json();
+  return await response.json()
 }
 
 // Usage
 createChannel('bot-announcements', 'Automated bot announcements', false)
-  .then(channel => console.log('Channel created:', channel))
-  .catch(err => console.error('Error:', err));
+  .then((channel) => console.log('Channel created:', channel))
+  .catch((err) => console.error('Error:', err))
 ```
 
 ### Python
@@ -545,21 +547,21 @@ async function getChannelInfo(channelId) {
   const response = await fetch(`${API_URL}/channel-info?channel_id=${channelId}`, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${BOT_TOKEN}`,
+      Authorization: `Bearer ${BOT_TOKEN}`,
     },
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`Failed to get channel info: ${await response.text()}`);
+    throw new Error(`Failed to get channel info: ${await response.text()}`)
   }
 
-  return await response.json();
+  return await response.json()
 }
 
 // Usage
 getChannelInfo('550e8400-e29b-41d4-a716-446655440000')
-  .then(channel => console.log('Channel info:', channel))
-  .catch(err => console.error('Error:', err));
+  .then((channel) => console.log('Channel info:', channel))
+  .catch((err) => console.error('Error:', err))
 ```
 
 ### Python
@@ -614,26 +616,26 @@ async function addReaction(messageId, emoji) {
   const response = await fetch(`${API_URL}/add-reaction`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${BOT_TOKEN}`,
+      Authorization: `Bearer ${BOT_TOKEN}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
       message_id: messageId,
       emoji: emoji,
     }),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`Failed to add reaction: ${await response.text()}`);
+    throw new Error(`Failed to add reaction: ${await response.text()}`)
   }
 
-  return await response.json();
+  return await response.json()
 }
 
 // Usage
 addReaction('660e8400-e29b-41d4-a716-446655440001', '👍')
-  .then(reaction => console.log('Reaction added:', reaction))
-  .catch(err => console.error('Error:', err));
+  .then((reaction) => console.log('Reaction added:', reaction))
+  .catch((err) => console.error('Error:', err))
 ```
 
 ### Python
@@ -689,21 +691,21 @@ async function getUserInfo(userId) {
   const response = await fetch(`${API_URL}/user-info?user_id=${userId}`, {
     method: 'GET',
     headers: {
-      'Authorization': `Bearer ${BOT_TOKEN}`,
+      Authorization: `Bearer ${BOT_TOKEN}`,
     },
-  });
+  })
 
   if (!response.ok) {
-    throw new Error(`Failed to get user info: ${await response.text()}`);
+    throw new Error(`Failed to get user info: ${await response.text()}`)
   }
 
-  return await response.json();
+  return await response.json()
 }
 
 // Usage
 getUserInfo('770e8400-e29b-41d4-a716-446655440002')
-  .then(user => console.log('User info:', user))
-  .catch(err => console.error('Error:', err));
+  .then((user) => console.log('User info:', user))
+  .catch((err) => console.error('Error:', err))
 ```
 
 ### Python
@@ -744,63 +746,60 @@ All webhook requests include an `X-Webhook-Signature` header with an HMAC-SHA256
 #### JavaScript/Node.js
 
 ```javascript
-const crypto = require('crypto');
-const express = require('express');
+const crypto = require('crypto')
+const express = require('express')
 
-const WEBHOOK_SECRET = 'your_webhook_secret_here';
+const WEBHOOK_SECRET = 'your_webhook_secret_here'
 
 function verifyWebhookSignature(payload, signature) {
   const expectedSignature = crypto
     .createHmac('sha256', WEBHOOK_SECRET)
     .update(JSON.stringify(payload))
-    .digest('hex');
+    .digest('hex')
 
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))
 }
 
-const app = express();
-app.use(express.json());
+const app = express()
+app.use(express.json())
 
 app.post('/webhook', (req, res) => {
-  const signature = req.headers['x-webhook-signature'];
+  const signature = req.headers['x-webhook-signature']
 
   if (!signature || !verifyWebhookSignature(req.body, signature)) {
-    return res.status(401).json({ error: 'Invalid signature' });
+    return res.status(401).json({ error: 'Invalid signature' })
   }
 
   // Process webhook event
-  const event = req.body;
-  console.log('Received webhook event:', event);
+  const event = req.body
+  console.log('Received webhook event:', event)
 
   switch (event.type) {
     case 'message.created':
-      handleMessageCreated(event.data);
-      break;
+      handleMessageCreated(event.data)
+      break
     case 'channel.created':
-      handleChannelCreated(event.data);
-      break;
+      handleChannelCreated(event.data)
+      break
     // ... handle other events
   }
 
-  res.status(200).json({ received: true });
-});
+  res.status(200).json({ received: true })
+})
 
 function handleMessageCreated(message) {
-  console.log('New message:', message);
+  console.log('New message:', message)
   // Your logic here
 }
 
 function handleChannelCreated(channel) {
-  console.log('New channel:', channel);
+  console.log('New channel:', channel)
   // Your logic here
 }
 
 app.listen(3000, () => {
-  console.log('Webhook server listening on port 3000');
-});
+  console.log('Webhook server listening on port 3000')
+})
 ```
 
 #### Python/Flask
@@ -860,15 +859,15 @@ if __name__ == '__main__':
 
 ### Webhook Event Types
 
-| Event Type | Description | Payload |
-|------------|-------------|---------|
-| `message.created` | New message posted | Message object |
-| `message.updated` | Message edited | Message object |
-| `message.deleted` | Message deleted | Message ID |
-| `channel.created` | New channel created | Channel object |
-| `channel.updated` | Channel updated | Channel object |
-| `user.joined` | User joined channel | User + Channel |
-| `reaction.added` | Reaction added to message | Reaction object |
+| Event Type        | Description               | Payload         |
+| ----------------- | ------------------------- | --------------- |
+| `message.created` | New message posted        | Message object  |
+| `message.updated` | Message edited            | Message object  |
+| `message.deleted` | Message deleted           | Message ID      |
+| `channel.created` | New channel created       | Channel object  |
+| `channel.updated` | Channel updated           | Channel object  |
+| `user.joined`     | User joined channel       | User + Channel  |
+| `reaction.added`  | Reaction added to message | Reaction object |
 
 ---
 
@@ -888,14 +887,14 @@ if __name__ == '__main__':
 
 ### Common Error Codes
 
-| Code | Status | Description |
-|------|--------|-------------|
-| `INVALID_TOKEN` | 401 | Bot token is invalid or expired |
-| `MISSING_PERMISSION` | 403 | Bot lacks required permission |
-| `CHANNEL_NOT_FOUND` | 404 | Channel ID does not exist |
-| `MESSAGE_TOO_LONG` | 400 | Message exceeds length limit |
-| `RATE_LIMIT_EXCEEDED` | 429 | Too many requests |
-| `INTERNAL_ERROR` | 500 | Server error |
+| Code                  | Status | Description                     |
+| --------------------- | ------ | ------------------------------- |
+| `INVALID_TOKEN`       | 401    | Bot token is invalid or expired |
+| `MISSING_PERMISSION`  | 403    | Bot lacks required permission   |
+| `CHANNEL_NOT_FOUND`   | 404    | Channel ID does not exist       |
+| `MESSAGE_TOO_LONG`    | 400    | Message exceeds length limit    |
+| `RATE_LIMIT_EXCEEDED` | 429    | Too many requests               |
+| `INTERNAL_ERROR`      | 500    | Server error                    |
 
 ### Error Handling Example (JavaScript)
 
@@ -903,26 +902,26 @@ if __name__ == '__main__':
 async function sendMessageWithRetry(channelId, content, maxRetries = 3) {
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      return await sendMessage(channelId, content);
+      return await sendMessage(channelId, content)
     } catch (error) {
       if (error.response?.status === 429) {
         // Rate limited - wait and retry
-        const retryAfter = error.response.headers['retry-after'] || 60;
-        console.log(`Rate limited. Retrying after ${retryAfter}s...`);
-        await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
-        continue;
+        const retryAfter = error.response.headers['retry-after'] || 60
+        console.log(`Rate limited. Retrying after ${retryAfter}s...`)
+        await new Promise((resolve) => setTimeout(resolve, retryAfter * 1000))
+        continue
       }
 
       if (error.response?.status >= 500 && attempt < maxRetries) {
         // Server error - retry with exponential backoff
-        const delay = Math.pow(2, attempt) * 1000;
-        console.log(`Server error. Retrying in ${delay}ms...`);
-        await new Promise(resolve => setTimeout(resolve, delay));
-        continue;
+        const delay = Math.pow(2, attempt) * 1000
+        console.log(`Server error. Retrying in ${delay}ms...`)
+        await new Promise((resolve) => setTimeout(resolve, delay))
+        continue
       }
 
       // Non-retryable error or max retries reached
-      throw error;
+      throw error
     }
   }
 }
@@ -945,65 +944,65 @@ async function sendMessageWithRetry(channelId, content, maxRetries = 3) {
 ```javascript
 class RateLimitedBotClient {
   constructor(token) {
-    this.token = token;
-    this.requestQueue = [];
-    this.processing = false;
+    this.token = token
+    this.requestQueue = []
+    this.processing = false
   }
 
   async request(endpoint, options) {
     return new Promise((resolve, reject) => {
-      this.requestQueue.push({ endpoint, options, resolve, reject });
-      this.processQueue();
-    });
+      this.requestQueue.push({ endpoint, options, resolve, reject })
+      this.processQueue()
+    })
   }
 
   async processQueue() {
-    if (this.processing || this.requestQueue.length === 0) return;
+    if (this.processing || this.requestQueue.length === 0) return
 
-    this.processing = true;
+    this.processing = true
 
     while (this.requestQueue.length > 0) {
-      const { endpoint, options, resolve, reject } = this.requestQueue.shift();
+      const { endpoint, options, resolve, reject } = this.requestQueue.shift()
 
       try {
         const response = await fetch(`${API_URL}${endpoint}`, {
           ...options,
           headers: {
-            'Authorization': `Bearer ${this.token}`,
+            Authorization: `Bearer ${this.token}`,
             ...options.headers,
           },
-        });
+        })
 
-        const remaining = parseInt(response.headers.get('X-RateLimit-Remaining') || '0');
-        const resetTime = parseInt(response.headers.get('X-RateLimit-Reset') || '0');
+        const remaining = parseInt(response.headers.get('X-RateLimit-Remaining') || '0')
+        const resetTime = parseInt(response.headers.get('X-RateLimit-Reset') || '0')
 
         if (response.status === 429) {
           // Rate limited - requeue and wait
-          this.requestQueue.unshift({ endpoint, options, resolve, reject });
-          const waitTime = (resetTime - Date.now()) || 60000;
-          await new Promise(r => setTimeout(r, waitTime));
-          continue;
+          this.requestQueue.unshift({ endpoint, options, resolve, reject })
+          const waitTime = resetTime - Date.now() || 60000
+          await new Promise((r) => setTimeout(r, waitTime))
+          continue
         }
 
-        const data = await response.json();
-        resolve(data);
+        const data = await response.json()
+        resolve(data)
 
         // Proactive rate limiting
         if (remaining <= 10) {
-          const waitTime = (resetTime - Date.now()) / (remaining + 1);
-          await new Promise(r => setTimeout(r, waitTime));
+          const waitTime = (resetTime - Date.now()) / (remaining + 1)
+          await new Promise((r) => setTimeout(r, waitTime))
         }
       } catch (error) {
-        reject(error);
+        reject(error)
       }
     }
 
-    this.processing = false;
+    this.processing = false
   }
 }
 
 // Usage
-const bot = new RateLimitedBotClient('nbot_YOUR_TOKEN_HERE');
+const bot = new RateLimitedBotClient('nbot_YOUR_TOKEN_HERE')
 ```
 
 ---
@@ -1014,10 +1013,10 @@ const bot = new RateLimitedBotClient('nbot_YOUR_TOKEN_HERE');
 
 ```javascript
 // ✅ Good
-const BOT_TOKEN = process.env.BOT_TOKEN;
+const BOT_TOKEN = process.env.BOT_TOKEN
 
 // ❌ Bad
-const BOT_TOKEN = 'nbot_hardcoded_token';
+const BOT_TOKEN = 'nbot_hardcoded_token'
 ```
 
 ### 2. Implement Exponential Backoff
@@ -1026,10 +1025,10 @@ const BOT_TOKEN = 'nbot_hardcoded_token';
 async function withRetry(fn, maxRetries = 3) {
   for (let i = 0; i < maxRetries; i++) {
     try {
-      return await fn();
+      return await fn()
     } catch (error) {
-      if (i === maxRetries - 1) throw error;
-      await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
+      if (i === maxRetries - 1) throw error
+      await new Promise((r) => setTimeout(r, Math.pow(2, i) * 1000))
     }
   }
 }
@@ -1040,11 +1039,11 @@ async function withRetry(fn, maxRetries = 3) {
 ```javascript
 function sendMessage(channelId, content) {
   if (!channelId || typeof channelId !== 'string') {
-    throw new Error('Invalid channel ID');
+    throw new Error('Invalid channel ID')
   }
 
   if (!content || content.length > 4000) {
-    throw new Error('Content must be between 1 and 4000 characters');
+    throw new Error('Content must be between 1 and 4000 characters')
   }
 
   // ... make API call
@@ -1055,13 +1054,13 @@ function sendMessage(channelId, content) {
 
 ```javascript
 try {
-  await sendMessage(channelId, content);
+  await sendMessage(channelId, content)
 } catch (error) {
   console.error('Failed to send message:', {
     channelId,
     error: error.message,
     stack: error.stack,
-  });
+  })
   // Report to error tracking service
 }
 ```
@@ -1073,20 +1072,20 @@ Instead of polling for new messages, use webhooks to receive events in real-time
 ### 6. Cache Channel/User Info
 
 ```javascript
-const cache = new Map();
+const cache = new Map()
 
 async function getChannelInfoCached(channelId) {
   if (cache.has(channelId)) {
-    return cache.get(channelId);
+    return cache.get(channelId)
   }
 
-  const channel = await getChannelInfo(channelId);
-  cache.set(channelId, channel);
+  const channel = await getChannelInfo(channelId)
+  cache.set(channelId, channel)
 
   // Expire after 5 minutes
-  setTimeout(() => cache.delete(channelId), 5 * 60 * 1000);
+  setTimeout(() => cache.delete(channelId), 5 * 60 * 1000)
 
-  return channel;
+  return channel
 }
 ```
 
@@ -1095,77 +1094,74 @@ async function getChannelInfoCached(channelId) {
 ## Complete Bot Example (JavaScript)
 
 ```javascript
-const fetch = require('node-fetch');
-const express = require('express');
-const crypto = require('crypto');
+const fetch = require('node-fetch')
+const express = require('express')
+const crypto = require('crypto')
 
 class NchatBot {
   constructor(token, webhookSecret) {
-    this.token = token;
-    this.webhookSecret = webhookSecret;
-    this.apiUrl = 'https://your-domain.com/api/bots';
+    this.token = token
+    this.webhookSecret = webhookSecret
+    this.apiUrl = 'https://your-domain.com/api/bots'
   }
 
   async sendMessage(channelId, content) {
     const response = await fetch(`${this.apiUrl}/send-message`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${this.token}`,
+        Authorization: `Bearer ${this.token}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ channel_id: channelId, content, type: 'text' }),
-    });
+    })
 
-    if (!response.ok) throw new Error(await response.text());
-    return await response.json();
+    if (!response.ok) throw new Error(await response.text())
+    return await response.json()
   }
 
   verifyWebhookSignature(payload, signature) {
     const expectedSignature = crypto
       .createHmac('sha256', this.webhookSecret)
       .update(JSON.stringify(payload))
-      .digest('hex');
+      .digest('hex')
 
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    );
+    return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))
   }
 
   createWebhookServer(port = 3000) {
-    const app = express();
-    app.use(express.json());
+    const app = express()
+    app.use(express.json())
 
     app.post('/webhook', async (req, res) => {
-      const signature = req.headers['x-webhook-signature'];
+      const signature = req.headers['x-webhook-signature']
 
       if (!signature || !this.verifyWebhookSignature(req.body, signature)) {
-        return res.status(401).json({ error: 'Invalid signature' });
+        return res.status(401).json({ error: 'Invalid signature' })
       }
 
       try {
-        await this.handleWebhook(req.body);
-        res.status(200).json({ received: true });
+        await this.handleWebhook(req.body)
+        res.status(200).json({ received: true })
       } catch (error) {
-        console.error('Webhook error:', error);
-        res.status(500).json({ error: 'Internal error' });
+        console.error('Webhook error:', error)
+        res.status(500).json({ error: 'Internal error' })
       }
-    });
+    })
 
     app.listen(port, () => {
-      console.log(`Webhook server listening on port ${port}`);
-    });
+      console.log(`Webhook server listening on port ${port}`)
+    })
 
-    return app;
+    return app
   }
 
   async handleWebhook(event) {
-    console.log('Received event:', event.type);
+    console.log('Received event:', event.type)
 
     switch (event.type) {
       case 'message.created':
-        await this.onMessageCreated(event.data);
-        break;
+        await this.onMessageCreated(event.data)
+        break
       // ... handle other events
     }
   }
@@ -1173,27 +1169,22 @@ class NchatBot {
   async onMessageCreated(message) {
     // Bot logic: respond to mentions
     if (message.content.includes('@bot')) {
-      await this.sendMessage(
-        message.channel_id,
-        `Hello! You mentioned me. How can I help?`
-      );
+      await this.sendMessage(message.channel_id, `Hello! You mentioned me. How can I help?`)
     }
   }
 }
 
 // Usage
-const bot = new NchatBot(
-  process.env.BOT_TOKEN,
-  process.env.WEBHOOK_SECRET
-);
+const bot = new NchatBot(process.env.BOT_TOKEN, process.env.WEBHOOK_SECRET)
 
 // Start webhook server
-bot.createWebhookServer(3000);
+bot.createWebhookServer(3000)
 
 // Send a message
-bot.sendMessage('550e8400-e29b-41d4-a716-446655440000', 'Bot is online!')
+bot
+  .sendMessage('550e8400-e29b-41d4-a716-446655440000', 'Bot is online!')
   .then(() => console.log('Message sent'))
-  .catch(err => console.error('Error:', err));
+  .catch((err) => console.error('Error:', err))
 ```
 
 ---

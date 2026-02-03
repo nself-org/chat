@@ -14,15 +14,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
-import {
-  Zap,
-  Users,
-  Hash,
-  FileText,
-  Activity,
-  Settings,
-  ChevronRight,
-} from 'lucide-react'
+import { Zap, Users, Hash, FileText, Activity, Settings, ChevronRight } from 'lucide-react'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -175,23 +167,23 @@ export default function AdvancedAdminPage() {
         <Tabs defaultValue="bulk-users" className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="bulk-users">
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="mr-2 h-4 w-4" />
               Bulk Users
             </TabsTrigger>
             <TabsTrigger value="bulk-channels">
-              <Hash className="h-4 w-4 mr-2" />
+              <Hash className="mr-2 h-4 w-4" />
               Bulk Channels
             </TabsTrigger>
             <TabsTrigger value="automation">
-              <Zap className="h-4 w-4 mr-2" />
+              <Zap className="mr-2 h-4 w-4" />
               Automation
             </TabsTrigger>
             <TabsTrigger value="monitoring">
-              <Activity className="h-4 w-4 mr-2" />
+              <Activity className="mr-2 h-4 w-4" />
               Monitoring
             </TabsTrigger>
             <TabsTrigger value="audit">
-              <FileText className="h-4 w-4 mr-2" />
+              <FileText className="mr-2 h-4 w-4" />
               Audit Log
             </TabsTrigger>
           </TabsList>
@@ -201,27 +193,25 @@ export default function AdvancedAdminPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>User Management</CardTitle>
-                  <CardDescription>
-                    Perform bulk operations on user accounts
-                  </CardDescription>
+                  <CardDescription>Perform bulk operations on user accounts</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 rounded-lg border">
+                    <div className="flex items-center justify-between rounded-lg border p-3">
                       <div>
                         <p className="font-medium">Total Users</p>
                         <p className="text-sm text-muted-foreground">156 active accounts</p>
                       </div>
                       <Badge>156</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-3 rounded-lg border">
+                    <div className="flex items-center justify-between rounded-lg border p-3">
                       <div>
                         <p className="font-medium">Pending Invites</p>
                         <p className="text-sm text-muted-foreground">Awaiting acceptance</p>
                       </div>
                       <Badge variant="secondary">8</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-3 rounded-lg border">
+                    <div className="flex items-center justify-between rounded-lg border p-3">
                       <div>
                         <p className="font-medium">Suspended</p>
                         <p className="text-sm text-muted-foreground">Temporary suspensions</p>
@@ -230,9 +220,9 @@ export default function AdvancedAdminPage() {
                     </div>
                   </div>
                   <Link href="/admin/users">
-                    <Button variant="outline" className="w-full mt-4">
+                    <Button variant="outline" className="mt-4 w-full">
                       View All Users
-                      <ChevronRight className="h-4 w-4 ml-2" />
+                      <ChevronRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
                 </CardContent>
@@ -253,27 +243,25 @@ export default function AdvancedAdminPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Channel Management</CardTitle>
-                  <CardDescription>
-                    Perform bulk operations on channels
-                  </CardDescription>
+                  <CardDescription>Perform bulk operations on channels</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 rounded-lg border">
+                    <div className="flex items-center justify-between rounded-lg border p-3">
                       <div>
                         <p className="font-medium">Total Channels</p>
                         <p className="text-sm text-muted-foreground">Public and private</p>
                       </div>
                       <Badge>24</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-3 rounded-lg border">
+                    <div className="flex items-center justify-between rounded-lg border p-3">
                       <div>
                         <p className="font-medium">Public Channels</p>
                         <p className="text-sm text-muted-foreground">Accessible to all</p>
                       </div>
                       <Badge variant="secondary">18</Badge>
                     </div>
-                    <div className="flex items-center justify-between p-3 rounded-lg border">
+                    <div className="flex items-center justify-between rounded-lg border p-3">
                       <div>
                         <p className="font-medium">Archived</p>
                         <p className="text-sm text-muted-foreground">No longer active</p>
@@ -282,9 +270,9 @@ export default function AdvancedAdminPage() {
                     </div>
                   </div>
                   <Link href="/admin/channels">
-                    <Button variant="outline" className="w-full mt-4">
+                    <Button variant="outline" className="mt-4 w-full">
                       View All Channels
-                      <ChevronRight className="h-4 w-4 ml-2" />
+                      <ChevronRight className="ml-2 h-4 w-4" />
                     </Button>
                   </Link>
                 </CardContent>
@@ -314,7 +302,7 @@ export default function AdvancedAdminPage() {
         </Tabs>
 
         {/* Feature Highlights */}
-        <Card className="bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-blue-500/20">
+        <Card className="border-blue-500/20 bg-gradient-to-r from-blue-500/10 to-purple-500/10">
           <CardHeader>
             <CardTitle>New in v0.5.0</CardTitle>
             <CardDescription>
@@ -381,7 +369,9 @@ function QuickStatCard({
 
   return (
     <Link href={href}>
-      <Card className={`hover:border-primary transition-colors cursor-pointer ${colorClasses[variant]}`}>
+      <Card
+        className={`cursor-pointer transition-colors hover:border-primary ${colorClasses[variant]}`}
+      >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">{title}</CardTitle>
           {icon}
@@ -404,9 +394,9 @@ interface FeatureCardProps {
 function FeatureCard({ title, description, icon }: FeatureCardProps) {
   return (
     <div className="flex gap-3">
-      <div className="flex-shrink-0 mt-1">{icon}</div>
+      <div className="mt-1 flex-shrink-0">{icon}</div>
       <div>
-        <h4 className="font-medium mb-1">{title}</h4>
+        <h4 className="mb-1 font-medium">{title}</h4>
         <p className="text-sm text-muted-foreground">{description}</p>
       </div>
     </div>

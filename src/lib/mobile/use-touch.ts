@@ -44,13 +44,7 @@ export interface PinchOptions {
  * Supports both touch and mouse events
  */
 export function useLongPress(options: LongPressOptions = {}) {
-  const {
-    delay = 500,
-    threshold = 10,
-    onLongPress,
-    onPress,
-    onCancel,
-  } = options
+  const { delay = 500, threshold = 10, onLongPress, onPress, onCancel } = options
 
   const timerRef = useRef<NodeJS.Timeout | null>(null)
   const startPosRef = useRef<{ x: number; y: number } | null>(null)
@@ -206,13 +200,7 @@ export function useDoubleTap(options: DoubleTapOptions = {}) {
  * Pinch zoom gesture detection
  */
 export function usePinch(options: PinchOptions = {}) {
-  const {
-    onPinchStart,
-    onPinch,
-    onPinchEnd,
-    minScale = 0.5,
-    maxScale = 3,
-  } = options
+  const { onPinchStart, onPinch, onPinchEnd, minScale = 0.5, maxScale = 3 } = options
 
   const [state, setState] = useState<PinchState>({
     scale: 1,

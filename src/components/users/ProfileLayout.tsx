@@ -48,21 +48,12 @@ const LAYOUTS = [
 // ============================================================================
 
 const ProfileLayout = React.forwardRef<HTMLDivElement, ProfileLayoutProps>(
-  (
-    {
-      className,
-      selectedLayout,
-      onLayoutChange,
-      disabled = false,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, selectedLayout, onLayoutChange, disabled = false, ...props }, ref) => {
     return (
       <div ref={ref} className={cn('space-y-4', className)} {...props}>
         <div>
           <Label className="text-sm font-medium">Profile Layout</Label>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="mt-1 text-xs text-muted-foreground">
             Choose how your profile information is displayed
           </p>
         </div>
@@ -87,17 +78,17 @@ const ProfileLayout = React.forwardRef<HTMLDivElement, ProfileLayoutProps>(
                 <Label
                   htmlFor={`layout-${layout.id}`}
                   className={cn(
-                    'flex items-center gap-4 rounded-lg border-2 p-4 cursor-pointer',
-                    'transition-all hover:border-muted-foreground/50',
-                    'peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5',
+                    'flex cursor-pointer items-center gap-4 rounded-lg border-2 p-4',
+                    'hover:border-muted-foreground/50 transition-all',
+                    'peer-data-[state=checked]:bg-primary/5 peer-data-[state=checked]:border-primary',
                     disabled && 'cursor-not-allowed opacity-50'
                   )}
                 >
                   <div
                     className={cn(
-                      'flex items-center justify-center h-10 w-10 rounded-lg',
+                      'flex h-10 w-10 items-center justify-center rounded-lg',
                       isSelected
-                        ? 'bg-primary text-primary-foreground'
+                        ? 'text-primary-foreground bg-primary'
                         : 'bg-muted text-muted-foreground'
                     )}
                   >
@@ -106,13 +97,9 @@ const ProfileLayout = React.forwardRef<HTMLDivElement, ProfileLayoutProps>(
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{layout.name}</span>
-                      {isSelected && (
-                        <Check className="h-4 w-4 text-primary" />
-                      )}
+                      {isSelected && <Check className="h-4 w-4 text-primary" />}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      {layout.description}
-                    </p>
+                    <p className="mt-0.5 text-xs text-muted-foreground">{layout.description}</p>
                   </div>
                 </Label>
               </div>
@@ -121,8 +108,8 @@ const ProfileLayout = React.forwardRef<HTMLDivElement, ProfileLayoutProps>(
         </RadioGroup>
 
         {/* Layout preview */}
-        <div className="p-4 rounded-lg border">
-          <p className="text-xs font-medium mb-3">Preview</p>
+        <div className="rounded-lg border p-4">
+          <p className="mb-3 text-xs font-medium">Preview</p>
           <LayoutPreview layout={selectedLayout} />
         </div>
       </div>
@@ -138,47 +125,47 @@ ProfileLayout.displayName = 'ProfileLayout'
 function LayoutPreview({ layout }: { layout: ProfileLayoutOption }) {
   if (layout === 'compact') {
     return (
-      <div className="bg-muted/50 rounded-lg p-3 space-y-2">
+      <div className="bg-muted/50 space-y-2 rounded-lg p-3">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-muted" />
           <div className="flex-1 space-y-1">
-            <div className="h-2.5 w-24 bg-muted rounded" />
-            <div className="h-2 w-16 bg-muted/70 rounded" />
+            <div className="h-2.5 w-24 rounded bg-muted" />
+            <div className="bg-muted/70 h-2 w-16 rounded" />
           </div>
         </div>
-        <div className="h-2 w-full bg-muted/50 rounded" />
-        <div className="h-2 w-3/4 bg-muted/50 rounded" />
+        <div className="bg-muted/50 h-2 w-full rounded" />
+        <div className="bg-muted/50 h-2 w-3/4 rounded" />
       </div>
     )
   }
 
   if (layout === 'expanded') {
     return (
-      <div className="bg-muted/50 rounded-lg overflow-hidden">
+      <div className="bg-muted/50 overflow-hidden rounded-lg">
         {/* Cover */}
-        <div className="h-12 bg-gradient-to-r from-primary/30 to-primary/10" />
+        <div className="from-primary/30 to-primary/10 h-12 bg-gradient-to-r" />
         {/* Content */}
-        <div className="p-3 space-y-3">
+        <div className="space-y-3 p-3">
           {/* Header */}
-          <div className="flex items-end gap-3 -mt-6">
-            <div className="h-12 w-12 rounded-full bg-muted border-2 border-background" />
-            <div className="flex-1 pb-1 space-y-1">
-              <div className="h-2.5 w-20 bg-muted rounded" />
-              <div className="h-2 w-14 bg-muted/70 rounded" />
+          <div className="-mt-6 flex items-end gap-3">
+            <div className="h-12 w-12 rounded-full border-2 border-background bg-muted" />
+            <div className="flex-1 space-y-1 pb-1">
+              <div className="h-2.5 w-20 rounded bg-muted" />
+              <div className="bg-muted/70 h-2 w-14 rounded" />
             </div>
           </div>
           {/* Sections */}
           <div className="grid grid-cols-2 gap-2">
-            <div className="h-8 bg-muted/50 rounded" />
-            <div className="h-8 bg-muted/50 rounded" />
-            <div className="h-8 bg-muted/50 rounded" />
-            <div className="h-8 bg-muted/50 rounded" />
+            <div className="bg-muted/50 h-8 rounded" />
+            <div className="bg-muted/50 h-8 rounded" />
+            <div className="bg-muted/50 h-8 rounded" />
+            <div className="bg-muted/50 h-8 rounded" />
           </div>
           {/* Bio */}
           <div className="space-y-1">
-            <div className="h-2 w-full bg-muted/50 rounded" />
-            <div className="h-2 w-full bg-muted/50 rounded" />
-            <div className="h-2 w-2/3 bg-muted/50 rounded" />
+            <div className="bg-muted/50 h-2 w-full rounded" />
+            <div className="bg-muted/50 h-2 w-full rounded" />
+            <div className="bg-muted/50 h-2 w-2/3 rounded" />
           </div>
         </div>
       </div>
@@ -187,23 +174,23 @@ function LayoutPreview({ layout }: { layout: ProfileLayoutOption }) {
 
   // Standard layout
   return (
-    <div className="bg-muted/50 rounded-lg overflow-hidden">
+    <div className="bg-muted/50 overflow-hidden rounded-lg">
       {/* Cover */}
-      <div className="h-8 bg-gradient-to-r from-primary/30 to-primary/10" />
+      <div className="from-primary/30 to-primary/10 h-8 bg-gradient-to-r" />
       {/* Content */}
-      <div className="p-3 space-y-2">
+      <div className="space-y-2 p-3">
         {/* Header */}
-        <div className="flex items-end gap-3 -mt-5">
-          <div className="h-10 w-10 rounded-full bg-muted border-2 border-background" />
-          <div className="flex-1 pb-1 space-y-1">
-            <div className="h-2.5 w-20 bg-muted rounded" />
-            <div className="h-2 w-14 bg-muted/70 rounded" />
+        <div className="-mt-5 flex items-end gap-3">
+          <div className="h-10 w-10 rounded-full border-2 border-background bg-muted" />
+          <div className="flex-1 space-y-1 pb-1">
+            <div className="h-2.5 w-20 rounded bg-muted" />
+            <div className="bg-muted/70 h-2 w-14 rounded" />
           </div>
         </div>
         {/* Info */}
         <div className="space-y-1">
-          <div className="h-2 w-full bg-muted/50 rounded" />
-          <div className="h-2 w-2/3 bg-muted/50 rounded" />
+          <div className="bg-muted/50 h-2 w-full rounded" />
+          <div className="bg-muted/50 h-2 w-2/3 rounded" />
         </div>
       </div>
     </div>

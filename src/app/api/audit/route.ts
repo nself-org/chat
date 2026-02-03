@@ -16,7 +16,10 @@ import type {
   AuditCategory,
   AuditSeverity,
 } from '@/lib/audit/audit-types'
+
 import { queryAuditLogs } from '@/lib/audit/audit-search'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Mock Data Store (In production, use database)
@@ -51,9 +54,7 @@ export async function GET(request: NextRequest) {
     const resourceId = searchParams.get('resource') || undefined
     const startDate = searchParams.get('from') ? new Date(searchParams.get('from')!) : undefined
     const endDate = searchParams.get('to') ? new Date(searchParams.get('to')!) : undefined
-    const success = searchParams.get('success')
-      ? searchParams.get('success') === 'true'
-      : undefined
+    const success = searchParams.get('success') ? searchParams.get('success') === 'true' : undefined
 
     // Build filters
     const filters: AuditLogFilters = {
@@ -86,7 +87,7 @@ export async function GET(request: NextRequest) {
       data: result,
     })
   } catch (error) {
-    console.error('[Audit API] GET error:', error)
+    logger.error('[Audit API] GET error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -186,7 +187,7 @@ export async function POST(request: NextRequest) {
       data: entry,
     })
   } catch (error) {
-    console.error('[Audit API] POST error:', error)
+    logger.error('[Audit API] POST error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -252,7 +253,7 @@ export async function DELETE(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('[Audit API] DELETE error:', error)
+    logger.error('[Audit API] DELETE error:', error)
     return NextResponse.json(
       {
         success: false,

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * SearchHistory - Manage and display search history
@@ -12,7 +12,7 @@
  * - Export history
  */
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Clock,
   X,
@@ -24,13 +24,13 @@ import {
   Calendar,
   User,
   Hash,
-} from 'lucide-react';
-import { formatDistanceToNow, format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
+} from 'lucide-react'
+import { formatDistanceToNow, format } from 'date-fns'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,8 +41,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
-import { useSearchStore, type RecentSearch } from '@/stores/search-store';
+} from '@/components/ui/alert-dialog'
+import { useSearchStore, type RecentSearch } from '@/stores/search-store'
 
 // ============================================================================
 // Types
@@ -50,13 +50,13 @@ import { useSearchStore, type RecentSearch } from '@/stores/search-store';
 
 export interface SearchHistoryProps {
   /** Maximum number of items to display */
-  maxItems?: number;
+  maxItems?: number
   /** Callback when a search is selected */
-  onSelect?: (search: RecentSearch) => void;
+  onSelect?: (search: RecentSearch) => void
   /** Callback when export is clicked */
-  onExport?: (searches: RecentSearch[]) => void;
+  onExport?: (searches: RecentSearch[]) => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -69,12 +69,12 @@ export function SearchHistory({
   onExport,
   className,
 }: SearchHistoryProps) {
-  const recentSearches = useSearchStore((state) => state.recentSearches);
-  const removeRecentSearch = useSearchStore((state) => state.removeRecentSearch);
-  const clearRecentSearches = useSearchStore((state) => state.clearRecentSearches);
-  const loadSavedSearch = useSearchStore((state) => state.loadSavedSearch);
+  const recentSearches = useSearchStore((state) => state.recentSearches)
+  const removeRecentSearch = useSearchStore((state) => state.removeRecentSearch)
+  const clearRecentSearches = useSearchStore((state) => state.clearRecentSearches)
+  const loadSavedSearch = useSearchStore((state) => state.loadSavedSearch)
 
-  const displaySearches = recentSearches.slice(0, maxItems);
+  const displaySearches = recentSearches.slice(0, maxItems)
 
   const handleSelectSearch = (search: RecentSearch) => {
     // Load the search into the store
@@ -90,46 +90,39 @@ export function SearchHistory({
         is: search.filters.is || [],
       },
       createdAt: search.timestamp,
-    });
-    onSelect?.(search);
-  };
+    })
+    onSelect?.(search)
+  }
 
   const handleRemoveSearch = (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    removeRecentSearch(id);
-  };
+    e.stopPropagation()
+    removeRecentSearch(id)
+  }
 
   const handleExport = () => {
     if (onExport) {
-      onExport(recentSearches);
+      onExport(recentSearches)
     } else {
       // Default export as JSON
-      const dataStr = JSON.stringify(recentSearches, null, 2);
-      const dataBlob = new Blob([dataStr], { type: 'application/json' });
-      const url = URL.createObjectURL(dataBlob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `search-history-${format(new Date(), 'yyyy-MM-dd')}.json`;
-      link.click();
-      URL.revokeObjectURL(url);
+      const dataStr = JSON.stringify(recentSearches, null, 2)
+      const dataBlob = new Blob([dataStr], { type: 'application/json' })
+      const url = URL.createObjectURL(dataBlob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `search-history-${format(new Date(), 'yyyy-MM-dd')}.json`
+      link.click()
+      URL.revokeObjectURL(url)
     }
-  };
+  }
 
   if (displaySearches.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex flex-col items-center justify-center py-12 text-center',
-          className
-        )}
-      >
-        <Clock className="h-12 w-12 text-muted-foreground/50" />
+      <div className={cn('flex flex-col items-center justify-center py-12 text-center', className)}>
+        <Clock className="text-muted-foreground/50 h-12 w-12" />
         <h3 className="mt-4 text-lg font-medium">No search history</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Your recent searches will appear here
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">Your recent searches will appear here</p>
       </div>
-    );
+    )
   }
 
   return (
@@ -143,12 +136,7 @@ export function SearchHistory({
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleExport}
-            className="h-8 gap-1 px-2"
-          >
+          <Button variant="outline" size="sm" onClick={handleExport} className="h-8 gap-1 px-2">
             <Download className="h-3.5 w-3.5" />
             Export
           </Button>
@@ -169,15 +157,15 @@ export function SearchHistory({
                 <AlertDialogTitle>Clear search history?</AlertDialogTitle>
                 <AlertDialogDescription>
                   This will permanently delete all {recentSearches.length} search
-                  {recentSearches.length !== 1 ? 'es' : ''} from your history. This
-                  action cannot be undone.
+                  {recentSearches.length !== 1 ? 'es' : ''} from your history. This action cannot be
+                  undone.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                 <AlertDialogAction
                   onClick={clearRecentSearches}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                 >
                   Clear history
                 </AlertDialogAction>
@@ -201,7 +189,7 @@ export function SearchHistory({
         </div>
       </ScrollArea>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -209,28 +197,28 @@ export function SearchHistory({
 // ============================================================================
 
 interface SearchHistoryItemProps {
-  search: RecentSearch;
-  onClick: () => void;
-  onRemove: (e: React.MouseEvent) => void;
+  search: RecentSearch
+  onClick: () => void
+  onRemove: (e: React.MouseEvent) => void
 }
 
 function SearchHistoryItem({ search, onClick, onRemove }: SearchHistoryItemProps) {
-  const [isHovered, setIsHovered] = React.useState(false);
+  const [isHovered, setIsHovered] = React.useState(false)
 
   // Calculate filter count
   const filterCount = React.useMemo(() => {
-    let count = 0;
-    if (search.filters.fromUsers?.length) count += search.filters.fromUsers.length;
-    if (search.filters.inChannels?.length) count += search.filters.inChannels.length;
-    if (search.filters.dateRange?.from || search.filters.dateRange?.to) count += 1;
-    if (search.filters.has?.length) count += search.filters.has.length;
-    if (search.filters.is?.length) count += search.filters.is.length;
-    return count;
-  }, [search.filters]);
+    let count = 0
+    if (search.filters.fromUsers?.length) count += search.filters.fromUsers.length
+    if (search.filters.inChannels?.length) count += search.filters.inChannels.length
+    if (search.filters.dateRange?.from || search.filters.dateRange?.to) count += 1
+    if (search.filters.has?.length) count += search.filters.has.length
+    if (search.filters.is?.length) count += search.filters.is.length
+    return count
+  }, [search.filters])
 
   const timeAgo = formatDistanceToNow(new Date(search.timestamp), {
     addSuffix: true,
-  });
+  })
 
   return (
     <button
@@ -287,9 +275,7 @@ function SearchHistoryItem({ search, onClick, onRemove }: SearchHistoryItemProps
         {/* Timestamp */}
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Clock className="h-3 w-3" />
-          <span title={format(new Date(search.timestamp), 'PPpp')}>
-            {timeAgo}
-          </span>
+          <span title={format(new Date(search.timestamp), 'PPpp')}>{timeAgo}</span>
         </div>
       </div>
 
@@ -305,8 +291,8 @@ function SearchHistoryItem({ search, onClick, onRemove }: SearchHistoryItemProps
           size="icon"
           className="h-8 w-8"
           onClick={(e) => {
-            e.stopPropagation();
-            onClick();
+            e.stopPropagation()
+            onClick()
           }}
           title="Re-run search"
         >
@@ -315,7 +301,7 @@ function SearchHistoryItem({ search, onClick, onRemove }: SearchHistoryItemProps
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 text-destructive hover:bg-destructive/10 hover:text-destructive"
+          className="hover:bg-destructive/10 h-8 w-8 text-destructive hover:text-destructive"
           onClick={onRemove}
           title="Remove from history"
         >
@@ -323,7 +309,7 @@ function SearchHistoryItem({ search, onClick, onRemove }: SearchHistoryItemProps
         </Button>
       </div>
     </button>
-  );
+  )
 }
 
 // ============================================================================
@@ -331,9 +317,9 @@ function SearchHistoryItem({ search, onClick, onRemove }: SearchHistoryItemProps
 // ============================================================================
 
 export interface CompactSearchHistoryProps {
-  maxItems?: number;
-  onSelect?: (search: RecentSearch) => void;
-  className?: string;
+  maxItems?: number
+  onSelect?: (search: RecentSearch) => void
+  className?: string
 }
 
 export function CompactSearchHistory({
@@ -341,11 +327,11 @@ export function CompactSearchHistory({
   onSelect,
   className,
 }: CompactSearchHistoryProps) {
-  const recentSearches = useSearchStore((state) => state.recentSearches);
-  const displaySearches = recentSearches.slice(0, maxItems);
+  const recentSearches = useSearchStore((state) => state.recentSearches)
+  const displaySearches = recentSearches.slice(0, maxItems)
 
   if (displaySearches.length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -357,7 +343,7 @@ export function CompactSearchHistory({
           onClick={() => onSelect?.(search)}
           className={cn(
             'flex w-full items-center gap-2 rounded-md px-2 py-1.5',
-            'text-sm text-left transition-colors hover:bg-accent'
+            'text-left text-sm transition-colors hover:bg-accent'
           )}
         >
           <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
@@ -368,7 +354,7 @@ export function CompactSearchHistory({
         </button>
       ))}
     </div>
-  );
+  )
 }
 
-export default SearchHistory;
+export default SearchHistory

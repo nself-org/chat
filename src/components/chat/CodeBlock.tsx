@@ -2,23 +2,11 @@
 
 import { memo, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Copy,
-  Check,
-  Download,
-  Maximize2,
-  Code2,
-  ChevronDown,
-  ChevronUp,
-} from 'lucide-react'
+import { Copy, Check, Download, Maximize2, Code2, ChevronDown, ChevronUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { logger } from '@/lib/logger'
 import {
   highlightCode,
   getLanguageDisplayName,
@@ -59,14 +47,10 @@ export const CodeBlock = memo(function CodeBlock({
   const [isCollapsed, setIsCollapsed] = useState(false)
 
   // Detect language if not provided
-  const detectedLanguage =
-    providedLanguage || detectLanguage(filename, code) || 'plaintext'
+  const detectedLanguage = providedLanguage || detectLanguage(filename, code) || 'plaintext'
 
   // Highlight code
-  const { html: highlightedCode, language } = highlightCode(
-    code,
-    detectedLanguage
-  )
+  const { html: highlightedCode, language } = highlightCode(code, detectedLanguage)
 
   // Get display name for language
   const languageDisplay = getLanguageDisplayName(language)
@@ -85,7 +69,7 @@ export const CodeBlock = memo(function CodeBlock({
         setTimeout(() => setCopied(false), 2000)
       })
       .catch((error) => {
-        console.error('Failed to copy code:', error)
+        logger.error('Failed to copy code:',  error)
       })
   }, [code])
 
@@ -106,26 +90,22 @@ export const CodeBlock = memo(function CodeBlock({
     <TooltipProvider delayDuration={300}>
       <div
         className={cn(
-          'group relative my-2 overflow-hidden rounded-lg border bg-muted/30',
-          'transition-all duration-200 hover:border-muted-foreground/20',
+          'bg-muted/30 group relative my-2 overflow-hidden rounded-lg border',
+          'hover:border-muted-foreground/20 transition-all duration-200',
           className
         )}
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b bg-muted/50 px-3 py-2">
+        <div className="bg-muted/50 flex items-center justify-between border-b px-3 py-2">
           <div className="flex items-center gap-2">
             {/* Language badge */}
-            <div className="flex items-center gap-1.5 rounded-md bg-background/80 px-2 py-1">
+            <div className="bg-background/80 flex items-center gap-1.5 rounded-md px-2 py-1">
               <Code2 className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-xs font-medium text-muted-foreground">
-                {languageDisplay}
-              </span>
+              <span className="text-xs font-medium text-muted-foreground">{languageDisplay}</span>
             </div>
 
             {/* Filename */}
-            {filename && (
-              <span className="text-xs text-muted-foreground">{filename}</span>
-            )}
+            {filename && <span className="text-xs text-muted-foreground">{filename}</span>}
 
             {/* Line count */}
             <span className="text-xs text-muted-foreground">
@@ -152,21 +132,14 @@ export const CodeBlock = memo(function CodeBlock({
                     )}
                   </Button>
                 </TooltipTrigger>
-                <TooltipContent>
-                  {isCollapsed ? 'Expand' : 'Collapse'}
-                </TooltipContent>
+                <TooltipContent>{isCollapsed ? 'Expand' : 'Collapse'}</TooltipContent>
               </Tooltip>
             )}
 
             {/* Copy button */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleCopy}
-                  className="h-7 w-7 p-0"
-                >
+                <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 w-7 p-0">
                   <AnimatePresence mode="wait">
                     {copied ? (
                       <motion.div
@@ -178,11 +151,7 @@ export const CodeBlock = memo(function CodeBlock({
                         <Check className="h-4 w-4 text-green-500" />
                       </motion.div>
                     ) : (
-                      <motion.div
-                        key="copy"
-                        initial={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                      >
+                      <motion.div key="copy" initial={{ scale: 1 }} exit={{ scale: 0 }}>
                         <Copy className="h-4 w-4" />
                       </motion.div>
                     )}
@@ -195,12 +164,7 @@ export const CodeBlock = memo(function CodeBlock({
             {/* Download button */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleDownload}
-                  className="h-7 w-7 p-0"
-                >
+                <Button variant="ghost" size="sm" onClick={handleDownload} className="h-7 w-7 p-0">
                   <Download className="h-4 w-4" />
                 </Button>
               </TooltipTrigger>
@@ -211,12 +175,7 @@ export const CodeBlock = memo(function CodeBlock({
             {onExpand && (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={onExpand}
-                    className="h-7 w-7 p-0"
-                  >
+                  <Button variant="ghost" size="sm" onClick={onExpand} className="h-7 w-7 p-0">
                     <Maximize2 className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -228,31 +187,22 @@ export const CodeBlock = memo(function CodeBlock({
 
         {/* Code content */}
         <div
-          className={cn(
-            'relative overflow-x-auto',
-            isCollapsed && 'max-h-[100px]'
-          )}
+          className={cn('relative overflow-x-auto', isCollapsed && 'max-h-[100px]')}
           style={{ maxHeight: isCollapsed ? '100px' : `${maxHeight}px` }}
         >
           <pre className="p-3">
             <code className="block font-mono text-xs leading-relaxed">
               {showLineNumbers ? (
-                <CodeWithLineNumbers
-                  code={code}
-                  highlightedCode={highlightedCode}
-                />
+                <CodeWithLineNumbers code={code} highlightedCode={highlightedCode} />
               ) : (
-                <div
-                  dangerouslySetInnerHTML={{ __html: highlightedCode }}
-                  className="hljs"
-                />
+                <div dangerouslySetInnerHTML={{ __html: highlightedCode }} className="hljs" />
               )}
             </code>
           </pre>
 
           {/* Fade overlay for collapsed state */}
           {isCollapsed && (
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-muted/30 to-transparent" />
+            <div className="from-muted/30 pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t to-transparent" />
           )}
         </div>
       </div>
@@ -265,26 +215,16 @@ CodeBlock.displayName = 'CodeBlock'
 /**
  * Code with line numbers
  */
-function CodeWithLineNumbers({
-  code,
-  highlightedCode,
-}: {
-  code: string
-  highlightedCode: string
-}) {
+function CodeWithLineNumbers({ code, highlightedCode }: { code: string; highlightedCode: string }) {
   const lines = code.split('\n')
   const highlightedLines = highlightedCode.split('\n')
 
   return (
     <div className="flex">
       {/* Line numbers */}
-      <div className="flex select-none flex-col border-r border-muted-foreground/10 pr-3 text-right">
+      <div className="border-muted-foreground/10 flex select-none flex-col border-r pr-3 text-right">
         {lines.map((_, index) => (
-          <div
-            key={index}
-            className="text-muted-foreground/50"
-            style={{ minWidth: '2.5em' }}
-          >
+          <div key={index} className="text-muted-foreground/50" style={{ minWidth: '2.5em' }}>
             {index + 1}
           </div>
         ))}

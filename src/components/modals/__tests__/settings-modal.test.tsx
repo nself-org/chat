@@ -150,12 +150,7 @@ describe('SettingsModal', () => {
     })
 
     it('renders description when provided', () => {
-      render(
-        <SettingsModal
-          {...defaultProps}
-          description="Configure your preferences"
-        />
-      )
+      render(<SettingsModal {...defaultProps} description="Configure your preferences" />)
       expect(screen.getByText('Configure your preferences')).toBeInTheDocument()
     })
 
@@ -233,12 +228,7 @@ describe('SettingsModal', () => {
     })
 
     it('renders text input from initial values', () => {
-      render(
-        <SettingsModal
-          {...defaultProps}
-          initialValues={{ username: 'customuser' }}
-        />
-      )
+      render(<SettingsModal {...defaultProps} initialValues={{ username: 'customuser' }} />)
       const input = screen.getByLabelText('Username')
       expect(input).toHaveValue('customuser')
     })
@@ -265,12 +255,7 @@ describe('SettingsModal', () => {
     })
 
     it('renders switch from initial values', () => {
-      render(
-        <SettingsModal
-          {...defaultProps}
-          initialValues={{ notifications: false }}
-        />
-      )
+      render(<SettingsModal {...defaultProps} initialValues={{ notifications: false }} />)
       const switchEl = screen.getByRole('switch', { name: /notifications/i })
       expect(switchEl).not.toBeChecked()
     })
@@ -414,9 +399,7 @@ describe('SettingsModal', () => {
 
     it('closes modal on successful save', async () => {
       const onOpenChange = jest.fn()
-      render(
-        <SettingsModal {...defaultProps} onOpenChange={onOpenChange} />
-      )
+      render(<SettingsModal {...defaultProps} onOpenChange={onOpenChange} />)
 
       // Make a change
       const input = screen.getByLabelText('Username')
@@ -433,9 +416,9 @@ describe('SettingsModal', () => {
     })
 
     it('shows loading state while saving', async () => {
-      const onSave = jest.fn().mockImplementation(
-        () => new Promise((resolve) => setTimeout(resolve, 100))
-      )
+      const onSave = jest
+        .fn()
+        .mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)))
       render(<SettingsModal {...defaultProps} onSave={onSave} />)
 
       // Make a change
@@ -525,9 +508,7 @@ describe('SettingsModal', () => {
 
     it('calls onReset when provided', async () => {
       const onReset = jest.fn()
-      render(
-        <SettingsModal {...defaultProps} showResetButton onReset={onReset} />
-      )
+      render(<SettingsModal {...defaultProps} showResetButton onReset={onReset} />)
 
       const resetButton = screen.getByRole('button', { name: /reset/i })
       await userEvent.click(resetButton)

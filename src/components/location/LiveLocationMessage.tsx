@@ -1,14 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import {
-  MapPin,
-  Navigation,
-  ExternalLink,
-  MoreVertical,
-  Timer,
-  User,
-} from 'lucide-react'
+import { MapPin, Navigation, ExternalLink, MoreVertical, Timer, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -20,11 +13,7 @@ import {
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { LocationMap } from './LocationMap'
-import {
-  LiveLocationIndicator,
-  LiveBadge,
-  LiveLocationTimer,
-} from './LiveLocationIndicator'
+import { LiveLocationIndicator, LiveBadge, LiveLocationTimer } from './LiveLocationIndicator'
 import { StopSharingButton, InlineStopButton } from './StopSharingButton'
 import {
   type LiveLocation,
@@ -72,7 +61,8 @@ export function LiveLocationMessage({
   showMap = true,
   className,
 }: LiveLocationMessageProps) {
-  const { coordinates, address, user, startedAt, expiresAt, duration, isActive, heading, speed } = location
+  const { coordinates, address, user, startedAt, expiresAt, duration, isActive, heading, speed } =
+    location
   const [remainingTime, setRemainingTime] = useState<number>(0)
 
   // Update remaining time
@@ -139,13 +129,7 @@ export function LiveLocationMessage({
 
   // Expired state
   if (!isActive || remainingTime <= 0) {
-    return (
-      <ExpiredLocationMessage
-        location={location}
-        size={size}
-        className={className}
-      />
-    )
+    return <ExpiredLocationMessage location={location} size={size} className={className} />
   }
 
   return (
@@ -187,11 +171,7 @@ export function LiveLocationMessage({
 
           {/* Timer in corner */}
           <div className="absolute bottom-2 right-2">
-            <LiveLocationTimer
-              startedAt={startedAt}
-              expiresAt={expiresAt}
-              size="sm"
-            />
+            <LiveLocationTimer startedAt={startedAt} expiresAt={expiresAt} size="sm" />
           </div>
         </div>
       )}
@@ -199,43 +179,35 @@ export function LiveLocationMessage({
       {/* User Info and Status */}
       <div className={config.padding}>
         <div className={cn('flex items-start justify-between', config.gap)}>
-          <div className="flex items-start gap-2.5 flex-1 min-w-0">
+          <div className="flex min-w-0 flex-1 items-start gap-2.5">
             {/* User Avatar */}
             <div className="relative">
               <Avatar className={config.avatar}>
-                {user.avatarUrl && (
-                  <AvatarImage src={user.avatarUrl} alt={user.displayName} />
-                )}
-                <AvatarFallback>
-                  {user.displayName.charAt(0).toUpperCase()}
-                </AvatarFallback>
+                {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.displayName} />}
+                <AvatarFallback>{user.displayName.charAt(0).toUpperCase()}</AvatarFallback>
               </Avatar>
               {/* Live indicator */}
               <div className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2 border-card bg-green-500" />
             </div>
 
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
-                <p className={cn('font-semibold truncate', config.title)}>
+                <p className={cn('truncate font-semibold', config.title)}>
                   {isOwnLocation ? 'You' : user.displayName}
                 </p>
               </div>
-              <p className={cn('text-muted-foreground', config.text)}>
-                Sharing live location
-              </p>
+              <p className={cn('text-muted-foreground', config.text)}>Sharing live location</p>
 
               {/* Location info */}
               {address && (
-                <p className={cn('text-muted-foreground mt-1 truncate', config.text)}>
-                  {typeof address === 'string'
-                    ? address
-                    : formatAddress(address, 'short')}
+                <p className={cn('mt-1 truncate text-muted-foreground', config.text)}>
+                  {typeof address === 'string' ? address : formatAddress(address, 'short')}
                 </p>
               )}
 
               {/* Speed indicator */}
               {speed !== undefined && speed > 0.5 && (
-                <p className={cn('text-muted-foreground mt-0.5', config.text)}>
+                <p className={cn('mt-0.5 text-muted-foreground', config.text)}>
                   Moving at {Math.round(speed * 3.6)} km/h
                 </p>
               )}
@@ -289,12 +261,7 @@ export function LiveLocationMessage({
             {isOwnLocation && onStopSharing ? (
               <InlineStopButton onStop={onStopSharing} />
             ) : (
-              <Button
-                variant="outline"
-                size="sm"
-                className="h-7"
-                onClick={handleGetDirections}
-              >
+              <Button variant="outline" size="sm" className="h-7" onClick={handleGetDirections}>
                 <Navigation className="mr-1.5 h-3 w-3" />
                 Directions
               </Button>
@@ -316,11 +283,7 @@ interface ExpiredLocationMessageProps {
   className?: string
 }
 
-function ExpiredLocationMessage({
-  location,
-  size = 'md',
-  className,
-}: ExpiredLocationMessageProps) {
+function ExpiredLocationMessage({ location, size = 'md', className }: ExpiredLocationMessageProps) {
   const { coordinates, user } = location
 
   const sizeConfig = {
@@ -333,24 +296,15 @@ function ExpiredLocationMessage({
 
   return (
     <div
-      className={cn(
-        'rounded-xl border bg-muted/30',
-        config.maxWidth,
-        config.padding,
-        className
-      )}
+      className={cn('bg-muted/30 rounded-xl border', config.maxWidth, config.padding, className)}
     >
       <div className="flex items-center gap-2.5">
         <Avatar className={cn(config.avatar, 'opacity-50')}>
-          {user.avatarUrl && (
-            <AvatarImage src={user.avatarUrl} alt={user.displayName} />
-          )}
-          <AvatarFallback>
-            {user.displayName.charAt(0).toUpperCase()}
-          </AvatarFallback>
+          {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.displayName} />}
+          <AvatarFallback>{user.displayName.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
 
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <p className={cn('font-medium text-muted-foreground', config.text)}>
             {user.displayName}&apos;s live location ended
           </p>

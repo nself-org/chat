@@ -11,6 +11,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { sessionManager } from '@/lib/auth/session-manager'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // GET - List Sessions
 // ============================================================================
@@ -77,11 +79,8 @@ export async function GET(request: NextRequest) {
       total: validSessions.length,
     })
   } catch (error) {
-    console.error('Error fetching sessions:', error)
-    return NextResponse.json(
-      { error: 'Failed to fetch sessions' },
-      { status: 500 }
-    )
+    logger.error('Error fetching sessions:', error)
+    return NextResponse.json({ error: 'Failed to fetch sessions' }, { status: 500 })
   }
 }
 
@@ -116,7 +115,7 @@ export async function POST(request: NextRequest) {
         }
       }
     } catch (error) {
-      console.warn('Failed to get geolocation:', error)
+      logger.warn('Failed to get geolocation:', { context: error })
     }
 
     // Create session
@@ -221,10 +220,7 @@ export async function POST(request: NextRequest) {
       const previousData = await previousSessionsResponse.json()
       const previousSessions = previousData.data?.nchat_user_sessions || []
 
-      suspiciousActivity = sessionManager.detectSuspiciousActivity(
-        session,
-        previousSessions
-      )
+      suspiciousActivity = sessionManager.detectSuspiciousActivity(session, previousSessions)
     }
 
     return NextResponse.json({
@@ -232,11 +228,8 @@ export async function POST(request: NextRequest) {
       suspiciousActivity,
     })
   } catch (error) {
-    console.error('Error creating session:', error)
-    return NextResponse.json(
-      { error: 'Failed to create session' },
-      { status: 500 }
-    )
+    logger.error('Error creating session:', error)
+    return NextResponse.json({ error: 'Failed to create session' }, { status: 500 })
   }
 }
 
@@ -260,10 +253,7 @@ export async function DELETE(request: NextRequest) {
       const currentSessionId = searchParams.get('currentSessionId')
 
       if (!currentSessionId) {
-        return NextResponse.json(
-          { error: 'Current session ID required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Current session ID required' }, { status: 400 })
       }
 
       const response = await fetch(
@@ -308,10 +298,7 @@ export async function DELETE(request: NextRequest) {
     } else {
       // Revoke single session
       if (!sessionId) {
-        return NextResponse.json(
-          { error: 'Session ID required' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Session ID required' }, { status: 400 })
       }
 
       const response = await fetch(
@@ -346,10 +333,7 @@ export async function DELETE(request: NextRequest) {
       })
     }
   } catch (error) {
-    console.error('Error revoking session:', error)
-    return NextResponse.json(
-      { error: 'Failed to revoke session' },
-      { status: 500 }
-    )
+    logger.error('Error revoking session:', error)
+    return NextResponse.json({ error: 'Failed to revoke session' }, { status: 500 })
   }
 }

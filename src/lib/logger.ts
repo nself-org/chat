@@ -30,7 +30,7 @@ class Logger {
    */
   debug(message: string, context?: LogContext): void {
     if (this.isDevelopment) {
-      console.debug(`[DEBUG] ${message}`, context || '')
+      // REMOVED: console.debug(`[DEBUG] ${message}`, context || '')
     }
   }
 
@@ -79,6 +79,54 @@ class Logger {
         },
       })
     }
+  }
+
+  /**
+   * Performance logging - for tracking operation duration
+   */
+  perf(operation: string, duration: number, context?: LogContext): void {
+    this.info(`Performance: ${operation} (${duration}ms)`, {
+      ...context,
+      operation,
+      duration,
+      type: 'performance',
+    })
+  }
+
+  /**
+   * Security event logging - always logged and sent to Sentry
+   */
+  security(event: string, context?: LogContext): void {
+    const securityContext = {
+      ...context,
+      type: 'security',
+      timestamp: Date.now(),
+    }
+
+    console.warn(`[SECURITY] ${event}`, securityContext)
+
+    if (this.isProduction) {
+      Sentry.captureMessage(`SECURITY: ${event}`, {
+        level: 'warning',
+        extra: securityContext,
+        tags: { type: 'security' },
+      })
+    }
+  }
+
+  /**
+   * Audit logging - for compliance and tracking
+   */
+  audit(action: string, userId: string, context?: LogContext): void {
+    const auditContext = {
+      ...context,
+      userId,
+      action,
+      type: 'audit',
+      timestamp: Date.now(),
+    }
+
+    this.info(`AUDIT: ${action}`, auditContext)
   }
 
   /**
@@ -136,6 +184,18 @@ class ScopedLogger {
 
   log(level: LogLevel, message: string, context?: LogContext): void {
     this.logger.log(level, `[${this.prefix}] ${message}`, context)
+  }
+
+  perf(operation: string, duration: number, context?: LogContext): void {
+    this.logger.perf(`[${this.prefix}] ${operation}`, duration, context)
+  }
+
+  security(event: string, context?: LogContext): void {
+    this.logger.security(`[${this.prefix}] ${event}`, context)
+  }
+
+  audit(action: string, userId: string, context?: LogContext): void {
+    this.logger.audit(`[${this.prefix}] ${action}`, userId, context)
   }
 }
 

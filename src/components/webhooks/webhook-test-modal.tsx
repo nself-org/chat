@@ -1,15 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
-import {
-  Loader2,
-  Send,
-  CheckCircle2,
-  XCircle,
-  AlertCircle,
-  Hash,
-  FileJson,
-} from 'lucide-react'
+import { Loader2, Send, CheckCircle2, XCircle, AlertCircle, Hash, FileJson } from 'lucide-react'
 import {
   Dialog,
   DialogContent,
@@ -137,9 +129,7 @@ export function WebhookTestModal({
 
   const resetForm = useCallback(() => {
     setContent('Hello from webhook test!')
-    setJsonPayload(
-      JSON.stringify({ content: 'Hello from webhook test!' }, null, 2)
-    )
+    setJsonPayload(JSON.stringify({ content: 'Hello from webhook test!' }, null, 2))
     setUsername('')
     setAvatarUrl('')
     setTestResult(null)
@@ -227,21 +217,19 @@ export function WebhookTestModal({
 
         <div className="space-y-4 py-2">
           {/* Webhook Info */}
-          <div className="flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
+          <div className="bg-muted/50 flex items-center gap-3 rounded-lg border p-3">
             <Avatar className="h-10 w-10">
               <AvatarImage src={webhook.avatar_url} />
               <AvatarFallback>{getInitials(webhook.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 flex-1">
-              <p className="font-medium truncate">{webhook.name}</p>
+              <p className="truncate font-medium">{webhook.name}</p>
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <Hash className="h-3.5 w-3.5" />
                 <span>{webhook.channel?.name || 'Unknown channel'}</span>
               </div>
             </div>
-            <Badge
-              variant={webhook.status === 'active' ? 'default' : 'secondary'}
-            >
+            <Badge variant={webhook.status === 'active' ? 'default' : 'secondary'}>
               {webhook.status}
             </Badge>
           </div>
@@ -320,9 +308,7 @@ export function WebhookTestModal({
 
           {/* Sample Payloads */}
           <div className="space-y-2">
-            <Label className="text-xs text-muted-foreground">
-              Sample payloads
-            </Label>
+            <Label className="text-xs text-muted-foreground">Sample payloads</Label>
             <div className="flex flex-wrap gap-2">
               {Object.entries(SAMPLE_PAYLOADS).map(([key, sample]) => (
                 <Button
@@ -330,9 +316,7 @@ export function WebhookTestModal({
                   variant="outline"
                   size="sm"
                   className="text-xs"
-                  onClick={() =>
-                    handleSelectSample(key as keyof typeof SAMPLE_PAYLOADS)
-                  }
+                  onClick={() => handleSelectSample(key as keyof typeof SAMPLE_PAYLOADS)}
                   disabled={isLoading}
                 >
                   {sample.name}
@@ -382,9 +366,7 @@ export function WebhookTestModal({
           <Button
             onClick={handleSendTest}
             disabled={
-              isLoading ||
-              webhook.status !== 'active' ||
-              (mode === 'simple' && !content.trim())
+              isLoading || webhook.status !== 'active' || (mode === 'simple' && !content.trim())
             }
           >
             {isLoading ? (

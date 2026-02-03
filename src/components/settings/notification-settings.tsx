@@ -1,25 +1,25 @@
-'use client';
+'use client'
 
 /**
  * Notification Settings Component
  * Combines notification toggle with other notification settings
  */
 
-import * as React from 'react';
-import { useState } from 'react';
-import { NotificationToggle } from './notification-toggle';
-import { SettingsSection } from './settings-section';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { useState } from 'react'
+import { NotificationToggle } from './notification-toggle'
+import { SettingsSection } from './settings-section'
+import { cn } from '@/lib/utils'
 
 export interface NotificationSettingsProps {
-  className?: string;
+  className?: string
 }
 
 export function NotificationSettings({ className }: NotificationSettingsProps) {
-  const [desktopNotifications, setDesktopNotifications] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(true);
-  const [messagePreview, setMessagePreview] = useState(true);
-  const [emailNotifications, setEmailNotifications] = useState(false);
+  const [desktopNotifications, setDesktopNotifications] = useState(true)
+  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [messagePreview, setMessagePreview] = useState(true)
+  const [emailNotifications, setEmailNotifications] = useState(false)
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -56,7 +56,7 @@ export function NotificationSettings({ className }: NotificationSettingsProps) {
         </div>
       </SettingsSection>
     </div>
-  );
+  )
 }
 
-export default NotificationSettings;
+export default NotificationSettings

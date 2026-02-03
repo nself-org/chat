@@ -42,16 +42,16 @@ export function generateIconSVG(options: IconSVGOptions): string {
     bgColor2,
     gradientDirection = 'to bottom right',
     iconShape,
-    size = 512
+    size = 512,
   } = options
 
   // Create background
   let bgElement = ''
   let defs = ''
-  
+
   if (bgType === 'gradient' && bgColor2) {
     const gradientId = 'iconGrad'
-    
+
     if (gradientDirection === 'radial') {
       defs = `
         <defs>
@@ -61,12 +61,13 @@ export function generateIconSVG(options: IconSVGOptions): string {
           </radialGradient>
         </defs>`
     } else {
-      const coords = gradientDirection === 'to right' 
-        ? 'x1="0%" y1="0%" x2="100%" y2="0%"'
-        : gradientDirection === 'to bottom' 
-        ? 'x1="0%" y1="0%" x2="0%" y2="100%"'
-        : 'x1="0%" y1="0%" x2="100%" y2="100%"'
-      
+      const coords =
+        gradientDirection === 'to right'
+          ? 'x1="0%" y1="0%" x2="100%" y2="0%"'
+          : gradientDirection === 'to bottom'
+            ? 'x1="0%" y1="0%" x2="0%" y2="100%"'
+            : 'x1="0%" y1="0%" x2="100%" y2="100%"'
+
       defs = `
         <defs>
           <linearGradient id="${gradientId}" ${coords}>
@@ -83,7 +84,7 @@ export function generateIconSVG(options: IconSVGOptions): string {
   // Create shape path
   let shapePath = ''
   if (iconShape === 'circle') {
-    shapePath = `<circle cx="${size/2}" cy="${size/2}" r="${size/2}" ${bgElement}/>`
+    shapePath = `<circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}" ${bgElement}/>`
   } else if (iconShape === 'rounded') {
     const radius = size * 0.125
     shapePath = `<rect x="0" y="0" width="${size}" height="${size}" rx="${radius}" ry="${radius}" ${bgElement}/>`
@@ -92,9 +93,7 @@ export function generateIconSVG(options: IconSVGOptions): string {
   }
 
   // Calculate font size
-  const fontSize = isSymbol ? 280 : 
-                  content.length === 1 ? 320 : 
-                  content.length === 2 ? 240 : 180
+  const fontSize = isSymbol ? 280 : content.length === 1 ? 320 : content.length === 2 ? 240 : 180
 
   const svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" xmlns="http://www.w3.org/2000/svg">
   ${defs}
@@ -131,7 +130,7 @@ export function generateLogoSVG(options: LogoSVGOptions): string {
     textOffsetX = 0,
     textOffsetY = 0,
     taglineOffsetX = 0,
-    taglineOffsetY = 0
+    taglineOffsetY = 0,
   } = options
 
   // Calculate dimensions
@@ -140,66 +139,70 @@ export function generateLogoSVG(options: LogoSVGOptions): string {
   const fontSize = 32
   const taglineFontSize = tagline ? 14 : 0
   const padding = 32
-  
+
   // Estimate text width (rough approximation)
   const textWidth = text.length * fontSize * 0.6
   const taglineWidth = tagline ? tagline.length * taglineFontSize * 0.6 : 0
   const maxTextWidth = Math.max(textWidth, taglineWidth)
-  
+
   let width: number, height: number
-  
+
   if (iconPosition === 'top') {
-    width = Math.max(iconSize, maxTextWidth) + (padding * 2)
-    height = iconSize + iconSpacing + fontSize + (tagline ? 8 + taglineFontSize : 0) + (padding * 2)
+    width = Math.max(iconSize, maxTextWidth) + padding * 2
+    height = iconSize + iconSpacing + fontSize + (tagline ? 8 + taglineFontSize : 0) + padding * 2
   } else {
-    width = iconSize + iconSpacing + maxTextWidth + (padding * 2)
-    height = Math.max(iconSize, fontSize + (tagline ? 8 + taglineFontSize : 0)) + (padding * 2)
+    width = iconSize + iconSpacing + maxTextWidth + padding * 2
+    height = Math.max(iconSize, fontSize + (tagline ? 8 + taglineFontSize : 0)) + padding * 2
   }
 
   let elements: string[] = []
-  
+
   // Background
   if (backgroundColor !== 'transparent') {
     elements.push(`<rect width="${width}" height="${height}" fill="${backgroundColor}"/>`)
   }
-  
+
   // Icon
   if (includeIcon && iconSvg) {
     let iconX = padding
     let iconY = padding
-    
+
     if (iconPosition === 'top') {
       if (alignment === 'center') iconX = (width - iconSize) / 2
       else if (alignment === 'right') iconX = width - padding - iconSize
     } else {
       iconY = (height - iconSize) / 2
     }
-    
+
     // If iconSvg is an SVG string, embed it directly
     if (iconSvg.startsWith('<svg')) {
       // Parse SVG and embed as group
       const svgMatch = iconSvg.match(/<svg[^>]*>(.*?)<\/svg>/s)
       if (svgMatch) {
-        elements.push(`<g transform="translate(${iconX}, ${iconY}) scale(${iconSize/512}, ${iconSize/512})">${svgMatch[1]}</g>`)
+        elements.push(
+          `<g transform="translate(${iconX}, ${iconY}) scale(${iconSize / 512}, ${iconSize / 512})">${svgMatch[1]}</g>`
+        )
       }
     } else {
       // Otherwise treat as data URL or path
-      elements.push(`<image x="${iconX}" y="${iconY}" width="${iconSize}" height="${iconSize}" href="${iconSvg}"/>`)
+      elements.push(
+        `<image x="${iconX}" y="${iconY}" width="${iconSize}" height="${iconSize}" href="${iconSvg}"/>`
+      )
     }
   }
-  
+
   // Text positioning
   let textX = padding
   let textY = padding
   let textAnchor = 'start'
-  
+
   if (iconPosition === 'top') {
     textY = padding + (includeIcon ? iconSize + iconSpacing : 0)
   } else {
     if (includeIcon) textX = padding + iconSize + iconSpacing
     textY = (height - (fontSize + (tagline ? 8 + taglineFontSize : 0))) / 2
   }
-  
+
   if (alignment === 'center') {
     textX = width / 2
     textAnchor = 'middle'
@@ -207,16 +210,21 @@ export function generateLogoSVG(options: LogoSVGOptions): string {
     textX = width - padding
     textAnchor = 'end'
   }
-  
+
   // Divider (above text)
   if (showDivider && dividerPosition === 'above') {
-    const dividerX = alignment === 'center' ? (width - dividerWidth) / 2 :
-                     alignment === 'right' ? width - padding - dividerWidth :
-                     textX
+    const dividerX =
+      alignment === 'center'
+        ? (width - dividerWidth) / 2
+        : alignment === 'right'
+          ? width - padding - dividerWidth
+          : textX
     const dividerY = textY - 4
-    elements.push(`<line x1="${dividerX}" y1="${dividerY}" x2="${dividerX + dividerWidth}" y2="${dividerY}" stroke="${dividerColor}" stroke-width="2"/>`)
+    elements.push(
+      `<line x1="${dividerX}" y1="${dividerY}" x2="${dividerX + dividerWidth}" y2="${dividerY}" stroke="${dividerColor}" stroke-width="2"/>`
+    )
   }
-  
+
   // Main text
   elements.push(`<text x="${textX + textOffsetX}" y="${textY + fontSize * 0.8 + textOffsetY}" 
         font-family="'${fontFamily}', sans-serif" 
@@ -224,7 +232,7 @@ export function generateLogoSVG(options: LogoSVGOptions): string {
         font-weight="${fontWeight}" 
         fill="${textColor}" 
         text-anchor="${textAnchor}">${text}</text>`)
-  
+
   // Tagline
   if (tagline) {
     const taglineY = textY + fontSize + 8
@@ -235,14 +243,19 @@ export function generateLogoSVG(options: LogoSVGOptions): string {
           fill="${taglineColor}" 
           text-anchor="${textAnchor}">${tagline}</text>`)
   }
-  
+
   // Divider (below text/tagline)
   if (showDivider && dividerPosition === 'below') {
-    const dividerX = alignment === 'center' ? (width - dividerWidth) / 2 :
-                     alignment === 'right' ? width - padding - dividerWidth :
-                     textX
+    const dividerX =
+      alignment === 'center'
+        ? (width - dividerWidth) / 2
+        : alignment === 'right'
+          ? width - padding - dividerWidth
+          : textX
     const dividerY = textY + fontSize + (tagline ? 8 + taglineFontSize : 0) + 8
-    elements.push(`<line x1="${dividerX}" y1="${dividerY}" x2="${dividerX + dividerWidth}" y2="${dividerY}" stroke="${dividerColor}" stroke-width="2"/>`)
+    elements.push(
+      `<line x1="${dividerX}" y1="${dividerY}" x2="${dividerX + dividerWidth}" y2="${dividerY}" stroke="${dividerColor}" stroke-width="2"/>`
+    )
   }
 
   const svg = `<svg width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg">
@@ -269,7 +282,7 @@ export function dataURLtoBlob(dataURL: string): Blob {
 export async function saveSVGToFile(svg: string, filename: string): Promise<string> {
   const blob = new Blob([svg], { type: 'image/svg+xml' })
   const url = URL.createObjectURL(blob)
-  
+
   // For now, return the blob URL
   // In a real implementation, this would save to the public directory
   return url

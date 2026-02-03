@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * Combined App Providers
@@ -7,42 +7,47 @@
  * dependency management. This component should be used in the root layout.
  */
 
-import React, { ReactNode, useEffect, useState } from 'react';
-import { ApolloProvider } from '@apollo/client';
-import { ThemeProvider as NextThemeProvider } from 'next-themes';
-import { Toaster } from 'sonner';
+import React, { ReactNode, useEffect, useState } from 'react'
+import { ApolloProvider } from '@apollo/client'
+import { ThemeProvider as NextThemeProvider } from 'next-themes'
+import { Toaster } from 'sonner'
 
 // Apollo
-import { apolloClient, setAuthToken, setTokenRefreshCallback } from '@/lib/apollo/client';
+import { apolloClient, setAuthToken, setTokenRefreshCallback } from '@/lib/apollo/client'
 
 // Nhost
-import { NhostProvider } from './nhost-provider';
-import { nhost } from '@/lib/nhost';
+import { NhostProvider } from './nhost-provider'
+import { nhost } from '@/lib/nhost'
 
 // App Providers
-import { AppConfigProvider } from '@/contexts/app-config-context';
-import { AuthProvider, useAuth } from '@/contexts/auth-context';
-import { ChatProvider } from '@/contexts/chat-context';
-import { TemplateProvider } from '@/templates/hooks/use-template';
+import { AppConfigProvider } from '@/contexts/app-config-context'
+import { AuthProvider, useAuth } from '@/contexts/auth-context'
+import { ChatProvider } from '@/contexts/chat-context'
+import { TemplateProvider } from '@/templates/hooks/use-template'
 // TEMPORARILY DISABLED: E2EE uses native Node.js modules that can't be bundled for browser
 // import { E2EEProvider } from '@/contexts/e2ee-context';
 
 // Socket
-import { SocketProvider } from '@/lib/socket/providers/socket-provider';
+import { SocketProvider } from '@/lib/socket/providers/socket-provider'
+
+// Realtime (nself-plugins integration)
+import { RealtimeProvider } from './realtime-provider'
 
 // PWA
-import { PWAProvider } from './pwa-provider';
+import { PWAProvider } from './pwa-provider'
 
 // Components
-import { ThemeInjector } from '@/components/theme-injector';
-import { AnnouncerProvider } from '@/components/accessibility/live-region';
+import { ThemeInjector } from '@/components/theme-injector'
+import { AnnouncerProvider } from '@/components/accessibility/live-region'
+
+import { logger } from '@/lib/logger'
 
 // =============================================================================
 // Types
 // =============================================================================
 
 export interface AppProvidersProps {
-  children: ReactNode;
+  children: ReactNode
 }
 
 // =============================================================================
@@ -50,8 +55,8 @@ export interface AppProvidersProps {
 // =============================================================================
 
 interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
+  hasError: boolean
+  error: Error | null
 }
 
 class ErrorBoundary extends React.Component<
@@ -59,16 +64,18 @@ class ErrorBoundary extends React.Component<
   ErrorBoundaryState
 > {
   constructor(props: { children: ReactNode; fallback?: ReactNode }) {
-    super(props);
-    this.state = { hasError: false, error: null };
+    super(props)
+    this.state = { hasError: false, error: null }
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+    return { hasError: true, error }
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('App Error Boundary caught an error:', error, errorInfo);
+    logger.error('App Error Boundary caught an error:', error, {
+      componentStack: errorInfo.componentStack
+    })
 
     // Report to error tracking service
     if (typeof window !== 'undefined') {
@@ -76,28 +83,26 @@ class ErrorBoundary extends React.Component<
         new CustomEvent('nchat:app-error', {
           detail: { error, errorInfo },
         })
-      );
+      )
     }
   }
 
   render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
-        return this.props.fallback;
+        return this.props.fallback
       }
 
       return (
         <div className="flex min-h-screen items-center justify-center bg-background p-4">
           <div className="max-w-md text-center">
-            <h1 className="mb-4 text-2xl font-bold text-foreground">
-              Something went wrong
-            </h1>
+            <h1 className="mb-4 text-2xl font-bold text-foreground">Something went wrong</h1>
             <p className="mb-6 text-muted-foreground">
               We apologize for the inconvenience. Please try refreshing the page.
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="rounded-lg bg-primary px-4 py-2 text-primary-foreground hover:bg-primary/90"
+              className="text-primary-foreground hover:bg-primary/90 rounded-lg bg-primary px-4 py-2"
             >
               Refresh Page
             </button>
@@ -110,10 +115,10 @@ class ErrorBoundary extends React.Component<
             )}
           </div>
         </div>
-      );
+      )
     }
 
-    return this.props.children;
+    return this.props.children
   }
 }
 
@@ -125,40 +130,38 @@ class ErrorBoundary extends React.Component<
  * Component that syncs auth token with Apollo client
  */
 function AuthTokenSync({ children }: { children: ReactNode }) {
-  const { user, loading } = useAuth();
+  const { user, loading } = useAuth()
 
   useEffect(() => {
     // Get token from localStorage or session
-    const token = typeof window !== 'undefined'
-      ? localStorage.getItem('nchat-token')
-      : null;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('nchat-token') : null
 
     if (token) {
-      setAuthToken(token);
+      setAuthToken(token)
     } else if (!user && !loading) {
-      setAuthToken(null);
+      setAuthToken(null)
     }
-  }, [user, loading]);
+  }, [user, loading])
 
   // Set up token refresh callback
   useEffect(() => {
     setTokenRefreshCallback(async () => {
       try {
         // Try to refresh via nhost
-        const session = nhost.auth.getSession();
+        const session = nhost.auth.getSession()
         if (session?.accessToken) {
-          localStorage.setItem('nchat-token', session.accessToken);
-          return session.accessToken;
+          localStorage.setItem('nchat-token', session.accessToken)
+          return session.accessToken
         }
-        return null;
+        return null
       } catch (error) {
-        console.error('Token refresh failed:', error);
-        return null;
+        logger.error('Token refresh failed:', { context: error })
+        return null
       }
-    });
-  }, []);
+    })
+  }, [])
 
-  return <>{children}</>;
+  return <>{children}</>
 }
 
 // =============================================================================
@@ -169,15 +172,13 @@ function AuthTokenSync({ children }: { children: ReactNode }) {
  * Component that provides socket connection with auth token
  */
 function SocketAuthProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
-  const [token, setToken] = useState<string | null>(null);
+  const { user } = useAuth()
+  const [token, setToken] = useState<string | null>(null)
 
   useEffect(() => {
-    const storedToken = typeof window !== 'undefined'
-      ? localStorage.getItem('nchat-token')
-      : null;
-    setToken(storedToken);
-  }, [user]);
+    const storedToken = typeof window !== 'undefined' ? localStorage.getItem('nchat-token') : null
+    setToken(storedToken)
+  }, [user])
 
   return (
     <SocketProvider
@@ -185,18 +186,18 @@ function SocketAuthProvider({ children }: { children: ReactNode }) {
       userId={user?.id ?? null}
       autoConnect={!!user}
       onConnect={() => {
-        window.dispatchEvent(new CustomEvent('nchat:connected'));
+        window.dispatchEvent(new CustomEvent('nchat:connected'))
       }}
       onDisconnect={(reason) => {
-        window.dispatchEvent(new CustomEvent('nchat:disconnected'));
+        window.dispatchEvent(new CustomEvent('nchat:disconnected'))
       }}
       onError={(error) => {
-        console.error('[Socket] Error:', error);
+        logger.error('[Socket] Error:', error)
       }}
     >
       {children}
     </SocketProvider>
-  );
+  )
 }
 
 // =============================================================================
@@ -221,7 +222,7 @@ function NotificationProvider({ children }: { children: ReactNode }) {
         }}
       />
     </>
-  );
+  )
 }
 
 // =============================================================================
@@ -229,47 +230,42 @@ function NotificationProvider({ children }: { children: ReactNode }) {
 // =============================================================================
 
 interface ModalContextValue {
-  openModal: (id: string, data?: Record<string, unknown>) => void;
-  closeModal: () => void;
-  activeModal: string | null;
-  modalData: Record<string, unknown> | null;
+  openModal: (id: string, data?: Record<string, unknown>) => void
+  closeModal: () => void
+  activeModal: string | null
+  modalData: Record<string, unknown> | null
 }
 
-const ModalContext = React.createContext<ModalContextValue | null>(null);
+const ModalContext = React.createContext<ModalContextValue | null>(null)
 
 export function useModal() {
-  const context = React.useContext(ModalContext);
+  const context = React.useContext(ModalContext)
   if (!context) {
-    throw new Error('useModal must be used within ModalProvider');
+    throw new Error('useModal must be used within ModalProvider')
   }
-  return context;
+  return context
 }
 
 function ModalProvider({ children }: { children: ReactNode }) {
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [modalData, setModalData] = useState<Record<string, unknown> | null>(null);
+  const [activeModal, setActiveModal] = useState<string | null>(null)
+  const [modalData, setModalData] = useState<Record<string, unknown> | null>(null)
 
-  const openModal = React.useCallback(
-    (id: string, data?: Record<string, unknown>) => {
-      setActiveModal(id);
-      setModalData(data ?? null);
-    },
-    []
-  );
+  const openModal = React.useCallback((id: string, data?: Record<string, unknown>) => {
+    setActiveModal(id)
+    setModalData(data ?? null)
+  }, [])
 
   const closeModal = React.useCallback(() => {
-    setActiveModal(null);
-    setModalData(null);
-  }, []);
+    setActiveModal(null)
+    setModalData(null)
+  }, [])
 
   const value = React.useMemo(
     () => ({ openModal, closeModal, activeModal, modalData }),
     [openModal, closeModal, activeModal, modalData]
-  );
+  )
 
-  return (
-    <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
-  );
+  return <ModalContext.Provider value={value}>{children}</ModalContext.Provider>
 }
 
 // =============================================================================
@@ -281,24 +277,24 @@ function SkipLinks() {
     <div className="skip-links">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        className="focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:outline-none focus:ring-2 focus:ring-ring"
       >
         Skip to main content
       </a>
       <a
         href="#sidebar"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-14 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        className="focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-14 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:outline-none focus:ring-2 focus:ring-ring"
       >
         Skip to sidebar
       </a>
       <a
         href="#message-input"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-24 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+        className="focus:text-primary-foreground sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-24 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:outline-none focus:ring-2 focus:ring-ring"
       >
         Skip to message input
       </a>
     </div>
-  );
+  )
 }
 
 // =============================================================================
@@ -363,16 +359,17 @@ export function AppProviders({ children }: AppProvidersProps) {
         </AppConfigProvider>
       </NhostProvider>
     </ErrorBoundary>
-  );
+  )
 }
 
 // =============================================================================
 // Exports
 // =============================================================================
 
-export { ErrorBoundary };
-export { ModalProvider, ModalContext };
-export { NotificationProvider };
-export { SkipLinks };
+export { ErrorBoundary }
+export { ModalProvider, ModalContext }
+export { NotificationProvider }
+export { SkipLinks }
+export { RealtimeProvider, useRealtimeContext } from './realtime-provider'
 
-export default AppProviders;
+export default AppProviders

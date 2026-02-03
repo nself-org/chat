@@ -89,8 +89,8 @@ export function UnreadMentions({
     return (
       <div className={cn('w-full', className)}>
         <MentionNotificationHeader unreadCount={0} />
-        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-          <div className="h-12 w-12 rounded-full bg-destructive/10 flex items-center justify-center mb-4">
+        <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+          <div className="bg-destructive/10 mb-4 flex h-12 w-12 items-center justify-center rounded-full">
             <svg
               className="h-6 w-6 text-destructive"
               fill="none"
@@ -106,7 +106,7 @@ export function UnreadMentions({
             </svg>
           </div>
           <h4 className="font-medium text-destructive">Error loading mentions</h4>
-          <p className="text-sm text-muted-foreground mt-1">{error}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{error}</p>
         </div>
       </div>
     )
@@ -130,9 +130,7 @@ export function UnreadMentions({
             className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:shadow-none"
           >
             Unread
-            {unreadCount > 0 && (
-              <MentionBadge count={unreadCount} size="sm" className="ml-2" />
-            )}
+            {unreadCount > 0 && <MentionBadge count={unreadCount} size="sm" className="ml-2" />}
           </TabsTrigger>
           <TabsTrigger
             value="all"
@@ -190,9 +188,7 @@ function MentionList({
   }
 
   return (
-    <ScrollArea
-      style={{ maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight }}
-    >
+    <ScrollArea style={{ maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight }}>
       <div className="divide-y">
         {mentions.map((mention) => (
           <MentionNotification
@@ -231,12 +227,7 @@ export function UnreadMentionsButton({
       onClick={onClick}
       aria-label={`${unreadCount} unread mentions`}
     >
-      <svg
-        className="h-5 w-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -245,7 +236,7 @@ export function UnreadMentionsButton({
         />
       </svg>
       {unreadCount > 0 && (
-        <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium text-primary-foreground">
+        <span className="text-primary-foreground absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium">
           {unreadCount > 99 ? '99+' : unreadCount}
         </span>
       )}
@@ -275,7 +266,7 @@ export function SidebarMentionsBadge({
   return (
     <span
       className={cn(
-        'flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium text-primary-foreground',
+        'text-primary-foreground flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium',
         className
       )}
       data-channel-id={channelId}
@@ -292,14 +283,7 @@ export function SidebarMentionsBadge({
 function LoadingSpinner() {
   return (
     <svg className="h-6 w-6 animate-spin text-muted-foreground" fill="none" viewBox="0 0 24 24">
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"
@@ -343,22 +327,17 @@ export function MentionsPanel({
   return (
     <div
       className={cn(
-        'fixed inset-y-0 right-0 w-full max-w-md bg-background border-l shadow-lg z-50',
+        'fixed inset-y-0 right-0 z-50 w-full max-w-md border-l bg-background shadow-lg',
         'transform transition-transform duration-200',
         isOpen ? 'translate-x-0' : 'translate-x-full',
         className
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b">
+      <div className="flex items-center justify-between border-b px-4 py-3">
         <h2 className="text-lg font-semibold">Mentions</h2>
         <Button variant="ghost" size="icon" onClick={onClose}>
-          <svg
-            className="h-5 w-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

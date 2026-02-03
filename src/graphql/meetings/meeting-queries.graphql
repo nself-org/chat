@@ -90,18 +90,10 @@ fragment MeetingReminderFull on nchat_meeting_reminders {
 # ============================================================================
 
 # Get all meetings for a user (as host or participant)
-query GetUserMeetings(
-  $userId: uuid!
-  $status: [String!]
-  $limit: Int = 50
-  $offset: Int = 0
-) {
+query GetUserMeetings($userId: uuid!, $status: [String!], $limit: Int = 50, $offset: Int = 0) {
   nchat_meetings(
     where: {
-      _or: [
-        { host_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
+      _or: [{ host_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       status: { _in: $status }
     }
     order_by: { scheduled_start_at: asc }
@@ -112,10 +104,7 @@ query GetUserMeetings(
   }
   nchat_meetings_aggregate(
     where: {
-      _or: [
-        { host_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
+      _or: [{ host_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       status: { _in: $status }
     }
   ) {
@@ -137,26 +126,16 @@ query GetMeeting($id: uuid!) {
 
 # Get a meeting by code (for joining)
 query GetMeetingByCode($code: String!) {
-  nchat_meetings(
-    where: { meeting_code: { _eq: $code } }
-    limit: 1
-  ) {
+  nchat_meetings(where: { meeting_code: { _eq: $code } }, limit: 1) {
     ...MeetingFull
   }
 }
 
 # Get upcoming meetings for a user
-query GetUpcomingMeetings(
-  $userId: uuid!
-  $startFrom: timestamptz!
-  $limit: Int = 10
-) {
+query GetUpcomingMeetings($userId: uuid!, $startFrom: timestamptz!, $limit: Int = 10) {
   nchat_meetings(
     where: {
-      _or: [
-        { host_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
+      _or: [{ host_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       status: { _eq: "scheduled" }
       scheduled_start_at: { _gte: $startFrom }
     }
@@ -176,17 +155,10 @@ query GetUpcomingMeetings(
 }
 
 # Get meetings in a date range (for calendar view)
-query GetMeetingsInRange(
-  $userId: uuid!
-  $startDate: timestamptz!
-  $endDate: timestamptz!
-) {
+query GetMeetingsInRange($userId: uuid!, $startDate: timestamptz!, $endDate: timestamptz!) {
   nchat_meetings(
     where: {
-      _or: [
-        { host_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
+      _or: [{ host_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       scheduled_start_at: { _gte: $startDate, _lt: $endDate }
       status: { _neq: "cancelled" }
     }
@@ -203,10 +175,7 @@ query GetMeetingsInRange(
 query GetMeetingsForDay($userId: uuid!, $date: date!) {
   nchat_meetings(
     where: {
-      _or: [
-        { host_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
+      _or: [{ host_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       scheduled_start_at: { _gte: $date, _lt: $date }
       status: { _neq: "cancelled" }
     }
@@ -219,10 +188,7 @@ query GetMeetingsForDay($userId: uuid!, $date: date!) {
 # Get meetings for a channel
 query GetChannelMeetings($channelId: uuid!, $status: [String!], $limit: Int = 20) {
   nchat_meetings(
-    where: {
-      channel_id: { _eq: $channelId }
-      status: { _in: $status }
-    }
+    where: { channel_id: { _eq: $channelId }, status: { _in: $status } }
     order_by: { scheduled_start_at: asc }
     limit: $limit
   ) {
@@ -242,10 +208,7 @@ query GetChannelMeetings($channelId: uuid!, $status: [String!], $limit: Int = 20
 query GetLiveMeetings($userId: uuid!) {
   nchat_meetings(
     where: {
-      _or: [
-        { host_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
+      _or: [{ host_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       status: { _eq: "live" }
     }
     order_by: { actual_start_at: desc }
@@ -255,17 +218,10 @@ query GetLiveMeetings($userId: uuid!) {
 }
 
 # Get past meetings
-query GetPastMeetings(
-  $userId: uuid!
-  $limit: Int = 20
-  $offset: Int = 0
-) {
+query GetPastMeetings($userId: uuid!, $limit: Int = 20, $offset: Int = 0) {
   nchat_meetings(
     where: {
-      _or: [
-        { host_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
+      _or: [{ host_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       status: { _eq: "ended" }
     }
     order_by: { scheduled_start_at: desc }
@@ -298,12 +254,7 @@ query GetMeetingParticipants($meetingId: uuid!) {
 
 # Get user's meeting reminders
 query GetUserMeetingReminders($userId: uuid!, $meetingIds: [uuid!]!) {
-  nchat_meeting_reminders(
-    where: {
-      user_id: { _eq: $userId }
-      meeting_id: { _in: $meetingIds }
-    }
-  ) {
+  nchat_meeting_reminders(where: { user_id: { _eq: $userId }, meeting_id: { _in: $meetingIds } }) {
     ...MeetingReminderFull
   }
 }
@@ -314,10 +265,7 @@ query GetPendingReminders($beforeTime: timestamptz!, $limit: Int = 100) {
     where: {
       is_enabled: { _eq: true }
       sent_at: { _is_null: true }
-      meeting: {
-        status: { _eq: "scheduled" }
-        scheduled_start_at: { _lte: $beforeTime }
-      }
+      meeting: { status: { _eq: "scheduled" }, scheduled_start_at: { _lte: $beforeTime } }
     }
     limit: $limit
   ) {
@@ -329,26 +277,11 @@ query GetPendingReminders($beforeTime: timestamptz!, $limit: Int = 100) {
 }
 
 # Search meetings
-query SearchMeetings(
-  $userId: uuid!
-  $query: String!
-  $limit: Int = 20
-  $offset: Int = 0
-) {
+query SearchMeetings($userId: uuid!, $query: String!, $limit: Int = 20, $offset: Int = 0) {
   nchat_meetings(
     where: {
-      _or: [
-        { host_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
-      _and: [
-        {
-          _or: [
-            { title: { _ilike: $query } }
-            { description: { _ilike: $query } }
-          ]
-        }
-      ]
+      _or: [{ host_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
+      _and: [{ _or: [{ title: { _ilike: $query } }, { description: { _ilike: $query } }] }]
     }
     order_by: { scheduled_start_at: desc }
     limit: $limit
@@ -408,25 +341,14 @@ fragment HuddleFull on nchat_huddles {
 
 # Get active huddle in a channel
 query GetChannelHuddle($channelId: uuid!) {
-  nchat_huddles(
-    where: {
-      channel_id: { _eq: $channelId }
-      status: { _eq: "active" }
-    }
-    limit: 1
-  ) {
+  nchat_huddles(where: { channel_id: { _eq: $channelId }, status: { _eq: "active" } }, limit: 1) {
     ...HuddleFull
   }
 }
 
 # Get all active huddles for a user's channels
 query GetActiveHuddles($channelIds: [uuid!]!) {
-  nchat_huddles(
-    where: {
-      channel_id: { _in: $channelIds }
-      status: { _eq: "active" }
-    }
-  ) {
+  nchat_huddles(where: { channel_id: { _in: $channelIds }, status: { _eq: "active" } }) {
     ...HuddleFull
   }
 }

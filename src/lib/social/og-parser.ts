@@ -182,7 +182,10 @@ function extractMetaTag(html: string, property: string): string | undefined {
 /**
  * Extract all meta tags with a given prefix
  */
-function extractMetaTagsWithPrefix(html: string, prefix: string): Array<{ property: string; content: string }> {
+function extractMetaTagsWithPrefix(
+  html: string,
+  prefix: string
+): Array<{ property: string; content: string }> {
   const tags: Array<{ property: string; content: string }> = []
   const regex = new RegExp(
     `<meta\\s+[^>]*(?:property|name)=["'](${escapeRegex(prefix)}[^"']*)["'][^>]*content=["']([^"']*)["'][^>]*>`,
@@ -354,7 +357,9 @@ export function parseBasicMetadata(html: string, baseUrl: string): BasicMetadata
   }
 
   // Canonical URL
-  const canonicalMatch = html.match(/<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']*)["'][^>]*>/i)
+  const canonicalMatch = html.match(
+    /<link[^>]+rel=["']canonical["'][^>]+href=["']([^"']*)["'][^>]*>/i
+  )
   if (canonicalMatch) {
     basic.canonicalUrl = canonicalMatch[1]
   }
@@ -363,8 +368,10 @@ export function parseBasicMetadata(html: string, baseUrl: string): BasicMetadata
   basic.themeColor = extractMetaTag(html, 'theme-color')
 
   // Published/Modified time
-  basic.publishedTime = extractMetaTag(html, 'article:published_time') || extractMetaTag(html, 'datePublished')
-  basic.modifiedTime = extractMetaTag(html, 'article:modified_time') || extractMetaTag(html, 'dateModified')
+  basic.publishedTime =
+    extractMetaTag(html, 'article:published_time') || extractMetaTag(html, 'datePublished')
+  basic.modifiedTime =
+    extractMetaTag(html, 'article:modified_time') || extractMetaTag(html, 'dateModified')
 
   // Favicon
   const faviconPatterns = [

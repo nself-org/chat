@@ -68,6 +68,8 @@ import {
 } from '@/lib/storage/quota-manager'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 interface StorageManagementProps {
   className?: string
 }
@@ -108,16 +110,20 @@ export function StorageManagement({ className }: StorageManagementProps) {
       setTeamQuota(quotaData)
 
       // Load usage breakdown
-      const breakdownRes = await fetch('/api/storage?action=breakdown&entityId=team-1&entityType=team')
+      const breakdownRes = await fetch(
+        '/api/storage?action=breakdown&entityId=team-1&entityType=team'
+      )
       const breakdownData = await breakdownRes.json()
       setBreakdown(breakdownData)
 
       // Load warnings
-      const warningsRes = await fetch('/api/storage?action=warnings&entityId=team-1&entityType=team')
+      const warningsRes = await fetch(
+        '/api/storage?action=warnings&entityId=team-1&entityType=team'
+      )
       const warningsData = await warningsRes.json()
       setWarnings(warningsData)
     } catch (error) {
-      console.error('Failed to load storage data:', error)
+      logger.error('Failed to load storage data:', error)
     } finally {
       setLoading(false)
     }
@@ -138,7 +144,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
       await res.json()
       await loadData()
     } catch (error) {
-      console.error('Failed to optimize storage:', error)
+      logger.error('Failed to optimize storage:', error)
     } finally {
       setOptimizeLoading(false)
     }
@@ -160,7 +166,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
       setCleanupDialogOpen(false)
       await loadData()
     } catch (error) {
-      console.error('Failed to apply cleanup:', error)
+      logger.error('Failed to apply cleanup:', error)
     }
   }
 
@@ -176,7 +182,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
       })
       await loadData()
     } catch (error) {
-      console.error('Failed to acknowledge warning:', error)
+      logger.error('Failed to acknowledge warning:', error)
     }
   }
 
@@ -188,9 +194,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Storage Management</h2>
-          <p className="text-muted-foreground">
-            Monitor and manage your team's storage usage
-          </p>
+          <p className="text-muted-foreground">Monitor and manage your team's storage usage</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={loadData} disabled={loading}>
@@ -212,8 +216,10 @@ export function StorageManagement({ className }: StorageManagementProps) {
               key={warning.id}
               variant={warning.type === 'exceeded' ? 'destructive' : 'default'}
               className={cn(
-                warning.type === 'critical' && 'border-orange-500 bg-orange-50 text-orange-900 dark:bg-orange-950 dark:text-orange-200',
-                warning.type === 'approaching' && 'border-yellow-500 bg-yellow-50 text-yellow-900 dark:bg-yellow-950 dark:text-yellow-200'
+                warning.type === 'critical' &&
+                  'border-orange-500 bg-orange-50 text-orange-900 dark:bg-orange-950 dark:text-orange-200',
+                warning.type === 'approaching' &&
+                  'border-yellow-500 bg-yellow-50 text-yellow-900 dark:bg-yellow-950 dark:text-yellow-200'
               )}
             >
               <AlertTriangle className="h-4 w-4" />
@@ -290,9 +296,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
                   <HardDrive className="h-5 w-5" />
                   Storage Quota
                 </CardTitle>
-                <CardDescription>
-                  Team-wide storage usage
-                </CardDescription>
+                <CardDescription>Team-wide storage usage</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="space-y-2">
@@ -315,10 +319,13 @@ export function StorageManagement({ className }: StorageManagementProps) {
                     <span>{teamQuota.percentage}% used</span>
                     <Badge
                       variant={
-                        quotaStatus === 'exceeded' ? 'destructive' :
-                        quotaStatus === 'critical' ? 'default' :
-                        quotaStatus === 'warning' ? 'default' :
-                        'secondary'
+                        quotaStatus === 'exceeded'
+                          ? 'destructive'
+                          : quotaStatus === 'critical'
+                            ? 'default'
+                            : quotaStatus === 'warning'
+                              ? 'default'
+                              : 'secondary'
                       }
                     >
                       {quotaStatus === 'ok' && <CheckCircle2 className="mr-1 h-3 w-3" />}
@@ -347,9 +354,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
           <Card>
             <CardHeader>
               <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>
-                Common storage management tasks
-              </CardDescription>
+              <CardDescription>Common storage management tasks</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <Button
@@ -384,23 +389,62 @@ export function StorageManagement({ className }: StorageManagementProps) {
               <Card>
                 <CardHeader>
                   <CardTitle>Storage by Type</CardTitle>
-                  <CardDescription>
-                    Breakdown of storage usage by file type
-                  </CardDescription>
+                  <CardDescription>Breakdown of storage usage by file type</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
                     {[
-                      { type: 'Messages', size: breakdown.byType.messages, icon: FileText, color: 'bg-blue-500' },
-                      { type: 'Images', size: breakdown.byType.images, icon: Image, color: 'bg-purple-500' },
-                      { type: 'Videos', size: breakdown.byType.videos, icon: Video, color: 'bg-red-500' },
-                      { type: 'Audio', size: breakdown.byType.audio, icon: Music, color: 'bg-green-500' },
-                      { type: 'Documents', size: breakdown.byType.documents, icon: File, color: 'bg-orange-500' },
-                      { type: 'Archives', size: breakdown.byType.archives, icon: Archive, color: 'bg-yellow-500' },
-                      { type: 'Code', size: breakdown.byType.code, icon: Code, color: 'bg-pink-500' },
-                      { type: 'Cache', size: breakdown.byType.cache, icon: Database, color: 'bg-gray-500' },
+                      {
+                        type: 'Messages',
+                        size: breakdown.byType.messages,
+                        icon: FileText,
+                        color: 'bg-blue-500',
+                      },
+                      {
+                        type: 'Images',
+                        size: breakdown.byType.images,
+                        icon: Image,
+                        color: 'bg-purple-500',
+                      },
+                      {
+                        type: 'Videos',
+                        size: breakdown.byType.videos,
+                        icon: Video,
+                        color: 'bg-red-500',
+                      },
+                      {
+                        type: 'Audio',
+                        size: breakdown.byType.audio,
+                        icon: Music,
+                        color: 'bg-green-500',
+                      },
+                      {
+                        type: 'Documents',
+                        size: breakdown.byType.documents,
+                        icon: File,
+                        color: 'bg-orange-500',
+                      },
+                      {
+                        type: 'Archives',
+                        size: breakdown.byType.archives,
+                        icon: Archive,
+                        color: 'bg-yellow-500',
+                      },
+                      {
+                        type: 'Code',
+                        size: breakdown.byType.code,
+                        icon: Code,
+                        color: 'bg-pink-500',
+                      },
+                      {
+                        type: 'Cache',
+                        size: breakdown.byType.cache,
+                        icon: Database,
+                        color: 'bg-gray-500',
+                      },
                     ].map(({ type, size, icon: Icon, color }) => {
-                      const percentage = breakdown.total > 0 ? Math.round((size / breakdown.total) * 100) : 0
+                      const percentage =
+                        breakdown.total > 0 ? Math.round((size / breakdown.total) * 100) : 0
                       return (
                         <div key={type} className="space-y-2">
                           <div className="flex items-center justify-between text-sm">
@@ -429,9 +473,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
               <Card>
                 <CardHeader>
                   <CardTitle>Largest Files</CardTitle>
-                  <CardDescription>
-                    Files taking up the most space
-                  </CardDescription>
+                  <CardDescription>Files taking up the most space</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <ScrollArea className="h-[300px]">
@@ -445,7 +487,8 @@ export function StorageManagement({ className }: StorageManagementProps) {
                             <div className="flex-1 space-y-1">
                               <p className="text-sm font-medium">{file.name}</p>
                               <p className="text-xs text-muted-foreground">
-                                Uploaded {new Date(file.uploadedAt).toLocaleDateString()} by {file.uploadedBy}
+                                Uploaded {new Date(file.uploadedAt).toLocaleDateString()} by{' '}
+                                {file.uploadedBy}
                               </p>
                             </div>
                             <div className="text-right">
@@ -474,12 +517,10 @@ export function StorageManagement({ className }: StorageManagementProps) {
           <Card>
             <CardHeader>
               <CardTitle>Storage by User</CardTitle>
-              <CardDescription>
-                Individual user storage usage
-              </CardDescription>
+              <CardDescription>Individual user storage usage</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
+              <div className="py-12 text-center text-muted-foreground">
                 User storage breakdown coming soon
               </div>
             </CardContent>
@@ -491,12 +532,10 @@ export function StorageManagement({ className }: StorageManagementProps) {
           <Card>
             <CardHeader>
               <CardTitle>Storage by Channel</CardTitle>
-              <CardDescription>
-                Channel-level storage usage
-              </CardDescription>
+              <CardDescription>Channel-level storage usage</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-center py-12 text-muted-foreground">
+              <div className="py-12 text-center text-muted-foreground">
                 Channel storage breakdown coming soon
               </div>
             </CardContent>
@@ -508,9 +547,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
           <Card>
             <CardHeader>
               <CardTitle>Cleanup Policy</CardTitle>
-              <CardDescription>
-                Configure automatic storage cleanup
-              </CardDescription>
+              <CardDescription>Configure automatic storage cleanup</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex items-center justify-between">
@@ -627,9 +664,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
           <Card>
             <CardHeader>
               <CardTitle>Storage Plans</CardTitle>
-              <CardDescription>
-                Upgrade your storage to get more space
-              </CardDescription>
+              <CardDescription>Upgrade your storage to get more space</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -688,9 +723,7 @@ export function StorageManagement({ className }: StorageManagementProps) {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleApplyCleanup}>
-              Apply Cleanup
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleApplyCleanup}>Apply Cleanup</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

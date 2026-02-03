@@ -205,7 +205,9 @@ export function ScheduleMessageModal({
         title: 'Message scheduled',
         description: (
           <div className="flex flex-col gap-1">
-            <p>Your message will be sent {getRelativeTime(scheduledMessage.scheduledAt)} from now.</p>
+            <p>
+              Your message will be sent {getRelativeTime(scheduledMessage.scheduledAt)} from now.
+            </p>
             <p className="text-xs text-muted-foreground">
               {formatScheduledTime(scheduledMessage.scheduledAt)}
             </p>
@@ -265,12 +267,10 @@ export function ScheduleMessageModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Schedule Message</DialogTitle>
-          <DialogDescription>
-            Choose when to send your message
-          </DialogDescription>
+          <DialogDescription>Choose when to send your message</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -314,7 +314,7 @@ export function ScheduleMessageModal({
             </TabsList>
 
             {/* Quick Schedule */}
-            <TabsContent value="quick" className="space-y-3 mt-4">
+            <TabsContent value="quick" className="mt-4 space-y-3">
               <div className="grid grid-cols-2 gap-2">
                 {QUICK_SCHEDULES.map((schedule, index) => {
                   const date = schedule.getValue()
@@ -327,12 +327,10 @@ export function ScheduleMessageModal({
                       variant={isSelected ? 'default' : 'outline'}
                       onClick={() => handleQuickSchedule(index, schedule.getValue)}
                       disabled={isScheduling}
-                      className="h-auto py-3 flex flex-col items-start"
+                      className="flex h-auto flex-col items-start py-3"
                     >
                       <span className="font-semibold">{schedule.label}</span>
-                      <span className="text-xs opacity-80">
-                        {format(date, 'MMM d, h:mm a')}
-                      </span>
+                      <span className="text-xs opacity-80">{format(date, 'MMM d, h:mm a')}</span>
                     </Button>
                   )
                 })}
@@ -340,11 +338,11 @@ export function ScheduleMessageModal({
             </TabsContent>
 
             {/* Custom Date & Time */}
-            <TabsContent value="custom" className="space-y-4 mt-4">
+            <TabsContent value="custom" className="mt-4 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="schedule-date">
-                    <Calendar className="h-4 w-4 inline mr-2" />
+                    <Calendar className="mr-2 inline h-4 w-4" />
                     Date
                   </Label>
                   <Input
@@ -358,7 +356,7 @@ export function ScheduleMessageModal({
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="schedule-time">
-                    <Clock className="h-4 w-4 inline mr-2" />
+                    <Clock className="mr-2 inline h-4 w-4" />
                     Time
                   </Label>
                   <Input
@@ -373,15 +371,15 @@ export function ScheduleMessageModal({
               </div>
 
               {customDateTime && (
-                <div className="p-3 bg-muted rounded-md">
-                  <p className="text-sm flex items-center gap-2">
+                <div className="rounded-md bg-muted p-3">
+                  <p className="flex items-center gap-2 text-sm">
                     <CheckCircle2 className="h-4 w-4 text-green-600" />
                     <span className="font-medium">Scheduled for:</span>{' '}
                     <span className="text-muted-foreground">
                       {formatScheduledTime(customDateTime.getTime())}
                     </span>
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1 ml-6">
+                  <p className="ml-6 mt-1 text-xs text-muted-foreground">
                     {getRelativeTime(customDateTime.getTime())} from now
                   </p>
                 </div>
@@ -391,15 +389,15 @@ export function ScheduleMessageModal({
 
           {/* Preview */}
           {customDateTime && content && (
-            <div className="border rounded-lg p-3 bg-muted/50">
-              <div className="flex items-start gap-2 mb-2">
-                <Send className="h-4 w-4 text-muted-foreground mt-0.5" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs font-medium text-muted-foreground mb-1">
+            <div className="bg-muted/50 rounded-lg border p-3">
+              <div className="mb-2 flex items-start gap-2">
+                <Send className="mt-0.5 h-4 w-4 text-muted-foreground" />
+                <div className="min-w-0 flex-1">
+                  <p className="mb-1 text-xs font-medium text-muted-foreground">
                     Scheduled for {format(customDateTime, 'MMM d, yyyy')} at{' '}
                     {format(customDateTime, 'h:mm a')}
                   </p>
-                  <p className="text-sm line-clamp-3 whitespace-pre-wrap">{content}</p>
+                  <p className="line-clamp-3 whitespace-pre-wrap text-sm">{content}</p>
                 </div>
               </div>
             </div>
@@ -407,10 +405,10 @@ export function ScheduleMessageModal({
 
           {/* Errors */}
           {errors.length > 0 && (
-            <div className="p-3 border border-destructive/50 bg-destructive/10 rounded-md">
+            <div className="border-destructive/50 bg-destructive/10 rounded-md border p-3">
               <div className="flex items-start gap-2">
-                <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
-                <ul className="text-sm text-destructive space-y-1 flex-1">
+                <AlertCircle className="mt-0.5 h-4 w-4 text-destructive" />
+                <ul className="flex-1 space-y-1 text-sm text-destructive">
                   {errors.map((error, index) => (
                     <li key={index}>• {error}</li>
                   ))}
@@ -428,7 +426,7 @@ export function ScheduleMessageModal({
             onClick={handleSchedule}
             disabled={isScheduling || !content.trim() || !customDateTime}
           >
-            <Clock className="h-4 w-4 mr-2" />
+            <Clock className="mr-2 h-4 w-4" />
             {isScheduling ? 'Scheduling...' : 'Schedule Message'}
           </Button>
         </DialogFooter>

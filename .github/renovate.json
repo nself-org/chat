@@ -49,12 +49,7 @@
     {
       "description": "Group linting packages",
       "groupName": "Linting",
-      "matchPackagePatterns": [
-        "^eslint",
-        "^@eslint/",
-        "^prettier",
-        "^@typescript-eslint/"
-      ]
+      "matchPackagePatterns": ["^eslint", "^@eslint/", "^prettier", "^@typescript-eslint/"]
     },
     {
       "description": "Group TypeScript packages",

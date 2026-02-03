@@ -1,29 +1,29 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import type { PinnedMessage } from '@/lib/pinned';
-import { PinnedMessageCard } from './PinnedMessageCard';
-import { PinnedEmpty } from './PinnedEmpty';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import type { PinnedMessage } from '@/lib/pinned'
+import { PinnedMessageCard } from './PinnedMessageCard'
+import { PinnedEmpty } from './PinnedEmpty'
 
 export interface PinnedMessageListProps {
   /** List of pinned messages */
-  pins: PinnedMessage[];
+  pins: PinnedMessage[]
   /** Callback to navigate to message */
-  onJumpToMessage?: (messageId: string, channelId: string) => void;
+  onJumpToMessage?: (messageId: string, channelId: string) => void
   /** Callback to unpin a message */
-  onUnpin?: (pin: PinnedMessage) => void;
+  onUnpin?: (pin: PinnedMessage) => void
   /** Whether user can unpin messages */
-  canUnpin?: boolean;
+  canUnpin?: boolean
   /** Loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Compact display mode */
-  compact?: boolean;
+  compact?: boolean
   /** Max height for scroll area */
-  maxHeight?: string;
+  maxHeight?: string
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -43,11 +43,8 @@ export function PinnedMessageList({
     return (
       <div className={cn('space-y-3 p-4', className)}>
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="animate-pulse rounded-lg border bg-card p-4"
-          >
-            <div className="flex items-center gap-2 mb-3">
+          <div key={i} className="animate-pulse rounded-lg border bg-card p-4">
+            <div className="mb-3 flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-muted" />
               <div className="space-y-1">
                 <div className="h-4 w-24 rounded bg-muted" />
@@ -61,11 +58,11 @@ export function PinnedMessageList({
           </div>
         ))}
       </div>
-    );
+    )
   }
 
   if (pins.length === 0) {
-    return <PinnedEmpty />;
+    return <PinnedEmpty />
   }
 
   return (
@@ -83,5 +80,5 @@ export function PinnedMessageList({
         ))}
       </div>
     </ScrollArea>
-  );
+  )
 }

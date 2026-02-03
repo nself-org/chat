@@ -3,6 +3,7 @@
 ## 📊 Progress Tracker
 
 ### Overall Progress: 0% Complete
+
 - [ ] Phase 0: Foundation
 - [ ] Phase 1: First-Run Setup
 - [ ] Phase 2: Authentication
@@ -22,6 +23,7 @@
 ## 🎯 Goal: Zero to Production-Ready White-Label Chat Platform
 
 ### 🎨 Design Inspiration
+
 - **Theme**: Protocol by Tailwind UI color scheme
 - **Primary**: Indigo/Purple gradients
 - **Dark Mode**: Deep slate backgrounds
@@ -32,13 +34,14 @@
 ## Phase 0: Foundation [Day 1-2]
 
 ### 0.0 Environment Configuration
+
 ```bash
 □ Backend Configuration (.backend/.env.dev updates)
   □ FRONTEND_APP_1_TABLE_PREFIX=nchat_
   □ FRONTEND_APP_1_DISPLAY_NAME="nself Chat"
   □ FRONTEND_APP_1_SYSTEM_NAME=nchat
   □ FRONTEND_APP_1_REMOTE_SCHEMA_NAME=nchat_schema
-  
+
 □ Frontend Configuration (web/.env.local)
   □ NEXT_PUBLIC_NHOST_SUBDOMAIN=localhost
   □ NEXT_PUBLIC_NHOST_REGION=local
@@ -47,7 +50,7 @@
   □ NEXT_PUBLIC_AUTH_URL=http://auth.localhost/v1/auth
   □ NEXT_PUBLIC_STORAGE_URL=http://storage.localhost/v1/storage
   □ NEXT_PUBLIC_FUNCTIONS_URL=http://functions.localhost/v1/functions
-  
+
 □ White-label Configuration (web/.env.local)
   □ NEXT_PUBLIC_APP_NAME=nchat
   □ NEXT_PUBLIC_APP_TAGLINE="Team Communication Platform"
@@ -56,7 +59,7 @@
   □ NEXT_PUBLIC_THEME_PRIMARY=#6366f1
   □ NEXT_PUBLIC_THEME_SECONDARY=#8b5cf6
   □ NEXT_PUBLIC_THEME_ACCENT=#06b6d4
-  
+
 □ Feature Flags (web/.env.local)
   □ NEXT_PUBLIC_ENABLE_FILE_UPLOAD=true
   □ NEXT_PUBLIC_ENABLE_REACTIONS=true
@@ -66,7 +69,7 @@
   □ NEXT_PUBLIC_ENABLE_AI_FEATURES=true
   □ NEXT_PUBLIC_ENABLE_SEARCH=true
   □ NEXT_PUBLIC_ENABLE_ANALYTICS=true
-  
+
 □ Limits Configuration (web/.env.local)
   □ NEXT_PUBLIC_MAX_FILE_SIZE=104857600 # 100MB
   □ NEXT_PUBLIC_MAX_MESSAGE_LENGTH=4000
@@ -75,6 +78,7 @@
 ```
 
 ### 0.1 Backend Database Schema
+
 ```sql
 -- I will create these migrations in order
 □ 001_core_tables.sql
@@ -175,32 +179,34 @@
 ```
 
 ### 0.2 Hasura Metadata Configuration
+
 ```yaml
 □ Track all tables with relationships
 □ Set up Row Level Security (RLS) policies
-  □ Owner can do everything
-  □ Admin can manage users/channels
-  □ Moderator can manage messages
-  □ Member can read/write in allowed channels
-  □ Guest can only read in public channels
+□ Owner can do everything
+□ Admin can manage users/channels
+□ Moderator can manage messages
+□ Member can read/write in allowed channels
+□ Guest can only read in public channels
 □ Create Hasura Actions
-  □ initializeOrganization
-  □ createFirstOwner
-  □ searchMessages
-  □ exportChannel
-  □ processSlashCommand
+□ initializeOrganization
+□ createFirstOwner
+□ searchMessages
+□ exportChannel
+□ processSlashCommand
 □ Set up Event Triggers
-  □ on_new_message → index_search
-  □ on_new_message → send_notifications
-  □ on_mention → notify_user
-  □ on_file_upload → scan_virus
+□ on_new_message → index_search
+□ on_new_message → send_notifications
+□ on_mention → notify_user
+□ on_file_upload → scan_virus
 □ Configure Scheduled Events
-  □ cleanup_old_typing_indicators (every 30s)
-  □ update_user_presence (every 1m)
-  □ send_digest_emails (daily)
+□ cleanup_old_typing_indicators (every 30s)
+□ update_user_presence (every 1m)
+□ send_digest_emails (daily)
 ```
 
 ### 0.3 Project Setup
+
 ```bash
 □ Create monorepo structure with pnpm workspaces
   □ Create pnpm-workspace.yaml
@@ -299,6 +305,7 @@
 ## Phase 1: First-Run Setup Experience [Day 3-4]
 
 ### 1.1 Initial Setup Flow
+
 ```typescript
 □ /web/app/(setup)/layout.tsx - Setup wrapper
 □ /web/app/(setup)/welcome/page.tsx
@@ -345,6 +352,7 @@
 ```
 
 ### 1.2 Core Configuration System
+
 ```typescript
 □ /web/lib/config/organization.ts
   □ loadOrganizationConfig()
@@ -382,6 +390,7 @@
 ## Phase 2: Authentication & Authorization [Day 5-6]
 
 ### 2.1 Authentication Implementation
+
 ```typescript
 □ /web/app/(auth)/layout.tsx - Auth pages wrapper
 □ /web/app/(auth)/login/page.tsx
@@ -414,6 +423,7 @@
 ```
 
 ### 2.2 Role Management System
+
 ```typescript
 □ /web/app/(app)/settings/roles/page.tsx
   □ List all roles
@@ -438,6 +448,7 @@
 ## Phase 3: Core Chat UI [Day 7-10]
 
 ### 3.1 Layout Components
+
 ```typescript
 □ /web/app/(app)/layout.tsx
   □ Main app shell
@@ -466,6 +477,7 @@
 ```
 
 ### 3.2 Channel Management
+
 ```typescript
 □ /web/components/channels/ChannelList.tsx
   □ Grouped by category
@@ -495,6 +507,7 @@
 ```
 
 ### 3.3 Message Components
+
 ```typescript
 □ /web/components/messages/MessageList.tsx
   □ Virtual scrolling for performance
@@ -539,6 +552,7 @@
 ## Phase 4: Real-time Features [Day 11-12]
 
 ### 4.1 GraphQL Subscriptions
+
 ```graphql
 □ /packages/graphql/subscriptions/messages.graphql
   □ subscription OnNewMessage($channelId: uuid!)
@@ -569,6 +583,7 @@
 ```
 
 ### 4.2 Socket.io Integration
+
 ```typescript
 □ /web/lib/socket/client.ts
   □ Initialize Socket.io connection
@@ -602,6 +617,7 @@
 ## Phase 5: Advanced Features [Day 13-15]
 
 ### 5.1 File Management
+
 ```typescript
 □ /web/components/files/FileUpload.tsx
   □ Drag-drop zone
@@ -625,6 +641,7 @@
 ```
 
 ### 5.2 Search System
+
 ```typescript
 □ /web/components/search/GlobalSearch.tsx
   □ Command palette (Cmd+K)
@@ -647,6 +664,7 @@
 ```
 
 ### 5.3 Notifications
+
 ```typescript
 □ /web/components/notifications/NotificationCenter.tsx
   □ Notification dropdown
@@ -672,6 +690,7 @@
 ## Phase 6: White-Label Customization [Day 16-17]
 
 ### 6.1 Theme System
+
 ```typescript
 □ /web/lib/theme/ThemeProvider.tsx
   □ Load theme from database
@@ -708,6 +727,7 @@
 ```
 
 ### 6.2 Branding Configuration
+
 ```typescript
 □ /web/app/(app)/settings/branding/page.tsx
   □ Organization name
@@ -732,6 +752,7 @@
 ## Phase 7: Admin Dashboard [Day 18-19]
 
 ### 7.1 User Management
+
 ```typescript
 □ /web/app/(app)/admin/users/page.tsx
   □ User list table
@@ -750,6 +771,7 @@
 ```
 
 ### 7.2 Analytics Dashboard
+
 ```typescript
 □ /web/app/(app)/admin/analytics/page.tsx
   □ Active users chart
@@ -766,6 +788,7 @@
 ```
 
 ### 7.3 System Settings
+
 ```typescript
 □ /web/app/(app)/admin/settings/page.tsx
   □ Rate limiting
@@ -781,6 +804,7 @@
 ## Phase 8: Backend Services [Day 20-21]
 
 ### 8.1 Realtime Service (Socket.io)
+
 ```typescript
 □ /services/realtime/index.ts
   □ Socket.io server setup
@@ -800,6 +824,7 @@
 ```
 
 ### 8.2 Worker Service (BullMQ)
+
 ```typescript
 □ /services/worker/index.ts
   □ Queue initialization
@@ -827,6 +852,7 @@
 ## Phase 9: Mobile & Desktop [Day 22-24]
 
 ### 9.1 Progressive Web App
+
 ```typescript
 □ /web/public/manifest.json
   □ App name & icons
@@ -845,6 +871,7 @@
 ```
 
 ### 9.2 Mobile Optimizations
+
 ```typescript
 □ Responsive design throughout
 □ Touch gestures
@@ -857,6 +884,7 @@
 ```
 
 ### 9.3 Desktop Enhancements
+
 ```typescript
 □ Keyboard shortcuts
   □ Cmd+K - Search
@@ -873,6 +901,7 @@
 ## Phase 10: Testing & Deployment [Day 25-26]
 
 ### 10.1 Testing Suite
+
 ```typescript
 □ Unit tests for utilities
   □ /packages/utils test coverage > 90%
@@ -880,20 +909,20 @@
   □ Validation functions
   □ Permission helpers
   □ Theme generators
-  
+
 □ Component tests with React Testing Library
   □ Message component
   □ Channel list component
   □ Auth forms
   □ Settings panels
   □ Modal dialogs
-  
+
 □ Integration tests
   □ GraphQL operations
   □ Socket.io connections
   □ File upload flow
   □ Search functionality
-  
+
 □ E2E tests with Playwright
   □ Auth flow
     □ Register new user
@@ -933,14 +962,14 @@
     □ Assign role
     □ Remove user
     □ Update profile
-    
+
 □ Load testing with K6
   □ 100 concurrent users
   □ 1000 messages per minute
   □ File upload stress test
   □ WebSocket connection limits
   □ Database query performance
-  
+
 □ Accessibility testing
   □ axe-core automated tests
   □ Screen reader manual testing
@@ -950,6 +979,7 @@
 ```
 
 ### 10.2 Performance Optimization
+
 ```typescript
 □ Code splitting
 □ Lazy loading
@@ -961,6 +991,7 @@
 ```
 
 ### 10.3 Deployment Setup
+
 ```bash
 □ Docker configuration
 □ Environment variables
@@ -976,23 +1007,25 @@
 ## Phase 11: Documentation [Day 27]
 
 ### 11.1 User Documentation
+
 ```markdown
 □ /docs/user-guide.md
-  □ Getting started
-  □ Creating channels
-  □ Sending messages
-  □ File sharing
-  □ Keyboard shortcuts
+□ Getting started
+□ Creating channels
+□ Sending messages
+□ File sharing
+□ Keyboard shortcuts
 
 □ /docs/admin-guide.md
-  □ Initial setup
-  □ User management
-  □ Role configuration
-  □ Customization
-  □ Backups
+□ Initial setup
+□ User management
+□ Role configuration
+□ Customization
+□ Backups
 ```
 
 ### 11.2 Developer Documentation
+
 ```markdown
 □ /docs/deployment.md
 □ /docs/configuration.md
@@ -1006,6 +1039,7 @@
 ## Phase 12: Polish & Launch [Day 28-30]
 
 ### 12.1 Final Polish
+
 ```typescript
 □ Loading states everywhere
   □ Message list loading
@@ -1050,77 +1084,78 @@
 ```
 
 ### 12.2 Launch Checklist
+
 ```markdown
 □ Security audit
-  □ SQL injection prevention
-  □ XSS protection
-  □ CSRF tokens
-  □ Rate limiting
-  □ Input validation
-  □ File upload restrictions
-  □ JWT expiration
-  □ Permission checks
+□ SQL injection prevention
+□ XSS protection
+□ CSRF tokens
+□ Rate limiting
+□ Input validation
+□ File upload restrictions
+□ JWT expiration
+□ Permission checks
 □ Performance testing
-  □ Lighthouse scores > 90
-  □ Bundle size < 500KB
-  □ Time to Interactive < 3s
-  □ First Contentful Paint < 1s
-  □ Core Web Vitals pass
+□ Lighthouse scores > 90
+□ Bundle size < 500KB
+□ Time to Interactive < 3s
+□ First Contentful Paint < 1s
+□ Core Web Vitals pass
 □ Cross-browser testing
-  □ Chrome (latest)
-  □ Firefox (latest)
-  □ Safari (latest)
-  □ Edge (latest)
-  □ Mobile browsers
+□ Chrome (latest)
+□ Firefox (latest)
+□ Safari (latest)
+□ Edge (latest)
+□ Mobile browsers
 □ Mobile testing
-  □ iOS Safari
-  □ Android Chrome
-  □ Tablet layouts
-  □ Touch interactions
-  □ Keyboard handling
+□ iOS Safari
+□ Android Chrome
+□ Tablet layouts
+□ Touch interactions
+□ Keyboard handling
 □ Accessibility review
-  □ Screen reader testing
-  □ Keyboard navigation
-  □ Color contrast (WCAG AA)
-  □ Focus management
-  □ ARIA labels
-  □ Alt text for images
+□ Screen reader testing
+□ Keyboard navigation
+□ Color contrast (WCAG AA)
+□ Focus management
+□ ARIA labels
+□ Alt text for images
 □ SEO optimization
-  □ Meta tags
-  □ Open Graph tags
-  □ Twitter cards
-  □ Sitemap
-  □ Robots.txt
-  □ Canonical URLs
+□ Meta tags
+□ Open Graph tags
+□ Twitter cards
+□ Sitemap
+□ Robots.txt
+□ Canonical URLs
 □ Analytics setup
-  □ Google Analytics 4
-  □ Custom events
-  □ User properties
-  □ Conversion tracking
+□ Google Analytics 4
+□ Custom events
+□ User properties
+□ Conversion tracking
 □ Error tracking (Sentry)
-  □ Install Sentry
-  □ Configure environments
-  □ Source maps
-  □ User context
-  □ Custom error boundaries
+□ Install Sentry
+□ Configure environments
+□ Source maps
+□ User context
+□ Custom error boundaries
 □ Demo data seeding
-  □ Sample users
-  □ Sample channels
-  □ Sample messages
-  □ Sample files
-  □ Demo organization
+□ Sample users
+□ Sample channels
+□ Sample messages
+□ Sample files
+□ Demo organization
 □ Documentation
-  □ README.md
-  □ CONTRIBUTING.md
-  □ API documentation
-  □ Deployment guide
-  □ Configuration guide
+□ README.md
+□ CONTRIBUTING.md
+□ API documentation
+□ Deployment guide
+□ Configuration guide
 □ Launch announcement
-  □ Product Hunt
-  □ Hacker News
-  □ Twitter/X
-  □ LinkedIn
-  □ Dev.to article
+□ Product Hunt
+□ Hacker News
+□ Twitter/X
+□ LinkedIn
+□ Dev.to article
 ```
 
 ---
@@ -1128,6 +1163,7 @@
 ## 🎉 Deliverables
 
 ### What You Get:
+
 1. **Fully functional chat platform** comparable to Slack/Discord
 2. **Complete white-label system** with UI customization
 3. **Role-based permissions** with Owner protection
@@ -1141,6 +1177,7 @@
 11. **Production-ready** with tests and docs
 
 ### Key Features:
+
 - ✅ Zero to production in 30 days
 - ✅ Single tenant but multi-tenant ready
 - ✅ Complete customization via UI
@@ -1152,6 +1189,7 @@
 - ✅ Maximal white-labeling
 
 ### Technology Stack:
+
 - **Frontend**: Next.js 14, TypeScript, Tailwind CSS
 - **UI**: Radix UI primitives, Framer Motion
 - **Backend**: Hasura, PostgreSQL, Redis
@@ -1168,6 +1206,7 @@
 ## 📝 Implementation Notes
 
 ### For AI Implementation:
+
 1. Each checkbox is a discrete task
 2. Complete each file before moving to next
 3. Test each component in isolation
@@ -1180,6 +1219,7 @@
 10. Bundle size: <500KB initial
 
 ### Critical Success Factors:
+
 1. **Owner role** cannot be changed after setup
 2. **Theme** must be hot-reloadable
 3. **Search** must be instant (<100ms)

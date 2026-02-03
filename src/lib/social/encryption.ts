@@ -5,6 +5,8 @@
 
 import crypto from 'crypto'
 
+import { logger } from '@/lib/logger'
+
 const ALGORITHM = 'aes-256-gcm'
 const IV_LENGTH = 16
 const AUTH_TAG_LENGTH = 16
@@ -35,15 +37,11 @@ export function encryptToken(token: string): string {
     const authTag = cipher.getAuthTag()
 
     // Combine IV + authTag + encrypted data
-    const result = Buffer.concat([
-      iv,
-      authTag,
-      Buffer.from(encrypted, 'hex')
-    ])
+    const result = Buffer.concat([iv, authTag, Buffer.from(encrypted, 'hex')])
 
     return result.toString('base64')
   } catch (error) {
-    console.error('Token encryption failed:', error)
+    logger.error('Token encryption failed:', error)
     throw new Error('Failed to encrypt token')
   }
 }
@@ -69,7 +67,7 @@ export function decryptToken(encryptedToken: string): string {
 
     return decrypted
   } catch (error) {
-    console.error('Token decryption failed:', error)
+    logger.error('Token decryption failed:', error)
     throw new Error('Failed to decrypt token')
   }
 }

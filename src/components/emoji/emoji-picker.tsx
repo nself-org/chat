@@ -79,9 +79,7 @@ export function EmojiPicker({
 }: EmojiPickerProps) {
   const { resolvedTheme } = useTheme()
   const [internalOpen, setInternalOpen] = useState(false)
-  const [currentSkinTone, setCurrentSkinTone] = useState<SkinTones>(
-    skinTone || SkinTones.NEUTRAL
-  )
+  const [currentSkinTone, setCurrentSkinTone] = useState<SkinTones>(skinTone || SkinTones.NEUTRAL)
   const pickerRef = useRef<HTMLDivElement>(null)
 
   // Use controlled or internal state
@@ -138,7 +136,7 @@ export function EmojiPicker({
       <PopoverContent
         side={side}
         align={align}
-        className={cn('w-auto p-0 border-0', className)}
+        className={cn('w-auto border-0 p-0', className)}
         sideOffset={8}
       >
         <div ref={pickerRef} className="emoji-picker-container">
@@ -195,9 +193,7 @@ export function StandaloneEmojiPicker({
   width = 350,
 }: StandaloneEmojiPickerProps) {
   const { resolvedTheme } = useTheme()
-  const [currentSkinTone, setCurrentSkinTone] = useState<SkinTones>(
-    skinTone || SkinTones.NEUTRAL
-  )
+  const [currentSkinTone, setCurrentSkinTone] = useState<SkinTones>(skinTone || SkinTones.NEUTRAL)
 
   useEffect(() => {
     if (skinTone !== undefined) {

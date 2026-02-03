@@ -227,7 +227,7 @@ describe('HTML Sanitization', () => {
       expect(escapeHtml('<script>')).toBe('&lt;script&gt;')
       expect(escapeHtml('a & b')).toBe('a &amp; b')
       expect(escapeHtml('"quoted"')).toBe('&quot;quoted&quot;')
-      expect(escapeHtml("it's")).toBe("it&#39;s")
+      expect(escapeHtml("it's")).toBe('it&#39;s')
     })
 
     it('should handle normal text', () => {

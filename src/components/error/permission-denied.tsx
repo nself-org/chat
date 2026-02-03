@@ -3,15 +3,7 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import {
-  ShieldX,
-  Home,
-  ArrowLeft,
-  Mail,
-  Lock,
-  UserX,
-  Ban,
-} from 'lucide-react'
+import { ShieldX, Home, ArrowLeft, Mail, Lock, UserX, Ban } from 'lucide-react'
 
 type DenialReason = 'unauthorized' | 'forbidden' | 'suspended' | 'banned' | 'generic'
 
@@ -66,7 +58,10 @@ interface PermissionDeniedProps {
   className?: string
 }
 
-const reasonConfig: Record<DenialReason, { icon: typeof ShieldX; defaultTitle: string; defaultDescription: string }> = {
+const reasonConfig: Record<
+  DenialReason,
+  { icon: typeof ShieldX; defaultTitle: string; defaultDescription: string }
+> = {
   unauthorized: {
     icon: Lock,
     defaultTitle: 'Sign In Required',
@@ -145,27 +140,25 @@ export function PermissionDenied({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center min-h-[400px] p-8 text-center',
+        'flex min-h-[400px] flex-col items-center justify-center p-8 text-center',
         className
       )}
     >
       {/* Icon */}
-      <div className="mb-6 p-4 bg-red-100 dark:bg-red-900/30 rounded-full">
+      <div className="mb-6 rounded-full bg-red-100 p-4 dark:bg-red-900/30">
         <Icon className="h-12 w-12 text-red-600 dark:text-red-400" />
       </div>
 
       {/* Title */}
-      <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-        {displayTitle}
-      </h2>
+      <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">{displayTitle}</h2>
 
       {/* Description */}
-      <p className="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md">
+      <p className="mb-8 max-w-md text-base text-zinc-600 dark:text-zinc-400">
         {displayDescription}
       </p>
 
       {/* Action buttons */}
-      <div className="flex flex-wrap gap-3 justify-center mb-6">
+      <div className="mb-6 flex flex-wrap justify-center gap-3">
         {shouldShowSignIn && (
           <Button onClick={handleSignIn} variant="default" className="gap-2">
             <Lock className="h-4 w-4" />
@@ -185,18 +178,14 @@ export function PermissionDenied({
         )}
 
         {requestSent && (
-          <div className="flex items-center gap-2 px-4 py-2 rounded-md bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400">
+          <div className="flex items-center gap-2 rounded-md bg-green-100 px-4 py-2 text-green-700 dark:bg-green-900/30 dark:text-green-400">
             <Mail className="h-4 w-4" />
             Access request sent
           </div>
         )}
 
         {showHomeButton && (
-          <Button
-            onClick={handleHome}
-            variant="outline"
-            className="gap-2"
-          >
+          <Button onClick={handleHome} variant="outline" className="gap-2">
             <Home className="h-4 w-4" />
             Go Home
           </Button>
@@ -214,10 +203,7 @@ export function PermissionDenied({
       {contactEmail && (
         <p className="text-sm text-zinc-500 dark:text-zinc-400">
           Need help?{' '}
-          <a
-            href={`mailto:${contactEmail}`}
-            className="text-primary hover:underline"
-          >
+          <a href={`mailto:${contactEmail}`} className="text-primary hover:underline">
             Contact {contactEmail}
           </a>
         </p>

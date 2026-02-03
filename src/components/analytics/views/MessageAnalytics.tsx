@@ -1,36 +1,29 @@
-'use client';
+'use client'
 
 /**
  * MessageAnalytics - Detailed message analytics view
  */
 
-import * as React from 'react';
-import {
-  MessageSquare,
-  Edit,
-  Trash2,
-  Paperclip,
-  Heart,
-  MessagesSquare,
-} from 'lucide-react';
+import * as React from 'react'
+import { MessageSquare, Edit, Trash2, Paperclip, Heart, MessagesSquare } from 'lucide-react'
 
-import { cn } from '@/lib/utils';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
-import { MessageVolumeChart } from '../charts/MessageVolumeChart';
-import { PeakHoursChart } from '../charts/PeakHoursChart';
-import { ResponseTimeChart } from '../charts/ResponseTimeChart';
-import { TopMessagesTable } from '../tables/TopMessagesTable';
+import { MessageVolumeChart } from '../charts/MessageVolumeChart'
+import { PeakHoursChart } from '../charts/PeakHoursChart'
+import { ResponseTimeChart } from '../charts/ResponseTimeChart'
+import { TopMessagesTable } from '../tables/TopMessagesTable'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface MessageAnalyticsProps {
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -38,12 +31,12 @@ interface MessageAnalyticsProps {
 // ============================================================================
 
 interface StatCardProps {
-  title: string;
-  value: number | string;
-  description?: string;
-  icon: React.ReactNode;
-  trend?: 'up' | 'down' | 'stable';
-  trendValue?: string;
+  title: string
+  value: number | string
+  description?: string
+  icon: React.ReactNode
+  trend?: 'up' | 'down' | 'stable'
+  trendValue?: string
 }
 
 function StatCard({ title, value, description, icon, trend, trendValue }: StatCardProps) {
@@ -61,11 +54,7 @@ function StatCard({ title, value, description, icon, trend, trendValue }: StatCa
               <span
                 className={cn(
                   'mr-1 font-medium',
-                  trend === 'up'
-                    ? 'text-green-600'
-                    : trend === 'down'
-                      ? 'text-red-600'
-                      : ''
+                  trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : ''
                 )}
               >
                 {trendValue}
@@ -76,7 +65,7 @@ function StatCard({ title, value, description, icon, trend, trendValue }: StatCa
         )}
       </CardContent>
     </Card>
-  );
+  )
 }
 
 // ============================================================================
@@ -84,28 +73,30 @@ function StatCard({ title, value, description, icon, trend, trendValue }: StatCa
 // ============================================================================
 
 export function MessageAnalytics({ className }: MessageAnalyticsProps) {
-  const { summary, messageVolume, isLoading, fetchSectionData } = useAnalyticsStore();
+  const { summary, messageVolume, isLoading, fetchSectionData } = useAnalyticsStore()
 
   // Fetch message data on mount
   React.useEffect(() => {
-    fetchSectionData('messages');
-  }, [fetchSectionData]);
+    fetchSectionData('messages')
+  }, [fetchSectionData])
 
   // Calculate message stats
   const messageStats = React.useMemo(() => {
-    if (!messageVolume || messageVolume.length === 0) return null;
+    if (!messageVolume || messageVolume.length === 0) return null
 
-    const totalMessages = messageVolume.reduce((sum, d) => sum + d.count, 0);
-    const avgPerDay = totalMessages / messageVolume.length;
-    const maxDay = messageVolume.reduce((max, d) =>
-      d.count > max.count ? d : max, messageVolume[0]
-    );
-    const minDay = messageVolume.reduce((min, d) =>
-      d.count < min.count ? d : min, messageVolume[0]
-    );
+    const totalMessages = messageVolume.reduce((sum, d) => sum + d.count, 0)
+    const avgPerDay = totalMessages / messageVolume.length
+    const maxDay = messageVolume.reduce(
+      (max, d) => (d.count > max.count ? d : max),
+      messageVolume[0]
+    )
+    const minDay = messageVolume.reduce(
+      (min, d) => (d.count < min.count ? d : min),
+      messageVolume[0]
+    )
 
-    return { totalMessages, avgPerDay, maxDay, minDay };
-  }, [messageVolume]);
+    return { totalMessages, avgPerDay, maxDay, minDay }
+  }, [messageVolume])
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -162,9 +153,7 @@ export function MessageAnalytics({ className }: MessageAnalyticsProps) {
               <CardTitle className="text-sm font-medium">Peak Day</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">
-                {messageStats.maxDay.count.toLocaleString()}
-              </div>
+              <div className="text-3xl font-bold">{messageStats.maxDay.count.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
                 on {new Date(messageStats.maxDay.timestamp).toLocaleDateString()}
               </p>
@@ -175,9 +164,7 @@ export function MessageAnalytics({ className }: MessageAnalyticsProps) {
               <CardTitle className="text-sm font-medium">Quiet Day</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">
-                {messageStats.minDay.count.toLocaleString()}
-              </div>
+              <div className="text-3xl font-bold">{messageStats.minDay.count.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
                 on {new Date(messageStats.minDay.timestamp).toLocaleDateString()}
               </p>
@@ -296,7 +283,7 @@ export function MessageAnalytics({ className }: MessageAnalyticsProps) {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }
 
-export default MessageAnalytics;
+export default MessageAnalytics

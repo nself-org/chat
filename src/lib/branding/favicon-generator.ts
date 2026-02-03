@@ -35,8 +35,20 @@ export const faviconSizes: FaviconSize[] = [
   { name: 'favicon-16x16', width: 16, height: 16, format: 'png' },
   { name: 'favicon-32x32', width: 32, height: 32, format: 'png' },
   { name: 'apple-touch-icon', width: 180, height: 180, format: 'png' },
-  { name: 'android-chrome-192x192', width: 192, height: 192, format: 'png', purpose: 'any maskable' },
-  { name: 'android-chrome-512x512', width: 512, height: 512, format: 'png', purpose: 'any maskable' },
+  {
+    name: 'android-chrome-192x192',
+    width: 192,
+    height: 192,
+    format: 'png',
+    purpose: 'any maskable',
+  },
+  {
+    name: 'android-chrome-512x512',
+    width: 512,
+    height: 512,
+    format: 'png',
+    purpose: 'any maskable',
+  },
   { name: 'mstile-150x150', width: 150, height: 150, format: 'png' },
   { name: 'safari-pinned-tab', width: 512, height: 512, format: 'svg' },
 ]
@@ -44,9 +56,7 @@ export const faviconSizes: FaviconSize[] = [
 /**
  * Generate all favicon sizes from a source image
  */
-export async function generateFavicons(
-  options: FaviconOptions
-): Promise<Record<string, string>> {
+export async function generateFavicons(options: FaviconOptions): Promise<Record<string, string>> {
   const results: Record<string, string> = {}
 
   for (const size of faviconSizes) {
@@ -75,13 +85,7 @@ export async function generateFavicon(
   height: number,
   options?: { backgroundColor?: string; padding?: number }
 ): Promise<string> {
-  return resizeImage(
-    source,
-    width,
-    height,
-    options?.backgroundColor,
-    options?.padding
-  )
+  return resizeImage(source, width, height, options?.backgroundColor, options?.padding)
 }
 
 /**
@@ -376,13 +380,7 @@ export async function generateOgImage(options: {
         // Draw logo centered at top
         const logoHeight = 80
         const logoWidth = (img.width / img.height) * logoHeight
-        ctx.drawImage(
-          img,
-          (width - logoWidth) / 2,
-          80,
-          logoWidth,
-          logoHeight
-        )
+        ctx.drawImage(img, (width - logoWidth) / 2, 80, logoWidth, logoHeight)
         contentStartY = 200
         drawText()
       }

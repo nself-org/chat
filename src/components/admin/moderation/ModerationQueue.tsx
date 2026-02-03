@@ -13,6 +13,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { AlertTriangle, CheckCircle, XCircle, Eye, EyeOff, Flag, Shield } from 'lucide-react'
 import type { QueueItem } from '@/lib/moderation/moderation-queue'
 
+import { logger } from '@/lib/logger'
+
 interface ModerationQueueProps {
   onAction?: (itemId: string, action: string) => void
 }
@@ -40,7 +42,7 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
         setItems(data.items || [])
       }
     } catch (error) {
-      console.error('Failed to fetch queue items:', error)
+      logger.error('Failed to fetch queue items:', error)
     } finally {
       setLoading(false)
     }
@@ -67,7 +69,7 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
         onAction?.(itemId, action)
       }
     } catch (error) {
-      console.error('Action failed:', error)
+      logger.error('Action failed:', error)
     }
   }
 
@@ -135,7 +137,7 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
           ) : items.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
-                <CheckCircle className="mx-auto h-12 w-12 text-green-500 mb-4" />
+                <CheckCircle className="mx-auto mb-4 h-12 w-12 text-green-500" />
                 <p className="text-muted-foreground">No items in queue</p>
               </CardContent>
             </Card>
@@ -145,13 +147,9 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
                 <CardHeader>
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge className={getPriorityColor(item.priority)}>
-                          {item.priority}
-                        </Badge>
-                        <Badge className={getStatusColor(item.status)}>
-                          {item.status}
-                        </Badge>
+                      <div className="mb-2 flex items-center gap-2">
+                        <Badge className={getPriorityColor(item.priority)}>{item.priority}</Badge>
+                        <Badge className={getStatusColor(item.status)}>{item.status}</Badge>
                         <Badge variant="outline">{item.contentType}</Badge>
                         {item.isHidden && (
                           <Badge variant="destructive">
@@ -163,9 +161,7 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
                       <CardTitle className="text-lg">
                         {item.userDisplayName || 'Unknown User'}
                       </CardTitle>
-                      <CardDescription>
-                        {new Date(item.createdAt).toLocaleString()}
-                      </CardDescription>
+                      <CardDescription>{new Date(item.createdAt).toLocaleString()}</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -173,17 +169,15 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
                 <CardContent className="space-y-4">
                   {/* Content Preview */}
                   {item.contentText && (
-                    <div className="p-4 bg-muted rounded-lg">
-                      <p className="text-sm whitespace-pre-wrap line-clamp-4">
-                        {item.contentText}
-                      </p>
+                    <div className="rounded-lg bg-muted p-4">
+                      <p className="line-clamp-4 whitespace-pre-wrap text-sm">{item.contentText}</p>
                     </div>
                   )}
 
                   {/* AI Flags */}
                   {item.aiFlags && item.aiFlags.length > 0 && (
                     <div>
-                      <p className="text-sm font-medium mb-2">AI Detections:</p>
+                      <p className="mb-2 text-sm font-medium">AI Detections:</p>
                       <div className="flex flex-wrap gap-2">
                         {item.aiFlags.map((flag, index) => (
                           <Badge key={index} variant="secondary">
@@ -195,7 +189,7 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
                   )}
 
                   {/* Scores */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                     {item.toxicScore > 0 && (
                       <div>
                         <p className="text-xs text-muted-foreground">Toxicity</p>
@@ -231,7 +225,7 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
                   {/* Profanity */}
                   {item.profanityDetected && item.profanityWords && (
                     <div>
-                      <p className="text-sm font-medium mb-2">Profanity Detected:</p>
+                      <p className="mb-2 text-sm font-medium">Profanity Detected:</p>
                       <div className="flex flex-wrap gap-2">
                         {item.profanityWords.map((word, index) => (
                           <Badge key={index} variant="destructive">
@@ -244,21 +238,17 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
 
                   {/* Auto Action */}
                   {item.autoAction && item.autoAction !== 'none' && (
-                    <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-                      <p className="text-sm font-medium mb-1">
-                        Auto Action: {item.autoAction}
-                      </p>
+                    <div className="rounded-lg bg-yellow-50 p-3 dark:bg-yellow-900/20">
+                      <p className="mb-1 text-sm font-medium">Auto Action: {item.autoAction}</p>
                       {item.autoActionReason && (
-                        <p className="text-xs text-muted-foreground">
-                          {item.autoActionReason}
-                        </p>
+                        <p className="text-xs text-muted-foreground">{item.autoActionReason}</p>
                       )}
                     </div>
                   )}
 
                   {/* Actions */}
                   {item.status === 'pending' && (
-                    <div className="flex flex-wrap gap-2 pt-4 border-t">
+                    <div className="flex flex-wrap gap-2 border-t pt-4">
                       <Button
                         onClick={() => handleAction(item.id, 'approve')}
                         variant="default"
@@ -299,11 +289,8 @@ export function ModerationQueue({ onAction }: ModerationQueueProps) {
                   {/* Review Info */}
                   {item.status !== 'pending' && item.reviewedBy && (
                     <div className="text-sm text-muted-foreground">
-                      Reviewed by {item.reviewedBy} on{' '}
-                      {new Date(item.reviewedAt!).toLocaleString()}
-                      {item.moderatorNotes && (
-                        <p className="mt-1">Notes: {item.moderatorNotes}</p>
-                      )}
+                      Reviewed by {item.reviewedBy} on {new Date(item.reviewedAt!).toLocaleString()}
+                      {item.moderatorNotes && <p className="mt-1">Notes: {item.moderatorNotes}</p>}
                     </div>
                   )}
                 </CardContent>

@@ -8,12 +8,7 @@
 
 // Template configuration
 export { default as discordTemplate } from './config'
-export {
-  discordColors,
-  discordTypography,
-  discordLayout,
-  discordAnimations,
-} from './config'
+export { discordColors, discordTypography, discordLayout, discordAnimations } from './config'
 
 // Theme utilities
 export {
@@ -32,10 +27,7 @@ export { DiscordLayout } from './components/DiscordLayout'
 export type { DiscordLayoutProps } from './components/DiscordLayout'
 
 export { DiscordServerList } from './components/DiscordServerList'
-export type {
-  DiscordServerListProps,
-  DiscordServerData,
-} from './components/DiscordServerList'
+export type { DiscordServerListProps, DiscordServerData } from './components/DiscordServerList'
 
 export { DiscordChannelSidebar } from './components/DiscordChannelSidebar'
 export type {
@@ -60,10 +52,7 @@ export type {
 } from './components/DiscordMessage'
 
 export { DiscordVoiceChannel } from './components/DiscordVoiceChannel'
-export type {
-  DiscordVoiceChannelProps,
-  DiscordVoiceUser,
-} from './components/DiscordVoiceChannel'
+export type { DiscordVoiceChannelProps, DiscordVoiceUser } from './components/DiscordVoiceChannel'
 
 export { DiscordUserCard } from './components/DiscordUserCard'
 export type {

@@ -66,9 +66,7 @@ test.describe('Language Switching', () => {
 
         // UI should update to Spanish
         // Look for Spanish text
-        const spanishText = page.locator(
-          'text=/Mensaje|Enviar|Canal|Usuario|Configuración/i'
-        )
+        const spanishText = page.locator('text=/Mensaje|Enviar|Canal|Usuario|Configuración/i')
 
         const isSpanish = await spanishText.isVisible().catch(() => false)
         expect(isSpanish || true).toBe(true)
@@ -103,9 +101,7 @@ test.describe('Language Switching', () => {
   })
 
   test('should display language name in selector', async ({ page }) => {
-    const languageSelector = page.locator(
-      '[data-testid="language-selector"], .language-selector'
-    )
+    const languageSelector = page.locator('[data-testid="language-selector"], .language-selector')
 
     if (await languageSelector.isVisible()) {
       // Should show current language name or flag
@@ -122,18 +118,14 @@ test.describe('Language Switching', () => {
 
     if (await languageSelector.isVisible()) {
       // Get initial UI text
-      const initialHeader = await page.evaluate(() =>
-        document.body.textContent?.substring(0, 100)
-      )
+      const initialHeader = await page.evaluate(() => document.body.textContent?.substring(0, 100))
 
       // Switch language
       await languageSelector.selectOption({ value: 'es' }).catch(() => {})
       await page.waitForTimeout(1000)
 
       // UI should change
-      const updatedHeader = await page.evaluate(() =>
-        document.body.textContent?.substring(0, 100)
-      )
+      const updatedHeader = await page.evaluate(() => document.body.textContent?.substring(0, 100))
 
       // Content may be different or same depending on translations
       expect(typeof updatedHeader).toBe('string')
@@ -161,9 +153,7 @@ test.describe('RTL Layout for Arabic/Hebrew', () => {
       await page.waitForTimeout(1000)
 
       // Check HTML direction
-      const htmlDir = await page.evaluate(() =>
-        document.documentElement.getAttribute('dir')
-      )
+      const htmlDir = await page.evaluate(() => document.documentElement.getAttribute('dir'))
 
       expect(htmlDir === 'rtl' || true).toBe(true)
     }
@@ -183,9 +173,7 @@ test.describe('RTL Layout for Arabic/Hebrew', () => {
       await page.waitForTimeout(1000)
 
       // Check HTML direction
-      const htmlDir = await page.evaluate(() =>
-        document.documentElement.getAttribute('dir')
-      )
+      const htmlDir = await page.evaluate(() => document.documentElement.getAttribute('dir'))
 
       expect(htmlDir === 'rtl' || true).toBe(true)
     }
@@ -319,9 +307,7 @@ test.describe('Date/Time Formatting per Locale', () => {
       await page.waitForTimeout(1000)
 
       // Look for date displays
-      const dateElements = page.locator(
-        '[data-testid="timestamp"], .timestamp, time'
-      )
+      const dateElements = page.locator('[data-testid="timestamp"], .timestamp, time')
 
       if ((await dateElements.count()) > 0) {
         const dateText = await dateElements.first().textContent()
@@ -348,13 +334,10 @@ test.describe('Date/Time Formatting per Locale', () => {
         // Get time format from page
         const timeFormat = await page.evaluate(() => {
           const date = new Date(2024, 0, 1, 14, 30, 0)
-          return new Intl.DateTimeFormat(
-            document.documentElement.lang || 'en',
-            {
-              hour: '2-digit',
-              minute: '2-digit',
-            }
-          ).format(date)
+          return new Intl.DateTimeFormat(document.documentElement.lang || 'en', {
+            hour: '2-digit',
+            minute: '2-digit',
+          }).format(date)
         })
 
         expect(timeFormat.length > 0).toBe(true)
@@ -369,9 +352,7 @@ test.describe('Date/Time Formatting per Locale', () => {
 
     if (await languageSelector.isVisible()) {
       // Look for relative time (e.g., "5 minutes ago")
-      const relativeTime = page.locator(
-        'text=/ago|hace|il y a|vor|fa|hace/i'
-      )
+      const relativeTime = page.locator('text=/ago|hace|il y a|vor|fa|hace/i')
 
       if (await relativeTime.isVisible()) {
         const text = await relativeTime.textContent()
@@ -509,9 +490,7 @@ test.describe('Pluralization Rules', () => {
 
     if (await languageSelector.isVisible()) {
       // Look for plural text patterns
-      const pluralText = page.locator(
-        'text=/message|messages|member|members|user|users/i'
-      )
+      const pluralText = page.locator('text=/message|messages|member|members|user|users/i')
 
       if (await pluralText.isVisible()) {
         const text = await pluralText.textContent()
@@ -543,9 +522,7 @@ test.describe('Pluralization Rules', () => {
 
   test('should show correct count display', async ({ page }) => {
     // Look for count displays (e.g., "1 message", "5 messages")
-    const countDisplay = page.locator(
-      '[data-testid="count-display"], .count-display'
-    )
+    const countDisplay = page.locator('[data-testid="count-display"], .count-display')
 
     if (await countDisplay.isVisible()) {
       const text = await countDisplay.textContent()
@@ -560,9 +537,7 @@ test.describe('Pluralization Rules', () => {
 // ============================================================================
 
 test.describe('Translation Completeness', () => {
-  test('should display translations without missing key placeholders', async ({
-    page,
-  }) => {
+  test('should display translations without missing key placeholders', async ({ page }) => {
     await page.goto('/chat')
     await page.waitForLoadState('networkidle')
 
@@ -675,9 +650,7 @@ test.describe('Language Persistence', () => {
       await page.waitForLoadState('networkidle')
 
       // Language should still be French
-      const currentLocale = await page.evaluate(() =>
-        document.documentElement.getAttribute('lang')
-      )
+      const currentLocale = await page.evaluate(() => document.documentElement.getAttribute('lang'))
 
       expect(currentLocale === 'fr' || true).toBe(true)
     }
@@ -713,9 +686,7 @@ test.describe('Language Persistence', () => {
     await page.waitForLoadState('networkidle')
 
     // Language should be set from URL
-    const currentLocale = await page.evaluate(() =>
-      document.documentElement.getAttribute('lang')
-    )
+    const currentLocale = await page.evaluate(() => document.documentElement.getAttribute('lang'))
 
     // May or may not support URL param, but shouldn't error
     expect(typeof currentLocale).toBe('string')

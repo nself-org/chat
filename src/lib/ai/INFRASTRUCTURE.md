@@ -52,6 +52,7 @@ The AI infrastructure provides a robust foundation for integrating AI features i
 #### OpenAI Client (`providers/openai-client.ts`)
 
 Advanced OpenAI integration with:
+
 - **Models**: GPT-4 Turbo, GPT-4o, GPT-4o Mini, GPT-3.5 Turbo
 - **Streaming**: Server-sent events for real-time responses
 - **Retry Logic**: Exponential backoff with jitter
@@ -60,6 +61,7 @@ Advanced OpenAI integration with:
 - **Timeout Handling**: Configurable request timeouts with abort controller
 
 **Usage:**
+
 ```typescript
 import { getOpenAIClient } from '@/lib/ai/providers/openai-client'
 
@@ -84,12 +86,14 @@ for await (const chunk of client.createChatCompletionStream({ messages })) {
 #### Anthropic Client (`providers/anthropic-client.ts`)
 
 Claude 3.5 integration with:
+
 - **Models**: Claude 3.5 Sonnet, Claude 3.5 Haiku, Claude 3 family
 - **Streaming**: Real-time streaming with event handling
 - **Error Handling**: Retry logic with longer delays for rate limits
 - **Message Conversion**: Helper utilities for message format conversion
 
 **Usage:**
+
 ```typescript
 import { getAnthropicClient } from '@/lib/ai/providers/anthropic-client'
 
@@ -113,6 +117,7 @@ for await (const event of client.createMessageStream({ messages })) {
 ### 2. Rate Limiter (`rate-limiter.ts`)
 
 Redis-backed distributed rate limiting with:
+
 - **Token Bucket Algorithm**: Smooth rate limiting with burst capacity
 - **Sliding Window**: Alternative algorithm for strict limits
 - **Multi-Level Limits**: Per-user, per-org, and per-endpoint limits
@@ -127,6 +132,7 @@ Redis-backed distributed rate limiting with:
 | Embeddings | 30 req | 5000 req | 1 min / 1 hour |
 
 **Usage:**
+
 ```typescript
 import { getSummarizeUserLimiter, checkAIRateLimit } from '@/lib/ai/rate-limiter'
 
@@ -139,7 +145,7 @@ if (!result.allowed) {
     { error: 'Rate limit exceeded' },
     {
       status: 429,
-      headers: getRateLimitHeaders(result)
+      headers: getRateLimitHeaders(result),
     }
   )
 }
@@ -157,6 +163,7 @@ const rateLimitResult = await checkAIRateLimit({
 ### 3. Cost Tracker (`cost-tracker.ts`)
 
 Comprehensive cost tracking and budget management:
+
 - **Token Tracking**: Input/output tokens for all requests
 - **Cost Calculation**: Real-time cost calculation per model
 - **Budget Alerts**: Configurable alerts at spending thresholds
@@ -173,21 +180,27 @@ Comprehensive cost tracking and budget management:
 | Claude 3.5 Haiku | $0.0008 | $0.004 |
 
 **Usage:**
+
 ```typescript
 import { getCostTracker } from '@/lib/ai/cost-tracker'
 
 const tracker = getCostTracker()
 
 // Track usage
-await tracker.trackUsage('summarize', 'gpt-4o-mini', {
-  inputTokens: 500,
-  outputTokens: 200,
-  totalTokens: 700,
-}, {
-  userId,
-  orgId,
-  requestId,
-})
+await tracker.trackUsage(
+  'summarize',
+  'gpt-4o-mini',
+  {
+    inputTokens: 500,
+    outputTokens: 200,
+    totalTokens: 700,
+  },
+  {
+    userId,
+    orgId,
+    requestId,
+  }
+)
 
 // Get stats
 const stats = await tracker.getUserStats(userId, startDate, endDate)
@@ -207,12 +220,14 @@ await tracker.createBudgetAlert({
 ### 4. Request Queue (`request-queue.ts`)
 
 Priority-based request queue with:
+
 - **Priority Levels**: Critical, High, Normal, Low, Background
 - **Batch Processing**: Process multiple requests concurrently
 - **Dead Letter Queue**: Failed requests for manual inspection
 - **Metrics**: Queue length, processing time, success/failure rates
 
 **Usage:**
+
 ```typescript
 import { getQueue, RequestPriority } from '@/lib/ai/request-queue'
 
@@ -244,6 +259,7 @@ console.log('Queue length:', metrics.totalQueued)
 ### 5. Response Cache (`response-cache.ts`)
 
 Intelligent caching with:
+
 - **Hash-Based Keys**: Automatic key generation from request payload
 - **TTL Configuration**: Different TTLs per operation type
 - **Hit Rate Tracking**: Monitor cache effectiveness
@@ -259,6 +275,7 @@ Intelligent caching with:
 | Translation | 24 hours | Translations are static |
 
 **Usage:**
+
 ```typescript
 import { getSummarizationCache, cached } from '@/lib/ai/response-cache'
 
@@ -285,6 +302,7 @@ class SummarizationService {
 ### Usage Dashboard (`components/admin/ai/AIUsageDashboard.tsx`)
 
 Real-time metrics dashboard showing:
+
 - **Cost Overview**: Total spending, average per request
 - **Usage Metrics**: Request counts, token usage
 - **Queue Status**: Queued, processing, completed, failed
@@ -296,6 +314,7 @@ Real-time metrics dashboard showing:
 ### Configuration Panel (`components/admin/ai/AIConfigPanel.tsx`)
 
 Manage AI configuration:
+
 - **Providers**: Enable/disable OpenAI and Anthropic
 - **Models**: Select default and fallback models
 - **Rate Limits**: Configure per-user and per-org limits
@@ -307,15 +326,18 @@ Manage AI configuration:
 ## API Routes
 
 ### GET /api/admin/ai/usage
+
 Get AI usage statistics
 
 **Query Parameters:**
+
 - `period`: `daily` | `monthly` (default: `daily`)
 - `userId`: Filter by user ID
 - `orgId`: Filter by organization ID
 - `date`: ISO date string (default: today)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -335,37 +357,46 @@ Get AI usage statistics
 ```
 
 ### GET /api/admin/ai/costs
+
 Get cost analysis
 
 **Query Parameters:**
+
 - `startDate`: ISO date string (required)
 - `endDate`: ISO date string (required)
 - `userId`: Filter by user ID
 - `orgId`: Filter by organization ID
 
 ### GET /api/admin/ai/limits
+
 Get rate limit status
 
 **Query Parameters:**
+
 - `userId`: Filter by user ID
 - `orgId`: Filter by organization ID
 - `endpoint`: Filter by endpoint
 
 ### DELETE /api/admin/ai/limits
+
 Reset rate limits
 
 **Query Parameters:**
+
 - `endpoint`: Endpoint to reset (required)
 - `userId`: Reset for specific user
 - `orgId`: Reset for specific org
 
 ### GET /api/admin/ai/config
+
 Get AI configuration
 
 ### POST /api/admin/ai/config
+
 Update AI configuration
 
 **Body:**
+
 ```json
 {
   "openai": { ... },
@@ -396,28 +427,33 @@ REDIS_DB=0
 ## Cost Optimization Recommendations
 
 ### 1. Use Appropriate Models
+
 - **Summarization**: GPT-4o Mini ($0.00015 input)
 - **Search**: Text-embedding-3-small ($0.00002)
 - **Chat**: GPT-4o Mini for simple, GPT-4o for complex
 - **Analysis**: Claude 3.5 Haiku ($0.0008)
 
 ### 2. Enable Caching
+
 - Cache summarizations for 30+ minutes
 - Cache search results for 1+ hour
 - Cache embeddings for 2+ hours
 - Monitor hit rates and adjust TTLs
 
 ### 3. Implement Rate Limits
+
 - Prevent abuse with per-user limits
 - Set org-level caps for cost control
 - Use burst capacity for legitimate spikes
 
 ### 4. Set Budget Alerts
+
 - Daily limits for quick feedback
 - Monthly limits for cost control
 - Alert at 75% to take action before exceeding
 
 ### 5. Monitor Usage
+
 - Review daily reports
 - Identify top users
 - Analyze cost by feature
@@ -426,6 +462,7 @@ REDIS_DB=0
 ## Monitoring and Alerting
 
 ### Metrics to Track
+
 - **Cost**: Daily/monthly spending, cost per user
 - **Usage**: Request counts, token usage
 - **Performance**: Average response time, queue length
@@ -433,6 +470,7 @@ REDIS_DB=0
 - **Cache**: Hit rate, cache size
 
 ### Alert Thresholds
+
 - Budget at 50%, 75%, 90%, 100%
 - Queue length > 100 requests
 - Error rate > 5%
@@ -441,6 +479,7 @@ REDIS_DB=0
 ## Best Practices
 
 ### 1. Error Handling
+
 ```typescript
 try {
   const result = await client.createChatCompletion(request)
@@ -455,7 +494,7 @@ try {
         // Log and alert
         break
       default:
-        // Fallback to alternative provider
+      // Fallback to alternative provider
     }
   }
   throw error
@@ -463,19 +502,28 @@ try {
 ```
 
 ### 2. Cost Tracking
+
 Always track usage for billing and monitoring:
+
 ```typescript
 const result = await client.createChatCompletion(request)
 
-await costTracker.trackUsage('chat', model, {
-  inputTokens: result.usage.promptTokens,
-  outputTokens: result.usage.completionTokens,
-  totalTokens: result.usage.totalTokens,
-}, { userId, orgId, requestId })
+await costTracker.trackUsage(
+  'chat',
+  model,
+  {
+    inputTokens: result.usage.promptTokens,
+    outputTokens: result.usage.completionTokens,
+    totalTokens: result.usage.totalTokens,
+  },
+  { userId, orgId, requestId }
+)
 ```
 
 ### 3. Rate Limiting
+
 Check limits before expensive operations:
+
 ```typescript
 const rateLimit = await checkAIRateLimit({
   userId,
@@ -491,7 +539,9 @@ if (!rateLimit.allowed) {
 ```
 
 ### 4. Caching
+
 Use caching for idempotent operations:
+
 ```typescript
 const cacheKey = hashPayload(request)
 const cached = await cache.get(cacheKey)
@@ -505,6 +555,7 @@ return result
 ## Testing
 
 ### Unit Tests
+
 ```typescript
 describe('CostTracker', () => {
   it('calculates cost correctly', () => {
@@ -520,6 +571,7 @@ describe('CostTracker', () => {
 ```
 
 ### Integration Tests
+
 ```typescript
 describe('Rate Limiter', () => {
   it('enforces user limits', async () => {
@@ -541,24 +593,28 @@ describe('Rate Limiter', () => {
 ## Troubleshooting
 
 ### High Costs
+
 1. Check top users: `GET /api/admin/ai/costs`
 2. Review usage by model
 3. Verify caching is enabled
 4. Lower budget limits if needed
 
 ### Rate Limit Errors
+
 1. Check current limits: `GET /api/admin/ai/limits`
 2. Reset limits if appropriate: `DELETE /api/admin/ai/limits`
 3. Increase limits in configuration
 4. Implement user-facing retry logic
 
 ### Cache Not Working
+
 1. Verify Redis connection
 2. Check cache configuration
 3. Monitor hit rates
 4. Adjust TTLs based on use case
 
 ### Queue Backing Up
+
 1. Check queue metrics
 2. Increase concurrency
 3. Review failed requests in DLQ
@@ -580,6 +636,7 @@ describe('Rate Limiter', () => {
 ## Support
 
 For issues or questions:
+
 1. Check this documentation
 2. Review error logs in Sentry
 3. Check Redis connectivity

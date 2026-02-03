@@ -25,10 +25,7 @@ interface TriggerStepPropertiesProps {
   onUpdate: (config: Record<string, unknown>) => void
 }
 
-export function TriggerStepProperties({
-  step,
-  onUpdate,
-}: TriggerStepPropertiesProps) {
+export function TriggerStepProperties({ step, onUpdate }: TriggerStepPropertiesProps) {
   const config = step.config
 
   return (
@@ -39,7 +36,7 @@ export function TriggerStepProperties({
           value={config.triggerType}
           onValueChange={(value) => onUpdate({ triggerType: value as TriggerType })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue placeholder="Select trigger type" />
           </SelectTrigger>
           <SelectContent>
@@ -50,24 +47,29 @@ export function TriggerStepProperties({
             ))}
           </SelectContent>
         </Select>
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           {triggerTemplates[config.triggerType]?.description}
         </p>
       </div>
 
       {/* Channel filter */}
-      {['message_received', 'reaction_added', 'member_joined', 'member_left', 'keyword', 'mention'].includes(
-        config.triggerType
-      ) && (
+      {[
+        'message_received',
+        'reaction_added',
+        'member_joined',
+        'member_left',
+        'keyword',
+        'mention',
+      ].includes(config.triggerType) && (
         <div>
           <Label className="text-xs">Channel (optional)</Label>
           <Input
             value={config.channelId || ''}
             onChange={(e) => onUpdate({ channelId: e.target.value || null })}
-            className="h-8 text-sm mt-1"
+            className="mt-1 h-8 text-sm"
             placeholder="Any channel"
           />
-          <p className="text-[10px] text-muted-foreground mt-1">
+          <p className="mt-1 text-[10px] text-muted-foreground">
             Leave empty to trigger in any channel
           </p>
         </div>
@@ -80,7 +82,7 @@ export function TriggerStepProperties({
           <Input
             value={config.keyword || ''}
             onChange={(e) => onUpdate({ keyword: e.target.value })}
-            className="h-8 text-sm mt-1"
+            className="mt-1 h-8 text-sm"
             placeholder="Enter keyword to watch for"
           />
         </div>
@@ -94,7 +96,7 @@ export function TriggerStepProperties({
             value={config.mentionType || 'user'}
             onValueChange={(value) => onUpdate({ mentionType: value })}
           >
-            <SelectTrigger className="h-8 text-sm mt-1">
+            <SelectTrigger className="mt-1 h-8 text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -118,7 +120,7 @@ export function TriggerStepProperties({
               if (!value.startsWith('/')) value = '/' + value
               onUpdate({ slashCommand: value })
             }}
-            className="h-8 text-sm mt-1 font-mono"
+            className="mt-1 h-8 font-mono text-sm"
             placeholder="/command"
           />
         </div>
@@ -139,7 +141,7 @@ export function TriggerStepProperties({
           <Input
             value={config.webhookSecret || ''}
             onChange={(e) => onUpdate({ webhookSecret: e.target.value })}
-            className="h-8 text-sm mt-1 font-mono"
+            className="mt-1 h-8 font-mono text-sm"
             placeholder="Secret for signature verification"
             type="password"
           />
@@ -165,14 +167,14 @@ function ScheduleConfig({
   const scheduleType = schedule?.type || 'recurring'
 
   return (
-    <div className="space-y-3 pt-2 border-t">
+    <div className="space-y-3 border-t pt-2">
       <div>
         <Label className="text-xs">Schedule Type</Label>
         <Select
           value={scheduleType}
           onValueChange={(value) => onUpdate({ ...schedule, type: value })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -191,7 +193,7 @@ function ScheduleConfig({
             onChange={(e) =>
               onUpdate({ ...schedule, datetime: new Date(e.target.value).toISOString() })
             }
-            className="h-8 text-sm mt-1"
+            className="mt-1 h-8 text-sm"
           />
         </div>
       )}
@@ -203,10 +205,10 @@ function ScheduleConfig({
             <Input
               value={schedule?.cron || '0 9 * * 1-5'}
               onChange={(e) => onUpdate({ ...schedule, cron: e.target.value })}
-              className="h-8 text-sm mt-1 font-mono"
+              className="mt-1 h-8 font-mono text-sm"
               placeholder="0 9 * * 1-5"
             />
-            <p className="text-[10px] text-muted-foreground mt-1">
+            <p className="mt-1 text-[10px] text-muted-foreground">
               Format: minute hour day-of-month month day-of-week
             </p>
           </div>
@@ -214,7 +216,7 @@ function ScheduleConfig({
           {/* Common presets */}
           <div>
             <Label className="text-xs">Quick Presets</Label>
-            <div className="flex flex-wrap gap-1 mt-1">
+            <div className="mt-1 flex flex-wrap gap-1">
               {[
                 { label: 'Every hour', cron: '0 * * * *' },
                 { label: 'Daily 9am', cron: '0 9 * * *' },
@@ -226,7 +228,7 @@ function ScheduleConfig({
                   key={preset.cron}
                   type="button"
                   onClick={() => onUpdate({ ...schedule, cron: preset.cron })}
-                  className="px-2 py-0.5 text-[10px] rounded bg-muted hover:bg-muted/80"
+                  className="hover:bg-muted/80 rounded bg-muted px-2 py-0.5 text-[10px]"
                 >
                   {preset.label}
                 </button>
@@ -242,7 +244,7 @@ function ScheduleConfig({
           value={schedule?.timezone || 'UTC'}
           onValueChange={(value) => onUpdate({ ...schedule, timezone: value })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

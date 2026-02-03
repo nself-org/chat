@@ -20,18 +20,10 @@ export class ChatPage {
     this.messageInput = page.locator(
       '[data-testid="message-input"], [contenteditable="true"], textarea, .ProseMirror'
     )
-    this.sendButton = page.locator(
-      '[data-testid="send-button"], button[aria-label*="send"]'
-    )
-    this.messageList = page.locator(
-      '[data-testid="message-list"], .message-list, [role="log"]'
-    )
-    this.channelList = page.locator(
-      '[data-testid="channel-list"], .channel-list, aside'
-    )
-    this.threadPanel = page.locator(
-      '[data-testid="thread-panel"], .thread-panel'
-    )
+    this.sendButton = page.locator('[data-testid="send-button"], button[aria-label*="send"]')
+    this.messageList = page.locator('[data-testid="message-list"], .message-list, [role="log"]')
+    this.channelList = page.locator('[data-testid="channel-list"], .channel-list, aside')
+    this.threadPanel = page.locator('[data-testid="thread-panel"], .thread-panel')
     this.userMenu = page.locator('[data-testid="user-menu"], .user-menu')
   }
 
@@ -57,9 +49,7 @@ export class ChatPage {
   }
 
   async selectChannel(channelName: string) {
-    const channel = this.page.locator(
-      `[data-testid="channel-item"]:has-text("${channelName}")`
-    )
+    const channel = this.page.locator(`[data-testid="channel-item"]:has-text("${channelName}")`)
     await channel.click()
     await this.page.waitForLoadState('networkidle')
   }
@@ -76,9 +66,8 @@ export class ChatPage {
   }
 
   async waitForMessages(count: number = 1) {
-    await expect(this.page.locator('[data-testid="message-item"]')).toHaveCount(
-      count,
-      { timeout: 5000 }
-    )
+    await expect(this.page.locator('[data-testid="message-item"]')).toHaveCount(count, {
+      timeout: 5000,
+    })
   }
 }

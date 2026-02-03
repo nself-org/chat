@@ -1,0 +1,237 @@
+{
+  "_meta": {
+    "language": "Azerbaijani",
+    "code": "az",
+    "namespace": "errors",
+    "version": "1.0.0",
+    "status": "needs_translation",
+    "note": "This file contains English text as placeholders. Professional translation required.",
+    "lastUpdated": "2026-02-03T17:05:59.137Z"
+  },
+  "errors": {
+    "general": "An error occurred",
+    "unknown": "An unknown error occurred",
+    "tryAgain": "Please try again",
+    "contactSupport": "Please contact support if the problem persists"
+  },
+  "network": {
+    "offline": "You are offline",
+    "connectionLost": "Connection lost",
+    "reconnecting": "Reconnecting...",
+    "reconnected": "Connection restored",
+    "slowConnection": "Slow connection detected",
+    "timeout": "Request timed out",
+    "noInternet": "No internet connection",
+    "checkConnection": "Please check your internet connection"
+  },
+  "http": {
+    "400": "Bad request",
+    "401": "Unauthorized",
+    "403": "Forbidden",
+    "404": "Not found",
+    "405": "Method not allowed",
+    "408": "Request timeout",
+    "409": "Conflict",
+    "410": "Gone",
+    "422": "Validation failed",
+    "429": "Too many requests",
+    "500": "Internal server error",
+    "502": "Bad gateway",
+    "503": "Service unavailable",
+    "504": "Gateway timeout"
+  },
+  "auth": {
+    "notAuthenticated": "You must be signed in",
+    "sessionExpired": "Your session has expired",
+    "invalidCredentials": "Invalid credentials",
+    "accountLocked": "Account locked",
+    "accountDisabled": "Account disabled",
+    "insufficientPermissions": "Insufficient permissions",
+    "tokenInvalid": "Invalid token",
+    "tokenExpired": "Token expired"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalid": "Invalid value",
+    "email": "Invalid email address",
+    "url": "Invalid URL",
+    "minLength": "Must be at least {{min}} characters",
+    "maxLength": "Must be no more than {{max}} characters",
+    "min": "Must be at least {{min}}",
+    "max": "Must be no more than {{max}}",
+    "pattern": "Invalid format",
+    "match": "Fields do not match",
+    "unique": "This value already exists",
+    "invalidDate": "Invalid date",
+    "futureDate": "Date must be in the future",
+    "pastDate": "Date must be in the past",
+    "fileSize": "File size exceeds limit of {{size}}",
+    "fileType": "File type not allowed",
+    "imageOnly": "Only images are allowed",
+    "videoOnly": "Only videos are allowed"
+  },
+  "messages": {
+    "sendFailed": "Failed to send message",
+    "deleteFailed": "Failed to delete message",
+    "editFailed": "Failed to edit message",
+    "loadFailed": "Failed to load messages",
+    "tooLong": "Message is too long (max {{max}} characters)",
+    "empty": "Message cannot be empty",
+    "attachmentFailed": "Failed to upload attachment",
+    "attachmentTooLarge": "Attachment is too large (max {{size}})",
+    "tooManyAttachments": "Too many attachments (max {{max}})"
+  },
+  "channels": {
+    "notFound": "Channel not found",
+    "createFailed": "Failed to create channel",
+    "updateFailed": "Failed to update channel",
+    "deleteFailed": "Failed to delete channel",
+    "joinFailed": "Failed to join channel",
+    "leaveFailed": "Failed to leave channel",
+    "archiveFailed": "Failed to archive channel",
+    "loadFailed": "Failed to load channel",
+    "noAccess": "You don't have access to this channel",
+    "alreadyMember": "You are already a member",
+    "notMember": "You are not a member",
+    "private": "This is a private channel",
+    "archived": "This channel is archived"
+  },
+  "users": {
+    "notFound": "User not found",
+    "updateFailed": "Failed to update user",
+    "deleteFailed": "Failed to delete user",
+    "inviteFailed": "Failed to send invitation",
+    "blockFailed": "Failed to block user",
+    "unblockFailed": "Failed to unblock user",
+    "loadFailed": "Failed to load user",
+    "alreadyBlocked": "User is already blocked",
+    "cannotBlockSelf": "You cannot block yourself",
+    "cannotDeleteSelf": "You cannot delete your own account here"
+  },
+  "files": {
+    "uploadFailed": "Failed to upload file",
+    "downloadFailed": "Failed to download file",
+    "deleteFailed": "Failed to delete file",
+    "notFound": "File not found",
+    "tooLarge": "File is too large (max {{size}})",
+    "invalidType": "File type not allowed",
+    "corruptedFile": "File appears to be corrupted",
+    "quotaExceeded": "Storage quota exceeded",
+    "scanFailed": "File security scan failed",
+    "virusDetected": "Virus detected in file"
+  },
+  "permissions": {
+    "denied": "Permission denied",
+    "notAuthorized": "You are not authorized to perform this action",
+    "roleRequired": "{{role}} role required",
+    "adminOnly": "Only administrators can perform this action",
+    "ownerOnly": "Only the owner can perform this action",
+    "moderatorOnly": "Only moderators can perform this action",
+    "readOnly": "You have read-only access",
+    "writeRequired": "Write permission required",
+    "deleteRequired": "Delete permission required"
+  },
+  "rate": {
+    "limitExceeded": "Rate limit exceeded",
+    "tooManyRequests": "Too many requests",
+    "slowDown": "Please slow down",
+    "tryAgainIn": "Try again in {{time}}",
+    "dailyLimitReached": "Daily limit reached",
+    "hourlyLimitReached": "Hourly limit reached"
+  },
+  "storage": {
+    "quotaExceeded": "Storage quota exceeded",
+    "notEnoughSpace": "Not enough storage space",
+    "upgradeRequired": "Please upgrade your plan for more storage",
+    "clearSpace": "Please clear some space and try again"
+  },
+  "subscription": {
+    "inactive": "Subscription inactive",
+    "expired": "Subscription expired",
+    "canceled": "Subscription canceled",
+    "paymentFailed": "Payment failed",
+    "featureNotAvailable": "This feature is not available in your plan",
+    "upgradeRequired": "Please upgrade your plan to access this feature",
+    "trialExpired": "Trial period expired"
+  },
+  "integration": {
+    "notConfigured": "Integration not configured",
+    "connectionFailed": "Failed to connect to {{service}}",
+    "authFailed": "Authorization failed",
+    "invalidApiKey": "Invalid API key",
+    "serviceUnavailable": "{{service}} is currently unavailable",
+    "quotaExceeded": "API quota exceeded",
+    "webhookFailed": "Webhook delivery failed"
+  },
+  "search": {
+    "failed": "Search failed",
+    "noResults": "No results found",
+    "queryTooShort": "Search query is too short (min {{min}} characters)",
+    "queryTooLong": "Search query is too long (max {{max}} characters)",
+    "invalidQuery": "Invalid search query",
+    "serviceUnavailable": "Search service is currently unavailable"
+  },
+  "sync": {
+    "failed": "Synchronization failed",
+    "conflict": "Sync conflict detected",
+    "outdated": "Your data is outdated",
+    "retrying": "Retrying synchronization...",
+    "offline": "Cannot sync while offline"
+  },
+  "import": {
+    "failed": "Import failed",
+    "invalidFormat": "Invalid file format",
+    "corruptedData": "Data appears to be corrupted",
+    "partialImport": "Partial import completed with errors",
+    "tooLarge": "Import file is too large"
+  },
+  "export": {
+    "failed": "Export failed",
+    "noData": "No data to export",
+    "generating": "Generating export...",
+    "timeout": "Export timeout"
+  },
+  "backup": {
+    "failed": "Backup failed",
+    "restoreFailed": "Restore failed",
+    "corruptedBackup": "Backup file is corrupted",
+    "incompatibleVersion": "Incompatible backup version"
+  },
+  "cache": {
+    "clearFailed": "Failed to clear cache",
+    "corruptedCache": "Cache is corrupted",
+    "rebuilding": "Rebuilding cache..."
+  },
+  "browser": {
+    "unsupported": "Your browser is not supported",
+    "updateRequired": "Please update your browser",
+    "cookiesDisabled": "Please enable cookies",
+    "jsDisabled": "JavaScript must be enabled",
+    "storageDisabled": "Local storage is disabled"
+  },
+  "media": {
+    "loadFailed": "Failed to load media",
+    "playbackFailed": "Playback failed",
+    "recordingFailed": "Recording failed",
+    "permissionDenied": "Permission denied",
+    "deviceNotFound": "Device not found",
+    "deviceBusy": "Device is in use by another application",
+    "unsupportedFormat": "Media format not supported"
+  },
+  "notification": {
+    "permissionDenied": "Notification permission denied",
+    "sendFailed": "Failed to send notification",
+    "unsupported": "Notifications are not supported"
+  },
+  "clipboard": {
+    "copyFailed": "Failed to copy to clipboard",
+    "pasteFailed": "Failed to paste from clipboard",
+    "permissionDenied": "Clipboard permission denied"
+  },
+  "geolocation": {
+    "unavailable": "Geolocation is unavailable",
+    "permissionDenied": "Location permission denied",
+    "timeout": "Location request timed out",
+    "error": "Failed to get location"
+  }
+}

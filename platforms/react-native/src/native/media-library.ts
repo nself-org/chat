@@ -55,11 +55,12 @@ export async function pickMedia(options?: MediaPickerOptions): Promise<MediaPick
     return { assets: [], canceled: true }
   }
 
-  const mediaTypes = options?.mediaTypes === 'images'
-    ? ImagePicker.MediaTypeOptions.Images
-    : options?.mediaTypes === 'videos'
-      ? ImagePicker.MediaTypeOptions.Videos
-      : ImagePicker.MediaTypeOptions.All
+  const mediaTypes =
+    options?.mediaTypes === 'images'
+      ? ImagePicker.MediaTypeOptions.Images
+      : options?.mediaTypes === 'videos'
+        ? ImagePicker.MediaTypeOptions.Videos
+        : ImagePicker.MediaTypeOptions.All
 
   try {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -96,14 +97,18 @@ export async function pickMedia(options?: MediaPickerOptions): Promise<MediaPick
 /**
  * Pick images from library
  */
-export async function pickImages(options?: Omit<MediaPickerOptions, 'mediaTypes'>): Promise<MediaPickerResult> {
+export async function pickImages(
+  options?: Omit<MediaPickerOptions, 'mediaTypes'>
+): Promise<MediaPickerResult> {
   return pickMedia({ ...options, mediaTypes: 'images' })
 }
 
 /**
  * Pick videos from library
  */
-export async function pickVideos(options?: Omit<MediaPickerOptions, 'mediaTypes'>): Promise<MediaPickerResult> {
+export async function pickVideos(
+  options?: Omit<MediaPickerOptions, 'mediaTypes'>
+): Promise<MediaPickerResult> {
   return pickMedia({ ...options, mediaTypes: 'videos' })
 }
 
@@ -122,11 +127,12 @@ export async function getRecentMedia(
   try {
     const result = await MediaLibrary.getAssetsAsync({
       first: limit,
-      mediaType: mediaType === 'photo'
-        ? MediaLibrary.MediaType.photo
-        : mediaType === 'video'
-          ? MediaLibrary.MediaType.video
-          : [MediaLibrary.MediaType.photo, MediaLibrary.MediaType.video],
+      mediaType:
+        mediaType === 'photo'
+          ? MediaLibrary.MediaType.photo
+          : mediaType === 'video'
+            ? MediaLibrary.MediaType.video
+            : [MediaLibrary.MediaType.photo, MediaLibrary.MediaType.video],
       sortBy: [[MediaLibrary.SortBy.creationTime, false]],
     })
 
@@ -167,10 +173,7 @@ export async function getAlbums(): Promise<MediaLibrary.Album[]> {
 /**
  * Get assets from a specific album
  */
-export async function getAlbumAssets(
-  albumId: string,
-  limit: number = 50
-): Promise<MediaAsset[]> {
+export async function getAlbumAssets(albumId: string, limit: number = 50): Promise<MediaAsset[]> {
   const hasPermission = await requestMediaLibraryPermissions()
   if (!hasPermission) {
     return []

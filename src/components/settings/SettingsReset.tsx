@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { RotateCcw, AlertTriangle } from 'lucide-react';
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { RotateCcw, AlertTriangle } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,18 +14,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/alert-dialog'
 
 interface SettingsResetProps {
-  label?: string;
-  description?: string;
-  onReset: () => void;
-  confirmTitle?: string;
-  confirmDescription?: string;
-  confirmLabel?: string;
-  variant?: 'default' | 'destructive';
-  className?: string;
-  disabled?: boolean;
+  label?: string
+  description?: string
+  onReset: () => void
+  confirmTitle?: string
+  confirmDescription?: string
+  confirmLabel?: string
+  variant?: 'default' | 'destructive'
+  className?: string
+  disabled?: boolean
 }
 
 /**
@@ -42,12 +42,12 @@ export function SettingsReset({
   className,
   disabled = false,
 }: SettingsResetProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleReset = () => {
-    onReset();
-    setIsOpen(false);
-  };
+    onReset()
+    setIsOpen(false)
+  }
 
   return (
     <div
@@ -59,13 +59,10 @@ export function SettingsReset({
     >
       <div className="flex-1 space-y-0.5">
         <div className="flex items-center gap-2">
-          {variant === 'destructive' && (
-            <AlertTriangle className="h-4 w-4 text-destructive" />
-          )}
-          <span className={cn(
-            'text-sm font-medium',
-            variant === 'destructive' && 'text-destructive'
-          )}>
+          {variant === 'destructive' && <AlertTriangle className="h-4 w-4 text-destructive" />}
+          <span
+            className={cn('text-sm font-medium', variant === 'destructive' && 'text-destructive')}
+          >
             {label}
           </span>
         </div>
@@ -87,14 +84,10 @@ export function SettingsReset({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
-              {variant === 'destructive' && (
-                <AlertTriangle className="h-5 w-5 text-destructive" />
-              )}
+              {variant === 'destructive' && <AlertTriangle className="h-5 w-5 text-destructive" />}
               {confirmTitle}
             </AlertDialogTitle>
-            <AlertDialogDescription>
-              {confirmDescription}
-            </AlertDialogDescription>
+            <AlertDialogDescription>{confirmDescription}</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
@@ -102,7 +95,7 @@ export function SettingsReset({
               onClick={handleReset}
               className={cn(
                 variant === 'destructive' &&
-                  'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                  'hover:bg-destructive/90 bg-destructive text-destructive-foreground'
               )}
             >
               {confirmLabel}
@@ -111,5 +104,5 @@ export function SettingsReset({
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  );
+  )
 }

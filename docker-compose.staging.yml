@@ -29,7 +29,7 @@ services:
     container_name: nchat-staging
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_ENV=staging
@@ -51,15 +51,15 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "/healthcheck.sh"]
+      test: ['CMD', '/healthcheck.sh']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
     labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.nchat-staging.rule=Host(`staging.nchat.local`)"
-      - "traefik.http.services.nchat-staging.loadbalancer.server.port=3000"
+      - 'traefik.enable=true'
+      - 'traefik.http.routers.nchat-staging.rule=Host(`staging.nchat.local`)'
+      - 'traefik.http.services.nchat-staging.loadbalancer.server.port=3000'
 
   # --------------------------------------------------------------------------
   # PostgreSQL Database (with persistence)
@@ -69,7 +69,7 @@ services:
     container_name: nchat-postgres-staging
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -82,7 +82,8 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-nchat_staging}"]
+      test:
+        ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-nchat_staging}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -102,15 +103,15 @@ services:
     container_name: nchat-hasura-staging
     restart: unless-stopped
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nchat_staging}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      HASURA_GRAPHQL_DEV_MODE: "false"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true'
+      HASURA_GRAPHQL_DEV_MODE: 'false'
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
-      HASURA_GRAPHQL_CORS_DOMAIN: "*"
-      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_CORS_DOMAIN: '*'
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: 'false'
       HASURA_GRAPHQL_LOG_LEVEL: info
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       HASURA_GRAPHQL_REDIS_URL: redis://redis:6379
@@ -123,7 +124,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/healthz']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -137,7 +138,7 @@ services:
     container_name: nchat-auth-staging
     restart: unless-stopped
     ports:
-      - "4000:4000"
+      - '4000:4000'
     environment:
       AUTH_HOST: 0.0.0.0
       AUTH_PORT: 4000
@@ -169,8 +170,8 @@ services:
     container_name: nchat-storage-staging
     restart: unless-stopped
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - '9000:9000'
+      - '9001:9001'
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
@@ -180,7 +181,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -194,7 +195,7 @@ services:
     container_name: nchat-redis-staging
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - '6379:6379'
     volumes:
       - redis-data:/data
     command: >
@@ -206,7 +207,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -219,8 +220,8 @@ services:
     container_name: nchat-mailpit-staging
     restart: unless-stopped
     ports:
-      - "1025:1025"   # SMTP
-      - "8025:8025"   # Web UI
+      - '1025:1025' # SMTP
+      - '8025:8025' # Web UI
     networks:
       - nchat-network
 
@@ -232,8 +233,8 @@ services:
     container_name: nchat-nginx-staging
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./docker/nginx/staging.conf:/etc/nginx/nginx.conf:ro
       - ./docker/nginx/ssl:/etc/nginx/ssl:ro
@@ -243,7 +244,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "nginx", "-t"]
+      test: ['CMD', 'nginx', '-t']
       interval: 30s
       timeout: 10s
       retries: 3

@@ -9,6 +9,7 @@
  * - Teacher verification
  */
 
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderMetadata,
@@ -111,10 +112,12 @@ export class IdMeProvider extends BaseAuthProvider {
     // If we have OAuth credentials (from callback), process them
     const oauthCreds = credentials as OAuthCredentials
     if (oauthCreds.code && oauthCreds.state) {
-      return this.handleCallback(new URLSearchParams({
-        code: oauthCreds.code,
-        state: oauthCreds.state,
-      }))
+      return this.handleCallback(
+        new URLSearchParams({
+          code: oauthCreds.code,
+          state: oauthCreds.state,
+        })
+      )
     }
 
     // If we have verification credentials
@@ -135,7 +138,10 @@ export class IdMeProvider extends BaseAuthProvider {
     }
   }
 
-  async signUp(credentials: AuthCredentials, metadata?: Record<string, unknown>): Promise<AuthResult> {
+  async signUp(
+    credentials: AuthCredentials,
+    metadata?: Record<string, unknown>
+  ): Promise<AuthResult> {
     // For ID.me, signUp is the same as signIn - they handle registration
     return this.signIn(credentials)
   }
@@ -145,9 +151,7 @@ export class IdMeProvider extends BaseAuthProvider {
     this.pendingState = state
     this.persistState(state)
 
-    const baseUrl = this.extendedConfig.sandbox
-      ? 'https://api.idmelabs.com'
-      : 'https://api.id.me'
+    const baseUrl = this.extendedConfig.sandbox ? 'https://api.idmelabs.com' : 'https://api.id.me'
 
     const scopes = [...(this.extendedConfig.scopes || [])]
 
@@ -174,7 +178,10 @@ export class IdMeProvider extends BaseAuthProvider {
     const error = params.get('error')
     if (error) {
       return this.createErrorResult(
-        this.createError('OAUTH_ERROR', params.get('error_description') || 'ID.me authentication failed')
+        this.createError(
+          'OAUTH_ERROR',
+          params.get('error_description') || 'ID.me authentication failed'
+        )
       )
     }
 
@@ -201,7 +208,10 @@ export class IdMeProvider extends BaseAuthProvider {
 
       if (!response.ok) {
         return this.createErrorResult(
-          this.createError('AUTH_FAILED', data.error?.message || 'Failed to authenticate with ID.me')
+          this.createError(
+            'AUTH_FAILED',
+            data.error?.message || 'Failed to authenticate with ID.me'
+          )
         )
       }
 
@@ -229,7 +239,7 @@ export class IdMeProvider extends BaseAuthProvider {
 
       return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
     } catch (error) {
-      console.error('ID.me callback error:', error)
+      logger.error('ID.me callback error:',  error)
       return this.createErrorResult(
         this.createError('NETWORK_ERROR', 'Failed to complete ID.me authentication')
       )
@@ -243,7 +253,7 @@ export class IdMeProvider extends BaseAuthProvider {
         headers: this.getAuthHeaders(),
       })
     } catch (error) {
-      console.error('Sign out error:', error)
+      logger.error('Sign out error:',  error)
     }
 
     this.verification = null
@@ -282,10 +292,8 @@ export class IdMeProvider extends BaseAuthProvider {
         data.session.refreshToken
       )
     } catch (error) {
-      console.error('Token refresh error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to refresh token')
-      )
+      logger.error('Token refresh error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to refresh token'))
     }
   }
 
@@ -348,7 +356,10 @@ export class IdMeProvider extends BaseAuthProvider {
 
       if (!response.ok) {
         return this.createErrorResult(
-          this.createError('VERIFICATION_FAILED', data.error?.message || 'ID.me verification failed')
+          this.createError(
+            'VERIFICATION_FAILED',
+            data.error?.message || 'ID.me verification failed'
+          )
         )
       }
 
@@ -360,25 +371,31 @@ export class IdMeProvider extends BaseAuthProvider {
 
       return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
     } catch (error) {
-      console.error('ID.me token verification error:', error)
+      logger.error('ID.me token verification error:',  error)
       return this.createErrorResult(
         this.createError('NETWORK_ERROR', 'Failed to verify ID.me token')
       )
     }
   }
 
-  private validateVerification(verification: IdMeVerification): { success: boolean; error?: AuthError } {
+  private validateVerification(verification: IdMeVerification): {
+    success: boolean
+    error?: AuthError
+  } {
     if (!verification.verified) {
       return {
         success: false,
-        error: this.createError('NOT_VERIFIED', 'ID.me verification is required to access this application'),
+        error: this.createError(
+          'NOT_VERIFIED',
+          'ID.me verification is required to access this application'
+        ),
       }
     }
 
     // Check if user belongs to any allowed group
     const allowedGroups = this.extendedConfig.allowedGroups || []
     if (allowedGroups.length > 0) {
-      const hasAllowedGroup = verification.groups.some(g => allowedGroups.includes(g))
+      const hasAllowedGroup = verification.groups.some((g) => allowedGroups.includes(g))
       if (!hasAllowedGroup) {
         return {
           success: false,
@@ -396,7 +413,10 @@ export class IdMeProvider extends BaseAuthProvider {
       if (expiresAt < new Date()) {
         return {
           success: false,
-          error: this.createError('VERIFICATION_EXPIRED', 'Your ID.me verification has expired. Please re-verify.'),
+          error: this.createError(
+            'VERIFICATION_EXPIRED',
+            'Your ID.me verification has expired. Please re-verify.'
+          ),
         }
       }
     }
@@ -410,7 +430,7 @@ export class IdMeProvider extends BaseAuthProvider {
     const params = new URLSearchParams(window.location.search)
 
     if (params.has('code')) {
-      this.handleCallback(params).then(result => {
+      this.handleCallback(params).then((result) => {
         if (result.success) {
           const url = new URL(window.location.href)
           url.search = ''
@@ -430,7 +450,11 @@ export class IdMeProvider extends BaseAuthProvider {
   }
 
   private getAuthApiUrl(): string {
-    return this.extendedConfig.authApiUrl || process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1'
+    return (
+      this.extendedConfig.authApiUrl ||
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      'http://localhost:4000/v1'
+    )
   }
 
   private getRedirectUrl(): string {
@@ -448,7 +472,10 @@ export class IdMeProvider extends BaseAuthProvider {
     }
   }
 
-  private mapUserResponse(userData: Record<string, unknown>, verification?: IdMeVerification): AuthUser {
+  private mapUserResponse(
+    userData: Record<string, unknown>,
+    verification?: IdMeVerification
+  ): AuthUser {
     const groups = verification?.groups || []
 
     // Determine role based on verified groups
@@ -460,17 +487,19 @@ export class IdMeProvider extends BaseAuthProvider {
     return {
       id: userData.id as string,
       email: (userData.email as string) || verification?.attributes?.email || '',
-      username: (userData.displayName as string)?.replace(/\s+/g, '_').toLowerCase() ||
+      username:
+        (userData.displayName as string)?.replace(/\s+/g, '_').toLowerCase() ||
         `${verification?.attributes?.firstName}_${verification?.attributes?.lastName}`.toLowerCase() ||
         (userData.email as string)?.split('@')[0],
-      displayName: userData.displayName as string ||
+      displayName:
+        (userData.displayName as string) ||
         `${verification?.attributes?.firstName || ''} ${verification?.attributes?.lastName || ''}`.trim() ||
         (userData.email as string)?.split('@')[0],
       avatarUrl: userData.avatarUrl as string | undefined,
       role,
       emailVerified: true, // ID.me verifies email
       metadata: {
-        ...(userData.metadata as Record<string, unknown> || {}),
+        ...((userData.metadata as Record<string, unknown>) || {}),
         provider: 'idme',
         idmeGroups: groups,
         idmeVerified: verification?.verified,
@@ -488,14 +517,21 @@ export class IdMeProvider extends BaseAuthProvider {
 
   private persistSession(session: { accessToken: string; refreshToken: string }): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem('nchat-idme-session', JSON.stringify({
-      ...session,
-      verification: this.verification,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-idme-session',
+      JSON.stringify({
+        ...session,
+        verification: this.verification,
+        timestamp: Date.now(),
+      })
+    )
   }
 
-  private getStoredSession(): { accessToken: string; refreshToken: string; verification?: IdMeVerification } | null {
+  private getStoredSession(): {
+    accessToken: string
+    refreshToken: string
+    verification?: IdMeVerification
+  } | null {
     if (typeof window === 'undefined') return null
     try {
       const stored = localStorage.getItem('nchat-idme-session')

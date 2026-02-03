@@ -232,7 +232,12 @@ describe('filterUsers', () => {
     createTestUser({ id: '1', username: 'alice', displayName: 'Alice Smith' }),
     createTestUser({ id: '2', username: 'bob', displayName: 'Bob Jones' }),
     createTestUser({ id: '3', username: 'charlie', displayName: 'Charlie Brown' }),
-    createTestUser({ id: '4', username: 'alice2', displayName: 'Alice Johnson', presence: 'online' }),
+    createTestUser({
+      id: '4',
+      username: 'alice2',
+      displayName: 'Alice Johnson',
+      presence: 'online',
+    }),
   ]
 
   it('should filter users by query', () => {
@@ -505,9 +510,7 @@ describe('filterMentionSuggestions', () => {
     createTestChannel({ id: '2', name: 'Random', slug: 'random' }),
   ]
 
-  const roles: MentionableRole[] = [
-    createTestRole({ id: '1', name: 'admin', memberCount: 5 }),
-  ]
+  const roles: MentionableRole[] = [createTestRole({ id: '1', name: 'admin', memberCount: 5 })]
 
   it('should return user suggestions for @ trigger', () => {
     const result = filterMentionSuggestions({
@@ -626,26 +629,14 @@ describe('handleAutocompleteKeyboard', () => {
 
   describe('ArrowDown', () => {
     it('should increment selected index', () => {
-      const result = handleAutocompleteKeyboard(
-        'ArrowDown',
-        0,
-        suggestions,
-        mockSelect,
-        mockClose
-      )
+      const result = handleAutocompleteKeyboard('ArrowDown', 0, suggestions, mockSelect, mockClose)
 
       expect(result.handled).toBe(true)
       expect(result.newIndex).toBe(1)
     })
 
     it('should wrap to beginning at end of list', () => {
-      const result = handleAutocompleteKeyboard(
-        'ArrowDown',
-        2,
-        suggestions,
-        mockSelect,
-        mockClose
-      )
+      const result = handleAutocompleteKeyboard('ArrowDown', 2, suggestions, mockSelect, mockClose)
 
       expect(result.newIndex).toBe(0)
     })
@@ -653,26 +644,14 @@ describe('handleAutocompleteKeyboard', () => {
 
   describe('ArrowUp', () => {
     it('should decrement selected index', () => {
-      const result = handleAutocompleteKeyboard(
-        'ArrowUp',
-        1,
-        suggestions,
-        mockSelect,
-        mockClose
-      )
+      const result = handleAutocompleteKeyboard('ArrowUp', 1, suggestions, mockSelect, mockClose)
 
       expect(result.handled).toBe(true)
       expect(result.newIndex).toBe(0)
     })
 
     it('should wrap to end at beginning of list', () => {
-      const result = handleAutocompleteKeyboard(
-        'ArrowUp',
-        0,
-        suggestions,
-        mockSelect,
-        mockClose
-      )
+      const result = handleAutocompleteKeyboard('ArrowUp', 0, suggestions, mockSelect, mockClose)
 
       expect(result.newIndex).toBe(2)
     })
@@ -686,13 +665,7 @@ describe('handleAutocompleteKeyboard', () => {
     })
 
     it('should return handled: true', () => {
-      const result = handleAutocompleteKeyboard(
-        'Enter',
-        0,
-        suggestions,
-        mockSelect,
-        mockClose
-      )
+      const result = handleAutocompleteKeyboard('Enter', 0, suggestions, mockSelect, mockClose)
 
       expect(result.handled).toBe(true)
     })
@@ -714,13 +687,7 @@ describe('handleAutocompleteKeyboard', () => {
     })
 
     it('should return handled: true', () => {
-      const result = handleAutocompleteKeyboard(
-        'Escape',
-        0,
-        suggestions,
-        mockSelect,
-        mockClose
-      )
+      const result = handleAutocompleteKeyboard('Escape', 0, suggestions, mockSelect, mockClose)
 
       expect(result.handled).toBe(true)
     })
@@ -728,13 +695,7 @@ describe('handleAutocompleteKeyboard', () => {
 
   describe('other keys', () => {
     it('should return handled: false for unrecognized keys', () => {
-      const result = handleAutocompleteKeyboard(
-        'a',
-        0,
-        suggestions,
-        mockSelect,
-        mockClose
-      )
+      const result = handleAutocompleteKeyboard('a', 0, suggestions, mockSelect, mockClose)
 
       expect(result.handled).toBe(false)
     })
@@ -936,13 +897,7 @@ describe('Edge Cases', () => {
   })
 
   it('should handle empty suggestions array in keyboard handler', () => {
-    const result = handleAutocompleteKeyboard(
-      'ArrowDown',
-      0,
-      [],
-      jest.fn(),
-      jest.fn()
-    )
+    const result = handleAutocompleteKeyboard('ArrowDown', 0, [], jest.fn(), jest.fn())
     expect(result.handled).toBe(true)
     expect(result.newIndex).toBeNaN() // Empty array causes NaN from modulo
   })

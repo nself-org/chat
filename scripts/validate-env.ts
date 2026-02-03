@@ -10,7 +10,12 @@
  *   pnpm tsx scripts/validate-env.ts --production
  */
 
-import { validatePublicEnv, validateProductionEnv, checkEnvHealth, getEnvInfo } from '../src/lib/env/validation'
+import {
+  validatePublicEnv,
+  validateProductionEnv,
+  checkEnvHealth,
+  getEnvInfo,
+} from '../src/lib/env/validation'
 
 // Colors for terminal output
 const colors = {
@@ -61,12 +66,27 @@ async function main() {
     section('2. Environment Information')
     const info = getEnvInfo()
     console.log()
-    log(`  GraphQL API:      ${info.hasGraphQL ? '✓ Configured' : '✗ Not configured'}`, info.hasGraphQL ? colors.green : colors.red)
-    log(`  Authentication:   ${info.hasAuth ? '✓ Configured' : '✗ Not configured'}`, info.hasAuth ? colors.green : colors.red)
-    log(`  Storage:          ${info.hasStorage ? '✓ Configured' : '✗ Not configured'}`, info.hasStorage ? colors.green : colors.red)
-    log(`  Real-time:        ${info.hasRealtime ? '✓ Configured' : '✗ Not configured'}`, info.hasRealtime ? colors.green : colors.yellow)
+    log(
+      `  GraphQL API:      ${info.hasGraphQL ? '✓ Configured' : '✗ Not configured'}`,
+      info.hasGraphQL ? colors.green : colors.red
+    )
+    log(
+      `  Authentication:   ${info.hasAuth ? '✓ Configured' : '✗ Not configured'}`,
+      info.hasAuth ? colors.green : colors.red
+    )
+    log(
+      `  Storage:          ${info.hasStorage ? '✓ Configured' : '✗ Not configured'}`,
+      info.hasStorage ? colors.green : colors.red
+    )
+    log(
+      `  Real-time:        ${info.hasRealtime ? '✓ Configured' : '✗ Not configured'}`,
+      info.hasRealtime ? colors.green : colors.yellow
+    )
     log(`  Analytics:        ${info.analyticsEnabled ? '✓ Enabled' : '✗ Disabled'}`, colors.gray)
-    log(`  Error Tracking:   ${info.errorTrackingEnabled ? '✓ Enabled' : '✗ Disabled'}`, colors.gray)
+    log(
+      `  Error Tracking:   ${info.errorTrackingEnabled ? '✓ Enabled' : '✗ Disabled'}`,
+      colors.gray
+    )
 
     // Check environment health
     section('3. Health Check')
@@ -125,7 +145,10 @@ async function main() {
       console.error(error)
     }
     console.error()
-    log('Please check your .env.local file and ensure all required variables are set.', colors.yellow)
+    log(
+      'Please check your .env.local file and ensure all required variables are set.',
+      colors.yellow
+    )
     log('See .env.example for reference.', colors.gray)
     process.exit(1)
   }

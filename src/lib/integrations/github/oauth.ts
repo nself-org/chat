@@ -208,11 +208,7 @@ export async function exchangeCodeForToken(
   const data = await response.json()
 
   if (data.error) {
-    throw new GitHubOAuthException(
-      data.error,
-      data.error_description,
-      data.error_uri
-    )
+    throw new GitHubOAuthException(data.error, data.error_description, data.error_uri)
   }
 
   if (!data.access_token) {
@@ -244,10 +240,7 @@ export async function handleGitHubOAuthCallback(
 }> {
   // Check for error response from GitHub
   if (callbackParams.error) {
-    throw new GitHubOAuthException(
-      callbackParams.error,
-      callbackParams.errorDescription
-    )
+    throw new GitHubOAuthException(callbackParams.error, callbackParams.errorDescription)
   }
 
   // Validate required parameters
@@ -321,10 +314,7 @@ export function parseScopes(scopeString: string): string[] {
 /**
  * Check if token has required scopes
  */
-export function hasRequiredScopes(
-  tokenScopes: string,
-  requiredScopes: string[]
-): boolean {
+export function hasRequiredScopes(tokenScopes: string, requiredScopes: string[]): boolean {
   const scopes = parseScopes(tokenScopes)
   return requiredScopes.every((required) => scopes.includes(required))
 }
@@ -332,10 +322,7 @@ export function hasRequiredScopes(
 /**
  * Get missing scopes
  */
-export function getMissingScopes(
-  tokenScopes: string,
-  requiredScopes: string[]
-): string[] {
+export function getMissingScopes(tokenScopes: string, requiredScopes: string[]): string[] {
   const scopes = parseScopes(tokenScopes)
   return requiredScopes.filter((required) => !scopes.includes(required))
 }

@@ -5,12 +5,7 @@
  * organized by category with descriptions and metadata.
  */
 
-import {
-  Permission,
-  PermissionCategory,
-  PermissionDefinition,
-  PermissionGroup,
-} from './role-types'
+import { Permission, PermissionCategory, PermissionDefinition, PermissionGroup } from './role-types'
 
 // ============================================================================
 // Permission Definitions
@@ -346,7 +341,10 @@ export const PERMISSIONS: Record<Permission, PermissionDefinition> = {
 // Permission Categories
 // ============================================================================
 
-export const PERMISSION_CATEGORIES: Record<PermissionCategory, Omit<PermissionGroup, 'permissions'>> = {
+export const PERMISSION_CATEGORIES: Record<
+  PermissionCategory,
+  Omit<PermissionGroup, 'permissions'>
+> = {
   general: {
     category: 'general',
     name: 'General',
@@ -392,9 +390,7 @@ export const PERMISSION_CATEGORIES: Record<PermissionCategory, Omit<PermissionGr
 export const PERMISSION_GROUPS: PermissionGroup[] = Object.keys(PERMISSION_CATEGORIES).map(
   (category) => ({
     ...PERMISSION_CATEGORIES[category as PermissionCategory],
-    permissions: Object.values(PERMISSIONS).filter(
-      (p) => p.category === category
-    ),
+    permissions: Object.values(PERMISSIONS).filter((p) => p.category === category),
   })
 )
 
@@ -405,9 +401,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = Object.keys(PERMISSION_CATEG
 /**
  * Get all permissions for a specific category
  */
-export function getPermissionsByCategory(
-  category: PermissionCategory
-): PermissionDefinition[] {
+export function getPermissionsByCategory(category: PermissionCategory): PermissionDefinition[] {
   return Object.values(PERMISSIONS).filter((p) => p.category === category)
 }
 

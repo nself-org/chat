@@ -55,9 +55,7 @@ subscription OnlineUsers {
 
 # Subscribe to online users count
 subscription OnlineUsersCount {
-  nchat_user_presence_aggregate(
-    where: { status: { _in: ["online", "away", "dnd"] } }
-  ) {
+  nchat_user_presence_aggregate(where: { status: { _in: ["online", "away", "dnd"] } }) {
     aggregate {
       count
     }

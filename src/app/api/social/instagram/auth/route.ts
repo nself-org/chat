@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { InstagramClient } from '@/lib/social/instagram-client'
 
+import { logger } from '@/lib/logger'
+
 /**
  * GET /api/social/instagram/auth
  * Initiates OAuth flow by redirecting to Instagram/Facebook
@@ -24,12 +26,12 @@ export async function GET(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 600 // 10 minutes
+      maxAge: 600, // 10 minutes
     })
 
     return response
   } catch (error) {
-    console.error('Instagram auth error:', error)
+    logger.error('Instagram auth error:', error)
     return NextResponse.json(
       { error: 'Failed to initiate Instagram authentication' },
       { status: 500 }

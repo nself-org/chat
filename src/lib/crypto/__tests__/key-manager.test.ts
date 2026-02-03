@@ -194,17 +194,18 @@ describe('Key Generation', () => {
       const customAlgorithm: EcKeyGenParams = { name: 'ECDH', namedCurve: 'P-384' }
       await generateKeyPair(customAlgorithm)
 
-      expect(mockCryptoSubtle.generateKey).toHaveBeenCalledWith(
-        customAlgorithm,
-        true,
-        ['deriveKey', 'deriveBits']
-      )
+      expect(mockCryptoSubtle.generateKey).toHaveBeenCalledWith(customAlgorithm, true, [
+        'deriveKey',
+        'deriveBits',
+      ])
     })
 
     it('should throw error on generation failure', async () => {
       mockCryptoSubtle.generateKey.mockRejectedValue(new Error('Generation failed'))
 
-      await expect(generateKeyPair()).rejects.toThrow('Failed to generate key pair: Generation failed')
+      await expect(generateKeyPair()).rejects.toThrow(
+        'Failed to generate key pair: Generation failed'
+      )
     })
 
     it('should handle unknown errors', async () => {
@@ -334,7 +335,9 @@ describe('Key Export/Import', () => {
     it('should throw error on import failure', async () => {
       mockCryptoSubtle.importKey.mockRejectedValue(new Error('Import failed'))
 
-      await expect(importPublicKey(mockJwk)).rejects.toThrow('Failed to import public key: Import failed')
+      await expect(importPublicKey(mockJwk)).rejects.toThrow(
+        'Failed to import public key: Import failed'
+      )
     })
   })
 
@@ -511,10 +514,7 @@ describe('Key Fingerprinting', () => {
     })
 
     it('should format fingerprint as uppercase hex groups', async () => {
-      const mockHashBuffer = new Uint8Array([
-        0x01, 0x02, 0x03, 0x04,
-        0x05, 0x06, 0x07, 0x08,
-      ]).buffer
+      const mockHashBuffer = new Uint8Array([0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08]).buffer
       mockCryptoSubtle.digest.mockResolvedValue(mockHashBuffer)
 
       const result = await getKeyFingerprint(mockPublicKey)
@@ -652,7 +652,7 @@ describe('IndexedDB Helpers', () => {
       mockIndexedDB.open.mockReturnValue(request)
 
       const promise = openKeyDatabase()
-      await new Promise(resolve => setTimeout(resolve, 10))
+      await new Promise((resolve) => setTimeout(resolve, 10))
 
       expect(mockIndexedDB.open).toHaveBeenCalledWith('nchat-encryption', 1)
       await expect(promise).resolves.toBe(db)
@@ -729,7 +729,7 @@ describe('IndexedDB Helpers', () => {
       mockIndexedDB.deleteDatabase.mockReturnValue(request)
 
       const promise = deleteKeyDatabase()
-      await new Promise(resolve => setTimeout(resolve, 10))
+      await new Promise((resolve) => setTimeout(resolve, 10))
 
       expect(mockIndexedDB.deleteDatabase).toHaveBeenCalledWith('nchat-encryption')
       await expect(promise).resolves.toBeUndefined()

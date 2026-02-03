@@ -20,7 +20,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useChannelStore, type ChannelCategory as ChannelCategoryType } from '@/stores/channel-store'
+import {
+  useChannelStore,
+  type ChannelCategory as ChannelCategoryType,
+} from '@/stores/channel-store'
 import { useUIStore } from '@/stores/ui-store'
 import { useAuth } from '@/contexts/auth-context'
 
@@ -107,9 +110,9 @@ export function ChannelCategory({
         }}
       >
         {/* Collapse Toggle + Category Name */}
-        <div className="flex items-center gap-1 min-w-0">
+        <div className="flex min-w-0 items-center gap-1">
           <button
-            className="p-0.5 rounded hover:bg-muted transition-colors"
+            className="rounded p-0.5 transition-colors hover:bg-muted"
             onClick={(e) => {
               e.stopPropagation()
               handleToggle()
@@ -121,14 +124,14 @@ export function ChannelCategory({
               <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" />
             )}
           </button>
-          <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground truncate">
+          <span className="truncate text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {category.name}
           </span>
         </div>
 
         {/* Actions */}
         {isAdmin && (
-          <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
             {/* Add Channel Button */}
             <Button
               variant="ghost"
@@ -181,11 +184,7 @@ export function ChannelCategory({
       </div>
 
       {/* Category Content (Channels) */}
-      {!isCollapsed && (
-        <div className="mt-0.5 space-y-0.5">
-          {children}
-        </div>
-      )}
+      {!isCollapsed && <div className="mt-0.5 space-y-0.5">{children}</div>}
     </div>
   )
 }

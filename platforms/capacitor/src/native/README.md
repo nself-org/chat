@@ -9,6 +9,7 @@ Native plugin implementations for iOS and Android mobile features.
 **Purpose**: Native call integration for iOS (CallKit) and Android (Telecom Framework)
 
 **Features**:
+
 - System-level call UI
 - Lock screen integration
 - Call history integration
@@ -16,6 +17,7 @@ Native plugin implementations for iOS and Android mobile features.
 - Bluetooth/CarPlay support
 
 **Files**:
+
 - `call-kit.ts` - TypeScript wrapper and React hooks
 - `call-kit-web.ts` - Web fallback implementation
 - `../ios/Plugin/CallKitPlugin.swift` - iOS implementation
@@ -23,6 +25,7 @@ Native plugin implementations for iOS and Android mobile features.
 - `../android/.../CallKitPlugin.kt` - Android implementation
 
 **Usage**:
+
 ```typescript
 import { callKitManager } from './call-kit'
 
@@ -49,18 +52,13 @@ await callKitManager.endCall('completed', uuid)
 ```
 
 **React Hook**:
+
 ```typescript
 import { useCallKit } from './call-kit'
 
 function Component() {
-  const {
-    isSupported,
-    isConfigured,
-    initialize,
-    reportIncomingCall,
-    startOutgoingCall,
-    endCall,
-  } = useCallKit()
+  const { isSupported, isConfigured, initialize, reportIncomingCall, startOutgoingCall, endCall } =
+    useCallKit()
 
   // Use the hook methods
 }
@@ -69,6 +67,7 @@ function Component() {
 ### Other Plugins
 
 This directory contains other native plugins:
+
 - `biometrics.ts` - Biometric authentication
 - `camera.ts` - Camera access
 - `file-picker.ts` - File selection
@@ -86,10 +85,12 @@ This directory contains other native plugins:
 **Purpose**: Data synchronization between the main app and widget extensions (iOS/Android)
 
 **Files**:
+
 - `widget-data.ts` - Widget data service and React hooks
 - `widget-data-web.ts` - Web fallback implementation
 
 **Usage**:
+
 ```typescript
 import { widgetData, useWidgetData } from './widget-data'
 
@@ -108,10 +109,12 @@ const { data, isLoading, refresh } = useWidgetData('unread_messages')
 **Purpose**: Bidirectional communication between iOS app and Apple Watch
 
 **Files**:
+
 - `watch-connectivity.ts` - WatchConnectivity wrapper and hooks
 - `watch-connectivity-web.ts` - Web fallback
 
 **Usage**:
+
 ```typescript
 import { watchConnectivity, useWatchConnectivity } from './watch-connectivity'
 
@@ -134,10 +137,12 @@ const { isAvailable, isReachable, sendMessage } = useWatchConnectivity()
 **Purpose**: Native Android App Widget support
 
 **Files**:
+
 - `android-widgets.ts` - Android widget service and hooks
 - `android-widgets-web.ts` - Web fallback
 
 **Usage**:
+
 ```typescript
 import { androidWidgets, useAndroidWidgets } from './android-widgets'
 
@@ -161,9 +166,11 @@ const { isSupported, widgets, updateUnreadCounter } = useAndroidWidgets()
 **Purpose**: Handle URL schemes, Universal Links (iOS), and App Links (Android)
 
 **Files**:
+
 - `deep-linking.ts` - Deep link handler and route matching
 
 **Usage**:
+
 ```typescript
 import { deepLinking, useDeepLink } from './deep-linking'
 
@@ -192,9 +199,11 @@ const { deepLinkParams, createDeepLink } = useDeepLink((params) => {
 **Purpose**: Rich notifications with actions, channels, and silent push
 
 **Files**:
+
 - `push-notifications-v2.ts` - Enhanced push notification service
 
 **Usage**:
+
 ```typescript
 import { enhancedPushNotifications, usePushNotifications } from './push-notifications-v2'
 
@@ -224,10 +233,12 @@ const { token, lastNotification, setBadgeCount } = usePushNotifications()
 **Purpose**: Background fetch and sync for offline-first functionality
 
 **Files**:
+
 - `background-sync.ts` - Background sync service
 - `background-sync-web.ts` - Web fallback (Service Worker)
 
 **Usage**:
+
 ```typescript
 import { backgroundSync, useBackgroundSync } from './background-sync'
 
@@ -238,10 +249,14 @@ await backgroundSync.initialize({
 })
 
 // Add task to queue
-const taskId = await backgroundSync.addTask('send_message', {
-  channelId: '123',
-  content: 'Hello!',
-}, { priority: 'high' })
+const taskId = await backgroundSync.addTask(
+  'send_message',
+  {
+    channelId: '123',
+    content: 'Hello!',
+  },
+  { priority: 'high' }
+)
 
 // Register task handler
 backgroundSync.registerTaskHandler('send_message', async (task) => {
@@ -258,10 +273,12 @@ const { status, queueSize, addTask, triggerSync } = useBackgroundSync()
 **Purpose**: Full biometric auth with secure storage
 
 **Files**:
+
 - `biometrics-v2.ts` - Enhanced biometric service
 - `biometrics-v2-web.ts` - WebAuthn fallback
 
 **Usage**:
+
 ```typescript
 import { biometricAuth, useBiometricAuth } from './biometrics-v2'
 
@@ -287,27 +304,28 @@ const { isAvailable, biometryTypeName, authenticate, enable } = useBiometricAuth
 
 ## Platform Support
 
-| Plugin | iOS | Android | Web |
-|--------|-----|---------|-----|
-| CallKit | ✅ Native | ✅ Native | ⚠️ Fallback |
-| Biometrics | ✅ Face ID/Touch ID | ✅ Fingerprint | ✅ WebAuthn |
-| Camera | ✅ | ✅ | ✅ |
-| File Picker | ✅ | ✅ | ✅ |
-| Haptics | ✅ | ✅ | ⚠️ Limited |
-| Push | ✅ APNs | ✅ FCM | ✅ Web Push |
-| Share | ✅ | ✅ | ⚠️ Limited |
-| Offline Sync | ✅ | ✅ | ✅ |
-| Widget Data | ✅ WidgetKit | ✅ App Widgets | ⚠️ Storage only |
-| Watch Connectivity | ✅ WatchOS | ❌ | ❌ |
-| Android Widgets | ❌ | ✅ | ❌ |
-| Deep Linking | ✅ Universal Links | ✅ App Links | ⚠️ Limited |
-| Background Sync | ✅ BGTaskScheduler | ✅ WorkManager | ⚠️ SW Sync |
+| Plugin             | iOS                 | Android        | Web             |
+| ------------------ | ------------------- | -------------- | --------------- |
+| CallKit            | ✅ Native           | ✅ Native      | ⚠️ Fallback     |
+| Biometrics         | ✅ Face ID/Touch ID | ✅ Fingerprint | ✅ WebAuthn     |
+| Camera             | ✅                  | ✅             | ✅              |
+| File Picker        | ✅                  | ✅             | ✅              |
+| Haptics            | ✅                  | ✅             | ⚠️ Limited      |
+| Push               | ✅ APNs             | ✅ FCM         | ✅ Web Push     |
+| Share              | ✅                  | ✅             | ⚠️ Limited      |
+| Offline Sync       | ✅                  | ✅             | ✅              |
+| Widget Data        | ✅ WidgetKit        | ✅ App Widgets | ⚠️ Storage only |
+| Watch Connectivity | ✅ WatchOS          | ❌             | ❌              |
+| Android Widgets    | ❌                  | ✅             | ❌              |
+| Deep Linking       | ✅ Universal Links  | ✅ App Links   | ⚠️ Limited      |
+| Background Sync    | ✅ BGTaskScheduler  | ✅ WorkManager | ⚠️ SW Sync      |
 
 ## Development
 
 ### Adding a New Plugin
 
 1. **Create TypeScript interface**:
+
 ```typescript
 // my-plugin.ts
 import { registerPlugin } from '@capacitor/core'
@@ -322,6 +340,7 @@ export const MyPlugin = registerPlugin<MyPlugin>('MyPlugin', {
 ```
 
 2. **Implement iOS version**:
+
 ```swift
 // ../ios/Plugin/MyPlugin.swift
 import Foundation
@@ -337,6 +356,7 @@ public class MyPlugin: CAPPlugin {
 ```
 
 3. **Create Objective-C bridge**:
+
 ```objc
 // ../ios/Plugin/MyPlugin.m
 #import <Capacitor/Capacitor.h>
@@ -347,6 +367,7 @@ CAP_PLUGIN(MyPlugin, "MyPlugin",
 ```
 
 4. **Implement Android version**:
+
 ```kotlin
 // ../android/.../MyPlugin.kt
 package io.nself.chat.plugins
@@ -367,6 +388,7 @@ class MyPlugin : Plugin() {
 ```
 
 5. **Create web fallback**:
+
 ```typescript
 // my-plugin-web.ts
 import type { MyPlugin } from './my-plugin'
@@ -382,6 +404,7 @@ export class MyPluginWeb implements MyPlugin {
 ### Testing Plugins
 
 **iOS**:
+
 ```bash
 cd ../..
 pnpm run build
@@ -392,6 +415,7 @@ pnpm run open:ios
 ```
 
 **Android**:
+
 ```bash
 cd ../..
 pnpm run build
@@ -402,6 +426,7 @@ pnpm run open:android
 ```
 
 **Web**:
+
 ```bash
 cd ../..
 pnpm run dev
@@ -487,6 +512,7 @@ useEffect(() => {
 **Problem**: Plugin not found
 
 **Solution**: Ensure plugin is registered in `AppDelegate.swift`:
+
 ```swift
 import MyPlugin
 
@@ -497,6 +523,7 @@ MyPlugin.register()
 **Problem**: Permission denied
 
 **Solution**: Add usage descriptions to `Info.plist`:
+
 ```xml
 <key>NSMicrophoneUsageDescription</key>
 <string>Required for voice calls</string>
@@ -507,6 +534,7 @@ MyPlugin.register()
 **Problem**: Plugin not registered
 
 **Solution**: Register in `MainActivity.kt`:
+
 ```kotlin
 import io.nself.chat.plugins.MyPlugin
 
@@ -521,6 +549,7 @@ class MainActivity : BridgeActivity() {
 **Problem**: Permission denied
 
 **Solution**: Add permissions to `AndroidManifest.xml`:
+
 ```xml
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 ```
@@ -530,6 +559,7 @@ class MainActivity : BridgeActivity() {
 **Problem**: Plugin not working on web
 
 **Solution**: Ensure web implementation is created and exported:
+
 ```typescript
 // my-plugin-web.ts
 export class MyPluginWeb implements MyPlugin {
@@ -547,6 +577,7 @@ export class MyPluginWeb implements MyPlugin {
 ## Support
 
 For plugin-related issues:
+
 1. Check plugin documentation above
 2. Review example implementations in this directory
 3. Check Capacitor documentation

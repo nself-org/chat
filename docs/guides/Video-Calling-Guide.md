@@ -14,6 +14,7 @@ nself-chat v0.4.0 introduces comprehensive HD video calling with support for up 
 ## Features
 
 ### Core Features
+
 - **HD Video Calling**: Support for 180p, 360p, 720p, and 1080p resolutions
 - **Multi-Participant**: Up to 50 participants in a single call
 - **Grid View**: Automatic grid layout for all participants
@@ -22,6 +23,7 @@ nself-chat v0.4.0 introduces comprehensive HD video calling with support for up 
 - **Picture-in-Picture**: Continue working while in a call
 
 ### Video Quality
+
 - **Adaptive Bitrate**: Automatically adjusts quality based on network conditions
 - **Simulcast**: Sends multiple quality layers for SFU selection
 - **Quality Profiles**:
@@ -31,6 +33,7 @@ nself-chat v0.4.0 introduces comprehensive HD video calling with support for up 
   - **1080p**: Full HD (1920x1080, 30fps, 3Mbps) - best quality
 
 ### Background Effects
+
 - **Background Blur**: Light, medium, or strong blur
 - **Virtual Backgrounds**: Replace background with images or colors
 - **8 Preset Backgrounds**: Office, library, beach, mountains, space, etc.
@@ -44,16 +47,14 @@ nself-chat v0.4.0 introduces comprehensive HD video calling with support for up 
 ### Starting a Video Call
 
 **From Channel**:
+
 ```tsx
 import { VideoCallButton } from '@/components/calls/VideoCallButton'
-
-<VideoCallButton
-  channelId="channel-id"
-  type="video"
-/>
+;<VideoCallButton channelId="channel-id" type="video" />
 ```
 
 **From Direct Message**:
+
 ```tsx
 import { useVideoCall } from '@/hooks/use-video-call'
 
@@ -81,22 +82,26 @@ When you receive an incoming video call:
 ### Basic Controls
 
 **Mute/Unmute Audio**:
+
 - Click the microphone button
 - Keyboard shortcut: `M`
 - Status: Red icon when muted
 
 **Toggle Video**:
+
 - Click the camera button
 - Keyboard shortcut: `V`
 - Shows avatar when video is off
 
 **End Call**:
+
 - Click the red phone button
 - Keyboard shortcut: `Esc`
 
 ### Advanced Features
 
 **Screen Sharing**:
+
 ```tsx
 const { startScreenShare, stopScreenShare, isScreenSharing } = useVideoCall(options)
 
@@ -108,6 +113,7 @@ stopScreenShare()
 ```
 
 **Picture-in-Picture**:
+
 ```tsx
 const { enterPictureInPicture, exitPictureInPicture } = useVideoCall(options)
 
@@ -121,16 +127,19 @@ await exitPictureInPicture()
 ### Layout Modes
 
 **Grid View**:
+
 - All participants in equal-sized tiles
 - Automatic grid calculation
 - Up to 4 tiles per row
 
 **Speaker View**:
+
 - Active speaker in main view
 - Other participants in thumbnails
 - Automatically switches on voice detection
 
 **Pinned View**:
+
 - Pin a specific participant to main view
 - Other participants in thumbnails
 - Click pin icon on any tile
@@ -144,11 +153,7 @@ await exitPictureInPicture()
 ```tsx
 import { useBackgroundEffects } from '@/hooks/use-background-effects'
 
-const {
-  setEffectType,
-  setBlurStrength,
-  applyToStream,
-} = useBackgroundEffects()
+const { setEffectType, setBlurStrength, applyToStream } = useBackgroundEffects()
 
 // Enable blur
 setEffectType('blur')
@@ -176,16 +181,19 @@ await setVirtualBackground('color', '#3b82f6')
 ### Available Presets
 
 **Professional**:
+
 - Modern Office
 - Conference Room
 - Library
 
 **Scenic**:
+
 - Beach
 - Mountains
 - City Skyline
 
 **Fun**:
+
 - Space
 - Abstract patterns
 
@@ -196,6 +204,7 @@ await setVirtualBackground('color', '#3b82f6')
 ### Adaptive Quality
 
 The system automatically adjusts video quality based on:
+
 - **Network Bandwidth**: Available upload/download speed
 - **Packet Loss**: Reduces quality if >5% packet loss
 - **RTT (Round-Trip Time)**: Latency to other participants
@@ -213,6 +222,7 @@ await setVideoQuality('720p') // '180p', '360p', '720p', '1080p'
 ### Simulcast
 
 Simulcast automatically sends 3 quality layers:
+
 - **High**: Full resolution (e.g., 720p)
 - **Medium**: Half resolution (e.g., 360p)
 - **Low**: Quarter resolution (e.g., 180p)
@@ -230,6 +240,7 @@ The SFU server selects the appropriate layer for each participant based on their
    - Allow camera permission for the site
 
 2. **Device Selection**:
+
    ```tsx
    const { selectCamera, availableCameras } = useVideoCall(options)
 
@@ -254,6 +265,7 @@ The SFU server selects the appropriate layer for each participant based on their
    - Use [speedtest.net](https://speedtest.net)
 
 2. **Reduce Quality**:
+
    ```tsx
    setVideoQuality('360p') // Lower quality for poor connections
    ```
@@ -349,19 +361,12 @@ const {
 ### useVideoLayout Hook
 
 ```tsx
-const {
-  mode,
-  tiles,
-  mainTile,
-  thumbnails,
-  setMode,
-  pinParticipant,
-  setSpeakingParticipant,
-} = useVideoLayout({
-  containerRef,
-  participantIds,
-  initialMode: 'speaker',
-})
+const { mode, tiles, mainTile, thumbnails, setMode, pinParticipant, setSpeakingParticipant } =
+  useVideoLayout({
+    containerRef,
+    participantIds,
+    initialMode: 'speaker',
+  })
 ```
 
 ---
@@ -392,31 +397,34 @@ const {
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
-| `M` | Toggle mute |
-| `V` | Toggle video |
-| `S` | Start/stop screen share |
-| `Esc` | End call |
-| `G` | Switch to grid view |
-| `P` | Switch to speaker view |
-| `F` | Toggle fullscreen |
+| Shortcut | Action                  |
+| -------- | ----------------------- |
+| `M`      | Toggle mute             |
+| `V`      | Toggle video            |
+| `S`      | Start/stop screen share |
+| `Esc`    | End call                |
+| `G`      | Switch to grid view     |
+| `P`      | Switch to speaker view  |
+| `F`      | Toggle fullscreen       |
 
 ---
 
 ## Supported Platforms
 
 ### Desktop Browsers
+
 - Chrome 74+ (Windows, macOS, Linux)
 - Firefox 66+ (Windows, macOS, Linux)
 - Safari 12.1+ (macOS)
 - Edge 79+ (Windows, macOS)
 
 ### Mobile Browsers
+
 - Chrome Mobile 74+ (Android)
 - Safari iOS 12.1+ (iOS)
 
 ### Native Apps
+
 - Electron (Windows, macOS, Linux)
 - Capacitor (iOS, Android)
 - Tauri (Windows, macOS, Linux)
@@ -426,17 +434,20 @@ const {
 ## Technical Details
 
 ### WebRTC Implementation
+
 - **Signaling**: WebSocket (Socket.io)
 - **Media**: WebRTC PeerConnection
 - **Codec**: VP8/VP9 or H.264
 - **Audio Codec**: Opus
 
 ### Network Requirements
+
 - **Minimum**: 500kbps upload/download
 - **Recommended**: 2Mbps+ for HD
 - **Ports**: UDP 49152-65535 (STUN/TURN)
 
 ### Privacy & Security
+
 - **End-to-End Encryption**: Via DTLS-SRTP (WebRTC default)
 - **Signaling Encryption**: WSS (WebSocket Secure)
 - **No Recording**: Calls are not recorded by default

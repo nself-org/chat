@@ -70,9 +70,7 @@ describe('useMessageActions', () => {
 
   describe('Permissions', () => {
     it('should return correct permissions for own message', () => {
-      const { result } = renderHook(() =>
-        useMessageActions({ channelId })
-      )
+      const { result } = renderHook(() => useMessageActions({ channelId }))
 
       const permissions = result.current.getPermissions(ownMessage)
 
@@ -83,9 +81,7 @@ describe('useMessageActions', () => {
     })
 
     it('should return correct permissions for other user message', () => {
-      const { result } = renderHook(() =>
-        useMessageActions({ channelId })
-      )
+      const { result } = renderHook(() => useMessageActions({ channelId }))
 
       const permissions = result.current.getPermissions(mockMessage)
 
@@ -98,9 +94,7 @@ describe('useMessageActions', () => {
     it('should not allow actions on deleted messages', () => {
       const deletedMessage = { ...mockMessage, isDeleted: true }
 
-      const { result } = renderHook(() =>
-        useMessageActions({ channelId })
-      )
+      const { result } = renderHook(() => useMessageActions({ channelId }))
 
       const permissions = result.current.getPermissions(deletedMessage)
 
@@ -110,9 +104,7 @@ describe('useMessageActions', () => {
     })
 
     it('should allow copy on any message', () => {
-      const { result } = renderHook(() =>
-        useMessageActions({ channelId })
-      )
+      const { result } = renderHook(() => useMessageActions({ channelId }))
 
       const permissions = result.current.getPermissions(mockMessage)
 
@@ -197,9 +189,7 @@ describe('useMessageActions', () => {
         },
       })
 
-      const { result } = renderHook(() =>
-        useMessageActions({ channelId })
-      )
+      const { result } = renderHook(() => useMessageActions({ channelId }))
 
       act(() => {
         result.current.handlers.onCopy(mockMessage)
@@ -216,17 +206,13 @@ describe('useMessageActions', () => {
         },
       })
 
-      const { result } = renderHook(() =>
-        useMessageActions({ channelId })
-      )
+      const { result } = renderHook(() => useMessageActions({ channelId }))
 
       act(() => {
         result.current.handlers.onCopyLink(mockMessage)
       })
 
-      expect(writeText).toHaveBeenCalledWith(
-        expect.stringContaining(mockMessage.id)
-      )
+      expect(writeText).toHaveBeenCalledWith(expect.stringContaining(mockMessage.id))
     })
   })
 
@@ -249,9 +235,7 @@ describe('useMessageActions', () => {
     })
 
     it('should pass data to react action', async () => {
-      const { result } = renderHook(() =>
-        useMessageActions({ channelId })
-      )
+      const { result } = renderHook(() => useMessageActions({ channelId }))
 
       await act(async () => {
         await result.current.handleAction('react', mockMessage, {
@@ -387,10 +371,7 @@ describe('useMessageActions', () => {
         useMessageActions({ channelId, enableBulkOperations: true })
       )
 
-      const messages = [
-        mockMessage,
-        { ...mockMessage, id: 'msg-2', content: 'Message 2' },
-      ]
+      const messages = [mockMessage, { ...mockMessage, id: 'msg-2', content: 'Message 2' }]
 
       act(() => {
         result.current.bulkHandlers.onBulkCopy(messages)
@@ -405,9 +386,7 @@ describe('useMessageActions', () => {
 
   describe('Permission Checks', () => {
     it('should check if action can be performed', () => {
-      const { result } = renderHook(() =>
-        useMessageActions({ channelId })
-      )
+      const { result } = renderHook(() => useMessageActions({ channelId }))
 
       // Can reply to any message
       expect(result.current.canPerformAction('reply', mockMessage)).toBe(true)

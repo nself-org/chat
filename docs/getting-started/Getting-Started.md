@@ -6,12 +6,12 @@ Get nchat up and running in under 5 minutes with this quick start guide.
 
 Before you begin, ensure you have:
 
-| Requirement | Version | Notes |
-|-------------|---------|-------|
-| Node.js | 18+ | LTS recommended |
-| Docker | 20+ | Docker Desktop or Docker Engine |
-| Docker Compose | 2.0+ | Usually included with Docker |
-| nself CLI | 0.4.2+ | Backend infrastructure |
+| Requirement    | Version | Notes                           |
+| -------------- | ------- | ------------------------------- |
+| Node.js        | 18+     | LTS recommended                 |
+| Docker         | 20+     | Docker Desktop or Docker Engine |
+| Docker Compose | 2.0+    | Usually included with Docker    |
+| nself CLI      | 0.4.2+  | Backend infrastructure          |
 
 ## Quick Start
 
@@ -87,16 +87,16 @@ When `NEXT_PUBLIC_USE_DEV_AUTH=true`, you get:
 
 Eight pre-configured users are available for testing:
 
-| Email | Password | Role |
-|-------|----------|------|
-| owner@nself.org | password123 | Owner |
-| admin@nself.org | password123 | Admin |
+| Email               | Password    | Role      |
+| ------------------- | ----------- | --------- |
+| owner@nself.org     | password123 | Owner     |
+| admin@nself.org     | password123 | Admin     |
 | moderator@nself.org | password123 | Moderator |
-| member@nself.org | password123 | Member |
-| guest@nself.org | password123 | Guest |
-| alice@nself.org | password123 | Member |
-| bob@nself.org | password123 | Member |
-| charlie@nself.org | password123 | Member |
+| member@nself.org    | password123 | Member    |
+| guest@nself.org     | password123 | Guest     |
+| alice@nself.org     | password123 | Member    |
+| bob@nself.org       | password123 | Member    |
+| charlie@nself.org   | password123 | Member    |
 
 ### Auto-Login
 

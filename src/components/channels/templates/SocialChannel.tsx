@@ -20,11 +20,7 @@ export interface SocialChannelProps {
 // Component
 // ============================================================================
 
-export function SocialChannel({
-  isSelected = false,
-  onClick,
-  className,
-}: SocialChannelProps) {
+export function SocialChannel({ isSelected = false, onClick, className }: SocialChannelProps) {
   return (
     <Card
       className={cn(
@@ -36,34 +32,34 @@ export function SocialChannel({
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="p-3 rounded-lg bg-pink-500/10">
+          <div className="rounded-lg bg-pink-500/10 p-3">
             <Coffee className="h-6 w-6 text-pink-600" />
           </div>
           <Badge variant="secondary">Casual</Badge>
         </div>
         <CardTitle className="text-lg">Social / Random</CardTitle>
         <CardDescription>
-          A casual space for off-topic conversations, fun, and team bonding.
-          The digital water cooler.
+          A casual space for off-topic conversations, fun, and team bonding. The digital water
+          cooler.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <p className="text-sm font-medium">Included features:</p>
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <Smile className="h-3 w-3" />
               GIFs & Stickers
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <Heart className="h-3 w-3" />
               Reactions
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <Image className="h-3 w-3" />
               Media sharing
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <Music className="h-3 w-3" />
               Voice messages
             </Badge>
@@ -71,7 +67,7 @@ export function SocialChannel({
         </div>
         <div className="space-y-2">
           <p className="text-sm font-medium">Permissions:</p>
-          <ul className="text-xs text-muted-foreground space-y-1">
+          <ul className="space-y-1 text-xs text-muted-foreground">
             <li>- Everyone can post and reply</li>
             <li>- Guests are welcome</li>
             <li>- All media types allowed</li>
@@ -79,8 +75,8 @@ export function SocialChannel({
         </div>
         <div className="text-xs text-muted-foreground">
           <p>
-            <strong>Best for:</strong> Team bonding, sharing memes, celebrating wins,
-            casual conversations, or anything that does not fit in other channels.
+            <strong>Best for:</strong> Team bonding, sharing memes, celebrating wins, casual
+            conversations, or anything that does not fit in other channels.
           </p>
         </div>
       </CardContent>

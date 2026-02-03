@@ -8,6 +8,8 @@ import { useWhiteLabelStore } from '@/stores/white-label-store'
 import { FontSelector, FontPairingSelector } from './FontSelector'
 import { loadFonts, FONT_PREVIEW_SAMPLES } from '@/lib/white-label/font-loader'
 
+import { logger } from '@/lib/logger'
+
 interface Step5TypographyProps {
   onValidChange?: (isValid: boolean) => void
   className?: string
@@ -38,57 +40,70 @@ export function Step5Typography({ onValidChange, className }: Step5TypographyPro
     }
   }, [config.typography.headingFont, config.typography.bodyFont, markStepComplete, onValidChange])
 
-  const handleHeadingChange = useCallback((font: string) => {
-    updateTypography({ headingFont: font })
-    loadFonts([{ family: font }]).catch(console.error)
-  }, [updateTypography])
+  const handleHeadingChange = useCallback(
+    (font: string) => {
+      updateTypography({ headingFont: font })
+      loadFonts([{ family: font }]).catch(console.error)
+    },
+    [updateTypography]
+  )
 
-  const handleBodyChange = useCallback((font: string) => {
-    updateTypography({ bodyFont: font })
-    loadFonts([{ family: font }]).catch(console.error)
-  }, [updateTypography])
+  const handleBodyChange = useCallback(
+    (font: string) => {
+      updateTypography({ bodyFont: font })
+      loadFonts([{ family: font }]).catch(console.error)
+    },
+    [updateTypography]
+  )
 
-  const handleMonoChange = useCallback((font: string) => {
-    updateTypography({ monoFont: font })
-    loadFonts([{ family: font }]).catch(console.error)
-  }, [updateTypography])
+  const handleMonoChange = useCallback(
+    (font: string) => {
+      updateTypography({ monoFont: font })
+      loadFonts([{ family: font }]).catch(console.error)
+    },
+    [updateTypography]
+  )
 
-  const handleFontSizeChange = useCallback((delta: number) => {
-    const newSize = Math.min(24, Math.max(12, config.typography.baseFontSize + delta))
-    updateTypography({ baseFontSize: newSize })
-  }, [config.typography.baseFontSize, updateTypography])
+  const handleFontSizeChange = useCallback(
+    (delta: number) => {
+      const newSize = Math.min(24, Math.max(12, config.typography.baseFontSize + delta))
+      updateTypography({ baseFontSize: newSize })
+    },
+    [config.typography.baseFontSize, updateTypography]
+  )
 
-  const handleLineHeightChange = useCallback((delta: number) => {
-    const newHeight = Math.min(2, Math.max(1, config.typography.lineHeight + delta))
-    updateTypography({ lineHeight: Math.round(newHeight * 10) / 10 })
-  }, [config.typography.lineHeight, updateTypography])
+  const handleLineHeightChange = useCallback(
+    (delta: number) => {
+      const newHeight = Math.min(2, Math.max(1, config.typography.lineHeight + delta))
+      updateTypography({ lineHeight: Math.round(newHeight * 10) / 10 })
+    },
+    [config.typography.lineHeight, updateTypography]
+  )
 
   return (
     <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl mb-4 shadow-lg">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 shadow-lg">
           <Type className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-          Typography
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">Typography</h2>
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Choose fonts that reflect your brand's personality.
         </p>
       </div>
 
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="mx-auto max-w-2xl space-y-8">
         {/* Tab buttons */}
-        <div className="flex gap-2 justify-center">
+        <div className="flex justify-center gap-2">
           <button
             type="button"
             onClick={() => setActiveTab('presets')}
             className={cn(
-              'px-4 py-2 text-sm font-medium rounded-lg transition-all',
+              'rounded-lg px-4 py-2 text-sm font-medium transition-all',
               activeTab === 'presets'
-                ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300'
-                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                ? 'dark:bg-sky-900/30 bg-sky-100 text-sky-700 dark:text-sky-300'
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
             )}
           >
             Recommended Pairings
@@ -97,10 +112,10 @@ export function Step5Typography({ onValidChange, className }: Step5TypographyPro
             type="button"
             onClick={() => setActiveTab('custom')}
             className={cn(
-              'px-4 py-2 text-sm font-medium rounded-lg transition-all',
+              'rounded-lg px-4 py-2 text-sm font-medium transition-all',
               activeTab === 'custom'
-                ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300'
-                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                ? 'dark:bg-sky-900/30 bg-sky-100 text-sky-700 dark:text-sky-300'
+                : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:hover:bg-zinc-700'
             )}
           >
             Custom Selection
@@ -154,10 +169,8 @@ export function Step5Typography({ onValidChange, className }: Step5TypographyPro
         )}
 
         {/* Size and spacing controls */}
-        <div className="space-y-4 pt-6 border-t border-zinc-200 dark:border-zinc-700">
-          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Size & Spacing
-          </h3>
+        <div className="space-y-4 border-t border-zinc-200 pt-6 dark:border-zinc-700">
+          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Size & Spacing</h3>
 
           <div className="grid grid-cols-2 gap-6">
             {/* Base font size */}
@@ -220,11 +233,9 @@ export function Step5Typography({ onValidChange, className }: Step5TypographyPro
 
         {/* Live preview */}
         <div className="space-y-3">
-          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Preview
-          </h3>
+          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Preview</h3>
           <div
-            className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 p-6 space-y-4"
+            className="space-y-4 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800"
             style={{
               fontSize: `${config.typography.baseFontSize}px`,
               lineHeight: config.typography.lineHeight,
@@ -243,7 +254,7 @@ export function Step5Typography({ onValidChange, className }: Step5TypographyPro
               {FONT_PREVIEW_SAMPLES.paragraph}
             </p>
             <pre
-              className="p-3 bg-zinc-100 dark:bg-zinc-900 rounded-lg text-sm"
+              className="rounded-lg bg-zinc-100 p-3 text-sm dark:bg-zinc-900"
               style={{ fontFamily: fontsLoaded ? config.typography.monoFont : undefined }}
             >
               <code>{`const config = { theme: 'custom' };`}</code>

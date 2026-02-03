@@ -4,6 +4,8 @@ import { useCallback, useState } from 'react'
 import { errorReporter, ErrorContext } from './error-reporter'
 import { isDevelopment } from '@/lib/environment'
 
+import { logger } from '@/lib/logger'
+
 interface UseErrorHandlerOptions {
   /**
    * Show toast notification on error
@@ -78,71 +80,76 @@ export function useErrorHandler(options: UseErrorHandlerOptions = {}): UseErrorH
 
   const [error, setError] = useState<Error | null>(null)
 
-  const showToastNotification = useCallback((message: string, type: 'error' | 'warning' | 'info') => {
-    if (showToast && onToast) {
-      onToast(message, type)
-    }
-  }, [showToast, onToast])
-
-  const handleError = useCallback((errorOrUnknown: Error | unknown, context?: ErrorContext) => {
-    // Convert unknown errors to Error objects
-    const error = errorOrUnknown instanceof Error
-      ? errorOrUnknown
-      : new Error(String(errorOrUnknown))
-
-    // Set error state
-    setError(error)
-
-    // Log to console
-    if (logToConsole) {
-      console.error('Error handled:', error)
-      if (context) {
-        console.error('Context:', context)
+  const showToastNotification = useCallback(
+    (message: string, type: 'error' | 'warning' | 'info') => {
+      if (showToast && onToast) {
+        onToast(message, type)
       }
-    }
+    },
+    [showToast, onToast]
+  )
 
-    // Report to backend
-    if (reportErrors) {
-      errorReporter.reportError(error, {
-        ...defaultContext,
-        ...context,
-      })
-    }
+  const handleError = useCallback(
+    (errorOrUnknown: Error | unknown, context?: ErrorContext) => {
+      // Convert unknown errors to Error objects
+      const error =
+        errorOrUnknown instanceof Error ? errorOrUnknown : new Error(String(errorOrUnknown))
 
-    // Show toast notification (unless silent)
-    if (!context?.silent) {
-      const message = error.message || defaultMessage
-      showToastNotification(message, 'error')
-    }
-  }, [logToConsole, reportErrors, defaultContext, defaultMessage, showToastNotification])
+      // Set error state
+      setError(error)
+
+      // Log to console
+      if (logToConsole) {
+        logger.error('Error handled:', error)
+        if (context) {
+          logger.error('Context:', context)
+        }
+      }
+
+      // Report to backend
+      if (reportErrors) {
+        errorReporter.reportError(error, {
+          ...defaultContext,
+          ...context,
+        })
+      }
+
+      // Show toast notification (unless silent)
+      if (!context?.silent) {
+        const message = error.message || defaultMessage
+        showToastNotification(message, 'error')
+      }
+    },
+    [logToConsole, reportErrors, defaultContext, defaultMessage, showToastNotification]
+  )
 
   const clearError = useCallback(() => {
     setError(null)
   }, [])
 
-  const wrapAsync = useCallback(async <T,>(
-    fn: () => Promise<T>,
-    context?: ErrorContext
-  ): Promise<T | null> => {
-    try {
-      return await fn()
-    } catch (err) {
-      handleError(err, context)
-      return null
-    }
-  }, [handleError])
+  const wrapAsync = useCallback(
+    async <T>(fn: () => Promise<T>, context?: ErrorContext): Promise<T | null> => {
+      try {
+        return await fn()
+      } catch (err) {
+        handleError(err, context)
+        return null
+      }
+    },
+    [handleError]
+  )
 
-  const trySafe = useCallback(<T,>(
-    fn: () => T,
-    fallback?: T
-  ): T | undefined => {
-    try {
-      return fn()
-    } catch (err) {
-      handleError(err, { silent: true })
-      return fallback
-    }
-  }, [handleError])
+  const trySafe = useCallback(
+    <T>(fn: () => T, fallback?: T): T | undefined => {
+      try {
+        return fn()
+      } catch (err) {
+        handleError(err, { silent: true })
+        return fallback
+      }
+    },
+    [handleError]
+  )
 
   return {
     error,
@@ -169,7 +176,7 @@ export function createSafeAsync<TArgs extends unknown[], TReturn>(
       const error = err instanceof Error ? err : new Error(String(err))
 
       if (isDevelopment()) {
-        console.error('Safe async error:', error)
+        logger.error('Safe async error:', error)
       }
 
       onError?.(error)
@@ -192,12 +199,7 @@ export async function withRetry<T>(
     onRetry?: (attempt: number, error: Error) => void
   } = {}
 ): Promise<T> {
-  const {
-    maxRetries = 3,
-    delay = 1000,
-    backoff = true,
-    onRetry,
-  } = options
+  const { maxRetries = 3, delay = 1000, backoff = true, onRetry } = options
 
   let lastError: Error | null = null
 
@@ -211,7 +213,7 @@ export async function withRetry<T>(
         onRetry?.(attempt, lastError)
 
         const waitTime = backoff ? delay * Math.pow(2, attempt - 1) : delay
-        await new Promise(resolve => setTimeout(resolve, waitTime))
+        await new Promise((resolve) => setTimeout(resolve, waitTime))
       }
     }
   }

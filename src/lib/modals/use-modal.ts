@@ -24,11 +24,7 @@ export interface UseModalOptions {
 
 export interface UseModalReturn {
   // Generic open
-  open: <T extends ModalType>(
-    type: T,
-    props: ModalPropsMap[T],
-    options?: UseModalOptions
-  ) => string
+  open: <T extends ModalType>(type: T, props: ModalPropsMap[T], options?: UseModalOptions) => string
 
   // Typed openers
   openConfirm: (props: ConfirmModalProps, options?: UseModalOptions) => string
@@ -86,11 +82,7 @@ export function useModal(): UseModalReturn {
   const isAnyModalOpen = useModalStore((state) => state.isAnyModalOpen)
 
   const open = useCallback(
-    <T extends ModalType>(
-      type: T,
-      props: ModalPropsMap[T],
-      options?: UseModalOptions
-    ) => {
+    <T extends ModalType>(type: T, props: ModalPropsMap[T], options?: UseModalOptions) => {
       return openModal(type, props, options)
     },
     [openModal]

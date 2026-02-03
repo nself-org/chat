@@ -2,22 +2,18 @@
 
 import * as React from 'react'
 import Link from 'next/link'
-import {
-  Hash,
-  Lock,
-  Users,
-  MessageSquare,
-  Star,
-  TrendingUp,
-  Sparkles,
-} from 'lucide-react'
+import { Hash, Lock, Users, MessageSquare, Star, TrendingUp, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback} from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { JoinChannelButton } from './JoinChannelButton'
 import type { Channel } from '@/stores/channel-store'
-import { formatMemberCount, getActivityLevel, getActivityLevelLabel } from '@/lib/channels/channel-stats'
+import {
+  formatMemberCount,
+  getActivityLevel,
+  getActivityLevelLabel,
+} from '@/lib/channels/channel-stats'
 
 // ============================================================================
 // Types
@@ -72,7 +68,7 @@ export function ChannelCard({
       <Link
         href={`/chat/channel/${channel.slug}`}
         className={cn(
-          'flex items-center gap-3 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors',
+          'hover:bg-accent/50 flex items-center gap-3 rounded-lg border bg-card p-3 transition-colors',
           className
         )}
       >
@@ -83,23 +79,17 @@ export function ChannelCard({
             <Hash className="h-5 w-5 text-muted-foreground" />
           )}
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-medium truncate">{channel.name}</span>
-            {isTrending && (
-              <TrendingUp className="h-3.5 w-3.5 text-orange-500 flex-shrink-0" />
-            )}
-            {isNew && (
-              <Sparkles className="h-3.5 w-3.5 text-purple-500 flex-shrink-0" />
-            )}
+            <span className="truncate font-medium">{channel.name}</span>
+            {isTrending && <TrendingUp className="h-3.5 w-3.5 flex-shrink-0 text-orange-500" />}
+            {isNew && <Sparkles className="h-3.5 w-3.5 flex-shrink-0 text-purple-500" />}
           </div>
           {channel.description && (
-            <p className="text-sm text-muted-foreground truncate">
-              {channel.description}
-            </p>
+            <p className="truncate text-sm text-muted-foreground">{channel.description}</p>
           )}
         </div>
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center gap-2">
           <div className="flex items-center gap-1 text-sm text-muted-foreground">
             <Users className="h-3.5 w-3.5" />
             <span>{formatMemberCount(channel.memberCount)}</span>
@@ -122,17 +112,17 @@ export function ChannelCard({
     return (
       <Card
         className={cn(
-          'overflow-hidden hover:shadow-md transition-shadow',
-          'border-2 border-primary/20 bg-gradient-to-br from-primary/5 to-transparent',
+          'overflow-hidden transition-shadow hover:shadow-md',
+          'border-primary/20 from-primary/5 border-2 bg-gradient-to-br to-transparent',
           className
         )}
       >
         <CardContent className="p-0">
           <Link href={`/chat/channel/${channel.slug}`} className="block">
             <div className="p-4">
-              <div className="flex items-start justify-between mb-3">
+              <div className="mb-3 flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 rounded-lg bg-primary/10">
+                  <div className="bg-primary/10 rounded-lg p-2">
                     {isPrivate ? (
                       <Lock className="h-5 w-5 text-primary" />
                     ) : (
@@ -142,7 +132,7 @@ export function ChannelCard({
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold">{channel.name}</h3>
-                      <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                      <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                     </div>
                     {channel.topic && (
                       <p className="text-xs text-muted-foreground">{channel.topic}</p>
@@ -160,7 +150,7 @@ export function ChannelCard({
               </div>
 
               {channel.description && (
-                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
                   {channel.description}
                 </p>
               )}
@@ -187,7 +177,7 @@ export function ChannelCard({
   return (
     <Card
       className={cn(
-        'overflow-hidden hover:shadow-md transition-shadow',
+        'overflow-hidden transition-shadow hover:shadow-md',
         isFeatured && 'border-primary/30',
         className
       )}
@@ -195,11 +185,11 @@ export function ChannelCard({
       <CardContent className="p-0">
         <Link href={`/chat/channel/${channel.slug}`} className="block">
           <div className="p-4">
-            <div className="flex items-start justify-between mb-2">
+            <div className="mb-2 flex items-start justify-between">
               <div className="flex items-center gap-2">
                 <div
                   className={cn(
-                    'p-2 rounded-lg',
+                    'rounded-lg p-2',
                     channel.color ? `bg-[${channel.color}]/10` : 'bg-muted'
                   )}
                 >
@@ -212,14 +202,10 @@ export function ChannelCard({
                 <div>
                   <div className="flex items-center gap-2">
                     <h3 className="font-semibold">{channel.name}</h3>
-                    {isFeatured && (
-                      <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
-                    )}
-                    {isTrending && (
-                      <TrendingUp className="h-3.5 w-3.5 text-orange-500" />
-                    )}
+                    {isFeatured && <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />}
+                    {isTrending && <TrendingUp className="h-3.5 w-3.5 text-orange-500" />}
                     {isNew && (
-                      <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+                      <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
                         New
                       </Badge>
                     )}
@@ -240,7 +226,7 @@ export function ChannelCard({
             </div>
 
             {channel.description && (
-              <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+              <p className="mb-3 line-clamp-2 text-sm text-muted-foreground">
                 {channel.description}
               </p>
             )}
@@ -255,9 +241,7 @@ export function ChannelCard({
                   {channel.lastMessagePreview && (
                     <div className="flex items-center gap-1">
                       <MessageSquare className="h-4 w-4" />
-                      <span className="truncate max-w-[150px]">
-                        {channel.lastMessagePreview}
-                      </span>
+                      <span className="max-w-[150px] truncate">{channel.lastMessagePreview}</span>
                     </div>
                   )}
                 </div>

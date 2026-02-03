@@ -164,7 +164,7 @@ export function SessionManagement() {
             {unreadCount > 0 && (
               <Badge
                 variant="destructive"
-                className="absolute -top-2 -right-2 h-5 w-5 p-0 flex items-center justify-center text-xs"
+                className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center p-0 text-xs"
               >
                 {unreadCount}
               </Badge>
@@ -242,29 +242,25 @@ export function SessionManagement() {
                 <Button variant="ghost" size="sm" onClick={clearNotifications}>
                   Clear
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowNotifications(false)}
-                >
+                <Button variant="ghost" size="sm" onClick={() => setShowNotifications(false)}>
                   <X className="h-4 w-4" />
                 </Button>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="space-y-2 max-h-96 overflow-y-auto">
+          <CardContent className="max-h-96 space-y-2 overflow-y-auto">
             {notifications.map((notification) => (
               <div
                 key={notification.id}
                 className={cn(
-                  'flex items-start gap-3 p-3 rounded-lg border cursor-pointer hover:bg-accent/50 transition-colors',
+                  'hover:bg-accent/50 flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors',
                   !notification.read && 'bg-accent/30'
                 )}
                 onClick={() => markNotificationRead(notification.id)}
               >
                 <div
                   className={cn(
-                    'rounded-full p-1.5 mt-0.5',
+                    'mt-0.5 rounded-full p-1.5',
                     notification.severity === 'critical' && 'bg-red-500/10 text-red-500',
                     notification.severity === 'warning' && 'bg-yellow-500/10 text-yellow-600',
                     notification.severity === 'info' && 'bg-blue-500/10 text-blue-500'
@@ -278,17 +274,15 @@ export function SessionManagement() {
                     <Info className="h-4 w-4" />
                   )}
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <p className="font-medium text-sm">{notification.title}</p>
+                    <p className="text-sm font-medium">{notification.title}</p>
                     {!notification.read && (
-                      <Badge variant="secondary" className="h-1.5 w-1.5 p-0 rounded-full" />
+                      <Badge variant="secondary" className="h-1.5 w-1.5 rounded-full p-0" />
                     )}
                   </div>
-                  <p className="text-xs text-muted-foreground mt-0.5">
-                    {notification.message}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-0.5 text-xs text-muted-foreground">{notification.message}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
                     {formatSessionTime(notification.timestamp)}
                   </p>
                 </div>
@@ -302,7 +296,7 @@ export function SessionManagement() {
       {suspiciousActivityScore !== null && suspiciousActivityScore > 0 && (
         <Card>
           <CardHeader className="pb-3">
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base">
               <Activity className="h-4 w-4" />
               Security Score
             </CardTitle>
@@ -310,7 +304,7 @@ export function SessionManagement() {
           <CardContent>
             <div className="flex items-center gap-4">
               <div className="flex-1">
-                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                <div className="h-2 overflow-hidden rounded-full bg-muted">
                   <div
                     className={cn(
                       'h-full transition-all',
@@ -329,7 +323,7 @@ export function SessionManagement() {
               </div>
               <span className="text-sm font-medium">{suspiciousActivityScore}/100</span>
             </div>
-            <p className="text-xs text-muted-foreground mt-2">
+            <p className="mt-2 text-xs text-muted-foreground">
               {suspiciousActivityScore < 30 && 'Your account activity looks normal'}
               {suspiciousActivityScore >= 30 &&
                 suspiciousActivityScore < 60 &&
@@ -385,7 +379,7 @@ export function SessionManagement() {
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={handleRevokeAllOthers}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                     >
                       {isRevoking ? (
                         <>
@@ -417,10 +411,10 @@ export function SessionManagement() {
       {/* No Other Sessions */}
       {!loading && otherSessions.length === 0 && (
         <Card>
-          <CardContent className="text-center py-12">
-            <Shield className="h-12 w-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+          <CardContent className="py-12 text-center">
+            <Shield className="mx-auto mb-4 h-12 w-12 text-muted-foreground opacity-50" />
             <p className="text-lg font-medium">No other active sessions</p>
-            <p className="text-sm text-muted-foreground mt-1">
+            <p className="mt-1 text-sm text-muted-foreground">
               You are only signed in on this device
             </p>
           </CardContent>
@@ -436,7 +430,7 @@ export function SessionManagement() {
             </CardContent>
           </Card>
           <Card>
-            <CardContent className="pt-6 space-y-3">
+            <CardContent className="space-y-3 pt-6">
               <SessionSkeleton />
               <SessionSkeleton />
             </CardContent>
@@ -454,9 +448,7 @@ export function SessionManagement() {
             Sessions are automatically created when you sign in and expire after a period of
             inactivity.
           </p>
-          <p>
-            For security, we recommend signing out of devices you no longer use or recognize.
-          </p>
+          <p>For security, we recommend signing out of devices you no longer use or recognize.</p>
           <p>
             If you notice suspicious activity, sign out all sessions and change your password
             immediately.
@@ -483,38 +475,33 @@ function SessionCard({ session, isCurrent, onRevoke, isRevoking }: SessionCardPr
     session.device.toLowerCase() === 'mobile'
       ? Smartphone
       : session.device.toLowerCase() === 'tablet'
-      ? Tablet
-      : Monitor
+        ? Tablet
+        : Monitor
 
   return (
     <div
       className={cn(
-        'flex items-start gap-4 p-4 rounded-lg border transition-colors',
+        'flex items-start gap-4 rounded-lg border p-4 transition-colors',
         isCurrent && 'bg-primary/5 border-primary/20'
       )}
     >
       {/* Device Icon */}
-      <div
-        className={cn(
-          'rounded-full p-2.5 shrink-0',
-          isCurrent ? 'bg-primary/10' : 'bg-muted'
-        )}
-      >
+      <div className={cn('shrink-0 rounded-full p-2.5', isCurrent ? 'bg-primary/10' : 'bg-muted')}>
         <DeviceIcon
           className={cn('h-5 w-5', isCurrent ? 'text-primary' : 'text-muted-foreground')}
         />
       </div>
 
       {/* Session Details */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center gap-2">
           <span className="font-medium">
             {session.browser} on {session.os}
           </span>
           {isCurrent && (
             <Badge
               variant="secondary"
-              className="bg-green-500/10 text-green-600 border-green-500/20"
+              className="border-green-500/20 bg-green-500/10 text-green-600"
             >
               <CheckCircle2 className="mr-1 h-3 w-3" />
               Current Device
@@ -523,7 +510,7 @@ function SessionCard({ session, isCurrent, onRevoke, isRevoking }: SessionCardPr
         </div>
 
         <div className="mt-2 space-y-1.5 text-sm text-muted-foreground">
-          <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex flex-wrap items-center gap-4">
             <span className="flex items-center gap-1.5">
               <MapPin className="h-3.5 w-3.5" />
               {formatLocation(session.location)}
@@ -535,13 +522,9 @@ function SessionCard({ session, isCurrent, onRevoke, isRevoking }: SessionCardPr
           </div>
           <div className="flex items-center gap-1.5">
             <Clock className="h-3.5 w-3.5" />
-            {isCurrent
-              ? 'Active now'
-              : `Last active ${formatSessionTime(session.lastActiveAt)}`}
+            {isCurrent ? 'Active now' : `Last active ${formatSessionTime(session.lastActiveAt)}`}
           </div>
-          <div className="text-xs">
-            Created {formatSessionTime(session.createdAt)}
-          </div>
+          <div className="text-xs">Created {formatSessionTime(session.createdAt)}</div>
         </div>
       </div>
 
@@ -581,7 +564,7 @@ function SessionCard({ session, isCurrent, onRevoke, isRevoking }: SessionCardPr
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={onRevoke}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               >
                 Sign Out
               </AlertDialogAction>
@@ -601,11 +584,11 @@ function SessionSkeleton({ isCurrent }: { isCurrent?: boolean }) {
   return (
     <div
       className={cn(
-        'flex items-start gap-4 p-4 rounded-lg border',
+        'flex items-start gap-4 rounded-lg border p-4',
         isCurrent && 'bg-primary/5 border-primary/20'
       )}
     >
-      <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+      <Skeleton className="h-10 w-10 shrink-0 rounded-full" />
       <div className="flex-1 space-y-2">
         <Skeleton className="h-5 w-48" />
         <Skeleton className="h-4 w-64" />

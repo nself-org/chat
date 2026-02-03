@@ -7,6 +7,7 @@ This document describes the complete implementation of the polls and interactive
 ## Features Implemented
 
 ✅ **Poll Creation**
+
 - Single-choice and multiple-choice polls
 - Anonymous voting option
 - Poll expiration/deadline
@@ -14,12 +15,14 @@ This document describes the complete implementation of the polls and interactive
 - 2-10 options per poll
 
 ✅ **Poll Voting**
+
 - Real-time vote updates
 - Change vote before poll closes
 - Multiple choice support with max limit
 - Vote validation (single vs multiple choice)
 
 ✅ **Poll Management**
+
 - Poll creator and admins can close polls early
 - Automatic expiration handling
 - Poll results with percentages
@@ -27,6 +30,7 @@ This document describes the complete implementation of the polls and interactive
 - Winning option highlighting
 
 ✅ **Real-time Updates**
+
 - Live poll results via GraphQL subscriptions
 - Instant vote count updates
 - Poll status changes (active/closed/expired)
@@ -36,6 +40,7 @@ This document describes the complete implementation of the polls and interactive
 ### Tables Created
 
 #### `nchat_polls`
+
 ```sql
 CREATE TABLE nchat_polls (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -53,6 +58,7 @@ CREATE TABLE nchat_polls (
 ```
 
 #### `nchat_poll_options`
+
 ```sql
 CREATE TABLE nchat_poll_options (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -66,6 +72,7 @@ CREATE TABLE nchat_poll_options (
 ```
 
 #### `nchat_poll_votes`
+
 ```sql
 CREATE TABLE nchat_poll_votes (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -78,6 +85,7 @@ CREATE TABLE nchat_poll_votes (
 ```
 
 #### `nchat_messages` Extension
+
 ```sql
 ALTER TABLE nchat_messages
 ADD COLUMN poll_id UUID REFERENCES nchat_polls(id) ON DELETE SET NULL;
@@ -97,6 +105,7 @@ The migration includes several PostgreSQL functions:
 ### Row Level Security (RLS)
 
 All tables have RLS enabled with policies for:
+
 - Viewing polls in accessible channels
 - Creating polls in member channels
 - Voting in active polls
@@ -136,6 +145,7 @@ All tables have RLS enabled with policies for:
 **Location**: `/Users/admin/Sites/nself-chat/src/components/chat/poll-creator.tsx`
 
 **Props**:
+
 ```typescript
 interface PollCreatorProps {
   channelId: string
@@ -146,6 +156,7 @@ interface PollCreatorProps {
 ```
 
 **Features**:
+
 - Question input (max 200 characters)
 - 2-10 answer options
 - Single/multiple choice toggle
@@ -155,10 +166,10 @@ interface PollCreatorProps {
 - Form validation
 
 **Usage**:
+
 ```tsx
 import { PollCreator } from '@/components/chat/poll-creator'
-
-<PollCreator
+;<PollCreator
   channelId={currentChannel.id}
   isOpen={showPollCreator}
   onClose={() => setShowPollCreator(false)}
@@ -171,6 +182,7 @@ import { PollCreator } from '@/components/chat/poll-creator'
 **Location**: `/Users/admin/Sites/nself-chat/src/components/chat/poll-display.tsx`
 
 **Props**:
+
 ```typescript
 interface PollDisplayProps {
   poll: Poll
@@ -183,6 +195,7 @@ interface PollDisplayProps {
 ```
 
 **Features**:
+
 - Question and metadata display
 - Vote buttons (single/multiple choice)
 - Real-time progress bars
@@ -195,10 +208,10 @@ interface PollDisplayProps {
 - Poll status badge
 
 **Usage**:
+
 ```tsx
 import { PollDisplay } from '@/components/chat/poll-display'
-
-<PollDisplay
+;<PollDisplay
   poll={poll}
   currentUserId={user.id}
   onVote={handleVote}
@@ -214,6 +227,7 @@ import { PollDisplay } from '@/components/chat/poll-display'
 **Location**: `/Users/admin/Sites/nself-chat/src/hooks/use-polls.ts`
 
 **Usage**:
+
 ```typescript
 import { usePolls } from '@/hooks/use-polls'
 
@@ -266,6 +280,7 @@ await addOption('poll-id', 'Tacos')
 ### Mutations
 
 #### Create Poll
+
 ```graphql
 mutation CreatePoll(
   $channelId: uuid!
@@ -301,14 +316,12 @@ mutation CreatePoll(
 ```
 
 #### Vote on Poll
+
 ```graphql
 mutation VotePoll($votes: [nchat_poll_votes_insert_input!]!) {
   insert_nchat_poll_votes(
     objects: $votes
-    on_conflict: {
-      constraint: unique_vote_per_option
-      update_columns: [voted_at]
-    }
+    on_conflict: { constraint: unique_vote_per_option, update_columns: [voted_at] }
   ) {
     affected_rows
     returning {
@@ -323,6 +336,7 @@ mutation VotePoll($votes: [nchat_poll_votes_insert_input!]!) {
 ```
 
 #### Close Poll
+
 ```graphql
 mutation ClosePoll($pollId: uuid!, $closedBy: uuid!) {
   update_nchat_polls_by_pk(
@@ -339,6 +353,7 @@ mutation ClosePoll($pollId: uuid!, $closedBy: uuid!) {
 ### Queries
 
 #### Get Poll with Results
+
 ```graphql
 query GetPollWithResults($pollId: uuid!) {
   nchat_polls_by_pk(id: $pollId) {
@@ -381,6 +396,7 @@ query GetPollWithResults($pollId: uuid!) {
 ### Subscriptions
 
 #### Subscribe to Poll Updates
+
 ```graphql
 subscription SubscribePollResults($pollId: uuid!) {
   nchat_polls_by_pk(id: $pollId) {
@@ -429,9 +445,7 @@ function MessageComposer({ channelId }) {
     <>
       <div className="composer">
         {/* Message input */}
-        <button onClick={() => setShowPollCreator(true)}>
-          Create Poll
-        </button>
+        <button onClick={() => setShowPollCreator(true)}>Create Poll</button>
       </div>
 
       <PollCreator
@@ -481,10 +495,12 @@ function MessageList({ messages, currentUserId }) {
 ## Permissions
 
 ### Poll Creation
+
 - Any user can create polls in channels they're a member of
 - Requires `INSERT` permission on `nchat_polls`
 
 ### Voting
+
 - Any user can vote in polls in accessible channels
 - Single-choice: one vote per poll (enforced by trigger)
 - Multiple-choice: multiple votes allowed
@@ -492,12 +508,14 @@ function MessageList({ messages, currentUserId }) {
 - Requires `INSERT` and `DELETE` on `nchat_poll_votes`
 
 ### Poll Management
+
 - Poll creator can close their polls
 - Admins and owners can close any poll
 - Only creator can delete polls
 - Requires `UPDATE` permission on `nchat_polls`
 
 ### Adding Options
+
 - Only available if `allow_add_options = true`
 - Only available for non-anonymous polls
 - Only available while poll is active
@@ -517,6 +535,7 @@ psql -U postgres -d nself_dev -f /migrations/012_polls_system.sql
 ```
 
 Or using Hasura console:
+
 1. Go to Hasura console (http://localhost:8080)
 2. Navigate to Data → SQL
 3. Paste contents of `012_polls_system.sql`
@@ -559,20 +578,24 @@ await closePoll(testPoll.id)
 ## Troubleshooting
 
 ### Poll not appearing in messages
+
 - Check that `poll_id` column was added to `nchat_messages`
 - Verify RLS policies allow reading polls in the channel
 
 ### Votes not counting
+
 - Check that user has permission to vote
 - Verify poll is active (not closed or expired)
 - For single-choice, ensure only one vote per user
 
 ### Real-time updates not working
+
 - Verify GraphQL subscriptions are set up
 - Check WebSocket connection
 - Ensure subscription query is correct
 
 ### Permission errors
+
 - Check RLS policies are properly configured
 - Verify user is authenticated
 - Ensure user is member of the channel
@@ -603,6 +626,7 @@ await closePoll(testPoll.id)
 ## Summary
 
 The polls system is now fully implemented with:
+
 - ✅ Database schema with proper constraints and RLS
 - ✅ GraphQL queries, mutations, and subscriptions
 - ✅ React components for creating and displaying polls

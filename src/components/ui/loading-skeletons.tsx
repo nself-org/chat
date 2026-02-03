@@ -1,8 +1,8 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Skeleton } from '@/components/ui/skeleton'
 import { staggerContainer, staggerItem } from '@/lib/animations'
 import { cn } from '@/lib/utils'
 
@@ -11,7 +11,7 @@ export function ChartSkeleton() {
     <Card>
       <CardHeader>
         <Skeleton className="h-4 w-[200px]" />
-        <Skeleton className="h-3 w-[300px] mt-2" />
+        <Skeleton className="mt-2 h-3 w-[300px]" />
       </CardHeader>
       <CardContent>
         <Skeleton className="h-[300px] w-full" />
@@ -25,7 +25,7 @@ export function FormSkeleton() {
     <Card>
       <CardHeader>
         <Skeleton className="h-6 w-[250px]" />
-        <Skeleton className="h-4 w-[350px] mt-2" />
+        <Skeleton className="mt-2 h-4 w-[350px]" />
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
@@ -51,12 +51,12 @@ export function TableSkeleton({ rows = 5 }: { rows?: number }) {
     <Card>
       <CardHeader>
         <Skeleton className="h-6 w-[200px]" />
-        <Skeleton className="h-4 w-[300px] mt-2" />
+        <Skeleton className="mt-2 h-4 w-[300px]" />
       </CardHeader>
       <CardContent>
         <div className="space-y-3">
           {Array.from({ length: rows }).map((_, i) => (
-            <div key={i} className="flex items-center gap-3 border rounded-lg p-3">
+            <div key={i} className="flex items-center gap-3 rounded-lg border p-3">
               <Skeleton className="h-10 w-10 rounded-full" />
               <div className="flex-1 space-y-2">
                 <Skeleton className="h-4 w-[200px]" />
@@ -81,7 +81,7 @@ export function CalendarSkeleton() {
         </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-7 gap-2 mb-4">
+        <div className="mb-4 grid grid-cols-7 gap-2">
           {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, i) => (
             <Skeleton key={i} className="h-8 w-full" />
           ))}
@@ -128,7 +128,7 @@ export function DashboardStatsSkeleton() {
         <Card key={i}>
           <CardHeader className="pb-2">
             <Skeleton className="h-4 w-[120px]" />
-            <Skeleton className="h-8 w-[80px] mt-2" />
+            <Skeleton className="mt-2 h-8 w-[80px]" />
           </CardHeader>
           <CardContent>
             <Skeleton className="h-3 w-[100px]" />
@@ -142,15 +142,15 @@ export function DashboardStatsSkeleton() {
 export function SettingsLayoutSkeleton() {
   return (
     <div className="flex h-full">
-      <aside className="w-64 border-r p-4 space-y-2">
+      <aside className="w-64 space-y-2 border-r p-4">
         {Array.from({ length: 6 }).map((_, i) => (
           <Skeleton key={i} className="h-10 w-full" />
         ))}
       </aside>
-      <div className="flex-1 p-6 space-y-6">
+      <div className="flex-1 space-y-6 p-6">
         <div>
           <Skeleton className="h-8 w-[200px]" />
-          <Skeleton className="h-4 w-[300px] mt-2" />
+          <Skeleton className="mt-2 h-4 w-[300px]" />
         </div>
         <FormSkeleton />
       </div>
@@ -168,7 +168,7 @@ export function ComplianceSkeleton() {
               <Skeleton className="h-5 w-[150px]" />
             </CardHeader>
             <CardContent>
-              <Skeleton className="h-4 w-full mb-4" />
+              <Skeleton className="mb-4 h-4 w-full" />
               <Skeleton className="h-9 w-full" />
             </CardContent>
           </Card>
@@ -199,11 +199,8 @@ export function ComplianceSkeleton() {
  */
 export function MessageSkeleton({ grouped = false }: { grouped?: boolean }) {
   return (
-    <motion.div
-      variants={staggerItem}
-      className={cn('flex gap-3 px-4 py-2', grouped && 'pl-16')}
-    >
-      {!grouped && <Skeleton className="h-9 w-9 rounded-full shrink-0" />}
+    <motion.div variants={staggerItem} className={cn('flex gap-3 px-4 py-2', grouped && 'pl-16')}>
+      {!grouped && <Skeleton className="h-9 w-9 shrink-0 rounded-full" />}
       <div className="flex-1 space-y-2">
         {!grouped && (
           <div className="flex items-center gap-2">
@@ -241,7 +238,7 @@ export function MessageListSkeleton({ count = 10 }: { count?: number }) {
  */
 export function ChannelSidebarSkeleton() {
   return (
-    <div className="w-64 border-r bg-background p-4 space-y-4">
+    <div className="w-64 space-y-4 border-r bg-background p-4">
       <div className="space-y-2">
         <Skeleton className="h-4 w-24" />
         {Array.from({ length: 5 }).map((_, i) => (
@@ -273,9 +270,9 @@ export function MemberListSkeleton({ count = 8 }: { count?: number }) {
       variants={staggerContainer}
       initial="initial"
       animate="animate"
-      className="w-64 border-l bg-background p-4 space-y-2"
+      className="w-64 space-y-2 border-l bg-background p-4"
     >
-      <Skeleton className="h-5 w-20 mb-3" />
+      <Skeleton className="mb-3 h-5 w-20" />
       {Array.from({ length: count }).map((_, i) => (
         <motion.div key={i} variants={staggerItem} className="flex items-center gap-2">
           <Skeleton className="h-8 w-8 rounded-full" />
@@ -316,7 +313,7 @@ export function ChatHeaderSkeleton() {
  */
 export function ThreadPreviewSkeleton() {
   return (
-    <div className="border-l-2 border-primary/20 pl-3 py-2 space-y-2">
+    <div className="border-primary/20 space-y-2 border-l-2 py-2 pl-3">
       <div className="flex items-center gap-2">
         <Skeleton className="h-4 w-4 rounded-full" />
         <Skeleton className="h-3 w-24" />
@@ -332,7 +329,7 @@ export function ThreadPreviewSkeleton() {
  */
 export function EmojiPickerSkeleton() {
   return (
-    <div className="w-80 p-4 space-y-3">
+    <div className="w-80 space-y-3 p-4">
       <Skeleton className="h-8 w-full" />
       <div className="grid grid-cols-8 gap-2">
         {Array.from({ length: 40 }).map((_, i) => (
@@ -350,7 +347,7 @@ export function ChatLayoutSkeleton() {
   return (
     <div className="flex h-screen">
       <ChannelSidebarSkeleton />
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-1 flex-col">
         <ChatHeaderSkeleton />
         <div className="flex-1 overflow-hidden">
           <MessageListSkeleton count={8} />

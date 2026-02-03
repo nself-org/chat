@@ -83,6 +83,7 @@ Block 3: [Data + Hash B] → Hash C →
 ```
 
 Each block contains:
+
 1. Current event data
 2. Hash of previous block
 3. Sequential block number
@@ -95,15 +96,8 @@ Each block contains:
 ### Hash Generation
 
 ```typescript
-hash = SHA-256(
-  blockNumber +
-  previousHash +
-  timestamp +
-  action +
-  actorId +
-  resourceId +
-  description
-)
+hash =
+  SHA - 256(blockNumber + previousHash + timestamp + action + actorId + resourceId + description)
 ```
 
 ### Verification Process
@@ -118,10 +112,10 @@ console.log({
   verifiedEntries: 10000,
   compromisedBlocks: [],
   chainMetadata: {
-    chainId: "uuid",
-    genesisHash: "sha256:...",
-    currentHash: "sha256:..."
-  }
+    chainId: 'uuid',
+    genesisHash: 'sha256:...',
+    currentHash: 'sha256:...',
+  },
 })
 ```
 
@@ -137,78 +131,73 @@ console.log({
 ### 1. User Actions
 
 ```typescript
-Category: "user"
-Events:
-  - user_created
-  - user_updated
-  - user_deleted
-  - user_login
-  - user_logout
-  - user_password_changed
-  - user_email_verified
-  - user_profile_updated
+Category: 'user'
+Events: -user_created -
+  user_updated -
+  user_deleted -
+  user_login -
+  user_logout -
+  user_password_changed -
+  user_email_verified -
+  user_profile_updated
 ```
 
 ### 2. Security Events
 
 ```typescript
-Category: "security"
-Events:
-  - login_success
-  - login_failed
-  - logout
-  - password_reset
-  - mfa_enabled
-  - mfa_disabled
-  - session_expired
-  - suspicious_activity
-  - sso_login
-  - api_key_created
+Category: 'security'
+Events: -login_success -
+  login_failed -
+  logout -
+  password_reset -
+  mfa_enabled -
+  mfa_disabled -
+  session_expired -
+  suspicious_activity -
+  sso_login -
+  api_key_created
 ```
 
 ### 3. Admin Actions
 
 ```typescript
-Category: "admin"
-Events:
-  - role_created
-  - role_updated
-  - role_deleted
-  - role_assigned
-  - permission_granted
-  - permission_revoked
-  - user_banned
-  - user_unbanned
-  - settings_updated
-  - integration_configured
+Category: 'admin'
+Events: -role_created -
+  role_updated -
+  role_deleted -
+  role_assigned -
+  permission_granted -
+  permission_revoked -
+  user_banned -
+  user_unbanned -
+  settings_updated -
+  integration_configured
 ```
 
 ### 4. Message Events
 
 ```typescript
-Category: "message"
-Events:
-  - message_sent
-  - message_edited
-  - message_deleted
-  - message_pinned
-  - message_reported
-  - reaction_added
+Category: 'message'
+Events: -message_sent -
+  message_edited -
+  message_deleted -
+  message_pinned -
+  message_reported -
+  reaction_added
 ```
 
 ### 5. Channel Events
 
 ```typescript
-Category: "channel"
-Events:
-  - channel_created
-  - channel_updated
-  - channel_deleted
-  - channel_archived
-  - user_joined
-  - user_left
-  - user_invited
-  - user_kicked
+Category: 'channel'
+Events: -channel_created -
+  channel_updated -
+  channel_deleted -
+  channel_archived -
+  user_joined -
+  user_left -
+  user_invited -
+  user_kicked
 ```
 
 ## Searching and Filtering
@@ -221,8 +210,8 @@ Access **Admin Dashboard → Security → Audit Log**
 
 ```typescript
 filter = {
-  startDate: new Date("2026-01-01"),
-  endDate: new Date("2026-01-31")
+  startDate: new Date('2026-01-01'),
+  endDate: new Date('2026-01-31'),
 }
 ```
 
@@ -230,8 +219,8 @@ filter = {
 
 ```typescript
 filter = {
-  actorIds: ["user-123", "user-456"],
-  actorTypes: ["user", "system", "api"]
+  actorIds: ['user-123', 'user-456'],
+  actorTypes: ['user', 'system', 'api'],
 }
 ```
 
@@ -239,9 +228,9 @@ filter = {
 
 ```typescript
 filter = {
-  actions: ["user_login", "user_logout"],
-  categories: ["security", "admin"],
-  severities: ["critical", "error", "warning"]
+  actions: ['user_login', 'user_logout'],
+  categories: ['security', 'admin'],
+  severities: ['critical', 'error', 'warning'],
 }
 ```
 
@@ -249,8 +238,8 @@ filter = {
 
 ```typescript
 filter = {
-  resourceTypes: ["user", "channel", "message"],
-  resourceIds: ["user-123"]
+  resourceTypes: ['user', 'channel', 'message'],
+  resourceIds: ['user-123'],
 }
 ```
 
@@ -258,7 +247,7 @@ filter = {
 
 ```typescript
 filter = {
-  searchText: "john@example.com"
+  searchText: 'john@example.com',
 }
 ```
 
@@ -266,16 +255,16 @@ filter = {
 
 ```typescript
 const filter = {
-  startDate: new Date("2026-01-01"),
-  endDate: new Date("2026-01-31"),
-  categories: ["security", "admin"],
-  severities: ["error", "critical"],
+  startDate: new Date('2026-01-01'),
+  endDate: new Date('2026-01-31'),
+  categories: ['security', 'admin'],
+  severities: ['error', 'critical'],
   success: false, // Only failed actions
-  searchText: "login",
-  sortBy: "timestamp",
-  sortOrder: "desc",
+  searchText: 'login',
+  sortBy: 'timestamp',
+  sortOrder: 'desc',
   limit: 50,
-  offset: 0
+  offset: 0,
 }
 
 const results = await searchTamperProofLogs(filter)
@@ -344,7 +333,7 @@ LEEF:1.0|nself|nchat|1.0|user_login|devTime=Jan 31 2026 12:00:00|action=user_log
 const data = await getTamperProofAuditService().exportLogs(
   {
     startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-    endDate: new Date()
+    endDate: new Date(),
   },
   'json'
 )
@@ -358,6 +347,7 @@ fs.writeFileSync('audit-log.json', data)
 ### SOC 2 Type II
 
 **Requirements**:
+
 - Logging of all administrative actions ✅
 - Immutable audit trail ✅
 - Regular integrity verification ✅
@@ -365,6 +355,7 @@ fs.writeFileSync('audit-log.json', data)
 - Access controls on logs ✅
 
 **Configuration**:
+
 ```typescript
 {
   retentionDays: 365,
@@ -377,12 +368,14 @@ fs.writeFileSync('audit-log.json', data)
 ### GDPR
 
 **Requirements**:
+
 - Log data access and modifications ✅
 - Right to deletion (with exceptions) ✅
 - Data export capability ✅
 - Retention policies ✅
 
 **Configuration**:
+
 ```typescript
 {
   logPersonalDataAccess: true,
@@ -395,12 +388,14 @@ fs.writeFileSync('audit-log.json', data)
 ### HIPAA
 
 **Requirements**:
+
 - Access logs for PHI ✅
 - 6-year retention ✅
 - Tamper detection ✅
 - Audit log reviews ✅
 
 **Configuration**:
+
 ```typescript
 {
   retentionDays: 2190, // 6 years
@@ -413,12 +408,14 @@ fs.writeFileSync('audit-log.json', data)
 ### PCI DSS
 
 **Requirements**:
+
 - Log all access to cardholder data ✅
 - Daily log reviews ✅
 - 1-year online, 3-year total retention ✅
 - Integrity verification ✅
 
 **Configuration**:
+
 ```typescript
 {
   retentionDays: 365,
@@ -441,12 +438,15 @@ Schedule automated integrity checks:
 
 ```typescript
 // Automated verification
-setInterval(async () => {
-  const result = await verifyAuditIntegrity()
-  if (!result.isValid) {
-    alertSecurityTeam(result)
-  }
-}, 24 * 60 * 60 * 1000) // Daily
+setInterval(
+  async () => {
+    const result = await verifyAuditIntegrity()
+    if (!result.isValid) {
+      alertSecurityTeam(result)
+    }
+  },
+  24 * 60 * 60 * 1000
+) // Daily
 ```
 
 ### 2. Retention Policies
@@ -477,10 +477,10 @@ const criticalEvents = [
   'role_deleted',
   'settings_updated',
   'sso_connection_deleted',
-  'audit_integrity_compromised'
+  'audit_integrity_compromised',
 ]
 
-criticalEvents.forEach(event => {
+criticalEvents.forEach((event) => {
   subscribeToAuditEvent(event, async (entry) => {
     await notifySecurityTeam(entry)
     await createIncident(entry)
@@ -529,8 +529,8 @@ Audit logs should be backed up separately:
 
 ```typescript
 const stats = await getTamperProofAuditService().getStatistics({
-  startDate: new Date("2026-01-01"),
-  endDate: new Date("2026-01-31")
+  startDate: new Date('2026-01-01'),
+  endDate: new Date('2026-01-31'),
 })
 
 console.log({
@@ -539,13 +539,13 @@ console.log({
     security: 3500,
     admin: 1200,
     user: 4000,
-    message: 1300
+    message: 1300,
   },
   failureRate: 0.02, // 2% failure rate
   topActors: [
-    { actorId: "user-123", count: 450 },
-    { actorId: "user-456", count: 320 }
-  ]
+    { actorId: 'user-123', count: 450 },
+    { actorId: 'user-456', count: 320 },
+  ],
 })
 ```
 
@@ -555,10 +555,10 @@ console.log({
 
 ```typescript
 const failedLogins = await searchTamperProofLogs({
-  actions: ["login_failed"],
+  actions: ['login_failed'],
   startDate: new Date(Date.now() - 24 * 60 * 60 * 1000),
-  sortBy: "timestamp",
-  sortOrder: "desc"
+  sortBy: 'timestamp',
+  sortOrder: 'desc',
 })
 ```
 
@@ -566,9 +566,9 @@ const failedLogins = await searchTamperProofLogs({
 
 ```typescript
 const adminActions = await searchTamperProofLogs({
-  actorIds: ["admin-123"],
-  categories: ["admin"],
-  startDate: new Date("2026-01-01")
+  actorIds: ['admin-123'],
+  categories: ['admin'],
+  startDate: new Date('2026-01-01'),
 })
 ```
 
@@ -576,9 +576,9 @@ const adminActions = await searchTamperProofLogs({
 
 ```typescript
 const incidents = await searchTamperProofLogs({
-  categories: ["security"],
-  severities: ["critical", "error"],
-  success: false
+  categories: ['security'],
+  severities: ['critical', 'error'],
+  success: false,
 })
 ```
 
@@ -589,11 +589,13 @@ const incidents = await searchTamperProofLogs({
 **Symptom**: Verification reports compromised blocks
 
 **Diagnosis**:
+
 1. Review verification errors
 2. Identify compromised block numbers
 3. Check for system issues (corruption, hardware failure)
 
 **Resolution**:
+
 1. Alert security team immediately
 2. Investigate root cause
 3. Restore from backup if necessary
@@ -604,6 +606,7 @@ const incidents = await searchTamperProofLogs({
 **Symptom**: Slow log queries
 
 **Solutions**:
+
 1. Add indexes on frequently queried fields
 2. Implement pagination (use offset/limit)
 3. Use time-based partitioning
@@ -614,6 +617,7 @@ const incidents = await searchTamperProofLogs({
 **Symptom**: Audit logs consuming excessive storage
 
 **Solutions**:
+
 1. Implement retention policies
 2. Enable compression
 3. Archive to cold storage

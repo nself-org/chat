@@ -17,7 +17,11 @@ import {
   ActionPerformed,
   DeliveredNotifications,
 } from '@capacitor/push-notifications'
-import { LocalNotifications, LocalNotificationSchema, ScheduleOptions } from '@capacitor/local-notifications'
+import {
+  LocalNotifications,
+  LocalNotificationSchema,
+  ScheduleOptions,
+} from '@capacitor/local-notifications'
 import { Capacitor, PluginListenerHandle } from '@capacitor/core'
 
 // =============================================================================
@@ -244,23 +248,17 @@ class EnhancedPushNotificationService {
    */
   private async setupListeners(): Promise<void> {
     // Registration success
-    const regListener = await PushNotifications.addListener(
-      'registration',
-      (token: Token) => {
-        console.log('Push token received:', token.value)
-        this.token = token.value
-        this.onTokenReceived?.(token.value, false)
-      }
-    )
+    const regListener = await PushNotifications.addListener('registration', (token: Token) => {
+      console.log('Push token received:', token.value)
+      this.token = token.value
+      this.onTokenReceived?.(token.value, false)
+    })
     this.listeners.push(regListener)
 
     // Registration error
-    const regErrorListener = await PushNotifications.addListener(
-      'registrationError',
-      (error) => {
-        console.error('Push registration error:', error)
-      }
-    )
+    const regErrorListener = await PushNotifications.addListener('registrationError', (error) => {
+      console.error('Push registration error:', error)
+    })
     this.listeners.push(regErrorListener)
 
     // Notification received in foreground
@@ -298,8 +296,7 @@ class EnhancedPushNotificationService {
 
     // Track channel stats
     if (payload.channelId) {
-      this.stats.byChannel[payload.channelId] =
-        (this.stats.byChannel[payload.channelId] || 0) + 1
+      this.stats.byChannel[payload.channelId] = (this.stats.byChannel[payload.channelId] || 0) + 1
     }
 
     this.onNotificationReceived?.(payload)
@@ -379,10 +376,7 @@ class EnhancedPushNotificationService {
   /**
    * Schedule a notification
    */
-  async scheduleNotification(
-    payload: RichNotificationPayload,
-    scheduleAt: Date
-  ): Promise<void> {
+  async scheduleNotification(payload: RichNotificationPayload, scheduleAt: Date): Promise<void> {
     const notification: LocalNotificationSchema = {
       id: parseInt(payload.id) || Date.now(),
       title: payload.title,
@@ -542,7 +536,7 @@ class EnhancedPushNotificationService {
    */
   private getVisibilityLevel(visibility?: NotificationChannel['visibility']): number {
     const levels = { secret: -1, private: 0, public: 1 }
-    return visibility ? levels[visibility] ?? 0 : 0
+    return visibility ? (levels[visibility] ?? 0) : 0
   }
 }
 

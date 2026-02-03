@@ -40,11 +40,7 @@ export { ChannelContextMenu } from './channel-context-menu'
 export type { ChannelContextMenuProps } from './channel-context-menu'
 
 export { UserContextMenu } from './user-context-menu'
-export type {
-  UserContextMenuProps,
-  ContextMenuUser,
-  UserRole,
-} from './user-context-menu'
+export type { UserContextMenuProps, ContextMenuUser, UserRole } from './user-context-menu'
 
 export { AttachmentContextMenu } from './attachment-context-menu'
 export type { AttachmentContextMenuProps } from './attachment-context-menu'

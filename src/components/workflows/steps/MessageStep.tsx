@@ -25,10 +25,7 @@ interface MessageStepPropertiesProps {
   onUpdate: (config: Record<string, unknown>) => void
 }
 
-export function MessageStepProperties({
-  step,
-  onUpdate,
-}: MessageStepPropertiesProps) {
+export function MessageStepProperties({ step, onUpdate }: MessageStepPropertiesProps) {
   const config = step.config
 
   return (
@@ -39,7 +36,7 @@ export function MessageStepProperties({
           value={config.target}
           onValueChange={(value) => onUpdate({ target: value as MessageTarget })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue placeholder="Select target" />
           </SelectTrigger>
           <SelectContent>
@@ -49,7 +46,7 @@ export function MessageStepProperties({
             <SelectItem value="thread">Reply in Thread</SelectItem>
           </SelectContent>
         </Select>
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           {config.target === 'trigger_source' && 'Sends to where the workflow was triggered'}
           {config.target === 'channel' && 'Sends to a specific channel'}
           {config.target === 'user' && 'Sends a direct message to a specific user'}
@@ -64,7 +61,7 @@ export function MessageStepProperties({
           <Input
             value={config.channelId || ''}
             onChange={(e) => onUpdate({ channelId: e.target.value })}
-            className="h-8 text-sm mt-1"
+            className="mt-1 h-8 text-sm"
             placeholder="general or channel ID"
           />
         </div>
@@ -77,7 +74,7 @@ export function MessageStepProperties({
           <Input
             value={config.userId || ''}
             onChange={(e) => onUpdate({ userId: e.target.value })}
-            className="h-8 text-sm mt-1"
+            className="mt-1 h-8 text-sm"
             placeholder="User ID or {{variable}}"
           />
         </div>
@@ -89,16 +86,16 @@ export function MessageStepProperties({
         <Textarea
           value={config.content}
           onChange={(e) => onUpdate({ content: e.target.value })}
-          className="text-sm mt-1 min-h-[100px] font-mono"
+          className="mt-1 min-h-[100px] font-mono text-sm"
           placeholder="Enter your message..."
         />
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           Use {'{{variableName}}'} to insert variables. Supports markdown formatting.
         </p>
       </div>
 
       {/* Options */}
-      <div className="space-y-2 pt-2 border-t">
+      <div className="space-y-2 border-t pt-2">
         <div className="flex items-center justify-between">
           <div>
             <Label className="text-xs">Parse Variables</Label>
@@ -115,9 +112,7 @@ export function MessageStepProperties({
         <div className="flex items-center justify-between">
           <div>
             <Label className="text-xs">Ephemeral</Label>
-            <p className="text-[10px] text-muted-foreground">
-              Only visible to recipient
-            </p>
+            <p className="text-[10px] text-muted-foreground">Only visible to recipient</p>
           </div>
           <Switch
             checked={config.isEphemeral === true}
@@ -127,9 +122,9 @@ export function MessageStepProperties({
       </div>
 
       {/* Variable suggestions */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <Label className="text-xs">Available Variables</Label>
-        <div className="flex flex-wrap gap-1 mt-1">
+        <div className="mt-1 flex flex-wrap gap-1">
           {[
             'trigger.data.userName',
             'trigger.data.channelName',
@@ -144,7 +139,7 @@ export function MessageStepProperties({
                 const newContent = (config.content || '') + `{{${varName}}}`
                 onUpdate({ content: newContent })
               }}
-              className="px-2 py-0.5 text-[10px] rounded bg-muted hover:bg-muted/80 font-mono"
+              className="hover:bg-muted/80 rounded bg-muted px-2 py-0.5 font-mono text-[10px]"
             >
               {`{{${varName}}}`}
             </button>

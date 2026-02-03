@@ -51,10 +51,15 @@ import {
 } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import {Tabs, TabsContent, TabsList} from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
-import { useBookmarks, useBookmarkMutations, useBookmarkCollections, useBookmarkExport } from '@/hooks/use-bookmarks'
+import {
+  useBookmarks,
+  useBookmarkMutations,
+  useBookmarkCollections,
+  useBookmarkExport,
+} from '@/hooks/use-bookmarks'
 import { useJumpToMessage } from '@/hooks/use-messages'
 import type { BookmarkFilter, BookmarkSortBy, BookmarkExportFormat } from '@/types/bookmark'
 // formatRelativeTime is defined locally at the bottom of this file
@@ -137,9 +142,7 @@ export function BookmarkList({
 
   const toggleSelection = (bookmarkId: string) => {
     setSelectedBookmarks((prev) =>
-      prev.includes(bookmarkId)
-        ? prev.filter((id) => id !== bookmarkId)
-        : [...prev, bookmarkId]
+      prev.includes(bookmarkId) ? prev.filter((id) => id !== bookmarkId) : [...prev, bookmarkId]
     )
   }
 
@@ -215,11 +218,7 @@ export function BookmarkList({
 
             {/* Batch actions */}
             {selectedBookmarks.length > 0 && (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={handleBatchRemove}
-              >
+              <Button variant="destructive" size="sm" onClick={handleBatchRemove}>
                 <Trash2 className="mr-2 h-4 w-4" />
                 Delete {selectedBookmarks.length}
               </Button>
@@ -230,7 +229,7 @@ export function BookmarkList({
 
       {/* Filters and Search */}
       {showFilters && (
-        <div className="border-b px-6 py-4 space-y-3">
+        <div className="space-y-3 border-b px-6 py-4">
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -356,7 +355,7 @@ export function BookmarkList({
         <div className="p-6">
           {bookmarks.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <BookmarkCheck className="mb-4 h-12 w-12 text-muted-foreground/50" />
+              <BookmarkCheck className="text-muted-foreground/50 mb-4 h-12 w-12" />
               <h3 className="mb-2 text-lg font-medium">No bookmarks found</h3>
               <p className="text-sm text-muted-foreground">
                 {searchQuery || filter.channelId || filter.collectionId || filter.tag
@@ -375,7 +374,7 @@ export function BookmarkList({
                     exit={{ opacity: 0, x: -100 }}
                     layout
                   >
-                    <Card className="group relative overflow-hidden hover:shadow-md transition-shadow">
+                    <Card className="group relative overflow-hidden transition-shadow hover:shadow-md">
                       <CardContent className="p-4">
                         <div className="flex items-start gap-4">
                           {/* Selection checkbox */}
@@ -395,7 +394,7 @@ export function BookmarkList({
                                 className="h-10 w-10 rounded-full"
                               />
                             ) : (
-                              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                              <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full text-primary">
                                 {bookmark.message.user.display_name.charAt(0).toUpperCase()}
                               </div>
                             )}
@@ -417,13 +416,13 @@ export function BookmarkList({
                             </div>
 
                             {/* Message content */}
-                            <p className="mb-2 line-clamp-2 text-sm text-foreground/90">
+                            <p className="text-foreground/90 mb-2 line-clamp-2 text-sm">
                               {bookmark.message.content}
                             </p>
 
                             {/* Note */}
                             {bookmark.note && (
-                              <div className="mb-2 rounded-md bg-muted/50 p-2">
+                              <div className="bg-muted/50 mb-2 rounded-md p-2">
                                 <p className="text-xs text-muted-foreground">
                                   Note: {bookmark.note}
                                 </p>
@@ -450,7 +449,7 @@ export function BookmarkList({
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="h-8 w-8 p-0 opacity-0 transition-opacity group-hover:opacity-100"
                               >
                                 <MoreVertical className="h-4 w-4" />
                               </Button>
@@ -503,7 +502,7 @@ export function BookmarkList({
             </div>
           ) : (
             // Grid view
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               <AnimatePresence mode="popLayout">
                 {bookmarks.map((bookmark) => (
                   <motion.div
@@ -513,9 +512,9 @@ export function BookmarkList({
                     exit={{ opacity: 0, scale: 0.9 }}
                     layout
                   >
-                    <Card className="group h-full hover:shadow-md transition-shadow cursor-pointer">
+                    <Card className="group h-full cursor-pointer transition-shadow hover:shadow-md">
                       <CardContent className="p-4">
-                        <div className="flex flex-col h-full">
+                        <div className="flex h-full flex-col">
                           {/* Header */}
                           <div className="mb-3 flex items-center justify-between">
                             <div className="flex items-center gap-2">
@@ -526,7 +525,7 @@ export function BookmarkList({
                                   className="h-8 w-8 rounded-full"
                                 />
                               ) : (
-                                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
+                                <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full text-xs text-primary">
                                   {bookmark.message.user.display_name.charAt(0).toUpperCase()}
                                 </div>
                               )}
@@ -541,11 +540,7 @@ export function BookmarkList({
                             </div>
                             <DropdownMenu>
                               <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-7 w-7 p-0"
-                                >
+                                <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
                                   <MoreVertical className="h-4 w-4" />
                                 </Button>
                               </DropdownMenuTrigger>
@@ -574,7 +569,7 @@ export function BookmarkList({
                           </div>
 
                           {/* Content */}
-                          <p className="mb-3 line-clamp-3 flex-1 text-sm text-foreground/90">
+                          <p className="text-foreground/90 mb-3 line-clamp-3 flex-1 text-sm">
                             {bookmark.message.content}
                           </p>
 

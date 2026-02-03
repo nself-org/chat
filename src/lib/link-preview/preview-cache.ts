@@ -7,6 +7,8 @@
 
 import type { LinkPreviewData, CachedPreview, PreviewCacheStats } from './preview-types'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Constants
 // ============================================================================
@@ -96,7 +98,7 @@ export class PreviewCache {
       this.updateStats(true)
       return cached.data
     } catch (error) {
-      console.warn('Failed to read from preview cache:', error)
+      logger.warn('Failed to read from preview cache:', { context: error })
       this.updateStats(false)
       return null
     }
@@ -140,10 +142,10 @@ export class PreviewCache {
           localStorage.setItem(key, JSON.stringify(cached))
           this.updateIndex(url, now, expiresAt, JSON.stringify(cached).length)
         } catch {
-          console.warn('Failed to store preview in cache after eviction')
+          logger.warn('Failed to store preview in cache after eviction')
         }
       } else {
-        console.warn('Failed to write to preview cache:', error)
+        logger.warn('Failed to write to preview cache:', { context: error })
       }
     }
   }
@@ -163,7 +165,7 @@ export class PreviewCache {
       localStorage.removeItem(key)
       this.removeFromIndex(url)
     } catch (error) {
-      console.warn('Failed to remove from preview cache:', error)
+      logger.warn('Failed to remove from preview cache:', { context: error })
     }
   }
 
@@ -207,7 +209,7 @@ export class PreviewCache {
       }
       localStorage.removeItem(CACHE_INDEX_KEY)
     } catch (error) {
-      console.warn('Failed to clear preview cache:', error)
+      logger.warn('Failed to clear preview cache:', { context: error })
     }
   }
 

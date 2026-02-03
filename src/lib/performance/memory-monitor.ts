@@ -5,6 +5,8 @@
  * Monitors memory usage, detects patterns, and provides debugging tools.
  */
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -59,7 +61,6 @@ export class MemoryMonitor {
     this.interval = setInterval(() => {
       this.takeSnapshot()
     }, intervalMs)
-
   }
 
   /**
@@ -81,10 +82,14 @@ export class MemoryMonitor {
       return null
     }
 
-    const memory = (performance as Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory
+    const memory = (
+      performance as Performance & {
+        memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number }
+      }
+    ).memory
 
     if (!memory) {
-      console.warn('[MemoryMonitor] Memory API not available')
+      logger.warn('[MemoryMonitor] Memory API not available')
       return null
     }
 
@@ -283,7 +288,7 @@ export class MemoryMonitor {
     if ('gc' in global && typeof (global as any).gc === 'function') {
       ;(global as any).gc()
     } else {
-      console.warn('[MemoryMonitor] GC not available (run with --expose-gc)')
+      logger.warn('[MemoryMonitor] GC not available (run with --expose-gc)')
     }
   }
 }

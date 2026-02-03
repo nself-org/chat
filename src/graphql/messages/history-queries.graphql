@@ -67,10 +67,7 @@ query GetMessagesEditHistory($messageIds: [uuid!]!) {
 # Get a specific version of a message
 query GetMessageVersion($messageId: uuid!, $versionNumber: Int!) {
   nchat_message_versions(
-    where: {
-      message_id: { _eq: $messageId }
-      version_number: { _eq: $versionNumber }
-    }
+    where: { message_id: { _eq: $messageId }, version_number: { _eq: $versionNumber } }
     limit: 1
   ) {
     ...MessageVersionFields
@@ -192,11 +189,7 @@ query GetAdminEditHistoryCount(
 }
 
 # Search in edit history
-query SearchEditHistory(
-  $searchQuery: String!
-  $limit: Int = 20
-  $offset: Int = 0
-) {
+query SearchEditHistory($searchQuery: String!, $limit: Int = 20, $offset: Int = 0) {
   nchat_message_versions(
     where: { content: { _ilike: $searchQuery } }
     order_by: { created_at: desc }
@@ -300,10 +293,7 @@ mutation RestoreMessageVersion(
 mutation ClearEditHistory($messageId: uuid!, $keepOriginal: Boolean = true) {
   # If keeping original, delete all but first version
   delete_nchat_message_versions(
-    where: {
-      message_id: { _eq: $messageId }
-      is_original: { _neq: $keepOriginal }
-    }
+    where: { message_id: { _eq: $messageId }, is_original: { _neq: $keepOriginal } }
   ) {
     affected_rows
   }
@@ -317,10 +307,8 @@ mutation ClearEditHistory($messageId: uuid!, $keepOriginal: Boolean = true) {
   }
 
   # Reset the message edit count
-  update_nchat_messages_by_pk(
-    pk_columns: { id: $messageId }
-    _set: { is_edited: false }
-  ) @include(if: $keepOriginal) {
+  update_nchat_messages_by_pk(pk_columns: { id: $messageId }, _set: { is_edited: false })
+    @include(if: $keepOriginal) {
     id
   }
 }

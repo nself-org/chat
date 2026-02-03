@@ -119,7 +119,7 @@ export function ChannelTable({
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-muted/50">
+              <tr className="bg-muted/50 border-b">
                 <th className="px-4 py-3 text-left text-sm font-medium">Channel</th>
                 <th className="px-4 py-3 text-left text-sm font-medium">Type</th>
                 <th className="px-4 py-3 text-left text-sm font-medium">Members</th>
@@ -143,7 +143,7 @@ export function ChannelTable({
                     <tr
                       key={channel.id}
                       className={cn(
-                        'border-b last:border-b-0 hover:bg-muted/30',
+                        'hover:bg-muted/30 border-b last:border-b-0',
                         channel.isArchived && 'opacity-60'
                       )}
                     >
@@ -185,12 +185,8 @@ export function ChannelTable({
                           {channel.type}
                         </Badge>
                       </td>
-                      <td className="px-4 py-3 text-sm">
-                        {channel.memberCount.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        {channel.messageCount.toLocaleString()}
-                      </td>
+                      <td className="px-4 py-3 text-sm">{channel.memberCount.toLocaleString()}</td>
+                      <td className="px-4 py-3 text-sm">{channel.messageCount.toLocaleString()}</td>
                       <td className="px-4 py-3 text-sm text-muted-foreground">
                         {new Date(channel.createdAt).toLocaleDateString()}
                       </td>
@@ -210,10 +206,7 @@ export function ChannelTable({
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => onViewChannel?.(channel)}
-                              asChild
-                            >
+                            <DropdownMenuItem onClick={() => onViewChannel?.(channel)} asChild>
                               <Link href={`/admin/channels/${channel.id}`}>
                                 <Eye className="mr-2 h-4 w-4" />
                                 View Details

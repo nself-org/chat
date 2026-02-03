@@ -18,10 +18,10 @@ import type {
   SlackImportOptions,
   SlackSyncResult,
 } from '../types'
-import {
-  buildAuthUrl,
-  tokenResponseToCredentials,
-} from '../integration-manager'
+
+import { buildAuthUrl, tokenResponseToCredentials } from '../integration-manager'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Constants
@@ -261,10 +261,9 @@ export class SlackApiClient {
    * Get user info
    */
   async getUserInfo(userId: string): Promise<SlackUser> {
-    const response = await this.get<SlackApiResponse & { user: SlackUser }>(
-      'users.info',
-      { user: userId }
-    )
+    const response = await this.get<SlackApiResponse & { user: SlackUser }>('users.info', {
+      user: userId,
+    })
     return response.user
   }
 
@@ -372,13 +371,15 @@ export class SlackApiClient {
     teamId: string
     userId: string
   }> {
-    const response = await this.get<SlackApiResponse & {
-      url: string
-      team: string
-      user: string
-      team_id: string
-      user_id: string
-    }>('auth.test')
+    const response = await this.get<
+      SlackApiResponse & {
+        url: string
+        team: string
+        user: string
+        team_id: string
+        user_id: string
+      }
+    >('auth.test')
 
     return {
       url: response.url,
@@ -465,7 +466,7 @@ export class SlackIntegrationProvider implements IntegrationProvider {
         await this.client.revokeToken()
       } catch (error) {
         // Ignore errors during revocation
-        console.warn('Failed to revoke Slack token:', error)
+        logger.warn('Failed to revoke Slack token:', { context: error })
       }
       this.client = null
     }

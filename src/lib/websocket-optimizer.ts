@@ -7,6 +7,8 @@
 
 import { io, Socket } from 'socket.io-client'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Configuration
 // ============================================================================
@@ -182,7 +184,9 @@ class WebSocketConnectionPool {
 
 export class OptimizedWebSocket {
   private socket: Socket | null = null
-  private config: Required<Omit<WebSocketConfig, 'auth'>> & { auth: NonNullable<WebSocketConfig['auth']> }
+  private config: Required<Omit<WebSocketConfig, 'auth'>> & {
+    auth: NonNullable<WebSocketConfig['auth']>
+  }
   private batcher: MessageBatcher | null = null
   private heartbeatTimer: NodeJS.Timeout | null = null
   private connectionPool: WebSocketConnectionPool | null = null
@@ -206,16 +210,13 @@ export class OptimizedWebSocket {
 
   async connect(): Promise<void> {
     if (this.socket?.connected) {
-      console.log('[WebSocket] Already connected')
+      // REMOVED: console.log('[WebSocket] Already connected')
       return
     }
 
     // Initialize connection pool if enabled
     if (this.config.enablePooling && !this.connectionPool) {
-      this.connectionPool = new WebSocketConnectionPool(
-        this.config,
-        this.config.poolSize
-      )
+      this.connectionPool = new WebSocketConnectionPool(this.config, this.config.poolSize)
       await this.connectionPool.initialize()
       return
     }
@@ -231,9 +232,7 @@ export class OptimizedWebSocket {
         autoConnect: false,
         transports: ['websocket'], // Force WebSocket only
         // Enable compression - cast to any since socket.io types may not accept false
-        ...(this.config.enableCompression
-          ? { perMessageDeflate: { threshold: 1024 } }
-          : {}),
+        ...(this.config.enableCompression ? { perMessageDeflate: { threshold: 1024 } } : {}),
       })
 
       // Initialize message batcher
@@ -247,42 +246,42 @@ export class OptimizedWebSocket {
 
       // Connection event handlers
       this.socket.on('connect', () => {
-        console.log('[WebSocket] Connected')
+        // REMOVED: console.log('[WebSocket] Connected')
         this.startHeartbeat()
         this.triggerEvent('connect', null)
         resolve()
       })
 
       this.socket.on('connect_error', (error) => {
-        console.error('[WebSocket] Connection error:', error)
+        logger.error('[WebSocket] Connection error:', error)
         this.triggerEvent('error', error)
         reject(error)
       })
 
       this.socket.on('disconnect', (reason) => {
-        console.log('[WebSocket] Disconnected:', reason)
+        // REMOVED: console.log('[WebSocket] Disconnected:', reason)
         this.stopHeartbeat()
         this.triggerEvent('disconnect', reason)
       })
 
       this.socket.on('reconnect', (attemptNumber) => {
-        console.log(`[WebSocket] Reconnected after ${attemptNumber} attempts`)
+        // REMOVED: console.log(`[WebSocket] Reconnected after ${attemptNumber} attempts`)
         this.startHeartbeat()
         this.triggerEvent('reconnect', attemptNumber)
       })
 
       this.socket.on('reconnect_attempt', (attemptNumber) => {
-        console.log(`[WebSocket] Reconnection attempt ${attemptNumber}`)
+        // REMOVED: console.log(`[WebSocket] Reconnection attempt ${attemptNumber}`)
         this.triggerEvent('reconnect_attempt', attemptNumber)
       })
 
       this.socket.on('reconnect_error', (error) => {
-        console.error('[WebSocket] Reconnection error:', error)
+        logger.error('[WebSocket] Reconnection error:', error)
         this.triggerEvent('reconnect_error', error)
       })
 
       this.socket.on('reconnect_failed', () => {
-        console.error('[WebSocket] Reconnection failed')
+        logger.error('[WebSocket] Reconnection failed')
         this.triggerEvent('reconnect_failed', null)
       })
 
@@ -333,12 +332,10 @@ export class OptimizedWebSocket {
   // ============================================================================
 
   emit(event: string, data: any): void {
-    const socket = this.connectionPool
-      ? this.connectionPool.getConnection().socket
-      : this.socket
+    const socket = this.connectionPool ? this.connectionPool.getConnection().socket : this.socket
 
     if (!socket) {
-      console.warn('[WebSocket] Cannot emit - not connected')
+      logger.warn('[WebSocket] Cannot emit - not connected')
       return
     }
 
@@ -352,12 +349,10 @@ export class OptimizedWebSocket {
   }
 
   emitImmediate(event: string, data: any): void {
-    const socket = this.connectionPool
-      ? this.connectionPool.getConnection().socket
-      : this.socket
+    const socket = this.connectionPool ? this.connectionPool.getConnection().socket : this.socket
 
     if (!socket) {
-      console.warn('[WebSocket] Cannot emit - not connected')
+      logger.warn('[WebSocket] Cannot emit - not connected')
       return
     }
 
@@ -373,12 +368,10 @@ export class OptimizedWebSocket {
   // ============================================================================
 
   on(event: string, handler: Function): void {
-    const socket = this.connectionPool
-      ? this.connectionPool.getConnection().socket
-      : this.socket
+    const socket = this.connectionPool ? this.connectionPool.getConnection().socket : this.socket
 
     if (!socket) {
-      console.warn('[WebSocket] Cannot register handler - not connected')
+      logger.warn('[WebSocket] Cannot register handler - not connected')
       return
     }
 
@@ -393,9 +386,7 @@ export class OptimizedWebSocket {
   }
 
   off(event: string, handler?: Function): void {
-    const socket = this.connectionPool
-      ? this.connectionPool.getConnection().socket
-      : this.socket
+    const socket = this.connectionPool ? this.connectionPool.getConnection().socket : this.socket
 
     if (!socket) return
 
@@ -513,10 +504,7 @@ export interface UseWebSocketOptions {
   reconnectOnMount?: boolean
 }
 
-export function useWebSocket(
-  config: WebSocketConfig,
-  options: UseWebSocketOptions = {}
-) {
+export function useWebSocket(config: WebSocketConfig, options: UseWebSocketOptions = {}) {
   const ws = getWebSocket(config)
 
   // Auto-connect on mount if specified

@@ -15,6 +15,7 @@ import type {
   OAuthCallbackParams,
   OAuthTokenResponse,
 } from './types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Constants
@@ -180,7 +181,7 @@ export class IntegrationManager {
    */
   registerProvider(provider: IntegrationProvider): void {
     if (this.providers.has(provider.id)) {
-      console.warn(`Provider ${provider.id} is already registered. Overwriting.`)
+      logger.warn(`Provider ${provider.id} is already registered. Overwriting.`)
     }
     this.providers.set(provider.id, provider)
 
@@ -482,7 +483,7 @@ export class IntegrationManager {
         })
       }
     } catch (error) {
-      console.error('Error loading integrations from storage:', error)
+      logger.error('Error loading integrations from storage:', error)
     }
   }
 
@@ -506,7 +507,7 @@ export class IntegrationManager {
       })
       localStorage.setItem(`${STORAGE_KEY_PREFIX}credentials`, JSON.stringify(credentials))
     } catch (error) {
-      console.error('Error saving integration to storage:', error)
+      logger.error('Error saving integration to storage:', error)
     }
   }
 

@@ -20,10 +20,7 @@ export {
 } from './thread-header'
 
 // Message list component (virtualized)
-export {
-  ThreadMessageList,
-  type ThreadMessageListProps,
-} from './thread-message-list'
+export { ThreadMessageList, type ThreadMessageListProps } from './thread-message-list'
 
 // Reply input component
 export {

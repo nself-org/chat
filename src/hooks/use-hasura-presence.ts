@@ -25,26 +25,34 @@ export function useHasuraPresence(userIds: string[]) {
 
   const presenceMap = useMemo(() => {
     const map = new Map<string, Presence>()
-    for (const p of (data?.nchat_presence ?? [])) {
+    for (const p of data?.nchat_presence ?? []) {
       map.set(p.user_id, p)
     }
     return map
   }, [data])
 
-  const getPresence = useCallback((userId: string): Presence => {
-    return presenceMap.get(userId) ?? {
-      user_id: userId,
-      status: 'offline',
-      last_seen: '',
-    }
-  }, [presenceMap])
+  const getPresence = useCallback(
+    (userId: string): Presence => {
+      return (
+        presenceMap.get(userId) ?? {
+          user_id: userId,
+          status: 'offline',
+          last_seen: '',
+        }
+      )
+    },
+    [presenceMap]
+  )
 
-  const isOnline = useCallback((userId: string): boolean => {
-    const p = presenceMap.get(userId)
-    if (!p) return false
-    const lastSeen = new Date(p.last_seen).getTime()
-    return Date.now() - lastSeen < AWAY_THRESHOLD
-  }, [presenceMap])
+  const isOnline = useCallback(
+    (userId: string): boolean => {
+      const p = presenceMap.get(userId)
+      if (!p) return false
+      const lastSeen = new Date(p.last_seen).getTime()
+      return Date.now() - lastSeen < AWAY_THRESHOLD
+    },
+    [presenceMap]
+  )
 
   return { presenceMap, getPresence, isOnline, loading }
 }
@@ -55,17 +63,20 @@ export function useMyPresence() {
   const [heartbeatMutation] = useMutation(HEARTBEAT)
   const heartbeatRef = useRef<NodeJS.Timeout | null>(null)
 
-  const setStatus = useCallback(async (status: PresenceStatus, customStatus?: string, emoji?: string) => {
-    if (!user?.id) return
-    await updatePresenceMutation({
-      variables: {
-        userId: user.id,
-        status,
-        customStatus,
-        customStatusEmoji: emoji,
-      },
-    })
-  }, [user?.id, updatePresenceMutation])
+  const setStatus = useCallback(
+    async (status: PresenceStatus, customStatus?: string, emoji?: string) => {
+      if (!user?.id) return
+      await updatePresenceMutation({
+        variables: {
+          userId: user.id,
+          status,
+          customStatus,
+          customStatusEmoji: emoji,
+        },
+      })
+    },
+    [user?.id, updatePresenceMutation]
+  )
 
   // Heartbeat to keep presence alive
   useEffect(() => {

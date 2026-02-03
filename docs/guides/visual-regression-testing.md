@@ -24,6 +24,7 @@ pnpm exec playwright show-report
 ### View Snapshots
 
 Snapshots are stored in:
+
 - `e2e/__screenshots__/` - Baseline snapshots
 - `test-results/` - Test results and diffs (gitignored)
 
@@ -252,6 +253,7 @@ Visual regression tests run automatically on pull requests. See `.github/workflo
 ### When to Update
 
 Update snapshots when:
+
 - ✅ UI changes are intentional
 - ✅ Design updates approved
 - ✅ Component refactoring with same visual output
@@ -282,11 +284,13 @@ git diff e2e/__screenshots__/
 ### Snapshots Differ Between Local and CI
 
 **Causes**:
+
 - Font rendering differences
 - Timezone differences
 - OS-specific rendering
 
 **Solutions**:
+
 - Use Playwright's `--update-snapshots` in CI once
 - Increase `maxDiffPixels` threshold
 - Mask problematic elements
@@ -294,11 +298,13 @@ git diff e2e/__screenshots__/
 ### Flaky Visual Tests
 
 **Causes**:
+
 - Animations not disabled
 - Dynamic content (timestamps, online status)
 - Loading states
 
 **Solutions**:
+
 ```typescript
 await expect(page).toHaveScreenshot('page.png', {
   animations: 'disabled',
@@ -310,6 +316,7 @@ await expect(page).toHaveScreenshot('page.png', {
 ### Large Snapshot Files
 
 **Solutions**:
+
 - Use `clip` to capture only relevant areas
 - Test components instead of full pages
 - Compress snapshots (Playwright does this automatically)
@@ -348,10 +355,12 @@ e2e/
 ## CI/CD Integration
 
 Visual regression tests run on:
+
 - ✅ Pull requests (blocks merge if tests fail)
 - ✅ Main branch (updates baseline)
 
 View results:
+
 - Playwright HTML report in GitHub Actions artifacts
 - Percy dashboard (if enabled)
 - Chromatic dashboard (if enabled)

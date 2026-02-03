@@ -88,8 +88,8 @@ export function UserList({ users, isLoading = false, showSearch = true }: UserLi
     return 'active'
   }
 
-  const isAllSelected = filteredUsers.length > 0 &&
-    filteredUsers.every((u) => selectedUserIds.includes(u.id))
+  const isAllSelected =
+    filteredUsers.length > 0 && filteredUsers.every((u) => selectedUserIds.includes(u.id))
 
   const handleSelectAll = () => {
     if (isAllSelected) {
@@ -107,14 +107,26 @@ export function UserList({ users, isLoading = false, showSearch = true }: UserLi
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b bg-muted/50">
+                <tr className="bg-muted/50 border-b">
                   <th className="w-12 px-4 py-3"></th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">User</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Role</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Status</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Joined</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Last Seen</th>
-                  <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                    User
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                    Role
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                    Joined
+                  </th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                    Last Seen
+                  </th>
+                  <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -132,11 +144,21 @@ export function UserList({ users, isLoading = false, showSearch = true }: UserLi
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3"><div className="h-5 w-16 animate-pulse rounded bg-muted" /></td>
-                    <td className="px-4 py-3"><div className="h-5 w-16 animate-pulse rounded bg-muted" /></td>
-                    <td className="px-4 py-3"><div className="h-4 w-20 animate-pulse rounded bg-muted" /></td>
-                    <td className="px-4 py-3"><div className="h-4 w-20 animate-pulse rounded bg-muted" /></td>
-                    <td className="px-4 py-3"><div className="ml-auto h-8 w-8 animate-pulse rounded bg-muted" /></td>
+                    <td className="px-4 py-3">
+                      <div className="h-5 w-16 animate-pulse rounded bg-muted" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-5 w-16 animate-pulse rounded bg-muted" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="ml-auto h-8 w-8 animate-pulse rounded bg-muted" />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -169,7 +191,7 @@ export function UserList({ users, isLoading = false, showSearch = true }: UserLi
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-muted/50">
+              <tr className="bg-muted/50 border-b">
                 <th className="w-12 px-4 py-3">
                   <Checkbox
                     checked={isAllSelected}
@@ -177,12 +199,24 @@ export function UserList({ users, isLoading = false, showSearch = true }: UserLi
                     aria-label="Select all"
                   />
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">User</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">Role</th>
-                <th className="hidden px-4 py-3 text-left text-sm font-medium text-muted-foreground md:table-cell">Status</th>
-                <th className="hidden px-4 py-3 text-left text-sm font-medium text-muted-foreground lg:table-cell">Joined</th>
-                <th className="hidden px-4 py-3 text-left text-sm font-medium text-muted-foreground lg:table-cell">Last Seen</th>
-                <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">Actions</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                  User
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
+                  Role
+                </th>
+                <th className="hidden px-4 py-3 text-left text-sm font-medium text-muted-foreground md:table-cell">
+                  Status
+                </th>
+                <th className="hidden px-4 py-3 text-left text-sm font-medium text-muted-foreground lg:table-cell">
+                  Joined
+                </th>
+                <th className="hidden px-4 py-3 text-left text-sm font-medium text-muted-foreground lg:table-cell">
+                  Last Seen
+                </th>
+                <th className="px-4 py-3 text-right text-sm font-medium text-muted-foreground">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -202,7 +236,7 @@ export function UserList({ users, isLoading = false, showSearch = true }: UserLi
                     <tr
                       key={user.id}
                       className={cn(
-                        'border-b last:border-b-0 hover:bg-muted/50',
+                        'hover:bg-muted/50 border-b last:border-b-0',
                         isSelected && 'bg-muted/30'
                       )}
                     >

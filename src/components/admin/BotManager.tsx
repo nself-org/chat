@@ -3,83 +3,97 @@
  * Admin interface for managing bots
  */
 
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { useBots, useCreateBot, useDeleteBot } from '@/hooks/use-bots';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { useToast } from '@/hooks/use-toast';
-import { Plus, Bot, Settings, Trash2} from 'lucide-react';
+import React, { useState } from 'react'
+import { useBots, useCreateBot, useDeleteBot } from '@/hooks/use-bots'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Badge } from '@/components/ui/badge'
+import { useToast } from '@/hooks/use-toast'
+import { Plus, Bot, Settings, Trash2 } from 'lucide-react'
 
 export function BotManager() {
-  const { bots, loading, refetch } = useBots();
-  const { createBot, loading: creating } = useCreateBot();
-  const { deleteBot, loading: deleting } = useDeleteBot();
-  const { toast } = useToast();
+  const { bots, loading, refetch } = useBots()
+  const { createBot, loading: creating } = useCreateBot()
+  const { deleteBot, loading: deleting } = useDeleteBot()
+  const { toast } = useToast()
 
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
-  const [selectedBot, setSelectedBot] = useState<string | null>(null);
+  const [showCreateDialog, setShowCreateDialog] = useState(false)
+  const [selectedBot, setSelectedBot] = useState<string | null>(null)
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
     avatarUrl: '',
     botType: 'custom' as 'custom' | 'integration' | 'system',
-  });
+  })
 
   const handleCreateBot = async () => {
     try {
-      await createBot(formData);
+      await createBot(formData)
       toast({
         title: 'Bot created',
         description: 'Bot has been created successfully',
-      });
-      setShowCreateDialog(false);
-      setFormData({ name: '', description: '', avatarUrl: '', botType: 'custom' });
-      refetch();
+      })
+      setShowCreateDialog(false)
+      setFormData({ name: '', description: '', avatarUrl: '', botType: 'custom' })
+      refetch()
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to create bot',
         variant: 'destructive',
-      });
+      })
     }
-  };
+  }
 
   const handleDeleteBot = async (botId: string) => {
     if (!confirm('Are you sure you want to delete this bot? This action cannot be undone.')) {
-      return;
+      return
     }
 
     try {
-      await deleteBot(botId);
+      await deleteBot(botId)
       toast({
         title: 'Bot deleted',
         description: 'Bot has been deleted successfully',
-      });
-      refetch();
+      })
+      refetch()
     } catch (error) {
       toast({
         title: 'Error',
         description: 'Failed to delete bot',
         variant: 'destructive',
-      });
+      })
     }
-  };
+  }
 
   if (loading) {
-    return <div className="p-6">Loading bots...</div>;
+    return <div className="p-6">Loading bots...</div>
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="space-y-6 p-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Bot Management</h1>
@@ -89,7 +103,7 @@ export function BotManager() {
         <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
           <DialogTrigger asChild>
             <Button>
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Create Bot
             </Button>
           </DialogTrigger>
@@ -166,13 +180,13 @@ export function BotManager() {
       {bots.length === 0 ? (
         <Card>
           <CardContent className="p-12 text-center">
-            <Bot className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-            <h3 className="text-lg font-semibold mb-2">No bots yet</h3>
-            <p className="text-muted-foreground mb-4">
+            <Bot className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <h3 className="mb-2 text-lg font-semibold">No bots yet</h3>
+            <p className="mb-4 text-muted-foreground">
               Create your first bot to start building integrations
             </p>
             <Button onClick={() => setShowCreateDialog(true)}>
-              <Plus className="w-4 h-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Create Bot
             </Button>
           </CardContent>
@@ -185,19 +199,15 @@ export function BotManager() {
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
                     {bot.avatar_url ? (
-                      <img
-                        src={bot.avatar_url}
-                        alt={bot.name}
-                        className="w-10 h-10 rounded-full"
-                      />
+                      <img src={bot.avatar_url} alt={bot.name} className="h-10 w-10 rounded-full" />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Bot className="w-5 h-5 text-primary" />
+                      <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
+                        <Bot className="h-5 w-5 text-primary" />
                       </div>
                     )}
                     <div>
                       <CardTitle className="text-lg">{bot.name}</CardTitle>
-                      <div className="flex items-center gap-2 mt-1">
+                      <div className="mt-1 flex items-center gap-2">
                         <Badge variant={bot.is_active ? 'default' : 'secondary'}>
                           {bot.is_active ? 'Active' : 'Inactive'}
                         </Badge>
@@ -232,14 +242,14 @@ export function BotManager() {
                   </div>
                 </div>
 
-                <div className="flex gap-2 mt-4">
+                <div className="mt-4 flex gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     className="flex-1"
                     onClick={() => setSelectedBot(bot.id)}
                   >
-                    <Settings className="w-4 h-4 mr-2" />
+                    <Settings className="mr-2 h-4 w-4" />
                     Manage
                   </Button>
                   <Button
@@ -248,7 +258,7 @@ export function BotManager() {
                     onClick={() => handleDeleteBot(bot.id)}
                     disabled={deleting}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="h-4 w-4" />
                   </Button>
                 </div>
               </CardContent>
@@ -274,5 +284,5 @@ export function BotManager() {
         </Dialog>
       )}
     </div>
-  );
+  )
 }

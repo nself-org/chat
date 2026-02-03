@@ -13,22 +13,26 @@ Implement user-to-user interaction features including direct messaging shortcuts
 ## Affected Components
 
 ### Direct Messaging
+
 - [ ] `src/app/people/[id]/page.tsx:178` - Open DM from user profile
 - [ ] `src/app/people/page.tsx:210` - Open DM from people list
 - [ ] `src/components/channel/channel-members.tsx:323` - DM from channel members
 
 ### Voice and Video Calls
+
 - [ ] `src/app/people/[id]/page.tsx:184` - Call from user profile
 - [ ] `src/app/people/page.tsx:216` - Call from people list
 - [ ] WebRTC integration
 - [ ] Call UI components
 
 ### User Reporting
+
 - [ ] `src/app/people/[id]/page.tsx:204` - Report user modal
 - [ ] Report submission backend
 - [ ] Admin moderation dashboard
 
 ### Team Invitations
+
 - [ ] `src/app/people/page.tsx:228` - Invite modal
 - [ ] Email invitations
 - [ ] Invite link generation
@@ -39,6 +43,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
 ### Direct Messaging Navigation
 
 1. **Implementation:**
+
    ```typescript
    const openDM = async (userId: string) => {
      // Check if DM already exists
@@ -54,9 +59,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
    query FindDM($userId: uuid!, $currentUserId: uuid!) {
      nchat_direct_messages(
        where: {
-         participants: {
-           user_id: { _in: [$userId, $currentUserId] }
-         }
+         participants: { user_id: { _in: [$userId, $currentUserId] } }
          is_group: { _eq: false }
        }
      ) {
@@ -74,6 +77,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
    - Signaling via Socket.io
 
 2. **Components:**
+
    ```typescript
    // src/components/call/CallModal.tsx
    // src/components/call/VideoCall.tsx
@@ -116,6 +120,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
    - Other (with description)
 
 2. **Report Flow:**
+
    ```typescript
    const reportUser = async (data: ReportData) => {
      await submitReport({
@@ -130,6 +135,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
    ```
 
 3. **GraphQL Mutation:**
+
    ```graphql
    mutation ReportUser(
      $reportedUserId: uuid!
@@ -137,14 +143,16 @@ Implement user-to-user interaction features including direct messaging shortcuts
      $description: String!
      $evidence: [String!]
    ) {
-     insert_nchat_reports_one(object: {
-       reported_user_id: $reportedUserId
-       reporter_id: $currentUserId
-       reason: $reason
-       description: $description
-       evidence: $evidence
-       status: "pending"
-     }) {
+     insert_nchat_reports_one(
+       object: {
+         reported_user_id: $reportedUserId
+         reporter_id: $currentUserId
+         reason: $reason
+         description: $description
+         evidence: $evidence
+         status: "pending"
+       }
+     ) {
        id
      }
    }
@@ -164,6 +172,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
    - QR code for in-person invitations
 
 2. **Invitation Flow:**
+
    ```typescript
    const inviteUser = async (email: string, role: string) => {
      const invitation = await createInvitation({
@@ -182,20 +191,19 @@ Implement user-to-user interaction features including direct messaging shortcuts
    ```
 
 3. **GraphQL Mutations:**
+
    ```graphql
-   mutation CreateInvitation(
-     $email: String!
-     $role: String!
-     $expiresAt: timestamp!
-   ) {
-     insert_nchat_invitations_one(object: {
-       email: $email
-       role: $role
-       token: $token
-       expires_at: $expiresAt
-       invited_by: $currentUserId
-       status: "pending"
-     }) {
+   mutation CreateInvitation($email: String!, $role: String!, $expiresAt: timestamp!) {
+     insert_nchat_invitations_one(
+       object: {
+         email: $email
+         role: $role
+         token: $token
+         expires_at: $expiresAt
+         invited_by: $currentUserId
+         status: "pending"
+       }
+     ) {
        id
        token
      }
@@ -227,6 +235,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
 ## Testing Checklist
 
 ### Direct Messaging
+
 - [ ] Open DM from user profile
 - [ ] Open DM from people list
 - [ ] Open DM from channel members
@@ -234,6 +243,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
 - [ ] Navigate to existing DM if exists
 
 ### Voice/Video Calls
+
 - [ ] Initiate voice call
 - [ ] Initiate video call
 - [ ] Receive incoming call
@@ -245,6 +255,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
 - [ ] Call history tracking
 
 ### User Reporting
+
 - [ ] Submit report with reason
 - [ ] Attach screenshots
 - [ ] Confirmation message
@@ -252,6 +263,7 @@ Implement user-to-user interaction features including direct messaging shortcuts
 - [ ] Admin can action reports
 
 ### Team Invitations
+
 - [ ] Send email invitation
 - [ ] Generate invite link
 - [ ] Generate QR code
@@ -278,4 +290,5 @@ Implement user-to-user interaction features including direct messaging shortcuts
 - QR code library (`qrcode` package)
 
 ## Priority: Medium
+
 Nice-to-have features for v1.1.0. Voice/video calls can be high priority if core requirement.

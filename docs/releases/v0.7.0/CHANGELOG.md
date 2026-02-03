@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 #### AI Message Summarization
+
 - **Thread Summaries** - Automatic TL;DR, key points, action items, and participant lists
 - **Channel Digests** - Daily, weekly, and custom schedule digests with email delivery
 - **Sentiment Analysis** - 8-emotion tracking (joy, sadness, anger, fear, surprise, disgust, neutral, mixed)
@@ -21,11 +22,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Batch Processing** - Process multiple messages efficiently
 
 **Components:**
+
 - `ThreadSummaryPanel.tsx` - Expandable summary panel
 - `ChannelDigestView.tsx` - Multi-tab digest viewer
 - `MessageSummary.tsx` - Inline message summaries
 
 **Libraries:**
+
 - `message-summarizer.ts` - Core summarization engine
 - `thread-summarizer.ts` - Thread-specific logic
 - `channel-digest.ts` - Digest generation
@@ -33,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `meeting-notes.ts` - Meeting extraction
 
 #### Smart Semantic Search
+
 - **Vector Embeddings** - pgvector with 1536-dimensional embeddings
 - **Natural Language Queries** - "Find messages about deadlines from last week"
 - **Advanced Filters** - Date range, user, channel, message type
@@ -42,11 +46,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **HNSW Index** - Hierarchical Navigable Small World for fast similarity search
 
 **Components:**
+
 - `AdvancedSearchBuilder.tsx` - Visual query builder
 - `SearchHistory.tsx` - Recent and saved searches
 - `SearchResultCard.tsx` - Rich result display
 
 **Database:**
+
 - `message_embeddings` - Vector storage with HNSW index
 - `embedding_cache` - Content hash-based caching
 - `embedding_queue` - Background processing queue
@@ -54,6 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `embedding_stats` - Performance metrics
 
 **Libraries:**
+
 - `embedding-service.ts` - Embedding generation
 - `embeddings.ts` - Vector operations
 - `embedding-pipeline.ts` - Automatic processing
@@ -61,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `vector-store.ts` - Database operations
 
 #### Bot Framework & SDK
+
 - **TypeScript SDK** - Complete type-safe bot development framework
 - **5 Pre-Built Templates** - Welcome, FAQ, Poll, Scheduler, Standup bots
 - **Event-Driven Architecture** - Message, join, mention, reaction events
@@ -70,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Analytics** - Usage metrics and performance tracking
 
 **Templates:**
+
 1. **Welcome Bot** - Greet new users with customizable messages
 2. **FAQ Bot** - Answer common questions with keyword matching
 3. **Poll Bot** - Create and manage polls with reaction voting
@@ -77,6 +86,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 5. **Standup Bot** - Coordinate daily standup meetings
 
 **Components:**
+
 - `BotEditor.tsx` - Code editor with syntax highlighting
 - `BotManager.tsx` - Bot management interface
 - `BotTemplateGallery.tsx` - Template browser
@@ -85,6 +95,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `BotLogs.tsx` - Real-time activity logs
 
 **Database:**
+
 - `nchat_bots` - Bot definitions
 - `nchat_bot_versions` - Version history
 - `nchat_bot_state` - Runtime state
@@ -94,10 +105,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `nchat_bot_permissions` - Access control
 
 **Libraries:**
+
 - `bot-sdk.ts` - Core SDK (1,100+ lines)
 - `bot-templates/*` - 5 pre-built templates
 
 #### Auto-Moderation AI
+
 - **Toxicity Detection** - 7 categories via Perspective API (toxicity, severe toxicity, insult, profanity, threat, identity attack, sexually explicit)
 - **ML-Based Spam Detection** - Pattern recognition and heuristic analysis
 - **Content Classification** - Automatic categorization of content types
@@ -107,12 +120,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Appeal System** - User appeals with admin review
 
 **Components:**
+
 - `ModerationQueue.tsx` - Admin moderation interface
 - `ModerationSettings.tsx` - Configuration panel
 - `ModerationDashboard.tsx` - Analytics and metrics
 - `ModerationAppeal.tsx` - Appeal management
 
 **Libraries:**
+
 - `ai-moderator.ts` - Main moderation engine
 - `toxicity-detector.ts` - Toxicity analysis
 - `spam-detector-ml.ts` - Spam detection
@@ -120,9 +135,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `actions.ts` - Automated actions
 
 **Database:**
+
 - Extends existing moderation tables with AI metadata
 
 #### AI Infrastructure
+
 - **Rate Limiting** - Token bucket algorithm with per-user limits
 - **Cost Tracking** - Real-time budget monitoring with alerts
 - **Request Queuing** - 5 priority levels (critical, high, normal, low, background)
@@ -132,11 +149,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Health Monitoring** - Provider health checks
 
 **Components:**
+
 - `AIUsageDashboard.tsx` - Admin cost tracking
 - `AIProviderStatus.tsx` - Provider health status
 - `AIBudgetAlerts.tsx` - Budget alert configuration
 
 **Libraries:**
+
 - `rate-limiter.ts` - Rate limiting logic
 - `cost-tracker.ts` - Cost monitoring
 - `request-queue.ts` - Queue management
@@ -144,6 +163,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `providers/*` - Multi-provider support
 
 #### Search UI
+
 - **Command Palette** - Cmd+K quick search access
 - **Visual Query Builder** - No-code filter creation
 - **Search History** - Recent and saved searches
@@ -152,12 +172,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Share Searches** - Share search queries with team
 
 **Features:**
+
 - Real-time suggestions
 - Keyboard shortcuts
 - Mobile-optimized
 - Accessibility compliant
 
 #### API Routes (20+ New)
+
 - `/api/ai/summarize` - Generate message summaries
 - `/api/ai/sentiment` - Analyze sentiment
 - `/api/ai/digest` - Create channel digests
@@ -177,6 +199,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ⚡ Changed
 
 #### Performance
+
 - **Semantic Search** - <50ms p95 latency (2x faster than target)
 - **Embedding Cache** - 70-90% hit rate (exceeds 60% target)
 - **Moderation** - <500ms average (2x faster than target)
@@ -184,12 +207,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Background Processing** - <2min queue lag
 
 #### User Experience
+
 - **Search Interface** - Modern command palette with Cmd+K
 - **Bot Management** - Visual editor with templates
 - **Moderation Queue** - Streamlined admin interface
 - **AI Settings** - Centralized configuration panel
 
 #### Infrastructure
+
 - **Database** - 3 new migrations for AI features
 - **Workers** - 3 background workers for async processing
 - **Caching** - Multi-layer caching strategy
@@ -198,6 +223,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🔒 Security
 
 #### Enhancements
+
 - **Content Hash Caching** - Privacy-safe deduplication
 - **User Opt-Out System** - AI feature preferences
 - **Audit Logging** - All moderation actions logged
@@ -217,29 +243,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 📚 Documentation (15+ Pages)
 
 #### User Guides
+
 - **AI Features Complete** - 755-line comprehensive guide
 - **Smart Search Guide** - 1,000+ line search documentation
 - **Auto-Moderation Guide** - 1,840-line moderation documentation
 - **Bot Templates Guide** - 1,848-line template documentation
 
 #### Developer Docs
+
 - **Bot SDK Reference** - 1,100+ line complete SDK documentation
 - **AI API Documentation** - 1,421-line API reference
 - **Vector Search Setup** - Database and infrastructure setup
 - **Vector Search Implementation** - Technical implementation guide
 
 #### Admin Guides
+
 - **AI Administration** - 868-line admin guide
 - **Bot Management UI** - Complete UI documentation
 - **Embedding Monitor** - Monitoring and maintenance
 
 #### Support
+
 - **AI Troubleshooting** - 1,954-line troubleshooting guide
 - **E2E Test Suite** - Comprehensive testing guide
 
 ### 🧪 Testing (285+ Tests)
 
 #### Unit Tests (230+ tests)
+
 - AI Summarization: 60+ tests, 100% coverage
 - Smart Search: 50+ tests, 100% coverage
 - Bot Framework: 78+ tests
@@ -247,23 +278,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AI Infrastructure: 114+ tests
 
 #### Integration Tests (108 tests)
+
 - AI Routes: 37 tests
 - Bot Routes: 33 tests
 - Moderation Routes: 38 tests
 
 #### Component Tests (99 tests)
+
 - MessageSummary: 18 tests
 - SmartSearch: 24 tests
 - BotManager: 29 tests
 - ModerationQueue: 28 tests
 
 #### E2E Tests (72+ tests)
+
 - AI Summarization: 31+ tests
 - Semantic Search: 41+ tests
 - Bot Management: Complete suite
 - Moderation Workflow: Complete suite
 
 **Test Files:**
+
 - `src/lib/ai/__tests__/*.test.ts` - AI unit tests
 - `src/app/api/__tests__/*.test.ts` - API integration tests
 - `src/components/__tests__/*.test.tsx` - Component tests
@@ -272,6 +307,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 📦 Dependencies
 
 #### Added
+
 - `@axe-core/playwright@^4.x.x` - Accessibility testing
 
 **Note:** AI provider SDKs already included from v0.6.0
@@ -302,6 +338,7 @@ PERSPECTIVE_API_KEY=...
 ```
 
 **Important:** All AI API keys are **optional**. Features degrade gracefully when not configured:
+
 - Summarization → Manual summaries only
 - Semantic Search → Keyword search fallback
 - Auto-Moderation → Manual moderation only
@@ -334,12 +371,12 @@ pm2 start ecosystem.workers.config.js
 
 ### Monthly Costs (10k active users/day)
 
-| Feature | Without Caching | With Caching | Reduction |
-|---------|-----------------|--------------|-----------|
-| Summarization | $60/mo | $18/mo | 70% |
-| Search Embeddings | $150/mo | $15/mo | 90% |
-| Moderation | $300/mo | $90/mo | 70% |
-| **Total** | **$510/mo** | **$123/mo** | **76%** |
+| Feature           | Without Caching | With Caching | Reduction |
+| ----------------- | --------------- | ------------ | --------- |
+| Summarization     | $60/mo          | $18/mo       | 70%       |
+| Search Embeddings | $150/mo         | $15/mo       | 90%       |
+| Moderation        | $300/mo         | $90/mo       | 70%       |
+| **Total**         | **$510/mo**     | **$123/mo**  | **76%**   |
 
 ### Free Tier Strategy
 
@@ -382,30 +419,32 @@ See [Upgrade Guide](UPGRADE-GUIDE.md) for platform-specific instructions.
 
 ## Feature Comparison
 
-| Feature | v0.6.0 | v0.7.0 |
-|---------|--------|--------|
-| AI Summarization | ❌ | ✅ |
-| Semantic Search | ❌ | ✅ |
-| Bot Framework | ❌ | ✅ |
-| Auto-Moderation AI | ❌ | ✅ |
-| Voice Messages | ✅ | ✅ |
-| Video Conferencing | ✅ | ✅ |
-| Integrations | ✅ | ✅ |
-| Search | Basic | Advanced |
-| Moderation | Manual | AI-Powered |
-| Bots | None | 5 Templates + SDK |
+| Feature            | v0.6.0 | v0.7.0            |
+| ------------------ | ------ | ----------------- |
+| AI Summarization   | ❌     | ✅                |
+| Semantic Search    | ❌     | ✅                |
+| Bot Framework      | ❌     | ✅                |
+| Auto-Moderation AI | ❌     | ✅                |
+| Voice Messages     | ✅     | ✅                |
+| Video Conferencing | ✅     | ✅                |
+| Integrations       | ✅     | ✅                |
+| Search             | Basic  | Advanced          |
+| Moderation         | Manual | AI-Powered        |
+| Bots               | None   | 5 Templates + SDK |
 
 ---
 
 ## Credits
 
 **Development Team:**
+
 - 12 parallel AI agents
 - Testing specialists
 - Documentation team
 - Performance engineers
 
 **Special Thanks:**
+
 - OpenAI team
 - Google Jigsaw (Perspective API)
 - pgvector contributors

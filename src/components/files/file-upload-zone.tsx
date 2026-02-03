@@ -186,14 +186,8 @@ export function FileUploadZone({
     noKeyboard: variant === 'inline',
   }
 
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject,
-    open,
-  } = useDropzone(dropzoneOptions)
+  const { getRootProps, getInputProps, isDragActive, isDragAccept, isDragReject, open } =
+    useDropzone(dropzoneOptions)
 
   // Render placeholder based on variant
   const renderPlaceholder = () => {
@@ -229,9 +223,7 @@ export function FileUploadZone({
               <Upload className="h-8 w-8 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">
                 Drag & drop or{' '}
-                <span className="text-primary hover:underline cursor-pointer">
-                  browse
-                </span>
+                <span className="cursor-pointer text-primary hover:underline">browse</span>
               </p>
             </>
           )}
@@ -244,14 +236,12 @@ export function FileUploadZone({
       <div className="flex flex-col items-center gap-4 py-8 text-center">
         {isDragActive ? (
           <>
-            <div className="rounded-full bg-primary/10 p-4">
+            <div className="bg-primary/10 rounded-full p-4">
               <FileUp className="h-10 w-10 text-primary" />
             </div>
             <div>
               <p className="text-lg font-medium">Drop files here</p>
-              <p className="text-sm text-muted-foreground">
-                Release to upload your files
-              </p>
+              <p className="text-sm text-muted-foreground">Release to upload your files</p>
             </div>
           </>
         ) : (
@@ -260,15 +250,10 @@ export function FileUploadZone({
               <Upload className="h-10 w-10 text-muted-foreground" />
             </div>
             <div>
-              <p className="text-lg font-medium">
-                Drag & drop files here
-              </p>
+              <p className="text-lg font-medium">Drag & drop files here</p>
               <p className="text-sm text-muted-foreground">
-                or{' '}
-                <span className="text-primary hover:underline cursor-pointer">
-                  browse
-                </span>{' '}
-                to upload
+                or <span className="cursor-pointer text-primary hover:underline">browse</span> to
+                upload
               </p>
             </div>
 
@@ -322,20 +307,16 @@ export function FileUploadZone({
       <div
         {...getRootProps()}
         onPaste={onPaste}
-        className={cn(
-          'relative',
-          isDragActive && 'ring-2 ring-primary ring-offset-2',
-          className
-        )}
+        className={cn('relative', isDragActive && 'ring-2 ring-primary ring-offset-2', className)}
       >
         <input {...getInputProps()} />
         {children}
 
         {/* Drag overlay */}
         {isDragActive && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center rounded-lg bg-background/90 backdrop-blur-sm">
+          <div className="bg-background/90 absolute inset-0 z-50 flex items-center justify-center rounded-lg backdrop-blur-sm">
             <div className="flex flex-col items-center gap-2">
-              <FileUp className="h-8 w-8 text-primary animate-bounce" />
+              <FileUp className="h-8 w-8 animate-bounce text-primary" />
               <p className="font-medium">Drop files to upload</p>
             </div>
           </div>
@@ -364,8 +345,8 @@ export function FileUploadZone({
       {/* Error message */}
       {error && (
         <div className="mt-2 flex items-start gap-2 text-destructive">
-          <AlertCircle className="h-4 w-4 flex-shrink-0 mt-0.5" />
-          <p className="text-sm whitespace-pre-line">{error}</p>
+          <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+          <p className="whitespace-pre-line text-sm">{error}</p>
         </div>
       )}
     </div>
@@ -375,9 +356,7 @@ export function FileUploadZone({
 /**
  * useFileUploadZone - Hook for programmatic access to dropzone
  */
-export function useFileUploadZone(
-  options: Omit<FileUploadZoneProps, 'className' | 'children'>
-) {
+export function useFileUploadZone(options: Omit<FileUploadZoneProps, 'className' | 'children'>) {
   const {
     onFilesAccepted,
     onFilesRejected,

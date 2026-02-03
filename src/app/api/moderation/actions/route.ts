@@ -10,6 +10,8 @@ import { ModerationQueue } from '@/lib/moderation/moderation-queue'
 import { ModerationActions } from '@/lib/moderation/actions'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -30,10 +32,7 @@ export async function POST(request: NextRequest) {
     } = body
 
     if (!action) {
-      return NextResponse.json(
-        { error: 'Action is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Action is required' }, { status: 400 })
     }
 
     const apolloClient = getApolloClient()
@@ -142,12 +141,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        result = await actions.muteUser(
-          targetUserId,
-          moderatorId,
-          reason || 'User muted',
-          duration
-        )
+        result = await actions.muteUser(targetUserId, moderatorId, reason || 'User muted', duration)
         break
 
       case 'unmute':
@@ -157,11 +151,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        result = await actions.unmuteUser(
-          targetUserId,
-          moderatorId,
-          reason || 'User unmuted'
-        )
+        result = await actions.unmuteUser(targetUserId, moderatorId, reason || 'User unmuted')
         break
 
       case 'ban':
@@ -171,12 +161,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        result = await actions.banUser(
-          targetUserId,
-          moderatorId,
-          reason || 'User banned',
-          duration
-        )
+        result = await actions.banUser(targetUserId, moderatorId, reason || 'User banned', duration)
         break
 
       case 'unban':
@@ -186,11 +171,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           )
         }
-        result = await actions.unbanUser(
-          targetUserId,
-          moderatorId,
-          reason || 'User unbanned'
-        )
+        result = await actions.unbanUser(targetUserId, moderatorId, reason || 'User unbanned')
         break
 
       case 'approve':
@@ -229,10 +210,7 @@ export async function POST(request: NextRequest) {
         break
 
       default:
-        return NextResponse.json(
-          { error: `Invalid action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Invalid action: ${action}` }, { status: 400 })
     }
 
     return NextResponse.json({
@@ -243,7 +221,7 @@ export async function POST(request: NextRequest) {
       error: result.error,
     })
   } catch (error) {
-    console.error('Moderation action error:', error)
+    logger.error('Moderation action error:', error)
     captureError(error as Error, {
       tags: { feature: 'moderation', endpoint: 'actions', version: 'v0.7.0' },
     })
@@ -274,7 +252,7 @@ export async function GET(request: NextRequest) {
       count: auditLog.length,
     })
   } catch (error) {
-    console.error('Get audit log error:', error)
+    logger.error('Get audit log error:', error)
     return NextResponse.json(
       {
         error: 'Failed to get audit log',

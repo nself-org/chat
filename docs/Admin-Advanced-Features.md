@@ -42,6 +42,7 @@ Perform operations on multiple users, channels, or messages at once with progres
 Invite multiple users via email addresses.
 
 **Features**:
+
 - Parse email lists (newline, comma, or semicolon separated)
 - Email validation
 - Custom welcome messages
@@ -49,6 +50,7 @@ Invite multiple users via email addresses.
 - Progress tracking
 
 **Usage**:
+
 ```typescript
 // Navigate to: /admin/advanced?tab=bulk-users
 // Select "Invite" tab
@@ -63,6 +65,7 @@ david@example.com; eve@example.com
 ```
 
 **CSV Import Format**:
+
 ```csv
 email,role,displayName
 alice@example.com,member,Alice Johnson
@@ -74,12 +77,14 @@ bob@example.com,moderator,Bob Smith
 Temporarily or permanently suspend user accounts.
 
 **Features**:
+
 - Suspension reason (required)
 - Duration options: 7 days, 30 days, 90 days, permanent
 - User notifications
 - Batch processing
 
 **Usage**:
+
 1. Select users from the user management table
 2. Navigate to "Suspend" tab
 3. Enter suspension reason
@@ -91,6 +96,7 @@ Temporarily or permanently suspend user accounts.
 Permanently delete user accounts.
 
 **Features**:
+
 - Confirmation required (type "DELETE")
 - Option to delete associated messages
 - Ownership transfer for channels
@@ -103,6 +109,7 @@ Permanently delete user accounts.
 Assign roles to multiple users simultaneously.
 
 **Features**:
+
 - Role selection from available roles
 - Optional user notifications
 - Immediate permission updates
@@ -114,6 +121,7 @@ Assign roles to multiple users simultaneously.
 Archive multiple channels to keep them readonly.
 
 **Features**:
+
 - Optional archive reason
 - Member notifications
 - Preserves message history
@@ -123,6 +131,7 @@ Archive multiple channels to keep them readonly.
 Permanently delete multiple channels.
 
 **Features**:
+
 - Confirmation required (type "DELETE")
 - Optional message archiving before deletion
 - Member notifications
@@ -133,6 +142,7 @@ Permanently delete multiple channels.
 Transfer channel ownership to another user.
 
 **Features**:
+
 - Specify new owner by ID or email
 - Notifications to old and new owners
 - Maintains channel settings
@@ -142,6 +152,7 @@ Transfer channel ownership to another user.
 Change privacy settings for multiple channels.
 
 **Features**:
+
 - Make public or private
 - Instant permission updates
 - Member list preserved
@@ -149,6 +160,7 @@ Change privacy settings for multiple channels.
 ### CSV Export/Import
 
 #### Export Users
+
 ```csv
 id,username,displayName,email,role,isActive,isBanned,createdAt,messagesCount,channelsCount
 user-123,alice,Alice Johnson,alice@example.com,member,true,false,2024-01-15T10:00:00Z,450,12
@@ -156,6 +168,7 @@ user-456,bob,Bob Smith,bob@example.com,moderator,true,false,2024-01-10T09:00:00Z
 ```
 
 #### Export Channels
+
 ```csv
 id,name,slug,description,type,isPrivate,isArchived,createdAt,membersCount,messagesCount
 ch-123,general,general,General discussion,public,false,false,2024-01-01T00:00:00Z,156,4521
@@ -171,6 +184,7 @@ Schedule and automate administrative tasks with rule-based triggers and actions.
 ### Rule Components
 
 Every automation rule has:
+
 1. **Trigger**: When the rule should run
 2. **Action**: What the rule should do
 3. **Conditions** (optional): Filter criteria
@@ -179,21 +193,25 @@ Every automation rule has:
 ### Trigger Types
 
 #### 1. Schedule Trigger
+
 Run on a cron schedule.
 
 **Examples**:
+
 - `0 0 * * *` - Daily at midnight
 - `0 0 * * 0` - Weekly on Sunday at midnight
 - `0 2 * * *` - Daily at 2 AM
 - `0 9 * * 1` - Monday at 9 AM
 
 #### 2. Event Triggers
+
 - `user.created` - New user account created
 - `user.login` - User logs in
 - `channel.created` - New channel created
 - `message.created` - New message posted
 
 #### 3. Time-based Triggers
+
 - `channel.inactive` - Channel inactive for X days
 - `message.old` - Message older than X days
 - `user.inactive` - User inactive for X days
@@ -201,10 +219,12 @@ Run on a cron schedule.
 ### Action Types
 
 #### 1. Channel Actions
+
 - `channel.archive` - Archive inactive channels
 - `channel.delete` - Delete channels
 
 **Example Configuration**:
+
 ```typescript
 {
   trigger: 'schedule',
@@ -223,9 +243,11 @@ Run on a cron schedule.
 ```
 
 #### 2. Message Actions
+
 - `message.delete` - Delete old messages
 
 **Example - Retention Policy**:
+
 ```typescript
 {
   trigger: 'schedule',
@@ -244,11 +266,13 @@ Run on a cron schedule.
 ```
 
 #### 3. User Actions
+
 - `user.assign_role` - Auto-assign roles
 - `user.send_email` - Send automated emails
 - `user.suspend` - Suspend inactive accounts
 
 **Example - Welcome Email**:
+
 ```typescript
 {
   trigger: 'user.created',
@@ -264,9 +288,11 @@ Run on a cron schedule.
 ```
 
 #### 4. Report Actions
+
 - `report.generate` - Generate and send reports
 
 **Example - Weekly Report**:
+
 ```typescript
 {
   trigger: 'schedule',
@@ -299,6 +325,7 @@ Pre-configured templates for common automation scenarios:
 ### Managing Rules
 
 #### Create Rule
+
 1. Navigate to `/admin/advanced?tab=automation`
 2. Click "Create Rule"
 3. Choose from template or create custom
@@ -307,11 +334,13 @@ Pre-configured templates for common automation scenarios:
 6. Save and activate
 
 #### Edit Rule
+
 1. Click "Edit" icon on rule row
 2. Modify configuration
 3. Save changes
 
 #### Control Rules
+
 - **Play**: Activate rule
 - **Pause**: Temporarily disable
 - **Run Now**: Execute immediately (manual trigger)
@@ -321,6 +350,7 @@ Pre-configured templates for common automation scenarios:
 ### Execution History
 
 View detailed execution logs:
+
 - Start/completion times
 - Items processed
 - Success/failure counts
@@ -335,22 +365,26 @@ Real-time monitoring of system resources and service health.
 ### Resource Monitoring
 
 #### CPU Usage
+
 - Current usage percentage
 - Core count
 - Load average (1m, 5m, 15m)
 - Historical trends (20-minute chart)
 
 #### Memory Usage
+
 - Total/used/free memory
 - Usage percentage
 - Memory trends over time
 
 #### Disk Usage
+
 - Total/used/free storage
 - Usage percentage
 - Storage status (Healthy/Warning/Critical)
 
 **Status Thresholds**:
+
 - Healthy: < 50%
 - Moderate: 50-75%
 - Warning: 75-90%
@@ -359,6 +393,7 @@ Real-time monitoring of system resources and service health.
 ### Service Health
 
 Monitor backend services:
+
 - PostgreSQL (database)
 - Hasura GraphQL (API)
 - Auth Service (authentication)
@@ -367,6 +402,7 @@ Monitor backend services:
 - MeiliSearch (search)
 
 **Metrics per Service**:
+
 - Status: Healthy/Degraded/Down
 - Uptime duration
 - Response time
@@ -375,6 +411,7 @@ Monitor backend services:
 ### Database Performance
 
 PostgreSQL-specific metrics:
+
 - Active connections
 - Queries per second
 - Average query time
@@ -400,6 +437,7 @@ Comprehensive audit trail with advanced search, filtering, and export capabiliti
 ### Event Types
 
 #### User Events
+
 - `user.created` - User account created
 - `user.updated` - Profile updated
 - `user.deleted` - Account deleted
@@ -409,18 +447,21 @@ Comprehensive audit trail with advanced search, filtering, and export capabiliti
 - `user.role_changed` - Role modified
 
 #### Channel Events
+
 - `channel.created` - Channel created
 - `channel.updated` - Settings updated
 - `channel.deleted` - Channel deleted
 - `channel.archived` - Channel archived
 
 #### Message Events
+
 - `message.created` - Message posted
 - `message.updated` - Message edited
 - `message.deleted` - Message deleted
 - `message.flagged` - Message flagged
 
 #### System Events
+
 - `settings.updated` - System settings changed
 - `automation.created` - Automation rule created
 - `automation.executed` - Automation run
@@ -437,12 +478,15 @@ Comprehensive audit trail with advanced search, filtering, and export capabiliti
 ### Advanced Filtering
 
 #### Search
+
 Free-text search across:
+
 - Event descriptions
 - Actor names
 - Event types
 
 #### Filters
+
 - **Event Type**: Filter by category (user, channel, message, settings, automation)
 - **Severity**: Filter by info, warning, error, critical
 - **Actor**: Filter by specific user
@@ -451,6 +495,7 @@ Free-text search across:
 ### Event Details
 
 Click "View" icon to see complete event details:
+
 - Full description
 - Actor information (name, username, email)
 - Target entity (if applicable)
@@ -461,12 +506,14 @@ Click "View" icon to see complete event details:
 ### Export Options
 
 #### CSV Export
+
 ```csv
 timestamp,type,severity,actor,action,description,ipAddress
 2024-01-29T14:30:00Z,user.created,info,Alice Johnson,created,Created new user account,192.168.1.10
 ```
 
 #### JSON Export
+
 ```json
 [
   {
@@ -490,6 +537,7 @@ timestamp,type,severity,actor,action,description,ipAddress
 ### Retention Policies
 
 Configure audit log retention:
+
 - Automatic cleanup of old logs
 - Configurable retention periods
 - Export before deletion option
@@ -503,6 +551,7 @@ Configure audit log retention:
 **Endpoint**: `POST /api/admin/bulk-operations`
 
 **Request Body**:
+
 ```typescript
 {
   type: BulkOperationType,
@@ -511,6 +560,7 @@ Configure audit log retention:
 ```
 
 **Response**:
+
 ```typescript
 {
   success: boolean,
@@ -525,6 +575,7 @@ Configure audit log retention:
 ```
 
 #### Example: Bulk User Invite
+
 ```typescript
 POST /api/admin/bulk-operations
 
@@ -548,6 +599,7 @@ Response:
 ```
 
 #### Example: Bulk Channel Archive
+
 ```typescript
 POST /api/admin/bulk-operations
 
@@ -629,6 +681,7 @@ Response:
 **Symptoms**: Operation shows as "running" but no progress
 
 **Solutions**:
+
 1. Check network connection
 2. Refresh the page
 3. Check browser console for errors
@@ -639,6 +692,7 @@ Response:
 **Symptoms**: Scheduled rule not executing
 
 **Solutions**:
+
 1. Verify rule status is "active"
 2. Check cron expression syntax
 3. Review execution history for errors
@@ -649,6 +703,7 @@ Response:
 **Symptoms**: CPU/Memory/Disk usage in critical range
 
 **Solutions**:
+
 1. Check recent bulk operations
 2. Review automation schedules
 3. Investigate database queries
@@ -659,6 +714,7 @@ Response:
 **Symptoms**: Expected events not appearing in logs
 
 **Solutions**:
+
 1. Check date range filter
 2. Verify severity filter settings
 3. Try clearing all filters
@@ -669,6 +725,7 @@ Response:
 ## Support
 
 For issues or questions:
+
 - Documentation: `/docs`
 - Admin Dashboard: `/admin/advanced`
 - System Health: `/admin/advanced?tab=monitoring`

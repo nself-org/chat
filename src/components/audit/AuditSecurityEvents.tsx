@@ -174,10 +174,7 @@ export function AuditSecurityEvents({
   const [timeRange, setTimeRange] = useState<'today' | 'week' | 'month' | 'all'>('week')
 
   // Filter to security events only
-  const securityEntries = useMemo(
-    () => entries.filter((e) => e.category === 'security'),
-    [entries]
-  )
+  const securityEntries = useMemo(() => entries.filter((e) => e.category === 'security'), [entries])
 
   const filteredEntries = useMemo(() => {
     let result = securityEntries
@@ -230,16 +227,14 @@ export function AuditSecurityEvents({
             <Shield className="h-5 w-5" />
             Security Overview
           </CardTitle>
-          <CardDescription>
-            Monitor security-related events and potential threats
-          </CardDescription>
+          <CardDescription>Monitor security-related events and potential threats</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center p-4 rounded-lg bg-muted/50">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+            <div className="bg-muted/50 rounded-lg p-4 text-center">
               <p className="text-3xl font-bold">{summary.totalEvents}</p>
               <p className="text-sm text-muted-foreground">Total Events</p>
-              <div className="flex items-center justify-center gap-1 mt-1">
+              <div className="mt-1 flex items-center justify-center gap-1">
                 <TrendIcon
                   className={cn(
                     'h-4 w-4',
@@ -247,23 +242,27 @@ export function AuditSecurityEvents({
                   )}
                 />
                 <span className="text-xs text-muted-foreground">
-                  {summary.eventTrend === 'up' ? 'Increasing' : summary.eventTrend === 'down' ? 'Decreasing' : 'Stable'}
+                  {summary.eventTrend === 'up'
+                    ? 'Increasing'
+                    : summary.eventTrend === 'down'
+                      ? 'Decreasing'
+                      : 'Stable'}
                 </span>
               </div>
             </div>
-            <div className="text-center p-4 rounded-lg bg-red-50 dark:bg-red-900/20">
+            <div className="rounded-lg bg-red-50 p-4 text-center dark:bg-red-900/20">
               <p className="text-3xl font-bold text-red-600 dark:text-red-400">
                 {summary.criticalEvents}
               </p>
               <p className="text-sm text-muted-foreground">Critical</p>
             </div>
-            <div className="text-center p-4 rounded-lg bg-orange-50 dark:bg-orange-900/20">
+            <div className="rounded-lg bg-orange-50 p-4 text-center dark:bg-orange-900/20">
               <p className="text-3xl font-bold text-orange-600 dark:text-orange-400">
                 {summary.errorEvents}
               </p>
               <p className="text-sm text-muted-foreground">Errors</p>
             </div>
-            <div className="text-center p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/20">
+            <div className="rounded-lg bg-yellow-50 p-4 text-center dark:bg-yellow-900/20">
               <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">
                 {summary.warningEvents}
               </p>
@@ -274,10 +273,10 @@ export function AuditSecurityEvents({
       </Card>
 
       {/* Threat Indicators */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <XCircle className="h-4 w-4 text-red-500" />
               <span className="text-sm text-muted-foreground">Failed Logins</span>
             </div>
@@ -286,7 +285,7 @@ export function AuditSecurityEvents({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <AlertOctagon className="h-4 w-4 text-red-500" />
               <span className="text-sm text-muted-foreground">Suspicious</span>
             </div>
@@ -295,7 +294,7 @@ export function AuditSecurityEvents({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <Key className="h-4 w-4 text-blue-500" />
               <span className="text-sm text-muted-foreground">API Key Ops</span>
             </div>
@@ -304,7 +303,7 @@ export function AuditSecurityEvents({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <Lock className="h-4 w-4 text-purple-500" />
               <span className="text-sm text-muted-foreground">MFA Changes</span>
             </div>
@@ -313,7 +312,7 @@ export function AuditSecurityEvents({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <Globe className="h-4 w-4 text-orange-500" />
               <span className="text-sm text-muted-foreground">IP Blocks</span>
             </div>
@@ -322,7 +321,7 @@ export function AuditSecurityEvents({
         </Card>
         <Card>
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="mb-2 flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-yellow-500" />
               <span className="text-sm text-muted-foreground">Rate Limited</span>
             </div>
@@ -335,7 +334,7 @@ export function AuditSecurityEvents({
       {summary.threatsByIP.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base">
               <Globe className="h-4 w-4" />
               IPs with Multiple Events
             </CardTitle>
@@ -343,13 +342,9 @@ export function AuditSecurityEvents({
           <CardContent>
             <div className="flex flex-wrap gap-2">
               {summary.threatsByIP.map((item) => (
-                <Badge
-                  key={item.ip}
-                  variant="outline"
-                  className="font-mono text-sm py-1 px-3"
-                >
+                <Badge key={item.ip} variant="outline" className="px-3 py-1 font-mono text-sm">
                   {item.ip}
-                  <span className="ml-2 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 px-1.5 py-0.5 rounded text-xs">
+                  <span className="ml-2 rounded bg-red-100 px-1.5 py-0.5 text-xs text-red-700 dark:bg-red-900 dark:text-red-300">
                     {item.count}
                   </span>
                 </Badge>
@@ -395,10 +390,7 @@ export function AuditSecurityEvents({
             </SelectContent>
           </Select>
 
-          <Select
-            value={timeRange}
-            onValueChange={(v) => setTimeRange(v as typeof timeRange)}
-          >
+          <Select value={timeRange} onValueChange={(v) => setTimeRange(v as typeof timeRange)}>
             <SelectTrigger className="w-[130px]">
               <SelectValue placeholder="Time range" />
             </SelectTrigger>
@@ -433,7 +425,7 @@ export function AuditSecurityEvents({
       {filteredEntries.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            <Shield className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <Shield className="mx-auto mb-2 h-8 w-8 opacity-50" />
             <p>No security events found for the selected filters</p>
           </CardContent>
         </Card>
@@ -445,13 +437,9 @@ export function AuditSecurityEvents({
           maxHeight="500px"
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {filteredEntries.map((entry) => (
-            <AuditEventCard
-              key={entry.id}
-              entry={entry}
-              onClick={() => onEntryClick?.(entry)}
-            />
+            <AuditEventCard key={entry.id} entry={entry} onClick={() => onEntryClick?.(entry)} />
           ))}
         </div>
       )}

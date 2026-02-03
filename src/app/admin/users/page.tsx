@@ -162,9 +162,7 @@ export default function UsersManagementPage() {
     // In production, this would call an API
     setUsers((prev) =>
       prev.map((u) =>
-        u.id === data.userId
-          ? { ...u, status: u.status === 'banned' ? 'active' : 'banned' }
-          : u
+        u.id === data.userId ? { ...u, status: u.status === 'banned' ? 'active' : 'banned' } : u
       )
     )
   }
@@ -172,9 +170,7 @@ export default function UsersManagementPage() {
   const handleConfirmRoleChange = async () => {
     if (!selectedUser) return
     // In production, this would call an API
-    setUsers((prev) =>
-      prev.map((u) => (u.id === selectedUser.id ? { ...u, role: newRole } : u))
-    )
+    setUsers((prev) => prev.map((u) => (u.id === selectedUser.id ? { ...u, role: newRole } : u)))
     setRoleDialogOpen(false)
     setSelectedUser(null)
   }
@@ -209,9 +205,7 @@ export default function UsersManagementPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Users</h1>
-            <p className="text-muted-foreground">
-              Manage user accounts, roles, and permissions
-            </p>
+            <p className="text-muted-foreground">Manage user accounts, roles, and permissions</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">
@@ -251,8 +245,8 @@ export default function UsersManagementPage() {
             <DialogHeader>
               <DialogTitle>Change User Role</DialogTitle>
               <DialogDescription>
-                Update the role for {selectedUser?.displayName}. This will change
-                their permissions immediately.
+                Update the role for {selectedUser?.displayName}. This will change their permissions
+                immediately.
               </DialogDescription>
             </DialogHeader>
             <div className="py-4">
@@ -277,16 +271,15 @@ export default function UsersManagementPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete User</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete {selectedUser?.displayName}? This
-                action cannot be undone. All their messages will remain but will
-                show as from a deleted user.
+                Are you sure you want to delete {selectedUser?.displayName}? This action cannot be
+                undone. All their messages will remain but will show as from a deleted user.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleConfirmDelete}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               >
                 Delete User
               </AlertDialogAction>

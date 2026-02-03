@@ -80,11 +80,7 @@ export function RestoreVersion({
     <>
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            className={cn('gap-2', className)}
-          >
+          <Button variant="outline" size="sm" className={cn('gap-2', className)}>
             <RotateCcw className="h-4 w-4" />
             Restore
           </Button>
@@ -96,9 +92,8 @@ export function RestoreVersion({
               Restore to Version {version.versionNumber}
             </DialogTitle>
             <DialogDescription>
-              This will create a new version of the message with the content from
-              version {version.versionNumber}. The current content will be preserved
-              in the edit history.
+              This will create a new version of the message with the content from version{' '}
+              {version.versionNumber}. The current content will be preserved in the edit history.
             </DialogDescription>
           </DialogHeader>
 
@@ -114,7 +109,7 @@ export function RestoreVersion({
                   {formatMessageTime(version.createdAt)}
                 </span>
               </div>
-              <div className="rounded-md bg-muted/50 p-3">
+              <div className="bg-muted/50 rounded-md p-3">
                 <pre className="max-h-[200px] overflow-auto whitespace-pre-wrap font-mono text-sm">
                   {version.content}
                 </pre>
@@ -128,11 +123,9 @@ export function RestoreVersion({
             <div className="rounded-md border p-4">
               <div className="mb-2 flex items-center justify-between">
                 <span className="font-medium">Current Version</span>
-                <span className="text-sm text-muted-foreground">
-                  Will be replaced
-                </span>
+                <span className="text-sm text-muted-foreground">Will be replaced</span>
               </div>
-              <div className="rounded-md bg-muted/50 p-3">
+              <div className="bg-muted/50 rounded-md p-3">
                 <pre className="max-h-[100px] overflow-auto whitespace-pre-wrap font-mono text-sm">
                   {history.currentContent}
                 </pre>
@@ -154,8 +147,8 @@ export function RestoreVersion({
             <Alert>
               <AlertTriangle className="h-4 w-4" />
               <AlertDescription>
-                This action will be logged in the audit trail. The message author
-                and other users will see the restored content.
+                This action will be logged in the audit trail. The message author and other users
+                will see the restored content.
               </AlertDescription>
             </Alert>
           </div>
@@ -164,9 +157,7 @@ export function RestoreVersion({
             <Button variant="outline" onClick={() => setIsOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={() => setShowConfirm(true)}>
-              Continue
-            </Button>
+            <Button onClick={() => setShowConfirm(true)}>Continue</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -177,9 +168,8 @@ export function RestoreVersion({
           <AlertDialogHeader>
             <AlertDialogTitle>Confirm Restore</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to restore this message to version{' '}
-              {version.versionNumber}? This action cannot be undone but will be
-              recorded in the edit history.
+              Are you sure you want to restore this message to version {version.versionNumber}? This
+              action cannot be undone but will be recorded in the edit history.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -242,11 +232,7 @@ export function RestoreButton({
       disabled={disabled || isLoading}
       className={cn('gap-1', className)}
     >
-      {isLoading ? (
-        <Loader2 className="h-3 w-3 animate-spin" />
-      ) : (
-        <RotateCcw className="h-3 w-3" />
-      )}
+      {isLoading ? <Loader2 className="h-3 w-3 animate-spin" /> : <RotateCcw className="h-3 w-3" />}
       <span>Restore</span>
     </Button>
   )
@@ -264,11 +250,7 @@ export interface RestoreSuccessProps {
   className?: string
 }
 
-export function RestoreSuccess({
-  versionNumber,
-  restoredAt,
-  className,
-}: RestoreSuccessProps) {
+export function RestoreSuccess({ versionNumber, restoredAt, className }: RestoreSuccessProps) {
   return (
     <div
       className={cn(
@@ -278,8 +260,7 @@ export function RestoreSuccess({
     >
       <Check className="h-4 w-4" />
       <span>
-        Successfully restored to version {versionNumber} at{' '}
-        {formatMessageTime(restoredAt)}
+        Successfully restored to version {versionNumber} at {formatMessageTime(restoredAt)}
       </span>
     </div>
   )

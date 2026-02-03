@@ -18,6 +18,7 @@ import type {
   MessageId,
   BotId,
 } from './types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -99,14 +100,20 @@ export class InteractionRouter {
   /**
    * Register a handler for select changes
    */
-  onSelectChange(actionId: string | RegExp, handler: InteractionHandler<SelectChangeInteraction>): this {
+  onSelectChange(
+    actionId: string | RegExp,
+    handler: InteractionHandler<SelectChangeInteraction>
+  ): this {
     return this.registerTypedHandler('select_change', actionId, handler)
   }
 
   /**
    * Register a handler for message actions
    */
-  onMessageAction(actionId: string | RegExp, handler: InteractionHandler<MessageActionInteraction>): this {
+  onMessageAction(
+    actionId: string | RegExp,
+    handler: InteractionHandler<MessageActionInteraction>
+  ): this {
     return this.registerTypedHandler('message_action', actionId, handler)
   }
 
@@ -188,7 +195,7 @@ export class InteractionRouter {
 
       return ctx.response ?? this.config.defaultResponse
     } catch (error) {
-      console.error('[InteractionRouter] Error handling interaction:', error)
+      logger.error('[InteractionRouter] Error handling interaction:', error)
 
       if (this.config.errorHandler) {
         return this.config.errorHandler(error as Error, interaction)
@@ -356,10 +363,7 @@ export class InteractionBuilder {
     } as ButtonClickInteraction
   }
 
-  formSubmit(
-    formId: string,
-    fields: FormSubmitInteraction['fields']
-  ): FormSubmitInteraction {
+  formSubmit(formId: string, fields: FormSubmitInteraction['fields']): FormSubmitInteraction {
     return {
       ...this.base,
       type: 'form_submit',
@@ -487,10 +491,7 @@ export function loggingMiddleware(
 /**
  * Rate limiting middleware
  */
-export function rateLimitMiddleware(
-  maxRequests: number,
-  windowMs: number
-): InteractionMiddleware {
+export function rateLimitMiddleware(maxRequests: number, windowMs: number): InteractionMiddleware {
   const requests = new Map<string, number[]>()
 
   return async (ctx, next) => {

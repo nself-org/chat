@@ -82,25 +82,28 @@ export function PollDisplay({
     }
   }, [userVotedOptions])
 
-  const handleToggleOption = useCallback((optionId: string) => {
-    if (!isActive || !canUserVote) return
+  const handleToggleOption = useCallback(
+    (optionId: string) => {
+      if (!isActive || !canUserVote) return
 
-    setSelectedOptions(prev => {
-      if (prev.includes(optionId)) {
-        return prev.filter(id => id !== optionId)
-      }
+      setSelectedOptions((prev) => {
+        if (prev.includes(optionId)) {
+          return prev.filter((id) => id !== optionId)
+        }
 
-      if (!poll.allowMultiple) {
-        return [optionId]
-      }
+        if (!poll.allowMultiple) {
+          return [optionId]
+        }
 
-      if (poll.maxChoices && prev.length >= poll.maxChoices) {
-        return prev
-      }
+        if (poll.maxChoices && prev.length >= poll.maxChoices) {
+          return prev
+        }
 
-      return [...prev, optionId]
-    })
-  }, [isActive, canUserVote, poll.allowMultiple, poll.maxChoices])
+        return [...prev, optionId]
+      })
+    },
+    [isActive, canUserVote, poll.allowMultiple, poll.maxChoices]
+  )
 
   const handleVote = useCallback(async () => {
     if (!onVote || selectedOptions.length === 0) return
@@ -136,15 +139,16 @@ export function PollDisplay({
     }
   }, [onAddOption, poll.id, newOptionText])
 
-  const hasVoteChanged = JSON.stringify(selectedOptions.sort()) !== JSON.stringify(userVotedOptions.sort())
+  const hasVoteChanged =
+    JSON.stringify(selectedOptions.sort()) !== JSON.stringify(userVotedOptions.sort())
 
   return (
-    <div className={cn('border rounded-lg p-4 space-y-4 bg-card', className)}>
+    <div className={cn('space-y-4 rounded-lg border bg-card p-4', className)}>
       {/* Header */}
       <div className="space-y-2">
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1">
-            <h4 className="font-semibold text-base leading-tight">{poll.question}</h4>
+            <h4 className="text-base font-semibold leading-tight">{poll.question}</h4>
           </div>
           <Badge variant={isActive ? 'default' : 'secondary'} className="shrink-0">
             {getPollStatusText(poll)}
@@ -155,7 +159,9 @@ export function PollDisplay({
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">
             <Users className="h-3 w-3" />
-            <span>{poll.totalVotes} {poll.totalVotes === 1 ? 'vote' : 'votes'}</span>
+            <span>
+              {poll.totalVotes} {poll.totalVotes === 1 ? 'vote' : 'votes'}
+            </span>
           </div>
           {poll.expiresAt && (
             <div className="flex items-center gap-1">
@@ -179,7 +185,7 @@ export function PollDisplay({
         <AnimatePresence mode="popLayout">
           {poll.options.map((option, index) => {
             const isSelected = selectedOptions.includes(option.id)
-            const isWinning = winningOptions.some(w => w.id === option.id)
+            const isWinning = winningOptions.some((w) => w.id === option.id)
             const userVoted = userVotedOptions.includes(option.id)
 
             return (
@@ -195,9 +201,9 @@ export function PollDisplay({
                   onClick={() => handleToggleOption(option.id)}
                   disabled={!isActive || !canUserVote || isVoting}
                   className={cn(
-                    'w-full text-left p-3 rounded-md border transition-all relative overflow-hidden',
-                    'hover:border-primary/50 focus:outline-none focus:ring-2 focus:ring-primary/50',
-                    isSelected && 'border-primary bg-primary/5',
+                    'relative w-full overflow-hidden rounded-md border p-3 text-left transition-all',
+                    'hover:border-primary/50 focus:ring-primary/50 focus:outline-none focus:ring-2',
+                    isSelected && 'bg-primary/5 border-primary',
                     userVoted && !isActive && 'bg-primary/10',
                     (!isActive || !canUserVote) && 'cursor-default',
                     'group'
@@ -206,7 +212,7 @@ export function PollDisplay({
                   {/* _Progress bar background */}
                   <div
                     className={cn(
-                      'absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent transition-all duration-500',
+                      'from-primary/10 absolute inset-0 bg-gradient-to-r to-transparent transition-all duration-500',
                       isWinning && poll.totalVotes > 0 && 'from-primary/20'
                     )}
                     style={{ width: `${option.percentage}%` }}
@@ -214,41 +220,43 @@ export function PollDisplay({
 
                   {/* Content */}
                   <div className="relative flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <div className="flex min-w-0 flex-1 items-center gap-3">
                       {/* Checkbox/Radio */}
                       {isActive && canUserVote ? (
                         poll.allowMultiple ? (
                           isSelected ? (
-                            <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
+                            <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                           ) : (
-                            <Circle className="h-5 w-5 text-muted-foreground shrink-0 group-hover:text-primary/50" />
+                            <Circle className="group-hover:text-primary/50 h-5 w-5 shrink-0 text-muted-foreground" />
                           )
                         ) : (
-                          <div className={cn(
-                            'h-5 w-5 rounded-full border-2 shrink-0 transition-colors',
-                            isSelected ? 'border-primary bg-primary' : 'border-muted-foreground group-hover:border-primary/50'
-                          )}>
+                          <div
+                            className={cn(
+                              'h-5 w-5 shrink-0 rounded-full border-2 transition-colors',
+                              isSelected
+                                ? 'border-primary bg-primary'
+                                : 'group-hover:border-primary/50 border-muted-foreground'
+                            )}
+                          >
                             {isSelected && (
-                              <div className="h-full w-full rounded-full bg-background scale-50" />
+                              <div className="h-full w-full scale-50 rounded-full bg-background" />
                             )}
                           </div>
                         )
                       ) : (
-                        userVoted && <CheckCircle2 className="h-5 w-5 text-primary shrink-0" />
+                        userVoted && <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
                       )}
 
                       {/* Option text */}
-                      <span className="font-medium truncate">{option.text}</span>
+                      <span className="truncate font-medium">{option.text}</span>
                     </div>
 
                     {/* Vote count and percentage */}
-                    <div className="flex items-center gap-2 shrink-0">
+                    <div className="flex shrink-0 items-center gap-2">
                       {isWinning && poll.totalVotes > 0 && (
                         <TrendingUp className="h-4 w-4 text-primary" />
                       )}
-                      <span className="text-sm font-semibold">
-                        {option.percentage}%
-                      </span>
+                      <span className="text-sm font-semibold">{option.percentage}%</span>
                       {!poll.isAnonymous && option.votes > 0 && (
                         <TooltipProvider>
                           <Tooltip>
@@ -279,7 +287,7 @@ export function PollDisplay({
                         ))}
                       </div>
                       {option.voters.length > 5 && (
-                        <span className="text-xs text-muted-foreground ml-1">
+                        <span className="ml-1 text-xs text-muted-foreground">
                           +{option.voters.length - 5} more
                         </span>
                       )}
@@ -302,7 +310,7 @@ export function PollDisplay({
                   value={newOptionText}
                   onChange={(e) => setNewOptionText(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleAddOption()}
-                  className="flex-1 px-3 py-2 text-sm border rounded-md"
+                  className="flex-1 rounded-md border px-3 py-2 text-sm"
                   autoFocus
                   maxLength={100}
                 />
@@ -367,13 +375,14 @@ export function PollDisplay({
 
       {/* Results Summary */}
       {!isActive && poll.totalVotes > 0 && (
-        <div className="text-xs text-muted-foreground space-y-1 pt-2">
+        <div className="space-y-1 pt-2 text-xs text-muted-foreground">
           {hasTie(poll) ? (
             <p>Multiple options are tied for first place</p>
           ) : (
             <p>
-              <span className="font-semibold text-foreground">{winningOptions[0]?.text}</span> is winning
-              with {winningOptions[0]?.votes} vote{winningOptions[0]?.votes !== 1 ? 's' : ''}
+              <span className="font-semibold text-foreground">{winningOptions[0]?.text}</span> is
+              winning with {winningOptions[0]?.votes} vote
+              {winningOptions[0]?.votes !== 1 ? 's' : ''}
             </p>
           )}
         </div>
@@ -381,10 +390,10 @@ export function PollDisplay({
 
       {/* Settings */}
       {formatPollSettings(poll).length > 0 && (
-        <div className="text-xs text-muted-foreground pt-2 border-t">
+        <div className="border-t pt-2 text-xs text-muted-foreground">
           <div className="flex flex-wrap gap-2">
             {formatPollSettings(poll).map((setting, idx) => (
-              <span key={idx} className="px-2 py-1 bg-muted rounded">
+              <span key={idx} className="rounded bg-muted px-2 py-1">
                 {setting}
               </span>
             ))}

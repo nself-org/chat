@@ -58,7 +58,8 @@ module.exports = {
       '@semantic-release/changelog',
       {
         changelogFile: 'CHANGELOG.md',
-        changelogTitle: '# Changelog\n\nAll notable changes to nself-chat will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).',
+        changelogTitle:
+          '# Changelog\n\nAll notable changes to nself-chat will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).',
       },
     ],
 
@@ -83,13 +84,11 @@ module.exports = {
     [
       '@semantic-release/github',
       {
-        assets: [
-          { path: 'nself-chat-web-*.tar.gz', label: 'Web Build' },
-        ],
+        assets: [{ path: 'nself-chat-web-*.tar.gz', label: 'Web Build' }],
         successComment: ':rocket: This PR is included in version ${nextRelease.version}',
         failComment: false,
         releasedLabels: ['released'],
       },
     ],
   ],
-};
+}

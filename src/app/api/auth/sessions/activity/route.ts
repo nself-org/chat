@@ -6,16 +6,15 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
+import { logger } from '@/lib/logger'
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { sessionId, userId } = body
 
     if (!sessionId || !userId) {
-      return NextResponse.json(
-        { error: 'Session ID and User ID required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Session ID and User ID required' }, { status: 400 })
     }
 
     // Update session activity in database
@@ -57,10 +56,7 @@ export async function POST(request: NextRequest) {
       session: data.data?.update_nchat_user_sessions_by_pk,
     })
   } catch (error) {
-    console.error('Error updating session activity:', error)
-    return NextResponse.json(
-      { error: 'Failed to update session activity' },
-      { status: 500 }
-    )
+    logger.error('Error updating session activity:', error)
+    return NextResponse.json({ error: 'Failed to update session activity' }, { status: 500 })
   }
 }

@@ -32,6 +32,7 @@ import {
   unauthorizedResponse,
   internalErrorResponse,
 } from '@/lib/api/response'
+import { logger } from '@/lib/logger'
 import {
   withErrorHandler,
   withRateLimit,
@@ -75,21 +76,8 @@ const ALLOWED_MIME_TYPES = {
     'image/bmp',
     'image/tiff',
   ],
-  videos: [
-    'video/mp4',
-    'video/webm',
-    'video/ogg',
-    'video/quicktime',
-    'video/x-msvideo',
-  ],
-  audio: [
-    'audio/mpeg',
-    'audio/wav',
-    'audio/ogg',
-    'audio/webm',
-    'audio/aac',
-    'audio/flac',
-  ],
+  videos: ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime', 'video/x-msvideo'],
+  audio: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/aac', 'audio/flac'],
   documents: [
     'application/pdf',
     'application/msword',
@@ -267,7 +255,7 @@ function validateUploadRequest(
   }
 
   // Check file type
-  if (!ALL_ALLOWED_MIME_TYPES.includes(contentType as typeof ALL_ALLOWED_MIME_TYPES[number])) {
+  if (!ALL_ALLOWED_MIME_TYPES.includes(contentType as (typeof ALL_ALLOWED_MIME_TYPES)[number])) {
     return {
       valid: false,
       error: `File type "${contentType}" is not allowed`,
@@ -450,16 +438,13 @@ async function handleUploadInit(request: NextRequest): Promise<NextResponse> {
 
     return successResponse(response, { status: 201 })
   } catch (error) {
-    console.error('Error generating presigned URL:', error)
+    logger.error('Error generating presigned URL:', error)
     return internalErrorResponse('Failed to initialize upload')
   }
 }
 
 // Apply middleware and export (CSRF removed to avoid build-time crypto issues)
-export const POST = compose(
-  withErrorHandler,
-  withRateLimit(CONFIG.RATE_LIMIT)
-)(handleUploadInit)
+export const POST = compose(withErrorHandler, withRateLimit(CONFIG.RATE_LIMIT))(handleUploadInit)
 
 // ============================================================================
 // Route Configuration

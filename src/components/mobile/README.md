@@ -29,12 +29,14 @@ This directory contains all mobile-specific UI components designed to provide a 
 ## Component List
 
 ### Core Navigation
+
 - `MobileNav` - Bottom navigation bar
 - `MobileHeader` - Top header with back button
 - `MobileSidebar` - Slide-out sidebar
 - `MobileDrawer` - Bottom/side drawer component
 
 ### Gestures & Interactions
+
 - `PullToRefresh` - Pull-down to refresh
 - `LongPressMenu` - Context menu on long press
 - `PinchZoom` - Pinch to zoom images
@@ -43,12 +45,14 @@ This directory contains all mobile-specific UI components designed to provide a 
 - `EdgeSwipe` - Screen edge swipe detection
 
 ### Input Components
+
 - `MobileMessageInput` - Chat message input
 - `MobileDatePicker` - Touch-friendly date picker
 - `MobileTimePicker` - Touch-friendly time picker
 - `TouchOptimized` - Touch-optimized form controls
 
 ### Layout & Display
+
 - `VirtualMessageList` - High-performance message list
 - `BottomSheet` - Modal bottom sheet
 - `SafeAreaView` - Safe area handling
@@ -56,6 +60,7 @@ This directory contains all mobile-specific UI components designed to provide a 
 - `SkeletonLoader` - Loading placeholders
 
 ### Channel & Messages
+
 - `MobileChannelView` - Channel message view
 - `MobileActionSheet` - Action sheet modal
 
@@ -85,12 +90,7 @@ import { TouchButton } from '@/components/mobile'
 
 function MyComponent() {
   return (
-    <TouchButton
-      variant="default"
-      size="default"
-      hapticFeedback
-      onClick={handleClick}
-    >
+    <TouchButton variant="default" size="default" hapticFeedback onClick={handleClick}>
       Tap Me
     </TouchButton>
   )
@@ -169,9 +169,7 @@ function Message({ message, isOwn }) {
 import { VirtualMessageList } from '@/components/mobile'
 
 function ChatView({ messages }) {
-  const renderMessage = (message, index) => (
-    <MessageItem key={message.id} message={message} />
-  )
+  const renderMessage = (message, index) => <MessageItem key={message.id} message={message} />
 
   return (
     <VirtualMessageList
@@ -220,19 +218,9 @@ function ScheduleForm() {
 
   return (
     <div className="space-y-4">
-      <MobileDatePicker
-        value={date}
-        onChange={setDate}
-        minDate={new Date()}
-        highlightToday
-      />
+      <MobileDatePicker value={date} onChange={setDate} minDate={new Date()} highlightToday />
 
-      <MobileTimePicker
-        value={time}
-        onChange={setTime}
-        format="12h"
-        minuteStep={15}
-      />
+      <MobileTimePicker value={time} onChange={setTime} format="12h" minuteStep={15} />
     </div>
   )
 }
@@ -302,13 +290,7 @@ import { PinchZoom } from '@/components/mobile'
 
 function ImageViewer({ imageUrl }) {
   return (
-    <PinchZoom
-      minScale={1}
-      maxScale={4}
-      enableRotation
-      enableDownload
-      downloadUrl={imageUrl}
-    >
+    <PinchZoom minScale={1} maxScale={4} enableRotation enableDownload downloadUrl={imageUrl}>
       <img src={imageUrl} alt="Zoomable" />
     </PinchZoom>
   )
@@ -338,12 +320,7 @@ All touch-optimized components meet iOS (44pt) and Android (48dp) minimum tap ta
 #### TouchListItem
 
 ```tsx
-<TouchListItem
-  onClick={handler}
-  href="/path"
-  disabled={boolean}
-  hapticFeedback={boolean}
->
+<TouchListItem onClick={handler} href="/path" disabled={boolean} hapticFeedback={boolean}>
   <ItemContent />
 </TouchListItem>
 ```
@@ -363,6 +340,7 @@ All touch-optimized components meet iOS (44pt) and Android (48dp) minimum tap ta
 ```
 
 **Props:**
+
 - `onRefresh` - Async function to call on refresh
 - `threshold` - Distance in pixels to trigger refresh (default: 80)
 - `maxPullDistance` - Maximum pull distance (default: 120)
@@ -382,6 +360,7 @@ All touch-optimized components meet iOS (44pt) and Android (48dp) minimum tap ta
 ```
 
 **MenuItem Interface:**
+
 ```tsx
 interface MenuItem {
   id: string
@@ -408,6 +387,7 @@ interface MenuItem {
 ```
 
 **Features:**
+
 - Virtual scrolling with @tanstack/react-virtual
 - Smooth 60fps performance
 - Auto-scroll to bottom for new messages
@@ -431,6 +411,7 @@ interface MenuItem {
 ```
 
 **Snap Points:**
+
 - `0.9` - Nearly full screen
 - `0.5` - Half screen
 - `0.2` - Peek mode
@@ -447,6 +428,7 @@ interface MenuItem {
 ```
 
 **Utility Classes:**
+
 ```tsx
 import { safeAreaClasses } from '@/components/mobile'
 
@@ -467,6 +449,7 @@ import { safeAreaClasses } from '@/components/mobile'
 ```
 
 **Hook:**
+
 ```tsx
 const { isKeyboardVisible, keyboardHeight } = useKeyboard()
 ```
@@ -510,10 +493,7 @@ Use haptic feedback for important actions:
 Provide visual feedback for gestures:
 
 ```tsx
-<SwipeActions
-  leftActions={[replyAction]}
-  rightActions={[deleteAction]}
->
+<SwipeActions leftActions={[replyAction]} rightActions={[deleteAction]}>
   <Message />
 </SwipeActions>
 ```
@@ -557,11 +537,9 @@ Show skeleton loaders while loading:
 ```tsx
 import { MessageSkeleton } from '@/components/mobile'
 
-{isLoading ? (
-  <MessageSkeleton count={5} />
-) : (
-  <MessageList messages={messages} />
-)}
+{
+  isLoading ? <MessageSkeleton count={5} /> : <MessageList messages={messages} />
+}
 ```
 
 ---
@@ -634,11 +612,7 @@ All components support:
 - **Reduced Motion**: Respects prefers-reduced-motion
 
 ```tsx
-<TouchButton
-  aria-label="Send message"
-  role="button"
-  tabIndex={0}
->
+<TouchButton aria-label="Send message" role="button" tabIndex={0}>
   <SendIcon />
 </TouchButton>
 ```
@@ -657,9 +631,7 @@ test('TouchButton triggers haptic feedback', () => {
   const mockVibrate = jest.fn()
   navigator.vibrate = mockVibrate
 
-  const { getByText } = render(
-    <TouchButton hapticFeedback>Click</TouchButton>
-  )
+  const { getByText } = render(<TouchButton hapticFeedback>Click</TouchButton>)
 
   fireEvent.click(getByText('Click'))
   expect(mockVibrate).toHaveBeenCalledWith(10)
@@ -688,6 +660,7 @@ test('swipe to delete message', async ({ page }) => {
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: [nself-chat/issues](https://github.com/nself/nself-chat/issues)
 - Documentation: See `/docs` directory
 - Examples: See `/e2e/mobile` for test examples

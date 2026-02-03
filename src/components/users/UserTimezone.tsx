@@ -38,16 +38,7 @@ function getTimeOfDayLabel(hour: number): string {
 // ============================================================================
 
 const UserTimezone = React.forwardRef<HTMLDivElement, UserTimezoneProps>(
-  (
-    {
-      className,
-      timezone,
-      showLocalTime = true,
-      showDifference = true,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, timezone, showLocalTime = true, showDifference = true, ...props }, ref) => {
     const [currentTime, setCurrentTime] = React.useState<Date | null>(null)
 
     // Update time every minute
@@ -65,10 +56,10 @@ const UserTimezone = React.forwardRef<HTMLDivElement, UserTimezoneProps>(
     if (!currentTime) {
       return (
         <div ref={ref} className={cn('flex items-center gap-3', className)} {...props}>
-          <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-muted animate-pulse" />
+          <div className="flex h-10 w-10 animate-pulse items-center justify-center rounded-lg bg-muted" />
           <div className="space-y-2">
-            <div className="h-4 w-24 bg-muted rounded animate-pulse" />
-            <div className="h-3 w-16 bg-muted rounded animate-pulse" />
+            <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+            <div className="h-3 w-16 animate-pulse rounded bg-muted" />
           </div>
         </div>
       )
@@ -105,8 +96,10 @@ const UserTimezone = React.forwardRef<HTMLDivElement, UserTimezoneProps>(
     if (showDifference) {
       try {
         const viewerOffset = currentTime.getTimezoneOffset()
-        const userOffset = new Date(currentTime.toLocaleString('en-US', { timeZone: timezone })).getTime() - currentTime.getTime()
-        const diffMinutes = Math.round((userOffset / 60000) + viewerOffset)
+        const userOffset =
+          new Date(currentTime.toLocaleString('en-US', { timeZone: timezone })).getTime() -
+          currentTime.getTime()
+        const diffMinutes = Math.round(userOffset / 60000 + viewerOffset)
         const diffHours = Math.round(diffMinutes / 60)
 
         if (diffHours === 0) {
@@ -126,16 +119,14 @@ const UserTimezone = React.forwardRef<HTMLDivElement, UserTimezoneProps>(
 
     return (
       <div ref={ref} className={cn('flex items-center gap-3', className)} {...props}>
-        <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-muted">
+        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
           {getTimeOfDayIcon(hour)}
         </div>
         <div>
           {showLocalTime && (
             <div className="flex items-center gap-2">
               <span className="font-medium">{userTimeString}</span>
-              <span className="text-xs text-muted-foreground">
-                ({getTimeOfDayLabel(hour)})
-              </span>
+              <span className="text-xs text-muted-foreground">({getTimeOfDayLabel(hour)})</span>
             </div>
           )}
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

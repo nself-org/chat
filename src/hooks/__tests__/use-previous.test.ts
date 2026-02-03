@@ -12,10 +12,9 @@ describe('usePrevious', () => {
   })
 
   it('should return previous value after update', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePrevious(value),
-      { initialProps: { value: 'first' } }
-    )
+    const { result, rerender } = renderHook(({ value }) => usePrevious(value), {
+      initialProps: { value: 'first' },
+    })
 
     expect(result.current).toBeUndefined()
 
@@ -49,9 +48,7 @@ describe('usePrevious', () => {
 
 describe('usePreviousWithInitial', () => {
   it('should return initial value on first render', () => {
-    const { result } = renderHook(() =>
-      usePreviousWithInitial('current', 'initial')
-    )
+    const { result } = renderHook(() => usePreviousWithInitial('current', 'initial'))
     expect(result.current).toBe('initial')
   })
 
@@ -71,10 +68,9 @@ describe('usePreviousWithInitial', () => {
   })
 
   it('should work with same type for value and initial', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => usePreviousWithInitial(value, 0),
-      { initialProps: { value: 1 } }
-    )
+    const { result, rerender } = renderHook(({ value }) => usePreviousWithInitial(value, 0), {
+      initialProps: { value: 1 },
+    })
 
     expect(result.current).toBe(0)
 
@@ -93,10 +89,9 @@ describe('useValueChange', () => {
   })
 
   it('should detect value changes', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useValueChange(value),
-      { initialProps: { value: 'first' } }
-    )
+    const { result, rerender } = renderHook(({ value }) => useValueChange(value), {
+      initialProps: { value: 'first' },
+    })
 
     expect(result.current.hasChanged).toBe(false)
     expect(result.current.isFirstRender).toBe(true)
@@ -109,10 +104,9 @@ describe('useValueChange', () => {
   })
 
   it('should not detect change when value stays same', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useValueChange(value),
-      { initialProps: { value: 'same' } }
-    )
+    const { result, rerender } = renderHook(({ value }) => useValueChange(value), {
+      initialProps: { value: 'same' },
+    })
 
     rerender({ value: 'same' })
 
@@ -122,10 +116,9 @@ describe('useValueChange', () => {
   })
 
   it('should track multiple changes', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useValueChange(value),
-      { initialProps: { value: 'first' } }
-    )
+    const { result, rerender } = renderHook(({ value }) => useValueChange(value), {
+      initialProps: { value: 'first' },
+    })
 
     rerender({ value: 'second' })
     expect(result.current.hasChanged).toBe(true)
@@ -144,10 +137,9 @@ describe('useValueChange', () => {
     const obj1 = { foo: 'bar' }
     const obj2 = { foo: 'baz' }
 
-    const { result, rerender } = renderHook(
-      ({ value }) => useValueChange(value),
-      { initialProps: { value: obj1 } }
-    )
+    const { result, rerender } = renderHook(({ value }) => useValueChange(value), {
+      initialProps: { value: obj1 },
+    })
 
     rerender({ value: obj2 })
 
@@ -158,10 +150,9 @@ describe('useValueChange', () => {
   it('should detect no change for same object reference', () => {
     const obj = { foo: 'bar' }
 
-    const { result, rerender } = renderHook(
-      ({ value }) => useValueChange(value),
-      { initialProps: { value: obj } }
-    )
+    const { result, rerender } = renderHook(({ value }) => useValueChange(value), {
+      initialProps: { value: obj },
+    })
 
     rerender({ value: obj })
 

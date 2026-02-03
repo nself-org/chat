@@ -114,12 +114,8 @@ export function LinkContextMenu({
         {/* Link info header */}
         <ContextMenuLabel className="font-normal">
           <div className="flex flex-col gap-1">
-            <p className="text-sm font-medium text-muted-foreground">
-              {domain}
-            </p>
-            <p className="text-xs text-muted-foreground/70 truncate">
-              {truncateUrl(url, 50)}
-            </p>
+            <p className="text-sm font-medium text-muted-foreground">{domain}</p>
+            <p className="text-muted-foreground/70 truncate text-xs">{truncateUrl(url, 50)}</p>
           </div>
         </ContextMenuLabel>
 
@@ -146,10 +142,7 @@ export function LinkContextMenu({
 
         {/* Copy text (only if different from URL) */}
         {hasDistinctText && (
-          <ContextMenuItemWithIcon
-            icon={<Copy className="h-4 w-4" />}
-            onClick={handleCopyText}
-          >
+          <ContextMenuItemWithIcon icon={<Copy className="h-4 w-4" />} onClick={handleCopyText}>
             Copy text
           </ContextMenuItemWithIcon>
         )}

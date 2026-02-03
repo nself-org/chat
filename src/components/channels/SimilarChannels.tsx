@@ -48,7 +48,7 @@ export function SimilarChannels({
 
   if (similarChannels.length === 0) {
     return (
-      <div className={cn('text-sm text-muted-foreground text-center py-4', className)}>
+      <div className={cn('py-4 text-center text-sm text-muted-foreground', className)}>
         No similar channels found
       </div>
     )
@@ -70,7 +70,7 @@ export function SimilarChannels({
       )}
 
       {layout === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {similarChannels.map((channel) => (
             <ChannelCard
               key={channel.id}

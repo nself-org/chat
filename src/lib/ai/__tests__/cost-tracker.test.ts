@@ -52,7 +52,7 @@ const mockCache = {
 
   async keys(pattern: string): Promise<string[]> {
     const regex = new RegExp(pattern.replace(/\*/g, '.*'))
-    return Array.from(this.data.keys()).filter(key => regex.test(key))
+    return Array.from(this.data.keys()).filter((key) => regex.test(key))
   },
 
   clear() {
@@ -380,7 +380,7 @@ describe('CostTracker', () => {
         'text-embedding-3-large',
       ]
 
-      openAIModels.forEach(model => {
+      openAIModels.forEach((model) => {
         expect(MODEL_PRICING[model]).toBeDefined()
         expect(MODEL_PRICING[model].provider).toBe('openai')
         expect(MODEL_PRICING[model].inputCostPer1k).toBeGreaterThanOrEqual(0)
@@ -398,7 +398,7 @@ describe('CostTracker', () => {
         'claude-3-haiku-20240307',
       ]
 
-      anthropicModels.forEach(model => {
+      anthropicModels.forEach((model) => {
         expect(MODEL_PRICING[model]).toBeDefined()
         expect(MODEL_PRICING[model].provider).toBe('anthropic')
         expect(MODEL_PRICING[model].inputCostPer1k).toBeGreaterThan(0)
@@ -409,11 +409,9 @@ describe('CostTracker', () => {
 
     it('should reflect reasonable pricing ratios', () => {
       // Output tokens should generally cost more than input tokens
-      const models = Object.keys(MODEL_PRICING).filter(
-        m => !m.includes('embedding')
-      )
+      const models = Object.keys(MODEL_PRICING).filter((m) => !m.includes('embedding'))
 
-      models.forEach(model => {
+      models.forEach((model) => {
         const pricing = MODEL_PRICING[model]
         if (pricing.outputCostPer1k > 0) {
           expect(pricing.outputCostPer1k).toBeGreaterThanOrEqual(pricing.inputCostPer1k)

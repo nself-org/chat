@@ -104,10 +104,7 @@ export function useUnreadMentions({
   const [error, setError] = useState<string | null>(null)
 
   // Calculate derived values
-  const unreadMentions = useMemo(
-    () => mentions.filter((m) => !m.isRead),
-    [mentions]
-  )
+  const unreadMentions = useMemo(() => mentions.filter((m) => !m.isRead), [mentions])
 
   const unreadCount = unreadMentions.length
 
@@ -127,9 +124,7 @@ export function useUnreadMentions({
   const markAsRead = useCallback((mentionId: string) => {
     setMentions((prev) =>
       prev.map((m) =>
-        m.id === mentionId
-          ? { ...m, isRead: true, readAt: new Date().toISOString() }
-          : m
+        m.id === mentionId ? { ...m, isRead: true, readAt: new Date().toISOString() } : m
       )
     )
   }, [])
@@ -139,29 +134,21 @@ export function useUnreadMentions({
     const idSet = new Set(mentionIds)
     const now = new Date().toISOString()
     setMentions((prev) =>
-      prev.map((m) =>
-        idSet.has(m.id) ? { ...m, isRead: true, readAt: now } : m
-      )
+      prev.map((m) => (idSet.has(m.id) ? { ...m, isRead: true, readAt: now } : m))
     )
   }, [])
 
   // Mark all as read
   const markAllAsRead = useCallback(() => {
     const now = new Date().toISOString()
-    setMentions((prev) =>
-      prev.map((m) => ({ ...m, isRead: true, readAt: now }))
-    )
+    setMentions((prev) => prev.map((m) => ({ ...m, isRead: true, readAt: now })))
   }, [])
 
   // Mark channel as read
   const markChannelAsRead = useCallback((targetChannelId: string) => {
     const now = new Date().toISOString()
     setMentions((prev) =>
-      prev.map((m) =>
-        m.channelId === targetChannelId
-          ? { ...m, isRead: true, readAt: now }
-          : m
-      )
+      prev.map((m) => (m.channelId === targetChannelId ? { ...m, isRead: true, readAt: now } : m))
     )
   }, [])
 
@@ -227,9 +214,7 @@ export function useUnreadMentions({
       // const response = await fetchMentions(userId)
       // setMentions(response.mentions)
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to fetch mentions'
-      )
+      setError(err instanceof Error ? err.message : 'Failed to fetch mentions')
     } finally {
       setIsLoading(false)
     }
@@ -271,10 +256,7 @@ export interface UseChannelUnreadMentionsOptions {
   userId?: string
 }
 
-export function useChannelUnreadMentions({
-  channelId,
-  userId,
-}: UseChannelUnreadMentionsOptions) {
+export function useChannelUnreadMentions({ channelId, userId }: UseChannelUnreadMentionsOptions) {
   const { unreadCount, markChannelAsRead } = useUnreadMentions({
     userId,
     channelId,
@@ -296,11 +278,7 @@ export interface UseMentionBadgeOptions {
   showBadge?: boolean
 }
 
-export function useMentionBadge({
-  channelId,
-  userId,
-  showBadge = true,
-}: UseMentionBadgeOptions) {
+export function useMentionBadge({ channelId, userId, showBadge = true }: UseMentionBadgeOptions) {
   const { channelUnreadCount } = useUnreadMentions({
     userId,
     channelId,

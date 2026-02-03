@@ -107,23 +107,14 @@ const ACTIVITY_FIELDS: {
 // ============================================================================
 
 const ProfileVisibility = React.forwardRef<HTMLDivElement, ProfileVisibilityProps>(
-  (
-    {
-      className,
-      visibility,
-      onVisibilityChange,
-      disabled = false,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, visibility, onVisibilityChange, disabled = false, ...props }, ref) => {
     return (
       <div ref={ref} className={cn('space-y-6', className)} {...props}>
         {/* Contact Information */}
         <div className="space-y-4">
           <div>
             <h4 className="text-sm font-medium">Contact Information</h4>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Control who can see your contact details
             </p>
           </div>
@@ -131,19 +122,14 @@ const ProfileVisibility = React.forwardRef<HTMLDivElement, ProfileVisibilityProp
           {VISIBILITY_FIELDS.map((field) => {
             const Icon = field.icon
             return (
-              <div
-                key={field.key}
-                className="flex items-center justify-between gap-4 py-2"
-              >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-muted flex-shrink-0">
+              <div key={field.key} className="flex items-center justify-between gap-4 py-2">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-muted">
                     <Icon className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div className="min-w-0">
                     <Label className="text-sm font-medium">{field.label}</Label>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {field.description}
-                    </p>
+                    <p className="truncate text-xs text-muted-foreground">{field.description}</p>
                   </div>
                 </div>
                 <Select
@@ -174,10 +160,10 @@ const ProfileVisibility = React.forwardRef<HTMLDivElement, ProfileVisibilityProp
         </div>
 
         {/* Activity Status */}
-        <div className="space-y-4 pt-4 border-t">
+        <div className="space-y-4 border-t pt-4">
           <div>
             <h4 className="text-sm font-medium">Activity Status</h4>
-            <p className="text-xs text-muted-foreground mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Control who can see your activity status
             </p>
           </div>
@@ -185,19 +171,14 @@ const ProfileVisibility = React.forwardRef<HTMLDivElement, ProfileVisibilityProp
           {ACTIVITY_FIELDS.map((field) => {
             const Icon = field.icon
             return (
-              <div
-                key={field.key}
-                className="flex items-center justify-between gap-4 py-2"
-              >
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <div className="flex items-center justify-center h-9 w-9 rounded-lg bg-muted flex-shrink-0">
+              <div key={field.key} className="flex items-center justify-between gap-4 py-2">
+                <div className="flex min-w-0 flex-1 items-center gap-3">
+                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-muted">
                     <Icon className="h-4 w-4 text-muted-foreground" />
                   </div>
                   <div className="min-w-0">
                     <Label className="text-sm font-medium">{field.label}</Label>
-                    <p className="text-xs text-muted-foreground truncate">
-                      {field.description}
-                    </p>
+                    <p className="truncate text-xs text-muted-foreground">{field.description}</p>
                   </div>
                 </div>
                 <Select
@@ -228,7 +209,7 @@ const ProfileVisibility = React.forwardRef<HTMLDivElement, ProfileVisibilityProp
         </div>
 
         {/* Privacy note */}
-        <div className="p-3 rounded-lg bg-muted/50 text-xs text-muted-foreground">
+        <div className="bg-muted/50 rounded-lg p-3 text-xs text-muted-foreground">
           <p>
             <strong>Note:</strong> Workspace admins may still be able to see some of this
             information for administrative purposes.

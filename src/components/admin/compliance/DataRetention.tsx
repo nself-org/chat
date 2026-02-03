@@ -122,7 +122,6 @@ export function DataRetention() {
   const loadRetentionData = async () => {
     try {
       setLoading(true)
-      // TODO: Load from API
       // Mock data for now
       setPolicies([
         createDefaultPolicy('messages', {
@@ -197,7 +196,7 @@ export function DataRetention() {
       return
     }
 
-    setPolicies(policies.map(p => p.id === policy.id ? policy : p))
+    setPolicies(policies.map((p) => (p.id === policy.id ? policy : p)))
     setShowEditDialog(false)
     setSelectedPolicy(null)
 
@@ -210,7 +209,7 @@ export function DataRetention() {
   const handleDeletePolicy = () => {
     if (!selectedPolicy) return
 
-    setPolicies(policies.filter(p => p.id !== selectedPolicy.id))
+    setPolicies(policies.filter((p) => p.id !== selectedPolicy.id))
     setShowDeleteDialog(false)
     setSelectedPolicy(null)
 
@@ -221,11 +220,9 @@ export function DataRetention() {
   }
 
   const handleTogglePolicy = (policyId: string) => {
-    setPolicies(policies.map(p =>
-      p.id === policyId ? { ...p, enabled: !p.enabled } : p
-    ))
+    setPolicies(policies.map((p) => (p.id === policyId ? { ...p, enabled: !p.enabled } : p)))
 
-    const policy = policies.find(p => p.id === policyId)
+    const policy = policies.find((p) => p.id === policyId)
     toast({
       title: policy?.enabled ? 'Policy Disabled' : 'Policy Enabled',
       description: `Retention policy "${policy?.name}" has been ${policy?.enabled ? 'disabled' : 'enabled'}.`,
@@ -237,16 +234,15 @@ export function DataRetention() {
       title: 'Retention Job Started',
       description: 'Data retention job is now running...',
     })
-    // TODO: Implement actual job execution
   }
 
   const summary = generatePolicySummary(policies)
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
           <p className="text-muted-foreground">Loading retention policies...</p>
         </div>
       </div>
@@ -259,17 +255,17 @@ export function DataRetention() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Data Retention Policies</h2>
-          <p className="text-muted-foreground mt-1">
+          <p className="mt-1 text-muted-foreground">
             Automatically delete data after specified periods
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={() => setShowSettingsDialog(true)}>
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="mr-2 h-4 w-4" />
             Auto-Delete Settings
           </Button>
           <Button onClick={() => setShowCreateDialog(true)}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             Create Policy
           </Button>
         </div>
@@ -284,9 +280,7 @@ export function DataRetention() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{summary.totalPolicies}</div>
-            <p className="text-xs text-muted-foreground">
-              {summary.enabledPolicies} enabled
-            </p>
+            <p className="text-xs text-muted-foreground">{summary.enabledPolicies} enabled</p>
           </CardContent>
         </Card>
 
@@ -329,19 +323,19 @@ export function DataRetention() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{summary.channelOverridesCount}</div>
-            <p className="text-xs text-muted-foreground">
-              Custom retention periods
-            </p>
+            <p className="text-xs text-muted-foreground">Custom retention periods</p>
           </CardContent>
         </Card>
       </div>
 
       {/* Auto-Delete Status */}
       {autoDeleteConfig && (
-        <Card className={cn(
-          'border-2',
-          autoDeleteConfig.enabled ? 'border-green-500' : 'border-gray-300'
-        )}>
+        <Card
+          className={cn(
+            'border-2',
+            autoDeleteConfig.enabled ? 'border-green-500' : 'border-gray-300'
+          )}
+        >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {autoDeleteConfig.enabled ? (
@@ -361,14 +355,12 @@ export function DataRetention() {
             <div className="grid gap-4 md:grid-cols-3">
               <div>
                 <Label className="text-xs text-muted-foreground">Mode</Label>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="mt-1 flex items-center gap-2">
                   <Badge variant={autoDeleteConfig.dryRunMode ? 'secondary' : 'default'}>
                     {autoDeleteConfig.dryRunMode ? 'Dry Run' : 'Live'}
                   </Badge>
                   {autoDeleteConfig.dryRunMode && (
-                    <span className="text-xs text-muted-foreground">
-                      (No actual deletions)
-                    </span>
+                    <span className="text-xs text-muted-foreground">(No actual deletions)</span>
                   )}
                 </div>
               </div>
@@ -396,7 +388,7 @@ export function DataRetention() {
               {autoDeleteConfig.notifyAdmins && ' • Admins notified'}
             </div>
             <Button variant="outline" size="sm" onClick={handleRunNow}>
-              <Play className="h-4 w-4 mr-2" />
+              <Play className="mr-2 h-4 w-4" />
               Run Now
             </Button>
           </CardFooter>
@@ -437,28 +429,32 @@ export function DataRetention() {
                     <div>
                       <div className="font-medium">{policy.name}</div>
                       {policy.description && (
-                        <div className="text-sm text-muted-foreground">
-                          {policy.description}
-                        </div>
+                        <div className="text-sm text-muted-foreground">{policy.description}</div>
                       )}
                     </div>
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {DATA_CATEGORIES.find(c => c.category === policy.dataCategory)?.label}
+                      {DATA_CATEGORIES.find((c) => c.category === policy.dataCategory)?.label}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    {DEFAULT_RETENTION_PERIODS.find(p => p.period === policy.period)?.label}
-                    {policy.period === 'custom' && policy.customDays && ` (${policy.customDays} days)`}
+                    {DEFAULT_RETENTION_PERIODS.find((p) => p.period === policy.period)?.label}
+                    {policy.period === 'custom' &&
+                      policy.customDays &&
+                      ` (${policy.customDays} days)`}
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1">
                       {policy.excludePinnedMessages && (
-                        <Badge variant="secondary" className="text-xs">Pinned</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          Pinned
+                        </Badge>
                       )}
                       {policy.excludeStarredMessages && (
-                        <Badge variant="secondary" className="text-xs">Starred</Badge>
+                        <Badge variant="secondary" className="text-xs">
+                          Starred
+                        </Badge>
                       )}
                       {policy.excludeMessageTypes && policy.excludeMessageTypes.length > 0 && (
                         <Badge variant="secondary" className="text-xs">
@@ -469,11 +465,9 @@ export function DataRetention() {
                   </TableCell>
                   <TableCell>
                     {policy.channelOverrides && policy.channelOverrides.length > 0 ? (
-                      <Badge variant="outline">
-                        {policy.channelOverrides.length} channels
-                      </Badge>
+                      <Badge variant="outline">{policy.channelOverrides.length} channels</Badge>
                     ) : (
-                      <span className="text-muted-foreground text-sm">None</span>
+                      <span className="text-sm text-muted-foreground">None</span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
@@ -506,14 +500,14 @@ export function DataRetention() {
           </Table>
 
           {policies.length === 0 && (
-            <div className="text-center py-12">
-              <Archive className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No retention policies</h3>
-              <p className="text-muted-foreground mb-4">
+            <div className="py-12 text-center">
+              <Archive className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="mb-2 text-lg font-semibold">No retention policies</h3>
+              <p className="mb-4 text-muted-foreground">
                 Create your first retention policy to automatically manage data lifecycle
               </p>
               <Button onClick={() => setShowCreateDialog(true)}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Create Policy
               </Button>
             </div>
@@ -546,15 +540,13 @@ export function DataRetention() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Retention Policy?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete the policy &quot;{selectedPolicy?.name}&quot;?
-              This action cannot be undone.
+              Are you sure you want to delete the policy &quot;{selectedPolicy?.name}&quot;? This
+              action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleDeletePolicy}>
-              Delete
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleDeletePolicy}>Delete</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
@@ -631,7 +623,7 @@ function PolicyDialog({ open, onOpenChange, onSave, policy, title }: PolicyDialo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>
@@ -715,10 +707,12 @@ function PolicyDialog({ open, onOpenChange, onSave, policy, title }: PolicyDialo
                 type="number"
                 min="1"
                 value={formData.customDays || ''}
-                onChange={(e) => setFormData({
-                  ...formData,
-                  customDays: parseInt(e.target.value)
-                })}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    customDays: parseInt(e.target.value),
+                  })
+                }
                 placeholder="Number of days"
               />
             </div>
@@ -761,9 +755,7 @@ function PolicyDialog({ open, onOpenChange, onSave, policy, title }: PolicyDialo
             <Switch
               id="enabled"
               checked={formData.enabled}
-              onCheckedChange={(checked) =>
-                setFormData({ ...formData, enabled: checked })
-              }
+              onCheckedChange={(checked) => setFormData({ ...formData, enabled: checked })}
             />
           </div>
         </div>
@@ -772,9 +764,7 @@ function PolicyDialog({ open, onOpenChange, onSave, policy, title }: PolicyDialo
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>
-            {policy ? 'Update' : 'Create'} Policy
-          </Button>
+          <Button onClick={handleSubmit}>{policy ? 'Update' : 'Create'} Policy</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
@@ -801,9 +791,7 @@ function AutoDeleteSettingsDialog({
   const [formData, setFormData] = useState<AutoDeleteConfig>(config)
 
   const handleSubmit = () => {
-    const nextRun = formData.enabled
-      ? calculateNextRunTime(formData)
-      : undefined
+    const nextRun = formData.enabled ? calculateNextRunTime(formData) : undefined
 
     onSave({
       ...formData,
@@ -823,7 +811,7 @@ function AutoDeleteSettingsDialog({
 
         <div className="space-y-4">
           {/* Enable/Disable */}
-          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+          <div className="flex items-center justify-between rounded-lg bg-muted p-4">
             <div>
               <Label className="font-semibold">Enable Automatic Deletion</Label>
               <p className="text-sm text-muted-foreground">
@@ -832,9 +820,7 @@ function AutoDeleteSettingsDialog({
             </div>
             <Switch
               checked={formData.enabled}
-              onCheckedChange={(checked) =>
-                setFormData({ ...formData, enabled: checked })
-              }
+              onCheckedChange={(checked) => setFormData({ ...formData, enabled: checked })}
             />
           </div>
 
@@ -853,15 +839,11 @@ function AutoDeleteSettingsDialog({
           <div className="flex items-center justify-between">
             <div>
               <Label className="font-normal">Dry Run Mode</Label>
-              <p className="text-sm text-muted-foreground">
-                Test without actually deleting data
-              </p>
+              <p className="text-sm text-muted-foreground">Test without actually deleting data</p>
             </div>
             <Switch
               checked={formData.dryRunMode}
-              onCheckedChange={(checked) =>
-                setFormData({ ...formData, dryRunMode: checked })
-              }
+              onCheckedChange={(checked) => setFormData({ ...formData, dryRunMode: checked })}
             />
           </div>
 
@@ -872,18 +854,14 @@ function AutoDeleteSettingsDialog({
               <Label className="font-normal">Notify admins</Label>
               <Switch
                 checked={formData.notifyAdmins}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, notifyAdmins: checked })
-                }
+                onCheckedChange={(checked) => setFormData({ ...formData, notifyAdmins: checked })}
               />
             </div>
             <div className="flex items-center justify-between">
               <Label className="font-normal">Notify affected users</Label>
               <Switch
                 checked={formData.notifyUsers}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, notifyUsers: checked })
-                }
+                onCheckedChange={(checked) => setFormData({ ...formData, notifyUsers: checked })}
               />
             </div>
           </div>
@@ -920,10 +898,12 @@ function AutoDeleteSettingsDialog({
               min="100"
               max="10000"
               value={formData.batchSize}
-              onChange={(e) => setFormData({
-                ...formData,
-                batchSize: parseInt(e.target.value)
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  batchSize: parseInt(e.target.value),
+                })
+              }
             />
             <p className="text-xs text-muted-foreground">
               Number of items to process in each batch
@@ -938,10 +918,12 @@ function AutoDeleteSettingsDialog({
               min="1000"
               max="1000000"
               value={formData.maxDeletionsPerRun}
-              onChange={(e) => setFormData({
-                ...formData,
-                maxDeletionsPerRun: parseInt(e.target.value)
-              })}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  maxDeletionsPerRun: parseInt(e.target.value),
+                })
+              }
             />
             <p className="text-xs text-muted-foreground">
               Safety limit to prevent accidental mass deletion
@@ -953,9 +935,7 @@ function AutoDeleteSettingsDialog({
           <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSubmit}>
-            Save Settings
-          </Button>
+          <Button onClick={handleSubmit}>Save Settings</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

@@ -121,7 +121,9 @@ export function getContrastText(backgroundColor: string): string {
 /**
  * Get status color based on presence
  */
-export function getStatusColor(status: 'online' | 'idle' | 'dnd' | 'offline' | 'streaming'): string {
+export function getStatusColor(
+  status: 'online' | 'idle' | 'dnd' | 'offline' | 'streaming'
+): string {
   const colors = {
     online: discordColors.statusOnline,
     idle: discordColors.statusIdle,

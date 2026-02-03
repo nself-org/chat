@@ -32,28 +32,13 @@ import { useMutation } from '@apollo/client'
 import { MUTE_USER } from '@/graphql/moderation'
 import { useAuth } from '@/contexts/auth-context'
 import { cn } from '@/lib/utils'
-import {
-  VolumeX,
-  Loader2,
-  CheckCircle2,
-  AlertTriangle,
-  Clock,
-  Globe,
-  Hash,
-} from 'lucide-react'
+import { VolumeX, Loader2, CheckCircle2, AlertTriangle, Clock, Globe, Hash } from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export type MuteDuration =
-  | '15m'
-  | '1h'
-  | '4h'
-  | '24h'
-  | '7d'
-  | '30d'
-  | 'permanent'
+export type MuteDuration = '15m' | '1h' | '4h' | '24h' | '7d' | '30d' | 'permanent'
 
 export interface MuteDurationOption {
   value: MuteDuration
@@ -182,9 +167,7 @@ export function MuteUserModal({
   // Form state
   const [selectedDuration, setSelectedDuration] = React.useState<MuteDuration>('1h')
   const [isGlobal, setIsGlobal] = React.useState(false)
-  const [selectedChannelId, setSelectedChannelId] = React.useState<string>(
-    channel?.id || ''
-  )
+  const [selectedChannelId, setSelectedChannelId] = React.useState<string>(channel?.id || '')
   const [reason, setReason] = React.useState('')
 
   // Submission state
@@ -247,8 +230,7 @@ export function MuteUserModal({
           onOpenChange(false)
         }, 2000)
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to mute user'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to mute user'
         setSubmitError(errorMessage)
       } finally {
         setIsSubmitting(false)
@@ -273,13 +255,15 @@ export function MuteUserModal({
         {submitSuccess ? (
           // Success state
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30 mb-4">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
               <CheckCircle2 className="h-8 w-8 text-amber-600 dark:text-amber-400" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">User Muted</h3>
-            <p className="text-sm text-muted-foreground max-w-xs">
+            <h3 className="mb-2 text-lg font-semibold">User Muted</h3>
+            <p className="max-w-xs text-sm text-muted-foreground">
               {user.displayName} has been muted{' '}
-              {isGlobal ? 'globally' : `in #${channels.find((c) => c.id === selectedChannelId)?.name || channel?.name}`}
+              {isGlobal
+                ? 'globally'
+                : `in #${channels.find((c) => c.id === selectedChannelId)?.name || channel?.name}`}
               {selectedDuration !== 'permanent'
                 ? ` for ${MUTE_DURATIONS.find((d) => d.value === selectedDuration)?.label}`
                 : ' permanently'}
@@ -289,7 +273,7 @@ export function MuteUserModal({
         ) : (
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <div className="flex items-center gap-3 mb-2">
+              <div className="mb-2 flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-100 dark:bg-amber-900/30">
                   <VolumeX className="h-5 w-5 text-amber-600 dark:text-amber-500" />
                 </div>
@@ -302,16 +286,14 @@ export function MuteUserModal({
 
             <div className="space-y-6 py-4">
               {/* User being muted */}
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+              <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-3">
                 <Avatar className="h-10 w-10">
                   <AvatarImage src={user.avatarUrl} alt={user.displayName} />
                   <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium truncate">{user.displayName}</p>
-                  <p className="text-sm text-muted-foreground truncate">
-                    @{user.username}
-                  </p>
+                  <p className="truncate font-medium">{user.displayName}</p>
+                  <p className="truncate text-sm text-muted-foreground">@{user.username}</p>
                 </div>
               </div>
 
@@ -322,19 +304,15 @@ export function MuteUserModal({
                   {/* Global toggle */}
                   <div
                     className={cn(
-                      'flex items-center justify-between p-3 rounded-lg border transition-colors',
-                      isGlobal
-                        ? 'border-primary bg-primary/5'
-                        : 'border-transparent bg-muted/50'
+                      'flex items-center justify-between rounded-lg border p-3 transition-colors',
+                      isGlobal ? 'bg-primary/5 border-primary' : 'bg-muted/50 border-transparent'
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <Globe className="h-4 w-4 text-muted-foreground" />
                       <div>
                         <p className="text-sm font-medium">Global Mute</p>
-                        <p className="text-xs text-muted-foreground">
-                          Mute in all channels
-                        </p>
+                        <p className="text-xs text-muted-foreground">Mute in all channels</p>
                       </div>
                     </div>
                     <Switch checked={isGlobal} onCheckedChange={setIsGlobal} />
@@ -345,23 +323,18 @@ export function MuteUserModal({
                     <div className="space-y-2">
                       <Label
                         htmlFor="channel-select"
-                        className="text-xs text-muted-foreground flex items-center gap-1"
+                        className="flex items-center gap-1 text-xs text-muted-foreground"
                       >
                         <Hash className="h-3 w-3" />
                         Or select a specific channel
                       </Label>
-                      <Select
-                        value={selectedChannelId}
-                        onValueChange={setSelectedChannelId}
-                      >
+                      <Select value={selectedChannelId} onValueChange={setSelectedChannelId}>
                         <SelectTrigger id="channel-select">
                           <SelectValue placeholder="Select channel" />
                         </SelectTrigger>
                         <SelectContent>
                           {channel && (
-                            <SelectItem value={channel.id}>
-                              # {channel.name} (current)
-                            </SelectItem>
+                            <SelectItem value={channel.id}># {channel.name} (current)</SelectItem>
                           )}
                           {channels
                             .filter((c) => c.id !== channel?.id)
@@ -379,7 +352,7 @@ export function MuteUserModal({
 
               {/* Duration selection */}
               <div className="space-y-3">
-                <Label className="text-sm font-medium flex items-center gap-2">
+                <Label className="flex items-center gap-2 text-sm font-medium">
                   <Clock className="h-4 w-4" />
                   Duration
                 </Label>
@@ -392,16 +365,13 @@ export function MuteUserModal({
                     <div
                       key={duration.value}
                       className={cn(
-                        'flex items-center space-x-2 p-3 rounded-lg border transition-colors cursor-pointer',
+                        'flex cursor-pointer items-center space-x-2 rounded-lg border p-3 transition-colors',
                         selectedDuration === duration.value
-                          ? 'border-primary bg-primary/5'
-                          : 'border-transparent hover:bg-muted/50'
+                          ? 'bg-primary/5 border-primary'
+                          : 'hover:bg-muted/50 border-transparent'
                       )}
                     >
-                      <RadioGroupItem
-                        value={duration.value}
-                        id={`duration-${duration.value}`}
-                      />
+                      <RadioGroupItem value={duration.value} id={`duration-${duration.value}`} />
                       <Label
                         htmlFor={`duration-${duration.value}`}
                         className="flex-1 cursor-pointer"
@@ -427,14 +397,12 @@ export function MuteUserModal({
                   maxLength={200}
                   className="resize-none"
                 />
-                <p className="text-xs text-muted-foreground text-right">
-                  {reason.length}/200
-                </p>
+                <p className="text-right text-xs text-muted-foreground">{reason.length}/200</p>
               </div>
 
               {/* Error message */}
               {submitError && (
-                <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive text-sm rounded-lg">
+                <div className="bg-destructive/10 flex items-center gap-2 rounded-lg p-3 text-sm text-destructive">
                   <AlertTriangle className="h-4 w-4 flex-shrink-0" />
                   {submitError}
                 </div>

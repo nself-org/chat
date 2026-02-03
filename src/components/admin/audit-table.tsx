@@ -1,7 +1,19 @@
 'use client'
 
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, User, Hash, Settings, Shield, Ban, Trash2, Plus, Edit, Archive } from 'lucide-react'
+import {
+  ChevronDown,
+  ChevronRight,
+  User,
+  Hash,
+  Settings,
+  Shield,
+  Ban,
+  Trash2,
+  Plus,
+  Edit,
+  Archive,
+} from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -96,7 +108,10 @@ const actionLabels: Record<AuditActionType, string> = {
   'message.deleted': 'Message Deleted',
 }
 
-const targetTypeIcons: Record<AuditLogEntry['targetType'], React.ComponentType<{ className?: string }>> = {
+const targetTypeIcons: Record<
+  AuditLogEntry['targetType'],
+  React.ComponentType<{ className?: string }>
+> = {
   user: User,
   channel: Hash,
   settings: Settings,
@@ -110,7 +125,7 @@ function AuditEntryRow({ entry }: { entry: AuditLogEntry }) {
 
   return (
     <>
-      <tr className="border-b hover:bg-muted/30">
+      <tr className="hover:bg-muted/30 border-b">
         <td className="px-4 py-3">
           <Button
             variant="ghost"
@@ -170,9 +185,7 @@ function AuditEntryRow({ entry }: { entry: AuditLogEntry }) {
                 {JSON.stringify(entry.details, null, 2)}
               </pre>
               {entry.ipAddress && (
-                <div className="text-muted-foreground">
-                  IP Address: {entry.ipAddress}
-                </div>
+                <div className="text-muted-foreground">IP Address: {entry.ipAddress}</div>
               )}
               {entry.userAgent && (
                 <div className="max-w-xl truncate text-muted-foreground">
@@ -247,7 +260,7 @@ export function AuditTable({ entries }: AuditTableProps) {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-muted/50">
+              <tr className="bg-muted/50 border-b">
                 <th className="w-10 px-4 py-3"></th>
                 <th className="px-4 py-3 text-left text-sm font-medium">Action</th>
                 <th className="px-4 py-3 text-left text-sm font-medium">Actor</th>
@@ -263,9 +276,7 @@ export function AuditTable({ entries }: AuditTableProps) {
                   </td>
                 </tr>
               ) : (
-                filteredEntries.map((entry) => (
-                  <AuditEntryRow key={entry.id} entry={entry} />
-                ))
+                filteredEntries.map((entry) => <AuditEntryRow key={entry.id} entry={entry} />)
               )}
             </tbody>
           </table>

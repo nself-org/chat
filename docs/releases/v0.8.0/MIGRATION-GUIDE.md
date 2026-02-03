@@ -17,15 +17,15 @@ This release maintains 100% database compatibility with v0.7.0. The schema remai
 
 ### Schema Status
 
-| Component | v0.7.0 | v0.8.0 | Changes |
-|-----------|--------|--------|---------|
-| Tables | 42 tables | 42 tables | None |
-| Columns | 287 columns | 287 columns | None |
-| Indexes | 93 indexes | 93 indexes | None |
-| Constraints | 64 constraints | 64 constraints | None |
-| Functions | 12 functions | 12 functions | None |
-| Triggers | 8 triggers | 8 triggers | None |
-| Views | 5 views | 5 views | None |
+| Component   | v0.7.0         | v0.8.0         | Changes |
+| ----------- | -------------- | -------------- | ------- |
+| Tables      | 42 tables      | 42 tables      | None    |
+| Columns     | 287 columns    | 287 columns    | None    |
+| Indexes     | 93 indexes     | 93 indexes     | None    |
+| Constraints | 64 constraints | 64 constraints | None    |
+| Functions   | 12 functions   | 12 functions   | None    |
+| Triggers    | 8 triggers     | 8 triggers     | None    |
+| Views       | 5 views        | 5 views        | None    |
 
 **Conclusion:** Database schema is identical.
 
@@ -151,12 +151,12 @@ interface AppConfig {
   mobile?: {
     offlineCache: {
       enabled: boolean
-      maxMessages: number  // default: 1000
-      maxMediaSize: number  // default: 500 MB
+      maxMessages: number // default: 1000
+      maxMediaSize: number // default: 500 MB
     }
     backgroundSync: {
       enabled: boolean
-      interval: number  // minutes
+      interval: number // minutes
     }
     analytics: {
       enabled: boolean
@@ -263,12 +263,12 @@ New APIs added for mobile features:
 
 ```typescript
 // Optional: Offline sync API
-POST /api/sync/queue
-GET /api/sync/status
+POST / api / sync / queue
+GET / api / sync / status
 
 // Optional: Push notification registration
-POST /api/push/register
-DELETE /api/push/unregister
+POST / api / push / register
+DELETE / api / push / unregister
 
 // These are additive, not required
 ```
@@ -457,6 +457,7 @@ GROUP BY state;
 **Symptom:** Application can't connect to database after upgrade
 
 **Solution:**
+
 ```bash
 # Check database is running
 pg_isready -h localhost -U postgres
@@ -473,6 +474,7 @@ cat .env | grep DATABASE_URL
 **Symptom:** Data appears to be missing after upgrade
 
 **Solution:**
+
 ```sql
 -- Verify data exists
 SELECT COUNT(*) FROM nchat_messages;
@@ -491,6 +493,7 @@ psql -h localhost -U postgres -d nchat < backup-20260201.sql
 **Symptom:** Database queries are slow after upgrade
 
 **Solution:**
+
 ```sql
 -- Analyze tables
 ANALYZE;
@@ -521,6 +524,7 @@ ORDER BY n_distinct DESC;
 Use this checklist for your migration:
 
 ### Pre-Migration
+
 - [ ] Read migration guide (this document)
 - [ ] Verify no schema changes needed
 - [ ] Backup production database
@@ -530,6 +534,7 @@ Use this checklist for your migration:
 - [ ] Notify team about upgrade
 
 ### Migration
+
 - [ ] Put application in maintenance mode (optional)
 - [ ] Run migration check (`nself db migrate status`)
 - [ ] Verify no pending migrations
@@ -538,6 +543,7 @@ Use this checklist for your migration:
 - [ ] Remove maintenance mode (if used)
 
 ### Post-Migration
+
 - [ ] Verify database health
 - [ ] Run smoke tests
 - [ ] Test critical workflows
@@ -547,6 +553,7 @@ Use this checklist for your migration:
 - [ ] Notify team of successful upgrade
 
 ### Rollback (If Needed)
+
 - [ ] Put in maintenance mode
 - [ ] Redeploy v0.7.0 application
 - [ ] Verify rollback successful

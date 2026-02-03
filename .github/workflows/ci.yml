@@ -163,8 +163,8 @@ jobs:
     name: E2E Tests
     runs-on: ubuntu-latest
     needs: [build]
-    continue-on-error: true  # E2E tests are optional for now
-    if: false  # Skip E2E tests until backend is available
+    continue-on-error: true # E2E tests are optional for now
+    if: false # Skip E2E tests until backend is available
     steps:
       - name: Checkout
         uses: actions/checkout@v4

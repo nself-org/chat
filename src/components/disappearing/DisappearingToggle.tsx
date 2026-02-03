@@ -1,33 +1,28 @@
-'use client';
+'use client'
 
-import { useState, useCallback } from 'react';
-import { Timer, TimerOff } from 'lucide-react';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { cn } from '@/lib/utils';
-import { formatDuration } from '@/lib/disappearing';
+import { useState, useCallback } from 'react'
+import { Timer, TimerOff } from 'lucide-react'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { cn } from '@/lib/utils'
+import { formatDuration } from '@/lib/disappearing'
 
 interface DisappearingToggleProps {
   /** Whether disappearing messages is enabled */
-  enabled: boolean;
+  enabled: boolean
   /** Current timer duration in seconds */
-  duration?: number;
+  duration?: number
   /** Callback when toggled */
-  onToggle: (enabled: boolean) => void;
+  onToggle: (enabled: boolean) => void
   /** Whether the toggle is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Show the current duration label */
-  showDuration?: boolean;
+  showDuration?: boolean
   /** Size variant */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -42,17 +37,17 @@ export function DisappearingToggle({
   size = 'md',
   className,
 }: DisappearingToggleProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = useState(false)
 
   const handleToggle = useCallback(
     (checked: boolean) => {
-      onToggle(checked);
+      onToggle(checked)
     },
     [onToggle]
-  );
+  )
 
-  const iconSize = size === 'sm' ? 14 : size === 'lg' ? 20 : 16;
-  const textSize = size === 'sm' ? 'text-xs' : size === 'lg' ? 'text-base' : 'text-sm';
+  const iconSize = size === 'sm' ? 14 : size === 'lg' ? 20 : 16
+  const textSize = size === 'sm' ? 'text-xs' : size === 'lg' ? 'text-base' : 'text-sm'
 
   return (
     <TooltipProvider>
@@ -91,14 +86,12 @@ export function DisappearingToggle({
                 className={cn(
                   textSize,
                   'cursor-pointer select-none',
-                  disabled && 'opacity-50 cursor-not-allowed'
+                  disabled && 'cursor-not-allowed opacity-50'
                 )}
               >
                 Disappearing messages
                 {showDuration && enabled && duration && duration > 0 && (
-                  <span className="ml-1 text-muted-foreground">
-                    ({formatDuration(duration)})
-                  </span>
+                  <span className="ml-1 text-muted-foreground">({formatDuration(duration)})</span>
                 )}
               </Label>
             </div>
@@ -113,14 +106,12 @@ export function DisappearingToggle({
         </TooltipTrigger>
         <TooltipContent side="bottom">
           <p>
-            {enabled
-              ? 'Messages will automatically disappear'
-              : 'Enable disappearing messages'}
+            {enabled ? 'Messages will automatically disappear' : 'Enable disappearing messages'}
           </p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
+  )
 }
 
 /**
@@ -144,16 +135,14 @@ export function DisappearingToggleCompact({
             className={cn(
               'flex items-center gap-1 rounded-md px-2 py-1 text-xs transition-colors',
               enabled
-                ? 'bg-primary/10 text-primary hover:bg-primary/20'
+                ? 'bg-primary/10 hover:bg-primary/20 text-primary'
                 : 'text-muted-foreground hover:bg-muted hover:text-foreground',
-              disabled && 'opacity-50 cursor-not-allowed',
+              disabled && 'cursor-not-allowed opacity-50',
               className
             )}
           >
             {enabled ? <Timer size={12} /> : <TimerOff size={12} />}
-            {enabled && duration && duration > 0 && (
-              <span>{formatDuration(duration)}</span>
-            )}
+            {enabled && duration && duration > 0 && <span>{formatDuration(duration)}</span>}
           </button>
         </TooltipTrigger>
         <TooltipContent side="top">
@@ -165,7 +154,7 @@ export function DisappearingToggleCompact({
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
+  )
 }
 
-export default DisappearingToggle;
+export default DisappearingToggle

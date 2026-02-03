@@ -198,10 +198,10 @@ export async function requestMicrophonePermission(): Promise<boolean> {
  * ```typescript
  * const recorder = new AudioRecorder({
  *   onStop: (blob, duration) => {
- *     console.log('Recording complete:', blob.size, 'bytes,', duration, 'seconds')
+ *     // console.log('Recording complete:', blob.size, 'bytes,', duration, 'seconds')
  *   },
  *   onDurationUpdate: (duration) => {
- *     console.log('Recording duration:', duration)
+ *     // console.log('Recording duration:', duration)
  *   },
  * })
  *
@@ -222,10 +222,7 @@ export class AudioRecorder {
   private _state: RecordingState = 'inactive'
   private mimeType: string | null = null
 
-  constructor(
-    callbacks: RecorderCallbacks = {},
-    options: RecorderOptions = {}
-  ) {
+  constructor(callbacks: RecorderCallbacks = {}, options: RecorderOptions = {}) {
     this.callbacks = callbacks
     this.options = { ...DEFAULT_OPTIONS, ...options }
     this.mimeType = getSupportedMimeType(this.options.format)
@@ -534,10 +531,7 @@ export class AudioRecorder {
  * Compress audio using AudioContext (client-side)
  * Note: Full compression requires a proper audio codec library
  */
-export async function compressAudioBlob(
-  blob: Blob,
-  _targetBitrate: number = 64000
-): Promise<Blob> {
+export async function compressAudioBlob(blob: Blob, _targetBitrate: number = 64000): Promise<Blob> {
   // For now, just return the original blob
   // Full compression would require a library like lamejs for MP3
   // or opus-encoder for Opus
@@ -548,10 +542,7 @@ export async function compressAudioBlob(
  * Convert audio blob to a different format
  * Note: Format conversion requires external libraries
  */
-export async function convertAudioFormat(
-  blob: Blob,
-  _targetFormat: AudioFormat
-): Promise<Blob> {
+export async function convertAudioFormat(blob: Blob, _targetFormat: AudioFormat): Promise<Blob> {
   // For now, just return the original blob
   // Full conversion would require libraries like ffmpeg.wasm
   return blob
@@ -560,11 +551,7 @@ export async function convertAudioFormat(
 /**
  * Create a File object from a Blob with proper naming
  */
-export function createAudioFile(
-  blob: Blob,
-  filename?: string,
-  mimeType?: string
-): File {
+export function createAudioFile(blob: Blob, filename?: string, mimeType?: string): File {
   const type = mimeType || blob.type
   const extension = getExtensionFromMimeType(type)
   const name = filename || `voice-message-${Date.now()}.${extension}`

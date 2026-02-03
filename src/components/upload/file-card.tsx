@@ -10,10 +10,10 @@
  * - Multiple variants
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useMemo, useCallback } from 'react';
+import * as React from 'react'
+import { useMemo, useCallback } from 'react'
 import {
   File,
   FileText,
@@ -31,23 +31,23 @@ import {
   Trash2,
   Copy,
   Share,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { FileType } from '@/stores/attachment-store';
+} from '@/components/ui/dropdown-menu'
+import { FileType } from '@/stores/attachment-store'
 import {
   formatFileSize,
   truncateFileName,
   getFileTypeColor,
   getFileExtension,
-} from '@/lib/upload/file-utils';
+} from '@/lib/upload/file-utils'
 
 // ============================================================================
 // Types
@@ -55,43 +55,43 @@ import {
 
 export interface FileCardProps {
   /** Unique identifier */
-  id: string;
+  id: string
   /** File name */
-  fileName: string;
+  fileName: string
   /** File size in bytes */
-  fileSize: number;
+  fileSize: number
   /** File type category */
-  fileType: FileType;
+  fileType: FileType
   /** MIME type */
-  mimeType?: string;
+  mimeType?: string
   /** File URL */
-  url?: string;
+  url?: string
   /** Thumbnail URL */
-  thumbnailUrl?: string;
+  thumbnailUrl?: string
   /** Whether the file is downloadable */
-  downloadable?: boolean;
+  downloadable?: boolean
   /** Whether the file is previewable */
-  previewable?: boolean;
+  previewable?: boolean
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Variant style */
-  variant?: 'default' | 'compact' | 'minimal' | 'grid';
+  variant?: 'default' | 'compact' | 'minimal' | 'grid'
   /** Callback when clicked */
-  onClick?: (id: string) => void;
+  onClick?: (id: string) => void
   /** Callback for download */
-  onDownload?: (id: string) => void;
+  onDownload?: (id: string) => void
   /** Callback for preview */
-  onPreview?: (id: string) => void;
+  onPreview?: (id: string) => void
   /** Callback for delete */
-  onDelete?: (id: string) => void;
+  onDelete?: (id: string) => void
   /** Callback for copy link */
-  onCopyLink?: (id: string) => void;
+  onCopyLink?: (id: string) => void
   /** Callback for share */
-  onShare?: (id: string) => void;
+  onShare?: (id: string) => void
   /** Show error state */
-  error?: string | null;
+  error?: string | null
   /** Loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
 }
 
 // ============================================================================
@@ -99,73 +99,88 @@ export interface FileCardProps {
 // ============================================================================
 
 interface FileIconProps {
-  fileType: FileType;
-  mimeType?: string;
-  extension?: string;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
+  fileType: FileType
+  mimeType?: string
+  extension?: string
+  size?: 'sm' | 'md' | 'lg'
+  className?: string
 }
 
-export function FileIcon({
-  fileType,
-  mimeType,
-  extension,
-  size = 'md',
-  className,
-}: FileIconProps) {
+export function FileIcon({ fileType, mimeType, extension, size = 'md', className }: FileIconProps) {
   const sizeClass = useMemo(() => {
     switch (size) {
       case 'sm':
-        return 'h-5 w-5';
+        return 'h-5 w-5'
       case 'lg':
-        return 'h-10 w-10';
+        return 'h-10 w-10'
       default:
-        return 'h-6 w-6';
+        return 'h-6 w-6'
     }
-  }, [size]);
+  }, [size])
 
-  const colorClass = getFileTypeColor(fileType);
+  const colorClass = getFileTypeColor(fileType)
 
   // Get specific icon based on MIME type or extension
   const Icon = useMemo(() => {
     // Check MIME type first
     if (mimeType) {
-      if (mimeType.includes('pdf')) return FileText;
-      if (mimeType.includes('word') || mimeType.includes('document')) return FileText;
-      if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return FileSpreadsheet;
-      if (mimeType.includes('powerpoint') || mimeType.includes('presentation')) return FileText;
+      if (mimeType.includes('pdf')) return FileText
+      if (mimeType.includes('word') || mimeType.includes('document')) return FileText
+      if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return FileSpreadsheet
+      if (mimeType.includes('powerpoint') || mimeType.includes('presentation')) return FileText
       if (mimeType.includes('text/') || mimeType.includes('json') || mimeType.includes('xml')) {
-        return FileCode;
+        return FileCode
       }
     }
 
     // Check extension
-    const ext = extension?.toLowerCase();
+    const ext = extension?.toLowerCase()
     if (ext) {
-      if (['js', 'ts', 'jsx', 'tsx', 'py', 'rb', 'go', 'rs', 'java', 'c', 'cpp', 'h', 'css', 'html', 'xml', 'json', 'yaml', 'yml'].includes(ext)) {
-        return FileCode;
+      if (
+        [
+          'js',
+          'ts',
+          'jsx',
+          'tsx',
+          'py',
+          'rb',
+          'go',
+          'rs',
+          'java',
+          'c',
+          'cpp',
+          'h',
+          'css',
+          'html',
+          'xml',
+          'json',
+          'yaml',
+          'yml',
+        ].includes(ext)
+      ) {
+        return FileCode
       }
-      if (['xls', 'xlsx', 'csv', 'ods'].includes(ext)) return FileSpreadsheet;
+      if (['xls', 'xlsx', 'csv', 'ods'].includes(ext)) return FileSpreadsheet
     }
 
     // Fall back to file type
     switch (fileType) {
       case 'image':
-        return FileImage;
+        return FileImage
       case 'video':
-        return FileVideo;
+        return FileVideo
       case 'audio':
-        return FileAudio;
+        return FileAudio
       case 'document':
-        return FileText;
+        return FileText
       case 'archive':
-        return FolderArchive;
+        return FolderArchive
       default:
-        return File;
+        return File
     }
-  }, [fileType, mimeType, extension]);
+  }, [fileType, mimeType, extension])
 
-  return <Icon className={cn(sizeClass, colorClass, className)} />;
+  return <Icon className={cn(sizeClass, colorClass, className)} />
 }
 
 // ============================================================================
@@ -173,12 +188,12 @@ export function FileIcon({
 // ============================================================================
 
 interface ExtensionBadgeProps {
-  extension: string;
-  className?: string;
+  extension: string
+  className?: string
 }
 
 function ExtensionBadge({ extension, className }: ExtensionBadgeProps) {
-  if (!extension) return null;
+  if (!extension) return null
 
   return (
     <span
@@ -189,7 +204,7 @@ function ExtensionBadge({ extension, className }: ExtensionBadgeProps) {
     >
       {extension}
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -217,39 +232,39 @@ export function FileCard({
   error,
   isLoading,
 }: FileCardProps) {
-  const extension = useMemo(() => getFileExtension(fileName), [fileName]);
+  const extension = useMemo(() => getFileExtension(fileName), [fileName])
 
   // Handle download
   const handleDownload = useCallback(() => {
     if (onDownload) {
-      onDownload(id);
+      onDownload(id)
     } else if (url) {
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = fileName;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
+      const a = document.createElement('a')
+      a.href = url
+      a.download = fileName
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
     }
-  }, [id, url, fileName, onDownload]);
+  }, [id, url, fileName, onDownload])
 
   // Handle preview
   const handlePreview = useCallback(() => {
     if (onPreview) {
-      onPreview(id);
+      onPreview(id)
     } else if (url) {
-      window.open(url, '_blank');
+      window.open(url, '_blank')
     }
-  }, [id, url, onPreview]);
+  }, [id, url, onPreview])
 
   // Handle copy link
   const handleCopyLink = useCallback(async () => {
     if (onCopyLink) {
-      onCopyLink(id);
+      onCopyLink(id)
     } else if (url) {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(url)
     }
-  }, [id, url, onCopyLink]);
+  }, [id, url, onCopyLink])
 
   // Minimal variant
   if (variant === 'minimal') {
@@ -268,7 +283,7 @@ export function FileCard({
         <span className="truncate">{fileName}</span>
         <span className="text-xs text-muted-foreground">({formatFileSize(fileSize)})</span>
       </div>
-    );
+    )
   }
 
   // Compact variant
@@ -277,7 +292,7 @@ export function FileCard({
       <div
         className={cn(
           'flex items-center gap-3 rounded-lg border p-2 transition-colors',
-          onClick && 'cursor-pointer hover:bg-muted/50',
+          onClick && 'hover:bg-muted/50 cursor-pointer',
           error && 'border-destructive/50 bg-destructive/5',
           className
         )}
@@ -295,9 +310,7 @@ export function FileCard({
           <p className="truncate text-sm font-medium" title={fileName}>
             {truncateFileName(fileName, 30)}
           </p>
-          <p className="text-xs text-muted-foreground">
-            {formatFileSize(fileSize)}
-          </p>
+          <p className="text-xs text-muted-foreground">{formatFileSize(fileSize)}</p>
         </div>
 
         {/* Actions */}
@@ -308,8 +321,8 @@ export function FileCard({
               size="icon"
               className="h-7 w-7"
               onClick={(e) => {
-                e.stopPropagation();
-                handleDownload();
+                e.stopPropagation()
+                handleDownload()
               }}
             >
               <Download className="h-4 w-4" />
@@ -317,7 +330,7 @@ export function FileCard({
           )}
         </div>
       </div>
-    );
+    )
   }
 
   // Grid variant (for file grids)
@@ -326,7 +339,7 @@ export function FileCard({
       <div
         className={cn(
           'group relative flex flex-col items-center rounded-lg border p-4 transition-colors',
-          onClick && 'cursor-pointer hover:bg-muted/50',
+          onClick && 'hover:bg-muted/50 cursor-pointer',
           error && 'border-destructive/50 bg-destructive/5',
           className
         )}
@@ -337,11 +350,7 @@ export function FileCard({
         {/* Thumbnail or Icon */}
         <div className="mb-3 flex h-16 w-16 items-center justify-center">
           {thumbnailUrl && fileType === 'image' ? (
-            <img
-              src={thumbnailUrl}
-              alt={fileName}
-              className="h-full w-full rounded object-cover"
-            />
+            <img src={thumbnailUrl} alt={fileName} className="h-full w-full rounded object-cover" />
           ) : (
             <FileIcon fileType={fileType} mimeType={mimeType} extension={extension} size="lg" />
           )}
@@ -366,8 +375,8 @@ export function FileCard({
               size="icon"
               className="h-7 w-7"
               onClick={(e) => {
-                e.stopPropagation();
-                handleDownload();
+                e.stopPropagation()
+                handleDownload()
               }}
             >
               <Download className="h-3.5 w-3.5" />
@@ -377,13 +386,13 @@ export function FileCard({
 
         {/* Error Badge */}
         {error && (
-          <div className="absolute bottom-1 left-1 right-1 flex items-center justify-center gap-1 rounded bg-destructive/10 px-1 py-0.5 text-[10px] text-destructive">
+          <div className="bg-destructive/10 absolute bottom-1 left-1 right-1 flex items-center justify-center gap-1 rounded px-1 py-0.5 text-[10px] text-destructive">
             <AlertCircle className="h-3 w-3" />
             <span className="truncate">{error}</span>
           </div>
         )}
       </div>
-    );
+    )
   }
 
   // Default variant
@@ -391,7 +400,7 @@ export function FileCard({
     <div
       className={cn(
         'flex items-center gap-4 rounded-lg border p-3 transition-colors',
-        onClick && 'cursor-pointer hover:bg-muted/50',
+        onClick && 'hover:bg-muted/50 cursor-pointer',
         error && 'border-destructive/50 bg-destructive/5',
         isLoading && 'animate-pulse',
         className
@@ -400,11 +409,7 @@ export function FileCard({
       {/* Icon/Thumbnail */}
       <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded bg-muted">
         {thumbnailUrl && fileType === 'image' ? (
-          <img
-            src={thumbnailUrl}
-            alt={fileName}
-            className="h-full w-full object-cover"
-          />
+          <img src={thumbnailUrl} alt={fileName} className="h-full w-full object-cover" />
         ) : (
           <FileIcon fileType={fileType} mimeType={mimeType} extension={extension} />
         )}
@@ -424,9 +429,7 @@ export function FileCard({
             </>
           )}
         </div>
-        {error && (
-          <p className="mt-1 text-xs text-destructive">{error}</p>
-        )}
+        {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
       </div>
 
       {/* Actions */}
@@ -438,8 +441,8 @@ export function FileCard({
             size="icon"
             className="h-8 w-8"
             onClick={(e) => {
-              e.stopPropagation();
-              handlePreview();
+              e.stopPropagation()
+              handlePreview()
             }}
             title="Preview"
           >
@@ -454,8 +457,8 @@ export function FileCard({
             size="icon"
             className="h-8 w-8"
             onClick={(e) => {
-              e.stopPropagation();
-              handleDownload();
+              e.stopPropagation()
+              handleDownload()
             }}
             title="Download"
           >
@@ -470,8 +473,8 @@ export function FileCard({
             size="icon"
             className="h-8 w-8"
             onClick={(e) => {
-              e.stopPropagation();
-              window.open(url, '_blank');
+              e.stopPropagation()
+              window.open(url, '_blank')
             }}
             title="Open in new tab"
           >
@@ -522,7 +525,7 @@ export function FileCard({
         )}
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -531,13 +534,13 @@ export function FileCard({
 
 export interface FileListProps {
   /** List of files */
-  files: Array<Omit<FileCardProps, 'variant'>>;
+  files: Array<Omit<FileCardProps, 'variant'>>
   /** Card variant */
-  variant?: FileCardProps['variant'];
+  variant?: FileCardProps['variant']
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Empty state message */
-  emptyMessage?: string;
+  emptyMessage?: string
 }
 
 export function FileList({
@@ -551,7 +554,7 @@ export function FileList({
       <div className={cn('flex items-center justify-center py-8 text-muted-foreground', className)}>
         {emptyMessage}
       </div>
-    );
+    )
   }
 
   if (variant === 'grid') {
@@ -561,7 +564,7 @@ export function FileList({
           <FileCard key={file.id} {...file} variant={variant} />
         ))}
       </div>
-    );
+    )
   }
 
   return (
@@ -570,7 +573,7 @@ export function FileList({
         <FileCard key={file.id} {...file} variant={variant} />
       ))}
     </div>
-  );
+  )
 }
 
-export default FileCard;
+export default FileCard

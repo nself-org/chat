@@ -19,16 +19,16 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 export type DiscordChannelType =
-  | 'text'           // Regular text channel
-  | 'voice'          // Voice channel
-  | 'stage'          // Stage channel (like concert/presentation)
-  | 'forum'          // Forum channel for organized discussions
-  | 'announcement'   // Announcement channel (can be followed)
-  | 'dm'             // Direct message
-  | 'group_dm'       // Group DM (up to 10 people)
-  | 'thread'         // Thread (attached to a message)
+  | 'text' // Regular text channel
+  | 'voice' // Voice channel
+  | 'stage' // Stage channel (like concert/presentation)
+  | 'forum' // Forum channel for organized discussions
+  | 'announcement' // Announcement channel (can be followed)
+  | 'dm' // Direct message
+  | 'group_dm' // Group DM (up to 10 people)
+  | 'thread' // Thread (attached to a message)
   | 'private_thread' // Private thread
-  | 'public_thread'  // Public thread
+  | 'public_thread' // Public thread
 
 export interface DiscordChannel {
   id: string
@@ -81,16 +81,16 @@ export interface DiscordForumTag {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const discordChannelIcons = {
-  text: 'Hash',           // #
-  voice: 'Volume2',       // Speaker
-  stage: 'Radio',         // Stage/broadcast
+  text: 'Hash', // #
+  voice: 'Volume2', // Speaker
+  stage: 'Radio', // Stage/broadcast
   forum: 'MessagesSquare', // Forum
   announcement: 'Megaphone', // Announcement
-  dm: 'AtSign',           // @
+  dm: 'AtSign', // @
   thread: 'MessageSquare', // Thread
-  private: 'Lock',        // Private
-  nsfw: 'AlertTriangle',  // NSFW
-  rules: 'BookOpen',      // Rules channel
+  private: 'Lock', // Private
+  nsfw: 'AlertTriangle', // NSFW
+  rules: 'BookOpen', // Rules channel
 } as const
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -129,11 +129,11 @@ export interface DiscordServer {
 }
 
 export type DiscordVerificationLevel =
-  | 'none'        // Unrestricted
-  | 'low'         // Must have verified email
-  | 'medium'      // Must be registered for 5+ minutes
-  | 'high'        // Must be member for 10+ minutes
-  | 'very_high'   // Must have verified phone
+  | 'none' // Unrestricted
+  | 'low' // Must have verified email
+  | 'medium' // Must be registered for 5+ minutes
+  | 'high' // Must be member for 10+ minutes
+  | 'very_high' // Must have verified phone
 
 export type DiscordServerFeature =
   | 'ANIMATED_BANNER'
@@ -248,14 +248,14 @@ export const DiscordPermissions = {
 export const discordRolePresets = {
   admin: {
     name: 'Admin',
-    color: 0xE74C3C, // Red
+    color: 0xe74c3c, // Red
     permissions: DiscordPermissions.ADMINISTRATOR,
     hoist: true,
     mentionable: true,
   },
   moderator: {
     name: 'Moderator',
-    color: 0x3498DB, // Blue
+    color: 0x3498db, // Blue
     permissions:
       DiscordPermissions.KICK_MEMBERS |
       DiscordPermissions.BAN_MEMBERS |
@@ -269,7 +269,7 @@ export const discordRolePresets = {
   },
   member: {
     name: 'Member',
-    color: 0x2ECC71, // Green
+    color: 0x2ecc71, // Green
     permissions:
       DiscordPermissions.VIEW_CHANNEL |
       DiscordPermissions.SEND_MESSAGES |
@@ -417,16 +417,16 @@ export interface DiscordMessage {
 }
 
 export type DiscordMessageType =
-  | 0  // Default
-  | 1  // Recipient Add
-  | 2  // Recipient Remove
-  | 3  // Call
-  | 4  // Channel Name Change
-  | 5  // Channel Icon Change
-  | 6  // Channel Pinned Message
-  | 7  // User Join
-  | 8  // Guild Boost
-  | 9  // Guild Boost Tier 1
+  | 0 // Default
+  | 1 // Recipient Add
+  | 2 // Recipient Remove
+  | 3 // Call
+  | 4 // Channel Name Change
+  | 5 // Channel Icon Change
+  | 6 // Channel Pinned Message
+  | 7 // User Join
+  | 8 // Guild Boost
+  | 9 // Guild Boost Tier 1
   | 10 // Guild Boost Tier 2
   | 11 // Guild Boost Tier 3
   | 12 // Channel Follow Add

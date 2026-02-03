@@ -161,13 +161,13 @@ export function useThread({
   })
 
   // Fetch thread participants
-  const {
-    data: participantsData,
-    loading: loadingParticipants,
-  } = useQuery(GET_THREAD_PARTICIPANTS, {
-    variables: { threadId },
-    skip: !threadId,
-  })
+  const { data: participantsData, loading: loadingParticipants } = useQuery(
+    GET_THREAD_PARTICIPANTS,
+    {
+      variables: { threadId },
+      skip: !threadId,
+    }
+  )
 
   // Subscribe to new messages in thread
   useSubscription(THREAD_MESSAGES_SUBSCRIPTION, {
@@ -182,8 +182,7 @@ export function useThread({
           fields: {
             nchat_messages(existingMessages = [], { readField }) {
               const exists = existingMessages.some(
-                (msgRef: { __ref: string }) =>
-                  readField('id', msgRef) === newMessage.id
+                (msgRef: { __ref: string }) => readField('id', msgRef) === newMessage.id
               )
               if (exists) return existingMessages
 
@@ -218,13 +217,10 @@ export function useThread({
     )
   }, [messagesData])
 
-  const parentMessage = messagesData?.nchat_threads_by_pk?.parent_message ??
-                       thread?.parent_message ??
-                       null
+  const parentMessage =
+    messagesData?.nchat_threads_by_pk?.parent_message ?? thread?.parent_message ?? null
 
-  const participants = participantsData?.nchat_thread_participants ??
-                      thread?.participants ??
-                      []
+  const participants = participantsData?.nchat_thread_participants ?? thread?.participants ?? []
 
   const totalCount = messagesData?.nchat_messages_aggregate?.aggregate?.count ?? 0
   const hasMore = messages.length < totalCount
@@ -239,9 +235,7 @@ export function useThread({
   const { hasUnread, unreadCount } = useMemo(() => {
     if (!user || !isParticipant) return { hasUnread: false, unreadCount: 0 }
 
-    const userParticipation = participants.find(
-      (p: ThreadParticipant) => p.user_id === user.id
-    )
+    const userParticipation = participants.find((p: ThreadParticipant) => p.user_id === user.id)
 
     if (!userParticipation?.last_read_at) {
       return { hasUnread: messages.length > 0, unreadCount: messages.length }
@@ -265,7 +259,6 @@ export function useThread({
         throw new Error('Cannot send reply: missing user or thread')
       }
 
-      // TODO: Handle file uploads when storage is implemented
       await replyToThread({
         variables: {
           threadId,
@@ -325,8 +318,7 @@ export function useThread({
               fields: {
                 nchat_messages(existingMessages = [], { readField }) {
                   const exists = existingMessages.some(
-                    (msgRef: { __ref: string }) =>
-                      readField('id', msgRef) === newMessage.id
+                    (msgRef: { __ref: string }) => readField('id', msgRef) === newMessage.id
                   )
                   if (exists) return existingMessages
 
@@ -363,10 +355,7 @@ export function useThread({
 
         return {
           ...fetchMoreResult,
-          nchat_messages: [
-            ...fetchMoreResult.nchat_messages,
-            ...prev.nchat_messages,
-          ],
+          nchat_messages: [...fetchMoreResult.nchat_messages, ...prev.nchat_messages],
         }
       },
     })
@@ -482,11 +471,7 @@ export interface UseCreateThreadOptions {
   onSuccess?: (thread: Thread) => void
 }
 
-export function useCreateThread({
-  channelId,
-  parentMessageId,
-  onSuccess,
-}: UseCreateThreadOptions) {
+export function useCreateThread({ channelId, parentMessageId, onSuccess }: UseCreateThreadOptions) {
   const { user } = useAuth()
   const [createThread, { loading, error }] = useMutation(CREATE_THREAD)
 

@@ -21,15 +21,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  AlertCircle,
-  Save,
-  X,
-  Eye,
-  Settings,
-  Shield,
-  Palette,
-} from 'lucide-react'
+import { AlertCircle, Save, X, Eye, Settings, Shield, Palette } from 'lucide-react'
 
 interface RoleEditorProps {
   role?: Partial<Role>
@@ -116,9 +108,7 @@ export function RoleEditor({
       {/* Header with preview */}
       <div className="flex items-start justify-between">
         <div>
-          <h2 className="text-xl font-semibold">
-            {isNew ? 'Create New Role' : 'Edit Role'}
-          </h2>
+          <h2 className="text-xl font-semibold">{isNew ? 'Create New Role' : 'Edit Role'}</h2>
           {isBuiltIn && (
             <p className="text-sm text-amber-500">
               This is a built-in role. Some settings cannot be changed.
@@ -140,7 +130,7 @@ export function RoleEditor({
 
       {/* Validation errors */}
       {errors.length > 0 && (
-        <div className="rounded-lg border border-destructive bg-destructive/10 p-4">
+        <div className="bg-destructive/10 rounded-lg border border-destructive p-4">
           <div className="flex items-center gap-2 text-destructive">
             <AlertCircle size={16} />
             <span className="font-medium">Please fix the following errors:</span>
@@ -198,16 +188,12 @@ export function RoleEditor({
                 id="position"
                 type="number"
                 value={formData.position || ''}
-                onChange={(e) =>
-                  updateField('position', parseInt(e.target.value) || 0)
-                }
+                onChange={(e) => updateField('position', parseInt(e.target.value) || 0)}
                 placeholder="Role position"
                 disabled={isBuiltIn}
                 min={1}
               />
-              <p className="text-xs text-muted-foreground">
-                Higher positions have more authority
-              </p>
+              <p className="text-xs text-muted-foreground">Higher positions have more authority</p>
             </div>
           </div>
 
@@ -247,16 +233,12 @@ export function RoleEditor({
             <div className="flex items-center justify-between">
               <div>
                 <Label htmlFor="isMentionable">Mentionable</Label>
-                <p className="text-sm text-muted-foreground">
-                  Allow anyone to @mention this role
-                </p>
+                <p className="text-sm text-muted-foreground">Allow anyone to @mention this role</p>
               </div>
               <Switch
                 id="isMentionable"
                 checked={formData.isMentionable}
-                onCheckedChange={(checked) =>
-                  updateField('isMentionable', checked)
-                }
+                onCheckedChange={(checked) => updateField('isMentionable', checked)}
               />
             </div>
           </div>
@@ -281,8 +263,8 @@ export function RoleEditor({
         {/* Permissions */}
         <TabsContent value="permissions" className="space-y-4">
           <div className="text-sm text-muted-foreground">
-            Configure what members with this role can do. Permissions marked
-            with a warning are sensitive and should be granted carefully.
+            Configure what members with this role can do. Permissions marked with a warning are
+            sensitive and should be granted carefully.
           </div>
 
           <RolePermissions
@@ -323,16 +305,12 @@ export function RoleEditor({
 
               <div className="flex items-center gap-4">
                 <span className="text-sm text-muted-foreground">Name color:</span>
-                <span style={{ color: formData.color }}>
-                  {formData.name || 'Role Name'}
-                </span>
+                <span style={{ color: formData.color }}>{formData.name || 'Role Name'}</span>
               </div>
 
               {formData.description && (
                 <div>
-                  <span className="text-sm text-muted-foreground">
-                    Description:
-                  </span>
+                  <span className="text-sm text-muted-foreground">Description:</span>
                   <p className="mt-1">{formData.description}</p>
                 </div>
               )}
@@ -340,9 +318,7 @@ export function RoleEditor({
               <div className="flex items-center gap-4 text-sm">
                 <span className="text-muted-foreground">Settings:</span>
                 {formData.isDefault && (
-                  <span className="rounded bg-blue-500/10 px-2 py-0.5 text-blue-500">
-                    Default
-                  </span>
+                  <span className="rounded bg-blue-500/10 px-2 py-0.5 text-blue-500">Default</span>
                 )}
                 {formData.isMentionable && (
                   <span className="rounded bg-green-500/10 px-2 py-0.5 text-green-500">
@@ -363,12 +339,7 @@ export function RoleEditor({
 
       {/* Actions */}
       <div className="flex items-center justify-end gap-3 border-t pt-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={onCancel}
-          disabled={isSubmitting}
-        >
+        <Button type="button" variant="outline" onClick={onCancel} disabled={isSubmitting}>
           <X className="mr-2 h-4 w-4" />
           Cancel
         </Button>

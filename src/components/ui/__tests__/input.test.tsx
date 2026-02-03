@@ -11,10 +11,10 @@ describe('Input Component', () => {
   it('handles value changes', () => {
     const handleChange = jest.fn()
     render(<Input onChange={handleChange} />)
-    
+
     const input = screen.getByRole('textbox')
     fireEvent.change(input, { target: { value: 'test value' } })
-    
+
     expect(handleChange).toHaveBeenCalled()
     expect(input).toHaveValue('test value')
   })
@@ -28,7 +28,7 @@ describe('Input Component', () => {
   it('supports different input types', () => {
     const { rerender } = render(<Input type="email" />)
     expect(screen.getByRole('textbox')).toHaveAttribute('type', 'email')
-    
+
     rerender(<Input type="password" />)
     // Password inputs don't have role="textbox"
     const passwordInput = document.querySelector('input[type="password"]')
@@ -38,7 +38,7 @@ describe('Input Component', () => {
   it('forwards ref correctly', () => {
     const ref = React.createRef<HTMLInputElement>()
     render(<Input ref={ref} />)
-    
+
     expect(ref.current).toBeInstanceOf(HTMLInputElement)
   })
 

@@ -1,20 +1,20 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Bookmark, Star, FolderOpen } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { Bookmark, Star, FolderOpen } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export interface SavedEmptyProps {
   /** Type of empty state */
-  type?: 'all' | 'starred' | 'collection';
+  type?: 'all' | 'starred' | 'collection'
   /** Collection name (when type is collection) */
-  collectionName?: string;
+  collectionName?: string
   /** Title text */
-  title?: string;
+  title?: string
   /** Description text */
-  description?: string;
+  description?: string
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -33,18 +33,14 @@ export function SavedEmpty({
         return {
           icon: Star,
           title: title ?? 'No starred messages',
-          description:
-            description ??
-            'Star your most important saved messages for quick access.',
-        };
+          description: description ?? 'Star your most important saved messages for quick access.',
+        }
       case 'collection':
         return {
           icon: FolderOpen,
           title: title ?? `No messages in ${collectionName ?? 'this collection'}`,
-          description:
-            description ??
-            'Add saved messages to this collection to organize them.',
-        };
+          description: description ?? 'Add saved messages to this collection to organize them.',
+        }
       default:
         return {
           icon: Bookmark,
@@ -52,27 +48,22 @@ export function SavedEmpty({
           description:
             description ??
             'Save messages to access them later. Your saved messages are private and only visible to you.',
-        };
+        }
     }
-  };
+  }
 
-  const content = getContent();
-  const Icon = content.icon;
+  const content = getContent()
+  const Icon = content.icon
 
   return (
     <div
-      className={cn(
-        'flex flex-col items-center justify-center py-12 px-4 text-center',
-        className
-      )}
+      className={cn('flex flex-col items-center justify-center px-4 py-12 text-center', className)}
     >
-      <div className="rounded-full bg-muted p-4 mb-4">
+      <div className="mb-4 rounded-full bg-muted p-4">
         <Icon className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h3 className="text-lg font-medium mb-1">{content.title}</h3>
-      <p className="text-sm text-muted-foreground max-w-sm">
-        {content.description}
-      </p>
+      <h3 className="mb-1 text-lg font-medium">{content.title}</h3>
+      <p className="max-w-sm text-sm text-muted-foreground">{content.description}</p>
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ActivityList Component
@@ -6,15 +6,11 @@
  * Displays a list of activities with optional date grouping
  */
 
-import * as React from 'react';
-import { ActivityItem } from './ActivityItem';
-import { ActivityDateSeparator } from './ActivityDate';
-import { groupActivitiesByDateGroup } from '@/lib/activity/activity-manager';
-import type {
-  Activity,
-  AggregatedActivity,
-  ActivityListProps,
-} from '@/lib/activity/activity-types';
+import * as React from 'react'
+import { ActivityItem } from './ActivityItem'
+import { ActivityDateSeparator } from './ActivityDate'
+import { groupActivitiesByDateGroup } from '@/lib/activity/activity-manager'
+import type { Activity, AggregatedActivity, ActivityListProps } from '@/lib/activity/activity-types'
 
 export function ActivityList({
   activities,
@@ -24,7 +20,7 @@ export function ActivityList({
   onMarkAsRead,
 }: ActivityListProps) {
   if (activities.length === 0) {
-    return null;
+    return null
   }
 
   if (!groupByDate) {
@@ -40,18 +36,18 @@ export function ActivityList({
           />
         ))}
       </div>
-    );
+    )
   }
 
   // Group activities by date
-  const groupedActivities = groupActivitiesByDateGroup(activities);
+  const groupedActivities = groupActivitiesByDateGroup(activities)
 
   return (
     <div className="space-y-4">
       {groupedActivities.map((group) => (
         <div key={group.date}>
           <ActivityDateSeparator label={group.label} />
-          <div className="space-y-1 mt-2">
+          <div className="mt-2 space-y-1">
             {group.activities.map((activity) => (
               <ActivityItem
                 key={activity.id}
@@ -65,7 +61,7 @@ export function ActivityList({
         </div>
       ))}
     </div>
-  );
+  )
 }
 
-export default ActivityList;
+export default ActivityList

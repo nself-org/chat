@@ -136,10 +136,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const timestamp = new Date().toISOString()
 
   // Run all checks in parallel
-  const [graphqlCheck, authCheck] = await Promise.all([
-    checkGraphQL(),
-    checkAuth(),
-  ])
+  const [graphqlCheck, authCheck] = await Promise.all([checkGraphQL(), checkAuth()])
 
   const configCheck = checkConfig()
 

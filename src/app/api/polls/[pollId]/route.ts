@@ -10,6 +10,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { Poll, UpdatePollInput } from '@/types/poll'
 import { validateUpdatePollInput } from '@/lib/polls/poll-manager'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // GET - Get Poll by ID
 // ============================================================================
@@ -22,24 +24,14 @@ export async function GET(
     const { pollId } = await params
 
     if (!pollId) {
-      return NextResponse.json(
-        { error: 'Poll ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Poll ID is required' }, { status: 400 })
     }
 
-    // TODO: Fetch poll from database
     // For now, return 404
-    return NextResponse.json(
-      { error: 'Poll not found' },
-      { status: 404 }
-    )
+    return NextResponse.json({ error: 'Poll not found' }, { status: 404 })
   } catch (error) {
-    console.error('Failed to fetch poll:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Failed to fetch poll:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -57,23 +49,15 @@ export async function PATCH(
     const input = body as UpdatePollInput
 
     if (!pollId) {
-      return NextResponse.json(
-        { error: 'Poll ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Poll ID is required' }, { status: 400 })
     }
 
-    // TODO: Get user ID from session/auth
     const userId = 'user_mock_id'
 
-    // TODO: Fetch existing poll from database
     const existingPoll = null as Poll | null
 
     if (!existingPoll) {
-      return NextResponse.json(
-        { error: 'Poll not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Poll not found' }, { status: 404 })
     }
 
     // Check permissions
@@ -96,7 +80,6 @@ export async function PATCH(
       )
     }
 
-    // TODO: Update poll in database
     const updatedPoll = { ...existingPoll, ...input }
 
     return NextResponse.json({
@@ -104,11 +87,8 @@ export async function PATCH(
       message: 'Poll updated successfully',
     })
   } catch (error) {
-    console.error('Failed to update poll:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Failed to update poll:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -124,23 +104,15 @@ export async function DELETE(
     const { pollId } = await params
 
     if (!pollId) {
-      return NextResponse.json(
-        { error: 'Poll ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Poll ID is required' }, { status: 400 })
     }
 
-    // TODO: Get user ID from session/auth
     const userId = 'user_mock_id'
 
-    // TODO: Fetch existing poll from database
     const existingPoll = null as Poll | null
 
     if (!existingPoll) {
-      return NextResponse.json(
-        { error: 'Poll not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Poll not found' }, { status: 404 })
     }
 
     // Check permissions
@@ -151,16 +123,11 @@ export async function DELETE(
       )
     }
 
-    // TODO: Delete poll from database
-
     return NextResponse.json({
       message: 'Poll deleted successfully',
     })
   } catch (error) {
-    console.error('Failed to delete poll:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Failed to delete poll:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

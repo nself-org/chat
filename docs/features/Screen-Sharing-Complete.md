@@ -58,12 +58,12 @@ src/components/call/
 
 #### Quality Presets
 
-| Quality | Resolution | Frame Rate | Bitrate |
-|---------|-----------|------------|---------|
-| 720p    | 1280x720  | 30 fps     | 1.5 Mbps |
-| 1080p   | 1920x1080 | 30 fps     | 2.5 Mbps |
-| 4K      | 3840x2160 | 60 fps     | 8 Mbps   |
-| Auto    | Adaptive  | 30 fps     | 2.5 Mbps |
+| Quality | Resolution | Frame Rate | Bitrate  |
+| ------- | ---------- | ---------- | -------- |
+| 720p    | 1280x720   | 30 fps     | 1.5 Mbps |
+| 1080p   | 1920x1080  | 30 fps     | 2.5 Mbps |
+| 4K      | 3840x2160  | 60 fps     | 8 Mbps   |
+| Auto    | Adaptive   | 30 fps     | 2.5 Mbps |
 
 #### Features
 
@@ -92,16 +92,12 @@ const captureManager = createScreenCaptureManager({
 })
 
 // Start capturing
-const share = await captureManager.startCapture(
-  userId,
-  userName,
-  {
-    quality: '1080p',
-    captureSystemAudio: true,
-    captureCursor: true,
-    frameRate: 30,
-  }
-)
+const share = await captureManager.startCapture(userId, userName, {
+  quality: '1080p',
+  captureSystemAudio: true,
+  captureCursor: true,
+  frameRate: 30,
+})
 
 // Update quality dynamically
 await captureManager.updateQuality(share.id, '4k')
@@ -118,15 +114,15 @@ captureManager.stopCapture(share.id)
 
 #### Available Tools
 
-| Tool | Description | Keyboard Shortcut |
-|------|-------------|------------------|
-| Pen | Freehand drawing | P |
-| Arrow | Draw arrows | A |
-| Line | Draw straight lines | L |
-| Rectangle | Draw rectangles | R |
-| Circle | Draw circles | C |
-| Text | Add text labels | T |
-| Eraser | Remove annotations | E |
+| Tool      | Description         | Keyboard Shortcut |
+| --------- | ------------------- | ----------------- |
+| Pen       | Freehand drawing    | P                 |
+| Arrow     | Draw arrows         | A                 |
+| Line      | Draw straight lines | L                 |
+| Rectangle | Draw rectangles     | R                 |
+| Circle    | Draw circles        | C                 |
+| Text      | Add text labels     | T                 |
+| Eraser    | Remove annotations  | E                 |
 
 #### Annotation Properties
 
@@ -248,10 +244,10 @@ highlighter.addClick({
 #### Quality Presets
 
 | Quality | Video Bitrate | Audio Bitrate |
-|---------|--------------|---------------|
-| Low     | 1 Mbps       | 64 kbps       |
-| Medium  | 2.5 Mbps     | 128 kbps      |
-| High    | 8 Mbps       | 192 kbps      |
+| ------- | ------------- | ------------- |
+| Low     | 1 Mbps        | 64 kbps       |
+| Medium  | 2.5 Mbps      | 128 kbps      |
+| High    | 8 Mbps        | 192 kbps      |
 
 #### Usage Example
 
@@ -421,23 +417,23 @@ import { AnnotationToolbar } from '@/components/call/annotation-toolbar'
 
 ### getDisplayMedia API Support
 
-| Browser | Screen | Window | Tab | System Audio | Status |
-|---------|--------|--------|-----|--------------|--------|
-| Chrome 72+ | ✅ | ✅ | ✅ | ✅ | Full Support |
-| Edge 79+ | ✅ | ✅ | ✅ | ✅ | Full Support |
-| Firefox 66+ | ✅ | ✅ | ✅ | ❌ | No System Audio |
-| Safari 13+ | ✅ | ✅ | ⚠️ | ❌ | Limited Tab Support |
-| Opera 60+ | ✅ | ✅ | ✅ | ✅ | Full Support |
+| Browser     | Screen | Window | Tab | System Audio | Status              |
+| ----------- | ------ | ------ | --- | ------------ | ------------------- |
+| Chrome 72+  | ✅     | ✅     | ✅  | ✅           | Full Support        |
+| Edge 79+    | ✅     | ✅     | ✅  | ✅           | Full Support        |
+| Firefox 66+ | ✅     | ✅     | ✅  | ❌           | No System Audio     |
+| Safari 13+  | ✅     | ✅     | ⚠️  | ❌           | Limited Tab Support |
+| Opera 60+   | ✅     | ✅     | ✅  | ✅           | Full Support        |
 
 ### MediaRecorder API Support
 
-| Browser | WebM | MP4 | Quality Control | Status |
-|---------|------|-----|----------------|--------|
-| Chrome 47+ | ✅ | ❌ | ✅ | Full Support |
-| Edge 79+ | ✅ | ❌ | ✅ | Full Support |
-| Firefox 29+ | ✅ | ❌ | ✅ | Full Support |
-| Safari 14.1+ | ⚠️ | ✅ | ⚠️ | Limited Support |
-| Opera 36+ | ✅ | ❌ | ✅ | Full Support |
+| Browser      | WebM | MP4 | Quality Control | Status          |
+| ------------ | ---- | --- | --------------- | --------------- |
+| Chrome 47+   | ✅   | ❌  | ✅              | Full Support    |
+| Edge 79+     | ✅   | ❌  | ✅              | Full Support    |
+| Firefox 29+  | ✅   | ❌  | ✅              | Full Support    |
+| Safari 14.1+ | ⚠️   | ✅  | ⚠️              | Limited Support |
+| Opera 36+    | ✅   | ❌  | ✅              | Full Support    |
 
 ---
 
@@ -562,6 +558,7 @@ useEffect(() => {
 ### Browser Testing
 
 Test in all supported browsers:
+
 - Chrome 72+
 - Edge 79+
 - Firefox 66+
@@ -756,6 +753,7 @@ class ScreenRecorder {
 ## Credits
 
 Built with:
+
 - **getDisplayMedia API** - Screen capture
 - **MediaRecorder API** - Recording
 - **Canvas API** - Annotations and cursor tracking
@@ -766,6 +764,7 @@ Built with:
 ## Support
 
 For issues and questions:
+
 - GitHub Issues: https://github.com/yourusername/nself-chat/issues
 - Documentation: https://docs.nself.org/features/screen-sharing
 - Email: support@nself.org

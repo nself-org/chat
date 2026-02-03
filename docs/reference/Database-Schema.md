@@ -20,32 +20,32 @@
 
 ### Schema Information
 
-| Property | Value |
-|----------|-------|
-| Schema Name | `nchat` |
-| Table Prefix | `nchat_` |
-| Database | PostgreSQL |
-| Extensions | `uuid-ossp`, `pg_trgm` |
+| Property     | Value                  |
+| ------------ | ---------------------- |
+| Schema Name  | `nchat`                |
+| Table Prefix | `nchat_`               |
+| Database     | PostgreSQL             |
+| Extensions   | `uuid-ossp`, `pg_trgm` |
 
 ### Migration Files
 
 Location: `.backend/migrations/`
 
-| File | Description |
-|------|-------------|
-| `000_app_configuration_standalone.sql` | Standalone app config |
-| `001_nchat_schema.sql` | Core schema (17 tables) |
-| `002_nchat_permissions.sql` | Permission setup |
-| `002_nchat_permissions_fixed.sql` | Permission fixes |
-| `003_nchat_seed_users.sql` | Seed user data |
-| `004_normalized_rbac_system.sql` | Normalized RBAC |
-| `005_seed_normalized_users.sql` | Normalized user seeds |
-| `006_channel_permissions_system.sql` | Channel permissions |
-| `007_comprehensive_channel_seed_data.sql` | Channel seed data |
-| `008_app_configuration.sql` | App configuration table |
-| `008_real_auth_users.sql` | Real auth user setup |
-| `009_additional_features.sql` | Extended features |
-| `010_additional_features_permissions.sql` | Extended permissions |
+| File                                      | Description             |
+| ----------------------------------------- | ----------------------- |
+| `000_app_configuration_standalone.sql`    | Standalone app config   |
+| `001_nchat_schema.sql`                    | Core schema (17 tables) |
+| `002_nchat_permissions.sql`               | Permission setup        |
+| `002_nchat_permissions_fixed.sql`         | Permission fixes        |
+| `003_nchat_seed_users.sql`                | Seed user data          |
+| `004_normalized_rbac_system.sql`          | Normalized RBAC         |
+| `005_seed_normalized_users.sql`           | Normalized user seeds   |
+| `006_channel_permissions_system.sql`      | Channel permissions     |
+| `007_comprehensive_channel_seed_data.sql` | Channel seed data       |
+| `008_app_configuration.sql`               | App configuration table |
+| `008_real_auth_users.sql`                 | Real auth user setup    |
+| `009_additional_features.sql`             | Extended features       |
+| `010_additional_features_permissions.sql` | Extended permissions    |
 
 ---
 
@@ -78,22 +78,22 @@ CREATE TABLE nchat.nchat_users (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| auth_user_id | UUID | UNIQUE, NOT NULL | Reference to auth.users |
-| username | VARCHAR(50) | UNIQUE, NOT NULL | Unique username |
-| display_name | VARCHAR(100) | NOT NULL | Display name |
-| email | VARCHAR(255) | NOT NULL | Email address |
-| avatar_url | TEXT | | Avatar image URL |
-| status | VARCHAR(20) | CHECK | User status: active, away, dnd, offline |
-| status_message | TEXT | | Custom status message |
-| role | VARCHAR(20) | CHECK, NOT NULL | User role |
-| preferences | JSONB | DEFAULT {} | User preferences |
-| last_seen_at | TIMESTAMPTZ | | Last activity timestamp |
-| is_deleted | BOOLEAN | DEFAULT FALSE | Soft delete flag |
-| created_at | TIMESTAMPTZ | DEFAULT NOW() | Creation timestamp |
-| updated_at | TIMESTAMPTZ | DEFAULT NOW() | Last update timestamp |
+| Column         | Type         | Constraints      | Description                             |
+| -------------- | ------------ | ---------------- | --------------------------------------- |
+| id             | UUID         | PK               | Primary key                             |
+| auth_user_id   | UUID         | UNIQUE, NOT NULL | Reference to auth.users                 |
+| username       | VARCHAR(50)  | UNIQUE, NOT NULL | Unique username                         |
+| display_name   | VARCHAR(100) | NOT NULL         | Display name                            |
+| email          | VARCHAR(255) | NOT NULL         | Email address                           |
+| avatar_url     | TEXT         |                  | Avatar image URL                        |
+| status         | VARCHAR(20)  | CHECK            | User status: active, away, dnd, offline |
+| status_message | TEXT         |                  | Custom status message                   |
+| role           | VARCHAR(20)  | CHECK, NOT NULL  | User role                               |
+| preferences    | JSONB        | DEFAULT {}       | User preferences                        |
+| last_seen_at   | TIMESTAMPTZ  |                  | Last activity timestamp                 |
+| is_deleted     | BOOLEAN      | DEFAULT FALSE    | Soft delete flag                        |
+| created_at     | TIMESTAMPTZ  | DEFAULT NOW()    | Creation timestamp                      |
+| updated_at     | TIMESTAMPTZ  | DEFAULT NOW()    | Last update timestamp                   |
 
 ### nchat_channels
 
@@ -118,21 +118,21 @@ CREATE TABLE nchat.nchat_channels (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| name | VARCHAR(100) | NOT NULL | Channel name |
-| slug | VARCHAR(100) | UNIQUE, NOT NULL | URL-friendly slug |
-| description | TEXT | | Channel description |
-| type | VARCHAR(20) | CHECK, NOT NULL | Type: public, private, direct, group |
-| is_archived | BOOLEAN | DEFAULT FALSE | Archive flag |
-| is_default | BOOLEAN | DEFAULT FALSE | Default channel flag |
-| topic | TEXT | | Channel topic |
-| creator_id | UUID | FK, NOT NULL | Channel creator |
-| metadata | JSONB | DEFAULT {} | Additional metadata |
-| position | INTEGER | DEFAULT 0 | Sort order |
-| created_at | TIMESTAMPTZ | | Creation timestamp |
-| updated_at | TIMESTAMPTZ | | Last update timestamp |
+| Column      | Type         | Constraints      | Description                          |
+| ----------- | ------------ | ---------------- | ------------------------------------ |
+| id          | UUID         | PK               | Primary key                          |
+| name        | VARCHAR(100) | NOT NULL         | Channel name                         |
+| slug        | VARCHAR(100) | UNIQUE, NOT NULL | URL-friendly slug                    |
+| description | TEXT         |                  | Channel description                  |
+| type        | VARCHAR(20)  | CHECK, NOT NULL  | Type: public, private, direct, group |
+| is_archived | BOOLEAN      | DEFAULT FALSE    | Archive flag                         |
+| is_default  | BOOLEAN      | DEFAULT FALSE    | Default channel flag                 |
+| topic       | TEXT         |                  | Channel topic                        |
+| creator_id  | UUID         | FK, NOT NULL     | Channel creator                      |
+| metadata    | JSONB        | DEFAULT {}       | Additional metadata                  |
+| position    | INTEGER      | DEFAULT 0        | Sort order                           |
+| created_at  | TIMESTAMPTZ  |                  | Creation timestamp                   |
+| updated_at  | TIMESTAMPTZ  |                  | Last update timestamp                |
 
 ### nchat_channel_members
 
@@ -154,17 +154,17 @@ CREATE TABLE nchat.nchat_channel_members (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| channel_id | UUID | FK, NOT NULL | Channel reference |
-| user_id | UUID | FK, NOT NULL | User reference |
-| role | VARCHAR(20) | CHECK | Channel role: admin, member |
-| joined_at | TIMESTAMPTZ | | Join timestamp |
-| last_read_at | TIMESTAMPTZ | | Last read timestamp |
-| notifications_enabled | BOOLEAN | DEFAULT TRUE | Notification preference |
-| created_at | TIMESTAMPTZ | | Creation timestamp |
-| updated_at | TIMESTAMPTZ | | Last update timestamp |
+| Column                | Type        | Constraints  | Description                 |
+| --------------------- | ----------- | ------------ | --------------------------- |
+| id                    | UUID        | PK           | Primary key                 |
+| channel_id            | UUID        | FK, NOT NULL | Channel reference           |
+| user_id               | UUID        | FK, NOT NULL | User reference              |
+| role                  | VARCHAR(20) | CHECK        | Channel role: admin, member |
+| joined_at             | TIMESTAMPTZ |              | Join timestamp              |
+| last_read_at          | TIMESTAMPTZ |              | Last read timestamp         |
+| notifications_enabled | BOOLEAN     | DEFAULT TRUE | Notification preference     |
+| created_at            | TIMESTAMPTZ |              | Creation timestamp          |
+| updated_at            | TIMESTAMPTZ |              | Last update timestamp       |
 
 ### nchat_messages
 
@@ -189,21 +189,21 @@ CREATE TABLE nchat.nchat_messages (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| channel_id | UUID | FK, NOT NULL | Channel reference |
-| user_id | UUID | FK, NOT NULL | Author reference |
-| parent_id | UUID | FK | Thread parent message |
-| content | TEXT | | Message content |
-| type | VARCHAR(20) | CHECK | Message type |
-| metadata | JSONB | DEFAULT {} | Additional data |
-| is_edited | BOOLEAN | DEFAULT FALSE | Edit flag |
-| is_deleted | BOOLEAN | DEFAULT FALSE | Soft delete flag |
-| edited_at | TIMESTAMPTZ | | Edit timestamp |
-| deleted_at | TIMESTAMPTZ | | Delete timestamp |
-| created_at | TIMESTAMPTZ | | Creation timestamp |
-| updated_at | TIMESTAMPTZ | | Last update timestamp |
+| Column     | Type        | Constraints   | Description           |
+| ---------- | ----------- | ------------- | --------------------- |
+| id         | UUID        | PK            | Primary key           |
+| channel_id | UUID        | FK, NOT NULL  | Channel reference     |
+| user_id    | UUID        | FK, NOT NULL  | Author reference      |
+| parent_id  | UUID        | FK            | Thread parent message |
+| content    | TEXT        |               | Message content       |
+| type       | VARCHAR(20) | CHECK         | Message type          |
+| metadata   | JSONB       | DEFAULT {}    | Additional data       |
+| is_edited  | BOOLEAN     | DEFAULT FALSE | Edit flag             |
+| is_deleted | BOOLEAN     | DEFAULT FALSE | Soft delete flag      |
+| edited_at  | TIMESTAMPTZ |               | Edit timestamp        |
+| deleted_at | TIMESTAMPTZ |               | Delete timestamp      |
+| created_at | TIMESTAMPTZ |               | Creation timestamp    |
+| updated_at | TIMESTAMPTZ |               | Last update timestamp |
 
 ### nchat_reactions
 
@@ -220,13 +220,13 @@ CREATE TABLE nchat.nchat_reactions (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| message_id | UUID | FK, NOT NULL | Message reference |
-| user_id | UUID | FK, NOT NULL | User reference |
-| emoji | VARCHAR(50) | NOT NULL | Emoji code |
-| created_at | TIMESTAMPTZ | | Creation timestamp |
+| Column     | Type        | Constraints  | Description        |
+| ---------- | ----------- | ------------ | ------------------ |
+| id         | UUID        | PK           | Primary key        |
+| message_id | UUID        | FK, NOT NULL | Message reference  |
+| user_id    | UUID        | FK, NOT NULL | User reference     |
+| emoji      | VARCHAR(50) | NOT NULL     | Emoji code         |
+| created_at | TIMESTAMPTZ |              | Creation timestamp |
 
 ### nchat_attachments
 
@@ -247,18 +247,18 @@ CREATE TABLE nchat.nchat_attachments (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| message_id | UUID | FK, NOT NULL | Message reference |
-| file_name | VARCHAR(255) | NOT NULL | Original filename |
-| file_type | VARCHAR(100) | | MIME type |
-| file_size | BIGINT | | File size in bytes |
-| file_url | TEXT | NOT NULL | Storage URL |
-| thumbnail_url | TEXT | | Thumbnail URL |
-| metadata | JSONB | DEFAULT {} | Additional metadata |
-| created_at | TIMESTAMPTZ | | Creation timestamp |
-| updated_at | TIMESTAMPTZ | | Last update timestamp |
+| Column        | Type         | Constraints  | Description           |
+| ------------- | ------------ | ------------ | --------------------- |
+| id            | UUID         | PK           | Primary key           |
+| message_id    | UUID         | FK, NOT NULL | Message reference     |
+| file_name     | VARCHAR(255) | NOT NULL     | Original filename     |
+| file_type     | VARCHAR(100) |              | MIME type             |
+| file_size     | BIGINT       |              | File size in bytes    |
+| file_url      | TEXT         | NOT NULL     | Storage URL           |
+| thumbnail_url | TEXT         |              | Thumbnail URL         |
+| metadata      | JSONB        | DEFAULT {}   | Additional metadata   |
+| created_at    | TIMESTAMPTZ  |              | Creation timestamp    |
+| updated_at    | TIMESTAMPTZ  |              | Last update timestamp |
 
 ### nchat_mentions
 
@@ -276,13 +276,13 @@ CREATE TABLE nchat.nchat_mentions (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| message_id | UUID | FK, NOT NULL | Message reference |
-| user_id | UUID | FK, NOT NULL | Mentioned user |
-| type | VARCHAR(20) | CHECK | Mention type |
-| created_at | TIMESTAMPTZ | | Creation timestamp |
+| Column     | Type        | Constraints  | Description        |
+| ---------- | ----------- | ------------ | ------------------ |
+| id         | UUID        | PK           | Primary key        |
+| message_id | UUID        | FK, NOT NULL | Message reference  |
+| user_id    | UUID        | FK, NOT NULL | Mentioned user     |
+| type       | VARCHAR(20) | CHECK        | Mention type       |
+| created_at | TIMESTAMPTZ |              | Creation timestamp |
 
 ### nchat_threads
 
@@ -301,15 +301,15 @@ CREATE TABLE nchat.nchat_threads (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| message_id | UUID | FK, UNIQUE, NOT NULL | Parent message |
-| participant_count | INTEGER | DEFAULT 0 | Number of participants |
-| message_count | INTEGER | DEFAULT 0 | Reply count |
-| last_message_at | TIMESTAMPTZ | | Last reply timestamp |
-| created_at | TIMESTAMPTZ | | Creation timestamp |
-| updated_at | TIMESTAMPTZ | | Last update timestamp |
+| Column            | Type        | Constraints          | Description            |
+| ----------------- | ----------- | -------------------- | ---------------------- |
+| id                | UUID        | PK                   | Primary key            |
+| message_id        | UUID        | FK, UNIQUE, NOT NULL | Parent message         |
+| participant_count | INTEGER     | DEFAULT 0            | Number of participants |
+| message_count     | INTEGER     | DEFAULT 0            | Reply count            |
+| last_message_at   | TIMESTAMPTZ |                      | Last reply timestamp   |
+| created_at        | TIMESTAMPTZ |                      | Creation timestamp     |
+| updated_at        | TIMESTAMPTZ |                      | Last update timestamp  |
 
 ### nchat_thread_participants
 
@@ -361,18 +361,18 @@ CREATE TABLE nchat.nchat_notifications (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| user_id | UUID | FK, NOT NULL | Recipient user |
-| type | VARCHAR(50) | NOT NULL | Notification type |
-| title | VARCHAR(255) | | Notification title |
-| content | TEXT | | Notification content |
-| metadata | JSONB | DEFAULT {} | Additional data |
-| is_read | BOOLEAN | DEFAULT FALSE | Read status |
-| read_at | TIMESTAMPTZ | | Read timestamp |
-| created_at | TIMESTAMPTZ | | Creation timestamp |
-| updated_at | TIMESTAMPTZ | | Last update timestamp |
+| Column     | Type         | Constraints   | Description           |
+| ---------- | ------------ | ------------- | --------------------- |
+| id         | UUID         | PK            | Primary key           |
+| user_id    | UUID         | FK, NOT NULL  | Recipient user        |
+| type       | VARCHAR(50)  | NOT NULL      | Notification type     |
+| title      | VARCHAR(255) |               | Notification title    |
+| content    | TEXT         |               | Notification content  |
+| metadata   | JSONB        | DEFAULT {}    | Additional data       |
+| is_read    | BOOLEAN      | DEFAULT FALSE | Read status           |
+| read_at    | TIMESTAMPTZ  |               | Read timestamp        |
+| created_at | TIMESTAMPTZ  |               | Creation timestamp    |
+| updated_at | TIMESTAMPTZ  |               | Last update timestamp |
 
 ### nchat_read_receipts
 
@@ -462,14 +462,14 @@ CREATE TABLE nchat.nchat_settings (
 
 **Default Settings:**
 
-| Key | Value | Description |
-|-----|-------|-------------|
-| app_name | "nchat" | Application name |
-| app_tagline | "Team Communication Platform" | Tagline |
-| theme | {"primary": "#5865F2", ...} | Theme colors |
-| allow_registration | true | Registration enabled |
-| max_file_size | 104857600 | 100MB limit |
-| message_retention_days | 0 | 0 = forever |
+| Key                    | Value                         | Description          |
+| ---------------------- | ----------------------------- | -------------------- |
+| app_name               | "nchat"                       | Application name     |
+| app_tagline            | "Team Communication Platform" | Tagline              |
+| theme                  | {"primary": "#5865F2", ...}   | Theme colors         |
+| allow_registration     | true                          | Registration enabled |
+| max_file_size          | 104857600                     | 100MB limit          |
+| message_retention_days | 0                             | 0 = forever          |
 
 ### nchat_audit_log
 
@@ -489,17 +489,17 @@ CREATE TABLE nchat.nchat_audit_log (
 );
 ```
 
-| Column | Type | Constraints | Description |
-|--------|------|-------------|-------------|
-| id | UUID | PK | Primary key |
-| user_id | UUID | FK | Acting user |
-| action | VARCHAR(100) | NOT NULL | Action performed |
-| entity_type | VARCHAR(50) | | Target entity type |
-| entity_id | UUID | | Target entity ID |
-| metadata | JSONB | DEFAULT {} | Action details |
-| ip_address | INET | | Client IP |
-| user_agent | TEXT | | Client user agent |
-| created_at | TIMESTAMPTZ | | Action timestamp |
+| Column      | Type         | Constraints | Description        |
+| ----------- | ------------ | ----------- | ------------------ |
+| id          | UUID         | PK          | Primary key        |
+| user_id     | UUID         | FK          | Acting user        |
+| action      | VARCHAR(100) | NOT NULL    | Action performed   |
+| entity_type | VARCHAR(50)  |             | Target entity type |
+| entity_id   | UUID         |             | Target entity ID   |
+| metadata    | JSONB        | DEFAULT {}  | Action details     |
+| ip_address  | INET         |             | Client IP          |
+| user_agent  | TEXT         |             | Client user agent  |
+| created_at  | TIMESTAMPTZ  |             | Action timestamp   |
 
 ---
 
@@ -526,13 +526,13 @@ CREATE TABLE nchat.nchat_roles (
 
 **Default Roles:**
 
-| Name | Slug | Level | Description |
-|------|------|-------|-------------|
-| Owner | owner | 0 | System owner (immutable) |
-| Admin | admin | 1 | Full admin access |
-| Moderator | moderator | 2 | Content moderation |
-| Member | member | 3 | Standard user |
-| Guest | guest | 4 | Read-only access |
+| Name      | Slug      | Level | Description              |
+| --------- | --------- | ----- | ------------------------ |
+| Owner     | owner     | 0     | System owner (immutable) |
+| Admin     | admin     | 1     | Full admin access        |
+| Moderator | moderator | 2     | Content moderation       |
+| Member    | member    | 3     | Standard user            |
+| Guest     | guest     | 4     | Read-only access         |
 
 ### nchat_role_permissions
 
@@ -551,22 +551,22 @@ CREATE TABLE nchat.nchat_role_permissions (
 
 **Available Permissions:**
 
-| Permission | Description |
-|------------|-------------|
-| manage_organization | Org settings |
-| manage_roles | Role management |
-| manage_users | User management |
-| manage_channels | Channel management |
-| manage_messages | Message moderation |
-| delete_any_message | Delete any message |
-| pin_messages | Pin/unpin messages |
-| create_public_channel | Create public channels |
+| Permission             | Description             |
+| ---------------------- | ----------------------- |
+| manage_organization    | Org settings            |
+| manage_roles           | Role management         |
+| manage_users           | User management         |
+| manage_channels        | Channel management      |
+| manage_messages        | Message moderation      |
+| delete_any_message     | Delete any message      |
+| pin_messages           | Pin/unpin messages      |
+| create_public_channel  | Create public channels  |
 | create_private_channel | Create private channels |
-| invite_users | Send invitations |
-| ban_users | Ban/unban users |
-| view_analytics | View analytics |
-| manage_integrations | Integration settings |
-| manage_billing | Billing settings |
+| invite_users           | Send invitations        |
+| ban_users              | Ban/unban users         |
+| view_analytics         | View analytics          |
+| manage_integrations    | Integration settings    |
+| manage_billing         | Billing settings        |
 
 ### nchat_user_roles
 
@@ -797,4 +797,4 @@ nchat_users
 
 ---
 
-*This document describes the complete database schema for nself-chat.*
+_This document describes the complete database schema for nself-chat._

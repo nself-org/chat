@@ -237,40 +237,49 @@ await initializeAnalytics({
 Track specific events. See [types.ts](./types.ts) for all available methods.
 
 **Authentication:**
+
 - `trackLogin(method, userId)`
 - `trackLogout()`
 - `trackSignup(method, userId)`
 
 **Messaging:**
+
 - `trackMessageSent(event: MessageSentEvent)`
 - `trackMessageEdited(channelId)`
 - `trackMessageDeleted(channelId)`
 
 **Channels:**
+
 - `trackChannelCreated(event: ChannelEvent)`
 - `trackChannelJoined(event: ChannelEvent)`
 - `trackChannelLeft(channelId)`
 
 **Search:**
+
 - `trackSearch(event: SearchEvent)`
 - `trackSearchResultClicked(resultId, position)`
 
 **Files:**
+
 - `trackFileUploaded(event: FileEvent)`
 - `trackFileDownloaded(fileType, fileSize)`
 
 **Calls:**
+
 - `trackCallStarted(event: CallEvent)`
 - `trackCallEnded(event: CallEvent)`
 
 **Performance:**
+
 - `trackScreenLoadTime(screenName, durationMs)`
 - `trackApiCall(endpoint, method, durationMs, status)`
 
 **Errors:**
+
 - `trackError(event: ErrorEvent)`
 
 **Generic:**
+
 - `trackScreenView(screenName, screenClass?)`
 
 ### analyticsPrivacy
@@ -278,6 +287,7 @@ Track specific events. See [types.ts](./types.ts) for all available methods.
 Privacy control API.
 
 **Consent Management:**
+
 - `getConsent(): ConsentStatus`
 - `setConsent(consent: Partial<ConsentStatus>): Promise<void>`
 - `acceptAll(): Promise<void>`
@@ -285,14 +295,17 @@ Privacy control API.
 - `hasProvidedConsent(): boolean`
 
 **Privacy Settings:**
+
 - `getPrivacySettings(): PrivacySettings`
 - `setPrivacySettings(settings: Partial<PrivacySettings>): Promise<void>`
 
 **Data Management:**
+
 - `exportUserData(): Promise<any>`
 - `clearAllData(): Promise<void>`
 
 **Utilities:**
+
 - `shouldEnableAnalytics(): boolean`
 - `anonymizeUserId(userId: string): string`
 - `getConsentBannerMessage(): string`
@@ -464,11 +477,13 @@ adb shell setprop debug.firebase.analytics.app io.nself.chat
 ### Verify Events
 
 **Firebase Console:**
+
 1. Open Firebase Console
 2. Go to Analytics → DebugView
 3. Verify events appear in real-time
 
 **Sentry Dashboard:**
+
 1. Open Sentry dashboard
 2. Go to Issues
 3. Verify errors are captured
@@ -539,6 +554,7 @@ cd platforms/capacitor/android
 The legacy analytics system (analytics-client.ts, analytics-collector.ts, etc.) is still available for backward compatibility, but the new v0.8.0 system is recommended for mobile and desktop apps.
 
 **Old (v0.7.0):**
+
 ```typescript
 import { getAnalyticsClient } from '@/lib/analytics/analytics-client'
 
@@ -547,6 +563,7 @@ client.track('message_sent', { ... })
 ```
 
 **New (v0.8.0):**
+
 ```typescript
 import { analytics } from '@/lib/analytics/events'
 
@@ -565,6 +582,7 @@ Both systems can coexist. The new system is optimized for mobile/desktop with na
 ## Support
 
 For issues or questions:
+
 - Email: dev@nself.org
 - GitHub: [Issues](https://github.com/nself/nchat/issues)
 - Slack: #analytics channel

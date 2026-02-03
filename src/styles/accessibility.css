@@ -108,8 +108,8 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
-[role="button"]:focus-visible,
-[role="link"]:focus-visible {
+[role='button']:focus-visible,
+[role='link']:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
@@ -184,7 +184,7 @@ select:focus-visible,
 }
 
 /* Remove transparency in high contrast */
-.high-contrast [style*="opacity"] {
+.high-contrast [style*='opacity'] {
   opacity: 1 !important;
 }
 
@@ -196,19 +196,19 @@ select:focus-visible,
   --font-size-multiplier: 1;
 }
 
-[data-font-size="small"] {
+[data-font-size='small'] {
   --font-size-multiplier: 0.875;
 }
 
-[data-font-size="medium"] {
+[data-font-size='medium'] {
   --font-size-multiplier: 1;
 }
 
-[data-font-size="large"] {
+[data-font-size='large'] {
   --font-size-multiplier: 1.125;
 }
 
-[data-font-size="x-large"] {
+[data-font-size='x-large'] {
   --font-size-multiplier: 1.25;
 }
 
@@ -218,16 +218,16 @@ html {
 }
 
 /* Adjust specific elements */
-[data-font-size="large"] button,
-[data-font-size="x-large"] button {
+[data-font-size='large'] button,
+[data-font-size='x-large'] button {
   min-height: 44px;
   padding: 0.75rem 1rem;
 }
 
-[data-font-size="large"] input,
-[data-font-size="x-large"] input,
-[data-font-size="large"] textarea,
-[data-font-size="x-large"] textarea {
+[data-font-size='large'] input,
+[data-font-size='x-large'] input,
+[data-font-size='large'] textarea,
+[data-font-size='x-large'] textarea {
   font-size: 1rem;
   padding: 0.75rem;
 }
@@ -238,7 +238,7 @@ html {
 
 /* Disable animations when reduce motion is enabled */
 .reduce-motion *,
-[data-animation-level="none"] * {
+[data-animation-level='none'] * {
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
@@ -246,7 +246,7 @@ html {
 }
 
 /* Reduced animations (keep some subtle motion) */
-[data-animation-level="reduced"] * {
+[data-animation-level='reduced'] * {
   animation-duration: 0.15s !important;
   transition-duration: 0.15s !important;
 }
@@ -268,36 +268,54 @@ html {
  * ============================================================================ */
 
 /* Protanopia (Red-Blind) */
-[data-colorblind-mode="protanopia"] {
+[data-colorblind-mode='protanopia'] {
   filter: url(#protanopia-filter);
 }
 
 /* Deuteranopia (Green-Blind) */
-[data-colorblind-mode="deuteranopia"] {
+[data-colorblind-mode='deuteranopia'] {
   filter: url(#deuteranopia-filter);
 }
 
 /* Tritanopia (Blue-Blind) */
-[data-colorblind-mode="tritanopia"] {
+[data-colorblind-mode='tritanopia'] {
   filter: url(#tritanopia-filter);
 }
 
 /* Monochrome */
-[data-colorblind-mode="monochrome"] {
+[data-colorblind-mode='monochrome'] {
   filter: grayscale(100%);
 }
 
 /* Add pattern/texture indicators for color-coded elements */
-[data-colorblind-mode]:not([data-colorblind-mode="none"]) .status-online {
-  background-image: repeating-linear-gradient(45deg, transparent, transparent 2px, currentColor 2px, currentColor 4px);
+[data-colorblind-mode]:not([data-colorblind-mode='none']) .status-online {
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    currentColor 2px,
+    currentColor 4px
+  );
 }
 
-[data-colorblind-mode]:not([data-colorblind-mode="none"]) .status-away {
-  background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, currentColor 2px, currentColor 4px);
+[data-colorblind-mode]:not([data-colorblind-mode='none']) .status-away {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 2px,
+    currentColor 2px,
+    currentColor 4px
+  );
 }
 
-[data-colorblind-mode]:not([data-colorblind-mode="none"]) .status-busy {
-  background-image: repeating-linear-gradient(135deg, transparent, transparent 2px, currentColor 2px, currentColor 4px);
+[data-colorblind-mode]:not([data-colorblind-mode='none']) .status-busy {
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 2px,
+    currentColor 2px,
+    currentColor 4px
+  );
 }
 
 /* ============================================================================
@@ -305,12 +323,12 @@ html {
  * ============================================================================ */
 
 /* Highlight keyboard focus path */
-.keyboard-only [tabindex="0"]:not(:focus) {
+.keyboard-only [tabindex='0']:not(:focus) {
   position: relative;
 }
 
-.keyboard-only [tabindex="0"]:not(:focus)::after {
-  content: "";
+.keyboard-only [tabindex='0']:not(:focus)::after {
+  content: '';
   position: absolute;
   inset: -2px;
   border: 1px dashed var(--muted-foreground);
@@ -332,14 +350,14 @@ html {
   }
 
   /* Simplify layout */
-  [data-decorative="true"] {
+  [data-decorative='true'] {
     display: none;
   }
 
   /* Ensure all interactive elements are keyboard accessible */
-  [role="button"],
-  [role="link"],
-  [role="menuitem"] {
+  [role='button'],
+  [role='link'],
+  [role='menuitem'] {
     cursor: pointer;
   }
 }
@@ -357,7 +375,7 @@ html {
 }
 
 /* Visible live regions (like status messages) */
-[aria-live][data-visible="true"] {
+[aria-live][data-visible='true'] {
   position: static;
   width: auto;
   height: auto;
@@ -381,7 +399,7 @@ html {
 
 /* High contrast borders */
 .high-contrast .border,
-.high-contrast [class*="border"] {
+.high-contrast [class*='border'] {
   border-width: 2px;
   border-color: var(--border);
 }
@@ -393,18 +411,18 @@ html {
 /* Ensure touch targets are at least 44x44px (WCAG 2.5.5) */
 button,
 a,
-input[type="button"],
-input[type="submit"],
-input[type="reset"],
-[role="button"],
-[role="link"] {
+input[type='button'],
+input[type='submit'],
+input[type='reset'],
+[role='button'],
+[role='link'] {
   min-height: 44px;
   min-width: 44px;
 }
 
 /* Icon-only buttons */
 button:has(svg:only-child),
-[role="button"]:has(svg:only-child) {
+[role='button']:has(svg:only-child) {
   min-height: 44px;
   min-width: 44px;
   padding: 0.5rem;
@@ -415,7 +433,7 @@ button:has(svg:only-child),
  * ============================================================================ */
 
 /* Ensure errors are not indicated by color alone */
-[aria-invalid="true"],
+[aria-invalid='true'],
 .error {
   border: 2px solid var(--destructive);
   padding-left: 2.5rem;
@@ -424,8 +442,8 @@ button:has(svg:only-child),
   background-position: 0.5rem center;
 }
 
-[role="alert"],
-[role="status"] {
+[role='alert'],
+[role='status'] {
   padding: 0.75rem;
   border-left: 4px solid var(--primary);
   background: var(--muted);
@@ -435,13 +453,13 @@ button:has(svg:only-child),
  * Loading States
  * ============================================================================ */
 
-[aria-busy="true"] {
+[aria-busy='true'] {
   cursor: wait;
   opacity: 0.7;
 }
 
-[aria-busy="true"]::after {
-  content: "Loading...";
+[aria-busy='true']::after {
+  content: 'Loading...';
   position: absolute;
   left: 0;
   right: 0;
@@ -455,19 +473,19 @@ button:has(svg:only-child),
  * ============================================================================ */
 
 @media (max-width: 768px) {
-  [data-font-size="small"] {
+  [data-font-size='small'] {
     --font-size-multiplier: 1;
   }
 
-  [data-font-size="medium"] {
+  [data-font-size='medium'] {
     --font-size-multiplier: 1.125;
   }
 
-  [data-font-size="large"] {
+  [data-font-size='large'] {
     --font-size-multiplier: 1.25;
   }
 
-  [data-font-size="x-large"] {
+  [data-font-size='x-large'] {
     --font-size-multiplier: 1.375;
   }
 }
@@ -478,18 +496,18 @@ button:has(svg:only-child),
 
 @media print {
   .no-print,
-  [aria-hidden="true"],
-  [role="complementary"],
+  [aria-hidden='true'],
+  [role='complementary'],
   nav {
     display: none !important;
   }
 
   a[href]::after {
-    content: " (" attr(href) ")";
+    content: ' (' attr(href) ')';
   }
 
   abbr[title]::after {
-    content: " (" attr(title) ")";
+    content: ' (' attr(title) ')';
   }
 }
 
@@ -499,7 +517,7 @@ button:has(svg:only-child),
 
 /* Ensure proper spacing for screen readers */
 .sr-space::after {
-  content: " ";
+  content: ' ';
 }
 
 /* Force show focus (for testing) */

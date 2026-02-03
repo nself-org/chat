@@ -197,18 +197,15 @@ export function LinkPreview({
   // If privacy mode is enabled and no previews loaded yet, show control
   if (privacyMode && validPreviews.length === 0 && urls.length > 0) {
     return (
-      <div className={cn('mt-2 rounded-lg border bg-muted/30 p-3', className)}>
+      <div className={cn('bg-muted/30 mt-2 rounded-lg border p-3', className)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <EyeOff className="h-4 w-4" />
-            <span>{urls.length} link{urls.length > 1 ? 's' : ''} hidden for privacy</span>
+            <span>
+              {urls.length} link{urls.length > 1 ? 's' : ''} hidden for privacy
+            </span>
           </div>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={togglePrivacyMode}
-            className="h-8"
-          >
+          <Button size="sm" variant="ghost" onClick={togglePrivacyMode} className="h-8">
             <Eye className="mr-2 h-4 w-4" />
             Show Previews
           </Button>
@@ -249,9 +246,7 @@ export function LinkPreview({
       <AnimatePresence mode="popLayout">
         {Array.from(previewStates.entries()).map(([url, state]) => {
           if (state.status === 'loading') {
-            return (
-              <LinkPreviewSkeleton key={url} />
-            )
+            return <LinkPreviewSkeleton key={url} />
           }
 
           if (state.status === 'success' && state.data) {
@@ -307,7 +302,7 @@ function LinkPreviewCard({ preview, onDismiss }: LinkPreviewCardProps) {
       exit={{ opacity: 0, scale: 0.95 }}
       transition={{ duration: 0.2 }}
       className={cn(
-        'group relative block overflow-hidden rounded-lg border bg-card transition-colors hover:border-primary/50',
+        'hover:border-primary/50 group relative block overflow-hidden rounded-lg border bg-card transition-colors',
         hasImage ? '' : 'p-3'
       )}
       style={{
@@ -326,7 +321,7 @@ function LinkPreviewCard({ preview, onDismiss }: LinkPreviewCardProps) {
             e.stopPropagation()
             onDismiss()
           }}
-          className="absolute right-2 top-2 z-10 h-6 w-6 bg-background/80 opacity-0 backdrop-blur-sm transition-opacity hover:bg-background group-hover:opacity-100"
+          className="bg-background/80 absolute right-2 top-2 z-10 h-6 w-6 opacity-0 backdrop-blur-sm transition-opacity hover:bg-background group-hover:opacity-100"
         >
           <X className="h-3 w-3" />
         </Button>
@@ -354,11 +349,7 @@ function LinkPreviewCard({ preview, onDismiss }: LinkPreviewCardProps) {
           {preview.type === 'video' && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/20">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-black/60">
-                <svg
-                  className="h-8 w-8 text-white"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M8 5v14l11-7z" />
                 </svg>
               </div>
@@ -499,9 +490,7 @@ function LinkPreviewError({ url, error, onDismiss }: LinkPreviewErrorProps) {
           >
             {domain}
           </a>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {error || 'Preview unavailable'}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{error || 'Preview unavailable'}</p>
         </div>
       </div>
     </motion.div>

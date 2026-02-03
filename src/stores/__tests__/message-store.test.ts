@@ -717,10 +717,7 @@ describe('Message Store', () => {
 
   describe('Selectors', () => {
     it('selectMessages should return messages for a channel', () => {
-      const messages = [
-        createTestMessage({ id: 'msg-1' }),
-        createTestMessage({ id: 'msg-2' }),
-      ]
+      const messages = [createTestMessage({ id: 'msg-1' }), createTestMessage({ id: 'msg-2' })]
 
       act(() => {
         useMessageStore.getState().setMessages('channel-1', messages)

@@ -9,6 +9,7 @@ v0.9.0 marks the "Feature Complete" milestone for nself-chat, delivering compreh
 ## Major Features
 
 ### 1. End-to-End Encryption (Signal Protocol)
+
 - **X3DH Key Exchange** - Secure key agreement protocol
 - **Double Ratchet Algorithm** - Forward secrecy with message key rotation
 - **Multi-Device Support** - Seamless encryption across devices
@@ -18,6 +19,7 @@ v0.9.0 marks the "Feature Complete" milestone for nself-chat, delivering compreh
 Files: `src/lib/encryption/` (5,040+ lines)
 
 ### 2. Complete Integration Suite
+
 - **Slack** - Full OAuth, message sync, channel mapping
 - **Discord** - Bot integration, webhook support
 - **GitHub** - Issue/PR notifications, code snippets
@@ -28,6 +30,7 @@ Files: `src/lib/encryption/` (5,040+ lines)
 Files: `src/lib/integrations/` (18 modules)
 
 ### 3. Mobile Platform Features
+
 - **iOS Widgets** - Home screen widgets with WidgetKit
 - **Android Widgets** - App widgets with Glance API
 - **Apple Watch** - WatchConnectivity integration
@@ -39,12 +42,14 @@ Files: `src/lib/integrations/` (18 modules)
 Files: `platforms/capacitor/src/native/` (14 modules)
 
 ### 4. Performance Optimizations
+
 - **Dynamic Imports** - Code splitting for faster loads
 - **Web Vitals Monitoring** - Core Web Vitals tracking
 - **Lazy Components** - Deferred component loading
 - **WebSocket Optimization** - Connection pooling, batching
 
 ### 5. AI & Intelligence
+
 - **Smart Search** - Natural language query parsing
 - **Semantic Search** - Vector-based similarity search
 - **AI Moderation** - Content toxicity detection
@@ -52,6 +57,7 @@ Files: `platforms/capacitor/src/native/` (14 modules)
 - **Sentiment Analysis** - Message sentiment tracking
 
 ### 6. Security Enhancements
+
 - **SAML Authentication** - Enterprise SSO support
 - **Session Management** - Secure session handling
 - **PIN Protection** - App-level PIN security
@@ -61,11 +67,13 @@ Files: `platforms/capacitor/src/native/` (14 modules)
 ## Technical Achievements
 
 ### TypeScript Quality
+
 - **467 → 0 errors** fixed in this release
 - Strict type checking enabled
 - Full type coverage across all modules
 
 ### Code Statistics
+
 - **180+ new/updated files**
 - **15,000+ lines** of new functionality
 - **18 parallel agents** used for implementation

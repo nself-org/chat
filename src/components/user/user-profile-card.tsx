@@ -8,11 +8,7 @@ import { UserStatus } from './user-status'
 import { RoleBadge } from './role-badge'
 import { UserPresenceDot } from './user-presence-dot'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Card, CardContent } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { MessageSquare, Phone, MoreHorizontal, User } from 'lucide-react'
@@ -21,8 +17,7 @@ import { MessageSquare, Phone, MoreHorizontal, User } from 'lucide-react'
 // Types
 // ============================================================================
 
-export interface UserProfileCardProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface UserProfileCardProps extends React.HTMLAttributes<HTMLDivElement> {
   user: UserProfile
   onMessage?: () => void
   onCall?: () => void
@@ -62,64 +57,46 @@ const UserProfileCard = React.forwardRef<HTMLDivElement, UserProfileCardProps>(
   ) => {
     if (compact) {
       return (
-        <div
-          ref={ref}
-          className={cn('flex items-center gap-3 p-2', className)}
-          {...props}
-        >
+        <div ref={ref} className={cn('flex items-center gap-3 p-2', className)} {...props}>
           <UserAvatar user={user} size="sm" presence={user.presence} />
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-sm truncate">
-                {user.displayName}
-              </span>
+              <span className="truncate text-sm font-medium">{user.displayName}</span>
               <RoleBadge role={user.role} size="xs" />
             </div>
-            <span className="text-xs text-muted-foreground truncate block">
-              @{user.username}
-            </span>
+            <span className="block truncate text-xs text-muted-foreground">@{user.username}</span>
           </div>
         </div>
       )
     }
 
     return (
-      <Card
-        ref={ref}
-        className={cn('w-80 overflow-hidden', className)}
-        {...props}
-      >
+      <Card ref={ref} className={cn('w-80 overflow-hidden', className)} {...props}>
         {/* Header with cover gradient */}
         <div
-          className="h-16 bg-gradient-to-r from-primary/20 to-primary/10"
+          className="from-primary/20 to-primary/10 h-16 bg-gradient-to-r"
           style={{
-            backgroundImage: user.coverUrl
-              ? `url(${user.coverUrl})`
-              : undefined,
+            backgroundImage: user.coverUrl ? `url(${user.coverUrl})` : undefined,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         />
 
-        <CardContent className="pt-0 -mt-8">
+        <CardContent className="-mt-8 pt-0">
           {/* Avatar and basic info */}
-          <div className="flex items-end gap-4 mb-3">
+          <div className="mb-3 flex items-end gap-4">
             <UserAvatar
               user={user}
               size="xl"
               presence={user.presence}
               className="ring-4 ring-background"
             />
-            <div className="flex-1 min-w-0 pb-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-semibold text-lg truncate">
-                  {user.displayName}
-                </h3>
+            <div className="min-w-0 flex-1 pb-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="truncate text-lg font-semibold">{user.displayName}</h3>
                 <RoleBadge role={user.role} size="sm" />
               </div>
-              <p className="text-sm text-muted-foreground truncate">
-                @{user.username}
-              </p>
+              <p className="truncate text-sm text-muted-foreground">@{user.username}</p>
             </div>
           </div>
 
@@ -129,7 +106,7 @@ const UserProfileCard = React.forwardRef<HTMLDivElement, UserProfileCardProps>(
           )}
 
           {/* Presence status */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
+          <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
             <UserPresenceDot status={user.presence} size="sm" position="inline" />
             <span className="capitalize">{user.presence}</span>
           </div>
@@ -138,9 +115,7 @@ const UserProfileCard = React.forwardRef<HTMLDivElement, UserProfileCardProps>(
           {user.bio && (
             <>
               <Separator className="my-3" />
-              <p className="text-sm text-muted-foreground line-clamp-2">
-                {user.bio}
-              </p>
+              <p className="line-clamp-2 text-sm text-muted-foreground">{user.bio}</p>
             </>
           )}
 
@@ -150,13 +125,8 @@ const UserProfileCard = React.forwardRef<HTMLDivElement, UserProfileCardProps>(
               <Separator className="my-3" />
               <div className="flex items-center gap-2">
                 {onMessage && (
-                  <Button
-                    variant="default"
-                    size="sm"
-                    className="flex-1"
-                    onClick={onMessage}
-                  >
-                    <MessageSquare className="h-4 w-4 mr-2" />
+                  <Button variant="default" size="sm" className="flex-1" onClick={onMessage}>
+                    <MessageSquare className="mr-2 h-4 w-4" />
                     Message
                   </Button>
                 )}
@@ -249,7 +219,7 @@ const UserProfileCardTrigger: React.FC<UserProfileCardTriggerProps> = ({
       <PopoverContent
         side={side}
         align={align}
-        className="p-0 w-auto"
+        className="w-auto p-0"
         onMouseEnter={handleContentMouseEnter}
         onMouseLeave={handleContentMouseLeave}
       >

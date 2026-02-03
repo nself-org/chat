@@ -32,7 +32,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
-import { useScheduledMessagesList, useScheduledMessage, useMessageScheduler } from '@/hooks/use-message-scheduler'
+import {
+  useScheduledMessagesList,
+  useScheduledMessage,
+  useMessageScheduler,
+} from '@/hooks/use-message-scheduler'
 import { ScheduleMessageModal } from './ScheduleMessageModal'
 import {
   formatScheduledTime,
@@ -46,11 +50,13 @@ interface ScheduledMessagesListProps {
   className?: string
 }
 
-export function ScheduledMessagesList({ channelId, userId, className }: ScheduledMessagesListProps) {
-  const { messages, pendingCount, failedCount, upcomingMessages, overdueMessages } = useScheduledMessagesList(
-    channelId,
-    userId
-  )
+export function ScheduledMessagesList({
+  channelId,
+  userId,
+  className,
+}: ScheduledMessagesListProps) {
+  const { messages, pendingCount, failedCount, upcomingMessages, overdueMessages } =
+    useScheduledMessagesList(channelId, userId)
   const { sendNow } = useMessageScheduler()
 
   const [selectedMessage, setSelectedMessage] = useState<ScheduledMessage | null>(null)
@@ -80,8 +86,8 @@ export function ScheduledMessagesList({ channelId, userId, className }: Schedule
   if (messages.length === 0) {
     return (
       <div className={cn('flex flex-col items-center justify-center p-8 text-center', className)}>
-        <Clock className="h-12 w-12 text-muted-foreground mb-4" />
-        <h3 className="text-lg font-semibold mb-2">No scheduled messages</h3>
+        <Clock className="mb-4 h-12 w-12 text-muted-foreground" />
+        <h3 className="mb-2 text-lg font-semibold">No scheduled messages</h3>
         <p className="text-sm text-muted-foreground">
           Schedule messages to be sent at a specific time
         </p>
@@ -92,7 +98,7 @@ export function ScheduledMessagesList({ channelId, userId, className }: Schedule
   return (
     <div className={cn('space-y-4', className)}>
       {/* Stats */}
-      <div className="flex gap-4 p-4 bg-muted/50 rounded-lg">
+      <div className="bg-muted/50 flex gap-4 rounded-lg p-4">
         <div className="flex items-center gap-2">
           <Clock className="h-4 w-4 text-muted-foreground" />
           <span className="text-sm">
@@ -116,7 +122,8 @@ export function ScheduledMessagesList({ channelId, userId, className }: Schedule
             <div className="flex items-center gap-2">
               <Send className="h-4 w-4 text-blue-600" />
               <span className="text-sm">
-                <span className="font-semibold">{upcomingMessages.length}</span> upcoming (next hour)
+                <span className="font-semibold">{upcomingMessages.length}</span> upcoming (next
+                hour)
               </span>
             </div>
           </>
@@ -199,7 +206,7 @@ function ScheduledMessageItem({
   return (
     <div
       className={cn(
-        'p-4 border rounded-lg space-y-3',
+        'space-y-3 rounded-lg border p-4',
         message.status === 'failed' && 'border-destructive/50 bg-destructive/5',
         message.status === 'sending' && 'border-blue-500/50 bg-blue-500/5',
         isOverdue && 'border-orange-500/50 bg-orange-500/5'
@@ -207,8 +214,8 @@ function ScheduledMessageItem({
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-4">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center gap-2">
             <StatusBadge status={message.status} isOverdue={isOverdue} />
             <span className="text-sm text-muted-foreground">
               {formatScheduledTime(message.scheduledAt)}
@@ -219,14 +226,14 @@ function ScheduledMessageItem({
               </span>
             )}
           </div>
-          <p className="text-sm line-clamp-2 whitespace-pre-wrap">{message.content}</p>
+          <p className="line-clamp-2 whitespace-pre-wrap text-sm">{message.content}</p>
         </div>
       </div>
 
       {/* Error Message */}
       {message.error && (
-        <div className="flex items-start gap-2 p-2 bg-destructive/10 rounded text-xs text-destructive">
-          <AlertCircle className="h-3 w-3 mt-0.5 flex-shrink-0" />
+        <div className="bg-destructive/10 flex items-start gap-2 rounded p-2 text-xs text-destructive">
+          <AlertCircle className="mt-0.5 h-3 w-3 flex-shrink-0" />
           <span>{message.error}</span>
         </div>
       )}
@@ -235,49 +242,28 @@ function ScheduledMessageItem({
       <div className="flex items-center gap-2">
         {message.status === 'pending' && (
           <>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onSendNow}
-              disabled={isSending}
-            >
-              <Send className="h-3 w-3 mr-1" />
+            <Button size="sm" variant="outline" onClick={onSendNow} disabled={isSending}>
+              <Send className="mr-1 h-3 w-3" />
               Send Now
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onEdit}
-            >
-              <Edit2 className="h-3 w-3 mr-1" />
+            <Button size="sm" variant="outline" onClick={onEdit}>
+              <Edit2 className="mr-1 h-3 w-3" />
               Edit
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={cancelMessage}
-            >
-              <X className="h-3 w-3 mr-1" />
+            <Button size="sm" variant="outline" onClick={cancelMessage}>
+              <X className="mr-1 h-3 w-3" />
               Cancel
             </Button>
           </>
         )}
         {message.status === 'failed' && (
           <>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={retryMessage}
-            >
-              <RefreshCw className="h-3 w-3 mr-1" />
+            <Button size="sm" variant="outline" onClick={retryMessage}>
+              <RefreshCw className="mr-1 h-3 w-3" />
               Retry
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={onEdit}
-            >
-              <Edit2 className="h-3 w-3 mr-1" />
+            <Button size="sm" variant="outline" onClick={onEdit}>
+              <Edit2 className="mr-1 h-3 w-3" />
               Edit
             </Button>
           </>
@@ -308,7 +294,7 @@ function StatusBadge({ status, isOverdue }: { status: string; isOverdue: boolean
   if (isOverdue) {
     return (
       <Badge variant="destructive" className="text-xs">
-        <AlertCircle className="h-3 w-3 mr-1" />
+        <AlertCircle className="mr-1 h-3 w-3" />
         Overdue
       </Badge>
     )
@@ -318,35 +304,35 @@ function StatusBadge({ status, isOverdue }: { status: string; isOverdue: boolean
     case 'pending':
       return (
         <Badge variant="secondary" className="text-xs">
-          <Clock className="h-3 w-3 mr-1" />
+          <Clock className="mr-1 h-3 w-3" />
           Scheduled
         </Badge>
       )
     case 'sending':
       return (
-        <Badge variant="default" className="text-xs bg-blue-600">
-          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+        <Badge variant="default" className="bg-blue-600 text-xs">
+          <Loader2 className="mr-1 h-3 w-3 animate-spin" />
           Sending
         </Badge>
       )
     case 'sent':
       return (
-        <Badge variant="default" className="text-xs bg-green-600">
-          <CheckCircle2 className="h-3 w-3 mr-1" />
+        <Badge variant="default" className="bg-green-600 text-xs">
+          <CheckCircle2 className="mr-1 h-3 w-3" />
           Sent
         </Badge>
       )
     case 'failed':
       return (
         <Badge variant="destructive" className="text-xs">
-          <AlertCircle className="h-3 w-3 mr-1" />
+          <AlertCircle className="mr-1 h-3 w-3" />
           Failed
         </Badge>
       )
     case 'cancelled':
       return (
         <Badge variant="outline" className="text-xs">
-          <X className="h-3 w-3 mr-1" />
+          <X className="mr-1 h-3 w-3" />
           Cancelled
         </Badge>
       )
@@ -399,7 +385,11 @@ interface DeleteScheduledMessageDialogProps {
   onClose: () => void
 }
 
-function DeleteScheduledMessageDialog({ message, isOpen, onClose }: DeleteScheduledMessageDialogProps) {
+function DeleteScheduledMessageDialog({
+  message,
+  isOpen,
+  onClose,
+}: DeleteScheduledMessageDialogProps) {
   const { deleteMessage } = useScheduledMessage(message.id)
 
   const handleDelete = () => {
@@ -416,9 +406,9 @@ function DeleteScheduledMessageDialog({ message, isOpen, onClose }: DeleteSchedu
             This will permanently remove the scheduled message. This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
-        <div className="p-4 bg-muted rounded-lg">
-          <p className="text-sm line-clamp-3 whitespace-pre-wrap">{message.content}</p>
-          <p className="text-xs text-muted-foreground mt-2">
+        <div className="rounded-lg bg-muted p-4">
+          <p className="line-clamp-3 whitespace-pre-wrap text-sm">{message.content}</p>
+          <p className="mt-2 text-xs text-muted-foreground">
             Scheduled for {formatScheduledTime(message.scheduledAt)}
           </p>
         </div>
@@ -427,7 +417,7 @@ function DeleteScheduledMessageDialog({ message, isOpen, onClose }: DeleteSchedu
             Cancel
           </Button>
           <Button variant="destructive" onClick={handleDelete}>
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete
           </Button>
         </DialogFooter>

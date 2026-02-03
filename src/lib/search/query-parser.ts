@@ -149,7 +149,7 @@ export function buildMeiliSearchFilter(
 
   // Add 'has:' filters
   if (parsedQuery.filters.has && parsedQuery.filters.has.length > 0) {
-    parsedQuery.filters.has.forEach(hasValue => {
+    parsedQuery.filters.has.forEach((hasValue) => {
       if (hasValue === 'link') {
         filterParts.push('has_link = true')
       } else if (hasValue === 'file') {
@@ -162,7 +162,7 @@ export function buildMeiliSearchFilter(
 
   // Add 'is:' filters
   if (parsedQuery.filters.is && parsedQuery.filters.is.length > 0) {
-    parsedQuery.filters.is.forEach(isValue => {
+    parsedQuery.filters.is.forEach((isValue) => {
       if (isValue === 'pinned') {
         filterParts.push('is_pinned = true')
       } else if (isValue === 'starred') {
@@ -191,7 +191,7 @@ export function buildMeiliSearchFilter(
         filterParts.push(`${key} = ${value}`)
       } else if (Array.isArray(value)) {
         // Handle array filters (IN operator)
-        const values = value.map(v => (typeof v === 'string' ? `"${v}"` : v)).join(', ')
+        const values = value.map((v) => (typeof v === 'string' ? `"${v}"` : v)).join(', ')
         filterParts.push(`${key} IN [${values}]`)
       }
     })
@@ -237,7 +237,7 @@ export function getOperatorSuggestions(partialQuery: string): string[] {
   }
 
   // Return operators that match the partial input
-  return allOperators.filter(op => op.startsWith(lastWord.toLowerCase()))
+  return allOperators.filter((op) => op.startsWith(lastWord.toLowerCase()))
 }
 
 /**
@@ -302,13 +302,13 @@ export function buildQueryFromFilters(filters: ParsedQuery['filters'], text?: st
   }
 
   if (filters.has && filters.has.length > 0) {
-    filters.has.forEach(hasValue => {
+    filters.has.forEach((hasValue) => {
       parts.push(`has:${hasValue}`)
     })
   }
 
   if (filters.is && filters.is.length > 0) {
-    filters.is.forEach(isValue => {
+    filters.is.forEach((isValue) => {
       parts.push(`is:${isValue}`)
     })
   }

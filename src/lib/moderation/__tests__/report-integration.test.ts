@@ -5,11 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach } from '@jest/globals'
-import {
-  createReportHandler,
-  createActionContext,
-  type ReportAction,
-} from '../report-handler'
+import { createReportHandler, createActionContext, type ReportAction } from '../report-handler'
 import { ReportQueue, type CreateReportInput } from '../report-system'
 
 describe('Report System Integration', () => {
@@ -176,9 +172,7 @@ describe('Report System Integration', () => {
         targetId: 'channel-456',
         categoryId: 'inappropriate-content',
         description: 'Channel has inappropriate content',
-        evidence: [
-          { type: 'link', content: 'https://example.com' },
-        ],
+        evidence: [{ type: 'link', content: 'https://example.com' }],
       }
 
       const result = await handler.submitReport(input)
@@ -223,12 +217,9 @@ describe('Report System Integration', () => {
       const submitResult = await handler.submitReport(input)
 
       // Approve it
-      const context = createActionContext(
-        submitResult.reportId,
-        'mod-789',
-        'approve',
-        { notes: 'Not spam, false alarm' }
-      )
+      const context = createActionContext(submitResult.reportId, 'mod-789', 'approve', {
+        notes: 'Not spam, false alarm',
+      })
       const actionResult = await handler.processAction(context)
 
       expect(actionResult.success).toBe(true)
@@ -249,12 +240,9 @@ describe('Report System Integration', () => {
       }
       const submitResult = await handler.submitReport(input)
 
-      const context = createActionContext(
-        submitResult.reportId,
-        'mod-789',
-        'dismiss',
-        { notes: 'Duplicate report' }
-      )
+      const context = createActionContext(submitResult.reportId, 'mod-789', 'dismiss', {
+        notes: 'Duplicate report',
+      })
       const actionResult = await handler.processAction(context)
 
       expect(actionResult.success).toBe(true)
@@ -271,12 +259,9 @@ describe('Report System Integration', () => {
       }
       const submitResult = await handler.submitReport(input)
 
-      const context = createActionContext(
-        submitResult.reportId,
-        'mod-789',
-        'escalate',
-        { notes: 'Needs admin review' }
-      )
+      const context = createActionContext(submitResult.reportId, 'mod-789', 'escalate', {
+        notes: 'Needs admin review',
+      })
       const actionResult = await handler.processAction(context)
 
       expect(actionResult.success).toBe(true)
@@ -297,12 +282,9 @@ describe('Report System Integration', () => {
       }
       const submitResult = await handler.submitReport(input)
 
-      const context = createActionContext(
-        submitResult.reportId,
-        'mod-789',
-        'assign',
-        { moderatorName: 'Jane Moderator' }
-      )
+      const context = createActionContext(submitResult.reportId, 'mod-789', 'assign', {
+        moderatorName: 'Jane Moderator',
+      })
       const actionResult = await handler.processAction(context)
 
       expect(actionResult.success).toBe(true)
@@ -325,9 +307,7 @@ describe('Report System Integration', () => {
       const submitResult = await handler.submitReport(input)
 
       // Assign to moderator
-      await handler.processAction(
-        createActionContext(submitResult.reportId, 'mod-789', 'assign')
-      )
+      await handler.processAction(createActionContext(submitResult.reportId, 'mod-789', 'assign'))
 
       // Warn user
       await handler.processAction(
@@ -363,9 +343,7 @@ describe('Report System Integration', () => {
       ])
 
       // Resolve one
-      await handler.processAction(
-        createActionContext(reports[0].reportId, 'mod-1', 'approve')
-      )
+      await handler.processAction(createActionContext(reports[0].reportId, 'mod-1', 'approve'))
 
       const pending = queue.getReports({ status: 'pending' })
       const resolved = queue.getReports({ status: 'resolved' })
@@ -468,9 +446,7 @@ describe('Report System Integration', () => {
       expect(notifications.length).toBeGreaterThan(0)
 
       // Should notify moderators
-      const moderatorNotif = notifications.find(
-        (n) => n.recipient === 'moderators'
-      )
+      const moderatorNotif = notifications.find((n) => n.recipient === 'moderators')
       expect(moderatorNotif).toBeTruthy()
     })
 
@@ -504,9 +480,7 @@ describe('Report System Integration', () => {
       }
       const submitResult = await handler.submitReport(input)
 
-      await handler.processAction(
-        createActionContext(submitResult.reportId, 'mod-789', 'approve')
-      )
+      await handler.processAction(createActionContext(submitResult.reportId, 'mod-789', 'approve'))
 
       const actionLog = handler.getActionLog()
       expect(actionLog.length).toBeGreaterThan(0)
@@ -526,9 +500,7 @@ describe('Report System Integration', () => {
       }
       const submitResult = await handler.submitReport(input)
 
-      await handler.processAction(
-        createActionContext(submitResult.reportId, 'mod-789', 'approve')
-      )
+      await handler.processAction(createActionContext(submitResult.reportId, 'mod-789', 'approve'))
 
       const actionLog = handler.getActionLog()
       const action = actionLog[actionLog.length - 1]

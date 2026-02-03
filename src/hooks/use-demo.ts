@@ -80,7 +80,11 @@ export interface UseDemoReturn {
   messages: DemoMessage[]
   getMessagesForChannel: (channelId: string) => DemoMessage[]
   getThreadMessages: (messageId: string) => DemoMessage[]
-  sendMessage: (channelId: string, content: string, options?: SendMessageOptions) => DemoMessage | null
+  sendMessage: (
+    channelId: string,
+    content: string,
+    options?: SendMessageOptions
+  ) => DemoMessage | null
   toggleReaction: (messageId: string, emoji: string) => boolean
 
   // Demo Control

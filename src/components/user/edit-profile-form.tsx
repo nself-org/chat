@@ -11,12 +11,13 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Camera, Upload, X, Loader2 } from 'lucide-react'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface EditProfileFormProps
-  extends React.HTMLAttributes<HTMLFormElement> {
+export interface EditProfileFormProps extends React.HTMLAttributes<HTMLFormElement> {
   user: UserProfile
   onSave?: (data: ProfileFormData) => Promise<void>
   onCancel?: () => void
@@ -74,9 +75,7 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
     const avatarInputRef = React.useRef<HTMLInputElement>(null)
     const coverInputRef = React.useRef<HTMLInputElement>(null)
 
-    const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
       const { name, value } = e.target
       setFormData((prev) => ({ ...prev, [name]: value }))
       // Clear error when user starts typing
@@ -180,7 +179,7 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
           })
         }
       } catch (error) {
-        console.error('Failed to update profile:', error)
+        logger.error('Failed to update profile:', error)
       } finally {
         setUpdatingProfile(false)
       }
@@ -190,34 +189,25 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
     const displayCoverUrl = coverPreview ?? formData.coverUrl
 
     return (
-      <form
-        ref={ref}
-        onSubmit={handleSubmit}
-        className={cn('space-y-6', className)}
-        {...props}
-      >
+      <form ref={ref} onSubmit={handleSubmit} className={cn('space-y-6', className)} {...props}>
         {/* Cover image */}
         {showCoverUpload && (
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Cover Image</CardTitle>
-              <CardDescription>
-                Add a banner image to personalize your profile
-              </CardDescription>
+              <CardDescription>Add a banner image to personalize your profile</CardDescription>
             </CardHeader>
             <CardContent>
               <div
-                className="relative h-32 rounded-lg bg-muted overflow-hidden cursor-pointer group"
+                className="group relative h-32 cursor-pointer overflow-hidden rounded-lg bg-muted"
                 onClick={() => coverInputRef.current?.click()}
                 style={{
-                  backgroundImage: displayCoverUrl
-                    ? `url(${displayCoverUrl})`
-                    : undefined,
+                  backgroundImage: displayCoverUrl ? `url(${displayCoverUrl})` : undefined,
                   backgroundSize: 'cover',
                   backgroundPosition: 'center',
                 }}
               >
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                   <Upload className="h-6 w-6 text-white" />
                 </div>
                 {displayCoverUrl && (
@@ -225,7 +215,7 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
                     type="button"
                     variant="destructive"
                     size="icon"
-                    className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute right-2 top-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
                     onClick={(e) => {
                       e.stopPropagation()
                       removeCover()
@@ -251,13 +241,11 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
           <Card>
             <CardHeader>
               <CardTitle className="text-base">Profile Picture</CardTitle>
-              <CardDescription>
-                Upload a photo to help others recognize you
-              </CardDescription>
+              <CardDescription>Upload a photo to help others recognize you</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
-                <div className="relative group">
+                <div className="group relative">
                   <Avatar className="h-20 w-20">
                     {displayAvatarUrl && (
                       <AvatarImage src={displayAvatarUrl} alt="Avatar preview" />
@@ -269,7 +257,7 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
                   <button
                     type="button"
                     onClick={() => avatarInputRef.current?.click()}
-                    className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                    className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100"
                   >
                     <Camera className="h-6 w-6 text-white" />
                   </button>
@@ -281,16 +269,11 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
                     size="sm"
                     onClick={() => avatarInputRef.current?.click()}
                   >
-                    <Upload className="h-4 w-4 mr-2" />
+                    <Upload className="mr-2 h-4 w-4" />
                     Upload Photo
                   </Button>
                   {displayAvatarUrl && (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={removeAvatar}
-                    >
+                    <Button type="button" variant="ghost" size="sm" onClick={removeAvatar}>
                       Remove
                     </Button>
                   )}
@@ -343,9 +326,7 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
                     className={cn('pl-7', errors.username ? 'border-destructive' : '')}
                   />
                 </div>
-                {errors.username && (
-                  <p className="text-xs text-destructive">{errors.username}</p>
-                )}
+                {errors.username && <p className="text-xs text-destructive">{errors.username}</p>}
               </div>
             </div>
 
@@ -361,9 +342,7 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
                 className={errors.bio ? 'border-destructive' : ''}
               />
               <div className="flex justify-between text-xs text-muted-foreground">
-                {errors.bio && (
-                  <span className="text-destructive">{errors.bio}</span>
-                )}
+                {errors.bio && <span className="text-destructive">{errors.bio}</span>}
                 <span className="ml-auto">{formData.bio.length}/200</span>
               </div>
             </div>
@@ -409,9 +388,7 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
                 placeholder="https://yourwebsite.com"
                 className={errors.website ? 'border-destructive' : ''}
               />
-              {errors.website && (
-                <p className="text-xs text-destructive">{errors.website}</p>
-              )}
+              {errors.website && <p className="text-xs text-destructive">{errors.website}</p>}
             </div>
           </CardContent>
         </Card>
@@ -424,7 +401,7 @@ const EditProfileForm = React.forwardRef<HTMLFormElement, EditProfileFormProps>(
             </Button>
           )}
           <Button type="submit" disabled={isUpdating}>
-            {isUpdating && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            {isUpdating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Save Changes
           </Button>
         </div>

@@ -455,12 +455,8 @@ describe('Permission Builder', () => {
       })
 
       it('registers multiple rules for same permission', () => {
-        const rule1 = permission('test1')
-          .forPermission(PERMISSIONS.MESSAGE_SEND)
-          .build()
-        const rule2 = permission('test2')
-          .forPermission(PERMISSIONS.MESSAGE_SEND)
-          .build()
+        const rule1 = permission('test1').forPermission(PERMISSIONS.MESSAGE_SEND).build()
+        const rule2 = permission('test2').forPermission(PERMISSIONS.MESSAGE_SEND).build()
 
         engine.registerRule(rule1)
         engine.registerRule(rule2)
@@ -503,9 +499,7 @@ describe('Permission Builder', () => {
 
     describe('unregisterRule', () => {
       it('removes a registered rule', () => {
-        const rule = permission('to-remove')
-          .forPermission(PERMISSIONS.MESSAGE_SEND)
-          .build()
+        const rule = permission('to-remove').forPermission(PERMISSIONS.MESSAGE_SEND).build()
 
         engine.registerRule(rule)
         const removed = engine.unregisterRule('to-remove')
@@ -520,9 +514,7 @@ describe('Permission Builder', () => {
       })
 
       it('removes empty permission entry', () => {
-        const rule = permission('only-rule')
-          .forPermission(PERMISSIONS.MESSAGE_SEND)
-          .build()
+        const rule = permission('only-rule').forPermission(PERMISSIONS.MESSAGE_SEND).build()
 
         engine.registerRule(rule)
         engine.unregisterRule('only-rule')

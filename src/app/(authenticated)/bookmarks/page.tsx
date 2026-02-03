@@ -34,11 +34,11 @@ export default function BookmarksPage() {
           </TabsList>
         </div>
 
-        <TabsContent value="bookmarks" className="flex-1 m-0">
+        <TabsContent value="bookmarks" className="m-0 flex-1">
           <BookmarkList />
         </TabsContent>
 
-        <TabsContent value="saved" className="flex-1 m-0">
+        <TabsContent value="saved" className="m-0 flex-1">
           <SavedMessages />
         </TabsContent>
       </Tabs>

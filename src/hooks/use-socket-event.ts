@@ -18,7 +18,7 @@ type EventCallback<E extends EventName> = ServerToClientEvents[E]
  * ```tsx
  * useSocketEvent('message:new', (payload) => {
  *   // payload is fully typed as MessagePayload
- *   console.log('New message:', payload.content)
+ *   /* console.log 'New message:', payload.content)
  * })
  * ```
  */
@@ -43,6 +43,9 @@ export function useSocketEvent<E extends EventName>(
     }
 
     // Type assertion needed due to the generic constraints
-    return subscribe(event as Parameters<typeof subscribe>[0], handler as Parameters<typeof subscribe>[1])
+    return subscribe(
+      event as Parameters<typeof subscribe>[0],
+      handler as Parameters<typeof subscribe>[1]
+    )
   }, [event, enabled, isConnected, subscribe])
 }

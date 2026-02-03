@@ -43,7 +43,11 @@ const mockChannels = [
 
 const channelListProps: PropDefinition[] = [
   { name: 'className', type: 'string', description: 'Additional CSS classes' },
-  { name: 'onChannelSelect', type: '(channel: Channel) => void', description: 'Callback when channel is selected' },
+  {
+    name: 'onChannelSelect',
+    type: '(channel: Channel) => void',
+    description: 'Callback when channel is selected',
+  },
 ]
 
 const channelHeaderProps: PropDefinition[] = [
@@ -57,7 +61,12 @@ const channelHeaderProps: PropDefinition[] = [
 
 const channelItemProps: PropDefinition[] = [
   { name: 'channel', type: 'Channel', required: true, description: 'Channel object to display' },
-  { name: 'isActive', type: 'boolean', default: 'false', description: 'Whether this channel is active' },
+  {
+    name: 'isActive',
+    type: 'boolean',
+    default: 'false',
+    description: 'Whether this channel is active',
+  },
   { name: 'onSelect', type: '(channel: Channel) => void', description: 'Selection callback' },
   { name: 'className', type: 'string', description: 'Additional CSS classes' },
 ]
@@ -118,7 +127,9 @@ const channelItemCode = `import { ChannelItem } from '@/components/channel/chann
 
 export default function ChannelsPage() {
   const [activeTab, setActiveTab] = useState('overview')
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set(['starred', 'channels']))
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set(['starred', 'channels'])
+  )
 
   const toggleCategory = (category: string) => {
     const next = new Set(expandedCategories)
@@ -134,21 +145,28 @@ export default function ChannelsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <div className="flex items-center gap-3 mb-2">
+        <div className="mb-2 flex items-center gap-3">
           <div className="rounded-lg bg-purple-500/10 p-2">
             <Hash className="h-5 w-5 text-purple-500" />
           </div>
           <h1 className="text-3xl font-bold tracking-tight">Channel Components</h1>
         </div>
         <p className="text-muted-foreground">
-          Components for displaying and managing chat channels. Includes channel lists,
-          headers, categories, and creation modals.
+          Components for displaying and managing chat channels. Includes channel lists, headers,
+          categories, and creation modals.
         </p>
       </div>
 
       {/* Component List */}
       <div className="flex flex-wrap gap-2">
-        {['ChannelList', 'ChannelHeader', 'ChannelItem', 'ChannelCategory', 'ChannelInfoPanel', 'CreateChannelModal'].map((name) => (
+        {[
+          'ChannelList',
+          'ChannelHeader',
+          'ChannelItem',
+          'ChannelCategory',
+          'ChannelInfoPanel',
+          'CreateChannelModal',
+        ].map((name) => (
           <Badge key={name} variant="secondary" className="text-sm">
             {name}
           </Badge>
@@ -167,13 +185,13 @@ export default function ChannelsPage() {
         </TabsList>
 
         {/* Overview Tab */}
-        <TabsContent value="overview" className="space-y-8 mt-6">
+        <TabsContent value="overview" className="mt-6 space-y-8">
           <Card>
             <CardHeader>
               <CardTitle>Channel System Overview</CardTitle>
               <CardDescription>
-                The channel system provides a Slack-like experience for organizing
-                conversations into public and private channels.
+                The channel system provides a Slack-like experience for organizing conversations
+                into public and private channels.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -181,10 +199,10 @@ export default function ChannelsPage() {
                 <PreviewCard title="ChannelList">
                   <div className="space-y-2 text-sm">
                     <p className="text-muted-foreground">
-                      Sidebar component showing all channels with search,
-                      categories, and quick actions.
+                      Sidebar component showing all channels with search, categories, and quick
+                      actions.
                     </p>
-                    <ul className="list-disc list-inside text-muted-foreground">
+                    <ul className="list-inside list-disc text-muted-foreground">
                       <li>Public and private channels</li>
                       <li>Starred channels section</li>
                       <li>Channel categories</li>
@@ -196,10 +214,10 @@ export default function ChannelsPage() {
                 <PreviewCard title="ChannelHeader">
                   <div className="space-y-2 text-sm">
                     <p className="text-muted-foreground">
-                      Header bar showing channel info with action buttons
-                      for search, members, and settings.
+                      Header bar showing channel info with action buttons for search, members, and
+                      settings.
                     </p>
-                    <ul className="list-disc list-inside text-muted-foreground">
+                    <ul className="list-inside list-disc text-muted-foreground">
                       <li>Channel name and icon</li>
                       <li>Topic display</li>
                       <li>Member count</li>
@@ -211,10 +229,9 @@ export default function ChannelsPage() {
                 <PreviewCard title="ChannelItem">
                   <div className="space-y-2 text-sm">
                     <p className="text-muted-foreground">
-                      Individual channel item in the sidebar with hover
-                      actions and context menu.
+                      Individual channel item in the sidebar with hover actions and context menu.
                     </p>
-                    <ul className="list-disc list-inside text-muted-foreground">
+                    <ul className="list-inside list-disc text-muted-foreground">
                       <li>Channel type icon</li>
                       <li>Unread indicator</li>
                       <li>Muted state</li>
@@ -239,7 +256,7 @@ export default function ChannelsPage() {
                   <input
                     type="text"
                     placeholder="Search channels..."
-                    className="w-full rounded-md border bg-muted/30 py-1.5 pl-8 pr-3 text-sm"
+                    className="bg-muted/30 w-full rounded-md border py-1.5 pl-8 pr-3 text-sm"
                   />
                 </div>
               </div>
@@ -249,7 +266,7 @@ export default function ChannelsPage() {
                 {/* Starred */}
                 <div className="mb-2">
                   <button
-                    className="flex w-full items-center gap-1.5 px-2 py-1 hover:bg-muted/50 rounded"
+                    className="hover:bg-muted/50 flex w-full items-center gap-1.5 rounded px-2 py-1"
                     onClick={() => toggleCategory('starred')}
                   >
                     {expandedCategories.has('starred') ? (
@@ -257,15 +274,15 @@ export default function ChannelsPage() {
                     ) : (
                       <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
                     )}
-                    <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
+                    <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
                     <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Starred
                     </span>
-                    <span className="text-xs text-muted-foreground/60">(1)</span>
+                    <span className="text-muted-foreground/60 text-xs">(1)</span>
                   </button>
                   {expandedCategories.has('starred') && (
                     <div className="mt-1 space-y-0.5">
-                      <div className="flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1.5 text-sm">
+                      <div className="bg-primary/10 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm">
                         <Hash className="h-4 w-4 text-muted-foreground" />
                         <span className="font-medium">general</span>
                       </div>
@@ -276,7 +293,7 @@ export default function ChannelsPage() {
                 {/* Channels */}
                 <div className="mb-2">
                   <button
-                    className="flex w-full items-center gap-1.5 px-2 py-1 hover:bg-muted/50 rounded"
+                    className="hover:bg-muted/50 flex w-full items-center gap-1.5 rounded px-2 py-1"
                     onClick={() => toggleCategory('channels')}
                   >
                     {expandedCategories.has('channels') ? (
@@ -288,9 +305,13 @@ export default function ChannelsPage() {
                     <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Channels
                     </span>
-                    <span className="text-xs text-muted-foreground/60">(5)</span>
+                    <span className="text-muted-foreground/60 text-xs">(5)</span>
                     <div className="flex-1" />
-                    <Button variant="ghost" size="icon" className="h-5 w-5 opacity-0 group-hover:opacity-100">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-5 w-5 opacity-0 group-hover:opacity-100"
+                    >
                       <Plus className="h-3.5 w-3.5" />
                     </Button>
                   </button>
@@ -300,7 +321,7 @@ export default function ChannelsPage() {
                         <div
                           key={channel.id}
                           className={cn(
-                            'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted/50',
+                            'hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm',
                             channel.id === 'ch-1' && 'bg-primary/10 text-primary'
                           )}
                         >
@@ -313,7 +334,7 @@ export default function ChannelsPage() {
                             {channel.name}
                           </span>
                           {channel.unreadCount > 0 && (
-                            <span className="ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
+                            <span className="text-primary-foreground ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium">
                               {channel.unreadCount}
                             </span>
                           )}
@@ -328,13 +349,13 @@ export default function ChannelsPage() {
         </TabsContent>
 
         {/* ChannelList Tab */}
-        <TabsContent value="channellist" className="space-y-8 mt-6">
+        <TabsContent value="channellist" className="mt-6 space-y-8">
           <Card>
             <CardHeader>
               <CardTitle>ChannelList</CardTitle>
               <CardDescription>
-                A complete channel sidebar with search, categories, starred channels,
-                and direct messages. Integrates with Zustand store for state management.
+                A complete channel sidebar with search, categories, starred channels, and direct
+                messages. Integrates with Zustand store for state management.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -359,26 +380,26 @@ export default function ChannelsPage() {
               <PreviewGrid cols={2}>
                 <PreviewCard title="Channel Search">
                   <p className="text-sm text-muted-foreground">
-                    Filter channels by name, description, or topic. Results update
-                    in real-time as you type.
+                    Filter channels by name, description, or topic. Results update in real-time as
+                    you type.
                   </p>
                 </PreviewCard>
                 <PreviewCard title="Channel Categories">
                   <p className="text-sm text-muted-foreground">
-                    Organize channels into collapsible categories. Categories can
-                    be reordered via drag and drop (when enabled).
+                    Organize channels into collapsible categories. Categories can be reordered via
+                    drag and drop (when enabled).
                   </p>
                 </PreviewCard>
                 <PreviewCard title="Starred Channels">
                   <p className="text-sm text-muted-foreground">
-                    Users can star frequently used channels for quick access.
-                    Starred channels appear in a dedicated section at the top.
+                    Users can star frequently used channels for quick access. Starred channels
+                    appear in a dedicated section at the top.
                   </p>
                 </PreviewCard>
                 <PreviewCard title="Unread Indicators">
                   <p className="text-sm text-muted-foreground">
-                    Channels with unread messages show a badge with the count.
-                    Bold text indicates unread content.
+                    Channels with unread messages show a badge with the count. Bold text indicates
+                    unread content.
                   </p>
                 </PreviewCard>
               </PreviewGrid>
@@ -387,13 +408,13 @@ export default function ChannelsPage() {
         </TabsContent>
 
         {/* ChannelHeader Tab */}
-        <TabsContent value="channelheader" className="space-y-8 mt-6">
+        <TabsContent value="channelheader" className="mt-6 space-y-8">
           <Card>
             <CardHeader>
               <CardTitle>ChannelHeader</CardTitle>
               <CardDescription>
-                The channel header displays the current channel name, topic, and
-                provides quick actions for search, members, and settings.
+                The channel header displays the current channel name, topic, and provides quick
+                actions for search, members, and settings.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -420,7 +441,7 @@ export default function ChannelsPage() {
                   <div>
                     <div className="flex items-center gap-1.5">
                       <h1 className="font-semibold">engineering</h1>
-                      <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                      <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                     </div>
                     <button className="text-xs text-muted-foreground hover:text-foreground">
                       Building the future, one commit at a time
@@ -459,20 +480,19 @@ export default function ChannelsPage() {
               <PreviewGrid cols={3}>
                 <PreviewCard title="Star/Unstar">
                   <p className="text-sm text-muted-foreground">
-                    Toggle starred status. Starred channels appear in the dedicated
-                    section at the top of the channel list.
+                    Toggle starred status. Starred channels appear in the dedicated section at the
+                    top of the channel list.
                   </p>
                 </PreviewCard>
                 <PreviewCard title="Mute/Unmute">
                   <p className="text-sm text-muted-foreground">
-                    Mute notifications for this channel. Muted channels show a bell-off
-                    icon in the header.
+                    Mute notifications for this channel. Muted channels show a bell-off icon in the
+                    header.
                   </p>
                 </PreviewCard>
                 <PreviewCard title="Members">
                   <p className="text-sm text-muted-foreground">
-                    Open the members panel to see who is in the channel and their
-                    online status.
+                    Open the members panel to see who is in the channel and their online status.
                   </p>
                 </PreviewCard>
               </PreviewGrid>
@@ -481,17 +501,21 @@ export default function ChannelsPage() {
         </TabsContent>
 
         {/* ChannelItem Tab */}
-        <TabsContent value="channelitem" className="space-y-8 mt-6">
+        <TabsContent value="channelitem" className="mt-6 space-y-8">
           <Card>
             <CardHeader>
               <CardTitle>ChannelItem</CardTitle>
               <CardDescription>
-                Individual channel item in the sidebar. Shows channel type icon,
-                name, unread count, and supports context menu actions.
+                Individual channel item in the sidebar. Shows channel type icon, name, unread count,
+                and supports context menu actions.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <CodeBlock code={channelItemCode} language="tsx" filename="channel-item-example.tsx" />
+              <CodeBlock
+                code={channelItemCode}
+                language="tsx"
+                filename="channel-item-example.tsx"
+              />
             </CardContent>
           </Card>
 
@@ -511,38 +535,38 @@ export default function ChannelsPage() {
             <CardContent>
               <PreviewGrid cols={2}>
                 <PreviewCard title="Public Channel">
-                  <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted/50">
+                  <div className="hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm">
                     <Hash className="h-4 w-4 text-muted-foreground" />
                     <span>general</span>
                   </div>
                 </PreviewCard>
 
                 <PreviewCard title="Private Channel">
-                  <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted/50">
+                  <div className="hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm">
                     <Lock className="h-4 w-4 text-muted-foreground" />
                     <span>leadership</span>
                   </div>
                 </PreviewCard>
 
                 <PreviewCard title="Active Channel">
-                  <div className="flex items-center gap-2 rounded-md bg-primary/10 px-2 py-1.5 text-sm">
+                  <div className="bg-primary/10 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm">
                     <Hash className="h-4 w-4 text-primary" />
                     <span className="font-medium text-primary">engineering</span>
                   </div>
                 </PreviewCard>
 
                 <PreviewCard title="Unread Channel">
-                  <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted/50">
+                  <div className="hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm">
                     <Hash className="h-4 w-4 text-muted-foreground" />
                     <span className="font-semibold">design</span>
-                    <span className="ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium text-primary-foreground">
+                    <span className="text-primary-foreground ml-auto rounded-full bg-primary px-1.5 py-0.5 text-[10px] font-medium">
                       5
                     </span>
                   </div>
                 </PreviewCard>
 
                 <PreviewCard title="Muted Channel">
-                  <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground hover:bg-muted/50">
+                  <div className="hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground">
                     <Hash className="h-4 w-4" />
                     <span>random</span>
                     <BellOff className="ml-auto h-3.5 w-3.5" />
@@ -550,10 +574,10 @@ export default function ChannelsPage() {
                 </PreviewCard>
 
                 <PreviewCard title="Starred Channel">
-                  <div className="flex items-center gap-2 rounded-md px-2 py-1.5 text-sm hover:bg-muted/50">
+                  <div className="hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm">
                     <Hash className="h-4 w-4 text-muted-foreground" />
                     <span>announcements</span>
-                    <Star className="ml-auto h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />
+                    <Star className="ml-auto h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />
                   </div>
                 </PreviewCard>
               </PreviewGrid>

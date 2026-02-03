@@ -14,14 +14,10 @@ const config = {
   path: '/',
 
   // Test specifications
-  specs: [
-    './e2e/mobile/**/*.spec.ts',
-  ],
+  specs: ['./e2e/mobile/**/*.spec.ts'],
 
   // Patterns to exclude
-  exclude: [
-    './e2e/mobile/**/*.setup.ts',
-  ],
+  exclude: ['./e2e/mobile/**/*.setup.ts'],
 
   // Maximum instances running at the same time
   maxInstances: 1,
@@ -34,7 +30,10 @@ const config = {
       platformName: 'iOS',
       'appium:platformVersion': '17.2',
       'appium:deviceName': 'iPhone 15 Pro Max',
-      'appium:app': path.join(__dirname, 'platforms/capacitor/ios/App/build/Build/Products/Debug-iphonesimulator/App.app'),
+      'appium:app': path.join(
+        __dirname,
+        'platforms/capacitor/ios/App/build/Build/Products/Debug-iphonesimulator/App.app'
+      ),
       'appium:automationName': 'XCUITest',
       'appium:newCommandTimeout': 240,
       'appium:wdaLaunchTimeout': 120000,
@@ -47,7 +46,10 @@ const config = {
       platformName: 'iOS',
       'appium:platformVersion': '17.2',
       'appium:deviceName': 'iPhone 14',
-      'appium:app': path.join(__dirname, 'platforms/capacitor/ios/App/build/Build/Products/Debug-iphonesimulator/App.app'),
+      'appium:app': path.join(
+        __dirname,
+        'platforms/capacitor/ios/App/build/Build/Products/Debug-iphonesimulator/App.app'
+      ),
       'appium:automationName': 'XCUITest',
       'appium:newCommandTimeout': 240,
       'appium:wdaLaunchTimeout': 120000,
@@ -58,7 +60,10 @@ const config = {
       platformName: 'iOS',
       'appium:platformVersion': '17.2',
       'appium:deviceName': 'iPhone SE (3rd generation)',
-      'appium:app': path.join(__dirname, 'platforms/capacitor/ios/App/build/Build/Products/Debug-iphonesimulator/App.app'),
+      'appium:app': path.join(
+        __dirname,
+        'platforms/capacitor/ios/App/build/Build/Products/Debug-iphonesimulator/App.app'
+      ),
       'appium:automationName': 'XCUITest',
       'appium:newCommandTimeout': 240,
     },
@@ -69,7 +74,10 @@ const config = {
       platformName: 'Android',
       'appium:platformVersion': '14',
       'appium:deviceName': 'Pixel 8 Pro',
-      'appium:app': path.join(__dirname, 'platforms/capacitor/android/app/build/outputs/apk/debug/app-debug.apk'),
+      'appium:app': path.join(
+        __dirname,
+        'platforms/capacitor/android/app/build/outputs/apk/debug/app-debug.apk'
+      ),
       'appium:automationName': 'UiAutomator2',
       'appium:newCommandTimeout': 240,
       'appium:uiautomator2ServerInstallTimeout': 120000,
@@ -81,7 +89,10 @@ const config = {
       platformName: 'Android',
       'appium:platformVersion': '13',
       'appium:deviceName': 'Samsung Galaxy S23',
-      'appium:app': path.join(__dirname, 'platforms/capacitor/android/app/build/outputs/apk/debug/app-debug.apk'),
+      'appium:app': path.join(
+        __dirname,
+        'platforms/capacitor/android/app/build/outputs/apk/debug/app-debug.apk'
+      ),
       'appium:automationName': 'UiAutomator2',
       'appium:newCommandTimeout': 240,
     },
@@ -90,7 +101,10 @@ const config = {
       platformName: 'Android',
       'appium:platformVersion': '14',
       'appium:deviceName': 'Pixel Tablet',
-      'appium:app': path.join(__dirname, 'platforms/capacitor/android/app/build/outputs/apk/debug/app-debug.apk'),
+      'appium:app': path.join(
+        __dirname,
+        'platforms/capacitor/android/app/build/outputs/apk/debug/app-debug.apk'
+      ),
       'appium:automationName': 'UiAutomator2',
       'appium:newCommandTimeout': 240,
     },
@@ -115,18 +129,24 @@ const config = {
   // Reporters
   reporters: [
     'spec',
-    ['junit', {
-      outputDir: './e2e/mobile/reports',
-      outputFileFormat: (options) => `appium-${options.cid}.xml`,
-    }],
-    ['html-nice', {
-      outputDir: './e2e/mobile/reports/html',
-      filename: 'appium-report.html',
-      reportTitle: 'nChat Mobile E2E Test Report',
-      showInBrowser: false,
-      collapseTests: false,
-      useOnAfterCommandForScreenshot: true,
-    }],
+    [
+      'junit',
+      {
+        outputDir: './e2e/mobile/reports',
+        outputFileFormat: (options) => `appium-${options.cid}.xml`,
+      },
+    ],
+    [
+      'html-nice',
+      {
+        outputDir: './e2e/mobile/reports/html',
+        filename: 'appium-report.html',
+        reportTitle: 'nChat Mobile E2E Test Report',
+        showInBrowser: false,
+        collapseTests: false,
+        useOnAfterCommandForScreenshot: true,
+      },
+    ],
   ],
 
   // Hooks
@@ -144,13 +164,16 @@ const config = {
 
   // Services
   services: [
-    ['appium', {
-      logPath: './e2e/mobile/logs',
-      args: {
-        relaxedSecurity: true,
-        sessionOverride: true,
+    [
+      'appium',
+      {
+        logPath: './e2e/mobile/logs',
+        args: {
+          relaxedSecurity: true,
+          sessionOverride: true,
+        },
       },
-    }],
+    ],
   ],
 }
 
@@ -194,18 +217,21 @@ if (process.env.BROWSERSTACK_USERNAME && process.env.BROWSERSTACK_ACCESS_KEY) {
   ]
 
   config.services = [
-    ['browserstack', {
-      browserstackLocal: true,
-      opts: {
-        forceLocal: true,
+    [
+      'browserstack',
+      {
+        browserstackLocal: true,
+        opts: {
+          forceLocal: true,
+        },
       },
-    }],
+    ],
   ]
 }
 
 // AWS Device Farm configuration
 if (process.env.AWS_DEVICE_FARM_ARN) {
-  config.capabilities = config.capabilities.map(cap => ({
+  config.capabilities = config.capabilities.map((cap) => ({
     ...cap,
     'awsdevicefarm:projectArn': process.env.AWS_DEVICE_FARM_PROJECT_ARN,
     'awsdevicefarm:devicePoolArn': process.env.AWS_DEVICE_FARM_DEVICE_POOL_ARN,

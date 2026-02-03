@@ -15,10 +15,7 @@ import { registerPlugin, PluginListenerHandle } from '@capacitor/core'
 // Types
 // =============================================================================
 
-export type WatchSessionState =
-  | 'notActivated'
-  | 'inactive'
-  | 'activated'
+export type WatchSessionState = 'notActivated' | 'inactive' | 'activated'
 
 export type WatchReachability = 'reachable' | 'unreachable'
 
@@ -130,9 +127,7 @@ export interface WatchConnectivityPlugin {
   /**
    * Update application context (synced in background)
    */
-  updateApplicationContext(options: {
-    context: WatchApplicationContext
-  }): Promise<void>
+  updateApplicationContext(options: { context: WatchApplicationContext }): Promise<void>
 
   /**
    * Get received application context from watch
@@ -144,9 +139,7 @@ export interface WatchConnectivityPlugin {
   /**
    * Transfer user info (queued and guaranteed delivery)
    */
-  transferUserInfo(options: {
-    userInfo: Record<string, unknown>
-  }): Promise<{ transferId: string }>
+  transferUserInfo(options: { userInfo: Record<string, unknown> }): Promise<{ transferId: string }>
 
   /**
    * Get outstanding user info transfers
@@ -158,9 +151,7 @@ export interface WatchConnectivityPlugin {
   /**
    * Update complication data
    */
-  updateComplication(options: {
-    complicationData: WatchComplicationData[]
-  }): Promise<void>
+  updateComplication(options: { complicationData: WatchComplicationData[] }): Promise<void>
 
   /**
    * Check if complications are enabled
@@ -228,7 +219,10 @@ const WatchConnectivity = registerPlugin<WatchConnectivityPlugin>('WatchConnecti
 class WatchConnectivityService {
   private sessionActivated = false
   private currentStatus: WatchSessionStatus | null = null
-  private messageHandlers: Map<string, (message: WatchMessage) => Promise<Record<string, unknown> | void>> = new Map()
+  private messageHandlers: Map<
+    string,
+    (message: WatchMessage) => Promise<Record<string, unknown> | void>
+  > = new Map()
   private listeners: PluginListenerHandle[] = []
 
   /**
@@ -270,15 +264,12 @@ class WatchConnectivityService {
    */
   private async setupListeners(): Promise<void> {
     // Session state changes
-    const stateListener = await WatchConnectivity.addListener(
-      'sessionStateChanged',
-      (data) => {
-        console.log('Watch session state changed:', data.state)
-        if (this.currentStatus) {
-          this.currentStatus.sessionState = data.state
-        }
+    const stateListener = await WatchConnectivity.addListener('sessionStateChanged', (data) => {
+      console.log('Watch session state changed:', data.state)
+      if (this.currentStatus) {
+        this.currentStatus.sessionState = data.state
       }
-    )
+    })
     this.listeners.push(stateListener)
 
     // Reachability changes
@@ -294,13 +285,10 @@ class WatchConnectivityService {
     this.listeners.push(reachabilityListener)
 
     // Message received
-    const messageListener = await WatchConnectivity.addListener(
-      'messageReceived',
-      async (data) => {
-        console.log('Message received from watch:', data.message)
-        await this.handleReceivedMessage(data.message)
-      }
-    )
+    const messageListener = await WatchConnectivity.addListener('messageReceived', async (data) => {
+      console.log('Message received from watch:', data.message)
+      await this.handleReceivedMessage(data.message)
+    })
     this.listeners.push(messageListener)
 
     // Application context received
@@ -314,13 +302,10 @@ class WatchConnectivityService {
     this.listeners.push(contextListener)
 
     // User info received
-    const userInfoListener = await WatchConnectivity.addListener(
-      'userInfoReceived',
-      (data) => {
-        console.log('User info received from watch:', data.userInfo)
-        this.handleReceivedUserInfo(data.userInfo)
-      }
-    )
+    const userInfoListener = await WatchConnectivity.addListener('userInfoReceived', (data) => {
+      console.log('User info received from watch:', data.userInfo)
+      this.handleReceivedUserInfo(data.userInfo)
+    })
     this.listeners.push(userInfoListener)
   }
 
@@ -433,18 +418,14 @@ class WatchConnectivityService {
   /**
    * Sync user status to watch
    */
-  async syncUserStatus(
-    user: WatchApplicationContext['user']
-  ): Promise<void> {
+  async syncUserStatus(user: WatchApplicationContext['user']): Promise<void> {
     await this.updateContext({ user })
   }
 
   /**
    * Sync recent conversations to watch
    */
-  async syncRecentConversations(
-    conversations: WatchConversation[]
-  ): Promise<void> {
+  async syncRecentConversations(conversations: WatchConversation[]): Promise<void> {
     // Limit to what watch can display
     await this.updateContext({
       recentConversations: conversations.slice(0, 10),
@@ -538,10 +519,7 @@ class WatchConnectivityService {
    * Check if watch is paired and app installed
    */
   isWatchAvailable(): boolean {
-    return (
-      this.currentStatus?.isPaired === true &&
-      this.currentStatus?.isWatchAppInstalled === true
-    )
+    return this.currentStatus?.isPaired === true && this.currentStatus?.isWatchAppInstalled === true
   }
 
   /**
@@ -633,12 +611,9 @@ export function useWatchConnectivity(): UseWatchConnectivityResult {
     }
   }, [])
 
-  const sendMessage = React.useCallback(
-    async (type: string, payload: Record<string, unknown>) => {
-      return watchConnectivity.sendMessage(type, payload)
-    },
-    []
-  )
+  const sendMessage = React.useCallback(async (type: string, payload: Record<string, unknown>) => {
+    return watchConnectivity.sendMessage(type, payload)
+  }, [])
 
   const syncUnreadCounts = React.useCallback(
     async (
@@ -651,12 +626,9 @@ export function useWatchConnectivity(): UseWatchConnectivityResult {
     []
   )
 
-  const syncRecentConversations = React.useCallback(
-    async (conversations: WatchConversation[]) => {
-      await watchConnectivity.syncRecentConversations(conversations)
-    },
-    []
-  )
+  const syncRecentConversations = React.useCallback(async (conversations: WatchConversation[]) => {
+    await watchConnectivity.syncRecentConversations(conversations)
+  }, [])
 
   return {
     isAvailable,

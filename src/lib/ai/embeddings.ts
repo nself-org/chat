@@ -157,10 +157,7 @@ export class EmbeddingService {
    * Generate content hash for caching
    */
   private hashContent(text: string, model: string): string {
-    return crypto
-      .createHash('sha256')
-      .update(`${model}:${text}`)
-      .digest('hex')
+    return crypto.createHash('sha256').update(`${model}:${text}`).digest('hex')
   }
 
   /**
@@ -181,11 +178,7 @@ export class EmbeddingService {
   /**
    * Store embedding in cache
    */
-  private setCached(
-    contentHash: string,
-    embedding: number[],
-    tokenCount: number
-  ): void {
+  private setCached(contentHash: string, embedding: number[], tokenCount: number): void {
     const entry: EmbeddingCacheEntry = {
       contentHash,
       embedding,
@@ -233,9 +226,7 @@ export class EmbeddingService {
   /**
    * Generate embedding for a single text
    */
-  public async generateEmbedding(
-    request: EmbeddingRequest
-  ): Promise<EmbeddingResponse> {
+  public async generateEmbedding(request: EmbeddingRequest): Promise<EmbeddingResponse> {
     this.stats.totalRequests++
 
     const model = request.model || this.model.name
@@ -391,10 +382,7 @@ export class EmbeddingService {
   /**
    * Call OpenAI Embeddings API
    */
-  private async callEmbeddingAPI(
-    texts: string[],
-    model: string
-  ): Promise<BatchEmbeddingResponse> {
+  private async callEmbeddingAPI(texts: string[], model: string): Promise<BatchEmbeddingResponse> {
     if (!this.apiKey) {
       throw new Error('OpenAI API key not configured')
     }
@@ -493,9 +481,7 @@ let embeddingService: EmbeddingService | null = null
 /**
  * Get or create the global embedding service instance
  */
-export function getEmbeddingService(
-  model: string = DEFAULT_EMBEDDING_MODEL
-): EmbeddingService {
+export function getEmbeddingService(model: string = DEFAULT_EMBEDDING_MODEL): EmbeddingService {
   if (!embeddingService || embeddingService.getModel().name !== model) {
     embeddingService = new EmbeddingService(model)
   }
@@ -505,10 +491,7 @@ export function getEmbeddingService(
 /**
  * Quick helper to generate single embedding
  */
-export async function generateEmbedding(
-  text: string,
-  model?: string
-): Promise<number[]> {
+export async function generateEmbedding(text: string, model?: string): Promise<number[]> {
   const service = getEmbeddingService(model)
   const result = await service.generateEmbedding({ text, model })
   return result.embedding

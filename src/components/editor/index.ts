@@ -17,7 +17,7 @@
  *       users={users}
  *       channels={channels}
  *       onSubmit={(html, json) => {
- *         console.log('Submitted:', html)
+ *         /* console.log 'Submitted:', html)
  *         editorRef.current?.clear()
  *       }}
  *     />

@@ -16,11 +16,7 @@ import { useFeatureEnabled } from '@/lib/features/hooks/use-feature'
 import { FEATURES } from '@/lib/features/feature-flags'
 import { ForwardDestinationList } from './forward-destination-list'
 import { ForwardPreview } from './forward-preview'
-import type {
-  ForwardMessage,
-  ForwardDestination,
-  ForwardResult,
-} from '@/lib/forward/forward-store'
+import type { ForwardMessage, ForwardDestination, ForwardResult } from '@/lib/forward/forward-store'
 
 // ============================================================================
 // Types
@@ -170,9 +166,9 @@ export function ForwardMessageModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md p-0 gap-0 overflow-hidden">
+      <DialogContent className="max-w-md gap-0 overflow-hidden p-0">
         {/* Header */}
-        <DialogHeader className="px-4 py-3 border-b">
+        <DialogHeader className="border-b px-4 py-3">
           <div className="flex items-center gap-2">
             {step === 'preview' && !hasResults && (
               <Button
@@ -180,7 +176,7 @@ export function ForwardMessageModal({
                 variant="ghost"
                 size="icon"
                 onClick={handleBack}
-                className="h-8 w-8 -ml-1"
+                className="-ml-1 h-8 w-8"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -220,15 +216,9 @@ export function ForwardMessageModal({
               {/* Continue Button */}
               {selectedDestinations.length > 0 && (
                 <div className="border-t p-3">
-                  <Button
-                    type="button"
-                    onClick={handleContinue}
-                    className="w-full"
-                  >
+                  <Button type="button" onClick={handleContinue} className="w-full">
                     Continue with {selectedDestinations.length}{' '}
-                    {selectedDestinations.length === 1
-                      ? 'destination'
-                      : 'destinations'}
+                    {selectedDestinations.length === 1 ? 'destination' : 'destinations'}
                   </Button>
                 </div>
               )}
@@ -284,10 +274,7 @@ export interface ConnectedForwardModalProps {
  * }
  * ```
  */
-export function ConnectedForwardModal({
-  onClose,
-  onSuccess,
-}: ConnectedForwardModalProps) {
+export function ConnectedForwardModal({ onClose, onSuccess }: ConnectedForwardModalProps) {
   const {
     isOpen,
     closeForwardModal,

@@ -9,12 +9,14 @@
 ## Quick Reference
 
 **Timeline:**
+
 - Preparation: 2-4 hours
 - Upload: 15-30 minutes
 - Review: 1-7 days (typical)
 - Release: Immediate or staged
 
 **Checklist:**
+
 - [ ] App built and signed
 - [ ] Screenshots captured (all required types)
 - [ ] Store listing completed
@@ -30,12 +32,14 @@
 ### 1. Google Play Console Setup
 
 **Required:**
+
 - Google Play Developer account ($25 one-time fee)
 - Package name: `io.nself.chat`
 - App name: nChat
 - Default language: English (United States)
 
 **Create App:**
+
 1. Go to [Google Play Console](https://play.google.com/console)
 2. Click **Create app**
 3. Fill in details:
@@ -70,11 +74,13 @@ bundletool build-apks \
 
 **App name:** nChat
 **Short description** (80 characters):
+
 ```
 Modern team communication with messaging, voice notes, and offline mode
 ```
 
 **Full description** (4000 characters):
+
 ```
 nChat - Modern Team Communication
 
@@ -223,11 +229,13 @@ Download nChat and transform how your team communicates!
 ### App Icon
 
 **Requirements:**
+
 - Format: PNG (32-bit)
 - Size: 512 × 512 pixels
 - Max file size: 1 MB
 
 **Design Guidelines:**
+
 - No transparency
 - No rounded corners (Google adds)
 - Visible at small sizes
@@ -236,11 +244,13 @@ Download nChat and transform how your team communicates!
 ### Feature Graphic
 
 **Requirements:**
+
 - Size: 1024 × 500 pixels
 - Format: PNG or JPEG
 - Max file size: 1 MB
 
 **Design Tips:**
+
 - Showcases app visually
 - Include app name/logo
 - No text requiring translation
@@ -249,6 +259,7 @@ Download nChat and transform how your team communicates!
 ### Screenshots
 
 **Phone Screenshots** (REQUIRED):
+
 - Size: 16:9 aspect ratio
 - Minimum: 320 × 569 pixels
 - Maximum: 3840 × 2160 pixels
@@ -256,10 +267,12 @@ Download nChat and transform how your team communicates!
 - Recommended: 1080 × 1920 pixels (portrait)
 
 **7-inch Tablet Screenshots** (OPTIONAL):
+
 - Same requirements as phone
 - Recommended: 1200 × 1920 pixels
 
 **10-inch Tablet Screenshots** (OPTIONAL):
+
 - Same requirements as phone
 - Recommended: 1600 × 2560 pixels
 
@@ -326,44 +339,54 @@ fastlane screengrab
 ### IARC Questionnaire
 
 **Step 1: Start Questionnaire**
+
 1. Go to **App content** → **Content rating**
 2. Start questionnaire
 3. Select email address for correspondence
 
 **Step 2: Category**
+
 - Select: **Apps & Games**
 
 **Step 3: Violence**
+
 - Does your app depict violence? **No**
 - Does your app depict realistic violence? **No**
 - Does your app depict violence towards realistic or cartoon characters? **No**
 
 **Step 4: Sexual Content**
+
 - Does your app contain sexual content? **No**
 - Does your app contain nudity? **No**
 - Does your app contain sexual references? **No**
 
 **Step 5: Language**
+
 - Does your app contain profanity? **No**
 - Does your app contain crude humor? **No**
 
 **Step 6: Controlled Substances**
+
 - Does your app depict or reference alcohol, tobacco or drug use? **No**
 
 **Step 7: User-Generated Content**
+
 - Does your app allow users to interact? **Yes**
 - Can users share their location? **Yes**
 - Can users make unrestricted content visible publicly? **Yes**
 
 **Step 8: Gambling**
+
 - Does your app contain simulated gambling? **No**
 
 **Step 9: Privacy & Data**
+
 - Does your app collect or share user information? **Yes**
   - Types: Email, name, messages, photos
   - Uses: App functionality, analytics
 
 **Expected Rating:**
+
 - ESRB: Everyone
 - PEGI: 3
 - USK: 0
@@ -378,6 +401,7 @@ fastlane screengrab
 **Privacy Policy URL:** https://nchat.io/privacy
 
 **Must include:**
+
 - Data collected
 - How data is used
 - Third parties with access
@@ -385,6 +409,7 @@ fastlane screengrab
 - Contact information
 
 **Template sections:**
+
 1. Information We Collect
 2. How We Use Information
 3. Information Sharing
@@ -401,6 +426,7 @@ fastlane screengrab
 ### Data Types Collected
 
 **Personal info:**
+
 - [x] Name
 - [x] Email address
 - [ ] User IDs (internal only)
@@ -408,50 +434,63 @@ fastlane screengrab
 - [ ] Phone number (optional)
 
 **Messages:**
+
 - [x] Emails or personal communication
 - [x] Other user content (messages, files)
 
 **Photos and videos:**
+
 - [x] Photos (shared by user)
 - [x] Videos (shared by user)
 
 **Audio:**
+
 - [x] Voice or sound recordings (voice messages)
 
 **Files and docs:**
+
 - [x] Files and documents (shared files)
 
 **App activity:**
+
 - [x] App interactions (usage analytics)
 - [ ] In-app search history (local only)
 
 **Device or other IDs:**
+
 - [x] Device or other IDs (for analytics)
 
 ### Data Usage
 
 **Account management:**
+
 - Email, name for account creation
 
 **App functionality:**
+
 - Messages, files, media for chat features
 
 **Analytics:**
+
 - Usage data for app improvement
 - Not used for tracking
 
 **Developer communications:**
+
 - Email for support, updates
 
 ### Data Security
 
 **In transit:**
+
 - [x] Data is encrypted in transit (HTTPS/TLS)
 
 **At rest:**
+
 - [x] Data is encrypted at rest (database encryption)
 
 **Can request data deletion:**
+
 - [x] Yes (account deletion)
 
 ---
@@ -475,6 +514,7 @@ cd platforms/capacitor/android
 ```
 
 **Upload:**
+
 1. Click **Upload** in release section
 2. Select `app-release.aab` file
 3. Wait for upload and processing
@@ -535,6 +575,7 @@ Download or update now to enjoy the new features!
 **Purpose:** Quick testing with up to 100 testers
 
 **Setup:**
+
 1. Go to **Testing** → **Internal testing**
 2. Create new release
 3. Upload AAB
@@ -543,6 +584,7 @@ Download or update now to enjoy the new features!
 6. Save and send
 
 **Benefits:**
+
 - Instant availability
 - No review required
 - Quick feedback
@@ -552,6 +594,7 @@ Download or update now to enjoy the new features!
 **Purpose:** Larger testing group
 
 **Setup:**
+
 1. Go to **Testing** → **Closed testing**
 2. Create testing track (e.g., "beta")
 3. Add testers (up to 100,000)
@@ -559,6 +602,7 @@ Download or update now to enjoy the new features!
 5. Publish
 
 **Benefits:**
+
 - Public or private
 - Opt-in links
 - Staged rollout
@@ -568,11 +612,13 @@ Download or update now to enjoy the new features!
 **Purpose:** Public beta
 
 **Setup:**
+
 1. Go to **Testing** → **Open testing**
 2. Upload build
 3. Available to anyone
 
 **Benefits:**
+
 - Public discovery
 - Large user base
 - Pre-launch feedback
@@ -606,12 +652,14 @@ Download or update now to enjoy the new features!
 ### Monitoring
 
 **Monitor for 24-48 hours:**
+
 - Crash rate
 - ANR (App Not Responding) rate
 - User reviews
 - Ratings
 
 **Thresholds:**
+
 - Crash rate: <1%
 - ANR rate: <0.5%
 - Rating: >4.0 stars
@@ -619,12 +667,14 @@ Download or update now to enjoy the new features!
 ### Increase Rollout
 
 **If metrics good:**
+
 1. Return to release
 2. Increase percentage
 3. Repeat every 24-48 hours
 4. Reach 100%
 
 **If issues found:**
+
 1. Halt rollout
 2. Fix critical issues
 3. Upload new version
@@ -637,6 +687,7 @@ Download or update now to enjoy the new features!
 ### Monitor Metrics
 
 **Vitals Dashboard:**
+
 1. Go to **Quality** → **Android vitals**
 2. Monitor:
    - Crash rate (<1%)
@@ -646,6 +697,7 @@ Download or update now to enjoy the new features!
    - Slow rendering frames
 
 **User Feedback:**
+
 1. Go to **User feedback** → **Ratings and reviews**
 2. Respond to reviews (especially negative)
 3. Response time: <48 hours
@@ -656,6 +708,7 @@ Download or update now to enjoy the new features!
 **Major updates:** Every 2-3 months
 
 **Hotfix process:**
+
 1. Fix critical bug
 2. Increment build number (e.g., 800 → 801)
 3. Upload to internal testing
@@ -707,12 +760,14 @@ Download or update now to enjoy the new features!
 ## Review Timeline
 
 **Typical Timeline:**
+
 - Upload: 5-10 minutes
 - Processing: 10-30 minutes
 - Review: 1-7 days (average 2-3 days)
 - Publishing: Immediate after approval
 
 **Expedited Review:**
+
 - Not available (no expedite option)
 - Critical fixes: Update immediately after approval
 
@@ -751,6 +806,7 @@ Download or update now to enjoy the new features!
 ## Support
 
 **Questions about submission?**
+
 - Email: playstore@nself.org
 - Slack: #android-play-store
 - Docs: https://docs.nchat.io/deployment/android

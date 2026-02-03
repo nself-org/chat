@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Wallet } from 'lucide-react';
+import * as React from 'react'
+import { Wallet } from 'lucide-react'
 import {
   WalletConnectButton,
   WalletModal,
@@ -13,15 +13,15 @@ import {
   TokenGate,
   TokenGateBadge,
   TipButton,
-} from '@/components/wallet';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useWallet } from '@/hooks/use-wallet';
+} from '@/components/wallet'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useWallet } from '@/hooks/use-wallet'
 
 export default function WalletPage() {
-  const { isConnected } = useWallet();
+  const { isConnected } = useWallet()
 
   return (
-    <div className="container mx-auto max-w-6xl py-8 space-y-8">
+    <div className="container mx-auto max-w-6xl space-y-8 py-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -29,9 +29,7 @@ export default function WalletPage() {
             <Wallet className="h-8 w-8" />
             Crypto Wallet
           </h1>
-          <p className="mt-2 text-muted-foreground">
-            Connect your wallet to access Web3 features
-          </p>
+          <p className="mt-2 text-muted-foreground">Connect your wallet to access Web3 features</p>
         </div>
         <div className="flex items-center gap-2">
           {isConnected ? <WalletStatus /> : <WalletConnectButton />}
@@ -53,10 +51,12 @@ export default function WalletPage() {
 
           <TabsContent value="nfts" className="mt-6">
             <NFTGallery
-              contractAddresses={[
-                // Add your NFT contract addresses here
-                // Example: '0x...'
-              ]}
+              contractAddresses={
+                [
+                  // Add your NFT contract addresses here
+                  // Example: '0x...'
+                ]
+              }
             />
           </TabsContent>
 
@@ -66,7 +66,7 @@ export default function WalletPage() {
         </Tabs>
       ) : (
         <div className="flex items-center justify-center rounded-lg border border-dashed p-16">
-          <div className="max-w-md text-center space-y-4">
+          <div className="max-w-md space-y-4 text-center">
             <Wallet className="mx-auto h-16 w-16 text-muted-foreground" />
             <div className="space-y-2">
               <h2 className="text-xl font-semibold">Connect Your Wallet</h2>
@@ -80,7 +80,7 @@ export default function WalletPage() {
       )}
 
       {/* Demo Section - Token Gating */}
-      <div className="rounded-lg border p-6 space-y-4">
+      <div className="space-y-4 rounded-lg border p-6">
         <h2 className="text-xl font-semibold">Token Gating Demo</h2>
         <p className="text-sm text-muted-foreground">
           This section demonstrates token-gated content. Connect your wallet and hold the required
@@ -101,7 +101,7 @@ export default function WalletPage() {
             </div>
           }
         >
-          <div className="rounded-lg border bg-primary/5 p-8 text-center">
+          <div className="bg-primary/5 rounded-lg border p-8 text-center">
             <h3 className="text-lg font-semibold">Exclusive Content</h3>
             <p className="mt-2 text-sm text-muted-foreground">
               You have access to this token-gated content!
@@ -111,13 +111,13 @@ export default function WalletPage() {
       </div>
 
       {/* Demo Section - Tipping */}
-      <div className="rounded-lg border p-6 space-y-4">
+      <div className="space-y-4 rounded-lg border p-6">
         <h2 className="text-xl font-semibold">Crypto Tipping Demo</h2>
         <p className="text-sm text-muted-foreground">
           Send crypto tips to other users directly from messages
         </p>
 
-        <div className="rounded-lg border bg-muted p-4 space-y-2">
+        <div className="space-y-2 rounded-lg border bg-muted p-4">
           <div className="flex items-start justify-between">
             <div>
               <p className="font-medium">Sample Message</p>
@@ -138,5 +138,5 @@ export default function WalletPage() {
       <WalletModal />
       <TransactionModal />
     </div>
-  );
+  )
 }

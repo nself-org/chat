@@ -81,11 +81,7 @@ export interface RemindersState {
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
   selectReminder: (id: string | null) => void
-  openModal: (options?: {
-    messageId?: string
-    channelId?: string
-    content?: string
-  }) => void
+  openModal: (options?: { messageId?: string; channelId?: string; content?: string }) => void
   closeModal: () => void
   setEditingReminder: (reminder: Reminder | null) => void
   setFilter: (filter: Partial<ReminderFilter>) => void
@@ -160,15 +156,13 @@ export const useReminderStore = create<RemindersState>()(
         // Sort reminders by remind_at within each channel
         for (const channelId of Object.keys(remindersByChannel)) {
           remindersByChannel[channelId].sort(
-            (a, b) =>
-              new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime()
+            (a, b) => new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime()
           )
         }
 
         set({
           reminders: reminders.sort(
-            (a, b) =>
-              new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime()
+            (a, b) => new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime()
           ),
           remindersById,
           remindersByChannel,
@@ -178,8 +172,7 @@ export const useReminderStore = create<RemindersState>()(
       addReminder: (reminder) => {
         set((state) => {
           const newReminders = [...state.reminders, reminder].sort(
-            (a, b) =>
-              new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime()
+            (a, b) => new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime()
           )
 
           const newRemindersById = {
@@ -189,15 +182,9 @@ export const useReminderStore = create<RemindersState>()(
 
           const newRemindersByChannel = { ...state.remindersByChannel }
           if (reminder.channel_id) {
-            const channelReminders =
-              state.remindersByChannel[reminder.channel_id] || []
-            newRemindersByChannel[reminder.channel_id] = [
-              ...channelReminders,
-              reminder,
-            ].sort(
-              (a, b) =>
-                new Date(a.remind_at).getTime() -
-                new Date(b.remind_at).getTime()
+            const channelReminders = state.remindersByChannel[reminder.channel_id] || []
+            newRemindersByChannel[reminder.channel_id] = [...channelReminders, reminder].sort(
+              (a, b) => new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime()
             )
           }
 
@@ -222,11 +209,7 @@ export const useReminderStore = create<RemindersState>()(
 
           const newReminders = state.reminders
             .map((r) => (r.id === id ? updatedReminder : r))
-            .sort(
-              (a, b) =>
-                new Date(a.remind_at).getTime() -
-                new Date(b.remind_at).getTime()
-            )
+            .sort((a, b) => new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime())
 
           // Update channel grouping
           const newRemindersByChannel = { ...state.remindersByChannel }
@@ -235,11 +218,7 @@ export const useReminderStore = create<RemindersState>()(
             if (newRemindersByChannel[channelId]) {
               newRemindersByChannel[channelId] = newRemindersByChannel[channelId]
                 .map((r) => (r.id === id ? updatedReminder : r))
-                .sort(
-                  (a, b) =>
-                    new Date(a.remind_at).getTime() -
-                    new Date(b.remind_at).getTime()
-                )
+                .sort((a, b) => new Date(a.remind_at).getTime() - new Date(b.remind_at).getTime())
             }
           }
 
@@ -261,16 +240,13 @@ export const useReminderStore = create<RemindersState>()(
 
           const newRemindersByChannel = { ...state.remindersByChannel }
           if (reminder.channel_id && newRemindersByChannel[reminder.channel_id]) {
-            newRemindersByChannel[reminder.channel_id] =
-              newRemindersByChannel[reminder.channel_id].filter(
-                (r) => r.id !== id
-              )
+            newRemindersByChannel[reminder.channel_id] = newRemindersByChannel[
+              reminder.channel_id
+            ].filter((r) => r.id !== id)
           }
 
           // Remove from notification queue if present
-          const newNotificationQueue = state.notificationQueue.filter(
-            (nId) => nId !== id
-          )
+          const newNotificationQueue = state.notificationQueue.filter((nId) => nId !== id)
 
           return {
             reminders: newReminders,
@@ -279,11 +255,8 @@ export const useReminderStore = create<RemindersState>()(
             dueReminders: state.dueReminders.filter((r) => r.id !== id),
             notificationQueue: newNotificationQueue,
             activeNotificationId:
-              state.activeNotificationId === id
-                ? null
-                : state.activeNotificationId,
-            selectedReminderId:
-              state.selectedReminderId === id ? null : state.selectedReminderId,
+              state.activeNotificationId === id ? null : state.activeNotificationId,
+            selectedReminderId: state.selectedReminderId === id ? null : state.selectedReminderId,
           }
         })
       },
@@ -303,9 +276,7 @@ export const useReminderStore = create<RemindersState>()(
 
         // Add new due reminders to notification queue
         const currentQueue = get().notificationQueue
-        const newIds = reminders
-          .map((r) => r.id)
-          .filter((id) => !currentQueue.includes(id))
+        const newIds = reminders.map((r) => r.id).filter((id) => !currentQueue.includes(id))
 
         if (newIds.length > 0) {
           set((state) => ({
@@ -387,9 +358,7 @@ export const useReminderStore = create<RemindersState>()(
       showNotification: (reminderId) => {
         set((state) => ({
           activeNotificationId: reminderId,
-          notificationQueue: state.notificationQueue.filter(
-            (id) => id !== reminderId
-          ),
+          notificationQueue: state.notificationQueue.filter((id) => id !== reminderId),
         }))
       },
 
@@ -423,14 +392,12 @@ export const useReminderStore = create<RemindersState>()(
       // Selectors
       getReminderById: (id) => get().remindersById[id],
 
-      getRemindersForChannel: (channelId) =>
-        get().remindersByChannel[channelId] || [],
+      getRemindersForChannel: (channelId) => get().remindersByChannel[channelId] || [],
 
       getRemindersForMessage: (messageId) =>
         get().reminders.filter((r) => r.message_id === messageId),
 
-      getPendingCount: () =>
-        get().reminders.filter((r) => r.status === 'pending').length,
+      getPendingCount: () => get().reminders.filter((r) => r.status === 'pending').length,
 
       getNextReminder: () => {
         const pending = get().reminders.filter((r) => r.status === 'pending')
@@ -698,10 +665,7 @@ export function getSnoozeDurations(): {
 /**
  * Calculate the next occurrence for a recurring reminder
  */
-export function getNextRecurrence(
-  currentDate: Date,
-  rule: RecurrenceRule
-): Date | null {
+export function getNextRecurrence(currentDate: Date, rule: RecurrenceRule): Date | null {
   const next = new Date(currentDate)
 
   switch (rule.frequency) {

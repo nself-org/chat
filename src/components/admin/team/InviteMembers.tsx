@@ -47,6 +47,8 @@ import { useTeamStore } from '@/stores/team-store'
 import { teamManager } from '@/lib/team/team-manager'
 import type { TeamRole, InviteBulkResult } from '@/lib/team/team-types'
 
+import { logger } from '@/lib/logger'
+
 interface InviteMembersProps {
   teamId: string
 }
@@ -285,7 +287,7 @@ function LinkInvite({ teamId, onSuccess }: { teamId: string; onSuccess: (link: a
         onSuccess(result.data)
       }
     } catch (err) {
-      console.error('Failed to generate link:', err)
+      logger.error('Failed to generate link:', err)
     } finally {
       setIsGenerating(false)
     }
@@ -378,7 +380,8 @@ function LinkInvite({ teamId, onSuccess }: { teamId: string; onSuccess: (link: a
               </Button>
             </div>
             <p className="text-xs text-muted-foreground">
-              Link expires in {expiresIn} day(s) {maxUses !== 'unlimited' && `• Max ${maxUses} uses`}
+              Link expires in {expiresIn} day(s){' '}
+              {maxUses !== 'unlimited' && `• Max ${maxUses} uses`}
             </p>
           </div>
         )}
@@ -434,7 +437,7 @@ function BulkInvite({ teamId }: { teamId: string }) {
         setValidation(null)
       }
     } catch (err) {
-      console.error('Failed to send bulk invites:', err)
+      logger.error('Failed to send bulk invites:', err)
     } finally {
       setIsSubmitting(false)
     }
@@ -527,7 +530,10 @@ function BulkInvite({ teamId }: { teamId: string }) {
             </Button>
           ) : (
             <>
-              <Button onClick={handleSubmit} disabled={validation.valid.length === 0 || isSubmitting}>
+              <Button
+                onClick={handleSubmit}
+                disabled={validation.valid.length === 0 || isSubmitting}
+              >
                 {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Send {validation.valid.length} Invitation(s)
               </Button>
@@ -549,13 +555,7 @@ function BulkInvite({ teamId }: { teamId: string }) {
 }
 
 // Pending Invitations Component
-function PendingInvitations({
-  teamId,
-  invitations,
-}: {
-  teamId: string
-  invitations: any[]
-}) {
+function PendingInvitations({ teamId, invitations }: { teamId: string; invitations: any[] }) {
   const { removeInvitation, updateInvitation } = useTeamStore()
   const [canceling, setCanceling] = useState<string | null>(null)
   const [resending, setResending] = useState<string | null>(null)
@@ -570,7 +570,7 @@ function PendingInvitations({
         removeInvitation(invitationId)
       }
     } catch (err) {
-      console.error('Failed to cancel invitation:', err)
+      logger.error('Failed to cancel invitation:', err)
     } finally {
       setCanceling(null)
     }
@@ -584,7 +584,7 @@ function PendingInvitations({
         updateInvitation(invitationId, { createdAt: new Date().toISOString() })
       }
     } catch (err) {
-      console.error('Failed to resend invitation:', err)
+      logger.error('Failed to resend invitation:', err)
     } finally {
       setResending(null)
     }

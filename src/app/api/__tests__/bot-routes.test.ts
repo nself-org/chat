@@ -19,11 +19,7 @@
 
 import { NextRequest } from 'next/server'
 import { GET as botsGet, POST as botsPost } from '../bots/route'
-import {
-  GET as botGet,
-  PUT as botPut,
-  DELETE as botDelete,
-} from '../bots/[id]/route'
+import { GET as botGet, PUT as botPut, DELETE as botDelete } from '../bots/[id]/route'
 import { POST as botEnablePost } from '../bots/[id]/enable/route'
 import { GET as botLogsGet } from '../bots/[id]/logs/route'
 import { GET as templatesGet, POST as templatesPost } from '../bots/templates/route'
@@ -518,7 +514,9 @@ describe('Bot API Routes', () => {
     })
 
     it('should support custom limit and offset', async () => {
-      const request = new NextRequest('http://localhost:3000/api/bots/bot-1/logs?limit=10&offset=20')
+      const request = new NextRequest(
+        'http://localhost:3000/api/bots/bot-1/logs?limit=10&offset=20'
+      )
       const params = Promise.resolve({ id: 'bot-1' })
 
       const response = await botLogsGet(request, { params })

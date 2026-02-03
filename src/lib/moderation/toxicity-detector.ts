@@ -3,6 +3,8 @@
  * Google Perspective API for toxicity, insult, profanity, threat detection
  */
 
+import { logger } from '@/lib/logger'
+
 export interface PerspectiveAPIResult {
   attributeScores: {
     [key: string]: {
@@ -80,13 +82,13 @@ export interface ToxicityDetectorConfig {
 
   // Which attributes to check
   checkAttributes: Array<
-    'TOXICITY' |
-    'SEVERE_TOXICITY' |
-    'INSULT' |
-    'PROFANITY' |
-    'THREAT' |
-    'IDENTITY_ATTACK' |
-    'SEXUALLY_EXPLICIT'
+    | 'TOXICITY'
+    | 'SEVERE_TOXICITY'
+    | 'INSULT'
+    | 'PROFANITY'
+    | 'THREAT'
+    | 'IDENTITY_ATTACK'
+    | 'SEXUALLY_EXPLICIT'
   >
 
   // Language support
@@ -148,7 +150,7 @@ export class ToxicityDetector {
         this.cacheResult(cacheKey, result)
         return result
       } catch (error) {
-        console.error('Perspective API failed:', error)
+        logger.error('Perspective API failed:', error)
         if (!this.config.enableFallback) {
           throw error
         }
@@ -176,23 +178,23 @@ export class ToxicityDetector {
     const requestBody = {
       comment: { text },
       languages: [language],
-      requestedAttributes: this.config.checkAttributes.reduce((acc, attr) => {
-        acc[attr] = {}
-        return acc
-      }, {} as Record<string, any>),
+      requestedAttributes: this.config.checkAttributes.reduce(
+        (acc, attr) => {
+          acc[attr] = {}
+          return acc
+        },
+        {} as Record<string, any>
+      ),
       spanAnnotations: true,
     }
 
-    const response = await fetch(
-      `${this.apiEndpoint}?key=${this.config.perspectiveApiKey}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      }
-    )
+    const response = await fetch(`${this.apiEndpoint}?key=${this.config.perspectiveApiKey}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    })
 
     if (!response.ok) {
       const error = await response.text()
@@ -275,7 +277,7 @@ export class ToxicityDetector {
     const isToxic = triggeredCategories.length > 0 || overallScore >= this.config.toxicityThreshold
 
     // Calculate confidence (based on Perspective API scores)
-    const confidence = Math.min(...Object.values(scores).filter(s => s > 0)) || 1
+    const confidence = Math.min(...Object.values(scores).filter((s) => s > 0)) || 1
 
     return {
       isToxic,
@@ -292,37 +294,22 @@ export class ToxicityDetector {
   /**
    * Fallback detection using rule-based approach
    */
-  private async analyzeWithFallback(
-    text: string,
-    language: string
-  ): Promise<ToxicityAnalysis> {
+  private async analyzeWithFallback(text: string, language: string): Promise<ToxicityAnalysis> {
     const lowerText = text.toLowerCase()
 
     // Rule-based detection patterns
     const patterns = {
-      toxicity: [
-        /\b(hate|stupid|dumb|idiot|moron|loser|pathetic)\b/gi,
-      ],
-      severeToxicity: [
-        /\b(kill|die|hurt|attack|destroy|murder)\b/gi,
-      ],
-      insult: [
-        /\b(ugly|fat|stupid|dumb|idiot|moron|loser|freak|creep)\b/gi,
-      ],
-      profanity: [
-        /\b(damn|hell|crap|suck|wtf|stfu)\b/gi,
-      ],
+      toxicity: [/\b(hate|stupid|dumb|idiot|moron|loser|pathetic)\b/gi],
+      severeToxicity: [/\b(kill|die|hurt|attack|destroy|murder)\b/gi],
+      insult: [/\b(ugly|fat|stupid|dumb|idiot|moron|loser|freak|creep)\b/gi],
+      profanity: [/\b(damn|hell|crap|suck|wtf|stfu)\b/gi],
       threat: [
         /\b(kill|murder|hurt|attack|destroy|beat up|shoot|stab)\b/gi,
         /i will (kill|hurt|attack|destroy|beat|shoot|stab)/gi,
         /going to (kill|hurt|attack|destroy|beat|shoot|stab)/gi,
       ],
-      identityAttack: [
-        /\b(racist|sexist|bigot|nazi|terrorist)\b/gi,
-      ],
-      sexuallyExplicit: [
-        /\b(porn|nude|naked|sex|xxx)\b/gi,
-      ],
+      identityAttack: [/\b(racist|sexist|bigot|nazi|terrorist)\b/gi],
+      sexuallyExplicit: [/\b(porn|nude|naked|sex|xxx)\b/gi],
     }
 
     const scores: ToxicityScore = {

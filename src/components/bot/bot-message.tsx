@@ -42,36 +42,30 @@ export interface BlockRendererProps {
 // STYLES
 // ============================================================================
 
-const messageContainerVariants = cva(
-  'flex gap-3 p-4 rounded-lg',
-  {
-    variants: {
-      variant: {
-        default: 'bg-muted/50',
-        highlighted: 'bg-primary/10 border border-primary/20',
-      },
+const messageContainerVariants = cva('flex gap-3 p-4 rounded-lg', {
+  variants: {
+    variant: {
+      default: 'bg-muted/50',
+      highlighted: 'bg-primary/10 border border-primary/20',
     },
-    defaultVariants: {
-      variant: 'default',
-    },
-  }
-)
+  },
+  defaultVariants: {
+    variant: 'default',
+  },
+})
 
-const buttonStyleVariants = cva(
-  'px-3 py-1.5 text-sm font-medium rounded transition-colors',
-  {
-    variants: {
-      style: {
-        primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
-        danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        default: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
-      },
+const buttonStyleVariants = cva('px-3 py-1.5 text-sm font-medium rounded transition-colors', {
+  variants: {
+    style: {
+      primary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+      danger: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
+      default: 'bg-secondary text-secondary-foreground hover:bg-secondary/80',
     },
-    defaultVariants: {
-      style: 'default',
-    },
-  }
-)
+  },
+  defaultVariants: {
+    style: 'default',
+  },
+})
 
 // ============================================================================
 // BLOCK RENDERERS
@@ -86,15 +80,13 @@ export function TextBlockRenderer({ block }: { block: TextBlock }) {
     const formattedText = formatMarkdown(block.text)
     return (
       <div
-        className="text-sm text-foreground whitespace-pre-wrap"
+        className="whitespace-pre-wrap text-sm text-foreground"
         dangerouslySetInnerHTML={{ __html: formattedText }}
       />
     )
   }
 
-  return (
-    <p className="text-sm text-foreground whitespace-pre-wrap">{block.text}</p>
-  )
+  return <p className="whitespace-pre-wrap text-sm text-foreground">{block.text}</p>
 }
 
 /**
@@ -107,13 +99,11 @@ export function ImageBlockRenderer({ block }: { block: ImageBlock }) {
         src={block.url}
         alt={block.alt ?? ''}
         title={block.title}
-        className="max-w-full h-auto rounded-md"
+        className="h-auto max-w-full rounded-md"
         loading="lazy"
       />
       {block.title && (
-        <figcaption className="mt-1 text-xs text-muted-foreground">
-          {block.title}
-        </figcaption>
+        <figcaption className="mt-1 text-xs text-muted-foreground">{block.title}</figcaption>
       )}
     </figure>
   )
@@ -143,7 +133,7 @@ export function ButtonBlockRenderer({
       disabled={block.disabled}
       className={cn(
         buttonStyleVariants({ style: block.style ?? 'default' }),
-        block.disabled && 'opacity-50 cursor-not-allowed'
+        block.disabled && 'cursor-not-allowed opacity-50'
       )}
       data-action-id={block.actionId}
       data-testid={`bot-button-${block.actionId}`}
@@ -172,16 +162,12 @@ export function ActionsBlockRenderer({
 }) {
   return (
     <div
-      className="flex flex-wrap gap-2 my-2"
+      className="my-2 flex flex-wrap gap-2"
       data-block-id={block.blockId}
       data-testid="bot-actions-block"
     >
       {block.elements.map((button, index) => (
-        <ButtonBlockRenderer
-          key={`${button.actionId}-${index}`}
-          block={button}
-          onClick={onClick}
-        />
+        <ButtonBlockRenderer key={`${button.actionId}-${index}`} block={button} onClick={onClick} />
       ))}
     </div>
   )
@@ -192,7 +178,7 @@ export function ActionsBlockRenderer({
  */
 export function ContextBlockRenderer({ block }: { block: ContextBlock }) {
   return (
-    <div className="flex items-center gap-2 text-xs text-muted-foreground my-1">
+    <div className="my-1 flex items-center gap-2 text-xs text-muted-foreground">
       {block.elements.map((element, index) => {
         if (element.type === 'text') {
           const textEl = element as TextBlock
@@ -209,7 +195,7 @@ export function ContextBlockRenderer({ block }: { block: ContextBlock }) {
               key={index}
               src={imgEl.url}
               alt={imgEl.alt ?? ''}
-              className="w-4 h-4 rounded-full object-cover"
+              className="h-4 w-4 rounded-full object-cover"
             />
           )
         }
@@ -257,20 +243,13 @@ export function BotMessage({
   className,
 }: BotMessageProps) {
   return (
-    <div
-      className={cn(messageContainerVariants(), className)}
-      data-testid="bot-message"
-    >
+    <div className={cn(messageContainerVariants(), className)} data-testid="bot-message">
       {/* Bot avatar */}
       <div className="flex-shrink-0">
         {botAvatar ? (
-          <img
-            src={botAvatar}
-            alt={botName}
-            className="w-10 h-10 rounded-full object-cover"
-          />
+          <img src={botAvatar} alt={botName} className="h-10 w-10 rounded-full object-cover" />
         ) : (
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+          <div className="bg-primary/20 flex h-10 w-10 items-center justify-center rounded-full">
             <span className="text-sm font-semibold text-primary">
               {botName.charAt(0).toUpperCase()}
             </span>
@@ -279,34 +258,26 @@ export function BotMessage({
       </div>
 
       {/* Message content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {/* Bot name and timestamp */}
-        <div className="flex items-center gap-2 mb-1">
-          <span className="font-semibold text-sm">{botName}</span>
-          <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-primary/10 text-primary">
+        <div className="mb-1 flex items-center gap-2">
+          <span className="text-sm font-semibold">{botName}</span>
+          <span className="bg-primary/10 inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium text-primary">
             BOT
           </span>
           {timestamp && (
-            <span className="text-xs text-muted-foreground">
-              {formatTime(timestamp)}
-            </span>
+            <span className="text-xs text-muted-foreground">{formatTime(timestamp)}</span>
           )}
         </div>
 
         {/* Plain text content */}
         {message.text && (
-          <p className="text-sm text-foreground whitespace-pre-wrap mb-2">
-            {message.text}
-          </p>
+          <p className="mb-2 whitespace-pre-wrap text-sm text-foreground">{message.text}</p>
         )}
 
         {/* Blocks */}
         {message.blocks?.map((block, index) => (
-          <BlockRenderer
-            key={`block-${index}`}
-            block={block}
-            onButtonClick={onButtonClick}
-          />
+          <BlockRenderer key={`block-${index}`} block={block} onButtonClick={onButtonClick} />
         ))}
       </div>
     </div>
@@ -326,11 +297,11 @@ export function BotMessageSkeleton() {
       className={cn(messageContainerVariants(), 'animate-pulse')}
       data-testid="bot-message-skeleton"
     >
-      <div className="w-10 h-10 rounded-full bg-muted" />
+      <div className="h-10 w-10 rounded-full bg-muted" />
       <div className="flex-1 space-y-2">
-        <div className="h-4 bg-muted rounded w-24" />
-        <div className="h-4 bg-muted rounded w-full" />
-        <div className="h-4 bg-muted rounded w-3/4" />
+        <div className="h-4 w-24 rounded bg-muted" />
+        <div className="h-4 w-full rounded bg-muted" />
+        <div className="h-4 w-3/4 rounded bg-muted" />
       </div>
     </div>
   )
@@ -341,19 +312,16 @@ export function BotMessageSkeleton() {
  */
 export function BotTypingIndicator({ botName = 'Bot' }: { botName?: string }) {
   return (
-    <div
-      className={cn(messageContainerVariants())}
-      data-testid="bot-typing-indicator"
-    >
-      <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+    <div className={cn(messageContainerVariants())} data-testid="bot-typing-indicator">
+      <div className="bg-primary/20 flex h-10 w-10 items-center justify-center rounded-full">
         <span className="text-sm font-semibold text-primary">
           {botName.charAt(0).toUpperCase()}
         </span>
       </div>
-      <div className="flex items-center gap-1 px-3 py-2 bg-muted rounded-full">
-        <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]" />
-        <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]" />
-        <span className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce" />
+      <div className="flex items-center gap-1 rounded-full bg-muted px-3 py-2">
+        <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.3s]" />
+        <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.15s]" />
+        <span className="h-2 w-2 animate-bounce rounded-full bg-muted-foreground" />
       </div>
     </div>
   )
@@ -406,7 +374,8 @@ function formatMarkdown(text: string): string {
   return DOMPurify.sanitize(formatted, {
     ALLOWED_TAGS: ['strong', 'em', 'del', 'code', 'a', 'br'],
     ALLOWED_ATTR: ['href', 'target', 'rel', 'class'],
-    ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+    ALLOWED_URI_REGEXP:
+      /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
   })
 }
 
@@ -424,9 +393,4 @@ function formatTime(date: Date): string {
 // EXPORTS
 // ============================================================================
 
-export {
-  messageContainerVariants,
-  buttonStyleVariants,
-  formatMarkdown,
-  formatTime,
-}
+export { messageContainerVariants, buttonStyleVariants, formatMarkdown, formatTime }

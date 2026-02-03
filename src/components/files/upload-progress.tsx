@@ -5,12 +5,7 @@ import { X, RotateCcw, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 // ============================================================================
 // TYPES
@@ -85,7 +80,7 @@ const SIZE_CONFIG = {
  *   status="uploading"
  *   showPercentage
  *   showCancel
- *   onCancel={() => console.log('Canceled')}
+ *   onCancel={() => /* console.log 'Canceled')}
  * />
  * ```
  */
@@ -122,15 +117,9 @@ export function UploadProgress({
 
     switch (status) {
       case 'pending':
-        return (
-          <Loader2
-            className={cn(config.iconSize, 'animate-spin text-muted-foreground')}
-          />
-        )
+        return <Loader2 className={cn(config.iconSize, 'animate-spin text-muted-foreground')} />
       case 'uploading':
-        return (
-          <Loader2 className={cn(config.iconSize, 'animate-spin text-primary')} />
-        )
+        return <Loader2 className={cn(config.iconSize, 'animate-spin text-primary')} />
       case 'completed':
         return <CheckCircle2 className={cn(config.iconSize, 'text-green-500')} />
       case 'error':
@@ -192,9 +181,7 @@ export function UploadProgress({
       )
     }
 
-    return buttons.length > 0 ? (
-      <div className="flex items-center gap-0.5">{buttons}</div>
-    ) : null
+    return buttons.length > 0 ? <div className="flex items-center gap-0.5">{buttons}</div> : null
   }
 
   return (
@@ -292,11 +279,7 @@ export function CircularUploadProgress({
       return <AlertCircle className="h-4 w-4 text-destructive" />
     }
     if (showPercentage) {
-      return (
-        <span className="text-xs font-medium tabular-nums">
-          {Math.round(progress)}
-        </span>
-      )
+      return <span className="text-xs font-medium tabular-nums">{Math.round(progress)}</span>
     }
     return null
   }
@@ -311,7 +294,7 @@ export function CircularUploadProgress({
         height={size}
         viewBox={`0 0 ${size} ${size}`}
         className={cn(
-          'transform -rotate-90',
+          '-rotate-90 transform',
           status === 'uploading' && progress < 100 && 'animate-pulse'
         )}
       >
@@ -339,9 +322,7 @@ export function CircularUploadProgress({
         />
       </svg>
       {/* Center content */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        {renderCenter()}
-      </div>
+      <div className="absolute inset-0 flex items-center justify-center">{renderCenter()}</div>
     </div>
   )
 }

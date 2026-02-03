@@ -11,13 +11,7 @@
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { WHATSAPP_COLORS } from '../config'
-import {
-  ArrowLeft,
-  Search,
-  Phone,
-  Video,
-  MoreVertical,
-} from 'lucide-react'
+import { ArrowLeft, Search, Phone, Video, MoreVertical } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -85,14 +79,11 @@ export function WhatsAppChatView({
   if (!chatId) {
     return (
       <div
-        className={cn(
-          'flex-1 flex flex-col items-center justify-center',
-          className
-        )}
+        className={cn('flex flex-1 flex-col items-center justify-center', className)}
         style={{ backgroundColor: '#222E35' }}
       >
         <div className="text-center">
-          <div className="w-[320px] h-[190px] mb-8 mx-auto">
+          <div className="mx-auto mb-8 h-[190px] w-[320px]">
             <svg viewBox="0 0 303 172" preserveAspectRatio="xMidYMid meet">
               <path
                 fill="#364147"
@@ -105,13 +96,13 @@ export function WhatsAppChatView({
             </svg>
           </div>
           <h2
-            className="text-3xl font-light mb-3"
+            className="mb-3 text-3xl font-light"
             style={{ color: WHATSAPP_COLORS.textPrimaryDark }}
           >
             WhatsApp Web
           </h2>
           <p
-            className="text-sm max-w-[450px] mx-auto leading-relaxed"
+            className="mx-auto max-w-[450px] text-sm leading-relaxed"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
             Send and receive messages without keeping your phone online.
@@ -124,9 +115,7 @@ export function WhatsAppChatView({
   }
 
   return (
-    <div
-      className={cn('flex flex-col h-full', className)}
-    >
+    <div className={cn('flex h-full flex-col', className)}>
       {/* Header */}
       <header
         className="flex items-center gap-3 px-4 py-2"
@@ -138,49 +127,35 @@ export function WhatsAppChatView({
         {/* Back Button (mobile) */}
         <button
           onClick={onBackClick}
-          className="p-2 -ml-2 rounded-full hover:bg-white/5 md:hidden"
+          className="-ml-2 rounded-full p-2 hover:bg-white/5 md:hidden"
           style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="h-5 w-5" />
         </button>
 
         {/* Avatar & Info */}
-        <button
-          onClick={onHeaderClick}
-          className="flex items-center gap-3 flex-1 min-w-0"
-        >
-          <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+        <button onClick={onHeaderClick} className="flex min-w-0 flex-1 items-center gap-3">
+          <div className="h-10 w-10 flex-shrink-0 overflow-hidden rounded-full">
             {chatAvatar ? (
-              <img
-                src={chatAvatar}
-                alt={chatName}
-                className="w-full h-full object-cover"
-              />
+              <img src={chatAvatar} alt={chatName} className="h-full w-full object-cover" />
             ) : (
               <div
-                className="w-full h-full flex items-center justify-center"
+                className="flex h-full w-full items-center justify-center"
                 style={{ backgroundColor: '#6B7C85' }}
               >
-                <span className="text-white font-medium">
-                  {chatName[0]?.toUpperCase()}
-                </span>
+                <span className="font-medium text-white">{chatName[0]?.toUpperCase()}</span>
               </div>
             )}
           </div>
 
-          <div className="text-left min-w-0">
-            <h1
-              className="font-medium truncate"
-              style={{ color: WHATSAPP_COLORS.textPrimaryDark }}
-            >
+          <div className="min-w-0 text-left">
+            <h1 className="truncate font-medium" style={{ color: WHATSAPP_COLORS.textPrimaryDark }}>
               {chatName}
             </h1>
             <p
-              className="text-xs truncate"
+              className="truncate text-xs"
               style={{
-                color: isTyping
-                  ? WHATSAPP_COLORS.primaryGreen
-                  : WHATSAPP_COLORS.textSecondaryDark,
+                color: isTyping ? WHATSAPP_COLORS.primaryGreen : WHATSAPP_COLORS.textSecondaryDark,
               }}
             >
               {getSubtitle()}
@@ -192,38 +167,38 @@ export function WhatsAppChatView({
         <div className="flex items-center gap-1">
           <button
             onClick={onVideoCallClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Video className="w-5 h-5" />
+            <Video className="h-5 w-5" />
           </button>
           <button
             onClick={onCallClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Phone className="w-5 h-5" />
+            <Phone className="h-5 w-5" />
           </button>
           <button
             onClick={onSearchClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Search className="w-5 h-5" />
+            <Search className="h-5 w-5" />
           </button>
           <button
             onClick={onMenuClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <MoreVertical className="w-5 h-5" />
+            <MoreVertical className="h-5 w-5" />
           </button>
         </div>
       </header>
 
       {/* Messages Area with WhatsApp pattern background */}
       <div
-        className="flex-1 overflow-y-auto whatsapp-chat-bg"
+        className="whatsapp-chat-bg flex-1 overflow-y-auto"
         style={{ backgroundColor: '#0B141A' }}
       >
         {children}

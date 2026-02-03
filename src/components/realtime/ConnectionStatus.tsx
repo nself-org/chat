@@ -126,15 +126,11 @@ export function ConnectionStatus({
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -10 }}
-          className={cn(
-            'fixed z-50',
-            positionClasses[position],
-            className
-          )}
+          className={cn('fixed z-50', positionClasses[position], className)}
         >
           <div
             className={cn(
-              'flex items-center gap-2 rounded-lg border bg-background/95 backdrop-blur shadow-lg',
+              'bg-background/95 flex items-center gap-2 rounded-lg border shadow-lg backdrop-blur',
               compact ? 'px-2 py-1' : 'px-3 py-2'
             )}
           >
@@ -175,8 +171,8 @@ export function ConnectionStatus({
                       ? quality === 'excellent'
                         ? 'text-green-600 dark:text-green-400'
                         : quality === 'good'
-                        ? 'text-yellow-600 dark:text-yellow-400'
-                        : 'text-orange-600 dark:text-orange-400'
+                          ? 'text-yellow-600 dark:text-yellow-400'
+                          : 'text-orange-600 dark:text-orange-400'
                       : 'text-destructive'
                   )}
                 >
@@ -184,11 +180,11 @@ export function ConnectionStatus({
                     ? quality === 'excellent'
                       ? 'Connected'
                       : quality === 'good'
-                      ? 'Connected (slow)'
-                      : 'Connected (poor)'
+                        ? 'Connected (slow)'
+                        : 'Connected (poor)'
                     : reconnectAttempts > 0
-                    ? `Reconnecting... (${reconnectAttempts})`
-                    : 'Offline'}
+                      ? `Reconnecting... (${reconnectAttempts})`
+                      : 'Offline'}
                 </span>
 
                 {/* Stats */}
@@ -246,8 +242,8 @@ export function InlineConnectionStatus({
               ? quality === 'excellent'
                 ? 'bg-green-500'
                 : quality === 'good'
-                ? 'bg-yellow-500'
-                : 'bg-orange-500'
+                  ? 'bg-yellow-500'
+                  : 'bg-orange-500'
               : 'bg-gray-400'
           )}
         />
@@ -263,8 +259,8 @@ export function InlineConnectionStatus({
             ? quality === 'excellent'
               ? 'Online'
               : quality === 'good'
-              ? 'Slow'
-              : 'Poor'
+                ? 'Slow'
+                : 'Poor'
             : 'Offline'}
         </span>
       )}
@@ -308,12 +304,12 @@ export function ConnectionQualityBar({ className }: { className?: string }) {
             quality === 'excellent'
               ? 'bg-green-500'
               : quality === 'good'
-              ? bar <= 3
-                ? 'bg-yellow-500'
-                : 'bg-gray-300 dark:bg-gray-700'
-              : bar <= 2
-              ? 'bg-orange-500'
-              : 'bg-gray-300 dark:bg-gray-700'
+                ? bar <= 3
+                  ? 'bg-yellow-500'
+                  : 'bg-gray-300 dark:bg-gray-700'
+                : bar <= 2
+                  ? 'bg-orange-500'
+                  : 'bg-gray-300 dark:bg-gray-700'
           )}
         />
       ))}
@@ -367,12 +363,7 @@ export function ConnectionStatusCard({ className }: { className?: string }) {
   }
 
   return (
-    <div
-      className={cn(
-        'rounded-lg border bg-card p-4 text-card-foreground',
-        className
-      )}
-    >
+    <div className={cn('rounded-lg border bg-card p-4 text-card-foreground', className)}>
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-medium">Connection Status</h3>
         {isConnected ? (
@@ -418,7 +409,7 @@ export function ConnectionStatusCard({ className }: { className?: string }) {
             {socketId && (
               <div className="flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Socket ID</span>
-                <code className="rounded bg-muted px-1.5 py-0.5 text-xs font-mono">
+                <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
                   {socketId.slice(0, 8)}...
                 </code>
               </div>

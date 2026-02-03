@@ -145,7 +145,7 @@ export function TemplateGallery({
   }
 
   return (
-    <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6', className)}>
+    <div className={cn('grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3', className)}>
       {galleryItems.map((item) => (
         <GalleryCard
           key={item.id}
@@ -186,12 +186,12 @@ function GalleryCard({
       onMouseEnter={() => onHover(true)}
       onMouseLeave={() => onHover(false)}
       className={cn(
-        'relative flex flex-col text-left rounded-2xl overflow-hidden',
+        'relative flex flex-col overflow-hidden rounded-2xl text-left',
         'border-2 transition-all duration-300',
         'bg-white dark:bg-gray-800',
         isSelected
-          ? 'border-current shadow-xl scale-[1.02]'
-          : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600',
+          ? 'scale-[1.02] border-current shadow-xl'
+          : 'border-gray-200 hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600',
         isHovered && !isSelected && 'shadow-lg'
       )}
       style={{
@@ -200,7 +200,7 @@ function GalleryCard({
     >
       {/* Preview Area */}
       <div
-        className="h-40 flex items-center justify-center relative overflow-hidden"
+        className="relative flex h-40 items-center justify-center overflow-hidden"
         style={{ backgroundColor: `${item.primaryColor}15` }}
       >
         {/* Decorative elements */}
@@ -213,7 +213,7 @@ function GalleryCard({
 
         {/* Logo */}
         <div
-          className="w-20 h-20 rounded-2xl flex items-center justify-center text-4xl font-bold text-white shadow-lg z-10"
+          className="z-10 flex h-20 w-20 items-center justify-center rounded-2xl text-4xl font-bold text-white shadow-lg"
           style={{ backgroundColor: item.primaryColor }}
         >
           {item.name[0]}
@@ -222,7 +222,7 @@ function GalleryCard({
         {/* Selected Badge */}
         {isSelected && (
           <div
-            className="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium text-white"
+            className="absolute right-3 top-3 rounded-full px-2 py-1 text-xs font-medium text-white"
             style={{ backgroundColor: item.primaryColor }}
           >
             Selected
@@ -232,19 +232,15 @@ function GalleryCard({
 
       {/* Content */}
       <div className="p-5">
-        <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
-          {item.name}
-        </h3>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-          {item.tagline}
-        </p>
+        <h3 className="mb-1 text-xl font-bold text-gray-900 dark:text-white">{item.name}</h3>
+        <p className="mb-4 text-sm text-gray-500 dark:text-gray-400">{item.tagline}</p>
 
         {/* Highlights */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="mb-4 flex flex-wrap gap-2">
           {item.highlights.map((highlight, index) => (
             <span
               key={index}
-              className="px-2 py-1 rounded-full text-xs font-medium"
+              className="rounded-full px-2 py-1 text-xs font-medium"
               style={{
                 backgroundColor: `${item.primaryColor}20`,
                 color: item.primaryColor,
@@ -264,7 +260,7 @@ function GalleryCard({
                 className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300"
               >
                 <svg
-                  className="w-4 h-4 flex-shrink-0"
+                  className="h-4 w-4 flex-shrink-0"
                   style={{ color: item.primaryColor }}
                   fill="currentColor"
                   viewBox="0 0 20 20"
@@ -308,17 +304,17 @@ function CarouselLayout({
             key={item.id}
             onClick={() => onTemplateSelect?.(item.id)}
             className={cn(
-              'flex-shrink-0 w-64 p-4 rounded-xl border-2 transition-all',
+              'w-64 flex-shrink-0 rounded-xl border-2 p-4 transition-all',
               selectedTemplate === item.id
-                ? 'border-current scale-105'
-                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300'
+                ? 'scale-105 border-current'
+                : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
             )}
             style={{
               borderColor: selectedTemplate === item.id ? item.primaryColor : undefined,
             }}
           >
             <div
-              className="w-12 h-12 rounded-lg flex items-center justify-center text-xl font-bold text-white mb-3"
+              className="mb-3 flex h-12 w-12 items-center justify-center rounded-lg text-xl font-bold text-white"
               style={{ backgroundColor: item.primaryColor }}
             >
               {item.name[0]}
@@ -356,32 +352,30 @@ function ListLayout({
           key={item.id}
           onClick={() => onTemplateSelect?.(item.id)}
           className={cn(
-            'flex items-center gap-4 w-full p-4 rounded-xl border-2 transition-all text-left',
+            'flex w-full items-center gap-4 rounded-xl border-2 p-4 text-left transition-all',
             selectedTemplate === item.id
               ? 'border-current bg-gray-50 dark:bg-gray-800'
-              : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+              : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800'
           )}
           style={{
             borderColor: selectedTemplate === item.id ? item.primaryColor : undefined,
           }}
         >
           <div
-            className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl font-bold text-white flex-shrink-0"
+            className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl text-2xl font-bold text-white"
             style={{ backgroundColor: item.primaryColor }}
           >
             {item.name[0]}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <h3 className="font-bold text-gray-900 dark:text-white">{item.name}</h3>
-            <p className="text-sm text-gray-500 dark:text-gray-400 truncate">
-              {item.tagline}
-            </p>
+            <p className="truncate text-sm text-gray-500 dark:text-gray-400">{item.tagline}</p>
             {showFeatures && (
-              <div className="flex flex-wrap gap-1 mt-2">
+              <div className="mt-2 flex flex-wrap gap-1">
                 {item.highlights.map((highlight, index) => (
                   <span
                     key={index}
-                    className="px-2 py-0.5 rounded text-xs"
+                    className="rounded px-2 py-0.5 text-xs"
                     style={{
                       backgroundColor: `${item.primaryColor}20`,
                       color: item.primaryColor,
@@ -395,7 +389,7 @@ function ListLayout({
           </div>
           {selectedTemplate === item.id && (
             <svg
-              className="w-6 h-6 flex-shrink-0"
+              className="h-6 w-6 flex-shrink-0"
               style={{ color: item.primaryColor }}
               fill="currentColor"
               viewBox="0 0 20 20"

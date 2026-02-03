@@ -86,11 +86,14 @@ const BlockUserButton = React.forwardRef<HTMLButtonElement, BlockUserButtonProps
         ) : (
           <Ban className={cn('h-4 w-4', showText && 'mr-2')} />
         )}
-        {showText && (
-          isLoading
-            ? (isBlocked ? 'Unblocking...' : 'Blocking...')
-            : (isBlocked ? 'Unblock' : 'Block')
-        )}
+        {showText &&
+          (isLoading
+            ? isBlocked
+              ? 'Unblocking...'
+              : 'Blocking...'
+            : isBlocked
+              ? 'Unblock'
+              : 'Block')}
       </>
     )
 
@@ -101,7 +104,7 @@ const BlockUserButton = React.forwardRef<HTMLButtonElement, BlockUserButtonProps
           variant={isBlocked ? 'outline' : variant}
           size={size}
           className={cn(
-            !isBlocked && 'text-destructive hover:text-destructive hover:bg-destructive/10',
+            !isBlocked && 'hover:bg-destructive/10 text-destructive hover:text-destructive',
             className
           )}
           onClick={handleClick}
@@ -121,7 +124,7 @@ const BlockUserButton = React.forwardRef<HTMLButtonElement, BlockUserButtonProps
             variant={isBlocked ? 'outline' : variant}
             size={size}
             className={cn(
-              !isBlocked && 'text-destructive hover:text-destructive hover:bg-destructive/10',
+              !isBlocked && 'hover:bg-destructive/10 text-destructive hover:text-destructive',
               className
             )}
             disabled={disabled || isLoading}
@@ -138,14 +141,14 @@ const BlockUserButton = React.forwardRef<HTMLButtonElement, BlockUserButtonProps
             <AlertDialogDescription>
               {isBlocked ? (
                 <>
-                  <strong>{userName}</strong> will be able to send you messages and
-                  see your online status again. You can block them again at any time.
+                  <strong>{userName}</strong> will be able to send you messages and see your online
+                  status again. You can block them again at any time.
                 </>
               ) : (
                 <>
-                  <strong>{userName}</strong> won't be able to send you direct messages
-                  or see your online status. They won't be notified that you blocked them.
-                  You can unblock them at any time.
+                  <strong>{userName}</strong> won't be able to send you direct messages or see your
+                  online status. They won't be notified that you blocked them. You can unblock them
+                  at any time.
                 </>
               )}
             </AlertDialogDescription>
@@ -155,11 +158,9 @@ const BlockUserButton = React.forwardRef<HTMLButtonElement, BlockUserButtonProps
             <AlertDialogAction
               onClick={handleAction}
               disabled={isLoading}
-              className={cn(!isBlocked && 'bg-destructive hover:bg-destructive/90')}
+              className={cn(!isBlocked && 'hover:bg-destructive/90 bg-destructive')}
             >
-              {isLoading ? (
-                <Loader2 className="h-4 w-4 animate-spin mr-2" />
-              ) : null}
+              {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
               {isBlocked ? 'Unblock' : 'Block'}
             </AlertDialogAction>
           </AlertDialogFooter>

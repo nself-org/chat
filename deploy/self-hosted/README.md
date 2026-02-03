@@ -11,6 +11,7 @@ curl -fsSL https://raw.githubusercontent.com/yourusername/nself-chat/main/script
 ```
 
 That's it! The installer will:
+
 - Install Docker and Docker Compose
 - Download and configure nself-chat
 - Set up SSL with Let's Encrypt
@@ -169,6 +170,7 @@ SMTP_FROM=noreply@chat.example.com
 ```
 
 **Recommended providers:**
+
 - SendGrid (100/day free)
 - Mailgun (5,000/month free)
 - AWS SES (62,000/month free with EC2)
@@ -203,10 +205,12 @@ docker compose -f docker-compose.production.yml \
 ```
 
 **Access dashboards:**
+
 - Grafana: https://chat.example.com/grafana
 - Prometheus: https://chat.example.com/prometheus
 
 **Default credentials:**
+
 - Username: admin
 - Password: admin (change on first login)
 
@@ -270,6 +274,7 @@ sudo /usr/local/bin/update-nchat v1.0.1
 ```
 
 The update script:
+
 - Creates automatic backup
 - Pulls latest code
 - Updates Docker images
@@ -318,6 +323,7 @@ curl -I https://chat.example.com/api/health
 ### Common Issues
 
 **Services won't start:**
+
 ```bash
 # Check port conflicts
 sudo netstat -tulpn | grep -E ':(80|443|3000|5432)'
@@ -330,6 +336,7 @@ docker compose -f docker-compose.production.yml restart
 ```
 
 **SSL errors:**
+
 ```bash
 # Check certificate
 sudo certbot certificates
@@ -342,6 +349,7 @@ docker compose -f docker-compose.production.yml restart nginx
 ```
 
 **Database issues:**
+
 ```bash
 # Check PostgreSQL logs
 docker compose -f docker-compose.production.yml logs postgres
@@ -357,6 +365,7 @@ See [Troubleshooting Guide](../../docs/guides/deployment/self-hosted-troubleshoo
 ### Essential Steps
 
 1. **Change default passwords**
+
    ```bash
    # Generate strong passwords
    openssl rand -base64 32
@@ -366,6 +375,7 @@ See [Troubleshooting Guide](../../docs/guides/deployment/self-hosted-troubleshoo
    ```
 
 2. **Enable firewall**
+
    ```bash
    sudo ufw allow 22/tcp
    sudo ufw allow 80/tcp
@@ -374,11 +384,13 @@ See [Troubleshooting Guide](../../docs/guides/deployment/self-hosted-troubleshoo
    ```
 
 3. **Set up fail2ban**
+
    ```bash
    sudo apt-get install -y fail2ban
    ```
 
 4. **Regular updates**
+
    ```bash
    # System updates
    sudo apt-get update && sudo apt-get upgrade -y
@@ -436,16 +448,19 @@ docker compose -f docker-compose.production.yml exec redis \
 ## Cost Estimation
 
 ### Small Team (1-25 users)
+
 - Server: $24/month (DigitalOcean 4GB)
 - Storage: Included
 - Total: ~$25/month
 
 ### Medium Team (25-100 users)
+
 - Server: $48/month (DigitalOcean 8GB)
 - Storage: $5/month
 - Total: ~$55/month
 
 ### Large Team (100-500 users)
+
 - Server: $96/month (DigitalOcean 16GB)
 - Storage: $20/month
 - Email: $30/month

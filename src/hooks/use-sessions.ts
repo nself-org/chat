@@ -16,6 +16,8 @@ import {
 } from '@/lib/auth/session-manager'
 import type { Session } from '@/lib/security/session-store'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -104,7 +106,7 @@ export function useSessions(): UseSessionsResult {
       })
       setLastActivityUpdate(Date.now())
     } catch (error) {
-      console.error('Failed to update session activity:', error)
+      logger.error('Failed to update session activity:', error)
     }
   }, [currentSession, user?.id])
 
@@ -115,9 +117,12 @@ export function useSessions(): UseSessionsResult {
     if (!currentSession || isDevMode) return
 
     // Update activity every 5 minutes
-    const interval = setInterval(() => {
-      updateSessionActivity()
-    }, 5 * 60 * 1000)
+    const interval = setInterval(
+      () => {
+        updateSessionActivity()
+      },
+      5 * 60 * 1000
+    )
 
     // Update on user interaction (throttled)
     let lastInteraction = Date.now()
@@ -155,7 +160,7 @@ export function useSessions(): UseSessionsResult {
     const checkSessionValidity = () => {
       const validation = sessionManager.validateSession(currentSession)
       if (!validation.valid) {
-        console.warn('Session invalid:', validation.reason)
+        logger.warn('Session invalid:', { context: validation.reason })
         // Could trigger logout here
         // signOut()
       }
@@ -179,7 +184,8 @@ export function useSessions(): UseSessionsResult {
 
     // Detect suspicious activity
     const previousSessions = sessions.filter(
-      (s: Session) => s.id !== currentSession.id && new Date(s.createdAt) < new Date(currentSession.createdAt)
+      (s: Session) =>
+        s.id !== currentSession.id && new Date(s.createdAt) < new Date(currentSession.createdAt)
     )
 
     const suspiciousAnalysis = sessionManager.detectSuspiciousActivity(
@@ -259,7 +265,7 @@ export function useSessions(): UseSessionsResult {
     try {
       await refetchSessions()
     } catch (error) {
-      console.error('Failed to refresh sessions:', error)
+      logger.error('Failed to refresh sessions:', error)
     }
   }, [refetchSessions])
 
@@ -289,7 +295,7 @@ export function useSessions(): UseSessionsResult {
         }
         return false
       } catch (error) {
-        console.error('Failed to revoke session:', error)
+        logger.error('Failed to revoke session:', error)
         return false
       }
     },
@@ -317,7 +323,7 @@ export function useSessions(): UseSessionsResult {
       }
       return false
     } catch (error) {
-      console.error('Failed to revoke sessions:', error)
+      logger.error('Failed to revoke sessions:', error)
       return false
     }
   }, [securityRevokeAllOthers, otherSessions.length])
@@ -355,9 +361,7 @@ export function useSessions(): UseSessionsResult {
    * Mark notification as read
    */
   const markNotificationRead = useCallback((id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n))
-    )
+    setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)))
   }, [])
 
   /**

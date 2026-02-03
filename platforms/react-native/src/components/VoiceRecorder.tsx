@@ -3,15 +3,7 @@
  */
 
 import React, { useState, useRef, useEffect, useCallback } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  Animated,
-  PanResponder,
-  Dimensions,
-} from 'react-native'
+import { View, Text, StyleSheet, Pressable, Animated, PanResponder, Dimensions } from 'react-native'
 
 import { useTheme } from '@theme'
 import { formatDuration } from '@shared/utils'
@@ -239,9 +231,7 @@ export function VoiceRecorder({
             style={[styles.controlButton, { backgroundColor: theme.colors.surface }]}
             onPress={handlePause}
           >
-            <Text style={{ color: theme.colors.text }}>
-              {isPaused ? 'play' : 'pause'}
-            </Text>
+            <Text style={{ color: theme.colors.text }}>{isPaused ? 'play' : 'pause'}</Text>
           </Pressable>
 
           <Pressable
@@ -271,10 +261,7 @@ export function VoiceRecorder({
       {/* Recording button (when not locked) */}
       {!isLocked && (
         <View
-          style={[
-            styles.recordButton,
-            { backgroundColor: theme.colors.error },
-          ]}
+          style={[styles.recordButton, { backgroundColor: theme.colors.error }]}
           {...panResponder.panHandlers}
         >
           <Text style={{ color: '#FFFFFF' }}>mic</Text>

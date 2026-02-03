@@ -14,7 +14,7 @@ import {
   sendDMNotification,
   sendDigest,
   setEmailBranding,
-} from './templates';
+} from './templates'
 
 // ============================================================================
 // Setup & Configuration Examples
@@ -28,7 +28,7 @@ export function setupEmailBranding() {
     appName: 'My Awesome App',
     logoUrl: 'https://myapp.com/logo.png',
     supportEmail: 'support@myapp.com',
-  });
+  })
 }
 
 // ============================================================================
@@ -38,11 +38,7 @@ export function setupEmailBranding() {
 /**
  * Example: New user signup flow
  */
-export async function handleUserSignup(user: {
-  email: string;
-  name: string;
-  id: string;
-}) {
+export async function handleUserSignup(user: { email: string; name: string; id: string }) {
   // 1. Send welcome email (high priority)
   await sendWelcomeEmail(
     { email: user.email, name: user.name },
@@ -51,10 +47,10 @@ export async function handleUserSignup(user: {
       loginUrl: `${process.env.NEXT_PUBLIC_APP_URL}/login`,
     },
     { priority: 'high' }
-  );
+  )
 
   // 2. Send email verification (urgent)
-  const verificationToken = generateVerificationToken(user.id);
+  const verificationToken = generateVerificationToken(user.id)
   await sendEmailVerification(
     { email: user.email, name: user.name },
     {
@@ -64,7 +60,7 @@ export async function handleUserSignup(user: {
       expiresInHours: 24,
     },
     { priority: 'urgent' }
-  );
+  )
 }
 
 /**
@@ -74,7 +70,7 @@ export async function handlePasswordResetRequest(
   user: { email: string; name?: string },
   request: { ip?: string; userAgent?: string }
 ) {
-  const resetToken = generateResetToken(user.email);
+  const resetToken = generateResetToken(user.email)
 
   await sendPasswordReset(
     { email: user.email, name: user.name },
@@ -86,7 +82,7 @@ export async function handlePasswordResetRequest(
       userAgent: request.userAgent,
     },
     { priority: 'urgent' }
-  );
+  )
 }
 
 /**
@@ -105,7 +101,7 @@ export async function handlePasswordChanged(
       timestamp: new Date(),
     },
     { priority: 'high' }
-  );
+  )
 }
 
 /**
@@ -114,12 +110,12 @@ export async function handlePasswordChanged(
 export async function handleNewLoginDetected(
   user: { email: string; name?: string },
   loginInfo: {
-    browser?: string;
-    os?: string;
-    device?: string;
-    city?: string;
-    country?: string;
-    ip?: string;
+    browser?: string
+    os?: string
+    device?: string
+    city?: string
+    country?: string
+    ip?: string
   }
 ) {
   await sendNewLoginAlert(
@@ -140,7 +136,7 @@ export async function handleNewLoginDetected(
       timestamp: new Date(),
     },
     { priority: 'high' }
-  );
+  )
 }
 
 // ============================================================================
@@ -151,10 +147,10 @@ export async function handleNewLoginDetected(
  * Example: User mentioned in a message
  */
 export async function handleMention(data: {
-  mentionedUser: { email: string; name: string };
-  author: { name: string; avatarUrl?: string };
-  channel: { name: string; type: 'public' | 'private' };
-  message: { id: string; content: string };
+  mentionedUser: { email: string; name: string }
+  author: { name: string; avatarUrl?: string }
+  channel: { name: string; type: 'public' | 'private' }
+  message: { id: string; content: string }
 }) {
   // Add 5-minute delay to batch multiple mentions
   await sendMentionNotification(
@@ -177,18 +173,18 @@ export async function handleMention(data: {
       priority: 'normal',
       delay: 300000, // 5 minutes
     }
-  );
+  )
 }
 
 /**
  * Example: Direct message received
  */
 export async function handleDirectMessage(data: {
-  recipient: { email: string; name: string };
-  sender: { name: string; avatarUrl?: string };
-  message: { id: string; content: string };
-  conversationId: string;
-  isFirstMessage?: boolean;
+  recipient: { email: string; name: string }
+  sender: { name: string; avatarUrl?: string }
+  message: { id: string; content: string }
+  conversationId: string
+  isFirstMessage?: boolean
 }) {
   // Add 5-minute delay to batch rapid messages
   await sendDMNotification(
@@ -208,7 +204,7 @@ export async function handleDirectMessage(data: {
       priority: 'normal',
       delay: 300000, // 5 minutes
     }
-  );
+  )
 }
 
 // ============================================================================
@@ -218,17 +214,13 @@ export async function handleDirectMessage(data: {
 /**
  * Example: Daily digest email
  */
-export async function sendDailyDigest(user: {
-  id: string;
-  email: string;
-  name: string;
-}) {
+export async function sendDailyDigest(user: { id: string; email: string; name: string }) {
   // Fetch digest items from database
-  const items = await fetchDigestItems(user.id, 'daily');
+  const items = await fetchDigestItems(user.id, 'daily')
 
   if (items.length === 0) {
-    console.log(`No digest items for user ${user.id}`);
-    return;
+    // REMOVED: console.log(`No digest items for user ${user.id}`)
+    return
   }
 
   // Calculate stats
@@ -238,7 +230,7 @@ export async function sendDailyDigest(user: {
     totalDirectMessages: items.filter((i) => i.type === 'direct_message').length,
     totalReactions: items.filter((i) => i.type === 'reaction').length,
     activeChannels: [...new Set(items.map((i) => i.channelName))],
-  };
+  }
 
   // Send digest
   await sendDigest(
@@ -264,27 +256,26 @@ export async function sendDailyDigest(user: {
       preferencesUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/notifications`,
     },
     { priority: 'low' }
-  );
+  )
 
   // Mark items as sent
-  await markDigestItemsAsSent(user.id, items.map((i) => i.id));
+  await markDigestItemsAsSent(
+    user.id,
+    items.map((i) => i.id)
+  )
 }
 
 /**
  * Example: Weekly digest email
  */
-export async function sendWeeklyDigest(user: {
-  id: string;
-  email: string;
-  name: string;
-}) {
-  const items = await fetchDigestItems(user.id, 'weekly');
+export async function sendWeeklyDigest(user: { id: string; email: string; name: string }) {
+  const items = await fetchDigestItems(user.id, 'weekly')
 
   if (items.length === 0) {
-    return;
+    return
   }
 
-  const stats = calculateDigestStats(items);
+  const stats = calculateDigestStats(items)
 
   await sendDigest(
     { email: user.email, name: user.name },
@@ -301,9 +292,12 @@ export async function sendWeeklyDigest(user: {
       preferencesUrl: `${process.env.NEXT_PUBLIC_APP_URL}/settings/notifications`,
     },
     { priority: 'low' }
-  );
+  )
 
-  await markDigestItemsAsSent(user.id, items.map((i) => i.id));
+  await markDigestItemsAsSent(
+    user.id,
+    items.map((i) => i.id)
+  )
 }
 
 // ============================================================================
@@ -323,16 +317,16 @@ export async function sendBulkWelcomeEmails(users: Array<{ email: string; name: 
       },
       { priority: 'normal' }
     )
-  );
+  )
 
-  const results = await Promise.allSettled(promises);
+  const results = await Promise.allSettled(promises)
 
-  const successful = results.filter((r) => r.status === 'fulfilled').length;
-  const failed = results.filter((r) => r.status === 'rejected').length;
+  const successful = results.filter((r) => r.status === 'fulfilled').length
+  const failed = results.filter((r) => r.status === 'rejected').length
 
-  console.log(`Bulk welcome emails: ${successful} sent, ${failed} failed`);
+  // REMOVED: console.log(`Bulk welcome emails: ${successful} sent, ${failed} failed`)
 
-  return { successful, failed };
+  return { successful, failed }
 }
 
 /**
@@ -341,14 +335,14 @@ export async function sendBulkWelcomeEmails(users: Array<{ email: string; name: 
 export async function sendTeamAnnouncement(
   teamMembers: Array<{ email: string; name: string }>,
   announcement: {
-    subject: string;
-    message: string;
+    subject: string
+    message: string
   }
 ) {
   const promises = teamMembers.map(async (member) => {
     // Use custom email for announcements
-    const { getEmailSender } = await import('./sender');
-    const sender = getEmailSender();
+    const { getEmailSender } = await import('./sender')
+    const sender = getEmailSender()
 
     return sender.queue(
       {
@@ -359,10 +353,10 @@ export async function sendTeamAnnouncement(
       },
       'custom',
       { priority: 'normal' }
-    );
-  });
+    )
+  })
 
-  await Promise.all(promises);
+  await Promise.all(promises)
 }
 
 // ============================================================================
@@ -371,27 +365,27 @@ export async function sendTeamAnnouncement(
 
 function generateVerificationToken(userId: string): string {
   // Implement your token generation logic
-  return `verify_${userId}_${Date.now()}_${Math.random().toString(36)}`;
+  return `verify_${userId}_${Date.now()}_${Math.random().toString(36)}`
 }
 
 function generateSixDigitCode(): string {
-  return Math.floor(100000 + Math.random() * 900000).toString();
+  return Math.floor(100000 + Math.random() * 900000).toString()
 }
 
 function generateResetToken(email: string): string {
   // Implement your token generation logic
-  return `reset_${email}_${Date.now()}_${Math.random().toString(36)}`;
+  return `reset_${email}_${Date.now()}_${Math.random().toString(36)}`
 }
 
 function truncate(text: string, maxLength: number): string {
-  if (text.length <= maxLength) return text;
-  return text.substring(0, maxLength - 3) + '...';
+  if (text.length <= maxLength) return text
+  return text.substring(0, maxLength - 3) + '...'
 }
 
 async function fetchDigestItems(userId: string, frequency: 'daily' | 'weekly'): Promise<any[]> {
   // Implement your database query
   // This should fetch items from nchat_email_digest_items table
-  return [];
+  return []
 }
 
 async function markDigestItemsAsSent(userId: string, itemIds: string[]): Promise<void> {
@@ -406,7 +400,7 @@ function calculateDigestStats(items: any[]) {
     totalDirectMessages: items.filter((i) => i.type === 'direct_message').length,
     totalReactions: items.filter((i) => i.type === 'reaction').length,
     activeChannels: [...new Set(items.map((i) => i.channelName))],
-  };
+  }
 }
 
 function formatDigestItem(item: any) {
@@ -418,5 +412,5 @@ function formatDigestItem(item: any) {
     messagePreview: truncate(item.messagePreview, 200),
     url: item.url,
     timestamp: new Date(item.timestamp),
-  };
+  }
 }

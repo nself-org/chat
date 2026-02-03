@@ -34,7 +34,7 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
       <div className="space-y-3">
         {/* Trigger */}
         <div className="flex items-center gap-2">
-          <code className="rounded bg-primary/10 px-2 py-1 font-mono text-primary">
+          <code className="bg-primary/10 rounded px-2 py-1 font-mono text-primary">
             /{command.trigger || 'command'}
           </code>
           {command.aliases && command.aliases.length > 0 && (
@@ -47,9 +47,7 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
         {/* Name & Description */}
         <div>
           <p className="font-medium">{command.name || 'Untitled Command'}</p>
-          <p className="text-sm text-muted-foreground">
-            {command.description || 'No description'}
-          </p>
+          <p className="text-sm text-muted-foreground">{command.description || 'No description'}</p>
         </div>
 
         {/* Quick Stats */}
@@ -77,7 +75,7 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
         <h4 className="text-sm font-medium text-muted-foreground">Command Card</h4>
         <div className="rounded-lg border bg-card p-4">
           <div className="flex items-start gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg text-primary">
               <Hash className="h-5 w-5" />
             </div>
             <div className="flex-1">
@@ -116,10 +114,8 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
       {/* Usage Preview */}
       <div className="space-y-4">
         <h4 className="text-sm font-medium text-muted-foreground">Usage</h4>
-        <div className="rounded-lg border bg-muted/30 p-4">
-          <code className="font-mono text-sm">
-            {command.usage || generateUsage(command)}
-          </code>
+        <div className="bg-muted/30 rounded-lg border p-4">
+          <code className="font-mono text-sm">{command.usage || generateUsage(command)}</code>
         </div>
       </div>
 
@@ -130,7 +126,7 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
           <div className="rounded-lg border">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b bg-muted/30">
+                <tr className="bg-muted/30 border-b">
                   <th className="px-4 py-2 text-left font-medium">Name</th>
                   <th className="px-4 py-2 text-left font-medium">Type</th>
                   <th className="px-4 py-2 text-left font-medium">Required</th>
@@ -176,7 +172,7 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
                 </span>
               </div>
               <p className="mt-1">
-                <code className="rounded bg-primary/10 px-1 font-mono text-primary">
+                <code className="bg-primary/10 rounded px-1 font-mono text-primary">
                   /{command.trigger || 'command'}
                 </code>
                 {command.arguments?.some((a) => a.required) && (
@@ -195,7 +191,7 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
           {/* Response Preview */}
           {command.actionType === 'message' && command.action?.message && (
             <div className="mt-4 flex items-start gap-3 border-t pt-4">
-              <Avatar className="h-8 w-8 bg-primary/10">
+              <Avatar className="bg-primary/10 h-8 w-8">
                 <AvatarFallback className="text-primary">
                   <Hash className="h-4 w-4" />
                 </AvatarFallback>
@@ -207,9 +203,7 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
                     BOT
                   </Badge>
                 </div>
-                <p className="mt-1 text-sm">
-                  {previewMessage(command.action.message)}
-                </p>
+                <p className="mt-1 text-sm">{previewMessage(command.action.message)}</p>
               </div>
             </div>
           )}
@@ -224,13 +218,9 @@ export function CommandPreview({ command, compact = false }: CommandPreviewProps
             <User className="mr-1 h-3 w-3" />
             {command.permissions?.minRole || 'member'}+ can use
           </Badge>
-          {command.permissions?.allowGuests && (
-            <Badge variant="secondary">Guests allowed</Badge>
-          )}
+          {command.permissions?.allowGuests && <Badge variant="secondary">Guests allowed</Badge>}
           {command.channels?.allowedTypes && (
-            <Badge variant="outline">
-              {command.channels.allowedTypes.length} channel types
-            </Badge>
+            <Badge variant="outline">{command.channels.allowedTypes.length} channel types</Badge>
           )}
         </div>
       </div>

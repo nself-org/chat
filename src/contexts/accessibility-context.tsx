@@ -1,13 +1,8 @@
 'use client'
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  ReactNode,
-  useCallback,
-} from 'react'
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from 'react'
+
+import { logger } from '@/lib/logger'
 
 /**
  * Accessibility Context
@@ -122,7 +117,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
         setSettings({ ...DEFAULT_SETTINGS, ...parsed })
       }
     } catch (error) {
-      console.error('Failed to load accessibility settings:', error)
+      logger.error('Failed to load accessibility settings:', error)
     }
   }, [])
 
@@ -204,7 +199,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(settings))
     } catch (error) {
-      console.error('Failed to save accessibility settings:', error)
+      logger.error('Failed to save accessibility settings:', error)
     }
   }, [settings, mounted])
 
@@ -250,27 +245,30 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // Announce to screen readers
-  const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
-    if (!mounted) return
+  const announce = useCallback(
+    (message: string, priority: 'polite' | 'assertive' = 'polite') => {
+      if (!mounted) return
 
-    // Find or create live region
-    let liveRegion = document.getElementById(`aria-live-${priority}`)
+      // Find or create live region
+      let liveRegion = document.getElementById(`aria-live-${priority}`)
 
-    if (!liveRegion) {
-      liveRegion = document.createElement('div')
-      liveRegion.id = `aria-live-${priority}`
-      liveRegion.setAttribute('aria-live', priority)
-      liveRegion.setAttribute('aria-atomic', 'true')
-      liveRegion.className = 'sr-only'
-      document.body.appendChild(liveRegion)
-    }
+      if (!liveRegion) {
+        liveRegion = document.createElement('div')
+        liveRegion.id = `aria-live-${priority}`
+        liveRegion.setAttribute('aria-live', priority)
+        liveRegion.setAttribute('aria-atomic', 'true')
+        liveRegion.className = 'sr-only'
+        document.body.appendChild(liveRegion)
+      }
 
-    // Clear and set new message
-    liveRegion.textContent = ''
-    setTimeout(() => {
-      liveRegion!.textContent = message
-    }, 100)
-  }, [mounted])
+      // Clear and set new message
+      liveRegion.textContent = ''
+      setTimeout(() => {
+        liveRegion!.textContent = message
+      }, 100)
+    },
+    [mounted]
+  )
 
   // Get font size multiplier
   const getFontSizeMultiplier = useCallback((): number => {

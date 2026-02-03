@@ -88,22 +88,27 @@
 ### 🔴 TypeScript Errors (38 total)
 
 **Category 1: Apollo Client Exports** (12 errors)
+
 ```
 - createClient not exported (6 instances)
 - getApolloClient not exported (5 instances)
 - useQueryClient not exported (2 instances)
 ```
+
 **Files Affected:** API routes, hooks, bot APIs
 
 **Category 2: Type Mismatches** (15 errors)
+
 ```
 - Null/undefined type errors (5)
 - String/number mismatches (3)
 - Missing properties (7)
 ```
+
 **Files Affected:** GifPicker, StickerUpload, PinManage, hooks
 
 **Category 3: Missing Modules** (5 errors)
+
 ```
 - next-auth not found (1)
 - meilisearch not found (1)
@@ -112,6 +117,7 @@
 ```
 
 **Category 4: Logic/Implementation** (6 errors)
+
 ```
 - Undefined function references (2)
 - Comparison errors (1)
@@ -133,6 +139,7 @@
 **Action:** Clean up in v0.3.1 or post-release
 
 **Common Patterns:**
+
 - Unused imports: `Badge`, `Card`, `Select` components
 - Unused destructured variables: `statistics`, `failedCount`
 - Unused caught errors: `err` in catch blocks
@@ -143,6 +150,7 @@
 ### TODO Comments (50+ found)
 
 **Categories:**
+
 1. **API Placeholders:** "TODO: Implement actual API call" (30+)
 2. **Feature Stubs:** "TODO: Navigate to or open DM" (10+)
 3. **Settings:** "TODO: Save to backend" (5+)
@@ -185,18 +193,21 @@ docker run -p 3000:3000 nself-chat:0.3.0
 ### 4. Deployment Targets
 
 **Option 1: Vercel (Recommended)**
+
 ```bash
 # Deploy to Vercel
 vercel --prod
 ```
 
 **Option 2: Docker/Kubernetes**
+
 ```bash
 # Apply Kubernetes manifests
 kubectl apply -f deploy/k8s/
 ```
 
 **Option 3: Self-Hosted**
+
 ```bash
 # Start with Docker Compose
 docker-compose -f docker-compose.production.yml up -d
@@ -205,6 +216,7 @@ docker-compose -f docker-compose.production.yml up -d
 ### 5. Environment Setup
 
 **Required Environment Variables (Production):**
+
 ```bash
 NEXT_PUBLIC_USE_DEV_AUTH=false
 NEXT_PUBLIC_GRAPHQL_URL=https://api.yourdomain.com/v1/graphql
@@ -215,6 +227,7 @@ JWT_SECRET=<min-32-chars>
 ```
 
 **Optional but Recommended:**
+
 ```bash
 NEXT_PUBLIC_SENTRY_DSN=<sentry-dsn>
 MEILISEARCH_MASTER_KEY=<search-key>
@@ -238,6 +251,7 @@ SOCIAL_MEDIA_ENCRYPTION_KEY=<base64-32-bytes>
 ### Feature Verification
 
 **Advanced Messaging:**
+
 - [ ] Edit message
 - [ ] Delete message
 - [ ] Forward message
@@ -247,6 +261,7 @@ SOCIAL_MEDIA_ENCRYPTION_KEY=<base64-32-bytes>
 - [ ] Typing indicators
 
 **GIFs & Stickers:**
+
 - [ ] GIF picker opens
 - [ ] GIF search works
 - [ ] Send GIF
@@ -254,24 +269,28 @@ SOCIAL_MEDIA_ENCRYPTION_KEY=<base64-32-bytes>
 - [ ] Send sticker
 
 **Polls:**
+
 - [ ] Create poll
 - [ ] Vote on poll
 - [ ] See live results
 - [ ] Close poll
 
 **Security:**
+
 - [ ] 2FA setup
 - [ ] 2FA login
 - [ ] PIN lock setup
 - [ ] Biometric unlock
 
 **Bots:**
+
 - [ ] Create bot
 - [ ] Generate token
 - [ ] API endpoint works
 - [ ] Webhook fires
 
 **Social Media:**
+
 - [ ] Connect account
 - [ ] Import posts
 - [ ] Auto-posting works
@@ -298,6 +317,7 @@ SOCIAL_MEDIA_ENCRYPTION_KEY=<base64-32-bytes>
 ### If Critical Issues Found
 
 **Step 1: Immediate Actions**
+
 ```bash
 # Revert to previous version
 git revert HEAD
@@ -308,6 +328,7 @@ vercel rollback
 ```
 
 **Step 2: Database Rollback**
+
 ```bash
 # If migrations applied, rollback
 cd .backend
@@ -315,12 +336,14 @@ nself db migrate down
 ```
 
 **Step 3: Communicate**
+
 - Post status update
 - Notify users
 - Document issue
 - Create hotfix branch
 
 **Step 4: Fix Forward**
+
 ```bash
 # Create hotfix branch
 git checkout -b hotfix/v0.3.1
@@ -339,12 +362,14 @@ pnpm release:patch
 ### Release Announcement
 
 **Channels:**
+
 - GitHub Release Notes
 - Project README
 - Documentation site
 - Social media (if applicable)
 
 **Key Messages:**
+
 1. Major feature release (122% increase)
 2. 8 new feature sets, 85+ features
 3. 28 new database tables
@@ -416,25 +441,27 @@ pnpm release:patch
 
 ## Sign-Off
 
-**Release Manager:** ___________________________
-**Date:** ___________________________
+**Release Manager:** \***\*\*\*\*\*\*\***\_\_\_\***\*\*\*\*\*\*\***
+**Date:** \***\*\*\*\*\*\*\***\_\_\_\***\*\*\*\*\*\*\***
 
-**Technical Lead:** ___________________________
-**Date:** ___________________________
+**Technical Lead:** \***\*\*\*\*\*\*\***\_\_\_\***\*\*\*\*\*\*\***
+**Date:** \***\*\*\*\*\*\*\***\_\_\_\***\*\*\*\*\*\*\***
 
-**QA Lead:** ___________________________
-**Date:** ___________________________
+**QA Lead:** \***\*\*\*\*\*\*\***\_\_\_\***\*\*\*\*\*\*\***
+**Date:** \***\*\*\*\*\*\*\***\_\_\_\***\*\*\*\*\*\*\***
 
 ---
 
 **Status:** 🟡 **READY WITH RESERVATIONS**
 
 **Recommendation:**
+
 - Fix TypeScript errors before final release
 - OR release as v0.3.0-beta.1 for testing
 - OR document errors and release v0.3.0 with known issues
 
 **Next Steps:**
+
 1. Review QA Report (RELEASE-QA-REPORT-v0.3.0.md)
 2. Fix critical TypeScript errors
 3. Run production build

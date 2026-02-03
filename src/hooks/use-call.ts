@@ -11,19 +11,9 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { useMutation, useSubscription } from '@apollo/client'
 import { useCallStore, type CallEndReason } from '@/stores/call-store'
 import { useAuth } from '@/contexts/auth-context'
-import {
-  PeerConnectionManager,
-  createPeerConnection,
-} from '@/lib/webrtc/peer-connection'
-import {
-  MediaManager,
-  createMediaManager,
-} from '@/lib/webrtc/media-manager'
-import {
-  SignalingManager,
-  createSignalingManager,
-  generateCallId,
-} from '@/lib/webrtc/signaling'
+import { PeerConnectionManager, createPeerConnection } from '@/lib/webrtc/peer-connection'
+import { MediaManager, createMediaManager } from '@/lib/webrtc/media-manager'
+import { SignalingManager, createSignalingManager, generateCallId } from '@/lib/webrtc/signaling'
 import {
   INITIATE_CALL,
   END_CALL,
@@ -34,6 +24,8 @@ import {
   SUBSCRIBE_TO_CALL,
 } from '@/graphql/calls'
 import { useToast } from '@/hooks/use-toast'
+
+import { logger } from '@/lib/logger'
 
 // =============================================================================
 // Types
@@ -47,7 +39,14 @@ export interface UseCallOptions {
 export interface UseCallReturn {
   // State
   isInCall: boolean
-  callState: 'idle' | 'initiating' | 'ringing' | 'connecting' | 'connected' | 'reconnecting' | 'ended'
+  callState:
+    | 'idle'
+    | 'initiating'
+    | 'ringing'
+    | 'connecting'
+    | 'connected'
+    | 'reconnecting'
+    | 'ended'
   callType: 'voice' | 'video' | null
   callDuration: number
   participants: any[]
@@ -64,8 +63,16 @@ export interface UseCallReturn {
   remoteStreams: Map<string, MediaStream>
 
   // Actions
-  initiateVoiceCall: (targetUserId: string, targetUserName: string, channelId?: string) => Promise<void>
-  initiateVideoCall: (targetUserId: string, targetUserName: string, channelId?: string) => Promise<void>
+  initiateVoiceCall: (
+    targetUserId: string,
+    targetUserName: string,
+    channelId?: string
+  ) => Promise<void>
+  initiateVideoCall: (
+    targetUserId: string,
+    targetUserName: string,
+    channelId?: string
+  ) => Promise<void>
   acceptCall: (callId: string) => Promise<void>
   declineCall: (callId: string) => void
   endCall: () => Promise<void>
@@ -281,7 +288,12 @@ export function useCall(options: UseCallOptions = {}): UseCallReturn {
   // ==========================================================================
 
   const initiateCall = useCallback(
-    async (targetUserId: string, targetUserName: string, type: 'voice' | 'video', channelId?: string) => {
+    async (
+      targetUserId: string,
+      targetUserName: string,
+      type: 'voice' | 'video',
+      channelId?: string
+    ) => {
       if (!user) {
         setError('Not authenticated')
         return
@@ -294,9 +306,10 @@ export function useCall(options: UseCallOptions = {}): UseCallReturn {
 
         // Start local media
         if (mediaManagerRef.current) {
-          const stream = type === 'video'
-            ? await mediaManagerRef.current.getVideoStream()
-            : await mediaManagerRef.current.getAudioOnlyStream()
+          const stream =
+            type === 'video'
+              ? await mediaManagerRef.current.getVideoStream()
+              : await mediaManagerRef.current.getAudioOnlyStream()
 
           setLocalStream(stream)
 
@@ -346,7 +359,15 @@ export function useCall(options: UseCallOptions = {}): UseCallReturn {
         cleanup()
       }
     },
-    [user, initializeManagers, initiateCallStore, initiateCallMutation, setLocalStream, toast, cleanup]
+    [
+      user,
+      initializeManagers,
+      initiateCallStore,
+      initiateCallMutation,
+      setLocalStream,
+      toast,
+      cleanup,
+    ]
   )
 
   const initiateVoiceCall = useCallback(
@@ -379,9 +400,10 @@ export function useCall(options: UseCallOptions = {}): UseCallReturn {
 
         // Start local media
         if (mediaManagerRef.current) {
-          const stream = call.type === 'video'
-            ? await mediaManagerRef.current.getVideoStream()
-            : await mediaManagerRef.current.getAudioOnlyStream()
+          const stream =
+            call.type === 'video'
+              ? await mediaManagerRef.current.getVideoStream()
+              : await mediaManagerRef.current.getAudioOnlyStream()
 
           setLocalStream(stream)
 
@@ -415,7 +437,16 @@ export function useCall(options: UseCallOptions = {}): UseCallReturn {
         cleanup()
       }
     },
-    [user, incomingCalls, initializeManagers, acceptCallStore, setLocalStream, removeIncomingCall, toast, cleanup]
+    [
+      user,
+      incomingCalls,
+      initializeManagers,
+      acceptCallStore,
+      setLocalStream,
+      removeIncomingCall,
+      toast,
+      cleanup,
+    ]
   )
 
   // ==========================================================================
@@ -462,7 +493,7 @@ export function useCall(options: UseCallOptions = {}): UseCallReturn {
 
       cleanup()
     } catch (err) {
-      console.error('Error ending call:', err)
+      logger.error('Error ending call:', err)
       // Still cleanup even if there's an error
       cleanup()
     }

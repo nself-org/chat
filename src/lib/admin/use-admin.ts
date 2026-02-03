@@ -6,7 +6,14 @@
 
 import { useCallback, useEffect } from 'react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
-import { useAdminStore, AdminUser, AdminChannel, ModerationReport, ReportStatus, ReportType } from './admin-store'
+import {
+  useAdminStore,
+  AdminUser,
+  AdminChannel,
+  ModerationReport,
+  ReportStatus,
+  ReportType,
+} from './admin-store'
 import {
   GET_ADMIN_STATS,
   GET_USERS_ADMIN,
@@ -539,7 +546,8 @@ export function useModeration() {
   })
 
   // Delete message mutation
-  const [deleteMessageMutation, { loading: deleteMessageLoading }] = useMutation(DELETE_MESSAGE_ADMIN)
+  const [deleteMessageMutation, { loading: deleteMessageLoading }] =
+    useMutation(DELETE_MESSAGE_ADMIN)
 
   // Warn user mutation
   const [warnUserMutation, { loading: warnLoading }] = useMutation(WARN_USER)
@@ -627,13 +635,8 @@ export function useModeration() {
 // ============================================================================
 
 export function useActivityLogs() {
-  const {
-    activityLogs,
-    isLoadingActivity,
-    setActivityLogs,
-    addActivityLog,
-    setLoadingActivity,
-  } = useAdminStore()
+  const { activityLogs, isLoadingActivity, setActivityLogs, addActivityLog, setLoadingActivity } =
+    useAdminStore()
 
   const { loading, error, refetch } = useQuery(GET_ACTIVITY_LOGS, {
     variables: {

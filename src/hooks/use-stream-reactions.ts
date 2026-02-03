@@ -36,9 +36,7 @@ export interface UseStreamReactionsReturn {
 // Hook
 // ============================================================================
 
-export function useStreamReactions(
-  options: UseStreamReactionsOptions
-): UseStreamReactionsReturn {
+export function useStreamReactions(options: UseStreamReactionsOptions): UseStreamReactionsReturn {
   const { streamId, onNewReaction } = options
   const { user } = useAuth()
   const { isConnected, emit, subscribe } = useSocket()
@@ -53,10 +51,7 @@ export function useStreamReactions(
   // ==========================================================================
 
   const sendReaction = useCallback(
-    async (
-      emoji: string,
-      position?: { x: number; y: number }
-    ): Promise<void> => {
+    async (emoji: string, position?: { x: number; y: number }): Promise<void> => {
       if (!user) {
         throw new Error('User not authenticated')
       }
@@ -109,34 +104,29 @@ export function useStreamReactions(
   useEffect(() => {
     if (!isConnected) return
 
-    const unsubReaction = subscribe<StreamReaction>(
-      'stream:reaction',
-      (reaction) => {
-        if (reaction.streamId === streamId) {
-          // Add to all reactions
-          setReactions((prev) => [...prev, reaction])
+    const unsubReaction = subscribe<StreamReaction>('stream:reaction', (reaction) => {
+      if (reaction.streamId === streamId) {
+        // Add to all reactions
+        setReactions((prev) => [...prev, reaction])
 
-          // Add to recent reactions for animation
-          setRecentReactions((prev) => {
-            const updated = [...prev, reaction]
-            // Keep only last 20 for performance
-            if (updated.length > 20) {
-              return updated.slice(-20)
-            }
-            return updated
-          })
+        // Add to recent reactions for animation
+        setRecentReactions((prev) => {
+          const updated = [...prev, reaction]
+          // Keep only last 20 for performance
+          if (updated.length > 20) {
+            return updated.slice(-20)
+          }
+          return updated
+        })
 
-          onNewReaction?.(reaction)
+        onNewReaction?.(reaction)
 
-          // Remove from recent after animation (3 seconds)
-          setTimeout(() => {
-            setRecentReactions((prev) =>
-              prev.filter((r) => r.id !== reaction.id)
-            )
-          }, 3000)
-        }
+        // Remove from recent after animation (3 seconds)
+        setTimeout(() => {
+          setRecentReactions((prev) => prev.filter((r) => r.id !== reaction.id))
+        }, 3000)
       }
-    )
+    })
 
     return () => {
       unsubReaction()

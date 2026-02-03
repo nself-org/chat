@@ -159,12 +159,10 @@ export function ChannelNotificationSettings({
 
         {isMuted && settings.muteUntil && (
           <CardContent>
-            <div className="flex items-center justify-between p-3 rounded-lg bg-muted">
+            <div className="flex items-center justify-between rounded-lg bg-muted p-3">
               <div className="flex items-center gap-2 text-sm">
                 <Clock className="h-4 w-4 text-muted-foreground" />
-                <span>
-                  Muted until {new Date(settings.muteUntil).toLocaleString()}
-                </span>
+                <span>Muted until {new Date(settings.muteUntil).toLocaleString()}</span>
               </div>
               <Button variant="ghost" size="sm" onClick={handleUnmute}>
                 Unmute
@@ -183,32 +181,16 @@ export function ChannelNotificationSettings({
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleMuteFor('15min')}
-              >
+              <Button variant="outline" size="sm" onClick={() => handleMuteFor('15min')}>
                 15 minutes
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleMuteFor('1hour')}
-              >
+              <Button variant="outline" size="sm" onClick={() => handleMuteFor('1hour')}>
                 1 hour
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleMuteFor('8hours')}
-              >
+              <Button variant="outline" size="sm" onClick={() => handleMuteFor('8hours')}>
                 8 hours
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handleMuteFor('24hours')}
-              >
+              <Button variant="outline" size="sm" onClick={() => handleMuteFor('24hours')}>
                 24 hours
               </Button>
               <Button
@@ -238,7 +220,7 @@ export function ChannelNotificationSettings({
                 handleSettingChange('notifyOn', value as NotificationPreferences['notifyOn'])
               }
             >
-              <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-accent">
+              <div className="flex items-center space-x-2 rounded-lg p-3 hover:bg-accent">
                 <RadioGroupItem value="all" id="notify-all" />
                 <Label htmlFor="notify-all" className="flex-1 cursor-pointer">
                   <div className="font-medium">All new messages</div>
@@ -247,7 +229,7 @@ export function ChannelNotificationSettings({
                   </p>
                 </Label>
               </div>
-              <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-accent">
+              <div className="flex items-center space-x-2 rounded-lg p-3 hover:bg-accent">
                 <RadioGroupItem value="mentions" id="notify-mentions" />
                 <Label htmlFor="notify-mentions" className="flex-1 cursor-pointer">
                   <div className="font-medium">Only @mentions</div>
@@ -256,7 +238,7 @@ export function ChannelNotificationSettings({
                   </p>
                 </Label>
               </div>
-              <div className="flex items-center space-x-2 p-3 rounded-lg hover:bg-accent">
+              <div className="flex items-center space-x-2 rounded-lg p-3 hover:bg-accent">
                 <RadioGroupItem value="nothing" id="notify-nothing" />
                 <Label htmlFor="notify-nothing" className="flex-1 cursor-pointer">
                   <div className="font-medium">Nothing</div>
@@ -352,7 +334,7 @@ export function ChannelNotificationSettings({
 
             {/* Email Digest */}
             {settings.email && (
-              <div className="flex items-center justify-between pt-2 pl-7">
+              <div className="flex items-center justify-between pl-7 pt-2">
                 <Label>Email frequency</Label>
                 <Select
                   value={settings.emailDigest}

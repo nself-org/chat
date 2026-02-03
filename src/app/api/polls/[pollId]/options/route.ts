@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { Poll } from '@/types/poll'
 import { addPollOption } from '@/lib/polls/poll-manager'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // POST - Add Option
 // ============================================================================
@@ -22,37 +24,24 @@ export async function POST(
     const { text, emoji } = body
 
     if (!pollId) {
-      return NextResponse.json(
-        { error: 'Poll ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Poll ID is required' }, { status: 400 })
     }
 
     if (!text || typeof text !== 'string' || !text.trim()) {
-      return NextResponse.json(
-        { error: 'Option text is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Option text is required' }, { status: 400 })
     }
 
-    // TODO: Get user ID from session/auth
     const _userId = 'user_mock_id'
 
-    // TODO: Fetch poll from database
     const poll: Poll | null = null
 
     if (!poll) {
-      return NextResponse.json(
-        { error: 'Poll not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Poll not found' }, { status: 404 })
     }
 
     // Add option (will throw error if not allowed)
     try {
       const updatedPoll = addPollOption(poll, text, emoji)
-
-      // TODO: Save updated poll to database
 
       return NextResponse.json({
         poll: updatedPoll,
@@ -67,10 +56,7 @@ export async function POST(
       )
     }
   } catch (error) {
-    console.error('Failed to add option:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Failed to add option:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

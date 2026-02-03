@@ -9,15 +9,7 @@
 
 import { useEffect, useState, useCallback, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Play,
-  Pause,
-  Download,
-  Volume2,
-  VolumeX,
-  Loader2,
-  AlertCircle,
-} from 'lucide-react'
+import { Play, Pause, Download, Volume2, VolumeX, Loader2, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import {
@@ -26,12 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   useVoicePlayer,
   generateWaveform,
@@ -40,6 +27,8 @@ import {
   type WaveformData,
 } from '@/lib/voice'
 import { WaveformVisualizer } from './waveform-visualizer'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -149,7 +138,7 @@ export const VoiceMessage = memo(function VoiceMessage({
         const data = await generateWaveform(src, compact ? 30 : 50)
         setWaveform(data.amplitudes)
       } catch (error) {
-        console.error('Failed to generate waveform:', error)
+        logger.error('Failed to generate waveform:', error)
         // Use default bars if waveform generation fails
         setWaveform(new Array(compact ? 30 : 50).fill(0.5))
       } finally {
@@ -186,7 +175,7 @@ export const VoiceMessage = memo(function VoiceMessage({
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
     } catch (error) {
-      console.error('Failed to download voice message:', error)
+      logger.error('Failed to download voice message:', error)
     }
   }, [src, onDownload])
 
@@ -421,7 +410,7 @@ const PlayButton = memo(function PlayButton({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
           >
-            <Play className="h-5 w-5 ml-0.5" />
+            <Play className="ml-0.5 h-5 w-5" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -501,12 +490,7 @@ const VolumeControl = memo(function VolumeControl({
       <TooltipProvider delayDuration={300}>
         <Tooltip>
           <TooltipTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onToggleMute}
-              className="h-8 w-8"
-            >
+            <Button variant="ghost" size="icon" onClick={onToggleMute} className="h-8 w-8">
               {isMuted || volume === 0 ? (
                 <VolumeX className="h-4 w-4" />
               ) : (
@@ -514,9 +498,7 @@ const VolumeControl = memo(function VolumeControl({
               )}
             </Button>
           </TooltipTrigger>
-          <TooltipContent>
-            {isMuted ? 'Unmute' : 'Mute'}
-          </TooltipContent>
+          <TooltipContent>{isMuted ? 'Unmute' : 'Mute'}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
 
@@ -611,7 +593,7 @@ const CompactVoiceMessage = memo(function CompactVoiceMessage({
         ) : isPlaying ? (
           <Pause className="h-4 w-4" />
         ) : (
-          <Play className="h-4 w-4 ml-0.5" />
+          <Play className="ml-0.5 h-4 w-4" />
         )}
       </Button>
 

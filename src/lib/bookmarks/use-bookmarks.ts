@@ -10,6 +10,7 @@ import {
   type SortBy,
   type SortOrder,
 } from './bookmark-store'
+import { logger } from '@/lib/logger'
 import {
   GET_BOOKMARKS,
   GET_BOOKMARK_COUNT,
@@ -59,7 +60,10 @@ export interface UseBookmarkActionsReturn {
   addBookmark: (messageId: string, note?: string) => Promise<Bookmark | null>
   removeBookmark: (bookmarkId: string) => Promise<boolean>
   removeBookmarkByMessage: (messageId: string) => Promise<boolean>
-  toggleBookmark: (messageId: string, note?: string) => Promise<{ action: 'added' | 'removed'; bookmark?: Bookmark }>
+  toggleBookmark: (
+    messageId: string,
+    note?: string
+  ) => Promise<{ action: 'added' | 'removed'; bookmark?: Bookmark }>
   updateNote: (bookmarkId: string, note: string) => Promise<boolean>
   clearAllBookmarks: () => Promise<number>
   loading: boolean
@@ -176,10 +180,7 @@ export function useBookmarks({
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev
 
-        const newBookmarks = [
-          ...prev.nchat_bookmarks,
-          ...fetchMoreResult.nchat_bookmarks,
-        ]
+        const newBookmarks = [...prev.nchat_bookmarks, ...fetchMoreResult.nchat_bookmarks]
 
         // Update store
         store.setBookmarks(newBookmarks)
@@ -222,7 +223,9 @@ export function useBookmark(messageId: string): UseBookmarkReturn {
   })
 
   const [addBookmarkMutation, { loading: addLoading }] = useMutation(ADD_BOOKMARK)
-  const [removeBookmarkMutation, { loading: removeLoading }] = useMutation(REMOVE_BOOKMARK_BY_MESSAGE)
+  const [removeBookmarkMutation, { loading: removeLoading }] = useMutation(
+    REMOVE_BOOKMARK_BY_MESSAGE
+  )
   const [updateBookmarkMutation, { loading: updateLoading }] = useMutation(UPDATE_BOOKMARK)
 
   const existingBookmark = data?.nchat_bookmarks?.[0]
@@ -249,7 +252,7 @@ export function useBookmark(messageId: string): UseBookmarkReturn {
 
         return newBookmark ?? null
       } catch (error) {
-        console.error('Failed to add bookmark:', error)
+        logger.error('Failed to add bookmark:',  error)
         throw error
       }
     },
@@ -275,7 +278,7 @@ export function useBookmark(messageId: string): UseBookmarkReturn {
 
       return false
     } catch (error) {
-      console.error('Failed to remove bookmark:', error)
+      logger.error('Failed to remove bookmark:',  error)
       throw error
     }
   }, [user?.id, messageId, removeBookmarkMutation, store, refetch])
@@ -310,7 +313,7 @@ export function useBookmark(messageId: string): UseBookmarkReturn {
 
         return false
       } catch (error) {
-        console.error('Failed to update bookmark note:', error)
+        logger.error('Failed to update bookmark note:',  error)
         throw error
       }
     },
@@ -336,10 +339,14 @@ export function useBookmarkActions(): UseBookmarkActionsReturn {
   const store = useBookmarkStore()
 
   const [addBookmarkMutation, { loading: addLoading, error: addError }] = useMutation(ADD_BOOKMARK)
-  const [removeBookmarkMutation, { loading: removeLoading, error: removeError }] = useMutation(REMOVE_BOOKMARK)
-  const [removeByMessageMutation, { loading: removeByMsgLoading, error: removeByMsgError }] = useMutation(REMOVE_BOOKMARK_BY_MESSAGE)
-  const [updateBookmarkMutation, { loading: updateLoading, error: updateError }] = useMutation(UPDATE_BOOKMARK)
-  const [deleteAllMutation, { loading: deleteAllLoading, error: deleteAllError }] = useMutation(DELETE_ALL_BOOKMARKS)
+  const [removeBookmarkMutation, { loading: removeLoading, error: removeError }] =
+    useMutation(REMOVE_BOOKMARK)
+  const [removeByMessageMutation, { loading: removeByMsgLoading, error: removeByMsgError }] =
+    useMutation(REMOVE_BOOKMARK_BY_MESSAGE)
+  const [updateBookmarkMutation, { loading: updateLoading, error: updateError }] =
+    useMutation(UPDATE_BOOKMARK)
+  const [deleteAllMutation, { loading: deleteAllLoading, error: deleteAllError }] =
+    useMutation(DELETE_ALL_BOOKMARKS)
 
   const addBookmark = useCallback(
     async (messageId: string, note?: string): Promise<Bookmark | null> => {

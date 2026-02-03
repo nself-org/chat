@@ -155,21 +155,21 @@
 
 ### Code Quality
 
-| Metric | Previous | Current | Change |
-|--------|----------|---------|--------|
-| TypeScript Errors | [N] | [N] | [+/-N] |
-| Test Coverage | [%] | [%] | [+/-%] |
-| Total Tests | [N] | [N] | [+N] |
-| Bundle Size (shared) | [KB] | [KB] | [+/-KB] |
+| Metric               | Previous | Current | Change  |
+| -------------------- | -------- | ------- | ------- |
+| TypeScript Errors    | [N]      | [N]     | [+/-N]  |
+| Test Coverage        | [%]      | [%]     | [+/-%]  |
+| Total Tests          | [N]      | [N]     | [+N]    |
+| Bundle Size (shared) | [KB]     | [KB]    | [+/-KB] |
 
 ### Performance
 
-| Metric | Previous | Current | Change |
-|--------|----------|---------|--------|
-| Lighthouse Performance | [score] | [score] | [+/-N] |
-| First Contentful Paint | [ms] | [ms] | [+/-ms] |
-| Largest Contentful Paint | [ms] | [ms] | [+/-ms] |
-| Time to Interactive | [ms] | [ms] | [+/-ms] |
+| Metric                   | Previous | Current | Change  |
+| ------------------------ | -------- | ------- | ------- |
+| Lighthouse Performance   | [score]  | [score] | [+/-N]  |
+| First Contentful Paint   | [ms]     | [ms]    | [+/-ms] |
+| Largest Contentful Paint | [ms]     | [ms]    | [+/-ms] |
+| Time to Interactive      | [ms]     | [ms]    | [+/-ms] |
 
 ---
 
@@ -235,6 +235,7 @@ This release includes contributions from:
 - [@username](https://github.com/username) - [Contribution description]
 
 **First-time contributors** 🎉
+
 - [@username](https://github.com/username)
 
 Thank you to everyone who contributed!
@@ -278,4 +279,4 @@ See our [roadmap](https://github.com/acamarata/nself-chat/projects) for more det
 
 ---
 
-*ɳChat is open source software released under the MIT License.*
+_ɳChat is open source software released under the MIT License._

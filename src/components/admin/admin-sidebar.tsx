@@ -129,10 +129,7 @@ export function AdminSidebar({ collapsed = false, onCollapse }: AdminSidebarProp
             onClick={() => onCollapse(!collapsed)}
           >
             <ChevronLeft
-              className={cn(
-                'h-4 w-4 transition-transform',
-                collapsed && 'rotate-180'
-              )}
+              className={cn('h-4 w-4 transition-transform', collapsed && 'rotate-180')}
             />
           </Button>
         )}
@@ -151,8 +148,8 @@ export function AdminSidebar({ collapsed = false, onCollapse }: AdminSidebarProp
               className={cn(
                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                 active
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
+                  ? 'text-primary-foreground bg-primary'
+                  : 'hover:text-accent-foreground text-muted-foreground hover:bg-accent',
                 collapsed && 'justify-center px-2'
               )}
               title={collapsed ? item.label : undefined}
@@ -189,7 +186,7 @@ export function AdminSidebar({ collapsed = false, onCollapse }: AdminSidebarProp
         <Link
           href="/chat"
           className={cn(
-            'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground',
+            'hover:text-accent-foreground flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent',
             collapsed && 'justify-center px-2'
           )}
           title={collapsed ? 'Back to Chat' : undefined}

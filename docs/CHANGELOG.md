@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Executive Summary
 
 **v0.8.0 Feature Highlights:**
+
 - ✅ Native iOS app (Capacitor 6.2.0) - App Store ready
 - ✅ Native Android app (Capacitor 6.2.0) - Play Store ready
 - ✅ Desktop apps (Electron 28) - Windows, macOS, Linux
@@ -36,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ✅ CI/CD automation (8 new GitHub Actions workflows)
 
 **Impact:**
+
 - **Reach**: 3 new platforms (iOS, Android, Desktop)
 - **Offline**: Full functionality without internet connection
 - **Performance**: 60 FPS scrolling, <1s app launch, <100 MB memory
@@ -49,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 1. iOS Application (Capacitor) 🍎
 
 **Native iOS Features:**
+
 - iOS 14.0+ support with Universal Binary (iPhone + iPad)
 - Face ID/Touch ID biometric authentication
 - APNs push notifications with rich actions and inline reply
@@ -65,12 +68,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Today widget for quick message access
 
 **Implementation:**
+
 - 127 files, 8,934 lines of code
 - 15 native Capacitor plugins
 - Xcode project with complete configuration
 - App Store submission-ready
 
 **Performance:**
+
 - App size: 42 MB (compressed IPA)
 - Launch time: <0.8s on iPhone 14 Pro
 - Memory: ~85 MB average
@@ -80,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 2. Android Application (Capacitor) 🤖
 
 **Native Android Features:**
+
 - Android 7.0+ (API 24+) support, covers 95%+ devices
 - Material Design 3 with Material You dynamic theming
 - Fingerprint/Face Unlock biometric authentication
@@ -95,12 +101,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TalkBack accessibility support
 
 **Implementation:**
+
 - 98 files, 7,621 lines of code
 - 15 native Capacitor plugins
 - Gradle build system with ProGuard
 - Play Store submission-ready
 
 **Performance:**
+
 - APK size: 38 MB (universal), AAB: 28 MB
 - Launch time: <1.2s on Pixel 6
 - Memory: ~95 MB average
@@ -110,11 +118,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 3. Desktop Application (Electron) 💻
 
 **Cross-Platform Desktop:**
+
 - Windows 10+ (64-bit and 32-bit)
 - macOS 10.15+ (Universal Binary: Intel + Apple Silicon)
 - Linux (Ubuntu 18.04+, Fedora 32+, Debian 10+)
 
 **Desktop Features:**
+
 - Multi-window support with isolated processes
 - System tray integration (minimize to tray)
 - Custom title bar with native window controls
@@ -129,17 +139,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Print support for conversations
 
 **Implementation:**
+
 - 67 files, 5,498 lines of code
 - Main process + renderer process architecture
 - Secure preload script with context isolation
 - Electron Builder configuration
 
 **Build Outputs:**
+
 - macOS: DMG + ZIP (x64, arm64, Universal)
 - Windows: NSIS installer + Portable EXE
 - Linux: AppImage, DEB, RPM, TAR.GZ
 
 **Performance:**
+
 - App size: 85-120 MB (varies by platform)
 - Launch time: <2s cold start
 - Memory: ~150 MB idle, ~250 MB active
@@ -148,6 +161,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 4. Offline Mode 📴
 
 **Offline Capabilities:**
+
 - IndexedDB client-side database
 - 1000 messages cached per channel
 - 500 MB media cache (configurable)
@@ -158,6 +172,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Optimistic UI for immediate feedback
 
 **Supported Offline Actions:**
+
 - Send messages (queued for delivery)
 - Edit messages (queued for sync)
 - Delete messages (queued)
@@ -168,6 +183,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - View user profiles
 
 **Storage:**
+
 - Messages: 1000 per channel
 - Media: 500 MB total (configurable)
 - Total: 1 GB maximum (IndexedDB)
@@ -175,6 +191,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 5. Background Sync 🔄
 
 **iOS Background Fetch:**
+
 - Fetch new messages every 15-30 minutes
 - Update badge count on app icon
 - Trigger push notifications
@@ -183,6 +200,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Configurable fetch interval
 
 **Android WorkManager:**
+
 - Periodic sync (15 minute minimum)
 - Expedited work for urgent sync
 - Constraints (WiFi-only, battery level)
@@ -190,6 +208,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Foreground service for high-priority
 
 **Web Service Workers:**
+
 - Background Sync API for message queue
 - Push notifications
 - Cache management
@@ -198,6 +217,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 6. Camera & Media Features 📷
 
 **Photo Capture:**
+
 - Front/rear camera selection
 - Flash control (auto, on, off, torch)
 - Focus and exposure adjustment
@@ -206,6 +226,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - HDR mode, Portrait mode
 
 **Video Recording:**
+
 - HD/4K video capture
 - Pause/resume recording
 - Up to 5 minutes duration
@@ -213,6 +234,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Video trimming
 
 **Photo Editing:**
+
 - Crop (free and fixed aspect ratios)
 - Rotate and flip
 - 10+ Instagram-like filters
@@ -222,6 +244,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Undo/redo support
 
 **Voice Messages:**
+
 - High-quality audio recording (AAC)
 - Waveform visualization during playback
 - Playback speed control (0.5x - 2x)
@@ -229,6 +252,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Maximum 5 minutes duration
 
 **Gallery Access:**
+
 - Multi-select photos/videos
 - Album browsing
 - Live Photos support (iOS)
@@ -237,6 +261,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 7. Mobile UI Optimizations 📱
 
 **Virtual Scrolling:**
+
 - Render only visible messages
 - Smooth 60 FPS scrolling
 - Handle 10,000+ messages without lag
@@ -244,6 +269,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Scroll-to-bottom indicator
 
 **Touch Gestures:**
+
 - Swipe to reply
 - Long-press for reactions
 - Pull-to-refresh
@@ -252,6 +278,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Double-tap to like
 
 **Adaptive UI:**
+
 - Portrait/landscape orientation
 - Tablet-optimized layouts
 - Split-screen support (iPad, Android tablets)
@@ -260,6 +287,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dynamic Island support (iPhone 14 Pro+)
 
 **Performance:**
+
 - Lazy loading of images
 - Progressive JPEG rendering
 - Image compression before upload
@@ -270,6 +298,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 8. Analytics & Monitoring 📊
 
 **Firebase Analytics:**
+
 - User engagement tracking
 - Screen views
 - Custom events (message_sent, channel_created, etc.)
@@ -280,6 +309,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Retention cohorts
 
 **Sentry Mobile:**
+
 - iOS crash reporting (@sentry/capacitor)
 - Android crash reporting
 - Electron crash reporting (@sentry/electron)
@@ -290,6 +320,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Breadcrumbs for debugging
 
 **Firebase Crashlytics:**
+
 - Real-time crash reporting
 - Non-fatal exception tracking
 - Custom logs and keys
@@ -297,6 +328,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue prioritization
 
 **Firebase Performance:**
+
 - App startup time measurement
 - Screen rendering performance
 - Network request monitoring
@@ -305,6 +337,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 9. Build Automation 🏗️
 
 **New GitHub Actions Workflows:**
+
 - `ios-build.yml` - Build and sign iOS app
 - `android-build.yml` - Build and sign Android app
 - `desktop-build.yml` - Build desktop apps (all platforms)
@@ -315,6 +348,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `e2e-tests.yml` - Mobile E2E testing
 
 **Build Features:**
+
 - Automated semantic versioning
 - Code signing (iOS certificates, Android keystores)
 - macOS notarization for desktop
@@ -326,6 +360,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Build artifact retention
 
 **Build Matrix:**
+
 - iOS: Debug, Release (App Store), Ad-hoc
 - Android: Debug, Release (APK + AAB)
 - macOS: x64, arm64, Universal Binary
@@ -335,12 +370,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### 10. E2E Testing 🧪
 
 **Test Frameworks:**
+
 - Detox for React Native/Capacitor
 - Appium for cross-platform mobile testing
 - WebdriverIO automation framework
 - Playwright for desktop app testing
 
 **Mobile Test Suites:**
+
 - `e2e/mobile/auth.spec.ts` - Authentication flows
 - `e2e/mobile/messaging.spec.ts` - Send/receive messages
 - `e2e/mobile/channels.spec.ts` - Channel management
@@ -353,6 +390,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `e2e/mobile/performance.spec.ts` - Performance benchmarks
 
 **Test Coverage:**
+
 - 30+ mobile E2E tests
 - 20+ desktop E2E tests
 - Automated on every commit
@@ -365,6 +403,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🔧 Technical Details
 
 **Code Statistics:**
+
 - Files changed: 487
 - Lines added: +34,682
 - Lines removed: -2,145
@@ -378,6 +417,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Docs: 12 guides, 1,471 lines
 
 **Dependencies Added:**
+
 - @capacitor/android@6.2.0
 - @capacitor/ios@6.2.0
 - @capacitor/camera@6.1.0
@@ -401,6 +441,7 @@ All existing web features, APIs, database schema, and configurations remain unch
 ### 📚 Documentation
 
 **New Documentation:**
+
 - `/docs/releases/v0.8.0/RELEASE-NOTES.md` - Complete release notes
 - `/docs/releases/v0.8.0/FEATURES.md` - All features documented
 - `/docs/releases/v0.8.0/BREAKING-CHANGES.md` - No breaking changes
@@ -464,14 +505,17 @@ All existing web features, APIs, database schema, and configurations remain unch
 ### 📦 Distribution
 
 **iOS:**
+
 - App Store: https://apps.apple.com/app/nchat/id...
 - TestFlight: Internal and external testing
 
 **Android:**
+
 - Play Store: https://play.google.com/store/apps/details?id=io.nself.chat
 - APK Direct: Available on GitHub Releases
 
 **Desktop:**
+
 - GitHub Releases: https://github.com/nself/nself-chat/releases/tag/v0.8.0
 - Auto-update: Enabled for all platforms
 
@@ -511,6 +555,7 @@ This release adds **7,500+ lines of production code** across **40+ new files**, 
 ## Executive Summary
 
 **v0.4.0 Feature Highlights:**
+
 - ✅ Signal Protocol E2EE with perfect forward secrecy and recovery codes
 - ✅ WebRTC calling (voice/video) with up to 50 participants
 - ✅ Screen sharing with annotations, cursor tracking, and recording
@@ -523,6 +568,7 @@ This release adds **7,500+ lines of production code** across **40+ new files**, 
 - ✅ Comprehensive analytics and health monitoring
 
 **Impact:**
+
 - **Security**: Military-grade encryption matching Signal/WhatsApp standards
 - **Scalability**: 50-person video calls, 100 concurrent streams
 - **Cross-Platform**: Full web, iOS, Android, desktop support
@@ -534,6 +580,7 @@ This release adds **7,500+ lines of production code** across **40+ new files**, 
 ## ✨ New Features
 
 ### 1. End-to-End Encryption (E2EE) - Signal Protocol 🔐
+
 - **Signal Protocol**: Industry-standard encryption used by Signal, WhatsApp
 - **Perfect Forward Secrecy**: Past messages remain secure even if keys compromised
 - **Future Secrecy**: Future messages secure after compromise (Double Ratchet)
@@ -551,6 +598,7 @@ This release adds **7,500+ lines of production code** across **40+ new files**, 
 - **Message Encryption**: Transparent encryption for DMs and private channels
 
 **Implementation Files**:
+
 - `src/lib/e2ee/crypto.ts` - Low-level cryptographic operations (456 lines)
 - `src/lib/e2ee/signal-client.ts` - Signal Protocol wrapper (465 lines)
 - `src/lib/e2ee/key-manager.ts` - Key generation and management (538 lines)
@@ -566,6 +614,7 @@ This release adds **7,500+ lines of production code** across **40+ new files**, 
 - `.backend/migrations/013_e2ee_system.sql` - Database schema (635 lines)
 
 **Database Tables (8 new)**:
+
 - `nchat_user_master_keys` - User master keys
 - `nchat_identity_keys` - Device identity keys
 - `nchat_signed_prekeys` - Medium-term signed prekeys
@@ -576,6 +625,7 @@ This release adds **7,500+ lines of production code** across **40+ new files**, 
 - `nchat_prekey_bundles` - Materialized view for efficient lookups
 
 **Configuration**:
+
 ```typescript
 features: {
   endToEndEncryption: boolean
@@ -593,6 +643,7 @@ encryption: {
 ```
 
 **Performance**:
+
 - Master key derivation: ~150ms (PBKDF2 100k iterations)
 - Device key generation: ~225ms (identity + signed prekey + 100 one-time prekeys)
 - Message encryption: ~3ms (subsequent), ~8ms (first)
@@ -600,6 +651,7 @@ encryption: {
 - Session setup: ~50ms (X3DH key agreement)
 
 **Security**:
+
 - ✅ Server compromise resistant (keys encrypted)
 - ✅ Network eavesdropping resistant (E2E encrypted)
 - ✅ Database breach resistant (private keys encrypted)
@@ -607,6 +659,7 @@ encryption: {
 - ✅ Future secrecy (healing via DH ratchet)
 
 **Documentation** (2,100+ lines):
+
 - `docs/features/E2EE-Complete.md` - Complete implementation guide (800+ lines)
 - `docs/features/E2EE-Quick-Reference.md` - Developer quick reference
 - `docs/security/E2EE-Security-Audit.md` - Security audit report
@@ -623,12 +676,14 @@ encryption: {
 **Enterprise-Grade Communication**: Full-featured voice and video calling system with P2P and SFU support, adaptive quality, and comprehensive device management.
 
 **Call Types:**
+
 - **1-on-1 Calls**: Low-latency peer-to-peer voice/video calls
 - **Group Calls**: SFU-based calls with up to 50 participants
 - **Audio-Only**: Optimized voice-only mode with reduced bandwidth
 - **HD Video**: Multiple quality levels (180p, 360p, 720p, 1080p)
 
 **Advanced Features:**
+
 - **Simulcast**: Send 3 quality layers (low, medium, high) for SFU selection
 - **Adaptive Bitrate**: Automatic quality adjustment based on network conditions
 - **Network Monitoring**: Real-time RTT, jitter, and packet loss tracking
@@ -641,6 +696,7 @@ encryption: {
 - **TURN/STUN**: NAT traversal with coturn server integration
 
 **View Modes:**
+
 - Grid View - Equal-sized tiles for all participants
 - Speaker View - Active speaker in main view with thumbnails
 - Pinned View - Pin any participant to main view
@@ -648,6 +704,7 @@ encryption: {
 - Spotlight View - Single participant full screen
 
 **Implementation Files** (~3,800 lines):
+
 - `src/lib/webrtc/peer-connection.ts` - WebRTC peer connection manager
 - `src/lib/webrtc/media-manager.ts` - Device management and streams
 - `src/lib/webrtc/video-processor.ts` - Quality adaptation, frame rate control
@@ -666,6 +723,7 @@ encryption: {
 - `src/components/calls/CallInvitation.tsx` - Incoming call notification
 
 **Database Tables** (5 new):
+
 - `nchat_calls` - Call metadata and state
 - `nchat_call_participants` - Participant state and quality metrics
 - `nchat_call_events` - Call event log
@@ -673,12 +731,14 @@ encryption: {
 - `nchat_call_quality_reports` - Quality metrics and analytics
 
 **API Routes:**
+
 - `POST /api/calls/initiate` - Start a new call
 - `POST /api/calls/accept` - Accept incoming call
 - `POST /api/calls/decline` - Decline incoming call
 - `POST /api/calls/end` - End active call
 
 **Configuration:**
+
 ```typescript
 calls: {
   enabled: boolean
@@ -692,11 +752,13 @@ calls: {
 ```
 
 **Performance:**
+
 - 1-to-1 call: <50ms latency, <5% CPU
 - 10-person call: <100ms latency, ~20% CPU
 - 50-person call: <200ms latency, ~60% CPU
 
 **Documentation** (1,500+ lines):
+
 - `docs/features/WebRTC-Calling-Complete.md` - Complete implementation guide
 - `docs/guides/Voice-Calling-Implementation.md` - Voice call guide
 - `docs/guides/Video-Calling-Implementation.md` - Video call guide
@@ -709,6 +771,7 @@ calls: {
 **Professional Screen Sharing**: Advanced screen sharing system with real-time annotations, multi-user cursor tracking, and high-quality recording capabilities.
 
 **Core Features:**
+
 - **Multi-source Capture**: Share entire screen, specific window, or browser tab
 - **System Audio Capture**: Share application audio (Chrome/Edge only)
 - **Quality Controls**: Adaptive quality from 720p to 4K with dynamic adjustment
@@ -728,6 +791,7 @@ calls: {
 - **Browser Compatibility**: Full support for Chrome 72+, Edge 79+, Firefox 66+, Safari 13+
 
 **Implementation Files** (~3,100 lines):
+
 - `src/lib/webrtc/screen-capture.ts` - Screen capture manager (390 lines)
 - `src/lib/webrtc/screen-annotator.ts` - Canvas-based annotation system (734 lines)
 - `src/lib/webrtc/cursor-highlighter.ts` - Multi-user cursor tracking (373 lines)
@@ -740,6 +804,7 @@ calls: {
 - `src/components/calls/ScreenShareExample.tsx` - Example implementation (337 lines)
 
 **Performance:**
+
 - Screen Capture: 5-20 MB/s (quality-dependent)
 - Annotations: <1ms render time
 - Cursor Highlighting: 60fps animation
@@ -753,6 +818,7 @@ calls: {
 | Recording | ✅ 47+ | ✅ 79+ | ✅ 25+ | ✅ 14.1+ |
 
 **Documentation** (1,300+ lines):
+
 - `docs/guides/Screen-Sharing-Implementation.md` - Complete implementation guide (800+ lines)
 - `docs/reference/Screen-Sharing-Quick-Reference.md` - Quick reference (500+ lines)
 - `docs/features/SCREEN-SHARING-SUMMARY.md` - Implementation summary
@@ -764,6 +830,7 @@ calls: {
 **Production-Ready Streaming**: Complete live streaming platform with HLS playback, WebRTC broadcast, adaptive bitrate, live chat, and comprehensive analytics.
 
 **Core Streaming:**
+
 - **WebRTC Broadcast**: Low-latency video/audio ingest from browser (<3s latency)
 - **HLS Playback**: Adaptive bitrate streaming with wide device compatibility
 - **Quality Selection**: Auto, 1080p, 720p, 480p, 360p with manual/automatic switching
@@ -773,6 +840,7 @@ calls: {
 - **Multi-Bitrate**: Simultaneous encoding at multiple quality levels
 
 **Interactive Features:**
+
 - **Live Chat**: Real-time messaging during streams with rate limiting
 - **Emoji Reactions**: Animated floating reactions (❤️ 👍 😂 🎉 😮 😢)
 - **Q&A Mode**: Optional question and answer sessions
@@ -781,6 +849,7 @@ calls: {
 - **Viewer Count**: Real-time viewer tracking with peak metrics
 
 **Analytics & Monitoring:**
+
 - **Viewer Metrics**: Real-time count, peak viewers, total views, unique viewers
 - **Quality Metrics**: Bitrate, FPS, resolution, dropped frames tracking
 - **Network Metrics**: Latency, bandwidth, packet loss monitoring
@@ -789,6 +858,7 @@ calls: {
 - **Buffer Analysis**: Buffer health, stall events, quality switches
 
 **Adaptive Bitrate (ABR):**
+
 - **EWMA Estimation**: Exponentially weighted moving average bandwidth estimation
 - **Buffer-Based ABR**: Quality selection based on buffer health
 - **Quality Switching**: Intelligent upgrade/downgrade with cooldown periods
@@ -796,6 +866,7 @@ calls: {
 - **Network-Aware**: Automatic quality reduction on poor connections
 
 **Implementation Files** (~2,700 lines):
+
 - `src/lib/streaming/stream-client.ts` - WebRTC broadcast client
 - `src/lib/streaming/hls-player.ts` - HLS.js wrapper with ABR
 - `src/lib/streaming/abr-manager.ts` - Adaptive bitrate controller
@@ -811,6 +882,7 @@ calls: {
 - `src/components/streaming/StreamAnalytics.tsx` - Analytics dashboard
 
 **Database Tables** (6 new):
+
 - `nchat_streams` - Stream metadata and configuration
 - `nchat_stream_viewers` - Real-time viewer tracking
 - `nchat_stream_chat_messages` - Live chat messages
@@ -819,6 +891,7 @@ calls: {
 - `nchat_stream_recordings` - Recording metadata
 
 **API Routes:**
+
 - `POST /api/streams/create` - Create new stream
 - `POST /api/streams/[id]/start` - Start streaming
 - `POST /api/streams/[id]/end` - End stream
@@ -826,6 +899,7 @@ calls: {
 - `GET /api/streams/[id]/analytics` - Get analytics
 
 **Configuration:**
+
 ```typescript
 streaming: {
   enabled: boolean
@@ -840,12 +914,14 @@ streaming: {
 ```
 
 **Performance:**
+
 - Stream Latency: <5 seconds (low-latency mode)
 - Max Concurrent Streams: 100 per instance
 - Max Viewers per Stream: Unlimited (CDN-backed)
 - ABR Switch Time: <2 seconds
 
 **Documentation** (1,200+ lines):
+
 - `docs/features/Live-Streaming-Complete.md` - Complete guide (800+ lines)
 - `docs/guides/Live-Streaming-Implementation.md` - Implementation guide
 - `docs/reference/Live-Streaming-Quick-Start.md` - Quick start (400+ lines)
@@ -859,6 +935,7 @@ streaming: {
 **Native OS Integration:**
 
 **iOS CallKit:**
+
 - System-level call UI with lock screen controls
 - Call history integration
 - Siri integration ("Hey Siri, call John")
@@ -867,6 +944,7 @@ streaming: {
 - Native ringtones and vibrations
 
 **Android Telecom:**
+
 - Native call UI matching system style
 - System notifications with quick actions
 - Call log integration
@@ -876,18 +954,21 @@ streaming: {
 **VoIP Push Notifications:**
 
 **APNs (iOS):**
+
 - VoIP push certificates for instant wake
 - Background wake from terminated state
 - PushKit framework integration
 - Silent push for call updates
 
 **FCM (Android):**
+
 - High-priority push messages
 - Background wake capability
 - Data-only messages for efficiency
 - Channel-based notifications
 
 **Battery Optimization:**
+
 - **Adaptive Quality**: Reduce quality when battery <20%
   - Low battery: 360p @ 15fps
   - Medium battery: 720p @ 30fps
@@ -899,6 +980,7 @@ streaming: {
 - **Wake Lock Management**: Prevent unnecessary screen wake
 
 **Picture-in-Picture (PiP):**
+
 - **Floating Window**: Continue call while using other apps
 - **Touch Controls**: Tap to mute, swipe to end
 - **Auto-Enable**: Automatic PiP when leaving app
@@ -906,6 +988,7 @@ streaming: {
 - **Always-On-Top**: Stay visible during multitasking
 
 **Touch Optimizations:**
+
 - **Gesture Controls**: Swipe gestures for quick actions
 - **Haptic Feedback**: Vibration feedback for button presses
 - **Large Touch Targets**: Minimum 44pt touch areas
@@ -913,6 +996,7 @@ streaming: {
 - **Edge Swipe**: Prevent accidental navigation
 
 **Implementation Files** (~1,500 lines):
+
 - `src/lib/mobile/callkit-manager.ts` - iOS CallKit integration
 - `src/lib/mobile/telecom-manager.ts` - Android Telecom integration
 - `src/lib/mobile/voip-push.ts` - Push notification handling
@@ -924,6 +1008,7 @@ streaming: {
 - `platforms/capacitor/plugins/Telecom.ts` - Native Android plugin
 
 **Configuration:**
+
 ```typescript
 mobile: {
   enableCallKit: boolean // iOS
@@ -937,12 +1022,14 @@ mobile: {
 ```
 
 **Platform Support:**
+
 - iOS 13.0+ (CallKit requires iOS 10+)
 - Android 6.0+ (API 23+)
 - React Native 0.70+
 - Capacitor 5.0+
 
 **Documentation** (1,000+ lines):
+
 - `docs/features/Mobile-Calls-Complete.md` - Complete guide (600+ lines)
 - `docs/features/MOBILE-CALLS-IMPLEMENTATION.md` - Implementation details
 - `docs/guides/Mobile-Call-Optimizations.md` - Optimization guide
@@ -955,6 +1042,7 @@ mobile: {
 ### New Tables (8 total)
 
 **E2EE Tables (8):**
+
 1. `nchat_user_master_keys` - User master keys (PBKDF2-derived)
 2. `nchat_identity_keys` - Device identity key pairs (Curve25519)
 3. `nchat_signed_prekeys` - Medium-term signed prekeys (rotated weekly)
@@ -964,24 +1052,14 @@ mobile: {
 7. `nchat_e2ee_audit_log` - Security audit log (metadata only)
 8. `nchat_prekey_bundles` - Materialized view for efficient lookups
 
-**Calling Tables (5):**
-9. `nchat_calls` - Call metadata, state, and configuration
-10. `nchat_call_participants` - Participant state, quality metrics
-11. `nchat_call_events` - Call event log (joined, left, muted, etc.)
-12. `nchat_call_recordings` - Recording metadata and storage URLs
-13. `nchat_call_quality_reports` - Quality metrics and network stats
+**Calling Tables (5):** 9. `nchat_calls` - Call metadata, state, and configuration 10. `nchat_call_participants` - Participant state, quality metrics 11. `nchat_call_events` - Call event log (joined, left, muted, etc.) 12. `nchat_call_recordings` - Recording metadata and storage URLs 13. `nchat_call_quality_reports` - Quality metrics and network stats
 
-**Streaming Tables (6):**
-14. `nchat_streams` - Stream metadata, scheduling, and configuration
-15. `nchat_stream_viewers` - Real-time viewer tracking
-16. `nchat_stream_chat_messages` - Live chat messages
-17. `nchat_stream_reactions` - Emoji reactions with positions
-18. `nchat_stream_analytics` - Aggregated metrics and analytics
-19. `nchat_stream_recordings` - Stream recording metadata
+**Streaming Tables (6):** 14. `nchat_streams` - Stream metadata, scheduling, and configuration 15. `nchat_stream_viewers` - Real-time viewer tracking 16. `nchat_stream_chat_messages` - Live chat messages 17. `nchat_stream_reactions` - Emoji reactions with positions 18. `nchat_stream_analytics` - Aggregated metrics and analytics 19. `nchat_stream_recordings` - Stream recording metadata
 
 ### Extended Tables
 
 **Messages Table:**
+
 - `is_encrypted` - Boolean flag for E2EE messages
 - `encrypted_payload` - Encrypted message content
 - `message_type` - Message type (text, prekey, etc.)
@@ -989,12 +1067,14 @@ mobile: {
 - `encryption_version` - Protocol version
 
 **Users Table:**
+
 - `has_e2ee_enabled` - User E2EE enrollment status
 - `e2ee_public_key` - User's public identity key
 
 ### Indexes Created
 
 **Performance Indexes (25+):**
+
 - E2EE: Identity keys, prekeys, sessions, safety numbers
 - Calls: Active calls, participants, quality reports
 - Streaming: Active streams, viewers, chat messages, analytics
@@ -1004,6 +1084,7 @@ mobile: {
 ### Migrations
 
 **6 New Migration Files:**
+
 - `013_e2ee_system.sql` - E2EE tables and indexes (635 lines)
 - `014_e2ee_system.sql` - Extended E2EE schema (24,956 bytes)
 - `015_voice_calls.sql` - Voice call tables (16,831 bytes)
@@ -1017,11 +1098,13 @@ mobile: {
 ### Production Dependencies (10 new)
 
 **Encryption:**
+
 - `@signalapp/libsignal-client@^0.69.0` - Official Signal Protocol implementation
 - `@noble/curves@^1.7.0` - Elliptic curve cryptography (Curve25519)
 - `@noble/hashes@^1.6.1` - Cryptographic hash functions
 
 **WebRTC & Media:**
+
 - `mediasoup@^3.18.9` - SFU media server for group calls
 - `mediasoup-client@^3.18.5` - Client-side SFU support
 - `simple-peer@^9.11.1` - Simplified WebRTC peer connections
@@ -1030,10 +1113,12 @@ mobile: {
 - `@mediapipe/selfie_segmentation@^0.1.1675465747` - Person segmentation for backgrounds
 
 **Streaming:**
+
 - `hls.js@^1.6.15` - HLS video player with ABR
 - `dashjs@^4.7.4` - MPEG-DASH player (alternative to HLS)
 
 **Canvas & Recording:**
+
 - `canvas@^2.11.2` - Server-side canvas for processing
 
 ### Development Dependencies (3 new)
@@ -1055,18 +1140,21 @@ mobile: {
 ### New API Routes (15+)
 
 **E2EE Endpoints (4):**
+
 - `POST /api/e2ee/initialize` - Initialize E2EE with password
 - `POST /api/e2ee/recover` - Recover E2EE with recovery code
 - `POST /api/e2ee/safety-number` - Generate/verify safety numbers
 - `POST /api/e2ee/keys/replenish` - Replenish one-time prekeys
 
 **Call Endpoints (4):**
+
 - `POST /api/calls/initiate` - Start new call
 - `POST /api/calls/accept` - Accept incoming call
 - `POST /api/calls/decline` - Decline call
 - `POST /api/calls/end` - End active call
 
 **Streaming Endpoints (5):**
+
 - `POST /api/streams/create` - Create new stream
 - `POST /api/streams/[id]/start` - Start streaming
 - `POST /api/streams/[id]/end` - End stream
@@ -1074,22 +1162,26 @@ mobile: {
 - `GET /api/streams/[id]/analytics` - Get analytics
 
 **Mobile Endpoints (2):**
+
 - `POST /api/mobile/voip-token` - Register VoIP push token
 - `POST /api/mobile/pip-state` - Update PiP state
 
 ### GraphQL Operations
 
 **New Queries (12+):**
+
 - E2EE: `getUserPreKeyBundle`, `getIdentityKey`, `getSafetyNumber`
 - Calls: `getActiveCall`, `getCallHistory`, `getCallQualityReport`
 - Streaming: `getActiveStreams`, `getStreamAnalytics`, `getStreamViewers`
 
 **New Mutations (15+):**
+
 - E2EE: `initializeE2EE`, `rotatePreKeys`, `verifySafetyNumber`
 - Calls: `initiateCall`, `acceptCall`, `updateCallQuality`
 - Streaming: `createStream`, `startStream`, `sendChatMessage`, `sendReaction`
 
 **New Subscriptions (8+):**
+
 - Calls: `onCallInvitation`, `onCallStateChange`, `onParticipantUpdate`
 - Streaming: `onViewerCount`, `onChatMessage`, `onReaction`, `onStreamEnd`
 
@@ -1100,6 +1192,7 @@ mobile: {
 ### E2EE Security
 
 **Cryptographic Primitives:**
+
 - **Curve25519**: ECDH key exchange
 - **Ed25519**: Digital signatures
 - **AES-256-GCM**: Symmetric encryption
@@ -1107,6 +1200,7 @@ mobile: {
 - **SHA-256/SHA-512**: Cryptographic hashing
 
 **Security Features:**
+
 - ✅ Perfect Forward Secrecy (one-time prekeys)
 - ✅ Future Secrecy (Double Ratchet break-in recovery)
 - ✅ Zero-Knowledge Server (server cannot decrypt)
@@ -1116,6 +1210,7 @@ mobile: {
 - ✅ Audit Logging (metadata only, no sensitive data)
 
 **Threat Model:**
+
 - ✅ Network eavesdropping resistant
 - ✅ Server compromise resistant
 - ✅ Database breach resistant
@@ -1145,6 +1240,7 @@ mobile: {
 ### Optimization Metrics
 
 **E2EE Performance:**
+
 - Master key derivation: ~150ms (PBKDF2 100k iterations)
 - Device key generation: ~225ms (identity + signed prekey + 100 OTPs)
 - Message encryption: ~3ms (subsequent), ~8ms (first session)
@@ -1152,6 +1248,7 @@ mobile: {
 - Session setup: ~50ms (X3DH key agreement)
 
 **Call Performance:**
+
 - P2P call setup: <1 second
 - SFU call join: <2 seconds
 - 1-to-1 latency: <50ms
@@ -1161,6 +1258,7 @@ mobile: {
 - CPU usage (50-person): ~60%
 
 **Streaming Performance:**
+
 - WebRTC ingest latency: <3 seconds
 - HLS playback latency: <5 seconds (low-latency mode)
 - ABR quality switch: <2 seconds
@@ -1168,6 +1266,7 @@ mobile: {
 - Reaction animation: 60fps
 
 **Screen Sharing:**
+
 - Screen capture: 5-20 MB/s (quality-dependent)
 - Annotation render: <1ms per frame
 - Cursor tracking: 60fps
@@ -1196,6 +1295,7 @@ mobile: {
 ### New Documentation (20+ files, 10,000+ lines)
 
 **E2EE Documentation (2,100+ lines):**
+
 - `docs/features/E2EE-Complete.md` - Complete implementation guide (800+ lines)
 - `docs/features/E2EE-Quick-Reference.md` - Developer quick reference
 - `docs/security/E2EE-Security-Audit.md` - Security audit report
@@ -1205,6 +1305,7 @@ mobile: {
 - `src/lib/e2ee/README.md` - Library documentation
 
 **Calling Documentation (2,500+ lines):**
+
 - `docs/features/WebRTC-Calling-Complete.md` - Complete guide (800+ lines)
 - `docs/guides/Voice-Calling-Implementation.md` - Voice implementation
 - `docs/guides/Video-Calling-Implementation.md` - Video implementation
@@ -1212,16 +1313,19 @@ mobile: {
 - System design and architecture documentation
 
 **Screen Sharing Documentation (1,300+ lines):**
+
 - `docs/guides/Screen-Sharing-Implementation.md` - Complete guide (800+ lines)
 - `docs/reference/Screen-Sharing-Quick-Reference.md` - Quick reference (500+ lines)
 - `docs/features/SCREEN-SHARING-SUMMARY.md` - Implementation summary
 
 **Streaming Documentation (1,200+ lines):**
+
 - `docs/features/Live-Streaming-Complete.md` - Complete guide (800+ lines)
 - `docs/guides/Live-Streaming-Implementation.md` - Implementation guide
 - `docs/reference/Live-Streaming-Quick-Start.md` - Quick start (400+ lines)
 
 **Mobile Documentation (1,000+ lines):**
+
 - `docs/features/Mobile-Calls-Complete.md` - Complete guide (600+ lines)
 - `docs/features/MOBILE-CALLS-IMPLEMENTATION.md` - Implementation details
 - `docs/guides/Mobile-Call-Optimizations.md` - Optimization guide
@@ -1229,6 +1333,7 @@ mobile: {
 - `platforms/MOBILE-APPS-SUMMARY.md` - Platform-specific notes
 
 **Integration Guides:**
+
 - Setup and configuration for all features
 - API reference documentation
 - Troubleshooting guides
@@ -1280,11 +1385,13 @@ NEXT_PUBLIC_FEATURE_MOBILE_OPTIMIZATIONS=true
 ### Migration Steps
 
 1. **Install Dependencies:**
+
    ```bash
    pnpm install
    ```
 
 2. **Run Database Migrations:**
+
    ```bash
    cd .backend
    nself db migrate up
@@ -1298,12 +1405,14 @@ NEXT_PUBLIC_FEATURE_MOBILE_OPTIMIZATIONS=true
    - Set up media server
 
 4. **Media Server Setup (Optional):**
+
    ```bash
    cd .backend
    ./scripts/setup-media-server.sh
    ```
 
 5. **Mobile Setup (Optional):**
+
    ```bash
    # iOS
    cd platforms/capacitor
@@ -1324,16 +1433,19 @@ NEXT_PUBLIC_FEATURE_MOBILE_OPTIMIZATIONS=true
 ### Infrastructure Requirements
 
 **Media Server:**
+
 - Docker and Docker Compose
 - Ports: 3100 (HTTP), 3478 (TURN), 40000-49999 (RTC)
 - Public IP for production
 
 **Database:**
+
 - PostgreSQL 14+ with PostGIS
 - Additional 8 tables (~50MB initial size)
 - ~200MB for 100k encrypted messages
 
 **CDN (for streaming):**
+
 - HLS segment delivery
 - Recommended: CloudFront, Cloudflare, or Fastly
 
@@ -1345,27 +1457,30 @@ NEXT_PUBLIC_FEATURE_MOBILE_OPTIMIZATIONS=true
 
 **Lines of Code: ~7,500+ production lines**
 
-| Category | Files | Lines | Description |
-|----------|-------|-------|-------------|
-| E2EE | 13 | ~3,200 | Encryption libraries, components, hooks |
-| WebRTC | 15 | ~3,800 | Calling, peer management, media processing |
-| Screen Sharing | 10 | ~3,100 | Capture, annotations, recording |
-| Streaming | 13 | ~2,700 | Broadcast, playback, ABR, analytics |
-| Mobile | 9 | ~1,500 | CallKit, Telecom, PiP, battery |
-| **Total** | **60+** | **~14,300** | All new production code |
+| Category       | Files   | Lines       | Description                                |
+| -------------- | ------- | ----------- | ------------------------------------------ |
+| E2EE           | 13      | ~3,200      | Encryption libraries, components, hooks    |
+| WebRTC         | 15      | ~3,800      | Calling, peer management, media processing |
+| Screen Sharing | 10      | ~3,100      | Capture, annotations, recording            |
+| Streaming      | 13      | ~2,700      | Broadcast, playback, ABR, analytics        |
+| Mobile         | 9       | ~1,500      | CallKit, Telecom, PiP, battery             |
+| **Total**      | **60+** | **~14,300** | All new production code                    |
 
 **Database:**
+
 - **Tables**: 19 new tables
 - **Indexes**: 25+ new indexes
 - **Migrations**: 6 migration files (~100KB SQL)
 
 **API:**
+
 - **REST Endpoints**: 15 new routes
 - **GraphQL Queries**: 12 new queries
 - **GraphQL Mutations**: 15 new mutations
 - **GraphQL Subscriptions**: 8 new subscriptions
 
 **Documentation:**
+
 - **Files**: 20+ documentation files
 - **Lines**: 10,000+ lines of documentation
 - **Guides**: Setup, implementation, troubleshooting
@@ -1374,6 +1489,7 @@ NEXT_PUBLIC_FEATURE_MOBILE_OPTIMIZATIONS=true
 ### Feature Coverage
 
 **Communication Features:**
+
 - ✅ E2EE messaging (Signal Protocol)
 - ✅ 1-on-1 voice calls
 - ✅ 1-on-1 video calls (HD quality)
@@ -1389,6 +1505,7 @@ NEXT_PUBLIC_FEATURE_MOBILE_OPTIMIZATIONS=true
 - ✅ Virtual backgrounds
 
 **Platform Support:**
+
 - ✅ Web (all modern browsers)
 - ✅ iOS 13+ (CallKit, VoIP push)
 - ✅ Android 6+ (Telecom, FCM)
@@ -1402,6 +1519,7 @@ NEXT_PUBLIC_FEATURE_MOBILE_OPTIMIZATIONS=true
 ### None - Fully Backward Compatible
 
 This release is **100% backward compatible** with v0.3.0. All new features are:
+
 - ✅ Opt-in via feature flags
 - ✅ Independent of existing functionality
 - ✅ Disabled by default
@@ -1474,6 +1592,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 ## 🙏 Acknowledgments
 
 **Built With:**
+
 - [Signal Protocol](https://signal.org/docs/) - Industry-standard E2EE
 - [MediaSoup](https://mediasoup.org/) - Production-grade SFU
 - [HLS.js](https://github.com/video-dev/hls.js) - HLS video player
@@ -1484,6 +1603,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 - [React 19](https://react.dev/) - UI library
 
 **Special Thanks:**
+
 - Signal Foundation for the Signal Protocol
 - WebRTC community for excellent browser support
 - Open source contributors for all dependencies
@@ -1499,6 +1619,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 ## [0.4.0] - 2026-01-30
 
 ### 🎥 Media Server Infrastructure Release
+
 - **Signal Protocol**: Industry-standard E2EE using official `@signalapp/libsignal-client`
 - **Perfect Forward Secrecy**: One-time prekeys ensure past messages remain secure
 - **Future Secrecy**: Double Ratchet provides break-in recovery
@@ -1517,6 +1638,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 - **Setup Wizard**: User-friendly E2EE initialization flow
 
 **Cryptographic Algorithms**:
+
 - Key Exchange: X3DH (Extended Triple Diffie-Hellman)
 - Message Encryption: Double Ratchet Algorithm
 - Curve: Curve25519 (ECDH)
@@ -1526,6 +1648,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 - Hashing: SHA-256, SHA-512
 
 **Database Schema** (8 new tables):
+
 - `nchat_user_master_keys` - Master key info (password-derived)
 - `nchat_identity_keys` - Device identity keys (one per device)
 - `nchat_signed_prekeys` - Signed prekeys (rotated weekly)
@@ -1536,27 +1659,32 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 - `nchat_e2ee_audit_log` - Audit trail (metadata only)
 
 **API Routes**:
+
 - `POST /api/e2ee/initialize` - Initialize E2EE with password
 - `POST /api/e2ee/recover` - Recover E2EE with recovery code
 - `POST /api/e2ee/safety-number` - Generate/verify safety numbers
 - `POST /api/e2ee/keys/replenish` - Replenish one-time prekeys
 
 **React Hooks**:
+
 - `useE2EE()` - Main E2EE functionality
 - `useSafetyNumbers()` - Safety number operations
 
 **UI Components**:
+
 - `<E2EESetup />` - Setup wizard with recovery code
 - `<SafetyNumberDisplay />` - Identity verification UI
 - `<E2EEStatus />` - Encryption status indicators
 
 **Documentation**:
+
 - `/docs/E2EE-Implementation.md` - Complete implementation guide
 - `/docs/E2EE-Quick-Reference.md` - Developer quick reference
 - `/docs/E2EE-Security-Audit.md` - Security audit report
 - `/src/lib/e2ee/README.md` - Library documentation
 
 #### 2. HD Video Calling
+
 - **Multi-Participant Video**: Support for up to 50 participants in a single video call
 - **Multiple Resolutions**: 180p, 360p, 720p (default), and 1080p video quality
 - **Grid View**: Automatic grid layout for all participants with smart tile sizing
@@ -1568,6 +1696,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 - **Simulcast**: Sends 3 quality layers (low, medium, high) for SFU selection
 
 #### 2. Background Effects
+
 - **Background Blur**: Light, medium, or strong blur using MediaPipe segmentation
 - **Virtual Backgrounds**: Replace background with images or solid colors
 - **8 Preset Backgrounds**: Professional (office, library), Scenic (beach, mountains), Fun (space)
@@ -1576,18 +1705,21 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 - **Real-time Processing**: 30fps processing with GPU acceleration
 
 #### 3. Screen Sharing
+
 - **Share Screen**: Share entire screen, window, or browser tab
 - **Screen + Audio**: Option to include system audio in screen share
 - **Automatic Layout**: Screen share takes main view automatically
 - **Track Control**: Easy start/stop with automatic fallback to camera
 
 #### 4. Picture-in-Picture
+
 - **PiP Mode**: Continue working while in a video call
 - **Browser Native**: Uses browser's native PiP API
 - **Easy Toggle**: Enter/exit PiP with single click
 - **Audio Included**: Full audio in PiP mode
 
 #### 5. Bandwidth Management
+
 - **Network Monitoring**: Real-time RTT, jitter, and packet loss tracking
 - **Adaptive Bitrate**: Automatic quality reduction on poor connections
 - **Quality Indicators**: Excellent, Good, Fair, Poor connection status
@@ -1597,6 +1729,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 ### 🛠️ Technical Implementation
 
 #### New Libraries
+
 - **Video Processing** (`src/lib/calls/video-processor.ts`): Quality adaptation, frame rate control
 - **Layout Manager** (`src/lib/calls/layout-manager.ts`): Grid/speaker/pinned layouts with auto-sizing
 - **Bandwidth Manager** (`src/lib/calls/bandwidth-manager.ts`): Network monitoring and adaptation
@@ -1605,12 +1738,14 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 - **Simulcast** (`src/lib/calls/simulcast.ts`): Multi-layer video encoding
 
 #### New React Hooks
+
 - **`use-camera`**: Camera device management and permissions
 - **`use-video-layout`**: Layout mode management and tile positioning
 - **`use-background-effects`**: Background blur and virtual background control
 - **`use-video-call`** (extended): Video call management with all controls
 
 #### New UI Components
+
 - **`VideoCallModal`**: Main video call interface with all controls
 - **`VideoGrid`**: Grid layout for participants
 - **`VideoTile`**: Individual participant video tile with status indicators
@@ -1625,6 +1760,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 ### 🗄️ Database Changes
 
 **New Migration**: `000009_add_video_call_support.sql`
+
 - Added `is_video_enabled` column to `nchat_call_participants`
 - Added `video_quality` column (180p, 360p, 720p, 1080p)
 - Added `is_screen_sharing` column
@@ -1687,6 +1823,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 ### ✨ New Features
 
 #### Media Server Infrastructure
+
 - **MediaSoup SFU**: Selective Forwarding Unit for efficient media routing (no transcoding)
 - **Multi-Party Calls**: Support for up to 50 participants per room, 100 rooms per instance
 - **coturn TURN/STUN**: NAT traversal with TURN relay and STUN servers
@@ -1697,6 +1834,7 @@ This release is **100% backward compatible** with v0.3.0. All new features are:
 - **Health Monitoring**: Prometheus metrics, Grafana dashboards, health checks
 
 #### Infrastructure Components
+
 - Express HTTP server with REST API (8 endpoints)
 - Socket.IO for real-time signaling (11 events)
 - MediaSoup worker pool (configurable workers)
@@ -1712,6 +1850,7 @@ No new database tables - media server uses Redis for state management.
 ### 📦 New Dependencies
 
 **Media Server**:
+
 - **mediasoup** ^3.14.0 - SFU for WebRTC
 - **socket.io** ^4.8.1 - Real-time signaling
 - **ioredis** ^5.4.1 - Redis client
@@ -1723,6 +1862,7 @@ No new database tables - media server uses Redis for state management.
 ### 📚 Documentation (1,500+ lines)
 
 **New Documentation Files**:
+
 - `docs/features/Media-Server-Setup.md` - Complete setup guide (500+ lines)
 - `docs/features/Media-Server-Quick-Reference.md` - Quick reference (400+ lines)
 - `.backend/custom-services/media-server/README.md` - Project docs (400+ lines)
@@ -1731,6 +1871,7 @@ No new database tables - media server uses Redis for state management.
 ### 🔧 Files Created (18 total)
 
 **Backend Code** (11 files, ~2,500 lines):
+
 ```
 .backend/custom-services/media-server/
 ├── src/
@@ -1748,6 +1889,7 @@ No new database tables - media server uses Redis for state management.
 ```
 
 **Docker & Config** (5 files):
+
 - `docker-compose.media.yml` - Service orchestration
 - `coturn/turnserver.conf` - TURN server configuration
 - `Dockerfile` - Multi-stage Docker build
@@ -1755,6 +1897,7 @@ No new database tables - media server uses Redis for state management.
 - `.env.example` - Environment template
 
 **Scripts** (2 files):
+
 - `scripts/setup-media-server.sh` - Automated setup wizard
 - `scripts/test-media-server.sh` - Comprehensive testing
 
@@ -1762,14 +1905,14 @@ No new database tables - media server uses Redis for state management.
 
 #### Services
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| Media Server | 3100 | HTTP/WebSocket API |
-| RTC Ports | 40000-49999 | WebRTC media |
-| TURN Server | 3478 | NAT traversal |
-| Redis | 6379 | State management |
-| Prometheus | 9091 | Metrics (optional) |
-| Grafana | 3001 | Dashboards (optional) |
+| Service      | Port        | Purpose               |
+| ------------ | ----------- | --------------------- |
+| Media Server | 3100        | HTTP/WebSocket API    |
+| RTC Ports    | 40000-49999 | WebRTC media          |
+| TURN Server  | 3478        | NAT traversal         |
+| Redis        | 6379        | State management      |
+| Prometheus   | 9091        | Metrics (optional)    |
+| Grafana      | 3001        | Dashboards (optional) |
 
 #### Quick Start
 
@@ -1802,12 +1945,14 @@ TURN_CREDENTIAL=your-turn-secret
 ### ⚡ Performance
 
 **Capacity per Instance**:
+
 - 100 concurrent rooms
 - 50 participants per room
 - 10 concurrent recordings
 - ~500 Mbps bandwidth at full load
 
 **Benchmarks**:
+
 - 1-to-1 call: <50ms latency, <5% CPU
 - 10-person call: <100ms latency, ~20% CPU
 - 50-person call: <200ms latency, ~60% CPU
@@ -1815,6 +1960,7 @@ TURN_CREDENTIAL=your-turn-secret
 ### 🎯 API Reference
 
 **REST Endpoints** (8):
+
 - GET /api/health - Health check
 - GET /api/stats - Server statistics
 - GET /api/ice-servers - ICE config
@@ -1822,6 +1968,7 @@ TURN_CREDENTIAL=your-turn-secret
 - Plus recording endpoints
 
 **Socket.IO Events** (11):
+
 - join-room, create-transport, produce, consume
 - Plus producer/consumer control events
 
@@ -1845,16 +1992,19 @@ None - this is a feature-only infrastructure release
 ### 🔄 Migration Notes
 
 **Non-Breaking**:
+
 - All changes are additive
 - No database migrations required
 - Backward compatible with v0.3.0
 
 **Requirements**:
+
 - Docker and Docker Compose
 - Ports 3100, 3478, 40000-49999
 - Public IP for production
 
 **Next Steps**:
+
 1. ✅ Setup media server (this release)
 2. 📝 Implement frontend WebRTC client
 3. 📝 Add call management UI
@@ -1871,6 +2021,7 @@ None - this is a feature-only infrastructure release
 ### ✨ New Features
 
 #### 1. Advanced Messaging Features
+
 - **Edit Messages**: Edit your own messages with complete edit history tracking
 - **Delete Messages**: Soft delete with "Message deleted" placeholder, hard delete for admins
 - **Forward Messages**: Forward to multiple channels/DMs with optional context
@@ -1880,6 +2031,7 @@ None - this is a feature-only infrastructure release
 - **Typing Indicators**: Real-time "User is typing..." display
 
 #### 2. Rich Media: GIFs & Stickers
+
 - **GIF Integration**: Full Tenor API integration with search and trending
 - **GIF Picker**: Inline GIF picker in message composer
 - **Sticker Packs**: Custom sticker pack management (admin/owner)
@@ -1888,6 +2040,7 @@ None - this is a feature-only infrastructure release
 - **Default Packs**: 2 pre-loaded packs (Reactions, Emoji) with 12 stickers
 
 #### 3. Polls & Interactive Messages
+
 - **Create Polls**: Single-choice and multiple-choice polls with 2-10 options
 - **Anonymous Voting**: Optional anonymous poll voting
 - **Poll Expiration**: Set deadlines (5 min to 30 days) or no expiration
@@ -1897,6 +2050,7 @@ None - this is a feature-only infrastructure release
 - **Poll Notifications**: Notify channel when polls are created/closed
 
 #### 4. Two-Factor Authentication (2FA/MFA)
+
 - **TOTP Setup**: QR code setup for Google Authenticator, Authy, 1Password
 - **Backup Codes**: 10 single-use backup codes with download/print
 - **Device Trust**: "Remember this device" for 30 days
@@ -1905,6 +2059,7 @@ None - this is a feature-only infrastructure release
 - **Rate Limiting**: 5 failed attempts = 30-minute lockout
 
 #### 5. PIN Lock & Session Security
+
 - **PIN Lock**: 4-6 digit PIN with PBKDF2 hashing (100k iterations)
 - **Auto-Lock**: Lock on app close, background, or timeout (5/15/30/60 min)
 - **Biometric Unlock**: WebAuthn fingerprint/face unlock (Touch ID, Face ID, Windows Hello)
@@ -1913,6 +2068,7 @@ None - this is a feature-only infrastructure release
 - **Emergency Unlock**: Password-based recovery if PIN forgotten
 
 #### 6. Enhanced Search
+
 - **MeiliSearch Integration**: Fast full-text search (port 7700)
 - **Multi-Type Search**: Search messages, files, users, channels
 - **Advanced Operators**: 9 operators (from:, in:, has:, before:, after:, is:)
@@ -1922,8 +2078,9 @@ None - this is a feature-only infrastructure release
 - **Keyboard Shortcuts**: Cmd+K / Ctrl+K to open search
 
 #### 7. Bot API Foundation
+
 - **Bot User Type**: Special bot accounts with is_bot flag
-- **API Tokens**: Generate secure tokens (nbot_ + 64 hex chars)
+- **API Tokens**: Generate secure tokens (nbot\_ + 64 hex chars)
 - **5 API Endpoints**: send-message, create-channel, channel-info, add-reaction, user-info
 - **Webhooks**: Outgoing webhooks with HMAC-SHA256 signing
 - **16 Permissions**: Granular permissions across 6 categories
@@ -1932,6 +2089,7 @@ None - this is a feature-only infrastructure release
 - **API Documentation**: Interactive docs at `/api-docs/bots`
 
 #### 8. Social Media Integration
+
 - **3 Platforms**: Twitter/X, Instagram, LinkedIn integration
 - **OAuth 2.0**: Secure authentication for all platforms
 - **Auto-Posting**: Automatically post new social media posts to announcement channels
@@ -1944,6 +2102,7 @@ None - this is a feature-only infrastructure release
 ### 🗄️ Database Changes
 
 #### New Tables (28 total)
+
 - Advanced Messaging: `nchat_edit_history`, `nchat_starred_message`, `nchat_read_receipt`, `nchat_thread_subscription`
 - GIFs & Stickers: `nchat_sticker_packs`, `nchat_stickers`
 - Polls: `nchat_polls`, `nchat_poll_options`, `nchat_poll_votes`
@@ -1954,6 +2113,7 @@ None - this is a feature-only infrastructure release
 - Social: `nchat_social_accounts`, `nchat_social_posts`, `nchat_social_integrations`, `nchat_social_import_logs`
 
 #### Updated Tables
+
 - `nchat_messages`: Added `gif_url`, `sticker_id`, `gif_metadata`, `poll_id`, `has_link`, `has_file`, `has_image`, `is_pinned`, `is_starred`
 - `nchat_users`: Added `is_bot`
 - `app_configuration`: Added `require_2fa`
@@ -1970,6 +2130,7 @@ None - this is a feature-only infrastructure release
 ### 📚 Documentation (20+ new pages)
 
 #### Feature Documentation
+
 - `docs/advanced-messaging-implementation-summary.md` (900 lines)
 - `docs/advanced-messaging-quick-reference.md` (600 lines)
 - `docs/GIF-Sticker-Implementation.md` (comprehensive guide)
@@ -1986,6 +2147,7 @@ None - this is a feature-only infrastructure release
 - `docs/Social-Media-Quick-Reference.md` (quick reference)
 
 #### Planning & Summary
+
 - Implementation planning document (in project docs)
 - Complete release summary (in project docs)
 - `BOT_API_IMPLEMENTATION.md` (bot API guide)
@@ -2014,11 +2176,13 @@ None - this is a feature-only infrastructure release
 ### 🎯 Competitive Analysis
 
 **Feature Parity Improvement:**
+
 - **Before v0.3.0**: 18% (32 implemented, 54 partial, 388 missing)
 - **After v0.3.0**: ~40% (85+ implemented, 70+ partial, 319 missing)
 - **Improvement**: +22 percentage points, **122% increase**
 
 **Features We Now Match/Exceed:**
+
 - ✅ Advanced Messaging (Slack/Discord parity)
 - ✅ Polls (Discord parity)
 - ✅ GIFs (Slack/Discord parity)
@@ -2032,6 +2196,7 @@ None - this is a feature-only infrastructure release
 ### 🚀 Deployment
 
 #### Environment Variables (New)
+
 ```bash
 # GIFs
 NEXT_PUBLIC_TENOR_API_KEY=
@@ -2061,6 +2226,7 @@ NEXT_PUBLIC_FEATURE_SOCIAL_INTEGRATION=true
 ```
 
 #### Migration Steps
+
 1. Install dependencies: `pnpm install`
 2. Run 8 database migrations (see V0.3.0-RELEASE-SUMMARY.md)
 3. Configure environment variables
@@ -2088,17 +2254,20 @@ NEXT_PUBLIC_FEATURE_SOCIAL_INTEGRATION=true
 ### 🔄 Migration Notes
 
 **Non-Breaking Changes:**
+
 - All new features are **opt-in** via feature flags
 - Existing functionality unchanged
 - No data migrations required (only new tables added)
 - Backward compatible with v0.2.0
 
 **Database Migrations:**
+
 - 8 migration files to apply (see deployment instructions)
 - All migrations are additive (no data loss)
 - Estimated migration time: 5-10 minutes
 
 **Configuration:**
+
 - New environment variables are optional
 - Features disabled by default
 - Enable features via `.env.local` or admin dashboard
@@ -2116,6 +2285,7 @@ See project documentation for complete deployment instructions and feature docum
 ### ✨ Major Features
 
 #### Voice & Video Communication
+
 - **Voice Calls**: One-on-one and group voice calls with WebRTC
 - **Video Calls**: HD video calling with camera/mic controls
 - **Screen Sharing**: Share your screen with audio support
@@ -2127,6 +2297,7 @@ See project documentation for complete deployment instructions and feature docum
 - **TURN Server Support**: Configurable TURN servers for NAT traversal
 
 #### Bot SDK & Automation
+
 - **Bot Framework**: Complete SDK for building custom bots
 - **Slash Commands**: Create custom `/commands` with arguments
 - **Webhooks**: Incoming and outgoing webhook support
@@ -2138,6 +2309,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Example Bots**: Hello Bot, Poll Bot, Reminder Bot, Welcome Bot
 
 #### Payments & Crypto
+
 - **Stripe Integration**: Subscriptions and one-time payments
 - **Payment History**: Complete transaction records
 - **Invoicing**: Automatic invoice generation
@@ -2147,6 +2319,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Transaction History**: Blockchain transaction tracking
 
 #### Internationalization (i18n)
+
 - **6 Languages**: English, Spanish, French, German, Arabic, Chinese
 - **RTL Support**: Full right-to-left layout for Arabic
 - **Auto-Detection**: Automatic locale detection from browser
@@ -2156,6 +2329,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Language Switcher**: Easy UI for language selection
 
 #### Offline Mode
+
 - **Service Worker**: Cache-first strategy with background sync
 - **Offline Queue**: Send messages while offline, sync when online
 - **IndexedDB Storage**: Local storage for messages and channels
@@ -2165,6 +2339,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Retry Logic**: Automatic retry of failed operations
 
 #### Enhanced Security
+
 - **End-to-End Encryption**: Optional E2E encryption for DMs (AES-256-GCM)
 - **Two-Factor Authentication**: TOTP-based 2FA support
 - **Session Management**: Device tracking and remote logout
@@ -2177,6 +2352,7 @@ See project documentation for complete deployment instructions and feature docum
 - **XSS Protection**: Comprehensive input sanitization
 
 #### Admin Dashboard
+
 - **Analytics Dashboard**: Active users, message stats, storage metrics
 - **User Management**: Create, suspend, delete, bulk operations
 - **Role Assignment**: Manage user roles and permissions
@@ -2188,6 +2364,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Error Tracking**: Integrated error reporting
 
 #### Accessibility (WCAG 2.1 AA)
+
 - **Screen Reader Support**: Comprehensive ARIA labels and roles
 - **Keyboard Navigation**: Full keyboard support throughout app
 - **Focus Management**: Proper focus handling and skip links
@@ -2201,6 +2378,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 🧪 Testing & Quality
 
 #### Comprehensive Test Suite
+
 - **860+ Total Tests**: 100% pass rate
 - **479 E2E Tests**: Playwright tests covering all user flows
 - **381 Integration Tests**: Jest integration tests
@@ -2211,6 +2389,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Lighthouse CI**: Performance monitoring in CI/CD
 
 #### Code Quality
+
 - **TypeScript**: 100% TypeScript with strict mode
 - **Zero Errors**: 0 TypeScript errors, 0 ESLint errors
 - **100% Pass Rate**: All tests passing
@@ -2220,6 +2399,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 🚀 Platform Support
 
 #### Multi-Platform Builds
+
 - **Web**: Production Next.js 15 + React 19 build
 - **Desktop (Tauri)**: Lightweight native desktop app (Rust + WebView)
 - **Desktop (Electron)**: Cross-platform Electron app (Chromium + Node.js)
@@ -2230,6 +2410,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Kubernetes**: Production-ready K8s manifests and Helm charts
 
 #### Build Scripts
+
 - `pnpm build:web` - Web production build
 - `pnpm build:tauri` - Desktop (Tauri) builds for all platforms
 - `pnpm build:electron` - Desktop (Electron) builds for all platforms
@@ -2239,6 +2420,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 📚 Documentation
 
 #### Complete Documentation Set
+
 - **README.md**: Comprehensive project overview with quick start
 - **DEPLOYMENT.md**: Full deployment guide for all platforms
 - **UPGRADE-GUIDE.md**: Version upgrade instructions and migration
@@ -2251,6 +2433,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 🎨 User Interface
 
 #### Enhanced UI/UX
+
 - **Modern Design**: Clean, professional interface
 - **Dark Mode**: Beautiful dark theme with proper contrast
 - **27 Theme Presets**: From Slack-like to Discord-style and beyond
@@ -2261,6 +2444,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Empty States**: Helpful empty state illustrations
 
 #### Components
+
 - **75+ Components**: Comprehensive component library
 - **Radix UI**: Accessible primitives from Radix
 - **TipTap Editor**: Rich text editor with formatting
@@ -2271,6 +2455,7 @@ See project documentation for complete deployment instructions and feature docum
 ### ⚡ Performance
 
 #### Optimizations
+
 - **Bundle Size**: 103 KB baseline (optimized, gzipped)
 - **Lighthouse Scores**: 90+ across all metrics
 - **Time to Interactive**: <3 seconds
@@ -2285,6 +2470,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 🔧 Developer Experience
 
 #### Tooling
+
 - **TypeScript 5.7**: Latest TypeScript with strict mode
 - **ESLint 9**: Modern ESLint with flat config
 - **Prettier**: Code formatting with Tailwind plugin
@@ -2294,6 +2480,7 @@ See project documentation for complete deployment instructions and feature docum
 - **Hot Reload**: Fast refresh in development
 
 #### Scripts
+
 - 70+ npm scripts for all common tasks
 - Type checking, linting, formatting, testing
 - Multi-platform builds
@@ -2303,6 +2490,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 🔐 Security Enhancements
 
 #### Security Features
+
 - **HTTPS**: SSL/TLS enforcement in production
 - **CSP Headers**: Content Security Policy
 - **CORS**: Proper CORS configuration
@@ -2316,6 +2504,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 🌐 Deployment
 
 #### Deployment Options
+
 - **Vercel**: One-click deployment with GitHub integration
 - **Docker**: Production-ready Dockerfile and docker-compose
 - **Kubernetes**: K8s manifests with HPA, PDB, NetworkPolicy
@@ -2324,6 +2513,7 @@ See project documentation for complete deployment instructions and feature docum
 - **CI/CD**: GitHub Actions workflows for all platforms
 
 #### Infrastructure
+
 - **Health Checks**: `/api/health` endpoint for monitoring
 - **Graceful Shutdown**: Proper cleanup on SIGTERM
 - **Environment Validation**: Pre-flight checks for production
@@ -2333,6 +2523,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 📦 Dependencies
 
 #### Major Updates
+
 - Next.js 15.1.6 (from 14.x)
 - React 19.0.0 (from 18.x)
 - TypeScript 5.7.3 (from 5.0.x)
@@ -2346,6 +2537,7 @@ See project documentation for complete deployment instructions and feature docum
 ### 🐛 Bug Fixes
 
 #### Stability Improvements
+
 - Fixed memory leaks in WebSocket connections
 - Resolved race conditions in message sending
 - Fixed file upload progress tracking
@@ -2360,23 +2552,28 @@ See project documentation for complete deployment instructions and feature docum
 ### 🔄 Migration Notes
 
 #### Upgrading from 0.3.x
+
 This is a **major release** with many new features, but most changes are **additive and opt-in**.
 
 **Breaking Changes:**
+
 - Node.js 20+ now required (was 18+)
 - TypeScript 5.7+ required (was 5.0+)
 
 **Database Changes:**
+
 - New tables added for calls, bots, payments, translations, offline queue
 - Existing tables unchanged
 - Run migrations: `cd .backend && nself db migrate up`
 
 **Environment Variables:**
+
 - All new features have corresponding env vars (optional)
 - See `.env.example` for complete reference
 - New features are disabled by default, opt-in via config
 
 **Configuration:**
+
 - AppConfig schema extended with new feature flags
 - Existing config remains compatible
 - New features accessible via Settings → Features
@@ -2404,6 +2601,7 @@ See [UPGRADE-GUIDE.md](./docs/UPGRADE-GUIDE.md) for detailed upgrade instruction
 ### 🙏 Acknowledgments
 
 Built with:
+
 - [ɳSelf CLI](https://github.com/acamarata/nself) for backend infrastructure
 - [Next.js 15](https://nextjs.org/) and [React 19](https://react.dev/)
 - [Radix UI](https://www.radix-ui.com/) for accessible components
@@ -2416,6 +2614,7 @@ Built with:
 ## [0.3.0] - 2026-01-29
 
 ### Added
+
 - 860+ comprehensive tests (479 E2E + 381 integration)
 - WCAG 2.1 AA accessibility compliance
 - Lighthouse CI automated monitoring
@@ -2425,11 +2624,13 @@ Built with:
 - Performance optimizations
 
 ### Changed
+
 - Updated documentation with test coverage details
 - Enhanced README with accessibility badges
 - Improved type safety across the codebase
 
 ### Fixed
+
 - Zero TypeScript errors achieved
 - All tests passing (100% pass rate)
 - Modal focus trapping issues
@@ -2440,6 +2641,7 @@ Built with:
 ## [0.2.0] - 2026-01-28
 
 ### Added
+
 - Real-time messaging with WebSocket (Socket.io)
 - 78+ features across 11 major categories
 - Voice and video calls (WebRTC)
@@ -2459,11 +2661,13 @@ Built with:
 - Content moderation tools
 
 ### Changed
+
 - Environment variable structure (renamed `NEXT_PUBLIC_API_URL` → `NEXT_PUBLIC_GRAPHQL_URL`)
 - Database schema with new tables for reactions, threads, calls, etc.
 - Configuration format in `app_configuration` table
 
 ### Breaking Changes
+
 - Requires Node.js 20+ (was 18+)
 - Requires pnpm 9+ (was 8+)
 - Environment variables renamed (see UPGRADE-GUIDE.md)
@@ -2474,6 +2678,7 @@ Built with:
 ## [0.1.1] - 2026-01-29
 
 ### Added
+
 - Enhanced setup wizard (12 steps instead of 9)
 - Comprehensive documentation (30+ pages)
 - Sprint planning system in AI context directory
@@ -2481,6 +2686,7 @@ Built with:
 - Architecture decision records (ADRs)
 
 ### Changed
+
 - README updated with detailed feature list
 - Setup wizard documentation enhanced
 - White-label guide expanded
@@ -2490,6 +2696,7 @@ Built with:
 ## [0.1.0] - 2026-01-27
 
 ### Added
+
 - Initial project structure with Next.js 15 and React 19
 - Basic setup wizard UI (9 steps)
 - AppConfig data model and persistence
@@ -2505,6 +2712,7 @@ Built with:
 - Basic chat UI components
 
 ### Features
+
 - Complete setup wizard
 - Dual authentication (dev/prod)
 - White-label branding
@@ -2528,6 +2736,7 @@ Built with:
 See [docs/Roadmap.md](./docs/Roadmap.md) for planned features and phases.
 
 ### Planned Features
+
 - Mobile push notifications (iOS/Android)
 - Email-to-chat integration
 - Advanced search with filters
@@ -2544,6 +2753,7 @@ See [docs/Roadmap.md](./docs/Roadmap.md) for planned features and phases.
 **Note**: All dates in this changelog reflect the actual development timeline. For more details on any release, see the corresponding Git tag or GitHub release notes.
 
 **Links**:
+
 - [GitHub Repository](https://github.com/acamarata/nself-chat)
 - [Documentation](./docs/Home.md)
 - [ɳSelf Website](https://nself.org)

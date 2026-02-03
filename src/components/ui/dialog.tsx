@@ -20,26 +20,21 @@ const DialogOverlay = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay>
 >(({ className, ...props }, ref) => {
   // Extract only the props we want to pass to motion.div, excluding conflicting event handlers
-  const { onDrag, onDragEnd, onDragStart, onAnimationStart, ...safeProps } = props as React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & {
-    onDrag?: unknown;
-    onDragEnd?: unknown;
-    onDragStart?: unknown;
-    onAnimationStart?: unknown;
-  }
+  const { onDrag, onDragEnd, onDragStart, onAnimationStart, ...safeProps } =
+    props as React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & {
+      onDrag?: unknown
+      onDragEnd?: unknown
+      onDragStart?: unknown
+      onAnimationStart?: unknown
+    }
   return (
-    <DialogPrimitive.Overlay
-      asChild
-      ref={ref}
-    >
+    <DialogPrimitive.Overlay asChild ref={ref}>
       <motion.div
         variants={modalOverlay}
         initial="initial"
         animate="animate"
         exit="exit"
-        className={cn(
-          'fixed inset-0 z-50 bg-black/80',
-          className
-        )}
+        className={cn('fixed inset-0 z-50 bg-black/80', className)}
         {...safeProps}
       />
     </DialogPrimitive.Overlay>
@@ -52,19 +47,17 @@ const DialogContent = React.forwardRef<
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
 >(({ className, children, ...props }, ref) => {
   // Extract only the props we want to pass to motion.div, excluding conflicting event handlers
-  const { onDrag, onDragEnd, onDragStart, onAnimationStart, ...safeProps } = props as React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
-    onDrag?: unknown;
-    onDragEnd?: unknown;
-    onDragStart?: unknown;
-    onAnimationStart?: unknown;
-  }
+  const { onDrag, onDragEnd, onDragStart, onAnimationStart, ...safeProps } =
+    props as React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+      onDrag?: unknown
+      onDragEnd?: unknown
+      onDragStart?: unknown
+      onAnimationStart?: unknown
+    }
   return (
     <DialogPortal>
       <DialogOverlay />
-      <DialogPrimitive.Content
-        asChild
-        ref={ref}
-      >
+      <DialogPrimitive.Content asChild ref={ref}>
         <motion.div
           variants={modalContent}
           initial="initial"
@@ -107,10 +100,7 @@ const DialogHeader = ({
     initial={{ opacity: 0, y: -10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.1 }}
-    className={cn(
-      'flex flex-col space-y-1.5 text-center sm:text-left',
-      className
-    )}
+    className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)}
     {...props}
   />
 )
@@ -128,10 +118,7 @@ const DialogFooter = ({
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: 0.15 }}
-    className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
-      className
-    )}
+    className={cn('flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2', className)}
     {...props}
   />
 )
@@ -143,10 +130,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn(
-      'text-lg font-semibold leading-none tracking-tight',
-      className
-    )}
+    className={cn('text-lg font-semibold leading-none tracking-tight', className)}
     {...props}
   />
 ))

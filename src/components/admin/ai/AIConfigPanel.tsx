@@ -12,11 +12,19 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { toast } from 'sonner'
 import { Save, Key, AlertTriangle, CheckCircle2, RefreshCw } from 'lucide-react'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Component
@@ -42,7 +50,7 @@ export default function AIConfigPanel() {
         setConfig(json.data)
       }
     } catch (error) {
-      console.error('Error fetching config:', error)
+      logger.error('Error fetching config:', error)
       toast.error('Failed to load configuration')
     } finally {
       setLoading(false)
@@ -67,7 +75,7 @@ export default function AIConfigPanel() {
         toast.error(json.error || 'Failed to save configuration')
       }
     } catch (error) {
-      console.error('Error saving config:', error)
+      logger.error('Error saving config:', error)
       toast.error('Failed to save configuration')
     } finally {
       setSaving(false)
@@ -92,7 +100,7 @@ export default function AIConfigPanel() {
 
   if (loading || !config) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     )
@@ -109,21 +117,12 @@ export default function AIConfigPanel() {
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchConfig}
-            disabled={loading}
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
+          <Button variant="outline" size="sm" onClick={fetchConfig} disabled={loading}>
+            <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
-          <Button
-            size="sm"
-            onClick={saveConfig}
-            disabled={!hasChanges || saving}
-          >
-            <Save className="h-4 w-4 mr-2" />
+          <Button size="sm" onClick={saveConfig} disabled={!hasChanges || saving}>
+            <Save className="mr-2 h-4 w-4" />
             {saving ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>
@@ -157,9 +156,7 @@ export default function AIConfigPanel() {
                   <CardTitle>OpenAI</CardTitle>
                   <Switch
                     checked={config.openai.enabled}
-                    onCheckedChange={(checked) =>
-                      updateConfig('openai.enabled', checked)
-                    }
+                    onCheckedChange={(checked) => updateConfig('openai.enabled', checked)}
                   />
                 </div>
                 <CardDescription>Configure OpenAI API settings</CardDescription>
@@ -188,9 +185,7 @@ export default function AIConfigPanel() {
                   <Label htmlFor="openai-model">Default Model</Label>
                   <Select
                     value={config.openai.defaultModel}
-                    onValueChange={(value) =>
-                      updateConfig('openai.defaultModel', value)
-                    }
+                    onValueChange={(value) => updateConfig('openai.defaultModel', value)}
                   >
                     <SelectTrigger id="openai-model">
                       <SelectValue />
@@ -209,9 +204,7 @@ export default function AIConfigPanel() {
                   <Label htmlFor="openai-fallback">Fallback Model</Label>
                   <Select
                     value={config.openai.fallbackModel}
-                    onValueChange={(value) =>
-                      updateConfig('openai.fallbackModel', value)
-                    }
+                    onValueChange={(value) => updateConfig('openai.fallbackModel', value)}
                   >
                     <SelectTrigger id="openai-fallback">
                       <SelectValue />
@@ -230,9 +223,7 @@ export default function AIConfigPanel() {
                       id="openai-timeout"
                       type="number"
                       value={config.openai.timeout}
-                      onChange={(e) =>
-                        updateConfig('openai.timeout', parseInt(e.target.value))
-                      }
+                      onChange={(e) => updateConfig('openai.timeout', parseInt(e.target.value))}
                     />
                   </div>
                   <div className="space-y-2">
@@ -241,9 +232,7 @@ export default function AIConfigPanel() {
                       id="openai-retries"
                       type="number"
                       value={config.openai.maxRetries}
-                      onChange={(e) =>
-                        updateConfig('openai.maxRetries', parseInt(e.target.value))
-                      }
+                      onChange={(e) => updateConfig('openai.maxRetries', parseInt(e.target.value))}
                     />
                   </div>
                 </div>
@@ -257,9 +246,7 @@ export default function AIConfigPanel() {
                   <CardTitle>Anthropic (Claude)</CardTitle>
                   <Switch
                     checked={config.anthropic.enabled}
-                    onCheckedChange={(checked) =>
-                      updateConfig('anthropic.enabled', checked)
-                    }
+                    onCheckedChange={(checked) => updateConfig('anthropic.enabled', checked)}
                   />
                 </div>
                 <CardDescription>Configure Anthropic API settings</CardDescription>
@@ -288,29 +275,17 @@ export default function AIConfigPanel() {
                   <Label htmlFor="anthropic-model">Default Model</Label>
                   <Select
                     value={config.anthropic.defaultModel}
-                    onValueChange={(value) =>
-                      updateConfig('anthropic.defaultModel', value)
-                    }
+                    onValueChange={(value) => updateConfig('anthropic.defaultModel', value)}
                   >
                     <SelectTrigger id="anthropic-model">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="claude-3-5-sonnet-20241022">
-                        Claude 3.5 Sonnet
-                      </SelectItem>
-                      <SelectItem value="claude-3-5-haiku-20241022">
-                        Claude 3.5 Haiku
-                      </SelectItem>
-                      <SelectItem value="claude-3-opus-20240229">
-                        Claude 3 Opus
-                      </SelectItem>
-                      <SelectItem value="claude-3-sonnet-20240229">
-                        Claude 3 Sonnet
-                      </SelectItem>
-                      <SelectItem value="claude-3-haiku-20240307">
-                        Claude 3 Haiku
-                      </SelectItem>
+                      <SelectItem value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet</SelectItem>
+                      <SelectItem value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</SelectItem>
+                      <SelectItem value="claude-3-opus-20240229">Claude 3 Opus</SelectItem>
+                      <SelectItem value="claude-3-sonnet-20240229">Claude 3 Sonnet</SelectItem>
+                      <SelectItem value="claude-3-haiku-20240307">Claude 3 Haiku</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -319,20 +294,14 @@ export default function AIConfigPanel() {
                   <Label htmlFor="anthropic-fallback">Fallback Model</Label>
                   <Select
                     value={config.anthropic.fallbackModel}
-                    onValueChange={(value) =>
-                      updateConfig('anthropic.fallbackModel', value)
-                    }
+                    onValueChange={(value) => updateConfig('anthropic.fallbackModel', value)}
                   >
                     <SelectTrigger id="anthropic-fallback">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="claude-3-haiku-20240307">
-                        Claude 3 Haiku
-                      </SelectItem>
-                      <SelectItem value="claude-3-5-haiku-20241022">
-                        Claude 3.5 Haiku
-                      </SelectItem>
+                      <SelectItem value="claude-3-haiku-20240307">Claude 3 Haiku</SelectItem>
+                      <SelectItem value="claude-3-5-haiku-20241022">Claude 3.5 Haiku</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -344,9 +313,7 @@ export default function AIConfigPanel() {
                       id="anthropic-timeout"
                       type="number"
                       value={config.anthropic.timeout}
-                      onChange={(e) =>
-                        updateConfig('anthropic.timeout', parseInt(e.target.value))
-                      }
+                      onChange={(e) => updateConfig('anthropic.timeout', parseInt(e.target.value))}
                     />
                   </div>
                   <div className="space-y-2">
@@ -372,9 +339,7 @@ export default function AIConfigPanel() {
             <Card key={endpoint}>
               <CardHeader>
                 <CardTitle className="capitalize">{endpoint}</CardTitle>
-                <CardDescription>
-                  Configure rate limits for {endpoint} endpoints
-                </CardDescription>
+                <CardDescription>Configure rate limits for {endpoint} endpoints</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-4 md:grid-cols-2">
@@ -448,9 +413,7 @@ export default function AIConfigPanel() {
           <Card>
             <CardHeader>
               <CardTitle>Budget Limits</CardTitle>
-              <CardDescription>
-                Set spending limits to control AI costs
-              </CardDescription>
+              <CardDescription>Set spending limits to control AI costs</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid gap-4 md:grid-cols-2">
@@ -461,9 +424,7 @@ export default function AIConfigPanel() {
                     type="number"
                     step="0.01"
                     value={config.budgets.dailyLimit || ''}
-                    onChange={(e) =>
-                      updateConfig('budgets.dailyLimit', parseFloat(e.target.value))
-                    }
+                    onChange={(e) => updateConfig('budgets.dailyLimit', parseFloat(e.target.value))}
                     placeholder="100.00"
                   />
                 </div>
@@ -506,15 +467,11 @@ export default function AIConfigPanel() {
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle>Response Cache</CardTitle>
-                  <CardDescription>
-                    Configure caching to reduce API costs
-                  </CardDescription>
+                  <CardDescription>Configure caching to reduce API costs</CardDescription>
                 </div>
                 <Switch
                   checked={config.cache.enabled}
-                  onCheckedChange={(checked) =>
-                    updateConfig('cache.enabled', checked)
-                  }
+                  onCheckedChange={(checked) => updateConfig('cache.enabled', checked)}
                 />
               </div>
             </CardHeader>
@@ -535,9 +492,7 @@ export default function AIConfigPanel() {
                   <Input
                     type="number"
                     value={config.cache.searchTtl}
-                    onChange={(e) =>
-                      updateConfig('cache.searchTtl', parseInt(e.target.value))
-                    }
+                    onChange={(e) => updateConfig('cache.searchTtl', parseInt(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -545,9 +500,7 @@ export default function AIConfigPanel() {
                   <Input
                     type="number"
                     value={config.cache.chatTtl}
-                    onChange={(e) =>
-                      updateConfig('cache.chatTtl', parseInt(e.target.value))
-                    }
+                    onChange={(e) => updateConfig('cache.chatTtl', parseInt(e.target.value))}
                   />
                 </div>
                 <div className="space-y-2">
@@ -555,9 +508,7 @@ export default function AIConfigPanel() {
                   <Input
                     type="number"
                     value={config.cache.embeddingsTtl}
-                    onChange={(e) =>
-                      updateConfig('cache.embeddingsTtl', parseInt(e.target.value))
-                    }
+                    onChange={(e) => updateConfig('cache.embeddingsTtl', parseInt(e.target.value))}
                   />
                 </div>
               </div>

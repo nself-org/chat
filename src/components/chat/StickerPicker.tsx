@@ -44,9 +44,7 @@ export function StickerPicker({ onSelect, onClose, className }: StickerPickerPro
 
   // Get all filtered stickers (for search results view)
   const allFilteredStickers = useMemo(() => {
-    return filteredPacks.flatMap((pack) =>
-      pack.stickers.map((sticker) => ({ ...sticker, pack }))
-    )
+    return filteredPacks.flatMap((pack) => pack.stickers.map((sticker) => ({ ...sticker, pack })))
   }, [filteredPacks])
 
   const handleSelect = (sticker: Sticker) => {
@@ -76,9 +74,7 @@ export function StickerPicker({ onSelect, onClose, className }: StickerPickerPro
       <div className={cn('flex h-[400px] flex-col items-center justify-center p-8', className)}>
         <Smile className="mb-2 h-8 w-8 text-muted-foreground" />
         <p className="mb-1 text-sm font-medium">No sticker packs available</p>
-        <p className="text-xs text-muted-foreground">
-          Ask an admin to create sticker packs
-        </p>
+        <p className="text-xs text-muted-foreground">Ask an admin to create sticker packs</p>
       </div>
     )
   }
@@ -121,11 +117,7 @@ export function StickerPicker({ onSelect, onClose, className }: StickerPickerPro
           ) : (
             <div className="grid grid-cols-4 gap-2 p-4">
               {allFilteredStickers.map((sticker) => (
-                <StickerItem
-                  key={sticker.id}
-                  sticker={sticker}
-                  onSelect={handleSelect}
-                />
+                <StickerItem key={sticker.id} sticker={sticker} onSelect={handleSelect} />
               ))}
             </div>
           )}
@@ -135,18 +127,8 @@ export function StickerPicker({ onSelect, onClose, className }: StickerPickerPro
         <Tabs defaultValue={packs[0]?.id} className="flex flex-1 flex-col">
           <TabsList className="w-full justify-start overflow-x-auto border-b px-2">
             {packs.map((pack) => (
-              <TabsTrigger
-                key={pack.id}
-                value={pack.id}
-                className="flex items-center gap-1.5"
-              >
-                {pack.icon_url && (
-                  <img
-                    src={pack.icon_url}
-                    alt=""
-                    className="h-4 w-4"
-                  />
-                )}
+              <TabsTrigger key={pack.id} value={pack.id} className="flex items-center gap-1.5">
+                {pack.icon_url && <img src={pack.icon_url} alt="" className="h-4 w-4" />}
                 <span className="text-xs">{pack.name}</span>
               </TabsTrigger>
             ))}
@@ -162,18 +144,12 @@ export function StickerPicker({ onSelect, onClose, className }: StickerPickerPro
                 {pack.stickers.length === 0 ? (
                   <div className="flex flex-col items-center justify-center p-8 text-center">
                     <Smile className="mb-2 h-6 w-6 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">
-                      This pack is empty
-                    </p>
+                    <p className="text-sm text-muted-foreground">This pack is empty</p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-4 gap-2 p-4">
                     {pack.stickers.map((sticker) => (
-                      <StickerItem
-                        key={sticker.id}
-                        sticker={sticker}
-                        onSelect={handleSelect}
-                      />
+                      <StickerItem key={sticker.id} sticker={sticker} onSelect={handleSelect} />
                     ))}
                   </div>
                 )}
@@ -205,7 +181,7 @@ function StickerItem({
     <button
       onClick={() => onSelect(sticker)}
       className={cn(
-        'group relative aspect-square overflow-hidden rounded-lg border bg-muted/30 transition-all hover:border-primary hover:shadow-md',
+        'bg-muted/30 group relative aspect-square overflow-hidden rounded-lg border transition-all hover:border-primary hover:shadow-md',
         'flex items-center justify-center p-2'
       )}
       title={sticker.name}

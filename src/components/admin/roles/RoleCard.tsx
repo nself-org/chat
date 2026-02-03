@@ -14,16 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Users,
-  MoreVertical,
-  Edit2,
-  Copy,
-  Trash2,
-  Shield,
-  Star,
-  GripVertical,
-} from 'lucide-react'
+import { Users, MoreVertical, Edit2, Copy, Trash2, Shield, Star, GripVertical } from 'lucide-react'
 
 interface RoleCardProps {
   role: Role
@@ -73,10 +64,7 @@ export function RoleCard({
         )}
 
         {/* Role color indicator */}
-        <div
-          className="h-10 w-1 rounded-full"
-          style={{ backgroundColor: role.color }}
-        />
+        <div className="h-10 w-1 rounded-full" style={{ backgroundColor: role.color }} />
 
         {/* Role icon */}
         <div
@@ -91,12 +79,9 @@ export function RoleCard({
         </div>
 
         {/* Role info */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <h3
-              className="font-semibold truncate"
-              style={{ color: role.color }}
-            >
+            <h3 className="truncate font-semibold" style={{ color: role.color }}>
               {role.name}
             </h3>
             {role.isBuiltIn && (
@@ -106,17 +91,12 @@ export function RoleCard({
             )}
             {role.isDefault && (
               <span title="Default role">
-                <Star
-                  size={14}
-                  className="fill-amber-400 text-amber-400"
-                />
+                <Star size={14} className="fill-amber-400 text-amber-400" />
               </span>
             )}
           </div>
           {role.description && (
-            <p className="text-sm text-muted-foreground truncate">
-              {role.description}
-            </p>
+            <p className="truncate text-sm text-muted-foreground">{role.description}</p>
           )}
         </div>
 
@@ -127,7 +107,7 @@ export function RoleCard({
         </div>
 
         {/* Position indicator */}
-        <div className="flex items-center justify-center rounded bg-muted px-2 py-1 text-xs font-mono text-muted-foreground">
+        <div className="flex items-center justify-center rounded bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">
           #{role.position}
         </div>
 
@@ -220,14 +200,14 @@ export function RoleCardCompact({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 rounded-lg border p-2 cursor-pointer transition-all hover:bg-accent',
+        'flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-all hover:bg-accent',
         isSelected && 'bg-accent ring-1 ring-primary',
         className
       )}
       onClick={onClick}
     >
       <div
-        className="h-6 w-6 rounded-full flex items-center justify-center"
+        className="flex h-6 w-6 items-center justify-center rounded-full"
         style={{ backgroundColor: `${role.color}20` }}
       >
         {role.icon ? (
@@ -239,9 +219,7 @@ export function RoleCardCompact({
       <span className="flex-1 truncate text-sm" style={{ color: role.color }}>
         {role.name}
       </span>
-      {role.isBuiltIn && (
-        <span className="text-[10px] text-muted-foreground">Built-in</span>
-      )}
+      {role.isBuiltIn && <span className="text-[10px] text-muted-foreground">Built-in</span>}
     </div>
   )
 }

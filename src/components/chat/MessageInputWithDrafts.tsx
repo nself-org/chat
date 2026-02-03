@@ -35,21 +35,15 @@ export function MessageInputWithDrafts({
   onMessageSent,
   className,
 }: MessageInputWithDraftsProps) {
-  const {
-    draftContent,
-    hasDraft,
-    draftUpdatedAt,
-    updateDraft,
-    clearDraft,
-    restoreDraft,
-  } = useDrafts({
-    channelId,
-    replyToId,
-    threadId,
-    onDraftRestored: (draft) => {
-      logger.debug('Draft restored in MessageInput', { draftId: draft.id })
-    },
-  })
+  const { draftContent, hasDraft, draftUpdatedAt, updateDraft, clearDraft, restoreDraft } =
+    useDrafts({
+      channelId,
+      replyToId,
+      threadId,
+      onDraftRestored: (draft) => {
+        logger.debug('Draft restored in MessageInput', { draftId: draft.id })
+      },
+    })
 
   const { sendMessage, sendingMessage } = useMessageMutations()
 
@@ -152,38 +146,31 @@ export function MessageInputWithDrafts({
     <div className={cn('relative', className)}>
       {/* Draft Indicator */}
       {showDraftIndicator && hasDraft && (
-        <div className="absolute -top-8 left-0 right-0 flex items-center justify-between px-2 py-1 bg-muted/50 rounded-t-lg text-xs">
+        <div className="bg-muted/50 absolute -top-8 left-0 right-0 flex items-center justify-between rounded-t-lg px-2 py-1 text-xs">
           <div className="flex items-center gap-2">
             <FileText className="h-3 w-3 text-muted-foreground" />
             <span className="text-muted-foreground">
               Draft saved{' '}
               {draftUpdatedAt && (
-                <span className="text-xs">
-                  {new Date(draftUpdatedAt).toLocaleTimeString()}
-                </span>
+                <span className="text-xs">{new Date(draftUpdatedAt).toLocaleTimeString()}</span>
               )}
             </span>
           </div>
-          <Button
-            size="sm"
-            variant="ghost"
-            onClick={handleClearDraft}
-            className="h-5 px-2"
-          >
+          <Button size="sm" variant="ghost" onClick={handleClearDraft} className="h-5 px-2">
             <X className="h-3 w-3" />
           </Button>
         </div>
       )}
 
       {/* Input Area */}
-      <div className="flex items-end gap-2 p-2 border rounded-lg bg-background">
+      <div className="flex items-end gap-2 rounded-lg border bg-background p-2">
         <Textarea
           ref={textareaRef}
           value={content}
           onChange={(e) => setContent(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder={placeholder}
-          className="min-h-[40px] max-h-[200px] resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="max-h-[200px] min-h-[40px] resize-none border-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           disabled={sendingMessage}
         />
 
@@ -214,7 +201,7 @@ export function MessageInputWithDrafts({
       </div>
 
       {/* Character Count */}
-      <div className="flex justify-between items-center mt-1 px-2 text-xs text-muted-foreground">
+      <div className="mt-1 flex items-center justify-between px-2 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           {replyToId && (
             <Badge variant="secondary" className="text-xs">

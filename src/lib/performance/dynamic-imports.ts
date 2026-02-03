@@ -30,12 +30,9 @@ export const DynamicActivityChart = dynamic(
 /**
  * Analytics Dashboard Components
  */
-export const DynamicAnalyticsDashboard = dynamic(
-  () => import('@/app/admin/analytics/page'),
-  {
-    ssr: false,
-  }
-)
+export const DynamicAnalyticsDashboard = dynamic(() => import('@/app/admin/analytics/page'), {
+  ssr: false,
+})
 
 // =============================================================================
 // Chat Components (Large - Message rendering, Editor)
@@ -65,7 +62,8 @@ export const DynamicMemberList = dynamic(
  * Pinned Messages - Secondary panel
  */
 export const DynamicPinnedMessages = dynamic(
-  () => import('@/components/layout/pinned-messages').then((mod) => ({ default: mod.PinnedMessages })),
+  () =>
+    import('@/components/layout/pinned-messages').then((mod) => ({ default: mod.PinnedMessages })),
   {
     ssr: true,
   }
@@ -80,7 +78,8 @@ export const DynamicPinnedMessages = dynamic(
  * Load on-demand when user focuses input
  */
 export const DynamicRichTextEditor = dynamic(
-  () => import('@/components/editor/rich-text-editor').then((mod) => ({ default: mod.RichTextEditor })),
+  () =>
+    import('@/components/editor/rich-text-editor').then((mod) => ({ default: mod.RichTextEditor })),
   {
     ssr: false, // Editor requires browser APIs
   }
@@ -93,12 +92,9 @@ export const DynamicRichTextEditor = dynamic(
 /**
  * File Uploader - Dropzone + preview
  */
-export const DynamicFileUploader = dynamic(
-  () => import('@/components/upload/file-uploader'),
-  {
-    ssr: false,
-  }
-)
+export const DynamicFileUploader = dynamic(() => import('@/components/upload/file-uploader'), {
+  ssr: false,
+})
 
 // =============================================================================
 // Emoji Picker
@@ -107,12 +103,9 @@ export const DynamicFileUploader = dynamic(
 /**
  * Emoji Picker - Large data set
  */
-export const DynamicEmojiPicker = dynamic(
-  () => import('emoji-picker-react'),
-  {
-    ssr: false,
-  }
-)
+export const DynamicEmojiPicker = dynamic(() => import('emoji-picker-react'), {
+  ssr: false,
+})
 
 // =============================================================================
 // Meeting/Call Components (Very Heavy - WebRTC, MediaSoup)
@@ -121,22 +114,16 @@ export const DynamicEmojiPicker = dynamic(
 /**
  * Video Call Interface - WebRTC stack
  */
-export const DynamicVideoCall = dynamic(
-  () => import('@/components/calls/video-call'),
-  {
-    ssr: false, // Requires browser APIs
-  }
-)
+export const DynamicVideoCall = dynamic(() => import('@/components/calls/video-call'), {
+  ssr: false, // Requires browser APIs
+})
 
 /**
  * Audio Call Interface
  */
-export const DynamicAudioCall = dynamic(
-  () => import('@/components/calls/audio-call'),
-  {
-    ssr: false,
-  }
-)
+export const DynamicAudioCall = dynamic(() => import('@/components/calls/audio-call'), {
+  ssr: false,
+})
 
 // =============================================================================
 // Settings Pages (Medium - Forms, Validation)
@@ -145,20 +132,17 @@ export const DynamicAudioCall = dynamic(
 /**
  * Settings sections - Load on navigation
  */
-export const DynamicSettingsAccount = dynamic(
-  () => import('@/app/settings/account/page'),
-  { ssr: true }
-)
+export const DynamicSettingsAccount = dynamic(() => import('@/app/settings/account/page'), {
+  ssr: true,
+})
 
-export const DynamicSettingsAppearance = dynamic(
-  () => import('@/app/settings/appearance/page'),
-  { ssr: true }
-)
+export const DynamicSettingsAppearance = dynamic(() => import('@/app/settings/appearance/page'), {
+  ssr: true,
+})
 
-export const DynamicSettingsSecurity = dynamic(
-  () => import('@/app/settings/security/page'),
-  { ssr: true }
-)
+export const DynamicSettingsSecurity = dynamic(() => import('@/app/settings/security/page'), {
+  ssr: true,
+})
 
 // =============================================================================
 // Modals (Load on-demand)
@@ -168,7 +152,10 @@ export const DynamicSettingsSecurity = dynamic(
  * Create Channel Modal
  */
 export const DynamicCreateChannelModal = dynamic(
-  () => import('@/components/modals/create-channel-modal').then((mod) => ({ default: mod.CreateChannelModal })),
+  () =>
+    import('@/components/modals/create-channel-modal').then((mod) => ({
+      default: mod.CreateChannelModal,
+    })),
   {
     ssr: false,
   }
@@ -178,7 +165,10 @@ export const DynamicCreateChannelModal = dynamic(
  * User Profile Modal
  */
 export const DynamicUserProfileModal = dynamic(
-  () => import('@/components/modals/user-profile-modal').then((mod) => ({ default: mod.UserProfileModal })),
+  () =>
+    import('@/components/modals/user-profile-modal').then((mod) => ({
+      default: mod.UserProfileModal,
+    })),
   {
     ssr: false,
   }
@@ -191,12 +181,9 @@ export const DynamicUserProfileModal = dynamic(
 /**
  * Swagger UI - ~200KB
  */
-export const DynamicSwaggerUI = dynamic(
-  () => import('swagger-ui-react'),
-  {
-    ssr: false,
-  }
-)
+export const DynamicSwaggerUI = dynamic(() => import('swagger-ui-react'), {
+  ssr: false,
+})
 
 // =============================================================================
 // Helper: Create Dynamic Component with Custom Config

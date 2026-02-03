@@ -75,21 +75,8 @@ export const ALLOWED_MIME_TYPES = {
     'image/bmp',
     'image/tiff',
   ],
-  videos: [
-    'video/mp4',
-    'video/webm',
-    'video/ogg',
-    'video/quicktime',
-    'video/x-msvideo',
-  ],
-  audio: [
-    'audio/mpeg',
-    'audio/wav',
-    'audio/ogg',
-    'audio/webm',
-    'audio/aac',
-    'audio/flac',
-  ],
+  videos: ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime', 'video/x-msvideo'],
+  audio: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/aac', 'audio/flac'],
   documents: [
     'application/pdf',
     'application/msword',
@@ -232,16 +219,8 @@ export function generateUniqueFileName(originalName: string): string {
 /**
  * Upload a file to storage using Nhost storage client
  */
-export async function uploadFile(
-  file: File,
-  options: UploadOptions = {}
-): Promise<UploadResult> {
-  const {
-    bucketId = DEFAULT_BUCKET,
-    name,
-    onProgress,
-    signal,
-  } = options
+export async function uploadFile(file: File, options: UploadOptions = {}): Promise<UploadResult> {
+  const { bucketId = DEFAULT_BUCKET, name, onProgress, signal } = options
 
   // Validate file first
   const validation = validateFile(file)
@@ -319,12 +298,7 @@ export async function uploadFileWithProgress(
   file: File,
   options: UploadOptions = {}
 ): Promise<UploadResult> {
-  const {
-    bucketId = DEFAULT_BUCKET,
-    name,
-    onProgress,
-    signal,
-  } = options
+  const { bucketId = DEFAULT_BUCKET, name, onProgress, signal } = options
 
   // Validate file first
   const validation = validateFile(file)

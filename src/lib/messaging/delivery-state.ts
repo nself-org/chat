@@ -11,6 +11,8 @@
 import { create } from 'zustand'
 import { subscribeWithSelector, persist } from 'zustand/middleware'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -19,13 +21,13 @@ import { subscribeWithSelector, persist } from 'zustand/middleware'
  * Extended message delivery states
  */
 export type MessageDeliveryState =
-  | 'pending'     // Message created locally, not yet sent
-  | 'sending'     // Message is being transmitted to server
-  | 'sent'        // Server acknowledged receipt
-  | 'delivered'   // At least one recipient received (pushed to device)
-  | 'read'        // At least one recipient read the message
-  | 'failed'      // Message failed to send
-  | 'expired'     // Message expired before delivery
+  | 'pending' // Message created locally, not yet sent
+  | 'sending' // Message is being transmitted to server
+  | 'sent' // Server acknowledged receipt
+  | 'delivered' // At least one recipient received (pushed to device)
+  | 'read' // At least one recipient read the message
+  | 'failed' // Message failed to send
+  | 'expired' // Message expired before delivery
 
 /**
  * Delivery state transition definition
@@ -110,11 +112,7 @@ export interface DeliveryStateStore {
     clientMessageId?: string,
     totalRecipients?: number
   ) => void
-  transitionState: (
-    messageId: string,
-    newState: MessageDeliveryState,
-    reason?: string
-  ) => boolean
+  transitionState: (messageId: string, newState: MessageDeliveryState, reason?: string) => boolean
   updateRecipientState: (
     messageId: string,
     userId: string,
@@ -149,19 +147,14 @@ const VALID_TRANSITIONS: Record<MessageDeliveryState, MessageDeliveryState[]> = 
 /**
  * Check if a state transition is valid
  */
-export function isValidTransition(
-  from: MessageDeliveryState,
-  to: MessageDeliveryState
-): boolean {
+export function isValidTransition(from: MessageDeliveryState, to: MessageDeliveryState): boolean {
   return VALID_TRANSITIONS[from]?.includes(to) ?? false
 }
 
 /**
  * Get allowed next states
  */
-export function getAllowedTransitions(
-  currentState: MessageDeliveryState
-): MessageDeliveryState[] {
+export function getAllowedTransitions(currentState: MessageDeliveryState): MessageDeliveryState[] {
   return VALID_TRANSITIONS[currentState] ?? []
 }
 
@@ -221,9 +214,7 @@ export const useDeliveryStateStore = create<DeliveryStateStore>()(
         },
 
         getFailedMessages: () => {
-          return Object.values(get().records).filter(
-            (record) => record.state === 'failed'
-          )
+          return Object.values(get().records).filter((record) => record.state === 'failed')
         },
 
         getPendingMessages: () => {
@@ -321,9 +312,7 @@ export const useDeliveryStateStore = create<DeliveryStateStore>()(
           const record = get().getRecord(messageId)
           if (!record) return
 
-          const existingIndex = record.recipients.findIndex(
-            (r) => r.userId === userId
-          )
+          const existingIndex = record.recipients.findIndex((r) => r.userId === userId)
           let updatedRecipients: RecipientDeliveryInfo[]
           let deliveredDelta = 0
           let readDelta = 0
@@ -333,9 +322,7 @@ export const useDeliveryStateStore = create<DeliveryStateStore>()(
 
             // Don't go backwards in state
             const stateOrder = ['sent', 'delivered', 'read']
-            if (
-              stateOrder.indexOf(newState) < stateOrder.indexOf(existing.state)
-            ) {
+            if (stateOrder.indexOf(newState) < stateOrder.indexOf(existing.state)) {
               return
             }
 
@@ -357,7 +344,7 @@ export const useDeliveryStateStore = create<DeliveryStateStore>()(
               state: newState,
               deliveredAt:
                 newState === 'delivered' || newState === 'read'
-                  ? existing.deliveredAt ?? timestamp
+                  ? (existing.deliveredAt ?? timestamp)
                   : existing.deliveredAt,
               readAt: newState === 'read' ? timestamp : existing.readAt,
             }
@@ -372,10 +359,7 @@ export const useDeliveryStateStore = create<DeliveryStateStore>()(
             const newRecipient: RecipientDeliveryInfo = {
               userId,
               state: newState,
-              deliveredAt:
-                newState === 'delivered' || newState === 'read'
-                  ? timestamp
-                  : undefined,
+              deliveredAt: newState === 'delivered' || newState === 'read' ? timestamp : undefined,
               readAt: newState === 'read' ? timestamp : undefined,
             }
             updatedRecipients = [...record.recipients, newRecipient]
@@ -517,9 +501,7 @@ export const useDeliveryStateStore = create<DeliveryStateStore>()(
               }
             }
 
-            for (const [clientId, serverId] of Object.entries(
-              state.clientToServerMap
-            )) {
+            for (const [clientId, serverId] of Object.entries(state.clientToServerMap)) {
               if (records[serverId]) {
                 clientToServerMap[clientId] = serverId
               }
@@ -579,11 +561,7 @@ export function markSent(messageId: string): boolean {
 /**
  * Mark message as delivered
  */
-export function markDelivered(
-  messageId: string,
-  userId?: string,
-  timestamp?: Date
-): void {
+export function markDelivered(messageId: string, userId?: string, timestamp?: Date): void {
   const store = useDeliveryStateStore.getState()
   if (userId) {
     store.updateRecipientState(messageId, userId, 'delivered', timestamp)
@@ -595,11 +573,7 @@ export function markDelivered(
 /**
  * Mark message as read
  */
-export function markRead(
-  messageId: string,
-  userId?: string,
-  timestamp?: Date
-): void {
+export function markRead(messageId: string, userId?: string, timestamp?: Date): void {
   const store = useDeliveryStateStore.getState()
   if (userId) {
     store.updateRecipientState(messageId, userId, 'read', timestamp)
@@ -671,16 +645,14 @@ export function canRetry(messageId: string): boolean {
 /**
  * Select delivery record for a message
  */
-export const selectDeliveryRecord =
-  (messageId: string) => (state: DeliveryStateStore) =>
-    state.records[messageId]
+export const selectDeliveryRecord = (messageId: string) => (state: DeliveryStateStore) =>
+  state.records[messageId]
 
 /**
  * Select delivery state for a message
  */
-export const selectDeliveryState =
-  (messageId: string) => (state: DeliveryStateStore) =>
-    state.records[messageId]?.state
+export const selectDeliveryState = (messageId: string) => (state: DeliveryStateStore) =>
+  state.records[messageId]?.state
 
 /**
  * Select all failed messages
@@ -692,15 +664,12 @@ export const selectFailedMessages = (state: DeliveryStateStore) =>
  * Select all pending messages
  */
 export const selectPendingMessages = (state: DeliveryStateStore) =>
-  Object.values(state.records).filter(
-    (r) => r.state === 'pending' || r.state === 'sending'
-  )
+  Object.values(state.records).filter((r) => r.state === 'pending' || r.state === 'sending')
 
 /**
  * Select messages by channel
  */
-export const selectMessagesByChannel =
-  (channelId: string) => (state: DeliveryStateStore) =>
-    Object.values(state.records).filter((r) => r.channelId === channelId)
+export const selectMessagesByChannel = (channelId: string) => (state: DeliveryStateStore) =>
+  Object.values(state.records).filter((r) => r.channelId === channelId)
 
 export default useDeliveryStateStore

@@ -5,6 +5,7 @@ Complete production-ready session management with security features, device trac
 ## Features Implemented
 
 ### 1. Active Sessions List
+
 - **Device Details**: Device type, browser, OS, IP address
 - **Location Tracking**: City, country with geolocation
 - **Last Active**: Real-time activity timestamps
@@ -12,12 +13,14 @@ Complete production-ready session management with security features, device trac
 - **Session Creation Time**: Track when session was created
 
 ### 2. Session Actions
+
 - **Revoke Session**: Sign out individual devices
 - **Revoke All Others**: Bulk sign out all non-current sessions
 - **Auto-Refresh**: Periodic session list updates
 - **Confirmation Dialogs**: Safety checks before revocation
 
 ### 3. Session Creation
+
 - **Device Fingerprinting**: Hardware/software identification
   - User agent parsing
   - Screen resolution
@@ -31,6 +34,7 @@ Complete production-ready session management with security features, device trac
 - **Geographic Location**: IP-based geolocation
 
 ### 4. Session Security
+
 - **Session Timeout**: Configurable expiration (default 8 hours)
 - **Idle Timeout**: Auto-logout after inactivity (default 30 minutes)
 - **Max Concurrent Sessions**: Limit simultaneous logins (default 10)
@@ -38,6 +42,7 @@ Complete production-ready session management with security features, device trac
 - **Automatic Cleanup**: Remove expired sessions
 
 ### 5. Session Notifications
+
 - **New Login Alerts**: Email/push on new session
 - **New Device Detection**: Alert for unrecognized devices
 - **Suspicious Activity**: High-risk behavior detection
@@ -48,6 +53,7 @@ Complete production-ready session management with security features, device trac
 - **Unread Count Badge**: Visual indicator
 
 ### 6. Suspicious Activity Detection
+
 - **Multi-Factor Analysis**:
   - Rapid location changes (country switching < 6 hours)
   - New device detection
@@ -60,6 +66,7 @@ Complete production-ready session management with security features, device trac
 - **Automatic Actions**: Optional auto-revoke on critical
 
 ### 7. Geographic Anomaly Detection
+
 - **Country Change Tracking**: Detect rapid location changes
 - **Distance Calculation**: Measure geographic movement
 - **Time-Based Analysis**: Factor in time between logins
@@ -92,6 +99,7 @@ src/
 ### Core Classes
 
 #### SessionManager
+
 ```typescript
 class SessionManager {
   // Session Creation
@@ -110,7 +118,10 @@ class SessionManager {
   // Notifications
   createNewLoginNotification(session: Session): SessionNotification
   createNewDeviceNotification(session: Session): SessionNotification
-  createSuspiciousActivityNotification(session: Session, analysis: SuspiciousActivityResult): SessionNotification
+  createSuspiciousActivityNotification(
+    session: Session,
+    analysis: SuspiciousActivityResult
+  ): SessionNotification
   createGeoAnomalyNotification(session: Session, previousLocation: string): SessionNotification
 
   // Enforcement
@@ -127,9 +138,9 @@ class SessionManager {
 ```typescript
 const config: SessionConfig = {
   // Timeouts
-  sessionTimeout: 480,        // 8 hours
-  idleTimeout: 30,            // 30 minutes
-  rememberMeDuration: 30,     // 30 days
+  sessionTimeout: 480, // 8 hours
+  idleTimeout: 30, // 30 minutes
+  rememberMeDuration: 30, // 30 days
 
   // Limits
   maxConcurrentSessions: 10,
@@ -156,7 +167,7 @@ import { sessionManager } from '@/lib/auth/session-manager'
 
 sessionManager.updateConfig({
   sessionTimeout: 1440, // 24 hours
-  idleTimeout: 60,      // 1 hour
+  idleTimeout: 60, // 1 hour
 })
 ```
 
@@ -198,16 +209,16 @@ function MyComponent() {
       <h2>Active Sessions: {sessions.length}</h2>
       <p>Security Score: {suspiciousActivityScore}/100</p>
 
-      {notifications.map(notif => (
+      {notifications.map((notif) => (
         <Alert key={notif.id}>{notif.message}</Alert>
       ))}
 
-      {otherSessions.map(session => (
+      {otherSessions.map((session) => (
         <div key={session.id}>
-          <span>{session.device} - {session.browser}</span>
-          <button onClick={() => revokeSession(session.id)}>
-            Sign Out
-          </button>
+          <span>
+            {session.device} - {session.browser}
+          </span>
+          <button onClick={() => revokeSession(session.id)}>Sign Out</button>
         </div>
       ))}
     </div>
@@ -218,6 +229,7 @@ function MyComponent() {
 ### API Usage
 
 #### Create Session
+
 ```typescript
 const response = await fetch('/api/auth/sessions', {
   method: 'POST',
@@ -232,20 +244,22 @@ const response = await fetch('/api/auth/sessions', {
 ```
 
 #### List Sessions
+
 ```typescript
 const response = await fetch('/api/auth/sessions?userId=user-123')
 const { sessions } = await response.json()
 ```
 
 #### Revoke Session
+
 ```typescript
-const response = await fetch(
-  '/api/auth/sessions?sessionId=sess-123&userId=user-123',
-  { method: 'DELETE' }
-)
+const response = await fetch('/api/auth/sessions?sessionId=sess-123&userId=user-123', {
+  method: 'DELETE',
+})
 ```
 
 #### Revoke All Others
+
 ```typescript
 const response = await fetch(
   '/api/auth/sessions?userId=user-123&revokeAll=true&currentSessionId=sess-current',
@@ -256,30 +270,35 @@ const response = await fetch(
 ## Security Considerations
 
 ### 1. Session Storage
+
 - Sessions stored in database (PostgreSQL via Hasura)
 - Session IDs are cryptographically random
 - IP addresses logged for security auditing
 - Location data stored as JSONB
 
 ### 2. Device Fingerprinting
+
 - Hash-based identification (SHA-256)
 - Non-PII data only
 - Client-side generation
 - Cannot be spoofed easily
 
 ### 3. Activity Tracking
+
 - Last activity updated every 5 minutes
 - Throttled to prevent spam (1 update/minute on interaction)
 - Automatic cleanup on logout
 - Real-time validation
 
 ### 4. Suspicious Activity
+
 - Multi-factor risk scoring
 - Configurable thresholds
 - Detailed logging for audit
 - Optional automatic actions
 
 ### 5. Data Privacy
+
 - IP addresses can be anonymized
 - Location data is city-level only
 - User control over notifications
@@ -334,12 +353,14 @@ CREATE INDEX idx_login_history_success ON nchat_login_history(user_id, success);
 ## Testing
 
 ### Development Mode
+
 - Simulated sessions in dev mode
 - Mock data for testing UI
 - No database persistence required
 - Fast iteration
 
 ### Unit Tests
+
 ```bash
 # Run tests
 pnpm test src/lib/auth/__tests__/session-manager.test.ts
@@ -347,6 +368,7 @@ pnpm test src/hooks/__tests__/use-sessions.test.ts
 ```
 
 ### E2E Tests
+
 ```bash
 # Test session management flow
 pnpm test:e2e e2e/session-management.spec.ts
@@ -355,6 +377,7 @@ pnpm test:e2e e2e/session-management.spec.ts
 ## Monitoring
 
 ### Metrics to Track
+
 - Average session duration
 - Sessions per user
 - Suspicious activity rate
@@ -364,6 +387,7 @@ pnpm test:e2e e2e/session-management.spec.ts
 - Failed login attempts
 
 ### Alerting
+
 - High suspicious activity scores
 - Multiple failed logins
 - Geographic anomalies
@@ -373,6 +397,7 @@ pnpm test:e2e e2e/session-management.spec.ts
 ## Performance
 
 ### Optimization Strategies
+
 1. **Caching**: Session data cached in Zustand store
 2. **Throttling**: Activity updates throttled to 1/minute
 3. **Pagination**: Login history paginated
@@ -381,6 +406,7 @@ pnpm test:e2e e2e/session-management.spec.ts
 6. **Debouncing**: User interaction tracking debounced
 
 ### Scalability
+
 - Handles 10,000+ sessions per user
 - Sub-100ms session validation
 - Efficient database queries with proper indexes
@@ -389,18 +415,21 @@ pnpm test:e2e e2e/session-management.spec.ts
 ## Troubleshooting
 
 ### Sessions Not Loading
+
 1. Check GraphQL endpoint configuration
 2. Verify user authentication
 3. Check database connectivity
 4. Review browser console for errors
 
 ### Activity Not Updating
+
 1. Confirm activity endpoint is accessible
 2. Check session ID validity
 3. Verify throttling is working correctly
 4. Review API logs
 
 ### Notifications Not Appearing
+
 1. Check notification permissions
 2. Verify suspicious activity detection is enabled
 3. Review notification threshold settings
@@ -409,6 +438,7 @@ pnpm test:e2e e2e/session-management.spec.ts
 ## Future Enhancements
 
 ### Planned Features
+
 - [ ] Mobile push notifications
 - [ ] Email alerts for security events
 - [ ] Session recording/replay
@@ -421,6 +451,7 @@ pnpm test:e2e e2e/session-management.spec.ts
 - [ ] Integration with SIEM systems
 
 ### API Improvements
+
 - [ ] GraphQL subscriptions for real-time updates
 - [ ] Batch session operations
 - [ ] Session export/import

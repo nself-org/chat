@@ -53,9 +53,7 @@ export interface UseSessionTimeoutReturn {
 // Hook
 // ============================================================================
 
-export function useSessionTimeout(
-  options: UseSessionTimeoutOptions = {}
-): UseSessionTimeoutReturn {
+export function useSessionTimeout(options: UseSessionTimeoutOptions = {}): UseSessionTimeoutReturn {
   const { onTimeout, checkInterval = 30000 } = options
 
   // State

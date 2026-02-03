@@ -31,10 +31,7 @@ interface ConditionStepPropertiesProps {
   onUpdate: (config: Record<string, unknown>) => void
 }
 
-export function ConditionStepProperties({
-  step,
-  onUpdate,
-}: ConditionStepPropertiesProps) {
+export function ConditionStepProperties({ step, onUpdate }: ConditionStepPropertiesProps) {
   const config = step.config
 
   const handleAddCondition = () => {
@@ -64,7 +61,7 @@ export function ConditionStepProperties({
           value={config.logic}
           onValueChange={(value) => onUpdate({ logic: value as ConditionLogic })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -75,22 +72,17 @@ export function ConditionStepProperties({
       </div>
 
       {/* Conditions */}
-      <div className="pt-2 border-t">
-        <div className="flex items-center justify-between mb-2">
+      <div className="border-t pt-2">
+        <div className="mb-2 flex items-center justify-between">
           <Label className="text-xs">Conditions</Label>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6"
-            onClick={handleAddCondition}
-          >
-            <Plus className="h-3 w-3 mr-1" />
+          <Button variant="ghost" size="sm" className="h-6" onClick={handleAddCondition}>
+            <Plus className="mr-1 h-3 w-3" />
             Add
           </Button>
         </div>
 
-        {(!config.conditions || config.conditions.length === 0) ? (
-          <p className="text-xs text-muted-foreground text-center py-4">
+        {!config.conditions || config.conditions.length === 0 ? (
+          <p className="py-4 text-center text-xs text-muted-foreground">
             No conditions added yet.
             <br />
             Without conditions, this will always return true.
@@ -104,7 +96,7 @@ export function ConditionStepProperties({
               return (
                 <React.Fragment key={condition.id}>
                   {index > 0 && (
-                    <div className="text-center text-[10px] text-muted-foreground uppercase">
+                    <div className="text-center text-[10px] uppercase text-muted-foreground">
                       {config.logic}
                     </div>
                   )}
@@ -121,7 +113,7 @@ export function ConditionStepProperties({
       </div>
 
       {/* Description */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <p className="text-[10px] text-muted-foreground">
           <strong>True branch:</strong> Executes when conditions are met
           <br />
@@ -151,7 +143,7 @@ function ConditionEditor({
   const showValue = selectedOperator?.valueRequired !== false
 
   return (
-    <div className="p-2 rounded border bg-muted/30 space-y-2">
+    <div className="bg-muted/30 space-y-2 rounded border p-2">
       <div className="flex items-start gap-2">
         <div className="flex-1 space-y-2">
           {/* Field */}
@@ -160,7 +152,7 @@ function ConditionEditor({
             <Input
               value={condition.field}
               onChange={(e) => onUpdate({ field: e.target.value })}
-              className="h-6 text-xs font-mono"
+              className="h-6 font-mono text-xs"
               placeholder="variables.myVar or message.content"
             />
           </div>
@@ -171,7 +163,7 @@ function ConditionEditor({
             <select
               value={condition.operator}
               onChange={(e) => onUpdate({ operator: e.target.value as ConditionOperator })}
-              className="w-full h-6 text-xs rounded border bg-background"
+              className="h-6 w-full rounded border bg-background text-xs"
             >
               {operatorOptions.map((op) => (
                 <option key={op.value} value={op.value}>
@@ -198,7 +190,7 @@ function ConditionEditor({
         <Button
           variant="ghost"
           size="sm"
-          className="h-6 w-6 p-0 text-destructive mt-4"
+          className="mt-4 h-6 w-6 p-0 text-destructive"
           onClick={onDelete}
         >
           <Trash2 className="h-3 w-3" />

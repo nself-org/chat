@@ -6,12 +6,7 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  Shield,
-  BarChart3,
-  Settings,
-  ListChecks,
-} from 'lucide-react'
+import { Shield, BarChart3, Settings, ListChecks } from 'lucide-react'
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ModerationDashboard } from '@/components/admin/moderation/ModerationDashboard'
@@ -42,7 +37,7 @@ export default function ModerationPage() {
         {/* Header */}
         <div className="space-y-2">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary/10 rounded-lg">
+            <div className="bg-primary/10 rounded-lg p-2">
               <Shield className="h-8 w-8 text-primary" />
             </div>
             <div>
@@ -56,7 +51,7 @@ export default function ModerationPage() {
 
         {/* Main Content */}
         <Tabs defaultValue="dashboard" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-3 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-3 lg:inline-grid lg:w-auto">
             <TabsTrigger value="dashboard">
               <BarChart3 className="mr-2 h-4 w-4" />
               Dashboard

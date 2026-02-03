@@ -48,9 +48,7 @@ export function MessageAttachments({
   return (
     <div className={cn('space-y-2', className)}>
       {/* Image gallery */}
-      {images.length > 0 && (
-        <ImageGallery images={images} onImageClick={setLightboxImage} />
-      )}
+      {images.length > 0 && <ImageGallery images={images} onImageClick={setLightboxImage} />}
 
       {/* Videos */}
       {videos.map((video) => (
@@ -81,10 +79,7 @@ export function MessageAttachments({
       )}
 
       {/* Lightbox */}
-      <ImageLightbox
-        imageUrl={lightboxImage}
-        onClose={() => setLightboxImage(null)}
-      />
+      <ImageLightbox imageUrl={lightboxImage} onClose={() => setLightboxImage(null)} />
     </div>
   )
 }
@@ -127,10 +122,7 @@ function ImageGallery({ images, onImageClick }: ImageGalleryProps) {
           )}
         >
           <div
-            className={cn(
-              'relative aspect-video w-full',
-              displayImages.length === 1 && 'max-h-80'
-            )}
+            className={cn('relative aspect-video w-full', displayImages.length === 1 && 'max-h-80')}
           >
             <Image
               src={image.thumbnailUrl || image.url}
@@ -149,9 +141,7 @@ function ImageGallery({ images, onImageClick }: ImageGalleryProps) {
           {/* Remaining count overlay */}
           {index === 3 && remainingCount > 0 && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/60">
-              <span className="text-2xl font-bold text-white">
-                +{remainingCount}
-              </span>
+              <span className="text-2xl font-bold text-white">+{remainingCount}</span>
             </div>
           )}
         </button>
@@ -209,7 +199,7 @@ function AudioPlayer({ attachment }: { attachment: Attachment }) {
   const [progress, setProgress] = useState(0)
 
   return (
-    <div className="flex max-w-md items-center gap-3 rounded-lg border bg-muted/50 p-3">
+    <div className="bg-muted/50 flex max-w-md items-center gap-3 rounded-lg border p-3">
       {/* Play button */}
       <Button
         variant="ghost"
@@ -217,11 +207,7 @@ function AudioPlayer({ attachment }: { attachment: Attachment }) {
         onClick={() => setIsPlaying(!isPlaying)}
         className="h-10 w-10 shrink-0 rounded-full"
       >
-        {isPlaying ? (
-          <Pause className="h-5 w-5" />
-        ) : (
-          <Play className="ml-0.5 h-5 w-5" />
-        )}
+        {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="ml-0.5 h-5 w-5" />}
       </Button>
 
       {/* Waveform / progress */}
@@ -233,10 +219,7 @@ function AudioPlayer({ attachment }: { attachment: Attachment }) {
           </span>
         </div>
         <div className="h-1 w-full overflow-hidden rounded-full bg-border">
-          <div
-            className="h-full bg-primary transition-all"
-            style={{ width: `${progress}%` }}
-          />
+          <div className="h-full bg-primary transition-all" style={{ width: `${progress}%` }} />
         </div>
       </div>
 
@@ -257,7 +240,7 @@ function FileCard({ attachment }: { attachment: Attachment }) {
   const Icon = getFileIcon(attachment.mimeType)
 
   return (
-    <div className="flex max-w-sm items-center gap-3 rounded-lg border bg-muted/30 p-3 transition-colors hover:bg-muted/50">
+    <div className="bg-muted/30 hover:bg-muted/50 flex max-w-sm items-center gap-3 rounded-lg border p-3 transition-colors">
       {/* File icon */}
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-muted">
         <Icon className="h-5 w-5 text-muted-foreground" />
@@ -290,7 +273,7 @@ function LinkPreviewCard({ preview }: { preview: LinkPreview }) {
       href={preview.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block max-w-md overflow-hidden rounded-lg border transition-colors hover:border-primary/50"
+      className="hover:border-primary/50 group block max-w-md overflow-hidden rounded-lg border transition-colors"
     >
       {/* Image */}
       {preview.imageUrl && (
@@ -310,13 +293,7 @@ function LinkPreviewCard({ preview }: { preview: LinkPreview }) {
         {/* Site info */}
         <div className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
           {preview.favicon && (
-            <Image
-              src={preview.favicon}
-              alt=""
-              width={14}
-              height={14}
-              className="rounded-sm"
-            />
+            <Image src={preview.favicon} alt="" width={14} height={14} className="rounded-sm" />
           )}
           <span>{preview.siteName || new URL(preview.url).hostname}</span>
           <ExternalLink className="ml-auto h-3 w-3 opacity-0 transition-opacity group-hover:opacity-100" />
@@ -331,9 +308,7 @@ function LinkPreviewCard({ preview }: { preview: LinkPreview }) {
 
         {/* Description */}
         {preview.description && (
-          <p className="line-clamp-2 text-xs text-muted-foreground">
-            {preview.description}
-          </p>
+          <p className="line-clamp-2 text-xs text-muted-foreground">{preview.description}</p>
         )}
       </div>
     </a>
@@ -343,13 +318,7 @@ function LinkPreviewCard({ preview }: { preview: LinkPreview }) {
 /**
  * Image lightbox component
  */
-function ImageLightbox({
-  imageUrl,
-  onClose,
-}: {
-  imageUrl: string | null
-  onClose: () => void
-}) {
+function ImageLightbox({ imageUrl, onClose }: { imageUrl: string | null; onClose: () => void }) {
   return (
     <AnimatePresence>
       {imageUrl && (

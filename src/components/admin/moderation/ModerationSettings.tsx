@@ -19,6 +19,8 @@ import { Save, Settings, Shield, AlertTriangle, X } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 import type { ModerationPolicy } from '@/lib/moderation/ai-moderator'
 
+import { logger } from '@/lib/logger'
+
 export function ModerationSettings() {
   const { toast } = useToast()
   const [policy, setPolicy] = useState<ModerationPolicy | null>(null)
@@ -40,7 +42,7 @@ export function ModerationSettings() {
         setPolicy(data.policy)
       }
     } catch (error) {
-      console.error('Failed to fetch policy:', error)
+      logger.error('Failed to fetch policy:', error)
       toast({
         title: 'Error',
         description: 'Failed to load moderation settings',
@@ -73,7 +75,7 @@ export function ModerationSettings() {
         throw new Error(data.error || 'Failed to save')
       }
     } catch (error) {
-      console.error('Failed to save policy:', error)
+      logger.error('Failed to save policy:', error)
       toast({
         title: 'Error',
         description: 'Failed to save moderation settings',
@@ -117,7 +119,7 @@ export function ModerationSettings() {
     if (!policy) return
 
     updatePolicy({
-      customBlockedWords: policy.customBlockedWords.filter(w => w !== word),
+      customBlockedWords: policy.customBlockedWords.filter((w) => w !== word),
     })
   }
 
@@ -136,13 +138,13 @@ export function ModerationSettings() {
     if (!policy) return
 
     updatePolicy({
-      customAllowedWords: policy.customAllowedWords.filter(w => w !== word),
+      customAllowedWords: policy.customAllowedWords.filter((w) => w !== word),
     })
   }
 
   if (loading || !policy) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex h-64 items-center justify-center">
         <p className="text-muted-foreground">Loading settings...</p>
       </div>
     )
@@ -176,9 +178,7 @@ export function ModerationSettings() {
             <AlertTriangle className="mr-2 h-4 w-4" />
             Auto Actions
           </TabsTrigger>
-          <TabsTrigger value="words">
-            Custom Words
-          </TabsTrigger>
+          <TabsTrigger value="words">Custom Words</TabsTrigger>
         </TabsList>
 
         {/* Detection Features */}
@@ -186,9 +186,7 @@ export function ModerationSettings() {
           <Card>
             <CardHeader>
               <CardTitle>AI Detection Features</CardTitle>
-              <CardDescription>
-                Enable or disable specific AI detection modules
-              </CardDescription>
+              <CardDescription>Enable or disable specific AI detection modules</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center justify-between">
@@ -201,9 +199,7 @@ export function ModerationSettings() {
                 <Switch
                   id="toxicity"
                   checked={policy.enableToxicityDetection}
-                  onCheckedChange={(checked) =>
-                    updatePolicy({ enableToxicityDetection: checked })
-                  }
+                  onCheckedChange={(checked) => updatePolicy({ enableToxicityDetection: checked })}
                 />
               </div>
 
@@ -217,9 +213,7 @@ export function ModerationSettings() {
                 <Switch
                   id="nsfw"
                   checked={policy.enableNSFWDetection}
-                  onCheckedChange={(checked) =>
-                    updatePolicy({ enableNSFWDetection: checked })
-                  }
+                  onCheckedChange={(checked) => updatePolicy({ enableNSFWDetection: checked })}
                 />
               </div>
 
@@ -233,9 +227,7 @@ export function ModerationSettings() {
                 <Switch
                   id="spam"
                   checked={policy.enableSpamDetection}
-                  onCheckedChange={(checked) =>
-                    updatePolicy({ enableSpamDetection: checked })
-                  }
+                  onCheckedChange={(checked) => updatePolicy({ enableSpamDetection: checked })}
                 />
               </div>
 
@@ -249,9 +241,7 @@ export function ModerationSettings() {
                 <Switch
                   id="profanity"
                   checked={policy.enableProfanityFilter}
-                  onCheckedChange={(checked) =>
-                    updatePolicy({ enableProfanityFilter: checked })
-                  }
+                  onCheckedChange={(checked) => updatePolicy({ enableProfanityFilter: checked })}
                 />
               </div>
 
@@ -279,9 +269,7 @@ export function ModerationSettings() {
           <Card>
             <CardHeader>
               <CardTitle>Detection Thresholds</CardTitle>
-              <CardDescription>
-                Adjust sensitivity for each detection type (0-100%)
-              </CardDescription>
+              <CardDescription>Adjust sensitivity for each detection type (0-100%)</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -349,9 +337,7 @@ export function ModerationSettings() {
           <Card>
             <CardHeader>
               <CardTitle>Action Thresholds</CardTitle>
-              <CardDescription>
-                When to trigger different moderation actions
-              </CardDescription>
+              <CardDescription>When to trigger different moderation actions</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="space-y-2">
@@ -505,9 +491,7 @@ export function ModerationSettings() {
           <Card>
             <CardHeader>
               <CardTitle>Blocked Words</CardTitle>
-              <CardDescription>
-                Custom words to always block
-              </CardDescription>
+              <CardDescription>Custom words to always block</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-2">
@@ -538,9 +522,7 @@ export function ModerationSettings() {
           <Card>
             <CardHeader>
               <CardTitle>Allowed Words</CardTitle>
-              <CardDescription>
-                Words to allow even if flagged by AI
-              </CardDescription>
+              <CardDescription>Words to allow even if flagged by AI</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-2">
@@ -556,10 +538,7 @@ export function ModerationSettings() {
                 {policy.customAllowedWords.map((word) => (
                   <Badge key={word} variant="secondary">
                     {word}
-                    <button
-                      onClick={() => removeAllowedWord(word)}
-                      className="ml-2"
-                    >
+                    <button onClick={() => removeAllowedWord(word)} className="ml-2">
                       <X className="h-3 w-3" />
                     </button>
                   </Badge>

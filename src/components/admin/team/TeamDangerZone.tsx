@@ -53,6 +53,8 @@ import { useTeamStore } from '@/stores/team-store'
 import { teamManager } from '@/lib/team/team-manager'
 import type { TeamMember } from '@/lib/team/team-types'
 
+import { logger } from '@/lib/logger'
+
 interface TeamDangerZoneProps {
   teamId: string
 }
@@ -127,7 +129,7 @@ function ExportDataSection({ teamId, teamName }: { teamId: string; teamName: str
         }, 2000)
       }
     } catch (error) {
-      console.error('Export failed:', error)
+      logger.error('Export failed:', error)
     } finally {
       setIsExporting(false)
     }
@@ -293,7 +295,7 @@ function TransferOwnershipSection({
         // Redirect or show success message
       }
     } catch (error) {
-      console.error('Transfer failed:', error)
+      logger.error('Transfer failed:', error)
     } finally {
       setIsTransferring(false)
     }
@@ -419,22 +421,20 @@ function DeleteTeamSection({ teamId, teamName }: { teamId: string; teamName: str
         window.location.href = '/'
       }
     } catch (error) {
-      console.error('Deletion failed:', error)
+      logger.error('Deletion failed:', error)
     } finally {
       setIsDeleting(false)
     }
   }
 
   return (
-    <Card className="border-destructive bg-destructive/5">
+    <Card className="bg-destructive/5 border-destructive">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-destructive">
           <Trash2 className="h-5 w-5" />
           Delete Team
         </CardTitle>
-        <CardDescription>
-          Permanently delete this team and all associated data
-        </CardDescription>
+        <CardDescription>Permanently delete this team and all associated data</CardDescription>
       </CardHeader>
       <CardContent>
         <AlertDialog>
@@ -493,7 +493,7 @@ function DeleteTeamSection({ teamId, teamName }: { teamId: string; teamName: str
               <AlertDialogAction
                 onClick={handleDelete}
                 disabled={confirmationText !== teamName || isDeleting}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               >
                 {isDeleting ? (
                   <>

@@ -8,10 +8,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { nhost } from '@/lib/nhost.server'
 
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+import { logger } from '@/lib/logger'
+
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     const streamId = params.id
     const { searchParams } = new URL(request.url)
@@ -49,11 +48,8 @@ export async function GET(
     )
 
     if (error) {
-      console.error('Failed to get chat messages:', error)
-      return NextResponse.json(
-        { error: 'Failed to get chat messages' },
-        { status: 500 }
-      )
+      logger.error('Failed to get chat messages:', error)
+      return NextResponse.json({ error: 'Failed to get chat messages' }, { status: 500 })
     }
 
     // Reverse to show oldest first
@@ -61,18 +57,12 @@ export async function GET(
 
     return NextResponse.json(messages)
   } catch (error) {
-    console.error('Get stream chat error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Get stream chat error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Get user from session
     const session = await nhost.auth.getSession()
@@ -93,17 +83,11 @@ export async function POST(
 
     // Validate content
     if (!content || content.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'Message cannot be empty' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Message cannot be empty' }, { status: 400 })
     }
 
     if (content.length > 500) {
-      return NextResponse.json(
-        { error: 'Message too long (max 500 characters)' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Message too long (max 500 characters)' }, { status: 400 })
     }
 
     // Verify stream is live and chat is enabled
@@ -125,17 +109,11 @@ export async function POST(
     }
 
     if (!streamData.nchat_streams_by_pk.enable_chat) {
-      return NextResponse.json(
-        { error: 'Chat is disabled for this stream' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Chat is disabled for this stream' }, { status: 403 })
     }
 
     if (streamData.nchat_streams_by_pk.status !== 'live') {
-      return NextResponse.json(
-        { error: 'Stream is not live' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Stream is not live' }, { status: 400 })
     }
 
     // Insert chat message
@@ -168,19 +146,13 @@ export async function POST(
     )
 
     if (error || !data?.insert_nchat_stream_chat_messages_one) {
-      console.error('Failed to send chat message:', error)
-      return NextResponse.json(
-        { error: 'Failed to send message' },
-        { status: 500 }
-      )
+      logger.error('Failed to send chat message:', error)
+      return NextResponse.json({ error: 'Failed to send message' }, { status: 500 })
     }
 
     return NextResponse.json(data.insert_nchat_stream_chat_messages_one)
   } catch (error) {
-    console.error('Send stream chat error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Send stream chat error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

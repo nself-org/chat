@@ -29,13 +29,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { cn } from '@/lib/utils'
-import {
-  BaseModal,
-  ModalHeader,
-  ModalTitle,
-  ModalBody,
-  type ModalSize,
-} from './base-modal'
+import { BaseModal, ModalHeader, ModalTitle, ModalBody, type ModalSize } from './base-modal'
+
+import { logger } from '@/lib/logger'
 
 export type ProfileStatus = 'online' | 'away' | 'busy' | 'offline'
 
@@ -157,7 +153,7 @@ export function ProfileModal({
       onCopyUserId?.(user.id)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy:', err)
+      logger.error('Failed to copy:', err)
     }
   }
 
@@ -174,11 +170,11 @@ export function ProfileModal({
       }}
       size={size}
       showCloseButton={false}
-      className="p-0 overflow-hidden"
+      className="overflow-hidden p-0"
     >
       {/* Header with large avatar */}
       <div className="relative">
-        <div className="h-24 bg-gradient-to-br from-primary/30 to-primary/5" />
+        <div className="from-primary/30 to-primary/5 h-24 bg-gradient-to-br" />
         <div className="absolute -bottom-12 left-6">
           <div className="relative">
             <Avatar className="h-24 w-24 border-4 border-background">
@@ -197,10 +193,10 @@ export function ProfileModal({
         </div>
 
         {/* Actions dropdown */}
-        <div className="absolute top-2 right-2">
+        <div className="absolute right-2 top-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8 bg-background/50">
+              <Button variant="ghost" size="icon" className="bg-background/50 h-8 w-8">
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -241,41 +237,35 @@ export function ProfileModal({
       </div>
 
       {/* Profile info */}
-      <ModalBody className="pt-14 pb-6">
-        <ModalHeader className="p-0 space-y-1">
+      <ModalBody className="pb-6 pt-14">
+        <ModalHeader className="space-y-1 p-0">
           <div className="flex items-center gap-2">
             <ModalTitle className="text-xl">{user.name}</ModalTitle>
             <Badge variant={roleConfig.variant} className="text-xs">
-              {roleConfig.hasIcon && <Shield className="h-3 w-3 mr-1" />}
+              {roleConfig.hasIcon && <Shield className="mr-1 h-3 w-3" />}
               {user.role}
             </Badge>
           </div>
-          <p className="text-sm text-muted-foreground flex items-center gap-1">
+          <p className="flex items-center gap-1 text-sm text-muted-foreground">
             <AtSign className="h-3 w-3" />
             {user.username}
           </p>
         </ModalHeader>
 
         {/* Status */}
-        <div className="flex items-center gap-2 mt-4">
-          <div
-            className={cn('h-2 w-2 rounded-full', STATUS_COLORS[user.status])}
-          />
-          <span className="text-sm text-muted-foreground">
-            {STATUS_LABELS[user.status]}
-          </span>
+        <div className="mt-4 flex items-center gap-2">
+          <div className={cn('h-2 w-2 rounded-full', STATUS_COLORS[user.status])} />
+          <span className="text-sm text-muted-foreground">{STATUS_LABELS[user.status]}</span>
         </div>
 
         {/* Custom status */}
         {user.customStatus && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg mt-4">
-            {user.customStatus.emoji && (
-              <span className="text-lg">{user.customStatus.emoji}</span>
-            )}
-            <span className="text-sm flex-1">{user.customStatus.text}</span>
+          <div className="mt-4 flex items-center gap-2 rounded-lg bg-muted px-3 py-2">
+            {user.customStatus.emoji && <span className="text-lg">{user.customStatus.emoji}</span>}
+            <span className="flex-1 text-sm">{user.customStatus.text}</span>
             {user.customStatus.expiresAt && (
               <span className="text-xs text-muted-foreground">
-                <Clock className="h-3 w-3 inline mr-1" />
+                <Clock className="mr-1 inline h-3 w-3" />
                 Clears soon
               </span>
             )}
@@ -283,25 +273,21 @@ export function ProfileModal({
         )}
 
         {/* Bio */}
-        {user.bio && (
-          <p className="text-sm text-foreground leading-relaxed mt-4">
-            {user.bio}
-          </p>
-        )}
+        {user.bio && <p className="mt-4 text-sm leading-relaxed text-foreground">{user.bio}</p>}
 
         <Separator className="my-4" />
 
         {/* Contact info */}
         <div className="space-y-3">
           <div className="flex items-center gap-3 text-sm">
-            <Mail className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+            <Mail className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
             <span className="text-muted-foreground">Email</span>
             <span className="ml-auto truncate">{user.email}</span>
           </div>
 
           {user.phone && (
             <div className="flex items-center gap-3 text-sm">
-              <Phone className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <Phone className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
               <span className="text-muted-foreground">Phone</span>
               <span className="ml-auto">{user.phone}</span>
             </div>
@@ -309,7 +295,7 @@ export function ProfileModal({
 
           {user.location && (
             <div className="flex items-center gap-3 text-sm">
-              <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <MapPin className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
               <span className="text-muted-foreground">Location</span>
               <span className="ml-auto">{user.location}</span>
             </div>
@@ -317,13 +303,13 @@ export function ProfileModal({
 
           {user.website && (
             <div className="flex items-center gap-3 text-sm">
-              <LinkIcon className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <LinkIcon className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
               <span className="text-muted-foreground">Website</span>
               <a
                 href={user.website}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="ml-auto text-primary hover:underline truncate"
+                className="ml-auto truncate text-primary hover:underline"
               >
                 {user.website.replace(/^https?:\/\//, '')}
               </a>
@@ -332,7 +318,7 @@ export function ProfileModal({
 
           {localTime && (
             <div className="flex items-center gap-3 text-sm">
-              <Clock className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <Clock className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
               <span className="text-muted-foreground">Local time</span>
               <span className="ml-auto">{localTime}</span>
             </div>
@@ -340,7 +326,7 @@ export function ProfileModal({
 
           {user.createdAt && (
             <div className="flex items-center gap-3 text-sm">
-              <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <Calendar className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
               <span className="text-muted-foreground">Joined</span>
               <span className="ml-auto">{formatDate(user.createdAt)}</span>
             </div>
@@ -349,7 +335,7 @@ export function ProfileModal({
 
         {/* Action buttons */}
         {!isSelf && (onSendMessage || onAddToChannel) && (
-          <div className="flex gap-2 pt-4 mt-4 border-t">
+          <div className="mt-4 flex gap-2 border-t pt-4">
             {onSendMessage && (
               <Button
                 onClick={() => {

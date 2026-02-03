@@ -83,12 +83,7 @@ function getFileIcon(type: string) {
 // Component
 // ============================================================================
 
-export function FilePreviewModal({
-  open,
-  onOpenChange,
-  file,
-  onDownload,
-}: FilePreviewModalProps) {
+export function FilePreviewModal({ open, onOpenChange, file, onDownload }: FilePreviewModalProps) {
   const [isDownloading, setIsDownloading] = React.useState(false)
 
   if (!file) return null
@@ -126,24 +121,19 @@ export function FilePreviewModal({
     switch (category) {
       case 'image':
         return (
-          <div className="flex items-center justify-center bg-muted/30 rounded-lg p-4">
+          <div className="bg-muted/30 flex items-center justify-center rounded-lg p-4">
             <img
               src={file.url}
               alt={file.name}
-              className="max-h-[500px] max-w-full object-contain rounded"
+              className="max-h-[500px] max-w-full rounded object-contain"
             />
           </div>
         )
 
       case 'video':
         return (
-          <div className="flex items-center justify-center bg-black rounded-lg overflow-hidden">
-            <video
-              src={file.url}
-              controls
-              className="max-h-[500px] max-w-full"
-              preload="metadata"
-            >
+          <div className="flex items-center justify-center overflow-hidden rounded-lg bg-black">
+            <video src={file.url} controls className="max-h-[500px] max-w-full" preload="metadata">
               Your browser does not support video playback.
             </video>
           </div>
@@ -151,8 +141,8 @@ export function FilePreviewModal({
 
       case 'audio':
         return (
-          <div className="flex flex-col items-center justify-center p-12 space-y-6">
-            <div className="flex h-24 w-24 items-center justify-center rounded-full bg-primary/10">
+          <div className="flex flex-col items-center justify-center space-y-6 p-12">
+            <div className="bg-primary/10 flex h-24 w-24 items-center justify-center rounded-full">
               <Music className="h-12 w-12 text-primary" />
             </div>
             <audio src={file.url} controls className="w-full max-w-md">
@@ -164,30 +154,24 @@ export function FilePreviewModal({
       case 'document':
         if (file.type === 'application/pdf') {
           return (
-            <div className="h-[600px] w-full rounded-lg overflow-hidden border">
-              <iframe
-                src={file.url}
-                className="w-full h-full"
-                title={file.name}
-              />
+            <div className="h-[600px] w-full overflow-hidden rounded-lg border">
+              <iframe src={file.url} className="h-full w-full" title={file.name} />
             </div>
           )
         }
-        // Fall through to default for non-PDF documents
+      // Fall through to default for non-PDF documents
 
       default:
         return (
-          <div className="flex flex-col items-center justify-center p-12 space-y-4">
+          <div className="flex flex-col items-center justify-center space-y-4 p-12">
             <div className="flex h-24 w-24 items-center justify-center rounded-full bg-muted">
               <Icon className="h-12 w-12 text-muted-foreground" />
             </div>
-            <div className="text-center space-y-2">
+            <div className="space-y-2 text-center">
               <p className="text-sm text-muted-foreground">
                 Preview not available for this file type
               </p>
-              <p className="text-xs text-muted-foreground">
-                Download the file to view it
-              </p>
+              <p className="text-xs text-muted-foreground">Download the file to view it</p>
             </div>
           </div>
         )
@@ -196,24 +180,22 @@ export function FilePreviewModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] flex flex-col p-0">
+      <DialogContent className="flex max-h-[90vh] max-w-4xl flex-col p-0">
         {/* Header */}
-        <DialogHeader className="px-6 pt-6 pb-4 space-y-3">
+        <DialogHeader className="space-y-3 px-6 pb-4 pt-6">
           <div className="flex items-start justify-between">
-            <div className="flex-1 min-w-0 pr-4">
-              <DialogTitle className="text-lg truncate" title={file.name}>
+            <div className="min-w-0 flex-1 pr-4">
+              <DialogTitle className="truncate text-lg" title={file.name}>
                 {file.name}
               </DialogTitle>
-              <DialogDescription className="flex items-center gap-2 mt-1">
+              <DialogDescription className="mt-1 flex items-center gap-2">
                 <span>{formatFileSize(file.size)}</span>
                 <span>•</span>
                 <span>{file.type.split('/')[1]?.toUpperCase() || file.type}</span>
                 {file.uploadedAt && (
                   <>
                     <span>•</span>
-                    <span>
-                      {new Date(file.uploadedAt).toLocaleDateString()}
-                    </span>
+                    <span>{new Date(file.uploadedAt).toLocaleDateString()}</span>
                   </>
                 )}
               </DialogDescription>
@@ -241,9 +223,7 @@ export function FilePreviewModal({
         </DialogHeader>
 
         {/* Preview area */}
-        <ScrollArea className="flex-1 px-6 pb-6">
-          {renderPreview()}
-        </ScrollArea>
+        <ScrollArea className="flex-1 px-6 pb-6">{renderPreview()}</ScrollArea>
       </DialogContent>
     </Dialog>
   )

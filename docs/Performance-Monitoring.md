@@ -66,18 +66,19 @@ Web Vitals are automatically collected on every page load:
 
 ### Thresholds
 
-| Metric | Good | Needs Improvement | Poor |
-|--------|------|-------------------|------|
-| LCP    | ≤2500ms | ≤4000ms | >4000ms |
-| FID    | ≤100ms  | ≤300ms  | >300ms  |
-| CLS    | ≤0.1    | ≤0.25   | >0.25   |
-| TTFB   | ≤800ms  | ≤1800ms | >1800ms |
-| FCP    | ≤1800ms | ≤3000ms | >3000ms |
-| INP    | ≤200ms  | ≤500ms  | >500ms  |
+| Metric | Good    | Needs Improvement | Poor    |
+| ------ | ------- | ----------------- | ------- |
+| LCP    | ≤2500ms | ≤4000ms           | >4000ms |
+| FID    | ≤100ms  | ≤300ms            | >300ms  |
+| CLS    | ≤0.1    | ≤0.25             | >0.25   |
+| TTFB   | ≤800ms  | ≤1800ms           | >1800ms |
+| FCP    | ≤1800ms | ≤3000ms           | >3000ms |
+| INP    | ≤200ms  | ≤500ms            | >500ms  |
 
 ### Ratings
 
 Each metric receives a rating:
+
 - **Good**: Green, score 90-100
 - **Needs Improvement**: Yellow, score 50-89
 - **Poor**: Red, score 0-49
@@ -89,7 +90,7 @@ Each metric receives a rating:
 ### Recording Custom Metrics
 
 ```typescript
-import { performanceMonitor } from '@/lib/performance/monitor';
+import { performanceMonitor } from '@/lib/performance/monitor'
 
 // Record a custom metric
 performanceMonitor.recordCustomMetric({
@@ -100,53 +101,56 @@ performanceMonitor.recordCustomMetric({
     endpoint: '/api/messages',
     method: 'POST',
   },
-});
+})
 ```
 
 ### Built-in Custom Metrics
 
 #### API Response Time
+
 ```typescript
-import { useApiPerformance } from '@/hooks/use-performance';
+import { useApiPerformance } from '@/hooks/use-performance'
 
 function MyComponent() {
-  const { recordApiCall } = useApiPerformance();
+  const { recordApiCall } = useApiPerformance()
 
   const fetchData = async () => {
-    const start = performance.now();
+    const start = performance.now()
     try {
-      const response = await fetch('/api/data');
-      const duration = performance.now() - start;
-      recordApiCall('/api/data', duration, response.ok);
+      const response = await fetch('/api/data')
+      const duration = performance.now() - start
+      recordApiCall('/api/data', duration, response.ok)
     } catch (error) {
-      const duration = performance.now() - start;
-      recordApiCall('/api/data', duration, false);
+      const duration = performance.now() - start
+      recordApiCall('/api/data', duration, false)
     }
-  };
+  }
 }
 ```
 
 #### WebSocket Latency
+
 ```typescript
-import { useWebSocketPerformance } from '@/hooks/use-performance';
+import { useWebSocketPerformance } from '@/hooks/use-performance'
 
 function WebSocketComponent() {
-  const { recordLatency, recordMessage } = useWebSocketPerformance();
+  const { recordLatency, recordMessage } = useWebSocketPerformance()
 
   const sendMessage = (message: string) => {
-    const start = performance.now();
+    const start = performance.now()
 
     socket.emit('message', message, () => {
-      const latency = performance.now() - start;
-      recordLatency(latency);
-    });
+      const latency = performance.now() - start
+      recordLatency(latency)
+    })
 
-    recordMessage('sent', message.length);
-  };
+    recordMessage('sent', message.length)
+  }
 }
 ```
 
 #### Render Performance
+
 ```typescript
 import { useRenderPerformance } from '@/hooks/use-performance';
 
@@ -158,6 +162,7 @@ function MyComponent() {
 ```
 
 #### Memory Usage
+
 ```typescript
 // Automatically tracked every 10 seconds
 // No manual code required
@@ -323,31 +328,31 @@ The performance monitor automatically tracks all API calls via PerformanceObserv
 For more detailed tracking:
 
 ```typescript
-import { measurePerformanceAsync } from '@/lib/performance/monitor';
+import { measurePerformanceAsync } from '@/lib/performance/monitor'
 
 async function fetchData() {
   return measurePerformanceAsync(
     'fetch-messages',
     async () => {
-      const response = await fetch('/api/messages');
-      return response.json();
+      const response = await fetch('/api/messages')
+      return response.json()
     },
     { endpoint: '/api/messages' }
-  );
+  )
 }
 ```
 
 ### GraphQL Integration
 
 ```typescript
-import { ApolloLink } from '@apollo/client';
-import { performanceMonitor } from '@/lib/performance/monitor';
+import { ApolloLink } from '@apollo/client'
+import { performanceMonitor } from '@/lib/performance/monitor'
 
 const performanceLink = new ApolloLink((operation, forward) => {
-  const start = performance.now();
+  const start = performance.now()
 
   return forward(operation).map((response) => {
-    const duration = performance.now() - start;
+    const duration = performance.now() - start
 
     performanceMonitor.recordCustomMetric({
       name: 'graphql-query-time',
@@ -357,11 +362,11 @@ const performanceLink = new ApolloLink((operation, forward) => {
         operation: operation.operationName,
         type: operation.query.definitions[0]?.operation || 'unknown',
       },
-    });
+    })
 
-    return response;
-  });
-});
+    return response
+  })
+})
 ```
 
 ---
@@ -418,14 +423,14 @@ import Image from 'next/image';
 ### 4. API Response Caching
 
 ```typescript
-import useSWR from 'swr';
+import useSWR from 'swr'
 
 function Messages() {
   // SWR automatically caches responses
   const { data } = useSWR('/api/messages', fetcher, {
     revalidateOnFocus: false,
     dedupingInterval: 2000,
-  });
+  })
 }
 ```
 
@@ -476,17 +481,17 @@ function LongList({ items }) {
 ### 7. Monitor Memory Leaks
 
 ```typescript
-import { useEffect } from 'react';
+import { useEffect } from 'react'
 
 function Component() {
   useEffect(() => {
-    const subscription = observable.subscribe(/* ... */);
+    const subscription = observable.subscribe(/* ... */)
 
     // Always clean up!
     return () => {
-      subscription.unsubscribe();
-    };
-  }, []);
+      subscription.unsubscribe()
+    }
+  }, [])
 }
 ```
 
@@ -516,17 +521,17 @@ function App() {
 
 Recommended targets for production:
 
-| Metric | Target | Alert Threshold |
-|--------|--------|-----------------|
-| LCP | <2.5s | >4s |
-| FID | <100ms | >300ms |
-| CLS | <0.1 | >0.25 |
-| TTFB | <800ms | >1.8s |
-| API Response | <500ms | >2s |
-| WebSocket Latency | <100ms | >500ms |
-| Render Time | <16ms (60fps) | >50ms |
-| Memory Usage | <50% | >80% |
-| Error Rate | <1% | >5% |
+| Metric            | Target        | Alert Threshold |
+| ----------------- | ------------- | --------------- |
+| LCP               | <2.5s         | >4s             |
+| FID               | <100ms        | >300ms          |
+| CLS               | <0.1          | >0.25           |
+| TTFB              | <800ms        | >1.8s           |
+| API Response      | <500ms        | >2s             |
+| WebSocket Latency | <100ms        | >500ms          |
+| Render Time       | <16ms (60fps) | >50ms           |
+| Memory Usage      | <50%          | >80%            |
+| Error Rate        | <1%           | >5%             |
 
 ---
 
@@ -590,6 +595,7 @@ NEXT_PUBLIC_SENTRY_DSN=https://...
 ### Alerts
 
 Configure Sentry alerts for:
+
 - Poor Web Vitals (score < 50)
 - High error rate (>5%)
 - Slow API responses (>2s)

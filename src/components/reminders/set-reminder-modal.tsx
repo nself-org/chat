@@ -70,6 +70,8 @@ import { useReminders } from '@/lib/reminders/use-reminders'
 import { formatMessageTime } from '@/lib/date'
 import type { Reminder, RecurrenceRule } from '@/graphql/reminders'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -120,16 +122,12 @@ interface MessagePreviewProps {
   timestamp?: string
 }
 
-function MessagePreview({
-  content,
-  author,
-  timestamp,
-}: MessagePreviewProps) {
+function MessagePreview({ content, author, timestamp }: MessagePreviewProps) {
   if (!content) return null
 
   return (
-    <div className="rounded-lg border bg-muted/50 p-3">
-      <div className="flex items-center gap-2 mb-2">
+    <div className="bg-muted/50 rounded-lg border p-3">
+      <div className="mb-2 flex items-center gap-2">
         <MessageSquare className="h-4 w-4 text-muted-foreground" />
         <span className="text-xs font-medium text-muted-foreground">
           Remind me about this message
@@ -144,20 +142,16 @@ function MessagePreview({
             </AvatarFallback>
           </Avatar>
         )}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             {author && (
-              <span className="text-sm font-medium">
-                {author.display_name || author.username}
-              </span>
+              <span className="text-sm font-medium">{author.display_name || author.username}</span>
             )}
             {timestamp && (
-              <span className="text-xs text-muted-foreground">
-                {formatMessageTime(timestamp)}
-              </span>
+              <span className="text-xs text-muted-foreground">{formatMessageTime(timestamp)}</span>
             )}
           </div>
-          <p className="text-sm text-muted-foreground line-clamp-2">{content}</p>
+          <p className="line-clamp-2 text-sm text-muted-foreground">{content}</p>
         </div>
       </div>
     </div>
@@ -176,7 +170,7 @@ function ReminderPreview({ draft, type }: ReminderPreviewProps) {
     <div
       className={cn(
         'rounded-lg border p-4',
-        isPast ? 'border-destructive bg-destructive/5' : 'bg-muted/50'
+        isPast ? 'bg-destructive/5 border-destructive' : 'bg-muted/50'
       )}
     >
       <div className="flex items-start gap-3">
@@ -186,27 +180,15 @@ function ReminderPreview({ draft, type }: ReminderPreviewProps) {
             isPast ? 'bg-destructive/10' : 'bg-primary/10'
           )}
         >
-          <Bell
-            className={cn(
-              'h-5 w-5',
-              isPast ? 'text-destructive' : 'text-primary'
-            )}
-          />
+          <Bell className={cn('h-5 w-5', isPast ? 'text-destructive' : 'text-primary')} />
         </div>
-        <div className="flex-1 min-w-0 space-y-1">
-          <p className="font-medium line-clamp-2">
-            {draft.content || 'No content'}
-          </p>
+        <div className="min-w-0 flex-1 space-y-1">
+          <p className="line-clamp-2 font-medium">{draft.content || 'No content'}</p>
           {draft.note && (
-            <p className="text-sm text-muted-foreground line-clamp-1">
-              Note: {draft.note}
-            </p>
+            <p className="line-clamp-1 text-sm text-muted-foreground">Note: {draft.note}</p>
           )}
           <div className="flex flex-wrap items-center gap-2 pt-1">
-            <Badge
-              variant={isPast ? 'destructive' : 'secondary'}
-              className="gap-1"
-            >
+            <Badge variant={isPast ? 'destructive' : 'secondary'} className="gap-1">
               <Clock className="h-3 w-3" />
               {formatFutureTime(draft.remindAt)}
             </Badge>
@@ -268,8 +250,7 @@ export function SetReminderModal({
   const editing = editingReminder ?? storeEditingReminder
 
   // API hooks
-  const { createReminder, updateReminder, isCreating, isUpdating } =
-    useReminders({ userId })
+  const { createReminder, updateReminder, isCreating, isUpdating } = useReminders({ userId })
 
   // Local state
   const [activeTab, setActiveTab] = React.useState<'quick' | 'custom'>('quick')
@@ -284,9 +265,7 @@ export function SetReminderModal({
       const initialDraft: ReminderDraft = {
         messageId: messageId,
         channelId: channelId,
-        content:
-          initialContent ||
-          (messageId ? 'Reminder for message' : ''),
+        content: initialContent || (messageId ? 'Reminder for message' : ''),
         remindAt: getDefaultReminderTime(),
         timezone: getUserTimezone(),
         type: messageId ? 'message' : 'custom',
@@ -356,7 +335,7 @@ export function SetReminderModal({
         }
       } catch (error) {
         // Error is handled by the hook
-        console.error('Failed to save reminder:', error)
+        logger.error('Failed to save reminder:', error)
       }
     },
     [draft, editing, createReminder, updateReminder, onSuccess, onOpenChange]
@@ -377,8 +356,7 @@ export function SetReminderModal({
     isRecurring: false,
   }
 
-  const isValid =
-    currentDraft.content.trim() && currentDraft.remindAt > new Date()
+  const isValid = currentDraft.content.trim() && currentDraft.remindAt > new Date()
   const isLoading = isCreating || isUpdating
 
   return (
@@ -390,20 +368,13 @@ export function SetReminderModal({
             {editing ? 'Edit Reminder' : 'Set Reminder'}
           </DialogTitle>
           <DialogDescription>
-            {editing
-              ? 'Update your reminder details'
-              : 'Choose when you want to be reminded'}
+            {editing ? 'Update your reminder details' : 'Choose when you want to be reminded'}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Message Preview (for message reminders) */}
-          {messageId && (
-            <MessagePreview
-              messageId={messageId}
-              content={initialContent}
-            />
-          )}
+          {messageId && <MessagePreview messageId={messageId} content={initialContent} />}
 
           {/* Reminder Type Selection */}
           {!messageId && (
@@ -445,11 +416,7 @@ export function SetReminderModal({
             </Label>
             <Textarea
               id="reminder-content"
-              placeholder={
-                messageId
-                  ? 'Add a note to this reminder...'
-                  : 'Enter your reminder...'
-              }
+              placeholder={messageId ? 'Add a note to this reminder...' : 'Enter your reminder...'}
               value={currentDraft.content}
               onChange={(e) => updateDraft({ content: e.target.value })}
               rows={3}
@@ -501,9 +468,7 @@ export function SetReminderModal({
                 <Label htmlFor="recurring-switch" className="cursor-pointer">
                   Recurring Reminder
                 </Label>
-                <p className="text-xs text-muted-foreground">
-                  Repeat this reminder on a schedule
-                </p>
+                <p className="text-xs text-muted-foreground">Repeat this reminder on a schedule</p>
               </div>
               <Switch
                 id="recurring-switch"
@@ -516,7 +481,7 @@ export function SetReminderModal({
             </div>
 
             {showRecurrence && (
-              <div className="rounded-lg border p-3 space-y-3">
+              <div className="space-y-3 rounded-lg border p-3">
                 <div className="space-y-2">
                   <Label>Repeat</Label>
                   <Select
@@ -562,8 +527,7 @@ export function SetReminderModal({
                         updateDraft({
                           recurrenceRule: {
                             ...currentDraft.recurrenceRule,
-                            frequency:
-                              currentDraft.recurrenceRule?.frequency || 'daily',
+                            frequency: currentDraft.recurrenceRule?.frequency || 'daily',
                             interval: parseInt(e.target.value) || 1,
                           },
                         })
@@ -593,12 +557,7 @@ export function SetReminderModal({
 
           {/* Actions */}
           <DialogFooter className="gap-2 sm:gap-0">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleCancel}
-              disabled={isLoading}
-            >
+            <Button type="button" variant="outline" onClick={handleCancel} disabled={isLoading}>
               Cancel
             </Button>
             <Button type="submit" disabled={!isValid || isLoading}>

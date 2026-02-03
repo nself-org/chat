@@ -30,11 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   getSmartSearch,
@@ -44,6 +40,8 @@ import {
   type SearchOptions,
 } from '@/lib/ai/smart-search'
 import { cn } from '@/lib/utils'
+
+import { logger } from '@/lib/logger'
 
 export interface SmartSearchProps {
   messages: SearchableMessage[]
@@ -121,7 +119,7 @@ export function SmartSearch({
       setShowResults(true)
       setSelectedResult(-1)
     } catch (error) {
-      console.error('Search error:', error)
+      logger.error('Search error:', error)
       setResults([])
     } finally {
       setLoading(false)
@@ -198,7 +196,7 @@ export function SmartSearch({
       {/* Search Input */}
       <div className="relative">
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             ref={inputRef}
             type="text"
@@ -208,20 +206,15 @@ export function SmartSearch({
             placeholder={placeholder}
             className="pl-10 pr-24"
           />
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+          <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-2">
             {isSemanticAvailable && (
               <Badge variant="secondary" className="text-xs">
-                <Sparkles className="h-3 w-3 mr-1" />
+                <Sparkles className="mr-1 h-3 w-3" />
                 AI
               </Badge>
             )}
             {query && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-6 w-6 p-0"
-                onClick={handleClear}
-              >
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0" onClick={handleClear}>
                 <X className="h-4 w-4" />
               </Button>
             )}
@@ -230,14 +223,17 @@ export function SmartSearch({
 
         {/* Filter Controls */}
         {showFilters && (
-          <div className="flex items-center gap-2 mt-2">
+          <div className="mt-2 flex items-center gap-2">
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8">
-                  <Filter className="h-3 w-3 mr-2" />
+                  <Filter className="mr-2 h-3 w-3" />
                   Filters
                   {activeFilterCount > 0 && (
-                    <Badge variant="secondary" className="ml-2 h-5 w-5 p-0 flex items-center justify-center text-xs">
+                    <Badge
+                      variant="secondary"
+                      className="ml-2 flex h-5 w-5 items-center justify-center p-0 text-xs"
+                    >
                       {activeFilterCount}
                     </Badge>
                   )}
@@ -261,9 +257,7 @@ export function SmartSearch({
                     <Input
                       placeholder="User ID"
                       value={filters.userId || ''}
-                      onChange={(e) =>
-                        setFilters((prev) => ({ ...prev, userId: e.target.value }))
-                      }
+                      onChange={(e) => setFilters((prev) => ({ ...prev, userId: e.target.value }))}
                     />
                   </div>
 
@@ -271,11 +265,7 @@ export function SmartSearch({
                     <label className="text-sm font-medium">Has Thread</label>
                     <Select
                       value={
-                        filters.hasThread === undefined
-                          ? 'any'
-                          : filters.hasThread
-                            ? 'yes'
-                            : 'no'
+                        filters.hasThread === undefined ? 'any' : filters.hasThread ? 'yes' : 'no'
                       }
                       onValueChange={(value) =>
                         setFilters((prev) => ({
@@ -310,7 +300,7 @@ export function SmartSearch({
             </Popover>
 
             <Select value={rankBy} onValueChange={(value: any) => setRankBy(value)}>
-              <SelectTrigger className="w-32 h-8">
+              <SelectTrigger className="h-8 w-32">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -328,14 +318,14 @@ export function SmartSearch({
 
         {/* Active Filters */}
         {activeFilterCount > 0 && (
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="mt-2 flex flex-wrap gap-2">
             {filters.channelId && (
               <Badge variant="secondary" className="gap-1">
                 <Hash className="h-3 w-3" />
                 {filters.channelId}
                 <button
                   onClick={() => clearFilter('channelId')}
-                  className="ml-1 hover:bg-muted rounded-sm"
+                  className="ml-1 rounded-sm hover:bg-muted"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -347,7 +337,7 @@ export function SmartSearch({
                 {filters.userId}
                 <button
                   onClick={() => clearFilter('userId')}
-                  className="ml-1 hover:bg-muted rounded-sm"
+                  className="ml-1 rounded-sm hover:bg-muted"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -359,7 +349,7 @@ export function SmartSearch({
                 Has Thread: {filters.hasThread ? 'Yes' : 'No'}
                 <button
                   onClick={() => clearFilter('hasThread')}
-                  className="ml-1 hover:bg-muted rounded-sm"
+                  className="ml-1 rounded-sm hover:bg-muted"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -374,7 +364,7 @@ export function SmartSearch({
                     clearFilter('dateFrom')
                     clearFilter('dateTo')
                   }}
-                  className="ml-1 hover:bg-muted rounded-sm"
+                  className="ml-1 rounded-sm hover:bg-muted"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -386,7 +376,7 @@ export function SmartSearch({
 
       {/* Search Results */}
       {showResults && (
-        <Card className="absolute top-full mt-2 w-full z-50 shadow-lg">
+        <Card className="absolute top-full z-50 mt-2 w-full shadow-lg">
           <CardContent className="p-0">
             <ScrollArea className="max-h-96" ref={resultsRef}>
               {results.length === 0 ? (
@@ -422,13 +412,11 @@ export function SmartSearch({
             {results.length > 0 && (
               <>
                 <Separator />
-                <div className="p-2 text-xs text-muted-foreground flex items-center justify-between">
+                <div className="flex items-center justify-between p-2 text-xs text-muted-foreground">
                   <span>
                     {results.length} result{results.length > 1 ? 's' : ''} found
                   </span>
-                  <span>
-                    {isSemanticAvailable ? 'Semantic search' : 'Keyword search'}
-                  </span>
+                  <span>{isSemanticAvailable ? 'Semantic search' : 'Keyword search'}</span>
                 </div>
               </>
             )}
@@ -457,7 +445,7 @@ function SearchResultItem({
   return (
     <button
       className={cn(
-        'w-full text-left p-4 hover:bg-muted/50 transition-colors',
+        'hover:bg-muted/50 w-full p-4 text-left transition-colors',
         selected && 'bg-muted'
       )}
       onClick={onClick}
@@ -466,25 +454,22 @@ function SearchResultItem({
       <div className="space-y-2">
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="font-medium text-sm truncate">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="truncate text-sm font-medium">
               {message.userName || 'Unknown User'}
             </span>
             {message.channelName && (
               <>
-                <ChevronRight className="h-3 w-3 text-muted-foreground flex-shrink-0" />
-                <span className="text-xs text-muted-foreground truncate">
+                <ChevronRight className="h-3 w-3 flex-shrink-0 text-muted-foreground" />
+                <span className="truncate text-xs text-muted-foreground">
                   #{message.channelName}
                 </span>
               </>
             )}
           </div>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <Badge
-              variant={matchType === 'semantic' ? 'default' : 'secondary'}
-              className="text-xs"
-            >
-              {matchType === 'semantic' && <Sparkles className="h-3 w-3 mr-1" />}
+          <div className="flex flex-shrink-0 items-center gap-2">
+            <Badge variant={matchType === 'semantic' ? 'default' : 'secondary'} className="text-xs">
+              {matchType === 'semantic' && <Sparkles className="mr-1 h-3 w-3" />}
               {Math.round(score * 100)}%
             </Badge>
             <span className="text-xs text-muted-foreground">
@@ -495,7 +480,7 @@ function SearchResultItem({
 
         {/* Context Before */}
         {context?.before && context.before.length > 0 && (
-          <div className="text-xs text-muted-foreground/60 italic pl-2 border-l-2 border-muted">
+          <div className="text-muted-foreground/60 border-l-2 border-muted pl-2 text-xs italic">
             {context.before[context.before.length - 1].content.slice(0, 80)}
             {context.before[context.before.length - 1].content.length > 80 && '...'}
           </div>
@@ -518,7 +503,7 @@ function SearchResultItem({
 
         {/* Context After */}
         {context?.after && context.after.length > 0 && (
-          <div className="text-xs text-muted-foreground/60 italic pl-2 border-l-2 border-muted">
+          <div className="text-muted-foreground/60 border-l-2 border-muted pl-2 text-xs italic">
             {context.after[0].content.slice(0, 80)}
             {context.after[0].content.length > 80 && '...'}
           </div>
@@ -528,7 +513,7 @@ function SearchResultItem({
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           {message.threadId && (
             <Badge variant="outline" className="h-5 text-xs">
-              <MessageSquare className="h-3 w-3 mr-1" />
+              <MessageSquare className="mr-1 h-3 w-3" />
               Thread
             </Badge>
           )}

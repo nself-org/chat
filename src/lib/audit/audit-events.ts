@@ -5,12 +5,7 @@
  * and helper functions for event handling.
  */
 
-import type {
-  AuditAction,
-  AuditActionConfig,
-  AuditCategory,
-  AuditSeverity,
-} from './audit-types'
+import type { AuditAction, AuditActionConfig, AuditCategory, AuditSeverity } from './audit-types'
 
 // ============================================================================
 // Event Configuration Registry

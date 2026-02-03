@@ -4,114 +4,114 @@
  * Handles search queries, filters, results, and search history
  */
 
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { create } from 'zustand'
+import { devtools, persist } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export type SearchTab = 'all' | 'messages' | 'files' | 'people' | 'channels';
+export type SearchTab = 'all' | 'messages' | 'files' | 'people' | 'channels'
 
-export type SearchSortBy = 'relevance' | 'date_desc' | 'date_asc';
+export type SearchSortBy = 'relevance' | 'date_desc' | 'date_asc'
 
-export type HasFilter = 'link' | 'file' | 'image' | 'code' | 'mention' | 'reaction';
+export type HasFilter = 'link' | 'file' | 'image' | 'code' | 'mention' | 'reaction'
 
-export type IsFilter = 'pinned' | 'starred' | 'thread' | 'unread';
+export type IsFilter = 'pinned' | 'starred' | 'thread' | 'unread'
 
 export interface DateRange {
-  from: Date | null;
-  to: Date | null;
+  from: Date | null
+  to: Date | null
 }
 
 export interface SearchFilters {
-  fromUsers: string[]; // User IDs
-  inChannels: string[]; // Channel IDs
-  dateRange: DateRange;
-  has: HasFilter[];
-  is: IsFilter[];
+  fromUsers: string[] // User IDs
+  inChannels: string[] // Channel IDs
+  dateRange: DateRange
+  has: HasFilter[]
+  is: IsFilter[]
 }
 
 export interface SearchResultBase {
-  id: string;
-  score: number;
-  highlights: string[];
+  id: string
+  score: number
+  highlights: string[]
 }
 
 export interface MessageSearchResult extends SearchResultBase {
-  type: 'message';
-  channelId: string;
-  channelName: string;
-  authorId: string;
-  authorName: string;
-  authorAvatar: string | null;
-  content: string;
-  timestamp: Date;
-  threadId: string | null;
-  isPinned: boolean;
-  isStarred: boolean;
-  reactions: { emoji: string; count: number }[];
-  hasAttachments: boolean;
+  type: 'message'
+  channelId: string
+  channelName: string
+  authorId: string
+  authorName: string
+  authorAvatar: string | null
+  content: string
+  timestamp: Date
+  threadId: string | null
+  isPinned: boolean
+  isStarred: boolean
+  reactions: { emoji: string; count: number }[]
+  hasAttachments: boolean
 }
 
 export interface FileSearchResult extends SearchResultBase {
-  type: 'file';
-  messageId: string;
-  channelId: string;
-  channelName: string;
-  uploaderId: string;
-  uploaderName: string;
-  fileName: string;
-  fileType: string;
-  fileSize: number;
-  thumbnailUrl: string | null;
-  uploadedAt: Date;
+  type: 'file'
+  messageId: string
+  channelId: string
+  channelName: string
+  uploaderId: string
+  uploaderName: string
+  fileName: string
+  fileType: string
+  fileSize: number
+  thumbnailUrl: string | null
+  uploadedAt: Date
 }
 
 export interface UserSearchResult extends SearchResultBase {
-  type: 'user';
-  userId: string;
-  displayName: string;
-  username: string;
-  email: string;
-  avatar: string | null;
-  role: string;
-  status: 'online' | 'away' | 'busy' | 'offline';
-  lastSeen: Date | null;
+  type: 'user'
+  userId: string
+  displayName: string
+  username: string
+  email: string
+  avatar: string | null
+  role: string
+  status: 'online' | 'away' | 'busy' | 'offline'
+  lastSeen: Date | null
 }
 
 export interface ChannelSearchResult extends SearchResultBase {
-  type: 'channel';
-  channelId: string;
-  name: string;
-  description: string | null;
-  isPrivate: boolean;
-  memberCount: number;
-  isMember: boolean;
-  createdAt: Date;
-  lastActivityAt: Date | null;
+  type: 'channel'
+  channelId: string
+  name: string
+  description: string | null
+  isPrivate: boolean
+  memberCount: number
+  isMember: boolean
+  createdAt: Date
+  lastActivityAt: Date | null
 }
 
 export type SearchResult =
   | MessageSearchResult
   | FileSearchResult
   | UserSearchResult
-  | ChannelSearchResult;
+  | ChannelSearchResult
 
 export interface RecentSearch {
-  id: string;
-  query: string;
-  filters: Partial<SearchFilters>;
-  timestamp: Date;
+  id: string
+  query: string
+  filters: Partial<SearchFilters>
+  timestamp: Date
 }
 
 export interface SavedSearch {
-  id: string;
-  name: string;
-  query: string;
-  filters: SearchFilters;
-  createdAt: Date;
+  id: string
+  name: string
+  query: string
+  filters: SearchFilters
+  createdAt: Date
 }
 
 // ============================================================================
@@ -120,47 +120,47 @@ export interface SavedSearch {
 
 export interface SearchState {
   // Query
-  query: string;
-  debouncedQuery: string;
+  query: string
+  debouncedQuery: string
 
   // Active tab
-  activeTab: SearchTab;
+  activeTab: SearchTab
 
   // Filters
-  filters: SearchFilters;
+  filters: SearchFilters
 
   // Sorting
-  sortBy: SearchSortBy;
+  sortBy: SearchSortBy
 
   // Results
-  results: SearchResult[];
-  totalResults: number;
-  hasMore: boolean;
-  currentPage: number;
-  resultsPerPage: number;
+  results: SearchResult[]
+  totalResults: number
+  hasMore: boolean
+  currentPage: number
+  resultsPerPage: number
 
   // Loading states
-  isSearching: boolean;
-  isLoadingMore: boolean;
+  isSearching: boolean
+  isLoadingMore: boolean
 
   // UI state
-  isOpen: boolean;
-  showFilters: boolean;
-  showAdvanced: boolean;
+  isOpen: boolean
+  showFilters: boolean
+  showAdvanced: boolean
 
   // History
-  recentSearches: RecentSearch[];
-  savedSearches: SavedSearch[];
+  recentSearches: RecentSearch[]
+  savedSearches: SavedSearch[]
 
   // In-channel search
-  inChannelSearchActive: boolean;
-  inChannelSearchQuery: string;
-  inChannelSearchResults: MessageSearchResult[];
-  inChannelCurrentIndex: number;
+  inChannelSearchActive: boolean
+  inChannelSearchQuery: string
+  inChannelSearchResults: MessageSearchResult[]
+  inChannelCurrentIndex: number
 
   // Quick switcher
-  quickSwitcherMode: boolean;
-  quickSwitcherResults: (ChannelSearchResult | UserSearchResult)[];
+  quickSwitcherMode: boolean
+  quickSwitcherResults: (ChannelSearchResult | UserSearchResult)[]
 }
 
 // ============================================================================
@@ -169,71 +169,71 @@ export interface SearchState {
 
 export interface SearchActions {
   // Query actions
-  setQuery: (query: string) => void;
-  setDebouncedQuery: (query: string) => void;
-  clearQuery: () => void;
+  setQuery: (query: string) => void
+  setDebouncedQuery: (query: string) => void
+  clearQuery: () => void
 
   // Tab actions
-  setActiveTab: (tab: SearchTab) => void;
+  setActiveTab: (tab: SearchTab) => void
 
   // Filter actions
-  setFilters: (filters: Partial<SearchFilters>) => void;
-  addFromUser: (userId: string) => void;
-  removeFromUser: (userId: string) => void;
-  addInChannel: (channelId: string) => void;
-  removeInChannel: (channelId: string) => void;
-  setDateRange: (range: DateRange) => void;
-  toggleHasFilter: (filter: HasFilter) => void;
-  toggleIsFilter: (filter: IsFilter) => void;
-  clearFilters: () => void;
+  setFilters: (filters: Partial<SearchFilters>) => void
+  addFromUser: (userId: string) => void
+  removeFromUser: (userId: string) => void
+  addInChannel: (channelId: string) => void
+  removeInChannel: (channelId: string) => void
+  setDateRange: (range: DateRange) => void
+  toggleHasFilter: (filter: HasFilter) => void
+  toggleIsFilter: (filter: IsFilter) => void
+  clearFilters: () => void
 
   // Sort actions
-  setSortBy: (sortBy: SearchSortBy) => void;
+  setSortBy: (sortBy: SearchSortBy) => void
 
   // Result actions
-  setResults: (results: SearchResult[], total: number, hasMore: boolean) => void;
-  appendResults: (results: SearchResult[], hasMore: boolean) => void;
-  clearResults: () => void;
-  setCurrentPage: (page: number) => void;
+  setResults: (results: SearchResult[], total: number, hasMore: boolean) => void
+  appendResults: (results: SearchResult[], hasMore: boolean) => void
+  clearResults: () => void
+  setCurrentPage: (page: number) => void
 
   // Loading actions
-  setSearching: (isSearching: boolean) => void;
-  setLoadingMore: (isLoading: boolean) => void;
+  setSearching: (isSearching: boolean) => void
+  setLoadingMore: (isLoading: boolean) => void
 
   // UI actions
-  openSearch: () => void;
-  closeSearch: () => void;
-  toggleFilters: () => void;
-  setShowFilters: (show: boolean) => void;
-  toggleAdvanced: () => void;
-  setShowAdvanced: (show: boolean) => void;
+  openSearch: () => void
+  closeSearch: () => void
+  toggleFilters: () => void
+  setShowFilters: (show: boolean) => void
+  toggleAdvanced: () => void
+  setShowAdvanced: (show: boolean) => void
 
   // History actions
-  addRecentSearch: (query: string, filters?: Partial<SearchFilters>) => void;
-  removeRecentSearch: (id: string) => void;
-  clearRecentSearches: () => void;
-  saveSearch: (name: string) => void;
-  removeSavedSearch: (id: string) => void;
-  loadSavedSearch: (search: SavedSearch) => void;
+  addRecentSearch: (query: string, filters?: Partial<SearchFilters>) => void
+  removeRecentSearch: (id: string) => void
+  clearRecentSearches: () => void
+  saveSearch: (name: string) => void
+  removeSavedSearch: (id: string) => void
+  loadSavedSearch: (search: SavedSearch) => void
 
   // In-channel search actions
-  startInChannelSearch: () => void;
-  endInChannelSearch: () => void;
-  setInChannelQuery: (query: string) => void;
-  setInChannelResults: (results: MessageSearchResult[]) => void;
-  navigateInChannelResult: (direction: 'next' | 'prev') => void;
-  jumpToInChannelResult: (index: number) => void;
+  startInChannelSearch: () => void
+  endInChannelSearch: () => void
+  setInChannelQuery: (query: string) => void
+  setInChannelResults: (results: MessageSearchResult[]) => void
+  navigateInChannelResult: (direction: 'next' | 'prev') => void
+  jumpToInChannelResult: (index: number) => void
 
   // Quick switcher actions
-  enableQuickSwitcherMode: () => void;
-  disableQuickSwitcherMode: () => void;
-  setQuickSwitcherResults: (results: (ChannelSearchResult | UserSearchResult)[]) => void;
+  enableQuickSwitcherMode: () => void
+  disableQuickSwitcherMode: () => void
+  setQuickSwitcherResults: (results: (ChannelSearchResult | UserSearchResult)[]) => void
 
   // Utility actions
-  reset: () => void;
+  reset: () => void
 }
 
-export type SearchStore = SearchState & SearchActions;
+export type SearchStore = SearchState & SearchActions
 
 // ============================================================================
 // Initial State
@@ -245,7 +245,7 @@ const emptyFilters: SearchFilters = {
   dateRange: { from: null, to: null },
   has: [],
   is: [],
-};
+}
 
 const initialState: SearchState = {
   // Query
@@ -290,7 +290,7 @@ const initialState: SearchState = {
   // Quick switcher
   quickSwitcherMode: false,
   quickSwitcherResults: [],
-};
+}
 
 // ============================================================================
 // Store
@@ -306,7 +306,7 @@ export const useSearchStore = create<SearchStore>()(
         setQuery: (query) =>
           set(
             (state) => {
-              state.query = query;
+              state.query = query
             },
             false,
             'search/setQuery'
@@ -315,7 +315,7 @@ export const useSearchStore = create<SearchStore>()(
         setDebouncedQuery: (query) =>
           set(
             (state) => {
-              state.debouncedQuery = query;
+              state.debouncedQuery = query
             },
             false,
             'search/setDebouncedQuery'
@@ -324,8 +324,8 @@ export const useSearchStore = create<SearchStore>()(
         clearQuery: () =>
           set(
             (state) => {
-              state.query = '';
-              state.debouncedQuery = '';
+              state.query = ''
+              state.debouncedQuery = ''
             },
             false,
             'search/clearQuery'
@@ -335,9 +335,9 @@ export const useSearchStore = create<SearchStore>()(
         setActiveTab: (tab) =>
           set(
             (state) => {
-              state.activeTab = tab;
-              state.results = [];
-              state.currentPage = 1;
+              state.activeTab = tab
+              state.results = []
+              state.currentPage = 1
             },
             false,
             'search/setActiveTab'
@@ -347,9 +347,9 @@ export const useSearchStore = create<SearchStore>()(
         setFilters: (filters) =>
           set(
             (state) => {
-              state.filters = { ...state.filters, ...filters };
-              state.results = [];
-              state.currentPage = 1;
+              state.filters = { ...state.filters, ...filters }
+              state.results = []
+              state.currentPage = 1
             },
             false,
             'search/setFilters'
@@ -359,7 +359,7 @@ export const useSearchStore = create<SearchStore>()(
           set(
             (state) => {
               if (!state.filters.fromUsers.includes(userId)) {
-                state.filters.fromUsers.push(userId);
+                state.filters.fromUsers.push(userId)
               }
             },
             false,
@@ -369,9 +369,7 @@ export const useSearchStore = create<SearchStore>()(
         removeFromUser: (userId) =>
           set(
             (state) => {
-              state.filters.fromUsers = state.filters.fromUsers.filter(
-                (id) => id !== userId
-              );
+              state.filters.fromUsers = state.filters.fromUsers.filter((id) => id !== userId)
             },
             false,
             'search/removeFromUser'
@@ -381,7 +379,7 @@ export const useSearchStore = create<SearchStore>()(
           set(
             (state) => {
               if (!state.filters.inChannels.includes(channelId)) {
-                state.filters.inChannels.push(channelId);
+                state.filters.inChannels.push(channelId)
               }
             },
             false,
@@ -391,9 +389,7 @@ export const useSearchStore = create<SearchStore>()(
         removeInChannel: (channelId) =>
           set(
             (state) => {
-              state.filters.inChannels = state.filters.inChannels.filter(
-                (id) => id !== channelId
-              );
+              state.filters.inChannels = state.filters.inChannels.filter((id) => id !== channelId)
             },
             false,
             'search/removeInChannel'
@@ -402,7 +398,7 @@ export const useSearchStore = create<SearchStore>()(
         setDateRange: (range) =>
           set(
             (state) => {
-              state.filters.dateRange = range;
+              state.filters.dateRange = range
             },
             false,
             'search/setDateRange'
@@ -411,11 +407,11 @@ export const useSearchStore = create<SearchStore>()(
         toggleHasFilter: (filter) =>
           set(
             (state) => {
-              const index = state.filters.has.indexOf(filter);
+              const index = state.filters.has.indexOf(filter)
               if (index === -1) {
-                state.filters.has.push(filter);
+                state.filters.has.push(filter)
               } else {
-                state.filters.has.splice(index, 1);
+                state.filters.has.splice(index, 1)
               }
             },
             false,
@@ -425,11 +421,11 @@ export const useSearchStore = create<SearchStore>()(
         toggleIsFilter: (filter) =>
           set(
             (state) => {
-              const index = state.filters.is.indexOf(filter);
+              const index = state.filters.is.indexOf(filter)
               if (index === -1) {
-                state.filters.is.push(filter);
+                state.filters.is.push(filter)
               } else {
-                state.filters.is.splice(index, 1);
+                state.filters.is.splice(index, 1)
               }
             },
             false,
@@ -439,9 +435,9 @@ export const useSearchStore = create<SearchStore>()(
         clearFilters: () =>
           set(
             (state) => {
-              state.filters = { ...emptyFilters };
-              state.results = [];
-              state.currentPage = 1;
+              state.filters = { ...emptyFilters }
+              state.results = []
+              state.currentPage = 1
             },
             false,
             'search/clearFilters'
@@ -451,9 +447,9 @@ export const useSearchStore = create<SearchStore>()(
         setSortBy: (sortBy) =>
           set(
             (state) => {
-              state.sortBy = sortBy;
-              state.results = [];
-              state.currentPage = 1;
+              state.sortBy = sortBy
+              state.results = []
+              state.currentPage = 1
             },
             false,
             'search/setSortBy'
@@ -463,9 +459,9 @@ export const useSearchStore = create<SearchStore>()(
         setResults: (results, total, hasMore) =>
           set(
             (state) => {
-              state.results = results;
-              state.totalResults = total;
-              state.hasMore = hasMore;
+              state.results = results
+              state.totalResults = total
+              state.hasMore = hasMore
             },
             false,
             'search/setResults'
@@ -474,8 +470,8 @@ export const useSearchStore = create<SearchStore>()(
         appendResults: (results, hasMore) =>
           set(
             (state) => {
-              state.results = [...state.results, ...results];
-              state.hasMore = hasMore;
+              state.results = [...state.results, ...results]
+              state.hasMore = hasMore
             },
             false,
             'search/appendResults'
@@ -484,10 +480,10 @@ export const useSearchStore = create<SearchStore>()(
         clearResults: () =>
           set(
             (state) => {
-              state.results = [];
-              state.totalResults = 0;
-              state.hasMore = false;
-              state.currentPage = 1;
+              state.results = []
+              state.totalResults = 0
+              state.hasMore = false
+              state.currentPage = 1
             },
             false,
             'search/clearResults'
@@ -496,7 +492,7 @@ export const useSearchStore = create<SearchStore>()(
         setCurrentPage: (page) =>
           set(
             (state) => {
-              state.currentPage = page;
+              state.currentPage = page
             },
             false,
             'search/setCurrentPage'
@@ -506,7 +502,7 @@ export const useSearchStore = create<SearchStore>()(
         setSearching: (isSearching) =>
           set(
             (state) => {
-              state.isSearching = isSearching;
+              state.isSearching = isSearching
             },
             false,
             'search/setSearching'
@@ -515,7 +511,7 @@ export const useSearchStore = create<SearchStore>()(
         setLoadingMore: (isLoading) =>
           set(
             (state) => {
-              state.isLoadingMore = isLoading;
+              state.isLoadingMore = isLoading
             },
             false,
             'search/setLoadingMore'
@@ -525,7 +521,7 @@ export const useSearchStore = create<SearchStore>()(
         openSearch: () =>
           set(
             (state) => {
-              state.isOpen = true;
+              state.isOpen = true
             },
             false,
             'search/openSearch'
@@ -534,8 +530,8 @@ export const useSearchStore = create<SearchStore>()(
         closeSearch: () =>
           set(
             (state) => {
-              state.isOpen = false;
-              state.quickSwitcherMode = false;
+              state.isOpen = false
+              state.quickSwitcherMode = false
             },
             false,
             'search/closeSearch'
@@ -544,7 +540,7 @@ export const useSearchStore = create<SearchStore>()(
         toggleFilters: () =>
           set(
             (state) => {
-              state.showFilters = !state.showFilters;
+              state.showFilters = !state.showFilters
             },
             false,
             'search/toggleFilters'
@@ -553,7 +549,7 @@ export const useSearchStore = create<SearchStore>()(
         setShowFilters: (show) =>
           set(
             (state) => {
-              state.showFilters = show;
+              state.showFilters = show
             },
             false,
             'search/setShowFilters'
@@ -562,7 +558,7 @@ export const useSearchStore = create<SearchStore>()(
         toggleAdvanced: () =>
           set(
             (state) => {
-              state.showAdvanced = !state.showAdvanced;
+              state.showAdvanced = !state.showAdvanced
             },
             false,
             'search/toggleAdvanced'
@@ -571,7 +567,7 @@ export const useSearchStore = create<SearchStore>()(
         setShowAdvanced: (show) =>
           set(
             (state) => {
-              state.showAdvanced = show;
+              state.showAdvanced = show
             },
             false,
             'search/setShowAdvanced'
@@ -582,19 +578,17 @@ export const useSearchStore = create<SearchStore>()(
           set(
             (state) => {
               // Remove existing entry with same query
-              state.recentSearches = state.recentSearches.filter(
-                (s) => s.query !== query
-              );
+              state.recentSearches = state.recentSearches.filter((s) => s.query !== query)
               // Add to beginning
               state.recentSearches.unshift({
                 id: crypto.randomUUID(),
                 query,
                 filters: filters ?? {},
                 timestamp: new Date(),
-              });
+              })
               // Keep only last 10
               if (state.recentSearches.length > 10) {
-                state.recentSearches = state.recentSearches.slice(0, 10);
+                state.recentSearches = state.recentSearches.slice(0, 10)
               }
             },
             false,
@@ -604,9 +598,7 @@ export const useSearchStore = create<SearchStore>()(
         removeRecentSearch: (id) =>
           set(
             (state) => {
-              state.recentSearches = state.recentSearches.filter(
-                (s) => s.id !== id
-              );
+              state.recentSearches = state.recentSearches.filter((s) => s.id !== id)
             },
             false,
             'search/removeRecentSearch'
@@ -615,7 +607,7 @@ export const useSearchStore = create<SearchStore>()(
         clearRecentSearches: () =>
           set(
             (state) => {
-              state.recentSearches = [];
+              state.recentSearches = []
             },
             false,
             'search/clearRecentSearches'
@@ -624,14 +616,14 @@ export const useSearchStore = create<SearchStore>()(
         saveSearch: (name) =>
           set(
             (state) => {
-              const { query, filters } = get();
+              const { query, filters } = get()
               state.savedSearches.push({
                 id: crypto.randomUUID(),
                 name,
                 query,
                 filters: { ...filters },
                 createdAt: new Date(),
-              });
+              })
             },
             false,
             'search/saveSearch'
@@ -640,9 +632,7 @@ export const useSearchStore = create<SearchStore>()(
         removeSavedSearch: (id) =>
           set(
             (state) => {
-              state.savedSearches = state.savedSearches.filter(
-                (s) => s.id !== id
-              );
+              state.savedSearches = state.savedSearches.filter((s) => s.id !== id)
             },
             false,
             'search/removeSavedSearch'
@@ -651,11 +641,11 @@ export const useSearchStore = create<SearchStore>()(
         loadSavedSearch: (search) =>
           set(
             (state) => {
-              state.query = search.query;
-              state.debouncedQuery = search.query;
-              state.filters = { ...search.filters };
-              state.results = [];
-              state.currentPage = 1;
+              state.query = search.query
+              state.debouncedQuery = search.query
+              state.filters = { ...search.filters }
+              state.results = []
+              state.currentPage = 1
             },
             false,
             'search/loadSavedSearch'
@@ -665,10 +655,10 @@ export const useSearchStore = create<SearchStore>()(
         startInChannelSearch: () =>
           set(
             (state) => {
-              state.inChannelSearchActive = true;
-              state.inChannelSearchQuery = '';
-              state.inChannelSearchResults = [];
-              state.inChannelCurrentIndex = 0;
+              state.inChannelSearchActive = true
+              state.inChannelSearchQuery = ''
+              state.inChannelSearchResults = []
+              state.inChannelCurrentIndex = 0
             },
             false,
             'search/startInChannelSearch'
@@ -677,10 +667,10 @@ export const useSearchStore = create<SearchStore>()(
         endInChannelSearch: () =>
           set(
             (state) => {
-              state.inChannelSearchActive = false;
-              state.inChannelSearchQuery = '';
-              state.inChannelSearchResults = [];
-              state.inChannelCurrentIndex = 0;
+              state.inChannelSearchActive = false
+              state.inChannelSearchQuery = ''
+              state.inChannelSearchResults = []
+              state.inChannelCurrentIndex = 0
             },
             false,
             'search/endInChannelSearch'
@@ -689,7 +679,7 @@ export const useSearchStore = create<SearchStore>()(
         setInChannelQuery: (query) =>
           set(
             (state) => {
-              state.inChannelSearchQuery = query;
+              state.inChannelSearchQuery = query
             },
             false,
             'search/setInChannelQuery'
@@ -698,8 +688,8 @@ export const useSearchStore = create<SearchStore>()(
         setInChannelResults: (results) =>
           set(
             (state) => {
-              state.inChannelSearchResults = results;
-              state.inChannelCurrentIndex = 0;
+              state.inChannelSearchResults = results
+              state.inChannelCurrentIndex = 0
             },
             false,
             'search/setInChannelResults'
@@ -708,17 +698,17 @@ export const useSearchStore = create<SearchStore>()(
         navigateInChannelResult: (direction) =>
           set(
             (state) => {
-              const { inChannelSearchResults, inChannelCurrentIndex } = state;
-              if (inChannelSearchResults.length === 0) return;
+              const { inChannelSearchResults, inChannelCurrentIndex } = state
+              if (inChannelSearchResults.length === 0) return
 
               if (direction === 'next') {
                 state.inChannelCurrentIndex =
-                  (inChannelCurrentIndex + 1) % inChannelSearchResults.length;
+                  (inChannelCurrentIndex + 1) % inChannelSearchResults.length
               } else {
                 state.inChannelCurrentIndex =
                   inChannelCurrentIndex === 0
                     ? inChannelSearchResults.length - 1
-                    : inChannelCurrentIndex - 1;
+                    : inChannelCurrentIndex - 1
               }
             },
             false,
@@ -729,7 +719,7 @@ export const useSearchStore = create<SearchStore>()(
           set(
             (state) => {
               if (index >= 0 && index < state.inChannelSearchResults.length) {
-                state.inChannelCurrentIndex = index;
+                state.inChannelCurrentIndex = index
               }
             },
             false,
@@ -740,10 +730,10 @@ export const useSearchStore = create<SearchStore>()(
         enableQuickSwitcherMode: () =>
           set(
             (state) => {
-              state.quickSwitcherMode = true;
-              state.isOpen = true;
-              state.query = '';
-              state.results = [];
+              state.quickSwitcherMode = true
+              state.isOpen = true
+              state.query = ''
+              state.results = []
             },
             false,
             'search/enableQuickSwitcherMode'
@@ -752,8 +742,8 @@ export const useSearchStore = create<SearchStore>()(
         disableQuickSwitcherMode: () =>
           set(
             (state) => {
-              state.quickSwitcherMode = false;
-              state.quickSwitcherResults = [];
+              state.quickSwitcherMode = false
+              state.quickSwitcherResults = []
             },
             false,
             'search/disableQuickSwitcherMode'
@@ -762,7 +752,7 @@ export const useSearchStore = create<SearchStore>()(
         setQuickSwitcherResults: (results) =>
           set(
             (state) => {
-              state.quickSwitcherResults = results;
+              state.quickSwitcherResults = results
             },
             false,
             'search/setQuickSwitcherResults'
@@ -791,14 +781,14 @@ export const useSearchStore = create<SearchStore>()(
     ),
     { name: 'search-store' }
   )
-);
+)
 
 // ============================================================================
 // Selectors
 // ============================================================================
 
 export const selectHasActiveFilters = (state: SearchStore): boolean => {
-  const { filters } = state;
+  const { filters } = state
   return (
     filters.fromUsers.length > 0 ||
     filters.inChannels.length > 0 ||
@@ -806,23 +796,23 @@ export const selectHasActiveFilters = (state: SearchStore): boolean => {
     filters.dateRange.to !== null ||
     filters.has.length > 0 ||
     filters.is.length > 0
-  );
-};
+  )
+}
 
 export const selectActiveFilterCount = (state: SearchStore): number => {
-  const { filters } = state;
-  let count = 0;
-  count += filters.fromUsers.length;
-  count += filters.inChannels.length;
-  if (filters.dateRange.from || filters.dateRange.to) count += 1;
-  count += filters.has.length;
-  count += filters.is.length;
-  return count;
-};
+  const { filters } = state
+  let count = 0
+  count += filters.fromUsers.length
+  count += filters.inChannels.length
+  if (filters.dateRange.from || filters.dateRange.to) count += 1
+  count += filters.has.length
+  count += filters.is.length
+  return count
+}
 
 export const selectFilteredResults = (state: SearchStore): SearchResult[] => {
-  const { results, activeTab } = state;
-  if (activeTab === 'all') return results;
+  const { results, activeTab } = state
+  if (activeTab === 'all') return results
 
   const typeMap: Record<SearchTab, SearchResult['type'] | null> = {
     all: null,
@@ -830,23 +820,23 @@ export const selectFilteredResults = (state: SearchStore): SearchResult[] => {
     files: 'file',
     people: 'user',
     channels: 'channel',
-  };
+  }
 
-  const targetType = typeMap[activeTab];
-  if (!targetType) return results;
+  const targetType = typeMap[activeTab]
+  if (!targetType) return results
 
-  return results.filter((r) => r.type === targetType);
-};
+  return results.filter((r) => r.type === targetType)
+}
 
 export const selectResultsByType = (state: SearchStore) => {
-  const { results } = state;
+  const { results } = state
   return {
     messages: results.filter((r): r is MessageSearchResult => r.type === 'message'),
     files: results.filter((r): r is FileSearchResult => r.type === 'file'),
     users: results.filter((r): r is UserSearchResult => r.type === 'user'),
     channels: results.filter((r): r is ChannelSearchResult => r.type === 'channel'),
-  };
-};
+  }
+}
 
 export const selectInChannelSearchState = (state: SearchStore) => ({
   active: state.inChannelSearchActive,
@@ -854,4 +844,4 @@ export const selectInChannelSearchState = (state: SearchStore) => ({
   results: state.inChannelSearchResults,
   currentIndex: state.inChannelCurrentIndex,
   total: state.inChannelSearchResults.length,
-});
+})

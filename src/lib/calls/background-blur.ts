@@ -7,6 +7,8 @@
 
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -114,7 +116,7 @@ export class BackgroundBlur {
         this.selfieSegmentation.send({ image: dummyCanvas }).catch(reject)
       })
     } catch (error) {
-      console.error('Failed to initialize background blur:', error)
+      logger.error('Failed to initialize background blur:', error)
       throw error
     }
   }
@@ -220,14 +222,17 @@ export class BackgroundBlur {
         this.lastFrameTime = startTime
       }
     } catch (error) {
-      console.error('Error processing frame:', error)
+      logger.error('Error processing frame:', error)
     }
 
     // Continue processing
     requestAnimationFrame(() => this.processFrame())
   }
 
-  private applyBlur(mask: HTMLCanvasElement | ImageBitmap | HTMLImageElement, image: HTMLCanvasElement | HTMLVideoElement | HTMLImageElement | CanvasImageSource): void {
+  private applyBlur(
+    mask: HTMLCanvasElement | ImageBitmap | HTMLImageElement,
+    image: HTMLCanvasElement | HTMLVideoElement | HTMLImageElement | CanvasImageSource
+  ): void {
     if (!this.tempCanvas || !this.tempCtx || !this.outputCanvas || !this.outputCtx || !this.ctx) {
       return
     }
@@ -258,7 +263,12 @@ export class BackgroundBlur {
     )
 
     // Get blurred image
-    const blurredData = this.tempCtx.getImageData(0, 0, this.tempCanvas.width, this.tempCanvas.height)
+    const blurredData = this.tempCtx.getImageData(
+      0,
+      0,
+      this.tempCanvas.width,
+      this.tempCanvas.height
+    )
 
     // Composite using mask
     const outputData = originalData

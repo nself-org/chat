@@ -28,6 +28,8 @@ import { validateEmail } from '@/lib/admin/users/user-manager'
 import { parseCSVEmails, validateBulkEmails } from '@/lib/admin/users/user-invite'
 import type { UserRole } from '@/lib/admin/users/user-types'
 
+import { logger } from '@/lib/logger'
+
 interface InviteModalProps {
   open: boolean
   onClose: () => void
@@ -73,7 +75,7 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
       await new Promise((resolve) => setTimeout(resolve, 1000)) // Simulate API call
       handleClose()
     } catch (error) {
-      console.error('Failed to send invite:', error)
+      logger.error('Failed to send invite:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -96,7 +98,7 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
       await new Promise((resolve) => setTimeout(resolve, 1000))
       handleClose()
     } catch (error) {
-      console.error('Failed to send bulk invites:', error)
+      logger.error('Failed to send bulk invites:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -110,7 +112,7 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
       const link = `${window.location.origin}/invite/${code}`
       setGeneratedLink(link)
     } catch (error) {
-      console.error('Failed to generate link:', error)
+      logger.error('Failed to generate link:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -136,21 +138,22 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
     onClose()
   }
 
-  const roleOptions = roles.length > 0 ? roles : [
-    { id: 'admin', name: 'Admin' },
-    { id: 'moderator', name: 'Moderator' },
-    { id: 'member', name: 'Member' },
-    { id: 'guest', name: 'Guest' },
-  ]
+  const roleOptions =
+    roles.length > 0
+      ? roles
+      : [
+          { id: 'admin', name: 'Admin' },
+          { id: 'moderator', name: 'Moderator' },
+          { id: 'member', name: 'Member' },
+          { id: 'guest', name: 'Guest' },
+        ]
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Invite Users</DialogTitle>
-          <DialogDescription>
-            Invite new users to join your workspace
-          </DialogDescription>
+          <DialogDescription>Invite new users to join your workspace</DialogDescription>
         </DialogHeader>
 
         <Tabs value={mode} onValueChange={(v) => setMode(v as typeof mode)}>
@@ -184,9 +187,7 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
                 }}
                 className={emailError ? 'border-red-500' : ''}
               />
-              {emailError && (
-                <p className="text-sm text-red-500">{emailError}</p>
-              )}
+              {emailError && <p className="text-sm text-red-500">{emailError}</p>}
             </div>
 
             <div className="space-y-2">
@@ -217,11 +218,7 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
             </div>
 
             <div className="flex items-center space-x-2">
-              <Switch
-                id="send-email"
-                checked={sendEmail}
-                onCheckedChange={setSendEmail}
-              />
+              <Switch id="send-email" checked={sendEmail} onCheckedChange={setSendEmail} />
               <Label htmlFor="send-email">Send invitation email</Label>
             </div>
           </TabsContent>
@@ -247,13 +244,9 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
 
             {bulkValidation && (
               <div className="space-y-2 text-sm">
-                <p className="text-green-600">
-                  Valid: {bulkValidation.valid.length} email(s)
-                </p>
+                <p className="text-green-600">Valid: {bulkValidation.valid.length} email(s)</p>
                 {bulkValidation.invalid.length > 0 && (
-                  <p className="text-red-500">
-                    Invalid: {bulkValidation.invalid.join(', ')}
-                  </p>
+                  <p className="text-red-500">Invalid: {bulkValidation.invalid.join(', ')}</p>
                 )}
               </div>
             )}
@@ -275,11 +268,7 @@ export function InviteModal({ open, onClose, mode: initialMode }: InviteModalPro
             </div>
 
             {!bulkValidation && (
-              <Button
-                variant="outline"
-                onClick={handleBulkValidate}
-                disabled={!bulkEmails.trim()}
-              >
+              <Button variant="outline" onClick={handleBulkValidate} disabled={!bulkEmails.trim()}>
                 Validate Emails
               </Button>
             )}

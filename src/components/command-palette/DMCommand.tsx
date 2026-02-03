@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * DMCommand
@@ -6,11 +6,11 @@
  * Specialized command item for direct messages with user avatar and presence.
  */
 
-import * as React from 'react';
-import { Command as CommandPrimitive } from 'cmdk';
-import { MessageSquare, User } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { DMCommandData } from '@/lib/command-palette/command-types';
+import * as React from 'react'
+import { Command as CommandPrimitive } from 'cmdk'
+import { MessageSquare, User } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { DMCommandData } from '@/lib/command-palette/command-types'
 
 // ============================================================================
 // Types
@@ -18,13 +18,13 @@ import type { DMCommandData } from '@/lib/command-palette/command-types';
 
 export interface DMCommandProps {
   /** DM command data */
-  command: DMCommandData;
+  command: DMCommandData
   /** Whether this item is currently selected */
-  isSelected?: boolean;
+  isSelected?: boolean
   /** Click handler */
-  onSelect?: (command: DMCommandData) => void;
+  onSelect?: (command: DMCommandData) => void
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -36,28 +36,23 @@ const presenceColors: Record<string, string> = {
   away: 'bg-amber-500',
   dnd: 'bg-red-500',
   offline: 'bg-gray-400',
-};
+}
 
 // ============================================================================
 // Component
 // ============================================================================
 
-export function DMCommand({
-  command,
-  isSelected = false,
-  onSelect,
-  className,
-}: DMCommandProps) {
+export function DMCommand({ command, isSelected = false, onSelect, className }: DMCommandProps) {
   return (
     <CommandPrimitive.Item
       value={command.id}
       onSelect={() => onSelect?.(command)}
       className={cn(
         'relative flex cursor-pointer select-none items-center gap-3 rounded-md px-3 py-2 text-sm outline-none',
-        'aria-selected:bg-accent aria-selected:text-accent-foreground',
+        'aria-selected:text-accent-foreground aria-selected:bg-accent',
         'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-        'hover:bg-accent hover:text-accent-foreground',
-        isSelected && 'bg-accent text-accent-foreground',
+        'hover:text-accent-foreground hover:bg-accent',
+        isSelected && 'text-accent-foreground bg-accent',
         className
       )}
       data-selected={isSelected}
@@ -92,23 +87,19 @@ export function DMCommand({
         <div className="flex items-center gap-2">
           <span className="truncate font-medium">{command.userDisplayName}</span>
           {command.userName !== command.userDisplayName && (
-            <span className="truncate text-xs text-muted-foreground">
-              @{command.userName}
-            </span>
+            <span className="truncate text-xs text-muted-foreground">@{command.userName}</span>
           )}
         </div>
 
         {/* Description */}
         {command.description && (
-          <p className="truncate text-xs text-muted-foreground">
-            {command.description}
-          </p>
+          <p className="truncate text-xs text-muted-foreground">{command.description}</p>
         )}
       </div>
 
       {/* Unread badge */}
       {command.unreadCount !== undefined && command.unreadCount > 0 && (
-        <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium text-primary-foreground">
+        <span className="text-primary-foreground flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium">
           {command.unreadCount > 99 ? '99+' : command.unreadCount}
         </span>
       )}
@@ -116,7 +107,7 @@ export function DMCommand({
       {/* DM icon */}
       <MessageSquare className="h-4 w-4 text-muted-foreground" />
     </CommandPrimitive.Item>
-  );
+  )
 }
 
-export default DMCommand;
+export default DMCommand

@@ -101,10 +101,7 @@ export async function deleteUser(userId: string): Promise<UserActionResult> {
 // User Status Operations
 // ============================================================================
 
-export async function deactivateUser(
-  userId: string,
-  reason?: string
-): Promise<UserActionResult> {
+export async function deactivateUser(userId: string, reason?: string): Promise<UserActionResult> {
   const response = await fetch(`/api/admin/users/${userId}/deactivate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -136,10 +133,7 @@ export async function reactivateUser(userId: string): Promise<UserActionResult> 
 // Role Operations
 // ============================================================================
 
-export async function changeUserRole(
-  userId: string,
-  roleId: string
-): Promise<UserActionResult> {
+export async function changeUserRole(userId: string, roleId: string): Promise<UserActionResult> {
   const response = await fetch(`/api/admin/users/${userId}/role`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
@@ -180,9 +174,7 @@ export async function resetUserPassword(
   const result = await response.json()
   return {
     success: true,
-    message: options.sendEmail
-      ? 'Password reset email sent'
-      : 'Password reset successfully',
+    message: options.sendEmail ? 'Password reset email sent' : 'Password reset successfully',
     data: result,
   }
 }
@@ -241,10 +233,7 @@ export function canPerformAction(
   }
 
   // Admins cannot modify other admins or owners
-  if (
-    adminUser.role.name === 'admin' &&
-    ['admin', 'owner'].includes(targetUser.role.name)
-  ) {
+  if (adminUser.role.name === 'admin' && ['admin', 'owner'].includes(targetUser.role.name)) {
     return false
   }
 
@@ -365,10 +354,7 @@ export async function bulkDeleteUsers(userIds: string[]): Promise<UserActionResu
   return { success: true, message: `${userIds.length} users deleted successfully` }
 }
 
-export async function bulkChangeRole(
-  userIds: string[],
-  roleId: string
-): Promise<UserActionResult> {
+export async function bulkChangeRole(userIds: string[], roleId: string): Promise<UserActionResult> {
   const response = await fetch('/api/admin/users/bulk-role', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

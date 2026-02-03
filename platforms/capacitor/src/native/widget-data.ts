@@ -119,17 +119,12 @@ export interface WidgetPlugin {
   /**
    * Update widget data
    */
-  updateWidgetData(options: {
-    widgetType: string
-    data: Record<string, unknown>
-  }): Promise<void>
+  updateWidgetData(options: { widgetType: string; data: Record<string, unknown> }): Promise<void>
 
   /**
    * Get current widget data
    */
-  getWidgetData(options: {
-    widgetType: string
-  }): Promise<{ data: Record<string, unknown> | null }>
+  getWidgetData(options: { widgetType: string }): Promise<{ data: Record<string, unknown> | null }>
 
   /**
    * Request widget refresh (iOS WidgetKit)
@@ -214,10 +209,7 @@ class WidgetDataService {
   /**
    * Update recent chats widget
    */
-  async updateRecentChatsWidget(
-    chats: RecentChat[],
-    maxDisplay: number = 5
-  ): Promise<void> {
+  async updateRecentChatsWidget(chats: RecentChat[], maxDisplay: number = 5): Promise<void> {
     // Sort by last message time and pin status
     const sortedChats = [...chats].sort((a, b) => {
       if (a.isPinned !== b.isPinned) return a.isPinned ? -1 : 1

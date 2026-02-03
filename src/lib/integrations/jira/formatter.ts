@@ -5,19 +5,9 @@
  * for display in the chat interface.
  */
 
-import type {
-  JiraUser,
-  JiraIssue,
-  JiraStatus,
-  JiraPriority,
-} from '../types'
+import type { JiraUser, JiraIssue, JiraStatus, JiraPriority } from '../types'
 
-import type {
-  JiraWebhookPayload,
-  JiraComment,
-  JiraIssueChange,
-  JiraSprint,
-} from './types'
+import type { JiraWebhookPayload, JiraComment, JiraIssueChange, JiraSprint } from './types'
 
 // ============================================================================
 // Types
@@ -50,12 +40,12 @@ export type JiraNotificationIcon =
   | 'jira'
 
 export type JiraNotificationColor =
-  | 'green'   // created, resolved
-  | 'blue'    // updated, comment
-  | 'purple'  // in progress
-  | 'red'     // deleted, blocked
-  | 'yellow'  // warning, to do
-  | 'gray'    // neutral
+  | 'green' // created, resolved
+  | 'blue' // updated, comment
+  | 'purple' // in progress
+  | 'red' // deleted, blocked
+  | 'yellow' // warning, to do
+  | 'gray' // neutral
 
 export interface JiraNotificationMetadata {
   eventType: string
@@ -77,9 +67,7 @@ export interface JiraNotificationMetadata {
 /**
  * Format a Jira webhook payload into a notification
  */
-export function formatJiraNotification(
-  payload: JiraWebhookPayload
-): FormattedJiraNotification {
+export function formatJiraNotification(payload: JiraWebhookPayload): FormattedJiraNotification {
   const eventType = payload.webhookEvent
 
   // Route to specific formatter based on event type
@@ -457,7 +445,9 @@ function extractTextFromDoc(doc: JiraComment['body']): string {
       .map((node) => {
         if (node.type === 'text') return node.text || ''
         if (node.content && Array.isArray(node.content)) {
-          return extractText(node.content as Array<{ type: string; content?: unknown[]; text?: string }>)
+          return extractText(
+            node.content as Array<{ type: string; content?: unknown[]; text?: string }>
+          )
         }
         return ''
       })

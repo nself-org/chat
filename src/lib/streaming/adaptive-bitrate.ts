@@ -103,9 +103,7 @@ class BandwidthEstimator {
    * Get estimated bandwidth based on configured method
    */
   public getEstimate(method: 'ewma' | 'sliding-window'): number {
-    return method === 'ewma'
-      ? this.getEstimateEWMA()
-      : this.getEstimateSlidingWindow()
+    return method === 'ewma' ? this.getEstimateEWMA() : this.getEstimateSlidingWindow()
   }
 
   /**
@@ -128,10 +126,7 @@ export class AdaptiveBitrateManager {
   private lastSwitchTime: number = 0
   private switchCooldown: number = 3000 // 3 seconds
 
-  constructor(
-    availableLevels: BitrateLevel[],
-    config: Partial<ABRConfig> = {}
-  ) {
+  constructor(availableLevels: BitrateLevel[], config: Partial<ABRConfig> = {}) {
     this.config = { ...DEFAULT_ABR_CONFIG, ...config }
     this.availableLevels = availableLevels.sort((a, b) => a.bitrate - b.bitrate)
     this.currentLevel = 0
@@ -145,17 +140,12 @@ export class AdaptiveBitrateManager {
   /**
    * Select optimal quality level based on network conditions
    */
-  public selectLevel(
-    networkConditions: NetworkConditions,
-    bufferState: BufferState
-  ): number {
+  public selectLevel(networkConditions: NetworkConditions, bufferState: BufferState): number {
     // Update bandwidth estimate
     this.bandwidthEstimator.addSample(networkConditions.bandwidth)
 
     // Get estimated bandwidth
-    const bandwidth = this.bandwidthEstimator.getEstimate(
-      this.config.bandwidthEstimator
-    )
+    const bandwidth = this.bandwidthEstimator.getEstimate(this.config.bandwidthEstimator)
 
     // Check cooldown period to prevent oscillation
     if (Date.now() - this.lastSwitchTime < this.switchCooldown) {
@@ -184,18 +174,12 @@ export class AdaptiveBitrateManager {
       const level = this.availableLevels[i]
 
       // Check if we can upgrade
-      if (
-        i > this.currentLevel &&
-        level.bitrate < bandwidth * this.config.switchUpThreshold
-      ) {
+      if (i > this.currentLevel && level.bitrate < bandwidth * this.config.switchUpThreshold) {
         targetLevel = i
       }
 
       // Check if we need to downgrade
-      if (
-        i < this.currentLevel &&
-        current.bitrate > bandwidth * this.config.switchDownThreshold
-      ) {
+      if (i < this.currentLevel && current.bitrate > bandwidth * this.config.switchDownThreshold) {
         targetLevel = i
         break // Downgrade immediately
       }
@@ -215,10 +199,7 @@ export class AdaptiveBitrateManager {
   /**
    * Select level based on buffer and bandwidth
    */
-  private selectLevelBufferBased(
-    bandwidth: number,
-    bufferState: BufferState
-  ): number {
+  private selectLevelBufferBased(bandwidth: number, bufferState: BufferState): number {
     const bufferRatio = bufferState.currentBuffer / bufferState.targetBuffer
 
     // If buffer is low, be conservative

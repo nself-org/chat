@@ -4,12 +4,7 @@ import * as React from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { MessageSquare } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
 // ============================================================================
@@ -124,7 +119,7 @@ export function ThreadPreview({
           'bg-muted/50 hover:bg-muted',
           'transition-colors duration-150',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          hasUnread && 'ring-1 ring-primary/50',
+          hasUnread && 'ring-primary/50 ring-1',
           config.container,
           className
         )}
@@ -166,39 +161,33 @@ export function ThreadPreview({
                     config.avatarOverlap,
                     'flex items-center justify-center',
                     'rounded-full border border-background',
-                    'bg-muted text-muted-foreground font-medium'
+                    'bg-muted font-medium text-muted-foreground'
                   )}
                 >
                   +{overflowCount}
                 </div>
               </TooltipTrigger>
               <TooltipContent side="top" className="text-xs">
-                {participants.slice(maxAvatars).map(p => p.display_name || p.username).join(', ')}
+                {participants
+                  .slice(maxAvatars)
+                  .map((p) => p.display_name || p.username)
+                  .join(', ')}
               </TooltipContent>
             </Tooltip>
           )}
         </div>
 
         {/* Reply count and time */}
-        <span
-          className={cn(
-            'text-primary hover:underline',
-            hasUnread && 'font-semibold'
-          )}
-        >
+        <span className={cn('text-primary hover:underline', hasUnread && 'font-semibold')}>
           {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
         </span>
 
         {lastReplyAt && (
-          <span className="text-muted-foreground">
-            {formatRelativeTime(lastReplyAt)}
-          </span>
+          <span className="text-muted-foreground">{formatRelativeTime(lastReplyAt)}</span>
         )}
 
         {/* Unread indicator */}
-        {hasUnread && (
-          <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
-        )}
+        {hasUnread && <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />}
       </button>
     </TooltipProvider>
   )
@@ -234,19 +223,17 @@ export function ThreadPreviewCompact({
             onClick={onClick}
             className={cn(
               'inline-flex items-center gap-1',
-              'px-1.5 py-0.5 rounded',
+              'rounded px-1.5 py-0.5',
               'text-xs text-muted-foreground',
               'hover:bg-muted hover:text-foreground',
               'transition-colors',
-              hasUnread && 'text-primary font-medium',
+              hasUnread && 'font-medium text-primary',
               className
             )}
           >
             <MessageSquare className="h-3.5 w-3.5" />
             <span>{replyCount}</span>
-            {hasUnread && (
-              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            )}
+            {hasUnread && <span className="h-1.5 w-1.5 rounded-full bg-primary" />}
           </button>
         </TooltipTrigger>
         <TooltipContent>
@@ -289,7 +276,7 @@ export function ThreadPreviewExpanded({
         type="button"
         onClick={onClick}
         className={cn(
-          'w-full text-left rounded-lg',
+          'w-full rounded-lg text-left',
           'px-3 py-2',
           'border border-transparent',
           'hover:bg-muted/50 hover:border-border',
@@ -300,17 +287,14 @@ export function ThreadPreviewExpanded({
         )}
       >
         {/* Header row */}
-        <div className="flex items-center justify-between gap-2 mb-1">
+        <div className="mb-1 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             {/* Avatars */}
             <div className="flex items-center">
               {visibleParticipants.map((participant, index) => (
                 <Avatar
                   key={participant.id}
-                  className={cn(
-                    'h-5 w-5 border border-background',
-                    index > 0 && '-ml-1.5'
-                  )}
+                  className={cn('h-5 w-5 border border-background', index > 0 && '-ml-1.5')}
                 >
                   <AvatarImage
                     src={participant.avatar_url}
@@ -322,30 +306,23 @@ export function ThreadPreviewExpanded({
                 </Avatar>
               ))}
               {overflowCount > 0 && (
-                <div className="h-5 w-5 -ml-1.5 flex items-center justify-center rounded-full border border-background bg-muted text-[10px] font-medium text-muted-foreground">
+                <div className="-ml-1.5 flex h-5 w-5 items-center justify-center rounded-full border border-background bg-muted text-[10px] font-medium text-muted-foreground">
                   +{overflowCount}
                 </div>
               )}
             </div>
 
             {/* Reply count */}
-            <span
-              className={cn(
-                'text-sm font-medium text-primary',
-                hasUnread && 'font-semibold'
-              )}
-            >
+            <span className={cn('text-sm font-medium text-primary', hasUnread && 'font-semibold')}>
               {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
             </span>
 
-            {hasUnread && (
-              <span className="h-2 w-2 rounded-full bg-primary shrink-0" />
-            )}
+            {hasUnread && <span className="h-2 w-2 shrink-0 rounded-full bg-primary" />}
           </div>
 
           {/* Timestamp */}
           {lastReplyAt && (
-            <span className="text-xs text-muted-foreground shrink-0">
+            <span className="shrink-0 text-xs text-muted-foreground">
               Last reply {formatRelativeTime(lastReplyAt)}
             </span>
           )}
@@ -353,8 +330,8 @@ export function ThreadPreviewExpanded({
 
         {/* Last reply preview */}
         {showLastReply && lastReplyContent && lastReplyUser && (
-          <div className="flex items-start gap-2 ml-[calc(theme(spacing.5)*0.5+theme(spacing.1))]">
-            <div className="text-xs text-muted-foreground line-clamp-2">
+          <div className="ml-[calc(theme(spacing.5)*0.5+theme(spacing.1))] flex items-start gap-2">
+            <div className="line-clamp-2 text-xs text-muted-foreground">
               <span className="font-medium text-foreground">
                 {lastReplyUser.display_name || lastReplyUser.username}:
               </span>{' '}
@@ -386,7 +363,7 @@ export function StartThreadButton({ onClick, className }: StartThreadButtonProps
             onClick={onClick}
             className={cn(
               'inline-flex items-center gap-1',
-              'px-1.5 py-0.5 rounded',
+              'rounded px-1.5 py-0.5',
               'text-xs text-muted-foreground',
               'hover:bg-muted hover:text-foreground',
               'opacity-0 group-hover:opacity-100',

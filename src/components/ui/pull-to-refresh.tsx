@@ -6,6 +6,8 @@ import { Loader2, RefreshCw } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { pullToRefresh } from '@/lib/animations'
 
+import { logger } from '@/lib/logger'
+
 interface PullToRefreshProps {
   onRefresh: () => Promise<void>
   children: React.ReactNode
@@ -58,7 +60,7 @@ export function PullToRefresh({
       try {
         await onRefresh()
       } catch (error) {
-        console.error('Refresh failed:', error)
+        logger.error('Refresh failed:', error)
       } finally {
         setIsRefreshing(false)
         y.set(0) // Return to normal position
@@ -70,10 +72,7 @@ export function PullToRefresh({
   }
 
   const pullDistance = useTransform(y, (latest) => latest)
-  const showIndicator = useTransform(
-    pullDistance,
-    (latest) => latest > 10 || isRefreshing
-  )
+  const showIndicator = useTransform(pullDistance, (latest) => latest > 10 || isRefreshing)
 
   return (
     <div className={cn('relative overflow-hidden', className)}>
@@ -86,7 +85,7 @@ export function PullToRefresh({
         }}
       >
         <motion.div
-          className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg"
+          className="text-primary-foreground flex h-10 w-10 items-center justify-center rounded-full bg-primary shadow-lg"
           style={{
             rotate: isRefreshing ? 0 : rotate,
             scale,
@@ -109,13 +108,7 @@ export function PullToRefresh({
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
         style={{ y }}
-        animate={
-          isRefreshing
-            ? 'refreshing'
-            : isPulling
-            ? 'pulling'
-            : 'initial'
-        }
+        animate={isRefreshing ? 'refreshing' : isPulling ? 'pulling' : 'initial'}
         variants={pullToRefresh}
       >
         {children}

@@ -85,27 +85,26 @@ export function useChannels(): UseChannelsReturn {
     await fetchChannels()
   }, [fetchChannels])
 
-  const createChannel = useCallback(async (
-    name: string,
-    type: Channel['type'],
-    description?: string
-  ): Promise<Channel> => {
-    // API call would go here
-    const newChannel: Channel = {
-      id: 'ch-' + Date.now(),
-      name,
-      description,
-      type,
-      isPrivate: type === 'private',
-      createdBy: 'current-user',
-      members: ['current-user'],
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      unreadCount: 0,
-    }
-    setChannels((prev) => [newChannel, ...prev])
-    return newChannel
-  }, [])
+  const createChannel = useCallback(
+    async (name: string, type: Channel['type'], description?: string): Promise<Channel> => {
+      // API call would go here
+      const newChannel: Channel = {
+        id: 'ch-' + Date.now(),
+        name,
+        description,
+        type,
+        isPrivate: type === 'private',
+        createdBy: 'current-user',
+        members: ['current-user'],
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        unreadCount: 0,
+      }
+      setChannels((prev) => [newChannel, ...prev])
+      return newChannel
+    },
+    []
+  )
 
   const deleteChannel = useCallback(async (channelId: string) => {
     // API call would go here

@@ -8,17 +8,8 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   Hash,
   Lock,
@@ -115,13 +106,7 @@ function SidebarNavSkeleton() {
 // Channel Icon
 // ============================================================================
 
-function ChannelIcon({
-  channel,
-  className,
-}: {
-  channel: SidebarChannel
-  className?: string
-}) {
+function ChannelIcon({ channel, className }: { channel: SidebarChannel; className?: string }) {
   if (channel.emoji) {
     return <span className={cn('text-sm', className)}>{channel.emoji}</span>
   }
@@ -156,8 +141,8 @@ function ChannelItem({ channel, isActive, onAction }: ChannelItemProps) {
         href={`/chat/channel/${channel.slug}`}
         className={cn(
           'flex flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-          'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
-          isActive && 'bg-accent text-accent-foreground font-medium',
+          'hover:text-accent-foreground text-muted-foreground hover:bg-accent',
+          isActive && 'text-accent-foreground bg-accent font-medium',
           hasUnread && !channel.isMuted && 'font-semibold text-foreground',
           channel.isMuted && 'opacity-60'
         )}
@@ -170,14 +155,14 @@ function ChannelItem({ channel, isActive, onAction }: ChannelItemProps) {
             isActive && 'text-accent-foreground'
           )}
         />
-        <span className="truncate flex-1">{channel.name}</span>
+        <span className="flex-1 truncate">{channel.name}</span>
         {hasUnread && (
           <span
             className={cn(
               'ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-xs font-medium',
               channel.hasUnreadMentions
                 ? 'bg-destructive text-destructive-foreground'
-                : 'bg-primary text-primary-foreground'
+                : 'text-primary-foreground bg-primary'
             )}
             data-testid={`channel-unread-${channel.id}`}
           >
@@ -192,7 +177,7 @@ function ChannelItem({ channel, isActive, onAction }: ChannelItemProps) {
             <Button
               variant="ghost"
               size="icon"
-              className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
               data-testid={`channel-menu-${channel.id}`}
             >
               <MoreHorizontal className="h-4 w-4" />
@@ -202,14 +187,9 @@ function ChannelItem({ channel, isActive, onAction }: ChannelItemProps) {
             <DropdownMenuItem onClick={() => onAction('mute')}>
               {channel.isMuted ? 'Unmute' : 'Mute'}
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => onAction('settings')}>
-              Settings
-            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => onAction('settings')}>Settings</DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem
-              onClick={() => onAction('leave')}
-              className="text-destructive"
-            >
+            <DropdownMenuItem onClick={() => onAction('leave')} className="text-destructive">
               Leave Channel
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -243,8 +223,8 @@ function DMItem({ dm, isActive }: DMItemProps) {
       href={`/chat/dm/${dm.id}`}
       className={cn(
         'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-        'text-muted-foreground hover:bg-accent hover:text-accent-foreground',
-        isActive && 'bg-accent text-accent-foreground font-medium',
+        'hover:text-accent-foreground text-muted-foreground hover:bg-accent',
+        isActive && 'text-accent-foreground bg-accent font-medium',
         hasUnread && 'font-semibold text-foreground'
       )}
       data-testid={`dm-item-${dm.id}`}
@@ -252,9 +232,7 @@ function DMItem({ dm, isActive }: DMItemProps) {
       <div className="relative flex-shrink-0">
         <Avatar className="h-6 w-6">
           <AvatarImage src={dm.avatarUrl} alt={dm.name} />
-          <AvatarFallback className="text-xs">
-            {dm.name.charAt(0).toUpperCase()}
-          </AvatarFallback>
+          <AvatarFallback className="text-xs">{dm.name.charAt(0).toUpperCase()}</AvatarFallback>
         </Avatar>
         <span
           className={cn(
@@ -264,14 +242,14 @@ function DMItem({ dm, isActive }: DMItemProps) {
           data-testid={`dm-presence-${dm.id}`}
         />
       </div>
-      <span className="truncate flex-1">{dm.name}</span>
+      <span className="flex-1 truncate">{dm.name}</span>
       {hasUnread && (
         <span
           className={cn(
             'ml-auto flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-xs font-medium',
             dm.hasUnreadMentions
               ? 'bg-destructive text-destructive-foreground'
-              : 'bg-primary text-primary-foreground'
+              : 'text-primary-foreground bg-primary'
           )}
           data-testid={`dm-unread-${dm.id}`}
         >
@@ -298,14 +276,10 @@ function SectionHeader({ title, collapsed, onToggle, onAdd }: SectionHeaderProps
     <div className="flex items-center justify-between px-2 py-1">
       <CollapsibleTrigger
         onClick={onToggle}
-        className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-colors hover:text-foreground"
         data-testid={`section-toggle-${title.toLowerCase().replace(/\s+/g, '-')}`}
       >
-        {collapsed ? (
-          <ChevronRight className="h-3 w-3" />
-        ) : (
-          <ChevronDown className="h-3 w-3" />
-        )}
+        {collapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
         {title}
       </CollapsibleTrigger>
       {onAdd && (
@@ -382,7 +356,7 @@ export function SidebarNav({
   if (isCollapsed) {
     return (
       <nav
-        className={cn('flex flex-col items-center py-4 gap-2', className)}
+        className={cn('flex flex-col items-center gap-2 py-4', className)}
         data-testid="sidebar-nav-collapsed"
       >
         <TooltipProvider delayDuration={300}>
@@ -452,9 +426,9 @@ export function SidebarNav({
   }
 
   return (
-    <nav className={cn('flex flex-col h-full', className)} data-testid="sidebar-nav">
+    <nav className={cn('flex h-full flex-col', className)} data-testid="sidebar-nav">
       {/* Quick Actions */}
-      <div className="flex items-center gap-1 p-2 border-b">
+      <div className="flex items-center gap-1 border-b p-2">
         {onOpenSearch && (
           <Button
             variant="ghost"
@@ -463,7 +437,7 @@ export function SidebarNav({
             onClick={onOpenSearch}
             data-testid="sidebar-search"
           >
-            <Search className="h-4 w-4 mr-2" />
+            <Search className="mr-2 h-4 w-4" />
             Search
           </Button>
         )}
@@ -492,14 +466,12 @@ export function SidebarNav({
                     channel={channel}
                     isActive={pathname === `/chat/channel/${channel.slug}`}
                     onAction={
-                      onChannelAction
-                        ? (action) => onChannelAction(channel.id, action)
-                        : undefined
+                      onChannelAction ? (action) => onChannelAction(channel.id, action) : undefined
                     }
                   />
                 ))}
                 {section.channels.length === 0 && (
-                  <p className="px-2 py-4 text-xs text-muted-foreground text-center">
+                  <p className="px-2 py-4 text-center text-xs text-muted-foreground">
                     No channels yet
                   </p>
                 )}
@@ -518,11 +490,7 @@ export function SidebarNav({
               />
               <CollapsibleContent className="space-y-0.5">
                 {directMessages.map((dm) => (
-                  <DMItem
-                    key={dm.id}
-                    dm={dm}
-                    isActive={pathname === `/chat/dm/${dm.id}`}
-                  />
+                  <DMItem key={dm.id} dm={dm} isActive={pathname === `/chat/dm/${dm.id}`} />
                 ))}
               </CollapsibleContent>
             </Collapsible>
@@ -531,7 +499,7 @@ export function SidebarNav({
           {/* Empty State */}
           {sections.length === 0 && directMessages.length === 0 && (
             <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Users className="h-8 w-8 text-muted-foreground mb-2" />
+              <Users className="mb-2 h-8 w-8 text-muted-foreground" />
               <p className="text-sm text-muted-foreground">No channels or DMs yet</p>
               {onCreateChannel && (
                 <Button
@@ -541,7 +509,7 @@ export function SidebarNav({
                   onClick={onCreateChannel}
                   data-testid="sidebar-empty-create"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   Create Channel
                 </Button>
               )}
@@ -552,7 +520,7 @@ export function SidebarNav({
 
       {/* Footer */}
       {onOpenSettings && (
-        <div className="p-2 border-t">
+        <div className="border-t p-2">
           <Button
             variant="ghost"
             size="sm"
@@ -560,7 +528,7 @@ export function SidebarNav({
             onClick={onOpenSettings}
             data-testid="sidebar-settings"
           >
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="mr-2 h-4 w-4" />
             Settings
           </Button>
         </div>

@@ -331,9 +331,7 @@ export class StickerService {
     try {
       const parsed = new URL(url)
       const validExtensions = ['.webp', '.png', '.gif', '.json', '.tgs']
-      return validExtensions.some((ext) =>
-        parsed.pathname.toLowerCase().endsWith(ext)
-      )
+      return validExtensions.some((ext) => parsed.pathname.toLowerCase().endsWith(ext))
     } catch {
       return false
     }

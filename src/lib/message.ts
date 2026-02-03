@@ -184,7 +184,9 @@ export function extractLinks(content: string): ParsedLink[] {
     const end = match.index + match[0].length
 
     // Check if this URL is inside a markdown link
-    const isInsideMarkdown = processedRanges.some((range) => start >= range.start && end <= range.end)
+    const isInsideMarkdown = processedRanges.some(
+      (range) => start >= range.start && end <= range.end
+    )
 
     if (!isInsideMarkdown) {
       links.push({

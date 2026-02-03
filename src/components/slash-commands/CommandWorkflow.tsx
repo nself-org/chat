@@ -49,7 +49,7 @@ export function CommandWorkflow({ workflow = {}, onChange }: CommandWorkflowProp
   return (
     <div className="space-y-6">
       {/* Description */}
-      <div className="rounded-lg border bg-muted/30 p-4">
+      <div className="bg-muted/30 rounded-lg border p-4">
         <div className="flex items-center gap-2">
           <Workflow className="h-5 w-5 text-primary" />
           <h3 className="font-medium">Workflow Configuration</h3>
@@ -84,7 +84,7 @@ export function CommandWorkflow({ workflow = {}, onChange }: CommandWorkflowProp
             {Object.entries(workflow.inputMapping).map(([inputKey, argKey]) => (
               <div
                 key={inputKey}
-                className="flex items-center gap-2 rounded border bg-muted/30 px-3 py-2"
+                className="bg-muted/30 flex items-center gap-2 rounded border px-3 py-2"
               >
                 <code className="text-sm font-medium">{argKey}</code>
                 <ArrowRight className="h-4 w-4 text-muted-foreground" />
@@ -129,12 +129,7 @@ export function CommandWorkflow({ workflow = {}, onChange }: CommandWorkflowProp
               }}
             />
           </div>
-          <Button
-            variant="outline"
-            size="icon"
-            className="mt-6"
-            onClick={handleAddMapping}
-          >
+          <Button variant="outline" size="icon" className="mt-6" onClick={handleAddMapping}>
             <Plus className="h-4 w-4" />
           </Button>
         </div>
@@ -150,9 +145,7 @@ export function CommandWorkflow({ workflow = {}, onChange }: CommandWorkflowProp
         </div>
         <Switch
           checked={workflow.waitForCompletion ?? false}
-          onCheckedChange={(checked) =>
-            onChange({ ...workflow, waitForCompletion: checked })
-          }
+          onCheckedChange={(checked) => onChange({ ...workflow, waitForCompletion: checked })}
         />
       </div>
 
@@ -180,8 +173,8 @@ export function CommandWorkflow({ workflow = {}, onChange }: CommandWorkflowProp
       )}
 
       {/* Preview */}
-      <div className="rounded-lg border bg-muted/30 p-4">
-        <h4 className="font-medium text-sm">Workflow Trigger Summary</h4>
+      <div className="bg-muted/30 rounded-lg border p-4">
+        <h4 className="text-sm font-medium">Workflow Trigger Summary</h4>
         <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
           {workflow.workflowId ? (
             <li>
@@ -191,14 +184,9 @@ export function CommandWorkflow({ workflow = {}, onChange }: CommandWorkflowProp
             <li className="text-destructive">- No workflow ID configured</li>
           )}
           {workflow.inputMapping && Object.keys(workflow.inputMapping).length > 0 && (
-            <li>
-              - {Object.keys(workflow.inputMapping).length} input(s) mapped
-            </li>
+            <li>- {Object.keys(workflow.inputMapping).length} input(s) mapped</li>
           )}
-          <li>
-            - {workflow.waitForCompletion ? 'Will wait' : 'Will not wait'} for
-            completion
-          </li>
+          <li>- {workflow.waitForCompletion ? 'Will wait' : 'Will not wait'} for completion</li>
           {workflow.waitForCompletion && workflow.timeout && (
             <li>- Timeout: {workflow.timeout}ms</li>
           )}

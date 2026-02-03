@@ -1,34 +1,25 @@
-'use client';
+'use client'
 
 /**
  * FileAnalytics - File upload analytics view
  */
 
-import * as React from 'react';
-import {
-  FileText,
-  Image,
-  Video,
-  Music,
-  Archive,
-  File,
-  Upload,
-  HardDrive,
-} from 'lucide-react';
+import * as React from 'react'
+import { FileText, Image, Video, Music, Archive, File, Upload, HardDrive } from 'lucide-react'
 
-import { cn } from '@/lib/utils';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-import { useAnalyticsStore } from '@/stores/analytics-store';
-import { FileUploadChart } from '../charts/FileUploadChart';
+import { useAnalyticsStore } from '@/stores/analytics-store'
+import { FileUploadChart } from '../charts/FileUploadChart'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface FileAnalyticsProps {
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -37,31 +28,31 @@ interface FileAnalyticsProps {
 
 function formatFileSize(bytes: number): string {
   if (bytes >= 1073741824) {
-    return `${(bytes / 1073741824).toFixed(1)} GB`;
+    return `${(bytes / 1073741824).toFixed(1)} GB`
   }
   if (bytes >= 1048576) {
-    return `${(bytes / 1048576).toFixed(1)} MB`;
+    return `${(bytes / 1048576).toFixed(1)} MB`
   }
   if (bytes >= 1024) {
-    return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / 1024).toFixed(1)} KB`
   }
-  return `${bytes} B`;
+  return `${bytes} B`
 }
 
 function getFileTypeIcon(type: string) {
   switch (type.toLowerCase()) {
     case 'images':
-      return <Image className="h-4 w-4" />;
+      return <Image className="h-4 w-4" />
     case 'videos':
-      return <Video className="h-4 w-4" />;
+      return <Video className="h-4 w-4" />
     case 'audio':
-      return <Music className="h-4 w-4" />;
+      return <Music className="h-4 w-4" />
     case 'documents':
-      return <FileText className="h-4 w-4" />;
+      return <FileText className="h-4 w-4" />
     case 'archives':
-      return <Archive className="h-4 w-4" />;
+      return <Archive className="h-4 w-4" />
     default:
-      return <File className="h-4 w-4" />;
+      return <File className="h-4 w-4" />
   }
 }
 
@@ -70,10 +61,10 @@ function getFileTypeIcon(type: string) {
 // ============================================================================
 
 interface StatCardProps {
-  title: string;
-  value: number | string;
-  description?: string;
-  icon: React.ReactNode;
+  title: string
+  value: number | string
+  description?: string
+  icon: React.ReactNode
 }
 
 function StatCard({ title, value, description, icon }: StatCardProps) {
@@ -85,12 +76,10 @@ function StatCard({ title, value, description, icon }: StatCardProps) {
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </CardContent>
     </Card>
-  );
+  )
 }
 
 // ============================================================================
@@ -98,29 +87,29 @@ function StatCard({ title, value, description, icon }: StatCardProps) {
 // ============================================================================
 
 export function FileAnalytics({ className }: FileAnalyticsProps) {
-  const { summary, fileUploads, isLoading, fetchSectionData } = useAnalyticsStore();
+  const { summary, fileUploads, isLoading, fetchSectionData } = useAnalyticsStore()
 
   // Fetch file data on mount
   React.useEffect(() => {
-    fetchSectionData('files');
-  }, [fetchSectionData]);
+    fetchSectionData('files')
+  }, [fetchSectionData])
 
   // Calculate file stats
   const fileStats = React.useMemo(() => {
-    if (!fileUploads || fileUploads.length === 0) return null;
+    if (!fileUploads || fileUploads.length === 0) return null
 
-    const totalFiles = fileUploads.reduce((sum, d) => sum + d.count, 0);
-    const totalSize = fileUploads.reduce((sum, d) => sum + d.totalSize, 0);
-    const avgSize = totalFiles > 0 ? totalSize / totalFiles : 0;
-    const avgPerDay = totalFiles / fileUploads.length;
+    const totalFiles = fileUploads.reduce((sum, d) => sum + d.count, 0)
+    const totalSize = fileUploads.reduce((sum, d) => sum + d.totalSize, 0)
+    const avgSize = totalFiles > 0 ? totalSize / totalFiles : 0
+    const avgPerDay = totalFiles / fileUploads.length
 
     // Aggregate file types
-    const fileTypes: Record<string, number> = {};
+    const fileTypes: Record<string, number> = {}
     fileUploads.forEach((upload) => {
       Object.entries(upload.fileTypes).forEach(([type, count]) => {
-        fileTypes[type] = (fileTypes[type] || 0) + count;
-      });
-    });
+        fileTypes[type] = (fileTypes[type] || 0) + count
+      })
+    })
 
     const sortedTypes = Object.entries(fileTypes)
       .map(([type, count]) => ({
@@ -128,7 +117,7 @@ export function FileAnalytics({ className }: FileAnalyticsProps) {
         count,
         percentage: totalFiles > 0 ? (count / totalFiles) * 100 : 0,
       }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a, b) => b.count - a.count)
 
     return {
       totalFiles,
@@ -136,8 +125,8 @@ export function FileAnalytics({ className }: FileAnalyticsProps) {
       avgSize,
       avgPerDay,
       fileTypes: sortedTypes,
-    };
-  }, [fileUploads]);
+    }
+  }, [fileUploads])
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -188,9 +177,7 @@ export function FileAnalytics({ className }: FileAnalyticsProps) {
               <CardTitle className="text-sm font-medium">Total Uploaded</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">
-                {fileStats.totalFiles.toLocaleString()}
-              </div>
+              <div className="text-3xl font-bold">{fileStats.totalFiles.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
                 {formatFileSize(fileStats.totalSize)} total
               </p>
@@ -260,12 +247,12 @@ export function FileAnalytics({ className }: FileAnalyticsProps) {
                   <div className="space-y-4">
                     {fileStats.fileTypes.map((type) => (
                       <div key={type.type} className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 w-32">
+                        <div className="flex w-32 items-center gap-2">
                           {getFileTypeIcon(type.type)}
                           <span className="font-medium">{type.type}</span>
                         </div>
                         <div className="flex-1">
-                          <div className="flex items-center justify-between text-sm mb-1">
+                          <div className="mb-1 flex items-center justify-between text-sm">
                             <span>{type.count.toLocaleString()} files</span>
                             <span className="text-muted-foreground">
                               {type.percentage.toFixed(1)}%
@@ -282,7 +269,7 @@ export function FileAnalytics({ className }: FileAnalyticsProps) {
                     ))}
                   </div>
                 ) : (
-                  <p className="text-center text-muted-foreground py-8">
+                  <p className="py-8 text-center text-muted-foreground">
                     No file type data available
                   </p>
                 )}
@@ -295,9 +282,7 @@ export function FileAnalytics({ className }: FileAnalyticsProps) {
           <Card>
             <CardHeader>
               <CardTitle>Files and Storage Over Time</CardTitle>
-              <CardDescription>
-                Combined view of upload count and total storage
-              </CardDescription>
+              <CardDescription>Combined view of upload count and total storage</CardDescription>
             </CardHeader>
             <CardContent>
               <FileUploadChart height={350} variant="combined" />
@@ -306,7 +291,7 @@ export function FileAnalytics({ className }: FileAnalyticsProps) {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }
 
-export default FileAnalytics;
+export default FileAnalytics

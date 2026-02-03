@@ -4,21 +4,21 @@
  * Utilities for handling RTL languages like Arabic and Hebrew.
  */
 
-import { RTL_LOCALES, SUPPORTED_LOCALES, type LocaleCode } from './locales';
+import { RTL_LOCALES, SUPPORTED_LOCALES, type LocaleCode } from './locales'
 
 /**
  * Check if a locale is RTL
  */
 export function isRTL(localeCode: string): boolean {
-  return RTL_LOCALES.includes(localeCode);
+  return RTL_LOCALES.includes(localeCode)
 }
 
 /**
  * Get text direction for a locale
  */
 export function getDirection(localeCode: string): 'ltr' | 'rtl' {
-  const config = SUPPORTED_LOCALES[localeCode];
-  return config?.direction || 'ltr';
+  const config = SUPPORTED_LOCALES[localeCode]
+  return config?.direction || 'ltr'
 }
 
 /**
@@ -58,7 +58,7 @@ export const logicalProperties = {
   maxHeight: 'maxBlockSize',
   // Text
   textAlign: 'textAlign', // Use 'start' and 'end' values
-} as const;
+} as const
 
 /**
  * Get RTL-aware value for text-align
@@ -67,33 +67,26 @@ export function getTextAlign(
   align: 'left' | 'right' | 'center' | 'start' | 'end',
   isRtl: boolean = false
 ): 'left' | 'right' | 'center' {
-  if (align === 'center') return 'center';
-  if (align === 'start') return isRtl ? 'right' : 'left';
-  if (align === 'end') return isRtl ? 'left' : 'right';
-  return align;
+  if (align === 'center') return 'center'
+  if (align === 'start') return isRtl ? 'right' : 'left'
+  if (align === 'end') return isRtl ? 'left' : 'right'
+  return align
 }
 
 /**
  * Flip a horizontal position for RTL
  */
-export function flipPosition(
-  position: 'left' | 'right',
-  isRtl: boolean = false
-): 'left' | 'right' {
-  if (!isRtl) return position;
-  return position === 'left' ? 'right' : 'left';
+export function flipPosition(position: 'left' | 'right', isRtl: boolean = false): 'left' | 'right' {
+  if (!isRtl) return position
+  return position === 'left' ? 'right' : 'left'
 }
 
 /**
  * RTL-aware CSS class helper
  * Returns appropriate class based on direction
  */
-export function rtlClass(
-  ltrClass: string,
-  rtlClass: string,
-  isRtl: boolean
-): string {
-  return isRtl ? rtlClass : ltrClass;
+export function rtlClass(ltrClass: string, rtlClass: string, isRtl: boolean): string {
+  return isRtl ? rtlClass : ltrClass
 }
 
 /**
@@ -101,51 +94,48 @@ export function rtlClass(
  */
 export function rtlStyles(
   styles: {
-    ltr?: React.CSSProperties;
-    rtl?: React.CSSProperties;
-    common?: React.CSSProperties;
+    ltr?: React.CSSProperties
+    rtl?: React.CSSProperties
+    common?: React.CSSProperties
   },
   isRtl: boolean
 ): React.CSSProperties {
   return {
     ...styles.common,
     ...(isRtl ? styles.rtl : styles.ltr),
-  };
+  }
 }
 
 /**
  * RTL-aware transform helper
  */
-export function rtlTransform(
-  transform: string,
-  isRtl: boolean
-): string {
-  if (!isRtl) return transform;
+export function rtlTransform(transform: string, isRtl: boolean): string {
+  if (!isRtl) return transform
 
   // Flip scaleX and translateX values
   return transform
     .replace(/scaleX\(([^)]+)\)/g, (_, value) => {
-      const num = parseFloat(value);
-      return `scaleX(${-num})`;
+      const num = parseFloat(value)
+      return `scaleX(${-num})`
     })
     .replace(/translateX\(([^)]+)\)/g, (_, value) => {
-      const match = value.match(/^(-?\d+(?:\.\d+)?)(.*)/);
+      const match = value.match(/^(-?\d+(?:\.\d+)?)(.*)/)
       if (match) {
-        const num = parseFloat(match[1]);
-        const unit = match[2];
-        return `translateX(${-num}${unit})`;
+        const num = parseFloat(match[1])
+        const unit = match[2]
+        return `translateX(${-num}${unit})`
       }
-      return `translateX(${value})`;
+      return `translateX(${value})`
     })
     .replace(/rotate\(([^)]+)\)/g, (_, value) => {
-      const match = value.match(/^(-?\d+(?:\.\d+)?)(.*)/);
+      const match = value.match(/^(-?\d+(?:\.\d+)?)(.*)/)
       if (match) {
-        const num = parseFloat(match[1]);
-        const unit = match[2];
-        return `rotate(${-num}${unit})`;
+        const num = parseFloat(match[1])
+        const unit = match[2]
+        return `rotate(${-num}${unit})`
       }
-      return `rotate(${value})`;
-    });
+      return `rotate(${value})`
+    })
 }
 
 /**
@@ -155,15 +145,15 @@ export function rtlFlexDirection(
   direction: 'row' | 'row-reverse' | 'column' | 'column-reverse',
   isRtl: boolean
 ): 'row' | 'row-reverse' | 'column' | 'column-reverse' {
-  if (!isRtl) return direction;
+  if (!isRtl) return direction
 
   switch (direction) {
     case 'row':
-      return 'row-reverse';
+      return 'row-reverse'
     case 'row-reverse':
-      return 'row';
+      return 'row'
     default:
-      return direction;
+      return direction
   }
 }
 
@@ -171,11 +161,11 @@ export function rtlFlexDirection(
  * Apply direction attribute to document
  */
 export function applyDocumentDirection(localeCode: string): void {
-  if (typeof document === 'undefined') return;
+  if (typeof document === 'undefined') return
 
-  const direction = getDirection(localeCode);
-  document.documentElement.dir = direction;
-  document.documentElement.lang = localeCode;
+  const direction = getDirection(localeCode)
+  document.documentElement.dir = direction
+  document.documentElement.lang = localeCode
 }
 
 /**
@@ -189,7 +179,7 @@ export function getRTLCSSVariables(isRtl: boolean): Record<string, string> {
     '--text-align': isRtl ? 'right' : 'left',
     '--flex-direction': isRtl ? 'row-reverse' : 'row',
     '--transform-scale-x': isRtl ? '-1' : '1',
-  };
+  }
 }
 
 /**
@@ -221,30 +211,27 @@ export const rtlTailwind = {
   textRight: 'text-right rtl:text-left',
   // Transforms
   flipX: 'scale-x-100 rtl:-scale-x-100',
-};
+}
 
 /**
  * Check if the current document direction is RTL
  */
 export function isDocumentRTL(): boolean {
-  if (typeof document === 'undefined') return false;
-  return document.documentElement.dir === 'rtl';
+  if (typeof document === 'undefined') return false
+  return document.documentElement.dir === 'rtl'
 }
 
 /**
  * Bidirectional text isolation helper
  * Wraps text in a span with dir attribute to isolate it from surrounding text
  */
-export function isolateBidi(
-  text: string,
-  direction: 'ltr' | 'rtl' | 'auto' = 'auto'
-): string {
+export function isolateBidi(text: string, direction: 'ltr' | 'rtl' | 'auto' = 'auto'): string {
   // Unicode directional isolate characters
-  const LRI = '\u2066'; // Left-to-Right Isolate
-  const RLI = '\u2067'; // Right-to-Left Isolate
-  const FSI = '\u2068'; // First Strong Isolate (auto)
-  const PDI = '\u2069'; // Pop Directional Isolate
+  const LRI = '\u2066' // Left-to-Right Isolate
+  const RLI = '\u2067' // Right-to-Left Isolate
+  const FSI = '\u2068' // First Strong Isolate (auto)
+  const PDI = '\u2069' // Pop Directional Isolate
 
-  const startChar = direction === 'ltr' ? LRI : direction === 'rtl' ? RLI : FSI;
-  return `${startChar}${text}${PDI}`;
+  const startChar = direction === 'ltr' ? LRI : direction === 'rtl' ? RLI : FSI
+  return `${startChar}${text}${PDI}`
 }

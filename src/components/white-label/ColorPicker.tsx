@@ -24,10 +24,26 @@ interface ColorPickerProps {
 }
 
 const DEFAULT_SWATCHES = [
-  '#EF4444', '#F97316', '#F59E0B', '#EAB308', '#84CC16',
-  '#22C55E', '#10B981', '#14B8A6', '#06B6D4', '#0EA5E9',
-  '#3B82F6', '#6366F1', '#8B5CF6', '#A855F7', '#D946EF',
-  '#EC4899', '#F43F5E', '#18181B', '#71717A', '#FFFFFF',
+  '#EF4444',
+  '#F97316',
+  '#F59E0B',
+  '#EAB308',
+  '#84CC16',
+  '#22C55E',
+  '#10B981',
+  '#14B8A6',
+  '#06B6D4',
+  '#0EA5E9',
+  '#3B82F6',
+  '#6366F1',
+  '#8B5CF6',
+  '#A855F7',
+  '#D946EF',
+  '#EC4899',
+  '#F43F5E',
+  '#18181B',
+  '#71717A',
+  '#FFFFFF',
 ]
 
 export function ColorPicker({
@@ -67,30 +83,39 @@ export function ColorPicker({
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
-  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value
-    setInputValue(newValue)
+  const handleInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value
+      setInputValue(newValue)
 
-    // Validate hex color
-    if (/^#[0-9A-Fa-f]{6}$/.test(newValue)) {
-      onChange(newValue)
-      setHsl(hexToHsl(newValue))
-    }
-  }, [onChange])
+      // Validate hex color
+      if (/^#[0-9A-Fa-f]{6}$/.test(newValue)) {
+        onChange(newValue)
+        setHsl(hexToHsl(newValue))
+      }
+    },
+    [onChange]
+  )
 
-  const handleHslChange = useCallback((component: keyof HSL, newValue: number) => {
-    const newHsl = { ...hsl, [component]: newValue }
-    setHsl(newHsl)
-    const hex = hslToHex(newHsl)
-    setInputValue(hex)
-    onChange(hex)
-  }, [hsl, onChange])
+  const handleHslChange = useCallback(
+    (component: keyof HSL, newValue: number) => {
+      const newHsl = { ...hsl, [component]: newValue }
+      setHsl(newHsl)
+      const hex = hslToHex(newHsl)
+      setInputValue(hex)
+      onChange(hex)
+    },
+    [hsl, onChange]
+  )
 
-  const handleSwatchClick = useCallback((color: string) => {
-    setInputValue(color)
-    setHsl(hexToHsl(color))
-    onChange(color)
-  }, [onChange])
+  const handleSwatchClick = useCallback(
+    (color: string) => {
+      setInputValue(color)
+      setHsl(hexToHsl(color))
+      onChange(color)
+    },
+    [onChange]
+  )
 
   const handleCopy = useCallback(async () => {
     await navigator.clipboard.writeText(value)
@@ -99,7 +124,11 @@ export function ColorPicker({
   }, [value])
 
   const handleRandomColor = useCallback(() => {
-    const randomHex = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')
+    const randomHex =
+      '#' +
+      Math.floor(Math.random() * 16777215)
+        .toString(16)
+        .padStart(6, '0')
     setInputValue(randomHex)
     setHsl(hexToHsl(randomHex))
     onChange(randomHex)
@@ -111,7 +140,7 @@ export function ColorPicker({
   return (
     <div ref={containerRef} className={cn('relative', className)}>
       {label && (
-        <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+        <label className="mb-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300">
           {label}
         </label>
       )}
@@ -122,9 +151,9 @@ export function ColorPicker({
           type="button"
           onClick={() => setIsOpen(!isOpen)}
           className={cn(
-            'w-10 h-10 rounded-lg border-2 transition-all shadow-sm',
+            'h-10 w-10 rounded-lg border-2 shadow-sm transition-all',
             isOpen
-              ? 'border-sky-500 ring-2 ring-sky-500/20'
+              ? 'ring-sky-500/20 border-sky-500 ring-2'
               : 'border-zinc-200 dark:border-zinc-700'
           )}
           style={{ backgroundColor: value }}
@@ -133,13 +162,13 @@ export function ColorPicker({
 
         {/* Hex input */}
         {showInput && (
-          <div className="flex-1 flex gap-2">
+          <div className="flex flex-1 gap-2">
             <input
               type="text"
               value={inputValue}
               onChange={handleInputChange}
               placeholder="#000000"
-              className="flex-1 px-3 py-2 text-sm font-mono border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-sky-500"
+              className="flex-1 rounded-lg border border-zinc-200 bg-white px-3 py-2 font-mono text-sm text-zinc-900 focus:outline-none focus:ring-2 focus:ring-sky-500 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
             />
             <Button
               type="button"
@@ -171,12 +200,12 @@ export function ColorPicker({
 
       {/* Picker dropdown */}
       {isOpen && (
-        <div className="absolute z-50 mt-2 w-64 p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-xl">
+        <div className="absolute z-50 mt-2 w-64 rounded-xl border border-zinc-200 bg-white p-4 shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
           {/* HSL Sliders */}
-          <div className="space-y-4 mb-4">
+          <div className="mb-4 space-y-4">
             {/* Hue */}
             <div>
-              <div className="flex justify-between text-xs text-zinc-500 mb-1">
+              <div className="mb-1 flex justify-between text-xs text-zinc-500">
                 <span>Hue</span>
                 <span>{hsl.h}</span>
               </div>
@@ -186,16 +215,17 @@ export function ColorPicker({
                 max="360"
                 value={hsl.h}
                 onChange={(e) => handleHslChange('h', parseInt(e.target.value))}
-                className="w-full h-3 rounded-full appearance-none cursor-pointer"
+                className="h-3 w-full cursor-pointer appearance-none rounded-full"
                 style={{
-                  background: 'linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)',
+                  background:
+                    'linear-gradient(to right, #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 67%, #f0f 83%, #f00 100%)',
                 }}
               />
             </div>
 
             {/* Saturation */}
             <div>
-              <div className="flex justify-between text-xs text-zinc-500 mb-1">
+              <div className="mb-1 flex justify-between text-xs text-zinc-500">
                 <span>Saturation</span>
                 <span>{hsl.s}%</span>
               </div>
@@ -205,7 +235,7 @@ export function ColorPicker({
                 max="100"
                 value={hsl.s}
                 onChange={(e) => handleHslChange('s', parseInt(e.target.value))}
-                className="w-full h-3 rounded-full appearance-none cursor-pointer"
+                className="h-3 w-full cursor-pointer appearance-none rounded-full"
                 style={{
                   background: `linear-gradient(to right, ${hslToHex({ ...hsl, s: 0 })}, ${hslToHex({ ...hsl, s: 100 })})`,
                 }}
@@ -214,7 +244,7 @@ export function ColorPicker({
 
             {/* Lightness */}
             <div>
-              <div className="flex justify-between text-xs text-zinc-500 mb-1">
+              <div className="mb-1 flex justify-between text-xs text-zinc-500">
                 <span>Lightness</span>
                 <span>{hsl.l}%</span>
               </div>
@@ -224,7 +254,7 @@ export function ColorPicker({
                 max="100"
                 value={hsl.l}
                 onChange={(e) => handleHslChange('l', parseInt(e.target.value))}
-                className="w-full h-3 rounded-full appearance-none cursor-pointer"
+                className="h-3 w-full cursor-pointer appearance-none rounded-full"
                 style={{
                   background: `linear-gradient(to right, #000, ${hslToHex({ ...hsl, l: 50 })}, #fff)`,
                 }}
@@ -233,15 +263,15 @@ export function ColorPicker({
           </div>
 
           {/* Swatches */}
-          <div className="grid grid-cols-10 gap-1 mb-3">
+          <div className="mb-3 grid grid-cols-10 gap-1">
             {swatches.map((color) => (
               <button
                 key={color}
                 type="button"
                 onClick={() => handleSwatchClick(color)}
                 className={cn(
-                  'w-5 h-5 rounded transition-transform hover:scale-110',
-                  value === color && 'ring-2 ring-offset-1 ring-sky-500'
+                  'h-5 w-5 rounded transition-transform hover:scale-110',
+                  value === color && 'ring-2 ring-sky-500 ring-offset-1'
                 )}
                 style={{
                   backgroundColor: color,
@@ -261,15 +291,10 @@ export function ColorPicker({
               onClick={handleRandomColor}
               className="flex-1"
             >
-              <RefreshCw className="h-3 w-3 mr-1" />
+              <RefreshCw className="mr-1 h-3 w-3" />
               Random
             </Button>
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => setIsOpen(false)}
-              className="flex-1"
-            >
+            <Button type="button" size="sm" onClick={() => setIsOpen(false)} className="flex-1">
               Done
             </Button>
           </div>

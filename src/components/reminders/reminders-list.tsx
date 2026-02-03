@@ -187,7 +187,7 @@ function RemindersFilterBar({
   showSearch,
 }: RemindersFilterBarProps) {
   return (
-    <div className="flex items-center gap-2 p-2 border-b">
+    <div className="flex items-center gap-2 border-b p-2">
       {showSearch && (
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
@@ -195,7 +195,7 @@ function RemindersFilterBar({
             placeholder="Search reminders..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-9 h-8"
+            className="h-8 pl-9"
           />
         </div>
       )}
@@ -208,7 +208,7 @@ function RemindersFilterBar({
           })
         }
       >
-        <SelectTrigger className="w-[130px] h-8">
+        <SelectTrigger className="h-8 w-[130px]">
           <SelectValue placeholder="Type" />
         </SelectTrigger>
         <SelectContent>
@@ -266,22 +266,13 @@ interface ReminderGroupHeaderProps {
   onToggle: () => void
 }
 
-function ReminderGroupHeader({
-  group,
-  isExpanded,
-  onToggle,
-}: ReminderGroupHeaderProps) {
+function ReminderGroupHeader({ group, isExpanded, onToggle }: ReminderGroupHeaderProps) {
   return (
     <button
       onClick={onToggle}
-      className="flex w-full items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground hover:bg-accent/50"
+      className="hover:bg-accent/50 flex w-full items-center gap-2 px-4 py-2 text-sm font-medium text-muted-foreground"
     >
-      <ChevronDown
-        className={cn(
-          'h-4 w-4 transition-transform',
-          !isExpanded && '-rotate-90'
-        )}
-      />
+      <ChevronDown className={cn('h-4 w-4 transition-transform', !isExpanded && '-rotate-90')} />
       <span>{group.label}</span>
       <Badge variant="secondary" className="ml-auto text-xs">
         {group.reminders.length}
@@ -297,12 +288,12 @@ interface EmptyStateProps {
 
 function EmptyState({ message, onCreateNew }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="rounded-full bg-muted p-3 mb-4">
+    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+      <div className="mb-4 rounded-full bg-muted p-3">
         <Bell className="h-6 w-6 text-muted-foreground" />
       </div>
-      <h3 className="text-sm font-medium mb-1">No reminders</h3>
-      <p className="text-sm text-muted-foreground mb-4">{message}</p>
+      <h3 className="mb-1 text-sm font-medium">No reminders</h3>
+      <p className="mb-4 text-sm text-muted-foreground">{message}</p>
       {onCreateNew && (
         <Button onClick={onCreateNew} size="sm">
           <Plus className="mr-2 h-4 w-4" />
@@ -317,7 +308,7 @@ function LoadingState() {
   return (
     <div className="space-y-4 p-4">
       {[1, 2, 3].map((i) => (
-        <div key={i} className="flex items-start gap-4 p-4 rounded-lg border">
+        <div key={i} className="flex items-start gap-4 rounded-lg border p-4">
           <Skeleton className="h-5 w-5 rounded-full" />
           <div className="flex-1 space-y-2">
             <Skeleton className="h-4 w-3/4" />
@@ -347,9 +338,7 @@ export function RemindersList({
 }: RemindersListProps) {
   // State
   const [searchQuery, setSearchQuery] = React.useState('')
-  const [selectedReminders, setSelectedReminders] = React.useState<Set<string>>(
-    new Set()
-  )
+  const [selectedReminders, setSelectedReminders] = React.useState<Set<string>>(new Set())
   const [expandedGroups, setExpandedGroups] = React.useState<Set<string>>(
     new Set(['overdue', 'today', 'this-week', 'later'])
   )
@@ -384,9 +373,7 @@ export function RemindersList({
     if (searchQuery) {
       const query = searchQuery.toLowerCase()
       result = result.filter(
-        (r) =>
-          r.content.toLowerCase().includes(query) ||
-          r.note?.toLowerCase().includes(query)
+        (r) => r.content.toLowerCase().includes(query) || r.note?.toLowerCase().includes(query)
       )
     }
 
@@ -398,9 +385,7 @@ export function RemindersList({
     // Apply channel filter
     if (filter.channelId) {
       result = result.filter(
-        (r) =>
-          r.channel_id === filter.channelId ||
-          r.message?.channel?.id === filter.channelId
+        (r) => r.channel_id === filter.channelId || r.message?.channel?.id === filter.channelId
       )
     }
 
@@ -467,7 +452,7 @@ export function RemindersList({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center py-12 px-4 text-center">
+      <div className="flex items-center justify-center px-4 py-12 text-center">
         <div className="text-destructive">
           <p className="font-medium">Error loading reminders</p>
           <p className="text-sm text-muted-foreground">{error}</p>
@@ -479,7 +464,7 @@ export function RemindersList({
   return (
     <div className={cn('flex flex-col', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b">
+      <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <Bell className="h-5 w-5" />
           <h2 className="font-semibold">Reminders</h2>
@@ -488,10 +473,7 @@ export function RemindersList({
           )}
         </div>
         {onCreateNew && (
-          <Button
-            size="sm"
-            onClick={onCreateNew || (() => openReminderModal())}
-          >
+          <Button size="sm" onClick={onCreateNew || (() => openReminderModal())}>
             <Plus className="mr-2 h-4 w-4" />
             New
           </Button>
@@ -538,17 +520,10 @@ export function RemindersList({
 
       {/* Bulk Actions */}
       {selectedReminders.size > 0 && (
-        <div className="flex items-center gap-2 px-4 py-2 bg-muted/50 border-b">
-          <span className="text-sm text-muted-foreground">
-            {selectedReminders.size} selected
-          </span>
+        <div className="bg-muted/50 flex items-center gap-2 border-b px-4 py-2">
+          <span className="text-sm text-muted-foreground">{selectedReminders.size} selected</span>
           <div className="flex-1" />
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBulkComplete}
-            disabled={isCompleting}
-          >
+          <Button variant="ghost" size="sm" onClick={handleBulkComplete} disabled={isCompleting}>
             <CheckCheck className="mr-2 h-4 w-4" />
             Complete all
           </Button>
@@ -566,7 +541,7 @@ export function RemindersList({
       )}
 
       {/* Group By Toggle */}
-      <div className="flex items-center gap-2 px-4 py-2 border-b">
+      <div className="flex items-center gap-2 border-b px-4 py-2">
         <span className="text-xs text-muted-foreground">Group by:</span>
         <Button
           variant={groupBy === 'date' ? 'secondary' : 'ghost'}
@@ -592,11 +567,7 @@ export function RemindersList({
       <ScrollArea style={{ maxHeight }} className="flex-1">
         {filteredReminders.length === 0 ? (
           <EmptyState
-            message={
-              activeTab === 'upcoming'
-                ? emptyMessage
-                : 'No completed reminders yet.'
-            }
+            message={activeTab === 'upcoming' ? emptyMessage : 'No completed reminders yet.'}
             onCreateNew={activeTab === 'upcoming' ? onCreateNew : undefined}
           />
         ) : (
@@ -639,15 +610,14 @@ export function RemindersList({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete reminder?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. The reminder will be permanently
-              deleted.
+              This action cannot be undone. The reminder will be permanently deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => deleteConfirmId && handleDelete(deleteConfirmId)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               {isDeleting ? (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

@@ -30,12 +30,15 @@ export function InviteEmail() {
 
   const { roles, addInvite } = useUserManagementStore()
 
-  const roleOptions = roles.length > 0 ? roles : [
-    { id: 'admin', name: 'Admin' },
-    { id: 'moderator', name: 'Moderator' },
-    { id: 'member', name: 'Member' },
-    { id: 'guest', name: 'Guest' },
-  ]
+  const roleOptions =
+    roles.length > 0
+      ? roles
+      : [
+          { id: 'admin', name: 'Admin' },
+          { id: 'moderator', name: 'Moderator' },
+          { id: 'member', name: 'Member' },
+          { id: 'guest', name: 'Guest' },
+        ]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -95,9 +98,7 @@ export function InviteEmail() {
     <Card>
       <CardHeader>
         <CardTitle>Send Email Invitation</CardTitle>
-        <CardDescription>
-          Send an invitation email to a new user
-        </CardDescription>
+        <CardDescription>Send an invitation email to a new user</CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -114,9 +115,7 @@ export function InviteEmail() {
               }}
               className={errors.email ? 'border-red-500' : ''}
             />
-            {errors.email && (
-              <p className="text-sm text-red-500">{errors.email}</p>
-            )}
+            {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
           </div>
 
           <div className="space-y-2">
@@ -150,23 +149,13 @@ export function InviteEmail() {
           </div>
 
           <div className="flex items-center space-x-2">
-            <Switch
-              id="send-email"
-              checked={sendEmail}
-              onCheckedChange={setSendEmail}
-            />
+            <Switch id="send-email" checked={sendEmail} onCheckedChange={setSendEmail} />
             <Label htmlFor="send-email">Send invitation email</Label>
           </div>
 
-          {errors.submit && (
-            <p className="text-sm text-red-500">{errors.submit}</p>
-          )}
+          {errors.submit && <p className="text-sm text-red-500">{errors.submit}</p>}
 
-          {success && (
-            <p className="text-sm text-green-600">
-              Invitation sent successfully!
-            </p>
-          )}
+          {success && <p className="text-sm text-green-600">Invitation sent successfully!</p>}
 
           <Button type="submit" disabled={isSubmitting}>
             {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

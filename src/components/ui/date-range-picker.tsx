@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * DateRangePicker - Date range selection component
@@ -11,41 +11,45 @@
  * - Keyboard navigation
  */
 
-import * as React from 'react';
-import { format, addDays, subDays, startOfWeek, endOfWeek, startOfMonth, endOfMonth } from 'date-fns';
-import { Calendar as CalendarIcon, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
+import * as React from 'react'
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Separator } from '@/components/ui/separator';
+  format,
+  addDays,
+  subDays,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+} from 'date-fns'
+import { Calendar as CalendarIcon, X, ChevronLeft, ChevronRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Separator } from '@/components/ui/separator'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface DateRange {
-  from: Date | null;
-  to: Date | null;
+  from: Date | null
+  to: Date | null
 }
 
 export interface DateRangePickerProps {
   /** Selected date range */
-  value?: DateRange;
+  value?: DateRange
   /** Callback when date range changes */
-  onChange?: (range: DateRange) => void;
+  onChange?: (range: DateRange) => void
   /** Placeholder text */
-  placeholder?: string;
+  placeholder?: string
   /** Whether to show presets */
-  showPresets?: boolean;
+  showPresets?: boolean
   /** Whether the picker is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -53,8 +57,8 @@ export interface DateRangePickerProps {
 // ============================================================================
 
 interface DatePreset {
-  label: string;
-  getValue: () => DateRange;
+  label: string
+  getValue: () => DateRange
 }
 
 const presets: DatePreset[] = [
@@ -68,11 +72,11 @@ const presets: DatePreset[] = [
   {
     label: 'Yesterday',
     getValue: () => {
-      const yesterday = subDays(new Date(), 1);
+      const yesterday = subDays(new Date(), 1)
       return {
         from: yesterday,
         to: yesterday,
-      };
+      }
     },
   },
   {
@@ -113,14 +117,14 @@ const presets: DatePreset[] = [
   {
     label: 'Last month',
     getValue: () => {
-      const lastMonth = subDays(startOfMonth(new Date()), 1);
+      const lastMonth = subDays(startOfMonth(new Date()), 1)
       return {
         from: startOfMonth(lastMonth),
         to: endOfMonth(lastMonth),
-      };
+      }
     },
   },
-];
+]
 
 // ============================================================================
 // Main Component
@@ -134,77 +138,75 @@ export function DateRangePicker({
   disabled = false,
   className,
 }: DateRangePickerProps) {
-  const [range, setRange] = React.useState<DateRange>(
-    value || { from: null, to: null }
-  );
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [currentMonth, setCurrentMonth] = React.useState(new Date());
-  const [selectingFrom, setSelectingFrom] = React.useState(true);
+  const [range, setRange] = React.useState<DateRange>(value || { from: null, to: null })
+  const [isOpen, setIsOpen] = React.useState(false)
+  const [currentMonth, setCurrentMonth] = React.useState(new Date())
+  const [selectingFrom, setSelectingFrom] = React.useState(true)
 
   // Update internal state when value prop changes
   React.useEffect(() => {
     if (value) {
-      setRange(value);
+      setRange(value)
     }
-  }, [value]);
+  }, [value])
 
   const handleDateClick = (date: Date) => {
     if (selectingFrom) {
-      setRange({ from: date, to: null });
-      setSelectingFrom(false);
+      setRange({ from: date, to: null })
+      setSelectingFrom(false)
     } else {
       const newRange: DateRange = {
         from: range.from,
         to: date,
-      };
+      }
 
       // Swap if to is before from
       if (newRange.from && newRange.to && newRange.to < newRange.from) {
-        newRange.from = date;
-        newRange.to = range.from;
+        newRange.from = date
+        newRange.to = range.from
       }
 
-      setRange(newRange);
-      onChange?.(newRange);
-      setSelectingFrom(true);
+      setRange(newRange)
+      onChange?.(newRange)
+      setSelectingFrom(true)
     }
-  };
+  }
 
   const handlePresetClick = (preset: DatePreset) => {
-    const newRange = preset.getValue();
-    setRange(newRange);
-    onChange?.(newRange);
-    setIsOpen(false);
-  };
+    const newRange = preset.getValue()
+    setRange(newRange)
+    onChange?.(newRange)
+    setIsOpen(false)
+  }
 
   const handleClear = () => {
-    const emptyRange = { from: null, to: null };
-    setRange(emptyRange);
-    onChange?.(emptyRange);
-    setSelectingFrom(true);
-  };
+    const emptyRange = { from: null, to: null }
+    setRange(emptyRange)
+    onChange?.(emptyRange)
+    setSelectingFrom(true)
+  }
 
   const formatRange = () => {
-    if (!range.from && !range.to) return placeholder;
+    if (!range.from && !range.to) return placeholder
 
     if (range.from && range.to) {
-      return `${format(range.from, 'MMM d, yyyy')} - ${format(range.to, 'MMM d, yyyy')}`;
+      return `${format(range.from, 'MMM d, yyyy')} - ${format(range.to, 'MMM d, yyyy')}`
     }
 
     if (range.from) {
-      return `From ${format(range.from, 'MMM d, yyyy')}`;
+      return `From ${format(range.from, 'MMM d, yyyy')}`
     }
 
-    return placeholder;
-  };
+    return placeholder
+  }
 
   const nextMonth = () => {
-    setCurrentMonth(addDays(currentMonth, 30));
-  };
+    setCurrentMonth(addDays(currentMonth, 30))
+  }
 
   const prevMonth = () => {
-    setCurrentMonth(subDays(currentMonth, 30));
-  };
+    setCurrentMonth(subDays(currentMonth, 30))
+  }
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -249,33 +251,17 @@ export function DateRangePicker({
             <div className="space-y-3">
               {/* Header */}
               <div className="flex items-center justify-between">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-7 w-7"
-                  onClick={prevMonth}
-                >
+                <Button variant="outline" size="icon" className="h-7 w-7" onClick={prevMonth}>
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <div className="text-sm font-medium">
-                  {format(currentMonth, 'MMMM yyyy')}
-                </div>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="h-7 w-7"
-                  onClick={nextMonth}
-                >
+                <div className="text-sm font-medium">{format(currentMonth, 'MMMM yyyy')}</div>
+                <Button variant="outline" size="icon" className="h-7 w-7" onClick={nextMonth}>
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
 
               {/* Calendar Grid */}
-              <Calendar
-                month={currentMonth}
-                range={range}
-                onDateClick={handleDateClick}
-              />
+              <Calendar month={currentMonth} range={range} onDateClick={handleDateClick} />
 
               {/* Footer */}
               <div className="flex items-center justify-between border-t pt-3">
@@ -292,7 +278,7 @@ export function DateRangePicker({
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }
 
 // ============================================================================
@@ -300,45 +286,45 @@ export function DateRangePicker({
 // ============================================================================
 
 interface CalendarProps {
-  month: Date;
-  range: DateRange;
-  onDateClick: (date: Date) => void;
+  month: Date
+  range: DateRange
+  onDateClick: (date: Date) => void
 }
 
 function Calendar({ month, range, onDateClick }: CalendarProps) {
-  const monthStart = startOfMonth(month);
-  const monthEnd = endOfMonth(month);
-  const startDate = startOfWeek(monthStart);
-  const endDate = endOfWeek(monthEnd);
+  const monthStart = startOfMonth(month)
+  const monthEnd = endOfMonth(month)
+  const startDate = startOfWeek(monthStart)
+  const endDate = endOfWeek(monthEnd)
 
-  const days: Date[] = [];
-  let currentDate = startDate;
+  const days: Date[] = []
+  let currentDate = startDate
 
   while (currentDate <= endDate) {
-    days.push(currentDate);
-    currentDate = addDays(currentDate, 1);
+    days.push(currentDate)
+    currentDate = addDays(currentDate, 1)
   }
 
   const isInRange = (date: Date) => {
-    if (!range.from || !range.to) return false;
-    return date >= range.from && date <= range.to;
-  };
+    if (!range.from || !range.to) return false
+    return date >= range.from && date <= range.to
+  }
 
   const isRangeStart = (date: Date) => {
-    return range.from && format(date, 'yyyy-MM-dd') === format(range.from, 'yyyy-MM-dd');
-  };
+    return range.from && format(date, 'yyyy-MM-dd') === format(range.from, 'yyyy-MM-dd')
+  }
 
   const isRangeEnd = (date: Date) => {
-    return range.to && format(date, 'yyyy-MM-dd') === format(range.to, 'yyyy-MM-dd');
-  };
+    return range.to && format(date, 'yyyy-MM-dd') === format(range.to, 'yyyy-MM-dd')
+  }
 
   const isToday = (date: Date) => {
-    return format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd');
-  };
+    return format(date, 'yyyy-MM-dd') === format(new Date(), 'yyyy-MM-dd')
+  }
 
   const isCurrentMonth = (date: Date) => {
-    return format(date, 'MM') === format(month, 'MM');
-  };
+    return format(date, 'MM') === format(month, 'MM')
+  }
 
   return (
     <div className="space-y-2">
@@ -360,11 +346,11 @@ function Calendar({ month, range, onDateClick }: CalendarProps) {
             onClick={() => onDateClick(date)}
             className={cn(
               'flex h-8 w-8 items-center justify-center rounded-md text-xs transition-colors',
-              'hover:bg-accent hover:text-accent-foreground',
+              'hover:text-accent-foreground hover:bg-accent',
               !isCurrentMonth(date) && 'text-muted-foreground/50',
               isInRange(date) && 'bg-primary/10',
               (isRangeStart(date) || isRangeEnd(date)) &&
-                'bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground',
+                'text-primary-foreground hover:text-primary-foreground bg-primary hover:bg-primary',
               isToday(date) && 'border border-primary'
             )}
           >
@@ -373,7 +359,7 @@ function Calendar({ month, range, onDateClick }: CalendarProps) {
         ))}
       </div>
     </div>
-  );
+  )
 }
 
-export default DateRangePicker;
+export default DateRangePicker

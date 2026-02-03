@@ -80,18 +80,10 @@ export const GET_ATTACHMENT = gql`
  * Get all files/attachments in a channel
  */
 export const GET_CHANNEL_FILES = gql`
-  query GetChannelFiles(
-    $channelId: uuid!
-    $fileType: String
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetChannelFiles($channelId: uuid!, $fileType: String, $limit: Int = 50, $offset: Int = 0) {
     nchat_attachments(
       where: {
-        message: {
-          channel_id: { _eq: $channelId }
-          is_deleted: { _eq: false }
-        }
+        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
         file_type: { _ilike: $fileType }
       }
       order_by: { created_at: desc }
@@ -109,10 +101,7 @@ export const GET_CHANNEL_FILES = gql`
     }
     nchat_attachments_aggregate(
       where: {
-        message: {
-          channel_id: { _eq: $channelId }
-          is_deleted: { _eq: false }
-        }
+        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
         file_type: { _ilike: $fileType }
       }
     ) {
@@ -158,7 +147,14 @@ export const GET_CHANNEL_FILES_BY_TYPE = gql`
     documents: nchat_attachments(
       where: {
         message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
-        file_type: { _in: ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain"] }
+        file_type: {
+          _in: [
+            "application/pdf"
+            "application/msword"
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            "text/plain"
+          ]
+        }
       }
       order_by: { created_at: desc }
       limit: $limit
@@ -186,12 +182,7 @@ export const GET_CHANNEL_FILES_BY_TYPE = gql`
 export const GET_USER_FILES = gql`
   query GetUserFiles($userId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_attachments(
-      where: {
-        message: {
-          user_id: { _eq: $userId }
-          is_deleted: { _eq: false }
-        }
-      }
+      where: { message: { user_id: { _eq: $userId }, is_deleted: { _eq: false } } }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
@@ -214,10 +205,7 @@ export const GET_USER_FILES = gql`
  */
 export const GET_MESSAGE_ATTACHMENTS = gql`
   query GetMessageAttachments($messageId: uuid!) {
-    nchat_attachments(
-      where: { message_id: { _eq: $messageId } }
-      order_by: { created_at: asc }
-    ) {
+    nchat_attachments(where: { message_id: { _eq: $messageId } }, order_by: { created_at: asc }) {
       ...Attachment
     }
   }
@@ -368,9 +356,7 @@ export const DELETE_ATTACHMENT = gql`
  */
 export const DELETE_MESSAGE_ATTACHMENTS = gql`
   mutation DeleteMessageAttachments($messageId: uuid!) {
-    delete_nchat_attachments(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    delete_nchat_attachments(where: { message_id: { _eq: $messageId } }) {
       affected_rows
       returning {
         id
@@ -386,10 +372,7 @@ export const DELETE_MESSAGE_ATTACHMENTS = gql`
  */
 export const UPDATE_ATTACHMENT_METADATA = gql`
   mutation UpdateAttachmentMetadata($id: uuid!, $metadata: jsonb!) {
-    update_nchat_attachments_by_pk(
-      pk_columns: { id: $id }
-      _append: { metadata: $metadata }
-    ) {
+    update_nchat_attachments_by_pk(pk_columns: { id: $id }, _append: { metadata: $metadata }) {
       id
       metadata
     }
@@ -400,18 +383,8 @@ export const UPDATE_ATTACHMENT_METADATA = gql`
  * Get a signed upload URL (via Hasura action connecting to MinIO/S3)
  */
 export const GET_UPLOAD_URL = gql`
-  mutation GetUploadUrl(
-    $fileName: String!
-    $fileType: String!
-    $fileSize: Int!
-  ) {
-    get_upload_url(
-      args: {
-        file_name: $fileName
-        file_type: $fileType
-        file_size: $fileSize
-      }
-    ) {
+  mutation GetUploadUrl($fileName: String!, $fileType: String!, $fileSize: Int!) {
+    get_upload_url(args: { file_name: $fileName, file_type: $fileType, file_size: $fileSize }) {
       upload_url
       file_url
       expires_at
@@ -423,16 +396,8 @@ export const GET_UPLOAD_URL = gql`
  * Alternative: Request presigned URL for direct upload
  */
 export const REQUEST_UPLOAD_URL = gql`
-  mutation RequestUploadUrl(
-    $fileName: String!
-    $contentType: String!
-    $channelId: uuid!
-  ) {
-    request_upload_url(
-      file_name: $fileName
-      content_type: $contentType
-      channel_id: $channelId
-    ) {
+  mutation RequestUploadUrl($fileName: String!, $contentType: String!, $channelId: uuid!) {
+    request_upload_url(file_name: $fileName, content_type: $contentType, channel_id: $channelId) {
       presigned_url
       file_key
       file_url
@@ -445,16 +410,8 @@ export const REQUEST_UPLOAD_URL = gql`
  * Confirm upload completion (finalize attachment)
  */
 export const CONFIRM_UPLOAD = gql`
-  mutation ConfirmUpload(
-    $fileKey: String!
-    $messageId: uuid!
-    $metadata: jsonb
-  ) {
-    confirm_upload(
-      file_key: $fileKey
-      message_id: $messageId
-      metadata: $metadata
-    ) {
+  mutation ConfirmUpload($fileKey: String!, $messageId: uuid!, $metadata: jsonb) {
+    confirm_upload(file_key: $fileKey, message_id: $messageId, metadata: $metadata) {
       attachment {
         ...Attachment
       }
@@ -479,9 +436,7 @@ export const GENERATE_THUMBNAIL = gql`
  */
 export const BULK_DELETE_ATTACHMENTS = gql`
   mutation BulkDeleteAttachments($ids: [uuid!]!) {
-    delete_nchat_attachments(
-      where: { id: { _in: $ids } }
-    ) {
+    delete_nchat_attachments(where: { id: { _in: $ids } }) {
       affected_rows
       returning {
         id

@@ -79,10 +79,7 @@ export interface InviteToChannelVariables {
  * Get all channels for a workspace (with optional filtering)
  */
 export const GET_CHANNELS = gql`
-  query GetChannels(
-    $type: String
-    $includeArchived: Boolean = false
-  ) {
+  query GetChannels($type: String, $includeArchived: Boolean = false) {
     nchat_channels(
       where: {
         _and: [
@@ -108,18 +105,12 @@ export const GET_CHANNELS_BY_CATEGORY = gql`
       name
       position
       is_collapsed
-      channels(
-        where: { is_archived: { _eq: false } }
-        order_by: { position: asc }
-      ) {
+      channels(where: { is_archived: { _eq: false } }, order_by: { position: asc }) {
         ...ChannelFull
       }
     }
     uncategorized: nchat_channels(
-      where: {
-        category_id: { _is_null: true }
-        is_archived: { _eq: false }
-      }
+      where: { category_id: { _is_null: true }, is_archived: { _eq: false } }
       order_by: { position: asc }
     ) {
       ...ChannelFull
@@ -133,15 +124,7 @@ export const GET_CHANNELS_BY_CATEGORY = gql`
  */
 export const GET_CHANNEL = gql`
   query GetChannel($id: uuid, $slug: String) {
-    nchat_channels(
-      where: {
-        _or: [
-          { id: { _eq: $id } }
-          { slug: { _eq: $slug } }
-        ]
-      }
-      limit: 1
-    ) {
+    nchat_channels(where: { _or: [{ id: { _eq: $id } }, { slug: { _eq: $slug } }] }, limit: 1) {
       ...ChannelFull
       settings
       members(limit: 20, order_by: { joined_at: asc }) {
@@ -178,9 +161,7 @@ export const GET_CHANNEL_MEMBERS = gql`
     ) {
       ...ChannelMember
     }
-    nchat_channel_members_aggregate(
-      where: { channel_id: { _eq: $channelId } }
-    ) {
+    nchat_channel_members_aggregate(where: { channel_id: { _eq: $channelId } }) {
       aggregate {
         count
       }
@@ -209,10 +190,7 @@ export const GET_USER_CHANNELS = gql`
       muted_until
       unread_count: channel {
         messages_aggregate(
-          where: {
-            created_at: { _gt: "last_read_at" }
-            is_deleted: { _eq: false }
-          }
+          where: { created_at: { _gt: "last_read_at" }, is_deleted: { _eq: false } }
         ) {
           aggregate {
             count
@@ -230,10 +208,7 @@ export const GET_USER_CHANNELS = gql`
 export const GET_DM_CHANNELS = gql`
   query GetDMChannels($userId: uuid!) {
     nchat_channel_members(
-      where: {
-        user_id: { _eq: $userId }
-        channel: { type: { _in: ["direct", "group"] } }
-      }
+      where: { user_id: { _eq: $userId }, channel: { type: { _in: ["direct", "group"] } } }
       order_by: { channel: { updated_at: desc } }
     ) {
       channel {
@@ -272,10 +247,7 @@ export const GET_DM_CHANNELS = gql`
 export const CHECK_CHANNEL_MEMBERSHIP = gql`
   query CheckChannelMembership($channelId: uuid!, $userId: uuid!) {
     nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
       limit: 1
     ) {
       id
@@ -313,9 +285,7 @@ export const CREATE_CHANNEL = gql`
         creator_id: $creatorId
         category_id: $categoryId
         icon: $icon
-        members: {
-          data: [{ user_id: $creatorId, role: "admin" }]
-        }
+        members: { data: [{ user_id: $creatorId, role: "admin" }] }
       }
     ) {
       ...ChannelFull
@@ -358,10 +328,7 @@ export const UPDATE_CHANNEL = gql`
  */
 export const UPDATE_CHANNEL_SETTINGS = gql`
   mutation UpdateChannelSettings($id: uuid!, $settings: jsonb!) {
-    update_nchat_channels_by_pk(
-      pk_columns: { id: $id }
-      _append: { settings: $settings }
-    ) {
+    update_nchat_channels_by_pk(pk_columns: { id: $id }, _append: { settings: $settings }) {
       id
       settings
     }
@@ -387,10 +354,7 @@ export const ARCHIVE_CHANNEL = gql`
   mutation ArchiveChannel($id: uuid!) {
     update_nchat_channels_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        is_archived: true
-        archived_at: "now()"
-      }
+      _set: { is_archived: true, archived_at: "now()" }
     ) {
       id
       is_archived
@@ -406,10 +370,7 @@ export const UNARCHIVE_CHANNEL = gql`
   mutation UnarchiveChannel($id: uuid!) {
     update_nchat_channels_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        is_archived: false
-        archived_at: null
-      }
+      _set: { is_archived: false, archived_at: null }
     ) {
       id
       is_archived
@@ -423,15 +384,8 @@ export const UNARCHIVE_CHANNEL = gql`
 export const JOIN_CHANNEL = gql`
   mutation JoinChannel($channelId: uuid!, $userId: uuid!) {
     insert_nchat_channel_members_one(
-      object: {
-        channel_id: $channelId
-        user_id: $userId
-        role: "member"
-      }
-      on_conflict: {
-        constraint: nchat_channel_members_channel_id_user_id_key
-        update_columns: []
-      }
+      object: { channel_id: $channelId, user_id: $userId, role: "member" }
+      on_conflict: { constraint: nchat_channel_members_channel_id_user_id_key, update_columns: [] }
     ) {
       id
       role
@@ -450,10 +404,7 @@ export const JOIN_CHANNEL = gql`
 export const LEAVE_CHANNEL = gql`
   mutation LeaveChannel($channelId: uuid!, $userId: uuid!) {
     delete_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
     ) {
       affected_rows
     }
@@ -505,10 +456,7 @@ export const BULK_INVITE_TO_CHANNEL = gql`
   mutation BulkInviteToChannel($objects: [nchat_channel_members_insert_input!]!) {
     insert_nchat_channel_members(
       objects: $objects
-      on_conflict: {
-        constraint: nchat_channel_members_channel_id_user_id_key
-        update_columns: []
-      }
+      on_conflict: { constraint: nchat_channel_members_channel_id_user_id_key, update_columns: [] }
     ) {
       affected_rows
       returning {
@@ -531,10 +479,7 @@ export const BULK_INVITE_TO_CHANNEL = gql`
 export const REMOVE_FROM_CHANNEL = gql`
   mutation RemoveFromChannel($channelId: uuid!, $userId: uuid!) {
     delete_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
     ) {
       affected_rows
     }
@@ -547,10 +492,7 @@ export const REMOVE_FROM_CHANNEL = gql`
 export const UPDATE_MEMBER_ROLE = gql`
   mutation UpdateMemberRole($channelId: uuid!, $userId: uuid!, $role: String!) {
     update_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
       _set: { role: $role }
     ) {
       affected_rows
@@ -577,14 +519,8 @@ export const UPDATE_CHANNEL_NOTIFICATIONS = gql`
     $mutedUntil: timestamptz
   ) {
     update_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
-      _set: {
-        notifications_enabled: $enabled
-        muted_until: $mutedUntil
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
+      _set: { notifications_enabled: $enabled, muted_until: $mutedUntil }
     ) {
       affected_rows
       returning {
@@ -608,16 +544,10 @@ export const GET_OR_CREATE_DM_CHANNEL = gql`
         type: "direct"
         is_private: true
         members: {
-          data: [
-            { user_id: $userId1, role: "member" }
-            { user_id: $userId2, role: "member" }
-          ]
+          data: [{ user_id: $userId1, role: "member" }, { user_id: $userId2, role: "member" }]
         }
       }
-      on_conflict: {
-        constraint: nchat_channels_dm_unique
-        update_columns: []
-      }
+      on_conflict: { constraint: nchat_channels_dm_unique, update_columns: [] }
     ) {
       ...ChannelFull
       members {
@@ -702,9 +632,7 @@ export const CHANNEL_MEMBERS_SUBSCRIPTION = gql`
  */
 export const USER_CHANNELS_SUBSCRIPTION = gql`
   subscription UserChannelsSubscription($userId: uuid!) {
-    nchat_channel_members(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    nchat_channel_members(where: { user_id: { _eq: $userId } }) {
       channel {
         ...ChannelBasic
       }

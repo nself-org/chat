@@ -13,9 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#18181B"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "org.nself.nchat",
       "buildNumber": "1",
@@ -27,16 +25,9 @@
         "NSPhotoLibraryUsageDescription": "nChat needs photo library access to share photos",
         "NSPhotoLibraryAddUsageDescription": "nChat needs permission to save photos to your library",
         "NSFaceIDUsageDescription": "nChat uses Face ID for secure authentication",
-        "UIBackgroundModes": [
-          "audio",
-          "voip",
-          "remote-notification"
-        ]
+        "UIBackgroundModes": ["audio", "voip", "remote-notification"]
       },
-      "associatedDomains": [
-        "applinks:nchat.nself.org",
-        "webcredentials:nchat.nself.org"
-      ]
+      "associatedDomains": ["applinks:nchat.nself.org", "webcredentials:nchat.nself.org"]
     },
     "android": {
       "package": "org.nself.nchat",
@@ -71,10 +62,7 @@
               "scheme": "nchat"
             }
           ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },

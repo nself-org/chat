@@ -5,113 +5,109 @@
  * Includes custom emoji support and reaction quick-access
  */
 
-import { create } from 'zustand';
-import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { create } from 'zustand'
+import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface CustomEmoji {
-  id: string;
-  name: string;
-  shortcode: string; // :emoji_name:
-  url: string;
-  category?: string;
-  createdBy?: string;
-  createdAt: string;
-  aliases?: string[];
+  id: string
+  name: string
+  shortcode: string // :emoji_name:
+  url: string
+  category?: string
+  createdBy?: string
+  createdAt: string
+  aliases?: string[]
 }
 
 export interface ReactionUsage {
-  emoji: string;
-  count: number;
-  lastUsedAt: number;
+  emoji: string
+  count: number
+  lastUsedAt: number
 }
 
 export interface ReactionPickerState {
-  isOpen: boolean;
-  targetMessageId: string | null;
-  targetChannelId: string | null;
-  position: { x: number; y: number } | null;
-  activeCategory: string;
-  searchQuery: string;
+  isOpen: boolean
+  targetMessageId: string | null
+  targetChannelId: string | null
+  position: { x: number; y: number } | null
+  activeCategory: string
+  searchQuery: string
 }
 
 export interface ReactionState {
   // Recent reactions (most recently used)
-  recentReactions: string[];
+  recentReactions: string[]
 
   // Frequently used reactions (by usage count)
-  frequentReactions: Map<string, ReactionUsage>;
+  frequentReactions: Map<string, ReactionUsage>
 
   // Quick reactions (customizable bar)
-  quickReactions: string[];
+  quickReactions: string[]
 
   // Custom emoji
-  customEmojis: Map<string, CustomEmoji>;
-  customEmojiCategories: string[];
+  customEmojis: Map<string, CustomEmoji>
+  customEmojiCategories: string[]
 
   // Skin tone preference
-  skinTone: '' | '1F3FB' | '1F3FC' | '1F3FD' | '1F3FE' | '1F3FF';
+  skinTone: '' | '1F3FB' | '1F3FC' | '1F3FD' | '1F3FE' | '1F3FF'
 
   // Reaction picker state
-  picker: ReactionPickerState;
+  picker: ReactionPickerState
 
   // Configuration
-  maxRecentReactions: number;
-  maxQuickReactions: number;
+  maxRecentReactions: number
+  maxQuickReactions: number
 }
 
 export interface ReactionActions {
   // Recording reactions
-  recordReaction: (emoji: string) => void;
+  recordReaction: (emoji: string) => void
 
   // Recent reactions
-  addRecentReaction: (emoji: string) => void;
-  clearRecentReactions: () => void;
+  addRecentReaction: (emoji: string) => void
+  clearRecentReactions: () => void
 
   // Frequent reactions
-  getTopReactions: (count: number) => string[];
-  clearFrequentReactions: () => void;
+  getTopReactions: (count: number) => string[]
+  clearFrequentReactions: () => void
 
   // Quick reactions
-  setQuickReactions: (emojis: string[]) => void;
-  addQuickReaction: (emoji: string) => void;
-  removeQuickReaction: (emoji: string) => void;
-  reorderQuickReaction: (fromIndex: number, toIndex: number) => void;
-  resetQuickReactions: () => void;
+  setQuickReactions: (emojis: string[]) => void
+  addQuickReaction: (emoji: string) => void
+  removeQuickReaction: (emoji: string) => void
+  reorderQuickReaction: (fromIndex: number, toIndex: number) => void
+  resetQuickReactions: () => void
 
   // Custom emoji
-  addCustomEmoji: (emoji: CustomEmoji) => void;
-  removeCustomEmoji: (emojiId: string) => void;
-  updateCustomEmoji: (emojiId: string, updates: Partial<CustomEmoji>) => void;
-  setCustomEmojis: (emojis: CustomEmoji[]) => void;
-  getCustomEmojiByShortcode: (shortcode: string) => CustomEmoji | undefined;
+  addCustomEmoji: (emoji: CustomEmoji) => void
+  removeCustomEmoji: (emojiId: string) => void
+  updateCustomEmoji: (emojiId: string, updates: Partial<CustomEmoji>) => void
+  setCustomEmojis: (emojis: CustomEmoji[]) => void
+  getCustomEmojiByShortcode: (shortcode: string) => CustomEmoji | undefined
 
   // Skin tone
-  setSkinTone: (tone: ReactionState['skinTone']) => void;
+  setSkinTone: (tone: ReactionState['skinTone']) => void
 
   // Picker state
-  openPicker: (
-    messageId: string,
-    channelId: string,
-    position?: { x: number; y: number }
-  ) => void;
-  closePicker: () => void;
-  setPickerCategory: (category: string) => void;
-  setPickerSearchQuery: (query: string) => void;
+  openPicker: (messageId: string, channelId: string, position?: { x: number; y: number }) => void
+  closePicker: () => void
+  setPickerCategory: (category: string) => void
+  setPickerSearchQuery: (query: string) => void
 
   // Configuration
-  setMaxRecentReactions: (max: number) => void;
-  setMaxQuickReactions: (max: number) => void;
+  setMaxRecentReactions: (max: number) => void
+  setMaxQuickReactions: (max: number) => void
 
   // Utility
-  reset: () => void;
+  reset: () => void
 }
 
-export type ReactionStore = ReactionState & ReactionActions;
+export type ReactionStore = ReactionState & ReactionActions
 
 // ============================================================================
 // Constants
@@ -124,10 +120,10 @@ const DEFAULT_QUICK_REACTIONS = [
   '😮', // open mouth (wow)
   '😢', // sad
   '🎉', // celebration
-];
+]
 
-const DEFAULT_MAX_RECENT = 24;
-const DEFAULT_MAX_QUICK = 6;
+const DEFAULT_MAX_RECENT = 24
+const DEFAULT_MAX_QUICK = 6
 
 // ============================================================================
 // Initial State
@@ -150,7 +146,7 @@ const initialState: ReactionState = {
   },
   maxRecentReactions: DEFAULT_MAX_RECENT,
   maxQuickReactions: DEFAULT_MAX_QUICK,
-};
+}
 
 // ============================================================================
 // Store
@@ -171,19 +167,19 @@ export const useReactionStore = create<ReactionStore>()(
                 state.recentReactions = [
                   emoji,
                   ...state.recentReactions.filter((e) => e !== emoji),
-                ].slice(0, state.maxRecentReactions);
+                ].slice(0, state.maxRecentReactions)
 
                 // Update frequent reactions
                 const usage = state.frequentReactions.get(emoji) || {
                   emoji,
                   count: 0,
                   lastUsedAt: 0,
-                };
+                }
                 state.frequentReactions.set(emoji, {
                   ...usage,
                   count: usage.count + 1,
                   lastUsedAt: Date.now(),
-                });
+                })
               },
               false,
               'reaction/recordReaction'
@@ -196,7 +192,7 @@ export const useReactionStore = create<ReactionStore>()(
                 state.recentReactions = [
                   emoji,
                   ...state.recentReactions.filter((e) => e !== emoji),
-                ].slice(0, state.maxRecentReactions);
+                ].slice(0, state.maxRecentReactions)
               },
               false,
               'reaction/addRecentReaction'
@@ -205,7 +201,7 @@ export const useReactionStore = create<ReactionStore>()(
           clearRecentReactions: () =>
             set(
               (state) => {
-                state.recentReactions = [];
+                state.recentReactions = []
               },
               false,
               'reaction/clearRecentReactions'
@@ -213,17 +209,17 @@ export const useReactionStore = create<ReactionStore>()(
 
           // Frequent reactions
           getTopReactions: (count) => {
-            const state = get();
+            const state = get()
             return Array.from(state.frequentReactions.values())
               .sort((a, b) => b.count - a.count)
               .slice(0, count)
-              .map((r) => r.emoji);
+              .map((r) => r.emoji)
           },
 
           clearFrequentReactions: () =>
             set(
               (state) => {
-                state.frequentReactions.clear();
+                state.frequentReactions.clear()
               },
               false,
               'reaction/clearFrequentReactions'
@@ -233,7 +229,7 @@ export const useReactionStore = create<ReactionStore>()(
           setQuickReactions: (emojis) =>
             set(
               (state) => {
-                state.quickReactions = emojis.slice(0, state.maxQuickReactions);
+                state.quickReactions = emojis.slice(0, state.maxQuickReactions)
               },
               false,
               'reaction/setQuickReactions'
@@ -243,10 +239,10 @@ export const useReactionStore = create<ReactionStore>()(
             set(
               (state) => {
                 if (!state.quickReactions.includes(emoji)) {
-                  state.quickReactions = [
-                    ...state.quickReactions,
-                    emoji,
-                  ].slice(0, state.maxQuickReactions);
+                  state.quickReactions = [...state.quickReactions, emoji].slice(
+                    0,
+                    state.maxQuickReactions
+                  )
                 }
               },
               false,
@@ -256,7 +252,7 @@ export const useReactionStore = create<ReactionStore>()(
           removeQuickReaction: (emoji) =>
             set(
               (state) => {
-                state.quickReactions = state.quickReactions.filter((e) => e !== emoji);
+                state.quickReactions = state.quickReactions.filter((e) => e !== emoji)
               },
               false,
               'reaction/removeQuickReaction'
@@ -265,10 +261,10 @@ export const useReactionStore = create<ReactionStore>()(
           reorderQuickReaction: (fromIndex, toIndex) =>
             set(
               (state) => {
-                const newQuickReactions = [...state.quickReactions];
-                const [removed] = newQuickReactions.splice(fromIndex, 1);
-                newQuickReactions.splice(toIndex, 0, removed);
-                state.quickReactions = newQuickReactions;
+                const newQuickReactions = [...state.quickReactions]
+                const [removed] = newQuickReactions.splice(fromIndex, 1)
+                newQuickReactions.splice(toIndex, 0, removed)
+                state.quickReactions = newQuickReactions
               },
               false,
               'reaction/reorderQuickReaction'
@@ -277,7 +273,7 @@ export const useReactionStore = create<ReactionStore>()(
           resetQuickReactions: () =>
             set(
               (state) => {
-                state.quickReactions = [...DEFAULT_QUICK_REACTIONS];
+                state.quickReactions = [...DEFAULT_QUICK_REACTIONS]
               },
               false,
               'reaction/resetQuickReactions'
@@ -287,9 +283,9 @@ export const useReactionStore = create<ReactionStore>()(
           addCustomEmoji: (emoji) =>
             set(
               (state) => {
-                state.customEmojis.set(emoji.id, emoji);
+                state.customEmojis.set(emoji.id, emoji)
                 if (emoji.category && !state.customEmojiCategories.includes(emoji.category)) {
-                  state.customEmojiCategories.push(emoji.category);
+                  state.customEmojiCategories.push(emoji.category)
                 }
               },
               false,
@@ -299,7 +295,7 @@ export const useReactionStore = create<ReactionStore>()(
           removeCustomEmoji: (emojiId) =>
             set(
               (state) => {
-                state.customEmojis.delete(emojiId);
+                state.customEmojis.delete(emojiId)
               },
               false,
               'reaction/removeCustomEmoji'
@@ -308,9 +304,9 @@ export const useReactionStore = create<ReactionStore>()(
           updateCustomEmoji: (emojiId, updates) =>
             set(
               (state) => {
-                const emoji = state.customEmojis.get(emojiId);
+                const emoji = state.customEmojis.get(emojiId)
                 if (emoji) {
-                  state.customEmojis.set(emojiId, { ...emoji, ...updates });
+                  state.customEmojis.set(emojiId, { ...emoji, ...updates })
                 }
               },
               false,
@@ -320,29 +316,29 @@ export const useReactionStore = create<ReactionStore>()(
           setCustomEmojis: (emojis) =>
             set(
               (state) => {
-                state.customEmojis = new Map(emojis.map((e) => [e.id, e]));
-                const categories = new Set<string>();
+                state.customEmojis = new Map(emojis.map((e) => [e.id, e]))
+                const categories = new Set<string>()
                 emojis.forEach((e) => {
-                  if (e.category) categories.add(e.category);
-                });
-                state.customEmojiCategories = Array.from(categories);
+                  if (e.category) categories.add(e.category)
+                })
+                state.customEmojiCategories = Array.from(categories)
               },
               false,
               'reaction/setCustomEmojis'
             ),
 
           getCustomEmojiByShortcode: (shortcode) => {
-            const state = get();
+            const state = get()
             return Array.from(state.customEmojis.values()).find(
               (e) => e.shortcode === shortcode || e.aliases?.includes(shortcode)
-            );
+            )
           },
 
           // Skin tone
           setSkinTone: (tone) =>
             set(
               (state) => {
-                state.skinTone = tone;
+                state.skinTone = tone
               },
               false,
               'reaction/setSkinTone'
@@ -352,11 +348,11 @@ export const useReactionStore = create<ReactionStore>()(
           openPicker: (messageId, channelId, position) =>
             set(
               (state) => {
-                state.picker.isOpen = true;
-                state.picker.targetMessageId = messageId;
-                state.picker.targetChannelId = channelId;
-                state.picker.position = position ?? null;
-                state.picker.searchQuery = '';
+                state.picker.isOpen = true
+                state.picker.targetMessageId = messageId
+                state.picker.targetChannelId = channelId
+                state.picker.position = position ?? null
+                state.picker.searchQuery = ''
               },
               false,
               'reaction/openPicker'
@@ -365,11 +361,11 @@ export const useReactionStore = create<ReactionStore>()(
           closePicker: () =>
             set(
               (state) => {
-                state.picker.isOpen = false;
-                state.picker.targetMessageId = null;
-                state.picker.targetChannelId = null;
-                state.picker.position = null;
-                state.picker.searchQuery = '';
+                state.picker.isOpen = false
+                state.picker.targetMessageId = null
+                state.picker.targetChannelId = null
+                state.picker.position = null
+                state.picker.searchQuery = ''
               },
               false,
               'reaction/closePicker'
@@ -378,7 +374,7 @@ export const useReactionStore = create<ReactionStore>()(
           setPickerCategory: (category) =>
             set(
               (state) => {
-                state.picker.activeCategory = category;
+                state.picker.activeCategory = category
               },
               false,
               'reaction/setPickerCategory'
@@ -387,7 +383,7 @@ export const useReactionStore = create<ReactionStore>()(
           setPickerSearchQuery: (query) =>
             set(
               (state) => {
-                state.picker.searchQuery = query;
+                state.picker.searchQuery = query
               },
               false,
               'reaction/setPickerSearchQuery'
@@ -397,10 +393,10 @@ export const useReactionStore = create<ReactionStore>()(
           setMaxRecentReactions: (max) =>
             set(
               (state) => {
-                state.maxRecentReactions = max;
+                state.maxRecentReactions = max
                 // Trim recent if necessary
                 if (state.recentReactions.length > max) {
-                  state.recentReactions = state.recentReactions.slice(0, max);
+                  state.recentReactions = state.recentReactions.slice(0, max)
                 }
               },
               false,
@@ -410,10 +406,10 @@ export const useReactionStore = create<ReactionStore>()(
           setMaxQuickReactions: (max) =>
             set(
               (state) => {
-                state.maxQuickReactions = max;
+                state.maxQuickReactions = max
                 // Trim quick reactions if necessary
                 if (state.quickReactions.length > max) {
-                  state.quickReactions = state.quickReactions.slice(0, max);
+                  state.quickReactions = state.quickReactions.slice(0, max)
                 }
               },
               false,
@@ -438,9 +434,9 @@ export const useReactionStore = create<ReactionStore>()(
         // Custom serialization for Map objects
         storage: {
           getItem: (name) => {
-            const str = localStorage.getItem(name);
-            if (!str) return null;
-            const data = JSON.parse(str);
+            const str = localStorage.getItem(name)
+            if (!str) return null
+            const data = JSON.parse(str)
             return {
               ...data,
               state: {
@@ -448,7 +444,7 @@ export const useReactionStore = create<ReactionStore>()(
                 frequentReactions: new Map(data.state.frequentReactions || []),
                 customEmojis: new Map(data.state.customEmojis || []),
               },
-            };
+            }
           },
           setItem: (name, value) => {
             const data = {
@@ -458,8 +454,8 @@ export const useReactionStore = create<ReactionStore>()(
                 frequentReactions: Array.from(value.state.frequentReactions.entries()),
                 customEmojis: Array.from(value.state.customEmojis.entries()),
               },
-            };
-            localStorage.setItem(name, JSON.stringify(data));
+            }
+            localStorage.setItem(name, JSON.stringify(data))
           },
           removeItem: (name) => localStorage.removeItem(name),
         },
@@ -479,38 +475,37 @@ export const useReactionStore = create<ReactionStore>()(
     ),
     { name: 'reaction-store' }
   )
-);
+)
 
 // ============================================================================
 // Selectors
 // ============================================================================
 
-export const selectRecentReactions = (state: ReactionStore) => state.recentReactions;
+export const selectRecentReactions = (state: ReactionStore) => state.recentReactions
 
-export const selectQuickReactions = (state: ReactionStore) => state.quickReactions;
+export const selectQuickReactions = (state: ReactionStore) => state.quickReactions
 
-export const selectSkinTone = (state: ReactionStore) => state.skinTone;
+export const selectSkinTone = (state: ReactionStore) => state.skinTone
 
-export const selectPickerState = (state: ReactionStore) => state.picker;
+export const selectPickerState = (state: ReactionStore) => state.picker
 
-export const selectIsPickerOpen = (state: ReactionStore) => state.picker.isOpen;
+export const selectIsPickerOpen = (state: ReactionStore) => state.picker.isOpen
 
 export const selectPickerTarget = (state: ReactionStore) => ({
   messageId: state.picker.targetMessageId,
   channelId: state.picker.targetChannelId,
-});
+})
 
-export const selectCustomEmojis = (state: ReactionStore) =>
-  Array.from(state.customEmojis.values());
+export const selectCustomEmojis = (state: ReactionStore) => Array.from(state.customEmojis.values())
 
 export const selectCustomEmojisByCategory = (category: string) => (state: ReactionStore) =>
-  Array.from(state.customEmojis.values()).filter((e) => e.category === category);
+  Array.from(state.customEmojis.values()).filter((e) => e.category === category)
 
 export const selectTopReactions = (count: number) => (state: ReactionStore) =>
   Array.from(state.frequentReactions.values())
     .sort((a, b) => b.count - a.count)
     .slice(0, count)
-    .map((r) => r.emoji);
+    .map((r) => r.emoji)
 
 // ============================================================================
 // Helpers
@@ -519,39 +514,137 @@ export const selectTopReactions = (count: number) => (state: ReactionStore) =>
 /**
  * Apply skin tone modifier to an emoji
  */
-export const applyEmojiSkinTone = (
-  emoji: string,
-  skinTone: ReactionState['skinTone']
-): string => {
-  if (!skinTone) return emoji;
+export const applyEmojiSkinTone = (emoji: string, skinTone: ReactionState['skinTone']): string => {
+  if (!skinTone) return emoji
 
   // List of emojis that support skin tone modifiers
   const skinToneEmojis = [
-    '👋', '🤚', '🖐️', '✋', '🖖', '👌', '🤌', '🤏', '✌️', '🤞',
-    '🤟', '🤘', '🤙', '👈', '👉', '👆', '🖕', '👇', '☝️', '👍',
-    '👎', '✊', '👊', '🤛', '🤜', '👏', '🙌', '👐', '🤲', '🙏',
-    '✍️', '💅', '🤳', '💪', '🦵', '🦶', '👂', '🦻', '👃', '👶',
-    '🧒', '👦', '👧', '🧑', '👱', '👨', '🧔', '👩', '🧓', '👴',
-    '👵', '🙍', '🙎', '🙅', '🙆', '💁', '🙋', '🧏', '🙇', '🤦',
-    '🤷', '👮', '🕵️', '💂', '👷', '🤴', '👸', '👳', '👲', '🧕',
-    '🤵', '👰', '🤰', '🤱', '👼', '🎅', '🤶', '🦸', '🦹', '🧙',
-    '🧚', '🧛', '🧜', '🧝', '🧞', '🧟', '💆', '💇', '🚶', '🧍',
-    '🧎', '🏃', '💃', '🕺', '🕴️', '🧖', '🧗', '🤸', '🏌️', '🏇',
-    '⛷️', '🏂', '🏋️', '🤼', '🤽', '🤾', '🤺', '⛹️', '🏊', '🚣',
-    '🧘', '🛀', '🛌',
-  ];
+    '👋',
+    '🤚',
+    '🖐️',
+    '✋',
+    '🖖',
+    '👌',
+    '🤌',
+    '🤏',
+    '✌️',
+    '🤞',
+    '🤟',
+    '🤘',
+    '🤙',
+    '👈',
+    '👉',
+    '👆',
+    '🖕',
+    '👇',
+    '☝️',
+    '👍',
+    '👎',
+    '✊',
+    '👊',
+    '🤛',
+    '🤜',
+    '👏',
+    '🙌',
+    '👐',
+    '🤲',
+    '🙏',
+    '✍️',
+    '💅',
+    '🤳',
+    '💪',
+    '🦵',
+    '🦶',
+    '👂',
+    '🦻',
+    '👃',
+    '👶',
+    '🧒',
+    '👦',
+    '👧',
+    '🧑',
+    '👱',
+    '👨',
+    '🧔',
+    '👩',
+    '🧓',
+    '👴',
+    '👵',
+    '🙍',
+    '🙎',
+    '🙅',
+    '🙆',
+    '💁',
+    '🙋',
+    '🧏',
+    '🙇',
+    '🤦',
+    '🤷',
+    '👮',
+    '🕵️',
+    '💂',
+    '👷',
+    '🤴',
+    '👸',
+    '👳',
+    '👲',
+    '🧕',
+    '🤵',
+    '👰',
+    '🤰',
+    '🤱',
+    '👼',
+    '🎅',
+    '🤶',
+    '🦸',
+    '🦹',
+    '🧙',
+    '🧚',
+    '🧛',
+    '🧜',
+    '🧝',
+    '🧞',
+    '🧟',
+    '💆',
+    '💇',
+    '🚶',
+    '🧍',
+    '🧎',
+    '🏃',
+    '💃',
+    '🕺',
+    '🕴️',
+    '🧖',
+    '🧗',
+    '🤸',
+    '🏌️',
+    '🏇',
+    '⛷️',
+    '🏂',
+    '🏋️',
+    '🤼',
+    '🤽',
+    '🤾',
+    '🤺',
+    '⛹️',
+    '🏊',
+    '🚣',
+    '🧘',
+    '🛀',
+    '🛌',
+  ]
 
   // Check if emoji supports skin tone
   // Remove existing skin tone modifiers (U+1F3FB through U+1F3FF)
-  const skinToneModifiers = /\uD83C[\uDFFB-\uDFFF]/g;
-  const baseEmoji = emoji.replace(skinToneModifiers, '');
+  const skinToneModifiers = /\uD83C[\uDFFB-\uDFFF]/g
+  const baseEmoji = emoji.replace(skinToneModifiers, '')
   if (!skinToneEmojis.includes(baseEmoji)) {
-    return emoji;
+    return emoji
   }
 
   // Apply skin tone
-  return baseEmoji + String.fromCodePoint(parseInt(skinTone, 16));
-};
+  return baseEmoji + String.fromCodePoint(parseInt(skinTone, 16))
+}
 
 /**
  * Get emoji categories for picker
@@ -568,7 +661,7 @@ export const getEmojiCategories = (): string[] => [
   'symbols',
   'flags',
   'custom',
-];
+]
 
 /**
  * Category labels for display
@@ -586,9 +679,9 @@ export const getCategoryLabel = (category: string): string => {
     symbols: 'Symbols',
     flags: 'Flags',
     custom: 'Custom',
-  };
-  return labels[category] || category;
-};
+  }
+  return labels[category] || category
+}
 
 /**
  * Category icons for picker tabs
@@ -606,6 +699,6 @@ export const getCategoryIcon = (category: string): string => {
     symbols: '❤️',
     flags: '🏳️',
     custom: '⭐',
-  };
-  return icons[category] || '📁';
-};
+  }
+  return icons[category] || '📁'
+}

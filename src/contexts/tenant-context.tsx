@@ -10,6 +10,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { Tenant, TenantContext as TenantContextType } from '@/lib/tenants/types'
 
+import { logger } from '@/lib/logger'
+
 interface TenantProviderProps {
   children: React.ReactNode
   initialTenant?: Tenant
@@ -51,11 +53,9 @@ export function TenantProvider({ children, initialTenant }: TenantProviderProps)
       setTenant(data.tenant)
       setContext(data.context)
     } catch (error) {
-      const errorMessage = error instanceof Error
-        ? error.message
-        : 'Failed to fetch tenant';
+      const errorMessage = error instanceof Error ? error.message : 'Failed to fetch tenant'
       setError(errorMessage)
-      console.error('Error fetching tenant:', error)
+      logger.error('Error fetching tenant:', error)
     } finally {
       setIsLoading(false)
     }
@@ -137,7 +137,7 @@ export function useTenantLimits() {
       const data = await response.json()
       setLimitsExceeded(data.limits || [])
     } catch (err) {
-      console.error('Error checking limits:', err)
+      logger.error('Error checking limits:', err)
     } finally {
       setIsChecking(false)
     }

@@ -139,10 +139,7 @@ mutation UpdateLiveLocation(
 
 # Stop sharing live location
 mutation StopLiveLocation($id: uuid!) {
-  update_nchat_location_shares_by_pk(
-    pk_columns: { id: $id }
-    _set: { is_active: false }
-  ) {
+  update_nchat_location_shares_by_pk(pk_columns: { id: $id }, _set: { is_active: false }) {
     id
     is_active
     expires_at
@@ -150,11 +147,7 @@ mutation StopLiveLocation($id: uuid!) {
 }
 
 # Extend live location duration
-mutation ExtendLiveLocation(
-  $id: uuid!
-  $additionalMinutes: Int!
-  $newExpiresAt: timestamptz!
-) {
+mutation ExtendLiveLocation($id: uuid!, $additionalMinutes: Int!, $newExpiresAt: timestamptz!) {
   update_nchat_location_shares_by_pk(
     pk_columns: { id: $id }
     _set: { expires_at: $newExpiresAt }
@@ -183,11 +176,7 @@ mutation ClearLocationHistory($userId: uuid!) {
 # Clear location history older than a date
 mutation ClearOldLocationHistory($userId: uuid!, $olderThan: timestamptz!) {
   delete_nchat_location_shares(
-    where: {
-      user_id: { _eq: $userId }
-      created_at: { _lt: $olderThan }
-      type: { _eq: "static" }
-    }
+    where: { user_id: { _eq: $userId }, created_at: { _lt: $olderThan }, type: { _eq: "static" } }
   ) {
     affected_rows
   }
@@ -227,11 +216,7 @@ mutation UpdateLocationPrivacySettings(
 # Stop all active live locations for a user (e.g., when logging out)
 mutation StopAllUserLiveLocations($userId: uuid!) {
   update_nchat_location_shares(
-    where: {
-      user_id: { _eq: $userId }
-      type: { _eq: "live" }
-      is_active: { _eq: true }
-    }
+    where: { user_id: { _eq: $userId }, type: { _eq: "live" }, is_active: { _eq: true } }
     _set: { is_active: false }
   ) {
     affected_rows
@@ -245,11 +230,7 @@ mutation StopAllUserLiveLocations($userId: uuid!) {
 # Mark expired live locations as inactive (cron job)
 mutation DeactivateExpiredLocations {
   update_nchat_location_shares(
-    where: {
-      type: { _eq: "live" }
-      is_active: { _eq: true }
-      expires_at: { _lt: "now()" }
-    }
+    where: { type: { _eq: "live" }, is_active: { _eq: true }, expires_at: { _lt: "now()" } }
     _set: { is_active: false }
   ) {
     affected_rows

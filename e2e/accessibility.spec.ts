@@ -2,6 +2,7 @@
  * Accessibility (a11y) E2E Tests
  *
  * Tests for accessibility features including:
+ * - WCAG 2.1 AA compliance with axe-core
  * - Tab navigation through interface
  * - Screen reader compatibility (ARIA labels)
  * - Keyboard shortcuts (Ctrl+K, Escape, etc.)
@@ -10,9 +11,110 @@
  * - Color contrast validation
  * - Form validation accessibility
  * - Modal focus trapping
+ *
+ * @tag @a11y
  */
 
 import { test, expect } from '@playwright/test'
+import AxeBuilder from '@axe-core/playwright'
+
+// ============================================================================
+// Axe-core WCAG 2.1 AA Compliance Tests
+// ============================================================================
+
+test.describe('WCAG 2.1 AA Compliance', () => {
+  test('home page should have no accessibility violations @a11y', async ({ page }) => {
+    await page.goto('/')
+    await page.waitForLoadState('networkidle')
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('login page should have no accessibility violations @a11y', async ({ page }) => {
+    await page.goto('/login')
+    await page.waitForLoadState('networkidle')
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('chat page should have no accessibility violations @a11y', async ({ page }) => {
+    await page.goto('/chat')
+    await page.waitForLoadState('networkidle')
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .exclude('[data-third-party]') // Exclude third-party widgets
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('settings page should have no accessibility violations @a11y', async ({ page }) => {
+    await page.goto('/settings')
+    await page.waitForLoadState('networkidle')
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa'])
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('should meet color contrast requirements @a11y', async ({ page }) => {
+    await page.goto('/chat')
+    await page.waitForLoadState('networkidle')
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['cat.color'])
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('should have proper keyboard accessibility @a11y', async ({ page }) => {
+    await page.goto('/chat')
+    await page.waitForLoadState('networkidle')
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['cat.keyboard'])
+      .analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('should have proper ARIA attributes @a11y', async ({ page }) => {
+    await page.goto('/chat')
+    await page.waitForLoadState('networkidle')
+
+    const accessibilityScanResults = await new AxeBuilder({ page }).withTags(['cat.aria']).analyze()
+
+    expect(accessibilityScanResults.violations).toEqual([])
+  })
+
+  test('should have proper semantic HTML @a11y', async ({ page }) => {
+    await page.goto('/chat')
+    await page.waitForLoadState('networkidle')
+
+    const accessibilityScanResults = await new AxeBuilder({ page })
+      .withTags(['best-practice'])
+      .analyze()
+
+    // Best practices can have warnings but should have no violations
+    const criticalViolations = accessibilityScanResults.violations.filter(
+      (v) => v.impact === 'critical' || v.impact === 'serious'
+    )
+
+    expect(criticalViolations).toEqual([])
+  })
+})
 
 // ============================================================================
 // Tab Navigation Tests
@@ -65,24 +167,24 @@ test.describe('Tab Navigation', () => {
     await page.keyboard.press('Tab')
     await page.waitForTimeout(100)
 
-    const firstElement = await page.evaluate(() =>
-      (document.activeElement as HTMLElement)?.id || 'unnamed'
+    const firstElement = await page.evaluate(
+      () => (document.activeElement as HTMLElement)?.id || 'unnamed'
     )
 
     // Tab forward again
     await page.keyboard.press('Tab')
     await page.waitForTimeout(100)
 
-    const secondElement = await page.evaluate(() =>
-      (document.activeElement as HTMLElement)?.id || 'unnamed'
+    const secondElement = await page.evaluate(
+      () => (document.activeElement as HTMLElement)?.id || 'unnamed'
     )
 
     // Tab back with Shift+Tab
     await page.keyboard.press('Shift+Tab')
     await page.waitForTimeout(100)
 
-    const backElement = await page.evaluate(() =>
-      (document.activeElement as HTMLElement)?.id || 'unnamed'
+    const backElement = await page.evaluate(
+      () => (document.activeElement as HTMLElement)?.id || 'unnamed'
     )
 
     // Should be back at first element
@@ -177,9 +279,7 @@ test.describe('Screen Reader Compatibility', () => {
     }
   })
 
-  test('should have descriptive aria-labels on interactive elements', async ({
-    page,
-  }) => {
+  test('should have descriptive aria-labels on interactive elements', async ({ page }) => {
     // Check form elements
     const inputs = page.locator('input[type="text"], textarea')
 
@@ -242,9 +342,7 @@ test.describe('Screen Reader Compatibility', () => {
 
       // At least one should be marked as current
       const withAriaCurrent = await links.evaluate((elements) => {
-        return Array.from(elements).filter((el) =>
-          el.hasAttribute('aria-current')
-        ).length
+        return Array.from(elements).filter((el) => el.hasAttribute('aria-current')).length
       })
 
       expect(withAriaCurrent).toBeGreaterThanOrEqual(0)
@@ -486,8 +584,7 @@ test.describe('Focus Management', () => {
       if (!elem) return null
 
       const style = window.getComputedStyle(elem)
-      const outline =
-        style.outline !== 'none' && style.outline !== ''
+      const outline = style.outline !== 'none' && style.outline !== ''
       const ring = style.boxShadow && style.boxShadow.includes('rgb')
 
       return {
@@ -651,11 +748,8 @@ test.describe('Color Contrast', () => {
     if ((await buttons.count()) > 0) {
       const hasContrast = await buttons.first().evaluate(() => {
         const style = window.getComputedStyle(button as HTMLElement)
-        const hasBg =
-          style.backgroundColor &&
-          style.backgroundColor !== 'rgba(0, 0, 0, 0)'
-        const hasText =
-          style.color && style.color !== 'rgba(0, 0, 0, 0)'
+        const hasBg = style.backgroundColor && style.backgroundColor !== 'rgba(0, 0, 0, 0)'
+        const hasText = style.color && style.color !== 'rgba(0, 0, 0, 0)'
 
         return hasBg || hasText
       })
@@ -728,9 +822,7 @@ test.describe('Form Validation Accessibility', () => {
         await page.waitForTimeout(500)
 
         // Look for error messages
-        const errorMessages = page.locator(
-          '[role="alert"], .error, [aria-describedby], .invalid'
-        )
+        const errorMessages = page.locator('[role="alert"], .error, [aria-describedby], .invalid')
 
         const hasErrors = await errorMessages.count()
 

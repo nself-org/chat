@@ -16,6 +16,7 @@ import { Check, ChevronDown, Copy } from 'lucide-react'
 import { NodeViewContent, NodeViewWrapper, type NodeViewProps } from '@tiptap/react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { logger } from '@/lib/logger'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,11 +89,7 @@ export interface StandaloneCodeBlockProps {
 // TipTap Node View Component
 // ============================================================================
 
-export function CodeBlockNodeView({
-  node,
-  updateAttributes,
-  extension,
-}: CodeBlockProps) {
+export function CodeBlockNodeView({ node, updateAttributes, extension }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
   const language = (node.attrs.language as SupportedLanguage) || 'plaintext'
 
@@ -103,7 +100,7 @@ export function CodeBlockNodeView({
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy code:', err)
+      logger.error('Failed to copy code:',  err)
     }
   }, [node.textContent])
 
@@ -114,14 +111,13 @@ export function CodeBlockNodeView({
     [updateAttributes]
   )
 
-  const languageLabel =
-    SUPPORTED_LANGUAGES.find((l) => l.value === language)?.label || 'Plain Text'
+  const languageLabel = SUPPORTED_LANGUAGES.find((l) => l.value === language)?.label || 'Plain Text'
 
   return (
     <NodeViewWrapper className="code-block-wrapper">
-      <div className="relative rounded-lg border bg-muted/50 overflow-hidden">
+      <div className="bg-muted/50 relative overflow-hidden rounded-lg border">
         {/* Header */}
-        <div className="flex items-center justify-between border-b bg-muted/80 px-3 py-1.5">
+        <div className="bg-muted/80 flex items-center justify-between border-b px-3 py-1.5">
           {/* Language selector */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -139,10 +135,7 @@ export function CodeBlockNodeView({
                 <DropdownMenuItem
                   key={lang.value}
                   onClick={() => handleLanguageChange(lang.value)}
-                  className={cn(
-                    'text-sm',
-                    lang.value === language && 'bg-accent'
-                  )}
+                  className={cn('text-sm', lang.value === language && 'bg-accent')}
                 >
                   {lang.label}
                 </DropdownMenuItem>
@@ -200,19 +193,18 @@ export function CodeBlock({
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy code:', err)
+      logger.error('Failed to copy code:',  err)
     }
   }, [code])
 
-  const languageLabel =
-    SUPPORTED_LANGUAGES.find((l) => l.value === language)?.label || 'Plain Text'
+  const languageLabel = SUPPORTED_LANGUAGES.find((l) => l.value === language)?.label || 'Plain Text'
 
   const lines = code.split('\n')
 
   return (
-    <div className={cn('relative rounded-lg border bg-muted/50 overflow-hidden', className)}>
+    <div className={cn('bg-muted/50 relative overflow-hidden rounded-lg border', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between border-b bg-muted/80 px-3 py-1.5">
+      <div className="bg-muted/80 flex items-center justify-between border-b px-3 py-1.5">
         {/* Language selector/label */}
         {editable && onLanguageChange ? (
           <DropdownMenu>
@@ -231,10 +223,7 @@ export function CodeBlock({
                 <DropdownMenuItem
                   key={lang.value}
                   onClick={() => onLanguageChange(lang.value)}
-                  className={cn(
-                    'text-sm',
-                    lang.value === language && 'bg-accent'
-                  )}
+                  className={cn('text-sm', lang.value === language && 'bg-accent')}
                 >
                   {lang.label}
                 </DropdownMenuItem>
@@ -273,7 +262,7 @@ export function CodeBlock({
             <code className={`language-${language}`}>
               {lines.map((line, index) => (
                 <div key={index} className="flex">
-                  <span className="mr-4 select-none text-muted-foreground/50 text-right min-w-[2ch]">
+                  <span className="text-muted-foreground/50 mr-4 min-w-[2ch] select-none text-right">
                     {index + 1}
                   </span>
                   <span>{line}</span>
@@ -300,12 +289,7 @@ export interface InlineCodeProps {
 
 export function InlineCode({ children, className }: InlineCodeProps) {
   return (
-    <code
-      className={cn(
-        'rounded bg-muted px-1.5 py-0.5 font-mono text-sm',
-        className
-      )}
-    >
+    <code className={cn('rounded bg-muted px-1.5 py-0.5 font-mono text-sm', className)}>
       {children}
     </code>
   )

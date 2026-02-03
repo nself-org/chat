@@ -16,30 +16,30 @@ The nself-chat project now includes a comprehensive, production-ready internatio
 
 ### Core Framework
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| Translation Engine | ✅ Complete | Custom i18n system with dynamic loading |
-| Locale Store | ✅ Complete | Zustand-based state management with persistence |
-| Language Detector | ✅ Complete | Browser language detection |
-| Pluralization | ✅ Complete | CLDR-compliant plural rules |
-| Date Formatting | ✅ Complete | date-fns integration |
-| Number Formatting | ✅ Complete | Intl.NumberFormat integration |
-| RTL Support | ✅ Complete | Full RTL layout support |
-| React Components | ✅ Complete | Provider, Switcher, Formatters |
+| Component          | Status      | Details                                         |
+| ------------------ | ----------- | ----------------------------------------------- |
+| Translation Engine | ✅ Complete | Custom i18n system with dynamic loading         |
+| Locale Store       | ✅ Complete | Zustand-based state management with persistence |
+| Language Detector  | ✅ Complete | Browser language detection                      |
+| Pluralization      | ✅ Complete | CLDR-compliant plural rules                     |
+| Date Formatting    | ✅ Complete | date-fns integration                            |
+| Number Formatting  | ✅ Complete | Intl.NumberFormat integration                   |
+| RTL Support        | ✅ Complete | Full RTL layout support                         |
+| React Components   | ✅ Complete | Provider, Switcher, Formatters                  |
 
 ### Supported Languages
 
-| Language | Code | Completion | Status |
-|----------|------|------------|---------|
-| English | en | 100% | ✅ Complete |
-| Spanish | es | 100% | ✅ Complete |
-| French | fr | 100% | ✅ Complete |
-| German | de | 100% | ✅ Complete |
-| Chinese (Simplified) | zh | 100% | ✅ Complete |
-| Arabic | ar | 100% | ✅ Complete (RTL) |
-| Japanese | ja | 95% | ⚠️ Minor gaps |
-| Portuguese | pt | 95% | ⚠️ Minor gaps |
-| Russian | ru | 95% | ⚠️ Minor gaps |
+| Language             | Code | Completion | Status            |
+| -------------------- | ---- | ---------- | ----------------- |
+| English              | en   | 100%       | ✅ Complete       |
+| Spanish              | es   | 100%       | ✅ Complete       |
+| French               | fr   | 100%       | ✅ Complete       |
+| German               | de   | 100%       | ✅ Complete       |
+| Chinese (Simplified) | zh   | 100%       | ✅ Complete       |
+| Arabic               | ar   | 100%       | ✅ Complete (RTL) |
+| Japanese             | ja   | 95%        | ⚠️ Minor gaps     |
+| Portuguese           | pt   | 95%        | ⚠️ Minor gaps     |
+| Russian              | ru   | 95%        | ⚠️ Minor gaps     |
 
 ### Translation Files
 
@@ -103,10 +103,11 @@ src/
 Translations are loaded on-demand using dynamic imports:
 
 ```typescript
-const translations = await import(`@/locales/${locale}/${namespace}.json`);
+const translations = await import(`@/locales/${locale}/${namespace}.json`)
 ```
 
 **Benefits**:
+
 - Reduces initial bundle size
 - Faster page loads
 - Automatic code-splitting per language
@@ -115,6 +116,7 @@ const translations = await import(`@/locales/${locale}/${namespace}.json`);
 ### 2. Intelligent Fallback System
 
 Multi-level fallback chain:
+
 1. Requested locale + namespace
 2. Fallback locale (English) + namespace
 3. Default value or key itself
@@ -122,6 +124,7 @@ Multi-level fallback chain:
 ### 3. Comprehensive RTL Support
 
 **Features**:
+
 - Automatic RTL detection
 - Document-level `dir` attribute management
 - Logical CSS properties
@@ -130,6 +133,7 @@ Multi-level fallback chain:
 - Bidirectional text isolation
 
 **RTL Components**:
+
 ```typescript
 <RTLWrapper>           // Layout wrapper
 <DirectionalText>      // Text direction
@@ -140,16 +144,18 @@ Multi-level fallback chain:
 ### 4. Locale-Aware Formatting
 
 **Date Formatting**:
+
 ```typescript
-formatDate(date, 'long', 'en')     // "January 31, 2026"
-formatDate(date, 'long', 'es')     // "31 de enero de 2026"
-formatDate(date, 'long', 'ar')     // "٣١ يناير ٢٠٢٦"
+formatDate(date, 'long', 'en') // "January 31, 2026"
+formatDate(date, 'long', 'es') // "31 de enero de 2026"
+formatDate(date, 'long', 'ar') // "٣١ يناير ٢٠٢٦"
 ```
 
 **Number Formatting**:
+
 ```typescript
-formatNumber(1234.56, 'en')        // "1,234.56"
-formatNumber(1234.56, 'de')        // "1.234,56"
+formatNumber(1234.56, 'en') // "1,234.56"
+formatNumber(1234.56, 'de') // "1.234,56"
 formatCurrency(99.99, 'USD', 'en') // "$99.99"
 ```
 
@@ -165,6 +171,7 @@ CLDR-compliant plural rules for all languages:
 ```
 
 **Arabic** (6 forms):
+
 ```json
 {
   "messages_zero": "لا توجد رسائل",
@@ -179,6 +186,7 @@ CLDR-compliant plural rules for all languages:
 ### 6. Browser Language Detection
 
 Automatically detects user's preferred language from:
+
 1. Browser `navigator.language`
 2. Browser `navigator.languages`
 3. HTML `lang` attribute
@@ -188,6 +196,7 @@ Automatically detects user's preferred language from:
 ### 7. Persistent Preferences
 
 User's language choice is persisted in:
+
 - LocalStorage
 - Zustand state
 - URL query parameter (optional)
@@ -200,19 +209,19 @@ User's language choice is persisted in:
 ### Basic Translation
 
 ```typescript
-import { t } from '@/lib/i18n/translator';
+import { t } from '@/lib/i18n/translator'
 
 // Simple translation
-const text = t('app.name');
+const text = t('app.name')
 
 // With namespace
-const text = t('chat:messages.new');
+const text = t('chat:messages.new')
 
 // With interpolation
-const text = t('time.ago', { values: { time: '5 minutes' } });
+const text = t('time.ago', { values: { time: '5 minutes' } })
 
 // With pluralization
-const text = t('messages.count', { count: 5 });
+const text = t('messages.count', { count: 5 })
 ```
 
 ### React Hooks
@@ -392,7 +401,7 @@ export const i18nConfig = {
 
   // Storage
   storageKey: 'nself-chat-locale',
-};
+}
 ```
 
 ### Locale Configuration
@@ -400,6 +409,7 @@ export const i18nConfig = {
 Location: `/src/lib/i18n/locales.ts`
 
 Each locale has:
+
 - `code`: ISO 639-1 language code
 - `name`: Native language name
 - `englishName`: English language name
@@ -486,6 +496,7 @@ The language switcher is integrated in:
 See the [TRANSLATION_GUIDE.md](development/translation-guide.md) for detailed instructions.
 
 **Quick steps**:
+
 1. Fork the repository
 2. Add/update translations in `/src/locales/[lang]/`
 3. Update locale configuration
@@ -536,23 +547,27 @@ See the [TRANSLATION_GUIDE.md](development/translation-guide.md) for detailed in
 ### What We Built
 
 ✅ **Production-ready i18n framework**
+
 - Custom translation engine
 - Dynamic loading
 - Comprehensive RTL support
 - Locale-aware formatting
 
 ✅ **9 languages supported**
+
 - Including RTL (Arabic)
 - Professional translations
 - Cultural adaptation
 
 ✅ **Developer-friendly API**
+
 - Simple `t()` function
 - React hooks
 - Ready-made components
 - TypeScript support
 
 ✅ **Community-ready**
+
 - Detailed documentation
 - Contribution guide
 - Translation workflow

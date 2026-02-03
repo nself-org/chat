@@ -1,13 +1,6 @@
 'use client'
 
-import {
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-  ReactNode,
-  memo,
-} from 'react'
+import { useState, useRef, useCallback, useEffect, ReactNode, memo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import { createPortal } from 'react-dom'
@@ -112,32 +105,35 @@ export const LongPressMenu = memo(function LongPressMenu({
   }, [hapticFeedback])
 
   // Calculate menu position (avoid screen edges)
-  const calculateMenuPosition = useCallback((x: number, y: number): Position => {
-    const menuHeight = items.length * MENU_ITEM_HEIGHT + MENU_PADDING * 2
-    const viewportWidth = window.innerWidth
-    const viewportHeight = window.innerHeight
+  const calculateMenuPosition = useCallback(
+    (x: number, y: number): Position => {
+      const menuHeight = items.length * MENU_ITEM_HEIGHT + MENU_PADDING * 2
+      const viewportWidth = window.innerWidth
+      const viewportHeight = window.innerHeight
 
-    let posX = x
-    let posY = y
+      let posX = x
+      let posY = y
 
-    // Adjust X to keep menu on screen
-    if (posX + MENU_WIDTH > viewportWidth - 16) {
-      posX = viewportWidth - MENU_WIDTH - 16
-    }
-    if (posX < 16) {
-      posX = 16
-    }
+      // Adjust X to keep menu on screen
+      if (posX + MENU_WIDTH > viewportWidth - 16) {
+        posX = viewportWidth - MENU_WIDTH - 16
+      }
+      if (posX < 16) {
+        posX = 16
+      }
 
-    // Adjust Y to keep menu on screen
-    if (posY + menuHeight > viewportHeight - 16) {
-      posY = viewportHeight - menuHeight - 16
-    }
-    if (posY < 16) {
-      posY = 16
-    }
+      // Adjust Y to keep menu on screen
+      if (posY + menuHeight > viewportHeight - 16) {
+        posY = viewportHeight - menuHeight - 16
+      }
+      if (posY < 16) {
+        posY = 16
+      }
 
-    return { x: posX, y: posY }
-  }, [items.length])
+      return { x: posX, y: posY }
+    },
+    [items.length]
+  )
 
   // Handle touch start
   const handleTouchStart = useCallback(
@@ -321,7 +317,7 @@ const LongPressMenuItem = memo(function LongPressMenuItem({
         'touch-manipulation select-none',
         'text-left text-sm font-medium',
         'transition-colors',
-        'focus:outline-none focus:bg-accent',
+        'focus:bg-accent focus:outline-none',
         !item.disabled && 'hover:bg-accent active:bg-accent',
         item.disabled && 'cursor-not-allowed opacity-50',
         item.destructive && !item.disabled && 'text-destructive',
@@ -333,9 +329,7 @@ const LongPressMenuItem = memo(function LongPressMenuItem({
       }}
     >
       {item.icon && (
-        <span className="flex h-5 w-5 items-center justify-center shrink-0">
-          {item.icon}
-        </span>
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center">{item.icon}</span>
       )}
       <span className="flex-1">{item.label}</span>
     </button>

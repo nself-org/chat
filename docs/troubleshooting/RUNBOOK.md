@@ -43,23 +43,23 @@ kubectl top nodes
 
 ### Service URLs
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| Application | https://nchat.example.com | Main application |
-| Grafana | https://monitoring.nchat.example.com | Dashboards |
-| Prometheus | Internal only | Metrics |
-| Hasura Console | Internal only | GraphQL admin |
+| Service        | URL                                  | Purpose          |
+| -------------- | ------------------------------------ | ---------------- |
+| Application    | https://nchat.example.com            | Main application |
+| Grafana        | https://monitoring.nchat.example.com | Dashboards       |
+| Prometheus     | Internal only                        | Metrics          |
+| Hasura Console | Internal only                        | GraphQL admin    |
 
 ### Critical Thresholds
 
-| Metric | Warning | Critical | Action |
-|--------|---------|----------|--------|
-| CPU Usage | 70% | 85% | Scale up |
-| Memory Usage | 75% | 90% | Scale up |
-| Disk Usage | 70% | 85% | Expand storage |
-| Response Time | 500ms | 1000ms | Investigate |
-| Error Rate | 1% | 5% | Incident |
-| Database Connections | 150/200 | 190/200 | Investigate |
+| Metric               | Warning | Critical | Action         |
+| -------------------- | ------- | -------- | -------------- |
+| CPU Usage            | 70%     | 85%      | Scale up       |
+| Memory Usage         | 75%     | 90%      | Scale up       |
+| Disk Usage           | 70%     | 85%      | Expand storage |
+| Response Time        | 500ms   | 1000ms   | Investigate    |
+| Error Rate           | 1%      | 5%       | Incident       |
+| Database Connections | 150/200 | 190/200  | Investigate    |
 
 ---
 
@@ -195,18 +195,19 @@ kubectl rollout restart deployment/nself-chat -n nself-chat
 
 ### Severity Levels
 
-| Level | Response Time | Description |
-|-------|---------------|-------------|
-| P1 - Critical | Immediate | Complete outage, data loss |
-| P2 - High | 15 minutes | Partial outage, severe degradation |
-| P3 - Medium | 1 hour | Performance issues, minor features down |
-| P4 - Low | 24 hours | Cosmetic issues, non-urgent bugs |
+| Level         | Response Time | Description                             |
+| ------------- | ------------- | --------------------------------------- |
+| P1 - Critical | Immediate     | Complete outage, data loss              |
+| P2 - High     | 15 minutes    | Partial outage, severe degradation      |
+| P3 - Medium   | 1 hour        | Performance issues, minor features down |
+| P4 - Low      | 24 hours      | Cosmetic issues, non-urgent bugs        |
 
 ### P1 - Critical Incident (Application Down)
 
 #### Immediate Actions
 
 1. **Verify the issue:**
+
    ```bash
    curl https://nchat.example.com/api/health
    kubectl get pods -n nself-chat
@@ -214,18 +215,21 @@ kubectl rollout restart deployment/nself-chat -n nself-chat
    ```
 
 2. **Check pod status:**
+
    ```bash
    kubectl describe pod <pod-name> -n nself-chat
    kubectl logs <pod-name> -n nself-chat
    ```
 
 3. **Check recent changes:**
+
    ```bash
    kubectl rollout history deployment/nself-chat -n nself-chat
    kubectl get events -n nself-chat --sort-by='.lastTimestamp' | head -20
    ```
 
 4. **Quick fixes:**
+
    ```bash
    # Restart deployment
    kubectl rollout restart deployment/nself-chat -n nself-chat
@@ -245,17 +249,20 @@ kubectl rollout restart deployment/nself-chat -n nself-chat
 #### Database Connection Issues
 
 1. **Check database pod:**
+
    ```bash
    kubectl get pods -n nself-chat | grep postgres
    kubectl logs postgres-0 -n nself-chat
    ```
 
 2. **Test connectivity:**
+
    ```bash
    kubectl exec -it postgres-0 -n nself-chat -- pg_isready
    ```
 
 3. **Check connections:**
+
    ```bash
    kubectl exec -it postgres-0 -n nself-chat -- \
      psql -U nchat_user -d nchat -c \
@@ -272,6 +279,7 @@ kubectl rollout restart deployment/nself-chat -n nself-chat
 #### Database Performance Issues
 
 1. **Check slow queries:**
+
    ```bash
    kubectl exec -it postgres-0 -n nself-chat -- \
      psql -U nchat_user -d nchat -c \
@@ -279,6 +287,7 @@ kubectl rollout restart deployment/nself-chat -n nself-chat
    ```
 
 2. **Check database size:**
+
    ```bash
    kubectl exec -it postgres-0 -n nself-chat -- \
      psql -U nchat_user -d nchat -c \
@@ -296,11 +305,13 @@ kubectl rollout restart deployment/nself-chat -n nself-chat
 #### High CPU Usage
 
 1. **Identify resource hogs:**
+
    ```bash
    kubectl top pods -n nself-chat --sort-by=cpu
    ```
 
 2. **Scale horizontally:**
+
    ```bash
    kubectl scale deployment/nself-chat --replicas=8 -n nself-chat
    ```
@@ -313,11 +324,13 @@ kubectl rollout restart deployment/nself-chat -n nself-chat
 #### High Memory Usage
 
 1. **Check memory usage:**
+
    ```bash
    kubectl top pods -n nself-chat --sort-by=memory
    ```
 
 2. **Look for memory leaks:**
+
    ```bash
    kubectl logs deployment/nself-chat -n nself-chat | grep -i "out of memory"
    ```
@@ -334,6 +347,7 @@ kubectl rollout restart deployment/nself-chat -n nself-chat
 ### Application Won't Start
 
 #### Check pod status:
+
 ```bash
 kubectl get pods -n nself-chat
 kubectl describe pod <pod-name> -n nself-chat
@@ -342,6 +356,7 @@ kubectl describe pod <pod-name> -n nself-chat
 #### Common issues:
 
 1. **Image pull errors:**
+
    ```bash
    # Check image pull secret
    kubectl get secret nself-chat-registry -n nself-chat
@@ -351,6 +366,7 @@ kubectl describe pod <pod-name> -n nself-chat
    ```
 
 2. **Insufficient resources:**
+
    ```bash
    kubectl describe nodes
    kubectl top nodes
@@ -365,11 +381,13 @@ kubectl describe pod <pod-name> -n nself-chat
 ### Database Connection Failures
 
 1. **Verify database is running:**
+
    ```bash
    kubectl get pods -n nself-chat | grep postgres
    ```
 
 2. **Test connection:**
+
    ```bash
    kubectl run pg-test --image=postgres:16 --rm -it --restart=Never -n nself-chat -- \
      psql -h postgres -U nchat_user -d nchat
@@ -383,11 +401,13 @@ kubectl describe pod <pod-name> -n nself-chat
 ### Slow Performance
 
 1. **Check response times:**
+
    ```bash
    curl -w "@curl-format.txt" -o /dev/null -s https://nchat.example.com/api/health
    ```
 
    Create `curl-format.txt`:
+
    ```
    time_namelookup:  %{time_namelookup}s\n
    time_connect:  %{time_connect}s\n
@@ -399,6 +419,7 @@ kubectl describe pod <pod-name> -n nself-chat
    ```
 
 2. **Check database performance:**
+
    ```bash
    kubectl exec -it postgres-0 -n nself-chat -- \
      psql -U nchat_user -d nchat -c \
@@ -414,12 +435,14 @@ kubectl describe pod <pod-name> -n nself-chat
 ### SSL/TLS Issues
 
 1. **Check certificate:**
+
    ```bash
    kubectl get certificate -n nself-chat
    kubectl describe certificate nself-chat-tls -n nself-chat
    ```
 
 2. **Verify cert-manager:**
+
    ```bash
    kubectl get pods -n cert-manager
    kubectl logs -n cert-manager deployment/cert-manager
@@ -467,12 +490,14 @@ gunzip < backup-20250129.sql.gz | \
 #### Zero-Downtime Deployment
 
 1. **Prepare:**
+
    ```bash
    # Ensure HPA is configured
    kubectl get hpa nself-chat -n nself-chat
    ```
 
 2. **Deploy:**
+
    ```bash
    helm upgrade nself-chat ./deploy/helm/nself-chat \
      -f deploy/helm/nself-chat/values-production.yaml \
@@ -483,6 +508,7 @@ gunzip < backup-20250129.sql.gz | \
    ```
 
 3. **Monitor:**
+
    ```bash
    kubectl rollout status deployment/nself-chat -n nself-chat
    watch -n 2 'kubectl get pods -n nself-chat'
@@ -518,6 +544,7 @@ kubectl get certificate nself-chat-tls -n nself-chat
 #### Connection Pooling
 
 Update Hasura environment:
+
 ```yaml
 HASURA_GRAPHQL_PG_CONNECTIONS: 50
 HASURA_GRAPHQL_PG_TIMEOUT: 180
@@ -552,14 +579,15 @@ kubectl exec -it deployment/redis -n nself-chat -- \
 ### Application Tuning
 
 Update deployment resources:
+
 ```yaml
 resources:
   requests:
-    cpu: "500m"
-    memory: "1Gi"
+    cpu: '500m'
+    memory: '1Gi'
   limits:
-    cpu: "2000m"
-    memory: "2Gi"
+    cpu: '2000m'
+    memory: '2Gi'
 ```
 
 ---
@@ -571,11 +599,13 @@ resources:
 #### Rotate JWT Secret
 
 1. **Generate new secret:**
+
    ```bash
    NEW_JWT_SECRET=$(openssl rand -base64 64)
    ```
 
 2. **Update secret:**
+
    ```bash
    kubectl create secret generic nself-chat-secrets \
      --from-literal=jwt-secret="$NEW_JWT_SECRET" \
@@ -591,6 +621,7 @@ resources:
 #### Rotate Database Password
 
 1. **Change password in database:**
+
    ```bash
    kubectl exec -it postgres-0 -n nself-chat -- \
      psql -U postgres -c \
@@ -598,6 +629,7 @@ resources:
    ```
 
 2. **Update application secret:**
+
    ```bash
    kubectl create secret generic nself-chat-secrets \
      --from-literal=database-url="postgresql://nchat_user:new-secure-password@postgres:5432/nchat" \
@@ -635,6 +667,7 @@ kubectl run trivy --rm -it --restart=Never \
 ### Full System Restore
 
 #### Prerequisites:
+
 - Recent database backup
 - Infrastructure as Code (Terraform) configurations
 - Kubernetes manifests in version control
@@ -642,6 +675,7 @@ kubectl run trivy --rm -it --restart=Never \
 #### Procedure:
 
 1. **Restore infrastructure (if using Terraform):**
+
    ```bash
    cd deploy/terraform
    terraform init
@@ -649,12 +683,14 @@ kubectl run trivy --rm -it --restart=Never \
    ```
 
 2. **Deploy application stack:**
+
    ```bash
    kubectl create namespace nself-chat
    kubectl apply -f deploy/k8s/
    ```
 
 3. **Restore database:**
+
    ```bash
    aws s3 cp s3://nself-chat-backups/latest.sql.gz .
    gunzip < latest.sql.gz | \
@@ -663,6 +699,7 @@ kubectl run trivy --rm -it --restart=Never \
    ```
 
 4. **Verify services:**
+
    ```bash
    kubectl get pods -n nself-chat
    curl https://nchat.example.com/api/health

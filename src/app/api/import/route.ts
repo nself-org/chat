@@ -9,6 +9,7 @@ import type {
   UnifiedChannel,
   UnifiedMessage,
 } from '@/lib/import-export/types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -42,10 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!data || (!data.users?.length && !data.channels?.length && !data.messages?.length)) {
-      return NextResponse.json(
-        { error: 'No data provided for import' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'No data provided for import' }, { status: 400 })
     }
 
     // Initialize stats
@@ -190,10 +188,7 @@ export async function POST(request: NextRequest) {
 
           // Count reactions
           if (config.options.importReactions && message.reactions?.length) {
-            stats.reactionsImported += message.reactions.reduce(
-              (sum, r) => sum + r.count,
-              0
-            )
+            stats.reactionsImported += message.reactions.reduce((sum, r) => sum + r.count, 0)
           }
         } catch (error) {
           errors.push({
@@ -235,7 +230,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Error in POST /api/import:', error)
+    logger.error('Error in POST /api/import:', error)
     return NextResponse.json(
       {
         error: 'Internal server error',
@@ -256,10 +251,7 @@ export async function GET(request: NextRequest) {
     const importId = searchParams.get('id')
 
     if (!importId) {
-      return NextResponse.json(
-        { error: 'Missing import ID' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing import ID' }, { status: 400 })
     }
 
     // In production, this would:
@@ -279,10 +271,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error in GET /api/import:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Error in GET /api/import:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

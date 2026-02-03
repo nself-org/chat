@@ -1,31 +1,31 @@
-'use client';
+'use client'
 
-import { SettingsSection } from './settings-section';
-import { OnlineStatusSettings } from './OnlineStatusSettings';
-import { ReadReceiptsSettings } from './ReadReceiptsSettings';
-import { TypingIndicatorSettings } from './TypingIndicatorSettings';
-import { ProfileVisibilitySettings } from './ProfileVisibilitySettings';
-import { BlockedUsersSettings } from './BlockedUsersSettings';
-import { DataSettings } from './DataSettings';
-import { SettingsReset } from './SettingsReset';
-import { useSettingsStore } from '@/stores/settings-store';
-import { Shield } from 'lucide-react';
+import { SettingsSection } from './settings-section'
+import { OnlineStatusSettings } from './OnlineStatusSettings'
+import { ReadReceiptsSettings } from './ReadReceiptsSettings'
+import { TypingIndicatorSettings } from './TypingIndicatorSettings'
+import { ProfileVisibilitySettings } from './ProfileVisibilitySettings'
+import { BlockedUsersSettings } from './BlockedUsersSettings'
+import { DataSettings } from './DataSettings'
+import { SettingsReset } from './SettingsReset'
+import { useSettingsStore } from '@/stores/settings-store'
+import { Shield } from 'lucide-react'
 
 interface PrivacySettingsProps {
-  className?: string;
+  className?: string
 }
 
 /**
  * PrivacySettings - Privacy overview and controls
  */
 export function PrivacySettings({ className }: PrivacySettingsProps) {
-  const { resetPrivacy } = useSettingsStore();
+  const { resetPrivacy } = useSettingsStore()
 
   return (
     <div className={className}>
       {/* Page Header */}
       <div className="mb-6 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
           <Shield className="h-5 w-5 text-primary" />
         </div>
         <div>
@@ -52,5 +52,5 @@ export function PrivacySettings({ className }: PrivacySettingsProps) {
         />
       </div>
     </div>
-  );
+  )
 }

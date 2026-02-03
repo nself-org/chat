@@ -29,6 +29,7 @@ A comprehensive guide to administering AI features in nself-chat, including usag
 The AI Administration Dashboard provides a unified view of all AI-related metrics and controls.
 
 **Navigation**:
+
 1. Sign in as an admin user
 2. Go to **Admin Panel** (gear icon in sidebar)
 3. Click **AI Management** in the left menu
@@ -53,12 +54,14 @@ The dashboard displays real-time metrics across four main areas:
 ```
 
 **Metrics**:
+
 - **Total Cost**: Current spending for selected period (daily/monthly)
 - **Budget Progress**: Visual progress bar showing budget utilization
 - **Remaining Budget**: How much you have left before hitting limits
 - **Budget Status**: Color-coded indicator (green/yellow/red)
 
 **Color Codes**:
+
 - 🟢 Green (0-70%): Healthy spending
 - 🟡 Yellow (71-90%): Approaching limit
 - 🔴 Red (91-100%): Near or over budget
@@ -75,6 +78,7 @@ The dashboard displays real-time metrics across four main areas:
 ```
 
 **Metrics**:
+
 - **Total Requests**: Number of AI API calls made
 - **Average Cost**: Cost per request calculation
 - **Trend**: Up/down arrow showing change vs previous period
@@ -91,6 +95,7 @@ The dashboard displays real-time metrics across four main areas:
 ```
 
 **Metrics**:
+
 - **Hit Rate**: Percentage of requests served from cache
 - **Total Hits**: Number of cached responses used
 - **Total Misses**: Number of requests that required API calls
@@ -110,6 +115,7 @@ The dashboard displays real-time metrics across four main areas:
 ```
 
 **Metrics**:
+
 - **Total Queued**: Items waiting or being processed
 - **Processing**: Currently active jobs
 - **Pending**: Waiting in queue
@@ -165,15 +171,16 @@ Track which AI features consume the most API calls and budget.
 
 **Endpoint Breakdown**:
 
-| Endpoint | Requests | % of Total | Avg Cost | Total Cost |
-|----------|----------|------------|----------|------------|
-| `/ai/summarize` | 5,234 | 42% | $0.0234 | $122.47 |
-| `/search` | 3,456 | 28% | $0.0015 | $5.18 |
-| `/ai/embed` | 2,345 | 19% | $0.0002 | $0.47 |
-| `/ai/chat` | 1,234 | 10% | $0.0456 | $56.27 |
-| `/moderation/analyze` | 189 | 1% | $0.0123 | $2.32 |
+| Endpoint              | Requests | % of Total | Avg Cost | Total Cost |
+| --------------------- | -------- | ---------- | -------- | ---------- |
+| `/ai/summarize`       | 5,234    | 42%        | $0.0234  | $122.47    |
+| `/search`             | 3,456    | 28%        | $0.0015  | $5.18      |
+| `/ai/embed`           | 2,345    | 19%        | $0.0002  | $0.47      |
+| `/ai/chat`            | 1,234    | 10%        | $0.0456  | $56.27     |
+| `/moderation/analyze` | 189      | 1%         | $0.0123  | $2.32      |
 
 **Actions**:
+
 - Click any endpoint to see detailed breakdown
 - Export endpoint data for analysis
 - Configure rate limits per endpoint
@@ -199,6 +206,7 @@ Identify top AI users to understand usage patterns and potential optimization op
 ```
 
 **Columns Explained**:
+
 - **Rank**: Position by cost (1 = highest spender)
 - **User**: User email or username
 - **Requests**: Total API calls made by this user
@@ -207,6 +215,7 @@ Identify top AI users to understand usage patterns and potential optimization op
 - **Visual Bar**: Quick visual comparison
 
 **Filtering Options**:
+
 - Filter by date range (last 7 days, 30 days, all time)
 - Filter by feature (summarization only, search only, etc.)
 - Filter by organization (for multi-tenant setups)
@@ -219,6 +228,7 @@ Identify top AI users to understand usage patterns and potential optimization op
 4. **Abuse Detection**: Spot unusual usage patterns that might indicate misuse
 
 **Actions**:
+
 - Click user to see detailed activity log
 - Set per-user rate limits
 - Send usage reports to users
@@ -247,6 +257,7 @@ Understand when AI features are most heavily used to optimize capacity and costs
 ```
 
 **Insights**:
+
 - **Peak Hours**: Typically 9 AM - 11 AM and 2 PM - 4 PM (work hours)
 - **Low Usage**: Nights and weekends
 - **Patterns**: Identify daily/weekly patterns
@@ -272,6 +283,7 @@ Sunday    ███░░░░░░░░░ 423 requests
 ```
 
 **Typical Patterns**:
+
 - **Weekdays**: Consistent high usage (2,000-2,500 requests/day)
 - **Weekends**: 70-80% reduction in usage
 - **Monday Peak**: Often highest due to catch-up activities
@@ -295,6 +307,7 @@ View AI requests in real-time as they happen:
 ```
 
 **Features**:
+
 - Auto-updating (1-second refresh)
 - Color-coded by endpoint
 - Click to see full request details
@@ -303,6 +316,7 @@ View AI requests in real-time as they happen:
 - Export recent activity
 
 **Use Cases**:
+
 - Debug user-reported issues in real-time
 - Monitor system health during deployments
 - Observe effects of configuration changes
@@ -319,11 +333,13 @@ The cost tracking system provides accurate, up-to-the-minute spending informatio
 #### How Costs Are Calculated
 
 **Formula**:
+
 ```
 Total Cost = (Input Tokens / 1000) × Input Price + (Output Tokens / 1000) × Output Price
 ```
 
 **Example** (GPT-4o-mini):
+
 ```
 Request:
 - Input: 2,345 tokens × $0.00015/1k = $0.00035
@@ -333,14 +349,14 @@ Request:
 
 **Current Model Pricing** (as of January 2026):
 
-| Model | Provider | Input ($/1k) | Output ($/1k) | Typical Use |
-|-------|----------|--------------|---------------|-------------|
-| GPT-4o-mini | OpenAI | $0.00015 | $0.0006 | Summarization, chat |
-| GPT-4o | OpenAI | $0.005 | $0.015 | Complex reasoning |
-| GPT-4 Turbo | OpenAI | $0.01 | $0.03 | High-quality summaries |
-| Claude 3.5 Haiku | Anthropic | $0.0008 | $0.004 | Fast responses |
-| Claude 3.5 Sonnet | Anthropic | $0.003 | $0.015 | Balanced performance |
-| text-embedding-3-small | OpenAI | $0.00002 | $0 | Embeddings (default) |
+| Model                  | Provider  | Input ($/1k) | Output ($/1k) | Typical Use            |
+| ---------------------- | --------- | ------------ | ------------- | ---------------------- |
+| GPT-4o-mini            | OpenAI    | $0.00015     | $0.0006       | Summarization, chat    |
+| GPT-4o                 | OpenAI    | $0.005       | $0.015        | Complex reasoning      |
+| GPT-4 Turbo            | OpenAI    | $0.01        | $0.03         | High-quality summaries |
+| Claude 3.5 Haiku       | Anthropic | $0.0008      | $0.004        | Fast responses         |
+| Claude 3.5 Sonnet      | Anthropic | $0.003       | $0.015        | Balanced performance   |
+| text-embedding-3-small | OpenAI    | $0.00002     | $0            | Embeddings (default)   |
 
 **Cost Tracking Features**:
 
@@ -400,6 +416,7 @@ Configure automatic alerts to prevent unexpected cost overruns.
 3. **Configure Notification Settings**:
 
 **Email Template**:
+
 ```
 Subject: [nself-chat] AI Budget Alert - 75% Threshold Reached
 
@@ -419,6 +436,7 @@ View Details: https://your-instance.com/admin/ai/dashboard
 ```
 
 **Slack Notification**:
+
 ```
 ⚠️ AI Budget Alert - 75% Threshold Reached
 
@@ -451,6 +469,7 @@ Top consumers:
 **Best Practices**:
 
 ✅ **Do**:
+
 - Set multiple thresholds (50%, 75%, 90%, 100%)
 - Include multiple notification recipients
 - Test alerts before going live
@@ -458,6 +477,7 @@ Top consumers:
 - Set both daily and monthly budgets
 
 ❌ **Avoid**:
+
 - Setting limits too low (causes service disruption)
 - Only alerting at 100% (no time to respond)
 - Ignoring repeated alerts (indicates need for adjustment)
@@ -486,14 +506,15 @@ Top consumers:
 
 **Cost Comparison** (1,000 requests, 1,000 tokens each):
 
-| Model | Input Cost | Output Cost | Total Cost | vs GPT-4o-mini |
-|-------|------------|-------------|------------|----------------|
-| GPT-4o-mini | $0.15 | $0.60 | **$0.75** | 1x (baseline) |
-| Claude 3.5 Haiku | $0.80 | $4.00 | **$4.80** | 6.4x |
-| GPT-4o | $5.00 | $15.00 | **$20.00** | 26.7x |
-| GPT-4 Turbo | $10.00 | $30.00 | **$40.00** | 53.3x |
+| Model            | Input Cost | Output Cost | Total Cost | vs GPT-4o-mini |
+| ---------------- | ---------- | ----------- | ---------- | -------------- |
+| GPT-4o-mini      | $0.15      | $0.60       | **$0.75**  | 1x (baseline)  |
+| Claude 3.5 Haiku | $0.80      | $4.00       | **$4.80**  | 6.4x           |
+| GPT-4o           | $5.00      | $15.00      | **$20.00** | 26.7x          |
+| GPT-4 Turbo      | $10.00     | $30.00      | **$40.00** | 53.3x          |
 
 **Optimization Strategy**:
+
 1. Start with GPT-4o-mini for all features
 2. Monitor quality metrics
 3. Upgrade specific features if quality is insufficient
@@ -502,6 +523,7 @@ Top consumers:
 #### 2. Caching Strategies
 
 **Cache Effectiveness**:
+
 - 80% hit rate = 80% cost reduction for cached requests
 - Embedding cache saves 100% of embedding API costs on cache hits
 
@@ -509,12 +531,12 @@ Top consumers:
 
 **Recommended TTL (Time-To-Live) Settings**:
 
-| Feature | Recommended TTL | Reasoning |
-|---------|----------------|-----------|
-| Summarization | 1 hour | Conversations change frequently |
-| Search Results | 5 minutes | Balance freshness vs cost |
-| Embeddings | 24 hours | Message content is immutable |
-| Chat Responses | Disabled | Each conversation is unique |
+| Feature        | Recommended TTL | Reasoning                       |
+| -------------- | --------------- | ------------------------------- |
+| Summarization  | 1 hour          | Conversations change frequently |
+| Search Results | 5 minutes       | Balance freshness vs cost       |
+| Embeddings     | 24 hours        | Message content is immutable    |
+| Chat Responses | Disabled        | Each conversation is unique     |
 
 **Cache Tuning**:
 
@@ -529,11 +551,13 @@ Top consumers:
 ```
 
 **Monitoring Cache Performance**:
+
 - Target: 80%+ hit rate for embeddings
 - Target: 60%+ hit rate for summarization
 - Target: 40%+ hit rate for search
 
 **Improving Hit Rate**:
+
 1. Increase TTL values
 2. Normalize cache keys (e.g., lowercase, trim whitespace)
 3. Use semantic similarity for near-match caching
@@ -556,6 +580,7 @@ await generateEmbeddings(messages)
 ```
 
 **Cost Savings**:
+
 - Individual: 100 requests × $0.0002 = $0.02
 - Batch: 1 request × $0.0002 = $0.0002
 - **Savings: 99%**
@@ -590,6 +615,7 @@ Balance user experience with cost control.
 ```
 
 **Progressive Rate Limiting**:
+
 ```
 Free Tier:     10 requests/hour
 Standard:      50 requests/hour
@@ -619,12 +645,14 @@ Automatically downgrade to cheaper models on rate limits or budget exhaustion.
 ```
 
 **Fallback Triggers**:
+
 1. Rate limit exceeded → Try fallback model
 2. Budget threshold (90%) → Switch to fallback automatically
 3. API error (500-series) → Retry with fallback
 4. Timeout → Use faster fallback model
 
 **Cost Impact Example**:
+
 - 1,000 requests normally on GPT-4o = $20.00
 - 200 fallback to GPT-4o-mini = $0.15
 - **Total: $16.15 (19% savings)**
@@ -696,6 +724,7 @@ OPENAI_API_KEY=sk-proj-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 **4. Test Connection**:
 
 Click "Test Connection" to verify:
+
 ```
 ✅ Connection successful
 ✅ Model access verified (gpt-4o-mini)
@@ -707,24 +736,25 @@ Click "Test Connection" to verify:
 
 **Summarization Models**:
 
-| Model | Speed | Cost | Quality | Best For |
-|-------|-------|------|---------|----------|
-| GPT-4o-mini | ⚡⚡⚡ | 💰 | ⭐⭐⭐ | High-volume, cost-sensitive |
-| GPT-4o | ⚡⚡ | 💰💰💰 | ⭐⭐⭐⭐ | Balanced quality & cost |
-| GPT-4 Turbo | ⚡ | 💰💰💰💰💰 | ⭐⭐⭐⭐⭐ | Highest quality needed |
+| Model       | Speed  | Cost       | Quality    | Best For                    |
+| ----------- | ------ | ---------- | ---------- | --------------------------- |
+| GPT-4o-mini | ⚡⚡⚡ | 💰         | ⭐⭐⭐     | High-volume, cost-sensitive |
+| GPT-4o      | ⚡⚡   | 💰💰💰     | ⭐⭐⭐⭐   | Balanced quality & cost     |
+| GPT-4 Turbo | ⚡     | 💰💰💰💰💰 | ⭐⭐⭐⭐⭐ | Highest quality needed      |
 
 **Embedding Models**:
 
-| Model | Dimensions | Cost | Performance |
-|-------|-----------|------|-------------|
-| text-embedding-3-small | 1536 | $0.00002/1k | Recommended (default) |
-| text-embedding-3-large | 3072 | $0.00013/1k | Higher accuracy, 6.5x cost |
+| Model                  | Dimensions | Cost        | Performance                |
+| ---------------------- | ---------- | ----------- | -------------------------- |
+| text-embedding-3-small | 1536       | $0.00002/1k | Recommended (default)      |
+| text-embedding-3-large | 3072       | $0.00013/1k | Higher accuracy, 6.5x cost |
 
 **Recommendation**: Use `gpt-4o-mini` + `text-embedding-3-small` for 99% of use cases.
 
 #### Advanced Settings
 
 **Temperature** (Randomness):
+
 ```
 0.0 = Deterministic (same input → same output)
 0.7 = Balanced creativity (recommended)
@@ -732,12 +762,14 @@ Click "Test Connection" to verify:
 ```
 
 **Max Tokens** (Response Length):
+
 ```
 Summarization: 500 tokens (≈375 words)
 Chat: 1000 tokens (≈750 words)
 ```
 
 **Presence Penalty** (Avoid repetition):
+
 ```
 0.0 = No penalty
 0.6 = Moderate (recommended)
@@ -800,18 +832,21 @@ ANTHROPIC_API_KEY=sk-ant-api03-xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 #### When to Use Anthropic vs OpenAI
 
 **Use Anthropic (Claude) when**:
+
 - ✅ Need highest quality summarization
 - ✅ Processing very long conversations (200k token context)
 - ✅ Want better handling of nuanced content
 - ✅ Cost is less of a concern
 
 **Use OpenAI when**:
+
 - ✅ Need embeddings (Anthropic doesn't offer embeddings)
 - ✅ Cost optimization is priority
 - ✅ Need faster response times
 - ✅ High request volume
 
 **Hybrid Approach** (Recommended):
+
 ```
 Summarization: Anthropic Claude 3.5 Haiku
 Embeddings: OpenAI text-embedding-3-small
@@ -850,11 +885,13 @@ Admin Panel → AI Configuration → Providers
 ```
 
 **3. Verify Switch**:
+
 - System will test new provider
 - Show confirmation message
 - Log switch event for audit
 
 **4. Monitor Performance**:
+
 - Watch error rates for 24 hours
 - Compare quality metrics
 - Review user feedback
@@ -864,12 +901,14 @@ Admin Panel → AI Configuration → Providers
 **Best Practices**:
 
 1. **Test in Staging First**:
+
    ```bash
    # Staging environment
    NEXT_PUBLIC_ENV=staging npm run test:ai-providers
    ```
 
 2. **Enable Fallback Chain**:
+
    ```javascript
    {
      primary: 'anthropic',
@@ -890,6 +929,7 @@ Admin Panel → AI Configuration → Providers
    - User satisfaction scores
 
 **Rollback Plan**:
+
 ```bash
 # Quick rollback if issues detected
 curl -X POST https://your-instance.com/api/admin/ai/providers/revert
@@ -973,12 +1013,14 @@ Control individual user AI consumption to prevent abuse and manage costs.
 #### Rate Limit Algorithm
 
 **Token Bucket Implementation**:
+
 - Each user has a "bucket" of tokens
 - Each request consumes 1 token
 - Bucket refills at a constant rate
 - When bucket is empty, requests are rejected
 
 **Example**:
+
 ```
 User Rate Limit: 50 requests/hour
 Bucket Size: 50 tokens
@@ -1017,12 +1059,12 @@ Set custom limits for specific users or groups.
 
 **Tier Definitions**:
 
-| Tier | Summarization | Search | Chat | Cost Budget |
-|------|---------------|--------|------|-------------|
-| Free | 10/hour | 5/min | 3/min | $5/month |
-| Standard | 50/hour | 20/min | 10/min | $25/month |
-| Premium | 200/hour | 100/min | 50/min | $100/month |
-| Enterprise | Unlimited | Unlimited | Unlimited | Custom |
+| Tier       | Summarization | Search    | Chat      | Cost Budget |
+| ---------- | ------------- | --------- | --------- | ----------- |
+| Free       | 10/hour       | 5/min     | 3/min     | $5/month    |
+| Standard   | 50/hour       | 20/min    | 10/min    | $25/month   |
+| Premium    | 200/hour      | 100/min   | 50/min    | $100/month  |
+| Enterprise | Unlimited     | Unlimited | Unlimited | Custom      |
 
 ### Per-Organization Limits
 
@@ -1147,6 +1189,7 @@ Monitor how many messages have embeddings generated for search functionality.
 ```
 
 **Coverage Thresholds**:
+
 - 🟢 90-100%: Excellent (search works great)
 - 🟡 70-89%: Good (some search gaps)
 - 🔴 <70%: Poor (search quality degraded)
@@ -1333,12 +1376,12 @@ Monitor the quality and performance of your embedding index.
 **Quality Score Calculation**:
 
 ```javascript
-qualityScore = (
-  vectorMagnitude * 0.3 +      // Proper normalization
-  dimensionVariance * 0.2 +    // Good distribution
-  noZeroValues * 0.2 +         // No degenerate values
-  withinExpectedRange * 0.3    // Values in expected range
-) * 100
+qualityScore =
+  (vectorMagnitude * 0.3 + // Proper normalization
+    dimensionVariance * 0.2 + // Good distribution
+    noZeroValues * 0.2 + // No degenerate values
+    withinExpectedRange * 0.3) * // Values in expected range
+  100
 ```
 
 ---
@@ -1385,11 +1428,13 @@ Control which bots are active in your workspace.
 ```
 
 **Bot States**:
+
 - **Enabled**: Bot responds to commands and events
 - **Disabled**: Bot is inactive (commands show "disabled" message)
 - **Restricted**: Bot only available to specific channels/users
 
 **Disabling a Bot**:
+
 1. Click dropdown next to bot name
 2. Select "Disabled"
 3. Confirm action
@@ -1445,6 +1490,7 @@ Track bot usage, errors, and user satisfaction.
 4. **User Satisfaction**: Based on reactions and feedback
 
 **Performance Thresholds**:
+
 - Success Rate: >95% is good
 - Response Time: <3s is good
 - Error Rate: <5% is acceptable
@@ -1488,6 +1534,7 @@ Deep dive into bot usage patterns and ROI.
 ```
 
 **ROI Calculation**:
+
 ```
 Time Saved = (Summaries Generated × Avg Manual Summary Time)
 Cost = API Calls × Cost per Call
@@ -1534,12 +1581,12 @@ Adjust sensitivity of auto-moderation to balance safety and false positives.
 
 **Threshold Recommendations**:
 
-| Workspace Type | Recommended Threshold | Reasoning |
-|----------------|----------------------|-----------|
-| Professional (Corporate) | 60-70% | Strict, low tolerance |
-| Community (Open) | 75-85% | Balanced, some tolerance |
-| Gaming/Casual | 80-90% | Relaxed, high tolerance |
-| Educational | 65-75% | Moderate, context-aware |
+| Workspace Type           | Recommended Threshold | Reasoning                |
+| ------------------------ | --------------------- | ------------------------ |
+| Professional (Corporate) | 60-70%                | Strict, low tolerance    |
+| Community (Open)         | 75-85%                | Balanced, some tolerance |
+| Gaming/Casual            | 80-90%                | Relaxed, high tolerance  |
+| Educational              | 65-75%                | Moderate, context-aware  |
 
 **Fine-Tuning Tips**:
 
@@ -1590,15 +1637,15 @@ Define automatic actions taken when content violates policies.
 
 **Available Actions**:
 
-| Action | Effect | User Impact | Reversible |
-|--------|--------|-------------|------------|
-| Flag | Add to moderation queue | None (message visible) | N/A |
-| Hide | Remove from view | Hidden from all users | Yes |
-| Warn | Send warning notification | Alert displayed | N/A |
-| Mute (1h) | Prevent messaging | Cannot send for 1 hour | Auto |
-| Mute (24h) | Prevent messaging | Cannot send for 24 hours | Manual |
-| Escalate | Add to review queue | Pending moderator decision | Yes |
-| Ban | Remove from workspace | Permanent removal | Manual only |
+| Action     | Effect                    | User Impact                | Reversible  |
+| ---------- | ------------------------- | -------------------------- | ----------- |
+| Flag       | Add to moderation queue   | None (message visible)     | N/A         |
+| Hide       | Remove from view          | Hidden from all users      | Yes         |
+| Warn       | Send warning notification | Alert displayed            | N/A         |
+| Mute (1h)  | Prevent messaging         | Cannot send for 1 hour     | Auto        |
+| Mute (24h) | Prevent messaging         | Cannot send for 24 hours   | Manual      |
+| Escalate   | Add to review queue       | Pending moderator decision | Yes         |
+| Ban        | Remove from workspace     | Permanent removal          | Manual only |
 
 ### Whitelist Management
 
@@ -1667,12 +1714,14 @@ Manage exceptions to moderation rules (allowed terms, trusted users).
 **Whitelist Best Practices**:
 
 ✅ **Do**:
+
 - Whitelist technical terms that trigger false positives
 - Exempt bot testing channels
 - Document why each term/user is whitelisted
 - Regular review (quarterly) to remove stale entries
 
 ❌ **Avoid**:
+
 - Blanket whitelisting of users (creates accountability gaps)
 - Whitelisting profanity without strong justification
 - Forgetting to remove former employees from whitelist
@@ -1688,6 +1737,7 @@ Common AI API errors and how to resolve them.
 #### Error: Rate Limit Exceeded
 
 **Symptom**:
+
 ```json
 {
   "error": "Rate limit exceeded",
@@ -1699,6 +1749,7 @@ Common AI API errors and how to resolve them.
 **User sees**: "AI features temporarily unavailable. Please try again in 32 seconds."
 
 **Causes**:
+
 1. Too many requests in short time
 2. Org-wide rate limit hit
 3. Provider-side rate limit (OpenAI/Anthropic)
@@ -1706,6 +1757,7 @@ Common AI API errors and how to resolve them.
 **Solutions**:
 
 **Short-term**:
+
 ```bash
 # Increase rate limits temporarily
 curl -X POST /api/admin/ai/rate-limits/adjust \
@@ -1713,12 +1765,14 @@ curl -X POST /api/admin/ai/rate-limits/adjust \
 ```
 
 **Long-term**:
+
 1. Review and adjust rate limits (see [Rate Limiting](#rate-limiting))
 2. Implement request queuing
 3. Add request deduplication
 4. Contact provider to increase limits
 
 **Prevention**:
+
 - Monitor usage trends
 - Set up rate limit alerts
 - Educate users on efficient AI usage
@@ -1726,6 +1780,7 @@ curl -X POST /api/admin/ai/rate-limits/adjust \
 #### Error: Insufficient Quota
 
 **Symptom**:
+
 ```json
 {
   "error": "Insufficient quota",
@@ -1735,6 +1790,7 @@ curl -X POST /api/admin/ai/rate-limits/adjust \
 ```
 
 **Causes**:
+
 1. OpenAI/Anthropic account out of credits
 2. Payment method failed
 3. Free tier limits exceeded
@@ -1761,6 +1817,7 @@ curl -X POST /api/admin/ai/rate-limits/adjust \
 #### Error: Invalid API Key
 
 **Symptom**:
+
 ```json
 {
   "error": "Invalid API key",
@@ -1769,6 +1826,7 @@ curl -X POST /api/admin/ai/rate-limits/adjust \
 ```
 
 **Causes**:
+
 1. API key expired or revoked
 2. Wrong API key for provider
 3. API key not set in environment
@@ -1776,6 +1834,7 @@ curl -X POST /api/admin/ai/rate-limits/adjust \
 **Solutions**:
 
 1. **Verify Environment Variable**:
+
    ```bash
    # Check if API key is set
    echo $OPENAI_API_KEY
@@ -1866,12 +1925,14 @@ Endpoint Breakdown:
 **Immediate Actions**:
 
 1. **Pause AI Features** (Emergency):
+
    ```bash
    # Admin panel or API
    curl -X POST /api/admin/ai/emergency-pause
    ```
 
 2. **Reduce Rate Limits**:
+
    ```bash
    # Cut all limits by 50%
    curl -X POST /api/admin/ai/rate-limits/reduce \
@@ -1993,32 +2054,35 @@ Embeddings:     92% hit rate  ✅ (target: >80%)
 
 ### Common Admin Tasks Quick Reference
 
-| Task | Location | Quick Action |
-|------|----------|--------------|
-| View AI costs | Dashboard | `/admin/ai/dashboard` |
-| Adjust rate limits | Rate Limits tab | Update values, save |
-| Disable a bot | Bot Management | Toggle "Disabled" |
-| Generate missing embeddings | Embeddings → Bulk | Click "Generate Missing" |
-| Check API key status | Provider Config | View "API Key Status" |
-| View top AI users | Usage Monitoring → Top Users | Sort by cost |
-| Set budget alert | Budgets tab | Create alert, set threshold |
-| Whitelist a term | Moderation → Whitelists | Add to term whitelist |
-| Export usage data | Dashboard | Click "Export" button |
-| Pause AI features | Emergency | `/admin/ai/emergency-pause` |
+| Task                        | Location                     | Quick Action                |
+| --------------------------- | ---------------------------- | --------------------------- |
+| View AI costs               | Dashboard                    | `/admin/ai/dashboard`       |
+| Adjust rate limits          | Rate Limits tab              | Update values, save         |
+| Disable a bot               | Bot Management               | Toggle "Disabled"           |
+| Generate missing embeddings | Embeddings → Bulk            | Click "Generate Missing"    |
+| Check API key status        | Provider Config              | View "API Key Status"       |
+| View top AI users           | Usage Monitoring → Top Users | Sort by cost                |
+| Set budget alert            | Budgets tab                  | Create alert, set threshold |
+| Whitelist a term            | Moderation → Whitelists      | Add to term whitelist       |
+| Export usage data           | Dashboard                    | Click "Export" button       |
+| Pause AI features           | Emergency                    | `/admin/ai/emergency-pause` |
 
 ### Support Resources
 
 **Documentation**:
+
 - AI Features User Guide: `/docs/guides/features/ai-features-complete.md`
 - Bot SDK Guide: `/docs/guides/development/bot-sdk-complete.md`
 - API Documentation: `/docs/api/ai-endpoints.md`
 
 **Community**:
+
 - Forum: [community.nself.org](https://community.nself.org)
 - Discord: [discord.gg/nself](https://discord.gg/nself)
 - GitHub Issues: [github.com/nself/nself-chat/issues](https://github.com/nself/nself-chat/issues)
 
 **Professional Support**:
+
 - Email: support@nself.org
 - Enterprise Support: enterprise@nself.org
 - Slack Connect: Request invite via email
@@ -2026,6 +2090,7 @@ Embeddings:     92% hit rate  ✅ (target: >80%)
 ### Changelog
 
 **v1.0.0** (January 31, 2026):
+
 - Initial release
 - Comprehensive AI administration guide
 - Coverage of all AI features

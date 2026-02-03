@@ -202,10 +202,7 @@ query GetSavedStats($userId: uuid!) {
 
 # Get all user's collections
 query GetCollections($userId: uuid!) {
-  nchat_saved_collections(
-    where: { user_id: { _eq: $userId } }
-    order_by: { position: asc }
-  ) {
+  nchat_saved_collections(where: { user_id: { _eq: $userId } }, order_by: { position: asc }) {
     id
     user_id
     name
@@ -227,11 +224,7 @@ query GetCollections($userId: uuid!) {
 }
 
 # Get a single collection with its messages
-query GetCollectionWithMessages(
-  $collectionId: uuid!
-  $limit: Int = 50
-  $offset: Int = 0
-) {
+query GetCollectionWithMessages($collectionId: uuid!, $limit: Int = 50, $offset: Int = 0) {
   nchat_saved_collections_by_pk(id: $collectionId) {
     id
     user_id
@@ -279,11 +272,7 @@ query GetCollectionWithMessages(
 }
 
 # Search saved messages
-query SearchSavedMessages(
-  $userId: uuid!
-  $searchQuery: String!
-  $limit: Int = 20
-) {
+query SearchSavedMessages($userId: uuid!, $searchQuery: String!, $limit: Int = 20) {
   nchat_saved_messages(
     where: {
       user_id: { _eq: $userId }

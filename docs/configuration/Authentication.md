@@ -8,19 +8,19 @@ Complete guide to all 11 authentication methods in nself-chat.
 
 nself-chat supports 11 authentication providers:
 
-| Provider | Type | Setup Complexity |
-|----------|------|------------------|
-| [Email/Password](Auth-Email) | Credential | None |
-| [Magic Links](Auth-Magic-Link) | Passwordless | SMTP required |
-| [Google](Auth-OAuth) | OAuth 2.0 | Low |
-| [GitHub](Auth-OAuth) | OAuth 2.0 | Low |
-| [Apple](Auth-OAuth) | OAuth 2.0 | Medium |
-| [Microsoft](Auth-OAuth) | OAuth 2.0 | Low |
-| [Facebook](Auth-OAuth) | OAuth 2.0 | Low |
-| [Twitter/X](Auth-OAuth) | OAuth 2.0 | Low |
-| [Phone/SMS](Auth-Phone) | OTP | Twilio/SNS required |
-| [ID.me](Auth-IDme) | Identity Verification | Medium |
-| [Telegram](Auth-OAuth) | Widget | Bot Token required |
+| Provider                       | Type                  | Setup Complexity    |
+| ------------------------------ | --------------------- | ------------------- |
+| [Email/Password](Auth-Email)   | Credential            | None                |
+| [Magic Links](Auth-Magic-Link) | Passwordless          | SMTP required       |
+| [Google](Auth-OAuth)           | OAuth 2.0             | Low                 |
+| [GitHub](Auth-OAuth)           | OAuth 2.0             | Low                 |
+| [Apple](Auth-OAuth)            | OAuth 2.0             | Medium              |
+| [Microsoft](Auth-OAuth)        | OAuth 2.0             | Low                 |
+| [Facebook](Auth-OAuth)         | OAuth 2.0             | Low                 |
+| [Twitter/X](Auth-OAuth)        | OAuth 2.0             | Low                 |
+| [Phone/SMS](Auth-Phone)        | OTP                   | Twilio/SNS required |
+| [ID.me](Auth-IDme)             | Identity Verification | Medium              |
+| [Telegram](Auth-OAuth)         | Widget                | Bot Token required  |
 
 ---
 
@@ -56,9 +56,9 @@ await updateConfig({
       google: true,
       github: true,
       apple: false,
-      idme: true
-    }
-  }
+      idme: true,
+    },
+  },
 })
 ```
 
@@ -83,7 +83,7 @@ const passwordConfig = {
   requireUppercase: true,
   requireLowercase: true,
   requireNumbers: true,
-  requireSpecialChars: false
+  requireSpecialChars: false,
 }
 ```
 
@@ -93,7 +93,7 @@ const passwordConfig = {
 const emailConfig = {
   requireVerification: true,
   verificationExpiry: 24 * 60 * 60, // 24 hours
-  allowUnverifiedLogin: false
+  allowUnverifiedLogin: false,
 }
 ```
 
@@ -143,6 +143,7 @@ GOOGLE_CLIENT_SECRET=your-client-secret
 ```
 
 **Setup Steps:**
+
 1. Go to [Google Cloud Console](https://console.cloud.google.com/)
 2. Create project or select existing
 3. Enable Google+ API
@@ -157,6 +158,7 @@ GITHUB_CLIENT_SECRET=your-client-secret
 ```
 
 **Setup Steps:**
+
 1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
 2. Create new OAuth App
 3. Set callback URL: `https://yourdomain.com/api/auth/callback/github`
@@ -171,6 +173,7 @@ APPLE_KEY_ID=your-key-id
 ```
 
 **Setup Steps:**
+
 1. Go to [Apple Developer Portal](https://developer.apple.com/)
 2. Create App ID with Sign In with Apple
 3. Create Services ID
@@ -207,11 +210,11 @@ OTP-based authentication via SMS.
 
 ### Provider Options
 
-| Provider | Configuration |
-|----------|---------------|
-| Twilio | Account SID, Auth Token, Phone Number |
-| AWS SNS | Access Key, Secret, Region |
-| Custom Webhook | Webhook URL |
+| Provider       | Configuration                         |
+| -------------- | ------------------------------------- |
+| Twilio         | Account SID, Auth Token, Phone Number |
+| AWS SNS        | Access Key, Secret, Region            |
+| Custom Webhook | Webhook URL                           |
 
 ### Twilio Configuration
 
@@ -240,8 +243,8 @@ const otpConfig = {
   maxAttempts: 3,
   rateLimit: {
     window: 3600,
-    max: 5
-  }
+    max: 5,
+  },
 }
 ```
 
@@ -278,22 +281,22 @@ Government-grade identity verification for verified groups.
 
 ### Supported Verification Groups
 
-| Group | Description |
-|-------|-------------|
-| `military` | Active duty military |
-| `veteran` | Military veterans |
-| `military_family` | Military families |
-| `first_responder` | Police, fire, EMT |
-| `law_enforcement` | Police officers |
-| `firefighter` | Firefighters |
-| `emt` | Emergency medical technicians |
-| `government` | Government employees |
-| `federal_government` | Federal employees |
-| `state_government` | State employees |
-| `local_government` | Local employees |
-| `teacher` | K-12 teachers |
-| `student` | College students |
-| `nurse` | Registered nurses |
+| Group                | Description                   |
+| -------------------- | ----------------------------- |
+| `military`           | Active duty military          |
+| `veteran`            | Military veterans             |
+| `military_family`    | Military families             |
+| `first_responder`    | Police, fire, EMT             |
+| `law_enforcement`    | Police officers               |
+| `firefighter`        | Firefighters                  |
+| `emt`                | Emergency medical technicians |
+| `government`         | Government employees          |
+| `federal_government` | Federal employees             |
+| `state_government`   | State employees               |
+| `local_government`   | Local employees               |
+| `teacher`            | K-12 teachers                 |
+| `student`            | College students              |
+| `nurse`              | Registered nurses             |
 
 ### Configuration
 
@@ -325,11 +328,7 @@ function IDmeLogin() {
 Verified users receive badges displayed on their profile:
 
 ```tsx
-<UserBadge
-  type="military"
-  verified={true}
-  verifiedAt={user.idmeVerifiedAt}
-/>
+<UserBadge type="military" verified={true} verifiedAt={user.idmeVerifiedAt} />
 ```
 
 ### Access Control
@@ -340,7 +339,7 @@ Restrict features to verified groups:
 const accessConfig = {
   mode: 'idme-roles',
   allowedGroups: ['military', 'veteran', 'first_responder'],
-  guestAccess: false
+  guestAccess: false,
 }
 ```
 
@@ -370,13 +369,13 @@ TELEGRAM_BOT_USERNAME=your-bot-username
 
 ### Mode Options
 
-| Mode | Description |
-|------|-------------|
-| `allow-all` | Anyone can register |
-| `verified-only` | Email verification required |
-| `idme-roles` | ID.me verification required |
+| Mode                | Description                 |
+| ------------------- | --------------------------- |
+| `allow-all`         | Anyone can register         |
+| `verified-only`     | Email verification required |
+| `idme-roles`        | ID.me verification required |
 | `domain-restricted` | Specific email domains only |
-| `admin-only` | Manual approval required |
+| `admin-only`        | Manual approval required    |
 
 ### Configuration
 
@@ -385,7 +384,7 @@ const accessConfig = {
   mode: 'verified-only',
   allowedDomains: ['company.com'], // for domain-restricted
   allowedIdmeGroups: ['military'], // for idme-roles
-  requireApproval: false
+  requireApproval: false,
 }
 ```
 
@@ -423,15 +422,16 @@ function MyComponent() {
 ```typescript
 const sessionConfig = {
   maxAge: 30 * 24 * 60 * 60, // 30 days
-  updateAge: 24 * 60 * 60,   // 24 hours
+  updateAge: 24 * 60 * 60, // 24 hours
   secure: true,
-  sameSite: 'lax'
+  sameSite: 'lax',
 }
 ```
 
 ### Token Refresh
 
 Tokens are automatically refreshed when:
+
 - Session approaches expiry
 - User returns after idle period
 - API returns 401
@@ -442,12 +442,12 @@ Tokens are automatically refreshed when:
 
 ### MFA Methods
 
-| Method | Description |
-|--------|-------------|
-| TOTP | Authenticator app (Google, Authy) |
-| SMS | Code via text message |
-| Email | Code via email |
-| Backup Codes | One-time recovery codes |
+| Method       | Description                       |
+| ------------ | --------------------------------- |
+| TOTP         | Authenticator app (Google, Authy) |
+| SMS          | Code via text message             |
+| Email        | Code via email                    |
+| Backup Codes | One-time recovery codes           |
 
 ### Enabling MFA
 

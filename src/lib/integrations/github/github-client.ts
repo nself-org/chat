@@ -191,15 +191,13 @@ export class GitHubApiClient {
   /**
    * List repositories for authenticated user
    */
-  async listRepositories(
-    options?: {
-      type?: 'all' | 'owner' | 'public' | 'private' | 'member'
-      sort?: 'created' | 'updated' | 'pushed' | 'full_name'
-      direction?: 'asc' | 'desc'
-      perPage?: number
-      page?: number
-    }
-  ): Promise<GitHubRepository[]> {
+  async listRepositories(options?: {
+    type?: 'all' | 'owner' | 'public' | 'private' | 'member'
+    sort?: 'created' | 'updated' | 'pushed' | 'full_name'
+    direction?: 'asc' | 'desc'
+    perPage?: number
+    page?: number
+  }): Promise<GitHubRepository[]> {
     const params: Record<string, string> = {}
     if (options?.type) params.type = options.type
     if (options?.sort) params.sort = options.sort
@@ -301,11 +299,7 @@ export class GitHubApiClient {
   /**
    * Get pull request
    */
-  async getPullRequest(
-    owner: string,
-    repo: string,
-    prNumber: number
-  ): Promise<GitHubPullRequest> {
+  async getPullRequest(owner: string, repo: string, prNumber: number): Promise<GitHubPullRequest> {
     return this.get<GitHubPullRequest>(`/repos/${owner}/${repo}/pulls/${prNumber}`)
   }
 
@@ -344,7 +338,11 @@ export class GitHubApiClient {
   /**
    * Get commit
    */
-  async getCommit(owner: string, repo: string, sha: string): Promise<{
+  async getCommit(
+    owner: string,
+    repo: string,
+    sha: string
+  ): Promise<{
     sha: string
     commit: {
       message: string
@@ -373,11 +371,13 @@ export class GitHubApiClient {
       perPage?: number
       page?: number
     }
-  ): Promise<Array<{
-    sha: string
-    commit: { message: string }
-    html_url: string
-  }>> {
+  ): Promise<
+    Array<{
+      sha: string
+      commit: { message: string }
+      html_url: string
+    }>
+  > {
     const params: Record<string, string> = {}
     if (options?.sha) params.sha = options.sha
     if (options?.path) params.path = options.path

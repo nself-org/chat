@@ -96,18 +96,13 @@ export function TelegramVoiceMessage({
   const getStatusIcon = () => {
     switch (status) {
       case 'sending':
-        return <Clock className="w-3.5 h-3.5 text-white/60" />
+        return <Clock className="h-3.5 w-3.5 text-white/60" />
       case 'sent':
-        return <Check className="w-3.5 h-3.5 text-white/60" />
+        return <Check className="h-3.5 w-3.5 text-white/60" />
       case 'delivered':
-        return <CheckCheck className="w-3.5 h-3.5 text-white/60" />
+        return <CheckCheck className="h-3.5 w-3.5 text-white/60" />
       case 'read':
-        return (
-          <CheckCheck
-            className="w-3.5 h-3.5"
-            style={{ color: TELEGRAM_COLORS.checkRead }}
-          />
-        )
+        return <CheckCheck className="h-3.5 w-3.5" style={{ color: TELEGRAM_COLORS.checkRead }} />
       default:
         return null
     }
@@ -133,19 +128,13 @@ export function TelegramVoiceMessage({
   }, [])
 
   return (
-    <div
-      className={cn(
-        'flex px-4',
-        isOwn ? 'justify-end' : 'justify-start',
-        className
-      )}
-    >
+    <div className={cn('flex px-4', isOwn ? 'justify-end' : 'justify-start', className)}>
       <div
         className={cn(
-          'flex items-center gap-2 px-3 py-2 rounded-2xl shadow-sm',
+          'flex items-center gap-2 rounded-2xl px-3 py-2 shadow-sm',
           isOwn
-            ? 'bg-[#EFFDDE] dark:bg-[#2B5278] rounded-br-sm'
-            : 'bg-white dark:bg-[#182533] rounded-bl-sm'
+            ? 'rounded-br-sm bg-[#EFFDDE] dark:bg-[#2B5278]'
+            : 'rounded-bl-sm bg-white dark:bg-[#182533]'
         )}
         style={{ minWidth: TELEGRAM_BUBBLES.voice.minWidth }}
       >
@@ -155,23 +144,17 @@ export function TelegramVoiceMessage({
         <button
           onClick={handlePlayPause}
           className={cn(
-            'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors',
-            isOwn
-              ? 'bg-[#4FAE4E] text-white'
-              : 'bg-[#2AABEE] text-white'
+            'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full transition-colors',
+            isOwn ? 'bg-[#4FAE4E] text-white' : 'bg-[#2AABEE] text-white'
           )}
         >
-          {playing ? (
-            <Pause className="w-5 h-5" />
-          ) : (
-            <Play className="w-5 h-5 ml-0.5" />
-          )}
+          {playing ? <Pause className="h-5 w-5" /> : <Play className="ml-0.5 h-5 w-5" />}
         </button>
 
         {/* Waveform */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div
-            className="flex items-center gap-0.5 h-7 cursor-pointer"
+            className="flex h-7 cursor-pointer items-center gap-0.5"
             onClick={handleWaveformClick}
           >
             {waveform.map((value, index) => {
@@ -188,8 +171,8 @@ export function TelegramVoiceMessage({
                         ? 'bg-[#4FAE4E]'
                         : 'bg-[#2AABEE]'
                       : isOwn
-                      ? 'bg-[#A0D89A]'
-                      : 'bg-gray-300 dark:bg-gray-600'
+                        ? 'bg-[#A0D89A]'
+                        : 'bg-gray-300 dark:bg-gray-600'
                   )}
                   style={{
                     height: `${Math.max(value * 24, 4)}px`,
@@ -200,16 +183,14 @@ export function TelegramVoiceMessage({
           </div>
 
           {/* Duration & Time */}
-          <div className="flex items-center justify-between mt-1">
+          <div className="mt-1 flex items-center justify-between">
             <span
               className={cn(
                 'text-xs',
                 isOwn ? 'text-gray-600 dark:text-gray-300' : 'text-gray-500 dark:text-gray-400'
               )}
             >
-              {playing || time > 0
-                ? formatDuration(time)
-                : formatDuration(duration)}
+              {playing || time > 0 ? formatDuration(time) : formatDuration(duration)}
             </span>
             <span className="flex items-center gap-1">
               <span

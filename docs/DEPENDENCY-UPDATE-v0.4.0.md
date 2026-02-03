@@ -1,7 +1,9 @@
 # Dependency Update for v0.4.0
 
 ## Summary
+
 Updated package.json to version 0.4.0 and added all required dependencies for the following features:
+
 - End-to-end encryption (Signal Protocol)
 - WebRTC video conferencing with SFU
 - Advanced video streaming (HLS/DASH)
@@ -54,6 +56,7 @@ Updated package.json to version 0.4.0 and added all required dependencies for th
 ## Previously Existing Dependencies (Verified)
 
 The following dependencies were already present and verified:
+
 - ✅ **@mediapipe/selfie_segmentation@^0.1.1675465747** - Person segmentation
 - ✅ **mediasoup-client@^3.18.5** - WebRTC client for mediasoup
 - ✅ **simple-peer@^9.11.1** - WebRTC wrapper
@@ -63,20 +66,24 @@ The following dependencies were already present and verified:
 ## Installation Results
 
 ### Installation Command
+
 ```bash
 pnpm install
 ```
 
 ### Status
+
 ✅ All dependencies installed successfully
 
 ### Warnings
+
 - Minor peer dependency warnings (non-critical):
   - `tree-sitter` version mismatch (0.22.4 vs 0.21.1)
   - `canvas` version mismatch (2.11.2 vs 3.0.0) - using older version for compatibility
 - Some Nhost packages deprecated (security patches continue until March 31)
 
 ### Build/Compilation Notes
+
 - **canvas**: Successfully compiled native module with some warnings (expected)
 - **mediasoup**: Downloaded prebuilt binary for darwin-arm64
 - **@signalapp/libsignal-client**: Prebuilt binary available
@@ -87,37 +94,41 @@ All dependencies can be imported correctly:
 
 ```typescript
 // Cryptography
-import { secp256k1 } from '@noble/curves/secp256k1';
-import { sha256 } from '@noble/hashes/sha256';
+import { secp256k1 } from '@noble/curves/secp256k1'
+import { sha256 } from '@noble/hashes/sha256'
 
 // WebRTC
-import * as mediasoupClient from 'mediasoup-client';
-import adapter from 'webrtc-adapter';
+import * as mediasoupClient from 'mediasoup-client'
+import adapter from 'webrtc-adapter'
 
 // Video streaming
-import Hls from 'hls.js';
+import Hls from 'hls.js'
 
 // Simple peer
-import * as SimplePeer from 'simple-peer';
+import * as SimplePeer from 'simple-peer'
 ```
 
 ## Special Handling Required
 
 ### Server-Side Only
+
 - **mediasoup**: Can only be imported in Node.js environment (API routes, server components)
 - **canvas**: Requires Cairo system dependencies, Node.js only
 
 ### Native Modules
+
 - **@signalapp/libsignal-client**: Requires proper Node.js environment
 - **canvas**: Requires Cairo, Pango, and related libraries
 
 ### Browser vs Server
+
 - Use dynamic imports with `typeof window !== 'undefined'` checks for client-only libraries
 - Use Next.js API routes for server-only dependencies
 
 ## Version Update
 
 Updated package version:
+
 - **Previous**: 0.3.0
 - **Current**: 0.4.0
 
@@ -152,6 +163,7 @@ pnpm list --depth=0 | grep -E "(noble|signal|mediasoup|canvas|dashjs|hls\.js|sim
 ## Documentation
 
 Related documentation:
+
 - Signal Protocol: https://signal.org/docs/
 - mediasoup: https://mediasoup.org/documentation/v3/
 - HLS.js: https://github.com/video-dev/hls.js/

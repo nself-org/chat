@@ -1,5 +1,5 @@
-import { gql } from '@apollo/client';
-import { USER_BASIC_FRAGMENT, CHANNEL_BASIC_FRAGMENT, MESSAGE_BASIC_FRAGMENT } from '../fragments';
+import { gql } from '@apollo/client'
+import { USER_BASIC_FRAGMENT, CHANNEL_BASIC_FRAGMENT, MESSAGE_BASIC_FRAGMENT } from '../fragments'
 
 // ============================================================================
 // FRAGMENTS
@@ -39,7 +39,7 @@ export const ACTIVITY_FRAGMENT = gql`
   ${USER_BASIC_FRAGMENT}
   ${CHANNEL_BASIC_FRAGMENT}
   ${MESSAGE_BASIC_FRAGMENT}
-`;
+`
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -64,7 +64,7 @@ export type ActivityType =
   | 'task_completed'
   | 'task_assigned'
   | 'integration_event'
-  | 'system';
+  | 'system'
 
 export type ActivityCategory =
   | 'all'
@@ -76,26 +76,26 @@ export type ActivityCategory =
   | 'members'
   | 'calls'
   | 'tasks'
-  | 'integrations';
+  | 'integrations'
 
 export interface GetActivitiesVariables {
-  userId: string;
-  limit?: number;
-  offset?: number;
-  category?: ActivityCategory;
-  types?: ActivityType[];
-  isRead?: boolean;
-  channelId?: string;
-  dateFrom?: string;
-  dateTo?: string;
+  userId: string
+  limit?: number
+  offset?: number
+  category?: ActivityCategory
+  types?: ActivityType[]
+  isRead?: boolean
+  channelId?: string
+  dateFrom?: string
+  dateTo?: string
 }
 
 export interface GetUnreadCountsVariables {
-  userId: string;
+  userId: string
 }
 
 export interface GetActivityByIdVariables {
-  activityId: string;
+  activityId: string
 }
 
 // ============================================================================
@@ -154,7 +154,7 @@ export const GET_ACTIVITIES = gql`
     }
   }
   ${ACTIVITY_FRAGMENT}
-`;
+`
 
 /**
  * Get activity by ID
@@ -166,7 +166,7 @@ export const GET_ACTIVITY_BY_ID = gql`
     }
   }
   ${ACTIVITY_FRAGMENT}
-`;
+`
 
 /**
  * Get unread counts by category
@@ -174,11 +174,7 @@ export const GET_ACTIVITY_BY_ID = gql`
 export const GET_UNREAD_COUNTS = gql`
   query GetUnreadCounts($userId: uuid!) {
     total: nchat_activities_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        is_read: { _eq: false }
-        is_archived: { _eq: false }
-      }
+      where: { user_id: { _eq: $userId }, is_read: { _eq: false }, is_archived: { _eq: false } }
     ) {
       aggregate {
         count
@@ -250,7 +246,7 @@ export const GET_UNREAD_COUNTS = gql`
       }
     }
   }
-`;
+`
 
 /**
  * Get activities grouped by category
@@ -294,11 +290,7 @@ export const GET_ACTIVITIES_BY_CATEGORY = gql`
     }
 
     files: nchat_activities(
-      where: {
-        user_id: { _eq: $userId }
-        category: { _eq: "files" }
-        is_archived: { _eq: false }
-      }
+      where: { user_id: { _eq: $userId }, category: { _eq: "files" }, is_archived: { _eq: false } }
       order_by: { created_at: desc }
       limit: $limit
     ) {
@@ -306,7 +298,7 @@ export const GET_ACTIVITIES_BY_CATEGORY = gql`
     }
   }
   ${ACTIVITY_FRAGMENT}
-`;
+`
 
 /**
  * Search activities
@@ -336,7 +328,7 @@ export const SEARCH_ACTIVITIES = gql`
     }
   }
   ${ACTIVITY_FRAGMENT}
-`;
+`
 
 // ============================================================================
 // MUTATIONS
@@ -349,17 +341,14 @@ export const MARK_ACTIVITY_AS_READ = gql`
   mutation MarkActivityAsRead($activityId: uuid!) {
     update_nchat_activities_by_pk(
       pk_columns: { id: $activityId }
-      _set: {
-        is_read: true
-        read_at: "now()"
-      }
+      _set: { is_read: true, read_at: "now()" }
     ) {
       id
       is_read
       read_at
     }
   }
-`;
+`
 
 /**
  * Mark multiple activities as read
@@ -368,10 +357,7 @@ export const MARK_ACTIVITIES_AS_READ = gql`
   mutation MarkActivitiesAsRead($activityIds: [uuid!]!) {
     update_nchat_activities(
       where: { id: { _in: $activityIds } }
-      _set: {
-        is_read: true
-        read_at: "now()"
-      }
+      _set: { is_read: true, read_at: "now()" }
     ) {
       affected_rows
       returning {
@@ -381,7 +367,7 @@ export const MARK_ACTIVITIES_AS_READ = gql`
       }
     }
   }
-`;
+`
 
 /**
  * Mark all activities as read
@@ -389,20 +375,13 @@ export const MARK_ACTIVITIES_AS_READ = gql`
 export const MARK_ALL_ACTIVITIES_AS_READ = gql`
   mutation MarkAllActivitiesAsRead($userId: uuid!, $category: String) {
     update_nchat_activities(
-      where: {
-        user_id: { _eq: $userId }
-        is_read: { _eq: false }
-        category: { _eq: $category }
-      }
-      _set: {
-        is_read: true
-        read_at: "now()"
-      }
+      where: { user_id: { _eq: $userId }, is_read: { _eq: false }, category: { _eq: $category } }
+      _set: { is_read: true, read_at: "now()" }
     ) {
       affected_rows
     }
   }
-`;
+`
 
 /**
  * Archive activity
@@ -411,17 +390,14 @@ export const ARCHIVE_ACTIVITY = gql`
   mutation ArchiveActivity($activityId: uuid!) {
     update_nchat_activities_by_pk(
       pk_columns: { id: $activityId }
-      _set: {
-        is_archived: true
-        archived_at: "now()"
-      }
+      _set: { is_archived: true, archived_at: "now()" }
     ) {
       id
       is_archived
       archived_at
     }
   }
-`;
+`
 
 /**
  * Archive all read activities
@@ -429,20 +405,13 @@ export const ARCHIVE_ACTIVITY = gql`
 export const ARCHIVE_READ_ACTIVITIES = gql`
   mutation ArchiveReadActivities($userId: uuid!) {
     update_nchat_activities(
-      where: {
-        user_id: { _eq: $userId }
-        is_read: { _eq: true }
-        is_archived: { _eq: false }
-      }
-      _set: {
-        is_archived: true
-        archived_at: "now()"
-      }
+      where: { user_id: { _eq: $userId }, is_read: { _eq: true }, is_archived: { _eq: false } }
+      _set: { is_archived: true, archived_at: "now()" }
     ) {
       affected_rows
     }
   }
-`;
+`
 
 /**
  * Delete activity
@@ -453,7 +422,7 @@ export const DELETE_ACTIVITY = gql`
       id
     }
   }
-`;
+`
 
 /**
  * Update activity preferences
@@ -468,4 +437,4 @@ export const UPDATE_ACTIVITY_PREFERENCES = gql`
       activity_preferences
     }
   }
-`;
+`

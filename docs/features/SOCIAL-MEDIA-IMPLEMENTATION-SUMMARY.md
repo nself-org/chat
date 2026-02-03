@@ -62,12 +62,14 @@ Comprehensive social media integration framework enabling automatic importing of
 ```
 
 **Tables Created:**
+
 - `nchat_social_accounts` - Connected social media accounts
 - `nchat_social_posts` - Imported posts
 - `nchat_social_integrations` - Channel mappings with filters
 - `nchat_social_import_logs` - Audit logs
 
 **Features:**
+
 - Row-level security policies
 - Indexes for performance
 - Updated_at triggers
@@ -89,6 +91,7 @@ src/lib/social/
 ```
 
 **Key Classes:**
+
 - `TwitterClient` - Implements `SocialAPIClient` interface
 - `InstagramClient` - Implements `SocialAPIClient` interface
 - `LinkedInClient` - Implements `SocialAPIClient` interface
@@ -114,6 +117,7 @@ src/app/api/social/
 ```
 
 **Endpoints:**
+
 - `GET /api/social/{platform}/auth` - Start OAuth
 - `GET /api/social/{platform}/callback` - OAuth callback
 - `GET /api/social/accounts` - List accounts
@@ -131,6 +135,7 @@ src/hooks/
 ```
 
 **Features:**
+
 - Apollo Client integration
 - Optimistic updates
 - Cache management
@@ -147,6 +152,7 @@ src/components/admin/
 ```
 
 **Features:**
+
 - Responsive design with Tailwind CSS
 - Real-time updates
 - Loading indicators
@@ -160,6 +166,7 @@ src/app/admin/social/page.tsx
 ```
 
 **Features:**
+
 - Tabbed interface (Accounts, Integrations, History)
 - Account selection
 - Integration management per account
@@ -172,6 +179,7 @@ src/graphql/social-media.ts
 ```
 
 **Operations:**
+
 - 6 queries (accounts, integrations, posts, logs)
 - 7 mutations (CRUD operations)
 - 1 subscription (real-time posts)
@@ -190,6 +198,7 @@ scripts/setup-social-media.sh        # Setup automation
 ### Data Flow
 
 1. **OAuth Connection**
+
    ```
    User clicks "Connect Twitter"
    → Redirect to Twitter OAuth
@@ -201,6 +210,7 @@ scripts/setup-social-media.sh        # Setup automation
    ```
 
 2. **Import Process**
+
    ```
    Cron job triggers /api/social/poll
    → Fetch all active accounts
@@ -328,11 +338,11 @@ See `docs/Social-Media-Integration.md` for detailed instructions.
 
 ## Rate Limits
 
-| Platform | Limit | Window |
-|----------|-------|--------|
-| Twitter | 300 requests | 15 minutes |
-| Instagram | 200 requests | 1 hour |
-| LinkedIn | Varies | Per endpoint |
+| Platform  | Limit        | Window       |
+| --------- | ------------ | ------------ |
+| Twitter   | 300 requests | 15 minutes   |
+| Instagram | 200 requests | 1 hour       |
+| LinkedIn  | Varies       | Per endpoint |
 
 All clients implement exponential backoff for rate limit handling.
 
@@ -397,14 +407,14 @@ All clients implement exponential backoff for rate limit handling.
 
 ## Cost Analysis
 
-| Item | Cost | Frequency |
-|------|------|-----------|
-| Twitter API (Essential) | $100 | Monthly |
-| Instagram API | Free | - |
-| LinkedIn API | Free | - |
-| Server compute | ~$5 | Monthly |
-| Database storage (1GB) | ~$1 | Monthly |
-| **Total** | **$106** | **Monthly** |
+| Item                    | Cost     | Frequency   |
+| ----------------------- | -------- | ----------- |
+| Twitter API (Essential) | $100     | Monthly     |
+| Instagram API           | Free     | -           |
+| LinkedIn API            | Free     | -           |
+| Server compute          | ~$5      | Monthly     |
+| Database storage (1GB)  | ~$1      | Monthly     |
+| **Total**               | **$106** | **Monthly** |
 
 Note: Instagram and LinkedIn APIs are free for standard usage. Only Twitter requires a paid subscription.
 
@@ -419,6 +429,7 @@ This is a new feature. No migration needed.
 Migration file: `.backend/migrations/012_social_media_integration.sql`
 
 **Steps:**
+
 1. Backup database
 2. Run migration script
 3. Verify tables created

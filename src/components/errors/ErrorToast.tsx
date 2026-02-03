@@ -23,6 +23,8 @@ import { toast } from '@/hooks/use-toast'
 import { AppError, ErrorCategory } from '@/lib/errors/error-types'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Error Toast Options
 // ============================================================================
@@ -67,9 +69,7 @@ export function showErrorToast(options: ErrorToastOptions) {
       <div className="space-y-1">
         <p>{error.userMessage}</p>
         {showErrorCode && error.context.errorCode && (
-          <p className="text-xs text-muted-foreground">
-            Error code: {error.context.errorCode}
-          </p>
+          <p className="text-xs text-muted-foreground">Error code: {error.context.errorCode}</p>
         )}
       </div>
     ),
@@ -80,7 +80,7 @@ export function showErrorToast(options: ErrorToastOptions) {
           try {
             await onRetry()
           } catch (retryError) {
-            console.error('Retry failed:', retryError)
+            logger.error('Retry failed:', retryError)
           }
         }}
         className="inline-flex h-8 shrink-0 items-center justify-center gap-1 rounded-md border border-transparent bg-transparent px-3 text-sm font-medium text-white ring-offset-background transition-colors hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none disabled:opacity-50"
@@ -97,10 +97,7 @@ export function showErrorToast(options: ErrorToastOptions) {
 /**
  * Show network error toast
  */
-export function showNetworkErrorToast(
-  message?: string,
-  onRetry?: () => void | Promise<void>
-) {
+export function showNetworkErrorToast(message?: string, onRetry?: () => void | Promise<void>) {
   toast({
     title: (
       <div className="flex items-center gap-2">
@@ -128,10 +125,7 @@ export function showNetworkErrorToast(
 /**
  * Show upload error toast
  */
-export function showUploadErrorToast(
-  fileName: string,
-  onRetry?: () => void | Promise<void>
-) {
+export function showUploadErrorToast(fileName: string, onRetry?: () => void | Promise<void>) {
   toast({
     title: (
       <div className="flex items-center gap-2">
@@ -187,10 +181,7 @@ export function showSendErrorToast(onRetry?: () => void | Promise<void>) {
 /**
  * Show save error toast
  */
-export function showSaveErrorToast(
-  itemName?: string,
-  onRetry?: () => void | Promise<void>
-) {
+export function showSaveErrorToast(itemName?: string, onRetry?: () => void | Promise<void>) {
   toast({
     title: (
       <div className="flex items-center gap-2">
@@ -368,9 +359,7 @@ export function showNotFoundErrorToast(itemName?: string) {
         <span>Not Found</span>
       </div>
     ),
-    description: itemName
-      ? `${itemName} not found.`
-      : 'The requested item was not found.',
+    description: itemName ? `${itemName} not found.` : 'The requested item was not found.',
     variant: 'destructive',
     duration: 5000,
   })
@@ -452,19 +441,16 @@ export interface UseErrorToastOptions {
 }
 
 export function useErrorToast() {
-  const showError = React.useCallback(
-    (error: AppError, options: UseErrorToastOptions = {}) => {
-      const { showToast: show = true, allowRetry = false, onRetry } = options
+  const showError = React.useCallback((error: AppError, options: UseErrorToastOptions = {}) => {
+    const { showToast: show = true, allowRetry = false, onRetry } = options
 
-      if (!show) return
+    if (!show) return
 
-      showErrorToast({
-        error,
-        onRetry: allowRetry ? onRetry : undefined,
-      })
-    },
-    []
-  )
+    showErrorToast({
+      error,
+      onRetry: allowRetry ? onRetry : undefined,
+    })
+  }, [])
 
   return {
     showError,

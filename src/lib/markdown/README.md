@@ -16,13 +16,15 @@ Complete markdown parsing and rendering for the nself-chat application.
 ## Supported Markdown
 
 ### Text Formatting
+
 - **Bold**: `**text**` or `__text__`
-- *Italic*: `*text*` or `_text_`
+- _Italic_: `*text*` or `_text_`
 - <u>Underline</u>: `<u>text</u>`
 - ~~Strikethrough~~: `~~text~~`
 - `Code`: `` `code` ``
 
 ### Block Elements
+
 - Headings: `# H1` through `###### H6`
 - Code blocks with syntax highlighting:
   ```language
@@ -32,15 +34,18 @@ Complete markdown parsing and rendering for the nself-chat application.
 - Horizontal rules: `---` or `***` or `___`
 
 ### Lists
+
 - Bullet lists: `- item` or `* item` or `+ item`
 - Ordered lists: `1. item`
 
 ### Links & Media
+
 - Links: `[text](url)`
 - Images: `![alt](url)`
 - Auto-linked URLs
 
 ### Custom Syntax
+
 - User mentions: `@username`
 - Channel mentions: `#channel`
 - Emoji shortcodes: `:emoji:`
@@ -165,35 +170,45 @@ function Message({ message }) {
 ### Parser Functions
 
 #### `jsonToMarkdown(json: JSONContent): string`
+
 Convert TipTap JSON to Markdown string.
 
 #### `markdownToJson(markdown: string): JSONContent`
+
 Convert Markdown string to TipTap JSON.
 
 #### `jsonToHtml(json: JSONContent, options?: ParseOptions): string`
+
 Convert TipTap JSON to sanitized HTML.
 
 #### `markdownToHtml(markdown: string): string`
+
 Convert Markdown string to HTML.
 
 #### `jsonToPlainText(json: JSONContent): string`
+
 Extract plain text (no formatting).
 
 #### `getExcerpt(json: JSONContent, length?: number): string`
+
 Get first N characters with ellipsis.
 
 #### `countWords(json: JSONContent): number`
+
 Count words in content.
 
 #### `isEmpty(json: JSONContent): boolean`
+
 Check if content is empty.
 
 ### Renderer Components
 
 #### `<MarkdownRenderer>`
+
 Full-featured markdown renderer.
 
 **Props:**
+
 - `content`: JSONContent | string - Content to render
 - `className?`: string - Additional CSS class
 - `sanitize?`: boolean - Sanitize HTML (default: true)
@@ -204,17 +219,21 @@ Full-featured markdown renderer.
 - `compact?`: boolean - Compact mode (default: false)
 
 #### `<MarkdownPreview>`
+
 Renderer with preview/raw toggle.
 
 **Props:**
+
 - All `MarkdownRenderer` props
 - `showToggle?`: boolean - Show toggle button (default: true)
 - `initialMode?`: 'preview' | 'raw' - Initial mode (default: 'preview')
 
 #### `<CompactMarkdownRenderer>`
+
 Truncated preview for message lists.
 
 **Props:**
+
 - `content`: JSONContent | string - Content to render
 - `maxLength?`: number - Max characters (default: 100)
 - `className?`: string - Additional CSS class
@@ -222,18 +241,21 @@ Truncated preview for message lists.
 ## Architecture
 
 ### Parser (`parser.ts`)
+
 - Bidirectional conversion: Markdown ↔ TipTap JSON
 - HTML generation with sanitization
 - Text extraction utilities
 - Supports all TipTap node types
 
 ### Renderer (`renderer.tsx`)
+
 - React components for rendering
 - Syntax highlighting via lowlight
 - Interactive mentions and links
 - Multiple rendering modes
 
 ### Integration Points
+
 1. **Editor**: TipTap stores content as JSON
 2. **Storage**: Convert to markdown for database
 3. **Display**: Render markdown as formatted React components
@@ -284,11 +306,9 @@ describe('Markdown Parser', () => {
       content: [
         {
           type: 'paragraph',
-          content: [
-            { type: 'text', text: 'bold', marks: [{ type: 'bold' }] }
-          ]
-        }
-      ]
+          content: [{ type: 'text', text: 'bold', marks: [{ type: 'bold' }] }],
+        },
+      ],
     }
     expect(jsonToMarkdown(json)).toBe('**bold**')
   })

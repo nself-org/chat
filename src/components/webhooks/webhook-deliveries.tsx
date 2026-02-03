@@ -24,17 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import {
   WebhookDelivery,
@@ -118,13 +109,13 @@ function DeliveryItem({ delivery, onRetry, compact = false }: DeliveryItemProps)
       <div
         className={cn(
           'flex items-center justify-between gap-4 rounded-lg border p-3',
-          'transition-colors hover:bg-accent/50'
+          'hover:bg-accent/50 transition-colors'
         )}
       >
         <div className="flex items-center gap-3">
           <DeliveryStatusIcon status={delivery.status} />
           <div>
-            <p className="text-sm font-medium line-clamp-1">
+            <p className="line-clamp-1 text-sm font-medium">
               {requestPreview.slice(0, 50)}
               {requestPreview.length > 50 && '...'}
             </p>
@@ -140,12 +131,7 @@ function DeliveryItem({ delivery, onRetry, compact = false }: DeliveryItemProps)
 
   return (
     <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-      <div
-        className={cn(
-          'rounded-lg border transition-colors',
-          isOpen && 'border-primary'
-        )}
-      >
+      <div className={cn('rounded-lg border transition-colors', isOpen && 'border-primary')}>
         {/* Header */}
         <CollapsibleTrigger asChild>
           <div
@@ -173,12 +159,8 @@ function DeliveryItem({ delivery, onRetry, compact = false }: DeliveryItemProps)
               </div>
               <div className="mt-1 flex items-center gap-4 text-xs text-muted-foreground">
                 <span>{formatDeliveryTime(delivery.created_at)}</span>
-                {delivery.response_status && (
-                  <span>HTTP {delivery.response_status}</span>
-                )}
-                {delivery.attempt_count > 1 && (
-                  <span>Attempt {delivery.attempt_count}</span>
-                )}
+                {delivery.response_status && <span>HTTP {delivery.response_status}</span>}
+                {delivery.attempt_count > 1 && <span>Attempt {delivery.attempt_count}</span>}
               </div>
             </div>
 
@@ -218,14 +200,14 @@ function DeliveryItem({ delivery, onRetry, compact = false }: DeliveryItemProps)
 
         {/* Expanded Content */}
         <CollapsibleContent>
-          <div className="border-t px-4 py-3 space-y-4">
+          <div className="space-y-4 border-t px-4 py-3">
             {/* Request Body */}
             <div>
               <div className="mb-2 flex items-center gap-2 text-sm font-medium">
                 <FileJson className="h-4 w-4" />
                 Request Body
               </div>
-              <pre className="max-h-32 overflow-auto rounded-lg bg-muted p-3 text-xs font-mono">
+              <pre className="max-h-32 overflow-auto rounded-lg bg-muted p-3 font-mono text-xs">
                 {(() => {
                   try {
                     return JSON.stringify(JSON.parse(delivery.request_body), null, 2)
@@ -245,8 +227,7 @@ function DeliveryItem({ delivery, onRetry, compact = false }: DeliveryItemProps)
                   {delivery.response_status && (
                     <Badge
                       variant={
-                        delivery.response_status >= 200 &&
-                        delivery.response_status < 300
+                        delivery.response_status >= 200 && delivery.response_status < 300
                           ? 'default'
                           : 'destructive'
                       }
@@ -258,20 +239,14 @@ function DeliveryItem({ delivery, onRetry, compact = false }: DeliveryItemProps)
                 </div>
                 <pre
                   className={cn(
-                    'max-h-32 overflow-auto rounded-lg p-3 text-xs font-mono',
-                    delivery.error_message
-                      ? 'bg-destructive/10 text-destructive'
-                      : 'bg-muted'
+                    'max-h-32 overflow-auto rounded-lg p-3 font-mono text-xs',
+                    delivery.error_message ? 'bg-destructive/10 text-destructive' : 'bg-muted'
                   )}
                 >
                   {delivery.error_message ||
                     (() => {
                       try {
-                        return JSON.stringify(
-                          JSON.parse(delivery.response_body || ''),
-                          null,
-                          2
-                        )
+                        return JSON.stringify(JSON.parse(delivery.response_body || ''), null, 2)
                       } catch {
                         return delivery.response_body
                       }
@@ -322,14 +297,10 @@ export function WebhookDeliveries({
   maxHeight = '500px',
   compact = false,
 }: WebhookDeliveriesProps) {
-  const [statusFilter, setStatusFilter] = useState<DeliveryStatus | 'all'>(
-    'all'
-  )
+  const [statusFilter, setStatusFilter] = useState<DeliveryStatus | 'all'>('all')
 
   const filteredDeliveries =
-    statusFilter === 'all'
-      ? deliveries
-      : deliveries.filter((d) => d.status === statusFilter)
+    statusFilter === 'all' ? deliveries : deliveries.filter((d) => d.status === statusFilter)
 
   // Stats
   const successCount = deliveries.filter((d) => d.status === 'success').length
@@ -346,18 +317,15 @@ export function WebhookDeliveries({
             <div className="flex items-center gap-2">
               <CardTitle className="text-base">Recent Deliveries</CardTitle>
               <span className="text-sm text-muted-foreground">
-                ({successCount} success, {failedCount} failed, {pendingCount}{' '}
-                pending)
+                ({successCount} success, {failedCount} failed, {pendingCount} pending)
               </span>
             </div>
             <div className="flex items-center gap-2">
               <Select
                 value={statusFilter}
-                onValueChange={(value) =>
-                  setStatusFilter(value as DeliveryStatus | 'all')
-                }
+                onValueChange={(value) => setStatusFilter(value as DeliveryStatus | 'all')}
               >
-                <SelectTrigger className="w-[120px] h-8 text-xs">
+                <SelectTrigger className="h-8 w-[120px] text-xs">
                   <SelectValue placeholder="Filter" />
                 </SelectTrigger>
                 <SelectContent>
@@ -376,9 +344,7 @@ export function WebhookDeliveries({
                   onClick={onRefresh}
                   disabled={isLoading}
                 >
-                  <RefreshCw
-                    className={cn('h-4 w-4', isLoading && 'animate-spin')}
-                  />
+                  <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
                 </Button>
               )}
             </div>
@@ -389,7 +355,7 @@ export function WebhookDeliveries({
       <CardContent className="flex flex-1 flex-col overflow-hidden">
         {/* Error State */}
         {error && (
-          <div className="mb-4 rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
+          <div className="bg-destructive/10 mb-4 rounded-lg border border-destructive p-4 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -400,10 +366,7 @@ export function WebhookDeliveries({
             {isLoading && deliveries.length === 0 ? (
               // Loading skeletons
               Array.from({ length: 3 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="animate-pulse rounded-lg border p-4"
-                >
+                <div key={i} className="animate-pulse rounded-lg border p-4">
                   <div className="flex items-center gap-4">
                     <div className="h-4 w-4 rounded-full bg-muted" />
                     <div className="flex-1 space-y-2">
@@ -417,7 +380,7 @@ export function WebhookDeliveries({
             ) : filteredDeliveries.length === 0 ? (
               // Empty state
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <FileJson className="h-12 w-12 text-muted-foreground/50" />
+                <FileJson className="text-muted-foreground/50 h-12 w-12" />
                 <h3 className="mt-4 text-lg font-semibold">No deliveries</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
                   {statusFilter !== 'all'
@@ -440,12 +403,7 @@ export function WebhookDeliveries({
             {/* Load More */}
             {hasMore && onLoadMore && (
               <div className="pt-4 text-center">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={onLoadMore}
-                  disabled={isLoading}
-                >
+                <Button variant="outline" size="sm" onClick={onLoadMore} disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -509,9 +467,7 @@ export function RecentDeliveries({
 
   if (deliveries.length === 0) {
     return (
-      <div className="py-4 text-center text-sm text-muted-foreground">
-        No recent deliveries
-      </div>
+      <div className="py-4 text-center text-sm text-muted-foreground">No recent deliveries</div>
     )
   }
 
@@ -521,11 +477,7 @@ export function RecentDeliveries({
         <DeliveryItem key={delivery.id} delivery={delivery} compact />
       ))}
       {deliveries.length > maxItems && onViewAll && (
-        <Button
-          variant="ghost"
-          className="w-full text-sm"
-          onClick={onViewAll}
-        >
+        <Button variant="ghost" className="w-full text-sm" onClick={onViewAll}>
           View all {deliveries.length} deliveries
         </Button>
       )}

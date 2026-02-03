@@ -372,7 +372,7 @@ export const threadFeatures: SlackFeature[] = [
   {
     id: 'threads-view',
     name: 'Threads View',
-    description: 'See all threads you\'re following in one place',
+    description: "See all threads you're following in one place",
     status: 'implemented',
     category: 'threads',
     enabled: true,
@@ -950,7 +950,11 @@ export const slackKeyboardShortcuts = {
   // Navigation
   quickSwitcher: { mac: 'Cmd+K', windows: 'Ctrl+K', description: 'Open quick switcher' },
   search: { mac: 'Cmd+G', windows: 'Ctrl+G', description: 'Search messages' },
-  jumpToConversation: { mac: 'Cmd+Shift+K', windows: 'Ctrl+Shift+K', description: 'Open DM browser' },
+  jumpToConversation: {
+    mac: 'Cmd+Shift+K',
+    windows: 'Ctrl+Shift+K',
+    description: 'Open DM browser',
+  },
   browseChannels: { mac: 'Cmd+Shift+L', windows: 'Ctrl+Shift+L', description: 'Browse channels' },
   threads: { mac: 'Cmd+Shift+T', windows: 'Ctrl+Shift+T', description: 'Open threads view' },
   activity: { mac: 'Cmd+Shift+M', windows: 'Ctrl+Shift+M', description: 'Open activity' },

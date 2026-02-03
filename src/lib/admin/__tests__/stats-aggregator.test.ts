@@ -120,8 +120,12 @@ describe('User Statistics', () => {
       const users = [
         createTestUser({ createdAt: now.toISOString() }),
         createTestUser({ createdAt: now.toISOString() }),
-        createTestUser({ createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString() }),
-        createTestUser({ createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString() }),
+        createTestUser({
+          createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        }),
+        createTestUser({
+          createdAt: new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+        }),
       ]
 
       const result = aggregateUserStats(users, now)
@@ -131,9 +135,7 @@ describe('User Statistics', () => {
     })
 
     it('should handle users without lastSeenAt', () => {
-      const users = [
-        createTestUser({ isActive: true, lastSeenAt: undefined }),
-      ]
+      const users = [createTestUser({ isActive: true, lastSeenAt: undefined })]
 
       const result = aggregateUserStats(users)
 
@@ -213,12 +215,7 @@ describe('User Statistics', () => {
     })
 
     it('should count users by role correctly', () => {
-      const users = [
-        { role: 'admin' },
-        { role: 'member' },
-        { role: 'member' },
-        { role: 'guest' },
-      ]
+      const users = [{ role: 'admin' }, { role: 'member' }, { role: 'member' }, { role: 'guest' }]
 
       const result = countUsersByRole(users)
 
@@ -707,10 +704,7 @@ describe('Edge Cases', () => {
   })
 
   it('should handle all inactive users', () => {
-    const users = [
-      createTestUser({ isActive: false }),
-      createTestUser({ isActive: false }),
-    ]
+    const users = [createTestUser({ isActive: false }), createTestUser({ isActive: false })]
 
     const result = aggregateUserStats(users)
 
@@ -721,9 +715,7 @@ describe('Edge Cases', () => {
     const now = new Date()
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000)
 
-    const messages = [
-      createTestMessage({ createdAt: yesterday.toISOString() }),
-    ]
+    const messages = [createTestMessage({ createdAt: yesterday.toISOString() })]
 
     const result = aggregateMessageStats(messages, now)
 

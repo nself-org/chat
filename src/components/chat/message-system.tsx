@@ -39,7 +39,7 @@ export function MessageSystem({ message, className }: MessageSystemProps) {
         className
       )}
     >
-      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted/50">
+      <div className="bg-muted/50 flex h-6 w-6 items-center justify-center rounded-full">
         <Icon className="h-3 w-3" />
       </div>
       <span>{text}</span>
@@ -53,10 +53,7 @@ export function MessageSystem({ message, className }: MessageSystemProps) {
 /**
  * System message as a line separator
  */
-export function SystemMessageLine({
-  message,
-  className,
-}: MessageSystemProps) {
+export function SystemMessageLine({ message, className }: MessageSystemProps) {
   const { icon: Icon, text } = getSystemMessageContent(message)
 
   return (
@@ -194,13 +191,7 @@ function getSystemMessageContent(message: Message): {
  * Date separator component
  * Shows date between message groups
  */
-export function DateSeparator({
-  date,
-  className,
-}: {
-  date: Date
-  className?: string
-}) {
+export function DateSeparator({ date, className }: { date: Date; className?: string }) {
   const formatDate = (d: Date) => {
     const today = new Date()
     const yesterday = new Date(today)
@@ -236,13 +227,7 @@ export function DateSeparator({
  * New messages separator
  * Shows "New messages" line for unread indicator
  */
-export function NewMessagesSeparator({
-  count,
-  className,
-}: {
-  count?: number
-  className?: string
-}) {
+export function NewMessagesSeparator({ count, className }: { count?: number; className?: string }) {
   return (
     <div className={cn('relative py-4', className)}>
       {/* Line */}
@@ -269,18 +254,13 @@ export function ThreadStartedIndicator({
   className?: string
 }) {
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2 py-2 text-xs text-muted-foreground',
-        className
-      )}
-    >
-      <div className="h-px flex-1 bg-primary/20" />
+    <div className={cn('flex items-center gap-2 py-2 text-xs text-muted-foreground', className)}>
+      <div className="bg-primary/20 h-px flex-1" />
       <MessageSquare className="h-3 w-3 text-primary" />
       <span>
         <strong className="text-primary">{userName}</strong> started a thread
       </span>
-      <div className="h-px flex-1 bg-primary/20" />
+      <div className="bg-primary/20 h-px flex-1" />
     </div>
   )
 }

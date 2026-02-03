@@ -1,0 +1,172 @@
+name: Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  COVERAGE_THRESHOLD: 80
+
+jobs:
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run tests with coverage
+        run: pnpm test:coverage
+        env:
+          CI: true
+          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
+          NEXT_PUBLIC_ENV: 'test'
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage/lcov.info
+          flags: unittests
+          name: nchat-coverage
+          fail_ci_if_error: false
+          verbose: true
+
+      - name: Upload coverage artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: |
+            coverage/
+            !coverage/lcov-report/
+          retention-days: 14
+
+      - name: Upload HTML coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-html
+          path: coverage/lcov-report/
+          retention-days: 14
+
+      - name: Check coverage thresholds
+        run: |
+          # Parse coverage summary
+          COVERAGE_FILE="coverage/coverage-summary.json"
+          if [ -f "$COVERAGE_FILE" ]; then
+            LINE_COVERAGE=$(jq '.total.lines.pct' $COVERAGE_FILE)
+            BRANCH_COVERAGE=$(jq '.total.branches.pct' $COVERAGE_FILE)
+            FUNCTION_COVERAGE=$(jq '.total.functions.pct' $COVERAGE_FILE)
+            STATEMENT_COVERAGE=$(jq '.total.statements.pct' $COVERAGE_FILE)
+
+            echo "## Coverage Summary" >> $GITHUB_STEP_SUMMARY
+            echo "| Metric | Coverage |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|----------|" >> $GITHUB_STEP_SUMMARY
+            echo "| Lines | ${LINE_COVERAGE}% |" >> $GITHUB_STEP_SUMMARY
+            echo "| Branches | ${BRANCH_COVERAGE}% |" >> $GITHUB_STEP_SUMMARY
+            echo "| Functions | ${FUNCTION_COVERAGE}% |" >> $GITHUB_STEP_SUMMARY
+            echo "| Statements | ${STATEMENT_COVERAGE}% |" >> $GITHUB_STEP_SUMMARY
+
+            # Check if coverage meets threshold
+            if (( $(echo "$LINE_COVERAGE < $COVERAGE_THRESHOLD" | bc -l) )); then
+              echo "::warning::Line coverage ($LINE_COVERAGE%) is below threshold ($COVERAGE_THRESHOLD%)"
+            fi
+          fi
+
+  coverage-diff:
+    name: Coverage Diff
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    needs: unit-tests
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage-pr
+
+      - name: Run tests on base branch
+        run: |
+          git checkout ${{ github.event.pull_request.base.sha }}
+          pnpm install --frozen-lockfile
+          pnpm test:coverage || true
+          cp coverage/coverage-summary.json coverage-base.json 2>/dev/null || echo "{}" > coverage-base.json
+          git checkout -
+        env:
+          CI: true
+
+      - name: Compare coverage
+        run: |
+          if [ -f "coverage-pr/coverage-summary.json" ] && [ -f "coverage-base.json" ]; then
+            PR_COVERAGE=$(jq '.total.lines.pct' coverage-pr/coverage-summary.json)
+            BASE_COVERAGE=$(jq '.total.lines.pct' coverage-base.json 2>/dev/null || echo "0")
+            DIFF=$(echo "$PR_COVERAGE - $BASE_COVERAGE" | bc)
+
+            echo "## Coverage Comparison" >> $GITHUB_STEP_SUMMARY
+            echo "| Branch | Line Coverage |" >> $GITHUB_STEP_SUMMARY
+            echo "|--------|--------------|" >> $GITHUB_STEP_SUMMARY
+            echo "| Base | ${BASE_COVERAGE}% |" >> $GITHUB_STEP_SUMMARY
+            echo "| PR | ${PR_COVERAGE}% |" >> $GITHUB_STEP_SUMMARY
+            echo "| Diff | ${DIFF}% |" >> $GITHUB_STEP_SUMMARY
+
+            if (( $(echo "$DIFF < 0" | bc -l) )); then
+              echo "::warning::Coverage decreased by ${DIFF}%"
+            fi
+          fi
+
+  test-report:
+    name: Test Report
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: always()
+    steps:
+      - name: Download test results
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage
+
+      - name: Publish Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: coverage/junit.xml
+          comment_mode: off
+          check_name: Test Results

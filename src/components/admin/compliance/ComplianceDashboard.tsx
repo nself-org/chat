@@ -15,21 +15,10 @@
 import * as React from 'react'
 import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   Shield,
   FileText,
@@ -108,7 +97,6 @@ export function ComplianceDashboard() {
   const loadComplianceData = async () => {
     try {
       setLoading(true)
-      // TODO: Implement API calls to fetch compliance data
       // Mock data for now
       setMetrics({
         activeRetentionPolicies: 5,
@@ -182,9 +170,9 @@ export function ComplianceDashboard() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+          <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-primary"></div>
           <p className="text-muted-foreground">Loading compliance data...</p>
         </div>
       </div>
@@ -197,17 +185,17 @@ export function ComplianceDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Compliance Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="mt-1 text-muted-foreground">
             Manage data retention, legal holds, and regulatory compliance
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline">
-            <FileText className="h-4 w-4 mr-2" />
+            <FileText className="mr-2 h-4 w-4" />
             Generate Report
           </Button>
           <Button>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export Audit Logs
           </Button>
         </div>
@@ -217,29 +205,26 @@ export function ComplianceDashboard() {
       {alerts.length > 0 && (
         <div className="space-y-2">
           {alerts.map((alert) => (
-            <Card key={alert.id} className={cn(
-              'border-l-4',
-              alert.type === 'error' && 'border-l-red-500',
-              alert.type === 'warning' && 'border-l-yellow-500',
-              alert.type === 'info' && 'border-l-blue-500'
-            )}>
+            <Card
+              key={alert.id}
+              className={cn(
+                'border-l-4',
+                alert.type === 'error' && 'border-l-red-500',
+                alert.type === 'warning' && 'border-l-yellow-500',
+                alert.type === 'info' && 'border-l-blue-500'
+              )}
+            >
               <CardContent className="pt-6">
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-3">
                     {getAlertIcon(alert.type)}
                     <div>
                       <h4 className="font-semibold">{alert.title}</h4>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {alert.description}
-                      </p>
+                      <p className="mt-1 text-sm text-muted-foreground">{alert.description}</p>
                     </div>
                   </div>
                   {alert.action && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={alert.action.onClick}
-                    >
+                    <Button variant="outline" size="sm" onClick={alert.action.onClick}>
                       {alert.action.label}
                     </Button>
                   )}
@@ -255,41 +240,31 @@ export function ComplianceDashboard() {
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Retention Policies
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Retention Policies</CardTitle>
               <Archive className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{metrics.activeRetentionPolicies}</div>
-              <p className="text-xs text-muted-foreground">
-                Active policies
-              </p>
+              <p className="text-xs text-muted-foreground">Active policies</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Scheduled Deletions
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Scheduled Deletions</CardTitle>
               <Calendar className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">
                 {metrics.scheduledDeletions.toLocaleString()}
               </div>
-              <p className="text-xs text-muted-foreground">
-                Items pending deletion
-              </p>
+              <p className="text-xs text-muted-foreground">Items pending deletion</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                Legal Holds
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">Legal Holds</CardTitle>
               <Lock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -302,16 +277,12 @@ export function ComplianceDashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                GDPR Requests
-              </CardTitle>
+              <CardTitle className="text-sm font-medium">GDPR Requests</CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{metrics.pendingGDPRRequests}</div>
-              <p className="text-xs text-muted-foreground">
-                Pending review
-              </p>
+              <p className="text-xs text-muted-foreground">Pending review</p>
             </CardContent>
           </Card>
         </div>
@@ -338,9 +309,7 @@ export function ComplianceDashboard() {
                   <Lock className="h-5 w-5" />
                   Data Under Legal Hold
                 </CardTitle>
-                <CardDescription>
-                  Protected data that cannot be deleted
-                </CardDescription>
+                <CardDescription>Protected data that cannot be deleted</CardDescription>
               </CardHeader>
               <CardContent>
                 {metrics && (
@@ -377,9 +346,7 @@ export function ComplianceDashboard() {
                   <FileCheck className="h-5 w-5" />
                   Compliance Status
                 </CardTitle>
-                <CardDescription>
-                  Current compliance metrics
-                </CardDescription>
+                <CardDescription>Current compliance metrics</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
@@ -387,7 +354,11 @@ export function ComplianceDashboard() {
                     <span className="text-sm text-muted-foreground">ToS Acceptance Rate</span>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold">{metrics?.tosAcceptanceRate}%</span>
-                      <Badge variant={metrics && metrics.tosAcceptanceRate > 90 ? 'default' : 'destructive'}>
+                      <Badge
+                        variant={
+                          metrics && metrics.tosAcceptanceRate > 90 ? 'default' : 'destructive'
+                        }
+                      >
                         {metrics && metrics.tosAcceptanceRate > 90 ? 'Good' : 'Action Required'}
                       </Badge>
                     </div>
@@ -418,13 +389,11 @@ export function ComplianceDashboard() {
                 <Clock className="h-5 w-5" />
                 Recent Compliance Activity
               </CardTitle>
-              <CardDescription>
-                Latest compliance-related events
-              </CardDescription>
+              <CardDescription>Latest compliance-related events</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
                   <Archive className="h-4 w-4 text-muted-foreground" />
                   <div className="flex-1">
                     <p className="text-sm font-medium">Retention job completed</p>
@@ -432,7 +401,7 @@ export function ComplianceDashboard() {
                   </div>
                   <span className="text-xs text-muted-foreground">2 hours ago</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
                   <Shield className="h-4 w-4 text-muted-foreground" />
                   <div className="flex-1">
                     <p className="text-sm font-medium">GDPR export request completed</p>
@@ -440,7 +409,7 @@ export function ComplianceDashboard() {
                   </div>
                   <span className="text-xs text-muted-foreground">5 hours ago</span>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
                   <Lock className="h-4 w-4 text-muted-foreground" />
                   <div className="flex-1">
                     <p className="text-sm font-medium">Legal hold created</p>
@@ -463,9 +432,7 @@ export function ComplianceDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Legal Holds</CardTitle>
-              <CardDescription>
-                Manage legal holds for eDiscovery and litigation
-              </CardDescription>
+              <CardDescription>Manage legal holds for eDiscovery and litigation</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">Legal holds management coming soon...</p>
@@ -478,9 +445,7 @@ export function ComplianceDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>GDPR Requests</CardTitle>
-              <CardDescription>
-                Data export and deletion requests
-              </CardDescription>
+              <CardDescription>Data export and deletion requests</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">GDPR request management coming soon...</p>
@@ -498,9 +463,7 @@ export function ComplianceDashboard() {
           <Card>
             <CardHeader>
               <CardTitle>Terms of Service</CardTitle>
-              <CardDescription>
-                Manage ToS versions and acceptance tracking
-              </CardDescription>
+              <CardDescription>Manage ToS versions and acceptance tracking</CardDescription>
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">ToS management coming soon...</p>

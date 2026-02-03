@@ -81,13 +81,9 @@ export function getWhatsAppThemeStyle(): Record<string, string> {
  */
 export function getBubbleBackground(isOwn: boolean, isDarkMode: boolean): string {
   if (isOwn) {
-    return isDarkMode
-      ? WHATSAPP_COLORS.bubbleOutgoingDark
-      : WHATSAPP_COLORS.bubbleOutgoing
+    return isDarkMode ? WHATSAPP_COLORS.bubbleOutgoingDark : WHATSAPP_COLORS.bubbleOutgoing
   }
-  return isDarkMode
-    ? WHATSAPP_COLORS.bubbleIncomingDark
-    : WHATSAPP_COLORS.bubbleIncoming
+  return isDarkMode ? WHATSAPP_COLORS.bubbleIncomingDark : WHATSAPP_COLORS.bubbleIncoming
 }
 
 /**

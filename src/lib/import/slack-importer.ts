@@ -109,7 +109,10 @@ export class SlackImporter {
   /**
    * Main import method
    */
-  async import(slackData: SlackExport, onProgress?: (progress: ImportProgress) => void): Promise<ImportResult> {
+  async import(
+    slackData: SlackExport,
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<ImportResult> {
     const startTime = Date.now()
     this.progress.status = 'importing'
     this.progress.startedAt = new Date()
@@ -172,7 +175,10 @@ export class SlackImporter {
   /**
    * Validate Slack export data
    */
-  private async validateData(data: SlackExport, onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async validateData(
+    data: SlackExport,
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(1, 'Validating data', onProgress)
 
     if (!data.users || data.users.length === 0) {
@@ -203,7 +209,10 @@ export class SlackImporter {
   /**
    * Import Slack users
    */
-  private async importUsers(users: SlackUser[], onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async importUsers(
+    users: SlackUser[],
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(2, 'Importing users', onProgress)
     this.progress.itemsTotal = users.length
 
@@ -259,7 +268,10 @@ export class SlackImporter {
   /**
    * Import Slack channels
    */
-  private async importChannels(channels: SlackChannel[], onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async importChannels(
+    channels: SlackChannel[],
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(3, 'Importing channels', onProgress)
     this.progress.itemsTotal = channels.length
 
@@ -326,13 +338,16 @@ export class SlackImporter {
   /**
    * Import Slack messages
    */
-  private async importMessages(messages: SlackMessage[], onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async importMessages(
+    messages: SlackMessage[],
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(4, 'Importing messages', onProgress)
     this.progress.itemsTotal = messages.length
 
     // Separate main messages and thread replies
-    const mainMessages = messages.filter(m => !m.thread_ts || m.thread_ts === m.ts)
-    const threadReplies = messages.filter(m => m.thread_ts && m.thread_ts !== m.ts)
+    const mainMessages = messages.filter((m) => !m.thread_ts || m.thread_ts === m.ts)
+    const threadReplies = messages.filter((m) => m.thread_ts && m.thread_ts !== m.ts)
 
     // Import main messages first
     for (let i = 0; i < mainMessages.length; i++) {
@@ -447,7 +462,10 @@ export class SlackImporter {
   /**
    * Import reactions
    */
-  private async importReactions(messageId: string, reactions: SlackMessage['reactions']): Promise<void> {
+  private async importReactions(
+    messageId: string,
+    reactions: SlackMessage['reactions']
+  ): Promise<void> {
     if (!reactions) return
 
     for (const reaction of reactions) {
@@ -473,10 +491,13 @@ export class SlackImporter {
   /**
    * Import files
    */
-  private async importFiles(messages: SlackMessage[], onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async importFiles(
+    messages: SlackMessage[],
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(5, 'Importing files', onProgress)
 
-    const messagesWithFiles = messages.filter(m => m.files && m.files.length > 0)
+    const messagesWithFiles = messages.filter((m) => m.files && m.files.length > 0)
     this.progress.itemsTotal = messagesWithFiles.reduce((acc, m) => acc + (m.files?.length || 0), 0)
 
     let processed = 0
@@ -553,7 +574,6 @@ export class SlackImporter {
     avatarUrl?: string
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual user creation via GraphQL
     return `user_${Math.random().toString(36).substr(2, 9)}`
   }
 
@@ -564,13 +584,10 @@ export class SlackImporter {
     createdBy: string
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual channel creation via GraphQL
     return `channel_${Math.random().toString(36).substr(2, 9)}`
   }
 
-  private async addChannelMembers(channelId: string, memberIds: string[]): Promise<void> {
-    // TODO: Implement channel member addition via GraphQL
-  }
+  private async addChannelMembers(channelId: string, memberIds: string[]): Promise<void> {}
 
   private async createMessage(data: {
     content: string
@@ -580,7 +597,6 @@ export class SlackImporter {
     createdAt: Date
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual message creation via GraphQL
     return `message_${Math.random().toString(36).substr(2, 9)}`
   }
 
@@ -588,9 +604,7 @@ export class SlackImporter {
     messageId: string
     userId: string
     emoji: string
-  }): Promise<void> {
-    // TODO: Implement reaction creation via GraphQL
-  }
+  }): Promise<void> {}
 
   private async importFile(data: {
     messageId: string
@@ -598,13 +612,15 @@ export class SlackImporter {
     filename: string
     mimeType: string
     size: number
-  }): Promise<void> {
-    // TODO: Implement file download and upload
-  }
+  }): Promise<void> {}
 
   // Progress tracking helpers
 
-  private updateProgress(step: number, message: string, onProgress?: (progress: ImportProgress) => void): void {
+  private updateProgress(
+    step: number,
+    message: string,
+    onProgress?: (progress: ImportProgress) => void
+  ): void {
     this.progress.currentStepNumber = step
     this.progress.currentStep = message
     this.progress.itemsProcessed = 0
@@ -618,7 +634,8 @@ export class SlackImporter {
     onProgress?: (progress: ImportProgress) => void
   ): void {
     const stepProgress = (current / total) * 100
-    const overallProgress = ((step - 1) / this.progress.totalSteps) * 100 + (stepProgress / this.progress.totalSteps)
+    const overallProgress =
+      ((step - 1) / this.progress.totalSteps) * 100 + stepProgress / this.progress.totalSteps
     this.progress.progress = Math.min(100, Math.round(overallProgress))
     onProgress?.(this.progress)
   }

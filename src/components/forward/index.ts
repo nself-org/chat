@@ -45,10 +45,7 @@ export {
 } from './forward-destination-list'
 
 // Preview components
-export {
-  ForwardPreview,
-  type ForwardPreviewProps,
-} from './forward-preview'
+export { ForwardPreview, type ForwardPreviewProps } from './forward-preview'
 
 // Forwarded message display
 export {

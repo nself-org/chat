@@ -169,9 +169,7 @@ export default function ChannelsManagementPage() {
   const handleConfirmArchive = async () => {
     if (!selectedChannel) return
     setChannels((prev) =>
-      prev.map((c) =>
-        c.id === selectedChannel.id ? { ...c, isArchived: !c.isArchived } : c
-      )
+      prev.map((c) => (c.id === selectedChannel.id ? { ...c, isArchived: !c.isArchived } : c))
     )
     setArchiveDialogOpen(false)
     setSelectedChannel(null)
@@ -195,9 +193,7 @@ export default function ChannelsManagementPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Channels</h1>
-            <p className="text-muted-foreground">
-              Manage workspace channels and their settings
-            </p>
+            <p className="text-muted-foreground">Manage workspace channels and their settings</p>
           </div>
           <div className="flex gap-2">
             <Button variant="outline" size="sm">
@@ -228,9 +224,7 @@ export default function ChannelsManagementPage() {
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Create New Channel</DialogTitle>
-              <DialogDescription>
-                Add a new channel to your workspace
-              </DialogDescription>
+              <DialogDescription>Add a new channel to your workspace</DialogDescription>
             </DialogHeader>
             <div className="space-y-4 py-4">
               <div className="space-y-2">
@@ -239,9 +233,7 @@ export default function ChannelsManagementPage() {
                   id="name"
                   placeholder="e.g., engineering"
                   value={newChannel.name}
-                  onChange={(e) =>
-                    setNewChannel((prev) => ({ ...prev, name: e.target.value }))
-                  }
+                  onChange={(e) => setNewChannel((prev) => ({ ...prev, name: e.target.value }))}
                 />
               </div>
               <div className="space-y-2">
@@ -295,10 +287,7 @@ export default function ChannelsManagementPage() {
               <Button variant="outline" onClick={() => setCreateDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button
-                onClick={handleCreateChannel}
-                disabled={!newChannel.name.trim()}
-              >
+              <Button onClick={handleCreateChannel} disabled={!newChannel.name.trim()}>
                 Create Channel
               </Button>
             </DialogFooter>
@@ -317,10 +306,7 @@ export default function ChannelsManagementPage() {
             <div className="space-y-4 py-4">
               <div className="space-y-2">
                 <Label htmlFor="edit-name">Channel Name</Label>
-                <Input
-                  id="edit-name"
-                  defaultValue={selectedChannel?.name}
-                />
+                <Input id="edit-name" defaultValue={selectedChannel?.name} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="edit-description">Description</Label>
@@ -347,9 +333,7 @@ export default function ChannelsManagementPage() {
               <Button variant="outline" onClick={() => setEditDialogOpen(false)}>
                 Cancel
               </Button>
-              <Button onClick={() => setEditDialogOpen(false)}>
-                Save Changes
-              </Button>
+              <Button onClick={() => setEditDialogOpen(false)}>Save Changes</Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
@@ -382,16 +366,15 @@ export default function ChannelsManagementPage() {
             <AlertDialogHeader>
               <AlertDialogTitle>Delete Channel</AlertDialogTitle>
               <AlertDialogDescription>
-                Are you sure you want to delete #{selectedChannel?.name}? This
-                action cannot be undone. All messages in this channel will be
-                permanently deleted.
+                Are you sure you want to delete #{selectedChannel?.name}? This action cannot be
+                undone. All messages in this channel will be permanently deleted.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleConfirmDelete}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               >
                 Delete Channel
               </AlertDialogAction>

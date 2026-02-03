@@ -4,21 +4,19 @@
  * Defines permission scopes, groups, and validation utilities
  */
 
-import type {
-  PermissionScope,
-  PermissionGroup,
-  AppPermission,
-  PermissionLevel,
-} from './app-types';
+import type { PermissionScope, PermissionGroup, AppPermission, PermissionLevel } from './app-types'
 
 // Re-export types for convenience
-export type { PermissionScope, PermissionGroup, AppPermission, PermissionLevel };
+export type { PermissionScope, PermissionGroup, AppPermission, PermissionLevel }
 
 // ============================================================================
 // Permission Definitions
 // ============================================================================
 
-export const PERMISSION_DEFINITIONS: Record<PermissionScope, { label: string; description: string }> = {
+export const PERMISSION_DEFINITIONS: Record<
+  PermissionScope,
+  { label: string; description: string }
+> = {
   'channels:read': {
     label: 'View channels',
     description: 'View channel information, names, and descriptions',
@@ -115,7 +113,7 @@ export const PERMISSION_DEFINITIONS: Record<PermissionScope, { label: string; de
     label: 'View team info',
     description: 'Access team/workspace information',
   },
-};
+}
 
 // ============================================================================
 // Permission Groups
@@ -194,7 +192,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
     icon: 'Settings',
     riskLevel: 'high',
   },
-];
+]
 
 // ============================================================================
 // Permission Utilities
@@ -203,25 +201,26 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
 /**
  * Get permission definition by scope
  */
-export function getPermissionDefinition(
-  scope: PermissionScope
-): { label: string; description: string } {
-  return PERMISSION_DEFINITIONS[scope];
+export function getPermissionDefinition(scope: PermissionScope): {
+  label: string
+  description: string
+} {
+  return PERMISSION_DEFINITIONS[scope]
 }
 
 /**
  * Get the permission group a scope belongs to
  */
 export function getPermissionGroup(scope: PermissionScope): PermissionGroup | undefined {
-  return PERMISSION_GROUPS.find((group) => group.permissions.includes(scope));
+  return PERMISSION_GROUPS.find((group) => group.permissions.includes(scope))
 }
 
 /**
  * Get risk level for a permission scope
  */
 export function getPermissionRiskLevel(scope: PermissionScope): 'low' | 'medium' | 'high' {
-  const group = getPermissionGroup(scope);
-  return group?.riskLevel || 'medium';
+  const group = getPermissionGroup(scope)
+  return group?.riskLevel || 'medium'
 }
 
 /**
@@ -230,39 +229,39 @@ export function getPermissionRiskLevel(scope: PermissionScope): 'low' | 'medium'
 export function groupPermissions(
   permissions: AppPermission[]
 ): Map<PermissionGroup, AppPermission[]> {
-  const grouped = new Map<PermissionGroup, AppPermission[]>();
+  const grouped = new Map<PermissionGroup, AppPermission[]>()
 
   permissions.forEach((permission) => {
-    const group = getPermissionGroup(permission.scope);
+    const group = getPermissionGroup(permission.scope)
     if (group) {
-      const existing = grouped.get(group) || [];
-      existing.push(permission);
-      grouped.set(group, existing);
+      const existing = grouped.get(group) || []
+      existing.push(permission)
+      grouped.set(group, existing)
     }
-  });
+  })
 
-  return grouped;
+  return grouped
 }
 
 /**
  * Check if permissions include any high-risk scopes
  */
 export function hasHighRiskPermissions(permissions: AppPermission[]): boolean {
-  return permissions.some((p) => getPermissionRiskLevel(p.scope) === 'high');
+  return permissions.some((p) => getPermissionRiskLevel(p.scope) === 'high')
 }
 
 /**
  * Get required permissions from a list
  */
 export function getRequiredPermissions(permissions: AppPermission[]): AppPermission[] {
-  return permissions.filter((p) => p.level === 'required');
+  return permissions.filter((p) => p.level === 'required')
 }
 
 /**
  * Get optional permissions from a list
  */
 export function getOptionalPermissions(permissions: AppPermission[]): AppPermission[] {
-  return permissions.filter((p) => p.level === 'optional');
+  return permissions.filter((p) => p.level === 'optional')
 }
 
 /**
@@ -272,13 +271,13 @@ export function validatePermissions(
   required: AppPermission[],
   granted: PermissionScope[]
 ): { valid: boolean; missing: PermissionScope[] } {
-  const requiredScopes = required.filter((p) => p.level === 'required').map((p) => p.scope);
-  const missing = requiredScopes.filter((scope) => !granted.includes(scope));
+  const requiredScopes = required.filter((p) => p.level === 'required').map((p) => p.scope)
+  const missing = requiredScopes.filter((scope) => !granted.includes(scope))
 
   return {
     valid: missing.length === 0,
     missing,
-  };
+  }
 }
 
 /**
@@ -289,56 +288,56 @@ export function createPermission(
   level: PermissionLevel,
   reason?: string
 ): AppPermission {
-  const definition = getPermissionDefinition(scope);
+  const definition = getPermissionDefinition(scope)
   return {
     scope,
     level,
     description: definition.description,
     reason,
-  };
+  }
 }
 
 /**
  * Get all permission scopes
  */
 export function getAllPermissionScopes(): PermissionScope[] {
-  return Object.keys(PERMISSION_DEFINITIONS) as PermissionScope[];
+  return Object.keys(PERMISSION_DEFINITIONS) as PermissionScope[]
 }
 
 /**
  * Sort permissions by risk level (high first)
  */
 export function sortPermissionsByRisk(permissions: AppPermission[]): AppPermission[] {
-  const riskOrder = { high: 0, medium: 1, low: 2 };
+  const riskOrder = { high: 0, medium: 1, low: 2 }
   return [...permissions].sort((a, b) => {
-    const riskA = getPermissionRiskLevel(a.scope);
-    const riskB = getPermissionRiskLevel(b.scope);
-    return riskOrder[riskA] - riskOrder[riskB];
-  });
+    const riskA = getPermissionRiskLevel(a.scope)
+    const riskB = getPermissionRiskLevel(b.scope)
+    return riskOrder[riskA] - riskOrder[riskB]
+  })
 }
 
 /**
  * Get a summary of permissions for display
  */
 export function getPermissionsSummary(permissions: AppPermission[]): {
-  total: number;
-  required: number;
-  optional: number;
-  highRisk: number;
-  groups: string[];
+  total: number
+  required: number
+  optional: number
+  highRisk: number
+  groups: string[]
 } {
-  const groups = new Set<string>();
-  let highRisk = 0;
+  const groups = new Set<string>()
+  let highRisk = 0
 
   permissions.forEach((p) => {
-    const group = getPermissionGroup(p.scope);
+    const group = getPermissionGroup(p.scope)
     if (group) {
-      groups.add(group.name);
+      groups.add(group.name)
     }
     if (getPermissionRiskLevel(p.scope) === 'high') {
-      highRisk++;
+      highRisk++
     }
-  });
+  })
 
   return {
     total: permissions.length,
@@ -346,5 +345,5 @@ export function getPermissionsSummary(permissions: AppPermission[]): {
     optional: getOptionalPermissions(permissions).length,
     highRisk,
     groups: Array.from(groups),
-  };
+  }
 }

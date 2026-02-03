@@ -69,11 +69,9 @@ export function CreateRoleModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {copyFrom ? 'Duplicate Role' : 'Create New Role'}
-          </DialogTitle>
+          <DialogTitle>{copyFrom ? 'Duplicate Role' : 'Create New Role'}</DialogTitle>
           <DialogDescription>
             {copyFrom
               ? `Creating a copy of "${copyFrom.name}"`
@@ -91,7 +89,7 @@ export function CreateRoleModal({
         />
 
         {errors.length > 0 && (
-          <div className="mt-4 rounded-lg border border-destructive bg-destructive/10 p-4">
+          <div className="bg-destructive/10 mt-4 rounded-lg border border-destructive p-4">
             <ul className="list-inside list-disc text-sm text-destructive">
               {errors.map((error, i) => (
                 <li key={i}>{error}</li>

@@ -7,6 +7,7 @@
 **Date**: January 30, 2026
 
 WebRTC voice calling system has been fully implemented for nself-chat with support for:
+
 - ✅ 1-on-1 peer-to-peer calls
 - ✅ Group calls (up to 50 participants) via SFU
 - ✅ High-quality Opus audio codec (48kHz)
@@ -108,6 +109,7 @@ WebRTC voice calling system has been fully implemented for nself-chat with suppo
 ### API Routes ✅
 
 Architecture and specifications provided for:
+
 - POST `/api/calls/initiate` - Start new call
 - POST `/api/calls/:id/join` - Join call
 - POST `/api/calls/:id/leave` - Leave call
@@ -117,6 +119,7 @@ Architecture and specifications provided for:
 ### UI Components ✅
 
 Architecture and specifications provided for:
+
 - VoiceCallModal - Main call interface
 - CallControls - Mute, speaker, hang up
 - CallParticipants - Participant list with status
@@ -252,24 +255,28 @@ nself-chat/
 ## Key Features
 
 ### 1. High-Quality Audio
+
 - **Codec**: Opus at 48kHz
 - **Bitrate**: 20-40 kbps per participant
 - **Processing**: Noise suppression, echo cancellation, AGC
 - **VAD**: Voice activity detection for bandwidth optimization
 
 ### 2. Scalable Architecture
+
 - **1-on-1**: Direct P2P with TURN fallback
 - **Group**: SFU architecture via mediasoup
 - **Participants**: Up to 50 simultaneous users
 - **Quality**: Adaptive bitrate based on network conditions
 
 ### 3. Robust State Management
+
 - **State Machine**: Formal state transitions with validation
 - **Event Logging**: Complete audit trail of call events
 - **Quality Monitoring**: Real-time WebRTC statistics
 - **Error Recovery**: Automatic reconnection logic
 
 ### 4. Developer-Friendly
+
 - **TypeScript**: Full type safety
 - **React Hooks**: Clean, reusable logic
 - **GraphQL**: Real-time subscriptions
@@ -383,12 +390,14 @@ nself db shell
 ## Testing
 
 ### Unit Tests
+
 ```bash
 pnpm test src/lib/calls
 pnpm test src/hooks/use-voice-call
 ```
 
 ### Integration Tests
+
 1. Open app in two browser tabs
 2. Login as different users
 3. Start call from one tab
@@ -398,6 +407,7 @@ pnpm test src/hooks/use-voice-call
 7. End call and verify cleanup
 
 ### Load Testing
+
 - Group call with 10 participants
 - Group call with 25 participants
 - Group call with 50 participants (maximum)
@@ -408,6 +418,7 @@ pnpm test src/hooks/use-voice-call
 ## Production Deployment
 
 ### Prerequisites
+
 - [ ] TURN server deployed and configured
 - [ ] SFU server (mediasoup) deployed for group calls
 - [ ] SSL/TLS certificates for secure WebRTC
@@ -416,6 +427,7 @@ pnpm test src/hooks/use-voice-call
 - [ ] Rate limiting configured
 
 ### Deployment Steps
+
 1. Run database migration
 2. Configure environment variables
 3. Deploy TURN server
@@ -429,6 +441,7 @@ pnpm test src/hooks/use-voice-call
 ## Next Steps
 
 ### Immediate (Required for Production)
+
 1. Create API routes based on specifications
 2. Create UI components based on specifications
 3. Integration testing
@@ -436,6 +449,7 @@ pnpm test src/hooks/use-voice-call
 5. Security audit
 
 ### Short-term Enhancements
+
 - Video calling support
 - Screen sharing
 - Virtual backgrounds
@@ -443,6 +457,7 @@ pnpm test src/hooks/use-voice-call
 - Advanced noise cancellation
 
 ### Long-term Roadmap
+
 - E2E encryption
 - Spatial audio
 - AI-powered background noise removal
@@ -454,6 +469,7 @@ pnpm test src/hooks/use-voice-call
 ## Performance Metrics
 
 ### Target Metrics
+
 - **Call Connection Time**: < 2 seconds
 - **Audio Latency**: < 150ms
 - **Packet Loss Tolerance**: < 5%
@@ -461,6 +477,7 @@ pnpm test src/hooks/use-voice-call
 - **Memory Usage**: < 50MB per call
 
 ### Monitoring
+
 - WebRTC stats collected every 5 seconds
 - Quality reports stored in `nchat_call_quality_reports`
 - Real-time dashboards via Grafana
@@ -471,16 +488,19 @@ pnpm test src/hooks/use-voice-call
 ## Support
 
 ### Documentation
+
 - Implementation Guide: `/docs/Voice-Calling-Implementation.md`
 - Quick Start: `/docs/Voice-Calling-Quick-Start.md`
 - API Reference: Inline in `/src/graphql/calls.ts`
 
 ### Resources
+
 - WebRTC API: https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API
 - mediasoup: https://mediasoup.org
 - Opus Codec: https://opus-codec.org
 
 ### Community
+
 - GitHub Issues: https://github.com/nself/nself-chat/issues
 - Discord: https://discord.gg/nself
 - Documentation: https://docs.nself.chat

@@ -4,12 +4,7 @@ import { useState, memo, useCallback } from 'react'
 import { AlertCircle, RefreshCw, Trash2, ChevronDown, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -86,15 +81,15 @@ const DeleteConfirmDialog = memo(function DeleteConfirmDialog({
         <AlertDialogHeader>
           <AlertDialogTitle>Delete failed message?</AlertDialogTitle>
           <AlertDialogDescription>
-            This will permanently remove the message from your draft queue. This
-            action cannot be undone.
+            This will permanently remove the message from your draft queue. This action cannot be
+            undone.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={onConfirm}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
           >
             Delete
           </AlertDialogAction>
@@ -142,7 +137,7 @@ const InlineFailedIndicator = memo(function InlineFailedIndicator({
     <>
       <div
         className={cn(
-          'flex items-center gap-2 rounded-md bg-destructive/10 px-2 py-1.5 text-destructive',
+          'bg-destructive/10 flex items-center gap-2 rounded-md px-2 py-1.5 text-destructive',
           className
         )}
       >
@@ -160,13 +155,11 @@ const InlineFailedIndicator = memo(function InlineFailedIndicator({
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 text-destructive hover:bg-destructive/20 hover:text-destructive"
+                    className="hover:bg-destructive/20 h-6 w-6 text-destructive hover:text-destructive"
                     onClick={handleRetry}
                     disabled={isRetrying}
                   >
-                    <RefreshCw
-                      className={cn('h-3.5 w-3.5', isRetrying && 'animate-spin')}
-                    />
+                    <RefreshCw className={cn('h-3.5 w-3.5', isRetrying && 'animate-spin')} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>Retry</TooltipContent>
@@ -180,7 +173,7 @@ const InlineFailedIndicator = memo(function InlineFailedIndicator({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-6 w-6 text-destructive hover:bg-destructive/20 hover:text-destructive"
+                  className="hover:bg-destructive/20 h-6 w-6 text-destructive hover:text-destructive"
                   onClick={handleDelete}
                 >
                   <Trash2 className="h-3.5 w-3.5" />
@@ -225,7 +218,7 @@ export const FailedMessageBanner = memo(function FailedMessageBanner({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       className={cn(
-        'flex items-center justify-between gap-3 rounded-lg border border-destructive/50 bg-destructive/10 px-4 py-3',
+        'border-destructive/50 bg-destructive/10 flex items-center justify-between gap-3 rounded-lg border px-4 py-3',
         className
       )}
     >
@@ -240,7 +233,7 @@ export const FailedMessageBanner = memo(function FailedMessageBanner({
         <Button
           variant="outline"
           size="sm"
-          className="border-destructive/50 text-destructive hover:bg-destructive/20"
+          className="border-destructive/50 hover:bg-destructive/20 text-destructive"
           onClick={onRetryAll}
           disabled={isRetrying}
         >
@@ -260,7 +253,7 @@ export const FailedMessageBanner = memo(function FailedMessageBanner({
         <Button
           variant="ghost"
           size="sm"
-          className="text-destructive hover:bg-destructive/20"
+          className="hover:bg-destructive/20 text-destructive"
           onClick={onClearAll}
         >
           Clear all
@@ -303,23 +296,18 @@ const ToastFailedIndicator = memo(function ToastFailedIndicator({
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: 100 }}
       className={cn(
-        'w-80 rounded-lg border border-destructive/50 bg-background shadow-lg',
+        'border-destructive/50 w-80 rounded-lg border bg-background shadow-lg',
         className
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between gap-2 border-b border-destructive/30 px-4 py-2">
+      <div className="border-destructive/30 flex items-center justify-between gap-2 border-b px-4 py-2">
         <div className="flex items-center gap-2 text-destructive">
           <AlertCircle className="h-4 w-4" />
           <span className="text-sm font-medium">Message failed</span>
         </div>
         {onDismiss && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
-            onClick={handleDismiss}
-          >
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleDismiss}>
             <X className="h-4 w-4" />
           </Button>
         )}
@@ -327,21 +315,14 @@ const ToastFailedIndicator = memo(function ToastFailedIndicator({
 
       {/* Content */}
       <div className="p-4">
-        <p className="text-sm text-muted-foreground">
-          {errorMessage || 'Failed to send message'}
-        </p>
+        <p className="text-sm text-muted-foreground">{errorMessage || 'Failed to send message'}</p>
 
         {/* Expandable message preview */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="mt-2 flex w-full items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
         >
-          <ChevronDown
-            className={cn(
-              'h-3 w-3 transition-transform',
-              isExpanded && 'rotate-180'
-            )}
-          />
+          <ChevronDown className={cn('h-3 w-3 transition-transform', isExpanded && 'rotate-180')} />
           {isExpanded ? 'Hide message' : 'Show message'}
         </button>
 

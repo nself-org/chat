@@ -24,6 +24,7 @@ The unread system provides comprehensive tracking and navigation for unread mess
 ### Features
 
 **Tracking:**
+
 - ✅ Per-channel last read position
 - ✅ Unread message counts
 - ✅ Unread mention tracking
@@ -33,6 +34,7 @@ The unread system provides comprehensive tracking and navigation for unread mess
 - ✅ Manual mark as read/unread
 
 **UI Indicators:**
+
 - ✅ Badge counts on channels
 - ✅ Dots for unread (red for mentions)
 - ✅ Unread line in message list
@@ -40,6 +42,7 @@ The unread system provides comprehensive tracking and navigation for unread mess
 - ✅ Multiple display variants
 
 **Navigation:**
+
 - ✅ Jump to first unread message
 - ✅ Jump to next/previous unread channel
 - ✅ Jump between mentions
@@ -47,6 +50,7 @@ The unread system provides comprehensive tracking and navigation for unread mess
 - ✅ Smooth scroll animations
 
 **Integration:**
+
 - ✅ Browser tab badge (title)
 - ✅ Desktop app badge (Electron/Tauri)
 - ✅ Push notifications
@@ -96,6 +100,7 @@ The unread system provides comprehensive tracking and navigation for unread mess
 ### State Management
 
 **Per-Channel State:**
+
 ```typescript
 interface ChannelUnreadState {
   channelId: string
@@ -111,6 +116,7 @@ interface ChannelUnreadState {
 ```
 
 **Global State (via useNotificationStore):**
+
 ```typescript
 interface UnreadCounts {
   total: number
@@ -132,34 +138,25 @@ Visual indicators for unread messages in various styles.
 #### Variants
 
 **Badge** - Full count badge:
+
 ```tsx
-<UnreadBadge
-  unreadCount={5}
-  mentionCount={2}
-  size="sm"
-  position="inline"
-/>
+<UnreadBadge unreadCount={5} mentionCount={2} size="sm" position="inline" />
 ```
 
 **Dot** - Minimal dot indicator:
+
 ```tsx
-<UnreadDot
-  unreadCount={3}
-  mentionCount={1}
-  size="sm"
-  position="top-right"
-/>
+<UnreadDot unreadCount={3} mentionCount={1} size="sm" position="top-right" />
 ```
 
 **Line** - Horizontal divider in message list:
+
 ```tsx
-<UnreadLine
-  count={10}
-  label="New Messages"
-/>
+<UnreadLine count={10} label="New Messages" />
 ```
 
 **Sidebar** - Channel list item with unread:
+
 ```tsx
 <SidebarUnread
   channelName="general"
@@ -172,12 +169,9 @@ Visual indicators for unread messages in various styles.
 ```
 
 **Inline** - Compact inline with tooltip:
+
 ```tsx
-<InlineUnread
-  unreadCount={3}
-  mentionCount={1}
-  showCount={true}
-/>
+<InlineUnread unreadCount={3} mentionCount={1} showCount={true} />
 ```
 
 #### Mention Highlight
@@ -210,16 +204,19 @@ Floating action button for jumping to unread messages.
 #### Variants
 
 **Default** - Full featured with text:
+
 ```tsx
 <JumpToUnreadButton variant="default" {...props} />
 ```
 
 **Compact** - Icon and count only:
+
 ```tsx
 <JumpToUnreadButton variant="compact" {...props} />
 ```
 
 **Minimal** - Subtle text button:
+
 ```tsx
 <JumpToUnreadButton variant="minimal" {...props} />
 ```
@@ -291,10 +288,10 @@ const {
 
 ```typescript
 interface UseUnreadOptions {
-  channelId: string           // Channel ID to track
-  messages?: Message[]        // Messages in the channel
-  autoMarkRead?: boolean      // Auto-mark as read on scroll
-  autoMarkReadDelay?: number  // Delay before auto-mark (ms)
+  channelId: string // Channel ID to track
+  messages?: Message[] // Messages in the channel
+  autoMarkRead?: boolean // Auto-mark as read on scroll
+  autoMarkReadDelay?: number // Delay before auto-mark (ms)
 }
 ```
 
@@ -327,12 +324,7 @@ interface UseUnreadReturn {
 Track unread across all channels.
 
 ```tsx
-const {
-  allStates,
-  totalUnread,
-  totalMentions,
-  markAllAsRead,
-} = useAllUnread()
+const { allStates, totalUnread, totalMentions, markAllAsRead } = useAllUnread()
 ```
 
 ### useUnreadNavigation
@@ -458,17 +450,12 @@ import { JumpToUnreadButton } from '@/components/chat/JumpToUnread'
 function ChatView({ channelId, messages }) {
   const messageListRef = useRef<MessageListRef>(null)
 
-  const {
-    unreadCount,
-    mentionCount,
-    firstUnreadMessageId,
-    hasUnread,
-    markChannelAsRead,
-  } = useUnread({
-    channelId,
-    messages,
-    autoMarkRead: true,
-  })
+  const { unreadCount, mentionCount, firstUnreadMessageId, hasUnread, markChannelAsRead } =
+    useUnread({
+      channelId,
+      messages,
+      autoMarkRead: true,
+    })
 
   const handleJumpToUnread = () => {
     if (firstUnreadMessageId) {
@@ -478,11 +465,7 @@ function ChatView({ channelId, messages }) {
 
   return (
     <div>
-      <MessageList
-        ref={messageListRef}
-        messages={messages}
-        onMarkAsRead={markChannelAsRead}
-      />
+      <MessageList ref={messageListRef} messages={messages} onMarkAsRead={markChannelAsRead} />
 
       <JumpToUnreadButton
         hasUnread={hasUnread}
@@ -519,7 +502,9 @@ function processMessages(messages, firstUnreadMessageId) {
 }
 
 // Render
-{item.type === 'unread-line' && <UnreadLine count={item.count} />}
+{
+  item.type === 'unread-line' && <UnreadLine count={item.count} />
+}
 ```
 
 ### Step 3: Channel Sidebar
@@ -533,7 +518,7 @@ function ChannelSidebar({ channels, currentChannelId, onSelect }) {
 
   return (
     <div>
-      {channels.map(channel => (
+      {channels.map((channel) => (
         <SidebarUnread
           key={channel.id}
           channelName={channel.name}
@@ -587,13 +572,13 @@ useEffect(() => {
 
 ## Keyboard Shortcuts
 
-| Shortcut | Action |
-|----------|--------|
+| Shortcut      | Action                       |
+| ------------- | ---------------------------- |
 | `Alt+Shift+U` | Jump to first unread message |
-| `Alt+Shift+M` | Jump to next mention |
-| `Alt+Shift+↑` | Previous unread channel |
-| `Alt+Shift+↓` | Next unread channel |
-| `Esc` | Mark channel as read |
+| `Alt+Shift+M` | Jump to next mention         |
+| `Alt+Shift+↑` | Previous unread channel      |
+| `Alt+Shift+↓` | Next unread channel          |
+| `Esc`         | Mark channel as read         |
 
 ### Custom Shortcuts
 
@@ -673,7 +658,7 @@ function isUserMentioned(message: Message, userId: string): boolean {
 function markMultipleAsRead(channelIds: string[]) {
   const tracker = getUnreadTracker()
 
-  channelIds.forEach(channelId => {
+  channelIds.forEach((channelId) => {
     tracker.resetChannel(channelId)
   })
 }
@@ -691,20 +676,24 @@ import { useUnread } from '@/hooks/use-unread'
 
 describe('useUnread', () => {
   it('tracks unread messages', () => {
-    const { result } = renderHook(() => useUnread({
-      channelId: 'test',
-      messages: mockMessages,
-    }))
+    const { result } = renderHook(() =>
+      useUnread({
+        channelId: 'test',
+        messages: mockMessages,
+      })
+    )
 
     expect(result.current.unreadCount).toBe(5)
     expect(result.current.mentionCount).toBe(2)
   })
 
   it('marks as read', () => {
-    const { result } = renderHook(() => useUnread({
-      channelId: 'test',
-      messages: mockMessages,
-    }))
+    const { result } = renderHook(() =>
+      useUnread({
+        channelId: 'test',
+        messages: mockMessages,
+      })
+    )
 
     act(() => {
       result.current.markChannelAsRead()
@@ -725,13 +714,7 @@ describe('JumpToUnread', () => {
   it('jumps to first unread message', async () => {
     const onJump = jest.fn()
 
-    render(
-      <JumpToUnreadButton
-        hasUnread={true}
-        unreadCount={5}
-        onJumpToUnread={onJump}
-      />
-    )
+    render(<JumpToUnreadButton hasUnread={true} unreadCount={5} onJumpToUnread={onJump} />)
 
     await userEvent.click(screen.getByRole('button'))
     expect(onJump).toHaveBeenCalled()
@@ -746,19 +729,23 @@ describe('JumpToUnread', () => {
 ### Optimizations
 
 **1. Batched Updates:**
+
 - Debounced localStorage saves (100ms)
 - Batch state updates in tracker
 
 **2. Memoization:**
+
 - `useMemo` for calculated values
 - `useCallback` for stable references
 
 **3. Efficient Storage:**
+
 - Only store necessary data
 - Auto-cleanup old data (30 days)
 - Compressed JSON storage
 
 **4. Smart Recalculation:**
+
 - Only recalculate when messages change
 - Cache counts in tracker
 - Incremental updates
@@ -871,6 +858,7 @@ if (message.isDeleted || message.isHidden) {
 **Problem:** Counts don't update when new messages arrive.
 
 **Solution:** Ensure messages are passed to `useUnread`:
+
 ```tsx
 const { unreadCount } = useUnread({
   channelId,
@@ -889,6 +877,7 @@ const { unreadCount } = useUnread({
 **Problem:** Messages don't auto-mark as read.
 
 **Solution:** Check `autoMarkRead` option and scroll position:
+
 ```tsx
 const { markChannelAsRead } = useUnread({
   channelId,
@@ -903,6 +892,7 @@ const { markChannelAsRead } = useUnread({
 **Problem:** localStorage quota exceeded.
 
 **Solution:** Reduce storage age or clean up manually:
+
 ```tsx
 const tracker = getUnreadTracker()
 tracker.cleanupOldData() // Removes data >30 days
@@ -913,6 +903,7 @@ tracker.cleanupOldData() // Removes data >30 days
 ## API Reference
 
 See TypeScript definitions in:
+
 - `/src/lib/messaging/unread-tracker.ts`
 - `/src/hooks/use-unread.ts`
 - `/src/components/chat/UnreadIndicator.tsx`
@@ -923,6 +914,7 @@ See TypeScript definitions in:
 ## Examples
 
 Complete examples available in:
+
 - `/src/components/chat/UnreadIntegrationExample.tsx`
 
 ---

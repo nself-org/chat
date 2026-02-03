@@ -127,9 +127,7 @@ export function MessageContextMenu({
               Add reaction
             </ContextMenuSubTrigger>
             <ContextMenuSubContent className="w-56">
-              <ReactionGrid
-                onSelect={(emoji) => onAction('react', { emoji })}
-              />
+              <ReactionGrid onSelect={(emoji) => onAction('react', { emoji })} />
             </ContextMenuSubContent>
           </ContextMenuSub>
         )}
@@ -150,9 +148,7 @@ export function MessageContextMenu({
 
         {/* Pin / Unpin */}
         {permissions.canPin && (
-          <ContextMenuItem
-            onClick={() => onAction(message.isPinned ? 'unpin' : 'pin')}
-          >
+          <ContextMenuItem onClick={() => onAction(message.isPinned ? 'unpin' : 'pin')}>
             {message.isPinned ? (
               <>
                 <PinOff className="mr-2 h-4 w-4" />
@@ -170,9 +166,7 @@ export function MessageContextMenu({
         {/* Bookmark */}
         {permissions.canBookmark && (
           <ContextMenuItem
-            onClick={() =>
-              onAction(message.isBookmarked ? 'unbookmark' : 'bookmark')
-            }
+            onClick={() => onAction(message.isBookmarked ? 'unbookmark' : 'bookmark')}
           >
             {message.isBookmarked ? (
               <>
@@ -196,9 +190,7 @@ export function MessageContextMenu({
           </ContextMenuItem>
         )}
 
-        {(permissions.canReport || permissions.canDelete) && (
-          <ContextMenuSeparator />
-        )}
+        {(permissions.canReport || permissions.canDelete) && <ContextMenuSeparator />}
 
         {/* Report */}
         {permissions.canReport && (
@@ -215,7 +207,7 @@ export function MessageContextMenu({
         {permissions.canDelete && (
           <ContextMenuItem
             onClick={() => onAction('delete')}
-            className="text-destructive focus:bg-destructive/10 focus:text-destructive"
+            className="focus:bg-destructive/10 text-destructive focus:text-destructive"
           >
             <Trash2 className="mr-2 h-4 w-4" />
             Delete message

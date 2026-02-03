@@ -20,11 +20,7 @@ import { Badge } from '@/components/ui/badge'
 import { Label } from '@/components/ui/label'
 import { Slider } from '@/components/ui/slider'
 import { Switch } from '@/components/ui/switch'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
@@ -126,7 +122,8 @@ export function ChannelFilters({
               {TYPE_OPTIONS.find((t) => t.value === (filters.type || 'all'))?.icon && (
                 <Hash className="mr-2 h-4 w-4" />
               )}
-              {TYPE_OPTIONS.find((t) => t.value === (filters.type || 'all'))?.label || 'All Channels'}
+              {TYPE_OPTIONS.find((t) => t.value === (filters.type || 'all'))?.label ||
+                'All Channels'}
               <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -149,20 +146,20 @@ export function ChannelFilters({
       {showCategoryFilter && (
         <Select
           value={filters.categoryId ?? 'all'}
-          onValueChange={(value) =>
-            updateFilter('categoryId', value === 'all' ? undefined : value)
-          }
+          onValueChange={(value) => updateFilter('categoryId', value === 'all' ? undefined : value)}
         >
           <SelectTrigger className="h-8 w-[150px]">
             <SelectValue placeholder="All Categories" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Categories</SelectItem>
-            {DEFAULT_CATEGORIES.filter((c) => !c.isSystem || c.id !== 'archived').map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
+            {DEFAULT_CATEGORIES.filter((c) => !c.isSystem || c.id !== 'archived').map(
+              (category) => (
+                <SelectItem key={category.id} value={category.id}>
+                  {category.name}
+                </SelectItem>
+              )
+            )}
           </SelectContent>
         </Select>
       )}
@@ -194,10 +191,7 @@ export function ChannelFilters({
               <Filter className="mr-2 h-4 w-4" />
               Filters
               {activeFilterCount > 0 && (
-                <Badge
-                  variant="secondary"
-                  className="ml-2 h-5 w-5 rounded-full p-0 text-xs"
-                >
+                <Badge variant="secondary" className="ml-2 h-5 w-5 rounded-full p-0 text-xs">
                   {activeFilterCount}
                 </Badge>
               )}
@@ -298,10 +292,7 @@ export function ChannelFilters({
                     variant={filters.memberCountMin === 10 ? 'default' : 'outline'}
                     className="cursor-pointer"
                     onClick={() =>
-                      updateFilter(
-                        'memberCountMin',
-                        filters.memberCountMin === 10 ? undefined : 10
-                      )
+                      updateFilter('memberCountMin', filters.memberCountMin === 10 ? undefined : 10)
                     }
                   >
                     <TrendingUp className="mr-1 h-3 w-3" />
@@ -312,10 +303,7 @@ export function ChannelFilters({
                     className="cursor-pointer"
                     onClick={() => {
                       const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-                      updateFilter(
-                        'createdAfter',
-                        filters.createdAfter ? undefined : weekAgo
-                      )
+                      updateFilter('createdAfter', filters.createdAfter ? undefined : weekAgo)
                     }}
                   >
                     <Sparkles className="mr-1 h-3 w-3" />

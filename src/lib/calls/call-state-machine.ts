@@ -7,6 +7,8 @@
 
 import { EventEmitter } from 'events'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -15,29 +17,29 @@ import { EventEmitter } from 'events'
  * All possible call states in the lifecycle
  */
 export type CallState =
-  | 'idle'           // No active call
-  | 'initiating'     // Creating call (getting media, creating connection)
-  | 'ringing'        // Calling recipient (waiting for answer)
-  | 'connecting'     // WebRTC negotiation in progress
-  | 'connected'      // Call is active
-  | 'reconnecting'   // Network issue, attempting to reconnect
-  | 'held'           // Call is on hold
-  | 'transferring'   // Call is being transferred
-  | 'ending'         // Hanging up (cleanup in progress)
-  | 'ended'          // Call has ended
+  | 'idle' // No active call
+  | 'initiating' // Creating call (getting media, creating connection)
+  | 'ringing' // Calling recipient (waiting for answer)
+  | 'connecting' // WebRTC negotiation in progress
+  | 'connected' // Call is active
+  | 'reconnecting' // Network issue, attempting to reconnect
+  | 'held' // Call is on hold
+  | 'transferring' // Call is being transferred
+  | 'ending' // Hanging up (cleanup in progress)
+  | 'ended' // Call has ended
 
 /**
  * Reason for call ending
  */
 export type CallEndReason =
-  | 'completed'      // Normal hangup
-  | 'declined'       // Recipient declined
-  | 'missed'         // No answer
-  | 'busy'           // Recipient busy
-  | 'timeout'        // Connection timeout
-  | 'error'          // Technical error
-  | 'network'        // Network failure
-  | 'cancelled'      // Caller cancelled
+  | 'completed' // Normal hangup
+  | 'declined' // Recipient declined
+  | 'missed' // No answer
+  | 'busy' // Recipient busy
+  | 'timeout' // Connection timeout
+  | 'error' // Technical error
+  | 'network' // Network failure
+  | 'cancelled' // Caller cancelled
 
 /**
  * State transition event
@@ -128,16 +130,10 @@ export class CallStateMachine extends EventEmitter {
   /**
    * Transition to new state
    */
-  transition(
-    targetState: CallState,
-    reason?: string,
-    metadata?: Record<string, any>
-  ): boolean {
+  transition(targetState: CallState, reason?: string, metadata?: Record<string, any>): boolean {
     // Check if transition is valid
     if (!this.canTransitionTo(targetState)) {
-      console.warn(
-        `Invalid transition: ${this.currentState} -> ${targetState}`
-      )
+      logger.warn(`Invalid transition: ${this.currentState} -> ${targetState}`)
 
       // Notify invalid transition
       if (this.config.onInvalidTransition) {
@@ -268,11 +264,7 @@ export class CallStateMachine extends EventEmitter {
     for (const event of this.history) {
       if (event.to === 'connected') {
         connectedStart = event.timestamp
-      } else if (
-        connectedStart &&
-        event.from === 'connected' &&
-        event.to !== 'held'
-      ) {
+      } else if (connectedStart && event.from === 'connected' && event.to !== 'held') {
         duration += event.timestamp.getTime() - connectedStart.getTime()
         connectedStart = null
       }
@@ -294,9 +286,7 @@ export class CallStateMachine extends EventEmitter {
 /**
  * Create a new call state machine
  */
-export function createCallStateMachine(
-  config?: StateMachineConfig
-): CallStateMachine {
+export function createCallStateMachine(config?: StateMachineConfig): CallStateMachine {
   return new CallStateMachine(config)
 }
 
@@ -332,9 +322,6 @@ export function getValidTransitions(state: CallState): CallState[] {
 /**
  * Check if a transition is valid
  */
-export function isValidTransition(
-  from: CallState,
-  to: CallState
-): boolean {
+export function isValidTransition(from: CallState, to: CallState): boolean {
   return getValidTransitions(from).includes(to)
 }

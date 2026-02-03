@@ -122,9 +122,11 @@ export function OfflineIndicator({
       className={cn(
         'fixed left-0 right-0 z-50 transition-all duration-300 ease-out',
         position === 'top' ? 'top-0' : 'bottom-0',
-        isVisible ? 'translate-y-0 opacity-100' : (
-          position === 'top' ? '-translate-y-full opacity-0' : 'translate-y-full opacity-0'
-        ),
+        isVisible
+          ? 'translate-y-0 opacity-100'
+          : position === 'top'
+            ? '-translate-y-full opacity-0'
+            : 'translate-y-full opacity-0',
         className
       )}
     >
@@ -132,9 +134,7 @@ export function OfflineIndicator({
         className={cn(
           'flex items-center justify-center gap-3 px-4 py-3',
           'text-sm font-medium',
-          isOffline
-            ? 'bg-amber-500 text-white'
-            : 'bg-green-500 text-white'
+          isOffline ? 'bg-amber-500 text-white' : 'bg-green-500 text-white'
         )}
       >
         {isOffline ? (
@@ -153,7 +153,7 @@ export function OfflineIndicator({
           <button
             onClick={handleDismiss}
             className={cn(
-              'ml-auto p-1 rounded-full transition-colors',
+              'ml-auto rounded-full p-1 transition-colors',
               'hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white/50'
             )}
             aria-label="Dismiss"

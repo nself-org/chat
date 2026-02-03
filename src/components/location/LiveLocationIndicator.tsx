@@ -104,10 +104,8 @@ export function LiveLocationIndicator({
   if (!isActive) {
     return (
       <div className={cn('flex items-center', config.container, className)}>
-        <div className={cn('rounded-full bg-muted-foreground/30', config.dot)} />
-        <span className={cn('text-muted-foreground', config.text)}>
-          Location sharing ended
-        </span>
+        <div className={cn('bg-muted-foreground/30 rounded-full', config.dot)} />
+        <span className={cn('text-muted-foreground', config.text)}>Location sharing ended</span>
       </div>
     )
   }
@@ -117,12 +115,7 @@ export function LiveLocationIndicator({
       {/* Pulsing dot */}
       <div className="relative">
         {showPulse && (
-          <div
-            className={cn(
-              'absolute animate-ping rounded-full bg-green-500/40',
-              config.pulse
-            )}
-          />
+          <div className={cn('absolute animate-ping rounded-full bg-green-500/40', config.pulse)} />
         )}
         <div className={cn('rounded-full bg-green-500', config.dot)} />
       </div>
@@ -153,11 +146,7 @@ interface LiveBadgeProps {
 /**
  * Simple "LIVE" badge for location sharing.
  */
-export function LiveBadge({
-  isLive = true,
-  size = 'md',
-  className,
-}: LiveBadgeProps) {
+export function LiveBadge({ isLive = true, size = 'md', className }: LiveBadgeProps) {
   if (!isLive) return null
 
   return (
@@ -216,11 +205,7 @@ export function ProgressRing({
 
   return (
     <div className={cn('relative', className)} style={{ width: size, height: size }}>
-      <svg
-        width={size}
-        height={size}
-        className="-rotate-90 transform"
-      >
+      <svg width={size} height={size} className="-rotate-90 transform">
         {/* Background circle */}
         <circle
           cx={size / 2}
@@ -245,9 +230,7 @@ export function ProgressRing({
         />
       </svg>
       {/* Center content */}
-      <div className="absolute inset-0 flex items-center justify-center">
-        {children}
-      </div>
+      <div className="absolute inset-0 flex items-center justify-center">{children}</div>
     </div>
   )
 }
@@ -321,11 +304,7 @@ export function LiveLocationTimer({
   }
 
   return (
-    <ProgressRing
-      progress={progress}
-      size={config.ring}
-      className={className}
-    >
+    <ProgressRing progress={progress} size={config.ring} className={className}>
       <span className={cn('font-medium text-green-600', config.text)}>
         {formatTimeShort(remainingTime)}
       </span>

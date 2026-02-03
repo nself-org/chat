@@ -76,12 +76,12 @@ function UnreadBadge({ count, className }: UnreadBadgeProps) {
     <Badge
       variant="default"
       className={cn(
-        'absolute -top-1 -right-1 h-5 min-w-5 px-1',
+        'absolute -right-1 -top-1 h-5 min-w-5 px-1',
         'flex items-center justify-center',
         'text-[10px] font-bold',
         'bg-destructive text-destructive-foreground',
         'border-2 border-background',
-        'animate-in zoom-in-50 duration-200',
+        'duration-200 animate-in zoom-in-50',
         className
       )}
     >
@@ -139,16 +139,7 @@ function Popover({ open, onOpenChange, trigger, content, position = 'right' }: P
   return (
     <div ref={popoverRef} className="relative">
       {trigger}
-      {open && (
-        <div
-          className={cn(
-            'absolute z-50',
-            positionClasses[position]
-          )}
-        >
-          {content}
-        </div>
-      )}
+      {open && <div className={cn('absolute z-50', positionClasses[position])}>{content}</div>}
     </div>
   )
 }
@@ -180,11 +171,7 @@ export function MentionsButton({
       variant="ghost"
       size={size}
       onClick={handleToggle}
-      className={cn(
-        'relative',
-        panel.isOpen && 'bg-accent',
-        className
-      )}
+      className={cn('relative', panel.isOpen && 'bg-accent', className)}
       aria-label={`Mentions${count > 0 ? ` (${count} unread)` : ''}`}
       aria-expanded={panel.isOpen}
       aria-haspopup="dialog"
@@ -199,14 +186,7 @@ export function MentionsButton({
       open={panel.isOpen}
       onOpenChange={(open) => (open ? openPanel() : closePanel())}
       trigger={buttonContent}
-      content={
-        <MentionsPanel
-          userId={userId}
-          onClose={closePanel}
-          width={400}
-          height={500}
-        />
-      }
+      content={<MentionsPanel userId={userId} onClose={closePanel} width={400} height={500} />}
       position={panelPosition}
     />
   )
@@ -280,10 +260,10 @@ export function MentionsNavItem({
     <button
       onClick={handleClick}
       className={cn(
-        'w-full flex items-center gap-3 px-3 py-2 rounded-md',
+        'flex w-full items-center gap-3 rounded-md px-3 py-2',
         'text-sm font-medium transition-colors',
-        'hover:bg-accent hover:text-accent-foreground',
-        isActive && 'bg-accent text-accent-foreground',
+        'hover:text-accent-foreground hover:bg-accent',
+        isActive && 'text-accent-foreground bg-accent',
         className
       )}
     >
@@ -292,7 +272,7 @@ export function MentionsNavItem({
       {count > 0 && (
         <Badge
           variant="default"
-          className="h-5 min-w-5 px-1 text-[10px] bg-destructive text-destructive-foreground"
+          className="h-5 min-w-5 bg-destructive px-1 text-[10px] text-destructive-foreground"
         >
           {count > 99 ? '99+' : count}
         </Badge>
@@ -317,11 +297,7 @@ export function MentionsIndicator({ userId, className }: MentionsIndicatorProps)
 
   return (
     <span
-      className={cn(
-        'inline-block h-2 w-2 rounded-full bg-destructive',
-        'animate-pulse',
-        className
-      )}
+      className={cn('inline-block h-2 w-2 rounded-full bg-destructive', 'animate-pulse', className)}
       aria-label={`${count} unread mention${count !== 1 ? 's' : ''}`}
     />
   )

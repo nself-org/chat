@@ -149,7 +149,7 @@ export function StickerUpload({ packId, onComplete, className }: StickerUploadPr
         className={cn(
           'relative cursor-pointer overflow-hidden rounded-lg border-2 border-dashed p-8 transition-colors',
           isDragActive
-            ? 'border-primary bg-primary/5'
+            ? 'bg-primary/5 border-primary'
             : 'border-muted-foreground/25 hover:border-muted-foreground/50'
         )}
       >
@@ -157,12 +157,8 @@ export function StickerUpload({ packId, onComplete, className }: StickerUploadPr
         <div className="flex flex-col items-center gap-2 text-center">
           <Upload className="h-8 w-8 text-muted-foreground" />
           <div>
-            <p className="font-medium">
-              {isDragActive ? 'Drop stickers here' : 'Upload stickers'}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Drag & drop or click to select
-            </p>
+            <p className="font-medium">{isDragActive ? 'Drop stickers here' : 'Upload stickers'}</p>
+            <p className="text-sm text-muted-foreground">Drag & drop or click to select</p>
           </div>
           <p className="text-xs text-muted-foreground">
             PNG, JPG, GIF, WebP, or SVG • Max 5MB each
@@ -193,17 +189,10 @@ export function StickerUpload({ packId, onComplete, className }: StickerUploadPr
 
           <div className="space-y-2">
             {stickers.map((sticker, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-3 rounded-lg border bg-muted/30 p-3"
-              >
+              <div key={index} className="bg-muted/30 flex items-start gap-3 rounded-lg border p-3">
                 {/* Preview */}
                 <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded border bg-background">
-                  <img
-                    src={sticker.preview}
-                    alt=""
-                    className="h-full w-full object-contain"
-                  />
+                  <img src={sticker.preview} alt="" className="h-full w-full object-contain" />
                 </div>
 
                 {/* Form */}
@@ -216,9 +205,7 @@ export function StickerUpload({ packId, onComplete, className }: StickerUploadPr
                       <Input
                         id={`name-${index}`}
                         value={sticker.name}
-                        onChange={(e) =>
-                          updateSticker(index, { name: e.target.value })
-                        }
+                        onChange={(e) => updateSticker(index, { name: e.target.value })}
                         disabled={sticker.status !== 'pending'}
                       />
                     </div>
@@ -229,9 +216,7 @@ export function StickerUpload({ packId, onComplete, className }: StickerUploadPr
                       <Input
                         id={`slug-${index}`}
                         value={sticker.slug}
-                        onChange={(e) =>
-                          updateSticker(index, { slug: e.target.value })
-                        }
+                        onChange={(e) => updateSticker(index, { slug: e.target.value })}
                         disabled={sticker.status !== 'pending'}
                         pattern="[a-z0-9-]+"
                       />

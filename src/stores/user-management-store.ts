@@ -75,7 +75,13 @@ export interface UserManagementState {
   isLoadingImpersonation: boolean
 
   // Roles
-  roles: { id: string; name: string; description?: string; permissions: string[]; isDefault: boolean }[]
+  roles: {
+    id: string
+    name: string
+    description?: string
+    permissions: string[]
+    isDefault: boolean
+  }[]
   isLoadingRoles: boolean
 
   // UI state

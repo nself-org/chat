@@ -30,7 +30,10 @@ const createMockCommand = (name: string, overrides: Partial<SlashCommand> = {}):
   ...overrides,
 })
 
-const createMockContext = (): Omit<CommandContext, 'commandName' | 'args' | 'rawInput' | 'respond' | 'ack'> => ({
+const createMockContext = (): Omit<
+  CommandContext,
+  'commandName' | 'args' | 'rawInput' | 'respond' | 'ack'
+> => ({
   userId: 'user_1',
   channelId: 'channel_1',
   botId: 'bot_1',
@@ -226,7 +229,7 @@ describe('useBotCommands', () => {
       let response: string | null = null
 
       await act(async () => {
-        response = await result.current.executeCommand('/test', createMockContext()) as string
+        response = (await result.current.executeCommand('/test', createMockContext())) as string
       })
 
       expect(handler).toHaveBeenCalled()
@@ -239,7 +242,10 @@ describe('useBotCommands', () => {
       let response: string | null = null
 
       await act(async () => {
-        response = await result.current.executeCommand('not a command', createMockContext()) as string
+        response = (await result.current.executeCommand(
+          'not a command',
+          createMockContext()
+        )) as string
       })
 
       expect(response).toBeNull()
@@ -249,9 +255,11 @@ describe('useBotCommands', () => {
       const { result } = renderHook(() => useBotCommands())
 
       act(() => {
-        result.current.registerCommand(createMockCommand('test', {
-          handler: async (ctx) => ctx.respond('Done'),
-        }))
+        result.current.registerCommand(
+          createMockCommand('test', {
+            handler: async (ctx) => ctx.respond('Done'),
+          })
+        )
       })
 
       await act(async () => {
@@ -267,9 +275,11 @@ describe('useBotCommands', () => {
       const { result } = renderHook(() => useBotCommands({ onCommandExecuted }))
 
       act(() => {
-        result.current.registerCommand(createMockCommand('test', {
-          handler: async (ctx) => ctx.respond('Done'),
-        }))
+        result.current.registerCommand(
+          createMockCommand('test', {
+            handler: async (ctx) => ctx.respond('Done'),
+          })
+        )
       })
 
       await act(async () => {
@@ -301,12 +311,14 @@ describe('useBotCommands', () => {
       const { result } = renderHook(() => useBotCommands())
 
       act(() => {
-        result.current.registerCommand(createMockCommand('test', {
-          handler: async (ctx) => {
-            await new Promise((r) => setTimeout(r, 50))
-            await ctx.respond('Done')
-          },
-        }))
+        result.current.registerCommand(
+          createMockCommand('test', {
+            handler: async (ctx) => {
+              await new Promise((r) => setTimeout(r, 50))
+              await ctx.respond('Done')
+            },
+          })
+        )
       })
 
       await act(async () => {
@@ -320,9 +332,11 @@ describe('useBotCommands', () => {
       const { result } = renderHook(() => useBotCommands({ maxHistory: 3 }))
 
       act(() => {
-        result.current.registerCommand(createMockCommand('test', {
-          handler: async (ctx) => ctx.respond('Done'),
-        }))
+        result.current.registerCommand(
+          createMockCommand('test', {
+            handler: async (ctx) => ctx.respond('Done'),
+          })
+        )
       })
 
       for (let i = 0; i < 5; i++) {
@@ -419,9 +433,11 @@ describe('useBotCommands', () => {
       const { result } = renderHook(() => useBotCommands())
 
       act(() => {
-        result.current.registerCommand(createMockCommand('test', {
-          handler: async (ctx) => ctx.respond('Done'),
-        }))
+        result.current.registerCommand(
+          createMockCommand('test', {
+            handler: async (ctx) => ctx.respond('Done'),
+          })
+        )
       })
 
       await act(async () => {
@@ -443,12 +459,16 @@ describe('useBotCommands', () => {
       const { result } = renderHook(() => useBotCommands())
 
       act(() => {
-        result.current.registerCommand(createMockCommand('first', {
-          handler: async (ctx) => ctx.respond('First'),
-        }))
-        result.current.registerCommand(createMockCommand('second', {
-          handler: async (ctx) => ctx.respond('Second'),
-        }))
+        result.current.registerCommand(
+          createMockCommand('first', {
+            handler: async (ctx) => ctx.respond('First'),
+          })
+        )
+        result.current.registerCommand(
+          createMockCommand('second', {
+            handler: async (ctx) => ctx.respond('Second'),
+          })
+        )
       })
 
       await act(async () => {
@@ -516,9 +536,11 @@ describe('useBotCommands', () => {
       const { result } = renderHook(() => useBotCommands())
 
       act(() => {
-        result.current.registerCommand(createMockCommand('test', {
-          description: 'Test description',
-        }))
+        result.current.registerCommand(
+          createMockCommand('test', {
+            description: 'Test description',
+          })
+        )
       })
 
       const help = result.current.getHelp('test')
@@ -540,9 +562,11 @@ describe('useBotCommands', () => {
       const { result } = renderHook(() => useBotCommands())
 
       act(() => {
-        result.current.registerCommand(createMockCommand('test', {
-          usage: '/test <arg>',
-        }))
+        result.current.registerCommand(
+          createMockCommand('test', {
+            usage: '/test <arg>',
+          })
+        )
       })
 
       expect(result.current.getUsage('test')).toBe('/test <arg>')
@@ -643,9 +667,7 @@ describe('useDebouncedSuggestions', () => {
   it('should debounce suggestions', async () => {
     const getSuggestions = jest.fn().mockReturnValue([{ name: 'test' }])
 
-    const { result } = renderHook(() =>
-      useDebouncedSuggestions('/te', getSuggestions, 100)
-    )
+    const { result } = renderHook(() => useDebouncedSuggestions('/te', getSuggestions, 100))
 
     expect(result.current).toHaveLength(0)
 
@@ -685,7 +707,7 @@ describe('createHelpCommand', () => {
     let response: string | null = null
 
     await act(async () => {
-      response = await result.current.executeCommand('/help', createMockContext()) as string
+      response = (await result.current.executeCommand('/help', createMockContext())) as string
     })
 
     expect(response).toContain('test')
@@ -710,7 +732,7 @@ describe('createPingCommand', () => {
     let response: string | null = null
 
     await act(async () => {
-      response = await result.current.executeCommand('/ping', createMockContext()) as string
+      response = (await result.current.executeCommand('/ping', createMockContext())) as string
     })
 
     expect(response).toBe('Pong!')
@@ -735,7 +757,10 @@ describe('createEchoCommand', () => {
     let response: string | null = null
 
     await act(async () => {
-      response = await result.current.executeCommand('/echo Hello World', createMockContext()) as string
+      response = (await result.current.executeCommand(
+        '/echo Hello World',
+        createMockContext()
+      )) as string
     })
 
     expect(response).toBe('Hello')

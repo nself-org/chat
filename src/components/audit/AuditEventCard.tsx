@@ -84,28 +84,24 @@ export function AuditEventCard({
     return (
       <div
         className={cn(
-          'flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer transition-colors',
+          'hover:bg-muted/50 flex cursor-pointer items-center gap-3 rounded-lg p-2 transition-colors',
           className
         )}
         onClick={onClick}
       >
-        <div className={cn('p-1.5 rounded', getCategoryBadgeClass(entry.category))}>
+        <div className={cn('rounded p-1.5', getCategoryBadgeClass(entry.category))}>
           {categoryIcons[entry.category]}
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-medium truncate">
-              {getActionDisplayName(entry.action)}
-            </span>
-            {!entry.success && (
-              <X className="h-3 w-3 text-red-500 flex-shrink-0" />
-            )}
+            <span className="truncate font-medium">{getActionDisplayName(entry.action)}</span>
+            {!entry.success && <X className="h-3 w-3 flex-shrink-0 text-red-500" />}
           </div>
-          <p className="text-xs text-muted-foreground truncate">
+          <p className="truncate text-xs text-muted-foreground">
             {actorName} - {formatTimestamp(entry.timestamp, 'relative')}
           </p>
         </div>
-        <ArrowRight className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+        <ArrowRight className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
       </div>
     )
   }
@@ -113,7 +109,7 @@ export function AuditEventCard({
   return (
     <Card
       className={cn(
-        'cursor-pointer hover:shadow-md transition-shadow',
+        'cursor-pointer transition-shadow hover:shadow-md',
         !entry.success && 'border-red-200 dark:border-red-800',
         className
       )}
@@ -123,22 +119,17 @@ export function AuditEventCard({
         <div className="flex items-start gap-3">
           {/* Category Icon */}
           <div
-            className={cn(
-              'p-2 rounded-lg flex-shrink-0',
-              getCategoryBadgeClass(entry.category)
-            )}
+            className={cn('flex-shrink-0 rounded-lg p-2', getCategoryBadgeClass(entry.category))}
           >
             {categoryIcons[entry.category]}
           </div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             {/* Header */}
-            <div className="flex items-center justify-between gap-2 mb-1">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="font-medium truncate">
-                  {getActionDisplayName(entry.action)}
-                </span>
+            <div className="mb-1 flex items-center justify-between gap-2">
+              <div className="flex min-w-0 items-center gap-2">
+                <span className="truncate font-medium">{getActionDisplayName(entry.action)}</span>
                 <Badge
                   variant="outline"
                   className={cn('flex-shrink-0', getSeverityBadgeClass(entry.severity))}
@@ -147,11 +138,11 @@ export function AuditEventCard({
                 </Badge>
               </div>
               {entry.success ? (
-                <span className="flex items-center gap-1 text-xs text-green-600 flex-shrink-0">
+                <span className="flex flex-shrink-0 items-center gap-1 text-xs text-green-600">
                   <Check className="h-3 w-3" />
                 </span>
               ) : (
-                <span className="flex items-center gap-1 text-xs text-red-600 flex-shrink-0">
+                <span className="flex flex-shrink-0 items-center gap-1 text-xs text-red-600">
                   <X className="h-3 w-3" />
                   Failed
                 </span>
@@ -159,9 +150,7 @@ export function AuditEventCard({
             </div>
 
             {/* Description */}
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-              {entry.description}
-            </p>
+            <p className="mb-2 line-clamp-2 text-sm text-muted-foreground">{entry.description}</p>
 
             {/* Footer */}
             <div className="flex items-center justify-between text-xs text-muted-foreground">
@@ -171,9 +160,9 @@ export function AuditEventCard({
                     {actorName.charAt(0).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="truncate max-w-[150px]">{actorName}</span>
+                <span className="max-w-[150px] truncate">{actorName}</span>
               </div>
-              <div className="flex items-center gap-1 flex-shrink-0">
+              <div className="flex flex-shrink-0 items-center gap-1">
                 <Clock className="h-3 w-3" />
                 {formatTimestamp(entry.timestamp, 'relative')}
               </div>
@@ -181,19 +170,15 @@ export function AuditEventCard({
 
             {/* Resource Info */}
             {entry.resource && (
-              <div className="mt-2 pt-2 border-t text-xs">
-                <span className="text-muted-foreground capitalize">
-                  {entry.resource.type}:
-                </span>{' '}
-                <span className="font-mono">
-                  {entry.resource.name || entry.resource.id}
-                </span>
+              <div className="mt-2 border-t pt-2 text-xs">
+                <span className="capitalize text-muted-foreground">{entry.resource.type}:</span>{' '}
+                <span className="font-mono">{entry.resource.name || entry.resource.id}</span>
               </div>
             )}
 
             {/* Error Message */}
             {entry.errorMessage && (
-              <div className="mt-2 p-2 rounded bg-red-50 dark:bg-red-900/20 text-xs text-red-700 dark:text-red-300 line-clamp-2">
+              <div className="mt-2 line-clamp-2 rounded bg-red-50 p-2 text-xs text-red-700 dark:bg-red-900/20 dark:text-red-300">
                 {entry.errorMessage}
               </div>
             )}
@@ -234,14 +219,12 @@ export function AuditSummaryCard({
         <div className="flex items-start justify-between">
           <div>
             <p className="text-sm text-muted-foreground">{title}</p>
-            <p className="text-2xl font-bold mt-1">{value}</p>
-            {description && (
-              <p className="text-xs text-muted-foreground mt-1">{description}</p>
-            )}
+            <p className="mt-1 text-2xl font-bold">{value}</p>
+            {description && <p className="mt-1 text-xs text-muted-foreground">{description}</p>}
             {trend && (
               <p
                 className={cn(
-                  'text-xs mt-1 flex items-center gap-1',
+                  'mt-1 flex items-center gap-1 text-xs',
                   trend.isPositive ? 'text-green-600' : 'text-red-600'
                 )}
               >
@@ -250,9 +233,7 @@ export function AuditSummaryCard({
               </p>
             )}
           </div>
-          {icon && (
-            <div className="p-2 rounded-lg bg-muted">{icon}</div>
-          )}
+          {icon && <div className="rounded-lg bg-muted p-2">{icon}</div>}
         </div>
       </CardContent>
     </Card>

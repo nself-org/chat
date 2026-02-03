@@ -131,17 +131,10 @@ export function useScheduled({
     fetchPolicy: 'cache-and-network',
   })
 
-  const [createMutation, { loading: createLoading }] = useMutation(
-    CREATE_SCHEDULED_MESSAGE
-  )
-  const [updateMutation, { loading: updateLoading }] = useMutation(
-    UPDATE_SCHEDULED_MESSAGE
-  )
-  const [deleteMutation, { loading: deleteLoading }] = useMutation(
-    DELETE_SCHEDULED_MESSAGE
-  )
-  const [sendNowMutation, { loading: sendNowLoading }] =
-    useMutation(SEND_SCHEDULED_NOW)
+  const [createMutation, { loading: createLoading }] = useMutation(CREATE_SCHEDULED_MESSAGE)
+  const [updateMutation, { loading: updateLoading }] = useMutation(UPDATE_SCHEDULED_MESSAGE)
+  const [deleteMutation, { loading: deleteLoading }] = useMutation(DELETE_SCHEDULED_MESSAGE)
+  const [sendNowMutation, { loading: sendNowLoading }] = useMutation(SEND_SCHEDULED_NOW)
   const [bulkCancelMutation] = useMutation(BULK_CANCEL_SCHEDULED_MESSAGES)
 
   // Sync query data to store
@@ -208,8 +201,7 @@ export function useScheduled({
         }
         return null
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to schedule message'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to schedule message'
         setError(errorMessage)
         throw err
       }
@@ -304,8 +296,7 @@ export function useScheduled({
         }
         return null
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to send message'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to send message'
         setError(errorMessage)
         throw err
       }
@@ -405,14 +396,11 @@ export function useChannelScheduledMessages(userId: string, channelId: string) {
   const isFeatureEnabled = useFeatureEnabled(FEATURES.MESSAGES_SCHEDULE)
   const { getMessagesForChannel } = useScheduledStore()
 
-  const { data, loading, error, refetch } = useQuery(
-    GET_CHANNEL_SCHEDULED_MESSAGES,
-    {
-      variables: { channelId, userId },
-      skip: !isFeatureEnabled || !channelId,
-      fetchPolicy: 'cache-and-network',
-    }
-  )
+  const { data, loading, error, refetch } = useQuery(GET_CHANNEL_SCHEDULED_MESSAGES, {
+    variables: { channelId, userId },
+    skip: !isFeatureEnabled || !channelId,
+    fetchPolicy: 'cache-and-network',
+  })
 
   const messages = useMemo(
     () => data?.nchat_scheduled_messages || getMessagesForChannel(channelId),
@@ -446,9 +434,7 @@ export function useScheduledMessagesCount(userId: string) {
   })
 
   const count = useMemo(
-    () =>
-      data?.nchat_scheduled_messages_aggregate?.aggregate?.count ??
-      getPendingCount(),
+    () => data?.nchat_scheduled_messages_aggregate?.aggregate?.count ?? getPendingCount(),
     [data, getPendingCount]
   )
 

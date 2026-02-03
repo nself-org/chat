@@ -364,10 +364,7 @@ export function normalizeHex(hex: string): string {
 /**
  * Generate CSS custom properties from a palette
  */
-export function paletteToCssVars(
-  palette: ColorPalette,
-  prefix: string
-): Record<string, string> {
+export function paletteToCssVars(palette: ColorPalette, prefix: string): Record<string, string> {
   const vars: Record<string, string> = {}
   Object.entries(palette).forEach(([shade, color]) => {
     vars[`--${prefix}-${shade}`] = color

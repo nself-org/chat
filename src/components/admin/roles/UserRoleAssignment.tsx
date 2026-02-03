@@ -66,9 +66,7 @@ export function UserRoleAssignment({
   // Roles the editor can manage
   const manageableRoles = React.useMemo(() => {
     if (!editorPermissions) return []
-    return allRoles.filter((role) =>
-      canManageRole(editorPermissions.highestRole, role)
-    )
+    return allRoles.filter((role) => canManageRole(editorPermissions.highestRole, role))
   }, [allRoles, editorPermissions])
 
   // Filter roles by search
@@ -78,8 +76,7 @@ export function UserRoleAssignment({
     const query = searchQuery.toLowerCase()
     return sorted.filter(
       (role) =>
-        role.name.toLowerCase().includes(query) ||
-        role.description?.toLowerCase().includes(query)
+        role.name.toLowerCase().includes(query) || role.description?.toLowerCase().includes(query)
     )
   }, [manageableRoles, searchQuery])
 
@@ -89,7 +86,9 @@ export function UserRoleAssignment({
   }
 
   // Get effective state (current + pending)
-  const getEffectiveState = (roleId: string): 'assigned' | 'unassigned' | 'pending-add' | 'pending-remove' => {
+  const getEffectiveState = (
+    roleId: string
+  ): 'assigned' | 'unassigned' | 'pending-add' | 'pending-remove' => {
     const isAssigned = currentRoleIds.has(roleId)
     const pending = getPendingAction(roleId)
 
@@ -168,9 +167,7 @@ export function UserRoleAssignment({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>Manage User Roles</DialogTitle>
-          <DialogDescription>
-            Add or remove roles for this user
-          </DialogDescription>
+          <DialogDescription>Add or remove roles for this user</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -180,25 +177,17 @@ export function UserRoleAssignment({
               <AvatarImage src={user.avatarUrl} />
               <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <div className="font-medium truncate">{user.displayName}</div>
-              <div className="text-sm text-muted-foreground truncate">
-                @{user.username}
-              </div>
+            <div className="min-w-0 flex-1">
+              <div className="truncate font-medium">{user.displayName}</div>
+              <div className="truncate text-sm text-muted-foreground">@{user.username}</div>
             </div>
           </div>
 
           {/* Current roles */}
           {currentRoles.length > 0 && (
             <div>
-              <Label className="text-xs text-muted-foreground">
-                Current roles
-              </Label>
-              <RoleBadgeGroup
-                roles={currentRoles}
-                maxDisplay={5}
-                className="mt-1"
-              />
+              <Label className="text-xs text-muted-foreground">Current roles</Label>
+              <RoleBadgeGroup roles={currentRoles} maxDisplay={5} className="mt-1" />
             </div>
           )}
 
@@ -234,10 +223,8 @@ export function UserRoleAssignment({
                       className={cn(
                         'flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors',
                         state === 'assigned' && 'bg-primary/5 border-primary/30',
-                        state === 'pending-add' &&
-                          'bg-green-500/10 border-green-500/30',
-                        state === 'pending-remove' &&
-                          'bg-red-500/10 border-red-500/30',
+                        state === 'pending-add' && 'border-green-500/30 bg-green-500/10',
+                        state === 'pending-remove' && 'border-red-500/30 bg-red-500/10',
                         state === 'unassigned' && 'hover:bg-accent'
                       )}
                     >
@@ -251,15 +238,12 @@ export function UserRoleAssignment({
                           <Plus size={16} className="text-muted-foreground" />
                         )}
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <div
-                          className="font-medium truncate"
-                          style={{ color: role.color }}
-                        >
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate font-medium" style={{ color: role.color }}>
                           {role.name}
                         </div>
                         {role.description && (
-                          <div className="text-xs text-muted-foreground truncate">
+                          <div className="truncate text-xs text-muted-foreground">
                             {role.description}
                           </div>
                         )}
@@ -283,8 +267,8 @@ export function UserRoleAssignment({
 
           {/* Errors */}
           {errors.length > 0 && (
-            <div className="flex items-start gap-2 rounded-lg border border-destructive bg-destructive/10 p-3">
-              <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
+            <div className="bg-destructive/10 flex items-start gap-2 rounded-lg border border-destructive p-3">
+              <AlertCircle className="mt-0.5 h-4 w-4 text-destructive" />
               <ul className="list-inside list-disc text-sm text-destructive">
                 {errors.map((error, i) => (
                   <li key={i}>{error}</li>
@@ -298,27 +282,16 @@ export function UserRoleAssignment({
           {/* Changes summary */}
           {pendingChanges.length > 0 && (
             <div className="flex-1 text-sm text-muted-foreground">
-              {addCount > 0 && (
-                <span className="text-green-500">+{addCount} </span>
-              )}
-              {removeCount > 0 && (
-                <span className="text-red-500">-{removeCount} </span>
-              )}
+              {addCount > 0 && <span className="text-green-500">+{addCount} </span>}
+              {removeCount > 0 && <span className="text-red-500">-{removeCount} </span>}
               changes pending
             </div>
           )}
 
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSubmitting}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
             Cancel
           </Button>
-          <Button
-            onClick={applyChanges}
-            disabled={isSubmitting || pendingChanges.length === 0}
-          >
+          <Button onClick={applyChanges} disabled={isSubmitting || pendingChanges.length === 0}>
             {isSubmitting ? 'Saving...' : 'Save Changes'}
           </Button>
         </DialogFooter>

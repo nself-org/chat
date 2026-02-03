@@ -14,6 +14,8 @@ import { Download, RefreshCw, Copy, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { buildInviteLink } from '@/lib/invite'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -126,22 +128,12 @@ function generateQRCodeCanvas(
     for (let col = 0; col < moduleCount; col++) {
       // Draw finder patterns (corners)
       if (isFinderPattern(row, col, moduleCount)) {
-        ctx.fillRect(
-          margin + col * moduleSize,
-          margin + row * moduleSize,
-          moduleSize,
-          moduleSize
-        )
+        ctx.fillRect(margin + col * moduleSize, margin + row * moduleSize, moduleSize, moduleSize)
       } else {
         // Generate pseudo-random pattern based on hash
         const bit = ((hash * (row * moduleCount + col)) >>> 0) % 2
         if (bit === 1) {
-          ctx.fillRect(
-            margin + col * moduleSize,
-            margin + row * moduleSize,
-            moduleSize,
-            moduleSize
-          )
+          ctx.fillRect(margin + col * moduleSize, margin + row * moduleSize, moduleSize, moduleSize)
         }
       }
     }
@@ -154,7 +146,7 @@ function simpleHash(str: string): number {
   let hash = 0
   for (let i = 0; i < str.length; i++) {
     const char = str.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
+    hash = (hash << 5) - hash + char
     hash = hash & hash
   }
   return Math.abs(hash)
@@ -276,14 +268,12 @@ export function QRCode({
       const blob = await response.blob()
 
       // Copy to clipboard
-      await navigator.clipboard.write([
-        new ClipboardItem({ 'image/png': blob }),
-      ])
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
 
       setCopied(true)
       setTimeout(() => setCopied(false), 2000)
     } catch (err) {
-      console.error('Failed to copy QR code:', err)
+      logger.error('Failed to copy QR code:', err)
     }
   }, [dataUrl])
 
@@ -317,7 +307,7 @@ export function QRCode({
     return (
       <div
         className={cn(
-          'flex items-center justify-center bg-muted rounded-xl animate-pulse',
+          'flex animate-pulse items-center justify-center rounded-xl bg-muted',
           className
         )}
         style={{ width: size, height: size }}
@@ -332,16 +322,14 @@ export function QRCode({
     return (
       <div
         className={cn(
-          'flex flex-col items-center justify-center gap-2 bg-muted rounded-xl p-4',
+          'flex flex-col items-center justify-center gap-2 rounded-xl bg-muted p-4',
           className
         )}
         style={{ width: size, height: size }}
       >
-        <p className="text-sm text-muted-foreground text-center">
-          Failed to generate QR code
-        </p>
+        <p className="text-center text-sm text-muted-foreground">Failed to generate QR code</p>
         <Button variant="outline" size="sm" onClick={handleRegenerate}>
-          <RefreshCw className="h-4 w-4 mr-2" />
+          <RefreshCw className="mr-2 h-4 w-4" />
           Retry
         </Button>
       </div>
@@ -352,17 +340,11 @@ export function QRCode({
     <div className={cn('flex flex-col items-center gap-3', className)}>
       {/* QR Code Image */}
       <div
-        className="rounded-xl overflow-hidden border border-border bg-white p-2"
+        className="overflow-hidden rounded-xl border border-border bg-white p-2"
         style={{ width: size + 16, height: size + 16 }}
       >
         {dataUrl && (
-          <img
-            src={dataUrl}
-            alt="QR Code"
-            width={size}
-            height={size}
-            className="block"
-          />
+          <img src={dataUrl} alt="QR Code" width={size} height={size} className="block" />
         )}
       </div>
 
@@ -370,31 +352,21 @@ export function QRCode({
       {(showDownload || showCopy) && (
         <div className="flex items-center gap-2">
           {showDownload && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDownload}
-              disabled={!dataUrl}
-            >
-              <Download className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" onClick={handleDownload} disabled={!dataUrl}>
+              <Download className="mr-2 h-4 w-4" />
               Download
             </Button>
           )}
           {showCopy && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleCopy}
-              disabled={!dataUrl}
-            >
+            <Button variant="outline" size="sm" onClick={handleCopy} disabled={!dataUrl}>
               {copied ? (
                 <>
-                  <Check className="h-4 w-4 mr-2 text-green-600" />
+                  <Check className="mr-2 h-4 w-4 text-green-600" />
                   Copied
                 </>
               ) : (
                 <>
-                  <Copy className="h-4 w-4 mr-2" />
+                  <Copy className="mr-2 h-4 w-4" />
                   Copy
                 </>
               )}
@@ -418,13 +390,7 @@ export interface QRCodeSmallProps {
 
 export function QRCodeSmall({ value, size = 64, className }: QRCodeSmallProps) {
   return (
-    <QRCode
-      value={value}
-      size={size}
-      showDownload={false}
-      showCopy={false}
-      className={className}
-    />
+    <QRCode value={value} size={size} showDownload={false} showCopy={false} className={className} />
   )
 }
 

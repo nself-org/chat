@@ -18,13 +18,7 @@ import {
   Zap,
   BarChart3,
 } from 'lucide-react'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
 import {
   Select,
@@ -156,9 +150,7 @@ export function BotAnalytics({
             <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {analytics.eventsHandled.toLocaleString()}
-            </div>
+            <div className="text-2xl font-bold">{analytics.eventsHandled.toLocaleString()}</div>
             {trends && (
               <div className="flex items-center gap-1 text-xs text-muted-foreground">
                 {trends.trend === 'up' ? (
@@ -179,9 +171,7 @@ export function BotAnalytics({
             <Zap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {analytics.commandsExecuted.toLocaleString()}
-            </div>
+            <div className="text-2xl font-bold">{analytics.commandsExecuted.toLocaleString()}</div>
             <p className="text-xs text-muted-foreground">
               {((analytics.commandsExecuted / analytics.eventsHandled) * 100).toFixed(1)}% of events
             </p>
@@ -197,7 +187,11 @@ export function BotAnalytics({
           <CardContent>
             <div className="text-2xl font-bold">{analytics.responseTime}ms</div>
             <p className="text-xs text-muted-foreground">
-              {analytics.responseTime < 200 ? 'Excellent' : analytics.responseTime < 500 ? 'Good' : 'Needs improvement'}
+              {analytics.responseTime < 200
+                ? 'Excellent'
+                : analytics.responseTime < 500
+                  ? 'Good'
+                  : 'Needs improvement'}
             </p>
           </CardContent>
         </Card>
@@ -236,14 +230,9 @@ export function BotAnalytics({
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <div className="flex-1">
-                      <Progress
-                        value={(data.count / maxUsage) * 100}
-                        className="h-2"
-                      />
+                      <Progress value={(data.count / maxUsage) * 100} className="h-2" />
                     </div>
-                    <div className="w-16 text-right text-sm font-medium">
-                      {data.count}
-                    </div>
+                    <div className="w-16 text-right text-sm font-medium">{data.count}</div>
                   </div>
                 </div>
               </div>
@@ -263,7 +252,7 @@ export function BotAnalytics({
             <div className="space-y-3">
               {analytics.topCommands.map((cmd, i) => (
                 <div key={i} className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-medium text-primary">
+                  <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium text-primary">
                     {i + 1}
                   </div>
                   <div className="flex-1">
@@ -298,9 +287,7 @@ export function BotAnalytics({
                   <div className="flex-1">
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-medium">{error.type}</span>
-                      <span className="text-sm text-muted-foreground">
-                        {error.count}
-                      </span>
+                      <span className="text-sm text-muted-foreground">{error.count}</span>
                     </div>
                     <Progress
                       value={(error.count / analytics.errorTypes[0].count) * 100}
@@ -322,12 +309,8 @@ export function BotAnalytics({
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {analytics.uniqueUsers.toLocaleString()}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Engaged with the bot
-            </p>
+            <div className="text-2xl font-bold">{analytics.uniqueUsers.toLocaleString()}</div>
+            <p className="text-xs text-muted-foreground">Engaged with the bot</p>
           </CardContent>
         </Card>
 
@@ -337,12 +320,8 @@ export function BotAnalytics({
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
-              {analytics.activeChannels}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Channels using bot
-            </p>
+            <div className="text-2xl font-bold">{analytics.activeChannels}</div>
+            <p className="text-xs text-muted-foreground">Channels using bot</p>
           </CardContent>
         </Card>
 

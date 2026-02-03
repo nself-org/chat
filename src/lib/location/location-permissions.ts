@@ -155,9 +155,10 @@ export async function checkLocationPermission(): Promise<LocationPermissionResul
   return {
     state,
     isGranted: state === 'granted',
-    error: state === 'denied'
-      ? 'Location permission has been denied. Please enable it in your browser settings.'
-      : undefined,
+    error:
+      state === 'denied'
+        ? 'Location permission has been denied. Please enable it in your browser settings.'
+        : undefined,
   }
 }
 

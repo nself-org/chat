@@ -18,7 +18,7 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback} from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
@@ -81,9 +81,7 @@ export function ChannelMembers({
     if (!searchQuery) return channel.members
 
     const query = searchQuery.toLowerCase()
-    return channel.members.filter((member) =>
-      member.userId.toLowerCase().includes(query)
-    )
+    return channel.members.filter((member) => member.userId.toLowerCase().includes(query))
   }, [channel.members, searchQuery])
 
   // Group members by role
@@ -134,35 +132,26 @@ export function ChannelMembers({
     return (
       <div
         key={member.userId}
-        className="flex items-center gap-3 p-3 rounded-lg hover:bg-accent/50"
+        className="hover:bg-accent/50 flex items-center gap-3 rounded-lg p-3"
       >
         <Avatar className="h-10 w-10">
-          <AvatarFallback>
-            {member.userId.slice(0, 2).toUpperCase()}
-          </AvatarFallback>
+          <AvatarFallback>{member.userId.slice(0, 2).toUpperCase()}</AvatarFallback>
         </Avatar>
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-medium truncate">
+            <span className="truncate font-medium">
               {member.userId}
               {isCurrentUser && ' (you)'}
             </span>
-            {member.role === 'owner' && (
-              <Crown className="h-4 w-4 text-yellow-500" />
-            )}
-            {member.role === 'admin' && (
-              <Shield className="h-4 w-4 text-blue-500" />
-            )}
+            {member.role === 'owner' && <Crown className="h-4 w-4 text-yellow-500" />}
+            {member.role === 'admin' && <Shield className="h-4 w-4 text-blue-500" />}
           </div>
           <p className="text-xs text-muted-foreground">
             Joined {formatTimeAgo(new Date(member.joinedAt))}
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge
-            variant={member.role === 'owner' ? 'default' : 'secondary'}
-            className="text-xs"
-          >
+          <Badge variant={member.role === 'owner' ? 'default' : 'secondary'} className="text-xs">
             {member.role}
           </Badge>
           {canManage && (
@@ -174,16 +163,12 @@ export function ChannelMembers({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 {member.role === 'member' ? (
-                  <DropdownMenuItem
-                    onClick={() => handlePromote(member.userId, 'admin')}
-                  >
+                  <DropdownMenuItem onClick={() => handlePromote(member.userId, 'admin')}>
                     <ShieldCheck className="mr-2 h-4 w-4" />
                     Make admin
                   </DropdownMenuItem>
                 ) : (
-                  <DropdownMenuItem
-                    onClick={() => handlePromote(member.userId, 'member')}
-                  >
+                  <DropdownMenuItem onClick={() => handlePromote(member.userId, 'member')}>
                     <ShieldX className="mr-2 h-4 w-4" />
                     Remove admin
                   </DropdownMenuItem>
@@ -214,9 +199,7 @@ export function ChannelMembers({
                 <Users className="h-5 w-5" />
                 Members ({channel.memberCount})
               </CardTitle>
-              <CardDescription>
-                People who have access to this channel
-              </CardDescription>
+              <CardDescription>People who have access to this channel</CardDescription>
             </div>
             {isAdmin && (
               <Button onClick={() => setShowInviteDialog(true)}>
@@ -229,7 +212,7 @@ export function ChannelMembers({
         <CardContent className="space-y-4">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search members..."
               value={searchQuery}
@@ -244,7 +227,7 @@ export function ChannelMembers({
               {/* Owners */}
               {owners.length > 0 && (
                 <div className="space-y-1">
-                  <p className="text-xs font-medium text-muted-foreground px-3 py-2">
+                  <p className="px-3 py-2 text-xs font-medium text-muted-foreground">
                     OWNER - {owners.length}
                   </p>
                   {owners.map(renderMemberRow)}
@@ -254,7 +237,7 @@ export function ChannelMembers({
               {/* Admins */}
               {admins.length > 0 && (
                 <div className="space-y-1">
-                  <p className="text-xs font-medium text-muted-foreground px-3 py-2">
+                  <p className="px-3 py-2 text-xs font-medium text-muted-foreground">
                     ADMINS - {admins.length}
                   </p>
                   {admins.map(renderMemberRow)}
@@ -264,7 +247,7 @@ export function ChannelMembers({
               {/* Members */}
               {members.length > 0 && (
                 <div className="space-y-1">
-                  <p className="text-xs font-medium text-muted-foreground px-3 py-2">
+                  <p className="px-3 py-2 text-xs font-medium text-muted-foreground">
                     MEMBERS - {members.length}
                   </p>
                   {members.map(renderMemberRow)}
@@ -273,10 +256,8 @@ export function ChannelMembers({
 
               {/* Empty state */}
               {filteredMembers.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
-                  {searchQuery
-                    ? `No members match "${searchQuery}"`
-                    : 'No members in this channel'}
+                <div className="py-8 text-center text-muted-foreground">
+                  {searchQuery ? `No members match "${searchQuery}"` : 'No members in this channel'}
                 </div>
               )}
             </div>
@@ -293,23 +274,20 @@ export function ChannelMembers({
       />
 
       {/* Remove Confirmation Dialog */}
-      <AlertDialog
-        open={removingUserId !== null}
-        onOpenChange={() => setRemovingUserId(null)}
-      >
+      <AlertDialog open={removingUserId !== null} onOpenChange={() => setRemovingUserId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Remove member?</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to remove this member from #{channel.name}?
-              They will no longer have access to this channel.
+              Are you sure you want to remove this member from #{channel.name}? They will no longer
+              have access to this channel.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={() => removingUserId && handleRemove(removingUserId)}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Remove Member

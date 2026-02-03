@@ -35,6 +35,7 @@ Authorization: Bearer <your-jwt-token>
 **Endpoint**: `POST /v1/auth/signin`
 
 **Request**:
+
 ```json
 {
   "email": "user@example.com",
@@ -43,6 +44,7 @@ Authorization: Bearer <your-jwt-token>
 ```
 
 **Response**:
+
 ```json
 {
   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -61,6 +63,7 @@ Authorization: Bearer <your-jwt-token>
 **Endpoint**: `POST /v1/auth/token/refresh`
 
 **Request**:
+
 ```json
 {
   "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
@@ -68,6 +71,7 @@ Authorization: Bearer <your-jwt-token>
 ```
 
 **Response**:
+
 ```json
 {
   "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
@@ -98,9 +102,7 @@ Authorization: Bearer <your-jwt-token>
 
 ```graphql
 query GetChannels($userId: uuid!) {
-  channels(where: {
-    channel_members: {user_id: {_eq: $userId}}
-  }) {
+  channels(where: { channel_members: { user_id: { _eq: $userId } } }) {
     id
     name
     description
@@ -123,8 +125,8 @@ query GetChannels($userId: uuid!) {
 ```graphql
 query GetMessages($channelId: uuid!, $limit: Int = 50, $offset: Int = 0) {
   messages(
-    where: {channel_id: {_eq: $channelId}}
-    order_by: {created_at: desc}
+    where: { channel_id: { _eq: $channelId } }
+    order_by: { created_at: desc }
     limit: $limit
     offset: $offset
   ) {
@@ -186,6 +188,7 @@ mutation CreateChannel($input: channels_insert_input!) {
 ```
 
 **Variables**:
+
 ```json
 {
   "input": {
@@ -214,6 +217,7 @@ mutation SendMessage($input: messages_insert_input!) {
 ```
 
 **Variables**:
+
 ```json
 {
   "input": {
@@ -241,10 +245,7 @@ mutation AddReaction($input: message_reactions_insert_input!) {
 
 ```graphql
 mutation UpdateUserProfile($userId: uuid!, $updates: users_set_input!) {
-  update_users_by_pk(
-    pk_columns: {id: $userId}
-    _set: $updates
-  ) {
+  update_users_by_pk(pk_columns: { id: $userId }, _set: $updates) {
     id
     display_name
     bio
@@ -259,11 +260,7 @@ mutation UpdateUserProfile($userId: uuid!, $updates: users_set_input!) {
 
 ```graphql
 subscription OnNewMessage($channelId: uuid!) {
-  messages(
-    where: {channel_id: {_eq: $channelId}}
-    order_by: {created_at: desc}
-    limit: 1
-  ) {
+  messages(where: { channel_id: { _eq: $channelId } }, order_by: { created_at: desc }, limit: 1) {
     id
     content
     created_at
@@ -280,12 +277,7 @@ subscription OnNewMessage($channelId: uuid!) {
 
 ```graphql
 subscription OnTyping($channelId: uuid!) {
-  typing_indicators(
-    where: {
-      channel_id: {_eq: $channelId}
-      is_typing: {_eq: true}
-    }
-  ) {
+  typing_indicators(where: { channel_id: { _eq: $channelId }, is_typing: { _eq: true } }) {
     user_id
     user {
       display_name
@@ -299,7 +291,7 @@ subscription OnTyping($channelId: uuid!) {
 
 ```graphql
 subscription OnUserPresence($userIds: [uuid!]!) {
-  users(where: {id: {_in: $userIds}}) {
+  users(where: { id: { _in: $userIds } }) {
     id
     status
     last_seen
@@ -320,6 +312,7 @@ GET /api/health
 ```
 
 **Response**:
+
 ```json
 {
   "status": "healthy",
@@ -337,6 +330,7 @@ GET /api/health/ready
 ```
 
 **Response**:
+
 ```json
 {
   "ready": true,
@@ -355,6 +349,7 @@ GET /api/health/live
 ```
 
 **Response**:
+
 ```json
 {
   "alive": true,
@@ -373,11 +368,13 @@ Authorization: Bearer <token>
 ```
 
 **Form Data**:
+
 - `file`: File to upload
 - `channelId`: Channel UUID (optional)
 - `messageId`: Message UUID (optional)
 
 **Response**:
+
 ```json
 {
   "id": "file-uuid",
@@ -390,6 +387,7 @@ Authorization: Bearer <token>
 ```
 
 **Limits**:
+
 - Max file size: 100MB
 - Allowed types: Images, videos, audio, documents
 
@@ -404,6 +402,7 @@ Content-Type: application/json
 ```
 
 **Request**:
+
 ```json
 {
   "url": "https://example.com/article"
@@ -411,6 +410,7 @@ Content-Type: application/json
 ```
 
 **Response**:
+
 ```json
 {
   "url": "https://example.com/article",
@@ -434,25 +434,28 @@ Connect to WebSocket endpoint:
 const ws = new WebSocket('wss://api.nchat.example.com/v1/graphql', 'graphql-ws')
 
 // Send connection init with auth token
-ws.send(JSON.stringify({
-  type: 'connection_init',
-  payload: {
-    headers: {
-      Authorization: 'Bearer <your-jwt-token>'
-    }
-  }
-}))
+ws.send(
+  JSON.stringify({
+    type: 'connection_init',
+    payload: {
+      headers: {
+        Authorization: 'Bearer <your-jwt-token>',
+      },
+    },
+  })
+)
 ```
 
 ### Subscribe to Events
 
 ```javascript
 // Subscribe to new messages
-ws.send(JSON.stringify({
-  id: '1',
-  type: 'start',
-  payload: {
-    query: `
+ws.send(
+  JSON.stringify({
+    id: '1',
+    type: 'start',
+    payload: {
+      query: `
       subscription OnNewMessage($channelId: uuid!) {
         messages(where: {channel_id: {_eq: $channelId}}) {
           id
@@ -463,11 +466,12 @@ ws.send(JSON.stringify({
         }
       }
     `,
-    variables: {
-      channelId: 'channel-uuid'
-    }
-  }
-}))
+      variables: {
+        channelId: 'channel-uuid',
+      },
+    },
+  })
+)
 ```
 
 ### Heartbeat
@@ -484,16 +488,17 @@ setInterval(() => {
 
 ## Rate Limits
 
-| Endpoint | Limit | Window |
-|----------|-------|--------|
-| Authentication | 5 attempts | 15 minutes |
-| GraphQL Queries | 100 requests | 1 minute |
-| GraphQL Mutations | 100 requests | 1 minute |
-| File Uploads | 50 uploads | 1 hour |
-| WebSocket Connections | 10 connections | 1 minute |
-| API (per IP) | 500 requests | 1 minute |
+| Endpoint              | Limit          | Window     |
+| --------------------- | -------------- | ---------- |
+| Authentication        | 5 attempts     | 15 minutes |
+| GraphQL Queries       | 100 requests   | 1 minute   |
+| GraphQL Mutations     | 100 requests   | 1 minute   |
+| File Uploads          | 50 uploads     | 1 hour     |
+| WebSocket Connections | 10 connections | 1 minute   |
+| API (per IP)          | 500 requests   | 1 minute   |
 
 **Rate Limit Headers**:
+
 ```http
 X-RateLimit-Limit: 100
 X-RateLimit-Remaining: 99
@@ -501,6 +506,7 @@ X-RateLimit-Reset: 1643481600000
 ```
 
 **Rate Limit Exceeded Response**:
+
 ```json
 {
   "error": "Too many requests",
@@ -515,17 +521,17 @@ X-RateLimit-Reset: 1643481600000
 
 ### HTTP Status Codes
 
-| Code | Meaning |
-|------|---------|
-| 200 | Success |
-| 201 | Created |
-| 400 | Bad Request |
-| 401 | Unauthorized |
-| 403 | Forbidden |
-| 404 | Not Found |
-| 429 | Too Many Requests |
-| 500 | Internal Server Error |
-| 503 | Service Unavailable |
+| Code | Meaning               |
+| ---- | --------------------- |
+| 200  | Success               |
+| 201  | Created               |
+| 400  | Bad Request           |
+| 401  | Unauthorized          |
+| 403  | Forbidden             |
+| 404  | Not Found             |
+| 429  | Too Many Requests     |
+| 500  | Internal Server Error |
+| 503  | Service Unavailable   |
 
 ### Error Response Format
 
@@ -584,6 +590,7 @@ Webhooks allow you to receive real-time notifications for events.
 **Endpoint**: `POST /api/webhooks`
 
 **Request**:
+
 ```json
 {
   "url": "https://your-app.com/webhook",
@@ -594,18 +601,18 @@ Webhooks allow you to receive real-time notifications for events.
 
 ### Webhook Events
 
-| Event | Description |
-|-------|-------------|
-| `message.created` | New message sent |
-| `message.updated` | Message edited |
-| `message.deleted` | Message deleted |
-| `channel.created` | New channel created |
-| `channel.updated` | Channel updated |
-| `channel.deleted` | Channel deleted |
-| `user.joined` | User joined channel |
-| `user.left` | User left channel |
-| `reaction.added` | Reaction added to message |
-| `file.uploaded` | File uploaded |
+| Event             | Description               |
+| ----------------- | ------------------------- |
+| `message.created` | New message sent          |
+| `message.updated` | Message edited            |
+| `message.deleted` | Message deleted           |
+| `channel.created` | New channel created       |
+| `channel.updated` | Channel updated           |
+| `channel.deleted` | Channel deleted           |
+| `user.joined`     | User joined channel       |
+| `user.left`       | User left channel         |
+| `reaction.added`  | Reaction added to message |
+| `file.uploaded`   | File uploaded             |
 
 ### Webhook Payload
 
@@ -634,10 +641,7 @@ function verifyWebhook(payload, signature, secret) {
   const hmac = crypto.createHmac('sha256', secret)
   hmac.update(JSON.stringify(payload))
   const computed = hmac.digest('hex')
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(computed)
-  )
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(computed))
 }
 ```
 
@@ -660,8 +664,8 @@ import { createClient } from 'graphql-ws'
 const httpLink = new HttpLink({
   uri: 'https://api.nchat.example.com/v1/graphql',
   headers: {
-    Authorization: `Bearer ${accessToken}`
-  }
+    Authorization: `Bearer ${accessToken}`,
+  },
 })
 
 const wsLink = new GraphQLWsLink(
@@ -669,19 +673,16 @@ const wsLink = new GraphQLWsLink(
     url: 'wss://api.nchat.example.com/v1/graphql',
     connectionParams: {
       headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
-    }
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
   })
 )
 
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query)
-    return (
-      definition.kind === 'OperationDefinition' &&
-      definition.operation === 'subscription'
-    )
+    return definition.kind === 'OperationDefinition' && definition.operation === 'subscription'
   },
   wsLink,
   httpLink
@@ -689,7 +690,7 @@ const splitLink = split(
 
 const client = new ApolloClient({
   link: splitLink,
-  cache: new InMemoryCache()
+  cache: new InMemoryCache(),
 })
 ```
 
@@ -715,9 +716,9 @@ async function sendMessage(channelId: string, content: string) {
       input: {
         channel_id: channelId,
         user_id: currentUserId,
-        content
-      }
-    }
+        content,
+      },
+    },
   })
   return data.insert_messages_one
 }
@@ -730,11 +731,7 @@ import { gql } from '@apollo/client'
 
 const MESSAGE_SUBSCRIPTION = gql`
   subscription OnNewMessage($channelId: uuid!) {
-    messages(
-      where: {channel_id: {_eq: $channelId}}
-      order_by: {created_at: desc}
-      limit: 1
-    ) {
+    messages(where: { channel_id: { _eq: $channelId } }, order_by: { created_at: desc }, limit: 1) {
       id
       content
       user {
@@ -744,17 +741,19 @@ const MESSAGE_SUBSCRIPTION = gql`
   }
 `
 
-const subscription = client.subscribe({
-  query: MESSAGE_SUBSCRIPTION,
-  variables: { channelId }
-}).subscribe({
-  next: ({ data }) => {
-    console.log('New message:', data.messages[0])
-  },
-  error: (err) => {
-    console.error('Subscription error:', err)
-  }
-})
+const subscription = client
+  .subscribe({
+    query: MESSAGE_SUBSCRIPTION,
+    variables: { channelId },
+  })
+  .subscribe({
+    next: ({ data }) => {
+      console.log('New message:', data.messages[0])
+    },
+    error: (err) => {
+      console.error('Subscription error:', err)
+    },
+  })
 ```
 
 ### Python

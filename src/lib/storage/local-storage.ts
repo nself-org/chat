@@ -105,9 +105,7 @@ export class LocalStorageManager {
         expiresAt: options?.ttl ? Date.now() + options.ttl : undefined,
       }
 
-      const serialized = options?.serializer
-        ? options.serializer(item)
-        : JSON.stringify(item)
+      const serialized = options?.serializer ? options.serializer(item) : JSON.stringify(item)
 
       localStorage.setItem(this.getKey(key), serialized)
       return true
@@ -323,9 +321,7 @@ export function useLocalStorage<T>(
   // Update function
   const updateValue = useCallback((newValue: T | ((prev: T) => T)) => {
     setValue((prev) => {
-      const updated = typeof newValue === 'function'
-        ? (newValue as (prev: T) => T)(prev)
-        : newValue
+      const updated = typeof newValue === 'function' ? (newValue as (prev: T) => T)(prev) : newValue
       return updated
     })
   }, [])

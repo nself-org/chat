@@ -263,9 +263,7 @@ describe('SmartSearch', () => {
   describe('embedding generation', () => {
     it('should generate local embeddings when provider is local', async () => {
       const search = new SmartSearch({ provider: 'local' })
-      const messages = [
-        createMockSearchableMessage({ content: 'Test message for embedding' }),
-      ]
+      const messages = [createMockSearchableMessage({ content: 'Test message for embedding' })]
 
       const results = await search.search('test query', messages)
 
@@ -570,9 +568,7 @@ describe('SmartSearch', () => {
       const search = new SmartSearch({ provider: 'openai', apiKey: 'test-key' })
 
       // First search
-      await search.search('test query', [
-        createMockSearchableMessage({ content: 'same content' }),
-      ])
+      await search.search('test query', [createMockSearchableMessage({ content: 'same content' })])
       const initialCacheSize = search.getCacheStats().size
 
       // Second search with same content

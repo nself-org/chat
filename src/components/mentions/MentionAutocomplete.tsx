@@ -8,14 +8,7 @@
 'use client'
 
 import * as React from 'react'
-import {
-  useState,
-  useCallback,
-  useRef,
-  useEffect,
-  forwardRef,
-  useImperativeHandle,
-} from 'react'
+import { useState, useCallback, useRef, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { cn } from '@/lib/utils'
 import { MentionSuggestions, type MentionSuggestionsRef } from './MentionSuggestions'
 import {
@@ -74,53 +67,112 @@ export interface MentionAutocompleteRef {
 // Component
 // ============================================================================
 
-export const MentionAutocomplete = forwardRef<
-  MentionAutocompleteRef,
-  MentionAutocompleteProps
->(function MentionAutocomplete(
-  {
-    users,
-    channels,
-    permissions = {
-      canMentionUsers: true,
-      canMentionChannels: true,
-      canMentionEveryone: false,
-      canMentionHere: false,
-      canMentionChannel: false,
-      canMentionRoles: false,
+export const MentionAutocomplete = forwardRef<MentionAutocompleteRef, MentionAutocompleteProps>(
+  function MentionAutocomplete(
+    {
+      users,
+      channels,
+      permissions = {
+        canMentionUsers: true,
+        canMentionChannels: true,
+        canMentionEveryone: false,
+        canMentionHere: false,
+        canMentionChannel: false,
+        canMentionRoles: false,
+      },
+      channelMemberIds,
+      onSelect,
+      value,
+      cursorPosition,
+      anchorElement,
+      enabled = true,
+      suggestionsClassName,
     },
-    channelMemberIds,
-    onSelect,
-    value,
-    cursorPosition,
-    anchorElement,
-    enabled = true,
-    suggestionsClassName,
-  },
-  ref
-) {
-  const [state, setState] = useState<MentionAutocompleteState>(
-    INITIAL_AUTOCOMPLETE_STATE
-  )
-  const suggestionsRef = useRef<MentionSuggestionsRef>(null)
-  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+    ref
+  ) {
+    const [state, setState] = useState<MentionAutocompleteState>(INITIAL_AUTOCOMPLETE_STATE)
+    const suggestionsRef = useRef<MentionSuggestionsRef>(null)
+    const debounceRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Parse query from current cursor position
-  useEffect(() => {
-    if (!enabled) {
-      setState(INITIAL_AUTOCOMPLETE_STATE)
-      return
-    }
+    // Parse query from current cursor position
+    useEffect(() => {
+      if (!enabled) {
+        setState(INITIAL_AUTOCOMPLETE_STATE)
+        return
+      }
 
-    // Debounce the query parsing
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current)
-    }
+      // Debounce the query parsing
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current)
+      }
 
-    debounceRef.current = setTimeout(() => {
-      const queryInfo = parseAutocompleteQuery(value, cursorPosition)
+      debounceRef.current = setTimeout(() => {
+        const queryInfo = parseAutocompleteQuery(value, cursorPosition)
 
-      if (!queryInfo) {
+        if (!queryInfo) {
+          setState((prev) => ({
+            ...prev,
+            isOpen: false,
+            query: '',
+            trigger: null,
+            suggestions: [],
+            selectedIndex: 0,
+          }))
+          return
+        }
+
+        // Get suggestions based on trigger
+        // When parseAutocompleteQuery returns non-null, trigger is always '@' or '#'
+        const trigger = queryInfo.trigger as '@' | '#'
+        const suggestions = filterMentionSuggestions({
+          users: trigger === '@' ? users : [],
+          channels: trigger === '#' ? channels : [],
+          permissions,
+          trigger,
+          query: queryInfo.query,
+          maxSuggestions: 10,
+          prioritizeChannelMembers: true,
+          channelMemberIds,
+        })
+
+        setState((prev) => ({
+          ...prev,
+          isOpen: suggestions.length > 0 || queryInfo.query.length === 0,
+          query: queryInfo.query,
+          trigger,
+          suggestions,
+          selectedIndex: 0,
+          position: calculatePosition(anchorElement),
+        }))
+      }, AUTOCOMPLETE_DEBOUNCE_MS)
+
+      return () => {
+        if (debounceRef.current) {
+          clearTimeout(debounceRef.current)
+        }
+      }
+    }, [
+      value,
+      cursorPosition,
+      users,
+      channels,
+      permissions,
+      channelMemberIds,
+      enabled,
+      anchorElement,
+    ])
+
+    // Handle selection
+    const handleSelect = useCallback(
+      (suggestion: MentionSuggestion) => {
+        const queryInfo = parseAutocompleteQuery(value, cursorPosition)
+        if (!queryInfo) return
+
+        onSelect(suggestion, {
+          start: queryInfo.start,
+          end: cursorPosition,
+        })
+
         setState((prev) => ({
           ...prev,
           isOpen: false,
@@ -129,203 +181,137 @@ export const MentionAutocomplete = forwardRef<
           suggestions: [],
           selectedIndex: 0,
         }))
-        return
-      }
+      },
+      [value, cursorPosition, onSelect]
+    )
 
-      // Get suggestions based on trigger
-      // When parseAutocompleteQuery returns non-null, trigger is always '@' or '#'
-      const trigger = queryInfo.trigger as '@' | '#'
-      const suggestions = filterMentionSuggestions({
-        users: trigger === '@' ? users : [],
-        channels: trigger === '#' ? channels : [],
-        permissions,
-        trigger,
-        query: queryInfo.query,
-        maxSuggestions: 10,
-        prioritizeChannelMembers: true,
-        channelMemberIds,
-      })
-
+    // Handle selection index change
+    const handleSelectionChange = useCallback((index: number) => {
       setState((prev) => ({
         ...prev,
-        isOpen: suggestions.length > 0 || queryInfo.query.length === 0,
-        query: queryInfo.query,
-        trigger,
-        suggestions,
-        selectedIndex: 0,
-        position: calculatePosition(anchorElement),
+        selectedIndex: index,
       }))
-    }, AUTOCOMPLETE_DEBOUNCE_MS)
+    }, [])
 
-    return () => {
-      if (debounceRef.current) {
-        clearTimeout(debounceRef.current)
-      }
-    }
-  }, [
-    value,
-    cursorPosition,
-    users,
-    channels,
-    permissions,
-    channelMemberIds,
-    enabled,
-    anchorElement,
-  ])
-
-  // Handle selection
-  const handleSelect = useCallback(
-    (suggestion: MentionSuggestion) => {
-      const queryInfo = parseAutocompleteQuery(value, cursorPosition)
-      if (!queryInfo) return
-
-      onSelect(suggestion, {
-        start: queryInfo.start,
-        end: cursorPosition,
-      })
-
-      setState((prev) => ({
-        ...prev,
-        isOpen: false,
-        query: '',
-        trigger: null,
-        suggestions: [],
-        selectedIndex: 0,
-      }))
-    },
-    [value, cursorPosition, onSelect]
-  )
-
-  // Handle selection index change
-  const handleSelectionChange = useCallback((index: number) => {
-    setState((prev) => ({
-      ...prev,
-      selectedIndex: index,
-    }))
-  }, [])
-
-  // Handle keyboard navigation
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent): boolean => {
-      if (!state.isOpen || state.suggestions.length === 0) {
-        return false
-      }
-
-      switch (event.key) {
-        case 'ArrowDown':
-          event.preventDefault()
-          suggestionsRef.current?.downHandler()
-          return true
-
-        case 'ArrowUp':
-          event.preventDefault()
-          suggestionsRef.current?.upHandler()
-          return true
-
-        case 'Tab':
-        case 'Enter':
-          if (state.suggestions[state.selectedIndex]) {
-            event.preventDefault()
-            suggestionsRef.current?.enterHandler()
-            return true
-          }
+    // Handle keyboard navigation
+    const handleKeyDown = useCallback(
+      (event: KeyboardEvent): boolean => {
+        if (!state.isOpen || state.suggestions.length === 0) {
           return false
+        }
 
-        case 'Escape':
-          event.preventDefault()
+        switch (event.key) {
+          case 'ArrowDown':
+            event.preventDefault()
+            suggestionsRef.current?.downHandler()
+            return true
+
+          case 'ArrowUp':
+            event.preventDefault()
+            suggestionsRef.current?.upHandler()
+            return true
+
+          case 'Tab':
+          case 'Enter':
+            if (state.suggestions[state.selectedIndex]) {
+              event.preventDefault()
+              suggestionsRef.current?.enterHandler()
+              return true
+            }
+            return false
+
+          case 'Escape':
+            event.preventDefault()
+            setState((prev) => ({
+              ...prev,
+              isOpen: false,
+            }))
+            return true
+
+          default:
+            return false
+        }
+      },
+      [state.isOpen, state.suggestions, state.selectedIndex]
+    )
+
+    // Expose methods to parent
+    useImperativeHandle(
+      ref,
+      () => ({
+        close: () => {
           setState((prev) => ({
             ...prev,
             isOpen: false,
           }))
-          return true
+        },
+        open: () => {
+          // Trigger a re-parse by updating state
+          const queryInfo = parseAutocompleteQuery(value, cursorPosition)
+          if (queryInfo && queryInfo.trigger) {
+            const trigger = queryInfo.trigger as '@' | '#'
+            const suggestions = filterMentionSuggestions({
+              users: trigger === '@' ? users : [],
+              channels: trigger === '#' ? channels : [],
+              permissions,
+              trigger,
+              query: queryInfo.query,
+              maxSuggestions: 10,
+              prioritizeChannelMembers: true,
+              channelMemberIds,
+            })
+            setState((prev) => ({
+              ...prev,
+              isOpen: true,
+              suggestions,
+              position: calculatePosition(anchorElement),
+            }))
+          }
+        },
+        isOpen: () => state.isOpen,
+        handleKeyDown,
+      }),
+      [
+        value,
+        cursorPosition,
+        users,
+        channels,
+        permissions,
+        channelMemberIds,
+        anchorElement,
+        state.isOpen,
+        handleKeyDown,
+      ]
+    )
 
-        default:
-          return false
-      }
-    },
-    [state.isOpen, state.suggestions, state.selectedIndex]
-  )
+    // Don't render if not open
+    if (!state.isOpen) {
+      return null
+    }
 
-  // Expose methods to parent
-  useImperativeHandle(
-    ref,
-    () => ({
-      close: () => {
-        setState((prev) => ({
-          ...prev,
-          isOpen: false,
-        }))
-      },
-      open: () => {
-        // Trigger a re-parse by updating state
-        const queryInfo = parseAutocompleteQuery(value, cursorPosition)
-        if (queryInfo && queryInfo.trigger) {
-          const trigger = queryInfo.trigger as '@' | '#'
-          const suggestions = filterMentionSuggestions({
-            users: trigger === '@' ? users : [],
-            channels: trigger === '#' ? channels : [],
-            permissions,
-            trigger,
-            query: queryInfo.query,
-            maxSuggestions: 10,
-            prioritizeChannelMembers: true,
-            channelMemberIds,
-          })
-          setState((prev) => ({
-            ...prev,
-            isOpen: true,
-            suggestions,
-            position: calculatePosition(anchorElement),
-          }))
-        }
-      },
-      isOpen: () => state.isOpen,
-      handleKeyDown,
-    }),
-    [
-      value,
-      cursorPosition,
-      users,
-      channels,
-      permissions,
-      channelMemberIds,
-      anchorElement,
-      state.isOpen,
-      handleKeyDown,
-    ]
-  )
-
-  // Don't render if not open
-  if (!state.isOpen) {
-    return null
+    return (
+      <div
+        className="fixed z-50"
+        style={{
+          top: state.position?.top ?? 0,
+          left: state.position?.left ?? 0,
+        }}
+      >
+        <MentionSuggestions
+          ref={suggestionsRef}
+          suggestions={state.suggestions}
+          selectedIndex={state.selectedIndex}
+          onSelect={handleSelect}
+          onSelectionChange={handleSelectionChange}
+          isLoading={state.isLoading}
+          error={state.error}
+          emptyMessage={state.trigger === '@' ? 'No users found' : 'No channels found'}
+          className={suggestionsClassName}
+        />
+      </div>
+    )
   }
-
-  return (
-    <div
-      className="fixed z-50"
-      style={{
-        top: state.position?.top ?? 0,
-        left: state.position?.left ?? 0,
-      }}
-    >
-      <MentionSuggestions
-        ref={suggestionsRef}
-        suggestions={state.suggestions}
-        selectedIndex={state.selectedIndex}
-        onSelect={handleSelect}
-        onSelectionChange={handleSelectionChange}
-        isLoading={state.isLoading}
-        error={state.error}
-        emptyMessage={
-          state.trigger === '@'
-            ? 'No users found'
-            : 'No channels found'
-        }
-        className={suggestionsClassName}
-      />
-    </div>
-  )
-})
+)
 
 // ============================================================================
 // Helper Functions
@@ -378,9 +364,7 @@ export function useMentionAutocomplete({
   channelMemberIds,
   onSelect,
 }: UseMentionAutocompleteOptions) {
-  const [state, setState] = useState<MentionAutocompleteState>(
-    INITIAL_AUTOCOMPLETE_STATE
-  )
+  const [state, setState] = useState<MentionAutocompleteState>(INITIAL_AUTOCOMPLETE_STATE)
 
   const updateQuery = useCallback(
     (trigger: '@' | '#', query: string) => {
@@ -425,15 +409,9 @@ export function useMentionAutocomplete({
 
       let newIndex: number
       if (direction === 'up') {
-        newIndex =
-          prev.selectedIndex <= 0
-            ? prev.suggestions.length - 1
-            : prev.selectedIndex - 1
+        newIndex = prev.selectedIndex <= 0 ? prev.suggestions.length - 1 : prev.selectedIndex - 1
       } else {
-        newIndex =
-          prev.selectedIndex >= prev.suggestions.length - 1
-            ? 0
-            : prev.selectedIndex + 1
+        newIndex = prev.selectedIndex >= prev.suggestions.length - 1 ? 0 : prev.selectedIndex + 1
       }
 
       return { ...prev, selectedIndex: newIndex }

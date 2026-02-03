@@ -133,12 +133,7 @@ export const GET_CHANNEL_POLLS = gql`
 
 export const GET_USER_POLL_VOTES = gql`
   query GetUserPollVotes($pollId: uuid!, $userId: uuid!) {
-    nchat_poll_votes(
-      where: {
-        poll_id: { _eq: $pollId }
-        user_id: { _eq: $userId }
-      }
-    ) {
+    nchat_poll_votes(where: { poll_id: { _eq: $pollId }, user_id: { _eq: $userId } }) {
       id
       option_id
       voted_at
@@ -182,12 +177,7 @@ export const GET_POLL_STATS = gql`
 
 export const HAS_USER_VOTED = gql`
   query HasUserVoted($pollId: uuid!) {
-    nchat_poll_votes(
-      where: {
-        poll_id: { _eq: $pollId }
-      }
-      limit: 1
-    ) {
+    nchat_poll_votes(where: { poll_id: { _eq: $pollId } }, limit: 1) {
       id
       option_id
     }
@@ -228,10 +218,7 @@ export const SUBSCRIBE_POLL_UPDATES = gql`
 
 export const SUBSCRIBE_POLL_VOTES = gql`
   subscription SubscribePollVotes($pollId: uuid!) {
-    nchat_poll_votes(
-      where: { poll_id: { _eq: $pollId } }
-      order_by: { voted_at: desc }
-    ) {
+    nchat_poll_votes(where: { poll_id: { _eq: $pollId } }, order_by: { voted_at: desc }) {
       id
       option_id
       user_id

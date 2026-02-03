@@ -8,6 +8,7 @@
  */
 
 import { nhost } from '@/lib/nhost'
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderType,
@@ -114,7 +115,7 @@ export class MagicLinkProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('MagicLinkProvider.sendMagicLink error:', err)
+      logger.error('MagicLinkProvider.sendMagicLink error:',  err)
       return {
         success: false,
         error: {
@@ -158,7 +159,7 @@ export class MagicLinkProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('MagicLinkProvider.handleCallback error:', err)
+      logger.error('MagicLinkProvider.handleCallback error:',  err)
       return {
         success: false,
         error: {

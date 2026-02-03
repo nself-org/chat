@@ -26,9 +26,12 @@ export function useChannelReadStatus(channelId: string | null) {
     return (data?.nchat_read_status ?? []) as ReadStatus[]
   }, [data])
 
-  const getReadBy = useCallback((messageId: string) => {
-    return readStatuses.filter(s => s.last_read_message_id === messageId)
-  }, [readStatuses])
+  const getReadBy = useCallback(
+    (messageId: string) => {
+      return readStatuses.filter((s) => s.last_read_message_id === messageId)
+    },
+    [readStatuses]
+  )
 
   return { readStatuses, getReadBy, loading }
 }
@@ -38,19 +41,25 @@ export function useMarkRead() {
   const [markReadMutation] = useMutation(MARK_CHANNEL_READ)
   const [updateLastReadMutation] = useMutation(UPDATE_LAST_READ)
 
-  const markRead = useCallback(async (channelId: string, messageId: string) => {
-    if (!user?.id) return
-    await markReadMutation({
-      variables: { channelId, userId: user.id, messageId },
-    })
-  }, [user?.id, markReadMutation])
+  const markRead = useCallback(
+    async (channelId: string, messageId: string) => {
+      if (!user?.id) return
+      await markReadMutation({
+        variables: { channelId, userId: user.id, messageId },
+      })
+    },
+    [user?.id, markReadMutation]
+  )
 
-  const updateLastRead = useCallback(async (channelId: string) => {
-    if (!user?.id) return
-    await updateLastReadMutation({
-      variables: { channelId, userId: user.id },
-    })
-  }, [user?.id, updateLastReadMutation])
+  const updateLastRead = useCallback(
+    async (channelId: string) => {
+      if (!user?.id) return
+      await updateLastReadMutation({
+        variables: { channelId, userId: user.id },
+      })
+    },
+    [user?.id, updateLastReadMutation]
+  )
 
   return { markRead, updateLastRead }
 }

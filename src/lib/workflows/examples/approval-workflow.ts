@@ -49,93 +49,98 @@ export function createApprovalWorkflow(
   }
 
   // Create request form
-  const requestForm = createFormStep({ x: 400, y: 180 }, {
-    title: 'Submit Request',
-    description: 'Fill out the details of your request',
-    target: 'trigger_source',
-    fields: [
-      {
-        id: 'type',
-        name: 'requestType',
-        label: 'Request Type',
-        type: 'select',
-        required: true,
-        options: [
-          { label: 'Purchase Request', value: 'purchase' },
-          { label: 'Time Off', value: 'time_off' },
-          { label: 'Expense Reimbursement', value: 'expense' },
-          { label: 'Access Request', value: 'access' },
-          { label: 'Other', value: 'other' },
-        ],
-      },
-      {
-        id: 'title',
-        name: 'title',
-        label: 'Request Title',
-        type: 'text',
-        placeholder: 'Brief description of your request',
-        required: true,
-        validation: {
-          maxLength: 100,
+  const requestForm = createFormStep(
+    { x: 400, y: 180 },
+    {
+      title: 'Submit Request',
+      description: 'Fill out the details of your request',
+      target: 'trigger_source',
+      fields: [
+        {
+          id: 'type',
+          name: 'requestType',
+          label: 'Request Type',
+          type: 'select',
+          required: true,
+          options: [
+            { label: 'Purchase Request', value: 'purchase' },
+            { label: 'Time Off', value: 'time_off' },
+            { label: 'Expense Reimbursement', value: 'expense' },
+            { label: 'Access Request', value: 'access' },
+            { label: 'Other', value: 'other' },
+          ],
         },
-      },
-      {
-        id: 'description',
-        name: 'description',
-        label: 'Details',
-        type: 'textarea',
-        placeholder: 'Provide detailed information about your request',
-        required: true,
-        validation: {
-          minLength: 20,
-          maxLength: 2000,
+        {
+          id: 'title',
+          name: 'title',
+          label: 'Request Title',
+          type: 'text',
+          placeholder: 'Brief description of your request',
+          required: true,
+          validation: {
+            maxLength: 100,
+          },
         },
-      },
-      {
-        id: 'amount',
-        name: 'amount',
-        label: 'Amount (if applicable)',
-        type: 'number',
-        placeholder: '0.00',
-        required: false,
-        validation: {
-          min: 0,
-          max: 1000000,
+        {
+          id: 'description',
+          name: 'description',
+          label: 'Details',
+          type: 'textarea',
+          placeholder: 'Provide detailed information about your request',
+          required: true,
+          validation: {
+            minLength: 20,
+            maxLength: 2000,
+          },
         },
-      },
-      {
-        id: 'urgency',
-        name: 'urgency',
-        label: 'Urgency',
-        type: 'radio',
-        required: true,
-        options: [
-          { label: 'Low - No rush', value: 'low' },
-          { label: 'Medium - Within a week', value: 'medium' },
-          { label: 'High - Within 24 hours', value: 'high' },
-          { label: 'Critical - ASAP', value: 'critical' },
-        ],
-        defaultValue: 'medium',
-      },
-      {
-        id: 'attachments',
-        name: 'attachmentUrl',
-        label: 'Supporting Documents (URL)',
-        type: 'text',
-        placeholder: 'Link to any supporting documents',
-        required: false,
-      },
-    ],
-    submitLabel: 'Submit Request',
-    timeoutSeconds: 300,
-  })
+        {
+          id: 'amount',
+          name: 'amount',
+          label: 'Amount (if applicable)',
+          type: 'number',
+          placeholder: '0.00',
+          required: false,
+          validation: {
+            min: 0,
+            max: 1000000,
+          },
+        },
+        {
+          id: 'urgency',
+          name: 'urgency',
+          label: 'Urgency',
+          type: 'radio',
+          required: true,
+          options: [
+            { label: 'Low - No rush', value: 'low' },
+            { label: 'Medium - Within a week', value: 'medium' },
+            { label: 'High - Within 24 hours', value: 'high' },
+            { label: 'Critical - ASAP', value: 'critical' },
+          ],
+          defaultValue: 'medium',
+        },
+        {
+          id: 'attachments',
+          name: 'attachmentUrl',
+          label: 'Supporting Documents (URL)',
+          type: 'text',
+          placeholder: 'Link to any supporting documents',
+          required: false,
+        },
+      ],
+      submitLabel: 'Submit Request',
+      timeoutSeconds: 300,
+    }
+  )
   requestForm.name = 'Request Form'
   requestForm.description = 'Collect request details from user'
 
   // Acknowledge receipt
-  const acknowledge = createMessageStep({ x: 400, y: 310 }, {
-    target: 'trigger_source',
-    content: `Thank you! Your request has been submitted.
+  const acknowledge = createMessageStep(
+    { x: 400, y: 310 },
+    {
+      target: 'trigger_source',
+      content: `Thank you! Your request has been submitted.
 
 **{{variables.formResponse.title}}**
 Type: {{variables.formResponse.requestType}}
@@ -144,8 +149,9 @@ Urgency: {{variables.formResponse.urgency}}
 Your request ID is: **{{variables.requestId}}**
 
 You'll be notified once a decision is made.`,
-    parseVariables: true,
-  })
+      parseVariables: true,
+    }
+  )
   acknowledge.name = 'Acknowledge Request'
   acknowledge.description = 'Confirm receipt to requester'
 
@@ -162,10 +168,12 @@ You'll be notified once a decision is made.`,
   }
 
   // Standard approval step
-  const standardApproval = createApprovalStep({ x: 200, y: 570 }, {
-    approvalType: 'single',
-    approvers: approvers,
-    message: `**New Request for Approval**
+  const standardApproval = createApprovalStep(
+    { x: 200, y: 570 },
+    {
+      approvalType: 'single',
+      approvers: approvers,
+      message: `**New Request for Approval**
 
 **{{variables.formResponse.title}}**
 Submitted by: {{trigger.data.userName}}
@@ -179,20 +187,23 @@ Urgency: {{variables.formResponse.urgency}}
 {{#if variables.formResponse.attachmentUrl}}
 Attachments: {{variables.formResponse.attachmentUrl}}
 {{/if}}`,
-    timeoutMinutes: 1440, // 24 hours
-    timeoutAction: 'escalate',
-    escalateTo: seniorApprovers,
-    requireComment: false,
-    reminderIntervalMinutes: 240, // 4 hours
-  })
+      timeoutMinutes: 1440, // 24 hours
+      timeoutAction: 'escalate',
+      escalateTo: seniorApprovers,
+      requireComment: false,
+      reminderIntervalMinutes: 240, // 4 hours
+    }
+  )
   standardApproval.name = 'Standard Approval'
   standardApproval.description = 'Request approval from standard approvers'
 
   // Senior approval step
-  const seniorApproval = createApprovalStep({ x: 600, y: 570 }, {
-    approvalType: 'single',
-    approvers: seniorApprovers.length > 0 ? seniorApprovers : approvers,
-    message: `**HIGH VALUE/CRITICAL Request for Approval**
+  const seniorApproval = createApprovalStep(
+    { x: 600, y: 570 },
+    {
+      approvalType: 'single',
+      approvers: seniorApprovers.length > 0 ? seniorApprovers : approvers,
+      message: `**HIGH VALUE/CRITICAL Request for Approval**
 
 **{{variables.formResponse.title}}**
 Submitted by: {{trigger.data.userName}}
@@ -208,18 +219,21 @@ Attachments: {{variables.formResponse.attachmentUrl}}
 {{/if}}
 
 This request requires senior approval due to value or urgency.`,
-    timeoutMinutes: 720, // 12 hours for critical
-    timeoutAction: 'notify',
-    requireComment: true,
-    reminderIntervalMinutes: 120, // 2 hours
-  })
+      timeoutMinutes: 720, // 12 hours for critical
+      timeoutAction: 'notify',
+      requireComment: true,
+      reminderIntervalMinutes: 120, // 2 hours
+    }
+  )
   seniorApproval.name = 'Senior Approval'
   seniorApproval.description = 'Request approval from senior approvers'
 
   // Approved notification
-  const approvedNotification = createMessageStep({ x: 200, y: 700 }, {
-    target: 'user',
-    content: `Great news! Your request has been **approved**.
+  const approvedNotification = createMessageStep(
+    { x: 200, y: 700 },
+    {
+      target: 'user',
+      content: `Great news! Your request has been **approved**.
 
 **{{variables.formResponse.title}}**
 Request ID: {{variables.requestId}}
@@ -230,15 +244,18 @@ Approver's comment: {{variables.approvalComment}}
 
 Approved by: {{variables.approvedBy}}
 Approved at: {{variables.approvedAt}}`,
-    parseVariables: true,
-  })
+      parseVariables: true,
+    }
+  )
   approvedNotification.name = 'Approval Notification'
   approvedNotification.description = 'Notify requester of approval'
 
   // Rejected notification
-  const rejectedNotification = createMessageStep({ x: 400, y: 700 }, {
-    target: 'user',
-    content: `Unfortunately, your request has been **declined**.
+  const rejectedNotification = createMessageStep(
+    { x: 400, y: 700 },
+    {
+      target: 'user',
+      content: `Unfortunately, your request has been **declined**.
 
 **{{variables.formResponse.title}}**
 Request ID: {{variables.requestId}}
@@ -250,30 +267,36 @@ Reason: {{variables.rejectionReason}}
 Reviewed by: {{variables.reviewedBy}}
 
 If you have questions, please reach out to your approver or submit a new request with additional details.`,
-    parseVariables: true,
-  })
+      parseVariables: true,
+    }
+  )
   rejectedNotification.name = 'Rejection Notification'
   rejectedNotification.description = 'Notify requester of rejection'
 
   // Timeout notification
-  const timeoutNotification = createMessageStep({ x: 600, y: 700 }, {
-    target: 'user',
-    content: `Your request is still pending review.
+  const timeoutNotification = createMessageStep(
+    { x: 600, y: 700 },
+    {
+      target: 'user',
+      content: `Your request is still pending review.
 
 **{{variables.formResponse.title}}**
 Request ID: {{variables.requestId}}
 
 The approval has timed out and has been escalated to additional reviewers. You'll be notified once a decision is made.`,
-    parseVariables: true,
-  })
+      parseVariables: true,
+    }
+  )
   timeoutNotification.name = 'Timeout Notification'
   timeoutNotification.description = 'Notify requester of timeout and escalation'
 
   // Post to notification channel (if configured)
-  const postToChannel = createMessageStep({ x: 200, y: 830 }, {
-    target: 'channel',
-    channelId: notificationChannelId || 'approvals',
-    content: `**Request {{variables.approvalStatus}}**
+  const postToChannel = createMessageStep(
+    { x: 200, y: 830 },
+    {
+      target: 'channel',
+      channelId: notificationChannelId || 'approvals',
+      content: `**Request {{variables.approvalStatus}}**
 
 {{variables.formResponse.title}}
 Requester: {{trigger.data.userName}}
@@ -281,31 +304,41 @@ Type: {{variables.formResponse.requestType}}
 Amount: $ {{variables.formResponse.amount}}
 
 Decision by: {{variables.reviewedBy}}`,
-    parseVariables: true,
-  })
+      parseVariables: true,
+    }
+  )
   postToChannel.name = 'Post to Channel'
   postToChannel.description = 'Post decision to notification channel'
 
   // End steps
-  const endApproved = createEndStep({ x: 200, y: 960 }, {
-    status: 'success',
-    message: 'Request approved and processed',
-    outputVariables: ['requestId', 'approvedBy', 'approvedAt'],
-  })
+  const endApproved = createEndStep(
+    { x: 200, y: 960 },
+    {
+      status: 'success',
+      message: 'Request approved and processed',
+      outputVariables: ['requestId', 'approvedBy', 'approvedAt'],
+    }
+  )
   endApproved.name = 'End (Approved)'
 
-  const endRejected = createEndStep({ x: 400, y: 830 }, {
-    status: 'success',
-    message: 'Request rejected',
-    outputVariables: ['requestId', 'reviewedBy', 'rejectionReason'],
-  })
+  const endRejected = createEndStep(
+    { x: 400, y: 830 },
+    {
+      status: 'success',
+      message: 'Request rejected',
+      outputVariables: ['requestId', 'reviewedBy', 'rejectionReason'],
+    }
+  )
   endRejected.name = 'End (Rejected)'
 
-  const endTimeout = createEndStep({ x: 600, y: 830 }, {
-    status: 'success',
-    message: 'Request timed out and escalated',
-    outputVariables: ['requestId'],
-  })
+  const endTimeout = createEndStep(
+    { x: 600, y: 830 },
+    {
+      status: 'success',
+      message: 'Request timed out and escalated',
+      outputVariables: ['requestId'],
+    }
+  )
   endTimeout.name = 'End (Timeout)'
 
   // Define edges
@@ -423,8 +456,7 @@ Decision by: {{variables.reviewedBy}}`,
   return {
     id: `workflow_approval_${Date.now()}`,
     name: 'Request Approval',
-    description:
-      'Multi-level approval workflow with routing based on value and urgency',
+    description: 'Multi-level approval workflow with routing based on value and urgency',
     status: 'draft',
     version: 1,
     steps: [

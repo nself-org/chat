@@ -155,15 +155,52 @@ export class ContentClassifier {
 
   // Sentiment words
   private positiveWords = [
-    'good', 'great', 'excellent', 'awesome', 'amazing', 'wonderful', 'fantastic',
-    'love', 'like', 'enjoy', 'happy', 'perfect', 'best', 'brilliant', 'outstanding',
-    'thank', 'thanks', 'appreciate', 'helpful', 'nice', 'cool',
+    'good',
+    'great',
+    'excellent',
+    'awesome',
+    'amazing',
+    'wonderful',
+    'fantastic',
+    'love',
+    'like',
+    'enjoy',
+    'happy',
+    'perfect',
+    'best',
+    'brilliant',
+    'outstanding',
+    'thank',
+    'thanks',
+    'appreciate',
+    'helpful',
+    'nice',
+    'cool',
   ]
 
   private negativeWords = [
-    'bad', 'terrible', 'awful', 'horrible', 'poor', 'worst', 'hate', 'dislike',
-    'angry', 'frustrated', 'disappointed', 'sad', 'upset', 'annoyed', 'broken',
-    'useless', 'worthless', 'fail', 'error', 'problem', 'issue', 'bug',
+    'bad',
+    'terrible',
+    'awful',
+    'horrible',
+    'poor',
+    'worst',
+    'hate',
+    'dislike',
+    'angry',
+    'frustrated',
+    'disappointed',
+    'sad',
+    'upset',
+    'annoyed',
+    'broken',
+    'useless',
+    'worthless',
+    'fail',
+    'error',
+    'problem',
+    'issue',
+    'bug',
   ]
 
   constructor(config: Partial<ClassifierConfig> = {}) {
@@ -197,12 +234,8 @@ export class ContentClassifier {
       : []
 
     // Primary category
-    const primaryCategory = categories.length > 0
-      ? categories[0].name
-      : 'general'
-    const confidence = categories.length > 0
-      ? categories[0].score
-      : 0.5
+    const primaryCategory = categories.length > 0 ? categories[0].name : 'general'
+    const confidence = categories.length > 0 ? categories[0].score : 0.5
 
     // Language detection
     const { detectedLanguage, languageConfidence } = this.config.enableLanguageDetection
@@ -215,18 +248,14 @@ export class ContentClassifier {
       : { sentiment: 'neutral' as const, sentimentScore: 0 }
 
     // Topic extraction
-    const detectedTopics = this.config.enableTopicExtraction
-      ? this.extractTopics(lowerContent)
-      : []
+    const detectedTopics = this.config.enableTopicExtraction ? this.extractTopics(lowerContent) : []
 
     // NSFW detection (text-based)
-    const isNSFW = this.config.enableNSFWDetection
-      ? this.detectNSFWText(lowerContent)
-      : false
+    const isNSFW = this.config.enableNSFWDetection ? this.detectNSFWText(lowerContent) : false
 
     // Inappropriate content detection
-    const isInappropriate = isNSFW ||
-      categories.some(c => ['inappropriate', 'harassment'].includes(c.name))
+    const isInappropriate =
+      isNSFW || categories.some((c) => ['inappropriate', 'harassment'].includes(c.name))
 
     const isSafe = !isInappropriate && !isNSFW
 
@@ -413,12 +442,12 @@ export class ContentClassifier {
     // Extract hashtags
     const hashtags = content.match(/#(\w+)/g)
     if (hashtags) {
-      topics.push(...hashtags.map(h => h.substring(1)))
+      topics.push(...hashtags.map((h) => h.substring(1)))
     }
 
     // Extract common nouns (simplified)
     const words = content.split(/\s+/)
-    const capitalizedWords = words.filter(w => /^[A-Z][a-z]+$/.test(w) && w.length > 3)
+    const capitalizedWords = words.filter((w) => /^[A-Z][a-z]+$/.test(w) && w.length > 3)
     topics.push(...capitalizedWords)
 
     // Deduplicate and limit
@@ -430,8 +459,16 @@ export class ContentClassifier {
    */
   private detectNSFWText(content: string): boolean {
     const nsfwKeywords = [
-      'nsfw', 'porn', 'xxx', 'adult', 'explicit', 'nude', 'naked', 'sex',
-      '18+', 'mature content',
+      'nsfw',
+      'porn',
+      'xxx',
+      'adult',
+      'explicit',
+      'nude',
+      'naked',
+      'sex',
+      '18+',
+      'mature content',
     ]
 
     for (const keyword of nsfwKeywords) {

@@ -9,6 +9,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { getWebhookHandlerManager } from '@/lib/integrations/webhook-handler'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -39,18 +41,15 @@ export async function POST(request: NextRequest) {
     const result = await manager.processWebhook(rawBody, headersObj)
 
     if (!result.success) {
-      console.error('GitHub webhook processing failed:', result.error)
-      return NextResponse.json(
-        { error: result.error },
-        { status: 400 }
-      )
+      logger.error('GitHub webhook processing failed:', result.error)
+      return NextResponse.json({ error: result.error }, { status: 400 })
     }
 
-    console.log('GitHub webhook processed:', {
-      event,
-      delivery,
-      success: true,
-    })
+    // REMOVED: console.log('GitHub webhook processed:', {
+    //   event,
+    //   delivery,
+    //   success: true,
+    // })
 
     return NextResponse.json({
       success: true,
@@ -59,7 +58,7 @@ export async function POST(request: NextRequest) {
       message: result.message,
     })
   } catch (error) {
-    console.error('GitHub webhook error:', error)
+    logger.error('GitHub webhook error:', error)
     return NextResponse.json(
       {
         error: 'Failed to process GitHub webhook',

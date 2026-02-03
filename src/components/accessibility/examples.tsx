@@ -18,12 +18,7 @@ import {
   usePrefersReducedMotion,
 } from '@/hooks/use-a11y'
 import { useAccessibility } from '@/contexts/accessibility-context'
-import {
-  announce,
-  getMessageLabel,
-  getChannelLabel,
-  getCountLabel,
-} from '@/lib/a11y'
+import { announce, getMessageLabel, getChannelLabel, getCountLabel } from '@/lib/a11y'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
@@ -64,21 +59,17 @@ export function AccessibleModal({ isOpen, onClose, title, children }: Accessible
       aria-labelledby="modal-title"
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
 
       {/* Modal content */}
       <div
         ref={modalRef}
-        className="relative bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full"
+        className="relative w-full max-w-md rounded-lg bg-white p-6 dark:bg-gray-800"
         style={{
-          animation: prefersReducedMotion ? 'none' : 'fadeIn 0.3s ease-out'
+          animation: prefersReducedMotion ? 'none' : 'fadeIn 0.3s ease-out',
         }}
       >
-        <h2 id="modal-title" className="text-xl font-bold mb-4">
+        <h2 id="modal-title" className="mb-4 text-xl font-bold">
           {title}
         </h2>
 
@@ -135,15 +126,10 @@ export function AccessibleForm({ onSubmit }: AccessibleFormProps) {
   }
 
   return (
-    <form
-      ref={formRef}
-      onSubmit={handleSubmit}
-      className="space-y-4"
-      {...loadingProps}
-    >
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-4" {...loadingProps}>
       {/* Name field */}
       <div>
-        <label htmlFor="name" className="block text-sm font-medium mb-1">
+        <label htmlFor="name" className="mb-1 block text-sm font-medium">
           Name
         </label>
         <Input
@@ -158,7 +144,7 @@ export function AccessibleForm({ onSubmit }: AccessibleFormProps) {
 
       {/* Email field */}
       <div>
-        <label htmlFor="email" className="block text-sm font-medium mb-1">
+        <label htmlFor="email" className="mb-1 block text-sm font-medium">
           Email
         </label>
         <Input
@@ -172,18 +158,14 @@ export function AccessibleForm({ onSubmit }: AccessibleFormProps) {
           disabled={isLoading}
         />
         {error && (
-          <span id="email-error" role="alert" className="text-sm text-red-600 mt-1">
+          <span id="email-error" role="alert" className="mt-1 text-sm text-red-600">
             {error}
           </span>
         )}
       </div>
 
       {/* Submit button */}
-      <Button
-        type="submit"
-        disabled={isLoading}
-        aria-busy={isLoading}
-      >
+      <Button type="submit" disabled={isLoading} aria-busy={isLoading}>
         {isLoading ? 'Submitting...' : 'Submit'}
       </Button>
     </form>
@@ -215,7 +197,7 @@ export function AccessibleChannelList({ channels, onSelectChannel }: AccessibleC
     loop: true,
     onSelect: (element) => {
       const channelId = element.getAttribute('data-channel-id')
-      const channel = channels.find(c => c.id === channelId)
+      const channel = channels.find((c) => c.id === channelId)
       if (channel) {
         onSelectChannel(channel)
       }
@@ -223,12 +205,7 @@ export function AccessibleChannelList({ channels, onSelectChannel }: AccessibleC
   })
 
   return (
-    <div
-      ref={listRef}
-      role="list"
-      aria-label="Channels"
-      className="space-y-1"
-    >
+    <div ref={listRef} role="list" aria-label="Channels" className="space-y-1">
       {channels.map((channel, index) => {
         const label = getChannelLabel(channel.name, {
           unreadCount: channel.unreadCount,
@@ -244,21 +221,23 @@ export function AccessibleChannelList({ channels, onSelectChannel }: AccessibleC
             role="listitem"
             tabIndex={index === 0 ? 0 : -1}
             aria-label={label}
-            className="block p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+            className="block rounded p-2 hover:bg-gray-100 dark:hover:bg-gray-800"
             onClick={(e) => {
               e.preventDefault()
               onSelectChannel(channel)
             }}
           >
             <span className="flex items-center gap-2">
-              {channel.isPrivate && (
-                <span aria-hidden="true">🔒</span>
-              )}
+              {channel.isPrivate && <span aria-hidden="true">🔒</span>}
               <span className="font-medium">{channel.name}</span>
               {channel.unreadCount > 0 && (
                 <span
-                  className="ml-auto bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs"
-                  aria-label={getCountLabel(channel.unreadCount, 'unread message', 'unread messages')}
+                  className="text-primary-foreground ml-auto rounded-full bg-primary px-2 py-0.5 text-xs"
+                  aria-label={getCountLabel(
+                    channel.unreadCount,
+                    'unread message',
+                    'unread messages'
+                  )}
                 >
                   {channel.unreadCount}
                 </span>
@@ -303,16 +282,11 @@ export function AccessibleMessage({ message, onReply, onEdit, onDelete }: Access
   const { settings } = useAccessibility()
   const announce = useAnnouncer()
 
-  const label = getMessageLabel(
-    message.content,
-    message.author.name,
-    message.timestamp,
-    {
-      isEdited: message.edited,
-      hasAttachments: message.attachments.length > 0,
-      attachmentCount: message.attachments.length,
-    }
-  )
+  const label = getMessageLabel(message.content, message.author.name, message.timestamp, {
+    isEdited: message.edited,
+    hasAttachments: message.attachments.length > 0,
+    attachmentCount: message.attachments.length,
+  })
 
   const handleAction = (action: string, callback: () => void) => {
     callback()
@@ -322,18 +296,14 @@ export function AccessibleMessage({ message, onReply, onEdit, onDelete }: Access
   }
 
   return (
-    <div
-      role="article"
-      aria-label={label}
-      className="p-4 border-b"
-    >
+    <div role="article" aria-label={label} className="border-b p-4">
       {/* Avatar and author */}
-      <div className="flex items-start gap-3 mb-2">
+      <div className="mb-2 flex items-start gap-3">
         <img
           src={message.author.avatar}
           alt=""
           aria-hidden="true"
-          className="w-10 h-10 rounded-full"
+          className="h-10 w-10 rounded-full"
         />
         <div>
           <div className="font-medium">{message.author.name}</div>
@@ -343,11 +313,7 @@ export function AccessibleMessage({ message, onReply, onEdit, onDelete }: Access
           >
             {message.timestamp.toLocaleString()}
           </time>
-          {message.edited && (
-            <span className="text-xs text-muted-foreground ml-2">
-              (edited)
-            </span>
-          )}
+          {message.edited && <span className="ml-2 text-xs text-muted-foreground">(edited)</span>}
         </div>
       </div>
 
@@ -375,11 +341,7 @@ export function AccessibleMessage({ message, onReply, onEdit, onDelete }: Access
       )}
 
       {/* Actions */}
-      <div
-        role="group"
-        aria-label="Message actions"
-        className="mt-2 flex gap-2"
-      >
+      <div role="group" aria-label="Message actions" className="mt-2 flex gap-2">
         <Button
           size="sm"
           variant="ghost"
@@ -441,7 +403,7 @@ export function AccessibleLoading({
         className="flex items-center justify-center p-8"
       >
         <div className="text-center">
-          <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-2" />
+          <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
           <span>{loadingText}</span>
           <span className="sr-only">{loadingText}</span>
         </div>

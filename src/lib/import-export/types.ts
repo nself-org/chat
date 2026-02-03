@@ -8,7 +8,13 @@
 
 export type ImportSource = 'slack' | 'discord' | 'file'
 export type ExportFormat = 'json' | 'csv'
-export type ImportStatus = 'pending' | 'validating' | 'mapping' | 'importing' | 'completed' | 'failed'
+export type ImportStatus =
+  | 'pending'
+  | 'validating'
+  | 'mapping'
+  | 'importing'
+  | 'completed'
+  | 'failed'
 export type ExportStatus = 'pending' | 'generating' | 'completed' | 'failed'
 
 export interface ImportProgress {

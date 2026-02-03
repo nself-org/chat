@@ -2,11 +2,7 @@
 
 import * as React from 'react'
 import { useState } from 'react'
-import {
-  Trash2,
-  AlertTriangle,
-  Loader2,
-} from 'lucide-react'
+import { Trash2, AlertTriangle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -76,17 +72,15 @@ export function ChannelDelete({
           <Trash2 className="h-5 w-5" />
           Delete Channel
         </CardTitle>
-        <CardDescription>
-          Permanently delete this channel and all its content
-        </CardDescription>
+        <CardDescription>Permanently delete this channel and all its content</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="p-4 rounded-lg bg-destructive/10 space-y-2">
-          <p className="text-sm font-medium flex items-center gap-2 text-destructive">
+        <div className="bg-destructive/10 space-y-2 rounded-lg p-4">
+          <p className="flex items-center gap-2 text-sm font-medium text-destructive">
             <AlertTriangle className="h-4 w-4" />
             This action is irreversible
           </p>
-          <ul className="text-sm text-muted-foreground space-y-1">
+          <ul className="space-y-1 text-sm text-muted-foreground">
             <li>- All messages will be permanently deleted</li>
             <li>- All files and attachments will be removed</li>
             <li>- Channel history cannot be recovered</li>
@@ -109,8 +103,8 @@ export function ChannelDelete({
               </AlertDialogTitle>
               <AlertDialogDescription className="space-y-4">
                 <p>
-                  This action cannot be undone. This will permanently delete the
-                  channel and all of its messages, files, and data.
+                  This action cannot be undone. This will permanently delete the channel and all of
+                  its messages, files, and data.
                 </p>
                 <div className="space-y-2">
                   <Label htmlFor="confirm-delete">
@@ -128,9 +122,7 @@ export function ChannelDelete({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel onClick={() => setConfirmText('')}>
-                Cancel
-              </AlertDialogCancel>
+              <AlertDialogCancel onClick={() => setConfirmText('')}>Cancel</AlertDialogCancel>
               <Button
                 variant="destructive"
                 onClick={handleDelete}

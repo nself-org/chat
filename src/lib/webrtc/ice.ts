@@ -5,12 +5,21 @@
  * for WebRTC peer connections.
  */
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
 
 export type IceGatheringState = 'new' | 'gathering' | 'complete'
-export type IceConnectionState = 'new' | 'checking' | 'connected' | 'completed' | 'failed' | 'disconnected' | 'closed'
+export type IceConnectionState =
+  | 'new'
+  | 'checking'
+  | 'connected'
+  | 'completed'
+  | 'failed'
+  | 'disconnected'
+  | 'closed'
 
 export interface IceCandidateInfo {
   candidate: RTCIceCandidate
@@ -221,7 +230,7 @@ export class IceCandidateManager {
     try {
       await connection.addIceCandidate(new RTCIceCandidate(candidate))
     } catch (error) {
-      console.error('Failed to add ICE candidate:', error)
+      logger.error('Failed to add ICE candidate:', error)
       this.callbacks.onIceError?.(
         error instanceof Error ? error : new Error('Failed to add ICE candidate')
       )
@@ -247,7 +256,7 @@ export class IceCandidateManager {
       try {
         await connection.addIceCandidate(new RTCIceCandidate(candidate))
       } catch (error) {
-        console.error('Failed to add pending ICE candidate:', error)
+        logger.error('Failed to add pending ICE candidate:', error)
       }
     }
   }

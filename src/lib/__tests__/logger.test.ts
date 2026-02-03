@@ -94,11 +94,7 @@ describe('Logger', () => {
       const error = new Error('Test error')
       const context = { userId: '123' }
       logger.error('Error message', error, context)
-      expect(consoleSpy.error).toHaveBeenCalledWith(
-        '[ERROR] Error message',
-        error,
-        context
-      )
+      expect(consoleSpy.error).toHaveBeenCalledWith('[ERROR] Error message', error, context)
     })
 
     it('should handle non-Error objects', () => {
@@ -141,10 +137,7 @@ describe('Logger', () => {
       process.env.NODE_ENV = 'development'
       const scopedLogger = logger.scope('TestModule')
       scopedLogger.debug('Test message')
-      expect(consoleSpy.debug).toHaveBeenCalledWith(
-        '[DEBUG] [TestModule] Test message',
-        ''
-      )
+      expect(consoleSpy.debug).toHaveBeenCalledWith('[DEBUG] [TestModule] Test message', '')
     })
 
     it('should work with all log levels', () => {

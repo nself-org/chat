@@ -9,7 +9,7 @@
 // ============================================================================
 
 // Channels
-export { useUserChannels, useChannelDetails, useChannelMutations } from './use-channels'
+export { useChannelDetails, useChannelMutations, useChannel } from './use-channels'
 
 // Messages
 export { useMessages, useMessageMutations } from './use-messages'
@@ -99,11 +99,7 @@ export { useCopyToClipboard, useClipboard } from './use-clipboard'
 export { useOnlineStatus, useNetworkStatus } from './use-online-status'
 
 // Window Focus
-export {
-  useWindowFocus,
-  useWindowFocusEffect,
-  useDocumentVisibility,
-} from './use-window-focus'
+export { useWindowFocus, useWindowFocusEffect, useDocumentVisibility } from './use-window-focus'
 
 // Previous Value
 export { usePrevious, usePreviousWithInitial, useValueChange } from './use-previous'

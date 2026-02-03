@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ConnectionBanner - Banner displayed when disconnected
@@ -7,21 +7,21 @@
  * the connection is lost, with reconnection status.
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { useConnectionStatus } from '@/hooks/useConnectionStatus';
-import { useOfflineStore } from '@/stores/offline-store';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { useConnectionStatus } from '@/hooks/useConnectionStatus'
+import { useOfflineStore } from '@/stores/offline-store'
 
 // =============================================================================
 // Types
 // =============================================================================
 
 export interface ConnectionBannerProps {
-  className?: string;
-  position?: 'top' | 'bottom';
-  dismissible?: boolean;
-  showPendingCount?: boolean;
+  className?: string
+  position?: 'top' | 'bottom'
+  dismissible?: boolean
+  showPendingCount?: boolean
 }
 
 // =============================================================================
@@ -44,17 +44,15 @@ export function ConnectionBanner({
     reconnect,
     cancelReconnect,
     dismissBanner,
-  } = useConnectionStatus();
+  } = useConnectionStatus()
 
   const pendingCount = useOfflineStore(
-    (s) =>
-      s.queuedActions.filter((a) => a.status === 'pending').length +
-      s.pendingMessages.length
-  );
+    (s) => s.queuedActions.filter((a) => a.status === 'pending').length + s.pendingMessages.length
+  )
 
   // Don't show if online or banner is dismissed
   if (!showBanner || state === 'online') {
-    return null;
+    return null
   }
 
   return (
@@ -88,11 +86,7 @@ export function ConnectionBanner({
             </svg>
           )}
           {isReconnecting && (
-            <svg
-              className="h-5 w-5 text-white animate-spin"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
+            <svg className="h-5 w-5 animate-spin text-white" fill="none" viewBox="0 0 24 24">
               <circle
                 className="opacity-25"
                 cx="12"
@@ -118,9 +112,7 @@ export function ConnectionBanner({
               {state === 'error' && 'Connection error'}
             </p>
             {offlineDurationText && !isReconnecting && (
-              <p className="text-xs text-white/70">
-                Offline for {offlineDurationText}
-              </p>
+              <p className="text-xs text-white/70">Offline for {offlineDurationText}</p>
             )}
             {showPendingCount && pendingCount > 0 && (
               <p className="text-xs text-white/70">
@@ -137,7 +129,7 @@ export function ConnectionBanner({
               variant="secondary"
               size="sm"
               onClick={() => reconnect()}
-              className="bg-white/20 hover:bg-white/30 text-white border-0"
+              className="border-0 bg-white/20 text-white hover:bg-white/30"
             >
               Reconnect
             </Button>
@@ -147,7 +139,7 @@ export function ConnectionBanner({
               variant="secondary"
               size="sm"
               onClick={cancelReconnect}
-              className="bg-white/20 hover:bg-white/30 text-white border-0"
+              className="border-0 bg-white/20 text-white hover:bg-white/30"
             >
               Cancel
             </Button>
@@ -155,15 +147,10 @@ export function ConnectionBanner({
           {dismissible && (
             <button
               onClick={dismissBanner}
-              className="p-1 rounded hover:bg-white/20 text-white"
+              className="rounded p-1 text-white hover:bg-white/20"
               aria-label="Dismiss"
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -176,7 +163,7 @@ export function ConnectionBanner({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ConnectionBanner;
+export default ConnectionBanner

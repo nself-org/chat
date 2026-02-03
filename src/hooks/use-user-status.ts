@@ -82,9 +82,7 @@ export interface UseUserStatusReturn {
 // Hook
 // =============================================================================
 
-export function useUserStatus(
-  options: UseUserStatusOptions = {}
-): UseUserStatusReturn {
+export function useUserStatus(options: UseUserStatusOptions = {}): UseUserStatusReturn {
   const { autoInitialize = true, ...config } = options
   const { user } = useAuth()
 

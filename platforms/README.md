@@ -5,6 +5,7 @@ This directory contains the mobile application implementations for nChat using C
 ## 📱 Available Platforms
 
 ### 1. **Capacitor** (`./capacitor/`)
+
 - Web-based approach using Capacitor 6.x
 - Wraps the Next.js web application
 - 100% code reuse from web
@@ -13,6 +14,7 @@ This directory contains the mobile application implementations for nChat using C
 [→ View Capacitor Documentation](./capacitor/README.md)
 
 ### 2. **React Native** (`./react-native/`)
+
 - Native mobile approach using React Native 0.76.6
 - True native performance
 - Platform-specific optimizations
@@ -23,25 +25,28 @@ This directory contains the mobile application implementations for nChat using C
 ## 🚀 Quick Start
 
 **New to mobile development?** Start here:
+
 - [Quick Start Guide](./QUICKSTART.md) - Get running in 30 minutes
 
 **Need detailed information?**
+
 - [Mobile Apps Summary](./MOBILE-APPS-SUMMARY.md) - Complete overview and comparison
 
 ## 📊 Platform Comparison
 
-| Feature | Capacitor | React Native |
-|---------|-----------|--------------|
-| **Setup Time** | 15 min | 20 min |
-| **Code Reuse** | 100% | ~60% |
-| **Performance** | Web-based (fast) | Native (faster) |
-| **Bundle Size** | Smaller | Larger |
-| **Learning Curve** | Low | Moderate |
-| **Best For** | MVP, Web-first | Complex native features |
+| Feature            | Capacitor        | React Native            |
+| ------------------ | ---------------- | ----------------------- |
+| **Setup Time**     | 15 min           | 20 min                  |
+| **Code Reuse**     | 100%             | ~60%                    |
+| **Performance**    | Web-based (fast) | Native (faster)         |
+| **Bundle Size**    | Smaller          | Larger                  |
+| **Learning Curve** | Low              | Moderate                |
+| **Best For**       | MVP, Web-first   | Complex native features |
 
 ## 🎯 Which Platform Should I Choose?
 
 ### Choose **Capacitor** if:
+
 - ✅ You want to ship quickly (MVP)
 - ✅ Your team knows web development
 - ✅ You want to maintain a single codebase
@@ -49,6 +54,7 @@ This directory contains the mobile application implementations for nChat using C
 - ✅ You prioritize development speed
 
 ### Choose **React Native** if:
+
 - ✅ You need native-level performance
 - ✅ You want platform-specific UI
 - ✅ You have mobile developers
@@ -56,6 +62,7 @@ This directory contains the mobile application implementations for nChat using C
 - ✅ You want the largest mobile ecosystem
 
 ### Not Sure?
+
 Start with **Capacitor** for MVP, evaluate, then migrate to React Native if needed.
 
 ## 📚 Documentation Structure
@@ -126,6 +133,7 @@ pnpm run pod:install
 ### Daily Development
 
 **Capacitor**:
+
 ```bash
 # Terminal 1: Build web app (if using live reload)
 cd ../..
@@ -138,6 +146,7 @@ pnpm run run:ios        # or run:android
 ```
 
 **React Native**:
+
 ```bash
 # Terminal 1: Start Metro bundler
 cd platforms/react-native
@@ -150,6 +159,7 @@ pnpm run ios           # or android
 ### Building for Production
 
 **Capacitor**:
+
 ```bash
 cd platforms/capacitor
 pnpm run build:ios      # Creates IPA
@@ -157,6 +167,7 @@ pnpm run build:android  # Creates APK
 ```
 
 **React Native**:
+
 ```bash
 cd platforms/react-native
 
@@ -171,6 +182,7 @@ fastlane android release
 Both platforms support:
 
 ### ✅ Push Notifications
+
 - Remote notifications (APNs & FCM)
 - Local notifications
 - Badge counts
@@ -178,6 +190,7 @@ Both platforms support:
 - Deep linking from notifications
 
 ### 📷 Camera & Media
+
 - Photo capture
 - Video recording
 - Gallery/library access
@@ -185,23 +198,27 @@ Both platforms support:
 - Multiple file selection
 
 ### 🔐 Biometric Authentication
+
 - Face ID (iOS)
 - Touch ID (iOS)
 - Fingerprint (Android)
 - Secure credential storage
 
 ### 💾 Offline Storage
+
 - Persistent key-value storage
 - Message caching
 - Sync queue
 - Network status monitoring
 
 ### 🔗 Deep Linking
+
 - Custom URL scheme (nchat://)
 - Universal Links (iOS)
 - App Links (Android)
 
 ### 🎨 UI Enhancements
+
 - Haptic feedback
 - Native sharing
 - Platform-specific styling
@@ -221,12 +238,14 @@ pnpm run android
 ### Physical Devices
 
 **iOS**:
+
 1. Connect device via USB
 2. Trust computer on device
 3. Select device in Xcode
 4. Click Run
 
 **Android**:
+
 1. Enable Developer Options
 2. Enable USB Debugging
 3. Connect via USB
@@ -236,6 +255,7 @@ pnpm run android
 ## 🔥 Common Commands
 
 ### Capacitor
+
 ```bash
 pnpm run dev              # Build + sync
 pnpm run sync             # Sync web to native
@@ -250,6 +270,7 @@ pnpm run doctor           # Diagnostic check
 ```
 
 ### React Native
+
 ```bash
 pnpm start                # Start Metro
 pnpm run ios              # Run iOS
@@ -267,6 +288,7 @@ pnpm test                 # Run tests
 ### iOS Issues
 
 **Pods not found**:
+
 ```bash
 cd ios
 pod deintegrate
@@ -274,6 +296,7 @@ pod install
 ```
 
 **Build failed**:
+
 ```bash
 # Clean build folder
 rm -rf ios/build
@@ -283,6 +306,7 @@ rm -rf ~/Library/Developer/Xcode/DerivedData
 ### Android Issues
 
 **Gradle sync failed**:
+
 ```bash
 cd android
 ./gradlew clean
@@ -290,6 +314,7 @@ cd android
 ```
 
 **ADB not found**:
+
 ```bash
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/platform-tools
@@ -298,6 +323,7 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 ### Both Platforms
 
 **Module not found**:
+
 ```bash
 rm -rf node_modules
 pnpm install
@@ -307,15 +333,18 @@ pnpm start -- --reset-cache
 ## 📖 Additional Resources
 
 ### Documentation
+
 - [Capacitor Docs](https://capacitorjs.com/docs)
 - [React Native Docs](https://reactnative.dev/docs)
 - [Firebase Setup](https://firebase.google.com/docs)
 
 ### Platform-Specific
+
 - [iOS Human Interface Guidelines](https://developer.apple.com/design/human-interface-guidelines/)
 - [Android Material Design](https://material.io/design)
 
 ### Tools
+
 - [Xcode](https://developer.apple.com/xcode/) (iOS)
 - [Android Studio](https://developer.android.com/studio) (Android)
 - [Flipper](https://fbflipper.com/) (Debugging)
@@ -323,18 +352,21 @@ pnpm start -- --reset-cache
 ## 🎓 Learning Path
 
 ### Beginner
+
 1. Read [QUICKSTART.md](./QUICKSTART.md)
 2. Follow quick start for Capacitor
 3. Deploy to simulator
 4. Test native features
 
 ### Intermediate
+
 1. Read platform-specific README
 2. Deploy to physical device
 3. Configure Firebase
 4. Test push notifications
 
 ### Advanced
+
 1. Build for production
 2. Set up Fastlane
 3. Submit to App Store / Play Store
@@ -350,6 +382,7 @@ pnpm start -- --reset-cache
    - App Store assets (screenshots, description)
 
 2. **Build**:
+
    ```bash
    fastlane ios release
    ```
@@ -366,6 +399,7 @@ pnpm start -- --reset-cache
    - Feature graphic and screenshots
 
 2. **Build**:
+
    ```bash
    fastlane android release
    ```
@@ -378,18 +412,21 @@ pnpm start -- --reset-cache
 ## 📊 Project Stats
 
 ### Capacitor
+
 - **Files Created**: 15+
 - **Lines of Code**: ~2,000
 - **Documentation**: 400+ lines
 - **Setup Time**: 15 minutes
 
 ### React Native
+
 - **Files Created**: 15+
 - **Lines of Code**: ~1,500
 - **Documentation**: 600+ lines
 - **Setup Time**: 20 minutes
 
 ### Total Implementation
+
 - **Files Created**: 30+
 - **Lines of Code**: ~3,500+
 - **Documentation**: 1,000+ lines

@@ -310,7 +310,8 @@ export const demoMessages: DemoMessage[] = [
     id: 'msg-1',
     channelId: 'channel-1',
     userId: 'user-1',
-    content: 'Good morning team! Quick reminder that we have our weekly standup in 30 minutes. Please come prepared with your updates.',
+    content:
+      'Good morning team! Quick reminder that we have our weekly standup in 30 minutes. Please come prepared with your updates.',
     createdAt: new Date(now - 2 * hour),
     reactions: [
       { emoji: '👍', userIds: ['user-2', 'user-3', 'user-6'], count: 3 },
@@ -322,17 +323,17 @@ export const demoMessages: DemoMessage[] = [
     id: 'msg-2',
     channelId: 'channel-1',
     userId: 'user-2',
-    content: 'Thanks for the heads up! I\'ll be presenting the new architecture proposal today. Looking forward to everyone\'s feedback.',
+    content:
+      "Thanks for the heads up! I'll be presenting the new architecture proposal today. Looking forward to everyone's feedback.",
     createdAt: new Date(now - 1.9 * hour),
-    reactions: [
-      { emoji: '🎉', userIds: ['user-1', 'user-5'], count: 2 },
-    ],
+    reactions: [{ emoji: '🎉', userIds: ['user-1', 'user-5'], count: 2 }],
   },
   {
     id: 'msg-3',
     channelId: 'channel-1',
     userId: 'user-4',
-    content: 'I\'ve uploaded the latest mockups for the dashboard redesign. Would love to get everyone\'s thoughts! @sarah_chen',
+    content:
+      "I've uploaded the latest mockups for the dashboard redesign. Would love to get everyone's thoughts! @sarah_chen",
     createdAt: new Date(now - 1.5 * hour),
     attachments: [demoFiles[1]],
     reactions: [
@@ -344,17 +345,17 @@ export const demoMessages: DemoMessage[] = [
     id: 'msg-4',
     channelId: 'channel-1',
     userId: 'user-1',
-    content: 'These look amazing Maya! I especially love the new navigation pattern. Let\'s discuss in more detail during our 1:1.',
+    content:
+      "These look amazing Maya! I especially love the new navigation pattern. Let's discuss in more detail during our 1:1.",
     createdAt: new Date(now - 1.2 * hour),
-    reactions: [
-      { emoji: '❤️', userIds: ['user-4'], count: 1 },
-    ],
+    reactions: [{ emoji: '❤️', userIds: ['user-4'], count: 1 }],
   },
   {
     id: 'msg-5',
     channelId: 'channel-1',
     userId: 'user-6',
-    content: 'Quick question - is anyone else having issues with the staging environment? Getting a 502 error.',
+    content:
+      'Quick question - is anyone else having issues with the staging environment? Getting a 502 error.',
     createdAt: new Date(now - 45 * minute),
     threadCount: 6,
   },
@@ -373,9 +374,7 @@ export const demoMessages: DemoMessage[] = [
     content: 'Found it! There was a memory leak in the latest deployment. Rolling back now.',
     createdAt: new Date(now - 35 * minute),
     threadId: 'msg-5',
-    reactions: [
-      { emoji: '🙏', userIds: ['user-6'], count: 1 },
-    ],
+    reactions: [{ emoji: '🙏', userIds: ['user-6'], count: 1 }],
   },
 
   // Engineering channel messages
@@ -383,18 +382,18 @@ export const demoMessages: DemoMessage[] = [
     id: 'msg-8',
     channelId: 'channel-2',
     userId: 'user-3',
-    content: '```typescript\nconst useWebSocket = (url: string) => {\n  const [isConnected, setIsConnected] = useState(false);\n  // ... implementation\n};\n```\n\nHere\'s my proposed hook for the real-time features. Thoughts?',
+    content:
+      "```typescript\nconst useWebSocket = (url: string) => {\n  const [isConnected, setIsConnected] = useState(false);\n  // ... implementation\n};\n```\n\nHere's my proposed hook for the real-time features. Thoughts?",
     createdAt: new Date(now - 3 * hour),
-    reactions: [
-      { emoji: '👀', userIds: ['user-2', 'user-5', 'user-6'], count: 3 },
-    ],
+    reactions: [{ emoji: '👀', userIds: ['user-2', 'user-5', 'user-6'], count: 3 }],
     threadCount: 8,
   },
   {
     id: 'msg-9',
     channelId: 'channel-2',
     userId: 'user-2',
-    content: 'Nice approach! Have you considered adding automatic reconnection logic? Something like exponential backoff would be great for reliability.',
+    content:
+      'Nice approach! Have you considered adding automatic reconnection logic? Something like exponential backoff would be great for reliability.',
     createdAt: new Date(now - 2.8 * hour),
     threadId: 'msg-8',
   },
@@ -402,17 +401,17 @@ export const demoMessages: DemoMessage[] = [
     id: 'msg-10',
     channelId: 'channel-2',
     userId: 'user-6',
-    content: 'PR is up for review: https://github.com/example/nself-chat/pull/142\n\nAdds the new message threading functionality. CC: @alex_rivera',
+    content:
+      'PR is up for review: https://github.com/example/nself-chat/pull/142\n\nAdds the new message threading functionality. CC: @alex_rivera',
     createdAt: new Date(now - 1 * hour),
-    reactions: [
-      { emoji: '✅', userIds: ['user-2'], count: 1 },
-    ],
+    reactions: [{ emoji: '✅', userIds: ['user-2'], count: 1 }],
   },
   {
     id: 'msg-11',
     channelId: 'channel-2',
     userId: 'user-5',
-    content: 'Deployed v2.4.1 to production. Release notes: \n- Fixed memory leak in websocket handler\n- Improved message rendering performance\n- Added support for code block syntax highlighting',
+    content:
+      'Deployed v2.4.1 to production. Release notes: \n- Fixed memory leak in websocket handler\n- Improved message rendering performance\n- Added support for code block syntax highlighting',
     createdAt: new Date(now - 30 * minute),
     isPinned: true,
     reactions: [
@@ -426,7 +425,8 @@ export const demoMessages: DemoMessage[] = [
     id: 'msg-12',
     channelId: 'channel-3',
     userId: 'user-4',
-    content: 'I\'ve been experimenting with different color palettes for the new theme system. Here are a few options:',
+    content:
+      "I've been experimenting with different color palettes for the new theme system. Here are a few options:",
     createdAt: new Date(now - 5 * hour),
     attachments: [demoFiles[1]],
   },
@@ -434,18 +434,18 @@ export const demoMessages: DemoMessage[] = [
     id: 'msg-13',
     channelId: 'channel-3',
     userId: 'user-1',
-    content: 'Love option 2! The contrast is much better for accessibility. Can we run it through the WCAG checker?',
+    content:
+      'Love option 2! The contrast is much better for accessibility. Can we run it through the WCAG checker?',
     createdAt: new Date(now - 4.5 * hour),
   },
   {
     id: 'msg-14',
     channelId: 'channel-3',
     userId: 'user-6',
-    content: 'I can help with the implementation once the design is finalized. The theme system is pretty flexible now.',
+    content:
+      'I can help with the implementation once the design is finalized. The theme system is pretty flexible now.',
     createdAt: new Date(now - 4 * hour),
-    reactions: [
-      { emoji: '🙌', userIds: ['user-4'], count: 1 },
-    ],
+    reactions: [{ emoji: '🙌', userIds: ['user-4'], count: 1 }],
   },
 
   // Random channel messages
@@ -455,9 +455,7 @@ export const demoMessages: DemoMessage[] = [
     userId: 'user-3',
     content: 'Anyone watching the game tonight?',
     createdAt: new Date(now - 6 * hour),
-    reactions: [
-      { emoji: '🏈', userIds: ['user-2', 'user-5'], count: 2 },
-    ],
+    reactions: [{ emoji: '🏈', userIds: ['user-2', 'user-5'], count: 2 }],
     threadCount: 12,
   },
   {
@@ -477,9 +475,7 @@ export const demoMessages: DemoMessage[] = [
     userId: 'user-6',
     content: 'Happy Friday everyone! Any plans for the weekend?',
     createdAt: new Date(now - 15 * minute),
-    reactions: [
-      { emoji: '🎉', userIds: ['user-1', 'user-2', 'user-4'], count: 3 },
-    ],
+    reactions: [{ emoji: '🎉', userIds: ['user-1', 'user-2', 'user-4'], count: 3 }],
     threadCount: 3,
   },
 
@@ -495,7 +491,8 @@ export const demoMessages: DemoMessage[] = [
     id: 'msg-dm-2',
     channelId: 'dm-1',
     userId: 'user-7',
-    content: 'Sure thing! I was just looking at the diagrams. The microservices approach looks solid.',
+    content:
+      'Sure thing! I was just looking at the diagrams. The microservices approach looks solid.',
     createdAt: new Date(now - 15 * minute),
   },
   {
@@ -504,9 +501,7 @@ export const demoMessages: DemoMessage[] = [
     userId: 'user-2',
     content: 'Great! Let me know if you have any questions. We can hop on a call if that helps.',
     createdAt: new Date(now - 10 * minute),
-    reactions: [
-      { emoji: '👍', userIds: ['user-7'], count: 1 },
-    ],
+    reactions: [{ emoji: '👍', userIds: ['user-7'], count: 1 }],
   },
 ]
 
@@ -538,11 +533,7 @@ export const templateBranding: Record<TemplateId, TemplateBranding> = {
       'Full customization support',
       'White-label ready',
     ],
-    highlights: [
-      'Protocol-inspired design',
-      'Glowing cyan accents',
-      'Dark mode optimized',
-    ],
+    highlights: ['Protocol-inspired design', 'Glowing cyan accents', 'Dark mode optimized'],
   },
   slack: {
     id: 'slack',
@@ -557,11 +548,7 @@ export const templateBranding: Record<TemplateId, TemplateBranding> = {
       'Familiar Slack-style UI',
       'Workspace organization',
     ],
-    highlights: [
-      'Professional look',
-      'Channel-focused',
-      'Enterprise-ready',
-    ],
+    highlights: ['Professional look', 'Channel-focused', 'Enterprise-ready'],
   },
   discord: {
     id: 'discord',
@@ -576,11 +563,7 @@ export const templateBranding: Record<TemplateId, TemplateBranding> = {
       'Voice channel indicators',
       'Rich presence support',
     ],
-    highlights: [
-      'Community-focused',
-      'Fun & engaging',
-      'Dark mode default',
-    ],
+    highlights: ['Community-focused', 'Fun & engaging', 'Dark mode default'],
   },
   telegram: {
     id: 'telegram',
@@ -595,11 +578,7 @@ export const templateBranding: Record<TemplateId, TemplateBranding> = {
       'Read receipts & timestamps',
       'Minimal distraction design',
     ],
-    highlights: [
-      'Speed-optimized',
-      'Privacy-focused',
-      'Clean aesthetics',
-    ],
+    highlights: ['Speed-optimized', 'Privacy-focused', 'Clean aesthetics'],
   },
   whatsapp: {
     id: 'whatsapp',
@@ -614,11 +593,7 @@ export const templateBranding: Record<TemplateId, TemplateBranding> = {
       'End-to-end encryption visuals',
       'Familiar mobile-first design',
     ],
-    highlights: [
-      'Instant messaging style',
-      'Universal familiarity',
-      'Simple interface',
-    ],
+    highlights: ['Instant messaging style', 'Universal familiarity', 'Simple interface'],
   },
 }
 

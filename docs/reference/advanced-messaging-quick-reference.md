@@ -292,19 +292,20 @@ function MessageItem({ message, currentUser }) {
 ```
 
 **Permissions object:**
+
 ```typescript
 {
-  canEdit: boolean        // Own messages only
-  canDelete: boolean      // Own or moderator+
-  canPin: boolean         // Moderator+ only
-  canReact: boolean       // Non-guests
-  canReply: boolean       // Non-guests
-  canThread: boolean      // Non-guests
-  canBookmark: boolean    // Non-guests (use starMessage)
-  canForward: boolean     // Non-guests
-  canReport: boolean      // Others' messages, non-guests
-  canCopy: boolean        // Everyone
-  canMarkUnread: boolean  // Non-guests
+  canEdit: boolean // Own messages only
+  canDelete: boolean // Own or moderator+
+  canPin: boolean // Moderator+ only
+  canReact: boolean // Non-guests
+  canReply: boolean // Non-guests
+  canThread: boolean // Non-guests
+  canBookmark: boolean // Non-guests (use starMessage)
+  canForward: boolean // Non-guests
+  canReport: boolean // Others' messages, non-guests
+  canCopy: boolean // Everyone
+  canMarkUnread: boolean // Non-guests
 }
 ```
 
@@ -532,6 +533,7 @@ function MessageItem({ message }) {
 ## Error Handling
 
 All mutations automatically:
+
 - ✅ Show toast notifications on success/error
 - ✅ Log errors to console (dev) and Sentry (prod)
 - ✅ Return error objects for custom handling
@@ -677,6 +679,7 @@ function MessageList({ messages }) {
 ### Issue: Edit history not showing
 
 **Check:**
+
 1. Is `is_edited` flag true?
 2. Does `nchat_message_edit_history` table have rows?
 3. Is the trigger `record_message_edit` active?
@@ -693,6 +696,7 @@ WHERE message_id = 'your-message-id';
 ### Issue: Typing indicator not appearing
 
 **Check:**
+
 1. Is WebSocket connected?
 2. Is `nchat_typing_indicator` table being updated?
 3. Has the indicator expired (TTL)?
@@ -707,6 +711,7 @@ WHERE channel_id = 'your-channel-id'
 ### Issue: Read receipts not updating
 
 **Check:**
+
 1. Is user authenticated?
 2. Is `nchat_message_read_receipt` table receiving inserts?
 3. Are permissions set correctly in Hasura?

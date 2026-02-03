@@ -70,9 +70,7 @@ export function LanguageSelector({
           <SelectItem key={language.code} value={language.code}>
             <div className="flex items-center gap-2">
               <span>{language.name}</span>
-              <span className="text-xs text-muted-foreground">
-                ({language.nativeName})
-              </span>
+              <span className="text-xs text-muted-foreground">({language.nativeName})</span>
             </div>
           </SelectItem>
         ))}

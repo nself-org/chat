@@ -17,7 +17,8 @@ const now = new Date().toISOString()
 // ============================================================================
 
 function createBuiltInCommand(
-  partial: Partial<SlashCommand> & Pick<SlashCommand, 'id' | 'trigger' | 'name' | 'description' | 'category'>
+  partial: Partial<SlashCommand> &
+    Pick<SlashCommand, 'id' | 'trigger' | 'name' | 'description' | 'category'>
 ): SlashCommand {
   return {
     arguments: [],
@@ -62,7 +63,8 @@ export const builtInCommands: SlashCommand[] = [
     aliases: ['?', 'commands'],
     name: 'Help',
     description: 'Show available commands and help information',
-    helpText: 'Displays a list of all available slash commands. Use /help [command] to get detailed help for a specific command.',
+    helpText:
+      'Displays a list of all available slash commands. Use /help [command] to get detailed help for a specific command.',
     usage: '/help [command]',
     category: 'general',
     icon: 'HelpCircle',
@@ -113,7 +115,8 @@ export const builtInCommands: SlashCommand[] = [
     aliases: ['brb', 'afk'],
     name: 'Set Away',
     description: 'Set your status to away',
-    helpText: 'Sets your status to away. Optionally add a message to let others know when you will be back.',
+    helpText:
+      'Sets your status to away. Optionally add a message to let others know when you will be back.',
     usage: '/away [message]',
     category: 'user',
     icon: 'Clock',
@@ -396,7 +399,8 @@ export const builtInCommands: SlashCommand[] = [
     trigger: 'archive',
     name: 'Archive Channel',
     description: 'Archive the current channel',
-    helpText: 'Archives the channel. Archived channels are read-only and hidden from the channel list.',
+    helpText:
+      'Archives the channel. Archived channels are read-only and hidden from the channel list.',
     usage: '/archive',
     category: 'channel',
     icon: 'Archive',
@@ -771,7 +775,11 @@ export const builtInCommands: SlashCommand[] = [
         position: 0,
         choices: [
           { value: 'profile', label: 'Profile', description: 'Edit your profile' },
-          { value: 'notifications', label: 'Notifications', description: 'Notification preferences' },
+          {
+            value: 'notifications',
+            label: 'Notifications',
+            description: 'Notification preferences',
+          },
           { value: 'appearance', label: 'Appearance', description: 'Theme and display settings' },
           { value: 'privacy', label: 'Privacy', description: 'Privacy settings' },
           { value: 'advanced', label: 'Advanced', description: 'Advanced settings' },

@@ -7,7 +7,16 @@
 'use client'
 
 import React from 'react'
-import { Mic, MicOff, Video, VideoOff, MonitorUp, MonitorStop, PhoneOff, Settings } from 'lucide-react'
+import {
+  Mic,
+  MicOff,
+  Video,
+  VideoOff,
+  MonitorUp,
+  MonitorStop,
+  PhoneOff,
+  Settings,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -49,8 +58,8 @@ export function VideoControls({
         className={cn(
           'h-12 w-12 rounded-full',
           isMuted
-            ? 'bg-red-600 hover:bg-red-700 text-white'
-            : 'bg-gray-700 hover:bg-gray-600 text-white'
+            ? 'bg-red-600 text-white hover:bg-red-700'
+            : 'bg-gray-700 text-white hover:bg-gray-600'
         )}
         onClick={onToggleMute}
         title={isMuted ? 'Unmute' : 'Mute'}
@@ -65,8 +74,8 @@ export function VideoControls({
         className={cn(
           'h-12 w-12 rounded-full',
           !isVideoEnabled
-            ? 'bg-red-600 hover:bg-red-700 text-white'
-            : 'bg-gray-700 hover:bg-gray-600 text-white'
+            ? 'bg-red-600 text-white hover:bg-red-700'
+            : 'bg-gray-700 text-white hover:bg-gray-600'
         )}
         onClick={onToggleVideo}
         title={isVideoEnabled ? 'Turn off video' : 'Turn on video'}
@@ -81,8 +90,8 @@ export function VideoControls({
         className={cn(
           'h-12 w-12 rounded-full',
           isScreenSharing
-            ? 'bg-blue-600 hover:bg-blue-700 text-white'
-            : 'bg-gray-700 hover:bg-gray-600 text-white'
+            ? 'bg-blue-600 text-white hover:bg-blue-700'
+            : 'bg-gray-700 text-white hover:bg-gray-600'
         )}
         onClick={onToggleScreenShare}
         title={isScreenSharing ? 'Stop sharing' : 'Share screen'}
@@ -95,7 +104,7 @@ export function VideoControls({
         <Button
           variant="ghost"
           size="icon"
-          className="h-12 w-12 rounded-full bg-gray-700 hover:bg-gray-600 text-white"
+          className="h-12 w-12 rounded-full bg-gray-700 text-white hover:bg-gray-600"
           onClick={onSettings}
           title="Settings"
         >
@@ -107,7 +116,7 @@ export function VideoControls({
       <Button
         variant="ghost"
         size="icon"
-        className="h-12 w-12 rounded-full bg-red-600 hover:bg-red-700 text-white"
+        className="h-12 w-12 rounded-full bg-red-600 text-white hover:bg-red-700"
         onClick={onEndCall}
         title="End call"
       >

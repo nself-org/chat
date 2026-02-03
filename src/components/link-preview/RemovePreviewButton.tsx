@@ -30,9 +30,7 @@ export function RemovePreviewButton({
     onClick()
   }
 
-  const sizeClasses = size === 'sm'
-    ? 'w-6 h-6'
-    : 'w-8 h-8'
+  const sizeClasses = size === 'sm' ? 'w-6 h-6' : 'w-8 h-8'
 
   const iconSize = size === 'sm' ? 'w-3 h-3' : 'w-4 h-4'
 
@@ -42,8 +40,8 @@ export function RemovePreviewButton({
       onClick={handleClick}
       className={cn(
         'flex items-center justify-center rounded-full',
-        'bg-background/80 backdrop-blur-sm border shadow-sm',
-        'hover:bg-destructive hover:text-destructive-foreground hover:border-destructive',
+        'bg-background/80 border shadow-sm backdrop-blur-sm',
+        'hover:border-destructive hover:bg-destructive hover:text-destructive-foreground',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
         'transition-colors duration-150',
         sizeClasses,
@@ -52,12 +50,7 @@ export function RemovePreviewButton({
       aria-label={label}
       title={label}
     >
-      <svg
-        className={iconSize}
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
+      <svg className={iconSize} fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"

@@ -283,13 +283,16 @@ export function useChannelDiscovery(
     }
   }, [])
 
-  const search = useCallback((query: string) => {
-    logger.debug('Searching channels', { query })
-    setSearchQuery(query)
-    if (query) {
-      refetchSearch({ query: `%${query}%` })
-    }
-  }, [refetchSearch])
+  const search = useCallback(
+    (query: string) => {
+      logger.debug('Searching channels', { query })
+      setSearchQuery(query)
+      if (query) {
+        refetchSearch({ query: `%${query}%` })
+      }
+    },
+    [refetchSearch]
+  )
 
   const clearSearch = useCallback(() => {
     logger.debug('Clearing search')
@@ -343,29 +346,44 @@ export function useChannelDiscovery(
   // Recommendation Functions
   // ============================================================================
 
-  const getFeatured = useCallback((limit = 6) => {
-    return getFeaturedChannels(channels).slice(0, limit)
-  }, [channels])
+  const getFeatured = useCallback(
+    (limit = 6) => {
+      return getFeaturedChannels(channels).slice(0, limit)
+    },
+    [channels]
+  )
 
-  const getPopular = useCallback((limit = 10) => {
-    return getPopularChannels(channels, limit)
-  }, [channels])
+  const getPopular = useCallback(
+    (limit = 10) => {
+      return getPopularChannels(channels, limit)
+    },
+    [channels]
+  )
 
-  const getTrending = useCallback((limit = 10) => {
-    return getRecentlyActiveChannels(channels, limit)
-  }, [channels])
+  const getTrending = useCallback(
+    (limit = 10) => {
+      return getRecentlyActiveChannels(channels, limit)
+    },
+    [channels]
+  )
 
-  const getNew = useCallback((limit = 10) => {
-    return getNewChannels(channels, limit)
-  }, [channels])
+  const getNew = useCallback(
+    (limit = 10) => {
+      return getNewChannels(channels, limit)
+    },
+    [channels]
+  )
 
-  const getSuggested = useCallback((limit = 10) => {
-    // This would use more sophisticated recommendation logic
-    // For now, return a mix of popular and new channels
-    const popular = getPopularChannels(channels, Math.ceil(limit / 2))
-    const recent = getNewChannels(channels, Math.ceil(limit / 2))
-    return [...popular, ...recent].slice(0, limit)
-  }, [channels])
+  const getSuggested = useCallback(
+    (limit = 10) => {
+      // This would use more sophisticated recommendation logic
+      // For now, return a mix of popular and new channels
+      const popular = getPopularChannels(channels, Math.ceil(limit / 2))
+      const recent = getNewChannels(channels, Math.ceil(limit / 2))
+      return [...popular, ...recent].slice(0, limit)
+    },
+    [channels]
+  )
 
   // ============================================================================
   // Effects

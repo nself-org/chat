@@ -73,7 +73,7 @@ export function MentionHighlight({
       {showIndicator && (
         <div
           className={cn(
-            'absolute top-0 bottom-0 w-0.5 rounded-full',
+            'absolute bottom-0 top-0 w-0.5 rounded-full',
             indicatorPosition === 'left' && 'left-0',
             indicatorPosition === 'right' && 'right-0',
             indicatorClasses[intensity]
@@ -233,7 +233,7 @@ export function MentionBadge({
     <span
       className={cn(
         'inline-flex items-center justify-center rounded-full',
-        'bg-primary text-primary-foreground font-medium',
+        'text-primary-foreground bg-primary font-medium',
         sizeClasses[size],
         className
       )}
@@ -264,11 +264,7 @@ export function MentionDot({ type = 'any', className }: MentionDotProps) {
 
   return (
     <span
-      className={cn(
-        'inline-block h-2 w-2 rounded-full',
-        colorClasses[type],
-        className
-      )}
+      className={cn('inline-block h-2 w-2 rounded-full', colorClasses[type], className)}
       aria-hidden="true"
     />
   )

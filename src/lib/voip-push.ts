@@ -62,7 +62,7 @@ export class VoIPPushManager {
         throw new Error('Push notification permission denied')
       }
     } catch (error) {
-      console.error('Failed to initialize VoIP push:', error)
+      logger.error('Failed to initialize VoIP push:', error)
       throw error
     }
   }
@@ -81,23 +81,24 @@ export class VoIPPushManager {
 
     // Registration error
     PushNotifications.addListener('registrationError', (error: any) => {
-      console.error('Push registration error:', error)
+      logger.error('Push registration error:', error)
     })
 
     // Push notification received
-    PushNotifications.addListener('pushNotificationReceived', async (notification: PushNotificationSchema) => {
+    PushNotifications.addListener(
+      'pushNotificationReceived',
+      async (notification: PushNotificationSchema) => {
+        // Parse VoIP payload
+        const payload = this.parseVoIPPayload(notification.data)
 
-      // Parse VoIP payload
-      const payload = this.parseVoIPPayload(notification.data)
-
-      if (payload) {
-        await this.handleVoIPPush(payload)
+        if (payload) {
+          await this.handleVoIPPush(payload)
+        }
       }
-    })
+    )
 
     // Push notification tapped
     PushNotifications.addListener('pushNotificationActionPerformed', async (notification: any) => {
-
       const payload = this.parseVoIPPayload(notification.notification.data)
 
       if (payload) {
@@ -129,7 +130,7 @@ export class VoIPPushManager {
         channelId: payload.channelId,
       }
     } catch (error) {
-      console.error('Failed to parse VoIP payload:', error)
+      logger.error('Failed to parse VoIP payload:', error)
       return null
     }
   }
@@ -153,10 +154,10 @@ export class VoIPPushManager {
           break
 
         default:
-          console.warn('Unknown VoIP push type:', payload.type)
+          logger.warn('Unknown VoIP push type:', { context: payload.type })
       }
     } catch (error) {
-      console.error('Failed to handle VoIP push:', error)
+      logger.error('Failed to handle VoIP push:', error)
     }
   }
 
@@ -244,9 +245,8 @@ export class VoIPPushManager {
       if (!response.ok) {
         throw new Error('Failed to register push token')
       }
-
     } catch (error) {
-      console.error('Failed to send push token to server:', error)
+      logger.error('Failed to send push token to server:', error)
     }
   }
 
@@ -285,7 +285,7 @@ export class VoIPPushManager {
       this.isInitialized = false
       this.token = null
     } catch (error) {
-      console.error('Failed to unregister VoIP push:', error)
+      logger.error('Failed to unregister VoIP push:', error)
     }
   }
 }
@@ -301,6 +301,8 @@ export const voipPushManager = new VoIPPushManager()
 // =============================================================================
 
 import { useEffect, useState } from 'react'
+
+import { logger } from '@/lib/logger'
 
 export function useVoIPPush() {
   const [isInitialized, setIsInitialized] = useState(false)
@@ -320,7 +322,7 @@ export function useVoIPPush() {
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Failed to initialize VoIP push'
         setError(message)
-        console.error('VoIP push initialization error:', err)
+        logger.error('VoIP push initialization error:', err)
       }
     }
 

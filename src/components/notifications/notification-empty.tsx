@@ -1,31 +1,31 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
 export interface NotificationEmptyProps extends React.HTMLAttributes<HTMLDivElement> {
   /**
    * Custom title text
    * @default "You're all caught up!"
    */
-  title?: string;
+  title?: string
 
   /**
    * Custom description text
    * @default "No new notifications"
    */
-  description?: string;
+  description?: string
 
   /**
    * Whether to show the illustration icon
    * @default true
    */
-  showIcon?: boolean;
+  showIcon?: boolean
 
   /**
    * Custom icon to display
    */
-  icon?: React.ReactNode;
+  icon?: React.ReactNode
 }
 
 /**
@@ -43,17 +43,14 @@ export function NotificationEmpty({
 }: NotificationEmptyProps) {
   return (
     <div
-      className={cn(
-        'flex flex-col items-center justify-center py-12 px-4 text-center',
-        className
-      )}
+      className={cn('flex flex-col items-center justify-center px-4 py-12 text-center', className)}
       {...props}
     >
       {showIcon && (
         <div className="mb-4">
           {icon || (
             <svg
-              className="w-16 h-16 text-muted-foreground/50"
+              className="text-muted-foreground/50 h-16 w-16"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
@@ -77,10 +74,10 @@ export function NotificationEmpty({
           )}
         </div>
       )}
-      <h3 className="text-lg font-medium text-foreground mb-1">{title}</h3>
-      <p className="text-sm text-muted-foreground max-w-[200px]">{description}</p>
+      <h3 className="mb-1 text-lg font-medium text-foreground">{title}</h3>
+      <p className="max-w-[200px] text-sm text-muted-foreground">{description}</p>
     </div>
-  );
+  )
 }
 
 /**
@@ -91,8 +88,8 @@ export function NotificationFilteredEmpty({
   className,
   ...props
 }: {
-  filterName: string;
-  className?: string;
+  filterName: string
+  className?: string
 } & React.HTMLAttributes<HTMLDivElement>) {
   return (
     <NotificationEmpty
@@ -100,7 +97,7 @@ export function NotificationFilteredEmpty({
       description={`You don't have any ${filterName.toLowerCase()} notifications`}
       icon={
         <svg
-          className="w-16 h-16 text-muted-foreground/50"
+          className="text-muted-foreground/50 h-16 w-16"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -117,10 +114,10 @@ export function NotificationFilteredEmpty({
       className={className}
       {...props}
     />
-  );
+  )
 }
 
-NotificationEmpty.displayName = 'NotificationEmpty';
-NotificationFilteredEmpty.displayName = 'NotificationFilteredEmpty';
+NotificationEmpty.displayName = 'NotificationEmpty'
+NotificationFilteredEmpty.displayName = 'NotificationFilteredEmpty'
 
-export default NotificationEmpty;
+export default NotificationEmpty

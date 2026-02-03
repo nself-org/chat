@@ -34,11 +34,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import { useAuth } from '@/contexts/auth-context'
-import {
-  useInviteStore,
-  type CreateInviteOptions,
-  type CreatedInvite,
-} from './invite-store'
+import { useInviteStore, type CreateInviteOptions, type CreatedInvite } from './invite-store'
 import {
   generateChannelInviteCode,
   generateWorkspaceInviteCode,
@@ -54,6 +50,7 @@ import {
   type InviteInfo,
   type InviteValidationError,
 } from './invite-service'
+import { logger } from '@/lib/logger'
 import {
   CREATE_INVITE,
   GET_INVITE,
@@ -141,13 +138,8 @@ export interface UseInviteReturn {
 // ============================================================================
 
 export function useInvite(options: UseInviteOptions = {}): UseInviteReturn {
-  const {
-    onCreateSuccess,
-    onCreateError,
-    onAcceptSuccess,
-    onAcceptError,
-    onRevokeSuccess,
-  } = options
+  const { onCreateSuccess, onCreateError, onAcceptSuccess, onAcceptError, onRevokeSuccess } =
+    options
 
   // Auth context
   const { user } = useAuth()
@@ -169,10 +161,12 @@ export function useInvite(options: UseInviteOptions = {}): UseInviteReturn {
     useLazyQuery(GET_CHANNEL_INVITES, {
       fetchPolicy: 'network-only',
     })
-  const [fetchWorkspaceInvitesQuery, { data: workspaceInvitesData, loading: loadingWorkspaceInvites }] =
-    useLazyQuery(GET_WORKSPACE_INVITES, {
-      fetchPolicy: 'network-only',
-    })
+  const [
+    fetchWorkspaceInvitesQuery,
+    { data: workspaceInvitesData, loading: loadingWorkspaceInvites },
+  ] = useLazyQuery(GET_WORKSPACE_INVITES, {
+    fetchPolicy: 'network-only',
+  })
 
   // Update active invites when data changes
   useEffect(() => {
@@ -239,9 +233,7 @@ export function useInvite(options: UseInviteOptions = {}): UseInviteReturn {
             channelName: inviteData.channel?.name || createOptions.channelName || null,
             link: buildInviteLink(inviteData.code),
             maxUses: inviteData.max_uses,
-            expiresAt: inviteData.expires_at
-              ? new Date(inviteData.expires_at)
-              : null,
+            expiresAt: inviteData.expires_at ? new Date(inviteData.expires_at) : null,
             createdAt: new Date(inviteData.created_at),
           }
 
@@ -424,7 +416,7 @@ export function useInvite(options: UseInviteOptions = {}): UseInviteReturn {
         onRevokeSuccess?.(inviteId)
         return true
       } catch (error) {
-        console.error('Failed to revoke invite:', error)
+        logger.error('Failed to revoke invite:',  error)
         return false
       }
     },
@@ -442,7 +434,7 @@ export function useInvite(options: UseInviteOptions = {}): UseInviteReturn {
         store.removeActiveInvite(inviteId)
         return true
       } catch (error) {
-        console.error('Failed to delete invite:', error)
+        logger.error('Failed to delete invite:',  error)
         return false
       }
     },
@@ -467,19 +459,13 @@ export function useInvite(options: UseInviteOptions = {}): UseInviteReturn {
   }, [fetchWorkspaceInvitesQuery, store])
 
   // Share utilities
-  const copyInviteLink = useCallback(
-    async (code: string): Promise<boolean> => {
-      return copyInviteLinkToClipboard(code)
-    },
-    []
-  )
+  const copyInviteLink = useCallback(async (code: string): Promise<boolean> => {
+    return copyInviteLinkToClipboard(code)
+  }, [])
 
-  const shareInvite = useCallback(
-    async (code: string, title?: string): Promise<boolean> => {
-      return shareInviteLink(code, title)
-    },
-    []
-  )
+  const shareInvite = useCallback(async (code: string, title?: string): Promise<boolean> => {
+    return shareInviteLink(code, title)
+  }, [])
 
   const getMailtoLink = useCallback((code: string): string => {
     return generateMailtoLink(code)

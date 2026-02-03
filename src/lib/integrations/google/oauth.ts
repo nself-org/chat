@@ -302,10 +302,7 @@ export async function getUserInfo(accessToken: string): Promise<GoogleUserInfo> 
   })
 
   if (!response.ok) {
-    throw new GoogleOAuthException(
-      'user_info_failed',
-      'Failed to fetch user information'
-    )
+    throw new GoogleOAuthException('user_info_failed', 'Failed to fetch user information')
   }
 
   return response.json()
@@ -326,10 +323,7 @@ export async function revokeToken(token: string): Promise<void> {
   )
 
   if (!response.ok) {
-    throw new GoogleOAuthException(
-      'revoke_failed',
-      'Failed to revoke token'
-    )
+    throw new GoogleOAuthException('revoke_failed', 'Failed to revoke token')
   }
 }
 
@@ -449,10 +443,7 @@ export function parseScopes(scopeString: string): string[] {
 /**
  * Check if token has required scopes
  */
-export function hasRequiredScopes(
-  tokenScopes: string,
-  requiredScopes: string[]
-): boolean {
+export function hasRequiredScopes(tokenScopes: string, requiredScopes: string[]): boolean {
   const scopes = parseScopes(tokenScopes)
   return requiredScopes.every((required) => scopes.includes(required))
 }

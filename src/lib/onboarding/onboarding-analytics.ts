@@ -11,20 +11,17 @@ import type {
   TourAnalyticsEvent,
   FeatureId,
   FeatureDiscoveryAnalyticsEvent,
-} from './onboarding-types';
+} from './onboarding-types'
 
 // ============================================================================
 // Analytics Event Types
 // ============================================================================
 
-export type AnalyticsEventType =
-  | 'onboarding'
-  | 'tour'
-  | 'feature_discovery';
+export type AnalyticsEventType = 'onboarding' | 'tour' | 'feature_discovery'
 
 export interface AnalyticsEvent {
-  type: AnalyticsEventType;
-  event: OnboardingAnalyticsEvent | TourAnalyticsEvent | FeatureDiscoveryAnalyticsEvent;
+  type: AnalyticsEventType
+  event: OnboardingAnalyticsEvent | TourAnalyticsEvent | FeatureDiscoveryAnalyticsEvent
 }
 
 // ============================================================================
@@ -32,43 +29,43 @@ export interface AnalyticsEvent {
 // ============================================================================
 
 export interface AnalyticsTracker {
-  track: (event: AnalyticsEvent) => void;
-  identify: (userId: string, traits?: Record<string, unknown>) => void;
-  page: (name: string, properties?: Record<string, unknown>) => void;
+  track: (event: AnalyticsEvent) => void
+  identify: (userId: string, traits?: Record<string, unknown>) => void
+  page: (name: string, properties?: Record<string, unknown>) => void
 }
 
 // ============================================================================
 // Default Analytics Tracker (Console + LocalStorage)
 // ============================================================================
 
-const ANALYTICS_STORAGE_KEY = 'nchat-onboarding-analytics';
+const ANALYTICS_STORAGE_KEY = 'nchat-onboarding-analytics'
 
 interface StoredAnalytics {
-  events: AnalyticsEvent[];
-  userId?: string;
+  events: AnalyticsEvent[]
+  userId?: string
 }
 
 function getStoredAnalytics(): StoredAnalytics {
-  if (typeof window === 'undefined') return { events: [] };
+  if (typeof window === 'undefined') return { events: [] }
 
   try {
-    const stored = localStorage.getItem(ANALYTICS_STORAGE_KEY);
-    return stored ? JSON.parse(stored) : { events: [] };
+    const stored = localStorage.getItem(ANALYTICS_STORAGE_KEY)
+    return stored ? JSON.parse(stored) : { events: [] }
   } catch {
-    return { events: [] };
+    return { events: [] }
   }
 }
 
 function storeAnalytics(analytics: StoredAnalytics): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') return
 
   try {
     // Keep only last 100 events to prevent storage bloat
-    const trimmedEvents = analytics.events.slice(-100);
+    const trimmedEvents = analytics.events.slice(-100)
     localStorage.setItem(
       ANALYTICS_STORAGE_KEY,
       JSON.stringify({ ...analytics, events: trimmedEvents })
-    );
+    )
   } catch {
     // Storage full or unavailable
   }
@@ -77,49 +74,49 @@ function storeAnalytics(analytics: StoredAnalytics): void {
 export const defaultAnalyticsTracker: AnalyticsTracker = {
   track: (event) => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Analytics]', event.type, event.event);
+      // REMOVED: console.log('[Analytics]', event.type, event.event)
     }
 
-    const analytics = getStoredAnalytics();
-    analytics.events.push(event);
-    storeAnalytics(analytics);
+    const analytics = getStoredAnalytics()
+    analytics.events.push(event)
+    storeAnalytics(analytics)
   },
 
   identify: (userId, traits) => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Analytics] Identify:', userId, traits);
+      // REMOVED: console.log('[Analytics] Identify:', userId, traits)
     }
 
-    const analytics = getStoredAnalytics();
-    analytics.userId = userId;
-    storeAnalytics(analytics);
+    const analytics = getStoredAnalytics()
+    analytics.userId = userId
+    storeAnalytics(analytics)
   },
 
   page: (name, properties) => {
     if (process.env.NODE_ENV === 'development') {
-      console.log('[Analytics] Page:', name, properties);
+      // REMOVED: console.log('[Analytics] Page:', name, properties)
     }
   },
-};
+}
 
 // ============================================================================
 // Analytics Singleton
 // ============================================================================
 
-let analyticsTracker: AnalyticsTracker = defaultAnalyticsTracker;
+let analyticsTracker: AnalyticsTracker = defaultAnalyticsTracker
 
 /**
  * Set custom analytics tracker
  */
 export function setAnalyticsTracker(tracker: AnalyticsTracker): void {
-  analyticsTracker = tracker;
+  analyticsTracker = tracker
 }
 
 /**
  * Get current analytics tracker
  */
 export function getAnalyticsTracker(): AnalyticsTracker {
-  return analyticsTracker;
+  return analyticsTracker
 }
 
 // ============================================================================
@@ -134,9 +131,9 @@ export function trackOnboardingStepStarted(stepId: OnboardingStepId): void {
     eventType: 'step_started',
     stepId,
     timestamp: new Date(),
-  };
+  }
 
-  analyticsTracker.track({ type: 'onboarding', event });
+  analyticsTracker.track({ type: 'onboarding', event })
 }
 
 /**
@@ -153,9 +150,9 @@ export function trackOnboardingStepCompleted(
     timestamp: new Date(),
     duration,
     metadata,
-  };
+  }
 
-  analyticsTracker.track({ type: 'onboarding', event });
+  analyticsTracker.track({ type: 'onboarding', event })
 }
 
 /**
@@ -166,9 +163,9 @@ export function trackOnboardingStepSkipped(stepId: OnboardingStepId): void {
     eventType: 'step_skipped',
     stepId,
     timestamp: new Date(),
-  };
+  }
 
-  analyticsTracker.track({ type: 'onboarding', event });
+  analyticsTracker.track({ type: 'onboarding', event })
 }
 
 /**
@@ -183,9 +180,9 @@ export function trackOnboardingCompleted(
     timestamp: new Date(),
     duration: totalDuration,
     metadata,
-  };
+  }
 
-  analyticsTracker.track({ type: 'onboarding', event });
+  analyticsTracker.track({ type: 'onboarding', event })
 }
 
 /**
@@ -200,9 +197,9 @@ export function trackOnboardingAbandoned(
     stepId: lastStepId,
     timestamp: new Date(),
     metadata,
-  };
+  }
 
-  analyticsTracker.track({ type: 'onboarding', event });
+  analyticsTracker.track({ type: 'onboarding', event })
 }
 
 // ============================================================================
@@ -216,9 +213,9 @@ export function trackTourStarted(): void {
   const event: TourAnalyticsEvent = {
     eventType: 'tour_started',
     timestamp: new Date(),
-  };
+  }
 
-  analyticsTracker.track({ type: 'tour', event });
+  analyticsTracker.track({ type: 'tour', event })
 }
 
 /**
@@ -230,9 +227,9 @@ export function trackTourStopViewed(stopId: TourStopId, duration?: number): void
     stopId,
     timestamp: new Date(),
     duration,
-  };
+  }
 
-  analyticsTracker.track({ type: 'tour', event });
+  analyticsTracker.track({ type: 'tour', event })
 }
 
 /**
@@ -243,9 +240,9 @@ export function trackTourStopSkipped(stopId: TourStopId): void {
     eventType: 'stop_skipped',
     stopId,
     timestamp: new Date(),
-  };
+  }
 
-  analyticsTracker.track({ type: 'tour', event });
+  analyticsTracker.track({ type: 'tour', event })
 }
 
 /**
@@ -256,9 +253,9 @@ export function trackTourCompleted(totalDuration: number): void {
     eventType: 'tour_completed',
     timestamp: new Date(),
     duration: totalDuration,
-  };
+  }
 
-  analyticsTracker.track({ type: 'tour', event });
+  analyticsTracker.track({ type: 'tour', event })
 }
 
 /**
@@ -269,9 +266,9 @@ export function trackTourDismissed(lastStopId: TourStopId): void {
     eventType: 'tour_dismissed',
     stopId: lastStopId,
     timestamp: new Date(),
-  };
+  }
 
-  analyticsTracker.track({ type: 'tour', event });
+  analyticsTracker.track({ type: 'tour', event })
 }
 
 // ============================================================================
@@ -287,9 +284,9 @@ export function trackTipShown(featureId: FeatureId, tipId: string): void {
     featureId,
     tipId,
     timestamp: new Date(),
-  };
+  }
 
-  analyticsTracker.track({ type: 'feature_discovery', event });
+  analyticsTracker.track({ type: 'feature_discovery', event })
 }
 
 /**
@@ -301,9 +298,9 @@ export function trackTipDismissed(featureId: FeatureId, tipId: string): void {
     featureId,
     tipId,
     timestamp: new Date(),
-  };
+  }
 
-  analyticsTracker.track({ type: 'feature_discovery', event });
+  analyticsTracker.track({ type: 'feature_discovery', event })
 }
 
 /**
@@ -315,26 +312,23 @@ export function trackTipClicked(featureId: FeatureId, tipId: string): void {
     featureId,
     tipId,
     timestamp: new Date(),
-  };
+  }
 
-  analyticsTracker.track({ type: 'feature_discovery', event });
+  analyticsTracker.track({ type: 'feature_discovery', event })
 }
 
 /**
  * Track feature used
  */
-export function trackFeatureUsed(
-  featureId: FeatureId,
-  metadata?: Record<string, unknown>
-): void {
+export function trackFeatureUsed(featureId: FeatureId, metadata?: Record<string, unknown>): void {
   const event: FeatureDiscoveryAnalyticsEvent = {
     eventType: 'feature_used',
     featureId,
     timestamp: new Date(),
     metadata,
-  };
+  }
 
-  analyticsTracker.track({ type: 'feature_discovery', event });
+  analyticsTracker.track({ type: 'feature_discovery', event })
 }
 
 // ============================================================================
@@ -345,7 +339,7 @@ export function trackFeatureUsed(
  * Calculate time spent on step
  */
 export function calculateStepDuration(startTime: Date, endTime: Date = new Date()): number {
-  return Math.round((endTime.getTime() - startTime.getTime()) / 1000);
+  return Math.round((endTime.getTime() - startTime.getTime()) / 1000)
 }
 
 /**
@@ -353,40 +347,40 @@ export function calculateStepDuration(startTime: Date, endTime: Date = new Date(
  */
 export function getAnalyticsSummary(): {
   onboarding: {
-    started: number;
-    completed: number;
-    abandoned: number;
-    averageDuration: number;
-  };
+    started: number
+    completed: number
+    abandoned: number
+    averageDuration: number
+  }
   tour: {
-    started: number;
-    completed: number;
-    dismissed: number;
-  };
+    started: number
+    completed: number
+    dismissed: number
+  }
   features: {
-    tipsShown: number;
-    tipsDismissed: number;
-    featuresUsed: number;
-  };
+    tipsShown: number
+    tipsDismissed: number
+    featuresUsed: number
+  }
 } {
-  const analytics = getStoredAnalytics();
+  const analytics = getStoredAnalytics()
 
-  const onboardingEvents = analytics.events.filter((e) => e.type === 'onboarding');
-  const tourEvents = analytics.events.filter((e) => e.type === 'tour');
-  const featureEvents = analytics.events.filter((e) => e.type === 'feature_discovery');
+  const onboardingEvents = analytics.events.filter((e) => e.type === 'onboarding')
+  const tourEvents = analytics.events.filter((e) => e.type === 'tour')
+  const featureEvents = analytics.events.filter((e) => e.type === 'feature_discovery')
 
   const onboardingCompleted = onboardingEvents.filter(
     (e) => (e.event as OnboardingAnalyticsEvent).eventType === 'onboarding_completed'
-  );
+  )
 
   const completedDurations = onboardingCompleted
     .map((e) => (e.event as OnboardingAnalyticsEvent).duration)
-    .filter((d): d is number => d !== undefined);
+    .filter((d): d is number => d !== undefined)
 
   const averageDuration =
     completedDurations.length > 0
       ? completedDurations.reduce((a, b) => a + b, 0) / completedDurations.length
-      : 0;
+      : 0
 
   return {
     onboarding: {
@@ -423,21 +417,21 @@ export function getAnalyticsSummary(): {
         (e) => (e.event as FeatureDiscoveryAnalyticsEvent).eventType === 'feature_used'
       ).length,
     },
-  };
+  }
 }
 
 /**
  * Clear stored analytics
  */
 export function clearAnalytics(): void {
-  if (typeof window === 'undefined') return;
-  localStorage.removeItem(ANALYTICS_STORAGE_KEY);
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(ANALYTICS_STORAGE_KEY)
 }
 
 /**
  * Export analytics data
  */
 export function exportAnalytics(): string {
-  const analytics = getStoredAnalytics();
-  return JSON.stringify(analytics, null, 2);
+  const analytics = getStoredAnalytics()
+  return JSON.stringify(analytics, null, 2)
 }

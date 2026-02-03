@@ -15,6 +15,8 @@ import { AlertTriangle, CheckCircle, XCircle, MessageSquare, Eye, EyeOff } from 
 import { toast } from 'sonner'
 import type { QueueItem } from '@/lib/moderation/moderation-queue'
 
+import { logger } from '@/lib/logger'
+
 interface ModerationQueueProps {
   moderatorId: string
   moderatorRole: string
@@ -51,17 +53,14 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
         toast.error('Failed to load queue items')
       }
     } catch (error) {
-      console.error('Error fetching queue items:', error)
+      logger.error('Error fetching queue items:', error)
       toast.error('Failed to load queue items')
     } finally {
       setLoading(false)
     }
   }
 
-  const handleAction = async (
-    itemId: string,
-    action: 'approve' | 'reject' | 'warn'
-  ) => {
+  const handleAction = async (itemId: string, action: 'approve' | 'reject' | 'warn') => {
     setActionLoading(true)
     try {
       const response = await fetch('/api/moderation/actions', {
@@ -86,7 +85,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
         toast.error(data.error || 'Action failed')
       }
     } catch (error) {
-      console.error('Error performing action:', error)
+      logger.error('Error performing action:', error)
       toast.error('Failed to perform action')
     } finally {
       setActionLoading(false)
@@ -120,9 +119,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Moderation Queue</h2>
-          <p className="text-sm text-muted-foreground">
-            Review and moderate flagged content
-          </p>
+          <p className="text-sm text-muted-foreground">Review and moderate flagged content</p>
         </div>
         <Button onClick={fetchQueueItems} disabled={loading}>
           Refresh
@@ -137,17 +134,15 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
           <TabsTrigger value="all">All Items</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pending" className="space-y-4 mt-4">
+        <TabsContent value="pending" className="mt-4 space-y-4">
           {loading ? (
-            <div className="text-center py-8">Loading...</div>
+            <div className="py-8 text-center">Loading...</div>
           ) : queueItems.length === 0 ? (
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
-                <CheckCircle className="h-12 w-12 text-green-600 mb-4" />
+                <CheckCircle className="mb-4 h-12 w-12 text-green-600" />
                 <h3 className="text-lg font-semibold">Queue is empty</h3>
-                <p className="text-sm text-muted-foreground">
-                  No items pending review
-                </p>
+                <p className="text-sm text-muted-foreground">No items pending review</p>
               </CardContent>
             </Card>
           ) : (
@@ -156,14 +151,12 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                 <CardHeader className="pb-3">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant={getPriorityColor(item.priority)}>
-                          {item.priority}
-                        </Badge>
+                      <div className="mb-2 flex items-center gap-2">
+                        <Badge variant={getPriorityColor(item.priority)}>{item.priority}</Badge>
                         <Badge variant="outline">{item.contentType}</Badge>
                         {item.isHidden && (
                           <Badge variant="secondary">
-                            <EyeOff className="h-3 w-3 mr-1" />
+                            <EyeOff className="mr-1 h-3 w-3" />
                             Hidden
                           </Badge>
                         )}
@@ -182,8 +175,8 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                 <CardContent className="space-y-4">
                   {/* Content Preview */}
                   {item.contentText && (
-                    <div className="bg-muted p-3 rounded-md">
-                      <p className="text-sm font-mono whitespace-pre-wrap">
+                    <div className="rounded-md bg-muted p-3">
+                      <p className="whitespace-pre-wrap font-mono text-sm">
                         {item.contentText.substring(0, 200)}
                         {item.contentText.length > 200 && '...'}
                       </p>
@@ -191,7 +184,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                   )}
 
                   {item.contentUrl && (
-                    <div className="bg-muted p-3 rounded-md">
+                    <div className="rounded-md bg-muted p-3">
                       <a
                         href={item.contentUrl}
                         target="_blank"
@@ -204,7 +197,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                   )}
 
                   {/* AI Detection Scores */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                     {item.toxicScore > 0 && (
                       <div>
                         <div className="text-xs text-muted-foreground">Toxic</div>
@@ -232,9 +225,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                     {item.profanityDetected && (
                       <div>
                         <div className="text-xs text-muted-foreground">Profanity</div>
-                        <div className="text-lg font-bold text-orange-600">
-                          Yes
-                        </div>
+                        <div className="text-lg font-bold text-orange-600">Yes</div>
                       </div>
                     )}
                   </div>
@@ -242,9 +233,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                   {/* Detected Issues */}
                   {item.aiFlags && item.aiFlags.length > 0 && (
                     <div>
-                      <div className="text-xs text-muted-foreground mb-2">
-                        Detected Issues:
-                      </div>
+                      <div className="mb-2 text-xs text-muted-foreground">Detected Issues:</div>
                       <div className="flex flex-wrap gap-2">
                         {item.aiFlags.map((flag, idx) => (
                           <Badge key={idx} variant="outline" className="text-xs">
@@ -257,12 +246,12 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
 
                   {/* Auto Action */}
                   {item.autoAction && item.autoAction !== 'none' && (
-                    <div className="bg-blue-50 dark:bg-blue-950 p-3 rounded-md">
+                    <div className="rounded-md bg-blue-50 p-3 dark:bg-blue-950">
                       <div className="text-xs font-semibold text-blue-900 dark:text-blue-100">
                         Auto Action: {item.autoAction}
                       </div>
                       {item.autoActionReason && (
-                        <div className="text-xs text-blue-700 dark:text-blue-300 mt-1">
+                        <div className="mt-1 text-xs text-blue-700 dark:text-blue-300">
                           {item.autoActionReason}
                         </div>
                       )}
@@ -271,7 +260,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
 
                   {/* Action Buttons */}
                   {selectedItem?.id === item.id ? (
-                    <div className="space-y-3 pt-3 border-t">
+                    <div className="space-y-3 border-t pt-3">
                       <Textarea
                         placeholder="Add notes (optional)..."
                         value={actionNotes}
@@ -285,7 +274,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                           onClick={() => handleAction(item.id, 'approve')}
                           disabled={actionLoading}
                         >
-                          <CheckCircle className="h-4 w-4 mr-1" />
+                          <CheckCircle className="mr-1 h-4 w-4" />
                           Approve
                         </Button>
                         <Button
@@ -294,7 +283,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                           onClick={() => handleAction(item.id, 'warn')}
                           disabled={actionLoading}
                         >
-                          <AlertTriangle className="h-4 w-4 mr-1" />
+                          <AlertTriangle className="mr-1 h-4 w-4" />
                           Warn
                         </Button>
                         <Button
@@ -303,7 +292,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                           onClick={() => handleAction(item.id, 'reject')}
                           disabled={actionLoading}
                         >
-                          <XCircle className="h-4 w-4 mr-1" />
+                          <XCircle className="mr-1 h-4 w-4" />
                           Delete
                         </Button>
                         <Button
@@ -320,13 +309,9 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
                       </div>
                     </div>
                   ) : (
-                    <div className="flex gap-2 pt-3 border-t">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setSelectedItem(item)}
-                      >
-                        <MessageSquare className="h-4 w-4 mr-1" />
+                    <div className="flex gap-2 border-t pt-3">
+                      <Button size="sm" variant="outline" onClick={() => setSelectedItem(item)}>
+                        <MessageSquare className="mr-1 h-4 w-4" />
                         Review
                       </Button>
                     </div>
@@ -339,7 +324,7 @@ export function ModerationQueue({ moderatorId, moderatorRole }: ModerationQueueP
 
         <TabsContent value="all" className="mt-4">
           {/* Similar to pending, but shows all items */}
-          <div className="text-center py-8 text-muted-foreground">
+          <div className="py-8 text-center text-muted-foreground">
             All queue items view (implement similar to pending)
           </div>
         </TabsContent>

@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { useNotificationSettingsStore } from '@/stores/notification-settings-store';
-import { isPushAvailable, getPushSubscription } from '@/lib/notifications/notification-channels';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Card } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { useNotificationSettingsStore } from '@/stores/notification-settings-store'
+import { isPushAvailable, getPushSubscription } from '@/lib/notifications/notification-channels'
 
 export interface PushNotificationSettingsPanelProps extends React.HTMLAttributes<HTMLDivElement> {}
 
@@ -19,41 +19,41 @@ export function PushNotificationSettingsPanel({
   className,
   ...props
 }: PushNotificationSettingsPanelProps) {
-  const pushSettings = useNotificationSettingsStore((state) => state.preferences.push);
-  const updatePushSettings = useNotificationSettingsStore((state) => state.updatePushSettings);
+  const pushSettings = useNotificationSettingsStore((state) => state.preferences.push)
+  const updatePushSettings = useNotificationSettingsStore((state) => state.updatePushSettings)
 
-  const [isAvailable, setIsAvailable] = React.useState(false);
-  const [hasSubscription, setHasSubscription] = React.useState(false);
-  const [loading, setLoading] = React.useState(true);
+  const [isAvailable, setIsAvailable] = React.useState(false)
+  const [hasSubscription, setHasSubscription] = React.useState(false)
+  const [loading, setLoading] = React.useState(true)
 
   // Check push availability
   React.useEffect(() => {
     const checkPush = async () => {
-      setIsAvailable(isPushAvailable());
-      const subscription = await getPushSubscription();
-      setHasSubscription(!!subscription);
-      setLoading(false);
-    };
-    checkPush();
-  }, []);
+      setIsAvailable(isPushAvailable())
+      const subscription = await getPushSubscription()
+      setHasSubscription(!!subscription)
+      setLoading(false)
+    }
+    checkPush()
+  }, [])
 
   if (loading) {
     return (
       <Card className={cn('p-4', className)} {...props}>
         <div className="animate-pulse space-y-4">
-          <div className="h-4 bg-muted rounded w-1/3" />
-          <div className="h-10 bg-muted rounded" />
+          <div className="h-4 w-1/3 rounded bg-muted" />
+          <div className="h-10 rounded bg-muted" />
         </div>
       </Card>
-    );
+    )
   }
 
   if (!isAvailable) {
     return (
       <Card className={cn('p-4', className)} {...props}>
-        <div className="text-center py-6">
+        <div className="py-6 text-center">
           <svg
-            className="w-12 h-12 mx-auto mb-3 text-muted-foreground"
+            className="mx-auto mb-3 h-12 w-12 text-muted-foreground"
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
@@ -63,12 +63,12 @@ export function PushNotificationSettingsPanel({
             <line x1="12" y1="18" x2="12.01" y2="18" />
           </svg>
           <p className="font-medium">Push notifications not available</p>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground">
             Your browser doesn't support push notifications or they're blocked.
           </p>
         </div>
       </Card>
-    );
+    )
   }
 
   return (
@@ -78,10 +78,7 @@ export function PushNotificationSettingsPanel({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div
-              className={cn(
-                'w-3 h-3 rounded-full',
-                hasSubscription ? 'bg-green-500' : 'bg-muted'
-              )}
+              className={cn('h-3 w-3 rounded-full', hasSubscription ? 'bg-green-500' : 'bg-muted')}
             />
             <div>
               <p className="font-medium">
@@ -103,8 +100,8 @@ export function PushNotificationSettingsPanel({
       </Card>
 
       {/* Push Settings */}
-      <Card className={cn('p-4', !hasSubscription && 'opacity-50 pointer-events-none')}>
-        <h3 className="text-sm font-medium mb-4">Push Options</h3>
+      <Card className={cn('p-4', !hasSubscription && 'pointer-events-none opacity-50')}>
+        <h3 className="mb-4 text-sm font-medium">Push Options</h3>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
@@ -123,9 +120,7 @@ export function PushNotificationSettingsPanel({
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="push-sound">Play sound</Label>
-              <p className="text-xs text-muted-foreground">
-                Play a sound with push notifications
-              </p>
+              <p className="text-xs text-muted-foreground">Play a sound with push notifications</p>
             </div>
             <Switch
               id="push-sound"
@@ -137,9 +132,7 @@ export function PushNotificationSettingsPanel({
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="push-vibrate">Vibrate</Label>
-              <p className="text-xs text-muted-foreground">
-                Vibrate device for notifications
-              </p>
+              <p className="text-xs text-muted-foreground">Vibrate device for notifications</p>
             </div>
             <Switch
               id="push-vibrate"
@@ -151,9 +144,7 @@ export function PushNotificationSettingsPanel({
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
               <Label htmlFor="push-group">Group notifications</Label>
-              <p className="text-xs text-muted-foreground">
-                Combine multiple notifications
-              </p>
+              <p className="text-xs text-muted-foreground">Combine multiple notifications</p>
             </div>
             <Switch
               id="push-group"
@@ -164,9 +155,9 @@ export function PushNotificationSettingsPanel({
         </div>
       </Card>
     </div>
-  );
+  )
 }
 
-PushNotificationSettingsPanel.displayName = 'PushNotificationSettingsPanel';
+PushNotificationSettingsPanel.displayName = 'PushNotificationSettingsPanel'
 
-export default PushNotificationSettingsPanel;
+export default PushNotificationSettingsPanel

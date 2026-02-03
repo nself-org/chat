@@ -7,11 +7,7 @@ import { PERMISSIONS } from '@/lib/admin/roles/permission-types'
 import { getPermissionSourceMap } from '@/lib/admin/roles/role-inheritance'
 import { RoleBadge } from './RoleBadge'
 import { Lock, ChevronDown, ChevronRight } from 'lucide-react'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 
 interface InheritedPermissionsProps {
   userRoles: Role[]
@@ -31,10 +27,7 @@ export function InheritedPermissions({
 }: InheritedPermissionsProps) {
   const [expandedItems, setExpandedItems] = React.useState<string[]>([])
 
-  const sourceMap = React.useMemo(
-    () => getPermissionSourceMap(userRoles),
-    [userRoles]
-  )
+  const sourceMap = React.useMemo(() => getPermissionSourceMap(userRoles), [userRoles])
 
   // Group permissions by source count
   const uniquePermissions = Array.from(sourceMap.entries()).filter(
@@ -66,7 +59,7 @@ export function InheritedPermissions({
                   open={expandedItems.includes(permission)}
                   onOpenChange={() => toggleItem(permission)}
                 >
-                  <CollapsibleTrigger className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-accent/50">
+                  <CollapsibleTrigger className="hover:bg-accent/50 flex w-full items-center gap-2 rounded-md p-2 text-left">
                     {expandedItems.includes(permission) ? (
                       <ChevronDown size={14} className="text-muted-foreground" />
                     ) : (
@@ -75,9 +68,7 @@ export function InheritedPermissions({
                     <span className="flex-1 text-sm">
                       {PERMISSIONS[permission]?.name ?? permission}
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      {roles.length} roles
-                    </span>
+                    <span className="text-xs text-muted-foreground">{roles.length} roles</span>
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <div className="ml-6 flex flex-wrap gap-1 pb-2">
@@ -108,23 +99,10 @@ export function InheritedPermissions({
               {uniquePermissions.map(([permission, roles]) => {
                 const role = roles[0]
                 return (
-                  <div
-                    key={permission}
-                    className="flex items-center gap-2 rounded-md p-2 text-sm"
-                  >
-                    <div
-                      className="h-2 w-2 rounded-full"
-                      style={{ backgroundColor: role.color }}
-                    />
-                    <span className="flex-1">
-                      {PERMISSIONS[permission]?.name ?? permission}
-                    </span>
-                    <RoleBadge
-                      name={role.name}
-                      color={role.color}
-                      size="sm"
-                      showIcon={false}
-                    />
+                  <div key={permission} className="flex items-center gap-2 rounded-md p-2 text-sm">
+                    <div className="h-2 w-2 rounded-full" style={{ backgroundColor: role.color }} />
+                    <span className="flex-1">{PERMISSIONS[permission]?.name ?? permission}</span>
+                    <RoleBadge name={role.name} color={role.color} size="sm" showIcon={false} />
                   </div>
                 )
               })}
@@ -142,22 +120,14 @@ export function InheritedPermissions({
         const isExpanded = expandedItems.includes(role.id)
 
         return (
-          <Collapsible
-            key={role.id}
-            open={isExpanded}
-            onOpenChange={() => toggleItem(role.id)}
-          >
-            <CollapsibleTrigger className="flex w-full items-center gap-3 rounded-lg border p-3 hover:bg-accent/50">
+          <Collapsible key={role.id} open={isExpanded} onOpenChange={() => toggleItem(role.id)}>
+            <CollapsibleTrigger className="hover:bg-accent/50 flex w-full items-center gap-3 rounded-lg border p-3">
               {isExpanded ? (
                 <ChevronDown size={16} className="text-muted-foreground" />
               ) : (
                 <ChevronRight size={16} className="text-muted-foreground" />
               )}
-              <RoleBadge
-                name={role.name}
-                color={role.color}
-                icon={role.icon}
-              />
+              <RoleBadge name={role.name} color={role.color} icon={role.icon} />
               <span className="flex-1 text-left text-sm text-muted-foreground">
                 {role.permissions.length} permissions
               </span>

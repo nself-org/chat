@@ -38,8 +38,20 @@ const mockSharedChannels: SharedChannel[] = [
 ]
 
 const mockSharedFiles: SharedFile[] = [
-  { id: 'file-1', name: 'document.pdf', type: 'application/pdf', size: 1024000, uploadedAt: new Date('2024-01-15') },
-  { id: 'file-2', name: 'image.png', type: 'image/png', size: 512000, uploadedAt: new Date('2024-01-20') },
+  {
+    id: 'file-1',
+    name: 'document.pdf',
+    type: 'application/pdf',
+    size: 1024000,
+    uploadedAt: new Date('2024-01-15'),
+  },
+  {
+    id: 'file-2',
+    name: 'image.png',
+    type: 'image/png',
+    size: 512000,
+    uploadedAt: new Date('2024-01-20'),
+  },
 ]
 
 // ============================================================================
@@ -242,9 +254,8 @@ describe('UserProfileModal', () => {
       render(<UserProfileModal {...defaultProps} onCall={onCall} />)
       // Phone icon button
       const buttons = screen.getAllByRole('button')
-      const callButton = buttons.find(btn =>
-        btn.querySelector('svg') &&
-        btn.className.includes('outline')
+      const callButton = buttons.find(
+        (btn) => btn.querySelector('svg') && btn.className.includes('outline')
       )
       expect(callButton).toBeInTheDocument()
     })
@@ -254,9 +265,8 @@ describe('UserProfileModal', () => {
       render(<UserProfileModal {...defaultProps} onCall={onCall} />)
 
       const buttons = screen.getAllByRole('button')
-      const callButton = buttons.find(btn =>
-        btn.querySelector('[class*="lucide-phone"]') ||
-        btn.innerHTML.includes('Phone')
+      const callButton = buttons.find(
+        (btn) => btn.querySelector('[class*="lucide-phone"]') || btn.innerHTML.includes('Phone')
       )
 
       if (callButton) {
@@ -275,9 +285,8 @@ describe('UserProfileModal', () => {
     it('renders more options dropdown', () => {
       render(<UserProfileModal {...defaultProps} />)
       const buttons = screen.getAllByRole('button')
-      const moreButton = buttons.find(btn =>
-        btn.querySelector('[class*="more"]') ||
-        btn.innerHTML.includes('MoreHorizontal')
+      const moreButton = buttons.find(
+        (btn) => btn.querySelector('[class*="more"]') || btn.innerHTML.includes('MoreHorizontal')
       )
       // More options button should exist
       expect(buttons.length).toBeGreaterThan(0)
@@ -304,23 +313,13 @@ describe('UserProfileModal', () => {
     })
 
     it('shows shared channels count in tab', () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedChannels={mockSharedChannels}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedChannels={mockSharedChannels} />)
 
       expect(screen.getByText(/channels \(3\)/i)).toBeInTheDocument()
     })
 
     it('shows shared files count in tab', () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedFiles={mockSharedFiles}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedFiles={mockSharedFiles} />)
 
       expect(screen.getByText(/files \(2\)/i)).toBeInTheDocument()
     })
@@ -333,12 +332,7 @@ describe('UserProfileModal', () => {
     })
 
     it('switches to Channels tab on click', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedChannels={mockSharedChannels}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedChannels={mockSharedChannels} />)
 
       const channelsTab = screen.getByRole('tab', { name: /channels/i })
       await userEvent.click(channelsTab)
@@ -349,12 +343,7 @@ describe('UserProfileModal', () => {
     })
 
     it('switches to Files tab on click', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedFiles={mockSharedFiles}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedFiles={mockSharedFiles} />)
 
       const filesTab = screen.getByRole('tab', { name: /files/i })
       await userEvent.click(filesTab)
@@ -371,12 +360,7 @@ describe('UserProfileModal', () => {
 
   describe('Shared Channels Tab', () => {
     it('displays shared channels', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedChannels={mockSharedChannels}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedChannels={mockSharedChannels} />)
 
       const channelsTab = screen.getByRole('tab', { name: /channels/i })
       await userEvent.click(channelsTab)
@@ -387,12 +371,7 @@ describe('UserProfileModal', () => {
     })
 
     it('shows Private badge for private channels', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedChannels={mockSharedChannels}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedChannels={mockSharedChannels} />)
 
       const channelsTab = screen.getByRole('tab', { name: /channels/i })
       await userEvent.click(channelsTab)
@@ -401,12 +380,7 @@ describe('UserProfileModal', () => {
     })
 
     it('shows empty state when no shared channels', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedChannels={[]}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedChannels={[]} />)
 
       const channelsTab = screen.getByRole('tab', { name: /channels/i })
       await userEvent.click(channelsTab)
@@ -421,12 +395,7 @@ describe('UserProfileModal', () => {
 
   describe('Shared Files Tab', () => {
     it('displays shared files', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedFiles={mockSharedFiles}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedFiles={mockSharedFiles} />)
 
       const filesTab = screen.getByRole('tab', { name: /files/i })
       await userEvent.click(filesTab)
@@ -436,12 +405,7 @@ describe('UserProfileModal', () => {
     })
 
     it('shows file size', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedFiles={mockSharedFiles}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedFiles={mockSharedFiles} />)
 
       const filesTab = screen.getByRole('tab', { name: /files/i })
       await userEvent.click(filesTab)
@@ -451,12 +415,7 @@ describe('UserProfileModal', () => {
     })
 
     it('shows empty state when no shared files', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedFiles={[]}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedFiles={[]} />)
 
       const filesTab = screen.getByRole('tab', { name: /files/i })
       await userEvent.click(filesTab)
@@ -482,9 +441,7 @@ describe('UserProfileModal', () => {
 
       // Open dropdown
       const buttons = screen.getAllByRole('button')
-      const moreButton = buttons.find(btn =>
-        btn.querySelector('svg')
-      )
+      const moreButton = buttons.find((btn) => btn.querySelector('svg'))
 
       if (moreButton) {
         await userEvent.click(moreButton)
@@ -494,13 +451,7 @@ describe('UserProfileModal', () => {
     })
 
     it('does not show moderation options for regular member', () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          currentUserRole="member"
-          onBanUser={jest.fn()}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} currentUserRole="member" onBanUser={jest.fn()} />)
 
       // Regular members should not see moderation options
       expect(screen.queryByText(/ban user/i)).not.toBeInTheDocument()
@@ -519,9 +470,7 @@ describe('UserProfileModal', () => {
 
       // Open dropdown
       const buttons = screen.getAllByRole('button')
-      const moreButton = buttons.find(btn =>
-        btn.querySelector('svg')
-      )
+      const moreButton = buttons.find((btn) => btn.querySelector('svg'))
 
       if (moreButton) {
         await userEvent.click(moreButton)
@@ -532,19 +481,12 @@ describe('UserProfileModal', () => {
 
     it('calls onBanUser when Ban clicked', async () => {
       const onBanUser = jest.fn()
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          currentUserRole="admin"
-          onBanUser={onBanUser}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} currentUserRole="admin" onBanUser={onBanUser} />)
 
       // Open dropdown
       const buttons = screen.getAllByRole('button')
-      const moreButton = buttons.find(btn =>
-        btn.className.includes('outline') &&
-        btn.querySelector('svg')
+      const moreButton = buttons.find(
+        (btn) => btn.className.includes('outline') && btn.querySelector('svg')
       )
 
       if (moreButton) {
@@ -560,19 +502,11 @@ describe('UserProfileModal', () => {
 
     it('calls onKickUser when Kick clicked', async () => {
       const onKickUser = jest.fn()
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          currentUserRole="admin"
-          onKickUser={onKickUser}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} currentUserRole="admin" onKickUser={onKickUser} />)
 
       // Open dropdown and click kick
       const buttons = screen.getAllByRole('button')
-      const moreButton = buttons.find(btn =>
-        btn.className.includes('outline')
-      )
+      const moreButton = buttons.find((btn) => btn.className.includes('outline'))
 
       if (moreButton) {
         await userEvent.click(moreButton)
@@ -615,12 +549,7 @@ describe('UserProfileModal', () => {
     })
 
     it('tabs are keyboard navigable', async () => {
-      render(
-        <UserProfileModal
-          {...defaultProps}
-          sharedChannels={mockSharedChannels}
-        />
-      )
+      render(<UserProfileModal {...defaultProps} sharedChannels={mockSharedChannels} />)
 
       const aboutTab = screen.getByRole('tab', { name: /about/i })
       aboutTab.focus()

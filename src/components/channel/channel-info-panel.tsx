@@ -26,11 +26,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
 import { ChannelMembers } from './channel-members'
 import { PinnedMessages } from './pinned-messages'
-import {
-  useChannelStore,
-  selectActiveChannel,
-  type Channel,
-} from '@/stores/channel-store'
+import { useChannelStore, selectActiveChannel, type Channel } from '@/stores/channel-store'
 import { useUIStore } from '@/stores/ui-store'
 import { useAuth } from '@/contexts/auth-context'
 
@@ -62,10 +58,10 @@ function InfoRow({
 }) {
   return (
     <div className="flex items-start gap-3 py-2">
-      <Icon className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
-      <div className="flex-1 min-w-0">
+      <Icon className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
+      <div className="min-w-0 flex-1">
         <p className="text-xs text-muted-foreground">{label}</p>
-        <div className="text-sm mt-0.5">{value}</div>
+        <div className="mt-0.5 text-sm">{value}</div>
       </div>
       {action}
     </div>
@@ -87,7 +83,7 @@ function ChannelIcon({ channel }: { channel: Channel }) {
   }
 
   return (
-    <div className="h-16 w-16 rounded-lg bg-muted flex items-center justify-center">
+    <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-muted">
       {channel.type === 'private' ? (
         <Lock className="h-8 w-8 text-muted-foreground" />
       ) : (
@@ -140,45 +136,42 @@ export function ChannelInfoPanel({ className, onClose }: ChannelInfoPanelProps) 
   const isDM = channel.type === 'direct' || channel.type === 'group'
 
   return (
-    <div className={cn('flex flex-col h-full bg-background border-l', className)}>
+    <div className={cn('flex h-full flex-col border-l bg-background', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between h-14 px-4 border-b">
-        <h2 className="font-semibold">
-          {isDM ? 'Conversation Details' : 'Channel Details'}
-        </h2>
+      <div className="flex h-14 items-center justify-between border-b px-4">
+        <h2 className="font-semibold">{isDM ? 'Conversation Details' : 'Channel Details'}</h2>
         <Button variant="ghost" size="icon" onClick={handleClose}>
           <X className="h-4 w-4" />
         </Button>
       </div>
 
       {/* Channel Info Header */}
-      <div className="p-4 border-b">
+      <div className="border-b p-4">
         <div className="flex items-start gap-4">
           <ChannelIcon channel={channel} />
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold text-lg truncate">
+              <h3 className="truncate text-lg font-semibold">
                 {isDM ? channel.otherUserName || channel.name : channel.name}
               </h3>
               {isAdmin && !isDM && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6"
-                  onClick={handleEditChannel}
-                >
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleEditChannel}>
                   <Edit2 className="h-3.5 w-3.5" />
                 </Button>
               )}
             </div>
             {channel.description && (
-              <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+              <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
                 {channel.description}
               </p>
             )}
-            <div className="flex items-center gap-2 mt-2">
+            <div className="mt-2 flex items-center gap-2">
               <Badge variant="secondary" className="text-xs">
-                {channel.type === 'private' ? 'Private' : channel.type === 'public' ? 'Public' : 'Direct'}
+                {channel.type === 'private'
+                  ? 'Private'
+                  : channel.type === 'public'
+                    ? 'Public'
+                    : 'Direct'}
               </Badge>
               {!isDM && (
                 <span className="text-xs text-muted-foreground">
@@ -194,23 +187,29 @@ export function ChannelInfoPanel({ className, onClose }: ChannelInfoPanelProps) 
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as TabValue)}
-        className="flex-1 flex flex-col min-h-0"
+        className="flex min-h-0 flex-1 flex-col"
       >
         <TabsList className="grid w-full grid-cols-4 px-4 pt-2">
-          <TabsTrigger value="about" className="text-xs">About</TabsTrigger>
+          <TabsTrigger value="about" className="text-xs">
+            About
+          </TabsTrigger>
           <TabsTrigger value="members" className="text-xs">
             Members
           </TabsTrigger>
-          <TabsTrigger value="pinned" className="text-xs">Pinned</TabsTrigger>
+          <TabsTrigger value="pinned" className="text-xs">
+            Pinned
+          </TabsTrigger>
           {isAdmin && !isDM && (
-            <TabsTrigger value="settings" className="text-xs">Settings</TabsTrigger>
+            <TabsTrigger value="settings" className="text-xs">
+              Settings
+            </TabsTrigger>
           )}
         </TabsList>
 
         {/* About Tab */}
-        <TabsContent value="about" className="flex-1 m-0">
+        <TabsContent value="about" className="m-0 flex-1">
           <ScrollArea className="h-full">
-            <div className="p-4 space-y-1">
+            <div className="space-y-1 p-4">
               {/* Topic */}
               {channel.topic && (
                 <InfoRow
@@ -261,11 +260,7 @@ export function ChannelInfoPanel({ className, onClose }: ChannelInfoPanelProps) 
                   label="Members"
                   value={`${channel.memberCount} member${channel.memberCount !== 1 ? 's' : ''}`}
                   action={
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setActiveTab('members')}
-                    >
+                    <Button variant="ghost" size="sm" onClick={() => setActiveTab('members')}>
                       View all
                     </Button>
                   }
@@ -278,7 +273,7 @@ export function ChannelInfoPanel({ className, onClose }: ChannelInfoPanelProps) 
                   icon={LinkIcon}
                   label="Channel link"
                   value={
-                    <code className="text-xs bg-muted px-2 py-1 rounded">
+                    <code className="rounded bg-muted px-2 py-1 text-xs">
                       /chat/channel/{channel.slug}
                     </code>
                   }
@@ -303,20 +298,20 @@ export function ChannelInfoPanel({ className, onClose }: ChannelInfoPanelProps) 
         </TabsContent>
 
         {/* Members Tab */}
-        <TabsContent value="members" className="flex-1 m-0">
+        <TabsContent value="members" className="m-0 flex-1">
           <ChannelMembers channelId={channel.id} />
         </TabsContent>
 
         {/* Pinned Tab */}
-        <TabsContent value="pinned" className="flex-1 m-0">
+        <TabsContent value="pinned" className="m-0 flex-1">
           <PinnedMessages channelId={channel.id} />
         </TabsContent>
 
         {/* Settings Tab (Admin only) */}
         {isAdmin && !isDM && (
-          <TabsContent value="settings" className="flex-1 m-0">
+          <TabsContent value="settings" className="m-0 flex-1">
             <ScrollArea className="h-full">
-              <div className="p-4 space-y-4">
+              <div className="space-y-4 p-4">
                 <Button
                   variant="outline"
                   className="w-full justify-start"
@@ -335,7 +330,7 @@ export function ChannelInfoPanel({ className, onClose }: ChannelInfoPanelProps) 
                   Invite people
                 </Button>
 
-                <div className="pt-4 border-t">
+                <div className="border-t pt-4">
                   <Button
                     variant="destructive"
                     className="w-full"

@@ -5,6 +5,7 @@ import { useQuery, useMutation, useLazyQuery, type ApolloError } from '@apollo/c
 import { useAuth } from '@/contexts/auth-context'
 import { useStickerStore } from './sticker-store'
 import { StickerService } from './sticker-service'
+import { logger } from '@/lib/logger'
 import {
   GET_STICKER_PACKS,
   GET_PACK_STICKERS,
@@ -130,8 +131,13 @@ export function useStickers(): UseStickersReturn {
   const [reorderPacksMutation] = useMutation(REORDER_USER_PACKS)
 
   // Combined error
-  const error = userPacksError || availPacksError || packStickersError ||
-                recentError || favoritesError || searchError
+  const error =
+    userPacksError ||
+    availPacksError ||
+    packStickersError ||
+    recentError ||
+    favoritesError ||
+    searchError
 
   // Load user's installed packs
   const loadUserPacks = useCallback(async () => {
@@ -166,27 +172,30 @@ export function useStickers(): UseStickersReturn {
   }, [fetchAvailablePacks, store])
 
   // Load stickers for a specific pack
-  const loadPackStickers = useCallback(async (packId: string) => {
-    // Check cache first
-    const cached = store.getCachedStickers(packId)
-    if (cached && cached.length > 0) {
-      store.setActivePackId(packId)
-      return
-    }
-
-    store.setLoadingStickers(true)
-    try {
-      const { data } = await fetchPackStickers({
-        variables: { packId },
-      })
-      if (data?.nchat_stickers) {
-        store.cachePackStickers(packId, data.nchat_stickers)
+  const loadPackStickers = useCallback(
+    async (packId: string) => {
+      // Check cache first
+      const cached = store.getCachedStickers(packId)
+      if (cached && cached.length > 0) {
         store.setActivePackId(packId)
+        return
       }
-    } finally {
-      store.setLoadingStickers(false)
-    }
-  }, [fetchPackStickers, store])
+
+      store.setLoadingStickers(true)
+      try {
+        const { data } = await fetchPackStickers({
+          variables: { packId },
+        })
+        if (data?.nchat_stickers) {
+          store.cachePackStickers(packId, data.nchat_stickers)
+          store.setActivePackId(packId)
+        }
+      } finally {
+        store.setLoadingStickers(false)
+      }
+    },
+    [fetchPackStickers, store]
+  )
 
   // Load recent stickers
   const loadRecentStickers = useCallback(async () => {
@@ -200,7 +209,7 @@ export function useStickers(): UseStickersReturn {
         store.setRecentStickers(data.nchat_recent_stickers)
       }
     } catch (err) {
-      console.error('Failed to load recent stickers:', err)
+      logger.error('Failed to load recent stickers:',  err)
     }
   }, [user?.id, fetchRecentStickers, store])
 
@@ -216,197 +225,222 @@ export function useStickers(): UseStickersReturn {
         store.setFavoriteStickers(data.nchat_favorite_stickers)
       }
     } catch (err) {
-      console.error('Failed to load favorite stickers:', err)
+      logger.error('Failed to load favorite stickers:',  err)
     }
   }, [user?.id, fetchFavoriteStickers, store])
 
   // Add pack to collection
-  const addPack = useCallback(async (packId: string): Promise<UserStickerPack | null> => {
-    if (!user?.id) return null
+  const addPack = useCallback(
+    async (packId: string): Promise<UserStickerPack | null> => {
+      if (!user?.id) return null
 
-    try {
-      const position = store.installedPacks.length
-      const { data } = await addPackMutation({
-        variables: { userId: user.id, packId, position },
-        optimisticResponse: {
-          insert_nchat_user_sticker_packs_one: {
-            __typename: 'nchat_user_sticker_packs',
-            id: `temp-${Date.now()}`,
-            user_id: user.id,
-            pack_id: packId,
-            position,
-            added_at: new Date().toISOString(),
-            pack: store.getPackById(packId) || {
-              __typename: 'nchat_sticker_packs',
-              id: packId,
-              name: 'Loading...',
-              description: '',
-              thumbnail_url: '',
-              author: '',
-              sticker_count: 0,
-              is_animated: false,
-              is_official: false,
-              created_at: new Date().toISOString(),
-              updated_at: new Date().toISOString(),
+      try {
+        const position = store.installedPacks.length
+        const { data } = await addPackMutation({
+          variables: { userId: user.id, packId, position },
+          optimisticResponse: {
+            insert_nchat_user_sticker_packs_one: {
+              __typename: 'nchat_user_sticker_packs',
+              id: `temp-${Date.now()}`,
+              user_id: user.id,
+              pack_id: packId,
+              position,
+              added_at: new Date().toISOString(),
+              pack: store.getPackById(packId) || {
+                __typename: 'nchat_sticker_packs',
+                id: packId,
+                name: 'Loading...',
+                description: '',
+                thumbnail_url: '',
+                author: '',
+                sticker_count: 0,
+                is_animated: false,
+                is_official: false,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              },
             },
           },
-        },
-      })
+        })
 
-      if (data?.insert_nchat_user_sticker_packs_one) {
-        store.addInstalledPack(data.insert_nchat_user_sticker_packs_one)
-        return data.insert_nchat_user_sticker_packs_one
+        if (data?.insert_nchat_user_sticker_packs_one) {
+          store.addInstalledPack(data.insert_nchat_user_sticker_packs_one)
+          return data.insert_nchat_user_sticker_packs_one
+        }
+        return null
+      } catch (err) {
+        logger.error('Failed to add pack:',  err)
+        return null
       }
-      return null
-    } catch (err) {
-      console.error('Failed to add pack:', err)
-      return null
-    }
-  }, [user?.id, addPackMutation, store])
+    },
+    [user?.id, addPackMutation, store]
+  )
 
   // Remove pack from collection
-  const removePack = useCallback(async (packId: string): Promise<boolean> => {
-    if (!user?.id) return false
+  const removePack = useCallback(
+    async (packId: string): Promise<boolean> => {
+      if (!user?.id) return false
 
-    try {
-      const { data } = await removePackMutation({
-        variables: { userId: user.id, packId },
-      })
+      try {
+        const { data } = await removePackMutation({
+          variables: { userId: user.id, packId },
+        })
 
-      if (data?.delete_nchat_user_sticker_packs?.affected_rows) {
-        store.removeInstalledPack(packId)
-        return true
+        if (data?.delete_nchat_user_sticker_packs?.affected_rows) {
+          store.removeInstalledPack(packId)
+          return true
+        }
+        return false
+      } catch (err) {
+        logger.error('Failed to remove pack:',  err)
+        return false
       }
-      return false
-    } catch (err) {
-      console.error('Failed to remove pack:', err)
-      return false
-    }
-  }, [user?.id, removePackMutation, store])
+    },
+    [user?.id, removePackMutation, store]
+  )
 
   // Reorder packs
-  const reorderPacks = useCallback(async (packIds: string[]) => {
-    if (!user?.id) return
+  const reorderPacks = useCallback(
+    async (packIds: string[]) => {
+      if (!user?.id) return
 
-    // Optimistically update the store
-    store.reorderInstalledPacks(packIds)
+      // Optimistically update the store
+      store.reorderInstalledPacks(packIds)
 
-    try {
-      const updates = packIds.map((packId, index) => ({
-        where: { user_id: { _eq: user.id }, pack_id: { _eq: packId } },
-        _set: { position: index },
-      }))
+      try {
+        const updates = packIds.map((packId, index) => ({
+          where: { user_id: { _eq: user.id }, pack_id: { _eq: packId } },
+          _set: { position: index },
+        }))
 
-      await reorderPacksMutation({
-        variables: { updates },
-      })
-    } catch (err) {
-      console.error('Failed to reorder packs:', err)
-      // Reload packs on failure to restore correct order
-      await loadUserPacks()
-    }
-  }, [user?.id, reorderPacksMutation, store, loadUserPacks])
+        await reorderPacksMutation({
+          variables: { updates },
+        })
+      } catch (err) {
+        logger.error('Failed to reorder packs:',  err)
+        // Reload packs on failure to restore correct order
+        await loadUserPacks()
+      }
+    },
+    [user?.id, reorderPacksMutation, store, loadUserPacks]
+  )
 
   // Check if pack is installed
-  const isPackInstalled = useCallback((packId: string): boolean => {
-    return store.isPackInstalled(packId)
-  }, [store])
+  const isPackInstalled = useCallback(
+    (packId: string): boolean => {
+      return store.isPackInstalled(packId)
+    },
+    [store]
+  )
 
   // Send a sticker (add to recent + emit event)
-  const sendSticker = useCallback(async (sticker: Sticker) => {
-    if (!user?.id) return
+  const sendSticker = useCallback(
+    async (sticker: Sticker) => {
+      if (!user?.id) return
 
-    // Add to recent stickers in database
-    try {
-      await addRecentMutation({
-        variables: { userId: user.id, stickerId: sticker.id },
-      })
+      // Add to recent stickers in database
+      try {
+        await addRecentMutation({
+          variables: { userId: user.id, stickerId: sticker.id },
+        })
 
-      // Update local store
-      const recentSticker: RecentSticker = {
-        id: `temp-${Date.now()}`,
-        user_id: user.id,
-        sticker_id: sticker.id,
-        used_at: new Date().toISOString(),
-        use_count: 1,
-        sticker,
+        // Update local store
+        const recentSticker: RecentSticker = {
+          id: `temp-${Date.now()}`,
+          user_id: user.id,
+          sticker_id: sticker.id,
+          used_at: new Date().toISOString(),
+          use_count: 1,
+          sticker,
+        }
+        store.addRecentSticker(recentSticker)
+      } catch (err) {
+        logger.error('Failed to record recent sticker:',  err)
       }
-      store.addRecentSticker(recentSticker)
-    } catch (err) {
-      console.error('Failed to record recent sticker:', err)
-    }
 
-    // Close the picker
-    store.setPickerOpen(false)
+      // Close the picker
+      store.setPickerOpen(false)
 
-    // The actual sending is handled by the chat system
-    // We dispatch a custom event that the message input can listen to
-    window.dispatchEvent(
-      new CustomEvent('nchat:send-sticker', { detail: { sticker } })
-    )
-  }, [user?.id, addRecentMutation, store])
+      // The actual sending is handled by the chat system
+      // We dispatch a custom event that the message input can listen to
+      window.dispatchEvent(new CustomEvent('nchat:send-sticker', { detail: { sticker } }))
+    },
+    [user?.id, addRecentMutation, store]
+  )
 
   // Search stickers
-  const searchStickers = useCallback(async (query: string) => {
-    store.setSearchQuery(query)
+  const searchStickers = useCallback(
+    async (query: string) => {
+      store.setSearchQuery(query)
 
-    if (!query || query.length < 2) {
-      store.setSearchResults([])
-      return
-    }
-
-    store.setSearching(true)
-    try {
-      const { data } = await searchStickersQuery({
-        variables: { searchQuery: `%${query}%`, limit: 50 },
-      })
-      if (data?.nchat_stickers) {
-        store.setSearchResults(data.nchat_stickers)
+      if (!query || query.length < 2) {
+        store.setSearchResults([])
+        return
       }
-    } finally {
-      store.setSearching(false)
-    }
-  }, [searchStickersQuery, store])
+
+      store.setSearching(true)
+      try {
+        const { data } = await searchStickersQuery({
+          variables: { searchQuery: `%${query}%`, limit: 50 },
+        })
+        if (data?.nchat_stickers) {
+          store.setSearchResults(data.nchat_stickers)
+        }
+      } finally {
+        store.setSearching(false)
+      }
+    },
+    [searchStickersQuery, store]
+  )
 
   // Add to favorites
-  const addToFavorites = useCallback(async (sticker: Sticker) => {
-    if (!user?.id) return
+  const addToFavorites = useCallback(
+    async (sticker: Sticker) => {
+      if (!user?.id) return
 
-    try {
-      const position = store.favoriteStickers.length
-      const { data } = await addFavoriteMutation({
-        variables: { userId: user.id, stickerId: sticker.id, position },
-      })
+      try {
+        const position = store.favoriteStickers.length
+        const { data } = await addFavoriteMutation({
+          variables: { userId: user.id, stickerId: sticker.id, position },
+        })
 
-      if (data?.insert_nchat_favorite_stickers_one) {
-        store.addFavoriteSticker(data.insert_nchat_favorite_stickers_one)
+        if (data?.insert_nchat_favorite_stickers_one) {
+          store.addFavoriteSticker(data.insert_nchat_favorite_stickers_one)
+        }
+      } catch (err) {
+        logger.error('Failed to add to favorites:',  err)
       }
-    } catch (err) {
-      console.error('Failed to add to favorites:', err)
-    }
-  }, [user?.id, addFavoriteMutation, store])
+    },
+    [user?.id, addFavoriteMutation, store]
+  )
 
   // Remove from favorites
-  const removeFromFavorites = useCallback(async (stickerId: string) => {
-    if (!user?.id) return
+  const removeFromFavorites = useCallback(
+    async (stickerId: string) => {
+      if (!user?.id) return
 
-    try {
-      const { data } = await removeFavoriteMutation({
-        variables: { userId: user.id, stickerId },
-      })
+      try {
+        const { data } = await removeFavoriteMutation({
+          variables: { userId: user.id, stickerId },
+        })
 
-      if (data?.delete_nchat_favorite_stickers?.affected_rows) {
-        store.removeFavoriteSticker(stickerId)
+        if (data?.delete_nchat_favorite_stickers?.affected_rows) {
+          store.removeFavoriteSticker(stickerId)
+        }
+      } catch (err) {
+        logger.error('Failed to remove from favorites:',  err)
       }
-    } catch (err) {
-      console.error('Failed to remove from favorites:', err)
-    }
-  }, [user?.id, removeFavoriteMutation, store])
+    },
+    [user?.id, removeFavoriteMutation, store]
+  )
 
   // Check if sticker is favorite
-  const isFavorite = useCallback((stickerId: string): boolean => {
-    return store.isFavorite(stickerId)
-  }, [store])
+  const isFavorite = useCallback(
+    (stickerId: string): boolean => {
+      return store.isFavorite(stickerId)
+    },
+    [store]
+  )
 
   // Clear recent stickers
   const clearRecentStickersHandler = useCallback(async () => {
@@ -418,7 +452,7 @@ export function useStickers(): UseStickersReturn {
       })
       store.clearRecentStickers()
     } catch (err) {
-      console.error('Failed to clear recent stickers:', err)
+      logger.error('Failed to clear recent stickers:',  err)
     }
   }, [user?.id, clearRecentMutation, store])
 
@@ -525,25 +559,28 @@ export function useStickerSearch(): UseStickerSearchReturn {
   const store = useStickerStore()
   const [search, { loading, error }] = useLazyQuery(SEARCH_STICKERS)
 
-  const searchHandler = useCallback(async (query: string) => {
-    store.setSearchQuery(query)
+  const searchHandler = useCallback(
+    async (query: string) => {
+      store.setSearchQuery(query)
 
-    if (!query || query.length < 2) {
-      store.setSearchResults([])
-      return
-    }
-
-    try {
-      const { data } = await search({
-        variables: { searchQuery: `%${query}%`, limit: 50 },
-      })
-      if (data?.nchat_stickers) {
-        store.setSearchResults(data.nchat_stickers)
+      if (!query || query.length < 2) {
+        store.setSearchResults([])
+        return
       }
-    } catch (err) {
-      console.error('Search failed:', err)
-    }
-  }, [search, store])
+
+      try {
+        const { data } = await search({
+          variables: { searchQuery: `%${query}%`, limit: 50 },
+        })
+        if (data?.nchat_stickers) {
+          store.setSearchResults(data.nchat_stickers)
+        }
+      } catch (err) {
+        logger.error('Search failed:',  err)
+      }
+    },
+    [search, store]
+  )
 
   const clear = useCallback(() => {
     store.clearSearch()

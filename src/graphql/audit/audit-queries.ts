@@ -78,12 +78,7 @@ export const GET_AUDIT_LOGS = gql`
     $where: nchat_audit_logs_bool_exp
     $order_by: [nchat_audit_logs_order_by!]
   ) {
-    nchat_audit_logs(
-      limit: $limit
-      offset: $offset
-      where: $where
-      order_by: $order_by
-    ) {
+    nchat_audit_logs(limit: $limit, offset: $offset, where: $where, order_by: $order_by) {
       ...AuditEntryFields
     }
     nchat_audit_logs_aggregate(where: $where) {
@@ -111,11 +106,7 @@ export const GET_AUDIT_LOG_BY_ID = gql`
  */
 export const GET_AUDIT_LOGS_BY_ACTOR = gql`
   ${AUDIT_ENTRY_FRAGMENT}
-  query GetAuditLogsByActor(
-    $actorId: uuid!
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetAuditLogsByActor($actorId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_audit_logs(
       where: { actor_id: { _eq: $actorId } }
       order_by: { timestamp: desc }
@@ -144,10 +135,7 @@ export const GET_AUDIT_LOGS_BY_RESOURCE = gql`
     $offset: Int = 0
   ) {
     nchat_audit_logs(
-      where: {
-        resource_type: { _eq: $resourceType }
-        resource_id: { _eq: $resourceId }
-      }
+      where: { resource_type: { _eq: $resourceType }, resource_id: { _eq: $resourceId } }
       order_by: { timestamp: desc }
       limit: $limit
       offset: $offset
@@ -155,10 +143,7 @@ export const GET_AUDIT_LOGS_BY_RESOURCE = gql`
       ...AuditEntryFields
     }
     nchat_audit_logs_aggregate(
-      where: {
-        resource_type: { _eq: $resourceType }
-        resource_id: { _eq: $resourceId }
-      }
+      where: { resource_type: { _eq: $resourceType }, resource_id: { _eq: $resourceId } }
     ) {
       aggregate {
         count
@@ -224,10 +209,7 @@ export const GET_USER_ACTIVITY = gql`
     $offset: Int = 0
   ) {
     nchat_audit_logs(
-      where: {
-        actor_id: { _eq: $userId }
-        timestamp: { _gte: $startDate, _lte: $endDate }
-      }
+      where: { actor_id: { _eq: $userId }, timestamp: { _gte: $startDate, _lte: $endDate } }
       order_by: { timestamp: desc }
       limit: $limit
       offset: $offset
@@ -235,10 +217,7 @@ export const GET_USER_ACTIVITY = gql`
       ...AuditEntryFields
     }
     nchat_audit_logs_aggregate(
-      where: {
-        actor_id: { _eq: $userId }
-        timestamp: { _gte: $startDate, _lte: $endDate }
-      }
+      where: { actor_id: { _eq: $userId }, timestamp: { _gte: $startDate, _lte: $endDate } }
     ) {
       aggregate {
         count
@@ -252,11 +231,7 @@ export const GET_USER_ACTIVITY = gql`
  */
 export const GET_CHANNEL_ACTIVITY = gql`
   ${AUDIT_ENTRY_FRAGMENT}
-  query GetChannelActivity(
-    $channelId: String!
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetChannelActivity($channelId: String!, $limit: Int = 50, $offset: Int = 0) {
     nchat_audit_logs(
       where: {
         _or: [
@@ -321,9 +296,7 @@ export const GET_HIGH_SEVERITY_EVENTS = gql`
     ) {
       ...AuditEntryFields
     }
-    nchat_audit_logs_aggregate(
-      where: { severity: { _in: ["critical", "error"] } }
-    ) {
+    nchat_audit_logs_aggregate(where: { severity: { _in: ["critical", "error"] } }) {
       aggregate {
         count
       }
@@ -364,10 +337,7 @@ export const GET_AUDIT_STATISTICS = gql`
       }
     }
     failed_events: nchat_audit_logs_aggregate(
-      where: {
-        success: { _eq: false }
-        timestamp: { _gte: $startDate, _lte: $endDate }
-      }
+      where: { success: { _eq: false }, timestamp: { _gte: $startDate, _lte: $endDate } }
     ) {
       aggregate {
         count
@@ -416,11 +386,7 @@ export const GET_AUDIT_SETTINGS = gql`
  */
 export const SEARCH_AUDIT_LOGS = gql`
   ${AUDIT_ENTRY_FRAGMENT}
-  query SearchAuditLogs(
-    $searchQuery: String!
-    $limit: Int = 20
-    $offset: Int = 0
-  ) {
+  query SearchAuditLogs($searchQuery: String!, $limit: Int = 20, $offset: Int = 0) {
     nchat_audit_logs(
       where: {
         _or: [

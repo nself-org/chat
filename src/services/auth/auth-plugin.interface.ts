@@ -5,6 +5,8 @@
  * with the nchat authentication system.
  */
 
+import { logger } from '@/lib/logger'
+
 // User information returned from authentication
 export interface AuthUser {
   id: string
@@ -205,7 +207,10 @@ export interface AuthProvider {
   /**
    * For phone providers: Send verification code
    */
-  sendVerificationCode?(phoneNumber: string, countryCode: string): Promise<{ success: boolean; error?: AuthError }>
+  sendVerificationCode?(
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<{ success: boolean; error?: AuthError }>
 
   /**
    * For passwordless: Send magic link
@@ -220,7 +225,10 @@ export interface AuthProvider {
   /**
    * For email: Reset password with token
    */
-  resetPassword?(token: string, newPassword: string): Promise<{ success: boolean; error?: AuthError }>
+  resetPassword?(
+    token: string,
+    newPassword: string
+  ): Promise<{ success: boolean; error?: AuthError }>
 
   /**
    * For email: Verify email address
@@ -301,20 +309,28 @@ export abstract class BaseAuthProvider implements AuthProvider {
   }
 
   protected emitEvent(event: AuthEvent): void {
-    this.listeners.forEach(listener => {
+    this.listeners.forEach((listener) => {
       try {
         listener(event)
       } catch (error) {
-        console.error('Auth event listener error:', error)
+        logger.error('Auth event listener error:',  error)
       }
     })
   }
 
-  protected createError(code: string, message: string, details?: Record<string, unknown>): AuthError {
+  protected createError(
+    code: string,
+    message: string,
+    details?: Record<string, unknown>
+  ): AuthError {
     return { code, message, details }
   }
 
-  protected createSuccessResult(user: AuthUser, accessToken: string, refreshToken?: string): AuthResult {
+  protected createSuccessResult(
+    user: AuthUser,
+    accessToken: string,
+    refreshToken?: string
+  ): AuthResult {
     return {
       success: true,
       user,
@@ -345,13 +361,13 @@ export class AuthProviderRegistry {
   register(provider: AuthProvider): void {
     const id = provider.metadata.id
     if (this.providers.has(id)) {
-      console.warn(`Auth provider ${id} is already registered, replacing...`)
+      logger.warn(`Auth provider ${id} is already registered, replacing...`)
     }
     this.providers.set(id, provider)
 
     // Forward events from provider to registry listeners
     provider.onAuthStateChange((event) => {
-      this.listeners.forEach(listener => listener(event))
+      this.listeners.forEach((listener) => listener(event))
     })
   }
 
@@ -384,14 +400,14 @@ export class AuthProviderRegistry {
    * Get all enabled providers
    */
   getEnabled(): AuthProvider[] {
-    return this.getAll().filter(p => p.isEnabled())
+    return this.getAll().filter((p) => p.isEnabled())
   }
 
   /**
    * Get providers by type
    */
   getByType(type: AuthProviderMetadata['type']): AuthProvider[] {
-    return this.getAll().filter(p => p.metadata.type === type)
+    return this.getAll().filter((p) => p.metadata.type === type)
   }
 
   /**
@@ -408,7 +424,7 @@ export class AuthProviderRegistry {
    * Destroy all providers
    */
   destroy(): void {
-    this.providers.forEach(provider => provider.destroy())
+    this.providers.forEach((provider) => provider.destroy())
     this.providers.clear()
     this.listeners.clear()
   }

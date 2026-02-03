@@ -199,12 +199,13 @@ src/
 **Purpose**: Primary UI for creating and editing reminders
 
 **Props**:
+
 ```typescript
 interface SetReminderModalProps {
   open?: boolean
   onOpenChange?: (open: boolean) => void
   userId: string
-  messageId?: string              // For message reminders
+  messageId?: string // For message reminders
   channelId?: string
   initialContent?: string
   editingReminder?: Reminder | null
@@ -214,6 +215,7 @@ interface SetReminderModalProps {
 ```
 
 **Features**:
+
 - Quick time presets (tabs)
 - Custom date/time picker
 - Recurring reminder configuration
@@ -222,10 +224,10 @@ interface SetReminderModalProps {
 - Preview panel
 
 **Usage**:
+
 ```tsx
 import { SetReminderModal } from '@/components/reminders'
-
-<SetReminderModal
+;<SetReminderModal
   open={isOpen}
   onOpenChange={setIsOpen}
   userId={currentUser.id}
@@ -243,10 +245,11 @@ import { SetReminderModal } from '@/components/reminders'
 **Purpose**: Display and manage all reminders
 
 **Props**:
+
 ```typescript
 interface RemindersListProps {
   userId: string
-  channelId?: string              // Filter to specific channel
+  channelId?: string // Filter to specific channel
   onEdit?: (reminder: Reminder) => void
   onCreateNew?: () => void
   showFilters?: boolean
@@ -259,6 +262,7 @@ interface RemindersListProps {
 ```
 
 **Features**:
+
 - Tabbed view (Upcoming / Completed)
 - Search and filter bar
 - Group by date or channel
@@ -267,10 +271,10 @@ interface RemindersListProps {
 - Empty states
 
 **Usage**:
+
 ```tsx
 import { RemindersList } from '@/components/reminders'
-
-<RemindersList
+;<RemindersList
   userId={currentUser.id}
   showFilters={true}
   showSearch={true}
@@ -286,12 +290,14 @@ import { RemindersList } from '@/components/reminders'
 **Purpose**: Display when reminder is due
 
 **Components**:
+
 - `ReminderNotification`: Full-featured notification
 - `ReminderToast`: Toast-style notification
 - `ReminderBell`: Badge with count
 - `ReminderNotificationContainer`: Container for active notifications
 
 **Features**:
+
 - Auto-dismiss or persistent
 - Quick actions (Complete, Snooze, Dismiss)
 - Sound alerts
@@ -299,11 +305,12 @@ import { RemindersList } from '@/components/reminders'
 - Click to navigate
 
 **Usage**:
+
 ```tsx
 import { ReminderNotificationContainer } from '@/components/reminders'
 
 // Add to your app layout
-<ReminderNotificationContainer userId={currentUser.id} />
+;<ReminderNotificationContainer userId={currentUser.id} />
 ```
 
 ---
@@ -313,21 +320,23 @@ import { ReminderNotificationContainer } from '@/components/reminders'
 **Purpose**: Quick reminder creation from messages
 
 **Components**:
+
 - `QuickRemind`: Full dropdown menu
 - `QuickRemindButtons`: Button grid
 - `MessageQuickRemind`: Message action integration
 
 **Features**:
+
 - Preset time options
 - One-click reminder creation
 - Message context aware
 - Custom time option
 
 **Usage**:
+
 ```tsx
 import { MessageQuickRemind } from '@/components/reminders'
-
-<MessageQuickRemind
+;<MessageQuickRemind
   messageId={message.id}
   channelId={channel.id}
   messageContent={message.content}
@@ -348,6 +357,7 @@ Base URL: `/api/reminders`
 Fetch reminders for authenticated user.
 
 **Query Parameters**:
+
 - `status`: Filter by status (`pending`, `completed`, `dismissed`, `snoozed`)
 - `channelId`: Filter by channel ID
 - `type`: Filter by type (`message`, `custom`, `followup`)
@@ -355,6 +365,7 @@ Fetch reminders for authenticated user.
 - `offset`: Pagination offset
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -380,6 +391,7 @@ Fetch reminders for authenticated user.
 Create a new reminder.
 
 **Request Body**:
+
 ```json
 {
   "messageId": "uuid (optional)",
@@ -399,11 +411,14 @@ Create a new reminder.
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
   "data": {
-    "reminder": { /* full reminder object */ },
+    "reminder": {
+      /* full reminder object */
+    },
     "message": "Reminder created successfully"
   }
 }
@@ -414,11 +429,12 @@ Create a new reminder.
 Perform actions on existing reminders.
 
 **Request Body**:
+
 ```json
 {
   "action": "complete | dismiss | snooze | unsnooze",
   "id": "uuid",
-  "snoozeDuration": 3600000  // milliseconds (for snooze)
+  "snoozeDuration": 3600000 // milliseconds (for snooze)
 }
 ```
 
@@ -427,6 +443,7 @@ Perform actions on existing reminders.
 Update an existing reminder.
 
 **Request Body**:
+
 ```json
 {
   "id": "uuid",
@@ -440,6 +457,7 @@ Update an existing reminder.
 Delete a reminder.
 
 **Query Parameters**:
+
 - `id`: Reminder ID
 
 ---
@@ -488,11 +506,7 @@ query GetReminders($userId: uuid!, $status: String) {
 
 query GetDueReminders($userId: uuid!, $now: timestamptz!) {
   nchat_reminders(
-    where: {
-      user_id: { _eq: $userId }
-      status: { _eq: "pending" }
-      remind_at: { _lte: $now }
-    }
+    where: { user_id: { _eq: $userId }, status: { _eq: "pending" }, remind_at: { _lte: $now } }
   ) {
     ...ReminderFragment
   }
@@ -503,14 +517,16 @@ query GetDueReminders($userId: uuid!, $now: timestamptz!) {
 
 ```graphql
 mutation CreateReminder($userId: uuid!, $content: String!, $remindAt: timestamptz!) {
-  insert_nchat_reminders_one(object: {
-    user_id: $userId
-    content: $content
-    remind_at: $remindAt
-    timezone: "UTC"
-    status: "pending"
-    type: "custom"
-  }) {
+  insert_nchat_reminders_one(
+    object: {
+      user_id: $userId
+      content: $content
+      remind_at: $remindAt
+      timezone: "UTC"
+      status: "pending"
+      type: "custom"
+    }
+  ) {
     ...ReminderFragment
   }
 }
@@ -527,11 +543,7 @@ mutation CompleteReminder($id: uuid!) {
 mutation SnoozeReminder($id: uuid!, $snoozedUntil: timestamptz!) {
   update_nchat_reminders_by_pk(
     pk_columns: { id: $id }
-    _set: {
-      status: "snoozed"
-      snoozed_until: $snoozedUntil
-      remind_at: $snoozedUntil
-    }
+    _set: { status: "snoozed", snoozed_until: $snoozedUntil, remind_at: $snoozedUntil }
     _inc: { snooze_count: 1 }
   ) {
     ...ReminderFragment
@@ -544,11 +556,7 @@ mutation SnoozeReminder($id: uuid!, $snoozedUntil: timestamptz!) {
 ```graphql
 subscription ReminderDue($userId: uuid!, $now: timestamptz!) {
   nchat_reminders(
-    where: {
-      user_id: { _eq: $userId }
-      status: { _eq: "pending" }
-      remind_at: { _lte: $now }
-    }
+    where: { user_id: { _eq: $userId }, status: { _eq: "pending" }, remind_at: { _lte: $now } }
   ) {
     ...ReminderFragment
   }
@@ -579,11 +587,7 @@ function MessageActions({ message, user }) {
     })
   }
 
-  return (
-    <button onClick={handleRemindIn1Hour}>
-      Remind me in 1 hour
-    </button>
-  )
+  return <button onClick={handleRemindIn1Hour}>Remind me in 1 hour</button>
 }
 ```
 
@@ -672,9 +676,7 @@ function HeaderBell({ user }) {
     <button className="relative">
       <Bell className="h-5 w-5" />
       {count > 0 && (
-        <Badge className="absolute -top-1 -right-1">
-          {count > 99 ? '99+' : count}
-        </Badge>
+        <Badge className="absolute -right-1 -top-1">{count > 99 ? '99+' : count}</Badge>
       )}
     </button>
   )
@@ -698,6 +700,7 @@ Natural language reminder creation via bot commands.
 #### Examples
 
 **Personal Reminders**:
+
 ```
 /remind me in 2 hours to review the PR
 /remind me tomorrow at 9am to call John
@@ -706,12 +709,14 @@ Natural language reminder creation via bot commands.
 ```
 
 **Mention Reminders**:
+
 ```
 /remind @john in 1 hour about the meeting
 /remind @sarah tomorrow to review the document
 ```
 
 **Channel Reminders**:
+
 ```
 /remind #general in 30 minutes to join standup
 /remind #dev-team tomorrow at 10am about deployment
@@ -915,6 +920,7 @@ If upgrading from a previous system:
 ## Support
 
 For issues, questions, or feature requests:
+
 - GitHub Issues: [nself-chat/issues](https://github.com/nself/nself-chat/issues)
 - Documentation: [docs/Reminders-System.md](./Reminders-System.md)
 - Email: support@nself.org

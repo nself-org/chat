@@ -27,6 +27,7 @@ curl -fsSL https://raw.githubusercontent.com/yourusername/nself-chat/main/script
 ```
 
 This will:
+
 - Install Docker and Docker Compose if needed
 - Download and configure nself-chat
 - Set up SSL with Let's Encrypt
@@ -39,13 +40,13 @@ This will:
 
 ### Minimum Server Specifications
 
-| Resource | Minimum | Recommended | Notes |
-|----------|---------|-------------|-------|
-| **CPU** | 2 cores | 4+ cores | More cores = better real-time performance |
-| **RAM** | 4 GB | 8+ GB | 8GB recommended for 50+ concurrent users |
-| **Disk** | 20 GB | 50+ GB SSD | SSD highly recommended for database |
-| **Network** | 100 Mbps | 1 Gbps | Upload speed matters for video calls |
-| **OS** | Ubuntu 20.04+ | Ubuntu 22.04 LTS | Also supports Debian, CentOS, RHEL |
+| Resource    | Minimum       | Recommended      | Notes                                     |
+| ----------- | ------------- | ---------------- | ----------------------------------------- |
+| **CPU**     | 2 cores       | 4+ cores         | More cores = better real-time performance |
+| **RAM**     | 4 GB          | 8+ GB            | 8GB recommended for 50+ concurrent users  |
+| **Disk**    | 20 GB         | 50+ GB SSD       | SSD highly recommended for database       |
+| **Network** | 100 Mbps      | 1 Gbps           | Upload speed matters for video calls      |
+| **OS**      | Ubuntu 20.04+ | Ubuntu 22.04 LTS | Also supports Debian, CentOS, RHEL        |
 
 ### Software Requirements
 
@@ -65,14 +66,14 @@ This will:
 
 ### Cloud Provider Recommendations
 
-| Provider | Instance Type | Monthly Cost (approx) | Notes |
-|----------|--------------|---------------------|-------|
-| **DigitalOcean** | Premium 4GB | $24/month | Best value for small teams |
-| **Hetzner** | CPX21 | €8.46/month | Excellent price/performance |
-| **AWS** | t3.medium | $30-40/month | Use with reserved instances |
-| **Google Cloud** | e2-medium | $25-35/month | Good integration options |
-| **Linode** | 4GB Dedicated | $24/month | Reliable performance |
-| **Vultr** | 4GB High Frequency | $24/month | Fast NVMe storage |
+| Provider         | Instance Type      | Monthly Cost (approx) | Notes                       |
+| ---------------- | ------------------ | --------------------- | --------------------------- |
+| **DigitalOcean** | Premium 4GB        | $24/month             | Best value for small teams  |
+| **Hetzner**      | CPX21              | €8.46/month           | Excellent price/performance |
+| **AWS**          | t3.medium          | $30-40/month          | Use with reserved instances |
+| **Google Cloud** | e2-medium          | $25-35/month          | Good integration options    |
+| **Linode**       | 4GB Dedicated      | $24/month             | Reliable performance        |
+| **Vultr**        | 4GB High Frequency | $24/month             | Fast NVMe storage           |
 
 ---
 
@@ -349,6 +350,7 @@ AAAA Record: chat.example.com  →  YOUR_SERVER_IPv6 (if available)
 ### Email Configuration
 
 nself-chat requires SMTP for:
+
 - User invitations
 - Password resets
 - Email verification
@@ -356,13 +358,13 @@ nself-chat requires SMTP for:
 
 **Recommended SMTP providers:**
 
-| Provider | Setup Complexity | Free Tier | Notes |
-|----------|------------------|-----------|-------|
-| **Resend** | Easy | 100/day | Modern, developer-friendly |
-| **SendGrid** | Easy | 100/day | Reliable, good docs |
-| **Mailgun** | Medium | 5,000/month | Powerful, pay-as-go |
-| **AWS SES** | Medium | 62,000/month (EC2) | Cheapest at scale |
-| **Postmark** | Easy | Free trial | Excellent deliverability |
+| Provider     | Setup Complexity | Free Tier          | Notes                      |
+| ------------ | ---------------- | ------------------ | -------------------------- |
+| **Resend**   | Easy             | 100/day            | Modern, developer-friendly |
+| **SendGrid** | Easy             | 100/day            | Reliable, good docs        |
+| **Mailgun**  | Medium           | 5,000/month        | Powerful, pay-as-go        |
+| **AWS SES**  | Medium           | 62,000/month (EC2) | Cheapest at scale          |
+| **Postmark** | Easy             | Free trial         | Excellent deliverability   |
 
 **Example SMTP configuration (SendGrid):**
 
@@ -922,6 +924,7 @@ sudo /usr/local/bin/diagnose-nchat --bundle
 ```
 
 The bundle includes:
+
 - Service status
 - Recent logs
 - Configuration (sanitized)
@@ -1067,6 +1070,7 @@ See [Mattermost Import Guide](../features/mattermost-import.md)
 ### Hosting Costs (Monthly)
 
 **Small Team (1-25 users):**
+
 - Server: $24/month (DigitalOcean 4GB)
 - Storage: Included
 - Bandwidth: Included
@@ -1074,6 +1078,7 @@ See [Mattermost Import Guide](../features/mattermost-import.md)
 - **Total: ~$25/month**
 
 **Medium Team (25-100 users):**
+
 - Server: $48/month (DigitalOcean 8GB)
 - Storage: $5/month (100GB)
 - Bandwidth: Included
@@ -1081,6 +1086,7 @@ See [Mattermost Import Guide](../features/mattermost-import.md)
 - **Total: ~$55/month**
 
 **Large Team (100-500 users):**
+
 - Server: $96/month (DigitalOcean 16GB)
 - Storage: $20/month (500GB)
 - Bandwidth: $10/month
@@ -1089,12 +1095,12 @@ See [Mattermost Import Guide](../features/mattermost-import.md)
 
 **Comparison to SaaS:**
 
-| Users | Self-Hosted | Slack | Savings |
-|-------|-------------|-------|---------|
-| 25 | $25/mo | $200/mo | $2,100/year |
-| 50 | $55/mo | $400/mo | $4,140/year |
-| 100 | $55/mo | $800/mo | $8,940/year |
-| 500 | $160/mo | $4,000/mo | $46,080/year |
+| Users | Self-Hosted | Slack     | Savings      |
+| ----- | ----------- | --------- | ------------ |
+| 25    | $25/mo      | $200/mo   | $2,100/year  |
+| 50    | $55/mo      | $400/mo   | $4,140/year  |
+| 100   | $55/mo      | $800/mo   | $8,940/year  |
+| 500   | $160/mo     | $4,000/mo | $46,080/year |
 
 ---
 

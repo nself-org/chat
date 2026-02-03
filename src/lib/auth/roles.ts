@@ -179,9 +179,7 @@ export function getNextHigherRole(role: UserRole): UserRole | null {
   const higherRoles = ALL_ROLES.filter((r) => getRoleLevel(r) > currentLevel)
   if (higherRoles.length === 0) return null
   // Return the role with the smallest level that's still higher
-  return higherRoles.reduce((closest, r) =>
-    getRoleLevel(r) < getRoleLevel(closest) ? r : closest
-  )
+  return higherRoles.reduce((closest, r) => (getRoleLevel(r) < getRoleLevel(closest) ? r : closest))
 }
 
 /**
@@ -192,9 +190,7 @@ export function getNextLowerRole(role: UserRole): UserRole | null {
   const lowerRoles = ALL_ROLES.filter((r) => getRoleLevel(r) < currentLevel)
   if (lowerRoles.length === 0) return null
   // Return the role with the largest level that's still lower
-  return lowerRoles.reduce((closest, r) =>
-    getRoleLevel(r) > getRoleLevel(closest) ? r : closest
-  )
+  return lowerRoles.reduce((closest, r) => (getRoleLevel(r) > getRoleLevel(closest) ? r : closest))
 }
 
 /**
@@ -203,9 +199,7 @@ export function getNextLowerRole(role: UserRole): UserRole | null {
 export function getAssignableRoles(assignerRole: UserRole): UserRole[] {
   // Owner cannot be assigned, only transferred
   // Users can only assign roles lower than their own
-  return ALL_ROLES.filter(
-    (r) => r !== 'owner' && getRoleLevel(r) < getRoleLevel(assignerRole)
-  )
+  return ALL_ROLES.filter((r) => r !== 'owner' && getRoleLevel(r) < getRoleLevel(assignerRole))
 }
 
 /**
@@ -223,8 +217,5 @@ export function canModifyUserRole(
   if (targetNewRole === 'owner') return false
 
   // Actor must have higher role than both current and new target role
-  return (
-    hasHigherRole(actorRole, targetCurrentRole) &&
-    hasHigherRole(actorRole, targetNewRole)
-  )
+  return hasHigherRole(actorRole, targetCurrentRole) && hasHigherRole(actorRole, targetNewRole)
 }

@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getModerationService } from '@/lib/moderation/moderation-service'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -25,10 +27,7 @@ export async function POST(request: NextRequest) {
     } = body
 
     if (!contentType) {
-      return NextResponse.json(
-        { error: 'Content type is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Content type is required' }, { status: 400 })
     }
 
     // Get moderation service
@@ -65,10 +64,7 @@ export async function POST(request: NextRequest) {
 
       result = await moderationService.moderateImage(contentUrl)
     } else {
-      return NextResponse.json(
-        { error: 'Invalid content type' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid content type' }, { status: 400 })
     }
 
     return NextResponse.json({
@@ -76,7 +72,7 @@ export async function POST(request: NextRequest) {
       result,
     })
   } catch (error) {
-    console.error('Moderation scan error:', error)
+    logger.error('Moderation scan error:', error)
     captureError(error as Error, {
       tags: { feature: 'moderation', endpoint: 'scan' },
     })

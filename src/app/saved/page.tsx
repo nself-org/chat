@@ -1,23 +1,23 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useRouter } from 'next/navigation';
-import { Bookmark, Plus, Download, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useSavedStore, selectAllCollections } from '@/stores/saved-store';
-import { SavedMessageList } from '@/components/saved/SavedMessageList';
-import { SavedFilters } from '@/components/saved/SavedFilters';
-import { CollectionList } from '@/components/saved/CollectionList';
-import { CreateCollection } from '@/components/saved/CreateCollection';
-import { AddToCollection } from '@/components/saved/AddToCollection';
-import { exportSavedMessages, downloadExport } from '@/lib/saved';
-import type { SavedMessage, SavedCollection } from '@/lib/saved';
+import * as React from 'react'
+import { useRouter } from 'next/navigation'
+import { Bookmark, Plus, Download, ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useSavedStore, selectAllCollections } from '@/stores/saved-store'
+import { SavedMessageList } from '@/components/saved/SavedMessageList'
+import { SavedFilters } from '@/components/saved/SavedFilters'
+import { CollectionList } from '@/components/saved/CollectionList'
+import { CreateCollection } from '@/components/saved/CreateCollection'
+import { AddToCollection } from '@/components/saved/AddToCollection'
+import { exportSavedMessages, downloadExport } from '@/lib/saved'
+import type { SavedMessage, SavedCollection } from '@/lib/saved'
 
 /**
  * Saved messages page - shows all saved/starred messages for the current user.
  */
 export default function SavedMessagesPage() {
-  const router = useRouter();
+  const router = useRouter()
 
   const {
     getFilteredSavedMessages,
@@ -50,50 +50,45 @@ export default function SavedMessagesPage() {
     closeCreateCollection,
     isCreateCollectionOpen,
     addCollection,
-  } = useSavedStore();
+  } = useSavedStore()
 
-  const allCollections = useSavedStore(selectAllCollections);
-  const savedMessages = getFilteredSavedMessages();
-  const stats = getSavedStats();
-  const availableTags = getAllTags();
+  const allCollections = useSavedStore(selectAllCollections)
+  const savedMessages = getFilteredSavedMessages()
+  const stats = getSavedStats()
+  const availableTags = getAllTags()
 
-  const selectedSaved = selectedSavedId
-    ? getSavedMessage(selectedSavedId)
-    : undefined;
+  const selectedSaved = selectedSavedId ? getSavedMessage(selectedSavedId) : undefined
 
   const handleJumpToMessage = (messageId: string, channelId: string) => {
-    router.push(`/chat/channel/${channelId}?message=${messageId}`);
-  };
+    router.push(`/chat/channel/${channelId}?message=${messageId}`)
+  }
 
   const handleUnsave = (saved: SavedMessage) => {
-    removeSavedMessage(saved.id);
-  };
+    removeSavedMessage(saved.id)
+  }
 
   const handleToggleStar = (saved: SavedMessage) => {
-    toggleStar(saved.id);
-  };
+    toggleStar(saved.id)
+  }
 
   const handleAddToCollection = (saved: SavedMessage) => {
-    openAddToCollection(saved.id);
-  };
+    openAddToCollection(saved.id)
+  }
 
-  const handleSortChange = (
-    newSortBy: typeof sortBy,
-    newSortOrder: typeof sortOrder
-  ) => {
-    setSortBy(newSortBy);
-    setSortOrder(newSortOrder);
-  };
+  const handleSortChange = (newSortBy: typeof sortBy, newSortOrder: typeof sortOrder) => {
+    setSortBy(newSortBy)
+    setSortOrder(newSortOrder)
+  }
 
   const handleCollectionSave = () => {
-    closeAddToCollection();
-  };
+    closeAddToCollection()
+  }
 
   const handleCreateCollection = (data: {
-    name: string;
-    description?: string;
-    icon?: string;
-    color?: string;
+    name: string
+    description?: string
+    icon?: string
+    color?: string
   }) => {
     const newCollection: SavedCollection = {
       id: crypto.randomUUID(),
@@ -107,47 +102,38 @@ export default function SavedMessagesPage() {
       updatedAt: new Date(),
       position: allCollections.length,
       isShared: false,
-    };
-    addCollection(newCollection);
-    closeCreateCollection();
-  };
+    }
+    addCollection(newCollection)
+    closeCreateCollection()
+  }
 
   const handleExport = () => {
-    const result = exportSavedMessages(
-      savedMessages,
-      allCollections,
-      {
-        format: 'json',
-        includeContent: true,
-        includeAttachments: true,
-        includeNotes: true,
-        includeTags: true,
-      }
-    );
+    const result = exportSavedMessages(savedMessages, allCollections, {
+      format: 'json',
+      includeContent: true,
+      includeAttachments: true,
+      includeNotes: true,
+      includeTags: true,
+    })
     if (result.success) {
-      downloadExport(result);
+      downloadExport(result)
     }
-  };
+  }
 
   return (
     <div className="flex h-screen bg-background">
       {/* Sidebar */}
-      <div className="w-64 border-r flex flex-col">
-        <div className="p-4 border-b">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="mb-2"
-            onClick={() => router.push('/chat')}
-          >
-            <ArrowLeft className="h-4 w-4 mr-2" />
+      <div className="flex w-64 flex-col border-r">
+        <div className="border-b p-4">
+          <Button variant="ghost" size="sm" className="mb-2" onClick={() => router.push('/chat')}>
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Back to Chat
           </Button>
           <div className="flex items-center gap-2">
             <Bookmark className="h-5 w-5 text-blue-500" />
             <h1 className="text-lg font-semibold">Saved Messages</h1>
           </div>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground">
             {stats.totalSaved} saved
             {stats.totalStarred > 0 && ` (${stats.totalStarred} starred)`}
           </p>
@@ -159,18 +145,16 @@ export default function SavedMessagesPage() {
           onSelect={setSelectedCollection}
           onCreate={openCreateCollection}
           showUncategorized
-          uncategorizedCount={
-            savedMessages.filter((m) => m.collectionIds.length === 0).length
-          }
+          uncategorizedCount={savedMessages.filter((m) => m.collectionIds.length === 0).length}
           className="flex-1"
         />
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Header */}
-        <div className="p-4 border-b">
-          <div className="flex items-center justify-between mb-4">
+        <div className="border-b p-4">
+          <div className="mb-4 flex items-center justify-between">
             <div>
               <h2 className="text-lg font-medium">
                 {selectedCollectionId
@@ -183,11 +167,11 @@ export default function SavedMessagesPage() {
             </div>
             <div className="flex items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleExport}>
-                <Download className="h-4 w-4 mr-2" />
+                <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
               <Button size="sm" onClick={openCreateCollection}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 New Collection
               </Button>
             </div>
@@ -235,17 +219,17 @@ export default function SavedMessagesPage() {
         collections={allCollections}
         selectedIds={selectedSaved?.collectionIds ?? []}
         onSelectionChange={(ids) => {
-          if (!selectedSavedId) return;
-          const current = selectedSaved?.collectionIds ?? [];
-          const toAdd = ids.filter((id) => !current.includes(id));
-          const toRemove = current.filter((id) => !ids.includes(id));
+          if (!selectedSavedId) return
+          const current = selectedSaved?.collectionIds ?? []
+          const toAdd = ids.filter((id) => !current.includes(id))
+          const toRemove = current.filter((id) => !ids.includes(id))
 
-          toAdd.forEach((cid) => addToCollection(selectedSavedId, cid));
-          toRemove.forEach((cid) => removeFromCollection(selectedSavedId, cid));
+          toAdd.forEach((cid) => addToCollection(selectedSavedId, cid))
+          toRemove.forEach((cid) => removeFromCollection(selectedSavedId, cid))
         }}
         onSave={handleCollectionSave}
         onCreateCollection={openCreateCollection}
       />
     </div>
-  );
+  )
 }

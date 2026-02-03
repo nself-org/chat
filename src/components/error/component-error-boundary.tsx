@@ -6,6 +6,8 @@ import { isDevelopment } from '@/lib/environment'
 import { cn } from '@/lib/utils'
 import { AlertCircle } from 'lucide-react'
 
+import { logger } from '@/lib/logger'
+
 type FallbackMode = 'minimal' | 'hidden' | 'inline'
 
 interface ComponentErrorBoundaryProps {
@@ -86,9 +88,9 @@ export class ComponentErrorBoundary extends Component<
       return (
         <div
           className={cn(
-            'flex items-center gap-2 p-3 rounded-md',
-            'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800',
-            'text-red-700 dark:text-red-400 text-sm',
+            'flex items-center gap-2 rounded-md p-3',
+            'border border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20',
+            'text-sm text-red-700 dark:text-red-400',
             className
           )}
         >
@@ -96,7 +98,7 @@ export class ComponentErrorBoundary extends Component<
           <span>
             {componentName ? `${componentName} failed to load` : 'Component failed to load'}
             {isDevelopment() && error && (
-              <span className="block text-xs opacity-75 mt-1">{error.message}</span>
+              <span className="mt-1 block text-xs opacity-75">{error.message}</span>
             )}
           </span>
         </div>
@@ -108,7 +110,7 @@ export class ComponentErrorBoundary extends Component<
       <div
         className={cn(
           'inline-flex items-center justify-center',
-          'p-2 rounded-md bg-zinc-100 dark:bg-zinc-800',
+          'rounded-md bg-zinc-100 p-2 dark:bg-zinc-800',
           'text-zinc-500 dark:text-zinc-400',
           className
         )}
@@ -139,10 +141,8 @@ export function withComponentErrorBoundary<P extends object>(
     fallback?: ReactNode
   }
 ): React.FC<P> {
-  const displayName = options?.componentName ||
-    WrappedComponent.displayName ||
-    WrappedComponent.name ||
-    'Component'
+  const displayName =
+    options?.componentName || WrappedComponent.displayName || WrappedComponent.name || 'Component'
 
   const ComponentWithBoundary: React.FC<P> = (props) => (
     <ComponentErrorBoundary

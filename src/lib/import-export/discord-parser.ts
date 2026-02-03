@@ -150,18 +150,20 @@ export class DiscordParser {
         type: (msg.type as DiscordMessageType) || 'Default',
         timestamp: msg.timestamp as string,
         timestampEdited: msg.timestampEdited as string | undefined,
-        isPinned: msg.isPinned as boolean || false,
-        content: msg.content as string || '',
+        isPinned: (msg.isPinned as boolean) || false,
+        content: (msg.content as string) || '',
         author: {
-          id: author?.id as string || 'unknown',
-          name: author?.name as string || 'Unknown User',
-          discriminator: author?.discriminator as string || '0000',
+          id: (author?.id as string) || 'unknown',
+          name: (author?.name as string) || 'Unknown User',
+          discriminator: (author?.discriminator as string) || '0000',
           nickname: author?.nickname as string | undefined,
           color: author?.color as string | undefined,
-          isBot: author?.isBot as boolean || false,
+          isBot: (author?.isBot as boolean) || false,
           avatarUrl: author?.avatarUrl as string | undefined,
         },
-        attachments: this.parseAttachments(msg.attachments as Array<Record<string, unknown>> | undefined),
+        attachments: this.parseAttachments(
+          msg.attachments as Array<Record<string, unknown>> | undefined
+        ),
         embeds: this.parseEmbeds(msg.embeds as Array<Record<string, unknown>> | undefined),
         reactions: this.parseReactions(msg.reactions as Array<Record<string, unknown>> | undefined),
         mentions: this.parseMentions(msg.mentions as Array<Record<string, unknown>> | undefined),
@@ -183,11 +185,11 @@ export class DiscordParser {
   private parseAttachments(attachments?: Array<Record<string, unknown>>): DiscordAttachment[] {
     if (!attachments || !Array.isArray(attachments)) return []
 
-    return attachments.map(att => ({
-      id: att.id as string || '',
-      url: att.url as string || '',
-      fileName: att.fileName as string || 'unknown',
-      fileSizeBytes: att.fileSizeBytes as number || 0,
+    return attachments.map((att) => ({
+      id: (att.id as string) || '',
+      url: (att.url as string) || '',
+      fileName: (att.fileName as string) || 'unknown',
+      fileSizeBytes: (att.fileSizeBytes as number) || 0,
     }))
   }
 
@@ -197,7 +199,7 @@ export class DiscordParser {
   private parseEmbeds(embeds?: Array<Record<string, unknown>>): DiscordEmbed[] {
     if (!embeds || !Array.isArray(embeds)) return []
 
-    return embeds.map(embed => ({
+    return embeds.map((embed) => ({
       title: embed.title as string | undefined,
       url: embed.url as string | undefined,
       timestamp: embed.timestamp as string | undefined,
@@ -214,20 +216,22 @@ export class DiscordParser {
   /**
    * Parse message reactions
    */
-  private parseReactions(reactions?: Array<Record<string, unknown>>): DiscordReaction[] | undefined {
+  private parseReactions(
+    reactions?: Array<Record<string, unknown>>
+  ): DiscordReaction[] | undefined {
     if (!reactions || !Array.isArray(reactions)) return undefined
 
-    return reactions.map(reaction => {
+    return reactions.map((reaction) => {
       const emoji = reaction.emoji as Record<string, unknown>
       return {
         emoji: {
           id: emoji?.id as string | undefined,
-          name: emoji?.name as string || '',
+          name: (emoji?.name as string) || '',
           code: emoji?.code as string | undefined,
           isAnimated: emoji?.isAnimated as boolean | undefined,
           imageUrl: emoji?.imageUrl as string | undefined,
         },
-        count: reaction.count as number || 0,
+        count: (reaction.count as number) || 0,
       }
     })
   }
@@ -238,12 +242,12 @@ export class DiscordParser {
   private parseMentions(mentions?: Array<Record<string, unknown>>): DiscordMessage['mentions'] {
     if (!mentions || !Array.isArray(mentions)) return undefined
 
-    return mentions.map(mention => ({
-      id: mention.id as string || '',
-      name: mention.name as string || 'Unknown',
-      discriminator: mention.discriminator as string || '0000',
+    return mentions.map((mention) => ({
+      id: (mention.id as string) || '',
+      name: (mention.name as string) || 'Unknown',
+      discriminator: (mention.discriminator as string) || '0000',
       nickname: mention.nickname as string | undefined,
-      isBot: mention.isBot as boolean || false,
+      isBot: (mention.isBot as boolean) || false,
     }))
   }
 
@@ -263,10 +267,10 @@ export class DiscordParser {
       }
     }
 
-    const users = Array.from(userMap.values()).map(u => this.convertUser(u))
-    const channels = data.channels.map(c => this.convertChannel(c, data.guild))
+    const users = Array.from(userMap.values()).map((u) => this.convertUser(u))
+    const channels = data.channels.map((c) => this.convertChannel(c, data.guild))
     const messages = data.messages
-      .map(m => this.convertMessage(m, data.channels[0]?.id || 'unknown'))
+      .map((m) => this.convertMessage(m, data.channels[0]?.id || 'unknown'))
       .filter((m): m is UnifiedMessage => m !== null)
 
     return { users, channels, messages }
@@ -276,9 +280,10 @@ export class DiscordParser {
    * Convert Discord author to unified user
    */
   convertUser(author: DiscordAuthor): UnifiedUser {
-    const username = author.discriminator !== '0000' && author.discriminator !== '0'
-      ? `${author.name}#${author.discriminator}`
-      : author.name
+    const username =
+      author.discriminator !== '0000' && author.discriminator !== '0'
+        ? `${author.name}#${author.discriminator}`
+        : author.name
 
     return {
       externalId: author.id,
@@ -375,9 +380,7 @@ export class DiscordParser {
         if (embed.title || embed.description) {
           content += '\n\n'
           if (embed.title) {
-            content += embed.url
-              ? `[**${embed.title}**](${embed.url})\n`
-              : `**${embed.title}**\n`
+            content += embed.url ? `[**${embed.title}**](${embed.url})\n` : `**${embed.title}**\n`
           }
           if (embed.description) {
             content += embed.description
@@ -417,7 +420,7 @@ export class DiscordParser {
    * Convert Discord attachments to unified format
    */
   convertAttachments(attachments: DiscordAttachment[]): UnifiedAttachment[] {
-    return attachments.map(att => ({
+    return attachments.map((att) => ({
       externalId: att.id,
       name: att.fileName,
       url: att.url,
@@ -431,7 +434,7 @@ export class DiscordParser {
   convertReactions(reactions?: DiscordReaction[]): UnifiedReaction[] {
     if (!reactions) return []
 
-    return reactions.map(reaction => ({
+    return reactions.map((reaction) => ({
       emoji: reaction.emoji.name.startsWith(':')
         ? reaction.emoji.name
         : reaction.emoji.id

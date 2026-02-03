@@ -16,6 +16,8 @@ import { Label } from '@/components/ui/label'
 import { Loader2, Trash2, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 export interface MessagePreview {
   id: string
   content: string
@@ -45,9 +47,7 @@ function formatTime(date: Date): string {
 
 function formatDate(date: Date): string {
   const now = new Date()
-  const diffDays = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-  )
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
 
   if (diffDays === 0) {
     return 'Today'
@@ -93,7 +93,7 @@ export function DeleteMessageModal({
       await onDelete(message.id, deleteForEveryone)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to delete message:', error)
+      logger.error('Failed to delete message:', error)
     } finally {
       setLoading(false)
     }
@@ -110,7 +110,7 @@ export function DeleteMessageModal({
           <div className="flex items-start gap-4">
             <div
               className={cn(
-                'flex items-center justify-center h-10 w-10 rounded-full shrink-0',
+                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
                 'bg-destructive/10 text-destructive'
               )}
             >
@@ -118,15 +118,13 @@ export function DeleteMessageModal({
             </div>
             <div className="space-y-1.5 pt-0.5">
               <DialogTitle>Delete message?</DialogTitle>
-              <DialogDescription>
-                This action cannot be undone.
-              </DialogDescription>
+              <DialogDescription>This action cannot be undone.</DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
         {/* Message preview */}
-        <div className="border rounded-xl p-4 bg-muted/30 space-y-3">
+        <div className="bg-muted/30 space-y-3 rounded-xl border p-4">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
               <AvatarImage src={message.authorAvatarUrl} />
@@ -134,20 +132,20 @@ export function DeleteMessageModal({
                 {message.authorName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{message.authorName}</p>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium">{message.authorName}</p>
               <p className="text-xs text-muted-foreground">
                 {formatDate(message.createdAt)} at {formatTime(message.createdAt)}
               </p>
             </div>
           </div>
 
-          <p className="text-sm pl-11 whitespace-pre-wrap break-words">
+          <p className="whitespace-pre-wrap break-words pl-11 text-sm">
             {truncateText(message.content, 200)}
           </p>
 
           {message.hasAttachments && (
-            <p className="text-xs text-muted-foreground pl-11">
+            <p className="pl-11 text-xs text-muted-foreground">
               + {message.attachmentCount || 1} attachment
               {(message.attachmentCount || 1) > 1 ? 's' : ''}
             </p>
@@ -155,8 +153,8 @@ export function DeleteMessageModal({
         </div>
 
         {/* Warning */}
-        <div className="flex items-start gap-3 p-3 bg-destructive/5 border border-destructive/20 rounded-lg">
-          <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+        <div className="bg-destructive/5 border-destructive/20 flex items-start gap-3 rounded-lg border p-3">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
           <p className="text-sm text-muted-foreground">
             {deleteForEveryone
               ? 'This message will be permanently deleted for everyone in this conversation.'
@@ -168,15 +166,10 @@ export function DeleteMessageModal({
         {canDeleteForEveryone && (
           <div className="flex items-center justify-between py-2">
             <div className="space-y-0.5">
-              <Label
-                htmlFor="delete-for-everyone"
-                className="cursor-pointer text-sm font-medium"
-              >
+              <Label htmlFor="delete-for-everyone" className="cursor-pointer text-sm font-medium">
                 Delete for everyone
               </Label>
-              <p className="text-xs text-muted-foreground">
-                Remove this message for all members
-              </p>
+              <p className="text-xs text-muted-foreground">Remove this message for all members</p>
             </div>
             <Switch
               id="delete-for-everyone"
@@ -188,18 +181,10 @@ export function DeleteMessageModal({
         )}
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={loading}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             Cancel
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={loading}
-          >
+          <Button variant="destructive" onClick={handleDelete} disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Delete
           </Button>

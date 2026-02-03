@@ -168,7 +168,7 @@ function TargetPreview({ target }: TargetPreviewProps) {
   const TargetIcon = getTargetIcon(target.type)
 
   return (
-    <div className="p-4 bg-muted/50 rounded-lg border space-y-3">
+    <div className="bg-muted/50 space-y-3 rounded-lg border p-4">
       <div className="flex items-center gap-2 text-sm font-medium">
         <TargetIcon className="h-4 w-4 text-muted-foreground" />
         <span className="capitalize">{target.type} Report</span>
@@ -205,8 +205,8 @@ function TargetPreview({ target }: TargetPreviewProps) {
             </div>
           )}
           {target.content && (
-            <div className="p-3 bg-background rounded border">
-              <p className="text-sm whitespace-pre-wrap break-words">
+            <div className="rounded border bg-background p-3">
+              <p className="whitespace-pre-wrap break-words text-sm">
                 {truncateContent(target.content)}
               </p>
             </div>
@@ -218,15 +218,13 @@ function TargetPreview({ target }: TargetPreviewProps) {
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <Hash className="h-5 w-5" />
-            <span className="font-medium text-lg">{target.name}</span>
+            <span className="text-lg font-medium">{target.name}</span>
           </div>
           {target.description && (
             <p className="text-sm text-muted-foreground">{target.description}</p>
           )}
           {target.memberCount !== undefined && (
-            <div className="text-xs text-muted-foreground">
-              {target.memberCount} members
-            </div>
+            <div className="text-xs text-muted-foreground">{target.memberCount} members</div>
           )}
         </div>
       )}
@@ -259,24 +257,20 @@ function EvidenceItem({ evidence, index, onRemove }: EvidenceItemProps) {
   }
 
   return (
-    <div className="flex items-start gap-2 p-3 bg-muted/50 rounded-lg border">
-      <div className="flex-shrink-0 mt-0.5">{getIcon()}</div>
-      <div className="flex-1 min-w-0 space-y-1">
+    <div className="bg-muted/50 flex items-start gap-2 rounded-lg border p-3">
+      <div className="mt-0.5 flex-shrink-0">{getIcon()}</div>
+      <div className="min-w-0 flex-1 space-y-1">
         <div className="text-sm font-medium capitalize">{evidence.type}</div>
-        <div className="text-xs text-muted-foreground break-all">
-          {evidence.content}
-        </div>
+        <div className="break-all text-xs text-muted-foreground">{evidence.content}</div>
         {evidence.description && (
-          <div className="text-xs text-muted-foreground italic">
-            {evidence.description}
-          </div>
+          <div className="text-xs italic text-muted-foreground">{evidence.description}</div>
         )}
       </div>
       <Button
         type="button"
         variant="ghost"
         size="sm"
-        className="h-6 w-6 p-0 flex-shrink-0"
+        className="h-6 w-6 flex-shrink-0 p-0"
         onClick={onRemove}
       >
         <X className="h-3 w-3" />
@@ -318,9 +312,7 @@ export function ReportModal({
   const enabledCategories = categories.filter((c) => c.enabled)
 
   // Get selected category
-  const category = selectedCategory
-    ? categories.find((c) => c.id === selectedCategory)
-    : null
+  const category = selectedCategory ? categories.find((c) => c.id === selectedCategory) : null
 
   // Reset form when modal opens/closes
   React.useEffect(() => {
@@ -414,62 +406,49 @@ export function ReportModal({
           handleOpenChange(false)
         }, 2000)
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to submit report'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to submit report'
         setSubmitError(errorMessage)
       } finally {
         setIsSubmitting(false)
       }
     },
-    [
-      target,
-      selectedCategory,
-      description,
-      evidence,
-      category,
-      onSubmit,
-      handleOpenChange,
-    ]
+    [target, selectedCategory, description, evidence, category, onSubmit, handleOpenChange]
   )
 
   if (!target) return null
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className={cn('sm:max-w-2xl max-h-[90vh]', className)}>
+      <DialogContent className={cn('max-h-[90vh] sm:max-w-2xl', className)}>
         {submitSuccess ? (
           // Success state
           <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 mb-6">
+            <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
               <CheckCircle2 className="h-10 w-10 text-green-600 dark:text-green-400" />
             </div>
-            <h3 className="text-2xl font-semibold mb-3">Report Submitted</h3>
-            <p className="text-muted-foreground max-w-md">
-              Thank you for reporting this {target.type}. Our moderation team will
-              review it and take appropriate action. You will be notified of the outcome.
+            <h3 className="mb-3 text-2xl font-semibold">Report Submitted</h3>
+            <p className="max-w-md text-muted-foreground">
+              Thank you for reporting this {target.type}. Our moderation team will review it and
+              take appropriate action. You will be notified of the outcome.
             </p>
             <Alert className="mt-6 max-w-md">
               <Shield className="h-4 w-4" />
               <AlertDescription>
                 Your report has been assigned priority:{' '}
-                <span className="font-medium capitalize">
-                  {category?.priority || 'normal'}
-                </span>
+                <span className="font-medium capitalize">{category?.priority || 'normal'}</span>
               </AlertDescription>
             </Alert>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-destructive/10">
+              <div className="mb-2 flex items-center gap-3">
+                <div className="bg-destructive/10 flex h-12 w-12 items-center justify-center rounded-full">
                   <Flag className="h-6 w-6 text-destructive" />
                 </div>
                 <div>
                   <DialogTitle className="text-xl">Report {target.type}</DialogTitle>
-                  <DialogDescription>
-                    Help keep our community safe
-                  </DialogDescription>
+                  <DialogDescription>Help keep our community safe</DialogDescription>
                 </div>
               </div>
             </DialogHeader>
@@ -490,10 +469,7 @@ export function ReportModal({
                     Why are you reporting this {target.type}?{' '}
                     <span className="text-destructive">*</span>
                   </Label>
-                  <RadioGroup
-                    value={selectedCategory || ''}
-                    onValueChange={setSelectedCategory}
-                  >
+                  <RadioGroup value={selectedCategory || ''} onValueChange={setSelectedCategory}>
                     <div className="space-y-2">
                       {enabledCategories.map((cat) => {
                         const CategoryIcon = getCategoryIcon(cat.id)
@@ -501,10 +477,10 @@ export function ReportModal({
                           <div
                             key={cat.id}
                             className={cn(
-                              'flex items-start space-x-3 p-4 rounded-lg border transition-all cursor-pointer',
+                              'flex cursor-pointer items-start space-x-3 rounded-lg border p-4 transition-all',
                               selectedCategory === cat.id
-                                ? 'border-primary bg-primary/5 shadow-sm'
-                                : 'border-transparent hover:bg-muted/50'
+                                ? 'bg-primary/5 border-primary shadow-sm'
+                                : 'hover:bg-muted/50 border-transparent'
                             )}
                           >
                             <RadioGroupItem
@@ -512,11 +488,8 @@ export function ReportModal({
                               id={`category-${cat.id}`}
                               className="mt-1"
                             />
-                            <Label
-                              htmlFor={`category-${cat.id}`}
-                              className="flex-1 cursor-pointer"
-                            >
-                              <div className="flex items-center gap-2 mb-1">
+                            <Label htmlFor={`category-${cat.id}`} className="flex-1 cursor-pointer">
+                              <div className="mb-1 flex items-center gap-2">
                                 <CategoryIcon className="h-4 w-4" />
                                 <span className="font-medium">{cat.name}</span>
                                 <Badge
@@ -524,8 +497,8 @@ export function ReportModal({
                                     cat.priority === 'urgent'
                                       ? 'destructive'
                                       : cat.priority === 'high'
-                                      ? 'default'
-                                      : 'secondary'
+                                        ? 'default'
+                                        : 'secondary'
                                   }
                                   className="text-xs"
                                 >
@@ -537,9 +510,7 @@ export function ReportModal({
                                   </Badge>
                                 )}
                               </div>
-                              <p className="text-sm text-muted-foreground">
-                                {cat.description}
-                              </p>
+                              <p className="text-sm text-muted-foreground">{cat.description}</p>
                             </Label>
                           </div>
                         )
@@ -576,9 +547,7 @@ export function ReportModal({
                   <div className="flex items-center justify-between">
                     <Label className="text-sm font-medium">
                       Evidence{' '}
-                      {category?.requiresEvidence && (
-                        <span className="text-destructive">*</span>
-                      )}
+                      {category?.requiresEvidence && <span className="text-destructive">*</span>}
                     </Label>
                     {evidence.length < maxEvidence && !showEvidenceForm && (
                       <Button
@@ -609,14 +578,12 @@ export function ReportModal({
 
                   {/* Evidence form */}
                   {showEvidenceForm && (
-                    <div className="p-4 bg-muted/50 rounded-lg border space-y-3">
+                    <div className="bg-muted/50 space-y-3 rounded-lg border p-4">
                       <div className="space-y-2">
                         <Label className="text-xs">Evidence Type</Label>
                         <RadioGroup
                           value={evidenceType}
-                          onValueChange={(v) =>
-                            setEvidenceType(v as ReportEvidence['type'])
-                          }
+                          onValueChange={(v) => setEvidenceType(v as ReportEvidence['type'])}
                           className="flex gap-4"
                         >
                           <div className="flex items-center space-x-2">
@@ -647,8 +614,8 @@ export function ReportModal({
                             evidenceType === 'link'
                               ? 'https://example.com/...'
                               : evidenceType === 'screenshot'
-                              ? 'Screenshot URL or description'
-                              : 'Evidence details'
+                                ? 'Screenshot URL or description'
+                                : 'Evidence details'
                           }
                           value={evidenceContent}
                           onChange={(e) => setEvidenceContent(e.target.value)}
@@ -707,15 +674,15 @@ export function ReportModal({
                   <Alert>
                     <Shield className="h-4 w-4" />
                     <AlertDescription>
-                      This report will be automatically escalated to administrators
-                      for immediate review.
+                      This report will be automatically escalated to administrators for immediate
+                      review.
                     </AlertDescription>
                   </Alert>
                 )}
               </div>
             </ScrollArea>
 
-            <DialogFooter className="gap-2 sm:gap-0 mt-4">
+            <DialogFooter className="mt-4 gap-2 sm:gap-0">
               <Button
                 type="button"
                 variant="outline"

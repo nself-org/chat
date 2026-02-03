@@ -35,7 +35,9 @@ export interface SchedulerConfig {
 }
 
 export interface SendMessageFunction {
-  (message: Omit<ScheduledMessage, 'id' | 'status' | 'retryCount' | 'createdAt' | 'updatedAt'>): Promise<{ id: string }>
+  (
+    message: Omit<ScheduledMessage, 'id' | 'status' | 'retryCount' | 'createdAt' | 'updatedAt'>
+  ): Promise<{ id: string }>
 }
 
 export interface SchedulerCallbacks {
@@ -263,7 +265,9 @@ export class MessageScheduler {
 
     for (const [id, message] of this.queue.entries()) {
       if (
-        (message.status === 'sent' || message.status === 'cancelled' || message.status === 'failed') &&
+        (message.status === 'sent' ||
+          message.status === 'cancelled' ||
+          message.status === 'failed') &&
         message.updatedAt < oneWeekAgo
       ) {
         this.queue.delete(id)
@@ -289,9 +293,7 @@ export class MessageScheduler {
       const now = Date.now()
       const dueMessages = Array.from(this.queue.values())
         .filter(
-          (msg) =>
-            msg.status === 'pending' &&
-            msg.scheduledAt - this.config.gracePeriod <= now
+          (msg) => msg.status === 'pending' && msg.scheduledAt - this.config.gracePeriod <= now
         )
         .sort((a, b) => a.scheduledAt - b.scheduledAt)
         .slice(0, this.config.batchSize)

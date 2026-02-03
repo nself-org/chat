@@ -162,7 +162,7 @@ export const VoiceRecorder = memo(function VoiceRecorder({
     return (
       <div
         className={cn(
-          'flex items-center justify-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-4',
+          'border-destructive/50 bg-destructive/10 flex items-center justify-center gap-2 rounded-lg border p-4',
           className
         )}
       >
@@ -179,7 +179,7 @@ export const VoiceRecorder = memo(function VoiceRecorder({
     return (
       <div
         className={cn(
-          'flex flex-col items-center justify-center gap-3 rounded-lg border border-destructive/50 bg-destructive/10 p-4',
+          'border-destructive/50 bg-destructive/10 flex flex-col items-center justify-center gap-3 rounded-lg border p-4',
           className
         )}
       >
@@ -251,10 +251,7 @@ export const VoiceRecorder = memo(function VoiceRecorder({
   return (
     <div
       ref={containerRef}
-      className={cn(
-        'flex flex-col rounded-lg border bg-card p-4',
-        className
-      )}
+      className={cn('flex flex-col rounded-lg border bg-card p-4', className)}
     >
       {/* Error display */}
       <AnimatePresence>
@@ -263,15 +260,11 @@ export const VoiceRecorder = memo(function VoiceRecorder({
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="mb-3 flex items-center gap-2 rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive"
+            className="bg-destructive/10 mb-3 flex items-center gap-2 rounded-md px-3 py-2 text-sm text-destructive"
           >
             <AlertCircle className="h-4 w-4 flex-shrink-0" />
             <span>{error.message}</span>
-            <button
-              type="button"
-              onClick={clearError}
-              className="ml-auto hover:opacity-70"
-            >
+            <button type="button" onClick={clearError} className="ml-auto hover:opacity-70">
               <X className="h-4 w-4" />
             </button>
           </motion.div>
@@ -279,7 +272,7 @@ export const VoiceRecorder = memo(function VoiceRecorder({
       </AnimatePresence>
 
       {/* Waveform visualizer */}
-      <div className="mb-4 rounded-lg bg-muted/50 p-3">
+      <div className="bg-muted/50 mb-4 rounded-lg p-3">
         <WaveformVisualizer
           realtimeData={waveformData}
           height={60}
@@ -328,11 +321,7 @@ export const VoiceRecorder = memo(function VoiceRecorder({
             onClick={isPaused ? resumeRecording : pauseRecording}
             className="h-10 w-10 rounded-full"
           >
-            {isPaused ? (
-              <Play className="h-4 w-4" />
-            ) : (
-              <Pause className="h-4 w-4" />
-            )}
+            {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
           </Button>
         )}
 
@@ -344,11 +333,7 @@ export const VoiceRecorder = memo(function VoiceRecorder({
           disabled={disabled || permission === 'prompt'}
           className="h-14 w-14 rounded-full"
         >
-          {isRecording || isPaused ? (
-            <Square className="h-6 w-6" />
-          ) : (
-            <Mic className="h-6 w-6" />
-          )}
+          {isRecording || isPaused ? <Square className="h-6 w-6" /> : <Mic className="h-6 w-6" />}
         </Button>
 
         {/* Quick send (without preview) */}
@@ -372,12 +357,7 @@ export const VoiceRecorder = memo(function VoiceRecorder({
       {/* Permission prompt */}
       {permission === 'prompt' && !isRecording && (
         <div className="mt-4 text-center">
-          <Button
-            variant="link"
-            size="sm"
-            onClick={handleRequestPermission}
-            className="text-xs"
-          >
+          <Button variant="link" size="sm" onClick={handleRequestPermission} className="text-xs">
             Click here to enable microphone
           </Button>
         </div>
@@ -416,103 +396,87 @@ interface CompactVoiceRecorderProps {
   className?: string
 }
 
-const CompactVoiceRecorder = memo(
-  function CompactVoiceRecorder({
-    isRecording,
-    isPaused,
-    duration,
-    formattedDuration,
-    waveformData,
-    error,
-    disabled,
-    onStart,
-    onStop,
-    onPause,
-    onResume,
-    onCancel,
-    showCancel,
-    className,
-  }: CompactVoiceRecorderProps) {
-    return (
-      <div
-        className={cn(
-          'flex items-center gap-3 rounded-full border bg-card px-4 py-2',
-          className
-        )}
-      >
-        {isRecording || isPaused ? (
-          <>
-            {/* Cancel */}
-            {showCancel && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onCancel}
-                className="h-8 w-8 rounded-full"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            )}
-
-            {/* Waveform */}
-            <div className="flex-1">
-              <WaveformVisualizer
-                realtimeData={waveformData}
-                height={24}
-                animated={isRecording && !isPaused}
-                barCount={20}
-              />
-            </div>
-
-            {/* Timer */}
-            <span className="font-mono text-sm font-medium tabular-nums text-destructive">
-              {formattedDuration}
-            </span>
-
-            {/* Pause/Resume */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={isPaused ? onResume : onPause}
-              className="h-8 w-8 rounded-full"
-            >
-              {isPaused ? (
-                <Play className="h-4 w-4" />
-              ) : (
-                <Pause className="h-4 w-4" />
-              )}
+const CompactVoiceRecorder = memo(function CompactVoiceRecorder({
+  isRecording,
+  isPaused,
+  duration,
+  formattedDuration,
+  waveformData,
+  error,
+  disabled,
+  onStart,
+  onStop,
+  onPause,
+  onResume,
+  onCancel,
+  showCancel,
+  className,
+}: CompactVoiceRecorderProps) {
+  return (
+    <div className={cn('flex items-center gap-3 rounded-full border bg-card px-4 py-2', className)}>
+      {isRecording || isPaused ? (
+        <>
+          {/* Cancel */}
+          {showCancel && (
+            <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8 rounded-full">
+              <X className="h-4 w-4" />
             </Button>
+          )}
 
-            {/* Stop */}
-            <Button
-              variant="destructive"
-              size="icon"
-              onClick={onStop}
-              className="h-8 w-8 rounded-full"
-            >
-              <Square className="h-3 w-3" />
-            </Button>
-          </>
-        ) : (
-          <>
-            <span className="flex-1 text-sm text-muted-foreground">
-              {error ? error.message : 'Record a voice message'}
-            </span>
-            <Button
-              variant="default"
-              size="icon"
-              onClick={onStart}
-              disabled={disabled}
-              className="h-8 w-8 rounded-full"
-            >
-              <Mic className="h-4 w-4" />
-            </Button>
-          </>
-        )}
-      </div>
-    )
-  }
-)
+          {/* Waveform */}
+          <div className="flex-1">
+            <WaveformVisualizer
+              realtimeData={waveformData}
+              height={24}
+              animated={isRecording && !isPaused}
+              barCount={20}
+            />
+          </div>
+
+          {/* Timer */}
+          <span className="font-mono text-sm font-medium tabular-nums text-destructive">
+            {formattedDuration}
+          </span>
+
+          {/* Pause/Resume */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={isPaused ? onResume : onPause}
+            className="h-8 w-8 rounded-full"
+          >
+            {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
+          </Button>
+
+          {/* Stop */}
+          <Button
+            variant="destructive"
+            size="icon"
+            onClick={onStop}
+            className="h-8 w-8 rounded-full"
+          >
+            <Square className="h-3 w-3" />
+          </Button>
+        </>
+      ) : (
+        <>
+          <span className="flex-1 text-sm text-muted-foreground">
+            {error ? error.message : 'Record a voice message'}
+          </span>
+          <Button
+            variant="default"
+            size="icon"
+            onClick={onStart}
+            disabled={disabled}
+            className="h-8 w-8 rounded-full"
+          >
+            <Mic className="h-4 w-4" />
+          </Button>
+        </>
+      )}
+    </div>
+  )
+})
 
 // ============================================================================
 // INLINE VARIANT
@@ -532,75 +496,56 @@ interface InlineVoiceRecorderProps {
   className?: string
 }
 
-const InlineVoiceRecorder = memo(
-  function InlineVoiceRecorder({
-    isRecording,
-    isPaused,
-    formattedDuration,
-    waveformData,
-    disabled,
-    onStart,
-    onStop,
-    onCancel,
-    className,
-  }: InlineVoiceRecorderProps) {
-    return (
-      <div
-        className={cn('flex items-center gap-2', className)}
-      >
-        {isRecording || isPaused ? (
-          <>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onCancel}
-              className="h-8 w-8"
-            >
-              <X className="h-4 w-4" />
-            </Button>
-
-            <div className="flex min-w-0 flex-1 items-center gap-2">
-              <span className="relative flex h-2 w-2">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-destructive" />
-              </span>
-              <span className="font-mono text-xs font-medium text-destructive">
-                {formattedDuration}
-              </span>
-              <div className="flex-1">
-                <WaveformVisualizer
-                  realtimeData={waveformData}
-                  height={16}
-                  animated
-                  barCount={15}
-                />
-              </div>
-            </div>
-
-            <Button
-              variant="destructive"
-              size="icon"
-              onClick={onStop}
-              className="h-8 w-8"
-            >
-              <Square className="h-3 w-3" />
-            </Button>
-          </>
-        ) : (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onStart}
-            disabled={disabled}
-            className="h-8 w-8"
-          >
-            <Mic className="h-4 w-4" />
+const InlineVoiceRecorder = memo(function InlineVoiceRecorder({
+  isRecording,
+  isPaused,
+  formattedDuration,
+  waveformData,
+  disabled,
+  onStart,
+  onStop,
+  onCancel,
+  className,
+}: InlineVoiceRecorderProps) {
+  return (
+    <div className={cn('flex items-center gap-2', className)}>
+      {isRecording || isPaused ? (
+        <>
+          <Button variant="ghost" size="icon" onClick={onCancel} className="h-8 w-8">
+            <X className="h-4 w-4" />
           </Button>
-        )}
-      </div>
-    )
-  }
-)
+
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-destructive" />
+            </span>
+            <span className="font-mono text-xs font-medium text-destructive">
+              {formattedDuration}
+            </span>
+            <div className="flex-1">
+              <WaveformVisualizer realtimeData={waveformData} height={16} animated barCount={15} />
+            </div>
+          </div>
+
+          <Button variant="destructive" size="icon" onClick={onStop} className="h-8 w-8">
+            <Square className="h-3 w-3" />
+          </Button>
+        </>
+      ) : (
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onStart}
+          disabled={disabled}
+          className="h-8 w-8"
+        >
+          <Mic className="h-4 w-4" />
+        </Button>
+      )}
+    </div>
+  )
+})
 
 // ============================================================================
 // UTILITIES

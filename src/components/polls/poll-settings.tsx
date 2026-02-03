@@ -6,13 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
 import { Separator } from '@/components/ui/separator'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -79,16 +73,9 @@ function SettingRow({
   disabled,
 }: SettingRowProps) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between py-3',
-        disabled && 'opacity-50'
-      )}
-    >
+    <div className={cn('flex items-center justify-between py-3', disabled && 'opacity-50')}>
       <div className="flex items-start gap-3">
-        <div className="p-2 rounded-lg bg-muted text-muted-foreground">
-          {icon}
-        </div>
+        <div className="rounded-lg bg-muted p-2 text-muted-foreground">{icon}</div>
         <div className="space-y-0.5">
           <Label htmlFor={label} className="cursor-pointer font-medium">
             {label}
@@ -96,12 +83,7 @@ function SettingRow({
           <p className="text-xs text-muted-foreground">{description}</p>
         </div>
       </div>
-      <Switch
-        id={label}
-        checked={checked}
-        onCheckedChange={onCheckedChange}
-        disabled={disabled}
-      />
+      <Switch id={label} checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} />
     </div>
   )
 }
@@ -163,16 +145,14 @@ export function PollSettings({
           <Settings className="h-5 w-5" />
           Poll Settings
         </CardTitle>
-        <CardDescription>
-          Configure how your poll works and when it ends
-        </CardDescription>
+        <CardDescription>Configure how your poll works and when it ends</CardDescription>
       </CardHeader>
 
       <CardContent className="space-y-4">
         {/* Voting Options */}
         <div>
-          <h4 className="text-sm font-medium mb-2">Voting Options</h4>
-          <div className="border rounded-lg divide-y">
+          <h4 className="mb-2 text-sm font-medium">Voting Options</h4>
+          <div className="divide-y rounded-lg border">
             <div className="px-4">
               <SettingRow
                 icon={<CheckCircle2 className="h-4 w-4" />}
@@ -220,10 +200,7 @@ export function PollSettings({
 
         {/* End Date */}
         <div className="space-y-2">
-          <Label
-            htmlFor="poll-end-date"
-            className="flex items-center gap-2 font-medium"
-          >
+          <Label htmlFor="poll-end-date" className="flex items-center gap-2 font-medium">
             <Calendar className="h-4 w-4" />
             End Date
           </Label>
@@ -248,26 +225,18 @@ export function PollSettings({
         {/* Actions */}
         <div className="flex items-center justify-between pt-2">
           <div className="flex items-center gap-2">
-            {hasChanges && (
-              <span className="text-xs text-muted-foreground">
-                Unsaved changes
-              </span>
-            )}
+            {hasChanges && <span className="text-xs text-muted-foreground">Unsaved changes</span>}
           </div>
 
           <div className="flex items-center gap-2">
             {onDelete && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button
-                    variant="destructive"
-                    size="sm"
-                    disabled={deleting || !canEdit}
-                  >
+                  <Button variant="destructive" size="sm" disabled={deleting || !canEdit}>
                     {deleting ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="mr-2 h-4 w-4" />
                     )}
                     Delete Poll
                   </Button>
@@ -276,15 +245,15 @@ export function PollSettings({
                   <AlertDialogHeader>
                     <AlertDialogTitle>Delete Poll</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Are you sure you want to delete this poll? This action cannot
-                      be undone. All votes and data will be permanently removed.
+                      Are you sure you want to delete this poll? This action cannot be undone. All
+                      votes and data will be permanently removed.
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
                     <AlertDialogAction
                       onClick={onDelete}
-                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                     >
                       Delete
                     </AlertDialogAction>
@@ -300,9 +269,9 @@ export function PollSettings({
               disabled={!hasChanges || saving || isDisabled}
             >
               {saving ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               ) : (
-                <Save className="h-4 w-4 mr-2" />
+                <Save className="mr-2 h-4 w-4" />
               )}
               Save Changes
             </Button>
@@ -311,7 +280,7 @@ export function PollSettings({
 
         {/* Warning for closed polls */}
         {pollStatus === 'closed' && (
-          <div className="p-3 rounded-lg bg-orange-500/10 border border-orange-500/20">
+          <div className="rounded-lg border border-orange-500/20 bg-orange-500/10 p-3">
             <p className="text-sm text-orange-600 dark:text-orange-400">
               This poll is closed. Reopen the poll to modify settings.
             </p>
@@ -331,10 +300,7 @@ interface PollSettingsInlineProps {
   className?: string
 }
 
-export function PollSettingsInline({
-  settings,
-  className,
-}: PollSettingsInlineProps) {
+export function PollSettingsInline({ settings, className }: PollSettingsInlineProps) {
   const activeSettings = [
     settings.allowMultipleVotes && {
       icon: <CheckCircle2 className="h-3 w-3" />,
@@ -359,7 +325,7 @@ export function PollSettingsInline({
       {activeSettings.map((setting, index) => (
         <div
           key={index}
-          className="flex items-center gap-1 text-xs text-muted-foreground bg-muted/50 px-2 py-1 rounded-md"
+          className="bg-muted/50 flex items-center gap-1 rounded-md px-2 py-1 text-xs text-muted-foreground"
         >
           {(setting as { icon: React.ReactNode; label: string }).icon}
           <span>{(setting as { icon: React.ReactNode; label: string }).label}</span>
@@ -379,11 +345,7 @@ interface PollSettingsSummaryProps {
   className?: string
 }
 
-export function PollSettingsSummary({
-  settings,
-  endsAt,
-  className,
-}: PollSettingsSummaryProps) {
+export function PollSettingsSummary({ settings, endsAt, className }: PollSettingsSummaryProps) {
   return (
     <div className={cn('space-y-2 text-sm', className)}>
       <div className="flex items-center gap-2">
@@ -394,9 +356,7 @@ export function PollSettingsSummary({
           )}
         />
         <span className={!settings.allowMultipleVotes ? 'text-muted-foreground' : ''}>
-          {settings.allowMultipleVotes
-            ? 'Multiple choices allowed'
-            : 'Single choice only'}
+          {settings.allowMultipleVotes ? 'Multiple choices allowed' : 'Single choice only'}
         </span>
       </div>
 
@@ -420,9 +380,7 @@ export function PollSettingsSummary({
           )}
         />
         <span className={!settings.allowAddOptions ? 'text-muted-foreground' : ''}>
-          {settings.allowAddOptions
-            ? 'Users can add options'
-            : 'Fixed options only'}
+          {settings.allowAddOptions ? 'Users can add options' : 'Fixed options only'}
         </span>
       </div>
 

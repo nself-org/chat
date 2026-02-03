@@ -15,6 +15,7 @@ Help documentation for resolving common issues, operational runbooks, and freque
 ### Common Issues
 
 #### Installation & Setup
+
 - **Problem**: Backend services won't start
   - See [TROUBLESHOOTING.md - Backend Issues](TROUBLESHOOTING.md#backend-issues)
 
@@ -25,6 +26,7 @@ Help documentation for resolving common issues, operational runbooks, and freque
   - See [RUNBOOK.md - Database Operations](RUNBOOK.md#database-operations)
 
 #### Authentication
+
 - **Problem**: Can't log in
   - See [TROUBLESHOOTING.md - Authentication](TROUBLESHOOTING.md#authentication-issues)
 
@@ -32,6 +34,7 @@ Help documentation for resolving common issues, operational runbooks, and freque
   - See [FAQ.md - Authentication](FAQ.md#authentication)
 
 #### Performance
+
 - **Problem**: Slow page loads
   - See [TROUBLESHOOTING.md - Performance](TROUBLESHOOTING.md#performance-issues)
 
@@ -39,6 +42,7 @@ Help documentation for resolving common issues, operational runbooks, and freque
   - See [RUNBOOK.md - Performance Monitoring](RUNBOOK.md#performance-monitoring)
 
 #### Real-Time Features
+
 - **Problem**: Messages not appearing in real-time
   - See [TROUBLESHOOTING.md - WebSocket Issues](TROUBLESHOOTING.md#websocket-issues)
 
@@ -76,54 +80,62 @@ Help documentation for resolving common issues, operational runbooks, and freque
 ### By Severity
 
 **Critical (P0):**
+
 - System down or unavailable
 - Data loss or corruption
 - Security breaches
-→ Follow [RUNBOOK.md - Incident Response](RUNBOOK.md#incident-response)
+  → Follow [RUNBOOK.md - Incident Response](RUNBOOK.md#incident-response)
 
 **High (P1):**
+
 - Major feature not working
 - Significant performance degradation
 - Authentication failures
-→ Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md) + [RUNBOOK.md](RUNBOOK.md)
+  → Check [TROUBLESHOOTING.md](TROUBLESHOOTING.md) + [RUNBOOK.md](RUNBOOK.md)
 
 **Medium (P2):**
+
 - Minor feature issues
 - Cosmetic bugs
 - Configuration questions
-→ Check [FAQ.md](FAQ.md) + [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
+  → Check [FAQ.md](FAQ.md) + [TROUBLESHOOTING.md](TROUBLESHOOTING.md)
 
 **Low (P3):**
+
 - Feature requests
 - General questions
 - Documentation clarifications
-→ Check [FAQ.md](FAQ.md)
+  → Check [FAQ.md](FAQ.md)
 
 ### By Component
 
 **Frontend:**
+
 - UI not rendering correctly
 - Client-side errors
 - Browser compatibility
-→ [TROUBLESHOOTING.md - Frontend Issues](TROUBLESHOOTING.md#frontend-issues)
+  → [TROUBLESHOOTING.md - Frontend Issues](TROUBLESHOOTING.md#frontend-issues)
 
 **Backend:**
+
 - API errors
 - Database connection issues
 - Server crashes
-→ [TROUBLESHOOTING.md - Backend Issues](TROUBLESHOOTING.md#backend-issues) + [RUNBOOK.md](RUNBOOK.md)
+  → [TROUBLESHOOTING.md - Backend Issues](TROUBLESHOOTING.md#backend-issues) + [RUNBOOK.md](RUNBOOK.md)
 
 **Infrastructure:**
+
 - Docker/Kubernetes issues
 - Networking problems
 - Storage issues
-→ [RUNBOOK.md - Infrastructure](RUNBOOK.md#infrastructure)
+  → [RUNBOOK.md - Infrastructure](RUNBOOK.md#infrastructure)
 
 **Third-Party:**
+
 - OAuth provider issues
 - Integration failures
 - External service errors
-→ [TROUBLESHOOTING.md - Integrations](TROUBLESHOOTING.md#integration-issues)
+  → [TROUBLESHOOTING.md - Integrations](TROUBLESHOOTING.md#integration-issues)
 
 ## Diagnostic Tools
 
@@ -188,6 +200,7 @@ export SENTRY_ENABLE_DEV=true
 ### Emergency Support
 
 For critical production issues:
+
 - **Severity 1 (P0)**: Email emergency@nself.org
 - **Security Issues**: Email security@nself.org (PGP key available)
 
@@ -202,18 +215,21 @@ troubleshooting/
 ```
 
 ### TROUBLESHOOTING.md
+
 - 100+ common issues organized by category
 - Step-by-step resolution procedures
 - Code examples and configuration fixes
 - Cross-references to related documentation
 
 ### FAQ.md
+
 - 50+ frequently asked questions
 - Organized by topic (features, deployment, config, etc.)
 - Quick answers with links to detailed docs
 - Updated based on community questions
 
 ### RUNBOOK.md
+
 - Operational procedures for production systems
 - Incident response workflows
 - Monitoring and alerting setup

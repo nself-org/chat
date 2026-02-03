@@ -14,6 +14,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -26,17 +28,26 @@ const PresenceStatusSchema = z.enum(['online', 'away', 'dnd', 'invisible', 'offl
 const UpdatePresenceSchema = z.object({
   userId: z.string().min(1, 'userId is required'),
   status: PresenceStatusSchema.optional(),
-  customStatus: z.object({
-    emoji: z.string().max(50).optional(),
-    text: z.string().max(100, 'Custom status text must be 100 characters or fewer').optional(),
-    activity: z.string().max(50).optional(),
-  }).optional().nullable(),
-  expiresAt: z.string().datetime({ message: 'expiresAt must be a valid ISO 8601 datetime' }).optional().nullable(),
-  device: z.object({
-    type: z.enum(['web', 'desktop', 'mobile', 'tablet']).optional(),
-    os: z.string().max(50).optional(),
-    browser: z.string().max(50).optional(),
-  }).optional(),
+  customStatus: z
+    .object({
+      emoji: z.string().max(50).optional(),
+      text: z.string().max(100, 'Custom status text must be 100 characters or fewer').optional(),
+      activity: z.string().max(50).optional(),
+    })
+    .optional()
+    .nullable(),
+  expiresAt: z
+    .string()
+    .datetime({ message: 'expiresAt must be a valid ISO 8601 datetime' })
+    .optional()
+    .nullable(),
+  device: z
+    .object({
+      type: z.enum(['web', 'desktop', 'mobile', 'tablet']).optional(),
+      os: z.string().max(50).optional(),
+      browser: z.string().max(50).optional(),
+    })
+    .optional(),
 })
 
 const QueryPresenceSchema = z.object({
@@ -175,15 +186,17 @@ function initializeStore(): void {
 // Demo channel membership mapping for channelId queries
 const DEMO_CHANNEL_MEMBERS: Record<string, string[]> = {
   'channel-general': [
-    'user-owner', 'user-admin', 'user-moderator', 'user-member',
-    'user-guest', 'user-alice', 'user-bob', 'user-charlie',
+    'user-owner',
+    'user-admin',
+    'user-moderator',
+    'user-member',
+    'user-guest',
+    'user-alice',
+    'user-bob',
+    'user-charlie',
   ],
-  'channel-random': [
-    'user-owner', 'user-admin', 'user-alice', 'user-bob', 'user-charlie',
-  ],
-  'channel-dev': [
-    'user-owner', 'user-admin', 'user-alice', 'user-charlie',
-  ],
+  'channel-random': ['user-owner', 'user-admin', 'user-alice', 'user-bob', 'user-charlie'],
+  'channel-dev': ['user-owner', 'user-admin', 'user-alice', 'user-charlie'],
 }
 
 // ============================================================================
@@ -209,9 +222,7 @@ function transformPresence(record: PresenceRecord) {
     customStatus,
     lastSeenAt: record.lastSeenAt,
     updatedAt: record.updatedAt,
-    device: record.device
-      ? { type: record.device.type, os: record.device.os }
-      : null,
+    device: record.device ? { type: record.device.type, os: record.device.os } : null,
   }
 }
 
@@ -219,15 +230,17 @@ function transformPresence(record: PresenceRecord) {
  * Get presence for a single user, returning a default offline record if not found
  */
 function getPresenceForUser(userId: string): PresenceRecord {
-  return presenceStore.get(userId) ?? {
-    userId,
-    status: 'offline',
-    customStatus: null,
-    expiresAt: null,
-    lastSeenAt: new Date(0).toISOString(),
-    updatedAt: new Date(0).toISOString(),
-    device: null,
-  }
+  return (
+    presenceStore.get(userId) ?? {
+      userId,
+      status: 'offline',
+      customStatus: null,
+      expiresAt: null,
+      lastSeenAt: new Date(0).toISOString(),
+      updatedAt: new Date(0).toISOString(),
+      device: null,
+    }
+  )
 }
 
 // ============================================================================
@@ -277,7 +290,10 @@ export async function GET(request: NextRequest) {
 
     // --- Batch user lookup ---
     if (userIds) {
-      const ids = userIds.split(',').map((id) => id.trim()).filter(Boolean)
+      const ids = userIds
+        .split(',')
+        .map((id) => id.trim())
+        .filter(Boolean)
 
       if (ids.length === 0) {
         return NextResponse.json(
@@ -349,8 +365,7 @@ export async function GET(request: NextRequest) {
     }
 
     // --- No parameters: return all online users ---
-    let allPresences = Array.from(presenceStore.values())
-      .map(transformPresence)
+    let allPresences = Array.from(presenceStore.values()).map(transformPresence)
 
     if (statusFilter) {
       allPresences = allPresences.filter((p) => p.status === statusFilter)
@@ -360,9 +375,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Sort by lastSeenAt descending (most recently active first)
-    allPresences.sort(
-      (a, b) => new Date(b.lastSeenAt).getTime() - new Date(a.lastSeenAt).getTime()
-    )
+    allPresences.sort((a, b) => new Date(b.lastSeenAt).getTime() - new Date(a.lastSeenAt).getTime())
 
     return NextResponse.json({
       success: true,
@@ -373,7 +386,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('GET /api/presence error:', error)
+    logger.error('GET /api/presence error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -427,12 +440,8 @@ export async function POST(request: NextRequest) {
     const updatedRecord: PresenceRecord = {
       userId,
       status: status ?? existing?.status ?? 'online',
-      customStatus: customStatus === null
-        ? null
-        : customStatus ?? existing?.customStatus ?? null,
-      expiresAt: expiresAt === null
-        ? null
-        : expiresAt ?? existing?.expiresAt ?? null,
+      customStatus: customStatus === null ? null : (customStatus ?? existing?.customStatus ?? null),
+      expiresAt: expiresAt === null ? null : (expiresAt ?? existing?.expiresAt ?? null),
       lastSeenAt: now,
       updatedAt: now,
       device: device ?? existing?.device ?? null,
@@ -453,7 +462,7 @@ export async function POST(request: NextRequest) {
       { status: 200 }
     )
   } catch (error) {
-    console.error('POST /api/presence error:', error)
+    logger.error('POST /api/presence error:', error)
 
     // Handle malformed JSON
     if (error instanceof SyntaxError) {
@@ -540,7 +549,7 @@ export async function DELETE(request: NextRequest) {
       data: transformPresence(existing),
     })
   } catch (error) {
-    console.error('DELETE /api/presence error:', error)
+    logger.error('DELETE /api/presence error:', error)
     return NextResponse.json(
       {
         success: false,

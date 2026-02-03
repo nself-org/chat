@@ -3,12 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Plus } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { reactionBurst, reactionPillHover } from '@/lib/animations'
@@ -64,10 +59,7 @@ export function MessageReactions({
           variant="ghost"
           size="sm"
           onClick={onAddReaction}
-          className={cn(
-            'h-6 w-6 rounded-full p-0 hover:bg-muted',
-            compact && 'h-5 w-5'
-          )}
+          className={cn('h-6 w-6 rounded-full p-0 hover:bg-muted', compact && 'h-5 w-5')}
         >
           <Plus className={cn('h-3.5 w-3.5', compact && 'h-3 w-3')} />
         </Button>
@@ -106,7 +98,7 @@ function ReactionPill({ reaction, onClick, compact }: ReactionPillProps) {
               'inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs transition-colors',
               reaction.hasReacted
                 ? 'border-primary/50 bg-primary/10 hover:bg-primary/20'
-                : 'border-border bg-muted/50 hover:bg-muted',
+                : 'bg-muted/50 border-border hover:bg-muted',
               compact && 'px-1.5 py-0'
             )}
           >
@@ -169,14 +161,7 @@ interface QuickReactionsProps {
   className?: string
 }
 
-const DEFAULT_QUICK_EMOJIS = [
-  'thumbs_up',
-  'heart',
-  'smile',
-  'tada',
-  'thinking',
-  'eyes',
-]
+const DEFAULT_QUICK_EMOJIS = ['thumbs_up', 'heart', 'smile', 'tada', 'thinking', 'eyes']
 
 export function QuickReactions({
   onReact,
@@ -278,30 +263,17 @@ const EMOJI_CATEGORIES = {
   ],
 }
 
-export function ReactionPicker({
-  onSelect,
-  recentEmojis = [],
-  className,
-}: ReactionPickerProps) {
+export function ReactionPicker({ onSelect, recentEmojis = [], className }: ReactionPickerProps) {
   const [activeCategory, setActiveCategory] = useState<string>('smileys')
 
-  const categories = Object.keys(EMOJI_CATEGORIES) as Array<
-    keyof typeof EMOJI_CATEGORIES
-  >
+  const categories = Object.keys(EMOJI_CATEGORIES) as Array<keyof typeof EMOJI_CATEGORIES>
 
   return (
-    <div
-      className={cn(
-        'w-72 rounded-lg border bg-popover p-2 shadow-lg',
-        className
-      )}
-    >
+    <div className={cn('w-72 rounded-lg border bg-popover p-2 shadow-lg', className)}>
       {/* Recent emojis */}
       {recentEmojis.length > 0 && (
         <div className="mb-2 border-b pb-2">
-          <div className="mb-1 text-xs font-medium text-muted-foreground">
-            Recently used
-          </div>
+          <div className="mb-1 text-xs font-medium text-muted-foreground">Recently used</div>
           <div className="flex flex-wrap gap-1">
             {recentEmojis.slice(0, 8).map((emoji) => (
               <Button
@@ -335,19 +307,17 @@ export function ReactionPicker({
 
       {/* Emoji grid */}
       <div className="grid grid-cols-8 gap-1">
-        {EMOJI_CATEGORIES[activeCategory as keyof typeof EMOJI_CATEGORIES].map(
-          (emoji) => (
-            <Button
-              key={emoji}
-              variant="ghost"
-              size="sm"
-              onClick={() => onSelect(emoji)}
-              className="h-8 w-8 p-0 text-lg hover:bg-muted"
-            >
-              {emojiFromName(emoji)}
-            </Button>
-          )
-        )}
+        {EMOJI_CATEGORIES[activeCategory as keyof typeof EMOJI_CATEGORIES].map((emoji) => (
+          <Button
+            key={emoji}
+            variant="ghost"
+            size="sm"
+            onClick={() => onSelect(emoji)}
+            className="h-8 w-8 p-0 text-lg hover:bg-muted"
+          >
+            {emojiFromName(emoji)}
+          </Button>
+        ))}
       </div>
     </div>
   )

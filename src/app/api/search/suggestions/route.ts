@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -110,7 +112,7 @@ export async function GET(request: NextRequest) {
       client.release()
     }
   } catch (error) {
-    console.error('Search suggestions error:', error)
+    logger.error('Search suggestions error:', error)
     captureError(error as Error, {
       tags: { api: 'search-suggestions' },
     })

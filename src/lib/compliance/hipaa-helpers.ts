@@ -12,7 +12,7 @@
 export const HIPAA_RULES = {
   PRIVACY: {
     name: 'Privacy Rule',
-    description: 'Establishes standards for protecting individuals\' medical records and PHI.',
+    description: "Establishes standards for protecting individuals' medical records and PHI.",
     requirements: [
       'Limit use and disclosure of PHI',
       'Provide individuals with rights over their PHI',
@@ -51,9 +51,9 @@ export const HIPAA_RULES = {
       'Implement corrective actions',
     ],
   },
-} as const;
+} as const
 
-export type HIPAARule = keyof typeof HIPAA_RULES;
+export type HIPAARule = keyof typeof HIPAA_RULES
 
 // ============================================================================
 // PROTECTED HEALTH INFORMATION (PHI)
@@ -78,7 +78,7 @@ export const PHI_IDENTIFIERS = [
   'Biometric identifiers',
   'Full-face photographs',
   'Any other unique identifying number or code',
-] as const;
+] as const
 
 // ============================================================================
 // SAFEGUARDS
@@ -130,7 +130,7 @@ export const ADMINISTRATIVE_SAFEGUARDS = {
       'Applications and data criticality analysis (Addressable)',
     ],
   },
-} as const;
+} as const
 
 export const PHYSICAL_SAFEGUARDS = {
   FACILITY_ACCESS: {
@@ -163,7 +163,7 @@ export const PHYSICAL_SAFEGUARDS = {
       'Data backup and storage (Addressable)',
     ],
   },
-} as const;
+} as const
 
 export const TECHNICAL_SAFEGUARDS = {
   ACCESS_CONTROL: {
@@ -194,47 +194,44 @@ export const TECHNICAL_SAFEGUARDS = {
   TRANSMISSION_SECURITY: {
     name: 'Transmission Security',
     standard: '164.312(e)',
-    specifications: [
-      'Integrity controls (Addressable)',
-      'Encryption (Addressable)',
-    ],
+    specifications: ['Integrity controls (Addressable)', 'Encryption (Addressable)'],
   },
-} as const;
+} as const
 
 // ============================================================================
 // HIPAA COMPLIANCE CHECKS
 // ============================================================================
 
 export interface HIPAAComplianceCheck {
-  id: string;
-  name: string;
-  safeguard: 'administrative' | 'physical' | 'technical' | 'organizational';
-  requirement: 'required' | 'addressable';
-  description: string;
+  id: string
+  name: string
+  safeguard: 'administrative' | 'physical' | 'technical' | 'organizational'
+  requirement: 'required' | 'addressable'
+  description: string
 }
 
 export interface HIPAAComplianceData {
-  isHealthcareEntity: boolean;
-  handlesPHI: boolean;
-  hasBAA: boolean; // Business Associate Agreement
-  hasPrivacyOfficer: boolean;
-  hasSecurityOfficer: boolean;
-  hasRiskAnalysis: boolean;
-  hasTrainingProgram: boolean;
-  hasIncidentPlan: boolean;
-  hasContingencyPlan: boolean;
-  hasAccessControls: boolean;
-  hasAuditControls: boolean;
-  hasEncryption: boolean;
-  hasPhysicalSafeguards: boolean;
-  documentationComplete: boolean;
+  isHealthcareEntity: boolean
+  handlesPHI: boolean
+  hasBAA: boolean // Business Associate Agreement
+  hasPrivacyOfficer: boolean
+  hasSecurityOfficer: boolean
+  hasRiskAnalysis: boolean
+  hasTrainingProgram: boolean
+  hasIncidentPlan: boolean
+  hasContingencyPlan: boolean
+  hasAccessControls: boolean
+  hasAuditControls: boolean
+  hasEncryption: boolean
+  hasPhysicalSafeguards: boolean
+  documentationComplete: boolean
 }
 
 export interface HIPAACheckResult {
-  passed: boolean;
-  status: 'compliant' | 'non_compliant' | 'partial' | 'not_applicable';
-  message: string;
-  recommendations?: string[];
+  passed: boolean
+  status: 'compliant' | 'non_compliant' | 'partial' | 'not_applicable'
+  message: string
+  recommendations?: string[]
 }
 
 export const HIPAA_COMPLIANCE_CHECKS: HIPAAComplianceCheck[] = [
@@ -322,30 +319,30 @@ export const HIPAA_COMPLIANCE_CHECKS: HIPAAComplianceCheck[] = [
     requirement: 'required',
     description: 'Maintain required policies, procedures, and documentation',
   },
-];
+]
 
 // ============================================================================
 // HIPAA ASSESSMENT
 // ============================================================================
 
 export interface HIPAAAssessment {
-  overallScore: number;
-  applies: boolean;
-  status: 'compliant' | 'at_risk' | 'non_compliant';
+  overallScore: number
+  applies: boolean
+  status: 'compliant' | 'at_risk' | 'non_compliant'
   checkResults: Array<{
-    check: HIPAAComplianceCheck;
-    passed: boolean;
-    notes?: string;
-  }>;
+    check: HIPAAComplianceCheck
+    passed: boolean
+    notes?: string
+  }>
   summary: {
-    compliant: number;
-    nonCompliant: number;
-    partial: number;
-    notApplicable: number;
-  };
-  criticalGaps: string[];
-  recommendations: string[];
-  generatedAt: Date;
+    compliant: number
+    nonCompliant: number
+    partial: number
+    notApplicable: number
+  }
+  criticalGaps: string[]
+  recommendations: string[]
+  generatedAt: Date
 }
 
 /**
@@ -353,7 +350,7 @@ export interface HIPAAAssessment {
  */
 export function runHIPAAAssessment(data: HIPAAComplianceData): HIPAAAssessment {
   // Check if HIPAA applies
-  const applies = data.isHealthcareEntity || data.handlesPHI;
+  const applies = data.isHealthcareEntity || data.handlesPHI
 
   if (!applies) {
     return {
@@ -361,14 +358,19 @@ export function runHIPAAAssessment(data: HIPAAComplianceData): HIPAAAssessment {
       applies: false,
       status: 'compliant',
       checkResults: [],
-      summary: { compliant: 0, nonCompliant: 0, partial: 0, notApplicable: HIPAA_COMPLIANCE_CHECKS.length },
+      summary: {
+        compliant: 0,
+        nonCompliant: 0,
+        partial: 0,
+        notApplicable: HIPAA_COMPLIANCE_CHECKS.length,
+      },
       criticalGaps: [],
       recommendations: [],
       generatedAt: new Date(),
-    };
+    }
   }
 
-  const checkResults: HIPAAAssessment['checkResults'] = [];
+  const checkResults: HIPAAAssessment['checkResults'] = []
 
   // Evaluate each check
   const evaluations: Record<string, boolean> = {
@@ -384,13 +386,13 @@ export function runHIPAAAssessment(data: HIPAAComplianceData): HIPAAAssessment {
     physical_safeguards: data.hasPhysicalSafeguards,
     baa: data.hasBAA,
     documentation: data.documentationComplete,
-  };
+  }
 
   for (const check of HIPAA_COMPLIANCE_CHECKS) {
     checkResults.push({
       check,
       passed: evaluations[check.id] || false,
-    });
+    })
   }
 
   const summary = {
@@ -398,25 +400,25 @@ export function runHIPAAAssessment(data: HIPAAComplianceData): HIPAAAssessment {
     nonCompliant: checkResults.filter((r) => !r.passed).length,
     partial: 0,
     notApplicable: 0,
-  };
+  }
 
-  const overallScore = Math.round((summary.compliant / checkResults.length) * 100);
+  const overallScore = Math.round((summary.compliant / checkResults.length) * 100)
 
   const criticalGaps = checkResults
     .filter((r) => !r.passed && r.check.requirement === 'required')
-    .map((r) => r.check.name);
+    .map((r) => r.check.name)
 
   const recommendations = checkResults
     .filter((r) => !r.passed)
-    .map((r) => `Implement ${r.check.name}: ${r.check.description}`);
+    .map((r) => `Implement ${r.check.name}: ${r.check.description}`)
 
-  let status: HIPAAAssessment['status'];
+  let status: HIPAAAssessment['status']
   if (summary.nonCompliant === 0) {
-    status = 'compliant';
+    status = 'compliant'
   } else if (criticalGaps.length <= 2) {
-    status = 'at_risk';
+    status = 'at_risk'
   } else {
-    status = 'non_compliant';
+    status = 'non_compliant'
   }
 
   return {
@@ -428,7 +430,7 @@ export function runHIPAAAssessment(data: HIPAAComplianceData): HIPAAAssessment {
     criticalGaps,
     recommendations,
     generatedAt: new Date(),
-  };
+  }
 }
 
 // ============================================================================
@@ -436,53 +438,53 @@ export function runHIPAAAssessment(data: HIPAAComplianceData): HIPAAAssessment {
 // ============================================================================
 
 export interface BreachAssessment {
-  isBreach: boolean;
-  requiresNotification: boolean;
-  notificationDeadline?: Date;
-  affectedIndividuals: number;
-  requiresMediaNotification: boolean;
-  factors: string[];
+  isBreach: boolean
+  requiresNotification: boolean
+  notificationDeadline?: Date
+  affectedIndividuals: number
+  requiresMediaNotification: boolean
+  factors: string[]
 }
 
 /**
  * Assess if an incident constitutes a HIPAA breach
  */
 export function assessBreach(incident: {
-  involvesPHI: boolean;
-  isUnsecured: boolean;
-  affectedCount: number;
-  discoveryDate: Date;
-  accessType: 'acquisition' | 'access' | 'use' | 'disclosure';
-  probability: 'low' | 'moderate' | 'high';
+  involvesPHI: boolean
+  isUnsecured: boolean
+  affectedCount: number
+  discoveryDate: Date
+  accessType: 'acquisition' | 'access' | 'use' | 'disclosure'
+  probability: 'low' | 'moderate' | 'high'
 }): BreachAssessment {
-  const factors: string[] = [];
+  const factors: string[] = []
 
   // Not a breach if PHI was secured (encrypted)
   if (incident.involvesPHI && incident.isUnsecured) {
-    factors.push('Unsecured PHI was involved');
+    factors.push('Unsecured PHI was involved')
   }
 
-  const isBreach = incident.involvesPHI && incident.isUnsecured;
+  const isBreach = incident.involvesPHI && incident.isUnsecured
 
   // Low probability exception
   if (incident.probability === 'low') {
-    factors.push('Low probability of compromise based on risk assessment');
+    factors.push('Low probability of compromise based on risk assessment')
   }
 
-  const requiresNotification = isBreach && incident.probability !== 'low';
+  const requiresNotification = isBreach && incident.probability !== 'low'
 
   // Calculate deadline (60 days from discovery)
-  let notificationDeadline: Date | undefined;
+  let notificationDeadline: Date | undefined
   if (requiresNotification) {
-    notificationDeadline = new Date(incident.discoveryDate);
-    notificationDeadline.setDate(notificationDeadline.getDate() + 60);
-    factors.push(`Notification deadline: ${notificationDeadline.toLocaleDateString()}`);
+    notificationDeadline = new Date(incident.discoveryDate)
+    notificationDeadline.setDate(notificationDeadline.getDate() + 60)
+    factors.push(`Notification deadline: ${notificationDeadline.toLocaleDateString()}`)
   }
 
   // Media notification required for 500+ individuals
-  const requiresMediaNotification = requiresNotification && incident.affectedCount >= 500;
+  const requiresMediaNotification = requiresNotification && incident.affectedCount >= 500
   if (requiresMediaNotification) {
-    factors.push('Media notification required (500+ individuals affected)');
+    factors.push('Media notification required (500+ individuals affected)')
   }
 
   return {
@@ -492,7 +494,7 @@ export function assessBreach(incident: {
     affectedIndividuals: incident.affectedCount,
     requiresMediaNotification,
     factors,
-  };
+  }
 }
 
 // ============================================================================
@@ -500,11 +502,11 @@ export function assessBreach(incident: {
 // ============================================================================
 
 export interface BAARequirements {
-  purpose: string;
-  permittedUses: string[];
-  safeguardRequirements: string[];
-  reportingRequirements: string[];
-  terminationConditions: string[];
+  purpose: string
+  permittedUses: string[]
+  safeguardRequirements: string[]
+  reportingRequirements: string[]
+  terminationConditions: string[]
 }
 
 /**
@@ -536,7 +538,7 @@ export function getBAARequirements(): BAARequirements {
       'Violation of HIPAA requirements',
       'Return or destroy PHI upon termination',
     ],
-  };
+  }
 }
 
 // ============================================================================
@@ -553,4 +555,4 @@ export const HIPAAHelpers = {
   runHIPAAAssessment,
   assessBreach,
   getBAARequirements,
-};
+}

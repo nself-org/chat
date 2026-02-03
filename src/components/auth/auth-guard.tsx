@@ -63,10 +63,9 @@ export function AuthGuard({
 
       // Build redirect URL with return path
       const returnUrl = encodeURIComponent(pathname)
-      const loginUrl =
-        redirectTo.includes('?')
-          ? `${redirectTo}&returnTo=${returnUrl}`
-          : `${redirectTo}?returnTo=${returnUrl}`
+      const loginUrl = redirectTo.includes('?')
+        ? `${redirectTo}&returnTo=${returnUrl}`
+        : `${redirectTo}?returnTo=${returnUrl}`
 
       router.replace(loginUrl)
     } else {
@@ -95,10 +94,7 @@ export function AuthGuard({
 /**
  * Hook version of AuthGuard for more control
  */
-export function useAuthGuard(options?: {
-  redirectTo?: string
-  onAuthFailure?: () => void
-}): {
+export function useAuthGuard(options?: { redirectTo?: string; onAuthFailure?: () => void }): {
   isAuthenticated: boolean
   isLoading: boolean
   user: ReturnType<typeof useAuth>['user']
@@ -135,10 +131,7 @@ export function withAuthGuard<P extends object>(
 ) {
   return function AuthGuardedComponent(props: P) {
     return (
-      <AuthGuard
-        redirectTo={options?.redirectTo}
-        loadingComponent={options?.loadingComponent}
-      >
+      <AuthGuard redirectTo={options?.redirectTo} loadingComponent={options?.loadingComponent}>
         <WrappedComponent {...props} />
       </AuthGuard>
     )
@@ -189,9 +182,7 @@ export function GuestGuard({
 /**
  * Hook version of GuestGuard
  */
-export function useGuestGuard(options?: {
-  redirectTo?: string
-}): {
+export function useGuestGuard(options?: { redirectTo?: string }): {
   isGuest: boolean
   isLoading: boolean
 } {

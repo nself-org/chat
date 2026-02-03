@@ -5,109 +5,109 @@
  * Drafts are preserved across page refreshes and browser sessions
  */
 
-import { create } from 'zustand';
-import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { create } from 'zustand'
+import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface DraftAttachment {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  localUrl: string; // blob URL for preview
-  file?: File; // Original file object (not persisted)
+  id: string
+  name: string
+  type: string
+  size: number
+  localUrl: string // blob URL for preview
+  file?: File // Original file object (not persisted)
 }
 
 export interface MessageDraft {
-  content: string;
-  contentHtml?: string;
-  replyToMessageId: string | null;
+  content: string
+  contentHtml?: string
+  replyToMessageId: string | null
   replyToPreview?: {
-    userId: string;
-    userName: string;
-    content: string;
-  };
-  attachmentIds: string[]; // References to attachment store
+    userId: string
+    userName: string
+    content: string
+  }
+  attachmentIds: string[] // References to attachment store
   mentions: Array<{
-    type: 'user' | 'channel' | 'everyone' | 'here';
-    id?: string;
-    name: string;
-  }>;
-  selectionStart: number;
-  selectionEnd: number;
-  lastModified: number; // timestamp
+    type: 'user' | 'channel' | 'everyone' | 'here'
+    id?: string
+    name: string
+  }>
+  selectionStart: number
+  selectionEnd: number
+  lastModified: number // timestamp
 }
 
 export interface DraftState {
   // Drafts by context key (channel:{id}, thread:{id}, dm:{id})
-  drafts: Record<string, MessageDraft>;
+  drafts: Record<string, MessageDraft>
 
   // Currently focused draft
-  activeDraftContext: string | null;
+  activeDraftContext: string | null
 
   // Attachments pending upload (in memory, not persisted)
-  pendingAttachments: Record<string, DraftAttachment[]>;
+  pendingAttachments: Record<string, DraftAttachment[]>
 
   // Auto-save configuration
-  autoSaveEnabled: boolean;
-  autoSaveDebounce: number; // ms
+  autoSaveEnabled: boolean
+  autoSaveDebounce: number // ms
 }
 
 export interface DraftActions {
   // Draft CRUD
-  setDraft: (contextKey: string, draft: Partial<MessageDraft>) => void;
-  getDraft: (contextKey: string) => MessageDraft | undefined;
-  clearDraft: (contextKey: string) => void;
-  clearAllDrafts: () => void;
+  setDraft: (contextKey: string, draft: Partial<MessageDraft>) => void
+  getDraft: (contextKey: string) => MessageDraft | undefined
+  clearDraft: (contextKey: string) => void
+  clearAllDrafts: () => void
 
   // Content shortcuts
-  setDraftContent: (contextKey: string, content: string) => void;
-  appendToDraft: (contextKey: string, text: string) => void;
+  setDraftContent: (contextKey: string, content: string) => void
+  appendToDraft: (contextKey: string, text: string) => void
 
   // Reply management
   setReplyTo: (
     contextKey: string,
     messageId: string,
     preview: { userId: string; userName: string; content: string }
-  ) => void;
-  clearReplyTo: (contextKey: string) => void;
+  ) => void
+  clearReplyTo: (contextKey: string) => void
 
   // Mentions
   addMention: (
     contextKey: string,
     mention: { type: 'user' | 'channel' | 'everyone' | 'here'; id?: string; name: string }
-  ) => void;
-  clearMentions: (contextKey: string) => void;
+  ) => void
+  clearMentions: (contextKey: string) => void
 
   // Selection/cursor state
-  setSelection: (contextKey: string, start: number, end: number) => void;
+  setSelection: (contextKey: string, start: number, end: number) => void
 
   // Attachments (in memory)
-  addPendingAttachment: (contextKey: string, attachment: DraftAttachment) => void;
-  removePendingAttachment: (contextKey: string, attachmentId: string) => void;
-  clearPendingAttachments: (contextKey: string) => void;
-  getPendingAttachments: (contextKey: string) => DraftAttachment[];
+  addPendingAttachment: (contextKey: string, attachment: DraftAttachment) => void
+  removePendingAttachment: (contextKey: string, attachmentId: string) => void
+  clearPendingAttachments: (contextKey: string) => void
+  getPendingAttachments: (contextKey: string) => DraftAttachment[]
 
   // Active draft
-  setActiveDraftContext: (contextKey: string | null) => void;
+  setActiveDraftContext: (contextKey: string | null) => void
 
   // Configuration
-  setAutoSaveEnabled: (enabled: boolean) => void;
-  setAutoSaveDebounce: (debounce: number) => void;
+  setAutoSaveEnabled: (enabled: boolean) => void
+  setAutoSaveDebounce: (debounce: number) => void
 
   // Utility
-  hasDraft: (contextKey: string) => boolean;
-  getDraftCount: () => number;
-  getOldDrafts: (olderThanMs: number) => string[];
-  cleanupOldDrafts: (olderThanMs: number) => void;
-  reset: () => void;
+  hasDraft: (contextKey: string) => boolean
+  getDraftCount: () => number
+  getOldDrafts: (olderThanMs: number) => string[]
+  cleanupOldDrafts: (olderThanMs: number) => void
+  reset: () => void
 }
 
-export type DraftStore = DraftState & DraftActions;
+export type DraftStore = DraftState & DraftActions
 
 // ============================================================================
 // Helper Functions
@@ -116,17 +116,17 @@ export type DraftStore = DraftState & DraftActions;
 /**
  * Create a context key for a channel draft
  */
-export const getChannelDraftKey = (channelId: string): string => `channel:${channelId}`;
+export const getChannelDraftKey = (channelId: string): string => `channel:${channelId}`
 
 /**
  * Create a context key for a thread draft
  */
-export const getThreadDraftKey = (threadId: string): string => `thread:${threadId}`;
+export const getThreadDraftKey = (threadId: string): string => `thread:${threadId}`
 
 /**
  * Create a context key for a DM draft
  */
-export const getDMDraftKey = (conversationId: string): string => `dm:${conversationId}`;
+export const getDMDraftKey = (conversationId: string): string => `dm:${conversationId}`
 
 /**
  * Create an empty draft
@@ -141,14 +141,14 @@ const createEmptyDraft = (): MessageDraft => ({
   selectionStart: 0,
   selectionEnd: 0,
   lastModified: Date.now(),
-});
+})
 
 // ============================================================================
 // Initial State
 // ============================================================================
 
-const DEFAULT_AUTO_SAVE_DEBOUNCE = 500; // ms
-const MAX_DRAFT_AGE = 30 * 24 * 60 * 60 * 1000; // 30 days
+const DEFAULT_AUTO_SAVE_DEBOUNCE = 500 // ms
+const MAX_DRAFT_AGE = 30 * 24 * 60 * 60 * 1000 // 30 days
 
 const initialState: DraftState = {
   drafts: {},
@@ -156,7 +156,7 @@ const initialState: DraftState = {
   pendingAttachments: {},
   autoSaveEnabled: true,
   autoSaveDebounce: DEFAULT_AUTO_SAVE_DEBOUNCE,
-};
+}
 
 // ============================================================================
 // Store
@@ -173,12 +173,12 @@ export const useDraftStore = create<DraftStore>()(
           setDraft: (contextKey, draft) =>
             set(
               (state) => {
-                const existing = state.drafts[contextKey] || createEmptyDraft();
+                const existing = state.drafts[contextKey] || createEmptyDraft()
                 state.drafts[contextKey] = {
                   ...existing,
                   ...draft,
                   lastModified: Date.now(),
-                };
+                }
               },
               false,
               'draft/setDraft'
@@ -189,8 +189,8 @@ export const useDraftStore = create<DraftStore>()(
           clearDraft: (contextKey) =>
             set(
               (state) => {
-                delete state.drafts[contextKey];
-                delete state.pendingAttachments[contextKey];
+                delete state.drafts[contextKey]
+                delete state.pendingAttachments[contextKey]
               },
               false,
               'draft/clearDraft'
@@ -199,8 +199,8 @@ export const useDraftStore = create<DraftStore>()(
           clearAllDrafts: () =>
             set(
               (state) => {
-                state.drafts = {};
-                state.pendingAttachments = {};
+                state.drafts = {}
+                state.pendingAttachments = {}
               },
               false,
               'draft/clearAllDrafts'
@@ -211,10 +211,10 @@ export const useDraftStore = create<DraftStore>()(
             set(
               (state) => {
                 if (!state.drafts[contextKey]) {
-                  state.drafts[contextKey] = createEmptyDraft();
+                  state.drafts[contextKey] = createEmptyDraft()
                 }
-                state.drafts[contextKey].content = content;
-                state.drafts[contextKey].lastModified = Date.now();
+                state.drafts[contextKey].content = content
+                state.drafts[contextKey].lastModified = Date.now()
               },
               false,
               'draft/setDraftContent'
@@ -224,10 +224,10 @@ export const useDraftStore = create<DraftStore>()(
             set(
               (state) => {
                 if (!state.drafts[contextKey]) {
-                  state.drafts[contextKey] = createEmptyDraft();
+                  state.drafts[contextKey] = createEmptyDraft()
                 }
-                state.drafts[contextKey].content += text;
-                state.drafts[contextKey].lastModified = Date.now();
+                state.drafts[contextKey].content += text
+                state.drafts[contextKey].lastModified = Date.now()
               },
               false,
               'draft/appendToDraft'
@@ -238,11 +238,11 @@ export const useDraftStore = create<DraftStore>()(
             set(
               (state) => {
                 if (!state.drafts[contextKey]) {
-                  state.drafts[contextKey] = createEmptyDraft();
+                  state.drafts[contextKey] = createEmptyDraft()
                 }
-                state.drafts[contextKey].replyToMessageId = messageId;
-                state.drafts[contextKey].replyToPreview = preview;
-                state.drafts[contextKey].lastModified = Date.now();
+                state.drafts[contextKey].replyToMessageId = messageId
+                state.drafts[contextKey].replyToPreview = preview
+                state.drafts[contextKey].lastModified = Date.now()
               },
               false,
               'draft/setReplyTo'
@@ -252,9 +252,9 @@ export const useDraftStore = create<DraftStore>()(
             set(
               (state) => {
                 if (state.drafts[contextKey]) {
-                  state.drafts[contextKey].replyToMessageId = null;
-                  state.drafts[contextKey].replyToPreview = undefined;
-                  state.drafts[contextKey].lastModified = Date.now();
+                  state.drafts[contextKey].replyToMessageId = null
+                  state.drafts[contextKey].replyToPreview = undefined
+                  state.drafts[contextKey].lastModified = Date.now()
                 }
               },
               false,
@@ -266,10 +266,10 @@ export const useDraftStore = create<DraftStore>()(
             set(
               (state) => {
                 if (!state.drafts[contextKey]) {
-                  state.drafts[contextKey] = createEmptyDraft();
+                  state.drafts[contextKey] = createEmptyDraft()
                 }
-                state.drafts[contextKey].mentions.push(mention);
-                state.drafts[contextKey].lastModified = Date.now();
+                state.drafts[contextKey].mentions.push(mention)
+                state.drafts[contextKey].lastModified = Date.now()
               },
               false,
               'draft/addMention'
@@ -279,8 +279,8 @@ export const useDraftStore = create<DraftStore>()(
             set(
               (state) => {
                 if (state.drafts[contextKey]) {
-                  state.drafts[contextKey].mentions = [];
-                  state.drafts[contextKey].lastModified = Date.now();
+                  state.drafts[contextKey].mentions = []
+                  state.drafts[contextKey].lastModified = Date.now()
                 }
               },
               false,
@@ -292,10 +292,10 @@ export const useDraftStore = create<DraftStore>()(
             set(
               (state) => {
                 if (!state.drafts[contextKey]) {
-                  state.drafts[contextKey] = createEmptyDraft();
+                  state.drafts[contextKey] = createEmptyDraft()
                 }
-                state.drafts[contextKey].selectionStart = start;
-                state.drafts[contextKey].selectionEnd = end;
+                state.drafts[contextKey].selectionStart = start
+                state.drafts[contextKey].selectionEnd = end
               },
               false,
               'draft/setSelection'
@@ -306,9 +306,9 @@ export const useDraftStore = create<DraftStore>()(
             set(
               (state) => {
                 if (!state.pendingAttachments[contextKey]) {
-                  state.pendingAttachments[contextKey] = [];
+                  state.pendingAttachments[contextKey] = []
                 }
-                state.pendingAttachments[contextKey].push(attachment);
+                state.pendingAttachments[contextKey].push(attachment)
               },
               false,
               'draft/addPendingAttachment'
@@ -320,7 +320,7 @@ export const useDraftStore = create<DraftStore>()(
                 if (state.pendingAttachments[contextKey]) {
                   state.pendingAttachments[contextKey] = state.pendingAttachments[
                     contextKey
-                  ].filter((a) => a.id !== attachmentId);
+                  ].filter((a) => a.id !== attachmentId)
                 }
               },
               false,
@@ -330,20 +330,19 @@ export const useDraftStore = create<DraftStore>()(
           clearPendingAttachments: (contextKey) =>
             set(
               (state) => {
-                delete state.pendingAttachments[contextKey];
+                delete state.pendingAttachments[contextKey]
               },
               false,
               'draft/clearPendingAttachments'
             ),
 
-          getPendingAttachments: (contextKey) =>
-            get().pendingAttachments[contextKey] || [],
+          getPendingAttachments: (contextKey) => get().pendingAttachments[contextKey] || [],
 
           // Active draft
           setActiveDraftContext: (contextKey) =>
             set(
               (state) => {
-                state.activeDraftContext = contextKey;
+                state.activeDraftContext = contextKey
               },
               false,
               'draft/setActiveDraftContext'
@@ -353,7 +352,7 @@ export const useDraftStore = create<DraftStore>()(
           setAutoSaveEnabled: (enabled) =>
             set(
               (state) => {
-                state.autoSaveEnabled = enabled;
+                state.autoSaveEnabled = enabled
               },
               false,
               'draft/setAutoSaveEnabled'
@@ -362,7 +361,7 @@ export const useDraftStore = create<DraftStore>()(
           setAutoSaveDebounce: (debounce) =>
             set(
               (state) => {
-                state.autoSaveDebounce = debounce;
+                state.autoSaveDebounce = debounce
               },
               false,
               'draft/setAutoSaveDebounce'
@@ -370,35 +369,33 @@ export const useDraftStore = create<DraftStore>()(
 
           // Utility
           hasDraft: (contextKey) => {
-            const draft = get().drafts[contextKey];
-            if (!draft) return false;
+            const draft = get().drafts[contextKey]
+            if (!draft) return false
             return (
               draft.content.trim().length > 0 ||
               draft.attachmentIds.length > 0 ||
               (get().pendingAttachments[contextKey]?.length ?? 0) > 0
-            );
+            )
           },
 
           getDraftCount: () => Object.keys(get().drafts).length,
 
           getOldDrafts: (olderThanMs) => {
-            const now = Date.now();
-            const drafts = get().drafts;
-            return Object.keys(drafts).filter(
-              (key) => now - drafts[key].lastModified > olderThanMs
-            );
+            const now = Date.now()
+            const drafts = get().drafts
+            return Object.keys(drafts).filter((key) => now - drafts[key].lastModified > olderThanMs)
           },
 
           cleanupOldDrafts: (olderThanMs) =>
             set(
               (state) => {
-                const now = Date.now();
+                const now = Date.now()
                 Object.keys(state.drafts).forEach((key) => {
                   if (now - state.drafts[key].lastModified > olderThanMs) {
-                    delete state.drafts[key];
-                    delete state.pendingAttachments[key];
+                    delete state.drafts[key]
+                    delete state.pendingAttachments[key]
                   }
-                });
+                })
               },
               false,
               'draft/cleanupOldDrafts'
@@ -427,14 +424,14 @@ export const useDraftStore = create<DraftStore>()(
         // Clean up old drafts on rehydration
         onRehydrateStorage: () => (state) => {
           if (state) {
-            state.cleanupOldDrafts(MAX_DRAFT_AGE);
+            state.cleanupOldDrafts(MAX_DRAFT_AGE)
           }
         },
       }
     ),
     { name: 'draft-store' }
   )
-);
+)
 
 // ============================================================================
 // Selectors
@@ -443,80 +440,79 @@ export const useDraftStore = create<DraftStore>()(
 /**
  * Select draft for a specific context
  */
-export const selectDraft = (contextKey: string) => (state: DraftStore) =>
-  state.drafts[contextKey];
+export const selectDraft = (contextKey: string) => (state: DraftStore) => state.drafts[contextKey]
 
 /**
  * Select draft content for a specific context
  */
 export const selectDraftContent = (contextKey: string) => (state: DraftStore) =>
-  state.drafts[contextKey]?.content ?? '';
+  state.drafts[contextKey]?.content ?? ''
 
 /**
  * Check if context has a non-empty draft
  */
 export const selectHasDraft = (contextKey: string) => (state: DraftStore) => {
-  const draft = state.drafts[contextKey];
-  if (!draft) return false;
+  const draft = state.drafts[contextKey]
+  if (!draft) return false
   return (
     draft.content.trim().length > 0 ||
     draft.attachmentIds.length > 0 ||
     (state.pendingAttachments[contextKey]?.length ?? 0) > 0
-  );
-};
+  )
+}
 
 /**
  * Select reply info for a draft
  */
 export const selectDraftReply = (contextKey: string) => (state: DraftStore) => {
-  const draft = state.drafts[contextKey];
-  if (!draft?.replyToMessageId) return null;
+  const draft = state.drafts[contextKey]
+  if (!draft?.replyToMessageId) return null
   return {
     messageId: draft.replyToMessageId,
     preview: draft.replyToPreview,
-  };
-};
+  }
+}
 
 /**
  * Select pending attachments for a context
  */
 export const selectPendingAttachments = (contextKey: string) => (state: DraftStore) =>
-  state.pendingAttachments[contextKey] || [];
+  state.pendingAttachments[contextKey] || []
 
 /**
  * Select all contexts that have drafts
  */
 export const selectDraftContexts = (state: DraftStore) =>
   Object.keys(state.drafts).filter((key) => {
-    const draft = state.drafts[key];
+    const draft = state.drafts[key]
     return (
       draft.content.trim().length > 0 ||
       draft.attachmentIds.length > 0 ||
       (state.pendingAttachments[key]?.length ?? 0) > 0
-    );
-  });
+    )
+  })
 
 /**
  * Select total draft count
  */
 export const selectDraftCount = (state: DraftStore) => {
   return Object.keys(state.drafts).filter((key) => {
-    const draft = state.drafts[key];
+    const draft = state.drafts[key]
     return (
       draft.content.trim().length > 0 ||
       draft.attachmentIds.length > 0 ||
       (state.pendingAttachments[key]?.length ?? 0) > 0
-    );
-  }).length;
-};
+    )
+  }).length
+}
 
 /**
  * Select the active draft context
  */
-export const selectActiveDraftContext = (state: DraftStore) => state.activeDraftContext;
+export const selectActiveDraftContext = (state: DraftStore) => state.activeDraftContext
 
 /**
  * Select the active draft
  */
 export const selectActiveDraft = (state: DraftStore) =>
-  state.activeDraftContext ? state.drafts[state.activeDraftContext] : null;
+  state.activeDraftContext ? state.drafts[state.activeDraftContext] : null

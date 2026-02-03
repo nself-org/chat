@@ -5,7 +5,11 @@
  * sentiment analysis, and topic extraction.
  */
 
-import { ContentClassifier, getContentClassifier, DEFAULT_CLASSIFIER_CONFIG } from '../content-classifier'
+import {
+  ContentClassifier,
+  getContentClassifier,
+  DEFAULT_CLASSIFIER_CONFIG,
+} from '../content-classifier'
 import type { ClassifierConfig } from '../content-classifier'
 
 // ============================================================================
@@ -81,23 +85,23 @@ describe('Content Classifier', () => {
         'We have a bug in the API. The database server is throwing errors.'
       )
 
-      expect(result.categories.some(c => c.name === 'technical')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'technical')).toBe(true)
     })
 
     it('should classify business content', async () => {
       const result = await classifier.classify(
-        'Let\'s schedule a meeting to discuss the project deadline and budget with the client.'
+        "Let's schedule a meeting to discuss the project deadline and budget with the client."
       )
 
-      expect(result.categories.some(c => c.name === 'business')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'business')).toBe(true)
     })
 
     it('should classify social content', async () => {
       const result = await classifier.classify(
-        'Are we having a party this weekend? Let\'s get lunch!'
+        "Are we having a party this weekend? Let's get lunch!"
       )
 
-      expect(result.categories.some(c => c.name === 'social')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'social')).toBe(true)
     })
 
     it('should classify support requests', async () => {
@@ -105,7 +109,7 @@ describe('Content Classifier', () => {
         'Help! I have an urgent issue. Something is broken and not working.'
       )
 
-      expect(result.categories.some(c => c.name === 'support')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'support')).toBe(true)
     })
 
     it('should classify announcements', async () => {
@@ -113,7 +117,7 @@ describe('Content Classifier', () => {
         'Announcing our new feature release! Update available now.'
       )
 
-      expect(result.categories.some(c => c.name === 'announcement')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'announcement')).toBe(true)
     })
 
     it('should classify questions', async () => {
@@ -121,7 +125,7 @@ describe('Content Classifier', () => {
         'How do I fix this? What should I do? When is it ready?'
       )
 
-      expect(result.categories.some(c => c.name === 'question')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'question')).toBe(true)
     })
 
     it('should classify feedback', async () => {
@@ -129,7 +133,7 @@ describe('Content Classifier', () => {
         'I have a suggestion for improvement. My feedback on the new feature.'
       )
 
-      expect(result.categories.some(c => c.name === 'feedback')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'feedback')).toBe(true)
     })
 
     it('should classify complaints', async () => {
@@ -137,7 +141,7 @@ describe('Content Classifier', () => {
         'This is unacceptable! I am very disappointed and frustrated.'
       )
 
-      expect(result.categories.some(c => c.name === 'complaint')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'complaint')).toBe(true)
     })
 
     it('should classify praise', async () => {
@@ -145,7 +149,7 @@ describe('Content Classifier', () => {
         'This is great! Awesome work! I love it! Excellent job!'
       )
 
-      expect(result.categories.some(c => c.name === 'praise')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'praise')).toBe(true)
     })
 
     it('should detect multiple categories', async () => {
@@ -163,9 +167,7 @@ describe('Content Classifier', () => {
 
       // Categories should be sorted by score (descending)
       for (let i = 0; i < result.categories.length - 1; i++) {
-        expect(result.categories[i].score).toBeGreaterThanOrEqual(
-          result.categories[i + 1].score
-        )
+        expect(result.categories[i].score).toBeGreaterThanOrEqual(result.categories[i + 1].score)
       }
     })
 
@@ -339,9 +341,7 @@ describe('Content Classifier', () => {
     })
 
     it('should detect neutral sentiment', async () => {
-      const result = await classifier.classify(
-        'The meeting is at 3pm. Please review the document.'
-      )
+      const result = await classifier.classify('The meeting is at 3pm. Please review the document.')
 
       expect(result.sentiment).toBe('neutral')
       expect(result.sentimentScore).toBeCloseTo(0, 1)
@@ -365,9 +365,7 @@ describe('Content Classifier', () => {
     })
 
     it('should count multiple negative words', async () => {
-      const result = await classifier.classify(
-        'Broken, useless, error, fail, problem, bad'
-      )
+      const result = await classifier.classify('Broken, useless, error, fail, problem, bad')
 
       expect(result.sentiment).toBe('negative')
     })
@@ -386,9 +384,7 @@ describe('Content Classifier', () => {
 
   describe('Topic Extraction', () => {
     it('should extract hashtags', async () => {
-      const result = await classifier.classify(
-        'Check out #JavaScript #React #NodeJS'
-      )
+      const result = await classifier.classify('Check out #JavaScript #React #NodeJS')
 
       expect(result.detectedTopics).toContain('JavaScript')
       expect(result.detectedTopics).toContain('React')
@@ -396,9 +392,7 @@ describe('Content Classifier', () => {
     })
 
     it('should extract capitalized words', async () => {
-      const result = await classifier.classify(
-        'Docker and Kubernetes are important for DevOps'
-      )
+      const result = await classifier.classify('Docker and Kubernetes are important for DevOps')
 
       expect(result.detectedTopics.length).toBeGreaterThan(0)
     })
@@ -412,11 +406,9 @@ describe('Content Classifier', () => {
     })
 
     it('should deduplicate topics', async () => {
-      const result = await classifier.classify(
-        '#React React React #React'
-      )
+      const result = await classifier.classify('#React React React #React')
 
-      const reactCount = result.detectedTopics.filter(t => t === 'React').length
+      const reactCount = result.detectedTopics.filter((t) => t === 'React').length
       expect(reactCount).toBe(1)
     })
 
@@ -463,20 +455,16 @@ describe('Content Classifier', () => {
     })
 
     it('should detect inappropriate category', async () => {
-      const result = await classifier.classify(
-        'nsfw inappropriate content mature adults only'
-      )
+      const result = await classifier.classify('nsfw inappropriate content mature adults only')
 
-      expect(result.categories.some(c => c.name === 'inappropriate')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'inappropriate')).toBe(true)
       expect(result.isInappropriate).toBe(true)
     })
 
     it('should detect harassment category', async () => {
-      const result = await classifier.classify(
-        'harass threaten bully stalk intimidate'
-      )
+      const result = await classifier.classify('harass threaten bully stalk intimidate')
 
-      expect(result.categories.some(c => c.name === 'harassment')).toBe(true)
+      expect(result.categories.some((c) => c.name === 'harassment')).toBe(true)
       expect(result.isInappropriate).toBe(true)
     })
   })
@@ -500,7 +488,7 @@ describe('Content Classifier', () => {
 
       const result = await classifier.classify('temp message')
 
-      expect(result.categories.some(c => c.name === 'temporary')).toBe(false)
+      expect(result.categories.some((c) => c.name === 'temporary')).toBe(false)
     })
 
     it('should update config with custom categories', () => {

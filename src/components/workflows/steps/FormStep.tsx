@@ -32,10 +32,7 @@ interface FormStepPropertiesProps {
   onUpdate: (config: Record<string, unknown>) => void
 }
 
-export function FormStepProperties({
-  step,
-  onUpdate,
-}: FormStepPropertiesProps) {
+export function FormStepProperties({ step, onUpdate }: FormStepPropertiesProps) {
   const config = step.config
 
   const handleAddField = () => {
@@ -68,7 +65,7 @@ export function FormStepProperties({
         <Input
           value={config.title || ''}
           onChange={(e) => onUpdate({ title: e.target.value })}
-          className="h-8 text-sm mt-1"
+          className="mt-1 h-8 text-sm"
           placeholder="Form title"
         />
       </div>
@@ -79,7 +76,7 @@ export function FormStepProperties({
         <Textarea
           value={config.description || ''}
           onChange={(e) => onUpdate({ description: e.target.value })}
-          className="text-sm mt-1 min-h-[60px]"
+          className="mt-1 min-h-[60px] text-sm"
           placeholder="Optional form description..."
         />
       </div>
@@ -91,7 +88,7 @@ export function FormStepProperties({
           value={config.target}
           onValueChange={(value) => onUpdate({ target: value as MessageTarget })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -109,34 +106,25 @@ export function FormStepProperties({
           type="number"
           value={config.timeoutSeconds || 300}
           onChange={(e) => onUpdate({ timeoutSeconds: parseInt(e.target.value) })}
-          className="h-8 text-sm mt-1"
+          className="mt-1 h-8 text-sm"
           min={30}
           max={86400}
         />
-        <p className="text-[10px] text-muted-foreground mt-1">
-          How long to wait for a response
-        </p>
+        <p className="mt-1 text-[10px] text-muted-foreground">How long to wait for a response</p>
       </div>
 
       {/* Fields */}
-      <div className="pt-2 border-t">
-        <div className="flex items-center justify-between mb-2">
+      <div className="border-t pt-2">
+        <div className="mb-2 flex items-center justify-between">
           <Label className="text-xs">Form Fields</Label>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-6"
-            onClick={handleAddField}
-          >
-            <Plus className="h-3 w-3 mr-1" />
+          <Button variant="ghost" size="sm" className="h-6" onClick={handleAddField}>
+            <Plus className="mr-1 h-3 w-3" />
             Add Field
           </Button>
         </div>
 
-        {(!config.fields || config.fields.length === 0) ? (
-          <p className="text-xs text-muted-foreground text-center py-4">
-            No fields added yet.
-          </p>
+        {!config.fields || config.fields.length === 0 ? (
+          <p className="py-4 text-center text-xs text-muted-foreground">No fields added yet.</p>
         ) : (
           <div className="space-y-2">
             {config.fields.map((field, index) => (
@@ -152,12 +140,12 @@ export function FormStepProperties({
       </div>
 
       {/* Submit button label */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <Label className="text-xs">Submit Button Label</Label>
         <Input
           value={config.submitLabel || 'Submit'}
           onChange={(e) => onUpdate({ submitLabel: e.target.value })}
-          className="h-8 text-sm mt-1"
+          className="mt-1 h-8 text-sm"
         />
       </div>
     </div>
@@ -192,13 +180,13 @@ function FieldEditor({
   ]
 
   return (
-    <div className="p-2 rounded border bg-muted/30">
+    <div className="bg-muted/30 rounded border p-2">
       <div className="flex items-center gap-2">
-        <GripVertical className="h-4 w-4 text-muted-foreground cursor-move" />
+        <GripVertical className="h-4 w-4 cursor-move text-muted-foreground" />
         <Input
           value={field.label}
           onChange={(e) => onUpdate({ label: e.target.value })}
-          className="h-6 text-xs flex-1"
+          className="h-6 flex-1 text-xs"
           placeholder="Field label"
         />
         <Button
@@ -227,7 +215,7 @@ function FieldEditor({
               <Input
                 value={field.name}
                 onChange={(e) => onUpdate({ name: e.target.value })}
-                className="h-6 text-xs font-mono"
+                className="h-6 font-mono text-xs"
                 placeholder="fieldName"
               />
             </div>
@@ -236,7 +224,7 @@ function FieldEditor({
               <select
                 value={field.type}
                 onChange={(e) => onUpdate({ type: e.target.value as FormFieldType })}
-                className="w-full h-6 text-xs rounded border bg-background"
+                className="h-6 w-full rounded border bg-background text-xs"
               >
                 {fieldTypes.map((type) => (
                   <option key={type.value} value={type.value}>
@@ -264,13 +252,19 @@ function FieldEditor({
               <Textarea
                 value={field.options?.map((o) => `${o.value}:${o.label}`).join('\n') || ''}
                 onChange={(e) => {
-                  const options = e.target.value.split('\n').map((line) => {
-                    const [value, label] = line.split(':')
-                    return { value: value?.trim() || '', label: label?.trim() || value?.trim() || '' }
-                  }).filter((o) => o.value)
+                  const options = e.target.value
+                    .split('\n')
+                    .map((line) => {
+                      const [value, label] = line.split(':')
+                      return {
+                        value: value?.trim() || '',
+                        label: label?.trim() || value?.trim() || '',
+                      }
+                    })
+                    .filter((o) => o.value)
                   onUpdate({ options })
                 }}
-                className="text-xs min-h-[60px] font-mono"
+                className="min-h-[60px] font-mono text-xs"
                 placeholder="value:Label&#10;option2:Option 2"
               />
             </div>

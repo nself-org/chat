@@ -50,70 +50,68 @@ export interface RoleMentionProps {
 // Component
 // ============================================================================
 
-export const RoleMention = forwardRef<HTMLSpanElement, RoleMentionProps>(
-  function RoleMention(
-    {
-      role,
-      isResolved = true,
-      onClick,
-      onHoverStart,
-      onHoverEnd,
-      mode = 'chip',
-      className,
-      children,
-    },
-    ref
-  ) {
-    const handleClick = (e: React.MouseEvent) => {
-      if (onClick) {
-        e.preventDefault()
-        e.stopPropagation()
-        onClick()
-      }
+export const RoleMention = forwardRef<HTMLSpanElement, RoleMentionProps>(function RoleMention(
+  {
+    role,
+    isResolved = true,
+    onClick,
+    onHoverStart,
+    onHoverEnd,
+    mode = 'chip',
+    className,
+    children,
+  },
+  ref
+) {
+  const handleClick = (e: React.MouseEvent) => {
+    if (onClick) {
+      e.preventDefault()
+      e.stopPropagation()
+      onClick()
     }
-
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault()
-        onClick?.()
-      }
-    }
-
-    // Use role color or default
-    const roleColor = role.color || 'hsl(var(--primary))'
-    const bgColor = role.color ? `${role.color}20` : 'hsl(var(--primary) / 0.1)'
-
-    return (
-      <span
-        ref={ref}
-        role={onClick ? 'button' : undefined}
-        tabIndex={onClick ? 0 : undefined}
-        className={cn(
-          'mention mention-role',
-          mode === 'chip' && 'inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-sm',
-          mode === 'inline' && 'inline font-medium',
-          !isResolved && 'opacity-50 italic',
-          onClick && 'cursor-pointer transition-opacity hover:opacity-80',
-          className
-        )}
-        style={{
-          backgroundColor: bgColor,
-          color: roleColor,
-        }}
-        data-role-id={role.id}
-        data-role-name={role.name}
-        data-mention-type="role"
-        onClick={handleClick}
-        onKeyDown={onClick ? handleKeyDown : undefined}
-        onMouseEnter={onHoverStart}
-        onMouseLeave={onHoverEnd}
-        aria-label={`Role mention: ${role.name} (${role.memberCount} members)`}
-      >
-        {children || `@${role.name}`}
-      </span>
-    )
   }
-)
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      onClick?.()
+    }
+  }
+
+  // Use role color or default
+  const roleColor = role.color || 'hsl(var(--primary))'
+  const bgColor = role.color ? `${role.color}20` : 'hsl(var(--primary) / 0.1)'
+
+  return (
+    <span
+      ref={ref}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      className={cn(
+        'mention mention-role',
+        mode === 'chip' && 'inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-sm',
+        mode === 'inline' && 'inline font-medium',
+        !isResolved && 'italic opacity-50',
+        onClick && 'cursor-pointer transition-opacity hover:opacity-80',
+        className
+      )}
+      style={{
+        backgroundColor: bgColor,
+        color: roleColor,
+      }}
+      data-role-id={role.id}
+      data-role-name={role.name}
+      data-mention-type="role"
+      onClick={handleClick}
+      onKeyDown={onClick ? handleKeyDown : undefined}
+      onMouseEnter={onHoverStart}
+      onMouseLeave={onHoverEnd}
+      aria-label={`Role mention: ${role.name} (${role.memberCount} members)`}
+    >
+      {children || `@${role.name}`}
+    </span>
+  )
+})
 
 // ============================================================================
 // Role Badge (shows member count)
@@ -132,8 +130,8 @@ export function RoleBadge({ role, onClick, className }: RoleBadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-xs font-medium',
-        onClick && 'cursor-pointer hover:opacity-80 transition-opacity',
+        'inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium',
+        onClick && 'cursor-pointer transition-opacity hover:opacity-80',
         className
       )}
       style={{
@@ -144,12 +142,7 @@ export function RoleBadge({ role, onClick, className }: RoleBadgeProps) {
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
     >
-      <svg
-        className="h-3 w-3"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -174,7 +167,7 @@ export interface RoleMentionInfoProps {
 
 export function RoleMentionInfo({ role, className }: RoleMentionInfoProps) {
   return (
-    <div className={cn('p-2 space-y-2', className)}>
+    <div className={cn('space-y-2 p-2', className)}>
       <div className="flex items-center gap-2">
         <RoleBadge role={role} />
       </div>
@@ -210,19 +203,10 @@ export interface GroupMentionProps {
 /**
  * Unified GroupMention component that handles all group mention types
  */
-export function GroupMention({
-  variant,
-  role,
-  onClick,
-  className,
-}: GroupMentionProps) {
+export function GroupMention({ variant, role, onClick, className }: GroupMentionProps) {
   if (variant === 'role') {
     if (!role) {
-      return (
-        <span className={cn('text-muted-foreground italic', className)}>
-          @unknown-role
-        </span>
-      )
+      return <span className={cn('italic text-muted-foreground', className)}>@unknown-role</span>
     }
     return <RoleMention role={role} onClick={onClick} className={className} />
   }

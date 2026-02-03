@@ -8,15 +8,15 @@ This system provides comprehensive AI-driven features for analyzing chat convers
 
 ## Files
 
-| File | Purpose | Key Features |
-|------|---------|--------------|
+| File                    | Purpose                   | Key Features                                            |
+| ----------------------- | ------------------------- | ------------------------------------------------------- |
 | `message-summarizer.ts` | Core summarization engine | Multi-message summaries, quality scoring, cost tracking |
-| `thread-summarizer.ts` | Thread analysis | TL;DR, action items, participant summaries |
-| `channel-digest.ts` | Channel summaries | Daily/weekly digests, trending topics, highlights |
-| `sentiment-analyzer.ts` | Sentiment analysis | Mood detection, emotion classification, team morale |
-| `meeting-notes.ts` | Meeting documentation | Auto-generated notes, decisions, transcripts |
-| `smart-search.ts` | Semantic search | Embeddings-based search, natural language queries |
-| `examples.ts` | Usage examples | 12 comprehensive examples |
+| `thread-summarizer.ts`  | Thread analysis           | TL;DR, action items, participant summaries              |
+| `channel-digest.ts`     | Channel summaries         | Daily/weekly digests, trending topics, highlights       |
+| `sentiment-analyzer.ts` | Sentiment analysis        | Mood detection, emotion classification, team morale     |
+| `meeting-notes.ts`      | Meeting documentation     | Auto-generated notes, decisions, transcripts            |
+| `smart-search.ts`       | Semantic search           | Embeddings-based search, natural language queries       |
+| `examples.ts`           | Usage examples            | 12 comprehensive examples                               |
 
 ## Quick Start
 
@@ -106,16 +106,19 @@ NEXT_PUBLIC_ANTHROPIC_API_KEY=sk-ant-...
 ## AI Providers
 
 ### Primary: OpenAI GPT-4 Turbo
+
 - Model: `gpt-4-turbo-preview`
 - Best for: High-quality summaries, complex analysis
 - Cost: ~$0.01/1K input, ~$0.03/1K output tokens
 
 ### Fallback: Claude 3.5 Haiku
+
 - Model: `claude-3-5-haiku-20241022`
 - Best for: Fast, cost-effective analysis
 - Cost: ~$0.00025/1K input, ~$0.00125/1K output tokens
 
 ### Local: Rule-Based
+
 - No API key required
 - Free, basic analysis
 - Good for development/testing
@@ -123,6 +126,7 @@ NEXT_PUBLIC_ANTHROPIC_API_KEY=sk-ant-...
 ## Features
 
 ### Thread Summarization
+
 - ✅ TL;DR generation (max 200 chars)
 - ✅ Key points extraction (3-5 points)
 - ✅ Action items with priorities
@@ -133,6 +137,7 @@ NEXT_PUBLIC_ANTHROPIC_API_KEY=sk-ant-...
 - ✅ Cost tracking
 
 ### Channel Digest
+
 - ✅ Daily/weekly/custom periods
 - ✅ Top messages identification
 - ✅ Key highlights extraction
@@ -144,6 +149,7 @@ NEXT_PUBLIC_ANTHROPIC_API_KEY=sk-ant-...
 - ✅ Next digest scheduling
 
 ### Sentiment Analysis
+
 - ✅ 4 sentiment types (positive, negative, neutral, mixed)
 - ✅ 8 emotion categories (joy, sadness, anger, fear, surprise, disgust, trust, anticipation)
 - ✅ Confidence scoring (0-100)
@@ -155,6 +161,7 @@ NEXT_PUBLIC_ANTHROPIC_API_KEY=sk-ant-...
 - ✅ Actionable recommendations
 
 ### Meeting Notes
+
 - ✅ Auto-generated titles
 - ✅ Executive summaries
 - ✅ Participant tracking with speaking time
@@ -261,8 +268,7 @@ Comprehensive thread summary display with interactive action items.
 
 ```tsx
 import { ThreadSummaryPanel } from '@/components/chat/ThreadSummaryPanel'
-
-<ThreadSummaryPanel
+;<ThreadSummaryPanel
   messages={messages}
   threadId="thread-123"
   autoGenerate={true}
@@ -271,6 +277,7 @@ import { ThreadSummaryPanel } from '@/components/chat/ThreadSummaryPanel'
 ```
 
 **Features:**
+
 - TL;DR with quality badge
 - Expandable key points
 - Interactive action items
@@ -283,8 +290,7 @@ Multi-tab channel digest viewer.
 
 ```tsx
 import { ChannelDigestView } from '@/components/chat/ChannelDigestView'
-
-<ChannelDigestView
+;<ChannelDigestView
   channelId="channel-123"
   channelName="#general"
   messages={messages}
@@ -294,6 +300,7 @@ import { ChannelDigestView } from '@/components/chat/ChannelDigestView'
 ```
 
 **Features:**
+
 - 4 tabs: Overview, Highlights, Topics, Stats
 - Top messages with scores
 - Highlight cards with type icons
@@ -314,6 +321,7 @@ console.log(`Requests: ${costs.requestCount}`)
 ```
 
 **Cost Estimates:**
+
 - Brief summary (10 messages): ~$0.002
 - Thread summary (50 messages): ~$0.008
 - Channel digest (200 messages): ~$0.020
@@ -349,14 +357,17 @@ try {
 ## Performance Optimization
 
 ### Parallel Processing
+
 - Multiple components generated in parallel
 - 50-70% faster than sequential processing
 
 ### Caching
+
 - Embedding cache: 1,000 entries (LRU eviction)
 - Smart search caches query embeddings
 
 ### Token Management
+
 - Automatic transcript truncation
 - Smart message sampling for large threads
 - Context window optimization
@@ -391,20 +402,24 @@ pnpm test:e2e e2e/ai-features.spec.ts
 ## Troubleshooting
 
 ### No API Keys
+
 - System falls back to local (rule-based) analysis
 - Set environment variables for AI features
 
 ### Rate Limit Exceeded
+
 - Wait 1 hour for reset
 - Upgrade API plan
 - Use local fallback
 
 ### Low Quality Scores
+
 - Use at least 5 messages
 - Ensure sufficient content per message
 - Check language compatibility
 
 ### High Costs
+
 - Monitor with `getCostStats()`
 - Use Claude Haiku for cost-sensitive ops
 - Set `maxLength` limits

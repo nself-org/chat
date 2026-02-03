@@ -22,6 +22,7 @@ Complete guide to using and customizing pre-built bot templates in nself-chat.
 Bot templates are pre-built, production-ready bots that you can instantly deploy to your nself-chat instance. They provide common functionality out of the box and can be customized to fit your specific needs.
 
 **Benefits:**
+
 - **Zero coding required** for basic use cases
 - **Instant deployment** - add to your workspace in seconds
 - **Battle-tested** - used in production by hundreds of teams
@@ -40,13 +41,13 @@ Instead of building bots from scratch, templates give you:
 
 ### Template Categories
 
-| Category | Purpose | Examples |
-|----------|---------|----------|
-| **Welcome** | Onboarding and greetings | Welcome Bot |
-| **Utility** | General-purpose tools | FAQ Bot |
-| **Productivity** | Team efficiency | Poll Bot, Scheduler Bot, Standup Bot |
-| **Moderation** | Content management | Auto-moderator Bot |
-| **Analytics** | Metrics and reporting | Analytics Bot |
+| Category         | Purpose                  | Examples                             |
+| ---------------- | ------------------------ | ------------------------------------ |
+| **Welcome**      | Onboarding and greetings | Welcome Bot                          |
+| **Utility**      | General-purpose tools    | FAQ Bot                              |
+| **Productivity** | Team efficiency          | Poll Bot, Scheduler Bot, Standup Bot |
+| **Moderation**   | Content management       | Auto-moderator Bot                   |
+| **Analytics**    | Metrics and reporting    | Analytics Bot                        |
 
 ---
 
@@ -57,6 +58,7 @@ Instead of building bots from scratch, templates give you:
 Automatically greet new members and send onboarding messages.
 
 **Features:**
+
 - Customizable welcome messages with placeholders
 - Optional direct messages to new members
 - Auto-role assignment on join
@@ -64,12 +66,14 @@ Automatically greet new members and send onboarding messages.
 - Member count tracking
 
 **Use Cases:**
+
 - Onboarding new team members
 - Community server welcomes
 - Directing users to important channels
 - Auto-assigning roles
 
 **Commands:**
+
 - `/setwelcome message:<text>` - Configure welcome message
 - `/testwelcome` - Preview the welcome message
 - `/welcomesettings` - View current settings
@@ -78,20 +82,22 @@ Automatically greet new members and send onboarding messages.
 
 ```typescript
 {
-  welcomeMessage: string     // Message template
-  sendDM: boolean           // Send DM to new members
-  showRules: boolean        // Display rules button
-  assignRole: string        // Role to auto-assign
-  embedColor: string        // Embed color (hex)
+  welcomeMessage: string // Message template
+  sendDM: boolean // Send DM to new members
+  showRules: boolean // Display rules button
+  assignRole: string // Role to auto-assign
+  embedColor: string // Embed color (hex)
 }
 ```
 
 **Message Placeholders:**
+
 - `{user}` - New member's name
 - `{channel}` - Channel name
 - `{memberCount}` - Total member count
 
 **Example Message:**
+
 ```
 Welcome {user} to {channel}! 🎉
 
@@ -111,6 +117,7 @@ You are member #{memberCount}!
 Answer frequently asked questions using a knowledge base with smart keyword matching.
 
 **Features:**
+
 - Keyword-based question matching
 - Add/edit/delete FAQs via commands
 - Category organization
@@ -120,12 +127,14 @@ Answer frequently asked questions using a knowledge base with smart keyword matc
 - Configurable match confidence
 
 **Use Cases:**
+
 - Customer support automation
 - Internal documentation
 - Onboarding assistance
 - Reducing repetitive questions
 
 **Commands:**
+
 - `/faq` - List all FAQs by category
 - `/addfaq question:<q> answer:<a> [category:<cat>]` - Add new FAQ
 - `/removefaq id:<id>` - Remove an FAQ
@@ -166,6 +175,7 @@ interface FAQItem {
 **Keyword Extraction:**
 
 The bot automatically extracts keywords by:
+
 1. Converting to lowercase
 2. Removing stop words (how, what, the, etc.)
 3. Filtering words shorter than 3 characters
@@ -174,6 +184,7 @@ The bot automatically extracts keywords by:
 **Match Scoring:**
 
 Questions are matched using keyword overlap:
+
 - Score = (matching keywords) / (total query keywords)
 - Only responds if score ≥ `minMatchScore`
 - Returns best match if multiple FAQs qualify
@@ -185,6 +196,7 @@ Questions are matched using keyword overlap:
 Create and manage polls and surveys with real-time voting.
 
 **Features:**
+
 - Create polls with multiple options
 - Real-time vote tracking
 - Anonymous or public voting
@@ -195,6 +207,7 @@ Create and manage polls and surveys with real-time voting.
 - Poll results visualization
 
 **Use Cases:**
+
 - Team decisions
 - Quick surveys
 - Feature voting
@@ -202,11 +215,13 @@ Create and manage polls and surveys with real-time voting.
 - Event planning
 
 **Commands:**
+
 - `/poll question:<q> options:<opt1,opt2,opt3>` - Create poll
 - `/pollresults id:<poll-id>` - View detailed results
 - `/closepoll id:<poll-id>` - Close poll early
 
 **Advanced Options:**
+
 - `duration:<time>` - Auto-close after duration (e.g., `1h`, `2d`)
 - `multiple:true` - Allow multiple votes per person
 - `anonymous:true` - Hide who voted for what
@@ -215,9 +230,9 @@ Create and manage polls and surveys with real-time voting.
 
 ```typescript
 {
-  defaultDuration: number  // Default poll duration (ms)
-  maxOptions: number       // Max poll options (2-20)
-  allowAnonymous: boolean  // Allow anonymous polls
+  defaultDuration: number // Default poll duration (ms)
+  maxOptions: number // Max poll options (2-20)
+  allowAnonymous: boolean // Allow anonymous polls
 }
 
 interface Poll {
@@ -259,6 +274,7 @@ The bot supports two voting methods:
 2. **Button-based**: Click interactive buttons
 
 **Time Duration Formats:**
+
 - `5m` - 5 minutes
 - `2h` - 2 hours
 - `1d` - 1 day
@@ -281,6 +297,7 @@ The bot supports two voting methods:
 Set reminders and schedule messages with powerful time parsing.
 
 **Features:**
+
 - One-time and recurring reminders
 - Schedule messages for future delivery
 - Flexible time parsing
@@ -291,6 +308,7 @@ Set reminders and schedule messages with powerful time parsing.
 - Reminder management
 
 **Use Cases:**
+
 - Meeting reminders
 - Deadline tracking
 - Daily standups
@@ -298,12 +316,14 @@ Set reminders and schedule messages with powerful time parsing.
 - Scheduled announcements
 
 **Commands:**
+
 - `/remind when:<time> message:<text>` - Set reminder
 - `/reminders` - List your reminders
 - `/deletereminder id:<id>` - Delete reminder
 - `/schedule when:<time> message:<text>` - Schedule message
 
 **Advanced Options:**
+
 - `repeat:<interval>` - Recurring reminder (e.g., `1d`, `1w`)
 - `count:<n>` - Max occurrences for recurring reminders
 - `channel:<id>` - Target channel for scheduled messages
@@ -312,9 +332,9 @@ Set reminders and schedule messages with powerful time parsing.
 
 ```typescript
 {
-  maxRemindersPerUser: number  // Max reminders per user
-  defaultTimezone: string      // Default timezone
-  allowRecurring: boolean      // Allow recurring reminders
+  maxRemindersPerUser: number // Max reminders per user
+  defaultTimezone: string // Default timezone
+  allowRecurring: boolean // Allow recurring reminders
 }
 
 interface Reminder {
@@ -335,6 +355,7 @@ interface Reminder {
 **Time Formats:**
 
 **Relative time:**
+
 ```bash
 /remind when:30m message:"Check status"
 /remind when:2h message:"Team meeting"
@@ -342,17 +363,20 @@ interface Reminder {
 ```
 
 **Named times:**
+
 ```bash
 /remind when:tomorrow message:"Follow up"
 /remind when:"next week" message:"Sprint planning"
 ```
 
 **Absolute datetime:**
+
 ```bash
 /remind when:"2026-02-15 15:00" message:"Product launch"
 ```
 
 **Recurring reminders:**
+
 ```bash
 # Daily reminder
 /remind when:9am message:"Daily standup" repeat:1d
@@ -390,6 +414,7 @@ interface Reminder {
 Automate daily standup meetings and track team participation.
 
 **Features:**
+
 - Scheduled daily standup prompts
 - Collect responses from team members
 - Generate standup summaries
@@ -400,6 +425,7 @@ Automate daily standup meetings and track team participation.
 - Historical standup notes
 
 **Use Cases:**
+
 - Daily team standups
 - Async team updates
 - Remote team coordination
@@ -407,6 +433,7 @@ Automate daily standup meetings and track team participation.
 - Team accountability
 
 **Commands:**
+
 - `/standup` - Start daily standup
 - `/mystandup yesterday:<text> today:<text> [blockers:<text>]` - Submit update
 - `/updatestandup` - Update your response
@@ -417,21 +444,21 @@ Automate daily standup meetings and track team participation.
 
 ```typescript
 {
-  standupTime: string        // Daily standup time (HH:MM)
-  standupChannel: string     // Channel for standups
-  skipWeekends: boolean      // Skip Saturday/Sunday
+  standupTime: string // Daily standup time (HH:MM)
+  standupChannel: string // Channel for standups
+  skipWeekends: boolean // Skip Saturday/Sunday
   questions: {
     yesterday: string
     today: string
     blockers: string
   }
   remindNonResponders: boolean
-  reminderTime: string       // Reminder time (HH:MM)
+  reminderTime: string // Reminder time (HH:MM)
 }
 
 interface StandupSession {
   id: string
-  date: string              // YYYY-MM-DD
+  date: string // YYYY-MM-DD
   channelId: string
   responses: StandupResponse[]
   status: 'active' | 'completed'
@@ -450,6 +477,7 @@ interface StandupResponse {
 ```
 
 **Default Questions:**
+
 1. What did you accomplish yesterday?
 2. What will you work on today?
 3. Do you have any blockers?
@@ -502,6 +530,7 @@ Blockers: Need design mockups for new UI
 **Automated Scheduling:**
 
 When configured, the bot automatically:
+
 1. Posts standup prompt at `standupTime` (e.g., 9:00 AM)
 2. Collects responses throughout the day
 3. Sends reminder at `reminderTime` (e.g., 10:00 AM) to non-responders
@@ -527,7 +556,7 @@ const response = await fetch('/api/bots/templates?featured=true')
 const { data: templates } = await response.json()
 
 // Get specific template
-const welcomeTemplate = templates.find(t => t.id === 'welcome-bot')
+const welcomeTemplate = templates.find((t) => t.id === 'welcome-bot')
 
 // Install template
 const installResponse = await fetch('/api/bots', {
@@ -539,9 +568,9 @@ const installResponse = await fetch('/api/bots', {
     config: {
       welcomeMessage: 'Welcome to our community!',
       sendDM: true,
-      embedColor: '#22c55e'
-    }
-  })
+      embedColor: '#22c55e',
+    },
+  }),
 })
 ```
 
@@ -627,7 +656,7 @@ export function createCustomWelcomeBot() {
       ...welcomeBotTemplate.defaultConfig,
       // Add custom settings
       sendWelcomeGif: true,
-      gifUrl: 'https://example.com/welcome.gif'
+      gifUrl: 'https://example.com/welcome.gif',
     })
 
     .onUserJoin(async (ctx, api) => {
@@ -667,12 +696,12 @@ export function createAdvancedWelcomeBot() {
     .settings({
       welcomePoints: 100,
       achievements: true,
-      leaderboard: true
+      leaderboard: true,
     })
 
     .onUserJoin(async (ctx, api) => {
       // Award welcome points
-      const userPoints = await api.getStorage<number>(`points:${ctx.user.id}`) || 0
+      const userPoints = (await api.getStorage<number>(`points:${ctx.user.id}`)) || 0
       await api.setStorage(`points:${ctx.user.id}`, userPoints + 100)
 
       // Check for achievements
@@ -682,8 +711,8 @@ export function createAdvancedWelcomeBot() {
         .title('🎉 Welcome to the Community!')
         .description(
           `Welcome ${ctx.user.displayName}!\n\n` +
-          `You've earned **100 points** for joining! 🌟\n\n` +
-          `You are member **#${memberCount}**!`
+            `You've earned **100 points** for joining! 🌟\n\n` +
+            `You are member **#${memberCount}**!`
         )
         .color('#22c55e')
 
@@ -700,7 +729,7 @@ export function createAdvancedWelcomeBot() {
     })
 
     .command('points', 'Check your points', async (ctx, api) => {
-      const points = await api.getStorage<number>(`points:${ctx.user.id}`) || 0
+      const points = (await api.getStorage<number>(`points:${ctx.user.id}`)) || 0
       return text(`You have ${points} points! 🌟`)
     })
 
@@ -734,7 +763,7 @@ async function getLeaderboard(api: any): Promise<Array<{ name: string; points: n
   return [
     { name: 'Alice', points: 500 },
     { name: 'Bob', points: 450 },
-    { name: 'Charlie', points: 400 }
+    { name: 'Charlie', points: 400 },
   ]
 }
 ```
@@ -750,7 +779,7 @@ return text('Welcome!')
 // Custom with embed
 return embed()
   .title('🎉 Welcome!')
-  .description('We\'re glad you\'re here!')
+  .description("We're glad you're here!")
   .color('#22c55e')
   .thumbnail('https://example.com/logo.png')
   .footer('Powered by nself-chat')
@@ -893,7 +922,7 @@ export const templateBotTemplate = {
     type: 'object',
     properties: {
       // JSON Schema for configuration
-    }
+    },
   },
   defaultConfig: {
     // Default configuration values
@@ -906,16 +935,16 @@ export const templateBotTemplate = {
 
 Every template must include:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Unique bot identifier (kebab-case) |
-| `name` | string | Display name |
-| `description` | string | What the bot does |
-| `category` | string | Template category |
-| `icon` | string | Emoji or icon URL |
-| `configSchema` | object | JSON Schema for settings |
-| `defaultConfig` | object | Default configuration |
-| `isFeatured` | boolean | Show in featured list |
+| Field           | Type    | Description                        |
+| --------------- | ------- | ---------------------------------- |
+| `id`            | string  | Unique bot identifier (kebab-case) |
+| `name`          | string  | Display name                       |
+| `description`   | string  | What the bot does                  |
+| `category`      | string  | Template category                  |
+| `icon`          | string  | Emoji or icon URL                  |
+| `configSchema`  | object  | JSON Schema for settings           |
+| `defaultConfig` | object  | Default configuration              |
+| `isFeatured`    | boolean | Show in featured list              |
 
 ### Configuration Schema
 
@@ -990,9 +1019,9 @@ await fetch('/api/bots/faq-bot/commands', {
     args: {
       question: 'How do I reset my password?',
       answer: 'Click "Forgot Password" on login page',
-      category: 'Account'
-    }
-  })
+      category: 'Account',
+    },
+  }),
 })
 ```
 
@@ -1003,7 +1032,7 @@ import {
   createWelcomeBot,
   createFAQBot,
   createPollBot,
-  createSchedulerBot
+  createSchedulerBot,
 } from '@/lib/bots/templates'
 
 // Deploy complete bot suite
@@ -1011,7 +1040,7 @@ const bots = {
   welcome: createWelcomeBot(),
   faq: createFAQBot(),
   poll: createPollBot(),
-  scheduler: createSchedulerBot()
+  scheduler: createSchedulerBot(),
 }
 
 console.log('Deployed', Object.keys(bots).length, 'bots')
@@ -1023,80 +1052,77 @@ console.log('Deployed', Object.keys(bots).length, 'bots')
 import { bot, embed, text, error } from '@/lib/bots/bot-sdk'
 
 export function createCustomPollBot() {
-  return bot('custom-poll-bot')
-    .name('Advanced Poll Bot')
-    .description('Poll bot with charts and analytics')
-    .version('2.0.0')
-    .icon('📊')
-    .permissions('read_messages', 'send_messages', 'add_reactions')
+  return (
+    bot('custom-poll-bot')
+      .name('Advanced Poll Bot')
+      .description('Poll bot with charts and analytics')
+      .version('2.0.0')
+      .icon('📊')
+      .permissions('read_messages', 'send_messages', 'add_reactions')
 
-    .settings({
-      defaultDuration: 24 * 60 * 60 * 1000,
-      maxOptions: 20,  // Increased from 10
-      allowAnonymous: true,
-      enableCharts: true,  // New feature
-      enableExport: true   // New feature
-    })
+      .settings({
+        defaultDuration: 24 * 60 * 60 * 1000,
+        maxOptions: 20, // Increased from 10
+        allowAnonymous: true,
+        enableCharts: true, // New feature
+        enableExport: true, // New feature
+      })
 
-    .command('poll', 'Create an advanced poll', async (ctx, api) => {
-      // ... poll creation logic
+      .command('poll', 'Create an advanced poll', async (ctx, api) => {
+        // ... poll creation logic
 
-      const config = api.getBotConfig()
-      if (!ctx.args.question || !ctx.args.options) {
-        return error('Usage: /poll question:<text> options:<opt1,opt2,...>')
-      }
+        const config = api.getBotConfig()
+        if (!ctx.args.question || !ctx.args.options) {
+          return error('Usage: /poll question:<text> options:<opt1,opt2,...>')
+        }
 
-      const poll = {
-        id: generateId(),
-        question: ctx.args.question as string,
-        options: (ctx.args.options as string).split(','),
-        votes: {},
-        createdAt: new Date()
-      }
+        const poll = {
+          id: generateId(),
+          question: ctx.args.question as string,
+          options: (ctx.args.options as string).split(','),
+          votes: {},
+          createdAt: new Date(),
+        }
 
-      await api.setStorage(`poll:${poll.id}`, poll)
+        await api.setStorage(`poll:${poll.id}`, poll)
 
-      return renderPollEmbed(poll, config)
-    })
+        return renderPollEmbed(poll, config)
+      })
 
-    // New command: Export poll results
-    .command('exportpoll', 'Export poll data as CSV', async (ctx, api) => {
-      if (!ctx.args.id) {
-        return error('Usage: /exportpoll id:<poll-id>')
-      }
+      // New command: Export poll results
+      .command('exportpoll', 'Export poll data as CSV', async (ctx, api) => {
+        if (!ctx.args.id) {
+          return error('Usage: /exportpoll id:<poll-id>')
+        }
 
-      const poll = await api.getStorage(`poll:${ctx.args.id}`)
-      if (!poll) {
-        return error('Poll not found')
-      }
+        const poll = await api.getStorage(`poll:${ctx.args.id}`)
+        if (!poll) {
+          return error('Poll not found')
+        }
 
-      const csv = generateCSV(poll)
+        const csv = generateCSV(poll)
 
-      return text(
-        `Poll data exported:\n\n\`\`\`csv\n${csv}\n\`\`\``
-      )
-    })
+        return text(`Poll data exported:\n\n\`\`\`csv\n${csv}\n\`\`\``)
+      })
 
-    // New command: Generate chart
-    .command('pollchart', 'Show poll results chart', async (ctx, api) => {
-      if (!ctx.args.id) {
-        return error('Usage: /pollchart id:<poll-id>')
-      }
+      // New command: Generate chart
+      .command('pollchart', 'Show poll results chart', async (ctx, api) => {
+        if (!ctx.args.id) {
+          return error('Usage: /pollchart id:<poll-id>')
+        }
 
-      const poll = await api.getStorage(`poll:${ctx.args.id}`)
-      if (!poll) {
-        return error('Poll not found')
-      }
+        const poll = await api.getStorage(`poll:${ctx.args.id}`)
+        if (!poll) {
+          return error('Poll not found')
+        }
 
-      const chartUrl = await generateChart(poll)
+        const chartUrl = await generateChart(poll)
 
-      return embed()
-        .title(`📊 ${poll.question}`)
-        .image(chartUrl)
-        .build()
-    })
+        return embed().title(`📊 ${poll.question}`).image(chartUrl).build()
+      })
 
-    .build()
+      .build()
+  )
 }
 
 function generateId(): string {
@@ -1107,9 +1133,7 @@ function renderPollEmbed(poll: any, config: any): any {
   // Custom rendering logic
   return embed()
     .title(`📊 ${poll.question}`)
-    .description(poll.options.map((o: string, i: number) =>
-      `${i + 1}. ${o}`
-    ).join('\n'))
+    .description(poll.options.map((o: string, i: number) => `${i + 1}. ${o}`).join('\n'))
     .footer(`Poll ID: ${poll.id}`)
     .color('#8b5cf6')
     .build()
@@ -1117,12 +1141,14 @@ function renderPollEmbed(poll: any, config: any): any {
 
 function generateCSV(poll: any): string {
   const header = 'Option,Votes,Percentage\n'
-  const rows = poll.options.map((option: string, i: number) => {
-    const votes = poll.votes[i] || 0
-    const total = Object.values(poll.votes).reduce((a: any, b: any) => a + b, 0)
-    const percentage = total > 0 ? (votes / total * 100).toFixed(2) : '0.00'
-    return `${option},${votes},${percentage}%`
-  }).join('\n')
+  const rows = poll.options
+    .map((option: string, i: number) => {
+      const votes = poll.votes[i] || 0
+      const total = Object.values(poll.votes).reduce((a: any, b: any) => a + b, 0)
+      const percentage = total > 0 ? ((votes / total) * 100).toFixed(2) : '0.00'
+      return `${option},${votes},${percentage}%`
+    })
+    .join('\n')
 
   return header + rows
 }
@@ -1153,11 +1179,14 @@ export function createDatabasePollBot() {
       const options = (ctx.args.options as string).split(',')
 
       // Store in PostgreSQL
-      const result = await db.query(`
+      const result = await db.query(
+        `
         INSERT INTO nchat_polls (question, options, created_by, channel_id)
         VALUES ($1, $2, $3, $4)
         RETURNING id
-      `, [question, options, ctx.user.id, ctx.channel.id])
+      `,
+        [question, options, ctx.user.id, ctx.channel.id]
+      )
 
       const pollId = result.rows[0].id
 
@@ -1170,10 +1199,13 @@ export function createDatabasePollBot() {
 
     .onReaction(async (ctx, api) => {
       // Find poll from database
-      const poll = await db.query(`
+      const poll = await db.query(
+        `
         SELECT * FROM nchat_polls
         WHERE message_id = $1
-      `, [ctx.reaction.messageId])
+      `,
+        [ctx.reaction.messageId]
+      )
 
       if (poll.rows.length === 0) return
 
@@ -1183,12 +1215,15 @@ export function createDatabasePollBot() {
       if (optionIndex === -1) return
 
       // Record vote in database
-      await db.query(`
+      await db.query(
+        `
         INSERT INTO nchat_poll_votes (poll_id, user_id, option_index)
         VALUES ($1, $2, $3)
         ON CONFLICT (poll_id, user_id)
         DO UPDATE SET option_index = $3, updated_at = NOW()
-      `, [poll.rows[0].id, ctx.user.id, optionIndex])
+      `,
+        [poll.rows[0].id, ctx.user.id, optionIndex]
+      )
 
       // Update poll message with new results
       const results = await getPollResults(poll.rows[0].id)
@@ -1199,7 +1234,8 @@ export function createDatabasePollBot() {
 }
 
 async function getPollResults(pollId: string): Promise<any> {
-  const result = await db.query(`
+  const result = await db.query(
+    `
     SELECT
       p.question,
       p.options,
@@ -1214,17 +1250,16 @@ async function getPollResults(pollId: string): Promise<any> {
     LEFT JOIN nchat_poll_votes v ON v.poll_id = p.id
     WHERE p.id = $1
     GROUP BY p.id
-  `, [pollId])
+  `,
+    [pollId]
+  )
 
   return result.rows[0]
 }
 
 function renderPollResults(results: any): any {
   // Render updated poll with vote counts
-  return embed()
-    .title(`📊 ${results.question}`)
-    .description(/* ... */)
-    .build()
+  return embed().title(`📊 ${results.question}`).description(/* ... */).build()
 }
 ```
 
@@ -1235,6 +1270,7 @@ function renderPollResults(results: any): any {
 ### 1. Configuration Management
 
 **DO:**
+
 ```typescript
 // Use typed configurations
 interface BotConfig {
@@ -1248,14 +1284,16 @@ const settings = config.settings as BotConfig
 ```
 
 **DON'T:**
+
 ```typescript
 // Untyped access
-const maxRetries = config.settings.maxRetries  // No type safety
+const maxRetries = config.settings.maxRetries // No type safety
 ```
 
 ### 2. Error Handling
 
 **DO:**
+
 ```typescript
 .command('poll', 'Create poll', async (ctx, api) => {
   try {
@@ -1276,6 +1314,7 @@ const maxRetries = config.settings.maxRetries  // No type safety
 ```
 
 **DON'T:**
+
 ```typescript
 .command('poll', 'Create poll', async (ctx, api) => {
   // No validation or error handling
@@ -1287,6 +1326,7 @@ const maxRetries = config.settings.maxRetries  // No type safety
 ### 3. Storage Keys
 
 **DO:**
+
 ```typescript
 // Namespaced, hierarchical keys
 await api.setStorage(`bot:poll:${pollId}`, data)
@@ -1295,6 +1335,7 @@ await api.setStorage(`bot:channel:${channelId}:config`, config)
 ```
 
 **DON'T:**
+
 ```typescript
 // Generic keys (collision risk)
 await api.setStorage(pollId, data)
@@ -1304,12 +1345,14 @@ await api.setStorage('prefs', prefs)
 ### 4. Permission Requests
 
 **DO:**
+
 ```typescript
 // Minimal permissions
 .permissions('read_messages', 'send_messages')
 ```
 
 **DON'T:**
+
 ```typescript
 // Over-requesting permissions
 .permissions(
@@ -1324,6 +1367,7 @@ await api.setStorage('prefs', prefs)
 ### 5. Resource Cleanup
 
 **DO:**
+
 ```typescript
 .onInit(async (bot, api) => {
   const interval = setInterval(() => {
@@ -1338,6 +1382,7 @@ await api.setStorage('prefs', prefs)
 ```
 
 **DON'T:**
+
 ```typescript
 .onInit(async (bot, api) => {
   // No cleanup - memory leak
@@ -1350,25 +1395,27 @@ await api.setStorage('prefs', prefs)
 ### 6. Rate Limiting
 
 **DO:**
+
 ```typescript
 let lastApiCall = 0
-const RATE_LIMIT = 1000  // 1 second
+const RATE_LIMIT = (1000) // 1 second
 
-.onMessage(async (ctx, api) => {
-  const now = Date.now()
+  .onMessage(async (ctx, api) => {
+    const now = Date.now()
 
-  if (now - lastApiCall < RATE_LIMIT) {
-    return  // Rate limited
-  }
+    if (now - lastApiCall < RATE_LIMIT) {
+      return // Rate limited
+    }
 
-  lastApiCall = now
+    lastApiCall = now
 
-  // Make API call
-  await externalAPI.call()
-})
+    // Make API call
+    await externalAPI.call()
+  })
 ```
 
 **DON'T:**
+
 ```typescript
 .onMessage(async (ctx, api) => {
   // No rate limiting - can overwhelm external APIs
@@ -1379,6 +1426,7 @@ const RATE_LIMIT = 1000  // 1 second
 ### 7. Input Validation
 
 **DO:**
+
 ```typescript
 .command('addfaq', 'Add FAQ', async (ctx, api) => {
   const question = ctx.args.question as string
@@ -1404,6 +1452,7 @@ const RATE_LIMIT = 1000  // 1 second
 ```
 
 **DON'T:**
+
 ```typescript
 .command('addfaq', 'Add FAQ', async (ctx, api) => {
   // No validation
@@ -1418,11 +1467,12 @@ const RATE_LIMIT = 1000  // 1 second
 ### 8. Performance Optimization
 
 **DO:**
+
 ```typescript
 // Cache frequently accessed data
 let faqCache: FAQ[] | null = null
 let cacheTimestamp = 0
-const CACHE_TTL = 5 * 60 * 1000  // 5 minutes
+const CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
 async function getFAQs(api: BotApi): Promise<FAQ[]> {
   const now = Date.now()
@@ -1431,7 +1481,7 @@ async function getFAQs(api: BotApi): Promise<FAQ[]> {
     return faqCache
   }
 
-  faqCache = await api.getStorage<FAQ[]>('faqs') || []
+  faqCache = (await api.getStorage<FAQ[]>('faqs')) || []
   cacheTimestamp = now
 
   return faqCache
@@ -1439,16 +1489,18 @@ async function getFAQs(api: BotApi): Promise<FAQ[]> {
 ```
 
 **DON'T:**
+
 ```typescript
 // Always fetch from storage
 async function getFAQs(api: BotApi): Promise<FAQ[]> {
-  return await api.getStorage<FAQ[]>('faqs') || []
+  return (await api.getStorage<FAQ[]>('faqs')) || []
 }
 ```
 
 ### 9. Security
 
 **DO:**
+
 ```typescript
 .command('deletepoll', 'Delete poll', async (ctx, api) => {
   const poll = await api.getStorage(`poll:${ctx.args.id}`)
@@ -1464,6 +1516,7 @@ async function getFAQs(api: BotApi): Promise<FAQ[]> {
 ```
 
 **DON'T:**
+
 ```typescript
 .command('deletepoll', 'Delete poll', async (ctx, api) => {
   // No permission check - anyone can delete
@@ -1475,6 +1528,7 @@ async function getFAQs(api: BotApi): Promise<FAQ[]> {
 ### 10. Documentation
 
 **DO:**
+
 ```typescript
 /**
  * Create a poll with multiple options
@@ -1491,16 +1545,13 @@ async function getFAQs(api: BotApi): Promise<FAQ[]> {
  *   { anonymous: true }
  * )
  */
-function createPoll(
-  question: string,
-  options: string[],
-  config?: PollConfig
-): Poll {
+function createPoll(question: string, options: string[], config?: PollConfig): Poll {
   // ...
 }
 ```
 
 **DON'T:**
+
 ```typescript
 // No documentation
 function createPoll(question, options, config) {
@@ -1517,6 +1568,7 @@ function createPoll(question, options, config) {
 #### 1. Bot Not Responding
 
 **Symptoms:**
+
 - Bot doesn't react to commands
 - No welcome messages sent
 - Handlers not firing
@@ -1549,6 +1601,7 @@ if (config.channels && !config.channels.includes(ctx.channel.id)) {
 #### 2. Storage Errors
 
 **Symptoms:**
+
 - Data not persisting
 - "Not found" errors
 - Stale data returned
@@ -1586,6 +1639,7 @@ if (JSON.stringify(saved) !== JSON.stringify(data)) {
 #### 3. Command Parsing Issues
 
 **Symptoms:**
+
 - Arguments not parsed correctly
 - Undefined values in `ctx.args`
 - Commands not recognized
@@ -1620,6 +1674,7 @@ if (JSON.stringify(saved) !== JSON.stringify(data)) {
 #### 4. Permission Denied
 
 **Symptoms:**
+
 - Operations fail with permission errors
 - Bot can't perform actions
 
@@ -1653,6 +1708,7 @@ if (!bot.hasPermission('manage_messages')) {
 #### 5. Rate Limiting
 
 **Symptoms:**
+
 - API calls failing
 - Delayed responses
 - 429 Too Many Requests errors
@@ -1665,7 +1721,7 @@ class RequestQueue {
   private queue: Array<() => Promise<any>> = []
   private processing = false
   private lastRequest = 0
-  private readonly minInterval = 100  // ms between requests
+  private readonly minInterval = 100 // ms between requests
 
   async enqueue<T>(fn: () => Promise<T>): Promise<T> {
     return new Promise((resolve, reject) => {
@@ -1707,21 +1763,20 @@ class RequestQueue {
 
 const queue = new RequestQueue()
 
-// Use queue for API calls
-.onMessage(async (ctx, api) => {
-  await queue.enqueue(() =>
-    api.sendMessage(ctx.channel.id, text('Response'))
-  )
-})
+  // Use queue for API calls
+  .onMessage(async (ctx, api) => {
+    await queue.enqueue(() => api.sendMessage(ctx.channel.id, text('Response')))
+  })
 
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 ```
 
 #### 6. Memory Leaks
 
 **Symptoms:**
+
 - Increasing memory usage over time
 - Bot becomes slow
 - Server crashes
@@ -1791,7 +1846,7 @@ export function createDebugBot() {
         content: ctx.message.content,
         user: ctx.user.displayName,
         channel: ctx.channel.name,
-        timestamp: ctx.message.createdAt
+        timestamp: ctx.message.createdAt,
       })
 
       // ... handler logic

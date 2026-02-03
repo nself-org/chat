@@ -406,9 +406,7 @@ export const selectMarketplaceBots = (state: BotSdkStore): MarketplaceBot[] =>
   Object.values(state.marketplaceBots)
 
 export const selectFeaturedBots = (state: BotSdkStore): MarketplaceBot[] =>
-  state.featuredBots
-    .map((id) => state.marketplaceBots[id])
-    .filter(Boolean)
+  state.featuredBots.map((id) => state.marketplaceBots[id]).filter(Boolean)
 
 export const selectFilteredInstalledBots = (state: BotSdkStore): InstalledBot[] => {
   let bots = selectInstalledBots(state)
@@ -418,8 +416,7 @@ export const selectFilteredInstalledBots = (state: BotSdkStore): InstalledBot[] 
     const query = state.searchQuery.toLowerCase()
     bots = bots.filter(
       (bot) =>
-        bot.name.toLowerCase().includes(query) ||
-        bot.description?.toLowerCase().includes(query)
+        bot.name.toLowerCase().includes(query) || bot.description?.toLowerCase().includes(query)
     )
   }
 
@@ -453,8 +450,10 @@ export const selectFilteredMarketplaceBots = (state: BotSdkStore): MarketplaceBo
   return bots
 }
 
-export const selectBotsByStatus = (status: BotStatus) => (state: BotSdkStore): InstalledBot[] =>
-  selectInstalledBots(state).filter((bot) => bot.status === status)
+export const selectBotsByStatus =
+  (status: BotStatus) =>
+  (state: BotSdkStore): InstalledBot[] =>
+    selectInstalledBots(state).filter((bot) => bot.status === status)
 
 export const selectOnlineBots = (state: BotSdkStore): InstalledBot[] =>
   selectBotsByStatus('online')(state)
@@ -462,22 +461,26 @@ export const selectOnlineBots = (state: BotSdkStore): InstalledBot[] =>
 export const selectOfflineBots = (state: BotSdkStore): InstalledBot[] =>
   selectBotsByStatus('offline')(state)
 
-export const selectBotsByPermission = (permission: BotPermission) => (state: BotSdkStore): InstalledBot[] =>
-  selectInstalledBots(state).filter(
-    (bot) => bot.permissions.includes(permission) || bot.permissions.includes('admin')
-  )
+export const selectBotsByPermission =
+  (permission: BotPermission) =>
+  (state: BotSdkStore): InstalledBot[] =>
+    selectInstalledBots(state).filter(
+      (bot) => bot.permissions.includes(permission) || bot.permissions.includes('admin')
+    )
 
-export const selectBotById = (botId: BotId) => (state: BotSdkStore): InstalledBot | MarketplaceBot | undefined =>
-  state.installedBots[botId] ?? state.marketplaceBots[botId]
+export const selectBotById =
+  (botId: BotId) =>
+  (state: BotSdkStore): InstalledBot | MarketplaceBot | undefined =>
+    state.installedBots[botId] ?? state.marketplaceBots[botId]
 
-export const selectIsInstalled = (botId: BotId) => (state: BotSdkStore): boolean =>
-  !!state.installedBots[botId]
+export const selectIsInstalled =
+  (botId: BotId) =>
+  (state: BotSdkStore): boolean =>
+    !!state.installedBots[botId]
 
-export const selectBotCount = (state: BotSdkStore): number =>
-  state.installedBotsOrder.length
+export const selectBotCount = (state: BotSdkStore): number => state.installedBotsOrder.length
 
-export const selectCategories = (state: BotSdkStore): string[] =>
-  state.categories
+export const selectCategories = (state: BotSdkStore): string[] => state.categories
 
 // ============================================================================
 // MOCK DATA HELPERS
@@ -496,7 +499,9 @@ export const createMockInstalledBot = (overrides: Partial<InstalledBot> = {}): I
   ...overrides,
 })
 
-export const createMockMarketplaceBot = (overrides: Partial<MarketplaceBot> = {}): MarketplaceBot => ({
+export const createMockMarketplaceBot = (
+  overrides: Partial<MarketplaceBot> = {}
+): MarketplaceBot => ({
   id: `marketplace_bot_${Date.now()}`,
   name: 'Marketplace Bot',
   description: 'A bot available in the marketplace',

@@ -7,8 +7,4 @@
 
 export { CodeBlock, InlineCode } from './code-block'
 export { PropsTable, PropsList, type PropDefinition } from './props-table'
-export {
-  ComponentPreview,
-  PreviewCard,
-  PreviewGrid,
-} from './component-preview'
+export { ComponentPreview, PreviewCard, PreviewGrid } from './component-preview'

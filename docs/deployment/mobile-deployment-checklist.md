@@ -11,6 +11,7 @@
 This checklist ensures a smooth, production-ready deployment of nChat mobile apps to the App Store and Play Store.
 
 **Estimated Time:**
+
 - iOS: 4-6 hours (first time), 2-3 hours (subsequent)
 - Android: 3-5 hours (first time), 1-2 hours (subsequent)
 
@@ -21,12 +22,14 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Account Setup
 
 **iOS:**
+
 - [ ] Apple Developer account active ($99/year)
 - [ ] Team ID and account holder identified
 - [ ] Payment method on file
 - [ ] Tax forms completed
 
 **Android:**
+
 - [ ] Google Play Developer account active ($25 one-time)
 - [ ] Payment method on file
 - [ ] Tax identification completed
@@ -35,6 +38,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Development Environment
 
 **General:**
+
 - [ ] macOS 13+ (for iOS builds)
 - [ ] Node.js 20+ installed
 - [ ] pnpm 9.15.4+ installed
@@ -42,6 +46,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 - [ ] Code editor setup (VS Code, etc.)
 
 **iOS Specific:**
+
 - [ ] Xcode 15.0+ installed
 - [ ] Xcode Command Line Tools installed
 - [ ] CocoaPods 1.10+ installed
@@ -49,6 +54,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 - [ ] Valid distribution certificate
 
 **Android Specific:**
+
 - [ ] Android Studio Hedgehog+ installed
 - [ ] Android SDK API 34 installed
 - [ ] Java JDK 17 installed
@@ -88,6 +94,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Environment Variables
 
 - [ ] `.env.local` configured:
+
   ```bash
   # Firebase
   NEXT_PUBLIC_FIREBASE_API_KEY=...
@@ -400,12 +407,14 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Monitoring
 
 **iOS:**
+
 - [ ] App Store Connect analytics enabled
 - [ ] Sentry iOS monitoring active
 - [ ] Firebase Analytics tracking
 - [ ] TestFlight feedback reviewed
 
 **Android:**
+
 - [ ] Play Console vitals dashboard
 - [ ] Sentry Android monitoring active
 - [ ] Firebase Analytics tracking
@@ -414,6 +423,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Metrics to Monitor
 
 **Both Platforms:**
+
 - [ ] Crash rate (<1%)
 - [ ] ANR rate (<0.5% Android)
 - [ ] Ratings (target >4.0 stars)
@@ -454,12 +464,14 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Hotfix Process
 
 **When needed:**
+
 - Critical bug affecting >10% users
 - Security vulnerability
 - Data loss issue
 - Crash on launch
 
 **Process:**
+
 1. [ ] Fix issue in codebase
 2. [ ] Increment build number only
 3. [ ] Test fix thoroughly
@@ -471,11 +483,13 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Minor Update (2-4 weeks)
 
 **Includes:**
+
 - Bug fixes
 - Small improvements
 - Performance tweaks
 
 **Process:**
+
 1. [ ] Fix bugs reported by users
 2. [ ] Implement small features
 3. [ ] Increment build number
@@ -485,11 +499,13 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Major Update (2-3 months)
 
 **Includes:**
+
 - New features
 - UI changes
 - Major improvements
 
 **Process:**
+
 1. [ ] Plan features
 2. [ ] Implement changes
 3. [ ] Increment version number (0.9.0)
@@ -504,6 +520,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### iOS
 
 **If critical issue found:**
+
 1. [ ] Don't panic - users on old version OK
 2. [ ] Pull new version from sale (optional)
 3. [ ] Fix issue immediately
@@ -515,6 +532,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### Android
 
 **If critical issue found:**
+
 1. [ ] Halt staged rollout immediately
 2. [ ] Fix issue in code
 3. [ ] Build new version (increment build)
@@ -522,6 +540,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 5. [ ] Upload and resume rollout
 
 **Rollback option:**
+
 - Can rollback to previous version if needed
 - Only affects users on staged rollout
 - Previous version becomes active
@@ -534,15 +553,15 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 
 - [ ] Both apps approved and live
 - [ ] <1% crash rate on both platforms
-- [ ] >4.0 star rating (target)
-- [ ] >1000 downloads in first week
+- [ ] > 4.0 star rating (target)
+- [ ] > 1000 downloads in first week
 - [ ] <5% uninstall rate
 - [ ] Positive user feedback
 
 ### 30-Day Success
 
-- [ ] >10,000 downloads (both platforms)
-- [ ] >4.2 star average rating
+- [ ] > 10,000 downloads (both platforms)
+- [ ] > 4.2 star average rating
 - [ ] <0.5% crash rate
 - [ ] 50%+ day-7 retention
 - [ ] 30%+ day-30 retention
@@ -555,6 +574,7 @@ This checklist ensures a smooth, production-ready deployment of nChat mobile app
 ### iOS Issues
 
 **Build fails:**
+
 ```bash
 # Clean build
 rm -rf ~/Library/Developer/Xcode/DerivedData
@@ -564,11 +584,13 @@ pod install --repo-update
 ```
 
 **Signing issues:**
+
 - Check provisioning profiles in Xcode
 - Verify certificate expiration
 - Re-download profiles from developer portal
 
 **Upload fails:**
+
 - Validate app in Xcode before uploading
 - Check bundle ID matches exactly
 - Verify all info.plist entries
@@ -576,6 +598,7 @@ pod install --repo-update
 ### Android Issues
 
 **Build fails:**
+
 ```bash
 # Clean build
 cd platforms/capacitor/android
@@ -585,11 +608,13 @@ cd platforms/capacitor/android
 ```
 
 **Signing issues:**
+
 - Verify keystore password
 - Check keystore.properties path
 - Ensure build.gradle configured correctly
 
 **Upload fails:**
+
 - Verify package name matches exactly
 - Check version code is higher than previous
 - Ensure bundle is signed with release keystore

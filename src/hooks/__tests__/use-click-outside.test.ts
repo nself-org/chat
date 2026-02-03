@@ -74,10 +74,9 @@ describe('useClickOutside', () => {
     const handler = jest.fn()
     const ref = { current: element }
 
-    const { rerender } = renderHook(
-      ({ enabled }) => useClickOutside(ref, handler, enabled),
-      { initialProps: { enabled: false } }
-    )
+    const { rerender } = renderHook(({ enabled }) => useClickOutside(ref, handler, enabled), {
+      initialProps: { enabled: false },
+    })
 
     const click1 = new MouseEvent('mousedown', { bubbles: true })
     document.body.dispatchEvent(click1)

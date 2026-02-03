@@ -21,12 +21,7 @@
 import { useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { CalendarClock, X, Clock, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { isScheduledInPast } from '@/lib/scheduled/scheduled-store'
@@ -111,10 +106,7 @@ export function ScheduledIndicator({
     () => formatScheduledTime(scheduledAt, timezone),
     [scheduledAt, timezone]
   )
-  const relativeTime = useMemo(
-    () => formatRelativeTime(scheduledAt),
-    [scheduledAt]
-  )
+  const relativeTime = useMemo(() => formatRelativeTime(scheduledAt), [scheduledAt])
 
   const handleClick = useCallback(() => {
     if (!disabled && onClick) {
@@ -141,23 +133,19 @@ export function ScheduledIndicator({
             <Badge
               variant={isPast ? 'destructive' : 'secondary'}
               className={cn(
-                'gap-1 cursor-pointer',
+                'cursor-pointer gap-1',
                 disabled && 'cursor-default opacity-50',
                 className
               )}
               onClick={handleClick}
             >
-              {isPast ? (
-                <AlertTriangle className="h-3 w-3" />
-              ) : (
-                <Clock className="h-3 w-3" />
-              )}
+              {isPast ? <AlertTriangle className="h-3 w-3" /> : <Clock className="h-3 w-3" />}
               {relativeTime}
               {onClear && !disabled && (
                 <button
                   type="button"
                   onClick={handleClear}
-                  className="ml-1 hover:bg-secondary-foreground/20 rounded p-0.5"
+                  className="hover:bg-secondary-foreground/20 ml-1 rounded p-0.5"
                 >
                   <X className="h-3 w-3" />
                 </button>
@@ -193,11 +181,7 @@ export function ScheduledIndicator({
         )}
         <span>{relativeTime}</span>
         {onClear && !disabled && (
-          <button
-            type="button"
-            onClick={handleClear}
-            className="hover:bg-muted rounded p-0.5"
-          >
+          <button type="button" onClick={handleClear} className="rounded p-0.5 hover:bg-muted">
             <X className="h-3 w-3" />
           </button>
         )}
@@ -209,34 +193,28 @@ export function ScheduledIndicator({
   return (
     <div
       className={cn(
-        'flex items-center gap-3 px-3 py-2 rounded-lg border',
-        isPast
-          ? 'bg-destructive/10 border-destructive/30'
-          : 'bg-primary/5 border-primary/20',
-        onClick && !disabled && 'cursor-pointer hover:bg-primary/10',
-        disabled && 'opacity-50 cursor-not-allowed',
+        'flex items-center gap-3 rounded-lg border px-3 py-2',
+        isPast ? 'bg-destructive/10 border-destructive/30' : 'bg-primary/5 border-primary/20',
+        onClick && !disabled && 'hover:bg-primary/10 cursor-pointer',
+        disabled && 'cursor-not-allowed opacity-50',
         className
       )}
       onClick={handleClick}
     >
       <div
         className={cn(
-          'flex items-center justify-center h-8 w-8 rounded-full',
+          'flex h-8 w-8 items-center justify-center rounded-full',
           isPast ? 'bg-destructive/20 text-destructive' : 'bg-primary/20 text-primary'
         )}
       >
-        {isPast ? (
-          <AlertTriangle className="h-4 w-4" />
-        ) : (
-          <CalendarClock className="h-4 w-4" />
-        )}
+        {isPast ? <AlertTriangle className="h-4 w-4" /> : <CalendarClock className="h-4 w-4" />}
       </div>
 
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <p className={cn('text-sm font-medium', isPast && 'text-destructive')}>
           {isPast ? 'Schedule expired' : 'Scheduled to send'}
         </p>
-        <p className="text-xs text-muted-foreground truncate">{formattedTime}</p>
+        <p className="truncate text-xs text-muted-foreground">{formattedTime}</p>
       </div>
 
       <div className="flex items-center gap-2">
@@ -295,10 +273,7 @@ export function ScheduleButton({
             size="icon"
             onClick={onClick}
             disabled={disabled}
-            className={cn(
-              hasSchedule && 'text-primary',
-              className
-            )}
+            className={cn(hasSchedule && 'text-primary', className)}
           >
             <CalendarClock className="h-4 w-4" />
           </Button>
@@ -308,9 +283,7 @@ export function ScheduleButton({
             <p>
               Scheduled {relativeTime}
               <br />
-              <span className="text-xs text-muted-foreground">
-                Click to change
-              </span>
+              <span className="text-xs text-muted-foreground">Click to change</span>
             </p>
           ) : (
             <p>Schedule message</p>
@@ -335,21 +308,13 @@ interface ScheduledCountBadgeProps {
  * Shows the count of pending scheduled messages
  * Useful for navigation items or headers
  */
-export function ScheduledCountBadge({
-  count,
-  onClick,
-  className,
-}: ScheduledCountBadgeProps) {
+export function ScheduledCountBadge({ count, onClick, className }: ScheduledCountBadgeProps) {
   if (count === 0) return null
 
   return (
     <Badge
       variant="secondary"
-      className={cn(
-        'gap-1',
-        onClick && 'cursor-pointer hover:bg-secondary/80',
-        className
-      )}
+      className={cn('gap-1', onClick && 'hover:bg-secondary/80 cursor-pointer', className)}
       onClick={onClick}
     >
       <CalendarClock className="h-3 w-3" />

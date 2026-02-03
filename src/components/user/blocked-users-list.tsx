@@ -14,14 +14,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useBlock } from '@/lib/moderation/use-block'
 import { cn } from '@/lib/utils'
-import {
-  Ban,
-  Loader2,
-  UserCheck,
-  ShieldOff,
-  RefreshCw,
-  Clock,
-} from 'lucide-react'
+import { Ban, Loader2, UserCheck, ShieldOff, RefreshCw, Clock } from 'lucide-react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -92,12 +85,12 @@ function getInitials(name: string): string {
 
 function EmptyState({ message }: { message: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted mb-4">
+    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
         <ShieldOff className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h3 className="text-lg font-semibold mb-2">No blocked users</h3>
-      <p className="text-sm text-muted-foreground max-w-xs">{message}</p>
+      <h3 className="mb-2 text-lg font-semibold">No blocked users</h3>
+      <p className="max-w-xs text-sm text-muted-foreground">{message}</p>
     </div>
   )
 }
@@ -137,26 +130,17 @@ function BlockedUserItem({ user, onUnblock, isUnblocking }: BlockedUserItemProps
   }
 
   return (
-    <div className="flex items-center justify-between gap-4 p-4 border-b last:border-b-0 hover:bg-muted/30 transition-colors">
-      <div className="flex items-center gap-3 min-w-0 flex-1">
+    <div className="hover:bg-muted/30 flex items-center justify-between gap-4 border-b p-4 transition-colors last:border-b-0">
+      <div className="flex min-w-0 flex-1 items-center gap-3">
         <Avatar className="h-10 w-10 flex-shrink-0">
-          <AvatarImage
-            src={user.blockedUser.avatarUrl}
-            alt={user.blockedUser.displayName}
-          />
-          <AvatarFallback>
-            {getInitials(user.blockedUser.displayName)}
-          </AvatarFallback>
+          <AvatarImage src={user.blockedUser.avatarUrl} alt={user.blockedUser.displayName} />
+          <AvatarFallback>{getInitials(user.blockedUser.displayName)}</AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
-          <p className="font-medium text-sm truncate">
-            {user.blockedUser.displayName}
-          </p>
-          <p className="text-xs text-muted-foreground truncate">
-            @{user.blockedUser.username}
-          </p>
+          <p className="truncate text-sm font-medium">{user.blockedUser.displayName}</p>
+          <p className="truncate text-xs text-muted-foreground">@{user.blockedUser.username}</p>
         </div>
-        <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground flex-shrink-0">
+        <div className="hidden flex-shrink-0 items-center gap-1 text-xs text-muted-foreground sm:flex">
           <Clock className="h-3 w-3" />
           <span>Blocked {formatDate(user.createdAt)}</span>
         </div>
@@ -164,12 +148,7 @@ function BlockedUserItem({ user, onUnblock, isUnblocking }: BlockedUserItemProps
 
       <AlertDialog open={isConfirmOpen} onOpenChange={setIsConfirmOpen}>
         <AlertDialogTrigger asChild>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={isUnblocking}
-            className="flex-shrink-0"
-          >
+          <Button variant="outline" size="sm" disabled={isUnblocking} className="flex-shrink-0">
             {isUnblockingThis ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (
@@ -182,16 +161,13 @@ function BlockedUserItem({ user, onUnblock, isUnblocking }: BlockedUserItemProps
           <AlertDialogHeader>
             <AlertDialogTitle>Unblock {user.blockedUser.displayName}?</AlertDialogTitle>
             <AlertDialogDescription>
-              This user will be able to send you direct messages and you will
-              see their messages in channels again.
+              This user will be able to send you direct messages and you will see their messages in
+              channels again.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isUnblockingThis}>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleUnblock}
-              disabled={isUnblockingThis}
-            >
+            <AlertDialogAction onClick={handleUnblock} disabled={isUnblockingThis}>
               {isUnblockingThis ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -218,14 +194,8 @@ export function BlockedUsersList({
   emptyMessage = "You haven't blocked anyone. When you block a user, they'll appear here.",
   className,
 }: BlockedUsersListProps) {
-  const {
-    blockedUsers,
-    isLoading,
-    isUnblocking,
-    error,
-    unblockUser,
-    refreshBlockedUsers,
-  } = useBlock()
+  const { blockedUsers, isLoading, isUnblocking, error, unblockUser, refreshBlockedUsers } =
+    useBlock()
 
   const [isRefreshing, setIsRefreshing] = React.useState(false)
 
@@ -260,12 +230,7 @@ export function BlockedUsersList({
               onClick={handleRefresh}
               disabled={isLoading || isRefreshing}
             >
-              <RefreshCw
-                className={cn(
-                  'h-4 w-4',
-                  (isLoading || isRefreshing) && 'animate-spin'
-                )}
-              />
+              <RefreshCw className={cn('h-4 w-4', (isLoading || isRefreshing) && 'animate-spin')} />
               <span className="sr-only">Refresh</span>
             </Button>
           )}
@@ -273,7 +238,7 @@ export function BlockedUsersList({
       </CardHeader>
       <CardContent className="p-0">
         {error && (
-          <div className="mx-4 mb-4 p-3 bg-destructive/10 text-destructive text-sm rounded-md">
+          <div className="bg-destructive/10 mx-4 mb-4 rounded-md p-3 text-sm text-destructive">
             {error}
           </div>
         )}

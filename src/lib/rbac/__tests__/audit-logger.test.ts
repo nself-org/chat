@@ -601,9 +601,7 @@ describe('Audit Logger', () => {
           loggerWithCallback.logLogin({ userId: 'user1' })
 
           expect(callback).toHaveBeenCalledTimes(1)
-          expect(callback).toHaveBeenCalledWith(
-            expect.objectContaining({ eventType: 'login' })
-          )
+          expect(callback).toHaveBeenCalledWith(expect.objectContaining({ eventType: 'login' }))
         })
       })
 

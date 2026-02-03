@@ -51,51 +51,51 @@ nself-chat is committed to providing an accessible communication platform for al
 
 ### Level A (Must Have)
 
-| Criterion | Status | Implementation |
-|-----------|--------|----------------|
-| 1.1.1 Non-text Content | ✅ | All images have alt text, icons have aria-labels |
-| 1.2.1 Audio-only and Video-only | ✅ | Transcripts provided for voice messages |
-| 1.3.1 Info and Relationships | ✅ | Semantic HTML and ARIA landmarks |
-| 1.4.1 Use of Color | ✅ | Information not conveyed by color alone |
-| 2.1.1 Keyboard | ✅ | All functionality available via keyboard |
-| 2.4.1 Bypass Blocks | ✅ | Skip links provided |
-| 3.1.1 Language of Page | ✅ | `lang` attribute set on `<html>` |
-| 4.1.1 Parsing | ✅ | Valid HTML5 |
-| 4.1.2 Name, Role, Value | ✅ | ARIA attributes on all interactive elements |
+| Criterion                       | Status | Implementation                                   |
+| ------------------------------- | ------ | ------------------------------------------------ |
+| 1.1.1 Non-text Content          | ✅     | All images have alt text, icons have aria-labels |
+| 1.2.1 Audio-only and Video-only | ✅     | Transcripts provided for voice messages          |
+| 1.3.1 Info and Relationships    | ✅     | Semantic HTML and ARIA landmarks                 |
+| 1.4.1 Use of Color              | ✅     | Information not conveyed by color alone          |
+| 2.1.1 Keyboard                  | ✅     | All functionality available via keyboard         |
+| 2.4.1 Bypass Blocks             | ✅     | Skip links provided                              |
+| 3.1.1 Language of Page          | ✅     | `lang` attribute set on `<html>`                 |
+| 4.1.1 Parsing                   | ✅     | Valid HTML5                                      |
+| 4.1.2 Name, Role, Value         | ✅     | ARIA attributes on all interactive elements      |
 
 ### Level AA (Should Have)
 
-| Criterion | Status | Implementation |
-|-----------|--------|----------------|
-| 1.2.4 Captions (Live) | ✅ | Live captions available for video calls |
-| 1.4.3 Contrast (Minimum) | ✅ | 4.5:1 for normal text, 3:1 for large text |
-| 1.4.5 Images of Text | ✅ | Text used instead of images where possible |
-| 2.4.5 Multiple Ways | ✅ | Search, navigation, direct links |
-| 2.4.6 Headings and Labels | ✅ | Descriptive headings and labels |
-| 2.4.7 Focus Visible | ✅ | Clear focus indicators on all elements |
-| 3.1.2 Language of Parts | ✅ | Language changes marked with `lang` |
-| 3.2.3 Consistent Navigation | ✅ | Navigation consistent across pages |
-| 3.3.3 Error Suggestion | ✅ | Helpful error messages with suggestions |
-| 3.3.4 Error Prevention | ✅ | Confirmation for critical actions |
+| Criterion                   | Status | Implementation                             |
+| --------------------------- | ------ | ------------------------------------------ |
+| 1.2.4 Captions (Live)       | ✅     | Live captions available for video calls    |
+| 1.4.3 Contrast (Minimum)    | ✅     | 4.5:1 for normal text, 3:1 for large text  |
+| 1.4.5 Images of Text        | ✅     | Text used instead of images where possible |
+| 2.4.5 Multiple Ways         | ✅     | Search, navigation, direct links           |
+| 2.4.6 Headings and Labels   | ✅     | Descriptive headings and labels            |
+| 2.4.7 Focus Visible         | ✅     | Clear focus indicators on all elements     |
+| 3.1.2 Language of Parts     | ✅     | Language changes marked with `lang`        |
+| 3.2.3 Consistent Navigation | ✅     | Navigation consistent across pages         |
+| 3.3.3 Error Suggestion      | ✅     | Helpful error messages with suggestions    |
+| 3.3.4 Error Prevention      | ✅     | Confirmation for critical actions          |
 
 ### Level AAA (Nice to Have)
 
-| Criterion | Status | Implementation |
-|-----------|--------|----------------|
-| 1.2.6 Sign Language | ⚠️ | Planned for future release |
-| 1.2.8 Media Alternative | ✅ | Text transcripts for all media |
-| 1.4.6 Contrast (Enhanced) | ✅ | 7:1 for normal text, 4.5:1 for large text |
-| 1.4.8 Visual Presentation | ✅ | Customizable text spacing and line height |
-| 2.1.3 Keyboard (No Exception) | ✅ | No keyboard traps |
-| 2.2.3 No Timing | ✅ | No time limits on reading/interactions |
-| 2.4.8 Location | ✅ | Breadcrumbs and current location indicators |
-| 2.4.9 Link Purpose | ✅ | Descriptive link text |
-| 2.4.10 Section Headings | ✅ | Proper heading hierarchy |
-| 3.1.3 Unusual Words | ✅ | Tooltips for technical terms |
-| 3.1.4 Abbreviations | ✅ | `<abbr>` tags with titles |
-| 3.2.5 Change on Request | ✅ | No automatic context changes |
-| 3.3.5 Help | ✅ | Context-sensitive help available |
-| 3.3.6 Error Prevention (All) | ✅ | Confirmation for all submissions |
+| Criterion                     | Status | Implementation                              |
+| ----------------------------- | ------ | ------------------------------------------- |
+| 1.2.6 Sign Language           | ⚠️     | Planned for future release                  |
+| 1.2.8 Media Alternative       | ✅     | Text transcripts for all media              |
+| 1.4.6 Contrast (Enhanced)     | ✅     | 7:1 for normal text, 4.5:1 for large text   |
+| 1.4.8 Visual Presentation     | ✅     | Customizable text spacing and line height   |
+| 2.1.3 Keyboard (No Exception) | ✅     | No keyboard traps                           |
+| 2.2.3 No Timing               | ✅     | No time limits on reading/interactions      |
+| 2.4.8 Location                | ✅     | Breadcrumbs and current location indicators |
+| 2.4.9 Link Purpose            | ✅     | Descriptive link text                       |
+| 2.4.10 Section Headings       | ✅     | Proper heading hierarchy                    |
+| 3.1.3 Unusual Words           | ✅     | Tooltips for technical terms                |
+| 3.1.4 Abbreviations           | ✅     | `<abbr>` tags with titles                   |
+| 3.2.5 Change on Request       | ✅     | No automatic context changes                |
+| 3.3.5 Help                    | ✅     | Context-sensitive help available            |
+| 3.3.6 Error Prevention (All)  | ✅     | Confirmation for all submissions            |
 
 ---
 
@@ -107,60 +107,60 @@ All keyboard shortcuts support both Mac (Cmd) and Windows/Linux (Ctrl) modifiers
 
 #### Essential Shortcuts
 
-| Shortcut | Action | Description |
-|----------|--------|-------------|
-| `Cmd/Ctrl + K` | Open command palette | Quick access to all actions |
-| `Cmd/Ctrl + F` | Search messages | Search current channel or all messages |
-| `Cmd/Ctrl + ,` | Open settings | Access application settings |
-| `Cmd/Ctrl + \` | Toggle sidebar | Show/hide channel sidebar |
-| `Cmd/Ctrl + Shift + A` | Accessibility menu | Quick access to accessibility settings |
-| `Escape` | Close modal/Cancel | Close current modal or cancel action |
+| Shortcut               | Action               | Description                            |
+| ---------------------- | -------------------- | -------------------------------------- |
+| `Cmd/Ctrl + K`         | Open command palette | Quick access to all actions            |
+| `Cmd/Ctrl + F`         | Search messages      | Search current channel or all messages |
+| `Cmd/Ctrl + ,`         | Open settings        | Access application settings            |
+| `Cmd/Ctrl + \`         | Toggle sidebar       | Show/hide channel sidebar              |
+| `Cmd/Ctrl + Shift + A` | Accessibility menu   | Quick access to accessibility settings |
+| `Escape`               | Close modal/Cancel   | Close current modal or cancel action   |
 
 #### Navigation Shortcuts
 
-| Shortcut | Action | Description |
-|----------|--------|-------------|
-| `Alt + ↓` | Next channel | Move to next channel in list |
-| `Alt + ↑` | Previous channel | Move to previous channel in list |
-| `Alt + Shift + ↓` | Next unread | Jump to next unread channel |
-| `Alt + Shift + ↑` | Previous unread | Jump to previous unread channel |
-| `Tab` | Next element | Move focus to next interactive element |
-| `Shift + Tab` | Previous element | Move focus to previous interactive element |
-| `Home` | First item | Jump to first item in list |
-| `End` | Last item | Jump to last item in list |
+| Shortcut          | Action           | Description                                |
+| ----------------- | ---------------- | ------------------------------------------ |
+| `Alt + ↓`         | Next channel     | Move to next channel in list               |
+| `Alt + ↑`         | Previous channel | Move to previous channel in list           |
+| `Alt + Shift + ↓` | Next unread      | Jump to next unread channel                |
+| `Alt + Shift + ↑` | Previous unread  | Jump to previous unread channel            |
+| `Tab`             | Next element     | Move focus to next interactive element     |
+| `Shift + Tab`     | Previous element | Move focus to previous interactive element |
+| `Home`            | First item       | Jump to first item in list                 |
+| `End`             | Last item        | Jump to last item in list                  |
 
 #### Messaging Shortcuts
 
-| Shortcut | Action | Description |
-|----------|--------|-------------|
-| `Cmd/Ctrl + N` | New message | Start a new message/DM |
-| `Cmd/Ctrl + Enter` | Send message | Send the current message |
-| `↑` (in empty input) | Edit last message | Edit your most recent message |
-| `R` | Reply | Reply to selected message |
-| `T` | Thread | Open thread for selected message |
-| `E` | React | Add reaction to selected message |
-| `P` | Pin | Pin/unpin selected message |
-| `S` | Save | Save selected message |
+| Shortcut             | Action            | Description                      |
+| -------------------- | ----------------- | -------------------------------- |
+| `Cmd/Ctrl + N`       | New message       | Start a new message/DM           |
+| `Cmd/Ctrl + Enter`   | Send message      | Send the current message         |
+| `↑` (in empty input) | Edit last message | Edit your most recent message    |
+| `R`                  | Reply             | Reply to selected message        |
+| `T`                  | Thread            | Open thread for selected message |
+| `E`                  | React             | Add reaction to selected message |
+| `P`                  | Pin               | Pin/unpin selected message       |
+| `S`                  | Save              | Save selected message            |
 
 #### Formatting Shortcuts
 
-| Shortcut | Action | Description |
-|----------|--------|-------------|
-| `Cmd/Ctrl + B` | Bold | Make selected text bold |
-| `Cmd/Ctrl + I` | Italic | Make selected text italic |
-| `Cmd/Ctrl + U` | Underline | Underline selected text |
-| `Cmd/Ctrl + E` | Code | Format as inline code |
-| `Cmd/Ctrl + Shift + K` | Link | Insert hyperlink |
-| `Cmd/Ctrl + Shift + 7` | Ordered list | Create numbered list |
-| `Cmd/Ctrl + Shift + 8` | Unordered list | Create bullet list |
+| Shortcut               | Action         | Description               |
+| ---------------------- | -------------- | ------------------------- |
+| `Cmd/Ctrl + B`         | Bold           | Make selected text bold   |
+| `Cmd/Ctrl + I`         | Italic         | Make selected text italic |
+| `Cmd/Ctrl + U`         | Underline      | Underline selected text   |
+| `Cmd/Ctrl + E`         | Code           | Format as inline code     |
+| `Cmd/Ctrl + Shift + K` | Link           | Insert hyperlink          |
+| `Cmd/Ctrl + Shift + 7` | Ordered list   | Create numbered list      |
+| `Cmd/Ctrl + Shift + 8` | Unordered list | Create bullet list        |
 
 #### Action Shortcuts
 
-| Shortcut | Action | Description |
-|----------|--------|-------------|
+| Shortcut         | Action           | Description               |
+| ---------------- | ---------------- | ------------------------- |
 | `Shift + Escape` | Mark all as read | Mark all messages as read |
-| `Cmd/Ctrl + U` | Upload file | Open file upload dialog |
-| `/` | Slash commands | Trigger command menu |
+| `Cmd/Ctrl + U`   | Upload file      | Open file upload dialog   |
+| `/`              | Slash commands   | Trigger command menu      |
 
 ### Focus Management
 
@@ -197,24 +197,32 @@ These links are visually hidden but appear on focus.
 
 ### Tested Screen Readers
 
-| Screen Reader | Version | Platform | Status |
-|---------------|---------|----------|--------|
-| NVDA | 2024.1 | Windows | ✅ Fully Supported |
-| JAWS | 2024 | Windows | ✅ Fully Supported |
-| VoiceOver | macOS 14+ | macOS | ✅ Fully Supported |
-| VoiceOver | iOS 17+ | iOS | ✅ Fully Supported |
-| TalkBack | Android 14+ | Android | ✅ Fully Supported |
+| Screen Reader | Version     | Platform | Status             |
+| ------------- | ----------- | -------- | ------------------ |
+| NVDA          | 2024.1      | Windows  | ✅ Fully Supported |
+| JAWS          | 2024        | Windows  | ✅ Fully Supported |
+| VoiceOver     | macOS 14+   | macOS    | ✅ Fully Supported |
+| VoiceOver     | iOS 17+     | iOS      | ✅ Fully Supported |
+| TalkBack      | Android 14+ | Android  | ✅ Fully Supported |
 
 ### ARIA Implementation
 
 #### Landmarks
 
 ```html
-<header role="banner">              <!-- Main header -->
-<nav role="navigation">             <!-- Channel sidebar -->
-<main role="main" id="main-content"> <!-- Message area -->
-<aside role="complementary">        <!-- Member list -->
-<footer role="contentinfo">         <!-- Footer -->
+<header role="banner">
+  <!-- Main header -->
+  <nav role="navigation">
+    <!-- Channel sidebar -->
+    <main role="main" id="main-content">
+      <!-- Message area -->
+      <aside role="complementary">
+        <!-- Member list -->
+        <footer role="contentinfo"><!-- Footer --></footer>
+      </aside>
+    </main>
+  </nav>
+</header>
 ```
 
 #### Live Regions
@@ -272,45 +280,45 @@ All text and interactive elements meet AAA contrast requirements:
 
 #### Text Contrast Ratios
 
-| Element Type | Normal Mode | High Contrast | Higher Contrast |
-|--------------|-------------|---------------|-----------------|
-| Body Text (Normal) | 7:1 | 10:1 | 15:1 |
-| Body Text (Large) | 4.5:1 | 7:1 | 10:1 |
-| UI Components | 4.5:1 | 7:1 | 10:1 |
-| Active Elements | 7:1 | 10:1 | 15:1 |
-| Disabled Elements | 3:1 | 4.5:1 | 7:1 |
+| Element Type       | Normal Mode | High Contrast | Higher Contrast |
+| ------------------ | ----------- | ------------- | --------------- |
+| Body Text (Normal) | 7:1         | 10:1          | 15:1            |
+| Body Text (Large)  | 4.5:1       | 7:1           | 10:1            |
+| UI Components      | 4.5:1       | 7:1           | 10:1            |
+| Active Elements    | 7:1         | 10:1          | 15:1            |
+| Disabled Elements  | 3:1         | 4.5:1         | 7:1             |
 
 #### Color Palette (Light Mode)
 
-| Element | Default | High Contrast | Contrast Ratio |
-|---------|---------|---------------|----------------|
-| Background | #FFFFFF | #FFFFFF | - |
-| Text | #18181B | #000000 | 21:1 |
-| Primary | #6366F1 | #3730A3 | 8.59:1 |
-| Secondary | #71717A | #52525B | 7.94:1 |
-| Error | #DC2626 | #991B1B | 7.73:1 |
-| Success | #16A34A | #15803D | 7.27:1 |
+| Element    | Default | High Contrast | Contrast Ratio |
+| ---------- | ------- | ------------- | -------------- |
+| Background | #FFFFFF | #FFFFFF       | -              |
+| Text       | #18181B | #000000       | 21:1           |
+| Primary    | #6366F1 | #3730A3       | 8.59:1         |
+| Secondary  | #71717A | #52525B       | 7.94:1         |
+| Error      | #DC2626 | #991B1B       | 7.73:1         |
+| Success    | #16A34A | #15803D       | 7.27:1         |
 
 #### Color Palette (Dark Mode)
 
-| Element | Default | High Contrast | Contrast Ratio |
-|---------|---------|---------------|----------------|
-| Background | #18181B | #000000 | - |
-| Text | #FAFAFA | #FFFFFF | 19.57:1 |
-| Primary | #818CF8 | #A5B4FC | 10.35:1 |
-| Secondary | #A1A1AA | #D4D4D8 | 8.76:1 |
-| Error | #F87171 | #FCA5A5 | 8.42:1 |
-| Success | #4ADE80 | #86EFAC | 9.18:1 |
+| Element    | Default | High Contrast | Contrast Ratio |
+| ---------- | ------- | ------------- | -------------- |
+| Background | #18181B | #000000       | -              |
+| Text       | #FAFAFA | #FFFFFF       | 19.57:1        |
+| Primary    | #818CF8 | #A5B4FC       | 10.35:1        |
+| Secondary  | #A1A1AA | #D4D4D8       | 8.76:1         |
+| Error      | #F87171 | #FCA5A5       | 8.42:1         |
+| Success    | #4ADE80 | #86EFAC       | 9.18:1         |
 
 ### Font Size Options
 
 Three font size presets are available:
 
-| Size | Base Font | Line Height | Use Case |
-|------|-----------|-------------|----------|
-| Small | 14px | 1.5 | Users who prefer compact layouts |
-| Medium | 16px | 1.6 | Default, optimal readability |
-| Large | 18px | 1.7 | Users with visual impairments |
+| Size   | Base Font | Line Height | Use Case                         |
+| ------ | --------- | ----------- | -------------------------------- |
+| Small  | 14px      | 1.5         | Users who prefer compact layouts |
+| Medium | 16px      | 1.6         | Default, optimal readability     |
+| Large  | 18px      | 1.7         | Users with visual impairments    |
 
 ### Dyslexia-Friendly Font
 
@@ -391,6 +399,7 @@ The Accessibility Menu provides one-click access to common settings:
 **Location**: Top navigation bar (Universal Access icon)
 
 **Features**:
+
 - Theme toggle (Light/Dark)
 - Font size adjustment
 - High contrast mode
@@ -524,13 +533,10 @@ import { Button } from '@/components/ui/button';
 ### Accessible Form Input
 
 ```tsx
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-
-<div>
-  <Label htmlFor="email">
-    Email Address
-  </Label>
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+;<div>
+  <Label htmlFor="email">Email Address</Label>
   <Input
     id="email"
     type="email"
@@ -552,21 +558,17 @@ import { Label } from '@/components/ui/label';
 ### Accessible Modal
 
 ```tsx
-import { Dialog, DialogContent } from '@/components/ui/dialog';
-import { useFocusManagement } from '@/hooks/use-focus-management';
-
-<Dialog open={isOpen} onOpenChange={setIsOpen}>
-  <DialogContent
-    aria-labelledby="modal-title"
-    aria-describedby="modal-description"
-  >
+import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { useFocusManagement } from '@/hooks/use-focus-management'
+;<Dialog open={isOpen} onOpenChange={setIsOpen}>
+  <DialogContent aria-labelledby="modal-title" aria-describedby="modal-description">
     <h2 id="modal-title">Confirm Delete</h2>
-    <p id="modal-description">
-      Are you sure you want to delete this message?
-    </p>
+    <p id="modal-description">Are you sure you want to delete this message?</p>
     <div>
       <Button onClick={handleConfirm}>Delete</Button>
-      <Button variant="ghost" onClick={handleCancel}>Cancel</Button>
+      <Button variant="ghost" onClick={handleCancel}>
+        Cancel
+      </Button>
     </div>
   </DialogContent>
 </Dialog>
@@ -575,20 +577,16 @@ import { useFocusManagement } from '@/hooks/use-focus-management';
 ### Accessible List with Keyboard Navigation
 
 ```tsx
-import { useRovingTabIndex } from '@/hooks/use-focus-management';
+import { useRovingTabIndex } from '@/hooks/use-focus-management'
 
 function ChannelList({ channels }) {
   const { containerRef } = useRovingTabIndex({
     orientation: 'vertical',
     loop: true,
-  });
+  })
 
   return (
-    <nav
-      ref={containerRef}
-      role="navigation"
-      aria-label="Channels"
-    >
+    <nav ref={containerRef} role="navigation" aria-label="Channels">
       <ul role="list">
         {channels.map((channel, index) => (
           <li key={channel.id}>
@@ -603,30 +601,28 @@ function ChannelList({ channels }) {
         ))}
       </ul>
     </nav>
-  );
+  )
 }
 ```
 
 ### Accessible Announcements
 
 ```tsx
-import { useAnnouncer } from '@/components/accessibility/live-region';
+import { useAnnouncer } from '@/components/accessibility/live-region'
 
 function MessageSender() {
-  const { announce } = useAnnouncer();
+  const { announce } = useAnnouncer()
 
   const handleSend = async () => {
     try {
-      await sendMessage(text);
-      announce('Message sent successfully', 'polite');
+      await sendMessage(text)
+      announce('Message sent successfully', 'polite')
     } catch (error) {
-      announce('Failed to send message. Please try again.', 'assertive');
+      announce('Failed to send message. Please try again.', 'assertive')
     }
-  };
+  }
 
-  return (
-    <Button onClick={handleSend}>Send</Button>
-  );
+  return <Button onClick={handleSend}>Send</Button>
 }
 ```
 

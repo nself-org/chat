@@ -216,29 +216,19 @@ export class MeetingNotesGenerator {
       const metadata = this.extractMetadata(messages)
 
       // Generate components in parallel
-      const [
-        title,
-        summary,
-        participants,
-        agenda,
-        decisions,
-        actionItems,
-        topics,
-        transcript,
-      ] = await Promise.all([
-        this.generateTitle(messages),
-        this.generateSummary(messages),
-        this.extractParticipants(messages),
-        options.extractAgenda !== false
-          ? this.extractAgenda(messages)
-          : Promise.resolve([]),
-        this.extractDecisions(messages, options.minDecisionConfidence),
-        this.extractActionItems(messages, options.minActionItemConfidence),
-        this.extractTopics(messages),
-        options.includeTranscript !== false
-          ? this.prepareTranscript(messages, options.transcriptFormat)
-          : Promise.resolve([]),
-      ])
+      const [title, summary, participants, agenda, decisions, actionItems, topics, transcript] =
+        await Promise.all([
+          this.generateTitle(messages),
+          this.generateSummary(messages),
+          this.extractParticipants(messages),
+          options.extractAgenda !== false ? this.extractAgenda(messages) : Promise.resolve([]),
+          this.extractDecisions(messages, options.minDecisionConfidence),
+          this.extractActionItems(messages, options.minActionItemConfidence),
+          this.extractTopics(messages),
+          options.includeTranscript !== false
+            ? this.prepareTranscript(messages, options.transcriptFormat)
+            : Promise.resolve([]),
+        ])
 
       // Format notes
       const formattedNotes = this.formatNotes(
@@ -289,7 +279,10 @@ export class MeetingNotesGenerator {
     }
 
     try {
-      const prompt = `Generate a concise, professional meeting title based on this conversation (max 80 characters):\n\n${messages.slice(0, 10).map((m) => `${m.userName}: ${m.content}`).join('\n')}\n\nTitle:`
+      const prompt = `Generate a concise, professional meeting title based on this conversation (max 80 characters):\n\n${messages
+        .slice(0, 10)
+        .map((m) => `${m.userName}: ${m.content}`)
+        .join('\n')}\n\nTitle:`
 
       const response =
         this.config.provider === 'openai'
@@ -328,9 +321,7 @@ export class MeetingNotesGenerator {
   /**
    * Extract participants
    */
-  private async extractParticipants(
-    messages: Message[]
-  ): Promise<MeetingParticipant[]> {
+  private async extractParticipants(messages: Message[]): Promise<MeetingParticipant[]> {
     const participantMap = new Map<string, Message[]>()
 
     messages.forEach((msg) => {
@@ -345,8 +336,7 @@ export class MeetingNotesGenerator {
 
     for (const [userId, userMessages] of participantMap.entries()) {
       const sorted = userMessages.sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       )
 
       const joinTime = new Date(sorted[0].createdAt)
@@ -484,16 +474,11 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY | DUE_DATE):`
         topics.push({
           topic,
           startTime: new Date(window.messages[0].createdAt),
-          endTime: new Date(
-            window.messages[window.messages.length - 1].createdAt
-          ),
+          endTime: new Date(window.messages[window.messages.length - 1].createdAt),
           duration:
-            new Date(
-              window.messages[window.messages.length - 1].createdAt
-            ).getTime() - new Date(window.messages[0].createdAt).getTime(),
-          participants: Array.from(
-            new Set(window.messages.map((m) => m.userName || 'Unknown'))
-          ),
+            new Date(window.messages[window.messages.length - 1].createdAt).getTime() -
+            new Date(window.messages[0].createdAt).getTime(),
+          participants: Array.from(new Set(window.messages.map((m) => m.userName || 'Unknown'))),
           keyPoints: window.messages.slice(0, 3).map((m) => m.content.slice(0, 100)),
           relatedMessageIds: window.messages.map((m) => m.id),
         })
@@ -534,8 +519,7 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY | DUE_DATE):`
    */
   private extractMetadata(messages: Message[]): MeetingMetadata {
     const sorted = [...messages].sort(
-      (a, b) =>
-        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+      (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
     )
 
     const startTime = new Date(sorted[0].createdAt)
@@ -621,7 +605,8 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY | DUE_DATE):`
         lines.push('## Agenda')
         lines.push('')
         notes.agenda.forEach((item) => {
-          const statusIcon = item.status === 'completed' ? '✓' : item.status === 'deferred' ? '⊗' : '○'
+          const statusIcon =
+            item.status === 'completed' ? '✓' : item.status === 'deferred' ? '⊗' : '○'
           lines.push(`${statusIcon} ${item.title}`)
           if (item.notes) {
             lines.push(`   ${item.notes}`)
@@ -667,18 +652,14 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY | DUE_DATE):`
   /**
    * Generate with OpenAI
    */
-  private async generateWithOpenAI(
-    prompt: string,
-    maxTokens: number
-  ): Promise<string> {
+  private async generateWithOpenAI(prompt: string, maxTokens: number): Promise<string> {
     const apiKey = this.config.apiKey || this.getAPIKey()
     if (!apiKey) {
       throw new Error('OpenAI API key not configured')
     }
 
     const model = this.config.model || DEFAULT_OPENAI_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
+    const endpoint = this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -712,18 +693,14 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY | DUE_DATE):`
   /**
    * Generate with Anthropic
    */
-  private async generateWithAnthropic(
-    prompt: string,
-    maxTokens: number
-  ): Promise<string> {
+  private async generateWithAnthropic(prompt: string, maxTokens: number): Promise<string> {
     const apiKey = this.config.apiKey || this.getAPIKey()
     if (!apiKey) {
       throw new Error('Anthropic API key not configured')
     }
 
     const model = this.config.model || DEFAULT_ANTHROPIC_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.anthropic.com/v1/messages'
+    const endpoint = this.config.endpoint || 'https://api.anthropic.com/v1/messages'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -843,9 +820,7 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY | DUE_DATE):`
     const decisionKeywords = ['decided', 'agreed', 'approved', 'will do']
 
     return messages
-      .filter((m) =>
-        decisionKeywords.some((kw) => m.content.toLowerCase().includes(kw))
-      )
+      .filter((m) => decisionKeywords.some((kw) => m.content.toLowerCase().includes(kw)))
       .slice(0, 5)
       .map((m, index) => ({
         id: `decision-${index}`,
@@ -862,9 +837,7 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY | DUE_DATE):`
     const actionKeywords = ['todo', 'task', 'action', 'need to', 'should', 'will']
 
     return messages
-      .filter((m) =>
-        actionKeywords.some((kw) => m.content.toLowerCase().includes(kw))
-      )
+      .filter((m) => actionKeywords.some((kw) => m.content.toLowerCase().includes(kw)))
       .slice(0, 10)
       .map((m, index) => ({
         id: `action-${index}`,
@@ -920,8 +893,7 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY | DUE_DATE):`
       wordCounts.set(word, (wordCounts.get(word) || 0) + 1)
     })
 
-    const topWord = Array.from(wordCounts.entries())
-      .sort((a, b) => b[1] - a[1])[0]
+    const topWord = Array.from(wordCounts.entries()).sort((a, b) => b[1] - a[1])[0]
 
     return topWord ? topWord[0] : 'General Discussion'
   }

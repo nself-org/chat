@@ -1,30 +1,30 @@
-'use client';
+'use client'
 
-import { SettingsSection } from './settings-section';
-import { ScreenReaderSettings } from './ScreenReaderSettings';
-import { KeyboardSettings } from './KeyboardSettings';
-import { ContrastSettings } from './ContrastSettings';
-import { MotionSettings } from './MotionSettings';
-import { FontSizeSettings } from './FontSizeSettings';
-import { SettingsReset } from './SettingsReset';
-import { useSettingsStore } from '@/stores/settings-store';
-import { Accessibility } from 'lucide-react';
+import { SettingsSection } from './settings-section'
+import { ScreenReaderSettings } from './ScreenReaderSettings'
+import { KeyboardSettings } from './KeyboardSettings'
+import { ContrastSettings } from './ContrastSettings'
+import { MotionSettings } from './MotionSettings'
+import { FontSizeSettings } from './FontSizeSettings'
+import { SettingsReset } from './SettingsReset'
+import { useSettingsStore } from '@/stores/settings-store'
+import { Accessibility } from 'lucide-react'
 
 interface AccessibilitySettingsProps {
-  className?: string;
+  className?: string
 }
 
 /**
  * AccessibilitySettings - Comprehensive accessibility options
  */
 export function AccessibilitySettings({ className }: AccessibilitySettingsProps) {
-  const { resetAccessibility } = useSettingsStore();
+  const { resetAccessibility } = useSettingsStore()
 
   return (
     <div className={className}>
       {/* Page Header */}
       <div className="mb-6 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
           <Accessibility className="h-5 w-5 text-primary" />
         </div>
         <div>
@@ -51,10 +51,9 @@ export function AccessibilitySettings({ className }: AccessibilitySettingsProps)
 
         {/* Help Section */}
         <SettingsSection title="Need Help?">
-          <div className="rounded-lg bg-muted/50 p-4">
+          <div className="bg-muted/50 rounded-lg p-4">
             <p className="text-sm text-muted-foreground">
-              If you encounter any accessibility issues or have suggestions for
-              improvement, please{' '}
+              If you encounter any accessibility issues or have suggestions for improvement, please{' '}
               <a
                 href="mailto:support@nself.org"
                 className="text-primary underline hover:no-underline"
@@ -67,5 +66,5 @@ export function AccessibilitySettings({ className }: AccessibilitySettingsProps)
         </SettingsSection>
       </div>
     </div>
-  );
+  )
 }

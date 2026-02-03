@@ -171,12 +171,7 @@ const CATEGORY_ICONS: Record<string, { icon: typeof File; color: string; bg: str
  * <FileIcon file={file} size="lg" showBackground />
  * ```
  */
-export function FileIcon({
-  file,
-  size = 'md',
-  className,
-  showBackground = false,
-}: FileIconProps) {
+export function FileIcon({ file, size = 'md', className, showBackground = false }: FileIconProps) {
   // Get file info
   const fileName = typeof file === 'string' ? file : file.name
   const mimeType = typeof file === 'string' ? '' : file.type

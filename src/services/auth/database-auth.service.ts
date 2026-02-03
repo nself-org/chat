@@ -1,6 +1,8 @@
 import { authConfig } from '@/config/auth.config'
 import bcrypt from 'bcryptjs'
 
+import { logger } from '@/lib/logger'
+
 export interface AuthResponse {
   user: any
   accessToken: string
@@ -45,7 +47,7 @@ export class DatabaseAuthService {
 
       return data
     } catch (error) {
-      console.error('Sign in error:', error)
+      logger.error('Sign in error:', error)
       throw error
     }
   }
@@ -71,7 +73,7 @@ export class DatabaseAuthService {
 
       return data
     } catch (error) {
-      console.error('Sign up error:', error)
+      logger.error('Sign up error:', error)
       throw error
     }
   }
@@ -94,7 +96,7 @@ export class DatabaseAuthService {
       try {
         const response = await fetch('/api/auth/me', {
           headers: {
-            'Authorization': `Bearer ${this.accessToken}`,
+            Authorization: `Bearer ${this.accessToken}`,
           },
         })
 
@@ -104,7 +106,7 @@ export class DatabaseAuthService {
           return user
         }
       } catch (error) {
-        console.error('Get user error:', error)
+        logger.error('Get user error:', error)
       }
     }
 

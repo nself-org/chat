@@ -1,46 +1,43 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Card } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Card } from '@/components/ui/card'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Button } from '@/components/ui/button'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useNotificationSettingsStore } from '@/stores/notification-settings-store';
-import { NOTIFICATION_SOUNDS, playTestSound } from '@/lib/notifications/notification-sounds';
+} from '@/components/ui/select'
+import { useNotificationSettingsStore } from '@/stores/notification-settings-store'
+import { NOTIFICATION_SOUNDS, playTestSound } from '@/lib/notifications/notification-sounds'
 
 export interface NotificationSoundPickerProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 /**
  * NotificationSoundPicker - Sound settings and picker
  */
-export function NotificationSoundPicker({
-  className,
-  ...props
-}: NotificationSoundPickerProps) {
-  const soundSettings = useNotificationSettingsStore((state) => state.preferences.sound);
-  const setSoundEnabled = useNotificationSettingsStore((state) => state.setSoundEnabled);
-  const setSoundVolume = useNotificationSettingsStore((state) => state.setSoundVolume);
-  const setNotificationSound = useNotificationSettingsStore((state) => state.setNotificationSound);
-  const updateSoundSettings = useNotificationSettingsStore((state) => state.updateSoundSettings);
+export function NotificationSoundPicker({ className, ...props }: NotificationSoundPickerProps) {
+  const soundSettings = useNotificationSettingsStore((state) => state.preferences.sound)
+  const setSoundEnabled = useNotificationSettingsStore((state) => state.setSoundEnabled)
+  const setSoundVolume = useNotificationSettingsStore((state) => state.setSoundVolume)
+  const setNotificationSound = useNotificationSettingsStore((state) => state.setNotificationSound)
+  const updateSoundSettings = useNotificationSettingsStore((state) => state.updateSoundSettings)
 
-  const [isPlaying, setIsPlaying] = React.useState<string | null>(null);
+  const [isPlaying, setIsPlaying] = React.useState<string | null>(null)
 
   // Play test sound
   const handlePlaySound = async (soundId: string) => {
-    setIsPlaying(soundId);
-    await playTestSound(soundId, soundSettings.volume);
-    setTimeout(() => setIsPlaying(null), 1000);
-  };
+    setIsPlaying(soundId)
+    await playTestSound(soundId, soundSettings.volume)
+    setTimeout(() => setIsPlaying(null), 1000)
+  }
 
-  const soundOptions = NOTIFICATION_SOUNDS.filter((s) => s.category !== 'system' || s.id === 'none');
+  const soundOptions = NOTIFICATION_SOUNDS.filter((s) => s.category !== 'system' || s.id === 'none')
 
   return (
     <div className={cn('space-y-6', className)} {...props}>
@@ -64,10 +61,16 @@ export function NotificationSoundPicker({
       </Card>
 
       {/* Volume Control */}
-      <Card className={cn('p-4', !soundSettings.enabled && 'opacity-50 pointer-events-none')}>
-        <h3 className="text-sm font-medium mb-4">Volume</h3>
+      <Card className={cn('p-4', !soundSettings.enabled && 'pointer-events-none opacity-50')}>
+        <h3 className="mb-4 text-sm font-medium">Volume</h3>
         <div className="flex items-center gap-4">
-          <svg className="w-5 h-5 text-muted-foreground" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg
+            className="h-5 w-5 text-muted-foreground"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
             <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
           </svg>
           <input
@@ -78,20 +81,16 @@ export function NotificationSoundPicker({
             onChange={(e) => setSoundVolume(parseInt(e.target.value, 10))}
             className="flex-1"
           />
-          <span className="w-12 text-sm text-right">{soundSettings.volume}%</span>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handlePlaySound('default')}
-          >
+          <span className="w-12 text-right text-sm">{soundSettings.volume}%</span>
+          <Button variant="outline" size="sm" onClick={() => handlePlaySound('default')}>
             Test
           </Button>
         </div>
       </Card>
 
       {/* Sound Selection */}
-      <Card className={cn('p-4', !soundSettings.enabled && 'opacity-50 pointer-events-none')}>
-        <h3 className="text-sm font-medium mb-4">Sound Selection</h3>
+      <Card className={cn('p-4', !soundSettings.enabled && 'pointer-events-none opacity-50')}>
+        <h3 className="mb-4 text-sm font-medium">Sound Selection</h3>
         <div className="space-y-4">
           {/* Default Sound */}
           <SoundRow
@@ -151,7 +150,7 @@ export function NotificationSoundPicker({
       </Card>
 
       {/* Additional Options */}
-      <Card className={cn('p-4', !soundSettings.enabled && 'opacity-50 pointer-events-none')}>
+      <Card className={cn('p-4', !soundSettings.enabled && 'pointer-events-none opacity-50')}>
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
             <Label htmlFor="play-focused">Play sounds when focused</Label>
@@ -167,18 +166,18 @@ export function NotificationSoundPicker({
         </div>
       </Card>
     </div>
-  );
+  )
 }
 
 // Sound Row Component
 interface SoundRowProps {
-  label: string;
-  description: string;
-  value: string;
-  onChange: (value: string) => void;
-  onPlay: () => void;
-  isPlaying: boolean;
-  options: typeof NOTIFICATION_SOUNDS;
+  label: string
+  description: string
+  value: string
+  onChange: (value: string) => void
+  onPlay: () => void
+  isPlaying: boolean
+  options: typeof NOTIFICATION_SOUNDS
 }
 
 function SoundRow({
@@ -191,14 +190,14 @@ function SoundRow({
   options,
 }: SoundRowProps) {
   return (
-    <div className="flex items-center justify-between py-2 border-b last:border-0">
+    <div className="flex items-center justify-between border-b py-2 last:border-0">
       <div className="space-y-0.5">
         <span className="text-sm font-medium">{label}</span>
         <p className="text-xs text-muted-foreground">{description}</p>
       </div>
       <div className="flex items-center gap-2">
         <Select value={value} onValueChange={onChange}>
-          <SelectTrigger className="w-[140px] h-8 text-xs">
+          <SelectTrigger className="h-8 w-[140px] text-xs">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -217,21 +216,33 @@ function SoundRow({
           className="h-8 w-8"
         >
           {isPlaying ? (
-            <svg className="w-4 h-4 animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-4 w-4 animate-pulse"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
               <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
             </svg>
           ) : (
-            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg
+              className="h-4 w-4"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <polygon points="5 3 19 12 5 21 5 3" />
             </svg>
           )}
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
-NotificationSoundPicker.displayName = 'NotificationSoundPicker';
+NotificationSoundPicker.displayName = 'NotificationSoundPicker'
 
-export default NotificationSoundPicker;
+export default NotificationSoundPicker

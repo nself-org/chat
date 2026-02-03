@@ -100,16 +100,16 @@ After setup, you'll have:
 
 In development mode (`NEXT_PUBLIC_USE_DEV_AUTH=true`), you get 8 test users:
 
-| Email | Role | Password |
-|-------|------|----------|
-| owner@nself.org | Owner | password123 |
-| admin@nself.org | Admin | password123 |
+| Email               | Role      | Password    |
+| ------------------- | --------- | ----------- |
+| owner@nself.org     | Owner     | password123 |
+| admin@nself.org     | Admin     | password123 |
 | moderator@nself.org | Moderator | password123 |
-| member@nself.org | Member | password123 |
-| guest@nself.org | Guest | password123 |
-| alice@nself.org | Member | password123 |
-| bob@nself.org | Member | password123 |
-| charlie@nself.org | Member | password123 |
+| member@nself.org    | Member    | password123 |
+| guest@nself.org     | Guest     | password123 |
+| alice@nself.org     | Member    | password123 |
+| bob@nself.org       | Member    | password123 |
+| charlie@nself.org   | Member    | password123 |
 
 **Auto-Login**: By default, you'll be automatically logged in as `owner@nself.org`.
 
@@ -125,22 +125,26 @@ To test different user roles, you can switch users in two ways:
 ## Quick Tour
 
 ### 1. Setup Wizard (First Run)
+
 - Visit `http://localhost:3000/setup`
 - Configure branding, themes, auth, and features
 - Takes ~5 minutes to complete
 
 ### 2. Main Chat Interface
+
 - Visit `http://localhost:3000/chat`
 - See channels in left sidebar
 - Send messages in the main area
 - Use @ for mentions, # for channels
 
 ### 3. User Settings
+
 - Click your avatar in the top right
 - Select "Settings"
 - Configure notifications, appearance, privacy
 
 ### 4. Admin Dashboard (Owner/Admin only)
+
 - Visit `http://localhost:3000/admin`
 - Manage users, channels, bots
 - View analytics and audit logs
@@ -150,6 +154,7 @@ To test different user roles, you can switch users in two ways:
 ## Key Features to Try
 
 ### Advanced Messaging
+
 - **Edit a message**: Click the "..." menu on any message → Edit
 - **Delete a message**: Click the "..." menu → Delete
 - **Forward a message**: Click the "..." menu → Forward
@@ -157,23 +162,27 @@ To test different user roles, you can switch users in two ways:
 - **Star a message**: Click the ⭐ icon
 
 ### GIFs & Stickers
+
 - Click the **GIF button** in the message composer
 - Search for GIFs using the Tenor API
 - Click the **sticker button** for stickers
 - Browse 2 default sticker packs
 
 ### Polls
+
 - Click the **poll icon** in a channel
 - Create single-choice or multiple-choice polls
 - Set expiration date (optional)
 - Enable anonymous voting (optional)
 
 ### Search
+
 - Press **Cmd+K** (Mac) or **Ctrl+K** (Windows/Linux)
 - Search messages, files, users, channels
 - Use operators: `from:alice`, `in:#general`, `has:file`
 
 ### 2FA & PIN Lock
+
 - Go to **Settings → Security**
 - Enable **Two-Factor Authentication**
 - Setup **PIN Lock** for app protection
@@ -183,29 +192,35 @@ To test different user roles, you can switch users in two ways:
 ## Common Tasks
 
 ### Customize Branding
+
 1. Go to `http://localhost:3000/setup` or Admin → Configuration
 2. Update app name, logo, colors
 3. Choose a theme preset or create custom theme
 4. Save changes
 
 ### Create a Channel
+
 1. Click **+** next to Channels in sidebar
 2. Enter channel name and description
 3. Choose public or private
 4. Invite members (for private channels)
 
 ### Invite Users
+
 In development mode, users are pre-created. In production:
+
 1. Go to **Admin → Users → Invite**
 2. Enter email addresses
 3. Send invitations
 
 ### Send Direct Message
+
 1. Click **+** next to Direct Messages
 2. Select a user from the list
 3. Start chatting
 
 ### Create a Bot
+
 1. Go to **Admin → Bots**
 2. Click **Create Bot**
 3. Enter bot name and description
@@ -250,17 +265,20 @@ TWITTER_CLIENT_SECRET=your-twitter-client-secret
 ## Next Steps
 
 ### Learn More
+
 - [Installation Guide](INSTALLATION) - Detailed installation
 - [Configuration Guide](CONFIGURATION) - All configuration options
 - [Features Overview](features/Features) - Explore all features
 - [User Guide](guides/USER-GUIDE) - End-user documentation
 
 ### Deploy to Production
+
 - [Deployment Guide](deployment/DEPLOYMENT) - Production deployment
 - [Docker Guide](deployment/Deployment-Docker) - Deploy with Docker
 - [Kubernetes Guide](deployment/Deployment-Kubernetes) - Deploy to K8s
 
 ### Develop & Contribute
+
 - [Architecture](reference/Architecture) - System design
 - [API Reference](API-REFERENCE) - GraphQL API
 - [Contributing Guide](about/Contributing) - How to contribute
@@ -271,12 +289,14 @@ TWITTER_CLIENT_SECRET=your-twitter-client-secret
 ## Troubleshooting
 
 ### Port 3000 is already in use
+
 ```bash
 # Use a different port
 PORT=3001 pnpm dev
 ```
 
 ### Dependencies installation fails
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules pnpm-lock.yaml
@@ -284,6 +304,7 @@ pnpm install
 ```
 
 ### TypeScript errors
+
 ```bash
 # Run type checking
 pnpm type-check
@@ -293,11 +314,13 @@ pnpm lint:fix
 ```
 
 ### Can't login with test users
+
 1. Check that `NEXT_PUBLIC_USE_DEV_AUTH=true` in `.env.local`
 2. Restart the development server
 3. Clear browser cache and cookies
 
 ### Setup wizard doesn't show
+
 1. Clear localStorage: `localStorage.removeItem('app-config')`
 2. Visit `http://localhost:3000/setup` directly
 3. Check browser console for errors
@@ -309,11 +332,13 @@ pnpm lint:fix
 ## Getting Help
 
 ### Documentation
+
 - [Full Documentation](README)
 - [FAQ](troubleshooting/FAQ)
 - [Troubleshooting](TROUBLESHOOTING)
 
 ### Community
+
 - [GitHub Issues](https://github.com/acamarata/nself-chat/issues) - Bug reports
 - [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions) - Questions
 - [Email Support](mailto:support@nself.org) - Direct support

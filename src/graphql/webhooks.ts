@@ -153,19 +153,9 @@ export const WEBHOOK_DELIVERY_FRAGMENT = gql`
  * Get all webhooks with optional filtering
  */
 export const GET_WEBHOOKS = gql`
-  query GetWebhooks(
-    $channelId: uuid
-    $status: String
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetWebhooks($channelId: uuid, $status: String, $limit: Int = 50, $offset: Int = 0) {
     nchat_webhooks(
-      where: {
-        _and: [
-          { channel_id: { _eq: $channelId } }
-          { status: { _eq: $status } }
-        ]
-      }
+      where: { _and: [{ channel_id: { _eq: $channelId } }, { status: { _eq: $status } }] }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
@@ -173,12 +163,7 @@ export const GET_WEBHOOKS = gql`
       ...WebhookFragment
     }
     nchat_webhooks_aggregate(
-      where: {
-        _and: [
-          { channel_id: { _eq: $channelId } }
-          { status: { _eq: $status } }
-        ]
-      }
+      where: { _and: [{ channel_id: { _eq: $channelId } }, { status: { _eq: $status } }] }
     ) {
       aggregate {
         count
@@ -193,11 +178,7 @@ export const GET_WEBHOOKS = gql`
  */
 export const GET_ALL_WEBHOOKS = gql`
   query GetAllWebhooks($limit: Int = 50, $offset: Int = 0) {
-    nchat_webhooks(
-      order_by: { created_at: desc }
-      limit: $limit
-      offset: $offset
-    ) {
+    nchat_webhooks(order_by: { created_at: desc }, limit: $limit, offset: $offset) {
       ...WebhookFragment
     }
     nchat_webhooks_aggregate {
@@ -226,13 +207,7 @@ export const GET_WEBHOOK = gql`
  */
 export const GET_WEBHOOK_BY_TOKEN = gql`
   query GetWebhookByToken($token: String!) {
-    nchat_webhooks(
-      where: {
-        token: { _eq: $token }
-        status: { _eq: "active" }
-      }
-      limit: 1
-    ) {
+    nchat_webhooks(where: { token: { _eq: $token }, status: { _eq: "active" } }, limit: 1) {
       ...WebhookFragment
     }
   }
@@ -250,10 +225,7 @@ export const GET_WEBHOOK_DELIVERIES = gql`
     $offset: Int = 0
   ) {
     nchat_webhook_deliveries(
-      where: {
-        webhook_id: { _eq: $webhookId }
-        status: { _eq: $status }
-      }
+      where: { webhook_id: { _eq: $webhookId }, status: { _eq: $status } }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
@@ -261,10 +233,7 @@ export const GET_WEBHOOK_DELIVERIES = gql`
       ...WebhookDeliveryFragment
     }
     nchat_webhook_deliveries_aggregate(
-      where: {
-        webhook_id: { _eq: $webhookId }
-        status: { _eq: $status }
-      }
+      where: { webhook_id: { _eq: $webhookId }, status: { _eq: $status } }
     ) {
       aggregate {
         count
@@ -279,10 +248,7 @@ export const GET_WEBHOOK_DELIVERIES = gql`
  */
 export const GET_RECENT_DELIVERIES = gql`
   query GetRecentDeliveries($limit: Int = 10) {
-    nchat_webhook_deliveries(
-      order_by: { created_at: desc }
-      limit: $limit
-    ) {
+    nchat_webhook_deliveries(order_by: { created_at: desc }, limit: $limit) {
       ...WebhookDeliveryFragment
       webhook {
         id
@@ -302,38 +268,27 @@ export const GET_RECENT_DELIVERIES = gql`
  */
 export const GET_WEBHOOK_STATS = gql`
   query GetWebhookStats($webhookId: uuid!) {
-    total: nchat_webhook_deliveries_aggregate(
-      where: { webhook_id: { _eq: $webhookId } }
-    ) {
+    total: nchat_webhook_deliveries_aggregate(where: { webhook_id: { _eq: $webhookId } }) {
       aggregate {
         count
       }
     }
     success: nchat_webhook_deliveries_aggregate(
-      where: {
-        webhook_id: { _eq: $webhookId }
-        status: { _eq: "success" }
-      }
+      where: { webhook_id: { _eq: $webhookId }, status: { _eq: "success" } }
     ) {
       aggregate {
         count
       }
     }
     failed: nchat_webhook_deliveries_aggregate(
-      where: {
-        webhook_id: { _eq: $webhookId }
-        status: { _eq: "failed" }
-      }
+      where: { webhook_id: { _eq: $webhookId }, status: { _eq: "failed" } }
     ) {
       aggregate {
         count
       }
     }
     pending: nchat_webhook_deliveries_aggregate(
-      where: {
-        webhook_id: { _eq: $webhookId }
-        status: { _in: ["pending", "retrying"] }
-      }
+      where: { webhook_id: { _eq: $webhookId }, status: { _in: ["pending", "retrying"] } }
     ) {
       aggregate {
         count
@@ -350,12 +305,7 @@ export const GET_WEBHOOK_STATS = gql`
  * Create a new webhook
  */
 export const CREATE_WEBHOOK = gql`
-  mutation CreateWebhook(
-    $name: String!
-    $channelId: uuid!
-    $avatarUrl: String
-    $createdBy: uuid!
-  ) {
+  mutation CreateWebhook($name: String!, $channelId: uuid!, $avatarUrl: String, $createdBy: uuid!) {
     insert_nchat_webhooks_one(
       object: {
         name: $name
@@ -417,10 +367,7 @@ export const REGENERATE_WEBHOOK_URL = gql`
   mutation RegenerateWebhookUrl($id: uuid!) {
     update_nchat_webhooks_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        token: null
-        updated_at: "now()"
-      }
+      _set: { token: null, updated_at: "now()" }
     ) {
       ...WebhookFragment
     }
@@ -457,10 +404,7 @@ export const TEST_WEBHOOK = gql`
  */
 export const UPDATE_WEBHOOK_LAST_USED = gql`
   mutation UpdateWebhookLastUsed($id: uuid!) {
-    update_nchat_webhooks_by_pk(
-      pk_columns: { id: $id }
-      _set: { last_used_at: "now()" }
-    ) {
+    update_nchat_webhooks_by_pk(pk_columns: { id: $id }, _set: { last_used_at: "now()" }) {
       id
       last_used_at
     }
@@ -526,13 +470,8 @@ export const RETRY_WEBHOOK_DELIVERY = gql`
   mutation RetryWebhookDelivery($id: uuid!) {
     update_nchat_webhook_deliveries_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        status: "retrying"
-        next_retry_at: "now()"
-      }
-      _inc: {
-        attempt_count: 1
-      }
+      _set: { status: "retrying", next_retry_at: "now()" }
+      _inc: { attempt_count: 1 }
     ) {
       ...WebhookDeliveryFragment
     }
@@ -546,10 +485,7 @@ export const RETRY_WEBHOOK_DELIVERY = gql`
 export const DELETE_OLD_DELIVERIES = gql`
   mutation DeleteOldDeliveries($webhookId: uuid!, $beforeDate: timestamptz!) {
     delete_nchat_webhook_deliveries(
-      where: {
-        webhook_id: { _eq: $webhookId }
-        created_at: { _lt: $beforeDate }
-      }
+      where: { webhook_id: { _eq: $webhookId }, created_at: { _lt: $beforeDate } }
     ) {
       affected_rows
     }
@@ -605,10 +541,7 @@ export const WEBHOOK_DELIVERIES_SUBSCRIPTION = gql`
  */
 export const RECENT_DELIVERIES_SUBSCRIPTION = gql`
   subscription RecentDeliveriesSubscription($limit: Int = 10) {
-    nchat_webhook_deliveries(
-      order_by: { created_at: desc }
-      limit: $limit
-    ) {
+    nchat_webhook_deliveries(order_by: { created_at: desc }, limit: $limit) {
       ...WebhookDeliveryFragment
       webhook {
         id

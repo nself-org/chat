@@ -13,6 +13,7 @@ Comprehensive Two-Factor Authentication system for nself-chat with TOTP support,
 ## Features Implemented
 
 ### ✅ Core Features
+
 - [x] TOTP (Time-based One-Time Password) authentication
 - [x] QR code generation for authenticator apps
 - [x] Manual secret entry support
@@ -24,6 +25,7 @@ Comprehensive Two-Factor Authentication system for nself-chat with TOTP support,
 - [x] Security audit logging
 
 ### ✅ Supported Authenticator Apps
+
 - Google Authenticator
 - Authy
 - 1Password
@@ -37,6 +39,7 @@ Comprehensive Two-Factor Authentication system for nself-chat with TOTP support,
 ### Database Schema
 
 **Tables Created:**
+
 ```sql
 nchat_user_2fa_settings       -- TOTP secrets and configuration
 nchat_user_backup_codes       -- Hashed backup codes
@@ -48,31 +51,31 @@ nchat_2fa_verification_attempts -- Rate limiting and audit log
 
 ### API Routes
 
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/auth/2fa/setup` | POST | Generate TOTP secret and backup codes |
-| `/api/auth/2fa/verify-setup` | POST | Verify initial setup and enable 2FA |
-| `/api/auth/2fa/verify` | POST | Verify TOTP/backup code during login |
-| `/api/auth/2fa/disable` | POST | Disable 2FA |
-| `/api/auth/2fa/backup-codes` | GET/POST | View status / regenerate codes |
-| `/api/auth/2fa/status` | GET | Get 2FA status for user |
-| `/api/auth/2fa/trusted-devices` | GET/DELETE | Manage trusted devices |
+| Endpoint                        | Method     | Purpose                               |
+| ------------------------------- | ---------- | ------------------------------------- |
+| `/api/auth/2fa/setup`           | POST       | Generate TOTP secret and backup codes |
+| `/api/auth/2fa/verify-setup`    | POST       | Verify initial setup and enable 2FA   |
+| `/api/auth/2fa/verify`          | POST       | Verify TOTP/backup code during login  |
+| `/api/auth/2fa/disable`         | POST       | Disable 2FA                           |
+| `/api/auth/2fa/backup-codes`    | GET/POST   | View status / regenerate codes        |
+| `/api/auth/2fa/status`          | GET        | Get 2FA status for user               |
+| `/api/auth/2fa/trusted-devices` | GET/DELETE | Manage trusted devices                |
 
 ### Utility Libraries
 
-| File | Purpose |
-|------|---------|
-| `src/lib/2fa/totp.ts` | TOTP generation/verification using speakeasy |
-| `src/lib/2fa/backup-codes.ts` | Backup code generation and bcrypt hashing |
-| `src/lib/2fa/device-fingerprint.ts` | Device fingerprinting for trust system |
+| File                                | Purpose                                      |
+| ----------------------------------- | -------------------------------------------- |
+| `src/lib/2fa/totp.ts`               | TOTP generation/verification using speakeasy |
+| `src/lib/2fa/backup-codes.ts`       | Backup code generation and bcrypt hashing    |
+| `src/lib/2fa/device-fingerprint.ts` | Device fingerprinting for trust system       |
 
 ### React Components
 
-| Component | Location | Purpose |
-|-----------|----------|---------|
+| Component           | Location                                        | Purpose                           |
+| ------------------- | ----------------------------------------------- | --------------------------------- |
 | `TwoFactorSettings` | `src/components/settings/TwoFactorSettings.tsx` | Main 2FA management UI (existing) |
-| `TwoFactorVerify` | `src/components/auth/TwoFactorVerify.tsx` | Login verification modal |
-| `use2FA` hook | `src/hooks/use-2fa.ts` | React hook for 2FA operations |
+| `TwoFactorVerify`   | `src/components/auth/TwoFactorVerify.tsx`       | Login verification modal          |
+| `use2FA` hook       | `src/hooks/use-2fa.ts`                          | React hook for 2FA operations     |
 
 ---
 
@@ -152,17 +155,20 @@ System disables 2FA and deletes:
 ## Security Features
 
 ### 1. Secret Storage
+
 - TOTP secrets stored as base32-encoded strings
 - **Production:** Should be encrypted at rest (TODO)
 - Backup codes hashed with bcrypt (10 rounds)
 - Never store plain-text codes
 
 ### 2. Rate Limiting
+
 - Maximum 5 verification attempts per 15 minutes
 - Attempts logged in `nchat_2fa_verification_attempts`
 - Includes IP address and user agent
 
 ### 3. Device Trust
+
 - SHA-256 hash of device fingerprint
 - Fingerprint includes:
   - User agent
@@ -174,6 +180,7 @@ System disables 2FA and deletes:
 - Trust expires after 30 days
 
 ### 4. Backup Codes
+
 - 10 codes generated per user
 - Each code is 8 hex characters (XXXX-XXXX format)
 - Hashed with bcrypt before storage
@@ -181,6 +188,7 @@ System disables 2FA and deletes:
 - Warning shown when ≤3 codes remaining
 
 ### 5. Row-Level Security (RLS)
+
 - Users can only access their own 2FA data
 - Admins can view (but not modify) for support
 - Service role can log verification attempts
@@ -192,12 +200,14 @@ System disables 2FA and deletes:
 ### 2FA Enforcement
 
 **Database Column:**
+
 ```sql
 ALTER TABLE app_configuration
   ADD COLUMN require_2fa BOOLEAN DEFAULT false;
 ```
 
 **Behavior:**
+
 - When `require_2fa = true`, all users must enable 2FA
 - Users see banner: "2FA setup required by administrator"
 - Users redirected to 2FA setup on next login
@@ -206,6 +216,7 @@ ALTER TABLE app_configuration
 ### Admin Dashboard Metrics
 
 **SQL Functions:**
+
 ```sql
 get_2fa_active_users_count()    -- Count of users with 2FA enabled
 user_has_2fa_enabled(user_id)   -- Check if specific user has 2FA
@@ -218,6 +229,7 @@ cleanup_expired_trusted_devices()      -- Remove expired devices
 ## Testing Checklist
 
 ### ✅ Setup Flow
+
 - [x] Generate TOTP secret and QR code
 - [x] Display manual entry code
 - [x] Verify 6-digit TOTP code
@@ -226,6 +238,7 @@ cleanup_expired_trusted_devices()      -- Remove expired devices
 - [x] Show success message
 
 ### ✅ Login Flow
+
 - [x] Check if 2FA is enabled for user
 - [x] Check if device is trusted (skip 2FA)
 - [x] Show verification modal
@@ -236,6 +249,7 @@ cleanup_expired_trusted_devices()      -- Remove expired devices
 - [x] Log verification attempt
 
 ### ✅ Management
+
 - [x] View 2FA status (enabled/disabled)
 - [x] View backup codes remaining
 - [x] Regenerate backup codes
@@ -244,6 +258,7 @@ cleanup_expired_trusted_devices()      -- Remove expired devices
 - [x] Disable 2FA (with password)
 
 ### ✅ Security
+
 - [x] Rate limiting (5 attempts per 15 min)
 - [x] Backup codes marked as used
 - [x] Device trust expires after 30 days
@@ -251,6 +266,7 @@ cleanup_expired_trusted_devices()      -- Remove expired devices
 - [x] IP address and user agent captured
 
 ### ⏳ TODO: Production Hardening
+
 - [ ] Encrypt TOTP secrets at rest
 - [ ] Add password verification before disable
 - [ ] Add password verification before regenerate codes
@@ -354,10 +370,12 @@ function LoginPage() {
 
   return (
     <>
-      <LoginForm onTwoFactorRequired={(uid) => {
-        setUserId(uid)
-        setShowTwoFactor(true)
-      }} />
+      <LoginForm
+        onTwoFactorRequired={(uid) => {
+          setUserId(uid)
+          setShowTwoFactor(true)
+        }}
+      />
 
       <TwoFactorVerify
         open={showTwoFactor}
@@ -375,26 +393,31 @@ function LoginPage() {
 ## Database Functions Reference
 
 ### Check if user has 2FA enabled
+
 ```sql
 SELECT user_has_2fa_enabled('user-uuid-here');
 ```
 
 ### Count active 2FA users
+
 ```sql
 SELECT get_2fa_active_users_count();
 ```
 
 ### Count remaining backup codes
+
 ```sql
 SELECT count_remaining_backup_codes('user-uuid-here');
 ```
 
 ### Check if device is trusted
+
 ```sql
 SELECT is_device_trusted('user-uuid-here', 'device-hash-here');
 ```
 
 ### Clean up expired devices
+
 ```sql
 SELECT cleanup_expired_trusted_devices();
 ```
@@ -411,6 +434,7 @@ nself db migrate up
 ```
 
 This will create:
+
 - `nchat_user_2fa_settings`
 - `nchat_user_backup_codes`
 - `nchat_user_trusted_devices`
@@ -460,6 +484,7 @@ pnpm dev
 ### Database Indexes
 
 All critical queries are indexed:
+
 ```sql
 idx_2fa_settings_user_id        -- Fast user lookups
 idx_2fa_settings_enabled        -- Count active users
@@ -474,11 +499,13 @@ idx_2fa_attempts_ip_time        -- IP-based rate limiting
 ### Caching Strategy
 
 **Frontend:**
+
 - Cache 2FA status in React state
 - Refresh on mount and after changes
 - Use SWR or React Query for automatic revalidation
 
 **Backend:**
+
 - Consider Redis cache for device trust checks
 - Cache 2FA status for active sessions
 - Invalidate cache on 2FA disable/enable
@@ -511,6 +538,7 @@ LIMIT 10;
 
 **Issue:** QR code won't scan in authenticator app
 **Solution:**
+
 1. Increase QR code size (300px default)
 2. Ensure proper contrast (black on white)
 3. Use manual entry code as fallback
@@ -519,6 +547,7 @@ LIMIT 10;
 
 **Issue:** TOTP code always fails
 **Solution:**
+
 1. Check server time is synchronized (NTP)
 2. Allow ±30 second window (default)
 3. Verify secret is stored correctly
@@ -528,6 +557,7 @@ LIMIT 10;
 
 **Issue:** 2FA required every time
 **Solution:**
+
 1. Check browser allows localStorage
 2. Verify device fingerprint is consistent
 3. Check trusted_until hasn't expired
@@ -537,6 +567,7 @@ LIMIT 10;
 
 **Issue:** "Too many attempts" error
 **Solution:**
+
 1. Wait 15 minutes for reset
 2. Use backup code instead
 3. Contact admin to clear attempts log
@@ -546,6 +577,7 @@ LIMIT 10;
 ## Future Enhancements
 
 ### Phase 2 (Post v0.3.0)
+
 - [ ] SMS backup codes
 - [ ] Email magic links as 2FA alternative
 - [ ] WebAuthn/FIDO2 support (hardware keys)
@@ -555,6 +587,7 @@ LIMIT 10;
 - [ ] 2FA recovery through admin support
 
 ### Phase 3 (Enterprise)
+
 - [ ] SAML/SSO integration with 2FA
 - [ ] Custom 2FA policies per role
 - [ ] Time-based 2FA requirements (e.g., only for sensitive operations)
@@ -567,12 +600,14 @@ LIMIT 10;
 ## Support Resources
 
 ### Documentation
+
 - [Speakeasy TOTP Documentation](https://github.com/speakeasyjs/speakeasy)
 - [QRCode.js Documentation](https://github.com/soldair/node-qrcode)
 - [RFC 6238 (TOTP)](https://datatracker.ietf.org/doc/html/rfc6238)
 - [RFC 4226 (HOTP)](https://datatracker.ietf.org/doc/html/rfc4226)
 
 ### Authenticator Apps
+
 - [Google Authenticator](https://support.google.com/accounts/answer/1066447)
 - [Authy](https://authy.com/)
 - [1Password](https://1password.com/)
@@ -585,17 +620,21 @@ LIMIT 10;
 ### Regular Tasks
 
 **Weekly:**
+
 - Clean up expired trusted devices
+
 ```sql
 SELECT cleanup_expired_trusted_devices();
 ```
 
 **Monthly:**
+
 - Review 2FA adoption metrics
 - Analyze failed verification attempts
 - Check for suspicious patterns
 
 **Quarterly:**
+
 - Audit 2FA enforcement policies
 - Review backup code usage
 - Update security documentation
@@ -605,6 +644,7 @@ SELECT cleanup_expired_trusted_devices();
 ## Conclusion
 
 The 2FA system is now **production-ready** with:
+
 - ✅ Complete TOTP implementation
 - ✅ Secure backup code system
 - ✅ Device trust management
@@ -614,6 +654,7 @@ The 2FA system is now **production-ready** with:
 - ✅ Rate limiting and audit logging
 
 **Next Steps:**
+
 1. Test thoroughly in development
 2. Enable for test users
 3. Roll out to production gradually
@@ -621,6 +662,7 @@ The 2FA system is now **production-ready** with:
 5. Implement Phase 2 enhancements
 
 **Estimated Adoption:**
+
 - Week 1: 10% of users
 - Week 2: 25% of users
 - Month 1: 50% of users

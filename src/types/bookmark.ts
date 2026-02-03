@@ -404,10 +404,7 @@ export interface BookmarkEvent {
 /**
  * Check if a message is bookmarked
  */
-export function isMessageBookmarked(
-  messageId: string,
-  bookmarks: Bookmark[]
-): boolean {
+export function isMessageBookmarked(messageId: string, bookmarks: Bookmark[]): boolean {
   return bookmarks.some((b) => b.messageId === messageId)
 }
 
@@ -433,20 +430,14 @@ export function formatBookmarkCount(count: number): string {
 /**
  * Get bookmarks by collection
  */
-export function getBookmarksByCollection(
-  collectionId: string,
-  bookmarks: Bookmark[]
-): Bookmark[] {
+export function getBookmarksByCollection(collectionId: string, bookmarks: Bookmark[]): Bookmark[] {
   return bookmarks.filter((b) => b.collectionIds.includes(collectionId))
 }
 
 /**
  * Get bookmarks by tag
  */
-export function getBookmarksByTag(
-  tag: string,
-  bookmarks: Bookmark[]
-): Bookmark[] {
+export function getBookmarksByTag(tag: string, bookmarks: Bookmark[]): Bookmark[] {
   return bookmarks.filter((b) => b.tags.includes(tag))
 }
 
@@ -500,10 +491,7 @@ export function getAllChannels(bookmarks: BookmarkListItem[]): Array<{
 /**
  * Search bookmarks
  */
-export function searchBookmarks(
-  query: string,
-  bookmarks: BookmarkListItem[]
-): BookmarkListItem[] {
+export function searchBookmarks(query: string, bookmarks: BookmarkListItem[]): BookmarkListItem[] {
   const lowerQuery = query.toLowerCase()
   return bookmarks.filter(
     (b) =>

@@ -12,12 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { ThreadParticipants } from './thread-participants'
@@ -122,9 +117,7 @@ export function ThreadHeader({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  {notificationsEnabled
-                    ? 'Turn off notifications'
-                    : 'Turn on notifications'}
+                  {notificationsEnabled ? 'Turn off notifications' : 'Turn on notifications'}
                 </TooltipContent>
               </Tooltip>
             )}
@@ -140,22 +133,20 @@ export function ThreadHeader({
               <DropdownMenuContent align="end" className="w-48">
                 {onViewParticipants && (
                   <DropdownMenuItem onClick={onViewParticipants}>
-                    <Users className="h-4 w-4 mr-2" />
+                    <Users className="mr-2 h-4 w-4" />
                     View all participants
                   </DropdownMenuItem>
                 )}
                 {isParticipant && onToggleNotifications && (
-                  <DropdownMenuItem
-                    onClick={() => onToggleNotifications(!notificationsEnabled)}
-                  >
+                  <DropdownMenuItem onClick={() => onToggleNotifications(!notificationsEnabled)}>
                     {notificationsEnabled ? (
                       <>
-                        <BellOff className="h-4 w-4 mr-2" />
+                        <BellOff className="mr-2 h-4 w-4" />
                         Mute thread
                       </>
                     ) : (
                       <>
-                        <Bell className="h-4 w-4 mr-2" />
+                        <Bell className="mr-2 h-4 w-4" />
                         Unmute thread
                       </>
                     )}
@@ -170,9 +161,7 @@ export function ThreadHeader({
                     Leave thread
                   </DropdownMenuItem>
                 ) : onJoin ? (
-                  <DropdownMenuItem onClick={onJoin}>
-                    Follow thread
-                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={onJoin}>Follow thread</DropdownMenuItem>
                 ) : null}
               </DropdownMenuContent>
             </DropdownMenu>
@@ -180,12 +169,7 @@ export function ThreadHeader({
             {/* Close button */}
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={onClose}
-                >
+                <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
                   <X className="h-4 w-4" />
                   <span className="sr-only">Close thread</span>
                 </Button>
@@ -199,7 +183,7 @@ export function ThreadHeader({
 
         {/* Parent message preview */}
         {parentMessage && (
-          <div className="px-4 py-3 bg-muted/30">
+          <div className="bg-muted/30 px-4 py-3">
             <div className="flex items-start gap-3">
               <Avatar className="h-8 w-8 shrink-0">
                 <AvatarImage
@@ -207,22 +191,20 @@ export function ThreadHeader({
                   alt={parentMessage.user.display_name || parentMessage.user.username}
                 />
                 <AvatarFallback className="text-xs">
-                  {getInitials(
-                    parentMessage.user.display_name || parentMessage.user.username
-                  )}
+                  {getInitials(parentMessage.user.display_name || parentMessage.user.username)}
                 </AvatarFallback>
               </Avatar>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-baseline gap-2 mb-1">
-                  <span className="text-sm font-semibold truncate">
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex items-baseline gap-2">
+                  <span className="truncate text-sm font-semibold">
                     {parentMessage.user.display_name || parentMessage.user.username}
                   </span>
                   <span className="text-xs text-muted-foreground">
                     {format(new Date(parentMessage.created_at), 'MMM d, h:mm a')}
                   </span>
                 </div>
-                <p className="text-sm text-muted-foreground line-clamp-2">
+                <p className="line-clamp-2 text-sm text-muted-foreground">
                   {truncateContent(parentMessage.content)}
                 </p>
               </div>
@@ -243,8 +225,7 @@ export function ThreadHeader({
                   onClick={onViewParticipants}
                 />
                 <span className="text-xs text-muted-foreground">
-                  {participants.length}{' '}
-                  {participants.length === 1 ? 'participant' : 'participants'}
+                  {participants.length} {participants.length === 1 ? 'participant' : 'participants'}
                 </span>
               </div>
 
@@ -280,18 +261,13 @@ export function ThreadHeaderCompact({
   className,
 }: ThreadHeaderCompactProps) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between px-3 py-2 border-b',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between border-b px-3 py-2', className)}>
       <div className="flex items-center gap-2">
         <MessageSquare className="h-4 w-4 text-muted-foreground" />
         <span className="text-sm font-medium">Thread</span>
         <span className="text-xs text-muted-foreground">
-          {replyCount} {replyCount === 1 ? 'reply' : 'replies'} &middot;{' '}
-          {participantCount} {participantCount === 1 ? 'person' : 'people'}
+          {replyCount} {replyCount === 1 ? 'reply' : 'replies'} &middot; {participantCount}{' '}
+          {participantCount === 1 ? 'person' : 'people'}
         </span>
       </div>
       <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>

@@ -98,9 +98,7 @@ describe('InteractionRouter', () => {
     })
 
     it('should allow chaining', () => {
-      const result = router
-        .on('action_1', jest.fn())
-        .on('action_2', jest.fn())
+      const result = router.on('action_1', jest.fn()).on('action_2', jest.fn())
 
       expect(result).toBe(router)
     })
@@ -203,7 +201,9 @@ describe('InteractionRouter', () => {
     })
 
     it('should route form submit to handler', async () => {
-      const handler = jest.fn().mockResolvedValue({ type: 'ephemeral', message: { text: 'Submitted' } })
+      const handler = jest
+        .fn()
+        .mockResolvedValue({ type: 'ephemeral', message: { text: 'Submitted' } })
       router.onFormSubmit('contact_form', handler)
 
       const interaction = createFormInteraction('contact_form', [
@@ -219,9 +219,7 @@ describe('InteractionRouter', () => {
       const handler = jest.fn().mockResolvedValue(undefined)
       router.onSelectChange('color_select', handler)
 
-      const interaction = createSelectInteraction('color_select', [
-        { label: 'Red', value: 'red' },
-      ])
+      const interaction = createSelectInteraction('color_select', [{ label: 'Red', value: 'red' }])
       await router.route(interaction)
 
       expect(handler).toHaveBeenCalled()
@@ -324,9 +322,12 @@ describe('InteractionRouter', () => {
     it('should timeout slow handlers', async () => {
       jest.useFakeTimers()
 
-      const slowHandler = jest.fn().mockImplementation(() => new Promise(() => {
-        // Never resolves
-      }))
+      const slowHandler = jest.fn().mockImplementation(
+        () =>
+          new Promise(() => {
+            // Never resolves
+          })
+      )
 
       const fastRouter = new InteractionRouter({ timeout: 1000 })
       fastRouter.on('slow_action', slowHandler)
@@ -467,9 +468,7 @@ describe('InteractionBuilder', () => {
         { name: 'agree', value: true, type: 'checkbox' as const },
       ]
 
-      const int = interaction()
-        .userId('user_1')
-        .formSubmit('contact_form', fields)
+      const int = interaction().userId('user_1').formSubmit('contact_form', fields)
 
       expect(int.type).toBe('form_submit')
       expect(int.formId).toBe('contact_form')
@@ -484,8 +483,7 @@ describe('InteractionBuilder', () => {
         { label: 'Blue', value: 'blue' },
       ]
 
-      const int = interaction()
-        .selectChange('color_picker', options, 'block_2')
+      const int = interaction().selectChange('color_picker', options, 'block_2')
 
       expect(int.type).toBe('select_change')
       expect(int.actionId).toBe('color_picker')
@@ -496,8 +494,7 @@ describe('InteractionBuilder', () => {
 
   describe('messageAction', () => {
     it('should create message action interaction', () => {
-      const int = interaction()
-        .messageAction('pin_message', 'Message text', '123456.789')
+      const int = interaction().messageAction('pin_message', 'Message text', '123456.789')
 
       expect(int.type).toBe('message_action')
       expect(int.actionId).toBe('pin_message')
@@ -615,10 +612,7 @@ describe('Middleware Factories', () => {
       await middleware(ctx, jest.fn().mockResolvedValue(undefined))
 
       expect(logger).toHaveBeenCalledTimes(2)
-      expect(logger).toHaveBeenCalledWith(
-        expect.stringContaining('Received'),
-        expect.any(Object)
-      )
+      expect(logger).toHaveBeenCalledWith(expect.stringContaining('Received'), expect.any(Object))
     })
   })
 

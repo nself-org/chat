@@ -16,10 +16,7 @@ import { cn } from '@/lib/utils'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  CHANNEL_TEMPLATES,
-  type ChannelTemplate,
-} from '@/lib/channels/channel-templates'
+import { CHANNEL_TEMPLATES, type ChannelTemplate } from '@/lib/channels/channel-templates'
 
 // ============================================================================
 // Types
@@ -87,7 +84,7 @@ export function TemplateSelector({
             >
               <Icon className="h-4 w-4" />
               {template.name}
-              {isSelected && <Check className="h-3 w-3 ml-1" />}
+              {isSelected && <Check className="ml-1 h-3 w-3" />}
             </Button>
           )
         })}
@@ -107,15 +104,15 @@ export function TemplateSelector({
               key={template.id}
               onClick={() => handleSelect(template)}
               className={cn(
-                'w-full flex items-center gap-3 p-3 rounded-lg border transition-colors text-left',
+                'flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors',
                 'hover:bg-accent',
-                isSelected && 'border-primary bg-primary/5'
+                isSelected && 'bg-primary/5 border-primary'
               )}
             >
-              <div className="p-2 rounded-md bg-muted">
+              <div className="rounded-md bg-muted p-2">
                 <Icon className="h-5 w-5" />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="font-medium">{template.name}</span>
                   {template.type === 'private' && (
@@ -123,9 +120,7 @@ export function TemplateSelector({
                   )}
                 </div>
                 {showDescriptions && (
-                  <p className="text-sm text-muted-foreground truncate">
-                    {template.description}
-                  </p>
+                  <p className="truncate text-sm text-muted-foreground">{template.description}</p>
                 )}
               </div>
               {isSelected ? (
@@ -142,7 +137,7 @@ export function TemplateSelector({
 
   // Default: grid variant
   return (
-    <div className={cn('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4', className)}>
+    <div className={cn('grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3', className)}>
       {CHANNEL_TEMPLATES.map((template) => {
         const Icon = getTemplateIcon(template.icon)
         const isSelected = selectedTemplateId === template.id
@@ -158,28 +153,26 @@ export function TemplateSelector({
           >
             <CardHeader className="pb-2">
               <div className="flex items-start justify-between">
-                <div className="p-2 rounded-lg bg-muted">
+                <div className="rounded-lg bg-muted p-2">
                   <Icon className="h-5 w-5" />
                 </div>
                 {isSelected && (
-                  <div className="p-1 rounded-full bg-primary text-primary-foreground">
+                  <div className="text-primary-foreground rounded-full bg-primary p-1">
                     <Check className="h-4 w-4" />
                   </div>
                 )}
               </div>
-              <CardTitle className="text-base flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-base">
                 {template.name}
                 {template.type === 'private' && (
                   <Badge variant="outline" className="text-xs">
-                    <Lock className="h-3 w-3 mr-1" />
+                    <Lock className="mr-1 h-3 w-3" />
                     Private
                   </Badge>
                 )}
               </CardTitle>
               {showDescriptions && (
-                <CardDescription className="text-sm">
-                  {template.description}
-                </CardDescription>
+                <CardDescription className="text-sm">{template.description}</CardDescription>
               )}
             </CardHeader>
             {showFeatures && (

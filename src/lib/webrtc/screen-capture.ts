@@ -172,7 +172,9 @@ export class ScreenCaptureManager {
       const constraints = this.buildConstraints(options)
 
       // Request display media
-      const stream = await navigator.mediaDevices.getDisplayMedia(constraints as MediaStreamConstraints)
+      const stream = await navigator.mediaDevices.getDisplayMedia(
+        constraints as MediaStreamConstraints
+      )
 
       // Generate unique ID
       const id = `screen-${++this.streamCounter}-${Date.now()}`
@@ -386,9 +388,7 @@ export function supportsSystemAudio(): boolean {
 /**
  * Get optimal quality based on network conditions
  */
-export function getOptimalQuality(
-  downlinkMbps: number = 10
-): ScreenCaptureQuality {
+export function getOptimalQuality(downlinkMbps: number = 10): ScreenCaptureQuality {
   if (downlinkMbps >= 20) return '4k'
   if (downlinkMbps >= 10) return '1080p'
   if (downlinkMbps >= 5) return '720p'

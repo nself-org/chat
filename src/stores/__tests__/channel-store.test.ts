@@ -778,10 +778,7 @@ describe('Channel Store', () => {
       it('should remove a member from channel', () => {
         const channel = createTestChannel({
           id: 'channel-1',
-          members: [
-            createTestMember({ userId: 'user-1' }),
-            createTestMember({ userId: 'user-2' }),
-          ],
+          members: [createTestMember({ userId: 'user-1' }), createTestMember({ userId: 'user-2' })],
           memberCount: 2,
         })
 

@@ -133,7 +133,7 @@ export function RoleEditor({
 
         <form onSubmit={handleSubmit}>
           {/* User Info */}
-          <div className="mb-6 flex items-center gap-3 rounded-lg border bg-muted/50 p-3">
+          <div className="bg-muted/50 mb-6 flex items-center gap-3 rounded-lg border p-3">
             <Avatar className="h-10 w-10">
               <AvatarImage src={user.avatarUrl} alt={user.displayName} />
               <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
@@ -142,10 +142,7 @@ export function RoleEditor({
               <div className="font-medium">{user.displayName}</div>
               <div className="text-sm text-muted-foreground">@{user.username}</div>
             </div>
-            <Badge
-              variant="outline"
-              className={cn('capitalize', roleColors[currentUserRoleName])}
-            >
+            <Badge variant="outline" className={cn('capitalize', roleColors[currentUserRoleName])}>
               Current: {user.role.name}
             </Badge>
           </div>
@@ -178,7 +175,7 @@ export function RoleEditor({
                         key={role.id}
                         className={cn(
                           'flex items-start space-x-3 rounded-lg border p-4 transition-colors',
-                          isSelected && 'border-primary bg-primary/5',
+                          isSelected && 'bg-primary/5 border-primary',
                           !isAssignable && !isCurrentRole && 'opacity-50',
                           roleColors[roleName]
                         )}
@@ -194,7 +191,7 @@ export function RoleEditor({
                             htmlFor={role.id}
                             className={cn(
                               'flex cursor-pointer items-center gap-2 font-medium',
-                              (!isAssignable && !isCurrentRole) && 'cursor-not-allowed'
+                              !isAssignable && !isCurrentRole && 'cursor-not-allowed'
                             )}
                           >
                             {role.name}
@@ -226,7 +223,7 @@ export function RoleEditor({
               {selectedRole && selectedRole.permissions && selectedRole.permissions.length > 0 && (
                 <div className="space-y-2">
                   <Label>Permissions</Label>
-                  <div className="rounded-lg border bg-muted/50 p-3">
+                  <div className="bg-muted/50 rounded-lg border p-3">
                     <div className="flex flex-wrap gap-2">
                       {selectedRole.permissions.map((permission, index) => (
                         <Badge key={index} variant="outline" className="text-xs">
@@ -253,7 +250,7 @@ export function RoleEditor({
 
               {/* Error */}
               {error && (
-                <div className="flex items-center gap-2 rounded-lg border border-destructive/50 bg-destructive/10 p-3 text-sm text-destructive">
+                <div className="border-destructive/50 bg-destructive/10 flex items-center gap-2 rounded-lg border p-3 text-sm text-destructive">
                   <AlertTriangle className="h-4 w-4" />
                   {error}
                 </div>

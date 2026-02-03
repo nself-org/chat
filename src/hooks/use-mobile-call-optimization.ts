@@ -7,7 +7,12 @@
 
 import { useEffect, useCallback, useRef } from 'react'
 import { useCallStore } from '@/stores/call-store'
-import { useBatteryStatus, getRecommendedFrameRate, getRecommendedResolution, shouldDisableVideo } from './use-battery-status'
+import {
+  useBatteryStatus,
+  getRecommendedFrameRate,
+  getRecommendedResolution,
+  shouldDisableVideo,
+} from './use-battery-status'
 import { useMobilePiP } from './use-mobile-pip'
 import { useMobileOrientation } from './use-mobile-orientation'
 // @ts-ignore - Capacitor integration (optional dependency)
@@ -15,6 +20,8 @@ import { callKitManager } from '@/platforms/capacitor/src/native/call-kit'
 // @ts-ignore - VoIP push integration (optional dependency)
 import { voipPushManager } from '@/lib/voip-push'
 import { useToast } from './use-toast'
+
+import { logger } from '@/lib/logger'
 
 // =============================================================================
 // Types
@@ -74,13 +81,8 @@ export function useMobileCallOptimization(
   const setLocalVideoEnabled = useCallStore((state) => state.setLocalVideoEnabled)
 
   const { toast } = useToast()
-  const {
-    batteryLevel,
-    isCharging,
-    isLowBattery,
-    isCriticalBattery,
-    suggestedVideoQuality,
-  } = useBatteryStatus()
+  const { batteryLevel, isCharging, isLowBattery, isCriticalBattery, suggestedVideoQuality } =
+    useBatteryStatus()
   const { enablePiP, disablePiP, isPiPSupported, isPiPActive } = useMobilePiP()
   const { lockPortrait, unlockOrientation, isOrientationLockSupported } = useMobileOrientation()
 
@@ -109,9 +111,8 @@ export function useMobileCallOptimization(
         await voipPushManager.initialize()
         voipPushInitializedRef.current = true
       }
-
     } catch (error) {
-      console.error('[MobileCallOptimization] Initialization failed:', error)
+      logger.error('[MobileCallOptimization] Initialization failed:', error)
       throw error
     }
   }, [enableNativeCallUI, enableVoIPPush])
@@ -137,9 +138,8 @@ export function useMobileCallOptimization(
         await voipPushManager.unregister()
         voipPushInitializedRef.current = false
       }
-
     } catch (error) {
-      console.error('[MobileCallOptimization] Cleanup failed:', error)
+      logger.error('[MobileCallOptimization] Cleanup failed:', error)
     }
   }, [isPiPActive, disablePiP, isOrientationLockSupported, unlockOrientation])
 
@@ -184,7 +184,7 @@ export function useMobileCallOptimization(
         })
       }
     } catch (error) {
-      console.error('[MobileCallOptimization] Failed to optimize call quality:', error)
+      logger.error('[MobileCallOptimization] Failed to optimize call quality:', error)
     }
   }, [activeCall, batteryLevel, isCharging, setLocalVideoEnabled, toast])
 
@@ -225,9 +225,8 @@ export function useMobileCallOptimization(
         title: 'Battery Saving Mode Enabled',
         description: 'Video disabled and audio optimized to extend battery life.',
       })
-
     } catch (error) {
-      console.error('[MobileCallOptimization] Failed to enable battery saving mode:', error)
+      logger.error('[MobileCallOptimization] Failed to enable battery saving mode:', error)
     }
   }, [activeCall, setLocalVideoEnabled, toast])
 
@@ -254,9 +253,8 @@ export function useMobileCallOptimization(
         title: 'Battery Saving Mode Disabled',
         description: 'Call quality restored to normal.',
       })
-
     } catch (error) {
-      console.error('[MobileCallOptimization] Failed to disable battery saving mode:', error)
+      logger.error('[MobileCallOptimization] Failed to disable battery saving mode:', error)
     }
   }, [activeCall, toast])
 
@@ -359,7 +357,7 @@ export function useMobileCallOptimization(
           }
         }
       } catch (error) {
-        console.error('[MobileCallOptimization] Failed to report call to CallKit:', error)
+        logger.error('[MobileCallOptimization] Failed to report call to CallKit:', error)
       }
     }
 

@@ -17,6 +17,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Configuration
 // ============================================================================
@@ -218,9 +220,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     allMetrics.push(...getBusinessMetrics())
 
     // Add timestamp
-    allMetrics.push(
-      `# Generated at ${new Date().toISOString()}`
-    )
+    allMetrics.push(`# Generated at ${new Date().toISOString()}`)
 
     const body = allMetrics.join('\n\n') + '\n'
 
@@ -232,7 +232,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       },
     })
   } catch (error) {
-    console.error('Metrics error:', error)
+    logger.error('Metrics error:', error)
 
     return new NextResponse('# Error generating metrics\n', {
       status: 500,

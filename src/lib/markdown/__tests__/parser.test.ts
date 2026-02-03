@@ -441,9 +441,9 @@ describe('Markdown Parser', () => {
 - List item 1
 - List item 2
 
-\`\`\`javascript
+```javascript
 const x = 1;
-\`\`\`
+```
 `
       const json = markdownToJson(original)
       const result = jsonToMarkdown(json)

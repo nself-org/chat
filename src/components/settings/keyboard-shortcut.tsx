@@ -9,24 +9,12 @@ interface KeyboardShortcutProps {
   className?: string
 }
 
-export function KeyboardShortcut({
-  keys,
-  label,
-  description,
-  className,
-}: KeyboardShortcutProps) {
+export function KeyboardShortcut({ keys, label, description, className }: KeyboardShortcutProps) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between py-3 border-b last:border-0',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between border-b py-3 last:border-0', className)}>
       <div className="space-y-0.5">
         <p className="text-sm font-medium">{label}</p>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
       <div className="flex items-center gap-1">
         {keys.map((key, index) => (
@@ -35,15 +23,12 @@ export function KeyboardShortcut({
               className={cn(
                 'inline-flex h-7 min-w-[28px] items-center justify-center rounded-md border bg-muted px-2 font-mono text-xs font-medium text-muted-foreground',
                 // Special styling for modifier keys
-                ['Cmd', 'Ctrl', 'Alt', 'Shift', 'Meta'].includes(key) &&
-                  'bg-muted/70'
+                ['Cmd', 'Ctrl', 'Alt', 'Shift', 'Meta'].includes(key) && 'bg-muted/70'
               )}
             >
               {formatKey(key)}
             </kbd>
-            {index < keys.length - 1 && (
-              <span className="text-muted-foreground">+</span>
-            )}
+            {index < keys.length - 1 && <span className="text-muted-foreground">+</span>}
           </span>
         ))}
       </div>
@@ -98,9 +83,7 @@ export function KeyboardShortcutGroup({
     <div className={cn('space-y-3', className)}>
       <div className="space-y-1">
         <h3 className="text-sm font-semibold">{title}</h3>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
       <div className="rounded-lg border bg-card p-3">{children}</div>
     </div>

@@ -5,9 +5,11 @@
  * with breadcrumbs for debugging.
  */
 
-import { AnalyticsEvent } from './event-schema';
-import { getAnalyticsClient, TrackedEvent } from './analytics-client';
-import { PrivacyFilter } from './privacy-filter';
+import { AnalyticsEvent } from './event-schema'
+import { getAnalyticsClient, TrackedEvent } from './analytics-client'
+import { PrivacyFilter } from './privacy-filter'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -41,56 +43,56 @@ export enum BreadcrumbType {
  * Breadcrumb entry
  */
 export interface Breadcrumb {
-  type: BreadcrumbType;
-  category: string;
-  message: string;
-  data?: Record<string, unknown>;
-  timestamp: number;
-  level?: ErrorSeverity;
+  type: BreadcrumbType
+  category: string
+  message: string
+  data?: Record<string, unknown>
+  timestamp: number
+  level?: ErrorSeverity
 }
 
 /**
  * Captured error data
  */
 export interface CapturedError {
-  id: string;
-  message: string;
-  name: string;
-  stack?: string;
-  severity: ErrorSeverity;
-  timestamp: number;
-  componentStack?: string;
-  tags: Record<string, string>;
-  context: Record<string, unknown>;
-  breadcrumbs: Breadcrumb[];
-  url?: string;
-  userAgent?: string;
-  handled: boolean;
+  id: string
+  message: string
+  name: string
+  stack?: string
+  severity: ErrorSeverity
+  timestamp: number
+  componentStack?: string
+  tags: Record<string, string>
+  context: Record<string, unknown>
+  breadcrumbs: Breadcrumb[]
+  url?: string
+  userAgent?: string
+  handled: boolean
 }
 
 /**
  * Error tracker configuration
  */
 export interface ErrorTrackerConfig {
-  enabled: boolean;
-  captureUnhandledErrors: boolean;
-  captureUnhandledRejections: boolean;
-  captureConsoleErrors: boolean;
-  maxBreadcrumbs: number;
-  maxStackFrames: number;
-  ignorePatterns: RegExp[];
-  beforeCapture?: (error: CapturedError) => CapturedError | null;
-  onCapture?: (error: CapturedError) => void;
+  enabled: boolean
+  captureUnhandledErrors: boolean
+  captureUnhandledRejections: boolean
+  captureConsoleErrors: boolean
+  maxBreadcrumbs: number
+  maxStackFrames: number
+  ignorePatterns: RegExp[]
+  beforeCapture?: (error: CapturedError) => CapturedError | null
+  onCapture?: (error: CapturedError) => void
 }
 
 /**
  * Error context for additional information
  */
 export interface ErrorContext {
-  componentName?: string;
-  actionName?: string;
-  userId?: string;
-  extra?: Record<string, unknown>;
+  componentName?: string
+  actionName?: string
+  userId?: string
+  extra?: Record<string, unknown>
 }
 
 // ============================================================================
@@ -110,26 +112,26 @@ const DEFAULT_CONFIG: ErrorTrackerConfig = {
     /ChunkLoadError/i,
     /Network request failed/i,
   ],
-};
+}
 
 // ============================================================================
 // Error Tracker Class
 // ============================================================================
 
 export class ErrorTracker {
-  private config: ErrorTrackerConfig;
-  private breadcrumbs: Breadcrumb[] = [];
-  private tags: Record<string, string> = {};
-  private context: Record<string, unknown> = {};
-  private privacyFilter: PrivacyFilter;
-  private initialized: boolean = false;
-  private errorHandler: ((event: ErrorEvent) => void) | null = null;
-  private rejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null;
-  private originalConsoleError: typeof console.error | null = null;
+  private config: ErrorTrackerConfig
+  private breadcrumbs: Breadcrumb[] = []
+  private tags: Record<string, string> = {}
+  private context: Record<string, unknown> = {}
+  private privacyFilter: PrivacyFilter
+  private initialized: boolean = false
+  private errorHandler: ((event: ErrorEvent) => void) | null = null
+  private rejectionHandler: ((event: PromiseRejectionEvent) => void) | null = null
+  private originalConsoleError: typeof console.error | null = null
 
   constructor(config: Partial<ErrorTrackerConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
-    this.privacyFilter = new PrivacyFilter();
+    this.config = { ...DEFAULT_CONFIG, ...config }
+    this.privacyFilter = new PrivacyFilter()
   }
 
   /**
@@ -137,26 +139,26 @@ export class ErrorTracker {
    */
   initialize(): void {
     if (this.initialized || !this.config.enabled) {
-      return;
+      return
     }
 
     if (typeof window === 'undefined') {
-      return;
+      return
     }
 
     if (this.config.captureUnhandledErrors) {
-      this.setupErrorHandler();
+      this.setupErrorHandler()
     }
 
     if (this.config.captureUnhandledRejections) {
-      this.setupRejectionHandler();
+      this.setupRejectionHandler()
     }
 
     if (this.config.captureConsoleErrors) {
-      this.setupConsoleCapture();
+      this.setupConsoleCapture()
     }
 
-    this.initialized = true;
+    this.initialized = true
   }
 
   /**
@@ -164,25 +166,25 @@ export class ErrorTracker {
    */
   destroy(): void {
     if (typeof window === 'undefined') {
-      return;
+      return
     }
 
     if (this.errorHandler) {
-      window.removeEventListener('error', this.errorHandler);
-      this.errorHandler = null;
+      window.removeEventListener('error', this.errorHandler)
+      this.errorHandler = null
     }
 
     if (this.rejectionHandler) {
-      window.removeEventListener('unhandledrejection', this.rejectionHandler);
-      this.rejectionHandler = null;
+      window.removeEventListener('unhandledrejection', this.rejectionHandler)
+      this.rejectionHandler = null
     }
 
     if (this.originalConsoleError) {
-      console.error = this.originalConsoleError;
-      this.originalConsoleError = null;
+      console.error = this.originalConsoleError
+      this.originalConsoleError = null
     }
 
-    this.initialized = false;
+    this.initialized = false
   }
 
   /**
@@ -194,26 +196,23 @@ export class ErrorTracker {
     severity: ErrorSeverity = ErrorSeverity.ERROR
   ): TrackedEvent | null {
     if (!this.config.enabled) {
-      return null;
+      return null
     }
 
-    const captured = this.createCapturedError(error, context, severity, true);
+    const captured = this.createCapturedError(error, context, severity, true)
 
     if (!captured) {
-      return null;
+      return null
     }
 
-    return this.trackError(captured);
+    return this.trackError(captured)
   }
 
   /**
    * Captures an exception (alias for captureError)
    */
-  captureException(
-    error: Error,
-    context: ErrorContext = {}
-  ): TrackedEvent | null {
-    return this.captureError(error, context, ErrorSeverity.ERROR);
+  captureException(error: Error, context: ErrorContext = {}): TrackedEvent | null {
+    return this.captureError(error, context, ErrorSeverity.ERROR)
   }
 
   /**
@@ -224,7 +223,7 @@ export class ErrorTracker {
     severity: ErrorSeverity = ErrorSeverity.INFO,
     context: ErrorContext = {}
   ): TrackedEvent | null {
-    return this.captureError(message, context, severity);
+    return this.captureError(message, context, severity)
   }
 
   /**
@@ -235,13 +234,13 @@ export class ErrorTracker {
       ...breadcrumb,
       timestamp: Date.now(),
       data: breadcrumb.data ? this.privacyFilter.filter(breadcrumb.data) : undefined,
-    };
+    }
 
-    this.breadcrumbs.push(crumb);
+    this.breadcrumbs.push(crumb)
 
     // Trim to max breadcrumbs
     if (this.breadcrumbs.length > this.config.maxBreadcrumbs) {
-      this.breadcrumbs = this.breadcrumbs.slice(-this.config.maxBreadcrumbs);
+      this.breadcrumbs = this.breadcrumbs.slice(-this.config.maxBreadcrumbs)
     }
   }
 
@@ -254,25 +253,20 @@ export class ErrorTracker {
       category: 'navigation',
       message: `Navigated from ${from} to ${to}`,
       data: { from, to },
-    });
+    })
   }
 
   /**
    * Adds an HTTP breadcrumb
    */
-  addHttpBreadcrumb(
-    method: string,
-    url: string,
-    statusCode?: number,
-    duration?: number
-  ): void {
+  addHttpBreadcrumb(method: string, url: string, statusCode?: number, duration?: number): void {
     this.addBreadcrumb({
       type: BreadcrumbType.HTTP,
       category: 'http',
       message: `${method} ${url}`,
       data: { method, url, statusCode, duration },
       level: statusCode && statusCode >= 400 ? ErrorSeverity.ERROR : ErrorSeverity.INFO,
-    });
+    })
   }
 
   /**
@@ -284,51 +278,47 @@ export class ErrorTracker {
       category: 'user',
       message: action,
       data,
-    });
+    })
   }
 
   /**
    * Adds a UI event breadcrumb
    */
-  addUIBreadcrumb(
-    element: string,
-    action: string,
-    data?: Record<string, unknown>
-  ): void {
+  addUIBreadcrumb(element: string, action: string, data?: Record<string, unknown>): void {
     this.addBreadcrumb({
       type: BreadcrumbType.UI,
       category: 'ui',
       message: `${action} on ${element}`,
       data: { element, action, ...data },
-    });
+    })
   }
 
   /**
    * Sets a tag
    */
   setTag(key: string, value: string): void {
-    this.tags[key] = value;
+    this.tags[key] = value
   }
 
   /**
    * Sets multiple tags
    */
   setTags(tags: Record<string, string>): void {
-    this.tags = { ...this.tags, ...tags };
+    this.tags = { ...this.tags, ...tags }
   }
 
   /**
    * Clears a tag
    */
   clearTag(key: string): void {
-    delete this.tags[key];
+    delete this.tags[key]
   }
 
   /**
    * Sets extra context
    */
   setContext(key: string, value: unknown): void {
-    this.context[key] = this.privacyFilter.filter(value);
+    this.context[key] = this.privacyFilter.filter(value)
   }
 
   /**
@@ -339,35 +329,35 @@ export class ErrorTracker {
       id: user.id,
       email: user.email ? this.privacyFilter.filter({ email: user.email }).email : undefined,
       name: user.name,
-    });
+    })
   }
 
   /**
    * Clears user context
    */
   clearUser(): void {
-    delete this.context.user;
+    delete this.context.user
   }
 
   /**
    * Gets current breadcrumbs
    */
   getBreadcrumbs(): Breadcrumb[] {
-    return [...this.breadcrumbs];
+    return [...this.breadcrumbs]
   }
 
   /**
    * Clears breadcrumbs
    */
   clearBreadcrumbs(): void {
-    this.breadcrumbs = [];
+    this.breadcrumbs = []
   }
 
   /**
    * Gets current tags
    */
   getTags(): Record<string, string> {
-    return { ...this.tags };
+    return { ...this.tags }
   }
 
   /**
@@ -375,54 +365,48 @@ export class ErrorTracker {
    */
   getContext(): Record<string, unknown> {
     // Return deep copy to prevent mutations
-    return JSON.parse(JSON.stringify(this.context));
+    return JSON.parse(JSON.stringify(this.context))
   }
 
   /**
    * Resets all state
    */
   reset(): void {
-    this.breadcrumbs = [];
-    this.tags = {};
-    this.context = {};
+    this.breadcrumbs = []
+    this.tags = {}
+    this.context = {}
   }
 
   /**
    * Wraps a function to capture errors
    */
-  wrap<T extends (...args: unknown[]) => unknown>(
-    fn: T,
-    context?: ErrorContext
-  ): T {
+  wrap<T extends (...args: unknown[]) => unknown>(fn: T, context?: ErrorContext): T {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
+    const self = this
     return function (this: unknown, ...args: unknown[]) {
       try {
-        return fn.apply(this, args);
+        return fn.apply(this, args)
       } catch (error) {
-        self.captureError(error as Error, context);
-        throw error;
+        self.captureError(error as Error, context)
+        throw error
       }
-    } as T;
+    } as T
   }
 
   /**
    * Wraps an async function to capture errors
    */
-  wrapAsync<T extends (...args: unknown[]) => Promise<unknown>>(
-    fn: T,
-    context?: ErrorContext
-  ): T {
+  wrapAsync<T extends (...args: unknown[]) => Promise<unknown>>(fn: T, context?: ErrorContext): T {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
+    const self = this
     return async function (this: unknown, ...args: unknown[]) {
       try {
-        return await fn.apply(this, args);
+        return await fn.apply(this, args)
       } catch (error) {
-        self.captureError(error as Error, context);
-        throw error;
+        self.captureError(error as Error, context)
+        throw error
       }
-    } as T;
+    } as T
   }
 
   // ==========================================================================
@@ -431,26 +415,24 @@ export class ErrorTracker {
 
   private setupErrorHandler(): void {
     this.errorHandler = (event: ErrorEvent) => {
-      const error = event.error || new Error(event.message);
-      this.captureUnhandledError(error, false);
-    };
-    window.addEventListener('error', this.errorHandler);
+      const error = event.error || new Error(event.message)
+      this.captureUnhandledError(error, false)
+    }
+    window.addEventListener('error', this.errorHandler)
   }
 
   private setupRejectionHandler(): void {
     this.rejectionHandler = (event: PromiseRejectionEvent) => {
-      const error = event.reason instanceof Error
-        ? event.reason
-        : new Error(String(event.reason));
-      this.captureUnhandledError(error, false);
-    };
-    window.addEventListener('unhandledrejection', this.rejectionHandler);
+      const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason))
+      this.captureUnhandledError(error, false)
+    }
+    window.addEventListener('unhandledrejection', this.rejectionHandler)
   }
 
   private setupConsoleCapture(): void {
-    this.originalConsoleError = console.error;
+    this.originalConsoleError = console.error
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    const self = this;
+    const self = this
 
     console.error = function (...args: unknown[]) {
       self.addBreadcrumb({
@@ -458,28 +440,28 @@ export class ErrorTracker {
         category: 'console',
         message: args.map((a) => String(a)).join(' '),
         level: ErrorSeverity.ERROR,
-      });
-      self.originalConsoleError?.apply(console, args);
-    };
+      })
+      self.originalConsoleError?.apply(console, args)
+    }
   }
 
   private captureUnhandledError(error: Error, handled: boolean): TrackedEvent | null {
     // Check ignore patterns
     if (this.shouldIgnoreError(error)) {
-      return null;
+      return null
     }
 
-    const captured = this.createCapturedError(error, {}, ErrorSeverity.ERROR, handled);
+    const captured = this.createCapturedError(error, {}, ErrorSeverity.ERROR, handled)
     if (!captured) {
-      return null;
+      return null
     }
 
-    return this.trackError(captured);
+    return this.trackError(captured)
   }
 
   private shouldIgnoreError(error: Error): boolean {
-    const message = error.message || String(error);
-    return this.config.ignorePatterns.some((pattern) => pattern.test(message));
+    const message = error.message || String(error)
+    return this.config.ignorePatterns.some((pattern) => pattern.test(message))
   }
 
   private createCapturedError(
@@ -488,7 +470,7 @@ export class ErrorTracker {
     severity: ErrorSeverity,
     handled: boolean
   ): CapturedError | null {
-    const errorObj = typeof error === 'string' ? new Error(error) : error;
+    const errorObj = typeof error === 'string' ? new Error(error) : error
 
     let captured: CapturedError = {
       id: this.generateErrorId(),
@@ -508,18 +490,18 @@ export class ErrorTracker {
       url: typeof window !== 'undefined' ? window.location.href : undefined,
       userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : undefined,
       handled,
-    };
+    }
 
     // Apply beforeCapture hook
     if (this.config.beforeCapture) {
-      const modified = this.config.beforeCapture(captured);
+      const modified = this.config.beforeCapture(captured)
       if (!modified) {
-        return null;
+        return null
       }
-      captured = modified;
+      captured = modified
     }
 
-    return captured;
+    return captured
   }
 
   private trackError(captured: CapturedError): TrackedEvent | null {
@@ -530,10 +512,10 @@ export class ErrorTracker {
       message: captured.message,
       data: { errorId: captured.id, name: captured.name },
       level: captured.severity,
-    });
+    })
 
     // Invoke callback
-    this.config.onCapture?.(captured);
+    this.config.onCapture?.(captured)
 
     // Track via analytics
     return getAnalyticsClient().track(AnalyticsEvent.ERROR_OCCURRED, {
@@ -549,27 +531,25 @@ export class ErrorTracker {
         handled: captured.handled,
         breadcrumbCount: captured.breadcrumbs.length,
       },
-    });
+    })
   }
 
   private processStackTrace(stack?: string): string | undefined {
     if (!stack) {
-      return undefined;
+      return undefined
     }
 
-    const lines = stack.split('\n');
-    const filtered = lines.slice(0, this.config.maxStackFrames);
+    const lines = stack.split('\n')
+    const filtered = lines.slice(0, this.config.maxStackFrames)
 
     // Filter out sensitive file paths
-    return filtered
-      .map((line) => line.replace(/\/Users\/[^/]+\//g, '/~/'))
-      .join('\n');
+    return filtered.map((line) => line.replace(/\/Users\/[^/]+\//g, '/~/')).join('\n')
   }
 
   private generateErrorId(): string {
-    const timestamp = Date.now().toString(36);
-    const random = Math.random().toString(36).substring(2, 9);
-    return `err_${timestamp}_${random}`;
+    const timestamp = Date.now().toString(36)
+    const random = Math.random().toString(36).substring(2, 9)
+    return `err_${timestamp}_${random}`
   }
 }
 
@@ -577,16 +557,16 @@ export class ErrorTracker {
 // Singleton Instance
 // ============================================================================
 
-let errorTrackerInstance: ErrorTracker | null = null;
+let errorTrackerInstance: ErrorTracker | null = null
 
 /**
  * Gets or creates the error tracker singleton
  */
 export function getErrorTracker(config?: Partial<ErrorTrackerConfig>): ErrorTracker {
   if (!errorTrackerInstance) {
-    errorTrackerInstance = new ErrorTracker(config);
+    errorTrackerInstance = new ErrorTracker(config)
   }
-  return errorTrackerInstance;
+  return errorTrackerInstance
 }
 
 /**
@@ -594,8 +574,8 @@ export function getErrorTracker(config?: Partial<ErrorTrackerConfig>): ErrorTrac
  */
 export function resetErrorTracker(): void {
   if (errorTrackerInstance) {
-    errorTrackerInstance.destroy();
-    errorTrackerInstance = null;
+    errorTrackerInstance.destroy()
+    errorTrackerInstance = null
   }
 }
 
@@ -611,17 +591,14 @@ export function captureError(
   context?: ErrorContext,
   severity?: ErrorSeverity
 ): TrackedEvent | null {
-  return getErrorTracker().captureError(error, context, severity);
+  return getErrorTracker().captureError(error, context, severity)
 }
 
 /**
  * Captures an exception
  */
-export function captureException(
-  error: Error,
-  context?: ErrorContext
-): TrackedEvent | null {
-  return getErrorTracker().captureException(error, context);
+export function captureException(error: Error, context?: ErrorContext): TrackedEvent | null {
+  return getErrorTracker().captureException(error, context)
 }
 
 /**
@@ -632,28 +609,28 @@ export function captureMessage(
   severity?: ErrorSeverity,
   context?: ErrorContext
 ): TrackedEvent | null {
-  return getErrorTracker().captureMessage(message, severity, context);
+  return getErrorTracker().captureMessage(message, severity, context)
 }
 
 /**
  * Adds a breadcrumb
  */
 export function addBreadcrumb(breadcrumb: Omit<Breadcrumb, 'timestamp'>): void {
-  getErrorTracker().addBreadcrumb(breadcrumb);
+  getErrorTracker().addBreadcrumb(breadcrumb)
 }
 
 /**
  * Sets error context
  */
 export function setErrorContext(key: string, value: unknown): void {
-  getErrorTracker().setContext(key, value);
+  getErrorTracker().setContext(key, value)
 }
 
 /**
  * Sets error tags
  */
 export function setErrorTags(tags: Record<string, string>): void {
-  getErrorTracker().setTags(tags);
+  getErrorTracker().setTags(tags)
 }
 
 /**
@@ -663,7 +640,7 @@ export function wrapFunction<T extends (...args: unknown[]) => unknown>(
   fn: T,
   context?: ErrorContext
 ): T {
-  return getErrorTracker().wrap(fn, context);
+  return getErrorTracker().wrap(fn, context)
 }
 
 /**
@@ -673,5 +650,5 @@ export function wrapAsyncFunction<T extends (...args: unknown[]) => Promise<unkn
   fn: T,
   context?: ErrorContext
 ): T {
-  return getErrorTracker().wrapAsync(fn, context);
+  return getErrorTracker().wrapAsync(fn, context)
 }

@@ -7,6 +7,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCache } from '@/lib/redis-cache'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -151,7 +153,7 @@ export async function GET(request: NextRequest) {
       data: maskedConfig,
     })
   } catch (error) {
-    console.error('Error getting AI config:', error)
+    logger.error('Error getting AI config:', error)
     return NextResponse.json(
       {
         success: false,
@@ -193,7 +195,7 @@ export async function POST(request: NextRequest) {
       message: 'AI configuration updated successfully',
     })
   } catch (error) {
-    console.error('Error updating AI config:', error)
+    logger.error('Error updating AI config:', error)
     return NextResponse.json(
       {
         success: false,

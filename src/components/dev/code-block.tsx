@@ -40,8 +40,10 @@ const languageColors: Record<string, string> = {
 
 function highlightCode(code: string, language: string): string {
   // Keywords for different languages
-  const jsKeywords = /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|class|extends|import|export|from|default|async|await|try|catch|finally|throw|new|this|typeof|instanceof|in|of|null|undefined|true|false)\b/g
-  const typeKeywords = /\b(string|number|boolean|void|any|never|unknown|interface|type|enum|namespace|module|declare|as|is)\b/g
+  const jsKeywords =
+    /\b(const|let|var|function|return|if|else|for|while|do|switch|case|break|continue|class|extends|import|export|from|default|async|await|try|catch|finally|throw|new|this|typeof|instanceof|in|of|null|undefined|true|false)\b/g
+  const typeKeywords =
+    /\b(string|number|boolean|void|any|never|unknown|interface|type|enum|namespace|module|declare|as|is)\b/g
 
   let highlighted = code
     // Escape HTML
@@ -55,7 +57,10 @@ function highlightCode(code: string, language: string): string {
       .replace(/(\/\/.*$)/gm, '<span class="text-muted-foreground italic">$1</span>')
       .replace(/(\/\*[\s\S]*?\*\/)/g, '<span class="text-muted-foreground italic">$1</span>')
       // Strings
-      .replace(/(&apos;[^&apos;]*&apos;|&quot;[^&quot;]*&quot;|`[^`]*`)/g, '<span class="text-green-400">$1</span>')
+      .replace(
+        /(&apos;[^&apos;]*&apos;|&quot;[^&quot;]*&quot;|`[^`]*`)/g,
+        '<span class="text-green-400">$1</span>'
+      )
       .replace(/('[^']*'|"[^"]*"|`[^`]*`)/g, '<span class="text-green-400">$1</span>')
       // Keywords
       .replace(jsKeywords, '<span class="text-pink-400 font-medium">$1</span>')
@@ -78,7 +83,10 @@ function highlightCode(code: string, language: string): string {
       // Comments
       .replace(/(#.*$)/gm, '<span class="text-muted-foreground italic">$1</span>')
       // Commands
-      .replace(/^(\s*)(npm|yarn|pnpm|npx|cd|mkdir|rm|cp|mv|git|nself|docker|node)\b/gm, '$1<span class="text-green-400 font-medium">$2</span>')
+      .replace(
+        /^(\s*)(npm|yarn|pnpm|npx|cd|mkdir|rm|cp|mv|git|nself|docker|node)\b/gm,
+        '$1<span class="text-green-400 font-medium">$2</span>'
+      )
       // Flags
       .replace(/(\s)(--?[\w-]+)/g, '$1<span class="text-cyan-400">$2</span>')
   }
@@ -115,15 +123,11 @@ export function CodeBlock({
       {/* Header */}
       <div className="flex items-center justify-between border-b px-4 py-2">
         <div className="flex items-center gap-2">
-          {filename && (
-            <span className="text-xs font-mono text-muted-foreground">
-              {filename}
-            </span>
-          )}
+          {filename && <span className="font-mono text-xs text-muted-foreground">{filename}</span>}
           <span
             className={cn(
               'rounded-md border px-2 py-0.5 text-[10px] font-medium uppercase',
-              languageColors[language] || 'bg-muted text-muted-foreground border-border'
+              languageColors[language] || 'border-border bg-muted text-muted-foreground'
             )}
           >
             {language}
@@ -158,18 +162,15 @@ export function CodeBlock({
                 key={index}
                 className={cn(
                   'flex',
-                  highlightLines.includes(index + 1) && 'bg-yellow-500/10 -mx-4 px-4'
+                  highlightLines.includes(index + 1) && '-mx-4 bg-yellow-500/10 px-4'
                 )}
               >
                 {showLineNumbers && (
-                  <span className="mr-4 w-8 flex-shrink-0 select-none text-right text-muted-foreground/50">
+                  <span className="text-muted-foreground/50 mr-4 w-8 flex-shrink-0 select-none text-right">
                     {index + 1}
                   </span>
                 )}
-                <span
-                  className="flex-1"
-                  dangerouslySetInnerHTML={{ __html: line || '&nbsp;' }}
-                />
+                <span className="flex-1" dangerouslySetInnerHTML={{ __html: line || '&nbsp;' }} />
               </div>
             ))}
           </code>
@@ -192,10 +193,7 @@ export function InlineCode({
 }) {
   return (
     <code
-      className={cn(
-        'rounded-md bg-muted px-1.5 py-0.5 font-mono text-sm text-pink-500',
-        className
-      )}
+      className={cn('rounded-md bg-muted px-1.5 py-0.5 font-mono text-sm text-pink-500', className)}
     >
       {children}
     </code>

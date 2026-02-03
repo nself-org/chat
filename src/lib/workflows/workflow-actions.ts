@@ -235,7 +235,9 @@ export function validateActionConfig(config: ActionConfig): string[] {
         errors.push('Variable name is required')
       }
       if (!isValidVariableName(config.variableName || '')) {
-        errors.push('Variable name must start with a letter and contain only letters, numbers, and underscores')
+        errors.push(
+          'Variable name must start with a letter and contain only letters, numbers, and underscores'
+        )
       }
       break
 
@@ -387,10 +389,7 @@ export async function executeAction(
 // Action Handlers
 // ============================================================================
 
-function executeSetVariable(
-  config: ActionConfig,
-  context: WorkflowContext
-): ActionResult {
+function executeSetVariable(config: ActionConfig, context: WorkflowContext): ActionResult {
   const { variableName, variableValue } = config
 
   if (!variableName) {
@@ -412,10 +411,7 @@ function executeSetVariable(
   }
 }
 
-function executeUpdateUser(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeUpdateUser(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetUserId } = config
 
   if (!targetUserId) {
@@ -432,10 +428,7 @@ function executeUpdateUser(
   }
 }
 
-function executeUpdateChannel(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeUpdateChannel(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetChannelId } = config
 
   if (!targetChannelId) {
@@ -452,10 +445,7 @@ function executeUpdateChannel(
   }
 }
 
-function executeAddReaction(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeAddReaction(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetMessageId, reactionEmoji } = config
 
   if (!targetMessageId || !reactionEmoji) {
@@ -473,10 +463,7 @@ function executeAddReaction(
   }
 }
 
-function executeRemoveReaction(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeRemoveReaction(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetMessageId, reactionEmoji } = config
 
   if (!targetMessageId || !reactionEmoji) {
@@ -494,10 +481,7 @@ function executeRemoveReaction(
   }
 }
 
-function executePinMessage(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executePinMessage(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetMessageId } = config
 
   if (!targetMessageId) {
@@ -514,10 +498,7 @@ function executePinMessage(
   }
 }
 
-function executeUnpinMessage(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeUnpinMessage(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetMessageId } = config
 
   if (!targetMessageId) {
@@ -534,10 +515,7 @@ function executeUnpinMessage(
   }
 }
 
-function executeArchiveChannel(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeArchiveChannel(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetChannelId } = config
 
   if (!targetChannelId) {
@@ -554,10 +532,7 @@ function executeArchiveChannel(
   }
 }
 
-function executeInviteUser(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeInviteUser(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetChannelId, inviteUserIds } = config
 
   if (!targetChannelId || !inviteUserIds || inviteUserIds.length === 0) {
@@ -575,10 +550,7 @@ function executeInviteUser(
   }
 }
 
-function executeRemoveUser(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeRemoveUser(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetChannelId, targetUserId } = config
 
   if (!targetChannelId || !targetUserId) {
@@ -596,10 +568,7 @@ function executeRemoveUser(
   }
 }
 
-function executeSetTopic(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeSetTopic(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { targetChannelId, topic } = config
 
   if (!targetChannelId) {
@@ -617,10 +586,7 @@ function executeSetTopic(
   }
 }
 
-function executeCreateChannel(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeCreateChannel(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { channelName, channelType } = config
 
   if (!channelName) {
@@ -641,14 +607,10 @@ function executeCreateChannel(
   }
 }
 
-function executeLog(
-  config: ActionConfig,
-  context: WorkflowContext
-): ActionResult {
+function executeLog(config: ActionConfig, context: WorkflowContext): ActionResult {
   const { logLevel, logMessage } = config
 
   const processedMessage = processVariableValue(logMessage, context)
-
 
   return {
     success: true,
@@ -660,10 +622,7 @@ function executeLog(
   }
 }
 
-function executeNotify(
-  config: ActionConfig,
-  context: WorkflowContext
-): ActionResult {
+function executeNotify(config: ActionConfig, context: WorkflowContext): ActionResult {
   const { notificationTitle, notificationBody } = config
 
   const processedTitle = processVariableValue(notificationTitle, context)
@@ -680,10 +639,7 @@ function executeNotify(
   }
 }
 
-function executeCustom(
-  config: ActionConfig,
-  _context: WorkflowContext
-): ActionResult {
+function executeCustom(config: ActionConfig, _context: WorkflowContext): ActionResult {
   const { customAction, customPayload } = config
 
   if (!customAction) {
@@ -709,10 +665,7 @@ function executeCustom(
  * Process a value that might contain variable references
  * Variables are referenced using {{variableName}} syntax
  */
-function processVariableValue(
-  value: unknown,
-  context: WorkflowContext
-): unknown {
+function processVariableValue(value: unknown, context: WorkflowContext): unknown {
   if (typeof value !== 'string') {
     return value
   }
@@ -812,7 +765,10 @@ export function getActionsByCategory(categoryId: string): ActionType[] {
 /**
  * Get all action templates grouped by category
  */
-export function getActionTemplatesByCategory(): Record<string, Array<StepTemplate & { actionType: ActionType }>> {
+export function getActionTemplatesByCategory(): Record<
+  string,
+  Array<StepTemplate & { actionType: ActionType }>
+> {
   const result: Record<string, Array<StepTemplate & { actionType: ActionType }>> = {}
 
   for (const category of actionCategories) {

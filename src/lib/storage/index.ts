@@ -15,10 +15,10 @@
  *
  * // Upload a file
  * const result = await uploadFileWithProgress(file, {
- *   onProgress: (p) => console.log(`${p.percentage}%`),
+ *   onProgress: (p) => // console.log(`${p.percentage}%`),
  * })
  *
- * console.log('Uploaded to:', result.url)
+ * // console.log('Uploaded to:', result.url)
  * ```
  */
 
@@ -51,9 +51,4 @@ export {
   ALL_ALLOWED_MIME_TYPES,
 } from './upload'
 
-export type {
-  UploadOptions,
-  UploadProgress,
-  UploadResult,
-  UploadError,
-} from './upload'
+export type { UploadOptions, UploadProgress, UploadResult, UploadError } from './upload'

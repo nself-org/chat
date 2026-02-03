@@ -4,6 +4,8 @@
  * API Documentation: https://developers.google.com/tenor/guides/quickstart
  */
 
+import { logger } from '@/lib/logger'
+
 const TENOR_API_BASE = 'https://tenor.googleapis.com/v2'
 
 export interface TenorGif {
@@ -243,7 +245,7 @@ export class TenorClient {
       await fetch(url)
     } catch (error) {
       // Non-critical - just log the error
-      console.error('Failed to register Tenor share:', error)
+      logger.error('Failed to register Tenor share:', error)
     }
   }
 

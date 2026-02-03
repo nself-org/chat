@@ -1,12 +1,7 @@
 'use client'
 
 import { useCallback, useMemo } from 'react'
-import {
-  useQuery,
-  useMutation,
-  useSubscription,
-  type ApolloError,
-} from '@apollo/client'
+import { useQuery, useMutation, useSubscription, type ApolloError } from '@apollo/client'
 import { useAuth } from '@/contexts/auth-context'
 import {
   GET_MESSAGES,
@@ -233,8 +228,7 @@ export function useMessages({
           fields: {
             nchat_messages(existingMessages = [], { readField, toReference }) {
               const exists = existingMessages.some(
-                (msgRef: { __ref: string }) =>
-                  readField('id', msgRef) === newMessage.id
+                (msgRef: { __ref: string }) => readField('id', msgRef) === newMessage.id
               )
               if (exists) return existingMessages
 
@@ -285,10 +279,7 @@ export function useMessages({
 
         return {
           ...fetchMoreResult,
-          nchat_messages: [
-            ...prev.nchat_messages,
-            ...fetchMoreResult.nchat_messages,
-          ],
+          nchat_messages: [...prev.nchat_messages, ...fetchMoreResult.nchat_messages],
           nchat_messages_aggregate: fetchMoreResult.nchat_messages_aggregate,
         }
       },
@@ -311,10 +302,7 @@ export function useMessages({
 
         return {
           ...fetchMoreResult,
-          nchat_messages: [
-            ...fetchMoreResult.nchat_messages,
-            ...prev.nchat_messages,
-          ],
+          nchat_messages: [...fetchMoreResult.nchat_messages, ...prev.nchat_messages],
           nchat_messages_aggregate: prev.nchat_messages_aggregate,
         }
       },
@@ -435,8 +423,7 @@ export function useSendMessage(): UseSendMessageReturn {
               fields: {
                 nchat_messages(existingMessages = [], { readField, toReference }) {
                   const exists = existingMessages.some(
-                    (msgRef: { __ref: string }) =>
-                      readField('id', msgRef) === newMessage.id
+                    (msgRef: { __ref: string }) => readField('id', msgRef) === newMessage.id
                   )
                   if (exists) return existingMessages
 
@@ -520,8 +507,7 @@ export function useDeleteMessage(): UseDeleteMessageReturn {
             fields: {
               nchat_messages(existingMessages = [], { readField }) {
                 return existingMessages.filter(
-                  (msgRef: { __ref: string }) =>
-                    readField('id', msgRef) !== messageId
+                  (msgRef: { __ref: string }) => readField('id', msgRef) !== messageId
                 )
               },
             },
@@ -569,10 +555,8 @@ export function useDeleteMessage(): UseDeleteMessageReturn {
  * Pin/unpin messages
  */
 export function usePinMessage(): UsePinMessageReturn {
-  const [pinMutation, { loading: pinLoading, error: pinError }] =
-    useMutation(PIN_MESSAGE)
-  const [unpinMutation, { loading: unpinLoading, error: unpinError }] =
-    useMutation(UNPIN_MESSAGE)
+  const [pinMutation, { loading: pinLoading, error: pinError }] = useMutation(PIN_MESSAGE)
+  const [unpinMutation, { loading: unpinLoading, error: unpinError }] = useMutation(UNPIN_MESSAGE)
 
   const pinMessage = useCallback(
     async (messageId: string): Promise<boolean> => {

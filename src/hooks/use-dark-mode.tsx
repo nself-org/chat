@@ -58,11 +58,7 @@ const MEDIA_QUERY = '(prefers-color-scheme: dark)'
  * ```
  */
 export function useDarkMode(options: UseDarkModeOptions = {}): UseDarkModeReturn {
-  const {
-    defaultValue = 'system',
-    storageKey = STORAGE_KEY,
-    onChange,
-  } = options
+  const { defaultValue = 'system', storageKey = STORAGE_KEY, onChange } = options
 
   // Get system preference
   const [systemPreference, setSystemPreference] = useState<'light' | 'dark'>(() => {
@@ -71,10 +67,7 @@ export function useDarkMode(options: UseDarkModeOptions = {}): UseDarkModeReturn
   })
 
   // Get user preference (with localStorage)
-  const [colorScheme, setStoredColorScheme] = useLocalStorage<ColorScheme>(
-    storageKey,
-    defaultValue
-  )
+  const [colorScheme, setStoredColorScheme] = useLocalStorage<ColorScheme>(storageKey, defaultValue)
 
   // Calculate effective dark mode state
   const isDark = colorScheme === 'dark' || (colorScheme === 'system' && systemPreference === 'dark')
@@ -174,11 +167,7 @@ export interface DarkModeProviderProps {
 export function DarkModeProvider({ children, options }: DarkModeProviderProps) {
   const darkMode = useDarkMode(options)
 
-  return (
-    <DarkModeContext.Provider value={darkMode}>
-      {children}
-    </DarkModeContext.Provider>
-  )
+  return <DarkModeContext.Provider value={darkMode}>{children}</DarkModeContext.Provider>
 }
 
 /**

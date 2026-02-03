@@ -13,6 +13,7 @@ Implement backend GraphQL mutations and API endpoints for all Direct Messaging f
 ## Affected Components
 
 ### DM Creation and Management
+
 - [ ] `src/components/dm/NewDMModal.tsx:120` - Create DM API
 - [ ] `src/components/dm/GroupDMCreate.tsx:125` - Create group DM API
 - [ ] `src/components/dm/GroupDMName.tsx:50` - Update group name API
@@ -20,16 +21,19 @@ Implement backend GraphQL mutations and API endpoints for all Direct Messaging f
 - [ ] `src/components/dm/GroupDMSettings.tsx:78,90,97` - Group settings APIs
 
 ### Member Management
+
 - [ ] `src/components/dm/GroupDMMembers.tsx:61` - Remove member API
 - [ ] `src/components/dm/GroupDMMembers.tsx:66,71` - Update member role API
 
 ### Notifications and Pins
+
 - [ ] `src/components/dm/DMNotificationSettings.tsx:70,93,99,104` - Notification settings API
 - [ ] `src/components/dm/DMPinned.tsx:55` - Pin/unpin DM API
 
 ## Technical Requirements
 
 1. **GraphQL Mutations Needed:**
+
    ```graphql
    mutation CreateDM($userId: uuid!, $participantIds: [uuid!]!) { ... }
    mutation CreateGroupDM($name: String!, $participantIds: [uuid!]!) { ... }
@@ -75,4 +79,5 @@ Implement backend GraphQL mutations and API endpoints for all Direct Messaging f
 - Loading states during API calls
 
 ## Priority: Medium
+
 Can be deferred to v1.1.0 if needed for v1.0.0 launch.

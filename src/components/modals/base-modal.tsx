@@ -114,18 +114,16 @@ export interface ModalHeaderProps extends React.HTMLAttributes<HTMLDivElement> {
 
 export function ModalHeader({ className, children, ...props }: ModalHeaderProps) {
   return (
-    <div
-      className={cn('flex flex-col space-y-1.5 p-6 pb-0', className)}
-      {...props}
-    >
+    <div className={cn('flex flex-col space-y-1.5 p-6 pb-0', className)} {...props}>
       {children}
     </div>
   )
 }
 
 // Modal Title
-export interface ModalTitleProps
-  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title> {}
+export interface ModalTitleProps extends React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Title
+> {}
 
 export const ModalTitle = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Title>,
@@ -140,8 +138,9 @@ export const ModalTitle = React.forwardRef<
 ModalTitle.displayName = 'ModalTitle'
 
 // Modal Description
-export interface ModalDescriptionProps
-  extends React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description> {}
+export interface ModalDescriptionProps extends React.ComponentPropsWithoutRef<
+  typeof DialogPrimitive.Description
+> {}
 
 export const ModalDescription = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Description>,
@@ -176,10 +175,7 @@ export interface ModalFooterProps extends React.HTMLAttributes<HTMLDivElement> {
 export function ModalFooter({ className, children, ...props }: ModalFooterProps) {
   return (
     <div
-      className={cn(
-        'flex flex-col-reverse gap-2 p-6 pt-0 sm:flex-row sm:justify-end',
-        className
-      )}
+      className={cn('flex flex-col-reverse gap-2 p-6 pt-0 sm:flex-row sm:justify-end', className)}
       {...props}
     >
       {children}

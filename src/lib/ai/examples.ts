@@ -30,7 +30,7 @@ export async function example1_BasicSummarization() {
     },
     {
       id: '3',
-      content: 'Great! I\'ll review the PR when it\'s ready.',
+      content: "Great! I'll review the PR when it's ready.",
       userId: 'user1',
       userName: 'Alice',
       createdAt: new Date('2025-01-31T10:10:00Z'),
@@ -44,7 +44,7 @@ export async function example1_BasicSummarization() {
     style: 'brief',
   })
 
-  console.log('Brief Summary:', summary)
+// REMOVED: console.log('Brief Summary:', summary)
   // Output: "Discussion about fixing an authentication bug before release,
   // with Bob volunteering to work on it and Alice agreeing to review."
 }
@@ -60,7 +60,7 @@ export async function example2_ChannelDigest() {
 
   const digest = await summarizer.generateChannelDigest(messages)
 
-  console.log('Channel Digest:', digest)
+// REMOVED: console.log('Channel Digest:', digest)
   /* Output:
   {
     summary: "Main discussion topics included...",
@@ -91,7 +91,7 @@ export async function example3_ThreadSummary() {
 
   const threadSummary = await summarizer.summarizeThread(threadMessages)
 
-  console.log('Thread Summary:', threadSummary)
+// REMOVED: console.log('Thread Summary:', threadSummary)
   /* Output:
   {
     summary: "Thread discussing authentication bug fix strategy...",
@@ -117,7 +117,7 @@ export async function example4_CatchUpSummary() {
 
   const catchUp = await summarizer.generateCatchUpSummary(missedMessages)
 
-  console.log('Catch-Up:', catchUp)
+// REMOVED: console.log('Catch-Up:', catchUp)
   /* Output:
   You missed 23 messages. Here's what happened:
 
@@ -138,15 +138,11 @@ export async function example5_BasicSearch() {
 
   const search = getSmartSearch()
 
-  const results = await search.search(
-    'authentication bug',
-    messages,
-    { limit: 10 }
-  )
+  const results = await search.search('authentication bug', messages, { limit: 10 })
 
-  console.log(`Found ${results.length} results`)
+// REMOVED: console.log(`Found ${results.length} results`)
   results.forEach((result) => {
-    console.log(`- [${result.score.toFixed(2)}] ${result.message.content}`)
+// REMOVED: console.log(`- [${result.score.toFixed(2)}] ${result.message.content}`)
   })
 }
 
@@ -159,31 +155,27 @@ export async function example6_AdvancedSearch() {
 
   const search = getSmartSearch()
 
-  const results = await search.search(
-    'deployment issues',
-    messages,
-    {
-      limit: 20,
-      threshold: 0.7, // Only return results with >70% similarity
-      includeContext: true, // Include surrounding messages
-      contextSize: 2, // 2 messages before/after
-      filters: {
-        channelId: 'engineering',
-        dateFrom: new Date('2025-01-01'),
-        dateTo: new Date('2025-01-31'),
-        hasThread: true, // Only messages with threads
-      },
-      rankBy: 'hybrid', // Balance relevance + recency
-    }
-  )
+  const results = await search.search('deployment issues', messages, {
+    limit: 20,
+    threshold: 0.7, // Only return results with >70% similarity
+    includeContext: true, // Include surrounding messages
+    contextSize: 2, // 2 messages before/after
+    filters: {
+      channelId: 'engineering',
+      dateFrom: new Date('2025-01-01'),
+      dateTo: new Date('2025-01-31'),
+      hasThread: true, // Only messages with threads
+    },
+    rankBy: 'hybrid', // Balance relevance + recency
+  })
 
   results.forEach((result) => {
-    console.log('Message:', result.message.content)
-    console.log('Score:', result.score)
-    console.log('Match Type:', result.matchType)
-    console.log('Highlights:', result.highlights)
-    console.log('Context Before:', result.context?.before)
-    console.log('Context After:', result.context?.after)
+// REMOVED: console.log('Message:', result.message.content)
+// REMOVED: console.log('Score:', result.score)
+// REMOVED: console.log('Match Type:', result.matchType)
+// REMOVED: console.log('Highlights:', result.highlights)
+// REMOVED: console.log('Context Before:', result.context?.before)
+// REMOVED: console.log('Context After:', result.context?.after)
   })
 }
 
@@ -195,21 +187,21 @@ export async function example7_CheckAvailability() {
   const summarizer = getMessageSummarizer()
   const search = getSmartSearch()
 
-  console.log('AI Status:')
-  console.log('- Summarization:', {
-    available: summarizer.available(),
-    provider: summarizer.getProvider(),
-  })
-  console.log('- Search:', {
-    available: search.available(),
-    provider: search.getProvider(),
-    semantic: search.getProvider() !== 'local',
-  })
+// REMOVED: console.log('AI Status:')
+  // REMOVED: console.log('- Summarization:', {
+  //   available: summarizer.available(),
+  //   provider: summarizer.getProvider(),
+  // })
+  // REMOVED: console.log('- Search:', {
+  //   available: search.available(),
+  //   provider: search.getProvider(),
+  //   semantic: search.getProvider() !== 'local',
+  // })
 
   // Or use the status API endpoint
   const response = await fetch('/api/ai/status')
   const status = await response.json()
-  console.log('API Status:', status)
+// REMOVED: console.log('API Status:', status)
 }
 
 // ============================================================================
@@ -300,8 +292,8 @@ export async function example10_APIUsage() {
   })
 
   const summarizeResult = await summarizeResponse.json()
-  console.log('Summary:', summarizeResult.summary)
-  console.log('Provider:', summarizeResult.provider)
+// REMOVED: console.log('Summary:', summarizeResult.summary)
+// REMOVED: console.log('Provider:', summarizeResult.provider)
 
   // Search API
   const searchResponse = await fetch('/api/ai/search', {
@@ -317,14 +309,14 @@ export async function example10_APIUsage() {
   })
 
   const searchResult = await searchResponse.json()
-  console.log('Results:', searchResult.results)
-  console.log('Count:', searchResult.count)
-  console.log('Semantic:', searchResult.isSemanticSearch)
+// REMOVED: console.log('Results:', searchResult.results)
+// REMOVED: console.log('Count:', searchResult.count)
+// REMOVED: console.log('Semantic:', searchResult.isSemanticSearch)
 
   // Status API
   const statusResponse = await fetch('/api/ai/status')
   const status = await statusResponse.json()
-  console.log('AI Status:', status)
+// REMOVED: console.log('AI Status:', status)
 }
 
 // ============================================================================
@@ -336,19 +328,19 @@ export async function example11_ErrorHandling(messages: Message[]) {
 
   try {
     const summary = await summarizer.summarizeMessages(messages)
-    console.log('AI Summary:', summary)
+// REMOVED: console.log('AI Summary:', summary)
   } catch (error) {
     // Automatically falls back to local summarization
     // No need for manual fallback handling
-    console.log('Using fallback summary')
+// REMOVED: console.log('Using fallback summary')
   }
 
   // Check provider to know if using AI or fallback
   const provider = summarizer.getProvider()
   if (provider === 'local') {
-    console.log('Using basic summarization (no API key configured)')
+// REMOVED: console.log('Using basic summarization (no API key configured)')
   } else {
-    console.log(`Using AI provider: ${provider}`)
+// REMOVED: console.log(`Using AI provider: ${provider}`)
   }
 }
 
@@ -361,11 +353,11 @@ export async function example12_CacheManagement() {
 
   // Check cache stats
   const stats = search.getCacheStats()
-  console.log(`Cache: ${stats.size}/${stats.maxSize} entries`)
+// REMOVED: console.log(`Cache: ${stats.size}/${stats.maxSize} entries`)
 
   // Clear cache if needed (e.g., when switching contexts)
   search.clearCache()
-  console.log('Cache cleared')
+// REMOVED: console.log('Cache cleared')
 
   // Cache is automatically managed with LRU eviction
   // Up to 1000 embeddings are cached based on first 100 chars

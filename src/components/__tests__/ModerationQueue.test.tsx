@@ -61,7 +61,7 @@ describe('ModerationQueue Component', () => {
       contentText: 'Third flagged message',
       priority: 'critical',
       status: 'reviewing',
-      nsfwScore: 0.90,
+      nsfwScore: 0.9,
     }),
   ]
 
@@ -130,9 +130,7 @@ describe('ModerationQueue Component', () => {
     render(<ModerationQueue />)
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('/api/moderation/queue')
-      )
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('/api/moderation/queue'))
     })
   })
 
@@ -171,9 +169,7 @@ describe('ModerationQueue Component', () => {
 
     // Should fetch with high priority filter
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.stringContaining('priority=high,critical')
-      )
+      expect(global.fetch).toHaveBeenCalledWith(expect.stringContaining('priority=high,critical'))
     })
   })
 

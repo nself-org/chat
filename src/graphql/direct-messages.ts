@@ -82,16 +82,10 @@ export const GET_OR_CREATE_DM = gql`
         slug: ""
         created_by: $userId1
         participants: {
-          data: [
-            { user_id: $userId1, role: "member" }
-            { user_id: $userId2, role: "member" }
-          ]
+          data: [{ user_id: $userId1, role: "member" }, { user_id: $userId2, role: "member" }]
         }
       }
-      on_conflict: {
-        constraint: nchat_direct_messages_participants_unique
-        update_columns: []
-      }
+      on_conflict: { constraint: nchat_direct_messages_participants_unique, update_columns: [] }
     ) {
       ...DirectMessage
     }
@@ -108,9 +102,7 @@ export const FIND_DM_BY_PARTICIPANTS = gql`
       where: {
         type: { _eq: "direct" }
         status: { _eq: "active" }
-        participants: {
-          user_id: { _in: [$userId1, $userId2] }
-        }
+        participants: { user_id: { _in: [$userId1, $userId2] } }
       }
       limit: 1
     ) {
@@ -126,10 +118,7 @@ export const FIND_DM_BY_PARTICIPANTS = gql`
 export const GET_USER_DMS = gql`
   query GetUserDMs($userId: uuid!) {
     nchat_dm_participants(
-      where: {
-        user_id: { _eq: $userId }
-        dm: { status: { _neq: "deleted" } }
-      }
+      where: { user_id: { _eq: $userId }, dm: { status: { _neq: "deleted" } } }
       order_by: { dm: { last_message_at: desc_nulls_last } }
     ) {
       dm {
@@ -180,11 +169,7 @@ export const CREATE_GROUP_DM = gql`
         avatar_url: $avatarUrl
         created_by: $creatorId
         slug: ""
-        participants: {
-          data: [
-            { user_id: $creatorId, role: "owner" }
-          ]
-        }
+        participants: { data: [{ user_id: $creatorId, role: "owner" }] }
       }
     ) {
       ...DirectMessage
@@ -197,20 +182,10 @@ export const CREATE_GROUP_DM = gql`
  * Update DM
  */
 export const UPDATE_DM = gql`
-  mutation UpdateDM(
-    $dmId: uuid!
-    $name: String
-    $description: String
-    $avatarUrl: String
-  ) {
+  mutation UpdateDM($dmId: uuid!, $name: String, $description: String, $avatarUrl: String) {
     update_nchat_direct_messages_by_pk(
       pk_columns: { id: $dmId }
-      _set: {
-        name: $name
-        description: $description
-        avatar_url: $avatarUrl
-        updated_at: "now()"
-      }
+      _set: { name: $name, description: $description, avatar_url: $avatarUrl, updated_at: "now()" }
     ) {
       ...DirectMessage
     }
@@ -225,11 +200,7 @@ export const ARCHIVE_DM = gql`
   mutation ArchiveDM($dmId: uuid!, $userId: uuid!) {
     update_nchat_direct_messages_by_pk(
       pk_columns: { id: $dmId }
-      _set: {
-        status: "archived"
-        archived_at: "now()"
-        archived_by: $userId
-      }
+      _set: { status: "archived", archived_at: "now()", archived_by: $userId }
     ) {
       id
       status
@@ -243,20 +214,10 @@ export const ARCHIVE_DM = gql`
  * Mark DM as read
  */
 export const MARK_DM_AS_READ = gql`
-  mutation MarkDMAsRead(
-    $dmId: uuid!
-    $userId: uuid!
-    $lastMessageId: uuid
-  ) {
+  mutation MarkDMAsRead($dmId: uuid!, $userId: uuid!, $lastMessageId: uuid) {
     update_nchat_dm_participants(
-      where: {
-        dm_id: { _eq: $dmId }
-        user_id: { _eq: $userId }
-      }
-      _set: {
-        last_read_at: "now()"
-        last_read_message_id: $lastMessageId
-      }
+      where: { dm_id: { _eq: $dmId }, user_id: { _eq: $userId } }
+      _set: { last_read_at: "now()", last_read_message_id: $lastMessageId }
     ) {
       affected_rows
       returning {
@@ -280,15 +241,8 @@ export const UPDATE_DM_NOTIFICATIONS = gql`
     $mutedUntil: timestamptz
   ) {
     update_nchat_dm_participants(
-      where: {
-        dm_id: { _eq: $dmId }
-        user_id: { _eq: $userId }
-      }
-      _set: {
-        notification_setting: $setting
-        is_muted: $isMuted
-        muted_until: $mutedUntil
-      }
+      where: { dm_id: { _eq: $dmId }, user_id: { _eq: $userId } }
+      _set: { notification_setting: $setting, is_muted: $isMuted, muted_until: $mutedUntil }
     ) {
       affected_rows
       returning {
@@ -323,10 +277,7 @@ export const DM_SUBSCRIPTION = gql`
 export const USER_DMS_SUBSCRIPTION = gql`
   subscription UserDMsSubscription($userId: uuid!) {
     nchat_dm_participants(
-      where: {
-        user_id: { _eq: $userId }
-        dm: { status: { _neq: "deleted" } }
-      }
+      where: { user_id: { _eq: $userId }, dm: { status: { _neq: "deleted" } } }
       order_by: { dm: { last_message_at: desc_nulls_last } }
     ) {
       dm {

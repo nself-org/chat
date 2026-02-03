@@ -292,12 +292,10 @@ export function BotTemplates({ onInstall, onPreview }: BotTemplatesProps) {
 
   // Filter templates
   const filteredTemplates = TEMPLATES.filter((template) => {
-    const matchesSearch = template.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase()) ||
+    const matchesSearch =
+      template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       template.description.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory =
-      selectedCategory === 'all' || template.category === selectedCategory
+    const matchesCategory = selectedCategory === 'all' || template.category === selectedCategory
     return matchesSearch && matchesCategory
   })
 
@@ -321,18 +319,14 @@ export function BotTemplates({ onInstall, onPreview }: BotTemplatesProps) {
       intermediate: 'secondary',
       advanced: 'destructive',
     } as const
-    return (
-      <Badge variant={variants[difficulty as keyof typeof variants]}>
-        {difficulty}
-      </Badge>
-    )
+    return <Badge variant={variants[difficulty as keyof typeof variants]}>{difficulty}</Badge>
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold flex items-center gap-2">
+        <h2 className="flex items-center gap-2 text-2xl font-bold">
           <Sparkles className="h-6 w-6" />
           Bot Templates
         </h2>
@@ -376,7 +370,7 @@ export function BotTemplates({ onInstall, onPreview }: BotTemplatesProps) {
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
                       <Icon className="h-5 w-5 text-primary" />
                     </div>
                     <div>
@@ -389,9 +383,7 @@ export function BotTemplates({ onInstall, onPreview }: BotTemplatesProps) {
                 </div>
               </CardHeader>
               <CardContent className="flex-1">
-                <p className="text-sm text-muted-foreground">
-                  {template.description}
-                </p>
+                <p className="text-sm text-muted-foreground">{template.description}</p>
                 <div className="mt-4 space-y-2">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Download className="h-3 w-3" />
@@ -412,10 +404,7 @@ export function BotTemplates({ onInstall, onPreview }: BotTemplatesProps) {
                   <Eye className="mr-2 h-4 w-4" />
                   Preview
                 </Button>
-                <Button
-                  className="flex-1"
-                  onClick={() => handleInstall(template)}
-                >
+                <Button className="flex-1" onClick={() => handleInstall(template)}>
                   <Download className="mr-2 h-4 w-4" />
                   Install
                 </Button>
@@ -442,16 +431,14 @@ export function BotTemplates({ onInstall, onPreview }: BotTemplatesProps) {
                   {(() => {
                     const Icon = selectedTemplate.icon
                     return (
-                      <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                      <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-lg">
                         <Icon className="h-6 w-6 text-primary" />
                       </div>
                     )
                   })()}
                   <div>
                     <DialogTitle>{selectedTemplate.name}</DialogTitle>
-                    <DialogDescription>
-                      {selectedTemplate.description}
-                    </DialogDescription>
+                    <DialogDescription>{selectedTemplate.description}</DialogDescription>
                   </div>
                 </div>
               </DialogHeader>
@@ -475,10 +462,7 @@ export function BotTemplates({ onInstall, onPreview }: BotTemplatesProps) {
                     <h4 className="mb-2 font-semibold">Features</h4>
                     <ul className="space-y-1">
                       {selectedTemplate.features.map((feature, i) => (
-                        <li
-                          key={i}
-                          className="flex items-center gap-2 text-sm"
-                        >
+                        <li key={i} className="flex items-center gap-2 text-sm">
                           <CheckCircle className="h-4 w-4 text-green-500" />
                           {feature}
                         </li>
@@ -492,9 +476,7 @@ export function BotTemplates({ onInstall, onPreview }: BotTemplatesProps) {
                     <span className="text-muted-foreground">
                       {selectedTemplate.installCount.toLocaleString()} installs
                     </span>
-                    <span className="text-muted-foreground">
-                      ★ {selectedTemplate.rating}/5
-                    </span>
+                    <span className="text-muted-foreground">★ {selectedTemplate.rating}/5</span>
                   </div>
                 </TabsContent>
 

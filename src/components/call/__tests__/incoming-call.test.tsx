@@ -251,8 +251,14 @@ describe('IncomingCall', () => {
 
     it('should have title attributes for buttons', () => {
       renderIncomingCall()
-      expect(screen.getByRole('button', { name: /accept call/i })).toHaveAttribute('title', 'Accept call')
-      expect(screen.getByRole('button', { name: /decline call/i })).toHaveAttribute('title', 'Decline call')
+      expect(screen.getByRole('button', { name: /accept call/i })).toHaveAttribute(
+        'title',
+        'Accept call'
+      )
+      expect(screen.getByRole('button', { name: /decline call/i })).toHaveAttribute(
+        'title',
+        'Decline call'
+      )
     })
   })
 })
@@ -406,16 +412,8 @@ describe('Multiple Incoming Calls', () => {
   it('should render multiple incoming calls with unique IDs', () => {
     render(
       <>
-        <IncomingCall
-          {...defaultProps}
-          callId="call-1"
-          callerName="Alice"
-        />
-        <IncomingCall
-          {...defaultProps}
-          callId="call-2"
-          callerName="Bob"
-        />
+        <IncomingCall {...defaultProps} callId="call-1" callerName="Alice" />
+        <IncomingCall {...defaultProps} callId="call-2" callerName="Bob" />
       </>
     )
 
@@ -439,8 +437,8 @@ describe('Edge Cases', () => {
   })
 
   it('should handle special characters in name', () => {
-    renderIncomingCall({ callerName: 'John O\'Brien' })
-    expect(screen.getByText('John O\'Brien')).toBeInTheDocument()
+    renderIncomingCall({ callerName: "John O'Brien" })
+    expect(screen.getByText("John O'Brien")).toBeInTheDocument()
     expect(screen.getByText('JO')).toBeInTheDocument()
   })
 

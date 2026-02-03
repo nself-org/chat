@@ -110,9 +110,7 @@ test.describe('Subscription Plans', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for price display
-    const priceElements = page.locator(
-      '[data-testid="plan-price"], .price, text=/\\$[0-9]+/i'
-    )
+    const priceElements = page.locator('[data-testid="plan-price"], .price, text=/\\$[0-9]+/i')
 
     const count = await priceElements.count()
     expect(count).toBeGreaterThan(0)
@@ -140,7 +138,10 @@ test.describe('Subscription Plans', () => {
       '[data-testid="billing-interval"], .interval-toggle, button:has-text("Month"), button:has-text("Year")'
     )
 
-    const isVisible = await intervalToggle.first().isVisible().catch(() => false)
+    const isVisible = await intervalToggle
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
@@ -169,9 +170,11 @@ test.describe('Plan Selection', () => {
     await page.waitForLoadState('networkidle')
 
     // Find and click a plan select button
-    const selectButton = page.locator(
-      'button:has-text("Select"), button:has-text("Upgrade"), button:has-text("Subscribe"), [data-testid="select-plan"]'
-    ).first()
+    const selectButton = page
+      .locator(
+        'button:has-text("Select"), button:has-text("Upgrade"), button:has-text("Subscribe"), [data-testid="select-plan"]'
+      )
+      .first()
 
     if (await selectButton.isVisible()) {
       await selectButton.click()
@@ -204,9 +207,7 @@ test.describe('Plan Selection', () => {
       await page.waitForTimeout(500)
 
       // Comparison should be visible
-      const comparison = page.locator(
-        '[data-testid="plan-comparison"], .comparison, table'
-      )
+      const comparison = page.locator('[data-testid="plan-comparison"], .comparison, table')
 
       const isVisible = await comparison.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -218,18 +219,16 @@ test.describe('Plan Selection', () => {
     await page.waitForLoadState('networkidle')
 
     // Try to select a plan
-    const selectButton = page.locator(
-      'button:has-text("Select"), button:has-text("Upgrade"), [data-testid="select-plan"]'
-    ).first()
+    const selectButton = page
+      .locator('button:has-text("Select"), button:has-text("Upgrade"), [data-testid="select-plan"]')
+      .first()
 
     if (await selectButton.isVisible()) {
       await selectButton.click()
       await page.waitForTimeout(500)
 
       // Look for confirmation message or modal
-      const confirmation = page.locator(
-        '[role="dialog"], .modal, text=/confirm|are you sure/i'
-      )
+      const confirmation = page.locator('[role="dialog"], .modal, text=/confirm|are you sure/i')
 
       // May show confirmation dialog
       const count = await confirmation.count()
@@ -249,9 +248,9 @@ test.describe('Payment Details Entry', () => {
     await page.waitForLoadState('networkidle')
 
     // Select a plan to proceed to payment
-    const selectButton = page.locator(
-      'button:has-text("Select"), button:has-text("Upgrade"), [data-testid="select-plan"]'
-    ).first()
+    const selectButton = page
+      .locator('button:has-text("Select"), button:has-text("Upgrade"), [data-testid="select-plan"]')
+      .first()
 
     if (await selectButton.isVisible()) {
       await selectButton.click()
@@ -265,7 +264,10 @@ test.describe('Payment Details Entry', () => {
       // Should show payment form (or embed Stripe)
       const hasPaymentForm =
         (await cardInput.isVisible().catch(() => false)) ||
-        (await page.locator('iframe[title*="Stripe"], [data-testid="payment-form"]').isVisible().catch(() => false))
+        (await page
+          .locator('iframe[title*="Stripe"], [data-testid="payment-form"]')
+          .isVisible()
+          .catch(() => false))
 
       expect(hasPaymentForm || true).toBe(true)
     }
@@ -339,18 +341,18 @@ test.describe('Payment Details Entry', () => {
     await page.waitForLoadState('networkidle')
 
     // Find payment button and click without filling form
-    const payButton = page.locator(
-      'button:has-text("Pay"), button:has-text("Subscribe"), button:has-text("Confirm"), [data-testid="pay-button"]'
-    ).first()
+    const payButton = page
+      .locator(
+        'button:has-text("Pay"), button:has-text("Subscribe"), button:has-text("Confirm"), [data-testid="pay-button"]'
+      )
+      .first()
 
     if (await payButton.isVisible()) {
       await payButton.click()
       await page.waitForTimeout(500)
 
       // Should show validation error
-      const errorMessage = page.locator(
-        '[role="alert"], .error, text=/required|invalid|error/i'
-      )
+      const errorMessage = page.locator('[role="alert"], .error, text=/required|invalid|error/i')
 
       // Error may appear
       const count = await errorMessage.count()
@@ -369,9 +371,9 @@ test.describe('Payment Processing', () => {
     await page.waitForLoadState('networkidle')
 
     // Select a plan first
-    const selectButton = page.locator(
-      'button:has-text("Select"), button:has-text("Upgrade"), [data-testid="select-plan"]'
-    ).first()
+    const selectButton = page
+      .locator('button:has-text("Select"), button:has-text("Upgrade"), [data-testid="select-plan"]')
+      .first()
 
     if (await selectButton.isVisible()) {
       await selectButton.click()
@@ -405,9 +407,9 @@ test.describe('Payment Processing', () => {
       }
 
       // Submit payment
-      const payButton = page.locator(
-        'button:has-text("Pay"), button:has-text("Subscribe"), [data-testid="pay-button"]'
-      ).first()
+      const payButton = page
+        .locator('button:has-text("Pay"), button:has-text("Subscribe"), [data-testid="pay-button"]')
+        .first()
 
       if (await payButton.isVisible()) {
         await payButton.click()
@@ -421,15 +423,13 @@ test.describe('Payment Processing', () => {
     await page.waitForLoadState('networkidle')
 
     // Find pay button
-    const payButton = page.locator(
-      'button:has-text("Pay"), button:has-text("Subscribe"), [data-testid="pay-button"]'
-    ).first()
+    const payButton = page
+      .locator('button:has-text("Pay"), button:has-text("Subscribe"), [data-testid="pay-button"]')
+      .first()
 
     if (await payButton.isVisible()) {
       // Check for loading indicator
-      const loader = page.locator(
-        '.loading, .spinner, [aria-busy="true"], [data-testid="loading"]'
-      )
+      const loader = page.locator('.loading, .spinner, [aria-busy="true"], [data-testid="loading"]')
 
       // Loader may appear briefly
       const count = await loader.count()
@@ -465,18 +465,16 @@ test.describe('Payment Success/Failure Handling', () => {
     await page.waitForLoadState('networkidle')
 
     // Fill and submit payment form with valid test card
-    const payButton = page.locator(
-      'button:has-text("Pay"), button:has-text("Subscribe"), [data-testid="pay-button"]'
-    ).first()
+    const payButton = page
+      .locator('button:has-text("Pay"), button:has-text("Subscribe"), [data-testid="pay-button"]')
+      .first()
 
     if (await payButton.isVisible()) {
       await payButton.click()
       await page.waitForTimeout(2000)
 
       // Look for success indicator
-      const successMessage = page.locator(
-        'text=/success|completed|received|subscription active/i'
-      )
+      const successMessage = page.locator('text=/success|completed|received|subscription active/i')
 
       // Check if we see success or were redirected
       const isSuccess = await successMessage.isVisible().catch(() => false)
@@ -514,18 +512,16 @@ test.describe('Payment Success/Failure Handling', () => {
         await cvcInput.fill(TEST_PAYMENT_DATA.testCardDeclined.cvc)
       }
 
-      const payButton = page.locator(
-        'button:has-text("Pay"), button:has-text("Subscribe"), [data-testid="pay-button"]'
-      ).first()
+      const payButton = page
+        .locator('button:has-text("Pay"), button:has-text("Subscribe"), [data-testid="pay-button"]')
+        .first()
 
       if (await payButton.isVisible()) {
         await payButton.click()
         await page.waitForTimeout(2000)
 
         // Look for error message
-        const errorMessage = page.locator(
-          '[role="alert"], text=/declined|failed|error|rejected/i'
-        )
+        const errorMessage = page.locator('[role="alert"], text=/declined|failed|error|rejected/i')
 
         const count = await errorMessage.count()
         expect(count).toBeGreaterThanOrEqual(0) // Error may appear
@@ -559,9 +555,7 @@ test.describe('Payment Success/Failure Handling', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for specific error messages
-    const insufficientFundsError = page.locator(
-      'text=/insufficient|funds|balance/i'
-    )
+    const insufficientFundsError = page.locator('text=/insufficient|funds|balance/i')
 
     // May or may not appear depending on payment attempt
     const count = await insufficientFundsError.count()
@@ -576,9 +570,7 @@ test.describe('Payment Success/Failure Handling', () => {
     await page.waitForTimeout(1000)
 
     // Look for connection error
-    const networkError = page.locator(
-      'text=/network|connection|offline|error/i'
-    )
+    const networkError = page.locator('text=/network|connection|offline|error/i')
 
     // May show error message
     const count = await networkError.count()
@@ -612,9 +604,7 @@ test.describe('Billing History', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for invoice items
-    const invoices = page.locator(
-      '[data-testid="invoice-item"], .invoice-item, table tbody tr'
-    )
+    const invoices = page.locator('[data-testid="invoice-item"], .invoice-item, table tbody tr')
 
     // May have invoices
     const count = await invoices.count()
@@ -704,9 +694,7 @@ test.describe('Payment Method Update', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for current card display (last 4 digits)
-    const cardDisplay = page.locator(
-      'text=/\\*\\*\\*\\*.*\\d{4}|Visa|Mastercard|Amex/i'
-    )
+    const cardDisplay = page.locator('text=/\\*\\*\\*\\*.*\\d{4}|Visa|Mastercard|Amex/i')
 
     // May show current payment method
     const count = await cardDisplay.count()
@@ -718,18 +706,18 @@ test.describe('Payment Method Update', () => {
     await page.waitForLoadState('networkidle')
 
     // Click update button
-    const updateButton = page.locator(
-      'button:has-text("Update Payment"), button:has-text("Change Card"), [data-testid="update-payment"]'
-    ).first()
+    const updateButton = page
+      .locator(
+        'button:has-text("Update Payment"), button:has-text("Change Card"), [data-testid="update-payment"]'
+      )
+      .first()
 
     if (await updateButton.isVisible()) {
       await updateButton.click()
       await page.waitForTimeout(500)
 
       // Should show payment form again
-      const paymentForm = page.locator(
-        '[data-testid="payment-form"], input[name*="card"]'
-      )
+      const paymentForm = page.locator('[data-testid="payment-form"], input[name*="card"]')
 
       const isVisible = await paymentForm.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -754,18 +742,18 @@ test.describe('Payment Method Update', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for remove button
-    const removeButton = page.locator(
-      'button:has-text("Remove"), button[aria-label*="delete"], [data-testid="remove-payment"]'
-    ).first()
+    const removeButton = page
+      .locator(
+        'button:has-text("Remove"), button[aria-label*="delete"], [data-testid="remove-payment"]'
+      )
+      .first()
 
     if (await removeButton.isVisible()) {
       await removeButton.click()
       await page.waitForTimeout(500)
 
       // Should show confirmation
-      const confirmation = page.locator(
-        '[role="alertdialog"], text=/confirm/i'
-      )
+      const confirmation = page.locator('[role="alertdialog"], text=/confirm/i')
 
       const isVisible = await confirmation.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -777,18 +765,18 @@ test.describe('Payment Method Update', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for set default button
-    const setDefaultButton = page.locator(
-      'button:has-text("Set Default"), button:has-text("Make Primary"), [data-testid="set-default"]'
-    ).first()
+    const setDefaultButton = page
+      .locator(
+        'button:has-text("Set Default"), button:has-text("Make Primary"), [data-testid="set-default"]'
+      )
+      .first()
 
     if (await setDefaultButton.isVisible()) {
       await setDefaultButton.click()
       await page.waitForTimeout(500)
 
       // Should show success message
-      const success = page.locator(
-        'text=/default|primary|set|success/i'
-      )
+      const success = page.locator('text=/default|primary|set|success/i')
 
       const count = await success.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -819,9 +807,11 @@ test.describe('Subscription Cancellation', () => {
     await page.waitForLoadState('networkidle')
 
     // Click cancel button
-    const cancelButton = page.locator(
-      'button:has-text("Cancel"), button:has-text("Cancel Subscription"), [data-testid="cancel-subscription"]'
-    ).first()
+    const cancelButton = page
+      .locator(
+        'button:has-text("Cancel"), button:has-text("Cancel Subscription"), [data-testid="cancel-subscription"]'
+      )
+      .first()
 
     if (await cancelButton.isVisible()) {
       await cancelButton.click()
@@ -842,18 +832,16 @@ test.describe('Subscription Cancellation', () => {
     await page.waitForLoadState('networkidle')
 
     // Click cancel
-    const cancelButton = page.locator(
-      'button:has-text("Cancel"), [data-testid="cancel-subscription"]'
-    ).first()
+    const cancelButton = page
+      .locator('button:has-text("Cancel"), [data-testid="cancel-subscription"]')
+      .first()
 
     if (await cancelButton.isVisible()) {
       await cancelButton.click()
       await page.waitForTimeout(500)
 
       // Look for reason dropdown
-      const reasonSelect = page.locator(
-        'select, [role="combobox"], text=/reason|why/i'
-      )
+      const reasonSelect = page.locator('select, [role="combobox"], text=/reason|why/i')
 
       // May ask for cancellation reason
       const count = await reasonSelect.count()
@@ -866,18 +854,16 @@ test.describe('Subscription Cancellation', () => {
     await page.waitForLoadState('networkidle')
 
     // Cancel subscription
-    const cancelButton = page.locator(
-      'button:has-text("Cancel"), [data-testid="cancel-subscription"]'
-    ).first()
+    const cancelButton = page
+      .locator('button:has-text("Cancel"), [data-testid="cancel-subscription"]')
+      .first()
 
     if (await cancelButton.isVisible()) {
       await cancelButton.click()
       await page.waitForTimeout(500)
 
       // Look for access end date
-      const endDate = page.locator(
-        'text=/Access ends|Service ends|Until|Cancel at/i'
-      )
+      const endDate = page.locator('text=/Access ends|Service ends|Until|Cancel at/i')
 
       // May show end date
       const count = await endDate.count()
@@ -899,9 +885,7 @@ test.describe('Subscription Cancellation', () => {
       await page.waitForTimeout(500)
 
       // Should show success
-      const success = page.locator(
-        'text=/reactivated|resumed|active/i'
-      )
+      const success = page.locator('text=/reactivated|resumed|active/i')
 
       const count = await success.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -913,18 +897,20 @@ test.describe('Subscription Cancellation', () => {
     await page.waitForLoadState('networkidle')
 
     // Cancel subscription
-    const cancelButton = page.locator(
-      'button:has-text("Cancel"), [data-testid="cancel-subscription"]'
-    ).first()
+    const cancelButton = page
+      .locator('button:has-text("Cancel"), [data-testid="cancel-subscription"]')
+      .first()
 
     if (await cancelButton.isVisible()) {
       await cancelButton.click()
       await page.waitForTimeout(500)
 
       // Look for confirm button
-      const confirmButton = page.locator(
-        'button:has-text("Confirm"), button:has-text("Yes"), [data-testid="confirm-cancel"]'
-      ).first()
+      const confirmButton = page
+        .locator(
+          'button:has-text("Confirm"), button:has-text("Yes"), [data-testid="confirm-cancel"]'
+        )
+        .first()
 
       if (await confirmButton.isVisible()) {
         await confirmButton.click()
@@ -952,9 +938,11 @@ test.describe('Invoice Downloads', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for download button in invoice list
-    const downloadButton = page.locator(
-      'button[aria-label*="download"], button:has-text("Download"), [data-testid="download-invoice"]'
-    ).first()
+    const downloadButton = page
+      .locator(
+        'button[aria-label*="download"], button:has-text("Download"), [data-testid="download-invoice"]'
+      )
+      .first()
 
     const isVisible = await downloadButton.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -968,9 +956,11 @@ test.describe('Invoice Downloads', () => {
     const downloadPromise = page.waitForEvent('download')
 
     // Click download button
-    const downloadButton = page.locator(
-      'button[aria-label*="download"], button:has-text("Download"), [data-testid="download-invoice"]'
-    ).first()
+    const downloadButton = page
+      .locator(
+        'button[aria-label*="download"], button:has-text("Download"), [data-testid="download-invoice"]'
+      )
+      .first()
 
     if (await downloadButton.isVisible()) {
       await downloadButton.click()
@@ -991,18 +981,18 @@ test.describe('Invoice Downloads', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for preview button
-    const previewButton = page.locator(
-      'button:has-text("View"), button:has-text("Preview"), [data-testid="preview-invoice"]'
-    ).first()
+    const previewButton = page
+      .locator(
+        'button:has-text("View"), button:has-text("Preview"), [data-testid="preview-invoice"]'
+      )
+      .first()
 
     if (await previewButton.isVisible()) {
       await previewButton.click()
       await page.waitForTimeout(500)
 
       // Should show invoice preview modal
-      const preview = page.locator(
-        '[role="dialog"], .modal, [data-testid="invoice-preview"]'
-      )
+      const preview = page.locator('[role="dialog"], .modal, [data-testid="invoice-preview"]')
 
       const isVisible = await preview.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -1014,18 +1004,18 @@ test.describe('Invoice Downloads', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for resend button
-    const resendButton = page.locator(
-      'button:has-text("Resend"), button[aria-label*="email"], [data-testid="resend-invoice"]'
-    ).first()
+    const resendButton = page
+      .locator(
+        'button:has-text("Resend"), button[aria-label*="email"], [data-testid="resend-invoice"]'
+      )
+      .first()
 
     if (await resendButton.isVisible()) {
       await resendButton.click()
       await page.waitForTimeout(500)
 
       // Should show confirmation
-      const confirmation = page.locator(
-        'text=/sent|emailed|check your email/i'
-      )
+      const confirmation = page.locator('text=/sent|emailed|check your email/i')
 
       const count = await confirmation.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -1037,9 +1027,7 @@ test.describe('Invoice Downloads', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for status filter
-    const statusFilter = page.locator(
-      '[data-testid="status-filter"], select, [role="combobox"]'
-    )
+    const statusFilter = page.locator('[data-testid="status-filter"], select, [role="combobox"]')
 
     if (await statusFilter.isVisible()) {
       await statusFilter.click()
@@ -1072,9 +1060,7 @@ test.describe('Billing Page Responsive Design', () => {
     await page.waitForLoadState('networkidle')
 
     // Should still show pricing section
-    const plansSection = page.locator(
-      '[data-testid="pricing-section"], section:has-text("Plan")'
-    )
+    const plansSection = page.locator('[data-testid="pricing-section"], section:has-text("Plan")')
 
     const isVisible = await plansSection.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')

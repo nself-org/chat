@@ -129,9 +129,9 @@ export function ConnectionLost({
       )}
     >
       {/* Icon */}
-      <div className="p-3 bg-amber-100 dark:bg-amber-900/30 rounded-full">
+      <div className="rounded-full bg-amber-100 p-3 dark:bg-amber-900/30">
         {isReconnecting ? (
-          <Loader2 className="h-8 w-8 text-amber-600 dark:text-amber-400 animate-spin" />
+          <Loader2 className="h-8 w-8 animate-spin text-amber-600 dark:text-amber-400" />
         ) : (
           <WifiOff className="h-8 w-8 text-amber-600 dark:text-amber-400" />
         )}
@@ -139,29 +139,23 @@ export function ConnectionLost({
 
       {/* Status message */}
       <div>
-        <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100 mb-1">
+        <h3 className="mb-1 text-lg font-semibold text-zinc-900 dark:text-zinc-100">
           {isReconnecting ? 'Reconnecting...' : 'Connection Lost'}
         </h3>
         <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          {isReconnecting ? (
-            'Attempting to restore connection...'
-          ) : hasExhaustedRetries ? (
-            'Unable to reconnect automatically. Please try manually.'
-          ) : countdown > 0 ? (
-            `Reconnecting in ${countdown} second${countdown !== 1 ? 's' : ''}...`
-          ) : (
-            'Real-time updates are temporarily unavailable.'
-          )}
+          {isReconnecting
+            ? 'Attempting to restore connection...'
+            : hasExhaustedRetries
+              ? 'Unable to reconnect automatically. Please try manually.'
+              : countdown > 0
+                ? `Reconnecting in ${countdown} second${countdown !== 1 ? 's' : ''}...`
+                : 'Real-time updates are temporarily unavailable.'}
         </p>
       </div>
 
       {/* Reconnect button */}
       {!isReconnecting && (
-        <Button
-          onClick={handleManualReconnect}
-          variant="outline"
-          className="gap-2"
-        >
+        <Button onClick={handleManualReconnect} variant="outline" className="gap-2">
           <RefreshCw className="h-4 w-4" />
           Reconnect Now
         </Button>
@@ -179,7 +173,7 @@ export function ConnectionLost({
   if (overlay) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-        <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-xl max-w-sm w-full mx-4">
+        <div className="mx-4 w-full max-w-sm rounded-lg bg-white shadow-xl dark:bg-zinc-900">
           {content}
         </div>
       </div>
@@ -212,10 +206,7 @@ export function ConnectionStatusDot({
   }
 
   return (
-    <div
-      className={cn('flex items-center gap-2', className)}
-      title={labels[connectionState]}
-    >
+    <div className={cn('flex items-center gap-2', className)} title={labels[connectionState]}>
       <span
         className={cn(
           'h-2 w-2 rounded-full',
@@ -223,9 +214,7 @@ export function ConnectionStatusDot({
           connectionState === 'reconnecting' && 'animate-pulse'
         )}
       />
-      <span className="text-xs text-zinc-500 dark:text-zinc-400">
-        {labels[connectionState]}
-      </span>
+      <span className="text-xs text-zinc-500 dark:text-zinc-400">{labels[connectionState]}</span>
     </div>
   )
 }

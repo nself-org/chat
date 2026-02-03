@@ -18,6 +18,8 @@ import {
 } from './crypto-primitives'
 import { getIdentityManager } from './identity'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -258,7 +260,7 @@ export class SignedPreKeyManager {
 
       return parsed
     } catch (error) {
-      console.error('Failed to load signed prekey:', error)
+      logger.error('Failed to load signed prekey:', error)
       return null
     }
   }
@@ -316,7 +318,7 @@ export class SignedPreKeyManager {
 
       localStorage.setItem(SIGNED_PREKEY_ARCHIVE_KEY, JSON.stringify(filtered))
     } catch (error) {
-      console.error('Failed to archive prekey:', error)
+      logger.error('Failed to archive prekey:', error)
     }
   }
 
@@ -343,7 +345,7 @@ export class SignedPreKeyManager {
         timestamp: found.timestamp,
       }
     } catch (error) {
-      console.error('Failed to get archived prekey:', error)
+      logger.error('Failed to get archived prekey:', error)
       return null
     }
   }

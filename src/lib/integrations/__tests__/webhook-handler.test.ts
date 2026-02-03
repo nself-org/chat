@@ -35,7 +35,9 @@ const mockCrypto = {
     sign: jest.fn().mockImplementation(async (_algorithm, _key, data) => {
       // Return a predictable mock signature based on input length
       const encoder = new TextEncoder()
-      const input = encoder.encode(data instanceof ArrayBuffer ? '' : new TextDecoder().decode(data))
+      const input = encoder.encode(
+        data instanceof ArrayBuffer ? '' : new TextDecoder().decode(data)
+      )
       // Create a mock signature (not cryptographically secure, just for testing)
       const mockSignature = new Uint8Array(32)
       for (let i = 0; i < 32; i++) {
@@ -374,7 +376,7 @@ describe('WebhookHandlerManager', () => {
       const result = await manager.processWebhook('not json', mockGitHubHeaders)
 
       expect(result.success).toBe(false)
-      expect(result.error).toContain('Invalid');
+      expect(result.error).toContain('Invalid')
     })
 
     it('should return error for no handler', async () => {

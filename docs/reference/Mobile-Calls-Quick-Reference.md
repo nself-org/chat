@@ -335,13 +335,13 @@ console.log('Push token:', pushToken)
 
 ## Platform Differences
 
-| Feature | iOS | Android | Web |
-|---------|-----|---------|-----|
-| CallKit | ✅ Native | ✅ Native | ❌ |
-| PiP | ✅ Native | ✅ Native | ⚠️ Limited |
-| VoIP Push | ✅ APNs | ✅ FCM | ⚠️ Web Push |
-| Background | ✅ Unlimited | ✅ Foreground | ❌ |
-| Orientation Lock | ✅ | ✅ | ⚠️ Limited |
+| Feature          | iOS          | Android       | Web         |
+| ---------------- | ------------ | ------------- | ----------- |
+| CallKit          | ✅ Native    | ✅ Native     | ❌          |
+| PiP              | ✅ Native    | ✅ Native     | ⚠️ Limited  |
+| VoIP Push        | ✅ APNs      | ✅ FCM        | ⚠️ Web Push |
+| Background       | ✅ Unlimited | ✅ Foreground | ❌          |
+| Orientation Lock | ✅           | ✅            | ⚠️ Limited  |
 
 ## Performance Targets
 

@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { SettingsSection } from './settings-section';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { useSettingsStore } from '@/stores/settings-store';
-import { UserX, Search, X, AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useState } from 'react'
+import { SettingsSection } from './settings-section'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { useSettingsStore } from '@/stores/settings-store'
+import { UserX, Search, X, AlertCircle } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,18 +17,18 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/alert-dialog'
 
 interface BlockedUser {
-  id: string;
-  name: string;
-  username: string;
-  avatar?: string;
-  blockedAt: Date;
+  id: string
+  name: string
+  username: string
+  avatar?: string
+  blockedAt: Date
 }
 
 interface BlockedUsersSettingsProps {
-  className?: string;
+  className?: string
 }
 
 // Mock blocked users
@@ -46,41 +46,40 @@ const mockBlockedUsers: BlockedUser[] = [
     avatar: '/avatars/jane.jpg',
     blockedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30),
   },
-];
+]
 
 /**
  * BlockedUsersSettings - Manage blocked users
  */
 export function BlockedUsersSettings({ className }: BlockedUsersSettingsProps) {
-  const { unblockUser } = useSettingsStore();
-  const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>(mockBlockedUsers);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [unblockId, setUnblockId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const { unblockUser } = useSettingsStore()
+  const [blockedUsers, setBlockedUsers] = useState<BlockedUser[]>(mockBlockedUsers)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [unblockId, setUnblockId] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
 
   const filteredUsers = blockedUsers.filter(
     (user) =>
       user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.username.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  )
 
   const handleUnblock = async () => {
-    if (!unblockId) return;
+    if (!unblockId) return
 
-    setLoading(true);
+    setLoading(true)
     try {
-      // TODO: Implement actual unblock API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500))
 
-      unblockUser(unblockId);
-      setBlockedUsers((prev) => prev.filter((u) => u.id !== unblockId));
+      unblockUser(unblockId)
+      setBlockedUsers((prev) => prev.filter((u) => u.id !== unblockId))
     } finally {
-      setLoading(false);
-      setUnblockId(null);
+      setLoading(false)
+      setUnblockId(null)
     }
-  };
+  }
 
-  const userToUnblock = blockedUsers.find((u) => u.id === unblockId);
+  const userToUnblock = blockedUsers.find((u) => u.id === unblockId)
 
   return (
     <SettingsSection
@@ -107,9 +106,7 @@ export function BlockedUsersSettings({ className }: BlockedUsersSettingsProps) {
         {blockedUsers.length === 0 && (
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-12 text-center">
             <UserX className="mb-4 h-12 w-12 text-muted-foreground opacity-50" />
-            <p className="text-sm text-muted-foreground">
-              You have not blocked any users
-            </p>
+            <p className="text-sm text-muted-foreground">You have not blocked any users</p>
           </div>
         )}
 
@@ -143,16 +140,10 @@ export function BlockedUsersSettings({ className }: BlockedUsersSettingsProps) {
                   </Avatar>
                   <div>
                     <p className="font-medium">{user.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      @{user.username}
-                    </p>
+                    <p className="text-sm text-muted-foreground">@{user.username}</p>
                   </div>
                 </div>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setUnblockId(user.id)}
-                >
+                <Button variant="outline" size="sm" onClick={() => setUnblockId(user.id)}>
                   Unblock
                 </Button>
               </div>
@@ -163,8 +154,7 @@ export function BlockedUsersSettings({ className }: BlockedUsersSettingsProps) {
         {/* Info */}
         {blockedUsers.length > 0 && (
           <p className="text-xs text-muted-foreground">
-            Blocked users cannot send you messages, see your online status, or
-            view your profile.
+            Blocked users cannot send you messages, see your online status, or view your profile.
           </p>
         )}
       </div>
@@ -175,8 +165,8 @@ export function BlockedUsersSettings({ className }: BlockedUsersSettingsProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Unblock {userToUnblock?.name}?</AlertDialogTitle>
             <AlertDialogDescription>
-              This user will be able to send you messages and view your profile
-              again. You can always block them again later.
+              This user will be able to send you messages and view your profile again. You can
+              always block them again later.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -188,5 +178,5 @@ export function BlockedUsersSettings({ className }: BlockedUsersSettingsProps) {
         </AlertDialogContent>
       </AlertDialog>
     </SettingsSection>
-  );
+  )
 }

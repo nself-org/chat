@@ -10,7 +10,13 @@ import { useState } from 'react'
 import { Languages, Loader2, Check, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 
@@ -70,14 +76,15 @@ export function MessageTranslator({
     <div className={cn('space-y-2', className)}>
       {/* Translation Result */}
       {translation && !isTranslating && (
-        <div className="relative border-l-2 border-primary pl-3 py-1.5 bg-primary/5 rounded-r">
+        <div className="bg-primary/5 relative rounded-r border-l-2 border-primary py-1.5 pl-3">
           <div className="flex items-start justify-between gap-2">
             <div className="flex-1 space-y-1">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 <Languages className="h-3 w-3" />
                 <span>
                   Translated from{' '}
-                  {LANGUAGES.find(l => l.code === translation.sourceLanguage)?.name || translation.sourceLanguage}
+                  {LANGUAGES.find((l) => l.code === translation.sourceLanguage)?.name ||
+                    translation.sourceLanguage}
                 </span>
               </div>
               <p className="text-sm">{translation.translatedText}</p>
@@ -97,7 +104,7 @@ export function MessageTranslator({
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="text-xs text-primary hover:underline mt-1"
+            className="mt-1 text-xs text-primary hover:underline"
           >
             Show original
           </button>
@@ -115,12 +122,8 @@ export function MessageTranslator({
       {/* Translate Button/Popover */}
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className={cn('h-7 text-xs', translation && 'hidden')}
-          >
-            <Languages className="h-3 w-3 mr-1.5" />
+          <Button variant="ghost" size="sm" className={cn('h-7 text-xs', translation && 'hidden')}>
+            <Languages className="mr-1.5 h-3 w-3" />
             Translate
           </Button>
         </PopoverTrigger>
@@ -154,28 +157,18 @@ export function MessageTranslator({
             )}
 
             <div className="flex justify-end gap-2 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-              >
+              <Button type="button" variant="outline" size="sm" onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
-              <Button
-                type="button"
-                size="sm"
-                onClick={handleTranslate}
-                disabled={isTranslating}
-              >
+              <Button type="button" size="sm" onClick={handleTranslate} disabled={isTranslating}>
                 {isTranslating ? (
                   <>
-                    <Loader2 className="h-3 w-3 mr-1.5 animate-spin" />
+                    <Loader2 className="mr-1.5 h-3 w-3 animate-spin" />
                     Translating...
                   </>
                 ) : (
                   <>
-                    <Check className="h-3 w-3 mr-1.5" />
+                    <Check className="mr-1.5 h-3 w-3" />
                     Translate
                   </>
                 )}

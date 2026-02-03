@@ -280,9 +280,7 @@ test.describe('Bot Templates', () => {
         await page.waitForTimeout(300)
 
         // Look for code preview
-        const codePreview = page.locator(
-          '[data-testid="template-code"], pre, code, .code-preview'
-        )
+        const codePreview = page.locator('[data-testid="template-code"], pre, code, .code-preview')
 
         const isVisible = await codePreview.isVisible().catch(() => false)
         expect(typeof isVisible).toBe('boolean')
@@ -695,9 +693,7 @@ test.describe('Bot Deployment', () => {
         await page.waitForTimeout(300)
 
         // Look for confirmation dialog
-        const confirmDialog = page.locator(
-          '[role="dialog"], [role="alertdialog"], .confirm-dialog'
-        )
+        const confirmDialog = page.locator('[role="dialog"], [role="alertdialog"], .confirm-dialog')
 
         const isVisible = await confirmDialog.isVisible().catch(() => false)
         expect(typeof isVisible).toBe('boolean')
@@ -748,9 +744,7 @@ test.describe('Bot Deployment', () => {
 
     if ((await botItems.count()) > 0) {
       // Look for status badge
-      const statusBadge = botItems
-        .first()
-        .locator('[data-testid="bot-status"], .status, .badge')
+      const statusBadge = botItems.first().locator('[data-testid="bot-status"], .status, .badge')
 
       const isVisible = await statusBadge.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -813,7 +807,9 @@ test.describe('Bot Analytics', () => {
       await botItems.first().click()
       await page.waitForTimeout(500)
 
-      const analyticsTab = page.locator('[data-testid="bot-analytics"], button:has-text("Analytics")')
+      const analyticsTab = page.locator(
+        '[data-testid="bot-analytics"], button:has-text("Analytics")'
+      )
 
       if (await analyticsTab.isVisible()) {
         await analyticsTab.click()
@@ -850,9 +846,7 @@ test.describe('Bot Analytics', () => {
         await page.waitForTimeout(500)
 
         // Look for chart
-        const chart = page.locator(
-          'canvas, svg[class*="chart"], [data-testid="usage-chart"]'
-        )
+        const chart = page.locator('canvas, svg[class*="chart"], [data-testid="usage-chart"]')
 
         const isVisible = await chart.isVisible().catch(() => false)
         expect(typeof isVisible).toBe('boolean')
@@ -904,9 +898,7 @@ test.describe('Bot Analytics', () => {
         await page.waitForTimeout(500)
 
         // Look for activity log
-        const activityLog = page.locator(
-          '[data-testid="activity-log"], .log-list, table'
-        )
+        const activityLog = page.locator('[data-testid="activity-log"], .log-list, table')
 
         const isVisible = await activityLog.isVisible().catch(() => false)
         expect(typeof isVisible).toBe('boolean')
@@ -1071,9 +1063,7 @@ test.describe('Bot Configuration', () => {
         await page.waitForTimeout(500)
 
         // Look for save button
-        const saveButton = page.locator(
-          '[data-testid="save-settings"], button:has-text("Save")'
-        )
+        const saveButton = page.locator('[data-testid="save-settings"], button:has-text("Save")')
 
         if (await saveButton.isVisible()) {
           await saveButton.click()

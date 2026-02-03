@@ -55,9 +55,9 @@ export function useMessageScheduler(
     async (message) => {
       try {
         // Mark as sending in store
-        const storeMessage = useScheduledMessagesStore.getState().getMessage(
-          message.metadata?.scheduledMessageId as string
-        )
+        const storeMessage = useScheduledMessagesStore
+          .getState()
+          .getMessage(message.metadata?.scheduledMessageId as string)
         if (storeMessage) {
           markSending(storeMessage.id)
         }
@@ -265,33 +265,27 @@ export function useScheduledMessagesList(channelId?: string, userId?: string) {
     })
   )
 
-  const pendingCount = useScheduledMessagesStore((state) =>
-    state
-      .getMessages({
+  const pendingCount = useScheduledMessagesStore(
+    (state) =>
+      state.getMessages({
         channelId,
         userId: userId || user?.id,
         status: 'pending',
-      })
-      .length
+      }).length
   )
 
-  const failedCount = useScheduledMessagesStore((state) =>
-    state
-      .getMessages({
+  const failedCount = useScheduledMessagesStore(
+    (state) =>
+      state.getMessages({
         channelId,
         userId: userId || user?.id,
         status: 'failed',
-      })
-      .length
+      }).length
   )
 
-  const upcomingMessages = useScheduledMessagesStore((state) =>
-    state.getUpcomingMessages(60)
-  )
+  const upcomingMessages = useScheduledMessagesStore((state) => state.getUpcomingMessages(60))
 
-  const overdueMessages = useScheduledMessagesStore((state) =>
-    state.getOverdueMessages()
-  )
+  const overdueMessages = useScheduledMessagesStore((state) => state.getOverdueMessages())
 
   return {
     messages: allMessages,

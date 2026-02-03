@@ -12,32 +12,32 @@ Based on the documentation audit, the following 14 screenshots are required for 
 
 ### High Priority (Must Have)
 
-| # | Screen Name | Priority | Status | Location | Purpose |
-|---|------------|----------|--------|----------|---------|
-| 1 | Setup Wizard - Environment Detection & Backend | 🔴 High | ❌ Needed | Getting Started | Show backend auto-detection |
-| 2 | Chat Interface - Main View | 🔴 High | ❌ Needed | Features, User Guide | Core messaging interface |
-| 3 | Multi-Tenant Dashboard | 🔴 High | ❌ Needed | Multi-Tenant Guide | Tenant management interface |
+| #   | Screen Name                                    | Priority | Status    | Location             | Purpose                     |
+| --- | ---------------------------------------------- | -------- | --------- | -------------------- | --------------------------- |
+| 1   | Setup Wizard - Environment Detection & Backend | 🔴 High  | ❌ Needed | Getting Started      | Show backend auto-detection |
+| 2   | Chat Interface - Main View                     | 🔴 High  | ❌ Needed | Features, User Guide | Core messaging interface    |
+| 3   | Multi-Tenant Dashboard                         | 🔴 High  | ❌ Needed | Multi-Tenant Guide   | Tenant management interface |
 
 ### Medium Priority (Should Have)
 
-| # | Screen Name | Priority | Status | Location | Purpose |
-|---|------------|----------|--------|----------|---------|
-| 4 | Rich Message Editor (TipTap) | 🟡 Medium | ❌ Needed | Features | Show formatting options |
-| 5 | Thread View | 🟡 Medium | ❌ Needed | Features | Threaded conversations |
-| 6 | Analytics Dashboard | 🟡 Medium | ❌ Needed | Admin Guide | Analytics overview |
-| 7 | Admin Dashboard | 🟡 Medium | ❌ Needed | Admin Guide | Admin panel |
-| 8 | Theme Customization (27 presets) | 🟡 Medium | ❌ Needed | Features | Theme selector |
-| 12 | Mobile View (Responsive) | 🟡 Medium | ❌ Needed | Features | Mobile interface |
-| 13 | Voice/Video Call Interface | 🟡 Medium | ❌ Needed | Features | Call UI |
+| #   | Screen Name                      | Priority  | Status    | Location    | Purpose                 |
+| --- | -------------------------------- | --------- | --------- | ----------- | ----------------------- |
+| 4   | Rich Message Editor (TipTap)     | 🟡 Medium | ❌ Needed | Features    | Show formatting options |
+| 5   | Thread View                      | 🟡 Medium | ❌ Needed | Features    | Threaded conversations  |
+| 6   | Analytics Dashboard              | 🟡 Medium | ❌ Needed | Admin Guide | Analytics overview      |
+| 7   | Admin Dashboard                  | 🟡 Medium | ❌ Needed | Admin Guide | Admin panel             |
+| 8   | Theme Customization (27 presets) | 🟡 Medium | ❌ Needed | Features    | Theme selector          |
+| 12  | Mobile View (Responsive)         | 🟡 Medium | ❌ Needed | Features    | Mobile interface        |
+| 13  | Voice/Video Call Interface       | 🟡 Medium | ❌ Needed | Features    | Call UI                 |
 
 ### Low Priority (Nice to Have)
 
-| # | Screen Name | Priority | Status | Location | Purpose |
-|---|------------|----------|--------|----------|---------|
-| 9 | Integrations (Slack, GitHub, Jira) | 🟢 Low | ❌ Needed | Features | Integration setup |
-| 10 | Billing Portal (Stripe) | 🟢 Low | ❌ Needed | Multi-Tenant | Billing interface |
-| 11 | Moderation Dashboard | 🟢 Low | ❌ Needed | Admin Guide | Moderation tools |
-| 14 | Bot Marketplace | 🟢 Low | ❌ Needed | Features | Bot discovery |
+| #   | Screen Name                        | Priority | Status    | Location     | Purpose           |
+| --- | ---------------------------------- | -------- | --------- | ------------ | ----------------- |
+| 9   | Integrations (Slack, GitHub, Jira) | 🟢 Low   | ❌ Needed | Features     | Integration setup |
+| 10  | Billing Portal (Stripe)            | 🟢 Low   | ❌ Needed | Multi-Tenant | Billing interface |
+| 11  | Moderation Dashboard               | 🟢 Low   | ❌ Needed | Admin Guide  | Moderation tools  |
+| 14  | Bot Marketplace                    | 🟢 Low   | ❌ Needed | Features     | Bot discovery     |
 
 ## Directory Structure
 
@@ -92,16 +92,19 @@ docs/
 ### Technical Specifications
 
 **Resolution:**
+
 - Desktop screenshots: 1920x1080 (Full HD) or 2560x1440 (2K)
 - Mobile screenshots: 375x812 (iPhone X) or 360x800 (Android)
 - Tablet screenshots: 1024x768 (iPad)
 
 **Format:**
+
 - File format: PNG (preferred for UI) or WEBP (for smaller file sizes)
 - Compression: Use tools like TinyPNG to optimize file size
 - Maximum file size: 500KB per screenshot (aim for < 200KB)
 
 **Quality:**
+
 - DPI: 72 DPI (web standard)
 - Color depth: 24-bit (True Color)
 - Background: Use default theme (nself dark mode) for consistency
@@ -109,12 +112,14 @@ docs/
 ### Content Guidelines
 
 **What to Include:**
+
 - Representative data (no lorem ipsum)
 - Realistic user names and content
 - Multiple messages/items to show real usage
 - Relevant UI states (e.g., hover, active, selected)
 
 **What to Avoid:**
+
 - Personal information (real emails, phone numbers)
 - Offensive or inappropriate content
 - Lorem ipsum or placeholder text
@@ -124,16 +129,19 @@ docs/
 ### Consistency Standards
 
 **Theme:**
+
 - Use "nself" theme preset in dark mode as default
 - Document if using different theme
 - Maintain same theme across related screenshots
 
 **Browser:**
+
 - Chrome or Firefox (latest stable)
 - Hide browser UI (full-screen mode recommended)
 - Disable extensions that modify page appearance
 
 **Window Size:**
+
 - Use standard sizes (1920x1080, 1440x900)
 - Maintain consistent window size for related screenshots
 - Document viewport size in filename if important
@@ -145,21 +153,25 @@ docs/
 **Recommended Screenshot Tools:**
 
 **macOS:**
+
 - Built-in: `Cmd + Shift + 4` (selection) or `Cmd + Shift + 5` (options)
 - [CleanShot X](https://cleanshot.com/) - Professional screenshot tool
 - [Shottr](https://shottr.cc/) - Free, feature-rich screenshot tool
 
 **Windows:**
+
 - Built-in: `Win + Shift + S` (Snipping Tool)
 - [ShareX](https://getsharex.com/) - Free, open-source
 - [Greenshot](https://getgreenshot.org/) - Free, lightweight
 
 **Linux:**
+
 - [Flameshot](https://flameshot.org/) - Feature-rich, cross-platform
 - [Spectacle](https://apps.kde.org/spectacle/) - KDE screenshot utility
 - [GNOME Screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot) - GNOME default
 
 **Browser Extensions:**
+
 - [Awesome Screenshot](https://www.awesomescreenshot.com/)
 - [Nimbus Screenshot](https://nimbusweb.me/screenshot.php)
 - [Fireshot](https://getfireshot.com/)
@@ -202,6 +214,7 @@ docs/
 ```
 
 **Examples:**
+
 - `setup-wizard-step-1-welcome.png`
 - `chat-main-interface-dark-theme.png`
 - `admin-dashboard-analytics-overview.png`
@@ -221,17 +234,20 @@ docs/
 ### Markdown Syntax
 
 **Basic Image:**
+
 ```markdown
 ![Alt text](docs/images/screenshots/chat/main-interface.png)
 ```
 
 **With Caption:**
+
 ```markdown
 ![Chat Interface](docs/images/screenshots/chat/main-interface.png)
-*Main chat interface showing channels, messages, and sidebar*
+_Main chat interface showing channels, messages, and sidebar_
 ```
 
 **Clickable/Linked:**
+
 ```markdown
 [![Chat Interface](docs/images/screenshots/chat/main-interface.png)](docs/images/screenshots/chat/main-interface.png)
 ```
@@ -252,7 +268,7 @@ docs/
 The main chat interface provides a familiar Slack-like experience with channels, direct messages, and rich formatting.
 
 ![Chat Interface - Main View](docs/images/screenshots/chat/main-interface.png)
-*The main chat interface showing the channel list, message feed, and user sidebar*
+_The main chat interface showing the channel list, message feed, and user sidebar_
 
 ### Key Features
 
@@ -261,7 +277,7 @@ The main chat interface provides a familiar Slack-like experience with channels,
 - **User List** (right sidebar) - See who's online and their status
 
 ![Message Editor](docs/images/screenshots/chat/message-editor.png)
-*Rich text editor with formatting options, emoji picker, and file upload*
+_Rich text editor with formatting options, emoji picker, and file upload_
 ```
 
 ## Screenshot Placeholders
@@ -272,18 +288,20 @@ Until actual screenshots are captured, documentation can use placeholder referen
 
 ```markdown
 <!-- TODO: Add screenshot -->
+
 **[Screenshot: Setup Wizard - Environment Detection]**
 
-*This screenshot will show the setup wizard automatically detecting the backend environment and displaying connection status.*
+_This screenshot will show the setup wizard automatically detecting the backend environment and displaying connection status._
 ```
 
 ### Placeholder Template
 
 ```markdown
 <!-- SCREENSHOT PLACEHOLDER -->
+
 **[Screenshot: {Title}]**
 
-*Description: {What the screenshot will show}*
+_Description: {What the screenshot will show}_
 
 **Location:** `docs/images/screenshots/{category}/{filename}.png`
 **Priority:** 🔴 High | 🟡 Medium | 🟢 Low
@@ -314,6 +332,7 @@ Screenshots should be updated when:
 ### Alt Text Guidelines
 
 **Good Alt Text:**
+
 - Describes the content and function
 - Concise but complete
 - Includes relevant context
@@ -322,12 +341,14 @@ Screenshots should be updated when:
 **Examples:**
 
 **Bad:**
+
 ```markdown
 ![Screenshot](image.png)
 ![Image of chat](image.png)
 ```
 
 **Good:**
+
 ```markdown
 ![Chat interface with message list and compose box](image.png)
 ![Setup wizard showing environment detection and backend status](image.png)
@@ -368,37 +389,27 @@ Before committing screenshots, verify:
 
 ### Progress by Category
 
-| Category | Total | Complete | In Progress | Not Started |
-|----------|-------|----------|-------------|-------------|
-| Setup | 1 | 0 | 0 | 1 |
-| Chat | 3 | 0 | 0 | 3 |
-| Admin | 3 | 0 | 0 | 3 |
-| Multi-Tenant | 2 | 0 | 0 | 2 |
-| Features | 3 | 0 | 0 | 3 |
-| Calls | 1 | 0 | 0 | 1 |
-| Mobile | 1 | 0 | 0 | 1 |
+| Category     | Total | Complete | In Progress | Not Started |
+| ------------ | ----- | -------- | ----------- | ----------- |
+| Setup        | 1     | 0        | 0           | 1           |
+| Chat         | 3     | 0        | 0           | 3           |
+| Admin        | 3     | 0        | 0           | 3           |
+| Multi-Tenant | 2     | 0        | 0           | 2           |
+| Features     | 3     | 0        | 0           | 3           |
+| Calls        | 1     | 0        | 0           | 1           |
+| Mobile       | 1     | 0        | 0           | 1           |
 
 ### Next Steps
 
 **Immediate (High Priority):**
+
 1. Capture Setup Wizard with backend detection
 2. Capture main Chat Interface
 3. Capture Multi-Tenant Dashboard
 
-**Short-term (Medium Priority):**
-4. Capture Message Editor
-5. Capture Thread View
-6. Capture Analytics Dashboard
-7. Capture Admin Dashboard
-8. Capture Theme Customization
+**Short-term (Medium Priority):** 4. Capture Message Editor 5. Capture Thread View 6. Capture Analytics Dashboard 7. Capture Admin Dashboard 8. Capture Theme Customization
 
-**Long-term (Low Priority):**
-9. Capture Integrations
-10. Capture Billing Portal
-11. Capture Moderation Dashboard
-12. Capture Mobile Views
-13. Capture Call Interface
-14. Capture Bot Marketplace
+**Long-term (Low Priority):** 9. Capture Integrations 10. Capture Billing Portal 11. Capture Moderation Dashboard 12. Capture Mobile Views 13. Capture Call Interface 14. Capture Bot Marketplace
 
 ## Contributing Screenshots
 
@@ -439,9 +450,9 @@ If you'd like to contribute screenshots:
 
 ## Version History
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0.0 | 2026-01-31 | Initial screenshot guide created |
+| Version | Date       | Changes                          |
+| ------- | ---------- | -------------------------------- |
+| 1.0.0   | 2026-01-31 | Initial screenshot guide created |
 
 ---
 

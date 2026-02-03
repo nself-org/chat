@@ -16,8 +16,9 @@ import type {
   SocialIntegration,
   SocialAPIClient,
   ImportResult,
-  SocialPlatform
+  SocialPlatform,
 } from './types'
+import { logger } from '@/lib/logger'
 
 // Platform clients (lazy loaded to avoid build-time errors if credentials not configured)
 let _clients: Record<SocialPlatform, SocialAPIClient> | null = null
@@ -27,7 +28,7 @@ function getClients(): Record<SocialPlatform, SocialAPIClient> {
     _clients = {
       twitter: new TwitterClient(),
       instagram: new InstagramClient(),
-      linkedin: new LinkedInClient()
+      linkedin: new LinkedInClient(),
     }
   }
   return _clients
@@ -42,14 +43,14 @@ export async function pollAllAccounts(apolloClient: any): Promise<ImportResult> 
     imported: 0,
     filtered: 0,
     posted: 0,
-    errors: []
+    errors: [],
   }
 
   try {
     // Get all active accounts
     const { data } = await apolloClient.query({
       query: GET_ACTIVE_SOCIAL_ACCOUNTS,
-      fetchPolicy: 'network-only'
+      fetchPolicy: 'network-only',
     })
 
     const accounts: SocialAccount[] = data?.nchat_social_accounts || []
@@ -65,7 +66,7 @@ export async function pollAllAccounts(apolloClient: any): Promise<ImportResult> 
         result.errors.push(...accountResult.errors)
       } catch (error) {
         const errorMsg = `Failed to poll ${account.platform} account ${account.account_name}: ${error}`
-        console.error(errorMsg)
+        logger.error(errorMsg)
         result.errors.push(errorMsg)
       }
     }
@@ -73,7 +74,7 @@ export async function pollAllAccounts(apolloClient: any): Promise<ImportResult> 
     return result
   } catch (error) {
     const errorMsg = `Failed to poll social accounts: ${error}`
-    console.error(errorMsg)
+    logger.error(errorMsg)
     result.errors.push(errorMsg)
     return result
   }
@@ -82,13 +83,16 @@ export async function pollAllAccounts(apolloClient: any): Promise<ImportResult> 
 /**
  * Poll a single social account for new posts
  */
-export async function pollAccount(apolloClient: any, account: SocialAccount): Promise<ImportResult> {
+export async function pollAccount(
+  apolloClient: any,
+  account: SocialAccount
+): Promise<ImportResult> {
   const result: ImportResult = {
     fetched: 0,
     imported: 0,
     filtered: 0,
     posted: 0,
-    errors: []
+    errors: [],
   }
 
   // Create import log
@@ -150,7 +154,7 @@ export async function pollAccount(apolloClient: any, account: SocialAccount): Pr
         }
       } catch (error) {
         const errorMsg = `Failed to process post ${post.post_id}: ${error}`
-        console.error(errorMsg)
+        logger.error(errorMsg)
         result.errors.push(errorMsg)
       }
     }
@@ -164,7 +168,7 @@ export async function pollAccount(apolloClient: any, account: SocialAccount): Pr
     return result
   } catch (error) {
     const errorMsg = `Poll failed: ${error}`
-    console.error(errorMsg)
+    logger.error(errorMsg)
     result.errors.push(errorMsg)
     await updateImportLog(apolloClient, logId, result, 'failed')
     throw error
@@ -177,7 +181,7 @@ export async function pollAccount(apolloClient: any, account: SocialAccount): Pr
 export async function manualImport(apolloClient: any, accountId: string): Promise<ImportResult> {
   const { data } = await apolloClient.query({
     query: GET_SOCIAL_ACCOUNT,
-    variables: { id: accountId }
+    variables: { id: accountId },
   })
 
   const account = data?.nchat_social_accounts_by_pk
@@ -356,11 +360,14 @@ const UPDATE_LAST_POLL_TIME = `
 
 // Helper functions
 
-async function getAccountIntegrations(apolloClient: any, accountId: string): Promise<SocialIntegration[]> {
+async function getAccountIntegrations(
+  apolloClient: any,
+  accountId: string
+): Promise<SocialIntegration[]> {
   const { data } = await apolloClient.query({
     query: GET_ACCOUNT_INTEGRATIONS,
     variables: { accountId },
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
   })
 
   return data?.nchat_social_integrations || []
@@ -370,21 +377,25 @@ async function getLastPostId(apolloClient: any, accountId: string): Promise<stri
   const { data } = await apolloClient.query({
     query: GET_LAST_POST_ID,
     variables: { accountId },
-    fetchPolicy: 'network-only'
+    fetchPolicy: 'network-only',
   })
 
   return data?.nchat_social_posts?.[0]?.post_id
 }
 
-async function savePost(apolloClient: any, accountId: string, post: SocialPost): Promise<SocialPost> {
+async function savePost(
+  apolloClient: any,
+  accountId: string,
+  post: SocialPost
+): Promise<SocialPost> {
   const { data } = await apolloClient.mutate({
     mutation: SAVE_POST,
     variables: {
       post: {
         ...post,
         account_id: accountId,
-      }
-    }
+      },
+    },
   })
 
   return data?.insert_nchat_social_posts_one
@@ -406,23 +417,31 @@ async function postToChannel(
         channel_id: integration.channel_id,
         user_id: null, // System message
         content: JSON.stringify(messageContent),
-        type: 'social_embed'
-      }
-    }
+        type: 'social_embed',
+      },
+    },
   })
 }
 
-async function markPostAsPosted(apolloClient: any, postId: string, channelId: string): Promise<void> {
+async function markPostAsPosted(
+  apolloClient: any,
+  postId: string,
+  channelId: string
+): Promise<void> {
   await apolloClient.mutate({
     mutation: MARK_POST_AS_POSTED,
-    variables: { postId, channelId }
+    variables: { postId, channelId },
   })
 }
 
-async function createImportLog(apolloClient: any, accountId: string, importType: string): Promise<string> {
+async function createImportLog(
+  apolloClient: any,
+  accountId: string,
+  importType: string
+): Promise<string> {
   const { data } = await apolloClient.mutate({
     mutation: CREATE_IMPORT_LOG,
-    variables: { accountId, importType }
+    variables: { accountId, importType },
   })
 
   return data?.insert_nchat_social_import_logs_one?.id
@@ -443,14 +462,14 @@ async function updateImportLog(
       filtered: result.filtered,
       posted: result.posted,
       errors: result.errors,
-      status
-    }
+      status,
+    },
   })
 }
 
 async function updateLastPollTime(apolloClient: any, accountId: string): Promise<void> {
   await apolloClient.mutate({
     mutation: UPDATE_LAST_POLL_TIME,
-    variables: { accountId }
+    variables: { accountId },
   })
 }

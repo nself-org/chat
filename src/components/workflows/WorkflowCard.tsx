@@ -18,12 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   MoreHorizontal,
   Edit,
@@ -97,21 +92,18 @@ export function WorkflowCard({
     return (
       <div
         className={cn(
-          'flex items-center gap-4 p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors',
+          'hover:bg-accent/50 flex items-center gap-4 rounded-lg border bg-card p-3 transition-colors',
           className
         )}
       >
         {/* Status indicator */}
-        <div
-          className={cn('w-2 h-2 rounded-full', status.color)}
-          title={status.label}
-        />
+        <div className={cn('h-2 w-2 rounded-full', status.color)} title={status.label} />
 
         {/* Workflow info */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <h3
-              className="font-medium truncate cursor-pointer hover:underline"
+              className="cursor-pointer truncate font-medium hover:underline"
               onClick={handleEdit}
             >
               {workflow.name}
@@ -121,9 +113,7 @@ export function WorkflowCard({
             </Badge>
           </div>
           {workflow.description && (
-            <p className="text-sm text-muted-foreground truncate">
-              {workflow.description}
-            </p>
+            <p className="truncate text-sm text-muted-foreground">{workflow.description}</p>
           )}
         </div>
 
@@ -182,15 +172,15 @@ export function WorkflowCard({
     <Card className={cn('overflow-hidden', className)}>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <CardTitle
-              className="text-base truncate cursor-pointer hover:underline"
+              className="cursor-pointer truncate text-base hover:underline"
               onClick={handleEdit}
             >
               {workflow.name}
             </CardTitle>
             {workflow.description && (
-              <CardDescription className="line-clamp-2 mt-1">
+              <CardDescription className="mt-1 line-clamp-2">
                 {workflow.description}
               </CardDescription>
             )}
@@ -207,7 +197,7 @@ export function WorkflowCard({
 
       <CardContent className="pt-0">
         {/* Status and trigger */}
-        <div className="flex items-center gap-2 mb-3">
+        <div className="mb-3 flex items-center gap-2">
           <Badge
             variant="outline"
             className={cn(
@@ -216,11 +206,11 @@ export function WorkflowCard({
               workflow.status === 'paused' && 'border-yellow-500 text-yellow-600'
             )}
           >
-            <StatusIcon className="h-3 w-3 mr-1" />
+            <StatusIcon className="mr-1 h-3 w-3" />
             {status.label}
           </Badge>
           <Badge variant="secondary" className="text-xs">
-            <Zap className="h-3 w-3 mr-1" />
+            <Zap className="mr-1 h-3 w-3" />
             {triggerType.replace('_', ' ')}
           </Badge>
         </div>
@@ -233,17 +223,14 @@ export function WorkflowCard({
 
         {/* Tags */}
         {workflow.settings.tags && workflow.settings.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
+          <div className="mt-2 flex flex-wrap gap-1">
             {workflow.settings.tags.slice(0, 3).map((tag) => (
-              <span
-                key={tag}
-                className="px-1.5 py-0.5 text-[10px] rounded bg-muted"
-              >
+              <span key={tag} className="rounded bg-muted px-1.5 py-0.5 text-[10px]">
                 {tag}
               </span>
             ))}
             {workflow.settings.tags.length > 3 && (
-              <span className="px-1.5 py-0.5 text-[10px] rounded bg-muted">
+              <span className="rounded bg-muted px-1.5 py-0.5 text-[10px]">
                 +{workflow.settings.tags.length - 3}
               </span>
             )}
@@ -251,7 +238,7 @@ export function WorkflowCard({
         )}
 
         {/* Footer */}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t text-xs text-muted-foreground">
+        <div className="mt-3 flex items-center justify-between border-t pt-3 text-xs text-muted-foreground">
           <span>Updated {formatDate(workflow.updatedAt)}</span>
           <Button variant="ghost" size="sm" className="h-7" onClick={handleEdit}>
             Edit
@@ -286,13 +273,13 @@ function WorkflowMenu({
       <DropdownMenuContent align="end">
         {onEdit && (
           <DropdownMenuItem onClick={onEdit}>
-            <Edit className="h-4 w-4 mr-2" />
+            <Edit className="mr-2 h-4 w-4" />
             Edit
           </DropdownMenuItem>
         )}
         {onDuplicate && (
           <DropdownMenuItem onClick={onDuplicate}>
-            <Copy className="h-4 w-4 mr-2" />
+            <Copy className="mr-2 h-4 w-4" />
             Duplicate
           </DropdownMenuItem>
         )}
@@ -301,18 +288,18 @@ function WorkflowMenu({
             <DropdownMenuSeparator />
             {workflow.status === 'active' ? (
               <DropdownMenuItem onClick={onToggleStatus}>
-                <Pause className="h-4 w-4 mr-2" />
+                <Pause className="mr-2 h-4 w-4" />
                 Pause
               </DropdownMenuItem>
             ) : workflow.status === 'paused' || workflow.status === 'draft' ? (
               <DropdownMenuItem onClick={onToggleStatus}>
-                <Play className="h-4 w-4 mr-2" />
+                <Play className="mr-2 h-4 w-4" />
                 Activate
               </DropdownMenuItem>
             ) : null}
             {workflow.status !== 'archived' && (
               <DropdownMenuItem onClick={onToggleStatus}>
-                <Archive className="h-4 w-4 mr-2" />
+                <Archive className="mr-2 h-4 w-4" />
                 Archive
               </DropdownMenuItem>
             )}
@@ -325,7 +312,7 @@ function WorkflowMenu({
               onClick={onDelete}
               className="text-destructive focus:text-destructive"
             >
-              <Trash2 className="h-4 w-4 mr-2" />
+              <Trash2 className="mr-2 h-4 w-4" />
               Delete
             </DropdownMenuItem>
           </>

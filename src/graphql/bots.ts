@@ -206,12 +206,7 @@ export const BOT_INSTALLATION_FRAGMENT = gql`
  * Get all installed bots for a workspace or channel
  */
 export const GET_INSTALLED_BOTS = gql`
-  query GetInstalledBots(
-    $workspaceId: uuid
-    $channelId: uuid
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetInstalledBots($workspaceId: uuid, $channelId: uuid, $limit: Int = 50, $offset: Int = 0) {
     nchat_bot_installations(
       where: {
         _and: [
@@ -259,12 +254,7 @@ export const GET_MARKETPLACE_BOTS = gql`
           { is_public: { _eq: true } }
           { category: { _eq: $category } }
           { featured: { _eq: $featured } }
-          {
-            _or: [
-              { name: { _ilike: $search } }
-              { description: { _ilike: $search } }
-            ]
-          }
+          { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }] }
         ]
       }
       order_by: [
@@ -284,12 +274,7 @@ export const GET_MARKETPLACE_BOTS = gql`
           { is_public: { _eq: true } }
           { category: { _eq: $category } }
           { featured: { _eq: $featured } }
-          {
-            _or: [
-              { name: { _ilike: $search } }
-              { description: { _ilike: $search } }
-            ]
-          }
+          { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }] }
         ]
       }
     ) {
@@ -323,10 +308,7 @@ export const GET_BOT = gql`
  */
 export const GET_BOT_COMMANDS = gql`
   query GetBotCommands($botId: uuid!) {
-    nchat_bot_commands(
-      where: { bot_id: { _eq: $botId } }
-      order_by: { name: asc }
-    ) {
+    nchat_bot_commands(where: { bot_id: { _eq: $botId } }, order_by: { name: asc }) {
       id
       name
       description
@@ -424,12 +406,7 @@ export const SEARCH_BOTS = gql`
         _and: [
           { status: { _eq: "active" } }
           { is_public: { _eq: true } }
-          {
-            _or: [
-              { name: { _ilike: $search } }
-              { description: { _ilike: $search } }
-            ]
-          }
+          { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }] }
         ]
       }
       order_by: { install_count: desc_nulls_last }
@@ -452,17 +429,9 @@ export const SEARCH_BOTS = gql`
  * Install a bot to channels
  */
 export const INSTALL_BOT = gql`
-  mutation InstallBot(
-    $botId: uuid!
-    $channelIds: [uuid!]!
-    $permissions: jsonb!
-  ) {
+  mutation InstallBot($botId: uuid!, $channelIds: [uuid!]!, $permissions: jsonb!) {
     insert_nchat_bot_installations(
-      objects: {
-        bot_id: $botId
-        channel_ids: $channelIds
-        permissions: $permissions
-      }
+      objects: { bot_id: $botId, channel_ids: $channelIds, permissions: $permissions }
       on_conflict: {
         constraint: nchat_bot_installations_bot_id_channel_id_key
         update_columns: [permissions, installed_at]
@@ -474,10 +443,7 @@ export const INSTALL_BOT = gql`
       }
     }
     # Increment install count
-    update_nchat_bots_by_pk(
-      pk_columns: { id: $botId }
-      _inc: { install_count: 1 }
-    ) {
+    update_nchat_bots_by_pk(pk_columns: { id: $botId }, _inc: { install_count: 1 }) {
       id
       install_count
     }
@@ -491,12 +457,7 @@ export const INSTALL_BOT = gql`
 export const REMOVE_BOT = gql`
   mutation RemoveBot($botId: uuid!, $channelId: uuid) {
     delete_nchat_bot_installations(
-      where: {
-        _and: [
-          { bot_id: { _eq: $botId } }
-          { channel_id: { _eq: $channelId } }
-        ]
-      }
+      where: { _and: [{ bot_id: { _eq: $botId } }, { channel_id: { _eq: $channelId } }] }
     ) {
       affected_rows
       returning {
@@ -506,10 +467,7 @@ export const REMOVE_BOT = gql`
       }
     }
     # Decrement install count
-    update_nchat_bots_by_pk(
-      pk_columns: { id: $botId }
-      _inc: { install_count: -1 }
-    ) {
+    update_nchat_bots_by_pk(pk_columns: { id: $botId }, _inc: { install_count: -1 }) {
       id
       install_count
     }
@@ -527,12 +485,7 @@ export const UPDATE_BOT_SETTINGS = gql`
     $status: String
   ) {
     update_nchat_bot_installations(
-      where: {
-        _and: [
-          { bot_id: { _eq: $botId } }
-          { channel_id: { _eq: $channelId } }
-        ]
-      }
+      where: { _and: [{ bot_id: { _eq: $botId } }, { channel_id: { _eq: $channelId } }] }
       _set: { permissions: $permissions }
     ) {
       affected_rows
@@ -570,11 +523,7 @@ export const ADD_BOT_BY_TOKEN = gql`
 export const SUBMIT_BOT_REVIEW = gql`
   mutation SubmitBotReview($botId: uuid!, $rating: Int!, $comment: String) {
     insert_nchat_bot_reviews_one(
-      object: {
-        bot_id: $botId
-        rating: $rating
-        comment: $comment
-      }
+      object: { bot_id: $botId, rating: $rating, comment: $comment }
       on_conflict: {
         constraint: nchat_bot_reviews_bot_id_user_id_key
         update_columns: [rating, comment, updated_at]
@@ -700,10 +649,7 @@ export const DELETE_BOT = gql`
  */
 export const GET_BOT_TOKENS = gql`
   query GetBotTokens($botId: uuid!) {
-    nchat_bot_tokens(
-      where: { bot_id: { _eq: $botId } }
-      order_by: { created_at: desc }
-    ) {
+    nchat_bot_tokens(where: { bot_id: { _eq: $botId } }, order_by: { created_at: desc }) {
       id
       name
       scopes
@@ -749,10 +695,7 @@ export const CREATE_BOT_TOKEN = gql`
  */
 export const REVOKE_BOT_TOKEN = gql`
   mutation RevokeBotToken($tokenId: uuid!) {
-    update_nchat_bot_tokens_by_pk(
-      pk_columns: { id: $tokenId }
-      _set: { is_active: false }
-    ) {
+    update_nchat_bot_tokens_by_pk(pk_columns: { id: $tokenId }, _set: { is_active: false }) {
       id
       is_active
     }
@@ -779,10 +722,7 @@ export const DELETE_BOT_TOKEN = gql`
  */
 export const GET_BOT_WEBHOOKS = gql`
   query GetBotWebhooks($botId: uuid!) {
-    nchat_bot_webhooks(
-      where: { bot_id: { _eq: $botId } }
-      order_by: { created_at: desc }
-    ) {
+    nchat_bot_webhooks(where: { bot_id: { _eq: $botId } }, order_by: { created_at: desc }) {
       id
       url
       events
@@ -800,19 +740,9 @@ export const GET_BOT_WEBHOOKS = gql`
  * Create bot webhook
  */
 export const CREATE_BOT_WEBHOOK = gql`
-  mutation CreateBotWebhook(
-    $botId: uuid!
-    $url: String!
-    $events: [String!]!
-    $secret: String!
-  ) {
+  mutation CreateBotWebhook($botId: uuid!, $url: String!, $events: [String!]!, $secret: String!) {
     insert_nchat_bot_webhooks_one(
-      object: {
-        bot_id: $botId
-        url: $url
-        events: $events
-        secret: $secret
-      }
+      object: { bot_id: $botId, url: $url, events: $events, secret: $secret }
     ) {
       id
       url
@@ -834,11 +764,7 @@ export const UPDATE_BOT_WEBHOOK = gql`
   ) {
     update_nchat_bot_webhooks_by_pk(
       pk_columns: { id: $webhookId }
-      _set: {
-        url: $url
-        events: $events
-        is_active: $isActive
-      }
+      _set: { url: $url, events: $events, is_active: $isActive }
     ) {
       id
       url
@@ -891,10 +817,7 @@ export const GET_WEBHOOK_LOGS = gql`
  */
 export const GET_BOT_PERMISSIONS = gql`
   query GetBotPermissions($botId: uuid!) {
-    nchat_bot_permissions(
-      where: { bot_id: { _eq: $botId } }
-      order_by: { permission: asc }
-    ) {
+    nchat_bot_permissions(where: { bot_id: { _eq: $botId } }, order_by: { permission: asc }) {
       id
       permission
       granted_by
@@ -911,21 +834,10 @@ export const GET_BOT_PERMISSIONS = gql`
  * Grant bot permission
  */
 export const GRANT_BOT_PERMISSION = gql`
-  mutation GrantBotPermission(
-    $botId: uuid!
-    $permission: String!
-    $grantedBy: uuid!
-  ) {
+  mutation GrantBotPermission($botId: uuid!, $permission: String!, $grantedBy: uuid!) {
     insert_nchat_bot_permissions_one(
-      object: {
-        bot_id: $botId
-        permission: $permission
-        granted_by: $grantedBy
-      }
-      on_conflict: {
-        constraint: bot_permission_unique
-        update_columns: []
-      }
+      object: { bot_id: $botId, permission: $permission, granted_by: $grantedBy }
+      on_conflict: { constraint: bot_permission_unique, update_columns: [] }
     ) {
       id
       permission
@@ -940,10 +852,7 @@ export const GRANT_BOT_PERMISSION = gql`
 export const REVOKE_BOT_PERMISSION = gql`
   mutation RevokeBotPermission($botId: uuid!, $permission: String!) {
     delete_nchat_bot_permissions(
-      where: {
-        bot_id: { _eq: $botId }
-        permission: { _eq: $permission }
-      }
+      where: { bot_id: { _eq: $botId }, permission: { _eq: $permission } }
     ) {
       affected_rows
     }

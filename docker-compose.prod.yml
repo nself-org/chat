@@ -19,7 +19,7 @@ services:
     container_name: nchat
     restart: always
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_ENV=production
@@ -54,16 +54,16 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "/healthcheck.sh"]
+      test: ['CMD', '/healthcheck.sh']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
     security_opt:
       - no-new-privileges:true
     read_only: true
@@ -78,8 +78,8 @@ services:
     container_name: nchat-nginx
     restart: always
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./docker/ssl:/etc/nginx/ssl:ro
@@ -90,15 +90,15 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "nginx", "-t"]
+      test: ['CMD', 'nginx', '-t']
       interval: 30s
       timeout: 10s
       retries: 3
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   # --------------------------------------------------------------------------
   # PostgreSQL Database (Production)
@@ -108,7 +108,7 @@ services:
     container_name: nchat-postgres
     restart: always
     ports:
-      - "127.0.0.1:5432:5432"  # Only localhost access
+      - '127.0.0.1:5432:5432' # Only localhost access
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -119,7 +119,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-nchat}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB:-nchat}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -133,10 +133,10 @@ services:
           cpus: '0.5'
           memory: 512M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   # --------------------------------------------------------------------------
   # Hasura GraphQL Engine (Production)
@@ -146,16 +146,16 @@ services:
     container_name: nchat-hasura
     restart: always
     ports:
-      - "127.0.0.1:8080:8080"  # Only localhost access
+      - '127.0.0.1:8080:8080' # Only localhost access
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nchat}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"  # Disabled in production
-      HASURA_GRAPHQL_DEV_MODE: "false"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false' # Disabled in production
+      HASURA_GRAPHQL_DEV_MODE: 'false'
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_JWT_SECRET}
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
       HASURA_GRAPHQL_CORS_DOMAIN: ${CORS_DOMAIN:-https://*.nself.io}
-      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: 'false'
       HASURA_GRAPHQL_LOG_LEVEL: warn
     depends_on:
       postgres:
@@ -163,7 +163,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/healthz']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -177,10 +177,10 @@ services:
           cpus: '0.5'
           memory: 512M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   # --------------------------------------------------------------------------
   # Nhost Auth Service (Production)
@@ -190,7 +190,7 @@ services:
     container_name: nchat-auth
     restart: always
     ports:
-      - "127.0.0.1:4000:4000"
+      - '127.0.0.1:4000:4000'
     environment:
       AUTH_HOST: 0.0.0.0
       AUTH_PORT: 4000
@@ -214,10 +214,10 @@ services:
     networks:
       - nchat-network
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
   # --------------------------------------------------------------------------
   # Redis Cache (Production)
@@ -227,14 +227,14 @@ services:
     container_name: nchat-redis
     restart: always
     ports:
-      - "127.0.0.1:6379:6379"
+      - '127.0.0.1:6379:6379'
     volumes:
       - redis-data:/data
     command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      test: ['CMD', 'redis-cli', '-a', '${REDIS_PASSWORD}', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -247,10 +247,10 @@ services:
           cpus: '0.1'
           memory: 128M
     logging:
-      driver: "json-file"
+      driver: 'json-file'
       options:
-        max-size: "10m"
-        max-file: "3"
+        max-size: '10m'
+        max-file: '3'
 
 # ============================================================================
 # Networks

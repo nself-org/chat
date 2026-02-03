@@ -15,7 +15,11 @@ import type {
   GoogleDrivePermission,
   GoogleDrivePickerConfig,
 } from '../types'
-import { buildAuthUrl, tokenResponseToCredentials, calculateTokenExpiry } from '../integration-manager'
+import {
+  buildAuthUrl,
+  tokenResponseToCredentials,
+  calculateTokenExpiry,
+} from '../integration-manager'
 
 // ============================================================================
 // Constants
@@ -185,7 +189,8 @@ export class GoogleDriveApiClient {
     if (fields) {
       params.fields = fields
     } else {
-      params.fields = 'id,name,mimeType,description,iconLink,thumbnailLink,webViewLink,webContentLink,size,createdTime,modifiedTime,owners,shared,starred'
+      params.fields =
+        'id,name,mimeType,description,iconLink,thumbnailLink,webViewLink,webContentLink,size,createdTime,modifiedTime,owners,shared,starred'
     }
     return this.get<GoogleDriveFile>(`/files/${fileId}`, params)
   }
@@ -204,7 +209,9 @@ export class GoogleDriveApiClient {
     nextPageToken?: string
   }> {
     const params: Record<string, string> = {
-      fields: options?.fields || 'nextPageToken,files(id,name,mimeType,iconLink,thumbnailLink,webViewLink,webContentLink,size,createdTime,modifiedTime,shared,starred)',
+      fields:
+        options?.fields ||
+        'nextPageToken,files(id,name,mimeType,iconLink,thumbnailLink,webViewLink,webContentLink,size,createdTime,modifiedTime,shared,starred)',
     }
     if (options?.pageSize) params.pageSize = String(options.pageSize)
     if (options?.pageToken) params.pageToken = options.pageToken
@@ -379,11 +386,7 @@ export class GoogleDriveApiClient {
     })
 
     if (!response.ok) {
-      throw new GoogleDriveApiError(
-        'Failed to get user info',
-        response.status,
-        '/userinfo'
-      )
+      throw new GoogleDriveApiError('Failed to get user info', response.status, '/userinfo')
     }
 
     return response.json()

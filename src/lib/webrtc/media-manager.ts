@@ -6,6 +6,8 @@
  * and track management.
  */
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -38,18 +40,22 @@ export interface VideoConstraints {
 }
 
 export interface ScreenShareOptions {
-  video?: boolean | {
-    cursor?: 'always' | 'motion' | 'never'
-    displaySurface?: 'browser' | 'monitor' | 'window'
-    width?: number | { max: number }
-    height?: number | { max: number }
-    frameRate?: number | { max: number }
-  }
-  audio?: boolean | {
-    echoCancellation?: boolean
-    noiseSuppression?: boolean
-    autoGainControl?: boolean
-  }
+  video?:
+    | boolean
+    | {
+        cursor?: 'always' | 'motion' | 'never'
+        displaySurface?: 'browser' | 'monitor' | 'window'
+        width?: number | { max: number }
+        height?: number | { max: number }
+        frameRate?: number | { max: number }
+      }
+  audio?:
+    | boolean
+    | {
+        echoCancellation?: boolean
+        noiseSuppression?: boolean
+        autoGainControl?: boolean
+      }
   selfBrowserSurface?: 'include' | 'exclude'
   surfaceSwitching?: 'include' | 'exclude'
   systemAudio?: 'include' | 'exclude'
@@ -190,7 +196,7 @@ export class MediaManager {
       }))
       return this.devices
     } catch (error) {
-      console.error('Failed to enumerate devices:', error)
+      logger.error('Failed to enumerate devices:', error)
       this.devices = []
       return []
     }
@@ -293,7 +299,9 @@ export class MediaManager {
   // Screen Sharing
   // ===========================================================================
 
-  async getDisplayMedia(options: ScreenShareOptions = DEFAULT_SCREEN_SHARE_OPTIONS): Promise<MediaStream> {
+  async getDisplayMedia(
+    options: ScreenShareOptions = DEFAULT_SCREEN_SHARE_OPTIONS
+  ): Promise<MediaStream> {
     this.stopScreenShare()
 
     try {
@@ -368,7 +376,7 @@ export class MediaManager {
 
     const hasVideo = this.hasVideo
     const videoConstraints = hasVideo
-      ? this.videoTracks[0].getConstraints() as VideoConstraints
+      ? (this.videoTracks[0].getConstraints() as VideoConstraints)
       : false
 
     await this.getUserMedia(
@@ -384,13 +392,13 @@ export class MediaManager {
 
     const hasAudio = this.hasAudio
     const audioConstraints = hasAudio
-      ? this.audioTracks[0].getConstraints() as AudioConstraints
+      ? (this.audioTracks[0].getConstraints() as AudioConstraints)
       : false
 
-    await this.getUserMedia(
-      audioConstraints,
-      { ...DEFAULT_VIDEO_CONSTRAINTS, deviceId: { exact: deviceId } }
-    )
+    await this.getUserMedia(audioConstraints, {
+      ...DEFAULT_VIDEO_CONSTRAINTS,
+      deviceId: { exact: deviceId },
+    })
   }
 
   async setAudioOutput(deviceId: string, element: HTMLMediaElement): Promise<void> {
@@ -398,7 +406,9 @@ export class MediaManager {
       throw new Error('Audio output selection is not supported in this browser')
     }
 
-    await (element as HTMLMediaElement & { setSinkId: (id: string) => Promise<void> }).setSinkId(deviceId)
+    await (element as HTMLMediaElement & { setSinkId: (id: string) => Promise<void> }).setSinkId(
+      deviceId
+    )
   }
 
   // ===========================================================================
@@ -427,7 +437,10 @@ export class MediaManager {
     return permissions
   }
 
-  async requestPermissions(audio: boolean = true, video: boolean = false): Promise<MediaPermissions> {
+  async requestPermissions(
+    audio: boolean = true,
+    video: boolean = false
+  ): Promise<MediaPermissions> {
     const permissions: MediaPermissions = { audio: false, video: false }
 
     try {
@@ -447,7 +460,11 @@ export class MediaManager {
   // Audio Level Detection
   // ===========================================================================
 
-  createAudioAnalyzer(): { analyser: AnalyserNode; getLevel: () => number; cleanup: () => void } | null {
+  createAudioAnalyzer(): {
+    analyser: AnalyserNode
+    getLevel: () => number
+    cleanup: () => void
+  } | null {
     if (!this.localStream || this.audioTracks.length === 0) {
       return null
     }
@@ -475,7 +492,7 @@ export class MediaManager {
 
       return { analyser, getLevel, cleanup }
     } catch (error) {
-      console.error('Failed to create audio analyzer:', error)
+      logger.error('Failed to create audio analyzer:', error)
       return null
     }
   }
@@ -556,18 +573,21 @@ export function createMediaManager(callbacks?: MediaManagerCallbacks): MediaMana
 // =============================================================================
 
 export function isMediaDevicesSupported(): boolean {
-  return typeof navigator !== 'undefined' &&
+  return (
+    typeof navigator !== 'undefined' &&
     'mediaDevices' in navigator &&
     'getUserMedia' in navigator.mediaDevices
+  )
 }
 
 export function isScreenSharingSupported(): boolean {
-  return typeof navigator !== 'undefined' &&
+  return (
+    typeof navigator !== 'undefined' &&
     'mediaDevices' in navigator &&
     'getDisplayMedia' in navigator.mediaDevices
+  )
 }
 
 export function isAudioOutputSelectionSupported(): boolean {
-  return typeof HTMLMediaElement !== 'undefined' &&
-    'setSinkId' in HTMLMediaElement.prototype
+  return typeof HTMLMediaElement !== 'undefined' && 'setSinkId' in HTMLMediaElement.prototype
 }

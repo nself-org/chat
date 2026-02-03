@@ -46,12 +46,7 @@ const UPDATE_STICKER_PACK = gql`
   ) {
     update_nchat_sticker_packs_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        name: $name
-        description: $description
-        icon_url: $icon_url
-        is_enabled: $is_enabled
-      }
+      _set: { name: $name, description: $description, icon_url: $icon_url, is_enabled: $is_enabled }
     ) {
       id
       name
@@ -103,12 +98,7 @@ const ADD_STICKER_TO_PACK = gql`
 `
 
 const UPDATE_STICKER = gql`
-  mutation UpdateSticker(
-    $id: uuid!
-    $name: String
-    $slug: String
-    $keywords: [String!]
-  ) {
+  mutation UpdateSticker($id: uuid!, $name: String, $slug: String, $keywords: [String!]) {
     update_nchat_stickers_by_pk(
       pk_columns: { id: $id }
       _set: { name: $name, slug: $slug, keywords: $keywords }
@@ -137,12 +127,15 @@ export interface UseStickerPacksManagementResult {
     description?: string
     icon_url?: string
   }) => Promise<any>
-  updatePack: (id: string, input: Partial<{
-    name: string
-    description: string
-    icon_url: string
-    is_enabled: boolean
-  }>) => Promise<any>
+  updatePack: (
+    id: string,
+    input: Partial<{
+      name: string
+      description: string
+      icon_url: string
+      is_enabled: boolean
+    }>
+  ) => Promise<any>
   deletePack: (id: string) => Promise<any>
   addSticker: (input: {
     pack_id: string
@@ -152,11 +145,14 @@ export interface UseStickerPacksManagementResult {
     thumbnail_url?: string
     keywords?: string[]
   }) => Promise<any>
-  updateSticker: (id: string, input: Partial<{
-    name: string
-    slug: string
-    keywords: string[]
-  }>) => Promise<any>
+  updateSticker: (
+    id: string,
+    input: Partial<{
+      name: string
+      slug: string
+      keywords: string[]
+    }>
+  ) => Promise<any>
   deleteSticker: (id: string) => Promise<any>
   isLoading: boolean
   canManage: boolean
@@ -171,7 +167,6 @@ export function useStickerPacksManagement(): UseStickerPacksManagementResult {
   const apolloClient = useApolloClient()
 
   // Check if user can manage sticker packs (owner or admin)
-  // TODO: Add 'manage_stickers' permission to PERMISSIONS
   const canManage = user?.role === 'owner' || user?.role === 'admin'
 
   // Mutations

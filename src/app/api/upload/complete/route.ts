@@ -36,6 +36,8 @@ import {
   getAuthenticatedUser,
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
+
+import { logger } from '@/lib/logger'
 // Import pending upload functions
 // Note: These are defined in the parent route.ts but we need to access them
 // In production, this would use a shared store like Redis
@@ -82,21 +84,8 @@ const ALLOWED_MIME_TYPES = {
     'image/bmp',
     'image/tiff',
   ],
-  videos: [
-    'video/mp4',
-    'video/webm',
-    'video/ogg',
-    'video/quicktime',
-    'video/x-msvideo',
-  ],
-  audio: [
-    'audio/mpeg',
-    'audio/wav',
-    'audio/ogg',
-    'audio/webm',
-    'audio/aac',
-    'audio/flac',
-  ],
+  videos: ['video/mp4', 'video/webm', 'video/ogg', 'video/quicktime', 'video/x-msvideo'],
+  audio: ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/webm', 'audio/aac', 'audio/flac'],
   documents: [
     'application/pdf',
     'application/msword',
@@ -207,11 +196,7 @@ function getFileUrl(bucket: string, key: string): string {
 /**
  * Generate thumbnail URL for images/videos
  */
-function getThumbnailUrl(
-  bucket: string,
-  key: string,
-  mimeType: string
-): string | undefined {
+function getThumbnailUrl(bucket: string, key: string, mimeType: string): string | undefined {
   const category = getFileCategory(mimeType)
 
   if (category === 'image' || category === 'video') {
@@ -366,7 +351,7 @@ async function handleCompleteUpload(request: NextRequest): Promise<NextResponse>
       etag,
     })
   } catch (error) {
-    console.error('Error completing upload:', error)
+    logger.error('Error completing upload:', error)
     return internalErrorResponse('Failed to complete upload')
   }
 }

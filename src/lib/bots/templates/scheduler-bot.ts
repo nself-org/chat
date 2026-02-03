@@ -198,9 +198,8 @@ export function createSchedulerBot(): BotInstance {
     })
 
     .onInit(async (bot, api) => {
-      console.log('[SchedulerBot] Initialized successfully')
+// REMOVED: console.log('[SchedulerBot] Initialized successfully')
 
-      // TODO: Load and reschedule any pending reminders from storage
     })
 
     .build()

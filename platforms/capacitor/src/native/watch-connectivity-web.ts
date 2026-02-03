@@ -59,9 +59,7 @@ export class WatchConnectivityWeb implements WatchConnectivityPlugin {
   /**
    * Update application context (no-op on web)
    */
-  async updateApplicationContext(_options: {
-    context: WatchApplicationContext
-  }): Promise<void> {
+  async updateApplicationContext(_options: { context: WatchApplicationContext }): Promise<void> {
     console.log('Application context update ignored on web')
   }
 
@@ -95,9 +93,7 @@ export class WatchConnectivityWeb implements WatchConnectivityPlugin {
   /**
    * Update complication data (no-op on web)
    */
-  async updateComplication(_options: {
-    complicationData: WatchComplicationData[]
-  }): Promise<void> {
+  async updateComplication(_options: { complicationData: WatchComplicationData[] }): Promise<void> {
     console.log('Complication update ignored on web')
   }
 

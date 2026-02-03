@@ -4,11 +4,7 @@
  * Utilities for California Consumer Privacy Act compliance.
  */
 
-import type {
-  DataExportRequest,
-  DataDeletionRequest,
-  UserConsent,
-} from './compliance-types';
+import type { DataExportRequest, DataDeletionRequest, UserConsent } from './compliance-types'
 
 // ============================================================================
 // CCPA RIGHTS
@@ -57,9 +53,9 @@ export const CCPA_RIGHTS = {
     timeLimit: 15,
     extensionAllowed: 0,
   },
-} as const;
+} as const
 
-export type CCPARight = keyof typeof CCPA_RIGHTS;
+export type CCPARight = keyof typeof CCPA_RIGHTS
 
 // ============================================================================
 // PERSONAL INFORMATION CATEGORIES
@@ -123,46 +119,56 @@ export const CCPA_DATA_CATEGORIES = {
   },
   SENSITIVE_PI: {
     name: 'Sensitive Personal Information',
-    examples: ['SSN', 'Driver\'s license', 'Financial account', 'Precise geolocation', 'Racial/ethnic origin', 'Religious beliefs', 'Biometric data', 'Health data', 'Sex life/orientation'],
+    examples: [
+      'SSN',
+      "Driver's license",
+      'Financial account',
+      'Precise geolocation',
+      'Racial/ethnic origin',
+      'Religious beliefs',
+      'Biometric data',
+      'Health data',
+      'Sex life/orientation',
+    ],
     sensitive: true,
   },
-} as const;
+} as const
 
-export type CCPADataCategory = keyof typeof CCPA_DATA_CATEGORIES;
+export type CCPADataCategory = keyof typeof CCPA_DATA_CATEGORIES
 
 // ============================================================================
 // CCPA COMPLIANCE CHECKS
 // ============================================================================
 
 export interface CCPAComplianceCheck {
-  id: string;
-  name: string;
-  description: string;
-  requirement: string;
-  check: (data: CCPAComplianceData) => CCPACheckResult;
+  id: string
+  name: string
+  description: string
+  requirement: string
+  check: (data: CCPAComplianceData) => CCPACheckResult
 }
 
 export interface CCPAComplianceData {
-  annualRevenue?: number;
-  californiansServed?: number;
-  sellsPersonalInfo: boolean;
-  hasDoNotSellLink: boolean;
-  hasPrivacyPolicy: boolean;
-  privacyPolicyLastUpdated?: Date;
-  acceptsOptOutRequests: boolean;
-  verificationProcedure: boolean;
-  recordKeeping: boolean;
-  employeeTraining: boolean;
-  consents: UserConsent[];
-  exportRequests: DataExportRequest[];
-  deletionRequests: DataDeletionRequest[];
+  annualRevenue?: number
+  californiansServed?: number
+  sellsPersonalInfo: boolean
+  hasDoNotSellLink: boolean
+  hasPrivacyPolicy: boolean
+  privacyPolicyLastUpdated?: Date
+  acceptsOptOutRequests: boolean
+  verificationProcedure: boolean
+  recordKeeping: boolean
+  employeeTraining: boolean
+  consents: UserConsent[]
+  exportRequests: DataExportRequest[]
+  deletionRequests: DataDeletionRequest[]
 }
 
 export interface CCPACheckResult {
-  passed: boolean;
-  status: 'pass' | 'fail' | 'warning' | 'not_applicable';
-  message: string;
-  recommendations?: string[];
+  passed: boolean
+  status: 'pass' | 'fail' | 'warning' | 'not_applicable'
+  message: string
+  recommendations?: string[]
 }
 
 export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
@@ -172,11 +178,11 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
     description: 'Determine if CCPA applies to your business',
     requirement: 'Annual revenue > $25M, or 50K+ consumers, or 50%+ revenue from selling PI',
     check: (data) => {
-      const meetsRevenue = (data.annualRevenue || 0) >= 25000000;
-      const meetsConsumers = (data.californiansServed || 0) >= 50000;
-      const sellsData = data.sellsPersonalInfo;
+      const meetsRevenue = (data.annualRevenue || 0) >= 25000000
+      const meetsConsumers = (data.californiansServed || 0) >= 50000
+      const sellsData = data.sellsPersonalInfo
 
-      const applies = meetsRevenue || meetsConsumers || sellsData;
+      const applies = meetsRevenue || meetsConsumers || sellsData
 
       return {
         passed: true,
@@ -184,7 +190,7 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
         message: applies
           ? 'CCPA requirements apply to your business'
           : 'CCPA may not apply to your business based on thresholds',
-      };
+      }
     },
   },
   {
@@ -199,12 +205,12 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
           status: 'fail',
           message: 'Privacy policy is required',
           recommendations: ['Create comprehensive privacy policy with CCPA disclosures'],
-        };
+        }
       }
 
       if (data.privacyPolicyLastUpdated) {
-        const oneYearAgo = new Date();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+        const oneYearAgo = new Date()
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1)
 
         if (new Date(data.privacyPolicyLastUpdated) < oneYearAgo) {
           return {
@@ -212,7 +218,7 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
             status: 'warning',
             message: 'Privacy policy needs annual update',
             recommendations: ['Update privacy policy within 12 months of last update'],
-          };
+          }
         }
       }
 
@@ -220,7 +226,7 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
         passed: true,
         status: 'pass',
         message: 'Privacy policy is in place and current',
-      };
+      }
     },
   },
   {
@@ -234,7 +240,7 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
           passed: true,
           status: 'not_applicable',
           message: 'Not applicable - business does not sell personal information',
-        };
+        }
       }
 
       return {
@@ -246,7 +252,7 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
         recommendations: data.hasDoNotSellLink
           ? undefined
           : ['Add "Do Not Sell My Personal Information" link to homepage'],
-      };
+      }
     },
   },
   {
@@ -255,27 +261,32 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
     description: 'Respond to consumer requests within 45 days',
     requirement: 'Process requests within 45 days (90 with extension)',
     check: (data) => {
-      const allRequests = [...data.exportRequests, ...data.deletionRequests];
+      const allRequests = [...data.exportRequests, ...data.deletionRequests]
       const overdueRequests = allRequests.filter((r) => {
-        if (['completed', 'rejected', 'cancelled'].includes(r.status)) return false;
+        if (['completed', 'rejected', 'cancelled'].includes(r.status)) return false
 
         const daysSinceRequest = Math.floor(
           (Date.now() - new Date(r.requestedAt).getTime()) / (1000 * 60 * 60 * 24)
-        );
+        )
 
-        return daysSinceRequest > 45;
-      });
+        return daysSinceRequest > 45
+      })
 
       return {
         passed: overdueRequests.length === 0,
         status: overdueRequests.length === 0 ? 'pass' : 'fail',
-        message: overdueRequests.length === 0
-          ? 'All requests are being processed within time limits'
-          : `${overdueRequests.length} request(s) exceed 45-day limit`,
-        recommendations: overdueRequests.length === 0
-          ? undefined
-          : ['Process overdue requests immediately', 'Consider requesting 45-day extension if needed'],
-      };
+        message:
+          overdueRequests.length === 0
+            ? 'All requests are being processed within time limits'
+            : `${overdueRequests.length} request(s) exceed 45-day limit`,
+        recommendations:
+          overdueRequests.length === 0
+            ? undefined
+            : [
+                'Process overdue requests immediately',
+                'Consider requesting 45-day extension if needed',
+              ],
+      }
     },
   },
   {
@@ -326,29 +337,29 @@ export const CCPA_COMPLIANCE_CHECKS: CCPAComplianceCheck[] = [
         : ['Implement CCPA training for customer-facing employees'],
     }),
   },
-];
+]
 
 // ============================================================================
 // CCPA ASSESSMENT
 // ============================================================================
 
 export interface CCPAAssessment {
-  overallScore: number;
-  applies: boolean;
-  status: 'compliant' | 'at_risk' | 'non_compliant';
+  overallScore: number
+  applies: boolean
+  status: 'compliant' | 'at_risk' | 'non_compliant'
   checkResults: Array<{
-    check: CCPAComplianceCheck;
-    result: CCPACheckResult;
-  }>;
+    check: CCPAComplianceCheck
+    result: CCPACheckResult
+  }>
   summary: {
-    passed: number;
-    failed: number;
-    warnings: number;
-    notApplicable: number;
-  };
-  criticalIssues: string[];
-  recommendations: string[];
-  generatedAt: Date;
+    passed: number
+    failed: number
+    warnings: number
+    notApplicable: number
+  }
+  criticalIssues: string[]
+  recommendations: string[]
+  generatedAt: Date
 }
 
 /**
@@ -358,39 +369,38 @@ export function runCCPAAssessment(data: CCPAComplianceData): CCPAAssessment {
   const checkResults = CCPA_COMPLIANCE_CHECKS.map((check) => ({
     check,
     result: check.check(data),
-  }));
+  }))
 
   // Check if CCPA applies
-  const thresholdCheck = checkResults.find((r) => r.check.id === 'threshold_check');
-  const applies = thresholdCheck?.result.status !== 'not_applicable';
+  const thresholdCheck = checkResults.find((r) => r.check.id === 'threshold_check')
+  const applies = thresholdCheck?.result.status !== 'not_applicable'
 
   const summary = {
     passed: checkResults.filter((r) => r.result.status === 'pass').length,
     failed: checkResults.filter((r) => r.result.status === 'fail').length,
     warnings: checkResults.filter((r) => r.result.status === 'warning').length,
     notApplicable: checkResults.filter((r) => r.result.status === 'not_applicable').length,
-  };
+  }
 
-  const totalApplicable = summary.passed + summary.failed + summary.warnings;
-  const overallScore = totalApplicable > 0
-    ? Math.round((summary.passed / totalApplicable) * 100)
-    : 100;
+  const totalApplicable = summary.passed + summary.failed + summary.warnings
+  const overallScore =
+    totalApplicable > 0 ? Math.round((summary.passed / totalApplicable) * 100) : 100
 
   const criticalIssues = checkResults
     .filter((r) => r.result.status === 'fail')
-    .map((r) => r.result.message);
+    .map((r) => r.result.message)
 
   const recommendations = checkResults
     .filter((r) => r.result.recommendations)
-    .flatMap((r) => r.result.recommendations || []);
+    .flatMap((r) => r.result.recommendations || [])
 
-  let status: CCPAAssessment['status'];
+  let status: CCPAAssessment['status']
   if (summary.failed === 0) {
-    status = 'compliant';
+    status = 'compliant'
   } else if (summary.failed <= 2) {
-    status = 'at_risk';
+    status = 'at_risk'
   } else {
-    status = 'non_compliant';
+    status = 'non_compliant'
   }
 
   return {
@@ -402,7 +412,7 @@ export function runCCPAAssessment(data: CCPAComplianceData): CCPAAssessment {
     criticalIssues,
     recommendations: [...new Set(recommendations)],
     generatedAt: new Date(),
-  };
+  }
 }
 
 // ============================================================================
@@ -412,38 +422,27 @@ export function runCCPAAssessment(data: CCPAComplianceData): CCPAAssessment {
 /**
  * Calculate deadline for CCPA request
  */
-export function calculateCCPADeadline(
-  requestDate: Date,
-  withExtension: boolean = false
-): Date {
-  const deadline = new Date(requestDate);
-  deadline.setDate(deadline.getDate() + (withExtension ? 90 : 45));
-  return deadline;
+export function calculateCCPADeadline(requestDate: Date, withExtension: boolean = false): Date {
+  const deadline = new Date(requestDate)
+  deadline.setDate(deadline.getDate() + (withExtension ? 90 : 45))
+  return deadline
 }
 
 /**
  * Check if CCPA request is overdue
  */
-export function isCCPARequestOverdue(
-  requestDate: Date,
-  withExtension: boolean = false
-): boolean {
-  const deadline = calculateCCPADeadline(requestDate, withExtension);
-  return new Date() > deadline;
+export function isCCPARequestOverdue(requestDate: Date, withExtension: boolean = false): boolean {
+  const deadline = calculateCCPADeadline(requestDate, withExtension)
+  return new Date() > deadline
 }
 
 /**
  * Get remaining days for CCPA request
  */
-export function getRemainingDays(
-  requestDate: Date,
-  withExtension: boolean = false
-): number {
-  const deadline = calculateCCPADeadline(requestDate, withExtension);
-  const remaining = Math.ceil(
-    (deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-  );
-  return Math.max(0, remaining);
+export function getRemainingDays(requestDate: Date, withExtension: boolean = false): number {
+  const deadline = calculateCCPADeadline(requestDate, withExtension)
+  const remaining = Math.ceil((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+  return Math.max(0, remaining)
 }
 
 // ============================================================================
@@ -451,11 +450,11 @@ export function getRemainingDays(
 // ============================================================================
 
 export interface OptOutRecord {
-  consumerId: string;
-  optedOutAt: Date;
-  categories: CCPADataCategory[];
-  source: 'website' | 'email' | 'phone' | 'gpc';
-  verified: boolean;
+  consumerId: string
+  optedOutAt: Date
+  categories: CCPADataCategory[]
+  source: 'website' | 'email' | 'phone' | 'gpc'
+  verified: boolean
 }
 
 /**
@@ -464,7 +463,7 @@ export interface OptOutRecord {
 export function shouldHonorGPC(): boolean {
   // California law requires honoring GPC signals as opt-out requests
   // This would typically check the browser's GPC setting
-  return true; // Always honor GPC signals
+  return true // Always honor GPC signals
 }
 
 // ============================================================================
@@ -480,4 +479,4 @@ export const CCPAHelpers = {
   isCCPARequestOverdue,
   getRemainingDays,
   shouldHonorGPC,
-};
+}

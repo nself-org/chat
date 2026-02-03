@@ -7,6 +7,7 @@
 ## Quick Commands
 
 ### Before Every Commit
+
 ```bash
 # 1. Run linting
 npm run lint
@@ -25,6 +26,7 @@ git diff --cached | grep -i "secret\|password\|api.key"
 ```
 
 ### Before Every Deployment
+
 ```bash
 # 1. Security audit
 npm audit
@@ -44,25 +46,31 @@ curl -I https://your-domain.com | grep -i "content-security\|strict-transport"
 ## Middleware Patterns
 
 ### Protect API Route (Full Stack)
+
 ```typescript
-import { compose, withErrorHandler, withRateLimit, withCsrfProtection, withAuth, withAdmin } from '@/lib/api/middleware'
+import {
+  compose,
+  withErrorHandler,
+  withRateLimit,
+  withCsrfProtection,
+  withAuth,
+  withAdmin,
+} from '@/lib/api/middleware'
 
 export const POST = compose(
-  withErrorHandler,           // 1. Catch errors
-  withRateLimit({ limit: 10, window: 60 }),  // 2. Rate limit
-  withCsrfProtection,         // 3. CSRF check
-  withAuth,                   // 4. Require auth
-  withAdmin                   // 5. Require admin role
+  withErrorHandler, // 1. Catch errors
+  withRateLimit({ limit: 10, window: 60 }), // 2. Rate limit
+  withCsrfProtection, // 3. CSRF check
+  withAuth, // 4. Require auth
+  withAdmin // 5. Require admin role
 )(handler)
 ```
 
 ### Common Combinations
+
 ```typescript
 // Public endpoint (rate limited)
-export const GET = compose(
-  withErrorHandler,
-  withRateLimit({ limit: 100, window: 60 })
-)(handler)
+export const GET = compose(withErrorHandler, withRateLimit({ limit: 100, window: 60 }))(handler)
 
 // Authenticated endpoint
 export const POST = compose(
@@ -72,12 +80,7 @@ export const POST = compose(
 )(handler)
 
 // Admin-only endpoint with CSRF
-export const PUT = compose(
-  withErrorHandler,
-  withCsrfProtection,
-  withAuth,
-  withAdmin
-)(handler)
+export const PUT = compose(withErrorHandler, withCsrfProtection, withAuth, withAdmin)(handler)
 ```
 
 ---
@@ -85,6 +88,7 @@ export const PUT = compose(
 ## Input Validation
 
 ### Use Zod Schemas
+
 ```typescript
 import { validateRequestBody } from '@/lib/validation/validate'
 import { sendMessageSchema } from '@/lib/validation/schemas'
@@ -92,25 +96,26 @@ import { sendMessageSchema } from '@/lib/validation/schemas'
 export async function POST(request: NextRequest) {
   // Automatically validates and throws on error
   const body = await validateRequestBody(request, sendMessageSchema)
-  
+
   // body is now typed and validated
   const { channelId, content } = body
 }
 ```
 
 ### Available Schemas
+
 ```typescript
 // Authentication
-signInSchema, signUpSchema, changePasswordSchema
+;(signInSchema, signUpSchema, changePasswordSchema)
 
 // User management
-updateProfileSchema, updateSettingsSchema
+;(updateProfileSchema, updateSettingsSchema)
 
 // Channels
-createChannelSchema, updateChannelSchema
+;(createChannelSchema, updateChannelSchema)
 
 // Messages
-sendMessageSchema, updateMessageSchema, addReactionSchema
+;(sendMessageSchema, updateMessageSchema, addReactionSchema)
 
 // File uploads
 uploadInitSchema
@@ -123,6 +128,7 @@ searchSchema
 ```
 
 ### Custom Validation
+
 ```typescript
 import { z } from 'zod'
 
@@ -138,6 +144,7 @@ const customSchema = z.object({
 ## Security Checklist
 
 ### ✅ DO
+
 - [ ] Use middleware for all API routes
 - [ ] Validate all user input with Zod
 - [ ] Use parameterized queries
@@ -149,6 +156,7 @@ const customSchema = z.object({
 - [ ] Sanitize HTML before rendering
 
 ### ❌ DON'T
+
 - [ ] Trust client-side validation
 - [ ] Use string concatenation in SQL
 - [ ] Expose stack traces
@@ -163,6 +171,7 @@ const customSchema = z.object({
 ## Common Vulnerabilities
 
 ### SQL Injection
+
 ```typescript
 // ❌ BAD
 const query = `SELECT * FROM users WHERE email = '${email}'`
@@ -172,6 +181,7 @@ const result = await pool.query('SELECT * FROM users WHERE email = $1', [email])
 ```
 
 ### XSS
+
 ```typescript
 // ❌ BAD
 <div dangerouslySetInnerHTML={{ __html: userInput }} />
@@ -182,6 +192,7 @@ import DOMPurify from 'dompurify'
 ```
 
 ### CSRF
+
 ```typescript
 // ❌ BAD (no protection)
 export async function POST(request: NextRequest) {
@@ -189,14 +200,11 @@ export async function POST(request: NextRequest) {
 }
 
 // ✅ GOOD (with CSRF protection)
-export const POST = compose(
-  withErrorHandler,
-  withCsrfProtection,
-  withAuth
-)(handler)
+export const POST = compose(withErrorHandler, withCsrfProtection, withAuth)(handler)
 ```
 
 ### Insecure File Upload
+
 ```typescript
 // ❌ BAD
 const filePath = `/uploads/${userFilename}`
@@ -214,6 +222,7 @@ const filePath = `/uploads/${randomUUID()}-${safeFilename}`
 ## Rate Limiting
 
 ### Standard Limits
+
 ```typescript
 // Login/signup
 { limit: 5, window: 900 }   // 5 per 15 min
@@ -229,16 +238,18 @@ const filePath = `/uploads/${randomUUID()}-${safeFilename}`
 ```
 
 ### Custom Rate Limit
+
 ```typescript
 import { withRateLimit } from '@/lib/api/middleware'
 
 export const POST = withRateLimit({
-  limit: 10,                    // 10 requests
-  window: 60,                   // per minute
-  keyGenerator: (req) => {      // per user
+  limit: 10, // 10 requests
+  window: 60, // per minute
+  keyGenerator: (req) => {
+    // per user
     const user = getAuthenticatedUser(req)
     return `user:${user?.id || getClientIp(req)}`
-  }
+  },
 })(handler)
 ```
 
@@ -247,17 +258,15 @@ export const POST = withRateLimit({
 ## CSRF Protection
 
 ### Server-Side
+
 ```typescript
 import { withCsrfProtection } from '@/lib/security/csrf'
 
-export const POST = compose(
-  withErrorHandler,
-  withCsrfProtection,
-  withAuth
-)(handler)
+export const POST = compose(withErrorHandler, withCsrfProtection, withAuth)(handler)
 ```
 
 ### Client-Side
+
 ```typescript
 // Get CSRF token
 const response = await fetch('/api/csrf')
@@ -268,9 +277,9 @@ fetch('/api/protected', {
   method: 'POST',
   headers: {
     [headerName]: csrfToken,
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   },
-  body: JSON.stringify(data)
+  body: JSON.stringify(data),
 })
 ```
 
@@ -279,6 +288,7 @@ fetch('/api/protected', {
 ## Error Handling
 
 ### Safe Error Responses
+
 ```typescript
 import { errorResponse, internalErrorResponse } from '@/lib/api/response'
 
@@ -287,13 +297,14 @@ try {
 } catch (error) {
   // ✅ Log internal details
   console.error('Detailed error:', error)
-  
+
   // ✅ Return generic message
   return internalErrorResponse('Operation failed')
 }
 ```
 
 ### Error Response Types
+
 ```typescript
 // 400 Bad Request
 badRequestResponse('Invalid input', 'INVALID_INPUT')
@@ -319,6 +330,7 @@ internalErrorResponse('Operation failed')
 ## Secrets Management
 
 ### Environment Variables
+
 ```bash
 # ✅ GOOD: Required, no defaults
 const SECRET = process.env.SECRET
@@ -331,6 +343,7 @@ const SECRET = process.env.SECRET || 'default123'
 ```
 
 ### Generate Secure Secrets
+
 ```bash
 # Generate 32-byte secrets
 openssl rand -base64 32
@@ -340,6 +353,7 @@ uuidgen
 ```
 
 ### .env Files
+
 ```bash
 # .env.local (development - gitignored)
 JWT_SECRET=dev-secret-change-in-production
@@ -359,6 +373,7 @@ DATABASE_URL=your-database-url-here
 ## Testing Security
 
 ### Authentication Tests
+
 ```typescript
 describe('POST /api/protected', () => {
   it('requires authentication', async () => {
@@ -369,7 +384,7 @@ describe('POST /api/protected', () => {
   it('requires correct role', async () => {
     const response = await fetch('/api/protected', {
       method: 'POST',
-      headers: { Authorization: 'Bearer member-token' }
+      headers: { Authorization: 'Bearer member-token' },
     })
     expect(response.status).toBe(403)
   })
@@ -377,6 +392,7 @@ describe('POST /api/protected', () => {
 ```
 
 ### Input Validation Tests
+
 ```typescript
 import { emailSchema } from '@/lib/validation/schemas'
 
@@ -393,13 +409,14 @@ describe('Email Validation', () => {
 ```
 
 ### Rate Limiting Tests
+
 ```typescript
 describe('Rate Limiting', () => {
   it('blocks after limit', async () => {
     // Make 6 requests (limit is 5)
-    const requests = Array(6).fill(null).map(() =>
-      fetch('/api/signin', { method: 'POST', body: '{}' })
-    )
+    const requests = Array(6)
+      .fill(null)
+      .map(() => fetch('/api/signin', { method: 'POST', body: '{}' }))
     const responses = await Promise.all(requests)
     expect(responses[5].status).toBe(429)
   })
@@ -411,6 +428,7 @@ describe('Rate Limiting', () => {
 ## Emergency Response
 
 ### Security Incident
+
 ```bash
 # 1. Rotate all secrets immediately
 openssl rand -base64 32 > new-secret.txt
@@ -430,6 +448,7 @@ git push origin main
 ```
 
 ### Compromised Credentials
+
 ```bash
 # 1. Invalidate all sessions
 # Update JWT_SECRET and restart
@@ -449,16 +468,19 @@ git push origin main
 ## Resources
 
 ### Documentation
+
 - [Security Audit Report](./security-audit.md)
 - [Security Best Practices](./security-best-practices.md)
 - [Security Policy](./SECURITY.md)
 
 ### External Resources
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [OWASP Cheat Sheets](https://cheatsheetseries.owasp.org/)
 - [Next.js Security](https://nextjs.org/docs/advanced-features/security-headers)
 
 ### Tools
+
 - `npm audit` - Dependency scanning
 - `curl -I` - Check headers
 - `openssl rand` - Generate secrets

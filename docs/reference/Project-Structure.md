@@ -991,32 +991,32 @@ Mobile app using Capacitor (web wrapper).
 
 ### Root Configuration
 
-| File | Purpose |
-|------|---------|
-| `.env.example` | Environment variable template (530 lines) |
-| `.eslintrc.json` | ESLint configuration |
-| `.eslintignore` | ESLint ignore patterns |
-| `.gitignore` | Git ignore patterns |
-| `jest.config.js` | Jest test configuration |
-| `jest.setup.js` | Jest setup file |
-| `next.config.js` | Next.js configuration |
-| `package.json` | Package manifest |
-| `playwright.config.ts` | E2E test configuration |
-| `postcss.config.js` | PostCSS configuration |
-| `tailwind.config.ts` | Tailwind configuration |
-| `tsconfig.json` | TypeScript configuration |
+| File                   | Purpose                                   |
+| ---------------------- | ----------------------------------------- |
+| `.env.example`         | Environment variable template (530 lines) |
+| `.eslintrc.json`       | ESLint configuration                      |
+| `.eslintignore`        | ESLint ignore patterns                    |
+| `.gitignore`           | Git ignore patterns                       |
+| `jest.config.js`       | Jest test configuration                   |
+| `jest.setup.js`        | Jest setup file                           |
+| `next.config.js`       | Next.js configuration                     |
+| `package.json`         | Package manifest                          |
+| `playwright.config.ts` | E2E test configuration                    |
+| `postcss.config.js`    | PostCSS configuration                     |
+| `tailwind.config.ts`   | Tailwind configuration                    |
+| `tsconfig.json`        | TypeScript configuration                  |
 
 ### Docker Configuration
 
-| File | Purpose |
-|------|---------|
-| `Dockerfile` | Production Docker image |
-| `Dockerfile.dev` | Development Docker image |
-| `docker-compose.yml` | Development compose |
-| `docker-compose.dev.yml` | Dev overrides |
-| `docker-compose.prod.yml` | Production compose |
-| `.dockerignore` | Docker ignore patterns |
+| File                      | Purpose                  |
+| ------------------------- | ------------------------ |
+| `Dockerfile`              | Production Docker image  |
+| `Dockerfile.dev`          | Development Docker image |
+| `docker-compose.yml`      | Development compose      |
+| `docker-compose.dev.yml`  | Dev overrides            |
+| `docker-compose.prod.yml` | Production compose       |
+| `.dockerignore`           | Docker ignore patterns   |
 
 ---
 
-*This document maps the complete file structure of nself-chat.*
+_This document maps the complete file structure of nself-chat._

@@ -116,7 +116,9 @@ describe('validateRetentionPolicy', () => {
 
     const result = validateRetentionPolicy(policy)
     expect(result.valid).toBe(true)
-    expect(result.warnings).toContain('30-day retention for audit logs may not meet compliance requirements')
+    expect(result.warnings).toContain(
+      '30-day retention for audit logs may not meet compliance requirements'
+    )
   })
 
   it('should warn when not excluding important messages', () => {
@@ -258,9 +260,7 @@ describe('shouldRetainItem', () => {
     const channelId = 'channel-1'
     const policyWithOverride = {
       ...policy,
-      channelOverrides: [
-        createChannelOverride(channelId, 'Test Channel', 'forever'),
-      ],
+      channelOverrides: [createChannelOverride(channelId, 'Test Channel', 'forever')],
     }
 
     const item = {
@@ -513,11 +513,7 @@ describe('isProtectedByLegalHold', () => {
 
 describe('createChannelOverride', () => {
   it('should create channel override with required fields', () => {
-    const override = createChannelOverride(
-      'channel-1',
-      'Test Channel',
-      '2_years'
-    )
+    const override = createChannelOverride('channel-1', 'Test Channel', '2_years')
 
     expect(override.channelId).toBe('channel-1')
     expect(override.channelName).toBe('Test Channel')

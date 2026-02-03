@@ -39,7 +39,6 @@ jobs:
       (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'macos') &&
       (github.event.inputs.framework == 'electron' || github.event.inputs.framework == 'both' || github.event.inputs.framework == '')
     timeout-minutes: 45
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -124,7 +123,6 @@ jobs:
       (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'windows') &&
       (github.event.inputs.framework == 'electron' || github.event.inputs.framework == 'both' || github.event.inputs.framework == '')
     timeout-minutes: 45
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -192,7 +190,6 @@ jobs:
       (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'linux') &&
       (github.event.inputs.framework == 'electron' || github.event.inputs.framework == 'both' || github.event.inputs.framework == '')
     timeout-minutes: 45
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -274,7 +271,6 @@ jobs:
       (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'macos') &&
       (github.event.inputs.framework == 'tauri' || github.event.inputs.framework == 'both')
     timeout-minutes: 60
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -333,7 +329,6 @@ jobs:
       (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'windows') &&
       (github.event.inputs.framework == 'tauri' || github.event.inputs.framework == 'both')
     timeout-minutes: 60
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -387,7 +382,6 @@ jobs:
       (github.event.inputs.platform == 'all' || github.event.inputs.platform == 'linux') &&
       (github.event.inputs.framework == 'tauri' || github.event.inputs.framework == 'both')
     timeout-minutes: 60
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4

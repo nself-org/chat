@@ -330,17 +330,14 @@ export function useCallKit() {
     }
   }, [])
 
-  const reportIncomingCall = React.useCallback(
-    async (callData: IncomingCallData) => {
-      try {
-        return await callKitManager.reportIncomingCall(callData)
-      } catch (err) {
-        console.error('Failed to report incoming call:', err)
-        throw err
-      }
-    },
-    []
-  )
+  const reportIncomingCall = React.useCallback(async (callData: IncomingCallData) => {
+    try {
+      return await callKitManager.reportIncomingCall(callData)
+    } catch (err) {
+      console.error('Failed to report incoming call:', err)
+      throw err
+    }
+  }, [])
 
   const startOutgoingCall = React.useCallback(async (callOptions: StartCallOptions) => {
     try {

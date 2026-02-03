@@ -84,41 +84,43 @@ function LottiePlayer({
 
   useEffect(() => {
     // Dynamically import lottie-web to avoid SSR issues
-    import('lottie-web').then((lottie) => {
-      if (!containerRef.current) return
+    import('lottie-web')
+      .then((lottie) => {
+        if (!containerRef.current) return
 
-      // Clear any existing animation
-      if (animationRef.current) {
-        (animationRef.current as { destroy: () => void }).destroy()
-      }
-
-      try {
-        animationRef.current = lottie.default.loadAnimation({
-          container: containerRef.current,
-          renderer: 'svg',
-          loop,
-          autoplay: autoplay && isPlaying,
-          path: src,
-        })
-
-        const anim = animationRef.current as {
-          addEventListener: (event: string, cb: () => void) => void
+        // Clear any existing animation
+        if (animationRef.current) {
+          ;(animationRef.current as { destroy: () => void }).destroy()
         }
 
-        anim.addEventListener('DOMLoaded', () => {
-          setLoaded(true)
-          onLoad?.()
-        })
-      } catch (err) {
-        onError?.(err instanceof Error ? err : new Error('Failed to load animation'))
-      }
-    }).catch((err) => {
-      onError?.(err instanceof Error ? err : new Error('Failed to import lottie-web'))
-    })
+        try {
+          animationRef.current = lottie.default.loadAnimation({
+            container: containerRef.current,
+            renderer: 'svg',
+            loop,
+            autoplay: autoplay && isPlaying,
+            path: src,
+          })
+
+          const anim = animationRef.current as {
+            addEventListener: (event: string, cb: () => void) => void
+          }
+
+          anim.addEventListener('DOMLoaded', () => {
+            setLoaded(true)
+            onLoad?.()
+          })
+        } catch (err) {
+          onError?.(err instanceof Error ? err : new Error('Failed to load animation'))
+        }
+      })
+      .catch((err) => {
+        onError?.(err instanceof Error ? err : new Error('Failed to import lottie-web'))
+      })
 
     return () => {
       if (animationRef.current) {
-        (animationRef.current as { destroy: () => void }).destroy()
+        ;(animationRef.current as { destroy: () => void }).destroy()
       }
     }
   }, [src, loop, autoplay, isPlaying, onLoad, onError])
@@ -141,10 +143,10 @@ function LottiePlayer({
 
   return (
     <div className={cn('relative', className)}>
-      <div ref={containerRef} className="w-full h-full" />
+      <div ref={containerRef} className="h-full w-full" />
       {!loaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted/50 animate-pulse">
-          <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin" />
+        <div className="bg-muted/50 absolute inset-0 flex animate-pulse items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
         </div>
       )}
       {loaded && (
@@ -154,13 +156,9 @@ function LottiePlayer({
             e.stopPropagation()
             togglePlay()
           }}
-          className="absolute bottom-1 right-1 p-1 rounded-full bg-black/50 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute bottom-1 right-1 rounded-full bg-black/50 p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
         >
-          {isPlaying ? (
-            <Pause className="h-3 w-3" />
-          ) : (
-            <Play className="h-3 w-3" />
-          )}
+          {isPlaying ? <Pause className="h-3 w-3" /> : <Play className="h-3 w-3" />}
         </button>
       )}
     </div>
@@ -233,16 +231,22 @@ export function StickerPreview({
   }, [])
 
   // Handle favorite toggle
-  const handleFavorite = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-    onFavorite?.(sticker)
-  }, [onFavorite, sticker])
+  const handleFavorite = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      onFavorite?.(sticker)
+    },
+    [onFavorite, sticker]
+  )
 
   // Handle info click
-  const handleInfo = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation()
-    onInfo?.(sticker)
-  }, [onInfo, sticker])
+  const handleInfo = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation()
+      onInfo?.(sticker)
+    },
+    [onInfo, sticker]
+  )
 
   // Cleanup on unmount
   useEffect(() => {
@@ -256,11 +260,11 @@ export function StickerPreview({
   return (
     <div
       className={cn(
-        'group relative rounded-lg cursor-pointer transition-all',
+        'group relative cursor-pointer rounded-lg transition-all',
         'hover:bg-accent/50 hover:scale-105',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         config.container,
-        disabled && 'opacity-50 cursor-not-allowed hover:scale-100',
+        disabled && 'cursor-not-allowed opacity-50 hover:scale-100',
         className
       )}
       onClick={handleClick}
@@ -284,14 +288,11 @@ export function StickerPreview({
       aria-label={sticker.name || 'Sticker'}
     >
       {/* Sticker Image/Animation */}
-      <div className="w-full h-full flex items-center justify-center p-1">
+      <div className="flex h-full w-full items-center justify-center p-1">
         {isAnimated && stickerType === 'lottie' && isHovered ? (
-          <LottiePlayer
-            src={sticker.url}
-            className="w-full h-full"
-          />
+          <LottiePlayer src={sticker.url} className="h-full w-full" />
         ) : imageError ? (
-          <div className="w-full h-full flex items-center justify-center bg-muted rounded-md">
+          <div className="flex h-full w-full items-center justify-center rounded-md bg-muted">
             <span className="text-xs text-muted-foreground">Error</span>
           </div>
         ) : (
@@ -300,10 +301,7 @@ export function StickerPreview({
             alt={sticker.name || 'Sticker'}
             width={config.image}
             height={config.image}
-            className={cn(
-              'object-contain transition-transform',
-              isAnimated && 'animate-pulse'
-            )}
+            className={cn('object-contain transition-transform', isAnimated && 'animate-pulse')}
             onError={() => setImageError(true)}
             unoptimized={stickerType === 'gif'}
           />
@@ -312,14 +310,14 @@ export function StickerPreview({
 
       {/* Animated indicator */}
       {isAnimated && !isHovered && (
-        <div className="absolute bottom-0.5 right-0.5 p-0.5 rounded bg-black/50">
+        <div className="absolute bottom-0.5 right-0.5 rounded bg-black/50 p-0.5">
           <Play className="h-2.5 w-2.5 text-white" />
         </div>
       )}
 
       {/* Hover Actions */}
       {showHoverActions && isHovered && !disabled && (
-        <div className="absolute top-0 right-0 flex gap-0.5 p-0.5 rounded-bl-lg bg-background/80 backdrop-blur-sm">
+        <div className="bg-background/80 absolute right-0 top-0 flex gap-0.5 rounded-bl-lg p-0.5 backdrop-blur-sm">
           {onFavorite && (
             <button
               type="button"
@@ -333,9 +331,7 @@ export function StickerPreview({
               )}
               title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
             >
-              <Heart
-                className={cn(config.iconSize, isFavorite && 'fill-current')}
-              />
+              <Heart className={cn(config.iconSize, isFavorite && 'fill-current')} />
             </button>
           )}
           {onInfo && (
@@ -343,7 +339,7 @@ export function StickerPreview({
               type="button"
               onClick={handleInfo}
               className={cn(
-                'rounded text-muted-foreground hover:text-foreground transition-colors',
+                'rounded text-muted-foreground transition-colors hover:text-foreground',
                 config.actionBtn
               )}
               title="Sticker info"
@@ -370,15 +366,7 @@ export function StickerPreviewSkeleton({
 }) {
   const config = sizeConfig[size]
 
-  return (
-    <div
-      className={cn(
-        'rounded-lg bg-muted animate-pulse',
-        config.container,
-        className
-      )}
-    />
-  )
+  return <div className={cn('animate-pulse rounded-lg bg-muted', config.container, className)} />
 }
 
 // ============================================================================
@@ -410,14 +398,14 @@ export function StickerPreviewLarge({
   return (
     <div
       className={cn(
-        'flex flex-col items-center gap-4 p-6 rounded-xl bg-background border shadow-lg',
+        'flex flex-col items-center gap-4 rounded-xl border bg-background p-6 shadow-lg',
         className
       )}
     >
       {/* Sticker Preview */}
-      <div className="w-48 h-48 flex items-center justify-center">
+      <div className="flex h-48 w-48 items-center justify-center">
         {isAnimated && stickerType === 'lottie' ? (
-          <LottiePlayer src={sticker.url} className="w-full h-full" />
+          <LottiePlayer src={sticker.url} className="h-full w-full" />
         ) : (
           <Image
             src={sticker.url}
@@ -432,13 +420,9 @@ export function StickerPreviewLarge({
 
       {/* Sticker Info */}
       <div className="text-center">
-        {sticker.name && (
-          <h3 className="font-medium text-foreground">{sticker.name}</h3>
-        )}
-        {sticker.emoji && (
-          <p className="text-sm text-muted-foreground">Emoji: {sticker.emoji}</p>
-        )}
-        <p className="text-xs text-muted-foreground mt-1">
+        {sticker.name && <h3 className="font-medium text-foreground">{sticker.name}</h3>}
+        {sticker.emoji && <p className="text-sm text-muted-foreground">Emoji: {sticker.emoji}</p>}
+        <p className="mt-1 text-xs text-muted-foreground">
           {sticker.width}x{sticker.height}
           {sticker.file_size && ` - ${StickerService.formatFileSize(sticker.file_size)}`}
         </p>
@@ -450,7 +434,7 @@ export function StickerPreviewLarge({
           <button
             type="button"
             onClick={() => onSend(sticker)}
-            className="px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="text-primary-foreground hover:bg-primary/90 rounded-lg bg-primary px-4 py-2 transition-colors"
           >
             Send
           </button>
@@ -460,13 +444,13 @@ export function StickerPreviewLarge({
             type="button"
             onClick={() => onFavorite(sticker)}
             className={cn(
-              'px-4 py-2 rounded-lg border transition-colors',
+              'rounded-lg border px-4 py-2 transition-colors',
               isFavorite
                 ? 'border-red-500 text-red-500 hover:bg-red-500/10'
                 : 'border-input hover:bg-accent'
             )}
           >
-            <Heart className={cn('h-4 w-4 mr-2 inline', isFavorite && 'fill-current')} />
+            <Heart className={cn('mr-2 inline h-4 w-4', isFavorite && 'fill-current')} />
             {isFavorite ? 'Favorited' : 'Favorite'}
           </button>
         )}
@@ -474,9 +458,9 @@ export function StickerPreviewLarge({
           <button
             type="button"
             onClick={() => onViewPack(sticker.pack_id)}
-            className="px-4 py-2 rounded-lg border border-input hover:bg-accent transition-colors"
+            className="rounded-lg border border-input px-4 py-2 transition-colors hover:bg-accent"
           >
-            <Plus className="h-4 w-4 mr-2 inline" />
+            <Plus className="mr-2 inline h-4 w-4" />
             View Pack
           </button>
         )}

@@ -3,13 +3,10 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { useBookmark } from '@/lib/bookmarks/use-bookmarks'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -80,14 +77,7 @@ function LoadingSpinner({ className }: { className?: string }) {
       viewBox="0 0 24 24"
       className={cn('h-5 w-5 animate-spin', className)}
     >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"
@@ -118,7 +108,7 @@ export function BookmarkButton({
       await toggleBookmark()
       onBookmarkChange?.(!isBookmarked)
     } catch (error) {
-      console.error('Failed to toggle bookmark:', error)
+      logger.error('Failed to toggle bookmark:', error)
     }
   }
 
@@ -144,7 +134,7 @@ export function BookmarkButton({
         sizeClasses[size],
         'transition-colors',
         isBookmarked
-          ? 'text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+          ? 'text-yellow-500 hover:bg-yellow-50 hover:text-yellow-600 dark:hover:bg-yellow-900/20'
           : 'text-muted-foreground hover:text-foreground',
         className
       )}
@@ -167,7 +157,7 @@ export function BookmarkButton({
         className={cn(
           'gap-2',
           isBookmarked
-            ? 'text-yellow-500 hover:text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+            ? 'text-yellow-500 hover:bg-yellow-50 hover:text-yellow-600 dark:hover:bg-yellow-900/20'
             : 'text-muted-foreground hover:text-foreground',
           className
         )}
@@ -214,7 +204,7 @@ export function BookmarkToggle({ messageId, className, onToggle }: BookmarkToggl
       await toggleBookmark()
       onToggle?.(!isBookmarked)
     } catch (error) {
-      console.error('Failed to toggle bookmark:', error)
+      logger.error('Failed to toggle bookmark:', error)
     }
   }
 
@@ -224,10 +214,10 @@ export function BookmarkToggle({ messageId, className, onToggle }: BookmarkToggl
       onClick={handleToggle}
       disabled={loading}
       className={cn(
-        'flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-md transition-colors',
-        'hover:bg-accent hover:text-accent-foreground',
+        'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
+        'hover:text-accent-foreground hover:bg-accent',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-        'disabled:opacity-50 disabled:pointer-events-none',
+        'disabled:pointer-events-none disabled:opacity-50',
         className
       )}
     >

@@ -36,13 +36,10 @@ import {
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
-  Info
+  Info,
 } from 'lucide-react'
 import { getRemainingSeconds } from '@/lib/2fa/totp'
-import {
-  formatBackupCodesForDownload,
-  formatBackupCodesForPrint
-} from '@/lib/2fa/backup-codes'
+import { formatBackupCodesForDownload, formatBackupCodesForPrint } from '@/lib/2fa/backup-codes'
 import { useToast } from '@/hooks/use-toast'
 
 interface TwoFactorSetupProps {
@@ -63,13 +60,7 @@ interface SetupData {
   manualEntryCode: string
 }
 
-export function TwoFactorSetup({
-  open,
-  onComplete,
-  onCancel,
-  userId,
-  email,
-}: TwoFactorSetupProps) {
+export function TwoFactorSetup({ open, onComplete, onCancel, userId, email }: TwoFactorSetupProps) {
   const { toast } = useToast()
 
   const [step, setStep] = useState<SetupStep>('intro')
@@ -265,13 +256,13 @@ export function TwoFactorSetup({
 
   return (
     <Dialog open={open} onOpenChange={() => !loading && handleClose()}>
-      <DialogContent className="sm:max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
         {/* INTRO STEP */}
         {step === 'intro' && (
           <>
             <DialogHeader>
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-lg">
                   <Shield className="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -287,7 +278,8 @@ export function TwoFactorSetup({
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription>
-                  Two-factor authentication (2FA) helps protect your account by requiring a verification code in addition to your password when signing in.
+                  Two-factor authentication (2FA) helps protect your account by requiring a
+                  verification code in addition to your password when signing in.
                 </AlertDescription>
               </Alert>
 
@@ -296,7 +288,10 @@ export function TwoFactorSetup({
                 <ol className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex gap-2">
                     <span className="font-semibold text-foreground">1.</span>
-                    <span>Download an authenticator app (Google Authenticator, Authy, Microsoft Authenticator, etc.)</span>
+                    <span>
+                      Download an authenticator app (Google Authenticator, Authy, Microsoft
+                      Authenticator, etc.)
+                    </span>
                   </li>
                   <li className="flex gap-2">
                     <span className="font-semibold text-foreground">2.</span>
@@ -317,7 +312,7 @@ export function TwoFactorSetup({
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm">Recommended Authenticator Apps</CardTitle>
                 </CardHeader>
-                <CardContent className="text-sm space-y-1">
+                <CardContent className="space-y-1 text-sm">
                   <div className="flex items-center gap-2">
                     <Smartphone className="h-4 w-4" />
                     <span>Google Authenticator (iOS, Android)</span>
@@ -364,7 +359,7 @@ export function TwoFactorSetup({
           <>
             <DialogHeader>
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-lg">
                   <QrCode className="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -391,15 +386,11 @@ export function TwoFactorSetup({
               <TabsContent value="qr" className="space-y-4">
                 <div className="flex flex-col items-center justify-center space-y-4 py-4">
                   {/* QR Code */}
-                  <div className="rounded-lg border-4 border-primary/20 p-4 bg-white">
-                    <img
-                      src={setupData.qrCodeDataUrl}
-                      alt="2FA QR Code"
-                      className="h-64 w-64"
-                    />
+                  <div className="border-primary/20 rounded-lg border-4 bg-white p-4">
+                    <img src={setupData.qrCodeDataUrl} alt="2FA QR Code" className="h-64 w-64" />
                   </div>
 
-                  <div className="text-center space-y-2">
+                  <div className="space-y-2 text-center">
                     <p className="text-sm text-muted-foreground">
                       Open your authenticator app and scan this QR code
                     </p>
@@ -414,7 +405,8 @@ export function TwoFactorSetup({
                 <Alert>
                   <Info className="h-4 w-4" />
                   <AlertDescription>
-                    If you can&apos;t scan the QR code, you can manually enter this secret key into your authenticator app.
+                    If you can&apos;t scan the QR code, you can manually enter this secret key into
+                    your authenticator app.
                   </AlertDescription>
                 </Alert>
 
@@ -469,7 +461,7 @@ export function TwoFactorSetup({
           <>
             <DialogHeader>
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-lg">
                   <Smartphone className="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -516,7 +508,8 @@ export function TwoFactorSetup({
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription>
-                  Make sure your device&apos;s time is accurate. TOTP codes are time-based and may not work if your clock is off.
+                  Make sure your device&apos;s time is accurate. TOTP codes are time-based and may
+                  not work if your clock is off.
                 </AlertDescription>
               </Alert>
             </div>
@@ -548,7 +541,7 @@ export function TwoFactorSetup({
           <>
             <DialogHeader>
               <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+                <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-lg">
                   <Key className="h-6 w-6 text-primary" />
                 </div>
                 <div>
@@ -564,7 +557,9 @@ export function TwoFactorSetup({
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  <strong>Important:</strong> Store these backup codes in a secure location. Each code can only be used once. If you lose access to your authenticator app, you&apos;ll need these codes to sign in.
+                  <strong>Important:</strong> Store these backup codes in a secure location. Each
+                  code can only be used once. If you lose access to your authenticator app,
+                  you&apos;ll need these codes to sign in.
                 </AlertDescription>
               </Alert>
 
@@ -572,7 +567,8 @@ export function TwoFactorSetup({
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm">Your Backup Codes</CardTitle>
                   <CardDescription>
-                    {setupData.backupCodes.length} recovery codes • Use if you lose your authenticator
+                    {setupData.backupCodes.length} recovery codes • Use if you lose your
+                    authenticator
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -679,9 +675,9 @@ export function TwoFactorSetup({
 
             <div className="space-y-4 py-4">
               <Card className="border-green-200 bg-green-50 dark:border-green-900 dark:bg-green-950/20">
-                <CardContent className="pt-6 space-y-3">
+                <CardContent className="space-y-3 pt-6">
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-500 mt-0.5" />
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-green-600 dark:text-green-500" />
                     <div>
                       <p className="font-medium">2FA is now active</p>
                       <p className="text-sm text-muted-foreground">
@@ -690,7 +686,7 @@ export function TwoFactorSetup({
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-500 mt-0.5" />
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-green-600 dark:text-green-500" />
                     <div>
                       <p className="font-medium">Backup codes saved</p>
                       <p className="text-sm text-muted-foreground">
@@ -699,7 +695,7 @@ export function TwoFactorSetup({
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-500 mt-0.5" />
+                    <CheckCircle2 className="mt-0.5 h-5 w-5 text-green-600 dark:text-green-500" />
                     <div>
                       <p className="font-medium">Account more secure</p>
                       <p className="text-sm text-muted-foreground">
@@ -713,7 +709,8 @@ export function TwoFactorSetup({
               <Alert>
                 <Info className="h-4 w-4" />
                 <AlertDescription>
-                  You can manage your 2FA settings, view trusted devices, and regenerate backup codes in your account security settings.
+                  You can manage your 2FA settings, view trusted devices, and regenerate backup
+                  codes in your account security settings.
                 </AlertDescription>
               </Alert>
             </div>

@@ -21,7 +21,9 @@ import {
 // Test Helpers
 // ============================================================================
 
-const createMockParticipant = (overrides?: Partial<ThreadPreviewParticipant>): ThreadPreviewParticipant => ({
+const createMockParticipant = (
+  overrides?: Partial<ThreadPreviewParticipant>
+): ThreadPreviewParticipant => ({
   id: 'user-1',
   username: 'testuser',
   display_name: 'Test User',
@@ -256,9 +258,7 @@ describe('ThreadPreviewExpanded Component', () => {
 
   it('should render participant avatars', () => {
     const thread = createMockThread({
-      participants: [
-        createMockParticipant({ id: 'user-1', display_name: 'Test User' }),
-      ],
+      participants: [createMockParticipant({ id: 'user-1', display_name: 'Test User' })],
     })
 
     render(<ThreadPreviewExpanded thread={thread} />)

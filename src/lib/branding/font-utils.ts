@@ -225,15 +225,10 @@ export const fontOptions: FontOption[] = [
 /**
  * Load a Google Font dynamically
  */
-export function loadGoogleFont(
-  fontFamily: string,
-  weights: number[] = [400, 700]
-): Promise<void> {
+export function loadGoogleFont(fontFamily: string, weights: number[] = [400, 700]): Promise<void> {
   return new Promise((resolve, reject) => {
     // Check if already loaded
-    const existingLink = document.querySelector(
-      `link[data-font="${fontFamily}"]`
-    )
+    const existingLink = document.querySelector(`link[data-font="${fontFamily}"]`)
     if (existingLink) {
       resolve()
       return
@@ -259,9 +254,7 @@ export function loadGoogleFont(
 export async function loadGoogleFonts(
   fonts: Array<{ family: string; weights?: number[] }>
 ): Promise<void> {
-  await Promise.all(
-    fonts.map((font) => loadGoogleFont(font.family, font.weights))
-  )
+  await Promise.all(fonts.map((font) => loadGoogleFont(font.family, font.weights)))
 }
 
 /**
@@ -316,9 +309,7 @@ export function getFont(fontName: string): FontOption | undefined {
 /**
  * Get fonts by category
  */
-export function getFontsByCategory(
-  category: FontOption['category']
-): FontOption[] {
+export function getFontsByCategory(category: FontOption['category']): FontOption[] {
   return fontOptions.filter((f) => f.category === category)
 }
 
@@ -353,9 +344,7 @@ export function generateGoogleFontsUrl(
   const familyParams = fonts
     .map((font) => {
       const weights = font.weights || [400, 700]
-      return `family=${encodeURIComponent(font.family)}:wght@${weights.join(
-        ';'
-      )}`
+      return `family=${encodeURIComponent(font.family)}:wght@${weights.join(';')}`
     })
     .join('&')
 
@@ -386,11 +375,7 @@ export function generateFontFace(options: {
 /**
  * Apply font to an element
  */
-export function applyFont(
-  element: HTMLElement,
-  fontFamily: string,
-  weight?: number
-): void {
+export function applyFont(element: HTMLElement, fontFamily: string, weight?: number): void {
   element.style.fontFamily = getFontFamilyString(fontFamily)
   if (weight) {
     element.style.fontWeight = String(weight)
@@ -402,10 +387,7 @@ export function applyFont(
  */
 export function setGlobalFont(fontFamily: string): void {
   if (typeof document === 'undefined') return
-  document.documentElement.style.setProperty(
-    '--font-family',
-    getFontFamilyString(fontFamily)
-  )
+  document.documentElement.style.setProperty('--font-family', getFontFamilyString(fontFamily))
 }
 
 /**
@@ -425,10 +407,7 @@ export async function isFontLoaded(fontFamily: string): Promise<boolean> {
 /**
  * Wait for font to load
  */
-export async function waitForFont(
-  fontFamily: string,
-  timeout = 3000
-): Promise<boolean> {
+export async function waitForFont(fontFamily: string, timeout = 3000): Promise<boolean> {
   if (typeof document === 'undefined') return false
 
   return Promise.race([

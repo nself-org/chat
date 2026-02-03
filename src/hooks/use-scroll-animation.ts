@@ -6,10 +6,7 @@ import { useInView, useScroll, useTransform, MotionValue } from 'framer-motion'
 /**
  * Hook to detect if an element is in view
  */
-export function useScrollAnimation(options?: {
-  threshold?: number
-  once?: boolean
-}) {
+export function useScrollAnimation(options?: { threshold?: number; once?: boolean }) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, {
     once: options?.once ?? true,
@@ -105,10 +102,7 @@ export function useAutoHideOnScroll(threshold: number = 100) {
 /**
  * Hook for scroll snap points
  */
-export function useScrollSnap(
-  containerRef: React.RefObject<HTMLElement>,
-  snapPoints: number[]
-) {
+export function useScrollSnap(containerRef: React.RefObject<HTMLElement>, snapPoints: number[]) {
   const [activeSnapPoint, setActiveSnapPoint] = useState(0)
 
   useEffect(() => {

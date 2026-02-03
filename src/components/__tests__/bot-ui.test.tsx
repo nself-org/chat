@@ -310,7 +310,9 @@ describe('BotMarketplace Component', () => {
     render(<BotMarketplace {...defaultProps} />)
 
     expect(screen.getByText('Bot Marketplace')).toBeInTheDocument()
-    expect(screen.getByText('Discover and install bots to enhance your workspace')).toBeInTheDocument()
+    expect(
+      screen.getByText('Discover and install bots to enhance your workspace')
+    ).toBeInTheDocument()
   })
 
   it('displays search input', () => {
@@ -378,7 +380,13 @@ describe('BotMarketplace Component', () => {
   it('filters by category when category is clicked', async () => {
     const user = userEvent.setup()
     const onFilterCategory = jest.fn()
-    render(<BotMarketplace {...defaultProps} categories={mockCategories} onFilterCategory={onFilterCategory} />)
+    render(
+      <BotMarketplace
+        {...defaultProps}
+        categories={mockCategories}
+        onFilterCategory={onFilterCategory}
+      />
+    )
 
     const productivityButton = screen.getByText('Productivity').closest('button')
     if (productivityButton) {
@@ -388,7 +396,13 @@ describe('BotMarketplace Component', () => {
   })
 
   it('shows active category badge', () => {
-    render(<BotMarketplace {...defaultProps} categories={mockCategories} selectedCategory="productivity" />)
+    render(
+      <BotMarketplace
+        {...defaultProps}
+        categories={mockCategories}
+        selectedCategory="productivity"
+      />
+    )
 
     const badge = screen.getByText('Productivity')
     expect(badge.closest('.cursor-pointer')).toBeInTheDocument()
@@ -512,7 +526,9 @@ describe('BotMarketplaceInline Component', () => {
   })
 
   it('applies custom className', () => {
-    const { container } = render(<BotMarketplaceInline {...defaultProps} className="custom-inline" />)
+    const { container } = render(
+      <BotMarketplaceInline {...defaultProps} className="custom-inline" />
+    )
 
     expect(container.querySelector('.custom-inline')).toBeInTheDocument()
   })

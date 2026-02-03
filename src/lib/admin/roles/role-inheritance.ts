@@ -5,12 +5,7 @@
  * and calculates effective permissions for users.
  */
 
-import {
-  Permission,
-  Role,
-  EffectivePermissions,
-  ChannelPermissionOverride,
-} from './role-types'
+import { Permission, Role, EffectivePermissions, ChannelPermissionOverride } from './role-types'
 import { getHighestRole, sortRolesByPosition } from './role-hierarchy'
 import { PERMISSIONS } from './permission-types'
 
@@ -29,14 +24,10 @@ export function computeEffectivePermissions(
   const highestRole = sortedRoles[0]
 
   // Check if user has administrator permission (bypasses all checks)
-  const hasAdmin = userRoles.some((role) =>
-    role.permissions.includes('administrator')
-  )
+  const hasAdmin = userRoles.some((role) => role.permissions.includes('administrator'))
 
   // Check if user is owner
-  const isOwner = userRoles.some(
-    (role) => role.id === 'owner' && role.isBuiltIn
-  )
+  const isOwner = userRoles.some((role) => role.id === 'owner' && role.isBuiltIn)
 
   // Merge all permissions from all roles
   const permissionSet = new Set<Permission>()
@@ -134,8 +125,7 @@ export function applyChannelOverrides(
   for (const override of sortedOverrides) {
     // Check if override applies to this user
     const applies =
-      override.userId === userId ||
-      (override.roleId && userRoleIds.includes(override.roleId))
+      override.userId === userId || (override.roleId && userRoleIds.includes(override.roleId))
 
     if (!applies) continue
 
@@ -182,10 +172,7 @@ export function computeChannelPermissions(
 /**
  * Find which role grants a specific permission
  */
-export function findPermissionSource(
-  permission: Permission,
-  userRoles: Role[]
-): Role | undefined {
+export function findPermissionSource(permission: Permission, userRoles: Role[]): Role | undefined {
   const sortedRoles = sortRolesByPosition(userRoles)
 
   // Return the highest role that grants this permission
@@ -201,19 +188,14 @@ export function findPermissionSource(
 /**
  * Get all roles that grant a specific permission
  */
-export function findAllPermissionSources(
-  permission: Permission,
-  userRoles: Role[]
-): Role[] {
+export function findAllPermissionSources(permission: Permission, userRoles: Role[]): Role[] {
   return userRoles.filter((role) => role.permissions.includes(permission))
 }
 
 /**
  * Get a map of permissions to their source roles
  */
-export function getPermissionSourceMap(
-  userRoles: Role[]
-): Map<Permission, Role[]> {
+export function getPermissionSourceMap(userRoles: Role[]): Map<Permission, Role[]> {
   const sourceMap = new Map<Permission, Role[]>()
 
   for (const role of userRoles) {
@@ -276,9 +258,7 @@ export function getPermissionsLostOnRemoval(
   }
 
   // Find permissions that are only in the removed role
-  return roleToRemove.permissions.filter(
-    (p) => !remainingPermissions.has(p)
-  )
+  return roleToRemove.permissions.filter((p) => !remainingPermissions.has(p))
 }
 
 // ============================================================================
@@ -295,9 +275,7 @@ export interface PermissionConflict {
   roles: Role[]
 }
 
-export function detectPermissionConflicts(
-  userRoles: Role[]
-): PermissionConflict[] {
+export function detectPermissionConflicts(userRoles: Role[]): PermissionConflict[] {
   const conflicts: PermissionConflict[] = []
   const sourceMap = getPermissionSourceMap(userRoles)
 
@@ -310,8 +288,7 @@ export function detectPermissionConflicts(
     conflicts.push({
       permission: 'manage_roles',
       type: 'escalation',
-      message:
-        'User can manage roles, which may allow privilege escalation',
+      message: 'User can manage roles, which may allow privilege escalation',
       roles: manageRolesSources,
     })
   }
@@ -372,9 +349,7 @@ export function canGrantPermission(
 /**
  * Filter permissions that a user can grant
  */
-export function filterGrantablePermissions(
-  granterPermissions: EffectivePermissions
-): Permission[] {
+export function filterGrantablePermissions(granterPermissions: EffectivePermissions): Permission[] {
   if (!hasPermission(granterPermissions, 'manage_roles')) {
     return []
   }

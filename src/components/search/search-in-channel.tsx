@@ -1,21 +1,12 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import {
-  Search,
-  X,
-  ChevronUp,
-  ChevronDown,
-  Loader2,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  useSearchStore,
-  selectInChannelSearchState,
-} from '@/stores/search-store';
+import * as React from 'react'
+import { useHotkeys } from 'react-hotkeys-hook'
+import { Search, X, ChevronUp, ChevronDown, Loader2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { useSearchStore, selectInChannelSearchState } from '@/stores/search-store'
 
 // ============================================================================
 // Types
@@ -23,19 +14,19 @@ import {
 
 export interface SearchInChannelProps {
   /** The channel ID to search in */
-  channelId: string;
+  channelId: string
   /** The channel name for display */
-  channelName?: string;
+  channelName?: string
   /** Callback when search is performed */
-  onSearch?: (query: string, channelId: string) => void;
+  onSearch?: (query: string, channelId: string) => void
   /** Callback when a result is navigated to */
-  onNavigateToResult?: (messageId: string, index: number) => void;
+  onNavigateToResult?: (messageId: string, index: number) => void
   /** Callback when search is closed */
-  onClose?: () => void;
+  onClose?: () => void
   /** Whether search is loading */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -51,133 +42,126 @@ export function SearchInChannel({
   isLoading = false,
   className,
 }: SearchInChannelProps) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
   // Get search state from store
-  const searchState = useSearchStore(selectInChannelSearchState);
-  const startInChannelSearch = useSearchStore((state) => state.startInChannelSearch);
-  const endInChannelSearch = useSearchStore((state) => state.endInChannelSearch);
-  const setInChannelQuery = useSearchStore((state) => state.setInChannelQuery);
-  const navigateInChannelResult = useSearchStore(
-    (state) => state.navigateInChannelResult
-  );
+  const searchState = useSearchStore(selectInChannelSearchState)
+  const startInChannelSearch = useSearchStore((state) => state.startInChannelSearch)
+  const endInChannelSearch = useSearchStore((state) => state.endInChannelSearch)
+  const setInChannelQuery = useSearchStore((state) => state.setInChannelQuery)
+  const navigateInChannelResult = useSearchStore((state) => state.navigateInChannelResult)
 
-  const { active, query, results, currentIndex, total } = searchState;
+  const { active, query, results, currentIndex, total } = searchState
 
   // Keyboard shortcuts
   useHotkeys(
     'mod+f',
     (e) => {
-      e.preventDefault();
+      e.preventDefault()
       if (!active) {
-        startInChannelSearch();
-        setTimeout(() => inputRef.current?.focus(), 0);
+        startInChannelSearch()
+        setTimeout(() => inputRef.current?.focus(), 0)
       }
     },
     { enableOnFormTags: true }
-  );
+  )
 
   useHotkeys(
     'escape',
     () => {
       if (active) {
-        handleClose();
+        handleClose()
       }
     },
     { enabled: active, enableOnFormTags: true }
-  );
+  )
 
   useHotkeys(
     'enter',
     (e) => {
       if (active && results.length > 0) {
-        e.preventDefault();
-        const result = results[currentIndex];
+        e.preventDefault()
+        const result = results[currentIndex]
         if (result) {
-          onNavigateToResult?.(result.id, currentIndex);
+          onNavigateToResult?.(result.id, currentIndex)
         }
       }
     },
     { enabled: active, enableOnFormTags: true }
-  );
+  )
 
   useHotkeys(
     ['mod+g', 'f3'],
     (e) => {
       if (active && results.length > 0) {
-        e.preventDefault();
+        e.preventDefault()
         if (e.shiftKey) {
-          handlePrevious();
+          handlePrevious()
         } else {
-          handleNext();
+          handleNext()
         }
       }
     },
     { enabled: active, enableOnFormTags: true }
-  );
+  )
 
   // Handle query change with debounce
-  const [localQuery, setLocalQuery] = React.useState(query);
-  const debounceRef = React.useRef<NodeJS.Timeout | null>(null);
+  const [localQuery, setLocalQuery] = React.useState(query)
+  const debounceRef = React.useRef<NodeJS.Timeout | null>(null)
 
   React.useEffect(() => {
     if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
+      clearTimeout(debounceRef.current)
     }
 
     debounceRef.current = setTimeout(() => {
       if (localQuery !== query) {
-        setInChannelQuery(localQuery);
+        setInChannelQuery(localQuery)
         if (localQuery.trim()) {
-          onSearch?.(localQuery, channelId);
+          onSearch?.(localQuery, channelId)
         }
       }
-    }, 300);
+    }, 300)
 
     return () => {
       if (debounceRef.current) {
-        clearTimeout(debounceRef.current);
+        clearTimeout(debounceRef.current)
       }
-    };
-  }, [localQuery, query, channelId, onSearch, setInChannelQuery]);
+    }
+  }, [localQuery, query, channelId, onSearch, setInChannelQuery])
 
   // Sync local query with store query
   React.useEffect(() => {
-    setLocalQuery(query);
-  }, [query]);
+    setLocalQuery(query)
+  }, [query])
 
   const handleClose = () => {
-    endInChannelSearch();
-    onClose?.();
-  };
+    endInChannelSearch()
+    onClose?.()
+  }
 
   const handleNext = () => {
-    navigateInChannelResult('next');
-    const nextIndex = (currentIndex + 1) % results.length;
-    const result = results[nextIndex];
+    navigateInChannelResult('next')
+    const nextIndex = (currentIndex + 1) % results.length
+    const result = results[nextIndex]
     if (result) {
-      onNavigateToResult?.(result.id, nextIndex);
+      onNavigateToResult?.(result.id, nextIndex)
     }
-  };
+  }
 
   const handlePrevious = () => {
-    navigateInChannelResult('prev');
-    const prevIndex = currentIndex === 0 ? results.length - 1 : currentIndex - 1;
-    const result = results[prevIndex];
+    navigateInChannelResult('prev')
+    const prevIndex = currentIndex === 0 ? results.length - 1 : currentIndex - 1
+    const result = results[prevIndex]
     if (result) {
-      onNavigateToResult?.(result.id, prevIndex);
+      onNavigateToResult?.(result.id, prevIndex)
     }
-  };
+  }
 
-  if (!active) return null;
+  if (!active) return null
 
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2 border-b bg-background px-3 py-2',
-        className
-      )}
-    >
+    <div className={cn('flex items-center gap-2 border-b bg-background px-3 py-2', className)}>
       {/* Search icon */}
       <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
 
@@ -187,20 +171,14 @@ export function SearchInChannel({
           ref={inputRef}
           value={localQuery}
           onChange={(e) => setLocalQuery(e.target.value)}
-          placeholder={
-            channelName
-              ? `Search in #${channelName}...`
-              : 'Search in this channel...'
-          }
+          placeholder={channelName ? `Search in #${channelName}...` : 'Search in this channel...'}
           className="h-8 border-0 bg-transparent px-0 focus-visible:ring-0 focus-visible:ring-offset-0"
           autoFocus
         />
       </div>
 
       {/* Loading indicator */}
-      {isLoading && (
-        <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />
-      )}
+      {isLoading && <Loader2 className="h-4 w-4 shrink-0 animate-spin text-muted-foreground" />}
 
       {/* Result count */}
       {!isLoading && localQuery && (
@@ -252,7 +230,7 @@ export function SearchInChannel({
         <X className="h-4 w-4" />
       </Button>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -260,20 +238,17 @@ export function SearchInChannel({
 // ============================================================================
 
 export interface SearchInChannelTriggerProps {
-  onClick?: () => void;
-  className?: string;
+  onClick?: () => void
+  className?: string
 }
 
-export function SearchInChannelTrigger({
-  onClick,
-  className,
-}: SearchInChannelTriggerProps) {
-  const startInChannelSearch = useSearchStore((state) => state.startInChannelSearch);
+export function SearchInChannelTrigger({ onClick, className }: SearchInChannelTriggerProps) {
+  const startInChannelSearch = useSearchStore((state) => state.startInChannelSearch)
 
   const handleClick = () => {
-    startInChannelSearch();
-    onClick?.();
-  };
+    startInChannelSearch()
+    onClick?.()
+  }
 
   return (
     <Button
@@ -289,7 +264,7 @@ export function SearchInChannelTrigger({
         &#8984;F
       </kbd>
     </Button>
-  );
+  )
 }
 
 // ============================================================================
@@ -297,17 +272,13 @@ export function SearchInChannelTrigger({
 // ============================================================================
 
 export function useSearchInChannel() {
-  const searchState = useSearchStore(selectInChannelSearchState);
-  const startInChannelSearch = useSearchStore((state) => state.startInChannelSearch);
-  const endInChannelSearch = useSearchStore((state) => state.endInChannelSearch);
-  const setInChannelQuery = useSearchStore((state) => state.setInChannelQuery);
-  const setInChannelResults = useSearchStore((state) => state.setInChannelResults);
-  const navigateInChannelResult = useSearchStore(
-    (state) => state.navigateInChannelResult
-  );
-  const jumpToInChannelResult = useSearchStore(
-    (state) => state.jumpToInChannelResult
-  );
+  const searchState = useSearchStore(selectInChannelSearchState)
+  const startInChannelSearch = useSearchStore((state) => state.startInChannelSearch)
+  const endInChannelSearch = useSearchStore((state) => state.endInChannelSearch)
+  const setInChannelQuery = useSearchStore((state) => state.setInChannelQuery)
+  const setInChannelResults = useSearchStore((state) => state.setInChannelResults)
+  const navigateInChannelResult = useSearchStore((state) => state.navigateInChannelResult)
+  const jumpToInChannelResult = useSearchStore((state) => state.jumpToInChannelResult)
 
   return {
     ...searchState,
@@ -317,7 +288,7 @@ export function useSearchInChannel() {
     setResults: setInChannelResults,
     navigate: navigateInChannelResult,
     jumpTo: jumpToInChannelResult,
-  };
+  }
 }
 
 // ============================================================================
@@ -326,13 +297,13 @@ export function useSearchInChannel() {
 
 export interface HighlightMatchesProps {
   /** The content to highlight */
-  content: string;
+  content: string
   /** The search query */
-  query: string;
+  query: string
   /** Whether this message is currently focused */
-  isFocused?: boolean;
+  isFocused?: boolean
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 export function HighlightMatches({
@@ -342,13 +313,13 @@ export function HighlightMatches({
   className,
 }: HighlightMatchesProps) {
   if (!query.trim()) {
-    return <span className={className}>{content}</span>;
+    return <span className={className}>{content}</span>
   }
 
   // Escape regex special characters
-  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`(${escapedQuery})`, 'gi');
-  const parts = content.split(regex);
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escapedQuery})`, 'gi')
+  const parts = content.split(regex)
 
   return (
     <span className={className}>
@@ -370,7 +341,7 @@ export function HighlightMatches({
         )
       )}
     </span>
-  );
+  )
 }
 
-export default SearchInChannel;
+export default SearchInChannel

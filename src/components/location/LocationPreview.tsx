@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  MapPin,
-  Navigation,
-  Copy,
-  ExternalLink,
-  Share2,
-} from 'lucide-react'
+import { MapPin, Navigation, Copy, ExternalLink, Share2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { LocationMap } from './LocationMap'
@@ -66,9 +60,7 @@ export function LocationPreview({
   size = 'md',
   className,
 }: LocationPreviewProps) {
-  const addressText = typeof address === 'string'
-    ? address
-    : address?.formattedAddress
+  const addressText = typeof address === 'string' ? address : address?.formattedAddress
 
   const handleCopyCoordinates = async () => {
     const success = await copyCoordinates(coordinates)
@@ -111,12 +103,7 @@ export function LocationPreview({
   const config = sizeConfig[size]
 
   return (
-    <div
-      className={cn(
-        'overflow-hidden rounded-lg border bg-card',
-        className
-      )}
-    >
+    <div className={cn('overflow-hidden rounded-lg border bg-card', className)}>
       {/* Map Preview */}
       {showMap && (
         <LocationMap
@@ -131,14 +118,12 @@ export function LocationPreview({
       {/* Location Info */}
       <div className={cn(config.padding)}>
         <div className={cn('flex items-start', config.gap)}>
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
+          <div className="bg-primary/10 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full">
             <MapPin className={cn('text-primary', config.icon)} />
           </div>
 
-          <div className="flex-1 min-w-0">
-            {label && (
-              <p className={cn('font-semibold', config.title)}>{label}</p>
-            )}
+          <div className="min-w-0 flex-1">
+            {label && <p className={cn('font-semibold', config.title)}>{label}</p>}
             {addressText && (
               <p
                 className={cn(
@@ -180,23 +165,13 @@ export function LocationPreview({
             </Button>
 
             {onShare && (
-              <Button
-                variant="outline"
-                size="sm"
-                className={config.button}
-                onClick={onShare}
-              >
+              <Button variant="outline" size="sm" className={config.button} onClick={onShare}>
                 <Share2 className="mr-1.5 h-3.5 w-3.5" />
                 Share
               </Button>
             )}
 
-            <Button
-              variant="ghost"
-              size="sm"
-              className={config.button}
-              onClick={handleOpenInMaps}
-            >
+            <Button variant="ghost" size="sm" className={config.button} onClick={handleOpenInMaps}>
               <ExternalLink className="mr-1.5 h-3.5 w-3.5" />
               Open in Maps
             </Button>
@@ -242,10 +217,10 @@ export function CompactLocationPreview({
       )}
       onClick={onClick}
     >
-      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+      <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full">
         <MapPin className="h-4 w-4 text-primary" />
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {label && <p className="truncate text-sm font-medium">{label}</p>}
         <p className="truncate text-xs text-muted-foreground">
           {address || formatCoordinates(coordinates)}
@@ -269,17 +244,9 @@ interface MiniLocationPreviewProps {
 /**
  * Minimal location preview showing just the map.
  */
-export function MiniLocationPreview({
-  coordinates,
-  className,
-}: MiniLocationPreviewProps) {
+export function MiniLocationPreview({ coordinates, className }: MiniLocationPreviewProps) {
   return (
-    <div
-      className={cn(
-        'relative overflow-hidden rounded-lg',
-        className
-      )}
-    >
+    <div className={cn('relative overflow-hidden rounded-lg', className)}>
       <LocationMap
         center={coordinates}
         zoom={15}

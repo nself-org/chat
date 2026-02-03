@@ -139,7 +139,7 @@ describe('escapeHtml', () => {
   it('should escape HTML entities', () => {
     expect(escapeHtml('<script>')).toBe('&lt;script&gt;')
     expect(escapeHtml('"test"')).toBe('&quot;test&quot;')
-    expect(escapeHtml("it's")).toBe("it&#39;s")
+    expect(escapeHtml("it's")).toBe('it&#39;s')
     expect(escapeHtml('a & b')).toBe('a &amp; b')
   })
 

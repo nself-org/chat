@@ -15,10 +15,7 @@ import { AppConfigProvider } from '@stores/app-config-store'
 import { ApolloProvider as GraphQLProvider } from '@api/graphql-client'
 
 // Ignore specific warnings in development
-LogBox.ignoreLogs([
-  'ViewPropTypes will be removed',
-  'ColorPropType will be removed',
-])
+LogBox.ignoreLogs(['ViewPropTypes will be removed', 'ColorPropType will be removed'])
 
 function AppContent() {
   const { theme, colorScheme } = useTheme()

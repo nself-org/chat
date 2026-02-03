@@ -13,12 +13,7 @@ export default function ChatLoading() {
 
       {/* Main chat area skeleton */}
       <div className="flex-1">
-        <ChatSkeleton
-          showHeader
-          showInput
-          showMemberPanel={false}
-          messageCount={8}
-        />
+        <ChatSkeleton showHeader showInput showMemberPanel={false} messageCount={8} />
       </div>
     </div>
   )

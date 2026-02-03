@@ -5,12 +5,7 @@
  * Handles Block Kit, mrkdwn conversion, and notification formatting.
  */
 
-import type {
-  SlackMessage,
-  SlackUser,
-  SlackChannel,
-  SlackFile,
-} from '../types'
+import type { SlackMessage, SlackUser, SlackChannel, SlackFile } from '../types'
 
 import type {
   SlackBlock,
@@ -46,12 +41,12 @@ export type SlackNotificationIcon =
   | 'slack'
 
 export type SlackNotificationColor =
-  | 'green'   // success, online
-  | 'blue'    // info, message
-  | 'purple'  // app, bot
-  | 'red'     // error, alert
-  | 'yellow'  // warning, away
-  | 'gray'    // neutral
+  | 'green' // success, online
+  | 'blue' // info, message
+  | 'purple' // app, bot
+  | 'red' // error, alert
+  | 'yellow' // warning, away
+  | 'gray' // neutral
 
 export interface SlackNotificationMetadata {
   eventType: string

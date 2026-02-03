@@ -5,40 +5,37 @@
  * Provides safe access to the Electron API with SSR support.
  */
 
-'use client';
+'use client'
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import {
-  isElectron,
-  getElectronAPI,
-  type ElectronAPI,
-  type PlatformInfo,
-} from '@/lib/electron';
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { isElectron, getElectronAPI, type ElectronAPI, type PlatformInfo } from '@/lib/electron'
+
+import { logger } from '@/lib/logger'
 
 export interface ElectronInfo {
   /** Whether running in Electron environment */
-  isElectron: boolean;
+  isElectron: boolean
   /** Whether the hook has finished initializing */
-  isReady: boolean;
+  isReady: boolean
   /** Platform information */
-  platform: PlatformInfo | null;
+  platform: PlatformInfo | null
   /** App version */
-  version: string | null;
+  version: string | null
   /** App name */
-  appName: string | null;
+  appName: string | null
   /** Whether the app is packaged (production build) */
-  isPackaged: boolean;
+  isPackaged: boolean
   /** System locale */
-  locale: string | null;
+  locale: string | null
 }
 
 export interface UseElectronReturn extends ElectronInfo {
   /** Get the Electron API (returns undefined if not in Electron) */
-  getApi: () => ElectronAPI | undefined;
+  getApi: () => ElectronAPI | undefined
   /** Open a URL in the default browser */
-  openExternal: (url: string) => Promise<void>;
+  openExternal: (url: string) => Promise<void>
   /** Quit the application */
-  quit: () => Promise<void>;
+  quit: () => Promise<void>
 }
 
 /**
@@ -49,7 +46,7 @@ export interface UseElectronReturn extends ElectronInfo {
  * const { isElectron, platform, openExternal } = useElectron();
  *
  * if (isElectron) {
- *   console.log(`Running on ${platform?.platform}`);
+ *   /* console.log `Running on ${platform?.platform}`);
  * }
  * ```
  */
@@ -62,21 +59,21 @@ export function useElectron(): UseElectronReturn {
     appName: null,
     isPackaged: false,
     locale: null,
-  });
+  })
 
   useEffect(() => {
     async function initElectron() {
-      const electronAvailable = isElectron();
+      const electronAvailable = isElectron()
 
       if (!electronAvailable) {
-        setInfo((prev) => ({ ...prev, isReady: true }));
-        return;
+        setInfo((prev) => ({ ...prev, isReady: true }))
+        return
       }
 
-      const api = getElectronAPI();
+      const api = getElectronAPI()
       if (!api) {
-        setInfo((prev) => ({ ...prev, isReady: true }));
-        return;
+        setInfo((prev) => ({ ...prev, isReady: true }))
+        return
       }
 
       try {
@@ -86,7 +83,7 @@ export function useElectron(): UseElectronReturn {
           api.app.getName(),
           api.app.isPackaged(),
           api.app.getLocale(),
-        ]);
+        ])
 
         setInfo({
           isElectron: true,
@@ -96,35 +93,35 @@ export function useElectron(): UseElectronReturn {
           appName,
           isPackaged,
           locale,
-        });
+        })
       } catch (error) {
-        console.error('Failed to initialize Electron info:', error);
-        setInfo((prev) => ({ ...prev, isElectron: true, isReady: true }));
+        logger.error('Failed to initialize Electron info:', error)
+        setInfo((prev) => ({ ...prev, isElectron: true, isReady: true }))
       }
     }
 
-    initElectron();
-  }, []);
+    initElectron()
+  }, [])
 
   const getApi = useCallback(() => {
-    return getElectronAPI();
-  }, []);
+    return getElectronAPI()
+  }, [])
 
   const openExternal = useCallback(async (url: string) => {
-    const api = getElectronAPI();
+    const api = getElectronAPI()
     if (api) {
-      await api.shell.openExternal(url);
+      await api.shell.openExternal(url)
     } else {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      window.open(url, '_blank', 'noopener,noreferrer')
     }
-  }, []);
+  }, [])
 
   const quit = useCallback(async () => {
-    const api = getElectronAPI();
+    const api = getElectronAPI()
     if (api) {
-      await api.app.quit();
+      await api.app.quit()
     }
-  }, []);
+  }, [])
 
   return useMemo(
     () => ({
@@ -134,20 +131,20 @@ export function useElectron(): UseElectronReturn {
       quit,
     }),
     [info, getApi, openExternal, quit]
-  );
+  )
 }
 
 /**
  * Hook to check if running in Electron (lightweight version)
  */
 export function useIsElectron(): boolean {
-  const [electron, setElectron] = useState(false);
+  const [electron, setElectron] = useState(false)
 
   useEffect(() => {
-    setElectron(isElectron());
-  }, []);
+    setElectron(isElectron())
+  }, [])
 
-  return electron;
+  return electron
 }
 
 /**
@@ -158,14 +155,14 @@ export function useElectronEffect(
   deps: React.DependencyList = []
 ): void {
   useEffect(() => {
-    if (!isElectron()) return;
+    if (!isElectron()) return
 
-    const api = getElectronAPI();
-    if (!api) return;
+    const api = getElectronAPI()
+    if (!api) return
 
-    return effect(api);
+    return effect(api)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, deps);
+  }, deps)
 }
 
-export default useElectron;
+export default useElectron

@@ -13,15 +13,8 @@ import { gql } from '@apollo/client'
 export const GET_PUBLIC_CHANNELS = gql`
   query GetPublicChannels($limit: Int = 50, $offset: Int = 0) {
     nchat_channels(
-      where: {
-        is_private: { _eq: false }
-        is_archived: { _eq: false }
-      }
-      order_by: [
-        { is_default: desc }
-        { members_aggregate: { count: desc } }
-        { name: asc }
-      ]
+      where: { is_private: { _eq: false }, is_archived: { _eq: false } }
+      order_by: [{ is_default: desc }, { members_aggregate: { count: desc } }, { name: asc }]
       limit: $limit
       offset: $offset
     ) {
@@ -73,10 +66,7 @@ export const SEARCH_CHANNELS = gql`
         is_archived: { _eq: false }
       }
       limit: $limit
-      order_by: [
-        { is_default: desc }
-        { members_aggregate: { count: desc } }
-      ]
+      order_by: [{ is_default: desc }, { members_aggregate: { count: desc } }]
     ) {
       id
       name
@@ -109,10 +99,7 @@ export const GET_TRENDING_CHANNELS = gql`
         is_archived: { _eq: false }
         last_message_at: { _gte: $since }
       }
-      order_by: [
-        { messages_aggregate: { count: desc } }
-        { members_aggregate: { count: desc } }
-      ]
+      order_by: [{ messages_aggregate: { count: desc } }, { members_aggregate: { count: desc } }]
       limit: $limit
     ) {
       id
@@ -145,15 +132,8 @@ export const GET_TRENDING_CHANNELS = gql`
 export const GET_FEATURED_CHANNELS = gql`
   query GetFeaturedChannels($limit: Int = 10) {
     nchat_channels(
-      where: {
-        is_private: { _eq: false }
-        is_archived: { _eq: false }
-        is_default: { _eq: true }
-      }
-      order_by: [
-        { position: asc }
-        { created_at: asc }
-      ]
+      where: { is_private: { _eq: false }, is_archived: { _eq: false }, is_default: { _eq: true } }
+      order_by: [{ position: asc }, { created_at: asc }]
       limit: $limit
     ) {
       id
@@ -181,13 +161,8 @@ export const GET_FEATURED_CHANNELS = gql`
 export const GET_POPULAR_CHANNELS = gql`
   query GetPopularChannels($limit: Int = 10) {
     nchat_channels(
-      where: {
-        is_private: { _eq: false }
-        is_archived: { _eq: false }
-      }
-      order_by: [
-        { members_aggregate: { count: desc } }
-      ]
+      where: { is_private: { _eq: false }, is_archived: { _eq: false } }
+      order_by: [{ members_aggregate: { count: desc } }]
       limit: $limit
     ) {
       id
@@ -219,9 +194,7 @@ export const GET_NEW_CHANNELS = gql`
         is_archived: { _eq: false }
         created_at: { _gte: $since }
       }
-      order_by: [
-        { created_at: desc }
-      ]
+      order_by: [{ created_at: desc }]
       limit: $limit
     ) {
       id
@@ -249,14 +222,8 @@ export const GET_NEW_CHANNELS = gql`
 export const GET_CHANNELS_BY_CATEGORY = gql`
   query GetChannelsByCategory($categoryId: uuid!) {
     nchat_channels(
-      where: {
-        category_id: { _eq: $categoryId }
-        is_archived: { _eq: false }
-      }
-      order_by: [
-        { position: asc }
-        { name: asc }
-      ]
+      where: { category_id: { _eq: $categoryId }, is_archived: { _eq: false } }
+      order_by: [{ position: asc }, { name: asc }]
     ) {
       id
       name
@@ -286,14 +253,9 @@ export const GET_RECOMMENDED_CHANNELS = gql`
       where: {
         is_private: { _eq: false }
         is_archived: { _eq: false }
-        members: {
-          user_id: { _neq: $userId }
-        }
+        members: { user_id: { _neq: $userId } }
       }
-      order_by: [
-        { members_aggregate: { count: desc } }
-        { created_at: desc }
-      ]
+      order_by: [{ members_aggregate: { count: desc } }, { created_at: desc }]
       limit: $limit
     ) {
       id
@@ -326,9 +288,7 @@ export const GET_SIMILAR_CHANNELS = gql`
         is_private: { _eq: false }
         is_archived: { _eq: false }
       }
-      order_by: [
-        { members_aggregate: { count: desc } }
-      ]
+      order_by: [{ members_aggregate: { count: desc } }]
       limit: $limit
     ) {
       id
@@ -353,20 +313,14 @@ export const GET_SIMILAR_CHANNELS = gql`
 export const GET_DISCOVERY_STATS = gql`
   query GetDiscoveryStats {
     public_channels: nchat_channels_aggregate(
-      where: {
-        is_private: { _eq: false }
-        is_archived: { _eq: false }
-      }
+      where: { is_private: { _eq: false }, is_archived: { _eq: false } }
     ) {
       aggregate {
         count
       }
     }
     private_channels: nchat_channels_aggregate(
-      where: {
-        is_private: { _eq: true }
-        is_archived: { _eq: false }
-      }
+      where: { is_private: { _eq: true }, is_archived: { _eq: false } }
     ) {
       aggregate {
         count
@@ -388,10 +342,7 @@ export const GET_DISCOVERY_STATS = gql`
       }
     }
     new_this_week: nchat_channels_aggregate(
-      where: {
-        created_at: { _gte: "now() - interval '7 days'" }
-        is_archived: { _eq: false }
-      }
+      where: { created_at: { _gte: "now() - interval '7 days'" }, is_archived: { _eq: false } }
     ) {
       aggregate {
         count
@@ -431,10 +382,7 @@ export const GET_CHANNEL_PREVIEW = gql`
           count
         }
       }
-      messages(
-        order_by: { created_at: desc }
-        limit: 5
-      ) {
+      messages(order_by: { created_at: desc }, limit: 5) {
         id
         content
         created_at
@@ -444,10 +392,7 @@ export const GET_CHANNEL_PREVIEW = gql`
           avatar_url
         }
       }
-      members(
-        limit: 10
-        order_by: { joined_at: asc }
-      ) {
+      members(limit: 10, order_by: { joined_at: asc }) {
         user {
           id
           username

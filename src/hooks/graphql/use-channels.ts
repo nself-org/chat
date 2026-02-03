@@ -1,12 +1,7 @@
 'use client'
 
 import { useCallback, useMemo } from 'react'
-import {
-  useQuery,
-  useMutation,
-  useSubscription,
-  type ApolloError,
-} from '@apollo/client'
+import { useQuery, useMutation, useSubscription, type ApolloError } from '@apollo/client'
 import { useAuth } from '@/contexts/auth-context'
 import {
   GET_CHANNELS,
@@ -190,7 +185,11 @@ export interface UseChannelMembershipReturn {
   inviteUsers: (channelId: string, userIds: string[]) => Promise<number>
   removeUser: (channelId: string, userId: string) => Promise<boolean>
   updateRole: (channelId: string, userId: string, role: string) => Promise<boolean>
-  updateNotifications: (channelId: string, enabled: boolean, mutedUntil?: string) => Promise<boolean>
+  updateNotifications: (
+    channelId: string,
+    enabled: boolean,
+    mutedUntil?: string
+  ) => Promise<boolean>
   isMember: (channelId: string) => Promise<boolean>
   loading: boolean
   error: ApolloError | undefined
@@ -518,10 +517,12 @@ export function useUpdateChannel(): UseUpdateChannelReturn {
  * Delete/archive channels
  */
 export function useDeleteChannel(): UseDeleteChannelReturn {
-  const [deleteMutation, { loading: deleteLoading, error: deleteError }] =
-    useMutation(DELETE_CHANNEL, {
+  const [deleteMutation, { loading: deleteLoading, error: deleteError }] = useMutation(
+    DELETE_CHANNEL,
+    {
       refetchQueries: [{ query: GET_CHANNELS }],
-    })
+    }
+  )
   const [archiveMutation, { loading: archiveLoading, error: archiveError }] =
     useMutation(ARCHIVE_CHANNEL)
   const [unarchiveMutation, { loading: unarchiveLoading, error: unarchiveError }] =
@@ -536,8 +537,7 @@ export function useDeleteChannel(): UseDeleteChannelReturn {
             fields: {
               nchat_channels(existingChannels = [], { readField }) {
                 return existingChannels.filter(
-                  (channelRef: { __ref: string }) =>
-                    readField('id', channelRef) !== channelId
+                  (channelRef: { __ref: string }) => readField('id', channelRef) !== channelId
                 )
               },
             },
@@ -602,18 +602,17 @@ export function useDeleteChannel(): UseDeleteChannelReturn {
 export function useChannelMembership(): UseChannelMembershipReturn {
   const { user } = useAuth()
 
-  const [joinMutation, { loading: joinLoading, error: joinError }] =
-    useMutation(JOIN_CHANNEL)
-  const [leaveMutation, { loading: leaveLoading, error: leaveError }] =
-    useMutation(LEAVE_CHANNEL)
+  const [joinMutation, { loading: joinLoading, error: joinError }] = useMutation(JOIN_CHANNEL)
+  const [leaveMutation, { loading: leaveLoading, error: leaveError }] = useMutation(LEAVE_CHANNEL)
   const [inviteMutation, { loading: inviteLoading, error: inviteError }] =
     useMutation(BULK_INVITE_TO_CHANNEL)
   const [removeMutation, { loading: removeLoading, error: removeError }] =
     useMutation(REMOVE_FROM_CHANNEL)
   const [updateRoleMutation, { loading: roleLoading, error: roleError }] =
     useMutation(UPDATE_MEMBER_ROLE)
-  const [updateNotificationsMutation, { loading: notifLoading, error: notifError }] =
-    useMutation(UPDATE_CHANNEL_NOTIFICATIONS)
+  const [updateNotificationsMutation, { loading: notifLoading, error: notifError }] = useMutation(
+    UPDATE_CHANNEL_NOTIFICATIONS
+  )
 
   const joinChannel = useCallback(
     async (channelId: string): Promise<boolean> => {
@@ -663,9 +662,7 @@ export function useChannelMembership(): UseChannelMembershipReturn {
 
       const result = await inviteMutation({
         variables: { objects },
-        refetchQueries: [
-          { query: GET_CHANNEL_MEMBERS, variables: { channelId } },
-        ],
+        refetchQueries: [{ query: GET_CHANNEL_MEMBERS, variables: { channelId } }],
       })
 
       return result.data?.insert_nchat_channel_members?.affected_rows ?? 0
@@ -677,9 +674,7 @@ export function useChannelMembership(): UseChannelMembershipReturn {
     async (channelId: string, userId: string): Promise<boolean> => {
       const result = await removeMutation({
         variables: { channelId, userId },
-        refetchQueries: [
-          { query: GET_CHANNEL_MEMBERS, variables: { channelId } },
-        ],
+        refetchQueries: [{ query: GET_CHANNEL_MEMBERS, variables: { channelId } }],
       })
 
       return (result.data?.delete_nchat_channel_members?.affected_rows ?? 0) > 0
@@ -738,19 +733,8 @@ export function useChannelMembership(): UseChannelMembershipReturn {
     updateNotifications,
     isMember,
     loading:
-      joinLoading ||
-      leaveLoading ||
-      inviteLoading ||
-      removeLoading ||
-      roleLoading ||
-      notifLoading,
-    error:
-      joinError ??
-      leaveError ??
-      inviteError ??
-      removeError ??
-      roleError ??
-      notifError,
+      joinLoading || leaveLoading || inviteLoading || removeLoading || roleLoading || notifLoading,
+    error: joinError ?? leaveError ?? inviteError ?? removeError ?? roleError ?? notifError,
   }
 }
 

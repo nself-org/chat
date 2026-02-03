@@ -67,10 +67,7 @@ query GetPinnedMessages($channelId: uuid!, $limit: Int = 50, $offset: Int = 0) {
 # Get a single pinned message by message ID
 query GetPinnedMessageByMessageId($channelId: uuid!, $messageId: uuid!) {
   nchat_pinned_messages(
-    where: {
-      channel_id: { _eq: $channelId }
-      message_id: { _eq: $messageId }
-    }
+    where: { channel_id: { _eq: $channelId }, message_id: { _eq: $messageId } }
     limit: 1
   ) {
     id
@@ -131,10 +128,7 @@ query GetChannelPinStats($channelId: uuid!) {
 # Check if a message is pinned
 query IsMessagePinned($channelId: uuid!, $messageId: uuid!) {
   nchat_pinned_messages(
-    where: {
-      channel_id: { _eq: $channelId }
-      message_id: { _eq: $messageId }
-    }
+    where: { channel_id: { _eq: $channelId }, message_id: { _eq: $messageId } }
     limit: 1
   ) {
     id
@@ -154,10 +148,7 @@ query GetChannelPinConfig($channelId: uuid!) {
 # Get user's pin count in a channel
 query GetUserPinCount($channelId: uuid!, $userId: uuid!) {
   nchat_pinned_messages_aggregate(
-    where: {
-      channel_id: { _eq: $channelId }
-      pinned_by: { _eq: $userId }
-    }
+    where: { channel_id: { _eq: $channelId }, pinned_by: { _eq: $userId } }
   ) {
     aggregate {
       count
@@ -166,18 +157,11 @@ query GetUserPinCount($channelId: uuid!, $userId: uuid!) {
 }
 
 # Search pinned messages
-query SearchPinnedMessages(
-  $channelId: uuid!
-  $searchQuery: String!
-  $limit: Int = 20
-) {
+query SearchPinnedMessages($channelId: uuid!, $searchQuery: String!, $limit: Int = 20) {
   nchat_pinned_messages(
     where: {
       channel_id: { _eq: $channelId }
-      _or: [
-        { message: { content: { _ilike: $searchQuery } } }
-        { note: { _ilike: $searchQuery } }
-      ]
+      _or: [{ message: { content: { _ilike: $searchQuery } } }, { note: { _ilike: $searchQuery } }]
     }
     order_by: { pinned_at: desc }
     limit: $limit

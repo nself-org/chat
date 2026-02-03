@@ -42,33 +42,27 @@ export interface ReactionDisplayProps {
 }
 
 // Group reactions by emoji
-function groupReactions(
-  reactions: Reaction[],
-  currentUserId: string
-): GroupedReaction[] {
-  const grouped = reactions.reduce<Record<string, GroupedReaction>>(
-    (acc, reaction) => {
-      const { emoji, user, userId } = reaction
+function groupReactions(reactions: Reaction[], currentUserId: string): GroupedReaction[] {
+  const grouped = reactions.reduce<Record<string, GroupedReaction>>((acc, reaction) => {
+    const { emoji, user, userId } = reaction
 
-      if (!acc[emoji]) {
-        acc[emoji] = {
-          emoji,
-          count: 0,
-          users: [],
-          hasReacted: false,
-        }
+    if (!acc[emoji]) {
+      acc[emoji] = {
+        emoji,
+        count: 0,
+        users: [],
+        hasReacted: false,
       }
+    }
 
-      acc[emoji].count++
-      acc[emoji].users.push(user)
-      if (userId === currentUserId) {
-        acc[emoji].hasReacted = true
-      }
+    acc[emoji].count++
+    acc[emoji].users.push(user)
+    if (userId === currentUserId) {
+      acc[emoji].hasReacted = true
+    }
 
-      return acc
-    },
-    {}
-  )
+    return acc
+  }, {})
 
   return Object.values(grouped).sort((a, b) => b.count - a.count)
 }
@@ -85,9 +79,7 @@ function formatUsersList(users: ReactionUser[], hasReacted: boolean): string {
 
   if (displayNames.length === 2) {
     if (hasReacted) {
-      const other = displayNames.find(
-        (_, i) => !users[i].id || displayNames[i] !== 'You'
-      )
+      const other = displayNames.find((_, i) => !users[i].id || displayNames[i] !== 'You')
       return `You and ${other}`
     }
     return `${displayNames[0]} and ${displayNames[1]}`
@@ -226,10 +218,10 @@ export function ReactionDisplay({
                   aria-label="Add reaction"
                   className={cn(
                     'inline-flex items-center justify-center rounded-full',
-                    'border border-dashed border-muted-foreground/30',
-                    'text-muted-foreground hover:text-foreground hover:border-foreground/50',
-                    'hover:bg-accent transition-colors',
-                    'disabled:opacity-50 disabled:cursor-not-allowed',
+                    'border-muted-foreground/30 border border-dashed',
+                    'hover:border-foreground/50 text-muted-foreground hover:text-foreground',
+                    'transition-colors hover:bg-accent',
+                    'disabled:cursor-not-allowed disabled:opacity-50',
                     classes.addButton
                   )}
                 >
@@ -256,12 +248,7 @@ interface ReactionBadgeProps {
   disabled?: boolean
 }
 
-function ReactionBadge({
-  reaction,
-  onClick,
-  size,
-  disabled = false,
-}: ReactionBadgeProps) {
+function ReactionBadge({ reaction, onClick, size, disabled = false }: ReactionBadgeProps) {
   const classes = sizeClasses[size]
   const userList = formatUsersList(reaction.users, reaction.hasReacted)
 
@@ -283,10 +270,10 @@ function ReactionBadge({
               'inline-flex items-center justify-center rounded-full',
               'border transition-all duration-150',
               'hover:scale-105 active:scale-95',
-              'disabled:opacity-50 disabled:cursor-not-allowed',
+              'disabled:cursor-not-allowed disabled:opacity-50',
               reaction.hasReacted
                 ? 'bg-primary/10 border-primary/30 hover:bg-primary/20'
-                : 'bg-muted border-transparent hover:bg-accent',
+                : 'border-transparent bg-muted hover:bg-accent',
               classes.button
             )}
           >
@@ -304,10 +291,7 @@ function ReactionBadge({
         <TooltipContent side="top" className="max-w-[200px]">
           <div className="text-xs">
             <span className="font-medium">{userList}</span>
-            <span className="text-muted-foreground">
-              {' '}
-              reacted with {reaction.emoji}
-            </span>
+            <span className="text-muted-foreground"> reacted with {reaction.emoji}</span>
           </div>
         </TooltipContent>
       </Tooltip>
@@ -342,10 +326,8 @@ export function CompactReactionDisplay({
       {uniqueEmojis.map((emoji) => (
         <span key={emoji}>{emoji}</span>
       ))}
-      {hiddenCount > 0 && (
-        <span className="text-muted-foreground text-xs">+{hiddenCount}</span>
-      )}
-      <span className="text-muted-foreground text-xs ml-1">{totalCount}</span>
+      {hiddenCount > 0 && <span className="text-xs text-muted-foreground">+{hiddenCount}</span>}
+      <span className="ml-1 text-xs text-muted-foreground">{totalCount}</span>
     </div>
   )
 }
@@ -356,10 +338,7 @@ export interface AnimatedReactionCounterProps {
   className?: string
 }
 
-export function AnimatedReactionCounter({
-  count,
-  className,
-}: AnimatedReactionCounterProps) {
+export function AnimatedReactionCounter({ count, className }: AnimatedReactionCounterProps) {
   return (
     <AnimatePresence mode="popLayout">
       <motion.span

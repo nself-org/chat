@@ -24,9 +24,11 @@ locales/
 ## Namespaces
 
 ### common.json
+
 General UI elements, buttons, labels, validation messages, errors
 
 **Key sections**:
+
 - `app.*` - Application-level strings
 - `navigation.*` - Navigation menu items
 - `time.*` - Time and date strings
@@ -40,9 +42,11 @@ General UI elements, buttons, labels, validation messages, errors
 - `language.*` - Language names
 
 ### chat.json
+
 Chat interface strings
 
 **Key sections**:
+
 - `messages.*` - Message-related strings
 - `channels.*` - Channel management
 - `threads.*` - Thread conversations
@@ -56,9 +60,11 @@ Chat interface strings
 - `formatting.*` - Text formatting
 
 ### settings.json
+
 Settings and preferences UI
 
 **Key sections**:
+
 - `settings.*` - Settings categories
 - `profile.*` - User profile
 - `account.*` - Account management
@@ -71,9 +77,11 @@ Settings and preferences UI
 - `about.*` - About and info
 
 ### admin.json
+
 Admin dashboard strings
 
 **Key sections**:
+
 - `admin.*` - Admin navigation
 - `dashboard.*` - Dashboard widgets
 - `users.*` - User management
@@ -89,16 +97,19 @@ Admin dashboard strings
 ## Adding a New Language
 
 1. Create a new directory with the language code (ISO 639-1):
+
    ```bash
    mkdir -p locales/it
    ```
 
 2. Copy English files as templates:
+
    ```bash
    cp locales/en/* locales/it/
    ```
 
 3. Translate the values (not the keys):
+
    ```json
    {
      "app": {
@@ -136,6 +147,7 @@ Admin dashboard strings
 Different languages need different plural forms:
 
 **English** (2 forms):
+
 ```json
 {
   "messages_one": "{{count}} message",
@@ -144,6 +156,7 @@ Different languages need different plural forms:
 ```
 
 **Arabic** (6 forms):
+
 ```json
 {
   "messages_zero": "لا توجد رسائل",
@@ -156,6 +169,7 @@ Different languages need different plural forms:
 ```
 
 **Russian** (3 forms):
+
 ```json
 {
   "messages_one": "{{count}} сообщение",

@@ -100,13 +100,7 @@ interface ForwardHeaderProps {
   compact?: boolean
 }
 
-function ForwardHeader({
-  user,
-  channel,
-  timestamp,
-  onNavigate,
-  compact,
-}: ForwardHeaderProps) {
+function ForwardHeader({ user, channel, timestamp, onNavigate, compact }: ForwardHeaderProps) {
   const ChannelIcon = channel.isPrivate ? Lock : Hash
 
   return (
@@ -126,7 +120,7 @@ function ForwardHeader({
             className={cn(
               'inline-flex items-center gap-1 font-medium',
               'text-foreground/80 hover:text-foreground hover:underline',
-              'focus:outline-none focus:underline',
+              'focus:underline focus:outline-none',
               'transition-colors'
             )}
           >
@@ -152,7 +146,7 @@ function ForwardHeader({
             className={cn(
               'inline-flex items-center gap-0.5 font-medium',
               'text-foreground/80 hover:text-foreground hover:underline',
-              'focus:outline-none focus:underline',
+              'focus:underline focus:outline-none',
               'transition-colors'
             )}
           >
@@ -179,12 +173,8 @@ interface AttachmentsPreviewProps {
 }
 
 function AttachmentsPreview({ attachments, compact }: AttachmentsPreviewProps) {
-  const imageAttachments = attachments.filter((a) =>
-    a.fileType.startsWith('image/')
-  )
-  const otherAttachments = attachments.filter(
-    (a) => !a.fileType.startsWith('image/')
-  )
+  const imageAttachments = attachments.filter((a) => a.fileType.startsWith('image/'))
+  const otherAttachments = attachments.filter((a) => !a.fileType.startsWith('image/'))
 
   return (
     <div className="mt-2 space-y-1.5">
@@ -220,8 +210,7 @@ function AttachmentsPreview({ attachments, compact }: AttachmentsPreviewProps) {
         <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
           <Paperclip className="h-3 w-3" />
           <span>
-            {otherAttachments.length}{' '}
-            {otherAttachments.length === 1 ? 'file' : 'files'}
+            {otherAttachments.length} {otherAttachments.length === 1 ? 'file' : 'files'}
           </span>
         </div>
       )}
@@ -233,10 +222,7 @@ function AttachmentsPreview({ attachments, compact }: AttachmentsPreviewProps) {
 // Main Component
 // ============================================================================
 
-export const ForwardedMessage = React.forwardRef<
-  HTMLDivElement,
-  ForwardedMessageProps
->(
+export const ForwardedMessage = React.forwardRef<HTMLDivElement, ForwardedMessageProps>(
   (
     {
       className,
@@ -266,14 +252,13 @@ export const ForwardedMessage = React.forwardRef<
       ? originalMessage.content
       : truncateContent(originalMessage.content, maxContentLength)
 
-    const hasAttachments =
-      originalMessage.attachments && originalMessage.attachments.length > 0
+    const hasAttachments = originalMessage.attachments && originalMessage.attachments.length > 0
 
     return (
       <div
         ref={ref}
         className={cn(
-          'rounded-lg border-l-2 border-primary/30 bg-muted/30',
+          'border-primary/30 bg-muted/30 rounded-lg border-l-2',
           compact ? 'p-2' : 'p-3',
           className
         )}
@@ -292,7 +277,7 @@ export const ForwardedMessage = React.forwardRef<
         <div className={cn('mt-2', compact && 'mt-1.5')}>
           <p
             className={cn(
-              'whitespace-pre-wrap text-foreground/90',
+              'text-foreground/90 whitespace-pre-wrap',
               compact ? 'text-sm' : 'text-sm'
             )}
           >
@@ -313,24 +298,14 @@ export const ForwardedMessage = React.forwardRef<
 
           {/* Attachments */}
           {showAttachments && hasAttachments && (
-            <AttachmentsPreview
-              attachments={originalMessage.attachments!}
-              compact={compact}
-            />
+            <AttachmentsPreview attachments={originalMessage.attachments!} compact={compact} />
           )}
         </div>
 
         {/* Comment from forwarder */}
         {comment && (
-          <div
-            className={cn(
-              'mt-3 border-t border-border/50 pt-2',
-              compact && 'mt-2 pt-1.5'
-            )}
-          >
-            <p className={cn('text-sm italic', compact && 'text-xs')}>
-              "{comment}"
-            </p>
+          <div className={cn('border-border/50 mt-3 border-t pt-2', compact && 'mt-2 pt-1.5')}>
+            <p className={cn('text-sm italic', compact && 'text-xs')}>"{comment}"</p>
           </div>
         )}
 
@@ -341,7 +316,7 @@ export const ForwardedMessage = React.forwardRef<
           className={cn(
             'mt-2 inline-flex items-center gap-1',
             'text-xs text-muted-foreground hover:text-foreground',
-            'focus:outline-none focus:underline',
+            'focus:underline focus:outline-none',
             'transition-colors'
           )}
         >
@@ -387,36 +362,35 @@ export interface ForwardIndicatorProps extends React.HTMLAttributes<HTMLSpanElem
   onClick?: () => void
 }
 
-export const ForwardIndicator = React.forwardRef<
-  HTMLSpanElement,
-  ForwardIndicatorProps
->(({ className, onClick, ...props }, ref) => {
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <span
-          ref={ref}
-          onClick={onClick}
-          className={cn(
-            'inline-flex items-center gap-1 rounded-sm px-1 py-0.5',
-            'text-xs text-muted-foreground',
-            'bg-muted/50 hover:bg-muted',
-            onClick && 'cursor-pointer',
-            'transition-colors',
-            className
-          )}
-          {...props}
-        >
-          <Forward className="h-3 w-3" />
-          <span>Forwarded</span>
-        </span>
-      </TooltipTrigger>
-      <TooltipContent>
-        <p>This message was forwarded</p>
-      </TooltipContent>
-    </Tooltip>
-  )
-})
+export const ForwardIndicator = React.forwardRef<HTMLSpanElement, ForwardIndicatorProps>(
+  ({ className, onClick, ...props }, ref) => {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span
+            ref={ref}
+            onClick={onClick}
+            className={cn(
+              'inline-flex items-center gap-1 rounded-sm px-1 py-0.5',
+              'text-xs text-muted-foreground',
+              'bg-muted/50 hover:bg-muted',
+              onClick && 'cursor-pointer',
+              'transition-colors',
+              className
+            )}
+            {...props}
+          >
+            <Forward className="h-3 w-3" />
+            <span>Forwarded</span>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>This message was forwarded</p>
+        </TooltipContent>
+      </Tooltip>
+    )
+  }
+)
 
 ForwardIndicator.displayName = 'ForwardIndicator'
 

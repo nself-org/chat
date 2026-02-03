@@ -71,11 +71,7 @@ export const CREATE_POLL_WITH_MESSAGE = gql`
         expires_at: $expiresAt
         poll_options: { data: $options }
         messages: {
-          data: {
-            channel_id: $channelId
-            content: $messageContent
-            message_type: "poll"
-          }
+          data: { channel_id: $channelId, content: $messageContent, message_type: "poll" }
         }
       }
     ) {
@@ -110,16 +106,8 @@ export const CREATE_POLL_WITH_MESSAGE = gql`
 export const VOTE_POLL = gql`
   mutation VotePoll($pollId: uuid!, $optionIds: [uuid!]!) {
     insert_nchat_poll_votes(
-      objects: [
-        {
-          poll_id: $pollId
-          option_id: { _in: $optionIds }
-        }
-      ]
-      on_conflict: {
-        constraint: unique_vote_per_option
-        update_columns: [voted_at]
-      }
+      objects: [{ poll_id: $pollId, option_id: { _in: $optionIds } }]
+      on_conflict: { constraint: unique_vote_per_option, update_columns: [voted_at] }
     ) {
       affected_rows
       returning {
@@ -136,22 +124,12 @@ export const VOTE_POLL = gql`
 export const VOTE_POLL_SINGLE = gql`
   mutation VotePollSingle($pollId: uuid!, $optionId: uuid!) {
     # First, remove any existing votes for single-choice polls
-    delete_nchat_poll_votes(
-      where: {
-        poll_id: { _eq: $pollId }
-        user_id: { _eq: "auth.uid()" }
-      }
-    ) {
+    delete_nchat_poll_votes(where: { poll_id: { _eq: $pollId }, user_id: { _eq: "auth.uid()" } }) {
       affected_rows
     }
 
     # Then insert the new vote
-    insert_nchat_poll_votes_one(
-      object: {
-        poll_id: $pollId
-        option_id: $optionId
-      }
-    ) {
+    insert_nchat_poll_votes_one(object: { poll_id: $pollId, option_id: $optionId }) {
       id
       poll_id
       option_id
@@ -164,24 +142,12 @@ export const VOTE_POLL_SINGLE = gql`
 export const VOTE_POLL_MULTIPLE = gql`
   mutation VotePollMultiple($pollId: uuid!, $optionIds: [uuid!]!) {
     # Remove existing votes first
-    delete_nchat_poll_votes(
-      where: {
-        poll_id: { _eq: $pollId }
-        user_id: { _eq: "auth.uid()" }
-      }
-    ) {
+    delete_nchat_poll_votes(where: { poll_id: { _eq: $pollId }, user_id: { _eq: "auth.uid()" } }) {
       affected_rows
     }
 
     # Insert new votes
-    insert_nchat_poll_votes(
-      objects: [
-        {
-          poll_id: $pollId
-          option_id: { _in: $optionIds }
-        }
-      ]
-    ) {
+    insert_nchat_poll_votes(objects: [{ poll_id: $pollId, option_id: { _in: $optionIds } }]) {
       affected_rows
       returning {
         id
@@ -196,12 +162,7 @@ export const VOTE_POLL_MULTIPLE = gql`
 
 export const REMOVE_VOTE = gql`
   mutation RemoveVote($pollId: uuid!, $optionId: uuid!) {
-    delete_nchat_poll_votes(
-      where: {
-        poll_id: { _eq: $pollId }
-        option_id: { _eq: $optionId }
-      }
-    ) {
+    delete_nchat_poll_votes(where: { poll_id: { _eq: $pollId }, option_id: { _eq: $optionId } }) {
       affected_rows
       returning {
         id
@@ -218,12 +179,7 @@ export const REMOVE_VOTE = gql`
 
 export const CLOSE_POLL = gql`
   mutation ClosePoll($pollId: uuid!) {
-    update_nchat_polls_by_pk(
-      pk_columns: { id: $pollId }
-      _set: {
-        closed_at: "now()"
-      }
-    ) {
+    update_nchat_polls_by_pk(pk_columns: { id: $pollId }, _set: { closed_at: "now()" }) {
       id
       question
       closed_at
@@ -233,17 +189,9 @@ export const CLOSE_POLL = gql`
 `
 
 export const ADD_POLL_OPTION = gql`
-  mutation AddPollOption(
-    $pollId: uuid!
-    $optionText: String!
-    $optionOrder: Int!
-  ) {
+  mutation AddPollOption($pollId: uuid!, $optionText: String!, $optionOrder: Int!) {
     insert_nchat_poll_options_one(
-      object: {
-        poll_id: $pollId
-        option_text: $optionText
-        option_order: $optionOrder
-      }
+      object: { poll_id: $pollId, option_text: $optionText, option_order: $optionOrder }
     ) {
       id
       poll_id

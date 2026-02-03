@@ -20,11 +20,7 @@ export interface SupportChannelProps {
 // Component
 // ============================================================================
 
-export function SupportChannel({
-  isSelected = false,
-  onClick,
-  className,
-}: SupportChannelProps) {
+export function SupportChannel({ isSelected = false, onClick, className }: SupportChannelProps) {
   return (
     <Card
       className={cn(
@@ -36,34 +32,34 @@ export function SupportChannel({
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="p-3 rounded-lg bg-red-500/10">
+          <div className="rounded-lg bg-red-500/10 p-3">
             <HelpCircle className="h-6 w-6 text-red-600" />
           </div>
           <Badge variant="outline">Help Desk</Badge>
         </div>
         <CardTitle className="text-lg">Support / Help</CardTitle>
         <CardDescription>
-          A channel for questions, support requests, and getting help.
-          Includes thread-based Q&A and slow mode.
+          A channel for questions, support requests, and getting help. Includes thread-based Q&A and
+          slow mode.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <p className="text-sm font-medium">Included features:</p>
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <MessageSquare className="h-3 w-3" />
               Threaded Q&A
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <Clock className="h-3 w-3" />
               Slow mode (30s)
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <CheckCircle className="h-3 w-3" />
               Resolved marking
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <FileText className="h-3 w-3" />
               File attachments
             </Badge>
@@ -71,7 +67,7 @@ export function SupportChannel({
         </div>
         <div className="space-y-2">
           <p className="text-sm font-medium">Optimizations:</p>
-          <ul className="text-xs text-muted-foreground space-y-1">
+          <ul className="space-y-1 text-xs text-muted-foreground">
             <li>- Slow mode prevents spam</li>
             <li>- Messages archived after 90 days</li>
             <li>- Encouraged to use threads</li>
@@ -79,8 +75,8 @@ export function SupportChannel({
         </div>
         <div className="text-xs text-muted-foreground">
           <p>
-            <strong>Best for:</strong> IT help desk, customer support, FAQ channels,
-            onboarding questions, or any scenario where people need assistance.
+            <strong>Best for:</strong> IT help desk, customer support, FAQ channels, onboarding
+            questions, or any scenario where people need assistance.
           </p>
         </div>
       </CardContent>

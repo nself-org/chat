@@ -97,9 +97,7 @@ function calculateLogoDimensions(
 
   // Estimate text width (rough approximation)
   const textWidth = opts.text.length * opts.fontSize * 0.6
-  const taglineWidth = hasTagline
-    ? opts.tagline.length * opts.taglineFontSize * 0.5
-    : 0
+  const taglineWidth = hasTagline ? opts.tagline.length * opts.taglineFontSize * 0.5 : 0
 
   let width: number
   let height: number
@@ -170,7 +168,8 @@ function calculateLogoDimensions(
     textX = width - opts.padding
     taglineX = width - opts.padding
     if (hasIcon && opts.iconPosition === 'left') {
-      iconX = width - opts.padding - opts.iconSize - opts.spacing - Math.max(textWidth, taglineWidth)
+      iconX =
+        width - opts.padding - opts.iconSize - opts.spacing - Math.max(textWidth, taglineWidth)
     }
   }
 
@@ -194,11 +193,7 @@ function generateLogoSvg(
   dims: LogoDimensions
 ): string {
   const textAnchor =
-    opts.alignment === 'center'
-      ? 'middle'
-      : opts.alignment === 'right'
-      ? 'end'
-      : 'start'
+    opts.alignment === 'center' ? 'middle' : opts.alignment === 'right' ? 'end' : 'start'
 
   let iconElement = ''
   if (opts.icon) {
@@ -366,9 +361,7 @@ export async function generateMonogramLogo(
 /**
  * Generate logo variations for different use cases
  */
-export async function generateLogoVariations(
-  options: LogoOptions
-): Promise<{
+export async function generateLogoVariations(options: LogoOptions): Promise<{
   full: LogoResult
   compact: LogoResult
   icon: LogoResult

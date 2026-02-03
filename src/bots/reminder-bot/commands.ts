@@ -61,17 +61,11 @@ export const remindCommand: CommandHandler = async (
   }
 
   if (delay > maxDuration) {
-    return error(
-      'Duration too long',
-      `Maximum reminder duration is ${maxDurationDays} days.`
-    )
+    return error('Duration too long', `Maximum reminder duration is ${maxDurationDays} days.`)
   }
 
   if (delay < 60000) {
-    return error(
-      'Duration too short',
-      'Minimum reminder duration is 1 minute.'
-    )
+    return error('Duration too short', 'Minimum reminder duration is 1 minute.')
   }
 
   // Check reminder limit
@@ -101,7 +95,7 @@ export const remindCommand: CommandHandler = async (
         .description(`I'll remind you in **${formatDuration(delay)}**`)
         .field('Message', message)
         .field('When', remindTime.toLocaleString())
-        .field('ID', `\`${reminder.id}\``, true)
+        .field('ID', `${reminder.id}`, true)
         .color('#10B981')
         .footer('Use /reminders to see all your reminders')
     )
@@ -120,12 +114,7 @@ export const remindersCommand: CommandHandler = async (
   const list = formatReminderList(reminders)
 
   return response()
-    .embed(
-      embed()
-        .title(':bell: Your Reminders')
-        .description(list)
-        .color('#6366F1')
-    )
+    .embed(embed().title(':bell: Your Reminders').description(list).color('#6366F1'))
     .build()
 }
 
@@ -149,7 +138,7 @@ export const cancelReminderCommand: CommandHandler = async (
     return error('Cannot cancel reminder', result.message)
   }
 
-  return success('Reminder cancelled', `Reminder \`${reminderId}\` has been cancelled.`)
+  return success('Reminder cancelled', `Reminder ${reminderId} has been cancelled.`)
 }
 
 /**
@@ -211,10 +200,7 @@ export const remindChannelCommand: CommandHandler = async (
   const message = ctx.args.message as string
 
   if (!timeStr || !message) {
-    return error(
-      'Missing required arguments',
-      'Usage: `/remindchannel <time> "<message>"`'
-    )
+    return error('Missing required arguments', 'Usage: `/remindchannel <time> "<message>"`')
   }
 
   const delay = parseDuration(timeStr)

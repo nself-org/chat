@@ -23,32 +23,32 @@
 
 ### Global
 
-| Shortcut | Action |
-|----------|--------|
+| Shortcut       | Action          |
+| -------------- | --------------- |
 | `Cmd/Ctrl + K` | Command palette |
 | `Cmd/Ctrl + F` | Search messages |
-| `Cmd/Ctrl + ,` | Settings |
-| `Cmd/Ctrl + \` | Toggle sidebar |
-| `Escape` | Close/Cancel |
+| `Cmd/Ctrl + ,` | Settings        |
+| `Cmd/Ctrl + \` | Toggle sidebar  |
+| `Escape`       | Close/Cancel    |
 
 ### Navigation
 
-| Shortcut | Action |
-|----------|--------|
-| `Alt + ↓` | Next channel |
-| `Alt + ↑` | Previous channel |
-| `Tab` | Next element |
+| Shortcut      | Action           |
+| ------------- | ---------------- |
+| `Alt + ↓`     | Next channel     |
+| `Alt + ↑`     | Previous channel |
+| `Tab`         | Next element     |
 | `Shift + Tab` | Previous element |
 
 ### Messaging
 
-| Shortcut | Action |
-|----------|--------|
-| `Cmd/Ctrl + Enter` | Send message |
-| `↑` (empty input) | Edit last message |
-| `R` | Reply |
-| `T` | Thread |
-| `E` | React |
+| Shortcut           | Action            |
+| ------------------ | ----------------- |
+| `Cmd/Ctrl + Enter` | Send message      |
+| `↑` (empty input)  | Edit last message |
+| `R`                | Reply             |
+| `T`                | Thread            |
+| `E`                | React             |
 
 **View all shortcuts**: Press `Cmd/Ctrl + /`
 
@@ -59,23 +59,27 @@
 **Location**: Settings → Accessibility
 
 ### Visual
+
 - High contrast mode (Normal/High/Higher)
 - Font size (Small/Medium/Large)
 - Dyslexia-friendly font
 - Reduce transparency
 
 ### Motion
+
 - Reduce motion
 - Disable animations
 - Autoplay controls
 
 ### Keyboard
+
 - Always show focus indicators
 - Larger touch targets
 - Keyboard shortcuts on/off
 - Show keyboard hints
 
 ### Screen Reader
+
 - Screen reader optimization
 - Announce new messages
 - Prefer captions
@@ -159,6 +163,7 @@ Three preset sizes:
 ## Reduce Motion
 
 When enabled:
+
 - ✅ Instant transitions (no animation delays)
 - ✅ Fade-only animations (no sliding/scaling)
 - ✅ Static UI elements
@@ -208,15 +213,18 @@ All interactive elements meet AAA standards:
 ## Media Accessibility
 
 ### Images
+
 - ✅ All images have descriptive alt text
 - ✅ Decorative images hidden from screen readers
 
 ### Videos
+
 - ✅ Captions available
 - ✅ Transcripts provided
 - ✅ Auto-play disabled by default
 
 ### Audio
+
 - ✅ Transcripts for voice messages
 - ✅ Visual indicators for playback
 
@@ -225,6 +233,7 @@ All interactive elements meet AAA standards:
 ## Forms
 
 All forms include:
+
 - ✅ Labels for all inputs
 - ✅ Hint text for guidance
 - ✅ Error messages with suggestions
@@ -236,6 +245,7 @@ All forms include:
 ## Dynamic Content
 
 Screen reader announcements for:
+
 - 📨 New messages (polite)
 - 🔔 Mentions (assertive)
 - ⚠️ Errors (assertive)
@@ -249,11 +259,13 @@ Screen reader announcements for:
 ## Getting Help
 
 ### Documentation
+
 - 📖 [Full Accessibility Guide](/docs/guides/accessibility.md)
 - 📊 [Color Contrast Report](/docs/guides/color-contrast-report.md)
 - 🔊 [Screen Reader Testing](/docs/guides/screen-reader-testing-report.md)
 
 ### Support
+
 - 📧 Email: accessibility@nself.org
 - 🐛 GitHub: [Report Issue](https://github.com/nself-chat/issues/new?labels=accessibility)
 - 💬 Support: Settings → Help → Contact Support
@@ -277,34 +289,40 @@ New to accessibility features? Start here:
 ## Tips for Different Needs
 
 ### Low Vision
+
 1. Increase font size (Large)
 2. Enable high contrast mode
 3. Reduce transparency
 4. Use zoom (browser or OS)
 
 ### Color Blindness
+
 1. Enable high contrast
 2. Rely on text labels (not just colors)
 3. Icons accompany all color-coded items
 
 ### Motor Impairments
+
 1. Use keyboard navigation
 2. Enable larger touch targets
 3. Adjust OS pointer speed
 4. Learn keyboard shortcuts
 
 ### Cognitive
+
 1. Disable animations
 2. Reduce motion
 3. Use compact mode for less distraction
 4. Enable auto-save for forms
 
 ### Hearing Impairments
+
 1. Enable captions
 2. Visual notifications on
 3. Flash screen for alerts (OS setting)
 
 ### Screen Reader Users
+
 1. Enable screen reader optimization
 2. Turn on message announcements
 3. Use skip links

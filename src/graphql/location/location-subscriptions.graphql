@@ -150,10 +150,7 @@ subscription MessageLocations($messageId: uuid!) {
 # (useful for notifications)
 subscription NewChannelLocations($channelId: uuid!, $since: timestamptz!) {
   nchat_location_shares(
-    where: {
-      channel_id: { _eq: $channelId }
-      created_at: { _gt: $since }
-    }
+    where: { channel_id: { _eq: $channelId }, created_at: { _gt: $since } }
     order_by: { created_at: desc }
   ) {
     id

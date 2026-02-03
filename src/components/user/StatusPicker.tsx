@@ -13,16 +13,16 @@
  * <StatusPicker
  *   currentStatus="online"
  *   customStatus={customStatus}
- *   onStatusChange={(status) => console.log(status)}
- *   onCustomStatusChange={(custom) => console.log(custom)}
+ *   onStatusChange={(status) => /* console.log status)}
+ *   onCustomStatusChange={(custom) => /* console.log custom)}
  * />
  * ```
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 import {
   type PresenceStatus,
   type CustomStatus,
@@ -34,9 +34,9 @@ import {
   type ActivityType,
   getPresetActivity,
   getDurationOption,
-} from '@/lib/presence/presence-types';
-import { usePresenceStore } from '@/stores/presence-store';
-import { Button } from '@/components/ui/button';
+} from '@/lib/presence/presence-types'
+import { usePresenceStore } from '@/stores/presence-store'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -45,7 +45,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -53,13 +53,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { UserPresenceDot } from './user-presence-dot';
+} from '@/components/ui/dropdown-menu'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Separator } from '@/components/ui/separator'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { UserPresenceDot } from './user-presence-dot'
 import {
   Circle,
   Moon,
@@ -71,7 +71,7 @@ import {
   ChevronDown,
   Calendar,
   Pencil,
-} from 'lucide-react';
+} from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -79,19 +79,19 @@ import {
 
 export interface StatusPickerProps {
   /** Current presence status */
-  currentStatus?: PresenceStatus;
+  currentStatus?: PresenceStatus
   /** Current custom status */
-  customStatus?: CustomStatus | null;
+  customStatus?: CustomStatus | null
   /** Callback when status changes */
-  onStatusChange?: (status: PresenceStatus) => void;
+  onStatusChange?: (status: PresenceStatus) => void
   /** Callback when custom status changes */
-  onCustomStatusChange?: (customStatus: CustomStatus | null) => void;
+  onCustomStatusChange?: (customStatus: CustomStatus | null) => void
   /** Show as compact button instead of full UI */
-  variant?: 'button' | 'dropdown' | 'full';
+  variant?: 'button' | 'dropdown' | 'full'
   /** Size variant */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -104,18 +104,46 @@ const statusIcons: Record<PresenceStatus, React.ReactNode> = {
   dnd: <MinusCircle className="h-4 w-4 fill-red-500 text-red-500" />,
   invisible: <CircleOff className="h-4 w-4 text-gray-500" />,
   offline: <CircleOff className="h-4 w-4 text-gray-500" />,
-};
+}
 
 // ============================================================================
 // Common Emojis
 // ============================================================================
 
 const COMMON_EMOJIS = [
-  '😀', '😊', '😎', '🙂', '😁', '🎉', '🔥', '💪',
-  '👋', '🙏', '💡', '⚡', '🚀', '💻', '📱', '🎯',
-  '✅', '❤️', '⭐', '🌟', '🎮', '🎨', '📚', '🎵',
-  '🏃', '🍕', '☕', '🌈', '🎪', '🎭', '🎬', '🎤',
-];
+  '😀',
+  '😊',
+  '😎',
+  '🙂',
+  '😁',
+  '🎉',
+  '🔥',
+  '💪',
+  '👋',
+  '🙏',
+  '💡',
+  '⚡',
+  '🚀',
+  '💻',
+  '📱',
+  '🎯',
+  '✅',
+  '❤️',
+  '⭐',
+  '🌟',
+  '🎮',
+  '🎨',
+  '📚',
+  '🎵',
+  '🏃',
+  '🍕',
+  '☕',
+  '🌈',
+  '🎪',
+  '🎭',
+  '🎬',
+  '🎤',
+]
 
 // ============================================================================
 // StatusPicker Component
@@ -134,115 +162,107 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
     },
     ref
   ) => {
-    const { setMyStatus, setMyCustomStatus, clearMyCustomStatus } = usePresenceStore();
+    const { setMyStatus, setMyCustomStatus, clearMyCustomStatus } = usePresenceStore()
 
     // Local state
-    const [dialogOpen, setDialogOpen] = React.useState(false);
-    const [activeTab, setActiveTab] = React.useState<'status' | 'custom'>('status');
-    const [emoji, setEmoji] = React.useState(customStatus?.emoji ?? '');
-    const [text, setText] = React.useState(customStatus?.text ?? '');
-    const [duration, setDuration] = React.useState<StatusDuration>('indefinite');
-    const [showEmojiPicker, setShowEmojiPicker] = React.useState(false);
+    const [dialogOpen, setDialogOpen] = React.useState(false)
+    const [activeTab, setActiveTab] = React.useState<'status' | 'custom'>('status')
+    const [emoji, setEmoji] = React.useState(customStatus?.emoji ?? '')
+    const [text, setText] = React.useState(customStatus?.text ?? '')
+    const [duration, setDuration] = React.useState<StatusDuration>('indefinite')
+    const [showEmojiPicker, setShowEmojiPicker] = React.useState(false)
 
     // Reset form when dialog opens
     React.useEffect(() => {
       if (dialogOpen) {
-        setEmoji(customStatus?.emoji ?? '');
-        setText(customStatus?.text ?? '');
-        setDuration('indefinite');
-        setShowEmojiPicker(false);
+        setEmoji(customStatus?.emoji ?? '')
+        setText(customStatus?.text ?? '')
+        setDuration('indefinite')
+        setShowEmojiPicker(false)
       }
-    }, [dialogOpen, customStatus]);
+    }, [dialogOpen, customStatus])
 
     // Handle status change
     const handleStatusChange = (status: PresenceStatus) => {
-      setMyStatus(status);
-      onStatusChange?.(status);
-    };
+      setMyStatus(status)
+      onStatusChange?.(status)
+    }
 
     // Handle preset activity selection
     const handlePresetSelect = (activity: ActivityType) => {
-      const preset = getPresetActivity(activity);
-      if (!preset) return;
+      const preset = getPresetActivity(activity)
+      if (!preset) return
 
-      setEmoji(preset.emoji);
-      setText(preset.text);
+      setEmoji(preset.emoji)
+      setText(preset.text)
       if (preset.defaultDuration) {
-        setDuration(preset.defaultDuration);
+        setDuration(preset.defaultDuration)
       }
-    };
+    }
 
     // Handle custom status save
     const handleCustomStatusSave = () => {
       if (!emoji && !text) {
-        clearMyCustomStatus();
-        onCustomStatusChange?.(null);
-        setDialogOpen(false);
-        return;
+        clearMyCustomStatus()
+        onCustomStatusChange?.(null)
+        setDialogOpen(false)
+        return
       }
 
-      const durationOption = getDurationOption(duration);
-      const expiresAt = durationOption?.getExpiresAt() ?? null;
+      const durationOption = getDurationOption(duration)
+      const expiresAt = durationOption?.getExpiresAt() ?? null
 
       const newCustomStatus: CustomStatus = {
         emoji: emoji || undefined,
         text: text || undefined,
         expiresAt,
-      };
+      }
 
-      setMyCustomStatus(newCustomStatus);
-      onCustomStatusChange?.(newCustomStatus);
-      setDialogOpen(false);
-    };
+      setMyCustomStatus(newCustomStatus)
+      onCustomStatusChange?.(newCustomStatus)
+      setDialogOpen(false)
+    }
 
     // Handle clear custom status
     const handleClearStatus = () => {
-      clearMyCustomStatus();
-      onCustomStatusChange?.(null);
-      setEmoji('');
-      setText('');
-      setDialogOpen(false);
-    };
+      clearMyCustomStatus()
+      onCustomStatusChange?.(null)
+      setEmoji('')
+      setText('')
+      setDialogOpen(false)
+    }
 
     // Render status selector UI
     const renderStatusSelector = () => (
       <div className="space-y-3">
         <Label className="text-sm font-medium">Online Status</Label>
         <div className="grid gap-2">
-          {(['online', 'away', 'dnd', 'invisible'] as PresenceStatus[]).map(
-            (status) => (
-              <button
-                key={status}
-                onClick={() => handleStatusChange(status)}
-                className={cn(
-                  'flex items-center gap-3 p-3 rounded-lg border-2 transition-all',
-                  'hover:bg-accent hover:border-accent-foreground/20',
-                  currentStatus === status
-                    ? 'border-primary bg-primary/5'
-                    : 'border-border'
-                )}
-              >
-                <UserPresenceDot
-                  status={status}
-                  size="md"
-                  position="inline"
-                  animate={status === 'online'}
-                />
-                <div className="flex-1 text-left">
-                  <div className="font-medium">{PRESENCE_LABELS[status]}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {PRESENCE_DESCRIPTIONS[status]}
-                  </div>
-                </div>
-                {currentStatus === status && (
-                  <div className="h-2 w-2 rounded-full bg-primary" />
-                )}
-              </button>
-            )
-          )}
+          {(['online', 'away', 'dnd', 'invisible'] as PresenceStatus[]).map((status) => (
+            <button
+              key={status}
+              onClick={() => handleStatusChange(status)}
+              className={cn(
+                'flex items-center gap-3 rounded-lg border-2 p-3 transition-all',
+                'hover:border-accent-foreground/20 hover:bg-accent',
+                currentStatus === status ? 'bg-primary/5 border-primary' : 'border-border'
+              )}
+            >
+              <UserPresenceDot
+                status={status}
+                size="md"
+                position="inline"
+                animate={status === 'online'}
+              />
+              <div className="flex-1 text-left">
+                <div className="font-medium">{PRESENCE_LABELS[status]}</div>
+                <div className="text-xs text-muted-foreground">{PRESENCE_DESCRIPTIONS[status]}</div>
+              </div>
+              {currentStatus === status && <div className="h-2 w-2 rounded-full bg-primary" />}
+            </button>
+          ))}
         </div>
       </div>
-    );
+    )
 
     // Render custom status UI
     const renderCustomStatusSelector = () => (
@@ -256,7 +276,7 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
                 type="button"
                 variant="outline"
                 size="icon"
-                className="h-10 w-10 text-lg relative"
+                className="relative h-10 w-10 text-lg"
                 onClick={() => setShowEmojiPicker(!showEmojiPicker)}
               >
                 {emoji || <Smile className="h-5 w-5 text-muted-foreground" />}
@@ -264,17 +284,17 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
 
               {/* Emoji Picker Dropdown */}
               {showEmojiPicker && (
-                <div className="absolute top-12 left-0 z-50 p-3 bg-popover border rounded-lg shadow-lg w-64">
+                <div className="absolute left-0 top-12 z-50 w-64 rounded-lg border bg-popover p-3 shadow-lg">
                   <div className="grid grid-cols-8 gap-1">
                     {COMMON_EMOJIS.map((e) => (
                       <button
                         key={e}
                         type="button"
                         onClick={() => {
-                          setEmoji(e);
-                          setShowEmojiPicker(false);
+                          setEmoji(e)
+                          setShowEmojiPicker(false)
                         }}
-                        className="p-1.5 text-lg hover:bg-accent rounded transition-colors"
+                        className="rounded p-1.5 text-lg transition-colors hover:bg-accent"
                       >
                         {e}
                       </button>
@@ -284,7 +304,7 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
               )}
             </div>
 
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <Input
                 placeholder="What's your status?"
                 value={text}
@@ -297,10 +317,10 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                  className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
                   onClick={() => {
-                    setEmoji('');
-                    setText('');
+                    setEmoji('')
+                    setText('')
                   }}
                 >
                   <X className="h-3.5 w-3.5" />
@@ -312,7 +332,7 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
 
         {/* Duration Selector */}
         <div className="space-y-2">
-          <Label className="text-sm font-medium flex items-center gap-2">
+          <Label className="flex items-center gap-2 text-sm font-medium">
             <Clock className="h-4 w-4" />
             Clear After
           </Label>
@@ -323,10 +343,10 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
                 type="button"
                 onClick={() => setDuration(option.value)}
                 className={cn(
-                  'p-2.5 rounded-md border text-sm transition-all',
-                  'hover:bg-accent hover:border-accent-foreground/20',
+                  'rounded-md border p-2.5 text-sm transition-all',
+                  'hover:border-accent-foreground/20 hover:bg-accent',
                   duration === option.value
-                    ? 'border-primary bg-primary/5 font-medium'
+                    ? 'bg-primary/5 border-primary font-medium'
                     : 'border-border'
                 )}
               >
@@ -349,14 +369,14 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
                   type="button"
                   onClick={() => handlePresetSelect(preset.type)}
                   className={cn(
-                    'flex items-center gap-3 w-full p-2.5 rounded-md text-left transition-colors',
+                    'flex w-full items-center gap-3 rounded-md p-2.5 text-left transition-colors',
                     emoji === preset.emoji && text === preset.text
                       ? 'bg-primary/10 text-primary'
                       : 'hover:bg-accent'
                   )}
                 >
                   <span className="text-lg">{preset.emoji}</span>
-                  <span className="text-sm flex-1">{preset.text}</span>
+                  <span className="flex-1 text-sm">{preset.text}</span>
                   {preset.defaultDuration && (
                     <span className="text-xs text-muted-foreground">
                       {getDurationOption(preset.defaultDuration)?.label}
@@ -368,7 +388,7 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
           </ScrollArea>
         </div>
       </div>
-    );
+    )
 
     // Button variant (opens dialog)
     if (variant === 'button') {
@@ -387,12 +407,8 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
                 position="inline"
                 animate={currentStatus === 'online'}
               />
-              <span>
-                {customStatus?.text || PRESENCE_LABELS[currentStatus]}
-              </span>
-              {customStatus?.emoji && (
-                <span className="ml-1">{customStatus.emoji}</span>
-              )}
+              <span>{customStatus?.text || PRESENCE_LABELS[currentStatus]}</span>
+              {customStatus?.emoji && <span className="ml-1">{customStatus.emoji}</span>}
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
@@ -420,11 +436,7 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
 
             <DialogFooter className="gap-2 sm:gap-0">
               {customStatus && activeTab === 'custom' && (
-                <Button
-                  variant="outline"
-                  onClick={handleClearStatus}
-                  className="mr-auto"
-                >
+                <Button variant="outline" onClick={handleClearStatus} className="mr-auto">
                   Clear Status
                 </Button>
               )}
@@ -434,13 +446,11 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
               {activeTab === 'custom' && (
                 <Button onClick={handleCustomStatusSave}>Save Status</Button>
               )}
-              {activeTab === 'status' && (
-                <Button onClick={() => setDialogOpen(false)}>Done</Button>
-              )}
+              {activeTab === 'status' && <Button onClick={() => setDialogOpen(false)}>Done</Button>}
             </DialogFooter>
           </DialogContent>
         </Dialog>
-      );
+      )
     }
 
     // Dropdown variant
@@ -460,37 +470,33 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
                 position="inline"
                 animate={currentStatus === 'online'}
               />
-              <span>
-                {customStatus?.text || PRESENCE_LABELS[currentStatus]}
-              </span>
+              <span>{customStatus?.text || PRESENCE_LABELS[currentStatus]}</span>
               <ChevronDown className="h-4 w-4 opacity-50" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="w-64">
             <DropdownMenuLabel>Set Status</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {(['online', 'away', 'dnd', 'invisible'] as PresenceStatus[]).map(
-              (status) => (
-                <DropdownMenuItem
-                  key={status}
-                  onClick={() => handleStatusChange(status)}
-                  className="gap-3"
-                >
-                  <UserPresenceDot
-                    status={status}
-                    size="sm"
-                    position="inline"
-                    animate={status === 'online'}
-                  />
-                  <div className="flex-1">
-                    <div className="font-medium">{PRESENCE_LABELS[status]}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {PRESENCE_DESCRIPTIONS[status]}
-                    </div>
+            {(['online', 'away', 'dnd', 'invisible'] as PresenceStatus[]).map((status) => (
+              <DropdownMenuItem
+                key={status}
+                onClick={() => handleStatusChange(status)}
+                className="gap-3"
+              >
+                <UserPresenceDot
+                  status={status}
+                  size="sm"
+                  position="inline"
+                  animate={status === 'online'}
+                />
+                <div className="flex-1">
+                  <div className="font-medium">{PRESENCE_LABELS[status]}</div>
+                  <div className="text-xs text-muted-foreground">
+                    {PRESENCE_DESCRIPTIONS[status]}
                   </div>
-                </DropdownMenuItem>
-              )
-            )}
+                </div>
+              </DropdownMenuItem>
+            ))}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setDialogOpen(true)} className="gap-2">
               <Pencil className="h-4 w-4" />
@@ -498,7 +504,7 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      );
+      )
     }
 
     // Full variant (inline UI)
@@ -516,10 +522,10 @@ export const StatusPicker = React.forwardRef<HTMLDivElement, StatusPickerProps>(
           <Button onClick={handleCustomStatusSave}>Save Status</Button>
         </div>
       </div>
-    );
+    )
   }
-);
+)
 
-StatusPicker.displayName = 'StatusPicker';
+StatusPicker.displayName = 'StatusPicker'
 
-export default StatusPicker;
+export default StatusPicker

@@ -29,12 +29,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Link2,
   Clock,
@@ -104,13 +99,9 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
   const isMaxUsed = hasReachedMaxUses(invite.maxUses, invite.useCount)
   const isInactive = !invite.isActive || isExpired || isMaxUsed
 
-  const expiresIn = invite.expiresAt
-    ? formatTimeUntilExpiry(invite.expiresAt)
-    : null
+  const expiresIn = invite.expiresAt ? formatTimeUntilExpiry(invite.expiresAt) : null
   const remainingUses =
-    invite.maxUses !== null
-      ? getRemainingUses(invite.maxUses, invite.useCount)
-      : null
+    invite.maxUses !== null ? getRemainingUses(invite.maxUses, invite.useCount) : null
 
   // Handle copy
   const handleCopy = useCallback(async () => {
@@ -161,32 +152,20 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
     <>
       <div
         className={cn(
-          'flex items-start gap-4 p-4 border-b last:border-b-0 transition-colors',
-          isInactive && 'opacity-60 bg-muted/30'
+          'flex items-start gap-4 border-b p-4 transition-colors last:border-b-0',
+          isInactive && 'bg-muted/30 opacity-60'
         )}
       >
         {/* Icon */}
-        <div
-          className={cn(
-            'p-2 rounded-xl',
-            isInactive ? 'bg-muted' : 'bg-primary/10'
-          )}
-        >
-          <Link2
-            className={cn(
-              'h-5 w-5',
-              isInactive ? 'text-muted-foreground' : 'text-primary'
-            )}
-          />
+        <div className={cn('rounded-xl p-2', isInactive ? 'bg-muted' : 'bg-primary/10')}>
+          <Link2 className={cn('h-5 w-5', isInactive ? 'text-muted-foreground' : 'text-primary')} />
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0 space-y-1">
+        <div className="min-w-0 flex-1 space-y-1">
           {/* Code and Status */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <code className="text-sm font-mono bg-muted px-2 py-0.5 rounded">
-              {invite.code}
-            </code>
+          <div className="flex flex-wrap items-center gap-2">
+            <code className="rounded bg-muted px-2 py-0.5 font-mono text-sm">{invite.code}</code>
             {getStatusBadge()}
           </div>
 
@@ -216,9 +195,7 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
             {expiresIn && (
               <div className="flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5" />
-                <span>
-                  {isExpired ? 'Expired' : `Expires in ${expiresIn}`}
-                </span>
+                <span>{isExpired ? 'Expired' : `Expires in ${expiresIn}`}</span>
               </div>
             )}
             {!invite.expiresAt && (
@@ -238,16 +215,11 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-1 shrink-0">
+        <div className="flex shrink-0 items-center gap-1">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleCopy}
-                  disabled={isInactive}
-                >
+                <Button variant="ghost" size="icon" onClick={handleCopy} disabled={isInactive}>
                   {copied ? (
                     <Check className="h-4 w-4 text-green-600" />
                   ) : (
@@ -255,9 +227,7 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
                   )}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
-                {copied ? 'Copied!' : 'Copy link'}
-              </TooltipContent>
+              <TooltipContent>{copied ? 'Copied!' : 'Copy link'}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
 
@@ -269,15 +239,11 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={handleCopy} disabled={isInactive}>
-                <Copy className="h-4 w-4 mr-2" />
+                <Copy className="mr-2 h-4 w-4" />
                 Copy Link
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() =>
-                  window.open(buildInviteLink(invite.code), '_blank')
-                }
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
+              <DropdownMenuItem onClick={() => window.open(buildInviteLink(invite.code), '_blank')}>
+                <ExternalLink className="mr-2 h-4 w-4" />
                 Open Link
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -286,7 +252,7 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
                   onClick={() => setRevokeDialogOpen(true)}
                   className="text-amber-600"
                 >
-                  <Ban className="h-4 w-4 mr-2" />
+                  <Ban className="mr-2 h-4 w-4" />
                   Revoke
                 </DropdownMenuItem>
               )}
@@ -294,7 +260,7 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
                 onClick={() => setDeleteDialogOpen(true)}
                 className="text-destructive"
               >
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className="mr-2 h-4 w-4" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -308,8 +274,8 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Revoke Invite Link</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to revoke this invite link? Anyone with this
-              link will no longer be able to join.
+              Are you sure you want to revoke this invite link? Anyone with this link will no longer
+              be able to join.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -331,8 +297,8 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Invite Link</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to permanently delete this invite link? This
-              action cannot be undone.
+              Are you sure you want to permanently delete this invite link? This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -340,7 +306,7 @@ function InviteItem({ invite, onRevoke, onDelete }: InviteItemProps) {
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-destructive hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive"
             >
               {isDeleting ? 'Deleting...' : 'Delete'}
             </AlertDialogAction>
@@ -363,16 +329,16 @@ interface EmptyStateProps {
 function EmptyState({ showCreateButton, onCreateClick }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
-      <div className="p-4 rounded-full bg-muted mb-4">
+      <div className="mb-4 rounded-full bg-muted p-4">
         <Link2 className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h3 className="text-lg font-semibold mb-1">No invite links</h3>
-      <p className="text-sm text-muted-foreground max-w-sm">
+      <h3 className="mb-1 text-lg font-semibold">No invite links</h3>
+      <p className="max-w-sm text-sm text-muted-foreground">
         Create an invite link to share with others and let them join.
       </p>
       {showCreateButton && (
         <Button className="mt-4" onClick={onCreateClick}>
-          <Link2 className="h-4 w-4 mr-2" />
+          <Link2 className="mr-2 h-4 w-4" />
           Create Invite Link
         </Button>
       )}
@@ -447,15 +413,13 @@ export function InviteList({
     return (
       <div className={cn('rounded-xl border bg-card', className)}>
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="p-4 rounded-full bg-destructive/10 mb-4">
+          <div className="bg-destructive/10 mb-4 rounded-full p-4">
             <AlertCircle className="h-8 w-8 text-destructive" />
           </div>
-          <h3 className="text-lg font-semibold mb-1">Failed to load invites</h3>
-          <p className="text-sm text-muted-foreground max-w-sm mb-4">
-            {invitesError}
-          </p>
+          <h3 className="mb-1 text-lg font-semibold">Failed to load invites</h3>
+          <p className="mb-4 max-w-sm text-sm text-muted-foreground">{invitesError}</p>
           <Button variant="outline" onClick={handleRefresh}>
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="mr-2 h-4 w-4" />
             Try Again
           </Button>
         </div>
@@ -466,7 +430,7 @@ export function InviteList({
   return (
     <div className={cn('rounded-xl border bg-card', className)}>
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between border-b p-4">
         <div>
           <h3 className="font-semibold">Invite Links</h3>
           <p className="text-sm text-muted-foreground">
@@ -483,12 +447,7 @@ export function InviteList({
                   onClick={handleRefresh}
                   disabled={isLoadingInvites}
                 >
-                  <RefreshCw
-                    className={cn(
-                      'h-4 w-4',
-                      isLoadingInvites && 'animate-spin'
-                    )}
-                  />
+                  <RefreshCw className={cn('h-4 w-4', isLoadingInvites && 'animate-spin')} />
                 </Button>
               </TooltipTrigger>
               <TooltipContent>Refresh</TooltipContent>
@@ -496,7 +455,7 @@ export function InviteList({
           </TooltipProvider>
           {showCreateButton && (
             <Button size="sm" onClick={onCreateClick}>
-              <Link2 className="h-4 w-4 mr-2" />
+              <Link2 className="mr-2 h-4 w-4" />
               Create
             </Button>
           )}
@@ -507,10 +466,7 @@ export function InviteList({
       {isLoadingInvites ? (
         <LoadingSkeleton />
       ) : activeInvites.length === 0 && showEmptyState ? (
-        <EmptyState
-          showCreateButton={showCreateButton}
-          onCreateClick={onCreateClick}
-        />
+        <EmptyState showCreateButton={showCreateButton} onCreateClick={onCreateClick} />
       ) : (
         <ScrollArea style={{ maxHeight }}>
           <div>

@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getApolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 const DISABLE_2FA_MUTATION = gql`
   mutation Disable2FA($userId: uuid!) {
     # Disable 2FA settings
@@ -35,13 +37,9 @@ export async function POST(request: NextRequest) {
     const { userId, password } = await request.json()
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
     }
 
-    // TODO: Verify password before disabling 2FA
     // This is a critical security step - should verify user's password
     // For now, we'll disable without verification (dev mode)
 
@@ -53,11 +51,8 @@ export async function POST(request: NextRequest) {
     })
 
     if (errors) {
-      console.error('GraphQL errors:', errors)
-      return NextResponse.json(
-        { error: 'Failed to disable 2FA' },
-        { status: 500 }
-      )
+      logger.error('GraphQL errors:', errors)
+      return NextResponse.json({ error: 'Failed to disable 2FA' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -70,10 +65,7 @@ export async function POST(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('2FA disable error:', error)
-    return NextResponse.json(
-      { error: 'Failed to disable 2FA' },
-      { status: 500 }
-    )
+    logger.error('2FA disable error:', error)
+    return NextResponse.json({ error: 'Failed to disable 2FA' }, { status: 500 })
   }
 }

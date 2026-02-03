@@ -5,12 +5,14 @@ Complete bot implementations for the nchat platform.
 ## Available Bots
 
 ### 1. Reminder Bot
+
 **Location**: `/src/bots/reminder-bot/`
 **Status**: ✅ Complete
 
 Set reminders for yourself or your team.
 
 **Commands:**
+
 - `/remind <time> "<message>"` - Set a reminder
 - `/reminders` - List your reminders
 - `/cancelreminder <id>` - Cancel a reminder
@@ -18,53 +20,62 @@ Set reminders for yourself or your team.
 - `/remindchannel <time> "<message>"` - Set channel reminder
 
 **Files:**
+
 - `index.ts` - Main bot implementation
 - `commands.ts` - Command handlers
 - `scheduler.ts` - Scheduling engine
 - `manifest.json` - Bot manifest
 
 ### 2. Welcome Bot
+
 **Location**: `/src/bots/welcome-bot/`
 **Status**: ✅ Complete
 
 Automatically welcome new members to your channels.
 
 **Commands:**
+
 - `/setwelcome "<message>"` - Set welcome message
 - `/testwelcome` - Preview welcome message
 - `/disablewelcome` - Disable welcomes
 
 **Files:**
+
 - `index.ts` - Main bot implementation
 - `handlers.ts` - Event handlers
 - `templates.ts` - Message templates
 - `manifest.json` - Bot manifest
 
 ### 3. Poll Bot
+
 **Location**: `/src/bots/poll-bot/`
 **Status**: ✅ Complete
 
 Create interactive polls and surveys in your channels.
 
 **Commands:**
+
 - `/poll "<question>" "<options>"` - Create a poll
 - `/quickpoll "<question>"` - Yes/no poll
 - `/pollresults <id>` - Show results
 - `/endpoll <id>` - End poll early
 
 **Files:**
+
 - `index.ts` - Main bot implementation
 - `commands.ts` - Command handlers
 - `handlers.ts` - Vote and expiry handlers
 - `manifest.json` - Bot manifest
 
 ### 4. FAQ Bot
+
 **Location**: `/src/bots/faq-bot/`
 **Status**: ✅ Complete
 
 Answer frequently asked questions automatically.
 
 **Commands:**
+
 - `/faq <question>` - Search FAQ
 - `/addfaq "<question>" "<answer>"` - Add FAQ
 - `/removefaq <id>` - Remove FAQ
@@ -72,17 +83,20 @@ Answer frequently asked questions automatically.
 - `/listfaqs [category]` - List all FAQs
 
 **Files:**
+
 - `index.ts` - Main bot implementation
 - `knowledge-base.ts` - FAQ storage and search
 - `manifest.json` - Bot manifest
 
 ### 5. Scheduler Bot
+
 **Location**: `/src/bots/scheduler-bot/`
 **Status**: ✅ Complete
 
 Schedule messages and create recurring tasks.
 
 **Commands:**
+
 - `/schedule <when> "<message>"` - Schedule a message
 - `/scheduled` - List scheduled messages
 - `/cancelschedule <id>` - Cancel schedule
@@ -91,6 +105,7 @@ Schedule messages and create recurring tasks.
 - `/cancelrecurring <id>` - Cancel recurring task
 
 **Files:**
+
 - `index.ts` - Main bot implementation
 - `scheduler.ts` - Scheduling and recurring tasks engine
 - `manifest.json` - Bot manifest
@@ -154,48 +169,45 @@ import { response, embed } from '@/lib/bots'
 import manifest from './manifest.json'
 
 export function createMyBot() {
-  return bot(manifest.id)
-    .name(manifest.name)
-    .description(manifest.description)
-    .version(manifest.version)
-    .permissions(...manifest.permissions)
+  return (
+    bot(manifest.id)
+      .name(manifest.name)
+      .description(manifest.description)
+      .version(manifest.version)
+      .permissions(...manifest.permissions)
 
-    // Commands
-    .command(
-      command('mycommand')
-        .description('Do something')
-        .stringArg('arg', 'Argument description', true)
-        .example('/mycommand value'),
-      async (ctx: CommandContext, api: BotApi): Promise<BotResponse> => {
-        return response()
-          .embed(
-            embed()
-              .title('Success')
-              .description('Command executed')
-              .color('#10B981')
-          )
-          .build()
-      }
-    )
+      // Commands
+      .command(
+        command('mycommand')
+          .description('Do something')
+          .stringArg('arg', 'Argument description', true)
+          .example('/mycommand value'),
+        async (ctx: CommandContext, api: BotApi): Promise<BotResponse> => {
+          return response()
+            .embed(embed().title('Success').description('Command executed').color('#10B981'))
+            .build()
+        }
+      )
 
-    // Event handlers
-    .onMessage(async (ctx, api) => {
-      // Handle messages
-    })
+      // Event handlers
+      .onMessage(async (ctx, api) => {
+        // Handle messages
+      })
 
-    .onUserJoin(async (ctx, api) => {
-      // Handle user joins
-    })
+      .onUserJoin(async (ctx, api) => {
+        // Handle user joins
+      })
 
-    // Initialization
-    .onInit(async (instance, api) => {
-      // Initialize bot
-      // Load from storage
-      // Set up intervals
-      // Register cleanup
-    })
+      // Initialization
+      .onInit(async (instance, api) => {
+        // Initialize bot
+        // Load from storage
+        // Set up intervals
+        // Register cleanup
+      })
 
-    .build()
+      .build()
+  )
 }
 
 export default createMyBot
@@ -205,6 +217,7 @@ export { manifest }
 ## Creating a New Bot
 
 1. **Create directory:**
+
 ```bash
 mkdir -p src/bots/my-bot
 cd src/bots/my-bot
@@ -215,6 +228,7 @@ cd src/bots/my-bot
 3. **Create index.ts** (see structure above)
 
 4. **Register in bot-registry.ts:**
+
 ```typescript
 import { default: createMyBot, manifest } from '@/bots/my-bot'
 
@@ -226,11 +240,13 @@ registerBotFactory('my-bot', createMyBot, manifest, {
 ```
 
 5. **Test:**
+
 ```bash
 pnpm test src/bots/my-bot
 ```
 
 6. **Install:**
+
 ```bash
 curl -X POST http://localhost:3000/api/bots \
   -H "Content-Type: application/json" \
@@ -268,7 +284,7 @@ command('name')
   .durationArg('time', 'Duration (e.g., 5m, 1h)')
   .choiceArg('choice', 'Choice', [
     { label: 'Option 1', value: 'opt1' },
-    { label: 'Option 2', value: 'opt2' }
+    { label: 'Option 2', value: 'opt2' },
   ])
   .example('/name arg1 arg2')
   .cooldown(30)
@@ -288,12 +304,7 @@ response()
       .footer('Footer')
       .timestamp()
   )
-  .button(
-    button('id')
-      .label('Click Me')
-      .style('primary')
-      .emoji('👍')
-  )
+  .button(button('id').label('Click Me').style('primary').emoji('👍'))
   .build()
 ```
 
@@ -337,6 +348,7 @@ describe('MyBot', () => {
 ## Support
 
 For issues or questions:
+
 1. Check `/docs/Bot-Framework-Complete.md`
 2. Review bot examples in `/src/bots/`
 3. Test with `/api/bots` endpoints

@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
 /**
  * MobileNotificationSettingsPanel - Mobile-specific notification settings
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
 export interface MobileNotificationSettingsPanelProps {
-  className?: string;
+  className?: string
 }
 
 export function MobileNotificationSettingsPanel({
@@ -25,7 +25,7 @@ export function MobileNotificationSettingsPanel({
         <p className="text-sm">Mobile notification settings coming soon.</p>
       </div>
     </div>
-  );
+  )
 }
 
-export default MobileNotificationSettingsPanel;
+export default MobileNotificationSettingsPanel

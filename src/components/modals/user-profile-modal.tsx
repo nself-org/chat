@@ -1,12 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -76,9 +71,12 @@ const STATUS_LABELS: Record<UserStatus, string> = {
   offline: 'Offline',
 }
 
-const ROLE_BADGES: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon?: React.ReactNode }> = {
-  owner: { variant: 'default', icon: <Shield className="h-3 w-3 mr-1" /> },
-  admin: { variant: 'default', icon: <Shield className="h-3 w-3 mr-1" /> },
+const ROLE_BADGES: Record<
+  string,
+  { variant: 'default' | 'secondary' | 'destructive' | 'outline'; icon?: React.ReactNode }
+> = {
+  owner: { variant: 'default', icon: <Shield className="mr-1 h-3 w-3" /> },
+  admin: { variant: 'default', icon: <Shield className="mr-1 h-3 w-3" /> },
   moderator: { variant: 'secondary' },
   member: { variant: 'outline' },
   guest: { variant: 'outline' },
@@ -121,10 +119,10 @@ export function UserProfileModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px] p-0 overflow-hidden">
+      <DialogContent className="overflow-hidden p-0 sm:max-w-[400px]">
         {/* Header with large avatar */}
         <div className="relative">
-          <div className="h-24 bg-gradient-to-br from-primary/20 to-primary/5" />
+          <div className="from-primary/20 to-primary/5 h-24 bg-gradient-to-br" />
           <div className="absolute -bottom-12 left-6">
             <div className="relative">
               <Avatar className="h-24 w-24 border-4 border-background">
@@ -143,7 +141,7 @@ export function UserProfileModal({
           </div>
 
           {/* Actions dropdown */}
-          <div className="absolute top-2 right-2">
+          <div className="absolute right-2 top-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-8 w-8">
@@ -175,7 +173,7 @@ export function UserProfileModal({
         </div>
 
         {/* Profile info */}
-        <div className="pt-14 px-6 pb-6 space-y-4">
+        <div className="space-y-4 px-6 pb-6 pt-14">
           <DialogHeader className="space-y-1">
             <div className="flex items-center gap-2">
               <DialogTitle className="text-xl">{user.name}</DialogTitle>
@@ -184,7 +182,7 @@ export function UserProfileModal({
                 {user.role}
               </Badge>
             </div>
-            <p className="text-sm text-muted-foreground flex items-center gap-1">
+            <p className="flex items-center gap-1 text-sm text-muted-foreground">
               <AtSign className="h-3 w-3" />
               {user.username}
             </p>
@@ -192,27 +190,20 @@ export function UserProfileModal({
 
           {/* Status */}
           <div className="flex items-center gap-2">
-            <div
-              className={cn(
-                'h-2 w-2 rounded-full',
-                STATUS_COLORS[user.status]
-              )}
-            />
-            <span className="text-sm text-muted-foreground">
-              {STATUS_LABELS[user.status]}
-            </span>
+            <div className={cn('h-2 w-2 rounded-full', STATUS_COLORS[user.status])} />
+            <span className="text-sm text-muted-foreground">{STATUS_LABELS[user.status]}</span>
           </div>
 
           {/* Custom status */}
           {user.customStatus && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg">
+            <div className="flex items-center gap-2 rounded-lg bg-muted px-3 py-2">
               {user.customStatus.emoji && (
                 <span className="text-lg">{user.customStatus.emoji}</span>
               )}
               <span className="text-sm">{user.customStatus.text}</span>
               {user.customStatus.expiresAt && (
-                <span className="text-xs text-muted-foreground ml-auto">
-                  <Clock className="h-3 w-3 inline mr-1" />
+                <span className="ml-auto text-xs text-muted-foreground">
+                  <Clock className="mr-1 inline h-3 w-3" />
                   Clears soon
                 </span>
               )}
@@ -220,11 +211,7 @@ export function UserProfileModal({
           )}
 
           {/* Bio */}
-          {user.bio && (
-            <p className="text-sm text-foreground leading-relaxed">
-              {user.bio}
-            </p>
-          )}
+          {user.bio && <p className="text-sm leading-relaxed text-foreground">{user.bio}</p>}
 
           <Separator />
 

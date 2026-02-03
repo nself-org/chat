@@ -59,7 +59,7 @@ export const VIDEO_QUALITY_PROFILES: Record<VideoQuality, VideoQualityProfile> =
 export const SIMULCAST_LAYERS = [
   { rid: 'f', scaleResolutionDownBy: 1.0, maxBitrate: 3000000 }, // Full resolution
   { rid: 'h', scaleResolutionDownBy: 2.0, maxBitrate: 1000000 }, // Half resolution
-  { rid: 'q', scaleResolutionDownBy: 4.0, maxBitrate: 300000 },  // Quarter resolution
+  { rid: 'q', scaleResolutionDownBy: 4.0, maxBitrate: 300000 }, // Quarter resolution
 ]
 
 // =============================================================================
@@ -89,7 +89,7 @@ export class VideoProcessor {
       this.canvas = document.createElement('canvas')
       this.ctx = this.canvas.getContext('2d', {
         willReadFrequently: true,
-        alpha: false
+        alpha: false,
       })
     }
   }
@@ -155,7 +155,7 @@ export class VideoProcessor {
     const processedStream = this.canvas.captureStream(this.currentFPS)
 
     // Copy audio tracks if present
-    stream.getAudioTracks().forEach(track => {
+    stream.getAudioTracks().forEach((track) => {
       processedStream.addTrack(track)
     })
 
@@ -172,19 +172,10 @@ export class VideoProcessor {
 
     if (elapsed >= this.frameInterval) {
       // Draw video frame to canvas
-      this.ctx.drawImage(
-        this.videoElement,
-        0, 0,
-        this.canvas.width,
-        this.canvas.height
-      )
+      this.ctx.drawImage(this.videoElement, 0, 0, this.canvas.width, this.canvas.height)
 
       // Get frame data
-      const imageData = this.ctx.getImageData(
-        0, 0,
-        this.canvas.width,
-        this.canvas.height
-      )
+      const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height)
 
       const frame: ProcessedVideoFrame = {
         data: imageData,
@@ -298,7 +289,7 @@ export class VideoProcessor {
     video.muted = true
 
     await video.play()
-    await new Promise(resolve => setTimeout(resolve, 100)) // Wait for first frame
+    await new Promise((resolve) => setTimeout(resolve, 100)) // Wait for first frame
 
     const settings = videoTrack.getSettings()
     this.canvas.width = settings.width || 1280
@@ -317,11 +308,7 @@ export class VideoProcessor {
   // Resolution Scaling
   // ===========================================================================
 
-  scaleImageData(
-    imageData: ImageData,
-    targetWidth: number,
-    targetHeight: number
-  ): ImageData {
+  scaleImageData(imageData: ImageData, targetWidth: number, targetHeight: number): ImageData {
     if (!this.canvas || !this.ctx) {
       return imageData
     }
@@ -340,8 +327,14 @@ export class VideoProcessor {
     this.canvas.height = targetHeight
     this.ctx.drawImage(
       tempCanvas,
-      0, 0, imageData.width, imageData.height,
-      0, 0, targetWidth, targetHeight
+      0,
+      0,
+      imageData.width,
+      imageData.height,
+      0,
+      0,
+      targetWidth,
+      targetHeight
     )
 
     return this.ctx.getImageData(0, 0, targetWidth, targetHeight)

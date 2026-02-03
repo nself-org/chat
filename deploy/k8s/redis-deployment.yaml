@@ -33,7 +33,7 @@ metadata:
     app.kubernetes.io/name: redis
     app.kubernetes.io/component: cache
 spec:
-  replicas: 1  # Single instance, use Redis Sentinel/Cluster for HA
+  replicas: 1 # Single instance, use Redis Sentinel/Cluster for HA
   selector:
     matchLabels:
       app.kubernetes.io/name: redis
@@ -45,7 +45,7 @@ spec:
         app.kubernetes.io/component: cache
     spec:
       securityContext:
-        runAsUser: 999  # redis user
+        runAsUser: 999 # redis user
         runAsGroup: 999
         fsGroup: 999
       containers:
@@ -75,11 +75,11 @@ spec:
               readOnly: true
           resources:
             requests:
-              cpu: "100m"
-              memory: "256Mi"
+              cpu: '100m'
+              memory: '256Mi'
             limits:
-              cpu: "500m"
-              memory: "1Gi"
+              cpu: '500m'
+              memory: '1Gi'
           livenessProbe:
             exec:
               command:
@@ -187,7 +187,7 @@ metadata:
     app.kubernetes.io/component: cache
 type: Opaque
 stringData:
-  password: CHANGE_ME_USE_SECRETS_MANAGER  # Replace with actual secure password
+  password: CHANGE_ME_USE_SECRETS_MANAGER # Replace with actual secure password
 
 ---
 # PVC for Redis Data

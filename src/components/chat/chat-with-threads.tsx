@@ -4,11 +4,7 @@ import * as React from 'react'
 import { useState, useCallback, useMemo } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import {
-  Panel,
-  PanelGroup,
-  PanelResizeHandle,
-} from 'react-resizable-panels'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { ChatContainer } from '@/components/chat/chat-container'
 import { ThreadPanel } from '@/components/thread/thread-panel'
 import { ThreadSidebar, ThreadSidebarTrigger } from '@/components/thread/thread-sidebar'
@@ -49,7 +45,7 @@ function ResizeHandle() {
         'before:absolute before:inset-y-0 before:-left-1 before:-right-1'
       )}
     >
-      <div className="h-8 w-0.5 rounded-full bg-border opacity-0 hover:opacity-100 transition-opacity" />
+      <div className="h-8 w-0.5 rounded-full bg-border opacity-0 transition-opacity hover:opacity-100" />
     </PanelResizeHandle>
   )
 }
@@ -76,9 +72,7 @@ export function ChatWithThreads({
   const isTablet = useMediaQuery('(max-width: 1024px)')
 
   // Thread state
-  const [activeThreadId, setActiveThreadId] = useState<string | null>(
-    searchParams.get('thread')
-  )
+  const [activeThreadId, setActiveThreadId] = useState<string | null>(searchParams.get('thread'))
   const [showThreadSidebar, setShowThreadSidebar] = useState(false)
 
   // Get unread count from store
@@ -189,11 +183,7 @@ export function ChatWithThreads({
             <>
               <ResizeHandle />
               <Panel defaultSize={40} minSize={30} maxSize={50}>
-                <ThreadPanel
-                  threadId={activeThreadId}
-                  onClose={handleCloseThread}
-                  compactHeader
-                />
+                <ThreadPanel threadId={activeThreadId} onClose={handleCloseThread} compactHeader />
               </Panel>
             </>
           )}
@@ -207,10 +197,7 @@ export function ChatWithThreads({
     <div className={cn('flex h-full', className)}>
       <PanelGroup direction="horizontal" autoSaveId="nchat-threads-desktop">
         {/* Main Chat Panel */}
-        <Panel
-          defaultSize={activeThreadId ? 65 : 100}
-          minSize={40}
-        >
+        <Panel defaultSize={activeThreadId ? 65 : 100} minSize={40}>
           <ChatContainer
             channel={channel}
             messages={messages}
@@ -231,10 +218,7 @@ export function ChatWithThreads({
           <>
             <ResizeHandle />
             <Panel defaultSize={35} minSize={25} maxSize={50}>
-              <ThreadPanel
-                threadId={activeThreadId}
-                onClose={handleCloseThread}
-              />
+              <ThreadPanel threadId={activeThreadId} onClose={handleCloseThread} />
             </Panel>
           </>
         )}
@@ -242,7 +226,7 @@ export function ChatWithThreads({
 
       {/* Thread Sidebar (slide-out) */}
       {showThreadSidebar && (
-        <div className="absolute right-0 top-0 bottom-0 w-80 z-40 shadow-xl">
+        <div className="absolute bottom-0 right-0 top-0 z-40 w-80 shadow-xl">
           <ThreadSidebar
             onSelectThread={handleSelectThread}
             selectedThreadId={activeThreadId}
@@ -268,11 +252,7 @@ export function ChatThreadsToggle({ onClick, className }: ChatThreadsToggleProps
   const totalUnreadCount = useThreadStore((state) => state.totalUnreadCount)
 
   return (
-    <ThreadSidebarTrigger
-      onClick={onClick}
-      unreadCount={totalUnreadCount}
-      className={className}
-    />
+    <ThreadSidebarTrigger onClick={onClick} unreadCount={totalUnreadCount} className={className} />
   )
 }
 

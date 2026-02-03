@@ -15,11 +15,10 @@ import {
   handleRetryAttempt,
   shouldShowDeliveryStatus,
 } from './delivery-status'
-import {
-  useMessageHistoryStore,
-  loadMessageHistory,
-} from './message-history-store'
+import { useMessageHistoryStore, loadMessageHistory } from './message-history-store'
 import type { MessageEditRecord } from '@/types/message'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -176,7 +175,7 @@ export function useEditHistory({
 
   const reload = useCallback(async () => {
     if (!fetchFn) {
-      console.warn('useEditHistory: fetchFn is required to reload history')
+      logger.warn('useEditHistory: fetchFn is required to reload history')
       return
     }
 
@@ -213,13 +212,7 @@ export function useShowDeliveryStatus({
   maxAgeMs,
 }: UseMessageDeliveryOptions): boolean {
   return useMemo(
-    () =>
-      shouldShowDeliveryStatus(
-        messageUserId,
-        currentUserId,
-        messageCreatedAt,
-        maxAgeMs
-      ),
+    () => shouldShowDeliveryStatus(messageUserId, currentUserId, messageCreatedAt, maxAgeMs),
     [messageUserId, currentUserId, messageCreatedAt, maxAgeMs]
   )
 }
@@ -266,16 +259,15 @@ export function useBulkMessageRetry() {
  * Hook to track sending state for optimistic updates
  */
 export function useSendingState(messageId: string) {
-  const { markSending, markSent, markFailed, markDelivered, markRead } =
-    useDeliveryStatusStore(
-      useShallow((state) => ({
-        markSending: state.markSending,
-        markSent: state.markSent,
-        markFailed: state.markFailed,
-        markDelivered: state.markDelivered,
-        markRead: state.markRead,
-      }))
-    )
+  const { markSending, markSent, markFailed, markDelivered, markRead } = useDeliveryStatusStore(
+    useShallow((state) => ({
+      markSending: state.markSending,
+      markSent: state.markSent,
+      markFailed: state.markFailed,
+      markDelivered: state.markDelivered,
+      markRead: state.markRead,
+    }))
+  )
 
   const startSending = useCallback(() => {
     markSending(messageId)

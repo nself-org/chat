@@ -51,7 +51,7 @@ jest.mock('@/stores/channel-store', () => {
   return {
     useChannelStore: (selector?: (state: any) => any) => {
       const state = {
-        channels: new Map(mockChannels.map(c => [c.id, c])),
+        channels: new Map(mockChannels.map((c) => [c.id, c])),
         categories: mockCategories,
         starredChannels: mockStarredChannels,
         isLoading: mockIsLoading,
@@ -60,14 +60,16 @@ jest.mock('@/stores/channel-store', () => {
       }
       return selector ? selector(state) : state
     },
-    selectPublicChannels: () => mockChannels.filter(c => c.type === 'public' && !c.isArchived),
-    selectPrivateChannels: () => mockChannels.filter(c => c.type === 'private' && !c.isArchived),
-    selectStarredChannels: () => mockChannels.filter(c => mockStarredChannels.has(c.id)),
+    selectPublicChannels: () => mockChannels.filter((c) => c.type === 'public' && !c.isArchived),
+    selectPrivateChannels: () => mockChannels.filter((c) => c.type === 'private' && !c.isArchived),
+    selectStarredChannels: () => mockChannels.filter((c) => mockStarredChannels.has(c.id)),
     selectChannelsByCategory: () => {
       const categorized: Record<string, Channel[]> = {}
       const uncategorized: Channel[] = []
-      mockCategories.forEach(cat => { categorized[cat.id] = [] })
-      mockChannels.forEach(channel => {
+      mockCategories.forEach((cat) => {
+        categorized[cat.id] = []
+      })
+      mockChannels.forEach((channel) => {
         if (channel.isArchived) return
         if (channel.categoryId && categorized[channel.categoryId]) {
           categorized[channel.categoryId].push(channel)
@@ -84,28 +86,38 @@ jest.mock('@/stores/channel-store', () => {
 jest.mock('../channel-item', () => ({
   ChannelItem: ({ channel, onSelect }: { channel: any; onSelect?: (ch: any) => void }) => {
     const React = require('react')
-    return React.createElement('button', {
-      'data-testid': `channel-item-${channel.id}`,
-      onClick: () => onSelect?.(channel),
-    }, [
-      React.createElement('span', { key: 'name' }, channel.name),
-      channel.unreadCount > 0 && React.createElement('span', {
-        key: 'badge',
-        'data-testid': `unread-badge-${channel.id}`,
-      }, channel.unreadCount),
-    ])
+    return React.createElement(
+      'button',
+      {
+        'data-testid': `channel-item-${channel.id}`,
+        onClick: () => onSelect?.(channel),
+      },
+      [
+        React.createElement('span', { key: 'name' }, channel.name),
+        channel.unreadCount > 0 &&
+          React.createElement(
+            'span',
+            {
+              key: 'badge',
+              'data-testid': `unread-badge-${channel.id}`,
+            },
+            channel.unreadCount
+          ),
+      ]
+    )
   },
 }))
 
 jest.mock('../channel-category', () => ({
   ChannelCategory: ({ category, children }: any) => {
     const React = require('react')
-    return React.createElement('div', {
-      'data-testid': `category-${category.id}`,
-    }, [
-      React.createElement('span', { key: 'name' }, category.name),
-      children,
-    ])
+    return React.createElement(
+      'div',
+      {
+        'data-testid': `category-${category.id}`,
+      },
+      [React.createElement('span', { key: 'name' }, category.name), children]
+    )
   },
 }))
 
@@ -272,10 +284,12 @@ describe('ChannelList Component', () => {
     })
 
     it('should render categorized channels', () => {
-      const category = createMockCategory({ id: 'cat-1', name: 'Engineering', channelIds: ['ch-1'] })
-      const channels = [
-        createMockChannel({ id: 'ch-1', name: 'frontend', categoryId: 'cat-1' }),
-      ]
+      const category = createMockCategory({
+        id: 'cat-1',
+        name: 'Engineering',
+        channelIds: ['ch-1'],
+      })
+      const channels = [createMockChannel({ id: 'ch-1', name: 'frontend', categoryId: 'cat-1' })]
 
       setupStore({ channels, categories: [category] })
 
@@ -302,9 +316,7 @@ describe('ChannelList Component', () => {
 
       await user.click(screen.getByTestId('channel-item-ch-1'))
 
-      expect(onChannelSelect).toHaveBeenCalledWith(
-        expect.objectContaining({ id: 'ch-1' })
-      )
+      expect(onChannelSelect).toHaveBeenCalledWith(expect.objectContaining({ id: 'ch-1' }))
     })
 
     it('should not throw when onChannelSelect is not provided', async () => {
@@ -326,9 +338,7 @@ describe('ChannelList Component', () => {
 
   describe('Unread Badge', () => {
     it('should show unread badge when channel has unread messages', () => {
-      const channels = [
-        createMockChannel({ id: 'ch-1', name: 'general', unreadCount: 5 } as any),
-      ]
+      const channels = [createMockChannel({ id: 'ch-1', name: 'general', unreadCount: 5 } as any)]
 
       setupStore({ channels })
 
@@ -607,9 +617,7 @@ describe('ChannelList Component', () => {
 
   describe('Edge Cases', () => {
     it('should handle special characters in channel names', () => {
-      const channels = [
-        createMockChannel({ id: 'ch-1', name: 'test & <script>' }),
-      ]
+      const channels = [createMockChannel({ id: 'ch-1', name: 'test & <script>' })]
 
       setupStore({ channels })
 

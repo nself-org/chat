@@ -160,7 +160,7 @@ export const MobileSidebar = memo(function MobileSidebar({
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
             className={cn(
-              'fixed left-0 top-0 bottom-0 z-50',
+              'fixed bottom-0 left-0 top-0 z-50',
               'flex flex-col',
               'bg-background',
               'shadow-2xl',
@@ -190,9 +190,7 @@ export const MobileSidebar = memo(function MobileSidebar({
                   />
                 ))}
 
-                {sections.length === 0 && (
-                  <EmptySidebar onCreateChannel={onCreateChannel} />
-                )}
+                {sections.length === 0 && <EmptySidebar onCreateChannel={onCreateChannel} />}
               </div>
             </ScrollArea>
 
@@ -214,10 +212,7 @@ interface SidebarHeaderProps {
   onClose: () => void
 }
 
-const SidebarHeader = memo(function SidebarHeader({
-  user,
-  onClose,
-}: SidebarHeaderProps) {
+const SidebarHeader = memo(function SidebarHeader({ user, onClose }: SidebarHeaderProps) {
   const getStatusColor = (status?: string) => {
     switch (status) {
       case 'online':
@@ -238,9 +233,7 @@ const SidebarHeader = memo(function SidebarHeader({
           <div className="relative">
             <Avatar className="h-10 w-10">
               <AvatarImage src={user.avatar} alt={user.name} />
-              <AvatarFallback>
-                {user.name?.charAt(0).toUpperCase()}
-              </AvatarFallback>
+              <AvatarFallback>{user.name?.charAt(0).toUpperCase()}</AvatarFallback>
             </Avatar>
             <span
               className={cn(
@@ -252,21 +245,14 @@ const SidebarHeader = memo(function SidebarHeader({
           </div>
           <div className="min-w-0">
             <p className="truncate font-semibold">{user.name}</p>
-            <p className="truncate text-xs text-muted-foreground">
-              {user.email}
-            </p>
+            <p className="truncate text-xs text-muted-foreground">{user.email}</p>
           </div>
         </div>
       ) : (
         <span className="font-semibold">Channels</span>
       )}
 
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={onClose}
-        className="h-8 w-8 shrink-0"
-      >
+      <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8 shrink-0">
         <X className="h-4 w-4" />
       </Button>
     </div>
@@ -294,11 +280,7 @@ const SidebarSection = memo(function SidebarSection({
         className="flex w-full items-center justify-between px-2 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:text-foreground"
       >
         <div className="flex items-center gap-1">
-          {isCollapsed ? (
-            <ChevronRight className="h-3 w-3" />
-          ) : (
-            <ChevronDown className="h-3 w-3" />
-          )}
+          {isCollapsed ? <ChevronRight className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
           <span>{section.title}</span>
         </div>
         {onCreateChannel && (
@@ -344,10 +326,7 @@ interface ChannelItemProps {
   onClick: () => void
 }
 
-const ChannelItem = memo(function ChannelItem({
-  channel,
-  onClick,
-}: ChannelItemProps) {
+const ChannelItem = memo(function ChannelItem({ channel, onClick }: ChannelItemProps) {
   const Icon = channel.type === 'private' ? Lock : Hash
 
   return (
@@ -365,16 +344,14 @@ const ChannelItem = memo(function ChannelItem({
       {channel.type === 'dm' ? (
         <Avatar className="h-5 w-5">
           <AvatarImage src={channel.avatar} />
-          <AvatarFallback className="text-[10px]">
-            {channel.name.charAt(0)}
-          </AvatarFallback>
+          <AvatarFallback className="text-[10px]">{channel.name.charAt(0)}</AvatarFallback>
         </Avatar>
       ) : (
         <Icon className="h-4 w-4 shrink-0" />
       )}
       <span className="flex-1 truncate text-left">{channel.name}</span>
       {channel.unreadCount && channel.unreadCount > 0 && (
-        <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-semibold text-primary-foreground">
+        <span className="text-primary-foreground flex h-5 min-w-[20px] items-center justify-center rounded-full bg-primary px-1.5 text-[10px] font-semibold">
           {channel.unreadCount > 99 ? '99+' : channel.unreadCount}
         </span>
       )}
@@ -387,19 +364,11 @@ interface SidebarFooterProps {
   onLogout?: () => void
 }
 
-const SidebarFooter = memo(function SidebarFooter({
-  onSettings,
-  onLogout,
-}: SidebarFooterProps) {
+const SidebarFooter = memo(function SidebarFooter({ onSettings, onLogout }: SidebarFooterProps) {
   return (
     <div className="border-t p-2">
       <div className="flex items-center justify-around">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onSettings}
-          className="h-10 w-10"
-        >
+        <Button variant="ghost" size="icon" onClick={onSettings} className="h-10 w-10">
           <Settings className="h-5 w-5" />
         </Button>
         <Button variant="ghost" size="icon" className="h-10 w-10">
@@ -427,18 +396,14 @@ interface EmptySidebarProps {
   onCreateChannel?: () => void
 }
 
-const EmptySidebar = memo(function EmptySidebar({
-  onCreateChannel,
-}: EmptySidebarProps) {
+const EmptySidebar = memo(function EmptySidebar({ onCreateChannel }: EmptySidebarProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center">
       <div className="mb-4 rounded-full bg-muted p-4">
         <Hash className="h-8 w-8 text-muted-foreground" />
       </div>
       <h3 className="mb-1 font-semibold">No channels yet</h3>
-      <p className="mb-4 text-sm text-muted-foreground">
-        Create a channel to get started
-      </p>
+      <p className="mb-4 text-sm text-muted-foreground">Create a channel to get started</p>
       {onCreateChannel && (
         <Button onClick={onCreateChannel} size="sm">
           <Plus className="mr-1 h-4 w-4" />

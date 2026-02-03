@@ -48,7 +48,7 @@ export function AdminNav() {
   const pathname = usePathname()
 
   return (
-    <div className="flex h-screen w-64 flex-col border-r bg-muted/30">
+    <div className="bg-muted/30 flex h-screen w-64 flex-col border-r">
       <div className="flex h-14 items-center border-b px-4">
         <Shield className="mr-2 h-5 w-5 text-primary" />
         <span className="font-semibold">Admin Panel</span>
@@ -57,17 +57,14 @@ export function AdminNav() {
       <ScrollArea className="flex-1 px-3 py-4">
         <nav className="space-y-1">
           {navItems.map((item) => {
-            const isActive = pathname === item.href ||
-              (item.href !== '/admin' && pathname.startsWith(item.href))
+            const isActive =
+              pathname === item.href || (item.href !== '/admin' && pathname.startsWith(item.href))
 
             return (
               <Link key={item.href} href={item.href}>
                 <Button
                   variant={isActive ? 'secondary' : 'ghost'}
-                  className={cn(
-                    'w-full justify-start',
-                    isActive && 'bg-secondary'
-                  )}
+                  className={cn('w-full justify-start', isActive && 'bg-secondary')}
                 >
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.title}

@@ -171,15 +171,15 @@ export function BotPermissions({
   return (
     <div className={cn('space-y-4', className)}>
       {hasHighRiskPermissions && !readOnly && (
-        <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 dark:border-amber-900/50 dark:bg-amber-900/20 p-3">
-          <AlertTriangle className="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5" />
+        <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-900/50 dark:bg-amber-900/20">
+          <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-600" />
           <div className="text-sm">
             <p className="font-medium text-amber-800 dark:text-amber-200">
               High-risk permissions requested
             </p>
             <p className="text-amber-700 dark:text-amber-300/80">
-              This bot requests elevated permissions. Only grant these if you
-              trust the bot developer.
+              This bot requests elevated permissions. Only grant these if you trust the bot
+              developer.
             </p>
           </div>
         </div>
@@ -195,41 +195,32 @@ export function BotPermissions({
               key={config.id}
               className={cn(
                 'flex items-start gap-3 rounded-lg border p-3 transition-colors',
-                isEnabled
-                  ? 'border-primary/20 bg-primary/5'
-                  : 'border-border bg-card'
+                isEnabled ? 'border-primary/20 bg-primary/5' : 'border-border bg-card'
               )}
             >
               <div
                 className={cn(
                   'rounded-lg p-2',
-                  isEnabled
-                    ? 'bg-primary/10'
-                    : getRiskLevelBg(config.riskLevel)
+                  isEnabled ? 'bg-primary/10' : getRiskLevelBg(config.riskLevel)
                 )}
               >
                 <Icon
                   className={cn(
                     'h-4 w-4',
-                    isEnabled
-                      ? 'text-primary'
-                      : getRiskLevelColor(config.riskLevel)
+                    isEnabled ? 'text-primary' : getRiskLevelColor(config.riskLevel)
                   )}
                 />
               </div>
 
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <Label
-                    htmlFor={`permission-${config.id}`}
-                    className="font-medium cursor-pointer"
-                  >
+                  <Label htmlFor={`permission-${config.id}`} className="cursor-pointer font-medium">
                     {config.label}
                   </Label>
                   {config.riskLevel !== 'low' && (
                     <span
                       className={cn(
-                        'text-xs px-1.5 py-0.5 rounded-full',
+                        'rounded-full px-1.5 py-0.5 text-xs',
                         config.riskLevel === 'high'
                           ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'
                           : 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400'
@@ -240,9 +231,7 @@ export function BotPermissions({
                   )}
                 </div>
                 {showDescriptions && (
-                  <p className="text-sm text-muted-foreground mt-0.5">
-                    {config.description}
-                  </p>
+                  <p className="mt-0.5 text-sm text-muted-foreground">{config.description}</p>
                 )}
               </div>
 
@@ -255,9 +244,9 @@ export function BotPermissions({
               ) : (
                 <div
                   className={cn(
-                    'flex items-center justify-center h-6 w-6 rounded-full',
+                    'flex h-6 w-6 items-center justify-center rounded-full',
                     isEnabled
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'text-primary-foreground bg-primary'
                       : 'bg-muted text-muted-foreground'
                   )}
                 >
@@ -287,9 +276,7 @@ export function BotPermissionsCompact({
   permissions: BotPermission[]
   className?: string
 }) {
-  const enabledConfigs = PERMISSION_CONFIGS.filter((config) =>
-    permissions.includes(config.id)
-  )
+  const enabledConfigs = PERMISSION_CONFIGS.filter((config) => permissions.includes(config.id))
 
   return (
     <div className={cn('flex flex-wrap gap-2', className)}>

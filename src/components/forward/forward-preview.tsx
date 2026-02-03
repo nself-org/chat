@@ -21,11 +21,7 @@ import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import { UserAvatar } from '@/components/user/user-avatar'
-import type {
-  ForwardMessage,
-  ForwardDestination,
-  ForwardResult,
-} from '@/lib/forward/forward-store'
+import type { ForwardMessage, ForwardDestination, ForwardResult } from '@/lib/forward/forward-store'
 
 // ============================================================================
 // Types
@@ -87,7 +83,7 @@ function MessagePreview({ message }: MessagePreviewProps) {
   const hasAttachments = message.attachments && message.attachments.length > 0
 
   return (
-    <div className="rounded-lg border bg-muted/30 p-3">
+    <div className="bg-muted/30 rounded-lg border p-3">
       {/* Header */}
       <div className="mb-2 flex items-center gap-2">
         <UserAvatar
@@ -101,24 +97,20 @@ function MessagePreview({ message }: MessagePreviewProps) {
         <div className="min-w-0 flex-1">
           <span className="text-sm font-medium">{message.user.displayName}</span>
           {message.channelName && (
-            <span className="ml-2 text-xs text-muted-foreground">
-              in #{message.channelName}
-            </span>
+            <span className="ml-2 text-xs text-muted-foreground">in #{message.channelName}</span>
           )}
         </div>
       </div>
 
       {/* Content */}
-      <p className="whitespace-pre-wrap text-sm text-foreground/90">
+      <p className="text-foreground/90 whitespace-pre-wrap text-sm">
         {truncateContent(message.content)}
       </p>
 
       {/* Attachments indicator */}
       {hasAttachments && (
         <div className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
-          {message.attachments!.some((a) =>
-            a.fileType.startsWith('image/')
-          ) ? (
+          {message.attachments!.some((a) => a.fileType.startsWith('image/')) ? (
             <ImageIcon className="h-3 w-3" />
           ) : (
             <Paperclip className="h-3 w-3" />
@@ -144,12 +136,7 @@ interface DestinationBadgeProps {
   disabled?: boolean
 }
 
-function DestinationBadge({
-  destination,
-  onRemove,
-  result,
-  disabled,
-}: DestinationBadgeProps) {
+function DestinationBadge({ destination, onRemove, result, disabled }: DestinationBadgeProps) {
   const Icon = getDestinationIcon(destination.type, destination.isPrivate)
 
   return (
@@ -219,16 +206,10 @@ export const ForwardPreview = React.forwardRef<HTMLDivElement, ForwardPreviewPro
       forwardResults.find((r) => r.destinationId === destinationId)
 
     return (
-      <div
-        ref={ref}
-        className={cn('flex flex-col gap-4', className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('flex flex-col gap-4', className)} {...props}>
         {/* Message Preview */}
         <div>
-          <label className="mb-2 block text-sm font-medium">
-            Forwarding message
-          </label>
+          <label className="mb-2 block text-sm font-medium">Forwarding message</label>
           <MessagePreview message={message} />
         </div>
 
@@ -255,10 +236,7 @@ export const ForwardPreview = React.forwardRef<HTMLDivElement, ForwardPreviewPro
         {/* Comment Input */}
         {!hasResults && (
           <div>
-            <label
-              htmlFor="forward-comment"
-              className="mb-2 block text-sm font-medium"
-            >
+            <label htmlFor="forward-comment" className="mb-2 block text-sm font-medium">
               Add a comment (optional)
             </label>
             <Textarea
@@ -301,8 +279,8 @@ export const ForwardPreview = React.forwardRef<HTMLDivElement, ForwardPreviewPro
               <div className="flex items-center gap-2">
                 <XCircle className="h-4 w-4" />
                 <span>
-                  {forwardResults.filter((r) => r.success).length} of{' '}
-                  {forwardResults.length} forwards succeeded
+                  {forwardResults.filter((r) => r.success).length} of {forwardResults.length}{' '}
+                  forwards succeeded
                 </span>
               </div>
             )}
@@ -313,12 +291,7 @@ export const ForwardPreview = React.forwardRef<HTMLDivElement, ForwardPreviewPro
 
         {/* Actions */}
         <div className="flex justify-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            disabled={isForwarding}
-          >
+          <Button type="button" variant="outline" onClick={onCancel} disabled={isForwarding}>
             {hasResults ? 'Close' : 'Cancel'}
           </Button>
           {!hasResults && (
@@ -336,9 +309,7 @@ export const ForwardPreview = React.forwardRef<HTMLDivElement, ForwardPreviewPro
                 <>
                   <Forward className="mr-2 h-4 w-4" />
                   Forward to {selectedDestinations.length}{' '}
-                  {selectedDestinations.length === 1
-                    ? 'destination'
-                    : 'destinations'}
+                  {selectedDestinations.length === 1 ? 'destination' : 'destinations'}
                 </>
               )}
             </Button>

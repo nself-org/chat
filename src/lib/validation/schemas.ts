@@ -66,9 +66,7 @@ export const urlSchema = z
 /**
  * UUID validation
  */
-export const uuidSchema = z
-  .string()
-  .uuid('Invalid UUID format')
+export const uuidSchema = z.string().uuid('Invalid UUID format')
 
 /**
  * Hex color validation
@@ -134,14 +132,16 @@ export const signUpSchema = z.object({
 /**
  * Change password request validation
  */
-export const changePasswordSchema = z.object({
-  currentPassword: z.string().min(1, 'Current password is required'),
-  newPassword: passwordSchema,
-  confirmPassword: z.string(),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: 'Passwords do not match',
-  path: ['confirmPassword'],
-})
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, 'Current password is required'),
+    newPassword: passwordSchema,
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
 
 /**
  * Reset password request validation
@@ -205,10 +205,7 @@ export const createChannelSchema = z.object({
     .min(1, 'Display name is required')
     .max(80, 'Display name must not exceed 80 characters')
     .trim(),
-  description: z
-    .string()
-    .max(500, 'Description must not exceed 500 characters')
-    .optional(),
+  description: z.string().max(500, 'Description must not exceed 500 characters').optional(),
   isPrivate: z.boolean().default(false),
   isArchived: z.boolean().default(false),
 })
@@ -223,10 +220,7 @@ export const updateChannelSchema = z.object({
     .max(80, 'Display name must not exceed 80 characters')
     .trim()
     .optional(),
-  description: z
-    .string()
-    .max(500, 'Description must not exceed 500 characters')
-    .optional(),
+  description: z.string().max(500, 'Description must not exceed 500 characters').optional(),
   isPrivate: z.boolean().optional(),
   isArchived: z.boolean().optional(),
 })
@@ -258,10 +252,7 @@ export const updateMessageSchema = z.object({
  */
 export const addReactionSchema = z.object({
   messageId: uuidSchema,
-  emoji: z
-    .string()
-    .min(1, 'Emoji is required')
-    .max(100, 'Emoji must not exceed 100 characters'),
+  emoji: z.string().min(1, 'Emoji is required').max(100, 'Emoji must not exceed 100 characters'),
 })
 
 // ============================================================================
@@ -298,43 +289,51 @@ export const uploadInitSchema = z.object({
  * App configuration update validation
  */
 export const updateConfigSchema = z.object({
-  branding: z.object({
-    appName: z.string().min(1).max(50).optional(),
-    logo: urlSchema.optional(),
-    favicon: urlSchema.optional(),
-    tagline: z.string().max(200).optional(),
-    logoScale: z.number().min(0.5).max(2.0).optional(),
-  }).optional(),
-  theme: z.object({
-    preset: z.string().optional(),
-    colorScheme: z.enum(['light', 'dark', 'system']).optional(),
-    primaryColor: hexColorSchema.optional(),
-    secondaryColor: hexColorSchema.optional(),
-    accentColor: hexColorSchema.optional(),
-    backgroundColor: hexColorSchema.optional(),
-    surfaceColor: hexColorSchema.optional(),
-    textColor: hexColorSchema.optional(),
-    mutedColor: hexColorSchema.optional(),
-    borderColor: hexColorSchema.optional(),
-    customCSS: z.string().max(50000).optional(),
-  }).optional(),
-  features: z.object({
-    publicChannels: z.boolean().optional(),
-    privateChannels: z.boolean().optional(),
-    directMessages: z.boolean().optional(),
-    threads: z.boolean().optional(),
-    reactions: z.boolean().optional(),
-    fileSharing: z.boolean().optional(),
-    voiceMessages: z.boolean().optional(),
-    videoConferencing: z.boolean().optional(),
-  }).optional(),
-  authProviders: z.object({
-    emailPassword: z.boolean().optional(),
-    magicLinks: z.boolean().optional(),
-    google: z.boolean().optional(),
-    github: z.boolean().optional(),
-    idme: z.boolean().optional(),
-  }).optional(),
+  branding: z
+    .object({
+      appName: z.string().min(1).max(50).optional(),
+      logo: urlSchema.optional(),
+      favicon: urlSchema.optional(),
+      tagline: z.string().max(200).optional(),
+      logoScale: z.number().min(0.5).max(2.0).optional(),
+    })
+    .optional(),
+  theme: z
+    .object({
+      preset: z.string().optional(),
+      colorScheme: z.enum(['light', 'dark', 'system']).optional(),
+      primaryColor: hexColorSchema.optional(),
+      secondaryColor: hexColorSchema.optional(),
+      accentColor: hexColorSchema.optional(),
+      backgroundColor: hexColorSchema.optional(),
+      surfaceColor: hexColorSchema.optional(),
+      textColor: hexColorSchema.optional(),
+      mutedColor: hexColorSchema.optional(),
+      borderColor: hexColorSchema.optional(),
+      customCSS: z.string().max(50000).optional(),
+    })
+    .optional(),
+  features: z
+    .object({
+      publicChannels: z.boolean().optional(),
+      privateChannels: z.boolean().optional(),
+      directMessages: z.boolean().optional(),
+      threads: z.boolean().optional(),
+      reactions: z.boolean().optional(),
+      fileSharing: z.boolean().optional(),
+      voiceMessages: z.boolean().optional(),
+      videoConferencing: z.boolean().optional(),
+    })
+    .optional(),
+  authProviders: z
+    .object({
+      emailPassword: z.boolean().optional(),
+      magicLinks: z.boolean().optional(),
+      google: z.boolean().optional(),
+      github: z.boolean().optional(),
+      idme: z.boolean().optional(),
+    })
+    .optional(),
 })
 
 // ============================================================================
@@ -349,12 +348,17 @@ export const incomingWebhookSchema = z.object({
   username: z.string().max(100).optional(),
   iconUrl: urlSchema.optional(),
   channel: z.string().max(100).optional(),
-  attachments: z.array(z.object({
-    title: z.string().max(200).optional(),
-    text: safeTextSchema.optional(),
-    color: hexColorSchema.optional(),
-    imageUrl: urlSchema.optional(),
-  })).max(10).optional(),
+  attachments: z
+    .array(
+      z.object({
+        title: z.string().max(200).optional(),
+        text: safeTextSchema.optional(),
+        color: hexColorSchema.optional(),
+        imageUrl: urlSchema.optional(),
+      })
+    )
+    .max(10)
+    .optional(),
 })
 
 /**

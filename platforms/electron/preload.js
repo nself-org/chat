@@ -5,13 +5,13 @@
  * It bridges the main process and renderer process securely.
  */
 
-'use strict';
+'use strict'
 
 // In production, load the compiled preload script
 // In development, we need to handle this differently since preload
 // scripts cannot use ts-node directly
-const path = require('path');
+const path = require('path')
 
 // Load the compiled preload script
 // Note: Preload scripts must be compiled to JavaScript before running
-require(path.join(__dirname, 'preload', 'index.js'));
+require(path.join(__dirname, 'preload', 'index.js'))

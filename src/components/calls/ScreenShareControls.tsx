@@ -212,7 +212,7 @@ export function ScreenShareControls({
               Options
             </DropdownMenuLabel>
             <DropdownMenuItem onClick={handleToggleAudio} disabled={!supportsSystemAudio}>
-              <div className="flex items-center justify-between w-full">
+              <div className="flex w-full items-center justify-between">
                 <span>System Audio</span>
                 {captureOptions.captureSystemAudio ? (
                   <Volume2 className="h-4 w-4 text-green-500" />
@@ -227,7 +227,7 @@ export function ScreenShareControls({
               )}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={handleToggleCursor}>
-              <div className="flex items-center justify-between w-full">
+              <div className="flex w-full items-center justify-between">
                 <span>Show Cursor</span>
                 {captureOptions.captureCursor && <span className="text-green-500">✓</span>}
               </div>
@@ -238,7 +238,7 @@ export function ScreenShareControls({
             {/* Start Button */}
             <DropdownMenuItem
               onClick={handleStartShare}
-              className="bg-primary text-primary-foreground hover:bg-primary/90"
+              className="text-primary-foreground hover:bg-primary/90 bg-primary"
             >
               <Monitor className="mr-2 h-4 w-4" />
               Start Sharing
@@ -320,11 +320,7 @@ export function ScreenShareButton({
       className={className}
       title={isSharing ? 'Stop screen sharing' : 'Share screen'}
     >
-      {isSharing ? (
-        <MonitorOff className="h-4 w-4" />
-      ) : (
-        <Monitor className="h-4 w-4" />
-      )}
+      {isSharing ? <MonitorOff className="h-4 w-4" /> : <Monitor className="h-4 w-4" />}
     </Button>
   )
 }

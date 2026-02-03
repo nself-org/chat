@@ -71,6 +71,7 @@ Gather opinions and make decisions:
 Protect accounts with military-grade security:
 
 **Two-Factor Authentication (2FA/MFA):**
+
 - TOTP setup with QR codes (Google Authenticator, Authy, 1Password)
 - 10 single-use backup codes with download/print
 - Device trust ("Remember this device" for 30 days)
@@ -79,6 +80,7 @@ Protect accounts with military-grade security:
 - Rate limiting (5 failed attempts = 30-minute lockout)
 
 **PIN Lock:**
+
 - 4-6 digit PIN with PBKDF2 hashing (100,000 iterations)
 - Auto-lock on app close, background, or timeout (5/15/30/60 minutes)
 - Biometric unlock via WebAuthn (Touch ID, Face ID, Windows Hello)
@@ -182,36 +184,43 @@ Comprehensive workspace management:
 ### New Tables (28 Total)
 
 **Advanced Messaging (4 tables):**
+
 - `nchat_edit_history` - Track message edit history with timestamps
 - `nchat_starred_messages` - User-specific message bookmarks with folders
 - `nchat_read_receipts` - Track when users read messages
 - `nchat_thread_subscriptions` - Thread notification preferences
 
 **GIFs & Stickers (2 tables):**
+
 - `nchat_sticker_packs` - Sticker pack metadata (name, creator, is_default)
 - `nchat_stickers` - Individual stickers with keywords and URLs
 
 **Polls (3 tables):**
+
 - `nchat_polls` - Poll metadata (question, type, expiration, settings)
 - `nchat_poll_options` - Poll options with vote counts
 - `nchat_poll_votes` - Individual votes with user/option mapping
 
 **Two-Factor Authentication (4 tables):**
+
 - `nchat_user_2fa_settings` - User 2FA configuration (enabled, secret, verified)
 - `nchat_user_backup_codes` - Backup codes with usage tracking
 - `nchat_user_trusted_devices` - Trusted device fingerprints with expiration
 - `nchat_2fa_verification_attempts` - Failed attempt tracking for rate limiting
 
 **PIN Lock (3 tables):**
+
 - `nchat_user_pin_settings` - PIN configuration (hash, salt, auto-lock settings)
 - `nchat_user_pin_attempts` - Failed PIN attempt tracking
 - `nchat_user_biometric_credentials` - WebAuthn credentials for biometric unlock
 
 **Search (2 tables):**
+
 - `nchat_search_history` - Recent searches with timestamps
 - `nchat_saved_searches` - Named saved searches with filters
 
 **Bot API (7 tables):**
+
 - `nchat_bots` - Bot accounts (user reference, description, avatar)
 - `nchat_bot_tokens` - API tokens with scopes and expiration
 - `nchat_bot_webhooks` - Webhook configurations (URL, events, secret)
@@ -221,6 +230,7 @@ Comprehensive workspace management:
 - `nchat_bot_api_logs` - API request logs for monitoring
 
 **Social Media (4 tables):**
+
 - `nchat_social_accounts` - Connected social media accounts
 - `nchat_social_posts` - Imported social media posts
 - `nchat_social_integrations` - Auto-posting configurations
@@ -246,18 +256,21 @@ nself db migrate status
 ### New Dependencies
 
 **Production:**
+
 - `meilisearch@0.44.0` - Full-text search engine
 - `otplib@13.2.1` - TOTP generation for 2FA
 - `speakeasy@2.0.0` - Additional 2FA utilities
 - `qrcode@1.5.4` - QR code generation for 2FA setup
 
 **Development:**
+
 - `@types/qrcode@1.5.6` - TypeScript types
 - `@types/speakeasy@2.0.10` - TypeScript types
 
 ### GraphQL Operations
 
 **38 New Operations:**
+
 - 15 Queries (search, polls, bots, social)
 - 18 Mutations (edit, pin, star, poll, 2FA, PIN, bot, social)
 - 5 Subscriptions (polls, typing indicators, read receipts)
@@ -265,6 +278,7 @@ nself db migrate status
 ### API Endpoints
 
 **5 New Bot API Endpoints:**
+
 - `POST /api/bots/send-message`
 - `POST /api/bots/create-channel`
 - `GET /api/bots/channel-info`
@@ -272,6 +286,7 @@ nself db migrate status
 - `GET /api/bots/user-info`
 
 **Social Media Endpoints:**
+
 - `GET /api/social/twitter/auth`
 - `GET /api/social/twitter/callback`
 - `POST /api/social/twitter/import`
@@ -380,6 +395,7 @@ No deprecations in this release.
 ### Security Advisories
 
 **Next.js CVE-2025-59472** (Moderate Severity)
+
 - **CVSS:** 5.9
 - **Impact:** DoS via PPR Resume Endpoint
 - **Our Status:** NOT VULNERABLE (PPR not enabled)
@@ -463,6 +479,7 @@ pnpm dev
 Use the **RELEASE-CHECKLIST-v0.3.0.md** for comprehensive testing.
 
 **Critical Paths:**
+
 - ✅ User signup/login
 - ✅ Send message
 - ✅ Edit message
@@ -505,6 +522,7 @@ Use the **RELEASE-CHECKLIST-v0.3.0.md** for comprehensive testing.
 **Impact:** Development tooling only, does not affect runtime
 
 **Affected Areas:**
+
 - Apollo Client export issues (12 errors)
 - Type mismatches in UI components (15 errors)
 - Missing module declarations (5 errors)
@@ -529,6 +547,7 @@ Use the **RELEASE-CHECKLIST-v0.3.0.md** for comprehensive testing.
 **Impact:** Features marked TODO are not yet implemented (expected)
 
 **Categories:**
+
 - API integration placeholders
 - Future feature stubs
 - Settings persistence TODOs

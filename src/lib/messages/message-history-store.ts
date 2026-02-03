@@ -105,7 +105,7 @@ export const useMessageHistoryStore = create<MessageHistoryState>()(
               history: state.histories[messageId]?.history ?? [],
               fetchedAt: state.histories[messageId]?.fetchedAt ?? new Date(),
               isLoading,
-              error: isLoading ? null : state.histories[messageId]?.error ?? null,
+              error: isLoading ? null : (state.histories[messageId]?.error ?? null),
             },
           },
         }))
@@ -305,7 +305,6 @@ export const selectHistoryError = (messageId: string) => (state: MessageHistoryS
 /**
  * Select all message IDs with cached history
  */
-export const selectCachedMessageIds = (state: MessageHistoryState) =>
-  Object.keys(state.histories)
+export const selectCachedMessageIds = (state: MessageHistoryState) => Object.keys(state.histories)
 
 export default useMessageHistoryStore

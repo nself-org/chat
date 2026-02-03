@@ -194,12 +194,14 @@ pnpm install
 ### 2. Configure iOS
 
 **Xcode Project Settings:**
+
 1. Open `platforms/capacitor/ios/App/App.xcodeproj` in Xcode
 2. Select target → Signing & Capabilities
 3. Add "Voice over IP" background mode
 4. Add "Audio, AirPlay, and Picture in Picture" background mode
 
 **Info.plist:**
+
 ```xml
 <key>UIBackgroundModes</key>
 <array>
@@ -213,6 +215,7 @@ pnpm install
 ```
 
 **Push Certificate:**
+
 1. Apple Developer Portal → Certificates
 2. Create VoIP Services Certificate
 3. Download and export as .p8
@@ -221,6 +224,7 @@ pnpm install
 ### 3. Configure Android
 
 **AndroidManifest.xml:**
+
 ```xml
 <!-- Add permissions -->
 <uses-permission android:name="android.permission.CALL_PHONE" />
@@ -242,6 +246,7 @@ pnpm install
 ```
 
 **Firebase Configuration:**
+
 1. Add `google-services.json` to `platforms/capacitor/android/app/`
 2. Configure FCM in Firebase Console
 
@@ -256,6 +261,7 @@ pnpm run sync:android
 ### 5. Register Native Plugins
 
 **In `platforms/capacitor/ios/App/AppDelegate.swift`:**
+
 ```swift
 import CallKitPlugin
 
@@ -264,6 +270,7 @@ CallKitPlugin.register()
 ```
 
 **In `platforms/capacitor/android/app/src/main/java/.../MainActivity.kt`:**
+
 ```kotlin
 import io.nself.chat.plugins.CallKitPlugin
 
@@ -409,6 +416,7 @@ function CallScreen() {
 ### Manual Testing
 
 #### iOS Testing
+
 ```bash
 # Build for iOS
 cd platforms/capacitor
@@ -422,6 +430,7 @@ pnpm run open:ios
 ```
 
 #### Android Testing
+
 ```bash
 # Build for Android
 cd platforms/capacitor
@@ -436,6 +445,7 @@ pnpm run open:android
 ### Test Checklist
 
 **CallKit/Telecom Integration:**
+
 - [ ] Incoming call shows native UI
 - [ ] Lock screen shows call UI
 - [ ] Accept call from native UI
@@ -445,6 +455,7 @@ pnpm run open:android
 - [ ] Call appears in call history
 
 **Picture-in-Picture:**
+
 - [ ] PiP activates on minimize
 - [ ] PiP window is draggable
 - [ ] PiP snaps to edges
@@ -453,6 +464,7 @@ pnpm run open:android
 - [ ] Double-tap expands to fullscreen
 
 **Background Calls:**
+
 - [ ] Call continues when app backgrounded
 - [ ] Audio continues in background
 - [ ] Video resumes when foregrounded
@@ -460,24 +472,28 @@ pnpm run open:android
 - [ ] Call survives screen lock
 
 **VoIP Push:**
+
 - [ ] Push wakes app from terminated state
 - [ ] CallKit shows immediately
 - [ ] Accept from push opens app
 - [ ] Push token registered on server
 
 **Battery Optimization:**
+
 - [ ] Quality reduces on low battery
 - [ ] Warning shown below 20%
 - [ ] Video disabled below 10%
 - [ ] Frame rate adjusts automatically
 
 **Network Handling:**
+
 - [ ] Detects WiFi vs cellular
 - [ ] Quality adjusts for network
 - [ ] Warns about cellular data usage
 - [ ] Reconnects after network change
 
 **Touch UI:**
+
 - [ ] All buttons meet 44pt minimum
 - [ ] Swipe down minimizes
 - [ ] Long press shows options
@@ -485,6 +501,7 @@ pnpm run open:android
 - [ ] Haptic feedback on actions
 
 **Orientation:**
+
 - [ ] Locks to portrait during call
 - [ ] Supports landscape mode
 - [ ] Layout adapts to orientation
@@ -521,16 +538,16 @@ describe('MobileCallScreen', () => {
 
 ### Target Performance
 
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Call Setup Time | < 2s | 1.2s ✅ |
-| Video Start Time | < 1s | 0.8s ✅ |
-| Audio Latency | < 150ms | 120ms ✅ |
-| Frame Rate | 24-30 fps | 30 fps ✅ |
-| Resolution | 480p-720p | 720p ✅ |
-| Battery Life | > 2 hours | 2.5 hours ✅ |
+| Metric             | Target     | Actual       |
+| ------------------ | ---------- | ------------ |
+| Call Setup Time    | < 2s       | 1.2s ✅      |
+| Video Start Time   | < 1s       | 0.8s ✅      |
+| Audio Latency      | < 150ms    | 120ms ✅     |
+| Frame Rate         | 24-30 fps  | 30 fps ✅    |
+| Resolution         | 480p-720p  | 720p ✅      |
+| Battery Life       | > 2 hours  | 2.5 hours ✅ |
 | Data Usage (video) | ~500 MB/hr | 480 MB/hr ✅ |
-| Data Usage (audio) | ~50 MB/hr | 45 MB/hr ✅ |
+| Data Usage (audio) | ~50 MB/hr  | 45 MB/hr ✅  |
 
 ### Optimization Results
 
@@ -704,4 +721,4 @@ describe('MobileCallScreen', () => {
 
 ---
 
-*For questions or issues, please refer to the [troubleshooting guide](./Mobile-Call-Optimizations.md#troubleshooting) or open a GitHub issue.*
+_For questions or issues, please refer to the [troubleshooting guide](./Mobile-Call-Optimizations.md#troubleshooting) or open a GitHub issue._

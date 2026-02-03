@@ -9,22 +9,26 @@ The nChat mobile apps include extensive native functionality implemented in Swif
 ## iOS Native Code
 
 ### Location
+
 All iOS native code is located in the `ios/` directory after running `npx cap add ios`.
 
 ### Plugins
 
 #### 1. BiometricAuthPlugin.swift
+
 **Path**: `ios/Plugin/BiometricAuthPlugin.swift`
 
 Face ID and Touch ID authentication plugin.
 
 **Key Methods**:
+
 - `checkAvailability()` - Check if biometrics are available
 - `authenticate()` - Authenticate with biometrics
 - `authenticateWithPasscode()` - Authenticate with device passcode
 - `getBiometryType()` - Get type of biometric (face/fingerprint)
 
 **Features**:
+
 - Face ID support
 - Touch ID support
 - Passcode fallback
@@ -32,14 +36,17 @@ Face ID and Touch ID authentication plugin.
 - Error handling with specific error codes
 
 **Dependencies**:
+
 - LocalAuthentication framework
 
 #### 2. CallKitPlugin.swift (Already exists)
+
 **Path**: `ios/Plugin/CallKitPlugin.swift`
 
 Native call integration using CallKit.
 
 **Key Methods**:
+
 - `configure()` - Configure CallKit provider
 - `reportIncomingCall()` - Show incoming call UI
 - `startCall()` - Start outgoing call
@@ -49,6 +56,7 @@ Native call integration using CallKit.
 - `setOnHold()` - Hold/unhold call
 
 **Features**:
+
 - Native iOS call UI
 - VoIP push notification integration
 - Call history integration
@@ -56,22 +64,26 @@ Native call integration using CallKit.
 - Call state management
 
 **Dependencies**:
+
 - CallKit framework
 - AVFoundation framework
 
 ### Extensions
 
 #### 3. NChatWidget.swift
+
 **Path**: `ios/Widget/NChatWidget.swift`
 
 Home screen widget for iOS 14+.
 
 **Widget Sizes**:
+
 - **Small**: App icon + unread count
 - **Medium**: 2 recent messages with sender and channel
 - **Large**: 3 recent messages with full details
 
 **Features**:
+
 - Displays recent messages from shared UserDefaults
 - Shows unread count badge
 - Updates every 15 minutes
@@ -80,25 +92,30 @@ Home screen widget for iOS 14+.
 - SwiftUI implementation
 
 **Data Source**:
+
 - Reads from `UserDefaults(suiteName: "group.io.nself.chat")`
 - Keys: `recent_messages`, `unread_count`
 
 **Dependencies**:
+
 - WidgetKit framework
 - SwiftUI framework
 
 #### 4. ShareViewController.swift
+
 **Path**: `ios/ShareExtension/ShareViewController.swift`
 
 Share extension for receiving shared content.
 
 **Supported Content Types**:
+
 - Text (plain text, URLs)
 - Images (JPEG, PNG, HEIC)
 - Videos (MP4, MOV)
 - Files (any file type)
 
 **Features**:
+
 - Extracts shared content
 - Saves to shared UserDefaults
 - Opens main app via deep link
@@ -106,23 +123,27 @@ Share extension for receiving shared content.
 - Preview of shared content
 
 **Data Flow**:
+
 1. Extract content from share extension
 2. Save to `UserDefaults(suiteName: "group.io.nself.chat")`
 3. Open main app with `nchat://share` deep link
 4. Main app reads from UserDefaults and displays share UI
 
 #### 5. AppClipViewController.swift
+
 **Path**: `ios/AppClip/AppClipViewController.swift`
 
 App Clip for quick access without full app installation.
 
 **Use Cases**:
+
 - Join public channels via QR code
 - View shared messages
 - Quick preview of nChat
 - Prompt to download full app
 
 **Features**:
+
 - Lightweight UI (<10MB)
 - NFC/QR code invocation
 - Universal link handling
@@ -130,6 +151,7 @@ App Clip for quick access without full app installation.
 - Channel join functionality
 
 **URL Handling**:
+
 - Supports `https://nchat.app/join/*` URLs
 - Parses channel information from URL
 - Deep link to specific content
@@ -137,11 +159,13 @@ App Clip for quick access without full app installation.
 ### Configuration Files
 
 #### 6. Info.plist.template
+
 **Path**: `ios/App/Info.plist.template`
 
 Complete iOS configuration template.
 
 **Key Configurations**:
+
 - Privacy permission descriptions (Camera, Photos, Microphone, etc.)
 - Background modes (Audio, VoIP, Remote notifications, Fetch)
 - URL schemes (`nchat://`)
@@ -152,11 +176,13 @@ Complete iOS configuration template.
 - Document type declarations
 
 #### 7. apple-app-site-association
+
 **Path**: `ios/App/.well-known/apple-app-site-association`
 
 Universal Links configuration.
 
 **Supported Paths**:
+
 - `/join/*` - Join channel
 - `/channel/*` - Open channel
 - `/message/*` - Open message
@@ -165,6 +191,7 @@ Universal Links configuration.
 - `/call/*` - Join call
 
 **App Clips**:
+
 - Includes App Clip configuration
 - Same path handling as main app
 
@@ -173,22 +200,26 @@ Universal Links configuration.
 ## Android Native Code
 
 ### Location
+
 All Android native code is located in the `android/` directory after running `npx cap add android`.
 
 ### Plugins
 
 #### 1. BiometricAuthPlugin.kt
+
 **Path**: `android/src/main/java/io/nself/chat/plugins/BiometricAuthPlugin.kt`
 
 Biometric authentication plugin using AndroidX Biometric library.
 
 **Key Methods**:
+
 - `checkAvailability()` - Check biometric availability
 - `authenticate()` - Authenticate with biometrics
 - `authenticateWithPasscode()` - Authenticate with device credentials
 - `getBiometryType()` - Get biometric type
 
 **Features**:
+
 - Fingerprint authentication
 - Face unlock (device-dependent)
 - Device credential fallback
@@ -196,19 +227,23 @@ Biometric authentication plugin using AndroidX Biometric library.
 - Error handling with codes
 
 **Supported Biometrics**:
+
 - Fingerprint (most common)
 - Face unlock (Android 10+, device-dependent)
 - Iris (rare)
 
 **Dependencies**:
+
 - androidx.biometric:biometric
 
 #### 2. CallKitPlugin.kt (Already exists)
+
 **Path**: `android/src/main/java/io/nself/chat/plugins/CallKitPlugin.kt`
 
 Native call integration using Android Telecom Manager.
 
 **Key Methods**:
+
 - `configure()` - Configure Telecom Manager
 - `reportIncomingCall()` - Show incoming call
 - `startCall()` - Start outgoing call
@@ -219,6 +254,7 @@ Native call integration using Android Telecom Manager.
 - `requestPermissions()` - Request call permissions
 
 **Features**:
+
 - Native Android call UI
 - Call history integration
 - Connection service
@@ -226,14 +262,17 @@ Native call integration using Android Telecom Manager.
 - Audio routing
 
 **Dependencies**:
+
 - android.telecom package
 
 #### 3. CallConnectionService.kt
+
 **Path**: `android/src/main/java/io/nself/chat/plugins/CallConnectionService.kt` (included in CallKitPlugin.kt)
 
 Connection service for handling call states.
 
 **Capabilities**:
+
 - Hold support
 - Mute support
 - Video calling support (bidirectional)
@@ -242,11 +281,13 @@ Connection service for handling call states.
 ### Activities
 
 #### 4. ShareActivity.kt
+
 **Path**: `android/src/main/java/io/nself/chat/ShareActivity.kt`
 
 Activity for receiving shared content from other apps.
 
 **Supported Content Types**:
+
 - Text (`text/plain`)
 - Images (`image/*`)
 - Videos (`video/*`)
@@ -254,6 +295,7 @@ Activity for receiving shared content from other apps.
 - Multiple files (`ACTION_SEND_MULTIPLE`)
 
 **Features**:
+
 - Extracts shared content
 - Saves to SharedPreferences
 - Opens main app
@@ -261,6 +303,7 @@ Activity for receiving shared content from other apps.
 - URI permissions
 
 **Data Flow**:
+
 1. Receive share intent
 2. Extract content and URIs
 3. Save to `SharedPreferences("nchat_share")`
@@ -270,11 +313,13 @@ Activity for receiving shared content from other apps.
 ### Widgets
 
 #### 5. NChatWidgetProvider.kt
+
 **Path**: `android/src/main/java/io/nself/chat/widgets/NChatWidgetProvider.kt`
 
 Home screen widget provider.
 
 **Features**:
+
 - Shows recent messages
 - Displays unread count
 - RemoteViews for list of messages
@@ -282,11 +327,13 @@ Home screen widget provider.
 - Tap to open app
 
 **Update Mechanism**:
+
 - `updateAppWidget()` - Updates single widget
 - `updateAllWidgets()` - Updates all instances
 - Data from SharedPreferences
 
 **Layout**:
+
 - Widget container with gradient background
 - Unread count badge
 - ListView of recent messages
@@ -295,21 +342,25 @@ Home screen widget provider.
 ### Managers
 
 #### 6. ShortcutManager.kt
+
 **Path**: `android/src/main/java/io/nself/chat/shortcuts/ShortcutManager.kt`
 
 App shortcuts manager for dynamic and static shortcuts.
 
 **Static Shortcuts**:
+
 - New Message
 - Search
 - Start Call
 
 **Dynamic Shortcuts**:
+
 - Up to 4 recent channels
 - Updated programmatically
 - Can be pinned to home screen
 
 **Features**:
+
 - Create dynamic shortcuts for channels
 - Update shortcut rankings
 - Report shortcut usage
@@ -317,16 +368,19 @@ App shortcuts manager for dynamic and static shortcuts.
 - Remove shortcuts
 
 **Dependencies**:
+
 - androidx.core.content.pm.ShortcutManagerCompat
 
 ### Configuration Files
 
 #### 7. AndroidManifest.xml.template
+
 **Path**: `android/app/src/main/AndroidManifest.xml.template`
 
 Complete Android manifest template.
 
 **Key Configurations**:
+
 - Permissions (Camera, Storage, Microphone, Contacts, etc.)
 - MainActivity with deep link intent filters
 - ShareActivity with share intent filters
@@ -339,17 +393,20 @@ Complete Android manifest template.
 - App shortcuts metadata
 
 **Intent Filters**:
+
 - **Deep Links**: `nchat://` custom scheme
 - **App Links**: `https://nchat.app/*` verified links
 - **Share**: All major MIME types
 - **Home**: Launcher intent
 
 #### 8. strings.xml
+
 **Path**: `android/app/src/main/res/values/strings.xml`
 
 String resources for Android app.
 
 **Categories**:
+
 - App info (name, package)
 - Deep link hosts
 - Notification channels
@@ -365,9 +422,11 @@ String resources for Android app.
 ## Build Scripts
 
 ### iOS Build Script
+
 **Path**: `scripts/build-ios.sh`
 
 **Features**:
+
 - Builds web app
 - Exports for Capacitor
 - Syncs to iOS
@@ -378,15 +437,18 @@ String resources for Android app.
 - Optional TestFlight upload
 
 **Usage**:
+
 ```bash
 ./scripts/build-ios.sh debug          # Debug build for simulator
 ./scripts/build-ios.sh release app-store  # Release for App Store
 ```
 
 ### Android Build Script
+
 **Path**: `scripts/build-android.sh`
 
 **Features**:
+
 - Builds web app
 - Exports for Capacitor
 - Syncs to Android
@@ -396,6 +458,7 @@ String resources for Android app.
 - Copies to dist folder
 
 **Usage**:
+
 ```bash
 ./scripts/build-android.sh debug      # Debug APK
 ./scripts/build-android.sh release aab    # Release AAB
@@ -407,11 +470,13 @@ String resources for Android app.
 ## Assets Configuration
 
 ### Capacitor Assets Config
+
 **Path**: `assets/capacitor.assets.json`
 
 Configuration for generating app icons and splash screens.
 
 **Source Assets** (place in `assets/`):
+
 - `icon.png` - 1024x1024 app icon
 - `icon-foreground.png` - Android adaptive foreground
 - `icon-background.png` - Android adaptive background
@@ -419,10 +484,12 @@ Configuration for generating app icons and splash screens.
 - `splash-dark.png` - Dark mode splash
 
 **Generated Assets**:
+
 - **iOS**: Multiple icon sizes, splash screens for all devices
 - **Android**: Icons for all densities, adaptive icons, splash screens
 
 **Generation**:
+
 ```bash
 npx @capacitor/assets generate
 ```
@@ -432,9 +499,11 @@ npx @capacitor/assets generate
 ## Store Metadata
 
 ### iOS App Store
+
 **Path**: `metadata/ios/app-store-metadata.json`
 
 Complete metadata for App Store Connect:
+
 - App name and bundle ID
 - Categories
 - Keywords and descriptions
@@ -445,9 +514,11 @@ Complete metadata for App Store Connect:
 - Test credentials
 
 ### Android Play Store
+
 **Path**: `metadata/android/play-store-metadata.json`
 
 Complete metadata for Google Play Console:
+
 - App name and package
 - Category and content rating
 - Short and full descriptions
@@ -463,9 +534,11 @@ Complete metadata for Google Play Console:
 ## CI/CD Workflows
 
 ### iOS Workflow
+
 **Path**: `.github/workflows/build-capacitor-ios.yml`
 
 **Features**:
+
 - Builds on macOS runner
 - Installs dependencies
 - Builds web app
@@ -477,6 +550,7 @@ Complete metadata for Google Play Console:
 - Artifact upload
 
 **Secrets Required**:
+
 - `APPLE_ID`
 - `APPLE_PASSWORD`
 - `TEAM_ID`
@@ -485,9 +559,11 @@ Complete metadata for Google Play Console:
 - `PROVISIONING_PROFILE`
 
 ### Android Workflow
+
 **Path**: `.github/workflows/build-capacitor-android.yml`
 
 **Features**:
+
 - Builds on Ubuntu runner
 - Installs dependencies
 - Builds web app
@@ -499,6 +575,7 @@ Complete metadata for Google Play Console:
 - Artifact upload
 
 **Secrets Required**:
+
 - `KEYSTORE_FILE`
 - `KEYSTORE_PASSWORD`
 - `KEY_ALIAS`
@@ -512,6 +589,7 @@ Complete metadata for Google Play Console:
 **Suite Name**: `group.io.nself.chat`
 
 **Shared Data**:
+
 1. **Widget Data**:
    - `recent_messages` - JSON array of recent messages
    - `unread_count` - Integer unread count
@@ -543,6 +621,7 @@ Complete metadata for Google Play Console:
 ### Registering Custom Plugins
 
 **iOS** (`ios/App/App/capacitor.config.json`):
+
 ```json
 {
   "plugins": {
@@ -557,6 +636,7 @@ Complete metadata for Google Play Console:
 ```
 
 **Android** (`android/app/src/main/java/io/nself/chat/MainActivity.java`):
+
 ```java
 public class MainActivity extends BridgeActivity {
   @Override
@@ -588,6 +668,7 @@ When adding new native code:
 ## Testing Native Code
 
 ### iOS Testing
+
 1. Build and run on simulator
 2. Test on physical device
 3. Test all biometric scenarios
@@ -598,6 +679,7 @@ When adding new native code:
 8. Test CallKit integration
 
 ### Android Testing
+
 1. Build and run on emulator
 2. Test on physical device
 3. Test biometric authentication

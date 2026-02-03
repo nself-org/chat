@@ -3,14 +3,7 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  RefreshControl,
-  Pressable,
-} from 'react-native'
+import { View, Text, StyleSheet, FlatList, RefreshControl, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -73,10 +66,13 @@ export function StatusScreen() {
     }
   }, [myStatuses, handleCreateStatus])
 
-  const handleStatusPress = useCallback((group: StatusGroup) => {
-    // View status in full screen viewer
-    viewStatus(group.statuses[0].id)
-  }, [viewStatus])
+  const handleStatusPress = useCallback(
+    (group: StatusGroup) => {
+      // View status in full screen viewer
+      viewStatus(group.statuses[0].id)
+    },
+    [viewStatus]
+  )
 
   const renderMyStatus = () => (
     <Pressable
@@ -86,22 +82,16 @@ export function StatusScreen() {
       <View style={styles.avatarContainer}>
         <UserAvatar user={user} size={56} />
         {myStatuses.length === 0 && (
-          <View
-            style={[styles.addButton, { backgroundColor: theme.colors.primary }]}
-          >
+          <View style={[styles.addButton, { backgroundColor: theme.colors.primary }]}>
             <Text style={{ color: '#FFFFFF', fontSize: 16 }}>+</Text>
           </View>
         )}
         {myStatuses.length > 0 && (
-          <View
-            style={[styles.statusRing, { borderColor: theme.colors.primary }]}
-          />
+          <View style={[styles.statusRing, { borderColor: theme.colors.primary }]} />
         )}
       </View>
       <View style={styles.statusContent}>
-        <Text style={[styles.statusName, { color: theme.colors.text }]}>
-          My Status
-        </Text>
+        <Text style={[styles.statusName, { color: theme.colors.text }]}>My Status</Text>
         <Text style={[styles.statusTime, { color: theme.colors.muted }]}>
           {myStatuses.length > 0
             ? `${myStatuses.length} update${myStatuses.length > 1 ? 's' : ''}`
@@ -124,9 +114,7 @@ export function StatusScreen() {
           <View style={[styles.statusRing, { borderColor: ringColor }]} />
         </View>
         <View style={styles.statusContent}>
-          <Text style={[styles.statusName, { color: theme.colors.text }]}>
-            {item.userName}
-          </Text>
+          <Text style={[styles.statusName, { color: theme.colors.text }]}>{item.userName}</Text>
           <Text style={[styles.statusTime, { color: theme.colors.muted }]}>
             {formatRelativeTime(item.lastUpdated)}
           </Text>
@@ -137,9 +125,7 @@ export function StatusScreen() {
 
   const renderSectionHeader = (title: string) => (
     <View style={[styles.sectionHeader, { backgroundColor: theme.colors.background }]}>
-      <Text style={[styles.sectionTitle, { color: theme.colors.muted }]}>
-        {title}
-      </Text>
+      <Text style={[styles.sectionTitle, { color: theme.colors.muted }]}>{title}</Text>
     </View>
   )
 
@@ -147,11 +133,7 @@ export function StatusScreen() {
     const sections: React.ReactNode[] = []
 
     // My Status
-    sections.push(
-      <View key="my-status">
-        {renderMyStatus()}
-      </View>
-    )
+    sections.push(<View key="my-status">{renderMyStatus()}</View>)
 
     // Recent (unviewed) statuses
     if (recentStatuses.length > 0) {
@@ -159,9 +141,7 @@ export function StatusScreen() {
         <View key="recent">
           {renderSectionHeader('Recent updates')}
           {recentStatuses.map((group) => (
-            <View key={group.userId}>
-              {renderStatusGroup({ item: group })}
-            </View>
+            <View key={group.userId}>{renderStatusGroup({ item: group })}</View>
           ))}
         </View>
       )
@@ -173,9 +153,7 @@ export function StatusScreen() {
         <View key="viewed">
           {renderSectionHeader('Viewed updates')}
           {viewedStatuses.map((group) => (
-            <View key={group.userId}>
-              {renderStatusGroup({ item: group })}
-            </View>
+            <View key={group.userId}>{renderStatusGroup({ item: group })}</View>
           ))}
         </View>
       )
@@ -185,12 +163,8 @@ export function StatusScreen() {
     if (recentStatuses.length === 0 && viewedStatuses.length === 0) {
       sections.push(
         <View key="empty" style={styles.emptyContainer}>
-          <Text style={[styles.emptyIcon, { color: theme.colors.muted }]}>
-            circle-dashed
-          </Text>
-          <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-            No status updates
-          </Text>
+          <Text style={[styles.emptyIcon, { color: theme.colors.muted }]}>circle-dashed</Text>
+          <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>No status updates</Text>
           <Text style={[styles.emptySubtitle, { color: theme.colors.muted }]}>
             Status updates from your contacts will appear here
           </Text>
@@ -203,20 +177,13 @@ export function StatusScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Header
-        title="Status"
-        rightIcon="camera"
-        onRightPress={handleCreateStatus}
-      />
+      <Header title="Status" rightIcon="camera" onRightPress={handleCreateStatus} />
 
       <FlatList
         data={[{ key: 'content' }]}
         renderItem={() => <>{renderContent()}</>}
         keyExtractor={(item) => item.key}
-        contentContainerStyle={[
-          styles.listContent,
-          { paddingBottom: insets.bottom },
-        ]}
+        contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom }]}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}

@@ -165,21 +165,21 @@ function CustomBroadcaster() {
 <!-- Test HLS playback directly -->
 <!DOCTYPE html>
 <html>
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-</head>
-<body>
-  <video id="video" controls style="width: 100%; max-width: 800px;"></video>
-  <script>
-    const video = document.getElementById('video')
-    const hls = new Hls({
-      lowLatencyMode: true,
-    })
-    hls.loadSource('http://localhost:8080/hls/STREAM_KEY.m3u8')
-    hls.attachMedia(video)
-    video.play()
-  </script>
-</body>
+  <head>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  </head>
+  <body>
+    <video id="video" controls style="width: 100%; max-width: 800px;"></video>
+    <script>
+      const video = document.getElementById('video')
+      const hls = new Hls({
+        lowLatencyMode: true,
+      })
+      hls.loadSource('http://localhost:8080/hls/STREAM_KEY.m3u8')
+      hls.attachMedia(video)
+      video.play()
+    </script>
+  </body>
 </html>
 ```
 
@@ -283,26 +283,34 @@ src/
 ## Common Issues
 
 ### Issue: "Stream not found"
+
 **Solution**: Verify streamId and ensure stream status is 'live'
 
 ### Issue: "HLS manifest not loading"
+
 **Solution**: Check NEXT_PUBLIC_HLS_BASE_URL and media server status
 
 ### Issue: "WebRTC connection failed"
+
 **Solution**:
+
 - Check browser permissions (camera/microphone)
 - Verify STUN/TURN server configuration
 - Check firewall settings
 
 ### Issue: "High latency"
+
 **Solution**:
+
 - Enable lowLatencyMode in HLS player
 - Reduce HLS fragment size (2s)
 - Check network bandwidth
 - Use LL-HLS if supported
 
 ### Issue: "Chat messages not appearing"
+
 **Solution**:
+
 - Check Socket.io connection
 - Verify authentication
 - Check browser console for errors
@@ -328,6 +336,7 @@ src/
 ## Support
 
 Questions? Issues?
+
 - Check main documentation: `docs/Live-Streaming-Implementation.md`
 - Review code comments in source files
 - Check browser console for errors

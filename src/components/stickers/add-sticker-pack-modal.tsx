@@ -63,14 +63,14 @@ function PackSearchInput({
 }: PackSearchInputProps) {
   return (
     <div className={cn('relative', className)}>
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
       <input
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
         className={cn(
-          'w-full h-10 pl-10 pr-10 rounded-lg border border-input bg-background',
+          'h-10 w-full rounded-lg border border-input bg-background pl-10 pr-10',
           'text-sm placeholder:text-muted-foreground',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring'
         )}
@@ -104,27 +104,30 @@ function PackCard({ pack, isInstalled, onPreview, onAdd, onRemove }: PackCardPro
   const [isLoading, setIsLoading] = useState(false)
   const [imageError, setImageError] = useState(false)
 
-  const handleAction = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (isLoading) return
+  const handleAction = useCallback(
+    async (e: React.MouseEvent) => {
+      e.stopPropagation()
+      if (isLoading) return
 
-    setIsLoading(true)
-    try {
-      if (isInstalled) {
-        await onRemove(pack)
-      } else {
-        await onAdd(pack)
+      setIsLoading(true)
+      try {
+        if (isInstalled) {
+          await onRemove(pack)
+        } else {
+          await onAdd(pack)
+        }
+      } finally {
+        setIsLoading(false)
       }
-    } finally {
-      setIsLoading(false)
-    }
-  }, [isInstalled, isLoading, onAdd, onRemove, pack])
+    },
+    [isInstalled, isLoading, onAdd, onRemove, pack]
+  )
 
   return (
     <div
       className={cn(
-        'relative rounded-xl border bg-card overflow-hidden cursor-pointer',
-        'hover:shadow-md transition-shadow group'
+        'relative cursor-pointer overflow-hidden rounded-xl border bg-card',
+        'group transition-shadow hover:shadow-md'
       )}
       onClick={() => onPreview(pack)}
       role="button"
@@ -139,7 +142,7 @@ function PackCard({ pack, isInstalled, onPreview, onAdd, onRemove }: PackCardPro
       {/* Thumbnail */}
       <div className="relative aspect-square bg-muted">
         {imageError ? (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
             <span className="text-4xl">:-)</span>
           </div>
         ) : (
@@ -153,10 +156,10 @@ function PackCard({ pack, isInstalled, onPreview, onAdd, onRemove }: PackCardPro
         )}
 
         {/* Badges */}
-        <div className="absolute top-2 left-2 flex gap-1">
+        <div className="absolute left-2 top-2 flex gap-1">
           {pack.is_official && (
-            <Badge variant="secondary" className="text-xs bg-background/80 backdrop-blur-sm">
-              <Sparkles className="h-3 w-3 mr-1" />
+            <Badge variant="secondary" className="bg-background/80 text-xs backdrop-blur-sm">
+              <Sparkles className="mr-1 h-3 w-3" />
               Official
             </Badge>
           )}
@@ -164,18 +167,18 @@ function PackCard({ pack, isInstalled, onPreview, onAdd, onRemove }: PackCardPro
 
         {/* Installed Indicator */}
         {isInstalled && (
-          <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
+          <div className="text-primary-foreground absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-primary">
             <Check className="h-4 w-4" />
           </div>
         )}
 
         {/* Hover overlay */}
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+        <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
       </div>
 
       {/* Info */}
       <div className="p-3">
-        <h4 className="font-medium text-sm truncate">{pack.name}</h4>
+        <h4 className="truncate text-sm font-medium">{pack.name}</h4>
         <p className="text-xs text-muted-foreground">
           {pack.sticker_count} stickers
           {pack.is_animated && ' - Animated'}
@@ -195,12 +198,12 @@ function PackCard({ pack, isInstalled, onPreview, onAdd, onRemove }: PackCardPro
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : isInstalled ? (
             <>
-              <Check className="h-4 w-4 mr-1" />
+              <Check className="mr-1 h-4 w-4" />
               Added
             </>
           ) : (
             <>
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="mr-1 h-4 w-4" />
               Add
             </>
           )}
@@ -255,7 +258,7 @@ function PackPreviewView({
     return (
       <div className="flex flex-col items-center justify-center py-12">
         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-        <p className="text-sm text-muted-foreground mt-2">Loading pack...</p>
+        <p className="mt-2 text-sm text-muted-foreground">Loading pack...</p>
       </div>
     )
   }
@@ -265,7 +268,7 @@ function PackPreviewView({
       <div className="flex flex-col items-center justify-center py-12">
         <p className="text-sm text-destructive">Failed to load pack</p>
         <Button variant="outline" size="sm" onClick={onBack} className="mt-4">
-          <ArrowLeft className="h-4 w-4 mr-2" />
+          <ArrowLeft className="mr-2 h-4 w-4" />
           Go Back
         </Button>
       </div>
@@ -278,33 +281,24 @@ function PackPreviewView({
       <button
         type="button"
         onClick={onBack}
-        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ChevronLeft className="h-4 w-4" />
         Back to Browse
       </button>
 
       {/* Pack Header */}
-      <div className="flex items-start gap-4 p-4 rounded-xl border bg-card">
-        <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-muted flex-shrink-0">
-          <Image
-            src={pack.thumbnail_url}
-            alt={pack.name}
-            fill
-            className="object-cover"
-          />
+      <div className="flex items-start gap-4 rounded-xl border bg-card p-4">
+        <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
+          <Image src={pack.thumbnail_url} alt={pack.name} fill className="object-cover" />
         </div>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-lg truncate">{pack.name}</h3>
-            {pack.is_official && (
-              <Sparkles className="h-4 w-4 text-primary flex-shrink-0" />
-            )}
+        <div className="min-w-0 flex-1">
+          <div className="mb-1 flex items-center gap-2">
+            <h3 className="truncate text-lg font-semibold">{pack.name}</h3>
+            {pack.is_official && <Sparkles className="h-4 w-4 flex-shrink-0 text-primary" />}
           </div>
           {pack.description && (
-            <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
-              {pack.description}
-            </p>
+            <p className="mb-2 line-clamp-2 text-sm text-muted-foreground">{pack.description}</p>
           )}
           <div className="flex items-center gap-3 text-xs text-muted-foreground">
             {pack.author && <span>by {pack.author}</span>}
@@ -326,12 +320,12 @@ function PackPreviewView({
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : installed ? (
             <>
-              <Check className="h-4 w-4 mr-2" />
+              <Check className="mr-2 h-4 w-4" />
               Added
             </>
           ) : (
             <>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Add Pack
             </>
           )}
@@ -339,15 +333,15 @@ function PackPreviewView({
       </div>
 
       {/* Stickers Grid */}
-      <div className="p-4 rounded-xl border bg-card">
-        <h4 className="font-medium text-sm mb-3">Stickers Preview</h4>
+      <div className="rounded-xl border bg-card p-4">
+        <h4 className="mb-3 text-sm font-medium">Stickers Preview</h4>
         <div className="grid grid-cols-5 gap-2">
           {stickers.map((sticker) => (
             <button
               key={sticker.id}
               type="button"
               onClick={() => onStickerClick?.(sticker)}
-              className="relative aspect-square rounded-lg overflow-hidden bg-muted hover:bg-accent transition-colors"
+              className="relative aspect-square overflow-hidden rounded-lg bg-muted transition-colors hover:bg-accent"
             >
               <Image
                 src={sticker.thumbnail_url || sticker.url}
@@ -409,8 +403,7 @@ export function AddStickerPackModal({
     const query = searchQuery.toLowerCase()
     return availablePacks.filter(
       (pack) =>
-        pack.name.toLowerCase().includes(query) ||
-        pack.description?.toLowerCase().includes(query)
+        pack.name.toLowerCase().includes(query) || pack.description?.toLowerCase().includes(query)
     )
   }, [availablePacks, searchQuery])
 
@@ -422,10 +415,13 @@ export function AddStickerPackModal({
   }, [filteredPacks])
 
   // Handle pack preview
-  const handlePreview = useCallback((pack: StickerPack) => {
-    setPreviewPackId(pack.id)
-    setView('preview')
-  }, [setPreviewPackId])
+  const handlePreview = useCallback(
+    (pack: StickerPack) => {
+      setPreviewPackId(pack.id)
+      setView('preview')
+    },
+    [setPreviewPackId]
+  )
 
   // Handle back from preview
   const handleBack = useCallback(() => {
@@ -434,14 +430,20 @@ export function AddStickerPackModal({
   }, [searchQuery, setPreviewPackId])
 
   // Handle add pack
-  const handleAddPack = useCallback(async (pack: StickerPack) => {
-    await addPack(pack.id)
-  }, [addPack])
+  const handleAddPack = useCallback(
+    async (pack: StickerPack) => {
+      await addPack(pack.id)
+    },
+    [addPack]
+  )
 
   // Handle remove pack
-  const handleRemovePack = useCallback(async (pack: StickerPack) => {
-    await removePack(pack.id)
-  }, [removePack])
+  const handleRemovePack = useCallback(
+    async (pack: StickerPack) => {
+      await removePack(pack.id)
+    },
+    [removePack]
+  )
 
   // Handle search change
   const handleSearchChange = useCallback((value: string) => {
@@ -472,12 +474,10 @@ export function AddStickerPackModal({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('sm:max-w-[600px] max-h-[80vh]', className)}>
+      <DialogContent className={cn('max-h-[80vh] sm:max-w-[600px]', className)}>
         <DialogHeader>
           <DialogTitle>Add Sticker Packs</DialogTitle>
-          <DialogDescription>
-            Browse and add sticker packs to your collection.
-          </DialogDescription>
+          <DialogDescription>Browse and add sticker packs to your collection.</DialogDescription>
         </DialogHeader>
 
         {/* Search */}
@@ -507,9 +507,9 @@ export function AddStickerPackModal({
               {/* Trending Section */}
               {!loadingTrending && trendingPacks.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="mb-3 flex items-center gap-2">
                     <TrendingUp className="h-4 w-4 text-primary" />
-                    <h3 className="font-medium text-sm">Trending</h3>
+                    <h3 className="text-sm font-medium">Trending</h3>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     {trendingPacks.slice(0, 3).map((pack: StickerPack) => (
@@ -529,9 +529,9 @@ export function AddStickerPackModal({
               {/* Official Packs */}
               {officialPacks.length > 0 && (
                 <div>
-                  <div className="flex items-center gap-2 mb-3">
+                  <div className="mb-3 flex items-center gap-2">
                     <Sparkles className="h-4 w-4 text-primary" />
-                    <h3 className="font-medium text-sm">Official Packs</h3>
+                    <h3 className="text-sm font-medium">Official Packs</h3>
                   </div>
                   <div className="grid grid-cols-3 gap-3">
                     {officialPacks.map((pack) => (
@@ -551,7 +551,7 @@ export function AddStickerPackModal({
               {/* Community Packs */}
               {communityPacks.length > 0 && (
                 <div>
-                  <h3 className="font-medium text-sm mb-3">Community Packs</h3>
+                  <h3 className="mb-3 text-sm font-medium">Community Packs</h3>
                   <div className="grid grid-cols-3 gap-3">
                     {communityPacks.map((pack) => (
                       <PackCard
@@ -576,11 +576,9 @@ export function AddStickerPackModal({
 
               {/* Empty State */}
               {!isLoadingPacks && availablePacks.length === 0 && (
-                <div className="text-center py-12">
-                  <div className="text-4xl mb-3">:-/</div>
-                  <p className="text-sm text-muted-foreground">
-                    No sticker packs available
-                  </p>
+                <div className="py-12 text-center">
+                  <div className="mb-3 text-4xl">:-/</div>
+                  <p className="text-sm text-muted-foreground">No sticker packs available</p>
                 </div>
               )}
             </div>
@@ -590,8 +588,8 @@ export function AddStickerPackModal({
           {view === 'search' && (
             <div className="space-y-4">
               {filteredPacks.length === 0 ? (
-                <div className="text-center py-12">
-                  <Search className="h-8 w-8 mx-auto text-muted-foreground mb-3" />
+                <div className="py-12 text-center">
+                  <Search className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
                   <p className="text-sm text-muted-foreground">
                     No packs found for &quot;{searchQuery}&quot;
                   </p>

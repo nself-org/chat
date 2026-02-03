@@ -25,7 +25,12 @@ import type {
   TriggerEvent,
 } from './bot-types'
 import { createBotApi, createMockServices } from './bot-api'
-import { BotEventEmitter, createMessageEvent, createUserEvent, createReactionEvent } from './bot-events'
+import {
+  BotEventEmitter,
+  createMessageEvent,
+  createUserEvent,
+  createReactionEvent,
+} from './bot-events'
 import { CommandRegistry } from './bot-commands'
 
 const logger = createLogger('BotManager')
@@ -77,11 +82,7 @@ export class BotManager {
   /**
    * Register a new bot
    */
-  async registerBot(
-    bot: Bot,
-    config: BotConfig,
-    manifest: BotManifest
-  ): Promise<void> {
+  async registerBot(bot: Bot, config: BotConfig, manifest: BotManifest): Promise<void> {
     if (this.bots.has(bot.id)) {
       throw new Error(`Bot ${bot.id} is already registered`)
     }
@@ -259,10 +260,8 @@ export class BotManager {
       if (!instance.enabled || !instance.bot.onMessage) continue
 
       try {
-        await this.executeHandler(
-          instance,
-          'message',
-          async () => instance.bot.onMessage!(context, instance.api)
+        await this.executeHandler(instance, 'message', async () =>
+          instance.bot.onMessage!(context, instance.api)
         )
       } catch (error) {
         this.handleBotError(instance, error as Error, 'handleMessage')
@@ -283,10 +282,8 @@ export class BotManager {
       const registered = instance.commandRegistry.get(commandName)
       if (registered) {
         try {
-          await this.executeHandler(
-            instance,
-            'command',
-            async () => registered.handler(context, instance.api)
+          await this.executeHandler(instance, 'command', async () =>
+            registered.handler(context, instance.api)
           )
           instance.stats.commandsExecuted++
           return
@@ -308,10 +305,8 @@ export class BotManager {
       if (!instance.enabled || !instance.bot.onUserJoin) continue
 
       try {
-        await this.executeHandler(
-          instance,
-          'userJoin',
-          async () => instance.bot.onUserJoin!(context, instance.api)
+        await this.executeHandler(instance, 'userJoin', async () =>
+          instance.bot.onUserJoin!(context, instance.api)
         )
       } catch (error) {
         this.handleBotError(instance, error as Error, 'handleUserJoin')
@@ -327,10 +322,8 @@ export class BotManager {
       if (!instance.enabled || !instance.bot.onUserLeave) continue
 
       try {
-        await this.executeHandler(
-          instance,
-          'userLeave',
-          async () => instance.bot.onUserLeave!(context, instance.api)
+        await this.executeHandler(instance, 'userLeave', async () =>
+          instance.bot.onUserLeave!(context, instance.api)
         )
       } catch (error) {
         this.handleBotError(instance, error as Error, 'handleUserLeave')
@@ -346,10 +339,8 @@ export class BotManager {
       if (!instance.enabled || !instance.bot.onReaction) continue
 
       try {
-        await this.executeHandler(
-          instance,
-          'reaction',
-          async () => instance.bot.onReaction!(context, instance.api)
+        await this.executeHandler(instance, 'reaction', async () =>
+          instance.bot.onReaction!(context, instance.api)
         )
       } catch (error) {
         this.handleBotError(instance, error as Error, 'handleReaction')
@@ -365,7 +356,7 @@ export class BotManager {
       if (!instance.enabled) continue
 
       // Check if bot has triggers for this event type
-      const hasTrigger = instance.manifest.triggers?.some(t => t.event === eventType)
+      const hasTrigger = instance.manifest.triggers?.some((t) => t.event === eventType)
       if (!hasTrigger) continue
 
       try {
@@ -468,14 +459,14 @@ export class BotManager {
    * Get all enabled bots
    */
   getEnabledBots(): BotInstance[] {
-    return Array.from(this.bots.values()).filter(b => b.enabled)
+    return Array.from(this.bots.values()).filter((b) => b.enabled)
   }
 
   /**
    * Get bot by name
    */
   getBotByName(name: string): BotInstance | undefined {
-    return Array.from(this.bots.values()).find(b => b.bot.name === name)
+    return Array.from(this.bots.values()).find((b) => b.bot.name === name)
   }
 
   /**
@@ -554,7 +545,7 @@ export class BotManager {
     for (const instance of this.bots.values()) {
       if (!instance.enabled) continue
 
-      const commands = instance.commandRegistry.getAll().map(c => c.definition.name)
+      const commands = instance.commandRegistry.getAll().map((c) => c.definition.name)
       if (commands.length > 0) {
         result.push({
           botId: instance.bot.id,

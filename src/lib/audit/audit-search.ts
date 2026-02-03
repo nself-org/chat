@@ -465,7 +465,10 @@ export function getEntriesByActor(entries: AuditLogEntry[], actorId: string): Au
 /**
  * Get entries by resource ID
  */
-export function getEntriesByResource(entries: AuditLogEntry[], resourceId: string): AuditLogEntry[] {
+export function getEntriesByResource(
+  entries: AuditLogEntry[],
+  resourceId: string
+): AuditLogEntry[] {
   return entries.filter((entry) => entry.resource?.id === resourceId)
 }
 

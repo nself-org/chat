@@ -52,9 +52,7 @@ function MyComponent() {
 
   return (
     <>
-      <button onClick={() => setShowPollModal(true)}>
-        Create Poll
-      </button>
+      <button onClick={() => setShowPollModal(true)}>Create Poll</button>
 
       <PollCreator
         channelId="your-channel-id"
@@ -165,6 +163,7 @@ function LivePoll({ pollId }) {
 ## Poll Types
 
 ### Single Choice Poll
+
 ```tsx
 const singleChoicePoll = {
   question: 'What's your favorite color?',
@@ -176,10 +175,11 @@ const singleChoicePoll = {
 ```
 
 ### Multiple Choice Poll
+
 ```tsx
 const multipleChoicePoll = {
   question: 'Which programming languages do you know?',
-  pollType: 'multiple',  // Users can select MULTIPLE options
+  pollType: 'multiple', // Users can select MULTIPLE options
   options: ['JavaScript', 'Python', 'Go', 'Rust'],
   isAnonymous: false,
   allowAddOptions: true,
@@ -187,17 +187,19 @@ const multipleChoicePoll = {
 ```
 
 ### Anonymous Poll
+
 ```tsx
 const anonymousPoll = {
   question: 'Do you like the new feature?',
   pollType: 'single',
   options: ['Yes', 'No', 'Not sure'],
-  isAnonymous: true,  // Hides who voted for what
-  allowAddOptions: false,  // Can't add options to anonymous polls
+  isAnonymous: true, // Hides who voted for what
+  allowAddOptions: false, // Can't add options to anonymous polls
 }
 ```
 
 ### Timed Poll
+
 ```tsx
 const timedPoll = {
   question: 'Where should we go for lunch today?',
@@ -205,7 +207,7 @@ const timedPoll = {
   options: ['Pizza Place', 'Sushi Bar', 'Burger Joint'],
   isAnonymous: false,
   allowAddOptions: false,
-  expiresAt: new Date(Date.now() + 3600000).toISOString(),  // 1 hour from now
+  expiresAt: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
 }
 ```
 
@@ -265,7 +267,7 @@ await addOption({
   variables: {
     pollId,
     optionText: 'New Option',
-    optionOrder: 4,  // Next position
+    optionOrder: 4, // Next position
     addedBy: currentUserId,
   },
 })
@@ -274,19 +276,23 @@ await addOption({
 ## Permissions
 
 ### Who Can Create Polls?
+
 - Any user who is a member of the channel
 
 ### Who Can Vote?
+
 - Any user who is a member of the channel
 - Only while poll is active (not closed or expired)
 - Can change vote before poll closes
 
 ### Who Can Close Polls?
+
 - Poll creator
 - Channel admins
 - Server owners
 
 ### Who Can Add Options?
+
 - Any channel member (if `allow_add_options = true`)
 - Only for non-anonymous polls
 - Only while poll is active
@@ -301,7 +307,7 @@ try {
   toast.success('Poll created!')
 } catch (error) {
   if (error.message.includes('permission')) {
-    toast.error('You don\'t have permission to create polls')
+    toast.error("You don't have permission to create polls")
   } else if (error.message.includes('validation')) {
     toast.error('Invalid poll data')
   } else {
@@ -322,6 +328,7 @@ try {
 ## Database Queries
 
 ### Get All Polls in Channel
+
 ```sql
 SELECT * FROM nchat_polls
 WHERE channel_id = 'channel-uuid'
@@ -329,6 +336,7 @@ ORDER BY created_at DESC;
 ```
 
 ### Get Poll Results
+
 ```sql
 SELECT
   p.question,
@@ -349,6 +357,7 @@ ORDER BY po.option_order;
 ```
 
 ### Get User's Vote
+
 ```sql
 SELECT option_id FROM nchat_poll_votes
 WHERE poll_id = 'poll-uuid'

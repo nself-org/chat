@@ -1,24 +1,24 @@
-'use client';
+'use client'
 
 /**
  * Live Stream Component
  * Provides live streaming functionality
  */
 
-import * as React from 'react';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Radio, Square, Users, Settings } from 'lucide-react';
+import * as React from 'react'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Radio, Square, Users, Settings } from 'lucide-react'
 
 export interface LiveStreamProps {
-  streamId?: string;
-  title?: string;
-  viewerCount?: number;
-  onStart?: () => void;
-  onStop?: () => void;
-  className?: string;
+  streamId?: string
+  title?: string
+  viewerCount?: number
+  onStart?: () => void
+  onStop?: () => void
+  className?: string
 }
 
 export function LiveStream({
@@ -29,21 +29,21 @@ export function LiveStream({
   onStop,
   className,
 }: LiveStreamProps) {
-  const [isStreaming, setIsStreaming] = useState(false);
+  const [isStreaming, setIsStreaming] = useState(false)
 
   const handleToggle = () => {
     if (isStreaming) {
-      setIsStreaming(false);
-      onStop?.();
+      setIsStreaming(false)
+      onStop?.()
     } else {
-      setIsStreaming(true);
-      onStart?.();
+      setIsStreaming(true)
+      onStart?.()
     }
-  };
+  }
 
   return (
     <div className={cn('flex flex-col', className)}>
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between border-b p-4">
         <div className="flex items-center gap-2">
           {isStreaming && (
             <Badge variant="destructive" className="animate-pulse">
@@ -64,7 +64,7 @@ export function LiveStream({
         </div>
       </div>
 
-      <div className="flex-1 bg-black aspect-video flex items-center justify-center">
+      <div className="flex aspect-video flex-1 items-center justify-center bg-black">
         {!isStreaming ? (
           <p className="text-white/60">Stream preview will appear here</p>
         ) : (
@@ -72,12 +72,8 @@ export function LiveStream({
         )}
       </div>
 
-      <div className="p-4 flex justify-center">
-        <Button
-          variant={isStreaming ? 'destructive' : 'default'}
-          size="lg"
-          onClick={handleToggle}
-        >
+      <div className="flex justify-center p-4">
+        <Button variant={isStreaming ? 'destructive' : 'default'} size="lg" onClick={handleToggle}>
           {isStreaming ? (
             <>
               <Square className="mr-2 h-4 w-4" />
@@ -92,7 +88,7 @@ export function LiveStream({
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
-export default LiveStream;
+export default LiveStream

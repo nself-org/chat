@@ -14,6 +14,7 @@ import type {
   ChannelEventData,
   UserEventData,
 } from './bot-types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // BOT API IMPLEMENTATION
@@ -220,17 +221,13 @@ export function createMockServices(): BotServices {
       async reply(messageId, response) {
         return `msg_${Date.now()}`
       },
-      async edit(messageId, response) {
-      },
-      async delete(messageId) {
-      },
+      async edit(messageId, response) {},
+      async delete(messageId) {},
     },
 
     reactions: {
-      async add(messageId, emoji) {
-      },
-      async remove(messageId, emoji) {
-      },
+      async add(messageId, emoji) {},
+      async remove(messageId, emoji) {},
     },
 
     channels: {
@@ -314,7 +311,9 @@ export function createMockServices(): BotServices {
  * Check if bot has a specific permission
  */
 export function hasPermission(manifest: BotManifest, permission: string): boolean {
-  return manifest.permissions.includes(permission as never) || manifest.permissions.includes('admin')
+  return (
+    manifest.permissions.includes(permission as never) || manifest.permissions.includes('admin')
+  )
 }
 
 /**
@@ -372,7 +371,7 @@ export function withLogging(api: BotApi, botId: string): BotApi {
             const result = await (value as Function).apply(target, args)
             return result
           } catch (error) {
-            console.error(`[Bot:${botId}] ${String(prop)} ERROR:`, error)
+            logger.error(`[Bot:${botId}] ${String(prop)} ERROR:`, error)
             throw error
           }
         }

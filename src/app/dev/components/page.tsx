@@ -19,13 +19,7 @@ import { cn } from '@/lib/utils'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 
 // ============================================================================
@@ -375,10 +369,10 @@ const components: ComponentInfo[] = [
 function ComponentCard({ component }: { component: ComponentInfo }) {
   return (
     <Link href={component.path} className="group">
-      <Card className="h-full transition-all hover:border-primary/50 hover:shadow-md">
+      <Card className="hover:border-primary/50 h-full transition-all hover:shadow-md">
         <CardHeader className="pb-2">
           <div className="flex items-start justify-between">
-            <CardTitle className="text-base group-hover:text-primary transition-colors">
+            <CardTitle className="text-base transition-colors group-hover:text-primary">
               {component.name}
             </CardTitle>
             <Badge
@@ -389,10 +383,7 @@ function ComponentCard({ component }: { component: ComponentInfo }) {
                     ? 'default'
                     : 'secondary'
               }
-              className={cn(
-                'text-[10px]',
-                component.status === 'new' && 'bg-green-500'
-              )}
+              className={cn('text-[10px]', component.status === 'new' && 'bg-green-500')}
             >
               {component.status}
             </Badge>
@@ -422,8 +413,7 @@ export default function ComponentsPage() {
         component.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         component.description.toLowerCase().includes(searchQuery.toLowerCase())
 
-      const matchesCategory =
-        activeCategory === 'all' || component.category === activeCategory
+      const matchesCategory = activeCategory === 'all' || component.category === activeCategory
 
       return matchesSearch && matchesCategory
     })
@@ -442,10 +432,10 @@ export default function ComponentsPage() {
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight mb-2">Component Library</h1>
+        <h1 className="mb-2 text-3xl font-bold tracking-tight">Component Library</h1>
         <p className="text-muted-foreground">
-          Browse all {components.length} components available in nself-chat.
-          Each component is fully typed, accessible, and themeable.
+          Browse all {components.length} components available in nself-chat. Each component is fully
+          typed, accessible, and themeable.
         </p>
       </div>
 
@@ -471,7 +461,7 @@ export default function ComponentsPage() {
               <TabsTrigger
                 key={category.id}
                 value={category.id}
-                className="h-8 gap-1.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                className="data-[state=active]:text-primary-foreground h-8 gap-1.5 data-[state=active]:bg-primary"
               >
                 <Icon className="h-3.5 w-3.5" />
                 {category.label}
@@ -483,16 +473,14 @@ export default function ComponentsPage() {
 
         <TabsContent value={activeCategory} className="mt-6">
           {filteredComponents.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
               {filteredComponents.map((component) => (
                 <ComponentCard key={component.name} component={component} />
               ))}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">
-                No components found matching your search.
-              </p>
+            <div className="py-12 text-center">
+              <p className="text-muted-foreground">No components found matching your search.</p>
               <Button
                 variant="link"
                 onClick={() => {
@@ -509,11 +497,11 @@ export default function ComponentsPage() {
 
       {/* Quick Navigation */}
       <div className="border-t pt-8">
-        <h2 className="text-xl font-semibold mb-4">Detailed Documentation</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <h2 className="mb-4 text-xl font-semibold">Detailed Documentation</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <Link href="/dev/components/messages" className="group">
             <Card className="hover:border-primary/50 transition-colors">
-              <CardContent className="pt-6 flex items-center justify-between">
+              <CardContent className="flex items-center justify-between pt-6">
                 <div className="flex items-center gap-3">
                   <div className="rounded-lg bg-green-500/10 p-2">
                     <MessageSquare className="h-5 w-5 text-green-500" />
@@ -523,14 +511,14 @@ export default function ComponentsPage() {
                     <p className="text-sm text-muted-foreground">8 components</p>
                   </div>
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/dev/components/channels" className="group">
             <Card className="hover:border-primary/50 transition-colors">
-              <CardContent className="pt-6 flex items-center justify-between">
+              <CardContent className="flex items-center justify-between pt-6">
                 <div className="flex items-center gap-3">
                   <div className="rounded-lg bg-purple-500/10 p-2">
                     <Hash className="h-5 w-5 text-purple-500" />
@@ -540,14 +528,14 @@ export default function ComponentsPage() {
                     <p className="text-sm text-muted-foreground">6 components</p>
                   </div>
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
               </CardContent>
             </Card>
           </Link>
 
           <Link href="/dev/components/users" className="group">
             <Card className="hover:border-primary/50 transition-colors">
-              <CardContent className="pt-6 flex items-center justify-between">
+              <CardContent className="flex items-center justify-between pt-6">
                 <div className="flex items-center gap-3">
                   <div className="rounded-lg bg-orange-500/10 p-2">
                     <User className="h-5 w-5 text-orange-500" />
@@ -557,7 +545,7 @@ export default function ComponentsPage() {
                     <p className="text-sm text-muted-foreground">6 components</p>
                   </div>
                 </div>
-                <ArrowRight className="h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
+                <ArrowRight className="h-5 w-5 text-muted-foreground transition-all group-hover:translate-x-1 group-hover:text-primary" />
               </CardContent>
             </Card>
           </Link>

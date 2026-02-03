@@ -3,48 +3,44 @@
  * Complete reference for the Bot API
  */
 
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Code, Copy, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Code, Copy, Check } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 export default function BotApiDocsPage() {
-  const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null)
 
   const copyToClipboard = (code: string, id: string) => {
-    navigator.clipboard.writeText(code);
-    setCopiedCode(id);
-    setTimeout(() => setCopiedCode(null), 2000);
-  };
+    navigator.clipboard.writeText(code)
+    setCopiedCode(id)
+    setTimeout(() => setCopiedCode(null), 2000)
+  }
 
   const CodeBlock = ({ code, language, id }: { code: string; language: string; id: string }) => (
     <div className="relative">
-      <pre className="bg-muted p-4 rounded-lg overflow-x-auto">
+      <pre className="overflow-x-auto rounded-lg bg-muted p-4">
         <code className={`language-${language}`}>{code}</code>
       </pre>
       <Button
         size="sm"
         variant="ghost"
-        className="absolute top-2 right-2"
+        className="absolute right-2 top-2"
         onClick={() => copyToClipboard(code, id)}
       >
-        {copiedCode === id ? (
-          <Check className="w-4 h-4" />
-        ) : (
-          <Copy className="w-4 h-4" />
-        )}
+        {copiedCode === id ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
       </Button>
     </div>
-  );
+  )
 
   return (
-    <div className="container mx-auto p-6 max-w-5xl">
+    <div className="container mx-auto max-w-5xl p-6">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">Bot API Documentation</h1>
+        <h1 className="mb-2 text-4xl font-bold">Bot API Documentation</h1>
         <p className="text-lg text-muted-foreground">
           Build powerful integrations with the nself-chat Bot API
         </p>
@@ -68,11 +64,11 @@ export default function BotApiDocsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h3 className="text-lg font-semibold mb-2">What is the Bot API?</h3>
+                <h3 className="mb-2 text-lg font-semibold">What is the Bot API?</h3>
                 <p className="text-muted-foreground">
                   The Bot API allows you to build automated integrations and bots that can:
                 </p>
-                <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground">
+                <ul className="mt-2 list-inside list-disc space-y-1 text-muted-foreground">
                   <li>Send messages to channels</li>
                   <li>Create and manage channels</li>
                   <li>Add reactions to messages</li>
@@ -82,20 +78,23 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Base URL</h3>
-                <code className="bg-muted px-2 py-1 rounded">
-                  https://your-domain.com/api/bots
-                </code>
+                <h3 className="mb-2 text-lg font-semibold">Base URL</h3>
+                <code className="rounded bg-muted px-2 py-1">https://your-domain.com/api/bots</code>
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Rate Limits</h3>
+                <h3 className="mb-2 text-lg font-semibold">Rate Limits</h3>
                 <p className="text-muted-foreground">
-                  100 requests per minute per bot. Rate limit headers are included in every response:
+                  100 requests per minute per bot. Rate limit headers are included in every
+                  response:
                 </p>
-                <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground">
-                  <li><code>X-RateLimit-Remaining</code>: Requests remaining in current window</li>
-                  <li><code>X-RateLimit-Reset</code>: When the rate limit resets</li>
+                <ul className="mt-2 list-inside list-disc space-y-1 text-muted-foreground">
+                  <li>
+                    <code>X-RateLimit-Remaining</code>: Requests remaining in current window
+                  </li>
+                  <li>
+                    <code>X-RateLimit-Reset</code>: When the rate limit resets
+                  </li>
                 </ul>
               </div>
             </CardContent>
@@ -116,10 +115,13 @@ export default function BotApiDocsPage() {
                   { name: 'reactions.add', desc: 'Add reactions to messages', danger: false },
                   { name: 'users.read', desc: 'Read user information', danger: false },
                 ].map((perm) => (
-                  <div key={perm.name} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div
+                    key={perm.name}
+                    className="flex items-center justify-between rounded-lg border p-3"
+                  >
                     <div>
-                      <code className="text-sm font-mono">{perm.name}</code>
-                      <p className="text-sm text-muted-foreground mt-1">{perm.desc}</p>
+                      <code className="font-mono text-sm">{perm.name}</code>
+                      <p className="mt-1 text-sm text-muted-foreground">{perm.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -137,8 +139,8 @@ export default function BotApiDocsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold mb-2">Creating a Bot Token</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                <h3 className="mb-2 text-lg font-semibold">Creating a Bot Token</h3>
+                <ol className="list-inside list-decimal space-y-2 text-muted-foreground">
                   <li>Go to Admin → Bot Management</li>
                   <li>Create a new bot or select an existing one</li>
                   <li>Navigate to the Tokens tab</li>
@@ -149,8 +151,8 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Using the Token</h3>
-                <p className="text-muted-foreground mb-3">
+                <h3 className="mb-2 text-lg font-semibold">Using the Token</h3>
+                <p className="mb-3 text-muted-foreground">
                   Include your bot token in the Authorization header:
                 </p>
                 <CodeBlock
@@ -161,12 +163,13 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Token Format</h3>
-                <p className="text-muted-foreground mb-2">
-                  Bot tokens always start with <code className="bg-muted px-1 rounded">nbot_</code> followed by 64 hexadecimal characters.
+                <h3 className="mb-2 text-lg font-semibold">Token Format</h3>
+                <p className="mb-2 text-muted-foreground">
+                  Bot tokens always start with <code className="rounded bg-muted px-1">nbot_</code>{' '}
+                  followed by 64 hexadecimal characters.
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  Example: <code className="bg-muted px-1 rounded">nbot_a1b2c3d4e5f6...</code>
+                  Example: <code className="rounded bg-muted px-1">nbot_a1b2c3d4e5f6...</code>
                 </p>
               </div>
             </CardContent>
@@ -186,7 +189,7 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">Request Body</h4>
+                <h4 className="mb-2 font-semibold">Request Body</h4>
                 <CodeBlock
                   id="send-message-request"
                   language="json"
@@ -206,7 +209,7 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">Response</h4>
+                <h4 className="mb-2 font-semibold">Response</h4>
                 <CodeBlock
                   id="send-message-response"
                   language="json"
@@ -240,7 +243,7 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">Request Body</h4>
+                <h4 className="mb-2 font-semibold">Request Body</h4>
                 <CodeBlock
                   id="create-channel-request"
                   language="json"
@@ -253,7 +256,7 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">Response</h4>
+                <h4 className="mb-2 font-semibold">Response</h4>
                 <CodeBlock
                   id="create-channel-response"
                   language="json"
@@ -283,12 +286,12 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">Query Parameters</h4>
-                <code className="bg-muted px-2 py-1 rounded">?channelId=uuid</code>
+                <h4 className="mb-2 font-semibold">Query Parameters</h4>
+                <code className="rounded bg-muted px-2 py-1">?channelId=uuid</code>
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">Response</h4>
+                <h4 className="mb-2 font-semibold">Response</h4>
                 <CodeBlock
                   id="channel-info-response"
                   language="json"
@@ -321,7 +324,7 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">Request Body</h4>
+                <h4 className="mb-2 font-semibold">Request Body</h4>
                 <CodeBlock
                   id="add-reaction-request"
                   language="json"
@@ -345,8 +348,8 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h4 className="font-semibold mb-2">Query Parameters</h4>
-                <code className="bg-muted px-2 py-1 rounded">?userId=uuid</code>
+                <h4 className="mb-2 font-semibold">Query Parameters</h4>
+                <code className="rounded bg-muted px-2 py-1">?userId=uuid</code>
               </div>
             </CardContent>
           </Card>
@@ -361,8 +364,8 @@ export default function BotApiDocsPage() {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold mb-2">Setting Up Webhooks</h3>
-                <ol className="list-decimal list-inside space-y-2 text-muted-foreground">
+                <h3 className="mb-2 text-lg font-semibold">Setting Up Webhooks</h3>
+                <ol className="list-inside list-decimal space-y-2 text-muted-foreground">
                   <li>Go to Admin → Bot Management</li>
                   <li>Select your bot</li>
                   <li>Navigate to the Webhooks tab</li>
@@ -374,7 +377,7 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Webhook Events</h3>
+                <h3 className="mb-2 text-lg font-semibold">Webhook Events</h3>
                 <div className="grid gap-2">
                   {[
                     'message.created',
@@ -383,7 +386,7 @@ export default function BotApiDocsPage() {
                     'user.joined',
                     'reaction.added',
                   ].map((event) => (
-                    <div key={event} className="p-2 bg-muted rounded">
+                    <div key={event} className="rounded bg-muted p-2">
                       <code className="text-sm">{event}</code>
                     </div>
                   ))}
@@ -391,7 +394,7 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Webhook Payload</h3>
+                <h3 className="mb-2 text-lg font-semibold">Webhook Payload</h3>
                 <CodeBlock
                   id="webhook-payload"
                   language="json"
@@ -410,10 +413,11 @@ export default function BotApiDocsPage() {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Verifying Webhooks</h3>
-                <p className="text-muted-foreground mb-3">
-                  Every webhook includes a signature in the <code className="bg-muted px-1 rounded">X-Webhook-Signature</code> header.
-                  Verify it using HMAC-SHA256:
+                <h3 className="mb-2 text-lg font-semibold">Verifying Webhooks</h3>
+                <p className="mb-3 text-muted-foreground">
+                  Every webhook includes a signature in the{' '}
+                  <code className="rounded bg-muted px-1">X-Webhook-Signature</code> header. Verify
+                  it using HMAC-SHA256:
                 </p>
                 <CodeBlock
                   id="verify-webhook"
@@ -435,11 +439,11 @@ function verifyWebhook(payload, signature, secret) {
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-2">Retry Logic</h3>
+                <h3 className="mb-2 text-lg font-semibold">Retry Logic</h3>
                 <p className="text-muted-foreground">
                   Failed webhooks are automatically retried up to 5 times with exponential backoff:
                 </p>
-                <ul className="list-disc list-inside space-y-1 mt-2 text-muted-foreground">
+                <ul className="mt-2 list-inside list-disc space-y-1 text-muted-foreground">
                   <li>Attempt 1: Immediate</li>
                   <li>Attempt 2: 2 seconds later</li>
                   <li>Attempt 3: 4 seconds later</li>
@@ -460,7 +464,7 @@ function verifyWebhook(payload, signature, secret) {
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold mb-3">cURL</h3>
+                <h3 className="mb-3 text-lg font-semibold">cURL</h3>
                 <CodeBlock
                   id="curl-example"
                   language="bash"
@@ -476,7 +480,7 @@ curl -X POST https://your-domain.com/api/bots/send-message \\
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-3">JavaScript</h3>
+                <h3 className="mb-3 text-lg font-semibold">JavaScript</h3>
                 <CodeBlock
                   id="js-example"
                   language="javascript"
@@ -502,7 +506,7 @@ await sendMessage('channel-uuid', 'Hello from bot!');`}
               </div>
 
               <div>
-                <h3 className="text-lg font-semibold mb-3">Python</h3>
+                <h3 className="mb-3 text-lg font-semibold">Python</h3>
                 <CodeBlock
                   id="python-example"
                   language="python"
@@ -534,5 +538,5 @@ send_message('channel-uuid', 'Hello from bot!')`}
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }

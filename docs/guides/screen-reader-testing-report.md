@@ -24,13 +24,13 @@ This report documents comprehensive screen reader testing for nself-chat across 
 
 ### Screen Readers Tested
 
-| Screen Reader | Version | Platform | Browser | Status |
-|---------------|---------|----------|---------|--------|
-| **NVDA** | 2024.1 | Windows 11 | Chrome 120 | ✅ Excellent |
-| **JAWS** | 2024 | Windows 11 | Chrome 120 | ✅ Excellent |
-| **VoiceOver** | macOS 14.2 | macOS Sonoma | Safari 17 | ✅ Excellent |
-| **VoiceOver** | iOS 17.2 | iPhone 15 Pro | Safari | ✅ Excellent |
-| **TalkBack** | 14.1 | Android 14 | Chrome | ✅ Excellent |
+| Screen Reader | Version    | Platform      | Browser    | Status       |
+| ------------- | ---------- | ------------- | ---------- | ------------ |
+| **NVDA**      | 2024.1     | Windows 11    | Chrome 120 | ✅ Excellent |
+| **JAWS**      | 2024       | Windows 11    | Chrome 120 | ✅ Excellent |
+| **VoiceOver** | macOS 14.2 | macOS Sonoma  | Safari 17  | ✅ Excellent |
+| **VoiceOver** | iOS 17.2   | iPhone 15 Pro | Safari     | ✅ Excellent |
+| **TalkBack**  | 14.1       | Android 14    | Chrome     | ✅ Excellent |
 
 ### Test Scenarios
 
@@ -55,17 +55,17 @@ Testing covered the following core user journeys:
 
 #### Test Results Summary
 
-| Category | Tests | Passed | Failed | Notes |
-|----------|-------|--------|--------|-------|
-| Navigation | 8 | 8 | 0 | Landmarks properly identified |
-| Forms | 6 | 6 | 0 | Labels correctly associated |
-| Buttons | 4 | 4 | 0 | All buttons have accessible names |
-| Links | 3 | 3 | 0 | Link purposes clear |
-| Dynamic Content | 5 | 5 | 0 | Live regions working perfectly |
-| Tables | 2 | 2 | 0 | Table headers announced |
-| Headings | 4 | 4 | 0 | Logical heading structure |
-| Images | 3 | 3 | 0 | Alt text descriptive |
-| **Total** | **35** | **35** | **0** | - |
+| Category        | Tests  | Passed | Failed | Notes                             |
+| --------------- | ------ | ------ | ------ | --------------------------------- |
+| Navigation      | 8      | 8      | 0      | Landmarks properly identified     |
+| Forms           | 6      | 6      | 0      | Labels correctly associated       |
+| Buttons         | 4      | 4      | 0      | All buttons have accessible names |
+| Links           | 3      | 3      | 0      | Link purposes clear               |
+| Dynamic Content | 5      | 5      | 0      | Live regions working perfectly    |
+| Tables          | 2      | 2      | 0      | Table headers announced           |
+| Headings        | 4      | 4      | 0      | Logical heading structure         |
+| Images          | 3      | 3      | 0      | Alt text descriptive              |
+| **Total**       | **35** | **35** | **0**  | -                                 |
 
 #### Detailed Findings
 
@@ -110,6 +110,7 @@ Testing covered the following core user journeys:
 ##### ✅ Forms (6/6 Passed)
 
 1. **Login Form** - PASS
+
    ```
    "Email, edit, required"
    "Password, password, edit, required"
@@ -122,16 +123,18 @@ Testing covered the following core user journeys:
    - Hint text properly linked with aria-describedby
 
 3. **Error Handling** - PASS
+
    ```
    "Email, invalid, edit"
    "Error: Please enter a valid email address"
    ```
+
    - Errors announced with role="alert"
    - aria-invalid properly set
 
 4. **Required Fields** - PASS
    - Required state announced
-   - Asterisk (*) not read alone
+   - Asterisk (\*) not read alone
 
 5. **Autocomplete** - PASS
    - Suggestions announced: "3 suggestions available"
@@ -181,7 +184,7 @@ Testing covered the following core user journeys:
 
 - **File Upload** - PASS
   - "Upload file, button"
-  - "Select files to upload, button, accepts image/*, .pdf, .doc"
+  - "Select files to upload, button, accepts image/\*, .pdf, .doc"
   - Upload progress announced
 
 #### User Experience Rating
@@ -199,14 +202,14 @@ Testing covered the following core user journeys:
 
 #### Test Results Summary
 
-| Category | Tests | Passed | Failed | Notes |
-|----------|-------|--------|--------|-------|
-| Navigation | 8 | 8 | 0 | Virtual cursor works perfectly |
-| Forms | 6 | 6 | 0 | Forms mode automatic |
-| Buttons | 4 | 4 | 0 | Button role announced |
-| Links | 3 | 3 | 0 | Link list functional |
-| Dynamic Content | 5 | 5 | 0 | Live region support excellent |
-| **Total** | **26** | **26** | **0** | - |
+| Category        | Tests  | Passed | Failed | Notes                          |
+| --------------- | ------ | ------ | ------ | ------------------------------ |
+| Navigation      | 8      | 8      | 0      | Virtual cursor works perfectly |
+| Forms           | 6      | 6      | 0      | Forms mode automatic           |
+| Buttons         | 4      | 4      | 0      | Button role announced          |
+| Links           | 3      | 3      | 0      | Link list functional           |
+| Dynamic Content | 5      | 5      | 0      | Live region support excellent  |
+| **Total**       | **26** | **26** | **0**  | -                              |
 
 #### Key Findings
 
@@ -269,14 +272,14 @@ Region end: "Main content"
 
 #### Test Results Summary
 
-| Category | Tests | Passed | Failed | Notes |
-|----------|-------|--------|--------|-------|
-| Navigation | 8 | 8 | 0 | Rotor navigation excellent |
-| Forms | 6 | 6 | 0 | Form controls clear |
-| Buttons | 4 | 4 | 0 | All accessible |
-| Links | 3 | 3 | 0 | Link descriptions perfect |
-| Dynamic Content | 5 | 5 | 0 | Announcements clear |
-| **Total** | **26** | **26** | **0** | - |
+| Category        | Tests  | Passed | Failed | Notes                      |
+| --------------- | ------ | ------ | ------ | -------------------------- |
+| Navigation      | 8      | 8      | 0      | Rotor navigation excellent |
+| Forms           | 6      | 6      | 0      | Form controls clear        |
+| Buttons         | 4      | 4      | 0      | All accessible             |
+| Links           | 3      | 3      | 0      | Link descriptions perfect  |
+| Dynamic Content | 5      | 5      | 0      | Announcements clear        |
+| **Total**       | **26** | **26** | **0**  | -                          |
 
 #### Key Findings
 
@@ -337,14 +340,14 @@ Region end: "Main content"
 
 #### Test Results Summary
 
-| Category | Tests | Passed | Failed | Notes |
-|----------|-------|--------|--------|-------|
-| Navigation | 8 | 8 | 0 | Touch gestures work perfectly |
-| Forms | 6 | 6 | 0 | Keyboard integration excellent |
-| Buttons | 4 | 4 | 0 | Touch targets adequate |
-| Links | 3 | 3 | 0 | All accessible |
-| Dynamic Content | 5 | 5 | 0 | Announcements timely |
-| **Total** | **26** | **26** | **0** | - |
+| Category        | Tests  | Passed | Failed | Notes                          |
+| --------------- | ------ | ------ | ------ | ------------------------------ |
+| Navigation      | 8      | 8      | 0      | Touch gestures work perfectly  |
+| Forms           | 6      | 6      | 0      | Keyboard integration excellent |
+| Buttons         | 4      | 4      | 0      | Touch targets adequate         |
+| Links           | 3      | 3      | 0      | All accessible                 |
+| Dynamic Content | 5      | 5      | 0      | Announcements timely           |
+| **Total**       | **26** | **26** | **0**  | -                              |
 
 #### Key Findings
 
@@ -405,14 +408,14 @@ Region end: "Main content"
 
 #### Test Results Summary
 
-| Category | Tests | Passed | Failed | Notes |
-|----------|-------|--------|--------|-------|
-| Navigation | 8 | 8 | 0 | Explore by touch works well |
-| Forms | 6 | 6 | 0 | Input accessible |
-| Buttons | 4 | 4 | 0 | All functional |
-| Links | 3 | 3 | 0 | Clear purposes |
-| Dynamic Content | 5 | 5 | 0 | Announcements work |
-| **Total** | **26** | **26** | **0** | - |
+| Category        | Tests  | Passed | Failed | Notes                       |
+| --------------- | ------ | ------ | ------ | --------------------------- |
+| Navigation      | 8      | 8      | 0      | Explore by touch works well |
+| Forms           | 6      | 6      | 0      | Input accessible            |
+| Buttons         | 4      | 4      | 0      | All functional              |
+| Links           | 3      | 3      | 0      | Clear purposes              |
+| Dynamic Content | 5      | 5      | 0      | Announcements work          |
+| **Total**       | **26** | **26** | **0**  | -                           |
 
 #### Key Findings
 
@@ -482,6 +485,7 @@ No significant issues were discovered during testing. All tested scenarios passe
 ### 1. Semantic HTML
 
 ✅ Used throughout the application:
+
 - `<header>`, `<nav>`, `<main>`, `<aside>`, `<footer>`
 - `<button>` for buttons, not `<div onclick>`
 - `<a>` for links, with proper href
@@ -490,6 +494,7 @@ No significant issues were discovered during testing. All tested scenarios passe
 ### 2. ARIA When Needed
 
 ✅ ARIA used appropriately:
+
 - Landmarks: `role="banner"`, `role="navigation"`, etc.
 - Live regions: `aria-live="polite"`, `aria-live="assertive"`
 - States: `aria-current`, `aria-expanded`, `aria-selected`
@@ -498,6 +503,7 @@ No significant issues were discovered during testing. All tested scenarios passe
 ### 3. Focus Management
 
 ✅ Proper focus handling:
+
 - Focus moved to modal on open
 - Focus trapped within modal
 - Focus restored on close
@@ -506,6 +512,7 @@ No significant issues were discovered during testing. All tested scenarios passe
 ### 4. Keyboard Navigation
 
 ✅ Full keyboard support:
+
 - All functionality available via keyboard
 - Logical tab order
 - Arrow key navigation in lists
@@ -514,6 +521,7 @@ No significant issues were discovered during testing. All tested scenarios passe
 ### 5. Dynamic Content
 
 ✅ Screen reader announcements:
+
 - New messages announced politely
 - Errors announced assertively
 - Loading states communicated

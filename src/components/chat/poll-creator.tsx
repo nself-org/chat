@@ -13,7 +13,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import {
@@ -51,22 +58,28 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
     }
   }, [options])
 
-  const handleRemoveOption = useCallback((index: number) => {
-    if (options.length > MIN_POLL_OPTIONS) {
-      setOptions(options.filter((_, i) => i !== index))
-    }
-  }, [options])
+  const handleRemoveOption = useCallback(
+    (index: number) => {
+      if (options.length > MIN_POLL_OPTIONS) {
+        setOptions(options.filter((_, i) => i !== index))
+      }
+    },
+    [options]
+  )
 
-  const handleOptionChange = useCallback((index: number, value: string) => {
-    const newOptions = [...options]
-    newOptions[index] = value
-    setOptions(newOptions)
-  }, [options])
+  const handleOptionChange = useCallback(
+    (index: number, value: string) => {
+      const newOptions = [...options]
+      newOptions[index] = value
+      setOptions(newOptions)
+    },
+    [options]
+  )
 
   const handleCreatePoll = useCallback(async () => {
     const input: CreatePollInput = {
       question: question.trim(),
-      options: options.map(o => o.trim()).filter(o => o.length > 0),
+      options: options.map((o) => o.trim()).filter((o) => o.length > 0),
       channelId,
       isAnonymous,
       allowMultiple,
@@ -93,7 +106,18 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
     } finally {
       setIsCreating(false)
     }
-  }, [question, options, channelId, isAnonymous, allowMultiple, allowAddOptions, maxChoices, expiresAt, onCreatePoll, onClose])
+  }, [
+    question,
+    options,
+    channelId,
+    isAnonymous,
+    allowMultiple,
+    allowAddOptions,
+    maxChoices,
+    expiresAt,
+    onCreatePoll,
+    onClose,
+  ])
 
   const handleReset = useCallback(() => {
     setQuestion('')
@@ -116,11 +140,13 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
   const minExpirationDate = new Date(Date.now() + 5 * 60 * 1000).toISOString().slice(0, 16)
 
   // Calculate maximum expiration time (30 days from now)
-  const maxExpirationDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().slice(0, 16)
+  const maxExpirationDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+    .toISOString()
+    .slice(0, 16)
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Create a Poll</DialogTitle>
           <DialogDescription>
@@ -141,7 +167,7 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
               rows={2}
               className="resize-none"
             />
-            <div className="text-xs text-muted-foreground text-right">
+            <div className="text-right text-xs text-muted-foreground">
               {question.length}/{MAX_QUESTION_LENGTH}
             </div>
           </div>
@@ -183,7 +209,7 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
                 onClick={handleAddOption}
                 className="w-full"
               >
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Add Option
               </Button>
             )}
@@ -199,15 +225,9 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
                 <Label htmlFor="anonymous">Anonymous Voting</Label>
-                <div className="text-xs text-muted-foreground">
-                  Hide who voted for each option
-                </div>
+                <div className="text-xs text-muted-foreground">Hide who voted for each option</div>
               </div>
-              <Switch
-                id="anonymous"
-                checked={isAnonymous}
-                onCheckedChange={setIsAnonymous}
-              />
+              <Switch id="anonymous" checked={isAnonymous} onCheckedChange={setIsAnonymous} />
             </div>
 
             <div className="flex items-center justify-between">
@@ -217,11 +237,7 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
                   Let people select more than one option
                 </div>
               </div>
-              <Switch
-                id="multiple"
-                checked={allowMultiple}
-                onCheckedChange={setAllowMultiple}
-              />
+              <Switch id="multiple" checked={allowMultiple} onCheckedChange={setAllowMultiple} />
             </div>
 
             {allowMultiple && (
@@ -248,13 +264,13 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
             onClick={() => setShowAdvanced(!showAdvanced)}
             className="w-full"
           >
-            <Settings2 className="h-4 w-4 mr-2" />
+            <Settings2 className="mr-2 h-4 w-4" />
             {showAdvanced ? 'Hide' : 'Show'} Advanced Settings
           </Button>
 
           {/* Advanced Settings */}
           {showAdvanced && (
-            <div className="space-y-4 p-4 border rounded-lg bg-muted/50">
+            <div className="bg-muted/50 space-y-4 rounded-lg border p-4">
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="add-options">Allow _Users to Add Options</Label>
@@ -271,7 +287,7 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
 
               <div className="space-y-2">
                 <Label htmlFor="expires-at">
-                  <Calendar className="h-4 w-4 inline mr-2" />
+                  <Calendar className="mr-2 inline h-4 w-4" />
                   Poll Expiration (Optional)
                 </Label>
                 <Input
@@ -291,8 +307,8 @@ export function PollCreator({ channelId, isOpen, onClose, onCreatePoll }: PollCr
 
           {/* Errors */}
           {errors.length > 0 && (
-            <div className="p-3 border border-destructive/50 bg-destructive/10 rounded-md">
-              <ul className="text-sm text-destructive space-y-1">
+            <div className="border-destructive/50 bg-destructive/10 rounded-md border p-3">
+              <ul className="space-y-1 text-sm text-destructive">
                 {errors.map((error, index) => (
                   <li key={index}>• {error}</li>
                 ))}

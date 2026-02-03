@@ -6,6 +6,8 @@
 
 import { loadPinSettings } from './pin'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Constants
 // ============================================================================
@@ -48,7 +50,7 @@ export function updateLastActivity(): void {
       localStorage.setItem(SESSION_VISIBLE_KEY, now.toString())
     }
   } catch (error) {
-    console.error('Failed to update last activity:', error)
+    logger.error('Failed to update last activity:', error)
   }
 }
 
@@ -93,10 +95,7 @@ export function getVisibilityState(): boolean {
 /**
  * Setup visibility change listener
  */
-export function setupVisibilityListener(
-  onVisible: () => void,
-  onHidden: () => void
-): () => void {
+export function setupVisibilityListener(onVisible: () => void, onHidden: () => void): () => void {
   if (typeof document === 'undefined') return () => {}
 
   const handleVisibilityChange = () => {
@@ -198,7 +197,7 @@ export function lockSession(
 
     localStorage.setItem(LOCK_STATE_KEY, JSON.stringify(lockState))
   } catch (error) {
-    console.error('Failed to lock session:', error)
+    logger.error('Failed to lock session:', error)
   }
 }
 
@@ -216,7 +215,7 @@ export function unlockSession(): void {
     localStorage.setItem(LOCK_STATE_KEY, JSON.stringify(lockState))
     updateLastActivity()
   } catch (error) {
-    console.error('Failed to unlock session:', error)
+    logger.error('Failed to unlock session:', error)
   }
 }
 
@@ -234,7 +233,7 @@ export function clearLockState(): void {
   try {
     localStorage.removeItem(LOCK_STATE_KEY)
   } catch (error) {
-    console.error('Failed to clear lock state:', error)
+    logger.error('Failed to clear lock state:', error)
   }
 }
 
@@ -288,14 +287,7 @@ export function setupAutoLockChecker(onLocked: () => void): () => void {
 export function setupActivityListeners(): () => void {
   if (typeof window === 'undefined') return () => {}
 
-  const events = [
-    'mousedown',
-    'mousemove',
-    'keypress',
-    'scroll',
-    'touchstart',
-    'click',
-  ]
+  const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click']
 
   let activityTimeout: NodeJS.Timeout | null = null
 
@@ -310,12 +302,12 @@ export function setupActivityListeners(): () => void {
     }, 30 * 1000)
   }
 
-  events.forEach(event => {
+  events.forEach((event) => {
     window.addEventListener(event, handleActivity, { passive: true })
   })
 
   return () => {
-    events.forEach(event => {
+    events.forEach((event) => {
       window.removeEventListener(event, handleActivity)
     })
     if (activityTimeout) {

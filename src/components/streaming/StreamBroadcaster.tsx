@@ -24,17 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Video,
-  VideoOff,
-  Mic,
-  MicOff,
-  Radio,
-  Square,
-  Users,
-  Clock,
-  Settings,
-} from 'lucide-react'
+import { Video, VideoOff, Mic, MicOff, Radio, Square, Users, Clock, Settings } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -181,7 +171,7 @@ export function StreamBroadcaster({ channelId, onStreamEnded }: StreamBroadcaste
   return (
     <div className="space-y-4">
       {/* Video Preview/Live */}
-      <Card className="overflow-hidden bg-black aspect-video relative">
+      <Card className="relative aspect-video overflow-hidden bg-black">
         {localStream ? (
           <video
             ref={(el) => {
@@ -192,19 +182,19 @@ export function StreamBroadcaster({ channelId, onStreamEnded }: StreamBroadcaste
             autoPlay
             muted
             playsInline
-            className="w-full h-full object-contain"
+            className="h-full w-full object-contain"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-            <Video className="w-16 h-16" />
+          <div className="flex h-full w-full items-center justify-center text-muted-foreground">
+            <Video className="h-16 w-16" />
           </div>
         )}
 
         {/* Status Overlay */}
         {isBroadcasting && (
-          <div className="absolute top-4 left-4 flex items-center gap-2">
-            <div className="flex items-center gap-2 bg-red-600 text-white px-3 py-1 rounded-full font-semibold">
-              <Radio className="w-4 h-4 animate-pulse" />
+          <div className="absolute left-4 top-4 flex items-center gap-2">
+            <div className="flex items-center gap-2 rounded-full bg-red-600 px-3 py-1 font-semibold text-white">
+              <Radio className="h-4 w-4 animate-pulse" />
               LIVE
             </div>
           </div>
@@ -212,13 +202,13 @@ export function StreamBroadcaster({ channelId, onStreamEnded }: StreamBroadcaste
 
         {/* Stats Overlay */}
         {isBroadcasting && (
-          <div className="absolute top-4 right-4 flex flex-col gap-2">
-            <div className="flex items-center gap-2 bg-black/75 text-white px-3 py-1 rounded-full">
-              <Users className="w-4 h-4" />
+          <div className="absolute right-4 top-4 flex flex-col gap-2">
+            <div className="flex items-center gap-2 rounded-full bg-black/75 px-3 py-1 text-white">
+              <Users className="h-4 w-4" />
               <span>{viewerCount}</span>
             </div>
-            <div className="flex items-center gap-2 bg-black/75 text-white px-3 py-1 rounded-full">
-              <Clock className="w-4 h-4" />
+            <div className="flex items-center gap-2 rounded-full bg-black/75 px-3 py-1 text-white">
+              <Clock className="h-4 w-4" />
               <span>{formatDuration(duration)}</span>
             </div>
           </div>
@@ -226,14 +216,14 @@ export function StreamBroadcaster({ channelId, onStreamEnded }: StreamBroadcaste
 
         {/* Controls Overlay */}
         {localStream && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
+          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2">
             <Button
               size="icon"
               variant={isVideoEnabled ? 'default' : 'destructive'}
               onClick={handleToggleVideo}
               disabled={!isBroadcasting}
             >
-              {isVideoEnabled ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
+              {isVideoEnabled ? <Video className="h-5 w-5" /> : <VideoOff className="h-5 w-5" />}
             </Button>
             <Button
               size="icon"
@@ -241,7 +231,7 @@ export function StreamBroadcaster({ channelId, onStreamEnded }: StreamBroadcaste
               onClick={handleToggleAudio}
               disabled={!isBroadcasting}
             >
-              {isAudioEnabled ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
+              {isAudioEnabled ? <Mic className="h-5 w-5" /> : <MicOff className="h-5 w-5" />}
             </Button>
           </div>
         )}
@@ -249,14 +239,14 @@ export function StreamBroadcaster({ channelId, onStreamEnded }: StreamBroadcaste
 
       {/* Error Display */}
       {error && (
-        <Card className="p-4 bg-destructive/10 border-destructive">
-          <p className="text-destructive text-sm">{error}</p>
+        <Card className="bg-destructive/10 border-destructive p-4">
+          <p className="text-sm text-destructive">{error}</p>
         </Card>
       )}
 
       {/* Stream Setup (Before Going Live) */}
       {!isBroadcasting && !stream && (
-        <Card className="p-4 space-y-4">
+        <Card className="space-y-4 p-4">
           <div>
             <Label htmlFor="title">Stream Title *</Label>
             <Input
@@ -363,7 +353,7 @@ export function StreamBroadcaster({ channelId, onStreamEnded }: StreamBroadcaste
               <>Starting...</>
             ) : (
               <>
-                <Radio className="w-5 h-5 mr-2" />
+                <Radio className="mr-2 h-5 w-5" />
                 Go Live
               </>
             )}
@@ -380,25 +370,21 @@ export function StreamBroadcaster({ channelId, onStreamEnded }: StreamBroadcaste
               <>Ending...</>
             ) : (
               <>
-                <Square className="w-5 h-5 mr-2" />
+                <Square className="mr-2 h-5 w-5" />
                 End Stream
               </>
             )}
           </Button>
         )}
 
-        <Button
-          variant="outline"
-          size="lg"
-          onClick={() => setShowSettings(!showSettings)}
-        >
-          <Settings className="w-5 h-5" />
+        <Button variant="outline" size="lg" onClick={() => setShowSettings(!showSettings)}>
+          <Settings className="h-5 w-5" />
         </Button>
       </div>
 
       {/* Advanced Settings (Toggle) */}
       {showSettings && (
-        <Card className="p-4 space-y-4">
+        <Card className="space-y-4 p-4">
           <h3 className="font-semibold">Advanced Settings</h3>
           {/* Add more advanced settings here */}
           <div className="text-sm text-muted-foreground">

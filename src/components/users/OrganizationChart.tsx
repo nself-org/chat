@@ -71,9 +71,9 @@ function OrgChartNode({
         <CardContent className="p-4">
           <div className="flex items-center gap-3">
             <UserAvatar user={node.user} size="md" presence={node.user.presence} />
-            <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-sm truncate">{node.user.displayName}</h4>
-              <p className="text-xs text-muted-foreground truncate">
+            <div className="min-w-0 flex-1">
+              <h4 className="truncate text-sm font-medium">{node.user.displayName}</h4>
+              <p className="truncate text-xs text-muted-foreground">
                 {node.user.title || `@${node.user.username}`}
               </p>
               <div className="mt-1">
@@ -91,20 +91,14 @@ function OrgChartNode({
             e.stopPropagation()
             onToggleExpand?.(node.user.id)
           }}
-          className="mt-2 p-1 rounded-full bg-muted hover:bg-muted/80 transition-colors"
+          className="hover:bg-muted/80 mt-2 rounded-full bg-muted p-1 transition-colors"
         >
-          {isExpanded ? (
-            <ChevronDown className="h-4 w-4" />
-          ) : (
-            <ChevronRight className="h-4 w-4" />
-          )}
+          {isExpanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
       )}
 
       {/* Connector line */}
-      {hasReports && isExpanded && (
-        <div className="w-0.5 h-6 bg-border" />
-      )}
+      {hasReports && isExpanded && <div className="h-6 w-0.5 bg-border" />}
 
       {/* Direct reports */}
       {hasReports && isExpanded && (
@@ -125,7 +119,7 @@ function OrgChartNode({
           {node.directReports.map((report, index) => (
             <div key={report.user.id} className="flex flex-col items-center">
               {/* Vertical connector to horizontal line */}
-              <div className="w-0.5 h-6 bg-border" />
+              <div className="h-6 w-0.5 bg-border" />
               <OrgChartNode
                 node={report}
                 onUserClick={onUserClick}
@@ -167,10 +161,7 @@ const OrganizationChart = React.forwardRef<HTMLDivElement, OrganizationChartProp
     // Initialize all nodes as expanded
     React.useEffect(() => {
       const collectIds = (node: OrgNode): string[] => {
-        return [
-          node.user.id,
-          ...node.directReports.flatMap(collectIds),
-        ]
+        return [node.user.id, ...node.directReports.flatMap(collectIds)]
       }
       setExpandedNodes(new Set(collectIds(rootNode)))
     }, [rootNode])
@@ -211,7 +202,7 @@ const OrganizationChart = React.forwardRef<HTMLDivElement, OrganizationChartProp
     return (
       <div ref={ref} className={cn('relative', className)} {...props}>
         {/* Zoom controls */}
-        <div className="absolute top-4 right-4 z-10 flex items-center gap-2 bg-background/80 backdrop-blur-sm rounded-lg p-2 border">
+        <div className="bg-background/80 absolute right-4 top-4 z-10 flex items-center gap-2 rounded-lg border p-2 backdrop-blur-sm">
           <Button
             variant="ghost"
             size="icon"
@@ -221,7 +212,7 @@ const OrganizationChart = React.forwardRef<HTMLDivElement, OrganizationChartProp
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-sm w-12 text-center">{Math.round(zoom * 100)}%</span>
+          <span className="w-12 text-center text-sm">{Math.round(zoom * 100)}%</span>
           <Button
             variant="ghost"
             size="icon"
@@ -231,12 +222,7 @@ const OrganizationChart = React.forwardRef<HTMLDivElement, OrganizationChartProp
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8"
-            onClick={handleResetZoom}
-          >
+          <Button variant="ghost" size="icon" className="h-8 w-8" onClick={handleResetZoom}>
             <Maximize2 className="h-4 w-4" />
           </Button>
         </div>

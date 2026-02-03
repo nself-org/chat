@@ -10,15 +10,11 @@
 
 ```typescript
 import { useQuery, useMutation, useSubscription } from '@apollo/client'
-import {
-  GET_MESSAGES,
-  SEND_MESSAGE,
-  MESSAGE_SUBSCRIPTION
-} from '@/graphql'
+import { GET_MESSAGES, SEND_MESSAGE, MESSAGE_SUBSCRIPTION } from '@/graphql'
 
 // Query
 const { data, loading, error } = useQuery(GET_MESSAGES, {
-  variables: { channelId: '123', limit: 50 }
+  variables: { channelId: '123', limit: 50 },
 })
 
 // Mutation
@@ -26,13 +22,13 @@ const [sendMessage] = useMutation(SEND_MESSAGE)
 await sendMessage({
   variables: {
     channelId: '123',
-    content: 'Hello!'
-  }
+    content: 'Hello!',
+  },
 })
 
 // Subscription
 const { data } = useSubscription(MESSAGE_SUBSCRIPTION, {
-  variables: { channelId: '123' }
+  variables: { channelId: '123' },
 })
 ```
 
@@ -254,12 +250,12 @@ import { MUTE_USER, UNMUTE_USER } from '@/graphql'
 
 ```typescript
 const { data, fetchMore } = useQuery(GET_MESSAGES, {
-  variables: { channelId, limit: 50, offset: 0 }
+  variables: { channelId, limit: 50, offset: 0 },
 })
 
 // Load more
 fetchMore({
-  variables: { offset: data.messages.length }
+  variables: { offset: data.messages.length },
 })
 ```
 
@@ -271,7 +267,7 @@ useSubscription(MESSAGE_SUBSCRIPTION, {
   variables: { channelId },
   onData: ({ data }) => {
     // Update cache or state
-  }
+  },
 })
 ```
 
@@ -286,8 +282,8 @@ const [sendMessage] = useMutation(SEND_MESSAGE, {
       content,
       created_at: new Date().toISOString(),
       // ... other fields
-    }
-  }
+    },
+  },
 })
 ```
 
@@ -306,10 +302,7 @@ if (error) {
 
 ```typescript
 const [updateChannel] = useMutation(UPDATE_CHANNEL, {
-  refetchQueries: [
-    { query: GET_CHANNELS },
-    { query: GET_CHANNEL_BY_ID, variables: { channelId } }
-  ]
+  refetchQueries: [{ query: GET_CHANNELS }, { query: GET_CHANNEL_BY_ID, variables: { channelId } }],
 })
 ```
 
@@ -318,6 +311,7 @@ const [updateChannel] = useMutation(UPDATE_CHANNEL, {
 ## File Locations
 
 ### Main Entry Point
+
 ```typescript
 import * from '@/graphql'
 // or
@@ -325,6 +319,7 @@ import { messages, channels, users } from '@/graphql'
 ```
 
 ### Organized Imports
+
 ```typescript
 // Queries
 import { GET_MESSAGES } from '@/graphql/queries/messages'
@@ -343,16 +338,12 @@ import { MESSAGE_SUBSCRIPTION } from '@/graphql/subscriptions/messages'
 All operations export TypeScript types:
 
 ```typescript
-import type {
-  SendMessageInput,
-  UpdateMessageInput,
-  GetMessagesVariables
-} from '@/graphql'
+import type { SendMessageInput, UpdateMessageInput, GetMessagesVariables } from '@/graphql'
 
 const variables: GetMessagesVariables = {
   channelId: '123',
   limit: 50,
-  offset: 0
+  offset: 0,
 }
 ```
 
@@ -367,7 +358,7 @@ import {
   USER_BASIC_FRAGMENT,
   USER_PROFILE_FRAGMENT,
   CHANNEL_BASIC_FRAGMENT,
-  MESSAGE_FULL_FRAGMENT
+  MESSAGE_FULL_FRAGMENT,
 } from '@/graphql/fragments'
 
 // Use in custom queries
@@ -421,6 +412,7 @@ if (data) return <Messages data={data} /> // May render null
 ## Performance Tips
 
 ### 1. Use Pagination
+
 ```typescript
 // Good: Paginated
 GET_MESSAGES({ limit: 50, offset: 0 })
@@ -430,6 +422,7 @@ GET_MESSAGES({ limit: 10000 })
 ```
 
 ### 2. Selective Fields
+
 ```typescript
 // Good: Only needed fields
 query GetUser {
@@ -443,13 +436,15 @@ query GetUser {
 ```
 
 ### 3. Cache Policies
+
 ```typescript
 useQuery(GET_MESSAGES, {
-  fetchPolicy: 'cache-first' // Use cache when available
+  fetchPolicy: 'cache-first', // Use cache when available
 })
 ```
 
 ### 4. Batch Operations
+
 ```typescript
 // Good: Single mutation
 ADD_MULTIPLE_MEMBERS({ members: [...] })
@@ -465,6 +460,7 @@ members.forEach(m => ADD_CHANNEL_MEMBER({ ...m }))
 ### Common Issues
 
 **Issue**: Subscription not working
+
 ```typescript
 // Check: WebSocket connection configured?
 // Check: Subscription variables correct?
@@ -472,6 +468,7 @@ members.forEach(m => ADD_CHANNEL_MEMBER({ ...m }))
 ```
 
 **Issue**: Stale data
+
 ```typescript
 // Solution: Refetch or use subscription
 refetch()
@@ -480,6 +477,7 @@ subscribeToMore({ ... })
 ```
 
 **Issue**: Cache not updating
+
 ```typescript
 // Solution: Update cache manually
 update: (cache, { data }) => {
@@ -487,8 +485,8 @@ update: (cache, { data }) => {
     fields: {
       messages(existing = []) {
         return [...existing, data.insert_nchat_messages_one]
-      }
-    }
+      },
+    },
   })
 }
 ```

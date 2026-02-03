@@ -25,11 +25,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { QuickReactions } from './message-reactions'
 import type { MessageActionPermissions, MessageAction } from '@/types/message'
@@ -75,11 +71,7 @@ export function MessageActions({
       {permissions.canReact && (
         <Popover open={showReactions} onOpenChange={setShowReactions}>
           <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 w-7 p-0 hover:bg-muted"
-            >
+            <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-muted">
               <Smile className="h-4 w-4" />
             </Button>
           </PopoverTrigger>
@@ -127,11 +119,7 @@ export function MessageActions({
       {/* More menu */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 w-7 p-0 hover:bg-muted"
-          >
+          <Button variant="ghost" size="sm" className="h-7 w-7 p-0 hover:bg-muted">
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
@@ -146,9 +134,7 @@ export function MessageActions({
 
           {/* Pin/Unpin */}
           {permissions.canPin && (
-            <DropdownMenuItem
-              onClick={() => onAction(isPinned ? 'unpin' : 'pin')}
-            >
+            <DropdownMenuItem onClick={() => onAction(isPinned ? 'unpin' : 'pin')}>
               {isPinned ? (
                 <>
                   <PinOff className="mr-2 h-4 w-4" />
@@ -165,9 +151,7 @@ export function MessageActions({
 
           {/* Bookmark */}
           {permissions.canBookmark && (
-            <DropdownMenuItem
-              onClick={() => onAction(isBookmarked ? 'unbookmark' : 'bookmark')}
-            >
+            <DropdownMenuItem onClick={() => onAction(isBookmarked ? 'unbookmark' : 'bookmark')}>
               {isBookmarked ? (
                 <>
                   <BookmarkCheck className="mr-2 h-4 w-4" />
@@ -197,9 +181,7 @@ export function MessageActions({
           </DropdownMenuItem>
 
           {/* Separator */}
-          {(permissions.canDelete || permissions.canReport) && (
-            <DropdownMenuSeparator />
-          )}
+          {(permissions.canDelete || permissions.canReport) && <DropdownMenuSeparator />}
 
           {/* Report */}
           {permissions.canReport && (
@@ -242,22 +224,12 @@ export function InlineMessageActions({
   return (
     <div className={cn('flex items-center gap-1', className)}>
       {permissions.canReact && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onAction('react')}
-          className="h-6 w-6 p-0"
-        >
+        <Button variant="ghost" size="sm" onClick={() => onAction('react')} className="h-6 w-6 p-0">
           <Smile className="h-3.5 w-3.5" />
         </Button>
       )}
       {permissions.canReply && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onAction('reply')}
-          className="h-6 w-6 p-0"
-        >
+        <Button variant="ghost" size="sm" onClick={() => onAction('reply')} className="h-6 w-6 p-0">
           <Reply className="h-3.5 w-3.5" />
         </Button>
       )}
@@ -391,11 +363,7 @@ export function FloatingMessageActions({
       </div>
 
       {/* Close button */}
-      <Button
-        variant="ghost"
-        className="mt-4 w-full"
-        onClick={onClose}
-      >
+      <Button variant="ghost" className="mt-4 w-full" onClick={onClose}>
         Cancel
       </Button>
     </motion.div>
@@ -419,7 +387,7 @@ function ActionButton({
       className={cn(
         'flex flex-col items-center gap-1 rounded-lg p-2 transition-colors',
         variant === 'default' && 'hover:bg-muted',
-        variant === 'destructive' && 'text-destructive hover:bg-destructive/10'
+        variant === 'destructive' && 'hover:bg-destructive/10 text-destructive'
       )}
     >
       <Icon className="h-5 w-5" />

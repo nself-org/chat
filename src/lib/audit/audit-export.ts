@@ -131,11 +131,7 @@ export async function exportAuditLogs(
 /**
  * Trigger a file download in the browser
  */
-export function downloadFile(
-  data: string | Blob,
-  filename: string,
-  mimeType: string
-): void {
+export function downloadFile(data: string | Blob, filename: string, mimeType: string): void {
   const blob = data instanceof Blob ? data : new Blob([data], { type: mimeType })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')

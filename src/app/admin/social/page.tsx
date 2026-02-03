@@ -19,10 +19,10 @@ export default function SocialMediaAdminPage() {
   const selectedAccount = accounts.find((acc) => acc.id === selectedAccountId)
 
   return (
-    <div className="container mx-auto py-8 space-y-8">
+    <div className="container mx-auto space-y-8 py-8">
       <div>
         <h1 className="text-3xl font-bold">Social Media Integration</h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="mt-2 text-muted-foreground">
           Connect social media accounts and automatically import posts to channels
         </p>
       </div>
@@ -51,9 +51,9 @@ export default function SocialMediaAdminPage() {
                   <button
                     key={account.id}
                     onClick={() => setSelectedAccountId(account.id)}
-                    className={`px-4 py-2 rounded-lg border transition-colors ${
+                    className={`rounded-lg border px-4 py-2 transition-colors ${
                       selectedAccountId === account.id
-                        ? 'bg-primary text-primary-foreground'
+                        ? 'text-primary-foreground bg-primary'
                         : 'bg-background hover:bg-accent'
                     }`}
                   >
@@ -69,13 +69,13 @@ export default function SocialMediaAdminPage() {
                   platform={selectedAccount.platform}
                 />
               ) : (
-                <p className="text-center text-muted-foreground py-12">
+                <p className="py-12 text-center text-muted-foreground">
                   Select an account to configure integrations
                 </p>
               )}
             </div>
           ) : (
-            <p className="text-center text-muted-foreground py-12">
+            <p className="py-12 text-center text-muted-foreground">
               Connect a social account to create integrations
             </p>
           )}

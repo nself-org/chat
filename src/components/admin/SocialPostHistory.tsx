@@ -50,7 +50,7 @@ interface Props {
 export function SocialPostHistory({ accountId }: Props) {
   const { data, loading, error } = useQuery(GET_SOCIAL_POSTS, {
     variables: accountId ? { accountId } : {},
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
   })
 
   const posts: SocialPost[] = data?.nchat_social_posts || []
@@ -81,7 +81,7 @@ export function SocialPostHistory({ accountId }: Props) {
       </CardHeader>
       <CardContent>
         {posts.length === 0 ? (
-          <div className="text-center py-12">
+          <div className="py-12 text-center">
             <p className="text-muted-foreground">No posts imported yet</p>
           </div>
         ) : (
@@ -95,10 +95,10 @@ export function SocialPostHistory({ accountId }: Props) {
                 (engagement.comments || 0)
 
               return (
-                <div key={post.id} className="border rounded-lg p-4 space-y-3">
+                <div key={post.id} className="space-y-3 rounded-lg border p-4">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
+                      <div className="mb-2 flex items-center gap-2">
                         {post.author_avatar_url && (
                           <img
                             src={post.author_avatar_url}
@@ -107,17 +107,17 @@ export function SocialPostHistory({ accountId }: Props) {
                           />
                         )}
                         <div>
-                          <p className="font-semibold text-sm">{post.author_name}</p>
+                          <p className="text-sm font-semibold">{post.author_name}</p>
                           {post.author_handle && (
                             <p className="text-xs text-muted-foreground">@{post.author_handle}</p>
                           )}
                         </div>
                       </div>
 
-                      <p className="text-sm line-clamp-3">{post.content}</p>
+                      <p className="line-clamp-3 text-sm">{post.content}</p>
 
                       {post.hashtags && post.hashtags.length > 0 && (
-                        <div className="flex flex-wrap gap-1 mt-2">
+                        <div className="mt-2 flex flex-wrap gap-1">
                           {post.hashtags.slice(0, 5).map((tag: string) => (
                             <Badge key={tag} variant="secondary" className="text-xs">
                               #{tag}
@@ -127,13 +127,13 @@ export function SocialPostHistory({ accountId }: Props) {
                       )}
 
                       {post.media_urls && post.media_urls.length > 0 && (
-                        <div className="flex gap-2 mt-2">
+                        <div className="mt-2 flex gap-2">
                           {post.media_urls.slice(0, 4).map((url: string, idx: number) => (
                             <img
                               key={idx}
                               src={url}
                               alt=""
-                              className="h-16 w-16 object-cover rounded"
+                              className="h-16 w-16 rounded object-cover"
                             />
                           ))}
                         </div>

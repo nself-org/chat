@@ -6,7 +6,7 @@ export interface AppConfig {
     visitedSteps: number[]
     completedAt?: Date
   }
-  
+
   // Owner Information
   owner: {
     name: string
@@ -14,7 +14,7 @@ export interface AppConfig {
     company?: string
     role?: string
   }
-  
+
   // App Identity
   branding: {
     appName: string
@@ -23,12 +23,12 @@ export interface AppConfig {
     favicon?: string
     companyName?: string
     websiteUrl?: string
-    logoScale?: number  // Scale factor for logo display (0.5 to 2.0, default 1.0)
+    logoScale?: number // Scale factor for logo display (0.5 to 2.0, default 1.0)
   }
-  
+
   // Landing Theme Templates
   landingTheme: 'login-only' | 'simple-landing' | 'full-homepage' | 'corporate' | 'community'
-  
+
   // Homepage Configuration
   homepage: {
     mode: 'landing' | 'redirect' | 'chat'
@@ -43,7 +43,7 @@ export interface AppConfig {
     }
     redirectTo?: '/login' | '/chat' | '/signup'
   }
-  
+
   // Authentication Providers
   authProviders: {
     emailPassword: boolean
@@ -63,7 +63,7 @@ export interface AppConfig {
       requireVerification: boolean
     }
   }
-  
+
   // Authentication Permissions
   authPermissions: {
     mode: 'allow-all' | 'verified-only' | 'idme-roles' | 'domain-restricted' | 'admin-only'
@@ -75,7 +75,7 @@ export interface AppConfig {
     welcomeNewMembers: boolean
     newMemberChannel?: string
   }
-  
+
   // Features & Permissions
   features: {
     publicChannels: boolean
@@ -110,7 +110,7 @@ export interface AppConfig {
     streamScheduling: boolean
     maxStreamDuration: number // minutes, 0 = unlimited
   }
-  
+
   // Integrations
   integrations: {
     slack: {
@@ -136,7 +136,7 @@ export interface AppConfig {
       customEndpoints: string[]
     }
   }
-  
+
   // Moderation & Safety (v0.5.0 - AI-Powered)
   moderation: {
     // Basic Settings
@@ -220,7 +220,7 @@ export interface AppConfig {
     // Import/Export
     customThemeJSON?: string
   }
-  
+
   // SEO & Meta
   seo: {
     title: string
@@ -229,7 +229,7 @@ export interface AppConfig {
     ogImage?: string
     twitterHandle?: string
   }
-  
+
   // Legal & Compliance
   legal: {
     privacyPolicyUrl?: string
@@ -237,7 +237,7 @@ export interface AppConfig {
     cookiePolicyUrl?: string
     supportEmail: string
   }
-  
+
   // Social Links
   social: {
     twitter?: string
@@ -253,7 +253,16 @@ export interface AppConfig {
     // SSO/SAML
     sso: {
       enabled: boolean
-      allowedProviders: ('okta' | 'azure-ad' | 'google-workspace' | 'onelogin' | 'auth0' | 'ping-identity' | 'jumpcloud' | 'generic-saml')[]
+      allowedProviders: (
+        | 'okta'
+        | 'azure-ad'
+        | 'google-workspace'
+        | 'onelogin'
+        | 'auth0'
+        | 'ping-identity'
+        | 'jumpcloud'
+        | 'generic-saml'
+      )[]
       enforceSSO: boolean // Require SSO for all logins
       jitProvisioning: boolean
       defaultRole: 'member' | 'moderator' | 'admin'
@@ -313,20 +322,20 @@ export const defaultAppConfig: AppConfig = {
     currentStep: 0,
     visitedSteps: [0],
   },
-  
+
   owner: {
     name: '',
     email: '',
   },
-  
+
   branding: {
     appName: 'nChat',
     tagline: 'Team Communication Platform',
     logoScale: 1.0,
   },
-  
+
   landingTheme: 'simple-landing',
-  
+
   homepage: {
     mode: 'landing',
     landingPages: {
@@ -337,9 +346,9 @@ export const defaultAppConfig: AppConfig = {
       contact: false,
       blog: false,
       docs: false,
-    }
+    },
   },
-  
+
   authProviders: {
     emailPassword: true,
     magicLinks: false,
@@ -356,9 +365,9 @@ export const defaultAppConfig: AppConfig = {
       allowFirstResponders: true,
       allowGovernment: false,
       requireVerification: true,
-    }
+    },
   },
-  
+
   authPermissions: {
     mode: 'allow-all',
     requireEmailVerification: false,
@@ -367,7 +376,7 @@ export const defaultAppConfig: AppConfig = {
     welcomeNewMembers: true,
     newMemberChannel: 'general',
   },
-  
+
   features: {
     publicChannels: true,
     privateChannels: true,
@@ -423,9 +432,9 @@ export const defaultAppConfig: AppConfig = {
     webhooks: {
       enabled: false,
       customEndpoints: [],
-    }
+    },
   },
-  
+
   moderation: {
     autoModeration: false,
     profanityFilter: false,
@@ -499,17 +508,17 @@ export const defaultAppConfig: AppConfig = {
     fontFamily: 'Inter, system-ui, sans-serif',
     colorScheme: 'dark',
   },
-  
+
   seo: {
     title: 'nChat - Team Communication Platform',
     description: 'Modern team communication and collaboration platform',
     keywords: ['chat', 'team', 'communication', 'collaboration', 'messaging'],
   },
-  
+
   legal: {
     supportEmail: 'support@example.com',
   },
-  
+
   social: {},
 
   enterprise: {
@@ -568,44 +577,44 @@ export const landingThemeTemplates = {
     name: 'Login Only',
     description: 'Direct to login page, no landing page',
     homepage: { mode: 'redirect', redirectTo: '/auth/signin' },
-    features: ['Simple', 'Fast', 'Secure']
+    features: ['Simple', 'Fast', 'Secure'],
   },
   'simple-landing': {
     name: 'Simple Landing',
     description: 'Basic landing page with hero and CTA buttons',
-    homepage: { 
-      mode: 'landing', 
-      landingPages: { hero: true, features: true, contact: true } 
+    homepage: {
+      mode: 'landing',
+      landingPages: { hero: true, features: true, contact: true },
     },
-    features: ['Hero Section', 'Feature List', 'Contact Info']
+    features: ['Hero Section', 'Feature List', 'Contact Info'],
   },
   'full-homepage': {
     name: 'Full Homepage',
     description: 'Complete website with navigation, pricing, about',
-    homepage: { 
-      mode: 'landing', 
-      landingPages: { hero: true, features: true, pricing: true, about: true, contact: true } 
+    homepage: {
+      mode: 'landing',
+      landingPages: { hero: true, features: true, pricing: true, about: true, contact: true },
     },
-    features: ['Full Navigation', 'Pricing Plans', 'About Page', 'Contact Form']
+    features: ['Full Navigation', 'Pricing Plans', 'About Page', 'Contact Form'],
   },
-  'corporate': {
+  corporate: {
     name: 'Corporate',
     description: 'Professional layout for business teams',
-    homepage: { 
-      mode: 'landing', 
-      landingPages: { hero: true, features: true, about: true } 
+    homepage: {
+      mode: 'landing',
+      landingPages: { hero: true, features: true, about: true },
     },
-    features: ['Professional Design', 'Team Features', 'Security Focus']
+    features: ['Professional Design', 'Team Features', 'Security Focus'],
   },
-  'community': {
+  community: {
     name: 'Community',
     description: 'Open community platform with public access',
-    homepage: { 
-      mode: 'landing', 
-      landingPages: { hero: true, features: true, docs: true, blog: true } 
+    homepage: {
+      mode: 'landing',
+      landingPages: { hero: true, features: true, docs: true, blog: true },
     },
-    features: ['Open Source Feel', 'Documentation', 'Blog Integration']
-  }
+    features: ['Open Source Feel', 'Documentation', 'Blog Integration'],
+  },
 } as const
 
 // Auth provider descriptions
@@ -613,12 +622,12 @@ export const authProviderDescriptions = {
   emailPassword: 'Traditional email and password authentication',
   magicLinks: 'Passwordless login via email links',
   google: 'Sign in with Google accounts',
-  facebook: 'Sign in with Facebook accounts',  
+  facebook: 'Sign in with Facebook accounts',
   twitter: 'Sign in with Twitter/X accounts',
   github: 'Sign in with GitHub accounts',
   discord: 'Sign in with Discord accounts',
   slack: 'Sign in with Slack workspace accounts',
-  idme: 'ID.me verification for military, police, and government personnel'
+  idme: 'ID.me verification for military, police, and government personnel',
 } as const
 
 // Auth permission descriptions
@@ -627,7 +636,7 @@ export const authPermissionDescriptions = {
   'verified-only': 'Only email-verified users can access',
   'idme-roles': 'Only users with verified ID.me roles can join',
   'domain-restricted': 'Only specific email domains are allowed',
-  'admin-only': 'Only admins can manually create accounts'
+  'admin-only': 'Only admins can manually create accounts',
 } as const
 
 // Setup step titles - Expanded wizard with environment detection and deployment
@@ -643,12 +652,16 @@ export const setupSteps = [
   'Access Permissions',
   'Features & Integrations',
   'Deployment',
-  'Review & Launch'
+  'Review & Launch',
 ] as const
 
 // Step phases for grouping in the wizard UI
 export const setupPhases = {
   setup: { name: 'Setup', steps: [0, 1, 2], description: 'Environment and backend configuration' },
-  customize: { name: 'Customize', steps: [3, 4, 5, 6, 7, 8, 9], description: 'Branding, theme, and features' },
-  deploy: { name: 'Deploy', steps: [10, 11], description: 'Deployment and launch' }
+  customize: {
+    name: 'Customize',
+    steps: [3, 4, 5, 6, 7, 8, 9],
+    description: 'Branding, theme, and features',
+  },
+  deploy: { name: 'Deploy', steps: [10, 11], description: 'Deployment and launch' },
 } as const

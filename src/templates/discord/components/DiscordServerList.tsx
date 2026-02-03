@@ -51,10 +51,7 @@ export function DiscordServerList({
 }: DiscordServerListProps) {
   return (
     <div
-      className={cn(
-        'flex flex-col items-center py-3 gap-2 overflow-y-auto',
-        className
-      )}
+      className={cn('flex flex-col items-center gap-2 overflow-y-auto py-3', className)}
       style={{ backgroundColor: discordColors.gray850 }}
     >
       {/* Home Button (Discord logo) */}
@@ -85,7 +82,7 @@ export function DiscordServerList({
       {/* Add Server Button */}
       <ServerButton
         isAction
-        icon={<Plus className="w-6 h-6" />}
+        icon={<Plus className="h-6 w-6" />}
         onClick={onAddServer}
         tooltip="Add a Server"
         color={discordColors.green}
@@ -94,7 +91,7 @@ export function DiscordServerList({
       {/* Explore Button */}
       <ServerButton
         isAction
-        icon={<Compass className="w-6 h-6" />}
+        icon={<Compass className="h-6 w-6" />}
         onClick={onExploreClick}
         tooltip="Explore Discoverable Servers"
         color={discordColors.green}
@@ -104,7 +101,7 @@ export function DiscordServerList({
       <Separator />
       <ServerButton
         isAction
-        icon={<Download className="w-6 h-6" />}
+        icon={<Download className="h-6 w-6" />}
         onClick={() => {}}
         tooltip="Download Apps"
         color={discordColors.green}
@@ -120,7 +117,7 @@ export function DiscordServerList({
 function Separator() {
   return (
     <div
-      className="w-8 h-0.5 rounded-full mx-auto"
+      className="mx-auto h-0.5 w-8 rounded-full"
       style={{ backgroundColor: discordColors.gray800 }}
     />
   )
@@ -151,17 +148,13 @@ function ServerButton({
   const hasMention = (server?.mentionCount ?? 0) > 0
 
   return (
-    <div className="relative group flex items-center">
+    <div className="group relative flex items-center">
       {/* Pill Indicator */}
       <div
         className={cn(
           'absolute left-0 w-1 rounded-r-full transition-all duration-200',
           'bg-white',
-          isActive
-            ? 'h-10'
-            : hasNotification
-            ? 'h-2 group-hover:h-5'
-            : 'h-0 group-hover:h-5'
+          isActive ? 'h-10' : hasNotification ? 'h-2 group-hover:h-5' : 'h-0 group-hover:h-5'
         )}
         style={{ left: -4 }}
       />
@@ -171,40 +164,31 @@ function ServerButton({
         onClick={onClick}
         title={tooltip}
         className={cn(
-          'relative w-12 h-12 flex items-center justify-center',
-          'transition-all duration-200 overflow-hidden',
-          isActive || (isHome && !server)
-            ? 'rounded-2xl'
-            : 'rounded-3xl group-hover:rounded-2xl'
+          'relative flex h-12 w-12 items-center justify-center',
+          'overflow-hidden transition-all duration-200',
+          isActive || (isHome && !server) ? 'rounded-2xl' : 'rounded-3xl group-hover:rounded-2xl'
         )}
         style={{
           backgroundColor: isActive
             ? discordColors.blurple
             : isAction
-            ? discordColors.gray700
-            : discordColors.gray700,
+              ? discordColors.gray700
+              : discordColors.gray700,
         }}
       >
         {isHome ? (
           <DiscordLogo
             className={cn(
-              'w-7 h-7 transition-colors',
+              'h-7 w-7 transition-colors',
               isActive ? 'text-white' : 'text-gray-300 group-hover:text-white'
             )}
           />
         ) : isAction ? (
-          <span
-            className="transition-colors"
-            style={{ color: isActive ? 'white' : color }}
-          >
+          <span className="transition-colors" style={{ color: isActive ? 'white' : color }}>
             {icon}
           </span>
         ) : server?.icon ? (
-          <img
-            src={server.icon}
-            alt={server.name}
-            className="w-full h-full object-cover"
-          />
+          <img src={server.icon} alt={server.name} className="h-full w-full object-cover" />
         ) : (
           <span className="text-lg font-medium text-white">
             {server?.name
@@ -219,7 +203,7 @@ function ServerButton({
         {/* Mention Badge */}
         {hasMention && (
           <span
-            className="absolute -bottom-1 -right-1 min-w-[20px] h-5 px-1.5 rounded-full text-xs font-bold flex items-center justify-center text-white border-4"
+            className="absolute -bottom-1 -right-1 flex h-5 min-w-[20px] items-center justify-center rounded-full border-4 px-1.5 text-xs font-bold text-white"
             style={{
               backgroundColor: discordColors.red,
               borderColor: discordColors.gray850,

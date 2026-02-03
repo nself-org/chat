@@ -120,16 +120,19 @@ export const MobileChannelView = memo(function MobileChannelView({
   }, [hasMore, isLoadingMore, onLoadMore, newMessageCount])
 
   // Scroll to bottom
-  const scrollToBottom = useCallback((smooth = true) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTo({
-        top: scrollRef.current.scrollHeight,
-        behavior: smooth ? 'smooth' : 'auto',
-      })
-      setNewMessageCount(0)
-      onScrollToBottom?.()
-    }
-  }, [onScrollToBottom])
+  const scrollToBottom = useCallback(
+    (smooth = true) => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollTo({
+          top: scrollRef.current.scrollHeight,
+          behavior: smooth ? 'smooth' : 'auto',
+        })
+        setNewMessageCount(0)
+        onScrollToBottom?.()
+      }
+    },
+    [onScrollToBottom]
+  )
 
   // Auto-scroll on new messages
   useEffect(() => {
@@ -160,11 +163,7 @@ export const MobileChannelView = memo(function MobileChannelView({
 
   return (
     <div
-      className={cn(
-        'flex h-full flex-col',
-        'bg-background',
-        className
-      )}
+      className={cn('flex h-full flex-col', 'bg-background', className)}
       style={{
         paddingBottom: keyboardVisible ? keyboardHeight : 0,
       }}
@@ -182,7 +181,7 @@ export const MobileChannelView = memo(function MobileChannelView({
               opacity: pullState.progress,
             }}
             exit={{ height: 0, opacity: 0 }}
-            className="flex items-center justify-center overflow-hidden bg-muted/30"
+            className="bg-muted/30 flex items-center justify-center overflow-hidden"
           >
             <div
               className={cn(
@@ -218,17 +217,13 @@ export const MobileChannelView = memo(function MobileChannelView({
         )}
 
         {/* Empty state */}
-        {!isLoading && messages.length === 0 && (
-          <EmptyMessages channelName={channelName} />
-        )}
+        {!isLoading && messages.length === 0 && <EmptyMessages channelName={channelName} />}
 
         {/* Loading skeleton */}
-        {isLoading && messages.length === 0 && (
-          <MessagesSkeleton />
-        )}
+        {isLoading && messages.length === 0 && <MessagesSkeleton />}
 
         {/* Messages list */}
-        <div className="px-4 py-2 space-y-1">
+        <div className="space-y-1 px-4 py-2">
           {messages.map((message, index) =>
             renderMessage ? (
               renderMessage(message, index)
@@ -254,13 +249,7 @@ export const MobileChannelView = memo(function MobileChannelView({
               className="h-10 rounded-full shadow-lg"
             >
               <ArrowDown className="mr-1 h-4 w-4" />
-              {newMessageCount > 0 ? (
-                <span>
-                  {newMessageCount} new
-                </span>
-              ) : (
-                <span>Latest</span>
-              )}
+              {newMessageCount > 0 ? <span>{newMessageCount} new</span> : <span>Latest</span>}
             </Button>
           </motion.div>
         )}
@@ -280,16 +269,9 @@ interface DefaultMessageProps {
   message: Message
 }
 
-const DefaultMessage = memo(function DefaultMessage({
-  message,
-}: DefaultMessageProps) {
+const DefaultMessage = memo(function DefaultMessage({ message }: DefaultMessageProps) {
   return (
-    <div
-      className={cn(
-        'flex gap-3 py-2',
-        message.isOwn && 'flex-row-reverse'
-      )}
-    >
+    <div className={cn('flex gap-3 py-2', message.isOwn && 'flex-row-reverse')}>
       {/* Avatar */}
       <div className="h-8 w-8 shrink-0 rounded-full bg-muted">
         {message.userAvatar ? (
@@ -310,16 +292,12 @@ const DefaultMessage = memo(function DefaultMessage({
         className={cn(
           'max-w-[75%] rounded-2xl px-4 py-2',
           message.isOwn
-            ? 'bg-primary text-primary-foreground rounded-br-sm'
-            : 'bg-muted rounded-bl-sm'
+            ? 'text-primary-foreground rounded-br-sm bg-primary'
+            : 'rounded-bl-sm bg-muted'
         )}
       >
-        {!message.isOwn && (
-          <p className="mb-0.5 text-xs font-semibold">{message.userName}</p>
-        )}
-        <p className="text-sm whitespace-pre-wrap break-words">
-          {message.content}
-        </p>
+        {!message.isOwn && <p className="mb-0.5 text-xs font-semibold">{message.userName}</p>}
+        <p className="whitespace-pre-wrap break-words text-sm">{message.content}</p>
         <p
           className={cn(
             'mt-1 text-[10px]',
@@ -337,17 +315,13 @@ interface EmptyMessagesProps {
   channelName?: string
 }
 
-const EmptyMessages = memo(function EmptyMessages({
-  channelName,
-}: EmptyMessagesProps) {
+const EmptyMessages = memo(function EmptyMessages({ channelName }: EmptyMessagesProps) {
   return (
     <div className="flex h-full flex-col items-center justify-center p-8 text-center">
-      <div className="mb-4 rounded-full bg-primary/10 p-4">
+      <div className="bg-primary/10 mb-4 rounded-full p-4">
         <span className="text-4xl">👋</span>
       </div>
-      <h3 className="mb-2 text-lg font-semibold">
-        Welcome to {channelName || 'this channel'}!
-      </h3>
+      <h3 className="mb-2 text-lg font-semibold">Welcome to {channelName || 'this channel'}!</h3>
       <p className="text-sm text-muted-foreground">
         This is the very beginning of the conversation.
         <br />
@@ -361,13 +335,7 @@ const MessagesSkeleton = memo(function MessagesSkeleton() {
   return (
     <div className="space-y-4 p-4">
       {[...Array(6)].map((_, i) => (
-        <div
-          key={i}
-          className={cn(
-            'flex gap-3',
-            i % 3 === 0 && 'flex-row-reverse'
-          )}
-        >
+        <div key={i} className={cn('flex gap-3', i % 3 === 0 && 'flex-row-reverse')}>
           <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
           <div
             className={cn(
@@ -377,11 +345,9 @@ const MessagesSkeleton = memo(function MessagesSkeleton() {
             )}
             style={{ width: `${40 + Math.random() * 35}%` }}
           >
-            <div className="h-3 w-16 rounded bg-muted-foreground/20" />
-            <div className="h-4 w-full rounded bg-muted-foreground/20" />
-            {i % 2 === 0 && (
-              <div className="h-4 w-3/4 rounded bg-muted-foreground/20" />
-            )}
+            <div className="bg-muted-foreground/20 h-3 w-16 rounded" />
+            <div className="bg-muted-foreground/20 h-4 w-full rounded" />
+            {i % 2 === 0 && <div className="bg-muted-foreground/20 h-4 w-3/4 rounded" />}
           </div>
         </div>
       ))}

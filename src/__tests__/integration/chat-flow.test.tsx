@@ -109,15 +109,19 @@ jest.mock('@/components/chat/message-input', () => ({
           }
         },
       }),
-      React.createElement('button', {
-        key: 'send',
-        onClick: () => {
-          if (value.trim()) {
-            onSendMessage(value.trim())
-            setValue('')
-          }
+      React.createElement(
+        'button',
+        {
+          key: 'send',
+          onClick: () => {
+            if (value.trim()) {
+              onSendMessage(value.trim())
+              setValue('')
+            }
+          },
         },
-      }, 'Send'),
+        'Send'
+      ),
     ])
   },
 }))
@@ -199,9 +203,7 @@ const ChatContainer: React.FC<{
   const channels = Array.from(useChannelStore((s) => s.channels).values())
   const activeChannelId = useChannelStore((s) => s.activeChannelId)
   const setActiveChannel = useChannelStore((s) => s.setActiveChannel)
-  const messages = useMessageStore((s) =>
-    s.messagesByChannel[activeChannelId || ''] || []
-  )
+  const messages = useMessageStore((s) => s.messagesByChannel[activeChannelId || ''] || [])
 
   const handleChannelClick = (channel: Channel) => {
     setActiveChannel(channel.id)
@@ -306,20 +308,20 @@ describe('Chat Application Integration', () => {
     it('redirects unauthenticated users to sign in', async () => {
       const ChatPage = () => {
         const { user } = useAuth()
-        
+
         if (!user) {
           return <div>Please sign in</div>
         }
-        
+
         return <div>Welcome to chat</div>
       }
-      
+
       render(
         <MockApp>
           <ChatPage />
         </MockApp>
       )
-      
+
       expect(screen.getByText('Please sign in')).toBeInTheDocument()
     })
 
@@ -337,23 +339,19 @@ describe('Chat Application Integration', () => {
           },
         }),
       })
-      
+
       const SignInFlow = () => {
         const { user, signIn } = useAuth()
         const [email, setEmail] = React.useState('test@example.com')
         const [password, setPassword] = React.useState('password')
-        
+
         if (user) {
           return <div>Welcome, {user.displayName}!</div>
         }
-        
+
         return (
           <div>
-            <input
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
             <input
               placeholder="Password"
               type="password"
@@ -364,16 +362,16 @@ describe('Chat Application Integration', () => {
           </div>
         )
       }
-      
+
       render(
         <MockApp>
           <SignInFlow />
         </MockApp>
       )
-      
+
       const signInButton = screen.getByText('Sign In')
       fireEvent.click(signInButton)
-      
+
       await waitFor(() => {
         expect(screen.getByText('Welcome, Test User!')).toBeInTheDocument()
       })
@@ -386,7 +384,7 @@ describe('Chat Application Integration', () => {
     it('changes theme and updates DOM', () => {
       const ThemeTest = () => {
         const { theme, setTheme } = useTheme()
-        
+
         return (
           <div>
             <div data-testid="current-theme">{theme}</div>
@@ -395,18 +393,18 @@ describe('Chat Application Integration', () => {
           </div>
         )
       }
-      
+
       render(
         <MockApp>
           <ThemeTest />
         </MockApp>
       )
-      
+
       expect(screen.getByTestId('current-theme')).toHaveTextContent('system')
-      
+
       fireEvent.click(screen.getByText('Dark Mode'))
       expect(document.documentElement).toHaveClass('dark')
-      
+
       fireEvent.click(screen.getByText('Light Mode'))
       expect(document.documentElement).toHaveClass('light')
       expect(document.documentElement).not.toHaveClass('dark')
@@ -415,7 +413,7 @@ describe('Chat Application Integration', () => {
     it('persists theme colors across components', () => {
       const ColorTest = () => {
         const { themeConfig, updateThemeConfig } = useTheme()
-        
+
         return (
           <div>
             <div data-testid="primary">{themeConfig.primary}</div>
@@ -425,24 +423,24 @@ describe('Chat Application Integration', () => {
           </div>
         )
       }
-      
+
       const ColorDisplay = () => {
         const { themeConfig } = useTheme()
         return <div data-testid="display-primary">{themeConfig.primary}</div>
       }
-      
+
       render(
         <MockApp>
           <ColorTest />
           <ColorDisplay />
         </MockApp>
       )
-      
+
       expect(screen.getByTestId('primary')).toHaveTextContent('#5865F2')
       expect(screen.getByTestId('display-primary')).toHaveTextContent('#5865F2')
-      
+
       fireEvent.click(screen.getByText('Change Primary'))
-      
+
       expect(screen.getByTestId('primary')).toHaveTextContent('#FF0000')
       expect(screen.getByTestId('display-primary')).toHaveTextContent('#FF0000')
     })
@@ -451,22 +449,27 @@ describe('Chat Application Integration', () => {
   describe('Message Flow', () => {
     it('sends and displays messages', async () => {
       const ChatInterface = () => {
-        const [messages, setMessages] = React.useState<Array<{
-          id: string
-          content: string
-          userName: string
-          createdAt: Date
-        }>>([])
-        
+        const [messages, setMessages] = React.useState<
+          Array<{
+            id: string
+            content: string
+            userName: string
+            createdAt: Date
+          }>
+        >([])
+
         const handleSendMessage = (content: string) => {
-          setMessages([...messages, {
-            id: Date.now().toString(),
-            content,
-            userName: 'Test User',
-            createdAt: new Date(),
-          }])
+          setMessages([
+            ...messages,
+            {
+              id: Date.now().toString(),
+              content,
+              userName: 'Test User',
+              createdAt: new Date(),
+            },
+          ])
         }
-        
+
         return (
           <div>
             <div data-testid="message-list">
@@ -481,45 +484,50 @@ describe('Chat Application Integration', () => {
           </div>
         )
       }
-      
+
       const user = userEvent.setup()
       render(
         <MockApp>
           <ChatInterface />
         </MockApp>
       )
-      
+
       const messageInput = screen.getByPlaceholderText('Type a message...')
       await user.type(messageInput, 'Hello, world!')
-      
+
       const sendButton = screen.getByText('Send')
       await user.click(sendButton)
-      
+
       expect(screen.getByText('Test User:')).toBeInTheDocument()
       expect(screen.getByText('Hello, world!')).toBeInTheDocument()
-      
+
       // Input should be cleared
       expect(messageInput).toHaveValue('')
     })
 
     it('handles multiple messages in order', async () => {
       const ChatInterface = () => {
-        const [messages, setMessages] = React.useState<Array<{
-          id: string
-          content: string
-          userName: string
-          createdAt: Date
-        }>>([])
-        
+        const [messages, setMessages] = React.useState<
+          Array<{
+            id: string
+            content: string
+            userName: string
+            createdAt: Date
+          }>
+        >([])
+
         const handleSendMessage = (content: string) => {
-          setMessages((prev) => [...prev, {
-            id: Date.now().toString(),
-            content,
-            userName: 'User',
-            createdAt: new Date(),
-          }])
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: Date.now().toString(),
+              content,
+              userName: 'User',
+              createdAt: new Date(),
+            },
+          ])
         }
-        
+
         return (
           <div>
             <div data-testid="message-list">
@@ -533,29 +541,29 @@ describe('Chat Application Integration', () => {
           </div>
         )
       }
-      
+
       const user = userEvent.setup()
       render(
         <MockApp>
           <ChatInterface />
         </MockApp>
       )
-      
+
       const messageInput = screen.getByPlaceholderText('Type a message...')
       const sendButton = screen.getByText('Send')
-      
+
       // Send first message
       await user.type(messageInput, 'First message')
       await user.click(sendButton)
-      
+
       // Send second message
       await user.type(messageInput, 'Second message')
       await user.click(sendButton)
-      
+
       // Send third message
       await user.type(messageInput, 'Third message')
       await user.click(sendButton)
-      
+
       // Check messages are in correct order
       expect(screen.getByTestId('message-0')).toHaveTextContent('First message')
       expect(screen.getByTestId('message-1')).toHaveTextContent('Second message')
@@ -567,30 +575,28 @@ describe('Chat Application Integration', () => {
     it('switches between channels', () => {
       const ChannelSwitcher = () => {
         const [activeChannel, setActiveChannel] = React.useState('general')
-        
+
         return (
           <div>
             <div data-testid="active-channel">{activeChannel}</div>
             <button onClick={() => setActiveChannel('general')}>General</button>
             <button onClick={() => setActiveChannel('random')}>Random</button>
-            <button onClick={() => setActiveChannel('announcements')}>
-              Announcements
-            </button>
+            <button onClick={() => setActiveChannel('announcements')}>Announcements</button>
           </div>
         )
       }
-      
+
       render(
         <MockApp>
           <ChannelSwitcher />
         </MockApp>
       )
-      
+
       expect(screen.getByTestId('active-channel')).toHaveTextContent('general')
-      
+
       fireEvent.click(screen.getByText('Random'))
       expect(screen.getByTestId('active-channel')).toHaveTextContent('random')
-      
+
       fireEvent.click(screen.getByText('Announcements'))
       expect(screen.getByTestId('active-channel')).toHaveTextContent('announcements')
     })
@@ -610,13 +616,11 @@ describe('Chat Application Integration', () => {
           role: 'member',
         }),
       })
-      
+
       const ProfileEditor = () => {
         const { user, updateProfile } = useAuth()
-        const [displayName, setDisplayName] = React.useState(
-          user?.displayName || ''
-        )
-        
+        const [displayName, setDisplayName] = React.useState(user?.displayName || '')
+
         return (
           <div>
             <div data-testid="current-name">{user?.displayName}</div>
@@ -625,30 +629,28 @@ describe('Chat Application Integration', () => {
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="Display name"
             />
-            <button onClick={() => updateProfile({ displayName })}>
-              Save Profile
-            </button>
+            <button onClick={() => updateProfile({ displayName })}>Save Profile</button>
           </div>
         )
       }
-      
+
       // Set initial user
       localStorage.setItem('token', 'mock.token.signature')
-      
+
       const user = userEvent.setup()
       render(
         <MockApp>
           <ProfileEditor />
         </MockApp>
       )
-      
+
       const input = screen.getByPlaceholderText('Display name')
       await user.clear(input)
       await user.type(input, 'Updated Name')
-      
+
       const saveButton = screen.getByText('Save Profile')
       await user.click(saveButton)
-      
+
       await waitFor(() => {
         expect(global.fetch).toHaveBeenCalledWith(
           '/api/auth/profile',
@@ -704,9 +706,7 @@ describe.skip('Store Integration Tests', () => {
       const user = userEvent.setup()
       const channels = [createMockChannel({ id: 'ch-1', name: 'General' })]
       const messages = {
-        'ch-1': [
-          createMockMessage({ id: 'msg-1', channelId: 'ch-1', content: 'Hello!' }),
-        ],
+        'ch-1': [createMockMessage({ id: 'msg-1', channelId: 'ch-1', content: 'Hello!' })],
       }
 
       setupStores({ channels, messages })
@@ -727,10 +727,9 @@ describe.skip('Store Integration Tests', () => {
       const channels = [createMockChannel({ id: 'ch-1', name: 'General' })]
       const onSendMessage = jest.fn((channelId, content) => {
         act(() => {
-          useMessageStore.getState().addMessage(
-            channelId,
-            createMockMessage({ channelId, content })
-          )
+          useMessageStore
+            .getState()
+            .addMessage(channelId, createMockMessage({ channelId, content }))
         })
       })
 
@@ -784,10 +783,12 @@ describe.skip('Store Integration Tests', () => {
 
       const onSendMessage = jest.fn((channelId, content) => {
         act(() => {
-          useMessageStore.getState().addMessage(
-            channelId,
-            createMockMessage({ id: `new-msg-${Date.now()}`, channelId, content })
-          )
+          useMessageStore
+            .getState()
+            .addMessage(
+              channelId,
+              createMockMessage({ id: `new-msg-${Date.now()}`, channelId, content })
+            )
         })
       })
 

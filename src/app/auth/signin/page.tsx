@@ -6,7 +6,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { useAuth } from '@/contexts/auth-context'
 
 export default function SignInPage() {
@@ -42,7 +49,10 @@ export default function SignInPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">
+              <div
+                className="bg-destructive/10 rounded-md p-3 text-sm text-destructive"
+                role="alert"
+              >
                 {error}
               </div>
             )}

@@ -518,15 +518,15 @@ pnpm test:watch
 
 ### Coverage Goals
 
-| Feature | Target Coverage |
-|---------|----------------|
-| AI Summarization | > 85% |
-| Smart Search | > 85% |
-| Bot Framework | > 80% |
-| Auto-Moderation | > 80% |
-| API Routes | > 90% |
-| Components | > 75% |
-| Overall | > 80% |
+| Feature          | Target Coverage |
+| ---------------- | --------------- |
+| AI Summarization | > 85%           |
+| Smart Search     | > 85%           |
+| Bot Framework    | > 80%           |
+| Auto-Moderation  | > 80%           |
+| API Routes       | > 90%           |
+| Components       | > 75%           |
+| Overall          | > 80%           |
 
 ## Test Data & Fixtures
 
@@ -632,11 +632,13 @@ src/
 ## Summary
 
 ### Completed (30%)
+
 - ✅ AI Summarization Tests (60+ tests)
 - ✅ Smart Search Tests (50+ tests)
 - ✅ Test Utilities & Helpers
 
 ### Remaining (70%)
+
 - 📋 Bot Framework Tests (40+ tests needed)
 - 📋 Auto-Moderation Tests (35+ tests needed)
 - 📋 AI Infrastructure Tests (30+ tests needed)
@@ -645,6 +647,7 @@ src/
 - 📋 E2E Integration Tests (15+ tests needed)
 
 ### Total Estimated Test Count
+
 - **Completed**: ~120 tests
 - **Remaining**: ~165 tests
 - **Total**: ~285 tests

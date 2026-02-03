@@ -1,5 +1,7 @@
 import { isDevelopment } from '@/lib/environment'
 
+import { logger } from '@/lib/logger'
+
 interface ErrorContext {
   componentStack?: string
   componentName?: string
@@ -155,7 +157,7 @@ class ErrorReporter {
       onReport?.(report)
     } catch (error) {
       if (isDevelopment()) {
-        console.error('Failed to send error report:', error)
+        logger.error('Failed to send error report:', error)
       }
       onReportError?.(error as Error)
     }
@@ -188,9 +190,9 @@ class ErrorReporter {
   async reportError(error: Error, context?: ErrorContext): Promise<void> {
     // Always log to console in development
     if (isDevelopment()) {
-      console.error('Error reported:', error)
+      logger.error('Error reported:', error)
       if (context?.componentStack) {
-        console.error('Component stack:', context.componentStack)
+        logger.error('Component stack:', context.componentStack)
       }
     }
 
@@ -202,7 +204,7 @@ class ErrorReporter {
     // Check rate limit
     if (this.isRateLimited()) {
       if (isDevelopment()) {
-        console.warn('Error reporting rate limited')
+        logger.warn('Error reporting rate limited')
       }
       return
     }
@@ -236,7 +238,11 @@ class ErrorReporter {
 
     const error = new Error(message)
     error.name = 'Info'
-    await this.reportError(error, { ...context, tags: [...(context?.tags || []), 'info'], silent: true })
+    await this.reportError(error, {
+      ...context,
+      tags: [...(context?.tags || []), 'info'],
+      silent: true,
+    })
   }
 
   /**
@@ -244,9 +250,7 @@ class ErrorReporter {
    */
   captureUnhandledRejections(): () => void {
     const handler = (event: PromiseRejectionEvent) => {
-      const error = event.reason instanceof Error
-        ? event.reason
-        : new Error(String(event.reason))
+      const error = event.reason instanceof Error ? event.reason : new Error(String(event.reason))
 
       this.reportError(error, {
         tags: ['unhandled-rejection'],

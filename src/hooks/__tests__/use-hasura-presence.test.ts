@@ -91,9 +91,7 @@ describe('useHasuraPresence Hooks', () => {
         error: undefined,
       } as any)
 
-      const { result } = renderHook(() =>
-        useHasuraPresence(['user-1', 'user-2', 'user-3'])
-      )
+      const { result } = renderHook(() => useHasuraPresence(['user-1', 'user-2', 'user-3']))
 
       expect(result.current.presenceMap.size).toBe(3)
       expect(result.current.presenceMap.get('user-1')?.status).toBe('online')
@@ -120,9 +118,7 @@ describe('useHasuraPresence Hooks', () => {
         error: undefined,
       } as any)
 
-      const { result } = renderHook(() =>
-        useHasuraPresence(['user-1', 'user-2', 'user-3'])
-      )
+      const { result } = renderHook(() => useHasuraPresence(['user-1', 'user-2', 'user-3']))
 
       const presence = result.current.getPresence('user-1')
 
@@ -137,9 +133,7 @@ describe('useHasuraPresence Hooks', () => {
         error: undefined,
       } as any)
 
-      const { result } = renderHook(() =>
-        useHasuraPresence(['user-1', 'user-2', 'user-3'])
-      )
+      const { result } = renderHook(() => useHasuraPresence(['user-1', 'user-2', 'user-3']))
 
       const presence = result.current.getPresence('unknown-user')
 
@@ -159,9 +153,7 @@ describe('useHasuraPresence Hooks', () => {
         error: undefined,
       } as any)
 
-      const { result } = renderHook(() =>
-        useHasuraPresence(['user-recent', 'user-stale'])
-      )
+      const { result } = renderHook(() => useHasuraPresence(['user-recent', 'user-stale']))
 
       // User seen 1 minute ago should be online (within 5 minute threshold)
       expect(result.current.isOnline('user-recent')).toBe(true)
@@ -547,10 +539,9 @@ describe('useHasuraPresence Hooks', () => {
         error: undefined,
       } as any)
 
-      const { rerender } = renderHook(
-        ({ userIds }) => useHasuraPresence(userIds),
-        { initialProps: { userIds: ['user-1'] } }
-      )
+      const { rerender } = renderHook(({ userIds }) => useHasuraPresence(userIds), {
+        initialProps: { userIds: ['user-1'] },
+      })
 
       expect(mockUseSubscription).toHaveBeenLastCalledWith(
         expect.anything(),

@@ -39,12 +39,7 @@ export {
 export type { DeviceInfo, MobileDetectionOptions } from './use-mobile'
 
 // Swipe Gestures
-export {
-  useSwipe,
-  useSimpleSwipe,
-  useHorizontalSwipe,
-  useVerticalSwipe,
-} from './use-swipe'
+export { useSwipe, useSimpleSwipe, useHorizontalSwipe, useVerticalSwipe } from './use-swipe'
 export type {
   SwipeDirection,
   SwipeState,
@@ -70,13 +65,7 @@ export type {
 } from './use-viewport'
 
 // Touch Utilities
-export {
-  useLongPress,
-  useDoubleTap,
-  usePinch,
-  useRipple,
-  usePullToRefresh,
-} from './use-touch'
+export { useLongPress, useDoubleTap, usePinch, useRipple, usePullToRefresh } from './use-touch'
 export type {
   LongPressOptions,
   DoubleTapOptions,

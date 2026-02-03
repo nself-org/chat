@@ -84,8 +84,8 @@ export function CallStats({
   const qualityIcon = getQualityIcon(connectionQuality)
 
   return (
-    <Card className={cn('p-4 bg-black/20 border-white/10 backdrop-blur-sm', className)}>
-      <div className="flex items-center justify-between mb-3">
+    <Card className={cn('border-white/10 bg-black/20 p-4 backdrop-blur-sm', className)}>
+      <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Activity className="h-4 w-4 text-white" />
           <span className="text-sm font-medium text-white">Connection Stats</span>
@@ -99,31 +99,26 @@ export function CallStats({
       <div className="grid grid-cols-2 gap-4 text-xs">
         {/* Bytes Received */}
         <div>
-          <div className="text-muted-foreground mb-1">Received</div>
-          <div className="text-white font-medium">{formatBytes(bytesReceived)}</div>
+          <div className="mb-1 text-muted-foreground">Received</div>
+          <div className="font-medium text-white">{formatBytes(bytesReceived)}</div>
         </div>
 
         {/* Bytes Sent */}
         <div>
-          <div className="text-muted-foreground mb-1">Sent</div>
-          <div className="text-white font-medium">{formatBytes(bytesSent)}</div>
+          <div className="mb-1 text-muted-foreground">Sent</div>
+          <div className="font-medium text-white">{formatBytes(bytesSent)}</div>
         </div>
 
         {/* Latency */}
         <div>
-          <div className="text-muted-foreground mb-1">Latency</div>
-          <div className="text-white font-medium">{formatLatency(roundTripTime)}</div>
+          <div className="mb-1 text-muted-foreground">Latency</div>
+          <div className="font-medium text-white">{formatLatency(roundTripTime)}</div>
         </div>
 
         {/* Packet Loss */}
         <div>
-          <div className="text-muted-foreground mb-1">Packet Loss</div>
-          <div
-            className={cn(
-              'font-medium',
-              packetsLost > 10 ? 'text-red-500' : 'text-white'
-            )}
-          >
+          <div className="mb-1 text-muted-foreground">Packet Loss</div>
+          <div className={cn('font-medium', packetsLost > 10 ? 'text-red-500' : 'text-white')}>
             {packetsLost}
           </div>
         </div>
@@ -131,8 +126,8 @@ export function CallStats({
 
       {/* Warning for poor connection */}
       {(connectionQuality === 'poor' || connectionQuality === 'disconnected') && (
-        <div className="mt-3 flex items-start gap-2 p-2 rounded bg-yellow-500/10 border border-yellow-500/20">
-          <AlertCircle className="h-4 w-4 text-yellow-500 mt-0.5" />
+        <div className="mt-3 flex items-start gap-2 rounded border border-yellow-500/20 bg-yellow-500/10 p-2">
+          <AlertCircle className="mt-0.5 h-4 w-4 text-yellow-500" />
           <div className="text-xs text-yellow-500">
             {connectionQuality === 'disconnected'
               ? 'Connection lost. Attempting to reconnect...'

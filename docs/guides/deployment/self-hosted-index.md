@@ -6,15 +6,16 @@ Quick reference index for all self-hosted deployment documentation and resources
 
 ### Getting Started
 
-| Document | Description | Audience |
-|----------|-------------|----------|
-| [Self-Hosted Guide](./self-hosted.md) | Complete deployment guide with step-by-step instructions | Everyone |
-| [Quick Reference](../../../deploy/self-hosted/README.md) | Quick commands and common tasks | Administrators |
-| [Troubleshooting](./self-hosted-troubleshooting.md) | Problem-solving guide | Support teams |
+| Document                                                 | Description                                              | Audience       |
+| -------------------------------------------------------- | -------------------------------------------------------- | -------------- |
+| [Self-Hosted Guide](./self-hosted.md)                    | Complete deployment guide with step-by-step instructions | Everyone       |
+| [Quick Reference](../../../deploy/self-hosted/README.md) | Quick commands and common tasks                          | Administrators |
+| [Troubleshooting](./self-hosted-troubleshooting.md)      | Problem-solving guide                                    | Support teams  |
 
 ### Installation Methods
 
 1. **One-Line Installation** (Recommended)
+
    ```bash
    curl -fsSL https://raw.githubusercontent.com/yourusername/nself-chat/main/scripts/self-hosted-install.sh | bash
    ```
@@ -29,41 +30,44 @@ Quick reference index for all self-hosted deployment documentation and resources
 
 ### Installation Scripts
 
-| Script | Location | Purpose |
-|--------|----------|---------|
+| Script                   | Location    | Purpose            |
+| ------------------------ | ----------- | ------------------ |
 | `self-hosted-install.sh` | `/scripts/` | One-line installer |
-| `update-nchat.sh` | `/scripts/` | Update automation |
+| `update-nchat.sh`        | `/scripts/` | Update automation  |
 
 ### Management Scripts
 
 Created during installation in `/usr/local/bin/`:
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `backup-nchat` | Create backup | `sudo backup-nchat` |
-| `update-nchat` | Update to latest | `sudo update-nchat` |
-| `diagnose-nchat` | Run diagnostics | `sudo diagnose-nchat` |
+| Script           | Purpose          | Usage                 |
+| ---------------- | ---------------- | --------------------- |
+| `backup-nchat`   | Create backup    | `sudo backup-nchat`   |
+| `update-nchat`   | Update to latest | `sudo update-nchat`   |
+| `diagnose-nchat` | Run diagnostics  | `sudo diagnose-nchat` |
 
 ## 🐳 Docker Configuration
 
 ### Compose Files
 
-| File | Purpose | Usage |
-|------|---------|-------|
-| `docker-compose.production.yml` | Production stack | Default |
+| File                            | Purpose          | Usage           |
+| ------------------------------- | ---------------- | --------------- |
+| `docker-compose.production.yml` | Production stack | Default         |
 | `docker-compose.monitoring.yml` | Monitoring stack | Optional add-on |
 
 ### Service Configuration
 
 **Nginx (Reverse Proxy + SSL):**
+
 - `/deploy/nginx/nginx.conf` - Main configuration
 - `/deploy/nginx/conf.d/nchat.conf` - Virtual host
 
 **PostgreSQL (Database):**
+
 - `/deploy/postgres/postgresql.conf` - Performance tuning
 - `/deploy/postgres/init-scripts/01-init.sql` - Initialization
 
 **Monitoring:**
+
 - `/deploy/monitoring/prometheus/prometheus.yml` - Metrics
 - `/deploy/monitoring/grafana/` - Dashboards and provisioning
 
@@ -71,10 +75,10 @@ Created during installation in `/usr/local/bin/`:
 
 ### Environment Files
 
-| File | Purpose | Location |
-|------|---------|----------|
-| `.env.production.example` | Configuration template | Project root |
-| `.env.production` | Active configuration | `/opt/nself-chat/` (installed) |
+| File                      | Purpose                | Location                       |
+| ------------------------- | ---------------------- | ------------------------------ |
+| `.env.production.example` | Configuration template | Project root                   |
+| `.env.production`         | Active configuration   | `/opt/nself-chat/` (installed) |
 
 ### Required Configuration
 
@@ -104,10 +108,10 @@ SMTP_PASS=your_smtp_password
 
 When monitoring is enabled:
 
-| Service | URL | Default Credentials |
-|---------|-----|---------------------|
-| Grafana | https://chat.example.com/grafana | admin/admin |
-| Prometheus | https://chat.example.com/prometheus | N/A |
+| Service    | URL                                 | Default Credentials |
+| ---------- | ----------------------------------- | ------------------- |
+| Grafana    | https://chat.example.com/grafana    | admin/admin         |
+| Prometheus | https://chat.example.com/prometheus | N/A                 |
 
 ### Metrics Available
 
@@ -149,22 +153,22 @@ When monitoring is enabled:
 
 ### Security Files
 
-| File | Purpose |
-|------|---------|
-| `/etc/letsencrypt/live/DOMAIN/` | SSL certificates |
-| `/etc/fail2ban/jail.d/` | Fail2ban configuration |
-| `/var/log/nginx/` | Access and error logs |
+| File                            | Purpose                |
+| ------------------------------- | ---------------------- |
+| `/etc/letsencrypt/live/DOMAIN/` | SSL certificates       |
+| `/etc/fail2ban/jail.d/`         | Fail2ban configuration |
+| `/var/log/nginx/`               | Access and error logs  |
 
 ## 💾 Backup and Restore
 
 ### Backup Locations
 
-| Type | Location | Retention |
-|------|----------|-----------|
-| Automatic backups | `/var/backups/nself-chat/` | 30 days |
-| Database dumps | Included in backup archive | 30 days |
-| Uploaded files | Included in backup archive | 30 days |
-| Configuration | Included in backup archive | 30 days |
+| Type              | Location                   | Retention |
+| ----------------- | -------------------------- | --------- |
+| Automatic backups | `/var/backups/nself-chat/` | 30 days   |
+| Database dumps    | Included in backup archive | 30 days   |
+| Uploaded files    | Included in backup archive | 30 days   |
+| Configuration     | Included in backup archive | 30 days   |
 
 ### Backup Commands
 
@@ -276,20 +280,22 @@ docker compose -f docker-compose.production.yml exec redis \
 
 ### Hosting Costs
 
-| Users | Server | Storage | Total/Month | Savings vs Slack |
-|-------|--------|---------|-------------|------------------|
-| 1-25 | $24 | $0 | $24 | $176/month |
-| 25-100 | $48 | $5 | $53 | $347/month |
-| 100-500 | $96 | $20 | $116 | $3,884/month |
+| Users   | Server | Storage | Total/Month | Savings vs Slack |
+| ------- | ------ | ------- | ----------- | ---------------- |
+| 1-25    | $24    | $0      | $24         | $176/month       |
+| 25-100  | $48    | $5      | $53         | $347/month       |
+| 100-500 | $96    | $20     | $116        | $3,884/month     |
 
 ### Provider Recommendations
 
 **Best Value:**
+
 - **Hetzner**: €8.46/month for 4GB VPS
 - **DigitalOcean**: $24/month for 4GB droplet
 - **Vultr**: $24/month for 4GB instance
 
 **Best Performance:**
+
 - **AWS EC2**: t3.medium with reserved instance
 - **Google Cloud**: e2-medium with committed use
 - **Azure**: B2s with reserved instance
@@ -420,6 +426,7 @@ sudo /usr/local/bin/diagnose-nchat
 ### Version 1.0.0 (January 31, 2026)
 
 Initial release with:
+
 - One-line installation script
 - Production Docker Compose configuration
 - Automatic SSL/TLS via Let's Encrypt

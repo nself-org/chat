@@ -52,19 +52,17 @@ export function ComponentPreview({
   const themeClass = mode === 'system' ? '' : mode
 
   return (
-    <div className={cn('rounded-lg border overflow-hidden', className)}>
+    <div className={cn('overflow-hidden rounded-lg border', className)}>
       {/* Header */}
       {(title || description) && (
         <div className="border-b px-4 py-3">
           {title && <h3 className="font-semibold">{title}</h3>}
-          {description && (
-            <p className="text-sm text-muted-foreground mt-1">{description}</p>
-          )}
+          {description && <p className="mt-1 text-sm text-muted-foreground">{description}</p>}
         </div>
       )}
 
       {/* Toolbar */}
-      <div className="flex items-center justify-between border-b px-4 py-2 bg-muted/30">
+      <div className="bg-muted/30 flex items-center justify-between border-b px-4 py-2">
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'preview' | 'code')}>
           <TabsList className="h-8">
             <TabsTrigger value="preview" className="h-6 gap-1.5 text-xs">
@@ -111,12 +109,7 @@ export function ComponentPreview({
           )}
 
           {code && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleCopy}
-              className="h-7 gap-1.5 text-xs"
-            >
+            <Button variant="ghost" size="sm" onClick={handleCopy} className="h-7 gap-1.5 text-xs">
               {copied ? (
                 <>
                   <Check className="h-3.5 w-3.5 text-green-500" />
@@ -142,9 +135,7 @@ export function ComponentPreview({
             themeClass === 'light' && 'bg-white'
           )}
         >
-          <div className={cn(themeClass === 'dark' && 'text-zinc-50')}>
-            {children}
-          </div>
+          <div className={cn(themeClass === 'dark' && 'text-zinc-50')}>{children}</div>
         </div>
       ) : (
         code && <CodeBlock code={code} language={language} showLineNumbers />
@@ -167,9 +158,9 @@ export function PreviewCard({
   className?: string
 }) {
   return (
-    <div className={cn('rounded-lg border overflow-hidden', className)}>
+    <div className={cn('overflow-hidden rounded-lg border', className)}>
       {title && (
-        <div className="border-b px-4 py-2 bg-muted/30">
+        <div className="bg-muted/30 border-b px-4 py-2">
           <h4 className="text-sm font-medium">{title}</h4>
         </div>
       )}
@@ -198,9 +189,5 @@ export function PreviewGrid({
     4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4',
   }
 
-  return (
-    <div className={cn('grid gap-4', colsClass[cols], className)}>
-      {children}
-    </div>
-  )
+  return <div className={cn('grid gap-4', colsClass[cols], className)}>{children}</div>
 }

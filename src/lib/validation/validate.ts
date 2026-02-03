@@ -161,10 +161,7 @@ export async function validateRequestBody<T>(
  * }
  * ```
  */
-export function validateQueryParams<T>(
-  request: NextRequest,
-  schema: z.ZodSchema<T>
-): T {
+export function validateQueryParams<T>(request: NextRequest, schema: z.ZodSchema<T>): T {
   const { searchParams } = new URL(request.url)
   const params: Record<string, string | string[]> = {}
 
@@ -172,7 +169,7 @@ export function validateQueryParams<T>(
     if (params[key]) {
       // Multiple values for same key
       if (Array.isArray(params[key])) {
-        (params[key] as string[]).push(value)
+        ;(params[key] as string[]).push(value)
       } else {
         params[key] = [params[key] as string, value]
       }
@@ -229,17 +226,19 @@ export function validatePathParams<T>(
  * @returns Sanitized HTML
  */
 export function sanitizeHtml(html: string): string {
-  return html
-    // Remove script tags
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-    // Remove iframe tags
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
-    // Remove event handlers
-    .replace(/on\w+="[^"]*"/gi, '')
-    .replace(/on\w+='[^']*'/gi, '')
-    // Remove javascript: protocol
-    .replace(/href="javascript:[^"]*"/gi, 'href="#"')
-    .replace(/src="javascript:[^"]*"/gi, '')
+  return (
+    html
+      // Remove script tags
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      // Remove iframe tags
+      .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+      // Remove event handlers
+      .replace(/on\w+="[^"]*"/gi, '')
+      .replace(/on\w+='[^']*'/gi, '')
+      // Remove javascript: protocol
+      .replace(/href="javascript:[^"]*"/gi, 'href="#"')
+      .replace(/src="javascript:[^"]*"/gi, '')
+  )
 }
 
 /**
@@ -249,12 +248,14 @@ export function sanitizeHtml(html: string): string {
  * @returns Sanitized SQL
  */
 export function sanitizeSql(sql: string): string {
-  return sql
-    // Escape single quotes
-    .replace(/'/g, "''")
-    // Remove SQL comments
-    .replace(/--.*$/gm, '')
-    .replace(/\/\*[\s\S]*?\*\//g, '')
+  return (
+    sql
+      // Escape single quotes
+      .replace(/'/g, "''")
+      // Remove SQL comments
+      .replace(/--.*$/gm, '')
+      .replace(/\/\*[\s\S]*?\*\//g, '')
+  )
 }
 
 /**
@@ -264,13 +265,15 @@ export function sanitizeSql(sql: string): string {
  * @returns Sanitized filename
  */
 export function sanitizeFilename(filename: string): string {
-  return filename
-    // Replace invalid characters with underscores
-    .replace(/[^a-zA-Z0-9._-]/g, '_')
-    // Remove leading/trailing dots and spaces
-    .replace(/^[.\s]+|[.\s]+$/g, '')
-    // Limit length
-    .substring(0, 255)
+  return (
+    filename
+      // Replace invalid characters with underscores
+      .replace(/[^a-zA-Z0-9._-]/g, '_')
+      // Remove leading/trailing dots and spaces
+      .replace(/^[.\s]+|[.\s]+$/g, '')
+      // Limit length
+      .substring(0, 255)
+  )
 }
 
 /**

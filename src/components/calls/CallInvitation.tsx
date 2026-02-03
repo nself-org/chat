@@ -95,16 +95,14 @@ export function CallInvitation({
         onPointerDownOutside={(e) => e.preventDefault()}
       >
         <DialogHeader className="text-center">
-          <DialogTitle className="sr-only">
-            Incoming {invitation.type} call
-          </DialogTitle>
+          <DialogTitle className="sr-only">Incoming {invitation.type} call</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col items-center space-y-6 py-6">
           {/* Avatar with pulse animation */}
           <div className="relative">
-            <div className="absolute inset-0 animate-ping rounded-full bg-primary/20" />
-            <Avatar className="h-24 w-24 relative">
+            <div className="bg-primary/20 absolute inset-0 animate-ping rounded-full" />
+            <Avatar className="relative h-24 w-24">
               <AvatarImage src={invitation.callerAvatarUrl} />
               <AvatarFallback>
                 <User className="h-12 w-12" />
@@ -115,15 +113,11 @@ export function CallInvitation({
           {/* Caller name */}
           <div className="text-center">
             <h2 className="text-2xl font-bold">{invitation.callerName}</h2>
-            <p className="text-muted-foreground">
-              Incoming {invitation.type} call
-            </p>
+            <p className="text-muted-foreground">Incoming {invitation.type} call</p>
           </div>
 
           {/* Ringing duration */}
-          <div className="text-sm text-muted-foreground">
-            Ringing for {ringingDuration}s
-          </div>
+          <div className="text-sm text-muted-foreground">Ringing for {ringingDuration}s</div>
 
           {/* Action buttons */}
           <div className="flex gap-4">
@@ -149,18 +143,14 @@ export function CallInvitation({
               onClick={handleAccept}
               aria-label="Accept call"
             >
-              {isVideo ? (
-                <Video className="h-6 w-6" />
-              ) : (
-                <Phone className="h-6 w-6" />
-              )}
+              {isVideo ? <Video className="h-6 w-6" /> : <Phone className="h-6 w-6" />}
             </Button>
           </div>
 
           {/* Keyboard shortcuts hint */}
           <div className="text-xs text-muted-foreground">
-            Press <kbd className="px-1 rounded bg-muted">A</kbd> to accept or{' '}
-            <kbd className="px-1 rounded bg-muted">D</kbd> to decline
+            Press <kbd className="rounded bg-muted px-1">A</kbd> to accept or{' '}
+            <kbd className="rounded bg-muted px-1">D</kbd> to decline
           </div>
         </div>
       </DialogContent>

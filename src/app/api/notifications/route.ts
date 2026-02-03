@@ -10,8 +10,10 @@
  * Integrates with GraphQL for persistent storage and real-time updates
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types & Validation Schemas
@@ -27,9 +29,9 @@ const NotificationTypeSchema = z.enum([
   'system',
   'announcement',
   'keyword',
-]);
+])
 
-const NotificationPrioritySchema = z.enum(['low', 'normal', 'high', 'urgent']);
+const NotificationPrioritySchema = z.enum(['low', 'normal', 'high', 'urgent'])
 
 const CreateNotificationSchema = z.object({
   type: NotificationTypeSchema,
@@ -50,29 +52,32 @@ const CreateNotificationSchema = z.object({
   threadId: z.string().uuid().optional(),
   actionUrl: z.string().url().optional(),
   metadata: z.record(z.unknown()).optional(),
-});
+})
 
 const UpdateNotificationSchema = z.object({
   notificationIds: z.array(z.string()).min(1),
   isRead: z.boolean().optional(),
   isArchived: z.boolean().optional(),
-});
+})
 
 const QueryNotificationsSchema = z.object({
   userId: z.string().uuid(),
   limit: z.coerce.number().int().min(1).max(100).optional().default(20),
   offset: z.coerce.number().int().min(0).optional().default(0),
-  filter: z.enum(['all', 'mentions', 'threads', 'reactions', 'dms', 'unread']).optional().default('all'),
+  filter: z
+    .enum(['all', 'mentions', 'threads', 'reactions', 'dms', 'unread'])
+    .optional()
+    .default('all'),
   unreadOnly: z.coerce.boolean().optional().default(false),
   includeArchived: z.coerce.boolean().optional().default(false),
   channelId: z.string().uuid().optional(),
   type: NotificationTypeSchema.optional(),
   priority: NotificationPrioritySchema.optional(),
-});
+})
 
-type CreateNotificationInput = z.infer<typeof CreateNotificationSchema>;
-type UpdateNotificationInput = z.infer<typeof UpdateNotificationSchema>;
-type QueryNotificationsInput = z.infer<typeof QueryNotificationsSchema>;
+type CreateNotificationInput = z.infer<typeof CreateNotificationSchema>
+type UpdateNotificationInput = z.infer<typeof UpdateNotificationSchema>
+type QueryNotificationsInput = z.infer<typeof QueryNotificationsSchema>
 
 // ============================================================================
 // GraphQL Queries & Mutations
@@ -140,7 +145,7 @@ const GET_NOTIFICATIONS_QUERY = `
       }
     }
   }
-`;
+`
 
 const CREATE_NOTIFICATION_MUTATION = `
   mutation CreateNotification($notification: nchat_notifications_insert_input!) {
@@ -162,7 +167,7 @@ const CREATE_NOTIFICATION_MUTATION = `
       metadata
     }
   }
-`;
+`
 
 const UPDATE_NOTIFICATIONS_MUTATION = `
   mutation UpdateNotifications(
@@ -187,7 +192,7 @@ const UPDATE_NOTIFICATIONS_MUTATION = `
       }
     }
   }
-`;
+`
 
 const DELETE_NOTIFICATIONS_MUTATION = `
   mutation DeleteNotifications($notificationIds: [uuid!]!) {
@@ -195,7 +200,7 @@ const DELETE_NOTIFICATIONS_MUTATION = `
       affected_rows
     }
   }
-`;
+`
 
 const MARK_ALL_READ_MUTATION = `
   mutation MarkAllNotificationsRead($userId: uuid!) {
@@ -212,7 +217,7 @@ const MARK_ALL_READ_MUTATION = `
       affected_rows
     }
   }
-`;
+`
 
 // ============================================================================
 // Helper Functions
@@ -226,18 +231,18 @@ async function executeGraphQL<T = unknown>(
   variables: Record<string, unknown> = {},
   authToken?: string
 ): Promise<{ data?: T; errors?: Array<{ message: string }> }> {
-  const hasuraUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/v1/graphql';
-  const hasuraAdminSecret = process.env.HASURA_ADMIN_SECRET;
+  const hasuraUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://localhost:8080/v1/graphql'
+  const hasuraAdminSecret = process.env.HASURA_ADMIN_SECRET
 
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-  };
+  }
 
   // Use admin secret if available, otherwise use auth token
   if (hasuraAdminSecret) {
-    headers['x-hasura-admin-secret'] = hasuraAdminSecret;
+    headers['x-hasura-admin-secret'] = hasuraAdminSecret
   } else if (authToken) {
-    headers['Authorization'] = `Bearer ${authToken}`;
+    headers['Authorization'] = `Bearer ${authToken}`
   }
 
   try {
@@ -245,17 +250,17 @@ async function executeGraphQL<T = unknown>(
       method: 'POST',
       headers,
       body: JSON.stringify({ query, variables }),
-    });
+    })
 
     if (!response.ok) {
-      throw new Error(`GraphQL request failed: ${response.statusText}`);
+      throw new Error(`GraphQL request failed: ${response.statusText}`)
     }
 
-    const result = await response.json();
-    return result;
+    const result = await response.json()
+    return result
   } catch (error) {
-    console.error('GraphQL execution error:', error);
-    throw error;
+    logger.error('GraphQL execution error:', error)
+    throw error
   }
 }
 
@@ -263,11 +268,11 @@ async function executeGraphQL<T = unknown>(
  * Get auth token from request headers
  */
 function getAuthToken(request: NextRequest): string | undefined {
-  const authHeader = request.headers.get('Authorization');
+  const authHeader = request.headers.get('Authorization')
   if (authHeader?.startsWith('Bearer ')) {
-    return authHeader.substring(7);
+    return authHeader.substring(7)
   }
-  return undefined;
+  return undefined
 }
 
 /**
@@ -275,24 +280,24 @@ function getAuthToken(request: NextRequest): string | undefined {
  */
 function transformNotification(notification: unknown): unknown {
   const n = notification as {
-    id: string;
-    type: string;
-    priority: string;
-    title: string;
-    body: string;
-    user_id: string;
-    actor?: { id: string; display_name: string; avatar_url?: string };
-    channel?: { id: string; name: string };
-    channel_id?: string;
-    message_id?: string;
-    thread_id?: string;
-    is_read: boolean;
-    is_archived: boolean;
-    created_at: string;
-    read_at?: string;
-    action_url?: string;
-    metadata?: Record<string, unknown>;
-  };
+    id: string
+    type: string
+    priority: string
+    title: string
+    body: string
+    user_id: string
+    actor?: { id: string; display_name: string; avatar_url?: string }
+    channel?: { id: string; name: string }
+    channel_id?: string
+    message_id?: string
+    thread_id?: string
+    is_read: boolean
+    is_archived: boolean
+    created_at: string
+    read_at?: string
+    action_url?: string
+    metadata?: Record<string, unknown>
+  }
 
   return {
     id: n.id,
@@ -317,7 +322,7 @@ function transformNotification(notification: unknown): unknown {
     readAt: n.read_at,
     actionUrl: n.action_url,
     metadata: n.metadata,
-  };
+  }
 }
 
 // ============================================================================
@@ -330,13 +335,13 @@ function transformNotification(notification: unknown): unknown {
  */
 export async function GET(request: NextRequest) {
   try {
-    const authToken = getAuthToken(request);
+    const authToken = getAuthToken(request)
 
     // Parse query parameters
-    const { searchParams } = new URL(request.url);
-    const queryParams = Object.fromEntries(searchParams.entries());
+    const { searchParams } = new URL(request.url)
+    const queryParams = Object.fromEntries(searchParams.entries())
 
-    const parsed = QueryNotificationsSchema.safeParse(queryParams);
+    const parsed = QueryNotificationsSchema.safeParse(queryParams)
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -346,15 +351,25 @@ export async function GET(request: NextRequest) {
           details: parsed.error.errors,
         },
         { status: 400 }
-      );
+      )
     }
 
-    const { userId, limit, offset, filter, unreadOnly, includeArchived, channelId, type, priority } = parsed.data;
+    const {
+      userId,
+      limit,
+      offset,
+      filter,
+      unreadOnly,
+      includeArchived,
+      channelId,
+      type,
+      priority,
+    } = parsed.data
 
     // Execute GraphQL query
     const result = await executeGraphQL<{
-      nchat_notifications: unknown[];
-      nchat_notifications_aggregate: { aggregate: { count: number } };
+      nchat_notifications: unknown[]
+      nchat_notifications_aggregate: { aggregate: { count: number } }
     }>(
       GET_NOTIFICATIONS_QUERY,
       {
@@ -367,7 +382,7 @@ export async function GET(request: NextRequest) {
         type: type || undefined,
       },
       authToken
-    );
+    )
 
     if (result.errors) {
       return NextResponse.json(
@@ -377,29 +392,39 @@ export async function GET(request: NextRequest) {
           details: result.errors,
         },
         { status: 500 }
-      );
+      )
     }
 
-    const notifications = result.data?.nchat_notifications || [];
-    const totalUnread = result.data?.nchat_notifications_aggregate?.aggregate?.count || 0;
+    const notifications = result.data?.nchat_notifications || []
+    const totalUnread = result.data?.nchat_notifications_aggregate?.aggregate?.count || 0
 
     // Apply filter transformations
-    let filteredNotifications = notifications;
+    let filteredNotifications = notifications
 
     if (filter === 'mentions') {
-      filteredNotifications = (notifications as any[]).filter((n: { type: string }) => n.type === 'mention');
+      filteredNotifications = (notifications as any[]).filter(
+        (n: { type: string }) => n.type === 'mention'
+      )
     } else if (filter === 'threads') {
-      filteredNotifications = (notifications as any[]).filter((n: { type: string }) => n.type === 'thread_reply');
+      filteredNotifications = (notifications as any[]).filter(
+        (n: { type: string }) => n.type === 'thread_reply'
+      )
     } else if (filter === 'reactions') {
-      filteredNotifications = (notifications as any[]).filter((n: { type: string }) => n.type === 'reaction');
+      filteredNotifications = (notifications as any[]).filter(
+        (n: { type: string }) => n.type === 'reaction'
+      )
     } else if (filter === 'dms') {
-      filteredNotifications = (notifications as any[]).filter((n: { type: string }) => n.type === 'direct_message');
+      filteredNotifications = (notifications as any[]).filter(
+        (n: { type: string }) => n.type === 'direct_message'
+      )
     } else if (filter === 'unread') {
-      filteredNotifications = (notifications as any[]).filter((n: { is_read: boolean }) => !n.is_read);
+      filteredNotifications = (notifications as any[]).filter(
+        (n: { is_read: boolean }) => !n.is_read
+      )
     }
 
     // Transform to API format
-    const transformedNotifications = filteredNotifications.map(transformNotification);
+    const transformedNotifications = filteredNotifications.map(transformNotification)
 
     return NextResponse.json(
       {
@@ -416,9 +441,9 @@ export async function GET(request: NextRequest) {
         },
       },
       { status: 200 }
-    );
+    )
   } catch (error) {
-    console.error('GET /api/notifications error:', error);
+    logger.error('GET /api/notifications error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -426,7 +451,7 @@ export async function GET(request: NextRequest) {
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -436,10 +461,10 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const authToken = getAuthToken(request);
-    const body = await request.json();
+    const authToken = getAuthToken(request)
+    const body = await request.json()
 
-    const parsed = CreateNotificationSchema.safeParse(body);
+    const parsed = CreateNotificationSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -449,10 +474,10 @@ export async function POST(request: NextRequest) {
           details: parsed.error.errors,
         },
         { status: 400 }
-      );
+      )
     }
 
-    const data = parsed.data;
+    const data = parsed.data
 
     // Build notification object for GraphQL
     const notification = {
@@ -469,11 +494,11 @@ export async function POST(request: NextRequest) {
       metadata: data.metadata,
       is_read: false,
       is_archived: false,
-    };
+    }
 
     const result = await executeGraphQL<{
-      insert_nchat_notifications_one: unknown;
-    }>(CREATE_NOTIFICATION_MUTATION, { notification }, authToken);
+      insert_nchat_notifications_one: unknown
+    }>(CREATE_NOTIFICATION_MUTATION, { notification }, authToken)
 
     if (result.errors) {
       return NextResponse.json(
@@ -483,10 +508,10 @@ export async function POST(request: NextRequest) {
           details: result.errors,
         },
         { status: 500 }
-      );
+      )
     }
 
-    const createdNotification = result.data?.insert_nchat_notifications_one;
+    const createdNotification = result.data?.insert_nchat_notifications_one
 
     return NextResponse.json(
       {
@@ -494,9 +519,9 @@ export async function POST(request: NextRequest) {
         data: transformNotification(createdNotification),
       },
       { status: 201 }
-    );
+    )
   } catch (error) {
-    console.error('POST /api/notifications error:', error);
+    logger.error('POST /api/notifications error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -504,7 +529,7 @@ export async function POST(request: NextRequest) {
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -514,10 +539,10 @@ export async function POST(request: NextRequest) {
  */
 export async function PUT(request: NextRequest) {
   try {
-    const authToken = getAuthToken(request);
-    const body = await request.json();
+    const authToken = getAuthToken(request)
+    const body = await request.json()
 
-    const parsed = UpdateNotificationSchema.safeParse(body);
+    const parsed = UpdateNotificationSchema.safeParse(body)
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -527,16 +552,16 @@ export async function PUT(request: NextRequest) {
           details: parsed.error.errors,
         },
         { status: 400 }
-      );
+      )
     }
 
-    const { notificationIds, isRead, isArchived } = parsed.data;
+    const { notificationIds, isRead, isArchived } = parsed.data
 
     const result = await executeGraphQL<{
       update_nchat_notifications: {
-        affected_rows: number;
-        returning: unknown[];
-      };
+        affected_rows: number
+        returning: unknown[]
+      }
     }>(
       UPDATE_NOTIFICATIONS_MUTATION,
       {
@@ -545,7 +570,7 @@ export async function PUT(request: NextRequest) {
         isArchived,
       },
       authToken
-    );
+    )
 
     if (result.errors) {
       return NextResponse.json(
@@ -555,11 +580,11 @@ export async function PUT(request: NextRequest) {
           details: result.errors,
         },
         { status: 500 }
-      );
+      )
     }
 
-    const affectedRows = result.data?.update_nchat_notifications?.affected_rows || 0;
-    const updatedNotifications = result.data?.update_nchat_notifications?.returning || [];
+    const affectedRows = result.data?.update_nchat_notifications?.affected_rows || 0
+    const updatedNotifications = result.data?.update_nchat_notifications?.returning || []
 
     return NextResponse.json(
       {
@@ -570,9 +595,9 @@ export async function PUT(request: NextRequest) {
         },
       },
       { status: 200 }
-    );
+    )
   } catch (error) {
-    console.error('PUT /api/notifications error:', error);
+    logger.error('PUT /api/notifications error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -580,7 +605,7 @@ export async function PUT(request: NextRequest) {
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -590,9 +615,9 @@ export async function PUT(request: NextRequest) {
  */
 export async function DELETE(request: NextRequest) {
   try {
-    const authToken = getAuthToken(request);
-    const { searchParams } = new URL(request.url);
-    const notificationIds = searchParams.get('ids')?.split(',') || [];
+    const authToken = getAuthToken(request)
+    const { searchParams } = new URL(request.url)
+    const notificationIds = searchParams.get('ids')?.split(',') || []
 
     if (notificationIds.length === 0) {
       return NextResponse.json(
@@ -601,14 +626,14 @@ export async function DELETE(request: NextRequest) {
           error: 'No notification IDs provided',
         },
         { status: 400 }
-      );
+      )
     }
 
     const result = await executeGraphQL<{
       delete_nchat_notifications: {
-        affected_rows: number;
-      };
-    }>(DELETE_NOTIFICATIONS_MUTATION, { notificationIds }, authToken);
+        affected_rows: number
+      }
+    }>(DELETE_NOTIFICATIONS_MUTATION, { notificationIds }, authToken)
 
     if (result.errors) {
       return NextResponse.json(
@@ -618,10 +643,10 @@ export async function DELETE(request: NextRequest) {
           details: result.errors,
         },
         { status: 500 }
-      );
+      )
     }
 
-    const affectedRows = result.data?.delete_nchat_notifications?.affected_rows || 0;
+    const affectedRows = result.data?.delete_nchat_notifications?.affected_rows || 0
 
     return NextResponse.json(
       {
@@ -632,9 +657,9 @@ export async function DELETE(request: NextRequest) {
         },
       },
       { status: 200 }
-    );
+    )
   } catch (error) {
-    console.error('DELETE /api/notifications error:', error);
+    logger.error('DELETE /api/notifications error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -642,7 +667,7 @@ export async function DELETE(request: NextRequest) {
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -652,9 +677,9 @@ export async function DELETE(request: NextRequest) {
  */
 export async function PATCH(request: NextRequest) {
   try {
-    const authToken = getAuthToken(request);
-    const body = await request.json();
-    const { userId } = body;
+    const authToken = getAuthToken(request)
+    const body = await request.json()
+    const { userId } = body
 
     if (!userId) {
       return NextResponse.json(
@@ -663,14 +688,14 @@ export async function PATCH(request: NextRequest) {
           error: 'userId is required',
         },
         { status: 400 }
-      );
+      )
     }
 
     const result = await executeGraphQL<{
       update_nchat_notifications: {
-        affected_rows: number;
-      };
-    }>(MARK_ALL_READ_MUTATION, { userId }, authToken);
+        affected_rows: number
+      }
+    }>(MARK_ALL_READ_MUTATION, { userId }, authToken)
 
     if (result.errors) {
       return NextResponse.json(
@@ -680,10 +705,10 @@ export async function PATCH(request: NextRequest) {
           details: result.errors,
         },
         { status: 500 }
-      );
+      )
     }
 
-    const affectedRows = result.data?.update_nchat_notifications?.affected_rows || 0;
+    const affectedRows = result.data?.update_nchat_notifications?.affected_rows || 0
 
     return NextResponse.json(
       {
@@ -693,9 +718,9 @@ export async function PATCH(request: NextRequest) {
         },
       },
       { status: 200 }
-    );
+    )
   } catch (error) {
-    console.error('PATCH /api/notifications error:', error);
+    logger.error('PATCH /api/notifications error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -703,6 +728,6 @@ export async function PATCH(request: NextRequest) {
         details: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
-    );
+    )
   }
 }

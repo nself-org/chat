@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCostTracker } from '@/lib/ai/cost-tracker'
 import { getAllQueues } from '@/lib/ai/request-queue'
+import { logger } from '@/lib/logger'
 import {
   getSummarizationCache,
   getSearchCache,
@@ -53,17 +54,13 @@ export async function GET(request: NextRequest) {
     )
 
     // Get cache statistics
-    const [
-      summarizationCacheStats,
-      searchCacheStats,
-      chatCacheStats,
-      embeddingsCacheStats,
-    ] = await Promise.all([
-      getSummarizationCache().getStats(),
-      getSearchCache().getStats(),
-      getChatCache().getStats(),
-      getEmbeddingsCache().getStats(),
-    ])
+    const [summarizationCacheStats, searchCacheStats, chatCacheStats, embeddingsCacheStats] =
+      await Promise.all([
+        getSummarizationCache().getStats(),
+        getSearchCache().getStats(),
+        getChatCache().getStats(),
+        getEmbeddingsCache().getStats(),
+      ])
 
     const cacheStats = {
       summarization: summarizationCacheStats,
@@ -83,7 +80,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error getting AI usage:', error)
+    logger.error('Error getting AI usage:', error)
     return NextResponse.json(
       {
         success: false,

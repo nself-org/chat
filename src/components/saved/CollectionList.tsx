@@ -1,43 +1,43 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Folder, MoreHorizontal, Plus, Pencil, Trash2, Share2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Badge } from '@/components/ui/badge';
+import * as React from 'react'
+import { Folder, MoreHorizontal, Plus, Pencil, Trash2, Share2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import type { SavedCollection } from '@/lib/saved';
+} from '@/components/ui/dropdown-menu'
+import type { SavedCollection } from '@/lib/saved'
 
 export interface CollectionListProps {
   /** List of collections */
-  collections: SavedCollection[];
+  collections: SavedCollection[]
   /** Currently selected collection ID */
-  selectedId?: string | null;
+  selectedId?: string | null
   /** Callback when collection is selected */
-  onSelect: (collectionId: string | null) => void;
+  onSelect: (collectionId: string | null) => void
   /** Callback to create new collection */
-  onCreate?: () => void;
+  onCreate?: () => void
   /** Callback to edit collection */
-  onEdit?: (collection: SavedCollection) => void;
+  onEdit?: (collection: SavedCollection) => void
   /** Callback to delete collection */
-  onDelete?: (collection: SavedCollection) => void;
+  onDelete?: (collection: SavedCollection) => void
   /** Callback to share collection */
-  onShare?: (collection: SavedCollection) => void;
+  onShare?: (collection: SavedCollection) => void
   /** Show uncategorized option */
-  showUncategorized?: boolean;
+  showUncategorized?: boolean
   /** Uncategorized count */
-  uncategorizedCount?: number;
+  uncategorizedCount?: number
   /** Compact mode */
-  compact?: boolean;
+  compact?: boolean
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -57,8 +57,8 @@ export function CollectionList({
   className,
 }: CollectionListProps) {
   const sortedCollections = React.useMemo(() => {
-    return [...collections].sort((a, b) => a.position - b.position);
-  }, [collections]);
+    return [...collections].sort((a, b) => a.position - b.position)
+  }, [collections])
 
   return (
     <div className={cn('flex flex-col', className)}>
@@ -66,12 +66,7 @@ export function CollectionList({
       <div className="flex items-center justify-between px-3 py-2">
         <span className="text-sm font-medium">Collections</span>
         {onCreate && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            onClick={onCreate}
-          >
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onCreate}>
             <Plus className="h-4 w-4" />
             <span className="sr-only">Create collection</span>
           </Button>
@@ -125,12 +120,7 @@ export function CollectionList({
             <div className="py-4 text-center">
               <p className="text-sm text-muted-foreground">No collections yet</p>
               {onCreate && (
-                <Button
-                  variant="link"
-                  size="sm"
-                  className="text-xs"
-                  onClick={onCreate}
-                >
+                <Button variant="link" size="sm" className="text-xs" onClick={onCreate}>
                   Create your first collection
                 </Button>
               )}
@@ -139,7 +129,7 @@ export function CollectionList({
         </div>
       </ScrollArea>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -147,17 +137,17 @@ export function CollectionList({
 // ============================================================================
 
 interface CollectionItemProps {
-  name: string;
-  icon?: string;
-  color?: string;
-  count: number;
-  isSelected: boolean;
-  isShared?: boolean;
-  onClick: () => void;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  onShare?: () => void;
-  compact?: boolean;
+  name: string
+  icon?: string
+  color?: string
+  count: number
+  isSelected: boolean
+  isShared?: boolean
+  onClick: () => void
+  onEdit?: () => void
+  onDelete?: () => void
+  onShare?: () => void
+  compact?: boolean
 }
 
 function CollectionItem({
@@ -173,37 +163,28 @@ function CollectionItem({
   onShare,
   compact = false,
 }: CollectionItemProps) {
-  const hasMenu = onEdit || onDelete || onShare;
+  const hasMenu = onEdit || onDelete || onShare
 
   return (
     <div
       className={cn(
-        'group flex items-center gap-2 rounded-md cursor-pointer transition-colors',
+        'group flex cursor-pointer items-center gap-2 rounded-md transition-colors',
         compact ? 'px-2 py-1' : 'px-3 py-2',
-        isSelected
-          ? 'bg-accent text-accent-foreground'
-          : 'hover:bg-muted/50'
+        isSelected ? 'text-accent-foreground bg-accent' : 'hover:bg-muted/50'
       )}
       onClick={onClick}
     >
       <div
-        className={cn(
-          'flex items-center justify-center rounded',
-          compact ? 'h-5 w-5' : 'h-6 w-6'
-        )}
+        className={cn('flex items-center justify-center rounded', compact ? 'h-5 w-5' : 'h-6 w-6')}
         style={color ? { backgroundColor: color + '20', color } : undefined}
       >
         <Folder className={compact ? 'h-3 w-3' : 'h-4 w-4'} />
       </div>
 
-      <span className={cn('flex-1 truncate', compact ? 'text-xs' : 'text-sm')}>
-        {name}
-      </span>
+      <span className={cn('flex-1 truncate', compact ? 'text-xs' : 'text-sm')}>{name}</span>
 
       <div className="flex items-center gap-1">
-        {isShared && (
-          <Share2 className="h-3 w-3 text-muted-foreground" />
-        )}
+        {isShared && <Share2 className="h-3 w-3 text-muted-foreground" />}
         <Badge
           variant="secondary"
           className={cn(
@@ -221,7 +202,7 @@ function CollectionItem({
                 variant="ghost"
                 size="icon"
                 className={cn(
-                  'opacity-0 group-hover:opacity-100 transition-opacity',
+                  'opacity-0 transition-opacity group-hover:opacity-100',
                   compact ? 'h-5 w-5' : 'h-6 w-6'
                 )}
                 onClick={(e) => e.stopPropagation()}
@@ -233,13 +214,13 @@ function CollectionItem({
             <DropdownMenuContent align="end">
               {onEdit && (
                 <DropdownMenuItem onClick={onEdit}>
-                  <Pencil className="h-4 w-4 mr-2" />
+                  <Pencil className="mr-2 h-4 w-4" />
                   Edit collection
                 </DropdownMenuItem>
               )}
               {onShare && (
                 <DropdownMenuItem onClick={onShare}>
-                  <Share2 className="h-4 w-4 mr-2" />
+                  <Share2 className="mr-2 h-4 w-4" />
                   Share collection
                 </DropdownMenuItem>
               )}
@@ -250,7 +231,7 @@ function CollectionItem({
                     onClick={onDelete}
                     className="text-destructive focus:text-destructive"
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="mr-2 h-4 w-4" />
                     Delete collection
                   </DropdownMenuItem>
                 </>
@@ -260,5 +241,5 @@ function CollectionItem({
         )}
       </div>
     </div>
-  );
+  )
 }

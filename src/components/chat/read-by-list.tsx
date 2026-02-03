@@ -10,11 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from '@/components/ui/dialog'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Button } from '@/components/ui/button'
@@ -139,11 +135,7 @@ const StackedAvatars = memo(function StackedAvatars({
       {displayUsers.map((user, index) => (
         <Avatar
           key={user.id}
-          className={cn(
-            avatarSize,
-            'border-2 border-background',
-            index > 0 && overlap
-          )}
+          className={cn(avatarSize, 'border-2 border-background', index > 0 && overlap)}
         >
           <AvatarImage src={user.avatarUrl} alt={user.displayName} />
           <AvatarFallback className="text-[10px]">
@@ -234,7 +226,7 @@ export const ReadByModal = memo(function ReadByModal({
       <DialogContent className="max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+            <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
               <Eye className="h-5 w-5 text-primary" />
             </div>
             <div>
@@ -282,7 +274,7 @@ export const ReadByModal = memo(function ReadByModal({
         </ScrollArea>
 
         {unreadCount > 0 && (
-          <div className="rounded-lg border bg-muted/30 p-3 text-center text-sm text-muted-foreground">
+          <div className="bg-muted/30 rounded-lg border p-3 text-center text-sm text-muted-foreground">
             <Users className="mr-1 inline-block h-4 w-4" />
             {unreadCount} recipient{unreadCount !== 1 ? 's' : ''} haven't read this yet
           </div>

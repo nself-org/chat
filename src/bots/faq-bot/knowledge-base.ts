@@ -125,7 +125,7 @@ export function getAllFAQs(): FAQ[] {
  */
 export function getFAQsByCategory(category: string): FAQ[] {
   return Array.from(faqs.values())
-    .filter(f => f.category === category)
+    .filter((f) => f.category === category)
     .sort((a, b) => a.question.localeCompare(b.question))
 }
 
@@ -151,7 +151,7 @@ export function getFAQCategories(): string[] {
  */
 export function searchFAQs(query: string, maxResults = 5): FAQSearchResult[] {
   const queryLower = query.toLowerCase()
-  const queryWords = queryLower.split(/\s+/).filter(w => w.length > 2)
+  const queryWords = queryLower.split(/\s+/).filter((w) => w.length > 2)
 
   const results: FAQSearchResult[] = []
 
@@ -216,7 +216,7 @@ export function findSimilarFAQs(faqId: string, maxResults = 3): FAQ[] {
   const results = searchFAQs(faq.question, maxResults + 1)
 
   // Remove the original FAQ from results
-  return results.filter(r => r.id !== faqId).slice(0, maxResults)
+  return results.filter((r) => r.id !== faqId).slice(0, maxResults)
 }
 
 // ============================================================================

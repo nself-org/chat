@@ -139,16 +139,14 @@ export default function DevHomePage() {
     <div className="space-y-12">
       {/* Hero Section */}
       <section className="text-center">
-        <div className="mb-4 inline-flex items-center gap-2 rounded-full border bg-muted/50 px-4 py-1.5">
+        <div className="bg-muted/50 mb-4 inline-flex items-center gap-2 rounded-full border px-4 py-1.5">
           <Sparkles className="h-4 w-4 text-amber-500" />
           <span className="text-sm font-medium">Developer Documentation</span>
         </div>
-        <h1 className="text-4xl font-bold tracking-tight mb-4">
-          nself-chat Component Library
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
-          Build beautiful, real-time team communication apps with our comprehensive
-          component library. White-label ready with full customization.
+        <h1 className="mb-4 text-4xl font-bold tracking-tight">nself-chat Component Library</h1>
+        <p className="mx-auto mb-8 max-w-2xl text-xl text-muted-foreground">
+          Build beautiful, real-time team communication apps with our comprehensive component
+          library. White-label ready with full customization.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button asChild size="lg">
@@ -158,9 +156,7 @@ export default function DevHomePage() {
             </Link>
           </Button>
           <Button variant="outline" size="lg" asChild>
-            <Link href="/dev/templates">
-              View Templates
-            </Link>
+            <Link href="/dev/templates">View Templates</Link>
           </Button>
         </div>
       </section>
@@ -195,13 +191,13 @@ export default function DevHomePage() {
 
       {/* Quick Links */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6">Quick Links</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 className="mb-6 text-2xl font-semibold">Quick Links</h2>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           {quickLinks.map((link) => {
             const Icon = link.icon
             return (
               <Link key={link.href} href={link.href} className="group">
-                <Card className="h-full transition-all hover:border-primary/50 hover:shadow-lg">
+                <Card className="hover:border-primary/50 h-full transition-all hover:shadow-lg">
                   <CardHeader>
                     <div className="flex items-start justify-between">
                       <div className={cn('rounded-lg p-2', link.bgColor)}>
@@ -213,9 +209,9 @@ export default function DevHomePage() {
                         </Badge>
                       )}
                     </div>
-                    <CardTitle className="flex items-center gap-2 group-hover:text-primary transition-colors">
+                    <CardTitle className="flex items-center gap-2 transition-colors group-hover:text-primary">
                       {link.title}
-                      <ArrowRight className="h-4 w-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                      <ArrowRight className="h-4 w-4 -translate-x-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100" />
                     </CardTitle>
                     <CardDescription>{link.description}</CardDescription>
                   </CardHeader>
@@ -228,17 +224,17 @@ export default function DevHomePage() {
 
       {/* Features */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6">Key Features</h2>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <h2 className="mb-6 text-2xl font-semibold">Key Features</h2>
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {features.map((feature) => {
             const Icon = feature.icon
             return (
               <Card key={feature.title}>
                 <CardContent className="pt-6">
-                  <div className="rounded-lg bg-primary/10 w-10 h-10 flex items-center justify-center mb-3">
+                  <div className="bg-primary/10 mb-3 flex h-10 w-10 items-center justify-center rounded-lg">
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
-                  <h3 className="font-semibold mb-1">{feature.title}</h3>
+                  <h3 className="mb-1 font-semibold">{feature.title}</h3>
                   <p className="text-sm text-muted-foreground">{feature.description}</p>
                 </CardContent>
               </Card>
@@ -249,7 +245,7 @@ export default function DevHomePage() {
 
       {/* Component Categories */}
       <section>
-        <h2 className="text-2xl font-semibold mb-6">Component Categories</h2>
+        <h2 className="mb-6 text-2xl font-semibold">Component Categories</h2>
         <div className="grid grid-cols-2 gap-4">
           {categories.map((category) => (
             <Card key={category.name}>
@@ -262,10 +258,7 @@ export default function DevHomePage() {
               <CardContent>
                 <div className="flex flex-wrap gap-2">
                   {category.items.map((item) => (
-                    <code
-                      key={item}
-                      className="rounded bg-muted px-2 py-1 text-xs font-mono"
-                    >
+                    <code key={item} className="rounded bg-muted px-2 py-1 font-mono text-xs">
                       {item}
                     </code>
                   ))}
@@ -295,8 +288,9 @@ export default function DevHomePage() {
               <div>cd .backend && nself init && nself build && nself start</div>
             </div>
             <p className="text-sm text-muted-foreground">
-              Components are located in <code className="bg-muted px-1 rounded">src/components/</code>.
-              Each component is self-contained with its own types, styles, and tests.
+              Components are located in{' '}
+              <code className="rounded bg-muted px-1">src/components/</code>. Each component is
+              self-contained with its own types, styles, and tests.
             </p>
           </CardContent>
         </Card>

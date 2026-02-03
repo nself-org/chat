@@ -25,19 +25,12 @@ export function LinkPreviewSkeleton({
   // Vertical layout
   if (variant === 'vertical') {
     return (
-      <div
-        className={cn(
-          'rounded-lg border bg-card overflow-hidden',
-          className
-        )}
-      >
-        {showImage && (
-          <Skeleton className="w-full aspect-video rounded-none" />
-        )}
-        <div className="p-3 space-y-2">
+      <div className={cn('overflow-hidden rounded-lg border bg-card', className)}>
+        {showImage && <Skeleton className="aspect-video w-full rounded-none" />}
+        <div className="space-y-2 p-3">
           {/* Domain */}
           <div className="flex items-center gap-1.5">
-            <Skeleton className="w-4 h-4 rounded-sm" />
+            <Skeleton className="h-4 w-4 rounded-sm" />
             <Skeleton className="h-3 w-24" />
           </div>
           {/* Title */}
@@ -54,19 +47,12 @@ export function LinkPreviewSkeleton({
   // Horizontal layout
   if (variant === 'horizontal') {
     return (
-      <div
-        className={cn(
-          'flex rounded-lg border bg-card overflow-hidden',
-          className
-        )}
-      >
-        {showImage && (
-          <Skeleton className="w-32 sm:w-40 flex-shrink-0 rounded-none" />
-        )}
-        <div className="flex-1 p-3 space-y-2">
+      <div className={cn('flex overflow-hidden rounded-lg border bg-card', className)}>
+        {showImage && <Skeleton className="w-32 flex-shrink-0 rounded-none sm:w-40" />}
+        <div className="flex-1 space-y-2 p-3">
           {/* Domain */}
           <div className="flex items-center gap-1.5">
-            <Skeleton className="w-4 h-4 rounded-sm" />
+            <Skeleton className="h-4 w-4 rounded-sm" />
             <Skeleton className="h-3 w-24" />
           </div>
           {/* Title */}
@@ -82,20 +68,13 @@ export function LinkPreviewSkeleton({
 
   // Compact layout
   return (
-    <div
-      className={cn(
-        'flex items-center gap-3 p-2 rounded-lg border bg-card',
-        className
-      )}
-    >
-      {showImage && (
-        <Skeleton className="w-12 h-12 rounded flex-shrink-0" />
-      )}
+    <div className={cn('flex items-center gap-3 rounded-lg border bg-card p-2', className)}>
+      {showImage && <Skeleton className="h-12 w-12 flex-shrink-0 rounded" />}
       <div className="flex-1 space-y-1.5">
         <Skeleton className="h-4 w-3/4" />
         <Skeleton className="h-3 w-1/2" />
       </div>
-      <Skeleton className="w-4 h-4 rounded flex-shrink-0" />
+      <Skeleton className="h-4 w-4 flex-shrink-0 rounded" />
     </div>
   )
 }

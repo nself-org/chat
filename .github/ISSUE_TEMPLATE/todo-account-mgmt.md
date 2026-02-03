@@ -13,15 +13,18 @@ Implement advanced account security features including OAuth connections, two-fa
 ## Affected Components
 
 ### OAuth Integration
+
 - [ ] `src/app/settings/account/page.tsx:139` - Connect OAuth account
 - [ ] `src/app/settings/account/page.tsx:151` - Disconnect OAuth account
 
 ### Two-Factor Authentication
+
 - [ ] `src/app/settings/account/page.tsx:163` - Enable/disable 2FA toggle
 - [ ] `src/components/settings/TwoFactorSettings.tsx:68` - 2FA verification flow
 - [ ] `src/components/settings/TwoFactorSettings.tsx:90` - 2FA disable flow
 
 ### Account Deletion
+
 - [ ] `src/app/settings/account/page.tsx:178` - Full account deletion flow
 - [ ] `src/components/settings/DeleteAccount.tsx:41` - Account deletion API
 
@@ -36,6 +39,7 @@ Implement advanced account security features including OAuth connections, two-fa
    - Future: Twitter, LinkedIn, Discord
 
 2. **GraphQL Mutations:**
+
    ```graphql
    mutation ConnectOAuthAccount($provider: String!, $token: String!) { ... }
    mutation DisconnectOAuthAccount($accountId: uuid!) { ... }
@@ -56,6 +60,7 @@ Implement advanced account security features including OAuth connections, two-fa
    - Require 2FA code on sensitive operations
 
 2. **GraphQL Mutations:**
+
    ```graphql
    mutation EnableTwoFactor($secret: String!, $code: String!) { ... }
    mutation DisableTwoFactor($code: String!) { ... }
@@ -104,6 +109,7 @@ Implement advanced account security features including OAuth connections, two-fa
 ## Testing Checklist
 
 ### OAuth
+
 - [ ] Connect Google account
 - [ ] Connect GitHub account
 - [ ] Disconnect account
@@ -111,6 +117,7 @@ Implement advanced account security features including OAuth connections, two-fa
 - [ ] Multiple OAuth accounts of same provider
 
 ### 2FA
+
 - [ ] Enable 2FA with QR code
 - [ ] Verify with authenticator app
 - [ ] Use backup code
@@ -119,6 +126,7 @@ Implement advanced account security features including OAuth connections, two-fa
 - [ ] Require 2FA for sensitive operations
 
 ### Account Deletion
+
 - [ ] Delete account with password
 - [ ] Delete account with 2FA
 - [ ] Export data before deletion
@@ -143,4 +151,5 @@ Implement advanced account security features including OAuth connections, two-fa
 - Data export functionality (if not exists)
 
 ## Priority: Medium
+
 Important for security but can be phased in after v1.0.0 launch.

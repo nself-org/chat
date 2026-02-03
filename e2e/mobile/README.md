@@ -152,11 +152,13 @@ This E2E testing suite provides comprehensive coverage of mobile app functionali
 ### iOS Setup
 
 1. Install Xcode and command line tools:
+
 ```bash
 xcode-select --install
 ```
 
 2. Install simulators:
+
 ```bash
 # List available simulators
 xcrun simctl list devicetypes
@@ -166,6 +168,7 @@ xcrun simctl create "iPhone 15 Pro" "com.apple.CoreSimulator.SimDeviceType.iPhon
 ```
 
 3. Install CocoaPods:
+
 ```bash
 sudo gem install cocoapods
 cd platforms/capacitor/ios/App
@@ -177,6 +180,7 @@ pod install
 1. Install Android Studio and Android SDK
 
 2. Set environment variables:
+
 ```bash
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export PATH=$PATH:$ANDROID_HOME/emulator
@@ -185,6 +189,7 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 ```
 
 3. Create AVD (Android Virtual Device):
+
 ```bash
 # List available devices
 avdmanager list device
@@ -333,6 +338,7 @@ GitHub Actions workflow (`.github/workflows/e2e-tests.yml`) runs tests on:
 ### Artifacts
 
 All test runs upload:
+
 - Screenshots (on failure)
 - Videos (on failure)
 - Test reports (HTML + JUnit)
@@ -343,26 +349,27 @@ All test runs upload:
 
 Target performance metrics:
 
-| Metric | Target | Test |
-|--------|--------|------|
-| Cold Start | < 3000ms | App launch from terminated state |
-| Warm Start | < 1500ms | App resume from background |
-| Splash Screen | < 500ms | Initial splash appearance |
-| Login | < 5000ms | Full login flow |
-| Channel Navigation | < 2000ms | Navigate to channel |
-| Channel Switch | < 1500ms | Switch between channels |
-| Message Send | < 2000ms | Send text message |
-| Optimistic Update | < 500ms | Message appears in UI |
-| Search Query | < 3000ms | Perform search |
-| Semantic Search | < 5000ms | AI-powered search |
-| Image Upload | < 8000ms | Upload photo |
-| Scroll (60 FPS) | Smooth | No dropped frames |
+| Metric             | Target   | Test                             |
+| ------------------ | -------- | -------------------------------- |
+| Cold Start         | < 3000ms | App launch from terminated state |
+| Warm Start         | < 1500ms | App resume from background       |
+| Splash Screen      | < 500ms  | Initial splash appearance        |
+| Login              | < 5000ms | Full login flow                  |
+| Channel Navigation | < 2000ms | Navigate to channel              |
+| Channel Switch     | < 1500ms | Switch between channels          |
+| Message Send       | < 2000ms | Send text message                |
+| Optimistic Update  | < 500ms  | Message appears in UI            |
+| Search Query       | < 3000ms | Perform search                   |
+| Semantic Search    | < 5000ms | AI-powered search                |
+| Image Upload       | < 8000ms | Upload photo                     |
+| Scroll (60 FPS)    | Smooth   | No dropped frames                |
 
 ## 🐛 Troubleshooting
 
 ### iOS Issues
 
 **Simulator won't boot:**
+
 ```bash
 # Reset simulator
 xcrun simctl erase all
@@ -370,6 +377,7 @@ xcrun simctl shutdown all
 ```
 
 **App won't install:**
+
 ```bash
 # Clean build
 cd platforms/capacitor
@@ -378,6 +386,7 @@ pnpm build:ios -- --configuration Debug --simulator
 ```
 
 **Detox can't connect:**
+
 ```bash
 # Check Detox server
 pnpm exec detox clean-framework-cache
@@ -387,12 +396,14 @@ pnpm exec detox build-framework-cache
 ### Android Issues
 
 **Emulator won't start:**
+
 ```bash
 # Cold boot emulator
 emulator -avd Pixel_5_API_34 -no-snapshot-load
 ```
 
 **ADB connection issues:**
+
 ```bash
 # Restart ADB server
 adb kill-server
@@ -401,6 +412,7 @@ adb devices
 ```
 
 **Build failures:**
+
 ```bash
 # Clean Gradle cache
 cd platforms/capacitor/android
@@ -410,6 +422,7 @@ cd platforms/capacitor/android
 ### Detox Issues
 
 **Tests hanging:**
+
 ```bash
 # Enable debug logs
 pnpm exec detox test --loglevel trace
@@ -419,6 +432,7 @@ pnpm exec detox test --loglevel trace
 ```
 
 **Flaky tests:**
+
 ```bash
 # Run with retries
 pnpm exec detox test --retries 2

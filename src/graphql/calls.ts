@@ -70,10 +70,7 @@ export const GET_ACTIVE_CALLS = gql`
     nchat_calls(
       where: {
         status: { _in: ["ringing", "connecting", "connected"] }
-        _or: [
-          { caller_id: { _eq: $userId } }
-          { participants: { user_id: { _eq: $userId } } }
-        ]
+        _or: [{ caller_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       }
       order_by: { started_at: desc }
     ) {
@@ -92,10 +89,7 @@ export const GET_CALL_HISTORY = gql`
     nchat_calls(
       where: {
         status: { _eq: "ended" }
-        _or: [
-          { caller_id: { _eq: $userId } }
-          { participants: { user_id: { _eq: $userId } } }
-        ]
+        _or: [{ caller_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
       }
       order_by: { started_at: desc }
       limit: $limit
@@ -278,7 +272,11 @@ export const UPDATE_PARTICIPANT_VIDEO = gql`
 `
 
 export const UPDATE_PARTICIPANT_SCREEN_SHARE = gql`
-  mutation UpdateParticipantScreenShare($callId: String!, $userId: uuid!, $isScreenSharing: Boolean!) {
+  mutation UpdateParticipantScreenShare(
+    $callId: String!
+    $userId: uuid!
+    $isScreenSharing: Boolean!
+  ) {
     update_nchat_call_participants(
       where: { call_id: { _eq: $callId }, user_id: { _eq: $userId } }
       _set: { is_screen_sharing: $isScreenSharing }
@@ -315,10 +313,7 @@ export const SUBSCRIBE_TO_INCOMING_CALLS = gql`
   ${CALL_PARTICIPANT_FRAGMENT}
   subscription SubscribeToIncomingCalls($userId: uuid!) {
     nchat_calls(
-      where: {
-        status: { _eq: "ringing" }
-        participants: { user_id: { _eq: $userId } }
-      }
+      where: { status: { _eq: "ringing" }, participants: { user_id: { _eq: $userId } } }
       order_by: { started_at: desc }
     ) {
       ...CallFields
@@ -338,10 +333,7 @@ export const SUBSCRIBE_TO_INCOMING_CALLS = gql`
 export const SUBSCRIBE_TO_CALL_PARTICIPANTS = gql`
   ${CALL_PARTICIPANT_FRAGMENT}
   subscription SubscribeToCallParticipants($callId: String!) {
-    nchat_call_participants(
-      where: { call_id: { _eq: $callId } }
-      order_by: { joined_at: asc }
-    ) {
+    nchat_call_participants(where: { call_id: { _eq: $callId } }, order_by: { joined_at: asc }) {
       ...CallParticipantFields
     }
   }

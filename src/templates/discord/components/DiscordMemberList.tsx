@@ -52,15 +52,11 @@ export function DiscordMemberList({
 }: DiscordMemberListProps) {
   return (
     <div
-      className={cn('flex flex-col h-full overflow-y-auto px-2 py-4', className)}
+      className={cn('flex h-full flex-col overflow-y-auto px-2 py-4', className)}
       style={{ backgroundColor: discordColors.gray750 }}
     >
       {roles.map((role) => (
-        <RoleGroup
-          key={role.id}
-          role={role}
-          onMemberClick={onMemberClick}
-        />
+        <RoleGroup key={role.id} role={role} onMemberClick={onMemberClick} />
       ))}
     </div>
   )
@@ -82,7 +78,7 @@ function RoleGroup({
   return (
     <div className="mb-4">
       {/* Role Header */}
-      <div className="px-2 mb-1">
+      <div className="mb-1 px-2">
         <span
           className="text-xs font-semibold uppercase tracking-wide"
           style={{ color: role.color || discordColors.gray300 }}
@@ -94,24 +90,14 @@ function RoleGroup({
       {/* Members */}
       <div className="space-y-0.5">
         {role.members.map((member) => (
-          <MemberItem
-            key={member.id}
-            member={member}
-            onClick={() => onMemberClick?.(member.id)}
-          />
+          <MemberItem key={member.id} member={member} onClick={() => onMemberClick?.(member.id)} />
         ))}
       </div>
     </div>
   )
 }
 
-function MemberItem({
-  member,
-  onClick,
-}: {
-  member: DiscordMemberData
-  onClick?: () => void
-}) {
+function MemberItem({ member, onClick }: { member: DiscordMemberData; onClick?: () => void }) {
   const statusColors = {
     online: discordColors.statusOnline,
     idle: discordColors.statusIdle,
@@ -125,23 +111,19 @@ function MemberItem({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-3 w-full px-2 py-1.5 rounded',
-        'hover:bg-[#35373C] transition-colors group',
+        'flex w-full items-center gap-3 rounded px-2 py-1.5',
+        'group transition-colors hover:bg-[#35373C]',
         member.status === 'offline' && 'opacity-40'
       )}
     >
       {/* Avatar with Status */}
       <div className="relative flex-shrink-0">
-        <div className="w-8 h-8 rounded-full overflow-hidden">
+        <div className="h-8 w-8 overflow-hidden rounded-full">
           {member.avatar ? (
-            <img
-              src={member.avatar}
-              alt={displayName}
-              className="w-full h-full object-cover"
-            />
+            <img src={member.avatar} alt={displayName} className="h-full w-full object-cover" />
           ) : (
             <div
-              className="w-full h-full flex items-center justify-center text-white font-medium text-sm"
+              className="flex h-full w-full items-center justify-center text-sm font-medium text-white"
               style={{ backgroundColor: member.roleColor || discordColors.blurple }}
             >
               {displayName[0]?.toUpperCase()}
@@ -149,7 +131,7 @@ function MemberItem({
           )}
         </div>
         <span
-          className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2"
+          className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full border-2"
           style={{
             backgroundColor: statusColors[member.status],
             borderColor: discordColors.gray750,
@@ -158,29 +140,25 @@ function MemberItem({
       </div>
 
       {/* Name & Activity */}
-      <div className="flex-1 min-w-0 text-left">
+      <div className="min-w-0 flex-1 text-left">
         <div className="flex items-center gap-1">
           <span
-            className="text-sm font-medium truncate"
+            className="truncate text-sm font-medium"
             style={{ color: member.roleColor || discordColors.gray100 }}
           >
             {displayName}
           </span>
           {member.isBot && (
             <span
-              className="px-1 py-0.5 rounded text-[10px] font-semibold uppercase"
+              className="rounded px-1 py-0.5 text-[10px] font-semibold uppercase"
               style={{ backgroundColor: discordColors.blurple, color: 'white' }}
             >
               BOT
             </span>
           )}
-          {member.isBoosting && (
-            <BoostIcon className="w-4 h-4" />
-          )}
+          {member.isBoosting && <BoostIcon className="h-4 w-4" />}
         </div>
-        {member.activity && (
-          <div className="text-xs text-gray-400 truncate">{member.activity}</div>
-        )}
+        {member.activity && <div className="truncate text-xs text-gray-400">{member.activity}</div>}
       </div>
     </button>
   )

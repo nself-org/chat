@@ -29,9 +29,19 @@ interface CommandChannelsProps {
 // ============================================================================
 
 const channelTypes = [
-  { value: 'public', label: 'Public Channels', icon: Hash, description: 'Open channels anyone can join' },
+  {
+    value: 'public',
+    label: 'Public Channels',
+    icon: Hash,
+    description: 'Open channels anyone can join',
+  },
   { value: 'private', label: 'Private Channels', icon: Lock, description: 'Invite-only channels' },
-  { value: 'direct', label: 'Direct Messages', icon: MessageCircle, description: 'One-on-one conversations' },
+  {
+    value: 'direct',
+    label: 'Direct Messages',
+    icon: MessageCircle,
+    description: 'One-on-one conversations',
+  },
   { value: 'group', label: 'Group DMs', icon: Users, description: 'Multi-person private chats' },
 ] as const
 
@@ -41,10 +51,7 @@ type ChannelType = 'public' | 'private' | 'direct' | 'group'
 // Component
 // ============================================================================
 
-export function CommandChannels({
-  channels = {},
-  onChange,
-}: CommandChannelsProps) {
+export function CommandChannels({ channels = {}, onChange }: CommandChannelsProps) {
   const [newAllowedChannel, setNewAllowedChannel] = useState('')
   const [newBlockedChannel, setNewBlockedChannel] = useState('')
 
@@ -94,7 +101,7 @@ export function CommandChannels({
   return (
     <div className="space-y-6">
       {/* Description */}
-      <div className="rounded-lg border bg-muted/30 p-4">
+      <div className="bg-muted/30 rounded-lg border p-4">
         <div className="flex items-center gap-2">
           <Hash className="h-5 w-5 text-primary" />
           <h3 className="font-medium">Channel Settings</h3>
@@ -117,7 +124,7 @@ export function CommandChannels({
               className={cn(
                 'flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors',
                 allowedTypes.includes(type.value as ChannelType)
-                  ? 'border-primary bg-primary/5'
+                  ? 'bg-primary/5 border-primary'
                   : 'hover:bg-muted/50'
               )}
             >
@@ -136,9 +143,7 @@ export function CommandChannels({
           ))}
         </div>
         {allowedTypes.length === 0 && (
-          <p className="text-sm text-destructive">
-            At least one channel type must be selected
-          </p>
+          <p className="text-sm text-destructive">At least one channel type must be selected</p>
         )}
       </div>
 
@@ -262,24 +267,19 @@ export function CommandChannels({
       </div>
 
       {/* Summary */}
-      <div className="rounded-lg border bg-muted/30 p-4">
-        <h4 className="font-medium text-sm">Channel Summary</h4>
+      <div className="bg-muted/30 rounded-lg border p-4">
+        <h4 className="text-sm font-medium">Channel Summary</h4>
         <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
           <li>
-            - Works in: {allowedTypes.map((t) => channelTypes.find((ct) => ct.value === t)?.label).join(', ')}
+            - Works in:{' '}
+            {allowedTypes.map((t) => channelTypes.find((ct) => ct.value === t)?.label).join(', ')}
           </li>
-          <li>
-            - Threads: {channels.allowInThreads ?? true ? 'Allowed' : 'Not allowed'}
-          </li>
+          <li>- Threads: {(channels.allowInThreads ?? true) ? 'Allowed' : 'Not allowed'}</li>
           {channels.allowedChannels && channels.allowedChannels.length > 0 && (
-            <li>
-              - Limited to {channels.allowedChannels.length} specific channel(s)
-            </li>
+            <li>- Limited to {channels.allowedChannels.length} specific channel(s)</li>
           )}
           {channels.blockedChannels && channels.blockedChannels.length > 0 && (
-            <li>
-              - Blocked in {channels.blockedChannels.length} channel(s)
-            </li>
+            <li>- Blocked in {channels.blockedChannels.length} channel(s)</li>
           )}
         </ul>
       </div>

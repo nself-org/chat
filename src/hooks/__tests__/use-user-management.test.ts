@@ -85,9 +85,7 @@ describe('useUserManagement Hook', () => {
     })
 
     it('should initialize with provided page size', () => {
-      const { result } = renderHook(() =>
-        useUserManagement({ initialPageSize: 10 })
-      )
+      const { result } = renderHook(() => useUserManagement({ initialPageSize: 10 }))
 
       expect(result.current.pagination.pageSize).toBe(10)
     })

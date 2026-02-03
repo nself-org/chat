@@ -8,6 +8,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -21,21 +23,19 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Discord webhook payload structure
-    console.log('Discord webhook received:', {
-      content: body.content,
-      username: body.username,
-      avatar_url: body.avatar_url,
-      embeds: body.embeds?.length || 0,
-    })
-
-    // TODO: Process Discord webhook and post to channel
+    // REMOVED: console.log('Discord webhook received:', {
+    //   content: body.content,
+    //   username: body.username,
+    //   avatar_url: body.avatar_url,
+    //   embeds: body.embeds?.length || 0,
+    // })
 
     return NextResponse.json({
       success: true,
       message: 'Discord webhook received',
     })
   } catch (error) {
-    console.error('Discord webhook error:', error)
+    logger.error('Discord webhook error:', error)
     return NextResponse.json(
       {
         error: 'Failed to process Discord webhook',

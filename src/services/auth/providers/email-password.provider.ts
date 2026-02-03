@@ -8,6 +8,7 @@
  * - Email verification
  */
 
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderMetadata,
@@ -93,7 +94,10 @@ export class EmailPasswordProvider extends BaseAuthProvider {
 
       if (!response.ok) {
         return this.createErrorResult(
-          this.createError(data.error?.code || 'AUTH_FAILED', data.error?.message || 'Authentication failed')
+          this.createError(
+            data.error?.code || 'AUTH_FAILED',
+            data.error?.message || 'Authentication failed'
+          )
         )
       }
 
@@ -110,14 +114,17 @@ export class EmailPasswordProvider extends BaseAuthProvider {
 
       return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
     } catch (error) {
-      console.error('Email/password sign in error:', error)
+      logger.error('Email/password sign in error:',  error)
       return this.createErrorResult(
         this.createError('NETWORK_ERROR', 'Failed to connect to authentication service')
       )
     }
   }
 
-  async signUp(credentials: AuthCredentials, metadata?: Record<string, unknown>): Promise<AuthResult> {
+  async signUp(
+    credentials: AuthCredentials,
+    metadata?: Record<string, unknown>
+  ): Promise<AuthResult> {
     if (!this.isEnabled()) {
       return this.createErrorResult(
         this.createError('PROVIDER_DISABLED', 'Email/password authentication is not enabled')
@@ -140,7 +147,10 @@ export class EmailPasswordProvider extends BaseAuthProvider {
     const passwordValidation = this.validatePassword(emailCreds.password)
     if (!passwordValidation.valid) {
       return this.createErrorResult(
-        this.createError('WEAK_PASSWORD', passwordValidation.message || 'Password does not meet requirements')
+        this.createError(
+          'WEAK_PASSWORD',
+          passwordValidation.message || 'Password does not meet requirements'
+        )
       )
     }
 
@@ -162,7 +172,10 @@ export class EmailPasswordProvider extends BaseAuthProvider {
 
       if (!response.ok) {
         return this.createErrorResult(
-          this.createError(data.error?.code || 'SIGNUP_FAILED', data.error?.message || 'Sign up failed')
+          this.createError(
+            data.error?.code || 'SIGNUP_FAILED',
+            data.error?.message || 'Sign up failed'
+          )
         )
       }
 
@@ -187,7 +200,7 @@ export class EmailPasswordProvider extends BaseAuthProvider {
 
       return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
     } catch (error) {
-      console.error('Email/password sign up error:', error)
+      logger.error('Email/password sign up error:',  error)
       return this.createErrorResult(
         this.createError('NETWORK_ERROR', 'Failed to connect to authentication service')
       )
@@ -201,7 +214,7 @@ export class EmailPasswordProvider extends BaseAuthProvider {
         headers: this.getAuthHeaders(),
       })
     } catch (error) {
-      console.error('Sign out error:', error)
+      logger.error('Sign out error:',  error)
     }
 
     this.clearSession()
@@ -238,10 +251,8 @@ export class EmailPasswordProvider extends BaseAuthProvider {
         data.session.refreshToken
       )
     } catch (error) {
-      console.error('Token refresh error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to refresh token')
-      )
+      logger.error('Token refresh error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to refresh token'))
     }
   }
 
@@ -257,13 +268,16 @@ export class EmailPasswordProvider extends BaseAuthProvider {
         const data = await response.json()
         return {
           success: false,
-          error: this.createError('RESET_FAILED', data.error?.message || 'Failed to send reset email'),
+          error: this.createError(
+            'RESET_FAILED',
+            data.error?.message || 'Failed to send reset email'
+          ),
         }
       }
 
       return { success: true }
     } catch (error) {
-      console.error('Password reset request error:', error)
+      logger.error('Password reset request error:',  error)
       return {
         success: false,
         error: this.createError('NETWORK_ERROR', 'Failed to request password reset'),
@@ -271,12 +285,18 @@ export class EmailPasswordProvider extends BaseAuthProvider {
     }
   }
 
-  async resetPassword(token: string, newPassword: string): Promise<{ success: boolean; error?: AuthError }> {
+  async resetPassword(
+    token: string,
+    newPassword: string
+  ): Promise<{ success: boolean; error?: AuthError }> {
     const passwordValidation = this.validatePassword(newPassword)
     if (!passwordValidation.valid) {
       return {
         success: false,
-        error: this.createError('WEAK_PASSWORD', passwordValidation.message || 'Password does not meet requirements'),
+        error: this.createError(
+          'WEAK_PASSWORD',
+          passwordValidation.message || 'Password does not meet requirements'
+        ),
       }
     }
 
@@ -291,7 +311,10 @@ export class EmailPasswordProvider extends BaseAuthProvider {
         const data = await response.json()
         return {
           success: false,
-          error: this.createError('RESET_FAILED', data.error?.message || 'Failed to reset password'),
+          error: this.createError(
+            'RESET_FAILED',
+            data.error?.message || 'Failed to reset password'
+          ),
         }
       }
 
@@ -302,7 +325,7 @@ export class EmailPasswordProvider extends BaseAuthProvider {
 
       return { success: true }
     } catch (error) {
-      console.error('Password reset error:', error)
+      logger.error('Password reset error:',  error)
       return {
         success: false,
         error: this.createError('NETWORK_ERROR', 'Failed to reset password'),
@@ -322,7 +345,10 @@ export class EmailPasswordProvider extends BaseAuthProvider {
         const data = await response.json()
         return {
           success: false,
-          error: this.createError('VERIFICATION_FAILED', data.error?.message || 'Email verification failed'),
+          error: this.createError(
+            'VERIFICATION_FAILED',
+            data.error?.message || 'Email verification failed'
+          ),
         }
       }
 
@@ -338,7 +364,7 @@ export class EmailPasswordProvider extends BaseAuthProvider {
 
       return { success: true }
     } catch (error) {
-      console.error('Email verification error:', error)
+      logger.error('Email verification error:',  error)
       return {
         success: false,
         error: this.createError('NETWORK_ERROR', 'Failed to verify email'),
@@ -379,7 +405,11 @@ export class EmailPasswordProvider extends BaseAuthProvider {
   }
 
   private getAuthApiUrl(): string {
-    return this.extendedConfig.authApiUrl || process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1'
+    return (
+      this.extendedConfig.authApiUrl ||
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      'http://localhost:4000/v1'
+    )
   }
 
   private getAuthHeaders(): Record<string, string> {
@@ -394,12 +424,14 @@ export class EmailPasswordProvider extends BaseAuthProvider {
     return {
       id: userData.id as string,
       email: userData.email as string,
-      username: (userData.displayName as string)?.replace(/\s+/g, '_').toLowerCase() || (userData.email as string).split('@')[0],
-      displayName: userData.displayName as string || (userData.email as string).split('@')[0],
+      username:
+        (userData.displayName as string)?.replace(/\s+/g, '_').toLowerCase() ||
+        (userData.email as string).split('@')[0],
+      displayName: (userData.displayName as string) || (userData.email as string).split('@')[0],
       avatarUrl: userData.avatarUrl as string | undefined,
       role: (userData.defaultRole as AuthUser['role']) || 'member',
-      emailVerified: userData.emailVerified as boolean || false,
-      metadata: userData.metadata as Record<string, unknown> || {},
+      emailVerified: (userData.emailVerified as boolean) || false,
+      metadata: (userData.metadata as Record<string, unknown>) || {},
       createdAt: userData.createdAt as string,
       lastLoginAt: new Date().toISOString(),
     }
@@ -407,10 +439,13 @@ export class EmailPasswordProvider extends BaseAuthProvider {
 
   private persistSession(session: { accessToken: string; refreshToken: string }): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem('nchat-email-session', JSON.stringify({
-      ...session,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-email-session',
+      JSON.stringify({
+        ...session,
+        timestamp: Date.now(),
+      })
+    )
   }
 
   private getStoredSession(): { accessToken: string; refreshToken: string } | null {

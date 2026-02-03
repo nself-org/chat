@@ -38,9 +38,7 @@ export function RoleBadge({
     lg: 18,
   }
 
-  const IconComponent = icon
-    ? (Icons[icon as keyof typeof Icons] as React.ElementType)
-    : null
+  const IconComponent = icon ? (Icons[icon as keyof typeof Icons] as React.ElementType) : null
 
   return (
     <span
@@ -69,9 +67,7 @@ export function RoleBadge({
           : undefined
       }
     >
-      {showIcon && IconComponent && (
-        <IconComponent size={iconSizes[size]} />
-      )}
+      {showIcon && IconComponent && <IconComponent size={iconSizes[size]} />}
       {name}
     </span>
   )
@@ -119,9 +115,7 @@ export function RoleBadgeGroup({
         />
       ))}
       {remainingCount > 0 && (
-        <span className="text-xs text-muted-foreground">
-          +{remainingCount} more
-        </span>
+        <span className="text-xs text-muted-foreground">+{remainingCount} more</span>
       )}
     </div>
   )

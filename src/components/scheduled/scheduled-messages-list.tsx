@@ -30,11 +30,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import {
   CalendarClock,
   Search,
@@ -82,9 +78,7 @@ interface GroupedMessages {
 // Helper Functions
 // ============================================================================
 
-function groupMessagesByChannel(
-  messages: ScheduledMessage[]
-): GroupedMessages[] {
+function groupMessagesByChannel(messages: ScheduledMessage[]): GroupedMessages[] {
   const groups: Record<string, GroupedMessages> = {}
 
   for (const message of messages) {
@@ -96,11 +90,7 @@ function groupMessagesByChannel(
       groups[channelId] = {
         key: channelId,
         label: channelName,
-        icon: isPrivate ? (
-          <Lock className="h-4 w-4" />
-        ) : (
-          <Hash className="h-4 w-4" />
-        ),
+        icon: isPrivate ? <Lock className="h-4 w-4" /> : <Hash className="h-4 w-4" />,
         messages: [],
         isPrivate,
       }
@@ -109,9 +99,7 @@ function groupMessagesByChannel(
     groups[channelId].messages.push(message)
   }
 
-  return Object.values(groups).sort((a, b) =>
-    a.label.localeCompare(b.label)
-  )
+  return Object.values(groups).sort((a, b) => a.label.localeCompare(b.label))
 }
 
 function groupMessagesByDate(messages: ScheduledMessage[]): GroupedMessages[] {
@@ -160,46 +148,33 @@ function groupMessagesByDate(messages: ScheduledMessage[]): GroupedMessages[] {
 
   // Sort groups in order: today, tomorrow, this week, later
   const order = ['today', 'tomorrow', 'this-week', 'later']
-  return order
-    .filter((key) => groups[key])
-    .map((key) => groups[key])
+  return order.filter((key) => groups[key]).map((key) => groups[key])
 }
 
-function filterMessages(
-  messages: ScheduledMessage[],
-  searchQuery: string
-): ScheduledMessage[] {
+function filterMessages(messages: ScheduledMessage[], searchQuery: string): ScheduledMessage[] {
   if (!searchQuery.trim()) return messages
 
   const query = searchQuery.toLowerCase()
   return messages.filter(
     (msg) =>
-      msg.content.toLowerCase().includes(query) ||
-      msg.channel?.name?.toLowerCase().includes(query)
+      msg.content.toLowerCase().includes(query) || msg.channel?.name?.toLowerCase().includes(query)
   )
 }
 
-function sortMessages(
-  messages: ScheduledMessage[],
-  sortBy: SortBy
-): ScheduledMessage[] {
+function sortMessages(messages: ScheduledMessage[], sortBy: SortBy): ScheduledMessage[] {
   const sorted = [...messages]
 
   switch (sortBy) {
     case 'time-asc':
       return sorted.sort(
-        (a, b) =>
-          new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime()
+        (a, b) => new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime()
       )
     case 'time-desc':
       return sorted.sort(
-        (a, b) =>
-          new Date(b.scheduled_at).getTime() - new Date(a.scheduled_at).getTime()
+        (a, b) => new Date(b.scheduled_at).getTime() - new Date(a.scheduled_at).getTime()
       )
     case 'channel':
-      return sorted.sort((a, b) =>
-        (a.channel?.name || '').localeCompare(b.channel?.name || '')
-      )
+      return sorted.sort((a, b) => (a.channel?.name || '').localeCompare(b.channel?.name || ''))
     default:
       return sorted
   }
@@ -226,20 +201,16 @@ function ScheduledMessagesListSkeleton() {
 // Empty State
 // ============================================================================
 
-function ScheduledMessagesEmpty({
-  onScheduleNew,
-}: {
-  onScheduleNew?: () => void
-}) {
+function ScheduledMessagesEmpty({ onScheduleNew }: { onScheduleNew?: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="flex items-center justify-center w-16 h-16 rounded-full bg-muted mb-4">
+    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
         <Inbox className="h-8 w-8 text-muted-foreground" />
       </div>
-      <h3 className="text-lg font-medium mb-2">No scheduled messages</h3>
-      <p className="text-sm text-muted-foreground mb-4 max-w-sm">
-        You don&apos;t have any messages scheduled to be sent. Schedule a message to
-        send it at a specific time.
+      <h3 className="mb-2 text-lg font-medium">No scheduled messages</h3>
+      <p className="mb-4 max-w-sm text-sm text-muted-foreground">
+        You don&apos;t have any messages scheduled to be sent. Schedule a message to send it at a
+        specific time.
       </p>
       {onScheduleNew && (
         <Button onClick={onScheduleNew}>
@@ -279,8 +250,8 @@ function MessageGroup({
       <CollapsibleTrigger asChild>
         <button
           className={cn(
-            'flex items-center gap-2 w-full p-2 rounded-lg',
-            'hover:bg-accent transition-colors text-left',
+            'flex w-full items-center gap-2 rounded-lg p-2',
+            'text-left transition-colors hover:bg-accent',
             'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2'
           )}
         >
@@ -290,14 +261,14 @@ function MessageGroup({
             <ChevronRight className="h-4 w-4 text-muted-foreground" />
           )}
           {group.icon}
-          <span className="font-medium text-sm">{group.label}</span>
+          <span className="text-sm font-medium">{group.label}</span>
           <Badge variant="secondary" className="ml-auto">
             {group.messages.length}
           </Badge>
         </button>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        <div className="space-y-3 pt-2 pl-6">
+        <div className="space-y-3 pl-6 pt-2">
           {group.messages.map((message) => (
             <ScheduledMessageItem
               key={message.id}
@@ -421,13 +392,8 @@ export function ScheduledMessagesList({
       <div className={cn('p-4', className)}>
         <div className="text-center text-destructive">
           <p className="text-sm">Failed to load scheduled messages</p>
-          <p className="text-xs text-muted-foreground mt-1">{error}</p>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchScheduledMessages}
-            className="mt-4"
-          >
+          <p className="mt-1 text-xs text-muted-foreground">{error}</p>
+          <Button variant="outline" size="sm" onClick={fetchScheduledMessages} className="mt-4">
             <RefreshCw className="mr-2 h-4 w-4" />
             Retry
           </Button>
@@ -440,7 +406,7 @@ export function ScheduledMessagesList({
     <div className={cn('flex flex-col', className)}>
       {/* Header */}
       {showHeader && (
-        <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center justify-between border-b p-4">
           <div className="flex items-center gap-2">
             <CalendarClock className="h-5 w-5 text-muted-foreground" />
             <h2 className="font-semibold">Scheduled Messages</h2>
@@ -458,10 +424,10 @@ export function ScheduledMessagesList({
 
       {/* Search and Filters */}
       {(showSearch || showGrouping) && processedMessages.length > 0 && (
-        <div className="flex flex-col sm:flex-row gap-2 p-4 border-b">
+        <div className="flex flex-col gap-2 border-b p-4 sm:flex-row">
           {showSearch && (
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search scheduled messages..."
                 value={searchQuery}
@@ -472,10 +438,7 @@ export function ScheduledMessagesList({
           )}
           {showGrouping && (
             <div className="flex gap-2">
-              <Select
-                value={groupBy}
-                onValueChange={(v) => setGroupBy(v as GroupBy)}
-              >
+              <Select value={groupBy} onValueChange={(v) => setGroupBy(v as GroupBy)}>
                 <SelectTrigger className="w-[130px]">
                   <SelectValue placeholder="Group by" />
                 </SelectTrigger>
@@ -485,10 +448,7 @@ export function ScheduledMessagesList({
                   <SelectItem value="none">No Grouping</SelectItem>
                 </SelectContent>
               </Select>
-              <Select
-                value={sortBy}
-                onValueChange={(v) => setSortBy(v as SortBy)}
-              >
+              <Select value={sortBy} onValueChange={(v) => setSortBy(v as SortBy)}>
                 <SelectTrigger className="w-[130px]">
                   <SelectValue placeholder="Sort by" />
                 </SelectTrigger>

@@ -77,10 +77,7 @@ export function StickerGrid({
   // Render loading skeletons
   if (loading) {
     return (
-      <ScrollArea
-        className={cn('w-full', className)}
-        style={{ maxHeight }}
-      >
+      <ScrollArea className={cn('w-full', className)} style={{ maxHeight }}>
         <div className={cn('grid gap-1 p-2', gridClass)}>
           {Array.from({ length: loadingCount }).map((_, i) => (
             <StickerPreviewSkeleton key={i} size={stickerSize} />
@@ -94,23 +91,17 @@ export function StickerGrid({
   if (stickers.length === 0) {
     return (
       <div
-        className={cn(
-          'flex flex-col items-center justify-center text-center p-8',
-          className
-        )}
+        className={cn('flex flex-col items-center justify-center p-8 text-center', className)}
         style={{ minHeight: '150px' }}
       >
-        <div className="text-4xl mb-2">:-/</div>
+        <div className="mb-2 text-4xl">:-/</div>
         <p className="text-sm text-muted-foreground">{emptyMessage}</p>
       </div>
     )
   }
 
   return (
-    <ScrollArea
-      className={cn('w-full', className)}
-      style={{ maxHeight }}
-    >
+    <ScrollArea className={cn('w-full', className)} style={{ maxHeight }}>
       <div className={cn('grid gap-1 p-2', gridClass)}>
         {stickers.map((sticker) => (
           <StickerPreview
@@ -160,8 +151,8 @@ export function StickerGridSection({
       {/* Section Header */}
       <div
         className={cn(
-          'flex items-center justify-between px-2 py-1.5 sticky top-0 bg-background/95 backdrop-blur-sm z-10',
-          collapsible && 'cursor-pointer hover:bg-accent/50 rounded-md'
+          'bg-background/95 sticky top-0 z-10 flex items-center justify-between px-2 py-1.5 backdrop-blur-sm',
+          collapsible && 'hover:bg-accent/50 cursor-pointer rounded-md'
         )}
         onClick={collapsible ? () => setIsCollapsed(!isCollapsed) : undefined}
         role={collapsible ? 'button' : undefined}
@@ -191,9 +182,7 @@ export function StickerGridSection({
             </span>
           )}
           <h3 className="text-sm font-medium text-foreground">{title}</h3>
-          <span className="text-xs text-muted-foreground">
-            ({stickers.length})
-          </span>
+          <span className="text-xs text-muted-foreground">({stickers.length})</span>
         </div>
         {headerAction && !isCollapsed && (
           <div onClick={(e) => e.stopPropagation()}>{headerAction}</div>
@@ -275,10 +264,7 @@ export function VirtualizedStickerGrid({
 
   if (loading) {
     return (
-      <div
-        className={cn('overflow-auto', className)}
-        style={{ height }}
-      >
+      <div className={cn('overflow-auto', className)} style={{ height }}>
         <div className={cn('grid gap-1 p-2', gridClass)}>
           {Array.from({ length: loadingCount }).map((_, i) => (
             <StickerPreviewSkeleton key={i} size={stickerSize} />
@@ -291,13 +277,10 @@ export function VirtualizedStickerGrid({
   if (stickers.length === 0) {
     return (
       <div
-        className={cn(
-          'flex flex-col items-center justify-center text-center',
-          className
-        )}
+        className={cn('flex flex-col items-center justify-center text-center', className)}
         style={{ height }}
       >
-        <div className="text-4xl mb-2">:-/</div>
+        <div className="mb-2 text-4xl">:-/</div>
         <p className="text-sm text-muted-foreground">{emptyMessage}</p>
       </div>
     )
@@ -306,11 +289,7 @@ export function VirtualizedStickerGrid({
   const totalHeight = rows.length * rowHeight
 
   return (
-    <div
-      className={cn('overflow-auto', className)}
-      style={{ height }}
-      onScroll={handleScroll}
-    >
+    <div className={cn('overflow-auto', className)} style={{ height }} onScroll={handleScroll}>
       <div style={{ height: totalHeight, position: 'relative' }}>
         {rows.slice(visibleRange.start, visibleRange.end).map((row, rowIndex) => (
           <div
@@ -384,23 +363,17 @@ export function CategorizedStickerGrid({
   if (filteredCategories.length === 0) {
     return (
       <div
-        className={cn(
-          'flex flex-col items-center justify-center text-center p-8',
-          className
-        )}
+        className={cn('flex flex-col items-center justify-center p-8 text-center', className)}
         style={{ minHeight: '150px' }}
       >
-        <div className="text-4xl mb-2">:-/</div>
+        <div className="mb-2 text-4xl">:-/</div>
         <p className="text-sm text-muted-foreground">No stickers available</p>
       </div>
     )
   }
 
   return (
-    <ScrollArea
-      className={cn('w-full', className)}
-      style={{ maxHeight }}
-    >
+    <ScrollArea className={cn('w-full', className)} style={{ maxHeight }}>
       {filteredCategories.map((category) => (
         <StickerGridSection
           key={category.id}

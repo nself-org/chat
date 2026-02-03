@@ -1,21 +1,21 @@
-'use client';
+'use client'
 
-import { SettingsSection } from './settings-section';
-import { SettingsSelect } from './SettingsSelect';
-import { cn } from '@/lib/utils';
-import { useSettingsStore } from '@/stores/settings-store';
-import type { MessageDensity } from '@/lib/settings/settings-types';
-import { Check } from 'lucide-react';
+import { SettingsSection } from './settings-section'
+import { SettingsSelect } from './SettingsSelect'
+import { cn } from '@/lib/utils'
+import { useSettingsStore } from '@/stores/settings-store'
+import type { MessageDensity } from '@/lib/settings/settings-types'
+import { Check } from 'lucide-react'
 
 interface MessageDisplaySettingsProps {
-  className?: string;
+  className?: string
 }
 
 const densityOptions: {
-  value: MessageDensity;
-  label: string;
-  description: string;
-  spacing: string;
+  value: MessageDensity
+  label: string
+  description: string
+  spacing: string
 }[] = [
   {
     value: 'compact',
@@ -35,13 +35,13 @@ const densityOptions: {
     description: 'More room between messages',
     spacing: 'gap-4',
   },
-];
+]
 
 /**
  * MessageDisplaySettings - Message density and display options
  */
 export function MessageDisplaySettings({ className }: MessageDisplaySettingsProps) {
-  const { settings, updateAppearance } = useSettingsStore();
+  const { settings, updateAppearance } = useSettingsStore()
 
   return (
     <SettingsSection
@@ -53,7 +53,7 @@ export function MessageDisplaySettings({ className }: MessageDisplaySettingsProp
         <p className="text-sm font-medium">Message density</p>
         <div className="grid gap-3 sm:grid-cols-3">
           {densityOptions.map((option) => {
-            const isActive = settings.appearance.messageDensity === option.value;
+            const isActive = settings.appearance.messageDensity === option.value
 
             return (
               <button
@@ -64,7 +64,7 @@ export function MessageDisplaySettings({ className }: MessageDisplaySettingsProp
                   'relative flex flex-col rounded-lg border p-4 text-left transition-all',
                   isActive
                     ? 'border-primary ring-2 ring-primary ring-offset-2'
-                    : 'border-input hover:border-muted-foreground/50'
+                    : 'hover:border-muted-foreground/50 border-input'
                 )}
               >
                 {isActive && (
@@ -76,7 +76,7 @@ export function MessageDisplaySettings({ className }: MessageDisplaySettingsProp
                 {/* Preview */}
                 <div
                   className={cn(
-                    'mb-3 flex flex-col rounded border bg-muted/50 p-2',
+                    'bg-muted/50 mb-3 flex flex-col rounded border p-2',
                     option.spacing
                   )}
                 >
@@ -85,21 +85,19 @@ export function MessageDisplaySettings({ className }: MessageDisplaySettingsProp
                       <div className="h-4 w-4 rounded-full bg-muted" />
                       <div className="flex-1 space-y-1">
                         <div className="h-1.5 w-12 rounded bg-muted" />
-                        <div className="h-1 w-full rounded bg-muted/70" />
+                        <div className="bg-muted/70 h-1 w-full rounded" />
                       </div>
                     </div>
                   ))}
                 </div>
 
                 <p className="text-sm font-medium">{option.label}</p>
-                <p className="text-xs text-muted-foreground">
-                  {option.description}
-                </p>
+                <p className="text-xs text-muted-foreground">{option.description}</p>
               </button>
-            );
+            )
           })}
         </div>
       </div>
     </SettingsSection>
-  );
+  )
 }

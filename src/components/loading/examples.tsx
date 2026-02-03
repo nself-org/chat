@@ -71,11 +71,7 @@ export function Example3_ButtonLoading() {
 
   return (
     <div className="space-x-2">
-      <LoadingButton
-        isLoading={isLoading}
-        loadingText="Saving..."
-        onClick={handleClick}
-      >
+      <LoadingButton isLoading={isLoading} loadingText="Saving..." onClick={handleClick}>
         Save Changes
       </LoadingButton>
     </div>
@@ -144,7 +140,7 @@ export function Example5_LoadingOverlay() {
 
       <button
         onClick={() => setIsLoading(!isLoading)}
-        className="mt-4 rounded bg-primary px-4 py-2 text-sm text-primary-foreground"
+        className="text-primary-foreground mt-4 rounded bg-primary px-4 py-2 text-sm"
       >
         Toggle Loading
       </button>
@@ -184,7 +180,7 @@ export function Example6_DataWrapper() {
     <div className="space-y-4">
       <button
         onClick={loadData}
-        className="rounded bg-primary px-4 py-2 text-sm text-primary-foreground"
+        className="text-primary-foreground rounded bg-primary px-4 py-2 text-sm"
       >
         Load Data
       </button>
@@ -195,12 +191,7 @@ export function Example6_DataWrapper() {
         error={error}
         onRetry={loadData}
         loadingSkeleton={<ProfileSkeleton />}
-        emptyState={
-          <EmptyState
-            title="No data"
-            description="Click the button to load data"
-          />
-        }
+        emptyState={<EmptyState title="No data" description="Click the button to load data" />}
       >
         {(data) => (
           <div className="rounded-lg border p-4">
@@ -237,10 +228,7 @@ export function Example7_InfiniteScroll() {
     <div className="h-96 overflow-auto rounded-lg border p-4">
       <div className="space-y-2">
         {items.map((item) => (
-          <div
-            key={item}
-            className="rounded-lg border bg-card p-4"
-          >
+          <div key={item} className="rounded-lg border bg-card p-4">
             Item {item + 1}
           </div>
         ))}
@@ -281,9 +269,7 @@ export function Example8_MultiStepForm() {
         <h3 className="mb-2 text-lg font-semibold">
           Step {currentStep + 1}: {steps[currentStep]}
         </h3>
-        <p className="text-sm text-muted-foreground">
-          Form content goes here
-        </p>
+        <p className="text-sm text-muted-foreground">Form content goes here</p>
       </div>
 
       {/* Actions */}
@@ -317,13 +303,18 @@ export function Example9_EmptyStates() {
       <EmptyState
         icon={
           <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+            />
           </svg>
         }
         title="No messages yet"
         description="Start a conversation to see messages appear here"
         action={
-          <button className="rounded bg-primary px-4 py-2 text-sm text-primary-foreground">
+          <button className="text-primary-foreground rounded bg-primary px-4 py-2 text-sm">
             Start Chat
           </button>
         }
@@ -333,7 +324,12 @@ export function Example9_EmptyStates() {
       <EmptyState
         icon={
           <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+            />
           </svg>
         }
         title="No results found"
@@ -377,11 +373,7 @@ export function Example10_CompleteChatExample() {
 
     // Replace with real message
     setMessages((prev) =>
-      prev.map((m) =>
-        m.id === tempMessage.id
-          ? { ...m, id: Date.now(), isPending: false }
-          : m
-      )
+      prev.map((m) => (m.id === tempMessage.id ? { ...m, id: Date.now(), isPending: false } : m))
     )
 
     setIsSending(false)
@@ -405,28 +397,19 @@ export function Example10_CompleteChatExample() {
         {isLoadingMessages ? (
           <MessageSkeleton count={5} showAvatar />
         ) : messages.length === 0 ? (
-          <EmptyState
-            title="No messages yet"
-            description="Be the first to say something!"
-          />
+          <EmptyState title="No messages yet" description="Be the first to say something!" />
         ) : (
           <div className="space-y-4">
             {messages.map((message) => (
               <div
                 key={message.id}
-                className={`flex gap-3 ${
-                  message.isPending ? 'opacity-50' : ''
-                }`}
+                className={`flex gap-3 ${message.isPending ? 'opacity-50' : ''}`}
               >
                 <div className="h-8 w-8 shrink-0 rounded-full bg-muted" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium">
-                      {message.user}
-                    </span>
-                    {message.isPending && (
-                      <Spinner size="sm" className="ml-2" />
-                    )}
+                    <span className="text-sm font-medium">{message.user}</span>
+                    {message.isPending && <Spinner size="sm" className="ml-2" />}
                   </div>
                   <p className="text-sm">{message.text}</p>
                 </div>

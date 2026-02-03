@@ -9,6 +9,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { getWebhookHandlerManager } from '@/lib/integrations/webhook-handler'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -46,23 +48,20 @@ export async function POST(request: NextRequest) {
     const result = await manager.processWebhook(rawBody, headersObj)
 
     if (!result.success) {
-      console.error('Slack webhook processing failed:', result.error)
-      return NextResponse.json(
-        { error: result.error },
-        { status: 400 }
-      )
+      logger.error('Slack webhook processing failed:', result.error)
+      return NextResponse.json({ error: result.error }, { status: 400 })
     }
 
-    console.log('Slack webhook processed:', {
-      type: body.type,
-      event: body.event?.type,
-      success: true,
-    })
+    // REMOVED: console.log('Slack webhook processed:', {
+    //   type: body.type,
+    //   event: body.event?.type,
+    //   success: true,
+    // })
 
     // Slack expects a 200 OK response quickly
     return NextResponse.json({ ok: true })
   } catch (error) {
-    console.error('Slack webhook error:', error)
+    logger.error('Slack webhook error:', error)
     return NextResponse.json(
       {
         error: 'Failed to process Slack webhook',

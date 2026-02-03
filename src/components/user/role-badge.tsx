@@ -4,12 +4,7 @@ import * as React from 'react'
 import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 import { type UserRole, getRoleColor, getRoleLabel } from '@/stores/user-store'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Crown, Shield, ShieldCheck, User, UserX } from 'lucide-react'
 
 // ============================================================================
@@ -44,8 +39,7 @@ const roleBadgeVariants = cva(
 // ============================================================================
 
 export interface RoleBadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof roleBadgeVariants> {
+  extends React.HTMLAttributes<HTMLSpanElement>, VariantProps<typeof roleBadgeVariants> {
   role: UserRole
   showIcon?: boolean
   showTooltip?: boolean
@@ -82,39 +76,15 @@ const getRoleIcon = (role: UserRole, size: number = 12) => {
 const getDefaultPermissions = (role: UserRole): string[] => {
   switch (role) {
     case 'owner':
-      return [
-        'Full system access',
-        'Manage all users',
-        'Configure settings',
-        'Delete workspace',
-      ]
+      return ['Full system access', 'Manage all users', 'Configure settings', 'Delete workspace']
     case 'admin':
-      return [
-        'Manage users',
-        'Manage channels',
-        'Configure settings',
-        'View analytics',
-      ]
+      return ['Manage users', 'Manage channels', 'Configure settings', 'View analytics']
     case 'moderator':
-      return [
-        'Moderate messages',
-        'Manage channel members',
-        'Mute/ban users',
-        'Pin messages',
-      ]
+      return ['Moderate messages', 'Manage channel members', 'Mute/ban users', 'Pin messages']
     case 'member':
-      return [
-        'Send messages',
-        'Join public channels',
-        'Create private channels',
-        'Upload files',
-      ]
+      return ['Send messages', 'Join public channels', 'Create private channels', 'Upload files']
     case 'guest':
-      return [
-        'View messages',
-        'Send messages (limited)',
-        'Access specific channels',
-      ]
+      return ['View messages', 'Send messages (limited)', 'Access specific channels']
     default:
       return []
   }
@@ -126,24 +96,14 @@ const getDefaultPermissions = (role: UserRole): string[] => {
 
 const RoleBadge = React.forwardRef<HTMLSpanElement, RoleBadgeProps>(
   (
-    {
-      className,
-      role,
-      size,
-      variant,
-      showIcon = true,
-      showTooltip = false,
-      permissions,
-      ...props
-    },
+    { className, role, size, variant, showIcon = true, showTooltip = false, permissions, ...props },
     ref
   ) => {
     const color = getRoleColor(role)
     const label = getRoleLabel(role)
     const rolePermissions = permissions ?? getDefaultPermissions(role)
 
-    const iconSize =
-      size === 'xs' ? 10 : size === 'sm' ? 12 : size === 'lg' ? 16 : 14
+    const iconSize = size === 'xs' ? 10 : size === 'sm' ? 12 : size === 'lg' ? 16 : 14
 
     const badge = (
       <span
@@ -174,10 +134,10 @@ const RoleBadge = React.forwardRef<HTMLSpanElement, RoleBadgeProps>(
             <TooltipContent side="top" className="max-w-xs">
               <div className="space-y-1">
                 <p className="font-semibold">{label} Permissions</p>
-                <ul className="text-xs space-y-0.5">
+                <ul className="space-y-0.5 text-xs">
                   {rolePermissions.map((permission, index) => (
                     <li key={index} className="flex items-center gap-1">
-                      <span className="w-1 h-1 rounded-full bg-current opacity-50" />
+                      <span className="h-1 w-1 rounded-full bg-current opacity-50" />
                       {permission}
                     </li>
                   ))}

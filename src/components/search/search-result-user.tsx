@@ -1,44 +1,41 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { formatDistanceToNow } from 'date-fns';
-import { MessageSquare, Mail, Shield, Crown, UserCog } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import type { UserSearchResult } from '@/stores/search-store';
-import { HighlightedText } from './search-result-message';
+import * as React from 'react'
+import { formatDistanceToNow } from 'date-fns'
+import { MessageSquare, Mail, Shield, Crown, UserCog } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import type { UserSearchResult } from '@/stores/search-store'
+import { HighlightedText } from './search-result-message'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export type UserStatus = 'online' | 'away' | 'busy' | 'offline';
+export type UserStatus = 'online' | 'away' | 'busy' | 'offline'
 
 export interface SearchResultUserProps {
   /** The user search result data */
-  result: UserSearchResult;
+  result: UserSearchResult
   /** The search query to highlight */
-  query?: string;
+  query?: string
   /** Whether this result is currently selected/focused */
-  isSelected?: boolean;
+  isSelected?: boolean
   /** Callback when "Message" button is clicked */
-  onMessage?: (result: UserSearchResult) => void;
+  onMessage?: (result: UserSearchResult) => void
   /** Callback when user profile is clicked */
-  onClick?: (result: UserSearchResult) => void;
+  onClick?: (result: UserSearchResult) => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
 // Status Configuration
 // ============================================================================
 
-const statusConfig: Record<
-  UserStatus,
-  { label: string; color: string; bgColor: string }
-> = {
+const statusConfig: Record<UserStatus, { label: string; color: string; bgColor: string }> = {
   online: {
     label: 'Online',
     color: 'bg-green-500',
@@ -59,22 +56,19 @@ const statusConfig: Record<
     color: 'bg-gray-400',
     bgColor: 'bg-gray-400/20',
   },
-};
+}
 
 // ============================================================================
 // Role Configuration
 // ============================================================================
 
-const roleConfig: Record<
-  string,
-  { label: string; icon: React.ElementType; color: string }
-> = {
+const roleConfig: Record<string, { label: string; icon: React.ElementType; color: string }> = {
   owner: { label: 'Owner', icon: Crown, color: 'text-yellow-500' },
   admin: { label: 'Admin', icon: Shield, color: 'text-red-500' },
   moderator: { label: 'Moderator', icon: UserCog, color: 'text-blue-500' },
   member: { label: 'Member', icon: () => null, color: 'text-muted-foreground' },
   guest: { label: 'Guest', icon: () => null, color: 'text-muted-foreground' },
-};
+}
 
 // ============================================================================
 // Component
@@ -89,20 +83,20 @@ export function SearchResultUser({
   className,
 }: SearchResultUserProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
   const handleMessage = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onMessage?.(result);
-  };
+    e.stopPropagation()
+    onMessage?.(result)
+  }
 
   // Get status config
-  const status = statusConfig[result.status];
+  const status = statusConfig[result.status]
 
   // Get role config
-  const role = roleConfig[result.role] ?? roleConfig.member;
-  const RoleIcon = role.icon;
+  const role = roleConfig[result.role] ?? roleConfig.member
+  const RoleIcon = role.icon
 
   // Get initials for avatar fallback
   const initials = result.displayName
@@ -110,12 +104,12 @@ export function SearchResultUser({
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2)
 
   // Format last seen
   const lastSeenText = result.lastSeen
     ? `Last seen ${formatDistanceToNow(new Date(result.lastSeen), { addSuffix: true })}`
-    : null;
+    : null
 
   return (
     <div
@@ -124,23 +118,21 @@ export function SearchResultUser({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
         'group relative flex items-center gap-3 rounded-lg border p-3 transition-colors',
         'hover:bg-accent/50 cursor-pointer',
-        isSelected && 'bg-accent border-primary/50',
+        isSelected && 'border-primary/50 bg-accent',
         className
       )}
     >
       {/* Avatar with presence indicator */}
       <div className="relative shrink-0">
         <Avatar className="h-10 w-10">
-          {result.avatar && (
-            <AvatarImage src={result.avatar} alt={result.displayName} />
-          )}
+          {result.avatar && <AvatarImage src={result.avatar} alt={result.displayName} />}
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
 
@@ -200,18 +192,13 @@ export function SearchResultUser({
           isSelected && 'opacity-100'
         )}
       >
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={handleMessage}
-          className="h-8 gap-1.5 px-3"
-        >
+        <Button variant="secondary" size="sm" onClick={handleMessage} className="h-8 gap-1.5 px-3">
           <MessageSquare className="h-4 w-4" />
           Message
         </Button>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -219,11 +206,11 @@ export function SearchResultUser({
 // ============================================================================
 
 export interface CompactUserResultProps {
-  result: UserSearchResult;
-  query?: string;
-  isSelected?: boolean;
-  onClick?: (result: UserSearchResult) => void;
-  className?: string;
+  result: UserSearchResult
+  query?: string
+  isSelected?: boolean
+  onClick?: (result: UserSearchResult) => void
+  className?: string
 }
 
 export function CompactUserResult({
@@ -234,17 +221,17 @@ export function CompactUserResult({
   className,
 }: CompactUserResultProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
-  const status = statusConfig[result.status];
+  const status = statusConfig[result.status]
 
   const initials = result.displayName
     .split(' ')
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2)
 
   return (
     <div
@@ -253,8 +240,8 @@ export function CompactUserResult({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
@@ -267,9 +254,7 @@ export function CompactUserResult({
       {/* Avatar with presence */}
       <div className="relative shrink-0">
         <Avatar className="h-6 w-6">
-          {result.avatar && (
-            <AvatarImage src={result.avatar} alt={result.displayName} />
-          )}
+          {result.avatar && <AvatarImage src={result.avatar} alt={result.displayName} />}
           <AvatarFallback className="text-xs">{initials}</AvatarFallback>
         </Avatar>
         <span
@@ -286,11 +271,9 @@ export function CompactUserResult({
       </span>
 
       {/* Username */}
-      <span className="shrink-0 text-xs text-muted-foreground">
-        @{result.username}
-      </span>
+      <span className="shrink-0 text-xs text-muted-foreground">@{result.username}</span>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -298,32 +281,27 @@ export function CompactUserResult({
 // ============================================================================
 
 export interface UserCardProps {
-  result: UserSearchResult;
-  onMessage?: (result: UserSearchResult) => void;
-  onEmail?: (result: UserSearchResult) => void;
-  className?: string;
+  result: UserSearchResult
+  onMessage?: (result: UserSearchResult) => void
+  onEmail?: (result: UserSearchResult) => void
+  className?: string
 }
 
-export function UserCard({
-  result,
-  onMessage,
-  onEmail,
-  className,
-}: UserCardProps) {
-  const status = statusConfig[result.status];
-  const role = roleConfig[result.role] ?? roleConfig.member;
-  const RoleIcon = role.icon;
+export function UserCard({ result, onMessage, onEmail, className }: UserCardProps) {
+  const status = statusConfig[result.status]
+  const role = roleConfig[result.role] ?? roleConfig.member
+  const RoleIcon = role.icon
 
   const initials = result.displayName
     .split(' ')
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2)
 
   const lastSeenText = result.lastSeen
     ? `Last seen ${formatDistanceToNow(new Date(result.lastSeen), { addSuffix: true })}`
-    : null;
+    : null
 
   return (
     <div className={cn('w-64 rounded-lg border bg-popover p-4', className)}>
@@ -331,9 +309,7 @@ export function UserCard({
       <div className="flex items-start gap-3">
         <div className="relative">
           <Avatar className="h-12 w-12">
-            {result.avatar && (
-              <AvatarImage src={result.avatar} alt={result.displayName} />
-            )}
+            {result.avatar && <AvatarImage src={result.avatar} alt={result.displayName} />}
             <AvatarFallback>{initials}</AvatarFallback>
           </Avatar>
           <span
@@ -355,13 +331,9 @@ export function UserCard({
 
       {/* Status */}
       <div className="mt-3 flex items-center gap-2 text-sm">
-        <span
-          className={cn('h-2 w-2 rounded-full', status.color)}
-        />
+        <span className={cn('h-2 w-2 rounded-full', status.color)} />
         <span className="text-muted-foreground">
-          {result.status === 'offline' && lastSeenText
-            ? lastSeenText
-            : status.label}
+          {result.status === 'offline' && lastSeenText ? lastSeenText : status.label}
         </span>
       </div>
 
@@ -387,18 +359,13 @@ export function UserCard({
           Message
         </Button>
         {result.email && (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onEmail?.(result)}
-            className="gap-1.5"
-          >
+          <Button variant="outline" size="sm" onClick={() => onEmail?.(result)} className="gap-1.5">
             <Mail className="h-4 w-4" />
           </Button>
         )}
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -407,19 +374,14 @@ export function UserCard({
 
 export function UserResultSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex items-center gap-3 rounded-lg border p-3 animate-pulse',
-        className
-      )}
-    >
+    <div className={cn('flex animate-pulse items-center gap-3 rounded-lg border p-3', className)}>
       <div className="h-10 w-10 shrink-0 rounded-full bg-muted" />
       <div className="min-w-0 flex-1 space-y-2">
         <div className="h-4 w-32 rounded bg-muted" />
         <div className="h-3 w-48 rounded bg-muted" />
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -427,35 +389,26 @@ export function UserResultSkeleton({ className }: { className?: string }) {
 // ============================================================================
 
 export interface PresenceIndicatorProps {
-  status: UserStatus;
-  size?: 'sm' | 'md' | 'lg';
-  className?: string;
+  status: UserStatus
+  size?: 'sm' | 'md' | 'lg'
+  className?: string
 }
 
-export function PresenceIndicator({
-  status,
-  size = 'md',
-  className,
-}: PresenceIndicatorProps) {
-  const config = statusConfig[status];
+export function PresenceIndicator({ status, size = 'md', className }: PresenceIndicatorProps) {
+  const config = statusConfig[status]
 
   const sizeClasses = {
     sm: 'h-2 w-2',
     md: 'h-3 w-3',
     lg: 'h-4 w-4',
-  };
+  }
 
   return (
     <span
-      className={cn(
-        'rounded-full',
-        sizeClasses[size],
-        config.color,
-        className
-      )}
+      className={cn('rounded-full', sizeClasses[size], config.color, className)}
       title={config.label}
     />
-  );
+  )
 }
 
-export default SearchResultUser;
+export default SearchResultUser

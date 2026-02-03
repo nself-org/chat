@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '@/lib/utils'
 
 const unreadBadgeVariants = cva('rounded-full bg-primary', {
   variants: {
@@ -33,34 +33,35 @@ const unreadBadgeVariants = cva('rounded-full bg-primary', {
     size: 'md',
     variant: 'dot',
   },
-});
+})
 
 export interface UnreadBadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
+  extends
+    React.HTMLAttributes<HTMLSpanElement>,
     Omit<VariantProps<typeof unreadBadgeVariants>, 'variant'> {
   /**
    * The unread count to display. If provided and > 0, shows count.
    * If not provided or 0, shows a dot.
    */
-  count?: number;
+  count?: number
 
   /**
    * Whether to show as a simple dot instead of count
    * @default auto-detected based on count
    */
-  showDot?: boolean;
+  showDot?: boolean
 
   /**
    * Maximum count to display before showing "max+"
    * @default 99
    */
-  max?: number;
+  max?: number
 
   /**
    * Whether to show the badge when count is 0
    * @default false
    */
-  showZero?: boolean;
+  showZero?: boolean
 }
 
 /**
@@ -80,12 +81,12 @@ export function UnreadBadge({
   ...props
 }: UnreadBadgeProps) {
   // Determine whether to show dot or count
-  const isDot = showDot === true || (showDot === undefined && (count === undefined || count === 0));
-  const hasUnread = count !== undefined && count > 0;
+  const isDot = showDot === true || (showDot === undefined && (count === undefined || count === 0))
+  const hasUnread = count !== undefined && count > 0
 
   // Don't render if no unread and not showing zero
   if (!isDot && !hasUnread && !showZero) {
-    return null;
+    return null
   }
 
   // If showing dot, just render the dot
@@ -96,12 +97,12 @@ export function UnreadBadge({
         aria-label="Unread messages"
         {...props}
       />
-    );
+    )
   }
 
   // If count is provided and we're not forcing dot
   if (!isDot && (hasUnread || showZero)) {
-    const displayCount = count! > max ? `${max}+` : count!.toString();
+    const displayCount = count! > max ? `${max}+` : count!.toString()
 
     return (
       <span
@@ -111,7 +112,7 @@ export function UnreadBadge({
       >
         {displayCount}
       </span>
-    );
+    )
   }
 
   // Show dot by default if there's any indication of unread
@@ -122,12 +123,12 @@ export function UnreadBadge({
         aria-hidden="true"
         {...props}
       />
-    );
+    )
   }
 
-  return null;
+  return null
 }
 
-UnreadBadge.displayName = 'UnreadBadge';
+UnreadBadge.displayName = 'UnreadBadge'
 
-export default UnreadBadge;
+export default UnreadBadge

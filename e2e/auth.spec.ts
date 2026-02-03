@@ -450,8 +450,7 @@ test.describe('Authentication UI', () => {
     const userAvatar = page.locator('[data-testid="user-avatar"], .avatar, [alt*="avatar"]')
     const userName = page.locator('[data-testid="user-name"], .user-name')
 
-    const hasUserIndicator =
-      (await userAvatar.first().isVisible()) || (await userName.isVisible())
+    const hasUserIndicator = (await userAvatar.first().isVisible()) || (await userName.isVisible())
 
     // Should show some user indicator when logged in
     expect(hasUserIndicator || true).toBe(true) // Graceful in dev mode

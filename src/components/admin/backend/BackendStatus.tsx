@@ -12,9 +12,11 @@ import {
   Database,
   Server,
   Shield,
-  Zap
+  Zap,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
+
+import { logger } from '@/lib/logger'
 
 interface ServiceStatus {
   name: string
@@ -47,7 +49,7 @@ export function BackendStatus() {
           uptime: '5d 3h',
           cpu: '12%',
           memory: '1.2GB',
-          url: 'postgres://localhost:5432'
+          url: 'postgres://localhost:5432',
         },
         {
           name: 'Hasura GraphQL',
@@ -55,7 +57,7 @@ export function BackendStatus() {
           uptime: '5d 3h',
           cpu: '8%',
           memory: '512MB',
-          url: 'https://api.local.nself.org'
+          url: 'https://api.local.nself.org',
         },
         {
           name: 'Auth Service',
@@ -63,7 +65,7 @@ export function BackendStatus() {
           uptime: '5d 3h',
           cpu: '3%',
           memory: '256MB',
-          url: 'https://auth.local.nself.org'
+          url: 'https://auth.local.nself.org',
         },
         {
           name: 'Nginx',
@@ -71,22 +73,22 @@ export function BackendStatus() {
           uptime: '5d 3h',
           cpu: '1%',
           memory: '64MB',
-          url: 'https://local.nself.org'
+          url: 'https://local.nself.org',
         },
         {
           name: 'Redis',
           status: 'healthy',
           uptime: '5d 3h',
           cpu: '2%',
-          memory: '128MB'
-        }
+          memory: '128MB',
+        },
       ]
 
       setServices(mockData)
       setLastUpdate(new Date())
       setLoading(false)
     } catch (error) {
-      console.error('Failed to fetch service status:', error)
+      logger.error('Failed to fetch service status:', error)
       setLoading(false)
     }
   }
@@ -109,14 +111,10 @@ export function BackendStatus() {
       healthy: 'default' as const,
       unhealthy: 'destructive' as const,
       starting: 'secondary' as const,
-      stopped: 'outline' as const
+      stopped: 'outline' as const,
     }
 
-    return (
-      <Badge variant={variants[status]}>
-        {status}
-      </Badge>
-    )
+    return <Badge variant={variants[status]}>{status}</Badge>
   }
 
   const getServiceIcon = (name: string) => {
@@ -126,7 +124,7 @@ export function BackendStatus() {
     return <Server className="h-5 w-5" />
   }
 
-  const healthyCount = services.filter(s => s.status === 'healthy').length
+  const healthyCount = services.filter((s) => s.status === 'healthy').length
   const totalCount = services.length
   const healthPercentage = totalCount > 0 ? Math.round((healthyCount / totalCount) * 100) : 0
 
@@ -140,18 +138,13 @@ export function BackendStatus() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={fetchServiceStatus}
-            disabled={loading}
-          >
-            <RefreshCw className={`h-4 w-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+          <Button variant="outline" size="sm" onClick={fetchServiceStatus} disabled={loading}>
+            <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
           <Button variant="outline" size="sm" asChild>
             <a href="https://admin.local.nself.org" target="_blank" rel="noopener noreferrer">
-              <Terminal className="h-4 w-4 mr-2" />
+              <Terminal className="mr-2 h-4 w-4" />
               Open Admin UI
             </a>
           </Button>
@@ -192,12 +185,12 @@ export function BackendStatus() {
                   <span className="font-medium">{service.memory}</span>
                 </div>
                 {service.url && (
-                  <div className="pt-2 border-t">
+                  <div className="border-t pt-2">
                     <a
                       href={service.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-xs text-blue-600 hover:underline truncate block"
+                      className="block truncate text-xs text-blue-600 hover:underline"
                     >
                       {service.url}
                     </a>

@@ -7,11 +7,7 @@
 import { create } from 'zustand'
 import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import type {
-  LinkPreviewData,
-  LinkPreviewSettings,
-  PreviewStatus,
-} from '@/lib/link-preview'
+import type { LinkPreviewData, LinkPreviewSettings, PreviewStatus } from '@/lib/link-preview'
 import { DEFAULT_PREVIEW_SETTINGS } from '@/lib/link-preview'
 
 // ============================================================================

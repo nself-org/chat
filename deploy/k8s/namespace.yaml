@@ -10,4 +10,4 @@ metadata:
     app.kubernetes.io/part-of: nself
     app.kubernetes.io/managed-by: kubectl
   annotations:
-    description: "Namespace for nself-chat team communication platform"
+    description: 'Namespace for nself-chat team communication platform'

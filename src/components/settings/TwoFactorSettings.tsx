@@ -1,12 +1,12 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { SettingsSection } from './settings-section';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Shield, Smartphone, Key, Check, AlertCircle, Copy } from 'lucide-react';
-import { Alert, AlertDescription } from '@/components/ui/alert';
+import { useState } from 'react'
+import { SettingsSection } from './settings-section'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Shield, Smartphone, Key, Check, AlertCircle, Copy } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import {
   Dialog,
   DialogContent,
@@ -14,29 +14,29 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { cn } from '@/lib/utils';
+} from '@/components/ui/dialog'
+import { cn } from '@/lib/utils'
 
 interface TwoFactorSettingsProps {
-  className?: string;
+  className?: string
 }
 
 /**
  * TwoFactorSettings - 2FA setup and management
  */
 export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
-  const [enabled, setEnabled] = useState(false);
-  const [setupOpen, setSetupOpen] = useState(false);
-  const [disableOpen, setDisableOpen] = useState(false);
-  const [step, setStep] = useState<'qr' | 'verify' | 'backup'>('qr');
-  const [verifyCode, setVerifyCode] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [backupCodes, setBackupCodes] = useState<string[]>([]);
-  const [copied, setCopied] = useState(false);
+  const [enabled, setEnabled] = useState(false)
+  const [setupOpen, setSetupOpen] = useState(false)
+  const [disableOpen, setDisableOpen] = useState(false)
+  const [step, setStep] = useState<'qr' | 'verify' | 'backup'>('qr')
+  const [verifyCode, setVerifyCode] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [backupCodes, setBackupCodes] = useState<string[]>([])
+  const [copied, setCopied] = useState(false)
 
   // Mock QR code secret
-  const mockSecret = 'JBSWY3DPEHPK3PXP';
+  const mockSecret = 'JBSWY3DPEHPK3PXP'
   const mockBackupCodes = [
     'A1B2C3D4',
     'E5F6G7H8',
@@ -46,64 +46,62 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
     'U1V2W3X4',
     'Y5Z6A7B8',
     'C9D0E1F2',
-  ];
+  ]
 
   const handleEnable = async () => {
-    setSetupOpen(true);
-    setStep('qr');
-    setVerifyCode('');
-    setError(null);
-  };
+    setSetupOpen(true)
+    setStep('qr')
+    setVerifyCode('')
+    setError(null)
+  }
 
   const handleVerify = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
       // Validate code format
       if (!/^\d{6}$/.test(verifyCode)) {
-        throw new Error('Please enter a valid 6-digit code');
+        throw new Error('Please enter a valid 6-digit code')
       }
 
-      // TODO: Implement actual 2FA verification
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      setBackupCodes(mockBackupCodes);
-      setStep('backup');
+      setBackupCodes(mockBackupCodes)
+      setStep('backup')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Verification failed');
+      setError(err instanceof Error ? err.message : 'Verification failed')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const handleComplete = () => {
-    setEnabled(true);
-    setSetupOpen(false);
-  };
+    setEnabled(true)
+    setSetupOpen(false)
+  }
 
   const handleDisable = async () => {
-    setLoading(true);
-    setError(null);
+    setLoading(true)
+    setError(null)
 
     try {
-      // TODO: Implement actual 2FA disable
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000))
 
-      setEnabled(false);
-      setDisableOpen(false);
+      setEnabled(false)
+      setDisableOpen(false)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to disable 2FA');
+      setError(err instanceof Error ? err.message : 'Failed to disable 2FA')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const copyBackupCodes = async () => {
-    await navigator.clipboard.writeText(backupCodes.join('\n'));
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+    await navigator.clipboard.writeText(backupCodes.join('\n'))
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
 
   return (
     <SettingsSection
@@ -123,9 +121,7 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
             <div
               className={cn(
                 'flex h-10 w-10 items-center justify-center rounded-lg',
-                enabled
-                  ? 'bg-green-100 dark:bg-green-900'
-                  : 'bg-muted'
+                enabled ? 'bg-green-100 dark:bg-green-900' : 'bg-muted'
               )}
             >
               {enabled ? (
@@ -157,9 +153,9 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
         {!enabled && (
           <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950">
             <p className="text-sm text-blue-800 dark:text-blue-200">
-              <strong>Why use 2FA?</strong> Two-factor authentication adds an extra
-              layer of security by requiring a verification code from your phone in
-              addition to your password.
+              <strong>Why use 2FA?</strong> Two-factor authentication adds an extra layer of
+              security by requiring a verification code from your phone in addition to your
+              password.
             </p>
           </div>
         )}
@@ -208,9 +204,7 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
                 <p className="text-sm text-muted-foreground">
                   Can&apos;t scan? Enter this code manually:
                 </p>
-                <code className="rounded bg-muted px-3 py-1.5 font-mono text-sm">
-                  {mockSecret}
-                </code>
+                <code className="rounded bg-muted px-3 py-1.5 font-mono text-sm">{mockSecret}</code>
               </div>
             </div>
           )}
@@ -236,7 +230,7 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
 
           {step === 'backup' && (
             <div className="space-y-4 py-4">
-              <div className="rounded-lg border bg-muted/50 p-4">
+              <div className="bg-muted/50 rounded-lg border p-4">
                 <div className="grid grid-cols-2 gap-2">
                   {backupCodes.map((code, index) => (
                     <code
@@ -248,11 +242,7 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
                   ))}
                 </div>
               </div>
-              <Button
-                variant="outline"
-                onClick={copyBackupCodes}
-                className="w-full gap-2"
-              >
+              <Button variant="outline" onClick={copyBackupCodes} className="w-full gap-2">
                 {copied ? (
                   <>
                     <Check className="h-4 w-4" />
@@ -275,25 +265,18 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
           )}
 
           <DialogFooter>
-            {step === 'qr' && (
-              <Button onClick={() => setStep('verify')}>Continue</Button>
-            )}
+            {step === 'qr' && <Button onClick={() => setStep('verify')}>Continue</Button>}
             {step === 'verify' && (
               <>
                 <Button variant="outline" onClick={() => setStep('qr')}>
                   Back
                 </Button>
-                <Button
-                  onClick={handleVerify}
-                  disabled={loading || verifyCode.length !== 6}
-                >
+                <Button onClick={handleVerify} disabled={loading || verifyCode.length !== 6}>
                   {loading ? 'Verifying...' : 'Verify'}
                 </Button>
               </>
             )}
-            {step === 'backup' && (
-              <Button onClick={handleComplete}>Done</Button>
-            )}
+            {step === 'backup' && <Button onClick={handleComplete}>Done</Button>}
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -304,8 +287,7 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
           <DialogHeader>
             <DialogTitle>Disable Two-Factor Authentication</DialogTitle>
             <DialogDescription>
-              Are you sure you want to disable 2FA? Your account will be less secure
-              without it.
+              Are you sure you want to disable 2FA? Your account will be less secure without it.
             </DialogDescription>
           </DialogHeader>
 
@@ -327,5 +309,5 @@ export function TwoFactorSettings({ className }: TwoFactorSettingsProps) {
         </DialogContent>
       </Dialog>
     </SettingsSection>
-  );
+  )
 }

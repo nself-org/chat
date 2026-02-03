@@ -167,7 +167,7 @@ describe('Drafts Store', () => {
         const draft = createTestDraft({
           contextKey: 'channel:ch-123',
           contextType: 'channel',
-          contextId: 'ch-123'
+          contextId: 'ch-123',
         })
 
         act(() => {
@@ -260,7 +260,7 @@ describe('Drafts Store', () => {
       it('should check by context type and id', () => {
         const draft = createTestDraft({
           contextKey: 'channel:ch-123',
-          content: 'Hello'
+          content: 'Hello',
         })
 
         act(() => {
@@ -765,10 +765,13 @@ describe('Drafts Store', () => {
     it('should handle drafts with both attachments and content', () => {
       act(() => {
         useDraftsStore.setState((state) => {
-          state.drafts.set('test', createTestDraft({
-            content: 'With attachment',
-            attachments: [createTestAttachment()],
-          }))
+          state.drafts.set(
+            'test',
+            createTestDraft({
+              content: 'With attachment',
+              attachments: [createTestAttachment()],
+            })
+          )
         })
       })
 
@@ -787,20 +790,26 @@ describe('Drafts Store', () => {
       const now = Date.now()
       act(() => {
         useDraftsStore.setState((state) => {
-          state.drafts.set('ch:1', createTestDraft({
-            contextKey: 'channel:1',
-            contextType: 'channel',
-            content: 'Channel with reply',
-            replyToMessageId: 'msg-1',
-            lastModified: now,
-          }))
-          state.drafts.set('ch:2', createTestDraft({
-            contextKey: 'channel:2',
-            contextType: 'channel',
-            content: 'Channel without reply',
-            replyToMessageId: null,
-            lastModified: now - 10000,
-          }))
+          state.drafts.set(
+            'ch:1',
+            createTestDraft({
+              contextKey: 'channel:1',
+              contextType: 'channel',
+              content: 'Channel with reply',
+              replyToMessageId: 'msg-1',
+              lastModified: now,
+            })
+          )
+          state.drafts.set(
+            'ch:2',
+            createTestDraft({
+              contextKey: 'channel:2',
+              contextType: 'channel',
+              content: 'Channel without reply',
+              replyToMessageId: null,
+              lastModified: now - 10000,
+            })
+          )
         })
       })
 

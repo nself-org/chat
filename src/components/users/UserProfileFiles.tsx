@@ -41,15 +41,12 @@ const UserProfileFiles = React.forwardRef<HTMLDivElement, UserProfileFilesProps>
       return (
         <div
           ref={ref}
-          className={cn(
-            'flex flex-col items-center justify-center py-12 text-center',
-            className
-          )}
+          className={cn('flex flex-col items-center justify-center py-12 text-center', className)}
           {...props}
         >
-          <FileText className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">No shared files</h3>
-          <p className="text-sm text-muted-foreground max-w-sm">
+          <FileText className="mb-4 h-12 w-12 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-medium">No shared files</h3>
+          <p className="max-w-sm text-sm text-muted-foreground">
             Files shared with this user will appear here.
           </p>
         </div>
@@ -80,26 +77,20 @@ const UserProfileFiles = React.forwardRef<HTMLDivElement, UserProfileFilesProps>
     }, [files])
 
     return (
-      <div ref={ref} className={cn('p-6 space-y-6', className)} {...props}>
+      <div ref={ref} className={cn('space-y-6 p-6', className)} {...props}>
         {/* Images */}
         {groupedFiles.images.length > 0 && (
           <section>
-            <h3 className="text-sm font-semibold mb-3">
-              Images ({groupedFiles.images.length})
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            <h3 className="mb-3 text-sm font-semibold">Images ({groupedFiles.images.length})</h3>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
               {groupedFiles.images.map((file) => (
                 <button
                   key={file.id}
                   onClick={() => onFileClick?.(file)}
-                  className="relative aspect-square rounded-lg overflow-hidden hover:opacity-80 transition-opacity group"
+                  className="group relative aspect-square overflow-hidden rounded-lg transition-opacity hover:opacity-80"
                 >
-                  <img
-                    src={file.url}
-                    alt={file.name}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <img src={file.url} alt={file.name} className="h-full w-full object-cover" />
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
                     <Download className="h-6 w-6 text-white" />
                   </div>
                 </button>
@@ -111,7 +102,7 @@ const UserProfileFiles = React.forwardRef<HTMLDivElement, UserProfileFilesProps>
         {/* Documents */}
         {groupedFiles.documents.length > 0 && (
           <section>
-            <h3 className="text-sm font-semibold mb-3">
+            <h3 className="mb-3 text-sm font-semibold">
               Documents ({groupedFiles.documents.length})
             </h3>
             <div className="space-y-2">
@@ -125,7 +116,7 @@ const UserProfileFiles = React.forwardRef<HTMLDivElement, UserProfileFilesProps>
         {/* Other files */}
         {groupedFiles.other.length > 0 && (
           <section>
-            <h3 className="text-sm font-semibold mb-3">
+            <h3 className="mb-3 text-sm font-semibold">
               Other Files ({groupedFiles.other.length})
             </h3>
             <div className="space-y-2">
@@ -155,16 +146,15 @@ function FileRow({ file, onFileClick }: FileRowProps) {
     <button
       onClick={() => onFileClick?.(file)}
       className={cn(
-        'w-full flex items-center gap-3 p-3 rounded-lg',
-        'hover:bg-muted/50 transition-colors text-left'
+        'flex w-full items-center gap-3 rounded-lg p-3',
+        'hover:bg-muted/50 text-left transition-colors'
       )}
     >
       <FileIcon file={file.name} className="h-10 w-10" />
-      <div className="flex-1 min-w-0">
-        <p className="font-medium text-sm truncate">{file.name}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{file.name}</p>
         <p className="text-xs text-muted-foreground">
-          {formatFileSize(file.size)} -{' '}
-          {formatDistanceToNow(file.uploadedAt, { addSuffix: true })}
+          {formatFileSize(file.size)} - {formatDistanceToNow(file.uploadedAt, { addSuffix: true })}
         </p>
       </div>
       <Button

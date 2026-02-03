@@ -9,6 +9,8 @@ import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import type { TenantContext, Tenant } from './types'
 
+import { logger } from '@/lib/logger'
+
 /**
  * Configuration for multi-tenant routing
  */
@@ -44,10 +46,7 @@ export function parseTenantFromHostname(
   const baseDomainWithoutPort = config.baseDomain.split(':')[0]
 
   // Handle localhost and IP addresses
-  if (
-    hostnameWithoutPort === 'localhost' ||
-    hostnameWithoutPort.match(/^\d+\.\d+\.\d+\.\d+$/)
-  ) {
+  if (hostnameWithoutPort === 'localhost' || hostnameWithoutPort.match(/^\d+\.\d+\.\d+\.\d+$/)) {
     // In development, use default tenant or extract from path
     return {
       subdomain: config.defaultTenant || null,
@@ -58,10 +57,7 @@ export function parseTenantFromHostname(
   // Extract subdomain from hostname
   // e.g., 'acme.nchat.app' -> 'acme'
   if (hostnameWithoutPort.endsWith(`.${baseDomainWithoutPort}`)) {
-    const subdomain = hostnameWithoutPort.replace(
-      `.${baseDomainWithoutPort}`,
-      ''
-    )
+    const subdomain = hostnameWithoutPort.replace(`.${baseDomainWithoutPort}`, '')
 
     // Ignore 'www' subdomain
     if (subdomain === 'www') {
@@ -106,7 +102,7 @@ export async function fetchTenant(
     const tenant = await response.json()
     return tenant
   } catch (error) {
-    console.error('Error fetching tenant:', error)
+    logger.error('Error fetching tenant:', error)
     return null
   }
 }
@@ -130,10 +126,7 @@ export function buildTenantContext(
 /**
  * Store tenant context in request headers
  */
-export function storeTenantContext(
-  request: NextRequest,
-  context: TenantContext
-): NextRequest {
+export function storeTenantContext(request: NextRequest, context: TenantContext): NextRequest {
   const requestHeaders = new Headers(request.headers)
 
   // Store tenant context as headers for API routes
@@ -185,10 +178,7 @@ export async function tenantMiddleware(
     const tenant = await fetchTenant(config.defaultTenant, '', false)
 
     if (!tenant) {
-      return NextResponse.json(
-        { error: 'Default tenant not found' },
-        { status: 500 }
-      )
+      return NextResponse.json({ error: 'Default tenant not found' }, { status: 500 })
     }
 
     const context = buildTenantContext(tenant, config.defaultTenant, false)
@@ -201,18 +191,12 @@ export async function tenantMiddleware(
 
   // Parse tenant from hostname
   const hostname = request.headers.get('host') || ''
-  const { subdomain, isCustomDomain } = parseTenantFromHostname(
-    hostname,
-    config
-  )
+  const { subdomain, isCustomDomain } = parseTenantFromHostname(hostname, config)
 
   // No tenant found - redirect to tenant selection or creation
   if (!subdomain && !isCustomDomain) {
     // Redirect to main landing page or tenant creation
-    const mainUrl = new URL(
-      `/select-tenant`,
-      `https://${config.baseDomain}`
-    )
+    const mainUrl = new URL(`/select-tenant`, `https://${config.baseDomain}`)
     return NextResponse.redirect(mainUrl)
   }
 
@@ -221,22 +205,16 @@ export async function tenantMiddleware(
 
   if (!tenant) {
     // Tenant not found - show error page
-    return NextResponse.rewrite(
-      new URL('/tenant-not-found', request.url)
-    )
+    return NextResponse.rewrite(new URL('/tenant-not-found', request.url))
   }
 
   // Check tenant status
   if (tenant.status === 'suspended') {
-    return NextResponse.rewrite(
-      new URL('/tenant-suspended', request.url)
-    )
+    return NextResponse.rewrite(new URL('/tenant-suspended', request.url))
   }
 
   if (tenant.status === 'cancelled') {
-    return NextResponse.rewrite(
-      new URL('/tenant-cancelled', request.url)
-    )
+    return NextResponse.rewrite(new URL('/tenant-cancelled', request.url))
   }
 
   // Check trial expiration
@@ -245,17 +223,11 @@ export async function tenantMiddleware(
     tenant.trialEndsAt &&
     new Date(tenant.trialEndsAt) < new Date()
   ) {
-    return NextResponse.rewrite(
-      new URL('/trial-expired', request.url)
-    )
+    return NextResponse.rewrite(new URL('/trial-expired', request.url))
   }
 
   // Build tenant context
-  const context = buildTenantContext(
-    tenant,
-    subdomain || hostname,
-    isCustomDomain
-  )
+  const context = buildTenantContext(tenant, subdomain || hostname, isCustomDomain)
 
   // Store context in headers
   const modifiedRequest = storeTenantContext(request, context)

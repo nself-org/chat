@@ -28,7 +28,7 @@ import {
   serializeSubscription,
   PushSubscriptionManager,
   PushSubscriptionData,
-} from '../push-subscription';
+} from '../push-subscription'
 
 // ============================================================================
 // Mocks
@@ -45,41 +45,41 @@ const mockPushSubscription: Partial<PushSubscription> = {
       auth: 'test-auth-key',
     },
   }),
-};
+}
 
 const mockPushManager = {
   getSubscription: jest.fn().mockResolvedValue(null),
   subscribe: jest.fn().mockResolvedValue(mockPushSubscription),
-};
+}
 
 const mockServiceWorkerRegistration: Partial<ServiceWorkerRegistration> = {
   pushManager: mockPushManager as unknown as PushManager,
-};
+}
 
 const mockServiceWorker = {
   register: jest.fn().mockResolvedValue(mockServiceWorkerRegistration),
   ready: Promise.resolve(mockServiceWorkerRegistration),
-};
+}
 
-const mockNotification = jest.fn();
+const mockNotification = jest.fn()
 Object.defineProperty(mockNotification, 'permission', {
   value: 'default',
   writable: true,
   configurable: true,
-});
-mockNotification.requestPermission = jest.fn().mockResolvedValue('granted');
+})
+mockNotification.requestPermission = jest.fn().mockResolvedValue('granted')
 
 // ============================================================================
 // Test Setup
 // ============================================================================
 
 describe('Push Subscription', () => {
-  const originalNavigator = global.navigator;
-  const originalWindow = global.window;
-  const originalNotification = global.Notification;
+  const originalNavigator = global.navigator
+  const originalWindow = global.window
+  const originalNotification = global.Notification
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.clearAllMocks()
 
     // Setup mocks
     Object.defineProperty(global, 'navigator', {
@@ -88,7 +88,7 @@ describe('Push Subscription', () => {
       },
       writable: true,
       configurable: true,
-    });
+    })
 
     Object.defineProperty(global, 'window', {
       value: {
@@ -102,42 +102,42 @@ describe('Push Subscription', () => {
       },
       writable: true,
       configurable: true,
-    });
+    })
 
     Object.defineProperty(global, 'Notification', {
       value: mockNotification,
       writable: true,
       configurable: true,
-    });
+    })
 
     // Reset mock states
-    mockPushManager.getSubscription.mockResolvedValue(null);
-    mockPushManager.subscribe.mockResolvedValue(mockPushSubscription);
-    (mockPushSubscription.unsubscribe as jest.Mock).mockResolvedValue(true);
+    mockPushManager.getSubscription.mockResolvedValue(null)
+    mockPushManager.subscribe.mockResolvedValue(mockPushSubscription)
+    ;(mockPushSubscription.unsubscribe as jest.Mock).mockResolvedValue(true)
     Object.defineProperty(mockNotification, 'permission', {
       value: 'default',
       writable: true,
       configurable: true,
-    });
-  });
+    })
+  })
 
   afterEach(() => {
     Object.defineProperty(global, 'navigator', {
       value: originalNavigator,
       writable: true,
       configurable: true,
-    });
+    })
     Object.defineProperty(global, 'window', {
       value: originalWindow,
       writable: true,
       configurable: true,
-    });
+    })
     Object.defineProperty(global, 'Notification', {
       value: originalNotification,
       writable: true,
       configurable: true,
-    });
-  });
+    })
+  })
 
   // ==========================================================================
   // Utility Function Tests
@@ -145,56 +145,56 @@ describe('Push Subscription', () => {
 
   describe('urlBase64ToUint8Array', () => {
     it('should convert base64 string to Uint8Array', () => {
-      const base64 = 'SGVsbG8gV29ybGQ'; // "Hello World" in base64
-      const result = urlBase64ToUint8Array(base64);
+      const base64 = 'SGVsbG8gV29ybGQ' // "Hello World" in base64
+      const result = urlBase64ToUint8Array(base64)
 
-      expect(result).toBeInstanceOf(Uint8Array);
-      expect(result.length).toBeGreaterThan(0);
-    });
+      expect(result).toBeInstanceOf(Uint8Array)
+      expect(result.length).toBeGreaterThan(0)
+    })
 
     it('should handle URL-safe base64', () => {
-      const urlSafeBase64 = 'SGVsbG8tV29ybGRf'; // with - and _ characters
-      const result = urlBase64ToUint8Array(urlSafeBase64);
+      const urlSafeBase64 = 'SGVsbG8tV29ybGRf' // with - and _ characters
+      const result = urlBase64ToUint8Array(urlSafeBase64)
 
-      expect(result).toBeInstanceOf(Uint8Array);
-    });
+      expect(result).toBeInstanceOf(Uint8Array)
+    })
 
     it('should add padding when needed', () => {
-      const noPadding = 'YQ'; // 'a' in base64 without padding
-      const result = urlBase64ToUint8Array(noPadding);
+      const noPadding = 'YQ' // 'a' in base64 without padding
+      const result = urlBase64ToUint8Array(noPadding)
 
-      expect(result).toBeInstanceOf(Uint8Array);
-      expect(result[0]).toBe(97); // 'a' char code
-    });
+      expect(result).toBeInstanceOf(Uint8Array)
+      expect(result[0]).toBe(97) // 'a' char code
+    })
 
     it('should handle empty string', () => {
-      const result = urlBase64ToUint8Array('');
+      const result = urlBase64ToUint8Array('')
 
-      expect(result).toBeInstanceOf(Uint8Array);
-      expect(result.length).toBe(0);
-    });
-  });
+      expect(result).toBeInstanceOf(Uint8Array)
+      expect(result.length).toBe(0)
+    })
+  })
 
   describe('arrayBufferToBase64', () => {
     it('should convert ArrayBuffer to base64', () => {
-      const buffer = new Uint8Array([72, 101, 108, 108, 111]).buffer; // "Hello"
-      const result = arrayBufferToBase64(buffer);
+      const buffer = new Uint8Array([72, 101, 108, 108, 111]).buffer // "Hello"
+      const result = arrayBufferToBase64(buffer)
 
-      expect(typeof result).toBe('string');
-      expect(result).toBe('SGVsbG8=');
-    });
+      expect(typeof result).toBe('string')
+      expect(result).toBe('SGVsbG8=')
+    })
 
     it('should handle empty buffer', () => {
-      const buffer = new ArrayBuffer(0);
-      const result = arrayBufferToBase64(buffer);
+      const buffer = new ArrayBuffer(0)
+      const result = arrayBufferToBase64(buffer)
 
-      expect(result).toBe('');
-    });
-  });
+      expect(result).toBe('')
+    })
+  })
 
   describe('serializeSubscription', () => {
     it('should serialize PushSubscription to data object', () => {
-      const result = serializeSubscription(mockPushSubscription as PushSubscription);
+      const result = serializeSubscription(mockPushSubscription as PushSubscription)
 
       expect(result).toEqual({
         endpoint: 'https://push.example.com/abc123',
@@ -203,8 +203,8 @@ describe('Push Subscription', () => {
           p256dh: 'test-p256dh-key',
           auth: 'test-auth-key',
         },
-      });
-    });
+      })
+    })
 
     it('should handle missing keys', () => {
       const subscriptionWithoutKeys = {
@@ -213,14 +213,14 @@ describe('Push Subscription', () => {
           endpoint: 'https://push.example.com/abc123',
           keys: {},
         }),
-      };
+      }
 
-      const result = serializeSubscription(subscriptionWithoutKeys as unknown as PushSubscription);
+      const result = serializeSubscription(subscriptionWithoutKeys as unknown as PushSubscription)
 
-      expect(result.keys.p256dh).toBe('');
-      expect(result.keys.auth).toBe('');
-    });
-  });
+      expect(result.keys.p256dh).toBe('')
+      expect(result.keys.auth).toBe('')
+    })
+  })
 
   // ==========================================================================
   // Permission Tests
@@ -228,133 +228,133 @@ describe('Push Subscription', () => {
 
   describe('isPushSupported', () => {
     it('should return true when all APIs are available', () => {
-      expect(isPushSupported()).toBe(true);
-    });
+      expect(isPushSupported()).toBe(true)
+    })
 
     it('should return false when window is undefined', () => {
-      const originalWindow = global.window;
+      const originalWindow = global.window
       // @ts-expect-error - intentionally setting to undefined
-      delete global.window;
+      delete global.window
 
-      expect(isPushSupported()).toBe(false);
+      expect(isPushSupported()).toBe(false)
 
-      global.window = originalWindow;
-    });
+      global.window = originalWindow
+    })
 
     it('should return false when serviceWorker is not available', () => {
       Object.defineProperty(global.navigator, 'serviceWorker', {
         value: undefined,
         configurable: true,
-      });
+      })
 
-      expect(isPushSupported()).toBe(false);
-    });
+      expect(isPushSupported()).toBe(false)
+    })
 
     it('should return false when PushManager is not available', () => {
       // @ts-expect-error - intentionally removing
-      delete global.window.PushManager;
+      delete global.window.PushManager
 
-      expect(isPushSupported()).toBe(false);
-    });
+      expect(isPushSupported()).toBe(false)
+    })
 
     it('should return false when Notification is not available', () => {
       // @ts-expect-error - intentionally removing
-      delete global.window.Notification;
+      delete global.window.Notification
 
-      expect(isPushSupported()).toBe(false);
-    });
-  });
+      expect(isPushSupported()).toBe(false)
+    })
+  })
 
   describe('getPermission', () => {
     it('should return current permission', () => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'granted',
         configurable: true,
-      });
+      })
 
-      expect(getPermission()).toBe('granted');
-    });
+      expect(getPermission()).toBe('granted')
+    })
 
     it('should return default when Notification is not available', () => {
       // @ts-expect-error - intentionally removing
-      delete global.window.Notification;
+      delete global.window.Notification
       // @ts-expect-error - intentionally setting to undefined
-      global.Notification = undefined;
+      global.Notification = undefined
 
-      expect(getPermission()).toBe('default');
-    });
-  });
+      expect(getPermission()).toBe('default')
+    })
+  })
 
   describe('requestPermission', () => {
     it('should request permission', async () => {
-      mockNotification.requestPermission.mockResolvedValue('granted');
+      mockNotification.requestPermission.mockResolvedValue('granted')
 
-      const result = await requestPermission();
+      const result = await requestPermission()
 
-      expect(result).toBe('granted');
-      expect(mockNotification.requestPermission).toHaveBeenCalled();
-    });
+      expect(result).toBe('granted')
+      expect(mockNotification.requestPermission).toHaveBeenCalled()
+    })
 
     it('should return granted if already granted', async () => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'granted',
         configurable: true,
-      });
+      })
 
-      const result = await requestPermission();
+      const result = await requestPermission()
 
-      expect(result).toBe('granted');
-      expect(mockNotification.requestPermission).not.toHaveBeenCalled();
-    });
+      expect(result).toBe('granted')
+      expect(mockNotification.requestPermission).not.toHaveBeenCalled()
+    })
 
     it('should return denied if already denied', async () => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'denied',
         configurable: true,
-      });
+      })
 
-      const result = await requestPermission();
+      const result = await requestPermission()
 
-      expect(result).toBe('denied');
-    });
+      expect(result).toBe('denied')
+    })
 
     it('should handle permission request error', async () => {
-      mockNotification.requestPermission.mockRejectedValue(new Error('User cancelled'));
+      mockNotification.requestPermission.mockRejectedValue(new Error('User cancelled'))
 
-      const result = await requestPermission();
+      const result = await requestPermission()
 
-      expect(result).toBe('denied');
-    });
-  });
+      expect(result).toBe('denied')
+    })
+  })
 
   describe('hasPermission', () => {
     it('should return true when granted', () => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'granted',
         configurable: true,
-      });
+      })
 
-      expect(hasPermission()).toBe(true);
-    });
+      expect(hasPermission()).toBe(true)
+    })
 
     it('should return false when denied', () => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'denied',
         configurable: true,
-      });
+      })
 
-      expect(hasPermission()).toBe(false);
-    });
+      expect(hasPermission()).toBe(false)
+    })
 
     it('should return false when default', () => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'default',
         configurable: true,
-      });
+      })
 
-      expect(hasPermission()).toBe(false);
-    });
-  });
+      expect(hasPermission()).toBe(false)
+    })
+  })
 
   // ==========================================================================
   // Service Worker Tests
@@ -362,21 +362,21 @@ describe('Push Subscription', () => {
 
   describe('getServiceWorkerRegistration', () => {
     it('should return service worker registration', async () => {
-      const registration = await getServiceWorkerRegistration();
+      const registration = await getServiceWorkerRegistration()
 
-      expect(registration).toBe(mockServiceWorkerRegistration);
-    });
+      expect(registration).toBe(mockServiceWorkerRegistration)
+    })
 
     it('should return null when service worker is not available', async () => {
       Object.defineProperty(global, 'navigator', {
         value: {},
         configurable: true,
-      });
+      })
 
-      const registration = await getServiceWorkerRegistration();
+      const registration = await getServiceWorkerRegistration()
 
-      expect(registration).toBeNull();
-    });
+      expect(registration).toBeNull()
+    })
 
     it('should return null when ready rejects', async () => {
       Object.defineProperty(global.navigator, 'serviceWorker', {
@@ -384,47 +384,47 @@ describe('Push Subscription', () => {
           ready: Promise.reject(new Error('Not ready')),
         },
         configurable: true,
-      });
+      })
 
-      const registration = await getServiceWorkerRegistration();
+      const registration = await getServiceWorkerRegistration()
 
-      expect(registration).toBeNull();
-    });
-  });
+      expect(registration).toBeNull()
+    })
+  })
 
   describe('registerServiceWorker', () => {
     it('should register service worker', async () => {
-      const registration = await registerServiceWorker('/sw.js');
+      const registration = await registerServiceWorker('/sw.js')
 
-      expect(registration).toBe(mockServiceWorkerRegistration);
-      expect(mockServiceWorker.register).toHaveBeenCalledWith('/sw.js');
-    });
+      expect(registration).toBe(mockServiceWorkerRegistration)
+      expect(mockServiceWorker.register).toHaveBeenCalledWith('/sw.js')
+    })
 
     it('should use default path', async () => {
-      await registerServiceWorker();
+      await registerServiceWorker()
 
-      expect(mockServiceWorker.register).toHaveBeenCalledWith('/sw.js');
-    });
+      expect(mockServiceWorker.register).toHaveBeenCalledWith('/sw.js')
+    })
 
     it('should return null when service worker is not available', async () => {
       Object.defineProperty(global, 'navigator', {
         value: {},
         configurable: true,
-      });
+      })
 
-      const registration = await registerServiceWorker();
+      const registration = await registerServiceWorker()
 
-      expect(registration).toBeNull();
-    });
+      expect(registration).toBeNull()
+    })
 
     it('should return null when registration fails', async () => {
-      mockServiceWorker.register.mockRejectedValue(new Error('Registration failed'));
+      mockServiceWorker.register.mockRejectedValue(new Error('Registration failed'))
 
-      const registration = await registerServiceWorker();
+      const registration = await registerServiceWorker()
 
-      expect(registration).toBeNull();
-    });
-  });
+      expect(registration).toBeNull()
+    })
+  })
 
   // ==========================================================================
   // Subscription Tests
@@ -432,101 +432,101 @@ describe('Push Subscription', () => {
 
   describe('getSubscription', () => {
     it('should return current subscription', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
 
-      const subscription = await getSubscription();
+      const subscription = await getSubscription()
 
-      expect(subscription).toBe(mockPushSubscription);
-    });
+      expect(subscription).toBe(mockPushSubscription)
+    })
 
     it('should return null when not subscribed', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(null);
+      mockPushManager.getSubscription.mockResolvedValue(null)
 
-      const subscription = await getSubscription();
+      const subscription = await getSubscription()
 
-      expect(subscription).toBeNull();
-    });
+      expect(subscription).toBeNull()
+    })
 
     it('should return null when service worker not available', async () => {
       Object.defineProperty(global, 'navigator', {
         value: {},
         configurable: true,
-      });
+      })
 
-      const subscription = await getSubscription();
+      const subscription = await getSubscription()
 
-      expect(subscription).toBeNull();
-    });
+      expect(subscription).toBeNull()
+    })
 
     it('should return null on error', async () => {
-      mockPushManager.getSubscription.mockRejectedValue(new Error('Error'));
+      mockPushManager.getSubscription.mockRejectedValue(new Error('Error'))
 
-      const subscription = await getSubscription();
+      const subscription = await getSubscription()
 
-      expect(subscription).toBeNull();
-    });
-  });
+      expect(subscription).toBeNull()
+    })
+  })
 
   describe('isSubscribed', () => {
     it('should return true when subscribed', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
 
-      const result = await isSubscribed();
+      const result = await isSubscribed()
 
-      expect(result).toBe(true);
-    });
+      expect(result).toBe(true)
+    })
 
     it('should return false when not subscribed', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(null);
+      mockPushManager.getSubscription.mockResolvedValue(null)
 
-      const result = await isSubscribed();
+      const result = await isSubscribed()
 
-      expect(result).toBe(false);
-    });
-  });
+      expect(result).toBe(false)
+    })
+  })
 
   describe('subscribe', () => {
     const options = {
       applicationServerKey: 'BNhpHT3dpT8BPz_abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNO',
-    };
+    }
 
     beforeEach(() => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'granted',
         configurable: true,
-      });
-    });
+      })
+    })
 
     it('should subscribe successfully', async () => {
-      const result = await subscribe(options);
+      const result = await subscribe(options)
 
-      expect(result.success).toBe(true);
-      expect(result.subscription).toBeDefined();
-      expect(result.subscription?.endpoint).toBe('https://push.example.com/abc123');
-    });
+      expect(result.success).toBe(true)
+      expect(result.subscription).toBeDefined()
+      expect(result.subscription?.endpoint).toBe('https://push.example.com/abc123')
+    })
 
     it('should fail when push is not supported', async () => {
       // @ts-expect-error - intentionally removing
-      delete global.window.PushManager;
+      delete global.window.PushManager
 
-      const result = await subscribe(options);
+      const result = await subscribe(options)
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('not supported');
-    });
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('not supported')
+    })
 
     it('should fail when permission denied', async () => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'default',
         configurable: true,
-      });
-      mockNotification.requestPermission.mockResolvedValue('denied');
+      })
+      mockNotification.requestPermission.mockResolvedValue('denied')
 
-      const result = await subscribe(options);
+      const result = await subscribe(options)
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('permission');
-    });
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('permission')
+    })
 
     it('should fail when service worker not registered', async () => {
       Object.defineProperty(global.navigator, 'serviceWorker', {
@@ -534,121 +534,121 @@ describe('Push Subscription', () => {
           ready: Promise.reject(new Error('Not ready')),
         },
         configurable: true,
-      });
+      })
 
-      const result = await subscribe(options);
+      const result = await subscribe(options)
 
-      expect(result.success).toBe(false);
-      expect(result.error).toContain('Service worker');
-    });
+      expect(result.success).toBe(false)
+      expect(result.error).toContain('Service worker')
+    })
 
     it('should fail when pushManager.subscribe throws', async () => {
-      mockPushManager.subscribe.mockRejectedValue(new Error('Subscribe failed'));
+      mockPushManager.subscribe.mockRejectedValue(new Error('Subscribe failed'))
 
-      const result = await subscribe(options);
+      const result = await subscribe(options)
 
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('Subscribe failed');
-    });
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Subscribe failed')
+    })
 
     it('should store VAPID key in localStorage', async () => {
-      await subscribe(options);
+      await subscribe(options)
 
       expect(global.window.localStorage.setItem).toHaveBeenCalledWith(
         'nchat-vapid-public-key',
         options.applicationServerKey
-      );
-    });
-  });
+      )
+    })
+  })
 
   describe('unsubscribe', () => {
     it('should unsubscribe successfully', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
 
-      const result = await unsubscribe();
+      const result = await unsubscribe()
 
-      expect(result.success).toBe(true);
-      expect(mockPushSubscription.unsubscribe).toHaveBeenCalled();
-    });
+      expect(result.success).toBe(true)
+      expect(mockPushSubscription.unsubscribe).toHaveBeenCalled()
+    })
 
     it('should succeed when not subscribed', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(null);
+      mockPushManager.getSubscription.mockResolvedValue(null)
 
-      const result = await unsubscribe();
+      const result = await unsubscribe()
 
-      expect(result.success).toBe(true);
-    });
+      expect(result.success).toBe(true)
+    })
 
     it('should fail when unsubscribe returns false', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
-      (mockPushSubscription.unsubscribe as jest.Mock).mockResolvedValue(false);
+      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
+      ;(mockPushSubscription.unsubscribe as jest.Mock).mockResolvedValue(false)
 
-      const result = await unsubscribe();
+      const result = await unsubscribe()
 
-      expect(result.success).toBe(false);
-    });
+      expect(result.success).toBe(false)
+    })
 
     it('should fail when unsubscribe throws', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
-      (mockPushSubscription.unsubscribe as jest.Mock).mockRejectedValue(
+      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
+      ;(mockPushSubscription.unsubscribe as jest.Mock).mockRejectedValue(
         new Error('Unsubscribe failed')
-      );
+      )
 
-      const result = await unsubscribe();
+      const result = await unsubscribe()
 
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('Unsubscribe failed');
-    });
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Unsubscribe failed')
+    })
 
     it('should clear VAPID key from localStorage', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
 
-      await unsubscribe();
+      await unsubscribe()
 
-      expect(global.window.localStorage.removeItem).toHaveBeenCalledWith('nchat-vapid-public-key');
-    });
-  });
+      expect(global.window.localStorage.removeItem).toHaveBeenCalledWith('nchat-vapid-public-key')
+    })
+  })
 
   describe('updateSubscription', () => {
     const options = {
       applicationServerKey: 'BNhpHT3dpT8BPz_abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNO',
-    };
+    }
 
     beforeEach(() => {
       Object.defineProperty(mockNotification, 'permission', {
         value: 'granted',
         configurable: true,
-      });
-    });
+      })
+    })
 
     it('should update subscription', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
 
-      const result = await updateSubscription(options);
+      const result = await updateSubscription(options)
 
-      expect(result.success).toBe(true);
-      expect(mockPushSubscription.unsubscribe).toHaveBeenCalled();
-      expect(mockPushManager.subscribe).toHaveBeenCalled();
-    });
+      expect(result.success).toBe(true)
+      expect(mockPushSubscription.unsubscribe).toHaveBeenCalled()
+      expect(mockPushManager.subscribe).toHaveBeenCalled()
+    })
 
     it('should succeed when not previously subscribed', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(null);
+      mockPushManager.getSubscription.mockResolvedValue(null)
 
-      const result = await updateSubscription(options);
+      const result = await updateSubscription(options)
 
-      expect(result.success).toBe(true);
-    });
-  });
+      expect(result.success).toBe(true)
+    })
+  })
 
   describe('getSubscriptionState', () => {
     it('should return complete state', async () => {
-      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+      mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
       Object.defineProperty(mockNotification, 'permission', {
         value: 'granted',
         configurable: true,
-      });
+      })
 
-      const state = await getSubscriptionState();
+      const state = await getSubscriptionState()
 
       expect(state).toEqual({
         isSupported: true,
@@ -658,27 +658,27 @@ describe('Push Subscription', () => {
           endpoint: 'https://push.example.com/abc123',
         }),
         error: null,
-      });
-    });
+      })
+    })
 
     it('should return unsupported state', async () => {
       // @ts-expect-error - intentionally removing
-      delete global.window.PushManager;
+      delete global.window.PushManager
 
-      const state = await getSubscriptionState();
+      const state = await getSubscriptionState()
 
-      expect(state.isSupported).toBe(false);
-    });
+      expect(state.isSupported).toBe(false)
+    })
 
     it('should handle errors', async () => {
-      mockPushManager.getSubscription.mockRejectedValue(new Error('Failed'));
+      mockPushManager.getSubscription.mockRejectedValue(new Error('Failed'))
 
-      const state = await getSubscriptionState();
+      const state = await getSubscriptionState()
 
-      expect(state.error).toBe('Failed');
-      expect(state.isSubscribed).toBe(false);
-    });
-  });
+      expect(state.error).toBe('Failed')
+      expect(state.isSubscribed).toBe(false)
+    })
+  })
 
   // ==========================================================================
   // Server Sync Tests
@@ -692,40 +692,40 @@ describe('Push Subscription', () => {
         p256dh: 'test-p256dh',
         auth: 'test-auth',
       },
-    };
+    }
 
     beforeEach(() => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         text: jest.fn().mockResolvedValue(''),
-      });
-    });
+      })
+    })
 
     it('should send subscription to server', async () => {
-      const result = await sendSubscriptionToServer(subscription, '/api/push/subscribe');
+      const result = await sendSubscriptionToServer(subscription, '/api/push/subscribe')
 
-      expect(result.success).toBe(true);
-      expect(global.fetch).toHaveBeenCalledWith('/api/push/subscribe', expect.any(Object));
-    });
+      expect(result.success).toBe(true)
+      expect(global.fetch).toHaveBeenCalledWith('/api/push/subscribe', expect.any(Object))
+    })
 
     it('should include user and device info', async () => {
       await sendSubscriptionToServer(subscription, '/api/push/subscribe', {
         userId: 'user-123',
         deviceId: 'device-456',
-      });
+      })
 
       expect(global.fetch).toHaveBeenCalledWith(
         '/api/push/subscribe',
         expect.objectContaining({
           body: expect.stringContaining('user-123'),
         })
-      );
-    });
+      )
+    })
 
     it('should include custom headers', async () => {
       await sendSubscriptionToServer(subscription, '/api/push/subscribe', {
         headers: { Authorization: 'Bearer token' },
-      });
+      })
 
       expect(global.fetch).toHaveBeenCalledWith(
         '/api/push/subscribe',
@@ -734,178 +734,178 @@ describe('Push Subscription', () => {
             Authorization: 'Bearer token',
           }),
         })
-      );
-    });
+      )
+    })
 
     it('should fail on server error', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      ;(global.fetch as jest.Mock).mockResolvedValue({
         ok: false,
         text: jest.fn().mockResolvedValue('Server error'),
-      });
+      })
 
-      const result = await sendSubscriptionToServer(subscription, '/api/push/subscribe');
+      const result = await sendSubscriptionToServer(subscription, '/api/push/subscribe')
 
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('Server error');
-    });
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Server error')
+    })
 
     it('should fail on network error', async () => {
-      (global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+      ;(global.fetch as jest.Mock).mockRejectedValue(new Error('Network error'))
 
-      const result = await sendSubscriptionToServer(subscription, '/api/push/subscribe');
+      const result = await sendSubscriptionToServer(subscription, '/api/push/subscribe')
 
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('Network error');
-    });
-  });
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Network error')
+    })
+  })
 
   describe('removeSubscriptionFromServer', () => {
     beforeEach(() => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         text: jest.fn().mockResolvedValue(''),
-      });
-    });
+      })
+    })
 
     it('should remove subscription from server', async () => {
       const result = await removeSubscriptionFromServer(
         'https://push.example.com/abc123',
         '/api/push/unsubscribe'
-      );
+      )
 
-      expect(result.success).toBe(true);
+      expect(result.success).toBe(true)
       expect(global.fetch).toHaveBeenCalledWith(
         '/api/push/unsubscribe',
         expect.objectContaining({
           method: 'DELETE',
         })
-      );
-    });
+      )
+    })
 
     it('should fail on server error', async () => {
-      (global.fetch as jest.Mock).mockResolvedValue({
+      ;(global.fetch as jest.Mock).mockResolvedValue({
         ok: false,
         text: jest.fn().mockResolvedValue('Not found'),
-      });
+      })
 
       const result = await removeSubscriptionFromServer(
         'https://push.example.com/abc123',
         '/api/push/unsubscribe'
-      );
+      )
 
-      expect(result.success).toBe(false);
-      expect(result.error).toBe('Not found');
-    });
-  });
+      expect(result.success).toBe(false)
+      expect(result.error).toBe('Not found')
+    })
+  })
 
   // ==========================================================================
   // PushSubscriptionManager Tests
   // ==========================================================================
 
   describe('PushSubscriptionManager', () => {
-    let manager: PushSubscriptionManager;
+    let manager: PushSubscriptionManager
     const options = {
       applicationServerKey: 'BNhpHT3dpT8BPz_abcdefghijklmnopqrstuvwxyz1234567890ABCDEFGHIJKLMNO',
       apiUrl: '/api/push',
       userId: 'user-123',
       deviceId: 'device-456',
-    };
+    }
 
     beforeEach(() => {
       global.fetch = jest.fn().mockResolvedValue({
         ok: true,
         text: jest.fn().mockResolvedValue(''),
-      });
+      })
       Object.defineProperty(mockNotification, 'permission', {
         value: 'granted',
         configurable: true,
-      });
-      manager = new PushSubscriptionManager(options);
-    });
+      })
+      manager = new PushSubscriptionManager(options)
+    })
 
     describe('constructor', () => {
       it('should create manager with options', () => {
-        expect(manager).toBeInstanceOf(PushSubscriptionManager);
-      });
+        expect(manager).toBeInstanceOf(PushSubscriptionManager)
+      })
 
       it('should accept onStateChange callback', () => {
-        const onStateChange = jest.fn();
-        const mgr = new PushSubscriptionManager({ ...options, onStateChange });
-        expect(mgr).toBeInstanceOf(PushSubscriptionManager);
-      });
-    });
+        const onStateChange = jest.fn()
+        const mgr = new PushSubscriptionManager({ ...options, onStateChange })
+        expect(mgr).toBeInstanceOf(PushSubscriptionManager)
+      })
+    })
 
     describe('getState', () => {
       it('should return current state', async () => {
-        const state = await manager.getState();
+        const state = await manager.getState()
 
-        expect(state).toHaveProperty('isSupported');
-        expect(state).toHaveProperty('permission');
-        expect(state).toHaveProperty('isSubscribed');
-      });
-    });
+        expect(state).toHaveProperty('isSupported')
+        expect(state).toHaveProperty('permission')
+        expect(state).toHaveProperty('isSubscribed')
+      })
+    })
 
     describe('subscribe', () => {
       it('should subscribe and sync with server', async () => {
-        const result = await manager.subscribe();
+        const result = await manager.subscribe()
 
-        expect(result.success).toBe(true);
-        expect(global.fetch).toHaveBeenCalled();
-      });
+        expect(result.success).toBe(true)
+        expect(global.fetch).toHaveBeenCalled()
+      })
 
       it('should call onStateChange callback', async () => {
-        const onStateChange = jest.fn();
-        const mgr = new PushSubscriptionManager({ ...options, onStateChange });
+        const onStateChange = jest.fn()
+        const mgr = new PushSubscriptionManager({ ...options, onStateChange })
 
-        await mgr.subscribe();
+        await mgr.subscribe()
 
-        expect(onStateChange).toHaveBeenCalled();
-      });
-    });
+        expect(onStateChange).toHaveBeenCalled()
+      })
+    })
 
     describe('unsubscribe', () => {
       it('should unsubscribe and remove from server', async () => {
-        mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+        mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
 
-        const result = await manager.unsubscribe();
+        const result = await manager.unsubscribe()
 
-        expect(result.success).toBe(true);
-        expect(global.fetch).toHaveBeenCalled();
-      });
+        expect(result.success).toBe(true)
+        expect(global.fetch).toHaveBeenCalled()
+      })
 
       it('should call onStateChange callback', async () => {
-        const onStateChange = jest.fn();
-        const mgr = new PushSubscriptionManager({ ...options, onStateChange });
-        mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+        const onStateChange = jest.fn()
+        const mgr = new PushSubscriptionManager({ ...options, onStateChange })
+        mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
 
-        await mgr.unsubscribe();
+        await mgr.unsubscribe()
 
-        expect(onStateChange).toHaveBeenCalled();
-      });
-    });
+        expect(onStateChange).toHaveBeenCalled()
+      })
+    })
 
     describe('refresh', () => {
       it('should refresh subscription', async () => {
-        mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription);
+        mockPushManager.getSubscription.mockResolvedValue(mockPushSubscription)
 
-        const result = await manager.refresh();
+        const result = await manager.refresh()
 
-        expect(result.success).toBe(true);
-      });
-    });
+        expect(result.success).toBe(true)
+      })
+    })
 
     describe('setUserId', () => {
       it('should update user ID', () => {
-        manager.setUserId('new-user-id');
+        manager.setUserId('new-user-id')
         // No direct way to verify, but should not throw
-      });
-    });
+      })
+    })
 
     describe('setDeviceId', () => {
       it('should update device ID', () => {
-        manager.setDeviceId('new-device-id');
+        manager.setDeviceId('new-device-id')
         // No direct way to verify, but should not throw
-      });
-    });
-  });
-});
+      })
+    })
+  })
+})

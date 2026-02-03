@@ -158,9 +158,7 @@ export class MessageSummarizer {
     const requests = this.rateLimitTracker.get(key) || []
 
     // Clean old requests (older than 1 hour)
-    const recentRequests = requests.filter(
-      (timestamp) => now - timestamp < 60 * 60 * 1000
-    )
+    const recentRequests = requests.filter((timestamp) => now - timestamp < 60 * 60 * 1000)
 
     // Allow 100 requests per hour
     if (recentRequests.length >= 100) {
@@ -189,9 +187,7 @@ export class MessageSummarizer {
     }
 
     // Coverage (0-30 points)
-    const messageWords = new Set(
-      messages.flatMap((m) => m.content.toLowerCase().split(/\s+/))
-    )
+    const messageWords = new Set(messages.flatMap((m) => m.content.toLowerCase().split(/\s+/)))
     const summaryWords = new Set(summary.toLowerCase().split(/\s+/))
     const coverage = Array.from(summaryWords).filter((w) => messageWords.has(w)).length
     score += Math.min((coverage / summaryWords.size) * 30, 30)
@@ -212,10 +208,7 @@ export class MessageSummarizer {
   /**
    * Summarize a list of messages
    */
-  async summarizeMessages(
-    messages: Message[],
-    options: SummaryOptions = {}
-  ): Promise<string> {
+  async summarizeMessages(messages: Message[], options: SummaryOptions = {}): Promise<string> {
     if (!this.isAvailable) {
       return this.localSummarize(messages, options)
     }
@@ -294,10 +287,7 @@ export class MessageSummarizer {
   /**
    * Summarize a thread
    */
-  async summarizeThread(
-    messages: Message[],
-    options: SummaryOptions = {}
-  ): Promise<ThreadSummary> {
+  async summarizeThread(messages: Message[], options: SummaryOptions = {}): Promise<ThreadSummary> {
     if (messages.length === 0) {
       return {
         summary: 'No messages in this thread.',
@@ -325,10 +315,7 @@ export class MessageSummarizer {
   /**
    * Generate catch-up summary for missed messages
    */
-  async generateCatchUpSummary(
-    messages: Message[],
-    options: SummaryOptions = {}
-  ): Promise<string> {
+  async generateCatchUpSummary(messages: Message[], options: SummaryOptions = {}): Promise<string> {
     if (messages.length === 0) {
       return 'You are all caught up! No new messages.'
     }
@@ -346,10 +333,7 @@ export class MessageSummarizer {
   /**
    * Build prompt for summarization
    */
-  private buildSummaryPrompt(
-    messages: Message[],
-    options: SummaryOptions
-  ): string {
+  private buildSummaryPrompt(messages: Message[], options: SummaryOptions): string {
     const { style = 'brief', includeKeyPoints = false } = options
 
     const formattedMessages = messages
@@ -384,18 +368,14 @@ export class MessageSummarizer {
   /**
    * Summarize using OpenAI
    */
-  private async summarizeWithOpenAI(
-    prompt: string,
-    options: SummaryOptions
-  ): Promise<string> {
+  private async summarizeWithOpenAI(prompt: string, options: SummaryOptions): Promise<string> {
     const apiKey = this.config.apiKey || this.getAPIKey()
     if (!apiKey) {
       throw new Error('OpenAI API key not configured')
     }
 
     const model = this.config.model || DEFAULT_OPENAI_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
+    const endpoint = this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -429,18 +409,14 @@ export class MessageSummarizer {
   /**
    * Summarize using Anthropic (Claude)
    */
-  private async summarizeWithAnthropic(
-    prompt: string,
-    options: SummaryOptions
-  ): Promise<string> {
+  private async summarizeWithAnthropic(prompt: string, options: SummaryOptions): Promise<string> {
     const apiKey = this.config.apiKey || this.getAPIKey()
     if (!apiKey) {
       throw new Error('Anthropic API key not configured')
     }
 
     const model = this.config.model || DEFAULT_ANTHROPIC_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.anthropic.com/v1/messages'
+    const endpoint = this.config.endpoint || 'https://api.anthropic.com/v1/messages'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -469,10 +445,7 @@ export class MessageSummarizer {
   /**
    * Local fallback summarization (no AI)
    */
-  private localSummarize(
-    messages: Message[],
-    options: SummaryOptions
-  ): string {
+  private localSummarize(messages: Message[], options: SummaryOptions): string {
     if (messages.length === 0) {
       return 'No messages to summarize.'
     }
@@ -483,9 +456,7 @@ export class MessageSummarizer {
       end: new Date(messages[messages.length - 1].createdAt),
     }
 
-    const duration = Math.floor(
-      (timeRange.end.getTime() - timeRange.start.getTime()) / 1000 / 60
-    ) // minutes
+    const duration = Math.floor((timeRange.end.getTime() - timeRange.start.getTime()) / 1000 / 60) // minutes
 
     let summary = `${messages.length} messages from ${participants.size} participant${participants.size > 1 ? 's' : ''}`
 
@@ -496,7 +467,8 @@ export class MessageSummarizer {
     if (options.style === 'bullets') {
       const recentMessages = messages.slice(-5)
       const bullets = recentMessages.map(
-        (m) => `• ${m.userName || 'User'}: ${m.content.slice(0, 100)}${m.content.length > 100 ? '...' : ''}`
+        (m) =>
+          `• ${m.userName || 'User'}: ${m.content.slice(0, 100)}${m.content.length > 100 ? '...' : ''}`
       )
       return `${summary}:\n\n${bullets.join('\n')}`
     }
@@ -596,9 +568,7 @@ let summarizer: MessageSummarizer | null = null
 /**
  * Get or create the global message summarizer instance
  */
-export function getMessageSummarizer(
-  config?: Partial<AIConfig>
-): MessageSummarizer {
+export function getMessageSummarizer(config?: Partial<AIConfig>): MessageSummarizer {
   if (!summarizer || config) {
     summarizer = new MessageSummarizer(config)
   }

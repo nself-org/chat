@@ -90,13 +90,7 @@ const TRIGGER_OPTIONS: Array<{
 // MAIN COMPONENT
 // ============================================================================
 
-export function BotTriggers({
-  triggers,
-  onAdd,
-  onRemove,
-  error,
-  className,
-}: BotTriggersProps) {
+export function BotTriggers({ triggers, onAdd, onRemove, error, className }: BotTriggersProps) {
   const [isAdding, setIsAdding] = useState(false)
   const [draft, setDraft] = useState<TriggerDraft>({
     type: 'message_created',
@@ -176,9 +170,7 @@ export function BotTriggers({
     <div className={cn('space-y-4', className)}>
       {/* Error message */}
       {error && (
-        <div className="p-3 rounded-md bg-destructive/10 text-destructive text-sm">
-          {error}
-        </div>
+        <div className="bg-destructive/10 rounded-md p-3 text-sm text-destructive">{error}</div>
       )}
 
       {/* Existing Triggers */}
@@ -186,7 +178,7 @@ export function BotTriggers({
         <div className="space-y-2">
           <h4 className="text-sm font-medium">Active Triggers</h4>
           {triggers.map((trigger) => (
-            <Card key={trigger.id} className="p-3 flex justify-between items-center">
+            <Card key={trigger.id} className="flex items-center justify-between p-3">
               <div>
                 <span className="font-medium">{formatTrigger(trigger)}</span>
                 <p className="text-xs text-muted-foreground">
@@ -208,23 +200,21 @@ export function BotTriggers({
 
       {/* Add Trigger Form */}
       {isAdding ? (
-        <Card className="p-4 space-y-4">
+        <Card className="space-y-4 p-4">
           <h4 className="font-medium">New Trigger</h4>
 
           {/* Trigger Type */}
           <div>
-            <label className="block text-sm font-medium mb-2">
-              Trigger Type
-            </label>
+            <label className="mb-2 block text-sm font-medium">Trigger Type</label>
             <div className="grid gap-2">
               {TRIGGER_OPTIONS.map((option) => (
                 <label
                   key={option.value}
                   className={cn(
-                    'flex items-start gap-3 p-3 rounded-md border cursor-pointer transition-colors',
+                    'flex cursor-pointer items-start gap-3 rounded-md border p-3 transition-colors',
                     draft.type === option.value
-                      ? 'border-primary bg-primary/5'
-                      : 'border-input hover:bg-muted/50'
+                      ? 'bg-primary/5 border-primary'
+                      : 'hover:bg-muted/50 border-input'
                   )}
                 >
                   <input
@@ -241,9 +231,7 @@ export function BotTriggers({
                   />
                   <div>
                     <span className="font-medium">{option.label}</span>
-                    <p className="text-sm text-muted-foreground">
-                      {option.description}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{option.description}</p>
                   </div>
                 </label>
               ))}
@@ -253,19 +241,15 @@ export function BotTriggers({
           {/* Keyword Config */}
           {draft.type === 'keyword' && (
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Keywords
-              </label>
+              <label className="mb-1 block text-sm font-medium">Keywords</label>
               <input
                 type="text"
                 value={draft.keywords || ''}
-                onChange={(e) =>
-                  setDraft((prev) => ({ ...prev, keywords: e.target.value }))
-                }
+                onChange={(e) => setDraft((prev) => ({ ...prev, keywords: e.target.value }))}
                 placeholder="hello, hi, hey"
-                className="w-full px-3 py-2 rounded-md border border-input bg-background"
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Separate multiple keywords with commas
               </p>
             </div>
@@ -274,28 +258,22 @@ export function BotTriggers({
           {/* Schedule Config */}
           {draft.type === 'scheduled' && (
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Schedule (Cron Expression)
-              </label>
+              <label className="mb-1 block text-sm font-medium">Schedule (Cron Expression)</label>
               <input
                 type="text"
                 value={draft.schedule || ''}
-                onChange={(e) =>
-                  setDraft((prev) => ({ ...prev, schedule: e.target.value }))
-                }
+                onChange={(e) => setDraft((prev) => ({ ...prev, schedule: e.target.value }))}
                 placeholder="0 9 * * 1-5"
-                className="w-full px-3 py-2 rounded-md border border-input bg-background"
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Example: "0 9 * * 1-5" = 9am on weekdays
               </p>
             </div>
           )}
 
           {/* Validation Error */}
-          {validationError && (
-            <p className="text-sm text-destructive">{validationError}</p>
-          )}
+          {validationError && <p className="text-sm text-destructive">{validationError}</p>}
 
           {/* Actions */}
           <div className="flex justify-end gap-2">
@@ -312,11 +290,7 @@ export function BotTriggers({
           </div>
         </Card>
       ) : (
-        <Button
-          variant="outline"
-          onClick={() => setIsAdding(true)}
-          className="w-full"
-        >
+        <Button variant="outline" onClick={() => setIsAdding(true)} className="w-full">
           + Add Trigger
         </Button>
       )}
@@ -324,8 +298,8 @@ export function BotTriggers({
       {/* Help */}
       <div className="text-sm text-muted-foreground">
         <p>
-          Triggers define when your bot responds. You can add multiple triggers
-          to respond to different events.
+          Triggers define when your bot responds. You can add multiple triggers to respond to
+          different events.
         </p>
       </div>
     </div>

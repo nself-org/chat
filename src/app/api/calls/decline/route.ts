@@ -16,6 +16,8 @@ import {
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -32,10 +34,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
 
     // Validate required fields
     if (!body.callId) {
-      return NextResponse.json(
-        { error: 'Missing required field: callId' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required field: callId' }, { status: 400 })
     }
 
     // Update call status to declined
@@ -48,7 +47,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
     })
 
     if (statusResult.errors) {
-      console.error('Failed to update call status:', statusResult.errors)
+      logger.error('Failed to update call status:', statusResult.errors)
       return NextResponse.json(
         { error: 'Failed to update call status', details: statusResult.errors },
         { status: 500 }
@@ -65,7 +64,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
     })
 
     if (leaveResult.errors) {
-      console.error('Failed to leave call:', leaveResult.errors)
+      logger.error('Failed to leave call:', leaveResult.errors)
       // Non-fatal, continue
     }
 
@@ -74,7 +73,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
       reason: body.reason || 'declined',
     })
   } catch (error) {
-    console.error('Error declining call:', error)
+    logger.error('Error declining call:', error)
     return NextResponse.json(
       {
         error: 'Internal server error',

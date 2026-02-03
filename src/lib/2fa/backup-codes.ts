@@ -8,6 +8,8 @@
 import { randomBytes } from 'crypto'
 import bcrypt from 'bcryptjs'
 
+import { logger } from '@/lib/logger'
+
 /**
  * Generate backup codes
  * @param count - Number of codes to generate (default: 10)
@@ -44,16 +46,13 @@ export async function hashBackupCode(code: string): Promise<string> {
  * @param hash - Stored hash
  * @returns true if code matches hash
  */
-export async function verifyBackupCode(
-  code: string,
-  hash: string
-): Promise<boolean> {
+export async function verifyBackupCode(code: string, hash: string): Promise<boolean> {
   try {
     const cleanCode = code.replace(/[-\s]/g, '').toUpperCase()
     const isMatch = await bcrypt.compare(cleanCode, hash)
     return isMatch
   } catch (error) {
-    console.error('Backup code verification error:', error)
+    logger.error('Backup code verification error:', error)
     return false
   }
 }
@@ -106,10 +105,7 @@ export async function generateAndHashBackupCodes(
  * @param username - User identifier
  * @returns Formatted text for download
  */
-export function formatBackupCodesForDownload(
-  codes: string[],
-  username: string
-): string {
+export function formatBackupCodesForDownload(codes: string[], username: string): string {
   const header = `nchat Backup Codes for ${username}`
   const divider = '='.repeat(header.length)
   const date = new Date().toISOString().split('T')[0]
@@ -135,10 +131,7 @@ export function formatBackupCodesForDownload(
  * @param username - User identifier
  * @returns HTML string for printing
  */
-export function formatBackupCodesForPrint(
-  codes: string[],
-  username: string
-): string {
+export function formatBackupCodesForPrint(codes: string[], username: string): string {
   const date = new Date().toLocaleDateString()
 
   return `
@@ -223,9 +216,7 @@ export function maskBackupCode(code: string): string {
  * @param codes - Array of backup code objects with 'used_at' property
  * @returns Number of unused codes
  */
-export function countRemainingCodes(
-  codes: Array<{ used_at: Date | null }>
-): number {
+export function countRemainingCodes(codes: Array<{ used_at: Date | null }>): number {
   return codes.filter((code) => code.used_at === null).length
 }
 
@@ -235,9 +226,6 @@ export function countRemainingCodes(
  * @param threshold - Threshold to trigger warning (default: 3)
  * @returns true if codes should be regenerated
  */
-export function shouldRegenerateCodes(
-  remainingCount: number,
-  threshold: number = 3
-): boolean {
+export function shouldRegenerateCodes(remainingCount: number, threshold: number = 3): boolean {
   return remainingCount <= threshold
 }

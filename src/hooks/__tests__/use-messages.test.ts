@@ -260,10 +260,7 @@ describe('useMessages Hooks', () => {
 
     it('should return error when mutation fails', () => {
       const error = new Error('Failed to send message')
-      mockUseMutation.mockReturnValue([
-        jest.fn(),
-        { data: null, loading: false, error },
-      ] as any)
+      mockUseMutation.mockReturnValue([jest.fn(), { data: null, loading: false, error }] as any)
 
       const { result } = renderHook(() => useSendMessage())
 
@@ -302,10 +299,7 @@ describe('useMessages Hooks', () => {
 
     it('should return error when mutation fails', () => {
       const error = new Error('Failed to update message')
-      mockUseMutation.mockReturnValue([
-        jest.fn(),
-        { data: null, loading: false, error },
-      ] as any)
+      mockUseMutation.mockReturnValue([jest.fn(), { data: null, loading: false, error }] as any)
 
       const { result } = renderHook(() => useUpdateMessage())
 
@@ -344,10 +338,7 @@ describe('useMessages Hooks', () => {
 
     it('should return error when mutation fails', () => {
       const error = new Error('Failed to delete message')
-      mockUseMutation.mockReturnValue([
-        jest.fn(),
-        { data: null, loading: false, error },
-      ] as any)
+      mockUseMutation.mockReturnValue([jest.fn(), { data: null, loading: false, error }] as any)
 
       const { result } = renderHook(() => useDeleteMessage())
 
@@ -494,10 +485,9 @@ describe('useMessages Hooks', () => {
         fetchMore: jest.fn(),
       } as any)
 
-      const { rerender } = renderHook(
-        ({ channelId }) => useMessages(channelId),
-        { initialProps: { channelId: 'channel-1' } }
-      )
+      const { rerender } = renderHook(({ channelId }) => useMessages(channelId), {
+        initialProps: { channelId: 'channel-1' },
+      })
 
       // Verify initial call
       expect(mockUseQuery).toHaveBeenLastCalledWith(

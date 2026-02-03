@@ -25,6 +25,8 @@ import {
 import { Lock, Fingerprint, AlertCircle, Loader2, KeyRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -183,7 +185,7 @@ export function PinLock({ onUnlock, onForgotPin, showBiometric = true }: PinLock
         setPin('')
       }
     } catch (err) {
-      console.error('PIN verification error:', err)
+      logger.error('PIN verification error:', err)
       setError('An error occurred. Please try again.')
     } finally {
       setIsVerifying(false)
@@ -213,7 +215,7 @@ export function PinLock({ onUnlock, onForgotPin, showBiometric = true }: PinLock
         setError(result.error || 'Biometric verification failed')
       }
     } catch (err) {
-      console.error('Biometric verification error:', err)
+      logger.error('Biometric verification error:', err)
       setError('Biometric verification failed')
     } finally {
       setIsBiometricVerifying(false)
@@ -259,19 +261,17 @@ export function PinLock({ onUnlock, onForgotPin, showBiometric = true }: PinLock
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
-        <div className="text-center space-y-2">
+        <div className="space-y-2 text-center">
           <div className="flex justify-center">
-            <div className="rounded-full bg-primary/10 p-4">
+            <div className="bg-primary/10 rounded-full p-4">
               <Lock className="h-8 w-8 text-primary" />
             </div>
           </div>
           <h1 className="text-2xl font-bold">App Locked</h1>
-          {lockReason && (
-            <p className="text-sm text-muted-foreground">{lockReason}</p>
-          )}
+          {lockReason && <p className="text-sm text-muted-foreground">{lockReason}</p>}
         </div>
 
         {/* Error alert */}
@@ -287,8 +287,8 @@ export function PinLock({ onUnlock, onForgotPin, showBiometric = true }: PinLock
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Your account is temporarily locked due to too many failed attempts.
-              Please wait {lockoutInfo.remainingMinutes} minute
+              Your account is temporarily locked due to too many failed attempts. Please wait{' '}
+              {lockoutInfo.remainingMinutes} minute
               {lockoutInfo.remainingMinutes !== 1 ? 's' : ''} before trying again.
             </AlertDescription>
           </Alert>
@@ -328,9 +328,7 @@ export function PinLock({ onUnlock, onForgotPin, showBiometric = true }: PinLock
                     key={i}
                     className={cn(
                       'h-3 w-3 rounded-full border-2 transition-colors',
-                      i < pin.length
-                        ? 'bg-primary border-primary'
-                        : 'border-muted-foreground/20'
+                      i < pin.length ? 'border-primary bg-primary' : 'border-muted-foreground/20'
                     )}
                   />
                 ))}
@@ -367,9 +365,7 @@ export function PinLock({ onUnlock, onForgotPin, showBiometric = true }: PinLock
                 <span className="w-full border-t" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-background px-2 text-muted-foreground">
-                  Or unlock with
-                </span>
+                <span className="bg-background px-2 text-muted-foreground">Or unlock with</span>
               </div>
             </div>
 

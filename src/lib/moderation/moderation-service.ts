@@ -162,9 +162,7 @@ export class ModerationService {
     }
 
     const overallScore =
-      toxicScore * weights.toxic +
-      spamScore * weights.spam +
-      profanityScore * weights.profanity
+      toxicScore * weights.toxic + spamScore * weights.spam + profanityScore * weights.profanity
 
     // Determine actions based on scores and thresholds
     const shouldFlag =

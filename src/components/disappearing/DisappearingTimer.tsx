@@ -1,42 +1,34 @@
-'use client';
+'use client'
 
-import { useState, useCallback } from 'react';
-import { Clock, Check } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { useState, useCallback } from 'react'
+import { Clock, Check } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
-import {
-  DISAPPEARING_TIMER_OPTIONS,
-  formatDuration,
-  isValidDuration,
-} from '@/lib/disappearing';
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
+import { DISAPPEARING_TIMER_OPTIONS, formatDuration, isValidDuration } from '@/lib/disappearing'
 
 interface DisappearingTimerProps {
   /** Current timer duration in seconds (0 = off) */
-  value: number;
+  value: number
   /** Callback when timer changes */
-  onChange: (duration: number) => void;
+  onChange: (duration: number) => void
   /** Whether the timer is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Allow custom duration input */
-  allowCustom?: boolean;
+  allowCustom?: boolean
   /** Show as dropdown or button group */
-  variant?: 'dropdown' | 'buttons' | 'compact';
+  variant?: 'dropdown' | 'buttons' | 'compact'
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -50,43 +42,43 @@ export function DisappearingTimer({
   variant = 'dropdown',
   className,
 }: DisappearingTimerProps) {
-  const [isCustomOpen, setIsCustomOpen] = useState(false);
-  const [customValue, setCustomValue] = useState('');
-  const [customUnit, setCustomUnit] = useState<'hours' | 'days'>('hours');
+  const [isCustomOpen, setIsCustomOpen] = useState(false)
+  const [customValue, setCustomValue] = useState('')
+  const [customUnit, setCustomUnit] = useState<'hours' | 'days'>('hours')
 
   const handleSelectChange = useCallback(
     (newValue: string) => {
       if (newValue === 'custom') {
-        setIsCustomOpen(true);
-        return;
+        setIsCustomOpen(true)
+        return
       }
-      onChange(parseInt(newValue, 10));
+      onChange(parseInt(newValue, 10))
     },
     [onChange]
-  );
+  )
 
   const handleCustomSubmit = useCallback(() => {
-    const num = parseInt(customValue, 10);
-    if (isNaN(num) || num <= 0) return;
+    const num = parseInt(customValue, 10)
+    if (isNaN(num) || num <= 0) return
 
-    let seconds = num;
+    let seconds = num
     if (customUnit === 'hours') {
-      seconds = num * 3600;
+      seconds = num * 3600
     } else if (customUnit === 'days') {
-      seconds = num * 86400;
+      seconds = num * 86400
     }
 
     if (isValidDuration(seconds)) {
-      onChange(seconds);
-      setIsCustomOpen(false);
-      setCustomValue('');
+      onChange(seconds)
+      setIsCustomOpen(false)
+      setCustomValue('')
     }
-  }, [customValue, customUnit, onChange]);
+  }, [customValue, customUnit, onChange])
 
-  const isPreset = DISAPPEARING_TIMER_OPTIONS.some((opt) => opt.value === value);
+  const isPreset = DISAPPEARING_TIMER_OPTIONS.some((opt) => opt.value === value)
   const selectedLabel = isPreset
     ? DISAPPEARING_TIMER_OPTIONS.find((opt) => opt.value === value)?.label
-    : formatDuration(value);
+    : formatDuration(value)
 
   if (variant === 'buttons') {
     return (
@@ -129,19 +121,13 @@ export function DisappearingTimer({
           </Popover>
         )}
       </div>
-    );
+    )
   }
 
   if (variant === 'compact') {
     return (
-      <Select
-        value={String(value)}
-        onValueChange={handleSelectChange}
-        disabled={disabled}
-      >
-        <SelectTrigger
-          className={cn('w-[100px] h-8 text-xs', className)}
-        >
+      <Select value={String(value)} onValueChange={handleSelectChange} disabled={disabled}>
+        <SelectTrigger className={cn('h-8 w-[100px] text-xs', className)}>
           <Clock size={12} className="mr-1 shrink-0" />
           <SelectValue placeholder="Timer" />
         </SelectTrigger>
@@ -153,7 +139,7 @@ export function DisappearingTimer({
           ))}
         </SelectContent>
       </Select>
-    );
+    )
   }
 
   // Default dropdown variant
@@ -163,24 +149,16 @@ export function DisappearingTimer({
         <Clock size={16} className="text-muted-foreground" />
         Timer duration
       </Label>
-      <Select
-        value={String(value)}
-        onValueChange={handleSelectChange}
-        disabled={disabled}
-      >
+      <Select value={String(value)} onValueChange={handleSelectChange} disabled={disabled}>
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select duration">
-            {selectedLabel}
-          </SelectValue>
+          <SelectValue placeholder="Select duration">{selectedLabel}</SelectValue>
         </SelectTrigger>
         <SelectContent>
           {DISAPPEARING_TIMER_OPTIONS.map((option) => (
             <SelectItem key={option.value} value={String(option.value)}>
-              <div className="flex items-center justify-between w-full">
+              <div className="flex w-full items-center justify-between">
                 <span>{option.label}</span>
-                {value === option.value && (
-                  <Check size={14} className="ml-2 text-primary" />
-                )}
+                {value === option.value && <Check size={14} className="ml-2 text-primary" />}
               </div>
             </SelectItem>
           ))}
@@ -193,7 +171,7 @@ export function DisappearingTimer({
       </Select>
 
       {allowCustom && isCustomOpen && (
-        <div className="mt-2 p-3 border rounded-md bg-muted/50">
+        <div className="bg-muted/50 mt-2 rounded-md border p-3">
           <CustomDurationInput
             value={customValue}
             unit={customUnit}
@@ -204,7 +182,7 @@ export function DisappearingTimer({
         </div>
       )}
     </div>
-  );
+  )
 }
 
 /**
@@ -217,11 +195,11 @@ function CustomDurationInput({
   onUnitChange,
   onSubmit,
 }: {
-  value: string;
-  unit: 'hours' | 'days';
-  onValueChange: (value: string) => void;
-  onUnitChange: (unit: 'hours' | 'days') => void;
-  onSubmit: () => void;
+  value: string
+  unit: 'hours' | 'days'
+  onValueChange: (value: string) => void
+  onUnitChange: (unit: 'hours' | 'days') => void
+  onSubmit: () => void
 }) {
   return (
     <div className="space-y-3">
@@ -250,7 +228,7 @@ function CustomDurationInput({
         Set timer
       </Button>
     </div>
-  );
+  )
 }
 
-export default DisappearingTimer;
+export default DisappearingTimer

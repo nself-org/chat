@@ -23,9 +23,7 @@ query GetDisappearingSettings($channelId: uuid!) {
 
 # Get disappearing settings for multiple channels
 query GetDisappearingSettingsBulk($channelIds: [uuid!]!) {
-  nchat_disappearing_settings(
-    where: { channel_id: { _in: $channelIds } }
-  ) {
+  nchat_disappearing_settings(where: { channel_id: { _in: $channelIds } }) {
     channel_id
     enabled
     default_duration
@@ -151,10 +149,7 @@ query GetDisappearingPreferences($userId: uuid!) {
 # Get secret chat info
 query GetSecretChatInfo($channelId: uuid!) {
   nchat_disappearing_settings(
-    where: {
-      channel_id: { _eq: $channelId }
-      is_secret_chat: { _eq: true }
-    }
+    where: { channel_id: { _eq: $channelId }, is_secret_chat: { _eq: true } }
   ) {
     channel_id
     enabled
@@ -174,11 +169,7 @@ query GetChannelsWithDisappearing($userId: uuid!) {
   nchat_channel_members(
     where: {
       user_id: { _eq: $userId }
-      channel: {
-        disappearing_settings: {
-          enabled: { _eq: true }
-        }
-      }
+      channel: { disappearing_settings: { enabled: { _eq: true } } }
     }
   ) {
     channel {
@@ -195,16 +186,9 @@ query GetChannelsWithDisappearing($userId: uuid!) {
 }
 
 # Get disappearing message history (for admin/audit)
-query GetDisappearingHistory(
-  $channelId: uuid!
-  $startDate: timestamptz!
-  $endDate: timestamptz!
-) {
+query GetDisappearingHistory($channelId: uuid!, $startDate: timestamptz!, $endDate: timestamptz!) {
   nchat_disappearing_history(
-    where: {
-      channel_id: { _eq: $channelId }
-      expired_at: { _gte: $startDate, _lte: $endDate }
-    }
+    where: { channel_id: { _eq: $channelId }, expired_at: { _gte: $startDate, _lte: $endDate } }
     order_by: { expired_at: desc }
   ) {
     id

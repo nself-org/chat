@@ -310,9 +310,7 @@ export default function KeyboardSettingsPage() {
         (shortcut) =>
           shortcut.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
           shortcut.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          shortcut.keys.some((key) =>
-            getKey(key).toLowerCase().includes(searchQuery.toLowerCase())
-          )
+          shortcut.keys.some((key) => getKey(key).toLowerCase().includes(searchQuery.toLowerCase()))
       ),
     }))
     .filter((category) => category.shortcuts.length > 0)
@@ -322,13 +320,11 @@ export default function KeyboardSettingsPage() {
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
             <Keyboard className="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">
-              Keyboard Shortcuts
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">Keyboard Shortcuts</h1>
             <p className="text-sm text-muted-foreground">
               Speed up your workflow with keyboard shortcuts
             </p>
@@ -347,13 +343,11 @@ export default function KeyboardSettingsPage() {
         </div>
 
         {/* OS Info */}
-        <div className="flex items-center gap-2 rounded-lg border bg-muted/50 p-3 text-sm text-muted-foreground">
+        <div className="bg-muted/50 flex items-center gap-2 rounded-lg border p-3 text-sm text-muted-foreground">
           <Info className="h-4 w-4" />
           <span>
             Showing shortcuts for{' '}
-            <span className="font-medium text-foreground">
-              {isMac ? 'macOS' : 'Windows/Linux'}
-            </span>
+            <span className="font-medium text-foreground">{isMac ? 'macOS' : 'Windows/Linux'}</span>
             . Use <Kbd>{isMac ? 'Cmd' : 'Ctrl'}</Kbd> as the primary modifier key.
           </span>
         </div>
@@ -362,11 +356,9 @@ export default function KeyboardSettingsPage() {
         <div className="space-y-8">
           {filteredCategories.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Keyboard className="mb-4 h-12 w-12 text-muted-foreground/50" />
+              <Keyboard className="text-muted-foreground/50 mb-4 h-12 w-12" />
               <p className="text-lg font-medium">No shortcuts found</p>
-              <p className="text-sm text-muted-foreground">
-                Try a different search term
-              </p>
+              <p className="text-sm text-muted-foreground">Try a different search term</p>
             </div>
           ) : (
             filteredCategories.map((category) => (
@@ -389,46 +381,43 @@ export default function KeyboardSettingsPage() {
         </div>
 
         {/* Tips Section */}
-        <SettingsSection
-          title="Tips"
-          description="Get the most out of keyboard shortcuts"
-        >
+        <SettingsSection title="Tips" description="Get the most out of keyboard shortcuts">
           <div className="space-y-3">
             <div className="flex items-start gap-3 rounded-lg border p-4">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+              <div className="bg-primary/10 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-primary">
                 1
               </div>
               <div>
                 <p className="font-medium">Learn navigation first</p>
                 <p className="text-sm text-muted-foreground">
-                  Master <Kbd>{isMac ? 'Cmd' : 'Ctrl'}</Kbd> + <Kbd>K</Kbd> and
-                  channel navigation to move around quickly.
+                  Master <Kbd>{isMac ? 'Cmd' : 'Ctrl'}</Kbd> + <Kbd>K</Kbd> and channel navigation
+                  to move around quickly.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-3 rounded-lg border p-4">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+              <div className="bg-primary/10 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-primary">
                 2
               </div>
               <div>
                 <p className="font-medium">Use the quick switcher</p>
                 <p className="text-sm text-muted-foreground">
-                  Press <Kbd>{isMac ? 'Cmd' : 'Ctrl'}</Kbd> + <Kbd>K</Kbd> to
-                  quickly jump to any channel, DM, or search.
+                  Press <Kbd>{isMac ? 'Cmd' : 'Ctrl'}</Kbd> + <Kbd>K</Kbd> to quickly jump to any
+                  channel, DM, or search.
                 </p>
               </div>
             </div>
 
             <div className="flex items-start gap-3 rounded-lg border p-4">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+              <div className="bg-primary/10 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-primary">
                 3
               </div>
               <div>
                 <p className="font-medium">Format messages efficiently</p>
                 <p className="text-sm text-muted-foreground">
-                  Use formatting shortcuts like <Kbd>{isMac ? 'Cmd' : 'Ctrl'}</Kbd> +{' '}
-                  <Kbd>B</Kbd> for bold while composing messages.
+                  Use formatting shortcuts like <Kbd>{isMac ? 'Cmd' : 'Ctrl'}</Kbd> + <Kbd>B</Kbd>{' '}
+                  for bold while composing messages.
                 </p>
               </div>
             </div>
@@ -438,9 +427,8 @@ export default function KeyboardSettingsPage() {
         {/* Customization Note */}
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950">
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>Coming soon:</strong> Custom keyboard shortcut bindings will
-            be available in a future update. You'll be able to remap any shortcut
-            to your preferred key combination.
+            <strong>Coming soon:</strong> Custom keyboard shortcut bindings will be available in a
+            future update. You'll be able to remap any shortcut to your preferred key combination.
           </p>
         </div>
       </div>

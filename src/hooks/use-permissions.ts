@@ -69,10 +69,7 @@ export function usePermissions(): UsePermissionsReturn {
   const role = user?.role ?? null
 
   // Get all permissions for the user's role
-  const permissions = useMemo(
-    () => (role ? getPermissionsForRole(role) : []),
-    [role]
-  )
+  const permissions = useMemo(() => (role ? getPermissionsForRole(role) : []), [role])
 
   // Memoized permission check functions
   const can = useCallback(
@@ -300,9 +297,4 @@ export function useSystemPermissions() {
 }
 
 // Re-export types and constants for convenience
-export {
-  type Permission,
-  PERMISSIONS,
-  PERMISSION_GROUPS,
-  getMinimumRoleForPermission,
-}
+export { type Permission, PERMISSIONS, PERMISSION_GROUPS, getMinimumRoleForPermission }

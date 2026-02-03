@@ -4,12 +4,23 @@
  * CommandAction - Configure what the command does
  */
 
-import { MessageSquare, UserCircle, Navigation, Layers, Webhook, Workflow, Code } from 'lucide-react'
+import {
+  MessageSquare,
+  UserCircle,
+  Navigation,
+  Layers,
+  Webhook,
+  Workflow,
+  Code,
+} from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import type { CommandActionType, CommandAction as CommandActionConfig } from '@/lib/slash-commands/command-types'
+import type {
+  CommandActionType,
+  CommandAction as CommandActionConfig,
+} from '@/lib/slash-commands/command-types'
 import { cn } from '@/lib/utils'
 
 // ============================================================================
@@ -80,7 +91,11 @@ const actionTypes: {
 // Component
 // ============================================================================
 
-export function CommandAction({ actionType = 'message', action = { type: 'message' }, onChange }: CommandActionProps) {
+export function CommandAction({
+  actionType = 'message',
+  action = { type: 'message' },
+  onChange,
+}: CommandActionProps) {
   const handleTypeChange = (type: CommandActionType) => {
     onChange(type, { type })
   }
@@ -100,8 +115,8 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
               key={type.value}
               htmlFor={type.value}
               className={cn(
-                'flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors hover:bg-muted/50',
-                actionType === type.value && 'border-primary bg-primary/5'
+                'hover:bg-muted/50 flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors',
+                actionType === type.value && 'bg-primary/5 border-primary'
               )}
             >
               <RadioGroupItem value={type.value} id={type.value} className="mt-1" />
@@ -128,9 +143,7 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
               <Label>Message Template</Label>
               <Textarea
                 value={action.message || ''}
-                onChange={(e) =>
-                  onChange(actionType, { ...action, message: e.target.value })
-                }
+                onChange={(e) => onChange(actionType, { ...action, message: e.target.value })}
                 placeholder="Hello {{username}}! You said: {{args}}"
                 rows={4}
                 className="font-mono text-sm"
@@ -167,7 +180,11 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
                   onChange={(e) =>
                     onChange(actionType, {
                       ...action,
-                      status: { ...action.status, text: action.status?.text || '', emoji: e.target.value },
+                      status: {
+                        ...action.status,
+                        text: action.status?.text || '',
+                        emoji: e.target.value,
+                      },
                     })
                   }
                   placeholder=":clock:"
@@ -181,7 +198,11 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
                 onChange={(e) =>
                   onChange(actionType, {
                     ...action,
-                    status: { ...action.status, text: action.status?.text || '', expiry: e.target.value },
+                    status: {
+                      ...action.status,
+                      text: action.status?.text || '',
+                      expiry: e.target.value,
+                    },
                   })
                 }
                 placeholder="1h, 30m, or ISO timestamp"
@@ -206,8 +227,8 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
                 placeholder="/settings or https://example.com"
               />
               <p className="text-xs text-muted-foreground">
-                Use relative paths for internal pages, or full URLs for external links.
-                Variables like {'{{userId}}'} are supported.
+                Use relative paths for internal pages, or full URLs for external links. Variables
+                like {'{{userId}}'} are supported.
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -218,7 +239,11 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
                 onChange={(e) =>
                   onChange(actionType, {
                     ...action,
-                    navigate: { ...action.navigate, url: action.navigate?.url || '', newTab: e.target.checked },
+                    navigate: {
+                      ...action.navigate,
+                      url: action.navigate?.url || '',
+                      newTab: e.target.checked,
+                    },
                   })
                 }
                 className="rounded border"
@@ -261,7 +286,11 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
                   onChange={(e) =>
                     onChange(actionType, {
                       ...action,
-                      api: { ...action.api, endpoint: e.target.value, method: action.api?.method || 'POST' },
+                      api: {
+                        ...action.api,
+                        endpoint: e.target.value,
+                        method: action.api?.method || 'POST',
+                      },
                     })
                   }
                   placeholder="/api/my-endpoint"
@@ -274,7 +303,11 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
                   onChange={(e) =>
                     onChange(actionType, {
                       ...action,
-                      api: { ...action.api, endpoint: action.api?.endpoint || '', method: e.target.value },
+                      api: {
+                        ...action.api,
+                        endpoint: action.api?.endpoint || '',
+                        method: e.target.value,
+                      },
                     })
                   }
                   className="h-10 w-full rounded-md border bg-background px-3"
@@ -293,7 +326,7 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
         {/* Webhook Action */}
         {actionType === 'webhook' && (
           <div className="rounded-lg border border-dashed p-4 text-center text-muted-foreground">
-            <Webhook className="mx-auto h-8 w-8 mb-2" />
+            <Webhook className="mx-auto mb-2 h-8 w-8" />
             <p className="text-sm">Configure webhook settings in the Webhook tab below.</p>
           </div>
         )}
@@ -301,7 +334,7 @@ export function CommandAction({ actionType = 'message', action = { type: 'messag
         {/* Workflow Action */}
         {actionType === 'workflow' && (
           <div className="rounded-lg border border-dashed p-4 text-center text-muted-foreground">
-            <Workflow className="mx-auto h-8 w-8 mb-2" />
+            <Workflow className="mx-auto mb-2 h-8 w-8" />
             <p className="text-sm">Configure workflow settings in the Workflow tab below.</p>
           </div>
         )}

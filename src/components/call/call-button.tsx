@@ -16,41 +16,37 @@ import { cva, type VariantProps } from 'class-variance-authority'
 // Variants
 // =============================================================================
 
-const callButtonVariants = cva(
-  'inline-flex items-center justify-center gap-2 transition-all',
-  {
-    variants: {
-      variant: {
-        default: '',
-        ghost: '',
-        outline: '',
-      },
-      size: {
-        sm: '',
-        md: '',
-        lg: '',
-        icon: '',
-      },
-      callType: {
-        voice: 'hover:bg-green-500/10 hover:text-green-600 dark:hover:text-green-400',
-        video: 'hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400',
-      },
+const callButtonVariants = cva('inline-flex items-center justify-center gap-2 transition-all', {
+  variants: {
+    variant: {
+      default: '',
+      ghost: '',
+      outline: '',
     },
-    defaultVariants: {
-      variant: 'ghost',
-      size: 'icon',
-      callType: 'voice',
+    size: {
+      sm: '',
+      md: '',
+      lg: '',
+      icon: '',
     },
-  }
-)
+    callType: {
+      voice: 'hover:bg-green-500/10 hover:text-green-600 dark:hover:text-green-400',
+      video: 'hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400',
+    },
+  },
+  defaultVariants: {
+    variant: 'ghost',
+    size: 'icon',
+    callType: 'voice',
+  },
+})
 
 // =============================================================================
 // Types
 // =============================================================================
 
 export interface CallButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof callButtonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof callButtonVariants> {
   callType?: 'voice' | 'video'
   onInitiateCall?: () => void
   loading?: boolean

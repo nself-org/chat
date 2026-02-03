@@ -29,15 +29,10 @@ export type {
   DMNotificationData,
   DigestEmailData,
   EmailTemplateData,
-} from './types';
+} from './types'
 
 // Sender
-export {
-  EmailSender,
-  renderEmailTemplate,
-  getEmailConfig,
-  getEmailSender,
-} from './sender';
+export { EmailSender, renderEmailTemplate, getEmailConfig, getEmailSender } from './sender'
 
 // Template functions
 export {
@@ -53,4 +48,4 @@ export {
   sendEmailImmediate,
   getEmailQueueStatus,
   verifyEmailConfig,
-} from './templates';
+} from './templates'

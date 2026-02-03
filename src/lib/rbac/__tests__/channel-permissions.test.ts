@@ -140,19 +140,23 @@ describe('Channel Permissions', () => {
         })
 
         it('returns all overrides for a channel', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              createdBy: 'admin1',
+            })
+          )
 
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'role',
-            targetId: 'member',
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'role',
+              targetId: 'member',
+              createdBy: 'admin1',
+            })
+          )
 
           expect(manager.getOverrides('channel1')).toHaveLength(2)
         })
@@ -182,19 +186,23 @@ describe('Channel Permissions', () => {
 
       describe('clearOverrides', () => {
         it('removes all overrides for a channel', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              createdBy: 'admin1',
+            })
+          )
 
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'role',
-            targetId: 'member',
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'role',
+              targetId: 'member',
+              createdBy: 'admin1',
+            })
+          )
 
           manager.clearOverrides('channel1')
 
@@ -268,11 +276,13 @@ describe('Channel Permissions', () => {
         })
 
         it('returns true for banned user', () => {
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+            })
+          )
 
           expect(manager.isBanned('channel1', 'user1')).toBe(true)
         })
@@ -281,12 +291,14 @@ describe('Channel Permissions', () => {
           const pastDate = new Date()
           pastDate.setMinutes(pastDate.getMinutes() - 10)
 
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-            expiresAt: pastDate,
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+              expiresAt: pastDate,
+            })
+          )
 
           expect(manager.isBanned('channel1', 'user1')).toBe(false)
         })
@@ -295,12 +307,14 @@ describe('Channel Permissions', () => {
           const futureDate = new Date()
           futureDate.setMinutes(futureDate.getMinutes() + 10)
 
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-            expiresAt: futureDate,
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+              expiresAt: futureDate,
+            })
+          )
 
           expect(manager.isBanned('channel1', 'user1')).toBe(true)
         })
@@ -312,12 +326,14 @@ describe('Channel Permissions', () => {
         })
 
         it('returns ban entry', () => {
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-            reason: 'Spam',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+              reason: 'Spam',
+            })
+          )
 
           const ban = manager.getBan('channel1', 'user1')
           expect(ban).toBeDefined()
@@ -331,17 +347,21 @@ describe('Channel Permissions', () => {
         })
 
         it('returns all bans for a channel', () => {
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+            })
+          )
 
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user2',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user2',
+              bannedBy: 'admin1',
+            })
+          )
 
           expect(manager.getChannelBans('channel1')).toHaveLength(2)
         })
@@ -349,11 +369,13 @@ describe('Channel Permissions', () => {
 
       describe('clearBans', () => {
         it('removes all bans for a channel', () => {
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+            })
+          )
 
           manager.clearBans('channel1')
 
@@ -377,15 +399,19 @@ describe('Channel Permissions', () => {
         })
 
         it('allows multiple invites for same channel', () => {
-          manager.createInvite(createInvite({
-            channelId: 'channel1',
-            createdBy: 'user1',
-          }))
+          manager.createInvite(
+            createInvite({
+              channelId: 'channel1',
+              createdBy: 'user1',
+            })
+          )
 
-          manager.createInvite(createInvite({
-            channelId: 'channel1',
-            createdBy: 'user2',
-          }))
+          manager.createInvite(
+            createInvite({
+              channelId: 'channel1',
+              createdBy: 'user2',
+            })
+          )
 
           expect(manager.getChannelInvites('channel1')).toHaveLength(2)
         })
@@ -549,11 +575,13 @@ describe('Channel Permissions', () => {
 
       describe('getActiveInvites', () => {
         it('returns only active invites', () => {
-          manager.createInvite(createInvite({
-            channelId: 'channel1',
-            createdBy: 'user1',
-            code: 'ACTIVE',
-          }))
+          manager.createInvite(
+            createInvite({
+              channelId: 'channel1',
+              createdBy: 'user1',
+              code: 'ACTIVE',
+            })
+          )
 
           const inactiveInvite = createInvite({
             channelId: 'channel1',
@@ -571,10 +599,12 @@ describe('Channel Permissions', () => {
 
       describe('clearInvites', () => {
         it('removes all invites for a channel', () => {
-          manager.createInvite(createInvite({
-            channelId: 'channel1',
-            createdBy: 'user1',
-          }))
+          manager.createInvite(
+            createInvite({
+              channelId: 'channel1',
+              createdBy: 'user1',
+            })
+          )
 
           manager.clearInvites('channel1')
 
@@ -609,11 +639,13 @@ describe('Channel Permissions', () => {
         })
 
         it('denies banned user all permissions', () => {
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -621,24 +653,22 @@ describe('Channel Permissions', () => {
             channelId: 'channel1',
           }
 
-          const result = manager.checkPermission(
-            PERMISSIONS.MESSAGE_SEND,
-            context,
-            basePermissions
-          )
+          const result = manager.checkPermission(PERMISSIONS.MESSAGE_SEND, context, basePermissions)
 
           expect(result.allowed).toBe(false)
           expect(result.deniedBy).toBe('channel-ban')
         })
 
         it('applies user override deny', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            deny: [PERMISSIONS.MESSAGE_SEND],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              deny: [PERMISSIONS.MESSAGE_SEND],
+              createdBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -646,24 +676,22 @@ describe('Channel Permissions', () => {
             channelId: 'channel1',
           }
 
-          const result = manager.checkPermission(
-            PERMISSIONS.MESSAGE_SEND,
-            context,
-            basePermissions
-          )
+          const result = manager.checkPermission(PERMISSIONS.MESSAGE_SEND, context, basePermissions)
 
           expect(result.allowed).toBe(false)
           expect(result.deniedBy).toContain('channel-override-user')
         })
 
         it('applies user override allow', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            allow: [PERMISSIONS.ADMIN_BILLING],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              allow: [PERMISSIONS.ADMIN_BILLING],
+              createdBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -682,13 +710,15 @@ describe('Channel Permissions', () => {
         })
 
         it('applies role override deny', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'role',
-            targetId: 'member',
-            deny: [PERMISSIONS.MESSAGE_SEND],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'role',
+              targetId: 'member',
+              deny: [PERMISSIONS.MESSAGE_SEND],
+              createdBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -696,24 +726,22 @@ describe('Channel Permissions', () => {
             channelId: 'channel1',
           }
 
-          const result = manager.checkPermission(
-            PERMISSIONS.MESSAGE_SEND,
-            context,
-            basePermissions
-          )
+          const result = manager.checkPermission(PERMISSIONS.MESSAGE_SEND, context, basePermissions)
 
           expect(result.allowed).toBe(false)
           expect(result.deniedBy).toContain('channel-override-role')
         })
 
         it('applies role override allow', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'role',
-            targetId: 'member',
-            allow: [PERMISSIONS.ADMIN_DASHBOARD],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'role',
+              targetId: 'member',
+              allow: [PERMISSIONS.ADMIN_DASHBOARD],
+              createdBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -733,22 +761,26 @@ describe('Channel Permissions', () => {
 
         it('user override takes precedence over role override', () => {
           // Role denies
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'role',
-            targetId: 'member',
-            deny: [PERMISSIONS.MESSAGE_SEND],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'role',
+              targetId: 'member',
+              deny: [PERMISSIONS.MESSAGE_SEND],
+              createdBy: 'admin1',
+            })
+          )
 
           // User allows
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            allow: [PERMISSIONS.MESSAGE_SEND],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              allow: [PERMISSIONS.MESSAGE_SEND],
+              createdBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -756,11 +788,7 @@ describe('Channel Permissions', () => {
             channelId: 'channel1',
           }
 
-          const result = manager.checkPermission(
-            PERMISSIONS.MESSAGE_SEND,
-            context,
-            basePermissions
-          )
+          const result = manager.checkPermission(PERMISSIONS.MESSAGE_SEND, context, basePermissions)
 
           expect(result.allowed).toBe(true)
         })
@@ -772,11 +800,7 @@ describe('Channel Permissions', () => {
             channelId: 'channel1',
           }
 
-          const result = manager.checkPermission(
-            PERMISSIONS.MESSAGE_SEND,
-            context,
-            basePermissions
-          )
+          const result = manager.checkPermission(PERMISSIONS.MESSAGE_SEND, context, basePermissions)
 
           expect(result.allowed).toBe(true)
           expect(result.grantedBy).toBe('member-role')
@@ -801,11 +825,13 @@ describe('Channel Permissions', () => {
 
       describe('getEffectivePermissions', () => {
         it('returns empty permissions for banned user', () => {
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -820,14 +846,16 @@ describe('Channel Permissions', () => {
         })
 
         it('applies role overrides', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'role',
-            targetId: 'member',
-            allow: [PERMISSIONS.ADMIN_DASHBOARD],
-            deny: [PERMISSIONS.MESSAGE_EDIT],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'role',
+              targetId: 'member',
+              allow: [PERMISSIONS.ADMIN_DASHBOARD],
+              deny: [PERMISSIONS.MESSAGE_EDIT],
+              createdBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -842,21 +870,25 @@ describe('Channel Permissions', () => {
         })
 
         it('applies user overrides after role overrides', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'role',
-            targetId: 'member',
-            deny: [PERMISSIONS.MESSAGE_SEND],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'role',
+              targetId: 'member',
+              deny: [PERMISSIONS.MESSAGE_SEND],
+              createdBy: 'admin1',
+            })
+          )
 
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            allow: [PERMISSIONS.MESSAGE_SEND],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              allow: [PERMISSIONS.MESSAGE_SEND],
+              createdBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -874,12 +906,14 @@ describe('Channel Permissions', () => {
           const futureDate = new Date()
           futureDate.setHours(futureDate.getHours() + 1)
 
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user1',
-            bannedBy: 'admin1',
-            expiresAt: futureDate,
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user1',
+              bannedBy: 'admin1',
+              expiresAt: futureDate,
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -902,10 +936,7 @@ describe('Channel Permissions', () => {
             channelId: 'channel1',
           }
 
-          const result = manager.canInvite(
-            context,
-            [PERMISSIONS.CHANNEL_MANAGE]
-          )
+          const result = manager.canInvite(context, [PERMISSIONS.CHANNEL_MANAGE])
 
           expect(result).toBe(true)
         })
@@ -935,13 +966,15 @@ describe('Channel Permissions', () => {
         })
 
         it('returns true for member with invite override', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            allow: [PERMISSIONS.CHANNEL_MANAGE],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              allow: [PERMISSIONS.CHANNEL_MANAGE],
+              createdBy: 'admin1',
+            })
+          )
 
           const context: ChannelPermissionContext = {
             userId: 'user1',
@@ -1099,23 +1132,29 @@ describe('Channel Permissions', () => {
     describe('Utility Methods', () => {
       describe('clearChannel', () => {
         it('clears all data for a channel', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              createdBy: 'admin1',
+            })
+          )
 
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user2',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user2',
+              bannedBy: 'admin1',
+            })
+          )
 
-          manager.createInvite(createInvite({
-            channelId: 'channel1',
-            createdBy: 'user1',
-          }))
+          manager.createInvite(
+            createInvite({
+              channelId: 'channel1',
+              createdBy: 'user1',
+            })
+          )
 
           manager.clearChannel('channel1')
 
@@ -1127,23 +1166,29 @@ describe('Channel Permissions', () => {
 
       describe('getChannelIds', () => {
         it('returns all channel IDs with data', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              createdBy: 'admin1',
+            })
+          )
 
-          manager.banUser(createBan({
-            channelId: 'channel2',
-            userId: 'user1',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel2',
+              userId: 'user1',
+              bannedBy: 'admin1',
+            })
+          )
 
-          manager.createInvite(createInvite({
-            channelId: 'channel3',
-            createdBy: 'user1',
-          }))
+          manager.createInvite(
+            createInvite({
+              channelId: 'channel3',
+              createdBy: 'user1',
+            })
+          )
 
           const ids = manager.getChannelIds()
           expect(ids).toContain('channel1')
@@ -1154,19 +1199,23 @@ describe('Channel Permissions', () => {
 
       describe('exportData / importData', () => {
         it('exports and imports data correctly', () => {
-          manager.addOverride(createOverride({
-            channelId: 'channel1',
-            targetType: 'user',
-            targetId: 'user1',
-            allow: [PERMISSIONS.MESSAGE_SEND],
-            createdBy: 'admin1',
-          }))
+          manager.addOverride(
+            createOverride({
+              channelId: 'channel1',
+              targetType: 'user',
+              targetId: 'user1',
+              allow: [PERMISSIONS.MESSAGE_SEND],
+              createdBy: 'admin1',
+            })
+          )
 
-          manager.banUser(createBan({
-            channelId: 'channel1',
-            userId: 'user2',
-            bannedBy: 'admin1',
-          }))
+          manager.banUser(
+            createBan({
+              channelId: 'channel1',
+              userId: 'user2',
+              bannedBy: 'admin1',
+            })
+          )
 
           const exported = manager.exportData()
 

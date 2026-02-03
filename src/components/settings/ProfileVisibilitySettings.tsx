@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { SettingsSection } from './settings-section';
-import { SettingsSelect } from './SettingsSelect';
-import { SettingsToggle } from './SettingsToggle';
-import { useSettingsStore } from '@/stores/settings-store';
-import type { ProfileVisibility } from '@/lib/settings/settings-types';
+import { SettingsSection } from './settings-section'
+import { SettingsSelect } from './SettingsSelect'
+import { SettingsToggle } from './SettingsToggle'
+import { useSettingsStore } from '@/stores/settings-store'
+import type { ProfileVisibility } from '@/lib/settings/settings-types'
 
 interface ProfileVisibilitySettingsProps {
-  className?: string;
+  className?: string
 }
 
 const visibilityOptions = [
@@ -26,13 +26,13 @@ const visibilityOptions = [
     label: 'Private',
     description: 'Only show your name and avatar',
   },
-];
+]
 
 /**
  * ProfileVisibilitySettings - Control profile visibility
  */
 export function ProfileVisibilitySettings({ className }: ProfileVisibilitySettingsProps) {
-  const { settings, updatePrivacy } = useSettingsStore();
+  const { settings, updatePrivacy } = useSettingsStore()
 
   return (
     <SettingsSection
@@ -45,9 +45,7 @@ export function ProfileVisibilitySettings({ className }: ProfileVisibilitySettin
         label="Profile visibility"
         description="Choose who can view your full profile"
         value={settings.privacy.profileVisibility}
-        onValueChange={(value) =>
-          updatePrivacy({ profileVisibility: value as ProfileVisibility })
-        }
+        onValueChange={(value) => updatePrivacy({ profileVisibility: value as ProfileVisibility })}
         options={visibilityOptions}
         vertical
       />
@@ -82,5 +80,5 @@ export function ProfileVisibilitySettings({ className }: ProfileVisibilitySettin
         />
       </div>
     </SettingsSection>
-  );
+  )
 }

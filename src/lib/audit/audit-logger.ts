@@ -16,7 +16,10 @@ import type {
   ActorType,
   ResourceType,
 } from './audit-types'
+
 import { auditEventConfigs, getSensitiveFields } from './audit-events'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -114,7 +117,7 @@ class AuditLogger {
       if (this.config.onError) {
         this.config.onError(error as Error, options as Partial<AuditLogEntry>)
       }
-      console.error('[AuditLogger] Error logging event:', error)
+      logger.error('[AuditLogger] Error logging event:', error)
       return null
     }
   }

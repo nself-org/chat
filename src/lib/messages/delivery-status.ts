@@ -16,11 +16,11 @@ import { subscribeWithSelector } from 'zustand/middleware'
  * Message delivery status states
  */
 export type DeliveryStatus =
-  | 'sending'    // Message is being sent to server
-  | 'sent'       // Server received the message
-  | 'delivered'  // Recipient's device received (for DMs)
-  | 'read'       // Recipient opened the chat
-  | 'failed'     // Message failed to send
+  | 'sending' // Message is being sent to server
+  | 'sent' // Server received the message
+  | 'delivered' // Recipient's device received (for DMs)
+  | 'read' // Recipient opened the chat
+  | 'failed' // Message failed to send
 
 /**
  * Individual message status entry
@@ -289,10 +289,7 @@ export function handleMessageRead(
 /**
  * Handle message failed event
  */
-export function handleMessageFailed(
-  messageId: string,
-  error: string
-): void {
+export function handleMessageFailed(messageId: string, error: string): void {
   const store = useDeliveryStatusStore.getState()
   const existing = store.getStatusEntry(messageId)
   store.markFailed(messageId, error, existing?.retryCount ?? 0)

@@ -75,13 +75,27 @@ export function SSOConfiguration() {
   const [isCreating, setIsCreating] = useState(false)
   const { toast } = useToast()
 
+  const [isLoading, setIsLoading] = useState(true)
+
   React.useEffect(() => {
     loadConnections()
   }, [])
 
-  const loadConnections = () => {
-    const service = getSAMLService()
-    setConnections(service.getAllConnections())
+  const loadConnections = async () => {
+    try {
+      setIsLoading(true)
+      const service = getSAMLService()
+      const allConnections = await service.getAllConnections()
+      setConnections(allConnections)
+    } catch (error) {
+      toast({
+        title: 'Error loading SSO connections',
+        description: (error as Error).message,
+        variant: 'destructive',
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const handleCreateConnection = async (data: Partial<SSOConnection>) => {
@@ -99,7 +113,7 @@ export function SSOConfiguration() {
       }
 
       await service.addConnection(connection)
-      loadConnections()
+      await loadConnections()
       setIsCreating(false)
 
       toast({
@@ -119,7 +133,7 @@ export function SSOConfiguration() {
     try {
       const service = getSAMLService()
       await service.updateConnection(id, updates)
-      loadConnections()
+      await loadConnections()
       setIsEditing(false)
       setSelectedConnection(null)
 
@@ -142,7 +156,7 @@ export function SSOConfiguration() {
     try {
       const service = getSAMLService()
       await service.removeConnection(id)
-      loadConnections()
+      await loadConnections()
       setSelectedConnection(null)
 
       toast({
@@ -209,110 +223,120 @@ export function SSOConfiguration() {
           </p>
         </div>
         <Button onClick={() => setIsCreating(true)}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Add Connection
         </Button>
       </div>
 
-      {/* Connections List */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {connections.map((connection) => (
-          <Card key={connection.id}>
-            <CardHeader>
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2">
-                    <Shield className="h-5 w-5" />
-                    {connection.name}
-                  </CardTitle>
-                  <CardDescription>
-                    {SSO_PROVIDER_NAMES[connection.provider]}
-                  </CardDescription>
-                </div>
-                <Badge variant={connection.enabled ? 'default' : 'secondary'}>
-                  {connection.enabled ? (
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                  ) : (
-                    <XCircle className="h-3 w-3 mr-1" />
-                  )}
-                  {connection.enabled ? 'Active' : 'Inactive'}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="text-sm">
-                <span className="text-muted-foreground">Domains:</span>
-                <div className="flex flex-wrap gap-1 mt-1">
-                  {connection.domains && connection.domains.length > 0 ? (
-                    connection.domains.map((domain) => (
-                      <Badge key={domain} variant="outline">
-                        {domain}
-                      </Badge>
-                    ))
-                  ) : (
-                    <span className="text-muted-foreground text-xs">No domains</span>
-                  )}
-                </div>
-              </div>
-              <div className="text-sm">
-                <span className="text-muted-foreground">JIT Provisioning:</span>
-                <span className="ml-2">
-                  {connection.config.jitProvisioning ? 'Enabled' : 'Disabled'}
-                </span>
-              </div>
-            </CardContent>
-            <CardFooter className="flex justify-between">
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedConnection(connection)
-                    setIsEditing(true)
-                  }}
-                >
-                  <Edit className="h-4 w-4 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleTestConnection(connection.id)}
-                >
-                  Test
-                </Button>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDownloadMetadata(connection)}
-                >
-                  <Download className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => handleDeleteConnection(connection.id)}
-                >
-                  <Trash2 className="h-4 w-4 text-destructive" />
-                </Button>
-              </div>
-            </CardFooter>
-          </Card>
-        ))}
-      </div>
-
-      {connections.length === 0 && (
+      {/* Loading State */}
+      {isLoading && (
         <Card>
           <CardContent className="py-12 text-center">
-            <Shield className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No SSO Connections</h3>
-            <p className="text-muted-foreground mb-4">
+            <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            <p className="text-muted-foreground">Loading SSO connections...</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Connections List */}
+      {!isLoading && (
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {connections.map((connection) => (
+            <Card key={connection.id}>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      {connection.name}
+                    </CardTitle>
+                    <CardDescription>{SSO_PROVIDER_NAMES[connection.provider]}</CardDescription>
+                  </div>
+                  <Badge variant={connection.enabled ? 'default' : 'secondary'}>
+                    {connection.enabled ? (
+                      <CheckCircle className="mr-1 h-3 w-3" />
+                    ) : (
+                      <XCircle className="mr-1 h-3 w-3" />
+                    )}
+                    {connection.enabled ? 'Active' : 'Inactive'}
+                  </Badge>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="text-sm">
+                  <span className="text-muted-foreground">Domains:</span>
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {connection.domains && connection.domains.length > 0 ? (
+                      connection.domains.map((domain) => (
+                        <Badge key={domain} variant="outline">
+                          {domain}
+                        </Badge>
+                      ))
+                    ) : (
+                      <span className="text-xs text-muted-foreground">No domains</span>
+                    )}
+                  </div>
+                </div>
+                <div className="text-sm">
+                  <span className="text-muted-foreground">JIT Provisioning:</span>
+                  <span className="ml-2">
+                    {connection.config.jitProvisioning ? 'Enabled' : 'Disabled'}
+                  </span>
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-between">
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedConnection(connection)
+                      setIsEditing(true)
+                    }}
+                  >
+                    <Edit className="mr-1 h-4 w-4" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleTestConnection(connection.id)}
+                  >
+                    Test
+                  </Button>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDownloadMetadata(connection)}
+                  >
+                    <Download className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteConnection(connection.id)}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {!isLoading && connections.length === 0 && (
+        <Card>
+          <CardContent className="py-12 text-center">
+            <Shield className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+            <h3 className="mb-2 text-lg font-semibold">No SSO Connections</h3>
+            <p className="mb-4 text-muted-foreground">
               Get started by adding your first SSO connection
             </p>
             <Button onClick={() => setIsCreating(true)}>
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Add Connection
             </Button>
           </CardContent>
@@ -353,12 +377,7 @@ interface SSOConnectionDialogProps {
   onSave: (data: Partial<SSOConnection>) => void
 }
 
-function SSOConnectionDialog({
-  connection,
-  open,
-  onClose,
-  onSave,
-}: SSOConnectionDialogProps) {
+function SSOConnectionDialog({ connection, open, onClose, onSave }: SSOConnectionDialogProps) {
   const [formData, setFormData] = useState<Partial<SSOConnection>>(
     connection || {
       name: '',
@@ -396,14 +415,10 @@ function SSOConnectionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-3xl overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>
-            {connection ? 'Edit SSO Connection' : 'Create SSO Connection'}
-          </DialogTitle>
-          <DialogDescription>
-            Configure SAML 2.0 single sign-on authentication
-          </DialogDescription>
+          <DialogTitle>{connection ? 'Edit SSO Connection' : 'Create SSO Connection'}</DialogTitle>
+          <DialogDescription>Configure SAML 2.0 single sign-on authentication</DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="basic" className="w-full">
@@ -449,9 +464,7 @@ function SSOConnectionDialog({
               <Switch
                 id="enabled"
                 checked={formData.enabled}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, enabled: checked })
-                }
+                onCheckedChange={(checked) => setFormData({ ...formData, enabled: checked })}
               />
               <Label htmlFor="enabled">Enable this connection</Label>
             </div>
@@ -527,10 +540,12 @@ function SSOConnectionDialog({
 
           {/* Attribute Mapping */}
           <TabsContent value="attributes" className="space-y-4">
-            <div className="rounded-lg bg-muted p-4 space-y-2">
+            <div className="space-y-2 rounded-lg bg-muted p-4">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-4 w-4 text-amber-500" />
-                <p className="text-sm font-medium">Pre-configured for {SSO_PROVIDER_NAMES[formData.provider || 'generic-saml']}</p>
+                <p className="text-sm font-medium">
+                  Pre-configured for {SSO_PROVIDER_NAMES[formData.provider || 'generic-saml']}
+                </p>
               </div>
               <p className="text-xs text-muted-foreground">
                 These mappings have been automatically configured based on your provider selection.

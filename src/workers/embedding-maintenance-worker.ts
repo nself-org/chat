@@ -10,16 +10,18 @@
  * @module workers/embedding-maintenance-worker
  */
 
-import { gql } from '@apollo/client';
-import { apolloClient } from '@/lib/apollo-client';
+import { gql } from '@apollo/client'
+import { apolloClient } from '@/lib/apollo-client'
+
+import { logger } from '@/lib/logger'
 
 // ========================================
 // Configuration
 // ========================================
 
-const WORKER_ID = `maintenance-${process.pid}-${Date.now()}`;
-const CHECK_INTERVAL_MS = 60 * 60 * 1000; // 1 hour
-const CACHE_CLEANUP_DAYS = 90; // Clean cache entries unused for 90+ days
+const WORKER_ID = `maintenance-${process.pid}-${Date.now()}`
+const CHECK_INTERVAL_MS = 60 * 60 * 1000 // 1 hour
+const CACHE_CLEANUP_DAYS = 90 // Clean cache entries unused for 90+ days
 
 // ========================================
 // GraphQL Queries
@@ -31,7 +33,7 @@ const CLEANUP_QUEUE = gql`
       result
     }
   }
-`;
+`
 
 const CLEANUP_CACHE = gql`
   mutation CleanupEmbeddingCache($daysUnused: Int!) {
@@ -39,7 +41,7 @@ const CLEANUP_CACHE = gql`
       result
     }
   }
-`;
+`
 
 const OPTIMIZE_INDEX = gql`
   mutation OptimizeEmbeddingIndex {
@@ -47,16 +49,16 @@ const OPTIMIZE_INDEX = gql`
       result
     }
   }
-`;
+`
 
 // ========================================
 // Worker State
 // ========================================
 
-let isRunning = false;
-let shouldStop = false;
-let lastCleanup: Date | null = null;
-let lastOptimization: Date | null = null;
+let isRunning = false
+let shouldStop = false
+let lastCleanup: Date | null = null
+let lastOptimization: Date | null = null
 
 // ========================================
 // Worker Functions
@@ -67,37 +69,37 @@ let lastOptimization: Date | null = null;
  */
 export async function startMaintenanceWorker(): Promise<void> {
   if (isRunning) {
-    console.log('[Maintenance Worker] Already running');
-    return;
+// REMOVED: console.log('[Maintenance Worker] Already running')
+    return
   }
 
-  isRunning = true;
-  shouldStop = false;
+  isRunning = true
+  shouldStop = false
 
-  console.log(`[Maintenance Worker] Started: ${WORKER_ID}`);
+// REMOVED: console.log(`[Maintenance Worker] Started: ${WORKER_ID}`)
 
   // Run initial maintenance
-  await runMaintenance();
+  await runMaintenance()
 
   // Run periodic maintenance
   while (!shouldStop) {
-    await sleep(CHECK_INTERVAL_MS);
+    await sleep(CHECK_INTERVAL_MS)
 
     if (!shouldStop) {
-      await runMaintenance();
+      await runMaintenance()
     }
   }
 
-  isRunning = false;
-  console.log('[Maintenance Worker] Stopped');
+  isRunning = false
+// REMOVED: console.log('[Maintenance Worker] Stopped')
 }
 
 /**
  * Stop the maintenance worker
  */
 export function stopMaintenanceWorker(): void {
-  console.log('[Maintenance Worker] Stopping...');
-  shouldStop = true;
+// REMOVED: console.log('[Maintenance Worker] Stopping...')
+  shouldStop = true
 }
 
 /**
@@ -109,35 +111,34 @@ export function getMaintenanceWorkerStatus() {
     isRunning,
     lastCleanup,
     lastOptimization,
-  };
+  }
 }
 
 /**
  * Run all maintenance tasks
  */
 async function runMaintenance(): Promise<void> {
-  console.log('[Maintenance Worker] Running maintenance tasks...');
+// REMOVED: console.log('[Maintenance Worker] Running maintenance tasks...')
 
   try {
     // 1. Cleanup queue
-    await cleanupQueue();
+    await cleanupQueue()
 
     // 2. Cleanup cache
-    await cleanupCache();
+    await cleanupCache()
 
     // 3. Optimize index (once per day)
     const shouldOptimize =
-      !lastOptimization ||
-      Date.now() - lastOptimization.getTime() > 24 * 60 * 60 * 1000;
+      !lastOptimization || Date.now() - lastOptimization.getTime() > 24 * 60 * 60 * 1000
 
     if (shouldOptimize) {
-      await optimizeIndex();
+      await optimizeIndex()
     }
 
-    lastCleanup = new Date();
-    console.log('[Maintenance Worker] Maintenance completed successfully');
+    lastCleanup = new Date()
+// REMOVED: console.log('[Maintenance Worker] Maintenance completed successfully')
   } catch (error) {
-    console.error('[Maintenance Worker] Maintenance error:', error);
+    logger.error('[Maintenance Worker] Maintenance error:',  error)
   }
 }
 
@@ -146,17 +147,17 @@ async function runMaintenance(): Promise<void> {
  */
 async function cleanupQueue(): Promise<void> {
   try {
-    console.log('[Maintenance Worker] Cleaning up embedding queue...');
+// REMOVED: console.log('[Maintenance Worker] Cleaning up embedding queue...')
 
     const { data } = await apolloClient.mutate({
       mutation: CLEANUP_QUEUE,
-    });
+    })
 
-    const deleted = data?.cleanup_embedding_queue?.result || 0;
-    console.log(`[Maintenance Worker] Removed ${deleted} stale queue items`);
+    const deleted = data?.cleanup_embedding_queue?.result || 0
+// REMOVED: console.log(`[Maintenance Worker] Removed ${deleted} stale queue items`)
   } catch (error) {
-    console.error('[Maintenance Worker] Queue cleanup error:', error);
-    throw error;
+    logger.error('[Maintenance Worker] Queue cleanup error:',  error)
+    throw error
   }
 }
 
@@ -165,20 +166,20 @@ async function cleanupQueue(): Promise<void> {
  */
 async function cleanupCache(): Promise<void> {
   try {
-    console.log(
-      `[Maintenance Worker] Cleaning up cache entries unused for ${CACHE_CLEANUP_DAYS}+ days...`
-    );
+    // REMOVED: console.log(
+    //   `[Maintenance Worker] Cleaning up cache entries unused for ${CACHE_CLEANUP_DAYS}+ days...`
+    // )
 
     const { data } = await apolloClient.mutate({
       mutation: CLEANUP_CACHE,
       variables: { daysUnused: CACHE_CLEANUP_DAYS },
-    });
+    })
 
-    const deleted = data?.cleanup_embedding_cache?.result || 0;
-    console.log(`[Maintenance Worker] Removed ${deleted} old cache entries`);
+    const deleted = data?.cleanup_embedding_cache?.result || 0
+// REMOVED: console.log(`[Maintenance Worker] Removed ${deleted} old cache entries`)
   } catch (error) {
-    console.error('[Maintenance Worker] Cache cleanup error:', error);
-    throw error;
+    logger.error('[Maintenance Worker] Cache cleanup error:',  error)
+    throw error
   }
 }
 
@@ -187,18 +188,18 @@ async function cleanupCache(): Promise<void> {
  */
 async function optimizeIndex(): Promise<void> {
   try {
-    console.log('[Maintenance Worker] Optimizing vector index...');
+// REMOVED: console.log('[Maintenance Worker] Optimizing vector index...')
 
     const { data } = await apolloClient.mutate({
       mutation: OPTIMIZE_INDEX,
-    });
+    })
 
-    const result = data?.optimize_embedding_index?.result || 'Unknown';
-    console.log(`[Maintenance Worker] Index optimization: ${result}`);
+    const result = data?.optimize_embedding_index?.result || 'Unknown'
+// REMOVED: console.log(`[Maintenance Worker] Index optimization: ${result}`)
 
-    lastOptimization = new Date();
+    lastOptimization = new Date()
   } catch (error) {
-    console.error('[Maintenance Worker] Index optimization error:', error);
+    logger.error('[Maintenance Worker] Index optimization error:',  error)
     // Don't throw - optimization failure shouldn't stop maintenance
   }
 }
@@ -208,7 +209,7 @@ async function optimizeIndex(): Promise<void> {
 // ========================================
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 // ========================================
@@ -218,18 +219,18 @@ function sleep(ms: number): Promise<void> {
 if (require.main === module) {
   // Handle graceful shutdown
   process.on('SIGINT', () => {
-    console.log('\n[Maintenance Worker] Received SIGINT, shutting down...');
-    stopMaintenanceWorker();
-  });
+// REMOVED: console.log('\n[Maintenance Worker] Received SIGINT, shutting down...')
+    stopMaintenanceWorker()
+  })
 
   process.on('SIGTERM', () => {
-    console.log('\n[Maintenance Worker] Received SIGTERM, shutting down...');
-    stopMaintenanceWorker();
-  });
+// REMOVED: console.log('\n[Maintenance Worker] Received SIGTERM, shutting down...')
+    stopMaintenanceWorker()
+  })
 
   // Start worker
   startMaintenanceWorker().catch((error) => {
-    console.error('[Maintenance Worker] Fatal error:', error);
-    process.exit(1);
-  });
+    logger.error('[Maintenance Worker] Fatal error:',  error)
+    process.exit(1)
+  })
 }

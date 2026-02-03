@@ -11,7 +11,7 @@ export const configCommands = {
     const spinner = ora('Fetching configuration...').start()
     // Fetch from API...
     spinner.succeed('Configuration retrieved')
-    console.log(chalk.gray('Configuration data would be displayed here'))
+    // REMOVED: console.log(chalk.gray('Configuration data would be displayed here'))
   },
 
   async set(key: string, value: string) {

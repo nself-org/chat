@@ -2,14 +2,7 @@
 
 import * as React from 'react'
 import { useState } from 'react'
-import {
-  Shield,
-  Crown,
-  Plus,
-  Trash2,
-  Pencil,
-  Loader2,
-} from 'lucide-react'
+import { Shield, Crown, Plus, Trash2, Pencil, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -171,9 +164,7 @@ export function ChannelRoles({
                 <Shield className="h-5 w-5" />
                 Channel Roles
               </CardTitle>
-              <CardDescription>
-                Manage roles and permissions for channel members
-              </CardDescription>
+              <CardDescription>Manage roles and permissions for channel members</CardDescription>
             </div>
             {isAdmin && (
               <Button onClick={() => setShowCreateDialog(true)}>
@@ -188,19 +179,14 @@ export function ChannelRoles({
             {roles.map((role) => (
               <div
                 key={role.id}
-                className="flex items-center justify-between p-4 rounded-lg border"
+                className="flex items-center justify-between rounded-lg border p-4"
               >
                 <div className="flex items-center gap-3">
-                  <div
-                    className="w-4 h-4 rounded-full"
-                    style={{ backgroundColor: role.color }}
-                  />
+                  <div className="h-4 w-4 rounded-full" style={{ backgroundColor: role.color }} />
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{role.name}</span>
-                      {role.id === 'owner' && (
-                        <Crown className="h-4 w-4 text-yellow-500" />
-                      )}
+                      {role.id === 'owner' && <Crown className="h-4 w-4 text-yellow-500" />}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {role.memberCount} member{role.memberCount !== 1 && 's'}
@@ -276,13 +262,7 @@ interface RoleDialogProps {
   isSaving: boolean
 }
 
-function RoleDialog({
-  open,
-  onOpenChange,
-  role,
-  onSave,
-  isSaving,
-}: RoleDialogProps) {
+function RoleDialog({ open, onOpenChange, role, onSave, isSaving }: RoleDialogProps) {
   const [formData, setFormData] = useState<Partial<ChannelRole>>(
     role || {
       name: '',
@@ -363,12 +343,8 @@ function RoleDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {role ? 'Edit Role' : 'Create Role'}
-          </DialogTitle>
-          <DialogDescription>
-            Configure role name and permissions
-          </DialogDescription>
+          <DialogTitle>{role ? 'Edit Role' : 'Create Role'}</DialogTitle>
+          <DialogDescription>Configure role name and permissions</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
@@ -376,9 +352,7 @@ function RoleDialog({
             <Label>Role Name</Label>
             <Input
               value={formData.name || ''}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, name: e.target.value }))
-              }
+              onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
               placeholder="Role name"
             />
           </div>
@@ -390,14 +364,10 @@ function RoleDialog({
                 <button
                   key={color}
                   type="button"
-                  onClick={() =>
-                    setFormData((prev) => ({ ...prev, color }))
-                  }
+                  onClick={() => setFormData((prev) => ({ ...prev, color }))}
                   className={cn(
-                    'w-6 h-6 rounded-full border-2 transition-all',
-                    formData.color === color
-                      ? 'border-foreground scale-110'
-                      : 'border-transparent'
+                    'h-6 w-6 rounded-full border-2 transition-all',
+                    formData.color === color ? 'scale-110 border-foreground' : 'border-transparent'
                   )}
                   style={{ backgroundColor: color }}
                 />

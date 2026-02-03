@@ -28,7 +28,9 @@ jest.mock('date-fns', () => ({
 // TEST DATA
 // ============================================================================
 
-const createMockSearchableMessage = (overrides: Partial<SearchableMessage> = {}): SearchableMessage => ({
+const createMockSearchableMessage = (
+  overrides: Partial<SearchableMessage> = {}
+): SearchableMessage => ({
   id: `msg-${Math.random().toString(36).substr(2, 9)}`,
   content: 'This is a test message',
   userId: 'user-1',
@@ -51,7 +53,9 @@ const createMockSearchResult = (overrides: Partial<SearchResult> = {}): SearchRe
   ...overrides,
 })
 
-const createMockMessageSearchResult = (overrides: Partial<MessageSearchResult> = {}): MessageSearchResult => ({
+const createMockMessageSearchResult = (
+  overrides: Partial<MessageSearchResult> = {}
+): MessageSearchResult => ({
   messageId: `msg-${Math.random().toString(36).substr(2, 9)}`,
   content: 'This is a test search result',
   authorId: 'user-1',
@@ -118,7 +122,7 @@ describe('SmartSearch Component', () => {
 
     // Clear button should be visible
     const clearButtons = screen.getAllByRole('button')
-    const clearButton = clearButtons.find(btn => btn.querySelector('svg'))
+    const clearButton = clearButtons.find((btn) => btn.querySelector('svg'))
     expect(clearButton).toBeInTheDocument()
   })
 
@@ -131,7 +135,7 @@ describe('SmartSearch Component', () => {
 
     // Find and click clear button
     const clearButtons = screen.getAllByRole('button')
-    const clearButton = clearButtons.find(btn => {
+    const clearButton = clearButtons.find((btn) => {
       const svg = btn.querySelector('svg')
       return svg && btn.className.includes('h-6')
     })
@@ -152,9 +156,12 @@ describe('SmartSearch Component', () => {
     const input = screen.getByPlaceholderText('Search messages with AI...')
     await user.type(input, 'test')
 
-    await waitFor(() => {
-      expect(mockSearch).toHaveBeenCalled()
-    }, { timeout: 500 })
+    await waitFor(
+      () => {
+        expect(mockSearch).toHaveBeenCalled()
+      },
+      { timeout: 500 }
+    )
   })
 
   it('does not search for queries less than 2 characters', async () => {
@@ -196,9 +203,9 @@ describe('SmartSearch Component', () => {
     const user = userEvent.setup()
     const onMessageClick = jest.fn()
     const mockResult = createMockSearchableMessage({ content: 'Clickable result' })
-    const mockSearch = jest.fn().mockResolvedValue([
-      createMockSearchResult({ message: mockResult }),
-    ])
+    const mockSearch = jest
+      .fn()
+      .mockResolvedValue([createMockSearchResult({ message: mockResult })])
     getSmartSearch.mockReturnValue({ search: mockSearch })
 
     render(<SmartSearch messages={mockMessages} onMessageClick={onMessageClick} />)
@@ -299,7 +306,7 @@ describe('SmartSearch Component', () => {
 
   it('shows loading indicator while searching', async () => {
     const user = userEvent.setup()
-    const mockSearch = jest.fn(() => new Promise(resolve => setTimeout(resolve, 1000)))
+    const mockSearch = jest.fn(() => new Promise((resolve) => setTimeout(resolve, 1000)))
     getSmartSearch.mockReturnValue({ search: mockSearch })
 
     render(<SmartSearch messages={mockMessages} showFilters={true} />)

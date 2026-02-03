@@ -4,13 +4,7 @@
  * Provides functions to check user permissions based on their role.
  */
 
-import {
-  ROLES,
-  ROLE_HIERARCHY,
-  PERMISSIONS,
-  type Role,
-  type Permission,
-} from '@/types/rbac'
+import { ROLES, ROLE_HIERARCHY, PERMISSIONS, type Role, type Permission } from '@/types/rbac'
 
 /**
  * Default permissions for each role
@@ -131,7 +125,5 @@ export function getRoleDisplayName(role: Role): string {
  * Get all roles sorted by hierarchy (highest first)
  */
 export function getAllRolesSorted(): Role[] {
-  return Object.values(ROLES).sort(
-    (a, b) => ROLE_HIERARCHY[b] - ROLE_HIERARCHY[a]
-  )
+  return Object.values(ROLES).sort((a, b) => ROLE_HIERARCHY[b] - ROLE_HIERARCHY[a])
 }

@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { useTauri } from '@/hooks/useTauri';
-import WindowControls from './WindowControls';
+import React from 'react'
+import { useTauri } from '@/hooks/useTauri'
+import WindowControls from './WindowControls'
 
 export interface TitleBarProps {
-  title?: string;
-  showTitle?: boolean;
-  showControls?: boolean;
-  className?: string;
-  children?: React.ReactNode;
+  title?: string
+  showTitle?: boolean
+  showControls?: boolean
+  className?: string
+  children?: React.ReactNode
 }
 
 /**
@@ -23,16 +23,16 @@ export function TitleBar({
   className = '',
   children,
 }: TitleBarProps) {
-  const { isTauri, isMacOS, isWindows, isLinux } = useTauri();
+  const { isTauri, isMacOS, isWindows, isLinux } = useTauri()
 
   // Only render custom title bar in Tauri
   if (!isTauri) {
-    return null;
+    return null
   }
 
   // macOS uses transparent titlebar with traffic lights
   // Windows/Linux use custom window controls
-  const showCustomControls = showControls && !isMacOS;
+  const showCustomControls = showControls && !isMacOS
 
   return (
     <div
@@ -94,7 +94,7 @@ export function TitleBar({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default TitleBar;
+export default TitleBar

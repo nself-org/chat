@@ -74,18 +74,13 @@ const responseTypes: {
 // Component
 // ============================================================================
 
-export function CommandResponse({
-  responseConfig = {},
-  onChange,
-}: CommandResponseProps) {
+export function CommandResponse({ responseConfig = {}, onChange }: CommandResponseProps) {
   return (
     <div className="space-y-6">
       {/* Response Type */}
       <div className="space-y-3">
         <Label>Response Type</Label>
-        <p className="text-xs text-muted-foreground">
-          How should the command respond to the user?
-        </p>
+        <p className="text-xs text-muted-foreground">How should the command respond to the user?</p>
         <RadioGroup
           value={responseConfig.type || 'ephemeral'}
           onValueChange={(value) =>
@@ -98,23 +93,17 @@ export function CommandResponse({
               key={type.value}
               htmlFor={`response-${type.value}`}
               className={cn(
-                'flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors hover:bg-muted/50',
-                responseConfig.type === type.value && 'border-primary bg-primary/5'
+                'hover:bg-muted/50 flex cursor-pointer items-start gap-3 rounded-lg border p-4 transition-colors',
+                responseConfig.type === type.value && 'bg-primary/5 border-primary'
               )}
             >
-              <RadioGroupItem
-                value={type.value}
-                id={`response-${type.value}`}
-                className="mt-1"
-              />
+              <RadioGroupItem value={type.value} id={`response-${type.value}`} className="mt-1" />
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <type.icon className="h-4 w-4 text-primary" />
                   <span className="font-medium">{type.label}</span>
                 </div>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  {type.description}
-                </p>
+                <p className="mt-1 text-xs text-muted-foreground">{type.description}</p>
               </div>
             </Label>
           ))}
@@ -129,15 +118,13 @@ export function CommandResponse({
             <Label>Response Template</Label>
             <Textarea
               value={responseConfig.template || ''}
-              onChange={(e) =>
-                onChange({ ...responseConfig, template: e.target.value })
-              }
+              onChange={(e) => onChange({ ...responseConfig, template: e.target.value })}
               placeholder="Command executed successfully!"
               rows={3}
             />
             <p className="text-xs text-muted-foreground">
-              Use {'{{variable}}'} to include dynamic content from arguments or context.
-              Available: username, displayName, channelName, plus argument names.
+              Use {'{{variable}}'} to include dynamic content from arguments or context. Available:
+              username, displayName, channelName, plus argument names.
             </p>
           </div>
         )}
@@ -153,9 +140,7 @@ export function CommandResponse({
           </div>
           <Switch
             checked={responseConfig.ephemeral ?? false}
-            onCheckedChange={(checked) =>
-              onChange({ ...responseConfig, ephemeral: checked })
-            }
+            onCheckedChange={(checked) => onChange({ ...responseConfig, ephemeral: checked })}
           />
         </div>
       )}
@@ -170,9 +155,7 @@ export function CommandResponse({
         </div>
         <Switch
           checked={responseConfig.showTyping ?? false}
-          onCheckedChange={(checked) =>
-            onChange({ ...responseConfig, showTyping: checked })
-          }
+          onCheckedChange={(checked) => onChange({ ...responseConfig, showTyping: checked })}
         />
       </div>
 
@@ -197,14 +180,14 @@ export function CommandResponse({
           <span className="text-sm text-muted-foreground">milliseconds</span>
         </div>
         <p className="text-xs text-muted-foreground">
-          Add a delay before showing the response (useful for dramatic effect or
-          simulating processing)
+          Add a delay before showing the response (useful for dramatic effect or simulating
+          processing)
         </p>
       </div>
 
       {/* Preview */}
-      <div className="rounded-lg border bg-muted/30 p-4">
-        <h4 className="font-medium text-sm">Response Behavior</h4>
+      <div className="bg-muted/30 rounded-lg border p-4">
+        <h4 className="text-sm font-medium">Response Behavior</h4>
         <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
           <li>
             - Type:{' '}
@@ -214,13 +197,11 @@ export function CommandResponse({
           </li>
           {responseConfig.type === 'message' && (
             <li>
-              - Visibility:{' '}
-              <strong>{responseConfig.ephemeral ? 'Only user' : 'Everyone'}</strong>
+              - Visibility: <strong>{responseConfig.ephemeral ? 'Only user' : 'Everyone'}</strong>
             </li>
           )}
           <li>
-            - Typing indicator:{' '}
-            <strong>{responseConfig.showTyping ? 'Yes' : 'No'}</strong>
+            - Typing indicator: <strong>{responseConfig.showTyping ? 'Yes' : 'No'}</strong>
           </li>
           {responseConfig.delay && (
             <li>

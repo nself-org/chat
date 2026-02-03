@@ -27,13 +27,7 @@ import { AuditAction, AuditCategory } from '@/lib/audit/audit-types'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Select,
   SelectContent,
@@ -146,12 +140,19 @@ export function AuditLogViewer() {
       const service = getTamperProofAuditService()
       const data = await service.exportLogs(filter, format)
 
-      const blob = data instanceof Blob ? data : new Blob([data], {
-        type: format === 'json' ? 'application/json' :
-              format === 'csv' ? 'text/csv' :
-              format === 'pdf' ? 'application/pdf' :
-              'text/plain'
-      })
+      const blob =
+        data instanceof Blob
+          ? data
+          : new Blob([data], {
+              type:
+                format === 'json'
+                  ? 'application/json'
+                  : format === 'csv'
+                    ? 'text/csv'
+                    : format === 'pdf'
+                      ? 'application/pdf'
+                      : 'text/plain',
+            })
 
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -207,31 +208,21 @@ export function AuditLogViewer() {
           </p>
         </div>
         <div className="flex gap-2">
-          <Button
-            variant="outline"
-            onClick={handleVerifyIntegrity}
-            disabled={isVerifying}
-          >
-            <Shield className="h-4 w-4 mr-2" />
+          <Button variant="outline" onClick={handleVerifyIntegrity} disabled={isVerifying}>
+            <Shield className="mr-2 h-4 w-4" />
             {isVerifying ? 'Verifying...' : 'Verify Integrity'}
           </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                <Download className="h-4 w-4 mr-2" />
+                <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => handleExport('json')}>
-                JSON
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport('csv')}>
-                CSV
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => handleExport('syslog')}>
-                Syslog
-              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExport('json')}>JSON</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExport('csv')}>CSV</DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleExport('syslog')}>Syslog</DropdownMenuItem>
               <DropdownMenuItem onClick={() => handleExport('cef')}>
                 CEF (Common Event Format)
               </DropdownMenuItem>
@@ -242,10 +233,9 @@ export function AuditLogViewer() {
 
       {/* Integrity Status */}
       {verification && (
-        <Card className={cn(
-          'border-2',
-          verification.isValid ? 'border-green-500' : 'border-red-500'
-        )}>
+        <Card
+          className={cn('border-2', verification.isValid ? 'border-green-500' : 'border-red-500')}
+        >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {verification.isValid ? (
@@ -276,9 +266,7 @@ export function AuditLogViewer() {
               </div>
               <div>
                 <div className="text-muted-foreground">Verified At</div>
-                <div className="text-sm">
-                  {verification.verifiedAt.toLocaleString()}
-                </div>
+                <div className="text-sm">{verification.verifiedAt.toLocaleString()}</div>
               </div>
             </div>
             {verification.errors.length > 0 && (
@@ -301,7 +289,7 @@ export function AuditLogViewer() {
           <div className="flex gap-4">
             <div className="flex-1">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 transform text-muted-foreground" />
                 <Input
                   placeholder="Search audit logs..."
                   className="pl-10"
@@ -310,17 +298,14 @@ export function AuditLogViewer() {
                 />
               </div>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setShowFilters(!showFilters)}
-            >
-              <Filter className="h-4 w-4 mr-2" />
+            <Button variant="outline" onClick={() => setShowFilters(!showFilters)}>
+              <Filter className="mr-2 h-4 w-4" />
               Filters
             </Button>
           </div>
 
           {showFilters && (
-            <div className="grid grid-cols-4 gap-4 mt-4 pt-4 border-t">
+            <div className="mt-4 grid grid-cols-4 gap-4 border-t pt-4">
               <div className="space-y-2">
                 <Label>Category</Label>
                 <Select
@@ -396,9 +381,7 @@ export function AuditLogViewer() {
                 <Label>Sort By</Label>
                 <Select
                   value={filter.sortBy || 'timestamp'}
-                  onValueChange={(value: any) =>
-                    setFilter({ ...filter, sortBy: value })
-                  }
+                  onValueChange={(value: any) => setFilter({ ...filter, sortBy: value })}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -449,12 +432,8 @@ export function AuditLogViewer() {
           <TableBody>
             {entries.map((entry) => (
               <TableRow key={entry.id}>
-                <TableCell className="font-mono text-xs">
-                  #{entry.blockNumber}
-                </TableCell>
-                <TableCell className="text-sm">
-                  {entry.timestamp.toLocaleString()}
-                </TableCell>
+                <TableCell className="font-mono text-xs">#{entry.blockNumber}</TableCell>
+                <TableCell className="text-sm">{entry.timestamp.toLocaleString()}</TableCell>
                 <TableCell>
                   <code className="text-xs">{entry.action}</code>
                 </TableCell>
@@ -468,9 +447,7 @@ export function AuditLogViewer() {
                   <Badge variant="outline">{entry.category}</Badge>
                 </TableCell>
                 <TableCell>
-                  <Badge variant={getSeverityVariant(entry.severity)}>
-                    {entry.severity}
-                  </Badge>
+                  <Badge variant={getSeverityVariant(entry.severity)}>{entry.severity}</Badge>
                 </TableCell>
                 <TableCell>
                   {entry.success ? (
@@ -480,11 +457,7 @@ export function AuditLogViewer() {
                   )}
                 </TableCell>
                 <TableCell>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSelectedEntry(entry)}
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => setSelectedEntry(entry)}>
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </TableCell>
@@ -542,9 +515,7 @@ function AuditEntryDialog({ entry, open, onClose }: AuditEntryDialogProps) {
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>Audit Log Entry #{entry.blockNumber}</DialogTitle>
-          <DialogDescription>
-            Tamper-proof audit log entry details
-          </DialogDescription>
+          <DialogDescription>Tamper-proof audit log entry details</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -560,18 +531,22 @@ function AuditEntryDialog({ entry, open, onClose }: AuditEntryDialogProps) {
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Action</Label>
-              <div><code>{entry.action}</code></div>
+              <div>
+                <code>{entry.action}</code>
+              </div>
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Category</Label>
-              <div><Badge variant="outline">{entry.category}</Badge></div>
+              <div>
+                <Badge variant="outline">{entry.category}</Badge>
+              </div>
             </div>
           </div>
 
           {/* Actor */}
           <div>
             <Label className="text-xs text-muted-foreground">Actor</Label>
-            <div className="flex items-center gap-2 mt-1">
+            <div className="mt-1 flex items-center gap-2">
               <User className="h-4 w-4" />
               <span>{entry.actor.id}</span>
               <Badge variant="secondary">{entry.actor.type}</Badge>
@@ -588,7 +563,7 @@ function AuditEntryDialog({ entry, open, onClose }: AuditEntryDialogProps) {
           {entry.resource && (
             <div>
               <Label className="text-xs text-muted-foreground">Resource</Label>
-              <div className="flex items-center gap-2 mt-1">
+              <div className="mt-1 flex items-center gap-2">
                 <Badge variant="outline">{entry.resource.type}</Badge>
                 <span className="font-mono text-sm">{entry.resource.id}</span>
               </div>
@@ -596,18 +571,18 @@ function AuditEntryDialog({ entry, open, onClose }: AuditEntryDialogProps) {
           )}
 
           {/* Cryptographic Info */}
-          <div className="space-y-2 p-4 bg-muted rounded-lg">
-            <div className="flex items-center gap-2 mb-2">
+          <div className="space-y-2 rounded-lg bg-muted p-4">
+            <div className="mb-2 flex items-center gap-2">
               <Shield className="h-4 w-4" />
               <span className="font-medium">Cryptographic Verification</span>
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Entry Hash</Label>
-              <div className="font-mono text-xs break-all">{entry.entryHash}</div>
+              <div className="break-all font-mono text-xs">{entry.entryHash}</div>
             </div>
             <div>
               <Label className="text-xs text-muted-foreground">Previous Hash</Label>
-              <div className="font-mono text-xs break-all">{entry.previousHash}</div>
+              <div className="break-all font-mono text-xs">{entry.previousHash}</div>
             </div>
           </div>
 
@@ -615,7 +590,7 @@ function AuditEntryDialog({ entry, open, onClose }: AuditEntryDialogProps) {
           {entry.metadata && Object.keys(entry.metadata).length > 0 && (
             <div>
               <Label className="text-xs text-muted-foreground">Metadata</Label>
-              <pre className="mt-1 p-2 bg-muted rounded text-xs overflow-auto max-h-40">
+              <pre className="mt-1 max-h-40 overflow-auto rounded bg-muted p-2 text-xs">
                 {JSON.stringify(entry.metadata, null, 2)}
               </pre>
             </div>

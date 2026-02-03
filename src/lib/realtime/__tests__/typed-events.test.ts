@@ -154,22 +154,16 @@ describe('ServerToClientEvents', () => {
 describe('ClientToServerEvents', () => {
   describe('message events', () => {
     it('should define message:send event', () => {
-      const handler: ClientToServerEvents['message:send'] = (
-        payload,
-        callback
-      ) => {
+      const handler: ClientToServerEvents['message:send'] = (payload, callback) => {
         expect(payload.channelId).toBeDefined()
         expect(payload.content).toBeDefined()
         if (callback) {
           callback({ success: true, messageId: 'msg-1' })
         }
       }
-      handler(
-        { channelId: 'ch-1', content: 'Hello' },
-        (ack) => {
-          expect(ack.success).toBe(true)
-        }
-      )
+      handler({ channelId: 'ch-1', content: 'Hello' }, (ack) => {
+        expect(ack.success).toBe(true)
+      })
     })
 
     it('should allow optional replyTo in message:send', () => {
@@ -180,10 +174,7 @@ describe('ClientToServerEvents', () => {
     })
 
     it('should define message:edit event', () => {
-      const handler: ClientToServerEvents['message:edit'] = (
-        payload,
-        callback
-      ) => {
+      const handler: ClientToServerEvents['message:edit'] = (payload, callback) => {
         expect(payload.messageId).toBeDefined()
         expect(payload.content).toBeDefined()
         if (callback) callback({ success: true })
@@ -192,10 +183,7 @@ describe('ClientToServerEvents', () => {
     })
 
     it('should define message:delete event', () => {
-      const handler: ClientToServerEvents['message:delete'] = (
-        payload,
-        callback
-      ) => {
+      const handler: ClientToServerEvents['message:delete'] = (payload, callback) => {
         expect(payload.messageId).toBeDefined()
         if (callback) callback({ success: true })
       }
@@ -213,10 +201,7 @@ describe('ClientToServerEvents', () => {
 
   describe('channel events', () => {
     it('should define channel:join event', () => {
-      const handler: ClientToServerEvents['channel:join'] = (
-        payload,
-        callback
-      ) => {
+      const handler: ClientToServerEvents['channel:join'] = (payload, callback) => {
         expect(payload.channelId).toBeDefined()
         if (callback) callback({ success: true })
       }

@@ -1,22 +1,13 @@
 import { DocumentNode } from '@apollo/client'
-import {
-  GET_CHANNELS,
-  GET_CHANNEL_BY_SLUG,
-  GET_USER_CHANNELS,
-} from '../queries/channels'
-import {
-  GET_MESSAGES,
-  MESSAGE_SUBSCRIPTION,
-} from '../queries/messages'
+import { GET_CHANNELS, GET_CHANNEL_BY_SLUG, GET_USER_CHANNELS } from '../queries/channels'
+import { GET_MESSAGES, MESSAGE_SUBSCRIPTION } from '../queries/messages'
 
 // ============================================================================
 // Helper Functions
 // ============================================================================
 
 function getOperationName(doc: DocumentNode): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     return definition.name?.value
   }
@@ -24,9 +15,7 @@ function getOperationName(doc: DocumentNode): string | undefined {
 }
 
 function getOperationType(doc: DocumentNode): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     return definition.operation
   }
@@ -34,25 +23,17 @@ function getOperationType(doc: DocumentNode): string | undefined {
 }
 
 function getVariableNames(doc: DocumentNode): string[] {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
-    return (
-      definition.variableDefinitions?.map((v) => v.variable.name.value) || []
-    )
+    return definition.variableDefinitions?.map((v) => v.variable.name.value) || []
   }
   return []
 }
 
 function getVariableType(doc: DocumentNode, varName: string): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
-    const varDef = definition.variableDefinitions?.find(
-      (v) => v.variable.name.value === varName
-    )
+    const varDef = definition.variableDefinitions?.find((v) => v.variable.name.value === varName)
     if (varDef) {
       return printType(varDef.type)
     }
@@ -79,26 +60,18 @@ function isVariableRequired(doc: DocumentNode, varName: string): boolean {
 }
 
 function hasDefaultValue(doc: DocumentNode, varName: string): boolean {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
-    const varDef = definition.variableDefinitions?.find(
-      (v) => v.variable.name.value === varName
-    )
+    const varDef = definition.variableDefinitions?.find((v) => v.variable.name.value === varName)
     return varDef?.defaultValue !== undefined
   }
   return false
 }
 
 function getDefaultValue(doc: DocumentNode, varName: string): any {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
-    const varDef = definition.variableDefinitions?.find(
-      (v) => v.variable.name.value === varName
-    )
+    const varDef = definition.variableDefinitions?.find((v) => v.variable.name.value === varName)
     if (varDef?.defaultValue) {
       if (varDef.defaultValue.kind === 'IntValue') {
         return parseInt(varDef.defaultValue.value, 10)
@@ -115,9 +88,7 @@ function getDefaultValue(doc: DocumentNode, varName: string): any {
 }
 
 function getSelectionFieldNames(doc: DocumentNode): string[] {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     return definition.selectionSet.selections
       .filter((sel): sel is { kind: 'Field'; name: { value: string } } => sel.kind === 'Field')
@@ -127,9 +98,7 @@ function getSelectionFieldNames(doc: DocumentNode): string[] {
 }
 
 function getNestedSelectionFields(doc: DocumentNode, rootField: string): string[] {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     const rootSelection = definition.selectionSet.selections.find(
       (sel) => sel.kind === 'Field' && sel.name.value === rootField
@@ -427,9 +396,7 @@ describe('Query Document Structure', () => {
     })
 
     it(`${name} should have exactly one operation definition`, () => {
-      const operationDefs = doc.definitions.filter(
-        (def) => def.kind === 'OperationDefinition'
-      )
+      const operationDefs = doc.definitions.filter((def) => def.kind === 'OperationDefinition')
       expect(operationDefs).toHaveLength(1)
     })
 

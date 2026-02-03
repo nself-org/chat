@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import { SettingsSection } from './settings-section';
-import { SettingsSelect } from './SettingsSelect';
-import { SettingsToggle } from './SettingsToggle';
-import { useSettingsStore } from '@/stores/settings-store';
-import type { OnlineStatusVisibility } from '@/lib/settings/settings-types';
+import { SettingsSection } from './settings-section'
+import { SettingsSelect } from './SettingsSelect'
+import { SettingsToggle } from './SettingsToggle'
+import { useSettingsStore } from '@/stores/settings-store'
+import type { OnlineStatusVisibility } from '@/lib/settings/settings-types'
 
 interface OnlineStatusSettingsProps {
-  className?: string;
+  className?: string
 }
 
 const visibilityOptions = [
@@ -26,13 +26,13 @@ const visibilityOptions = [
     label: 'Nobody',
     description: 'Your online status is always hidden',
   },
-];
+]
 
 /**
  * OnlineStatusSettings - Control who sees your online status
  */
 export function OnlineStatusSettings({ className }: OnlineStatusSettingsProps) {
-  const { settings, updatePrivacy } = useSettingsStore();
+  const { settings, updatePrivacy } = useSettingsStore()
 
   return (
     <SettingsSection
@@ -45,9 +45,7 @@ export function OnlineStatusSettings({ className }: OnlineStatusSettingsProps) {
         label="Online status visibility"
         description="Choose who can see your online/offline status"
         value={settings.privacy.onlineStatus}
-        onValueChange={(value) =>
-          updatePrivacy({ onlineStatus: value as OnlineStatusVisibility })
-        }
+        onValueChange={(value) => updatePrivacy({ onlineStatus: value as OnlineStatusVisibility })}
         options={visibilityOptions}
         vertical
       />
@@ -61,5 +59,5 @@ export function OnlineStatusSettings({ className }: OnlineStatusSettingsProps) {
         disabled={settings.privacy.onlineStatus === 'nobody'}
       />
     </SettingsSection>
-  );
+  )
 }

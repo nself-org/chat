@@ -65,6 +65,8 @@ import { useTeamStore } from '@/stores/team-store'
 import { teamManager } from '@/lib/team/team-manager'
 import type { TeamMember, TeamRole } from '@/lib/team/team-types'
 
+import { logger } from '@/lib/logger'
+
 interface TeamMembersProps {
   teamId: string
 }
@@ -87,7 +89,7 @@ export function TeamMembers({ teamId }: TeamMembersProps) {
         const membersList = await teamManager.getTeamMembers(teamId)
         setMembers(membersList, membersList.length)
       } catch (error) {
-        console.error('Failed to load members:', error)
+        logger.error('Failed to load members:', error)
       } finally {
         setLoadingMembers(false)
       }
@@ -123,7 +125,7 @@ export function TeamMembers({ teamId }: TeamMembersProps) {
         setSelectedMember(null)
       }
     } catch (error) {
-      console.error('Failed to change role:', error)
+      logger.error('Failed to change role:', error)
     } finally {
       setIsProcessing(false)
     }
@@ -145,7 +147,7 @@ export function TeamMembers({ teamId }: TeamMembersProps) {
         setSelectedMember(null)
       }
     } catch (error) {
-      console.error('Failed to remove member:', error)
+      logger.error('Failed to remove member:', error)
     } finally {
       setIsProcessing(false)
     }
@@ -421,7 +423,7 @@ export function TeamMembers({ teamId }: TeamMembersProps) {
             <AlertDialogAction
               onClick={handleRemoveMember}
               disabled={isProcessing}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               {isProcessing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Remove Member

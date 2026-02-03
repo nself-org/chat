@@ -7,11 +7,7 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import type {
-  AutomationRule,
-  AutomationExecution,
-  AutomationStatus,
-} from './automation-engine'
+import type { AutomationRule, AutomationExecution, AutomationStatus } from './automation-engine'
 
 // ============================================================================
 // State Interface
@@ -356,8 +352,7 @@ export const selectFilteredRules = (state: AutomationStore) => {
     const query = state.searchQuery.toLowerCase()
     filtered = filtered.filter(
       (rule) =>
-        rule.name.toLowerCase().includes(query) ||
-        rule.description?.toLowerCase().includes(query)
+        rule.name.toLowerCase().includes(query) || rule.description?.toLowerCase().includes(query)
     )
   }
 

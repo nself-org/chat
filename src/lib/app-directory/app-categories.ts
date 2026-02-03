@@ -4,7 +4,7 @@
  * Defines all available app categories with their metadata
  */
 
-import type { AppCategory } from './app-types';
+import type { AppCategory } from './app-types'
 
 // ============================================================================
 // Category Definitions
@@ -137,7 +137,7 @@ export const APP_CATEGORIES: AppCategory[] = [
     color: '#d946ef',
     appCount: 0,
   },
-];
+]
 
 // ============================================================================
 // Helper Functions
@@ -147,28 +147,28 @@ export const APP_CATEGORIES: AppCategory[] = [
  * Get a category by its ID
  */
 export function getCategoryById(categoryId: string): AppCategory | undefined {
-  return APP_CATEGORIES.find((category) => category.id === categoryId);
+  return APP_CATEGORIES.find((category) => category.id === categoryId)
 }
 
 /**
  * Get a category by its slug
  */
 export function getCategoryBySlug(slug: string): AppCategory | undefined {
-  return APP_CATEGORIES.find((category) => category.slug === slug);
+  return APP_CATEGORIES.find((category) => category.slug === slug)
 }
 
 /**
  * Get all categories sorted by name
  */
 export function getCategoriesSorted(): AppCategory[] {
-  return [...APP_CATEGORIES].sort((a, b) => a.name.localeCompare(b.name));
+  return [...APP_CATEGORIES].sort((a, b) => a.name.localeCompare(b.name))
 }
 
 /**
  * Get categories with app counts greater than 0
  */
 export function getActiveCategories(categories: AppCategory[]): AppCategory[] {
-  return categories.filter((category) => category.appCount > 0);
+  return categories.filter((category) => category.appCount > 0)
 }
 
 /**
@@ -181,23 +181,23 @@ export function updateCategoryCounts(
   return categories.map((category) => ({
     ...category,
     appCount: appCategoryCounts[category.id] || 0,
-  }));
+  }))
 }
 
 /**
  * Get category icon name for Lucide icons
  */
 export function getCategoryIcon(categoryId: string): string {
-  const category = getCategoryById(categoryId);
-  return category?.icon || 'Box';
+  const category = getCategoryById(categoryId)
+  return category?.icon || 'Box'
 }
 
 /**
  * Get category color
  */
 export function getCategoryColor(categoryId: string): string {
-  const category = getCategoryById(categoryId);
-  return category?.color || '#6b7280';
+  const category = getCategoryById(categoryId)
+  return category?.color || '#6b7280'
 }
 
 // ============================================================================
@@ -219,6 +219,6 @@ export const CATEGORY_IDS = {
   AUTOMATION: 'automation',
   SOCIAL: 'social',
   DESIGN: 'design',
-} as const;
+} as const
 
-export type CategoryId = (typeof CATEGORY_IDS)[keyof typeof CATEGORY_IDS];
+export type CategoryId = (typeof CATEGORY_IDS)[keyof typeof CATEGORY_IDS]

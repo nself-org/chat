@@ -758,8 +758,7 @@ export const selectActiveCall = (state: CallStore) => state.activeCall
 export const selectIsInCall = (state: CallStore) =>
   state.activeCall !== null && state.activeCall.state !== 'ended'
 
-export const selectIsCallConnected = (state: CallStore) =>
-  state.activeCall?.state === 'connected'
+export const selectIsCallConnected = (state: CallStore) => state.activeCall?.state === 'connected'
 
 export const selectIsCallRinging = (state: CallStore) =>
   state.activeCall?.state === 'ringing' || state.incomingCalls.length > 0
@@ -787,17 +786,17 @@ export const selectHasIncomingCall = (state: CallStore) => state.incomingCalls.l
 
 export const selectCallHistory = (state: CallStore) => state.callHistory
 
-export const selectRecentCalls = (limit: number = 10) => (state: CallStore) =>
-  state.callHistory.slice(0, limit)
+export const selectRecentCalls =
+  (limit: number = 10) =>
+  (state: CallStore) =>
+    state.callHistory.slice(0, limit)
 
-export const selectMissedCalls = (state: CallStore) =>
-  state.callHistory.filter((c) => c.missedCall)
+export const selectMissedCalls = (state: CallStore) => state.callHistory.filter((c) => c.missedCall)
 
 export const selectMissedCallCount = (state: CallStore) =>
   state.callHistory.filter((c) => c.missedCall).length
 
-export const selectIsLocalMuted = (state: CallStore) =>
-  state.activeCall?.isLocalMuted ?? false
+export const selectIsLocalMuted = (state: CallStore) => state.activeCall?.isLocalMuted ?? false
 
 export const selectIsLocalVideoEnabled = (state: CallStore) =>
   state.activeCall?.isLocalVideoEnabled ?? false
@@ -805,8 +804,7 @@ export const selectIsLocalVideoEnabled = (state: CallStore) =>
 export const selectIsScreenSharing = (state: CallStore) =>
   state.activeCall?.isLocalScreenSharing ?? false
 
-export const selectLocalStream = (state: CallStore) =>
-  state.activeCall?.localStream
+export const selectLocalStream = (state: CallStore) => state.activeCall?.localStream
 
 export const selectRemoteStreams = (state: CallStore): MediaStream[] =>
   state.activeCall ? Array.from(state.activeCall.remoteStreams.values()) : []

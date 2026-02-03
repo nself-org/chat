@@ -8,6 +8,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { nhost } from '@/lib/nhost.server'
 
+import { logger } from '@/lib/logger'
+
 export async function POST(request: NextRequest) {
   try {
     // Get user from session
@@ -40,10 +42,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!channelId || !title) {
-      return NextResponse.json(
-        { error: 'channelId and title are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'channelId and title are required' }, { status: 400 })
     }
 
     // Verify user has access to channel
@@ -64,10 +63,7 @@ export async function POST(request: NextRequest) {
     )
 
     if (memberError || !channelMember?.nchat_channel_members?.length) {
-      return NextResponse.json(
-        { error: 'Not a member of this channel' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Not a member of this channel' }, { status: 403 })
     }
 
     // Generate stream key
@@ -126,20 +122,14 @@ export async function POST(request: NextRequest) {
     )
 
     if (error) {
-      console.error('Failed to create stream:', error)
-      return NextResponse.json(
-        { error: 'Failed to create stream' },
-        { status: 500 }
-      )
+      logger.error('Failed to create stream:', error)
+      return NextResponse.json({ error: 'Failed to create stream' }, { status: 500 })
     }
 
     return NextResponse.json(data.insert_nchat_streams_one)
   } catch (error) {
-    console.error('Stream creation error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Stream creation error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 

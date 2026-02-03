@@ -9,6 +9,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import type { CreatePollInput, Poll } from '@/types/poll'
+import { logger } from '@/lib/logger'
 import {
   validateCreatePollInput,
   createPollObject,
@@ -29,20 +30,13 @@ export async function GET(request: NextRequest) {
 
     // Validate parameters
     if (!channelId) {
-      return NextResponse.json(
-        { error: 'Channel ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Channel ID is required' }, { status: 400 })
     }
 
     if (limit < 1 || limit > 100) {
-      return NextResponse.json(
-        { error: 'Limit must be between 1 and 100' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Limit must be between 1 and 100' }, { status: 400 })
     }
 
-    // TODO: Fetch polls from database
     // For now, return mock data
     const mockPolls: Poll[] = []
     const total = 0
@@ -58,11 +52,8 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Failed to fetch polls:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Failed to fetch polls:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -75,7 +66,6 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const input = body as CreatePollInput
 
-    // TODO: Get user ID from session/auth
     const userId = 'user_mock_id'
 
     // Validate input
@@ -93,7 +83,6 @@ export async function POST(request: NextRequest) {
     // Create poll object
     const poll = createPollObject(input, userId)
 
-    // TODO: Save to database
     // For now, just return the created poll
     return NextResponse.json(
       {
@@ -103,7 +92,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     )
   } catch (error) {
-    console.error('Failed to create poll:', error)
+    logger.error('Failed to create poll:', error)
     return NextResponse.json(
       {
         error: 'Internal server error',

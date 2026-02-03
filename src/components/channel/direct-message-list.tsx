@@ -147,8 +147,8 @@ function DirectMessageItem({
         onClick={handleClick}
         className={cn(
           'flex flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
-          'hover:bg-accent hover:text-accent-foreground',
-          isActive && 'bg-accent text-accent-foreground font-medium',
+          'hover:text-accent-foreground hover:bg-accent',
+          isActive && 'text-accent-foreground bg-accent font-medium',
           isMuted && 'opacity-60'
         )}
       >
@@ -165,12 +165,12 @@ function DirectMessageItem({
         </div>
 
         {/* Name and Preview */}
-        <div className="flex-1 min-w-0">
-          <span className={cn('truncate block', isMuted && 'text-muted-foreground')}>
+        <div className="min-w-0 flex-1">
+          <span className={cn('block truncate', isMuted && 'text-muted-foreground')}>
             {dm.otherUserName || dm.name}
           </span>
           {dm.lastMessagePreview && (
-            <span className="text-xs text-muted-foreground truncate block">
+            <span className="block truncate text-xs text-muted-foreground">
               {dm.lastMessagePreview}
             </span>
           )}
@@ -188,7 +188,7 @@ function DirectMessageItem({
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity absolute right-1"
+            className="absolute right-1 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
           >
             <MoreVertical className="h-3.5 w-3.5" />
           </Button>
@@ -225,12 +225,7 @@ function DirectMessageItem({
 export function DirectMessageList({ className, onSelect }: DirectMessageListProps) {
   const pathname = usePathname()
   const { openModal } = useUIStore()
-  const {
-    mutedChannels,
-    hiddenChannels,
-    toggleMuteChannel,
-    hideChannel,
-  } = useChannelStore()
+  const { mutedChannels, hiddenChannels, toggleMuteChannel, hideChannel } = useChannelStore()
 
   // Local state
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -248,8 +243,7 @@ export function DirectMessageList({ className, onSelect }: DirectMessageListProp
       const query = searchQuery.toLowerCase()
       dms = dms.filter(
         (dm) =>
-          dm.otherUserName?.toLowerCase().includes(query) ||
-          dm.name.toLowerCase().includes(query)
+          dm.otherUserName?.toLowerCase().includes(query) || dm.name.toLowerCase().includes(query)
       )
     }
 
@@ -269,7 +263,7 @@ export function DirectMessageList({ className, onSelect }: DirectMessageListProp
     <div className={cn('mb-4', className)}>
       {/* Header */}
       <div
-        className="group flex items-center justify-between px-2 py-1 cursor-pointer hover:bg-accent/50 rounded-md transition-colors"
+        className="hover:bg-accent/50 group flex cursor-pointer items-center justify-between rounded-md px-2 py-1 transition-colors"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         <div className="flex items-center gap-1.5">
@@ -285,13 +279,11 @@ export function DirectMessageList({ className, onSelect }: DirectMessageListProp
             Direct Messages
           </span>
           {filteredDMs.length > 0 && (
-            <span className="text-xs text-muted-foreground/60">
-              ({filteredDMs.length})
-            </span>
+            <span className="text-muted-foreground/60 text-xs">({filteredDMs.length})</span>
           )}
         </div>
 
-        <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-0.5 opacity-0 transition-opacity group-hover:opacity-100">
           <Button
             variant="ghost"
             size="icon"
@@ -324,7 +316,7 @@ export function DirectMessageList({ className, onSelect }: DirectMessageListProp
           {showSearch && (
             <div className="px-2 pb-1">
               <div className="relative">
-                <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+                <Search className="absolute left-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                   type="text"
                   placeholder="Find a conversation..."
@@ -358,7 +350,7 @@ export function DirectMessageList({ className, onSelect }: DirectMessageListProp
           ) : (
             <Button
               variant="ghost"
-              className="w-full justify-start text-muted-foreground hover:text-foreground text-sm"
+              className="w-full justify-start text-sm text-muted-foreground hover:text-foreground"
               onClick={handleCreateDM}
             >
               <Plus className="mr-2 h-4 w-4" />

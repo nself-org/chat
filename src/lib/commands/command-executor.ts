@@ -10,14 +10,16 @@
  *
  * const result = await executeCommand(parsedCommand, context)
  * if (result.success) {
- *   console.log(result.message)
+ *   /* console.log result.message)
  * } else {
- *   console.error(result.error)
+ *   logger.error(result.error)
  * }
  * ```
  */
 
-import type { ParsedArg, ParsedCommand } from './command-parser';
+import type { ParsedArg, ParsedCommand } from './command-parser'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -28,17 +30,17 @@ import type { ParsedArg, ParsedCommand } from './command-parser';
  */
 export interface CommandContext {
   /** Current user ID */
-  userId: string;
+  userId: string
   /** Current user's display name */
-  userName: string;
+  userName: string
   /** Current user's role */
-  userRole: 'owner' | 'admin' | 'moderator' | 'member' | 'guest';
+  userRole: 'owner' | 'admin' | 'moderator' | 'member' | 'guest'
   /** Current channel ID (if in a channel) */
-  channelId?: string;
+  channelId?: string
   /** Current channel name */
-  channelName?: string;
+  channelName?: string
   /** Current thread ID (if in a thread) */
-  threadId?: string;
+  threadId?: string
 }
 
 /**
@@ -46,92 +48,92 @@ export interface CommandContext {
  */
 export interface CommandResult {
   /** Whether the command executed successfully */
-  success: boolean;
+  success: boolean
   /** Type of result */
-  type: CommandResultType;
+  type: CommandResultType
   /** Success message */
-  message?: string;
+  message?: string
   /** Error message */
-  error?: string;
+  error?: string
   /** Data returned by the command */
-  data?: CommandResultData;
+  data?: CommandResultData
   /** Side effects to perform */
-  effects?: CommandEffect[];
+  effects?: CommandEffect[]
 }
 
 /**
  * Type of command result
  */
 export type CommandResultType =
-  | 'message'      // Send a message
-  | 'action'       // Perform an action (no message)
-  | 'navigation'   // Navigate somewhere
-  | 'modal'        // Open a modal
-  | 'preview'      // Show preview before executing
-  | 'error'        // Error occurred
-  | 'silent';      // Success with no visible result
+  | 'message' // Send a message
+  | 'action' // Perform an action (no message)
+  | 'navigation' // Navigate somewhere
+  | 'modal' // Open a modal
+  | 'preview' // Show preview before executing
+  | 'error' // Error occurred
+  | 'silent' // Success with no visible result
 
 /**
  * Data returned by command execution
  */
 export interface CommandResultData {
   /** Message content to send */
-  messageContent?: string;
+  messageContent?: string
   /** Message type */
-  messageType?: 'text' | 'action' | 'system';
+  messageType?: 'text' | 'action' | 'system'
   /** URL to navigate to */
-  navigateTo?: string;
+  navigateTo?: string
   /** Modal to open */
   modal?: {
-    type: string;
-    data?: Record<string, unknown>;
-  };
+    type: string
+    data?: Record<string, unknown>
+  }
   /** Preview content */
   preview?: {
-    title: string;
-    content: React.ReactNode;
-    confirmLabel?: string;
-    cancelLabel?: string;
-  };
+    title: string
+    content: React.ReactNode
+    confirmLabel?: string
+    cancelLabel?: string
+  }
   /** Poll data */
   poll?: {
-    question: string;
-    options: string[];
-  };
+    question: string
+    options: string[]
+  }
   /** GIF data */
   gif?: {
-    url: string;
-    title: string;
-    width: number;
-    height: number;
-  };
+    url: string
+    title: string
+    width: number
+    height: number
+  }
   /** Status data */
   status?: {
-    emoji?: string;
-    text?: string;
-    expiration?: number;
-  };
+    emoji?: string
+    text?: string
+    expiration?: number
+  }
   /** Reminder data */
   reminder?: {
-    message: string;
-    triggerAt: number;
-  };
+    message: string
+    triggerAt: number
+  }
   /** Channel members list */
   members?: Array<{
-    id: string;
-    name: string;
-    role: string;
-  }>;
+    id: string
+    name: string
+    role: string
+  }>
   /** Generic key-value data */
-  [key: string]: unknown;
+  [key: string]: unknown
 }
 
 /**
  * Side effect to perform after command execution
  */
 export interface CommandEffect {
-  type: CommandEffectType;
-  payload: Record<string, unknown>;
+  type: CommandEffectType
+  payload: Record<string, unknown>
 }
 
 export type CommandEffectType =
@@ -157,7 +159,7 @@ export type CommandEffectType =
   | 'navigate'
   | 'collapse_media'
   | 'expand_media'
-  | 'send_message';
+  | 'send_message'
 
 /**
  * Command handler function type
@@ -165,7 +167,7 @@ export type CommandEffectType =
 export type CommandHandler = (
   args: Record<string, ParsedArg>,
   context: CommandContext
-) => Promise<CommandResult> | CommandResult;
+) => Promise<CommandResult> | CommandResult
 
 // ============================================================================
 // Command Handlers Registry
@@ -176,7 +178,7 @@ const commandHandlers: Record<string, CommandHandler> = {
   // Fun Commands
   // -------------------------------------------------------------------------
   shrug: (args) => {
-    const text = args.text?.value || '';
+    const text = args.text?.value || ''
     return {
       success: true,
       type: 'message',
@@ -184,11 +186,11 @@ const commandHandlers: Record<string, CommandHandler> = {
         messageContent: `${text} \u00AF\\_(\u30C4)_/\u00AF`.trim(),
         messageType: 'text',
       },
-    };
+    }
   },
 
   tableflip: (args) => {
-    const text = args.text?.value || '';
+    const text = args.text?.value || ''
     return {
       success: true,
       type: 'message',
@@ -196,11 +198,11 @@ const commandHandlers: Record<string, CommandHandler> = {
         messageContent: `${text} (\u256F\u00B0\u25A1\u00B0)\u256F\uFE35 \u253B\u2501\u253B`.trim(),
         messageType: 'text',
       },
-    };
+    }
   },
 
   unflip: (args) => {
-    const text = args.text?.value || '';
+    const text = args.text?.value || ''
     return {
       success: true,
       type: 'message',
@@ -208,18 +210,18 @@ const commandHandlers: Record<string, CommandHandler> = {
         messageContent: `\u252C\u2500\u252C\u30CE( \u00BA _ \u00BA\u30CE) ${text}`.trim(),
         messageType: 'text',
       },
-    };
+    }
   },
 
   me: (args) => {
-    const action = args.action?.value;
-    const actionText = Array.isArray(action) ? action.join(' ') : (action || '');
+    const action = args.action?.value
+    const actionText = Array.isArray(action) ? action.join(' ') : action || ''
     if (!actionText) {
       return {
         success: false,
         type: 'error',
         error: 'Please provide an action.',
-      };
+      }
     }
     return {
       success: true,
@@ -228,15 +230,15 @@ const commandHandlers: Record<string, CommandHandler> = {
         messageContent: actionText,
         messageType: 'action',
       },
-    };
+    }
   },
 
   // -------------------------------------------------------------------------
   // Status Commands
   // -------------------------------------------------------------------------
   status: (args, _context) => {
-    const emoji = args.emoji?.value as string | undefined;
-    const text = args.text?.value as string | undefined;
+    const emoji = args.emoji?.value as string | undefined
+    const text = args.text?.value as string | undefined
 
     if (!emoji && !text) {
       return {
@@ -249,7 +251,7 @@ const commandHandlers: Record<string, CommandHandler> = {
             payload: { emoji: null, text: null },
           },
         ],
-      };
+      }
     }
 
     return {
@@ -265,7 +267,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { emoji, text },
         },
       ],
-    };
+    }
   },
 
   away: (_args, _context) => {
@@ -279,7 +281,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { status: 'away' },
         },
       ],
-    };
+    }
   },
 
   active: (_, context) => {
@@ -293,21 +295,19 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { status: 'online' },
         },
       ],
-    };
+    }
   },
 
   dnd: (args) => {
-    const duration = args.duration?.value as string | undefined;
+    const duration = args.duration?.value as string | undefined
     const durationMs = args.duration?.rawValue
       ? parseDurationToMs(args.duration.rawValue)
-      : undefined;
+      : undefined
 
     return {
       success: true,
       type: 'action',
-      message: duration
-        ? `Do not disturb enabled for ${duration}.`
-        : 'Do not disturb enabled.',
+      message: duration ? `Do not disturb enabled for ${duration}.` : 'Do not disturb enabled.',
       effects: [
         {
           type: 'set_dnd',
@@ -317,7 +317,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           },
         },
       ],
-    };
+    }
   },
 
   // -------------------------------------------------------------------------
@@ -329,20 +329,18 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
-    const duration = args.duration?.value as string | undefined;
+    const duration = args.duration?.value as string | undefined
     const durationMs = args.duration?.rawValue
       ? parseDurationToMs(args.duration.rawValue)
-      : undefined;
+      : undefined
 
     return {
       success: true,
       type: 'action',
-      message: duration
-        ? `Channel muted for ${duration}.`
-        : 'Channel muted.',
+      message: duration ? `Channel muted for ${duration}.` : 'Channel muted.',
       effects: [
         {
           type: 'mute_channel',
@@ -352,7 +350,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           },
         },
       ],
-    };
+    }
   },
 
   unmute: (_, context) => {
@@ -361,7 +359,7 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
     return {
@@ -374,7 +372,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId },
         },
       ],
-    };
+    }
   },
 
   star: (_, context) => {
@@ -383,7 +381,7 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
     return {
@@ -396,7 +394,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId },
         },
       ],
-    };
+    }
   },
 
   unstar: (_, context) => {
@@ -405,7 +403,7 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
     return {
@@ -418,7 +416,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId },
         },
       ],
-    };
+    }
   },
 
   leave: (_, context) => {
@@ -427,7 +425,7 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
     return {
@@ -448,7 +446,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId },
         },
       ],
-    };
+    }
   },
 
   archive: (_, context) => {
@@ -457,7 +455,7 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
     return {
@@ -478,7 +476,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId },
         },
       ],
-    };
+    }
   },
 
   topic: (args, context) => {
@@ -487,16 +485,16 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
-    const topic = args.topic?.value as string;
+    const topic = args.topic?.value as string
     if (!topic) {
       return {
         success: false,
         type: 'error',
         error: 'Please provide a topic.',
-      };
+      }
     }
 
     return {
@@ -509,7 +507,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId, topic },
         },
       ],
-    };
+    }
   },
 
   rename: (args, context) => {
@@ -518,16 +516,16 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
-    const name = args.name?.value as string;
+    const name = args.name?.value as string
     if (!name) {
       return {
         success: false,
         type: 'error',
         error: 'Please provide a new name.',
-      };
+      }
     }
 
     return {
@@ -540,7 +538,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId, name },
         },
       ],
-    };
+    }
   },
 
   invite: (args, context) => {
@@ -549,16 +547,16 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
-    const users = args.users?.value as string;
+    const users = args.users?.value as string
     if (!users) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a user to invite.',
-      };
+      }
     }
 
     return {
@@ -571,7 +569,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId, username: users },
         },
       ],
-    };
+    }
   },
 
   who: (_, context) => {
@@ -580,7 +578,7 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
     return {
@@ -593,7 +591,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           data: { channelId: context.channelId },
         },
       },
-    };
+    }
   },
 
   // -------------------------------------------------------------------------
@@ -605,16 +603,16 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
-    const user = args.user?.value as string;
+    const user = args.user?.value as string
     if (!user) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a user to kick.',
-      };
+      }
     }
 
     return {
@@ -634,7 +632,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId, username: user },
         },
       ],
-    };
+    }
   },
 
   ban: (args, context) => {
@@ -643,18 +641,18 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
-    const user = args.user?.value as string;
-    const reason = args.reason?.value as string | undefined;
+    const user = args.user?.value as string
+    const reason = args.reason?.value as string | undefined
 
     if (!user) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a user to ban.',
-      };
+      }
     }
 
     return {
@@ -674,7 +672,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId, username: user, reason },
         },
       ],
-    };
+    }
   },
 
   unban: (args, context) => {
@@ -683,16 +681,16 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
-    const user = args.user?.value as string;
+    const user = args.user?.value as string
     if (!user) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a user to unban.',
-      };
+      }
     }
 
     return {
@@ -705,19 +703,19 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { channelId: context.channelId, username: user },
         },
       ],
-    };
+    }
   },
 
   warn: (args, context) => {
-    const user = args.user?.value as string;
-    const reason = args.reason?.value as string | undefined;
+    const user = args.user?.value as string
+    const reason = args.reason?.value as string | undefined
 
     if (!user) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a user to warn.',
-      };
+      }
     }
 
     return {
@@ -734,7 +732,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           },
         },
       ],
-    };
+    }
   },
 
   slowmode: (args, context) => {
@@ -743,13 +741,11 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'This command must be used in a channel.',
-      };
+      }
     }
 
-    const interval = args.interval?.value as string;
-    const intervalMs = args.interval?.rawValue
-      ? parseDurationToMs(args.interval.rawValue)
-      : 30000; // Default 30 seconds
+    const interval = args.interval?.value as string
+    const intervalMs = args.interval?.rawValue ? parseDurationToMs(args.interval.rawValue) : 30000 // Default 30 seconds
 
     return {
       success: true,
@@ -766,25 +762,23 @@ const commandHandlers: Record<string, CommandHandler> = {
           },
         },
       ],
-    };
+    }
   },
 
   // -------------------------------------------------------------------------
   // Utility Commands
   // -------------------------------------------------------------------------
   remind: (args) => {
-    const time = args.time?.value as string;
-    const message = args.message?.value as string;
-    const triggerMs = args.time?.rawValue
-      ? parseDurationToMs(args.time.rawValue)
-      : undefined;
+    const time = args.time?.value as string
+    const message = args.message?.value as string
+    const triggerMs = args.time?.rawValue ? parseDurationToMs(args.time.rawValue) : undefined
 
     if (!time || !triggerMs) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify when to remind you.',
-      };
+      }
     }
 
     if (!message) {
@@ -792,7 +786,7 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'Please specify what to remind you about.',
-      };
+      }
     }
 
     return {
@@ -814,17 +808,17 @@ const commandHandlers: Record<string, CommandHandler> = {
           },
         },
       ],
-    };
+    }
   },
 
   search: (args) => {
-    const query = args.query?.value as string;
+    const query = args.query?.value as string
     if (!query) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a search query.',
-      };
+      }
     }
 
     return {
@@ -842,7 +836,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { type: 'search', query },
         },
       ],
-    };
+    }
   },
 
   shortcuts: () => {
@@ -860,11 +854,11 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { type: 'keyboard-shortcuts' },
         },
       ],
-    };
+    }
   },
 
   help: (args) => {
-    const command = args.command?.value as string | undefined;
+    const command = args.command?.value as string | undefined
 
     return {
       success: true,
@@ -881,7 +875,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { type: 'command-help', command },
         },
       ],
-    };
+    }
   },
 
   collapse: () => {
@@ -895,7 +889,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: {},
         },
       ],
-    };
+    }
   },
 
   expand: () => {
@@ -909,20 +903,20 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: {},
         },
       ],
-    };
+    }
   },
 
   // -------------------------------------------------------------------------
   // Navigation Commands
   // -------------------------------------------------------------------------
   open: (args) => {
-    const channel = args.channel?.value as string;
+    const channel = args.channel?.value as string
     if (!channel) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a channel to open.',
-      };
+      }
     }
 
     return {
@@ -937,17 +931,17 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { to: `/chat/channel/${channel}` },
         },
       ],
-    };
+    }
   },
 
   dm: (args) => {
-    const user = args.user?.value as string;
+    const user = args.user?.value as string
     if (!user) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a user to message.',
-      };
+      }
     }
 
     return {
@@ -962,7 +956,7 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { to: `/chat/dm/${user}` },
         },
       ],
-    };
+    }
   },
 
   settings: () => {
@@ -978,20 +972,20 @@ const commandHandlers: Record<string, CommandHandler> = {
           payload: { to: '/settings' },
         },
       ],
-    };
+    }
   },
 
   // -------------------------------------------------------------------------
   // Media Commands (require API calls - return preview/placeholder)
   // -------------------------------------------------------------------------
   giphy: (args) => {
-    const query = args.query?.value as string;
+    const query = args.query?.value as string
     if (!query) {
       return {
         success: false,
         type: 'error',
         error: 'Please specify a search term.',
-      };
+      }
     }
 
     // Return preview type - actual GIF search will be handled by UI
@@ -1009,19 +1003,19 @@ const commandHandlers: Record<string, CommandHandler> = {
         searchQuery: query,
         searchType: 'giphy',
       },
-    };
+    }
   },
 
   poll: (args) => {
-    const question = args.question?.value as string;
-    const options = args.options?.value as string[] | undefined;
+    const question = args.question?.value as string
+    const options = args.options?.value as string[] | undefined
 
     if (!question) {
       return {
         success: false,
         type: 'error',
         error: 'Please provide a poll question.',
-      };
+      }
     }
 
     if (!options || options.length < 2) {
@@ -1029,7 +1023,7 @@ const commandHandlers: Record<string, CommandHandler> = {
         success: false,
         type: 'error',
         error: 'Please provide at least 2 poll options.',
-      };
+      }
     }
 
     return {
@@ -1047,9 +1041,9 @@ const commandHandlers: Record<string, CommandHandler> = {
           cancelLabel: 'Cancel',
         },
       },
-    };
+    }
   },
-};
+}
 
 // ============================================================================
 // Main Executor Function
@@ -1068,55 +1062,52 @@ export async function executeCommand(
       success: false,
       type: 'error',
       error: parsed.errors[0]?.message || 'Invalid command.',
-    };
+    }
   }
 
-  const commandName = parsed.commandName;
-  const handler = commandHandlers[commandName];
+  const commandName = parsed.commandName
+  const handler = commandHandlers[commandName]
 
   if (!handler) {
     return {
       success: false,
       type: 'error',
       error: `Command handler not implemented: /${commandName}`,
-    };
+    }
   }
 
   try {
-    const result = await handler(parsed.namedArgs, context);
-    return result;
+    const result = await handler(parsed.namedArgs, context)
+    return result
   } catch (error) {
-    console.error(`Error executing command /${commandName}:`, error);
+    logger.error(`Error executing command /${commandName}:`, error)
     return {
       success: false,
       type: 'error',
       error: error instanceof Error ? error.message : 'Unknown error occurred.',
-    };
+    }
   }
 }
 
 /**
  * Register a custom command handler
  */
-export function registerCommandHandler(
-  commandName: string,
-  handler: CommandHandler
-): void {
-  commandHandlers[commandName] = handler;
+export function registerCommandHandler(commandName: string, handler: CommandHandler): void {
+  commandHandlers[commandName] = handler
 }
 
 /**
  * Unregister a command handler
  */
 export function unregisterCommandHandler(commandName: string): void {
-  delete commandHandlers[commandName];
+  delete commandHandlers[commandName]
 }
 
 /**
  * Check if a command handler is registered
  */
 export function hasCommandHandler(commandName: string): boolean {
-  return commandName in commandHandlers;
+  return commandName in commandHandlers
 }
 
 // ============================================================================
@@ -1127,11 +1118,13 @@ export function hasCommandHandler(commandName: string): boolean {
  * Parse duration string to milliseconds
  */
 function parseDurationToMs(input: string): number | undefined {
-  const match = input.match(/^(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hr|hour|hours|d|day|days|w|week|weeks)$/i);
-  if (!match) return undefined;
+  const match = input.match(
+    /^(\d+)\s*(s|sec|second|seconds|m|min|minute|minutes|h|hr|hour|hours|d|day|days|w|week|weeks)$/i
+  )
+  if (!match) return undefined
 
-  const value = parseInt(match[1], 10);
-  const unit = match[2].toLowerCase();
+  const value = parseInt(match[1], 10)
+  const unit = match[2].toLowerCase()
 
   const multipliers: Record<string, number> = {
     s: 1000,
@@ -1152,7 +1145,7 @@ function parseDurationToMs(input: string): number | undefined {
     w: 7 * 24 * 60 * 60 * 1000,
     week: 7 * 24 * 60 * 60 * 1000,
     weeks: 7 * 24 * 60 * 60 * 1000,
-  };
+  }
 
-  return value * (multipliers[unit] || 1000);
+  return value * (multipliers[unit] || 1000)
 }

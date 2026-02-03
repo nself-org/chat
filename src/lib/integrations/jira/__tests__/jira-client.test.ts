@@ -18,12 +18,7 @@ import {
   JIRA_RESOURCES_URL,
   JIRA_DEFAULT_SCOPES,
 } from '../jira-client'
-import type {
-  IntegrationCredentials,
-  JiraUser,
-  JiraProject,
-  JiraIssue,
-} from '../../types'
+import type { IntegrationCredentials, JiraUser, JiraProject, JiraIssue } from '../../types'
 
 // ============================================================================
 // Mock Setup
@@ -335,7 +330,11 @@ describe('JiraApiClient', () => {
       mockFetch.mockResolvedValueOnce(
         createMockResponse({
           transitions: [
-            { id: '21', name: 'In Progress', to: { id: '3', name: 'In Progress', statusCategory: {} } },
+            {
+              id: '21',
+              name: 'In Progress',
+              to: { id: '3', name: 'In Progress', statusCategory: {} },
+            },
           ],
         })
       )
@@ -524,9 +523,9 @@ describe('JiraIntegrationProvider', () => {
     })
 
     it('should throw error on missing code', async () => {
-      await expect(
-        provider.handleCallback({ code: '', state: 'test' })
-      ).rejects.toThrow('Missing authorization code')
+      await expect(provider.handleCallback({ code: '', state: 'test' })).rejects.toThrow(
+        'Missing authorization code'
+      )
     })
 
     it('should throw error when no accessible sites', async () => {
@@ -534,9 +533,9 @@ describe('JiraIntegrationProvider', () => {
         .mockResolvedValueOnce(createMockResponse({ access_token: 'token' }))
         .mockResolvedValueOnce(createMockResponse([]))
 
-      await expect(
-        provider.handleCallback({ code: 'test', state: 'test' })
-      ).rejects.toThrow('No accessible Jira sites found')
+      await expect(provider.handleCallback({ code: 'test', state: 'test' })).rejects.toThrow(
+        'No accessible Jira sites found'
+      )
     })
   })
 
@@ -556,9 +555,9 @@ describe('JiraIntegrationProvider', () => {
     })
 
     it('should throw error without refresh token', async () => {
-      await expect(
-        provider.refreshToken({ accessToken: 'test' })
-      ).rejects.toThrow('No refresh token available')
+      await expect(provider.refreshToken({ accessToken: 'test' })).rejects.toThrow(
+        'No refresh token available'
+      )
     })
   })
 

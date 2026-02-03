@@ -132,12 +132,9 @@ await handleErrorSilent(error, { userId: user.id })
 ```typescript
 import { handleErrorWithRetry } from '@/lib/errors'
 
-await handleErrorWithRetry(
-  error,
-  async () => {
-    await retryOperation()
-  }
-)
+await handleErrorWithRetry(error, async () => {
+  await retryOperation()
+})
 ```
 
 ## Retry Logic
@@ -483,12 +480,9 @@ import { showQueuedToast } from '@/components/errors'
 
 async function sendMessage(message: string) {
   if (!navigator.onLine) {
-    const id = offlineQueue.enqueue(
-      async () => {
-        await sendMessageToServer(message)
-      },
-      'Send message'
-    )
+    const id = offlineQueue.enqueue(async () => {
+      await sendMessageToServer(message)
+    }, 'Send message')
 
     showQueuedToast('Message', offlineQueue.size())
     return
@@ -546,12 +540,13 @@ function MessageForm() {
 
   return (
     <ComponentErrorBoundary>
-      <form onSubmit={(e) => { e.preventDefault(); handleSend(); }}>
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          disabled={sending}
-        />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleSend()
+        }}
+      >
+        <input value={message} onChange={(e) => setMessage(e.target.value)} disabled={sending} />
         <button type="submit" disabled={sending}>
           {sending ? 'Sending...' : 'Send'}
         </button>
@@ -694,10 +689,7 @@ class ChannelNotFoundError extends AppError {
 ```typescript
 import { errorHandler } from '@/lib/errors'
 
-export async function apiErrorMiddleware(
-  error: unknown,
-  req: Request
-): Promise<Response> {
+export async function apiErrorMiddleware(error: unknown, req: Request): Promise<Response> {
   const appError = parseError(error)
 
   await errorHandler.handle(appError, {
@@ -760,7 +752,7 @@ Check Sentry configuration:
 
 ```typescript
 // .env.local
-NEXT_PUBLIC_SENTRY_DSN=your-dsn-here
+NEXT_PUBLIC_SENTRY_DSN = your - dsn - here
 ```
 
 ### Circuit Breaker Always Open
@@ -799,5 +791,6 @@ The nself-chat error handling system provides:
 ✅ **Production Ready** - Battle-tested patterns
 
 For more information, see the source code in:
+
 - `/src/lib/errors/` - Error handling utilities
 - `/src/components/errors/` - Error UI components

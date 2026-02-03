@@ -7,10 +7,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { nhost } from '@/lib/nhost.server'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+import { logger } from '@/lib/logger'
+
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Get user from session
     const session = await nhost.auth.getSession()
@@ -31,10 +30,7 @@ export async function POST(
 
     // Validate emoji
     if (!emoji || emoji.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'Emoji is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Emoji is required' }, { status: 400 })
     }
 
     // Verify stream is live and reactions are enabled
@@ -55,17 +51,11 @@ export async function POST(
     }
 
     if (!streamData.nchat_streams_by_pk.enable_reactions) {
-      return NextResponse.json(
-        { error: 'Reactions are disabled for this stream' },
-        { status: 403 }
-      )
+      return NextResponse.json({ error: 'Reactions are disabled for this stream' }, { status: 403 })
     }
 
     if (streamData.nchat_streams_by_pk.status !== 'live') {
-      return NextResponse.json(
-        { error: 'Stream is not live' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Stream is not live' }, { status: 400 })
     }
 
     // Insert reaction
@@ -99,19 +89,13 @@ export async function POST(
     )
 
     if (error || !data?.insert_nchat_stream_reactions_one) {
-      console.error('Failed to send reaction:', error)
-      return NextResponse.json(
-        { error: 'Failed to send reaction' },
-        { status: 500 }
-      )
+      logger.error('Failed to send reaction:', error)
+      return NextResponse.json({ error: 'Failed to send reaction' }, { status: 500 })
     }
 
     return NextResponse.json(data.insert_nchat_stream_reactions_one)
   } catch (error) {
-    console.error('Send stream reaction error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Send stream reaction error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

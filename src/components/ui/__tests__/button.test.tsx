@@ -10,18 +10,22 @@ describe('Button Component', () => {
   it('handles click events', () => {
     const handleClick = jest.fn()
     render(<Button onClick={handleClick}>Click me</Button>)
-    
+
     fireEvent.click(screen.getByText('Click me'))
     expect(handleClick).toHaveBeenCalledTimes(1)
   })
 
   it('can be disabled', () => {
     const handleClick = jest.fn()
-    render(<Button disabled onClick={handleClick}>Disabled</Button>)
-    
+    render(
+      <Button disabled onClick={handleClick}>
+        Disabled
+      </Button>
+    )
+
     const button = screen.getByText('Disabled')
     expect(button).toBeDisabled()
-    
+
     fireEvent.click(button)
     expect(handleClick).not.toHaveBeenCalled()
   })
@@ -29,10 +33,10 @@ describe('Button Component', () => {
   it('applies variant classes correctly', () => {
     const { rerender } = render(<Button variant="default">Default</Button>)
     expect(screen.getByText('Default')).toHaveClass('bg-primary')
-    
+
     rerender(<Button variant="destructive">Destructive</Button>)
     expect(screen.getByText('Destructive')).toHaveClass('bg-destructive')
-    
+
     rerender(<Button variant="outline">Outline</Button>)
     expect(screen.getByText('Outline')).toHaveClass('border')
   })
@@ -40,10 +44,10 @@ describe('Button Component', () => {
   it('applies size classes correctly', () => {
     const { rerender } = render(<Button size="default">Default</Button>)
     expect(screen.getByText('Default')).toHaveClass('h-10')
-    
+
     rerender(<Button size="sm">Small</Button>)
     expect(screen.getByText('Small')).toHaveClass('h-9')
-    
+
     rerender(<Button size="lg">Large</Button>)
     expect(screen.getByText('Large')).toHaveClass('h-11')
   })
@@ -54,7 +58,7 @@ describe('Button Component', () => {
         <a href="/test">Link Button</a>
       </Button>
     )
-    
+
     const link = screen.getByRole('link')
     expect(link).toHaveAttribute('href', '/test')
     expect(link).toHaveTextContent('Link Button')

@@ -1,14 +1,14 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Separator } from '@/components/ui/separator';
+import * as React from 'react'
+import { useState } from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Label } from '@/components/ui/label'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Separator } from '@/components/ui/separator'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,93 +18,77 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import {
-  Camera,
-  Save,
-  LogOut,
-  Trash2,
-  AlertTriangle,
-  Loader2,
-} from 'lucide-react';
-import type { DirectMessage } from '@/lib/dm/dm-types';
-import { canModifyGroupSettings, canDeleteDM, getLeaveConsequences } from '@/lib/dm';
-import { useDMStore } from '@/stores/dm-store';
+} from '@/components/ui/alert-dialog'
+import { Camera, Save, LogOut, Trash2, AlertTriangle, Loader2 } from 'lucide-react'
+import type { DirectMessage } from '@/lib/dm/dm-types'
+import { canModifyGroupSettings, canDeleteDM, getLeaveConsequences } from '@/lib/dm'
+import { useDMStore } from '@/stores/dm-store'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface GroupDMSettingsProps {
-  dm: DirectMessage;
-  currentUserId: string;
-  onClose?: () => void;
-  className?: string;
+  dm: DirectMessage
+  currentUserId: string
+  onClose?: () => void
+  className?: string
 }
 
 // ============================================================================
 // Component
 // ============================================================================
 
-export function GroupDMSettings({
-  dm,
-  currentUserId,
-  onClose,
-  className,
-}: GroupDMSettingsProps) {
-  const { updateDM, removeDM, removeParticipant } = useDMStore();
+export function GroupDMSettings({ dm, currentUserId, onClose, className }: GroupDMSettingsProps) {
+  const { updateDM, removeDM, removeParticipant } = useDMStore()
 
-  const [name, setName] = useState(dm.name || '');
-  const [description, setDescription] = useState(dm.description || '');
-  const [isSaving, setIsSaving] = useState(false);
-  const [showLeaveDialog, setShowLeaveDialog] = useState(false);
-  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [name, setName] = useState(dm.name || '')
+  const [description, setDescription] = useState(dm.description || '')
+  const [isSaving, setIsSaving] = useState(false)
+  const [showLeaveDialog, setShowLeaveDialog] = useState(false)
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
-  const canEdit = canModifyGroupSettings(dm, currentUserId);
-  const canDelete = canDeleteDM(dm, currentUserId);
-  const leaveConsequences = getLeaveConsequences(dm, currentUserId);
+  const canEdit = canModifyGroupSettings(dm, currentUserId)
+  const canDelete = canDeleteDM(dm, currentUserId)
+  const leaveConsequences = getLeaveConsequences(dm, currentUserId)
 
-  const hasChanges = name !== (dm.name || '') || description !== (dm.description || '');
+  const hasChanges = name !== (dm.name || '') || description !== (dm.description || '')
 
   const handleSave = async () => {
-    if (!canEdit || !hasChanges) return;
+    if (!canEdit || !hasChanges) return
 
-    setIsSaving(true);
+    setIsSaving(true)
     try {
       updateDM(dm.id, {
         name: name.trim(),
         description: description.trim() || null,
-      });
-      // TODO: Call API to update
+      })
     } catch (error) {
-      console.error('Failed to update group:', error);
+      logger.error('Failed to update group:', error)
     } finally {
-      setIsSaving(false);
+      setIsSaving(false)
     }
-  };
+  }
 
   const handleLeave = () => {
-    removeParticipant(dm.id, currentUserId);
-    setShowLeaveDialog(false);
-    onClose?.();
-    // TODO: Call API to leave group
-  };
+    removeParticipant(dm.id, currentUserId)
+    setShowLeaveDialog(false)
+    onClose?.()
+  }
 
   const handleDelete = () => {
-    removeDM(dm.id);
-    setShowDeleteDialog(false);
-    onClose?.();
-    // TODO: Call API to delete group
-  };
+    removeDM(dm.id)
+    setShowDeleteDialog(false)
+    onClose?.()
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
       {/* Group Photo */}
       <section className="flex flex-col items-center">
-        <button
-          className="relative group disabled:cursor-not-allowed"
-          disabled={!canEdit}
-        >
+        <button className="group relative disabled:cursor-not-allowed" disabled={!canEdit}>
           <Avatar className="h-24 w-24">
             <AvatarImage src={dm.avatarUrl || undefined} />
             <AvatarFallback className="text-2xl">
@@ -112,16 +96,12 @@ export function GroupDMSettings({
             </AvatarFallback>
           </Avatar>
           {canEdit && (
-            <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/50 opacity-0 transition-opacity group-hover:opacity-100">
               <Camera className="h-6 w-6 text-white" />
             </div>
           )}
         </button>
-        {canEdit && (
-          <p className="text-xs text-muted-foreground mt-2">
-            Click to change photo
-          </p>
-        )}
+        {canEdit && <p className="mt-2 text-xs text-muted-foreground">Click to change photo</p>}
       </section>
 
       {/* Group Info */}
@@ -172,7 +152,7 @@ export function GroupDMSettings({
 
       {/* Group Actions */}
       <section className="space-y-2">
-        <h3 className="text-sm font-semibold mb-4">Actions</h3>
+        <h3 className="mb-4 text-sm font-semibold">Actions</h3>
 
         {/* Leave Group */}
         <Button
@@ -204,19 +184,13 @@ export function GroupDMSettings({
             <AlertDialogTitle>Leave group?</AlertDialogTitle>
             <AlertDialogDescription>
               {leaveConsequences.willDeleteGroup ? (
-                <>
-                  You are the last member. Leaving will delete this group
-                  permanently.
-                </>
+                <>You are the last member. Leaving will delete this group permanently.</>
               ) : leaveConsequences.requiresOwnerTransfer ? (
-                <>
-                  You are the owner. Please transfer ownership to another member
-                  before leaving.
-                </>
+                <>You are the owner. Please transfer ownership to another member before leaving.</>
               ) : (
                 <>
-                  You will no longer receive messages from this group. You can be
-                  added back by a member.
+                  You will no longer receive messages from this group. You can be added back by a
+                  member.
                 </>
               )}
             </AlertDialogDescription>
@@ -225,8 +199,10 @@ export function GroupDMSettings({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleLeave}
-              disabled={leaveConsequences.requiresOwnerTransfer && !leaveConsequences.willDeleteGroup}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              disabled={
+                leaveConsequences.requiresOwnerTransfer && !leaveConsequences.willDeleteGroup
+              }
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               Leave
             </AlertDialogAction>
@@ -243,15 +219,15 @@ export function GroupDMSettings({
               Delete group?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the group and all messages for
-              everyone. This action cannot be undone.
+              This will permanently delete the group and all messages for everyone. This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               Delete Group
             </AlertDialogAction>
@@ -259,7 +235,7 @@ export function GroupDMSettings({
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  );
+  )
 }
 
-GroupDMSettings.displayName = 'GroupDMSettings';
+GroupDMSettings.displayName = 'GroupDMSettings'

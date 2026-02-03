@@ -30,7 +30,7 @@ export type InternalUrlType =
   | 'gist'
   | 'codepen'
   | 'codesandbox'
-  | 'generic';
+  | 'generic'
 
 /**
  * Detect the type of URL and return the appropriate handler
@@ -41,7 +41,8 @@ export function detectUrlType(url: string): InternalUrlType {
     youtube:
       /^https?:\/\/(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/i,
     github: /^https?:\/\/(?:www\.)?github\.com\/([^/]+)(?:\/([^/]+))?/i,
-    spotify: /^https?:\/\/(?:open\.)?spotify\.com\/(track|album|playlist|artist|episode|show)\/([a-zA-Z0-9]+)/i,
+    spotify:
+      /^https?:\/\/(?:open\.)?spotify\.com\/(track|album|playlist|artist|episode|show)\/([a-zA-Z0-9]+)/i,
     gist: /^https?:\/\/gist\.github\.com\/([^/]+)\/([a-f0-9]+)/i,
     codepen: /^https?:\/\/codepen\.io\/([^/]+)\/(?:pen|full|details)\/([^/]+)/i,
     codesandbox: /^https?:\/\/codesandbox\.io\/(?:s|embed)\/([^/?]+)/i,
@@ -93,10 +94,7 @@ export function extractTwitterUsername(url: string): string | null {
 /**
  * Build Twitter embed data
  */
-export function buildTwitterPreview(
-  url: string,
-  html?: string
-): Partial<TwitterPostData> {
+export function buildTwitterPreview(url: string, html?: string): Partial<TwitterPostData> {
   const tweetId = extractTwitterId(url)
   const username = extractTwitterUsername(url)
 
@@ -191,10 +189,15 @@ export function getYouTubeEmbedUrl(videoId: string): string {
 /**
  * Parse GitHub URL into components
  */
-export function parseGitHubUrl(
-  url: string
-): { owner: string; repo?: string; type?: 'issues' | 'pull' | 'discussions'; number?: number } | null {
-  const match = url.match(/github\.com\/([^/]+)(?:\/([^/]+)(?:\/(issues|pull|discussions)\/(\d+))?)?/i)
+export function parseGitHubUrl(url: string): {
+  owner: string
+  repo?: string
+  type?: 'issues' | 'pull' | 'discussions'
+  number?: number
+} | null {
+  const match = url.match(
+    /github\.com\/([^/]+)(?:\/([^/]+)(?:\/(issues|pull|discussions)\/(\d+))?)?/i
+  )
 
   if (!match) {
     return null

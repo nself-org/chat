@@ -12,6 +12,8 @@ import {
 } from '@/lib/ai/smart-search'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -80,11 +82,7 @@ export async function POST(request: NextRequest) {
     const smartSearch = getSmartSearch()
 
     // Perform search
-    const results = await smartSearch.search(
-      body.query,
-      body.messages,
-      body.options
-    )
+    const results = await smartSearch.search(body.query, body.messages, body.options)
 
     const provider = smartSearch.getProvider()
     const isSemanticSearch = provider !== 'local'
@@ -97,7 +95,7 @@ export async function POST(request: NextRequest) {
       isSemanticSearch,
     } as SearchResponse)
   } catch (error) {
-    console.error('Search error:', error)
+    logger.error('Search error:', error)
     captureError(error as Error, {
       tags: { api: 'ai-search' },
       extra: { query: (error as any)?.query },

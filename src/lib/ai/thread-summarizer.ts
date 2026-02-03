@@ -232,10 +232,7 @@ export class ThreadSummarizer {
   /**
    * Generate TL;DR summary
    */
-  private async generateTldr(
-    messages: Message[],
-    options: ThreadSummaryOptions
-  ): Promise<string> {
+  private async generateTldr(messages: Message[], options: ThreadSummaryOptions): Promise<string> {
     if (!this.isAvailable) {
       return this.generateLocalTldr(messages)
     }
@@ -300,9 +297,7 @@ export class ThreadSummarizer {
   /**
    * Generate participant summaries
    */
-  private async generateParticipantSummaries(
-    messages: Message[]
-  ): Promise<ParticipantSummary[]> {
+  private async generateParticipantSummaries(messages: Message[]): Promise<ParticipantSummary[]> {
     const participantMap = new Map<string, Message[]>()
 
     // Group messages by participant
@@ -319,13 +314,10 @@ export class ThreadSummarizer {
 
     for (const [userId, userMessages] of participantMap.entries()) {
       const sorted = userMessages.sort(
-        (a, b) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
       )
 
-      const keyContributions = await this.extractParticipantContributions(
-        userMessages
-      )
+      const keyContributions = await this.extractParticipantContributions(userMessages)
 
       summaries.push({
         userId,
@@ -424,18 +416,14 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY):`
   /**
    * Generate with OpenAI
    */
-  private async generateWithOpenAI(
-    prompt: string,
-    maxTokens: number
-  ): Promise<string> {
+  private async generateWithOpenAI(prompt: string, maxTokens: number): Promise<string> {
     const apiKey = this.config.apiKey || this.getAPIKey()
     if (!apiKey) {
       throw new Error('OpenAI API key not configured')
     }
 
     const model = this.config.model || DEFAULT_OPENAI_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
+    const endpoint = this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -475,18 +463,14 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY):`
   /**
    * Generate with Anthropic
    */
-  private async generateWithAnthropic(
-    prompt: string,
-    maxTokens: number
-  ): Promise<string> {
+  private async generateWithAnthropic(prompt: string, maxTokens: number): Promise<string> {
     const apiKey = this.config.apiKey || this.getAPIKey()
     if (!apiKey) {
       throw new Error('Anthropic API key not configured')
     }
 
     const model = this.config.model || DEFAULT_ANTHROPIC_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.anthropic.com/v1/messages'
+    const endpoint = this.config.endpoint || 'https://api.anthropic.com/v1/messages'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -543,8 +527,7 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY):`
       const description = parts[0]?.replace(/^[-•*\d.]\s*/, '') || line
       const assignee = parts[1] || undefined
       const priorityStr = parts[2]?.toLowerCase() || 'medium'
-      const priority =
-        priorityStr === 'high' || priorityStr === 'low' ? priorityStr : 'medium'
+      const priority = priorityStr === 'high' || priorityStr === 'low' ? priorityStr : 'medium'
 
       return {
         id: `action-${index}-${Date.now()}`,
@@ -560,9 +543,7 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY):`
   /**
    * Extract participant contributions
    */
-  private async extractParticipantContributions(
-    messages: Message[]
-  ): Promise<string[]> {
+  private async extractParticipantContributions(messages: Message[]): Promise<string[]> {
     if (!this.isAvailable || messages.length === 0) {
       return messages.slice(0, 2).map((m) => m.content.slice(0, 100))
     }
@@ -617,21 +598,10 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY):`
    * Extract local action items (fallback)
    */
   private extractLocalActionItems(messages: Message[]): ActionItem[] {
-    const actionWords = [
-      'todo',
-      'to-do',
-      'task',
-      'action',
-      'need to',
-      'should',
-      'must',
-      'will',
-    ]
+    const actionWords = ['todo', 'to-do', 'task', 'action', 'need to', 'should', 'must', 'will']
 
     return messages
-      .filter((m) =>
-        actionWords.some((word) => m.content.toLowerCase().includes(word))
-      )
+      .filter((m) => actionWords.some((word) => m.content.toLowerCase().includes(word)))
       .slice(0, 5)
       .map((m, index) => ({
         id: `local-action-${index}-${Date.now()}`,
@@ -645,9 +615,7 @@ Action Items (format: DESCRIPTION | ASSIGNEE | PRIORITY):`
   /**
    * Detect basic sentiment
    */
-  private detectBasicSentiment(
-    messages: Message[]
-  ): 'positive' | 'neutral' | 'negative' | 'mixed' {
+  private detectBasicSentiment(messages: Message[]): 'positive' | 'neutral' | 'negative' | 'mixed' {
     const positiveWords = ['great', 'good', 'awesome', 'excellent', 'thanks']
     const negativeWords = ['bad', 'issue', 'problem', 'error', 'failed', 'wrong']
 
@@ -753,9 +721,7 @@ let threadSummarizer: ThreadSummarizer | null = null
 /**
  * Get or create the global thread summarizer instance
  */
-export function getThreadSummarizer(
-  config?: Partial<ThreadSummarizerConfig>
-): ThreadSummarizer {
+export function getThreadSummarizer(config?: Partial<ThreadSummarizerConfig>): ThreadSummarizer {
   if (!threadSummarizer || config) {
     threadSummarizer = new ThreadSummarizer(config)
   }

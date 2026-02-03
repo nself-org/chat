@@ -5,70 +5,376 @@
  *
  * React hooks for channel lifecycle, membership, and settings with proper
  * error handling, logging, and user feedback.
+ *
+ * Uses real Hasura GraphQL backend for all operations.
  */
 
-import { useSubscription, useMutation } from '@apollo/client'
+import { useQuery, useSubscription, useMutation, useLazyQuery } from '@apollo/client'
 import { useCallback, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuth } from '@/contexts/auth-context'
 import { logger } from '@/lib/logger'
 import { useToast } from '@/hooks/use-toast'
+
+// GraphQL Operations from organized channels directory
 import {
-  USER_CHANNELS_SUBSCRIPTION,
-  CHANNEL_DETAILS_SUBSCRIPTION,
-} from '@/graphql/subscriptions/channels'
+  GET_CHANNELS,
+  GET_CHANNEL_BY_ID,
+  GET_CHANNEL_BY_SLUG,
+  GET_PUBLIC_CHANNELS,
+  SEARCH_CHANNELS,
+  GET_CHANNELS_BY_CATEGORY,
+  GET_CHANNEL_STATS,
+} from '@/graphql/channels/queries'
+
 import {
   CREATE_CHANNEL,
   UPDATE_CHANNEL,
   DELETE_CHANNEL,
   ARCHIVE_CHANNEL,
   UNARCHIVE_CHANNEL,
+  UPDATE_CHANNEL_POSITION,
+  UPDATE_CHANNEL_TYPE,
   JOIN_CHANNEL,
   LEAVE_CHANNEL,
-  ADD_CHANNEL_MEMBER,
-  REMOVE_CHANNEL_MEMBER,
-  UPDATE_MEMBER_ROLE,
-  TRANSFER_OWNERSHIP,
-  MUTE_CHANNEL,
-  UNMUTE_CHANNEL,
-  PIN_CHANNEL,
-  UNPIN_CHANNEL,
-  UPDATE_CHANNEL_NOTIFICATIONS,
-  UPDATE_CHANNEL_PRIVACY,
-  ADD_MULTIPLE_MEMBERS,
-  REMOVE_MULTIPLE_MEMBERS,
-  type CreateChannelInput,
-  type UpdateChannelInput,
-  type ChannelMemberInput,
-  type BulkMemberInput,
-} from '@/graphql/mutations/channels'
-import {
-  MARK_CHANNEL_READ,
-} from '@/graphql/mutations/read-receipts'
+} from '@/graphql/channels/mutations'
 
-interface Channel {
+import {
+  CHANNEL_SUBSCRIPTION,
+  CHANNELS_LIST_SUBSCRIPTION,
+  USER_CHANNELS_SUBSCRIPTION,
+} from '@/graphql/channels/subscriptions'
+
+import type { ChannelType } from '@/types/channel'
+
+// ============================================================================
+// TYPE DEFINITIONS
+// ============================================================================
+
+export interface Channel {
   id: string
   name: string
+  slug: string
+  description?: string | null
+  topic?: string | null
+  type: ChannelType | 'announcement'
+  categoryId?: string | null
+  icon?: string | null
+  color?: string | null
+  position: number
+  isDefault: boolean
+  isArchived: boolean
+  isReadonly: boolean
+  memberCount: number
+  createdBy: string
+  createdAt: string
+  updatedAt: string
+  lastMessageAt?: string | null
+  creator?: {
+    id: string
+    username: string
+    displayName: string
+    avatarUrl?: string
+  }
+}
+
+export interface ChannelWithMembership extends Channel {
+  userRole?: string
+  isMuted?: boolean
+  isPinned?: boolean
+  lastReadAt?: string
+  unreadCount?: number
+  mentionCount?: number
+}
+
+export interface CreateChannelInput {
+  name: string
+  slug?: string
   description?: string
-  type: string
-  is_private: boolean
-  created_at: string
-  updated_at: string
-  owner_id: string
+  topic?: string
+  type: 'public' | 'private' | 'direct' | 'group' | 'announcement'
+  categoryId?: string
+  icon?: string
+  color?: string
+  isDefault?: boolean
+  isReadonly?: boolean
+  memberIds?: string[]
+}
+
+export interface UpdateChannelInput {
+  name?: string
+  description?: string
   topic?: string
   icon?: string
-  members_aggregate?: { aggregate: { count: number } }
+  color?: string
+  categoryId?: string
+  position?: number
+  isDefault?: boolean
+  isReadonly?: boolean
 }
 
-interface ChannelMembership {
-  channel: Channel
-  role: string
-  joined_at: string
-  is_muted: boolean
-  last_read_at?: string
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+function transformChannel(raw: Record<string, unknown>): Channel {
+  return {
+    id: raw.id as string,
+    name: raw.name as string,
+    slug: raw.slug as string,
+    description: raw.description as string | null,
+    topic: raw.topic as string | null,
+    type: raw.type as ChannelType | 'announcement',
+    categoryId: raw.category_id as string | null,
+    icon: raw.icon as string | null,
+    color: raw.color as string | null,
+    position: (raw.position as number) || 0,
+    isDefault: (raw.is_default as boolean) || false,
+    isArchived: (raw.is_archived as boolean) || false,
+    isReadonly: (raw.is_readonly as boolean) || false,
+    memberCount:
+      (raw.member_count as number) ||
+      (raw.members_aggregate as { aggregate?: { count?: number } })?.aggregate?.count ||
+      0,
+    createdBy: raw.created_by as string,
+    createdAt: raw.created_at as string,
+    updatedAt: raw.updated_at as string,
+    lastMessageAt: raw.last_message_at as string | null,
+    creator: raw.creator
+      ? {
+          id: (raw.creator as Record<string, unknown>).id as string,
+          username: (raw.creator as Record<string, unknown>).username as string,
+          displayName: (raw.creator as Record<string, unknown>).display_name as string,
+          avatarUrl: (raw.creator as Record<string, unknown>).avatar_url as string | undefined,
+        }
+      : undefined,
+  }
 }
 
-export function useUserChannels() {
+function transformChannelWithMembership(
+  membershipData: Record<string, unknown>
+): ChannelWithMembership {
+  const channelData = membershipData.channel as Record<string, unknown>
+  return {
+    ...transformChannel(channelData),
+    userRole: membershipData.role as string,
+    isMuted: (membershipData.is_muted as boolean) || false,
+    isPinned: (membershipData.is_pinned as boolean) || false,
+    lastReadAt: membershipData.last_read_at as string | undefined,
+    unreadCount: (membershipData.unread_count as number) || 0,
+    mentionCount: (membershipData.mention_count as number) || 0,
+  }
+}
+
+// ============================================================================
+// QUERY HOOKS
+// ============================================================================
+
+/**
+ * Hook to fetch all channels
+ */
+export function useChannels(options?: {
+  type?: string
+  includeArchived?: boolean
+  limit?: number
+  offset?: number
+}) {
+  const { type, includeArchived = false, limit = 50, offset = 0 } = options || {}
+
+  const { data, loading, error, refetch } = useQuery(GET_CHANNELS, {
+    variables: { type, includeArchived, limit, offset },
+    fetchPolicy: 'cache-and-network',
+  })
+
+  const channels = useMemo(() => {
+    return (data?.nchat_channels || []).map(transformChannel)
+  }, [data])
+
+  const total = data?.nchat_channels_aggregate?.aggregate?.count || channels.length
+
+  return {
+    channels,
+    total,
+    hasMore: offset + limit < total,
+    loading,
+    error,
+    refetch,
+  }
+}
+
+/**
+ * Hook to fetch public channels
+ */
+export function usePublicChannels(limit = 50, offset = 0) {
+  const { data, loading, error, refetch } = useQuery(GET_PUBLIC_CHANNELS, {
+    variables: { limit, offset },
+    fetchPolicy: 'cache-and-network',
+  })
+
+  const channels = useMemo(() => {
+    return (data?.nchat_channels || []).map(transformChannel)
+  }, [data])
+
+  return { channels, loading, error, refetch }
+}
+
+/**
+ * Hook to fetch a single channel by ID
+ */
+export function useChannel(channelId: string | null) {
+  const { data, loading, error, refetch } = useQuery(GET_CHANNEL_BY_ID, {
+    variables: { id: channelId },
+    skip: !channelId,
+    fetchPolicy: 'cache-and-network',
+  })
+
+  const channel = useMemo(() => {
+    if (!data?.nchat_channels_by_pk) return null
+    return transformChannel(data.nchat_channels_by_pk)
+  }, [data])
+
+  return { channel, loading, error, refetch }
+}
+
+/**
+ * Hook to fetch a channel by slug
+ */
+export function useChannelBySlug(slug: string | null) {
+  const { data, loading, error, refetch } = useQuery(GET_CHANNEL_BY_SLUG, {
+    variables: { slug },
+    skip: !slug,
+    fetchPolicy: 'cache-and-network',
+  })
+
+  const channel = useMemo(() => {
+    if (!data?.nchat_channels || data.nchat_channels.length === 0) return null
+    return transformChannel(data.nchat_channels[0])
+  }, [data])
+
+  return { channel, loading, error, refetch }
+}
+
+/**
+ * Hook to search channels
+ */
+export function useChannelSearch() {
+  const [executeSearch, { data, loading, error }] = useLazyQuery(SEARCH_CHANNELS)
+
+  const search = useCallback(
+    (query: string, type?: string, limit = 20, offset = 0) => {
+      return executeSearch({
+        variables: {
+          searchQuery: `%${query}%`,
+          type,
+          limit,
+          offset,
+        },
+      })
+    },
+    [executeSearch]
+  )
+
+  const results = useMemo(() => {
+    return (data?.nchat_channels || []).map(transformChannel)
+  }, [data])
+
+  return { search, results, loading, error }
+}
+
+/**
+ * Hook to get channels by category
+ */
+export function useChannelsByCategory(includeArchived = false) {
+  const { data, loading, error, refetch } = useQuery(GET_CHANNELS_BY_CATEGORY, {
+    variables: { includeArchived },
+    fetchPolicy: 'cache-and-network',
+  })
+
+  const result = useMemo(() => {
+    if (!data) return { categories: [], uncategorized: [] }
+
+    const categories = (data.nchat_categories || []).map((cat: Record<string, unknown>) => ({
+      id: cat.id,
+      name: cat.name,
+      description: cat.description,
+      position: cat.position,
+      isCollapsed: cat.is_collapsed,
+      channels: ((cat.channels as Record<string, unknown>[]) || []).map(transformChannel),
+    }))
+
+    const uncategorized = (data.uncategorized || []).map(transformChannel)
+
+    return { categories, uncategorized }
+  }, [data])
+
+  return { ...result, loading, error, refetch }
+}
+
+/**
+ * Hook to get channel stats
+ */
+export function useChannelStats(channelId: string | null) {
+  const { data, loading, error } = useQuery(GET_CHANNEL_STATS, {
+    variables: { channelId },
+    skip: !channelId,
+    fetchPolicy: 'cache-and-network',
+  })
+
+  const stats = useMemo(() => {
+    if (!data?.nchat_channels_by_pk) return null
+    const channel = data.nchat_channels_by_pk
+    return {
+      memberCount: channel.member_count || channel.members_aggregate?.aggregate?.count || 0,
+      messageCount: channel.message_count || channel.messages_aggregate?.aggregate?.count || 0,
+      pinnedCount: channel.pinned_count?.aggregate?.count || 0,
+      createdAt: channel.created_at,
+      lastMessageAt: channel.last_message_at,
+    }
+  }, [data])
+
+  return { stats, loading, error }
+}
+
+// ============================================================================
+// SUBSCRIPTION HOOKS
+// ============================================================================
+
+/**
+ * Hook to subscribe to a single channel's updates
+ */
+export function useChannelSubscription(channelId: string | null) {
+  const { data, loading, error } = useSubscription(CHANNEL_SUBSCRIPTION, {
+    variables: { channelId },
+    skip: !channelId,
+  })
+
+  const channel = useMemo(() => {
+    if (!data?.nchat_channels_by_pk) return null
+    return transformChannel(data.nchat_channels_by_pk)
+  }, [data])
+
+  return { channel, loading, error }
+}
+
+/**
+ * Hook to subscribe to channel list updates
+ */
+export function useChannelsListSubscription(includeArchived = false) {
+  const { data, loading, error } = useSubscription(CHANNELS_LIST_SUBSCRIPTION, {
+    variables: { includeArchived },
+  })
+
+  const channels = useMemo(() => {
+    return (data?.nchat_channels || []).map(transformChannel)
+  }, [data])
+
+  return { channels, loading, error }
+}
+
+/**
+ * Hook to subscribe to user's channels
+ */
+export function useUserChannelsSubscription() {
   const { user } = useAuth()
 
   const { data, loading, error } = useSubscription(USER_CHANNELS_SUBSCRIPTION, {
@@ -77,47 +383,36 @@ export function useUserChannels() {
   })
 
   const channels = useMemo(() => {
-    return (data?.nchat_channel_members ?? []).map((m: ChannelMembership) => ({
-      ...m.channel,
-      userRole: m.role,
-      isMuted: m.is_muted,
-      lastReadAt: m.last_read_at,
-    }))
+    return (data?.nchat_channel_members || []).map(transformChannelWithMembership)
   }, [data])
 
   return { channels, loading, error }
 }
 
-export function useChannelDetails(channelId: string | null) {
-  const { data, loading, error } = useSubscription(CHANNEL_DETAILS_SUBSCRIPTION, {
-    variables: { channelId },
-    skip: !channelId,
-  })
+// ============================================================================
+// MUTATION HOOKS
+// ============================================================================
 
-  return {
-    channel: data?.nchat_channels_by_pk as Channel | null,
-    loading,
-    error,
-  }
-}
-
+/**
+ * Hook for channel mutations (create, update, delete, archive)
+ */
 export function useChannelMutations() {
   const { user } = useAuth()
   const { toast } = useToast()
   const router = useRouter()
 
-  // ============================================================================
-  // Channel CRUD Mutations
-  // ============================================================================
-
+  // Mutations
   const [createChannelMutation, { loading: creatingChannel }] = useMutation(CREATE_CHANNEL)
   const [updateChannelMutation, { loading: updatingChannel }] = useMutation(UPDATE_CHANNEL)
   const [deleteChannelMutation, { loading: deletingChannel }] = useMutation(DELETE_CHANNEL)
-  const [archiveChannelMutation, { loading: archivingChannel }] =
-    useMutation(ARCHIVE_CHANNEL)
-  const [unarchiveChannelMutation, { loading: unarchivingChannel }] =
-    useMutation(UNARCHIVE_CHANNEL)
+  const [archiveChannelMutation, { loading: archivingChannel }] = useMutation(ARCHIVE_CHANNEL)
+  const [unarchiveChannelMutation, { loading: unarchivingChannel }] = useMutation(UNARCHIVE_CHANNEL)
+  const [updatePositionMutation] = useMutation(UPDATE_CHANNEL_POSITION)
+  const [updateTypeMutation] = useMutation(UPDATE_CHANNEL_TYPE)
+  const [joinChannelMutation, { loading: joiningChannel }] = useMutation(JOIN_CHANNEL)
+  const [leaveChannelMutation, { loading: leavingChannel }] = useMutation(LEAVE_CHANNEL)
 
+  // Create channel
   const createChannel = useCallback(
     async (input: CreateChannelInput) => {
       if (!user?.id) {
@@ -127,19 +422,30 @@ export function useChannelMutations() {
       try {
         logger.info('Creating channel', { userId: user.id, channelName: input.name })
 
+        const slug =
+          input.slug ||
+          input.name
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '')
+
         const { data } = await createChannelMutation({
           variables: {
             name: input.name,
+            slug,
             description: input.description,
-            type: input.type,
-            isPrivate: input.isPrivate,
             topic: input.topic,
-            icon: input.icon,
+            type: input.type,
             categoryId: input.categoryId,
+            icon: input.icon,
+            color: input.color,
+            isDefault: input.isDefault || false,
+            isReadonly: input.isReadonly || false,
+            createdBy: user.id,
           },
         })
 
-        const channel = data.insert_nchat_channels_one
+        const channel = transformChannel(data.insert_nchat_channels_one)
 
         logger.info('Channel created', { userId: user.id, channelId: channel.id })
         toast({
@@ -164,6 +470,7 @@ export function useChannelMutations() {
     [user?.id, createChannelMutation, router, toast]
   )
 
+  // Update channel
   const updateChannel = useCallback(
     async (channelId: string, updates: UpdateChannelInput) => {
       if (!user?.id) {
@@ -174,8 +481,21 @@ export function useChannelMutations() {
         logger.info('Updating channel', { userId: user.id, channelId, updates })
 
         const { data } = await updateChannelMutation({
-          variables: { channelId, ...updates },
+          variables: {
+            channelId,
+            name: updates.name,
+            description: updates.description,
+            topic: updates.topic,
+            icon: updates.icon,
+            color: updates.color,
+            categoryId: updates.categoryId,
+            position: updates.position,
+            isDefault: updates.isDefault,
+            isReadonly: updates.isReadonly,
+          },
         })
+
+        const channel = transformChannel(data.update_nchat_channels_by_pk)
 
         logger.info('Channel updated', { userId: user.id, channelId })
         toast({
@@ -183,7 +503,7 @@ export function useChannelMutations() {
           description: 'Channel settings have been saved.',
         })
 
-        return data.update_nchat_channels_by_pk
+        return channel
       } catch (error) {
         logger.error('Failed to update channel', error as Error, { userId: user.id, channelId })
         toast({
@@ -197,6 +517,7 @@ export function useChannelMutations() {
     [user?.id, updateChannelMutation, toast]
   )
 
+  // Delete channel
   const deleteChannel = useCallback(
     async (channelId: string) => {
       if (!user?.id) {
@@ -210,16 +531,18 @@ export function useChannelMutations() {
           variables: { channelId },
         })
 
+        const deletedChannel = data.delete_nchat_channels_by_pk
+
         logger.warn('Channel deleted', { userId: user.id, channelId })
         toast({
           title: 'Channel deleted',
-          description: `#${data.delete_nchat_channels_by_pk.name} has been deleted.`,
+          description: `#${deletedChannel.name} has been deleted.`,
         })
 
         // Navigate away from deleted channel
         router.push('/chat')
 
-        return data.delete_nchat_channels_by_pk
+        return deletedChannel
       } catch (error) {
         logger.error('Failed to delete channel', error as Error, { userId: user.id, channelId })
         toast({
@@ -233,6 +556,7 @@ export function useChannelMutations() {
     [user?.id, deleteChannelMutation, router, toast]
   )
 
+  // Archive channel
   const archiveChannel = useCallback(
     async (channelId: string) => {
       if (!user?.id) {
@@ -266,6 +590,7 @@ export function useChannelMutations() {
     [user?.id, archiveChannelMutation, toast]
   )
 
+  // Unarchive channel
   const unarchiveChannel = useCallback(
     async (channelId: string) => {
       if (!user?.id) {
@@ -287,10 +612,7 @@ export function useChannelMutations() {
 
         return data.update_nchat_channels_by_pk
       } catch (error) {
-        logger.error('Failed to unarchive channel', error as Error, {
-          userId: user.id,
-          channelId,
-        })
+        logger.error('Failed to unarchive channel', error as Error, { userId: user.id, channelId })
         toast({
           title: 'Unarchive failed',
           description: 'Could not unarchive the channel. Please try again.',
@@ -302,19 +624,57 @@ export function useChannelMutations() {
     [user?.id, unarchiveChannelMutation, toast]
   )
 
-  // ============================================================================
-  // Membership Mutations
-  // ============================================================================
+  // Update channel position
+  const updateChannelPosition = useCallback(
+    async (channelId: string, position: number, categoryId?: string | null) => {
+      try {
+        await updatePositionMutation({
+          variables: { channelId, position, categoryId },
+        })
+      } catch (error) {
+        logger.error('Failed to update channel position', error as Error)
+        throw error
+      }
+    },
+    [updatePositionMutation]
+  )
 
-  const [joinChannelMutation, { loading: joiningChannel }] = useMutation(JOIN_CHANNEL)
-  const [leaveChannelMutation, { loading: leavingChannel }] = useMutation(LEAVE_CHANNEL)
-  const [addMemberMutation, { loading: addingMember }] = useMutation(ADD_CHANNEL_MEMBER)
-  const [removeMemberMutation, { loading: removingMember }] =
-    useMutation(REMOVE_CHANNEL_MEMBER)
-  const [updateRoleMutation, { loading: updatingRole }] = useMutation(UPDATE_MEMBER_ROLE)
-  const [transferOwnershipMutation, { loading: transferringOwnership }] =
-    useMutation(TRANSFER_OWNERSHIP)
+  // Update channel type
+  const updateChannelType = useCallback(
+    async (channelId: string, type: 'public' | 'private' | 'announcement') => {
+      if (!user?.id) {
+        throw new Error('User not authenticated')
+      }
 
+      try {
+        logger.info('Updating channel type', { userId: user.id, channelId, type })
+
+        await updateTypeMutation({
+          variables: { channelId, type },
+        })
+
+        logger.info('Channel type updated', { userId: user.id, channelId, type })
+        toast({
+          title: 'Channel type updated',
+          description: `Channel is now ${type}.`,
+        })
+      } catch (error) {
+        logger.error('Failed to update channel type', error as Error, {
+          userId: user.id,
+          channelId,
+        })
+        toast({
+          title: 'Update failed',
+          description: 'Could not update channel type. Please try again.',
+          variant: 'destructive',
+        })
+        throw error
+      }
+    },
+    [user?.id, updateTypeMutation, toast]
+  )
+
+  // Join channel
   const joinChannel = useCallback(
     async (channelId: string) => {
       if (!user?.id) {
@@ -324,22 +684,23 @@ export function useChannelMutations() {
       try {
         logger.info('Joining channel', { userId: user.id, channelId })
 
-        const { data } = await joinChannelMutation({
+        await joinChannelMutation({
           variables: { channelId, userId: user.id },
         })
 
-        logger.info('Joined channel', { userId: user.id, channelId })
+        logger.info('Channel joined', { userId: user.id, channelId })
         toast({
-          title: 'Joined channel',
-          description: 'You have joined this channel.',
+          title: 'Channel joined',
+          description: 'You have joined the channel.',
         })
-
-        return data.insert_nchat_channel_members_one
       } catch (error) {
-        logger.error('Failed to join channel', error as Error, { userId: user.id, channelId })
+        logger.error('Failed to join channel', error as Error, {
+          userId: user.id,
+          channelId,
+        })
         toast({
           title: 'Join failed',
-          description: 'Could not join the channel. Please try again.',
+          description: 'Could not join channel. Please try again.',
           variant: 'destructive',
         })
         throw error
@@ -348,6 +709,7 @@ export function useChannelMutations() {
     [user?.id, joinChannelMutation, toast]
   )
 
+  // Leave channel
   const leaveChannel = useCallback(
     async (channelId: string) => {
       if (!user?.id) {
@@ -361,533 +723,82 @@ export function useChannelMutations() {
           variables: { channelId, userId: user.id },
         })
 
-        logger.info('Left channel', { userId: user.id, channelId })
+        logger.info('Channel left', { userId: user.id, channelId })
         toast({
-          title: 'Left channel',
-          description: 'You have left this channel.',
+          title: 'Channel left',
+          description: 'You have left the channel.',
         })
-
-        // Navigate away from left channel
-        router.push('/chat')
       } catch (error) {
-        logger.error('Failed to leave channel', error as Error, { userId: user.id, channelId })
+        logger.error('Failed to leave channel', error as Error, {
+          userId: user.id,
+          channelId,
+        })
         toast({
           title: 'Leave failed',
-          description: 'Could not leave the channel. Please try again.',
+          description: 'Could not leave channel. Please try again.',
           variant: 'destructive',
         })
         throw error
       }
     },
-    [user?.id, leaveChannelMutation, router, toast]
+    [user?.id, leaveChannelMutation, toast]
   )
-
-  const addChannelMember = useCallback(
-    async (input: ChannelMemberInput) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Adding channel member', {
-          adminId: user.id,
-          channelId: input.channelId,
-          targetUserId: input.userId,
-        })
-
-        const { data } = await addMemberMutation({
-          variables: {
-            channelId: input.channelId,
-            userId: input.userId,
-            role: input.role || 'member',
-          },
-        })
-
-        logger.info('Channel member added', {
-          adminId: user.id,
-          channelId: input.channelId,
-          targetUserId: input.userId,
-        })
-        toast({
-          title: 'Member added',
-          description: 'User has been added to the channel.',
-        })
-
-        return data.insert_nchat_channel_members_one
-      } catch (error) {
-        logger.error('Failed to add channel member', error as Error, { userId: user.id })
-        toast({
-          title: 'Add member failed',
-          description: 'Could not add the member. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, addMemberMutation, toast]
-  )
-
-  const removeChannelMember = useCallback(
-    async (channelId: string, memberId: string) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Removing channel member', { userId: user.id, channelId, memberId })
-
-        await removeMemberMutation({
-          variables: { channelId, userId: memberId },
-        })
-
-        logger.info('Channel member removed', { userId: user.id, channelId, memberId })
-        toast({
-          title: 'Member removed',
-          description: 'User has been removed from the channel.',
-        })
-      } catch (error) {
-        logger.error('Failed to remove channel member', error as Error, {
-          userId: user.id,
-          channelId,
-          memberId,
-        })
-        toast({
-          title: 'Remove member failed',
-          description: 'Could not remove the member. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, removeMemberMutation, toast]
-  )
-
-  const updateMemberRole = useCallback(
-    async (channelId: string, memberId: string, role: string) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Updating member role', { userId: user.id, channelId, memberId, role })
-
-        const { data } = await updateRoleMutation({
-          variables: { channelId, userId: memberId, role },
-        })
-
-        logger.info('Member role updated', { userId: user.id, channelId, memberId, role })
-        toast({
-          title: 'Role updated',
-          description: `Member role has been changed to ${role}.`,
-        })
-
-        return data.update_nchat_channel_members
-      } catch (error) {
-        logger.error('Failed to update member role', error as Error, {
-          userId: user.id,
-          channelId,
-          memberId,
-        })
-        toast({
-          title: 'Update role failed',
-          description: 'Could not update the member role. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, updateRoleMutation, toast]
-  )
-
-  const transferOwnership = useCallback(
-    async (channelId: string, newOwnerId: string) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.warn('Transferring channel ownership', { userId: user.id, channelId, newOwnerId })
-
-        const { data } = await transferOwnershipMutation({
-          variables: { channelId, newOwnerId },
-        })
-
-        logger.warn('Channel ownership transferred', { userId: user.id, channelId, newOwnerId })
-        toast({
-          title: 'Ownership transferred',
-          description: 'Channel ownership has been transferred successfully.',
-        })
-
-        return data.update_nchat_channels_by_pk
-      } catch (error) {
-        logger.error('Failed to transfer ownership', error as Error, {
-          userId: user.id,
-          channelId,
-        })
-        toast({
-          title: 'Transfer failed',
-          description: 'Could not transfer ownership. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, transferOwnershipMutation, toast]
-  )
-
-  // ============================================================================
-  // Channel Settings Mutations
-  // ============================================================================
-
-  const [muteChannelMutation, { loading: mutingChannel }] = useMutation(MUTE_CHANNEL)
-  const [unmuteChannelMutation, { loading: unmutingChannel }] = useMutation(UNMUTE_CHANNEL)
-  const [pinChannelMutation, { loading: pinningChannel }] = useMutation(PIN_CHANNEL)
-  const [unpinChannelMutation, { loading: unpinningChannel }] = useMutation(UNPIN_CHANNEL)
-  const [updateNotificationsMutation, { loading: updatingNotifications }] = useMutation(
-    UPDATE_CHANNEL_NOTIFICATIONS
-  )
-  const [markReadMutation, { loading: markingRead }] = useMutation(MARK_CHANNEL_READ)
-  const [updatePrivacyMutation, { loading: updatingPrivacy }] =
-    useMutation(UPDATE_CHANNEL_PRIVACY)
-
-  const muteChannel = useCallback(
-    async (channelId: string) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Muting channel', { userId: user.id, channelId })
-
-        await muteChannelMutation({
-          variables: { channelId, userId: user.id },
-        })
-
-        logger.info('Channel muted', { userId: user.id, channelId })
-        toast({
-          title: 'Channel muted',
-          description: 'You will no longer receive notifications from this channel.',
-        })
-      } catch (error) {
-        logger.error('Failed to mute channel', error as Error, { userId: user.id, channelId })
-        toast({
-          title: 'Mute failed',
-          description: 'Could not mute the channel. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, muteChannelMutation, toast]
-  )
-
-  const unmuteChannel = useCallback(
-    async (channelId: string) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Unmuting channel', { userId: user.id, channelId })
-
-        await unmuteChannelMutation({
-          variables: { channelId, userId: user.id },
-        })
-
-        logger.info('Channel unmuted', { userId: user.id, channelId })
-        toast({
-          title: 'Channel unmuted',
-          description: 'You will now receive notifications from this channel.',
-        })
-      } catch (error) {
-        logger.error('Failed to unmute channel', error as Error, { userId: user.id, channelId })
-        toast({
-          title: 'Unmute failed',
-          description: 'Could not unmute the channel. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, unmuteChannelMutation, toast]
-  )
-
-  const pinChannel = useCallback(
-    async (channelId: string) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Pinning channel', { userId: user.id, channelId })
-
-        await pinChannelMutation({
-          variables: { channelId, userId: user.id },
-        })
-
-        logger.info('Channel pinned', { userId: user.id, channelId })
-      } catch (error) {
-        logger.error('Failed to pin channel', error as Error, { userId: user.id, channelId })
-        throw error
-      }
-    },
-    [user?.id, pinChannelMutation]
-  )
-
-  const unpinChannel = useCallback(
-    async (channelId: string) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Unpinning channel', { userId: user.id, channelId })
-
-        await unpinChannelMutation({
-          variables: { channelId, userId: user.id },
-        })
-
-        logger.info('Channel unpinned', { userId: user.id, channelId })
-      } catch (error) {
-        logger.error('Failed to unpin channel', error as Error, { userId: user.id, channelId })
-        throw error
-      }
-    },
-    [user?.id, unpinChannelMutation]
-  )
-
-  const updateChannelNotifications = useCallback(
-    async (channelId: string, enabled: boolean) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Updating channel notifications', { userId: user.id, channelId, enabled })
-
-        await updateNotificationsMutation({
-          variables: { channelId, userId: user.id, notificationsEnabled: enabled },
-        })
-
-        logger.info('Channel notifications updated', { userId: user.id, channelId, enabled })
-        toast({
-          title: enabled ? 'Notifications enabled' : 'Notifications disabled',
-          description: enabled
-            ? 'You will receive notifications from this channel.'
-            : 'You will not receive notifications from this channel.',
-        })
-      } catch (error) {
-        logger.error('Failed to update channel notifications', error as Error, {
-          userId: user.id,
-          channelId,
-        })
-        toast({
-          title: 'Update failed',
-          description: 'Could not update notification settings. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, updateNotificationsMutation, toast]
-  )
-
-  const markChannelRead = useCallback(
-    async (channelId: string) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.debug('Marking channel as read', { userId: user.id, channelId })
-
-        await markReadMutation({
-          variables: { channelId, userId: user.id },
-        })
-      } catch (error) {
-        logger.error('Failed to mark channel read', error as Error, { userId: user.id, channelId })
-        // Silent failure for mark read
-      }
-    },
-    [user?.id, markReadMutation]
-  )
-
-  const updateChannelPrivacy = useCallback(
-    async (channelId: string, isPrivate: boolean) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Updating channel privacy', { userId: user.id, channelId, isPrivate })
-
-        const { data } = await updatePrivacyMutation({
-          variables: { channelId, isPrivate },
-        })
-
-        logger.info('Channel privacy updated', { userId: user.id, channelId, isPrivate })
-        toast({
-          title: 'Privacy updated',
-          description: `Channel is now ${isPrivate ? 'private' : 'public'}.`,
-        })
-
-        return data.update_nchat_channels_by_pk
-      } catch (error) {
-        logger.error('Failed to update channel privacy', error as Error, {
-          userId: user.id,
-          channelId,
-        })
-        toast({
-          title: 'Update failed',
-          description: 'Could not update channel privacy. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, updatePrivacyMutation, toast]
-  )
-
-  // ============================================================================
-  // Bulk Operations
-  // ============================================================================
-
-  const [addMultipleMutation, { loading: addingMultiple }] =
-    useMutation(ADD_MULTIPLE_MEMBERS)
-  const [removeMultipleMutation, { loading: removingMultiple }] = useMutation(
-    REMOVE_MULTIPLE_MEMBERS
-  )
-
-  const addMultipleMembers = useCallback(
-    async (members: BulkMemberInput[]) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Adding multiple channel members', { userId: user.id, count: members.length })
-
-        const { data } = await addMultipleMutation({
-          variables: { members },
-        })
-
-        logger.info('Multiple channel members added', {
-          userId: user.id,
-          count: data.insert_nchat_channel_members.affected_rows,
-        })
-        toast({
-          title: 'Members added',
-          description: `${data.insert_nchat_channel_members.affected_rows} members have been added.`,
-        })
-
-        return data.insert_nchat_channel_members
-      } catch (error) {
-        logger.error('Failed to add multiple members', error as Error, { userId: user.id })
-        toast({
-          title: 'Bulk add failed',
-          description: 'Could not add all members. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, addMultipleMutation, toast]
-  )
-
-  const removeMultipleMembers = useCallback(
-    async (channelId: string, userIds: string[]) => {
-      if (!user?.id) {
-        throw new Error('User not authenticated')
-      }
-
-      try {
-        logger.info('Removing multiple channel members', {
-          userId: user.id,
-          channelId,
-          count: userIds.length,
-        })
-
-        const { data } = await removeMultipleMutation({
-          variables: { channelId, userIds },
-        })
-
-        logger.info('Multiple channel members removed', {
-          userId: user.id,
-          count: data.delete_nchat_channel_members.affected_rows,
-        })
-        toast({
-          title: 'Members removed',
-          description: `${data.delete_nchat_channel_members.affected_rows} members have been removed.`,
-        })
-
-        return data.delete_nchat_channel_members
-      } catch (error) {
-        logger.error('Failed to remove multiple members', error as Error, {
-          userId: user.id,
-          channelId,
-        })
-        toast({
-          title: 'Bulk remove failed',
-          description: 'Could not remove all members. Please try again.',
-          variant: 'destructive',
-        })
-        throw error
-      }
-    },
-    [user?.id, removeMultipleMutation, toast]
-  )
-
-  // ============================================================================
-  // Return API
-  // ============================================================================
 
   return {
-    // CRUD
+    // CRUD operations
     createChannel,
     updateChannel,
     deleteChannel,
     archiveChannel,
     unarchiveChannel,
+    updateChannelPosition,
+    updateChannelType,
+    joinChannel,
+    leaveChannel,
+
+    // Loading states
     creatingChannel,
     updatingChannel,
     deletingChannel,
     archivingChannel,
     unarchivingChannel,
-
-    // Membership
-    joinChannel,
-    leaveChannel,
-    addChannelMember,
-    removeChannelMember,
-    updateMemberRole,
-    transferOwnership,
     joiningChannel,
     leavingChannel,
-    addingMember,
-    removingMember,
-    updatingRole,
-    transferringOwnership,
-
-    // Settings
-    muteChannel,
-    unmuteChannel,
-    pinChannel,
-    unpinChannel,
-    updateChannelNotifications,
-    markChannelRead,
-    updateChannelPrivacy,
-    mutingChannel,
-    unmutingChannel,
-    pinningChannel,
-    unpinningChannel,
-    updatingNotifications,
-    markingRead,
-    updatingPrivacy,
-
-    // Bulk
-    addMultipleMembers,
-    removeMultipleMembers,
-    addingMultiple,
-    removingMultiple,
   }
 }
+
+// ============================================================================
+// COMBINED HOOK
+// ============================================================================
+
+/**
+ * Combined hook for common channel operations
+ */
+export function useChannelDetails(channelIdOrSlug: string | null, isSlug = false) {
+  // Query based on ID or slug
+  const channelByIdResult = useChannel(isSlug ? null : channelIdOrSlug)
+  const channelBySlugResult = useChannelBySlug(isSlug ? channelIdOrSlug : null)
+
+  const result = isSlug ? channelBySlugResult : channelByIdResult
+  const channelId = result.channel?.id || null
+
+  // Get stats
+  const { stats } = useChannelStats(channelId)
+
+  // Subscribe to updates
+  const { channel: liveChannel } = useChannelSubscription(channelId)
+
+  // Use live data if available, otherwise query data
+  const channel = liveChannel || result.channel
+
+  return {
+    channel,
+    stats,
+    loading: result.loading,
+    error: result.error,
+    refetch: result.refetch,
+  }
+}
+
+// Export types
+export type { ChannelType }

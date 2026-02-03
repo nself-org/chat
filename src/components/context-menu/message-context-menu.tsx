@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Reply,
   SmilePlus,
@@ -15,12 +15,14 @@ import {
   Forward,
   Flag,
   MoreHorizontal,
-} from 'lucide-react';
-import { useContextMenuStore, type MessageTarget } from '@/lib/context-menu/context-menu-store';
-import { PositionedContextMenu } from './base-context-menu';
-import { MenuItem } from './menu-item';
-import { MenuSeparator } from './menu-separator';
-import { MenuSubmenu, MenuSubmenuTrigger, MenuSubmenuContent } from './menu-submenu';
+} from 'lucide-react'
+import { useContextMenuStore, type MessageTarget } from '@/lib/context-menu/context-menu-store'
+import { PositionedContextMenu } from './base-context-menu'
+import { MenuItem } from './menu-item'
+import { MenuSeparator } from './menu-separator'
+import { MenuSubmenu, MenuSubmenuTrigger, MenuSubmenuContent } from './menu-submenu'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -30,14 +32,14 @@ export interface MessageContextMenuProps {
   /**
    * Called when an action is performed
    */
-  onAction?: (action: string, data: MessageActionData) => void;
+  onAction?: (action: string, data: MessageActionData) => void
 }
 
 export interface MessageActionData {
-  messageId: string;
-  channelId: string;
-  action: MessageAction;
-  emoji?: string;
+  messageId: string
+  channelId: string
+  action: MessageAction
+  emoji?: string
 }
 
 export type MessageAction =
@@ -52,7 +54,7 @@ export type MessageAction =
   | 'copy-text'
   | 'copy-link'
   | 'forward'
-  | 'report';
+  | 'report'
 
 // Common emoji reactions
 const QUICK_REACTIONS = [
@@ -62,20 +64,20 @@ const QUICK_REACTIONS = [
   { emoji: '😮', label: 'Wow' },
   { emoji: '😢', label: 'Sad' },
   { emoji: '🎉', label: 'Party' },
-];
+]
 
 // ============================================================================
 // Component
 // ============================================================================
 
 export function MessageContextMenu({ onAction }: MessageContextMenuProps) {
-  const target = useContextMenuStore((state) => state.target);
-  const closeMenu = useContextMenuStore((state) => state.closeMenu);
+  const target = useContextMenuStore((state) => state.target)
+  const closeMenu = useContextMenuStore((state) => state.closeMenu)
 
   // Type guard for message target
-  const messageTarget = target?.type === 'message' ? (target as MessageTarget) : null;
+  const messageTarget = target?.type === 'message' ? (target as MessageTarget) : null
 
-  if (!messageTarget) return null;
+  if (!messageTarget) return null
 
   const {
     messageId,
@@ -87,7 +89,7 @@ export function MessageContextMenu({ onAction }: MessageContextMenuProps) {
     canDelete,
     canPin,
     canModerate,
-  } = messageTarget;
+  } = messageTarget
 
   const handleAction = (action: MessageAction, emoji?: string) => {
     onAction?.(action, {
@@ -95,52 +97,46 @@ export function MessageContextMenu({ onAction }: MessageContextMenuProps) {
       channelId,
       action,
       emoji,
-    });
-    closeMenu();
-  };
+    })
+    closeMenu()
+  }
 
   const handleCopyText = async () => {
     try {
-      await navigator.clipboard.writeText(content);
-      handleAction('copy-text');
+      await navigator.clipboard.writeText(content)
+      handleAction('copy-text')
     } catch (error) {
-      console.error('Failed to copy text:', error);
+      logger.error('Failed to copy text:', error)
     }
-  };
+  }
 
   const handleCopyLink = async () => {
     try {
-      const url = `${window.location.origin}/chat/${channelId}/${messageId}`;
-      await navigator.clipboard.writeText(url);
-      handleAction('copy-link');
+      const url = `${window.location.origin}/chat/${channelId}/${messageId}`
+      await navigator.clipboard.writeText(url)
+      handleAction('copy-link')
     } catch (error) {
-      console.error('Failed to copy link:', error);
+      logger.error('Failed to copy link:', error)
     }
-  };
+  }
 
   return (
     <PositionedContextMenu>
       {/* Reply */}
-      <MenuItem
-        icon={Reply}
-        shortcut="R"
-        onSelect={() => handleAction('reply')}
-      >
+      <MenuItem icon={Reply} shortcut="R" onSelect={() => handleAction('reply')}>
         Reply
       </MenuItem>
 
       {/* Quick Reactions Submenu */}
       <MenuSubmenu>
-        <MenuSubmenuTrigger icon={SmilePlus}>
-          Add reaction
-        </MenuSubmenuTrigger>
+        <MenuSubmenuTrigger icon={SmilePlus}>Add reaction</MenuSubmenuTrigger>
         <MenuSubmenuContent>
           <div className="flex gap-1 p-1">
             {QUICK_REACTIONS.map(({ emoji, label }) => (
               <button
                 key={emoji}
                 type="button"
-                className="flex h-8 w-8 items-center justify-center rounded hover:bg-accent transition-colors"
+                className="flex h-8 w-8 items-center justify-center rounded transition-colors hover:bg-accent"
                 title={label}
                 onClick={() => handleAction('react', emoji)}
               >
@@ -149,10 +145,7 @@ export function MessageContextMenu({ onAction }: MessageContextMenuProps) {
             ))}
           </div>
           <MenuSeparator />
-          <MenuItem
-            icon={MoreHorizontal}
-            onSelect={() => handleAction('react')}
-          >
+          <MenuItem icon={MoreHorizontal} onSelect={() => handleAction('react')}>
             More reactions...
           </MenuItem>
         </MenuSubmenuContent>
@@ -162,22 +155,14 @@ export function MessageContextMenu({ onAction }: MessageContextMenuProps) {
 
       {/* Edit (own messages only) */}
       {canEdit && (
-        <MenuItem
-          icon={Pencil}
-          shortcut="E"
-          onSelect={() => handleAction('edit')}
-        >
+        <MenuItem icon={Pencil} shortcut="E" onSelect={() => handleAction('edit')}>
           Edit message
         </MenuItem>
       )}
 
       {/* Delete (own messages or moderator) */}
       {canDelete && (
-        <MenuItem
-          icon={Trash2}
-          danger
-          onSelect={() => handleAction('delete')}
-        >
+        <MenuItem icon={Trash2} danger onSelect={() => handleAction('delete')}>
           Delete message
         </MenuItem>
       )}
@@ -205,27 +190,17 @@ export function MessageContextMenu({ onAction }: MessageContextMenuProps) {
       <MenuSeparator />
 
       {/* Copy Text */}
-      <MenuItem
-        icon={Copy}
-        shortcut="Ctrl+C"
-        onSelect={handleCopyText}
-      >
+      <MenuItem icon={Copy} shortcut="Ctrl+C" onSelect={handleCopyText}>
         Copy text
       </MenuItem>
 
       {/* Copy Link */}
-      <MenuItem
-        icon={Link}
-        onSelect={handleCopyLink}
-      >
+      <MenuItem icon={Link} onSelect={handleCopyLink}>
         Copy link to message
       </MenuItem>
 
       {/* Forward */}
-      <MenuItem
-        icon={Forward}
-        onSelect={() => handleAction('forward')}
-      >
+      <MenuItem icon={Forward} onSelect={() => handleAction('forward')}>
         Forward message
       </MenuItem>
 
@@ -233,20 +208,16 @@ export function MessageContextMenu({ onAction }: MessageContextMenuProps) {
 
       {/* Report (for moderation) */}
       {canModerate && (
-        <MenuItem
-          icon={Flag}
-          danger
-          onSelect={() => handleAction('report')}
-        >
+        <MenuItem icon={Flag} danger onSelect={() => handleAction('report')}>
           Report message
         </MenuItem>
       )}
     </PositionedContextMenu>
-  );
+  )
 }
 
 // ============================================================================
 // Exports
 // ============================================================================
 
-export { QUICK_REACTIONS };
+export { QUICK_REACTIONS }

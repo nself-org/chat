@@ -64,11 +64,13 @@ import {
 ### 2. Loading States with Skeletons
 
 ```tsx
-{isLoading ? (
-  <SkeletonLoader type="message" count={8} />
-) : (
-  <VirtualMessageList messages={messages} />
-)}
+{
+  isLoading ? (
+    <SkeletonLoader type="message" count={8} />
+  ) : (
+    <VirtualMessageList messages={messages} />
+  )
+}
 ```
 
 ### 3. Touch-Optimized Buttons
@@ -94,13 +96,7 @@ import {
 ### 4. Image Viewer with Zoom
 
 ```tsx
-<PinchZoom
-  minScale={1}
-  maxScale={4}
-  enableRotation
-  enableDownload
-  downloadUrl={imageUrl}
->
+<PinchZoom minScale={1} maxScale={4} enableRotation enableDownload downloadUrl={imageUrl}>
   <img src={imageUrl} alt="Message attachment" />
 </PinchZoom>
 ```
@@ -296,26 +292,31 @@ pnpm check-all
 ## Common Issues
 
 ### Virtual Scroll Not Smooth
+
 - Reduce `overscan` prop
 - Check message render performance
 - Ensure `estimateSize` is accurate
 
 ### Dark Mode Flashing
+
 - Use `next-themes` ThemeProvider
 - Add `suppressHydrationWarning` to html tag
 - Ensure localStorage loads before render
 
 ### Touch Targets Too Small
+
 - Use `TouchButton` instead of `Button`
 - Wrap small elements in `TouchArea`
 - Check with browser inspector (show rulers)
 
 ### Skeleton Not Matching Content
+
 - Adjust skeleton heights
 - Use multiple skeleton types
 - Match skeleton structure to content
 
 ### Performance Issues
+
 - Check bundle size with `pnpm build:analyze`
 - Lazy load heavy components
 - Use virtual scrolling

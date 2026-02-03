@@ -224,9 +224,7 @@ export function CommandList({
           <Search className="mx-auto h-12 w-12 text-muted-foreground" />
           <h3 className="mt-4 text-lg font-medium">No commands found</h3>
           <p className="mt-1 text-sm text-muted-foreground">
-            {searchQuery
-              ? 'Try a different search term'
-              : 'Create your first custom command'}
+            {searchQuery ? 'Try a different search term' : 'Create your first custom command'}
           </p>
           {onCreateNew && !searchQuery && (
             <Button onClick={onCreateNew} className="mt-4">
@@ -268,8 +266,7 @@ export function CommandList({
             <div key={category}>
               <h3 className="mb-3 flex items-center gap-2 text-sm font-medium text-muted-foreground">
                 <Badge variant="outline">
-                  {commandCategories[category as keyof typeof commandCategories]?.name ||
-                    category}
+                  {commandCategories[category as keyof typeof commandCategories]?.name || category}
                 </Badge>
                 <span>{commands.length}</span>
               </h3>
@@ -283,11 +280,9 @@ export function CommandList({
                     )}
                   >
                     {/* Command Info */}
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
-                        <code className="font-mono text-sm text-primary">
-                          /{command.trigger}
-                        </code>
+                        <code className="font-mono text-sm text-primary">/{command.trigger}</code>
                         {!command.isEnabled && (
                           <Badge variant="secondary" className="text-xs">
                             Disabled
@@ -299,7 +294,7 @@ export function CommandList({
                           </Badge>
                         )}
                       </div>
-                      <p className="mt-0.5 text-sm text-muted-foreground truncate">
+                      <p className="mt-0.5 truncate text-sm text-muted-foreground">
                         {command.description}
                       </p>
                     </div>

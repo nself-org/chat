@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { TwitterClient } from '@/lib/social/twitter-client'
 import { encryptToken } from '@/lib/social/encryption'
 
+import { logger } from '@/lib/logger'
+
 // Lazy instantiate in route handler
 
 /**
@@ -56,7 +58,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/social/accounts`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         platform: 'twitter',
@@ -66,8 +68,8 @@ export async function GET(request: NextRequest) {
         avatar_url: accountInfo.avatarUrl,
         access_token_encrypted: encryptedAccessToken,
         refresh_token_encrypted: encryptedRefreshToken,
-        token_expires_at: expiresAt?.toISOString()
-      })
+        token_expires_at: expiresAt?.toISOString(),
+      }),
     })
 
     if (!response.ok) {
@@ -82,7 +84,7 @@ export async function GET(request: NextRequest) {
 
     return successResponse
   } catch (error) {
-    console.error('Twitter callback error:', error)
+    logger.error('Twitter callback error:', error)
     return NextResponse.redirect(
       `${process.env.NEXT_PUBLIC_APP_URL}/admin/social?error=${encodeURIComponent(String(error))}`
     )

@@ -131,10 +131,7 @@ export interface BulkImportResult {
 /**
  * Convert array of objects to CSV string
  */
-export function arrayToCSV<T extends Record<string, any>>(
-  data: T[],
-  fields?: string[]
-): string {
+export function arrayToCSV<T extends Record<string, any>>(data: T[], fields?: string[]): string {
   if (data.length === 0) return ''
 
   const selectedFields = fields || Object.keys(data[0])

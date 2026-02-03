@@ -178,9 +178,10 @@ export function scheduleReminder(
  */
 export function buildReminderMessage(reminder: Reminder): BotResponse {
   const userMention = mentionUser(reminder.userId)
-  const snoozeInfo = reminder.snoozedCount > 0
-    ? ` (snoozed ${reminder.snoozedCount} time${reminder.snoozedCount > 1 ? 's' : ''})`
-    : ''
+  const snoozeInfo =
+    reminder.snoozedCount > 0
+      ? ` (snoozed ${reminder.snoozedCount} time${reminder.snoozedCount > 1 ? 's' : ''})`
+      : ''
 
   if (reminder.isChannel) {
     return response()
@@ -202,7 +203,7 @@ export function buildReminderMessage(reminder: Reminder): BotResponse {
         .description(reminder.message)
         .color('#6366F1')
         .footer(`Reminder ID: ${reminder.id}${snoozeInfo}`)
-        .field('Snooze', `\`/snooze ${reminder.id}\``, true)
+        .field('Snooze', `/snooze ${reminder.id}`, true)
         .timestamp()
     )
     .text(`${userMention}, here's your reminder!`)

@@ -54,9 +54,7 @@ export const GET = compose(
     totalBlocked: blocked.length,
     temporaryBlocks: blocked.filter((b) => b.blockType === 'temporary').length,
     permanentBlocks: blocked.filter((b) => b.blockType === 'permanent').length,
-    expiringWithin1Hour: blocked.filter(
-      (b) => b.expiresAt && b.expiresAt - now < 3600000
-    ).length,
+    expiringWithin1Hour: blocked.filter((b) => b.expiresAt && b.expiresAt - now < 3600000).length,
     totalWhitelisted: whitelist.length,
     totalBlacklisted: blacklist.length,
   }

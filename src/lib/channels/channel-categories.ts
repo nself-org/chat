@@ -195,7 +195,10 @@ export function createCustomCategory(
   name: string,
   options?: Partial<Omit<ChannelCategoryDefinition, 'id' | 'name' | 'isSystem'>>
 ): ChannelCategoryDefinition {
-  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+  const slug = name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
   const id = `custom-${slug}-${Date.now()}`
 
   return {

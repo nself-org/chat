@@ -47,34 +47,34 @@ export function SearchScreen() {
   const [filter, setFilter] = useState<SearchFilter>('all')
   const inputRef = useRef<TextInput>(null)
 
-  const { results, isSearching, recentSearches, clearRecentSearches } = useSearch(
-    query,
-    filter
-  )
+  const { results, isSearching, recentSearches, clearRecentSearches } = useSearch(query, filter)
 
-  const handleResultPress = useCallback((result: SearchResult) => {
-    switch (result.type) {
-      case 'message':
-        // Navigate to message in channel
-        navigation.navigate('Channel', {
-          channelId: result.id,
-          title: result.title,
-        })
-        break
-      case 'channel':
-        navigation.navigate('Channel', {
-          channelId: result.id,
-          title: result.title,
-        })
-        break
-      case 'user':
-        navigation.navigate('Profile', { userId: result.id })
-        break
-      case 'file':
-        // Open file viewer
-        break
-    }
-  }, [navigation])
+  const handleResultPress = useCallback(
+    (result: SearchResult) => {
+      switch (result.type) {
+        case 'message':
+          // Navigate to message in channel
+          navigation.navigate('Channel', {
+            channelId: result.id,
+            title: result.title,
+          })
+          break
+        case 'channel':
+          navigation.navigate('Channel', {
+            channelId: result.id,
+            title: result.title,
+          })
+          break
+        case 'user':
+          navigation.navigate('Profile', { userId: result.id })
+          break
+        case 'file':
+          // Open file viewer
+          break
+      }
+    },
+    [navigation]
+  )
 
   const handleRecentSearchPress = useCallback((searchTerm: string) => {
     setQuery(searchTerm)
@@ -114,21 +114,14 @@ export function SearchScreen() {
         {item.type === 'user' ? (
           <UserAvatar size={40} />
         ) : (
-          <View
-            style={[
-              styles.resultIcon,
-              { backgroundColor: theme.colors.surface },
-            ]}
-          >
+          <View style={[styles.resultIcon, { backgroundColor: theme.colors.surface }]}>
             <Text style={{ color: theme.colors.primary }}>
               {item.type === 'channel' ? '#' : item.type === 'message' ? 'M' : 'F'}
             </Text>
           </View>
         )}
         <View style={styles.resultContent}>
-          <Text style={[styles.resultTitle, { color: theme.colors.text }]}>
-            {item.title}
-          </Text>
+          <Text style={[styles.resultTitle, { color: theme.colors.text }]}>{item.title}</Text>
           {item.subtitle && (
             <Text style={[styles.resultSubtitle, { color: theme.colors.muted }]}>
               {truncate(item.subtitle, 60)}
@@ -150,10 +143,7 @@ export function SearchScreen() {
   }
 
   const renderRecentSearch = ({ item }: { item: string }) => (
-    <Pressable
-      style={styles.recentItem}
-      onPress={() => handleRecentSearchPress(item)}
-    >
+    <Pressable style={styles.recentItem} onPress={() => handleRecentSearchPress(item)}>
       <Text style={[styles.recentIcon, { color: theme.colors.muted }]}>clock</Text>
       <Text style={[styles.recentText, { color: theme.colors.text }]}>{item}</Text>
     </Pressable>
@@ -170,9 +160,7 @@ export function SearchScreen() {
                   Recent Searches
                 </Text>
                 <Pressable onPress={clearRecentSearches}>
-                  <Text style={[styles.clearButton, { color: theme.colors.primary }]}>
-                    Clear
-                  </Text>
+                  <Text style={[styles.clearButton, { color: theme.colors.primary }]}>Clear</Text>
                 </Pressable>
               </View>
               <FlatList
@@ -184,9 +172,7 @@ export function SearchScreen() {
             </>
           ) : (
             <View style={styles.emptyMessage}>
-              <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-                Search nChat
-              </Text>
+              <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>Search nChat</Text>
               <Text style={[styles.emptySubtitle, { color: theme.colors.muted }]}>
                 Find messages, channels, people, and files
               </Text>
@@ -200,9 +186,7 @@ export function SearchScreen() {
       return (
         <View style={styles.emptyContainer}>
           <View style={styles.emptyMessage}>
-            <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-              No results found
-            </Text>
+            <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>No results found</Text>
             <Text style={[styles.emptySubtitle, { color: theme.colors.muted }]}>
               Try different keywords or filters
             </Text>
@@ -216,10 +200,7 @@ export function SearchScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Header
-        title="Search"
-        onBackPress={() => navigation.goBack()}
-      />
+      <Header title="Search" onBackPress={() => navigation.goBack()} />
 
       <View style={styles.searchContainer}>
         <SearchBar
@@ -232,9 +213,7 @@ export function SearchScreen() {
       </View>
 
       {/* Filters */}
-      <View style={styles.filtersContainer}>
-        {filterOptions.map(renderFilterButton)}
-      </View>
+      <View style={styles.filtersContainer}>{filterOptions.map(renderFilterButton)}</View>
 
       {/* Results */}
       {isSearching ? (
@@ -246,10 +225,7 @@ export function SearchScreen() {
           data={results}
           renderItem={renderResult}
           keyExtractor={(item) => `${item.type}-${item.id}`}
-          contentContainerStyle={[
-            styles.resultsList,
-            { paddingBottom: insets.bottom },
-          ]}
+          contentContainerStyle={[styles.resultsList, { paddingBottom: insets.bottom }]}
           ListEmptyComponent={renderEmptyState}
           keyboardShouldPersistTaps="handled"
         />

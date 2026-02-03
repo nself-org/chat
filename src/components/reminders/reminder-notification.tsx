@@ -18,16 +18,7 @@
  */
 
 import * as React from 'react'
-import {
-  AlarmClock,
-  Bell,
-  Check,
-  ChevronDown,
-  Clock,
-  Hash,
-  MessageSquare,
-  X,
-} from 'lucide-react'
+import { AlarmClock, Bell, Check, ChevronDown, Clock, Hash, MessageSquare, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -38,10 +29,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  getSnoozeDurations,
-  formatFutureTime,
-} from '@/lib/reminders/reminder-store'
+import { getSnoozeDurations, formatFutureTime } from '@/lib/reminders/reminder-store'
 import { formatMessageTime } from '@/lib/date'
 import type { Reminder } from '@/graphql/reminders'
 
@@ -143,24 +131,23 @@ export function ReminderNotification({
   if (!isVisible) return null
 
   const hasMessage = !!reminder.message
-  const channelName =
-    reminder.channel?.name || reminder.message?.channel?.name
+  const channelName = reminder.channel?.name || reminder.message?.channel?.name
 
   return (
     <div
       className={cn(
         'relative w-[400px] rounded-lg border bg-background shadow-lg',
-        'animate-in slide-in-from-right fade-in duration-200',
-        isExiting && 'animate-out slide-out-to-right fade-out duration-200',
+        'duration-200 animate-in fade-in slide-in-from-right',
+        isExiting && 'duration-200 animate-out fade-out slide-out-to-right',
         className
       )}
       role="alert"
       aria-live="assertive"
     >
       {/* Header */}
-      <div className="flex items-center justify-between border-b px-4 py-2 bg-primary/5">
+      <div className="bg-primary/5 flex items-center justify-between border-b px-4 py-2">
         <div className="flex items-center gap-2">
-          <AlarmClock className="h-4 w-4 text-primary animate-pulse" />
+          <AlarmClock className="h-4 w-4 animate-pulse text-primary" />
           <span className="text-sm font-medium">Reminder</span>
         </div>
         <div className="flex items-center gap-1">
@@ -170,12 +157,7 @@ export function ReminderNotification({
               {channelName}
             </Badge>
           )}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-6 w-6"
-            onClick={handleDismiss}
-          >
+          <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleDismiss}>
             <X className="h-4 w-4" />
             <span className="sr-only">Dismiss</span>
           </Button>
@@ -184,48 +166,39 @@ export function ReminderNotification({
 
       {/* Content */}
       <div
-        className={cn(
-          'p-4 space-y-3',
-          onClick && 'cursor-pointer hover:bg-accent/50'
-        )}
+        className={cn('space-y-3 p-4', onClick && 'hover:bg-accent/50 cursor-pointer')}
         onClick={() => onClick?.(reminder)}
       >
         {/* Reminder Content */}
         <div className="space-y-1">
           <p className="font-medium">{reminder.content}</p>
-          {reminder.note && (
-            <p className="text-sm text-muted-foreground">{reminder.note}</p>
-          )}
+          {reminder.note && <p className="text-sm text-muted-foreground">{reminder.note}</p>}
         </div>
 
         {/* Message Preview (if message reminder) */}
         {hasMessage && reminder.message && (
-          <div className="rounded-md bg-muted/50 p-3 space-y-2">
+          <div className="bg-muted/50 space-y-2 rounded-md p-3">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-3.5 w-3.5 text-muted-foreground" />
-              <span className="text-xs text-muted-foreground">
-                Original message
-              </span>
+              <span className="text-xs text-muted-foreground">Original message</span>
             </div>
             <div className="flex items-start gap-2">
               <Avatar className="h-5 w-5">
                 <AvatarImage src={reminder.message.user.avatar_url} />
                 <AvatarFallback className="text-[8px]">
-                  {reminder.message.user.display_name?.[0] ||
-                    reminder.message.user.username[0]}
+                  {reminder.message.user.display_name?.[0] || reminder.message.user.username[0]}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-medium">
-                    {reminder.message.user.display_name ||
-                      reminder.message.user.username}
+                    {reminder.message.user.display_name || reminder.message.user.username}
                   </span>
                   <span className="text-[10px] text-muted-foreground">
                     {formatMessageTime(reminder.message.created_at)}
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground line-clamp-2">
+                <p className="line-clamp-2 text-xs text-muted-foreground">
                   {reminder.message.content}
                 </p>
               </div>
@@ -236,9 +209,7 @@ export function ReminderNotification({
         {/* Time Info */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
           <Clock className="h-3.5 w-3.5" />
-          <span>
-            Set for {formatFutureTime(new Date(reminder.remind_at))}
-          </span>
+          <span>Set for {formatFutureTime(new Date(reminder.remind_at))}</span>
           {reminder.snooze_count > 0 && (
             <Badge variant="outline" className="text-[10px]">
               Snoozed {reminder.snooze_count}x
@@ -248,7 +219,7 @@ export function ReminderNotification({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center justify-end gap-2 border-t px-4 py-3 bg-muted/30">
+      <div className="bg-muted/30 flex items-center justify-end gap-2 border-t px-4 py-3">
         {/* Snooze Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -260,15 +231,10 @@ export function ReminderNotification({
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             {snoozeDurations.map((option) => (
-              <DropdownMenuItem
-                key={option.label}
-                onClick={() => handleSnooze(option.value)}
-              >
+              <DropdownMenuItem key={option.label} onClick={() => handleSnooze(option.value)}>
                 <div className="flex flex-col">
                   <span>{option.label}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {option.description}
-                  </span>
+                  <span className="text-xs text-muted-foreground">{option.description}</span>
                 </div>
               </DropdownMenuItem>
             ))}
@@ -305,13 +271,7 @@ export function ReminderNotificationContainer({
   if (reminders.length === 0) return null
 
   return (
-    <div
-      className={cn(
-        'fixed z-50 flex flex-col gap-3',
-        POSITION_CLASSES[position],
-        className
-      )}
-    >
+    <div className={cn('fixed z-50 flex flex-col gap-3', POSITION_CLASSES[position], className)}>
       {visibleReminders.map((reminder, index) => (
         <div
           key={reminder.id}
@@ -332,7 +292,7 @@ export function ReminderNotificationContainer({
 
       {/* Hidden count indicator */}
       {hiddenCount > 0 && (
-        <div className="flex items-center justify-center rounded-lg border bg-background/95 backdrop-blur px-4 py-2">
+        <div className="bg-background/95 flex items-center justify-center rounded-lg border px-4 py-2 backdrop-blur">
           <Bell className="mr-2 h-4 w-4 text-muted-foreground" />
           <span className="text-sm text-muted-foreground">
             +{hiddenCount} more reminder{hiddenCount > 1 ? 's' : ''}
@@ -366,29 +326,26 @@ export function ReminderToast({
 }: ReminderToastProps) {
   const [isExiting, setIsExiting] = React.useState(false)
 
-  const handleAction = React.useCallback(
-    (action: () => void) => {
-      setIsExiting(true)
-      setTimeout(action, 200)
-    },
-    []
-  )
+  const handleAction = React.useCallback((action: () => void) => {
+    setIsExiting(true)
+    setTimeout(action, 200)
+  }, [])
 
   return (
     <div
       className={cn(
-        'flex items-center gap-3 rounded-lg border bg-background shadow-lg p-3 min-w-[300px] max-w-[400px]',
-        'animate-in slide-in-from-top fade-in duration-200',
-        isExiting && 'animate-out slide-out-to-top fade-out duration-200',
+        'flex min-w-[300px] max-w-[400px] items-center gap-3 rounded-lg border bg-background p-3 shadow-lg',
+        'duration-200 animate-in fade-in slide-in-from-top',
+        isExiting && 'duration-200 animate-out fade-out slide-out-to-top',
         className
       )}
     >
-      <div className="flex-shrink-0 p-2 rounded-full bg-primary/10">
+      <div className="bg-primary/10 flex-shrink-0 rounded-full p-2">
         <Bell className="h-4 w-4 text-primary" />
       </div>
 
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{reminder.content}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{reminder.content}</p>
         <p className="text-xs text-muted-foreground">
           {formatFutureTime(new Date(reminder.remind_at))}
         </p>
@@ -435,27 +392,17 @@ export interface ReminderBellProps {
   className?: string
 }
 
-export function ReminderBell({
-  count,
-  hasUrgent = false,
-  onClick,
-  className,
-}: ReminderBellProps) {
+export function ReminderBell({ count, hasUrgent = false, onClick, className }: ReminderBellProps) {
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      onClick={onClick}
-      className={cn('relative', className)}
-    >
+    <Button variant="ghost" size="icon" onClick={onClick} className={cn('relative', className)}>
       <Bell className={cn('h-5 w-5', hasUrgent && 'animate-pulse')} />
       {count > 0 && (
         <span
           className={cn(
-            'absolute -top-1 -right-1 flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-medium',
+            'absolute -right-1 -top-1 flex h-4 min-w-[16px] items-center justify-center rounded-full px-1 text-[10px] font-medium',
             hasUrgent
               ? 'bg-destructive text-destructive-foreground'
-              : 'bg-primary text-primary-foreground'
+              : 'text-primary-foreground bg-primary'
           )}
         >
           {count > 99 ? '99+' : count}

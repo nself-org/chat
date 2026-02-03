@@ -45,11 +45,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
-import type {
-  StickerPack,
-  Sticker,
-  StickerPackBasic,
-} from '@/types/sticker'
+import type { StickerPack, Sticker, StickerPackBasic } from '@/types/sticker'
 
 // ============================================================================
 // Types
@@ -101,7 +97,7 @@ function PackPreviewDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] max-w-2xl flex-col overflow-hidden">
         <DialogHeader>
           <div className="flex items-start gap-4">
             {pack.thumbnailUrl && (
@@ -112,12 +108,12 @@ function PackPreviewDialog({
                 </AvatarFallback>
               </Avatar>
             )}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               <DialogTitle className="flex items-center gap-2">
                 {pack.title || pack.name}
                 {pack.isVerified && (
                   <Badge variant="secondary" className="text-xs">
-                    <Check className="h-3 w-3 mr-1" />
+                    <Check className="mr-1 h-3 w-3" />
                     Verified
                   </Badge>
                 )}
@@ -132,7 +128,7 @@ function PackPreviewDialog({
               </DialogDescription>
 
               {/* Stats */}
-              <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+              <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Grid3X3 className="h-3 w-3" />
                   {pack.stickerCount} stickers
@@ -153,8 +149,8 @@ function PackPreviewDialog({
         </DialogHeader>
 
         {/* Sticker Grid */}
-        <ScrollArea className="flex-1 mt-4">
-          <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-2 p-1">
+        <ScrollArea className="mt-4 flex-1">
+          <div className="grid grid-cols-4 gap-2 p-1 sm:grid-cols-5 md:grid-cols-6">
             {pack.stickers.map((sticker) => (
               <motion.button
                 key={sticker.id}
@@ -162,9 +158,9 @@ function PackPreviewDialog({
                 animate={{ opacity: 1, scale: 1 }}
                 onClick={() => onSelectSticker?.(sticker)}
                 className={cn(
-                  'aspect-square rounded-lg border bg-muted/30 p-2 transition-all',
-                  'hover:border-primary hover:shadow-md hover:scale-105',
-                  'focus:outline-none focus:ring-2 focus:ring-primary/50'
+                  'bg-muted/30 aspect-square rounded-lg border p-2 transition-all',
+                  'hover:scale-105 hover:border-primary hover:shadow-md',
+                  'focus:ring-primary/50 focus:outline-none focus:ring-2'
                 )}
               >
                 <img
@@ -196,23 +192,18 @@ function PackPreviewDialog({
             {pack.websiteUrl && (
               <Button variant="ghost" size="sm" asChild>
                 <a href={pack.websiteUrl} target="_blank" rel="noopener noreferrer">
-                  <ExternalLink className="h-4 w-4 mr-1" />
+                  <ExternalLink className="mr-1 h-4 w-4" />
                   Website
                 </a>
               </Button>
             )}
             {isInstalled ? (
-              <Button
-                variant="destructive"
-                size="sm"
-                onClick={onUninstall}
-                disabled={isInstalling}
-              >
+              <Button variant="destructive" size="sm" onClick={onUninstall} disabled={isInstalling}>
                 {isInstalling ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    <Trash2 className="h-4 w-4 mr-1" />
+                    <Trash2 className="mr-1 h-4 w-4" />
                     Uninstall
                   </>
                 )}
@@ -223,7 +214,7 @@ function PackPreviewDialog({
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <>
-                    <Download className="h-4 w-4 mr-1" />
+                    <Download className="mr-1 h-4 w-4" />
                     Install
                   </>
                 )}
@@ -273,14 +264,12 @@ function PackCard({
               <Package className="h-6 w-6 text-muted-foreground" />
             </div>
           )}
-          <div className="flex-1 min-w-0">
-            <CardTitle className="text-sm flex items-center gap-1">
+          <div className="min-w-0 flex-1">
+            <CardTitle className="flex items-center gap-1 text-sm">
               <span className="truncate">{pack.title || pack.name}</span>
-              {pack.isVerified && (
-                <Check className="h-4 w-4 text-primary flex-shrink-0" />
-              )}
+              {pack.isVerified && <Check className="h-4 w-4 flex-shrink-0 text-primary" />}
             </CardTitle>
-            <CardDescription className="text-xs truncate">
+            <CardDescription className="truncate text-xs">
               {pack.stickerCount} stickers
             </CardDescription>
           </div>
@@ -291,10 +280,7 @@ function PackCard({
         {/* Sticker Preview Grid */}
         <div className="grid grid-cols-4 gap-1">
           {pack.stickers.slice(0, 4).map((sticker) => (
-            <div
-              key={sticker.id}
-              className="aspect-square rounded bg-muted/50 p-1"
-            >
+            <div key={sticker.id} className="bg-muted/50 aspect-square rounded p-1">
               <img
                 src={sticker.thumbnailUrl || sticker.url}
                 alt={sticker.name}
@@ -308,12 +294,7 @@ function PackCard({
 
       <CardFooter className="pt-2">
         <div className="flex w-full items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            className="flex-1"
-            onClick={onPreview}
-          >
+          <Button variant="outline" size="sm" className="flex-1" onClick={onPreview}>
             Preview
           </Button>
           {isInstalled ? (
@@ -331,11 +312,7 @@ function PackCard({
               )}
             </Button>
           ) : (
-            <Button
-              size="sm"
-              onClick={onInstall}
-              disabled={isInstalling}
-            >
+            <Button size="sm" onClick={onInstall} disabled={isInstalling}>
               {isInstalling ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
@@ -368,10 +345,7 @@ export function StickerPacks({
   const [installingPackId, setInstallingPackId] = useState<string | null>(null)
 
   // Get installed pack IDs for quick lookup
-  const installedPackIds = useMemo(
-    () => new Set(installedPacks.map((p) => p.id)),
-    [installedPacks]
-  )
+  const installedPackIds = useMemo(() => new Set(installedPacks.map((p) => p.id)), [installedPacks])
 
   // Filter packs by search query
   const filteredInstalledPacks = useMemo(() => {
@@ -458,9 +432,9 @@ export function StickerPacks({
       <Tabs
         value={activeTab}
         onValueChange={(v) => setActiveTab(v as 'installed' | 'browse')}
-        className="flex-1 flex flex-col"
+        className="flex flex-1 flex-col"
       >
-        <TabsList className="w-full justify-start px-4 border-b rounded-none">
+        <TabsList className="w-full justify-start rounded-none border-b px-4">
           <TabsTrigger value="installed" className="flex items-center gap-1">
             <Star className="h-4 w-4" />
             Installed
@@ -480,25 +454,26 @@ export function StickerPacks({
         </TabsList>
 
         {/* Installed Packs */}
-        <TabsContent value="installed" className="flex-1 m-0 data-[state=active]:flex data-[state=active]:flex-col">
+        <TabsContent
+          value="installed"
+          className="m-0 flex-1 data-[state=active]:flex data-[state=active]:flex-col"
+        >
           <ScrollArea className="flex-1">
             {filteredInstalledPacks.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-8 text-center">
-                <Package className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-1">No Sticker Packs</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+                <Package className="mb-4 h-12 w-12 text-muted-foreground" />
+                <h3 className="mb-1 text-lg font-semibold">No Sticker Packs</h3>
+                <p className="mb-4 text-sm text-muted-foreground">
                   {searchQuery
                     ? 'No packs match your search'
                     : "You haven't installed any sticker packs yet"}
                 </p>
                 {!searchQuery && availablePacks.length > 0 && (
-                  <Button onClick={() => setActiveTab('browse')}>
-                    Browse Packs
-                  </Button>
+                  <Button onClick={() => setActiveTab('browse')}>Browse Packs</Button>
                 )}
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
+              <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2">
                 <AnimatePresence mode="popLayout">
                   {filteredInstalledPacks.map((pack) => (
                     <motion.div
@@ -525,12 +500,15 @@ export function StickerPacks({
         </TabsContent>
 
         {/* Browse Packs */}
-        <TabsContent value="browse" className="flex-1 m-0 data-[state=active]:flex data-[state=active]:flex-col">
+        <TabsContent
+          value="browse"
+          className="m-0 flex-1 data-[state=active]:flex data-[state=active]:flex-col"
+        >
           <ScrollArea className="flex-1">
             {filteredAvailablePacks.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-8 text-center">
-                <Package className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-1">
+                <Package className="mb-4 h-12 w-12 text-muted-foreground" />
+                <h3 className="mb-1 text-lg font-semibold">
                   {searchQuery ? 'No Results' : 'No Available Packs'}
                 </h3>
                 <p className="text-sm text-muted-foreground">
@@ -540,7 +518,7 @@ export function StickerPacks({
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4">
+              <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2">
                 <AnimatePresence mode="popLayout">
                   {filteredAvailablePacks.map((pack) => (
                     <motion.div

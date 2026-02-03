@@ -603,9 +603,7 @@ export const usePollStore = create<PollStore>()(
         getPollsForChannel: (channelId) => {
           const state = get()
           const pollIds = state.pollsByChannel.get(channelId) || []
-          return pollIds
-            .map((id) => state.polls.get(id))
-            .filter((p): p is Poll => p !== undefined)
+          return pollIds.map((id) => state.polls.get(id)).filter((p): p is Poll => p !== undefined)
         },
 
         // Utility
@@ -636,14 +634,12 @@ export const usePollStore = create<PollStore>()(
 // Selectors
 // ============================================================================
 
-export const selectPoll = (pollId: string) => (state: PollStore) =>
-  state.polls.get(pollId)
+export const selectPoll = (pollId: string) => (state: PollStore) => state.polls.get(pollId)
 
 export const selectPollsByChannel = (channelId: string) => (state: PollStore) =>
   state.getPollsForChannel(channelId)
 
-export const selectUserVotes = (pollId: string) => (state: PollStore) =>
-  state.userVotes.get(pollId)
+export const selectUserVotes = (pollId: string) => (state: PollStore) => state.userVotes.get(pollId)
 
 export const selectHasUserVoted = (pollId: string) => (state: PollStore) =>
   state.hasUserVoted(pollId)

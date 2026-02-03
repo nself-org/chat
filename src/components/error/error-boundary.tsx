@@ -5,6 +5,8 @@ import { ErrorFallback } from './error-fallback'
 import { errorReporter } from '@/lib/error/error-reporter'
 import { isDevelopment } from '@/lib/environment'
 
+import { logger } from '@/lib/logger'
+
 interface ErrorBoundaryProps {
   children: ReactNode
   fallback?: ReactNode
@@ -47,8 +49,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     // Log error to console in development
     if (isDevelopment()) {
-      console.error('ErrorBoundary caught an error:', error)
-      console.error('Component stack:', errorInfo.componentStack)
+      logger.error('ErrorBoundary caught an error:', error)
+      logger.error('Component stack:', errorInfo.componentStack)
     }
 
     // Report error to backend

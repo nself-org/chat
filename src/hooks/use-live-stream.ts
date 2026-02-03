@@ -12,6 +12,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 import { useSocket } from './use-socket'
+import { logger } from '@/lib/logger'
 import {
   StreamClient,
   createStreamClient,
@@ -107,7 +108,7 @@ export function useLiveStream(options: UseLiveStreamOptions = {}): UseLiveStream
       setAvailableCameras(devices.filter((d) => d.kind === 'videoinput'))
       setAvailableMicrophones(devices.filter((d) => d.kind === 'audioinput'))
     } catch (err) {
-      console.error('Failed to enumerate devices:', err)
+      logger.error('Failed to enumerate devices:',  err)
     }
   }, [])
 
@@ -288,29 +289,20 @@ export function useLiveStream(options: UseLiveStreamOptions = {}): UseLiveStream
   // Device Controls
   // ==========================================================================
 
-  const switchCamera = useCallback(
-    async (deviceId: string): Promise<void> => {
-      if (!streamClientRef.current) return
-      await streamClientRef.current.switchCamera(deviceId)
-    },
-    []
-  )
+  const switchCamera = useCallback(async (deviceId: string): Promise<void> => {
+    if (!streamClientRef.current) return
+    await streamClientRef.current.switchCamera(deviceId)
+  }, [])
 
-  const switchMicrophone = useCallback(
-    async (deviceId: string): Promise<void> => {
-      if (!streamClientRef.current) return
-      await streamClientRef.current.switchMicrophone(deviceId)
-    },
-    []
-  )
+  const switchMicrophone = useCallback(async (deviceId: string): Promise<void> => {
+    if (!streamClientRef.current) return
+    await streamClientRef.current.switchMicrophone(deviceId)
+  }, [])
 
-  const changeQuality = useCallback(
-    async (quality: StreamQuality): Promise<void> => {
-      if (!streamClientRef.current) return
-      await streamClientRef.current.changeQuality(quality)
-    },
-    []
-  )
+  const changeQuality = useCallback(async (quality: StreamQuality): Promise<void> => {
+    if (!streamClientRef.current) return
+    await streamClientRef.current.changeQuality(quality)
+  }, [])
 
   const toggleVideo = useCallback((enabled: boolean): void => {
     if (!streamClientRef.current) return

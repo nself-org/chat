@@ -110,9 +110,7 @@ export function UserSessions({
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Active Sessions</CardTitle>
-              <CardDescription>
-                Manage user login sessions across devices
-              </CardDescription>
+              <CardDescription>Manage user login sessions across devices</CardDescription>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm" onClick={onRefresh}>
@@ -136,7 +134,7 @@ export function UserSessions({
           {isLoading ? (
             <div className="space-y-4">
               {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 border rounded-lg">
+                <div key={i} className="flex items-center gap-4 rounded-lg border p-4">
                   <div className="h-10 w-10 animate-pulse rounded bg-muted" />
                   <div className="flex-1 space-y-2">
                     <div className="h-4 w-1/2 animate-pulse rounded bg-muted" />
@@ -146,7 +144,7 @@ export function UserSessions({
               ))}
             </div>
           ) : sessions.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="py-8 text-center text-muted-foreground">
               <Monitor className="mx-auto h-12 w-12 opacity-50" />
               <p className="mt-2">No active sessions</p>
             </div>
@@ -156,8 +154,8 @@ export function UserSessions({
                 <div
                   key={session.id}
                   className={cn(
-                    'flex items-center justify-between p-4 border rounded-lg',
-                    session.isCurrent && 'border-primary bg-primary/5'
+                    'flex items-center justify-between rounded-lg border p-4',
+                    session.isCurrent && 'bg-primary/5 border-primary'
                   )}
                 >
                   <div className="flex items-center gap-4">
@@ -170,12 +168,7 @@ export function UserSessions({
                           {session.browser || 'Unknown Browser'}
                           {session.os && ` on ${session.os}`}
                         </span>
-                        <div
-                          className={cn(
-                            'h-2 w-2 rounded-full',
-                            statusColors[session.status]
-                          )}
-                        />
+                        <div className={cn('h-2 w-2 rounded-full', statusColors[session.status])} />
                         {session.isCurrent && (
                           <Badge variant="secondary" className="text-xs">
                             Current
@@ -195,7 +188,7 @@ export function UserSessions({
                           {formatDate(session.lastActiveAt)}
                         </span>
                       </div>
-                      <div className="text-xs text-muted-foreground mt-1">
+                      <div className="mt-1 text-xs text-muted-foreground">
                         IP: {session.ipAddress}
                       </div>
                     </div>
@@ -227,8 +220,8 @@ export function UserSessions({
           <AlertDialogHeader>
             <AlertDialogTitle>Revoke Session</AlertDialogTitle>
             <AlertDialogDescription>
-              This will log out the user from this device. They will need to
-              sign in again to continue using the application.
+              This will log out the user from this device. They will need to sign in again to
+              continue using the application.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -239,7 +232,7 @@ export function UserSessions({
                 handleRevokeSession()
               }}
               disabled={isRevoking}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               Revoke Session
             </AlertDialogAction>
@@ -256,9 +249,8 @@ export function UserSessions({
               Revoke All Sessions
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This will log out the user from all {activeSessions.length} active
-              device(s). They will need to sign in again on each device to
-              continue using the application.
+              This will log out the user from all {activeSessions.length} active device(s). They
+              will need to sign in again on each device to continue using the application.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -269,7 +261,7 @@ export function UserSessions({
                 handleRevokeAllSessions()
               }}
               disabled={isRevoking}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               Revoke All Sessions
             </AlertDialogAction>

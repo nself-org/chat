@@ -154,10 +154,7 @@ export class TenantService {
   /**
    * Update tenant
    */
-  async updateTenant(
-    id: string,
-    request: UpdateTenantRequest
-  ): Promise<Tenant> {
+  async updateTenant(id: string, request: UpdateTenantRequest): Promise<Tenant> {
     const updates: string[] = []
     const values: any[] = []
     let paramIndex = 1
@@ -276,8 +273,7 @@ export class TenantService {
       values.push(filters.plan)
     }
 
-    const whereClause =
-      whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : ''
+    const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : ''
 
     // Get total count
     const countQuery = `SELECT COUNT(*) FROM public.tenants ${whereClause}`
@@ -307,10 +303,7 @@ export class TenantService {
   /**
    * Get tenant usage statistics
    */
-  async getTenantUsage(
-    tenantId: string,
-    period: string
-  ): Promise<TenantUsage | null> {
+  async getTenantUsage(tenantId: string, period: string): Promise<TenantUsage | null> {
     const query = `
       SELECT * FROM public.tenant_usage
       WHERE tenant_id = $1 AND period = $2
@@ -328,10 +321,7 @@ export class TenantService {
   /**
    * Update tenant usage (incremental)
    */
-  async updateTenantUsage(
-    tenantId: string,
-    updates: Partial<TenantUsage>
-  ): Promise<void> {
+  async updateTenantUsage(tenantId: string, updates: Partial<TenantUsage>): Promise<void> {
     const period = new Date().toISOString().slice(0, 7) // YYYY-MM
 
     // Use INSERT ... ON CONFLICT to update or create
@@ -368,9 +358,7 @@ export class TenantService {
       updates.calls?.totalMinutes,
       updates.calls?.totalCalls,
       updates.apiCalls?.total,
-      updates.apiCalls?.byEndpoint
-        ? JSON.stringify(updates.apiCalls.byEndpoint)
-        : null,
+      updates.apiCalls?.byEndpoint ? JSON.stringify(updates.apiCalls.byEndpoint) : null,
     ])
   }
 
@@ -391,10 +379,7 @@ export class TenantService {
     }
 
     // Check user limit
-    if (
-      tenant.limits.maxUsers !== -1 &&
-      usage.users.total > tenant.limits.maxUsers
-    ) {
+    if (tenant.limits.maxUsers !== -1 && usage.users.total > tenant.limits.maxUsers) {
       exceeded.push('maxUsers')
     }
 
@@ -428,10 +413,7 @@ export class TenantService {
     return parseInt(result.rows[0].count) > 0
   }
 
-  private async runTenantMigrations(
-    client: any,
-    schemaName: string
-  ): Promise<void> {
+  private async runTenantMigrations(client: any, schemaName: string): Promise<void> {
     // Run all nchat_* table creation in the tenant schema
     // This creates an isolated copy of the chat schema for each tenant
 
@@ -490,10 +472,7 @@ export class TenantService {
     ])
   }
 
-  private async initializeTenantSettings(
-    client: any,
-    tenantId: string
-  ): Promise<void> {
+  private async initializeTenantSettings(client: any, tenantId: string): Promise<void> {
     const query = `
       INSERT INTO public.tenant_settings (
         tenant_id, timezone, language, date_format,

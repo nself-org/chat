@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   ExternalLink,
   CheckCircle2,
@@ -12,30 +12,24 @@ import {
   Rocket,
   GitBranch,
   Link as LinkIcon,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
+} from '@/components/ui/accordion'
 
 interface EnvVariable {
-  name: string;
-  description: string;
-  required: boolean;
-  example: string;
-  currentValue?: string;
+  name: string
+  description: string
+  required: boolean
+  example: string
+  currentValue?: string
 }
 
 const REQUIRED_ENV_VARS: EnvVariable[] = [
@@ -75,7 +69,7 @@ const REQUIRED_ENV_VARS: EnvVariable[] = [
     required: true,
     example: 'https://storage.yourproject.nhost.run/v1/storage',
   },
-];
+]
 
 const OPTIONAL_ENV_VARS: EnvVariable[] = [
   {
@@ -90,29 +84,27 @@ const OPTIONAL_ENV_VARS: EnvVariable[] = [
     required: false,
     example: 'G-XXXXXXXXXX',
   },
-];
+]
 
 export default function VercelDeployButton() {
-  const [copiedVar, setCopiedVar] = useState<string | null>(null);
-  const [expandedStep, setExpandedStep] = useState<string>('step-1');
+  const [copiedVar, setCopiedVar] = useState<string | null>(null)
+  const [expandedStep, setExpandedStep] = useState<string>('step-1')
 
   const copyToClipboard = async (text: string, varName: string) => {
-    await navigator.clipboard.writeText(text);
-    setCopiedVar(varName);
-    setTimeout(() => setCopiedVar(null), 2000);
-  };
+    await navigator.clipboard.writeText(text)
+    setCopiedVar(varName)
+    setTimeout(() => setCopiedVar(null), 2000)
+  }
 
   const checkEnvVarSet = (varName: string): boolean => {
-    if (typeof window === 'undefined') return false;
-    const value = process.env[varName];
-    return Boolean(value && value !== 'undefined' && value !== '');
-  };
+    if (typeof window === 'undefined') return false
+    const value = process.env[varName]
+    return Boolean(value && value !== 'undefined' && value !== '')
+  }
 
-  const allRequiredVarsSet = REQUIRED_ENV_VARS.every((envVar) =>
-    checkEnvVarSet(envVar.name)
-  );
+  const allRequiredVarsSet = REQUIRED_ENV_VARS.every((envVar) => checkEnvVarSet(envVar.name))
 
-  const deployUrl = `https://vercel.com/new/clone?repository-url=https://github.com/yourusername/nself-chat&env=${REQUIRED_ENV_VARS.map((v) => v.name).join(',')}&envDescription=Environment%20variables%20required%20for%20nchat&envLink=https://github.com/yourusername/nself-chat/blob/main/docs/guides/deployment/vercel-deployment.md&project-name=nchat&repository-name=nself-chat`;
+  const deployUrl = `https://vercel.com/new/clone?repository-url=https://github.com/yourusername/nself-chat&env=${REQUIRED_ENV_VARS.map((v) => v.name).join(',')}&envDescription=Environment%20variables%20required%20for%20nchat&envLink=https://github.com/yourusername/nself-chat/blob/main/docs/guides/deployment/vercel-deployment.md&project-name=nchat&repository-name=nself-chat`
 
   return (
     <div className="space-y-6">
@@ -137,23 +129,14 @@ export default function VercelDeployButton() {
         <CardContent className="space-y-4">
           {/* Quick Deploy */}
           <div className="flex items-center gap-4">
-            <Button
-              size="lg"
-              className="flex-1"
-              onClick={() => window.open(deployUrl, '_blank')}
-            >
+            <Button size="lg" className="flex-1" onClick={() => window.open(deployUrl, '_blank')}>
               <ExternalLink className="mr-2 h-4 w-4" />
               Deploy Now
             </Button>
             <Button
               variant="outline"
               size="lg"
-              onClick={() =>
-                window.open(
-                  'https://vercel.com/docs/deployments/overview',
-                  '_blank'
-                )
-              }
+              onClick={() => window.open('https://vercel.com/docs/deployments/overview', '_blank')}
             >
               Documentation
             </Button>
@@ -164,8 +147,8 @@ export default function VercelDeployButton() {
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Configuration Required</AlertTitle>
               <AlertDescription>
-                Some required environment variables are not configured. Follow
-                the steps below to set them up before deploying.
+                Some required environment variables are not configured. Follow the steps below to
+                set them up before deploying.
               </AlertDescription>
             </Alert>
           )}
@@ -176,9 +159,7 @@ export default function VercelDeployButton() {
       <Card>
         <CardHeader>
           <CardTitle>Deployment Guide</CardTitle>
-          <CardDescription>
-            Follow these steps to deploy nchat to Vercel
-          </CardDescription>
+          <CardDescription>Follow these steps to deploy nchat to Vercel</CardDescription>
         </CardHeader>
         <CardContent>
           <Accordion
@@ -200,14 +181,14 @@ export default function VercelDeployButton() {
                 <p className="text-sm text-muted-foreground">
                   First, fork the nself-chat repository to your GitHub account.
                 </p>
-                <ol className="list-decimal list-inside space-y-2 text-sm">
+                <ol className="list-inside list-decimal space-y-2 text-sm">
                   <li>
                     Visit{' '}
                     <a
                       href="https://github.com/yourusername/nself-chat"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-primary hover:underline inline-flex items-center gap-1"
+                      className="inline-flex items-center gap-1 text-primary hover:underline"
                     >
                       github.com/yourusername/nself-chat
                       <ExternalLink className="h-3 w-3" />
@@ -220,8 +201,8 @@ export default function VercelDeployButton() {
                 <Alert>
                   <CheckCircle2 className="h-4 w-4" />
                   <AlertDescription>
-                    Once forked, you'll have your own copy of the repository to
-                    deploy and customize.
+                    Once forked, you'll have your own copy of the repository to deploy and
+                    customize.
                   </AlertDescription>
                 </Alert>
               </AccordionContent>
@@ -237,18 +218,15 @@ export default function VercelDeployButton() {
               </AccordionTrigger>
               <AccordionContent className="space-y-3">
                 <p className="text-sm text-muted-foreground">
-                  nchat requires backend services (GraphQL, Auth, Storage).
-                  Choose one option:
+                  nchat requires backend services (GraphQL, Auth, Storage). Choose one option:
                 </p>
                 <div className="space-y-3">
                   <Card>
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-sm">
-                        Option A: Nhost Cloud (Recommended)
-                      </CardTitle>
+                      <CardTitle className="text-sm">Option A: Nhost Cloud (Recommended)</CardTitle>
                     </CardHeader>
-                    <CardContent className="text-sm space-y-2">
-                      <ol className="list-decimal list-inside space-y-1">
+                    <CardContent className="space-y-2 text-sm">
+                      <ol className="list-inside list-decimal space-y-1">
                         <li>
                           Sign up at{' '}
                           <a
@@ -261,10 +239,7 @@ export default function VercelDeployButton() {
                           </a>
                         </li>
                         <li>Create a new project</li>
-                        <li>
-                          Copy your GraphQL, Auth, and Storage URLs from project
-                          settings
-                        </li>
+                        <li>Copy your GraphQL, Auth, and Storage URLs from project settings</li>
                       </ol>
                       <Badge variant="secondary">Free tier available</Badge>
                     </CardContent>
@@ -272,12 +247,10 @@ export default function VercelDeployButton() {
 
                   <Card>
                     <CardHeader className="pb-3">
-                      <CardTitle className="text-sm">
-                        Option B: Self-Host with nself CLI
-                      </CardTitle>
+                      <CardTitle className="text-sm">Option B: Self-Host with nself CLI</CardTitle>
                     </CardHeader>
-                    <CardContent className="text-sm space-y-2">
-                      <ol className="list-decimal list-inside space-y-1">
+                    <CardContent className="space-y-2 text-sm">
+                      <ol className="list-inside list-decimal space-y-1">
                         <li>Deploy nself backend to your server</li>
                         <li>Configure public HTTPS URLs</li>
                         <li>Ensure services are accessible from internet</li>
@@ -302,39 +275,33 @@ export default function VercelDeployButton() {
               </AccordionTrigger>
               <AccordionContent className="space-y-4">
                 <p className="text-sm text-muted-foreground">
-                  These environment variables must be set in Vercel before
-                  deployment:
+                  These environment variables must be set in Vercel before deployment:
                 </p>
 
                 {/* Required Variables */}
                 <div className="space-y-3">
                   <h4 className="text-sm font-semibold">Required Variables</h4>
                   {REQUIRED_ENV_VARS.map((envVar) => {
-                    const isSet = checkEnvVarSet(envVar.name);
+                    const isSet = checkEnvVarSet(envVar.name)
                     return (
                       <Card key={envVar.name}>
                         <CardContent className="pt-4">
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                              <code className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                              <code className="rounded bg-muted px-2 py-1 font-mono text-sm">
                                 {envVar.name}
                               </code>
                               <div className="flex items-center gap-2">
                                 {isSet && (
                                   <Badge variant="default" className="text-xs">
-                                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                                    <CheckCircle2 className="mr-1 h-3 w-3" />
                                     Set
                                   </Badge>
                                 )}
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  onClick={() =>
-                                    copyToClipboard(
-                                      envVar.example,
-                                      envVar.name
-                                    )
-                                  }
+                                  onClick={() => copyToClipboard(envVar.example, envVar.name)}
                                 >
                                   {copiedVar === envVar.name ? (
                                     <Check className="h-3 w-3" />
@@ -344,38 +311,32 @@ export default function VercelDeployButton() {
                                 </Button>
                               </div>
                             </div>
-                            <p className="text-xs text-muted-foreground">
-                              {envVar.description}
-                            </p>
-                            <div className="bg-muted/50 p-2 rounded text-xs font-mono">
+                            <p className="text-xs text-muted-foreground">{envVar.description}</p>
+                            <div className="bg-muted/50 rounded p-2 font-mono text-xs">
                               Example: {envVar.example}
                             </div>
                           </div>
                         </CardContent>
                       </Card>
-                    );
+                    )
                   })}
                 </div>
 
                 {/* Optional Variables */}
                 <div className="space-y-3">
-                  <h4 className="text-sm font-semibold">
-                    Optional Variables (Recommended)
-                  </h4>
+                  <h4 className="text-sm font-semibold">Optional Variables (Recommended)</h4>
                   {OPTIONAL_ENV_VARS.map((envVar) => (
                     <Card key={envVar.name}>
                       <CardContent className="pt-4">
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
-                            <code className="text-sm font-mono bg-muted px-2 py-1 rounded">
+                            <code className="rounded bg-muted px-2 py-1 font-mono text-sm">
                               {envVar.name}
                             </code>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() =>
-                                copyToClipboard(envVar.example, envVar.name)
-                              }
+                              onClick={() => copyToClipboard(envVar.example, envVar.name)}
                             >
                               {copiedVar === envVar.name ? (
                                 <Check className="h-3 w-3" />
@@ -384,10 +345,8 @@ export default function VercelDeployButton() {
                               )}
                             </Button>
                           </div>
-                          <p className="text-xs text-muted-foreground">
-                            {envVar.description}
-                          </p>
-                          <div className="bg-muted/50 p-2 rounded text-xs font-mono">
+                          <p className="text-xs text-muted-foreground">{envVar.description}</p>
+                          <div className="bg-muted/50 rounded p-2 font-mono text-xs">
                             Example: {envVar.example}
                           </div>
                         </div>
@@ -407,14 +366,10 @@ export default function VercelDeployButton() {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  Now you're ready to deploy!
-                </p>
-                <ol className="list-decimal list-inside space-y-2 text-sm">
+                <p className="text-sm text-muted-foreground">Now you're ready to deploy!</p>
+                <ol className="list-inside list-decimal space-y-2 text-sm">
                   <li>Click the "Deploy Now" button at the top</li>
-                  <li>
-                    Vercel will open and ask you to connect your GitHub account
-                  </li>
+                  <li>Vercel will open and ask you to connect your GitHub account</li>
                   <li>Select your forked repository</li>
                   <li>Add all environment variables from Step 3</li>
                   <li>Click "Deploy"</li>
@@ -439,17 +394,11 @@ export default function VercelDeployButton() {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="space-y-3">
-                <p className="text-sm text-muted-foreground">
-                  After successful deployment:
-                </p>
-                <ol className="list-decimal list-inside space-y-2 text-sm">
-                  <li>
-                    Update NEXT_PUBLIC_APP_URL to your actual Vercel URL
-                  </li>
+                <p className="text-sm text-muted-foreground">After successful deployment:</p>
+                <ol className="list-inside list-decimal space-y-2 text-sm">
+                  <li>Update NEXT_PUBLIC_APP_URL to your actual Vercel URL</li>
                   <li>Run the setup wizard to configure your app</li>
-                  <li>
-                    (Optional) Configure a custom domain in Vercel settings
-                  </li>
+                  <li>(Optional) Configure a custom domain in Vercel settings</li>
                   <li>(Optional) Set up monitoring with Sentry</li>
                   <li>Test all features work correctly</li>
                 </ol>
@@ -457,8 +406,8 @@ export default function VercelDeployButton() {
                   <AlertCircle className="h-4 w-4" />
                   <AlertTitle>Important</AlertTitle>
                   <AlertDescription>
-                    Make sure to update your OAuth callback URLs and CORS
-                    settings in your backend to include your new Vercel domain.
+                    Make sure to update your OAuth callback URLs and CORS settings in your backend
+                    to include your new Vercel domain.
                   </AlertDescription>
                 </Alert>
               </AccordionContent>
@@ -473,16 +422,11 @@ export default function VercelDeployButton() {
           <CardTitle className="text-sm">Helpful Resources</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <Button
               variant="outline"
               className="justify-start"
-              onClick={() =>
-                window.open(
-                  '/docs/guides/deployment/vercel-deployment.md',
-                  '_blank'
-                )
-              }
+              onClick={() => window.open('/docs/guides/deployment/vercel-deployment.md', '_blank')}
             >
               <ExternalLink className="mr-2 h-4 w-4" />
               Full Deployment Guide
@@ -490,9 +434,7 @@ export default function VercelDeployButton() {
             <Button
               variant="outline"
               className="justify-start"
-              onClick={() =>
-                window.open('https://vercel.com/docs', '_blank')
-              }
+              onClick={() => window.open('https://vercel.com/docs', '_blank')}
             >
               <ExternalLink className="mr-2 h-4 w-4" />
               Vercel Documentation
@@ -508,12 +450,7 @@ export default function VercelDeployButton() {
             <Button
               variant="outline"
               className="justify-start"
-              onClick={() =>
-                window.open(
-                  'https://github.com/nself/nself-chat/issues',
-                  '_blank'
-                )
-              }
+              onClick={() => window.open('https://github.com/nself/nself-chat/issues', '_blank')}
             >
               <ExternalLink className="mr-2 h-4 w-4" />
               Get Help
@@ -522,5 +459,5 @@ export default function VercelDeployButton() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

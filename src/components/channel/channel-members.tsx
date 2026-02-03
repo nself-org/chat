@@ -146,13 +146,16 @@ function getRoleBadge(role: ChannelMember['role']) {
   switch (role) {
     case 'owner':
       return (
-        <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-yellow-500 text-yellow-600">
+        <Badge
+          variant="outline"
+          className="border-yellow-500 px-1.5 py-0 text-[10px] text-yellow-600"
+        >
           Owner
         </Badge>
       )
     case 'admin':
       return (
-        <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-blue-500 text-blue-600">
+        <Badge variant="outline" className="border-blue-500 px-1.5 py-0 text-[10px] text-blue-600">
           Admin
         </Badge>
       )
@@ -186,7 +189,7 @@ function MemberItem({
   const canManage = isCurrentUserAdmin && !isCurrentUser && member.role !== 'owner'
 
   return (
-    <div className="flex items-center gap-3 px-3 py-2 hover:bg-accent/50 rounded-md group transition-colors">
+    <div className="hover:bg-accent/50 group flex items-center gap-3 rounded-md px-3 py-2 transition-colors">
       {/* Avatar with presence */}
       <div className="relative">
         <Avatar className="h-8 w-8">
@@ -205,27 +208,23 @@ function MemberItem({
       </div>
 
       {/* User info */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-1.5">
-          <span className="text-sm font-medium truncate">
-            {member.user.displayName}
-          </span>
+          <span className="truncate text-sm font-medium">{member.user.displayName}</span>
           {getRoleIcon(member.role)}
           {isCurrentUser && (
-            <Badge variant="secondary" className="text-[10px] px-1.5 py-0">
+            <Badge variant="secondary" className="px-1.5 py-0 text-[10px]">
               You
             </Badge>
           )}
         </div>
-        <span className="text-xs text-muted-foreground truncate block">
+        <span className="block truncate text-xs text-muted-foreground">
           @{member.user.username}
         </span>
       </div>
 
       {/* Role badge */}
-      <div className="hidden group-hover:flex items-center gap-1">
-        {getRoleBadge(member.role)}
-      </div>
+      <div className="hidden items-center gap-1 group-hover:flex">{getRoleBadge(member.role)}</div>
 
       {/* Actions */}
       {(canManage || !isCurrentUser) && (
@@ -234,7 +233,7 @@ function MemberItem({
             <Button
               variant="ghost"
               size="icon"
-              className="h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-7 w-7 opacity-0 transition-opacity group-hover:opacity-100"
             >
               <MoreVertical className="h-4 w-4" />
             </Button>
@@ -306,7 +305,7 @@ export function ChannelMembers({ channelId, className }: ChannelMembersProps) {
     }
 
     // Sort by role (owner > admin > member) then by name
-    const sortByRole = (a: typeof members[0], b: typeof members[0]) => {
+    const sortByRole = (a: (typeof members)[0], b: (typeof members)[0]) => {
       const roleOrder = { owner: 0, admin: 1, member: 2 }
       const roleCompare = roleOrder[a.role] - roleOrder[b.role]
       if (roleCompare !== 0) return roleCompare
@@ -319,9 +318,7 @@ export function ChannelMembers({ channelId, className }: ChannelMembersProps) {
     return { onlineMembers: online, offlineMembers: offline }
   }, [members, searchQuery])
 
-  const handleMessage = (userId: string) => {
-    // TODO: Navigate to or create DM with user
-  }
+  const handleMessage = (userId: string) => {}
 
   const handlePromote = (userId: string) => {
     updateChannelMember(channelId, userId, { role: 'admin' })
@@ -346,17 +343,17 @@ export function ChannelMembers({ channelId, className }: ChannelMembersProps) {
   }
 
   return (
-    <div className={cn('flex flex-col h-full', className)}>
+    <div className={cn('flex h-full flex-col', className)}>
       {/* Search */}
       <div className="p-3">
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search members..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 h-8 text-sm"
+            className="h-8 pl-8 text-sm"
           />
         </div>
       </div>
@@ -421,7 +418,7 @@ export function ChannelMembers({ channelId, className }: ChannelMembersProps) {
 
       {/* Add Members Button (Admin only) */}
       {isAdmin && (
-        <div className="p-3 border-t">
+        <div className="border-t p-3">
           <Button
             variant="outline"
             className="w-full"

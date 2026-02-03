@@ -1,9 +1,5 @@
 import { gql } from '@apollo/client'
-import {
-  USER_BASIC_FRAGMENT,
-  USER_PROFILE_FRAGMENT,
-  USER_PRESENCE_FRAGMENT,
-} from './fragments'
+import { USER_BASIC_FRAGMENT, USER_PROFILE_FRAGMENT, USER_PRESENCE_FRAGMENT } from './fragments'
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -65,11 +61,7 @@ export const GET_USER = gql`
   query GetUser($id: uuid, $username: String, $email: String) {
     nchat_users(
       where: {
-        _or: [
-          { id: { _eq: $id } }
-          { username: { _eq: $username } }
-          { email: { _eq: $email } }
-        ]
+        _or: [{ id: { _eq: $id } }, { username: { _eq: $username } }, { email: { _eq: $email } }]
       }
       limit: 1
     ) {
@@ -138,12 +130,7 @@ export const GET_USER_PROFILE = gql`
  * Get all users (workspace members) with pagination and search
  */
 export const GET_USERS = gql`
-  query GetUsers(
-    $limit: Int = 50
-    $offset: Int = 0
-    $search: String
-    $roleId: uuid
-  ) {
+  query GetUsers($limit: Int = 50, $offset: Int = 0, $search: String, $roleId: uuid) {
     nchat_users(
       where: {
         _and: [
@@ -211,10 +198,7 @@ export const GET_ONLINE_USERS = gql`
  */
 export const GET_USER_PRESENCE = gql`
   query GetUserPresence($userId: uuid!) {
-    nchat_user_presence(
-      where: { user_id: { _eq: $userId } }
-      limit: 1
-    ) {
+    nchat_user_presence(where: { user_id: { _eq: $userId } }, limit: 1) {
       ...UserPresence
     }
   }
@@ -226,9 +210,7 @@ export const GET_USER_PRESENCE = gql`
  */
 export const GET_USERS_PRESENCE = gql`
   query GetUsersPresence($userIds: [uuid!]!) {
-    nchat_user_presence(
-      where: { user_id: { _in: $userIds } }
-    ) {
+    nchat_user_presence(where: { user_id: { _in: $userIds } }) {
       user_id
       status
       last_seen_at
@@ -243,10 +225,7 @@ export const GET_USERS_PRESENCE = gql`
 export const GET_USERS_BY_ROLE = gql`
   query GetUsersByRole($roleName: String!) {
     nchat_users(
-      where: {
-        role: { name: { _eq: $roleName } }
-        is_active: { _eq: true }
-      }
+      where: { role: { name: { _eq: $roleName } }, is_active: { _eq: true } }
       order_by: { display_name: asc }
     ) {
       ...UserBasic
@@ -289,12 +268,7 @@ export const SEARCH_USERS_FOR_MENTION = gql`
     nchat_users(
       where: {
         _and: [
-          {
-            _or: [
-              { username: { _ilike: $search } }
-              { display_name: { _ilike: $search } }
-            ]
-          }
+          { _or: [{ username: { _ilike: $search } }, { display_name: { _ilike: $search } }] }
           { is_active: { _eq: true } }
           # Optionally filter by channel membership
           { channel_memberships: { channel_id: { _eq: $channelId } } }
@@ -379,11 +353,7 @@ export const CLEAR_STATUS = gql`
   mutation ClearStatus($userId: uuid!) {
     update_nchat_users_by_pk(
       pk_columns: { id: $userId }
-      _set: {
-        status: null
-        status_emoji: null
-        status_expires_at: null
-      }
+      _set: { status: null, status_emoji: null, status_expires_at: null }
     ) {
       id
       status
@@ -398,12 +368,7 @@ export const CLEAR_STATUS = gql`
 export const UPDATE_PRESENCE = gql`
   mutation UpdatePresence($userId: uuid!, $status: String!, $device: String) {
     insert_nchat_user_presence_one(
-      object: {
-        user_id: $userId
-        status: $status
-        device: $device
-        last_seen_at: "now()"
-      }
+      object: { user_id: $userId, status: $status, device: $device, last_seen_at: "now()" }
       on_conflict: {
         constraint: nchat_user_presence_user_id_key
         update_columns: [status, device, last_seen_at]
@@ -441,10 +406,7 @@ export const SET_OFFLINE = gql`
  */
 export const UPDATE_USER_SETTINGS = gql`
   mutation UpdateUserSettings($userId: uuid!, $settings: jsonb!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _append: { settings: $settings }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _append: { settings: $settings }) {
       id
       settings
     }
@@ -503,20 +465,14 @@ export const DEACTIVATE_USER = gql`
   mutation DeactivateUser($userId: uuid!) {
     update_nchat_users_by_pk(
       pk_columns: { id: $userId }
-      _set: {
-        is_active: false
-        deactivated_at: "now()"
-      }
+      _set: { is_active: false, deactivated_at: "now()" }
     ) {
       id
       is_active
       deactivated_at
     }
     # Also set offline
-    update_nchat_user_presence(
-      where: { user_id: { _eq: $userId } }
-      _set: { status: "offline" }
-    ) {
+    update_nchat_user_presence(where: { user_id: { _eq: $userId } }, _set: { status: "offline" }) {
       affected_rows
     }
   }
@@ -529,10 +485,7 @@ export const REACTIVATE_USER = gql`
   mutation ReactivateUser($userId: uuid!) {
     update_nchat_users_by_pk(
       pk_columns: { id: $userId }
-      _set: {
-        is_active: true
-        deactivated_at: null
-      }
+      _set: { is_active: true, deactivated_at: null }
     ) {
       id
       is_active
@@ -545,10 +498,7 @@ export const REACTIVATE_USER = gql`
  */
 export const UPDATE_USER_ROLE = gql`
   mutation UpdateUserRole($userId: uuid!, $roleId: uuid!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { role_id: $roleId }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { role_id: $roleId }) {
       id
       role {
         id
@@ -568,9 +518,7 @@ export const UPDATE_USER_ROLE = gql`
  */
 export const PRESENCE_SUBSCRIPTION = gql`
   subscription PresenceSubscription($userId: uuid!) {
-    nchat_user_presence(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    nchat_user_presence(where: { user_id: { _eq: $userId } }) {
       ...UserPresence
     }
   }
@@ -582,9 +530,7 @@ export const PRESENCE_SUBSCRIPTION = gql`
  */
 export const ALL_PRESENCE_SUBSCRIPTION = gql`
   subscription AllPresenceSubscription {
-    nchat_user_presence(
-      where: { status: { _neq: "offline" } }
-    ) {
+    nchat_user_presence(where: { status: { _neq: "offline" } }) {
       user_id
       status
       last_seen_at
@@ -601,9 +547,7 @@ export const ALL_PRESENCE_SUBSCRIPTION = gql`
  */
 export const USERS_PRESENCE_SUBSCRIPTION = gql`
   subscription UsersPresenceSubscription($userIds: [uuid!]!) {
-    nchat_user_presence(
-      where: { user_id: { _in: $userIds } }
-    ) {
+    nchat_user_presence(where: { user_id: { _in: $userIds } }) {
       user_id
       status
       last_seen_at

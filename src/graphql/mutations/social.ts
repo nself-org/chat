@@ -20,10 +20,7 @@ export const CREATE_DM_CHANNEL = gql`
         is_private: true
         created_by: $userId
         members: {
-          data: [
-            { user_id: $userId, role: "member" }
-            { user_id: $otherUserId, role: "member" }
-          ]
+          data: [{ user_id: $userId, role: "member" }, { user_id: $otherUserId, role: "member" }]
         }
       }
     ) {
@@ -53,12 +50,7 @@ export const GET_OR_CREATE_DM = gql`
 `
 
 export const SEND_DM = gql`
-  mutation SendDM(
-    $channelId: uuid!
-    $userId: uuid!
-    $content: String!
-    $attachments: jsonb
-  ) {
+  mutation SendDM($channelId: uuid!, $userId: uuid!, $content: String!, $attachments: jsonb) {
     insert_nchat_messages_one(
       object: {
         channel_id: $channelId
@@ -85,12 +77,7 @@ export const SEND_DM = gql`
 // ============================================================================
 
 export const INITIATE_CALL = gql`
-  mutation InitiateCall(
-    $callerId: uuid!
-    $calleeId: uuid!
-    $type: String!
-    $channelId: uuid
-  ) {
+  mutation InitiateCall($callerId: uuid!, $calleeId: uuid!, $type: String!, $channelId: uuid) {
     insert_nchat_calls_one(
       object: {
         caller_id: $callerId
@@ -258,10 +245,7 @@ export const BLOCK_USER = gql`
 export const UNBLOCK_USER = gql`
   mutation UnblockUser($userId: uuid!, $blockedUserId: uuid!) {
     delete_nchat_blocked_users(
-      where: {
-        user_id: { _eq: $userId }
-        blocked_user_id: { _eq: $blockedUserId }
-      }
+      where: { user_id: { _eq: $userId }, blocked_user_id: { _eq: $blockedUserId } }
     ) {
       affected_rows
     }

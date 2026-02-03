@@ -8,6 +8,7 @@ Cross-platform desktop application for nchat, built with Electron and Next.js.
 ## Features
 
 ### Core Features
+
 - **Native Window Management** - Customizable window with system tray integration
 - **Global Keyboard Shortcuts** - Quick access even when app is not focused
 - **Native Notifications** - System notifications with Do Not Disturb support
@@ -21,6 +22,7 @@ Cross-platform desktop application for nchat, built with Electron and Next.js.
 ### Platform-Specific Features
 
 #### macOS
+
 - Transparent titlebar with traffic lights
 - Touch Bar support (if available)
 - System theme integration
@@ -29,6 +31,7 @@ Cross-platform desktop application for nchat, built with Electron and Next.js.
 - Services integration
 
 #### Windows
+
 - Custom window controls
 - Taskbar badge overlay
 - System notifications
@@ -36,6 +39,7 @@ Cross-platform desktop application for nchat, built with Electron and Next.js.
 - Auto-start with Windows
 
 #### Linux
+
 - System tray icon
 - Desktop notifications
 - Multiple package formats (AppImage, deb, rpm)
@@ -116,6 +120,7 @@ pnpm start:dev
 ```
 
 This will:
+
 1. Start Next.js dev server on port 3000
 2. Launch Electron pointing to localhost:3000
 3. Enable DevTools
@@ -124,10 +129,12 @@ This will:
 ### 4. Debug
 
 **Main Process:**
+
 - Use VS Code debugger with launch configuration
 - Or add `debugger;` statements and run with `--inspect`
 
 **Renderer Process:**
+
 - DevTools are enabled in development
 - Press `Cmd/Ctrl+Shift+I` to toggle DevTools
 
@@ -239,15 +246,18 @@ Edit `electron-builder.json` to customize:
 After building, find installers in `platforms/dist-electron/`:
 
 **macOS:**
+
 - `nchat-{version}-mac-universal.dmg` - Universal binary (Intel + Apple Silicon)
 - `nchat-{version}-mac-universal.zip` - Zip archive
 
 **Windows:**
+
 - `nchat-{version}-win-x64.exe` - 64-bit installer
 - `nchat-{version}-win-ia32.exe` - 32-bit installer
 - `nchat-{version}-win-x64-portable.exe` - Portable version
 
 **Linux:**
+
 - `nchat-{version}-linux-x64.AppImage` - AppImage (universal)
 - `nchat-{version}-linux-x64.deb` - Debian/Ubuntu package
 - `nchat-{version}-linux-x64.rpm` - Red Hat/Fedora package
@@ -307,6 +317,7 @@ The Electron app follows security best practices:
 **Issue:** Code signing errors
 
 **Solution:**
+
 ```bash
 # Skip code signing for development
 export CSC_IDENTITY_AUTO_DISCOVERY=false
@@ -318,6 +329,7 @@ pnpm build:electron
 **Issue:** Missing Visual Studio Build Tools
 
 **Solution:**
+
 ```powershell
 # Install Visual Studio Build Tools
 npm install --global windows-build-tools
@@ -328,6 +340,7 @@ npm install --global windows-build-tools
 **Issue:** Missing dependencies
 
 **Solution:**
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install build-essential libgtk-3-dev libnotify-dev
@@ -342,6 +355,7 @@ sudo dnf install gtk3-devel libnotify-devel
 **Issue:** Blank white screen
 
 **Solution:**
+
 1. Clear cache: Delete the config folder (see Settings Storage)
 2. Run in development mode to see errors
 3. Check DevTools console for JavaScript errors
@@ -351,6 +365,7 @@ sudo dnf install gtk3-devel libnotify-devel
 **Issue:** Update checks fail
 
 **Solution:**
+
 1. Ensure app is built with `--publish` flag
 2. Check network connectivity
 3. Verify `publish` configuration in `electron-builder.json`
@@ -360,11 +375,13 @@ sudo dnf install gtk3-devel libnotify-devel
 GitHub Actions workflow: `.github/workflows/build-electron.yml`
 
 **Trigger manually:**
+
 ```bash
 gh workflow run build-electron.yml -f platform=all
 ```
 
 **Environment secrets needed:**
+
 - `MAC_CERTS` - Base64-encoded macOS certificate
 - `MAC_CERTS_PASSWORD` - Certificate password
 - `APPLE_ID` - Apple ID for notarization
@@ -393,7 +410,7 @@ const value = await window.electron.store.get('key')
 await window.electron.notifications.show({
   title: 'Hello',
   body: 'Message',
-  silent: false
+  silent: false,
 })
 
 // Tray
@@ -407,7 +424,7 @@ await window.electron.shell.openExternal('https://nself.org')
 
 // Dialog
 const result = await window.electron.dialog.showOpen({
-  properties: ['openFile']
+  properties: ['openFile'],
 })
 ```
 

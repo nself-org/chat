@@ -3,12 +3,7 @@
  * Comprehensive tests for slash command registration, parsing, validation, and help
  */
 
-import {
-  CommandRegistry,
-  createCommandRegistry,
-  defineCommand,
-  param,
-} from '../command-registry'
+import { CommandRegistry, createCommandRegistry, defineCommand, param } from '../command-registry'
 import type { SlashCommand, CommandParameter, ParsedCommand } from '../types'
 
 // ============================================================================
@@ -197,14 +192,18 @@ describe('CommandRegistry', () => {
 
   describe('getByPermission', () => {
     it('should filter commands by permission', () => {
-      registry.register(createMockCommand({
-        name: 'admin',
-        permissions: ['admin'],
-      }))
-      registry.register(createMockCommand({
-        name: 'read',
-        permissions: ['read_messages'],
-      }))
+      registry.register(
+        createMockCommand({
+          name: 'admin',
+          permissions: ['admin'],
+        })
+      )
+      registry.register(
+        createMockCommand({
+          name: 'read',
+          permissions: ['read_messages'],
+        })
+      )
       registry.register(createMockCommand({ name: 'noPerms' }))
 
       const adminCmds = registry.getByPermission('admin')
@@ -219,12 +218,14 @@ describe('CommandRegistry', () => {
 
   describe('parse', () => {
     beforeEach(() => {
-      registry.register(createMockCommand({
-        name: 'greet',
-        parameters: [
-          { name: 'name', type: 'string', required: true, description: 'Name to greet' },
-        ],
-      }))
+      registry.register(
+        createMockCommand({
+          name: 'greet',
+          parameters: [
+            { name: 'name', type: 'string', required: true, description: 'Name to greet' },
+          ],
+        })
+      )
     })
 
     it('should parse simple command', () => {
@@ -262,13 +263,15 @@ describe('CommandRegistry', () => {
     })
 
     it('should parse named arguments', () => {
-      registry.register(createMockCommand({
-        name: 'remind',
-        parameters: [
-          { name: 'time', type: 'string', required: true, description: 'Time' },
-          { name: 'message', type: 'string', required: true, description: 'Message' },
-        ],
-      }))
+      registry.register(
+        createMockCommand({
+          name: 'remind',
+          parameters: [
+            { name: 'time', type: 'string', required: true, description: 'Time' },
+            { name: 'message', type: 'string', required: true, description: 'Message' },
+          ],
+        })
+      )
 
       const result = registry.parse('/remind --time 5m --message "Call mom"')
 
@@ -317,7 +320,13 @@ describe('CommandRegistry', () => {
 
     it('should apply default values', () => {
       const params: CommandParameter[] = [
-        { name: 'optional', type: 'string', required: false, description: 'Optional', default: 'default' },
+        {
+          name: 'optional',
+          type: 'string',
+          required: false,
+          description: 'Optional',
+          default: 'default',
+        },
       ]
 
       const result = registry.validateAndParseArgs('', params)
@@ -458,11 +467,13 @@ describe('CommandRegistry', () => {
 
     it('should pass correct context to handler', async () => {
       const handler = createMockHandler()
-      registry.register(createMockCommand({
-        name: 'test',
-        handler,
-        parameters: [{ name: 'arg', type: 'string', required: false, description: 'Arg' }],
-      }))
+      registry.register(
+        createMockCommand({
+          name: 'test',
+          handler,
+          parameters: [{ name: 'arg', type: 'string', required: false, description: 'Arg' }],
+        })
+      )
 
       const parsed = registry.parse('/test hello')!
       await registry.execute(parsed, {
@@ -507,10 +518,14 @@ describe('CommandRegistry', () => {
     })
 
     it('should handle validation errors', async () => {
-      registry.register(createMockCommand({
-        name: 'test',
-        parameters: [{ name: 'required', type: 'string', required: true, description: 'Required' }],
-      }))
+      registry.register(
+        createMockCommand({
+          name: 'test',
+          parameters: [
+            { name: 'required', type: 'string', required: true, description: 'Required' },
+          ],
+        })
+      )
 
       const parsed = registry.parse('/test')! // Missing required arg
 
@@ -597,17 +612,25 @@ describe('CommandRegistry', () => {
 
   describe('getHelp', () => {
     it('should generate help for command', () => {
-      registry.register(createMockCommand({
-        name: 'remind',
-        description: 'Set a reminder',
-        usage: '/remind [time] [message]',
-        parameters: [
-          { name: 'time', type: 'string', required: true, description: 'When to remind' },
-          { name: 'message', type: 'string', required: false, description: 'Reminder message', default: 'No message' },
-        ],
-        aliases: ['r', 'rem'],
-        cooldown: 10,
-      }))
+      registry.register(
+        createMockCommand({
+          name: 'remind',
+          description: 'Set a reminder',
+          usage: '/remind [time] [message]',
+          parameters: [
+            { name: 'time', type: 'string', required: true, description: 'When to remind' },
+            {
+              name: 'message',
+              type: 'string',
+              required: false,
+              description: 'Reminder message',
+              default: 'No message',
+            },
+          ],
+          aliases: ['r', 'rem'],
+          cooldown: 10,
+        })
+      )
 
       const help = registry.getHelp('remind')
 
@@ -627,21 +650,23 @@ describe('CommandRegistry', () => {
     })
 
     it('should include choices in help', () => {
-      registry.register(createMockCommand({
-        name: 'color',
-        parameters: [
-          {
-            name: 'color',
-            type: 'string',
-            required: true,
-            description: 'Color',
-            choices: [
-              { label: 'Red', value: 'red' },
-              { label: 'Blue', value: 'blue' },
-            ],
-          },
-        ],
-      }))
+      registry.register(
+        createMockCommand({
+          name: 'color',
+          parameters: [
+            {
+              name: 'color',
+              type: 'string',
+              required: true,
+              description: 'Color',
+              choices: [
+                { label: 'Red', value: 'red' },
+                { label: 'Blue', value: 'blue' },
+              ],
+            },
+          ],
+        })
+      )
 
       const help = registry.getHelp('color')
       expect(help).toContain('choices:')
@@ -687,10 +712,12 @@ describe('CommandRegistry', () => {
 
   describe('getUsage', () => {
     it('should return usage string', () => {
-      registry.register(createMockCommand({
-        name: 'test',
-        usage: '/test <arg1> [arg2]',
-      }))
+      registry.register(
+        createMockCommand({
+          name: 'test',
+          usage: '/test <arg1> [arg2]',
+        })
+      )
 
       expect(registry.getUsage('test')).toBe('/test <arg1> [arg2]')
     })

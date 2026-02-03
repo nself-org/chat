@@ -139,9 +139,7 @@ export function useStreamChat(options: UseStreamChatOptions): UseStreamChatRetur
         }
 
         setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === messageId ? { ...msg, isDeleted: true } : msg
-          )
+          prev.map((msg) => (msg.id === messageId ? { ...msg, isDeleted: true } : msg))
         )
       } catch (err) {
         setError((err as Error).message)
@@ -154,21 +152,16 @@ export function useStreamChat(options: UseStreamChatOptions): UseStreamChatRetur
   const pinMessage = useCallback(
     async (messageId: string): Promise<void> => {
       try {
-        const response = await fetch(
-          `/api/streams/${streamId}/chat/${messageId}/pin`,
-          {
-            method: 'POST',
-          }
-        )
+        const response = await fetch(`/api/streams/${streamId}/chat/${messageId}/pin`, {
+          method: 'POST',
+        })
 
         if (!response.ok) {
           throw new Error('Failed to pin message')
         }
 
         setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === messageId ? { ...msg, isPinned: true } : msg
-          )
+          prev.map((msg) => (msg.id === messageId ? { ...msg, isPinned: true } : msg))
         )
 
         emit('stream:chat-pinned', { messageId })
@@ -183,21 +176,16 @@ export function useStreamChat(options: UseStreamChatOptions): UseStreamChatRetur
   const unpinMessage = useCallback(
     async (messageId: string): Promise<void> => {
       try {
-        const response = await fetch(
-          `/api/streams/${streamId}/chat/${messageId}/pin`,
-          {
-            method: 'DELETE',
-          }
-        )
+        const response = await fetch(`/api/streams/${streamId}/chat/${messageId}/pin`, {
+          method: 'DELETE',
+        })
 
         if (!response.ok) {
           throw new Error('Failed to unpin message')
         }
 
         setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === messageId ? { ...msg, isPinned: false } : msg
-          )
+          prev.map((msg) => (msg.id === messageId ? { ...msg, isPinned: false } : msg))
         )
       } catch (err) {
         setError((err as Error).message)
@@ -218,45 +206,32 @@ export function useStreamChat(options: UseStreamChatOptions): UseStreamChatRetur
   useEffect(() => {
     if (!isConnected) return
 
-    const unsubMessage = subscribe<StreamChatMessage>(
-      'stream:chat-message',
-      (message) => {
-        if (message.streamId === streamId) {
-          setMessages((prev) => {
-            const updated = [...prev, message]
-            // Keep only last maxMessages
-            if (updated.length > maxMessages) {
-              return updated.slice(-maxMessages)
-            }
-            return updated
-          })
+    const unsubMessage = subscribe<StreamChatMessage>('stream:chat-message', (message) => {
+      if (message.streamId === streamId) {
+        setMessages((prev) => {
+          const updated = [...prev, message]
+          // Keep only last maxMessages
+          if (updated.length > maxMessages) {
+            return updated.slice(-maxMessages)
+          }
+          return updated
+        })
 
-          onNewMessage?.(message)
-        }
+        onNewMessage?.(message)
       }
-    )
+    })
 
-    const unsubDeleted = subscribe<{ messageId: string }>(
-      'stream:chat-deleted',
-      (data) => {
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === data.messageId ? { ...msg, isDeleted: true } : msg
-          )
-        )
-      }
-    )
+    const unsubDeleted = subscribe<{ messageId: string }>('stream:chat-deleted', (data) => {
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === data.messageId ? { ...msg, isDeleted: true } : msg))
+      )
+    })
 
-    const unsubPinned = subscribe<{ messageId: string }>(
-      'stream:chat-pinned',
-      (data) => {
-        setMessages((prev) =>
-          prev.map((msg) =>
-            msg.id === data.messageId ? { ...msg, isPinned: true } : msg
-          )
-        )
-      }
-    )
+    const unsubPinned = subscribe<{ messageId: string }>('stream:chat-pinned', (data) => {
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === data.messageId ? { ...msg, isPinned: true } : msg))
+      )
+    })
 
     return () => {
       unsubMessage()

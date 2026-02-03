@@ -158,11 +158,7 @@ export const ROLE_TEMPLATES: RoleTemplate[] = [
     category: 'developer',
     icon: 'Code',
     baseRole: 'member',
-    permissions: [
-      'admin:webhooks',
-      'admin:integrations',
-      'admin:analytics',
-    ],
+    permissions: ['admin:webhooks', 'admin:integrations', 'admin:analytics'],
     recommended: false,
   },
   {
@@ -172,11 +168,7 @@ export const ROLE_TEMPLATES: RoleTemplate[] = [
     category: 'management',
     icon: 'BarChart',
     baseRole: 'member',
-    permissions: [
-      'admin:analytics',
-      'admin:audit_log',
-      'user:view_activity',
-    ],
+    permissions: ['admin:analytics', 'admin:audit_log', 'user:view_activity'],
     recommended: false,
   },
   {
@@ -238,11 +230,7 @@ export const PERMISSION_GROUPS_ENTERPRISE: PermissionGroup[] = [
     name: 'Content Control',
     description: 'Edit and delete any content',
     category: 'moderation',
-    permissions: [
-      'message:edit_any',
-      'message:delete_any',
-      'file:delete_any',
-    ],
+    permissions: ['message:edit_any', 'message:delete_any', 'file:delete_any'],
     requiresBaseRole: 'moderator',
   },
   {
@@ -250,12 +238,7 @@ export const PERMISSION_GROUPS_ENTERPRISE: PermissionGroup[] = [
     name: 'System Configuration',
     description: 'Configure system settings',
     category: 'admin',
-    permissions: [
-      'admin:settings',
-      'admin:integrations',
-      'admin:webhooks',
-      'system:config',
-    ],
+    permissions: ['admin:settings', 'admin:integrations', 'admin:webhooks', 'system:config'],
     requiresBaseRole: 'admin',
     dangerous: true,
   },
@@ -498,9 +481,11 @@ export class CustomRoleService {
       roleId,
       assignedBy,
       assignedAt: new Date(),
-      expiresAt: expiresAt || (role.expiresAfter
-        ? new Date(Date.now() + role.expiresAfter * 24 * 60 * 60 * 1000)
-        : undefined),
+      expiresAt:
+        expiresAt ||
+        (role.expiresAfter
+          ? new Date(Date.now() + role.expiresAfter * 24 * 60 * 60 * 1000)
+          : undefined),
     }
 
     const userAssignments = this.assignments.get(roleId) || []
@@ -527,10 +512,7 @@ export class CustomRoleService {
   /**
    * Remove role from user
    */
-  async unassignRole(
-    assignmentId: string,
-    unassignedBy: string
-  ): Promise<void> {
+  async unassignRole(assignmentId: string, unassignedBy: string): Promise<void> {
     for (const [roleId, assignments] of this.assignments.entries()) {
       const index = assignments.findIndex((a) => a.id === assignmentId)
       if (index !== -1) {
@@ -702,16 +684,11 @@ export function getCustomRoleService(): CustomRoleService {
 /**
  * Validate permission compatibility with base role
  */
-export function isPermissionCompatible(
-  permission: Permission,
-  baseRole?: UserRole
-): boolean {
+export function isPermissionCompatible(permission: Permission, baseRole?: UserRole): boolean {
   if (!baseRole) return true
 
   // Check if permission requires a higher base role
-  const group = PERMISSION_GROUPS_ENTERPRISE.find((g) =>
-    g.permissions.includes(permission)
-  )
+  const group = PERMISSION_GROUPS_ENTERPRISE.find((g) => g.permissions.includes(permission))
 
   if (!group || !group.requiresBaseRole) return true
 

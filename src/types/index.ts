@@ -52,7 +52,7 @@ export type {
   CreateUserInput,
   UpdateUserInput,
   UserFilter,
-} from './user';
+} from './user'
 
 export {
   UserRoleLevel,
@@ -61,7 +61,7 @@ export {
   UserPresenceLabels,
   DefaultStatusPresets,
   DefaultRolePermissions,
-} from './user';
+} from './user'
 
 // ============================================================================
 // Channel Types
@@ -107,7 +107,7 @@ export type {
   // Event types
   ChannelUpdateType,
   ChannelUpdateEvent,
-} from './channel';
+} from './channel'
 
 export {
   ChannelTypeLabels,
@@ -116,7 +116,7 @@ export {
   isDirectMessage,
   isRegularChannel,
   getChannelDisplayName,
-} from './channel';
+} from './channel'
 
 // ============================================================================
 // Message Types
@@ -171,14 +171,14 @@ export type {
   // Read state types
   ChannelReadState,
   ReadStateUpdate,
-} from './message';
+} from './message'
 
 export {
   isSystemMessage,
   formatSystemMessage,
   formatTypingIndicator,
   getMessagePermissions,
-} from './message';
+} from './message'
 
 // ============================================================================
 // Attachment Types
@@ -209,7 +209,7 @@ export type {
   UploadFileInput,
   UploadFilesInput,
   PresignedUploadUrl,
-} from './attachment';
+} from './attachment'
 
 export {
   MimeTypeCategories,
@@ -219,7 +219,7 @@ export {
   formatFileSize,
   isFileTypeAllowed,
   getFileIcon,
-} from './attachment';
+} from './attachment'
 
 // ============================================================================
 // Notification Types
@@ -263,9 +263,9 @@ export type {
   NotificationReceivedEvent,
   NotificationReadEvent,
   NotificationCountUpdatedEvent,
-} from './notification';
+} from './notification'
 
-export { DefaultNotificationPreferences } from './notification';
+export { DefaultNotificationPreferences } from './notification'
 
 // ============================================================================
 // Poll Types
@@ -299,7 +299,7 @@ export type {
   // Query types
   PollFilter,
   PollSortOptions,
-} from './poll';
+} from './poll'
 
 export {
   DefaultPollSettings,
@@ -308,7 +308,7 @@ export {
   calculatePollPercentages,
   getWinningOptions,
   formatPollClosingTime,
-} from './poll';
+} from './poll'
 
 // ============================================================================
 // Emoji Types
@@ -345,7 +345,7 @@ export type {
   ReactionAddedEvent,
   ReactionRemovedEvent,
   ReactionsClearedEvent,
-} from './emoji';
+} from './emoji'
 
 export {
   EmojiCategories,
@@ -356,7 +356,7 @@ export {
   isValidEmojiName,
   applyEmojiSkinTone,
   getEmojiLabel,
-} from './emoji';
+} from './emoji'
 
 // ============================================================================
 // Search Types
@@ -405,14 +405,9 @@ export type {
   // Config types
   SearchConfig,
   SearchFilterPreset,
-} from './search';
+} from './search'
 
-export {
-  DefaultSearchConfig,
-  CommonSearchPresets,
-  buildSearchUrl,
-  parseSearchUrl,
-} from './search';
+export { DefaultSearchConfig, CommonSearchPresets, buildSearchUrl, parseSearchUrl } from './search'
 
 // ============================================================================
 // Webhook Types
@@ -455,7 +450,7 @@ export type {
   // Event types
   WebhookCreatedEvent,
   WebhookDeliveryEvent,
-} from './webhook';
+} from './webhook'
 
 export {
   DefaultWebhookRetryConfig,
@@ -463,7 +458,7 @@ export {
   verifyWebhookSignature,
   getEventCategory,
   formatWebhookUrl,
-} from './webhook';
+} from './webhook'
 
 // ============================================================================
 // Bot Types
@@ -519,9 +514,9 @@ export type {
   BotStatusChangeEvent,
   BotInstalledEvent,
   BotUninstalledEvent,
-} from './bot';
+} from './bot'
 
-export { BotPermissionScopeDescriptions } from './bot';
+export { BotPermissionScopeDescriptions } from './bot'
 
 // ============================================================================
 // Sticker Types
@@ -563,7 +558,7 @@ export type {
   StickerPackUpdatedEvent,
   StickerPackInstalledEvent,
   StickerUsedEvent,
-} from './sticker';
+} from './sticker'
 
 export {
   DefaultStickerUploadConstraints,
@@ -574,7 +569,7 @@ export {
   isValidPackName,
   getStickerPackUrl,
   formatStickerSize,
-} from './sticker';
+} from './sticker'
 
 // ============================================================================
 // API Types
@@ -623,7 +618,7 @@ export type {
   DeepPartial,
   ExtractAPIData,
   ExtractPaginatedItem,
-} from './api';
+} from './api'
 
 export {
   HTTPStatusToErrorCode,
@@ -633,7 +628,7 @@ export {
   isAPIError,
   createAPIError,
   buildPaginationParams,
-} from './api';
+} from './api'
 
 // ============================================================================
 // Socket Types
@@ -692,9 +687,9 @@ export type {
   SocketEventHandler,
   SocketEventCleanup,
   ExtractEventPayload,
-} from './socket';
+} from './socket'
 
-export { DefaultSocketConnectionOptions } from './socket';
+export { DefaultSocketConnectionOptions } from './socket'
 
 // ============================================================================
 // Config Types
@@ -747,7 +742,7 @@ export type {
   ConfigChangeEvent,
   // Environment types
   EnvironmentConfig,
-} from './config';
+} from './config'
 
 export {
   SetupSteps,
@@ -755,7 +750,7 @@ export {
   DefaultFeatureFlags,
   DefaultAppConfig,
   getEnvironmentConfig,
-} from './config';
+} from './config'
 
 // ============================================================================
 // GIF Types (existing)
@@ -791,4 +786,205 @@ export type {
   GifSearchProps,
   GifCategoriesProps,
   GifPickerTriggerProps,
-} from './gif';
+} from './gif'
+
+// ============================================================================
+// Database Types
+// ============================================================================
+
+export type {
+  // Enums
+  UserStatus as DbUserStatus,
+  PresenceStatus as DbPresenceStatus,
+  ChannelType as DbChannelType,
+  MessageType as DbMessageType,
+  MemberRole,
+  NotificationType as DbNotificationType,
+  AttachmentType as DbAttachmentType,
+  SubscriptionStatus as DbSubscriptionStatus,
+  AuditAction,
+  // Base types
+  UUID,
+  Timestamp,
+  InetAddress,
+  JsonObject,
+  TimestampFields,
+  SoftDeleteFields,
+  // Tables
+  DbUser,
+  DbProfile,
+  DbPresence,
+  DbUserSettings,
+  DbCategory,
+  DbChannel,
+  DbChannelMember,
+  DbMessage,
+  DbThread,
+  DbThreadMember,
+  DbReaction,
+  DbCustomEmoji,
+  DbAttachment,
+  DbMedia,
+  DbNotification,
+  DbPushSubscription,
+  DbWorkspace,
+  DbWorkspaceMember,
+  DbWorkspaceInvite,
+  DbRole,
+  DbUserRole,
+  DbPermission,
+  DbPlan,
+  DbSubscription,
+  DbInvoice,
+  DbBookmark,
+  DbPinnedMessage,
+  DbSearchIndex,
+  DbAuditLog,
+  DbIntegration,
+  DbWebhook,
+  DbIncomingWebhook,
+  DbBot,
+  DbAppConfiguration,
+  DbSession,
+} from './database'
+
+export {
+  // Enum arrays
+  USER_STATUSES,
+  PRESENCE_STATUSES,
+  CHANNEL_TYPES,
+  MESSAGE_TYPES,
+  MEMBER_ROLES,
+  NOTIFICATION_TYPES,
+  ATTACHMENT_TYPES,
+  SUBSCRIPTION_STATUSES,
+  AUDIT_ACTIONS,
+  // Labels
+  PRESENCE_STATUS_LABELS,
+  CHANNEL_TYPE_LABELS,
+  MEMBER_ROLE_LEVELS,
+  MEMBER_ROLE_LABELS,
+  SUBSCRIPTION_STATUS_LABELS,
+  AUDIT_ACTION_LABELS,
+  MIME_TYPE_CATEGORIES,
+  // Type guards
+  isUserStatus,
+  isPresenceStatus as isDbPresenceStatus,
+  isChannelType as isDbChannelType,
+  isMessageType as isDbMessageType,
+  isMemberRole,
+  isNotificationType as isDbNotificationType,
+  isAttachmentType as isDbAttachmentType,
+  isSubscriptionStatus,
+  isAuditAction,
+} from './database'
+
+// ============================================================================
+// Subscription Types
+// ============================================================================
+
+export type {
+  Plan,
+  PlanTier,
+  Currency,
+  PlanFeatures,
+  PlanDisplay,
+  SubscriptionStatus,
+  BillingInterval,
+  Subscription,
+  SubscriptionWithComputed,
+  InvoiceStatus,
+  Invoice,
+  InvoiceLineItem,
+  PaymentMethodType,
+  PaymentMethod,
+  SubscriptionUsage,
+  UsageLimitWarning,
+  CreateSubscriptionInput,
+  UpdateSubscriptionInput,
+  CancelSubscriptionInput,
+  AddPaymentMethodInput,
+  SubscriptionEventType,
+  SubscriptionEvent,
+} from './subscription.types'
+
+export {
+  FREE_PLAN_FEATURES,
+  SUBSCRIPTION_STATUS_LABELS as SubscriptionStatusLabels,
+  formatPrice,
+  calculateYearlySavings,
+  isSubscriptionActive,
+  getDaysUntil,
+} from './subscription.types'
+
+// ============================================================================
+// Audit Types
+// ============================================================================
+
+export type {
+  AuditActionCategory,
+  AuthenticationAction,
+  UserManagementAction,
+  ChannelManagementAction,
+  MessageManagementAction,
+  ModerationAction,
+  SettingsAction,
+  BillingAction,
+  IntegrationAction,
+  SecurityAction,
+  AuditAction as AuditActionType,
+  AuditSeverity,
+  AuditLog,
+  AuditEntityType,
+  AuditMetadata,
+  AuditLocation,
+  AuditLogFilter,
+  AuditLogSortOptions,
+  AuditLogSearchResult,
+  AuditStatistics,
+  UserActivitySummary,
+  AuditExportFormat,
+  AuditExportRequest,
+  AuditExportStatus,
+  SecurityEvent,
+  SecurityIndicator,
+} from './audit.types'
+
+export {
+  getActionCategory,
+  getSeverityLabel,
+  getSeverityColor,
+  formatAuditDescription,
+  isSecuritySensitive,
+} from './audit.types'
+
+// ============================================================================
+// API Types (Extended)
+// ============================================================================
+
+export * from './api'
+
+// ============================================================================
+// GraphQL Types
+// ============================================================================
+
+export * from './graphql'
+
+// ============================================================================
+// Type Utilities
+// ============================================================================
+
+export * from './utils'
+
+// ============================================================================
+// Presence Privacy Settings Types
+// ============================================================================
+
+export type {
+  PresenceSettings,
+  PresenceSettingsInput,
+  PresenceVisibility,
+  PresenceVisibilityResult,
+} from '@/graphql/presence-settings'
+
+export { DEFAULT_PRESENCE_SETTINGS } from '@/graphql/presence-settings'

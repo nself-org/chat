@@ -1,37 +1,16 @@
 import { DocumentNode } from '@apollo/client'
-import {
-  SEND_MESSAGE,
-  UPDATE_MESSAGE,
-  DELETE_MESSAGE,
-} from '../mutations/messages'
-import {
-  CREATE_CHANNEL,
-  UPDATE_CHANNEL,
-  JOIN_CHANNEL,
-  LEAVE_CHANNEL,
-} from '../mutations/channels'
-import {
-  UPDATE_PRESENCE,
-  HEARTBEAT,
-} from '../mutations/presence'
-import {
-  MARK_CHANNEL_READ,
-  UPDATE_LAST_READ,
-} from '../mutations/read-receipts'
-import {
-  ADD_REACTION,
-  REMOVE_REACTION,
-  TOGGLE_REACTION,
-} from '../mutations/reactions'
+import { SEND_MESSAGE, UPDATE_MESSAGE, DELETE_MESSAGE } from '../mutations/messages'
+import { CREATE_CHANNEL, UPDATE_CHANNEL, JOIN_CHANNEL, LEAVE_CHANNEL } from '../mutations/channels'
+import { UPDATE_PRESENCE, HEARTBEAT } from '../mutations/presence'
+import { MARK_CHANNEL_READ, UPDATE_LAST_READ } from '../mutations/read-receipts'
+import { ADD_REACTION, REMOVE_REACTION, TOGGLE_REACTION } from '../mutations/reactions'
 
 // ============================================================================
 // Helper Functions
 // ============================================================================
 
 function getOperationName(doc: DocumentNode): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     return definition.name?.value
   }
@@ -39,9 +18,7 @@ function getOperationName(doc: DocumentNode): string | undefined {
 }
 
 function getOperationType(doc: DocumentNode): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     return definition.operation
   }
@@ -49,25 +26,17 @@ function getOperationType(doc: DocumentNode): string | undefined {
 }
 
 function getVariableNames(doc: DocumentNode): string[] {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
-    return (
-      definition.variableDefinitions?.map((v) => v.variable.name.value) || []
-    )
+    return definition.variableDefinitions?.map((v) => v.variable.name.value) || []
   }
   return []
 }
 
 function getVariableType(doc: DocumentNode, varName: string): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
-    const varDef = definition.variableDefinitions?.find(
-      (v) => v.variable.name.value === varName
-    )
+    const varDef = definition.variableDefinitions?.find((v) => v.variable.name.value === varName)
     if (varDef) {
       return printType(varDef.type)
     }
@@ -94,9 +63,7 @@ function isVariableRequired(doc: DocumentNode, varName: string): boolean {
 }
 
 function getSelectionFields(doc: DocumentNode): string[] {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     const firstSelection = definition.selectionSet.selections[0]
     if (firstSelection && firstSelection.kind === 'Field' && firstSelection.selectionSet) {
@@ -698,9 +665,7 @@ describe('Mutation Document Structure', () => {
     })
 
     it(`${name} should have exactly one operation definition`, () => {
-      const operationDefs = doc.definitions.filter(
-        (def) => def.kind === 'OperationDefinition'
-      )
+      const operationDefs = doc.definitions.filter((def) => def.kind === 'OperationDefinition')
       expect(operationDefs).toHaveLength(1)
     })
 

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * Desktop Deployment Helper Component
@@ -11,7 +11,7 @@
  * - Monitoring deployment status
  */
 
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 import {
   Download,
   Upload,
@@ -29,54 +29,54 @@ import {
   ExternalLink,
   ChevronDown,
   ChevronRight,
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+} from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge } from '@/components/ui/badge'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
+} from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
+import { Separator } from '@/components/ui/separator'
 
 interface BuildStatus {
-  platform: 'electron' | 'tauri';
-  target: 'mac' | 'win' | 'linux' | 'all';
-  status: 'idle' | 'building' | 'success' | 'failed';
-  progress: number;
-  logs: string[];
-  artifacts: string[];
-  error?: string;
+  platform: 'electron' | 'tauri'
+  target: 'mac' | 'win' | 'linux' | 'all'
+  status: 'idle' | 'building' | 'success' | 'failed'
+  progress: number
+  logs: string[]
+  artifacts: string[]
+  error?: string
 }
 
 interface CodeSigningConfig {
   macos: {
-    appleId: string;
-    applePassword: string;
-    teamId: string;
-    signingIdentity: string;
-  };
+    appleId: string
+    applePassword: string
+    teamId: string
+    signingIdentity: string
+  }
   windows: {
-    certificatePath: string;
-    certificatePassword: string;
-  };
+    certificatePath: string
+    certificatePassword: string
+  }
   linux: {
-    gpgKeyId: string;
-    gpgPassphrase: string;
-  };
+    gpgKeyId: string
+    gpgPassphrase: string
+  }
 }
 
 export default function DesktopDeployHelper() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState('overview')
   const [buildStatus, setBuildStatus] = useState<BuildStatus>({
     platform: 'electron',
     target: 'all',
@@ -84,7 +84,7 @@ export default function DesktopDeployHelper() {
     progress: 0,
     logs: [],
     artifacts: [],
-  });
+  })
 
   const [signingConfig, setSigningConfig] = useState<CodeSigningConfig>({
     macos: {
@@ -101,7 +101,7 @@ export default function DesktopDeployHelper() {
       gpgKeyId: '',
       gpgPassphrase: '',
     },
-  });
+  })
 
   const [buildOptions, setBuildOptions] = useState({
     platform: 'electron' as 'electron' | 'tauri',
@@ -111,20 +111,20 @@ export default function DesktopDeployHelper() {
     sign: true,
     publish: false,
     clean: false,
-  });
+  })
 
-  const [showLogs, setShowLogs] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['overview']));
+  const [showLogs, setShowLogs] = useState(false)
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['overview']))
 
   const toggleSection = (section: string) => {
-    const newExpanded = new Set(expandedSections);
+    const newExpanded = new Set(expandedSections)
     if (newExpanded.has(section)) {
-      newExpanded.delete(section);
+      newExpanded.delete(section)
     } else {
-      newExpanded.add(section);
+      newExpanded.add(section)
     }
-    setExpandedSections(newExpanded);
-  };
+    setExpandedSections(newExpanded)
+  }
 
   const handleBuild = () => {
     setBuildStatus({
@@ -132,7 +132,7 @@ export default function DesktopDeployHelper() {
       status: 'building',
       progress: 0,
       logs: ['Starting build process...'],
-    });
+    })
 
     // Simulate build process
     const logMessages = [
@@ -143,40 +143,43 @@ export default function DesktopDeployHelper() {
       'Signing application...',
       'Creating installers...',
       'Build complete!',
-    ];
+    ]
 
-    let progress = 0;
+    let progress = 0
     logMessages.forEach((msg, index) => {
-      setTimeout(() => {
-        progress = ((index + 1) / logMessages.length) * 100;
-        setBuildStatus((prev) => ({
-          ...prev,
-          progress,
-          logs: [...prev.logs, msg],
-          status: index === logMessages.length - 1 ? 'success' : 'building',
-          artifacts:
-            index === logMessages.length - 1
-              ? [
-                  'nchat-1.0.0-mac-x64.dmg',
-                  'nchat-1.0.0-mac-arm64.dmg',
-                  'nchat-1.0.0-win-x64.exe',
-                  'nchat-1.0.0-linux-x64.AppImage',
-                ]
-              : prev.artifacts,
-        }));
-      }, (index + 1) * 1000);
-    });
-  };
+      setTimeout(
+        () => {
+          progress = ((index + 1) / logMessages.length) * 100
+          setBuildStatus((prev) => ({
+            ...prev,
+            progress,
+            logs: [...prev.logs, msg],
+            status: index === logMessages.length - 1 ? 'success' : 'building',
+            artifacts:
+              index === logMessages.length - 1
+                ? [
+                    'nchat-1.0.0-mac-x64.dmg',
+                    'nchat-1.0.0-mac-arm64.dmg',
+                    'nchat-1.0.0-win-x64.exe',
+                    'nchat-1.0.0-linux-x64.AppImage',
+                  ]
+                : prev.artifacts,
+          }))
+        },
+        (index + 1) * 1000
+      )
+    })
+  }
 
   const handleCopyCommand = (command: string) => {
-    navigator.clipboard.writeText(command);
-  };
+    navigator.clipboard.writeText(command)
+  }
 
   const getBuildCommand = () => {
     const script =
       buildOptions.platform === 'electron'
         ? './scripts/deploy-desktop-electron.sh'
-        : './scripts/deploy-desktop-tauri.sh';
+        : './scripts/deploy-desktop-tauri.sh'
 
     const args = [
       `--platform ${buildOptions.target}`,
@@ -187,17 +190,17 @@ export default function DesktopDeployHelper() {
       buildOptions.clean ? '--clean' : '',
     ]
       .filter(Boolean)
-      .join(' ');
+      .join(' ')
 
-    return `${script} ${args}`;
-  };
+    return `${script} ${args}`
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
         <h1 className="text-3xl font-bold">Desktop Deployment</h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="mt-2 text-muted-foreground">
           Build, sign, and deploy nchat desktop applications for macOS, Windows, and Linux
         </p>
       </div>
@@ -210,21 +213,21 @@ export default function DesktopDeployHelper() {
             Quick Actions
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex gap-4 flex-wrap">
+        <CardContent className="flex flex-wrap gap-4">
           <Button onClick={handleBuild} disabled={buildStatus.status === 'building'}>
-            <Play className="h-4 w-4 mr-2" />
+            <Play className="mr-2 h-4 w-4" />
             Build Application
           </Button>
           <Button variant="outline">
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="mr-2 h-4 w-4" />
             Configure Signing
           </Button>
           <Button variant="outline">
-            <Upload className="h-4 w-4 mr-2" />
+            <Upload className="mr-2 h-4 w-4" />
             Publish Release
           </Button>
           <Button variant="outline">
-            <Terminal className="h-4 w-4 mr-2" />
+            <Terminal className="mr-2 h-4 w-4" />
             View Logs
           </Button>
         </CardContent>
@@ -236,13 +239,15 @@ export default function DesktopDeployHelper() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               {buildStatus.status === 'building' && <Play className="h-5 w-5 animate-pulse" />}
-              {buildStatus.status === 'success' && <CheckCircle className="h-5 w-5 text-green-500" />}
+              {buildStatus.status === 'success' && (
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              )}
               {buildStatus.status === 'failed' && <XCircle className="h-5 w-5 text-red-500" />}
               Build Status
             </CardTitle>
             <CardDescription>
-              {buildOptions.platform.charAt(0).toUpperCase() + buildOptions.platform.slice(1)} build for{' '}
-              {buildOptions.target}
+              {buildOptions.platform.charAt(0).toUpperCase() + buildOptions.platform.slice(1)} build
+              for {buildOptions.target}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -252,7 +257,7 @@ export default function DesktopDeployHelper() {
                 <span>Progress</span>
                 <span>{Math.round(buildStatus.progress)}%</span>
               </div>
-              <div className="h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-2 overflow-hidden rounded-full bg-muted">
                 <div
                   className="h-full bg-primary transition-all duration-300"
                   style={{ width: `${buildStatus.progress}%` }}
@@ -268,11 +273,15 @@ export default function DesktopDeployHelper() {
                 onClick={() => setShowLogs(!showLogs)}
                 className="mb-2"
               >
-                {showLogs ? <ChevronDown className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 mr-2" />}
+                {showLogs ? (
+                  <ChevronDown className="mr-2 h-4 w-4" />
+                ) : (
+                  <ChevronRight className="mr-2 h-4 w-4" />
+                )}
                 Build Logs
               </Button>
               {showLogs && (
-                <div className="bg-muted/50 rounded-lg p-4 font-mono text-xs max-h-64 overflow-y-auto">
+                <div className="bg-muted/50 max-h-64 overflow-y-auto rounded-lg p-4 font-mono text-xs">
                   {buildStatus.logs.map((log, index) => (
                     <div key={index} className="text-muted-foreground">
                       {log}
@@ -290,11 +299,11 @@ export default function DesktopDeployHelper() {
                   {buildStatus.artifacts.map((artifact, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-muted/50 rounded-lg"
+                      className="bg-muted/50 flex items-center justify-between rounded-lg p-3"
                     >
                       <div className="flex items-center gap-2">
                         <FileCode className="h-4 w-4" />
-                        <span className="text-sm font-mono">{artifact}</span>
+                        <span className="font-mono text-sm">{artifact}</span>
                       </div>
                       <Button size="sm" variant="ghost">
                         <Download className="h-4 w-4" />
@@ -324,9 +333,9 @@ export default function DesktopDeployHelper() {
               <CardDescription>Desktop application frameworks and targets</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid gap-4 md:grid-cols-2">
                 {/* Electron */}
-                <div className="p-4 border rounded-lg space-y-2">
+                <div className="space-y-2 rounded-lg border p-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-semibold">Electron</h4>
                     <Badge>Chromium + Node.js</Badge>
@@ -334,7 +343,7 @@ export default function DesktopDeployHelper() {
                   <p className="text-sm text-muted-foreground">
                     Mature ecosystem with rich features. Bundle size ~150-200 MB.
                   </p>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex flex-wrap gap-2">
                     <Badge variant="outline">macOS (x64 + arm64)</Badge>
                     <Badge variant="outline">Windows (x64 + ia32)</Badge>
                     <Badge variant="outline">Linux (x64)</Badge>
@@ -342,7 +351,7 @@ export default function DesktopDeployHelper() {
                 </div>
 
                 {/* Tauri */}
-                <div className="p-4 border rounded-lg space-y-2">
+                <div className="space-y-2 rounded-lg border p-4">
                   <div className="flex items-center justify-between">
                     <h4 className="font-semibold">Tauri</h4>
                     <Badge>WebView + Rust</Badge>
@@ -350,7 +359,7 @@ export default function DesktopDeployHelper() {
                   <p className="text-sm text-muted-foreground">
                     Small bundle size and fast performance. Bundle size ~10-20 MB.
                   </p>
-                  <div className="flex gap-2 flex-wrap">
+                  <div className="flex flex-wrap gap-2">
                     <Badge variant="outline">macOS (universal)</Badge>
                     <Badge variant="outline">Windows (x64)</Badge>
                     <Badge variant="outline">Linux (x64)</Badge>
@@ -367,11 +376,11 @@ export default function DesktopDeployHelper() {
             <CardContent className="space-y-4">
               {/* Electron Requirements */}
               <div>
-                <h4 className="font-medium mb-2 flex items-center gap-2">
+                <h4 className="mb-2 flex items-center gap-2 font-medium">
                   <CheckCircle className="h-4 w-4" />
                   Electron Requirements
                 </h4>
-                <ul className="text-sm text-muted-foreground space-y-1 ml-6">
+                <ul className="ml-6 space-y-1 text-sm text-muted-foreground">
                   <li>• Node.js &gt;= 20.0.0</li>
                   <li>• npm &gt;= 9.0.0</li>
                   <li>• Git</li>
@@ -381,11 +390,11 @@ export default function DesktopDeployHelper() {
 
               {/* Tauri Requirements */}
               <div>
-                <h4 className="font-medium mb-2 flex items-center gap-2">
+                <h4 className="mb-2 flex items-center gap-2 font-medium">
                   <CheckCircle className="h-4 w-4" />
                   Tauri Requirements
                 </h4>
-                <ul className="text-sm text-muted-foreground space-y-1 ml-6">
+                <ul className="ml-6 space-y-1 text-sm text-muted-foreground">
                   <li>• Node.js &gt;= 20.0.0</li>
                   <li>• Rust &gt;= 1.70</li>
                   <li>• Cargo tauri-cli</li>
@@ -404,7 +413,7 @@ export default function DesktopDeployHelper() {
               <CardDescription>Configure build options and parameters</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Platform</Label>
                   <Select
@@ -478,11 +487,15 @@ export default function DesktopDeployHelper() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label>Code Signing</Label>
-                    <p className="text-sm text-muted-foreground">Sign application with certificates</p>
+                    <p className="text-sm text-muted-foreground">
+                      Sign application with certificates
+                    </p>
                   </div>
                   <Switch
                     checked={buildOptions.sign}
-                    onCheckedChange={(checked) => setBuildOptions({ ...buildOptions, sign: checked })}
+                    onCheckedChange={(checked) =>
+                      setBuildOptions({ ...buildOptions, sign: checked })
+                    }
                   />
                 </div>
 
@@ -493,7 +506,9 @@ export default function DesktopDeployHelper() {
                   </div>
                   <Switch
                     checked={buildOptions.publish}
-                    onCheckedChange={(checked) => setBuildOptions({ ...buildOptions, publish: checked })}
+                    onCheckedChange={(checked) =>
+                      setBuildOptions({ ...buildOptions, publish: checked })
+                    }
                   />
                 </div>
 
@@ -504,7 +519,9 @@ export default function DesktopDeployHelper() {
                   </div>
                   <Switch
                     checked={buildOptions.clean}
-                    onCheckedChange={(checked) => setBuildOptions({ ...buildOptions, clean: checked })}
+                    onCheckedChange={(checked) =>
+                      setBuildOptions({ ...buildOptions, clean: checked })
+                    }
                   />
                 </div>
               </div>
@@ -514,10 +531,14 @@ export default function DesktopDeployHelper() {
               <div className="space-y-2">
                 <Label>Build Command</Label>
                 <div className="flex gap-2">
-                  <code className="flex-1 p-3 bg-muted rounded-lg text-sm font-mono overflow-x-auto">
+                  <code className="flex-1 overflow-x-auto rounded-lg bg-muted p-3 font-mono text-sm">
                     {getBuildCommand()}
                   </code>
-                  <Button variant="outline" size="icon" onClick={() => handleCopyCommand(getBuildCommand())}>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => handleCopyCommand(getBuildCommand())}
+                  >
                     <Copy className="h-4 w-4" />
                   </Button>
                 </div>
@@ -527,8 +548,8 @@ export default function DesktopDeployHelper() {
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Important</AlertTitle>
                 <AlertDescription>
-                  Ensure all required dependencies are installed and code signing certificates are configured
-                  before building.
+                  Ensure all required dependencies are installed and code signing certificates are
+                  configured before building.
                 </AlertDescription>
               </Alert>
             </CardContent>
@@ -643,7 +664,10 @@ export default function DesktopDeployHelper() {
                       onChange={(e) =>
                         setSigningConfig({
                           ...signingConfig,
-                          windows: { ...signingConfig.windows, certificatePassword: e.target.value },
+                          windows: {
+                            ...signingConfig.windows,
+                            certificatePassword: e.target.value,
+                          },
                         })
                       }
                     />
@@ -694,7 +718,7 @@ export default function DesktopDeployHelper() {
                 <Button>Save Configuration</Button>
                 <Button variant="outline">Test Signing</Button>
                 <Button variant="outline">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="mr-2 h-4 w-4" />
                   View Documentation
                 </Button>
               </div>
@@ -703,8 +727,8 @@ export default function DesktopDeployHelper() {
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Security Notice</AlertTitle>
                 <AlertDescription>
-                  Never commit certificates or passwords to version control. Use environment variables or
-                  secure secrets management.
+                  Never commit certificates or passwords to version control. Use environment
+                  variables or secure secrets management.
                 </AlertDescription>
               </Alert>
             </CardContent>
@@ -723,14 +747,14 @@ export default function DesktopDeployHelper() {
                 <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Coming Soon</AlertTitle>
                 <AlertDescription>
-                  Release management features will be available in a future update. For now, manage releases
-                  through GitHub Releases.
+                  Release management features will be available in a future update. For now, manage
+                  releases through GitHub Releases.
                 </AlertDescription>
               </Alert>
 
               <div className="mt-4">
                 <Button variant="outline">
-                  <ExternalLink className="h-4 w-4 mr-2" />
+                  <ExternalLink className="mr-2 h-4 w-4" />
                   View on GitHub
                 </Button>
               </div>
@@ -745,22 +769,22 @@ export default function DesktopDeployHelper() {
           <CardTitle>Documentation</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid gap-4 md:grid-cols-3">
             <Button variant="outline" className="justify-start">
-              <FileCode className="h-4 w-4 mr-2" />
+              <FileCode className="mr-2 h-4 w-4" />
               Desktop Deployment Guide
             </Button>
             <Button variant="outline" className="justify-start">
-              <Key className="h-4 w-4 mr-2" />
+              <Key className="mr-2 h-4 w-4" />
               Code Signing Guide
             </Button>
             <Button variant="outline" className="justify-start">
-              <Package className="h-4 w-4 mr-2" />
+              <Package className="mr-2 h-4 w-4" />
               Build Scripts Reference
             </Button>
           </div>
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

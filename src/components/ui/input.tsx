@@ -26,11 +26,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     }, [error])
 
     // Extract conflicting event handlers that have different signatures in React vs Framer Motion
-    const { onDrag, onDragEnd, onDragStart, onAnimationStart, 'aria-invalid': ariaInvalid, ...safeProps } = props as InputProps & {
-      onDrag?: unknown;
-      onDragEnd?: unknown;
-      onDragStart?: unknown;
-      onAnimationStart?: unknown;
+    const {
+      onDrag,
+      onDragEnd,
+      onDragStart,
+      onAnimationStart,
+      'aria-invalid': ariaInvalid,
+      ...safeProps
+    } = props as InputProps & {
+      onDrag?: unknown
+      onDragEnd?: unknown
+      onDragStart?: unknown
+      onAnimationStart?: unknown
     }
 
     return (
@@ -38,9 +45,9 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <motion.input
           type={type}
           className={cn(
-            'flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-200',
-            error && 'border-destructive focus-visible:ring-destructive pr-10',
-            success && 'border-green-500 focus-visible:ring-green-500 pr-10',
+            'flex h-10 w-full rounded-xl border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-all duration-200 file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
+            error && 'border-destructive pr-10 focus-visible:ring-destructive',
+            success && 'border-green-500 pr-10 focus-visible:ring-green-500',
             className
           )}
           ref={ref}

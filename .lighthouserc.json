@@ -1,0 +1,73 @@
+{
+  "ci": {
+    "collect": {
+      "numberOfRuns": 3,
+      "url": [
+        "http://localhost:3000",
+        "http://localhost:3000/chat",
+        "http://localhost:3000/settings",
+        "http://localhost:3000/login"
+      ],
+      "settings": {
+        "preset": "desktop",
+        "throttling": {
+          "rttMs": 40,
+          "throughputKbps": 10240,
+          "cpuSlowdownMultiplier": 1
+        }
+      }
+    },
+    "assert": {
+      "preset": "lighthouse:recommended",
+      "assertions": {
+        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "categories:performance": ["warn", { "minScore": 0.75 }],
+        "categories:best-practices": ["warn", { "minScore": 0.85 }],
+        "categories:seo": ["warn", { "minScore": 0.85 }],
+
+        "color-contrast": ["error", { "minScore": 1 }],
+        "document-title": "error",
+        "html-has-lang": "error",
+        "html-lang-valid": "error",
+        "image-alt": "error",
+        "label": "error",
+        "link-name": "error",
+        "button-name": "error",
+        "aria-required-attr": "error",
+        "aria-required-children": "error",
+        "aria-required-parent": "error",
+        "aria-roles": "error",
+        "aria-valid-attr-value": "error",
+        "aria-valid-attr": "error",
+        "duplicate-id-active": "error",
+        "duplicate-id-aria": "error",
+        "heading-order": "warn",
+        "list": "error",
+        "listitem": "error",
+        "meta-viewport": "error",
+        "tabindex": "error",
+        "valid-lang": "error",
+
+        "accesskeys": "warn",
+        "aria-hidden-body": "error",
+        "aria-hidden-focus": "error",
+        "aria-input-field-name": "error",
+        "aria-toggle-field-name": "error",
+        "bypass": "warn",
+        "definition-list": "error",
+        "dlitem": "error",
+        "form-field-multiple-labels": "error",
+        "frame-title": "error",
+        "input-image-alt": "error",
+        "meta-refresh": "error",
+        "object-alt": "error",
+        "td-headers-attr": "error",
+        "th-has-data-cells": "error",
+        "video-caption": "warn"
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

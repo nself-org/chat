@@ -7,20 +7,25 @@
 // Core Native Plugins
 // =============================================================================
 
-export { pushNotifications } from './push-notifications';
-export { camera } from './camera';
-export { biometrics } from './biometrics';
-export { filePicker } from './file-picker';
-export { offlineSync } from './offline-sync';
-export { haptics } from './haptics';
-export { share } from './share';
+export { pushNotifications } from './push-notifications'
+export { camera } from './camera'
+export { biometrics } from './biometrics'
+export { filePicker } from './file-picker'
+export { offlineSync } from './offline-sync'
+export { haptics } from './haptics'
+export { share } from './share'
 
 // =============================================================================
 // v0.9.0 Enhanced Features
 // =============================================================================
 
 // Widget Data Provider (iOS/Android)
-export { widgetData, useWidgetData, formatMessagePreview, formatWidgetTimestamp } from './widget-data';
+export {
+  widgetData,
+  useWidgetData,
+  formatMessagePreview,
+  formatWidgetTimestamp,
+} from './widget-data'
 export type {
   WidgetData,
   UnreadMessagesWidgetData,
@@ -32,14 +37,10 @@ export type {
   RecentChat,
   QuickComposeRecipient,
   UserStatus,
-} from './widget-data';
+} from './widget-data'
 
 // Watch Connectivity (iOS Apple Watch)
-export {
-  watchConnectivity,
-  useWatchConnectivity,
-  WatchMessageTypes,
-} from './watch-connectivity';
+export { watchConnectivity, useWatchConnectivity, WatchMessageTypes } from './watch-connectivity'
 export type {
   WatchSessionStatus,
   WatchMessage,
@@ -48,10 +49,10 @@ export type {
   WatchComplicationData,
   WatchSessionState,
   WatchReachability,
-} from './watch-connectivity';
+} from './watch-connectivity'
 
 // Android Widgets
-export { androidWidgets, useAndroidWidgets } from './android-widgets';
+export { androidWidgets, useAndroidWidgets } from './android-widgets'
 export type {
   AndroidWidgetConfig,
   AndroidWidgetType,
@@ -61,7 +62,7 @@ export type {
   AndroidWidgetMessage,
   AndroidWidgetChannel,
   StatusWidgetData as AndroidStatusWidgetData,
-} from './android-widgets';
+} from './android-widgets'
 
 // Deep Linking
 export {
@@ -72,13 +73,13 @@ export {
   useOAuthDeepLink,
   wasLaunchedFromDeepLink,
   getLaunchDeepLink,
-} from './deep-linking';
+} from './deep-linking'
 export type {
   DeepLinkRoute,
   DeepLinkParams,
   DeepLinkRouteConfig,
   DeepLinkHandlerOptions,
-} from './deep-linking';
+} from './deep-linking'
 
 // Enhanced Push Notifications
 export {
@@ -86,7 +87,7 @@ export {
   usePushNotifications,
   DEFAULT_NOTIFICATION_CHANNELS,
   DEFAULT_NOTIFICATION_CATEGORIES,
-} from './push-notifications-v2';
+} from './push-notifications-v2'
 export type {
   RichNotificationPayload,
   NotificationChannel,
@@ -94,10 +95,10 @@ export type {
   NotificationAction,
   VoIPPushPayload,
   NotificationStats,
-} from './push-notifications-v2';
+} from './push-notifications-v2'
 
 // Background Sync
-export { backgroundSync, useBackgroundSync } from './background-sync';
+export { backgroundSync, useBackgroundSync } from './background-sync'
 export type {
   BackgroundSyncConfig,
   BackgroundSyncStatus,
@@ -106,10 +107,10 @@ export type {
   SyncTaskType,
   SyncProgress,
   BackgroundSyncStats,
-} from './background-sync';
+} from './background-sync'
 
 // Enhanced Biometric Authentication
-export { biometricAuth, useBiometricAuth } from './biometrics-v2';
+export { biometricAuth, useBiometricAuth } from './biometrics-v2'
 export type {
   BiometryInfo,
   BiometryType as BiometryTypeV2,
@@ -119,14 +120,14 @@ export type {
   BiometricError,
   SecureStorageOptions,
   BiometricSettings,
-} from './biometrics-v2';
+} from './biometrics-v2'
 
 // =============================================================================
 // Legacy Exports (for backward compatibility)
 // =============================================================================
 
-export type { NotificationPayload } from './push-notifications';
-export type { MediaFile } from './camera';
-export type { BiometricType, BiometricAuthOptions } from './biometrics';
-export type { PickedFile, FilePickerOptions } from './file-picker';
-export type { SyncOptions } from './offline-sync';
+export type { NotificationPayload } from './push-notifications'
+export type { MediaFile } from './camera'
+export type { BiometricType, BiometricAuthOptions } from './biometrics'
+export type { PickedFile, FilePickerOptions } from './file-picker'
+export type { SyncOptions } from './offline-sync'

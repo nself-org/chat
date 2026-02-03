@@ -35,6 +35,7 @@ Smart Search in nself-chat uses **semantic search** powered by AI embeddings to 
 ### Benefits of Semantic Search
 
 **Traditional Keyword Search:**
+
 ```
 Query: "server down"
 Finds: Only messages containing exact words "server" AND "down"
@@ -42,6 +43,7 @@ Misses: "backend not responding", "API outage", "service unavailable"
 ```
 
 **Semantic Search:**
+
 ```
 Query: "server down"
 Finds: All related messages:
@@ -71,6 +73,7 @@ Embedding: [0.23, -0.45, 0.67, ..., 0.12] (1536 dimensions)
 ```
 
 Similar messages have similar embeddings:
+
 ```
 "Q4 sales were higher than predicted" ← Very similar embedding
 "It's sunny today" ← Very different embedding
@@ -92,13 +95,13 @@ When you search:
 
 #### Keyboard Shortcuts
 
-| Platform | Shortcut | Action |
-|----------|----------|--------|
-| Windows/Linux | `Ctrl + K` | Open search modal |
-| macOS | `Cmd + K` | Open search modal |
-| All | `Ctrl + Shift + F` | Open advanced search |
-| All | `/` | Quick search (from chat) |
-| All | `Esc` | Close search modal |
+| Platform      | Shortcut           | Action                   |
+| ------------- | ------------------ | ------------------------ |
+| Windows/Linux | `Ctrl + K`         | Open search modal        |
+| macOS         | `Cmd + K`          | Open search modal        |
+| All           | `Ctrl + Shift + F` | Open advanced search     |
+| All           | `/`                | Quick search (from chat) |
+| All           | `Esc`              | Close search modal       |
 
 #### UI Access
 
@@ -153,6 +156,7 @@ When you search:
 Smart Search understands conversational questions:
 
 #### Simple Questions
+
 ```
 ✓ "What is our deployment process?"
 ✓ "How do I reset my password?"
@@ -161,6 +165,7 @@ Smart Search understands conversational questions:
 ```
 
 #### Who/What/Where/When/Why
+
 ```
 ✓ "Who approved the design changes?"
 ✓ "What dependencies does the auth service have?"
@@ -172,6 +177,7 @@ Smart Search understands conversational questions:
 ### Advanced Queries
 
 #### Temporal Queries
+
 ```
 ✓ "security patches from last month"
 ✓ "messages about the bug since Tuesday"
@@ -181,6 +187,7 @@ Smart Search understands conversational questions:
 ```
 
 #### Contextual Queries
+
 ```
 ✓ "urgent issues requiring immediate attention"
 ✓ "positive feedback about the new feature"
@@ -190,6 +197,7 @@ Smart Search understands conversational questions:
 ```
 
 #### Relationship Queries
+
 ```
 ✓ "conversations between Alice and Bob"
 ✓ "questions directed at the DevOps team"
@@ -201,6 +209,7 @@ Smart Search understands conversational questions:
 ### Query Examples by Use Case
 
 #### Project Management
+
 ```
 Query: "What are the open action items from sprint planning?"
 
@@ -212,6 +221,7 @@ Finds:
 ```
 
 #### Troubleshooting
+
 ```
 Query: "database connection errors in production"
 
@@ -224,6 +234,7 @@ Finds:
 ```
 
 #### Documentation
+
 ```
 Query: "how to configure authentication providers"
 
@@ -236,6 +247,7 @@ Finds:
 ```
 
 #### Onboarding
+
 ```
 Query: "where can I find development environment setup?"
 
@@ -250,6 +262,7 @@ Finds:
 ### Semantic Understanding Examples
 
 #### Synonyms and Related Concepts
+
 ```
 Query: "slow performance"
 
@@ -262,6 +275,7 @@ Also Finds:
 ```
 
 #### Technical Jargon
+
 ```
 Query: "k8s deployment"
 
@@ -273,6 +287,7 @@ Understands:
 ```
 
 #### Acronyms and Abbreviations
+
 ```
 Query: "CI/CD pipeline"
 
@@ -321,6 +336,7 @@ Examples:
 ### 30+ Natural Language Query Examples
 
 #### Work & Projects
+
 ```
 1. "What are we working on this sprint?"
 2. "Show me recent updates from the design team"
@@ -332,6 +348,7 @@ Examples:
 ```
 
 #### Questions & Answers
+
 ```
 8. "How do I deploy to production?"
 9. "What's the process for requesting time off?"
@@ -343,6 +360,7 @@ Examples:
 ```
 
 #### People & Teams
+
 ```
 15. "What did Alice say about the design?"
 16. "Find Bob's feedback on the proposal"
@@ -353,6 +371,7 @@ Examples:
 ```
 
 #### Topics & Discussions
+
 ```
 21. "Find conversations about performance issues"
 22. "Show me all feedback on the new UI"
@@ -363,6 +382,7 @@ Examples:
 ```
 
 #### Time-Based
+
 ```
 27. "What happened while I was out?"
 28. "What did I miss this week?"
@@ -400,6 +420,7 @@ Access filters by clicking "Filters" in the search modal or pressing `Ctrl+Shift
 ### Date Range Filter
 
 #### Predefined Ranges
+
 - Today
 - Yesterday
 - Last 7 days
@@ -409,12 +430,14 @@ Access filters by clicking "Filters" in the search modal or pressing `Ctrl+Shift
 - All time
 
 #### Custom Range
+
 ```
 From: [Jan 15, 2026 ▼]
 To:   [Jan 31, 2026 ▼]
 ```
 
 #### Relative Dates
+
 ```
 Examples:
 • "last week"
@@ -425,6 +448,7 @@ Examples:
 ```
 
 #### Advanced Date Syntax
+
 ```
 after:2026-01-01        Messages after Jan 1, 2026
 before:2026-01-31       Messages before Jan 31, 2026
@@ -440,6 +464,7 @@ during:night            Messages sent 6pm-6am
 ### User Filter
 
 #### Search by User
+
 - **Select from dropdown**: All workspace members
 - **Type to filter**: Start typing name or email
 - **Multiple users**: Select multiple with checkboxes
@@ -453,10 +478,12 @@ From user:
 ```
 
 #### User Roles
+
 - Filter by role: Owner, Admin, Moderator, Member, Guest
 - Team filter: Engineering, Design, Product, etc.
 
 #### User Filter Syntax
+
 ```
 from:alice              Messages from @alice
 from:alice from:bob     Messages from @alice OR @bob
@@ -467,6 +494,7 @@ from:me                 Your own messages
 ### Channel Filter
 
 #### Channel Selection
+
 - **All channels**: Search across entire workspace
 - **Current channel**: Only this channel
 - **Specific channels**: Select multiple channels
@@ -482,11 +510,13 @@ In channels:
 ```
 
 #### Thread Filters
+
 - **Main messages only**: Exclude thread replies
 - **Thread replies only**: Only threaded conversations
 - **Include threads**: All messages and replies
 
 #### Channel Filter Syntax
+
 ```
 in:general              Messages in #general
 in:engineering in:design Messages in #engineering OR #design
@@ -498,7 +528,8 @@ in:current              Current channel only
 ### Message Type Filters
 
 #### Content Type
-```
+
+````
 Has:
 ☑ Files (PDF, images, videos, etc.)
 ☑ Links (URLs to external resources)
@@ -506,9 +537,10 @@ Has:
 ☐ Mentions (@user or @channel)
 ☐ Reactions (👍, ❤️, etc.)
 ☐ Polls or forms
-```
+````
 
 #### File Type Filter
+
 ```
 File type:
 ○ All files
@@ -520,6 +552,7 @@ File type:
 ```
 
 #### Attachment Filter Syntax
+
 ```
 has:attachment          Messages with any attachment
 has:image              Messages with images (jpg, png, gif, etc.)
@@ -534,6 +567,7 @@ has:video              Messages with video files
 ### Status Filters
 
 #### Message Status
+
 ```
 ☐ Starred (messages you starred)
 ☐ Pinned (pinned to channel)
@@ -543,6 +577,7 @@ has:video              Messages with video files
 ```
 
 #### Reaction Filter
+
 ```
 Has reaction:
 • Any reaction
@@ -552,6 +587,7 @@ Has reaction:
 ```
 
 #### Status Filter Syntax
+
 ```
 is:starred              Your starred messages
 is:pinned               Pinned messages
@@ -565,6 +601,7 @@ is:deleted              Deleted messages (if you have permission)
 ### Advanced Boolean Filters
 
 #### Combining Filters
+
 ```
 Example: Critical production issues
 
@@ -577,6 +614,7 @@ Filters:
 ```
 
 #### Exclusion Filters
+
 ```
 Example: Non-automated messages
 
@@ -588,6 +626,7 @@ Exclude:
 ```
 
 #### Complex Filter Combinations
+
 ```
 from:alice in:engineering after:2026-01-01
   → Messages from Alice in #engineering since Jan 1
@@ -633,6 +672,7 @@ Saved Searches:
 Search history is automatically saved and accessible:
 
 #### Recent Searches Panel
+
 ```
 Recent Searches (Last 10):
 1. database migration issues          2 minutes ago
@@ -643,6 +683,7 @@ Recent Searches (Last 10):
 ```
 
 #### Search History Page
+
 - Access via: Settings → Search History
 - View all past searches
 - Filter by date, frequency
@@ -651,6 +692,7 @@ Recent Searches (Last 10):
 ### Saving Searches
 
 #### Quick Save
+
 1. Perform a search
 2. Click "Save this search" (⭐ icon)
 3. Name your search
@@ -667,6 +709,7 @@ Notify me: ☑ When new results appear
 #### Search Folders
 
 Organize saved searches:
+
 ```
 My Saved Searches
 ├── 📁 Daily Checks
@@ -685,11 +728,13 @@ My Saved Searches
 ### Re-running Searches
 
 #### Manual Re-run
+
 - Click any saved search to run it again
 - Results reflect current data
 - Filters are preserved
 
 #### Scheduled Searches
+
 ```
 Run schedule:
 ○ Manual only
@@ -725,6 +770,7 @@ Delivery:
 ### Managing Search History
 
 #### View Full History
+
 ```
 Search History (Last 30 Days):
 • Total searches: 247
@@ -741,6 +787,7 @@ Recent searches:
 ```
 
 #### Clear History
+
 ```
 Clear Search History:
 ○ Last 24 hours
@@ -757,6 +804,7 @@ Clear Search History:
 ### Exporting Search Results
 
 #### Export Options
+
 - **CSV**: Spreadsheet format with metadata
 - **JSON**: Structured data for integration
 - **PDF**: Formatted report with context
@@ -777,6 +825,7 @@ Results to export: 47 messages
 ```
 
 #### CSV Export Format
+
 ```
 id,channel,user,timestamp,message,url,attachments
 msg_123,#engineering,alice,2026-01-31T10:30:00Z,"Fixed deployment bug",https://...,file1.pdf
@@ -790,6 +839,7 @@ msg_124,#devops,bob,2026-01-31T11:45:00Z,"Updated docs",https://...,
 ### Writing Effective Queries
 
 #### Be Specific
+
 ```
 ❌ Bad:  "error"
 ✓ Good: "authentication error in user login flow"
@@ -802,6 +852,7 @@ msg_124,#devops,bob,2026-01-31T11:45:00Z,"Updated docs",https://...,
 ```
 
 #### Use Natural Language
+
 ```
 ✓ "What was decided in the pricing discussion?"
 ✓ "How do we handle failed payments?"
@@ -810,6 +861,7 @@ msg_124,#devops,bob,2026-01-31T11:45:00Z,"Updated docs",https://...,
 ```
 
 #### Add Context
+
 ```
 Instead of:           Try:
 "bug"          →     "login bug affecting mobile users"
@@ -821,18 +873,19 @@ Instead of:           Try:
 
 #### Search Shortcuts
 
-| Shortcut | Action | Example |
-|----------|--------|---------|
-| `from:user` | Messages from user | `from:alice deployment` |
-| `in:channel` | Messages in channel | `in:engineering docker` |
-| `has:link` | Messages with links | `has:link documentation` |
-| `has:file` | Messages with files | `has:file budget` |
-| `before:date` | Before date | `before:2026-01-15 bug` |
-| `after:date` | After date | `after:yesterday meeting` |
-| `is:starred` | Starred messages | `is:starred TODO` |
-| `is:unread` | Unread messages | `is:unread @me` |
+| Shortcut      | Action              | Example                   |
+| ------------- | ------------------- | ------------------------- |
+| `from:user`   | Messages from user  | `from:alice deployment`   |
+| `in:channel`  | Messages in channel | `in:engineering docker`   |
+| `has:link`    | Messages with links | `has:link documentation`  |
+| `has:file`    | Messages with files | `has:file budget`         |
+| `before:date` | Before date         | `before:2026-01-15 bug`   |
+| `after:date`  | After date          | `after:yesterday meeting` |
+| `is:starred`  | Starred messages    | `is:starred TODO`         |
+| `is:unread`   | Unread messages     | `is:unread @me`           |
 
 #### Combining Shortcuts
+
 ```
 Examples:
 • from:alice in:engineering has:code after:yesterday
@@ -843,12 +896,14 @@ Examples:
 #### Advanced Operators
 
 **Proximity Search**: Find words near each other
+
 ```
 "database" NEAR[5] "connection"
 → Finds "database" within 5 words of "connection"
 ```
 
 **Field Search**: Search specific fields
+
 ```
 title:"Sprint Planning"      → Search message titles
 author:alice                 → Messages by Alice
@@ -856,6 +911,7 @@ thread_count:>10            → Threads with 10+ replies
 ```
 
 **Fuzzy Search**: Allow typos and variations
+
 ```
 deployment~2                → Allows 2-character difference
 "databse"                   → Auto-corrects to "database"
@@ -864,6 +920,7 @@ deployment~2                → Allows 2-character difference
 ### Search Strategies
 
 #### The Funnel Approach
+
 1. **Start Broad**: Begin with general query
 2. **Review Results**: See what you're getting
 3. **Add Filters**: Narrow by date, user, channel
@@ -879,6 +936,7 @@ Example: Finding deployment issues
 ```
 
 #### The Targeted Approach
+
 1. **Know What You Want**: Specific information
 2. **Use All Context**: Date, user, channel, keywords
 3. **Apply Filters First**: Set constraints upfront
@@ -892,6 +950,7 @@ Filters: Last 30 days, has:link
 ```
 
 #### The Exploratory Approach
+
 1. **Ask Questions**: Natural language
 2. **Browse Results**: See related content
 3. **Follow Threads**: Click to see full context
@@ -908,18 +967,21 @@ Query: "Why did we choose PostgreSQL over MongoDB?"
 ### Common Search Patterns
 
 #### Finding Decisions
+
 ```
 Query: "(decided OR approved OR agreed) database choice"
 Filters: From team leads, Last quarter
 ```
 
 #### Tracking Action Items
+
 ```
 Query: "TODO OR action item OR follow-up"
 Filters: Mentions @me, Is unread
 ```
 
 #### Debugging Issues
+
 ```
 Query: error type AND environment AND symptoms
 Filters: Channel #production, Last 24 hours
@@ -927,12 +989,14 @@ Example: "500 error API production timeout"
 ```
 
 #### Research & Learning
+
 ```
 Query: "how to" OR "guide" OR "tutorial" OR "documentation"
 Filters: Has links or files, Specific channels
 ```
 
 #### Meeting Follow-ups
+
 ```
 Query: "meeting notes" OR "minutes" OR "summary"
 Filters: From specific user, This week, Has TODO
@@ -943,12 +1007,14 @@ Filters: From specific user, This week, Has TODO
 #### Search Performance
 
 **Fast Searches**:
+
 - Use date filters (reduces search space)
 - Search specific channels (not all)
 - Use exact phrases for known terms
 - Limit results with filters
 
 **Slow Searches**:
+
 - Avoid: `*` wildcards at start of words
 - Avoid: Very common words alone ("the", "and")
 - Avoid: Searching "All time" unnecessarily
@@ -956,18 +1022,21 @@ Filters: From specific user, This week, Has TODO
 #### Result Quality
 
 **Improve Relevance**:
+
 - Add more context words
 - Use specific technical terms
 - Include user or channel filters
 - Try different phrasings
 
 **Too Many Results**:
+
 - Add date range
 - Specify channel or user
 - Use more specific terms
 - Use phrase search with quotes
 
 **Too Few Results**:
+
 - Remove restrictive filters
 - Try synonyms or related terms
 - Expand date range
@@ -980,11 +1049,13 @@ Filters: From specific user, This week, Has TODO
 ### Enabling Voice Search
 
 #### Requirements
+
 - Microphone access (browser permission required)
 - Modern browser (Chrome, Firefox, Safari, Edge)
 - HTTPS connection (required for Web Speech API)
 
 #### Setup
+
 1. Go to Settings → Search → Voice Search
 2. Enable "Voice Search"
 3. Grant microphone permission when prompted
@@ -1004,6 +1075,7 @@ Confidence threshold: [70% ▼]
 ### Using Voice Search
 
 #### Click to Speak
+
 1. Click the microphone icon (🎤) in search bar
 2. Speak your query clearly
 3. Wait for transcription
@@ -1020,6 +1092,7 @@ Understood: what did alice say about the deployment yesterday
 ```
 
 #### Wake Word Mode (Optional)
+
 1. Enable "Always listening" mode
 2. Say wake word: "Hey nchat"
 3. Speak your query
@@ -1036,6 +1109,7 @@ System: *searching* (displays results)
 #### Voice Commands
 
 **Search Commands**:
+
 ```
 "Search for [query]"
 "Find messages about [topic]"
@@ -1045,6 +1119,7 @@ System: *searching* (displays results)
 ```
 
 **Navigation**:
+
 ```
 "Next result"
 "Previous result"
@@ -1054,6 +1129,7 @@ System: *searching* (displays results)
 ```
 
 **Filters**:
+
 ```
 "From Alice"
 "In engineering channel"
@@ -1063,6 +1139,7 @@ System: *searching* (displays results)
 ```
 
 **Actions**:
+
 ```
 "Save this search"
 "Clear filters"
@@ -1073,6 +1150,7 @@ System: *searching* (displays results)
 ### Voice Search Tips
 
 #### Speaking Clearly
+
 - Speak at normal pace (not too fast)
 - Enunciate technical terms
 - Pause between commands and queries
@@ -1080,6 +1158,7 @@ System: *searching* (displays results)
 - Use punctuation words when needed
 
 #### Handling Technical Terms
+
 ```
 Spell mode for unusual terms:
 "Search for K-U-B-E-R-N-E-T-E-S"
@@ -1092,6 +1171,7 @@ Or use natural pronunciation:
 ```
 
 #### Multi-Step Queries
+
 ```
 Say: "Search for deployment issues"
 → See results
@@ -1104,6 +1184,7 @@ Say: "Show the first result"
 ```
 
 #### Using Punctuation
+
 ```
 "Find messages with question mark in them"
 "Search for error comma timeout comma or failure"
@@ -1113,6 +1194,7 @@ Say: "Show the first result"
 ### Voice Search Accuracy
 
 #### Improving Recognition
+
 - **Train your voice**: Use voice search regularly
 - **Check transcription**: Always review before searching
 - **Use punctuation words**: Say "comma", "period", "question mark"
@@ -1159,6 +1241,7 @@ What you say:        What it hears:
 ### Accessibility Features
 
 Voice search supports accessibility:
+
 - **Screen readers**: Full compatibility with ARIA labels
 - **Hands-free operation**: Voice-only navigation
 - **Visual feedback**: See transcription in real-time
@@ -1166,6 +1249,7 @@ Voice search supports accessibility:
 - **Keyboard alternatives**: All voice commands have keyboard shortcuts
 
 #### Screen Reader Integration
+
 ```
 Voice search announces:
 • "Voice search activated"
@@ -1188,6 +1272,7 @@ Admins can access workspace-wide search analytics:
 ### Usage Metrics
 
 #### Overall Statistics
+
 ```
 Search Activity (Last 30 Days)
 ─────────────────────────────
@@ -1200,6 +1285,7 @@ Search satisfaction:   87% (clicked results)
 ```
 
 #### Search Volume Trends
+
 ```
 Daily Search Volume:
 │                            ╭─╮
@@ -1217,6 +1303,7 @@ Peak times:
 ```
 
 #### Weekly Patterns
+
 ```
 Search activity by day:
 Monday:     2,341 searches (18.2%)
@@ -1231,6 +1318,7 @@ Sunday:       551 searches (4.3%)
 ### Popular Queries
 
 #### Top Search Terms
+
 ```
 Most Searched (This Month):
 1. deployment          847 searches    (6.6%)
@@ -1246,6 +1334,7 @@ Most Searched (This Month):
 ```
 
 #### Trending Queries
+
 ```
 Trending Up (vs Last Month):
 1. "kubernetes migration"    ↑ 340% (89 → 392 searches)
@@ -1259,6 +1348,7 @@ Trending Down:
 ```
 
 #### Query Categories
+
 ```
 Search by category:
 Technical:        4,234 searches (33%)
@@ -1272,6 +1362,7 @@ Other:            1,355 searches (10%)
 ### User Insights
 
 #### Power Users
+
 ```
 Top Searchers (Last 30 Days):
 User              Searches   Saved   Zero Results   Satisfaction
@@ -1283,6 +1374,7 @@ Eve Martinez      267        11      2.8%          90%
 ```
 
 #### Search Adoption
+
 ```
 User Segments:
 Daily searchers:     89 users (30%) - 8,234 searches
@@ -1294,6 +1386,7 @@ Adoption trend: ↑ 12% vs last month
 ```
 
 #### New User Onboarding
+
 ```
 Search usage by tenure:
 Week 1:      12 searches avg (learning)
@@ -1305,6 +1398,7 @@ Month 4+:    54 searches avg (power user)
 ### Query Performance
 
 #### Response Times
+
 ```
 Search Performance (Last 30 Days):
 Avg response time: 245ms
@@ -1325,6 +1419,7 @@ Hybrid search:      240ms avg
 ```
 
 #### Performance Trends
+
 ```
 Response time over time:
 Week 1:  235ms avg
@@ -1336,6 +1431,7 @@ Action: Optimized embedding cache (Week 3)
 ```
 
 #### Zero-Result Queries
+
 ```
 Top Zero-Result Queries (Last 30 Days):
 1. "HR handbook"              34 times
@@ -1355,6 +1451,7 @@ Action Items:
 ### Search Quality Metrics
 
 #### Result Relevance
+
 ```
 User Engagement (Last 30 Days):
 Clicked first result:     68% (8,735 searches)
@@ -1367,6 +1464,7 @@ Quality score: 87/100 (Good)
 ```
 
 #### Click-Through Rates by Position
+
 ```
 Result position vs CTR:
 Position 1:  68% CTR
@@ -1378,6 +1476,7 @@ Position 6+:  2% CTR
 ```
 
 #### Filter Usage
+
 ```
 Most Used Filters:
 1. Date range:    67% of searches (8,607)
@@ -1393,6 +1492,7 @@ Avg filters per search: 1.8
 ### Content Analytics
 
 #### Searchable Content
+
 ```
 Indexed Content (Current):
 Messages:         1,234,567
@@ -1408,6 +1508,7 @@ Index coverage:   99.8% (up to date)
 ```
 
 #### Index Health
+
 ```
 Index Status:
 Last full index:     Jan 25, 2026
@@ -1422,6 +1523,7 @@ Failed:             0 (0%)
 ```
 
 #### Channel Activity
+
 ```
 Most Searched Channels:
 Channel          Searches   Messages   Search/Msg Ratio
@@ -1437,6 +1539,7 @@ Least searched: #random (23 searches, 12,345 messages)
 ### Search Cost Analytics
 
 #### API Usage
+
 ```
 Embedding API Usage (Last 30 Days):
 Total API calls:      145,234
@@ -1450,6 +1553,7 @@ Avg cost per search:  $0.0053
 ```
 
 #### Cost Optimization
+
 ```
 Cost Trends:
 Month 1:  $45.20
@@ -1487,6 +1591,7 @@ Privacy: All user-identifiable data will be anonymized
 ### Real-Time Monitoring
 
 #### Live Search Activity
+
 ```
 Live Search Feed (Admin View):
 🔍 alice: "deployment process"          → 12 results  180ms
@@ -1498,6 +1603,7 @@ Current: 4 searches/min (normal)
 ```
 
 #### Alerts
+
 ```
 Search Alerts:
 ⚠️  Slow query detected: avg 850ms (threshold: 500ms)
@@ -1519,6 +1625,7 @@ Search Alerts:
 ### What Gets Indexed
 
 #### Message Content
+
 ```
 Indexed:
 ✓ Message text
@@ -1539,6 +1646,7 @@ Not Indexed:
 ```
 
 #### Metadata Indexed
+
 ```
 For each message:
 • Author (user ID and name)
@@ -1553,6 +1661,7 @@ For each message:
 ```
 
 #### File Content Indexing
+
 ```
 Files indexed for full-text search:
 ✓ PDF documents
@@ -1599,6 +1708,7 @@ Retention: [90 days ▼]
 #### Opt-Out Options
 
 **Complete Opt-Out** (not recommended):
+
 ```
 ⚠️  Disable Search Indexing
 This will:
@@ -1617,6 +1727,7 @@ Impact:
 ```
 
 **Selective Opt-Out**:
+
 ```
 Exclude from indexing:
 ☐ Messages in specific channels:
@@ -1638,6 +1749,7 @@ Exclude from indexing:
 ### Data Retention
 
 #### Search Index Retention
+
 ```
 Index Retention Policy:
 Active messages:     Indexed immediately (< 5 min)
@@ -1658,6 +1770,7 @@ Last full index:  Jan 25, 2026
 ```
 
 #### Search History Retention
+
 ```
 Your search history:
 Stored locally:      90 days (browser cache)
@@ -1678,6 +1791,7 @@ Clear History:
 ```
 
 #### Deleted Content Handling
+
 ```
 When you delete a message:
 1. Immediately: Removed from UI
@@ -1693,6 +1807,7 @@ Grace period for recovery:
 ### Data Security
 
 #### Encryption
+
 ```
 Search Data Encryption:
 • At rest: AES-256 encryption
@@ -1709,6 +1824,7 @@ Encryption keys:
 ```
 
 #### Access Control
+
 ```
 Search respects all permissions:
 • You can only search channels you can access
@@ -1725,6 +1841,7 @@ Permission checks:
 ```
 
 #### Audit Logging
+
 ```
 Search activity logging (for security):
 • Who searched what (admin view only)
@@ -1740,6 +1857,7 @@ Access: Admins and security team only
 ### Compliance
 
 #### GDPR Compliance
+
 ```
 Data Subject Rights:
 ✓ Right to access: Export your search data
@@ -1754,6 +1872,7 @@ Settings → Privacy → Data Rights Request
 ```
 
 #### Data Subject Requests
+
 ```
 Request Your Data:
 Settings → Privacy → Download My Data
@@ -1772,6 +1891,7 @@ Processing time: 24-48 hours
 ```
 
 #### CCPA Compliance
+
 ```
 California Consumer Privacy Act:
 ✓ Right to know what data is collected
@@ -1811,6 +1931,7 @@ Example anonymized data:
 ### Third-Party Data
 
 #### External Integrations
+
 ```
 If integrations are enabled:
 • Slack messages: Indexed if connected
@@ -1822,6 +1943,7 @@ Control: Settings → Integrations → Search Access
 ```
 
 #### AI Processing
+
 ```
 AI/ML Usage:
 • Embeddings generated for semantic search
@@ -1844,6 +1966,7 @@ Opt-out: Settings → Privacy → AI Processing
 ```
 
 #### Data Processing Agreement (DPA)
+
 ```
 For enterprise customers:
 ✓ Standard DPA available
@@ -1866,6 +1989,7 @@ Contact: privacy@yourcompany.com
 **Symptom**: Search bar doesn't respond or shows error
 
 **Solutions**:
+
 1. **Refresh the page**: `Cmd+R` or `Ctrl+R`
 2. **Clear browser cache**: Settings → Privacy → Clear cache
 3. **Check browser console**: `F12` → Look for errors
@@ -1889,6 +2013,7 @@ Common errors:
 **Symptom**: "No results" for query you know should match
 
 **Troubleshooting Checklist**:
+
 ```
 ✓ Check spelling and typos
 ✓ Verify date range (expand to "All time")
@@ -1901,6 +2026,7 @@ Common errors:
 ```
 
 **Example**:
+
 ```
 ❌ Query: "kubernetees deployment in production channel yesterday"
    Filters: Channel=#staging, Last 7 days
@@ -1913,6 +2039,7 @@ Common errors:
 ```
 
 **Admin Troubleshooting**:
+
 ```
 If messages should exist but don't appear:
 1. Check index coverage: Admin → AI → Embeddings
@@ -1929,6 +2056,7 @@ If messages should exist but don't appear:
 **Causes & Solutions**:
 
 1. **Large result set**
+
    ```
    Problem: Too many matching results
    Solution:
@@ -1938,6 +2066,7 @@ If messages should exist but don't appear:
    ```
 
 2. **Complex query**
+
    ```
    Problem: Too many operators or wildcards
    Solution:
@@ -1948,6 +2077,7 @@ If messages should exist but don't appear:
    ```
 
 3. **Network issues**
+
    ```
    Problem: Slow internet or high latency
    Solution:
@@ -1967,6 +2097,7 @@ If messages should exist but don't appear:
    ```
 
 **Performance Benchmarks**:
+
 ```
 Expected response times:
 Simple query:      < 200ms
@@ -1983,6 +2114,7 @@ If exceeding these consistently:
 **Symptom**: New messages don't appear in search immediately
 
 **Expected Behavior**:
+
 ```
 Normal indexing delay:
 • New messages: 2-5 minutes
@@ -1996,6 +2128,7 @@ If delay > 15 minutes:
 ```
 
 **Solutions**:
+
 ```
 1. Wait for indexing (usually <5 minutes)
 2. Force refresh: Ctrl+Shift+R
@@ -2008,6 +2141,7 @@ If delay > 15 minutes:
 ```
 
 **Admin Troubleshooting**:
+
 ```
 Index Status Dashboard:
 • Last update: 2 minutes ago ✓
@@ -2026,6 +2160,7 @@ If indexing stopped:
 **Symptom**: Microphone not recognized or voice not transcribed
 
 **Checklist**:
+
 ```
 ✓ Grant microphone permission (browser prompt)
 ✓ Check site uses HTTPS (required for mic access)
@@ -2037,6 +2172,7 @@ If indexing stopped:
 ```
 
 **Browser Permissions**:
+
 ```
 Chrome:
 1. Click lock icon in address bar
@@ -2054,6 +2190,7 @@ Safari:
 ```
 
 **System Permissions**:
+
 ```
 macOS:
 System Settings → Privacy & Security → Microphone
@@ -2069,6 +2206,7 @@ pavucontrol → Input Devices
 ```
 
 **Testing Microphone**:
+
 ```
 Test your microphone:
 1. Settings → Voice Search → Test Microphone
@@ -2089,6 +2227,7 @@ If no audio detected:
 **Meaning**: Backend search service is down or unreachable
 
 **What you see**:
+
 ```
 ⚠️  Search service unavailable
 We're having trouble connecting to the search service.
@@ -2098,6 +2237,7 @@ Please try again in a moment.
 ```
 
 **Solutions**:
+
 1. Wait 1-2 minutes and click "Retry"
 2. Check status page (if available): status.yourcompany.com
 3. Use "Basic Search" as fallback (keyword only)
@@ -2105,6 +2245,7 @@ Please try again in a moment.
 5. Check internet connection
 
 **Admin Actions**:
+
 ```
 1. Check search service status:
    docker ps | grep search-service
@@ -2123,6 +2264,7 @@ Please try again in a moment.
 **Meaning**: Search index is updating, limited functionality temporarily
 
 **What you see**:
+
 ```
 ℹ️  Index is being rebuilt
 Search index is being updated. Some results may be incomplete.
@@ -2134,12 +2276,14 @@ Progress: ████████░░ 78%
 ```
 
 **What to do**:
+
 - Wait for completion (progress shown)
 - Basic keyword search still available
 - Full semantic search restored after rebuild
 - Typical time: 15-30 minutes for full workspace
 
 **When this happens**:
+
 - Scheduled weekly maintenance (Sunday 2 AM)
 - Admin triggered manual re-index
 - After major system update
@@ -2150,6 +2294,7 @@ Progress: ████████░░ 78%
 **Meaning**: Rate limit exceeded, too many searches in short time
 
 **What you see**:
+
 ```
 ⚠️  Too many requests
 You've made too many search requests. Please wait a moment.
@@ -2160,6 +2305,7 @@ Try again in: 45 seconds
 ```
 
 **Rate Limits** (default):
+
 ```
 Per user:
 • 60 searches per minute
@@ -2173,6 +2319,7 @@ If exceeded:
 ```
 
 **Solutions**:
+
 - Wait 60 seconds before next search
 - Reduce search frequency
 - Use saved searches instead of repeating queries
@@ -2184,6 +2331,7 @@ If exceeded:
 **Meaning**: Query has too many operators, filters, or nested conditions
 
 **What you see**:
+
 ```
 ⚠️  Query too complex
 Your search query is too complex. Please simplify it.
@@ -2196,6 +2344,7 @@ Issues detected:
 ```
 
 **Solutions**:
+
 ```
 Simplify complex query:
 
@@ -2217,6 +2366,7 @@ Then add filters instead of query operators
 ```
 
 **Limits**:
+
 ```
 Query constraints:
 • Max boolean operators: 10
@@ -2231,6 +2381,7 @@ Query constraints:
 **Meaning**: You don't have access to search certain channels or content
 
 **What you see**:
+
 ```
 ⚠️  Insufficient permissions
 Some results were excluded because you don't have access.
@@ -2241,12 +2392,14 @@ Showing 12 of 45 potential results.
 ```
 
 **Why this happens**:
+
 - Private channels you're not a member of
 - Admin-only content
 - Deleted channels
 - Restricted file types
 
 **Solutions**:
+
 - Request access to specific channels
 - Contact admin for permission
 - Filter to only channels you have access to
@@ -2256,6 +2409,7 @@ Showing 12 of 45 potential results.
 #### Faster Searches
 
 **Best Practices**:
+
 ```
 Do:
 ✓ Use date filters (last 7 days, not all time)
@@ -2273,6 +2427,7 @@ Don't:
 ```
 
 **Query Optimization**:
+
 ```
 Slow (450ms):
 *deployment in:* after:2020-01-01
@@ -2284,6 +2439,7 @@ deployment in:engineering after:last-week
 #### Better Results
 
 **Improve Relevance**:
+
 ```
 1. Add context: "login error mobile app" > "error"
 2. Use technical terms: "PostgreSQL deadlock" > "database stuck"
@@ -2294,6 +2450,7 @@ deployment in:engineering after:last-week
 ```
 
 **Handle Too Many Results** (>100):
+
 ```
 Narrow down:
 1. Add date range: after:last-week
@@ -2304,6 +2461,7 @@ Narrow down:
 ```
 
 **Handle Too Few Results** (<3):
+
 ```
 Broaden search:
 1. Remove restrictive filters
@@ -2320,6 +2478,7 @@ Broaden search:
 #### Re-index Content
 
 **When to re-index**:
+
 - Messages not appearing in search
 - Search results seem outdated
 - After system upgrades
@@ -2339,6 +2498,7 @@ Actions:
 ```
 
 **Re-indexing Options**:
+
 ```
 Full Re-index:
 Estimated time: 2-4 hours
@@ -2457,6 +2617,7 @@ Priority:
 ```
 
 **Response Times**:
+
 ```
 Priority levels:
 Critical:  < 1 hour
@@ -2475,6 +2636,7 @@ Low:       < 3 days
 #### Admin Support
 
 For admin-specific issues:
+
 - **Email**: admin-support@yourcompany.com
 - **Slack**: #admin-help channel
 - **Phone**: Enterprise customers only
@@ -2485,38 +2647,38 @@ For admin-specific issues:
 
 ### Keyboard Shortcuts Reference
 
-| Shortcut | Action |
-|----------|--------|
-| `Cmd/Ctrl + K` | Open search |
-| `Cmd/Ctrl + Shift + F` | Advanced search |
-| `/` | Quick search |
-| `Esc` | Close search |
-| `↑` / `↓` | Navigate results |
-| `Enter` | Open result |
-| `Cmd/Ctrl + Enter` | Open in new tab |
-| `Tab` | Focus filters |
-| `Shift + Tab` | Previous field |
-| `Cmd/Ctrl + S` | Save search |
-| `Cmd/Ctrl + 1-9` | Quick saved searches |
+| Shortcut               | Action               |
+| ---------------------- | -------------------- |
+| `Cmd/Ctrl + K`         | Open search          |
+| `Cmd/Ctrl + Shift + F` | Advanced search      |
+| `/`                    | Quick search         |
+| `Esc`                  | Close search         |
+| `↑` / `↓`              | Navigate results     |
+| `Enter`                | Open result          |
+| `Cmd/Ctrl + Enter`     | Open in new tab      |
+| `Tab`                  | Focus filters        |
+| `Shift + Tab`          | Previous field       |
+| `Cmd/Ctrl + S`         | Save search          |
+| `Cmd/Ctrl + 1-9`       | Quick saved searches |
 
 ### Search Operator Reference
 
-| Operator | Syntax | Example |
-|----------|--------|---------|
-| From user | `from:user` | `from:alice` |
-| In channel | `in:channel` | `in:engineering` |
-| Has file | `has:file` | `has:pdf` |
-| Has link | `has:link` | `has:link docs` |
-| Before date | `before:date` | `before:2026-01-15` |
-| After date | `after:date` | `after:yesterday` |
-| Is starred | `is:starred` | `is:starred TODO` |
-| Is unread | `is:unread` | `is:unread @me` |
-| AND | `AND` | `error AND production` |
-| OR | `OR` | `bug OR issue` |
-| NOT | `NOT` | `deploy NOT staging` |
-| Phrase | `"phrase"` | `"out of memory"` |
-| Wildcard | `*` | `auth*` |
-| Proximity | `NEAR[n]` | `error NEAR[5] timeout` |
+| Operator    | Syntax        | Example                 |
+| ----------- | ------------- | ----------------------- |
+| From user   | `from:user`   | `from:alice`            |
+| In channel  | `in:channel`  | `in:engineering`        |
+| Has file    | `has:file`    | `has:pdf`               |
+| Has link    | `has:link`    | `has:link docs`         |
+| Before date | `before:date` | `before:2026-01-15`     |
+| After date  | `after:date`  | `after:yesterday`       |
+| Is starred  | `is:starred`  | `is:starred TODO`       |
+| Is unread   | `is:unread`   | `is:unread @me`         |
+| AND         | `AND`         | `error AND production`  |
+| OR          | `OR`          | `bug OR issue`          |
+| NOT         | `NOT`         | `deploy NOT staging`    |
+| Phrase      | `"phrase"`    | `"out of memory"`       |
+| Wildcard    | `*`           | `auth*`                 |
+| Proximity   | `NEAR[n]`     | `error NEAR[5] timeout` |
 
 ### Glossary
 
@@ -2540,6 +2702,7 @@ For admin-specific issues:
 ## Updates & Changelog
 
 ### Version 1.0.0 (January 31, 2026)
+
 - Initial comprehensive user guide (1,000+ lines)
 - All 10 core sections complete:
   - Introduction with benefits and how it works
@@ -2557,6 +2720,7 @@ For admin-specific issues:
 - Admin guides included
 
 ### Planned Updates
+
 - Video tutorials embedded
 - Interactive examples
 - Advanced use case studies
@@ -2580,12 +2744,14 @@ Help us improve this guide:
 **End of Smart Search User Guide**
 
 **Related Documentation**:
+
 - [AI Features Complete Guide](/docs/guides/features/ai-features-complete.md)
 - [Auto-Moderation Guide](/docs/guides/features/auto-moderation.md)
 - [Search API Documentation](/docs/api/ai-endpoints.md#search)
 - [Admin AI Management](/docs/guides/admin/ai-management.md)
 
 **For Developers**:
+
 - [Search Implementation](/docs/guides/development/)
 - [Vector Search Setup](/docs/Vector-Search-Setup.md)
 - [Embedding Service](/src/lib/ai/embedding-service.ts)

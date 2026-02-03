@@ -71,6 +71,8 @@ import docker from 'highlight.js/lib/languages/dockerfile'
 import nginx from 'highlight.js/lib/languages/nginx'
 import makefile from 'highlight.js/lib/languages/makefile'
 
+import { logger } from '@/lib/logger'
+
 // Initialize lowlight
 const lowlight = createLowlight()
 
@@ -198,7 +200,7 @@ Object.entries(languageMap).forEach(([name, lang]) => {
     lowlight.register(name, lang)
   } catch (error) {
     // Language might already be registered
-    console.warn(`Could not register language: ${name}`)
+    logger.warn(`Could not register language: ${name}`)
   }
 })
 
@@ -219,11 +221,29 @@ export interface LanguageInfo {
 export function getSupportedLanguages(): LanguageInfo[] {
   return [
     // JavaScript/TypeScript
-    { name: 'javascript', aliases: ['js', 'jsx'], displayName: 'JavaScript', extension: '.js', category: 'Web' },
-    { name: 'typescript', aliases: ['ts', 'tsx'], displayName: 'TypeScript', extension: '.ts', category: 'Web' },
+    {
+      name: 'javascript',
+      aliases: ['js', 'jsx'],
+      displayName: 'JavaScript',
+      extension: '.js',
+      category: 'Web',
+    },
+    {
+      name: 'typescript',
+      aliases: ['ts', 'tsx'],
+      displayName: 'TypeScript',
+      extension: '.ts',
+      category: 'Web',
+    },
 
     // Backend
-    { name: 'python', aliases: ['py'], displayName: 'Python', extension: '.py', category: 'Backend' },
+    {
+      name: 'python',
+      aliases: ['py'],
+      displayName: 'Python',
+      extension: '.py',
+      category: 'Backend',
+    },
     { name: 'java', aliases: [], displayName: 'Java', extension: '.java', category: 'Backend' },
     { name: 'go', aliases: ['golang'], displayName: 'Go', extension: '.go', category: 'Backend' },
     { name: 'rust', aliases: ['rs'], displayName: 'Rust', extension: '.rs', category: 'Backend' },
@@ -233,7 +253,13 @@ export function getSupportedLanguages(): LanguageInfo[] {
     // Systems
     { name: 'c', aliases: [], displayName: 'C', extension: '.c', category: 'Systems' },
     { name: 'cpp', aliases: ['c++'], displayName: 'C++', extension: '.cpp', category: 'Systems' },
-    { name: 'csharp', aliases: ['c#', 'cs'], displayName: 'C#', extension: '.cs', category: 'Systems' },
+    {
+      name: 'csharp',
+      aliases: ['c#', 'cs'],
+      displayName: 'C#',
+      extension: '.cs',
+      category: 'Systems',
+    },
 
     // Web
     { name: 'html', aliases: ['htm'], displayName: 'HTML', extension: '.html', category: 'Web' },
@@ -241,33 +267,72 @@ export function getSupportedLanguages(): LanguageInfo[] {
     { name: 'scss', aliases: ['sass'], displayName: 'SCSS', extension: '.scss', category: 'Web' },
 
     // Shell
-    { name: 'bash', aliases: ['sh', 'shell', 'zsh'], displayName: 'Bash', extension: '.sh', category: 'Shell' },
-    { name: 'powershell', aliases: ['ps1'], displayName: 'PowerShell', extension: '.ps1', category: 'Shell' },
+    {
+      name: 'bash',
+      aliases: ['sh', 'shell', 'zsh'],
+      displayName: 'Bash',
+      extension: '.sh',
+      category: 'Shell',
+    },
+    {
+      name: 'powershell',
+      aliases: ['ps1'],
+      displayName: 'PowerShell',
+      extension: '.ps1',
+      category: 'Shell',
+    },
 
     // Data
     { name: 'json', aliases: [], displayName: 'JSON', extension: '.json', category: 'Data' },
     { name: 'yaml', aliases: ['yml'], displayName: 'YAML', extension: '.yaml', category: 'Data' },
     { name: 'xml', aliases: [], displayName: 'XML', extension: '.xml', category: 'Data' },
-    { name: 'graphql', aliases: ['gql'], displayName: 'GraphQL', extension: '.graphql', category: 'Data' },
+    {
+      name: 'graphql',
+      aliases: ['gql'],
+      displayName: 'GraphQL',
+      extension: '.graphql',
+      category: 'Data',
+    },
 
     // Database
     { name: 'sql', aliases: [], displayName: 'SQL', extension: '.sql', category: 'Database' },
-    { name: 'pgsql', aliases: ['postgresql'], displayName: 'PostgreSQL', extension: '.sql', category: 'Database' },
+    {
+      name: 'pgsql',
+      aliases: ['postgresql'],
+      displayName: 'PostgreSQL',
+      extension: '.sql',
+      category: 'Database',
+    },
 
     // Other
-    { name: 'markdown', aliases: ['md'], displayName: 'Markdown', extension: '.md', category: 'Markup' },
-    { name: 'diff', aliases: ['patch'], displayName: 'Diff', extension: '.diff', category: 'Other' },
-    { name: 'docker', aliases: ['dockerfile'], displayName: 'Dockerfile', extension: 'Dockerfile', category: 'DevOps' },
+    {
+      name: 'markdown',
+      aliases: ['md'],
+      displayName: 'Markdown',
+      extension: '.md',
+      category: 'Markup',
+    },
+    {
+      name: 'diff',
+      aliases: ['patch'],
+      displayName: 'Diff',
+      extension: '.diff',
+      category: 'Other',
+    },
+    {
+      name: 'docker',
+      aliases: ['dockerfile'],
+      displayName: 'Dockerfile',
+      extension: 'Dockerfile',
+      category: 'DevOps',
+    },
   ]
 }
 
 /**
  * Detect language from filename or content
  */
-export function detectLanguage(
-  filename?: string,
-  content?: string
-): string | undefined {
+export function detectLanguage(filename?: string, content?: string): string | undefined {
   if (filename) {
     const ext = filename.toLowerCase().split('.').pop()
     if (ext) {
@@ -277,7 +342,7 @@ export function detectLanguage(
         if (lang.extension.toLowerCase().endsWith(`.${ext}`)) {
           return lang.name
         }
-        if (lang.aliases.some(alias => alias === ext)) {
+        if (lang.aliases.some((alias) => alias === ext)) {
           return lang.name
         }
       }
@@ -313,10 +378,7 @@ export function detectLanguage(
 /**
  * Highlight code using lowlight
  */
-export function highlightCode(
-  code: string,
-  language?: string
-): { html: string; language: string } {
+export function highlightCode(code: string, language?: string): { html: string; language: string } {
   const lang = language || 'plaintext'
 
   try {
@@ -329,7 +391,7 @@ export function highlightCode(
       const result = lowlight.highlightAuto(code, { prefix: 'hljs-' })
       return {
         html: toHtml(result),
-        language: result.data?.language as string || 'plaintext',
+        language: (result.data?.language as string) || 'plaintext',
       }
     } catch (fallbackError) {
       // Return plain text if all fails

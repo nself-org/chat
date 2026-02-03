@@ -6,14 +6,7 @@
 
 import { useState, useCallback } from 'react'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
-import {
-  Plus,
-  Trash2,
-  GripVertical,
-  ChevronDown,
-  ChevronUp,
-  Settings2,
-} from 'lucide-react'
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronUp, Settings2 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
@@ -26,11 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import type { CommandArgument, CommandArgType } from '@/lib/slash-commands/command-types'
 import { cn } from '@/lib/utils'
 
@@ -121,11 +110,11 @@ export function CommandArguments({ arguments: args, onChange }: CommandArguments
   return (
     <div className="space-y-6">
       {/* Description */}
-      <div className="rounded-lg border bg-muted/30 p-4">
+      <div className="bg-muted/30 rounded-lg border p-4">
         <h3 className="font-medium">Command Arguments</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          Define the inputs your command accepts. Positional arguments are parsed in order,
-          while flags use --name format.
+          Define the inputs your command accepts. Positional arguments are parsed in order, while
+          flags use --name format.
         </p>
       </div>
 
@@ -138,9 +127,7 @@ export function CommandArguments({ arguments: args, onChange }: CommandArguments
 
         {positionalArgs.length === 0 ? (
           <div className="rounded-lg border border-dashed p-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              No positional arguments defined yet.
-            </p>
+            <p className="text-sm text-muted-foreground">No positional arguments defined yet.</p>
           </div>
         ) : (
           <Reorder.Group
@@ -227,7 +214,7 @@ export function CommandArguments({ arguments: args, onChange }: CommandArguments
 
       {/* Usage Preview */}
       {args.length > 0 && (
-        <div className="rounded-lg border bg-muted/30 p-4">
+        <div className="bg-muted/30 rounded-lg border p-4">
           <h4 className="text-sm font-medium">Usage Preview</h4>
           <code className="mt-2 block font-mono text-sm">
             /command{' '}
@@ -279,7 +266,7 @@ function ArgumentItem({
     <Reorder.Item
       value={argument}
       id={argument.id}
-      className={cn('rounded-lg border bg-card', isExpanded && 'ring-2 ring-primary/20')}
+      className={cn('rounded-lg border bg-card', isExpanded && 'ring-primary/20 ring-2')}
     >
       <Collapsible open={isExpanded} onOpenChange={onToggle}>
         {/* Header */}
@@ -309,11 +296,7 @@ function ArgumentItem({
 
           <CollapsibleTrigger asChild>
             <Button variant="ghost" size="icon" className="h-8 w-8">
-              {isExpanded ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
+              {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
             </Button>
           </CollapsibleTrigger>
 
@@ -434,9 +417,7 @@ function ArgumentItem({
             {argument.type === 'choice' && (
               <div className="space-y-2">
                 <Label>Choices</Label>
-                <p className="text-xs text-muted-foreground">
-                  Enter one choice per line
-                </p>
+                <p className="text-xs text-muted-foreground">Enter one choice per line</p>
                 <textarea
                   className="min-h-[100px] w-full rounded-md border bg-background p-2 font-mono text-sm"
                   value={argument.choices?.map((c) => c.value).join('\n') || ''}
@@ -475,9 +456,7 @@ option3"
                             onUpdate({
                               validation: {
                                 ...argument.validation,
-                                minLength: e.target.value
-                                  ? parseInt(e.target.value)
-                                  : undefined,
+                                minLength: e.target.value ? parseInt(e.target.value) : undefined,
                               },
                             })
                           }
@@ -493,9 +472,7 @@ option3"
                             onUpdate({
                               validation: {
                                 ...argument.validation,
-                                maxLength: e.target.value
-                                  ? parseInt(e.target.value)
-                                  : undefined,
+                                maxLength: e.target.value ? parseInt(e.target.value) : undefined,
                               },
                             })
                           }
@@ -514,9 +491,7 @@ option3"
                             onUpdate({
                               validation: {
                                 ...argument.validation,
-                                min: e.target.value
-                                  ? parseFloat(e.target.value)
-                                  : undefined,
+                                min: e.target.value ? parseFloat(e.target.value) : undefined,
                               },
                             })
                           }
@@ -531,9 +506,7 @@ option3"
                             onUpdate({
                               validation: {
                                 ...argument.validation,
-                                max: e.target.value
-                                  ? parseFloat(e.target.value)
-                                  : undefined,
+                                max: e.target.value ? parseFloat(e.target.value) : undefined,
                               },
                             })
                           }

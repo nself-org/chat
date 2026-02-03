@@ -127,49 +127,39 @@ export function Step8CustomDomain({ onValidChange, className }: Step8CustomDomai
     <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-violet-400 to-violet-600 rounded-xl mb-4 shadow-lg">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-violet-400 to-violet-600 shadow-lg">
           <Globe className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-          Custom Domain
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">Custom Domain</h2>
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Connect your own domain to make your app accessible at your custom URL.
         </p>
       </div>
 
-      <div className="max-w-xl mx-auto space-y-6">
+      <div className="mx-auto max-w-xl space-y-6">
         {/* Domain input */}
         <div className="space-y-3">
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Domain Name
           </label>
           <div className="flex gap-3">
-            <div className="flex-1 relative">
-              <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+            <div className="relative flex-1">
+              <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
               <input
                 type="text"
                 value={domainInput}
                 onChange={handleDomainChange}
                 placeholder="app.yourdomain.com"
                 disabled={config.customDomain.status === 'active'}
-                className="w-full pl-10 pr-4 py-2.5 border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 disabled:opacity-50"
+                className="w-full rounded-lg border border-zinc-200 bg-white py-2.5 pl-10 pr-4 text-zinc-900 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-100"
               />
             </div>
             {config.customDomain.status === 'active' ? (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleRemoveDomain}
-              >
+              <Button type="button" variant="outline" onClick={handleRemoveDomain}>
                 Remove
               </Button>
             ) : (
-              <Button
-                type="button"
-                onClick={handleSaveDomain}
-                disabled={!domainInput.trim()}
-              >
+              <Button type="button" onClick={handleSaveDomain} disabled={!domainInput.trim()}>
                 Save
               </Button>
             )}
@@ -195,9 +185,7 @@ export function Step8CustomDomain({ onValidChange, className }: Step8CustomDomai
         {config.customDomain.dnsRecords && config.customDomain.dnsRecords.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-medium text-zinc-900 dark:text-white">
-                DNS Configuration
-              </h3>
+              <h3 className="font-medium text-zinc-900 dark:text-white">DNS Configuration</h3>
               <Button
                 type="button"
                 variant="outline"
@@ -206,16 +194,16 @@ export function Step8CustomDomain({ onValidChange, className }: Step8CustomDomai
                 disabled={isValidating || config.customDomain.status === 'active'}
               >
                 {isValidating ? (
-                  <RefreshCw className="h-4 w-4 mr-1 animate-spin" />
+                  <RefreshCw className="mr-1 h-4 w-4 animate-spin" />
                 ) : (
-                  <RefreshCw className="h-4 w-4 mr-1" />
+                  <RefreshCw className="mr-1 h-4 w-4" />
                 )}
                 Verify
               </Button>
             </div>
 
-            <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-4">
-              <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-4">
+            <div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/50">
+              <p className="mb-4 text-sm text-zinc-600 dark:text-zinc-400">
                 Add these records to your domain's DNS settings:
               </p>
 
@@ -223,7 +211,7 @@ export function Step8CustomDomain({ onValidChange, className }: Step8CustomDomai
                 {config.customDomain.dnsRecords.map((record, index) => (
                   <div
                     key={index}
-                    className="flex items-center justify-between p-3 bg-white dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700"
+                    className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800"
                   >
                     <div className="flex items-center gap-3">
                       {record.verified ? (
@@ -233,22 +221,20 @@ export function Step8CustomDomain({ onValidChange, className }: Step8CustomDomai
                       )}
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-mono bg-zinc-100 dark:bg-zinc-700 px-1.5 py-0.5 rounded">
+                          <span className="rounded bg-zinc-100 px-1.5 py-0.5 font-mono text-xs dark:bg-zinc-700">
                             {record.type}
                           </span>
-                          <span className="text-sm font-mono text-zinc-700 dark:text-zinc-300">
+                          <span className="font-mono text-sm text-zinc-700 dark:text-zinc-300">
                             {record.name}
                           </span>
                         </div>
-                        <span className="text-xs font-mono text-zinc-500">
-                          {record.value}
-                        </span>
+                        <span className="font-mono text-xs text-zinc-500">{record.value}</span>
                       </div>
                     </div>
                     <button
                       type="button"
                       onClick={() => handleCopyRecord(record.value, `${record.type}-${index}`)}
-                      className="p-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded transition-colors"
+                      className="rounded p-1.5 transition-colors hover:bg-zinc-100 dark:hover:bg-zinc-700"
                       title="Copy value"
                     >
                       {copied === `${record.type}-${index}` ? (
@@ -263,16 +249,16 @@ export function Step8CustomDomain({ onValidChange, className }: Step8CustomDomai
             </div>
 
             {/* Help text */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4">
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-900/20">
               <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500" />
                 <div className="text-sm">
                   <p className="font-medium text-blue-800 dark:text-blue-200">
                     DNS propagation can take up to 48 hours
                   </p>
-                  <p className="text-blue-600 dark:text-blue-400 mt-1">
-                    After adding the records, click "Verify" to check if they're propagated.
-                    You can continue with the setup and verify later.
+                  <p className="mt-1 text-blue-600 dark:text-blue-400">
+                    After adding the records, click "Verify" to check if they're propagated. You can
+                    continue with the setup and verify later.
                   </p>
                 </div>
               </div>
@@ -282,20 +268,18 @@ export function Step8CustomDomain({ onValidChange, className }: Step8CustomDomai
 
         {/* No domain configured */}
         {!config.customDomain.domain && (
-          <div className="text-center py-8 bg-zinc-50 dark:bg-zinc-800/50 rounded-xl">
-            <Globe className="h-12 w-12 mx-auto text-zinc-300 dark:text-zinc-600 mb-3" />
-            <p className="text-zinc-500">
-              Enter your domain above to get started
-            </p>
-            <p className="text-xs text-zinc-400 mt-2">
+          <div className="rounded-xl bg-zinc-50 py-8 text-center dark:bg-zinc-800/50">
+            <Globe className="mx-auto mb-3 h-12 w-12 text-zinc-300 dark:text-zinc-600" />
+            <p className="text-zinc-500">Enter your domain above to get started</p>
+            <p className="mt-2 text-xs text-zinc-400">
               This step is optional. You can skip it and configure later.
             </p>
           </div>
         )}
 
         {/* Domain provider links */}
-        <div className="pt-4 border-t border-zinc-200 dark:border-zinc-700">
-          <p className="text-sm text-zinc-500 mb-3">
+        <div className="border-t border-zinc-200 pt-4 dark:border-zinc-700">
+          <p className="mb-3 text-sm text-zinc-500">
             Need help with DNS? Here are some popular providers:
           </p>
           <div className="flex flex-wrap gap-2">
@@ -305,7 +289,7 @@ export function Step8CustomDomain({ onValidChange, className }: Step8CustomDomai
                 href={`https://www.google.com/search?q=${encodeURIComponent(`${provider} DNS settings`)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs text-sky-600 dark:text-sky-400 hover:underline"
+                className="flex items-center gap-1 text-xs text-sky-600 hover:underline dark:text-sky-400"
               >
                 {provider}
                 <ExternalLink className="h-3 w-3" />

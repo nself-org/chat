@@ -18,7 +18,11 @@ import type {
   JiraStatus,
   JiraCreateIssueParams,
 } from '../types'
-import { buildAuthUrl, tokenResponseToCredentials, calculateTokenExpiry } from '../integration-manager'
+import {
+  buildAuthUrl,
+  tokenResponseToCredentials,
+  calculateTokenExpiry,
+} from '../integration-manager'
 
 // ============================================================================
 // Constants
@@ -324,11 +328,13 @@ export class JiraApiClient {
   /**
    * Get available transitions for an issue
    */
-  async getTransitions(issueKey: string): Promise<Array<{
-    id: string
-    name: string
-    to: JiraStatus
-  }>> {
+  async getTransitions(issueKey: string): Promise<
+    Array<{
+      id: string
+      name: string
+      to: JiraStatus
+    }>
+  > {
     const response = await this.get<{
       transitions: Array<{ id: string; name: string; to: JiraStatus }>
     }>(`/issue/${issueKey}/transitions`)
@@ -338,7 +344,10 @@ export class JiraApiClient {
   /**
    * Add comment to issue
    */
-  async addComment(issueKey: string, body: string): Promise<{
+  async addComment(
+    issueKey: string,
+    body: string
+  ): Promise<{
     id: string
     body: unknown
     created: string
@@ -374,11 +383,11 @@ export class JiraApiClient {
     const body: Record<string, unknown> = { fields: {} }
 
     if (fields.summary) {
-      (body.fields as Record<string, unknown>).summary = fields.summary
+      ;(body.fields as Record<string, unknown>).summary = fields.summary
     }
 
     if (fields.description) {
-      (body.fields as Record<string, unknown>).description = {
+      ;(body.fields as Record<string, unknown>).description = {
         type: 'doc',
         version: 1,
         content: [
@@ -391,15 +400,15 @@ export class JiraApiClient {
     }
 
     if (fields.priority) {
-      (body.fields as Record<string, unknown>).priority = { name: fields.priority }
+      ;(body.fields as Record<string, unknown>).priority = { name: fields.priority }
     }
 
     if (fields.assignee) {
-      (body.fields as Record<string, unknown>).assignee = { accountId: fields.assignee }
+      ;(body.fields as Record<string, unknown>).assignee = { accountId: fields.assignee }
     }
 
     if (fields.labels) {
-      (body.fields as Record<string, unknown>).labels = fields.labels
+      ;(body.fields as Record<string, unknown>).labels = fields.labels
     }
 
     await this.put(`/issue/${issueKey}`, body)
@@ -715,12 +724,15 @@ export class JiraIntegrationProvider implements IntegrationProvider {
     // Get available transitions
     const transitions = await client.getTransitions(issueKey)
     const transition = transitions.find(
-      (t) => t.name.toLowerCase() === statusName.toLowerCase() ||
-             t.to.name.toLowerCase() === statusName.toLowerCase()
+      (t) =>
+        t.name.toLowerCase() === statusName.toLowerCase() ||
+        t.to.name.toLowerCase() === statusName.toLowerCase()
     )
 
     if (!transition) {
-      throw new Error(`Cannot transition to status "${statusName}". Available: ${transitions.map(t => t.name).join(', ')}`)
+      throw new Error(
+        `Cannot transition to status "${statusName}". Available: ${transitions.map((t) => t.name).join(', ')}`
+      )
     }
 
     await client.transitionIssue(issueKey, transition.id)

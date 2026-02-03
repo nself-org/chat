@@ -197,6 +197,7 @@ message_id,channel_name,username,content,created_at,is_edited,has_attachments
 ### HTML
 
 Styled, printable format with:
+
 - Metadata header
 - Message cards with user info
 - Attachments and reactions
@@ -207,6 +208,7 @@ Styled, printable format with:
 ### PDF
 
 Server-side generated PDF (requires puppeteer or similar):
+
 - Based on HTML formatter
 - Professional layout
 - Page breaks for messages

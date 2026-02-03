@@ -25,10 +25,7 @@ interface ApprovalStepPropertiesProps {
   onUpdate: (config: Record<string, unknown>) => void
 }
 
-export function ApprovalStepProperties({
-  step,
-  onUpdate,
-}: ApprovalStepPropertiesProps) {
+export function ApprovalStepProperties({ step, onUpdate }: ApprovalStepPropertiesProps) {
   const config = step.config
 
   return (
@@ -40,7 +37,7 @@ export function ApprovalStepProperties({
           value={config.approvalType}
           onValueChange={(value) => onUpdate({ approvalType: value as ApprovalType })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -50,7 +47,7 @@ export function ApprovalStepProperties({
             <SelectItem value="majority">Majority - More than half</SelectItem>
           </SelectContent>
         </Select>
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           {config.approvalType === 'single' && 'Only one approval is needed'}
           {config.approvalType === 'all' && 'All listed approvers must approve'}
           {config.approvalType === 'any' && 'First response (approve or reject) decides'}
@@ -70,10 +67,10 @@ export function ApprovalStepProperties({
               .filter((s) => s)
             onUpdate({ approvers })
           }}
-          className="text-xs font-mono min-h-[60px] mt-1"
+          className="mt-1 min-h-[60px] font-mono text-xs"
           placeholder="user_id_1&#10;user_id_2&#10;{{manager_id}}"
         />
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           One user ID per line. Use variables like {'{{manager_id}}'}
         </p>
       </div>
@@ -90,10 +87,10 @@ export function ApprovalStepProperties({
               .filter((s) => s)
             onUpdate({ approverRoles: roles })
           }}
-          className="h-8 text-sm mt-1"
+          className="mt-1 h-8 text-sm"
           placeholder="admin, manager"
         />
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           Users with these roles can also approve
         </p>
       </div>
@@ -104,23 +101,23 @@ export function ApprovalStepProperties({
         <Textarea
           value={config.message || ''}
           onChange={(e) => onUpdate({ message: e.target.value })}
-          className="text-sm min-h-[80px] mt-1"
+          className="mt-1 min-h-[80px] text-sm"
           placeholder="Please review and approve this request..."
         />
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           Message shown to approvers. Supports variables.
         </p>
       </div>
 
       {/* Timeout */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <Label className="text-xs">Timeout</Label>
-        <div className="flex gap-2 items-center mt-1">
+        <div className="mt-1 flex items-center gap-2">
           <Input
             type="number"
             value={config.timeoutMinutes || 1440}
             onChange={(e) => onUpdate({ timeoutMinutes: parseInt(e.target.value) })}
-            className="h-8 text-sm w-24"
+            className="h-8 w-24 text-sm"
             min={1}
           />
           <span className="text-xs text-muted-foreground">minutes</span>
@@ -137,7 +134,7 @@ export function ApprovalStepProperties({
           value={config.timeoutAction || 'reject'}
           onValueChange={(value) => onUpdate({ timeoutAction: value })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -161,20 +158,18 @@ export function ApprovalStepProperties({
                 .filter((s) => s)
               onUpdate({ escalateTo: users })
             }}
-            className="h-8 text-sm mt-1"
+            className="mt-1 h-8 text-sm"
             placeholder="manager_id, director_id"
           />
         </div>
       )}
 
       {/* Options */}
-      <div className="pt-2 border-t space-y-2">
+      <div className="space-y-2 border-t pt-2">
         <div className="flex items-center justify-between">
           <div>
             <Label className="text-xs">Require Comment</Label>
-            <p className="text-[10px] text-muted-foreground">
-              Approvers must provide a comment
-            </p>
+            <p className="text-[10px] text-muted-foreground">Approvers must provide a comment</p>
           </div>
           <Switch
             checked={config.requireComment === true}
@@ -185,9 +180,7 @@ export function ApprovalStepProperties({
         <div className="flex items-center justify-between">
           <div>
             <Label className="text-xs">Allow Delegation</Label>
-            <p className="text-[10px] text-muted-foreground">
-              Approvers can delegate to others
-            </p>
+            <p className="text-[10px] text-muted-foreground">Approvers can delegate to others</p>
           </div>
           <Switch
             checked={config.allowDelegate === true}
@@ -197,7 +190,7 @@ export function ApprovalStepProperties({
       </div>
 
       {/* Reminders */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <Label className="text-xs">Reminder Interval (minutes)</Label>
         <Input
           type="number"
@@ -206,25 +199,24 @@ export function ApprovalStepProperties({
             const value = e.target.value ? parseInt(e.target.value) : undefined
             onUpdate({ reminderIntervalMinutes: value })
           }}
-          className="h-8 text-sm mt-1"
+          className="mt-1 h-8 text-sm"
           min={15}
           placeholder="Leave empty for no reminders"
         />
-        <p className="text-[10px] text-muted-foreground mt-1">
+        <p className="mt-1 text-[10px] text-muted-foreground">
           How often to remind approvers. Leave empty to disable.
         </p>
       </div>
 
       {/* Output info */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <p className="text-[10px] text-muted-foreground">
           <strong>Output branches:</strong>
           <br />
           - Approved: When approval is granted
           <br />
           - Rejected: When approval is denied
-          <br />
-          - Timeout: When no response is received
+          <br />- Timeout: When no response is received
         </p>
       </div>
     </div>

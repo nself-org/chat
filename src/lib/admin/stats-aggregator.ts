@@ -175,9 +175,7 @@ export function calculateUserGrowth(
 /**
  * Count users by role
  */
-export function countUsersByRole(
-  users: Array<{ role: string }>
-): Record<string, number> {
+export function countUsersByRole(users: Array<{ role: string }>): Record<string, number> {
   const roleCounts: Record<string, number> = {}
 
   for (const user of users) {
@@ -241,10 +239,7 @@ export function aggregateMessageStats(
   }
 
   // Calculate average messages per day
-  const daysSinceFirst = Math.max(
-    1,
-    Math.ceil((now - earliestDate) / MS_PER_DAY)
-  )
+  const daysSinceFirst = Math.max(1, Math.ceil((now - earliestDate) / MS_PER_DAY))
   const avgPerDay = Math.round(totalMessages / daysSinceFirst)
 
   return {
@@ -258,9 +253,7 @@ export function aggregateMessageStats(
 /**
  * Calculate message volume by hour
  */
-export function calculateMessageVolumeByHour(
-  messages: MessageStatsInput[]
-): MessageVolumeData[] {
+export function calculateMessageVolumeByHour(messages: MessageStatsInput[]): MessageVolumeData[] {
   const hourCounts = new Array<number>(24).fill(0)
 
   for (const message of messages) {
@@ -328,9 +321,7 @@ export function aggregateChannelStats(
   }
 
   // Find most active channels
-  const sortedChannels = [...channels].sort(
-    (a, b) => b.messageCount - a.messageCount
-  )
+  const sortedChannels = [...channels].sort((a, b) => b.messageCount - a.messageCount)
   const mostActive = sortedChannels.slice(0, topCount).map((c) => c.name)
 
   return {
@@ -344,9 +335,7 @@ export function aggregateChannelStats(
 /**
  * Calculate channel activity ranking
  */
-export function calculateChannelActivity(
-  channels: ChannelStatsInput[]
-): ChannelActivityData[] {
+export function calculateChannelActivity(channels: ChannelStatsInput[]): ChannelActivityData[] {
   return channels
     .map((channel) => ({
       channelId: channel.id,
@@ -386,9 +375,7 @@ export function calculateChannelDistribution(
 /**
  * Calculate storage statistics
  */
-export function aggregateStorageStats(
-  input: StorageStatsInput
-): DashboardStats['storage'] {
+export function aggregateStorageStats(input: StorageStatsInput): DashboardStats['storage'] {
   const { used, limit } = input
   const percentage = limit > 0 ? (used / limit) * 100 : 0
 
@@ -460,10 +447,7 @@ export function aggregateDashboardStats(
 /**
  * Calculate percentage change between two values
  */
-export function calculatePercentageChange(
-  current: number,
-  previous: number
-): number {
+export function calculatePercentageChange(current: number, previous: number): number {
   if (previous === 0) return current > 0 ? 100 : 0
   return Math.round(((current - previous) / previous) * 100 * 100) / 100
 }
@@ -471,10 +455,7 @@ export function calculatePercentageChange(
 /**
  * Calculate trend direction
  */
-export function calculateTrend(
-  current: number,
-  previous: number
-): 'up' | 'down' | 'stable' {
+export function calculateTrend(current: number, previous: number): 'up' | 'down' | 'stable' {
   if (current > previous) return 'up'
   if (current < previous) return 'down'
   return 'stable'

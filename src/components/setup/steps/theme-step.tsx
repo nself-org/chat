@@ -6,12 +6,34 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { Palette, Type, Monitor, Download, Upload, Copy, Check, Sun, Moon, Laptop, Wand2, ChevronDown, ChevronUp } from 'lucide-react'
+import {
+  Palette,
+  Type,
+  Monitor,
+  Download,
+  Upload,
+  Copy,
+  Check,
+  Sun,
+  Moon,
+  Laptop,
+  Wand2,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react'
 import { themePresets, type ThemeColors } from '@/lib/theme-presets'
+
+import { logger } from '@/lib/logger'
 
 interface ThemeStepProps {
   config: AppConfig
@@ -23,7 +45,7 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
   const [theme, setTheme] = useState(config.theme)
   const [selectedPreset, setSelectedPreset] = useState(config.theme.preset || 'nself')
   const [previewMode, setPreviewMode] = useState<'light' | 'dark'>('dark')
-  
+
   // Initialize preview theme with dark mode colors from the preset
   const initPreviewTheme = () => {
     const preset = themePresets[config.theme.preset || 'nself']
@@ -32,12 +54,12 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
     }
     return config.theme
   }
-  
+
   const [previewTheme, setPreviewTheme] = useState(initPreviewTheme()) // Separate state for preview
   const [importTheme, setImportTheme] = useState('')
   const [copied, setCopied] = useState(false)
   const [showTailwindColors, setShowTailwindColors] = useState(false)
-  
+
   // Color input refs for native color picker
   const primaryColorRef = useRef<HTMLInputElement>(null)
   const secondaryColorRef = useRef<HTMLInputElement>(null)
@@ -62,10 +84,10 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
   }, [theme])
 
   const handleColorChange = (field: keyof typeof theme, value: string) => {
-    setTheme(prev => ({ ...prev, [field]: value }))
+    setTheme((prev) => ({ ...prev, [field]: value }))
     // Also update preview theme if it's a custom theme
     if (selectedPreset === 'custom' || !selectedPreset) {
-      setPreviewTheme(prev => ({ ...prev, [field]: value }))
+      setPreviewTheme((prev) => ({ ...prev, [field]: value }))
     }
   }
 
@@ -79,7 +101,7 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
         ...theme,
         preset: typedPresetKey,
         ...colors,
-        colorScheme: 'dark' as const
+        colorScheme: 'dark' as const,
       }
       setTheme(newTheme)
       setSelectedPreset(presetKey as typeof selectedPreset)
@@ -88,33 +110,32 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
       const previewColors = previewMode === 'dark' ? preset.dark : preset.light
       setPreviewTheme({
         ...newTheme,
-        ...previewColors
+        ...previewColors,
       })
     }
   }
 
-
   const handlePreviewModeChange = (mode: 'light' | 'dark') => {
     setPreviewMode(mode)
-    
+
     // Only update preview theme, not the main theme
     if (selectedPreset && selectedPreset !== 'custom') {
       const preset = themePresets[selectedPreset]
       if (preset) {
         const colors = mode === 'dark' ? preset.dark : preset.light
-        setPreviewTheme(prev => ({
+        setPreviewTheme((prev) => ({
           ...prev,
-          ...colors
+          ...colors,
         }))
       }
     } else {
       // For custom themes, just toggle the background colors
-      setPreviewTheme(prev => ({
+      setPreviewTheme((prev) => ({
         ...prev,
         backgroundColor: mode === 'dark' ? theme.backgroundColor : '#FFFFFF',
         surfaceColor: mode === 'dark' ? theme.surfaceColor : '#F8FAFC',
         textColor: mode === 'dark' ? theme.textColor : '#0F172A',
-        mutedColor: mode === 'dark' ? theme.mutedColor : '#64748B'
+        mutedColor: mode === 'dark' ? theme.mutedColor : '#64748B',
       }))
     }
   }
@@ -122,15 +143,15 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
   const handleImportTheme = () => {
     try {
       const importedTheme = JSON.parse(importTheme)
-      setTheme(prev => ({
+      setTheme((prev) => ({
         ...prev,
         ...importedTheme,
-        preset: 'custom'
+        preset: 'custom',
       }))
       setSelectedPreset('custom')
       setImportTheme('')
     } catch (error) {
-      console.error('Invalid theme JSON')
+      logger.error('Invalid theme JSON')
     }
   }
 
@@ -150,7 +171,7 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
         <div className="flex gap-2">
           <button
             onClick={() => inputRef.current?.click()}
-            className="w-10 h-10 rounded-xl border-2 border-zinc-300 dark:border-zinc-700 shadow-sm cursor-pointer hover:scale-105 transition-transform"
+            className="h-10 w-10 cursor-pointer rounded-xl border-2 border-zinc-300 shadow-sm transition-transform hover:scale-105 dark:border-zinc-700"
             style={{ backgroundColor: value }}
           />
           <input
@@ -164,24 +185,25 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
             value={value}
             onChange={(e) => onChange(e.target.value)}
             placeholder="#000000"
-            className="flex-1 h-10 font-mono text-xs"
+            className="h-10 flex-1 font-mono text-xs"
           />
         </div>
       </div>
-    );
-  };
+    )
+  }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl mb-4">
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-8 text-center">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-purple-500 to-pink-600">
           <Palette className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-3">
+        <h2 className="mb-3 text-2xl font-bold text-zinc-900 dark:text-white">
           Theme Customization
         </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-lg mx-auto">
-          Customize every aspect of your app's appearance with full control over colors, buttons, and UI elements.
+        <p className="mx-auto max-w-lg leading-relaxed text-zinc-600 dark:text-zinc-400">
+          Customize every aspect of your app's appearance with full control over colors, buttons,
+          and UI elements.
         </p>
       </div>
 
@@ -192,118 +214,42 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
           <TabsTrigger value="import">Import/Export</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="presets" className="space-y-4 mt-6">
+        <TabsContent value="presets" className="mt-6 space-y-4">
           {/* Main Theme Presets */}
           <div>
-            <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">Featured Themes</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            <h3 className="mb-3 text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              Featured Themes
+            </h3>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
               {Object.entries(themePresets)
-                .filter(([key]) => ['nself', 'slack', 'discord', 'ocean', 'sunset', 'midnight'].includes(key))
+                .filter(([key]) =>
+                  ['nself', 'slack', 'discord', 'ocean', 'sunset', 'midnight'].includes(key)
+                )
                 .map(([key, preset]) => (
-              <button
-                key={key}
-                onClick={() => applyPreset(key)}
-                className={`p-4 rounded-xl border-2 transition-all hover:scale-105 ${
-                  selectedPreset === key
-                    ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/30'
-                    : 'border-zinc-200 dark:border-zinc-700 hover:border-sky-300'
-                }`}
-              >
-                <div className="flex flex-col gap-2 mb-2">
-                  {/* Light mode colors */}
-                  <div className="flex items-center gap-2">
-                    <Sun className="h-3 w-3 text-zinc-400" />
-                    <div className="flex -space-x-1">
-                      <div
-                        className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
-                        style={{ backgroundColor: preset.light.primaryColor }}
-                      />
-                      <div
-                        className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
-                        style={{ backgroundColor: preset.light.secondaryColor }}
-                      />
-                      <div
-                        className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
-                        style={{ backgroundColor: preset.light.accentColor }}
-                      />
-                    </div>
-                  </div>
-                  {/* Dark mode colors */}
-                  <div className="flex items-center gap-2">
-                    <Moon className="h-3 w-3 text-zinc-400" />
-                    <div className="flex -space-x-1">
-                      <div
-                        className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
-                        style={{ backgroundColor: preset.dark.primaryColor }}
-                      />
-                      <div
-                        className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
-                        style={{ backgroundColor: preset.dark.secondaryColor }}
-                      />
-                      <div
-                        className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
-                        style={{ backgroundColor: preset.dark.accentColor }}
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div className="flex items-center justify-between w-full">
-                  <p className="font-medium text-sm text-zinc-900 dark:text-white">
-                    {preset.name}
-                  </p>
-                  {selectedPreset === key && (
-                    <Check className="h-4 w-4 text-sky-500" />
-                  )}
-                </div>
-              </button>
-            ))}
-            </div>
-          </div>
-          
-          {/* Tailwind Colors - Collapsible */}
-          <div>
-            <button
-              onClick={() => setShowTailwindColors(!showTailwindColors)}
-              className="flex items-center gap-2 text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-            >
-              <span>Tailwind Color Palettes</span>
-              {showTailwindColors ? (
-                <ChevronUp className="h-4 w-4" />
-              ) : (
-                <ChevronDown className="h-4 w-4" />
-              )}
-              <Badge variant="secondary" className="ml-2">18 colors</Badge>
-            </button>
-            
-            {showTailwindColors && (
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {Object.entries(themePresets)
-                  .filter(([key]) => !['nself', 'slack', 'discord', 'ocean', 'sunset', 'midnight'].includes(key))
-                  .map(([key, preset]) => (
                   <button
                     key={key}
                     onClick={() => applyPreset(key)}
-                    className={`p-4 rounded-xl border-2 transition-all hover:scale-105 ${
+                    className={`rounded-xl border-2 p-4 transition-all hover:scale-105 ${
                       selectedPreset === key
                         ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/30'
-                        : 'border-zinc-200 dark:border-zinc-700 hover:border-sky-300'
+                        : 'border-zinc-200 hover:border-sky-300 dark:border-zinc-700'
                     }`}
                   >
-                    <div className="flex flex-col gap-2 mb-2">
+                    <div className="mb-2 flex flex-col gap-2">
                       {/* Light mode colors */}
                       <div className="flex items-center gap-2">
                         <Sun className="h-3 w-3 text-zinc-400" />
                         <div className="flex -space-x-1">
                           <div
-                            className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
+                            className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
                             style={{ backgroundColor: preset.light.primaryColor }}
                           />
                           <div
-                            className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
+                            className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
                             style={{ backgroundColor: preset.light.secondaryColor }}
                           />
                           <div
-                            className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
+                            className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
                             style={{ backgroundColor: preset.light.accentColor }}
                           />
                         </div>
@@ -313,42 +259,123 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
                         <Moon className="h-3 w-3 text-zinc-400" />
                         <div className="flex -space-x-1">
                           <div
-                            className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
+                            className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
                             style={{ backgroundColor: preset.dark.primaryColor }}
                           />
                           <div
-                            className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
+                            className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
                             style={{ backgroundColor: preset.dark.secondaryColor }}
                           />
                           <div
-                            className="w-3 h-3 rounded-full border border-white dark:border-zinc-800"
+                            className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
                             style={{ backgroundColor: preset.dark.accentColor }}
                           />
                         </div>
                       </div>
                     </div>
-                    <div className="flex items-center justify-between w-full">
-                      <p className="font-medium text-sm text-zinc-900 dark:text-white">
+                    <div className="flex w-full items-center justify-between">
+                      <p className="text-sm font-medium text-zinc-900 dark:text-white">
                         {preset.name}
                       </p>
-                      {selectedPreset === key && (
-                        <Check className="h-4 w-4 text-sky-500" />
-                      )}
+                      {selectedPreset === key && <Check className="h-4 w-4 text-sky-500" />}
                     </div>
                   </button>
                 ))}
+            </div>
+          </div>
+
+          {/* Tailwind Colors - Collapsible */}
+          <div>
+            <button
+              onClick={() => setShowTailwindColors(!showTailwindColors)}
+              className="mb-3 flex items-center gap-2 text-sm font-medium text-zinc-700 transition-colors hover:text-zinc-900 dark:text-zinc-300 dark:hover:text-zinc-100"
+            >
+              <span>Tailwind Color Palettes</span>
+              {showTailwindColors ? (
+                <ChevronUp className="h-4 w-4" />
+              ) : (
+                <ChevronDown className="h-4 w-4" />
+              )}
+              <Badge variant="secondary" className="ml-2">
+                18 colors
+              </Badge>
+            </button>
+
+            {showTailwindColors && (
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+                {Object.entries(themePresets)
+                  .filter(
+                    ([key]) =>
+                      !['nself', 'slack', 'discord', 'ocean', 'sunset', 'midnight'].includes(key)
+                  )
+                  .map(([key, preset]) => (
+                    <button
+                      key={key}
+                      onClick={() => applyPreset(key)}
+                      className={`rounded-xl border-2 p-4 transition-all hover:scale-105 ${
+                        selectedPreset === key
+                          ? 'border-sky-500 bg-sky-50 dark:bg-sky-950/30'
+                          : 'border-zinc-200 hover:border-sky-300 dark:border-zinc-700'
+                      }`}
+                    >
+                      <div className="mb-2 flex flex-col gap-2">
+                        {/* Light mode colors */}
+                        <div className="flex items-center gap-2">
+                          <Sun className="h-3 w-3 text-zinc-400" />
+                          <div className="flex -space-x-1">
+                            <div
+                              className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
+                              style={{ backgroundColor: preset.light.primaryColor }}
+                            />
+                            <div
+                              className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
+                              style={{ backgroundColor: preset.light.secondaryColor }}
+                            />
+                            <div
+                              className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
+                              style={{ backgroundColor: preset.light.accentColor }}
+                            />
+                          </div>
+                        </div>
+                        {/* Dark mode colors */}
+                        <div className="flex items-center gap-2">
+                          <Moon className="h-3 w-3 text-zinc-400" />
+                          <div className="flex -space-x-1">
+                            <div
+                              className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
+                              style={{ backgroundColor: preset.dark.primaryColor }}
+                            />
+                            <div
+                              className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
+                              style={{ backgroundColor: preset.dark.secondaryColor }}
+                            />
+                            <div
+                              className="h-3 w-3 rounded-full border border-white dark:border-zinc-800"
+                              style={{ backgroundColor: preset.dark.accentColor }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex w-full items-center justify-between">
+                        <p className="text-sm font-medium text-zinc-900 dark:text-white">
+                          {preset.name}
+                        </p>
+                        {selectedPreset === key && <Check className="h-4 w-4 text-sky-500" />}
+                      </div>
+                    </button>
+                  ))}
               </div>
             )}
           </div>
         </TabsContent>
 
-        <TabsContent value="customize" className="space-y-6 mt-6">
+        <TabsContent value="customize" className="mt-6 space-y-6">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Base Colors</CardTitle>
               <CardDescription>Core colors that define your app's identity</CardDescription>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-3">
               <ColorInput
                 label="Primary"
                 value={theme.primaryColor}
@@ -405,7 +432,7 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
               <CardTitle className="text-lg">Button Colors</CardTitle>
               <CardDescription>Customize button appearance</CardDescription>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <ColorInput
                 label="Primary BG"
                 value={theme.buttonPrimaryBg}
@@ -438,7 +465,7 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
               <CardTitle className="text-lg">Status Colors</CardTitle>
               <CardDescription>Colors for different status states</CardDescription>
             </CardHeader>
-            <CardContent className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <CardContent className="grid grid-cols-2 gap-4 md:grid-cols-4">
               <ColorInput
                 label="Success"
                 value={theme.successColor}
@@ -472,7 +499,7 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
               <CardDescription>Additional customization options</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 <div>
                   <Label>Border Radius</Label>
                   <Select
@@ -504,7 +531,9 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
                     <SelectContent>
                       <SelectItem value="Inter, system-ui, sans-serif">Inter</SelectItem>
                       <SelectItem value="system-ui, sans-serif">System</SelectItem>
-                      <SelectItem value="'SF Pro Display', system-ui, sans-serif">SF Pro</SelectItem>
+                      <SelectItem value="'SF Pro Display', system-ui, sans-serif">
+                        SF Pro
+                      </SelectItem>
                       <SelectItem value="'Segoe UI', system-ui, sans-serif">Segoe UI</SelectItem>
                       <SelectItem value="'Roboto', sans-serif">Roboto</SelectItem>
                       <SelectItem value="'Open Sans', sans-serif">Open Sans</SelectItem>
@@ -516,7 +545,7 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
           </Card>
         </TabsContent>
 
-        <TabsContent value="import" className="space-y-4 mt-6">
+        <TabsContent value="import" className="mt-6 space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Import Theme</CardTitle>
@@ -527,10 +556,10 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
                 placeholder="Paste your theme JSON here..."
                 value={importTheme}
                 onChange={(e) => setImportTheme(e.target.value)}
-                className="font-mono text-xs h-32"
+                className="h-32 font-mono text-xs"
               />
               <Button onClick={handleImportTheme} disabled={!importTheme}>
-                <Upload className="h-4 w-4 mr-2" />
+                <Upload className="mr-2 h-4 w-4" />
                 Import Theme
               </Button>
             </CardContent>
@@ -545,12 +574,12 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
               <Button onClick={exportTheme}>
                 {copied ? (
                   <>
-                    <Check className="h-4 w-4 mr-2" />
+                    <Check className="mr-2 h-4 w-4" />
                     Copied!
                   </>
                 ) : (
                   <>
-                    <Copy className="h-4 w-4 mr-2" />
+                    <Copy className="mr-2 h-4 w-4" />
                     Copy Theme JSON
                   </>
                 )}
@@ -561,59 +590,64 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
       </Tabs>
 
       {/* Comprehensive App Preview */}
-      <Card className="mt-8 overflow-hidden" style={{ backgroundColor: '#18181b', borderColor: '#3f3f46' }}>
+      <Card
+        className="mt-8 overflow-hidden"
+        style={{ backgroundColor: '#18181b', borderColor: '#3f3f46' }}
+      >
         <CardHeader style={{ backgroundColor: '#18181b' }}>
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="text-white">Live Preview</CardTitle>
-              <CardDescription className="text-zinc-400">See how your theme looks in the actual app</CardDescription>
+              <CardDescription className="text-zinc-400">
+                See how your theme looks in the actual app
+              </CardDescription>
             </div>
-            <div className="flex gap-1 p-1 bg-zinc-800 rounded-xl">
+            <div className="flex gap-1 rounded-xl bg-zinc-800 p-1">
               <button
                 onClick={() => handlePreviewModeChange('light')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
-                  previewMode === 'light' 
-                    ? 'bg-zinc-700 text-white shadow-sm' 
+                className={`rounded-md px-3 py-1 text-sm font-medium transition-all ${
+                  previewMode === 'light'
+                    ? 'bg-zinc-700 text-white shadow-sm'
                     : 'text-zinc-400 hover:text-zinc-300'
                 }`}
               >
-                <Sun className="h-3.5 w-3.5 inline mr-1" />
+                <Sun className="mr-1 inline h-3.5 w-3.5" />
                 Light
               </button>
               <button
                 onClick={() => handlePreviewModeChange('dark')}
-                className={`px-3 py-1 rounded-md text-sm font-medium transition-all ${
-                  previewMode === 'dark' 
-                    ? 'bg-zinc-700 text-white shadow-sm' 
+                className={`rounded-md px-3 py-1 text-sm font-medium transition-all ${
+                  previewMode === 'dark'
+                    ? 'bg-zinc-700 text-white shadow-sm'
                     : 'text-zinc-400 hover:text-zinc-300'
                 }`}
               >
-                <Moon className="h-3.5 w-3.5 inline mr-1" />
+                <Moon className="mr-1 inline h-3.5 w-3.5" />
                 Dark
               </button>
             </div>
           </div>
         </CardHeader>
         <CardContent style={{ backgroundColor: '#18181b' }}>
-          <div 
-            className="rounded-xl overflow-hidden border-2"
-            style={{ 
+          <div
+            className="overflow-hidden rounded-xl border-2"
+            style={{
               backgroundColor: previewTheme.backgroundColor,
-              borderColor: previewTheme.borderColor 
+              borderColor: previewTheme.borderColor,
             }}
           >
             {/* App Header */}
-            <div 
-              className="p-4 border-b"
-              style={{ 
+            <div
+              className="border-b p-4"
+              style={{
                 backgroundColor: previewTheme.surfaceColor,
-                borderColor: previewTheme.borderColor 
+                borderColor: previewTheme.borderColor,
               }}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div 
-                    className="w-8 h-8 rounded-xl"
+                  <div
+                    className="h-8 w-8 rounded-xl"
                     style={{ backgroundColor: previewTheme.primaryColor }}
                   />
                   <span style={{ color: previewTheme.textColor }} className="font-semibold">
@@ -622,21 +656,21 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
                 </div>
                 <div className="flex gap-2">
                   <button
-                    className="px-3 py-1.5 rounded text-sm font-medium"
+                    className="rounded px-3 py-1.5 text-sm font-medium"
                     style={{
                       backgroundColor: previewTheme.buttonPrimaryBg,
                       color: previewTheme.buttonPrimaryText,
-                      borderRadius: previewTheme.borderRadius
+                      borderRadius: previewTheme.borderRadius,
                     }}
                   >
                     Primary
                   </button>
                   <button
-                    className="px-3 py-1.5 rounded text-sm font-medium"
+                    className="rounded px-3 py-1.5 text-sm font-medium"
                     style={{
                       backgroundColor: previewTheme.buttonSecondaryBg,
                       color: previewTheme.buttonSecondaryText,
-                      borderRadius: previewTheme.borderRadius
+                      borderRadius: previewTheme.borderRadius,
                     }}
                   >
                     Secondary
@@ -648,22 +682,25 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
             {/* Main Content Area */}
             <div className="flex h-64">
               {/* Sidebar */}
-              <div 
-                className="w-48 p-4 border-r"
-                style={{ 
+              <div
+                className="w-48 border-r p-4"
+                style={{
                   backgroundColor: theme.surfaceColor,
-                  borderColor: theme.borderColor 
+                  borderColor: theme.borderColor,
                 }}
               >
                 <div className="space-y-2">
-                  <div 
-                    className="p-2 rounded"
-                    style={{ 
+                  <div
+                    className="rounded p-2"
+                    style={{
                       backgroundColor: previewTheme.primaryColor + '20',
-                      borderRadius: previewTheme.borderRadius 
+                      borderRadius: previewTheme.borderRadius,
                     }}
                   >
-                    <span style={{ color: previewTheme.primaryColor }} className="text-sm font-medium">
+                    <span
+                      style={{ color: previewTheme.primaryColor }}
+                      className="text-sm font-medium"
+                    >
                       Active Item
                     </span>
                   </div>
@@ -682,48 +719,63 @@ export function ThemeStep({ config, onUpdate, onValidate }: ThemeStepProps) {
 
               {/* Content */}
               <div className="flex-1 p-6">
-                <h3 style={{ color: previewTheme.textColor }} className="text-lg font-semibold mb-4">
+                <h3
+                  style={{ color: previewTheme.textColor }}
+                  className="mb-4 text-lg font-semibold"
+                >
                   Content Area
                 </h3>
                 <div className="space-y-3">
                   <div className="flex gap-2">
-                    <span 
+                    <span
                       className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                      style={{ backgroundColor: previewTheme.successColor || '#10B981', color: '#FFFFFF' }}
+                      style={{
+                        backgroundColor: previewTheme.successColor || '#10B981',
+                        color: '#FFFFFF',
+                      }}
                     >
                       Success
                     </span>
-                    <span 
+                    <span
                       className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                      style={{ backgroundColor: previewTheme.warningColor || '#F59E0B', color: '#FFFFFF' }}
+                      style={{
+                        backgroundColor: previewTheme.warningColor || '#F59E0B',
+                        color: '#FFFFFF',
+                      }}
                     >
                       Warning
                     </span>
-                    <span 
+                    <span
                       className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                      style={{ backgroundColor: previewTheme.errorColor || '#EF4444', color: '#FFFFFF' }}
+                      style={{
+                        backgroundColor: previewTheme.errorColor || '#EF4444',
+                        color: '#FFFFFF',
+                      }}
                     >
                       Error
                     </span>
-                    <span 
+                    <span
                       className="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
-                      style={{ backgroundColor: previewTheme.infoColor || '#3B82F6', color: '#FFFFFF' }}
+                      style={{
+                        backgroundColor: previewTheme.infoColor || '#3B82F6',
+                        color: '#FFFFFF',
+                      }}
                     >
                       Info
                     </span>
                   </div>
-                  <div 
-                    className="p-4 rounded"
-                    style={{ 
+                  <div
+                    className="rounded p-4"
+                    style={{
                       backgroundColor: previewTheme.surfaceColor,
                       borderRadius: previewTheme.borderRadius,
-                      border: `1px solid ${previewTheme.borderColor}`
+                      border: `1px solid ${previewTheme.borderColor}`,
                     }}
                   >
                     <p style={{ color: previewTheme.textColor }} className="text-sm">
                       This is how your content cards will look.
                     </p>
-                    <p style={{ color: previewTheme.mutedColor }} className="text-xs mt-2">
+                    <p style={{ color: previewTheme.mutedColor }} className="mt-2 text-xs">
                       Muted text appears like this.
                     </p>
                   </div>

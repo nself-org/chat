@@ -103,7 +103,8 @@
 .rich-editor-content code:not(pre code) {
   background-color: hsl(var(--muted));
   border-radius: 0.25rem;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 0.875em;
   padding: 0.125rem 0.375rem;
   color: hsl(var(--foreground));
@@ -117,7 +118,8 @@
   background-color: hsl(var(--muted) / 0.5);
   border: 1px solid hsl(var(--border));
   border-radius: 0.5rem;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  font-family:
+    ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   font-size: 0.875rem;
   line-height: 1.5;
   margin: 0.75rem 0;
@@ -367,7 +369,7 @@
 }
 
 .mention-user::before {
-  content: "@";
+  content: '@';
 }
 
 /* Channel mentions */
@@ -376,7 +378,7 @@
 }
 
 .mention-channel::before {
-  content: "#";
+  content: '#';
 }
 
 /* ============================================================================
@@ -384,7 +386,8 @@
    ============================================================================ */
 
 .emoji {
-  font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+  font-family:
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji', sans-serif;
   font-size: 1.25em;
   line-height: 1;
   vertical-align: middle;
@@ -426,7 +429,7 @@
 }
 
 .ProseMirror-gapcursor:after {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   top: -2px;

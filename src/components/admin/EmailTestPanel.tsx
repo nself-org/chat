@@ -4,40 +4,42 @@
  * Admin component for testing email templates and configuration.
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import * as React from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { CheckCircle2, XCircle, Loader2, Mail, Send } from 'lucide-react';
-import type { EmailType } from '@/lib/email/types';
+} from '@/components/ui/select'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { CheckCircle2, XCircle, Loader2, Mail, Send } from 'lucide-react'
+import type { EmailType } from '@/lib/email/types'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Email Test Panel Component
 // ============================================================================
 
 export default function EmailTestPanel() {
-  const [emailType, setEmailType] = React.useState<EmailType>('welcome');
-  const [recipientEmail, setRecipientEmail] = React.useState('');
-  const [recipientName, setRecipientName] = React.useState('');
-  const [sending, setSending] = React.useState(false);
-  const [verifying, setVerifying] = React.useState(false);
+  const [emailType, setEmailType] = React.useState<EmailType>('welcome')
+  const [recipientEmail, setRecipientEmail] = React.useState('')
+  const [recipientName, setRecipientName] = React.useState('')
+  const [sending, setSending] = React.useState(false)
+  const [verifying, setVerifying] = React.useState(false)
   const [result, setResult] = React.useState<{
-    success: boolean;
-    message: string;
-  } | null>(null);
-  const [queueStatus, setQueueStatus] = React.useState<any>(null);
+    success: boolean
+    message: string
+  } | null>(null)
+  const [queueStatus, setQueueStatus] = React.useState<any>(null)
 
   // Template-specific data
   const [templateData, setTemplateData] = React.useState<Record<string, any>>({
@@ -48,7 +50,7 @@ export default function EmailTestPanel() {
     resetUrl: 'http://localhost:3000/reset?token=xyz789',
     messagePreview: 'Hey, check out this cool feature!',
     messageUrl: 'http://localhost:3000/chat/channel/general/msg123',
-  });
+  })
 
   // ==========================================================================
   // Handlers
@@ -59,12 +61,12 @@ export default function EmailTestPanel() {
       setResult({
         success: false,
         message: 'Please enter a recipient email address',
-      });
-      return;
+      })
+      return
     }
 
-    setSending(true);
-    setResult(null);
+    setSending(true)
+    setResult(null)
 
     try {
       const response = await fetch('/api/email/send', {
@@ -78,96 +80,96 @@ export default function EmailTestPanel() {
           },
           data: getTemplateData(emailType),
         }),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (response.ok) {
         setResult({
           success: true,
           message: `Email queued successfully! ID: ${data.emailId}`,
-        });
+        })
         // Refresh queue status
-        fetchQueueStatus();
+        fetchQueueStatus()
       } else {
         setResult({
           success: false,
           message: data.error || 'Failed to send email',
-        });
+        })
       }
     } catch (error) {
       setResult({
         success: false,
         message: error instanceof Error ? error.message : 'Unknown error',
-      });
+      })
     } finally {
-      setSending(false);
+      setSending(false)
     }
-  };
+  }
 
   const handleVerifyConfig = async () => {
-    setVerifying(true);
+    setVerifying(true)
 
     try {
-      const response = await fetch('/api/email/send?action=verify');
-      const data = await response.json();
+      const response = await fetch('/api/email/send?action=verify')
+      const data = await response.json()
 
       setResult({
         success: data.valid,
         message: data.valid
           ? 'Email configuration is valid and working!'
           : 'Email configuration verification failed. Check your settings.',
-      });
+      })
     } catch (_error) {
       setResult({
         success: false,
         message: 'Failed to verify email configuration',
-      });
+      })
     } finally {
-      setVerifying(false);
+      setVerifying(false)
     }
-  };
+  }
 
   const fetchQueueStatus = async () => {
     try {
-      const response = await fetch('/api/email/send?action=status');
-      const data = await response.json();
-      setQueueStatus(data);
+      const response = await fetch('/api/email/send?action=status')
+      const data = await response.json()
+      setQueueStatus(data)
     } catch (error) {
-      console.error('Failed to fetch queue status:', error);
+      logger.error('Failed to fetch queue status:', error)
     }
-  };
+  }
 
   const getTemplateData = (type: EmailType): any => {
     const baseData = {
       userName: templateData.userName,
-    };
+    }
 
     switch (type) {
       case 'welcome':
         return {
           ...baseData,
           loginUrl: templateData.loginUrl,
-        };
+        }
 
       case 'email-verification':
         return {
           ...baseData,
           verificationUrl: templateData.verificationUrl,
           verificationCode: templateData.verificationCode,
-        };
+        }
 
       case 'password-reset':
         return {
           ...baseData,
           resetUrl: templateData.resetUrl,
-        };
+        }
 
       case 'password-changed':
         return {
           ...baseData,
           timestamp: new Date(),
-        };
+        }
 
       case 'new-login':
         return {
@@ -177,7 +179,7 @@ export default function EmailTestPanel() {
             os: 'macOS',
           },
           timestamp: new Date(),
-        };
+        }
 
       case 'mention-notification':
         return {
@@ -192,7 +194,7 @@ export default function EmailTestPanel() {
           messagePreview: templateData.messagePreview,
           messageUrl: templateData.messageUrl,
           timestamp: new Date(),
-        };
+        }
 
       case 'dm-notification':
         return {
@@ -203,7 +205,7 @@ export default function EmailTestPanel() {
           messagePreview: templateData.messagePreview,
           messageUrl: templateData.messageUrl,
           timestamp: new Date(),
-        };
+        }
 
       case 'digest':
         return {
@@ -231,17 +233,17 @@ export default function EmailTestPanel() {
             totalReactions: 5,
             activeChannels: ['general', 'random'],
           },
-        };
+        }
 
       default:
-        return baseData;
+        return baseData
     }
-  };
+  }
 
   // Load queue status on mount
   React.useEffect(() => {
-    fetchQueueStatus();
-  }, []);
+    fetchQueueStatus()
+  }, [])
 
   // ==========================================================================
   // Render
@@ -254,9 +256,7 @@ export default function EmailTestPanel() {
           <Mail className="h-5 w-5" />
           Email Testing Panel
         </CardTitle>
-        <CardDescription>
-          Test email templates and verify email configuration
-        </CardDescription>
+        <CardDescription>Test email templates and verify email configuration</CardDescription>
       </CardHeader>
 
       <CardContent>
@@ -322,19 +322,13 @@ export default function EmailTestPanel() {
                   id="user-name"
                   placeholder="Test User"
                   value={templateData.userName}
-                  onChange={(e) =>
-                    setTemplateData({ ...templateData, userName: e.target.value })
-                  }
+                  onChange={(e) => setTemplateData({ ...templateData, userName: e.target.value })}
                 />
               </div>
 
               {/* Actions */}
               <div className="flex gap-2">
-                <Button
-                  onClick={handleSendTestEmail}
-                  disabled={sending}
-                  className="flex-1"
-                >
+                <Button onClick={handleSendTestEmail} disabled={sending} className="flex-1">
                   {sending ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -348,16 +342,8 @@ export default function EmailTestPanel() {
                   )}
                 </Button>
 
-                <Button
-                  variant="outline"
-                  onClick={handleVerifyConfig}
-                  disabled={verifying}
-                >
-                  {verifying ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    'Verify Config'
-                  )}
+                <Button variant="outline" onClick={handleVerifyConfig} disabled={verifying}>
+                  {verifying ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Verify Config'}
                 </Button>
               </div>
 
@@ -394,9 +380,7 @@ export default function EmailTestPanel() {
                     <CardTitle className="text-sm">Pending</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-3xl font-bold text-yellow-600">
-                      {queueStatus.pending}
-                    </p>
+                    <p className="text-3xl font-bold text-yellow-600">{queueStatus.pending}</p>
                   </CardContent>
                 </Card>
 
@@ -405,9 +389,7 @@ export default function EmailTestPanel() {
                     <CardTitle className="text-sm">Sending</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-3xl font-bold text-blue-600">
-                      {queueStatus.sending}
-                    </p>
+                    <p className="text-3xl font-bold text-blue-600">{queueStatus.sending}</p>
                   </CardContent>
                 </Card>
 
@@ -416,9 +398,7 @@ export default function EmailTestPanel() {
                     <CardTitle className="text-sm">Failed</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <p className="text-3xl font-bold text-red-600">
-                      {queueStatus.failed}
-                    </p>
+                    <p className="text-3xl font-bold text-red-600">{queueStatus.failed}</p>
                   </CardContent>
                 </Card>
               </div>
@@ -435,5 +415,5 @@ export default function EmailTestPanel() {
         </Tabs>
       </CardContent>
     </Card>
-  );
+  )
 }

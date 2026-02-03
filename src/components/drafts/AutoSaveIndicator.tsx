@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * AutoSaveIndicator - Shows auto-save status
@@ -6,18 +6,13 @@
  * Visual indicator for draft auto-save status
  */
 
-import * as React from 'react';
-import { Loader2, Check, AlertCircle, Cloud, CloudOff } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { useDraftsStore, selectAutoSaveState } from '@/stores/drafts-store';
-import { formatLastSaveTime, getAutoSaveStatusText } from '@/lib/drafts';
-import type { AutoSaveStatus } from '@/lib/drafts/draft-types';
+import * as React from 'react'
+import { Loader2, Check, AlertCircle, Cloud, CloudOff } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useDraftsStore, selectAutoSaveState } from '@/stores/drafts-store'
+import { formatLastSaveTime, getAutoSaveStatusText } from '@/lib/drafts'
+import type { AutoSaveStatus } from '@/lib/drafts/draft-types'
 
 // ============================================================================
 // Types
@@ -25,21 +20,21 @@ import type { AutoSaveStatus } from '@/lib/drafts/draft-types';
 
 export interface AutoSaveIndicatorProps {
   /** Override status (otherwise uses store) */
-  status?: AutoSaveStatus;
+  status?: AutoSaveStatus
   /** Override error message */
-  error?: string | null;
+  error?: string | null
   /** Override last save time */
-  lastSaveTime?: number | null;
+  lastSaveTime?: number | null
   /** Show text label */
-  showLabel?: boolean;
+  showLabel?: boolean
   /** Size variant */
-  size?: 'sm' | 'default' | 'lg';
+  size?: 'sm' | 'default' | 'lg'
   /** Show tooltip */
-  showTooltip?: boolean;
+  showTooltip?: boolean
   /** Animate transitions */
-  animate?: boolean;
+  animate?: boolean
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -57,7 +52,7 @@ const sizeClasses = {
     default: 'text-xs',
     lg: 'text-sm',
   },
-};
+}
 
 // ============================================================================
 // Status Config
@@ -66,9 +61,9 @@ const sizeClasses = {
 const statusConfig: Record<
   AutoSaveStatus,
   {
-    icon: typeof Loader2;
-    color: string;
-    label: string;
+    icon: typeof Loader2
+    color: string
+    label: string
   }
 > = {
   idle: {
@@ -91,7 +86,7 @@ const statusConfig: Record<
     color: 'text-destructive',
     label: 'Save failed',
   },
-};
+}
 
 // ============================================================================
 // Component
@@ -107,26 +102,26 @@ export function AutoSaveIndicator({
   animate = true,
   className,
 }: AutoSaveIndicatorProps) {
-  const autoSaveState = useDraftsStore(selectAutoSaveState);
+  const autoSaveState = useDraftsStore(selectAutoSaveState)
 
-  const status = statusProp ?? autoSaveState.status;
-  const error = errorProp ?? autoSaveState.error;
-  const lastSaveTime = lastSaveTimeProp ?? autoSaveState.lastSaveTime;
+  const status = statusProp ?? autoSaveState.status
+  const error = errorProp ?? autoSaveState.error
+  const lastSaveTime = lastSaveTimeProp ?? autoSaveState.lastSaveTime
 
-  const config = statusConfig[status];
-  const Icon = config.icon;
+  const config = statusConfig[status]
+  const Icon = config.icon
 
   // Build tooltip text
-  const tooltipText = status === 'error'
-    ? `Error: ${error}`
-    : status === 'saved' && lastSaveTime
-    ? `Last saved ${formatLastSaveTime(lastSaveTime)}`
-    : config.label;
+  const tooltipText =
+    status === 'error'
+      ? `Error: ${error}`
+      : status === 'saved' && lastSaveTime
+        ? `Last saved ${formatLastSaveTime(lastSaveTime)}`
+        : config.label
 
   // Build label text
-  const labelText = status === 'saved' && lastSaveTime
-    ? formatLastSaveTime(lastSaveTime)
-    : config.label;
+  const labelText =
+    status === 'saved' && lastSaveTime ? formatLastSaveTime(lastSaveTime) : config.label
 
   const indicator = (
     <div
@@ -137,11 +132,7 @@ export function AutoSaveIndicator({
       )}
     >
       <Icon
-        className={cn(
-          sizeClasses.icon[size],
-          config.color,
-          status === 'saving' && 'animate-spin'
-        )}
+        className={cn(sizeClasses.icon[size], config.color, status === 'saving' && 'animate-spin')}
       />
       {showLabel && (
         <span
@@ -155,10 +146,10 @@ export function AutoSaveIndicator({
         </span>
       )}
     </div>
-  );
+  )
 
   if (!showTooltip) {
-    return indicator;
+    return indicator
   }
 
   return (
@@ -168,7 +159,7 @@ export function AutoSaveIndicator({
         <TooltipContent side="top">{tooltipText}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
+  )
 }
 
 // ============================================================================
@@ -176,8 +167,8 @@ export function AutoSaveIndicator({
 // ============================================================================
 
 export interface AutoSaveIndicatorMinimalProps {
-  status?: AutoSaveStatus;
-  className?: string;
+  status?: AutoSaveStatus
+  className?: string
 }
 
 /**
@@ -187,15 +178,15 @@ export function AutoSaveIndicatorMinimal({
   status: statusProp,
   className,
 }: AutoSaveIndicatorMinimalProps) {
-  const autoSaveState = useDraftsStore(selectAutoSaveState);
-  const status = statusProp ?? autoSaveState.status;
+  const autoSaveState = useDraftsStore(selectAutoSaveState)
+  const status = statusProp ?? autoSaveState.status
 
   const colorClasses: Record<AutoSaveStatus, string> = {
     idle: 'bg-muted-foreground',
     saving: 'bg-blue-500 animate-pulse',
     saved: 'bg-green-500',
     error: 'bg-destructive',
-  };
+  }
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -209,12 +200,10 @@ export function AutoSaveIndicatorMinimal({
             )}
           />
         </TooltipTrigger>
-        <TooltipContent side="top">
-          {statusConfig[status].label}
-        </TooltipContent>
+        <TooltipContent side="top">{statusConfig[status].label}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
+  )
 }
 
 // ============================================================================
@@ -222,9 +211,9 @@ export function AutoSaveIndicatorMinimal({
 // ============================================================================
 
 export interface AutoSaveIndicatorInlineProps {
-  status?: AutoSaveStatus;
-  lastSaveTime?: number | null;
-  className?: string;
+  status?: AutoSaveStatus
+  lastSaveTime?: number | null
+  className?: string
 }
 
 /**
@@ -235,29 +224,27 @@ export function AutoSaveIndicatorInline({
   lastSaveTime: lastSaveTimeProp,
   className,
 }: AutoSaveIndicatorInlineProps) {
-  const autoSaveState = useDraftsStore(selectAutoSaveState);
-  const status = statusProp ?? autoSaveState.status;
-  const lastSaveTime = lastSaveTimeProp ?? autoSaveState.lastSaveTime;
+  const autoSaveState = useDraftsStore(selectAutoSaveState)
+  const status = statusProp ?? autoSaveState.status
+  const lastSaveTime = lastSaveTimeProp ?? autoSaveState.lastSaveTime
 
-  let text: string;
+  let text: string
 
   switch (status) {
     case 'saving':
-      text = 'Saving...';
-      break;
+      text = 'Saving...'
+      break
     case 'saved':
-      text = lastSaveTime
-        ? `Saved ${formatLastSaveTime(lastSaveTime)}`
-        : 'Saved';
-      break;
+      text = lastSaveTime ? `Saved ${formatLastSaveTime(lastSaveTime)}` : 'Saved'
+      break
     case 'error':
-      text = 'Save failed';
-      break;
+      text = 'Save failed'
+      break
     default:
-      text = '';
+      text = ''
   }
 
-  if (!text) return null;
+  if (!text) return null
 
   return (
     <span
@@ -270,7 +257,7 @@ export function AutoSaveIndicatorInline({
     >
       {text}
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -278,20 +265,17 @@ export function AutoSaveIndicatorInline({
 // ============================================================================
 
 export interface AutoSaveConnectionProps {
-  isConnected?: boolean;
-  className?: string;
+  isConnected?: boolean
+  className?: string
 }
 
 /**
  * Shows sync/connection status
  */
-export function AutoSaveConnection({
-  isConnected = true,
-  className,
-}: AutoSaveConnectionProps) {
-  const Icon = isConnected ? Cloud : CloudOff;
-  const text = isConnected ? 'Synced' : 'Offline';
-  const color = isConnected ? 'text-green-500' : 'text-muted-foreground';
+export function AutoSaveConnection({ isConnected = true, className }: AutoSaveConnectionProps) {
+  const Icon = isConnected ? Cloud : CloudOff
+  const text = isConnected ? 'Synced' : 'Offline'
+  const color = isConnected ? 'text-green-500' : 'text-muted-foreground'
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -303,13 +287,11 @@ export function AutoSaveConnection({
           </div>
         </TooltipTrigger>
         <TooltipContent side="top">
-          {isConnected
-            ? 'Your drafts are synced'
-            : 'Drafts will sync when connected'}
+          {isConnected ? 'Your drafts are synced' : 'Drafts will sync when connected'}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
+  )
 }
 
-export default AutoSaveIndicator;
+export default AutoSaveIndicator

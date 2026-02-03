@@ -49,85 +49,80 @@ export interface MentionListRef {
 // Component
 // ============================================================================
 
-export const MentionList = forwardRef<MentionListRef, MentionListProps>(
-  function MentionList(
-    { items, selectedIndex, onSelect, onSelectionChange, className },
-    ref
-  ) {
-    const containerRef = useRef<HTMLDivElement>(null)
-    const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
+export const MentionList = forwardRef<MentionListRef, MentionListProps>(function MentionList(
+  { items, selectedIndex, onSelect, onSelectionChange, className },
+  ref
+) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
 
-    // Expose handlers to parent
-    useImperativeHandle(ref, () => ({
-      upHandler: () => {
-        const newIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1
-        onSelectionChange?.(newIndex)
-      },
-      downHandler: () => {
-        const newIndex = selectedIndex >= items.length - 1 ? 0 : selectedIndex + 1
-        onSelectionChange?.(newIndex)
-      },
-      enterHandler: () => {
-        const item = items[selectedIndex]
-        if (item) {
-          onSelect(item)
-        }
-      },
-    }))
-
-    // Scroll selected item into view
-    useEffect(() => {
-      const selectedItem = itemRefs.current.get(selectedIndex)
-      if (selectedItem) {
-        selectedItem.scrollIntoView({ block: 'nearest' })
+  // Expose handlers to parent
+  useImperativeHandle(ref, () => ({
+    upHandler: () => {
+      const newIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1
+      onSelectionChange?.(newIndex)
+    },
+    downHandler: () => {
+      const newIndex = selectedIndex >= items.length - 1 ? 0 : selectedIndex + 1
+      onSelectionChange?.(newIndex)
+    },
+    enterHandler: () => {
+      const item = items[selectedIndex]
+      if (item) {
+        onSelect(item)
       }
-    }, [selectedIndex])
+    },
+  }))
 
-    if (items.length === 0) {
-      return (
-        <div
-          className={cn(
-            'rounded-lg border bg-popover p-3 text-sm text-muted-foreground shadow-md',
-            className
-          )}
-        >
-          No users found
-        </div>
-      )
+  // Scroll selected item into view
+  useEffect(() => {
+    const selectedItem = itemRefs.current.get(selectedIndex)
+    if (selectedItem) {
+      selectedItem.scrollIntoView({ block: 'nearest' })
     }
+  }, [selectedIndex])
 
+  if (items.length === 0) {
     return (
       <div
-        ref={containerRef}
         className={cn(
-          'rounded-lg border bg-popover shadow-md overflow-hidden',
+          'rounded-lg border bg-popover p-3 text-sm text-muted-foreground shadow-md',
           className
         )}
       >
-        <ScrollArea className="max-h-[300px]">
-          <div className="p-1">
-            {items.map((item, index) => (
-              <MentionListItem
-                key={item.id}
-                ref={(el) => {
-                  if (el) {
-                    itemRefs.current.set(index, el)
-                  } else {
-                    itemRefs.current.delete(index)
-                  }
-                }}
-                user={item}
-                isSelected={index === selectedIndex}
-                onClick={() => onSelect(item)}
-                onMouseEnter={() => onSelectionChange?.(index)}
-              />
-            ))}
-          </div>
-        </ScrollArea>
+        No users found
       </div>
     )
   }
-)
+
+  return (
+    <div
+      ref={containerRef}
+      className={cn('overflow-hidden rounded-lg border bg-popover shadow-md', className)}
+    >
+      <ScrollArea className="max-h-[300px]">
+        <div className="p-1">
+          {items.map((item, index) => (
+            <MentionListItem
+              key={item.id}
+              ref={(el) => {
+                if (el) {
+                  itemRefs.current.set(index, el)
+                } else {
+                  itemRefs.current.delete(index)
+                }
+              }}
+              user={item}
+              isSelected={index === selectedIndex}
+              onClick={() => onSelect(item)}
+              onMouseEnter={() => onSelectionChange?.(index)}
+            />
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
+  )
+})
 
 // ============================================================================
 // MentionListItem Component
@@ -141,13 +136,8 @@ interface MentionListItemProps {
 }
 
 const MentionListItem = forwardRef<HTMLButtonElement, MentionListItemProps>(
-  function MentionListItem(
-    { user, isSelected, onClick, onMouseEnter },
-    ref
-  ) {
-    const presenceColor = user.presence
-      ? getPresenceColor(user.presence)
-      : '#6B7280'
+  function MentionListItem({ user, isSelected, onClick, onMouseEnter }, ref) {
+    const presenceColor = user.presence ? getPresenceColor(user.presence) : '#6B7280'
 
     return (
       <button
@@ -157,20 +147,14 @@ const MentionListItem = forwardRef<HTMLButtonElement, MentionListItemProps>(
         onMouseEnter={onMouseEnter}
         className={cn(
           'flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
-          isSelected
-            ? 'bg-accent text-accent-foreground'
-            : 'hover:bg-accent/50'
+          isSelected ? 'text-accent-foreground bg-accent' : 'hover:bg-accent/50'
         )}
       >
         {/* Avatar with presence indicator */}
         <div className="relative">
           <Avatar className="h-8 w-8">
-            {user.avatarUrl && (
-              <AvatarImage src={user.avatarUrl} alt={user.displayName} />
-            )}
-            <AvatarFallback className="text-xs">
-              {getInitials(user.displayName)}
-            </AvatarFallback>
+            {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.displayName} />}
+            <AvatarFallback className="text-xs">{getInitials(user.displayName)}</AvatarFallback>
           </Avatar>
           {/* Online status indicator */}
           {user.presence && (
@@ -182,11 +166,9 @@ const MentionListItem = forwardRef<HTMLButtonElement, MentionListItemProps>(
         </div>
 
         {/* User info */}
-        <div className="flex-1 min-w-0">
-          <div className="font-medium text-sm truncate">{user.displayName}</div>
-          <div className="text-xs text-muted-foreground truncate">
-            @{user.username}
-          </div>
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-medium">{user.displayName}</div>
+          <div className="truncate text-xs text-muted-foreground">@{user.username}</div>
         </div>
 
         {/* Presence label for screen readers */}

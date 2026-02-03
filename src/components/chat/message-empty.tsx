@@ -50,8 +50,7 @@ export function MessageEmpty({
       default:
         return (
           <>
-            Welcome to{' '}
-            <span className="font-bold text-foreground">#{channelName}</span>
+            Welcome to <span className="font-bold text-foreground">#{channelName}</span>
           </>
         )
     }
@@ -75,26 +74,17 @@ export function MessageEmpty({
   }
 
   return (
-    <div
-      className={cn(
-        'flex flex-col items-start justify-end p-6 pb-4',
-        className
-      )}
-    >
+    <div className={cn('flex flex-col items-start justify-end p-6 pb-4', className)}>
       {/* Icon */}
-      <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted/50">
+      <div className="bg-muted/50 mb-4 flex h-16 w-16 items-center justify-center rounded-full">
         {getIcon()}
       </div>
 
       {/* Title */}
-      <h2 className="mb-2 text-xl font-semibold text-muted-foreground">
-        {getTitle()}
-      </h2>
+      <h2 className="mb-2 text-xl font-semibold text-muted-foreground">{getTitle()}</h2>
 
       {/* Subtitle / Description */}
-      <p className="mb-4 max-w-lg text-sm text-muted-foreground">
-        {getSubtitle()}
-      </p>
+      <p className="mb-4 max-w-lg text-sm text-muted-foreground">{getSubtitle()}</p>
 
       {/* Channel metadata */}
       {(createdBy || createdAt) && (
@@ -126,18 +116,14 @@ export function MessageEmpty({
           </div>
           <ul className="mt-2 space-y-1 text-xs text-muted-foreground">
             <li>
-              Use <code className="rounded bg-muted px-1">@username</code> to
-              mention someone
+              Use <code className="rounded bg-muted px-1">@username</code> to mention someone
             </li>
             <li>
-              Use <code className="rounded bg-muted px-1">#channel</code> to
-              link to another channel
+              Use <code className="rounded bg-muted px-1">#channel</code> to link to another channel
             </li>
             <li>
-              Press <kbd className="rounded bg-muted px-1.5 py-0.5">Enter</kbd>{' '}
-              to send,{' '}
-              <kbd className="rounded bg-muted px-1.5 py-0.5">Shift+Enter</kbd>{' '}
-              for new line
+              Press <kbd className="rounded bg-muted px-1.5 py-0.5">Enter</kbd> to send,{' '}
+              <kbd className="rounded bg-muted px-1.5 py-0.5">Shift+Enter</kbd> for new line
             </li>
           </ul>
         </div>
@@ -149,26 +135,15 @@ export function MessageEmpty({
 /**
  * Simplified empty state for search results
  */
-export function SearchEmpty({
-  query,
-  className,
-}: {
-  query: string
-  className?: string
-}) {
+export function SearchEmpty({ query, className }: { query: string; className?: string }) {
   return (
     <div
-      className={cn(
-        'flex flex-col items-center justify-center gap-4 py-12 text-center',
-        className
-      )}
+      className={cn('flex flex-col items-center justify-center gap-4 py-12 text-center', className)}
     >
-      <MessageCircle className="h-12 w-12 text-muted-foreground/50" />
+      <MessageCircle className="text-muted-foreground/50 h-12 w-12" />
       <div className="space-y-1">
         <h3 className="font-medium">No messages found</h3>
-        <p className="text-sm text-muted-foreground">
-          No messages matching &quot;{query}&quot;
-        </p>
+        <p className="text-sm text-muted-foreground">No messages matching &quot;{query}&quot;</p>
       </div>
     </div>
   )
@@ -180,12 +155,9 @@ export function SearchEmpty({
 export function ThreadEmpty({ className }: { className?: string }) {
   return (
     <div
-      className={cn(
-        'flex flex-col items-center justify-center gap-4 py-12 text-center',
-        className
-      )}
+      className={cn('flex flex-col items-center justify-center gap-4 py-12 text-center', className)}
     >
-      <MessageCircle className="h-12 w-12 text-muted-foreground/50" />
+      <MessageCircle className="text-muted-foreground/50 h-12 w-12" />
       <div className="space-y-1">
         <h3 className="font-medium">No thread selected</h3>
         <p className="text-sm text-muted-foreground">

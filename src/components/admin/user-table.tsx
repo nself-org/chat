@@ -224,7 +224,7 @@ export function UserTable({
     <div className="space-y-4">
       {/* Filters */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative flex-1 max-w-sm">
+        <div className="relative max-w-sm flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search users..."
@@ -272,7 +272,7 @@ export function UserTable({
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-muted/50">
+              <tr className="bg-muted/50 border-b">
                 <th className="px-4 py-3 text-left text-sm font-medium text-muted-foreground">
                   User
                 </th>
@@ -337,7 +337,7 @@ export function UserTable({
                   const isOwner = roleName.toLowerCase() === 'owner'
 
                   return (
-                    <tr key={user.id} className="border-b last:border-b-0 hover:bg-muted/50">
+                    <tr key={user.id} className="hover:bg-muted/50 border-b last:border-b-0">
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10">
@@ -367,9 +367,7 @@ export function UserTable({
                       </td>
                       <td className="hidden px-4 py-3 md:table-cell">
                         <div className="flex items-center space-x-2">
-                          <div
-                            className={cn('h-2 w-2 rounded-full', statusColors[status])}
-                          />
+                          <div className={cn('h-2 w-2 rounded-full', statusColors[status])} />
                           <span className="text-sm capitalize">{status}</span>
                         </div>
                       </td>
@@ -390,10 +388,7 @@ export function UserTable({
                           <DropdownMenuContent align="end">
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                              onClick={() => onViewUser?.(user)}
-                              asChild
-                            >
+                            <DropdownMenuItem onClick={() => onViewUser?.(user)} asChild>
                               <Link href={`/admin/users/${user.id}`}>
                                 <Eye className="mr-2 h-4 w-4" />
                                 View Details

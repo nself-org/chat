@@ -1,12 +1,7 @@
 'use client'
 
 import { useCallback, useMemo, useState } from 'react'
-import {
-  useQuery,
-  useMutation,
-  useLazyQuery,
-  type ApolloError,
-} from '@apollo/client'
+import { useQuery, useMutation, useLazyQuery, type ApolloError } from '@apollo/client'
 import { useAuth } from '@/contexts/auth-context'
 import {
   SEARCH_MESSAGES,
@@ -272,10 +267,7 @@ export function useSearchMessages(limit = 20): UseSearchMessagesReturn {
 
         return {
           ...fetchMoreResult,
-          nchat_messages: [
-            ...prev.nchat_messages,
-            ...fetchMoreResult.nchat_messages,
-          ],
+          nchat_messages: [...prev.nchat_messages, ...fetchMoreResult.nchat_messages],
         }
       },
     })
@@ -341,10 +333,7 @@ export function useSearchMessagesFTS(limit = 20) {
         if (!fetchMoreResult) return prev
 
         return {
-          search_messages: [
-            ...prev.search_messages,
-            ...fetchMoreResult.search_messages,
-          ],
+          search_messages: [...prev.search_messages, ...fetchMoreResult.search_messages],
         }
       },
     })
@@ -483,10 +472,7 @@ export function useSearchChannels(limit = 20): UseSearchChannelsReturn {
 
         return {
           ...fetchMoreResult,
-          nchat_channels: [
-            ...prev.nchat_channels,
-            ...fetchMoreResult.nchat_channels,
-          ],
+          nchat_channels: [...prev.nchat_channels, ...fetchMoreResult.nchat_channels],
         }
       },
     })
@@ -520,10 +506,7 @@ export function useSearchFiles(limit = 20): UseSearchFilesReturn {
   } | null>(null)
 
   const search = useCallback(
-    async (
-      query: string,
-      filters?: { channelId?: string; fileType?: string }
-    ) => {
+    async (query: string, filters?: { channelId?: string; fileType?: string }) => {
       const searchPattern = `%${query}%`
       const fileTypePattern = filters?.fileType ? `%${filters.fileType}%` : undefined
 
@@ -557,9 +540,7 @@ export function useSearchFiles(limit = 20): UseSearchFilesReturn {
     if (!hasMore || loading || !searchParams) return
 
     const searchPattern = `%${searchParams.query}%`
-    const fileTypePattern = searchParams.fileType
-      ? `%${searchParams.fileType}%`
-      : undefined
+    const fileTypePattern = searchParams.fileType ? `%${searchParams.fileType}%` : undefined
 
     await fetchMore({
       variables: {
@@ -574,10 +555,7 @@ export function useSearchFiles(limit = 20): UseSearchFilesReturn {
 
         return {
           ...fetchMoreResult,
-          nchat_attachments: [
-            ...prev.nchat_attachments,
-            ...fetchMoreResult.nchat_attachments,
-          ],
+          nchat_attachments: [...prev.nchat_attachments, ...fetchMoreResult.nchat_attachments],
         }
       },
     })
@@ -687,9 +665,7 @@ export function useQuickSearch(limit = 8): UseQuickSearchReturn {
  * Search messages in a specific channel
  */
 export function useSearchChannelMessages(channelId: string, limit = 20) {
-  const [searchQuery, { data, loading, error, fetchMore }] = useLazyQuery(
-    SEARCH_CHANNEL_MESSAGES
-  )
+  const [searchQuery, { data, loading, error, fetchMore }] = useLazyQuery(SEARCH_CHANNEL_MESSAGES)
   const [currentQuery, setCurrentQuery] = useState<string | null>(null)
 
   const search = useCallback(
@@ -729,10 +705,7 @@ export function useSearchChannelMessages(channelId: string, limit = 20) {
         if (!fetchMoreResult) return prev
 
         return {
-          nchat_messages: [
-            ...prev.nchat_messages,
-            ...fetchMoreResult.nchat_messages,
-          ],
+          nchat_messages: [...prev.nchat_messages, ...fetchMoreResult.nchat_messages],
         }
       },
     })
@@ -756,9 +729,7 @@ export function useSearchChannelMessages(channelId: string, limit = 20) {
  * Search messages from a specific user
  */
 export function useSearchUserMessages(userId: string, limit = 20) {
-  const [searchQuery, { data, loading, error, fetchMore }] = useLazyQuery(
-    SEARCH_USER_MESSAGES
-  )
+  const [searchQuery, { data, loading, error, fetchMore }] = useLazyQuery(SEARCH_USER_MESSAGES)
   const [currentQuery, setCurrentQuery] = useState<string | null>(null)
 
   const search = useCallback(
@@ -798,10 +769,7 @@ export function useSearchUserMessages(userId: string, limit = 20) {
         if (!fetchMoreResult) return prev
 
         return {
-          nchat_messages: [
-            ...prev.nchat_messages,
-            ...fetchMoreResult.nchat_messages,
-          ],
+          nchat_messages: [...prev.nchat_messages, ...fetchMoreResult.nchat_messages],
         }
       },
     })
@@ -825,17 +793,10 @@ export function useSearchUserMessages(userId: string, limit = 20) {
  * Search messages by date range
  */
 export function useSearchMessagesByDate(limit = 50) {
-  const [searchQuery, { data, loading, error }] = useLazyQuery(
-    SEARCH_MESSAGES_BY_DATE
-  )
+  const [searchQuery, { data, loading, error }] = useLazyQuery(SEARCH_MESSAGES_BY_DATE)
 
   const search = useCallback(
-    async (
-      query: string,
-      startDate: string,
-      endDate: string,
-      channelId?: string
-    ) => {
+    async (query: string, startDate: string, endDate: string, channelId?: string) => {
       const searchPattern = `%${query}%`
 
       await searchQuery({

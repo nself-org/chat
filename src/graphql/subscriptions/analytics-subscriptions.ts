@@ -4,22 +4,16 @@
  * Subscribe to analytics updates in real-time using Hasura GraphQL subscriptions
  */
 
-import { gql } from '@apollo/client';
+import { gql } from '@apollo/client'
 
 // ============================================================================
 // Real-Time Event Stream
 // ============================================================================
 
 export const SUBSCRIBE_TO_ANALYTICS_EVENTS = gql`
-  subscription SubscribeToAnalyticsEvents(
-    $since: timestamptz!
-    $eventCategories: [String!]
-  ) {
+  subscription SubscribeToAnalyticsEvents($since: timestamptz!, $eventCategories: [String!]) {
     nchat_analytics_events(
-      where: {
-        timestamp: { _gte: $since }
-        event_category: { _in: $eventCategories }
-      }
+      where: { timestamp: { _gte: $since }, event_category: { _in: $eventCategories } }
       order_by: { timestamp: desc }
       limit: 100
     ) {
@@ -34,7 +28,7 @@ export const SUBSCRIBE_TO_ANALYTICS_EVENTS = gql`
       created_at
     }
   }
-`;
+`
 
 // ============================================================================
 // Real-Time User Activity
@@ -63,7 +57,7 @@ export const SUBSCRIBE_TO_USER_ACTIVITY = gql`
       }
     }
   }
-`;
+`
 
 // ============================================================================
 // Real-Time Channel Activity
@@ -90,7 +84,7 @@ export const SUBSCRIBE_TO_CHANNEL_ACTIVITY = gql`
       }
     }
   }
-`;
+`
 
 // ============================================================================
 // Real-Time Performance Metrics
@@ -113,7 +107,7 @@ export const SUBSCRIBE_TO_PERFORMANCE_METRICS = gql`
       user_id
     }
   }
-`;
+`
 
 // ============================================================================
 // Real-Time Error Tracking
@@ -122,10 +116,7 @@ export const SUBSCRIBE_TO_PERFORMANCE_METRICS = gql`
 export const SUBSCRIBE_TO_ERRORS = gql`
   subscription SubscribeToErrors($since: timestamptz!, $resolved: Boolean) {
     nchat_analytics_errors(
-      where: {
-        timestamp: { _gte: $since }
-        resolved: { _eq: $resolved }
-      }
+      where: { timestamp: { _gte: $since }, resolved: { _eq: $resolved } }
       order_by: { timestamp: desc }
       limit: 50
     ) {
@@ -143,7 +134,7 @@ export const SUBSCRIBE_TO_ERRORS = gql`
       resolved_by
     }
   }
-`;
+`
 
 // ============================================================================
 // Real-Time DAU/MAU Updates
@@ -151,10 +142,7 @@ export const SUBSCRIBE_TO_ERRORS = gql`
 
 export const SUBSCRIBE_TO_ACTIVE_USERS = gql`
   subscription SubscribeToActiveUsers {
-    nchat_analytics_daily_user_summary(
-      order_by: { day: desc }
-      limit: 30
-    ) {
+    nchat_analytics_daily_user_summary(order_by: { day: desc }, limit: 30) {
       day
       user_id
       total_messages
@@ -164,7 +152,7 @@ export const SUBSCRIBE_TO_ACTIVE_USERS = gql`
       total_session_duration
     }
   }
-`;
+`
 
 // ============================================================================
 // Real-Time Search Queries
@@ -188,7 +176,7 @@ export const SUBSCRIBE_TO_SEARCH_LOGS = gql`
       search_duration_ms
     }
   }
-`;
+`
 
 // ============================================================================
 // Real-Time Feature Usage
@@ -210,7 +198,7 @@ export const SUBSCRIBE_TO_FEATURE_USAGE = gql`
       platform
     }
   }
-`;
+`
 
 // ============================================================================
 // Aggregated Real-Time Metrics
@@ -251,17 +239,14 @@ export const SUBSCRIBE_TO_LIVE_METRICS = gql`
 
     # Errors in last 5 minutes
     errors_last_5min: nchat_analytics_errors_aggregate(
-      where: {
-        timestamp: { _gte: "now() - interval '5 minutes'" }
-        resolved: { _eq: false }
-      }
+      where: { timestamp: { _gte: "now() - interval '5 minutes'" }, resolved: { _eq: false } }
     ) {
       aggregate {
         count
       }
     }
   }
-`;
+`
 
 // ============================================================================
 // WebSocket Connection Metrics
@@ -287,4 +272,4 @@ export const SUBSCRIBE_TO_WEBSOCKET_METRICS = gql`
       error_message
     }
   }
-`;
+`

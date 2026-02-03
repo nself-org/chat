@@ -590,13 +590,10 @@ export const useWorkflowBuilderStore = create<WorkflowBuilderStore>()(
           const { workflow, canvas } = get()
           if (!workflow || canvas.selectedStepIds.length === 0) return
 
-          const selectedSteps = workflow.steps.filter((s) =>
-            canvas.selectedStepIds.includes(s.id)
-          )
+          const selectedSteps = workflow.steps.filter((s) => canvas.selectedStepIds.includes(s.id))
           const selectedStepIds = new Set(canvas.selectedStepIds)
           const selectedEdges = workflow.edges.filter(
-            (e) =>
-              selectedStepIds.has(e.sourceId) && selectedStepIds.has(e.targetId)
+            (e) => selectedStepIds.has(e.sourceId) && selectedStepIds.has(e.targetId)
           )
 
           set(
@@ -823,8 +820,12 @@ export const useWorkflowBuilderStore = create<WorkflowBuilderStore>()(
             targetId: stepId,
             sourceHandle: connectionStart.handleId,
             targetHandle: handleId,
-            type: connectionStart.handleId === 'true' ? 'true' :
-                  connectionStart.handleId === 'false' ? 'false' : 'default',
+            type:
+              connectionStart.handleId === 'true'
+                ? 'true'
+                : connectionStart.handleId === 'false'
+                  ? 'false'
+                  : 'default',
           })
 
           set(
@@ -1049,14 +1050,10 @@ function pushHistory(state: WorkflowBuilderState, description: string): void {
 
 export const selectWorkflow = (state: WorkflowBuilderStore) => state.workflow
 export const selectSelectedSteps = (state: WorkflowBuilderStore) =>
-  state.workflow?.steps.filter((s) =>
-    state.canvas.selectedStepIds.includes(s.id)
-  ) || []
+  state.workflow?.steps.filter((s) => state.canvas.selectedStepIds.includes(s.id)) || []
 export const selectSelectedStep = (state: WorkflowBuilderStore) =>
   state.canvas.selectedStepIds.length === 1
-    ? state.workflow?.steps.find(
-        (s) => s.id === state.canvas.selectedStepIds[0]
-      )
+    ? state.workflow?.steps.find((s) => s.id === state.canvas.selectedStepIds[0])
     : undefined
 export const selectSelectedEdge = (state: WorkflowBuilderStore) =>
   state.canvas.selectedEdgeId

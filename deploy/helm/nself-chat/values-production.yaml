@@ -25,10 +25,10 @@ ingress:
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
-    nginx.ingress.kubernetes.io/rate-limit: "20"
-    nginx.ingress.kubernetes.io/rate-limit-connections: "10"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+    nginx.ingress.kubernetes.io/proxy-body-size: '100m'
+    nginx.ingress.kubernetes.io/rate-limit: '20'
+    nginx.ingress.kubernetes.io/rate-limit-connections: '10'
   hosts:
     - host: chat.nself.io
       paths:
@@ -65,7 +65,7 @@ podDisruptionBudget:
 config:
   NODE_ENV: production
   NEXT_PUBLIC_ENV: production
-  NEXT_PUBLIC_USE_DEV_AUTH: "false"
+  NEXT_PUBLIC_USE_DEV_AUTH: 'false'
   NEXT_PUBLIC_APP_NAME: nchat
   LOG_LEVEL: warn
   LOG_FORMAT: json

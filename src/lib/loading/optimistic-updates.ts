@@ -5,6 +5,8 @@
 
 import { useState, useCallback, useRef } from 'react'
 
+import { logger } from '@/lib/logger'
+
 /**
  * Type for optimistic update state
  */
@@ -27,11 +29,14 @@ export function useOptimistic<T>(
   const [isPending, setIsPending] = useState(false)
   const previousStateRef = useRef<T>(initialState)
 
-  const update = useCallback((updater: (current: T) => T) => {
-    previousStateRef.current = state
-    setState(updater)
-    setIsPending(true)
-  }, [state])
+  const update = useCallback(
+    (updater: (current: T) => T) => {
+      previousStateRef.current = state
+      setState(updater)
+      setIsPending(true)
+    },
+    [state]
+  )
 
   const revert = useCallback(() => {
     setState(previousStateRef.current)
@@ -50,32 +55,37 @@ export function useOptimistic<T>(
 /**
  * Hook for optimistic list operations (add, update, remove)
  */
-export function useOptimisticList<T extends { id: string | number }>(
-  initialList: T[]
-) {
+export function useOptimisticList<T extends { id: string | number }>(initialList: T[]) {
   const [list, setList] = useState<T[]>(initialList)
   const [pendingIds, setPendingIds] = useState<Set<string | number>>(new Set())
   const previousListRef = useRef<T[]>(initialList)
 
-  const addOptimistic = useCallback((item: T) => {
-    previousListRef.current = list
-    setList((prev) => [...prev, item])
-    setPendingIds((prev) => new Set(prev).add(item.id))
-  }, [list])
+  const addOptimistic = useCallback(
+    (item: T) => {
+      previousListRef.current = list
+      setList((prev) => [...prev, item])
+      setPendingIds((prev) => new Set(prev).add(item.id))
+    },
+    [list]
+  )
 
-  const updateOptimistic = useCallback((id: string | number, updates: Partial<T>) => {
-    previousListRef.current = list
-    setList((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, ...updates } : item))
-    )
-    setPendingIds((prev) => new Set(prev).add(id))
-  }, [list])
+  const updateOptimistic = useCallback(
+    (id: string | number, updates: Partial<T>) => {
+      previousListRef.current = list
+      setList((prev) => prev.map((item) => (item.id === id ? { ...item, ...updates } : item)))
+      setPendingIds((prev) => new Set(prev).add(id))
+    },
+    [list]
+  )
 
-  const removeOptimistic = useCallback((id: string | number) => {
-    previousListRef.current = list
-    setList((prev) => prev.filter((item) => item.id !== id))
-    setPendingIds((prev) => new Set(prev).add(id))
-  }, [list])
+  const removeOptimistic = useCallback(
+    (id: string | number) => {
+      previousListRef.current = list
+      setList((prev) => prev.filter((item) => item.id !== id))
+      setPendingIds((prev) => new Set(prev).add(id))
+    },
+    [list]
+  )
 
   const confirmUpdate = useCallback((id: string | number) => {
     setPendingIds((prev) => {
@@ -202,9 +212,7 @@ export class OptimisticMessageSender<T extends { id: string; isPending?: boolean
  * Debounced optimistic update
  * Waits for user to finish typing before applying
  */
-export function createDebouncedOptimistic<T>(
-  delay: number = 300
-) {
+export function createDebouncedOptimistic<T>(delay: number = 300) {
   let timeoutId: NodeJS.Timeout | null = null
   let pendingUpdate: (() => void) | null = null
 
@@ -225,7 +233,7 @@ export function createDebouncedOptimistic<T>(
           try {
             await action()
           } catch (error) {
-            console.error('Optimistic update failed:', error)
+            logger.error('Optimistic update failed:', error)
           }
           pendingUpdate = null
         }
@@ -254,12 +262,7 @@ export class OptimisticQueue<T> {
   }> = []
   private isProcessing = false
 
-  add(
-    id: string,
-    optimisticUpdate: () => void,
-    action: () => Promise<T>,
-    revert: () => void
-  ) {
+  add(id: string, optimisticUpdate: () => void, action: () => Promise<T>, revert: () => void) {
     this.queue.push({ id, optimisticUpdate, action, revert })
     if (!this.isProcessing) {
       this.process()
@@ -282,7 +285,7 @@ export class OptimisticQueue<T> {
       } catch (error) {
         // Revert on error
         item.revert()
-        console.error(`Optimistic update ${item.id} failed:`, error)
+        logger.error(`Optimistic update ${item.id} failed:`, error)
       }
     }
 
@@ -332,10 +335,7 @@ export function createOptimisticCache<K, V>() {
 /**
  * Retry mechanism for failed optimistic updates
  */
-export function createRetryableOptimistic<T>(
-  maxRetries: number = 3,
-  retryDelay: number = 1000
-) {
+export function createRetryableOptimistic<T>(maxRetries: number = 3, retryDelay: number = 1000) {
   return async (
     optimisticUpdate: () => void,
     action: () => Promise<T>,

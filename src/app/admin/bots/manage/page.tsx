@@ -39,14 +39,7 @@ import { FEATURES } from '@/lib/features/feature-flags'
 import type { Bot, BotCategory, BotPermissionScope } from '@/types/bot'
 import type { BotPermission } from '@/graphql/bots'
 
-type ViewMode =
-  | 'list'
-  | 'editor'
-  | 'analytics'
-  | 'logs'
-  | 'templates'
-  | 'test'
-  | 'config'
+type ViewMode = 'list' | 'editor' | 'analytics' | 'logs' | 'templates' | 'test' | 'config'
 
 // Mock channels
 const mockChannels = [
@@ -67,41 +60,43 @@ export default function BotManagementPage() {
   const [editingBot, setEditingBot] = useState<Bot | null>(null)
 
   // Use bots hook
-  const {
-    installedBots,
-    isLoading,
-    error,
-    refreshBots,
-  } = useBots({
+  const { installedBots, isLoading, error, refreshBots } = useBots({
     autoFetch: true,
     useMockData: process.env.NEXT_PUBLIC_USE_DEV_AUTH === 'true',
   })
 
   // Convert bot installations to bot list
   // Map graphql bot status to types/bot BotStatus
-  const mapBotStatus = (graphqlStatus: string | undefined): 'online' | 'offline' | 'maintenance' | 'disabled' => {
+  const mapBotStatus = (
+    graphqlStatus: string | undefined
+  ): 'online' | 'offline' | 'maintenance' | 'disabled' => {
     switch (graphqlStatus) {
-      case 'active': return 'online'
-      case 'inactive': return 'offline'
-      case 'suspended': return 'disabled'
-      case 'pending': return 'maintenance'
-      default: return 'offline'
+      case 'active':
+        return 'online'
+      case 'inactive':
+        return 'offline'
+      case 'suspended':
+        return 'disabled'
+      case 'pending':
+        return 'maintenance'
+      default:
+        return 'offline'
     }
   }
 
   // Map graphql BotPermission to types/bot BotPermissionScope
   const mapBotPermission = (permission: BotPermission): BotPermissionScope => {
     const mapping: Record<BotPermission, BotPermissionScope> = {
-      'read_messages': 'messages.read',
-      'send_messages': 'messages.write',
-      'manage_channels': 'channels.manage',
-      'manage_users': 'admin.write',
-      'read_files': 'files.read',
-      'upload_files': 'files.write',
-      'use_slash_commands': 'messages.write',
-      'send_notifications': 'messages.write',
-      'access_user_data': 'users.read',
-      'manage_webhooks': 'webhooks.write',
+      read_messages: 'messages.read',
+      send_messages: 'messages.write',
+      manage_channels: 'channels.manage',
+      manage_users: 'admin.write',
+      read_files: 'files.read',
+      upload_files: 'files.write',
+      use_slash_commands: 'messages.write',
+      send_notifications: 'messages.write',
+      access_user_data: 'users.read',
+      manage_webhooks: 'webhooks.write',
     }
     return mapping[permission] || 'messages.read'
   }
@@ -112,7 +107,8 @@ export default function BotManagementPage() {
     displayName: installation.bot?.name || 'Unknown Bot',
     description: installation.bot?.description || '',
     avatarUrl: installation.bot?.avatarUrl,
-    category: (((installation.bot as unknown as Record<string, unknown>)?.category as BotCategory) || 'utility') as BotCategory,
+    category: (((installation.bot as unknown as Record<string, unknown>)
+      ?.category as BotCategory) || 'utility') as BotCategory,
     visibility: 'public' as const,
     status: mapBotStatus(installation.bot?.status),
     permissions: {
@@ -154,7 +150,7 @@ export default function BotManagementPage() {
 
   const handleToggleStatus = async (bot: Bot) => {
     // Implement toggle status logic
-    console.log('Toggle status:', bot)
+    // REMOVED: console.log('Toggle status:', bot)
   }
 
   const handleViewAnalytics = (bot: Bot) => {
@@ -168,14 +164,14 @@ export default function BotManagementPage() {
   }
 
   const handleSaveBot = async (botData: Partial<Bot>) => {
-    console.log('Saving bot:', botData)
+    // REMOVED: console.log('Saving bot:', botData)
     // Implement save logic
     setViewMode('list')
     await refreshBots()
   }
 
   const handleInstallTemplate = (template: any) => {
-    console.log('Installing template:', template)
+    // REMOVED: console.log('Installing template:', template)
     // Pre-populate editor with template
     setEditingBot({
       ...template,
@@ -200,11 +196,11 @@ export default function BotManagementPage() {
     return (
       <AdminLayout>
         <div className="flex flex-col items-center justify-center py-20">
-          <div className="rounded-full bg-muted p-4 mb-4">
+          <div className="mb-4 rounded-full bg-muted p-4">
             <Code className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">Bots feature is disabled</h2>
-          <p className="text-muted-foreground text-center max-w-md">
+          <h2 className="mb-2 text-xl font-semibold">Bots feature is disabled</h2>
+          <p className="max-w-md text-center text-muted-foreground">
             Enable the bots feature in settings to access bot management.
           </p>
         </div>
@@ -220,31 +216,20 @@ export default function BotManagementPage() {
           <div>
             <div className="flex items-center gap-2">
               {viewMode !== 'list' && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleBackToList}
-                  className="mr-2"
-                >
+                <Button variant="ghost" size="sm" onClick={handleBackToList} className="mr-2">
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
               )}
               <h1 className="text-3xl font-bold">Bot Management</h1>
             </div>
             <p className="text-muted-foreground">
-              {viewMode === 'list' &&
-                'Manage and monitor your workspace bots'}
-              {viewMode === 'editor' &&
-                (editingBot ? 'Edit bot' : 'Create new bot')}
-              {viewMode === 'analytics' &&
-                `Analytics for ${selectedBot?.displayName}`}
-              {viewMode === 'logs' &&
-                `Logs for ${selectedBot?.displayName}`}
+              {viewMode === 'list' && 'Manage and monitor your workspace bots'}
+              {viewMode === 'editor' && (editingBot ? 'Edit bot' : 'Create new bot')}
+              {viewMode === 'analytics' && `Analytics for ${selectedBot?.displayName}`}
+              {viewMode === 'logs' && `Logs for ${selectedBot?.displayName}`}
               {viewMode === 'templates' && 'Browse bot templates'}
-              {viewMode === 'test' &&
-                `Test ${selectedBot?.displayName || 'bot'}`}
-              {viewMode === 'config' &&
-                `Configure ${selectedBot?.displayName}`}
+              {viewMode === 'test' && `Test ${selectedBot?.displayName || 'bot'}`}
+              {viewMode === 'config' && `Configure ${selectedBot?.displayName}`}
             </p>
           </div>
 
@@ -264,7 +249,7 @@ export default function BotManagementPage() {
 
         {/* Error Display */}
         {error && (
-          <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-destructive">
+          <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4 text-destructive">
             {error}
           </div>
         )}
@@ -332,10 +317,10 @@ export default function BotManagementPage() {
                   bot={editingBot || undefined}
                   onSave={handleSaveBot}
                   onTest={async (code) => {
-                    console.log('Testing code:', code)
+                    // REMOVED: console.log('Testing code:', code)
                   }}
                   onDeploy={async (code) => {
-                    console.log('Deploying code:', code)
+                    // REMOVED: console.log('Deploying code:', code)
                     await handleSaveBot({ webhookUrl: code })
                   }}
                 />
@@ -348,7 +333,7 @@ export default function BotManagementPage() {
                       bot={editingBot}
                       channels={mockChannels}
                       onSave={async (config) => {
-                        console.log('Saving config:', config)
+                        // REMOVED: console.log('Saving config:', config)
                       }}
                     />
                   </TabsContent>
@@ -359,7 +344,7 @@ export default function BotManagementPage() {
                       botName={editingBot.displayName}
                       botCode={editingBot.webhookUrl}
                       onTest={async (event) => {
-                        console.log('Testing event:', event)
+                        // REMOVED: console.log('Testing event:', event)
                         return {
                           success: true,
                           response: {
@@ -411,7 +396,7 @@ export default function BotManagementPage() {
               botName={selectedBot.displayName}
               botCode={selectedBot.webhookUrl}
               onTest={async (event) => {
-                console.log('Testing event:', event)
+                // REMOVED: console.log('Testing event:', event)
                 return {
                   success: true,
                   response: {
@@ -430,7 +415,7 @@ export default function BotManagementPage() {
               bot={selectedBot}
               channels={mockChannels}
               onSave={async (config) => {
-                console.log('Saving config:', config)
+                // REMOVED: console.log('Saving config:', config)
               }}
             />
           )}

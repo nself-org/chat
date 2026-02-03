@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * SearchResultCard - Individual search result card with highlighting and actions
@@ -13,7 +13,7 @@
  * - Relevance score display
  */
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   MessageSquare,
   Hash,
@@ -29,20 +29,20 @@ import {
   MoreVertical,
   Pin,
   Star,
-} from 'lucide-react';
-import { formatDistanceToNow, format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+} from 'lucide-react'
+import { formatDistanceToNow, format } from 'date-fns'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import type { MessageSearchResult } from '@/stores/search-store';
+} from '@/components/ui/dropdown-menu'
+import type { MessageSearchResult } from '@/stores/search-store'
 
 // ============================================================================
 // Types
@@ -50,25 +50,25 @@ import type { MessageSearchResult } from '@/stores/search-store';
 
 export interface SearchResultCardProps {
   /** Search result data */
-  result: MessageSearchResult;
+  result: MessageSearchResult
   /** Search query for highlighting */
-  query?: string;
+  query?: string
   /** Whether to show context */
-  showContext?: boolean;
+  showContext?: boolean
   /** Number of context messages to show */
-  contextSize?: number;
+  contextSize?: number
   /** Whether the result is bookmarked */
-  isBookmarked?: boolean;
+  isBookmarked?: boolean
   /** Callback when card is clicked */
-  onClick?: (result: MessageSearchResult) => void;
+  onClick?: (result: MessageSearchResult) => void
   /** Callback when jump to message is clicked */
-  onJumpToMessage?: (result: MessageSearchResult) => void;
+  onJumpToMessage?: (result: MessageSearchResult) => void
   /** Callback when share is clicked */
-  onShare?: (result: MessageSearchResult) => void;
+  onShare?: (result: MessageSearchResult) => void
   /** Callback when bookmark is toggled */
-  onToggleBookmark?: (result: MessageSearchResult) => void;
+  onToggleBookmark?: (result: MessageSearchResult) => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -87,24 +87,21 @@ export function SearchResultCard({
   onToggleBookmark,
   className,
 }: SearchResultCardProps) {
-  const [isHovered, setIsHovered] = React.useState(false);
+  const [isHovered, setIsHovered] = React.useState(false)
 
   // Highlight search terms in text
   const highlightText = (text: string, searchQuery: string) => {
-    if (!searchQuery) return text;
+    if (!searchQuery) return text
 
-    const terms = searchQuery.split(' ').filter(Boolean);
-    const regex = new RegExp(`(${terms.join('|')})`, 'gi');
-    const parts = text.split(regex);
+    const terms = searchQuery.split(' ').filter(Boolean)
+    const regex = new RegExp(`(${terms.join('|')})`, 'gi')
+    const parts = text.split(regex)
 
     return (
       <>
         {parts.map((part, index) =>
           regex.test(part) ? (
-            <mark
-              key={index}
-              className="bg-yellow-200 dark:bg-yellow-900/50 px-0.5 rounded"
-            >
+            <mark key={index} className="rounded bg-yellow-200 px-0.5 dark:bg-yellow-900/50">
               {part}
             </mark>
           ) : (
@@ -112,27 +109,27 @@ export function SearchResultCard({
           )
         )}
       </>
-    );
-  };
+    )
+  }
 
   const handleCardClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
   const handleJumpClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onJumpToMessage?.(result);
-  };
+    e.stopPropagation()
+    onJumpToMessage?.(result)
+  }
 
   const handleShareClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onShare?.(result);
-  };
+    e.stopPropagation()
+    onShare?.(result)
+  }
 
   const handleBookmarkClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onToggleBookmark?.(result);
-  };
+    e.stopPropagation()
+    onToggleBookmark?.(result)
+  }
 
   return (
     <div
@@ -156,12 +153,8 @@ export function SearchResultCard({
           </Avatar>
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="truncate font-medium text-sm">
-                {result.authorName}
-              </span>
-              {result.isPinned && (
-                <Pin className="h-3 w-3 shrink-0 text-primary" />
-              )}
+              <span className="truncate text-sm font-medium">{result.authorName}</span>
+              {result.isPinned && <Pin className="h-3 w-3 shrink-0 text-primary" />}
               {result.isStarred && (
                 <Star className="h-3 w-3 shrink-0 fill-yellow-500 text-yellow-500" />
               )}
@@ -261,9 +254,7 @@ export function SearchResultCard({
       {/* Content */}
       <div className="space-y-2">
         {/* Main Message Content */}
-        <div className="text-sm leading-relaxed">
-          {highlightText(result.content, query)}
-        </div>
+        <div className="text-sm leading-relaxed">{highlightText(result.content, query)}</div>
 
         {/* Attachments */}
         {result.hasAttachments && (
@@ -279,9 +270,7 @@ export function SearchResultCard({
         {result.threadId && (
           <div className="flex items-center gap-2 rounded-md border border-dashed p-2">
             <MessageSquare className="h-4 w-4 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">
-              Part of a thread
-            </span>
+            <span className="text-xs text-muted-foreground">Part of a thread</span>
           </div>
         )}
 
@@ -289,11 +278,7 @@ export function SearchResultCard({
         {result.reactions && result.reactions.length > 0 && (
           <div className="flex flex-wrap gap-1">
             {result.reactions.slice(0, 5).map((reaction, index) => (
-              <Badge
-                key={index}
-                variant="secondary"
-                className="h-6 gap-1 px-2 text-xs"
-              >
+              <Badge key={index} variant="secondary" className="h-6 gap-1 px-2 text-xs">
                 {reaction.emoji} {reaction.count}
               </Badge>
             ))}
@@ -320,15 +305,17 @@ export function SearchResultCard({
         )}
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
 // Compact Card Variant
 // ============================================================================
 
-export interface CompactSearchResultCardProps
-  extends Omit<SearchResultCardProps, 'showContext' | 'contextSize'> {}
+export interface CompactSearchResultCardProps extends Omit<
+  SearchResultCardProps,
+  'showContext' | 'contextSize'
+> {}
 
 export function CompactSearchResultCard({
   result,
@@ -337,20 +324,17 @@ export function CompactSearchResultCard({
   className,
 }: CompactSearchResultCardProps) {
   const highlightText = (text: string, searchQuery: string) => {
-    if (!searchQuery) return text;
+    if (!searchQuery) return text
 
-    const terms = searchQuery.split(' ').filter(Boolean);
-    const regex = new RegExp(`(${terms.join('|')})`, 'gi');
-    const parts = text.split(regex);
+    const terms = searchQuery.split(' ').filter(Boolean)
+    const regex = new RegExp(`(${terms.join('|')})`, 'gi')
+    const parts = text.split(regex)
 
     return (
       <>
         {parts.map((part, index) =>
           regex.test(part) ? (
-            <mark
-              key={index}
-              className="bg-yellow-200 dark:bg-yellow-900/50 px-0.5 rounded"
-            >
+            <mark key={index} className="rounded bg-yellow-200 px-0.5 dark:bg-yellow-900/50">
               {part}
             </mark>
           ) : (
@@ -358,8 +342,8 @@ export function CompactSearchResultCard({
           )
         )}
       </>
-    );
-  };
+    )
+  }
 
   return (
     <button
@@ -378,7 +362,7 @@ export function CompactSearchResultCard({
 
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex items-center gap-2">
-          <span className="truncate font-medium text-sm">{result.authorName}</span>
+          <span className="truncate text-sm font-medium">{result.authorName}</span>
           <span className="shrink-0 text-xs text-muted-foreground">
             {formatDistanceToNow(result.timestamp, { addSuffix: true })}
           </span>
@@ -404,7 +388,7 @@ export function CompactSearchResultCard({
         {Math.round(result.score * 100)}%
       </Badge>
     </button>
-  );
+  )
 }
 
-export default SearchResultCard;
+export default SearchResultCard

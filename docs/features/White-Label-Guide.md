@@ -20,36 +20,40 @@ nself-chat is designed for complete white-labeling with **zero code required**. 
 When you first launch nself-chat, the setup wizard guides you through:
 
 ### Step 1: Welcome
+
 Introduction to the setup process.
 
 ### Step 2: Owner Info
+
 ```typescript
 {
-  name: string      // Your name
-  email: string     // Contact email
-  company: string   // Company name
-  role: string      // Your role
+  name: string // Your name
+  email: string // Contact email
+  company: string // Company name
+  role: string // Your role
 }
 ```
 
 ### Step 3: Branding
+
 ```typescript
 {
-  appName: string       // "My Chat App"
-  logo: string | null   // Logo URL or uploaded file
+  appName: string // "My Chat App"
+  logo: string | null // Logo URL or uploaded file
   favicon: string | null
-  tagline: string       // "Team communication made easy"
+  tagline: string // "Team communication made easy"
   companyName: string
 }
 ```
 
 ### Step 4: Theme
+
 ```typescript
 {
   mode: 'light' | 'dark' | 'system'
-  preset: string  // 'nself' | 'slack' | 'discord' | etc.
+  preset: string // 'nself' | 'slack' | 'discord' | etc.
   colors: {
-    primary: string    // '#6366f1'
+    primary: string // '#6366f1'
     secondary: string
     accent: string
     background: string
@@ -59,7 +63,9 @@ Introduction to the setup process.
 ```
 
 ### Step 5: Features
+
 Toggle which features to enable:
+
 - Channels (public, private)
 - Direct Messages
 - Threads
@@ -71,7 +77,9 @@ Toggle which features to enable:
 - And more...
 
 ### Step 6: Authentication
+
 Choose authentication providers:
+
 - Email/Password
 - Magic Links
 - Google
@@ -82,6 +90,7 @@ Choose authentication providers:
 - ID.me
 
 ### Step 7: Access Permissions
+
 ```typescript
 {
   mode: 'allow-all' | 'verified-only' | 'idme-roles' | 'domain-restricted' | 'admin-only'
@@ -92,6 +101,7 @@ Choose authentication providers:
 ```
 
 ### Step 8: Landing Page
+
 ```typescript
 {
   mode: 'landing' | 'redirect' | 'chat'
@@ -104,6 +114,7 @@ Choose authentication providers:
 ```
 
 ### Step 9: Review
+
 Preview all settings and confirm.
 
 ---
@@ -113,24 +124,28 @@ Preview all settings and confirm.
 For advanced branding, access `/admin/white-label`:
 
 ### Step 1: App Info
+
 - App Name
 - Tagline
 - Description
 - Keywords (SEO)
 
 ### Step 2: Logo Builder
+
 - Upload logo
 - Generate logo with presets
 - Color options
 - Size options
 
 ### Step 3: Favicon Generator
+
 - Upload favicon source
 - Auto-generate all sizes (16x16 to 512x512)
 - Apple touch icons
 - Android icons
 
 ### Step 4: Color Scheme
+
 - Primary color picker
 - Secondary color
 - Accent color
@@ -138,13 +153,16 @@ For advanced branding, access `/admin/white-label`:
 - Preset color schemes
 
 ### Step 5: Typography
+
 - Font family selection
 - Font sizes
 - Font weights
 - Line heights
 
 ### Step 6: Email Templates
+
 Customize transactional emails:
+
 - Welcome email
 - Password reset
 - Email verification
@@ -152,7 +170,9 @@ Customize transactional emails:
 - Invite email
 
 ### Step 7: Landing Page
+
 Full landing page customization:
+
 - Hero section
 - Features section
 - Pricing section
@@ -160,6 +180,7 @@ Full landing page customization:
 - Footer
 
 ### Step 8: Custom Domain
+
 - Connect your domain
 - SSL configuration
 - DNS setup instructions
@@ -170,18 +191,18 @@ Full landing page customization:
 
 ### Available Presets
 
-| Preset | Colors | Style |
-|--------|--------|-------|
-| **nself** | Indigo/Violet | Clean, modern |
-| **slack** | Purple/Teal | Familiar workspace |
-| **discord** | Blurple/Dark | Gaming-inspired |
-| **teams** | Purple/White | Professional |
-| **telegram** | Blue/White | Messenger style |
-| **whatsapp** | Green/Light | Chat focused |
-| **sunset** | Orange/Red | Warm tones |
-| **emerald** | Green/Teal | Fresh, nature |
-| **rose** | Pink/Red | Soft, friendly |
-| **midnight** | Blue/Purple | Dark mode |
+| Preset       | Colors        | Style              |
+| ------------ | ------------- | ------------------ |
+| **nself**    | Indigo/Violet | Clean, modern      |
+| **slack**    | Purple/Teal   | Familiar workspace |
+| **discord**  | Blurple/Dark  | Gaming-inspired    |
+| **teams**    | Purple/White  | Professional       |
+| **telegram** | Blue/White    | Messenger style    |
+| **whatsapp** | Green/Light   | Chat focused       |
+| **sunset**   | Orange/Red    | Warm tones         |
+| **emerald**  | Green/Teal    | Fresh, nature      |
+| **rose**     | Pink/Red      | Soft, friendly     |
+| **midnight** | Blue/Purple   | Dark mode          |
 
 ### Custom Theme
 
@@ -199,23 +220,23 @@ const customTheme = {
     border: '#333333',
     error: '#ff4757',
     success: '#2ed573',
-    warning: '#ffa502'
+    warning: '#ffa502',
   },
   fonts: {
     sans: 'Inter, -apple-system, sans-serif',
-    mono: 'JetBrains Mono, monospace'
+    mono: 'JetBrains Mono, monospace',
   },
   radius: {
     sm: '4px',
     md: '8px',
     lg: '12px',
-    full: '9999px'
+    full: '9999px',
   },
   shadows: {
     sm: '0 1px 2px rgba(0,0,0,0.1)',
     md: '0 4px 6px rgba(0,0,0,0.1)',
-    lg: '0 10px 15px rgba(0,0,0,0.1)'
-  }
+    lg: '0 10px 15px rgba(0,0,0,0.1)',
+  },
 }
 ```
 
@@ -246,23 +267,25 @@ function ThemeSwitcher() {
 
 ### Logo Requirements
 
-| Type | Size | Format | Usage |
-|------|------|--------|-------|
-| Main Logo | 200x50px | PNG/SVG | Header |
-| Square Logo | 100x100px | PNG/SVG | Sidebar |
-| Favicon | 32x32px | ICO/PNG | Browser tab |
-| Apple Touch | 180x180px | PNG | iOS |
-| Android | 192x192px | PNG | Android |
+| Type        | Size      | Format  | Usage       |
+| ----------- | --------- | ------- | ----------- |
+| Main Logo   | 200x50px  | PNG/SVG | Header      |
+| Square Logo | 100x100px | PNG/SVG | Sidebar     |
+| Favicon     | 32x32px   | ICO/PNG | Browser tab |
+| Apple Touch | 180x180px | PNG     | iOS         |
+| Android     | 192x192px | PNG     | Android     |
 
 ### Logo Generator
 
 The built-in logo generator creates logos from:
+
 - Text (app name)
 - Icon + text
 - Custom icon
 - Uploaded image
 
 Options:
+
 - Font selection
 - Color scheme
 - Background style
@@ -271,6 +294,7 @@ Options:
 ### Favicon Generator
 
 Automatically generates:
+
 - favicon.ico (16x16, 32x32)
 - favicon-16x16.png
 - favicon-32x32.png
@@ -285,12 +309,12 @@ Automatically generates:
 
 ### Template Options
 
-| Template | Description |
-|----------|-------------|
-| **Minimal** | Login only |
-| **Simple** | Hero + features |
-| **Marketing** | Full marketing site |
-| **Corporate** | Professional business |
+| Template      | Description             |
+| ------------- | ----------------------- |
+| **Minimal**   | Login only              |
+| **Simple**    | Hero + features         |
+| **Marketing** | Full marketing site     |
+| **Corporate** | Professional business   |
 | **Community** | Open source / community |
 
 ### Landing Page Sections
@@ -333,13 +357,13 @@ interface LandingPageConfig {
 
 ### Email Templates
 
-| Template | Variables |
-|----------|-----------|
-| Welcome | `{name}`, `{appName}`, `{loginUrl}` |
-| Verification | `{name}`, `{verifyUrl}`, `{code}` |
-| Password Reset | `{name}`, `{resetUrl}`, `{expiry}` |
-| Invite | `{inviterName}`, `{channelName}`, `{joinUrl}` |
-| Notification | `{name}`, `{summary}`, `{detailsUrl}` |
+| Template       | Variables                                     |
+| -------------- | --------------------------------------------- |
+| Welcome        | `{name}`, `{appName}`, `{loginUrl}`           |
+| Verification   | `{name}`, `{verifyUrl}`, `{code}`             |
+| Password Reset | `{name}`, `{resetUrl}`, `{expiry}`            |
+| Invite         | `{inviterName}`, `{channelName}`, `{joinUrl}` |
+| Notification   | `{name}`, `{summary}`, `{detailsUrl}`         |
 
 ### Email Styling
 
@@ -350,7 +374,7 @@ const emailStyles = {
   bodyFont: 'Arial, sans-serif',
   buttonColor: '#6366f1',
   buttonRadius: '4px',
-  footerText: '© 2024 Your Company'
+  footerText: '© 2024 Your Company',
 }
 ```
 
@@ -365,7 +389,7 @@ const seoConfig = {
   keywords: ['team chat', 'communication', 'collaboration'],
   ogImage: 'https://example.com/og-image.png',
   twitterCard: 'summary_large_image',
-  canonicalUrl: 'https://chat.example.com'
+  canonicalUrl: 'https://chat.example.com',
 }
 ```
 
@@ -375,11 +399,11 @@ Automatically generated in `<head>`:
 
 ```html
 <title>My Chat App - Team Communication</title>
-<meta name="description" content="...">
-<meta property="og:title" content="...">
-<meta property="og:description" content="...">
-<meta property="og:image" content="...">
-<meta name="twitter:card" content="...">
+<meta name="description" content="..." />
+<meta property="og:title" content="..." />
+<meta property="og:description" content="..." />
+<meta property="og:image" content="..." />
+<meta name="twitter:card" content="..." />
 ```
 
 ---
@@ -389,6 +413,7 @@ Automatically generated in `<head>`:
 ### DNS Configuration
 
 1. Add CNAME record:
+
    ```
    chat.yourdomain.com -> your-deployment.vercel.app
    ```
@@ -401,6 +426,7 @@ Automatically generated in `<head>`:
 ### SSL
 
 SSL certificates are:
+
 - **Automatic** on Vercel
 - **Let's Encrypt** on self-hosted
 - **Custom** for enterprise
@@ -448,8 +474,8 @@ await updateConfig({
   branding: {
     appName: 'New Name',
     logo: '/uploads/new-logo.png',
-    tagline: 'New tagline'
-  }
+    tagline: 'New tagline',
+  },
 })
 ```
 

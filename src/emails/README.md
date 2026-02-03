@@ -40,6 +40,7 @@ pnpm install
 ```
 
 Dependencies included:
+
 - `@react-email/components` - React Email component library
 - `@react-email/render` - Email HTML renderer
 - `nodemailer` - SMTP email sending
@@ -85,6 +86,7 @@ pnpm db:migrate
 ```
 
 This creates:
+
 - `nchat_email_queue` - Email sending queue
 - `nchat_email_tracking` - Delivery tracking
 - `nchat_email_preferences` - User preferences
@@ -93,7 +95,7 @@ This creates:
 ### 4. Send Your First Email
 
 ```typescript
-import { sendWelcomeEmail } from '@/lib/email/templates';
+import { sendWelcomeEmail } from '@/lib/email/templates'
 
 await sendWelcomeEmail(
   { email: 'user@example.com', name: 'John' },
@@ -101,7 +103,7 @@ await sendWelcomeEmail(
     userName: 'John',
     loginUrl: 'https://app.example.com/login',
   }
-);
+)
 ```
 
 ## Usage
@@ -116,7 +118,7 @@ import {
   sendMentionNotification,
   sendDMNotification,
   sendDigest,
-} from '@/lib/email/templates';
+} from '@/lib/email/templates'
 
 // Welcome email
 await sendWelcomeEmail(
@@ -125,7 +127,7 @@ await sendWelcomeEmail(
     userName: 'Alice',
     loginUrl: 'https://app.com/login',
   }
-);
+)
 
 // Email verification
 await sendEmailVerification(
@@ -135,7 +137,7 @@ await sendEmailVerification(
     verificationUrl: 'https://app.com/verify?token=abc',
     verificationCode: '123456',
   }
-);
+)
 
 // Password reset
 await sendPasswordReset(
@@ -144,7 +146,7 @@ await sendPasswordReset(
     resetUrl: 'https://app.com/reset?token=xyz',
     ipAddress: '192.168.1.1',
   }
-);
+)
 
 // Mention notification
 await sendMentionNotification(
@@ -157,7 +159,7 @@ await sendMentionNotification(
     messageUrl: 'https://app.com/chat/general/msg123',
     timestamp: new Date(),
   }
-);
+)
 ```
 
 ### Sending via API
@@ -230,6 +232,7 @@ export default function AdminEmailPage() {
 ```
 
 Features:
+
 - Test all email templates
 - Send to any email address
 - Verify email configuration
@@ -242,22 +245,19 @@ Users can control their email notifications:
 
 ```typescript
 // Get user preferences
-const prefs = await db.query(
-  'SELECT * FROM nchat_email_preferences WHERE user_id = $1',
-  [userId]
-);
+const prefs = await db.query('SELECT * FROM nchat_email_preferences WHERE user_id = $1', [userId])
 
 // Check if email should be sent
-const shouldSend = await db.query(
-  'SELECT should_send_email($1, $2)',
-  [userId, 'mention-notification']
-);
+const shouldSend = await db.query('SELECT should_send_email($1, $2)', [
+  userId,
+  'mention-notification',
+])
 
 // Update preferences
-await db.query(
-  'UPDATE nchat_email_preferences SET mention_enabled = $1 WHERE user_id = $2',
-  [false, userId]
-);
+await db.query('UPDATE nchat_email_preferences SET mention_enabled = $1 WHERE user_id = $2', [
+  false,
+  userId,
+])
 ```
 
 ### Unsubscribe
@@ -266,12 +266,13 @@ Each user has a unique unsubscribe token:
 
 ```typescript
 // Generate unsubscribe URL
-const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${user.unsubscribeToken}`;
+const unsubscribeUrl = `${baseUrl}/unsubscribe?token=${user.unsubscribeToken}`
 ```
 
 ## Email Queue
 
 The queue processes emails with:
+
 - **Priority ordering** - Urgent emails sent first
 - **Retry logic** - Failed emails retried with exponential backoff
 - **Rate limiting** - Prevents overwhelming mail servers
@@ -280,10 +281,10 @@ The queue processes emails with:
 ### Queue Status
 
 ```typescript
-import { getEmailQueueStatus } from '@/lib/email/templates';
+import { getEmailQueueStatus } from '@/lib/email/templates'
 
-const status = getEmailQueueStatus();
-console.log(status);
+const status = getEmailQueueStatus()
+console.log(status)
 // {
 //   total: 10,
 //   pending: 5,
@@ -316,7 +317,7 @@ await db.query(
     message_preview, channel_name, sender_name, item_url
   ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
   [userId, 'mention', channelId, messageId, preview, channelName, senderName, url]
-);
+)
 ```
 
 ### Sending Digest
@@ -328,16 +329,16 @@ const items = await db.query(
    WHERE user_id = $1 AND included_in_digest = false
    ORDER BY created_at DESC`,
   [userId]
-);
+)
 
 // Calculate stats
 const stats = {
   totalMessages: items.length,
-  totalMentions: items.filter(i => i.type === 'mention').length,
-  totalDirectMessages: items.filter(i => i.type === 'direct_message').length,
-  totalReactions: items.filter(i => i.type === 'reaction').length,
-  activeChannels: [...new Set(items.map(i => i.channel_name))],
-};
+  totalMentions: items.filter((i) => i.type === 'mention').length,
+  totalDirectMessages: items.filter((i) => i.type === 'direct_message').length,
+  totalReactions: items.filter((i) => i.type === 'reaction').length,
+  activeChannels: [...new Set(items.map((i) => i.channel_name))],
+}
 
 // Send digest
 await sendDigest(
@@ -349,7 +350,7 @@ await sendDigest(
     items: items.map(formatItem),
     stats,
   }
-);
+)
 
 // Mark items as included
 await db.query(
@@ -357,7 +358,7 @@ await db.query(
    SET included_in_digest = true, digest_sent_at = NOW()
    WHERE user_id = $1 AND included_in_digest = false`,
   [userId]
-);
+)
 ```
 
 ## Email Tracking
@@ -370,7 +371,7 @@ await db.query(
   `INSERT INTO nchat_email_tracking (email_id, event, metadata)
    VALUES ($1, $2, $3)`,
   [emailId, 'opened', { userAgent, ipAddress }]
-);
+)
 
 // Get email stats
 const stats = await db.query(
@@ -381,7 +382,7 @@ const stats = await db.query(
    FROM nchat_email_tracking
    WHERE email_id = $1`,
   [emailId]
-);
+)
 ```
 
 ## Customizing Templates
@@ -391,13 +392,13 @@ const stats = await db.query(
 Set global branding for all emails:
 
 ```typescript
-import { setEmailBranding } from '@/lib/email/templates';
+import { setEmailBranding } from '@/lib/email/templates'
 
 setEmailBranding({
   appName: 'My App',
   logoUrl: 'https://example.com/logo.png',
   supportEmail: 'support@example.com',
-});
+})
 ```
 
 ### Custom Templates
@@ -406,14 +407,14 @@ Create your own template:
 
 ```tsx
 // src/emails/templates/custom.tsx
-import EmailLayout from '../components/EmailLayout';
-import EmailHeading from '../components/EmailHeading';
-import EmailButton from '../components/EmailButton';
-import { Text } from '@react-email/components';
+import EmailLayout from '../components/EmailLayout'
+import EmailHeading from '../components/EmailHeading'
+import EmailButton from '../components/EmailButton'
+import { Text } from '@react-email/components'
 
 interface CustomEmailProps {
-  userName: string;
-  customData: string;
+  userName: string
+  customData: string
 }
 
 export default function CustomEmail({ userName, customData }: CustomEmailProps) {
@@ -423,7 +424,7 @@ export default function CustomEmail({ userName, customData }: CustomEmailProps) 
       <Text>{customData}</Text>
       <EmailButton href="https://example.com">Take Action</EmailButton>
     </EmailLayout>
-  );
+  )
 }
 ```
 
@@ -432,11 +433,13 @@ export default function CustomEmail({ userName, customData }: CustomEmailProps) 
 ### Emails not sending
 
 1. Check email configuration:
+
    ```bash
    curl http://localhost:3000/api/email/send?action=verify
    ```
 
 2. Check queue status:
+
    ```bash
    curl http://localhost:3000/api/email/send?action=status
    ```

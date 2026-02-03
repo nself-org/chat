@@ -19,27 +19,27 @@ stopScreenShare()
 
 ## 📦 Components
 
-| Component | Purpose | Path |
-|-----------|---------|------|
-| `ScreenSharePanel` | Full screen share UI | `@/components/call/screen-share-panel` |
-| `AnnotationToolbar` | Drawing tools | `@/components/call/annotation-toolbar` |
-| `CallModal` | Integrated call UI | `@/components/call/call-modal` |
+| Component           | Purpose              | Path                                   |
+| ------------------- | -------------------- | -------------------------------------- |
+| `ScreenSharePanel`  | Full screen share UI | `@/components/call/screen-share-panel` |
+| `AnnotationToolbar` | Drawing tools        | `@/components/call/annotation-toolbar` |
+| `CallModal`         | Integrated call UI   | `@/components/call/call-modal`         |
 
 ## 🎣 Hooks
 
-| Hook | Purpose |
-|------|---------|
-| `useScreenShare` | Screen sharing lifecycle |
-| `useScreenRecording` | Recording management |
+| Hook                 | Purpose                  |
+| -------------------- | ------------------------ |
+| `useScreenShare`     | Screen sharing lifecycle |
+| `useScreenRecording` | Recording management     |
 
 ## 🛠️ Core Classes
 
-| Class | Purpose |
-|-------|---------|
+| Class                  | Purpose                   |
+| ---------------------- | ------------------------- |
 | `ScreenCaptureManager` | Capture screen/window/tab |
-| `ScreenAnnotator` | Draw annotations |
-| `CursorHighlighter` | Track cursors |
-| `ScreenRecorder` | Record screen shares |
+| `ScreenAnnotator`      | Draw annotations          |
+| `CursorHighlighter`    | Track cursors             |
+| `ScreenRecorder`       | Record screen shares      |
 
 ## 🎨 Annotation Tools
 
@@ -53,32 +53,32 @@ stopScreenShare()
 
 ## 📊 Quality Presets
 
-| Quality | Resolution | FPS | Bitrate |
-|---------|-----------|-----|---------|
-| 720p    | 1280x720  | 30  | 1.5 Mbps |
-| 1080p   | 1920x1080 | 30  | 2.5 Mbps |
-| 4K      | 3840x2160 | 60  | 8 Mbps   |
+| Quality | Resolution | FPS | Bitrate  |
+| ------- | ---------- | --- | -------- |
+| 720p    | 1280x720   | 30  | 1.5 Mbps |
+| 1080p   | 1920x1080  | 30  | 2.5 Mbps |
+| 4K      | 3840x2160  | 60  | 8 Mbps   |
 
 ## 🎬 Recording Options
 
 ```typescript
 await startRecording(stream, {
-  format: 'webm',           // or 'mp4'
-  quality: 'high',          // 'low', 'medium', 'high'
-  includeWebcam: true,      // Add webcam overlay
-  webcamSize: 'small',      // 'small', 'medium', 'large'
+  format: 'webm', // or 'mp4'
+  quality: 'high', // 'low', 'medium', 'high'
+  includeWebcam: true, // Add webcam overlay
+  webcamSize: 'small', // 'small', 'medium', 'large'
   webcamPosition: 'bottom-right', // 4 corners
 })
 ```
 
 ## 🌐 Browser Support
 
-| Browser | Support | System Audio |
-|---------|---------|--------------|
-| Chrome 72+ | ✅ Full | ✅ Yes |
-| Edge 79+ | ✅ Full | ✅ Yes |
-| Firefox 66+ | ✅ Full | ❌ No |
-| Safari 13+ | ⚠️ Partial | ❌ No |
+| Browser     | Support    | System Audio |
+| ----------- | ---------- | ------------ |
+| Chrome 72+  | ✅ Full    | ✅ Yes       |
+| Edge 79+    | ✅ Full    | ✅ Yes       |
+| Firefox 66+ | ✅ Full    | ❌ No        |
+| Safari 13+  | ⚠️ Partial | ❌ No        |
 
 ## ⚡ Performance Tips
 
@@ -113,11 +113,11 @@ try {
 
 ## 🐛 Common Errors
 
-| Error | Cause | Solution |
-|-------|-------|----------|
-| `NotAllowedError` | Permission denied | Request permission again |
-| `NotFoundError` | No screen selected | User must select a screen |
-| `NotSupportedError` | Browser doesn't support | Use Chrome/Edge/Firefox |
+| Error               | Cause                   | Solution                  |
+| ------------------- | ----------------------- | ------------------------- |
+| `NotAllowedError`   | Permission denied       | Request permission again  |
+| `NotFoundError`     | No screen selected      | User must select a screen |
+| `NotSupportedError` | Browser doesn't support | Use Chrome/Edge/Firefox   |
 
 ## 📋 Event Handlers
 

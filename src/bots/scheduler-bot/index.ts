@@ -63,22 +63,19 @@ const scheduleCommand = async (ctx: CommandContext, api: BotApi): Promise<BotRes
   const maxDuration = ((config.settings?.max_duration as number) || 30) * 24 * 60 * 60 * 1000
 
   if (delay > maxDuration) {
-    return error('Duration too long', `Maximum schedule time is ${config.settings?.max_duration || 30} days.`)
+    return error(
+      'Duration too long',
+      `Maximum schedule time is ${config.settings?.max_duration || 30} days.`
+    )
   }
 
-  const scheduled = scheduleMessage(
-    ctx.user.id,
-    channel,
-    message,
-    delay,
-    async (msg) => {
-      try {
-        await api.sendMessage(msg.channelId, response().text(msg.message).build())
-      } catch (error) {
-        logger.error('Failed to send scheduled message', error as Error, { scheduleId: msg.id })
-      }
+  const scheduled = scheduleMessage(ctx.user.id, channel, message, delay, async (msg) => {
+    try {
+      await api.sendMessage(msg.channelId, response().text(msg.message).build())
+    } catch (error) {
+      logger.error('Failed to send scheduled message', error as Error, { scheduleId: msg.id })
     }
-  )
+  })
 
   const sendTime = new Date(Date.now() + delay)
 
@@ -90,7 +87,7 @@ const scheduleCommand = async (ctx: CommandContext, api: BotApi): Promise<BotRes
         .field('Message', message)
         .field('When', sendTime.toLocaleString())
         .field('Channel', `<#${channel}>`, true)
-        .field('ID', `\`${scheduled.id}\``, true)
+        .field('ID', `${scheduled.id}`, true)
         .color('#10B981')
         .footer('Use /scheduled to see all your scheduled messages')
     )
@@ -131,7 +128,7 @@ const cancelScheduleCommand = async (ctx: CommandContext, api: BotApi): Promise<
     return error('Cannot cancel', 'Schedule not found or you do not have permission to cancel it.')
   }
 
-  return success('Schedule cancelled', `Scheduled message \`${scheduleId}\` has been cancelled.`)
+  return success('Schedule cancelled', `Scheduled message ${scheduleId} has been cancelled.`)
 }
 
 /**
@@ -173,19 +170,13 @@ const recurringCommand = async (ctx: CommandContext, api: BotApi): Promise<BotRe
     )
   }
 
-  const task = createRecurringTask(
-    ctx.user.id,
-    channel,
-    message,
-    delay,
-    async (msg) => {
-      try {
-        await api.sendMessage(msg.channelId, response().text(msg.message).build())
-      } catch (error) {
-        logger.error('Failed to send recurring message', error as Error, { taskId: msg.taskId })
-      }
+  const task = createRecurringTask(ctx.user.id, channel, message, delay, async (msg) => {
+    try {
+      await api.sendMessage(msg.channelId, response().text(msg.message).build())
+    } catch (error) {
+      logger.error('Failed to send recurring message', error as Error, { taskId: msg.taskId })
     }
-  )
+  })
 
   const nextRun = new Date(Date.now() + delay)
 
@@ -197,7 +188,7 @@ const recurringCommand = async (ctx: CommandContext, api: BotApi): Promise<BotRe
         .field('Message', message)
         .field('Next Run', nextRun.toLocaleString())
         .field('Channel', `<#${channel}>`, true)
-        .field('ID', `\`${task.id}\``, true)
+        .field('ID', `${task.id}`, true)
         .color('#10B981')
     )
     .build()
@@ -237,7 +228,7 @@ const cancelRecurringCommand = async (ctx: CommandContext, api: BotApi): Promise
     return error('Cannot cancel', 'Task not found or you do not have permission to cancel it.')
   }
 
-  return success('Recurring task cancelled', `Task \`${taskId}\` has been cancelled.`)
+  return success('Recurring task cancelled', `Task ${taskId} has been cancelled.`)
 }
 
 // ============================================================================
@@ -248,107 +239,108 @@ const cancelRecurringCommand = async (ctx: CommandContext, api: BotApi): Promise
  * Create and configure the Scheduler Bot
  */
 export function createSchedulerBot() {
-  return bot(manifest.id)
-    .name(manifest.name)
-    .description(manifest.description)
-    .version(manifest.version)
-    .author(manifest.author)
-    .icon(manifest.icon)
-    .permissions('read_messages', 'send_messages')
+  return (
+    bot(manifest.id)
+      .name(manifest.name)
+      .description(manifest.description)
+      .version(manifest.version)
+      .author(manifest.author)
+      .icon(manifest.icon)
+      .permissions('read_messages', 'send_messages')
 
-    // Register commands
-    .command(
-      command('schedule')
-        .description('Schedule a message to be sent later')
-        .aliases('schedmsg')
-        .durationArg('when', 'When to send (e.g., 1h, 2d)', true)
-        .stringArg('message', 'The message to send', true)
-        .stringArg('channel', 'Channel to send to (optional)')
-        .example('/schedule 1h "Meeting reminder!"', '/schedule 2d "Deadline tomorrow!" #team')
-        .cooldown(5),
-      scheduleCommand
-    )
-    .command(
-      command('scheduled')
-        .description('List your scheduled messages')
-        .aliases('schedules')
-        .example('/scheduled'),
-      scheduledCommand
-    )
-    .command(
-      command('cancelschedule')
-        .description('Cancel a scheduled message')
-        .aliases('cancelsched')
-        .stringArg('schedule_id', 'ID of the scheduled message', true)
-        .example('/cancelschedule sched_abc123'),
-      cancelScheduleCommand
-    )
-    .command(
-      command('recurring')
-        .description('Create a recurring message')
-        .durationArg('interval', 'How often to send (e.g., 1d, 1w)', true)
-        .stringArg('message', 'The message to send', true)
-        .stringArg('channel', 'Channel to send to (optional)')
-        .example('/recurring 1d "Daily standup!"', '/recurring 1w "Weekly sync!" #team')
-        .cooldown(10),
-      recurringCommand
-    )
-    .command(
-      command('recurringtasks')
-        .description('List your recurring tasks')
-        .aliases('recurring-list')
-        .example('/recurringtasks'),
-      recurringTasksCommand
-    )
-    .command(
-      command('cancelrecurring')
-        .description('Cancel a recurring task')
-        .stringArg('task_id', 'ID of the recurring task', true)
-        .example('/cancelrecurring task_abc123'),
-      cancelRecurringCommand
-    )
+      // Register commands
+      .command(
+        command('schedule')
+          .description('Schedule a message to be sent later')
+          .aliases('schedmsg')
+          .durationArg('when', 'When to send (e.g., 1h, 2d)', true)
+          .stringArg('message', 'The message to send', true)
+          .stringArg('channel', 'Channel to send to (optional)')
+          .example('/schedule 1h "Meeting reminder!"', '/schedule 2d "Deadline tomorrow!" #team')
+          .cooldown(5),
+        scheduleCommand
+      )
+      .command(
+        command('scheduled')
+          .description('List your scheduled messages')
+          .aliases('schedules')
+          .example('/scheduled'),
+        scheduledCommand
+      )
+      .command(
+        command('cancelschedule')
+          .description('Cancel a scheduled message')
+          .aliases('cancelsched')
+          .stringArg('schedule_id', 'ID of the scheduled message', true)
+          .example('/cancelschedule sched_abc123'),
+        cancelScheduleCommand
+      )
+      .command(
+        command('recurring')
+          .description('Create a recurring message')
+          .durationArg('interval', 'How often to send (e.g., 1d, 1w)', true)
+          .stringArg('message', 'The message to send', true)
+          .stringArg('channel', 'Channel to send to (optional)')
+          .example('/recurring 1d "Daily standup!"', '/recurring 1w "Weekly sync!" #team')
+          .cooldown(10),
+        recurringCommand
+      )
+      .command(
+        command('recurringtasks')
+          .description('List your recurring tasks')
+          .aliases('recurring-list')
+          .example('/recurringtasks'),
+        recurringTasksCommand
+      )
+      .command(
+        command('cancelrecurring')
+          .description('Cancel a recurring task')
+          .stringArg('task_id', 'ID of the recurring task', true)
+          .example('/cancelrecurring task_abc123'),
+        cancelRecurringCommand
+      )
 
-    // Initialization
-    .onInit(async (instance, api) => {
-      // Load saved schedules
-      try {
-        const saved = await api.getStorage<{
-          messages: ScheduledMessage[]
-          tasks: RecurringTask[]
-        }>('schedules')
+      // Initialization
+      .onInit(async (instance, api) => {
+        // Load saved schedules
+        try {
+          const saved = await api.getStorage<{
+            messages: ScheduledMessage[]
+            tasks: RecurringTask[]
+          }>('schedules')
 
-        if (saved) {
-          importSchedules(
-            saved.messages || [],
-            saved.tasks || [],
-            async (msg) => {
+          if (saved) {
+            importSchedules(saved.messages || [], saved.tasks || [], async (msg) => {
               try {
                 await api.sendMessage(msg.channelId, response().text(msg.message).build())
               } catch (error) {
                 logger.error('Failed to send scheduled/recurring message', error as Error)
               }
-            }
-          )
-        }
-      } catch (error) {
-        logger.error('Failed to load schedules', error as Error)
-      }
-
-      // Periodic save
-      const saveInterval = setInterval(async () => {
-        try {
-          await api.setStorage('schedules', exportSchedules())
+            })
+          }
         } catch (error) {
-          logger.error('Failed to save schedules', error as Error)
+          logger.error('Failed to load schedules', error as Error)
         }
-      }, 5 * 60 * 1000) // Every 5 minutes
 
-      instance.registerCleanup(() => {
-        clearInterval(saveInterval)
+        // Periodic save
+        const saveInterval = setInterval(
+          async () => {
+            try {
+              await api.setStorage('schedules', exportSchedules())
+            } catch (error) {
+              logger.error('Failed to save schedules', error as Error)
+            }
+          },
+          5 * 60 * 1000
+        ) // Every 5 minutes
+
+        instance.registerCleanup(() => {
+          clearInterval(saveInterval)
+        })
       })
-    })
 
-    .build()
+      .build()
+  )
 }
 
 // ============================================================================

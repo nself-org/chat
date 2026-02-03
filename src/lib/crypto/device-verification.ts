@@ -104,7 +104,9 @@ const SAFETY_NUMBER_GROUP_SIZE = 5
 /**
  * Detects the current device type from user agent
  */
-export function detectDeviceType(userAgent: string): 'desktop' | 'mobile' | 'tablet' | 'web' | 'unknown' {
+export function detectDeviceType(
+  userAgent: string
+): 'desktop' | 'mobile' | 'tablet' | 'web' | 'unknown' {
   const ua = userAgent.toLowerCase()
 
   // Check for tablets first (before mobile)
@@ -563,10 +565,7 @@ export function verifyDeviceWithSafetyNumber(
 /**
  * Checks if a public key matches a device
  */
-export async function doesKeyMatchDevice(
-  publicKey: CryptoKey,
-  device: Device
-): Promise<boolean> {
+export async function doesKeyMatchDevice(publicKey: CryptoKey, device: Device): Promise<boolean> {
   const fingerprint = await getKeyFingerprint(publicKey)
   return compareFingerprints(fingerprint, device.fingerprint)
 }
@@ -667,10 +666,7 @@ export class DeviceVerification {
   /**
    * Verifies a device
    */
-  async verifyDevice(
-    deviceId: string,
-    qrData: QRVerificationData
-  ): Promise<VerificationResult> {
+  async verifyDevice(deviceId: string, qrData: QRVerificationData): Promise<VerificationResult> {
     const device = this.devices.get(deviceId)
     if (!device) {
       return {

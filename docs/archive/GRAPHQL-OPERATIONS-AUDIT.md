@@ -30,6 +30,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 **File**: `/Users/admin/Sites/nself-chat/src/graphql/users.ts`
 
 #### Queries (11/11 implemented)
+
 - ✅ `GET_USER` - Get user by ID/username/email
 - ✅ `GET_USER_PROFILE` - Detailed profile with channels
 - ✅ `GET_USERS` - All workspace members with pagination
@@ -41,6 +42,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `SEARCH_USERS_FOR_MENTION` - Mention autocomplete
 
 #### Mutations (12/12 implemented)
+
 - ✅ `UPDATE_PROFILE` - Update user profile
 - ✅ `UPDATE_STATUS` - Update custom status
 - ✅ `CLEAR_STATUS` - Clear status
@@ -55,6 +57,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `UPDATE_USER_ROLE` - Change user role (admin)
 
 #### Subscriptions (5/5 implemented)
+
 - ✅ `PRESENCE_SUBSCRIPTION` - Watch single user presence
 - ✅ `ALL_PRESENCE_SUBSCRIPTION` - Watch all online users
 - ✅ `USERS_PRESENCE_SUBSCRIPTION` - Watch specific users
@@ -67,11 +70,13 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 ### 2. CHANNEL OPERATIONS ✅ COMPLETE
 
 **Files**:
+
 - `/Users/admin/Sites/nself-chat/src/graphql/queries/channels.ts`
 - `/Users/admin/Sites/nself-chat/src/graphql/mutations/channels.ts`
 - `/Users/admin/Sites/nself-chat/src/graphql/subscriptions/channels.ts`
 
 #### Queries (19/19 implemented)
+
 - ✅ `GET_CHANNELS` - All channels
 - ✅ `GET_CHANNEL_BY_ID` - Single channel by ID
 - ✅ `GET_CHANNEL_BY_SLUG` - Single channel by slug
@@ -93,6 +98,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `GET_GROUP_DM_CHANNELS` - Group DM channels
 
 #### Mutations (22/22 implemented)
+
 - ✅ `CREATE_CHANNEL` - Create new channel
 - ✅ `UPDATE_CHANNEL` - Update channel details
 - ✅ `DELETE_CHANNEL` - Hard delete channel
@@ -118,6 +124,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `CREATE_GROUP_DM` - Create group DM
 
 #### Subscriptions (1/1 implemented)
+
 - ✅ `CHANNEL_SUBSCRIPTION` - Watch channel updates
 
 ---
@@ -125,11 +132,13 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 ### 3. MESSAGE OPERATIONS ✅ COMPLETE
 
 **Files**:
+
 - `/Users/admin/Sites/nself-chat/src/graphql/queries/messages.ts`
 - `/Users/admin/Sites/nself-chat/src/graphql/mutations/messages.ts`
 - `/Users/admin/Sites/nself-chat/src/graphql/subscriptions/messages.ts`
 
 #### Queries (15/15 implemented)
+
 - ✅ `GET_MESSAGES` - Paginated channel messages
 - ✅ `GET_MESSAGE_BY_ID` - Single message by ID
 - ✅ `GET_THREAD_MESSAGES` - Messages in thread
@@ -143,6 +152,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `GET_MESSAGE_LINK` - Link to message
 
 #### Mutations (27/27 implemented)
+
 - ✅ `SEND_MESSAGE` - Send new message
 - ✅ `UPDATE_MESSAGE` - Edit message
 - ✅ `DELETE_MESSAGE` - Hard delete
@@ -169,6 +179,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `PIN_MULTIPLE_MESSAGES` - Bulk pin
 
 #### Subscriptions (5/5 implemented)
+
 - ✅ `MESSAGE_SUBSCRIPTION` - New messages in channel
 - ✅ `THREAD_MESSAGE_SUBSCRIPTION` - New replies in thread
 - ✅ `TYPING_SUBSCRIPTION` - Typing indicators
@@ -180,10 +191,12 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 ### 4. THREAD OPERATIONS ✅ COMPLETE
 
 **Files**:
+
 - `/Users/admin/Sites/nself-chat/src/graphql/queries/threads.ts`
 - `/Users/admin/Sites/nself-chat/src/graphql/mutations/threads.ts`
 
 #### Queries (9/9 implemented)
+
 - ✅ `GET_THREAD` - Thread details
 - ✅ `GET_THREAD_MESSAGES` - Messages in thread
 - ✅ `GET_THREAD_PARTICIPANTS` - Thread participants
@@ -195,6 +208,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `GET_THREAD_PARTICIPANT_STATS` - Contribution stats
 
 #### Mutations (Covered in Messages)
+
 - ✅ `CREATE_THREAD` - (in messages.ts)
 - ✅ `REPLY_TO_THREAD` - (in messages.ts)
 - ✅ `SUBSCRIBE_TO_THREAD` - (in messages.ts)
@@ -207,11 +221,13 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 **File**: `/Users/admin/Sites/nself-chat/src/graphql/mutations/reactions.ts`
 
 #### Mutations (3/3 implemented)
+
 - ✅ `ADD_REACTION` - Add emoji reaction
 - ✅ `REMOVE_REACTION` - Remove reaction
 - ✅ `TOGGLE_REACTION` - Toggle reaction (add/remove)
 
 #### Subscriptions (1/1 implemented)
+
 - ✅ `REACTION_SUBSCRIPTION` - Watch message reactions
 
 ---
@@ -221,10 +237,12 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 **File**: `/Users/admin/Sites/nself-chat/src/graphql/mutations/presence.ts`
 
 #### Mutations (2/2 implemented)
+
 - ✅ `UPDATE_PRESENCE` - Update online status
 - ✅ `HEARTBEAT` - Keep-alive ping
 
 #### Subscriptions (Covered in Users)
+
 - ✅ `PRESENCE_SUBSCRIPTION` - (in users.ts)
 
 ---
@@ -234,6 +252,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 **File**: `/Users/admin/Sites/nself-chat/src/graphql/notifications.ts`
 
 #### Queries (6/6 implemented)
+
 - ✅ `GET_NOTIFICATIONS` - User notifications with filters
 - ✅ `GET_UNREAD_COUNT` - Unread counts by type
 - ✅ `GET_UNREAD_BY_CHANNEL` - Unread per channel
@@ -241,6 +260,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `GET_NOTIFICATIONS_GROUPED` - Grouped by type
 
 #### Mutations (11/11 implemented)
+
 - ✅ `MARK_AS_READ` - Mark single as read
 - ✅ `MARK_MULTIPLE_AS_READ` - Mark multiple as read
 - ✅ `MARK_ALL_AS_READ` - Mark all as read
@@ -253,6 +273,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `UNREGISTER_PUSH_TOKEN` - Unregister push
 
 #### Subscriptions (4/4 implemented)
+
 - ✅ `NOTIFICATION_SUBSCRIPTION` - New notifications
 - ✅ `UNREAD_COUNT_SUBSCRIPTION` - Unread count changes
 - ✅ `NOTIFICATION_STREAM_SUBSCRIPTION` - Notification stream
@@ -265,6 +286,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 **File**: `/Users/admin/Sites/nself-chat/src/graphql/search.ts`
 
 #### Queries (13/13 implemented)
+
 - ✅ `SEARCH_MESSAGES` - Search with advanced filters
 - ✅ `SEARCH_MESSAGES_FTS` - Full-text search (PostgreSQL FTS)
 - ✅ `SEARCH_FILES` - Search attachments
@@ -278,6 +300,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `GET_RECENT_SEARCHES` - Search history
 
 #### Mutations (2/2 implemented)
+
 - ✅ `SAVE_SEARCH` - Save to history
 - ✅ `CLEAR_SEARCH_HISTORY` - Clear history
 
@@ -288,6 +311,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 **File**: `/Users/admin/Sites/nself-chat/src/graphql/attachments.ts`
 
 #### Queries (9/9 implemented)
+
 - ✅ `GET_ATTACHMENT` - Single attachment
 - ✅ `GET_CHANNEL_FILES` - All files in channel
 - ✅ `GET_CHANNEL_FILES_BY_TYPE` - Files by type (images/videos/docs)
@@ -297,6 +321,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `GET_STORAGE_USAGE` - Workspace storage usage
 
 #### Mutations (10/10 implemented)
+
 - ✅ `CREATE_ATTACHMENT` - Create attachment record
 - ✅ `CREATE_ATTACHMENTS` - Bulk create
 - ✅ `DELETE_ATTACHMENT` - Delete attachment
@@ -309,6 +334,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 - ✅ `BULK_DELETE_ATTACHMENTS` - Admin cleanup
 
 #### Subscriptions (2/2 implemented)
+
 - ✅ `CHANNEL_ATTACHMENTS_SUBSCRIPTION` - New attachments
 - ✅ `ATTACHMENTS_STREAM_SUBSCRIPTION` - Attachment stream
 
@@ -317,15 +343,18 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 ### 10. READ RECEIPTS & TYPING ✅ COMPLETE
 
 **Files**:
+
 - `/Users/admin/Sites/nself-chat/src/graphql/read-receipts.ts`
 - `/Users/admin/Sites/nself-chat/src/graphql/typing.ts`
 
 #### Read Receipts
+
 - ✅ Queries for read status
 - ✅ Mutations for marking read
 - ✅ Subscriptions for real-time updates
 
 #### Typing Indicators
+
 - ✅ `START_TYPING` mutation
 - ✅ `STOP_TYPING` mutation
 - ✅ Subscription for typing events
@@ -337,6 +366,7 @@ This audit confirms that **ALL required GraphQL operations** for the nself-chat 
 The GraphQL layer includes extensive additional operations for advanced features:
 
 ### ✅ **Admin Operations** (`admin.ts`)
+
 - User management (ban/unban/suspend)
 - Channel moderation
 - Report handling
@@ -344,6 +374,7 @@ The GraphQL layer includes extensive additional operations for advanced features
 - Audit logs
 
 ### ✅ **Moderation** (`moderation.ts`)
+
 - Block/unblock users
 - Report users/messages
 - Mute users
@@ -351,80 +382,95 @@ The GraphQL layer includes extensive additional operations for advanced features
 - Moderation queue
 
 ### ✅ **Bookmarks** (`bookmarks.ts`)
+
 - Save messages
 - Organize bookmarks
 - Search bookmarks
 
 ### ✅ **Polls** (`polls.ts`)
+
 - Create polls
 - Vote on polls
 - View results
 - Close polls
 
 ### ✅ **Scheduled Messages** (`scheduled.ts`)
+
 - Schedule messages
 - Edit scheduled
 - Cancel scheduled
 - View scheduled
 
 ### ✅ **Direct Messages** (`dms.ts`, `direct-messages.ts`)
+
 - Create DM channels
 - Group DMs
 - DM-specific operations
 
 ### ✅ **Mentions** (`mentions.ts`)
+
 - @user mentions
 - @channel/@everyone
 - Mention notifications
 
 ### ✅ **Security** (`security.ts`)
+
 - Two-factor authentication
 - Session management
 - Security settings
 
 ### ✅ **Analytics** (`analytics-queries.ts`)
+
 - User activity
 - Channel statistics
 - Message metrics
 - Engagement tracking
 
 ### ✅ **E2E Encryption** (`e2ee.ts`)
+
 - End-to-end encrypted messages
 - Key management
 - Encrypted channels
 
 ### ✅ **Voice/Video Calls** (`calls.ts`)
+
 - Voice calls
 - Video calls
 - Screen sharing
 - Call history
 
 ### ✅ **Bots & Integrations** (`bots.ts`, `webhooks.ts`)
+
 - Bot management
 - Webhook configuration
 - Integration settings
 
 ### ✅ **Stickers & Emojis** (`stickers.ts`, `sticker-packs.ts`)
+
 - Sticker packs
 - Custom emojis
 - Sticker management
 
 ### ✅ **Invites** (`invites.ts`)
+
 - Generate invite links
 - Manage invitations
 - Invite tracking
 
 ### ✅ **Reminders** (`reminders.ts`)
+
 - Set reminders
 - Manage reminders
 - Reminder notifications
 
 ### ✅ **Social Features** (`social.ts`, `social-media.ts`)
+
 - Social sharing
 - External integrations
 - Social embeds
 
 ### ✅ **Audit & Compliance** (`audit-queries.ts`, `audit-mutations.ts`)
+
 - Audit logging
 - Compliance exports
 - Activity tracking
@@ -434,6 +480,7 @@ The GraphQL layer includes extensive additional operations for advanced features
 ## Type Safety & Error Handling
 
 ### Type Definitions ✅
+
 All operations include comprehensive TypeScript interfaces:
 
 ```typescript
@@ -449,6 +496,7 @@ export interface SendMessageInput {
 ```
 
 ### Error Handling Patterns ✅
+
 - Proper null/undefined handling
 - Optional chaining for nested data
 - Aggregate queries for counts
@@ -459,6 +507,7 @@ export interface SendMessageInput {
 ## Testing Coverage
 
 ### Test Files Present ✅
+
 - `/Users/admin/Sites/nself-chat/src/graphql/__tests__/apollo-mocks.test.ts`
 - `/Users/admin/Sites/nself-chat/src/graphql/__tests__/fragments.test.ts`
 - `/Users/admin/Sites/nself-chat/src/graphql/__tests__/mutations.test.ts`
@@ -470,7 +519,9 @@ export interface SendMessageInput {
 ## GraphQL Best Practices ✅
 
 ### ✅ Fragments for Reusability
+
 Well-defined fragments in `/Users/admin/Sites/nself-chat/src/graphql/fragments.ts`:
+
 - `USER_BASIC_FRAGMENT`
 - `USER_PROFILE_FRAGMENT`
 - `USER_PRESENCE_FRAGMENT`
@@ -483,22 +534,26 @@ Well-defined fragments in `/Users/admin/Sites/nself-chat/src/graphql/fragments.t
 - `THREAD_FRAGMENT`
 
 ### ✅ Pagination Support
+
 - Limit/offset pagination
 - Cursor-based pagination for streams
 - Aggregate queries for total counts
 
 ### ✅ Filtering & Sorting
+
 - Rich where clauses
 - Multiple sort options
 - Date range filtering
 - Full-text search support
 
 ### ✅ Optimistic Updates
+
 - Proper cache updates
 - Optimistic UI patterns
 - Subscription integration
 
 ### ✅ Real-time Subscriptions
+
 - GraphQL subscriptions
 - Stream-based subscriptions
 - Proper unsubscribe handling
@@ -510,6 +565,7 @@ Well-defined fragments in `/Users/admin/Sites/nself-chat/src/graphql/fragments.t
 All GraphQL operations align with the database schema:
 
 ### Core Tables
+
 - ✅ `nchat_users`
 - ✅ `nchat_channels`
 - ✅ `nchat_messages`
@@ -527,6 +583,7 @@ All GraphQL operations align with the database schema:
 - ✅ `nchat_message_history`
 
 ### Extended Tables
+
 - ✅ `nchat_roles`
 - ✅ `nchat_role_permissions`
 - ✅ `nchat_bookmarks`
@@ -546,18 +603,22 @@ All GraphQL operations align with the database schema:
 ## Integration with Frontend
 
 ### Apollo Client Setup ✅
+
 - Properly configured in `/Users/admin/Sites/nself-chat/src/lib/apollo-client.ts`
 - Cache policies defined
 - Error handling configured
 - Subscription transport configured
 
 ### Context Providers ✅
+
 - AppConfigProvider uses GraphQL
 - AuthProvider integrates with operations
 - Real-time updates via subscriptions
 
 ### Custom Hooks Ready ✅
+
 All operations can be used with Apollo hooks:
+
 ```typescript
 import { useQuery, useMutation, useSubscription } from '@apollo/client'
 import { GET_MESSAGES, SEND_MESSAGE, MESSAGE_SUBSCRIPTION } from '@/graphql'
@@ -568,20 +629,24 @@ import { GET_MESSAGES, SEND_MESSAGE, MESSAGE_SUBSCRIPTION } from '@/graphql'
 ## Performance Optimizations
 
 ### ✅ Batching
+
 - Multiple queries in single request
 - DataLoader pattern support
 
 ### ✅ Caching
+
 - Normalized cache
 - Fragment matching
 - Cache-first policies
 
 ### ✅ Subscriptions
+
 - Efficient real-time updates
 - Proper cleanup
 - Reconnection logic
 
 ### ✅ Query Optimization
+
 - Selective field fetching
 - Aggregate queries for counts
 - Indexed queries
@@ -591,21 +656,25 @@ import { GET_MESSAGES, SEND_MESSAGE, MESSAGE_SUBSCRIPTION } from '@/graphql'
 ## Production Readiness
 
 ### ✅ Complete Coverage
+
 - All CRUD operations implemented
 - All business logic supported
 - All real-time features enabled
 
 ### ✅ Error Handling
+
 - GraphQL errors handled
 - Network errors handled
 - Validation errors handled
 
 ### ✅ Security
+
 - Authorization checks in place
 - Role-based access control
 - Sensitive data filtering
 
 ### ✅ Monitoring
+
 - Operation naming for tracking
 - Error logging
 - Performance monitoring
@@ -615,6 +684,7 @@ import { GET_MESSAGES, SEND_MESSAGE, MESSAGE_SUBSCRIPTION } from '@/graphql'
 ## Recommendations
 
 ### Already Excellent ✅
+
 1. **Comprehensive Operations**: 1,104+ operations cover every feature
 2. **Type Safety**: Full TypeScript coverage
 3. **Real-time Support**: Extensive subscription coverage
@@ -624,6 +694,7 @@ import { GET_MESSAGES, SEND_MESSAGE, MESSAGE_SUBSCRIPTION } from '@/graphql'
 7. **Production Ready**: Error handling, security, optimization in place
 
 ### Optional Enhancements (Future)
+
 1. **GraphQL Codegen**: Consider auto-generating types from schema
 2. **Operation Complexity Analysis**: Monitor query complexity
 3. **Rate Limiting**: Implement operation-level rate limits

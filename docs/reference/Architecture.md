@@ -49,15 +49,15 @@ This document describes the system architecture of nchat, including components, 
 
 ### Technology Stack
 
-| Layer | Technology | Purpose |
-|-------|------------|---------|
-| Framework | Next.js 15 | React framework with App Router |
-| UI Library | React 19 | Component library |
-| Styling | Tailwind CSS | Utility-first CSS |
-| Components | Radix UI | Accessible UI primitives |
-| State | Zustand | Global state management |
-| Data | Apollo Client | GraphQL client |
-| Real-time | Socket.io | WebSocket connections |
+| Layer      | Technology    | Purpose                         |
+| ---------- | ------------- | ------------------------------- |
+| Framework  | Next.js 15    | React framework with App Router |
+| UI Library | React 19      | Component library               |
+| Styling    | Tailwind CSS  | Utility-first CSS               |
+| Components | Radix UI      | Accessible UI primitives        |
+| State      | Zustand       | Global state management         |
+| Data       | Apollo Client | GraphQL client                  |
+| Real-time  | Socket.io     | WebSocket connections           |
 
 ### Application Structure
 
@@ -140,15 +140,15 @@ src/
 
 The backend is powered by nself CLI v0.4.2, which orchestrates:
 
-| Service | Purpose | Port |
-|---------|---------|------|
-| PostgreSQL | Primary database | 5432 |
-| Hasura | GraphQL engine | 8080 |
-| Auth (Nhost) | Authentication | 4000 |
-| Nginx | Reverse proxy | 80/443 |
-| MinIO | S3-compatible storage | 9000 |
-| Redis | Cache/sessions | 6379 |
-| MeiliSearch | Full-text search | 7700 |
+| Service      | Purpose               | Port   |
+| ------------ | --------------------- | ------ |
+| PostgreSQL   | Primary database      | 5432   |
+| Hasura       | GraphQL engine        | 8080   |
+| Auth (Nhost) | Authentication        | 4000   |
+| Nginx        | Reverse proxy         | 80/443 |
+| MinIO        | S3-compatible storage | 9000   |
+| Redis        | Cache/sessions        | 6379   |
+| MeiliSearch  | Full-text search      | 7700   |
 
 ### Service Communication
 
@@ -289,7 +289,7 @@ const socket = io(SOCKET_URL, {
   transports: ['websocket'],
   reconnection: true,
   reconnectionAttempts: 10,
-  reconnectionDelay: 1000
+  reconnectionDelay: 1000,
 })
 
 // Event handling
@@ -389,7 +389,7 @@ enum Permission {
 
   // Admin permissions
   ADMIN_ACCESS = 'admin:access',
-  SETTINGS_MANAGE = 'settings:manage'
+  SETTINGS_MANAGE = 'settings:manage',
 }
 ```
 
@@ -448,12 +448,12 @@ Guest (20)
 
 ### Caching Strategy
 
-| Layer | Cache | TTL | Purpose |
-|-------|-------|-----|---------|
-| Browser | localStorage | Permanent | User preferences |
-| CDN | Edge cache | 1 hour | Static assets |
-| Redis | In-memory | 5 minutes | Session, presence |
-| PostgreSQL | Query cache | Dynamic | Frequent queries |
+| Layer      | Cache        | TTL       | Purpose           |
+| ---------- | ------------ | --------- | ----------------- |
+| Browser    | localStorage | Permanent | User preferences  |
+| CDN        | Edge cache   | 1 hour    | Static assets     |
+| Redis      | In-memory    | 5 minutes | Session, presence |
+| PostgreSQL | Query cache  | Dynamic   | Frequent queries  |
 
 ### Performance Considerations
 

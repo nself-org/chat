@@ -50,7 +50,7 @@ export function VideoTile({
   return (
     <div
       className={cn(
-        'relative rounded-lg overflow-hidden bg-gray-900 border-2',
+        'relative overflow-hidden rounded-lg border-2 bg-gray-900',
         participant.isSpeaking ? 'border-blue-500' : 'border-transparent',
         isMain && 'border-4'
       )}
@@ -65,18 +65,18 @@ export function VideoTile({
           autoPlay
           playsInline
           muted={false} // Only mute local video to prevent feedback
-          className="w-full h-full object-cover"
+          className="h-full w-full object-cover"
         />
       ) : (
-        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-600 to-purple-600">
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-blue-600 to-purple-600">
           {participant.avatarUrl ? (
             <img
               src={participant.avatarUrl}
               alt={participant.name}
-              className="w-1/3 h-1/3 rounded-full object-cover"
+              className="h-1/3 w-1/3 rounded-full object-cover"
             />
           ) : (
-            <User className="w-1/3 h-1/3 text-white opacity-50" />
+            <User className="h-1/3 w-1/3 text-white opacity-50" />
           )}
         </div>
       )}
@@ -94,12 +94,10 @@ export function VideoTile({
       <div className="absolute bottom-0 left-0 right-0 p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-white font-medium text-sm drop-shadow-md">
+            <span className="text-sm font-medium text-white drop-shadow-md">
               {participant.name}
             </span>
-            {participant.isMuted && (
-              <MicOff className="w-4 h-4 text-red-500 drop-shadow-md" />
-            )}
+            {participant.isMuted && <MicOff className="h-4 w-4 text-red-500 drop-shadow-md" />}
           </div>
 
           {onPin && isHovered && (
@@ -117,14 +115,14 @@ export function VideoTile({
 
       {/* Screen Sharing Indicator */}
       {participant.isScreenSharing && (
-        <div className="absolute top-2 right-2 px-2 py-1 bg-blue-600 rounded text-xs text-white font-medium">
+        <div className="absolute right-2 top-2 rounded bg-blue-600 px-2 py-1 text-xs font-medium text-white">
           Sharing Screen
         </div>
       )}
 
       {/* Connection Status */}
       {participant.connectionState !== 'connected' && (
-        <div className="absolute top-2 left-2 px-2 py-1 bg-yellow-600 rounded text-xs text-white font-medium">
+        <div className="absolute left-2 top-2 rounded bg-yellow-600 px-2 py-1 text-xs font-medium text-white">
           {participant.connectionState}...
         </div>
       )}

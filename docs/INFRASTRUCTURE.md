@@ -30,12 +30,12 @@ This document provides comprehensive infrastructure recommendations for deployin
 
 ### Infrastructure Tiers
 
-| Tier | Users | Monthly Cost | Complexity |
-|------|-------|--------------|------------|
-| **Small** | <1,000 | $50-200 | Low |
-| **Medium** | 1,000-10,000 | $500-2,000 | Medium |
-| **Large** | 10,000-100,000 | $3,000-10,000 | High |
-| **Enterprise** | 100,000+ | $10,000+ | Very High |
+| Tier           | Users          | Monthly Cost  | Complexity |
+| -------------- | -------------- | ------------- | ---------- |
+| **Small**      | <1,000         | $50-200       | Low        |
+| **Medium**     | 1,000-10,000   | $500-2,000    | Medium     |
+| **Large**      | 10,000-100,000 | $3,000-10,000 | High       |
+| **Enterprise** | 100,000+       | $10,000+      | Very High  |
 
 ---
 
@@ -44,6 +44,7 @@ This document provides comprehensive infrastructure recommendations for deployin
 ### Local Development
 
 **Recommended Setup:**
+
 ```yaml
 Infrastructure:
   - Docker Desktop or Podman
@@ -66,6 +67,7 @@ Services (via nself CLI):
 ```
 
 **Development Tools:**
+
 - **IDE**: VSCode with recommended extensions
 - **API Testing**: Postman or Insomnia
 - **Database GUI**: pgAdmin 4 or TablePlus
@@ -85,6 +87,7 @@ GitHub Actions Workflows:
 ## Staging Environment
 
 ### Purpose
+
 - Pre-production testing
 - Client demos
 - QA validation
@@ -93,6 +96,7 @@ GitHub Actions Workflows:
 ### Recommended Architecture
 
 **Single-Server Setup** (Cost-effective):
+
 ```
 Server Specifications:
   Provider: DigitalOcean, Linode, or Hetzner
@@ -119,6 +123,7 @@ Backups:
 ```
 
 **Kubernetes Setup** (Production-like):
+
 ```
 Provider: DigitalOcean Kubernetes, GKE, EKS
 Cluster:
@@ -140,6 +145,7 @@ Features:
 ### Small Production (< 1,000 users)
 
 **Serverless Deployment** (Recommended):
+
 ```
 Frontend:
   Provider: Vercel or Netlify
@@ -167,6 +173,7 @@ Backend:
 ### Medium Production (1,000 - 10,000 users)
 
 **Kubernetes Cluster**:
+
 ```
 Infrastructure:
   Provider: DigitalOcean Kubernetes, GKE, or EKS
@@ -205,6 +212,7 @@ Total Cost: $600-1,000/month
 ### Large Production (10,000 - 100,000 users)
 
 **Multi-Region Architecture**:
+
 ```
 Primary Region (US/EU):
   Kubernetes Cluster:
@@ -236,6 +244,7 @@ Total Infrastructure: $5,000-10,000/month
 ### Enterprise Production (100,000+ users)
 
 **Global Multi-Cloud Architecture**:
+
 ```
 Requirements:
   - 99.99% uptime SLA
@@ -273,6 +282,7 @@ Estimated Total: $15,000-50,000+/month
 ### PostgreSQL Configuration
 
 **Small/Medium Deployments**:
+
 ```yaml
 Version: PostgreSQL 16
 Resources:
@@ -295,6 +305,7 @@ Backup Strategy:
 ```
 
 **Large/Enterprise Deployments**:
+
 ```yaml
 Primary Database:
   Type: Managed PostgreSQL (RDS, Cloud SQL, Azure Database)
@@ -330,6 +341,7 @@ Performance Optimizations:
 ### Database Scaling Strategy
 
 **Vertical Scaling** (Recommended first):
+
 ```
 1. Monitor query performance
 2. Identify slow queries (pg_stat_statements)
@@ -339,6 +351,7 @@ Performance Optimizations:
 ```
 
 **Horizontal Scaling** (When vertical scaling maxes out):
+
 ```
 1. Add read replicas for read-heavy workloads
 2. Implement sharding for write-heavy workloads
@@ -353,6 +366,7 @@ Performance Optimizations:
 ### File Storage
 
 **Small Deployments**:
+
 ```
 Option 1: MinIO (Self-hosted S3)
   - Easy to deploy
@@ -367,6 +381,7 @@ Option 2: Managed Object Storage
 ```
 
 **Medium/Large Deployments**:
+
 ```
 Primary: AWS S3, Google Cloud Storage, or Azure Blob
   - Multi-region replication
@@ -415,6 +430,7 @@ Retention Policies:
 ### Content Delivery Network
 
 **Recommended CDN Providers**:
+
 ```
 Tier 1: Cloudflare (Recommended)
   - Free plan includes CDN
@@ -438,6 +454,7 @@ Tier 3: Fastly
 ### Caching Strategy
 
 **Frontend Caching**:
+
 ```yaml
 Static Assets:
   Cache-Control: public, max-age=31536000, immutable
@@ -453,6 +470,7 @@ No Cache:
 ```
 
 **Backend Caching (Redis)**:
+
 ```yaml
 Cache Strategy:
   - User sessions (TTL: 24 hours)
@@ -478,6 +496,7 @@ Redis Configuration:
 ### Monitoring Stack
 
 **Recommended Tools**:
+
 ```yaml
 Error Tracking:
   - Sentry (already integrated)
@@ -508,6 +527,7 @@ Uptime Monitoring:
 ### Key Metrics to Monitor
 
 **Application Metrics**:
+
 ```yaml
 Performance:
   - API response time (p50, p95, p99)
@@ -529,6 +549,7 @@ Error Metrics:
 ```
 
 **Infrastructure Metrics**:
+
 ```yaml
 Resources:
   - CPU utilization (target: <70%)
@@ -551,6 +572,7 @@ Storage:
 ### Alerting Strategy
 
 **Critical Alerts** (Page on-call):
+
 ```
 - Service down (>5 minutes)
 - Database unavailable
@@ -560,6 +582,7 @@ Storage:
 ```
 
 **Warning Alerts** (Email/Slack):
+
 ```
 - High CPU/memory usage (>80%)
 - Slow response times (>2s)
@@ -575,6 +598,7 @@ Storage:
 ### Backup Strategy
 
 **Database Backups**:
+
 ```yaml
 Frequency:
   - Full backup: Daily at 2 AM UTC
@@ -597,6 +621,7 @@ Test Restoration:
 ```
 
 **File Storage Backups**:
+
 ```yaml
 Strategy:
   - Versioning enabled on S3/MinIO
@@ -610,6 +635,7 @@ Retention:
 ```
 
 **Configuration Backups**:
+
 ```yaml
 Backups:
   - Kubernetes manifests (Git)
@@ -624,6 +650,7 @@ Storage: Git repository (private)
 ### Disaster Recovery Plan
 
 **Recovery Time Objectives**:
+
 ```
 Tier 1 (Critical): RTO 1 hour, RPO 5 minutes
   - Database
@@ -641,6 +668,7 @@ Tier 3 (Nice to have): RTO 24 hours, RPO 24 hours
 ```
 
 **Disaster Recovery Steps**:
+
 ```
 1. Assess the situation (incident severity)
 2. Activate DR team
@@ -660,6 +688,7 @@ Tier 3 (Nice to have): RTO 24 hours, RPO 24 hours
 ### Network Security
 
 **Firewall Rules**:
+
 ```yaml
 Ingress:
   - HTTP/HTTPS (80/443): Allow from anywhere
@@ -673,6 +702,7 @@ Egress:
 ```
 
 **SSL/TLS**:
+
 ```yaml
 Certificates:
   - Provider: Let's Encrypt (free)
@@ -686,6 +716,7 @@ Configuration:
 ```
 
 **DDoS Protection**:
+
 ```yaml
 Layer 3/4: Cloudflare or AWS Shield
 Layer 7: Web Application Firewall (WAF)
@@ -697,6 +728,7 @@ Layer 7: Web Application Firewall (WAF)
 ### Application Security
 
 **Authentication**:
+
 ```yaml
 Password Policy:
   - Minimum 12 characters
@@ -717,13 +749,14 @@ Session Management:
 ```
 
 **Secrets Management**:
+
 ```yaml
 Tools:
   - Development: .env files (gitignored)
   - Staging/Production:
-    - HashiCorp Vault
-    - AWS Secrets Manager
-    - Kubernetes Secrets (encrypted at rest)
+      - HashiCorp Vault
+      - AWS Secrets Manager
+      - Kubernetes Secrets (encrypted at rest)
 
 Rotation:
   - Database passwords: Every 90 days
@@ -732,6 +765,7 @@ Rotation:
 ```
 
 **Security Scanning**:
+
 ```yaml
 Static Analysis:
   - ESLint with security plugins
@@ -756,6 +790,7 @@ Compliance:
 ### GitHub Actions Workflows
 
 **Current Workflows** (19 total):
+
 ```yaml
 Core Workflows:
   - ci.yml: Lint, Type Check, Test, Build
@@ -786,35 +821,36 @@ Quality:
 ### Recommended Pipeline Enhancements
 
 **Additional Stages**:
+
 ```yaml
 1. Security Scanning:
-   - Snyk for dependency vulnerabilities
-   - Trivy for container scanning
-   - SonarQube for code quality
+  - Snyk for dependency vulnerabilities
+  - Trivy for container scanning
+  - SonarQube for code quality
 
 2. Load Testing:
-   - k6 for API load testing
-   - Run before production deployment
+  - k6 for API load testing
+  - Run before production deployment
 
 3. Database Migrations:
-   - Automatic migration on deploy
-   - Rollback support
+  - Automatic migration on deploy
+  - Rollback support
 
 4. Smoke Tests:
-   - Post-deployment health checks
-   - Critical path verification
+  - Post-deployment health checks
+  - Critical path verification
 
 5. Rollback Strategy:
-   - Automatic rollback on failed health checks
-   - Manual rollback capability
+  - Automatic rollback on failed health checks
+  - Manual rollback capability
 ```
 
 ### Deployment Strategy
 
 **Blue-Green Deployment**:
+
 ```yaml
-Steps:
-  1. Deploy new version (green) alongside old (blue)
+Steps: 1. Deploy new version (green) alongside old (blue)
   2. Run smoke tests on green
   3. Gradually shift traffic to green (10% → 50% → 100%)
   4. Monitor error rates
@@ -828,9 +864,9 @@ Benefits:
 ```
 
 **Canary Deployment** (Alternative):
+
 ```yaml
-Steps:
-  1. Deploy new version to 5% of users
+Steps: 1. Deploy new version to 5% of users
   2. Monitor metrics for 1 hour
   3. If stable, increase to 25%
   4. Monitor for 2 hours
@@ -850,6 +886,7 @@ Benefits:
 ### Infrastructure Cost Reduction
 
 **Compute Optimization**:
+
 ```yaml
 Strategies:
   - Right-sizing: Use smaller instances where possible
@@ -865,6 +902,7 @@ Example Savings:
 ```
 
 **Storage Optimization**:
+
 ```yaml
 Strategies:
   - Lifecycle policies: Move old files to cold storage
@@ -879,6 +917,7 @@ Example Savings:
 ```
 
 **Database Optimization**:
+
 ```yaml
 Strategies:
   - Connection pooling: Reduce instance size
@@ -895,6 +934,7 @@ Example Savings:
 ### Monitoring Cost Optimization
 
 **Reduce Logging Costs**:
+
 ```yaml
 Strategies:
   - Filter unnecessary logs
@@ -909,6 +949,7 @@ Example Savings:
 ```
 
 **Reduce Monitoring Costs**:
+
 ```yaml
 Strategies:
   - Use open-source tools (Prometheus, Grafana)
@@ -929,6 +970,7 @@ Example Savings:
 ### Horizontal Scaling
 
 **Application Scaling**:
+
 ```yaml
 Auto-Scaling Configuration:
   Metrics:
@@ -953,6 +995,7 @@ Auto-Scaling Configuration:
 ```
 
 **Database Scaling**:
+
 ```yaml
 Read Scaling:
   - Add read replicas (up to 5)
@@ -973,6 +1016,7 @@ Cache Scaling:
 ### Geographic Scaling
 
 **Multi-Region Deployment**:
+
 ```yaml
 Regions:
   Primary: US East (us-east-1)
@@ -1002,6 +1046,7 @@ Latency Targets:
 ### Terraform
 
 **Recommended Structure**:
+
 ```
 infrastructure/
 ├── terraform/
@@ -1024,6 +1069,7 @@ infrastructure/
 ```
 
 **Example Module** (Kubernetes):
+
 ```hcl
 module "kubernetes" {
   source = "./modules/kubernetes"
@@ -1057,6 +1103,7 @@ module "kubernetes" {
 ### Helm Charts
 
 **Recommended Structure**:
+
 ```
 charts/
 └── nself-chat/
@@ -1075,6 +1122,7 @@ charts/
 ```
 
 **Deployment**:
+
 ```bash
 # Staging
 helm upgrade --install nself-chat ./charts/nself-chat \
@@ -1094,6 +1142,7 @@ helm upgrade --install nself-chat ./charts/nself-chat \
 ### GDPR Compliance
 
 **Data Protection**:
+
 ```yaml
 User Rights:
   - Right to access: Export user data
@@ -1112,6 +1161,7 @@ Implementation:
 ### HIPAA Compliance (if applicable)
 
 **Requirements**:
+
 ```yaml
 Technical Safeguards:
   - End-to-end encryption (already implemented)
@@ -1135,6 +1185,7 @@ Physical Safeguards:
 ### SOC 2 Compliance
 
 **Type I vs Type II**:
+
 ```yaml
 Type I (Point in time):
   - Security policies
@@ -1162,6 +1213,7 @@ Type II (Over time):
 ### Cloud Providers
 
 **Tier 1 (Recommended for Production)**:
+
 ```yaml
 AWS:
   Pros: Largest provider, most services, mature
@@ -1180,6 +1232,7 @@ Microsoft Azure:
 ```
 
 **Tier 2 (Good for SMBs)**:
+
 ```yaml
 DigitalOcean:
   Pros: Simple pricing, great UX, good docs
@@ -1232,6 +1285,7 @@ AWS RDS:
 ### On-Call Rotation
 
 **Recommended Setup**:
+
 ```yaml
 Team Size: 4-6 engineers
 Rotation: Weekly (Mon-Sun)
@@ -1252,6 +1306,7 @@ Alert Levels:
 ### Runbooks
 
 **Required Runbooks**:
+
 ```
 1. Service Degradation Response
 2. Database Failure Recovery
@@ -1268,6 +1323,7 @@ Alert Levels:
 ### Documentation
 
 **Required Documentation**:
+
 ```yaml
 Technical Docs:
   - Architecture diagrams
@@ -1300,21 +1356,25 @@ This infrastructure guide provides comprehensive recommendations for deploying a
 ### Quick Reference
 
 **Small Team (<1,000 users)**:
+
 - Cost: $50-200/month
 - Deploy: Vercel + Managed DB
 - Time to deploy: 1-2 hours
 
 **Medium Team (1,000-10,000 users)**:
+
 - Cost: $500-2,000/month
 - Deploy: Kubernetes + Managed Services
 - Time to deploy: 1-2 days
 
 **Large Organization (10,000+ users)**:
+
 - Cost: $3,000-10,000+/month
 - Deploy: Multi-region Kubernetes
 - Time to deploy: 1-2 weeks
 
 **Enterprise (100,000+ users)**:
+
 - Cost: $10,000-50,000+/month
 - Deploy: Multi-cloud, Multi-region
 - Time to deploy: 1-3 months

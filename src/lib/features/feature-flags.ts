@@ -296,34 +296,34 @@ export const FEATURES = {
 
   /** Enable slow mode for channels */
   MODERATION_SLOW_MODE: 'moderation.slowMode',
-} as const;
+} as const
 
 /**
  * Type representing all feature flag keys
  */
-export type FeatureKey = keyof typeof FEATURES;
+export type FeatureKey = keyof typeof FEATURES
 
 /**
  * Type representing all feature flag values (the string identifiers)
  */
-export type FeatureFlag = (typeof FEATURES)[FeatureKey];
+export type FeatureFlag = (typeof FEATURES)[FeatureKey]
 
 /**
  * Array of all feature flags for iteration
  */
-export const ALL_FEATURES = Object.values(FEATURES);
+export const ALL_FEATURES = Object.values(FEATURES)
 
 /**
  * Array of all feature keys for iteration
  */
-export const ALL_FEATURE_KEYS = Object.keys(FEATURES) as FeatureKey[];
+export const ALL_FEATURE_KEYS = Object.keys(FEATURES) as FeatureKey[]
 
 /**
  * Get the category from a feature flag
  * @example getFeatureCategory('messages.edit') // 'messages'
  */
 export function getFeatureCategory(feature: FeatureFlag): string {
-  return feature.split('.')[0];
+  return feature.split('.')[0]
 }
 
 /**
@@ -331,7 +331,7 @@ export function getFeatureCategory(feature: FeatureFlag): string {
  * @example getFeaturesByCategory('messages') // ['messages.edit', 'messages.delete', ...]
  */
 export function getFeaturesByCategory(category: string): FeatureFlag[] {
-  return ALL_FEATURES.filter((f) => f.startsWith(`${category}.`));
+  return ALL_FEATURES.filter((f) => f.startsWith(`${category}.`))
 }
 
 /**
@@ -348,6 +348,6 @@ export const FEATURE_CATEGORIES = {
   advanced: 'Advanced Features',
   admin: 'Administration',
   moderation: 'Moderation',
-} as const;
+} as const
 
-export type FeatureCategory = keyof typeof FEATURE_CATEGORIES;
+export type FeatureCategory = keyof typeof FEATURE_CATEGORIES

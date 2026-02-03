@@ -71,11 +71,7 @@ function getDefaultGranularity(period: AnalyticsPeriod): AnalyticsGranularity {
 /**
  * Generate time buckets for a date range and granularity.
  */
-function generateTimeBuckets(
-  start: Date,
-  end: Date,
-  granularity: AnalyticsGranularity
-): Date[] {
+function generateTimeBuckets(start: Date, end: Date, granularity: AnalyticsGranularity): Date[] {
   const buckets: Date[] = []
   const current = new Date(start)
 
@@ -236,25 +232,27 @@ export class AnalyticsAggregator {
       ? mockChannels.filter((c) => options.channelIds!.includes(c.id))
       : mockChannels
 
-    return filteredChannels.map((channel) => {
-      const messageCount = Math.floor(Math.random() * 2000) + 100
-      const activeUsers = Math.floor(Math.random() * 50) + 10
-      const memberCount = activeUsers + Math.floor(Math.random() * 30) + 10
+    return filteredChannels
+      .map((channel) => {
+        const messageCount = Math.floor(Math.random() * 2000) + 100
+        const activeUsers = Math.floor(Math.random() * 50) + 10
+        const memberCount = activeUsers + Math.floor(Math.random() * 30) + 10
 
-      return {
-        timestamp: start,
-        label: channel.name,
-        channelId: channel.id,
-        channelName: channel.name,
-        channelType: channel.type,
-        messageCount,
-        activeUsers,
-        reactionCount: Math.floor(messageCount * (0.2 + Math.random() * 0.3)),
-        threadCount: Math.floor(messageCount * (0.05 + Math.random() * 0.1)),
-        memberCount,
-        growthPercent: Math.floor(Math.random() * 40) - 10,
-      }
-    }).sort((a, b) => b.messageCount - a.messageCount)
+        return {
+          timestamp: start,
+          label: channel.name,
+          channelId: channel.id,
+          channelName: channel.name,
+          channelType: channel.type,
+          messageCount,
+          activeUsers,
+          reactionCount: Math.floor(messageCount * (0.2 + Math.random() * 0.3)),
+          threadCount: Math.floor(messageCount * (0.05 + Math.random() * 0.1)),
+          memberCount,
+          growthPercent: Math.floor(Math.random() * 40) - 10,
+        }
+      })
+      .sort((a, b) => b.messageCount - a.messageCount)
   }
 
   /**
@@ -375,7 +373,9 @@ export class AnalyticsAggregator {
   /**
    * Get role distribution.
    */
-  async getRoleDistribution(): Promise<Array<{ role: UserRole; count: number; percentage: number }>> {
+  async getRoleDistribution(): Promise<
+    Array<{ role: UserRole; count: number; percentage: number }>
+  > {
     const distribution = [
       { role: 'owner' as UserRole, count: 1 },
       { role: 'admin' as UserRole, count: 3 + Math.floor(Math.random() * 2) },
@@ -398,15 +398,17 @@ export class AnalyticsAggregator {
   async getTopContributors(
     period: AnalyticsPeriod,
     limit: number = 10
-  ): Promise<Array<{
-    userId: string
-    username: string
-    displayName: string
-    avatarUrl?: string
-    messageCount: number
-    reactionCount: number
-    threadCount: number
-  }>> {
+  ): Promise<
+    Array<{
+      userId: string
+      username: string
+      displayName: string
+      avatarUrl?: string
+      messageCount: number
+      reactionCount: number
+      threadCount: number
+    }>
+  > {
     // Mock top contributors
     const mockUsers = [
       { userId: 'u-1', username: 'alice', displayName: 'Alice Johnson', avatarUrl: undefined },

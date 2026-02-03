@@ -28,7 +28,7 @@ export function SettingsSkeleton({
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-2xl mx-auto p-6">
+        <div className="mx-auto max-w-2xl p-6">
           {/* Page header */}
           <div className="mb-6">
             <LineSkeleton width={150} height={24} className="mb-2" />
@@ -52,12 +52,7 @@ export function SettingsSkeleton({
  */
 export function SettingsNavSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'w-56 border-r bg-zinc-50 dark:bg-zinc-900/50 p-4',
-        className
-      )}
-    >
+    <div className={cn('w-56 border-r bg-zinc-50 p-4 dark:bg-zinc-900/50', className)}>
       {/* Header */}
       <LineSkeleton width={80} height={18} className="mb-4" />
 
@@ -96,12 +91,7 @@ export function SettingsNavSkeleton({ className }: { className?: string }) {
  */
 function SettingsNavItemSkeleton({ active = false }: { active?: boolean }) {
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2 px-3 py-2 rounded-md',
-        active && 'bg-muted'
-      )}
-    >
+    <div className={cn('flex items-center gap-2 rounded-md px-3 py-2', active && 'bg-muted')}>
       <Skeleton className="h-4 w-4 rounded" />
       <LineSkeleton width={80} height={14} />
     </div>
@@ -146,36 +136,20 @@ interface SettingsRowSkeletonProps {
 /**
  * Settings row skeleton
  */
-export function SettingsRowSkeleton({
-  type = 'toggle',
-  className,
-}: SettingsRowSkeletonProps) {
+export function SettingsRowSkeleton({ type = 'toggle', className }: SettingsRowSkeletonProps) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between py-2',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between py-2', className)}>
       {/* Label and description */}
-      <div className="flex-1 mr-4">
+      <div className="mr-4 flex-1">
         <LineSkeleton width={120} height={14} className="mb-1" />
         <LineSkeleton width={200} height={12} />
       </div>
 
       {/* Control */}
-      {type === 'toggle' && (
-        <Skeleton className="h-6 w-10 rounded-full shrink-0" />
-      )}
-      {type === 'input' && (
-        <Skeleton className="h-9 w-48 rounded-md shrink-0" />
-      )}
-      {type === 'select' && (
-        <Skeleton className="h-9 w-40 rounded-md shrink-0" />
-      )}
-      {type === 'button' && (
-        <Skeleton className="h-9 w-24 rounded-md shrink-0" />
-      )}
+      {type === 'toggle' && <Skeleton className="h-6 w-10 shrink-0 rounded-full" />}
+      {type === 'input' && <Skeleton className="h-9 w-48 shrink-0 rounded-md" />}
+      {type === 'select' && <Skeleton className="h-9 w-40 shrink-0 rounded-md" />}
+      {type === 'button' && <Skeleton className="h-9 w-24 shrink-0 rounded-md" />}
     </div>
   )
 }
@@ -187,12 +161,12 @@ export function ProfileSettingsSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('space-y-6', className)}>
       {/* Avatar section */}
-      <div className="flex items-start gap-4 pb-6 border-b">
+      <div className="flex items-start gap-4 border-b pb-6">
         <CircleSkeleton size={80} />
         <div className="space-y-2">
           <LineSkeleton width={100} height={16} />
           <LineSkeleton width={180} height={12} />
-          <Skeleton className="h-8 w-24 rounded-md mt-2" />
+          <Skeleton className="mt-2 h-8 w-24 rounded-md" />
         </div>
       </div>
 
@@ -205,7 +179,7 @@ export function ProfileSettingsSkeleton({ className }: { className?: string }) {
       </div>
 
       {/* Actions */}
-      <div className="flex justify-end gap-2 pt-4 border-t">
+      <div className="flex justify-end gap-2 border-t pt-4">
         <Skeleton className="h-10 w-20 rounded-md" />
         <Skeleton className="h-10 w-28 rounded-md" />
       </div>
@@ -240,11 +214,7 @@ function SettingsTextareaSkeleton({ label }: { label: string }) {
 /**
  * Notification settings skeleton
  */
-export function NotificationSettingsSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function NotificationSettingsSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('space-y-6', className)}>
       {/* Email notifications */}
@@ -268,11 +238,7 @@ export function NotificationSettingsSkeleton({
 /**
  * Appearance settings skeleton
  */
-export function AppearanceSettingsSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function AppearanceSettingsSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('space-y-6', className)}>
       {/* Theme */}
@@ -308,11 +274,7 @@ export function AppearanceSettingsSkeleton({
 /**
  * Security settings skeleton
  */
-export function SecuritySettingsSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function SecuritySettingsSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('space-y-6', className)}>
       {/* Password section */}
@@ -320,7 +282,7 @@ export function SecuritySettingsSkeleton({
         <div className="border-b pb-2">
           <LineSkeleton width={80} height={18} />
         </div>
-        <div className="flex items-center justify-between p-4 rounded-lg border">
+        <div className="flex items-center justify-between rounded-lg border p-4">
           <div>
             <LineSkeleton width={100} height={14} className="mb-1" />
             <LineSkeleton width={160} height={12} />
@@ -334,7 +296,7 @@ export function SecuritySettingsSkeleton({
         <div className="border-b pb-2">
           <LineSkeleton width={140} height={18} />
         </div>
-        <div className="flex items-center justify-between p-4 rounded-lg border">
+        <div className="flex items-center justify-between rounded-lg border p-4">
           <div>
             <LineSkeleton width={120} height={14} className="mb-1" />
             <LineSkeleton width={200} height={12} />
@@ -349,7 +311,7 @@ export function SecuritySettingsSkeleton({
           <LineSkeleton width={100} height={18} />
         </div>
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="flex items-center justify-between p-3 rounded-lg border">
+          <div key={i} className="flex items-center justify-between rounded-lg border p-3">
             <div className="flex items-center gap-3">
               <Skeleton className="h-10 w-10 rounded" />
               <div>

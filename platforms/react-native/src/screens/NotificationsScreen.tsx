@@ -3,14 +3,7 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  RefreshControl,
-  Pressable,
-} from 'react-native'
+import { View, Text, StyleSheet, FlatList, RefreshControl, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -31,14 +24,8 @@ export function NotificationsScreen() {
   const { theme } = useTheme()
   const insets = useSafeAreaInsets()
 
-  const {
-    notifications,
-    isLoading,
-    refresh,
-    markAsRead,
-    markAllAsRead,
-    unreadCount,
-  } = useNotifications()
+  const { notifications, isLoading, refresh, markAsRead, markAllAsRead, unreadCount } =
+    useNotifications()
 
   const [isRefreshing, setIsRefreshing] = useState(false)
 
@@ -48,47 +35,50 @@ export function NotificationsScreen() {
     setIsRefreshing(false)
   }, [refresh])
 
-  const handleNotificationPress = useCallback((notification: Notification) => {
-    markAsRead(notification.id)
+  const handleNotificationPress = useCallback(
+    (notification: Notification) => {
+      markAsRead(notification.id)
 
-    // Navigate based on notification type
-    switch (notification.type) {
-      case 'message':
-      case 'mention':
-      case 'thread_reply':
-        const channelId = notification.data?.channelId as string
-        const channelName = notification.data?.channelName as string
-        if (channelId) {
-          navigation.navigate('Channel', {
-            channelId,
-            title: channelName || 'Channel',
-          })
-        }
-        break
-      case 'direct_message':
-        const userId = notification.data?.userId as string
-        const userName = notification.data?.userName as string
-        if (userId) {
-          navigation.navigate('Chat', {
-            channelId: userId,
-            title: userName || 'Chat',
-          })
-        }
-        break
-      case 'channel_invite':
-        const inviteChannelId = notification.data?.channelId as string
-        if (inviteChannelId) {
-          navigation.navigate('Channel', {
-            channelId: inviteChannelId,
-            title: notification.data?.channelName as string || 'Channel',
-          })
-        }
-        break
-      case 'reaction':
-        // Navigate to the reacted message
-        break
-    }
-  }, [navigation, markAsRead])
+      // Navigate based on notification type
+      switch (notification.type) {
+        case 'message':
+        case 'mention':
+        case 'thread_reply':
+          const channelId = notification.data?.channelId as string
+          const channelName = notification.data?.channelName as string
+          if (channelId) {
+            navigation.navigate('Channel', {
+              channelId,
+              title: channelName || 'Channel',
+            })
+          }
+          break
+        case 'direct_message':
+          const userId = notification.data?.userId as string
+          const userName = notification.data?.userName as string
+          if (userId) {
+            navigation.navigate('Chat', {
+              channelId: userId,
+              title: userName || 'Chat',
+            })
+          }
+          break
+        case 'channel_invite':
+          const inviteChannelId = notification.data?.channelId as string
+          if (inviteChannelId) {
+            navigation.navigate('Channel', {
+              channelId: inviteChannelId,
+              title: (notification.data?.channelName as string) || 'Channel',
+            })
+          }
+          break
+        case 'reaction':
+          // Navigate to the reacted message
+          break
+      }
+    },
+    [navigation, markAsRead]
+  )
 
   const getNotificationIcon = (type: Notification['type']) => {
     switch (type) {
@@ -119,24 +109,15 @@ export function NotificationsScreen() {
         style={[
           styles.notificationItem,
           {
-            backgroundColor: isUnread
-              ? theme.colors.primary + '10'
-              : 'transparent',
+            backgroundColor: isUnread ? theme.colors.primary + '10' : 'transparent',
             borderBottomColor: theme.colors.border,
           },
         ]}
         onPress={() => handleNotificationPress(item)}
       >
         {/* Left: Avatar or Icon */}
-        <View
-          style={[
-            styles.iconContainer,
-            { backgroundColor: theme.colors.surface },
-          ]}
-        >
-          <Text style={{ color: theme.colors.primary }}>
-            {getNotificationIcon(item.type)}
-          </Text>
+        <View style={[styles.iconContainer, { backgroundColor: theme.colors.surface }]}>
+          <Text style={{ color: theme.colors.primary }}>{getNotificationIcon(item.type)}</Text>
         </View>
 
         {/* Content */}
@@ -152,10 +133,7 @@ export function NotificationsScreen() {
           >
             {item.title}
           </Text>
-          <Text
-            style={[styles.notificationBody, { color: theme.colors.muted }]}
-            numberOfLines={2}
-          >
+          <Text style={[styles.notificationBody, { color: theme.colors.muted }]} numberOfLines={2}>
             {truncate(item.body, 100)}
           </Text>
           <Text style={[styles.notificationTime, { color: theme.colors.muted }]}>
@@ -164,14 +142,7 @@ export function NotificationsScreen() {
         </View>
 
         {/* Unread indicator */}
-        {isUnread && (
-          <View
-            style={[
-              styles.unreadDot,
-              { backgroundColor: theme.colors.primary },
-            ]}
-          />
-        )}
+        {isUnread && <View style={[styles.unreadDot, { backgroundColor: theme.colors.primary }]} />}
       </Pressable>
     )
   }
@@ -179,9 +150,7 @@ export function NotificationsScreen() {
   const renderEmptyState = () => (
     <View style={styles.emptyContainer}>
       <Text style={[styles.emptyIcon, { color: theme.colors.muted }]}>bell</Text>
-      <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>
-        No notifications yet
-      </Text>
+      <Text style={[styles.emptyTitle, { color: theme.colors.text }]}>No notifications yet</Text>
       <Text style={[styles.emptySubtitle, { color: theme.colors.muted }]}>
         When you receive notifications, they will appear here
       </Text>
@@ -193,9 +162,7 @@ export function NotificationsScreen() {
 
     return (
       <View style={[styles.listHeader, { borderBottomColor: theme.colors.border }]}>
-        <Text style={[styles.unreadCount, { color: theme.colors.text }]}>
-          {unreadCount} unread
-        </Text>
+        <Text style={[styles.unreadCount, { color: theme.colors.text }]}>{unreadCount} unread</Text>
         <Pressable onPress={markAllAsRead}>
           <Text style={[styles.markAllRead, { color: theme.colors.primary }]}>
             Mark all as read
@@ -221,10 +188,7 @@ export function NotificationsScreen() {
         keyExtractor={(item) => item.id}
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={renderEmptyState}
-        contentContainerStyle={[
-          styles.listContent,
-          { paddingBottom: insets.bottom },
-        ]}
+        contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom }]}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}

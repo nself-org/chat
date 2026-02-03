@@ -107,10 +107,7 @@ mutation DeleteMeeting($id: uuid!) {
 mutation StartMeeting($id: uuid!) {
   update_nchat_meetings_by_pk(
     pk_columns: { id: $id }
-    _set: {
-      status: "live"
-      actual_start_at: "now()"
-    }
+    _set: { status: "live", actual_start_at: "now()" }
   ) {
     id
     status
@@ -122,10 +119,7 @@ mutation StartMeeting($id: uuid!) {
 mutation EndMeeting($id: uuid!) {
   update_nchat_meetings_by_pk(
     pk_columns: { id: $id }
-    _set: {
-      status: "ended"
-      actual_end_at: "now()"
-    }
+    _set: { status: "ended", actual_end_at: "now()" }
   ) {
     id
     status
@@ -135,12 +129,7 @@ mutation EndMeeting($id: uuid!) {
 
 # Cancel a meeting
 mutation CancelMeeting($id: uuid!) {
-  update_nchat_meetings_by_pk(
-    pk_columns: { id: $id }
-    _set: {
-      status: "cancelled"
-    }
-  ) {
+  update_nchat_meetings_by_pk(pk_columns: { id: $id }, _set: { status: "cancelled" }) {
     id
     status
     updated_at
@@ -149,10 +138,7 @@ mutation CancelMeeting($id: uuid!) {
 
 # Update meeting settings
 mutation UpdateMeetingSettings($id: uuid!, $settings: jsonb!) {
-  update_nchat_meetings_by_pk(
-    pk_columns: { id: $id }
-    _set: { settings: $settings }
-  ) {
+  update_nchat_meetings_by_pk(pk_columns: { id: $id }, _set: { settings: $settings }) {
     id
     settings
     updated_at
@@ -187,30 +173,17 @@ mutation InviteParticipants($participants: [nchat_meeting_participants_insert_in
 # Remove a participant from a meeting
 mutation RemoveParticipant($meetingId: uuid!, $userId: uuid!) {
   delete_nchat_meeting_participants(
-    where: {
-      meeting_id: { _eq: $meetingId }
-      user_id: { _eq: $userId }
-    }
+    where: { meeting_id: { _eq: $meetingId }, user_id: { _eq: $userId } }
   ) {
     affected_rows
   }
 }
 
 # Update participant response (RSVP)
-mutation UpdateParticipantResponse(
-  $meetingId: uuid!
-  $userId: uuid!
-  $status: String!
-) {
+mutation UpdateParticipantResponse($meetingId: uuid!, $userId: uuid!, $status: String!) {
   update_nchat_meeting_participants(
-    where: {
-      meeting_id: { _eq: $meetingId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      status: $status
-      responded_at: "now()"
-    }
+    where: { meeting_id: { _eq: $meetingId }, user_id: { _eq: $userId } }
+    _set: { status: $status, responded_at: "now()" }
   ) {
     affected_rows
     returning {
@@ -222,16 +195,9 @@ mutation UpdateParticipantResponse(
 }
 
 # Update participant role
-mutation UpdateParticipantRole(
-  $meetingId: uuid!
-  $userId: uuid!
-  $role: String!
-) {
+mutation UpdateParticipantRole($meetingId: uuid!, $userId: uuid!, $role: String!) {
   update_nchat_meeting_participants(
-    where: {
-      meeting_id: { _eq: $meetingId }
-      user_id: { _eq: $userId }
-    }
+    where: { meeting_id: { _eq: $meetingId }, user_id: { _eq: $userId } }
     _set: { role: $role }
   ) {
     affected_rows
@@ -245,14 +211,8 @@ mutation UpdateParticipantRole(
 # Record participant joining the meeting
 mutation RecordParticipantJoin($meetingId: uuid!, $userId: uuid!) {
   update_nchat_meeting_participants(
-    where: {
-      meeting_id: { _eq: $meetingId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      status: "joined"
-      joined_at: "now()"
-    }
+    where: { meeting_id: { _eq: $meetingId }, user_id: { _eq: $userId } }
+    _set: { status: "joined", joined_at: "now()" }
   ) {
     affected_rows
   }
@@ -261,14 +221,8 @@ mutation RecordParticipantJoin($meetingId: uuid!, $userId: uuid!) {
 # Record participant leaving the meeting
 mutation RecordParticipantLeave($meetingId: uuid!, $userId: uuid!) {
   update_nchat_meeting_participants(
-    where: {
-      meeting_id: { _eq: $meetingId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      status: "left"
-      left_at: "now()"
-    }
+    where: { meeting_id: { _eq: $meetingId }, user_id: { _eq: $userId } }
+    _set: { status: "left", left_at: "now()" }
   ) {
     affected_rows
   }
@@ -286,12 +240,7 @@ mutation CreateMeetingReminder(
   $isEnabled: Boolean = true
 ) {
   insert_nchat_meeting_reminders_one(
-    object: {
-      meeting_id: $meetingId
-      user_id: $userId
-      timing: $timing
-      is_enabled: $isEnabled
-    }
+    object: { meeting_id: $meetingId, user_id: $userId, timing: $timing, is_enabled: $isEnabled }
     on_conflict: {
       constraint: meeting_reminders_meeting_id_user_id_timing_key
       update_columns: [is_enabled]
@@ -307,10 +256,7 @@ mutation CreateMeetingReminder(
 
 # Update reminder
 mutation UpdateMeetingReminder($id: uuid!, $isEnabled: Boolean!) {
-  update_nchat_meeting_reminders_by_pk(
-    pk_columns: { id: $id }
-    _set: { is_enabled: $isEnabled }
-  ) {
+  update_nchat_meeting_reminders_by_pk(pk_columns: { id: $id }, _set: { is_enabled: $isEnabled }) {
     id
     is_enabled
   }
@@ -325,10 +271,7 @@ mutation DeleteMeetingReminder($id: uuid!) {
 
 # Mark reminder as sent
 mutation MarkReminderSent($id: uuid!) {
-  update_nchat_meeting_reminders_by_pk(
-    pk_columns: { id: $id }
-    _set: { sent_at: "now()" }
-  ) {
+  update_nchat_meeting_reminders_by_pk(pk_columns: { id: $id }, _set: { sent_at: "now()" }) {
     id
     sent_at
   }
@@ -396,10 +339,7 @@ mutation JoinHuddle($huddleId: uuid!, $userId: uuid!) {
     user_id
     joined_at
   }
-  update_nchat_huddles_by_pk(
-    pk_columns: { id: $huddleId }
-    _inc: { participant_count: 1 }
-  ) {
+  update_nchat_huddles_by_pk(pk_columns: { id: $huddleId }, _inc: { participant_count: 1 }) {
     id
     participant_count
   }
@@ -408,17 +348,11 @@ mutation JoinHuddle($huddleId: uuid!, $userId: uuid!) {
 # Leave a huddle
 mutation LeaveHuddle($huddleId: uuid!, $userId: uuid!) {
   delete_nchat_huddle_participants(
-    where: {
-      huddle_id: { _eq: $huddleId }
-      user_id: { _eq: $userId }
-    }
+    where: { huddle_id: { _eq: $huddleId }, user_id: { _eq: $userId } }
   ) {
     affected_rows
   }
-  update_nchat_huddles_by_pk(
-    pk_columns: { id: $huddleId }
-    _inc: { participant_count: -1 }
-  ) {
+  update_nchat_huddles_by_pk(pk_columns: { id: $huddleId }, _inc: { participant_count: -1 }) {
     id
     participant_count
   }
@@ -428,10 +362,7 @@ mutation LeaveHuddle($huddleId: uuid!, $userId: uuid!) {
 mutation EndHuddle($huddleId: uuid!) {
   update_nchat_huddles_by_pk(
     pk_columns: { id: $huddleId }
-    _set: {
-      status: "ended"
-      ended_at: "now()"
-    }
+    _set: { status: "ended", ended_at: "now()" }
   ) {
     id
     status
@@ -449,10 +380,7 @@ mutation UpdateHuddleParticipantState(
   $isScreenSharing: Boolean
 ) {
   update_nchat_huddle_participants(
-    where: {
-      huddle_id: { _eq: $huddleId }
-      user_id: { _eq: $userId }
-    }
+    where: { huddle_id: { _eq: $huddleId }, user_id: { _eq: $userId } }
     _set: {
       is_muted: $isMuted
       is_video_on: $isVideoOn
@@ -513,12 +441,7 @@ mutation CancelFutureRecurringInstances($parentMeetingId: uuid!, $fromDate: time
 # Delete recurring meeting and all instances
 mutation DeleteRecurringMeeting($id: uuid!) {
   delete_nchat_meetings(
-    where: {
-      _or: [
-        { id: { _eq: $id } }
-        { parent_meeting_id: { _eq: $id } }
-      ]
-    }
+    where: { _or: [{ id: { _eq: $id } }, { parent_meeting_id: { _eq: $id } }] }
   ) {
     affected_rows
   }

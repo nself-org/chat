@@ -205,9 +205,7 @@ describe('AI API Routes', () => {
     })
 
     it('should successfully generate digest', async () => {
-      const messages = [
-        { id: '1', content: 'Hello', userId: 'user1' },
-      ]
+      const messages = [{ id: '1', content: 'Hello', userId: 'user1' }]
       const request = new NextRequest('http://localhost:3000/api/ai/summarize', {
         method: 'POST',
         body: JSON.stringify({ messages, type: 'digest' }),
@@ -223,9 +221,7 @@ describe('AI API Routes', () => {
     })
 
     it('should successfully summarize thread', async () => {
-      const messages = [
-        { id: '1', content: 'Thread message', userId: 'user1' },
-      ]
+      const messages = [{ id: '1', content: 'Thread message', userId: 'user1' }]
       const request = new NextRequest('http://localhost:3000/api/ai/summarize', {
         method: 'POST',
         body: JSON.stringify({ messages, type: 'thread' }),

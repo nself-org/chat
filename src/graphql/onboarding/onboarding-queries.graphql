@@ -67,16 +67,9 @@ query GetSuggestedChannels($limit: Int = 10) {
   nchat_channels(
     where: {
       type: { _eq: "public" }
-      _or: [
-        { is_default: { _eq: true } }
-        { is_recommended: { _eq: true } }
-      ]
+      _or: [{ is_default: { _eq: true } }, { is_recommended: { _eq: true } }]
     }
-    order_by: [
-      { is_default: desc }
-      { is_recommended: desc }
-      { member_count: desc }
-    ]
+    order_by: [{ is_default: desc }, { is_recommended: desc }, { member_count: desc }]
     limit: $limit
   ) {
     id
@@ -139,10 +132,7 @@ query GetFeatureDiscoveryConfig {
 
 # Get what's new items
 query GetWhatsNewItems($since: timestamptz) {
-  nchat_whats_new(
-    where: { release_date: { _gte: $since } }
-    order_by: { release_date: desc }
-  ) {
+  nchat_whats_new(where: { release_date: { _gte: $since } }, order_by: { release_date: desc }) {
     id
     title
     description
@@ -170,9 +160,7 @@ query GetUserWhatsNew($userId: uuid!) {
 # Get onboarding analytics summary (admin)
 query GetOnboardingAnalytics($startDate: timestamptz, $endDate: timestamptz) {
   nchat_onboarding_analytics_aggregate(
-    where: {
-      created_at: { _gte: $startDate, _lte: $endDate }
-    }
+    where: { created_at: { _gte: $startDate, _lte: $endDate } }
   ) {
     aggregate {
       count

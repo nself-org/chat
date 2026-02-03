@@ -178,12 +178,7 @@ interface UserSuggestionItemProps {
   onMouseEnter: () => void
 }
 
-function UserSuggestionItem({
-  user,
-  isSelected,
-  onClick,
-  onMouseEnter,
-}: UserSuggestionItemProps) {
+function UserSuggestionItem({ user, isSelected, onClick, onMouseEnter }: UserSuggestionItemProps) {
   const initials = React.useMemo(() => {
     const name = user.display_name || user.username
     return name
@@ -201,7 +196,7 @@ function UserSuggestionItem({
       onClick={onClick}
       onMouseEnter={onMouseEnter}
       className={cn(
-        'flex items-center gap-3 px-3 py-2 cursor-pointer',
+        'flex cursor-pointer items-center gap-3 px-3 py-2',
         'transition-colors',
         isSelected ? 'bg-accent' : 'hover:bg-accent/50'
       )}
@@ -213,20 +208,16 @@ function UserSuggestionItem({
         </Avatar>
         <PresenceIndicator status={user.presence?.status} />
       </div>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="font-medium text-sm truncate">
-            {user.display_name || user.username}
-          </span>
+          <span className="truncate text-sm font-medium">{user.display_name || user.username}</span>
           {user.role && (
-            <span className="text-xs text-muted-foreground px-1.5 py-0.5 bg-muted rounded">
+            <span className="rounded bg-muted px-1.5 py-0.5 text-xs text-muted-foreground">
               {user.role}
             </span>
           )}
         </div>
-        <span className="text-xs text-muted-foreground truncate">
-          @{user.username}
-        </span>
+        <span className="truncate text-xs text-muted-foreground">@{user.username}</span>
       </div>
     </div>
   )
@@ -257,20 +248,18 @@ function SpecialMentionItem({
       className={cn(
         'flex items-center gap-3 px-3 py-2',
         'transition-colors',
-        isDisabled && 'opacity-50 cursor-not-allowed',
+        isDisabled && 'cursor-not-allowed opacity-50',
         !isDisabled && 'cursor-pointer',
         !isDisabled && (isSelected ? 'bg-accent' : 'hover:bg-accent/50')
       )}
     >
-      <div className="flex items-center justify-center h-8 w-8 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400">
+      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400">
         {mention.icon}
       </div>
-      <div className="flex-1 min-w-0">
-        <span className="font-medium text-sm">{mention.label}</span>
+      <div className="min-w-0 flex-1">
+        <span className="text-sm font-medium">{mention.label}</span>
         <p className="text-xs text-muted-foreground">{mention.description}</p>
-        {isDisabled && (
-          <p className="text-xs text-destructive">You don't have permission</p>
-        )}
+        {isDisabled && <p className="text-xs text-destructive">You don't have permission</p>}
       </div>
     </div>
   )
@@ -282,7 +271,7 @@ function SpecialMentionItem({
 
 function SectionHeader({ children }: { children: React.ReactNode }) {
   return (
-    <div className="px-3 py-1.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider bg-muted/30">
+    <div className="bg-muted/30 px-3 py-1.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
       {children}
     </div>
   )
@@ -295,9 +284,7 @@ function SectionHeader({ children }: { children: React.ReactNode }) {
 function EmptyState({ query }: { query: string }) {
   return (
     <div className="px-3 py-4 text-center text-sm text-muted-foreground">
-      {query
-        ? `No users found matching "${query}"`
-        : 'Start typing to search users'}
+      {query ? `No users found matching "${query}"` : 'Start typing to search users'}
     </div>
   )
 }
@@ -308,7 +295,7 @@ function EmptyState({ query }: { query: string }) {
 
 function LoadingState() {
   return (
-    <div className="px-3 py-4 flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2 px-3 py-4">
       <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       <span className="text-sm text-muted-foreground">Searching...</span>
     </div>
@@ -351,9 +338,7 @@ export function MentionAutocomplete({
     if (!query) return SPECIAL_MENTIONS
     const lowerQuery = query.toLowerCase()
     return SPECIAL_MENTIONS.filter(
-      (m) =>
-        m.label.toLowerCase().includes(lowerQuery) ||
-        m.id.toLowerCase().includes(lowerQuery)
+      (m) => m.label.toLowerCase().includes(lowerQuery) || m.id.toLowerCase().includes(lowerQuery)
     )
   }, [query])
 
@@ -401,15 +386,11 @@ export function MentionAutocomplete({
       switch (event.key) {
         case 'ArrowDown':
           event.preventDefault()
-          setSelectedIndex((prev) =>
-            prev < suggestions.length - 1 ? prev + 1 : 0
-          )
+          setSelectedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0))
           break
         case 'ArrowUp':
           event.preventDefault()
-          setSelectedIndex((prev) =>
-            prev > 0 ? prev - 1 : suggestions.length - 1
-          )
+          setSelectedIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1))
           break
         case 'Enter':
         case 'Tab':
@@ -417,10 +398,7 @@ export function MentionAutocomplete({
           const selected = suggestions[selectedIndex]
           if (selected) {
             // Check permission for special mentions
-            if (
-              selected.type === 'special' &&
-              !canUseGroupMention(selected.mentionType)
-            ) {
+            if (selected.type === 'special' && !canUseGroupMention(selected.mentionType)) {
               return
             }
             onSelect(selected)
@@ -443,10 +421,7 @@ export function MentionAutocomplete({
     if (!isOpen) return
 
     function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
         onClose()
       }
     }
@@ -458,10 +433,7 @@ export function MentionAutocomplete({
   if (!isOpen) return null
 
   const handleSelect = (suggestion: MentionSuggestion) => {
-    if (
-      suggestion.type === 'special' &&
-      !canUseGroupMention(suggestion.mentionType)
-    ) {
+    if (suggestion.type === 'special' && !canUseGroupMention(suggestion.mentionType)) {
       return
     }
     onSelect(suggestion)
@@ -481,9 +453,9 @@ export function MentionAutocomplete({
       role="listbox"
       aria-label="Mention suggestions"
       className={cn(
-        'absolute z-50 w-72 max-h-80',
+        'absolute z-50 max-h-80 w-72',
         'bg-popover text-popover-foreground',
-        'border rounded-lg shadow-lg',
+        'rounded-lg border shadow-lg',
         'overflow-hidden',
         className
       )}
@@ -501,9 +473,7 @@ export function MentionAutocomplete({
               <>
                 <SectionHeader>Special mentions</SectionHeader>
                 {specialSuggestions.map((suggestion) => {
-                  const specialMention = SPECIAL_MENTIONS.find(
-                    (s) => s.id === suggestion.id
-                  )!
+                  const specialMention = SPECIAL_MENTIONS.find((s) => s.id === suggestion.id)!
                   const index = currentIndex++
                   const isDisabled = !canUseGroupMention(suggestion.mentionType)
 
@@ -524,9 +494,7 @@ export function MentionAutocomplete({
             {/* User suggestions section */}
             {userSuggestions.length > 0 && (
               <>
-                <SectionHeader>
-                  {channelId ? 'Channel members' : 'Users'}
-                </SectionHeader>
+                <SectionHeader>{channelId ? 'Channel members' : 'Users'}</SectionHeader>
                 {userSuggestions.map((suggestion) => {
                   const index = currentIndex++
                   const user: MentionableUser = {
@@ -556,15 +524,13 @@ export function MentionAutocomplete({
       </ScrollArea>
 
       {/* Keyboard hints footer */}
-      <div className="px-3 py-2 text-xs text-muted-foreground border-t bg-muted/30 flex items-center gap-3">
+      <div className="bg-muted/30 flex items-center gap-3 border-t px-3 py-2 text-xs text-muted-foreground">
         <span>
-          <kbd className="px-1 py-0.5 bg-muted rounded text-[10px]">Tab</kbd> or{' '}
-          <kbd className="px-1 py-0.5 bg-muted rounded text-[10px]">Enter</kbd>{' '}
-          to select
+          <kbd className="rounded bg-muted px-1 py-0.5 text-[10px]">Tab</kbd> or{' '}
+          <kbd className="rounded bg-muted px-1 py-0.5 text-[10px]">Enter</kbd> to select
         </span>
         <span>
-          <kbd className="px-1 py-0.5 bg-muted rounded text-[10px]">Esc</kbd> to
-          close
+          <kbd className="rounded bg-muted px-1 py-0.5 text-[10px]">Esc</kbd> to close
         </span>
       </div>
     </div>

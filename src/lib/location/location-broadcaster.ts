@@ -259,9 +259,8 @@ export class LocationBroadcaster {
       this.currentLocation.expiresAt.getTime() + additionalMinutes * 60 * 1000
     )
     this.currentLocation.expiresAt = newExpiresAt
-    this.currentLocation.duration = (
-      this.currentLocation.duration + additionalMinutes
-    ) as LocationSharingDuration
+    this.currentLocation.duration = (this.currentLocation.duration +
+      additionalMinutes) as LocationSharingDuration
 
     // Reset expiration timeout
     this.clearExpirationTimeout()
@@ -436,9 +435,7 @@ export class LocationBroadcaster {
 /**
  * Create a location broadcaster.
  */
-export function createLocationBroadcaster(
-  options?: BroadcasterOptions
-): LocationBroadcaster {
+export function createLocationBroadcaster(options?: BroadcasterOptions): LocationBroadcaster {
   return new LocationBroadcaster(options)
 }
 

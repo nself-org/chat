@@ -91,23 +91,26 @@ async function uploadFile(file: File) {
 import { withRetry, NetworkError } from '@/lib/errors'
 
 async function fetchUserData(userId: string) {
-  return withRetry(async () => {
-    const response = await fetch(`/api/users/${userId}`)
+  return withRetry(
+    async () => {
+      const response = await fetch(`/api/users/${userId}`)
 
-    if (!response.ok) {
-      if (response.status >= 500) {
-        // Retryable server error
-        throw new NetworkError('Server error')
+      if (!response.ok) {
+        if (response.status >= 500) {
+          // Retryable server error
+          throw new NetworkError('Server error')
+        }
+        // Non-retryable client error
+        throw new Error(`HTTP ${response.status}`)
       }
-      // Non-retryable client error
-      throw new Error(`HTTP ${response.status}`)
-    }
 
-    return await response.json()
-  }, {
-    maxAttempts: 3,
-    initialDelayMs: 1000,
-  })
+      return await response.json()
+    },
+    {
+      maxAttempts: 3,
+      initialDelayMs: 1000,
+    }
+  )
 }
 ```
 
@@ -186,12 +189,9 @@ async function sendMessage(message: string) {
   // Check if online
   if (!navigator.onLine) {
     // Queue for later
-    offlineQueue.enqueue(
-      async () => {
-        await sendMessageToServer(message)
-      },
-      'Send message'
-    )
+    offlineQueue.enqueue(async () => {
+      await sendMessageToServer(message)
+    }, 'Send message')
 
     // Show queued notification
     showQueuedToast('Message', offlineQueue.size())
@@ -269,7 +269,12 @@ function MessageForm() {
 
   return (
     <ComponentErrorBoundary>
-      <form onSubmit={(e) => { e.preventDefault(); handleSend(); }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault()
+          handleSend()
+        }}
+      >
         <input
           value={message}
           onChange={(e) => setMessage(e.target.value)}

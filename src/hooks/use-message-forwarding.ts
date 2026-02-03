@@ -30,108 +30,125 @@ export function useMessageForwarding() {
 
   const [forwardMessageMutation] = useMutation(FORWARD_MESSAGE)
 
-  const forwardMessages = useCallback(async (
-    messages: ForwardableMessage[],
-    destinations: ForwardDestination[],
-    mode: ForwardingMode,
-    comment?: string
-  ) => {
-    if (!user) {
-      toast({
-        title: 'Error',
-        description: 'You must be logged in to forward messages',
-        variant: 'destructive',
-      })
-      return
-    }
-
-    try {
-      logger.debug('Forwarding messages', { messageCount: messages.length, destinationCount: destinations.length, mode })
-
-      store.startForwarding()
-
-      const request = createForwardRequest(messages, destinations, mode, user.id, comment)
-      const results: ForwardResult[] = []
-
-      // Forward to each destination
-      for (const destination of destinations) {
-        try {
-          const messageIds: string[] = []
-
-          for (const message of messages) {
-            const { content, attribution } = formatForwardedContent(message, mode)
-
-            const fullContent = comment
-              ? `${comment}\n\n${content}${attribution ? `\n\n${attribution}` : ''}`
-              : `${content}${attribution ? `\n\n${attribution}` : ''}`
-
-            const result = await forwardMessageMutation({
-              variables: {
-                messageId: message.id,
-                targetChannelId: destination.id,
-                content: fullContent,
-                userId: user.id,
-              },
-            })
-
-            if (result.data?.insert_nchat_messages_one?.id) {
-              messageIds.push(result.data.insert_nchat_messages_one.id)
-            }
-          }
-
-          results.push({
-            destination,
-            success: true,
-            messageIds,
-          })
-
-          logger.info('Successfully forwarded to destination', { destination: destination.name })
-        } catch (error) {
-          logger.error('Failed to forward to destination', error instanceof Error ? error : new Error(String(error)), { destination: destination.name })
-          results.push({
-            destination,
-            success: false,
-            error: error instanceof Error ? error.message : 'Failed to forward',
-          })
-        }
-      }
-
-      const operationResult: ForwardOperationResult = {
-        request,
-        results,
-        successCount: results.filter(r => r.success).length,
-        failureCount: results.filter(r => !r.success).length,
-      }
-
-      store.finishForwarding(operationResult)
-
-      if (operationResult.successCount > 0) {
+  const forwardMessages = useCallback(
+    async (
+      messages: ForwardableMessage[],
+      destinations: ForwardDestination[],
+      mode: ForwardingMode,
+      comment?: string
+    ) => {
+      if (!user) {
         toast({
-          title: 'Messages forwarded',
-          description: `Successfully forwarded to ${operationResult.successCount} destination${operationResult.successCount !== 1 ? 's' : ''}`,
-        })
-      }
-
-      if (operationResult.failureCount > 0) {
-        toast({
-          title: 'Partial failure',
-          description: `Failed to forward to ${operationResult.failureCount} destination${operationResult.failureCount !== 1 ? 's' : ''}`,
+          title: 'Error',
+          description: 'You must be logged in to forward messages',
           variant: 'destructive',
         })
+        return
       }
 
-      logger.info('Forward operation completed', { successCount: operationResult.successCount, failureCount: operationResult.failureCount })
-      return operationResult
-    } catch (error) {
-      logger.error('Failed to forward messages', error instanceof Error ? error : new Error(String(error)))
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to forward messages',
-        variant: 'destructive',
-      })
-      throw error
-    }
-  }, [user, store, forwardMessageMutation, toast])
+      try {
+        logger.debug('Forwarding messages', {
+          messageCount: messages.length,
+          destinationCount: destinations.length,
+          mode,
+        })
+
+        store.startForwarding()
+
+        const request = createForwardRequest(messages, destinations, mode, user.id, comment)
+        const results: ForwardResult[] = []
+
+        // Forward to each destination
+        for (const destination of destinations) {
+          try {
+            const messageIds: string[] = []
+
+            for (const message of messages) {
+              const { content, attribution } = formatForwardedContent(message, mode)
+
+              const fullContent = comment
+                ? `${comment}\n\n${content}${attribution ? `\n\n${attribution}` : ''}`
+                : `${content}${attribution ? `\n\n${attribution}` : ''}`
+
+              const result = await forwardMessageMutation({
+                variables: {
+                  messageId: message.id,
+                  targetChannelId: destination.id,
+                  content: fullContent,
+                  userId: user.id,
+                },
+              })
+
+              if (result.data?.insert_nchat_messages_one?.id) {
+                messageIds.push(result.data.insert_nchat_messages_one.id)
+              }
+            }
+
+            results.push({
+              destination,
+              success: true,
+              messageIds,
+            })
+
+            logger.info('Successfully forwarded to destination', { destination: destination.name })
+          } catch (error) {
+            logger.error(
+              'Failed to forward to destination',
+              error instanceof Error ? error : new Error(String(error)),
+              { destination: destination.name }
+            )
+            results.push({
+              destination,
+              success: false,
+              error: error instanceof Error ? error.message : 'Failed to forward',
+            })
+          }
+        }
+
+        const operationResult: ForwardOperationResult = {
+          request,
+          results,
+          successCount: results.filter((r) => r.success).length,
+          failureCount: results.filter((r) => !r.success).length,
+        }
+
+        store.finishForwarding(operationResult)
+
+        if (operationResult.successCount > 0) {
+          toast({
+            title: 'Messages forwarded',
+            description: `Successfully forwarded to ${operationResult.successCount} destination${operationResult.successCount !== 1 ? 's' : ''}`,
+          })
+        }
+
+        if (operationResult.failureCount > 0) {
+          toast({
+            title: 'Partial failure',
+            description: `Failed to forward to ${operationResult.failureCount} destination${operationResult.failureCount !== 1 ? 's' : ''}`,
+            variant: 'destructive',
+          })
+        }
+
+        logger.info('Forward operation completed', {
+          successCount: operationResult.successCount,
+          failureCount: operationResult.failureCount,
+        })
+        return operationResult
+      } catch (error) {
+        logger.error(
+          'Failed to forward messages',
+          error instanceof Error ? error : new Error(String(error))
+        )
+        toast({
+          title: 'Error',
+          description: error instanceof Error ? error.message : 'Failed to forward messages',
+          variant: 'destructive',
+        })
+        throw error
+      }
+    },
+    [user, store, forwardMessageMutation, toast]
+  )
 
   return {
     // Modal state

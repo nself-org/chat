@@ -13,11 +13,7 @@ export function HeroSection() {
           {/* Logo */}
           {branding.logo && (
             <div className="mb-8">
-              <img
-                src={branding.logo}
-                alt={branding.appName}
-                className="h-16 w-auto mx-auto"
-              />
+              <img src={branding.logo} alt={branding.appName} className="mx-auto h-16 w-auto" />
             </div>
           )}
 
@@ -25,9 +21,9 @@ export function HeroSection() {
           <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-6xl">
             {branding.appName}
           </h1>
-          
+
           {branding.tagline && (
-            <p className="mt-6 text-lg leading-8 text-gray-700 dark:text-gray-200 max-w-2xl mx-auto">
+            <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-700 dark:text-gray-200">
               {branding.tagline}
             </p>
           )}
@@ -36,22 +32,16 @@ export function HeroSection() {
           <div className="mt-10 flex items-center justify-center gap-x-6">
             {authPermissions.mode !== 'admin-only' ? (
               <Button asChild size="lg">
-                <Link href="/auth/signup">
-                  Get Started
-                </Link>
+                <Link href="/auth/signup">Get Started</Link>
               </Button>
             ) : (
               <Button asChild size="lg">
-                <Link href="/auth/signin">
-                  Sign In
-                </Link>
+                <Link href="/auth/signin">Sign In</Link>
               </Button>
             )}
-            
+
             <Button variant="outline" size="lg" asChild>
-              <Link href="#features">
-                Learn More
-              </Link>
+              <Link href="#features">Learn More</Link>
             </Button>
           </div>
 

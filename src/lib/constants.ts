@@ -15,7 +15,7 @@ export const API_URLS = {
   STORAGE: process.env.NEXT_PUBLIC_STORAGE_URL || 'http://storage.localhost/v1/storage',
   /** WebSocket endpoint for subscriptions */
   WS: process.env.NEXT_PUBLIC_WS_URL || 'ws://api.localhost/v1/graphql',
-} as const;
+} as const
 
 /**
  * Application metadata
@@ -31,7 +31,7 @@ export const APP_CONFIG = {
   DEFAULT_LOCALE: 'en-US',
   /** Support email */
   SUPPORT_EMAIL: 'support@nself.org',
-} as const;
+} as const
 
 /**
  * Default values for the application
@@ -69,7 +69,7 @@ export const DEFAULTS = {
   RECONNECT_INTERVAL: 5000,
   /** Maximum reconnect attempts */
   MAX_RECONNECT_ATTEMPTS: 10,
-} as const;
+} as const
 
 /**
  * Size limits
@@ -109,7 +109,7 @@ export const LIMITS = {
   MAX_REACTIONS_PER_MESSAGE: 50,
   /** Maximum members in a direct message group */
   MAX_DM_GROUP_MEMBERS: 8,
-} as const;
+} as const
 
 /**
  * Timing constants (all in milliseconds)
@@ -141,14 +141,15 @@ export const TIMING = {
   USER_CACHE_TTL: 5 * 60 * 1000,
   /** Cache TTL for channel data */
   CHANNEL_CACHE_TTL: 60 * 1000,
-} as const;
+} as const
 
 /**
  * Regular expression patterns
  */
 export const PATTERNS = {
   /** Email pattern */
-  EMAIL: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
+  EMAIL:
+    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
   /** Username pattern (letters, numbers, underscores, periods) */
   USERNAME: /^[a-zA-Z][a-zA-Z0-9_.]*[a-zA-Z0-9]$|^[a-zA-Z]$/,
   /** Channel name pattern (lowercase, numbers, hyphens, underscores) */
@@ -171,7 +172,7 @@ export const PATTERNS = {
   SLUG: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
   /** Password pattern (at least 8 chars, 1 upper, 1 lower, 1 number) */
   PASSWORD: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/,
-} as const;
+} as const
 
 /**
  * Key codes for keyboard shortcuts
@@ -191,7 +192,7 @@ export const KEYS = {
   END: 'End',
   PAGE_UP: 'PageUp',
   PAGE_DOWN: 'PageDown',
-} as const;
+} as const
 
 /**
  * HTTP status codes
@@ -210,7 +211,7 @@ export const HTTP_STATUS = {
   INTERNAL_SERVER_ERROR: 500,
   BAD_GATEWAY: 502,
   SERVICE_UNAVAILABLE: 503,
-} as const;
+} as const
 
 /**
  * User roles
@@ -221,7 +222,7 @@ export const ROLES = {
   MODERATOR: 'moderator',
   MEMBER: 'member',
   GUEST: 'guest',
-} as const;
+} as const
 
 /**
  * Role hierarchy (higher number = more permissions)
@@ -232,7 +233,7 @@ export const ROLE_HIERARCHY: Record<string, number> = {
   [ROLES.MODERATOR]: 60,
   [ROLES.MEMBER]: 40,
   [ROLES.GUEST]: 20,
-} as const;
+} as const
 
 /**
  * Channel types
@@ -242,7 +243,7 @@ export const CHANNEL_TYPES = {
   PRIVATE: 'private',
   DIRECT: 'direct',
   GROUP_DM: 'group_dm',
-} as const;
+} as const
 
 /**
  * Message types
@@ -256,7 +257,7 @@ export const MESSAGE_TYPES = {
   SYSTEM: 'system',
   REPLY: 'reply',
   THREAD: 'thread',
-} as const;
+} as const
 
 /**
  * Presence status types
@@ -266,7 +267,7 @@ export const PRESENCE_STATUS = {
   AWAY: 'away',
   DND: 'dnd',
   OFFLINE: 'offline',
-} as const;
+} as const
 
 /**
  * Notification types
@@ -279,7 +280,7 @@ export const NOTIFICATION_TYPES = {
   CHANNEL_INVITE: 'channel_invite',
   DM: 'dm',
   SYSTEM: 'system',
-} as const;
+} as const
 
 /**
  * File type categories
@@ -312,7 +313,7 @@ export const FILE_CATEGORIES = {
     mimeTypes: ['application/zip', 'application/x-rar-compressed', 'application/gzip'],
     extensions: ['.zip', '.rar', '.gz', '.tar'],
   },
-} as const;
+} as const
 
 /**
  * Error codes
@@ -352,7 +353,7 @@ export const ERROR_CODES = {
   FILE_TOO_LARGE: 'FILE_TOO_LARGE',
   FILE_TYPE_NOT_ALLOWED: 'FILE_TYPE_NOT_ALLOWED',
   FILE_UPLOAD_FAILED: 'FILE_UPLOAD_FAILED',
-} as const;
+} as const
 
 /**
  * Local storage keys
@@ -367,7 +368,7 @@ export const STORAGE_KEYS = {
   SIDEBAR_STATE: 'nchat-sidebar',
   RECENT_EMOJI: 'nchat-recent-emoji',
   NOTIFICATION_PERMISSION: 'nchat-notification-permission',
-} as const;
+} as const
 
 /**
  * Event names for custom events
@@ -398,7 +399,7 @@ export const EVENTS = {
   SIDEBAR_TOGGLE: 'nchat:ui:sidebar-toggle',
   MODAL_OPEN: 'nchat:ui:modal-open',
   MODAL_CLOSE: 'nchat:ui:modal-close',
-} as const;
+} as const
 
 /**
  * Breakpoints for responsive design
@@ -409,7 +410,7 @@ export const BREAKPOINTS = {
   LG: 1024,
   XL: 1280,
   '2XL': 1536,
-} as const;
+} as const
 
 /**
  * Z-index layers
@@ -424,4 +425,4 @@ export const Z_INDEX = {
   TOOLTIP: 600,
   TOAST: 700,
   MAX: 9999,
-} as const;
+} as const

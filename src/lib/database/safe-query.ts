@@ -227,10 +227,7 @@ export function sanitizeColumnName(name: string): string {
  * const query = `SELECT * FROM users ${orderBy}`
  * ```
  */
-export function buildOrderByClause(
-  column: string,
-  direction: 'ASC' | 'DESC' = 'ASC'
-): string {
+export function buildOrderByClause(column: string, direction: 'ASC' | 'DESC' = 'ASC'): string {
   // Validate column name
   const safeColumn = sanitizeColumnName(column)
 

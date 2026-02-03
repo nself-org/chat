@@ -288,8 +288,7 @@ Specialized upload progress indicator.
 
 ```tsx
 import { UploadProgress } from '@/components/loading'
-
-<UploadProgress
+;<UploadProgress
   fileName="document.pdf"
   fileSize="2.4 MB"
   progress={45}
@@ -308,16 +307,13 @@ Type-safe lazy loading utilities.
 import { lazyLoad, lazyLoadWithRetry, preloadComponent } from '@/lib/loading'
 
 // Basic lazy load
-const ChatView = lazyLoad(
-  () => import('@/components/chat/ChatView'),
-  'ChatView'
-)
+const ChatView = lazyLoad(() => import('@/components/chat/ChatView'), 'ChatView')
 
 // With retry
-const HeavyComponent = lazyLoadWithRetry(
-  () => import('./HeavyComponent'),
-  { maxRetries: 3, retryDelay: 1000 }
-)
+const HeavyComponent = lazyLoadWithRetry(() => import('./HeavyComponent'), {
+  maxRetries: 3,
+  retryDelay: 1000,
+})
 
 // Preload before needed
 preloadComponent(ChatView)
@@ -393,8 +389,7 @@ Unified loading state management.
 
 ```tsx
 import { LoadingState } from '@/components/loading'
-
-<LoadingState
+;<LoadingState
   state={loadingState} // 'idle' | 'loading' | 'success' | 'error'
   loadingContent={<Skeleton />}
   errorContent={<ErrorMessage />}
@@ -437,16 +432,11 @@ import { DataWrapper, ListWrapper } from '@/components/loading'
 
 ```tsx
 import { EmptyState } from '@/components/loading'
-
-<EmptyState
+;<EmptyState
   icon={<InboxIcon className="h-12 w-12" />}
   title="No messages yet"
   description="Start a conversation to see messages here"
-  action={
-    <Button onClick={handleStartChat}>
-      Start Chat
-    </Button>
-  }
+  action={<Button onClick={handleStartChat}>Start Chat</Button>}
 />
 ```
 
@@ -460,25 +450,24 @@ Manage optimistic UI updates.
 import { useOptimistic } from '@/lib/loading'
 
 function MessageList() {
-  const [{ data: messages, isPending }, updateMessages] = useOptimistic(
-    initialMessages
-  )
+  const [{ data: messages, isPending }, updateMessages] = useOptimistic(initialMessages)
 
   const sendMessage = async (text: string) => {
     // Optimistically add message
-    updateMessages((prev) => [...prev, {
-      id: 'temp-' + Date.now(),
-      text,
-      isPending: true,
-    }])
+    updateMessages((prev) => [
+      ...prev,
+      {
+        id: 'temp-' + Date.now(),
+        text,
+        isPending: true,
+      },
+    ])
 
     try {
       // Send to server
       const result = await api.sendMessage(text)
       // Update with real message
-      updateMessages((prev) =>
-        prev.map((m) => m.id === 'temp-' + Date.now() ? result : m)
-      )
+      updateMessages((prev) => prev.map((m) => (m.id === 'temp-' + Date.now() ? result : m)))
     } catch (error) {
       // Revert on error
       revert()
@@ -488,11 +477,7 @@ function MessageList() {
   return (
     <div>
       {messages.map((msg) => (
-        <Message
-          key={msg.id}
-          message={msg}
-          isPending={msg.isPending}
-        />
+        <Message key={msg.id} message={msg} isPending={msg.isPending} />
       ))}
     </div>
   )
@@ -507,14 +492,8 @@ Optimistic operations on lists.
 import { useOptimisticList } from '@/lib/loading'
 
 function TodoList() {
-  const {
-    list,
-    addOptimistic,
-    updateOptimistic,
-    removeOptimistic,
-    confirmUpdate,
-    isPending,
-  } = useOptimisticList(initialTodos)
+  const { list, addOptimistic, updateOptimistic, removeOptimistic, confirmUpdate, isPending } =
+    useOptimisticList(initialTodos)
 
   const addTodo = async (text: string) => {
     const tempId = 'temp-' + Date.now()
@@ -535,10 +514,7 @@ function TodoList() {
   return (
     <ul>
       {list.map((todo) => (
-        <li
-          key={todo.id}
-          className={isPending(todo.id) ? 'opacity-50' : ''}
-        >
+        <li key={todo.id} className={isPending(todo.id) ? 'opacity-50' : ''}>
           {todo.text}
         </li>
       ))}
@@ -641,11 +617,7 @@ Use smooth transitions between loading states:
 Ensure loading states are accessible:
 
 ```tsx
-<div
-  role="status"
-  aria-live="polite"
-  aria-label="Loading content"
->
+<div role="status" aria-live="polite" aria-label="Loading content">
   <Spinner />
 </div>
 ```
@@ -656,12 +628,14 @@ Avoid over-rendering skeletons:
 
 ```tsx
 // Good: Single wrapper
-<SkeletonWrapper isLoading={isLoading} skeleton={<Skeleton />}>
+;<SkeletonWrapper isLoading={isLoading} skeleton={<Skeleton />}>
   <Content />
 </SkeletonWrapper>
 
 // Bad: Conditional rendering (re-mounts)
-{isLoading ? <Skeleton /> : <Content />}
+{
+  isLoading ? <Skeleton /> : <Content />
+}
 ```
 
 ## Complete Example

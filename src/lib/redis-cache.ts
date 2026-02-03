@@ -6,6 +6,9 @@
  */
 
 import Redis, { RedisOptions } from 'ioredis'
+import { createLogger } from './logger'
+
+const log = createLogger('Redis')
 
 // ============================================================================
 // Configuration
@@ -52,16 +55,14 @@ export const CacheKeys = {
   // Channel data
   channel: (channelId: string) => `channel:${channelId}`,
   channelMembers: (channelId: string) => `channel:members:${channelId}`,
-  channelUnread: (userId: string, channelId: string) =>
-    `channel:unread:${userId}:${channelId}`,
+  channelUnread: (userId: string, channelId: string) => `channel:unread:${userId}:${channelId}`,
   channelStats: (channelId: string) => `channel:stats:${channelId}`,
 
   // Message data
   message: (messageId: string) => `message:${messageId}`,
   messageReactions: (messageId: string) => `message:reactions:${messageId}`,
   messageThread: (messageId: string) => `message:thread:${messageId}`,
-  channelMessages: (channelId: string, page: number) =>
-    `channel:messages:${channelId}:${page}`,
+  channelMessages: (channelId: string, page: number) => `channel:messages:${channelId}:${page}`,
 
   // Direct messages
   dm: (dmId: string) => `dm:${dmId}`,
@@ -152,21 +153,21 @@ export class RedisCacheService {
 
     this.client.on('connect', () => {
       this.isConnected = true
-      console.log('[Redis] Connected to Redis server')
+      log.info('Connected to Redis server')
     })
 
     this.client.on('error', (error) => {
       this.isConnected = false
-      console.error('[Redis] Connection error:', error)
+      log.error('Connection error', error)
     })
 
     this.client.on('close', () => {
       this.isConnected = false
-      console.log('[Redis] Connection closed')
+      log.info('Connection closed')
     })
 
     this.client.on('reconnecting', () => {
-      console.log('[Redis] Reconnecting...')
+      log.info('Reconnecting...')
     })
   }
 
@@ -204,7 +205,7 @@ export class RedisCacheService {
       const value = await this.client.get(key)
       return value ? JSON.parse(value) : null
     } catch (error) {
-      console.error(`[Redis] Error getting key ${key}:`, error)
+      log.error(`Error getting key ${key}`, error)
       return null
     }
   }
@@ -222,7 +223,7 @@ export class RedisCacheService {
 
       return true
     } catch (error) {
-      console.error(`[Redis] Error setting key ${key}:`, error)
+      log.error(`Error setting key ${key}`, error)
       return false
     }
   }
@@ -232,7 +233,7 @@ export class RedisCacheService {
       const keys = Array.isArray(key) ? key : [key]
       return await this.client.del(...keys)
     } catch (error) {
-      console.error(`[Redis] Error deleting key(s):`, error)
+      log.error(`Error deleting key(s):`, error)
       return 0
     }
   }
@@ -242,7 +243,7 @@ export class RedisCacheService {
       const result = await this.client.exists(key)
       return result === 1
     } catch (error) {
-      console.error(`[Redis] Error checking key ${key}:`, error)
+      log.error(`Error checking key ${key}:`, error)
       return false
     }
   }
@@ -251,7 +252,7 @@ export class RedisCacheService {
     try {
       return await this.client.ttl(key)
     } catch (error) {
-      console.error(`[Redis] Error getting TTL for key ${key}:`, error)
+      log.error(`Error getting TTL for key ${key}:`, error)
       return -1
     }
   }
@@ -261,7 +262,7 @@ export class RedisCacheService {
       const result = await this.client.expire(key, seconds)
       return result === 1
     } catch (error) {
-      console.error(`[Redis] Error setting expiry for key ${key}:`, error)
+      log.error(`Error setting expiry for key ${key}:`, error)
       return false
     }
   }
@@ -275,7 +276,7 @@ export class RedisCacheService {
       const values = await this.client.mget(...keys)
       return values.map((val) => (val ? JSON.parse(val) : null))
     } catch (error) {
-      console.error(`[Redis] Error getting multiple keys:`, error)
+      log.error(`Error getting multiple keys:`, error)
       return keys.map(() => null)
     }
   }
@@ -297,7 +298,7 @@ export class RedisCacheService {
       await pipeline.exec()
       return true
     } catch (error) {
-      console.error(`[Redis] Error setting multiple keys:`, error)
+      log.error(`Error setting multiple keys:`, error)
       return false
     }
   }
@@ -310,7 +311,7 @@ export class RedisCacheService {
       }
       return value
     } catch (error) {
-      console.error(`[Redis] Error incrementing key ${key}:`, error)
+      log.error(`Error incrementing key ${key}:`, error)
       return 0
     }
   }
@@ -319,7 +320,7 @@ export class RedisCacheService {
     try {
       return await this.client.decr(key)
     } catch (error) {
-      console.error(`[Redis] Error decrementing key ${key}:`, error)
+      log.error(`Error decrementing key ${key}:`, error)
       return 0
     }
   }
@@ -333,7 +334,7 @@ export class RedisCacheService {
       const value = await this.client.hget(key, field)
       return value ? JSON.parse(value) : null
     } catch (error) {
-      console.error(`[Redis] Error getting hash field ${key}:${field}:`, error)
+      log.error(`Error getting hash field ${key}:${field}:`, error)
       return null
     }
   }
@@ -344,7 +345,7 @@ export class RedisCacheService {
       await this.client.hset(key, field, serialized)
       return true
     } catch (error) {
-      console.error(`[Redis] Error setting hash field ${key}:${field}:`, error)
+      log.error(`Error setting hash field ${key}:${field}:`, error)
       return false
     }
   }
@@ -358,7 +359,7 @@ export class RedisCacheService {
       }
       return result
     } catch (error) {
-      console.error(`[Redis] Error getting all hash fields ${key}:`, error)
+      log.error(`Error getting all hash fields ${key}:`, error)
       return {}
     }
   }
@@ -368,7 +369,7 @@ export class RedisCacheService {
       const fieldArray = Array.isArray(fields) ? fields : [fields]
       return await this.client.hdel(key, ...fieldArray)
     } catch (error) {
-      console.error(`[Redis] Error deleting hash fields ${key}:`, error)
+      log.error(`Error deleting hash fields ${key}:`, error)
       return 0
     }
   }
@@ -382,7 +383,7 @@ export class RedisCacheService {
       const memberArray = Array.isArray(members) ? members : [members]
       return await this.client.sadd(key, ...memberArray)
     } catch (error) {
-      console.error(`[Redis] Error adding to set ${key}:`, error)
+      log.error(`Error adding to set ${key}:`, error)
       return 0
     }
   }
@@ -392,7 +393,7 @@ export class RedisCacheService {
       const memberArray = Array.isArray(members) ? members : [members]
       return await this.client.srem(key, ...memberArray)
     } catch (error) {
-      console.error(`[Redis] Error removing from set ${key}:`, error)
+      log.error(`Error removing from set ${key}:`, error)
       return 0
     }
   }
@@ -401,7 +402,7 @@ export class RedisCacheService {
     try {
       return await this.client.smembers(key)
     } catch (error) {
-      console.error(`[Redis] Error getting set members ${key}:`, error)
+      log.error(`Error getting set members ${key}:`, error)
       return []
     }
   }
@@ -411,7 +412,7 @@ export class RedisCacheService {
       const result = await this.client.sismember(key, member)
       return result === 1
     } catch (error) {
-      console.error(`[Redis] Error checking set member ${key}:`, error)
+      log.error(`Error checking set member ${key}:`, error)
       return false
     }
   }
@@ -424,7 +425,7 @@ export class RedisCacheService {
     try {
       return await this.client.keys(pattern)
     } catch (error) {
-      console.error(`[Redis] Error getting keys with pattern ${pattern}:`, error)
+      log.error(`Error getting keys with pattern ${pattern}:`, error)
       return []
     }
   }
@@ -435,7 +436,7 @@ export class RedisCacheService {
       if (keys.length === 0) return 0
       return await this.del(keys)
     } catch (error) {
-      console.error(`[Redis] Error deleting pattern ${pattern}:`, error)
+      log.error(`Error deleting pattern ${pattern}:`, error)
       return 0
     }
   }
@@ -460,7 +461,7 @@ export class RedisCacheService {
     try {
       await this.client.flushdb()
     } catch (error) {
-      console.error(`[Redis] Error flushing database:`, error)
+      log.error(`Error flushing database:`, error)
     }
   }
 
@@ -473,7 +474,7 @@ export class RedisCacheService {
       const result = await this.client.ping()
       return result === 'PONG'
     } catch (error) {
-      console.error(`[Redis] Ping failed:`, error)
+      log.error(`Ping failed:`, error)
       return false
     }
   }
@@ -482,7 +483,7 @@ export class RedisCacheService {
     try {
       return await this.client.info()
     } catch (error) {
-      console.error(`[Redis] Error getting info:`, error)
+      log.error(`Error getting info:`, error)
       return ''
     }
   }
@@ -499,7 +500,7 @@ export function getCache(): RedisCacheService {
     cacheInstance = new RedisCacheService()
     // Auto-connect in development
     if (process.env.NODE_ENV !== 'production') {
-      cacheInstance.connect().catch(console.error)
+      cacheInstance.connect().catch(log.error)
     }
   }
   return cacheInstance
@@ -520,11 +521,7 @@ export function cached<T>(
   keyFn: (...args: any[]) => string,
   ttl: number = CacheTTL.channelMessages
 ) {
-  return function (
-    target: any,
-    propertyName: string,
-    descriptor: PropertyDescriptor
-  ) {
+  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value
 
     descriptor.value = async function (...args: any[]): Promise<T> {

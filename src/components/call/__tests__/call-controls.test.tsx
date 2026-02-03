@@ -4,11 +4,7 @@
 
 import React from 'react'
 import { render, screen, fireEvent } from '@testing-library/react'
-import {
-  CallControls,
-  formatCallDuration,
-  type CallControlsProps,
-} from '../call-controls'
+import { CallControls, formatCallDuration, type CallControlsProps } from '../call-controls'
 
 // =============================================================================
 // Test Helpers

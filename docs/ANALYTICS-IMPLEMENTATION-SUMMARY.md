@@ -119,17 +119,19 @@ Root files:
 ### 1. Firebase Configuration
 
 **Android**: `platforms/capacitor/android/app/google-services.json`
+
 ```json
 {
   "project_info": {
     "project_id": "nchat-production",
     "project_number": "YOUR_PROJECT_NUMBER"
-  },
+  }
   // ... full config from Firebase Console
 }
 ```
 
 **iOS**: `platforms/capacitor/ios/App/App/GoogleService-Info.plist`
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" ...>
@@ -143,6 +145,7 @@ Root files:
 ```
 
 **Web**: `.env.local`
+
 ```bash
 NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
 NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
@@ -152,6 +155,7 @@ NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 ### 2. Sentry Configuration
 
 **All Platforms**: `sentry.properties`
+
 ```properties
 defaults.url=https://sentry.io/
 defaults.org=YOUR_SENTRY_ORG
@@ -160,6 +164,7 @@ auth.token=YOUR_SENTRY_AUTH_TOKEN
 ```
 
 **.env.local**:
+
 ```bash
 NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
 SENTRY_AUTH_TOKEN=your_auth_token
@@ -193,6 +198,7 @@ NEXT_PUBLIC_SENTRY_REPLAYS_SAMPLE_RATE=0.1
 ## Dependencies Added
 
 ### Main package.json
+
 ```json
 {
   "dependencies": {
@@ -208,6 +214,7 @@ NEXT_PUBLIC_SENTRY_REPLAYS_SAMPLE_RATE=0.1
 ```
 
 ### Capacitor package.json
+
 ```json
 {
   "dependencies": {
@@ -222,6 +229,7 @@ NEXT_PUBLIC_SENTRY_REPLAYS_SAMPLE_RATE=0.1
 ```
 
 ### Android build.gradle
+
 ```gradle
 plugins {
     id 'io.sentry.android.gradle' version '4.2.0'
@@ -234,6 +242,7 @@ dependencies {
 ```
 
 ### iOS Podfile
+
 ```ruby
 pod 'Firebase/Analytics'
 pod 'Firebase/Crashlytics'
@@ -418,12 +427,14 @@ enum StandardEvents {
 ### Data Collection
 
 **What we collect:**
+
 - Usage patterns (screens, features)
 - Performance metrics (load times)
 - Error reports and crashes
 - Device information (platform, OS)
 
 **What we DON'T collect:**
+
 - Message content
 - File attachments
 - Passwords or tokens
@@ -455,6 +466,7 @@ const anonId = analyticsPrivacy.anonymizeUserId('user-123')
 ### Development Testing
 
 1. **Enable Debug Mode**:
+
 ```bash
 # iOS
 -FIRDebugEnabled
@@ -561,6 +573,7 @@ See [ANALYTICS-SETUP.md](./ANALYTICS-SETUP.md#troubleshooting) for common issues
 ## Support
 
 For questions or issues:
+
 - Email: dev@nself.org
 - GitHub: [Issues](https://github.com/nself/nchat/issues)
 - Slack: #analytics channel

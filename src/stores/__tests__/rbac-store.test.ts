@@ -234,19 +234,17 @@ describe('RBAC Store', () => {
 
     describe('hasAnyPermission', () => {
       it('returns true if any permission is granted', () => {
-        const result = useRBACStore.getState().hasAnyPermission([
-          PERMISSIONS.ADMIN_BILLING,
-          PERMISSIONS.MESSAGE_SEND,
-        ])
+        const result = useRBACStore
+          .getState()
+          .hasAnyPermission([PERMISSIONS.ADMIN_BILLING, PERMISSIONS.MESSAGE_SEND])
 
         expect(result).toBe(true)
       })
 
       it('returns false if no permissions are granted', () => {
-        const result = useRBACStore.getState().hasAnyPermission([
-          PERMISSIONS.ADMIN_BILLING,
-          PERMISSIONS.ROLE_CREATE,
-        ])
+        const result = useRBACStore
+          .getState()
+          .hasAnyPermission([PERMISSIONS.ADMIN_BILLING, PERMISSIONS.ROLE_CREATE])
 
         expect(result).toBe(false)
       })
@@ -256,19 +254,17 @@ describe('RBAC Store', () => {
       it('returns true if all permissions are granted', () => {
         // Use permissions that don't have specific rules in the rule engine
         // Member has MESSAGE_SEND, USER_VIEW, and ROLE_VIEW
-        const result = useRBACStore.getState().hasAllPermissions([
-          PERMISSIONS.MESSAGE_SEND,
-          PERMISSIONS.USER_VIEW,
-        ])
+        const result = useRBACStore
+          .getState()
+          .hasAllPermissions([PERMISSIONS.MESSAGE_SEND, PERMISSIONS.USER_VIEW])
 
         expect(result).toBe(true)
       })
 
       it('returns false if any permission is not granted', () => {
-        const result = useRBACStore.getState().hasAllPermissions([
-          PERMISSIONS.MESSAGE_SEND,
-          PERMISSIONS.ADMIN_BILLING,
-        ])
+        const result = useRBACStore
+          .getState()
+          .hasAllPermissions([PERMISSIONS.MESSAGE_SEND, PERMISSIONS.ADMIN_BILLING])
 
         expect(result).toBe(false)
       })
@@ -380,7 +376,9 @@ describe('RBAC Store', () => {
           useRBACStore.getState().setChannelOverride(override)
         })
 
-        const result = useRBACStore.getState().checkChannelPermission('channel1', PERMISSIONS.MESSAGE_SEND)
+        const result = useRBACStore
+          .getState()
+          .checkChannelPermission('channel1', PERMISSIONS.MESSAGE_SEND)
 
         expect(result.allowed).toBe(false)
       })

@@ -13,14 +13,14 @@
  * - Auto mark-as-read on scroll
  */
 
-'use client';
+'use client'
 
-import React, { useRef, useCallback, useEffect, useState } from 'react';
-import { useUnread, useUnreadNavigation } from '@/hooks/use-unread';
-import { UnreadLine, SidebarUnread, MentionHighlight } from './UnreadIndicator';
-import { JumpToUnreadButton, JumpToChannel, UnreadNavigation } from './JumpToUnread';
-import { MessageList, type MessageListRef } from './message-list';
-import type { Message } from '@/types/message';
+import React, { useRef, useCallback, useEffect, useState } from 'react'
+import { useUnread, useUnreadNavigation } from '@/hooks/use-unread'
+import { UnreadLine, SidebarUnread, MentionHighlight } from './UnreadIndicator'
+import { JumpToUnreadButton, JumpToChannel, UnreadNavigation } from './JumpToUnread'
+import { MessageList, type MessageListRef } from './message-list'
+import type { Message } from '@/types/message'
 
 // ============================================================================
 // Example 1: Channel Sidebar with Unread Indicators
@@ -28,15 +28,15 @@ import type { Message } from '@/types/message';
 
 interface ChannelSidebarExampleProps {
   channels: Array<{
-    id: string;
-    name: string;
-    type: 'channel' | 'dm' | 'thread';
-    unreadCount: number;
-    mentionCount: number;
-    isMuted?: boolean;
-  }>;
-  currentChannelId?: string;
-  onChannelClick: (channelId: string) => void;
+    id: string
+    name: string
+    type: 'channel' | 'dm' | 'thread'
+    unreadCount: number
+    mentionCount: number
+    isMuted?: boolean
+  }>
+  currentChannelId?: string
+  onChannelClick: (channelId: string) => void
 }
 
 export function ChannelSidebarExample({
@@ -59,7 +59,7 @@ export function ChannelSidebarExample({
         />
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -67,9 +67,9 @@ export function ChannelSidebarExample({
 // ============================================================================
 
 interface MessageListWithUnreadProps {
-  channelId: string;
-  messages: Message[];
-  onLoadMore?: () => void;
+  channelId: string
+  messages: Message[]
+  onLoadMore?: () => void
 }
 
 export function MessageListWithUnread({
@@ -77,8 +77,8 @@ export function MessageListWithUnread({
   messages,
   onLoadMore,
 }: MessageListWithUnreadProps) {
-  const messageListRef = useRef<MessageListRef>(null);
-  const [isAtBottom, setIsAtBottom] = useState(true);
+  const messageListRef = useRef<MessageListRef>(null)
+  const [isAtBottom, setIsAtBottom] = useState(true)
 
   // Use unread hook
   const {
@@ -93,33 +93,33 @@ export function MessageListWithUnread({
     messages,
     autoMarkRead: true,
     autoMarkReadDelay: 1000,
-  });
+  })
 
   // Jump to first unread message
   const handleJumpToUnread = useCallback(() => {
     if (firstUnreadMessageId && messageListRef.current) {
-      messageListRef.current.scrollToMessage(firstUnreadMessageId);
+      messageListRef.current.scrollToMessage(firstUnreadMessageId)
     }
-  }, [firstUnreadMessageId]);
+  }, [firstUnreadMessageId])
 
   // Jump to latest message
   const handleJumpToLatest = useCallback(() => {
     if (messageListRef.current) {
-      messageListRef.current.scrollToBottom('smooth');
+      messageListRef.current.scrollToBottom('smooth')
     }
-  }, []);
+  }, [])
 
   // Process messages to insert unread line
   const messagesWithUnreadLine = React.useMemo(() => {
-    if (!firstUnreadMessageId) return messages;
+    if (!firstUnreadMessageId) return messages
 
-    const firstUnreadIndex = messages.findIndex((m) => m.id === firstUnreadMessageId);
-    if (firstUnreadIndex === -1) return messages;
+    const firstUnreadIndex = messages.findIndex((m) => m.id === firstUnreadMessageId)
+    if (firstUnreadIndex === -1) return messages
 
     // Insert a marker at the unread position
     // In real implementation, MessageList would handle this
-    return messages;
-  }, [messages, firstUnreadMessageId]);
+    return messages
+  }, [messages, firstUnreadMessageId])
 
   return (
     <div className="relative flex h-full flex-col">
@@ -145,7 +145,7 @@ export function MessageListWithUnread({
         variant="default"
       />
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -154,13 +154,13 @@ export function MessageListWithUnread({
 
 interface CompleteChatInterfaceProps {
   channels: Array<{
-    id: string;
-    name: string;
-    type: 'channel' | 'dm' | 'thread';
-  }>;
-  currentChannelId: string;
-  messages: Message[];
-  onChannelChange: (channelId: string) => void;
+    id: string
+    name: string
+    type: 'channel' | 'dm' | 'thread'
+  }>
+  currentChannelId: string
+  messages: Message[]
+  onChannelChange: (channelId: string) => void
 }
 
 export function CompleteChatInterface({
@@ -169,56 +169,47 @@ export function CompleteChatInterface({
   messages,
   onChannelChange,
 }: CompleteChatInterfaceProps) {
-  const messageListRef = useRef<MessageListRef>(null);
-  const [isAtBottom, setIsAtBottom] = useState(true);
+  const messageListRef = useRef<MessageListRef>(null)
+  const [isAtBottom, setIsAtBottom] = useState(true)
 
   // Current channel unread tracking
-  const {
-    unreadCount,
-    mentionCount,
-    firstUnreadMessageId,
-    hasUnread,
-    markChannelAsRead,
-  } = useUnread({
-    channelId: currentChannelId,
-    messages,
-    autoMarkRead: false, // Manual control
-  });
+  const { unreadCount, mentionCount, firstUnreadMessageId, hasUnread, markChannelAsRead } =
+    useUnread({
+      channelId: currentChannelId,
+      messages,
+      autoMarkRead: false, // Manual control
+    })
 
   // Navigation between unread channels
-  const {
-    unreadChannels,
-    hasUnreadChannels,
-    getNextUnreadChannel,
-    getPreviousUnreadChannel,
-  } = useUnreadNavigation(currentChannelId);
+  const { unreadChannels, hasUnreadChannels, getNextUnreadChannel, getPreviousUnreadChannel } =
+    useUnreadNavigation(currentChannelId)
 
   // Jump to unread in current channel
   const handleJumpToUnread = useCallback(() => {
     if (firstUnreadMessageId && messageListRef.current) {
-      messageListRef.current.scrollToMessage(firstUnreadMessageId);
+      messageListRef.current.scrollToMessage(firstUnreadMessageId)
     }
-  }, [firstUnreadMessageId]);
+  }, [firstUnreadMessageId])
 
   // Jump to next/previous unread channel
   const handleNextUnreadChannel = useCallback(() => {
-    const nextChannel = getNextUnreadChannel();
+    const nextChannel = getNextUnreadChannel()
     if (nextChannel) {
-      onChannelChange(nextChannel);
+      onChannelChange(nextChannel)
     }
-  }, [getNextUnreadChannel, onChannelChange]);
+  }, [getNextUnreadChannel, onChannelChange])
 
   const handlePrevUnreadChannel = useCallback(() => {
-    const prevChannel = getPreviousUnreadChannel();
+    const prevChannel = getPreviousUnreadChannel()
     if (prevChannel) {
-      onChannelChange(prevChannel);
+      onChannelChange(prevChannel)
     }
-  }, [getPreviousUnreadChannel, onChannelChange]);
+  }, [getPreviousUnreadChannel, onChannelChange])
 
   return (
     <div className="flex h-screen">
       {/* Sidebar with unread indicators */}
-      <div className="w-64 border-r bg-muted/50">
+      <div className="bg-muted/50 w-64 border-r">
         <ChannelSidebarExample
           channels={channels.map((channel) => ({
             ...channel,
@@ -280,7 +271,7 @@ export function CompleteChatInterface({
         <div className="border-t p-4">{/* Message input component */}</div>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -288,9 +279,9 @@ export function CompleteChatInterface({
 // ============================================================================
 
 interface MessageItemWithUnreadProps {
-  message: Message;
-  channelId: string;
-  currentUserId: string;
+  message: Message
+  channelId: string
+  currentUserId: string
 }
 
 export function MessageItemWithUnread({
@@ -298,12 +289,12 @@ export function MessageItemWithUnread({
   channelId,
   currentUserId,
 }: MessageItemWithUnreadProps) {
-  const { isMessageUnread } = useUnread({ channelId });
+  const { isMessageUnread } = useUnread({ channelId })
 
   const isMentioned =
     message.mentionedUsers?.includes(currentUserId) ||
     message.mentionsEveryone ||
-    message.mentionsHere;
+    message.mentionsHere
 
   return (
     <MentionHighlight isMentioned={!!isMentioned}>
@@ -330,7 +321,7 @@ export function MessageItemWithUnread({
         </div>
       </div>
     </MentionHighlight>
-  );
+  )
 }
 
 // ============================================================================
@@ -338,14 +329,14 @@ export function MessageItemWithUnread({
 // ============================================================================
 
 export function useBrowserBadge() {
-  const { totalUnread, totalMentions } = useUnread({ channelId: '' }) as any; // Use global unread
+  const { totalUnread, totalMentions } = useUnread({ channelId: '' }) as any // Use global unread
 
   useEffect(() => {
     // Update document title
     if (totalUnread > 0) {
-      document.title = `(${totalUnread}) nself-chat`;
+      document.title = `(${totalUnread}) nself-chat`
     } else {
-      document.title = 'nself-chat';
+      document.title = 'nself-chat'
     }
 
     // Update favicon badge (would need a library like favico.js)
@@ -353,9 +344,9 @@ export function useBrowserBadge() {
 
     // Desktop app badge (Electron/Tauri)
     if (window.electron?.setBadgeCount) {
-      window.electron.setBadgeCount(totalUnread);
+      window.electron.setBadgeCount(totalUnread)
     }
-  }, [totalUnread, totalMentions]);
+  }, [totalUnread, totalMentions])
 }
 
 // ============================================================================
@@ -365,9 +356,9 @@ export function useBrowserBadge() {
 declare global {
   interface Window {
     electron?: {
-      setBadgeCount: (count: number) => void;
-    };
+      setBadgeCount: (count: number) => void
+    }
   }
 }
 
-export default CompleteChatInterface;
+export default CompleteChatInterface

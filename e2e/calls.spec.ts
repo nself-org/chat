@@ -208,9 +208,7 @@ test.describe('Call Controls', () => {
           await page.waitForTimeout(500)
 
           // Call panel should disappear
-          const callUI = page.locator(
-            '[data-testid="call-panel"], .call-panel, .call-dialog'
-          )
+          const callUI = page.locator('[data-testid="call-panel"], .call-panel, .call-dialog')
 
           const isHidden = !(await callUI.isVisible().catch(() => false))
           expect(typeof isHidden).toBe('boolean')
@@ -742,9 +740,7 @@ test.describe('End Call', () => {
           await page.waitForTimeout(500)
 
           // Call panel should disappear
-          const callUI = page.locator(
-            '[data-testid="call-panel"], .call-panel, .call-dialog'
-          )
+          const callUI = page.locator('[data-testid="call-panel"], .call-panel, .call-dialog')
 
           const isHidden = !(await callUI.isVisible().catch(() => false))
           expect(typeof isHidden).toBe('boolean')
@@ -873,9 +869,7 @@ test.describe('Call Notifications', () => {
 
 test.describe('Call History', () => {
   test('should access call history from user menu or settings', async ({ page }) => {
-    const userMenu = page.locator(
-      '[data-testid="user-menu"], [aria-label*="user"], .user-menu'
-    )
+    const userMenu = page.locator('[data-testid="user-menu"], [aria-label*="user"], .user-menu')
 
     if (await userMenu.isVisible()) {
       await userMenu.click()
@@ -914,9 +908,7 @@ test.describe('Call History', () => {
 
     await page.waitForTimeout(500)
 
-    const callHistoryItems = page.locator(
-      '[data-testid="call-history-item"], .call-history-item'
-    )
+    const callHistoryItems = page.locator('[data-testid="call-history-item"], .call-history-item')
 
     if ((await callHistoryItems.count()) > 0) {
       const firstItem = callHistoryItems.first()
@@ -945,16 +937,12 @@ test.describe('Call History', () => {
 
     await page.waitForTimeout(500)
 
-    const callHistoryItems = page.locator(
-      '[data-testid="call-history-item"], .call-history-item'
-    )
+    const callHistoryItems = page.locator('[data-testid="call-history-item"], .call-history-item')
 
     if ((await callHistoryItems.count()) > 0) {
       const firstItem = callHistoryItems.first()
 
-      const duration = firstItem.locator(
-        '[data-testid="call-duration"], .duration, .call-duration'
-      )
+      const duration = firstItem.locator('[data-testid="call-duration"], .duration, .call-duration')
 
       const hasDuration = await duration.isVisible().catch(() => false)
       expect(typeof hasDuration).toBe('boolean')
@@ -968,9 +956,7 @@ test.describe('Call History', () => {
 
     await page.waitForTimeout(500)
 
-    const callHistoryItems = page.locator(
-      '[data-testid="call-history-item"], .call-history-item'
-    )
+    const callHistoryItems = page.locator('[data-testid="call-history-item"], .call-history-item')
 
     if ((await callHistoryItems.count()) > 0) {
       const firstItem = callHistoryItems.first()

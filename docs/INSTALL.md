@@ -29,22 +29,26 @@ Complete installation instructions for all platforms: Web, iOS, Android, and Des
 ### Installation Steps
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/acamarata/nself-chat.git
    cd nself-chat
    ```
 
 2. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 3. **Configure environment variables:**
+
    ```bash
    cp .env.example .env.local
    ```
 
    Edit `.env.local` with your configuration:
+
    ```bash
    # Backend URLs (if using nself CLI backend)
    NEXT_PUBLIC_GRAPHQL_URL=http://api.localhost/v1/graphql
@@ -60,6 +64,7 @@ Complete installation instructions for all platforms: Web, iOS, Android, and Des
    ```
 
 4. **Start the development server:**
+
    ```bash
    pnpm dev
    ```
@@ -99,11 +104,13 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment guides.
 ### Prerequisites
 
 **General Requirements:**
+
 - Node.js 20.0.0+
 - pnpm 9.15.4+
 - Capacitor CLI 6.x
 
 **iOS Requirements:**
+
 - macOS (required for iOS development)
 - Xcode 15.0 or later
 - CocoaPods 1.10 or later
@@ -111,6 +118,7 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment guides.
 - Apple Developer account (for device testing and App Store)
 
 **Android Requirements:**
+
 - Android Studio Hedgehog (2023.1.1) or later
 - Android SDK API 34
 - Java JDK 17
@@ -119,11 +127,13 @@ See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed deployment guides.
 ### Initial Setup
 
 1. **Build the web application:**
+
    ```bash
    pnpm build
    ```
 
 2. **Navigate to Capacitor directory:**
+
    ```bash
    cd platforms/capacitor
    ```
@@ -147,6 +157,7 @@ npx cap add ios
 ### 2. Configure iOS Project
 
 1. **Open the project in Xcode:**
+
    ```bash
    pnpm run open:ios
    ```
@@ -192,6 +203,7 @@ In Xcode, add the following capabilities:
    - Download `GoogleService-Info.plist`
 
 3. **Add to Xcode:**
+
    ```bash
    cp GoogleService-Info.plist platforms/capacitor/ios/App/App/
    ```
@@ -228,16 +240,19 @@ Or manually add icons to `ios/App/App/Assets.xcassets/AppIcon.appiconset/`
 ### 7. Build and Run
 
 **Run on Simulator:**
+
 ```bash
 pnpm run run:ios
 ```
 
 **Run on Device:**
+
 ```bash
 pnpm run run:ios -- --device
 ```
 
 **Build for Release:**
+
 ```bash
 pnpm run build:ios
 ```
@@ -260,6 +275,7 @@ npx cap add android
 ### 2. Configure Android Project
 
 1. **Open the project in Android Studio:**
+
    ```bash
    pnpm run open:android
    ```
@@ -284,6 +300,7 @@ npx cap add android
    - Download `google-services.json`
 
 3. **Add to project:**
+
    ```bash
    cp google-services.json platforms/capacitor/android/app/
    ```
@@ -297,22 +314,24 @@ npx cap add android
 ### 4. Configure Deep Linking
 
 1. **Create `assetlinks.json`** on your server:
+
    ```
    https://nchat.yourdomain.com/.well-known/assetlinks.json
    ```
 
    Content:
+
    ```json
-   [{
-     "relation": ["delegate_permission/common.handle_all_urls"],
-     "target": {
-       "namespace": "android_app",
-       "package_name": "com.yourcompany.nchat",
-       "sha256_cert_fingerprints": [
-         "YOUR_SHA256_FINGERPRINT"
-       ]
+   [
+     {
+       "relation": ["delegate_permission/common.handle_all_urls"],
+       "target": {
+         "namespace": "android_app",
+         "package_name": "com.yourcompany.nchat",
+         "sha256_cert_fingerprints": ["YOUR_SHA256_FINGERPRINT"]
+       }
      }
-   }]
+   ]
    ```
 
 2. **Get SHA256 fingerprint:**
@@ -323,17 +342,20 @@ npx cap add android
 ### 5. Configure Signing (for Release Builds)
 
 1. **Generate keystore:**
+
    ```bash
    keytool -genkey -v -keystore nchat-release.keystore -alias nchat -keyalg RSA -keysize 2048 -validity 10000
    ```
 
 2. **Create `keystore.properties`:**
+
    ```bash
    cd platforms/capacitor/android
    nano keystore.properties
    ```
 
    Content:
+
    ```properties
    storeFile=/path/to/nchat-release.keystore
    storePassword=YOUR_STORE_PASSWORD
@@ -353,22 +375,26 @@ Or manually add icons to `android/app/src/main/res/mipmap-*/`
 ### 7. Build and Run
 
 **Run on Emulator/Device:**
+
 ```bash
 pnpm run run:android
 ```
 
 **Build Debug APK:**
+
 ```bash
 cd platforms/capacitor/android
 ./gradlew assembleDebug
 ```
 
 **Build Release APK:**
+
 ```bash
 ./gradlew assembleRelease
 ```
 
 **Build Release Bundle (for Play Store):**
+
 ```bash
 pnpm run build:android:bundle
 ```
@@ -397,11 +423,13 @@ Electron apps work on Windows, macOS, and Linux.
 #### Installation
 
 1. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 2. **Build web assets:**
+
    ```bash
    pnpm build
    ```
@@ -414,16 +442,19 @@ Electron apps work on Windows, macOS, and Linux.
 #### Building for Distribution
 
 **Build for current platform:**
+
 ```bash
 pnpm electron:build
 ```
 
 **Build for all platforms:**
+
 ```bash
 pnpm build:electron
 ```
 
 **Build for specific platform:**
+
 ```bash
 # Windows
 pnpm electron:build --win
@@ -438,6 +469,7 @@ pnpm electron:build --linux
 #### Distribution
 
 Built apps will be in `dist/electron/`:
+
 - **Windows**: `.exe` installer
 - **macOS**: `.dmg` installer
 - **Linux**: `.AppImage`, `.deb`, or `.rpm`
@@ -461,11 +493,13 @@ Tauri is a lightweight alternative to Electron using Rust and native webviews.
 #### Installation
 
 1. **Install dependencies:**
+
    ```bash
    pnpm install
    ```
 
 2. **Build web assets:**
+
    ```bash
    pnpm build
    ```
@@ -478,11 +512,13 @@ Tauri is a lightweight alternative to Electron using Rust and native webviews.
 #### Building for Distribution
 
 **Build for current platform:**
+
 ```bash
 pnpm tauri:build
 ```
 
 Built apps will be in `src-tauri/target/release/bundle/`:
+
 - **Windows**: `.msi` installer
 - **macOS**: `.dmg` or `.app`
 - **Linux**: `.deb`, `.AppImage`
@@ -502,22 +538,26 @@ No backend required for basic testing!
 ### Option 2: nself CLI Backend (Recommended)
 
 1. **Install nself CLI:**
+
    ```bash
    npm install -g @nself/cli
    ```
 
 2. **Initialize backend:**
+
    ```bash
    cd .backend
    nself init --demo
    ```
 
 3. **Start services:**
+
    ```bash
    nself start
    ```
 
 4. **Verify services:**
+
    ```bash
    nself status
    nself urls
@@ -540,12 +580,14 @@ See [nself CLI documentation](https://nself.org/docs) for advanced configuration
 ### Web App
 
 **Issue: Port 3000 already in use**
+
 ```bash
 # Use a different port
 pnpm dev -- -p 3001
 ```
 
 **Issue: Module not found errors**
+
 ```bash
 # Clear cache and reinstall
 rm -rf node_modules .next
@@ -555,6 +597,7 @@ pnpm install
 ### iOS
 
 **Issue: CocoaPods errors**
+
 ```bash
 cd platforms/capacitor/ios/App
 pod deintegrate
@@ -562,11 +605,13 @@ pod install --repo-update
 ```
 
 **Issue: Build fails in Xcode**
+
 - Clean build folder: Product → Clean Build Folder
 - Update signing certificates
 - Check Xcode version (15.0+)
 
 **Issue: App crashes on launch**
+
 - Check Firebase configuration
 - Verify GoogleService-Info.plist is added
 - Check console logs in Xcode
@@ -574,6 +619,7 @@ pod install --repo-update
 ### Android
 
 **Issue: Gradle sync failed**
+
 ```bash
 cd platforms/capacitor/android
 ./gradlew clean
@@ -582,11 +628,13 @@ cd platforms/capacitor/android
 ```
 
 **Issue: Build fails**
+
 - Update Android SDK to API 34
 - Check Java version (should be 17)
 - Invalidate caches: File → Invalidate Caches / Restart
 
 **Issue: App crashes on launch**
+
 - Check Firebase configuration
 - Verify google-services.json is added
 - Check Logcat for errors
@@ -594,18 +642,21 @@ cd platforms/capacitor/android
 ### Desktop (Electron)
 
 **Issue: Electron fails to start**
+
 ```bash
 # Rebuild native modules
 pnpm rebuild
 ```
 
 **Issue: Build fails**
+
 - Check platform-specific build tools are installed
 - Try building for current platform only first
 
 ### Desktop (Tauri)
 
 **Issue: Rust compilation errors**
+
 ```bash
 # Update Rust
 rustup update
@@ -616,6 +667,7 @@ cargo clean
 ```
 
 **Issue: Missing system dependencies (Linux)**
+
 ```bash
 # Ubuntu/Debian
 sudo apt-get install libwebkit2gtk-4.0-dev build-essential curl wget libssl-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
@@ -627,6 +679,7 @@ sudo dnf install webkit2gtk3-devel openssl-devel curl wget gtk3-devel libappindi
 ### Backend (nself CLI)
 
 **Issue: Services won't start**
+
 ```bash
 # Check Docker is running
 docker ps
@@ -640,6 +693,7 @@ nself start
 ```
 
 **Issue: Port conflicts**
+
 - Check if ports 3000, 4000, 5432, 8080 are available
 - Modify ports in `.backend/.env`
 

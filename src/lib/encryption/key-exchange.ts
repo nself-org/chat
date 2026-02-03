@@ -170,10 +170,7 @@ export class X3DH {
 
     // Step 5: Calculate associated data (AD)
     // AD = Encode(IKa) || Encode(IKb)
-    const associatedData = concatUint8Arrays(
-      aliceIdentity.publicKey,
-      bobPreKeyBundle.identityKey
-    )
+    const associatedData = concatUint8Arrays(aliceIdentity.publicKey, bobPreKeyBundle.identityKey)
 
     return {
       sharedSecret,
@@ -250,10 +247,7 @@ export class X3DH {
 
     // Calculate associated data (AD)
     // AD = Encode(IKa) || Encode(IKb)
-    const associatedData = concatUint8Arrays(
-      aliceIdentityKey,
-      bobIdentity.publicKey
-    )
+    const associatedData = concatUint8Arrays(aliceIdentityKey, bobIdentity.publicKey)
 
     return {
       sharedSecret,

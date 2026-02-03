@@ -138,13 +138,9 @@ export function ActionSheet({
           {/* Header */}
           {(title || message) && (
             <View style={styles.header}>
-              {title && (
-                <Text style={[styles.title, { color: theme.colors.text }]}>{title}</Text>
-              )}
+              {title && <Text style={[styles.title, { color: theme.colors.text }]}>{title}</Text>}
               {message && (
-                <Text style={[styles.message, { color: theme.colors.muted }]}>
-                  {message}
-                </Text>
+                <Text style={[styles.message, { color: theme.colors.muted }]}>{message}</Text>
               )}
             </View>
           )}

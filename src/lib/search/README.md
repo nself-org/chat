@@ -49,19 +49,25 @@ The nself-chat search system provides powerful full-text search capabilities acr
 ## Search Operators
 
 ### From Operator
+
 Search messages from a specific user:
+
 ```
 project update from:john
 ```
 
 ### In Operator
+
 Search within a specific channel:
+
 ```
 bug report in:dev
 ```
 
 ### Has Operator
+
 Filter by content type:
+
 ```
 has:link          # Messages with links
 has:file          # Messages with attachments
@@ -69,21 +75,27 @@ has:image         # Messages with images
 ```
 
 ### Date Operators
+
 Filter by date range:
+
 ```
 before:2024-01-01  # Before date
 after:2024-01-01   # After date
 ```
 
 ### Is Operator
+
 Filter by message properties:
+
 ```
 is:pinned         # Pinned messages only
 is:starred        # Starred messages only
 ```
 
 ### Combined Operators
+
 Combine multiple operators:
+
 ```
 project update from:john in:general has:file after:2024-01-01
 ```
@@ -139,7 +151,7 @@ function MyApp() {
 const { saveSearch } = useSearch()
 
 await saveSearch('Weekly Updates', 'update from:john', {
-  dateFrom: '2024-01-01'
+  dateFrom: '2024-01-01',
 })
 ```
 
@@ -163,7 +175,7 @@ await indexMessage({
   created_at: message.created_at,
   has_link: hasLinks(message.content),
   has_file: message.attachments.length > 0,
-  has_image: message.attachments.some(a => a.type === 'image'),
+  has_image: message.attachments.some((a) => a.type === 'image'),
   is_pinned: false,
   is_starred: false,
 })
@@ -220,6 +232,7 @@ await initializeIndexes()
 ```
 
 This creates:
+
 - `messages` index with searchable/filterable attributes
 - `files` index
 - `users` index
@@ -243,6 +256,7 @@ curl -X POST http://localhost:3000/api/search \
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -336,12 +350,14 @@ CREATE TABLE nchat_saved_searches (
 ### MeiliSearch not running
 
 Check if MeiliSearch container is running:
+
 ```bash
 cd .backend
 nself status
 ```
 
 Start MeiliSearch if stopped:
+
 ```bash
 cd .backend
 nself start
@@ -350,6 +366,7 @@ nself start
 ### Indexes not created
 
 Initialize indexes manually:
+
 ```bash
 curl -X POST http://localhost:3000/api/search/initialize
 ```
@@ -357,16 +374,19 @@ curl -X POST http://localhost:3000/api/search/initialize
 ### Search not finding results
 
 1. Check if content is indexed:
+
 ```bash
 curl http://search.localhost:7700/indexes/messages/stats
 ```
 
 2. Reindex content:
+
 ```typescript
 await reindexAllMessages(fetchMessages)
 ```
 
 3. Check MeiliSearch logs:
+
 ```bash
 cd .backend
 nself logs meilisearch
@@ -375,6 +395,7 @@ nself logs meilisearch
 ### Slow search performance
 
 1. Check index stats:
+
 ```bash
 curl http://search.localhost:7700/indexes/messages/stats
 ```
@@ -391,7 +412,7 @@ curl http://search.localhost:7700/indexes/messages/stats
 const { search } = useSearch()
 
 await search('bug report in:dev', {
-  type: 'messages'
+  type: 'messages',
 })
 ```
 
@@ -399,7 +420,7 @@ await search('bug report in:dev', {
 
 ```typescript
 await search('from:alice', {
-  type: 'files'
+  type: 'files',
 })
 ```
 
@@ -407,7 +428,7 @@ await search('from:alice', {
 
 ```typescript
 await search('update after:2024-01-01 before:2024-02-01', {
-  type: 'messages'
+  type: 'messages',
 })
 ```
 
@@ -415,7 +436,7 @@ await search('update after:2024-01-01 before:2024-02-01', {
 
 ```typescript
 await search('is:pinned', {
-  type: 'messages'
+  type: 'messages',
 })
 ```
 

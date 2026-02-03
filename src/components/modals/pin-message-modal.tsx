@@ -15,6 +15,8 @@ import { Badge } from '@/components/ui/badge'
 import { Loader2, Pin, AlertTriangle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 export interface PinnableMessage {
   id: string
   content: string
@@ -45,9 +47,7 @@ function formatTime(date: Date): string {
 
 function formatDate(date: Date): string {
   const now = new Date()
-  const diffDays = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-  )
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
 
   if (diffDays === 0) {
     return 'Today'
@@ -93,7 +93,7 @@ export function PinMessageModal({
       await onPin(message.id)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to pin message:', error)
+      logger.error('Failed to pin message:', error)
     } finally {
       setLoading(false)
     }
@@ -111,7 +111,7 @@ export function PinMessageModal({
           <div className="flex items-start gap-4">
             <div
               className={cn(
-                'flex items-center justify-center h-10 w-10 rounded-full shrink-0',
+                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
                 'bg-primary/10 text-primary'
               )}
             >
@@ -120,15 +120,14 @@ export function PinMessageModal({
             <div className="space-y-1.5 pt-0.5">
               <DialogTitle>Pin this message?</DialogTitle>
               <DialogDescription>
-                This message will be pinned to {channelName} for all members to
-                see.
+                This message will be pinned to {channelName} for all members to see.
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
         {/* Message preview */}
-        <div className="border rounded-xl p-4 bg-muted/30 space-y-3">
+        <div className="bg-muted/30 space-y-3 rounded-xl border p-4">
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
               <AvatarImage src={message.authorAvatarUrl} />
@@ -136,20 +135,20 @@ export function PinMessageModal({
                 {message.authorName.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{message.authorName}</p>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium">{message.authorName}</p>
               <p className="text-xs text-muted-foreground">
                 {formatDate(message.createdAt)} at {formatTime(message.createdAt)}
               </p>
             </div>
           </div>
 
-          <p className="text-sm pl-11 whitespace-pre-wrap break-words">
+          <p className="whitespace-pre-wrap break-words pl-11 text-sm">
             {truncateText(message.content, 200)}
           </p>
 
           {message.hasAttachments && (
-            <p className="text-xs text-muted-foreground pl-11">
+            <p className="pl-11 text-xs text-muted-foreground">
               + {message.attachmentCount || 1} attachment
               {(message.attachmentCount || 1) > 1 ? 's' : ''}
             </p>
@@ -158,49 +157,41 @@ export function PinMessageModal({
 
         {/* Pinned count info */}
         <div className="flex items-center justify-between px-1">
-          <span className="text-sm text-muted-foreground">
-            Currently pinned messages
-          </span>
-          <Badge
-            variant={isAtLimit ? 'destructive' : isNearLimit ? 'secondary' : 'outline'}
-          >
+          <span className="text-sm text-muted-foreground">Currently pinned messages</span>
+          <Badge variant={isAtLimit ? 'destructive' : isNearLimit ? 'secondary' : 'outline'}>
             {currentPinnedCount} / {maxPinnedMessages}
           </Badge>
         </div>
 
         {/* Warning if near or at limit */}
         {isAtLimit && (
-          <div className="flex items-start gap-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-            <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+          <div className="bg-destructive/10 border-destructive/20 flex items-start gap-3 rounded-lg border p-3">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
             <p className="text-sm text-destructive">
-              You have reached the maximum number of pinned messages. Please
-              unpin an existing message before pinning a new one.
+              You have reached the maximum number of pinned messages. Please unpin an existing
+              message before pinning a new one.
             </p>
           </div>
         )}
 
         {isNearLimit && !isAtLimit && (
-          <div className="flex items-start gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-            <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-500 mt-0.5 shrink-0" />
+          <div className="flex items-start gap-3 rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-3">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-yellow-600 dark:text-yellow-500" />
             <p className="text-sm text-yellow-800 dark:text-yellow-200">
-              You are approaching the maximum number of pinned messages. Consider
-              unpinning older messages.
+              You are approaching the maximum number of pinned messages. Consider unpinning older
+              messages.
             </p>
           </div>
         )}
 
         {/* Info about pinned messages */}
         <p className="text-xs text-muted-foreground">
-          Pinned messages are visible to all channel members and appear in the
-          pinned messages sidebar. Members will be notified about this pin.
+          Pinned messages are visible to all channel members and appear in the pinned messages
+          sidebar. Members will be notified about this pin.
         </p>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={loading}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             Cancel
           </Button>
           <Button onClick={handlePin} disabled={loading || isAtLimit}>
@@ -244,7 +235,7 @@ export function UnpinMessageModal({
       await onUnpin(message.id)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to unpin message:', error)
+      logger.error('Failed to unpin message:', error)
     } finally {
       setLoading(false)
     }
@@ -259,7 +250,7 @@ export function UnpinMessageModal({
           <div className="flex items-start gap-4">
             <div
               className={cn(
-                'flex items-center justify-center h-10 w-10 rounded-full shrink-0',
+                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
                 'bg-muted text-muted-foreground'
               )}
             >
@@ -275,26 +266,16 @@ export function UnpinMessageModal({
         </DialogHeader>
 
         {/* Brief message preview */}
-        <div className="border rounded-xl p-3 bg-muted/30">
-          <p className="text-sm line-clamp-2">{truncateText(message.content, 150)}</p>
-          <p className="text-xs text-muted-foreground mt-1">
-            by {message.authorName}
-          </p>
+        <div className="bg-muted/30 rounded-xl border p-3">
+          <p className="line-clamp-2 text-sm">{truncateText(message.content, 150)}</p>
+          <p className="mt-1 text-xs text-muted-foreground">by {message.authorName}</p>
         </div>
 
         <DialogFooter className="gap-2 sm:gap-0">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={loading}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             Cancel
           </Button>
-          <Button
-            variant="secondary"
-            onClick={handleUnpin}
-            disabled={loading}
-          >
+          <Button variant="secondary" onClick={handleUnpin} disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Unpin
           </Button>

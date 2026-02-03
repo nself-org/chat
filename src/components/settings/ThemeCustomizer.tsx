@@ -262,11 +262,7 @@ export function ThemeCustomizer({ className }: ThemeCustomizerProps) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowPreview(!showPreview)}
-          >
+          <Button variant="outline" size="sm" onClick={() => setShowPreview(!showPreview)}>
             {showPreview ? (
               <>
                 <EyeOff className="mr-2 h-4 w-4" />
@@ -370,7 +366,10 @@ export function ThemeCustomizer({ className }: ThemeCustomizerProps) {
 
         {/* Colors Tab */}
         <TabsContent value="colors" className="space-y-6">
-          <Accordion type="multiple" defaultValue={['Brand', 'Surfaces', 'Text', 'Buttons', 'Status']}>
+          <Accordion
+            type="multiple"
+            defaultValue={['Brand', 'Surfaces', 'Text', 'Buttons', 'Status']}
+          >
             {Object.entries(colorsByCategory).map(([category, props]) => (
               <AccordionItem key={category} value={category}>
                 <AccordionTrigger className="text-lg font-semibold">
@@ -400,7 +399,8 @@ export function ThemeCustomizer({ className }: ThemeCustomizerProps) {
           <div>
             <h3 className="mb-4 text-lg font-semibold">Theme Presets</h3>
             <p className="mb-6 text-sm text-muted-foreground">
-              Choose a pre-designed theme as a starting point. You can customize it further in the Colors tab.
+              Choose a pre-designed theme as a starting point. You can customize it further in the
+              Colors tab.
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -434,7 +434,8 @@ export function ThemeCustomizer({ className }: ThemeCustomizerProps) {
                     {fontFamilies.map((font) => (
                       <SelectItem key={font.value} value={font.value}>
                         <span style={{ fontFamily: font.value }}>
-                          {font.label} <span className="text-muted-foreground">({font.category})</span>
+                          {font.label}{' '}
+                          <span className="text-muted-foreground">({font.category})</span>
                         </span>
                       </SelectItem>
                     ))}
@@ -497,14 +498,11 @@ export function ThemeCustomizer({ className }: ThemeCustomizerProps) {
                       className={cn(
                         'flex h-16 flex-col items-center justify-center gap-1 rounded-lg border-2 transition-colors',
                         theme.borderRadius === option.value
-                          ? 'border-primary bg-primary/10'
+                          ? 'bg-primary/10 border-primary'
                           : 'border-border hover:border-muted-foreground'
                       )}
                     >
-                      <div
-                        className="h-6 w-6 bg-primary"
-                        style={{ borderRadius: option.value }}
-                      />
+                      <div className="h-6 w-6 bg-primary" style={{ borderRadius: option.value }} />
                       <span className="text-xs">{option.label}</span>
                     </button>
                   ))}
@@ -540,7 +538,7 @@ export function ThemeCustomizer({ className }: ThemeCustomizerProps) {
                 <p className="text-xs text-muted-foreground">Preview</p>
                 <div className="space-y-2">
                   <div
-                    className="bg-primary p-4 text-primary-foreground"
+                    className="text-primary-foreground bg-primary p-4"
                     style={{
                       borderRadius: theme.borderRadius,
                       padding: `${theme.spacingScale}rem`,
@@ -548,10 +546,7 @@ export function ThemeCustomizer({ className }: ThemeCustomizerProps) {
                   >
                     Button with custom spacing and radius
                   </div>
-                  <div
-                    className="flex gap-2"
-                    style={{ gap: `${theme.spacingScale * 0.5}rem` }}
-                  >
+                  <div className="flex gap-2" style={{ gap: `${theme.spacingScale * 0.5}rem` }}>
                     <div
                       className="flex-1 bg-muted p-2"
                       style={{ borderRadius: theme.borderRadius }}
@@ -647,14 +642,8 @@ function PresetCard({ preset, isActive, colorScheme, onSelect }: PresetCardProps
       )}
     >
       {/* Color Preview */}
-      <div
-        className="h-24 p-4"
-        style={{ backgroundColor: colors.backgroundColor }}
-      >
-        <div
-          className="h-full rounded"
-          style={{ backgroundColor: colors.surfaceColor }}
-        >
+      <div className="h-24 p-4" style={{ backgroundColor: colors.backgroundColor }}>
+        <div className="h-full rounded" style={{ backgroundColor: colors.surfaceColor }}>
           <div className="flex h-full items-center justify-center gap-2 p-2">
             <div
               className="h-8 w-8 rounded-full"
@@ -664,10 +653,7 @@ function PresetCard({ preset, isActive, colorScheme, onSelect }: PresetCardProps
               className="h-8 w-8 rounded-full"
               style={{ backgroundColor: colors.secondaryColor }}
             />
-            <div
-              className="h-8 w-8 rounded-full"
-              style={{ backgroundColor: colors.accentColor }}
-            />
+            <div className="h-8 w-8 rounded-full" style={{ backgroundColor: colors.accentColor }} />
           </div>
         </div>
       </div>
@@ -750,10 +736,7 @@ function ThemePreview({ theme }: { theme: any }) {
             className="h-8 flex-1 rounded"
             style={{ backgroundColor: theme.colors.errorColor }}
           />
-          <div
-            className="h-8 flex-1 rounded"
-            style={{ backgroundColor: theme.colors.infoColor }}
-          />
+          <div className="h-8 flex-1 rounded" style={{ backgroundColor: theme.colors.infoColor }} />
         </div>
       </div>
     </div>

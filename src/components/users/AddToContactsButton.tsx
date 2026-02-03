@@ -93,10 +93,7 @@ const AddToContactsButton = React.forwardRef<HTMLButtonElement, AddToContactsBut
         ref={ref}
         variant={isContact ? 'ghost' : variant}
         size={size}
-        className={cn(
-          justAdded && 'text-green-500 border-green-500',
-          className
-        )}
+        className={cn(justAdded && 'border-green-500 text-green-500', className)}
         onClick={handleClick}
         disabled={disabled || isLoading}
         aria-label={ariaLabel}

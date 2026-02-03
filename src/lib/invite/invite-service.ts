@@ -200,10 +200,7 @@ export function isInviteExpired(expiresAt: Date | string | null): boolean {
 /**
  * Check if an invite has reached max uses
  */
-export function hasReachedMaxUses(
-  maxUses: number | null,
-  useCount: number
-): boolean {
+export function hasReachedMaxUses(maxUses: number | null, useCount: number): boolean {
   if (maxUses === null || maxUses === 0) return false
   return useCount >= maxUses
 }
@@ -211,10 +208,7 @@ export function hasReachedMaxUses(
 /**
  * Get remaining uses for an invite
  */
-export function getRemainingUses(
-  maxUses: number | null,
-  useCount: number
-): number | null {
+export function getRemainingUses(maxUses: number | null, useCount: number): number | null {
   if (maxUses === null) return null
   return Math.max(0, maxUses - useCount)
 }
@@ -222,9 +216,7 @@ export function getRemainingUses(
 /**
  * Get time until invite expires
  */
-export function getTimeUntilExpiry(
-  expiresAt: Date | string | null
-): number | null {
+export function getTimeUntilExpiry(expiresAt: Date | string | null): number | null {
   if (!expiresAt) return null
   const expiry = typeof expiresAt === 'string' ? new Date(expiresAt) : expiresAt
   const remaining = expiry.getTime() - Date.now()
@@ -234,9 +226,7 @@ export function getTimeUntilExpiry(
 /**
  * Format time until expiry as human-readable string
  */
-export function formatTimeUntilExpiry(
-  expiresAt: Date | string | null
-): string | null {
+export function formatTimeUntilExpiry(expiresAt: Date | string | null): string | null {
   const remaining = getTimeUntilExpiry(expiresAt)
   if (remaining === null) return null
   if (remaining === 0) return 'Expired'
@@ -259,10 +249,7 @@ export function formatTimeUntilExpiry(
 /**
  * Build an invite link URL
  */
-export function buildInviteLink(
-  code: string,
-  baseUrl?: string
-): string {
+export function buildInviteLink(code: string, baseUrl?: string): string {
   const base = baseUrl || getBaseUrl()
   return `${base}/invite/${code}`
 }
@@ -390,11 +377,7 @@ export async function shareInviteLink(
 /**
  * Generate mailto link for email sharing
  */
-export function generateMailtoLink(
-  code: string,
-  subject?: string,
-  body?: string
-): string {
+export function generateMailtoLink(code: string, subject?: string, body?: string): string {
   const link = buildInviteLink(code)
   const defaultSubject = "You're invited to join our chat"
   const defaultBody = `Hi,\n\nI'd like to invite you to join our conversation.\n\nClick here to join: ${link}\n\nSee you there!`
@@ -426,11 +409,9 @@ export function transformInviteData(data: any): InviteInfo | null {
     channelSlug: data.channel?.slug || null,
     channelDescription: data.channel?.description || null,
     channelIsPrivate: data.channel?.is_private || false,
-    channelMembersCount:
-      data.channel?.members_aggregate?.aggregate?.count || 0,
+    channelMembersCount: data.channel?.members_aggregate?.aggregate?.count || 0,
     workspaceName: null, // Would come from workspace data
-    creatorName:
-      data.creator?.display_name || data.creator?.username || 'Unknown',
+    creatorName: data.creator?.display_name || data.creator?.username || 'Unknown',
     creatorAvatarUrl: data.creator?.avatar_url || null,
     maxUses: data.max_uses || null,
     useCount: data.use_count || 0,

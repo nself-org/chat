@@ -9,6 +9,8 @@ import { ColorPaletteGenerator } from './ColorPaletteGenerator'
 import { getDominantColor } from '@/lib/white-label/logo-processor'
 import type { ColorPalette } from '@/lib/white-label/color-generator'
 
+import { logger } from '@/lib/logger'
+
 interface Step4ColorSchemeProps {
   onValidChange?: (isValid: boolean) => void
   className?: string
@@ -29,16 +31,22 @@ export function Step4ColorScheme({ onValidChange, className }: Step4ColorSchemeP
     }
   }, [config.colors.primary, markStepComplete, onValidChange])
 
-  const handlePrimaryChange = useCallback((color: string) => {
-    updateColors({ primary: color })
-  }, [updateColors])
+  const handlePrimaryChange = useCallback(
+    (color: string) => {
+      updateColors({ primary: color })
+    },
+    [updateColors]
+  )
 
-  const handlePaletteGenerated = useCallback((palette: ColorPalette, paletteMode: ColorMode) => {
-    // Only update if the mode matches
-    if (paletteMode === mode) {
-      updateColors(palette)
-    }
-  }, [mode, updateColors])
+  const handlePaletteGenerated = useCallback(
+    (palette: ColorPalette, paletteMode: ColorMode) => {
+      // Only update if the mode matches
+      if (paletteMode === mode) {
+        updateColors(palette)
+      }
+    },
+    [mode, updateColors]
+  )
 
   const handleExtractFromLogo = useCallback(async () => {
     if (!config.logo.original) return
@@ -48,15 +56,18 @@ export function Step4ColorScheme({ onValidChange, className }: Step4ColorSchemeP
       const dominantColor = await getDominantColor(config.logo.original)
       handlePrimaryChange(dominantColor)
     } catch (error) {
-      console.error('Failed to extract color:', error)
+      logger.error('Failed to extract color:', error)
     } finally {
       setIsExtractingColor(false)
     }
   }, [config.logo.original, handlePrimaryChange])
 
-  const handleColorChange = useCallback((key: keyof typeof config.colors, value: string) => {
-    updateColors({ [key]: value })
-  }, [updateColors])
+  const handleColorChange = useCallback(
+    (key: keyof typeof config.colors, value: string) => {
+      updateColors({ [key]: value })
+    },
+    [updateColors]
+  )
 
   // Color categories for manual editing
   const colorCategories = [
@@ -92,29 +103,27 @@ export function Step4ColorScheme({ onValidChange, className }: Step4ColorSchemeP
     <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-rose-400 to-rose-600 rounded-xl mb-4 shadow-lg">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-rose-400 to-rose-600 shadow-lg">
           <Palette className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-          Color Scheme
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">Color Scheme</h2>
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Choose your brand colors and we'll generate a complete palette.
         </p>
       </div>
 
-      <div className="max-w-2xl mx-auto space-y-8">
+      <div className="mx-auto max-w-2xl space-y-8">
         {/* Mode toggle */}
         <div className="flex justify-center">
-          <div className="inline-flex items-center gap-1 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-1">
+          <div className="inline-flex items-center gap-1 rounded-lg bg-zinc-100 p-1 dark:bg-zinc-800">
             <button
               type="button"
               onClick={() => setMode('light')}
               className={cn(
-                'flex items-center gap-2 px-4 py-2 text-sm rounded-md transition-all',
+                'flex items-center gap-2 rounded-md px-4 py-2 text-sm transition-all',
                 mode === 'light'
-                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                  ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white'
+                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
               )}
             >
               <Sun className="h-4 w-4" />
@@ -124,10 +133,10 @@ export function Step4ColorScheme({ onValidChange, className }: Step4ColorSchemeP
               type="button"
               onClick={() => setMode('dark')}
               className={cn(
-                'flex items-center gap-2 px-4 py-2 text-sm rounded-md transition-all',
+                'flex items-center gap-2 rounded-md px-4 py-2 text-sm transition-all',
                 mode === 'dark'
-                  ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-white shadow-sm'
-                  : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                  ? 'bg-white text-zinc-900 shadow-sm dark:bg-zinc-700 dark:text-white'
+                  : 'text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white'
               )}
             >
               <Moon className="h-4 w-4" />
@@ -143,7 +152,7 @@ export function Step4ColorScheme({ onValidChange, className }: Step4ColorSchemeP
               type="button"
               onClick={handleExtractFromLogo}
               disabled={isExtractingColor}
-              className="flex items-center gap-2 px-4 py-2 text-sm bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 rounded-lg hover:bg-zinc-200 dark:hover:bg-zinc-700 transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg bg-zinc-100 px-4 py-2 text-sm text-zinc-700 transition-colors hover:bg-zinc-200 disabled:opacity-50 dark:bg-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-700"
             >
               <Pipette className="h-4 w-4" />
               {isExtractingColor ? 'Extracting...' : 'Extract from Logo'}
@@ -159,17 +168,15 @@ export function Step4ColorScheme({ onValidChange, className }: Step4ColorSchemeP
         />
 
         {/* Advanced color editing */}
-        <div className="space-y-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
-          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-            Fine-tune Colors
-          </h3>
+        <div className="space-y-6 border-t border-zinc-200 pt-6 dark:border-zinc-700">
+          <h3 className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Fine-tune Colors</h3>
 
           {colorCategories.map((category) => (
             <div key={category.title} className="space-y-3">
-              <h4 className="text-xs font-medium text-zinc-500 uppercase tracking-wide">
+              <h4 className="text-xs font-medium uppercase tracking-wide text-zinc-500">
                 {category.title}
               </h4>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                 {category.colors.map(({ key, label }) => (
                   <div key={key} className="space-y-1">
                     <label className="text-xs text-zinc-500">{label}</label>

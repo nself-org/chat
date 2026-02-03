@@ -4,10 +4,7 @@ import { useState } from 'react'
 import { Clock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import {
-  type LocationSharingDuration,
-  SHARING_DURATION_OPTIONS,
-} from '@/lib/location'
+import { type LocationSharingDuration, SHARING_DURATION_OPTIONS } from '@/lib/location'
 
 // ============================================================================
 // Types
@@ -50,12 +47,7 @@ export function LocationDuration({
 }: LocationDurationProps) {
   if (variant === 'list') {
     return (
-      <DurationList
-        value={value}
-        onChange={onChange}
-        disabled={disabled}
-        className={className}
-      />
+      <DurationList value={value} onChange={onChange} disabled={disabled} className={className} />
     )
   }
 
@@ -122,7 +114,7 @@ function DurationButtons({
           className={cn(
             'min-w-[80px]',
             sizeClasses[size],
-            value === option.duration && 'ring-2 ring-offset-2 ring-primary'
+            value === option.duration && 'ring-2 ring-primary ring-offset-2'
           )}
         >
           {showIcon && <Clock className="mr-1.5 h-3.5 w-3.5" />}
@@ -145,13 +137,7 @@ interface DurationPillsProps {
   className?: string
 }
 
-function DurationPills({
-  value,
-  onChange,
-  size,
-  disabled,
-  className,
-}: DurationPillsProps) {
+function DurationPills({ value, onChange, size, disabled, className }: DurationPillsProps) {
   const sizeClasses = {
     sm: 'px-2 py-0.5 text-xs',
     md: 'px-3 py-1 text-sm',
@@ -159,12 +145,7 @@ function DurationPills({
   }
 
   return (
-    <div
-      className={cn(
-        'inline-flex rounded-full border bg-muted/50 p-0.5',
-        className
-      )}
-    >
+    <div className={cn('bg-muted/50 inline-flex rounded-full border p-0.5', className)}>
       {SHARING_DURATION_OPTIONS.map((option) => (
         <button
           key={option.duration}
@@ -174,7 +155,7 @@ function DurationPills({
             'rounded-full font-medium transition-colors',
             sizeClasses[size],
             value === option.duration
-              ? 'bg-primary text-primary-foreground shadow-sm'
+              ? 'text-primary-foreground bg-primary shadow-sm'
               : 'text-muted-foreground hover:text-foreground',
             disabled && 'cursor-not-allowed opacity-50'
           )}
@@ -197,12 +178,7 @@ interface DurationListProps {
   className?: string
 }
 
-function DurationList({
-  value,
-  onChange,
-  disabled,
-  className,
-}: DurationListProps) {
+function DurationList({ value, onChange, disabled, className }: DurationListProps) {
   return (
     <div className={cn('space-y-1', className)}>
       {SHARING_DURATION_OPTIONS.map((option) => (
@@ -213,7 +189,7 @@ function DurationList({
           className={cn(
             'flex w-full items-center justify-between rounded-lg border p-3 transition-colors',
             value === option.duration
-              ? 'border-primary bg-primary/5'
+              ? 'bg-primary/5 border-primary'
               : 'border-transparent hover:bg-muted',
             disabled && 'cursor-not-allowed opacity-50'
           )}
@@ -222,9 +198,7 @@ function DurationList({
             <Clock className="h-4 w-4 text-muted-foreground" />
             <span className="font-medium">{option.label}</span>
           </div>
-          {value === option.duration && (
-            <div className="h-2 w-2 rounded-full bg-primary" />
-          )}
+          {value === option.duration && <div className="h-2 w-2 rounded-full bg-primary" />}
         </button>
       ))}
     </div>
@@ -247,11 +221,7 @@ interface DurationDisplayProps {
 /**
  * Display the selected duration.
  */
-export function DurationDisplay({
-  duration,
-  size = 'md',
-  className,
-}: DurationDisplayProps) {
+export function DurationDisplay({ duration, size = 'md', className }: DurationDisplayProps) {
   const option = SHARING_DURATION_OPTIONS.find((o) => o.duration === duration)
 
   if (!option) return null
@@ -284,10 +254,7 @@ interface QuickDurationSelectorProps {
 /**
  * Quick duration selector for inline use.
  */
-export function QuickDurationSelector({
-  onSelect,
-  className,
-}: QuickDurationSelectorProps) {
+export function QuickDurationSelector({ onSelect, className }: QuickDurationSelectorProps) {
   return (
     <div
       className={cn(

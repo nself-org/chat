@@ -10,7 +10,7 @@ import type {
   UserConsent,
   PrivacySettings,
   ComplianceAuditEntry,
-} from './compliance-types';
+} from './compliance-types'
 
 // ============================================================================
 // GDPR RIGHTS
@@ -20,7 +20,8 @@ export const GDPR_RIGHTS = {
   ACCESS: {
     article: 'Article 15',
     name: 'Right of Access',
-    description: 'The right to obtain confirmation of whether personal data is being processed and access to that data.',
+    description:
+      'The right to obtain confirmation of whether personal data is being processed and access to that data.',
     timeLimit: 30, // days
   },
   RECTIFICATION: {
@@ -59,9 +60,9 @@ export const GDPR_RIGHTS = {
     description: 'The right not to be subject to automated decision-making including profiling.',
     timeLimit: 30,
   },
-} as const;
+} as const
 
-export type GDPRRight = keyof typeof GDPR_RIGHTS;
+export type GDPRRight = keyof typeof GDPR_RIGHTS
 
 // ============================================================================
 // LAWFUL BASIS FOR PROCESSING
@@ -110,40 +111,40 @@ export const LAWFUL_BASIS = {
     requiresDocumentation: true,
     canBeWithdrawn: true,
   },
-} as const;
+} as const
 
-export type LawfulBasis = keyof typeof LAWFUL_BASIS;
+export type LawfulBasis = keyof typeof LAWFUL_BASIS
 
 // ============================================================================
 // GDPR COMPLIANCE CHECKS
 // ============================================================================
 
 export interface GDPRComplianceCheck {
-  id: string;
-  name: string;
-  description: string;
-  category: 'consent' | 'rights' | 'security' | 'documentation' | 'breach';
-  check: (data: GDPRComplianceData) => GDPRCheckResult;
+  id: string
+  name: string
+  description: string
+  category: 'consent' | 'rights' | 'security' | 'documentation' | 'breach'
+  check: (data: GDPRComplianceData) => GDPRCheckResult
 }
 
 export interface GDPRComplianceData {
-  consents: UserConsent[];
-  exportRequests: DataExportRequest[];
-  deletionRequests: DataDeletionRequest[];
-  privacySettings: PrivacySettings | null;
-  auditLogs: ComplianceAuditEntry[];
-  hasPrivacyPolicy: boolean;
-  hasDPO: boolean;
-  hasBreachProcedure: boolean;
-  hasDataProcessingRecords: boolean;
+  consents: UserConsent[]
+  exportRequests: DataExportRequest[]
+  deletionRequests: DataDeletionRequest[]
+  privacySettings: PrivacySettings | null
+  auditLogs: ComplianceAuditEntry[]
+  hasPrivacyPolicy: boolean
+  hasDPO: boolean
+  hasBreachProcedure: boolean
+  hasDataProcessingRecords: boolean
 }
 
 export interface GDPRCheckResult {
-  passed: boolean;
-  status: 'pass' | 'fail' | 'warning' | 'not_applicable';
-  message: string;
-  recommendations?: string[];
-  evidence?: string[];
+  passed: boolean
+  status: 'pass' | 'fail' | 'warning' | 'not_applicable'
+  message: string
+  recommendations?: string[]
+  evidence?: string[]
 }
 
 export const GDPR_COMPLIANCE_CHECKS: GDPRComplianceCheck[] = [
@@ -153,20 +154,16 @@ export const GDPR_COMPLIANCE_CHECKS: GDPRComplianceCheck[] = [
     description: 'All consents must be documented with timestamp and scope',
     category: 'consent',
     check: (data) => {
-      const documentedConsents = data.consents.filter(
-        (c) => c.grantedAt || c.revokedAt
-      );
-      const passed = documentedConsents.length === data.consents.length;
+      const documentedConsents = data.consents.filter((c) => c.grantedAt || c.revokedAt)
+      const passed = documentedConsents.length === data.consents.length
       return {
         passed,
         status: passed ? 'pass' : 'fail',
         message: passed
           ? 'All consents are properly documented'
           : 'Some consents lack proper documentation',
-        recommendations: passed
-          ? undefined
-          : ['Ensure all consent records include timestamps'],
-      };
+        recommendations: passed ? undefined : ['Ensure all consent records include timestamps'],
+      }
     },
   },
   {
@@ -176,7 +173,7 @@ export const GDPR_COMPLIANCE_CHECKS: GDPRComplianceCheck[] = [
     category: 'consent',
     check: (data) => {
       // Check if there are any revoked consents (proves mechanism exists)
-      const hasWithdrawalMechanism = data.consents.some((c) => c.revokedAt);
+      const hasWithdrawalMechanism = data.consents.some((c) => c.revokedAt)
       return {
         passed: true, // Mechanism exists if app is using consent manager
         status: hasWithdrawalMechanism ? 'pass' : 'warning',
@@ -186,7 +183,7 @@ export const GDPR_COMPLIANCE_CHECKS: GDPRComplianceCheck[] = [
         recommendations: hasWithdrawalMechanism
           ? undefined
           : ['Verify consent withdrawal mechanism is accessible to users'],
-      };
+      }
     },
   },
   {
@@ -196,25 +193,23 @@ export const GDPR_COMPLIANCE_CHECKS: GDPRComplianceCheck[] = [
     category: 'rights',
     check: (data) => {
       const overdueRequests = data.exportRequests.filter((r) => {
-        if (r.status === 'completed') return false;
+        if (r.status === 'completed') return false
         const daysSinceRequest = Math.floor(
           (Date.now() - new Date(r.requestedAt).getTime()) / (1000 * 60 * 60 * 24)
-        );
-        return daysSinceRequest > 30;
-      });
+        )
+        return daysSinceRequest > 30
+      })
 
-      const passed = overdueRequests.length === 0;
+      const passed = overdueRequests.length === 0
       return {
         passed,
         status: passed ? 'pass' : 'fail',
         message: passed
           ? 'All data access requests are within time limits'
           : `${overdueRequests.length} request(s) exceed 30-day limit`,
-        recommendations: passed
-          ? undefined
-          : ['Process overdue export requests immediately'],
+        recommendations: passed ? undefined : ['Process overdue export requests immediately'],
         evidence: overdueRequests.map((r) => `Request ${r.id} from ${r.userEmail}`),
-      };
+      }
     },
   },
   {
@@ -224,24 +219,22 @@ export const GDPR_COMPLIANCE_CHECKS: GDPRComplianceCheck[] = [
     category: 'rights',
     check: (data) => {
       const overdueRequests = data.deletionRequests.filter((r) => {
-        if (['completed', 'rejected', 'cancelled'].includes(r.status)) return false;
+        if (['completed', 'rejected', 'cancelled'].includes(r.status)) return false
         const daysSinceRequest = Math.floor(
           (Date.now() - new Date(r.requestedAt).getTime()) / (1000 * 60 * 60 * 24)
-        );
-        return daysSinceRequest > 30;
-      });
+        )
+        return daysSinceRequest > 30
+      })
 
-      const passed = overdueRequests.length === 0;
+      const passed = overdueRequests.length === 0
       return {
         passed,
         status: passed ? 'pass' : 'fail',
         message: passed
           ? 'All erasure requests are within time limits'
           : `${overdueRequests.length} request(s) exceed 30-day limit`,
-        recommendations: passed
-          ? undefined
-          : ['Process overdue deletion requests immediately'],
-      };
+        recommendations: passed ? undefined : ['Process overdue deletion requests immediately'],
+      }
     },
   },
   {
@@ -252,9 +245,7 @@ export const GDPR_COMPLIANCE_CHECKS: GDPRComplianceCheck[] = [
     check: (data) => ({
       passed: data.hasPrivacyPolicy,
       status: data.hasPrivacyPolicy ? 'pass' : 'fail',
-      message: data.hasPrivacyPolicy
-        ? 'Privacy policy is available'
-        : 'Privacy policy is missing',
+      message: data.hasPrivacyPolicy ? 'Privacy policy is available' : 'Privacy policy is missing',
       recommendations: data.hasPrivacyPolicy
         ? undefined
         : ['Create and publish a comprehensive privacy policy'],
@@ -298,41 +289,39 @@ export const GDPR_COMPLIANCE_CHECKS: GDPRComplianceCheck[] = [
     description: 'Maintain audit trails for compliance verification',
     category: 'security',
     check: (data) => {
-      const hasRecentLogs = data.auditLogs.length > 0;
+      const hasRecentLogs = data.auditLogs.length > 0
       return {
         passed: hasRecentLogs,
         status: hasRecentLogs ? 'pass' : 'warning',
         message: hasRecentLogs
           ? `${data.auditLogs.length} audit entries recorded`
           : 'No audit trail found',
-        recommendations: hasRecentLogs
-          ? undefined
-          : ['Enable comprehensive audit logging'],
-      };
+        recommendations: hasRecentLogs ? undefined : ['Enable comprehensive audit logging'],
+      }
     },
   },
-];
+]
 
 // ============================================================================
 // GDPR ASSESSMENT
 // ============================================================================
 
 export interface GDPRAssessment {
-  overallScore: number;
-  status: 'compliant' | 'at_risk' | 'non_compliant';
+  overallScore: number
+  status: 'compliant' | 'at_risk' | 'non_compliant'
   checkResults: Array<{
-    check: GDPRComplianceCheck;
-    result: GDPRCheckResult;
-  }>;
+    check: GDPRComplianceCheck
+    result: GDPRCheckResult
+  }>
   summary: {
-    passed: number;
-    failed: number;
-    warnings: number;
-    notApplicable: number;
-  };
-  criticalIssues: string[];
-  recommendations: string[];
-  generatedAt: Date;
+    passed: number
+    failed: number
+    warnings: number
+    notApplicable: number
+  }
+  criticalIssues: string[]
+  recommendations: string[]
+  generatedAt: Date
 }
 
 /**
@@ -342,35 +331,34 @@ export function runGDPRAssessment(data: GDPRComplianceData): GDPRAssessment {
   const checkResults = GDPR_COMPLIANCE_CHECKS.map((check) => ({
     check,
     result: check.check(data),
-  }));
+  }))
 
   const summary = {
     passed: checkResults.filter((r) => r.result.status === 'pass').length,
     failed: checkResults.filter((r) => r.result.status === 'fail').length,
     warnings: checkResults.filter((r) => r.result.status === 'warning').length,
     notApplicable: checkResults.filter((r) => r.result.status === 'not_applicable').length,
-  };
+  }
 
-  const totalApplicable = summary.passed + summary.failed + summary.warnings;
-  const overallScore = totalApplicable > 0
-    ? Math.round((summary.passed / totalApplicable) * 100)
-    : 100;
+  const totalApplicable = summary.passed + summary.failed + summary.warnings
+  const overallScore =
+    totalApplicable > 0 ? Math.round((summary.passed / totalApplicable) * 100) : 100
 
   const criticalIssues = checkResults
     .filter((r) => r.result.status === 'fail')
-    .map((r) => r.result.message);
+    .map((r) => r.result.message)
 
   const recommendations = checkResults
     .filter((r) => r.result.recommendations)
-    .flatMap((r) => r.result.recommendations || []);
+    .flatMap((r) => r.result.recommendations || [])
 
-  let status: GDPRAssessment['status'];
+  let status: GDPRAssessment['status']
   if (summary.failed === 0) {
-    status = 'compliant';
+    status = 'compliant'
   } else if (summary.failed <= 2) {
-    status = 'at_risk';
+    status = 'at_risk'
   } else {
-    status = 'non_compliant';
+    status = 'non_compliant'
   }
 
   return {
@@ -381,7 +369,7 @@ export function runGDPRAssessment(data: GDPRComplianceData): GDPRAssessment {
     criticalIssues,
     recommendations: [...new Set(recommendations)], // Remove duplicates
     generatedAt: new Date(),
-  };
+  }
 }
 
 // ============================================================================
@@ -392,28 +380,26 @@ export function runGDPRAssessment(data: GDPRComplianceData): GDPRAssessment {
  * Calculate deadline for GDPR request
  */
 export function calculateGDPRDeadline(requestDate: Date, extensionDays: number = 0): Date {
-  const deadline = new Date(requestDate);
-  deadline.setDate(deadline.getDate() + 30 + extensionDays);
-  return deadline;
+  const deadline = new Date(requestDate)
+  deadline.setDate(deadline.getDate() + 30 + extensionDays)
+  return deadline
 }
 
 /**
  * Check if GDPR request is overdue
  */
 export function isGDPRRequestOverdue(requestDate: Date, extensionDays: number = 0): boolean {
-  const deadline = calculateGDPRDeadline(requestDate, extensionDays);
-  return new Date() > deadline;
+  const deadline = calculateGDPRDeadline(requestDate, extensionDays)
+  return new Date() > deadline
 }
 
 /**
  * Get remaining days for GDPR request
  */
 export function getRemainingDays(requestDate: Date, extensionDays: number = 0): number {
-  const deadline = calculateGDPRDeadline(requestDate, extensionDays);
-  const remaining = Math.ceil(
-    (deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
-  );
-  return Math.max(0, remaining);
+  const deadline = calculateGDPRDeadline(requestDate, extensionDays)
+  const remaining = Math.ceil((deadline.getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+  return Math.max(0, remaining)
 }
 
 // ============================================================================
@@ -424,11 +410,11 @@ export function getRemainingDays(requestDate: Date, extensionDays: number = 0): 
  * Generate GDPR compliance report
  */
 export function generateGDPRReport(assessment: GDPRAssessment): {
-  title: string;
+  title: string
   sections: Array<{
-    title: string;
-    content: string;
-  }>;
+    title: string
+    content: string
+  }>
 } {
   return {
     title: 'GDPR Compliance Assessment Report',
@@ -448,28 +434,32 @@ Assessment Date: ${assessment.generatedAt.toISOString()}
       },
       {
         title: 'Critical Issues',
-        content: assessment.criticalIssues.length > 0
-          ? assessment.criticalIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')
-          : 'No critical issues identified.',
+        content:
+          assessment.criticalIssues.length > 0
+            ? assessment.criticalIssues.map((issue, i) => `${i + 1}. ${issue}`).join('\n')
+            : 'No critical issues identified.',
       },
       {
         title: 'Recommendations',
-        content: assessment.recommendations.length > 0
-          ? assessment.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')
-          : 'No additional recommendations.',
+        content:
+          assessment.recommendations.length > 0
+            ? assessment.recommendations.map((rec, i) => `${i + 1}. ${rec}`).join('\n')
+            : 'No additional recommendations.',
       },
       {
         title: 'Detailed Check Results',
         content: assessment.checkResults
-          .map((r) => `
+          .map((r) =>
+            `
 [${r.result.status.toUpperCase()}] ${r.check.name}
 Category: ${r.check.category}
 ${r.result.message}
-          `.trim())
+          `.trim()
+          )
           .join('\n\n'),
       },
     ],
-  };
+  }
 }
 
 // ============================================================================
@@ -485,4 +475,4 @@ export const GDPRHelpers = {
   isGDPRRequestOverdue,
   getRemainingDays,
   generateGDPRReport,
-};
+}

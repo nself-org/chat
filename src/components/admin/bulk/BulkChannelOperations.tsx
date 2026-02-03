@@ -94,19 +94,19 @@ export function BulkChannelOperations({
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="archive">
-              <Archive className="h-4 w-4 mr-1" />
+              <Archive className="mr-1 h-4 w-4" />
               Archive
             </TabsTrigger>
             <TabsTrigger value="delete">
-              <Trash2 className="h-4 w-4 mr-1" />
+              <Trash2 className="mr-1 h-4 w-4" />
               Delete
             </TabsTrigger>
             <TabsTrigger value="transfer">
-              <UserCog className="h-4 w-4 mr-1" />
+              <UserCog className="mr-1 h-4 w-4" />
               Transfer
             </TabsTrigger>
             <TabsTrigger value="privacy">
-              <Lock className="h-4 w-4 mr-1" />
+              <Lock className="mr-1 h-4 w-4" />
               Privacy
             </TabsTrigger>
           </TabsList>
@@ -151,13 +151,17 @@ export function BulkChannelOperations({
             variant="outline"
             className="w-full"
             onClick={() => {
-              const csv = exportChannelsToCSV(selectedChannels.length > 0 ? selectedChannels : channels)
+              const csv = exportChannelsToCSV(
+                selectedChannels.length > 0 ? selectedChannels : channels
+              )
               const filename = `channels-export-${new Date().toISOString().split('T')[0]}.csv`
               downloadCSV(filename, csv)
-              toast.success(`Exported ${selectedChannels.length > 0 ? selectedChannels.length : channels.length} channels`)
+              toast.success(
+                `Exported ${selectedChannels.length > 0 ? selectedChannels.length : channels.length} channels`
+              )
             }}
           >
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export {selectedChannels.length > 0 ? 'Selected' : 'All'} Channels
           </Button>
         </div>
@@ -222,8 +226,8 @@ function BulkArchiveTab({
   return (
     <div className="space-y-4">
       {selectedChannels.length === 0 ? (
-        <div className="text-center py-6 text-muted-foreground">
-          <Archive className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <div className="py-6 text-center text-muted-foreground">
+          <Archive className="mx-auto mb-2 h-12 w-12 opacity-50" />
           <p>No channels selected</p>
           <p className="text-sm">Select channels from the table to archive in bulk</p>
         </div>
@@ -252,8 +256,8 @@ function BulkArchiveTab({
             </Label>
           </div>
 
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-sm font-medium mb-1">
+          <div className="rounded-lg bg-muted p-3">
+            <p className="mb-1 text-sm font-medium">
               Channels to Archive ({selectedChannels.length})
             </p>
             <div className="flex flex-wrap gap-1">
@@ -269,7 +273,7 @@ function BulkArchiveTab({
           </div>
 
           <Button onClick={handleArchive} className="w-full">
-            <Archive className="h-4 w-4 mr-2" />
+            <Archive className="mr-2 h-4 w-4" />
             Archive {selectedChannels.length} Channel{selectedChannels.length > 1 ? 's' : ''}
           </Button>
         </>
@@ -344,19 +348,19 @@ function BulkDeleteTab({
   return (
     <div className="space-y-4">
       {selectedChannels.length === 0 ? (
-        <div className="text-center py-6 text-muted-foreground">
-          <Trash2 className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <div className="py-6 text-center text-muted-foreground">
+          <Trash2 className="mx-auto mb-2 h-12 w-12 opacity-50" />
           <p>No channels selected</p>
           <p className="text-sm">Select channels from the table to delete in bulk</p>
         </div>
       ) : (
         <>
-          <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4">
+          <div className="bg-destructive/10 border-destructive/20 rounded-lg border p-4">
             <div className="flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-destructive flex-shrink-0 mt-0.5" />
+              <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-destructive" />
               <div>
                 <p className="font-medium text-destructive">Warning: Permanent Action</p>
-                <p className="text-sm text-destructive/90 mt-1">
+                <p className="text-destructive/90 mt-1 text-sm">
                   Deleting channels is permanent. All channel data and history will be removed.
                 </p>
               </div>
@@ -387,8 +391,8 @@ function BulkDeleteTab({
             </div>
           </div>
 
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-sm font-medium mb-1">
+          <div className="rounded-lg bg-muted p-3">
+            <p className="mb-1 text-sm font-medium">
               Channels to Delete ({selectedChannels.length})
             </p>
             <div className="flex flex-wrap gap-1">
@@ -404,7 +408,7 @@ function BulkDeleteTab({
           </div>
 
           <Button onClick={() => setConfirmOpen(true)} variant="destructive" className="w-full">
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Delete {selectedChannels.length} Channel{selectedChannels.length > 1 ? 's' : ''}
           </Button>
 
@@ -510,8 +514,8 @@ function BulkTransferTab({
   return (
     <div className="space-y-4">
       {selectedChannels.length === 0 ? (
-        <div className="text-center py-6 text-muted-foreground">
-          <UserCog className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <div className="py-6 text-center text-muted-foreground">
+          <UserCog className="mx-auto mb-2 h-12 w-12 opacity-50" />
           <p>No channels selected</p>
           <p className="text-sm">Select channels to transfer ownership in bulk</p>
         </div>
@@ -539,8 +543,8 @@ function BulkTransferTab({
             </Label>
           </div>
 
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-sm font-medium mb-1">
+          <div className="rounded-lg bg-muted p-3">
+            <p className="mb-1 text-sm font-medium">
               Channels to Transfer ({selectedChannels.length})
             </p>
             <div className="flex flex-wrap gap-1">
@@ -556,7 +560,7 @@ function BulkTransferTab({
           </div>
 
           <Button onClick={handleTransfer} className="w-full" disabled={!newOwnerId}>
-            <UserCog className="h-4 w-4 mr-2" />
+            <UserCog className="mr-2 h-4 w-4" />
             Transfer {selectedChannels.length} Channel{selectedChannels.length > 1 ? 's' : ''}
           </Button>
         </>
@@ -613,16 +617,14 @@ function BulkPrivacyTab({
     progress.complete()
     onProcessingChange(false)
 
-    toast.success(
-      `Made ${operation.successCount} channels ${makePrivate ? 'private' : 'public'}`
-    )
+    toast.success(`Made ${operation.successCount} channels ${makePrivate ? 'private' : 'public'}`)
   }
 
   return (
     <div className="space-y-4">
       {selectedChannels.length === 0 ? (
-        <div className="text-center py-6 text-muted-foreground">
-          <Lock className="h-12 w-12 mx-auto mb-2 opacity-50" />
+        <div className="py-6 text-center text-muted-foreground">
+          <Lock className="mx-auto mb-2 h-12 w-12 opacity-50" />
           <p>No channels selected</p>
           <p className="text-sm">Select channels to change privacy settings in bulk</p>
         </div>
@@ -636,7 +638,7 @@ function BulkPrivacyTab({
                 onClick={() => setMakePrivate(true)}
                 className="justify-start"
               >
-                <Lock className="h-4 w-4 mr-2" />
+                <Lock className="mr-2 h-4 w-4" />
                 Make Private
               </Button>
               <Button
@@ -644,14 +646,14 @@ function BulkPrivacyTab({
                 onClick={() => setMakePrivate(false)}
                 className="justify-start"
               >
-                <Unlock className="h-4 w-4 mr-2" />
+                <Unlock className="mr-2 h-4 w-4" />
                 Make Public
               </Button>
             </div>
           </div>
 
-          <div className="bg-muted rounded-lg p-3">
-            <p className="text-sm font-medium mb-1">
+          <div className="rounded-lg bg-muted p-3">
+            <p className="mb-1 text-sm font-medium">
               Channels to Update ({selectedChannels.length})
             </p>
             <div className="flex flex-wrap gap-1">
@@ -667,7 +669,7 @@ function BulkPrivacyTab({
           </div>
 
           <Button onClick={handleChangePrivacy} className="w-full">
-            {makePrivate ? <Lock className="h-4 w-4 mr-2" /> : <Unlock className="h-4 w-4 mr-2" />}
+            {makePrivate ? <Lock className="mr-2 h-4 w-4" /> : <Unlock className="mr-2 h-4 w-4" />}
             Make {selectedChannels.length} Channel{selectedChannels.length > 1 ? 's' : ''}{' '}
             {makePrivate ? 'Private' : 'Public'}
           </Button>
@@ -690,22 +692,22 @@ function OperationProgress({ operation }: OperationProgressProps) {
     operation.totalItems > 0 ? (operation.processedItems / operation.totalItems) * 100 : 0
 
   return (
-    <div className="mt-6 p-4 border rounded-lg bg-muted/50">
-      <div className="flex items-center justify-between mb-2">
+    <div className="bg-muted/50 mt-6 rounded-lg border p-4">
+      <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2">
           {operation.status === 'completed' ? (
             <CheckCircle className="h-5 w-5 text-green-600" />
           ) : operation.status === 'failed' ? (
             <AlertCircle className="h-5 w-5 text-destructive" />
           ) : (
-            <div className="h-5 w-5 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+            <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary border-t-transparent" />
           )}
           <span className="font-medium">
             {operation.status === 'completed'
               ? 'Operation Completed'
               : operation.status === 'failed'
-              ? 'Operation Failed'
-              : 'Processing...'}
+                ? 'Operation Failed'
+                : 'Processing...'}
           </span>
         </div>
         <span className="text-sm text-muted-foreground">

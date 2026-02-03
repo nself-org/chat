@@ -8,13 +8,9 @@
  */
 
 import { nhost } from '@/lib/nhost'
-import {
-  AuthProvider,
-  AuthProviderType,
-  AuthResult,
-  AuthError,
-  OAuthProviderConfig,
-} from './types'
+import { AuthProvider, AuthProviderType, AuthResult, AuthError, OAuthProviderConfig } from './types'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Configuration
@@ -81,7 +77,7 @@ export class GoogleProvider implements AuthProvider {
         requiresVerification: true,
       }
     } catch (err) {
-      console.error('GoogleProvider.authenticate error:', err)
+      logger.error('GoogleProvider.authenticate error:', err)
       return {
         success: false,
         error: {
@@ -144,7 +140,7 @@ export class GoogleProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('GoogleProvider.handleCallback error:', err)
+      logger.error('GoogleProvider.handleCallback error:', err)
       return {
         success: false,
         error: {
@@ -170,7 +166,7 @@ export class GoogleProvider implements AuthProvider {
         requiresVerification: true,
       }
     } catch (err) {
-      console.error('GoogleProvider.linkAccount error:', err)
+      logger.error('GoogleProvider.linkAccount error:', err)
       return {
         success: false,
         error: {
@@ -209,7 +205,7 @@ export class GoogleProvider implements AuthProvider {
 
       return { success: true }
     } catch (err) {
-      console.error('GoogleProvider.unlinkAccount error:', err)
+      logger.error('GoogleProvider.unlinkAccount error:', err)
       return {
         success: false,
         error: {
@@ -263,7 +259,7 @@ export class GoogleProvider implements AuthProvider {
         },
       }
     } catch (err) {
-      console.error('GoogleProvider.handleOneTapCallback error:', err)
+      logger.error('GoogleProvider.handleOneTapCallback error:', err)
       return {
         success: false,
         error: {

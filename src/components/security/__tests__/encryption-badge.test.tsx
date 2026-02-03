@@ -45,33 +45,19 @@ describe('EncryptionBadge', () => {
     })
 
     it('should render with custom label', () => {
-      render(
-        <EncryptionBadge
-          level="encrypted"
-          label="Custom Label"
-          showTooltip={false}
-        />
-      )
+      render(<EncryptionBadge level="encrypted" label="Custom Label" showTooltip={false} />)
 
       expect(screen.getByText('Custom Label')).toBeInTheDocument()
     })
 
     it('should render with default label', () => {
-      render(
-        <EncryptionBadge level="encrypted" showTooltip={false} />
-      )
+      render(<EncryptionBadge level="encrypted" showTooltip={false} />)
 
       expect(screen.getByText('Encrypted')).toBeInTheDocument()
     })
 
     it('should hide label when showLabel is false', () => {
-      render(
-        <EncryptionBadge
-          level="encrypted"
-          showLabel={false}
-          showTooltip={false}
-        />
-      )
+      render(<EncryptionBadge level="encrypted" showLabel={false} showTooltip={false} />)
 
       expect(screen.queryByText('Encrypted')).not.toBeInTheDocument()
     })
@@ -80,12 +66,7 @@ describe('EncryptionBadge', () => {
   describe('Sizes', () => {
     it('should render small size', () => {
       render(
-        <EncryptionBadge
-          level="encrypted"
-          size="sm"
-          data-testid="badge"
-          showTooltip={false}
-        />
+        <EncryptionBadge level="encrypted" size="sm" data-testid="badge" showTooltip={false} />
       )
 
       const badge = screen.getByTestId('badge')
@@ -93,13 +74,7 @@ describe('EncryptionBadge', () => {
     })
 
     it('should render medium size (default)', () => {
-      render(
-        <EncryptionBadge
-          level="encrypted"
-          data-testid="badge"
-          showTooltip={false}
-        />
-      )
+      render(<EncryptionBadge level="encrypted" data-testid="badge" showTooltip={false} />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveClass('text-sm')
@@ -107,12 +82,7 @@ describe('EncryptionBadge', () => {
 
     it('should render large size', () => {
       render(
-        <EncryptionBadge
-          level="encrypted"
-          size="lg"
-          data-testid="badge"
-          showTooltip={false}
-        />
+        <EncryptionBadge level="encrypted" size="lg" data-testid="badge" showTooltip={false} />
       )
 
       const badge = screen.getByTestId('badge')
@@ -122,45 +92,35 @@ describe('EncryptionBadge', () => {
 
   describe('Variants/Levels', () => {
     it('should apply correct styling for none level', () => {
-      render(
-        <EncryptionBadge level="none" data-testid="badge" showTooltip={false} />
-      )
+      render(<EncryptionBadge level="none" data-testid="badge" showTooltip={false} />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveClass('bg-muted')
     })
 
     it('should apply correct styling for initializing level', () => {
-      render(
-        <EncryptionBadge level="initializing" data-testid="badge" showTooltip={false} />
-      )
+      render(<EncryptionBadge level="initializing" data-testid="badge" showTooltip={false} />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveClass('bg-yellow-100')
     })
 
     it('should apply correct styling for encrypted level', () => {
-      render(
-        <EncryptionBadge level="encrypted" data-testid="badge" showTooltip={false} />
-      )
+      render(<EncryptionBadge level="encrypted" data-testid="badge" showTooltip={false} />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveClass('bg-green-100')
     })
 
     it('should apply correct styling for verified level', () => {
-      render(
-        <EncryptionBadge level="verified" data-testid="badge" showTooltip={false} />
-      )
+      render(<EncryptionBadge level="verified" data-testid="badge" showTooltip={false} />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveClass('bg-blue-100')
     })
 
     it('should apply correct styling for error level', () => {
-      render(
-        <EncryptionBadge level="error" data-testid="badge" showTooltip={false} />
-      )
+      render(<EncryptionBadge level="error" data-testid="badge" showTooltip={false} />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveClass('bg-red-100')
@@ -232,12 +192,7 @@ describe('EncryptionBadge', () => {
 
     it('should have cursor-pointer class when interactive', () => {
       render(
-        <EncryptionBadge
-          level="encrypted"
-          interactive
-          showTooltip={false}
-          data-testid="badge"
-        />
+        <EncryptionBadge level="encrypted" interactive showTooltip={false} data-testid="badge" />
       )
 
       const badge = screen.getByTestId('badge')
@@ -284,12 +239,7 @@ describe('EncryptionBadge', () => {
 
     it('should have button role when interactive', () => {
       render(
-        <EncryptionBadge
-          level="encrypted"
-          interactive
-          showTooltip={false}
-          data-testid="badge"
-        />
+        <EncryptionBadge level="encrypted" interactive showTooltip={false} data-testid="badge" />
       )
 
       const badge = screen.getByTestId('badge')
@@ -297,13 +247,7 @@ describe('EncryptionBadge', () => {
     })
 
     it('should have status role when not interactive', () => {
-      render(
-        <EncryptionBadge
-          level="encrypted"
-          showTooltip={false}
-          data-testid="badge"
-        />
-      )
+      render(<EncryptionBadge level="encrypted" showTooltip={false} data-testid="badge" />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveAttribute('role', 'status')
@@ -312,27 +256,21 @@ describe('EncryptionBadge', () => {
 
   describe('Accessibility', () => {
     it('should have correct aria-label for none level', () => {
-      render(
-        <EncryptionBadge level="none" showTooltip={false} data-testid="badge" />
-      )
+      render(<EncryptionBadge level="none" showTooltip={false} data-testid="badge" />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveAttribute('aria-label', 'Encryption disabled')
     })
 
     it('should have correct aria-label for encrypted level', () => {
-      render(
-        <EncryptionBadge level="encrypted" showTooltip={false} data-testid="badge" />
-      )
+      render(<EncryptionBadge level="encrypted" showTooltip={false} data-testid="badge" />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveAttribute('aria-label', 'End-to-end encrypted')
     })
 
     it('should have correct aria-label for verified level', () => {
-      render(
-        <EncryptionBadge level="verified" showTooltip={false} data-testid="badge" />
-      )
+      render(<EncryptionBadge level="verified" showTooltip={false} data-testid="badge" />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).toHaveAttribute('aria-label', 'Verified end-to-end encrypted')
@@ -340,12 +278,7 @@ describe('EncryptionBadge', () => {
 
     it('should have tabIndex when interactive', () => {
       render(
-        <EncryptionBadge
-          level="encrypted"
-          interactive
-          showTooltip={false}
-          data-testid="badge"
-        />
+        <EncryptionBadge level="encrypted" interactive showTooltip={false} data-testid="badge" />
       )
 
       const badge = screen.getByTestId('badge')
@@ -353,9 +286,7 @@ describe('EncryptionBadge', () => {
     })
 
     it('should not have tabIndex when not interactive', () => {
-      render(
-        <EncryptionBadge level="encrypted" showTooltip={false} data-testid="badge" />
-      )
+      render(<EncryptionBadge level="encrypted" showTooltip={false} data-testid="badge" />)
 
       const badge = screen.getByTestId('badge')
       expect(badge).not.toHaveAttribute('tabIndex')
@@ -458,25 +389,14 @@ describe('ChannelEncryptionStatus', () => {
   })
 
   it('should prioritize error over other states', () => {
-    render(
-      <ChannelEncryptionStatus
-        isEncrypted={true}
-        isVerified={true}
-        isError={true}
-      />
-    )
+    render(<ChannelEncryptionStatus isEncrypted={true} isVerified={true} isError={true} />)
 
     const status = screen.getByTestId('channel-encryption-status')
     expect(status).toHaveAttribute('data-encryption-level', 'error')
   })
 
   it('should prioritize initializing over encrypted', () => {
-    render(
-      <ChannelEncryptionStatus
-        isEncrypted={true}
-        isInitializing={true}
-      />
-    )
+    render(<ChannelEncryptionStatus isEncrypted={true} isInitializing={true} />)
 
     const status = screen.getByTestId('channel-encryption-status')
     expect(status).toHaveAttribute('data-encryption-level', 'initializing')
@@ -540,9 +460,7 @@ describe('MessageEncryptionIndicator', () => {
   })
 
   it('should render error indicator when decryption failed', () => {
-    render(
-      <MessageEncryptionIndicator isEncrypted={true} isDecryptionFailed={true} />
-    )
+    render(<MessageEncryptionIndicator isEncrypted={true} isDecryptionFailed={true} />)
 
     const indicator = screen.getByTestId('message-decryption-failed')
     expect(indicator).toBeInTheDocument()
@@ -550,27 +468,21 @@ describe('MessageEncryptionIndicator', () => {
   })
 
   it('should have red color when decryption failed', () => {
-    render(
-      <MessageEncryptionIndicator isEncrypted={true} isDecryptionFailed={true} />
-    )
+    render(<MessageEncryptionIndicator isEncrypted={true} isDecryptionFailed={true} />)
 
     const indicator = screen.getByTestId('message-decryption-failed')
     expect(indicator).toHaveClass('text-red-500')
   })
 
   it('should prioritize decryption failed over encrypted', () => {
-    render(
-      <MessageEncryptionIndicator isEncrypted={true} isDecryptionFailed={true} />
-    )
+    render(<MessageEncryptionIndicator isEncrypted={true} isDecryptionFailed={true} />)
 
     expect(screen.queryByTestId('message-encrypted-indicator')).not.toBeInTheDocument()
     expect(screen.getByTestId('message-decryption-failed')).toBeInTheDocument()
   })
 
   it('should apply custom className', () => {
-    render(
-      <MessageEncryptionIndicator isEncrypted={true} className="custom-class" />
-    )
+    render(<MessageEncryptionIndicator isEncrypted={true} className="custom-class" />)
 
     const indicator = screen.getByTestId('message-encrypted-indicator')
     expect(indicator).toHaveClass('custom-class')
@@ -583,9 +495,7 @@ describe('MessageEncryptionIndicator', () => {
   })
 
   it('should have screen reader text for failed decryption', () => {
-    render(
-      <MessageEncryptionIndicator isEncrypted={true} isDecryptionFailed={true} />
-    )
+    render(<MessageEncryptionIndicator isEncrypted={true} isDecryptionFailed={true} />)
 
     expect(screen.getByText('Decryption failed')).toHaveClass('sr-only')
   })

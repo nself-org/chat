@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import { SettingsSection } from './settings-section';
-import { SettingsToggle } from './SettingsToggle';
-import { useSettingsStore } from '@/stores/settings-store';
-import { cn } from '@/lib/utils';
+import { SettingsSection } from './settings-section'
+import { SettingsToggle } from './SettingsToggle'
+import { useSettingsStore } from '@/stores/settings-store'
+import { cn } from '@/lib/utils'
 
 interface KeyboardSettingsProps {
-  className?: string;
+  className?: string
 }
 
 interface ShortcutInfo {
-  keys: string[];
-  action: string;
-  category: string;
+  keys: string[]
+  action: string
+  category: string
 }
 
 const shortcuts: ShortcutInfo[] = [
@@ -27,25 +27,25 @@ const shortcuts: ShortcutInfo[] = [
   { keys: ['Cmd', '/'], action: 'Toggle sidebar', category: 'Global' },
   { keys: ['Cmd', 'N'], action: 'New message', category: 'Messaging' },
   { keys: ['Cmd', 'Enter'], action: 'Send message', category: 'Messaging' },
-];
+]
 
 /**
  * KeyboardSettings - Keyboard navigation and shortcuts
  */
 export function KeyboardSettings({ className }: KeyboardSettingsProps) {
-  const { settings, updateAccessibility } = useSettingsStore();
+  const { settings, updateAccessibility } = useSettingsStore()
 
   // Group shortcuts by category
   const groupedShortcuts = shortcuts.reduce(
     (acc, shortcut) => {
       if (!acc[shortcut.category]) {
-        acc[shortcut.category] = [];
+        acc[shortcut.category] = []
       }
-      acc[shortcut.category].push(shortcut);
-      return acc;
+      acc[shortcut.category].push(shortcut)
+      return acc
     },
     {} as Record<string, ShortcutInfo[]>
-  );
+  )
 
   return (
     <SettingsSection
@@ -58,9 +58,7 @@ export function KeyboardSettings({ className }: KeyboardSettingsProps) {
         label="Always show focus indicators"
         description="Show focus rings on all interactions, not just keyboard navigation"
         checked={settings.accessibility.alwaysShowFocus}
-        onCheckedChange={(checked) =>
-          updateAccessibility({ alwaysShowFocus: checked })
-        }
+        onCheckedChange={(checked) => updateAccessibility({ alwaysShowFocus: checked })}
       />
 
       <SettingsToggle
@@ -68,9 +66,7 @@ export function KeyboardSettings({ className }: KeyboardSettingsProps) {
         label="Larger touch targets"
         description="Increase the size of interactive elements for easier clicking and tapping"
         checked={settings.accessibility.largerTargets}
-        onCheckedChange={(checked) =>
-          updateAccessibility({ largerTargets: checked })
-        }
+        onCheckedChange={(checked) => updateAccessibility({ largerTargets: checked })}
       />
 
       <SettingsToggle
@@ -78,9 +74,7 @@ export function KeyboardSettings({ className }: KeyboardSettingsProps) {
         label="Show keyboard shortcuts"
         description="Display keyboard shortcut hints on buttons and actions"
         checked={settings.accessibility.showKeyboardHints}
-        onCheckedChange={(checked) =>
-          updateAccessibility({ showKeyboardHints: checked })
-        }
+        onCheckedChange={(checked) => updateAccessibility({ showKeyboardHints: checked })}
       />
 
       {/* Keyboard shortcuts reference */}
@@ -94,13 +88,8 @@ export function KeyboardSettings({ className }: KeyboardSettingsProps) {
               </p>
               <div className="space-y-1">
                 {categoryShortcuts.map((shortcut) => (
-                  <div
-                    key={shortcut.action}
-                    className="flex items-center justify-between py-1"
-                  >
-                    <span className="text-sm text-muted-foreground">
-                      {shortcut.action}
-                    </span>
+                  <div key={shortcut.action} className="flex items-center justify-between py-1">
+                    <span className="text-sm text-muted-foreground">{shortcut.action}</span>
                     <div className="flex items-center gap-1">
                       {shortcut.keys.map((key, index) => (
                         <span key={key} className="flex items-center gap-1">
@@ -110,7 +99,9 @@ export function KeyboardSettings({ className }: KeyboardSettingsProps) {
                               'border-border bg-muted px-1.5 text-xs font-medium text-muted-foreground'
                             )}
                           >
-                            {key === 'Cmd' && typeof navigator !== 'undefined' && navigator.platform.includes('Mac')
+                            {key === 'Cmd' &&
+                            typeof navigator !== 'undefined' &&
+                            navigator.platform.includes('Mac')
                               ? 'Cmd'
                               : key === 'Cmd'
                                 ? 'Ctrl'
@@ -130,5 +121,5 @@ export function KeyboardSettings({ className }: KeyboardSettingsProps) {
         </div>
       </div>
     </SettingsSection>
-  );
+  )
 }

@@ -35,12 +35,12 @@ nself CLI provides a complete backend infrastructure stack with the following se
 
 ### Service Tiers
 
-| Tier | Services | Always Enabled | Enable Via |
-|------|----------|----------------|------------|
-| **Core** | 4 services | Yes | Automatic |
-| **Optional** | 7 services | No | Environment variables |
-| **Monitoring** | 10 services | No | `MONITORING_ENABLED=true` |
-| **Admin** | 1 service | No | `NSELF_ADMIN_ENABLED=true` |
+| Tier           | Services    | Always Enabled | Enable Via                 |
+| -------------- | ----------- | -------------- | -------------------------- |
+| **Core**       | 4 services  | Yes            | Automatic                  |
+| **Optional**   | 7 services  | No             | Environment variables      |
+| **Monitoring** | 10 services | No             | `MONITORING_ENABLED=true`  |
+| **Admin**      | 1 service   | No             | `NSELF_ADMIN_ENABLED=true` |
 
 ### Service Dependency Graph
 
@@ -76,14 +76,14 @@ These four services are always enabled and form the foundation of your backend.
 
 #### Overview
 
-| Property | Value |
-|----------|-------|
-| **Image** | `postgres:16-alpine` |
-| **Port** | 5432 |
-| **Data Location** | `/var/lib/postgresql/data` (Docker volume) |
-| **Default Database** | `{project_name}_dev` |
-| **Default User** | `postgres` |
-| **Health Check** | `pg_isready -U postgres` |
+| Property             | Value                                      |
+| -------------------- | ------------------------------------------ |
+| **Image**            | `postgres:16-alpine`                       |
+| **Port**             | 5432                                       |
+| **Data Location**    | `/var/lib/postgresql/data` (Docker volume) |
+| **Default Database** | `{project_name}_dev`                       |
+| **Default User**     | `postgres`                                 |
+| **Health Check**     | `pg_isready -U postgres`                   |
 
 #### Features
 
@@ -98,12 +98,14 @@ These four services are always enabled and form the foundation of your backend.
 #### Available Extensions
 
 **Cryptography:**
+
 ```sql
 CREATE EXTENSION pgcrypto;      -- Cryptographic functions
 CREATE EXTENSION "uuid-ossp";   -- UUID generation
 ```
 
 **Full-Text Search:**
+
 ```sql
 CREATE EXTENSION pg_trgm;       -- Similarity search
 CREATE EXTENSION pg_freespacemap;
@@ -112,6 +114,7 @@ CREATE EXTENSION btree_gist;    -- GIST indexes
 ```
 
 **Performance:**
+
 ```sql
 CREATE EXTENSION pg_stat_statements;  -- Query performance
 CREATE EXTENSION pg_buffercache;     -- Cache stats
@@ -119,6 +122,7 @@ CREATE EXTENSION pg_prewarm;         -- Buffer prewarming
 ```
 
 **Data Types:**
+
 ```sql
 CREATE EXTENSION hstore;        -- Key-value store
 CREATE EXTENSION ltree;         -- Hierarchical tree
@@ -127,6 +131,7 @@ CREATE EXTENSION isn;           -- ISBN/ISSN/etc
 ```
 
 **Geographic (Optional):**
+
 ```sql
 CREATE EXTENSION postgis;       -- Geographic objects
 CREATE EXTENSION postgis_topology;
@@ -134,11 +139,13 @@ CREATE EXTENSION address_standardizer;
 ```
 
 **Time-Series (Optional):**
+
 ```sql
 CREATE EXTENSION timescaledb;  -- Time-series optimization
 ```
 
 **Job Scheduling (Optional):**
+
 ```sql
 CREATE EXTENSION pg_cron;      -- Cron-like job scheduler
 ```
@@ -146,6 +153,7 @@ CREATE EXTENSION pg_cron;      -- Cron-like job scheduler
 #### Configuration
 
 **Default Configuration (.backend/.env):**
+
 ```bash
 POSTGRES_DB=myapp_dev
 POSTGRES_USER=postgres
@@ -156,6 +164,7 @@ POSTGRES_PORT=5432
 **Performance Tuning:**
 
 For development (8GB RAM):
+
 ```bash
 # Add to docker-compose.yml postgres service
 command:
@@ -185,6 +194,7 @@ command:
 ```
 
 For production (32GB RAM):
+
 ```bash
 command:
   - postgres
@@ -203,6 +213,7 @@ command:
 #### Connecting to PostgreSQL
 
 **From Host Machine:**
+
 ```bash
 # Using psql
 psql -h localhost -p 5432 -U postgres -d myapp_dev
@@ -212,22 +223,24 @@ nself exec postgres psql -U postgres -d myapp_dev
 ```
 
 **From Application:**
+
 ```javascript
 // Node.js (pg)
-const { Pool } = require('pg');
+const { Pool } = require('pg')
 const pool = new Pool({
   host: 'localhost',
   port: 5432,
   database: 'myapp_dev',
   user: 'postgres',
   password: 'postgres-dev-password',
-});
+})
 
 // Connection string
-const connectionString = 'postgresql://postgres:postgres-dev-password@localhost:5432/myapp_dev';
+const connectionString = 'postgresql://postgres:postgres-dev-password@localhost:5432/myapp_dev'
 ```
 
 **GUI Tools:**
+
 - **pgAdmin 4**: Free, feature-rich
 - **TablePlus**: Modern, beautiful UI (paid)
 - **DBeaver**: Open-source, Java-based
@@ -236,6 +249,7 @@ const connectionString = 'postgresql://postgres:postgres-dev-password@localhost:
 #### Backup and Restore
 
 **Create Backup:**
+
 ```bash
 # Using nself CLI
 nself db:dump backup.sql
@@ -248,6 +262,7 @@ docker exec myapp_postgres pg_dump -U postgres myapp_dev | gzip > backup.sql.gz
 ```
 
 **Restore Backup:**
+
 ```bash
 # Using nself CLI
 nself db:restore backup.sql
@@ -262,17 +277,20 @@ gunzip < backup.sql.gz | docker exec -i myapp_postgres psql -U postgres -d myapp
 #### Common Tasks
 
 **Create Database:**
+
 ```sql
 CREATE DATABASE my_new_db;
 ```
 
 **Create User:**
+
 ```sql
 CREATE USER myuser WITH PASSWORD 'mypassword';
 GRANT ALL PRIVILEGES ON DATABASE myapp_dev TO myuser;
 ```
 
 **List Databases:**
+
 ```sql
 \l
 -- or
@@ -280,6 +298,7 @@ SELECT datname FROM pg_database;
 ```
 
 **List Tables:**
+
 ```sql
 \dt
 -- or
@@ -287,6 +306,7 @@ SELECT tablename FROM pg_tables WHERE schemaname = 'public';
 ```
 
 **Table Size:**
+
 ```sql
 SELECT
   schemaname,
@@ -305,14 +325,14 @@ ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
 
 #### Overview
 
-| Property | Value |
-|----------|-------|
-| **Image** | `hasura/graphql-engine:v2.44.0` |
-| **Port** | 8080 |
-| **Console** | http://localhost:8080/console |
+| Property         | Value                           |
+| ---------------- | ------------------------------- |
+| **Image**        | `hasura/graphql-engine:v2.44.0` |
+| **Port**         | 8080                            |
+| **Console**      | http://localhost:8080/console   |
 | **API Endpoint** | http://api.localhost/v1/graphql |
 | **Admin Secret** | `hasura-admin-secret-dev` (dev) |
-| **Health Check** | http://localhost:8080/healthz |
+| **Health Check** | http://localhost:8080/healthz   |
 
 #### Features
 
@@ -329,6 +349,7 @@ ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
 #### Configuration
 
 **Environment Variables:**
+
 ```bash
 HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres-dev-password@postgres:5432/myapp_dev
 HASURA_GRAPHQL_ADMIN_SECRET=hasura-admin-secret-dev
@@ -344,6 +365,7 @@ HASURA_GRAPHQL_UNAUTHORIZED_ROLE=public
 #### Using the Console
 
 **Access Console:**
+
 ```bash
 # Direct access
 open http://localhost:8080/console
@@ -353,6 +375,7 @@ nself console
 ```
 
 **Console Features:**
+
 - **DATA**: Manage tables, relationships, permissions
 - **ACTIONS**: Define custom GraphQL mutations
 - **REMOTE SCHEMAS**: Integrate external GraphQL APIs
@@ -363,6 +386,7 @@ nself console
 #### GraphQL Queries
 
 **Basic Query:**
+
 ```graphql
 query GetUsers {
   users {
@@ -375,9 +399,10 @@ query GetUsers {
 ```
 
 **Filtered Query:**
+
 ```graphql
 query GetActiveUsers {
-  users(where: {active: {_eq: true}}) {
+  users(where: { active: { _eq: true } }) {
     id
     name
   }
@@ -385,13 +410,10 @@ query GetActiveUsers {
 ```
 
 **Pagination:**
+
 ```graphql
 query GetUsersPaginated {
-  users(
-    limit: 10
-    offset: 0
-    order_by: {created_at: desc}
-  ) {
+  users(limit: 10, offset: 0, order_by: { created_at: desc }) {
     id
     name
   }
@@ -399,6 +421,7 @@ query GetUsersPaginated {
 ```
 
 **Relationships:**
+
 ```graphql
 query GetUsersWithPosts {
   users {
@@ -414,6 +437,7 @@ query GetUsersWithPosts {
 ```
 
 **Aggregations:**
+
 ```graphql
 query GetUserStats {
   users_aggregate {
@@ -433,12 +457,10 @@ query GetUserStats {
 #### Mutations
 
 **Insert:**
+
 ```graphql
 mutation CreateUser {
-  insert_users_one(object: {
-    name: "John Doe"
-    email: "john@example.com"
-  }) {
+  insert_users_one(object: { name: "John Doe", email: "john@example.com" }) {
     id
     name
   }
@@ -446,12 +468,10 @@ mutation CreateUser {
 ```
 
 **Update:**
+
 ```graphql
 mutation UpdateUser {
-  update_users_by_pk(
-    pk_columns: {id: "123"}
-    _set: {name: "Jane Doe"}
-  ) {
+  update_users_by_pk(pk_columns: { id: "123" }, _set: { name: "Jane Doe" }) {
     id
     name
   }
@@ -459,6 +479,7 @@ mutation UpdateUser {
 ```
 
 **Delete:**
+
 ```graphql
 mutation DeleteUser {
   delete_users_by_pk(id: "123") {
@@ -468,12 +489,15 @@ mutation DeleteUser {
 ```
 
 **Batch Insert:**
+
 ```graphql
 mutation CreateMultipleUsers {
-  insert_users(objects: [
-    {name: "Alice", email: "alice@example.com"},
-    {name: "Bob", email: "bob@example.com"}
-  ]) {
+  insert_users(
+    objects: [
+      { name: "Alice", email: "alice@example.com" }
+      { name: "Bob", email: "bob@example.com" }
+    ]
+  ) {
     affected_rows
     returning {
       id
@@ -486,6 +510,7 @@ mutation CreateMultipleUsers {
 #### Subscriptions
 
 **Subscribe to Table:**
+
 ```graphql
 subscription WatchUsers {
   users {
@@ -497,9 +522,10 @@ subscription WatchUsers {
 ```
 
 **Filtered Subscription:**
+
 ```graphql
 subscription WatchActiveUsers {
-  users(where: {active: {_eq: true}}) {
+  users(where: { active: { _eq: true } }) {
     id
     name
     status
@@ -508,6 +534,7 @@ subscription WatchActiveUsers {
 ```
 
 **Subscribe to Specific Record:**
+
 ```graphql
 subscription WatchUser($userId: uuid!) {
   users_by_pk(id: $userId) {
@@ -528,6 +555,7 @@ subscription WatchUser($userId: uuid!) {
 3. Configure operations:
 
 **Select Permission (Read):**
+
 ```json
 {
   "id": {
@@ -537,6 +565,7 @@ subscription WatchUser($userId: uuid!) {
 ```
 
 **Insert Permission (Create):**
+
 ```json
 {
   "user_id": {
@@ -546,6 +575,7 @@ subscription WatchUser($userId: uuid!) {
 ```
 
 **Update Permission:**
+
 ```json
 {
   "id": {
@@ -555,6 +585,7 @@ subscription WatchUser($userId: uuid!) {
 ```
 
 **Delete Permission:**
+
 ```json
 {
   "id": {
@@ -574,6 +605,7 @@ subscription WatchUser($userId: uuid!) {
    - **Webhook**: http://myapp:3000/webhooks/user-created
 
 **Payload:**
+
 ```json
 {
   "event": {
@@ -605,11 +637,7 @@ subscription WatchUser($userId: uuid!) {
 
 ```graphql
 type Mutation {
-  sendEmail(
-    to: String!
-    subject: String!
-    body: String!
-  ): SendEmailOutput
+  sendEmail(to: String!, subject: String!, body: String!): SendEmailOutput
 }
 
 type SendEmailOutput {
@@ -619,19 +647,20 @@ type SendEmailOutput {
 ```
 
 **Handler Endpoint:**
+
 ```javascript
 // POST /actions/send-email
 app.post('/actions/send-email', async (req, res) => {
-  const { to, subject, body } = req.body.input;
+  const { to, subject, body } = req.body.input
 
   // Send email logic
-  const result = await sendEmail(to, subject, body);
+  const result = await sendEmail(to, subject, body)
 
   res.json({
     success: true,
-    messageId: result.id
-  });
-});
+    messageId: result.id,
+  })
+})
 ```
 
 #### Remote Schemas
@@ -648,6 +677,7 @@ app.post('/actions/send-email', async (req, res) => {
    ```
 
 **Query Remote Schema:**
+
 ```graphql
 query {
   github_viewer {
@@ -666,6 +696,7 @@ query {
 #### Metadata Management
 
 **Export Metadata:**
+
 ```bash
 # Using Hasura CLI
 hasura metadata export
@@ -675,11 +706,13 @@ nself exec hasura hasura-cli metadata export
 ```
 
 **Apply Metadata:**
+
 ```bash
 hasura metadata apply
 ```
 
 **Reload Metadata:**
+
 ```bash
 hasura metadata reload
 ```
@@ -692,14 +725,14 @@ hasura metadata reload
 
 #### Overview
 
-| Property | Value |
-|----------|-------|
-| **Image** | `nhost/hasura-auth:0.36.0` |
-| **Port** | 4000 |
-| **API Endpoint** | http://auth.localhost/v1/auth |
-| **Health Check** | http://localhost:4001/healthz |
-| **JWT Algorithm** | HS256 |
-| **Token Expiry** | 15 min (access), 30 days (refresh) |
+| Property          | Value                              |
+| ----------------- | ---------------------------------- |
+| **Image**         | `nhost/hasura-auth:0.36.0`         |
+| **Port**          | 4000                               |
+| **API Endpoint**  | http://auth.localhost/v1/auth      |
+| **Health Check**  | http://localhost:4001/healthz      |
+| **JWT Algorithm** | HS256                              |
+| **Token Expiry**  | 15 min (access), 30 days (refresh) |
 
 #### Features
 
@@ -716,6 +749,7 @@ hasura metadata reload
 #### Supported Auth Providers
 
 **OAuth Providers:**
+
 - Google
 - GitHub
 - Facebook
@@ -733,6 +767,7 @@ hasura metadata reload
 #### Configuration
 
 **Enable Providers (.backend/.env):**
+
 ```bash
 # Email/Password (always enabled)
 AUTH_EMAIL_SIGNIN_EMAIL_VERIFIED_REQUIRED=false
@@ -765,6 +800,7 @@ AUTH_MFA_TOTP_ISSUER=MyApp
 #### API Endpoints
 
 **Sign Up (Email/Password):**
+
 ```bash
 POST http://auth.localhost/v1/auth/signup/email-password
 
@@ -780,6 +816,7 @@ POST http://auth.localhost/v1/auth/signup/email-password
 ```
 
 **Sign In (Email/Password):**
+
 ```bash
 POST http://auth.localhost/v1/auth/signin/email-password
 
@@ -790,6 +827,7 @@ POST http://auth.localhost/v1/auth/signin/email-password
 ```
 
 **Response:**
+
 ```json
 {
   "session": {
@@ -809,6 +847,7 @@ POST http://auth.localhost/v1/auth/signin/email-password
 ```
 
 **Magic Link (Passwordless):**
+
 ```bash
 POST http://auth.localhost/v1/auth/signin/passwordless/email
 
@@ -821,6 +860,7 @@ POST http://auth.localhost/v1/auth/signin/passwordless/email
 ```
 
 **OAuth Sign In:**
+
 ```bash
 # Redirect user to:
 GET http://auth.localhost/v1/auth/signin/provider/google?redirectTo=http://myapp.localhost/auth/callback
@@ -830,6 +870,7 @@ http://myapp.localhost/auth/callback?refreshToken=uuid-refresh-token
 ```
 
 **Refresh Token:**
+
 ```bash
 POST http://auth.localhost/v1/auth/token
 
@@ -839,6 +880,7 @@ POST http://auth.localhost/v1/auth/token
 ```
 
 **Sign Out:**
+
 ```bash
 POST http://auth.localhost/v1/auth/signout
 
@@ -848,6 +890,7 @@ POST http://auth.localhost/v1/auth/signout
 ```
 
 **Change Password:**
+
 ```bash
 POST http://auth.localhost/v1/auth/user/password
 
@@ -860,6 +903,7 @@ Headers:
 ```
 
 **Request Password Reset:**
+
 ```bash
 POST http://auth.localhost/v1/auth/user/password/reset
 
@@ -874,8 +918,9 @@ POST http://auth.localhost/v1/auth/user/password/reset
 #### Client Integration
 
 **JavaScript/TypeScript:**
+
 ```typescript
-import { NhostClient } from '@nhost/nhost-js';
+import { NhostClient } from '@nhost/nhost-js'
 
 const nhost = new NhostClient({
   subdomain: 'localhost',
@@ -883,28 +928,29 @@ const nhost = new NhostClient({
   authUrl: 'http://auth.localhost/v1/auth',
   graphqlUrl: 'http://api.localhost/v1/graphql',
   storageUrl: 'http://storage.localhost/v1/storage',
-});
+})
 
 // Sign up
 const { session, error } = await nhost.auth.signUp({
   email: 'user@example.com',
   password: 'SecurePassword123!',
-});
+})
 
 // Sign in
 const { session, error } = await nhost.auth.signIn({
   email: 'user@example.com',
   password: 'SecurePassword123!',
-});
+})
 
 // Get user
-const user = nhost.auth.getUser();
+const user = nhost.auth.getUser()
 
 // Sign out
-await nhost.auth.signOut();
+await nhost.auth.signOut()
 ```
 
 **React:**
+
 ```typescript
 import { NhostProvider, useAuth, useSignInEmailPassword } from '@nhost/react';
 
@@ -935,6 +981,7 @@ function AuthComponent() {
 #### JWT Token Structure
 
 **Access Token (decoded):**
+
 ```json
 {
   "sub": "user-uuid",
@@ -952,6 +999,7 @@ function AuthComponent() {
 #### User Metadata
 
 **Default User Fields:**
+
 - `id` - UUID
 - `email` - Email address
 - `displayName` - User's display name
@@ -964,6 +1012,7 @@ function AuthComponent() {
 - `metadata` - Custom JSON metadata
 
 **Update User Metadata:**
+
 ```bash
 POST http://auth.localhost/v1/auth/user
 
@@ -989,12 +1038,12 @@ Headers:
 
 #### Overview
 
-| Property | Value |
-|----------|-------|
-| **Image** | `nginx:alpine` |
-| **Ports** | 80 (HTTP), 443 (HTTPS) |
-| **Config** | `.backend/nginx/nginx.conf` |
-| **Sites** | `.backend/nginx/conf.d/` |
+| Property      | Value                        |
+| ------------- | ---------------------------- |
+| **Image**     | `nginx:alpine`               |
+| **Ports**     | 80 (HTTP), 443 (HTTPS)       |
+| **Config**    | `.backend/nginx/nginx.conf`  |
+| **Sites**     | `.backend/nginx/conf.d/`     |
 | **SSL Certs** | `.backend/ssl/certificates/` |
 
 #### Features
@@ -1011,6 +1060,7 @@ Headers:
 #### Configuration
 
 **Main Config (.backend/nginx/nginx.conf):**
+
 ```nginx
 user nginx;
 worker_processes auto;
@@ -1053,6 +1103,7 @@ http {
 ```
 
 **Site Config (.backend/nginx/conf.d/default.conf):**
+
 ```nginx
 # API subdomain
 server {
@@ -1110,6 +1161,7 @@ server {
 #### SSL Configuration
 
 **Enable HTTPS:**
+
 ```nginx
 server {
     listen 443 ssl http2;
@@ -1150,14 +1202,14 @@ Enable these services via environment variables in `.backend/.env`.
 
 **Enable:** `MINIO_ENABLED=true`
 
-| Property | Value |
-|----------|-------|
-| **Image** | `minio/minio:latest` |
-| **API Port** | 9000 |
-| **Console Port** | 9001 |
-| **Console URL** | http://localhost:9001 |
-| **Access Key** | `minioadmin` |
-| **Secret Key** | `minioadmin` |
+| Property         | Value                 |
+| ---------------- | --------------------- |
+| **Image**        | `minio/minio:latest`  |
+| **API Port**     | 9000                  |
+| **Console Port** | 9001                  |
+| **Console URL**  | http://localhost:9001 |
+| **Access Key**   | `minioadmin`          |
+| **Secret Key**   | `minioadmin`          |
 
 #### Features
 
@@ -1172,6 +1224,7 @@ Enable these services via environment variables in `.backend/.env`.
 #### Configuration
 
 **Create Bucket:**
+
 ```bash
 # Using MinIO Client (mc)
 docker exec -it myapp_minio mc mb /data/my-bucket
@@ -1181,6 +1234,7 @@ open http://localhost:9001
 ```
 
 **Upload File:**
+
 ```bash
 # Using mc
 docker exec -it myapp_minio mc cp /path/to/file /data/my-bucket/
@@ -1189,13 +1243,14 @@ docker exec -it myapp_minio mc cp /path/to/file /data/my-bucket/
 ```
 
 **Access Control Policy:**
+
 ```json
 {
   "Version": "2012-10-17",
   "Statement": [
     {
       "Effect": "Allow",
-      "Principal": {"AWS": ["*"]},
+      "Principal": { "AWS": ["*"] },
       "Action": ["s3:GetObject"],
       "Resource": ["arn:aws:s3:::my-bucket/*"]
     }
@@ -1206,8 +1261,9 @@ docker exec -it myapp_minio mc cp /path/to/file /data/my-bucket/
 #### Client Integration
 
 **JavaScript (AWS SDK):**
+
 ```javascript
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3'
 
 const s3 = new S3Client({
   region: 'us-east-1',
@@ -1217,14 +1273,16 @@ const s3 = new S3Client({
     secretAccessKey: 'minioadmin',
   },
   forcePathStyle: true,
-});
+})
 
 // Upload file
-await s3.send(new PutObjectCommand({
-  Bucket: 'my-bucket',
-  Key: 'file.txt',
-  Body: fileBuffer,
-}));
+await s3.send(
+  new PutObjectCommand({
+    Bucket: 'my-bucket',
+    Key: 'file.txt',
+    Body: fileBuffer,
+  })
+)
 ```
 
 ---
@@ -1235,12 +1293,12 @@ await s3.send(new PutObjectCommand({
 
 **Enable:** `REDIS_ENABLED=true`
 
-| Property | Value |
-|----------|-------|
-| **Image** | `redis:7-alpine` |
-| **Port** | 6379 |
-| **Persistence** | RDB + AOF |
-| **Eviction** | allkeys-lru |
+| Property        | Value            |
+| --------------- | ---------------- |
+| **Image**       | `redis:7-alpine` |
+| **Port**        | 6379             |
+| **Persistence** | RDB + AOF        |
+| **Eviction**    | allkeys-lru      |
 
 #### Features
 
@@ -1255,51 +1313,58 @@ await s3.send(new PutObjectCommand({
 #### Use Cases
 
 **Session Storage:**
+
 ```javascript
-import Redis from 'ioredis';
-const redis = new Redis(6379, 'localhost');
+import Redis from 'ioredis'
+const redis = new Redis(6379, 'localhost')
 
 // Store session
-await redis.setex(`session:${sessionId}`, 3600, JSON.stringify(userData));
+await redis.setex(`session:${sessionId}`, 3600, JSON.stringify(userData))
 
 // Get session
-const session = await redis.get(`session:${sessionId}`);
+const session = await redis.get(`session:${sessionId}`)
 ```
 
 **Caching:**
+
 ```javascript
 // Cache API response
-await redis.setex(`cache:users:${userId}`, 300, JSON.stringify(userData));
+await redis.setex(`cache:users:${userId}`, 300, JSON.stringify(userData))
 
 // Get cached data
-const cached = await redis.get(`cache:users:${userId}`);
-if (cached) return JSON.parse(cached);
+const cached = await redis.get(`cache:users:${userId}`)
+if (cached) return JSON.parse(cached)
 ```
 
 **Rate Limiting:**
+
 ```javascript
 // Increment request count
-const count = await redis.incr(`ratelimit:${ip}:${minute}`);
-await redis.expire(`ratelimit:${ip}:${minute}`, 60);
+const count = await redis.incr(`ratelimit:${ip}:${minute}`)
+await redis.expire(`ratelimit:${ip}:${minute}`, 60)
 
 if (count > 100) {
-  throw new Error('Rate limit exceeded');
+  throw new Error('Rate limit exceeded')
 }
 ```
 
 **Pub/Sub:**
+
 ```javascript
 // Publisher
-await redis.publish('notifications', JSON.stringify({
-  type: 'new_message',
-  userId: '123',
-}));
+await redis.publish(
+  'notifications',
+  JSON.stringify({
+    type: 'new_message',
+    userId: '123',
+  })
+)
 
 // Subscriber
-redis.subscribe('notifications');
+redis.subscribe('notifications')
 redis.on('message', (channel, message) => {
-  console.log('Received:', JSON.parse(message));
-});
+  console.log('Received:', JSON.parse(message))
+})
 ```
 
 ---
@@ -1310,12 +1375,12 @@ redis.on('message', (channel, message) => {
 
 **Enable:** Automatically enabled with MinIO
 
-| Property | Value |
-|----------|-------|
-| **Image** | `nhost/hasura-storage:0.6.1` |
-| **Port** | 5001 |
+| Property         | Value                               |
+| ---------------- | ----------------------------------- |
+| **Image**        | `nhost/hasura-storage:0.6.1`        |
+| **Port**         | 5001                                |
 | **API Endpoint** | http://storage.localhost/v1/storage |
-| **Backend** | MinIO |
+| **Backend**      | MinIO                               |
 
 #### Features
 
@@ -1328,6 +1393,7 @@ redis.on('message', (channel, message) => {
 #### Upload File
 
 **HTTP:**
+
 ```bash
 POST http://storage.localhost/v1/storage/files
 
@@ -1340,6 +1406,7 @@ Body (multipart/form-data):
 ```
 
 **JavaScript:**
+
 ```javascript
 import { NhostClient } from '@nhost/nhost-js';
 
@@ -1364,6 +1431,7 @@ GET http://storage.localhost/v1/storage/files/{fileId}?w=300&h=300&q=80
 ```
 
 Parameters:
+
 - `w` - Width
 - `h` - Height
 - `q` - Quality (0-100)
@@ -1378,12 +1446,12 @@ Parameters:
 
 **Enable:** `MAILPIT_ENABLED=true` (enabled by default in dev)
 
-| Property | Value |
-|----------|-------|
-| **Image** | `axllent/mailpit:latest` |
-| **SMTP Port** | 1025 |
-| **UI Port** | 8025 |
-| **Web UI** | http://localhost:8025 |
+| Property      | Value                    |
+| ------------- | ------------------------ |
+| **Image**     | `axllent/mailpit:latest` |
+| **SMTP Port** | 1025                     |
+| **UI Port**   | 8025                     |
+| **Web UI**    | http://localhost:8025    |
 
 #### Features
 
@@ -1397,25 +1465,27 @@ Parameters:
 #### Send Email
 
 **SMTP:**
+
 ```javascript
-import nodemailer from 'nodemailer';
+import nodemailer from 'nodemailer'
 
 const transporter = nodemailer.createTransporter({
   host: 'localhost',
   port: 1025,
   secure: false,
   auth: false,
-});
+})
 
 await transporter.sendMail({
   from: 'noreply@myapp.com',
   to: 'user@example.com',
   subject: 'Test Email',
   html: '<h1>Hello!</h1><p>This is a test email.</p>',
-});
+})
 ```
 
 **View Emails:**
+
 ```bash
 open http://localhost:8025
 ```
@@ -1428,11 +1498,11 @@ open http://localhost:8025
 
 **Enable:** `MEILISEARCH_ENABLED=true`
 
-| Property | Value |
-|----------|-------|
-| **Image** | `getmeili/meilisearch:latest` |
-| **Port** | 7700 |
-| **API Endpoint** | http://localhost:7700 |
+| Property         | Value                         |
+| ---------------- | ----------------------------- |
+| **Image**        | `getmeili/meilisearch:latest` |
+| **Port**         | 7700                          |
+| **API Endpoint** | http://localhost:7700         |
 
 #### Features
 
@@ -1446,6 +1516,7 @@ open http://localhost:8025
 #### Index Documents
 
 **HTTP:**
+
 ```bash
 POST http://localhost:7700/indexes/users/documents
 
@@ -1456,18 +1527,19 @@ POST http://localhost:7700/indexes/users/documents
 ```
 
 **JavaScript:**
+
 ```javascript
-import { MeiliSearch } from 'meilisearch';
+import { MeiliSearch } from 'meilisearch'
 
 const client = new MeiliSearch({
   host: 'http://localhost:7700',
-});
+})
 
-const index = client.index('users');
+const index = client.index('users')
 await index.addDocuments([
-  {id: 1, name: 'Alice', email: 'alice@example.com'},
-  {id: 2, name: 'Bob', email: 'bob@example.com'},
-]);
+  { id: 1, name: 'Alice', email: 'alice@example.com' },
+  { id: 2, name: 'Bob', email: 'bob@example.com' },
+])
 ```
 
 #### Search
@@ -1477,7 +1549,7 @@ const results = await index.search('ali', {
   limit: 10,
   attributesToHighlight: ['name'],
   filter: 'active = true',
-});
+})
 ```
 
 ---
@@ -1488,11 +1560,11 @@ const results = await index.search('ali', {
 
 **Enable:** `FUNCTIONS_ENABLED=true`
 
-| Property | Value |
-|----------|-------|
-| **Runtime** | Node.js, Python, Go |
-| **Deployment** | Hot reload in dev |
-| **Endpoint** | http://functions.localhost |
+| Property       | Value                      |
+| -------------- | -------------------------- |
+| **Runtime**    | Node.js, Python, Go        |
+| **Deployment** | Hot reload in dev          |
+| **Endpoint**   | http://functions.localhost |
 
 #### Function Structure
 
@@ -1506,18 +1578,20 @@ functions/
 #### Example Function
 
 **functions/hello.js:**
+
 ```javascript
 export default async (req, res) => {
-  const { name } = req.body;
+  const { name } = req.body
 
   res.json({
     message: `Hello, ${name}!`,
     timestamp: new Date().toISOString(),
-  });
-};
+  })
+}
 ```
 
 **Call Function:**
+
 ```bash
 POST http://functions.localhost/hello
 
@@ -1532,13 +1606,13 @@ POST http://functions.localhost/hello
 
 **Enable:** `MLFLOW_ENABLED=true`
 
-| Property | Value |
-|----------|-------|
-| **Image** | `mlflow/mlflow:latest` |
-| **Port** | 5000 |
-| **UI** | http://localhost:5000 |
-| **Backend** | PostgreSQL |
-| **Artifacts** | MinIO |
+| Property      | Value                  |
+| ------------- | ---------------------- |
+| **Image**     | `mlflow/mlflow:latest` |
+| **Port**      | 5000                   |
+| **UI**        | http://localhost:5000  |
+| **Backend**   | PostgreSQL             |
+| **Artifacts** | MinIO                  |
 
 #### Log Experiment
 
@@ -1562,18 +1636,18 @@ with mlflow.start_run():
 
 Enables 10 services for complete observability:
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| Prometheus | 9090 | Metrics collection |
-| Grafana | 3000 | Dashboards |
-| Loki | 3100 | Log aggregation |
-| Promtail | 9080 | Log collection |
-| Alertmanager | 9093 | Alerts |
-| Node Exporter | 9100 | Host metrics |
-| cAdvisor | 8080 | Container metrics |
-| Jaeger | 16686 | Distributed tracing |
-| Tempo | 3200 | Trace storage |
-| OTEL Collector | 4317 | Telemetry |
+| Service        | Port  | Purpose             |
+| -------------- | ----- | ------------------- |
+| Prometheus     | 9090  | Metrics collection  |
+| Grafana        | 3000  | Dashboards          |
+| Loki           | 3100  | Log aggregation     |
+| Promtail       | 9080  | Log collection      |
+| Alertmanager   | 9093  | Alerts              |
+| Node Exporter  | 9100  | Host metrics        |
+| cAdvisor       | 8080  | Container metrics   |
+| Jaeger         | 16686 | Distributed tracing |
+| Tempo          | 3200  | Trace storage       |
+| OTEL Collector | 4317  | Telemetry           |
 
 ---
 
@@ -1585,12 +1659,13 @@ Enables 10 services for complete observability:
 
 **Enable:** `NSELF_ADMIN_ENABLED=true`
 
-| Property | Value |
-|----------|-------|
-| **Port** | 3021 (NOT 3100) |
-| **URL** | http://localhost:3021 |
+| Property | Value                 |
+| -------- | --------------------- |
+| **Port** | 3021 (NOT 3100)       |
+| **URL**  | http://localhost:3021 |
 
 **Features:**
+
 - Service health dashboard
 - Log viewer
 - Database browser
@@ -1609,6 +1684,7 @@ Enables 10 services for complete observability:
 **Features:** Auth, GraphQL API, File Storage, Search
 
 **Frontend Integration:**
+
 ```typescript
 // lib/nhost.ts
 import { NhostClient } from '@nhost/nhost-js';

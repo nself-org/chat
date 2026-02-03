@@ -45,6 +45,7 @@ nchat-cli dev start --turbo
 ```
 
 **Example Output**:
+
 ```
 ✓ Starting development server
 🚀 Server will run on http://localhost:3000
@@ -61,12 +62,14 @@ nchat-cli dev backend --detach
 ```
 
 **What This Does**:
+
 - Starts PostgreSQL database
 - Starts Hasura GraphQL engine
 - Starts Nhost Auth service
 - Starts any other configured services (Redis, MinIO, etc.)
 
 **Example Output**:
+
 ```
 ✓ Backend services started
 ✓ Backend services are running
@@ -113,6 +116,7 @@ nchat-cli db migrate --to 20240101000000
 ```
 
 **Example**:
+
 ```bash
 $ nchat-cli db migrate
 ✓ Running database migrations...
@@ -133,6 +137,7 @@ nchat-cli db seed --users 100 --channels 20 --messages 200
 ```
 
 **Example Output**:
+
 ```
 ✓ Database seeded successfully
 ✓ Sample data created:
@@ -161,6 +166,7 @@ nchat-cli db status
 ```
 
 **Example Output**:
+
 ```
 ✓ Database is connected
   Host: localhost:5432
@@ -217,6 +223,7 @@ nchat-cli user list --role admin
 ```
 
 **Example Output**:
+
 ```
 ┌────────────┬──────────────────────┬────────────┬───────────┬────────┐
 │ ID         │ Email                │ Name       │ Role      │ Status │
@@ -319,6 +326,7 @@ nchat-cli deploy vercel --prod
 ```
 
 **What This Does**:
+
 1. Runs `next build`
 2. Uploads build to Vercel
 3. Deploys to preview or production environment
@@ -412,12 +420,14 @@ nchat-cli backup create --output ./backups/
 ```
 
 **Backup Contents**:
+
 - Database dump
 - App configuration
 - Media files (if --include-media)
 - User uploads
 
 **Example Output**:
+
 ```
 ✓ Backup created: ./backups/full-backup-2024-01-15T10-30-00.tar.gz
   Size: 1.2 GB
@@ -435,6 +445,7 @@ nchat-cli backup list --limit 10
 ```
 
 **Example Output**:
+
 ```
 ┌───────────────────────────────────────┬──────────┬─────────────────────┐
 │ File                                  │ Size     │ Date                │

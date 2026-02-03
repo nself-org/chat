@@ -16,6 +16,8 @@ import {
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -31,10 +33,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
 
     // Validate required fields
     if (!body.callId) {
-      return NextResponse.json(
-        { error: 'Missing required field: callId' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required field: callId' }, { status: 400 })
     }
 
     // Update call status to connecting
@@ -47,7 +46,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
     })
 
     if (statusResult.errors) {
-      console.error('Failed to update call status:', statusResult.errors)
+      logger.error('Failed to update call status:', statusResult.errors)
       return NextResponse.json(
         { error: 'Failed to update call status', details: statusResult.errors },
         { status: 500 }
@@ -64,7 +63,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
     })
 
     if (joinResult.errors) {
-      console.error('Failed to join call:', joinResult.errors)
+      logger.error('Failed to join call:', joinResult.errors)
       return NextResponse.json(
         { error: 'Failed to join call', details: joinResult.errors },
         { status: 500 }
@@ -76,7 +75,7 @@ async function handlePost(request: AuthenticatedRequest, context: RouteContext) 
       participant: joinResult.data?.insert_nchat_call_participants_one,
     })
   } catch (error) {
-    console.error('Error accepting call:', error)
+    logger.error('Error accepting call:', error)
     return NextResponse.json(
       {
         error: 'Internal server error',

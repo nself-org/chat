@@ -3,17 +3,8 @@
 import { useState, memo, useCallback } from 'react'
 import { format, formatDistanceToNow, isToday, isYesterday, isThisWeek, isThisYear } from 'date-fns'
 import { Clock, Calendar, Copy, Check } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
@@ -131,9 +122,7 @@ const TimestampPopover = memo(function TimestampPopover({
             <Calendar className="mt-0.5 h-4 w-4 text-muted-foreground" />
             <div>
               <p className="font-medium">{format(timestamp, 'EEEE, MMMM d, yyyy')}</p>
-              <p className="text-sm text-muted-foreground">
-                {format(timestamp, 'h:mm:ss a')}
-              </p>
+              <p className="text-sm text-muted-foreground">{format(timestamp, 'h:mm:ss a')}</p>
             </div>
           </div>
 
@@ -144,12 +133,7 @@ const TimestampPopover = memo(function TimestampPopover({
           </div>
 
           {/* Copy button */}
-          <Button
-            variant="outline"
-            size="sm"
-            className="w-full gap-2"
-            onClick={handleCopy}
-          >
+          <Button variant="outline" size="sm" className="w-full gap-2" onClick={handleCopy}>
             {copied ? (
               <>
                 <Check className="h-4 w-4" />
@@ -349,10 +333,7 @@ export const DateSeparatorTimestamp = memo(function DateSeparatorTimestamp({
         <TooltipTrigger asChild>
           <time
             dateTime={date.toISOString()}
-            className={cn(
-              'text-xs font-medium text-muted-foreground',
-              className
-            )}
+            className={cn('text-xs font-medium text-muted-foreground', className)}
           >
             {displayText}
           </time>

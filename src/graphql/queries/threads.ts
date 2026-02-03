@@ -10,11 +10,7 @@
  */
 
 import { gql } from '@apollo/client'
-import {
-  THREAD_FRAGMENT,
-  MESSAGE_FULL_FRAGMENT,
-  USER_BASIC_FRAGMENT,
-} from '../fragments'
+import { THREAD_FRAGMENT, MESSAGE_FULL_FRAGMENT, USER_BASIC_FRAGMENT } from '../fragments'
 
 // ============================================================================
 // QUERIES
@@ -54,12 +50,7 @@ export const GET_THREAD_MESSAGES = gql`
     ) {
       ...MessageFull
     }
-    nchat_messages_aggregate(
-      where: {
-        thread_id: { _eq: $threadId }
-        is_deleted: { _eq: false }
-      }
-    ) {
+    nchat_messages_aggregate(where: { thread_id: { _eq: $threadId }, is_deleted: { _eq: false } }) {
       aggregate {
         count
       }
@@ -94,9 +85,7 @@ export const GET_THREAD_PARTICIPANTS = gql`
         status
       }
     }
-    nchat_thread_participants_aggregate(
-      where: { thread_id: { _eq: $threadId } }
-    ) {
+    nchat_thread_participants_aggregate(where: { thread_id: { _eq: $threadId } }) {
       aggregate {
         count
       }
@@ -169,10 +158,7 @@ export const GET_USER_THREADS = gql`
       last_read_at
       has_unread: thread {
         messages_aggregate(
-          where: {
-            created_at: { _gt: "last_read_at" }
-            is_deleted: { _eq: false }
-          }
+          where: { created_at: { _gt: "last_read_at" }, is_deleted: { _eq: false } }
         ) {
           aggregate {
             count
@@ -193,12 +179,7 @@ export const GET_UNREAD_THREADS_COUNT = gql`
     nchat_thread_participants_aggregate(
       where: {
         user_id: { _eq: $userId }
-        thread: {
-          messages: {
-            created_at: { _gt: "last_read_at" }
-            is_deleted: { _eq: false }
-          }
-        }
+        thread: { messages: { created_at: { _gt: "last_read_at" }, is_deleted: { _eq: false } } }
       }
     ) {
       aggregate {
@@ -212,11 +193,7 @@ export const GET_UNREAD_THREADS_COUNT = gql`
  * Search threads in a channel
  */
 export const SEARCH_CHANNEL_THREADS = gql`
-  query SearchChannelThreads(
-    $channelId: uuid!
-    $searchQuery: String!
-    $limit: Int = 20
-  ) {
+  query SearchChannelThreads($channelId: uuid!, $searchQuery: String!, $limit: Int = 20) {
     nchat_threads(
       where: {
         channel_id: { _eq: $channelId }
@@ -272,9 +249,7 @@ export const GET_THREAD_ACTIVITY_FEED = gql`
  */
 export const GET_THREAD_PARTICIPANT_STATS = gql`
   query GetThreadParticipantStats($threadId: uuid!) {
-    nchat_thread_participants(
-      where: { thread_id: { _eq: $threadId } }
-    ) {
+    nchat_thread_participants(where: { thread_id: { _eq: $threadId } }) {
       id
       user_id
       joined_at
@@ -284,10 +259,7 @@ export const GET_THREAD_PARTICIPANT_STATS = gql`
         ...UserBasic
       }
       message_count: messages_aggregate(
-        where: {
-          thread_id: { _eq: $threadId }
-          is_deleted: { _eq: false }
-        }
+        where: { thread_id: { _eq: $threadId }, is_deleted: { _eq: false } }
       ) {
         aggregate {
           count
@@ -296,10 +268,7 @@ export const GET_THREAD_PARTICIPANT_STATS = gql`
       last_message: messages(
         limit: 1
         order_by: { created_at: desc }
-        where: {
-          thread_id: { _eq: $threadId }
-          is_deleted: { _eq: false }
-        }
+        where: { thread_id: { _eq: $threadId }, is_deleted: { _eq: false } }
       ) {
         id
         content

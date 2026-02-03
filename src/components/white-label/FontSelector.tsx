@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { Search, Check, Loader2, Type, ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { logger } from '@/lib/logger'
 import {
   POPULAR_FONTS,
   FONT_PAIRINGS,
@@ -56,28 +57,29 @@ export function FontSelector({
   const filteredFonts = useMemo(() => {
     let fonts = category ? getFontsByCategory(category) : POPULAR_FONTS
     if (searchQuery) {
-      fonts = searchFonts(searchQuery).filter(
-        (f) => !category || f.category === category
-      )
+      fonts = searchFonts(searchQuery).filter((f) => !category || f.category === category)
     }
     return fonts
   }, [category, searchQuery])
 
-  const handleSelect = useCallback(async (font: GoogleFont) => {
-    if (!loadedFonts.has(font.family)) {
-      setLoadingFont(font.family)
-      try {
-        await loadFonts([{ family: font.family }])
-        setLoadedFonts((prev) => new Set([...prev, font.family]))
-      } catch (error) {
-        console.error('Failed to load font:', error)
-      } finally {
-        setLoadingFont(null)
+  const handleSelect = useCallback(
+    async (font: GoogleFont) => {
+      if (!loadedFonts.has(font.family)) {
+        setLoadingFont(font.family)
+        try {
+          await loadFonts([{ family: font.family }])
+          setLoadedFonts((prev) => new Set([...prev, font.family]))
+        } catch (error) {
+          logger.error('Failed to load font:',  error)
+        } finally {
+          setLoadingFont(null)
+        }
       }
-    }
-    onChange(font.family)
-    setIsOpen(false)
-  }, [loadedFonts, onChange])
+      onChange(font.family)
+      setIsOpen(false)
+    },
+    [loadedFonts, onChange]
+  )
 
   const selectedFont = POPULAR_FONTS.find((f) => f.family === value)
 
@@ -94,10 +96,10 @@ export function FontSelector({
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'w-full flex items-center justify-between px-3 py-2.5 text-left border rounded-lg transition-all',
+          'flex w-full items-center justify-between rounded-lg border px-3 py-2.5 text-left transition-all',
           isOpen
-            ? 'border-sky-500 ring-2 ring-sky-500/20'
-            : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
+            ? 'ring-sky-500/20 border-sky-500 ring-2'
+            : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600'
         )}
       >
         <div className="flex items-center gap-3">
@@ -110,19 +112,14 @@ export function FontSelector({
           </span>
         </div>
         {selectedFont && (
-          <span className="text-xs text-zinc-500 capitalize">
-            {selectedFont.category}
-          </span>
+          <span className="text-xs capitalize text-zinc-500">{selectedFont.category}</span>
         )}
       </button>
 
       {/* Font preview */}
       {showPreview && value && loadedFonts.has(value) && (
-        <div className="p-3 bg-zinc-50 dark:bg-zinc-800 rounded-lg">
-          <p
-            className="text-lg text-zinc-900 dark:text-zinc-100"
-            style={{ fontFamily: value }}
-          >
+        <div className="rounded-lg bg-zinc-50 p-3 dark:bg-zinc-800">
+          <p className="text-lg text-zinc-900 dark:text-zinc-100" style={{ fontFamily: value }}>
             {previewText}
           </p>
         </div>
@@ -130,28 +127,26 @@ export function FontSelector({
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl shadow-xl max-h-96 overflow-hidden">
+        <div className="absolute z-50 mt-1 max-h-96 w-full overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-700 dark:bg-zinc-900">
           {/* Search */}
-          <div className="p-3 border-b border-zinc-200 dark:border-zinc-700">
+          <div className="border-b border-zinc-200 p-3 dark:border-zinc-700">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search fonts..."
-                className="w-full pl-9 pr-3 py-2 text-sm bg-zinc-50 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+                className="w-full rounded-lg border border-zinc-200 bg-zinc-50 py-2 pl-9 pr-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 dark:border-zinc-700 dark:bg-zinc-800"
                 autoFocus
               />
             </div>
           </div>
 
           {/* Font list */}
-          <div className="overflow-y-auto max-h-72">
+          <div className="max-h-72 overflow-y-auto">
             {filteredFonts.length === 0 ? (
-              <div className="p-4 text-center text-sm text-zinc-500">
-                No fonts found
-              </div>
+              <div className="p-4 text-center text-sm text-zinc-500">No fonts found</div>
             ) : (
               <div className="py-1">
                 {filteredFonts.map((font) => {
@@ -172,9 +167,9 @@ export function FontSelector({
                         }
                       }}
                       className={cn(
-                        'w-full flex items-center justify-between px-4 py-2.5 text-left transition-colors',
+                        'flex w-full items-center justify-between px-4 py-2.5 text-left transition-colors',
                         isSelected
-                          ? 'bg-sky-50 dark:bg-sky-900/30'
+                          ? 'dark:bg-sky-900/30 bg-sky-50'
                           : 'hover:bg-zinc-50 dark:hover:bg-zinc-800'
                       )}
                     >
@@ -185,17 +180,11 @@ export function FontSelector({
                         >
                           {font.family}
                         </span>
-                        <span className="text-xs text-zinc-500 capitalize">
-                          {font.category}
-                        </span>
+                        <span className="text-xs capitalize text-zinc-500">{font.category}</span>
                       </div>
                       <div className="flex items-center gap-2">
-                        {isLoading && (
-                          <Loader2 className="h-4 w-4 animate-spin text-sky-500" />
-                        )}
-                        {isSelected && (
-                          <Check className="h-4 w-4 text-sky-500" />
-                        )}
+                        {isLoading && <Loader2 className="h-4 w-4 animate-spin text-sky-500" />}
+                        {isSelected && <Check className="h-4 w-4 text-sky-500" />}
                       </div>
                     </button>
                   )
@@ -205,12 +194,12 @@ export function FontSelector({
           </div>
 
           {/* Google Fonts link */}
-          <div className="p-3 border-t border-zinc-200 dark:border-zinc-700">
+          <div className="border-t border-zinc-200 p-3 dark:border-zinc-700">
             <a
               href="https://fonts.google.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-xs text-zinc-500 hover:text-sky-500 transition-colors"
+              className="flex items-center gap-2 text-xs text-zinc-500 transition-colors hover:text-sky-500"
             >
               <ExternalLink className="h-3 w-3" />
               Browse more on Google Fonts
@@ -242,10 +231,7 @@ export function FontPairingSelector({
 
   // Load fonts for pairings preview
   useEffect(() => {
-    const fontsToLoad = FONT_PAIRINGS.flatMap((p) => [
-      { family: p.heading },
-      { family: p.body },
-    ])
+    const fontsToLoad = FONT_PAIRINGS.flatMap((p) => [{ family: p.heading }, { family: p.body }])
     loadFonts(fontsToLoad)
       .then(() => {
         const names = new Set(fontsToLoad.map((f) => f.family))
@@ -254,12 +240,15 @@ export function FontPairingSelector({
       .catch(console.error)
   }, [])
 
-  const handleSelectPairing = useCallback((pairing: typeof FONT_PAIRINGS[0]) => {
-    onHeadingChange(pairing.heading)
-    onBodyChange(pairing.body)
-  }, [onHeadingChange, onBodyChange])
+  const handleSelectPairing = useCallback(
+    (pairing: (typeof FONT_PAIRINGS)[0]) => {
+      onHeadingChange(pairing.heading)
+      onBodyChange(pairing.body)
+    },
+    [onHeadingChange, onBodyChange]
+  )
 
-  const isSelected = (pairing: typeof FONT_PAIRINGS[0]) =>
+  const isSelected = (pairing: (typeof FONT_PAIRINGS)[0]) =>
     headingFont === pairing.heading && bodyFont === pairing.body
 
   return (
@@ -281,10 +270,10 @@ export function FontPairingSelector({
               type="button"
               onClick={() => handleSelectPairing(pairing)}
               className={cn(
-                'p-4 text-left rounded-xl border-2 transition-all',
+                'rounded-xl border-2 p-4 text-left transition-all',
                 selected
-                  ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20'
-                  : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
+                  ? 'dark:bg-sky-900/20 border-sky-500 bg-sky-50'
+                  : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600'
               )}
             >
               <div className="space-y-2">

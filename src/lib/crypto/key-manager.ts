@@ -118,10 +118,7 @@ export async function generateKeyPair(
   algorithm: EcKeyGenParams = DEFAULT_KEY_ALGORITHM
 ): Promise<KeyPair> {
   try {
-    const keyPair = await crypto.subtle.generateKey(algorithm, true, [
-      'deriveKey',
-      'deriveBits',
-    ])
+    const keyPair = await crypto.subtle.generateKey(algorithm, true, ['deriveKey', 'deriveBits'])
 
     return {
       publicKey: keyPair.publicKey,
@@ -223,10 +220,7 @@ export async function importPrivateKey(
   algorithm: EcKeyImportParams = { name: 'ECDH', namedCurve: 'P-256' }
 ): Promise<CryptoKey> {
   try {
-    return await crypto.subtle.importKey('jwk', jwk, algorithm, true, [
-      'deriveKey',
-      'deriveBits',
-    ])
+    return await crypto.subtle.importKey('jwk', jwk, algorithm, true, ['deriveKey', 'deriveBits'])
   } catch (error) {
     throw new Error(
       `Failed to import private key: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -254,13 +248,9 @@ export async function importKeyPair(
  */
 export async function importSigningPublicKey(jwk: JsonWebKey): Promise<CryptoKey> {
   try {
-    return await crypto.subtle.importKey(
-      'jwk',
-      jwk,
-      { name: 'ECDSA', namedCurve: 'P-256' },
-      true,
-      ['verify']
-    )
+    return await crypto.subtle.importKey('jwk', jwk, { name: 'ECDSA', namedCurve: 'P-256' }, true, [
+      'verify',
+    ])
   } catch (error) {
     throw new Error(
       `Failed to import signing public key: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -273,13 +263,9 @@ export async function importSigningPublicKey(jwk: JsonWebKey): Promise<CryptoKey
  */
 export async function importSigningPrivateKey(jwk: JsonWebKey): Promise<CryptoKey> {
   try {
-    return await crypto.subtle.importKey(
-      'jwk',
-      jwk,
-      { name: 'ECDSA', namedCurve: 'P-256' },
-      true,
-      ['sign']
-    )
+    return await crypto.subtle.importKey('jwk', jwk, { name: 'ECDSA', namedCurve: 'P-256' }, true, [
+      'sign',
+    ])
   } catch (error) {
     throw new Error(
       `Failed to import signing private key: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -382,9 +368,7 @@ export async function retrieveKeyPair(config?: KeyManagerConfig): Promise<KeyPai
 /**
  * Retrieves key metadata without loading the actual keys
  */
-export async function retrieveKeyMetadata(
-  config?: KeyManagerConfig
-): Promise<KeyMetadata | null> {
+export async function retrieveKeyMetadata(config?: KeyManagerConfig): Promise<KeyMetadata | null> {
   const dbName = config?.dbName ?? DEFAULT_DB_NAME
   const storeName = config?.storeName ?? DEFAULT_STORE_NAME
 
@@ -473,7 +457,8 @@ export async function rotateKeyPair(
     const store = transaction.objectStore(storeName)
     const request = store.get(CURRENT_KEY_ID)
 
-    request.onerror = () => reject(new Error(`Failed to get existing key: ${request.error?.message}`))
+    request.onerror = () =>
+      reject(new Error(`Failed to get existing key: ${request.error?.message}`))
     request.onsuccess = () => resolve(request.result as StoredKeyData | null)
   })
 
@@ -515,7 +500,8 @@ export async function rotateKeyPair(
     // Store new key
     const request = store.put(newKeyData)
 
-    request.onerror = () => reject(new Error(`Failed to store rotated key: ${request.error?.message}`))
+    request.onerror = () =>
+      reject(new Error(`Failed to store rotated key: ${request.error?.message}`))
 
     transaction.oncomplete = () => {
       db.close()
@@ -529,10 +515,7 @@ export async function rotateKeyPair(
 /**
  * Checks if key rotation is needed based on age
  */
-export function isKeyRotationNeeded(
-  metadata: KeyMetadata,
-  maxAgeInDays: number = 30
-): boolean {
+export function isKeyRotationNeeded(metadata: KeyMetadata, maxAgeInDays: number = 30): boolean {
   const ageInMs = Date.now() - metadata.createdAt.getTime()
   const ageInDays = ageInMs / (1000 * 60 * 60 * 24)
   return ageInDays >= maxAgeInDays
@@ -623,8 +606,9 @@ export async function getKeyFingerprint(publicKey: CryptoKey): Promise<string> {
  * Compares two key fingerprints
  */
 export function compareFingerprints(fingerprint1: string, fingerprint2: string): boolean {
-  return fingerprint1.replace(/\s/g, '').toLowerCase() ===
-    fingerprint2.replace(/\s/g, '').toLowerCase()
+  return (
+    fingerprint1.replace(/\s/g, '').toLowerCase() === fingerprint2.replace(/\s/g, '').toLowerCase()
+  )
 }
 
 // ============================================================================

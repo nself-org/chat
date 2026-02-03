@@ -51,7 +51,7 @@ export function FeaturedChannels({
     <section className={cn('space-y-4', className)}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Star className="h-5 w-5 text-yellow-500 fill-yellow-500" />
+          <Star className="h-5 w-5 fill-yellow-500 text-yellow-500" />
           <h2 className="text-lg font-semibold">Featured Channels</h2>
         </div>
         {showViewAll && (

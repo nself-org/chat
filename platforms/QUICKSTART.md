@@ -5,17 +5,20 @@ Get nChat mobile apps running on iOS and Android in under 30 minutes!
 ## Prerequisites Checklist
 
 ### Everyone Needs
+
 - ✅ Node.js 20+ installed
 - ✅ pnpm 9.15.4+ installed
 - ✅ Git installed
 
 ### For iOS Development
+
 - ✅ macOS (required)
 - ✅ Xcode 15+ installed from App Store
 - ✅ Xcode Command Line Tools: `xcode-select --install`
 - ✅ CocoaPods: `sudo gem install cocoapods`
 
 ### For Android Development
+
 - ✅ Android Studio Hedgehog+ installed
 - ✅ Android SDK API 34 installed
 - ✅ Java JDK 17 installed
@@ -164,12 +167,14 @@ Your app should now be running on both platforms!
 3. **Connect via USB**
 
 4. **Verify Connection**:
+
    ```bash
    adb devices
    # Should show your device
    ```
 
 5. **Run**:
+
    ```bash
    # Capacitor
    cd platforms/capacitor
@@ -187,6 +192,7 @@ Your app should now be running on both platforms!
 ### iOS Issues
 
 **"Command PhaseScriptExecution failed"**
+
 ```bash
 cd ios
 pod deintegrate
@@ -195,6 +201,7 @@ pod install
 ```
 
 **"No Bundle URL present"**
+
 ```bash
 # Make sure Metro is running
 pnpm start -- --reset-cache
@@ -203,12 +210,14 @@ pnpm start -- --reset-cache
 ### Android Issues
 
 **"SDK location not found"**
+
 ```bash
 # Create android/local.properties
 echo "sdk.dir=$HOME/Library/Android/sdk" > android/local.properties
 ```
 
 **"Execution failed for task ':app:installDebug'"**
+
 ```bash
 cd android
 ./gradlew clean
@@ -219,6 +228,7 @@ pnpm run android
 ### Both Platforms
 
 **"Unable to resolve module"**
+
 ```bash
 # Clear all caches
 rm -rf node_modules
@@ -238,6 +248,7 @@ pnpm start -- --reset-cache
 ### 1. Enable Hot Reload (Development)
 
 **Capacitor**:
+
 ```typescript
 // capacitor.config.ts
 server: {
@@ -265,26 +276,30 @@ Hot reload is enabled by default!
 ### 3. Test Native Features
 
 **Push Notifications**:
+
 ```typescript
-import { pushNotifications } from '@native/push-notifications';
-await pushNotifications.initialize();
+import { pushNotifications } from '@native/push-notifications'
+await pushNotifications.initialize()
 ```
 
 **Camera**:
+
 ```typescript
-import { camera } from '@native/camera';
-const photo = await camera.takePhoto();
+import { camera } from '@native/camera'
+const photo = await camera.takePhoto()
 ```
 
 **Biometrics**:
+
 ```typescript
-import { biometrics } from '@native/biometrics';
-const authenticated = await biometrics.authenticate();
+import { biometrics } from '@native/biometrics'
+const authenticated = await biometrics.authenticate()
 ```
 
 ### 4. Build for Production
 
 **Capacitor**:
+
 ```bash
 cd platforms/capacitor
 
@@ -296,6 +311,7 @@ pnpm run build:android
 ```
 
 **React Native**:
+
 ```bash
 cd platforms/react-native
 
@@ -356,16 +372,19 @@ pnpm run pod:install      # Install iOS pods
 ## Getting Help
 
 ### Documentation
+
 - Capacitor: `platforms/capacitor/README.md` (400+ lines)
 - React Native: `platforms/react-native/README.md` (600+ lines)
 - Summary: `platforms/MOBILE-APPS-SUMMARY.md`
 
 ### Online Resources
+
 - Capacitor Docs: https://capacitorjs.com/docs
 - React Native Docs: https://reactnative.dev/docs
 - Firebase Setup: https://firebase.google.com/docs/ios/setup
 
 ### Troubleshooting
+
 Check the README files for your platform - they contain detailed troubleshooting sections!
 
 ---
@@ -387,14 +406,14 @@ Check the README files for your platform - they contain detailed troubleshooting
 
 ## Time Estimates
 
-| Task | Time |
-|------|------|
-| Initial setup (Capacitor) | 15 min |
-| Initial setup (React Native) | 20 min |
-| Firebase setup | 10 min |
-| First iOS build | 10 min |
-| First Android build | 10 min |
-| **Total** | **30-45 min** |
+| Task                         | Time          |
+| ---------------------------- | ------------- |
+| Initial setup (Capacitor)    | 15 min        |
+| Initial setup (React Native) | 20 min        |
+| Firebase setup               | 10 min        |
+| First iOS build              | 10 min        |
+| First Android build          | 10 min        |
+| **Total**                    | **30-45 min** |
 
 ---
 

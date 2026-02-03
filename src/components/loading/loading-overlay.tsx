@@ -66,9 +66,7 @@ export function LoadingOverlay({
         >
           <Spinner size={spinnerSize} color={spinnerColor} />
 
-          {message && (
-            <p className="mt-3 text-sm text-muted-foreground">{message}</p>
-          )}
+          {message && <p className="mt-3 text-sm text-muted-foreground">{message}</p>}
         </div>
       )}
     </div>
@@ -92,14 +90,12 @@ export function CardLoadingOverlay({
     <div
       className={cn(
         'absolute inset-0 z-10 flex flex-col items-center justify-center',
-        'rounded-lg bg-background/60 backdrop-blur-[2px]',
+        'bg-background/60 rounded-lg backdrop-blur-[2px]',
         className
       )}
     >
       <Spinner size="md" />
-      {message && (
-        <p className="mt-2 text-xs text-muted-foreground">{message}</p>
-      )}
+      {message && <p className="mt-2 text-xs text-muted-foreground">{message}</p>}
     </div>
   )
 }
@@ -145,7 +141,7 @@ export function ModalLoadingOverlay({
     <div
       className={cn(
         'absolute inset-0 z-50 flex flex-col items-center justify-center',
-        'rounded-lg bg-background/90 backdrop-blur-sm',
+        'bg-background/90 rounded-lg backdrop-blur-sm',
         className
       )}
     >
@@ -182,9 +178,7 @@ export function WithLoadingOverlay({
           )}
         >
           <Spinner size="lg" />
-          {message && (
-            <p className="mt-3 text-sm text-muted-foreground">{message}</p>
-          )}
+          {message && <p className="mt-3 text-sm text-muted-foreground">{message}</p>}
         </div>
       )}
     </div>

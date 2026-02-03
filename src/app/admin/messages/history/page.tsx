@@ -35,11 +35,7 @@ import {
 import { Checkbox } from '@/components/ui/checkbox'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Label } from '@/components/ui/label'
 import { StatsCard, StatsGrid } from '@/components/admin/stats-card'
 import { useAdminAccess } from '@/lib/admin/use-admin'
@@ -293,9 +289,7 @@ export default function AdminMessageHistoryPage() {
               Export
             </Button>
             <Button variant="outline" onClick={handleRefresh} disabled={isLoading}>
-              <RefreshCw
-                className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}
-              />
+              <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
           </div>
@@ -327,7 +321,7 @@ export default function AdminMessageHistoryPage() {
 
         {/* Filters */}
         <div className="flex flex-wrap items-center gap-4">
-          <div className="relative flex-1 min-w-[200px] max-w-md">
+          <div className="relative min-w-[200px] max-w-md flex-1">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search messages or authors..."
@@ -377,12 +371,7 @@ export default function AdminMessageHistoryPage() {
           </Popover>
 
           {selectedIds.length > 0 && isAdmin && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleBulkDelete}
-              className="gap-2"
-            >
+            <Button variant="destructive" size="sm" onClick={handleBulkDelete} className="gap-2">
               <Trash2 className="h-4 w-4" />
               Clear Selected ({selectedIds.length})
             </Button>
@@ -398,8 +387,7 @@ export default function AdminMessageHistoryPage() {
                   <TableHead className="w-12">
                     <Checkbox
                       checked={
-                        selectedIds.length === filteredItems.length &&
-                        filteredItems.length > 0
+                        selectedIds.length === filteredItems.length && filteredItems.length > 0
                       }
                       onCheckedChange={handleSelectAll}
                     />
@@ -432,27 +420,22 @@ export default function AdminMessageHistoryPage() {
                       <Skeleton className="h-4 w-20" />
                     </TableCell>
                     <TableCell>
-                      <Skeleton className="h-4 w-8 mx-auto" />
+                      <Skeleton className="mx-auto h-4 w-8" />
                     </TableCell>
                     <TableCell>
                       <Skeleton className="h-4 w-24" />
                     </TableCell>
                     <TableCell>
-                      <Skeleton className="h-8 w-16 ml-auto" />
+                      <Skeleton className="ml-auto h-8 w-16" />
                     </TableCell>
                   </TableRow>
                 ))
               ) : filteredItems.length === 0 ? (
                 <TableRow>
-                  <TableCell
-                    colSpan={isAdmin ? 7 : 6}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={isAdmin ? 7 : 6} className="h-24 text-center">
                     <div className="flex flex-col items-center justify-center">
                       <History className="h-8 w-8 text-muted-foreground" />
-                      <p className="mt-2 text-muted-foreground">
-                        No edited messages found
-                      </p>
+                      <p className="mt-2 text-muted-foreground">No edited messages found</p>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -471,9 +454,7 @@ export default function AdminMessageHistoryPage() {
                     )}
                     <TableCell>
                       <div className="max-w-xs">
-                        <p className="truncate font-medium">
-                          {item.contentPreview}
-                        </p>
+                        <p className="truncate font-medium">{item.contentPreview}</p>
                         <p className="truncate text-xs text-muted-foreground">
                           Original: {item.originalPreview}
                         </p>
@@ -482,17 +463,12 @@ export default function AdminMessageHistoryPage() {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <Avatar className="h-6 w-6">
-                          <AvatarImage
-                            src={item.author.avatarUrl}
-                            alt={item.author.displayName}
-                          />
+                          <AvatarImage src={item.author.avatarUrl} alt={item.author.displayName} />
                           <AvatarFallback>
                             <User className="h-3 w-3" />
                           </AvatarFallback>
                         </Avatar>
-                        <span className="text-sm">
-                          {item.author.displayName}
-                        </span>
+                        <span className="text-sm">{item.author.displayName}</span>
                       </div>
                     </TableCell>
                     <TableCell>
@@ -502,9 +478,7 @@ export default function AdminMessageHistoryPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-center">
-                      <Badge
-                        variant={item.editCount >= 5 ? 'destructive' : 'secondary'}
-                      >
+                      <Badge variant={item.editCount >= 5 ? 'destructive' : 'secondary'}>
                         {item.editCount}
                       </Badge>
                     </TableCell>
@@ -546,10 +520,8 @@ export default function AdminMessageHistoryPage() {
           history={viewingHistory}
           canRestore={isAdmin}
           canClear={isAdmin}
-          onRestore={async (version, reason) => {
-          }}
-          onClear={async (keepOriginal, reason) => {
-          }}
+          onRestore={async (version, reason) => {}}
+          onClear={async (keepOriginal, reason) => {}}
         />
       </div>
     </AdminLayout>

@@ -92,10 +92,7 @@ export function LocationMarker({
       {/* Pulse animation for live locations */}
       {isAnimated && (
         <div
-          className={cn(
-            'absolute animate-ping rounded-full opacity-75',
-            config.pulse
-          )}
+          className={cn('absolute animate-ping rounded-full opacity-75', config.pulse)}
           style={{ backgroundColor: `${color}30` }}
         />
       )}
@@ -114,28 +111,16 @@ export function LocationMarker({
 
       {/* Place marker */}
       {type === 'place' && (
-        <PlaceMarker
-          label={label}
-          size={config.pin}
-          color={color}
-          isSelected={isSelected}
-        />
+        <PlaceMarker label={label} size={config.pin} color={color} isSelected={isSelected} />
       )}
 
       {/* Generic pin marker */}
       {type === 'pin' && (
-        <PinMarker
-          size={config.pin}
-          color={color}
-          label={label}
-          isSelected={isSelected}
-        />
+        <PinMarker size={config.pin} color={color} label={label} isSelected={isSelected} />
       )}
 
       {/* Heading indicator */}
-      {heading !== undefined && (
-        <HeadingIndicator heading={heading} color={color} size={size} />
-      )}
+      {heading !== undefined && <HeadingIndicator heading={heading} color={color} size={size} />}
     </div>
   )
 }
@@ -153,13 +138,7 @@ interface UserMarkerProps {
   isSelected: boolean
 }
 
-function UserMarker({
-  user,
-  size,
-  color,
-  isAnimated,
-  isSelected,
-}: UserMarkerProps) {
+function UserMarker({ user, size, color, isAnimated, isSelected }: UserMarkerProps) {
   const config = sizeConfig[size]
 
   return (
@@ -175,13 +154,8 @@ function UserMarker({
       }}
     >
       <Avatar className={config.avatar}>
-        {user.avatarUrl && (
-          <AvatarImage src={user.avatarUrl} alt={user.displayName} />
-        )}
-        <AvatarFallback
-          className="text-xs"
-          style={{ backgroundColor: color, color: 'white' }}
-        >
+        {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.displayName} />}
+        <AvatarFallback className="text-xs" style={{ backgroundColor: color, color: 'white' }}>
           {user.displayName.charAt(0).toUpperCase()}
         </AvatarFallback>
       </Avatar>

@@ -25,8 +25,8 @@ services:
     container_name: nchat-nginx
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./deploy/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./deploy/nginx/conf.d:/etc/nginx/conf.d:ro
@@ -39,14 +39,14 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost/health']
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 10s
     labels:
-      com.nself.service: "nginx"
-      com.nself.environment: "production"
+      com.nself.service: 'nginx'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # nself-chat Application (Production)
@@ -85,7 +85,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:3000/api/health']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -99,8 +99,8 @@ services:
           cpus: '1.0'
           memory: 2G
     labels:
-      com.nself.service: "nchat"
-      com.nself.environment: "production"
+      com.nself.service: 'nchat'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # PostgreSQL Database (Production)
@@ -115,7 +115,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-nchat}
       PGDATA: /var/lib/postgresql/data/pgdata
       # Performance tuning
-      POSTGRES_INITDB_ARGS: "-E UTF8 --locale=en_US.UTF-8"
+      POSTGRES_INITDB_ARGS: '-E UTF8 --locale=en_US.UTF-8'
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - postgres-backups:/backups
@@ -125,7 +125,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-nchat}"]
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-nchat}']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -139,8 +139,8 @@ services:
           cpus: '0.5'
           memory: 512M
     labels:
-      com.nself.service: "postgres"
-      com.nself.environment: "production"
+      com.nself.service: 'postgres'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Hasura GraphQL Engine (Production)
@@ -151,27 +151,27 @@ services:
     restart: unless-stopped
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-nchat}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"  # Disabled in production
-      HASURA_GRAPHQL_DEV_MODE: "false"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false' # Disabled in production
+      HASURA_GRAPHQL_DEV_MODE: 'false'
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
       HASURA_GRAPHQL_CORS_DOMAIN: https://${DOMAIN}
-      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: 'false'
       HASURA_GRAPHQL_JWT_SECRET: ${HASURA_GRAPHQL_JWT_SECRET}
       # Performance and security
-      HASURA_GRAPHQL_CONNECTIONS_PER_READ_REPLICA: "50"
-      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: "true"
-      HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS: "false"
-      HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: "false"
+      HASURA_GRAPHQL_CONNECTIONS_PER_READ_REPLICA: '50'
+      HASURA_GRAPHQL_ENABLE_REMOTE_SCHEMA_PERMISSIONS: 'true'
+      HASURA_GRAPHQL_INFER_FUNCTION_PERMISSIONS: 'false'
+      HASURA_GRAPHQL_STRINGIFY_NUMERIC_TYPES: 'false'
       # Rate limiting
-      HASURA_GRAPHQL_RATE_LIMIT_PER_MINUTE: "1000"
+      HASURA_GRAPHQL_RATE_LIMIT_PER_MINUTE: '1000'
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/healthz"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:8080/healthz']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -185,8 +185,8 @@ services:
           cpus: '0.5'
           memory: 512M
     labels:
-      com.nself.service: "hasura"
-      com.nself.environment: "production"
+      com.nself.service: 'hasura'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Nhost Auth Service (Production)
@@ -212,8 +212,8 @@ services:
       AUTH_SMTP_PASS: ${SMTP_PASS}
       AUTH_SMTP_SENDER: ${SMTP_FROM}
       # Security
-      AUTH_ACCESS_TOKEN_EXPIRES_IN: 900  # 15 minutes
-      AUTH_REFRESH_TOKEN_EXPIRES_IN: 2592000  # 30 days
+      AUTH_ACCESS_TOKEN_EXPIRES_IN: 900 # 15 minutes
+      AUTH_REFRESH_TOKEN_EXPIRES_IN: 2592000 # 30 days
       AUTH_DISABLE_SIGNUP: ${AUTH_DISABLE_SIGNUP:-false}
       AUTH_EMAIL_PASSWORDLESS_ENABLED: ${AUTH_EMAIL_PASSWORDLESS_ENABLED:-true}
       # OAuth providers (configure as needed)
@@ -231,7 +231,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/healthz"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://localhost:4000/healthz']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -245,8 +245,8 @@ services:
           cpus: '0.25'
           memory: 256M
     labels:
-      com.nself.service: "auth"
-      com.nself.environment: "production"
+      com.nself.service: 'auth'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # MinIO Storage (Production)
@@ -258,7 +258,7 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-      MINIO_BROWSER: "on"
+      MINIO_BROWSER: 'on'
       MINIO_DOMAIN: ${DOMAIN}
       # Security
       MINIO_SERVER_URL: https://${DOMAIN}/storage
@@ -268,7 +268,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
       interval: 30s
       timeout: 10s
       retries: 3
@@ -282,8 +282,8 @@ services:
           cpus: '0.25'
           memory: 256M
     labels:
-      com.nself.service: "storage"
-      com.nself.environment: "production"
+      com.nself.service: 'storage'
+      com.nself.environment: 'production'
 
   # --------------------------------------------------------------------------
   # Redis Cache (Production)
@@ -303,7 +303,7 @@ services:
     networks:
       - nchat-network
     healthcheck:
-      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      test: ['CMD', 'redis-cli', '--raw', 'incr', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -316,8 +316,8 @@ services:
           cpus: '0.25'
           memory: 512M
     labels:
-      com.nself.service: "redis"
-      com.nself.environment: "production"
+      com.nself.service: 'redis'
+      com.nself.environment: 'production'
 
 # ============================================================================
 # Networks

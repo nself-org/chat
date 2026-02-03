@@ -83,32 +83,41 @@ export function useChannel(channelId: string): UseChannelReturn {
     await fetchChannel()
   }, [fetchChannel])
 
-  const updateChannel = useCallback(async (updates: Partial<Channel>) => {
-    if (!channel) return
-    // API call would go here
-    setChannel({ ...channel, ...updates, updatedAt: new Date() })
-  }, [channel])
+  const updateChannel = useCallback(
+    async (updates: Partial<Channel>) => {
+      if (!channel) return
+      // API call would go here
+      setChannel({ ...channel, ...updates, updatedAt: new Date() })
+    },
+    [channel]
+  )
 
-  const addMember = useCallback(async (userId: string) => {
-    if (!channel) return
-    // API call would go here
-    setChannel({
-      ...channel,
-      members: [...channel.members, userId],
-      updatedAt: new Date(),
-    })
-  }, [channel])
+  const addMember = useCallback(
+    async (userId: string) => {
+      if (!channel) return
+      // API call would go here
+      setChannel({
+        ...channel,
+        members: [...channel.members, userId],
+        updatedAt: new Date(),
+      })
+    },
+    [channel]
+  )
 
-  const removeMember = useCallback(async (userId: string) => {
-    if (!channel) return
-    // API call would go here
-    setChannel({
-      ...channel,
-      members: channel.members.filter((id) => id !== userId),
-      updatedAt: new Date(),
-    })
-    setMembers((prev) => prev.filter((m) => m.id !== userId))
-  }, [channel])
+  const removeMember = useCallback(
+    async (userId: string) => {
+      if (!channel) return
+      // API call would go here
+      setChannel({
+        ...channel,
+        members: channel.members.filter((id) => id !== userId),
+        updatedAt: new Date(),
+      })
+      setMembers((prev) => prev.filter((m) => m.id !== userId))
+    },
+    [channel]
+  )
 
   const leaveChannel = useCallback(async () => {
     // API call would go here

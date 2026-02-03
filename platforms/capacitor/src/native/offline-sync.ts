@@ -3,55 +3,55 @@
  * Handles background sync and offline queue management
  */
 
-import { Preferences } from '@capacitor/preferences';
-import { Network } from '@capacitor/network';
-import { Capacitor } from '@capacitor/core';
+import { Preferences } from '@capacitor/preferences'
+import { Network } from '@capacitor/network'
+import { Capacitor } from '@capacitor/core'
 
 export interface SyncOptions {
-  retryAttempts?: number;
-  retryDelay?: number;
-  batchSize?: number;
+  retryAttempts?: number
+  retryDelay?: number
+  batchSize?: number
 }
 
 export interface QueuedAction {
-  id: string;
-  type: string;
-  payload: any;
-  timestamp: number;
-  attempts: number;
+  id: string
+  type: string
+  payload: any
+  timestamp: number
+  attempts: number
 }
 
 class OfflineSyncService {
-  private queue: QueuedAction[] = [];
-  private isOnline = true;
-  private isSyncing = false;
+  private queue: QueuedAction[] = []
+  private isOnline = true
+  private isSyncing = false
   private syncOptions: SyncOptions = {
     retryAttempts: 3,
     retryDelay: 5000,
     batchSize: 10,
-  };
+  }
 
   /**
    * Initialize offline sync service
    */
   async initialize(options?: SyncOptions): Promise<void> {
     if (options) {
-      this.syncOptions = { ...this.syncOptions, ...options };
+      this.syncOptions = { ...this.syncOptions, ...options }
     }
 
     // Load queue from storage
-    await this.loadQueue();
+    await this.loadQueue()
 
     // Set up network monitoring
-    await this.setupNetworkMonitoring();
+    await this.setupNetworkMonitoring()
 
     // Check initial network status
-    const status = await Network.getStatus();
-    this.isOnline = status.connected;
+    const status = await Network.getStatus()
+    this.isOnline = status.connected
 
     // Start sync if online
     if (this.isOnline && this.queue.length > 0) {
-      await this.sync();
+      await this.sync()
     }
   }
 
@@ -60,17 +60,17 @@ class OfflineSyncService {
    */
   private async setupNetworkMonitoring(): Promise<void> {
     if (!Capacitor.isNativePlatform()) {
-      return;
+      return
     }
 
     Network.addListener('networkStatusChange', (status) => {
-      console.log('Network status changed:', status);
-      this.isOnline = status.connected;
+      console.log('Network status changed:', status)
+      this.isOnline = status.connected
 
       if (this.isOnline && this.queue.length > 0) {
-        this.sync();
+        this.sync()
       }
-    });
+    })
   }
 
   /**
@@ -83,19 +83,19 @@ class OfflineSyncService {
       payload,
       timestamp: Date.now(),
       attempts: 0,
-    };
+    }
 
-    this.queue.push(action);
-    await this.saveQueue();
+    this.queue.push(action)
+    await this.saveQueue()
 
-    console.log('Action added to offline queue:', action);
+    console.log('Action added to offline queue:', action)
 
     // Try to sync immediately if online
     if (this.isOnline) {
-      await this.sync();
+      await this.sync()
     }
 
-    return action.id;
+    return action.id
   }
 
   /**
@@ -103,41 +103,41 @@ class OfflineSyncService {
    */
   async sync(): Promise<void> {
     if (this.isSyncing || !this.isOnline || this.queue.length === 0) {
-      return;
+      return
     }
 
-    this.isSyncing = true;
-    console.log('Starting offline sync...');
+    this.isSyncing = true
+    console.log('Starting offline sync...')
 
     try {
       // Process actions in batches
-      const batch = this.queue.slice(0, this.syncOptions.batchSize);
+      const batch = this.queue.slice(0, this.syncOptions.batchSize)
 
       for (const action of batch) {
         try {
-          await this.processAction(action);
-          this.removeFromQueue(action.id);
+          await this.processAction(action)
+          this.removeFromQueue(action.id)
         } catch (error) {
-          console.error('Error processing action:', error);
-          action.attempts++;
+          console.error('Error processing action:', error)
+          action.attempts++
 
           if (action.attempts >= (this.syncOptions.retryAttempts || 3)) {
-            console.error('Max retry attempts reached, removing action:', action);
-            this.removeFromQueue(action.id);
+            console.error('Max retry attempts reached, removing action:', action)
+            this.removeFromQueue(action.id)
           }
         }
       }
 
-      await this.saveQueue();
+      await this.saveQueue()
 
       // Continue syncing if there are more items
       if (this.queue.length > 0) {
         setTimeout(() => {
-          this.sync();
-        }, this.syncOptions.retryDelay);
+          this.sync()
+        }, this.syncOptions.retryDelay)
       }
     } finally {
-      this.isSyncing = false;
+      this.isSyncing = false
     }
   }
 
@@ -145,27 +145,27 @@ class OfflineSyncService {
    * Process a single queued action
    */
   private async processAction(action: QueuedAction): Promise<void> {
-    console.log('Processing action:', action);
+    console.log('Processing action:', action)
 
     // Implement action processing based on type
     switch (action.type) {
       case 'SEND_MESSAGE':
-        await this.syncMessage(action.payload);
-        break;
+        await this.syncMessage(action.payload)
+        break
       case 'UPDATE_MESSAGE':
-        await this.updateMessage(action.payload);
-        break;
+        await this.updateMessage(action.payload)
+        break
       case 'DELETE_MESSAGE':
-        await this.deleteMessage(action.payload);
-        break;
+        await this.deleteMessage(action.payload)
+        break
       case 'CREATE_CHANNEL':
-        await this.createChannel(action.payload);
-        break;
+        await this.createChannel(action.payload)
+        break
       case 'UPDATE_CHANNEL':
-        await this.updateChannel(action.payload);
-        break;
+        await this.updateChannel(action.payload)
+        break
       default:
-        console.warn('Unknown action type:', action.type);
+        console.warn('Unknown action type:', action.type)
     }
   }
 
@@ -173,7 +173,7 @@ class OfflineSyncService {
    * Sync message to server
    */
   private async syncMessage(payload: any): Promise<void> {
-    console.log('Syncing message:', payload);
+    console.log('Syncing message:', payload)
     // TODO: Implement actual API call
     // Example: await api.sendMessage(payload)
   }
@@ -182,7 +182,7 @@ class OfflineSyncService {
    * Update message on server
    */
   private async updateMessage(payload: any): Promise<void> {
-    console.log('Updating message:', payload);
+    console.log('Updating message:', payload)
     // TODO: Implement actual API call
   }
 
@@ -190,7 +190,7 @@ class OfflineSyncService {
    * Delete message on server
    */
   private async deleteMessage(payload: any): Promise<void> {
-    console.log('Deleting message:', payload);
+    console.log('Deleting message:', payload)
     // TODO: Implement actual API call
   }
 
@@ -198,7 +198,7 @@ class OfflineSyncService {
    * Create channel on server
    */
   private async createChannel(payload: any): Promise<void> {
-    console.log('Creating channel:', payload);
+    console.log('Creating channel:', payload)
     // TODO: Implement actual API call
   }
 
@@ -206,7 +206,7 @@ class OfflineSyncService {
    * Update channel on server
    */
   private async updateChannel(payload: any): Promise<void> {
-    console.log('Updating channel:', payload);
+    console.log('Updating channel:', payload)
     // TODO: Implement actual API call
   }
 
@@ -214,7 +214,7 @@ class OfflineSyncService {
    * Remove action from queue
    */
   private removeFromQueue(id: string): void {
-    this.queue = this.queue.filter((action) => action.id !== id);
+    this.queue = this.queue.filter((action) => action.id !== id)
   }
 
   /**
@@ -222,14 +222,14 @@ class OfflineSyncService {
    */
   private async loadQueue(): Promise<void> {
     try {
-      const result = await Preferences.get({ key: 'offline_sync_queue' });
+      const result = await Preferences.get({ key: 'offline_sync_queue' })
       if (result.value) {
-        this.queue = JSON.parse(result.value);
-        console.log('Loaded offline queue:', this.queue.length, 'items');
+        this.queue = JSON.parse(result.value)
+        console.log('Loaded offline queue:', this.queue.length, 'items')
       }
     } catch (error) {
-      console.error('Error loading offline queue:', error);
-      this.queue = [];
+      console.error('Error loading offline queue:', error)
+      this.queue = []
     }
   }
 
@@ -241,9 +241,9 @@ class OfflineSyncService {
       await Preferences.set({
         key: 'offline_sync_queue',
         value: JSON.stringify(this.queue),
-      });
+      })
     } catch (error) {
-      console.error('Error saving offline queue:', error);
+      console.error('Error saving offline queue:', error)
     }
   }
 
@@ -251,29 +251,29 @@ class OfflineSyncService {
    * Clear queue
    */
   async clearQueue(): Promise<void> {
-    this.queue = [];
-    await this.saveQueue();
+    this.queue = []
+    await this.saveQueue()
   }
 
   /**
    * Get queue size
    */
   getQueueSize(): number {
-    return this.queue.length;
+    return this.queue.length
   }
 
   /**
    * Check if online
    */
   isDeviceOnline(): boolean {
-    return this.isOnline;
+    return this.isOnline
   }
 
   /**
    * Generate unique ID
    */
   private generateId(): string {
-    return `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    return `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
   }
 
   /**
@@ -281,12 +281,12 @@ class OfflineSyncService {
    */
   async forceSync(): Promise<void> {
     if (!this.isOnline) {
-      throw new Error('Cannot sync while offline');
+      throw new Error('Cannot sync while offline')
     }
 
-    await this.sync();
+    await this.sync()
   }
 }
 
 // Export singleton instance
-export const offlineSync = new OfflineSyncService();
+export const offlineSync = new OfflineSyncService()

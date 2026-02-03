@@ -44,7 +44,12 @@ const mockUserData: {
   lastSeenAt: string
   channelMemberships: { id: string; name: string; role: 'admin' | 'member' }[]
   activityHistory: { id: string; action: string; timestamp: string }[]
-  stats: { messagesSent: number; channelsJoined: number; reactionsGiven: number; daysActive: number }
+  stats: {
+    messagesSent: number
+    channelsJoined: number
+    reactionsGiven: number
+    daysActive: number
+  }
   warnings: { id: string; reason: string; date: string; issuedBy: string }[]
 } = {
   id: '4',
@@ -177,9 +182,7 @@ export default function UserDetailPage({ params }: PageProps) {
           </Link>
           <div className="flex-1">
             <h1 className="text-3xl font-bold">User Details</h1>
-            <p className="text-muted-foreground">
-              View and manage user account information
-            </p>
+            <p className="text-muted-foreground">View and manage user account information</p>
           </div>
           <div className="flex gap-2">
             {isEditing ? (
@@ -223,12 +226,7 @@ export default function UserDetailPage({ params }: PageProps) {
                 <CardTitle className="mt-4">{userData.displayName}</CardTitle>
                 <CardDescription>@{userData.username}</CardDescription>
                 <div className="mt-2 flex items-center gap-2">
-                  <div
-                    className={cn(
-                      'h-2 w-2 rounded-full',
-                      statusColors[userData.status]
-                    )}
-                  />
+                  <div className={cn('h-2 w-2 rounded-full', statusColors[userData.status])} />
                   <span className="text-sm capitalize">{userData.status}</span>
                 </div>
                 <div className="mt-2">
@@ -250,9 +248,7 @@ export default function UserDetailPage({ params }: PageProps) {
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span>
                     Last seen{' '}
-                    {userData.lastSeenAt
-                      ? new Date(userData.lastSeenAt).toLocaleString()
-                      : 'Never'}
+                    {userData.lastSeenAt ? new Date(userData.lastSeenAt).toLocaleString() : 'Never'}
                   </span>
                 </div>
                 {userData.bio && (
@@ -323,9 +319,7 @@ export default function UserDetailPage({ params }: PageProps) {
                         <Label>Role</Label>
                         <RoleSelect
                           value={editedData.role}
-                          onChange={(role) =>
-                            setEditedData((prev) => ({ ...prev, role }))
-                          }
+                          onChange={(role) => setEditedData((prev) => ({ ...prev, role }))}
                           disabledRoles={
                             currentUser.role === 'admin' ? ['owner', 'admin'] : ['owner']
                           }
@@ -338,9 +332,7 @@ export default function UserDetailPage({ params }: PageProps) {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardDescription>Messages Sent</CardDescription>
-                        <CardTitle className="text-2xl">
-                          {userData.stats.messagesSent}
-                        </CardTitle>
+                        <CardTitle className="text-2xl">{userData.stats.messagesSent}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center text-xs text-muted-foreground">
@@ -352,9 +344,7 @@ export default function UserDetailPage({ params }: PageProps) {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardDescription>Channels</CardDescription>
-                        <CardTitle className="text-2xl">
-                          {userData.stats.channelsJoined}
-                        </CardTitle>
+                        <CardTitle className="text-2xl">{userData.stats.channelsJoined}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center text-xs text-muted-foreground">
@@ -366,9 +356,7 @@ export default function UserDetailPage({ params }: PageProps) {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardDescription>Reactions</CardDescription>
-                        <CardTitle className="text-2xl">
-                          {userData.stats.reactionsGiven}
-                        </CardTitle>
+                        <CardTitle className="text-2xl">{userData.stats.reactionsGiven}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center text-xs text-muted-foreground">
@@ -379,9 +367,7 @@ export default function UserDetailPage({ params }: PageProps) {
                     <Card>
                       <CardHeader className="pb-2">
                         <CardDescription>Active Days</CardDescription>
-                        <CardTitle className="text-2xl">
-                          {userData.stats.daysActive}
-                        </CardTitle>
+                        <CardTitle className="text-2xl">{userData.stats.daysActive}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="flex items-center text-xs text-muted-foreground">
@@ -399,9 +385,7 @@ export default function UserDetailPage({ params }: PageProps) {
                 <Card>
                   <CardHeader>
                     <CardTitle>Channel Memberships</CardTitle>
-                    <CardDescription>
-                      Channels this user is a member of
-                    </CardDescription>
+                    <CardDescription>Channels this user is a member of</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-3">
@@ -474,7 +458,7 @@ export default function UserDetailPage({ params }: PageProps) {
                       </Button>
                     </div>
                     {userData.warnings.length === 0 ? (
-                      <p className="text-center text-sm text-muted-foreground py-4">
+                      <p className="py-4 text-center text-sm text-muted-foreground">
                         No warnings issued
                       </p>
                     ) : (
@@ -499,9 +483,7 @@ export default function UserDetailPage({ params }: PageProps) {
                 <Card>
                   <CardHeader>
                     <CardTitle>Ban Options</CardTitle>
-                    <CardDescription>
-                      Manage user access to the workspace
-                    </CardDescription>
+                    <CardDescription>Manage user access to the workspace</CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button

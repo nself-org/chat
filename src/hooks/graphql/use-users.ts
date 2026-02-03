@@ -150,11 +150,7 @@ export interface UseUpdateProfileReturn {
 }
 
 export interface UseUpdateStatusReturn {
-  updateStatus: (
-    status: string,
-    emoji?: string,
-    expiresAt?: string
-  ) => Promise<boolean>
+  updateStatus: (status: string, emoji?: string, expiresAt?: string) => Promise<boolean>
   clearStatus: () => Promise<boolean>
   loading: boolean
   error: ApolloError | undefined
@@ -366,10 +362,7 @@ export function useOnlineUsers(autoSubscribe = true): UseOnlineUsersReturn {
 /**
  * Get a specific user's presence
  */
-export function useUserPresence(
-  userId: string,
-  autoSubscribe = true
-): UseUserPresenceReturn {
+export function useUserPresence(userId: string, autoSubscribe = true): UseUserPresenceReturn {
   const { data, loading, error } = useQuery(GET_USER_PRESENCE, {
     variables: { userId },
     skip: !userId,
@@ -391,10 +384,7 @@ export function useUserPresence(
 /**
  * Get presence for multiple users
  */
-export function useUsersPresence(
-  userIds: string[],
-  autoSubscribe = true
-) {
+export function useUsersPresence(userIds: string[], autoSubscribe = true) {
   const { data, loading, error, refetch } = useQuery(GET_USERS_PRESENCE, {
     variables: { userIds },
     skip: !userIds.length,
@@ -458,9 +448,7 @@ export function useUpdateProfile(): UseUpdateProfileReturn {
     useMutation(DELETE_AVATAR)
 
   const updateProfile = useCallback(
-    async (
-      variables: Omit<UpdateProfileVariables, 'id'>
-    ): Promise<UserProfile | null> => {
+    async (variables: Omit<UpdateProfileVariables, 'id'>): Promise<UserProfile | null> => {
       if (!user) {
         throw new Error('Must be logged in to update profile')
       }
@@ -548,11 +536,7 @@ export function useUpdateStatus(): UseUpdateStatusReturn {
     useMutation(CLEAR_STATUS)
 
   const updateStatus = useCallback(
-    async (
-      status: string,
-      emoji?: string,
-      expiresAt?: string
-    ): Promise<boolean> => {
+    async (status: string, emoji?: string, expiresAt?: string): Promise<boolean> => {
       if (!user) {
         throw new Error('Must be logged in to update status')
       }
@@ -694,8 +678,9 @@ export function useUserSettings(): UseUserSettingsReturn {
 
   const [updateSettingsMutation, { loading: settingsLoading, error: settingsError }] =
     useMutation(UPDATE_USER_SETTINGS)
-  const [updateNotifMutation, { loading: notifLoading, error: notifError }] =
-    useMutation(UPDATE_NOTIFICATION_PREFERENCES)
+  const [updateNotifMutation, { loading: notifLoading, error: notifError }] = useMutation(
+    UPDATE_NOTIFICATION_PREFERENCES
+  )
 
   const updateSettings = useCallback(
     async (settings: Record<string, unknown>): Promise<boolean> => {
@@ -745,9 +730,7 @@ export function useUserSettings(): UseUserSettingsReturn {
  * Search users for mentions
  */
 export function useSearchUsersForMention(): UseSearchUsersForMentionReturn {
-  const [searchQuery, { data, loading, error }] = useLazyQuery(
-    SEARCH_USERS_FOR_MENTION
-  )
+  const [searchQuery, { data, loading, error }] = useLazyQuery(SEARCH_USERS_FOR_MENTION)
 
   const search = useCallback(
     async (query: string, channelId?: string): Promise<UserBasic[]> => {

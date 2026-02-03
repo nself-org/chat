@@ -7,11 +7,7 @@ import { UserDirectory } from '@/components/users'
 import { type ExtendedUserProfile } from '@/components/users/UserCard'
 import { useUserDirectoryStore } from '@/stores/user-directory-store'
 import { useUserStore } from '@/stores/user-store'
-import {
-  extractDepartments,
-  extractTeams,
-  extractLocations,
-} from '@/lib/users/user-directory'
+import { extractDepartments, extractTeams, extractLocations } from '@/lib/users/user-directory'
 
 // ============================================================================
 // Mock Data for Development
@@ -164,10 +160,7 @@ export default function PeoplePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const {
-    setLoadingDirectory,
-    setDirectoryError,
-  } = useUserDirectoryStore()
+  const { setLoadingDirectory, setDirectoryError } = useUserDirectoryStore()
 
   // Load users on mount
   useEffect(() => {
@@ -206,14 +199,10 @@ export default function PeoplePage() {
   }
 
   // Handle message - would open DM
-  const handleMessage = (targetUser: ExtendedUserProfile) => {
-    // TODO: Navigate to or open DM with user
-  }
+  const handleMessage = (targetUser: ExtendedUserProfile) => {}
 
   // Handle call - placeholder
-  const handleCall = (targetUser: ExtendedUserProfile) => {
-    // TODO: Implement calling feature
-  }
+  const handleCall = (targetUser: ExtendedUserProfile) => {}
 
   // Handle refresh
   const handleRefresh = () => {
@@ -222,12 +211,10 @@ export default function PeoplePage() {
   }
 
   // Handle invite
-  const handleInvite = () => {
-    // TODO: Open invite modal
-  }
+  const handleInvite = () => {}
 
   return (
-    <div className="h-screen flex flex-col bg-background">
+    <div className="flex h-screen flex-col bg-background">
       <UserDirectory
         users={users}
         departments={departments}

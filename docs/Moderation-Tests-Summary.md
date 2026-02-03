@@ -15,6 +15,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 **Purpose**: Test the core AI moderator with multi-model consensus and auto-action decisions
 
 **Test Categories:**
+
 - ✅ Initialization (3 tests)
 - ✅ Content Analysis (8 tests)
 - ✅ Confidence Scoring (3 tests)
@@ -28,6 +29,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 - ✅ Cleanup (2 tests)
 
 **Key Features Tested:**
+
 ```typescript
 // Multi-model consensus
 ✅ Analyze content with toxicity, spam, profanity, NSFW detectors
@@ -58,6 +60,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 **Purpose**: Test toxicity detection using Perspective API and fallback logic
 
 **Test Categories:**
+
 - ✅ Initialization (3 tests)
 - ✅ Perspective API Integration (6 tests)
 - ✅ 7 Toxicity Categories (7 tests)
@@ -69,6 +72,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 - ✅ Edge Cases (5 tests)
 
 **Key Features Tested:**
+
 ```typescript
 // Perspective API Integration
 ✅ Call API with correct parameters
@@ -107,6 +111,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 **Purpose**: Test ML-powered spam detection with pattern recognition and user behavior analysis
 
 **Test Categories:**
+
 - ✅ Initialization (3 tests)
 - ✅ Pattern-Based Detection (6 tests)
 - ✅ Link Spam Detection (6 tests)
@@ -120,6 +125,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 - ✅ Edge Cases (4 tests)
 
 **Key Features Tested:**
+
 ```typescript
 // Pattern Detection
 ✅ Excessive capitalization (>70%)
@@ -161,12 +167,14 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 **Purpose**: Test content category classification
 
 **Test Categories:**
+
 - ✅ Initialization (2 tests)
 - ✅ Classification Logic (3 tests)
 - ✅ Multi-label Classification (2 tests)
 - ✅ Edge Cases (3 tests)
 
 **Key Features Tested:**
+
 ```typescript
 ✅ Classify content into categories
 ✅ Support multiple labels per content
@@ -181,6 +189,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 **Purpose**: Test moderation actions (ban, mute, warn, delete)
 
 **Test Categories:**
+
 - ✅ Initialization (2 tests)
 - ✅ Ban Actions (2 tests)
 - ✅ Mute Actions (2 tests)
@@ -188,6 +197,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 - ✅ Delete Actions (2 tests)
 
 **Key Features Tested:**
+
 ```typescript
 ✅ Ban user (permanent or temporary)
 ✅ Mute user with duration
@@ -203,6 +213,7 @@ Comprehensive test coverage for the AI-powered moderation system with **165+ tes
 All tests use comprehensive mocks for external dependencies:
 
 ### AI Detector Mock
+
 ```typescript
 jest.mock('../ai-detector', () => ({
   getAIDetector: () => ({
@@ -230,6 +241,7 @@ jest.mock('../ai-detector', () => ({
 ```
 
 ### Profanity Filter Mock
+
 ```typescript
 jest.mock('../profanity-filter', () => ({
   getProfanityFilter: () => ({
@@ -246,24 +258,39 @@ jest.mock('../profanity-filter', () => ({
 ```
 
 ### Perspective API Mock
+
 ```typescript
 global.fetch = jest.fn()
 
 const mockPerspectiveResponse = {
   attributeScores: {
     TOXICITY: {
-      spanScores: [/* ... */],
+      spanScores: [
+        /* ... */
+      ],
       summaryScore: { value: 0.8, type: 'PROBABILITY' },
     },
-    SEVERE_TOXICITY: { /* ... */ },
-    INSULT: { /* ... */ },
-    PROFANITY: { /* ... */ },
-    THREAT: { /* ... */ },
-    IDENTITY_ATTACK: { /* ... */ },
-    SEXUALLY_EXPLICIT: { /* ... */ },
+    SEVERE_TOXICITY: {
+      /* ... */
+    },
+    INSULT: {
+      /* ... */
+    },
+    PROFANITY: {
+      /* ... */
+    },
+    THREAT: {
+      /* ... */
+    },
+    IDENTITY_ATTACK: {
+      /* ... */
+    },
+    SEXUALLY_EXPLICIT: {
+      /* ... */
+    },
   },
   languages: ['en'],
-  detectedLanguages: ['en']
+  detectedLanguages: ['en'],
 }
 ```
 
@@ -272,11 +299,13 @@ const mockPerspectiveResponse = {
 ## Running Tests
 
 ### Run All Moderation Tests
+
 ```bash
 npm test src/lib/moderation/__tests__/
 ```
 
 ### Run Individual Test Files
+
 ```bash
 # AI Moderator
 npm test src/lib/moderation/__tests__/ai-moderator.test.ts
@@ -295,11 +324,13 @@ npm test src/lib/moderation/__tests__/actions.test.ts
 ```
 
 ### Run with Coverage
+
 ```bash
 npm test -- --coverage src/lib/moderation/__tests__/
 ```
 
 ### Run in Watch Mode
+
 ```bash
 npm test -- --watch src/lib/moderation/__tests__/
 ```
@@ -309,6 +340,7 @@ npm test -- --watch src/lib/moderation/__tests__/
 ## Test Results
 
 ### Current Status (700+ passing tests)
+
 ```
 Test Suites: 13 total
 Tests:       700+ passed, 165+ moderation tests
@@ -318,20 +350,21 @@ Time:        ~2 seconds
 
 ### Code Coverage by Module
 
-| Module | Lines | Branches | Functions | Statements |
-|--------|-------|----------|-----------|------------|
-| ai-moderator.ts | 98% | 95% | 100% | 98% |
-| toxicity-detector.ts | 96% | 92% | 100% | 96% |
-| spam-detector-ml.ts | 97% | 94% | 100% | 97% |
-| content-classifier.ts | 95% | 90% | 100% | 95% |
-| actions.ts | 94% | 88% | 100% | 94% |
-| **Overall** | **96%** | **92%** | **100%** | **96%** |
+| Module                | Lines   | Branches | Functions | Statements |
+| --------------------- | ------- | -------- | --------- | ---------- |
+| ai-moderator.ts       | 98%     | 95%      | 100%      | 98%        |
+| toxicity-detector.ts  | 96%     | 92%      | 100%      | 96%        |
+| spam-detector-ml.ts   | 97%     | 94%      | 100%      | 97%        |
+| content-classifier.ts | 95%     | 90%      | 100%      | 95%        |
+| actions.ts            | 94%     | 88%      | 100%      | 94%        |
+| **Overall**           | **96%** | **92%**  | **100%**  | **96%**    |
 
 ---
 
 ## Test Quality Metrics
 
 ### Characteristics
+
 - ✅ **Comprehensive**: Cover all features and edge cases
 - ✅ **Isolated**: Each test is independent with proper mocks
 - ✅ **Fast**: All tests complete in ~2 seconds
@@ -340,6 +373,7 @@ Time:        ~2 seconds
 - ✅ **Reliable**: Consistent results
 
 ### AAA Pattern
+
 All tests follow the Arrange-Act-Assert pattern:
 
 ```typescript
@@ -354,11 +388,7 @@ it('should detect toxic content', async () => {
   })
 
   // Act
-  const result = await moderator.analyzeContent(
-    'content-1',
-    'text',
-    'Toxic message'
-  )
+  const result = await moderator.analyzeContent('content-1', 'text', 'Toxic message')
 
   // Assert
   expect(result.toxicity.isToxic).toBe(true)
@@ -371,6 +401,7 @@ it('should detect toxic content', async () => {
 ## Example Test Scenarios
 
 ### 1. Multi-Model Consensus
+
 ```typescript
 it('should calculate high confidence when multiple models agree', async () => {
   // All models detect issues
@@ -395,6 +426,7 @@ it('should calculate high confidence when multiple models agree', async () => {
 ```
 
 ### 2. Perspective API Integration
+
 ```typescript
 it('should call Perspective API with correct parameters', async () => {
   const detector = new ToxicityDetector({
@@ -417,6 +449,7 @@ it('should call Perspective API with correct parameters', async () => {
 ```
 
 ### 3. User Behavior Analysis
+
 ```typescript
 it('should detect flooding', async () => {
   const detector = new SpamDetectorML({
@@ -441,6 +474,7 @@ it('should detect flooding', async () => {
 ## Next Steps
 
 ### Completed ✅
+
 - [x] AI moderator core tests (50+ tests)
 - [x] Toxicity detection tests (45+ tests)
 - [x] Spam detection tests (50+ tests)
@@ -450,6 +484,7 @@ it('should detect flooding', async () => {
 - [x] Comprehensive mocking strategy
 
 ### Future Enhancements
+
 - [ ] Integration tests with real Perspective API (optional)
 - [ ] Performance benchmarking for large-scale moderation
 - [ ] Load testing for concurrent analysis
@@ -461,6 +496,7 @@ it('should detect flooding', async () => {
 ## Documentation
 
 ### Related Files
+
 - `/src/lib/moderation/ai-moderator.ts` - Core moderator implementation
 - `/src/lib/moderation/toxicity-detector.ts` - Toxicity detection
 - `/src/lib/moderation/spam-detector-ml.ts` - Spam detection
@@ -468,6 +504,7 @@ it('should detect flooding', async () => {
 - `/src/lib/moderation/actions.ts` - Moderation actions
 
 ### Configuration
+
 - `/jest.config.js` - Jest configuration
 - `/package.json` - Test scripts
 - `/tsconfig.json` - TypeScript configuration
@@ -486,6 +523,7 @@ The moderation system has **complete test coverage** with:
 - ✅ **Maintainable code** with clear patterns
 
 All tests follow best practices and provide comprehensive coverage of:
+
 - Multi-model AI consensus
 - Auto-action decision logic
 - Trust scoring and violation tracking

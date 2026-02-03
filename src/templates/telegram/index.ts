@@ -33,10 +33,7 @@ export { TelegramLayout } from './components/TelegramLayout'
 export type { TelegramLayoutProps } from './components/TelegramLayout'
 
 export { TelegramChatList } from './components/TelegramChatList'
-export type {
-  TelegramChatListProps,
-  TelegramChatData,
-} from './components/TelegramChatList'
+export type { TelegramChatListProps, TelegramChatData } from './components/TelegramChatList'
 
 export { TelegramChatView } from './components/TelegramChatView'
 export type { TelegramChatViewProps } from './components/TelegramChatView'
@@ -52,10 +49,7 @@ export { TelegramComposer } from './components/TelegramComposer'
 export type { TelegramComposerProps } from './components/TelegramComposer'
 
 export { TelegramFolders } from './components/TelegramFolders'
-export type {
-  TelegramFoldersProps,
-  TelegramFolder,
-} from './components/TelegramFolders'
+export type { TelegramFoldersProps, TelegramFolder } from './components/TelegramFolders'
 
 export { TelegramVoiceMessage } from './components/TelegramVoiceMessage'
 export type { TelegramVoiceMessageProps } from './components/TelegramVoiceMessage'

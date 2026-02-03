@@ -125,7 +125,10 @@ export const MobileTimePicker = memo(function MobileTimePicker({
   const setIsOpen = onOpenChange || setInternalIsOpen
 
   // Generate hour and minute options
-  const hours = format === '24h' ? Array.from({ length: 24 }, (_, i) => i) : Array.from({ length: 12 }, (_, i) => i + 1)
+  const hours =
+    format === '24h'
+      ? Array.from({ length: 24 }, (_, i) => i)
+      : Array.from({ length: 12 }, (_, i) => i + 1)
   const minutes = Array.from({ length: Math.floor(60 / minuteStep) }, (_, i) => i * minuteStep)
 
   // Handle time change
@@ -174,12 +177,7 @@ export const MobileTimePicker = memo(function MobileTimePicker({
       </TouchButton>
 
       {/* Bottom sheet with time picker */}
-      <BottomSheet
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        snapPoints={[0.6]}
-        showHandle
-      >
+      <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} snapPoints={[0.6]} showHandle>
         <div className="space-y-6">
           {/* Header */}
           <div className="text-center">
@@ -187,7 +185,7 @@ export const MobileTimePicker = memo(function MobileTimePicker({
           </div>
 
           {/* Time display */}
-          <div className="rounded-lg bg-primary/10 py-6 text-center">
+          <div className="bg-primary/10 rounded-lg py-6 text-center">
             <p className="text-4xl font-bold text-primary">
               {formatTime(createDateWithTime(selectedTime, format), format)}
             </p>
@@ -282,7 +280,7 @@ const TimeWheel = memo(function TimeWheel({
   return (
     <div className="flex flex-col items-center gap-2">
       {/* Label */}
-      <p className="text-xs font-medium text-muted-foreground uppercase">{label}</p>
+      <p className="text-xs font-medium uppercase text-muted-foreground">{label}</p>
 
       {/* Wheel container */}
       <div className="relative flex flex-col items-center">
@@ -302,7 +300,7 @@ const TimeWheel = memo(function TimeWheel({
           ref={wheelRef}
           className={cn(
             'flex h-16 w-16 items-center justify-center',
-            'rounded-lg border-2 border-primary bg-primary/5',
+            'bg-primary/5 rounded-lg border-2 border-primary',
             'text-2xl font-bold',
             isDragging && 'scale-105'
           )}

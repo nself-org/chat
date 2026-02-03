@@ -79,13 +79,7 @@ export function BlockUserModal({
   onBlocked,
   className,
 }: BlockUserModalProps) {
-  const {
-    blockUser,
-    closeBlockModal,
-    blockModalState,
-    isBlocking,
-    error,
-  } = useBlock()
+  const { blockUser, closeBlockModal, blockModalState, isBlocking, error } = useBlock()
 
   // Use prop user or modal state
   const targetUser = propUser || blockModalState.target
@@ -139,8 +133,8 @@ export function BlockUserModal({
     <AlertDialog open={isOpen} onOpenChange={handleOpenChange}>
       <AlertDialogContent className={cn('sm:max-w-md', className)}>
         <AlertDialogHeader>
-          <div className="flex items-center gap-3 mb-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
+          <div className="mb-2 flex items-center gap-3">
+            <div className="bg-destructive/10 flex h-10 w-10 items-center justify-center rounded-full">
               <Ban className="h-5 w-5 text-destructive" />
             </div>
             <AlertDialogTitle>Block {targetUser.displayName}?</AlertDialogTitle>
@@ -148,42 +142,27 @@ export function BlockUserModal({
           <AlertDialogDescription asChild>
             <div className="space-y-4">
               {/* User preview */}
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg">
+              <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage
-                    src={targetUser.avatarUrl}
-                    alt={targetUser.displayName}
-                  />
-                  <AvatarFallback>
-                    {getInitials(targetUser.displayName)}
-                  </AvatarFallback>
+                  <AvatarImage src={targetUser.avatarUrl} alt={targetUser.displayName} />
+                  <AvatarFallback>{getInitials(targetUser.displayName)}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-foreground truncate">
-                    {targetUser.displayName}
-                  </p>
-                  <p className="text-sm text-muted-foreground truncate">
-                    @{targetUser.username}
-                  </p>
+                  <p className="truncate font-medium text-foreground">{targetUser.displayName}</p>
+                  <p className="truncate text-sm text-muted-foreground">@{targetUser.username}</p>
                 </div>
               </div>
 
               {/* Consequences list */}
               <div className="space-y-3">
-                <p className="text-sm font-medium text-foreground">
-                  When you block this user:
-                </p>
+                <p className="text-sm font-medium text-foreground">When you block this user:</p>
                 <ul className="space-y-2">
                   {BLOCK_CONSEQUENCES.map((consequence, index) => (
                     <li key={index} className="flex items-start gap-3">
-                      <consequence.icon className="h-4 w-4 mt-0.5 text-muted-foreground flex-shrink-0" />
+                      <consequence.icon className="mt-0.5 h-4 w-4 flex-shrink-0 text-muted-foreground" />
                       <div>
-                        <p className="text-sm font-medium text-foreground">
-                          {consequence.title}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {consequence.description}
-                        </p>
+                        <p className="text-sm font-medium text-foreground">{consequence.title}</p>
+                        <p className="text-xs text-muted-foreground">{consequence.description}</p>
                       </div>
                     </li>
                   ))}
@@ -197,9 +176,7 @@ export function BlockUserModal({
 
               {/* Error message */}
               {error && (
-                <p className="text-sm text-destructive bg-destructive/10 p-2 rounded">
-                  {error}
-                </p>
+                <p className="bg-destructive/10 rounded p-2 text-sm text-destructive">{error}</p>
               )}
             </div>
           </AlertDialogDescription>
@@ -211,11 +188,7 @@ export function BlockUserModal({
             </Button>
           </AlertDialogCancel>
           <AlertDialogAction asChild>
-            <Button
-              variant="destructive"
-              onClick={handleBlock}
-              disabled={isBlocking}
-            >
+            <Button variant="destructive" onClick={handleBlock} disabled={isBlocking}>
               {isBlocking ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />

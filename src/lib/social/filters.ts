@@ -15,10 +15,8 @@ export function matchesFilters(post: SocialPost, integration: SocialIntegration)
       return false
     }
 
-    const hasMatchingHashtag = integration.filter_hashtags.some(filterTag =>
-      post.hashtags!.some(postTag =>
-        postTag.toLowerCase() === filterTag.toLowerCase()
-      )
+    const hasMatchingHashtag = integration.filter_hashtags.some((filterTag) =>
+      post.hashtags!.some((postTag) => postTag.toLowerCase() === filterTag.toLowerCase())
     )
 
     if (!hasMatchingHashtag) {
@@ -29,7 +27,7 @@ export function matchesFilters(post: SocialPost, integration: SocialIntegration)
   // Check keyword filters
   if (integration.filter_keywords && integration.filter_keywords.length > 0) {
     const content = post.content.toLowerCase()
-    const hasMatchingKeyword = integration.filter_keywords.some(keyword =>
+    const hasMatchingKeyword = integration.filter_keywords.some((keyword) =>
       content.includes(keyword.toLowerCase())
     )
 
@@ -89,17 +87,15 @@ function isReply(post: SocialPost): boolean {
  * Filter a list of posts based on criteria
  */
 export function filterPosts(posts: SocialPost[], criteria: FilterCriteria): SocialPost[] {
-  return posts.filter(post => {
+  return posts.filter((post) => {
     // Hashtag filter
     if (criteria.hashtags && criteria.hashtags.length > 0) {
       if (!post.hashtags || post.hashtags.length === 0) {
         return false
       }
 
-      const hasMatchingHashtag = criteria.hashtags.some(filterTag =>
-        post.hashtags!.some(postTag =>
-          postTag.toLowerCase() === filterTag.toLowerCase()
-        )
+      const hasMatchingHashtag = criteria.hashtags.some((filterTag) =>
+        post.hashtags!.some((postTag) => postTag.toLowerCase() === filterTag.toLowerCase())
       )
 
       if (!hasMatchingHashtag) {
@@ -110,7 +106,7 @@ export function filterPosts(posts: SocialPost[], criteria: FilterCriteria): Soci
     // Keyword filter
     if (criteria.keywords && criteria.keywords.length > 0) {
       const content = post.content.toLowerCase()
-      const hasMatchingKeyword = criteria.keywords.some(keyword =>
+      const hasMatchingKeyword = criteria.keywords.some((keyword) =>
         content.includes(keyword.toLowerCase())
       )
 
@@ -147,7 +143,7 @@ export function filterPosts(posts: SocialPost[], criteria: FilterCriteria): Soci
 export function extractHashtags(text: string): string[] {
   const matches = text.match(/#\w+/g)
   if (!matches) return []
-  return matches.map(tag => tag.slice(1).toLowerCase())
+  return matches.map((tag) => tag.slice(1).toLowerCase())
 }
 
 /**
@@ -156,7 +152,7 @@ export function extractHashtags(text: string): string[] {
 export function extractMentions(text: string): string[] {
   const matches = text.match(/@\w+/g)
   if (!matches) return []
-  return matches.map(mention => mention.slice(1).toLowerCase())
+  return matches.map((mention) => mention.slice(1).toLowerCase())
 }
 
 /**

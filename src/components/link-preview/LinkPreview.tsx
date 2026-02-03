@@ -73,15 +73,7 @@ export function LinkPreview({
   onRemove,
   className,
 }: LinkPreviewProps) {
-  const {
-    preview,
-    isLoading,
-    error,
-    isRemoved,
-    remove,
-    restore,
-    refresh,
-  } = useLinkPreview(url, {
+  const { preview, isLoading, error, isRemoved, remove, restore, refresh } = useLinkPreview(url, {
     autoFetch,
     messageId,
     onLoad,
@@ -112,14 +104,7 @@ export function LinkPreview({
 
   // Error state
   if (error && !preview) {
-    return (
-      <LinkPreviewError
-        url={url}
-        error={error}
-        onRetry={refresh}
-        className={className}
-      />
-    )
+    return <LinkPreviewError url={url} error={error} onRetry={refresh} className={className} />
   }
 
   // No preview data
@@ -128,22 +113,15 @@ export function LinkPreview({
   }
 
   // Determine actual variant
-  const actualVariant = variant === 'auto'
-    ? (preview.image ? 'vertical' : 'compact')
-    : variant
+  const actualVariant = variant === 'auto' ? (preview.image ? 'vertical' : 'compact') : variant
 
   // Render specialized preview components based on type
   const renderSpecializedPreview = () => {
     // Twitter/X
     if (isTwitterPreview(preview)) {
       return (
-        <TwitterPreview
-          data={preview}
-          className={className}
-        >
-          {showRemoveButton && (
-            <RemovePreviewButton onClick={handleRemove} />
-          )}
+        <TwitterPreview data={preview} className={className}>
+          {showRemoveButton && <RemovePreviewButton onClick={handleRemove} />}
         </TwitterPreview>
       )
     }
@@ -151,13 +129,8 @@ export function LinkPreview({
     // YouTube
     if (isYouTubePreview(preview)) {
       return (
-        <YouTubePreview
-          data={preview}
-          className={className}
-        >
-          {showRemoveButton && (
-            <RemovePreviewButton onClick={handleRemove} />
-          )}
+        <YouTubePreview data={preview} className={className}>
+          {showRemoveButton && <RemovePreviewButton onClick={handleRemove} />}
         </YouTubePreview>
       )
     }
@@ -165,13 +138,8 @@ export function LinkPreview({
     // GitHub
     if (isGitHubRepoPreview(preview) || isGitHubIssuePreview(preview)) {
       return (
-        <GitHubPreview
-          data={preview}
-          className={className}
-        >
-          {showRemoveButton && (
-            <RemovePreviewButton onClick={handleRemove} />
-          )}
+        <GitHubPreview data={preview} className={className}>
+          {showRemoveButton && <RemovePreviewButton onClick={handleRemove} />}
         </GitHubPreview>
       )
     }
@@ -179,13 +147,8 @@ export function LinkPreview({
     // Spotify
     if (isSpotifyPreview(preview)) {
       return (
-        <SpotifyPreview
-          data={preview}
-          className={className}
-        >
-          {showRemoveButton && (
-            <RemovePreviewButton onClick={handleRemove} />
-          )}
+        <SpotifyPreview data={preview} className={className}>
+          {showRemoveButton && <RemovePreviewButton onClick={handleRemove} />}
         </SpotifyPreview>
       )
     }
@@ -193,13 +156,8 @@ export function LinkPreview({
     // Code (Gist, CodePen, etc.)
     if (isCodePreview(preview)) {
       return (
-        <CodePreview
-          data={preview}
-          className={className}
-        >
-          {showRemoveButton && (
-            <RemovePreviewButton onClick={handleRemove} />
-          )}
+        <CodePreview data={preview} className={className}>
+          {showRemoveButton && <RemovePreviewButton onClick={handleRemove} />}
         </CodePreview>
       )
     }
@@ -207,14 +165,8 @@ export function LinkPreview({
     // Direct image
     if (isImagePreview(preview)) {
       return (
-        <ImagePreview
-          data={preview}
-          maxHeight={maxImageHeight}
-          className={className}
-        >
-          {showRemoveButton && (
-            <RemovePreviewButton onClick={handleRemove} />
-          )}
+        <ImagePreview data={preview} maxHeight={maxImageHeight} className={className}>
+          {showRemoveButton && <RemovePreviewButton onClick={handleRemove} />}
         </ImagePreview>
       )
     }
@@ -222,13 +174,8 @@ export function LinkPreview({
     // Direct video
     if (isVideoPreview(preview)) {
       return (
-        <VideoPreview
-          data={preview}
-          className={className}
-        >
-          {showRemoveButton && (
-            <RemovePreviewButton onClick={handleRemove} />
-          )}
+        <VideoPreview data={preview} className={className}>
+          {showRemoveButton && <RemovePreviewButton onClick={handleRemove} />}
         </VideoPreview>
       )
     }
@@ -253,9 +200,7 @@ export function LinkPreview({
       maxImageHeight={maxImageHeight}
       className={className}
     >
-      {showRemoveButton && (
-        <RemovePreviewButton onClick={handleRemove} />
-      )}
+      {showRemoveButton && <RemovePreviewButton onClick={handleRemove} />}
     </LinkCard>
   )
 }

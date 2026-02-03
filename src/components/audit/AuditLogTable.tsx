@@ -26,7 +26,7 @@ import {
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback} from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 
 import type {
@@ -120,16 +120,16 @@ export function AuditLogTable({
   const SortIcon = ({ field }: { field: AuditLogSortOptions['field'] }) => {
     if (sort?.field !== field) return null
     return sort.direction === 'asc' ? (
-      <ChevronUp className="h-4 w-4 inline ml-1" />
+      <ChevronUp className="ml-1 inline h-4 w-4" />
     ) : (
-      <ChevronDown className="h-4 w-4 inline ml-1" />
+      <ChevronDown className="ml-1 inline h-4 w-4" />
     )
   }
 
   const allSelected = entries.length > 0 && selectedIds.length === entries.length
 
   return (
-    <div className="rounded-md border overflow-hidden">
+    <div className="overflow-hidden rounded-md border">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-muted/50">
@@ -151,31 +151,31 @@ export function AuditLogTable({
                 </th>
               )}
               <th
-                className="px-4 py-3 text-left font-medium cursor-pointer hover:bg-muted"
+                className="cursor-pointer px-4 py-3 text-left font-medium hover:bg-muted"
                 onClick={() => handleSort('timestamp')}
               >
                 Timestamp <SortIcon field="timestamp" />
               </th>
               <th
-                className="px-4 py-3 text-left font-medium cursor-pointer hover:bg-muted"
+                className="cursor-pointer px-4 py-3 text-left font-medium hover:bg-muted"
                 onClick={() => handleSort('category')}
               >
                 Category <SortIcon field="category" />
               </th>
               <th
-                className="px-4 py-3 text-left font-medium cursor-pointer hover:bg-muted"
+                className="cursor-pointer px-4 py-3 text-left font-medium hover:bg-muted"
                 onClick={() => handleSort('action')}
               >
                 Action <SortIcon field="action" />
               </th>
               <th
-                className="px-4 py-3 text-left font-medium cursor-pointer hover:bg-muted"
+                className="cursor-pointer px-4 py-3 text-left font-medium hover:bg-muted"
                 onClick={() => handleSort('actor')}
               >
                 Actor <SortIcon field="actor" />
               </th>
               <th
-                className="px-4 py-3 text-left font-medium cursor-pointer hover:bg-muted"
+                className="cursor-pointer px-4 py-3 text-left font-medium hover:bg-muted"
                 onClick={() => handleSort('severity')}
               >
                 Severity <SortIcon field="severity" />
@@ -191,7 +191,7 @@ export function AuditLogTable({
                   colSpan={selectable ? 8 : 7}
                   className="px-4 py-8 text-center text-muted-foreground"
                 >
-                  <Activity className="h-6 w-6 animate-spin mx-auto mb-2" />
+                  <Activity className="mx-auto mb-2 h-6 w-6 animate-spin" />
                   Loading audit logs...
                 </td>
               </tr>
@@ -225,7 +225,7 @@ export function AuditLogTable({
                         />
                       </td>
                     )}
-                    <td className="px-4 py-3 whitespace-nowrap text-muted-foreground">
+                    <td className="whitespace-nowrap px-4 py-3 text-muted-foreground">
                       {formatTimestamp(entry.timestamp, 'short')}
                     </td>
                     <td className="px-4 py-3">
@@ -237,23 +237,17 @@ export function AuditLogTable({
                         {entry.category}
                       </Badge>
                     </td>
-                    <td className="px-4 py-3 font-medium">
-                      {getActionDisplayName(entry.action)}
-                    </td>
+                    <td className="px-4 py-3 font-medium">{getActionDisplayName(entry.action)}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Avatar className="h-6 w-6">
                           <AvatarFallback className="text-xs">
-                            {(
-                              entry.actor.displayName ||
-                              entry.actor.username ||
-                              entry.actor.id
-                            )
+                            {(entry.actor.displayName || entry.actor.username || entry.actor.id)
                               .charAt(0)
                               .toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
-                        <span className="truncate max-w-[150px]">
+                        <span className="max-w-[150px] truncate">
                           {entry.actor.displayName ||
                             entry.actor.username ||
                             entry.actor.email ||
@@ -299,11 +293,8 @@ export function AuditLogTable({
                   </tr>
                   {expandedRows.has(entry.id) && (
                     <tr key={`${entry.id}-expanded`} className="bg-muted/20">
-                      <td
-                        colSpan={selectable ? 8 : 7}
-                        className="px-4 py-4"
-                      >
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+                      <td colSpan={selectable ? 8 : 7} className="px-4 py-4">
+                        <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-3">
                           <div>
                             <span className="text-muted-foreground">Description:</span>
                             <p className="mt-1">{entry.description}</p>

@@ -13,31 +13,51 @@ export interface ProfanityResult {
 // Default profanity word list (expandable)
 const DEFAULT_PROFANITY_WORDS = [
   // Common profanity (censored for production)
-  'damn', 'hell', 'crap', 'shit', 'fuck', 'bitch', 'ass', 'bastard',
-  'piss', 'dick', 'cock', 'pussy', 'whore', 'slut', 'fag', 'nigger',
+  'damn',
+  'hell',
+  'crap',
+  'shit',
+  'fuck',
+  'bitch',
+  'ass',
+  'bastard',
+  'piss',
+  'dick',
+  'cock',
+  'pussy',
+  'whore',
+  'slut',
+  'fag',
+  'nigger',
   // Variations and bypass attempts
-  'sh1t', 'fck', 'fuk', 'b1tch', 'a55', 'fvck', 'shyt',
+  'sh1t',
+  'fck',
+  'fuk',
+  'b1tch',
+  'a55',
+  'fvck',
+  'shyt',
 ]
 
 // Severity levels for words
 const SEVERITY_LEVELS: Record<string, number> = {
   // High severity (1.0)
-  'nigger': 1.0,
-  'fag': 1.0,
-  'cunt': 1.0,
+  nigger: 1.0,
+  fag: 1.0,
+  cunt: 1.0,
 
   // Medium severity (0.7)
-  'fuck': 0.7,
-  'shit': 0.7,
-  'bitch': 0.7,
-  'whore': 0.7,
-  'slut': 0.7,
+  fuck: 0.7,
+  shit: 0.7,
+  bitch: 0.7,
+  whore: 0.7,
+  slut: 0.7,
 
   // Low severity (0.3)
-  'damn': 0.3,
-  'hell': 0.3,
-  'crap': 0.3,
-  'ass': 0.3,
+  damn: 0.3,
+  hell: 0.3,
+  crap: 0.3,
+  ass: 0.3,
 }
 
 export class ProfanityFilter {
@@ -45,15 +65,9 @@ export class ProfanityFilter {
   private allowedWords: Set<string>
   private patterns: RegExp[]
 
-  constructor(
-    customBlockedWords: string[] = [],
-    customAllowedWords: string[] = []
-  ) {
+  constructor(customBlockedWords: string[] = [], customAllowedWords: string[] = []) {
     // Combine default and custom words
-    this.blockedWords = new Set([
-      ...DEFAULT_PROFANITY_WORDS,
-      ...customBlockedWords,
-    ])
+    this.blockedWords = new Set([...DEFAULT_PROFANITY_WORDS, ...customBlockedWords])
 
     this.allowedWords = new Set(customAllowedWords)
 
@@ -190,7 +204,8 @@ export class ProfanityFilter {
    * Find base word from obfuscated version
    */
   private findBaseWord(word: string): string {
-    const normalized = word.toLowerCase()
+    const normalized = word
+      .toLowerCase()
       .replace(/[@4]/g, 'a')
       .replace(/[3]/g, 'e')
       .replace(/[1!|]/g, 'i')

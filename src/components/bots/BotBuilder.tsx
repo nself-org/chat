@@ -85,12 +85,7 @@ const STEPS: StepConfig[] = [
 // MAIN COMPONENT
 // ============================================================================
 
-export function BotBuilder({
-  onSave,
-  onCancel,
-  initialBot,
-  className,
-}: BotBuilderProps) {
+export function BotBuilder({ onSave, onCancel, initialBot, className }: BotBuilderProps) {
   // Current step
   const [currentStep, setCurrentStep] = useState<BuilderStep>('info')
   const currentStepIndex = STEPS.findIndex((s) => s.id === currentStep)
@@ -112,10 +107,7 @@ export function BotBuilder({
 
   // Update bot field
   const updateBot = useCallback(
-    <K extends keyof BotBuilderDefinition>(
-      key: K,
-      value: BotBuilderDefinition[K]
-    ) => {
+    <K extends keyof BotBuilderDefinition>(key: K, value: BotBuilderDefinition[K]) => {
       setBot((prev) => ({ ...prev, [key]: value }))
       // Clear error when field is updated
       if (errors[key]) {
@@ -211,13 +203,16 @@ export function BotBuilder({
   }, [currentStepIndex])
 
   // Jump to specific step
-  const goToStep = useCallback((step: BuilderStep) => {
-    const targetIndex = STEPS.findIndex((s) => s.id === step)
-    // Only allow jumping to completed or current steps
-    if (targetIndex <= currentStepIndex) {
-      setCurrentStep(step)
-    }
-  }, [currentStepIndex])
+  const goToStep = useCallback(
+    (step: BuilderStep) => {
+      const targetIndex = STEPS.findIndex((s) => s.id === step)
+      // Only allow jumping to completed or current steps
+      if (targetIndex <= currentStepIndex) {
+        setCurrentStep(step)
+      }
+    },
+    [currentStepIndex]
+  )
 
   // Save bot
   const handleSave = useCallback(() => {
@@ -233,49 +228,47 @@ export function BotBuilder({
         return (
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Bot Name</label>
+              <label className="mb-1 block text-sm font-medium">Bot Name</label>
               <input
                 type="text"
                 value={bot.name || ''}
                 onChange={(e) => updateBot('name', e.target.value)}
                 placeholder="My Custom Bot"
                 className={cn(
-                  'w-full px-3 py-2 rounded-md border bg-background',
+                  'w-full rounded-md border bg-background px-3 py-2',
                   errors.name ? 'border-destructive' : 'border-input'
                 )}
               />
-              {errors.name && (
-                <p className="text-sm text-destructive mt-1">{errors.name}</p>
-              )}
+              {errors.name && <p className="mt-1 text-sm text-destructive">{errors.name}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Description</label>
+              <label className="mb-1 block text-sm font-medium">Description</label>
               <textarea
                 value={bot.description || ''}
                 onChange={(e) => updateBot('description', e.target.value)}
                 placeholder="What does this bot do?"
                 rows={3}
                 className={cn(
-                  'w-full px-3 py-2 rounded-md border bg-background resize-none',
+                  'w-full resize-none rounded-md border bg-background px-3 py-2',
                   errors.description ? 'border-destructive' : 'border-input'
                 )}
               />
               {errors.description && (
-                <p className="text-sm text-destructive mt-1">{errors.description}</p>
+                <p className="mt-1 text-sm text-destructive">{errors.description}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">Icon (optional)</label>
+              <label className="mb-1 block text-sm font-medium">Icon (optional)</label>
               <input
                 type="text"
                 value={bot.icon || ''}
                 onChange={(e) => updateBot('icon', e.target.value)}
                 placeholder="robot"
-                className="w-full px-3 py-2 rounded-md border border-input bg-background"
+                className="w-full rounded-md border border-input bg-background px-3 py-2"
               />
-              <p className="text-xs text-muted-foreground mt-1">
+              <p className="mt-1 text-xs text-muted-foreground">
                 Enter an icon name (e.g., robot, bot, star)
               </p>
             </div>
@@ -303,13 +296,7 @@ export function BotBuilder({
         )
 
       case 'commands':
-        return (
-          <BotCommands
-            actions={bot.actions || []}
-            onAdd={addAction}
-            onRemove={removeAction}
-          />
-        )
+        return <BotCommands actions={bot.actions || []} onAdd={addAction} onRemove={removeAction} />
 
       case 'test':
         return <BotTesting bot={bot as BotBuilderDefinition} />
@@ -320,19 +307,17 @@ export function BotBuilder({
   }
 
   return (
-    <div className={cn('flex flex-col h-full', className)}>
+    <div className={cn('flex h-full flex-col', className)}>
       {/* Header */}
-      <div className="px-6 py-4 border-b">
+      <div className="border-b px-6 py-4">
         <h2 className="text-xl font-semibold">Bot Builder</h2>
-        <p className="text-sm text-muted-foreground">
-          Create a custom bot for your channels
-        </p>
+        <p className="text-sm text-muted-foreground">Create a custom bot for your channels</p>
       </div>
 
       {/* Progress */}
-      <div className="px-6 py-3 border-b">
+      <div className="border-b px-6 py-3">
         <Progress value={progress} className="h-2" />
-        <div className="flex justify-between mt-2">
+        <div className="mt-2 flex justify-between">
           {STEPS.map((step, index) => (
             <button
               key={step.id}
@@ -341,10 +326,10 @@ export function BotBuilder({
               className={cn(
                 'text-xs transition-colors',
                 index === currentStepIndex
-                  ? 'text-primary font-medium'
+                  ? 'font-medium text-primary'
                   : index < currentStepIndex
-                  ? 'text-foreground cursor-pointer hover:text-primary'
-                  : 'text-muted-foreground cursor-not-allowed'
+                    ? 'cursor-pointer text-foreground hover:text-primary'
+                    : 'cursor-not-allowed text-muted-foreground'
               )}
             >
               {step.label}
@@ -356,10 +341,8 @@ export function BotBuilder({
       {/* Content */}
       <div className="flex-1 overflow-y-auto p-6">
         <Card className="p-6">
-          <h3 className="text-lg font-medium mb-1">
-            {STEPS[currentStepIndex].label}
-          </h3>
-          <p className="text-sm text-muted-foreground mb-6">
+          <h3 className="mb-1 text-lg font-medium">{STEPS[currentStepIndex].label}</h3>
+          <p className="mb-6 text-sm text-muted-foreground">
             {STEPS[currentStepIndex].description}
           </p>
 
@@ -368,7 +351,7 @@ export function BotBuilder({
       </div>
 
       {/* Footer */}
-      <div className="px-6 py-4 border-t flex justify-between">
+      <div className="flex justify-between border-t px-6 py-4">
         <div>
           {onCancel && (
             <Button variant="ghost" onClick={onCancel}>
@@ -385,13 +368,9 @@ export function BotBuilder({
           )}
 
           {currentStepIndex < STEPS.length - 1 ? (
-            <Button onClick={goNext}>
-              Next
-            </Button>
+            <Button onClick={goNext}>Next</Button>
           ) : (
-            <Button onClick={handleSave}>
-              Save Bot
-            </Button>
+            <Button onClick={handleSave}>Save Bot</Button>
           )}
         </div>
       </div>

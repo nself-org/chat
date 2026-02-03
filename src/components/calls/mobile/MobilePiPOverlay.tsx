@@ -10,14 +10,7 @@
 import * as React from 'react'
 import { motion, useMotionValue, useAnimation, PanInfo } from 'framer-motion'
 import { cn } from '@/lib/utils'
-import {
-  Maximize2,
-  PhoneOff,
-  Mic,
-  MicOff,
-  Video,
-  VideoOff,
-} from 'lucide-react'
+import { Maximize2, PhoneOff, Mic, MicOff, Video, VideoOff } from 'lucide-react'
 import { useCallStore } from '@/stores/call-store'
 import { formatCallDuration } from '@/components/call/call-controls'
 
@@ -173,7 +166,7 @@ export function MobilePiPOverlay({
       style={{ x, y }}
       className={cn(
         'fixed z-50 cursor-move touch-none',
-        'rounded-2xl overflow-hidden shadow-2xl',
+        'overflow-hidden rounded-2xl shadow-2xl',
         'bg-gray-900',
         className
       )}
@@ -181,43 +174,35 @@ export function MobilePiPOverlay({
       whileTap={{ scale: 0.98 }}
     >
       {/* Video/Avatar */}
-      <div className="relative w-40 h-56 bg-gray-800">
+      <div className="relative h-56 w-40 bg-gray-800">
         {isVideoCall && isVideoEnabled ? (
-          <video
-            ref={videoRef}
-            autoPlay
-            playsInline
-            muted
-            className="w-full h-full object-cover"
-          />
+          <video ref={videoRef} autoPlay playsInline muted className="h-full w-full object-cover" />
         ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <div className="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center text-white text-xl font-semibold">
+          <div className="flex h-full w-full items-center justify-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gray-700 text-xl font-semibold text-white">
               {participant?.name?.charAt(0).toUpperCase() || '?'}
             </div>
           </div>
         )}
 
         {/* Status Indicator */}
-        <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
-          <div className="bg-red-500 w-2 h-2 rounded-full animate-pulse" />
-          <div className="bg-black/70 backdrop-blur-sm rounded-full px-2 py-1">
-            <span className="text-white text-xs font-mono">
-              {formatCallDuration(callDuration)}
-            </span>
+        <div className="absolute left-2 right-2 top-2 flex items-center justify-between">
+          <div className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+          <div className="rounded-full bg-black/70 px-2 py-1 backdrop-blur-sm">
+            <span className="font-mono text-xs text-white">{formatCallDuration(callDuration)}</span>
           </div>
         </div>
 
         {/* Participant Name */}
         <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-          <p className="text-white text-xs font-medium truncate">
+          <p className="truncate text-xs font-medium text-white">
             {participant?.name || 'Unknown'}
           </p>
         </div>
 
         {/* Mute Indicator */}
         {isMuted && (
-          <div className="absolute bottom-2 right-2 bg-red-500 rounded-full p-1.5">
+          <div className="absolute bottom-2 right-2 rounded-full bg-red-500 p-1.5">
             <MicOff size={12} className="text-white" />
           </div>
         )}
@@ -242,7 +227,7 @@ export function MobilePiPOverlay({
               toggleLocalMute()
             }}
             className={cn(
-              'w-8 h-8 rounded-full flex items-center justify-center',
+              'flex h-8 w-8 items-center justify-center rounded-full',
               isMuted ? 'bg-red-500' : 'bg-gray-700'
             )}
             aria-label={isMuted ? 'Unmute' : 'Mute'}
@@ -259,7 +244,7 @@ export function MobilePiPOverlay({
                 toggleLocalVideo()
               }}
               className={cn(
-                'w-8 h-8 rounded-full flex items-center justify-center',
+                'flex h-8 w-8 items-center justify-center rounded-full',
                 isVideoEnabled ? 'bg-blue-500' : 'bg-gray-700'
               )}
               aria-label={isVideoEnabled ? 'Stop Video' : 'Start Video'}
@@ -275,7 +260,7 @@ export function MobilePiPOverlay({
               e.stopPropagation()
               onExpand()
             }}
-            className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-500"
             aria-label="Expand"
           >
             <Maximize2 size={16} />
@@ -285,7 +270,7 @@ export function MobilePiPOverlay({
           <button
             type="button"
             onClick={handleEndCall}
-            className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center"
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-red-500"
             aria-label="End Call"
           >
             <PhoneOff size={16} />
@@ -295,7 +280,7 @@ export function MobilePiPOverlay({
 
       {/* Tap Indicator (shown briefly) */}
       <motion.div
-        className="absolute inset-0 border-2 border-white rounded-2xl pointer-events-none"
+        className="pointer-events-none absolute inset-0 rounded-2xl border-2 border-white"
         initial={{ opacity: 0 }}
         animate={{ opacity: isExpanded ? 0 : 0 }}
       />

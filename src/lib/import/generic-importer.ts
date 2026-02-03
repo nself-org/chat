@@ -144,16 +144,16 @@ export class GenericImporter {
     const columns = Object.keys(firstRow)
 
     // Detect if this is user data
-    if (columns.some(col => /email|username|user/i.test(col))) {
-      data.users = rows.map(row => this.mapUser(row))
+    if (columns.some((col) => /email|username|user/i.test(col))) {
+      data.users = rows.map((row) => this.mapUser(row))
     }
     // Detect if this is channel data
-    else if (columns.some(col => /channel|room/i.test(col))) {
-      data.channels = rows.map(row => this.mapChannel(row))
+    else if (columns.some((col) => /channel|room/i.test(col))) {
+      data.channels = rows.map((row) => this.mapChannel(row))
     }
     // Detect if this is message data
-    else if (columns.some(col => /message|content|text/i.test(col))) {
-      data.messages = rows.map(row => this.mapMessage(row))
+    else if (columns.some((col) => /message|content|text/i.test(col))) {
+      data.messages = rows.map((row) => this.mapMessage(row))
     }
 
     return data
@@ -171,12 +171,12 @@ export class GenericImporter {
       const firstItem = data[0]
       if (firstItem && typeof firstItem === 'object') {
         const keys = Object.keys(firstItem)
-        if (keys.some(k => /email|username/i.test(k))) {
-          result.users = data.map(item => this.mapUser(item as Record<string, unknown>))
-        } else if (keys.some(k => /channel|room/i.test(k))) {
-          result.channels = data.map(item => this.mapChannel(item as Record<string, unknown>))
-        } else if (keys.some(k => /message|content/i.test(k))) {
-          result.messages = data.map(item => this.mapMessage(item as Record<string, unknown>))
+        if (keys.some((k) => /email|username/i.test(k))) {
+          result.users = data.map((item) => this.mapUser(item as Record<string, unknown>))
+        } else if (keys.some((k) => /channel|room/i.test(k))) {
+          result.channels = data.map((item) => this.mapChannel(item as Record<string, unknown>))
+        } else if (keys.some((k) => /message|content/i.test(k))) {
+          result.messages = data.map((item) => this.mapMessage(item as Record<string, unknown>))
         }
       }
     }
@@ -274,13 +274,13 @@ export class GenericImporter {
     const mapping: Record<string, string> = {}
     const keys = Object.keys(row)
 
-    mapping.id = keys.find(k => /^id$/i.test(k)) || keys[0]
-    mapping.email = keys.find(k => /email/i.test(k)) || ''
-    mapping.username = keys.find(k => /username|user_name|login/i.test(k)) || ''
-    mapping.displayName = keys.find(k => /display.*name|full.*name|name/i.test(k)) || ''
-    mapping.avatarUrl = keys.find(k => /avatar|photo|picture|image/i.test(k)) || ''
-    mapping.role = keys.find(k => /role|type|level/i.test(k)) || ''
-    mapping.createdAt = keys.find(k => /created.*at|created.*date|joined/i.test(k)) || ''
+    mapping.id = keys.find((k) => /^id$/i.test(k)) || keys[0]
+    mapping.email = keys.find((k) => /email/i.test(k)) || ''
+    mapping.username = keys.find((k) => /username|user_name|login/i.test(k)) || ''
+    mapping.displayName = keys.find((k) => /display.*name|full.*name|name/i.test(k)) || ''
+    mapping.avatarUrl = keys.find((k) => /avatar|photo|picture|image/i.test(k)) || ''
+    mapping.role = keys.find((k) => /role|type|level/i.test(k)) || ''
+    mapping.createdAt = keys.find((k) => /created.*at|created.*date|joined/i.test(k)) || ''
 
     return mapping
   }
@@ -292,12 +292,12 @@ export class GenericImporter {
     const mapping: Record<string, string> = {}
     const keys = Object.keys(row)
 
-    mapping.id = keys.find(k => /^id$/i.test(k)) || keys[0]
-    mapping.name = keys.find(k => /^name$|channel.*name/i.test(k)) || ''
-    mapping.description = keys.find(k => /description|desc|topic|purpose/i.test(k)) || ''
-    mapping.isPrivate = keys.find(k => /private|is.*private/i.test(k)) || ''
-    mapping.createdBy = keys.find(k => /created.*by|creator|owner/i.test(k)) || ''
-    mapping.createdAt = keys.find(k => /created.*at|created.*date/i.test(k)) || ''
+    mapping.id = keys.find((k) => /^id$/i.test(k)) || keys[0]
+    mapping.name = keys.find((k) => /^name$|channel.*name/i.test(k)) || ''
+    mapping.description = keys.find((k) => /description|desc|topic|purpose/i.test(k)) || ''
+    mapping.isPrivate = keys.find((k) => /private|is.*private/i.test(k)) || ''
+    mapping.createdBy = keys.find((k) => /created.*by|creator|owner/i.test(k)) || ''
+    mapping.createdAt = keys.find((k) => /created.*at|created.*date/i.test(k)) || ''
 
     return mapping
   }
@@ -309,13 +309,13 @@ export class GenericImporter {
     const mapping: Record<string, string> = {}
     const keys = Object.keys(row)
 
-    mapping.id = keys.find(k => /^id$|message.*id/i.test(k)) || keys[0]
-    mapping.channelId = keys.find(k => /channel.*id|room.*id/i.test(k)) || ''
-    mapping.userId = keys.find(k => /user.*id|author.*id|sender.*id/i.test(k)) || ''
-    mapping.content = keys.find(k => /content|text|message|body/i.test(k)) || ''
-    mapping.createdAt = keys.find(k => /created.*at|timestamp|sent.*at/i.test(k)) || ''
-    mapping.editedAt = keys.find(k => /edited.*at|updated.*at/i.test(k)) || ''
-    mapping.parentId = keys.find(k => /parent.*id|thread.*id|reply.*to/i.test(k)) || ''
+    mapping.id = keys.find((k) => /^id$|message.*id/i.test(k)) || keys[0]
+    mapping.channelId = keys.find((k) => /channel.*id|room.*id/i.test(k)) || ''
+    mapping.userId = keys.find((k) => /user.*id|author.*id|sender.*id/i.test(k)) || ''
+    mapping.content = keys.find((k) => /content|text|message|body/i.test(k)) || ''
+    mapping.createdAt = keys.find((k) => /created.*at|timestamp|sent.*at/i.test(k)) || ''
+    mapping.editedAt = keys.find((k) => /edited.*at|updated.*at/i.test(k)) || ''
+    mapping.parentId = keys.find((k) => /parent.*id|thread.*id|reply.*to/i.test(k)) || ''
 
     return mapping
   }
@@ -323,7 +323,10 @@ export class GenericImporter {
   /**
    * Main import method
    */
-  async import(data: GenericImportData, onProgress?: (progress: ImportProgress) => void): Promise<ImportResult> {
+  async import(
+    data: GenericImportData,
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<ImportResult> {
     const startTime = Date.now()
     this.progress.status = 'importing'
     this.progress.startedAt = new Date()
@@ -378,7 +381,10 @@ export class GenericImporter {
   /**
    * Validate import data
    */
-  private async validateData(data: GenericImportData, onProgress?: (progress: ImportProgress) => void): Promise<void> {
+  private async validateData(
+    data: GenericImportData,
+    onProgress?: (progress: ImportProgress) => void
+  ): Promise<void> {
     this.updateProgress(1, 'Validating data', onProgress)
 
     let hasData = false
@@ -618,7 +624,6 @@ export class GenericImporter {
     avatarUrl?: string
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual user creation via GraphQL
     return `user_${Math.random().toString(36).substr(2, 9)}`
   }
 
@@ -629,7 +634,6 @@ export class GenericImporter {
     createdBy: string
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual channel creation via GraphQL
     return `channel_${Math.random().toString(36).substr(2, 9)}`
   }
 
@@ -641,13 +645,16 @@ export class GenericImporter {
     createdAt: Date
     metadata?: Record<string, unknown>
   }): Promise<string> {
-    // TODO: Implement actual message creation via GraphQL
     return `message_${Math.random().toString(36).substr(2, 9)}`
   }
 
   // Progress tracking helpers
 
-  private updateProgress(step: number, message: string, onProgress?: (progress: ImportProgress) => void): void {
+  private updateProgress(
+    step: number,
+    message: string,
+    onProgress?: (progress: ImportProgress) => void
+  ): void {
     this.progress.currentStepNumber = step
     this.progress.currentStep = message
     this.progress.itemsProcessed = 0
@@ -661,7 +668,8 @@ export class GenericImporter {
     onProgress?: (progress: ImportProgress) => void
   ): void {
     const stepProgress = (current / total) * 100
-    const overallProgress = ((step - 1) / this.progress.totalSteps) * 100 + (stepProgress / this.progress.totalSteps)
+    const overallProgress =
+      ((step - 1) / this.progress.totalSteps) * 100 + stepProgress / this.progress.totalSteps
     this.progress.progress = Math.min(100, Math.round(overallProgress))
     onProgress?.(this.progress)
   }

@@ -8,12 +8,12 @@
 /**
  * Plural categories as defined by CLDR
  */
-export type PluralCategory = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other';
+export type PluralCategory = 'zero' | 'one' | 'two' | 'few' | 'many' | 'other'
 
 /**
  * Plural rule function type
  */
-export type PluralRuleFunction = (n: number) => PluralCategory;
+export type PluralRuleFunction = (n: number) => PluralCategory
 
 /**
  * Plural rules for each supported locale
@@ -25,8 +25,8 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * "one" for n=1, "other" for everything else
    */
   en: (n: number): PluralCategory => {
-    if (n === 1) return 'one';
-    return 'other';
+    if (n === 1) return 'one'
+    return 'other'
   },
 
   /**
@@ -34,8 +34,8 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * Same as English
    */
   es: (n: number): PluralCategory => {
-    if (n === 1) return 'one';
-    return 'other';
+    if (n === 1) return 'one'
+    return 'other'
   },
 
   /**
@@ -43,8 +43,8 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * "one" for 0 and 1, "other" for everything else
    */
   fr: (n: number): PluralCategory => {
-    if (n === 0 || n === 1) return 'one';
-    return 'other';
+    if (n === 0 || n === 1) return 'one'
+    return 'other'
   },
 
   /**
@@ -52,8 +52,8 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * Same as English
    */
   de: (n: number): PluralCategory => {
-    if (n === 1) return 'one';
-    return 'other';
+    if (n === 1) return 'one'
+    return 'other'
   },
 
   /**
@@ -61,13 +61,13 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * Most complex plural system
    */
   ar: (n: number): PluralCategory => {
-    if (n === 0) return 'zero';
-    if (n === 1) return 'one';
-    if (n === 2) return 'two';
-    const mod100 = n % 100;
-    if (mod100 >= 3 && mod100 <= 10) return 'few';
-    if (mod100 >= 11 && mod100 <= 99) return 'many';
-    return 'other';
+    if (n === 0) return 'zero'
+    if (n === 1) return 'one'
+    if (n === 2) return 'two'
+    const mod100 = n % 100
+    if (mod100 >= 3 && mod100 <= 10) return 'few'
+    if (mod100 >= 11 && mod100 <= 99) return 'many'
+    return 'other'
   },
 
   /**
@@ -75,7 +75,7 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * Chinese doesn't have plural forms
    */
   zh: (): PluralCategory => {
-    return 'other';
+    return 'other'
   },
 
   /**
@@ -83,7 +83,7 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * Japanese doesn't have plural forms
    */
   ja: (): PluralCategory => {
-    return 'other';
+    return 'other'
   },
 
   /**
@@ -91,8 +91,8 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * Same as English
    */
   pt: (n: number): PluralCategory => {
-    if (n === 1) return 'one';
-    return 'other';
+    if (n === 1) return 'one'
+    return 'other'
   },
 
   /**
@@ -100,43 +100,36 @@ export const pluralRules: Record<string, PluralRuleFunction> = {
    * Complex Slavic plural system
    */
   ru: (n: number): PluralCategory => {
-    const mod10 = n % 10;
-    const mod100 = n % 100;
+    const mod10 = n % 10
+    const mod100 = n % 100
 
-    if (mod10 === 1 && mod100 !== 11) return 'one';
-    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'few';
-    return 'many';
+    if (mod10 === 1 && mod100 !== 11) return 'one'
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return 'few'
+    return 'many'
   },
-};
+}
 
 /**
  * Get plural category for a number in a given locale
  */
-export function getPluralCategory(
-  locale: string,
-  count: number
-): PluralCategory {
-  const absoluteCount = Math.abs(count);
-  const rule = pluralRules[locale];
+export function getPluralCategory(locale: string, count: number): PluralCategory {
+  const absoluteCount = Math.abs(count)
+  const rule = pluralRules[locale]
 
   if (!rule) {
     // Default to English-like pluralization
-    return absoluteCount === 1 ? 'one' : 'other';
+    return absoluteCount === 1 ? 'one' : 'other'
   }
 
-  return rule(absoluteCount);
+  return rule(absoluteCount)
 }
 
 /**
  * Get the plural key suffix for a translation
  */
-export function getPluralKeySuffix(
-  locale: string,
-  count: number,
-  separator: string = '_'
-): string {
-  const category = getPluralCategory(locale, count);
-  return `${separator}${category}`;
+export function getPluralKeySuffix(locale: string, count: number, separator: string = '_'): string {
+  const category = getPluralCategory(locale, count)
+  return `${separator}${category}`
 }
 
 /**
@@ -148,8 +141,8 @@ export function buildPluralKey(
   count: number,
   separator: string = '_'
 ): string {
-  const suffix = getPluralKeySuffix(locale, count, separator);
-  return `${baseKey}${suffix}`;
+  const suffix = getPluralKeySuffix(locale, count, separator)
+  return `${baseKey}${suffix}`
 }
 
 /**
@@ -158,29 +151,26 @@ export function buildPluralKey(
 export function getLocalePluralForms(locale: string): PluralCategory[] {
   switch (locale) {
     case 'ar':
-      return ['zero', 'one', 'two', 'few', 'many', 'other'];
+      return ['zero', 'one', 'two', 'few', 'many', 'other']
     case 'ru':
-      return ['one', 'few', 'many', 'other'];
+      return ['one', 'few', 'many', 'other']
     case 'zh':
     case 'ja':
-      return ['other'];
+      return ['other']
     case 'fr':
-      return ['one', 'other'];
+      return ['one', 'other']
     default:
       // English, Spanish, German, Portuguese
-      return ['one', 'other'];
+      return ['one', 'other']
   }
 }
 
 /**
  * Check if a locale supports a specific plural category
  */
-export function localeHasPluralCategory(
-  locale: string,
-  category: PluralCategory
-): boolean {
-  const forms = getLocalePluralForms(locale);
-  return forms.includes(category);
+export function localeHasPluralCategory(locale: string, category: PluralCategory): boolean {
+  const forms = getLocalePluralForms(locale)
+  return forms.includes(category)
 }
 
 /**
@@ -188,13 +178,13 @@ export function localeHasPluralCategory(
  */
 export const ordinalRules: Record<string, PluralRuleFunction> = {
   en: (n: number): PluralCategory => {
-    const mod10 = n % 10;
-    const mod100 = n % 100;
+    const mod10 = n % 10
+    const mod100 = n % 100
 
-    if (mod10 === 1 && mod100 !== 11) return 'one';
-    if (mod10 === 2 && mod100 !== 12) return 'two';
-    if (mod10 === 3 && mod100 !== 13) return 'few';
-    return 'other';
+    if (mod10 === 1 && mod100 !== 11) return 'one'
+    if (mod10 === 2 && mod100 !== 12) return 'two'
+    if (mod10 === 3 && mod100 !== 13) return 'few'
+    return 'other'
   },
 
   // Most languages use 'other' for ordinals
@@ -206,17 +196,14 @@ export const ordinalRules: Record<string, PluralRuleFunction> = {
   ja: (): PluralCategory => 'other',
   pt: (): PluralCategory => 'other',
   ru: (): PluralCategory => 'other',
-};
+}
 
 /**
  * Get ordinal plural category
  */
-export function getOrdinalCategory(
-  locale: string,
-  count: number
-): PluralCategory {
-  const rule = ordinalRules[locale] || ordinalRules.en;
-  return rule(Math.abs(count));
+export function getOrdinalCategory(locale: string, count: number): PluralCategory {
+  const rule = ordinalRules[locale] || ordinalRules.en
+  return rule(Math.abs(count))
 }
 
 /**
@@ -224,13 +211,13 @@ export function getOrdinalCategory(
  * e.g., 1 -> "st", 2 -> "nd", 3 -> "rd", 4 -> "th"
  */
 export function getEnglishOrdinalSuffix(n: number): string {
-  const mod10 = n % 10;
-  const mod100 = n % 100;
+  const mod10 = n % 10
+  const mod100 = n % 100
 
-  if (mod10 === 1 && mod100 !== 11) return 'st';
-  if (mod10 === 2 && mod100 !== 12) return 'nd';
-  if (mod10 === 3 && mod100 !== 13) return 'rd';
-  return 'th';
+  if (mod10 === 1 && mod100 !== 11) return 'st'
+  if (mod10 === 2 && mod100 !== 12) return 'nd'
+  if (mod10 === 3 && mod100 !== 13) return 'rd'
+  return 'th'
 }
 
 /**
@@ -239,9 +226,9 @@ export function getEnglishOrdinalSuffix(n: number): string {
  */
 export function formatOrdinal(n: number, locale: string = 'en'): string {
   if (locale === 'en') {
-    return `${n}${getEnglishOrdinalSuffix(n)}`;
+    return `${n}${getEnglishOrdinalSuffix(n)}`
   }
   // For other locales, just return the number
   // Full ordinal support would require more locale-specific data
-  return n.toString();
+  return n.toString()
 }

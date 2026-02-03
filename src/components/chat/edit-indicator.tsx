@@ -3,12 +3,7 @@
 import { useState, memo } from 'react'
 import { format, formatDistanceToNow } from 'date-fns'
 import { Pencil } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { MessageEditRecord, MessageUser } from '@/types/message'
 
@@ -72,9 +67,7 @@ export const EditIndicator = memo(function EditIndicator({
           {editCount} edit{editCount !== 1 ? 's' : ''} total
         </p>
       )}
-      {onViewHistory && (
-        <p className="text-xs text-primary">Click to view edit history</p>
-      )}
+      {onViewHistory && <p className="text-xs text-primary">Click to view edit history</p>}
     </div>
   ) : (
     <p>Edited</p>

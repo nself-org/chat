@@ -112,10 +112,7 @@ export class BackgroundSyncWeb implements BackgroundPlugin {
   /**
    * Cancel work
    */
-  async cancelWork(options: {
-    workId?: string
-    taskIdentifier?: string
-  }): Promise<void> {
+  async cancelWork(options: { workId?: string; taskIdentifier?: string }): Promise<void> {
     if (
       this.periodicSyncRegistered &&
       'serviceWorker' in navigator &&
@@ -282,4 +279,4 @@ async function handleBackgroundSync(tag) {
     // await performDirectSync();
   }
 }
-`;
+`

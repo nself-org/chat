@@ -2,16 +2,7 @@
 
 import * as React from 'react'
 import { useState, useEffect } from 'react'
-import {
-  Hash,
-  Lock,
-  Trash2,
-  Archive,
-  Bell,
-  BellOff,
-  Users,
-  Shield,
-} from 'lucide-react'
+import { Hash, Lock, Trash2, Archive, Bell, BellOff, Users, Shield } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -32,12 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from '@/components/ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,6 +38,8 @@ import {
 import { useChannelStore, type Channel } from '@/stores/channel-store'
 import { useUIStore } from '@/stores/ui-store'
 import { useAuth } from '@/contexts/auth-context'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -70,11 +58,7 @@ type PostPermission = 'everyone' | 'admins' | 'owner'
 // Component
 // ============================================================================
 
-export function ChannelSettingsModal({
-  open,
-  channelId,
-  onOpenChange,
-}: ChannelSettingsModalProps) {
+export function ChannelSettingsModal({ open, channelId, onOpenChange }: ChannelSettingsModalProps) {
   const { user } = useAuth()
   const isOwner = user?.role === 'owner'
   const isAdmin = user?.role === 'owner' || user?.role === 'admin'
@@ -115,7 +99,7 @@ export function ChannelSettingsModal({
       })
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to update channel:', error)
+      logger.error('Failed to update channel:', error)
     } finally {
       setIsLoading(false)
     }
@@ -152,9 +136,7 @@ export function ChannelSettingsModal({
             )}
             Channel Settings
           </DialogTitle>
-          <DialogDescription>
-            Manage settings for #{channel.name}
-          </DialogDescription>
+          <DialogDescription>Manage settings for #{channel.name}</DialogDescription>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab}>
@@ -165,7 +147,7 @@ export function ChannelSettingsModal({
           </TabsList>
 
           {/* General Tab */}
-          <TabsContent value="general" className="space-y-4 mt-4">
+          <TabsContent value="general" className="mt-4 space-y-4">
             {/* Channel Name */}
             <div className="space-y-2">
               <Label htmlFor="channel-name">Channel name</Label>
@@ -194,9 +176,7 @@ export function ChannelSettingsModal({
                 rows={2}
                 maxLength={250}
               />
-              <p className="text-xs text-muted-foreground">
-                {description.length}/250 characters
-              </p>
+              <p className="text-xs text-muted-foreground">{description.length}/250 characters</p>
             </div>
 
             {/* Topic */}
@@ -209,9 +189,7 @@ export function ChannelSettingsModal({
                 placeholder="Current topic of discussion"
                 maxLength={250}
               />
-              <p className="text-xs text-muted-foreground">
-                Shown in the channel header
-              </p>
+              <p className="text-xs text-muted-foreground">Shown in the channel header</p>
             </div>
 
             {/* Privacy */}
@@ -231,7 +209,7 @@ export function ChannelSettingsModal({
           </TabsContent>
 
           {/* Notifications Tab */}
-          <TabsContent value="notifications" className="space-y-4 mt-4">
+          <TabsContent value="notifications" className="mt-4 space-y-4">
             <div className="space-y-2">
               <Label>Notification preference</Label>
               <Select
@@ -271,7 +249,7 @@ export function ChannelSettingsModal({
           </TabsContent>
 
           {/* Permissions Tab */}
-          <TabsContent value="permissions" className="space-y-4 mt-4">
+          <TabsContent value="permissions" className="mt-4 space-y-4">
             {isAdmin && (
               <>
                 <div className="space-y-2">
@@ -306,13 +284,13 @@ export function ChannelSettingsModal({
                   </Select>
                 </div>
 
-                <div className="pt-4 border-t space-y-3">
+                <div className="space-y-3 border-t pt-4">
                   {/* Archive Channel */}
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <Button
                         variant="outline"
-                        className="w-full justify-start text-amber-600 hover:text-amber-700 hover:bg-amber-50"
+                        className="w-full justify-start text-amber-600 hover:bg-amber-50 hover:text-amber-700"
                       >
                         <Archive className="mr-2 h-4 w-4" />
                         Archive channel
@@ -322,15 +300,14 @@ export function ChannelSettingsModal({
                       <AlertDialogHeader>
                         <AlertDialogTitle>Archive channel?</AlertDialogTitle>
                         <AlertDialogDescription>
-                          Members will no longer be able to send messages in #{channel.name}.
-                          The channel and its messages will still be visible. You can unarchive it later.
+                          Members will no longer be able to send messages in #{channel.name}. The
+                          channel and its messages will still be visible. You can unarchive it
+                          later.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleArchive}>
-                          Archive
-                        </AlertDialogAction>
+                        <AlertDialogAction onClick={handleArchive}>Archive</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -341,7 +318,7 @@ export function ChannelSettingsModal({
                       <AlertDialogTrigger asChild>
                         <Button
                           variant="outline"
-                          className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10"
+                          className="hover:bg-destructive/10 w-full justify-start text-destructive hover:text-destructive"
                         >
                           <Trash2 className="mr-2 h-4 w-4" />
                           Delete channel
@@ -359,7 +336,7 @@ export function ChannelSettingsModal({
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={handleDelete}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                           >
                             Delete permanently
                           </AlertDialogAction>
@@ -372,7 +349,7 @@ export function ChannelSettingsModal({
             )}
 
             {!isAdmin && (
-              <p className="text-sm text-muted-foreground py-4 text-center">
+              <p className="py-4 text-center text-sm text-muted-foreground">
                 Only admins can manage channel permissions
               </p>
             )}

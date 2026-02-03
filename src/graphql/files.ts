@@ -1,7 +1,8 @@
 /**
  * File Management GraphQL Operations
  *
- * Handles file uploads, downloads, and file management
+ * Handles file uploads, downloads, and file management.
+ * Uses nchat_attachments table for file records.
  */
 
 import { gql } from '@apollo/client'
@@ -11,14 +12,7 @@ import { ATTACHMENT_FRAGMENT, USER_BASIC_FRAGMENT, CHANNEL_BASIC_FRAGMENT } from
 // TYPE DEFINITIONS
 // ============================================================================
 
-export type FileType =
-  | 'image'
-  | 'video'
-  | 'audio'
-  | 'document'
-  | 'archive'
-  | 'code'
-  | 'other'
+export type FileType = 'image' | 'video' | 'audio' | 'document' | 'archive' | 'code' | 'other'
 
 export type FileCategory =
   | 'image/jpeg'
@@ -44,10 +38,15 @@ export interface UploadFileVariables {
 }
 
 export interface CreateFileRecordVariables {
+  id?: string
   messageId: string
+  userId: string
+  channelId?: string
   fileName: string
+  originalName: string
   fileType: string
   fileSize: number
+  storagePath: string
   fileUrl: string
   thumbnailUrl?: string
   width?: number
@@ -92,16 +91,47 @@ export interface FileUploadProgress {
 }
 
 // ============================================================================
+// EXTENDED ATTACHMENT FRAGMENT
+// ============================================================================
+
+export const ATTACHMENT_FULL_FRAGMENT = gql`
+  fragment AttachmentFull on nchat_attachments {
+    id
+    message_id
+    user_id
+    channel_id
+    file_name
+    original_name
+    file_type
+    file_size
+    storage_path
+    file_url
+    thumbnail_url
+    width
+    height
+    duration
+    metadata
+    processing_status
+    processing_job_id
+    content_hash
+    is_deleted
+    deleted_at
+    created_at
+    updated_at
+  }
+`
+
+// ============================================================================
 // QUERIES
 // ============================================================================
 
 /**
  * Get a single file by ID
  */
-export const GET_FILE = gql`
-  query GetFile($id: uuid!) {
+export const GET_FILE_BY_ID = gql`
+  query GetFileById($id: uuid!) {
     nchat_attachments_by_pk(id: $id) {
-      ...Attachment
+      ...AttachmentFull
       message {
         id
         content
@@ -115,34 +145,39 @@ export const GET_FILE = gql`
       }
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
   ${USER_BASIC_FRAGMENT}
   ${CHANNEL_BASIC_FRAGMENT}
+`
+
+/**
+ * Get file by storage path
+ */
+export const GET_FILE_BY_STORAGE_PATH = gql`
+  query GetFileByStoragePath($storagePath: String!) {
+    nchat_attachments(where: { storage_path: { _eq: $storagePath } }, limit: 1) {
+      ...AttachmentFull
+    }
+  }
+  ${ATTACHMENT_FULL_FRAGMENT}
 `
 
 /**
  * Get all files in a channel
  */
 export const GET_CHANNEL_FILES = gql`
-  query GetChannelFiles(
-    $channelId: uuid!
-    $fileType: String
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetChannelFiles($channelId: uuid!, $fileType: String, $limit: Int = 50, $offset: Int = 0) {
     nchat_attachments(
       where: {
-        message: {
-          channel_id: { _eq: $channelId }
-          is_deleted: { _eq: false }
-        }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _ilike: $fileType }
       }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
     ) {
-      ...Attachment
+      ...AttachmentFull
       message {
         id
         created_at
@@ -153,10 +188,8 @@ export const GET_CHANNEL_FILES = gql`
     }
     nchat_attachments_aggregate(
       where: {
-        message: {
-          channel_id: { _eq: $channelId }
-          is_deleted: { _eq: false }
-        }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _ilike: $fileType }
       }
     ) {
@@ -168,7 +201,7 @@ export const GET_CHANNEL_FILES = gql`
       }
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
   ${USER_BASIC_FRAGMENT}
 `
 
@@ -179,29 +212,32 @@ export const GET_FILES_BY_TYPE = gql`
   query GetFilesByType($channelId: uuid!, $limit: Int = 20) {
     images: nchat_attachments(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _ilike: "image/%" }
       }
       order_by: { created_at: desc }
       limit: $limit
     ) {
-      ...Attachment
+      ...AttachmentFull
     }
 
     videos: nchat_attachments(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _ilike: "video/%" }
       }
       order_by: { created_at: desc }
       limit: $limit
     ) {
-      ...Attachment
+      ...AttachmentFull
     }
 
     documents: nchat_attachments(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: {
           _in: [
             "application/pdf"
@@ -214,23 +250,25 @@ export const GET_FILES_BY_TYPE = gql`
       order_by: { created_at: desc }
       limit: $limit
     ) {
-      ...Attachment
+      ...AttachmentFull
     }
 
     audio: nchat_attachments(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _ilike: "audio/%" }
       }
       order_by: { created_at: desc }
       limit: $limit
     ) {
-      ...Attachment
+      ...AttachmentFull
     }
 
     archives: nchat_attachments(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: {
           _in: [
             "application/zip"
@@ -243,10 +281,10 @@ export const GET_FILES_BY_TYPE = gql`
       order_by: { created_at: desc }
       limit: $limit
     ) {
-      ...Attachment
+      ...AttachmentFull
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
 `
 
 /**
@@ -255,17 +293,12 @@ export const GET_FILES_BY_TYPE = gql`
 export const GET_USER_FILES = gql`
   query GetUserFiles($userId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_attachments(
-      where: {
-        message: {
-          user_id: { _eq: $userId }
-          is_deleted: { _eq: false }
-        }
-      }
+      where: { user_id: { _eq: $userId }, is_deleted: { _eq: false } }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
     ) {
-      ...Attachment
+      ...AttachmentFull
       message {
         id
         channel {
@@ -273,8 +306,16 @@ export const GET_USER_FILES = gql`
         }
       }
     }
+    nchat_attachments_aggregate(where: { user_id: { _eq: $userId }, is_deleted: { _eq: false } }) {
+      aggregate {
+        count
+        sum {
+          file_size
+        }
+      }
+    }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
   ${CHANNEL_BASIC_FRAGMENT}
 `
 
@@ -284,13 +325,13 @@ export const GET_USER_FILES = gql`
 export const GET_MESSAGE_FILES = gql`
   query GetMessageFiles($messageId: uuid!) {
     nchat_attachments(
-      where: { message_id: { _eq: $messageId } }
+      where: { message_id: { _eq: $messageId }, is_deleted: { _eq: false } }
       order_by: { created_at: asc }
     ) {
-      ...Attachment
+      ...AttachmentFull
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
 `
 
 /**
@@ -299,7 +340,7 @@ export const GET_MESSAGE_FILES = gql`
 export const GET_CHANNEL_FILE_STATS = gql`
   query GetChannelFileStats($channelId: uuid!) {
     total: nchat_attachments_aggregate(
-      where: { message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } } }
+      where: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
     ) {
       aggregate {
         count
@@ -311,7 +352,8 @@ export const GET_CHANNEL_FILE_STATS = gql`
 
     images: nchat_attachments_aggregate(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _ilike: "image/%" }
       }
     ) {
@@ -325,7 +367,8 @@ export const GET_CHANNEL_FILE_STATS = gql`
 
     videos: nchat_attachments_aggregate(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _ilike: "video/%" }
       }
     ) {
@@ -339,7 +382,8 @@ export const GET_CHANNEL_FILE_STATS = gql`
 
     documents: nchat_attachments_aggregate(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _in: ["application/pdf", "application/msword", "text/plain"] }
       }
     ) {
@@ -353,10 +397,27 @@ export const GET_CHANNEL_FILE_STATS = gql`
 
     audio: nchat_attachments_aggregate(
       where: {
-        message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
+        channel_id: { _eq: $channelId }
+        is_deleted: { _eq: false }
         file_type: { _ilike: "audio/%" }
       }
     ) {
+      aggregate {
+        count
+        sum {
+          file_size
+        }
+      }
+    }
+  }
+`
+
+/**
+ * Get storage usage for user
+ */
+export const GET_USER_STORAGE_USAGE = gql`
+  query GetUserStorageUsage($userId: uuid!) {
+    nchat_attachments_aggregate(where: { user_id: { _eq: $userId }, is_deleted: { _eq: false } }) {
       aggregate {
         count
         sum {
@@ -372,32 +433,13 @@ export const GET_CHANNEL_FILE_STATS = gql`
  */
 export const GET_STORAGE_USAGE = gql`
   query GetStorageUsage {
-    total: nchat_attachments_aggregate {
+    total: nchat_attachments_aggregate(where: { is_deleted: { _eq: false } }) {
       aggregate {
         count
         sum {
           file_size
         }
       }
-    }
-
-    by_user: nchat_attachments(
-      distinct_on: [message: { user_id }]
-      order_by: { message: { user_id: asc } }
-    ) {
-      message {
-        user {
-          id
-          display_name
-        }
-      }
-    }
-
-    by_type: nchat_attachments(
-      distinct_on: file_type
-      order_by: { file_type: asc }
-    ) {
-      file_type
     }
   }
 `
@@ -416,16 +458,17 @@ export const SEARCH_FILES = gql`
     nchat_attachments(
       where: {
         _and: [
-          { file_name: { _ilike: $query } }
+          { _or: [{ file_name: { _ilike: $query } }, { original_name: { _ilike: $query } }] }
           { file_type: { _ilike: $fileType } }
-          { message: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } } }
+          { channel_id: { _eq: $channelId } }
+          { is_deleted: { _eq: false } }
         ]
       }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
     ) {
-      ...Attachment
+      ...AttachmentFull
       message {
         id
         created_at
@@ -438,7 +481,7 @@ export const SEARCH_FILES = gql`
       }
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
   ${USER_BASIC_FRAGMENT}
   ${CHANNEL_BASIC_FRAGMENT}
 `
@@ -449,11 +492,11 @@ export const SEARCH_FILES = gql`
 export const GET_RECENT_FILES = gql`
   query GetRecentFiles($limit: Int = 20) {
     nchat_attachments(
-      where: { message: { is_deleted: { _eq: false } } }
+      where: { is_deleted: { _eq: false } }
       order_by: { created_at: desc }
       limit: $limit
     ) {
-      ...Attachment
+      ...AttachmentFull
       message {
         id
         created_at
@@ -466,9 +509,29 @@ export const GET_RECENT_FILES = gql`
       }
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
   ${USER_BASIC_FRAGMENT}
   ${CHANNEL_BASIC_FRAGMENT}
+`
+
+/**
+ * Check if file exists by content hash (for deduplication)
+ */
+export const GET_FILE_BY_HASH = gql`
+  query GetFileByHash($contentHash: String!, $userId: uuid!) {
+    nchat_attachments(
+      where: {
+        content_hash: { _eq: $contentHash }
+        user_id: { _eq: $userId }
+        is_deleted: { _eq: false }
+      }
+      limit: 1
+    ) {
+      id
+      storage_path
+      file_url
+    }
+  }
 `
 
 // ============================================================================
@@ -476,64 +539,65 @@ export const GET_RECENT_FILES = gql`
 // ============================================================================
 
 /**
- * Request presigned URL for file upload
+ * Insert a new file record
  */
-export const REQUEST_UPLOAD_URL = gql`
-  mutation RequestUploadUrl(
-    $fileName: String!
-    $contentType: String!
-    $fileSize: Int!
+export const INSERT_FILE = gql`
+  mutation InsertFile(
+    $id: uuid
+    $messageId: uuid
+    $userId: uuid!
     $channelId: uuid
-  ) {
-    request_upload_url(
-      file_name: $fileName
-      content_type: $contentType
-      file_size: $fileSize
-      channel_id: $channelId
-    ) {
-      presigned_url
-      file_key
-      file_url
-      expires_in
-    }
-  }
-`
-
-/**
- * Create file record after upload
- */
-export const CREATE_FILE = gql`
-  mutation CreateFile(
-    $messageId: uuid!
     $fileName: String!
+    $originalName: String!
     $fileType: String!
     $fileSize: Int!
+    $storagePath: String!
     $fileUrl: String!
     $thumbnailUrl: String
     $width: Int
     $height: Int
     $duration: Int
     $metadata: jsonb
+    $processingStatus: String
+    $processingJobId: String
+    $contentHash: String
   ) {
     insert_nchat_attachments_one(
       object: {
+        id: $id
         message_id: $messageId
+        user_id: $userId
+        channel_id: $channelId
         file_name: $fileName
+        original_name: $originalName
         file_type: $fileType
         file_size: $fileSize
+        storage_path: $storagePath
         file_url: $fileUrl
         thumbnail_url: $thumbnailUrl
         width: $width
         height: $height
         duration: $duration
         metadata: $metadata
+        processing_status: $processingStatus
+        processing_job_id: $processingJobId
+        content_hash: $contentHash
+      }
+      on_conflict: {
+        constraint: nchat_attachments_pkey
+        update_columns: [file_url, thumbnail_url, processing_status, metadata, updated_at]
       }
     ) {
-      ...Attachment
+      ...AttachmentFull
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
 `
+
+/**
+ * Create file record after upload (alias)
+ */
+export const CREATE_FILE = INSERT_FILE
 
 /**
  * Create multiple files at once
@@ -543,20 +607,114 @@ export const CREATE_FILES = gql`
     insert_nchat_attachments(objects: $files) {
       affected_rows
       returning {
-        ...Attachment
+        ...AttachmentFull
       }
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
 `
 
 /**
- * Delete a file
+ * Update file metadata
+ */
+export const UPDATE_FILE = gql`
+  mutation UpdateFile(
+    $id: uuid!
+    $fileName: String
+    $thumbnailUrl: String
+    $width: Int
+    $height: Int
+    $duration: Int
+    $metadata: jsonb
+    $processingStatus: String
+  ) {
+    update_nchat_attachments_by_pk(
+      pk_columns: { id: $id }
+      _set: {
+        file_name: $fileName
+        thumbnail_url: $thumbnailUrl
+        width: $width
+        height: $height
+        duration: $duration
+        processing_status: $processingStatus
+        updated_at: "now()"
+      }
+      _append: { metadata: $metadata }
+    ) {
+      ...AttachmentFull
+    }
+  }
+  ${ATTACHMENT_FULL_FRAGMENT}
+`
+
+/**
+ * Update file metadata only
+ */
+export const UPDATE_FILE_METADATA = gql`
+  mutation UpdateFileMetadata($id: uuid!, $metadata: jsonb!) {
+    update_nchat_attachments_by_pk(pk_columns: { id: $id }, _append: { metadata: $metadata }) {
+      id
+      metadata
+      updated_at
+    }
+  }
+`
+
+/**
+ * Update processing status
+ */
+export const UPDATE_PROCESSING_STATUS = gql`
+  mutation UpdateProcessingStatus(
+    $id: uuid!
+    $status: String!
+    $thumbnailUrl: String
+    $width: Int
+    $height: Int
+    $duration: Int
+    $metadata: jsonb
+  ) {
+    update_nchat_attachments_by_pk(
+      pk_columns: { id: $id }
+      _set: {
+        processing_status: $status
+        thumbnail_url: $thumbnailUrl
+        width: $width
+        height: $height
+        duration: $duration
+        updated_at: "now()"
+      }
+      _append: { metadata: $metadata }
+    ) {
+      ...AttachmentFull
+    }
+  }
+  ${ATTACHMENT_FULL_FRAGMENT}
+`
+
+/**
+ * Soft delete a file
  */
 export const DELETE_FILE = gql`
   mutation DeleteFile($id: uuid!) {
+    update_nchat_attachments_by_pk(
+      pk_columns: { id: $id }
+      _set: { is_deleted: true, deleted_at: "now()" }
+    ) {
+      id
+      is_deleted
+      deleted_at
+    }
+  }
+`
+
+/**
+ * Hard delete a file (permanent)
+ */
+export const HARD_DELETE_FILE = gql`
+  mutation HardDeleteFile($id: uuid!) {
     delete_nchat_attachments_by_pk(id: $id) {
       id
+      storage_path
       file_url
       thumbnail_url
       file_name
@@ -569,12 +727,14 @@ export const DELETE_FILE = gql`
  */
 export const DELETE_MESSAGE_FILES = gql`
   mutation DeleteMessageFiles($messageId: uuid!) {
-    delete_nchat_attachments(
+    update_nchat_attachments(
       where: { message_id: { _eq: $messageId } }
+      _set: { is_deleted: true, deleted_at: "now()" }
     ) {
       affected_rows
       returning {
         id
+        storage_path
         file_url
         thumbnail_url
       }
@@ -587,12 +747,14 @@ export const DELETE_MESSAGE_FILES = gql`
  */
 export const BULK_DELETE_FILES = gql`
   mutation BulkDeleteFiles($ids: [uuid!]!) {
-    delete_nchat_attachments(
+    update_nchat_attachments(
       where: { id: { _in: $ids } }
+      _set: { is_deleted: true, deleted_at: "now()" }
     ) {
       affected_rows
       returning {
         id
+        storage_path
         file_url
         thumbnail_url
         file_name
@@ -602,66 +764,16 @@ export const BULK_DELETE_FILES = gql`
 `
 
 /**
- * Update file metadata
+ * Restore soft-deleted file
  */
-export const UPDATE_FILE_METADATA = gql`
-  mutation UpdateFileMetadata($id: uuid!, $metadata: jsonb!) {
+export const RESTORE_FILE = gql`
+  mutation RestoreFile($id: uuid!) {
     update_nchat_attachments_by_pk(
       pk_columns: { id: $id }
-      _append: { metadata: $metadata }
+      _set: { is_deleted: false, deleted_at: null }
     ) {
       id
-      metadata
-      updated_at
-    }
-  }
-`
-
-/**
- * Generate thumbnail for image/video
- */
-export const GENERATE_THUMBNAIL = gql`
-  mutation GenerateThumbnail($fileId: uuid!) {
-    generate_thumbnail(file_id: $fileId) {
-      thumbnail_url
-      width
-      height
-    }
-  }
-`
-
-/**
- * Confirm upload completion
- */
-export const CONFIRM_FILE_UPLOAD = gql`
-  mutation ConfirmFileUpload(
-    $fileKey: String!
-    $messageId: uuid!
-    $metadata: jsonb
-  ) {
-    confirm_upload(
-      file_key: $fileKey
-      message_id: $messageId
-      metadata: $metadata
-    ) {
-      attachment {
-        ...Attachment
-      }
-      success
-      error
-    }
-  }
-  ${ATTACHMENT_FRAGMENT}
-`
-
-/**
- * Get download URL for a file
- */
-export const GET_DOWNLOAD_URL = gql`
-  mutation GetDownloadUrl($fileId: uuid!) {
-    get_download_url(file_id: $fileId) {
-      download_url
-      expires_in
+      is_deleted
     }
   }
 `
@@ -673,27 +785,10 @@ export const UPDATE_FILE_NAME = gql`
   mutation UpdateFileName($id: uuid!, $fileName: String!) {
     update_nchat_attachments_by_pk(
       pk_columns: { id: $id }
-      _set: { file_name: $fileName }
+      _set: { file_name: $fileName, updated_at: "now()" }
     ) {
       id
       file_name
-    }
-  }
-`
-
-/**
- * Process uploaded file (generate thumbnails, extract metadata, etc.)
- */
-export const PROCESS_FILE = gql`
-  mutation ProcessFile($fileId: uuid!) {
-    process_file(file_id: $fileId) {
-      success
-      thumbnail_url
-      width
-      height
-      duration
-      metadata
-      error
     }
   }
 `
@@ -708,11 +803,11 @@ export const PROCESS_FILE = gql`
 export const CHANNEL_FILES_SUBSCRIPTION = gql`
   subscription ChannelFilesSubscription($channelId: uuid!) {
     nchat_attachments(
-      where: { message: { channel_id: { _eq: $channelId } } }
+      where: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
       order_by: { created_at: desc }
       limit: 1
     ) {
-      ...Attachment
+      ...AttachmentFull
       message {
         id
         user {
@@ -721,20 +816,25 @@ export const CHANNEL_FILES_SUBSCRIPTION = gql`
       }
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
   ${USER_BASIC_FRAGMENT}
 `
 
 /**
- * Subscribe to file upload progress
+ * Subscribe to file processing status
  */
-export const FILE_UPLOAD_PROGRESS_SUBSCRIPTION = gql`
-  subscription FileUploadProgressSubscription($fileKey: String!) {
-    file_upload_progress(file_key: $fileKey) {
-      file_key
-      progress
-      status
-      error
+export const FILE_PROCESSING_SUBSCRIPTION = gql`
+  subscription FileProcessingSubscription($fileId: uuid!) {
+    nchat_attachments_by_pk(id: $fileId) {
+      id
+      processing_status
+      processing_job_id
+      thumbnail_url
+      width
+      height
+      duration
+      metadata
+      updated_at
     }
   }
 `
@@ -747,9 +847,9 @@ export const FILES_STREAM_SUBSCRIPTION = gql`
     nchat_attachments_stream(
       cursor: { initial_value: { created_at: "now()" } }
       batch_size: 10
-      where: { message: { channel_id: { _eq: $channelId } } }
+      where: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
     ) {
-      ...Attachment
+      ...AttachmentFull
       message {
         id
         channel_id
@@ -759,6 +859,6 @@ export const FILES_STREAM_SUBSCRIPTION = gql`
       }
     }
   }
-  ${ATTACHMENT_FRAGMENT}
+  ${ATTACHMENT_FULL_FRAGMENT}
   ${USER_BASIC_FRAGMENT}
 `

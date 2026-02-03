@@ -1,12 +1,7 @@
 'use client'
 
 import { useCallback, useMemo, useEffect } from 'react'
-import {
-  useQuery,
-  useMutation,
-  useSubscription,
-  type ApolloError,
-} from '@apollo/client'
+import { useQuery, useMutation, useSubscription, type ApolloError } from '@apollo/client'
 import { useAuth } from '@/contexts/auth-context'
 import {
   GET_NOTIFICATIONS,
@@ -210,8 +205,7 @@ export function useNotifications(options?: {
           fields: {
             nchat_notifications(existingNotifications = [], { readField, toReference }) {
               const exists = existingNotifications.some(
-                (notifRef: { __ref: string }) =>
-                  readField('id', notifRef) === newNotification.id
+                (notifRef: { __ref: string }) => readField('id', notifRef) === newNotification.id
               )
               if (exists) return existingNotifications
 
@@ -322,27 +316,29 @@ export function useUnreadByChannel(): UseUnreadByChannelReturn {
   const channelUnreads = useMemo(() => {
     const memberships = data?.nchat_channel_members ?? []
 
-    return memberships.map((m: {
-      channel_id: string
-      last_read_at?: string
-      channel: {
-        id: string
-        name: string
-        slug: string
-        unread?: { aggregate?: { count?: number } }
-        has_mention?: Array<{ id: string }>
-      }
-    }) => ({
-      channel_id: m.channel_id,
-      channel: {
-        id: m.channel.id,
-        name: m.channel.name,
-        slug: m.channel.slug,
-      },
-      unread_count: m.channel.unread?.aggregate?.count ?? 0,
-      has_mention: (m.channel.has_mention?.length ?? 0) > 0,
-      last_read_at: m.last_read_at,
-    }))
+    return memberships.map(
+      (m: {
+        channel_id: string
+        last_read_at?: string
+        channel: {
+          id: string
+          name: string
+          slug: string
+          unread?: { aggregate?: { count?: number } }
+          has_mention?: Array<{ id: string }>
+        }
+      }) => ({
+        channel_id: m.channel_id,
+        channel: {
+          id: m.channel.id,
+          name: m.channel.name,
+          slug: m.channel.slug,
+        },
+        unread_count: m.channel.unread?.aggregate?.count ?? 0,
+        has_mention: (m.channel.has_mention?.length ?? 0) > 0,
+        last_read_at: m.last_read_at,
+      })
+    )
   }, [data])
 
   return {
@@ -389,8 +385,7 @@ export function useMarkAsRead(): UseMarkAsReadReturn {
     useMutation(MARK_AS_READ)
   const [markMultipleMutation, { loading: multipleLoading, error: multipleError }] =
     useMutation(MARK_MULTIPLE_AS_READ)
-  const [markAllMutation, { loading: allLoading, error: allError }] =
-    useMutation(MARK_ALL_AS_READ)
+  const [markAllMutation, { loading: allLoading, error: allError }] = useMutation(MARK_ALL_AS_READ)
 
   const markAsRead = useCallback(
     async (notificationId: string): Promise<boolean> => {
@@ -444,9 +439,7 @@ export function useMarkAsRead(): UseMarkAsReadReturn {
           userId: user.id,
           channelId,
         },
-        refetchQueries: [
-          { query: GET_UNREAD_COUNT, variables: { userId: user.id } },
-        ],
+        refetchQueries: [{ query: GET_UNREAD_COUNT, variables: { userId: user.id } }],
       })
 
       return result.data?.update_nchat_notifications?.affected_rows ?? 0
@@ -474,12 +467,15 @@ export function useNotificationPreferences(): UseNotificationPreferencesReturn {
     skip: !user?.id,
   })
 
-  const [updatePrefsMutation, { loading: updateLoading, error: updateError }] =
-    useMutation(UPDATE_NOTIFICATION_PREFERENCES)
-  const [muteMutation, { loading: muteLoading, error: muteError }] =
-    useMutation(MUTE_CHANNEL_NOTIFICATIONS)
-  const [unmuteMutation, { loading: unmuteLoading, error: unmuteError }] =
-    useMutation(UNMUTE_CHANNEL_NOTIFICATIONS)
+  const [updatePrefsMutation, { loading: updateLoading, error: updateError }] = useMutation(
+    UPDATE_NOTIFICATION_PREFERENCES
+  )
+  const [muteMutation, { loading: muteLoading, error: muteError }] = useMutation(
+    MUTE_CHANNEL_NOTIFICATIONS
+  )
+  const [unmuteMutation, { loading: unmuteLoading, error: unmuteError }] = useMutation(
+    UNMUTE_CHANNEL_NOTIFICATIONS
+  )
 
   const preferences = useMemo(() => {
     return data?.nchat_users_by_pk?.notification_preferences ?? null
@@ -585,8 +581,7 @@ export function useDeleteNotifications(): UseDeleteNotificationsReturn {
             fields: {
               nchat_notifications(existingNotifications = [], { readField }) {
                 return existingNotifications.filter(
-                  (notifRef: { __ref: string }) =>
-                    readField('id', notifRef) !== notificationId
+                  (notifRef: { __ref: string }) => readField('id', notifRef) !== notificationId
                 )
               },
             },
@@ -640,11 +635,7 @@ export function usePushNotifications(): UsePushNotificationsReturn {
     useMutation(UNREGISTER_PUSH_TOKEN)
 
   const registerToken = useCallback(
-    async (
-      token: string,
-      platform: string,
-      deviceId?: string
-    ): Promise<boolean> => {
+    async (token: string, platform: string, deviceId?: string): Promise<boolean> => {
       if (!user) {
         throw new Error('Must be logged in to register push token')
       }
@@ -685,11 +676,9 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 /**
  * Subscribe to notification stream
  */
-export function useNotificationStream(
-  options?: {
-    onNotification?: (notification: Notification) => void
-  }
-) {
+export function useNotificationStream(options?: {
+  onNotification?: (notification: Notification) => void
+}) {
   const { user } = useAuth()
 
   useSubscription(NOTIFICATION_STREAM_SUBSCRIPTION, {
@@ -734,12 +723,10 @@ export function useChannelUnreadSubscription(
 /**
  * Combined notification subscription hook
  */
-export function useNotificationSubscription(
-  options?: {
-    onNewNotification?: (notification: Notification) => void
-    onUnreadCountChange?: (counts: UnreadCounts) => void
-  }
-) {
+export function useNotificationSubscription(options?: {
+  onNewNotification?: (notification: Notification) => void
+  onUnreadCountChange?: (counts: UnreadCounts) => void
+}) {
   const { user } = useAuth()
 
   // New notifications

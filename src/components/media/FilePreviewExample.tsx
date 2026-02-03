@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * FilePreviewExample - Example usage of the FilePreview system
@@ -7,12 +7,12 @@
  * components with various file types.
  */
 
-import * as React from 'react';
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { FilePreview } from './FilePreview';
-import { MediaItem, MediaUser } from '@/lib/media/media-types';
-import { Download, Eye } from 'lucide-react';
+import * as React from 'react'
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { FilePreview } from './FilePreview'
+import { MediaItem, MediaUser } from '@/lib/media/media-types'
+import { Download, Eye } from 'lucide-react'
 
 // ============================================================================
 // Example Data
@@ -23,7 +23,7 @@ const exampleUser: MediaUser = {
   username: 'johndoe',
   displayName: 'John Doe',
   avatarUrl: null,
-};
+}
 
 const exampleFiles: MediaItem[] = [
   // Image
@@ -147,41 +147,41 @@ const exampleFiles: MediaItem[] = [
     canShare: true,
     canDownload: true,
   },
-];
+]
 
 // ============================================================================
 // Component
 // ============================================================================
 
 export function FilePreviewExample() {
-  const [selectedFile, setSelectedFile] = useState<MediaItem | null>(null);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<MediaItem | null>(null)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
 
   const handlePreview = (file: MediaItem) => {
-    setSelectedFile(file);
-    setIsPreviewOpen(true);
-  };
+    setSelectedFile(file)
+    setIsPreviewOpen(true)
+  }
 
   const handleClose = () => {
-    setIsPreviewOpen(false);
-    setSelectedFile(null);
-  };
+    setIsPreviewOpen(false)
+    setSelectedFile(null)
+  }
 
   const handleNext = () => {
-    if (!selectedFile) return;
-    const currentIndex = exampleFiles.findIndex((f) => f.id === selectedFile.id);
+    if (!selectedFile) return
+    const currentIndex = exampleFiles.findIndex((f) => f.id === selectedFile.id)
     if (currentIndex < exampleFiles.length - 1) {
-      setSelectedFile(exampleFiles[currentIndex + 1]);
+      setSelectedFile(exampleFiles[currentIndex + 1])
     }
-  };
+  }
 
   const handlePrevious = () => {
-    if (!selectedFile) return;
-    const currentIndex = exampleFiles.findIndex((f) => f.id === selectedFile.id);
+    if (!selectedFile) return
+    const currentIndex = exampleFiles.findIndex((f) => f.id === selectedFile.id)
     if (currentIndex > 0) {
-      setSelectedFile(exampleFiles[currentIndex - 1]);
+      setSelectedFile(exampleFiles[currentIndex - 1])
     }
-  };
+  }
 
   return (
     <div className="container mx-auto max-w-4xl py-8">
@@ -208,18 +208,14 @@ export function FilePreviewExample() {
               <div>
                 <p className="font-medium">{file.fileName}</p>
                 <p className="text-sm text-muted-foreground">
-                  {file.mimeType.split('/')[1].toUpperCase()} •{' '}
-                  {(file.fileSize / 1024).toFixed(0)} KB
+                  {file.mimeType.split('/')[1].toUpperCase()} • {(file.fileSize / 1024).toFixed(0)}{' '}
+                  KB
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => handlePreview(file)}
-              >
+              <Button variant="outline" size="sm" onClick={() => handlePreview(file)}>
                 <Eye className="mr-2 h-4 w-4" />
                 Preview
               </Button>
@@ -245,7 +241,7 @@ export function FilePreviewExample() {
         />
       )}
     </div>
-  );
+  )
 }
 
-export default FilePreviewExample;
+export default FilePreviewExample

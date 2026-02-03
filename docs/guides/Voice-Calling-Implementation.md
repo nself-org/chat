@@ -3,6 +3,7 @@
 ## Overview
 
 Comprehensive WebRTC voice calling system with support for:
+
 - **1-on-1 calls**: Peer-to-peer with automatic fallback to TURN
 - **Group calls**: SFU architecture supporting up to 50 participants
 - **High-quality audio**: Opus codec at 48kHz with noise suppression and echo cancellation
@@ -100,26 +101,32 @@ nself db migrate up
 ### Core Tables
 
 **nchat_calls**
+
 - Main call records
 - Fields: id, type ('1-on-1'|'group'), status, channel_id, initiator_id, timestamps, duration, quality metrics, recording info
 
 **nchat_call_participants**
+
 - Participant information for each call
 - Fields: call_id, user_id, status, joined_at, left_at, duration, is_muted, connection quality
 
 **nchat_call_events**
+
 - Event log for debugging and analytics
 - Fields: call_id, user_id, event_type, timestamp, data
 
 **nchat_call_recordings**
+
 - Metadata for call recordings
 - Fields: call_id, file_url, duration, status, permissions
 
 **nchat_ice_servers**
+
 - TURN/STUN server configurations
 - Fields: urls[], username, credential, server_type, region, priority
 
 **nchat_call_quality_reports**
+
 - WebRTC quality metrics
 - Fields: call_id, participant_id, packet_loss, jitter, rtt, bitrate, rtc_stats (JSONB)
 
@@ -128,19 +135,23 @@ nself db migrate up
 ### 1. Core Libraries
 
 #### Audio Processor (`src/lib/calls/audio-processor.ts`)
+
 ```typescript
 import { createAudioProcessor } from '@/lib/calls/audio-processor'
 
-const processor = createAudioProcessor({
-  echoCancellation: true,
-  noiseSuppression: true,
-  autoGainControl: true,
-  vadEnabled: true,
-  vadThreshold: 30,
-}, {
-  onAudioLevel: (info) => console.log('Audio level:', info.level),
-  onVoiceActivity: (speaking) => console.log('Speaking:', speaking),
-})
+const processor = createAudioProcessor(
+  {
+    echoCancellation: true,
+    noiseSuppression: true,
+    autoGainControl: true,
+    vadEnabled: true,
+    vadThreshold: 30,
+  },
+  {
+    onAudioLevel: (info) => console.log('Audio level:', info.level),
+    onVoiceActivity: (speaking) => console.log('Speaking:', speaking),
+  }
+)
 
 // Initialize with stream
 await processor.initialize(stream)
@@ -153,6 +164,7 @@ processor.cleanup()
 ```
 
 Features:
+
 - ✅ Automatic Gain Control (AGC)
 - ✅ Noise suppression
 - ✅ Echo cancellation
@@ -161,6 +173,7 @@ Features:
 - ✅ Real-time processing
 
 #### Call State Machine (`src/lib/calls/call-state-machine.ts`)
+
 ```typescript
 import { createCallStateMachine } from '@/lib/calls/call-state-machine'
 
@@ -170,11 +183,11 @@ const machine = createCallStateMachine('call-123', {
 })
 
 // Trigger state transitions
-machine.initiate()    // idle -> initiating
-machine.ring()        // initiating -> ringing
-machine.accept()      // ringing -> connecting
-machine.connect()     // connecting -> connected
-machine.end()         // connected -> ended
+machine.initiate() // idle -> initiating
+machine.ring() // initiating -> ringing
+machine.accept() // ringing -> connecting
+machine.connect() // connecting -> connected
+machine.end() // connected -> ended
 
 // Query state
 machine.isConnected()
@@ -185,20 +198,24 @@ machine.getTimeline()
 States: `idle` → `initiating` → `ringing` → `connecting` → `connected` → `ended`
 
 #### Group Call Manager (`src/lib/calls/group-call-manager.ts`)
+
 ```typescript
 import { createGroupCallManager } from '@/lib/calls/group-call-manager'
 
-const manager = createGroupCallManager({
-  callId: 'call-123',
-  userId: 'user-456',
-  maxParticipants: 50,
-  audioCodec: 'opus',
-  enableDtx: true,
-}, {
-  onParticipantJoined: (p) => console.log('Joined:', p.name),
-  onParticipantLeft: (id) => console.log('Left:', id),
-  onStatsUpdate: (stats) => console.log('Stats:', stats),
-})
+const manager = createGroupCallManager(
+  {
+    callId: 'call-123',
+    userId: 'user-456',
+    maxParticipants: 50,
+    audioCodec: 'opus',
+    enableDtx: true,
+  },
+  {
+    onParticipantJoined: (p) => console.log('Joined:', p.name),
+    onParticipantLeft: (id) => console.log('Left:', id),
+    onStatsUpdate: (stats) => console.log('Stats:', stats),
+  }
+)
 
 // Initialize with local stream
 await manager.initialize(localStream)
@@ -223,9 +240,11 @@ manager.cleanup()
 ### 2. React Hooks
 
 #### useVoiceCall (Already Implemented)
+
 Located at: `src/hooks/use-voice-call.ts`
 
 Usage:
+
 ```typescript
 import { useVoiceCall } from '@/hooks/use-voice-call'
 
@@ -264,6 +283,7 @@ const VoiceCallComponent = () => {
 ```
 
 #### useCallAudio (To be created: `src/hooks/use-call-audio.ts`)
+
 ```typescript
 export function useCallAudio() {
   const [devices, setDevices] = useState({ inputs: [], outputs: [] })
@@ -289,6 +309,7 @@ export function useCallAudio() {
 ```
 
 #### useCallControls (To be created: `src/hooks/use-call-controls.ts`)
+
 ```typescript
 export function useCallControls(callId: string) {
   const [isMuted, setIsMuted] = useState(false)
@@ -305,6 +326,7 @@ export function useCallControls(callId: string) {
 ```
 
 #### useCallRecording (To be created: `src/hooks/use-call-recording.ts`)
+
 ```typescript
 export function useCallRecording(callId: string) {
   const [isRecording, setIsRecording] = useState(false)
@@ -323,9 +345,11 @@ export function useCallRecording(callId: string) {
 ### 3. API Routes
 
 #### POST /api/calls/initiate
+
 Create a new call
 
 Request:
+
 ```json
 {
   "targetUserId": "user-456",
@@ -335,6 +359,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "callId": "call-123",
@@ -343,9 +368,11 @@ Response:
 ```
 
 #### POST /api/calls/:id/join
+
 Join an existing call
 
 Response:
+
 ```json
 {
   "callId": "call-123",
@@ -355,9 +382,11 @@ Response:
 ```
 
 #### POST /api/calls/:id/leave
+
 Leave a call
 
 Response:
+
 ```json
 {
   "success": true,
@@ -366,9 +395,11 @@ Response:
 ```
 
 #### GET /api/calls/:id/participants
+
 Get call participants
 
 Response:
+
 ```json
 {
   "participants": [
@@ -383,9 +414,11 @@ Response:
 ```
 
 #### POST /api/calls/:id/recording
+
 Start/stop recording
 
 Request:
+
 ```json
 {
   "action": "start" | "stop"
@@ -393,6 +426,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "recordingId": "rec-456",
@@ -432,10 +466,7 @@ query GetActiveCalls {
 query GetCallHistory($userId: uuid!) {
   nchat_calls(
     where: {
-      _or: [
-        { initiator_id: { _eq: $userId } }
-        { participants: { user_id: { _eq: $userId } } }
-      ]
+      _or: [{ initiator_id: { _eq: $userId } }, { participants: { user_id: { _eq: $userId } } }]
     }
     order_by: { created_at: desc }
     limit: 50
@@ -460,12 +491,14 @@ query GetCallHistory($userId: uuid!) {
 ```graphql
 # Create call
 mutation CreateCall($type: String!, $initiatorId: uuid!, $channelId: uuid) {
-  insert_nchat_calls_one(object: {
-    type: $type
-    initiator_id: $initiatorId
-    channel_id: $channelId
-    status: "initiating"
-  }) {
+  insert_nchat_calls_one(
+    object: {
+      type: $type
+      initiator_id: $initiatorId
+      channel_id: $channelId
+      status: "initiating"
+    }
+  ) {
     id
     status
   }
@@ -473,11 +506,9 @@ mutation CreateCall($type: String!, $initiatorId: uuid!, $channelId: uuid) {
 
 # Join call
 mutation JoinCall($callId: uuid!, $userId: uuid!) {
-  insert_nchat_call_participants_one(object: {
-    call_id: $callId
-    user_id: $userId
-    status: "connecting"
-  }) {
+  insert_nchat_call_participants_one(
+    object: { call_id: $callId, user_id: $userId, status: "connecting" }
+  ) {
     id
   }
 }
@@ -499,10 +530,7 @@ mutation EndCall($callId: uuid!) {
 ```graphql
 # Subscribe to call events
 subscription CallEvents($callId: uuid!) {
-  nchat_call_events(
-    where: { call_id: { _eq: $callId } }
-    order_by: { timestamp: desc }
-  ) {
+  nchat_call_events(where: { call_id: { _eq: $callId } }, order_by: { timestamp: desc }) {
     id
     event_type
     timestamp
@@ -515,9 +543,7 @@ subscription CallEvents($callId: uuid!) {
 
 # Subscribe to participant changes
 subscription ParticipantChanges($callId: uuid!) {
-  nchat_call_participants(
-    where: { call_id: { _eq: $callId } }
-  ) {
+  nchat_call_participants(where: { call_id: { _eq: $callId } }) {
     id
     user {
       id
@@ -534,7 +560,9 @@ subscription ParticipantChanges($callId: uuid!) {
 ### 5. UI Components
 
 #### VoiceCallModal.tsx
+
 Main call interface showing:
+
 - Participant avatars
 - Call duration
 - Audio level indicators
@@ -542,14 +570,18 @@ Main call interface showing:
 - Connection quality
 
 #### CallControls.tsx
+
 Control buttons:
+
 - Mute/unmute
 - Speaker on/off
 - End call
 - Settings (device selection)
 
 #### CallParticipants.tsx
+
 List of participants with:
+
 - Avatar
 - Name
 - Mute status
@@ -557,13 +589,17 @@ List of participants with:
 - Audio level
 
 #### IncomingCallAlert.tsx
+
 Notification for incoming calls:
+
 - Caller info
 - Accept/Decline buttons
 - Ringtone audio
 
 #### CallHistory.tsx
+
 Call log showing:
+
 - Missed/completed calls
 - Duration
 - Participants
@@ -675,6 +711,7 @@ VALUES (
 ## Testing
 
 ### Test Audio Input
+
 ```typescript
 import { testAudioInput } from '@/lib/calls/audio-processor'
 
@@ -684,6 +721,7 @@ console.log('Test result:', result)
 ```
 
 ### Test 1-on-1 Call
+
 1. Open app in two browser tabs
 2. Login as different users
 3. Start call from one tab
@@ -693,6 +731,7 @@ console.log('Test result:', result)
 7. End call
 
 ### Test Group Call
+
 1. Open app in multiple tabs (3-5)
 2. Start group call in channel
 3. Join from other tabs
@@ -703,6 +742,7 @@ console.log('Test result:', result)
 ## Performance Optimization
 
 ### Audio Codec Settings
+
 ```typescript
 {
   audio: {
@@ -721,12 +761,14 @@ console.log('Test result:', result)
 ```
 
 ### Bandwidth Management
+
 - **1-on-1**: ~20-40 kbps per participant
 - **Group (5)**: ~100-200 kbps total
 - **Group (20)**: ~400-800 kbps total
 - **Group (50)**: ~1-2 Mbps total
 
 ### Quality Monitoring
+
 ```typescript
 // Check connection quality
 const quality = await checkConnectionQuality()
@@ -743,22 +785,26 @@ if (quality.packetLoss > 5) {
 ### Common Issues
 
 **No audio heard**
+
 - Check microphone permissions
 - Verify device selection
 - Check if muted
 - Test with `testAudioInput()`
 
 **High latency**
+
 - Check RTT in quality reports
 - Verify TURN server location
 - Consider using closer server
 
 **Call fails to connect**
+
 - Verify ICE servers configured
 - Check TURN credentials
 - Test with different network
 
 **Echo in call**
+
 - Enable echo cancellation
 - Check speaker/microphone distance
 - Reduce speaker volume
@@ -804,6 +850,7 @@ manager.getParticipants()
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/nself/nself-chat/issues
 - Documentation: https://docs.nself.chat
 - Discord: https://discord.gg/nself

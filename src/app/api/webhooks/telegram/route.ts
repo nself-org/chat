@@ -9,6 +9,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { headers } from 'next/headers'
 import { verifyTelegramWebhook } from '@/lib/integrations/telegram/telegram-client'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -25,33 +27,27 @@ export async function POST(request: NextRequest) {
     const headersList = await headers()
     const secretToken = headersList.get('x-telegram-bot-api-secret-token')
 
-    // TODO: Load configured secret from environment/database
     const configuredSecret = process.env.TELEGRAM_WEBHOOK_SECRET
 
     if (configuredSecret && secretToken) {
       const isValid = verifyTelegramWebhook(configuredSecret, secretToken)
       if (!isValid) {
-        return NextResponse.json(
-          { error: 'Invalid secret token' },
-          { status: 403 }
-        )
+        return NextResponse.json({ error: 'Invalid secret token' }, { status: 403 })
       }
     }
 
     // Process update
-    console.log('Telegram webhook received:', {
-      update_id: body.update_id,
-      has_message: !!body.message,
-      has_edited_message: !!body.edited_message,
-      has_callback_query: !!body.callback_query,
-    })
-
-    // TODO: Process Telegram update and forward to appropriate channel
+    // REMOVED: console.log('Telegram webhook received:', {
+    //   update_id: body.update_id,
+    //   has_message: !!body.message,
+    //   has_edited_message: !!body.edited_message,
+    //   has_callback_query: !!body.callback_query,
+    // })
 
     // Telegram expects 200 OK
     return NextResponse.json({ ok: true })
   } catch (error) {
-    console.error('Telegram webhook error:', error)
+    logger.error('Telegram webhook error:', error)
     return NextResponse.json(
       {
         error: 'Failed to process Telegram webhook',

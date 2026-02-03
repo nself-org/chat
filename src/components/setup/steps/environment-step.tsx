@@ -11,9 +11,24 @@
  */
 
 import { useEffect, useState, useCallback } from 'react'
-import { CheckCircle2, XCircle, Loader2, Server, Database, Shield, HardDrive, AlertCircle, ChevronRight, Zap, Settings, Cloud } from 'lucide-react'
+import {
+  CheckCircle2,
+  XCircle,
+  Loader2,
+  Server,
+  Database,
+  Shield,
+  HardDrive,
+  AlertCircle,
+  ChevronRight,
+  Zap,
+  Settings,
+  Cloud,
+} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { type AppConfig } from '@/config/app-config'
+
+import { logger } from '@/lib/logger'
 
 interface EnvironmentStepProps {
   config: AppConfig
@@ -61,10 +76,17 @@ export function EnvironmentStep({ config, onUpdate, onValidate }: EnvironmentSte
   const [error, setError] = useState<string | null>(null)
 
   // Get initial values from config's extended settings
-  const envSettings = (config as AppConfig & { environmentSettings?: EnvironmentSettings }).environmentSettings
-  const [setupMode, setSetupMode] = useState<EnvironmentSettings['setupMode']>(envSettings?.setupMode || 'fresh')
-  const [backendType, setBackendType] = useState<EnvironmentSettings['backendType']>(envSettings?.backendType || 'nself')
-  const [environment, setEnvironment] = useState<EnvironmentSettings['environment']>(envSettings?.environment || 'development')
+  const envSettings = (config as AppConfig & { environmentSettings?: EnvironmentSettings })
+    .environmentSettings
+  const [setupMode, setSetupMode] = useState<EnvironmentSettings['setupMode']>(
+    envSettings?.setupMode || 'fresh'
+  )
+  const [backendType, setBackendType] = useState<EnvironmentSettings['backendType']>(
+    envSettings?.backendType || 'nself'
+  )
+  const [environment, setEnvironment] = useState<EnvironmentSettings['environment']>(
+    envSettings?.environment || 'development'
+  )
 
   // Detect existing environment
   const detectEnvironment = useCallback(async () => {
@@ -105,7 +127,7 @@ export function EnvironmentStep({ config, onUpdate, onValidate }: EnvironmentSte
         setSetupMode('existing')
       }
     } catch (err) {
-      console.error('Environment detection failed:', err)
+      logger.error('Environment detection failed:', err)
       setError('Failed to detect environment. You can still proceed with fresh setup.')
     } finally {
       setDetecting(false)
@@ -132,10 +154,12 @@ export function EnvironmentStep({ config, onUpdate, onValidate }: EnvironmentSte
 
   if (detecting) {
     return (
-      <div className="flex flex-col items-center justify-center py-16 space-y-4">
-        <Loader2 className="w-12 h-12 animate-spin text-primary" />
+      <div className="flex flex-col items-center justify-center space-y-4 py-16">
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
         <p className="text-lg text-muted-foreground">Detecting your environment...</p>
-        <p className="text-sm text-muted-foreground">Checking for existing configuration and services</p>
+        <p className="text-sm text-muted-foreground">
+          Checking for existing configuration and services
+        </p>
       </div>
     )
   }
@@ -145,12 +169,12 @@ export function EnvironmentStep({ config, onUpdate, onValidate }: EnvironmentSte
       {/* Environment Detection Results */}
       {detection && (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold flex items-center gap-2">
-            <Settings className="w-5 h-5" />
+          <h3 className="flex items-center gap-2 text-lg font-semibold">
+            <Settings className="h-5 w-5" />
             Environment Status
           </h3>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
             <StatusCard
               icon={Server}
               label="nself CLI"
@@ -160,13 +184,19 @@ export function EnvironmentStep({ config, onUpdate, onValidate }: EnvironmentSte
             <StatusCard
               icon={Database}
               label="Backend"
-              status={detection.backend.initialized ? (detection.backend.running ? 'success' : 'warning') : 'neutral'}
+              status={
+                detection.backend.initialized
+                  ? detection.backend.running
+                    ? 'success'
+                    : 'warning'
+                  : 'neutral'
+              }
               detail={
                 detection.backend.running
                   ? 'Running'
                   : detection.backend.initialized
-                  ? 'Stopped'
-                  : 'Not configured'
+                    ? 'Stopped'
+                    : 'Not configured'
               }
             />
             <StatusCard
@@ -191,8 +221,8 @@ export function EnvironmentStep({ config, onUpdate, onValidate }: EnvironmentSte
           </div>
 
           {error && (
-            <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-600 dark:text-yellow-400">
-              <AlertCircle className="w-5 h-5 flex-shrink-0" />
+            <div className="flex items-center gap-2 rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-3 text-yellow-600 dark:text-yellow-400">
+              <AlertCircle className="h-5 w-5 flex-shrink-0" />
               <span className="text-sm">{error}</span>
             </div>
           )}
@@ -246,7 +276,11 @@ export function EnvironmentStep({ config, onUpdate, onValidate }: EnvironmentSte
               icon={Server}
               title="nself CLI (Recommended)"
               description="Full-featured backend with PostgreSQL, Hasura GraphQL, Auth, and Storage"
-              features={['Auto-setup with one command', 'Production-ready', 'All services included']}
+              features={[
+                'Auto-setup with one command',
+                'Production-ready',
+                'All services included',
+              ]}
             />
 
             <BackendTypeCard
@@ -280,13 +314,13 @@ export function EnvironmentStep({ config, onUpdate, onValidate }: EnvironmentSte
               key={env}
               onClick={() => setEnvironment(env)}
               className={cn(
-                'flex-1 px-4 py-3 rounded-lg border-2 transition-all',
+                'flex-1 rounded-lg border-2 px-4 py-3 transition-all',
                 environment === env
-                  ? 'border-primary bg-primary/5 text-primary'
-                  : 'border-border hover:border-primary/50'
+                  ? 'bg-primary/5 border-primary text-primary'
+                  : 'hover:border-primary/50 border-border'
               )}
             >
-              <span className="capitalize font-medium">{env}</span>
+              <span className="font-medium capitalize">{env}</span>
             </button>
           ))}
         </div>
@@ -323,10 +357,10 @@ function StatusCard({
   const StatusIcon = status === 'success' ? CheckCircle2 : status === 'error' ? XCircle : Icon
 
   return (
-    <div className={cn('p-4 rounded-lg border', statusColors[status])}>
-      <div className="flex items-center gap-2 mb-2">
-        <StatusIcon className="w-4 h-4" />
-        <span className="font-medium text-sm">{label}</span>
+    <div className={cn('rounded-lg border p-4', statusColors[status])}>
+      <div className="mb-2 flex items-center gap-2">
+        <StatusIcon className="h-4 w-4" />
+        <span className="text-sm font-medium">{label}</span>
       </div>
       <p className="text-xs opacity-80">{detail}</p>
     </div>
@@ -358,40 +392,40 @@ function SetupModeCard({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'relative flex items-start gap-4 p-4 rounded-lg border-2 text-left transition-all',
+        'relative flex items-start gap-4 rounded-lg border-2 p-4 text-left transition-all',
         selected
-          ? 'border-primary bg-primary/5'
+          ? 'bg-primary/5 border-primary'
           : disabled
-          ? 'border-border opacity-50 cursor-not-allowed'
-          : 'border-border hover:border-primary/50'
+            ? 'cursor-not-allowed border-border opacity-50'
+            : 'hover:border-primary/50 border-border'
       )}
     >
       <div
         className={cn(
-          'p-2 rounded-lg',
-          selected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+          'rounded-lg p-2',
+          selected ? 'text-primary-foreground bg-primary' : 'bg-muted'
         )}
       >
-        <Icon className="w-5 h-5" />
+        <Icon className="h-5 w-5" />
       </div>
       <div className="flex-1">
         <div className="flex items-center gap-2">
           <h4 className="font-semibold">{title}</h4>
           {(recommended || badge) && (
-            <span className="px-2 py-0.5 text-xs font-medium bg-primary/10 text-primary rounded-full">
+            <span className="bg-primary/10 rounded-full px-2 py-0.5 text-xs font-medium text-primary">
               {badge || 'Detected'}
             </span>
           )}
         </div>
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
       <div
         className={cn(
-          'w-5 h-5 rounded-full border-2 flex items-center justify-center',
+          'flex h-5 w-5 items-center justify-center rounded-full border-2',
           selected ? 'border-primary bg-primary' : 'border-muted-foreground/30'
         )}
       >
-        {selected && <CheckCircle2 className="w-3 h-3 text-primary-foreground" />}
+        {selected && <CheckCircle2 className="text-primary-foreground h-3 w-3" />}
       </div>
     </button>
   )
@@ -417,25 +451,25 @@ function BackendTypeCard({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-start gap-4 p-4 rounded-lg border-2 text-left transition-all',
-        selected ? 'border-primary bg-primary/5' : 'border-border hover:border-primary/50'
+        'flex items-start gap-4 rounded-lg border-2 p-4 text-left transition-all',
+        selected ? 'bg-primary/5 border-primary' : 'hover:border-primary/50 border-border'
       )}
     >
       <div
         className={cn(
-          'p-2 rounded-lg',
-          selected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+          'rounded-lg p-2',
+          selected ? 'text-primary-foreground bg-primary' : 'bg-muted'
         )}
       >
-        <Icon className="w-5 h-5" />
+        <Icon className="h-5 w-5" />
       </div>
       <div className="flex-1">
         <h4 className="font-semibold">{title}</h4>
-        <p className="text-sm text-muted-foreground mt-1">{description}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
         <ul className="mt-2 space-y-1">
           {features.map((feature, i) => (
-            <li key={i} className="text-xs text-muted-foreground flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-green-500" />
+            <li key={i} className="flex items-center gap-1 text-xs text-muted-foreground">
+              <CheckCircle2 className="h-3 w-3 text-green-500" />
               {feature}
             </li>
           ))}
@@ -443,11 +477,11 @@ function BackendTypeCard({
       </div>
       <div
         className={cn(
-          'w-5 h-5 rounded-full border-2 flex items-center justify-center',
+          'flex h-5 w-5 items-center justify-center rounded-full border-2',
           selected ? 'border-primary bg-primary' : 'border-muted-foreground/30'
         )}
       >
-        {selected && <CheckCircle2 className="w-3 h-3 text-primary-foreground" />}
+        {selected && <CheckCircle2 className="text-primary-foreground h-3 w-3" />}
       </div>
     </button>
   )

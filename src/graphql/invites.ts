@@ -1,8 +1,5 @@
 import { gql } from '@apollo/client'
-import {
-  CHANNEL_BASIC_FRAGMENT,
-  USER_BASIC_FRAGMENT,
-} from './fragments'
+import { CHANNEL_BASIC_FRAGMENT, USER_BASIC_FRAGMENT } from './fragments'
 
 // ============================================================================
 // TYPE DEFINITIONS
@@ -127,13 +124,7 @@ export const INVITE_USAGE_FRAGMENT = gql`
  */
 export const GET_INVITE = gql`
   query GetInvite($code: String!) {
-    nchat_invites(
-      where: {
-        code: { _eq: $code }
-        is_active: { _eq: true }
-      }
-      limit: 1
-    ) {
+    nchat_invites(where: { code: { _eq: $code }, is_active: { _eq: true } }, limit: 1) {
       ...Invite
     }
   }
@@ -158,22 +149,14 @@ export const GET_INVITE_BY_ID = gql`
 export const GET_CHANNEL_INVITES = gql`
   query GetChannelInvites($channelId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_invites(
-      where: {
-        channel_id: { _eq: $channelId }
-        type: { _eq: "channel" }
-      }
+      where: { channel_id: { _eq: $channelId }, type: { _eq: "channel" } }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
     ) {
       ...Invite
     }
-    nchat_invites_aggregate(
-      where: {
-        channel_id: { _eq: $channelId }
-        type: { _eq: "channel" }
-      }
-    ) {
+    nchat_invites_aggregate(where: { channel_id: { _eq: $channelId }, type: { _eq: "channel" } }) {
       aggregate {
         count
       }
@@ -188,20 +171,14 @@ export const GET_CHANNEL_INVITES = gql`
 export const GET_WORKSPACE_INVITES = gql`
   query GetWorkspaceInvites($limit: Int = 50, $offset: Int = 0) {
     nchat_invites(
-      where: {
-        type: { _eq: "workspace" }
-      }
+      where: { type: { _eq: "workspace" } }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
     ) {
       ...Invite
     }
-    nchat_invites_aggregate(
-      where: {
-        type: { _eq: "workspace" }
-      }
-    ) {
+    nchat_invites_aggregate(where: { type: { _eq: "workspace" } }) {
       aggregate {
         count
       }
@@ -240,9 +217,7 @@ export const GET_INVITE_USAGE = gql`
     ) {
       ...InviteUsage
     }
-    nchat_invite_usages_aggregate(
-      where: { invite_id: { _eq: $inviteId } }
-    ) {
+    nchat_invite_usages_aggregate(where: { invite_id: { _eq: $inviteId } }) {
       aggregate {
         count
       }
@@ -257,10 +232,7 @@ export const GET_INVITE_USAGE = gql`
 export const CHECK_INVITE_USAGE = gql`
   query CheckInviteUsage($inviteId: uuid!, $userId: uuid!) {
     nchat_invite_usages(
-      where: {
-        invite_id: { _eq: $inviteId }
-        user_id: { _eq: $userId }
-      }
+      where: { invite_id: { _eq: $inviteId }, user_id: { _eq: $userId } }
       limit: 1
     ) {
       id
@@ -310,14 +282,8 @@ export const ACCEPT_INVITE = gql`
   mutation AcceptInvite($inviteId: uuid!, $userId: uuid!) {
     # Record the usage
     insert_nchat_invite_usages_one(
-      object: {
-        invite_id: $inviteId
-        user_id: $userId
-      }
-      on_conflict: {
-        constraint: nchat_invite_usages_invite_id_user_id_key
-        update_columns: []
-      }
+      object: { invite_id: $inviteId, user_id: $userId }
+      on_conflict: { constraint: nchat_invite_usages_invite_id_user_id_key, update_columns: [] }
     ) {
       id
       invite_id
@@ -325,10 +291,7 @@ export const ACCEPT_INVITE = gql`
       used_at
     }
     # Increment use count
-    update_nchat_invites_by_pk(
-      pk_columns: { id: $inviteId }
-      _inc: { use_count: 1 }
-    ) {
+    update_nchat_invites_by_pk(pk_columns: { id: $inviteId }, _inc: { use_count: 1 }) {
       id
       use_count
     }
@@ -339,36 +302,19 @@ export const ACCEPT_INVITE = gql`
  * Accept a channel invite and add user as member
  */
 export const ACCEPT_CHANNEL_INVITE = gql`
-  mutation AcceptChannelInvite(
-    $inviteId: uuid!
-    $userId: uuid!
-    $channelId: uuid!
-  ) {
+  mutation AcceptChannelInvite($inviteId: uuid!, $userId: uuid!, $channelId: uuid!) {
     # Record the usage
     insert_nchat_invite_usages_one(
-      object: {
-        invite_id: $inviteId
-        user_id: $userId
-      }
-      on_conflict: {
-        constraint: nchat_invite_usages_invite_id_user_id_key
-        update_columns: []
-      }
+      object: { invite_id: $inviteId, user_id: $userId }
+      on_conflict: { constraint: nchat_invite_usages_invite_id_user_id_key, update_columns: [] }
     ) {
       id
       used_at
     }
     # Add user to channel
     insert_nchat_channel_members_one(
-      object: {
-        channel_id: $channelId
-        user_id: $userId
-        role: "member"
-      }
-      on_conflict: {
-        constraint: nchat_channel_members_channel_id_user_id_key
-        update_columns: []
-      }
+      object: { channel_id: $channelId, user_id: $userId, role: "member" }
+      on_conflict: { constraint: nchat_channel_members_channel_id_user_id_key, update_columns: [] }
     ) {
       id
       channel_id
@@ -379,10 +325,7 @@ export const ACCEPT_CHANNEL_INVITE = gql`
       }
     }
     # Increment use count
-    update_nchat_invites_by_pk(
-      pk_columns: { id: $inviteId }
-      _inc: { use_count: 1 }
-    ) {
+    update_nchat_invites_by_pk(pk_columns: { id: $inviteId }, _inc: { use_count: 1 }) {
       id
       use_count
     }
@@ -397,10 +340,7 @@ export const REVOKE_INVITE = gql`
   mutation RevokeInvite($id: uuid!) {
     update_nchat_invites_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        is_active: false
-        updated_at: "now()"
-      }
+      _set: { is_active: false, updated_at: "now()" }
     ) {
       id
       is_active
@@ -424,12 +364,7 @@ export const DELETE_INVITE = gql`
  * Update invite settings
  */
 export const UPDATE_INVITE = gql`
-  mutation UpdateInvite(
-    $id: uuid!
-    $maxUses: Int
-    $expiresAt: timestamptz
-    $isActive: Boolean
-  ) {
+  mutation UpdateInvite($id: uuid!, $maxUses: Int, $expiresAt: timestamptz, $isActive: Boolean) {
     update_nchat_invites_by_pk(
       pk_columns: { id: $id }
       _set: {
@@ -452,11 +387,7 @@ export const REACTIVATE_INVITE = gql`
   mutation ReactivateInvite($id: uuid!, $expiresAt: timestamptz) {
     update_nchat_invites_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        is_active: true
-        expires_at: $expiresAt
-        updated_at: "now()"
-      }
+      _set: { is_active: true, expires_at: $expiresAt, updated_at: "now()" }
     ) {
       ...Invite
     }
@@ -486,10 +417,7 @@ export const INVITE_SUBSCRIPTION = gql`
 export const CHANNEL_INVITES_SUBSCRIPTION = gql`
   subscription ChannelInvitesSubscription($channelId: uuid!) {
     nchat_invites(
-      where: {
-        channel_id: { _eq: $channelId }
-        type: { _eq: "channel" }
-      }
+      where: { channel_id: { _eq: $channelId }, type: { _eq: "channel" } }
       order_by: { created_at: desc }
     ) {
       ...Invite

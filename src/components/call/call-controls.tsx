@@ -170,7 +170,7 @@ function ControlButton({
       className={cn(
         controlButtonVariants({ variant, size }),
         'flex items-center justify-center',
-        disabled && 'opacity-50 cursor-not-allowed',
+        disabled && 'cursor-not-allowed opacity-50',
         className
       )}
     >
@@ -218,7 +218,7 @@ export function CallControls({
       {/* Call Duration */}
       {callDuration !== undefined && (
         <div
-          className="px-3 py-1 text-sm font-mono tabular-nums"
+          className="px-3 py-1 font-mono text-sm tabular-nums"
           aria-live="polite"
           aria-label={`Call duration: ${formatCallDuration(callDuration)}`}
         >
@@ -229,13 +229,7 @@ export function CallControls({
       {/* Minimize Toggle */}
       {onToggleMinimize && (
         <ControlButton
-          icon={
-            isMinimized ? (
-              <Maximize2 size={iconSize} />
-            ) : (
-              <Minimize2 size={iconSize} />
-            )
-          }
+          icon={isMinimized ? <Maximize2 size={iconSize} /> : <Minimize2 size={iconSize} />}
           label={isMinimized ? 'Expand controls' : 'Minimize controls'}
           onClick={onToggleMinimize}
           size={buttonSize}
@@ -246,13 +240,7 @@ export function CallControls({
       {/* Speaker Toggle */}
       {showSpeakerControls && onToggleSpeaker && (
         <ControlButton
-          icon={
-            isSpeakerMuted ? (
-              <VolumeX size={iconSize} />
-            ) : (
-              <Volume2 size={iconSize} />
-            )
-          }
+          icon={isSpeakerMuted ? <VolumeX size={iconSize} /> : <Volume2 size={iconSize} />}
           label={isSpeakerMuted ? 'Unmute speaker' : 'Mute speaker'}
           onClick={onToggleSpeaker}
           variant={isSpeakerMuted ? 'muted' : 'default'}
@@ -263,9 +251,7 @@ export function CallControls({
 
       {/* Mute Toggle */}
       <ControlButton
-        icon={
-          isMuted ? <MicOff size={iconSize} /> : <Mic size={iconSize} />
-        }
+        icon={isMuted ? <MicOff size={iconSize} /> : <Mic size={iconSize} />}
         label={isMuted ? 'Unmute microphone' : 'Mute microphone'}
         onClick={onToggleMute}
         variant={isMuted ? 'muted' : 'default'}
@@ -276,13 +262,7 @@ export function CallControls({
       {/* Video Toggle */}
       {showVideoControls && onToggleVideo && (
         <ControlButton
-          icon={
-            isVideoEnabled ? (
-              <Video size={iconSize} />
-            ) : (
-              <VideoOff size={iconSize} />
-            )
-          }
+          icon={isVideoEnabled ? <Video size={iconSize} /> : <VideoOff size={iconSize} />}
           label={isVideoEnabled ? 'Turn off camera' : 'Turn on camera'}
           onClick={onToggleVideo}
           variant={isVideoEnabled ? 'enabled' : 'muted'}
@@ -294,13 +274,7 @@ export function CallControls({
       {/* Screen Share Toggle */}
       {showScreenShareControls && onToggleScreenShare && (
         <ControlButton
-          icon={
-            isScreenSharing ? (
-              <MonitorOff size={iconSize} />
-            ) : (
-              <Monitor size={iconSize} />
-            )
-          }
+          icon={isScreenSharing ? <MonitorOff size={iconSize} /> : <Monitor size={iconSize} />}
           label={isScreenSharing ? 'Stop screen sharing' : 'Share screen'}
           onClick={onToggleScreenShare}
           variant={isScreenSharing ? 'active' : 'default'}

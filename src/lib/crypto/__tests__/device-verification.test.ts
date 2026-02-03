@@ -357,10 +357,7 @@ describe('Device Detection', () => {
     it('should use SHA-256 for hashing', async () => {
       await generateDeviceFingerprint()
 
-      expect(mockCryptoSubtle.digest).toHaveBeenCalledWith(
-        'SHA-256',
-        expect.any(Uint8Array)
-      )
+      expect(mockCryptoSubtle.digest).toHaveBeenCalledWith('SHA-256', expect.any(Uint8Array))
     })
   })
 })
@@ -376,12 +373,7 @@ describe('Safety Numbers', () => {
       for (let i = 0; i < 64; i++) hashBuffer[i] = i
       mockCryptoSubtle.digest.mockResolvedValue(hashBuffer.buffer)
 
-      const result = await generateSafetyNumber(
-        mockPublicKey,
-        mockPublicKey,
-        'user1',
-        'user2'
-      )
+      const result = await generateSafetyNumber(mockPublicKey, mockPublicKey, 'user1', 'user2')
 
       expect(result).toHaveProperty('displayNumber')
       expect(result).toHaveProperty('rawBytes')
@@ -393,12 +385,7 @@ describe('Safety Numbers', () => {
       const hashBuffer = new Uint8Array(64)
       mockCryptoSubtle.digest.mockResolvedValue(hashBuffer.buffer)
 
-      const result = await generateSafetyNumber(
-        mockPublicKey,
-        mockPublicKey,
-        'user1',
-        'user2'
-      )
+      const result = await generateSafetyNumber(mockPublicKey, mockPublicKey, 'user1', 'user2')
 
       const digits = result.displayNumber.replace(/\s/g, '')
       expect(digits.length).toBe(60)
@@ -408,12 +395,7 @@ describe('Safety Numbers', () => {
       const hashBuffer = new Uint8Array(64)
       mockCryptoSubtle.digest.mockResolvedValue(hashBuffer.buffer)
 
-      const result = await generateSafetyNumber(
-        mockPublicKey,
-        mockPublicKey,
-        'user1',
-        'user2'
-      )
+      const result = await generateSafetyNumber(mockPublicKey, mockPublicKey, 'user1', 'user2')
 
       const groups = result.displayNumber.split(' ')
       groups.forEach((group) => {
@@ -426,19 +408,9 @@ describe('Safety Numbers', () => {
       for (let i = 0; i < 64; i++) hashBuffer[i] = i
       mockCryptoSubtle.digest.mockResolvedValue(hashBuffer.buffer)
 
-      const result1 = await generateSafetyNumber(
-        mockPublicKey,
-        mockPublicKey,
-        'user1',
-        'user2'
-      )
+      const result1 = await generateSafetyNumber(mockPublicKey, mockPublicKey, 'user1', 'user2')
 
-      const result2 = await generateSafetyNumber(
-        mockPublicKey,
-        mockPublicKey,
-        'user1',
-        'user2'
-      )
+      const result2 = await generateSafetyNumber(mockPublicKey, mockPublicKey, 'user1', 'user2')
 
       expect(result1.displayNumber).toBe(result2.displayNumber)
     })
@@ -449,19 +421,9 @@ describe('Safety Numbers', () => {
       mockCryptoSubtle.digest.mockResolvedValue(hashBuffer.buffer)
 
       // Same user IDs, should produce same result regardless of order
-      const result1 = await generateSafetyNumber(
-        mockPublicKey,
-        mockPublicKey,
-        'aaa',
-        'bbb'
-      )
+      const result1 = await generateSafetyNumber(mockPublicKey, mockPublicKey, 'aaa', 'bbb')
 
-      const result2 = await generateSafetyNumber(
-        mockPublicKey,
-        mockPublicKey,
-        'bbb',
-        'aaa'
-      )
+      const result2 = await generateSafetyNumber(mockPublicKey, mockPublicKey, 'bbb', 'aaa')
 
       expect(result1.displayNumber).toBe(result2.displayNumber)
     })
@@ -563,7 +525,8 @@ describe('Safety Numbers', () => {
     })
 
     it('should return false for non-numeric characters', () => {
-      const invalidNumber = 'abcde 67890 12345 67890 12345 67890 12345 67890 12345 67890 12345 67890'
+      const invalidNumber =
+        'abcde 67890 12345 67890 12345 67890 12345 67890 12345 67890 12345 67890'
       expect(validateSafetyNumber(invalidNumber)).toBe(false)
     })
   })
@@ -576,11 +539,7 @@ describe('Safety Numbers', () => {
 describe('QR Verification', () => {
   describe('generateQRVerificationData', () => {
     it('should generate QR data with all fields', () => {
-      const data = generateQRVerificationData(
-        'device-123',
-        '0102 0304',
-        'user-456'
-      )
+      const data = generateQRVerificationData('device-123', '0102 0304', 'user-456')
 
       expect(data).toMatchObject({
         deviceId: 'device-123',

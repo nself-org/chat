@@ -13,7 +13,7 @@ import {
 } from 'lucide-react'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 
 import { TeamSettings } from '@/components/admin/team/TeamSettings'
@@ -24,6 +24,8 @@ import { TeamDangerZone } from '@/components/admin/team/TeamDangerZone'
 
 import { useTeamStore } from '@/stores/team-store'
 import { teamManager } from '@/lib/team/team-manager'
+
+import { logger } from '@/lib/logger'
 
 export default function TeamManagementPage() {
   const { team, setTeam, setLoadingTeam } = useTeamStore()
@@ -40,7 +42,7 @@ export default function TeamManagementPage() {
         const teamData = await teamManager.getTeam(teamId)
         setTeam(teamData)
       } catch (error) {
-        console.error('Failed to load team:', error)
+        logger.error('Failed to load team:', error)
       } finally {
         setLoadingTeam(false)
       }

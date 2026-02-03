@@ -17,9 +17,7 @@ export const MESSAGE_REACTIONS_SUBSCRIPTION = gql`
 
 export const MESSAGE_REACTION_COUNTS_SUBSCRIPTION = gql`
   subscription MessageReactionCounts($messageId: uuid!) {
-    nchat_reactions_aggregate(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    nchat_reactions_aggregate(where: { message_id: { _eq: $messageId } }) {
       nodes {
         emoji
       }
@@ -32,11 +30,7 @@ export const MESSAGE_REACTION_COUNTS_SUBSCRIPTION = gql`
 
 export const CHANNEL_REACTIONS_SUBSCRIPTION = gql`
   subscription ChannelReactions($channelId: uuid!, $messageIds: [uuid!]!) {
-    nchat_reactions(
-      where: {
-        message_id: { _in: $messageIds }
-      }
-    ) {
+    nchat_reactions(where: { message_id: { _in: $messageIds } }) {
       id
       message_id
       emoji

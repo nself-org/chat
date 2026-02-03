@@ -37,7 +37,7 @@ import { UserStatusIndicator } from '@/components/calls/UserStatusIndicator'
 ```typescript
 const machine = createCallStateMachine({
   initialState: 'idle',
-  onTransition: (event) => console.log(event.from, '->', event.to)
+  onTransition: (event) => console.log(event.from, '->', event.to),
 })
 ```
 
@@ -46,12 +46,10 @@ const machine = createCallStateMachine({
 ```typescript
 const manager = createInvitationManager({
   timeout: 30000,
-  onInvitation: (inv) => showIncomingCallModal(inv)
+  onInvitation: (inv) => showIncomingCallModal(inv),
 })
 
-const invitation = manager.createInvitation(
-  callId, callerId, callerName, 'video'
-)
+const invitation = manager.createInvitation(callId, callerId, callerName, 'video')
 ```
 
 ### 3. Check User Availability
@@ -72,7 +70,7 @@ if (statusManager.isAvailable(userId)) {
 ```typescript
 const monitor = createQualityMonitor({
   interval: 2000,
-  onAlert: (alert) => showQualityWarning(alert)
+  onAlert: (alert) => showQualityWarning(alert),
 })
 
 monitor.start(peerConnection)
@@ -99,11 +97,11 @@ emitter.onCallEvent('call:quality-changed', (event) => {
 
 ```typescript
 const {
-  state,           // Current state
-  isConnected,     // Boolean checks
-  displayName,     // Human-readable state
+  state, // Current state
+  isConnected, // Boolean checks
+  displayName, // Human-readable state
   connectedDuration, // Time connected (ms)
-  transition,      // Transition to new state
+  transition, // Transition to new state
   canTransitionTo, // Check if valid
 } = useCallState()
 ```
@@ -113,9 +111,9 @@ const {
 ```typescript
 const {
   activeInvitations, // Array of pending invitations
-  isRinging,         // Is ring tone playing
-  accept,            // Accept invitation
-  decline,           // Decline invitation
+  isRinging, // Is ring tone playing
+  accept, // Accept invitation
+  decline, // Decline invitation
 } = useCallInvitation({
   ringVolume: 0.8,
   timeout: 30000,
@@ -126,13 +124,13 @@ const {
 
 ```typescript
 const {
-  status,          // Current status
-  isAvailable,     // Can receive calls
-  inCall,          // Currently in call
-  setOnline,       // Set to online
-  setBusy,         // Set to busy
-  setDND,          // Set to DND
-  updateActivity,  // Prevent auto-away
+  status, // Current status
+  isAvailable, // Can receive calls
+  inCall, // Currently in call
+  setOnline, // Set to online
+  setBusy, // Set to busy
+  setDND, // Set to DND
+  updateActivity, // Prevent auto-away
 } = useUserStatus()
 ```
 
@@ -140,54 +138,55 @@ const {
 
 ```typescript
 const {
-  quality,    // 'excellent' | 'good' | 'fair' | 'poor' | 'critical'
-  metrics,    // Full metrics object
-  lastAlert,  // Last quality alert
-  start,      // Start monitoring
-  stop,       // Stop monitoring
+  quality, // 'excellent' | 'good' | 'fair' | 'poor' | 'critical'
+  metrics, // Full metrics object
+  lastAlert, // Last quality alert
+  start, // Start monitoring
+  stop, // Stop monitoring
 } = useCallQuality({ interval: 2000 })
 ```
 
 ## State Machine States
 
-| State | Description | Duration |
-|-------|-------------|----------|
-| idle | No call | N/A |
-| initiating | Starting call | 1-2s |
-| ringing | Waiting for answer | Up to 30s |
-| connecting | WebRTC setup | 2-5s |
-| connected | Active call | Varies |
-| reconnecting | Network recovery | Up to 10s |
-| held | On hold | Varies |
-| transferring | Being transferred | 2-5s |
-| ending | Cleaning up | <1s |
-| ended | Call finished | Brief |
+| State        | Description        | Duration  |
+| ------------ | ------------------ | --------- |
+| idle         | No call            | N/A       |
+| initiating   | Starting call      | 1-2s      |
+| ringing      | Waiting for answer | Up to 30s |
+| connecting   | WebRTC setup       | 2-5s      |
+| connected    | Active call        | Varies    |
+| reconnecting | Network recovery   | Up to 10s |
+| held         | On hold            | Varies    |
+| transferring | Being transferred  | 2-5s      |
+| ending       | Cleaning up        | <1s       |
+| ended        | Call finished      | Brief     |
 
 ## User Status Types
 
-| Status | Description | Auto-Set | Can Receive Calls |
-|--------|-------------|----------|-------------------|
-| online | Available | On connect | Yes |
-| busy | In a call | On call start | No* |
-| away | Idle | After 5 min | Yes |
-| dnd | Do Not Disturb | Manual only | No |
-| offline | Disconnected | On disconnect | No |
+| Status  | Description    | Auto-Set      | Can Receive Calls |
+| ------- | -------------- | ------------- | ----------------- |
+| online  | Available      | On connect    | Yes               |
+| busy    | In a call      | On call start | No\*              |
+| away    | Idle           | After 5 min   | Yes               |
+| dnd     | Do Not Disturb | Manual only   | No                |
+| offline | Disconnected   | On disconnect | No                |
 
-*Can receive if call waiting enabled
+\*Can receive if call waiting enabled
 
 ## Quality Levels
 
-| Level | Packet Loss | Jitter | RTT | Bitrate |
-|-------|-------------|--------|-----|---------|
-| excellent | < 0.5% | < 20ms | < 100ms | > 300 kbps |
-| good | < 2% | < 50ms | < 200ms | > 150 kbps |
-| fair | < 5% | < 100ms | < 400ms | > 64 kbps |
-| poor | < 10% | < 200ms | < 800ms | > 32 kbps |
-| critical | > 10% | > 200ms | > 800ms | < 32 kbps |
+| Level     | Packet Loss | Jitter  | RTT     | Bitrate    |
+| --------- | ----------- | ------- | ------- | ---------- |
+| excellent | < 0.5%      | < 20ms  | < 100ms | > 300 kbps |
+| good      | < 2%        | < 50ms  | < 200ms | > 150 kbps |
+| fair      | < 5%        | < 100ms | < 400ms | > 64 kbps  |
+| poor      | < 10%       | < 200ms | < 800ms | > 32 kbps  |
+| critical  | > 10%       | > 200ms | > 800ms | < 32 kbps  |
 
 ## Event Types
 
 ### Lifecycle Events
+
 - `call:created`
 - `call:ringing`
 - `call:answered`
@@ -195,28 +194,33 @@ const {
 - `call:ended`
 
 ### Media Events
+
 - `call:mute-changed`
 - `call:video-changed`
 - `call:screen-share-started`
 - `call:screen-share-stopped`
 
 ### Quality Events
+
 - `call:quality-changed`
 - `call:quality-alert`
 - `call:quality-critical`
 
 ### Invitation Events
+
 - `call:invitation-received`
 - `call:invitation-accepted`
 - `call:invitation-declined`
 - `call:invitation-missed`
 
 ### Status Events
+
 - `call:status-changed`
 - `call:user-busy`
 - `call:user-available`
 
 ### Error Events
+
 - `call:error`
 - `call:media-error`
 - `call:connection-error`
@@ -396,7 +400,7 @@ const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: t
 
 // 4. Create peer connection
 const pc = new RTCPeerConnection()
-stream.getTracks().forEach(track => pc.addTrack(track, stream))
+stream.getTracks().forEach((track) => pc.addTrack(track, stream))
 
 // 5. Transition to ringing
 machine.transition('ringing')
@@ -421,7 +425,7 @@ const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: t
 
 // 4. Create peer connection
 const pc = new RTCPeerConnection()
-stream.getTracks().forEach(track => pc.addTrack(track, stream))
+stream.getTracks().forEach((track) => pc.addTrack(track, stream))
 
 // 5. Create answer
 const answer = await pc.createAnswer()
@@ -448,7 +452,7 @@ machine.transition('ending')
 peerConnection.close()
 
 // 3. Stop media streams
-localStream.getTracks().forEach(track => track.stop())
+localStream.getTracks().forEach((track) => track.stop())
 
 // 4. Stop quality monitoring
 qualityMonitor.stop()

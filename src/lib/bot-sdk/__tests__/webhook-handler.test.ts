@@ -25,10 +25,7 @@ import type { WebhookPayload, WebhookEventType } from '../types'
 
 const TEST_SECRET = 'test-webhook-secret'
 
-const createTestPayload = <T = unknown>(
-  type: WebhookEventType,
-  data: T
-): WebhookPayload<T> => ({
+const createTestPayload = <T = unknown>(type: WebhookEventType, data: T): WebhookPayload<T> => ({
   id: 'webhook_123',
   type,
   timestamp: new Date().toISOString(),
@@ -158,9 +155,7 @@ describe('WebhookRouter', () => {
     })
 
     it('should allow chaining', () => {
-      const result = router
-        .on('message.created', jest.fn())
-        .on('message.deleted', jest.fn())
+      const result = router.on('message.created', jest.fn()).on('message.deleted', jest.fn())
 
       expect(result).toBe(router)
     })
@@ -245,11 +240,7 @@ describe('WebhookRouter', () => {
       router.on('message.created', handler)
 
       const payload = createTestPayload('message.created', { text: 'Hello' })
-      const request = webhookRequest()
-        .body(payload)
-        .timestamp()
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body(payload).timestamp().sign(TEST_SECRET).build()
 
       const response = await router.handle(request)
 
@@ -269,10 +260,7 @@ describe('WebhookRouter', () => {
 
     it('should reject request with invalid signature', async () => {
       const payload = createTestPayload('message.created', { text: 'Hello' })
-      const request = webhookRequest()
-        .body(payload)
-        .sign('wrong-secret')
-        .build()
+      const request = webhookRequest().body(payload).sign('wrong-secret').build()
 
       const response = await router.handle(request)
 
@@ -301,11 +289,7 @@ describe('WebhookRouter', () => {
       })
 
       const largePayload = { data: 'x'.repeat(200) }
-      const request = webhookRequest()
-        .body(largePayload)
-        .timestamp()
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body(largePayload).timestamp().sign(TEST_SECRET).build()
 
       const response = await smallRouter.handle(request)
 
@@ -314,11 +298,7 @@ describe('WebhookRouter', () => {
     })
 
     it('should reject invalid JSON payload', async () => {
-      const request = webhookRequest()
-        .body('not valid json')
-        .timestamp()
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body('not valid json').timestamp().sign(TEST_SECRET).build()
 
       const response = await router.handle(request)
 
@@ -327,11 +307,7 @@ describe('WebhookRouter', () => {
 
     it('should reject payload missing required fields', async () => {
       const incompletePayload = { data: 'test' } // Missing id, type, timestamp
-      const request = webhookRequest()
-        .body(incompletePayload)
-        .timestamp()
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body(incompletePayload).timestamp().sign(TEST_SECRET).build()
 
       const response = await router.handle(request)
 
@@ -348,11 +324,7 @@ describe('WebhookRouter', () => {
       router.onAll(wildcardHandler)
 
       const payload = createTestPayload('message.created', { text: 'Hello' })
-      const request = webhookRequest()
-        .body(payload)
-        .timestamp()
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body(payload).timestamp().sign(TEST_SECRET).build()
 
       await router.handle(request)
 
@@ -369,11 +341,7 @@ describe('WebhookRouter', () => {
       router.on('message.created', goodHandler)
 
       const payload = createTestPayload('message.created', { text: 'Hello' })
-      const request = webhookRequest()
-        .body(payload)
-        .timestamp()
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body(payload).timestamp().sign(TEST_SECRET).build()
 
       const consoleSpy = jest.spyOn(console, 'error').mockImplementation()
       const response = await router.handle(request)
@@ -385,11 +353,7 @@ describe('WebhookRouter', () => {
 
     it('should return 200 when no handlers match', async () => {
       const payload = createTestPayload('message.created', { text: 'Hello' })
-      const request = webhookRequest()
-        .body(payload)
-        .timestamp()
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body(payload).timestamp().sign(TEST_SECRET).build()
 
       const response = await router.handle(request)
 
@@ -537,9 +501,7 @@ describe('WebhookPayloadBuilder', () => {
 
   describe('data', () => {
     it('should set payload data', () => {
-      const payload = webhookPayload<{ text: string }>()
-        .data({ text: 'Hello' })
-        .build()
+      const payload = webhookPayload<{ text: string }>().data({ text: 'Hello' }).build()
 
       expect(payload.data).toEqual({ text: 'Hello' })
     })
@@ -590,9 +552,7 @@ describe('WebhookRequestBuilder', () => {
 
   describe('header', () => {
     it('should set custom header', () => {
-      const request = webhookRequest()
-        .header('X-Custom', 'value')
-        .build()
+      const request = webhookRequest().header('X-Custom', 'value').build()
 
       expect(request.headers['X-Custom']).toBe('value')
     })
@@ -617,10 +577,7 @@ describe('WebhookRequestBuilder', () => {
 
   describe('sign', () => {
     it('should compute and set signature', () => {
-      const request = webhookRequest()
-        .body({ test: 'data' })
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body({ test: 'data' }).sign(TEST_SECRET).build()
 
       expect(request.headers['x-webhook-signature']).toBeDefined()
       expect(request.headers['x-webhook-signature']).toMatch(/^sha256=/)
@@ -629,11 +586,7 @@ describe('WebhookRequestBuilder', () => {
 
   describe('build', () => {
     it('should build complete request', () => {
-      const request = webhookRequest()
-        .body({ type: 'test' })
-        .timestamp()
-        .sign(TEST_SECRET)
-        .build()
+      const request = webhookRequest().body({ type: 'test' }).timestamp().sign(TEST_SECRET).build()
 
       expect(request.body).toBeDefined()
       expect(request.headers['x-webhook-timestamp']).toBeDefined()

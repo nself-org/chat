@@ -124,10 +124,12 @@ describe('usePresenceStore', () => {
     })
 
     it('should set multiple users presence', () => {
-      act(() => usePresenceStore.getState().setUsersPresence([
-        { userId: 'user-1', status: 'online' },
-        { userId: 'user-2', status: 'away' },
-      ]))
+      act(() =>
+        usePresenceStore.getState().setUsersPresence([
+          { userId: 'user-1', status: 'online' },
+          { userId: 'user-2', status: 'away' },
+        ])
+      )
       expect(usePresenceStore.getState().presenceMap['user-1'].status).toBe('online')
       expect(usePresenceStore.getState().presenceMap['user-2'].status).toBe('away')
     })
@@ -139,10 +141,12 @@ describe('usePresenceStore', () => {
     })
 
     it('should clear all presence', () => {
-      act(() => usePresenceStore.getState().setUsersPresence([
-        { userId: 'user-1', status: 'online' },
-        { userId: 'user-2', status: 'away' },
-      ]))
+      act(() =>
+        usePresenceStore.getState().setUsersPresence([
+          { userId: 'user-1', status: 'online' },
+          { userId: 'user-2', status: 'away' },
+        ])
+      )
       act(() => usePresenceStore.getState().clearAllPresence())
       expect(Object.keys(usePresenceStore.getState().presenceMap)).toHaveLength(0)
     })
@@ -167,10 +171,7 @@ describe('usePresenceStore', () => {
     })
 
     it('should set context typing', () => {
-      const users = [
-        mockTypingUser,
-        { ...mockTypingUser, userId: 'user-2', userName: 'Bob' },
-      ]
+      const users = [mockTypingUser, { ...mockTypingUser, userId: 'user-2', userName: 'Bob' }]
       act(() => usePresenceStore.getState().setContextTyping('channel:ch-1', users))
       expect(Object.keys(usePresenceStore.getState().typingMap['channel:ch-1'])).toHaveLength(2)
     })
@@ -229,17 +230,21 @@ describe('usePresenceStore', () => {
 
   describe('Settings Actions', () => {
     it('should update settings', () => {
-      act(() => usePresenceStore.getState().updateSettings({
-        autoAway: { enabled: false },
-      }))
+      act(() =>
+        usePresenceStore.getState().updateSettings({
+          autoAway: { enabled: false },
+        })
+      )
       expect(usePresenceStore.getState().settings.autoAway.enabled).toBe(false)
     })
 
     it('should merge nested settings', () => {
       const initialTimeout = usePresenceStore.getState().settings.autoAway.timeout
-      act(() => usePresenceStore.getState().updateSettings({
-        autoAway: { enabled: false },
-      }))
+      act(() =>
+        usePresenceStore.getState().updateSettings({
+          autoAway: { enabled: false },
+        })
+      )
       expect(usePresenceStore.getState().settings.autoAway.timeout).toBe(initialTimeout)
     })
   })
@@ -264,10 +269,12 @@ describe('usePresenceStore', () => {
 
   describe('Initialization', () => {
     it('should initialize with options', () => {
-      act(() => usePresenceStore.getState().initialize({
-        status: 'dnd',
-        customStatus: { text: 'Busy' },
-      }))
+      act(() =>
+        usePresenceStore.getState().initialize({
+          status: 'dnd',
+          customStatus: { text: 'Busy' },
+        })
+      )
       expect(usePresenceStore.getState().myStatus).toBe('dnd')
       expect(usePresenceStore.getState().myCustomStatus?.text).toBe('Busy')
       expect(usePresenceStore.getState().isInitializing).toBe(false)
@@ -282,11 +289,13 @@ describe('usePresenceStore', () => {
   describe('Cleanup', () => {
     it('should cleanup expired typing indicators', () => {
       // Add typing via proper action
-      act(() => usePresenceStore.getState().setUserTyping('channel:ch-1', {
-        userId: 'user-1',
-        userName: 'Alice',
-        startedAt: new Date(),
-      }))
+      act(() =>
+        usePresenceStore.getState().setUserTyping('channel:ch-1', {
+          userId: 'user-1',
+          userName: 'Alice',
+          startedAt: new Date(),
+        })
+      )
 
       // Verify added
       expect(usePresenceStore.getState().typingMap['channel:ch-1']).toBeDefined()
@@ -326,31 +335,37 @@ describe('usePresenceStore', () => {
     })
 
     it('should select online users', () => {
-      act(() => usePresenceStore.getState().setUsersPresence([
-        { userId: 'user-1', status: 'online' },
-        { userId: 'user-2', status: 'away' },
-        { userId: 'user-3', status: 'offline' },
-      ]))
+      act(() =>
+        usePresenceStore.getState().setUsersPresence([
+          { userId: 'user-1', status: 'online' },
+          { userId: 'user-2', status: 'away' },
+          { userId: 'user-3', status: 'offline' },
+        ])
+      )
       const online = selectOnlineUsers(usePresenceStore.getState())
       expect(online).toHaveLength(2) // online and away
     })
 
     it('should select typing users', () => {
-      act(() => usePresenceStore.getState().setUserTyping('channel:ch-1', {
-        userId: 'user-1',
-        userName: 'Alice',
-        startedAt: new Date(),
-      }))
+      act(() =>
+        usePresenceStore.getState().setUserTyping('channel:ch-1', {
+          userId: 'user-1',
+          userName: 'Alice',
+          startedAt: new Date(),
+        })
+      )
       const typing = selectTypingUsers('channel:ch-1')(usePresenceStore.getState())
       expect(typing).toHaveLength(1)
     })
 
     it('should select if anyone typing', () => {
-      act(() => usePresenceStore.getState().setUserTyping('channel:ch-1', {
-        userId: 'user-1',
-        userName: 'Alice',
-        startedAt: new Date(),
-      }))
+      act(() =>
+        usePresenceStore.getState().setUserTyping('channel:ch-1', {
+          userId: 'user-1',
+          userName: 'Alice',
+          startedAt: new Date(),
+        })
+      )
       expect(selectIsAnyoneTyping('channel:ch-1')(usePresenceStore.getState())).toBe(true)
       expect(selectIsAnyoneTyping('channel:ch-2')(usePresenceStore.getState())).toBe(false)
     })

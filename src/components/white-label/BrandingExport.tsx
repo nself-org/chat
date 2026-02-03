@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import type { BrandingConfig } from '@/lib/white-label/branding-schema'
 import type { GeneratedFavicon } from '@/lib/white-label/favicon-generator'
+import { logger } from '@/lib/logger'
 import {
   exportAsJSON,
   exportAsCSS,
@@ -70,38 +71,40 @@ const EXPORT_OPTIONS: ExportOption[] = [
   },
 ]
 
-export function BrandingExport({
-  config,
-  favicons = [],
-  className,
-}: BrandingExportProps) {
+export function BrandingExport({ config, favicons = [], className }: BrandingExportProps) {
   const [selectedFormat, setSelectedFormat] = useState<ExportFormat>('json')
   const [isExporting, setIsExporting] = useState(false)
   const [copied, setCopied] = useState(false)
   const [previewContent, setPreviewContent] = useState<string>('')
 
   // Generate preview content when format changes
-  const generatePreview = useCallback((format: ExportFormat): string => {
-    switch (format) {
-      case 'json':
-        return exportAsJSON(config)
-      case 'css':
-        return exportAsCSS(config)
-      case 'tailwind':
-        return exportAsTailwindConfig(config)
-      case 'scss':
-        return exportAsSCSS(config)
-      case 'zip':
-        return '// ZIP package includes:\n// - branding.json\n// - css/variables.css\n// - scss/_variables.scss\n// - tailwind.config.js\n// - favicons/\n// - logo/\n// - emails/'
-      default:
-        return ''
-    }
-  }, [config])
+  const generatePreview = useCallback(
+    (format: ExportFormat): string => {
+      switch (format) {
+        case 'json':
+          return exportAsJSON(config)
+        case 'css':
+          return exportAsCSS(config)
+        case 'tailwind':
+          return exportAsTailwindConfig(config)
+        case 'scss':
+          return exportAsSCSS(config)
+        case 'zip':
+          return '// ZIP package includes:\n// - branding.json\n// - css/variables.css\n// - scss/_variables.scss\n// - tailwind.config.js\n// - favicons/\n// - logo/\n// - emails/'
+        default:
+          return ''
+      }
+    },
+    [config]
+  )
 
-  const handleFormatChange = useCallback((format: ExportFormat) => {
-    setSelectedFormat(format)
-    setPreviewContent(generatePreview(format))
-  }, [generatePreview])
+  const handleFormatChange = useCallback(
+    (format: ExportFormat) => {
+      setSelectedFormat(format)
+      setPreviewContent(generatePreview(format))
+    },
+    [generatePreview]
+  )
 
   const handleDownload = useCallback(async () => {
     setIsExporting(true)
@@ -122,15 +125,18 @@ export function BrandingExport({
           downloadFile(exportAsSCSS(config), `_${filename}.scss`)
           break
         case 'zip':
-          const blob = await exportAsZip(config, favicons.map(f => ({
-            name: f.name,
-            blob: f.blob!,
-          })))
+          const blob = await exportAsZip(
+            config,
+            favicons.map((f) => ({
+              name: f.name,
+              blob: f.blob!,
+            }))
+          )
           downloadFile(blob, `${filename}.zip`)
           break
       }
     } catch (error) {
-      console.error('Export failed:', error)
+      logger.error('Export failed:',  error)
     } finally {
       setIsExporting(false)
     }
@@ -159,33 +165,29 @@ export function BrandingExport({
         <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
           Export Format
         </label>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
           {EXPORT_OPTIONS.map((option) => (
             <button
               key={option.id}
               type="button"
               onClick={() => handleFormatChange(option.id)}
               className={cn(
-                'flex flex-col items-start p-3 rounded-xl border-2 transition-all text-left',
+                'flex flex-col items-start rounded-xl border-2 p-3 text-left transition-all',
                 selectedFormat === option.id
-                  ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20'
-                  : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
+                  ? 'dark:bg-sky-900/20 border-sky-500 bg-sky-50'
+                  : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600'
               )}
             >
               <option.icon
                 className={cn(
-                  'h-5 w-5 mb-2',
-                  selectedFormat === option.id
-                    ? 'text-sky-600 dark:text-sky-400'
-                    : 'text-zinc-400'
+                  'mb-2 h-5 w-5',
+                  selectedFormat === option.id ? 'text-sky-600 dark:text-sky-400' : 'text-zinc-400'
                 )}
               />
               <span className="text-sm font-medium text-zinc-900 dark:text-white">
                 {option.label}
               </span>
-              <span className="text-xs text-zinc-500 mt-0.5">
-                {option.description}
-              </span>
+              <span className="mt-0.5 text-xs text-zinc-500">{option.description}</span>
             </button>
           ))}
         </div>
@@ -195,9 +197,7 @@ export function BrandingExport({
       {selectedFormat !== 'zip' && (
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-              Preview
-            </label>
+            <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Preview</label>
             <Button
               type="button"
               variant="ghost"
@@ -207,23 +207,23 @@ export function BrandingExport({
             >
               {copied ? (
                 <>
-                  <Check className="h-3 w-3 mr-1 text-green-500" />
+                  <Check className="mr-1 h-3 w-3 text-green-500" />
                   Copied!
                 </>
               ) : (
                 <>
-                  <Copy className="h-3 w-3 mr-1" />
+                  <Copy className="mr-1 h-3 w-3" />
                   Copy
                 </>
               )}
             </Button>
           </div>
           <div className="relative">
-            <pre className="p-4 bg-zinc-900 text-zinc-100 rounded-xl overflow-x-auto text-xs font-mono max-h-64 overflow-y-auto">
+            <pre className="max-h-64 overflow-x-auto overflow-y-auto rounded-xl bg-zinc-900 p-4 font-mono text-xs text-zinc-100">
               <code>{previewContent || generatePreview(selectedFormat)}</code>
             </pre>
-            <div className="absolute top-2 right-2">
-              <span className="px-2 py-0.5 text-[10px] font-mono bg-zinc-700 text-zinc-300 rounded">
+            <div className="absolute right-2 top-2">
+              <span className="rounded bg-zinc-700 px-2 py-0.5 font-mono text-[10px] text-zinc-300">
                 .{selectedOption.extension}
               </span>
             </div>
@@ -237,7 +237,7 @@ export function BrandingExport({
           <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
             Package Contents
           </label>
-          <div className="bg-zinc-50 dark:bg-zinc-800 rounded-xl p-4">
+          <div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800">
             <ul className="space-y-2 text-sm">
               {[
                 { name: 'branding.json', desc: 'Complete branding configuration' },
@@ -251,10 +251,10 @@ export function BrandingExport({
                 { name: 'README.md', desc: 'Usage documentation' },
               ].map((file) => (
                 <li key={file.name} className="flex items-start gap-2">
-                  <span className="font-mono text-xs text-sky-600 dark:text-sky-400 flex-shrink-0">
+                  <span className="flex-shrink-0 font-mono text-xs text-sky-600 dark:text-sky-400">
                     {file.name}
                   </span>
-                  <span className="text-zinc-500 text-xs">{file.desc}</span>
+                  <span className="text-xs text-zinc-500">{file.desc}</span>
                 </li>
               ))}
             </ul>
@@ -263,24 +263,17 @@ export function BrandingExport({
       )}
 
       {/* Download button */}
-      <Button
-        type="button"
-        onClick={handleDownload}
-        disabled={isExporting}
-        className="w-full"
-      >
+      <Button type="button" onClick={handleDownload} disabled={isExporting} className="w-full">
         {isExporting ? (
-          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <Download className="h-4 w-4 mr-2" />
+          <Download className="mr-2 h-4 w-4" />
         )}
-        {isExporting
-          ? 'Preparing...'
-          : `Download ${selectedOption.label}`}
+        {isExporting ? 'Preparing...' : `Download ${selectedOption.label}`}
       </Button>
 
       {/* File info */}
-      <p className="text-xs text-center text-zinc-500">
+      <p className="text-center text-xs text-zinc-500">
         Downloads as <span className="font-mono">.{selectedOption.extension}</span> file
         {selectedFormat === 'zip' && favicons.length > 0 && (
           <> with {favicons.length} favicon sizes</>

@@ -13,11 +13,7 @@ import crypto from 'crypto'
 /**
  * Verify GitHub webhook signature
  */
-export function verifyGitHubSignature(
-  payload: string,
-  signature: string,
-  secret: string
-): boolean {
+export function verifyGitHubSignature(payload: string, signature: string, secret: string): boolean {
   if (!signature || !signature.startsWith('sha256=')) {
     return false
   }
@@ -31,10 +27,7 @@ export function verifyGitHubSignature(
   const expectedSignature = hmac.digest('hex')
 
   // Constant-time comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(receivedSignature),
-    Buffer.from(expectedSignature)
-  )
+  return crypto.timingSafeEqual(Buffer.from(receivedSignature), Buffer.from(expectedSignature))
 }
 
 // Example usage
@@ -85,10 +78,7 @@ export function verifySlackSignature(
   const expectedSignature = hmac.digest('hex')
 
   // Constant-time comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(receivedSignature),
-    Buffer.from(expectedSignature)
-  )
+  return crypto.timingSafeEqual(Buffer.from(receivedSignature), Buffer.from(expectedSignature))
 }
 
 // Example usage
@@ -110,11 +100,7 @@ if (verifySlackSignature(slackPayload, slackTimestamp, slackSignature, slackSecr
 /**
  * Verify Jira webhook signature
  */
-export function verifyJiraSignature(
-  payload: string,
-  signature: string,
-  secret: string
-): boolean {
+export function verifyJiraSignature(payload: string, signature: string, secret: string): boolean {
   if (!signature || !signature.startsWith('sha256=')) {
     return false
   }
@@ -128,10 +114,7 @@ export function verifyJiraSignature(
   const expectedSignature = hmac.digest('hex')
 
   // Constant-time comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(receivedSignature),
-    Buffer.from(expectedSignature)
-  )
+  return crypto.timingSafeEqual(Buffer.from(receivedSignature), Buffer.from(expectedSignature))
 }
 
 // Example usage
@@ -152,10 +135,7 @@ if (verifyJiraSignature(jiraPayload, jiraSignature, jiraSecret)) {
 /**
  * Verify Telegram webhook secret token
  */
-export function verifyTelegramWebhook(
-  configuredSecret: string,
-  receivedToken: string
-): boolean {
+export function verifyTelegramWebhook(configuredSecret: string, receivedToken: string): boolean {
   // Constant-time comparison to prevent timing attacks
   if (configuredSecret.length !== receivedToken.length) {
     return false
@@ -209,10 +189,7 @@ export function verifyHmacSignature(
     return false
   }
 
-  return crypto.timingSafeEqual(
-    Buffer.from(receivedSignature),
-    Buffer.from(expectedSignature)
-  )
+  return crypto.timingSafeEqual(Buffer.from(receivedSignature), Buffer.from(expectedSignature))
 }
 
 // Example usage

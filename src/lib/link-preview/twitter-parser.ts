@@ -46,8 +46,10 @@ export function parseTwitterCard(html: string): TwitterCardData {
   const twitterData: TwitterCardData = {}
 
   // Match all meta tags with name or property attributes
-  const metaRegex = /<meta\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["']\s+(?:[^>]*?\s+)?content=["']([^"']*)["'][^>]*>/gi
-  const metaRegexAlt = /<meta\s+(?:[^>]*?\s+)?content=["']([^"']*)["']\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["'][^>]*>/gi
+  const metaRegex =
+    /<meta\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["']\s+(?:[^>]*?\s+)?content=["']([^"']*)["'][^>]*>/gi
+  const metaRegexAlt =
+    /<meta\s+(?:[^>]*?\s+)?content=["']([^"']*)["']\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["'][^>]*>/gi
 
   // Process standard order (property/name first)
   let match: RegExpExecArray | null
@@ -73,11 +75,7 @@ export function parseTwitterCard(html: string): TwitterCardData {
 /**
  * Process a single Twitter meta tag
  */
-function processTwitterTag(
-  property: string,
-  content: string,
-  twitterData: TwitterCardData
-): void {
+function processTwitterTag(property: string, content: string, twitterData: TwitterCardData): void {
   const mappedKey = TWITTER_PROPERTY_MAP[property]
   if (!mappedKey) return
 

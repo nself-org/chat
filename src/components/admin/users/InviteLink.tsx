@@ -26,6 +26,8 @@ import { useUserManagementStore } from '@/stores/user-management-store'
 import { formatInviteExpiration, generateInviteUrl } from '@/lib/admin/users/user-invite'
 import type { UserRole, InviteLink as InviteLinkType } from '@/lib/admin/users/user-types'
 
+import { logger } from '@/lib/logger'
+
 export function InviteLink() {
   const [linkRole, setLinkRole] = useState<UserRole>('member')
   const [maxUses, setMaxUses] = useState('')
@@ -36,12 +38,15 @@ export function InviteLink() {
 
   const { inviteLinks, roles, addInviteLink, removeInviteLink } = useUserManagementStore()
 
-  const roleOptions = roles.length > 0 ? roles : [
-    { id: 'admin', name: 'Admin' },
-    { id: 'moderator', name: 'Moderator' },
-    { id: 'member', name: 'Member' },
-    { id: 'guest', name: 'Guest' },
-  ]
+  const roleOptions =
+    roles.length > 0
+      ? roles
+      : [
+          { id: 'admin', name: 'Admin' },
+          { id: 'moderator', name: 'Moderator' },
+          { id: 'member', name: 'Member' },
+          { id: 'guest', name: 'Guest' },
+        ]
 
   const handleGenerateLink = async () => {
     setIsGenerating(true)
@@ -81,7 +86,7 @@ export function InviteLink() {
       addInviteLink(newLink)
       setGeneratedLink(link)
     } catch (error) {
-      console.error('Failed to generate link:', error)
+      logger.error('Failed to generate link:', error)
     } finally {
       setIsGenerating(false)
     }
@@ -162,16 +167,10 @@ export function InviteLink() {
               <Label>Generated Link</Label>
               <div className="flex gap-2">
                 <Input value={generatedLink} readOnly className="font-mono text-sm" />
-                <Button
-                  variant="outline"
-                  onClick={() => handleCopyLink(generatedLink)}
-                >
+                <Button variant="outline" onClick={() => handleCopyLink(generatedLink)}>
                   {copied ? 'Copied!' : <Copy className="h-4 w-4" />}
                 </Button>
-                <Button
-                  variant="outline"
-                  asChild
-                >
+                <Button variant="outline" asChild>
                   <a href={generatedLink} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="h-4 w-4" />
                   </a>
@@ -192,15 +191,11 @@ export function InviteLink() {
       <Card>
         <CardHeader>
           <CardTitle>Active Invite Links</CardTitle>
-          <CardDescription>
-            Manage your existing invite links
-          </CardDescription>
+          <CardDescription>Manage your existing invite links</CardDescription>
         </CardHeader>
         <CardContent>
           {activeLinks.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
-              No active invite links
-            </div>
+            <div className="py-8 text-center text-muted-foreground">No active invite links</div>
           ) : (
             <Table>
               <TableHeader>
@@ -216,9 +211,7 @@ export function InviteLink() {
                 {activeLinks.map((link) => (
                   <TableRow key={link.id}>
                     <TableCell>
-                      <code className="text-xs bg-muted px-2 py-1 rounded">
-                        {link.code}
-                      </code>
+                      <code className="rounded bg-muted px-2 py-1 text-xs">{link.code}</code>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className="capitalize">
@@ -229,9 +222,7 @@ export function InviteLink() {
                       {link.currentUses}
                       {link.maxUses && ` / ${link.maxUses}`}
                     </TableCell>
-                    <TableCell>
-                      {formatInviteExpiration(link.expiresAt)}
-                    </TableCell>
+                    <TableCell>{formatInviteExpiration(link.expiresAt)}</TableCell>
                     <TableCell className="text-right">
                       <div className="flex justify-end gap-2">
                         <Button

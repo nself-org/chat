@@ -11,37 +11,116 @@ const customJestConfig = {
   testEnvironment: 'jest-environment-jsdom',
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^@/test-utils$': '<rootDir>/src/test-utils',
+    '^@/test-utils/(.*)$': '<rootDir>/src/test-utils/$1',
   },
   collectCoverageFrom: [
     'src/**/*.{js,jsx,ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/*.stories.{js,jsx,ts,tsx}',
     '!src/**/_*.{js,jsx,ts,tsx}',
+    // Exclude test utilities from coverage
+    '!src/test-utils/**',
+    '!src/__tests__/**',
+    // Exclude generated files
+    '!src/types/generated/**',
+    // Exclude platform-specific code (tested separately)
+    '!src/**/electron/**',
+    '!src/**/capacitor/**',
+    '!src/**/tauri/**',
+    // Exclude instrumentation files (Sentry setup)
+    '!src/instrumentation*.ts',
+    '!src/sentry*.ts',
   ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
+    // Critical modules require 100% coverage
+    'src/services/auth/**/*.ts': {
+      branches: 90,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+    'src/stores/**/*.ts': {
+      branches: 85,
+      functions: 85,
+      lines: 85,
+      statements: 85,
+    },
+    'src/lib/utils.ts': {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
+  coverageReporters: ['text', 'text-summary', 'lcov', 'html', 'json-summary'],
+  coverageDirectory: '<rootDir>/coverage',
   testPathIgnorePatterns: [
     '<rootDir>/.next/',
     '<rootDir>/node_modules/',
     '<rootDir>/.backend/',
     '<rootDir>/e2e/',
+    '<rootDir>/platforms/',
     '<rootDir>/src/__tests__/mocks/',
     '<rootDir>/src/__tests__/utils/',
     '<rootDir>/src/__tests__/setup.ts',
+    '<rootDir>/src/test-utils/',
   ],
-  testMatch: [
-    '**/__tests__/**/*.test.[jt]s?(x)',
-    '**/?(*.)+(spec|test).[jt]s?(x)',
-  ],
+  testMatch: ['**/__tests__/**/*.test.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],
   modulePathIgnorePatterns: [
     '<rootDir>/.backend/',
     '<rootDir>/.next/standalone/',
     '<rootDir>/.next/',
+    '<rootDir>/platforms/',
   ],
   haste: {
     forceNodeFilesystemAPI: true,
   },
-  transformIgnorePatterns: [
-    'node_modules/(?!(uuid|@apollo/client|graphql)/)',
+  transformIgnorePatterns: ['node_modules/(?!(uuid|@apollo/client|graphql|graphql-ws)/)'],
+  // Performance optimizations
+  maxWorkers: '50%',
+  // Reporters for CI
+  reporters: [
+    'default',
+    [
+      'jest-junit',
+      {
+        outputDirectory: './coverage',
+        outputName: 'junit.xml',
+        classNameTemplate: '{classname}',
+        titleTemplate: '{title}',
+        ancestorSeparator: ' > ',
+        usePathForSuiteName: true,
+      },
+    ],
+    [
+      'jest-html-reporter',
+      {
+        pageTitle: 'nchat Test Report',
+        outputPath: './coverage/test-report.html',
+        includeFailureMsg: true,
+        includeSuiteFailure: true,
+      },
+    ],
   ],
+  // Snapshot configuration
+  snapshotSerializers: [],
+  // Clear mocks between tests
+  clearMocks: true,
+  // Restore mocks after each test
+  restoreMocks: true,
+  // Verbose output for debugging
+  verbose: false,
+  // Fail fast in CI
+  bail: process.env.CI ? 1 : 0,
+  // Test timeout
+  testTimeout: 10000,
 }
 
 // createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async

@@ -84,9 +84,7 @@ export function WhatsAppChatList({
   const [filterMode, setFilterMode] = useState<'all' | 'unread' | 'groups'>('all')
 
   const filteredChats = chats.filter((chat) => {
-    const matchesSearch = chat.name
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase())
+    const matchesSearch = chat.name.toLowerCase().includes(searchQuery.toLowerCase())
 
     if (filterMode === 'unread') {
       return matchesSearch && (chat.unreadCount ?? 0) > 0
@@ -103,7 +101,7 @@ export function WhatsAppChatList({
 
   return (
     <div
-      className={cn('flex flex-col h-full', className)}
+      className={cn('flex h-full flex-col', className)}
       style={{ backgroundColor: WHATSAPP_COLORS.chatBgDark }}
     >
       {/* Header */}
@@ -114,32 +112,29 @@ export function WhatsAppChatList({
           minHeight: 60,
         }}
       >
-        <h1
-          className="text-xl font-bold"
-          style={{ color: WHATSAPP_COLORS.textPrimaryDark }}
-        >
+        <h1 className="text-xl font-bold" style={{ color: WHATSAPP_COLORS.textPrimaryDark }}>
           Chats
         </h1>
         <div className="flex items-center gap-1">
           <button
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Camera className="w-5 h-5" />
+            <Camera className="h-5 w-5" />
           </button>
           <button
             onClick={onNewChatClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <MessageSquarePlus className="w-5 h-5" />
+            <MessageSquarePlus className="h-5 w-5" />
           </button>
           <button
             onClick={onMenuClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <MoreVertical className="w-5 h-5" />
+            <MoreVertical className="h-5 w-5" />
           </button>
         </div>
       </header>
@@ -147,14 +142,11 @@ export function WhatsAppChatList({
       {/* Search Bar */}
       <div className="px-3 pb-2">
         <div
-          className={cn(
-            'flex items-center gap-3 px-3 py-2 rounded-lg',
-            'transition-colors'
-          )}
+          className={cn('flex items-center gap-3 rounded-lg px-3 py-2', 'transition-colors')}
           style={{ backgroundColor: '#202C33' }}
         >
           <Search
-            className="w-4 h-4 flex-shrink-0"
+            className="h-4 w-4 flex-shrink-0"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           />
           <input
@@ -170,10 +162,10 @@ export function WhatsAppChatList({
             }}
           />
           <button
-            className="p-1 rounded hover:bg-white/5"
+            className="rounded p-1 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Filter className="w-4 h-4" />
+            <Filter className="h-4 w-4" />
           </button>
         </div>
       </div>
@@ -204,8 +196,8 @@ export function WhatsAppChatList({
           className="flex items-center gap-4 px-4 py-3 hover:bg-white/5"
           style={{ color: WHATSAPP_COLORS.primaryGreen }}
         >
-          <div className="w-12 h-12 rounded-full flex items-center justify-center bg-[#202C33]">
-            <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#202C33]">
+            <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
               <path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM6.24 5h11.52l.81.97H5.44l.8-.97zM5 19V8h14v11H5zm8.45-9h-2.9v3H8l4 4 4-4h-2.55v-3z" />
             </svg>
           </div>
@@ -256,10 +248,8 @@ function FilterPill({
     <button
       onClick={onClick}
       className={cn(
-        'px-3 py-1 rounded-full text-sm transition-colors',
-        isActive
-          ? 'bg-[#00A884] text-[#111B21]'
-          : 'bg-[#202C33] text-[#8696A0] hover:bg-[#2A3942]'
+        'rounded-full px-3 py-1 text-sm transition-colors',
+        isActive ? 'bg-[#00A884] text-[#111B21]' : 'bg-[#202C33] text-[#8696A0] hover:bg-[#2A3942]'
       )}
     >
       {label}
@@ -304,11 +294,11 @@ function ChatItem({
   const getCheckmarkIcon = (status?: string) => {
     switch (status) {
       case 'read':
-        return <CheckCheck className="w-4 h-4" style={{ color: WHATSAPP_COLORS.checkBlue }} />
+        return <CheckCheck className="h-4 w-4" style={{ color: WHATSAPP_COLORS.checkBlue }} />
       case 'delivered':
-        return <CheckCheck className="w-4 h-4" style={{ color: WHATSAPP_COLORS.checkGray }} />
+        return <CheckCheck className="h-4 w-4" style={{ color: WHATSAPP_COLORS.checkGray }} />
       case 'sent':
-        return <Check className="w-4 h-4" style={{ color: WHATSAPP_COLORS.checkGray }} />
+        return <Check className="h-4 w-4" style={{ color: WHATSAPP_COLORS.checkGray }} />
       default:
         return null
     }
@@ -316,9 +306,7 @@ function ChatItem({
 
   const getMessagePreview = () => {
     if (chat.isTyping) {
-      return (
-        <span style={{ color: WHATSAPP_COLORS.primaryGreen }}>typing...</span>
-      )
+      return <span style={{ color: WHATSAPP_COLORS.primaryGreen }}>typing...</span>
     }
 
     if (!chat.lastMessage) return null
@@ -326,12 +314,12 @@ function ChatItem({
     const prefixes: Record<string, React.ReactNode> = {
       image: (
         <span className="flex items-center gap-1">
-          <Camera className="w-4 h-4" /> Photo
+          <Camera className="h-4 w-4" /> Photo
         </span>
       ),
       voice: (
         <span className="flex items-center gap-1">
-          <Mic className="w-4 h-4" /> Voice message
+          <Mic className="h-4 w-4" /> Voice message
         </span>
       ),
     }
@@ -343,22 +331,22 @@ function ChatItem({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-3 w-full px-3 py-2',
-        'hover:bg-[#202C33] transition-colors',
+        'flex w-full items-center gap-3 px-3 py-2',
+        'transition-colors hover:bg-[#202C33]',
         isActive && 'bg-[#2A3942]'
       )}
     >
       {/* Avatar */}
       <div className="relative flex-shrink-0">
-        <div className="w-12 h-12 rounded-full overflow-hidden">
+        <div className="h-12 w-12 overflow-hidden rounded-full">
           {chat.avatar ? (
-            <img src={chat.avatar} alt={chat.name} className="w-full h-full object-cover" />
+            <img src={chat.avatar} alt={chat.name} className="h-full w-full object-cover" />
           ) : (
             <div
-              className="w-full h-full flex items-center justify-center"
+              className="flex h-full w-full items-center justify-center"
               style={{ backgroundColor: '#6B7C85' }}
             >
-              <svg viewBox="0 0 212 212" className="w-full h-full">
+              <svg viewBox="0 0 212 212" className="h-full w-full">
                 <path
                   fill="#DFE5E7"
                   d="M106.251.5C164.653.5 212 47.846 212 106.25S164.653 212 106.25 212C47.846 212 .5 164.654.5 106.25S47.846.5 106.251.5z"
@@ -374,20 +362,18 @@ function ChatItem({
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 text-left border-b border-[#222D34] py-2">
-        <div className="flex items-center justify-between mb-0.5">
-          <span
-            className="font-medium truncate"
-            style={{ color: WHATSAPP_COLORS.textPrimaryDark }}
-          >
+      <div className="min-w-0 flex-1 border-b border-[#222D34] py-2 text-left">
+        <div className="mb-0.5 flex items-center justify-between">
+          <span className="truncate font-medium" style={{ color: WHATSAPP_COLORS.textPrimaryDark }}>
             {chat.name}
           </span>
           <span
-            className="text-xs flex-shrink-0 ml-2"
+            className="ml-2 flex-shrink-0 text-xs"
             style={{
-              color: (chat.unreadCount ?? 0) > 0
-                ? WHATSAPP_COLORS.primaryGreen
-                : WHATSAPP_COLORS.textSecondaryDark,
+              color:
+                (chat.unreadCount ?? 0) > 0
+                  ? WHATSAPP_COLORS.primaryGreen
+                  : WHATSAPP_COLORS.textSecondaryDark,
             }}
           >
             {chat.lastMessage && formatTime(chat.lastMessage.time)}
@@ -395,22 +381,22 @@ function ChatItem({
         </div>
         <div className="flex items-center justify-between">
           <p
-            className="text-sm truncate flex items-center gap-1"
+            className="flex items-center gap-1 truncate text-sm"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
             {chat.lastMessage?.isOwn && getCheckmarkIcon(chat.lastMessage.status)}
             {getMessagePreview()}
           </p>
-          <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+          <div className="ml-2 flex flex-shrink-0 items-center gap-1">
             {chat.isMuted && (
-              <BellOff className="w-4 h-4" style={{ color: WHATSAPP_COLORS.textSecondaryDark }} />
+              <BellOff className="h-4 w-4" style={{ color: WHATSAPP_COLORS.textSecondaryDark }} />
             )}
             {chat.isPinned && (
-              <Pin className="w-4 h-4" style={{ color: WHATSAPP_COLORS.textSecondaryDark }} />
+              <Pin className="h-4 w-4" style={{ color: WHATSAPP_COLORS.textSecondaryDark }} />
             )}
             {(chat.unreadCount ?? 0) > 0 && (
               <span
-                className="min-w-[20px] h-5 px-1.5 rounded-full text-xs font-medium flex items-center justify-center"
+                className="flex h-5 min-w-[20px] items-center justify-center rounded-full px-1.5 text-xs font-medium"
                 style={{
                   backgroundColor: chat.isMuted ? '#8696A0' : WHATSAPP_COLORS.primaryGreen,
                   color: '#111B21',

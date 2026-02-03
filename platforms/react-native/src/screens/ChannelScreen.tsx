@@ -3,13 +3,7 @@
  */
 
 import React, { useCallback, useRef, useState, useEffect } from 'react'
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  KeyboardAvoidingView,
-  Platform,
-} from 'react-native'
+import { View, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -82,15 +76,18 @@ export function ChannelScreen() {
     return sections
   }, [messages])
 
-  const handleSend = useCallback(async (content: string, attachments?: string[]) => {
-    await sendMessage({
-      content,
-      attachments,
-      replyTo: replyTo?.id,
-    })
-    setReplyTo(null)
-    flatListRef.current?.scrollToOffset({ offset: 0, animated: true })
-  }, [sendMessage, replyTo])
+  const handleSend = useCallback(
+    async (content: string, attachments?: string[]) => {
+      await sendMessage({
+        content,
+        attachments,
+        replyTo: replyTo?.id,
+      })
+      setReplyTo(null)
+      flatListRef.current?.scrollToOffset({ offset: 0, animated: true })
+    },
+    [sendMessage, replyTo]
+  )
 
   const handleReply = useCallback((message: Message) => {
     setReplyTo(message)
@@ -117,40 +114,43 @@ export function ChannelScreen() {
     return `${typingUsers.length} people are typing...`
   }
 
-  const renderItem = useCallback(({ item }: { item: MessageSection }) => {
-    if (item.type === 'date') {
-      return (
-        <View style={styles.dateHeader}>
-          <View style={[styles.dateLine, { backgroundColor: theme.colors.border }]} />
-          <View style={[styles.dateLabel, { backgroundColor: theme.colors.background }]}>
-            <Text style={[styles.dateText, { color: theme.colors.muted }]}>
-              {item.data as string}
-            </Text>
+  const renderItem = useCallback(
+    ({ item }: { item: MessageSection }) => {
+      if (item.type === 'date') {
+        return (
+          <View style={styles.dateHeader}>
+            <View style={[styles.dateLine, { backgroundColor: theme.colors.border }]} />
+            <View style={[styles.dateLabel, { backgroundColor: theme.colors.background }]}>
+              <Text style={[styles.dateText, { color: theme.colors.muted }]}>
+                {item.data as string}
+              </Text>
+            </View>
+            <View style={[styles.dateLine, { backgroundColor: theme.colors.border }]} />
           </View>
-          <View style={[styles.dateLine, { backgroundColor: theme.colors.border }]} />
-        </View>
+        )
+      }
+
+      const message = item.data as Message
+      const isOwnMessage = message.senderId === user?.id
+      const messageIndex = messages.findIndex((m) => m.id === message.id)
+      const previousMessage = messages[messageIndex + 1]
+      const showAvatar = !previousMessage || previousMessage.senderId !== message.senderId
+
+      return (
+        <MessageBubble
+          message={message}
+          isOwnMessage={isOwnMessage}
+          showAvatar={showAvatar}
+          showSenderName={!isOwnMessage && showAvatar}
+          onReply={() => handleReply(message)}
+          onLongPress={() => {
+            // Show message actions
+          }}
+        />
       )
-    }
-
-    const message = item.data as Message
-    const isOwnMessage = message.senderId === user?.id
-    const messageIndex = messages.findIndex((m) => m.id === message.id)
-    const previousMessage = messages[messageIndex + 1]
-    const showAvatar = !previousMessage || previousMessage.senderId !== message.senderId
-
-    return (
-      <MessageBubble
-        message={message}
-        isOwnMessage={isOwnMessage}
-        showAvatar={showAvatar}
-        showSenderName={!isOwnMessage && showAvatar}
-        onReply={() => handleReply(message)}
-        onLongPress={() => {
-          // Show message actions
-        }}
-      />
-    )
-  }, [user?.id, messages, handleReply, theme.colors])
+    },
+    [user?.id, messages, handleReply, theme.colors]
+  )
 
   const keyExtractor = useCallback((item: MessageSection) => item.key, [])
 

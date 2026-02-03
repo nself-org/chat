@@ -48,6 +48,7 @@ The nself-chat AI API provides intelligent features powered by OpenAI GPT-4o-min
 **Base URL**: `https://your-domain.com/api`
 
 **Supported AI Providers**:
+
 - OpenAI (GPT-4o-mini, GPT-3.5-turbo)
 - Anthropic (Claude 3.5 Haiku, Claude 3 Haiku)
 - Local fallbacks for basic operations
@@ -80,15 +81,16 @@ In development (`NEXT_PUBLIC_USE_DEV_AUTH=true`), authentication is bypassed for
 
 Rate limits are enforced per user and per organization:
 
-| Endpoint Category | User Limit | Org Limit | Window |
-|------------------|------------|-----------|--------|
-| Summarization | 50 requests | 500 requests | 1 hour |
-| Search | 20 requests | 1,000 requests | 1 minute |
-| Embeddings | 10 requests | 100 requests | 1 minute |
-| Moderation | 100 requests | 1,000 requests | 1 hour |
-| Admin | 30 requests | N/A | 1 minute |
+| Endpoint Category | User Limit   | Org Limit      | Window   |
+| ----------------- | ------------ | -------------- | -------- |
+| Summarization     | 50 requests  | 500 requests   | 1 hour   |
+| Search            | 20 requests  | 1,000 requests | 1 minute |
+| Embeddings        | 10 requests  | 100 requests   | 1 minute |
+| Moderation        | 100 requests | 1,000 requests | 1 hour   |
+| Admin             | 30 requests  | N/A            | 1 minute |
 
 **Rate Limit Headers**:
+
 ```http
 X-RateLimit-Limit: 50
 X-RateLimit-Remaining: 45
@@ -96,6 +98,7 @@ X-RateLimit-Reset: 1706745600
 ```
 
 **429 Response**:
+
 ```json
 {
   "success": false,
@@ -110,14 +113,14 @@ X-RateLimit-Reset: 1706745600
 
 Approximate costs per operation (USD):
 
-| Operation | Model | Cost per Request |
-|-----------|-------|------------------|
-| Brief Summary | GPT-4o-mini | $0.0001 - $0.0005 |
-| Channel Digest | GPT-4o-mini | $0.001 - $0.005 |
-| Sentiment Analysis | Claude 3.5 Haiku | $0.0001 - $0.0003 |
-| Embedding (batch 100) | text-embedding-3-small | $0.00002 |
-| Semantic Search | text-embedding-3-small | $0.000001 per query |
-| Content Moderation | GPT-4o-mini | $0.0002 - $0.0008 |
+| Operation             | Model                  | Cost per Request    |
+| --------------------- | ---------------------- | ------------------- |
+| Brief Summary         | GPT-4o-mini            | $0.0001 - $0.0005   |
+| Channel Digest        | GPT-4o-mini            | $0.001 - $0.005     |
+| Sentiment Analysis    | Claude 3.5 Haiku       | $0.0001 - $0.0003   |
+| Embedding (batch 100) | text-embedding-3-small | $0.00002            |
+| Semantic Search       | text-embedding-3-small | $0.000001 per query |
+| Content Moderation    | GPT-4o-mini            | $0.0002 - $0.0008   |
 
 **Note**: Actual costs vary based on content length and complexity. Enable cost tracking in admin settings.
 
@@ -137,17 +140,18 @@ Generate intelligent summaries of messages using AI.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `messages` | `Message[]` | Yes | Array of messages to summarize (max 500) |
-| `type` | `string` | No | Summary type: `brief`, `digest`, `thread`, `catchup`, `meeting-notes` (default: `brief`) |
-| `options` | `object` | No | Summary options |
-| `options.style` | `string` | No | Style: `brief`, `detailed`, `bullets` (default: `brief`) |
-| `options.maxLength` | `number` | No | Max summary length in words (default: 100) |
-| `options.includeKeyPoints` | `boolean` | No | Include key discussion points (default: false) |
-| `meetingOptions` | `object` | No | Meeting notes options (for `meeting-notes` type) |
+| Parameter                  | Type        | Required | Description                                                                              |
+| -------------------------- | ----------- | -------- | ---------------------------------------------------------------------------------------- |
+| `messages`                 | `Message[]` | Yes      | Array of messages to summarize (max 500)                                                 |
+| `type`                     | `string`    | No       | Summary type: `brief`, `digest`, `thread`, `catchup`, `meeting-notes` (default: `brief`) |
+| `options`                  | `object`    | No       | Summary options                                                                          |
+| `options.style`            | `string`    | No       | Style: `brief`, `detailed`, `bullets` (default: `brief`)                                 |
+| `options.maxLength`        | `number`    | No       | Max summary length in words (default: 100)                                               |
+| `options.includeKeyPoints` | `boolean`   | No       | Include key discussion points (default: false)                                           |
+| `meetingOptions`           | `object`    | No       | Meeting notes options (for `meeting-notes` type)                                         |
 
 **Message Object**:
+
 ```typescript
 {
   id: string
@@ -161,6 +165,7 @@ Generate intelligent summaries of messages using AI.
 ```
 
 **Example Request**:
+
 ```json
 {
   "messages": [
@@ -191,6 +196,7 @@ Generate intelligent summaries of messages using AI.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -206,19 +212,20 @@ Generate intelligent summaries of messages using AI.
 
 **Response Fields**:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `success` | `boolean` | Whether the request succeeded |
-| `summary` | `string` | Generated summary text |
-| `digest` | `object` | Full digest object (for `digest` type) |
-| `threadSummary` | `object` | Thread summary details (for `thread` type) |
-| `provider` | `string` | AI provider used: `openai`, `anthropic`, `local` |
-| `qualityScore` | `number` | Quality score 0-1 (brief type only) |
-| `costInfo` | `object` | Cost tracking information |
+| Field           | Type      | Description                                      |
+| --------------- | --------- | ------------------------------------------------ |
+| `success`       | `boolean` | Whether the request succeeded                    |
+| `summary`       | `string`  | Generated summary text                           |
+| `digest`        | `object`  | Full digest object (for `digest` type)           |
+| `threadSummary` | `object`  | Thread summary details (for `thread` type)       |
+| `provider`      | `string`  | AI provider used: `openai`, `anthropic`, `local` |
+| `qualityScore`  | `number`  | Quality score 0-1 (brief type only)              |
+| `costInfo`      | `object`  | Cost tracking information                        |
 
 #### Errors
 
 **400 Bad Request**:
+
 ```json
 {
   "success": false,
@@ -227,6 +234,7 @@ Generate intelligent summaries of messages using AI.
 ```
 
 **400 Too Many Messages**:
+
 ```json
 {
   "success": false,
@@ -235,6 +243,7 @@ Generate intelligent summaries of messages using AI.
 ```
 
 **500 Internal Server Error**:
+
 ```json
 {
   "success": false,
@@ -245,6 +254,7 @@ Generate intelligent summaries of messages using AI.
 #### Code Examples
 
 **cURL**:
+
 ```bash
 curl -X POST https://api.example.com/api/ai/summarize \
   -H "Content-Type: application/json" \
@@ -265,12 +275,13 @@ curl -X POST https://api.example.com/api/ai/summarize \
 ```
 
 **JavaScript (fetch)**:
+
 ```javascript
 const response = await fetch('/api/ai/summarize', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
+    Authorization: `Bearer ${token}`,
   },
   body: JSON.stringify({
     messages: [
@@ -279,19 +290,20 @@ const response = await fetch('/api/ai/summarize', {
         content: 'Project discussion content',
         author_id: 'user-123',
         author_name: 'Alice',
-        created_at: new Date().toISOString()
-      }
+        created_at: new Date().toISOString(),
+      },
     ],
     type: 'brief',
-    options: { style: 'bullets', maxLength: 100 }
-  })
-});
+    options: { style: 'bullets', maxLength: 100 },
+  }),
+})
 
-const data = await response.json();
-console.log('Summary:', data.summary);
+const data = await response.json()
+console.log('Summary:', data.summary)
 ```
 
 **Python (requests)**:
+
 ```python
 import requests
 from datetime import datetime
@@ -336,17 +348,18 @@ Generate comprehensive channel digests with activity summaries, key discussions,
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `channelId` | `string` | Yes | Channel ID |
-| `messages` | `Message[]` | Yes | Messages to include in digest (max 1,000) |
-| `options` | `object` | No | Digest options |
-| `options.period` | `string` | No | Period: `daily`, `weekly`, `monthly` (default: `daily`) |
-| `options.includeStats` | `boolean` | No | Include message statistics (default: true) |
-| `options.includeTopics` | `boolean` | No | Extract discussion topics (default: true) |
-| `options.includeTrends` | `boolean` | No | Identify trending discussions (default: true) |
+| Parameter               | Type        | Required | Description                                             |
+| ----------------------- | ----------- | -------- | ------------------------------------------------------- |
+| `channelId`             | `string`    | Yes      | Channel ID                                              |
+| `messages`              | `Message[]` | Yes      | Messages to include in digest (max 1,000)               |
+| `options`               | `object`    | No       | Digest options                                          |
+| `options.period`        | `string`    | No       | Period: `daily`, `weekly`, `monthly` (default: `daily`) |
+| `options.includeStats`  | `boolean`   | No       | Include message statistics (default: true)              |
+| `options.includeTopics` | `boolean`   | No       | Extract discussion topics (default: true)               |
+| `options.includeTrends` | `boolean`   | No       | Identify trending discussions (default: true)           |
 
 **Example Request**:
+
 ```json
 {
   "channelId": "channel-general",
@@ -371,6 +384,7 @@ Generate comprehensive channel digests with activity summaries, key discussions,
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -418,6 +432,7 @@ Generate comprehensive channel digests with activity summaries, key discussions,
 Same as `/api/ai/summarize` with additional:
 
 **400 Missing Channel ID**:
+
 ```json
 {
   "success": false,
@@ -430,6 +445,7 @@ Same as `/api/ai/summarize` with additional:
 Get digest schedule information for a channel.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -457,19 +473,20 @@ Analyze sentiment and emotional tone of messages.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `message` | `Message` | Conditional | Single message (required for `single` type) |
-| `messages` | `Message[]` | Conditional | Multiple messages (required for `trend`, `morale` types) |
-| `type` | `string` | No | Analysis type: `single`, `trend`, `morale` (default: `single`) |
-| `period` | `object` | Conditional | Time period (required for `morale` type) |
-| `period.start` | `string` | Yes | Start date (ISO 8601) |
-| `period.end` | `string` | Yes | End date (ISO 8601) |
-| `options` | `object` | No | Analysis options |
+| Parameter      | Type        | Required    | Description                                                    |
+| -------------- | ----------- | ----------- | -------------------------------------------------------------- |
+| `message`      | `Message`   | Conditional | Single message (required for `single` type)                    |
+| `messages`     | `Message[]` | Conditional | Multiple messages (required for `trend`, `morale` types)       |
+| `type`         | `string`    | No          | Analysis type: `single`, `trend`, `morale` (default: `single`) |
+| `period`       | `object`    | Conditional | Time period (required for `morale` type)                       |
+| `period.start` | `string`    | Yes         | Start date (ISO 8601)                                          |
+| `period.end`   | `string`    | Yes         | End date (ISO 8601)                                            |
+| `options`      | `object`    | No          | Analysis options                                               |
 
 **Example Requests**:
 
 **Single Message Sentiment**:
+
 ```json
 {
   "message": {
@@ -484,17 +501,23 @@ Analyze sentiment and emotional tone of messages.
 ```
 
 **Sentiment Trend Analysis**:
+
 ```json
 {
-  "messages": [ /* array of messages */ ],
+  "messages": [
+    /* array of messages */
+  ],
   "type": "trend"
 }
 ```
 
 **Team Morale Report**:
+
 ```json
 {
-  "messages": [ /* array of messages */ ],
+  "messages": [
+    /* array of messages */
+  ],
   "type": "morale",
   "period": {
     "start": "2026-01-01T00:00:00Z",
@@ -506,6 +529,7 @@ Analyze sentiment and emotional tone of messages.
 #### Response
 
 **Single Sentiment (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -526,6 +550,7 @@ Analyze sentiment and emotional tone of messages.
 ```
 
 **Sentiment Trend (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -551,6 +576,7 @@ Analyze sentiment and emotional tone of messages.
 ```
 
 **Team Morale Report (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -563,15 +589,8 @@ Analyze sentiment and emotional tone of messages.
       "neutral": 25,
       "negative": 10
     },
-    "topPositiveTopics": [
-      "Product launch",
-      "Team collaboration",
-      "Feature releases"
-    ],
-    "concerns": [
-      "Deployment complexity",
-      "Meeting frequency"
-    ],
+    "topPositiveTopics": ["Product launch", "Team collaboration", "Feature releases"],
+    "concerns": ["Deployment complexity", "Meeting frequency"],
     "recommendations": [
       "Continue current momentum on product releases",
       "Address deployment process concerns raised by team"
@@ -584,6 +603,7 @@ Analyze sentiment and emotional tone of messages.
 #### Errors
 
 **400 Invalid Type**:
+
 ```json
 {
   "success": false,
@@ -592,6 +612,7 @@ Analyze sentiment and emotional tone of messages.
 ```
 
 **400 Missing Period**:
+
 ```json
 {
   "success": false,
@@ -615,16 +636,17 @@ Perform AI-powered semantic search across messages using embeddings.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `query` | `string` | Yes | Search query (min 2 chars, max 200 chars) |
-| `messages` | `SearchableMessage[]` | Yes | Messages to search (max 10,000) |
-| `options` | `object` | No | Search options |
-| `options.limit` | `number` | No | Max results to return (default: 20) |
-| `options.threshold` | `number` | No | Similarity threshold 0-1 (default: 0.7) |
-| `options.includeContext` | `boolean` | No | Include surrounding messages (default: false) |
+| Parameter                | Type                  | Required | Description                                   |
+| ------------------------ | --------------------- | -------- | --------------------------------------------- |
+| `query`                  | `string`              | Yes      | Search query (min 2 chars, max 200 chars)     |
+| `messages`               | `SearchableMessage[]` | Yes      | Messages to search (max 10,000)               |
+| `options`                | `object`              | No       | Search options                                |
+| `options.limit`          | `number`              | No       | Max results to return (default: 20)           |
+| `options.threshold`      | `number`              | No       | Similarity threshold 0-1 (default: 0.7)       |
+| `options.includeContext` | `boolean`             | No       | Include surrounding messages (default: false) |
 
 **SearchableMessage Object**:
+
 ```typescript
 {
   id: string
@@ -638,6 +660,7 @@ Perform AI-powered semantic search across messages using embeddings.
 ```
 
 **Example Request**:
+
 ```json
 {
   "query": "deployment issues",
@@ -662,6 +685,7 @@ Perform AI-powered semantic search across messages using embeddings.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -694,16 +718,17 @@ Perform AI-powered semantic search across messages using embeddings.
 
 **Response Fields**:
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `results` | `SearchResult[]` | Array of search results ranked by similarity |
-| `count` | `number` | Number of results returned |
-| `provider` | `string` | Search provider: `openai`, `local` |
-| `isSemanticSearch` | `boolean` | Whether semantic search was used |
+| Field              | Type             | Description                                  |
+| ------------------ | ---------------- | -------------------------------------------- |
+| `results`          | `SearchResult[]` | Array of search results ranked by similarity |
+| `count`            | `number`         | Number of results returned                   |
+| `provider`         | `string`         | Search provider: `openai`, `local`           |
+| `isSemanticSearch` | `boolean`        | Whether semantic search was used             |
 
 #### Errors
 
 **400 Query Too Short**:
+
 ```json
 {
   "success": false,
@@ -712,6 +737,7 @@ Perform AI-powered semantic search across messages using embeddings.
 ```
 
 **400 Too Many Messages**:
+
 ```json
 {
   "success": false,
@@ -734,17 +760,19 @@ Generate embeddings for text content in batch.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `texts` | `string[]` | Yes | Array of texts to embed (max 100) |
-| `model` | `string` | No | Embedding model (default: `text-embedding-3-small`) |
+| Parameter | Type       | Required | Description                                         |
+| --------- | ---------- | -------- | --------------------------------------------------- |
+| `texts`   | `string[]` | Yes      | Array of texts to embed (max 100)                   |
+| `model`   | `string`   | No       | Embedding model (default: `text-embedding-3-small`) |
 
 **Constraints**:
+
 - Maximum batch size: 100 texts
 - Maximum text length: 8,000 characters per text
 - Empty strings not allowed
 
 **Example Request**:
+
 ```json
 {
   "texts": [
@@ -759,13 +787,14 @@ Generate embeddings for text content in batch.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
   "embeddings": [
-    [0.123, -0.456, 0.789, /* ... 1536 dimensions */],
-    [-0.234, 0.567, -0.890, /* ... 1536 dimensions */],
-    [0.345, -0.678, 0.901, /* ... 1536 dimensions */]
+    [0.123, -0.456, 0.789 /* ... 1536 dimensions */],
+    [-0.234, 0.567, -0.89 /* ... 1536 dimensions */],
+    [0.345, -0.678, 0.901 /* ... 1536 dimensions */]
   ],
   "model": "text-embedding-3-small",
   "usage": {
@@ -779,19 +808,20 @@ Generate embeddings for text content in batch.
 
 **Response Fields**:
 
-| Field | Type | Description |
-|-------|------|-------------|
+| Field        | Type         | Description                                  |
+| ------------ | ------------ | -------------------------------------------- |
 | `embeddings` | `number[][]` | Array of embedding vectors (1536 dimensions) |
-| `model` | `string` | Model used for generation |
-| `usage` | `object` | Token usage information |
-| `cached` | `number` | Number of embeddings served from cache |
-| `generated` | `number` | Number of embeddings newly generated |
+| `model`      | `string`     | Model used for generation                    |
+| `usage`      | `object`     | Token usage information                      |
+| `cached`     | `number`     | Number of embeddings served from cache       |
+| `generated`  | `number`     | Number of embeddings newly generated         |
 
 #### GET /api/ai/embed
 
 Get embedding service status and statistics.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -817,6 +847,7 @@ Get embedding service status and statistics.
 #### Errors
 
 **400 Invalid Text**:
+
 ```json
 {
   "success": false,
@@ -825,6 +856,7 @@ Get embedding service status and statistics.
 ```
 
 **400 Batch Too Large**:
+
 ```json
 {
   "success": false,
@@ -833,6 +865,7 @@ Get embedding service status and statistics.
 ```
 
 **503 Service Unavailable**:
+
 ```json
 {
   "success": false,
@@ -853,13 +886,14 @@ Get autocomplete suggestions based on search history.
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `q` | `string` | No | Partial query to match (default: `""`) |
-| `limit` | `number` | No | Max suggestions (1-50, default: 10) |
-| `userId` | `string` | No | User ID for personalized suggestions |
+| Parameter | Type     | Required | Description                            |
+| --------- | -------- | -------- | -------------------------------------- |
+| `q`       | `string` | No       | Partial query to match (default: `""`) |
+| `limit`   | `number` | No       | Max suggestions (1-50, default: 10)    |
+| `userId`  | `string` | No       | User ID for personalized suggestions   |
 
 **Example Request**:
+
 ```
 GET /api/search/suggestions?q=deploy&limit=5&userId=user-123
 ```
@@ -867,6 +901,7 @@ GET /api/search/suggestions?q=deploy&limit=5&userId=user-123
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -893,6 +928,7 @@ GET /api/search/suggestions?q=deploy&limit=5&userId=user-123
 #### Errors
 
 **400 Invalid Limit**:
+
 ```json
 {
   "success": false,
@@ -916,20 +952,21 @@ Analyze content with AI-powered moderation using multiple detection models.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `contentId` | `string` | Yes | Unique content identifier |
-| `content` | `string` | Yes | Content to analyze |
-| `contentType` | `string` | No | Type: `text`, `image`, `video`, `file`, `profile`, `channel` (default: `text`) |
-| `metadata` | `object` | No | Additional metadata |
-| `metadata.userId` | `string` | No | User ID (for violation tracking) |
-| `metadata.channelId` | `string` | No | Channel ID |
-| `policy` | `object` | No | Custom moderation policy |
-| `enableToxicity` | `boolean` | No | Enable toxicity detection (default: true) |
-| `enableSpam` | `boolean` | No | Enable spam detection (default: true) |
-| `enableClassification` | `boolean` | No | Enable content classification (default: true) |
+| Parameter              | Type      | Required | Description                                                                    |
+| ---------------------- | --------- | -------- | ------------------------------------------------------------------------------ |
+| `contentId`            | `string`  | Yes      | Unique content identifier                                                      |
+| `content`              | `string`  | Yes      | Content to analyze                                                             |
+| `contentType`          | `string`  | No       | Type: `text`, `image`, `video`, `file`, `profile`, `channel` (default: `text`) |
+| `metadata`             | `object`  | No       | Additional metadata                                                            |
+| `metadata.userId`      | `string`  | No       | User ID (for violation tracking)                                               |
+| `metadata.channelId`   | `string`  | No       | Channel ID                                                                     |
+| `policy`               | `object`  | No       | Custom moderation policy                                                       |
+| `enableToxicity`       | `boolean` | No       | Enable toxicity detection (default: true)                                      |
+| `enableSpam`           | `boolean` | No       | Enable spam detection (default: true)                                          |
+| `enableClassification` | `boolean` | No       | Enable content classification (default: true)                                  |
 
 **Example Request**:
+
 ```json
 {
   "contentId": "msg-123",
@@ -948,6 +985,7 @@ Analyze content with AI-powered moderation using multiple detection models.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -991,6 +1029,7 @@ Analyze content with AI-powered moderation using multiple detection models.
 ```
 
 **Flagged Content (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1020,11 +1059,17 @@ Analyze content with AI-powered moderation using multiple detection models.
     },
     "recommendedAction": "flag",
     "autoAction": "hide",
-    "confidence": 0.90
+    "confidence": 0.9
   },
-  "toxicityAnalysis": { /* ... */ },
-  "spamAnalysis": { /* ... */ },
-  "classification": { /* ... */ }
+  "toxicityAnalysis": {
+    /* ... */
+  },
+  "spamAnalysis": {
+    /* ... */
+  },
+  "classification": {
+    /* ... */
+  }
 }
 ```
 
@@ -1033,6 +1078,7 @@ Analyze content with AI-powered moderation using multiple detection models.
 Get current moderation policy configuration.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -1043,9 +1089,15 @@ Get current moderation policy configuration.
     "nsfwAction": "hide",
     "autoModeration": true
   },
-  "toxicityConfig": { /* ... */ },
-  "spamConfig": { /* ... */ },
-  "classifierConfig": { /* ... */ }
+  "toxicityConfig": {
+    /* ... */
+  },
+  "spamConfig": {
+    /* ... */
+  },
+  "classifierConfig": {
+    /* ... */
+  }
 }
 ```
 
@@ -1054,17 +1106,21 @@ Get current moderation policy configuration.
 Update moderation policy configuration.
 
 **Request**:
+
 ```json
 {
   "policy": {
     "toxicityThreshold": 0.8,
     "autoModeration": true
   },
-  "toxicityConfig": { /* ... */ }
+  "toxicityConfig": {
+    /* ... */
+  }
 }
 ```
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -1087,13 +1143,14 @@ Process multiple content items in parallel for efficient bulk moderation.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `items` | `BatchItem[]` | Yes | Array of items to moderate (max 100) |
-| `policy` | `object` | No | Custom moderation policy |
-| `maxConcurrency` | `number` | No | Max concurrent processing (default: 10) |
+| Parameter        | Type          | Required | Description                             |
+| ---------------- | ------------- | -------- | --------------------------------------- |
+| `items`          | `BatchItem[]` | Yes      | Array of items to moderate (max 100)    |
+| `policy`         | `object`      | No       | Custom moderation policy                |
+| `maxConcurrency` | `number`      | No       | Max concurrent processing (default: 10) |
 
 **BatchItem Object**:
+
 ```typescript
 {
   contentId: string
@@ -1104,6 +1161,7 @@ Process multiple content items in parallel for efficient bulk moderation.
 ```
 
 **Example Request**:
+
 ```json
 {
   "items": [
@@ -1127,6 +1185,7 @@ Process multiple content items in parallel for efficient bulk moderation.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1143,13 +1202,17 @@ Process multiple content items in parallel for efficient bulk moderation.
     {
       "contentId": "msg-1",
       "success": true,
-      "analysis": { /* ... */ },
+      "analysis": {
+        /* ... */
+      },
       "processingTime": 584
     },
     {
       "contentId": "msg-2",
       "success": true,
-      "analysis": { /* ... */ },
+      "analysis": {
+        /* ... */
+      },
       "processingTime": 661
     }
   ]
@@ -1157,6 +1220,7 @@ Process multiple content items in parallel for efficient bulk moderation.
 ```
 
 **With Errors (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1173,7 +1237,9 @@ Process multiple content items in parallel for efficient bulk moderation.
     {
       "contentId": "msg-1",
       "success": true,
-      "analysis": { /* ... */ },
+      "analysis": {
+        /* ... */
+      },
       "processingTime": 620
     },
     {
@@ -1183,15 +1249,14 @@ Process multiple content items in parallel for efficient bulk moderation.
       "processingTime": 560
     }
   ],
-  "errors": [
-    "msg-2: Content too long"
-  ]
+  "errors": ["msg-2: Content too long"]
 }
 ```
 
 #### Errors
 
 **400 Invalid Request**:
+
 ```json
 {
   "error": "Items array is required"
@@ -1199,6 +1264,7 @@ Process multiple content items in parallel for efficient bulk moderation.
 ```
 
 **400 Batch Too Large**:
+
 ```json
 {
   "error": "Maximum batch size is 100 items"
@@ -1219,38 +1285,39 @@ Take moderation actions on content or users.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `action` | `string` | Yes | Action type: `flag`, `hide`, `delete`, `warn`, `mute`, `unmute`, `ban`, `unban`, `approve`, `reject`, `appeal` |
-| `itemId` | `string` | Conditional | Queue item ID (for approve/reject/appeal) |
-| `moderatorId` | `string` | Conditional | Moderator user ID (required for manual actions) |
-| `reason` | `string` | No | Action reason |
-| `targetType` | `string` | Conditional | Target type for flag/hide/delete |
-| `targetId` | `string` | Conditional | Target ID for flag/hide/delete |
-| `targetUserId` | `string` | Conditional | Target user ID |
-| `duration` | `number` | No | Duration in minutes (for mute/ban) |
-| `bulk` | `object[]` | No | Bulk action targets |
-| `appealText` | `string` | Conditional | Appeal text (for appeal action) |
+| Parameter      | Type       | Required    | Description                                                                                                    |
+| -------------- | ---------- | ----------- | -------------------------------------------------------------------------------------------------------------- |
+| `action`       | `string`   | Yes         | Action type: `flag`, `hide`, `delete`, `warn`, `mute`, `unmute`, `ban`, `unban`, `approve`, `reject`, `appeal` |
+| `itemId`       | `string`   | Conditional | Queue item ID (for approve/reject/appeal)                                                                      |
+| `moderatorId`  | `string`   | Conditional | Moderator user ID (required for manual actions)                                                                |
+| `reason`       | `string`   | No          | Action reason                                                                                                  |
+| `targetType`   | `string`   | Conditional | Target type for flag/hide/delete                                                                               |
+| `targetId`     | `string`   | Conditional | Target ID for flag/hide/delete                                                                                 |
+| `targetUserId` | `string`   | Conditional | Target user ID                                                                                                 |
+| `duration`     | `number`   | No          | Duration in minutes (for mute/ban)                                                                             |
+| `bulk`         | `object[]` | No          | Bulk action targets                                                                                            |
+| `appealText`   | `string`   | Conditional | Appeal text (for appeal action)                                                                                |
 
 **Action Types**:
 
-| Action | Description | Required Fields |
-|--------|-------------|-----------------|
-| `flag` | Flag content for review | `targetType`, `targetId`, `targetUserId` |
-| `hide` | Hide content from view | `targetType`, `targetId`, `targetUserId` |
-| `delete` | Delete content | `targetType`, `targetId`, `targetUserId` |
-| `warn` | Warn user | `moderatorId`, `targetUserId` |
-| `mute` | Mute user | `moderatorId`, `targetUserId`, `duration` (optional) |
-| `unmute` | Unmute user | `moderatorId`, `targetUserId` |
-| `ban` | Ban user | `moderatorId`, `targetUserId`, `duration` (optional) |
-| `unban` | Unban user | `moderatorId`, `targetUserId` |
-| `approve` | Approve flagged content | `moderatorId`, `itemId` |
-| `reject` | Reject flagged content | `moderatorId`, `itemId` |
-| `appeal` | Submit appeal | `itemId`, `appealText` |
+| Action    | Description             | Required Fields                                      |
+| --------- | ----------------------- | ---------------------------------------------------- |
+| `flag`    | Flag content for review | `targetType`, `targetId`, `targetUserId`             |
+| `hide`    | Hide content from view  | `targetType`, `targetId`, `targetUserId`             |
+| `delete`  | Delete content          | `targetType`, `targetId`, `targetUserId`             |
+| `warn`    | Warn user               | `moderatorId`, `targetUserId`                        |
+| `mute`    | Mute user               | `moderatorId`, `targetUserId`, `duration` (optional) |
+| `unmute`  | Unmute user             | `moderatorId`, `targetUserId`                        |
+| `ban`     | Ban user                | `moderatorId`, `targetUserId`, `duration` (optional) |
+| `unban`   | Unban user              | `moderatorId`, `targetUserId`                        |
+| `approve` | Approve flagged content | `moderatorId`, `itemId`                              |
+| `reject`  | Reject flagged content  | `moderatorId`, `itemId`                              |
+| `appeal`  | Submit appeal           | `itemId`, `appealText`                               |
 
 **Example Requests**:
 
 **Flag Content**:
+
 ```json
 {
   "action": "flag",
@@ -1263,6 +1330,7 @@ Take moderation actions on content or users.
 ```
 
 **Mute User (Temporary)**:
+
 ```json
 {
   "action": "mute",
@@ -1274,6 +1342,7 @@ Take moderation actions on content or users.
 ```
 
 **Bulk Action**:
+
 ```json
 {
   "action": "hide",
@@ -1289,6 +1358,7 @@ Take moderation actions on content or users.
 #### Response
 
 **Single Action (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1299,6 +1369,7 @@ Take moderation actions on content or users.
 ```
 
 **Bulk Action (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1327,6 +1398,7 @@ Take moderation actions on content or users.
 Get moderation action audit log.
 
 **Response**:
+
 ```json
 {
   "success": true,
@@ -1358,13 +1430,14 @@ Get comprehensive moderation analytics and statistics.
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `period` | `string` | No | Period: `1d`, `7d`, `30d`, `90d`, `all` (default: `7d`) |
-| `startDate` | `string` | No | Custom start date (ISO 8601) |
-| `endDate` | `string` | No | Custom end date (ISO 8601) |
+| Parameter   | Type     | Required | Description                                             |
+| ----------- | -------- | -------- | ------------------------------------------------------- |
+| `period`    | `string` | No       | Period: `1d`, `7d`, `30d`, `90d`, `all` (default: `7d`) |
+| `startDate` | `string` | No       | Custom start date (ISO 8601)                            |
+| `endDate`   | `string` | No       | Custom end date (ISO 8601)                              |
 
 **Example Request**:
+
 ```
 GET /api/moderation/stats?period=30d
 ```
@@ -1372,6 +1445,7 @@ GET /api/moderation/stats?period=30d
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1452,10 +1526,18 @@ GET /api/moderation/stats?period=30d
     "over24h": 4
   },
   "violationTrends": {
-    "toxicity": [ /* daily data points */ ],
-    "spam": [ /* daily data points */ ],
-    "profanity": [ /* daily data points */ ],
-    "nsfw": [ /* daily data points */ ]
+    "toxicity": [
+      /* daily data points */
+    ],
+    "spam": [
+      /* daily data points */
+    ],
+    "profanity": [
+      /* daily data points */
+    ],
+    "nsfw": [
+      /* daily data points */
+    ]
   },
   "topCategories": [
     { "category": "profanity", "count": 68 },
@@ -1488,14 +1570,15 @@ Get AI usage statistics for monitoring and billing.
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `userId` | `string` | No | Filter by user ID |
-| `orgId` | `string` | No | Filter by organization ID |
-| `period` | `string` | No | Period: `daily`, `weekly`, `monthly` (default: `daily`) |
-| `date` | `string` | No | Target date (ISO 8601, default: today) |
+| Parameter | Type     | Required | Description                                             |
+| --------- | -------- | -------- | ------------------------------------------------------- |
+| `userId`  | `string` | No       | Filter by user ID                                       |
+| `orgId`   | `string` | No       | Filter by organization ID                               |
+| `period`  | `string` | No       | Period: `daily`, `weekly`, `monthly` (default: `daily`) |
+| `date`    | `string` | No       | Target date (ISO 8601, default: today)                  |
 
 **Example Request**:
+
 ```
 GET /api/admin/ai/usage?period=monthly&date=2026-01-01
 ```
@@ -1503,6 +1586,7 @@ GET /api/admin/ai/usage?period=monthly&date=2026-01-01
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1593,14 +1677,15 @@ Get detailed cost analysis and breakdowns.
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `userId` | `string` | No | Filter by user ID |
-| `orgId` | `string` | No | Filter by organization ID |
-| `startDate` | `string` | Yes | Start date (ISO 8601) |
-| `endDate` | `string` | Yes | End date (ISO 8601) |
+| Parameter   | Type     | Required | Description               |
+| ----------- | -------- | -------- | ------------------------- |
+| `userId`    | `string` | No       | Filter by user ID         |
+| `orgId`     | `string` | No       | Filter by organization ID |
+| `startDate` | `string` | Yes      | Start date (ISO 8601)     |
+| `endDate`   | `string` | Yes      | End date (ISO 8601)       |
 
 **Example Request**:
+
 ```
 GET /api/admin/ai/costs?startDate=2026-01-01&endDate=2026-01-31
 ```
@@ -1608,6 +1693,7 @@ GET /api/admin/ai/costs?startDate=2026-01-01&endDate=2026-01-31
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1687,6 +1773,7 @@ Get current AI configuration.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1760,6 +1847,7 @@ Update AI configuration settings.
 **Body Parameters**: Partial `AIConfig` object (see GET response for full schema)
 
 **Example Request**:
+
 ```json
 {
   "openai": {
@@ -1781,10 +1869,13 @@ Update AI configuration settings.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
-  "data": { /* updated config */ },
+  "data": {
+    /* updated config */
+  },
   "message": "AI configuration updated successfully"
 }
 ```
@@ -1803,11 +1894,12 @@ Get comprehensive embedding generation statistics.
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `days` | `number` | No | Number of days to include (default: 30) |
+| Parameter | Type     | Required | Description                             |
+| --------- | -------- | -------- | --------------------------------------- |
+| `days`    | `number` | No       | Number of days to include (default: 30) |
 
 **Example Request**:
+
 ```
 GET /api/admin/embeddings/stats?days=90
 ```
@@ -1815,6 +1907,7 @@ GET /api/admin/embeddings/stats?days=90
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "coverage": {
@@ -1881,12 +1974,13 @@ Start bulk embedding generation job.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `userId` | `string` | No | User to run job as |
-| `type` | `string` | No | Job type: `initial`, `reindex`, `repair` (default: `initial`) |
+| Parameter | Type     | Required | Description                                                   |
+| --------- | -------- | -------- | ------------------------------------------------------------- |
+| `userId`  | `string` | No       | User to run job as                                            |
+| `type`    | `string` | No       | Job type: `initial`, `reindex`, `repair` (default: `initial`) |
 
 **Example Request**:
+
 ```json
 {
   "type": "initial",
@@ -1897,6 +1991,7 @@ Start bulk embedding generation job.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -1919,12 +2014,13 @@ Get status of embedding generation jobs.
 
 **Query Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `jobId` | `string` | No | Specific job ID (omit for all recent jobs) |
-| `limit` | `number` | No | Max jobs to return (default: 10) |
+| Parameter | Type     | Required | Description                                |
+| --------- | -------- | -------- | ------------------------------------------ |
+| `jobId`   | `string` | No       | Specific job ID (omit for all recent jobs) |
+| `limit`   | `number` | No       | Max jobs to return (default: 10)           |
 
 **Example Requests**:
+
 ```
 GET /api/admin/embeddings/status?jobId=job-abc123def456
 GET /api/admin/embeddings/status?limit=20
@@ -1933,6 +2029,7 @@ GET /api/admin/embeddings/status?limit=20
 #### Response
 
 **Single Job (200 OK)**:
+
 ```json
 {
   "job": {
@@ -1956,6 +2053,7 @@ GET /api/admin/embeddings/status?limit=20
 ```
 
 **All Jobs (200 OK)**:
+
 ```json
 {
   "jobs": [
@@ -1990,11 +2088,12 @@ Cancel a running embedding generation job.
 
 **Body Parameters**:
 
-| Parameter | Type | Required | Description |
-|-----------|------|----------|-------------|
-| `jobId` | `string` | Yes | Job ID to cancel |
+| Parameter | Type     | Required | Description      |
+| --------- | -------- | -------- | ---------------- |
+| `jobId`   | `string` | Yes      | Job ID to cancel |
 
 **Example Request**:
+
 ```json
 {
   "jobId": "job-abc123def456"
@@ -2004,6 +2103,7 @@ Cancel a running embedding generation job.
 #### Response
 
 **Success (200 OK)**:
+
 ```json
 {
   "success": true,
@@ -2017,6 +2117,7 @@ Cancel a running embedding generation job.
 ```
 
 **404 Not Found**:
+
 ```json
 {
   "error": "Job not found"
@@ -2029,18 +2130,19 @@ Cancel a running embedding generation job.
 
 Standard HTTP status codes and error responses:
 
-| Code | Name | Description |
-|------|------|-------------|
-| 200 | OK | Request successful |
-| 400 | Bad Request | Invalid request parameters |
-| 401 | Unauthorized | Missing or invalid authentication |
-| 403 | Forbidden | Insufficient permissions |
-| 404 | Not Found | Resource not found |
-| 429 | Too Many Requests | Rate limit exceeded |
-| 500 | Internal Server Error | Server-side error |
-| 503 | Service Unavailable | AI service unavailable |
+| Code | Name                  | Description                       |
+| ---- | --------------------- | --------------------------------- |
+| 200  | OK                    | Request successful                |
+| 400  | Bad Request           | Invalid request parameters        |
+| 401  | Unauthorized          | Missing or invalid authentication |
+| 403  | Forbidden             | Insufficient permissions          |
+| 404  | Not Found             | Resource not found                |
+| 429  | Too Many Requests     | Rate limit exceeded               |
+| 500  | Internal Server Error | Server-side error                 |
+| 503  | Service Unavailable   | AI service unavailable            |
 
 **Error Response Format**:
+
 ```json
 {
   "success": false,
@@ -2052,15 +2154,15 @@ Standard HTTP status codes and error responses:
 
 **Common Error Codes**:
 
-| Code | Description |
-|------|-------------|
-| `MISSING_QUERY` | Search query parameter missing |
-| `QUERY_TOO_SHORT` | Query below minimum length |
-| `VALIDATION_ERROR` | Request validation failed |
-| `RATE_LIMIT_EXCEEDED` | Too many requests |
-| `SERVICE_UNAVAILABLE` | AI provider unavailable |
+| Code                       | Description                     |
+| -------------------------- | ------------------------------- |
+| `MISSING_QUERY`            | Search query parameter missing  |
+| `QUERY_TOO_SHORT`          | Query below minimum length      |
+| `VALIDATION_ERROR`         | Request validation failed       |
+| `RATE_LIMIT_EXCEEDED`      | Too many requests               |
+| `SERVICE_UNAVAILABLE`      | AI provider unavailable         |
 | `INSUFFICIENT_PERMISSIONS` | User lacks required permissions |
-| `INVALID_JSON` | Request body is not valid JSON |
+| `INVALID_JSON`             | Request body is not valid JSON  |
 
 ---
 
@@ -2069,27 +2171,25 @@ Standard HTTP status codes and error responses:
 ### Complete Summarization Workflow
 
 **TypeScript/React Hook**:
+
 ```typescript
-import { useState } from 'react';
+import { useState } from 'react'
 
 interface Message {
-  id: string;
-  content: string;
-  author_id: string;
-  author_name: string;
-  created_at: string;
+  id: string
+  content: string
+  author_id: string
+  author_name: string
+  created_at: string
 }
 
 export function useSummarize() {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const summarize = async (
-    messages: Message[],
-    type: 'brief' | 'digest' = 'brief'
-  ) => {
-    setLoading(true);
-    setError(null);
+  const summarize = async (messages: Message[], type: 'brief' | 'digest' = 'brief') => {
+    setLoading(true)
+    setError(null)
 
     try {
       const response = await fetch('/api/ai/summarize', {
@@ -2105,35 +2205,36 @@ export function useSummarize() {
             maxLength: 150,
           },
         }),
-      });
+      })
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
+        throw new Error(`HTTP ${response.status}`)
       }
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (!data.success) {
-        throw new Error(data.error);
+        throw new Error(data.error)
       }
 
-      return data.summary;
+      return data.summary
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Unknown error';
-      setError(message);
-      throw err;
+      const message = err instanceof Error ? err.message : 'Unknown error'
+      setError(message)
+      throw err
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
-  return { summarize, loading, error };
+  return { summarize, loading, error }
 }
 ```
 
 ### Semantic Search with Caching
 
 **Python Implementation**:
+
 ```python
 import requests
 from typing import List, Dict, Optional
@@ -2229,23 +2330,21 @@ for result in results:
 ### Batch Moderation with Retry Logic
 
 **Node.js/Express**:
+
 ```javascript
-const axios = require('axios');
+const axios = require('axios')
 
 class ModerationClient {
   constructor(apiBase, apiKey) {
-    this.apiBase = apiBase;
-    this.apiKey = apiKey;
-    this.maxRetries = 3;
+    this.apiBase = apiBase
+    this.apiKey = apiKey
+    this.maxRetries = 3
   }
 
   async analyzeBatch(items, options = {}) {
-    const {
-      maxConcurrency = 10,
-      retryDelay = 1000,
-    } = options;
+    const { maxConcurrency = 10, retryDelay = 1000 } = options
 
-    let attempt = 0;
+    let attempt = 0
 
     while (attempt < this.maxRetries) {
       try {
@@ -2262,30 +2361,30 @@ class ModerationClient {
             },
             timeout: 60000,
           }
-        );
+        )
 
         if (!response.data.success) {
-          throw new Error(response.data.error || 'Batch moderation failed');
+          throw new Error(response.data.error || 'Batch moderation failed')
         }
 
-        return response.data;
+        return response.data
       } catch (error) {
-        attempt++;
+        attempt++
 
         if (attempt >= this.maxRetries) {
-          throw error;
+          throw error
         }
 
         // Exponential backoff
-        const delay = retryDelay * Math.pow(2, attempt - 1);
-        console.log(`Retry ${attempt}/${this.maxRetries} after ${delay}ms`);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        const delay = retryDelay * Math.pow(2, attempt - 1)
+        console.log(`Retry ${attempt}/${this.maxRetries} after ${delay}ms`)
+        await new Promise((resolve) => setTimeout(resolve, delay))
       }
     }
   }
 
   async processQueue(messages, batchSize = 50) {
-    const items = messages.map(msg => ({
+    const items = messages.map((msg) => ({
       contentId: msg.id,
       contentType: 'text',
       content: msg.content,
@@ -2293,41 +2392,39 @@ class ModerationClient {
         userId: msg.author_id,
         channelId: msg.channel_id,
       },
-    }));
+    }))
 
-    const results = [];
+    const results = []
 
     // Process in batches
     for (let i = 0; i < items.length; i += batchSize) {
-      const batch = items.slice(i, i + batchSize);
-      console.log(`Processing batch ${i / batchSize + 1}...`);
+      const batch = items.slice(i, i + batchSize)
+      console.log(`Processing batch ${i / batchSize + 1}...`)
 
-      const batchResult = await this.analyzeBatch(batch);
-      results.push(...batchResult.results);
+      const batchResult = await this.analyzeBatch(batch)
+      results.push(...batchResult.results)
 
-      console.log(`Batch stats:`, batchResult.stats);
+      console.log(`Batch stats:`, batchResult.stats)
     }
 
-    return results;
+    return results
   }
 }
 
 // Usage
-const client = new ModerationClient(
-  'https://api.example.com',
-  'your-api-key'
-);
+const client = new ModerationClient('https://api.example.com', 'your-api-key')
 
 const messages = [
   /* your messages */
-];
+]
 
-client.processQueue(messages, 50)
-  .then(results => {
-    const flagged = results.filter(r => r.success && r.analysis.shouldFlag);
-    console.log(`Flagged ${flagged.length} out of ${results.length} messages`);
+client
+  .processQueue(messages, 50)
+  .then((results) => {
+    const flagged = results.filter((r) => r.success && r.analysis.shouldFlag)
+    console.log(`Flagged ${flagged.length} out of ${results.length} messages`)
   })
-  .catch(err => console.error('Moderation failed:', err));
+  .catch((err) => console.error('Moderation failed:', err))
 ```
 
 ---
@@ -2340,8 +2437,8 @@ Always implement client-side rate limiting to avoid 429 errors:
 
 ```typescript
 class RateLimiter {
-  private queue: Array<() => Promise<any>> = [];
-  private processing = false;
+  private queue: Array<() => Promise<any>> = []
+  private processing = false
 
   constructor(private maxPerMinute: number) {}
 
@@ -2349,29 +2446,29 @@ class RateLimiter {
     return new Promise((resolve, reject) => {
       this.queue.push(async () => {
         try {
-          const result = await fn();
-          resolve(result);
+          const result = await fn()
+          resolve(result)
         } catch (error) {
-          reject(error);
+          reject(error)
         }
-      });
+      })
 
-      this.process();
-    });
+      this.process()
+    })
   }
 
   private async process() {
-    if (this.processing || this.queue.length === 0) return;
+    if (this.processing || this.queue.length === 0) return
 
-    this.processing = true;
-    const fn = this.queue.shift()!;
+    this.processing = true
+    const fn = this.queue.shift()!
 
-    await fn();
+    await fn()
 
     setTimeout(() => {
-      this.processing = false;
-      this.process();
-    }, 60000 / this.maxPerMinute);
+      this.processing = false
+      this.process()
+    }, 60000 / this.maxPerMinute)
   }
 }
 ```
@@ -2391,42 +2488,35 @@ Monitor and optimize API costs:
 Implement comprehensive error handling:
 
 ```typescript
-async function robustAPICall<T>(
-  apiCall: () => Promise<T>,
-  maxRetries = 3
-): Promise<T> {
+async function robustAPICall<T>(apiCall: () => Promise<T>, maxRetries = 3): Promise<T> {
   for (let i = 0; i < maxRetries; i++) {
     try {
-      return await apiCall();
+      return await apiCall()
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        const status = error.response?.status;
+        const status = error.response?.status
 
         // Don't retry client errors (except rate limits)
         if (status && status >= 400 && status < 500 && status !== 429) {
-          throw error;
+          throw error
         }
 
         // For rate limits, wait before retry
         if (status === 429) {
-          const retryAfter = error.response?.headers['retry-after'];
-          await new Promise(resolve =>
-            setTimeout(resolve, (retryAfter || 60) * 1000)
-          );
+          const retryAfter = error.response?.headers['retry-after']
+          await new Promise((resolve) => setTimeout(resolve, (retryAfter || 60) * 1000))
         }
       }
 
       // Last attempt
-      if (i === maxRetries - 1) throw error;
+      if (i === maxRetries - 1) throw error
 
       // Exponential backoff
-      await new Promise(resolve =>
-        setTimeout(resolve, Math.pow(2, i) * 1000)
-      );
+      await new Promise((resolve) => setTimeout(resolve, Math.pow(2, i) * 1000))
     }
   }
 
-  throw new Error('Max retries exceeded');
+  throw new Error('Max retries exceeded')
 }
 ```
 
@@ -2441,36 +2531,34 @@ const metrics = {
   errors: 0,
   totalCost: 0,
   avgLatency: 0,
-};
+}
 
-async function monitoredRequest<T>(
-  endpoint: string,
-  request: () => Promise<T>
-): Promise<T> {
-  const start = Date.now();
-  metrics.requests++;
+async function monitoredRequest<T>(endpoint: string, request: () => Promise<T>): Promise<T> {
+  const start = Date.now()
+  metrics.requests++
 
   try {
-    const result = await request();
+    const result = await request()
 
     // Track cost if available
     if ('costInfo' in result) {
-      metrics.totalCost += result.costInfo.totalCost;
+      metrics.totalCost += result.costInfo.totalCost
     }
 
-    return result;
+    return result
   } catch (error) {
-    metrics.errors++;
-    throw error;
+    metrics.errors++
+    throw error
   } finally {
-    const latency = Date.now() - start;
-    metrics.avgLatency =
-      (metrics.avgLatency * (metrics.requests - 1) + latency) /
-      metrics.requests;
+    const latency = Date.now() - start
+    metrics.avgLatency = (metrics.avgLatency * (metrics.requests - 1) + latency) / metrics.requests
 
-    console.log(`[${endpoint}] Latency: ${latency}ms, Error rate: ${
-      (metrics.errors / metrics.requests * 100).toFixed(2)
-    }%`);
+    console.log(
+      `[${endpoint}] Latency: ${latency}ms, Error rate: ${(
+        (metrics.errors / metrics.requests) *
+        100
+      ).toFixed(2)}%`
+    )
   }
 }
 ```

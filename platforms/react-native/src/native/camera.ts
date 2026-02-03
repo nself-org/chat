@@ -61,9 +61,8 @@ export async function takePhoto(options?: CameraOptions): Promise<CapturedMedia 
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: options?.allowsEditing ?? true,
       quality: options?.quality ?? 0.8,
-      cameraType: options?.type === 'front'
-        ? ImagePicker.CameraType.front
-        : ImagePicker.CameraType.back,
+      cameraType:
+        options?.type === 'front' ? ImagePicker.CameraType.front : ImagePicker.CameraType.back,
     })
 
     if (result.canceled || !result.assets[0]) {
@@ -101,9 +100,8 @@ export async function recordVideo(options?: CameraOptions): Promise<CapturedMedi
       allowsEditing: options?.allowsEditing ?? true,
       quality: options?.quality ?? 0.8,
       videoMaxDuration: options?.maxDuration ?? 60,
-      cameraType: options?.type === 'front'
-        ? ImagePicker.CameraType.front
-        : ImagePicker.CameraType.back,
+      cameraType:
+        options?.type === 'front' ? ImagePicker.CameraType.front : ImagePicker.CameraType.back,
     })
 
     if (result.canceled || !result.assets[0]) {
@@ -138,11 +136,12 @@ export async function captureMedia(options?: CameraOptions): Promise<CapturedMed
     return recordVideo(options)
   }
 
-  const mediaTypes = options?.mediaTypes === 'all'
-    ? ImagePicker.MediaTypeOptions.All
-    : options?.mediaTypes === 'image'
-      ? ImagePicker.MediaTypeOptions.Images
-      : ImagePicker.MediaTypeOptions.All
+  const mediaTypes =
+    options?.mediaTypes === 'all'
+      ? ImagePicker.MediaTypeOptions.All
+      : options?.mediaTypes === 'image'
+        ? ImagePicker.MediaTypeOptions.Images
+        : ImagePicker.MediaTypeOptions.All
 
   try {
     // For video, also request mic permission
@@ -155,9 +154,8 @@ export async function captureMedia(options?: CameraOptions): Promise<CapturedMed
       allowsEditing: options?.allowsEditing ?? true,
       quality: options?.quality ?? 0.8,
       videoMaxDuration: options?.maxDuration ?? 60,
-      cameraType: options?.type === 'front'
-        ? ImagePicker.CameraType.front
-        : ImagePicker.CameraType.back,
+      cameraType:
+        options?.type === 'front' ? ImagePicker.CameraType.front : ImagePicker.CameraType.back,
     })
 
     if (result.canceled || !result.assets[0]) {

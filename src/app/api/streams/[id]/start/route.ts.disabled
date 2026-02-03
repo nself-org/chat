@@ -7,10 +7,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { nhost } from '@/lib/nhost.server'
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
+import { logger } from '@/lib/logger'
+
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
   try {
     // Get user from session
     const session = await nhost.auth.getSession()
@@ -47,10 +46,7 @@ export async function POST(
     }
 
     if (streamData.nchat_streams_by_pk.status === 'live') {
-      return NextResponse.json(
-        { error: 'Stream is already live' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Stream is already live' }, { status: 400 })
     }
 
     // Generate HLS manifest URL
@@ -87,19 +83,13 @@ export async function POST(
     )
 
     if (error || !data?.update_nchat_streams_by_pk) {
-      console.error('Failed to start stream:', error)
-      return NextResponse.json(
-        { error: 'Failed to start stream' },
-        { status: 500 }
-      )
+      logger.error('Failed to start stream:', error)
+      return NextResponse.json({ error: 'Failed to start stream' }, { status: 500 })
     }
 
     return NextResponse.json(data.update_nchat_streams_by_pk)
   } catch (error) {
-    console.error('Start stream error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Start stream error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -20,13 +20,13 @@ import { NChatClient } from '@nchat/sdk'
 // Initialize the client
 const client = new NChatClient({
   apiUrl: 'https://api.nchat.example.com',
-  apiKey: 'your-api-key'
+  apiKey: 'your-api-key',
 })
 
 // Authenticate
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 // Update client with user token
@@ -35,7 +35,7 @@ client.setToken(token)
 // Send a message
 const message = await client.messages.send({
   channelId: 'channel-123',
-  content: 'Hello, world!'
+  content: 'Hello, world!',
 })
 ```
 
@@ -56,7 +56,7 @@ const message = await client.messages.send({
 ```typescript
 const client = new NChatClient({
   apiUrl: 'https://api.nchat.example.com',
-  apiKey: 'your-api-key'
+  apiKey: 'your-api-key',
 })
 ```
 
@@ -71,13 +71,13 @@ const client = new NChatClient({
   debug: true, // Enable debug logging
   timeout: 30000, // Request timeout (ms)
   headers: {
-    'X-Custom-Header': 'value'
+    'X-Custom-Header': 'value',
   },
   retry: {
     enabled: true,
     maxRetries: 3,
-    retryDelay: 1000
-  }
+    retryDelay: 1000,
+  },
 })
 ```
 
@@ -101,7 +101,7 @@ The SDK is organized into resource classes:
 // Sign in
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 client.setToken(token)
@@ -110,7 +110,7 @@ client.setToken(token)
 const { user, token } = await client.auth.signUp({
   email: 'newuser@example.com',
   password: 'password123',
-  displayName: 'New User'
+  displayName: 'New User',
 })
 
 // Sign out
@@ -124,12 +124,12 @@ await client.auth.signOut()
 const channel = await client.channels.create({
   name: 'general',
   description: 'General discussion',
-  type: 'public'
+  type: 'public',
 })
 
 // List channels
 const { data: channels } = await client.channels.list({
-  limit: 50
+  limit: 50,
 })
 
 // Join a channel
@@ -145,21 +145,21 @@ const { data: members } = await client.channels.getMembers(channel.id)
 // Send a message
 const message = await client.messages.send({
   channelId: 'channel-123',
-  content: 'Hello, world!'
+  content: 'Hello, world!',
 })
 
 // Send with mentions
 await client.messages.send({
   channelId: 'channel-123',
   content: 'Hey @john!',
-  mentions: ['user-456']
+  mentions: ['user-456'],
 })
 
 // List messages
 const { data: messages } = await client.messages.list('channel-123', {
   limit: 50,
   orderBy: 'created_at',
-  orderDirection: 'desc'
+  orderDirection: 'desc',
 })
 
 // React to message
@@ -167,7 +167,7 @@ await client.messages.react(message.id, '👍')
 
 // Update message
 await client.messages.update(message.id, {
-  content: 'Updated content'
+  content: 'Updated content',
 })
 ```
 
@@ -183,7 +183,7 @@ const { data: users } = await client.users.search('john')
 // Update profile
 await client.users.update({
   displayName: 'John Doe',
-  avatarUrl: 'https://example.com/avatar.jpg'
+  avatarUrl: 'https://example.com/avatar.jpg',
 })
 
 // Update presence
@@ -197,7 +197,7 @@ await client.users.updatePresence('online')
 const webhook = await client.webhooks.create({
   name: 'My Webhook',
   url: 'https://example.com/webhook',
-  events: ['message.created', 'channel.created']
+  events: ['message.created', 'channel.created'],
 })
 
 // Test webhook
@@ -214,13 +214,13 @@ const { secret } = await client.webhooks.regenerateSecret(webhook.id)
 const bot = await client.bots.create({
   name: 'Helper Bot',
   username: 'helperbot',
-  description: 'A helpful bot'
+  description: 'A helpful bot',
 })
 
 // Send message as bot
 await client.bots.sendMessage(bot.id, {
   channelId: 'channel-123',
-  content: 'Hello from bot!'
+  content: 'Hello from bot!',
 })
 ```
 
@@ -232,7 +232,7 @@ const stats = await client.admin.getStats()
 
 // Update user role
 await client.admin.updateUserRole('user-123', {
-  role: 'moderator'
+  role: 'moderator',
 })
 
 // Suspend user
@@ -272,14 +272,14 @@ try {
 ```typescript
 // First page
 const { data, pagination } = await client.messages.list('channel-123', {
-  limit: 50
+  limit: 50,
 })
 
 // Next page
 if (pagination.hasMore) {
   const { data: nextPage } = await client.messages.list('channel-123', {
     limit: 50,
-    offset: pagination.offset + pagination.limit
+    offset: pagination.offset + pagination.limit,
   })
 }
 
@@ -287,7 +287,7 @@ if (pagination.hasMore) {
 if (pagination.nextCursor) {
   const { data: nextPage } = await client.messages.list('channel-123', {
     limit: 50,
-    cursor: pagination.nextCursor
+    cursor: pagination.nextCursor,
   })
 }
 ```

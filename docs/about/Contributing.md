@@ -27,6 +27,7 @@ We are committed to providing a welcoming and inspiring community for everyone. 
 ### Our Standards
 
 ✅ **Encouraged Behavior**:
+
 - Using welcoming and inclusive language
 - Being respectful of differing viewpoints
 - Gracefully accepting constructive criticism
@@ -34,6 +35,7 @@ We are committed to providing a welcoming and inspiring community for everyone. 
 - Showing empathy towards other community members
 
 ❌ **Unacceptable Behavior**:
+
 - Trolling, insulting/derogatory comments, and personal or political attacks
 - Public or private harassment
 - Publishing others' private information without permission
@@ -57,6 +59,7 @@ Before contributing, ensure you have:
 
 1. Fork the repository on GitHub
 2. Clone your fork locally:
+
    ```bash
    git clone https://github.com/YOUR-USERNAME/nself-chat.git
    cd nself-chat
@@ -92,6 +95,7 @@ git checkout -b feature/your-feature-name
 ```
 
 Branch naming conventions:
+
 - `feature/` - New features
 - `fix/` - Bug fixes
 - `docs/` - Documentation changes
@@ -237,10 +241,10 @@ const config = {
 
 // ❌ Bad
 const config = {
-    name: "ɳChat",
-    version: "0.3.0",
-    features: ["messaging", "calls", "search"]
-};
+  name: 'ɳChat',
+  version: '0.3.0',
+  features: ['messaging', 'calls', 'search'],
+}
 ```
 
 ### Import Order
@@ -357,15 +361,18 @@ test(e2e): add channel creation tests
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
 - [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
 - [ ] Documentation update
 
 ## Testing
+
 How has this been tested?
 
 - [ ] Unit tests
@@ -374,9 +381,11 @@ How has this been tested?
 - [ ] Manual testing
 
 ## Screenshots (if applicable)
+
 Add screenshots to help explain your changes
 
 ## Checklist
+
 - [ ] My code follows the code style of this project
 - [ ] I have performed a self-review of my own code
 - [ ] I have commented my code, particularly in hard-to-understand areas
@@ -432,6 +441,7 @@ We follow the [Conventional Commits](https://www.conventionalcommits.org/) speci
 ### Scopes
 
 Common scopes:
+
 - `chat`: Chat functionality
 - `auth`: Authentication
 - `settings`: Settings pages
@@ -480,17 +490,14 @@ Closes #123
  * @returns Array of channel objects
  * @throws {AuthError} If user is not authenticated
  */
-export async function fetchChannels(
-  userId: string,
-  includeArchived = false
-): Promise<Channel[]> {
+export async function fetchChannels(userId: string, includeArchived = false): Promise<Channel[]> {
   // Implementation
 }
 ```
 
 ### Component Documentation
 
-```typescript
+````typescript
 /**
  * MessageList Component
  *
@@ -511,11 +518,12 @@ export async function fetchChannels(
 export function MessageList({ channelId, onMessageClick }: MessageListProps) {
   // Implementation
 }
-```
+````
 
 ### README Updates
 
 When adding major features, update README.md:
+
 - Add to feature list
 - Update screenshots if UI changed
 - Add to quick start if setup changed
@@ -558,6 +566,7 @@ You don't have to write code to contribute! We welcome:
 ### Contributors
 
 All contributors are recognized in:
+
 - GitHub Contributors page
 - CONTRIBUTORS.md (coming soon)
 - Release notes for significant contributions
@@ -578,6 +587,7 @@ By contributing to ɳChat, you agree that your contributions will be licensed un
 ## Questions?
 
 If you have questions about contributing, please:
+
 1. Check existing GitHub Discussions
 2. Ask in our Discord server
 3. Open a new Discussion on GitHub

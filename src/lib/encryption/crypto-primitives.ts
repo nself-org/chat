@@ -226,7 +226,10 @@ export async function importPrivateKey(
   publicKey: Uint8Array
 ): Promise<CryptoKey> {
   // Convert to base64url for JWK
-  const dBase64 = uint8ArrayToBase64(privateKey).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+  const dBase64 = uint8ArrayToBase64(privateKey)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '')
 
   // Extract x and y coordinates from uncompressed public key (format: 04 || x || y)
   const x = publicKey.slice(1, 33)
@@ -268,7 +271,10 @@ export async function importSigningPrivateKey(
   privateKey: Uint8Array,
   publicKey: Uint8Array
 ): Promise<CryptoKey> {
-  const dBase64 = uint8ArrayToBase64(privateKey).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
+  const dBase64 = uint8ArrayToBase64(privateKey)
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '')
   const x = publicKey.slice(1, 33)
   const y = publicKey.slice(33, 65)
   const xBase64 = uint8ArrayToBase64(x).replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
@@ -373,9 +379,13 @@ export async function hkdf(
   length: number = PROTOCOL_CONSTANTS.HKDF_OUTPUT_LENGTH
 ): Promise<Uint8Array> {
   // Import IKM as raw key material
-  const ikm = await crypto.subtle.importKey('raw', toBufferSource(inputKeyMaterial), 'HKDF', false, [
-    'deriveBits',
-  ])
+  const ikm = await crypto.subtle.importKey(
+    'raw',
+    toBufferSource(inputKeyMaterial),
+    'HKDF',
+    false,
+    ['deriveBits']
+  )
 
   // Derive bits using HKDF
   const derivedBits = await crypto.subtle.deriveBits(
@@ -412,12 +422,7 @@ export async function deriveRootAndChainKeys(
   sharedSecret: Uint8Array,
   salt: Uint8Array = new Uint8Array(32)
 ): Promise<DerivedKeys> {
-  const derived = await hkdfWithInfo(
-    sharedSecret,
-    salt,
-    PROTOCOL_CONSTANTS.HKDF_INFO.ROOT_KEY,
-    64
-  )
+  const derived = await hkdfWithInfo(sharedSecret, salt, PROTOCOL_CONSTANTS.HKDF_INFO.ROOT_KEY, 64)
 
   return {
     rootKey: derived.slice(0, 32),

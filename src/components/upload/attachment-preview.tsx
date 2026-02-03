@@ -9,10 +9,10 @@
  * - Support for uploads in progress
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useMemo } from 'react';
+import * as React from 'react'
+import { useMemo } from 'react'
 import {
   X,
   Loader2,
@@ -24,11 +24,16 @@ import {
   File,
   FolderArchive,
   Play,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Progress } from '@/components/ui/progress';
-import { FileType, UploadStatus } from '@/stores/attachment-store';
-import { formatFileSize, truncateFileName, getFileTypeColor, formatDuration } from '@/lib/upload/file-utils';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Progress } from '@/components/ui/progress'
+import { FileType, UploadStatus } from '@/stores/attachment-store'
+import {
+  formatFileSize,
+  truncateFileName,
+  getFileTypeColor,
+  formatDuration,
+} from '@/lib/upload/file-utils'
 
 // ============================================================================
 // Types
@@ -36,53 +41,53 @@ import { formatFileSize, truncateFileName, getFileTypeColor, formatDuration } fr
 
 export interface AttachmentItem {
   /** Unique identifier */
-  id: string;
+  id: string
   /** File name */
-  fileName: string;
+  fileName: string
   /** File size in bytes */
-  fileSize: number;
+  fileSize: number
   /** File type category */
-  fileType: FileType;
+  fileType: FileType
   /** MIME type */
-  mimeType?: string;
+  mimeType?: string
   /** Preview URL (blob URL or uploaded URL) */
-  previewUrl?: string | null;
+  previewUrl?: string | null
   /** Thumbnail URL */
-  thumbnailUrl?: string | null;
+  thumbnailUrl?: string | null
   /** Upload status (if uploading) */
-  status?: UploadStatus;
+  status?: UploadStatus
   /** Upload progress (0-100) */
-  progress?: number;
+  progress?: number
   /** Error message */
-  error?: string | null;
+  error?: string | null
   /** Media dimensions */
-  width?: number;
-  height?: number;
+  width?: number
+  height?: number
   /** Duration for audio/video */
-  duration?: number;
+  duration?: number
 }
 
 export interface AttachmentPreviewProps {
   /** List of attachments */
-  attachments: AttachmentItem[];
+  attachments: AttachmentItem[]
   /** Callback to remove attachment */
-  onRemove?: (id: string) => void;
+  onRemove?: (id: string) => void
   /** Callback when attachment is clicked */
-  onClick?: (id: string) => void;
+  onClick?: (id: string) => void
   /** Callback to retry failed upload */
-  onRetry?: (id: string) => void;
+  onRetry?: (id: string) => void
   /** Maximum visible attachments (rest shown as +N) */
-  maxVisible?: number;
+  maxVisible?: number
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Grid columns */
-  columns?: 2 | 3 | 4 | 5 | 'auto';
+  columns?: 2 | 3 | 4 | 5 | 'auto'
   /** Preview size */
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg'
   /** Show file names */
-  showNames?: boolean;
+  showNames?: boolean
   /** Read-only mode (no remove buttons) */
-  readOnly?: boolean;
+  readOnly?: boolean
 }
 
 // ============================================================================
@@ -90,21 +95,21 @@ export interface AttachmentPreviewProps {
 // ============================================================================
 
 function FileTypeIcon({ fileType, className }: { fileType: FileType; className?: string }) {
-  const iconClass = cn('h-6 w-6', getFileTypeColor(fileType), className);
+  const iconClass = cn('h-6 w-6', getFileTypeColor(fileType), className)
 
   switch (fileType) {
     case 'image':
-      return <ImageIcon className={iconClass} />;
+      return <ImageIcon className={iconClass} />
     case 'video':
-      return <FileVideo className={iconClass} />;
+      return <FileVideo className={iconClass} />
     case 'audio':
-      return <FileAudio className={iconClass} />;
+      return <FileAudio className={iconClass} />
     case 'document':
-      return <FileText className={iconClass} />;
+      return <FileText className={iconClass} />
     case 'archive':
-      return <FolderArchive className={iconClass} />;
+      return <FolderArchive className={iconClass} />
     default:
-      return <File className={iconClass} />;
+      return <File className={iconClass} />
   }
 }
 
@@ -113,13 +118,13 @@ function FileTypeIcon({ fileType, className }: { fileType: FileType; className?:
 // ============================================================================
 
 interface AttachmentPreviewItemProps {
-  attachment: AttachmentItem;
-  onRemove?: (id: string) => void;
-  onClick?: (id: string) => void;
-  onRetry?: (id: string) => void;
-  size?: 'sm' | 'md' | 'lg';
-  showName?: boolean;
-  readOnly?: boolean;
+  attachment: AttachmentItem
+  onRemove?: (id: string) => void
+  onClick?: (id: string) => void
+  onRetry?: (id: string) => void
+  size?: 'sm' | 'md' | 'lg'
+  showName?: boolean
+  readOnly?: boolean
 }
 
 function AttachmentPreviewItem({
@@ -142,29 +147,29 @@ function AttachmentPreviewItem({
     progress = 0,
     error,
     duration,
-  } = attachment;
+  } = attachment
 
-  const isUploading = status === 'uploading' || status === 'processing' || status === 'queued';
-  const isPending = status === 'pending';
-  const isFailed = status === 'failed';
-  const isCompleted = status === 'completed' || !status;
+  const isUploading = status === 'uploading' || status === 'processing' || status === 'queued'
+  const isPending = status === 'pending'
+  const isFailed = status === 'failed'
+  const isCompleted = status === 'completed' || !status
 
   // Size configuration
   const sizeConfig = useMemo(() => {
     switch (size) {
       case 'sm':
-        return { container: 'w-16 h-16', icon: 'h-5 w-5' };
+        return { container: 'w-16 h-16', icon: 'h-5 w-5' }
       case 'lg':
-        return { container: 'w-32 h-32', icon: 'h-8 w-8' };
+        return { container: 'w-32 h-32', icon: 'h-8 w-8' }
       default:
-        return { container: 'w-24 h-24', icon: 'h-6 w-6' };
+        return { container: 'w-24 h-24', icon: 'h-6 w-6' }
     }
-  }, [size]);
+  }, [size])
 
   // Preview image URL
-  const imageUrl = thumbnailUrl || previewUrl;
-  const canShowImagePreview = fileType === 'image' && imageUrl;
-  const canShowVideoPreview = fileType === 'video' && (thumbnailUrl || previewUrl);
+  const imageUrl = thumbnailUrl || previewUrl
+  const canShowImagePreview = fileType === 'image' && imageUrl
+  const canShowVideoPreview = fileType === 'video' && (thumbnailUrl || previewUrl)
 
   return (
     <div className="group relative flex flex-col items-center gap-1">
@@ -173,7 +178,7 @@ function AttachmentPreviewItem({
         className={cn(
           'relative flex items-center justify-center overflow-hidden rounded-lg border bg-muted transition-all',
           sizeConfig.container,
-          onClick && !isFailed && 'cursor-pointer hover:border-primary/50',
+          onClick && !isFailed && 'hover:border-primary/50 cursor-pointer',
           isUploading && 'opacity-75',
           isFailed && 'border-destructive/50 bg-destructive/5'
         )}
@@ -182,29 +187,21 @@ function AttachmentPreviewItem({
         tabIndex={onClick && !isFailed ? 0 : undefined}
         onKeyDown={(e) => {
           if (onClick && !isFailed && (e.key === 'Enter' || e.key === ' ')) {
-            e.preventDefault();
-            onClick(id);
+            e.preventDefault()
+            onClick(id)
           }
         }}
       >
         {/* Image Preview */}
         {canShowImagePreview && (
-          <img
-            src={imageUrl}
-            alt={fileName}
-            className="h-full w-full object-cover"
-          />
+          <img src={imageUrl} alt={fileName} className="h-full w-full object-cover" />
         )}
 
         {/* Video Preview with Play Icon */}
         {canShowVideoPreview && (
           <>
             {thumbnailUrl ? (
-              <img
-                src={thumbnailUrl}
-                alt={fileName}
-                className="h-full w-full object-cover"
-              />
+              <img src={thumbnailUrl} alt={fileName} className="h-full w-full object-cover" />
             ) : (
               <video
                 src={previewUrl || undefined}
@@ -231,9 +228,7 @@ function AttachmentPreviewItem({
           <div className="flex flex-col items-center gap-1">
             <FileTypeIcon fileType="audio" className={sizeConfig.icon} />
             {duration !== undefined && (
-              <span className="text-xs text-muted-foreground">
-                {formatDuration(duration)}
-              </span>
+              <span className="text-xs text-muted-foreground">{formatDuration(duration)}</span>
             )}
           </div>
         )}
@@ -245,7 +240,7 @@ function AttachmentPreviewItem({
 
         {/* Uploading Overlay */}
         {isUploading && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-background/60">
+          <div className="bg-background/60 absolute inset-0 flex flex-col items-center justify-center gap-1">
             <Loader2 className="h-5 w-5 animate-spin text-primary" />
             <span className="text-xs font-medium">{progress}%</span>
           </div>
@@ -253,21 +248,21 @@ function AttachmentPreviewItem({
 
         {/* Pending Overlay */}
         {isPending && (
-          <div className="absolute inset-0 flex items-center justify-center bg-background/30">
-            <div className="h-2 w-2 rounded-full bg-muted-foreground/50" />
+          <div className="bg-background/30 absolute inset-0 flex items-center justify-center">
+            <div className="bg-muted-foreground/50 h-2 w-2 rounded-full" />
           </div>
         )}
 
         {/* Failed Overlay */}
         {isFailed && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-destructive/10">
+          <div className="bg-destructive/10 absolute inset-0 flex flex-col items-center justify-center gap-1">
             <AlertCircle className="h-5 w-5 text-destructive" />
             {onRetry && (
               <button
                 type="button"
                 onClick={(e) => {
-                  e.stopPropagation();
-                  onRetry(id);
+                  e.stopPropagation()
+                  onRetry(id)
                 }}
                 className="text-xs text-destructive underline hover:no-underline"
               >
@@ -282,13 +277,13 @@ function AttachmentPreviewItem({
           <button
             type="button"
             onClick={(e) => {
-              e.stopPropagation();
-              onRemove(id);
+              e.stopPropagation()
+              onRemove(id)
             }}
             className={cn(
               'absolute -right-1.5 -top-1.5 rounded-full bg-background p-0.5 shadow-md transition-opacity',
               'hover:bg-muted focus:outline-none focus:ring-2 focus:ring-ring',
-              'opacity-0 group-hover:opacity-100 focus:opacity-100'
+              'opacity-0 focus:opacity-100 group-hover:opacity-100'
             )}
             aria-label="Remove attachment"
           >
@@ -306,15 +301,12 @@ function AttachmentPreviewItem({
 
       {/* File Name */}
       {showName && (
-        <span
-          className="max-w-full truncate text-xs text-muted-foreground"
-          title={fileName}
-        >
+        <span className="max-w-full truncate text-xs text-muted-foreground" title={fileName}>
           {truncateFileName(fileName, 12)}
         </span>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -322,36 +314,36 @@ function AttachmentPreviewItem({
 // ============================================================================
 
 interface OverflowCounterProps {
-  count: number;
-  onClick?: () => void;
-  size?: 'sm' | 'md' | 'lg';
+  count: number
+  onClick?: () => void
+  size?: 'sm' | 'md' | 'lg'
 }
 
 function OverflowCounter({ count, onClick, size = 'md' }: OverflowCounterProps) {
   const sizeConfig = useMemo(() => {
     switch (size) {
       case 'sm':
-        return 'w-16 h-16 text-sm';
+        return 'w-16 h-16 text-sm'
       case 'lg':
-        return 'w-32 h-32 text-lg';
+        return 'w-32 h-32 text-lg'
       default:
-        return 'w-24 h-24 text-base';
+        return 'w-24 h-24 text-base'
     }
-  }, [size]);
+  }, [size])
 
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        'flex items-center justify-center rounded-lg border bg-muted font-medium text-muted-foreground transition-colors hover:bg-muted/80',
+        'hover:bg-muted/80 flex items-center justify-center rounded-lg border bg-muted font-medium text-muted-foreground transition-colors',
         sizeConfig,
         onClick && 'cursor-pointer'
       )}
     >
       +{count}
     </button>
-  );
+  )
 }
 
 // ============================================================================
@@ -373,26 +365,26 @@ export function AttachmentPreview({
   // Grid columns class - must be before early return
   const gridColumnsClass = useMemo(() => {
     if (columns === 'auto') {
-      return 'grid-cols-[repeat(auto-fill,minmax(6rem,1fr))]';
+      return 'grid-cols-[repeat(auto-fill,minmax(6rem,1fr))]'
     }
     return {
       2: 'grid-cols-2',
       3: 'grid-cols-3',
       4: 'grid-cols-4',
       5: 'grid-cols-5',
-    }[columns];
-  }, [columns]);
+    }[columns]
+  }, [columns])
 
   if (attachments.length === 0) {
-    return null;
+    return null
   }
 
   // Determine visible attachments
-  const visibleAttachments = attachments.slice(0, maxVisible);
-  const overflowCount = attachments.length - maxVisible;
+  const visibleAttachments = attachments.slice(0, maxVisible)
+  const overflowCount = attachments.length - maxVisible
 
   return (
-    <div className={cn('rounded-lg border bg-muted/30 p-3', className)}>
+    <div className={cn('bg-muted/30 rounded-lg border p-3', className)}>
       <div className={cn('grid gap-3', gridColumnsClass)}>
         {visibleAttachments.map((attachment) => (
           <AttachmentPreviewItem
@@ -416,7 +408,7 @@ export function AttachmentPreview({
         )}
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -425,17 +417,17 @@ export function AttachmentPreview({
 
 export interface AttachmentStripProps {
   /** List of attachments */
-  attachments: AttachmentItem[];
+  attachments: AttachmentItem[]
   /** Callback to remove attachment */
-  onRemove?: (id: string) => void;
+  onRemove?: (id: string) => void
   /** Callback when attachment is clicked */
-  onClick?: (id: string) => void;
+  onClick?: (id: string) => void
   /** Maximum visible attachments */
-  maxVisible?: number;
+  maxVisible?: number
   /** Custom class name */
-  className?: string;
+  className?: string
   /** Read-only mode */
-  readOnly?: boolean;
+  readOnly?: boolean
 }
 
 export function AttachmentStrip({
@@ -447,29 +439,27 @@ export function AttachmentStrip({
   readOnly = false,
 }: AttachmentStripProps) {
   if (attachments.length === 0) {
-    return null;
+    return null
   }
 
-  const visibleAttachments = attachments.slice(0, maxVisible);
-  const overflowCount = attachments.length - maxVisible;
+  const visibleAttachments = attachments.slice(0, maxVisible)
+  const overflowCount = attachments.length - maxVisible
 
   return (
     <div className={cn('flex items-center gap-2 overflow-x-auto', className)}>
       {visibleAttachments.map((attachment) => (
-        <div
-          key={attachment.id}
-          className="group relative flex-shrink-0"
-        >
+        <div key={attachment.id} className="group relative flex-shrink-0">
           <div
             className={cn(
               'flex h-12 w-12 items-center justify-center overflow-hidden rounded border bg-muted',
-              onClick && 'cursor-pointer hover:border-primary/50'
+              onClick && 'hover:border-primary/50 cursor-pointer'
             )}
             onClick={() => onClick?.(attachment.id)}
             role={onClick ? 'button' : undefined}
             tabIndex={onClick ? 0 : undefined}
           >
-            {attachment.fileType === 'image' && (attachment.thumbnailUrl || attachment.previewUrl) ? (
+            {attachment.fileType === 'image' &&
+            (attachment.thumbnailUrl || attachment.previewUrl) ? (
               <img
                 src={attachment.thumbnailUrl || attachment.previewUrl || ''}
                 alt={attachment.fileName}
@@ -481,7 +471,7 @@ export function AttachmentStrip({
 
             {/* Uploading indicator */}
             {(attachment.status === 'uploading' || attachment.status === 'queued') && (
-              <div className="absolute inset-0 flex items-center justify-center bg-background/60">
+              <div className="bg-background/60 absolute inset-0 flex items-center justify-center">
                 <Loader2 className="h-4 w-4 animate-spin text-primary" />
               </div>
             )}
@@ -492,8 +482,8 @@ export function AttachmentStrip({
             <button
               type="button"
               onClick={(e) => {
-                e.stopPropagation();
-                onRemove(attachment.id);
+                e.stopPropagation()
+                onRemove(attachment.id)
               }}
               className="absolute -right-1 -top-1 rounded-full bg-background p-0.5 opacity-0 shadow-sm transition-opacity group-hover:opacity-100"
             >
@@ -507,7 +497,7 @@ export function AttachmentStrip({
         <div
           className={cn(
             'flex h-12 w-12 flex-shrink-0 items-center justify-center rounded border bg-muted text-sm font-medium text-muted-foreground',
-            onClick && 'cursor-pointer hover:bg-muted/80'
+            onClick && 'hover:bg-muted/80 cursor-pointer'
           )}
           onClick={() => onClick?.(attachments[maxVisible].id)}
           role={onClick ? 'button' : undefined}
@@ -517,7 +507,7 @@ export function AttachmentStrip({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default AttachmentPreview;
+export default AttachmentPreview

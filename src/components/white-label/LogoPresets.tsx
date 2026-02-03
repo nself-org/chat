@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { Check, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 interface LogoPreset {
   id: string
   name: string
@@ -157,7 +159,10 @@ export function LogoPresets({
 
     // Add text
     const initials = getInitials(appName)
-    const isDark = preset.id === 'solid-dark' || preset.colors[0].startsWith('#1') || preset.colors[0].startsWith('#0')
+    const isDark =
+      preset.id === 'solid-dark' ||
+      preset.colors[0].startsWith('#1') ||
+      preset.colors[0].startsWith('#0')
     ctx.fillStyle = isDark ? '#FFFFFF' : '#FFFFFF'
     ctx.font = `bold ${size * 0.35}px Inter, system-ui, sans-serif`
     ctx.textAlign = 'center'
@@ -173,7 +178,7 @@ export function LogoPresets({
       const dataUrl = await generateLogo(preset)
       onSelect(preset, dataUrl)
     } catch (error) {
-      console.error('Failed to generate logo:', error)
+      logger.error('Failed to generate logo:', error)
     } finally {
       setGeneratingId(null)
     }
@@ -198,10 +203,10 @@ export function LogoPresets({
               onClick={() => handleSelect(preset)}
               disabled={isGenerating}
               className={cn(
-                'relative aspect-square rounded-xl border-2 transition-all overflow-hidden group',
+                'group relative aspect-square overflow-hidden rounded-xl border-2 transition-all',
                 isSelected
-                  ? 'border-sky-500 ring-2 ring-sky-500/20'
-                  : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-400 dark:hover:border-zinc-500'
+                  ? 'ring-sky-500/20 border-sky-500 ring-2'
+                  : 'border-zinc-200 hover:border-zinc-400 dark:border-zinc-700 dark:hover:border-zinc-500'
               )}
             >
               {/* Preview */}
@@ -212,7 +217,7 @@ export function LogoPresets({
                 }}
               >
                 <span
-                  className="text-white font-bold text-lg"
+                  className="text-lg font-bold text-white"
                   style={{ textShadow: '0 1px 2px rgba(0,0,0,0.2)' }}
                 >
                   {initials}
@@ -221,21 +226,21 @@ export function LogoPresets({
 
               {/* Selected indicator */}
               {isSelected && (
-                <div className="absolute top-1 right-1 w-5 h-5 bg-sky-500 rounded-full flex items-center justify-center">
+                <div className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-sky-500">
                   <Check className="h-3 w-3 text-white" />
                 </div>
               )}
 
               {/* Loading overlay */}
               {isGenerating && (
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                  <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 </div>
               )}
 
               {/* Hover name */}
-              <div className="absolute inset-x-0 bottom-0 bg-black/60 py-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <span className="text-white text-xs">{preset.name}</span>
+              <div className="absolute inset-x-0 bottom-0 bg-black/60 py-1 opacity-0 transition-opacity group-hover:opacity-100">
+                <span className="text-xs text-white">{preset.name}</span>
               </div>
             </button>
           )

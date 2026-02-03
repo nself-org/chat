@@ -101,8 +101,8 @@ const TeamDirectory = React.forwardRef<HTMLDivElement, TeamDirectoryProps>(
           {Array.from({ length: 3 }).map((_, i) => (
             <Card key={i} className="animate-pulse">
               <CardHeader>
-                <div className="h-6 w-40 bg-muted rounded" />
-                <div className="h-4 w-60 bg-muted rounded" />
+                <div className="h-6 w-40 rounded bg-muted" />
+                <div className="h-4 w-60 rounded bg-muted" />
               </CardHeader>
             </Card>
           ))}
@@ -114,14 +114,11 @@ const TeamDirectory = React.forwardRef<HTMLDivElement, TeamDirectoryProps>(
       return (
         <div
           ref={ref}
-          className={cn(
-            'flex flex-col items-center justify-center py-12 text-center',
-            className
-          )}
+          className={cn('flex flex-col items-center justify-center py-12 text-center', className)}
           {...props}
         >
-          <Building2 className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">No teams found</h3>
+          <Building2 className="mb-4 h-12 w-12 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-medium">No teams found</h3>
           <p className="text-sm text-muted-foreground">
             Teams will appear here once they are created.
           </p>
@@ -134,7 +131,7 @@ const TeamDirectory = React.forwardRef<HTMLDivElement, TeamDirectoryProps>(
         {Object.entries(teamsByDepartment).map(([department, deptTeams]) => (
           <div key={department}>
             {showDepartments && (
-              <div className="flex items-center gap-2 mb-4">
+              <div className="mb-4 flex items-center gap-2">
                 <Building2 className="h-4 w-4 text-muted-foreground" />
                 <h2 className="text-lg font-semibold">{department}</h2>
                 <Badge variant="secondary" className="ml-2">
@@ -157,7 +154,7 @@ const TeamDirectory = React.forwardRef<HTMLDivElement, TeamDirectoryProps>(
                   >
                     <Card>
                       <CollapsibleTrigger asChild>
-                        <CardHeader className="cursor-pointer hover:bg-muted/50 transition-colors">
+                        <CardHeader className="hover:bg-muted/50 cursor-pointer transition-colors">
                           <div className="flex items-start gap-4">
                             <Avatar className="h-12 w-12 rounded-lg">
                               <AvatarImage src={team.avatarUrl} alt={team.name} />
@@ -168,7 +165,7 @@ const TeamDirectory = React.forwardRef<HTMLDivElement, TeamDirectoryProps>(
                                 {team.name.charAt(0)}
                               </AvatarFallback>
                             </Avatar>
-                            <div className="flex-1 min-w-0">
+                            <div className="min-w-0 flex-1">
                               <div className="flex items-center gap-2">
                                 <CardTitle className="text-lg">{team.name}</CardTitle>
                                 {isExpanded ? (
@@ -182,7 +179,7 @@ const TeamDirectory = React.forwardRef<HTMLDivElement, TeamDirectoryProps>(
                                   {team.description}
                                 </CardDescription>
                               )}
-                              <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                              <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
                                 <div className="flex items-center gap-1">
                                   <Users className="h-3.5 w-3.5" />
                                   <span>{team.members.length} members</span>
@@ -215,13 +212,13 @@ const TeamDirectory = React.forwardRef<HTMLDivElement, TeamDirectoryProps>(
                         </CardHeader>
                       </CollapsibleTrigger>
                       <CollapsibleContent>
-                        <CardContent className="pt-0 border-t">
+                        <CardContent className="border-t pt-0">
                           <ScrollArea className="max-h-96">
                             <div className="space-y-1 pt-4">
                               {/* Team leader first */}
                               {leader && (
                                 <div className="mb-4">
-                                  <p className="text-xs font-medium text-muted-foreground mb-2">
+                                  <p className="mb-2 text-xs font-medium text-muted-foreground">
                                     Team Lead
                                   </p>
                                   <UserCard
@@ -234,7 +231,7 @@ const TeamDirectory = React.forwardRef<HTMLDivElement, TeamDirectoryProps>(
                                 </div>
                               )}
                               {/* Other members */}
-                              <p className="text-xs font-medium text-muted-foreground mb-2">
+                              <p className="mb-2 text-xs font-medium text-muted-foreground">
                                 Members
                               </p>
                               {team.members

@@ -13,6 +13,7 @@ Comprehensive screen sharing system for nself-chat with annotation tools, cursor
 ## Features Implemented
 
 ### 1. Core Screen Capture
+
 - **Location**: `/Users/admin/Sites/nself-chat/src/lib/webrtc/screen-capture.ts`
 - getDisplayMedia API wrapper
 - Support for screen, window, and tab capture
@@ -23,6 +24,7 @@ Comprehensive screen sharing system for nself-chat with annotation tools, cursor
 - Multiple simultaneous shares support
 
 ### 2. Annotation System
+
 - **Location**: `/Users/admin/Sites/nself-chat/src/lib/webrtc/screen-annotator.ts`
 - Drawing tools:
   - Pen (freehand drawing)
@@ -40,6 +42,7 @@ Comprehensive screen sharing system for nself-chat with annotation tools, cursor
 - Touch support for tablets
 
 ### 3. Cursor Highlighting
+
 - **Location**: `/Users/admin/Sites/nself-chat/src/lib/webrtc/cursor-highlighter.ts`
 - Real-time cursor position tracking
 - Animated highlight rings
@@ -50,6 +53,7 @@ Comprehensive screen sharing system for nself-chat with annotation tools, cursor
 - Color-coded per user
 
 ### 4. Screen Recording
+
 - **Location**: `/Users/admin/Sites/nself-chat/src/lib/webrtc/screen-recorder.ts`
 - MediaRecorder API integration
 - WebM and MP4 format support
@@ -66,6 +70,7 @@ Comprehensive screen sharing system for nself-chat with annotation tools, cursor
 ### 5. React Hooks
 
 #### use-screen-share.ts
+
 - **Location**: `/Users/admin/Sites/nself-chat/src/hooks/use-screen-share.ts`
 - Start/stop screen sharing
 - Quality controls
@@ -75,6 +80,7 @@ Comprehensive screen sharing system for nself-chat with annotation tools, cursor
 - Backward compatible with legacy MediaManager
 
 #### use-annotations.ts
+
 - **Location**: `/Users/admin/Sites/nself-chat/src/hooks/use-annotations.ts`
 - Tool selection
 - Color management
@@ -85,6 +91,7 @@ Comprehensive screen sharing system for nself-chat with annotation tools, cursor
 - Enable/Disable toggle
 
 #### use-screen-recording.ts
+
 - **Location**: `/Users/admin/Sites/nself-chat/src/hooks/use-screen-recording.ts`
 - Start/Stop/Pause/Resume
 - Recording management
@@ -96,6 +103,7 @@ Comprehensive screen sharing system for nself-chat with annotation tools, cursor
 ### 6. UI Components
 
 #### ScreenShareControls.tsx
+
 - **Location**: `/Users/admin/Sites/nself-chat/src/components/calls/ScreenShareControls.tsx`
 - Start/Stop sharing
 - Quality dropdown (Auto, 720p, 1080p, 4K)
@@ -372,6 +380,7 @@ function CallInterface() {
 ## Browser Support
 
 ### Screen Capture (getDisplayMedia)
+
 - ✅ Chrome 72+
 - ✅ Edge 79+
 - ✅ Firefox 66+
@@ -379,12 +388,14 @@ function CallInterface() {
 - ✅ Opera 60+
 
 ### System Audio Capture
+
 - ✅ Chrome 74+ (Windows, macOS, Linux)
 - ✅ Edge 79+ (Windows, macOS)
 - ❌ Firefox (not supported)
 - ❌ Safari (not supported)
 
 ### MediaRecorder
+
 - ✅ Chrome 47+
 - ✅ Edge 79+
 - ✅ Firefox 25+
@@ -392,6 +403,7 @@ function CallInterface() {
 - ✅ Opera 36+
 
 ### Preferred Formats
+
 - Chrome/Edge: VP9 (WebM)
 - Firefox: VP8 (WebM)
 - Safari: H.264 (MP4)
@@ -402,12 +414,12 @@ function CallInterface() {
 
 ### Resolution & Bitrate
 
-| Quality | Resolution | Frame Rate | Bitrate     | Use Case          |
-|---------|-----------|------------|-------------|-------------------|
-| Auto    | 1920x1080 | 30fps      | 2.5 Mbps    | Default           |
-| 720p    | 1280x720  | 30fps      | 1.5 Mbps    | Low bandwidth     |
-| 1080p   | 1920x1080 | 30fps      | 2.5 Mbps    | Standard quality  |
-| 4K      | 3840x2160 | 60fps      | 8 Mbps      | High quality      |
+| Quality | Resolution | Frame Rate | Bitrate  | Use Case         |
+| ------- | ---------- | ---------- | -------- | ---------------- |
+| Auto    | 1920x1080  | 30fps      | 2.5 Mbps | Default          |
+| 720p    | 1280x720   | 30fps      | 1.5 Mbps | Low bandwidth    |
+| 1080p   | 1920x1080  | 30fps      | 2.5 Mbps | Standard quality |
+| 4K      | 3840x2160  | 60fps      | 8 Mbps   | High quality     |
 
 ### Adaptive Quality
 
@@ -580,27 +592,35 @@ useEffect(() => {
 ### Common Issues
 
 #### 1. Permission Denied
+
 ```
 Error: NotAllowedError: Permission denied
 ```
+
 **Solution**: User must grant permission. Ensure HTTPS in production.
 
 #### 2. No Audio Captured
+
 ```
 System audio not working
 ```
+
 **Solution**: Check browser support. Only Chrome/Edge support system audio.
 
 #### 3. Poor Quality
+
 ```
 Video is pixelated or laggy
 ```
+
 **Solution**: Reduce quality or frame rate. Check network bandwidth.
 
 #### 4. Recording Fails
+
 ```
 Error: MediaRecorder not supported
 ```
+
 **Solution**: Check browser support. Try different MIME type.
 
 ---
@@ -632,6 +652,7 @@ Error: MediaRecorder not supported
 ### Browser Testing
 
 Test on:
+
 - [ ] Chrome (latest)
 - [ ] Edge (latest)
 - [ ] Firefox (latest)
@@ -674,6 +695,7 @@ Same as nself-chat project license.
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: [nself-chat repository]
 - Documentation: `/Users/admin/Sites/nself-chat/docs/`
 - Examples: See usage examples above

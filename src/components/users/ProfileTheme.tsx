@@ -100,7 +100,7 @@ const ProfileTheme = React.forwardRef<HTMLDivElement, ProfileThemeProps>(
       <div ref={ref} className={cn('space-y-4', className)} {...props}>
         <div>
           <Label className="text-sm font-medium">Profile Theme</Label>
-          <p className="text-xs text-muted-foreground mt-1">
+          <p className="mt-1 text-xs text-muted-foreground">
             Choose a color scheme for your profile
           </p>
         </div>
@@ -109,27 +109,23 @@ const ProfileTheme = React.forwardRef<HTMLDivElement, ProfileThemeProps>(
           value={selectedTheme}
           onValueChange={onThemeChange}
           disabled={disabled}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+          className="grid grid-cols-2 gap-3 sm:grid-cols-4"
         >
           {themes.map((theme) => (
             <div key={theme.id}>
-              <RadioGroupItem
-                value={theme.id}
-                id={`theme-${theme.id}`}
-                className="peer sr-only"
-              />
+              <RadioGroupItem value={theme.id} id={`theme-${theme.id}`} className="peer sr-only" />
               <Label
                 htmlFor={`theme-${theme.id}`}
                 className={cn(
-                  'flex flex-col items-center gap-2 rounded-lg border-2 p-3 cursor-pointer',
-                  'transition-all hover:border-muted-foreground/50',
+                  'flex cursor-pointer flex-col items-center gap-2 rounded-lg border-2 p-3',
+                  'hover:border-muted-foreground/50 transition-all',
                   'peer-data-[state=checked]:border-primary peer-data-[state=checked]:ring-1 peer-data-[state=checked]:ring-primary',
                   disabled && 'cursor-not-allowed opacity-50'
                 )}
               >
                 {/* Theme preview */}
                 <div
-                  className="relative w-full h-12 rounded-md overflow-hidden"
+                  className="relative h-12 w-full overflow-hidden rounded-md"
                   style={{ backgroundColor: theme.backgroundColor }}
                 >
                   {/* Primary color accent */}
@@ -142,7 +138,7 @@ const ProfileTheme = React.forwardRef<HTMLDivElement, ProfileThemeProps>(
                   {/* Selected indicator */}
                   {selectedTheme === theme.id && (
                     <div
-                      className="absolute top-1 right-1 h-5 w-5 rounded-full flex items-center justify-center"
+                      className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full"
                       style={{ backgroundColor: theme.primaryColor }}
                     >
                       <Check className="h-3 w-3 text-white" />
@@ -157,10 +153,10 @@ const ProfileTheme = React.forwardRef<HTMLDivElement, ProfileThemeProps>(
 
         {/* Custom color preview */}
         {selectedTheme && (
-          <div className="p-4 rounded-lg border">
-            <p className="text-xs font-medium mb-2">Preview</p>
+          <div className="rounded-lg border p-4">
+            <p className="mb-2 text-xs font-medium">Preview</p>
             <div
-              className="h-20 rounded-md overflow-hidden"
+              className="h-20 overflow-hidden rounded-md"
               style={{
                 backgroundColor:
                   themes.find((t) => t.id === selectedTheme)?.backgroundColor || '#f3f4f6',
@@ -171,9 +167,7 @@ const ProfileTheme = React.forwardRef<HTMLDivElement, ProfileThemeProps>(
                 style={{
                   background: `linear-gradient(to right, ${
                     themes.find((t) => t.id === selectedTheme)?.primaryColor || '#6366f1'
-                  }, ${
-                    themes.find((t) => t.id === selectedTheme)?.primaryColor || '#6366f1'
-                  }80)`,
+                  }, ${themes.find((t) => t.id === selectedTheme)?.primaryColor || '#6366f1'}80)`,
                 }}
               />
               <div className="p-2">
@@ -185,7 +179,7 @@ const ProfileTheme = React.forwardRef<HTMLDivElement, ProfileThemeProps>(
                     opacity: 0.5,
                   }}
                 />
-                <div className="h-2 w-16 rounded bg-muted mt-1" />
+                <div className="mt-1 h-2 w-16 rounded bg-muted" />
               </div>
             </div>
           </div>

@@ -16,17 +16,9 @@ import { Preferences } from '@capacitor/preferences'
 // Types
 // =============================================================================
 
-export type BackgroundSyncStatus =
-  | 'idle'
-  | 'syncing'
-  | 'completed'
-  | 'failed'
-  | 'cancelled'
+export type BackgroundSyncStatus = 'idle' | 'syncing' | 'completed' | 'failed' | 'cancelled'
 
-export type BackgroundTaskResult =
-  | 'newData'
-  | 'noData'
-  | 'failed'
+export type BackgroundTaskResult = 'newData' | 'noData' | 'failed'
 
 export interface BackgroundSyncConfig {
   /** Minimum interval between syncs (seconds) */
@@ -292,13 +284,10 @@ class BackgroundSyncService {
    */
   private async setupListeners(): Promise<void> {
     // Background fetch listener
-    const fetchListener = await Background.addListener(
-      'backgroundFetch',
-      async (data) => {
-        console.log('Background fetch triggered:', data.taskIdentifier)
-        await this.performSync('backgroundFetch')
-      }
-    )
+    const fetchListener = await Background.addListener('backgroundFetch', async (data) => {
+      console.log('Background fetch triggered:', data.taskIdentifier)
+      await this.performSync('backgroundFetch')
+    })
     this.listeners.push(fetchListener)
 
     // Background processing listener
@@ -473,10 +462,7 @@ class BackgroundSyncService {
   /**
    * Register task handler
    */
-  registerTaskHandler(
-    type: SyncTaskType,
-    handler: (task: SyncTask) => Promise<boolean>
-  ): void {
+  registerTaskHandler(type: SyncTaskType, handler: (task: SyncTask) => Promise<boolean>): void {
     this.taskHandlers.set(type, handler)
   }
 

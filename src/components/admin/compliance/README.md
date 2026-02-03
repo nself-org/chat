@@ -5,13 +5,16 @@ Complete, production-ready compliance and legal management components for nself-
 ## Components
 
 ### ComplianceDashboard.tsx
+
 Central compliance management interface with:
+
 - Real-time metrics and KPIs
 - Alert system for compliance issues
 - Tabbed interface for different compliance areas
 - Overview of retention, legal holds, GDPR requests, and ToS
 
 **Usage:**
+
 ```tsx
 import { ComplianceDashboard } from '@/components/admin/compliance/ComplianceDashboard'
 
@@ -21,7 +24,9 @@ export default function CompliancePage() {
 ```
 
 ### DataRetention.tsx
+
 Comprehensive data retention policy management:
+
 - Create/edit/delete retention policies
 - Auto-delete scheduler configuration
 - Channel and user exclusions
@@ -30,6 +35,7 @@ Comprehensive data retention policy management:
 - Policy validation and warnings
 
 **Features:**
+
 - 10 predefined retention periods (30 days to 7 years + forever + custom)
 - 10 data categories (messages, files, audit logs, etc.)
 - 9 message types for exclusion
@@ -39,6 +45,7 @@ Comprehensive data retention policy management:
 - Weekend/holiday exclusions
 
 **Usage:**
+
 ```tsx
 import { DataRetention } from '@/components/admin/compliance/DataRetention'
 
@@ -48,7 +55,9 @@ export default function RetentionPage() {
 ```
 
 ### AuditExport.tsx
+
 Export audit logs and compliance data:
+
 - Multiple export types (audit logs, users, channels, etc.)
 - Multiple formats (JSON, CSV, ZIP)
 - Date range filtering
@@ -57,6 +66,7 @@ Export audit logs and compliance data:
 - Download management
 
 **Usage:**
+
 ```tsx
 import { AuditExport } from '@/components/admin/compliance/AuditExport'
 
@@ -122,7 +132,10 @@ if (validation.warnings.length > 0) {
 **Example - Auto-Delete Configuration:**
 
 ```typescript
-import { createDefaultAutoDeleteConfig, calculateNextRunTime } from '@/lib/compliance/retention-policy'
+import {
+  createDefaultAutoDeleteConfig,
+  calculateNextRunTime,
+} from '@/lib/compliance/retention-policy'
 
 const config = createDefaultAutoDeleteConfig()
 config.enabled = true
@@ -337,6 +350,7 @@ ComplianceAction
 ### 1. Retention Policies
 
 ✅ **DO:**
+
 - Set audit logs to 7 years for compliance
 - Exclude pinned and starred messages
 - Use channel overrides for sensitive channels
@@ -345,6 +359,7 @@ ComplianceAction
 - Document policy reasons
 
 ❌ **DON'T:**
+
 - Set audit logs to less than 1 year
 - Delete all message types indiscriminately
 - Run live mode without testing
@@ -354,6 +369,7 @@ ComplianceAction
 ### 2. Legal Holds
 
 ✅ **DO:**
+
 - Document the legal matter thoroughly
 - Notify custodians immediately
 - Send regular reminders
@@ -362,6 +378,7 @@ ComplianceAction
 - Release promptly when appropriate
 
 ❌ **DON'T:**
+
 - Create holds without legal justification
 - Forget to notify custodians
 - Release holds without legal approval
@@ -371,6 +388,7 @@ ComplianceAction
 ### 3. GDPR Compliance
 
 ✅ **DO:**
+
 - Respond within 30 days
 - Verify user identity
 - Export all requested data
@@ -379,6 +397,7 @@ ComplianceAction
 - Log all requests
 
 ❌ **DON'T:**
+
 - Ignore GDPR requests
 - Export without verification
 - Keep exports indefinitely
@@ -388,6 +407,7 @@ ComplianceAction
 ### 4. Audit Exports
 
 ✅ **DO:**
+
 - Use appropriate format for purpose
 - Filter by date range when possible
 - Limit export scope
@@ -396,6 +416,7 @@ ComplianceAction
 - Auto-delete expired exports
 
 ❌ **DON'T:**
+
 - Export everything always
 - Use insecure storage
 - Share export links publicly
@@ -480,24 +501,28 @@ GET    /api/admin/compliance/audit-export/:id/download
 ### Common Issues
 
 **Q: Retention job fails silently**
+
 - Check legal holds aren't blocking deletion
 - Verify policy is enabled
 - Check batch size isn't too large
 - Review error logs
 
 **Q: Users not receiving legal hold notices**
+
 - Verify email service is configured
 - Check custodian email addresses
 - Review notification settings
 - Check spam filters
 
 **Q: Export requests timing out**
+
 - Reduce date range
 - Limit data categories
 - Check server resources
 - Use ZIP format for large exports
 
 **Q: Policies not being applied**
+
 - Verify policy is enabled
 - Check data category matches
 - Verify no channel overrides
@@ -506,6 +531,7 @@ GET    /api/admin/compliance/audit-export/:id/download
 ## Support
 
 For issues or questions:
+
 - Check documentation: `/docs/compliance/`
 - Review tests: `/src/lib/compliance/__tests__/`
 - See implementation: `COMPLIANCE-IMPLEMENTATION.md`

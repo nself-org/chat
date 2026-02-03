@@ -66,11 +66,11 @@ Optional dependencies (disabled by default):
 ```yaml
 dependencies:
   - name: postgresql
-    version: "13.x.x"
+    version: '13.x.x'
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
   - name: redis
-    version: "18.x.x"
+    version: '18.x.x'
     repository: https://charts.bitnami.com/bitnami
     condition: redis.enabled
 ```
@@ -132,21 +132,21 @@ helm install nself-chat ./deploy/helm/nself-chat \
 
 ### Key Values
 
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `replicaCount` | Number of replicas | `2` |
-| `image.repository` | Image repository | `ghcr.io/nself/nself-chat` |
-| `image.tag` | Image tag | Chart appVersion |
-| `image.pullPolicy` | Pull policy | `IfNotPresent` |
-| `service.type` | Service type | `ClusterIP` |
-| `service.port` | Service port | `80` |
-| `ingress.enabled` | Enable ingress | `true` |
-| `ingress.hosts` | Ingress hosts | `[{host: chat.nself.io}]` |
-| `resources.requests.cpu` | CPU request | `100m` |
-| `resources.requests.memory` | Memory request | `256Mi` |
-| `autoscaling.enabled` | Enable HPA | `true` |
-| `autoscaling.minReplicas` | Min replicas | `2` |
-| `autoscaling.maxReplicas` | Max replicas | `10` |
+| Parameter                   | Description        | Default                    |
+| --------------------------- | ------------------ | -------------------------- |
+| `replicaCount`              | Number of replicas | `2`                        |
+| `image.repository`          | Image repository   | `ghcr.io/nself/nself-chat` |
+| `image.tag`                 | Image tag          | Chart appVersion           |
+| `image.pullPolicy`          | Pull policy        | `IfNotPresent`             |
+| `service.type`              | Service type       | `ClusterIP`                |
+| `service.port`              | Service port       | `80`                       |
+| `ingress.enabled`           | Enable ingress     | `true`                     |
+| `ingress.hosts`             | Ingress hosts      | `[{host: chat.nself.io}]`  |
+| `resources.requests.cpu`    | CPU request        | `100m`                     |
+| `resources.requests.memory` | Memory request     | `256Mi`                    |
+| `autoscaling.enabled`       | Enable HPA         | `true`                     |
+| `autoscaling.minReplicas`   | Min replicas       | `2`                        |
+| `autoscaling.maxReplicas`   | Max replicas       | `10`                       |
 
 ### External Services
 
@@ -177,10 +177,10 @@ secrets:
 ```yaml
 secrets:
   create: true
-  hasuraAdminSecret: "change-me"
+  hasuraAdminSecret: 'change-me'
   hasuraJwtSecret: '{"type":"HS256","key":"..."}'
-  postgresPassword: "change-me"
-  redisPassword: "change-me"
+  postgresPassword: 'change-me'
+  redisPassword: 'change-me'
 ```
 
 ### Ingress
@@ -312,7 +312,7 @@ Create a custom values file:
 ```yaml
 # my-values.yaml
 app:
-  name: "My Chat"
+  name: 'My Chat'
   environment: production
 
 image:

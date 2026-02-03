@@ -54,7 +54,8 @@ export const TRUST_SERVICES_CRITERIA = {
   PRIVACY: {
     name: 'Privacy',
     code: 'P',
-    description: 'Personal information is collected, used, retained, disclosed, and disposed properly.',
+    description:
+      'Personal information is collected, used, retained, disclosed, and disposed properly.',
     categories: {
       NOTICE: 'Notice (P1)',
       CHOICE_CONSENT: 'Choice and Consent (P2)',
@@ -66,23 +67,23 @@ export const TRUST_SERVICES_CRITERIA = {
       MONITORING: 'Monitoring and Enforcement (P8)',
     },
   },
-} as const;
+} as const
 
-export type TrustServicesCriterion = keyof typeof TRUST_SERVICES_CRITERIA;
+export type TrustServicesCriterion = keyof typeof TRUST_SERVICES_CRITERIA
 
 // ============================================================================
 // SOC 2 CONTROL OBJECTIVES
 // ============================================================================
 
 export interface SOC2ControlObjective {
-  id: string;
-  criterion: TrustServicesCriterion;
-  category: string;
-  name: string;
-  description: string;
-  type: 'preventive' | 'detective' | 'corrective';
-  frequency: 'continuous' | 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'annually' | 'ad_hoc';
-  evidence: string[];
+  id: string
+  criterion: TrustServicesCriterion
+  category: string
+  name: string
+  description: string
+  type: 'preventive' | 'detective' | 'corrective'
+  frequency: 'continuous' | 'daily' | 'weekly' | 'monthly' | 'quarterly' | 'annually' | 'ad_hoc'
+  evidence: string[]
 }
 
 export const SOC2_CONTROL_OBJECTIVES: SOC2ControlObjective[] = [
@@ -395,7 +396,7 @@ export const SOC2_CONTROL_OBJECTIVES: SOC2ControlObjective[] = [
     frequency: 'continuous',
     evidence: ['Disclosure policies', 'Third party agreements', 'Disclosure logs'],
   },
-];
+]
 
 // ============================================================================
 // SOC 2 COMPLIANCE DATA
@@ -403,74 +404,74 @@ export const SOC2_CONTROL_OBJECTIVES: SOC2ControlObjective[] = [
 
 export interface SOC2ComplianceData {
   // Organizational
-  hasControlEnvironment: boolean;
-  hasRiskAssessment: boolean;
-  hasMonitoringProgram: boolean;
+  hasControlEnvironment: boolean
+  hasRiskAssessment: boolean
+  hasMonitoringProgram: boolean
 
   // Security
-  hasAccessControls: boolean;
-  hasAuthenticationMFA: boolean;
-  hasEncryption: boolean;
-  hasChangeManagement: boolean;
-  hasIncidentResponse: boolean;
-  hasVulnerabilityManagement: boolean;
+  hasAccessControls: boolean
+  hasAuthenticationMFA: boolean
+  hasEncryption: boolean
+  hasChangeManagement: boolean
+  hasIncidentResponse: boolean
+  hasVulnerabilityManagement: boolean
 
   // Availability
-  hasBackupProcedures: boolean;
-  hasDisasterRecovery: boolean;
-  hasCapacityMonitoring: boolean;
-  hasSLAMonitoring: boolean;
+  hasBackupProcedures: boolean
+  hasDisasterRecovery: boolean
+  hasCapacityMonitoring: boolean
+  hasSLAMonitoring: boolean
 
   // Processing Integrity
-  hasDataValidation: boolean;
-  hasErrorHandling: boolean;
-  hasTransactionLogging: boolean;
+  hasDataValidation: boolean
+  hasErrorHandling: boolean
+  hasTransactionLogging: boolean
 
   // Confidentiality
-  hasDataClassification: boolean;
-  hasConfidentialityControls: boolean;
-  hasSecureDisposal: boolean;
+  hasDataClassification: boolean
+  hasConfidentialityControls: boolean
+  hasSecureDisposal: boolean
 
   // Privacy
-  hasPrivacyNotice: boolean;
-  hasConsentManagement: boolean;
-  hasDataRetentionPolicy: boolean;
-  hasDataSubjectRights: boolean;
-  hasThirdPartyManagement: boolean;
+  hasPrivacyNotice: boolean
+  hasConsentManagement: boolean
+  hasDataRetentionPolicy: boolean
+  hasDataSubjectRights: boolean
+  hasThirdPartyManagement: boolean
 
   // Documentation
-  hasPolicies: boolean;
-  hasProcedures: boolean;
-  hasAuditTrails: boolean;
-  hasVendorManagement: boolean;
+  hasPolicies: boolean
+  hasProcedures: boolean
+  hasAuditTrails: boolean
+  hasVendorManagement: boolean
 }
 
 export interface SOC2CheckResult {
-  control: SOC2ControlObjective;
-  implemented: boolean;
-  evidence: string[];
-  notes?: string;
+  control: SOC2ControlObjective
+  implemented: boolean
+  evidence: string[]
+  notes?: string
 }
 
 export interface SOC2Assessment {
-  overallScore: number;
-  status: 'compliant' | 'at_risk' | 'non_compliant';
+  overallScore: number
+  status: 'compliant' | 'at_risk' | 'non_compliant'
   criteria: {
-    security: number;
-    availability?: number;
-    processingIntegrity?: number;
-    confidentiality?: number;
-    privacy?: number;
-  };
-  checkResults: SOC2CheckResult[];
+    security: number
+    availability?: number
+    processingIntegrity?: number
+    confidentiality?: number
+    privacy?: number
+  }
+  checkResults: SOC2CheckResult[]
   summary: {
-    implemented: number;
-    notImplemented: number;
-    total: number;
-  };
-  criticalGaps: string[];
-  recommendations: string[];
-  generatedAt: Date;
+    implemented: number
+    notImplemented: number
+    total: number
+  }
+  criticalGaps: string[]
+  recommendations: string[]
+  generatedAt: Date
 }
 
 // ============================================================================
@@ -481,7 +482,7 @@ export interface SOC2Assessment {
  * Run SOC 2 compliance assessment
  */
 export function runSOC2Assessment(data: SOC2ComplianceData): SOC2Assessment {
-  const checkResults: SOC2CheckResult[] = [];
+  const checkResults: SOC2CheckResult[] = []
 
   // Map control objectives to data fields
   const controlImplementation: Record<string, boolean> = {
@@ -524,16 +525,16 @@ export function runSOC2Assessment(data: SOC2ComplianceData): SOC2Assessment {
     'P4.1': data.hasDataRetentionPolicy,
     'P5.1': data.hasDataSubjectRights,
     'P6.1': data.hasThirdPartyManagement,
-  };
+  }
 
   // Evaluate each control
   for (const control of SOC2_CONTROL_OBJECTIVES) {
-    const implemented = controlImplementation[control.id] || false;
+    const implemented = controlImplementation[control.id] || false
     checkResults.push({
       control,
       implemented,
       evidence: implemented ? control.evidence : [],
-    });
+    })
   }
 
   // Calculate summary
@@ -541,9 +542,9 @@ export function runSOC2Assessment(data: SOC2ComplianceData): SOC2Assessment {
     implemented: checkResults.filter((r) => r.implemented).length,
     notImplemented: checkResults.filter((r) => !r.implemented).length,
     total: checkResults.length,
-  };
+  }
 
-  const overallScore = Math.round((summary.implemented / summary.total) * 100);
+  const overallScore = Math.round((summary.implemented / summary.total) * 100)
 
   // Calculate criterion-specific scores
   const criteriaScores = {
@@ -552,26 +553,26 @@ export function runSOC2Assessment(data: SOC2ComplianceData): SOC2Assessment {
     processingIntegrity: calculateCriterionScore(checkResults, 'PROCESSING_INTEGRITY'),
     confidentiality: calculateCriterionScore(checkResults, 'CONFIDENTIALITY'),
     privacy: calculateCriterionScore(checkResults, 'PRIVACY'),
-  };
+  }
 
   // Identify critical gaps
   const criticalGaps = checkResults
     .filter((r) => !r.implemented && r.control.type === 'preventive')
-    .map((r) => `${r.control.id}: ${r.control.name}`);
+    .map((r) => `${r.control.id}: ${r.control.name}`)
 
   // Generate recommendations
   const recommendations = checkResults
     .filter((r) => !r.implemented)
-    .map((r) => `Implement ${r.control.name} (${r.control.id}): ${r.control.description}`);
+    .map((r) => `Implement ${r.control.name} (${r.control.id}): ${r.control.description}`)
 
   // Determine status
-  let status: SOC2Assessment['status'];
+  let status: SOC2Assessment['status']
   if (overallScore >= 90) {
-    status = 'compliant';
+    status = 'compliant'
   } else if (overallScore >= 70) {
-    status = 'at_risk';
+    status = 'at_risk'
   } else {
-    status = 'non_compliant';
+    status = 'non_compliant'
   }
 
   return {
@@ -583,7 +584,7 @@ export function runSOC2Assessment(data: SOC2ComplianceData): SOC2Assessment {
     criticalGaps,
     recommendations,
     generatedAt: new Date(),
-  };
+  }
 }
 
 /**
@@ -593,11 +594,11 @@ function calculateCriterionScore(
   results: SOC2CheckResult[],
   criterion: TrustServicesCriterion
 ): number {
-  const criterionResults = results.filter((r) => r.control.criterion === criterion);
-  if (criterionResults.length === 0) return 0;
+  const criterionResults = results.filter((r) => r.control.criterion === criterion)
+  if (criterionResults.length === 0) return 0
 
-  const implemented = criterionResults.filter((r) => r.implemented).length;
-  return Math.round((implemented / criterionResults.length) * 100);
+  const implemented = criterionResults.filter((r) => r.implemented).length
+  return Math.round((implemented / criterionResults.length) * 100)
 }
 
 // ============================================================================
@@ -605,27 +606,27 @@ function calculateCriterionScore(
 // ============================================================================
 
 export interface EvidenceItem {
-  controlId: string;
-  evidenceType: string;
-  description: string;
-  collectedAt: Date;
-  reviewer?: string;
-  status: 'collected' | 'pending' | 'insufficient';
-  fileUrl?: string;
-  notes?: string;
+  controlId: string
+  evidenceType: string
+  description: string
+  collectedAt: Date
+  reviewer?: string
+  status: 'collected' | 'pending' | 'insufficient'
+  fileUrl?: string
+  notes?: string
 }
 
 /**
  * Create evidence collection checklist
  */
 export function createEvidenceChecklist(): Array<{
-  controlId: string;
-  evidenceRequired: string[];
+  controlId: string
+  evidenceRequired: string[]
 }> {
   return SOC2_CONTROL_OBJECTIVES.map((control) => ({
     controlId: control.id,
     evidenceRequired: control.evidence,
-  }));
+  }))
 }
 
 // ============================================================================
@@ -633,43 +634,43 @@ export function createEvidenceChecklist(): Array<{
 // ============================================================================
 
 export interface VendorAssessment {
-  vendorName: string;
-  vendorType: string;
-  dataShared: string[];
-  hasSOC2Report: boolean;
-  soc2ReportDate?: Date;
-  soc2Type: 'Type I' | 'Type II' | 'None';
-  riskLevel: 'low' | 'medium' | 'high' | 'critical';
-  reviewDate: Date;
-  nextReviewDate: Date;
-  notes?: string;
+  vendorName: string
+  vendorType: string
+  dataShared: string[]
+  hasSOC2Report: boolean
+  soc2ReportDate?: Date
+  soc2Type: 'Type I' | 'Type II' | 'None'
+  riskLevel: 'low' | 'medium' | 'high' | 'critical'
+  reviewDate: Date
+  nextReviewDate: Date
+  notes?: string
 }
 
 /**
  * Calculate vendor risk level
  */
 export function calculateVendorRisk(vendor: {
-  hasSOC2Report: boolean;
-  dataShared: string[];
-  soc2ReportDate?: Date;
+  hasSOC2Report: boolean
+  dataShared: string[]
+  soc2ReportDate?: Date
 }): VendorAssessment['riskLevel'] {
   if (!vendor.hasSOC2Report) {
-    return vendor.dataShared.length > 0 ? 'critical' : 'high';
+    return vendor.dataShared.length > 0 ? 'critical' : 'high'
   }
 
   if (vendor.soc2ReportDate) {
     const monthsSinceReport =
-      (Date.now() - vendor.soc2ReportDate.getTime()) / (1000 * 60 * 60 * 24 * 30);
+      (Date.now() - vendor.soc2ReportDate.getTime()) / (1000 * 60 * 60 * 24 * 30)
     if (monthsSinceReport > 18) {
-      return 'high';
+      return 'high'
     }
   }
 
   if (vendor.dataShared.length > 3) {
-    return 'medium';
+    return 'medium'
   }
 
-  return 'low';
+  return 'low'
 }
 
 // ============================================================================
@@ -677,19 +678,19 @@ export function calculateVendorRisk(vendor: {
 // ============================================================================
 
 export interface SecurityIncident {
-  id: string;
-  type: 'unauthorized_access' | 'data_breach' | 'system_outage' | 'malware' | 'other';
-  severity: 'low' | 'medium' | 'high' | 'critical';
-  detectedAt: Date;
-  reportedBy: string;
-  description: string;
-  affectedSystems: string[];
-  affectedData?: string[];
-  containedAt?: Date;
-  resolvedAt?: Date;
-  rootCause?: string;
-  remediationSteps: string[];
-  status: 'detected' | 'contained' | 'resolved' | 'closed';
+  id: string
+  type: 'unauthorized_access' | 'data_breach' | 'system_outage' | 'malware' | 'other'
+  severity: 'low' | 'medium' | 'high' | 'critical'
+  detectedAt: Date
+  reportedBy: string
+  description: string
+  affectedSystems: string[]
+  affectedData?: string[]
+  containedAt?: Date
+  resolvedAt?: Date
+  rootCause?: string
+  remediationSteps: string[]
+  status: 'detected' | 'contained' | 'resolved' | 'closed'
 }
 
 /**
@@ -698,20 +699,20 @@ export interface SecurityIncident {
 export function requiresSOC2Reporting(incident: SecurityIncident): boolean {
   // Critical incidents always require reporting
   if (incident.severity === 'critical') {
-    return true;
+    return true
   }
 
   // Data breaches require reporting
   if (incident.type === 'data_breach') {
-    return true;
+    return true
   }
 
   // System outages require reporting
   if (incident.type === 'system_outage' && incident.severity === 'high') {
-    return true;
+    return true
   }
 
-  return false;
+  return false
 }
 
 // ============================================================================
@@ -719,34 +720,34 @@ export function requiresSOC2Reporting(incident: SecurityIncident): boolean {
 // ============================================================================
 
 export interface SOC2ReadinessScore {
-  readinessPercentage: number;
-  estimatedTimeToCompliance: string;
-  topPriorities: string[];
-  quickWins: string[];
+  readinessPercentage: number
+  estimatedTimeToCompliance: string
+  topPriorities: string[]
+  quickWins: string[]
 }
 
 /**
  * Assess SOC 2 readiness
  */
 export function assessSOC2Readiness(data: SOC2ComplianceData): SOC2ReadinessScore {
-  const assessment = runSOC2Assessment(data);
+  const assessment = runSOC2Assessment(data)
 
   const quickWins = assessment.checkResults
     .filter((r) => !r.implemented && r.control.frequency === 'continuous')
     .slice(0, 5)
-    .map((r) => r.control.name);
+    .map((r) => r.control.name)
 
-  const topPriorities = assessment.criticalGaps.slice(0, 5);
+  const topPriorities = assessment.criticalGaps.slice(0, 5)
 
-  let estimatedTime: string;
+  let estimatedTime: string
   if (assessment.overallScore >= 80) {
-    estimatedTime = '1-3 months';
+    estimatedTime = '1-3 months'
   } else if (assessment.overallScore >= 60) {
-    estimatedTime = '3-6 months';
+    estimatedTime = '3-6 months'
   } else if (assessment.overallScore >= 40) {
-    estimatedTime = '6-12 months';
+    estimatedTime = '6-12 months'
   } else {
-    estimatedTime = '12+ months';
+    estimatedTime = '12+ months'
   }
 
   return {
@@ -754,7 +755,7 @@ export function assessSOC2Readiness(data: SOC2ComplianceData): SOC2ReadinessScor
     estimatedTimeToCompliance: estimatedTime,
     topPriorities,
     quickWins,
-  };
+  }
 }
 
 // ============================================================================
@@ -769,4 +770,4 @@ export const SOC2Helpers = {
   calculateVendorRisk,
   requiresSOC2Reporting,
   assessSOC2Readiness,
-};
+}

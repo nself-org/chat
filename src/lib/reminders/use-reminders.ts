@@ -26,11 +26,7 @@
 
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
-import {
-  useReminderStore,
-  type ReminderDraft,
-  getUserTimezone,
-} from './reminder-store'
+import { useReminderStore, type ReminderDraft, getUserTimezone } from './reminder-store'
 import {
   GET_REMINDERS,
   GET_UPCOMING_REMINDERS,
@@ -87,10 +83,7 @@ export interface UseRemindersReturn {
   // Actions
   fetchReminders: () => Promise<void>
   createReminder: (draft: ReminderDraft) => Promise<Reminder | null>
-  updateReminder: (
-    id: string,
-    updates: Partial<ReminderDraft>
-  ) => Promise<Reminder | null>
+  updateReminder: (id: string, updates: Partial<ReminderDraft>) => Promise<Reminder | null>
   deleteReminder: (id: string) => Promise<boolean>
   completeReminder: (id: string) => Promise<Reminder | null>
   dismissReminder: (id: string) => Promise<boolean>
@@ -199,17 +192,12 @@ export function useReminders({
   })
 
   // GraphQL mutations
-  const [createMutation, { loading: createLoading }] =
-    useMutation(CREATE_REMINDER)
-  const [updateMutation, { loading: updateLoading }] =
-    useMutation(UPDATE_REMINDER)
-  const [deleteMutation, { loading: deleteLoading }] =
-    useMutation(DELETE_REMINDER)
-  const [completeMutation, { loading: completeLoading }] =
-    useMutation(COMPLETE_REMINDER)
+  const [createMutation, { loading: createLoading }] = useMutation(CREATE_REMINDER)
+  const [updateMutation, { loading: updateLoading }] = useMutation(UPDATE_REMINDER)
+  const [deleteMutation, { loading: deleteLoading }] = useMutation(DELETE_REMINDER)
+  const [completeMutation, { loading: completeLoading }] = useMutation(COMPLETE_REMINDER)
   const [dismissMutation] = useMutation(DISMISS_REMINDER)
-  const [snoozeMutation, { loading: snoozeLoading }] =
-    useMutation(SNOOZE_REMINDER)
+  const [snoozeMutation, { loading: snoozeLoading }] = useMutation(SNOOZE_REMINDER)
   const [bulkDeleteMutation] = useMutation(BULK_DELETE_REMINDERS)
   const [bulkCompleteMutation] = useMutation(BULK_COMPLETE_REMINDERS)
 
@@ -326,8 +314,7 @@ export function useReminders({
         }
         return null
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to create reminder'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to create reminder'
         setError(errorMessage)
         throw err
       }
@@ -336,10 +323,7 @@ export function useReminders({
   )
 
   const updateReminderAction = useCallback(
-    async (
-      id: string,
-      updates: Partial<ReminderDraft>
-    ): Promise<Reminder | null> => {
+    async (id: string, updates: Partial<ReminderDraft>): Promise<Reminder | null> => {
       if (!isFeatureEnabled) {
         setError('Reminders feature is not enabled')
         return null
@@ -366,8 +350,7 @@ export function useReminders({
         }
         return null
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to update reminder'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to update reminder'
         setError(errorMessage)
         throw err
       }
@@ -394,8 +377,7 @@ export function useReminders({
         }
         return false
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to delete reminder'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to delete reminder'
         setError(errorMessage)
         throw err
       }
@@ -423,8 +405,7 @@ export function useReminders({
         }
         return null
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to complete reminder'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to complete reminder'
         setError(errorMessage)
         throw err
       }
@@ -451,8 +432,7 @@ export function useReminders({
         }
         return false
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to dismiss reminder'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to dismiss reminder'
         setError(errorMessage)
         throw err
       }
@@ -484,8 +464,7 @@ export function useReminders({
         }
         return null
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to snooze reminder'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to snooze reminder'
         setError(errorMessage)
         throw err
       }
@@ -516,8 +495,7 @@ export function useReminders({
         }
         return 0
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to delete reminders'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to delete reminders'
         setError(errorMessage)
         throw err
       }
@@ -551,8 +529,7 @@ export function useReminders({
         }
         return 0
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to complete reminders'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to complete reminders'
         setError(errorMessage)
         throw err
       }
@@ -725,8 +702,7 @@ export function useRemindersCount(userId: string) {
   })
 
   const count = useMemo(
-    () =>
-      data?.nchat_reminders_aggregate?.aggregate?.count ?? getPendingCount(),
+    () => data?.nchat_reminders_aggregate?.aggregate?.count ?? getPendingCount(),
     [data, getPendingCount]
   )
 
@@ -753,10 +729,7 @@ export function useMessageReminder(userId: string, messageId: string) {
     fetchPolicy: 'cache-and-network',
   })
 
-  const reminder = useMemo(
-    () => data?.nchat_reminders?.[0] || null,
-    [data]
-  )
+  const reminder = useMemo(() => data?.nchat_reminders?.[0] || null, [data])
 
   return {
     reminder,

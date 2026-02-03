@@ -15,13 +15,7 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -152,38 +146,40 @@ export function AuditExport() {
   const simulateExportProcessing = (exportRequest: ExportRequest) => {
     // Simulate processing
     setTimeout(() => {
-      setExports(prev => prev.map(exp =>
-        exp.id === exportRequest.id
-          ? { ...exp, status: 'processing' as ExportStatus, startedAt: new Date(), progress: 0 }
-          : exp
-      ))
+      setExports((prev) =>
+        prev.map((exp) =>
+          exp.id === exportRequest.id
+            ? { ...exp, status: 'processing' as ExportStatus, startedAt: new Date(), progress: 0 }
+            : exp
+        )
+      )
 
       // Progress updates
       let progress = 0
       const interval = setInterval(() => {
         progress += 10
-        setExports(prev => prev.map(exp =>
-          exp.id === exportRequest.id
-            ? { ...exp, progress }
-            : exp
-        ))
+        setExports((prev) =>
+          prev.map((exp) => (exp.id === exportRequest.id ? { ...exp, progress } : exp))
+        )
 
         if (progress >= 100) {
           clearInterval(interval)
-          setExports(prev => prev.map(exp =>
-            exp.id === exportRequest.id
-              ? {
-                  ...exp,
-                  status: 'completed' as ExportStatus,
-                  progress: 100,
-                  completedAt: new Date(),
-                  downloadUrl: `/api/exports/${exp.id}/download`,
-                  fileSize: 1024 * 1024 * 2.5, // 2.5 MB
-                  recordCount: 1523,
-                  expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-                }
-              : exp
-          ))
+          setExports((prev) =>
+            prev.map((exp) =>
+              exp.id === exportRequest.id
+                ? {
+                    ...exp,
+                    status: 'completed' as ExportStatus,
+                    progress: 100,
+                    completedAt: new Date(),
+                    downloadUrl: `/api/exports/${exp.id}/download`,
+                    fileSize: 1024 * 1024 * 2.5, // 2.5 MB
+                    recordCount: 1523,
+                    expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+                  }
+                : exp
+            )
+          )
         }
       }, 500)
     }, 1000)
@@ -197,7 +193,6 @@ export function AuditExport() {
       description: `Downloading ${exportRequest.format.toUpperCase()} file...`,
     })
 
-    // TODO: Implement actual download
     // window.location.href = exportRequest.downloadUrl
   }
 
@@ -208,7 +203,7 @@ export function AuditExport() {
       case 'failed':
         return <XCircle className="h-4 w-4 text-red-500" />
       case 'processing':
-        return <Loader2 className="h-4 w-4 text-blue-500 animate-spin" />
+        return <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
       default:
         return <Clock className="h-4 w-4 text-gray-500" />
     }
@@ -225,9 +220,7 @@ export function AuditExport() {
     }
 
     return (
-      <Badge variant={variants[status]}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
-      </Badge>
+      <Badge variant={variants[status]}>{status.charAt(0).toUpperCase() + status.slice(1)}</Badge>
     )
   }
 
@@ -248,12 +241,12 @@ export function AuditExport() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold">Export Data</h2>
-          <p className="text-muted-foreground mt-1">
+          <p className="mt-1 text-muted-foreground">
             Export audit logs, user data, and compliance reports
           </p>
         </div>
         <Button onClick={() => setShowCreateDialog(true)}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           New Export
         </Button>
       </div>
@@ -262,9 +255,7 @@ export function AuditExport() {
       <Card>
         <CardHeader>
           <CardTitle>Export Requests</CardTitle>
-          <CardDescription>
-            View and download your export requests
-          </CardDescription>
+          <CardDescription>View and download your export requests</CardDescription>
         </CardHeader>
         <CardContent>
           {exports.length > 0 ? (
@@ -290,62 +281,47 @@ export function AuditExport() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant="outline">
-                        {exp.dataType.replace(/_/g, ' ')}
-                      </Badge>
+                      <Badge variant="outline">{exp.dataType.replace(/_/g, ' ')}</Badge>
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {getFormatIcon(exp.format)}
-                        <span className="uppercase text-xs font-mono">
-                          {exp.format}
-                        </span>
+                        <span className="font-mono text-xs uppercase">{exp.format}</span>
                       </div>
                     </TableCell>
                     <TableCell>
                       {exp.status === 'processing' ? (
                         <div className="space-y-1">
                           <Progress value={exp.progress} className="w-24" />
-                          <span className="text-xs text-muted-foreground">
-                            {exp.progress}%
-                          </span>
+                          <span className="text-xs text-muted-foreground">{exp.progress}%</span>
                         </div>
                       ) : exp.status === 'completed' ? (
-                        <div className="text-sm">
-                          {exp.recordCount?.toLocaleString()} records
-                        </div>
+                        <div className="text-sm">{exp.recordCount?.toLocaleString()} records</div>
                       ) : (
-                        <span className="text-muted-foreground text-sm">-</span>
+                        <span className="text-sm text-muted-foreground">-</span>
                       )}
                     </TableCell>
                     <TableCell>
-                      <div className="text-sm">
-                        {exp.createdAt.toLocaleDateString()}
-                      </div>
+                      <div className="text-sm">{exp.createdAt.toLocaleDateString()}</div>
                       <div className="text-xs text-muted-foreground">
                         {exp.createdAt.toLocaleTimeString()}
                       </div>
                     </TableCell>
                     <TableCell>
                       {exp.expiresAt ? (
-                        <div className={cn(
-                          'text-sm',
-                          new Date() > exp.expiresAt && 'text-red-500'
-                        )}>
+                        <div
+                          className={cn('text-sm', new Date() > exp.expiresAt && 'text-red-500')}
+                        >
                           {exp.expiresAt.toLocaleDateString()}
                         </div>
                       ) : (
-                        <span className="text-muted-foreground text-sm">-</span>
+                        <span className="text-sm text-muted-foreground">-</span>
                       )}
                     </TableCell>
                     <TableCell className="text-right">
                       {exp.status === 'completed' && exp.downloadUrl && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleDownload(exp)}
-                        >
-                          <Download className="h-4 w-4 mr-2" />
+                        <Button variant="outline" size="sm" onClick={() => handleDownload(exp)}>
+                          <Download className="mr-2 h-4 w-4" />
                           Download
                         </Button>
                       )}
@@ -366,14 +342,14 @@ export function AuditExport() {
               </TableBody>
             </Table>
           ) : (
-            <div className="text-center py-12">
-              <Download className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No export requests</h3>
-              <p className="text-muted-foreground mb-4">
+            <div className="py-12 text-center">
+              <Download className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+              <h3 className="mb-2 text-lg font-semibold">No export requests</h3>
+              <p className="mb-4 text-muted-foreground">
                 Create your first export to download audit logs or user data
               </p>
               <Button onClick={() => setShowCreateDialog(true)}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 New Export
               </Button>
             </div>
@@ -403,12 +379,7 @@ interface CreateExportDialogProps {
   loading: boolean
 }
 
-function CreateExportDialog({
-  open,
-  onOpenChange,
-  onCreate,
-  loading,
-}: CreateExportDialogProps) {
+function CreateExportDialog({ open, onOpenChange, onCreate, loading }: CreateExportDialogProps) {
   const [dataType, setDataType] = useState<ExportDataType>('audit_logs')
   const [format, setFormat] = useState<ExportFormat>('json')
   const [startDate, setStartDate] = useState('')
@@ -449,10 +420,7 @@ function CreateExportDialog({
           {/* Data Type */}
           <div className="space-y-2">
             <Label htmlFor="dataType">Data Type *</Label>
-            <Select
-              value={dataType}
-              onValueChange={(value: ExportDataType) => setDataType(value)}
-            >
+            <Select value={dataType} onValueChange={(value: ExportDataType) => setDataType(value)}>
               <SelectTrigger id="dataType">
                 <SelectValue />
               </SelectTrigger>
@@ -470,10 +438,7 @@ function CreateExportDialog({
           {/* Export Format */}
           <div className="space-y-2">
             <Label htmlFor="format">Format *</Label>
-            <Select
-              value={format}
-              onValueChange={(value: ExportFormat) => setFormat(value)}
-            >
+            <Select value={format} onValueChange={(value: ExportFormat) => setFormat(value)}>
               <SelectTrigger id="format">
                 <SelectValue />
               </SelectTrigger>
@@ -548,14 +513,14 @@ function CreateExportDialog({
           </div>
 
           {/* Info Banner */}
-          <div className="p-4 bg-blue-50 dark:bg-blue-950 rounded-lg border border-blue-200 dark:border-blue-900">
+          <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 dark:border-blue-900 dark:bg-blue-950">
             <div className="flex gap-3">
-              <AlertCircle className="h-5 w-5 text-blue-500 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500" />
               <div className="text-sm text-blue-900 dark:text-blue-100">
-                <p className="font-medium mb-1">GDPR Compliance</p>
+                <p className="mb-1 font-medium">GDPR Compliance</p>
                 <p className="text-blue-700 dark:text-blue-300">
-                  Exports will be available for 7 days and will be automatically deleted.
-                  All export requests are logged for compliance purposes.
+                  Exports will be available for 7 days and will be automatically deleted. All export
+                  requests are logged for compliance purposes.
                 </p>
               </div>
             </div>
@@ -567,7 +532,7 @@ function CreateExportDialog({
             Cancel
           </Button>
           <Button onClick={handleSubmit} disabled={loading}>
-            {loading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Create Export
           </Button>
         </DialogFooter>

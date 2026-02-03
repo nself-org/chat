@@ -29,12 +29,7 @@ import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { ComponentPreview, PreviewCard, PreviewGrid } from '@/components/dev/component-preview'
 import { CodeBlock } from '@/components/dev/code-block'
 
@@ -279,9 +274,7 @@ export default function FeaturesPage() {
     if (!searchQuery) return featureFlags
     const query = searchQuery.toLowerCase()
     return featureFlags.filter(
-      (f) =>
-        f.name.toLowerCase().includes(query) ||
-        f.description.toLowerCase().includes(query)
+      (f) => f.name.toLowerCase().includes(query) || f.description.toLowerCase().includes(query)
     )
   }, [searchQuery])
 
@@ -330,9 +323,7 @@ export default function FeaturesPage() {
     const isEnabled = enabledFeatures.has(feature.id)
 
     // Check if dependencies are met
-    const missingDeps = feature.dependencies?.filter(
-      (dep) => !enabledFeatures.has(dep)
-    )
+    const missingDeps = feature.dependencies?.filter((dep) => !enabledFeatures.has(dep))
 
     // Check if required by enabled features
     const requiredByEnabled = featureFlags.filter(
@@ -352,15 +343,15 @@ export default function FeaturesPage() {
       <div className="space-y-8">
         {/* Header */}
         <div>
-          <div className="flex items-center gap-3 mb-2">
+          <div className="mb-2 flex items-center gap-3">
             <div className="rounded-lg bg-amber-500/10 p-2">
               <Flag className="h-5 w-5 text-amber-500" />
             </div>
             <h1 className="text-3xl font-bold tracking-tight">Feature Flags</h1>
           </div>
           <p className="text-muted-foreground">
-            Configure which features are available in your nself-chat deployment.
-            Toggle features on/off to customize the user experience.
+            Configure which features are available in your nself-chat deployment. Toggle features
+            on/off to customize the user experience.
           </p>
         </div>
 
@@ -392,10 +383,10 @@ export default function FeaturesPage() {
         <section className="space-y-8">
           {Object.entries(featuresByCategory).map(([category, features]) => (
             <div key={category}>
-              <h2 className="text-lg font-semibold mb-4">
+              <h2 className="mb-4 text-lg font-semibold">
                 {categoryLabels[category as keyof typeof categoryLabels]}
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                 {features.map((feature) => {
                   const Icon = feature.icon
                   const status = getFeatureStatus(feature)
@@ -414,26 +405,19 @@ export default function FeaturesPage() {
                             <div
                               className={cn(
                                 'rounded-lg p-2',
-                                status.isEnabled
-                                  ? 'bg-primary/10'
-                                  : 'bg-muted'
+                                status.isEnabled ? 'bg-primary/10' : 'bg-muted'
                               )}
                             >
                               <Icon
                                 className={cn(
                                   'h-5 w-5',
-                                  status.isEnabled
-                                    ? 'text-primary'
-                                    : 'text-muted-foreground'
+                                  status.isEnabled ? 'text-primary' : 'text-muted-foreground'
                                 )}
                               />
                             </div>
                             <div className="flex-1">
                               <div className="flex items-center gap-2">
-                                <Label
-                                  htmlFor={feature.id}
-                                  className="font-medium cursor-pointer"
-                                >
+                                <Label htmlFor={feature.id} className="cursor-pointer font-medium">
                                   {feature.name}
                                 </Label>
                                 {feature.dependencies && (
@@ -445,40 +429,30 @@ export default function FeaturesPage() {
                                       <p className="text-xs">
                                         Requires:{' '}
                                         {feature.dependencies
-                                          .map(
-                                            (d) =>
-                                              featureFlags.find((f) => f.id === d)
-                                                ?.name
-                                          )
+                                          .map((d) => featureFlags.find((f) => f.id === d)?.name)
                                           .join(', ')}
                                       </p>
                                     </TooltipContent>
                                   </Tooltip>
                                 )}
                               </div>
-                              <p className="text-sm text-muted-foreground mt-1">
+                              <p className="mt-1 text-sm text-muted-foreground">
                                 {feature.description}
                               </p>
 
                               {/* Dependency warnings */}
                               {status.missingDeps && status.missingDeps.length > 0 && (
-                                <p className="text-xs text-amber-500 mt-2">
+                                <p className="mt-2 text-xs text-amber-500">
                                   Will also enable:{' '}
                                   {status.missingDeps
-                                    .map(
-                                      (d) =>
-                                        featureFlags.find((f) => f.id === d)?.name
-                                    )
+                                    .map((d) => featureFlags.find((f) => f.id === d)?.name)
                                     .join(', ')}
                                 </p>
                               )}
 
                               {status.requiredByEnabled.length > 0 && (
-                                <p className="text-xs text-muted-foreground mt-2">
-                                  Used by:{' '}
-                                  {status.requiredByEnabled
-                                    .map((f) => f.name)
-                                    .join(', ')}
+                                <p className="mt-2 text-xs text-muted-foreground">
+                                  Used by: {status.requiredByEnabled.map((f) => f.name).join(', ')}
                                 </p>
                               )}
                             </div>
@@ -503,18 +477,15 @@ export default function FeaturesPage() {
 
         {/* Dependency Visualization */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Feature Dependencies</h2>
+          <h2 className="mb-4 text-xl font-semibold">Feature Dependencies</h2>
           <Card>
             <CardContent className="pt-6">
               <div className="space-y-3">
                 {featureFlags
                   .filter((f) => f.dependencies && f.dependencies.length > 0)
                   .map((feature) => (
-                    <div
-                      key={feature.id}
-                      className="flex items-center gap-4 text-sm"
-                    >
-                      <div className="flex items-center gap-2 min-w-[200px]">
+                    <div key={feature.id} className="flex items-center gap-4 text-sm">
+                      <div className="flex min-w-[200px] items-center gap-2">
                         {enabledFeatures.has(feature.id) ? (
                           <Check className="h-4 w-4 text-green-500" />
                         ) : (
@@ -522,8 +493,7 @@ export default function FeaturesPage() {
                         )}
                         <span
                           className={cn(
-                            !enabledFeatures.has(feature.id) &&
-                              'text-muted-foreground'
+                            !enabledFeatures.has(feature.id) && 'text-muted-foreground'
                           )}
                         >
                           {feature.name}
@@ -533,17 +503,11 @@ export default function FeaturesPage() {
                       <div className="flex items-center gap-2">
                         <span className="text-muted-foreground">requires</span>
                         {feature.dependencies?.map((dep, i) => {
-                          const depFeature = featureFlags.find(
-                            (f) => f.id === dep
-                          )
+                          const depFeature = featureFlags.find((f) => f.id === dep)
                           return (
                             <span key={dep}>
                               <Badge
-                                variant={
-                                  enabledFeatures.has(dep)
-                                    ? 'default'
-                                    : 'outline'
-                                }
+                                variant={enabledFeatures.has(dep) ? 'default' : 'outline'}
                                 className="text-xs"
                               >
                                 {depFeature?.name}
@@ -571,16 +535,10 @@ export default function FeaturesPage() {
           <Card>
             <CardHeader>
               <CardTitle>Feature Configuration</CardTitle>
-              <CardDescription>
-                Features are configured in the AppConfig interface.
-              </CardDescription>
+              <CardDescription>Features are configured in the AppConfig interface.</CardDescription>
             </CardHeader>
             <CardContent>
-              <CodeBlock
-                code={featureConfigCode}
-                language="typescript"
-                filename="app-config.ts"
-              />
+              <CodeBlock code={featureConfigCode} language="typescript" filename="app-config.ts" />
             </CardContent>
           </Card>
 
@@ -592,51 +550,41 @@ export default function FeaturesPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <CodeBlock
-                code={featureUsageCode}
-                language="tsx"
-                filename="message-actions.tsx"
-              />
+              <CodeBlock code={featureUsageCode} language="tsx" filename="message-actions.tsx" />
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
               <CardTitle>Feature Guard Component</CardTitle>
-              <CardDescription>
-                A reusable component for feature-gated content.
-              </CardDescription>
+              <CardDescription>A reusable component for feature-gated content.</CardDescription>
             </CardHeader>
             <CardContent>
-              <CodeBlock
-                code={featureGuardCode}
-                language="tsx"
-                filename="feature-guard.tsx"
-              />
+              <CodeBlock code={featureGuardCode} language="tsx" filename="feature-guard.tsx" />
             </CardContent>
           </Card>
         </section>
 
         {/* Best Practices */}
         <section>
-          <h2 className="text-xl font-semibold mb-4">Best Practices</h2>
+          <h2 className="mb-4 text-xl font-semibold">Best Practices</h2>
           <PreviewGrid cols={3}>
             <PreviewCard title="Default Conservatively">
               <p className="text-sm text-muted-foreground">
-                Start with core features enabled and let users opt into advanced
-                features through the setup wizard.
+                Start with core features enabled and let users opt into advanced features through
+                the setup wizard.
               </p>
             </PreviewCard>
             <PreviewCard title="Handle Dependencies">
               <p className="text-sm text-muted-foreground">
-                When disabling a feature, consider its dependents. Provide clear
-                warnings about cascading effects.
+                When disabling a feature, consider its dependents. Provide clear warnings about
+                cascading effects.
               </p>
             </PreviewCard>
             <PreviewCard title="Graceful Degradation">
               <p className="text-sm text-muted-foreground">
-                Components should handle disabled features gracefully, hiding UI
-                elements rather than showing errors.
+                Components should handle disabled features gracefully, hiding UI elements rather
+                than showing errors.
               </p>
             </PreviewCard>
           </PreviewGrid>

@@ -1,50 +1,48 @@
-'use client';
+'use client'
 
 /**
  * ImagePicker Component
  * Multi-select image picker with compression and preview
  */
 
-import * as React from 'react';
-import { useState, useCallback, useRef } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { Badge } from '@/components/ui/badge';
-import { Camera, Image as ImageIcon, X, Edit2, Check } from 'lucide-react';
-import { camera } from '@/lib/capacitor/camera';
-import {
-  compressImage,
-  formatSize,
-  type CompressionResult,
-} from '@/lib/media/image-compression';
-import { Capacitor } from '@capacitor/core';
+import * as React from 'react'
+import { useState, useCallback, useRef } from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Progress } from '@/components/ui/progress'
+import { Badge } from '@/components/ui/badge'
+import { Camera, Image as ImageIcon, X, Edit2, Check } from 'lucide-react'
+import { camera } from '@/lib/capacitor/camera'
+import { compressImage, formatSize, type CompressionResult } from '@/lib/media/image-compression'
+import { Capacitor } from '@capacitor/core'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface ImagePickerProps {
-  maxImages?: number;
-  maxSizeMB?: number;
-  allowCamera?: boolean;
-  allowGallery?: boolean;
-  autoCompress?: boolean;
-  compressionQuality?: number;
-  onImagesSelected?: (images: SelectedImage[]) => void;
-  onError?: (error: string) => void;
-  className?: string;
+  maxImages?: number
+  maxSizeMB?: number
+  allowCamera?: boolean
+  allowGallery?: boolean
+  autoCompress?: boolean
+  compressionQuality?: number
+  onImagesSelected?: (images: SelectedImage[]) => void
+  onError?: (error: string) => void
+  className?: string
 }
 
 export interface SelectedImage {
-  id: string;
-  file: File;
-  blob: Blob;
-  preview: string;
-  originalSize: number;
-  compressedSize: number;
-  width: number;
-  height: number;
+  id: string
+  file: File
+  blob: Blob
+  preview: string
+  originalSize: number
+  compressedSize: number
+  width: number
+  height: number
 }
 
 // ============================================================================
@@ -62,21 +60,21 @@ export function ImagePicker({
   onError,
   className,
 }: ImagePickerProps) {
-  const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([]);
-  const [isCompressing, setIsCompressing] = useState(false);
-  const [compressionProgress, setCompressionProgress] = useState(0);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImages, setSelectedImages] = useState<SelectedImage[]>([])
+  const [isCompressing, setIsCompressing] = useState(false)
+  const [compressionProgress, setCompressionProgress] = useState(0)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   /**
    * Handle file input change
    */
   const handleFileSelect = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = Array.from(event.target.files || []);
-      await processFiles(files);
+      const files = Array.from(event.target.files || [])
+      await processFiles(files)
     },
     [selectedImages]
-  );
+  )
 
   /**
    * Process selected files
@@ -84,64 +82,64 @@ export function ImagePicker({
   const processFiles = async (files: File[]) => {
     // Check max images limit
     if (selectedImages.length + files.length > maxImages) {
-      onError?.(`Maximum ${maxImages} images allowed`);
-      return;
+      onError?.(`Maximum ${maxImages} images allowed`)
+      return
     }
 
     // Validate files
     const validFiles = files.filter((file) => {
       if (!file.type.startsWith('image/')) {
-        onError?.(`${file.name} is not an image file`);
-        return false;
+        onError?.(`${file.name} is not an image file`)
+        return false
       }
 
-      const sizeMB = file.size / 1024 / 1024;
+      const sizeMB = file.size / 1024 / 1024
       if (sizeMB > maxSizeMB) {
-        onError?.(`${file.name} exceeds ${maxSizeMB}MB limit`);
-        return false;
+        onError?.(`${file.name} exceeds ${maxSizeMB}MB limit`)
+        return false
       }
 
-      return true;
-    });
+      return true
+    })
 
-    if (validFiles.length === 0) return;
+    if (validFiles.length === 0) return
 
-    setIsCompressing(true);
-    setCompressionProgress(0);
+    setIsCompressing(true)
+    setCompressionProgress(0)
 
-    const newImages: SelectedImage[] = [];
+    const newImages: SelectedImage[] = []
 
     for (let i = 0; i < validFiles.length; i++) {
-      const file = validFiles[i];
+      const file = validFiles[i]
 
       try {
-        let resultBlob: Blob;
-        let compressedSize: number;
-        let width: number;
-        let height: number;
+        let resultBlob: Blob
+        let compressedSize: number
+        let width: number
+        let height: number
 
         if (autoCompress) {
           const result = await compressImage(file, {
             quality: compressionQuality,
             maxWidth: 1920,
             maxHeight: 1920,
-          });
+          })
 
-          resultBlob = result.blob;
-          compressedSize = result.compressedSize;
-          width = result.width;
-          height = result.height;
+          resultBlob = result.blob
+          compressedSize = result.compressedSize
+          width = result.width
+          height = result.height
         } else {
-          resultBlob = file;
-          compressedSize = file.size;
+          resultBlob = file
+          compressedSize = file.size
 
           // Get dimensions
-          const img = await loadImage(file);
-          width = img.naturalWidth;
-          height = img.naturalHeight;
+          const img = await loadImage(file)
+          width = img.naturalWidth
+          height = img.naturalHeight
         }
 
-        const preview = URL.createObjectURL(resultBlob);
+        const preview = URL.createObjectURL(resultBlob)
 
         newImages.push({
           id: `${Date.now()}-${i}`,
@@ -152,54 +150,54 @@ export function ImagePicker({
           compressedSize,
           width,
           height,
-        });
+        })
 
-        setCompressionProgress(((i + 1) / validFiles.length) * 100);
+        setCompressionProgress(((i + 1) / validFiles.length) * 100)
       } catch (error) {
-        console.error('Failed to process image:', error);
-        onError?.(`Failed to process ${file.name}`);
+        logger.error('Failed to process image:', error)
+        onError?.(`Failed to process ${file.name}`)
       }
     }
 
-    setSelectedImages((prev) => [...prev, ...newImages]);
-    setIsCompressing(false);
+    setSelectedImages((prev) => [...prev, ...newImages])
+    setIsCompressing(false)
 
-    onImagesSelected?.([...selectedImages, ...newImages]);
+    onImagesSelected?.([...selectedImages, ...newImages])
 
     // Reset file input
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = ''
     }
-  };
+  }
 
   /**
    * Handle camera capture
    */
   const handleCameraCapture = async () => {
     try {
-      const hasPermission = await camera.requestCameraPermission();
+      const hasPermission = await camera.requestCameraPermission()
       if (!hasPermission) {
-        onError?.('Camera permission denied');
-        return;
+        onError?.('Camera permission denied')
+        return
       }
 
-      const photo = await camera.takePhoto();
+      const photo = await camera.takePhoto()
       if (!photo) {
-        onError?.('Failed to capture photo');
-        return;
+        onError?.('Failed to capture photo')
+        return
       }
 
       // Convert to File object
-      const response = await fetch(photo.uri);
-      const blob = await response.blob();
-      const file = new File([blob], photo.filename, { type: 'image/jpeg' });
+      const response = await fetch(photo.uri)
+      const blob = await response.blob()
+      const file = new File([blob], photo.filename, { type: 'image/jpeg' })
 
-      await processFiles([file]);
+      await processFiles([file])
     } catch (error) {
-      console.error('Camera capture failed:', error);
-      onError?.('Failed to capture photo');
+      logger.error('Camera capture failed:', error)
+      onError?.('Failed to capture photo')
     }
-  };
+  }
 
   /**
    * Handle gallery selection
@@ -207,23 +205,23 @@ export function ImagePicker({
   const handleGallerySelect = async () => {
     if (Capacitor.isNativePlatform()) {
       try {
-        const photo = await camera.pickPhoto();
-        if (!photo) return;
+        const photo = await camera.pickPhoto()
+        if (!photo) return
 
-        const response = await fetch(photo.uri);
-        const blob = await response.blob();
-        const file = new File([blob], photo.filename, { type: 'image/jpeg' });
+        const response = await fetch(photo.uri)
+        const blob = await response.blob()
+        const file = new File([blob], photo.filename, { type: 'image/jpeg' })
 
-        await processFiles([file]);
+        await processFiles([file])
       } catch (error) {
-        console.error('Gallery selection failed:', error);
-        onError?.('Failed to select photo');
+        logger.error('Gallery selection failed:', error)
+        onError?.('Failed to select photo')
       }
     } else {
       // Web: use file input
-      fileInputRef.current?.click();
+      fileInputRef.current?.click()
     }
-  };
+  }
 
   /**
    * Remove image
@@ -232,38 +230,38 @@ export function ImagePicker({
     setSelectedImages((prev) => {
       const updated = prev.filter((img) => {
         if (img.id === id) {
-          URL.revokeObjectURL(img.preview);
-          return false;
+          URL.revokeObjectURL(img.preview)
+          return false
         }
-        return true;
-      });
+        return true
+      })
 
-      onImagesSelected?.(updated);
-      return updated;
-    });
-  };
+      onImagesSelected?.(updated)
+      return updated
+    })
+  }
 
   /**
    * Load image helper
    */
   const loadImage = (file: File): Promise<HTMLImageElement> => {
     return new Promise((resolve, reject) => {
-      const img = new Image();
+      const img = new Image()
       img.onload = () => {
-        URL.revokeObjectURL(img.src);
-        resolve(img);
-      };
-      img.onerror = reject;
-      img.src = URL.createObjectURL(file);
-    });
-  };
+        URL.revokeObjectURL(img.src)
+        resolve(img)
+      }
+      img.onerror = reject
+      img.src = URL.createObjectURL(file)
+    })
+  }
 
   // Cleanup on unmount
   React.useEffect(() => {
     return () => {
-      selectedImages.forEach((img) => URL.revokeObjectURL(img.preview));
-    };
-  }, []);
+      selectedImages.forEach((img) => URL.revokeObjectURL(img.preview))
+    }
+  }, [])
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -311,21 +309,13 @@ export function ImagePicker({
             <span className="text-sm font-medium">
               Selected Images ({selectedImages.length}/{maxImages})
             </span>
-            {autoCompress && (
-              <Badge variant="secondary">
-                Auto-compression enabled
-              </Badge>
-            )}
+            {autoCompress && <Badge variant="secondary">Auto-compression enabled</Badge>}
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
             {selectedImages.map((image) => (
               <div key={image.id} className="group relative aspect-square">
-                <img
-                  src={image.preview}
-                  alt=""
-                  className="h-full w-full rounded-lg object-cover"
-                />
+                <img src={image.preview} alt="" className="h-full w-full rounded-lg object-cover" />
 
                 {/* Overlay */}
                 <div className="absolute inset-0 rounded-lg bg-black/0 transition-colors group-hover:bg-black/50" />
@@ -341,11 +331,11 @@ export function ImagePicker({
                 {/* Image info */}
                 <div className="absolute bottom-0 left-0 right-0 rounded-b-lg bg-black/70 p-2 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100">
                   <div className="flex items-center justify-between">
-                    <span>{image.width} × {image.height}</span>
+                    <span>
+                      {image.width} × {image.height}
+                    </span>
                     {autoCompress && (
-                      <span className="text-green-400">
-                        {formatSize(image.compressedSize)}
-                      </span>
+                      <span className="text-green-400">{formatSize(image.compressedSize)}</span>
                     )}
                   </div>
                   {autoCompress && (
@@ -371,7 +361,7 @@ export function ImagePicker({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default ImagePicker;
+export default ImagePicker

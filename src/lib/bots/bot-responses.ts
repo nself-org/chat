@@ -409,7 +409,9 @@ export class SelectBuilder {
   /**
    * Add multiple options
    */
-  options(...options: { label: string; value: string; description?: string; emoji?: string }[]): this {
+  options(
+    ...options: { label: string; value: string; description?: string; emoji?: string }[]
+  ): this {
     this.select.options.push(...options)
     return this
   }
@@ -516,28 +518,20 @@ export function success(message: string, details?: string): BotResponse {
  * Create an info response
  */
 export function info(title: string, description: string): BotResponse {
-  return response()
-    .embed(embed().color('#3B82F6').title(title).description(description))
-    .build()
+  return response().embed(embed().color('#3B82F6').title(title).description(description)).build()
 }
 
 /**
  * Create a warning response
  */
 export function warning(message: string): BotResponse {
-  return response()
-    .embed(embed().color('#F59E0B').title('Warning').description(message))
-    .build()
+  return response().embed(embed().color('#F59E0B').title('Warning').description(message)).build()
 }
 
 /**
  * Create a confirmation prompt with buttons
  */
-export function confirm(
-  message: string,
-  confirmId: string,
-  cancelId: string
-): BotResponse {
+export function confirm(message: string, confirmId: string, cancelId: string): BotResponse {
   return response()
     .text(message)
     .buttons(
@@ -616,7 +610,10 @@ export function codeBlock(text: string, language = ''): string {
  * Format text as a quote block
  */
 export function blockQuote(text: string): string {
-  return text.split('\n').map((line) => `> ${line}`).join('\n')
+  return text
+    .split('\n')
+    .map((line) => `> ${line}`)
+    .join('\n')
 }
 
 /**

@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/button'
 import { Loader2, LogOut, AlertTriangle, Hash, Lock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 export interface ChannelInfo {
   id: string
   name: string
@@ -53,7 +55,7 @@ export function LeaveChannelModal({
       await onLeave(channel.id)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to leave channel:', error)
+      logger.error('Failed to leave channel:', error)
     } finally {
       setLoading(false)
     }
@@ -68,7 +70,7 @@ export function LeaveChannelModal({
           <div className="flex items-start gap-4">
             <div
               className={cn(
-                'flex items-center justify-center h-10 w-10 rounded-full shrink-0',
+                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
                 'bg-yellow-500/10 text-yellow-600 dark:text-yellow-500'
               )}
             >
@@ -78,7 +80,7 @@ export function LeaveChannelModal({
               <DialogTitle>Leave channel?</DialogTitle>
               <DialogDescription>
                 You are about to leave{' '}
-                <span className="font-medium text-foreground inline-flex items-center gap-1">
+                <span className="inline-flex items-center gap-1 font-medium text-foreground">
                   {channel.isPrivate ? (
                     <Lock className="h-3.5 w-3.5" />
                   ) : (
@@ -94,45 +96,35 @@ export function LeaveChannelModal({
         {/* Warning messages */}
         <div className="space-y-3">
           {channel.isPrivate && (
-            <div className="flex items-start gap-3 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-              <AlertTriangle className="h-4 w-4 text-yellow-600 dark:text-yellow-500 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-3 rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-3">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-yellow-600 dark:text-yellow-500" />
               <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                This is a private channel. You will need to be re-invited to
-                rejoin.
+                This is a private channel. You will need to be re-invited to rejoin.
               </p>
             </div>
           )}
 
           {isLastAdmin && (
-            <div className="flex items-start gap-3 p-3 bg-destructive/10 border border-destructive/20 rounded-lg">
-              <AlertTriangle className="h-4 w-4 text-destructive mt-0.5 shrink-0" />
+            <div className="bg-destructive/10 border-destructive/20 flex items-start gap-3 rounded-lg border p-3">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-destructive" />
               <p className="text-sm text-destructive">
-                You are the last admin of this channel. Leaving will remove all
-                admin privileges. Consider assigning another admin before
-                leaving.
+                You are the last admin of this channel. Leaving will remove all admin privileges.
+                Consider assigning another admin before leaving.
               </p>
             </div>
           )}
 
           <p className="text-sm text-muted-foreground">
-            You will no longer receive notifications from this channel. Your
-            messages will remain visible to other members.
+            You will no longer receive notifications from this channel. Your messages will remain
+            visible to other members.
           </p>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0 mt-4">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={loading}
-          >
+        <DialogFooter className="mt-4 gap-2 sm:gap-0">
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             Cancel
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleLeave}
-            disabled={loading}
-          >
+          <Button variant="destructive" onClick={handleLeave} disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Leave Channel
           </Button>

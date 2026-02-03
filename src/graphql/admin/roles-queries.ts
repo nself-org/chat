@@ -125,10 +125,7 @@ export const GET_DEFAULT_ROLE = gql`
 export const GET_BUILT_IN_ROLES = gql`
   ${ROLE_FRAGMENT}
   query GetBuiltInRoles {
-    nchat_roles(
-      where: { is_built_in: { _eq: true } }
-      order_by: { position: desc }
-    ) {
+    nchat_roles(where: { is_built_in: { _eq: true } }, order_by: { position: desc }) {
       ...RoleFields
     }
   }
@@ -140,10 +137,7 @@ export const GET_BUILT_IN_ROLES = gql`
 export const GET_CUSTOM_ROLES = gql`
   ${ROLE_FRAGMENT}
   query GetCustomRoles {
-    nchat_roles(
-      where: { is_built_in: { _eq: false } }
-      order_by: { position: desc }
-    ) {
+    nchat_roles(where: { is_built_in: { _eq: false } }, order_by: { position: desc }) {
       ...RoleFields
     }
   }
@@ -156,12 +150,7 @@ export const SEARCH_ROLES = gql`
   ${ROLE_FRAGMENT}
   query SearchRoles($search: String!) {
     nchat_roles(
-      where: {
-        _or: [
-          { name: { _ilike: $search } }
-          { description: { _ilike: $search } }
-        ]
-      }
+      where: { _or: [{ name: { _ilike: $search } }, { description: { _ilike: $search } }] }
       order_by: { position: desc }
     ) {
       ...RoleFields
@@ -178,11 +167,7 @@ export const SEARCH_ROLES = gql`
  */
 export const GET_ROLE_MEMBERS = gql`
   ${ROLE_MEMBER_FRAGMENT}
-  query GetRoleMembers(
-    $roleId: uuid!
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetRoleMembers($roleId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_user_roles(
       where: { role_id: { _eq: $roleId } }
       limit: $limit
@@ -205,10 +190,7 @@ export const GET_ROLE_MEMBERS = gql`
 export const GET_USER_ROLES = gql`
   ${ROLE_FRAGMENT}
   query GetUserRoles($userId: uuid!) {
-    nchat_user_roles(
-      where: { user_id: { _eq: $userId } }
-      order_by: { role: { position: desc } }
-    ) {
+    nchat_user_roles(where: { user_id: { _eq: $userId } }, order_by: { role: { position: desc } }) {
       assigned_at
       assigned_by
       expires_at
@@ -224,12 +206,7 @@ export const GET_USER_ROLES = gql`
  */
 export const CHECK_USER_ROLE = gql`
   query CheckUserRole($userId: uuid!, $roleId: uuid!) {
-    nchat_user_roles(
-      where: {
-        user_id: { _eq: $userId }
-        role_id: { _eq: $roleId }
-      }
-    ) {
+    nchat_user_roles(where: { user_id: { _eq: $userId }, role_id: { _eq: $roleId } }) {
       role_id
       assigned_at
     }
@@ -241,11 +218,7 @@ export const CHECK_USER_ROLE = gql`
  */
 export const GET_USERS_WITH_PERMISSION = gql`
   query GetUsersWithPermission($permission: String!) {
-    nchat_user_roles(
-      where: {
-        role: { permissions: { _contains: [$permission] } }
-      }
-    ) {
+    nchat_user_roles(where: { role: { permissions: { _contains: [$permission] } } }) {
       user_id
       user {
         id
@@ -271,11 +244,7 @@ export const GET_USERS_WITH_PERMISSION = gql`
  */
 export const GET_USER_ROLE_HISTORY = gql`
   ${ROLE_HISTORY_FRAGMENT}
-  query GetUserRoleHistory(
-    $userId: uuid!
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetUserRoleHistory($userId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_role_history(
       where: { user_id: { _eq: $userId } }
       order_by: { timestamp: desc }
@@ -297,11 +266,7 @@ export const GET_USER_ROLE_HISTORY = gql`
  */
 export const GET_ROLE_HISTORY = gql`
   ${ROLE_HISTORY_FRAGMENT}
-  query GetRoleHistory(
-    $roleId: uuid!
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetRoleHistory($roleId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_role_history(
       where: { role_id: { _eq: $roleId } }
       order_by: { timestamp: desc }
@@ -324,10 +289,7 @@ export const GET_ROLE_HISTORY = gql`
 export const GET_RECENT_ROLE_CHANGES = gql`
   ${ROLE_HISTORY_FRAGMENT}
   query GetRecentRoleChanges($limit: Int = 20) {
-    nchat_role_history(
-      order_by: { timestamp: desc }
-      limit: $limit
-    ) {
+    nchat_role_history(order_by: { timestamp: desc }, limit: $limit) {
       ...RoleHistoryFields
       user {
         username
@@ -397,9 +359,7 @@ export const GET_ROLE_STATS = gql`
         count
       }
     }
-    with_members: nchat_roles(
-      where: { members: {} }
-    ) {
+    with_members: nchat_roles(where: { members: {} }) {
       id
       members_aggregate {
         aggregate {

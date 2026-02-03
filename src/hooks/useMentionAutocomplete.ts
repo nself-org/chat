@@ -127,9 +127,7 @@ export function useMentionAutocomplete({
   debounceMs = AUTOCOMPLETE_DEBOUNCE_MS,
   maxSuggestions = 10,
 }: UseMentionAutocompleteOptions): UseMentionAutocompleteReturn {
-  const [state, setState] = useState<MentionAutocompleteState>(
-    INITIAL_AUTOCOMPLETE_STATE
-  )
+  const [state, setState] = useState<MentionAutocompleteState>(INITIAL_AUTOCOMPLETE_STATE)
 
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
   const lastTextRef = useRef<string>('')
@@ -252,15 +250,9 @@ export function useMentionAutocomplete({
 
       let newIndex: number
       if (direction === 'up') {
-        newIndex =
-          prev.selectedIndex <= 0
-            ? prev.suggestions.length - 1
-            : prev.selectedIndex - 1
+        newIndex = prev.selectedIndex <= 0 ? prev.suggestions.length - 1 : prev.selectedIndex - 1
       } else {
-        newIndex =
-          prev.selectedIndex >= prev.suggestions.length - 1
-            ? 0
-            : prev.selectedIndex + 1
+        newIndex = prev.selectedIndex >= prev.suggestions.length - 1 ? 0 : prev.selectedIndex + 1
       }
 
       return { ...prev, selectedIndex: newIndex }

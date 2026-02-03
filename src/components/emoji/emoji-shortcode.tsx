@@ -263,9 +263,9 @@ const EMOJI_SHORTCODES: Record<string, string> = {
 }
 
 // Reverse mapping for emoji to shortcode
-const EMOJI_TO_SHORTCODE: Record<string, string> = Object.entries(
-  EMOJI_SHORTCODES
-).reduce<Record<string, string>>((acc, [shortcode, emoji]) => {
+const EMOJI_TO_SHORTCODE: Record<string, string> = Object.entries(EMOJI_SHORTCODES).reduce<
+  Record<string, string>
+>((acc, [shortcode, emoji]) => {
   // Don't overwrite if we already have a shortcode for this emoji
   if (!acc[emoji]) {
     acc[emoji] = shortcode
@@ -385,9 +385,7 @@ export function ShortcodeAutocomplete({
   // Scroll selected item into view
   useEffect(() => {
     if (!containerRef.current) return
-    const selectedElement = containerRef.current.querySelector(
-      `[data-index="${selectedIndex}"]`
-    )
+    const selectedElement = containerRef.current.querySelector(`[data-index="${selectedIndex}"]`)
     selectedElement?.scrollIntoView({ block: 'nearest' })
   }, [selectedIndex])
 
@@ -410,7 +408,7 @@ export function ShortcodeAutocomplete({
         exit={{ opacity: 0, y: 5 }}
         transition={{ duration: 0.1 }}
         className={cn(
-          'absolute z-50 bg-popover border rounded-md shadow-lg overflow-hidden',
+          'absolute z-50 overflow-hidden rounded-md border bg-popover shadow-lg',
           className
         )}
         style={position ? { top: position.top, left: position.left } : undefined}
@@ -424,8 +422,8 @@ export function ShortcodeAutocomplete({
                 data-index={index}
                 onClick={() => handleItemClick(shortcode, emoji)}
                 className={cn(
-                  'flex items-center gap-2 w-full px-2 py-1.5 text-sm rounded-sm',
-                  'hover:bg-accent transition-colors',
+                  'flex w-full items-center gap-2 rounded-sm px-2 py-1.5 text-sm',
+                  'transition-colors hover:bg-accent',
                   index === selectedIndex && 'bg-accent'
                 )}
               >
@@ -460,7 +458,12 @@ export function useShortcodeDetection(options: UseShortcodeDetectionOptions = {}
 
       // Find the start of the potential shortcode
       let start = cursorPosition - 1
-      while (start >= 0 && text[start] !== triggerChar && text[start] !== ' ' && text[start] !== '\n') {
+      while (
+        start >= 0 &&
+        text[start] !== triggerChar &&
+        text[start] !== ' ' &&
+        text[start] !== '\n'
+      ) {
         start--
       }
 

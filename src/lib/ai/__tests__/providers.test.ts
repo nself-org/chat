@@ -132,9 +132,7 @@ describe('OpenAIClient', () => {
       })
 
       const request: ChatCompletionRequest = {
-        messages: [
-          { role: 'user', content: 'Hello' },
-        ],
+        messages: [{ role: 'user', content: 'Hello' }],
       }
 
       const response = await client.createChatCompletion(request)
@@ -228,7 +226,8 @@ describe('OpenAIClient', () => {
       ]
 
       const mockReader = {
-        read: jest.fn()
+        read: jest
+          .fn()
           .mockResolvedValueOnce({ done: false, value: new TextEncoder().encode(streamData[0]) })
           .mockResolvedValueOnce({ done: false, value: new TextEncoder().encode(streamData[1]) })
           .mockResolvedValueOnce({ done: false, value: new TextEncoder().encode(streamData[2]) })
@@ -259,9 +258,11 @@ describe('OpenAIClient', () => {
       client.updateConfig({ enableStreaming: false })
 
       await expect(
-        client.createChatCompletionStream({
-          messages: [{ role: 'user', content: 'Test' }],
-        }).next()
+        client
+          .createChatCompletionStream({
+            messages: [{ role: 'user', content: 'Test' }],
+          })
+          .next()
       ).rejects.toThrow('Streaming is disabled')
     })
   })
@@ -270,12 +271,11 @@ describe('OpenAIClient', () => {
     it('should create embedding', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: [
-            { embedding: Array(1536).fill(0.1) },
-          ],
-          usage: { prompt_tokens: 8, total_tokens: 8 },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [{ embedding: Array(1536).fill(0.1) }],
+            usage: { prompt_tokens: 8, total_tokens: 8 },
+          }),
       })
 
       const embeddings = await client.createEmbedding('test text')
@@ -287,13 +287,11 @@ describe('OpenAIClient', () => {
     it('should create multiple embeddings', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          data: [
-            { embedding: Array(1536).fill(0.1) },
-            { embedding: Array(1536).fill(0.2) },
-          ],
-          usage: { prompt_tokens: 16, total_tokens: 16 },
-        }),
+        json: () =>
+          Promise.resolve({
+            data: [{ embedding: Array(1536).fill(0.1) }, { embedding: Array(1536).fill(0.2) }],
+            usage: { prompt_tokens: 16, total_tokens: 16 },
+          }),
       })
 
       const embeddings = await client.createEmbedding(['text 1', 'text 2'])
@@ -378,12 +376,13 @@ describe('OpenAIClient', () => {
     })
 
     it('should handle timeout', async () => {
-      mockFetch.mockImplementationOnce(() =>
-        new Promise((_, reject) => {
-          const error: any = new Error('Aborted')
-          error.name = 'AbortError'
-          setTimeout(() => reject(error), 100)
-        })
+      mockFetch.mockImplementationOnce(
+        () =>
+          new Promise((_, reject) => {
+            const error: any = new Error('Aborted')
+            error.name = 'AbortError'
+            setTimeout(() => reject(error), 100)
+          })
       )
 
       await expect(
@@ -521,9 +520,7 @@ describe('AnthropicClient', () => {
       })
 
       const request: MessageRequest = {
-        messages: [
-          { role: 'user', content: 'Hello' },
-        ],
+        messages: [{ role: 'user', content: 'Hello' }],
       }
 
       const response = await client.createMessage(request)
@@ -664,7 +661,8 @@ describe('AnthropicClient', () => {
       ]
 
       const mockReader = {
-        read: jest.fn()
+        read: jest
+          .fn()
           .mockResolvedValueOnce({ done: false, value: new TextEncoder().encode(streamData[0]) })
           .mockResolvedValueOnce({ done: false, value: new TextEncoder().encode(streamData[1]) })
           .mockResolvedValueOnce({ done: false, value: new TextEncoder().encode(streamData[2]) })

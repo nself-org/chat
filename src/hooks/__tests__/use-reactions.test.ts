@@ -90,7 +90,9 @@ describe('useMessageReactions', () => {
     // Default mutation mocks - called 2 times for add, remove
     mockUseMutation
       .mockReturnValueOnce([mockAddReaction, { loading: false }] as ReturnType<typeof useMutation>)
-      .mockReturnValueOnce([mockRemoveReaction, { loading: false }] as ReturnType<typeof useMutation>)
+      .mockReturnValueOnce([mockRemoveReaction, { loading: false }] as ReturnType<
+        typeof useMutation
+      >)
   })
 
   // ==========================================================================
@@ -109,15 +111,15 @@ describe('useMessageReactions', () => {
 
       expect(result.current.reactions).toHaveLength(3) // 👍, ❤️, 😂
 
-      const thumbsUp = result.current.reactions.find(r => r.emoji === '👍')
+      const thumbsUp = result.current.reactions.find((r) => r.emoji === '👍')
       expect(thumbsUp?.count).toBe(3)
       expect(thumbsUp?.users).toEqual(['Alice', 'Bob', 'Current User'])
 
-      const heart = result.current.reactions.find(r => r.emoji === '❤️')
+      const heart = result.current.reactions.find((r) => r.emoji === '❤️')
       expect(heart?.count).toBe(1)
       expect(heart?.users).toEqual(['Alice'])
 
-      const laughing = result.current.reactions.find(r => r.emoji === '😂')
+      const laughing = result.current.reactions.find((r) => r.emoji === '😂')
       expect(laughing?.count).toBe(1)
       expect(laughing?.users).toEqual(['Bob'])
     })
@@ -184,15 +186,15 @@ describe('useMessageReactions', () => {
       const { result } = renderHook(() => useMessageReactions('msg-1'))
 
       // Current user reacted to 👍
-      const thumbsUp = result.current.reactions.find(r => r.emoji === '👍')
+      const thumbsUp = result.current.reactions.find((r) => r.emoji === '👍')
       expect(thumbsUp?.userReacted).toBe(true)
 
       // Current user did not react to ❤️
-      const heart = result.current.reactions.find(r => r.emoji === '❤️')
+      const heart = result.current.reactions.find((r) => r.emoji === '❤️')
       expect(heart?.userReacted).toBe(false)
 
       // Current user did not react to 😂
-      const laughing = result.current.reactions.find(r => r.emoji === '😂')
+      const laughing = result.current.reactions.find((r) => r.emoji === '😂')
       expect(laughing?.userReacted).toBe(false)
     })
 
@@ -210,7 +212,7 @@ describe('useMessageReactions', () => {
       const { result } = renderHook(() => useMessageReactions('msg-1'))
 
       // All reactions should show userReacted as false
-      result.current.reactions.forEach(reaction => {
+      result.current.reactions.forEach((reaction) => {
         expect(reaction.userReacted).toBe(false)
       })
     })
@@ -451,7 +453,7 @@ describe('useMessageReactions', () => {
       const { result } = renderHook(() => useMessageReactions('msg-1'))
 
       expect(result.current.reactions).toHaveLength(3)
-      result.current.reactions.forEach(reaction => {
+      result.current.reactions.forEach((reaction) => {
         expect(reaction.userReacted).toBe(true)
         expect(reaction.count).toBe(1)
       })
@@ -511,8 +513,12 @@ describe('useMessageReactions', () => {
 
       // Reset mocks for rerender
       mockUseMutation
-        .mockReturnValueOnce([mockAddReaction, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockRemoveReaction, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockAddReaction, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockRemoveReaction, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       rerender()
 

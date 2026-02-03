@@ -1,13 +1,6 @@
 'use client'
 
-import {
-  useRef,
-  useCallback,
-  useState,
-  useEffect,
-  ReactNode,
-  memo,
-} from 'react'
+import { useRef, useCallback, useState, useEffect, ReactNode, memo } from 'react'
 import { motion, useAnimation, PanInfo } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -279,7 +272,7 @@ const SwipeIndicator = memo(function SwipeIndicator({
       <div
         className={cn(
           'flex h-12 w-12 items-center justify-center',
-          'rounded-full bg-primary/20 backdrop-blur-sm',
+          'bg-primary/20 rounded-full backdrop-blur-sm',
           progress >= 1 && 'bg-primary/30'
         )}
       >

@@ -38,15 +38,10 @@ export interface UnreadInfo {
  */
 export const GET_READ_RECEIPTS = gql`
   query GetReadReceipts($messageId: uuid!) {
-    nchat_read_receipts(
-      where: { message_id: { _eq: $messageId } }
-      order_by: { read_at: asc }
-    ) {
+    nchat_read_receipts(where: { message_id: { _eq: $messageId } }, order_by: { read_at: asc }) {
       ...ReadReceipt
     }
-    nchat_read_receipts_aggregate(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    nchat_read_receipts_aggregate(where: { message_id: { _eq: $messageId } }) {
       aggregate {
         count
       }
@@ -81,10 +76,7 @@ export const GET_MESSAGES_READ_RECEIPTS = gql`
 export const GET_CHANNEL_READ_STATUS = gql`
   query GetChannelReadStatus($channelId: uuid!, $userId: uuid!) {
     nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
       limit: 1
     ) {
       last_read_at
@@ -92,10 +84,7 @@ export const GET_CHANNEL_READ_STATUS = gql`
       channel {
         id
         messages_aggregate(
-          where: {
-            created_at: { _gt: "last_read_at" }
-            is_deleted: { _eq: false }
-          }
+          where: { created_at: { _gt: "last_read_at" }, is_deleted: { _eq: false } }
         ) {
           aggregate {
             count
@@ -119,9 +108,7 @@ export const GET_CHANNEL_READ_STATUS = gql`
  */
 export const GET_ALL_UNREAD_COUNTS = gql`
   query GetAllUnreadCounts($userId: uuid!) {
-    nchat_channel_members(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    nchat_channel_members(where: { user_id: { _eq: $userId } }) {
       channel_id
       last_read_at
       last_read_message_id
@@ -162,10 +149,7 @@ export const GET_ALL_UNREAD_COUNTS = gql`
 export const GET_CHANNEL_READERS = gql`
   query GetChannelReaders($channelId: uuid!, $afterMessageId: uuid) {
     nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        last_read_message_id: { _gte: $afterMessageId }
-      }
+      where: { channel_id: { _eq: $channelId }, last_read_message_id: { _gte: $afterMessageId } }
       order_by: { last_read_at: desc }
     ) {
       user_id
@@ -184,9 +168,7 @@ export const GET_CHANNEL_READERS = gql`
  */
 export const GET_CHANNEL_READ_POSITIONS = gql`
   query GetChannelReadPositions($channelId: uuid!) {
-    nchat_channel_members(
-      where: { channel_id: { _eq: $channelId } }
-    ) {
+    nchat_channel_members(where: { channel_id: { _eq: $channelId } }) {
       user_id
       last_read_at
       last_read_message_id
@@ -207,19 +189,13 @@ export const GET_CHANNEL_READ_POSITIONS = gql`
 export const GET_FIRST_UNREAD_MESSAGE = gql`
   query GetFirstUnreadMessage($channelId: uuid!, $userId: uuid!) {
     nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
       limit: 1
     ) {
       last_read_at
       channel {
         first_unread: messages(
-          where: {
-            created_at: { _gt: "last_read_at" }
-            is_deleted: { _eq: false }
-          }
+          where: { created_at: { _gt: "last_read_at" }, is_deleted: { _eq: false } }
           order_by: { created_at: asc }
           limit: 1
         ) {
@@ -242,13 +218,8 @@ export const MARK_CHANNEL_READ = gql`
   mutation MarkChannelRead($channelId: uuid!, $userId: uuid!) {
     # Get latest message ID first, then update
     update_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
-      _set: {
-        last_read_at: "now()"
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
+      _set: { last_read_at: "now()" }
     ) {
       affected_rows
       returning {
@@ -264,20 +235,10 @@ export const MARK_CHANNEL_READ = gql`
  * Mark channel as read up to specific message
  */
 export const MARK_CHANNEL_READ_TO_MESSAGE = gql`
-  mutation MarkChannelReadToMessage(
-    $channelId: uuid!
-    $userId: uuid!
-    $messageId: uuid!
-  ) {
+  mutation MarkChannelReadToMessage($channelId: uuid!, $userId: uuid!, $messageId: uuid!) {
     update_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
-      _set: {
-        last_read_at: "now()"
-        last_read_message_id: $messageId
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
+      _set: { last_read_at: "now()", last_read_message_id: $messageId }
     ) {
       affected_rows
       returning {
@@ -293,18 +254,9 @@ export const MARK_CHANNEL_READ_TO_MESSAGE = gql`
  * Create a read receipt for a specific message
  */
 export const CREATE_READ_RECEIPT = gql`
-  mutation CreateReadReceipt(
-    $messageId: uuid!
-    $userId: uuid!
-    $channelId: uuid!
-  ) {
+  mutation CreateReadReceipt($messageId: uuid!, $userId: uuid!, $channelId: uuid!) {
     insert_nchat_read_receipts_one(
-      object: {
-        message_id: $messageId
-        user_id: $userId
-        channel_id: $channelId
-        read_at: "now()"
-      }
+      object: { message_id: $messageId, user_id: $userId, channel_id: $channelId, read_at: "now()" }
       on_conflict: {
         constraint: nchat_read_receipts_user_id_message_id_key
         update_columns: [read_at]
@@ -315,14 +267,8 @@ export const CREATE_READ_RECEIPT = gql`
     }
     # Also update channel member's last read
     update_nchat_channel_members(
-      where: {
-        channel_id: { _eq: $channelId }
-        user_id: { _eq: $userId }
-      }
-      _set: {
-        last_read_at: "now()"
-        last_read_message_id: $messageId
-      }
+      where: { channel_id: { _eq: $channelId }, user_id: { _eq: $userId } }
+      _set: { last_read_at: "now()", last_read_message_id: $messageId }
     ) {
       affected_rows
     }
@@ -367,9 +313,7 @@ export const BULK_CREATE_READ_RECEIPTS = gql`
  */
 export const CLEANUP_OLD_READ_RECEIPTS = gql`
   mutation CleanupOldReadReceipts($olderThan: timestamptz!) {
-    delete_nchat_read_receipts(
-      where: { read_at: { _lt: $olderThan } }
-    ) {
+    delete_nchat_read_receipts(where: { read_at: { _lt: $olderThan } }) {
       affected_rows
     }
   }
@@ -406,10 +350,7 @@ export const READ_RECEIPT_SUBSCRIPTION = gql`
  */
 export const MESSAGE_READ_STATUS_SUBSCRIPTION = gql`
   subscription MessageReadStatusSubscription($messageId: uuid!) {
-    nchat_read_receipts(
-      where: { message_id: { _eq: $messageId } }
-      order_by: { read_at: asc }
-    ) {
+    nchat_read_receipts(where: { message_id: { _eq: $messageId } }, order_by: { read_at: asc }) {
       user_id
       read_at
       user {
@@ -425,9 +366,7 @@ export const MESSAGE_READ_STATUS_SUBSCRIPTION = gql`
  */
 export const CHANNEL_READ_POSITIONS_SUBSCRIPTION = gql`
   subscription ChannelReadPositionsSubscription($channelId: uuid!) {
-    nchat_channel_members(
-      where: { channel_id: { _eq: $channelId } }
-    ) {
+    nchat_channel_members(where: { channel_id: { _eq: $channelId } }) {
       user_id
       last_read_at
       last_read_message_id
@@ -444,9 +383,7 @@ export const CHANNEL_READ_POSITIONS_SUBSCRIPTION = gql`
  */
 export const UNREAD_COUNTS_SUBSCRIPTION = gql`
   subscription UnreadCountsSubscription($userId: uuid!) {
-    nchat_channel_members(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    nchat_channel_members(where: { user_id: { _eq: $userId } }) {
       channel_id
       last_read_at
       channel {

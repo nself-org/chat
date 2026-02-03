@@ -1,16 +1,11 @@
 'use client'
 
-import {
-  useState,
-  useRef,
-  useCallback,
-  useEffect,
-  ReactNode,
-  memo,
-} from 'react'
+import { useState, useRef, useCallback, useEffect, ReactNode, memo } from 'react'
 import { motion, useAnimation } from 'framer-motion'
 import { RefreshCw, ArrowDown, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -122,10 +117,7 @@ export const PullToRefresh = memo(function PullToRefresh({
 
         // Apply resistance curve
         const resistance = 0.5
-        const adjustedDistance = Math.min(
-          distance * resistance,
-          maxPullDistance
-        )
+        const adjustedDistance = Math.min(distance * resistance, maxPullDistance)
 
         setPullDistance(adjustedDistance)
 
@@ -164,7 +156,7 @@ export const PullToRefresh = memo(function PullToRefresh({
           setRefreshState('idle')
         }, COMPLETE_DELAY)
       } catch (error) {
-        console.error('Refresh failed:', error)
+        logger.error('Refresh failed:', error)
         setPullDistance(0)
         setRefreshState('idle')
       }
@@ -190,7 +182,7 @@ export const PullToRefresh = memo(function PullToRefresh({
     >
       {/* Pull indicator */}
       <div
-        className="absolute top-0 left-0 right-0 z-10 flex items-center justify-center overflow-hidden"
+        className="absolute left-0 right-0 top-0 z-10 flex items-center justify-center overflow-hidden"
         style={{
           height: pullDistance,
           opacity: indicatorOpacity,
@@ -235,10 +227,10 @@ export const PullToRefresh = memo(function PullToRefresh({
             {refreshState === 'complete'
               ? 'Updated!'
               : refreshState === 'ready'
-              ? 'Release to refresh'
-              : refreshState === 'refreshing'
-              ? 'Refreshing...'
-              : 'Pull to refresh'}
+                ? 'Release to refresh'
+                : refreshState === 'refreshing'
+                  ? 'Refreshing...'
+                  : 'Pull to refresh'}
           </p>
         </motion.div>
       </div>
@@ -301,9 +293,7 @@ export interface UsePullToRefreshReturn {
  * </div>
  * ```
  */
-export function usePullToRefresh(
-  options: UsePullToRefreshOptions
-): UsePullToRefreshReturn {
+export function usePullToRefresh(options: UsePullToRefreshOptions): UsePullToRefreshReturn {
   const {
     onRefresh,
     threshold = DEFAULT_THRESHOLD,
@@ -379,7 +369,7 @@ export function usePullToRefresh(
           setRefreshState('idle')
         }, COMPLETE_DELAY)
       } catch (error) {
-        console.error('Refresh failed:', error)
+        logger.error('Refresh failed:', error)
         setPullDistance(0)
         setRefreshState('idle')
       }

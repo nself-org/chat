@@ -232,12 +232,7 @@ export const MobileDatePicker = memo(function MobileDatePicker({
       </TouchButton>
 
       {/* Bottom sheet with calendar */}
-      <BottomSheet
-        isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
-        snapPoints={[0.75]}
-        showHandle
-      >
+      <BottomSheet isOpen={isOpen} onClose={() => setIsOpen(false)} snapPoints={[0.75]} showHandle>
         <div className="space-y-4">
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -258,12 +253,7 @@ export const MobileDatePicker = memo(function MobileDatePicker({
 
           {/* Today button */}
           {highlightToday && (
-            <TouchButton
-              onClick={goToToday}
-              variant="secondary"
-              size="sm"
-              className="w-full"
-            >
+            <TouchButton onClick={goToToday} variant="secondary" size="sm" className="w-full">
               Today
             </TouchButton>
           )}
@@ -301,7 +291,7 @@ export const MobileDatePicker = memo(function MobileDatePicker({
                       'touch-manipulation',
                       !day.isCurrentMonth && 'text-muted-foreground/40',
                       day.isCurrentMonth && !disabled && 'hover:bg-accent',
-                      isSelected && 'bg-primary text-primary-foreground hover:bg-primary/90',
+                      isSelected && 'text-primary-foreground hover:bg-primary/90 bg-primary',
                       isToday && !isSelected && 'border-2 border-primary',
                       disabled && 'cursor-not-allowed opacity-30'
                     )}

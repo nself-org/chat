@@ -9,22 +9,13 @@
 
 import { useEffect, useState, useCallback, memo } from 'react'
 import { motion } from 'framer-motion'
-import {
-  Play,
-  Pause,
-  Send,
-  Trash2,
-  RefreshCw,
-  Loader2,
-} from 'lucide-react'
+import { Play, Pause, Send, Trash2, RefreshCw, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  useVoicePlayer,
-  generateWaveform,
-  formatDuration,
-} from '@/lib/voice'
+import { useVoicePlayer, generateWaveform, formatDuration } from '@/lib/voice'
 import { WaveformVisualizer } from './waveform-visualizer'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -104,7 +95,7 @@ export const VoiceMessagePreview = memo(function VoiceMessagePreview({
         const data = await generateWaveform(source, 60)
         setWaveform(data.amplitudes)
       } catch (error) {
-        console.error('Failed to generate waveform:', error)
+        logger.error('Failed to generate waveform:', error)
         // Use default bars
         setWaveform(new Array(60).fill(0.5))
       } finally {
@@ -184,10 +175,7 @@ export const VoiceMessagePreview = memo(function VoiceMessagePreview({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 10 }}
-      className={cn(
-        'flex flex-col gap-4 rounded-lg border bg-card p-4',
-        className
-      )}
+      className={cn('flex flex-col gap-4 rounded-lg border bg-card p-4', className)}
     >
       {/* Title */}
       <div className="flex items-center justify-between">
@@ -198,7 +186,7 @@ export const VoiceMessagePreview = memo(function VoiceMessagePreview({
       </div>
 
       {/* Waveform */}
-      <div className="rounded-lg bg-muted/50 p-3">
+      <div className="bg-muted/50 rounded-lg p-3">
         {isLoadingWaveform ? (
           <div className="flex h-12 items-center justify-center">
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
@@ -231,7 +219,7 @@ export const VoiceMessagePreview = memo(function VoiceMessagePreview({
           size="icon"
           onClick={handleDelete}
           disabled={isSending}
-          className="h-10 w-10 rounded-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+          className="hover:bg-destructive/10 h-10 w-10 rounded-full text-destructive hover:text-destructive"
         >
           <Trash2 className="h-4 w-4" />
         </Button>
@@ -264,7 +252,7 @@ export const VoiceMessagePreview = memo(function VoiceMessagePreview({
             ) : isPlaying ? (
               <Pause className="h-5 w-5" />
             ) : (
-              <Play className="h-5 w-5 ml-0.5" />
+              <Play className="ml-0.5 h-5 w-5" />
             )}
           </Button>
         </div>
@@ -277,11 +265,7 @@ export const VoiceMessagePreview = memo(function VoiceMessagePreview({
           disabled={isSending || !onSend}
           className="h-10 w-10 rounded-full"
         >
-          {isSending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Send className="h-4 w-4" />
-          )}
+          {isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
         </Button>
       </div>
     </motion.div>
@@ -330,10 +314,7 @@ const CompactPreview = memo(function CompactPreview({
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className={cn(
-        'flex items-center gap-2 rounded-full border bg-card px-3 py-2',
-        className
-      )}
+      className={cn('flex items-center gap-2 rounded-full border bg-card px-3 py-2', className)}
     >
       {/* Delete button */}
       <Button
@@ -341,7 +322,7 @@ const CompactPreview = memo(function CompactPreview({
         size="icon"
         onClick={onDelete}
         disabled={isSending}
-        className="h-8 w-8 rounded-full text-destructive hover:bg-destructive/10"
+        className="hover:bg-destructive/10 h-8 w-8 rounded-full text-destructive"
       >
         <Trash2 className="h-4 w-4" />
       </Button>
@@ -359,7 +340,7 @@ const CompactPreview = memo(function CompactPreview({
         ) : isPlaying ? (
           <Pause className="h-4 w-4" />
         ) : (
-          <Play className="h-4 w-4 ml-0.5" />
+          <Play className="ml-0.5 h-4 w-4" />
         )}
       </Button>
 
@@ -392,11 +373,7 @@ const CompactPreview = memo(function CompactPreview({
         disabled={isSending || !onSend}
         className="h-8 w-8 rounded-full"
       >
-        {isSending ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Send className="h-4 w-4" />
-        )}
+        {isSending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
       </Button>
     </motion.div>
   )
@@ -448,10 +425,7 @@ const CardPreview = memo(function CardPreview({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
-      className={cn(
-        'overflow-hidden rounded-xl border bg-card shadow-lg',
-        className
-      )}
+      className={cn('overflow-hidden rounded-xl border bg-card shadow-lg', className)}
     >
       {/* Header */}
       <div className="flex items-center justify-between border-b px-4 py-3">
@@ -461,15 +435,13 @@ const CardPreview = memo(function CardPreview({
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
           </span>
-          <span className="ml-1 font-mono text-sm tabular-nums">
-            {formatDuration(duration)}
-          </span>
+          <span className="ml-1 font-mono text-sm tabular-nums">{formatDuration(duration)}</span>
         </div>
       </div>
 
       {/* Waveform */}
       <div className="p-4">
-        <div className="rounded-lg bg-muted/30 p-4">
+        <div className="bg-muted/30 rounded-lg p-4">
           {isLoadingWaveform ? (
             <div className="flex h-16 items-center justify-center">
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -505,19 +477,14 @@ const CardPreview = memo(function CardPreview({
             size="sm"
             onClick={onDelete}
             disabled={isSending}
-            className="text-destructive hover:bg-destructive/10 hover:text-destructive"
+            className="hover:bg-destructive/10 text-destructive hover:text-destructive"
           >
             <Trash2 className="mr-1.5 h-4 w-4" />
             Delete
           </Button>
 
           {onReRecord && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onReRecord}
-              disabled={isSending}
-            >
+            <Button variant="ghost" size="sm" onClick={onReRecord} disabled={isSending}>
               <RefreshCw className="mr-1.5 h-4 w-4" />
               Re-record
             </Button>
@@ -538,15 +505,11 @@ const CardPreview = memo(function CardPreview({
             ) : isPlaying ? (
               <Pause className="h-4 w-4" />
             ) : (
-              <Play className="h-4 w-4 ml-0.5" />
+              <Play className="ml-0.5 h-4 w-4" />
             )}
           </Button>
 
-          <Button
-            onClick={onSend}
-            disabled={isSending || !onSend}
-            className="gap-1.5"
-          >
+          <Button onClick={onSend} disabled={isSending || !onSend} className="gap-1.5">
             {isSending ? (
               <Loader2 className="h-4 w-4 animate-spin" />
             ) : (

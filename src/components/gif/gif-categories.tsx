@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * GIF Categories Component
@@ -15,7 +15,7 @@
  * ```
  */
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react'
 import {
   Smile,
   Film,
@@ -30,10 +30,10 @@ import {
   Sparkles,
   Star,
   Loader2,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { GifCategory, GifCategoriesProps } from '@/types/gif';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import type { GifCategory, GifCategoriesProps } from '@/types/gif'
 
 // ============================================================================
 // Category Icons Mapping
@@ -54,14 +54,14 @@ const CATEGORY_ICONS: Record<string, React.ComponentType<{ className?: string }>
   celebrities: Star,
   // Fallback
   default: Sparkles,
-};
+}
 
 /**
  * Get icon component for a category
  */
 function getCategoryIcon(categoryId: string): React.ComponentType<{ className?: string }> {
-  const normalizedId = categoryId.toLowerCase().replace(/[^a-z]/g, '');
-  return CATEGORY_ICONS[normalizedId] || CATEGORY_ICONS.default;
+  const normalizedId = categoryId.toLowerCase().replace(/[^a-z]/g, '')
+  return CATEGORY_ICONS[normalizedId] || CATEGORY_ICONS.default
 }
 
 // ============================================================================
@@ -69,29 +69,26 @@ function getCategoryIcon(categoryId: string): React.ComponentType<{ className?: 
 // ============================================================================
 
 interface CategoryCardProps {
-  category: GifCategory;
-  onClick: (category: GifCategory) => void;
+  category: GifCategory
+  onClick: (category: GifCategory) => void
 }
 
-const CategoryCard = memo(function CategoryCard({
-  category,
-  onClick,
-}: CategoryCardProps) {
-  const Icon = getCategoryIcon(category.id);
+const CategoryCard = memo(function CategoryCard({ category, onClick }: CategoryCardProps) {
+  const Icon = getCategoryIcon(category.id)
 
   const handleClick = useCallback(() => {
-    onClick(category);
-  }, [category, onClick]);
+    onClick(category)
+  }, [category, onClick])
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onClick(category);
+        e.preventDefault()
+        onClick(category)
       }
     },
     [category, onClick]
-  );
+  )
 
   return (
     <button
@@ -100,7 +97,7 @@ const CategoryCard = memo(function CategoryCard({
       onKeyDown={handleKeyDown}
       className={cn(
         'relative flex flex-col items-center justify-center',
-        'p-3 rounded-xl',
+        'rounded-xl p-3',
         'bg-muted/30 hover:bg-muted/50',
         'border border-transparent hover:border-border',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-1',
@@ -113,7 +110,7 @@ const CategoryCard = memo(function CategoryCard({
       {category.previewGif && (
         <div
           className={cn(
-            'absolute inset-0 rounded-xl overflow-hidden',
+            'absolute inset-0 overflow-hidden rounded-xl',
             'opacity-0 group-hover:opacity-30',
             'transition-opacity duration-300'
           )}
@@ -121,7 +118,7 @@ const CategoryCard = memo(function CategoryCard({
           <img
             src={category.previewGif.previewUrl}
             alt=""
-            className="w-full h-full object-cover"
+            className="h-full w-full object-cover"
             loading="lazy"
           />
         </div>
@@ -131,7 +128,7 @@ const CategoryCard = memo(function CategoryCard({
       <div
         className={cn(
           'relative z-10',
-          'p-2 rounded-full',
+          'rounded-full p-2',
           'bg-primary/10 group-hover:bg-primary/20',
           'transition-colors duration-200'
         )}
@@ -144,14 +141,14 @@ const CategoryCard = memo(function CategoryCard({
         className={cn(
           'relative z-10 mt-2',
           'text-xs font-medium text-foreground',
-          'truncate max-w-full px-1'
+          'max-w-full truncate px-1'
         )}
       >
         {category.name}
       </span>
     </button>
-  );
-});
+  )
+})
 
 // ============================================================================
 // GIF Categories Grid
@@ -165,10 +162,10 @@ export const GifCategories = memo(function GifCategories({
 }: GifCategoriesProps) {
   const handleSelect = useCallback(
     (category: GifCategory) => {
-      onSelect(category);
+      onSelect(category)
     },
     [onSelect]
-  );
+  )
 
   // Loading state
   if (loading) {
@@ -178,35 +175,26 @@ export const GifCategories = memo(function GifCategories({
           <CategoryCardSkeleton key={i} />
         ))}
       </div>
-    );
+    )
   }
 
   // Empty state
   if (categories.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex flex-col items-center justify-center py-8 text-center',
-          className
-        )}
-      >
+      <div className={cn('flex flex-col items-center justify-center py-8 text-center', className)}>
         <p className="text-sm text-muted-foreground">No categories available</p>
       </div>
-    );
+    )
   }
 
   return (
     <div className={cn('grid grid-cols-3 gap-2', className)}>
       {categories.map((category) => (
-        <CategoryCard
-          key={category.id}
-          category={category}
-          onClick={handleSelect}
-        />
+        <CategoryCard key={category.id} category={category} onClick={handleSelect} />
       ))}
     </div>
-  );
-});
+  )
+})
 
 // ============================================================================
 // Category Card Skeleton
@@ -217,15 +205,15 @@ function CategoryCardSkeleton() {
     <div
       className={cn(
         'flex flex-col items-center justify-center',
-        'p-3 rounded-xl',
+        'rounded-xl p-3',
         'bg-muted/30',
         'min-h-[80px]'
       )}
     >
       <Skeleton className="h-9 w-9 rounded-full" />
-      <Skeleton className="h-3 w-16 mt-2 rounded" />
+      <Skeleton className="mt-2 h-3 w-16 rounded" />
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -233,10 +221,10 @@ function CategoryCardSkeleton() {
 // ============================================================================
 
 export interface GifCategoryPillsProps {
-  categories: GifCategory[];
-  selectedCategory?: string | null;
-  onSelect: (category: GifCategory) => void;
-  className?: string;
+  categories: GifCategory[]
+  selectedCategory?: string | null
+  onSelect: (category: GifCategory) => void
+  className?: string
 }
 
 export const GifCategoryPills = memo(function GifCategoryPills({
@@ -249,43 +237,43 @@ export const GifCategoryPills = memo(function GifCategoryPills({
     <div
       className={cn(
         'flex items-center gap-1.5 overflow-x-auto',
-        'py-1 -mx-1 px-1',
+        '-mx-1 px-1 py-1',
         'scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent',
         className
       )}
     >
       {categories.slice(0, 10).map((category) => {
-        const isSelected = selectedCategory === category.id;
+        const isSelected = selectedCategory === category.id
         return (
           <button
             key={category.id}
             type="button"
             onClick={() => onSelect(category)}
             className={cn(
-              'flex-shrink-0 px-3 py-1.5 rounded-full',
-              'text-xs font-medium whitespace-nowrap',
+              'flex-shrink-0 rounded-full px-3 py-1.5',
+              'whitespace-nowrap text-xs font-medium',
               'transition-colors duration-200',
               'focus:outline-none focus:ring-2 focus:ring-ring',
               isSelected
-                ? 'bg-primary text-primary-foreground'
+                ? 'text-primary-foreground bg-primary'
                 : 'bg-muted/50 text-foreground hover:bg-muted'
             )}
           >
             {category.name}
           </button>
-        );
+        )
       })}
     </div>
-  );
-});
+  )
+})
 
 // ============================================================================
 // Popular Categories (Static list for quick access)
 // ============================================================================
 
 export interface PopularCategoriesProps {
-  onSelect: (query: string) => void;
-  className?: string;
+  onSelect: (query: string) => void
+  className?: string
 }
 
 const POPULAR_SEARCHES = [
@@ -301,14 +289,12 @@ const POPULAR_SEARCHES = [
   { emoji: '🙄', label: 'Eye Roll', query: 'eye roll annoyed' },
   { emoji: '💪', label: 'Strong', query: 'strong muscles' },
   { emoji: '🤦', label: 'Facepalm', query: 'facepalm' },
-];
+]
 
 export function PopularCategories({ onSelect, className }: PopularCategoriesProps) {
   return (
     <div className={cn('space-y-2', className)}>
-      <span className="text-xs font-medium text-muted-foreground px-1">
-        Popular Searches
-      </span>
+      <span className="px-1 text-xs font-medium text-muted-foreground">Popular Searches</span>
       <div className="grid grid-cols-4 gap-1.5">
         {POPULAR_SEARCHES.map((item) => (
           <button
@@ -317,21 +303,21 @@ export function PopularCategories({ onSelect, className }: PopularCategoriesProp
             onClick={() => onSelect(item.query)}
             className={cn(
               'flex flex-col items-center justify-center',
-              'p-2 rounded-lg',
+              'rounded-lg p-2',
               'bg-muted/30 hover:bg-muted/50',
               'transition-colors duration-200',
               'focus:outline-none focus:ring-2 focus:ring-ring'
             )}
           >
             <span className="text-lg">{item.emoji}</span>
-            <span className="text-[10px] text-muted-foreground mt-0.5 truncate max-w-full">
+            <span className="mt-0.5 max-w-full truncate text-[10px] text-muted-foreground">
               {item.label}
             </span>
           </button>
         ))}
       </div>
     </div>
-  );
+  )
 }
 
-export default GifCategories;
+export default GifCategories

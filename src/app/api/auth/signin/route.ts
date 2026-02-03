@@ -1,30 +1,38 @@
+/**
+ * Sign In API Route
+ *
+ * Handles email/password authentication.
+ * In production, proxies to Nhost Auth.
+ * In development, uses mock authentication.
+ */
+
 import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import { Pool } from 'pg'
-import {
-  withErrorHandler,
-  withRateLimit,
-  compose,
-} from '@/lib/api/middleware'
+import { withErrorHandler, withRateLimit, compose } from '@/lib/api/middleware'
 import {
   successResponse,
   unauthorizedResponse,
   badRequestResponse,
   internalErrorResponse,
 } from '@/lib/api/response'
+import { authConfig, validatePassword, isEmailDomainAllowed } from '@/config/auth.config'
 
-// Lazy initialization of database connection and JWT_SECRET
-// This prevents build-time validation errors while still ensuring runtime safety
+import { logger } from '@/lib/logger'
+
+// ============================================================================
+// Database Configuration (Production Only)
+// ============================================================================
+
 let pool: Pool | null = null
 let JWT_SECRET: string | null = null
 
 function initializeDatabaseConnection() {
   if (pool) return pool
 
-  // Skip validation during build
-  if (process.env.SKIP_ENV_VALIDATION === 'true') {
-    console.warn('SKIP_ENV_VALIDATION is true, skipping database initialization')
+  // Skip in dev mode or during build
+  if (authConfig.useDevAuth || process.env.SKIP_ENV_VALIDATION === 'true') {
     return null
   }
 
@@ -37,20 +45,18 @@ function initializeDatabaseConnection() {
   }
 
   // Validate required environment variables at runtime
-  if (process.env.NODE_ENV === 'production') {
+  if (authConfig.isProduction) {
     for (const [key, value] of Object.entries(requiredEnvVars)) {
       if (!value) {
         throw new Error(`FATAL: ${key} environment variable must be set in production`)
       }
     }
 
-    // Validate DATABASE_PASSWORD minimum length
     if (requiredEnvVars.DATABASE_PASSWORD!.length < 16) {
       throw new Error('FATAL: DATABASE_PASSWORD must be at least 16 characters in production')
     }
   }
 
-  // Create PostgreSQL connection pool
   pool = new Pool({
     host: process.env.DATABASE_HOST!,
     port: parseInt(process.env.DATABASE_PORT || '5432'),
@@ -65,10 +71,8 @@ function initializeDatabaseConnection() {
 function getJWTSecret() {
   if (JWT_SECRET) return JWT_SECRET
 
-  // Skip validation during build
-  if (process.env.SKIP_ENV_VALIDATION === 'true') {
-    console.warn('SKIP_ENV_VALIDATION is true, using dummy JWT_SECRET')
-    return 'dummy-secret-for-build-only-must-be-at-least-32-chars'
+  if (authConfig.useDevAuth || process.env.SKIP_ENV_VALIDATION === 'true') {
+    return 'dev-secret-for-testing-only-not-for-production-use'
   }
 
   JWT_SECRET = process.env.JWT_SECRET || null
@@ -82,18 +86,122 @@ function getJWTSecret() {
   return JWT_SECRET
 }
 
+// ============================================================================
+// Rate Limiting
+// ============================================================================
+
 // Rate limit: 5 login attempts per 15 minutes per IP
-const RATE_LIMIT = { limit: 5, window: 15 * 60 }
+const RATE_LIMIT = {
+  limit: authConfig.security.maxLoginAttempts,
+  window: authConfig.security.lockoutDurationMinutes * 60,
+}
+
+// ============================================================================
+// Request Handler
+// ============================================================================
 
 async function handleSignIn(request: NextRequest): Promise<NextResponse> {
   try {
-    const { email, password } = await request.json()
+    const body = await request.json()
+    const { email, password } = body
 
     if (!email || !password) {
       return badRequestResponse('Email and password are required', 'MISSING_CREDENTIALS')
     }
 
-    // Initialize database connection (lazy)
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return badRequestResponse('Invalid email format', 'INVALID_EMAIL')
+    }
+
+    // Check email domain restrictions (production only)
+    if (!authConfig.useDevAuth && !isEmailDomainAllowed(email)) {
+      return badRequestResponse('Email domain is not allowed', 'DOMAIN_NOT_ALLOWED')
+    }
+
+    // ==========================================================================
+    // Development Mode: Mock Authentication
+    // ==========================================================================
+
+    if (authConfig.useDevAuth) {
+      const normalizedEmail = email.toLowerCase().trim()
+
+      // Find user from predefined list
+      const predefinedUser = authConfig.devAuth.availableUsers.find(
+        (u) => u.email.toLowerCase() === normalizedEmail
+      )
+
+      if (predefinedUser) {
+        const jwtSecret = getJWTSecret()
+
+        const accessToken = jwt.sign(
+          {
+            sub: predefinedUser.id,
+            email: predefinedUser.email,
+            username: predefinedUser.username,
+            displayName: predefinedUser.displayName,
+            role: predefinedUser.role,
+          },
+          jwtSecret,
+          { expiresIn: '24h' }
+        )
+
+        const refreshToken = jwt.sign({ sub: predefinedUser.id }, jwtSecret, { expiresIn: '30d' })
+
+        return successResponse({
+          user: {
+            id: predefinedUser.id,
+            email: predefinedUser.email,
+            username: predefinedUser.username,
+            displayName: predefinedUser.displayName,
+            avatarUrl: predefinedUser.avatarUrl,
+            role: predefinedUser.role,
+          },
+          accessToken,
+          refreshToken,
+          expiresIn: 24 * 60 * 60, // 24 hours in seconds
+        })
+      }
+
+      // For non-predefined users in dev mode, create a temporary user
+      const devUser = {
+        id: `dev-user-${Date.now()}`,
+        email: normalizedEmail,
+        username: normalizedEmail.split('@')[0],
+        displayName: normalizedEmail.split('@')[0],
+        role: 'member' as const,
+        avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${normalizedEmail}`,
+      }
+
+      const jwtSecret = getJWTSecret()
+
+      const accessToken = jwt.sign(
+        {
+          sub: devUser.id,
+          email: devUser.email,
+          username: devUser.username,
+          displayName: devUser.displayName,
+          role: devUser.role,
+        },
+        jwtSecret,
+        { expiresIn: '24h' }
+      )
+
+      const refreshToken = jwt.sign({ sub: devUser.id }, jwtSecret, { expiresIn: '30d' })
+
+      return successResponse({
+        user: devUser,
+        accessToken,
+        refreshToken,
+        expiresIn: 24 * 60 * 60,
+      })
+    }
+
+    // ==========================================================================
+    // Production Mode: Database Authentication
+    // ==========================================================================
+
     const dbPool = initializeDatabaseConnection()
     if (!dbPool) {
       return internalErrorResponse('Database connection not available')
@@ -105,8 +213,9 @@ async function handleSignIn(request: NextRequest): Promise<NextResponse> {
         au.id as auth_id,
         au.email,
         au.encrypted_password,
-        au.given_name,
-        au.family_name,
+        au.email_verified,
+        au.mfa_enabled,
+        au.mfa_ticket,
         nu.id,
         nu.username,
         nu.display_name,
@@ -138,7 +247,34 @@ async function handleSignIn(request: NextRequest): Promise<NextResponse> {
       return unauthorizedResponse('Invalid email or password')
     }
 
-    // Get JWT secret (lazy)
+    // Check if email verification is required
+    if (authConfig.security.requireEmailVerification && !user.email_verified) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Email verification required',
+          errorCode: 'EMAIL_NOT_VERIFIED',
+          requiresEmailVerification: true,
+        },
+        { status: 403 }
+      )
+    }
+
+    // Check if MFA is enabled
+    if (user.mfa_enabled) {
+      // Generate MFA ticket
+      const mfaTicket = jwt.sign({ sub: user.id, mfa: true }, getJWTSecret(), { expiresIn: '5m' })
+
+      return NextResponse.json(
+        {
+          success: true,
+          requires2FA: true,
+          mfaTicket,
+        },
+        { status: 200 }
+      )
+    }
+
     const jwtSecret = getJWTSecret()
 
     // Generate JWT tokens
@@ -152,17 +288,17 @@ async function handleSignIn(request: NextRequest): Promise<NextResponse> {
         role: user.role || 'member',
       },
       jwtSecret,
-      { expiresIn: '24h' }
+      { expiresIn: `${authConfig.security.jwtExpiresInMinutes}m` }
     )
 
-    const refreshToken = jwt.sign(
-      { sub: user.id },
-      jwtSecret,
-      { expiresIn: '30d' }
-    )
+    const refreshToken = jwt.sign({ sub: user.id }, jwtSecret, {
+      expiresIn: `${authConfig.security.refreshTokenExpiresInDays}d`,
+    })
 
-    // Return user data and tokens
-    const responseData = {
+    // Update last login timestamp
+    await dbPool.query(`UPDATE nchat.nchat_users SET last_seen_at = NOW() WHERE id = $1`, [user.id])
+
+    return successResponse({
       user: {
         id: user.id,
         email: user.email,
@@ -171,20 +307,20 @@ async function handleSignIn(request: NextRequest): Promise<NextResponse> {
         avatarUrl: user.avatar_url,
         role: user.role || 'member',
         status: user.status || 'online',
+        emailVerified: user.email_verified,
       },
       accessToken,
       refreshToken,
-    }
-
-    return successResponse(responseData)
+      expiresIn: authConfig.security.jwtExpiresInMinutes * 60,
+    })
   } catch (error) {
-    console.error('Sign in error:', error)
+    logger.error('Sign in error:', error)
     return internalErrorResponse('Sign in failed')
   }
 }
 
-// Apply rate limiting and error handling
-export const POST = compose(
-  withErrorHandler,
-  withRateLimit(RATE_LIMIT)
-)(handleSignIn)
+// ============================================================================
+// Export with Middleware
+// ============================================================================
+
+export const POST = compose(withErrorHandler, withRateLimit(RATE_LIMIT))(handleSignIn)

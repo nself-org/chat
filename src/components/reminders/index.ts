@@ -37,10 +37,7 @@ export {
   QuickRemindButtons,
   MessageQuickRemind,
 } from './quick-remind'
-export {
-  ReminderTimePicker,
-  CompactTimePicker,
-} from './reminder-time-picker'
+export { ReminderTimePicker, CompactTimePicker } from './reminder-time-picker'
 
 // Types
 export type { RemindersListProps } from './reminders-list'
@@ -58,7 +55,4 @@ export type {
   QuickRemindButtonsProps,
   MessageQuickRemindProps,
 } from './quick-remind'
-export type {
-  ReminderTimePickerProps,
-  CompactTimePickerProps,
-} from './reminder-time-picker'
+export type { ReminderTimePickerProps, CompactTimePickerProps } from './reminder-time-picker'

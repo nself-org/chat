@@ -333,13 +333,11 @@ export function useRemoveReaction(): UseRemoveReactionReturn {
               id: cache.identify({ __typename: 'nchat_messages', id: messageId }),
               fields: {
                 reactions(existingReactions = [], { readField }) {
-                  return existingReactions.filter(
-                    (reactionRef: { __ref: string }) => {
-                      const reactionEmoji = readField('emoji', reactionRef)
-                      const reactionUserId = readField('user_id', reactionRef)
-                      return !(reactionEmoji === emoji && reactionUserId === user.id)
-                    }
-                  )
+                  return existingReactions.filter((reactionRef: { __ref: string }) => {
+                    const reactionEmoji = readField('emoji', reactionRef)
+                    const reactionUserId = readField('user_id', reactionRef)
+                    return !(reactionEmoji === emoji && reactionUserId === user.id)
+                  })
                 },
               },
             })
@@ -364,8 +362,7 @@ export function useRemoveReaction(): UseRemoveReactionReturn {
  */
 export function useToggleReaction(): UseToggleReactionReturn {
   const { user } = useAuth()
-  const [addReactionMutation, { loading: addLoading, error: addError }] =
-    useMutation(ADD_REACTION)
+  const [addReactionMutation, { loading: addLoading, error: addError }] = useMutation(ADD_REACTION)
   const [removeReactionMutation, { loading: removeLoading, error: removeError }] =
     useMutation(REMOVE_REACTION)
   const [checkReaction] = useLazyQuery(CHECK_USER_REACTION)
@@ -451,8 +448,7 @@ export function useToggleReaction(): UseToggleReactionReturn {
 export function useReactions(): UseReactionsReturn {
   const { user } = useAuth()
 
-  const [addMutation, { loading: addLoading, error: addError }] =
-    useMutation(ADD_REACTION)
+  const [addMutation, { loading: addLoading, error: addError }] = useMutation(ADD_REACTION)
   const [removeMutation, { loading: removeLoading, error: removeError }] =
     useMutation(REMOVE_REACTION)
   const [clearMutation, { loading: clearLoading, error: clearError }] =

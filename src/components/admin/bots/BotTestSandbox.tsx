@@ -26,13 +26,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Select,
   SelectContent,
@@ -128,12 +122,7 @@ const TEST_SCENARIOS = [
   },
 ]
 
-export function BotTestSandbox({
-  botId,
-  botName,
-  botCode,
-  onTest,
-}: BotTestSandboxProps) {
+export function BotTestSandbox({ botId, botName, botCode, onTest }: BotTestSandboxProps) {
   const [eventType, setEventType] = useState('message_created')
   const [userId, setUserId] = useState('user-test-1')
   const [channelId, setChannelId] = useState('channel-test-1')
@@ -192,10 +181,7 @@ export function BotTestSandbox({
           }
 
       setTestResult(result)
-      setTestHistory((prev) => [
-        { event, result, timestamp: new Date() },
-        ...prev.slice(0, 9),
-      ])
+      setTestHistory((prev) => [{ event, result, timestamp: new Date() }, ...prev.slice(0, 9)])
     } catch (error: any) {
       setTestResult({
         success: false,
@@ -218,13 +204,11 @@ export function BotTestSandbox({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold flex items-center gap-2">
+        <h2 className="flex items-center gap-2 text-2xl font-bold">
           <Bug className="h-6 w-6" />
           Test Sandbox - {botName}
         </h2>
-        <p className="text-muted-foreground">
-          Send test events to your bot and inspect responses
-        </p>
+        <p className="text-muted-foreground">Send test events to your bot and inspect responses</p>
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -337,11 +321,7 @@ export function BotTestSandbox({
 
               {/* Actions */}
               <div className="flex gap-2">
-                <Button
-                  onClick={runTest}
-                  disabled={isRunning}
-                  className="flex-1"
-                >
+                <Button onClick={runTest} disabled={isRunning} className="flex-1">
                   {isRunning ? (
                     <>
                       <Clock className="mr-2 h-4 w-4 animate-spin" />
@@ -412,7 +392,7 @@ export function BotTestSandbox({
                         )}
                       </div>
                     ) : (
-                      <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4">
+                      <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4">
                         <div className="flex items-start gap-2">
                           <AlertCircle className="h-5 w-5 text-destructive" />
                           <div>
@@ -438,9 +418,7 @@ export function BotTestSandbox({
                           <div key={i} className="text-muted-foreground">
                             {log}
                           </div>
-                        )) || (
-                          <p className="text-muted-foreground">No debug logs available</p>
-                        )}
+                        )) || <p className="text-muted-foreground">No debug logs available</p>}
                       </div>
                     </ScrollArea>
                   </CardContent>
@@ -457,9 +435,7 @@ export function BotTestSandbox({
                       <div className="space-y-2">
                         {testResult.stateChanges.map((change, i) => (
                           <div key={i} className="rounded-lg border p-3">
-                            <pre className="text-sm">
-                              {JSON.stringify(change, null, 2)}
-                            </pre>
+                            <pre className="text-sm">{JSON.stringify(change, null, 2)}</pre>
                           </div>
                         ))}
                       </div>
@@ -494,10 +470,7 @@ export function BotTestSandbox({
           <CardContent>
             <div className="space-y-2">
               {testHistory.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex items-center justify-between rounded-lg border p-3"
-                >
+                <div key={i} className="flex items-center justify-between rounded-lg border p-3">
                   <div className="flex items-center gap-3">
                     {item.result.success ? (
                       <CheckCircle className="h-4 w-4 text-green-500" />
@@ -521,9 +494,7 @@ export function BotTestSandbox({
                         setUserId(item.event.userId)
                         setChannelId(item.event.channelId)
                         setMessageContent(item.event.content || '')
-                        setCustomMetadata(
-                          JSON.stringify(item.event.metadata || {}, null, 2)
-                        )
+                        setCustomMetadata(JSON.stringify(item.event.metadata || {}, null, 2))
                       }}
                     >
                       Replay

@@ -6,11 +6,7 @@ import { cn } from '@/lib/utils'
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
 import { Skeleton } from '@/components/ui/skeleton'
 import { UserPresenceDot } from './user-presence-dot'
-import {
-  type PresenceStatus,
-  type UserProfile,
-  getInitials,
-} from '@/stores/user-store'
+import { type PresenceStatus, type UserProfile, getInitials } from '@/stores/user-store'
 
 // ============================================================================
 // Variants
@@ -64,7 +60,8 @@ const avatarFallbackVariants = cva(
 // ============================================================================
 
 export interface UserAvatarProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'>,
     VariantProps<typeof userAvatarVariants> {
   user?: Pick<UserProfile, 'avatarUrl' | 'displayName'>
   src?: string
@@ -132,11 +129,7 @@ const UserAvatar = React.forwardRef<HTMLDivElement, UserAvatarProps>(
 
     // Loading skeleton
     if (loading) {
-      return (
-        <Skeleton
-          className={cn(userAvatarVariants({ size, shape }), className)}
-        />
-      )
+      return <Skeleton className={cn(userAvatarVariants({ size, shape }), className)} />
     }
 
     return (
@@ -144,7 +137,7 @@ const UserAvatar = React.forwardRef<HTMLDivElement, UserAvatarProps>(
         ref={ref}
         className={cn(
           userAvatarVariants({ size, shape }),
-          interactive && 'cursor-pointer hover:opacity-80 transition-opacity',
+          interactive && 'cursor-pointer transition-opacity hover:opacity-80',
           className
         )}
         onClick={onClick}
@@ -171,11 +164,7 @@ const UserAvatar = React.forwardRef<HTMLDivElement, UserAvatarProps>(
           )}
         >
           {avatarSrc && (
-            <AvatarImage
-              src={avatarSrc}
-              alt={`${displayName}'s avatar`}
-              className="object-cover"
-            />
+            <AvatarImage src={avatarSrc} alt={`${displayName}'s avatar`} className="object-cover" />
           )}
           <AvatarFallback
             className={cn(
@@ -208,8 +197,7 @@ UserAvatar.displayName = 'UserAvatar'
 // UserAvatarGroup - Display multiple avatars stacked
 // ============================================================================
 
-export interface UserAvatarGroupProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface UserAvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
   users: Array<Pick<UserProfile, 'id' | 'avatarUrl' | 'displayName'>>
   max?: number
   size?: UserAvatarProps['size']
@@ -219,15 +207,7 @@ export interface UserAvatarGroupProps
 
 const UserAvatarGroup = React.forwardRef<HTMLDivElement, UserAvatarGroupProps>(
   (
-    {
-      className,
-      users,
-      max = 4,
-      size = 'sm',
-      shape = 'circle',
-      onOverflowClick,
-      ...props
-    },
+    { className, users, max = 4, size = 'sm', shape = 'circle', onOverflowClick, ...props },
     ref
   ) => {
     const visibleUsers = users.slice(0, max)
@@ -245,11 +225,7 @@ const UserAvatarGroup = React.forwardRef<HTMLDivElement, UserAvatarGroupProps>(
               : '-ml-4'
 
     return (
-      <div
-        ref={ref}
-        className={cn('flex items-center', className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('flex items-center', className)} {...props}>
         {visibleUsers.map((user, index) => (
           <UserAvatar
             key={user.id}
@@ -257,27 +233,22 @@ const UserAvatarGroup = React.forwardRef<HTMLDivElement, UserAvatarGroupProps>(
             size={size}
             shape={shape}
             showPresence={false}
-            className={cn(
-              'ring-2 ring-background',
-              index > 0 && overlapClass
-            )}
+            className={cn('ring-2 ring-background', index > 0 && overlapClass)}
           />
         ))}
         {overflowCount > 0 && (
           <div
             className={cn(
-              'flex items-center justify-center bg-muted text-muted-foreground font-medium ring-2 ring-background',
+              'flex items-center justify-center bg-muted font-medium text-muted-foreground ring-2 ring-background',
               userAvatarVariants({ size, shape }),
               overlapClass,
-              onOverflowClick && 'cursor-pointer hover:bg-muted/80 transition-colors'
+              onOverflowClick && 'hover:bg-muted/80 cursor-pointer transition-colors'
             )}
             onClick={onOverflowClick}
             role={onOverflowClick ? 'button' : undefined}
             tabIndex={onOverflowClick ? 0 : undefined}
           >
-            <span className={avatarFallbackVariants({ size })}>
-              +{overflowCount}
-            </span>
+            <span className={avatarFallbackVariants({ size })}>+{overflowCount}</span>
           </div>
         )}
       </div>

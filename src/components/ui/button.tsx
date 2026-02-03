@@ -13,9 +13,12 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90 active:bg-primary/95',
-        destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/95',
-        outline: 'border border-input bg-background hover:bg-accent hover:text-accent-foreground active:bg-accent/80',
-        secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70',
+        destructive:
+          'bg-destructive text-destructive-foreground hover:bg-destructive/90 active:bg-destructive/95',
+        outline:
+          'border border-input bg-background hover:bg-accent hover:text-accent-foreground active:bg-accent/80',
+        secondary:
+          'bg-secondary text-secondary-foreground hover:bg-secondary/80 active:bg-secondary/70',
         ghost: 'hover:bg-accent hover:text-accent-foreground active:bg-accent/80',
         link: 'text-primary underline-offset-4 hover:underline active:text-primary/90',
       },
@@ -34,8 +37,7 @@ const buttonVariants = cva(
 )
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends React.ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean
   animated?: boolean
 }
@@ -46,12 +48,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     if (animated && !asChild && !props.disabled) {
       // Extract conflicting event handlers that have different signatures in React vs Framer Motion
-      const { onDrag, onDragEnd, onDragStart, onAnimationStart, ...safeProps } = props as ButtonProps & {
-        onDrag?: unknown;
-        onDragEnd?: unknown;
-        onDragStart?: unknown;
-        onAnimationStart?: unknown;
-      }
+      const { onDrag, onDragEnd, onDragStart, onAnimationStart, ...safeProps } =
+        props as ButtonProps & {
+          onDrag?: unknown
+          onDragEnd?: unknown
+          onDragStart?: unknown
+          onAnimationStart?: unknown
+        }
       return (
         <motion.button
           className={cn(buttonVariants({ variant, size, className }))}

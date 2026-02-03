@@ -10,13 +10,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  LayoutGrid,
-  LayoutList,
-  Users,
-  RefreshCw,
-  UserPlus,
-} from 'lucide-react'
+import { LayoutGrid, LayoutList, Users, RefreshCw, UserPlus } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -125,14 +119,28 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
 
       // Sort: online users first, then by name
       result.sort((a, b) => {
-        const presenceOrder: Record<string, number> = { online: 0, away: 1, dnd: 2, invisible: 3, offline: 3 }
+        const presenceOrder: Record<string, number> = {
+          online: 0,
+          away: 1,
+          dnd: 2,
+          invisible: 3,
+          offline: 3,
+        }
         const presenceDiff = presenceOrder[a.presence] - presenceOrder[b.presence]
         if (presenceDiff !== 0) return presenceDiff
         return a.displayName.localeCompare(b.displayName)
       })
 
       return result
-    }, [users, searchQuery, roleFilter, presenceFilter, departmentFilter, teamFilter, locationFilter])
+    }, [
+      users,
+      searchQuery,
+      roleFilter,
+      presenceFilter,
+      departmentFilter,
+      teamFilter,
+      locationFilter,
+    ])
 
     // Group users by first letter for list view
     const groupedUsers = React.useMemo(() => {
@@ -151,32 +159,25 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
     const onlineCount = users.filter((u) => u.presence === 'online').length
 
     return (
-      <div ref={ref} className={cn('flex flex-col h-full', className)} {...props}>
+      <div ref={ref} className={cn('flex h-full flex-col', className)} {...props}>
         {/* Header */}
         {showHeader && (
           <div className="flex-shrink-0 border-b">
-            <div className="p-6 space-y-4">
+            <div className="space-y-4 p-6">
               <div className="flex items-start justify-between">
                 <div>
                   <h1 className="text-2xl font-bold tracking-tight">{title}</h1>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {description}
-                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">{description}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {onInvite && (
                     <Button onClick={onInvite} size="sm">
-                      <UserPlus className="h-4 w-4 mr-2" />
+                      <UserPlus className="mr-2 h-4 w-4" />
                       Invite
                     </Button>
                   )}
                   {onRefresh && (
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={onRefresh}
-                      disabled={isLoading}
-                    >
+                    <Button variant="outline" size="icon" onClick={onRefresh} disabled={isLoading}>
                       <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
                     </Button>
                   )}
@@ -197,7 +198,7 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
             </div>
 
             {/* Search and filters */}
-            <div className="px-6 pb-4 space-y-4">
+            <div className="space-y-4 px-6 pb-4">
               {showSearch && (
                 <div className="flex items-center gap-4">
                   <UserSearch className="flex-1" />
@@ -233,15 +234,12 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
               <div
                 className={cn(
                   viewMode === 'grid'
-                    ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'
+                    ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
                     : 'space-y-2'
                 )}
               >
                 {Array.from({ length: 8 }).map((_, i) => (
-                  <Skeleton
-                    key={i}
-                    className={viewMode === 'grid' ? 'h-48' : 'h-16'}
-                  />
+                  <Skeleton key={i} className={viewMode === 'grid' ? 'h-48' : 'h-16'} />
                 ))}
               </div>
             )}
@@ -249,10 +247,10 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
             {/* Error state */}
             {error && !isLoading && (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <p className="text-destructive mb-4">{error}</p>
+                <p className="mb-4 text-destructive">{error}</p>
                 {onRefresh && (
                   <Button variant="outline" onClick={onRefresh}>
-                    <RefreshCw className="h-4 w-4 mr-2" />
+                    <RefreshCw className="mr-2 h-4 w-4" />
                     Try Again
                   </Button>
                 )}
@@ -262,9 +260,9 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
             {/* Empty state */}
             {!isLoading && !error && filteredUsers.length === 0 && (
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <Users className="h-12 w-12 text-muted-foreground mb-4" />
-                <h3 className="text-lg font-medium mb-2">No users found</h3>
-                <p className="text-sm text-muted-foreground max-w-sm">
+                <Users className="mb-4 h-12 w-12 text-muted-foreground" />
+                <h3 className="mb-2 text-lg font-medium">No users found</h3>
+                <p className="max-w-sm text-sm text-muted-foreground">
                   {searchQuery
                     ? `No users match "${searchQuery}". Try adjusting your search or filters.`
                     : 'No users match the current filters.'}
@@ -274,7 +272,7 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
 
             {/* Grid view */}
             {!isLoading && !error && filteredUsers.length > 0 && viewMode === 'grid' && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {filteredUsers.map((user) => (
                   <UserCard
                     key={user.id}
@@ -293,7 +291,7 @@ const UserDirectory = React.forwardRef<HTMLDivElement, UserDirectoryProps>(
               <div className="space-y-6">
                 {Object.entries(groupedUsers).map(([letter, letterUsers]) => (
                   <div key={letter}>
-                    <h3 className="text-sm font-medium text-muted-foreground mb-2 sticky top-0 bg-background py-1">
+                    <h3 className="sticky top-0 mb-2 bg-background py-1 text-sm font-medium text-muted-foreground">
                       {letter}
                     </h3>
                     <div className="space-y-1">

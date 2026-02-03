@@ -121,12 +121,7 @@ export const UPDATE_STICKER = gql`
   ) {
     update_nchat_stickers_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        name: $name
-        slug: $slug
-        keywords: $keywords
-        sort_order: $sort_order
-      }
+      _set: { name: $name, slug: $slug, keywords: $keywords, sort_order: $sort_order }
     ) {
       id
       name
@@ -184,11 +179,7 @@ export const SEND_GIF_MESSAGE = gql`
 `
 
 export const SEND_STICKER_MESSAGE = gql`
-  mutation SendStickerMessage(
-    $channel_id: uuid!
-    $user_id: uuid!
-    $sticker_id: uuid!
-  ) {
+  mutation SendStickerMessage($channel_id: uuid!, $user_id: uuid!, $sticker_id: uuid!) {
     insert_nchat_messages_one(
       object: {
         channel_id: $channel_id

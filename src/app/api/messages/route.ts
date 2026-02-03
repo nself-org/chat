@@ -1,17 +1,22 @@
 /**
  * Messages API Route
  *
- * Handles CRUD operations for message management
+ * Handles CRUD operations for message management using Hasura GraphQL.
  *
  * GET /api/messages - List messages (with filters, pagination, threads)
  * POST /api/messages - Create/send new message
  * PUT /api/messages - Update/edit message (requires messageId in body)
  * DELETE /api/messages - Delete message (requires messageId in query)
+ * PATCH /api/messages - Add/remove reaction
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import { logger } from '@/lib/logger'
 import { z } from 'zod'
+import { apolloClient } from '@/lib/apollo-client'
+import { getMessageService } from '@/services/messages/message.service'
+import { getReactionService } from '@/services/messages/reaction.service'
+import { getMentionService } from '@/services/messages/mention.service'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -22,77 +27,65 @@ export const dynamic = 'force-dynamic'
 
 const CreateMessageSchema = z.object({
   channelId: z.string().uuid('Invalid channel ID'),
-  content: z.string().min(1, 'Message content is required').max(4000, 'Message content too long (max 4000 characters)'),
-  threadId: z.string().uuid().optional().nullable(), // Reply to thread
-  parentMessageId: z.string().uuid().optional().nullable(), // Reply to specific message
-  mentions: z.array(z.string().uuid()).optional(), // User IDs mentioned
-  attachments: z.array(z.object({
-    url: z.string().url(),
-    filename: z.string(),
-    size: z.number(),
-    mimetype: z.string(),
-  })).optional(),
-  metadata: z.record(z.unknown()).optional(), // Additional metadata
+  userId: z.string().uuid('Invalid user ID'),
+  content: z
+    .string()
+    .min(1, 'Message content is required')
+    .max(4000, 'Message content too long (max 4000 characters)'),
+  type: z.string().optional().default('text'),
+  threadId: z.string().uuid().optional().nullable(),
+  parentMessageId: z.string().uuid().optional().nullable(),
+  mentions: z.array(z.string().uuid()).optional(),
+  mentionedRoles: z.array(z.string()).optional(),
+  mentionedChannels: z.array(z.string().uuid()).optional(),
+  attachments: z
+    .array(
+      z.object({
+        url: z.string().url(),
+        filename: z.string(),
+        size: z.number(),
+        mimetype: z.string(),
+      })
+    )
+    .optional(),
+  metadata: z.record(z.unknown()).optional(),
 })
 
 const UpdateMessageSchema = z.object({
   messageId: z.string().uuid('Invalid message ID'),
   content: z.string().min(1, 'Message content is required').max(4000, 'Message content too long'),
+  mentions: z.array(z.string().uuid()).optional(),
   metadata: z.record(z.unknown()).optional(),
 })
 
 const SearchQuerySchema = z.object({
   channelId: z.string().uuid().optional(),
   threadId: z.string().uuid().optional(),
-  userId: z.string().uuid().optional(), // Filter by author
-  search: z.string().optional(), // Full-text search
-  before: z.string().datetime().optional(), // Messages before this timestamp
-  after: z.string().datetime().optional(), // Messages after this timestamp
+  userId: z.string().uuid().optional(),
+  search: z.string().optional(),
+  before: z.string().datetime().optional(),
+  after: z.string().datetime().optional(),
   limit: z.coerce.number().int().min(1).max(100).default(50),
   offset: z.coerce.number().int().min(0).default(0),
   sortOrder: z.enum(['asc', 'desc']).default('desc'),
-  includeThreads: z.coerce.boolean().default(false), // Include thread replies
+  includeThreads: z.coerce.boolean().default(false),
   includeReactions: z.coerce.boolean().default(true),
 })
 
 const ReactionSchema = z.object({
   messageId: z.string().uuid('Invalid message ID'),
+  userId: z.string().uuid('Invalid user ID'),
   emoji: z.string().min(1).max(50),
-  action: z.enum(['add', 'remove']),
+  action: z.enum(['add', 'remove', 'toggle']),
 })
 
 // ============================================================================
-// TYPES
+// SERVICES
 // ============================================================================
 
-interface Message {
-  id: string
-  channelId: string
-  userId: string
-  content: string
-  threadId?: string | null
-  parentMessageId?: string | null
-  createdAt: string
-  updatedAt: string
-  editedAt?: string | null
-  deletedAt?: string | null
-  isEdited: boolean
-  isPinned: boolean
-  mentions?: string[]
-  attachments?: Array<{
-    url: string
-    filename: string
-    size: number
-    mimetype: string
-  }>
-  reactions?: Array<{
-    emoji: string
-    count: number
-    users: string[]
-  }>
-  replyCount?: number
-  metadata?: Record<string, unknown>
-}
+const messageService = getMessageService(apolloClient)
+const reactionService = getReactionService(apolloClient)
+const mentionService = getMentionService(apolloClient)
 
 // ============================================================================
 // GET /api/messages - List messages
@@ -122,6 +115,7 @@ export async function GET(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         {
+          success: false,
           error: 'Invalid query parameters',
           details: validation.error.flatten().fieldErrors,
         },
@@ -134,141 +128,104 @@ export async function GET(request: NextRequest) {
     // Require at least channelId or threadId
     if (!params.channelId && !params.threadId) {
       return NextResponse.json(
-        { error: 'Either channelId or threadId is required' },
+        { success: false, error: 'Either channelId or threadId is required' },
         { status: 400 }
       )
     }
 
-    // TODO: Replace with actual database query using Hasura GraphQL
-    // This is a mock implementation
-    const mockMessages: Message[] = [
-      {
-        id: '1',
-        channelId: params.channelId || 'channel-1',
-        userId: 'user-1',
-        content: 'Hello everyone! Welcome to the channel.',
-        threadId: null,
-        parentMessageId: null,
-        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-        editedAt: null,
-        deletedAt: null,
-        isEdited: false,
-        isPinned: true,
-        mentions: [],
-        reactions: [
-          { emoji: '👋', count: 5, users: ['user-2', 'user-3', 'user-4', 'user-5', 'user-6'] },
-          { emoji: '🎉', count: 2, users: ['user-7', 'user-8'] },
-        ],
-        replyCount: 3,
-      },
-      {
-        id: '2',
-        channelId: params.channelId || 'channel-1',
-        userId: 'user-2',
-        content: 'Thanks for the warm welcome!',
-        threadId: '1', // Thread reply to message 1
-        parentMessageId: '1',
-        createdAt: new Date(Date.now() - 1.5 * 60 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 1.5 * 60 * 60 * 1000).toISOString(),
-        editedAt: null,
-        deletedAt: null,
-        isEdited: false,
-        isPinned: false,
-        mentions: ['user-1'],
-        reactions: [
-          { emoji: '❤️', count: 1, users: ['user-1'] },
-        ],
-      },
-      {
-        id: '3',
-        channelId: params.channelId || 'channel-1',
-        userId: 'user-3',
-        content: 'Has anyone seen the latest updates?',
-        threadId: null,
-        parentMessageId: null,
-        createdAt: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-        updatedAt: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
-        editedAt: new Date(Date.now() - 25 * 60 * 1000).toISOString(),
-        deletedAt: null,
-        isEdited: true,
-        isPinned: false,
-        mentions: [],
-        replyCount: 0,
-      },
-    ]
-
-    // Apply filters
-    let filteredMessages = mockMessages
-
-    if (params.channelId) {
-      filteredMessages = filteredMessages.filter(m => m.channelId === params.channelId)
-    }
-
-    if (params.threadId) {
-      filteredMessages = filteredMessages.filter(m => m.threadId === params.threadId)
-    }
-
-    if (params.userId) {
-      filteredMessages = filteredMessages.filter(m => m.userId === params.userId)
-    }
-
-    if (!params.includeThreads) {
-      filteredMessages = filteredMessages.filter(m => !m.threadId)
-    }
-
+    // If searching, use search endpoint
     if (params.search) {
-      const query = params.search.toLowerCase()
-      filteredMessages = filteredMessages.filter(m =>
-        m.content.toLowerCase().includes(query)
-      )
+      const result = await messageService.searchMessages({
+        channelId: params.channelId,
+        query: params.search,
+        limit: params.limit,
+        offset: params.offset,
+        userId: params.userId,
+      })
+
+      if (!result.success) {
+        return NextResponse.json(
+          { success: false, error: result.error?.message || 'Search failed' },
+          { status: result.error?.status || 500 }
+        )
+      }
+
+      return NextResponse.json({
+        success: true,
+        messages: result.data?.messages || [],
+        pagination: {
+          total: result.data?.totalCount || 0,
+          offset: params.offset,
+          limit: params.limit,
+          hasMore: result.data?.hasMore || false,
+        },
+      })
     }
 
-    if (params.before) {
-      const beforeDate = new Date(params.before)
-      filteredMessages = filteredMessages.filter(m =>
-        new Date(m.createdAt) < beforeDate
-      )
+    // If threadId provided, get thread messages
+    if (params.threadId) {
+      const result = await messageService.getThreadMessages(params.threadId, {
+        limit: params.limit,
+        offset: params.offset,
+        before: params.before,
+      })
+
+      if (!result.success) {
+        return NextResponse.json(
+          { success: false, error: result.error?.message || 'Failed to fetch thread messages' },
+          { status: result.error?.status || 500 }
+        )
+      }
+
+      return NextResponse.json({
+        success: true,
+        messages: result.data?.messages || [],
+        pagination: {
+          total: result.data?.totalCount || 0,
+          offset: params.offset,
+          limit: params.limit,
+          hasMore: result.data?.hasMore || false,
+        },
+      })
     }
 
-    if (params.after) {
-      const afterDate = new Date(params.after)
-      filteredMessages = filteredMessages.filter(m =>
-        new Date(m.createdAt) > afterDate
-      )
-    }
-
-    // Sort messages
-    filteredMessages.sort((a, b) => {
-      const dateA = new Date(a.createdAt).getTime()
-      const dateB = new Date(b.createdAt).getTime()
-      return params.sortOrder === 'asc' ? dateA - dateB : dateB - dateA
+    // Get channel messages
+    const result = await messageService.getMessages({
+      channelId: params.channelId!,
+      limit: params.limit,
+      offset: params.offset,
+      before: params.before,
+      after: params.after,
     })
 
-    const total = filteredMessages.length
-    const messages = filteredMessages.slice(params.offset, params.offset + params.limit)
+    if (!result.success) {
+      return NextResponse.json(
+        { success: false, error: result.error?.message || 'Failed to fetch messages' },
+        { status: result.error?.status || 500 }
+      )
+    }
 
     logger.info('GET /api/messages - Success', {
-      total,
-      returned: messages.length,
+      total: result.data?.totalCount,
+      returned: result.data?.messages.length,
       channelId: params.channelId,
-      threadId: params.threadId,
     })
 
     return NextResponse.json({
       success: true,
-      messages,
+      messages: result.data?.messages || [],
       pagination: {
-        total,
+        total: result.data?.totalCount || 0,
         offset: params.offset,
         limit: params.limit,
-        hasMore: params.offset + params.limit < total,
+        hasMore: result.data?.hasMore || false,
       },
     })
   } catch (error) {
     logger.error('GET /api/messages - Error', error as Error)
     return NextResponse.json(
       {
+        success: false,
         error: 'Failed to fetch messages',
         message: error instanceof Error ? error.message : 'Unknown error',
       },
@@ -292,6 +249,7 @@ export async function POST(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         {
+          success: false,
           error: 'Invalid request body',
           details: validation.error.flatten().fieldErrors,
         },
@@ -301,60 +259,64 @@ export async function POST(request: NextRequest) {
 
     const data = validation.data
 
-    // TODO: Check authentication
-    // Get current user from session/token
+    // Parse mentions from content
+    const parsedMentions = mentionService.parseMentions(data.content)
+    const mentionedUserIds = data.mentions || []
 
-    // TODO: Check authorization
-    // Verify user has access to the channel
-    // If it's a thread reply, verify thread exists
-
-    // TODO: Process mentions
-    // Send notifications to mentioned users
-
-    // TODO: Process attachments
-    // Validate attachment URLs and metadata
-
-    // TODO: Check for spam/rate limiting
-    // Implement rate limiting per user
-
-    // TODO: Create message in database via Hasura GraphQL mutation
-    const newMessage: Message = {
-      id: crypto.randomUUID(),
-      channelId: data.channelId,
-      userId: 'current-user-id', // TODO: Get from auth context
-      content: data.content,
-      threadId: data.threadId || null,
-      parentMessageId: data.parentMessageId || null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-      editedAt: null,
-      deletedAt: null,
-      isEdited: false,
-      isPinned: false,
-      mentions: data.mentions,
-      attachments: data.attachments,
-      reactions: [],
-      replyCount: 0,
-      metadata: data.metadata,
+    // Add parsed user mentions
+    for (const mention of parsedMentions) {
+      if (mention.type === 'user' && mention.value) {
+        // Resolve username to user ID would happen here
+        // For now, we use IDs passed in the request
+      }
     }
 
-    // TODO: Emit real-time event via WebSocket/Socket.io
-    // This notifies other users in the channel
+    // Send message via service
+    const result = await messageService.sendMessage({
+      channelId: data.channelId,
+      userId: data.userId,
+      content: data.content,
+      type: data.type,
+      threadId: data.threadId || undefined,
+      parentMessageId: data.parentMessageId || undefined,
+      mentions: mentionedUserIds,
+      mentionedRoles: data.mentionedRoles,
+      mentionedChannels: data.mentionedChannels,
+      metadata: data.metadata,
+    })
 
-    // TODO: Send push notifications to mentioned users
+    if (!result.success || !result.data) {
+      return NextResponse.json(
+        { success: false, error: result.error?.message || 'Failed to create message' },
+        { status: result.error?.status || 500 }
+      )
+    }
 
-    // TODO: Update channel's lastMessageAt timestamp
+    // Send mention notifications (async, don't wait)
+    if (mentionedUserIds.length > 0 || mentionService.hasMentions(data.content)) {
+      mentionService
+        .notifyMentionedUsers(data.content, {
+          messageId: result.data.id,
+          channelId: data.channelId,
+          actorId: data.userId,
+          actorName: result.data.user.displayName,
+          messagePreview: data.content.substring(0, 100),
+        })
+        .catch((err) => {
+          logger.warn('Failed to send mention notifications', { error: err })
+        })
+    }
 
     logger.info('POST /api/messages - Message created', {
-      messageId: newMessage.id,
-      channelId: newMessage.channelId,
-      isThreadReply: !!newMessage.threadId,
+      messageId: result.data.id,
+      channelId: data.channelId,
+      isThreadReply: !!data.threadId,
     })
 
     return NextResponse.json(
       {
         success: true,
-        message: newMessage,
+        message: result.data,
       },
       { status: 201 }
     )
@@ -362,6 +324,7 @@ export async function POST(request: NextRequest) {
     logger.error('POST /api/messages - Error', error as Error)
     return NextResponse.json(
       {
+        success: false,
         error: 'Failed to create message',
         message: error instanceof Error ? error.message : 'Unknown error',
       },
@@ -385,6 +348,7 @@ export async function PUT(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         {
+          success: false,
           error: 'Invalid request body',
           details: validation.error.flatten().fieldErrors,
         },
@@ -394,35 +358,24 @@ export async function PUT(request: NextRequest) {
 
     const data = validation.data
 
-    // TODO: Check authentication and authorization
-    // Only message author and admins can edit messages
+    // Parse mentions from updated content
+    const parsedMentions = mentionService.parseMentions(data.content)
+    const mentionedUserIds = data.mentions || []
 
-    // TODO: Check if message exists
-
-    // TODO: Check edit time window
-    // Some systems only allow edits within X minutes
-
-    // TODO: Store edit history
-    // Keep track of all edits for audit purposes
-
-    // TODO: Update message in database via Hasura GraphQL mutation
-    const updatedMessage: Message = {
+    // Update message via service
+    const result = await messageService.updateMessage({
       id: data.messageId,
-      channelId: 'channel-id', // Would come from database
-      userId: 'user-id',
       content: data.content,
-      threadId: null,
-      parentMessageId: null,
-      createdAt: new Date(Date.now() - 60 * 60 * 1000).toISOString(), // Mock
-      updatedAt: new Date().toISOString(),
-      editedAt: new Date().toISOString(),
-      deletedAt: null,
-      isEdited: true,
-      isPinned: false,
+      mentions: mentionedUserIds,
       metadata: data.metadata,
-    }
+    })
 
-    // TODO: Emit real-time event for message update
+    if (!result.success || !result.data) {
+      return NextResponse.json(
+        { success: false, error: result.error?.message || 'Failed to update message' },
+        { status: result.error?.status || 500 }
+      )
+    }
 
     logger.info('PUT /api/messages - Message updated', {
       messageId: data.messageId,
@@ -430,12 +383,13 @@ export async function PUT(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: updatedMessage,
+      message: result.data,
     })
   } catch (error) {
     logger.error('PUT /api/messages - Error', error as Error)
     return NextResponse.json(
       {
+        success: false,
         error: 'Failed to update message',
         message: error instanceof Error ? error.message : 'Unknown error',
       },
@@ -458,7 +412,7 @@ export async function DELETE(request: NextRequest) {
 
     if (!messageId) {
       return NextResponse.json(
-        { error: 'messageId query parameter is required' },
+        { success: false, error: 'messageId query parameter is required' },
         { status: 400 }
       )
     }
@@ -467,30 +421,25 @@ export async function DELETE(request: NextRequest) {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
     if (!uuidRegex.test(messageId)) {
       return NextResponse.json(
-        { error: 'Invalid message ID format' },
+        { success: false, error: 'Invalid message ID format' },
         { status: 400 }
       )
     }
 
-    // TODO: Check authentication and authorization
-    // Only message author and admins can delete messages
+    // Delete message via service
+    const result = await messageService.deleteMessage(messageId, { hard: hardDelete })
 
-    // TODO: Check if message exists
-
-    if (hardDelete) {
-      // TODO: Hard delete from database
-      // Removes message completely
-      logger.warn('DELETE /api/messages - Hard delete requested', { messageId })
-    } else {
-      // TODO: Soft delete
-      // Set deletedAt timestamp or replace content with [deleted]
-      logger.info('DELETE /api/messages - Message soft deleted', { messageId })
+    if (!result.success) {
+      return NextResponse.json(
+        { success: false, error: result.error?.message || 'Failed to delete message' },
+        { status: result.error?.status || 500 }
+      )
     }
 
-    // TODO: Emit real-time event for message deletion
-
-    // TODO: Handle thread implications
-    // If this message has replies, decide what to do with them
+    logger.info('DELETE /api/messages - Message deleted', {
+      messageId,
+      hardDelete,
+    })
 
     return NextResponse.json({
       success: true,
@@ -501,6 +450,7 @@ export async function DELETE(request: NextRequest) {
     logger.error('DELETE /api/messages - Error', error as Error)
     return NextResponse.json(
       {
+        success: false,
         error: 'Failed to delete message',
         message: error instanceof Error ? error.message : 'Unknown error',
       },
@@ -524,6 +474,7 @@ export async function PATCH(request: NextRequest) {
     if (!validation.success) {
       return NextResponse.json(
         {
+          success: false,
           error: 'Invalid request body',
           details: validation.error.flatten().fieldErrors,
         },
@@ -533,14 +484,29 @@ export async function PATCH(request: NextRequest) {
 
     const data = validation.data
 
-    // TODO: Check authentication
+    let result
+    if (data.action === 'add') {
+      result = await reactionService.addReaction({
+        messageId: data.messageId,
+        userId: data.userId,
+        emoji: data.emoji,
+      })
+    } else if (data.action === 'remove') {
+      result = await reactionService.removeReaction({
+        messageId: data.messageId,
+        userId: data.userId,
+        emoji: data.emoji,
+      })
+    } else {
+      result = await reactionService.toggleReaction(data.messageId, data.userId, data.emoji)
+    }
 
-    // TODO: Check if message exists
-
-    // TODO: Add or remove reaction in database
-    // Store user-emoji-message relationship
-
-    // TODO: Emit real-time event for reaction update
+    if (!result.success) {
+      return NextResponse.json(
+        { success: false, error: result.error?.message || 'Failed to update reaction' },
+        { status: result.error?.status || 500 }
+      )
+    }
 
     logger.info('PATCH /api/messages - Reaction updated', {
       messageId: data.messageId,
@@ -550,12 +516,13 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: `Reaction ${data.action === 'add' ? 'added' : 'removed'}`,
+      data: result.data,
     })
   } catch (error) {
     logger.error('PATCH /api/messages - Error', error as Error)
     return NextResponse.json(
       {
+        success: false,
         error: 'Failed to update reaction',
         message: error instanceof Error ? error.message : 'Unknown error',
       },

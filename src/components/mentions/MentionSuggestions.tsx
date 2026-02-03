@@ -50,152 +50,132 @@ export interface MentionSuggestionsRef {
 // Component
 // ============================================================================
 
-export const MentionSuggestions = forwardRef<
-  MentionSuggestionsRef,
-  MentionSuggestionsProps
->(function MentionSuggestions(
-  {
-    suggestions,
-    selectedIndex,
-    onSelect,
-    onSelectionChange,
-    isLoading = false,
-    error = null,
-    emptyMessage = 'No results found',
-    className,
-  },
-  ref
-) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
+export const MentionSuggestions = forwardRef<MentionSuggestionsRef, MentionSuggestionsProps>(
+  function MentionSuggestions(
+    {
+      suggestions,
+      selectedIndex,
+      onSelect,
+      onSelectionChange,
+      isLoading = false,
+      error = null,
+      emptyMessage = 'No results found',
+      className,
+    },
+    ref
+  ) {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
 
-  // Expose navigation handlers to parent
-  useImperativeHandle(
-    ref,
-    () => ({
-      upHandler: () => {
-        const newIndex =
-          selectedIndex <= 0 ? suggestions.length - 1 : selectedIndex - 1
-        onSelectionChange?.(newIndex)
-      },
-      downHandler: () => {
-        const newIndex =
-          selectedIndex >= suggestions.length - 1 ? 0 : selectedIndex + 1
-        onSelectionChange?.(newIndex)
-      },
-      enterHandler: () => {
-        const suggestion = suggestions[selectedIndex]
-        if (suggestion) {
-          onSelect(suggestion)
-        }
-      },
-    }),
-    [suggestions, selectedIndex, onSelect, onSelectionChange]
-  )
+    // Expose navigation handlers to parent
+    useImperativeHandle(
+      ref,
+      () => ({
+        upHandler: () => {
+          const newIndex = selectedIndex <= 0 ? suggestions.length - 1 : selectedIndex - 1
+          onSelectionChange?.(newIndex)
+        },
+        downHandler: () => {
+          const newIndex = selectedIndex >= suggestions.length - 1 ? 0 : selectedIndex + 1
+          onSelectionChange?.(newIndex)
+        },
+        enterHandler: () => {
+          const suggestion = suggestions[selectedIndex]
+          if (suggestion) {
+            onSelect(suggestion)
+          }
+        },
+      }),
+      [suggestions, selectedIndex, onSelect, onSelectionChange]
+    )
 
-  // Scroll selected item into view
-  useEffect(() => {
-    const selectedItem = itemRefs.current.get(selectedIndex)
-    if (selectedItem) {
-      selectedItem.scrollIntoView({ block: 'nearest' })
+    // Scroll selected item into view
+    useEffect(() => {
+      const selectedItem = itemRefs.current.get(selectedIndex)
+      if (selectedItem) {
+        selectedItem.scrollIntoView({ block: 'nearest' })
+      }
+    }, [selectedIndex])
+
+    // Loading state
+    if (isLoading) {
+      return (
+        <div className={cn('rounded-lg border bg-popover p-3 shadow-md', className)}>
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <LoadingSpinner />
+            <span>Loading suggestions...</span>
+          </div>
+        </div>
+      )
     }
-  }, [selectedIndex])
 
-  // Loading state
-  if (isLoading) {
+    // Error state
+    if (error) {
+      return (
+        <div className={cn('rounded-lg border bg-popover p-3 shadow-md', className)}>
+          <div className="flex items-center gap-2 text-sm text-destructive">
+            <ErrorIcon />
+            <span>{error}</span>
+          </div>
+        </div>
+      )
+    }
+
+    // Empty state
+    if (suggestions.length === 0) {
+      return (
+        <div
+          className={cn(
+            'rounded-lg border bg-popover p-3 text-sm text-muted-foreground shadow-md',
+            className
+          )}
+        >
+          {emptyMessage}
+        </div>
+      )
+    }
+
     return (
       <div
-        className={cn(
-          'rounded-lg border bg-popover p-3 shadow-md',
-          className
-        )}
+        ref={containerRef}
+        className={cn('overflow-hidden rounded-lg border bg-popover shadow-md', className)}
       >
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <LoadingSpinner />
-          <span>Loading suggestions...</span>
+        <ScrollArea className="max-h-[300px]">
+          <div className="p-1" role="listbox" aria-label="Mention suggestions">
+            {suggestions.map((suggestion, index) => (
+              <MentionItem
+                key={`${suggestion.type}-${suggestion.id}`}
+                ref={(el) => {
+                  if (el) {
+                    itemRefs.current.set(index, el)
+                  } else {
+                    itemRefs.current.delete(index)
+                  }
+                }}
+                suggestion={suggestion}
+                isSelected={index === selectedIndex}
+                onClick={() => onSelect(suggestion)}
+                onMouseEnter={() => onSelectionChange?.(index)}
+              />
+            ))}
+          </div>
+        </ScrollArea>
+
+        {/* Keyboard hint */}
+        <div className="flex items-center gap-3 border-t px-3 py-1.5 text-xs text-muted-foreground">
+          <span className="flex items-center gap-1">
+            <kbd className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium">Tab</kbd>
+            <span>select</span>
+          </span>
+          <span className="flex items-center gap-1">
+            <kbd className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-medium">Esc</kbd>
+            <span>close</span>
+          </span>
         </div>
       </div>
     )
   }
-
-  // Error state
-  if (error) {
-    return (
-      <div
-        className={cn(
-          'rounded-lg border bg-popover p-3 shadow-md',
-          className
-        )}
-      >
-        <div className="flex items-center gap-2 text-sm text-destructive">
-          <ErrorIcon />
-          <span>{error}</span>
-        </div>
-      </div>
-    )
-  }
-
-  // Empty state
-  if (suggestions.length === 0) {
-    return (
-      <div
-        className={cn(
-          'rounded-lg border bg-popover p-3 shadow-md text-sm text-muted-foreground',
-          className
-        )}
-      >
-        {emptyMessage}
-      </div>
-    )
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      className={cn(
-        'rounded-lg border bg-popover shadow-md overflow-hidden',
-        className
-      )}
-    >
-      <ScrollArea className="max-h-[300px]">
-        <div className="p-1" role="listbox" aria-label="Mention suggestions">
-          {suggestions.map((suggestion, index) => (
-            <MentionItem
-              key={`${suggestion.type}-${suggestion.id}`}
-              ref={(el) => {
-                if (el) {
-                  itemRefs.current.set(index, el)
-                } else {
-                  itemRefs.current.delete(index)
-                }
-              }}
-              suggestion={suggestion}
-              isSelected={index === selectedIndex}
-              onClick={() => onSelect(suggestion)}
-              onMouseEnter={() => onSelectionChange?.(index)}
-            />
-          ))}
-        </div>
-      </ScrollArea>
-
-      {/* Keyboard hint */}
-      <div className="border-t px-3 py-1.5 text-xs text-muted-foreground flex items-center gap-3">
-        <span className="flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-medium">
-            Tab
-          </kbd>
-          <span>select</span>
-        </span>
-        <span className="flex items-center gap-1">
-          <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px] font-medium">
-            Esc
-          </kbd>
-          <span>close</span>
-        </span>
-      </div>
-    </div>
-  )
-})
+)
 
 // ============================================================================
 // Loading Spinner
@@ -203,19 +183,8 @@ export const MentionSuggestions = forwardRef<
 
 function LoadingSpinner() {
   return (
-    <svg
-      className="h-4 w-4 animate-spin"
-      fill="none"
-      viewBox="0 0 24 24"
-    >
-      <circle
-        className="opacity-25"
-        cx="12"
-        cy="12"
-        r="10"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
+    <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path
         className="opacity-75"
         fill="currentColor"
@@ -231,12 +200,7 @@ function LoadingSpinner() {
 
 function ErrorIcon() {
   return (
-    <svg
-      className="h-4 w-4"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-    >
+    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -251,8 +215,10 @@ function ErrorIcon() {
 // Grouped Suggestions Component
 // ============================================================================
 
-export interface GroupedMentionSuggestionsProps
-  extends Omit<MentionSuggestionsProps, 'suggestions'> {
+export interface GroupedMentionSuggestionsProps extends Omit<
+  MentionSuggestionsProps,
+  'suggestions'
+> {
   /** Users to show */
   users?: MentionSuggestion[]
   /** Channels to show */
@@ -304,8 +270,7 @@ export const GroupedMentionSuggestions = forwardRef<
 // Floating Suggestions (positioned)
 // ============================================================================
 
-export interface FloatingMentionSuggestionsProps
-  extends MentionSuggestionsProps {
+export interface FloatingMentionSuggestionsProps extends MentionSuggestionsProps {
   /** Position for the floating container */
   position: { top: number; left: number } | null
   /** Whether the suggestions are visible */
@@ -315,10 +280,7 @@ export interface FloatingMentionSuggestionsProps
 export const FloatingMentionSuggestions = forwardRef<
   MentionSuggestionsRef,
   FloatingMentionSuggestionsProps
->(function FloatingMentionSuggestions(
-  { position, isVisible, className, ...props },
-  ref
-) {
+>(function FloatingMentionSuggestions({ position, isVisible, className, ...props }, ref) {
   if (!isVisible || !position) {
     return null
   }

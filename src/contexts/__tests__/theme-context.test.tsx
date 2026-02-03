@@ -15,16 +15,14 @@ function TestComponent() {
       <button onClick={() => setTheme('dark')}>Set Dark</button>
       <button onClick={() => setTheme('light')}>Set Light</button>
       <button onClick={() => setTheme('system')}>Set System</button>
-      <button onClick={() => updateThemeConfig({ primary: '#FF0000' })}>
-        Update Primary
-      </button>
-      <button onClick={() => updateThemeConfig({ secondary: '#00FF00' })}>
-        Update Secondary
-      </button>
-      <button onClick={() => updateThemeConfig({ accent: '#0000FF' })}>
-        Update Accent
-      </button>
-      <button onClick={() => updateThemeConfig({ primary: '#111111', secondary: '#222222', accent: '#333333' })}>
+      <button onClick={() => updateThemeConfig({ primary: '#FF0000' })}>Update Primary</button>
+      <button onClick={() => updateThemeConfig({ secondary: '#00FF00' })}>Update Secondary</button>
+      <button onClick={() => updateThemeConfig({ accent: '#0000FF' })}>Update Accent</button>
+      <button
+        onClick={() =>
+          updateThemeConfig({ primary: '#111111', secondary: '#222222', accent: '#333333' })
+        }
+      >
         Update All Colors
       </button>
     </div>
@@ -45,18 +43,16 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     expect(screen.getByTestId('theme')).toBeInTheDocument()
     expect(screen.getByTestId('primary-color')).toBeInTheDocument()
   })
 
   it('throws error when useTheme is used outside ThemeProvider', () => {
     const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
-    
-    expect(() => render(<TestComponent />)).toThrow(
-      'useTheme must be used within a ThemeProvider'
-    )
-    
+
+    expect(() => render(<TestComponent />)).toThrow('useTheme must be used within a ThemeProvider')
+
     consoleSpy.mockRestore()
   })
 
@@ -66,7 +62,7 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     expect(screen.getByTestId('theme')).toHaveTextContent('system')
   })
 
@@ -76,7 +72,7 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     expect(screen.getByTestId('primary-color')).toHaveTextContent('#5865F2')
     expect(screen.getByTestId('secondary-color')).toHaveTextContent('#7B68EE')
     expect(screen.getByTestId('accent-color')).toHaveTextContent('#00BFA5')
@@ -88,13 +84,13 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     const setDarkButton = screen.getByText('Set Dark')
-    
+
     act(() => {
       setDarkButton.click()
     })
-    
+
     expect(screen.getByTestId('theme')).toHaveTextContent('dark')
     expect(document.documentElement).toHaveClass('dark')
   })
@@ -105,20 +101,20 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     const setLightButton = screen.getByText('Set Light')
-    
+
     act(() => {
       setLightButton.click()
     })
-    
+
     expect(screen.getByTestId('theme')).toHaveTextContent('light')
     expect(document.documentElement).toHaveClass('light')
   })
 
   it('applies system theme based on media query', () => {
     // Mock dark mode preference
-    window.matchMedia = jest.fn().mockImplementation(query => ({
+    window.matchMedia = jest.fn().mockImplementation((query) => ({
       matches: query === '(prefers-color-scheme: dark)',
       media: query,
       onchange: null,
@@ -128,13 +124,13 @@ describe('ThemeContext', () => {
       removeListener: jest.fn(),
       dispatchEvent: jest.fn(),
     }))
-    
+
     render(
       <ThemeProvider>
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     // System theme should apply dark mode
     expect(document.documentElement).toHaveClass('dark')
   })
@@ -145,13 +141,13 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     const updateButton = screen.getByText('Update Primary')
-    
+
     act(() => {
       updateButton.click()
     })
-    
+
     expect(screen.getByTestId('primary-color')).toHaveTextContent('#FF0000')
     // Other colors should remain unchanged
     expect(screen.getByTestId('secondary-color')).toHaveTextContent('#7B68EE')
@@ -164,7 +160,7 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     const styles = document.documentElement.style
     expect(styles.getPropertyValue('--primary')).toBe('#5865F2')
     expect(styles.getPropertyValue('--secondary')).toBe('#7B68EE')
@@ -177,13 +173,13 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     const updateButton = screen.getByText('Update Primary')
-    
+
     act(() => {
       updateButton.click()
     })
-    
+
     const styles = document.documentElement.style
     expect(styles.getPropertyValue('--primary')).toBe('#FF0000')
   })
@@ -194,21 +190,21 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     const setDarkButton = screen.getByText('Set Dark')
     const setLightButton = screen.getByText('Set Light')
-    
+
     act(() => {
       setDarkButton.click()
     })
-    
+
     expect(document.documentElement).toHaveClass('dark')
     expect(document.documentElement).not.toHaveClass('light')
-    
+
     act(() => {
       setLightButton.click()
     })
-    
+
     expect(document.documentElement).toHaveClass('light')
     expect(document.documentElement).not.toHaveClass('dark')
   })
@@ -219,20 +215,20 @@ describe('ThemeContext', () => {
         <TestComponent />
       </ThemeProvider>
     )
-    
+
     const updateButton = screen.getByText('Update Primary')
     const setDarkButton = screen.getByText('Set Dark')
-    
+
     act(() => {
       updateButton.click()
     })
-    
+
     expect(screen.getByTestId('primary-color')).toHaveTextContent('#FF0000')
-    
+
     act(() => {
       setDarkButton.click()
     })
-    
+
     // Color config should persist after theme change
     expect(screen.getByTestId('primary-color')).toHaveTextContent('#FF0000')
   })
@@ -245,7 +241,7 @@ describe('useTheme hook', () => {
 
   it('returns theme context values', () => {
     const { result } = renderHook(() => useTheme(), { wrapper })
-    
+
     expect(result.current.theme).toBe('system')
     expect(result.current.themeConfig).toEqual({
       primary: '#5865F2',
@@ -258,11 +254,11 @@ describe('useTheme hook', () => {
 
   it('updates theme through hook', () => {
     const { result } = renderHook(() => useTheme(), { wrapper })
-    
+
     act(() => {
       result.current.setTheme('dark')
     })
-    
+
     expect(result.current.theme).toBe('dark')
   })
 

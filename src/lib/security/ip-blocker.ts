@@ -15,6 +15,8 @@
 import { NextRequest } from 'next/server'
 import Redis from 'ioredis'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -159,12 +161,12 @@ function getRedisClient(): Redis | null {
     })
 
     redisClient.connect().catch((error) => {
-      console.error('[IPBlocker] Failed to connect to Redis:', error.message)
+      logger.error('[IPBlocker] Failed to connect to Redis:', error.message)
     })
 
     return redisClient
   } catch (error) {
-    console.error('[IPBlocker] Failed to initialize Redis:', error)
+    logger.error('[IPBlocker] Failed to initialize Redis:', error)
     return null
   }
 }
@@ -368,7 +370,7 @@ export class IPBlocker {
         return await inMemoryStore.isBlocked(ip)
       }
     } catch (error) {
-      console.error('[IPBlocker] Error checking blocked IP:', error)
+      logger.error('[IPBlocker] Error checking blocked IP:', error)
       this.useRedis = false
       return await inMemoryStore.isBlocked(ip)
     }
@@ -448,9 +450,9 @@ export class IPBlocker {
         await inMemoryStore.blockIP(blocked)
       }
 
-      console.log(`[IPBlocker] Blocked IP ${ip} (${blockType}): ${reason}`)
+      // REMOVED: console.log(`[IPBlocker] Blocked IP ${ip} (${blockType}): ${reason}`)
     } catch (error) {
-      console.error('[IPBlocker] Error blocking IP:', error)
+      logger.error('[IPBlocker] Error blocking IP:', error)
       this.useRedis = false
       await inMemoryStore.blockIP(blocked)
     }
@@ -468,9 +470,9 @@ export class IPBlocker {
         await inMemoryStore.unblockIP(ip)
       }
 
-      console.log(`[IPBlocker] Unblocked IP ${ip}`)
+      // REMOVED: console.log(`[IPBlocker] Unblocked IP ${ip}`)
     } catch (error) {
-      console.error('[IPBlocker] Error unblocking IP:', error)
+      logger.error('[IPBlocker] Error unblocking IP:', error)
       this.useRedis = false
       await inMemoryStore.unblockIP(ip)
     }
@@ -490,9 +492,9 @@ export class IPBlocker {
         await inMemoryStore.addToWhitelist(ip)
       }
 
-      console.log(`[IPBlocker] Added IP ${ip} to whitelist`)
+      // REMOVED: console.log(`[IPBlocker] Added IP ${ip} to whitelist`)
     } catch (error) {
-      console.error('[IPBlocker] Error adding to whitelist:', error)
+      logger.error('[IPBlocker] Error adding to whitelist:', error)
       this.useRedis = false
       await inMemoryStore.addToWhitelist(ip)
     }
@@ -509,7 +511,7 @@ export class IPBlocker {
         await inMemoryStore.removeFromWhitelist(ip)
       }
     } catch (error) {
-      console.error('[IPBlocker] Error removing from whitelist:', error)
+      logger.error('[IPBlocker] Error removing from whitelist:', error)
       this.useRedis = false
       await inMemoryStore.removeFromWhitelist(ip)
     }
@@ -528,9 +530,9 @@ export class IPBlocker {
         await inMemoryStore.addToBlacklist(ip)
       }
 
-      console.log(`[IPBlocker] Added IP ${ip} to blacklist`)
+      // REMOVED: console.log(`[IPBlocker] Added IP ${ip} to blacklist`)
     } catch (error) {
-      console.error('[IPBlocker] Error adding to blacklist:', error)
+      logger.error('[IPBlocker] Error adding to blacklist:', error)
       this.useRedis = false
       await inMemoryStore.addToBlacklist(ip)
     }
@@ -547,7 +549,7 @@ export class IPBlocker {
         await inMemoryStore.removeFromBlacklist(ip)
       }
     } catch (error) {
-      console.error('[IPBlocker] Error removing from blacklist:', error)
+      logger.error('[IPBlocker] Error removing from blacklist:', error)
       this.useRedis = false
       await inMemoryStore.removeFromBlacklist(ip)
     }
@@ -610,7 +612,7 @@ export class IPBlocker {
 
       return false
     } catch (error) {
-      console.error('[IPBlocker] Error recording abuse:', error)
+      logger.error('[IPBlocker] Error recording abuse:', error)
       return false
     }
   }
@@ -626,7 +628,7 @@ export class IPBlocker {
         return await inMemoryStore.getWhitelist()
       }
     } catch (error) {
-      console.error('[IPBlocker] Error getting whitelist:', error)
+      logger.error('[IPBlocker] Error getting whitelist:', error)
       this.useRedis = false
       return await inMemoryStore.getWhitelist()
     }
@@ -643,7 +645,7 @@ export class IPBlocker {
         return await inMemoryStore.getBlacklist()
       }
     } catch (error) {
-      console.error('[IPBlocker] Error getting blacklist:', error)
+      logger.error('[IPBlocker] Error getting blacklist:', error)
       this.useRedis = false
       return await inMemoryStore.getBlacklist()
     }
@@ -674,7 +676,7 @@ export class IPBlocker {
         return await inMemoryStore.getAllBlockedIPs()
       }
     } catch (error) {
-      console.error('[IPBlocker] Error getting blocked IPs:', error)
+      logger.error('[IPBlocker] Error getting blocked IPs:', error)
       this.useRedis = false
       return await inMemoryStore.getAllBlockedIPs()
     }

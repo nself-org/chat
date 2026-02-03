@@ -6,6 +6,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getCostTracker, MODEL_PRICING } from '@/lib/ai/cost-tracker'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
@@ -69,7 +71,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Error getting AI costs:', error)
+    logger.error('Error getting AI costs:', error)
     return NextResponse.json(
       {
         success: false,

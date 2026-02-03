@@ -6,12 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { formatMessageTime, formatMessageTimeTooltip } from '@/lib/date'
 import type { MessageVersion, VersionDiff } from '@/lib/message-history'
@@ -64,19 +59,15 @@ export function EditHistoryItem({
     <div
       className={cn(
         'relative rounded-lg border bg-card p-4 transition-colors',
-        isSelected && 'border-primary bg-primary/5',
-        onSelect && 'cursor-pointer hover:border-primary/50',
+        isSelected && 'bg-primary/5 border-primary',
+        onSelect && 'hover:border-primary/50 cursor-pointer',
         className
       )}
       onClick={onSelect}
     >
       {/* Timeline connector */}
-      {!isFirst && (
-        <div className="absolute -top-4 left-6 h-4 w-0.5 bg-border" />
-      )}
-      {!isLast && (
-        <div className="absolute -bottom-4 left-6 h-4 w-0.5 bg-border" />
-      )}
+      {!isFirst && <div className="absolute -top-4 left-6 h-4 w-0.5 bg-border" />}
+      {!isLast && <div className="absolute -bottom-4 left-6 h-4 w-0.5 bg-border" />}
 
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
@@ -147,11 +138,7 @@ export function EditHistoryItem({
             }}
             className="h-8 w-8 p-0"
           >
-            {isExpanded ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
+            {isExpanded ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </Button>
         </div>
       </div>
@@ -161,10 +148,7 @@ export function EditHistoryItem({
         <div className="mt-3">
           <DiffPreview diff={diff} maxChars={100} />
           <div className="mt-2">
-            <DiffStatsBar
-              charsAdded={diff.charsAdded}
-              charsRemoved={diff.charsRemoved}
-            />
+            <DiffStatsBar charsAdded={diff.charsAdded} charsRemoved={diff.charsRemoved} />
           </div>
         </div>
       )}
@@ -180,20 +164,15 @@ export function EditHistoryItem({
             className="overflow-hidden"
           >
             <div className="mt-4 space-y-3">
-              <div className="rounded-md border bg-muted/30 p-3">
-                <pre className="whitespace-pre-wrap font-mono text-sm">
-                  {content}
-                </pre>
+              <div className="bg-muted/30 rounded-md border p-3">
+                <pre className="whitespace-pre-wrap font-mono text-sm">{content}</pre>
               </div>
               {diff && (
                 <div>
                   <p className="mb-2 text-sm font-medium text-muted-foreground">
                     Changes from previous version:
                   </p>
-                  <DiffStatsBar
-                    charsAdded={diff.charsAdded}
-                    charsRemoved={diff.charsRemoved}
-                  />
+                  <DiffStatsBar charsAdded={diff.charsAdded} charsRemoved={diff.charsRemoved} />
                 </div>
               )}
             </div>
@@ -209,12 +188,7 @@ export function EditHistoryItem({
  */
 export function EditHistoryItemSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'rounded-lg border bg-card p-4',
-        className
-      )}
-    >
+    <div className={cn('rounded-lg border bg-card p-4', className)}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="h-8 w-8 animate-pulse rounded-full bg-muted" />
@@ -257,9 +231,7 @@ export function CompactHistoryItem({
       onClick={onClick}
       className={cn(
         'flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
-        isSelected
-          ? 'bg-primary/10 text-primary'
-          : 'hover:bg-muted',
+        isSelected ? 'bg-primary/10 text-primary' : 'hover:bg-muted',
         className
       )}
     >
@@ -268,19 +240,11 @@ export function CompactHistoryItem({
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="truncate text-sm font-medium">
-            {editedBy.displayName}
-          </span>
-          {isOriginal && (
-            <span className="text-xs text-muted-foreground">(original)</span>
-          )}
-          {isCurrent && (
-            <span className="text-xs text-primary">(current)</span>
-          )}
+          <span className="truncate text-sm font-medium">{editedBy.displayName}</span>
+          {isOriginal && <span className="text-xs text-muted-foreground">(original)</span>}
+          {isCurrent && <span className="text-xs text-primary">(current)</span>}
         </div>
-        <span className="text-xs text-muted-foreground">
-          {formatMessageTime(createdAt)}
-        </span>
+        <span className="text-xs text-muted-foreground">{formatMessageTime(createdAt)}</span>
       </div>
     </button>
   )

@@ -18,11 +18,7 @@ export {
 } from './notification-toggle'
 
 // Keyboard components
-export {
-  KeyboardShortcut,
-  KeyboardShortcutGroup,
-  Kbd,
-} from './keyboard-shortcut'
+export { KeyboardShortcut, KeyboardShortcutGroup, Kbd } from './keyboard-shortcut'
 
 // Security components
 export { ChangePasswordForm } from './change-password-form'

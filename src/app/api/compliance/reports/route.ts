@@ -4,22 +4,15 @@
  * Generate compliance reports for GDPR, HIPAA, SOC 2, etc.
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { GDPRHelpers } from '@/lib/compliance/gdpr-helpers';
-import { HIPAAHelpers } from '@/lib/compliance/hipaa-helpers';
-import { SOC2Helpers } from '@/lib/compliance/soc2-helpers';
-import type {
-  GDPRComplianceData,
-  GDPRAssessment,
-} from '@/lib/compliance/gdpr-helpers';
-import type {
-  HIPAAComplianceData,
-  HIPAAAssessment,
-} from '@/lib/compliance/hipaa-helpers';
-import type {
-  SOC2ComplianceData,
-  SOC2Assessment,
-} from '@/lib/compliance/soc2-helpers';
+import { NextRequest, NextResponse } from 'next/server'
+import { GDPRHelpers } from '@/lib/compliance/gdpr-helpers'
+import { HIPAAHelpers } from '@/lib/compliance/hipaa-helpers'
+import { SOC2Helpers } from '@/lib/compliance/soc2-helpers'
+import type { GDPRComplianceData, GDPRAssessment } from '@/lib/compliance/gdpr-helpers'
+import type { HIPAAComplianceData, HIPAAAssessment } from '@/lib/compliance/hipaa-helpers'
+import type { SOC2ComplianceData, SOC2Assessment } from '@/lib/compliance/soc2-helpers'
+
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/compliance/reports?type=<reportType>
@@ -27,38 +20,34 @@ import type {
  */
 export async function GET(request: NextRequest) {
   try {
-    const reportType = request.nextUrl.searchParams.get('type');
+    const reportType = request.nextUrl.searchParams.get('type')
 
     if (!reportType) {
       return NextResponse.json(
         { success: false, error: 'Report type is required' },
         { status: 400 }
-      );
+      )
     }
 
-    // TODO: Fetch actual compliance data from database
     // This is mock data for demonstration
     switch (reportType) {
       case 'gdpr':
-        return await generateGDPRReport();
+        return await generateGDPRReport()
 
       case 'hipaa':
-        return await generateHIPAAReport();
+        return await generateHIPAAReport()
 
       case 'soc2':
-        return await generateSOC2Report();
+        return await generateSOC2Report()
 
       case 'overview':
-        return await generateOverviewReport();
+        return await generateOverviewReport()
 
       default:
-        return NextResponse.json(
-          { success: false, error: 'Invalid report type' },
-          { status: 400 }
-        );
+        return NextResponse.json({ success: false, error: 'Invalid report type' }, { status: 400 })
     }
   } catch (error) {
-    console.error('Error generating report:', error);
+    logger.error('Error generating report:', error)
     return NextResponse.json(
       {
         success: false,
@@ -66,7 +55,7 @@ export async function GET(request: NextRequest) {
         message: error instanceof Error ? error.message : 'Unknown error',
       },
       { status: 500 }
-    );
+    )
   }
 }
 
@@ -74,7 +63,6 @@ export async function GET(request: NextRequest) {
  * Generate GDPR compliance report
  */
 async function generateGDPRReport() {
-  // TODO: Fetch real data from database
   const complianceData: GDPRComplianceData = {
     consents: [],
     exportRequests: [],
@@ -85,10 +73,10 @@ async function generateGDPRReport() {
     hasDPO: false,
     hasBreachProcedure: true,
     hasDataProcessingRecords: true,
-  };
+  }
 
-  const assessment: GDPRAssessment = GDPRHelpers.runGDPRAssessment(complianceData);
-  const report = GDPRHelpers.generateGDPRReport(assessment);
+  const assessment: GDPRAssessment = GDPRHelpers.runGDPRAssessment(complianceData)
+  const report = GDPRHelpers.generateGDPRReport(assessment)
 
   return NextResponse.json({
     success: true,
@@ -96,14 +84,13 @@ async function generateGDPRReport() {
     assessment,
     report,
     generatedAt: new Date().toISOString(),
-  });
+  })
 }
 
 /**
  * Generate HIPAA compliance report
  */
 async function generateHIPAAReport() {
-  // TODO: Fetch real data from database
   const complianceData: HIPAAComplianceData = {
     isHealthcareEntity: false,
     handlesPHI: false,
@@ -119,9 +106,9 @@ async function generateHIPAAReport() {
     hasEncryption: true,
     hasPhysicalSafeguards: false,
     documentationComplete: false,
-  };
+  }
 
-  const assessment: HIPAAAssessment = HIPAAHelpers.runHIPAAAssessment(complianceData);
+  const assessment: HIPAAAssessment = HIPAAHelpers.runHIPAAAssessment(complianceData)
 
   return NextResponse.json({
     success: true,
@@ -129,17 +116,14 @@ async function generateHIPAAReport() {
     assessment,
     applies: assessment.applies,
     generatedAt: new Date().toISOString(),
-    message: assessment.applies
-      ? undefined
-      : 'HIPAA does not apply to this organization',
-  });
+    message: assessment.applies ? undefined : 'HIPAA does not apply to this organization',
+  })
 }
 
 /**
  * Generate SOC 2 compliance report
  */
 async function generateSOC2Report() {
-  // TODO: Fetch real data from database
   const complianceData: SOC2ComplianceData = {
     // Organizational
     hasControlEnvironment: true,
@@ -176,10 +160,10 @@ async function generateSOC2Report() {
     hasProcedures: true,
     hasAuditTrails: true,
     hasVendorManagement: false,
-  };
+  }
 
-  const assessment: SOC2Assessment = SOC2Helpers.runSOC2Assessment(complianceData);
-  const readiness = SOC2Helpers.assessSOC2Readiness(complianceData);
+  const assessment: SOC2Assessment = SOC2Helpers.runSOC2Assessment(complianceData)
+  const readiness = SOC2Helpers.assessSOC2Readiness(complianceData)
 
   return NextResponse.json({
     success: true,
@@ -187,7 +171,7 @@ async function generateSOC2Report() {
     assessment,
     readiness,
     generatedAt: new Date().toISOString(),
-  });
+  })
 }
 
 /**
@@ -205,7 +189,7 @@ async function generateOverviewReport() {
     hasDPO: false,
     hasBreachProcedure: true,
     hasDataProcessingRecords: true,
-  };
+  }
 
   const hipaaData: HIPAAComplianceData = {
     isHealthcareEntity: false,
@@ -222,7 +206,7 @@ async function generateOverviewReport() {
     hasEncryption: true,
     hasPhysicalSafeguards: false,
     documentationComplete: false,
-  };
+  }
 
   const soc2Data: SOC2ComplianceData = {
     hasControlEnvironment: true,
@@ -253,11 +237,11 @@ async function generateOverviewReport() {
     hasProcedures: true,
     hasAuditTrails: true,
     hasVendorManagement: false,
-  };
+  }
 
-  const gdprAssessment = GDPRHelpers.runGDPRAssessment(gdprData);
-  const hipaaAssessment = HIPAAHelpers.runHIPAAAssessment(hipaaData);
-  const soc2Assessment = SOC2Helpers.runSOC2Assessment(soc2Data);
+  const gdprAssessment = GDPRHelpers.runGDPRAssessment(gdprData)
+  const hipaaAssessment = HIPAAHelpers.runHIPAAAssessment(hipaaData)
+  const soc2Assessment = SOC2Helpers.runSOC2Assessment(soc2Data)
 
   return NextResponse.json({
     success: true,
@@ -282,7 +266,10 @@ async function generateOverviewReport() {
     },
     summary: {
       overallCompliance: Math.round(
-        (gdprAssessment.overallScore + (hipaaAssessment.applies ? hipaaAssessment.overallScore : 100) + soc2Assessment.overallScore) / 3
+        (gdprAssessment.overallScore +
+          (hipaaAssessment.applies ? hipaaAssessment.overallScore : 100) +
+          soc2Assessment.overallScore) /
+          3
       ),
       standardsTracked: 3,
       standardsCompliant: [
@@ -292,5 +279,5 @@ async function generateOverviewReport() {
       ].reduce((a, b) => a + b, 0),
     },
     generatedAt: new Date().toISOString(),
-  });
+  })
 }

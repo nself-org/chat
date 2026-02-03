@@ -150,6 +150,7 @@ export const MESSAGE_BASIC_FRAGMENT = gql`
     channel_id
     user_id
     content
+    content_html
     type
     is_edited
     is_pinned
@@ -172,6 +173,7 @@ export const MESSAGE_FULL_FRAGMENT = gql`
     parent_id
     forwarded_from_id
     content
+    content_html
     type
     is_edited
     is_pinned
@@ -186,6 +188,7 @@ export const MESSAGE_FULL_FRAGMENT = gql`
     parent {
       id
       content
+      content_html
       user {
         ...UserBasic
       }
@@ -387,6 +390,7 @@ export const SEARCH_MESSAGE_RESULT_FRAGMENT = gql`
   fragment SearchMessageResult on nchat_messages {
     id
     content
+    content_html
     type
     created_at
     user {

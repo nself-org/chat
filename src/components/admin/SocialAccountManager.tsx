@@ -11,27 +11,39 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/switch'
-import { AlertCircle, Check, ExternalLink, Loader2, RefreshCw, Trash2, Twitter, Instagram, Linkedin } from 'lucide-react'
+import {
+  AlertCircle,
+  Check,
+  ExternalLink,
+  Loader2,
+  RefreshCw,
+  Trash2,
+  Twitter,
+  Instagram,
+  Linkedin,
+} from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { formatDistanceToNow } from 'date-fns'
 import type { SocialPlatform } from '@/lib/social/types'
 
+import { logger } from '@/lib/logger'
+
 const PLATFORM_ICONS = {
   twitter: Twitter,
   instagram: Instagram,
-  linkedin: Linkedin
+  linkedin: Linkedin,
 }
 
 const PLATFORM_COLORS = {
   twitter: 'bg-blue-500',
   instagram: 'bg-pink-500',
-  linkedin: 'bg-blue-700'
+  linkedin: 'bg-blue-700',
 }
 
 const PLATFORM_NAMES = {
   twitter: 'Twitter/X',
   instagram: 'Instagram',
-  linkedin: 'LinkedIn'
+  linkedin: 'LinkedIn',
 }
 
 export function SocialAccountManager() {
@@ -44,7 +56,7 @@ export function SocialAccountManager() {
     toggleAccountStatus,
     deleteAccount,
     triggerImport,
-    isPlatformConnected
+    isPlatformConnected,
   } = useSocialAccounts()
 
   const [importingId, setImportingId] = useState<string | null>(null)
@@ -60,14 +72,16 @@ export function SocialAccountManager() {
     try {
       await toggleAccountStatus(id, !currentStatus)
     } catch (error) {
-      console.error('Failed to toggle status:', error)
+      logger.error('Failed to toggle status:', error)
     } finally {
       setTogglingId(null)
     }
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to remove this account? All integrations will be deleted.')) {
+    if (
+      !confirm('Are you sure you want to remove this account? All integrations will be deleted.')
+    ) {
       return
     }
 
@@ -75,7 +89,7 @@ export function SocialAccountManager() {
     try {
       await deleteAccount(id)
     } catch (error) {
-      console.error('Failed to delete account:', error)
+      logger.error('Failed to delete account:', error)
     } finally {
       setDeletingId(null)
     }
@@ -85,9 +99,11 @@ export function SocialAccountManager() {
     setImportingId(id)
     try {
       const result = await triggerImport(id)
-      alert(`Import complete!\n\nFetched: ${result.fetched}\nImported: ${result.imported}\nFiltered: ${result.filtered}\nPosted: ${result.posted}`)
+      alert(
+        `Import complete!\n\nFetched: ${result.fetched}\nImported: ${result.imported}\nFiltered: ${result.filtered}\nPosted: ${result.posted}`
+      )
     } catch (error) {
-      console.error('Failed to trigger import:', error)
+      logger.error('Failed to trigger import:', error)
       alert('Import failed. Please try again.')
     } finally {
       setImportingId(null)
@@ -122,7 +138,7 @@ export function SocialAccountManager() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             {(['twitter', 'instagram', 'linkedin'] as const).map((platform) => {
               const Icon = PLATFORM_ICONS[platform]
               const isConnected = isPlatformConnected(platform)
@@ -132,17 +148,17 @@ export function SocialAccountManager() {
                 <Button
                   key={platform}
                   variant={isConnected ? 'outline' : 'default'}
-                  className="h-auto py-4 flex-col gap-2"
+                  className="h-auto flex-col gap-2 py-4"
                   onClick={() => handleConnect(platform)}
                   disabled={isConnected}
                 >
-                  <div className={`p-3 rounded-full ${colorClass} text-white`}>
+                  <div className={`rounded-full p-3 ${colorClass} text-white`}>
                     <Icon className="h-6 w-6" />
                   </div>
                   <span className="font-semibold">{PLATFORM_NAMES[platform]}</span>
                   {isConnected && (
                     <Badge variant="secondary" className="text-xs">
-                      <Check className="h-3 w-3 mr-1" />
+                      <Check className="mr-1 h-3 w-3" />
                       Connected
                     </Badge>
                   )}
@@ -172,10 +188,10 @@ export function SocialAccountManager() {
                 return (
                   <div
                     key={account.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
+                    className="flex items-center justify-between rounded-lg border p-4"
                   >
-                    <div className="flex items-center gap-4 flex-1">
-                      <div className={`p-2 rounded-full ${colorClass} text-white`}>
+                    <div className="flex flex-1 items-center gap-4">
+                      <div className={`rounded-full p-2 ${colorClass} text-white`}>
                         <Icon className="h-5 w-5" />
                       </div>
 
@@ -196,7 +212,7 @@ export function SocialAccountManager() {
                             <>
                               Last polled{' '}
                               {formatDistanceToNow(new Date(account.last_poll_time), {
-                                addSuffix: true
+                                addSuffix: true,
                               })}
                             </>
                           ) : (
@@ -269,7 +285,7 @@ export function SocialAccountManager() {
       {accounts.length === 0 && (
         <Card>
           <CardContent className="py-12">
-            <div className="text-center space-y-2">
+            <div className="space-y-2 text-center">
               <h3 className="text-lg font-semibold">No accounts connected</h3>
               <p className="text-sm text-muted-foreground">
                 Connect your social media accounts to start importing posts
@@ -286,7 +302,7 @@ function getProfileUrl(platform: SocialPlatform, handle: string): string {
   const urls = {
     twitter: `https://twitter.com/${handle}`,
     instagram: `https://instagram.com/${handle}`,
-    linkedin: `https://linkedin.com/in/${handle}`
+    linkedin: `https://linkedin.com/in/${handle}`,
   }
   return urls[platform]
 }

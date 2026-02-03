@@ -4,14 +4,28 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { X, Download, Sparkles, Type, Smile, Search, Square, Circle, SquareCheckBig } from 'lucide-react'
+import {
+  X,
+  Download,
+  Sparkles,
+  Type,
+  Smile,
+  Search,
+  Square,
+  Circle,
+  SquareCheckBig,
+} from 'lucide-react'
 import { unicodeSymbols } from '@/lib/unicode-symbols'
 import { generateIconSVG } from '@/lib/svg-generator'
 
 interface IconGeneratorModalProps {
   isOpen: boolean
   onClose: () => void
-  onGenerate: (dataUrl: string, svgString?: string, variants?: { light?: string; dark?: string; lightSvg?: string; darkSvg?: string }) => void
+  onGenerate: (
+    dataUrl: string,
+    svgString?: string,
+    variants?: { light?: string; dark?: string; lightSvg?: string; darkSvg?: string }
+  ) => void
 }
 
 const presetColors = [
@@ -75,10 +89,10 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
     // Set canvas size
     canvas.width = 512
     canvas.height = 512
-    
+
     // Clear canvas
     ctx.clearRect(0, 0, 512, 512)
-    
+
     // Create clipping path based on shape
     ctx.save()
     if (iconShape === 'circle') {
@@ -99,7 +113,7 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
       ctx.quadraticCurveTo(0, 0, radius, 0)
       ctx.clip()
     }
-    
+
     // Draw background
     if (bgType === 'solid') {
       ctx.fillStyle = bgColor1
@@ -121,16 +135,16 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, 512, 512)
     }
-    
+
     ctx.restore()
-    
+
     // Draw text or symbol
     ctx.fillStyle = textColor
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    
+
     const content = inputType === 'symbol' ? selectedSymbol : text
-    
+
     if (inputType === 'symbol') {
       ctx.font = '280px Arial'
     } else {
@@ -138,7 +152,7 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
       const fontSize = text.length === 1 ? 320 : text.length === 2 ? 240 : 180
       ctx.font = `bold ${fontSize}px Inter, system-ui, sans-serif`
     }
-    
+
     ctx.fillText(content, 256, 256)
 
     // Generate SVG string
@@ -151,12 +165,12 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
       bgColor2,
       gradientDirection,
       iconShape,
-      size: 512
+      size: 512,
     })
-    
+
     // Convert to data URL
     const dataUrl = canvas.toDataURL('image/png')
-    
+
     // Generate variants if requested
     let variants: { light?: string; dark?: string; lightSvg?: string; darkSvg?: string } | undefined
     if (generateVariants) {
@@ -168,9 +182,9 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
         bgType: 'solid',
         bgColor1: '#FFFFFF', // White background
         iconShape,
-        size: 512
+        size: 512,
       })
-      
+
       // Generate dark variant (light text on dark background)
       const darkSvg = generateIconSVG({
         content,
@@ -179,21 +193,21 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
         bgType: 'solid',
         bgColor1: '#18181B', // Dark background
         iconShape,
-        size: 512
+        size: 512,
       })
-      
+
       // Convert SVGs to data URLs
       const lightDataUrl = `data:image/svg+xml;base64,${btoa(lightSvg)}`
       const darkDataUrl = `data:image/svg+xml;base64,${btoa(darkSvg)}`
-      
+
       variants = {
         light: lightDataUrl,
         dark: darkDataUrl,
         lightSvg,
-        darkSvg
+        darkSvg,
       }
     }
-    
+
     onGenerate(dataUrl, svgString, variants)
     onClose()
   }
@@ -215,13 +229,13 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
     if (!searchQuery) {
       return unicodeSymbols[selectedCategory as keyof typeof unicodeSymbols].symbols
     }
-    
+
     // Search across all categories
     const allSymbols: string[] = []
-    Object.values(unicodeSymbols).forEach(category => {
+    Object.values(unicodeSymbols).forEach((category) => {
       allSymbols.push(...category.symbols)
     })
-    
+
     // For emoji/symbol search, we can't use toLowerCase
     // Just return all symbols since they can't be searched by text
     return allSymbols
@@ -230,36 +244,38 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-zinc-950 rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-zinc-200 dark:border-zinc-800">
-        <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 bg-gradient-to-r from-sky-50 to-indigo-50 dark:from-zinc-900 dark:to-zinc-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="border-b border-zinc-200 bg-gradient-to-r from-sky-50 to-indigo-50 p-4 dark:border-zinc-800 dark:from-zinc-900 dark:to-zinc-900">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-gradient-to-br from-sky-500 to-indigo-600 rounded-lg">
+              <div className="rounded-lg bg-gradient-to-br from-sky-500 to-indigo-600 p-1.5">
                 <Sparkles className="h-4 w-4 text-white" />
               </div>
-              <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">Icon Generator</h2>
+              <h2 className="text-lg font-semibold text-zinc-900 dark:text-white">
+                Icon Generator
+              </h2>
             </div>
             <button
               onClick={onClose}
-              className="p-1.5 hover:bg-zinc-200 dark:hover:bg-zinc-800 rounded-lg transition-colors"
+              className="rounded-lg p-1.5 transition-colors hover:bg-zinc-200 dark:hover:bg-zinc-800"
             >
               <X className="h-4 w-4 text-zinc-600 dark:text-zinc-400" />
             </button>
           </div>
         </div>
 
-        <div className="p-4 space-y-4">
+        <div className="space-y-4 p-4">
           {/* Input Type Selection */}
           <div>
             <Label>Content Type</Label>
-            <div className="flex gap-2 mt-2">
+            <div className="mt-2 flex gap-2">
               <Button
                 variant={inputType === 'text' ? 'default' : 'outline'}
                 onClick={() => setInputType('text')}
                 className="flex-1"
               >
-                <Type className="h-4 w-4 mr-2" />
+                <Type className="mr-2 h-4 w-4" />
                 Text (1-3 letters)
               </Button>
               <Button
@@ -267,7 +283,7 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
                 onClick={() => setInputType('symbol')}
                 className="flex-1"
               >
-                <Smile className="h-4 w-4 mr-2" />
+                <Smile className="mr-2 h-4 w-4" />
                 Symbol/Emoji
               </Button>
             </div>
@@ -291,7 +307,7 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
               <div>
                 <Label>Search Symbols</Label>
                 <div className="relative mt-1.5">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                  <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
                   <Input
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -304,14 +320,14 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
               {!searchQuery && (
                 <div>
                   <Label>Categories</Label>
-                  <div className="flex flex-wrap gap-1.5 mt-1.5">
+                  <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {Object.entries(unicodeSymbols).map(([key, category]) => (
                       <Button
                         key={key}
                         variant={selectedCategory === key ? 'default' : 'outline'}
                         onClick={() => setSelectedCategory(key)}
                         size="sm"
-                        className="h-7 text-xs px-2.5"
+                        className="h-7 px-2.5 text-xs"
                       >
                         {category.name}
                       </Button>
@@ -322,19 +338,20 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
 
               <div>
                 <Label>
-                  {searchQuery 
+                  {searchQuery
                     ? `Search Results (${getFilteredSymbols().length})`
-                    : unicodeSymbols[selectedCategory as keyof typeof unicodeSymbols].name
-                  }
+                    : unicodeSymbols[selectedCategory as keyof typeof unicodeSymbols].name}
                 </Label>
-                <div className="mt-1.5 p-3 bg-white dark:bg-zinc-950 rounded-lg max-h-48 overflow-y-auto border border-zinc-200 dark:border-zinc-700">
+                <div className="mt-1.5 max-h-48 overflow-y-auto rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-950">
                   <div className="grid grid-cols-12 gap-1">
                     {getFilteredSymbols().map((symbol, index) => (
                       <button
                         key={`${symbol}-${index}`}
                         onClick={() => setSelectedSymbol(symbol)}
-                        className={`p-2 text-xl text-zinc-900 dark:text-zinc-100 hover:bg-sky-50 dark:hover:bg-zinc-800 rounded transition-colors ${
-                          selectedSymbol === symbol ? 'bg-sky-100 dark:bg-zinc-800 ring-2 ring-sky-500' : ''
+                        className={`rounded p-2 text-xl text-zinc-900 transition-colors hover:bg-sky-50 dark:text-zinc-100 dark:hover:bg-zinc-800 ${
+                          selectedSymbol === symbol
+                            ? 'bg-sky-100 ring-2 ring-sky-500 dark:bg-zinc-800'
+                            : ''
                         }`}
                         title={symbol}
                       >
@@ -343,7 +360,7 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
                     ))}
                   </div>
                   {searchQuery && getFilteredSymbols().length === 0 && (
-                    <p className="text-center text-zinc-500 dark:text-zinc-400 py-4">
+                    <p className="py-4 text-center text-zinc-500 dark:text-zinc-400">
                       No symbols found matching "{searchQuery}"
                     </p>
                   )}
@@ -351,7 +368,7 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="text-3xl p-2 bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 rounded-lg border border-zinc-200 dark:border-zinc-700">
+                <div className="rounded-lg border border-zinc-200 bg-white p-2 text-3xl text-zinc-900 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100">
                   {selectedSymbol}
                 </div>
                 <Input
@@ -367,11 +384,11 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
           {/* Text Color */}
           <div>
             <Label>Text Color</Label>
-            <div className="flex gap-2 mt-1.5">
+            <div className="mt-1.5 flex gap-2">
               <div className="flex gap-1.5">
                 <button
                   onClick={() => textColorInputRef.current?.click()}
-                  className="w-7 h-7 rounded border-2 border-zinc-300 dark:border-zinc-700 hover:scale-110 transition-transform cursor-pointer"
+                  className="h-7 w-7 cursor-pointer rounded border-2 border-zinc-300 transition-transform hover:scale-110 dark:border-zinc-700"
                   style={{ backgroundColor: textColor }}
                   title="Click to pick color"
                 />
@@ -382,11 +399,20 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
                   onChange={(e) => setTextColor(e.target.value)}
                   className="hidden"
                 />
-                {['#FFFFFF', '#18181B', '#6B7280', '#EF4444', '#10B981', '#3B82F6', '#8B5CF6', '#F59E0B'].map(color => (
+                {[
+                  '#FFFFFF',
+                  '#18181B',
+                  '#6B7280',
+                  '#EF4444',
+                  '#10B981',
+                  '#3B82F6',
+                  '#8B5CF6',
+                  '#F59E0B',
+                ].map((color) => (
                   <button
                     key={color}
                     onClick={() => setTextColor(color)}
-                    className="w-7 h-7 rounded border-2 border-zinc-300 dark:border-zinc-700 hover:scale-110 transition-transform"
+                    className="h-7 w-7 rounded border-2 border-zinc-300 transition-transform hover:scale-110 dark:border-zinc-700"
                     style={{ backgroundColor: color }}
                   />
                 ))}
@@ -395,7 +421,7 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
                 value={textColor}
                 onChange={(e) => setTextColor(e.target.value)}
                 placeholder="#FFFFFF"
-                className="flex-1 h-7 text-xs"
+                className="h-7 flex-1 text-xs"
               />
             </div>
           </div>
@@ -433,7 +459,7 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
               </Button>
             </div>
           </div>
-          
+
           {/* Generate Variants */}
           <div className="flex items-center gap-2">
             <input
@@ -441,9 +467,9 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
               id="generateVariants"
               checked={generateVariants}
               onChange={(e) => setGenerateVariants(e.target.checked)}
-              className="rounded border-zinc-300 dark:border-zinc-700 text-sky-600 focus:ring-sky-500"
+              className="rounded border-zinc-300 text-sky-600 focus:ring-sky-500 dark:border-zinc-700"
             />
-            <Label htmlFor="generateVariants" className="text-sm cursor-pointer">
+            <Label htmlFor="generateVariants" className="cursor-pointer text-sm">
               Generate light/dark variants
             </Label>
           </div>
@@ -473,14 +499,14 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
 
           {/* Background Colors */}
           <div className="space-y-2">
-            <div className="flex gap-2 items-end">
+            <div className="flex items-end gap-2">
               {/* Color inputs */}
               <div className="flex-1">
                 <Label className="text-xs">{bgType === 'gradient' ? 'Start' : 'Color'}</Label>
-                <div className="flex gap-1.5 mt-1">
+                <div className="mt-1 flex gap-1.5">
                   <button
                     onClick={() => bgColor1InputRef.current?.click()}
-                    className="w-8 h-7 rounded border-2 border-zinc-300 dark:border-zinc-700 shadow-sm cursor-pointer hover:scale-105 transition-transform"
+                    className="h-7 w-8 cursor-pointer rounded border-2 border-zinc-300 shadow-sm transition-transform hover:scale-105 dark:border-zinc-700"
                     style={{ backgroundColor: bgColor1 }}
                     title="Click to pick color"
                   />
@@ -495,18 +521,18 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
                     value={bgColor1}
                     onChange={(e) => setBgColor1(e.target.value)}
                     placeholder="#38BDF8"
-                    className="flex-1 h-7 text-xs"
+                    className="h-7 flex-1 text-xs"
                   />
                 </div>
               </div>
-              
+
               {bgType === 'gradient' && (
                 <div className="flex-1">
                   <Label className="text-xs">End</Label>
-                  <div className="flex gap-1.5 mt-1">
+                  <div className="mt-1 flex gap-1.5">
                     <button
                       onClick={() => bgColor2InputRef.current?.click()}
-                      className="w-8 h-7 rounded border-2 border-zinc-300 dark:border-zinc-700 shadow-sm cursor-pointer hover:scale-105 transition-transform"
+                      className="h-7 w-8 cursor-pointer rounded border-2 border-zinc-300 shadow-sm transition-transform hover:scale-105 dark:border-zinc-700"
                       style={{ backgroundColor: bgColor2 }}
                       title="Click to pick color"
                     />
@@ -521,47 +547,52 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
                       value={bgColor2}
                       onChange={(e) => setBgColor2(e.target.value)}
                       placeholder="#8B5CF6"
-                      className="flex-1 h-7 text-xs"
+                      className="h-7 flex-1 text-xs"
                     />
                   </div>
                 </div>
               )}
             </div>
-            
+
             {/* Quick colors */}
             <div className="flex gap-1.5">
-              {presetColors.filter(c => c.group === 'primary').slice(0, 10).map((color) => (
-                <button
-                  key={color.value}
-                  onClick={() => {
-                    setBgColor1(color.value)
-                    if (bgType === 'gradient' && color.pair) {
-                      setBgColor2(color.pair)
-                    }
-                  }}
-                  className="w-7 h-7 rounded border border-zinc-300 dark:border-zinc-700 hover:scale-110 transition-transform"
-                  style={{ backgroundColor: color.value }}
-                  title={color.name}
-                />
-              ))}
-            </div>
-            
-            {bgType === 'gradient' && (
-              <div className="flex gap-1.5">
-                {presetColors.filter(c => c.group === 'gradient').map((color) => (
+              {presetColors
+                .filter((c) => c.group === 'primary')
+                .slice(0, 10)
+                .map((color) => (
                   <button
-                    key={color.name}
+                    key={color.value}
                     onClick={() => {
                       setBgColor1(color.value)
-                      setBgColor2(color.pair!)
+                      if (bgType === 'gradient' && color.pair) {
+                        setBgColor2(color.pair)
+                      }
                     }}
-                    className="h-7 flex-1 rounded border border-zinc-300 dark:border-zinc-700 hover:scale-105 transition-transform"
-                    style={{ 
-                      background: `linear-gradient(to right, ${color.value}, ${color.pair})`
-                    }}
+                    className="h-7 w-7 rounded border border-zinc-300 transition-transform hover:scale-110 dark:border-zinc-700"
+                    style={{ backgroundColor: color.value }}
                     title={color.name}
                   />
                 ))}
+            </div>
+
+            {bgType === 'gradient' && (
+              <div className="flex gap-1.5">
+                {presetColors
+                  .filter((c) => c.group === 'gradient')
+                  .map((color) => (
+                    <button
+                      key={color.name}
+                      onClick={() => {
+                        setBgColor1(color.value)
+                        setBgColor2(color.pair!)
+                      }}
+                      className="h-7 flex-1 rounded border border-zinc-300 transition-transform hover:scale-105 dark:border-zinc-700"
+                      style={{
+                        background: `linear-gradient(to right, ${color.value}, ${color.pair})`,
+                      }}
+                      title={color.name}
+                    />
+                  ))}
               </div>
             )}
           </div>
@@ -569,14 +600,14 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
           {bgType === 'gradient' && (
             <div>
               <Label className="text-xs">Direction</Label>
-              <div className="flex gap-1.5 mt-1.5">
+              <div className="mt-1.5 flex gap-1.5">
                 {gradientDirections.map((dir) => (
                   <Button
                     key={dir.value}
                     variant={gradientDirection === dir.value ? 'default' : 'outline'}
                     onClick={() => setGradientDirection(dir.value)}
                     size="sm"
-                    className="h-7 text-xs px-2 flex-1"
+                    className="h-7 flex-1 px-2 text-xs"
                   >
                     {dir.name.split(' ')[0]}
                   </Button>
@@ -586,47 +617,69 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
           )}
 
           {/* Preview */}
-          <div className="p-6 -mx-4 bg-gradient-to-br from-zinc-50 to-zinc-100 dark:from-zinc-900 dark:to-zinc-800 border-y border-zinc-200 dark:border-zinc-800">
+          <div className="-mx-4 border-y border-zinc-200 bg-gradient-to-br from-zinc-50 to-zinc-100 p-6 dark:border-zinc-800 dark:from-zinc-900 dark:to-zinc-800">
             <div className="flex justify-center gap-6">
               <div className="text-center">
-                <div 
-                  className={`w-24 h-24 flex items-center justify-center font-bold shadow-lg ${
-                    iconShape === 'circle' ? 'rounded-full' : 
-                    iconShape === 'rounded' ? 'rounded-2xl' : ''
+                <div
+                  className={`flex h-24 w-24 items-center justify-center font-bold shadow-lg ${
+                    iconShape === 'circle'
+                      ? 'rounded-full'
+                      : iconShape === 'rounded'
+                        ? 'rounded-2xl'
+                        : ''
                   }`}
                   style={{
-                    background: bgType === 'solid' 
-                      ? bgColor1 
-                      : gradientDirection === 'radial'
-                      ? `radial-gradient(circle, ${bgColor1}, ${bgColor2})`
-                      : `linear-gradient(${gradientDirection}, ${bgColor1}, ${bgColor2})`,
+                    background:
+                      bgType === 'solid'
+                        ? bgColor1
+                        : gradientDirection === 'radial'
+                          ? `radial-gradient(circle, ${bgColor1}, ${bgColor2})`
+                          : `linear-gradient(${gradientDirection}, ${bgColor1}, ${bgColor2})`,
                     color: textColor,
-                    fontSize: inputType === 'symbol' ? '48px' : text.length === 1 ? '56px' : text.length === 2 ? '42px' : '32px'
+                    fontSize:
+                      inputType === 'symbol'
+                        ? '48px'
+                        : text.length === 1
+                          ? '56px'
+                          : text.length === 2
+                            ? '42px'
+                            : '32px',
                   }}
                 >
                   {inputType === 'symbol' ? selectedSymbol : text}
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">Large</p>
+                <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">Large</p>
               </div>
               <div className="text-center">
-                <div 
-                  className={`w-12 h-12 flex items-center justify-center font-bold shadow-md ${
-                    iconShape === 'circle' ? 'rounded-full' : 
-                    iconShape === 'rounded' ? 'rounded-xl' : ''
+                <div
+                  className={`flex h-12 w-12 items-center justify-center font-bold shadow-md ${
+                    iconShape === 'circle'
+                      ? 'rounded-full'
+                      : iconShape === 'rounded'
+                        ? 'rounded-xl'
+                        : ''
                   }`}
                   style={{
-                    background: bgType === 'solid' 
-                      ? bgColor1 
-                      : gradientDirection === 'radial'
-                      ? `radial-gradient(circle, ${bgColor1}, ${bgColor2})`
-                      : `linear-gradient(${gradientDirection}, ${bgColor1}, ${bgColor2})`,
+                    background:
+                      bgType === 'solid'
+                        ? bgColor1
+                        : gradientDirection === 'radial'
+                          ? `radial-gradient(circle, ${bgColor1}, ${bgColor2})`
+                          : `linear-gradient(${gradientDirection}, ${bgColor1}, ${bgColor2})`,
                     color: textColor,
-                    fontSize: inputType === 'symbol' ? '24px' : text.length === 1 ? '28px' : text.length === 2 ? '20px' : '16px'
+                    fontSize:
+                      inputType === 'symbol'
+                        ? '24px'
+                        : text.length === 1
+                          ? '28px'
+                          : text.length === 2
+                            ? '20px'
+                            : '16px',
                   }}
                 >
                   {inputType === 'symbol' ? selectedSymbol : text}
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-2">Small</p>
+                <p className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">Small</p>
               </div>
             </div>
           </div>
@@ -635,17 +688,17 @@ export function IconGeneratorModal({ isOpen, onClose, onGenerate }: IconGenerato
           <canvas ref={canvasRef} className="hidden" />
         </div>
 
-        <div className="p-4 border-t border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 flex justify-end gap-2">
+        <div className="flex justify-end gap-2 border-t border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-800 dark:bg-zinc-900">
           <Button variant="outline" size="sm" onClick={onClose}>
             Cancel
           </Button>
-          <Button 
+          <Button
             onClick={generateIcon}
             disabled={inputType === 'text' ? !text : !selectedSymbol}
             size="sm"
-            className="bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white"
+            className="bg-gradient-to-r from-sky-600 to-indigo-600 text-white hover:from-sky-700 hover:to-indigo-700"
           >
-            <Download className="h-3.5 w-3.5 mr-1.5" />
+            <Download className="mr-1.5 h-3.5 w-3.5" />
             Generate
           </Button>
         </div>

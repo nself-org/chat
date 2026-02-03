@@ -1,37 +1,37 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import type { SavedMessage } from '@/lib/saved';
-import { SavedMessageCard } from './SavedMessageCard';
-import { SavedEmpty } from './SavedEmpty';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import type { SavedMessage } from '@/lib/saved'
+import { SavedMessageCard } from './SavedMessageCard'
+import { SavedEmpty } from './SavedEmpty'
 
 export interface SavedMessageListProps {
   /** List of saved messages */
-  savedMessages: SavedMessage[];
+  savedMessages: SavedMessage[]
   /** Callback to navigate to message */
-  onJumpToMessage?: (messageId: string, channelId: string) => void;
+  onJumpToMessage?: (messageId: string, channelId: string) => void
   /** Callback to unsave a message */
-  onUnsave?: (saved: SavedMessage) => void;
+  onUnsave?: (saved: SavedMessage) => void
   /** Callback to toggle star */
-  onToggleStar?: (saved: SavedMessage) => void;
+  onToggleStar?: (saved: SavedMessage) => void
   /** Callback to add to collection */
-  onAddToCollection?: (saved: SavedMessage) => void;
+  onAddToCollection?: (saved: SavedMessage) => void
   /** Callback to edit note */
-  onEditNote?: (saved: SavedMessage) => void;
+  onEditNote?: (saved: SavedMessage) => void
   /** Callback to set reminder */
-  onSetReminder?: (saved: SavedMessage) => void;
+  onSetReminder?: (saved: SavedMessage) => void
   /** Loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Compact display mode */
-  compact?: boolean;
+  compact?: boolean
   /** Max height for scroll area */
-  maxHeight?: string;
+  maxHeight?: string
   /** Show empty state */
-  showEmpty?: boolean;
+  showEmpty?: boolean
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -55,11 +55,8 @@ export function SavedMessageList({
     return (
       <div className={cn('space-y-3 p-4', className)}>
         {[1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="animate-pulse rounded-lg border bg-card p-4"
-          >
-            <div className="flex items-center gap-2 mb-3">
+          <div key={i} className="animate-pulse rounded-lg border bg-card p-4">
+            <div className="mb-3 flex items-center gap-2">
               <div className="h-8 w-8 rounded-full bg-muted" />
               <div className="space-y-1">
                 <div className="h-4 w-24 rounded bg-muted" />
@@ -73,11 +70,11 @@ export function SavedMessageList({
           </div>
         ))}
       </div>
-    );
+    )
   }
 
   if (savedMessages.length === 0 && showEmpty) {
-    return <SavedEmpty />;
+    return <SavedEmpty />
   }
 
   const content = (
@@ -96,15 +93,15 @@ export function SavedMessageList({
         />
       ))}
     </div>
-  );
+  )
 
   if (maxHeight) {
     return (
       <ScrollArea className={cn('w-full', className)} style={{ maxHeight }}>
         {content}
       </ScrollArea>
-    );
+    )
   }
 
-  return <div className={className}>{content}</div>;
+  return <div className={className}>{content}</div>
 }

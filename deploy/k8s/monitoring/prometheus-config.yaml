@@ -284,8 +284,8 @@ spec:
         app.kubernetes.io/name: prometheus
         app.kubernetes.io/component: monitoring
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "9090"
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '9090'
     spec:
       serviceAccountName: prometheus
       containers:
@@ -310,11 +310,11 @@ spec:
               mountPath: /prometheus
           resources:
             requests:
-              cpu: "500m"
-              memory: "1Gi"
+              cpu: '500m'
+              memory: '1Gi'
             limits:
-              cpu: "2000m"
-              memory: "4Gi"
+              cpu: '2000m'
+              memory: '4Gi'
           livenessProbe:
             httpGet:
               path: /-/healthy
@@ -350,21 +350,21 @@ kind: ClusterRole
 metadata:
   name: prometheus
 rules:
-  - apiGroups: [""]
+  - apiGroups: ['']
     resources:
       - nodes
       - nodes/proxy
       - services
       - endpoints
       - pods
-    verbs: ["get", "list", "watch"]
+    verbs: ['get', 'list', 'watch']
   - apiGroups:
       - extensions
     resources:
       - ingresses
-    verbs: ["get", "list", "watch"]
-  - nonResourceURLs: ["/metrics"]
-    verbs: ["get"]
+    verbs: ['get', 'list', 'watch']
+  - nonResourceURLs: ['/metrics']
+    verbs: ['get']
 
 ---
 # ClusterRoleBinding for Prometheus

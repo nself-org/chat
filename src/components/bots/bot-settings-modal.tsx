@@ -73,9 +73,7 @@ export function BotSettingsModal({
   onViewProfile,
 }: BotSettingsModalProps) {
   const [activeTab, setActiveTab] = useState('info')
-  const [editedPermissions, setEditedPermissions] = useState<
-    Record<string, BotPermission[]>
-  >({})
+  const [editedPermissions, setEditedPermissions] = useState<Record<string, BotPermission[]>>({})
   const [saving, setSaving] = useState(false)
   const [removeDialogOpen, setRemoveDialogOpen] = useState(false)
   const [channelToRemove, setChannelToRemove] = useState<string | null>(null)
@@ -92,10 +90,7 @@ export function BotSettingsModal({
     }
   }, [installations])
 
-  const handlePermissionChange = (
-    channelId: string,
-    permissions: BotPermission[]
-  ) => {
+  const handlePermissionChange = (channelId: string, permissions: BotPermission[]) => {
     setEditedPermissions((prev) => ({
       ...prev,
       [channelId]: permissions,
@@ -160,18 +155,12 @@ export function BotSettingsModal({
               <div className="flex-1">
                 <div className="flex items-center gap-2">
                   <DialogTitle className="text-xl">{bot.name}</DialogTitle>
-                  {bot.verified && (
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                  )}
+                  {bot.verified && <CheckCircle className="h-5 w-5 text-primary" />}
                 </div>
-                <DialogDescription className="mt-1">
-                  {bot.description}
-                </DialogDescription>
-                <div className="flex items-center gap-2 mt-2">
+                <DialogDescription className="mt-1">{bot.description}</DialogDescription>
+                <div className="mt-2 flex items-center gap-2">
                   <Badge variant="secondary">{bot.status}</Badge>
-                  {bot.category && (
-                    <Badge variant="outline">{bot.category}</Badge>
-                  )}
+                  {bot.category && <Badge variant="outline">{bot.category}</Badge>}
                 </div>
               </div>
             </div>
@@ -180,9 +169,7 @@ export function BotSettingsModal({
           <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-4">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="info">Info</TabsTrigger>
-              <TabsTrigger value="channels">
-                Channels ({installations.length})
-              </TabsTrigger>
+              <TabsTrigger value="channels">Channels ({installations.length})</TabsTrigger>
               <TabsTrigger value="permissions">Permissions</TabsTrigger>
             </TabsList>
 
@@ -197,7 +184,7 @@ export function BotSettingsModal({
                         href={bot.website}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-center gap-1"
+                        className="flex items-center gap-1 text-primary hover:underline"
                       >
                         {new URL(bot.website).hostname}
                         <ExternalLink className="h-3 w-3" />
@@ -214,7 +201,7 @@ export function BotSettingsModal({
                         href={bot.supportUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-center gap-1"
+                        className="flex items-center gap-1 text-primary hover:underline"
                       >
                         Get help
                         <ExternalLink className="h-3 w-3" />
@@ -231,7 +218,7 @@ export function BotSettingsModal({
                         href={bot.privacyPolicyUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-primary hover:underline flex items-center gap-1"
+                        className="flex items-center gap-1 text-primary hover:underline"
                       >
                         View policy
                         <ExternalLink className="h-3 w-3" />
@@ -240,11 +227,7 @@ export function BotSettingsModal({
                   />
                 )}
                 {bot.owner && (
-                  <InfoRow
-                    icon={Shield}
-                    label="Developer"
-                    value={bot.owner.displayName}
-                  />
+                  <InfoRow icon={Shield} label="Developer" value={bot.owner.displayName} />
                 )}
               </div>
 
@@ -267,7 +250,7 @@ export function BotSettingsModal({
               <ScrollArea className="h-[300px] pr-4">
                 <div className="space-y-3">
                   {installations.length === 0 ? (
-                    <div className="text-center py-8 text-muted-foreground">
+                    <div className="py-8 text-center text-muted-foreground">
                       This bot is not installed in any channels
                     </div>
                   ) : (
@@ -286,9 +269,7 @@ export function BotSettingsModal({
                           variant="ghost"
                           size="sm"
                           className="text-destructive hover:text-destructive"
-                          onClick={() =>
-                            handleRemoveClick(installation.channelId)
-                          }
+                          onClick={() => handleRemoveClick(installation.channelId)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
@@ -301,7 +282,7 @@ export function BotSettingsModal({
 
             <TabsContent value="permissions" className="mt-4">
               {installations.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="py-8 text-center text-muted-foreground">
                   Install the bot in a channel to manage permissions
                 </div>
               ) : installations.length === 1 ? (
@@ -309,21 +290,15 @@ export function BotSettingsModal({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Hash className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-medium">
-                        {installations[0].channel?.name}
-                      </span>
+                      <span className="font-medium">{installations[0].channel?.name}</span>
                     </div>
                     {hasPermissionChanges(installations[0].channelId) && (
                       <Button
                         size="sm"
-                        onClick={() =>
-                          handleSavePermissions(installations[0].channelId)
-                        }
+                        onClick={() => handleSavePermissions(installations[0].channelId)}
                         disabled={saving}
                       >
-                        {saving && (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        )}
+                        {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                         Save Changes
                       </Button>
                     )}
@@ -335,10 +310,7 @@ export function BotSettingsModal({
                         installations[0].permissions
                       }
                       onChange={(perms) =>
-                        handlePermissionChange(
-                          installations[0].channelId,
-                          perms
-                        )
+                        handlePermissionChange(installations[0].channelId, perms)
                       }
                       showDescriptions
                     />
@@ -348,10 +320,7 @@ export function BotSettingsModal({
                 <ScrollArea className="h-[300px] pr-4">
                   <div className="space-y-4">
                     {installations.map((installation) => (
-                      <div
-                        key={installation.id}
-                        className="rounded-lg border p-3 space-y-3"
-                      >
+                      <div key={installation.id} className="space-y-3 rounded-lg border p-3">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <Hash className="h-4 w-4 text-muted-foreground" />
@@ -363,22 +332,17 @@ export function BotSettingsModal({
                             <Button
                               size="sm"
                               variant="outline"
-                              onClick={() =>
-                                handleSavePermissions(installation.channelId)
-                              }
+                              onClick={() => handleSavePermissions(installation.channelId)}
                               disabled={saving}
                             >
-                              {saving && (
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              )}
+                              {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                               Save
                             </Button>
                           )}
                         </div>
                         <BotPermissionsCompact
                           permissions={
-                            editedPermissions[installation.channelId] ||
-                            installation.permissions
+                            editedPermissions[installation.channelId] || installation.permissions
                           }
                         />
                       </div>
@@ -391,7 +355,7 @@ export function BotSettingsModal({
 
           <Separator className="my-4" />
 
-          <DialogFooter className="flex-col sm:flex-row gap-2">
+          <DialogFooter className="flex-col gap-2 sm:flex-row">
             <Button
               variant="destructive"
               className="w-full sm:w-auto"
@@ -421,17 +385,15 @@ export function BotSettingsModal({
             <AlertDialogDescription>
               {channelToRemove ? (
                 <>
-                  Are you sure you want to remove <strong>{bot.name}</strong>{' '}
-                  from this channel? The bot will no longer be able to access
-                  messages or send notifications in this channel.
+                  Are you sure you want to remove <strong>{bot.name}</strong> from this channel? The
+                  bot will no longer be able to access messages or send notifications in this
+                  channel.
                 </>
               ) : (
                 <>
-                  Are you sure you want to remove <strong>{bot.name}</strong>{' '}
-                  from your entire workspace? This will remove it from all{' '}
-                  {installations.length} channel
-                  {installations.length !== 1 ? 's' : ''} where it&apos;s
-                  installed.
+                  Are you sure you want to remove <strong>{bot.name}</strong> from your entire
+                  workspace? This will remove it from all {installations.length} channel
+                  {installations.length !== 1 ? 's' : ''} where it&apos;s installed.
                 </>
               )}
             </AlertDialogDescription>
@@ -440,7 +402,7 @@ export function BotSettingsModal({
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleConfirmRemove}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               disabled={removing}
             >
               {removing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

@@ -160,7 +160,7 @@ export function getScheduledMessage(scheduleId: string): ScheduledMessage | unde
  */
 export function getUserScheduledMessages(userId: UserId): ScheduledMessage[] {
   return Array.from(scheduledMessages.values())
-    .filter(m => m.userId === userId && m.status === 'pending')
+    .filter((m) => m.userId === userId && m.status === 'pending')
     .sort((a, b) => a.sendAt.getTime() - b.sendAt.getTime())
 }
 
@@ -169,7 +169,7 @@ export function getUserScheduledMessages(userId: UserId): ScheduledMessage[] {
  */
 export function getChannelScheduledMessages(channelId: ChannelId): ScheduledMessage[] {
   return Array.from(scheduledMessages.values())
-    .filter(m => m.channelId === channelId && m.status === 'pending')
+    .filter((m) => m.channelId === channelId && m.status === 'pending')
     .sort((a, b) => a.sendAt.getTime() - b.sendAt.getTime())
 }
 
@@ -369,7 +369,7 @@ export function getRecurringTask(taskId: string): RecurringTask | undefined {
  */
 export function getRecurringTasks(userId: UserId): RecurringTask[] {
   return Array.from(recurringTasks.values())
-    .filter(t => t.userId === userId && t.status === 'active')
+    .filter((t) => t.userId === userId && t.status === 'active')
     .sort((a, b) => a.nextRun.getTime() - b.nextRun.getTime())
 }
 

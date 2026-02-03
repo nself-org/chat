@@ -29,7 +29,7 @@ export function PropsTable({ props, className }: PropsTableProps) {
     <div className={cn('overflow-hidden rounded-lg border', className)}>
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b bg-muted/50">
+          <tr className="bg-muted/50 border-b">
             <th className="px-4 py-3 text-left font-semibold">Prop</th>
             <th className="px-4 py-3 text-left font-semibold">Type</th>
             <th className="px-4 py-3 text-left font-semibold">Default</th>
@@ -47,7 +47,7 @@ export function PropsTable({ props, className }: PropsTableProps) {
             >
               <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
-                  <code className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-primary">
+                  <code className="bg-primary/10 rounded px-1.5 py-0.5 font-mono text-primary">
                     {prop.name}
                   </code>
                   {prop.required && (
@@ -71,9 +71,7 @@ export function PropsTable({ props, className }: PropsTableProps) {
                   <span className="text-muted-foreground">-</span>
                 )}
               </td>
-              <td className="px-4 py-3 text-muted-foreground">
-                {prop.description}
-              </td>
+              <td className="px-4 py-3 text-muted-foreground">{prop.description}</td>
             </tr>
           ))}
         </tbody>
@@ -92,7 +90,7 @@ export function PropsList({ props, className }: PropsTableProps) {
       {props.map((prop) => (
         <div key={prop.name} className="flex flex-col gap-1">
           <dt className="flex items-center gap-2">
-            <code className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-sm text-primary">
+            <code className="bg-primary/10 rounded px-1.5 py-0.5 font-mono text-sm text-primary">
               {prop.name}
             </code>
             <code className="text-xs text-muted-foreground">{prop.type}</code>
@@ -102,11 +100,11 @@ export function PropsList({ props, className }: PropsTableProps) {
               </Badge>
             )}
           </dt>
-          <dd className="text-sm text-muted-foreground pl-2">
+          <dd className="pl-2 text-sm text-muted-foreground">
             {prop.description}
             {prop.default && (
               <span className="ml-2 text-xs">
-                (default: <code className="bg-muted px-1 rounded">{prop.default}</code>)
+                (default: <code className="rounded bg-muted px-1">{prop.default}</code>)
               </span>
             )}
           </dd>

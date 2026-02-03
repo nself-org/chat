@@ -39,7 +39,7 @@ export function LinkDescription({
   return (
     <p
       className={cn(
-        'text-muted-foreground leading-relaxed',
+        'leading-relaxed text-muted-foreground',
         sizeClasses[size],
         lineClampClasses[maxLines],
         className

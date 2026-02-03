@@ -155,9 +155,9 @@ test.describe('Flagged Content Creation', () => {
     await page.goto('/chat')
     await page.waitForLoadState('networkidle')
 
-    const messageInput = page.locator(
-      '[data-testid="message-input"], [contenteditable="true"], textarea'
-    ).first()
+    const messageInput = page
+      .locator('[data-testid="message-input"], [contenteditable="true"], textarea')
+      .first()
 
     if (await messageInput.isVisible()) {
       await messageInput.click()
@@ -324,9 +324,7 @@ test.describe('Moderation Queue Display', () => {
       const firstItem = queueItems.first()
 
       // Look for reporter name/indicator
-      const reporter = firstItem.locator(
-        '[data-testid="reporter"], text=/reported by|flagged by/i'
-      )
+      const reporter = firstItem.locator('[data-testid="reporter"], text=/reported by|flagged by/i')
 
       const isVisible = await reporter.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -343,9 +341,7 @@ test.describe('Moderation Queue Display', () => {
       const firstItem = queueItems.first()
 
       // Look for timestamp
-      const timestamp = firstItem.locator(
-        '[data-testid="timestamp"], time, .time, text=/ago|at/i'
-      )
+      const timestamp = firstItem.locator('[data-testid="timestamp"], time, .time, text=/ago|at/i')
 
       const isVisible = await timestamp.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -378,9 +374,7 @@ test.describe('Moderation Queue Display', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for sort dropdown
-    const sortDropdown = page.locator(
-      '[data-testid="sort-by"], select, button:has-text("Sort")'
-    )
+    const sortDropdown = page.locator('[data-testid="sort-by"], select, button:has-text("Sort")')
 
     if (await sortDropdown.isVisible()) {
       await sortDropdown.click()
@@ -463,9 +457,7 @@ test.describe('Moderation Actions', () => {
       const firstItem = queueItems.first()
 
       // Click remove button
-      const removeButton = firstItem.locator(
-        'button:has-text("Remove"), button:has-text("Delete")'
-      )
+      const removeButton = firstItem.locator('button:has-text("Remove"), button:has-text("Delete")')
 
       if (await removeButton.isVisible()) {
         await removeButton.click()
@@ -475,7 +467,9 @@ test.describe('Moderation Actions', () => {
         const confirmDialog = page.locator('[role="dialog"], [role="alertdialog"]')
 
         if (await confirmDialog.isVisible()) {
-          const confirmButton = page.locator('button:has-text("Remove"), button:has-text("Confirm")')
+          const confirmButton = page.locator(
+            'button:has-text("Remove"), button:has-text("Confirm")'
+          )
 
           if (await confirmButton.isVisible()) {
             await confirmButton.click()
@@ -516,9 +510,7 @@ test.describe('Moderation Actions', () => {
 
         if (await warnDialog.isVisible()) {
           // Look for warning message input
-          const messageInput = page.locator(
-            'textarea, [data-testid="warning-message"]'
-          )
+          const messageInput = page.locator('textarea, [data-testid="warning-message"]')
 
           if (await messageInput.isVisible()) {
             await messageInput.fill('Please follow our community guidelines.')
@@ -566,9 +558,7 @@ test.describe('Moderation Actions', () => {
 
         if (await banDialog.isVisible()) {
           // Look for ban duration options
-          const durationSelect = page.locator(
-            'select, [data-testid="ban-duration"]'
-          )
+          const durationSelect = page.locator('select, [data-testid="ban-duration"]')
 
           if (await durationSelect.isVisible()) {
             await durationSelect.click()
@@ -775,9 +765,7 @@ test.describe('Moderation Audit Log', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for audit log entries
-    const logEntries = page.locator(
-      '[data-testid="audit-entry"], .audit-log-item, tbody tr'
-    )
+    const logEntries = page.locator('[data-testid="audit-entry"], .audit-log-item, tbody tr')
 
     const count = await logEntries.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -946,9 +934,7 @@ test.describe('Auto-Moderation Settings', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for toggle switches
-    const toggles = page.locator(
-      'input[type="checkbox"], [role="switch"]'
-    )
+    const toggles = page.locator('input[type="checkbox"], [role="switch"]')
 
     if ((await toggles.count()) > 0) {
       const firstToggle = toggles.first()
@@ -1005,9 +991,7 @@ test.describe('Auto-Moderation Settings', () => {
     await page.waitForLoadState('networkidle')
 
     // Look for save button
-    const saveButton = page.locator(
-      '[data-testid="save-settings"], button:has-text("Save")'
-    )
+    const saveButton = page.locator('[data-testid="save-settings"], button:has-text("Save")')
 
     if (await saveButton.isVisible()) {
       await saveButton.click()
@@ -1056,8 +1040,7 @@ test.describe('Moderator Permissions', () => {
     const accessDenied = page.locator('text=/access denied|forbidden|unauthorized/i')
 
     const isDenied =
-      !currentUrl.includes('moderation') ||
-      (await accessDenied.isVisible().catch(() => false))
+      !currentUrl.includes('moderation') || (await accessDenied.isVisible().catch(() => false))
 
     expect(typeof isDenied).toBe('boolean')
   })

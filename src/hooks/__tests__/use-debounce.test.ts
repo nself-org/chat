@@ -21,10 +21,9 @@ describe('useDebounce', () => {
   })
 
   it('should debounce value changes', () => {
-    const { result, rerender } = renderHook(
-      ({ value, delay }) => useDebounce(value, delay),
-      { initialProps: { value: 'first', delay: 500 } }
-    )
+    const { result, rerender } = renderHook(({ value, delay }) => useDebounce(value, delay), {
+      initialProps: { value: 'first', delay: 500 },
+    })
 
     expect(result.current).toBe('first')
 
@@ -44,10 +43,9 @@ describe('useDebounce', () => {
   })
 
   it('should cancel previous timeout on rapid changes', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value, 500),
-      { initialProps: { value: 'first' } }
-    )
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value, 500), {
+      initialProps: { value: 'first' },
+    })
 
     rerender({ value: 'second' })
     act(() => {
@@ -71,10 +69,9 @@ describe('useDebounce', () => {
   })
 
   it('should use default delay of 500ms', () => {
-    const { result, rerender } = renderHook(
-      ({ value }) => useDebounce(value),
-      { initialProps: { value: 'first' } }
-    )
+    const { result, rerender } = renderHook(({ value }) => useDebounce(value), {
+      initialProps: { value: 'first' },
+    })
 
     rerender({ value: 'second' })
 
@@ -192,10 +189,9 @@ describe('useDebouncedCallback', () => {
 
   it('should use latest callback', () => {
     let callback = jest.fn()
-    const { result, rerender } = renderHook(
-      ({ cb }) => useDebouncedCallback(cb, 100),
-      { initialProps: { cb: callback } }
-    )
+    const { result, rerender } = renderHook(({ cb }) => useDebouncedCallback(cb, 100), {
+      initialProps: { cb: callback },
+    })
 
     act(() => {
       result.current()
@@ -214,9 +210,7 @@ describe('useDebouncedCallback', () => {
 
   it('should cleanup on unmount', () => {
     const mockCallback = jest.fn()
-    const { result, unmount } = renderHook(() =>
-      useDebouncedCallback(mockCallback, 500)
-    )
+    const { result, unmount } = renderHook(() => useDebouncedCallback(mockCallback, 500))
 
     act(() => {
       result.current()

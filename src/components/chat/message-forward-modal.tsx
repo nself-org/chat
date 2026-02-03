@@ -12,7 +12,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -68,9 +75,9 @@ export function MessageForwardModal({
   }, [availableDestinations, searchQuery])
 
   const handleToggleDestination = useCallback((destination: ForwardDestination) => {
-    setSelectedDestinations(prev => {
+    setSelectedDestinations((prev) => {
       if (isDestinationSelected(destination, prev)) {
-        return prev.filter(d => !(d.type === destination.type && d.id === destination.id))
+        return prev.filter((d) => !(d.type === destination.type && d.id === destination.id))
       }
 
       if (prev.length >= MAX_FORWARD_DESTINATIONS) {
@@ -82,8 +89,8 @@ export function MessageForwardModal({
   }, [])
 
   const handleRemoveDestination = useCallback((destination: ForwardDestination) => {
-    setSelectedDestinations(prev =>
-      prev.filter(d => !(d.type === destination.type && d.id === destination.id))
+    setSelectedDestinations((prev) =>
+      prev.filter((d) => !(d.type === destination.type && d.id === destination.id))
     )
   }, [])
 
@@ -135,27 +142,31 @@ export function MessageForwardModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleClose()}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] max-w-3xl flex-col overflow-hidden">
         <DialogHeader>
           <DialogTitle>Forward Messages</DialogTitle>
           <DialogDescription>
-            Forward {messages.length} message{messages.length !== 1 ? 's' : ''} to other channels or users
+            Forward {messages.length} message{messages.length !== 1 ? 's' : ''} to other channels or
+            users
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-hidden space-y-4 py-4">
+        <div className="flex-1 space-y-4 overflow-hidden py-4">
           {/* Forwarding Mode */}
           <div className="space-y-3">
             <Label>Forwarding Mode</Label>
-            <RadioGroup value={forwardMode} onValueChange={(v) => setForwardMode(v as ForwardingMode)}>
+            <RadioGroup
+              value={forwardMode}
+              onValueChange={(v) => setForwardMode(v as ForwardingMode)}
+            >
               <div className="space-y-2">
                 {(['forward', 'copy', 'quote'] as ForwardingMode[]).map((mode) => (
                   <label
                     key={mode}
                     className={cn(
-                      'flex items-start gap-3 p-3 border rounded-lg cursor-pointer transition-colors',
-                      'hover:bg-accent hover:border-accent-foreground/20',
-                      forwardMode === mode && 'border-primary bg-primary/5'
+                      'flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors',
+                      'hover:border-accent-foreground/20 hover:bg-accent',
+                      forwardMode === mode && 'bg-primary/5 border-primary'
                     )}
                   >
                     <RadioGroupItem value={mode} id={mode} className="mt-0.5" />
@@ -174,12 +185,14 @@ export function MessageForwardModal({
           <Separator />
 
           {/* Destination Selection */}
-          <div className="space-y-3 flex-1 flex flex-col min-h-0">
-            <Label>Select Destinations ({selectedDestinations.length}/{MAX_FORWARD_DESTINATIONS})</Label>
+          <div className="flex min-h-0 flex-1 flex-col space-y-3">
+            <Label>
+              Select Destinations ({selectedDestinations.length}/{MAX_FORWARD_DESTINATIONS})
+            </Label>
 
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search channels and users..."
                 value={searchQuery}
@@ -190,19 +203,19 @@ export function MessageForwardModal({
 
             {/* Selected Destinations */}
             {selectedDestinations.length > 0 && (
-              <div className="flex flex-wrap gap-2 p-3 bg-muted rounded-lg">
+              <div className="flex flex-wrap gap-2 rounded-lg bg-muted p-3">
                 {selectedDestinations.map((dest) => (
                   <Badge
                     key={`${dest.type}-${dest.id}`}
                     variant="secondary"
-                    className="pl-2 pr-1 py-1"
+                    className="py-1 pl-2 pr-1"
                   >
                     {getDestinationDisplayText(dest)}
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="h-4 w-4 ml-1 hover:bg-transparent"
+                      className="ml-1 h-4 w-4 hover:bg-transparent"
                       onClick={() => handleRemoveDestination(dest)}
                     >
                       <X className="h-3 w-3" />
@@ -225,18 +238,22 @@ export function MessageForwardModal({
                         key={`${dest.type}-${dest.id}`}
                         type="button"
                         onClick={() => handleToggleDestination(dest)}
-                        disabled={!isSelected && selectedDestinations.length >= MAX_FORWARD_DESTINATIONS}
+                        disabled={
+                          !isSelected && selectedDestinations.length >= MAX_FORWARD_DESTINATIONS
+                        }
                         className={cn(
-                          'w-full flex items-center gap-3 p-2 rounded-md transition-colors text-left',
+                          'flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors',
                           'hover:bg-accent',
                           isSelected && 'bg-primary/10 hover:bg-primary/15'
                         )}
                       >
-                        <div className={cn(
-                          'h-5 w-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors',
-                          isSelected ? 'border-primary bg-primary' : 'border-muted-foreground'
-                        )}>
-                          {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
+                        <div
+                          className={cn(
+                            'flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors',
+                            isSelected ? 'border-primary bg-primary' : 'border-muted-foreground'
+                          )}
+                        >
+                          {isSelected && <Check className="text-primary-foreground h-3 w-3" />}
                         </div>
                         <div className="shrink-0 text-muted-foreground">
                           {getDestinationIcon(dest.type)}
@@ -249,7 +266,9 @@ export function MessageForwardModal({
                         )}
                         <span className="flex-1 truncate">{dest.name}</span>
                         {dest.isPrivate && (
-                          <Badge variant="secondary" className="text-xs">Private</Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            Private
+                          </Badge>
                         )}
                       </button>
                     )
@@ -259,16 +278,16 @@ export function MessageForwardModal({
             )}
 
             {/* All Destinations */}
-            <div className="flex-1 min-h-0 flex flex-col">
-              <div className="text-xs font-medium text-muted-foreground mb-2">
+            <div className="flex min-h-0 flex-1 flex-col">
+              <div className="mb-2 text-xs font-medium text-muted-foreground">
                 {searchQuery ? 'Search Results' : 'All Destinations'}
               </div>
-              <ScrollArea className="flex-1 -mr-4 pr-4">
+              <ScrollArea className="-mr-4 flex-1 pr-4">
                 <div className="space-y-1">
                   {filteredDestinations.map((dest) => {
                     const isSelected = isDestinationSelected(dest, selectedDestinations)
                     const isRecent = recentDestinations.some(
-                      r => r.type === dest.type && r.id === dest.id
+                      (r) => r.type === dest.type && r.id === dest.id
                     )
 
                     if (isRecent && searchQuery === '') return null
@@ -278,19 +297,25 @@ export function MessageForwardModal({
                         key={`${dest.type}-${dest.id}`}
                         type="button"
                         onClick={() => handleToggleDestination(dest)}
-                        disabled={!isSelected && selectedDestinations.length >= MAX_FORWARD_DESTINATIONS}
+                        disabled={
+                          !isSelected && selectedDestinations.length >= MAX_FORWARD_DESTINATIONS
+                        }
                         className={cn(
-                          'w-full flex items-center gap-3 p-2 rounded-md transition-colors text-left',
+                          'flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors',
                           'hover:bg-accent',
                           isSelected && 'bg-primary/10 hover:bg-primary/15',
-                          !isSelected && selectedDestinations.length >= MAX_FORWARD_DESTINATIONS && 'opacity-50 cursor-not-allowed'
+                          !isSelected &&
+                            selectedDestinations.length >= MAX_FORWARD_DESTINATIONS &&
+                            'cursor-not-allowed opacity-50'
                         )}
                       >
-                        <div className={cn(
-                          'h-5 w-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors',
-                          isSelected ? 'border-primary bg-primary' : 'border-muted-foreground'
-                        )}>
-                          {isSelected && <Check className="h-3 w-3 text-primary-foreground" />}
+                        <div
+                          className={cn(
+                            'flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 transition-colors',
+                            isSelected ? 'border-primary bg-primary' : 'border-muted-foreground'
+                          )}
+                        >
+                          {isSelected && <Check className="text-primary-foreground h-3 w-3" />}
                         </div>
                         <div className="shrink-0 text-muted-foreground">
                           {getDestinationIcon(dest.type)}
@@ -303,14 +328,16 @@ export function MessageForwardModal({
                         )}
                         <span className="flex-1 truncate">{dest.name}</span>
                         {dest.isPrivate && (
-                          <Badge variant="secondary" className="text-xs">Private</Badge>
+                          <Badge variant="secondary" className="text-xs">
+                            Private
+                          </Badge>
                         )}
                       </button>
                     )
                   })}
                 </div>
                 {filteredDestinations.length === 0 && (
-                  <div className="text-center py-8 text-muted-foreground">
+                  <div className="py-8 text-center text-muted-foreground">
                     No destinations found
                   </div>
                 )}
@@ -332,22 +359,22 @@ export function MessageForwardModal({
               rows={2}
               className="resize-none"
             />
-            <div className="text-xs text-muted-foreground text-right">
+            <div className="text-right text-xs text-muted-foreground">
               {comment.length}/{MAX_FORWARD_COMMENT_LENGTH}
             </div>
           </div>
 
           {/* Summary */}
           {selectedDestinations.length > 0 && (
-            <div className="p-3 bg-muted rounded-lg text-sm">
+            <div className="rounded-lg bg-muted p-3 text-sm">
               {getForwardSummary(messages.length, selectedDestinations.length, forwardMode)}
             </div>
           )}
 
           {/* Errors */}
           {errors.length > 0 && (
-            <div className="p-3 border border-destructive/50 bg-destructive/10 rounded-md">
-              <ul className="text-sm text-destructive space-y-1">
+            <div className="border-destructive/50 bg-destructive/10 rounded-md border p-3">
+              <ul className="space-y-1 text-sm text-destructive">
                 {errors.map((error, index) => (
                   <li key={index}>• {error}</li>
                 ))}
@@ -364,7 +391,7 @@ export function MessageForwardModal({
             onClick={handleForward}
             disabled={isForwarding || selectedDestinations.length === 0}
           >
-            <Send className="h-4 w-4 mr-2" />
+            <Send className="mr-2 h-4 w-4" />
             {isForwarding ? 'Forwarding...' : 'Forward'}
           </Button>
         </DialogFooter>

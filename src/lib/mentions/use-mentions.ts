@@ -27,12 +27,7 @@
 import { useCallback, useEffect, useMemo } from 'react'
 import { useMutation, useQuery, useSubscription } from '@apollo/client'
 import { useRouter } from 'next/navigation'
-import {
-  useMentionStore,
-  normalizeMention,
-  type Mention,
-  type MentionType,
-} from './mention-store'
+import { useMentionStore, normalizeMention, type Mention, type MentionType } from './mention-store'
 import {
   GET_MENTIONS,
   GET_UNREAD_MENTIONS_COUNT,
@@ -196,8 +191,7 @@ export function useMentions({
     fetchPolicy: 'cache-and-network',
   })
 
-  const [markMentionReadMutation, { loading: markReadLoading }] =
-    useMutation(MARK_MENTION_READ)
+  const [markMentionReadMutation, { loading: markReadLoading }] = useMutation(MARK_MENTION_READ)
   const [markMentionsReadMutation] = useMutation(MARK_MENTIONS_READ)
   const [markAllMentionsReadMutation] = useMutation(MARK_ALL_MENTIONS_READ)
 
@@ -244,9 +238,7 @@ export function useMentions({
     try {
       await refetch()
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to fetch mentions'
-      )
+      setError(err instanceof Error ? err.message : 'Failed to fetch mentions')
     } finally {
       setLoading(false)
     }
@@ -265,9 +257,7 @@ export function useMentions({
         })
       } catch (err) {
         // Revert on error - would need to refetch
-        setError(
-          err instanceof Error ? err.message : 'Failed to mark mention as read'
-        )
+        setError(err instanceof Error ? err.message : 'Failed to mark mention as read')
         await fetchMentions()
       }
     },
@@ -286,9 +276,7 @@ export function useMentions({
           variables: { mentionIds },
         })
       } catch (err) {
-        setError(
-          err instanceof Error ? err.message : 'Failed to mark mentions as read'
-        )
+        setError(err instanceof Error ? err.message : 'Failed to mark mentions as read')
         await fetchMentions()
       }
     },
@@ -309,9 +297,7 @@ export function useMentions({
         },
       })
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Failed to mark all mentions as read'
-      )
+      setError(err instanceof Error ? err.message : 'Failed to mark all mentions as read')
       await fetchMentions()
     }
   }, [
@@ -476,12 +462,9 @@ export function useMentionPermissions({
     const mentionSettings = channelSettings.mentions || {}
 
     return {
-      canMentionHere:
-        mentionSettings.allowHere !== false && (isAdmin || isModerator || true),
-      canMentionChannel:
-        mentionSettings.allowChannel !== false && (isAdmin || isModerator),
-      canMentionEveryone:
-        mentionSettings.allowEveryone !== false && isAdmin,
+      canMentionHere: mentionSettings.allowHere !== false && (isAdmin || isModerator || true),
+      canMentionChannel: mentionSettings.allowChannel !== false && (isAdmin || isModerator),
+      canMentionEveryone: mentionSettings.allowEveryone !== false && isAdmin,
     }
   }, [data])
 
@@ -532,13 +515,10 @@ export function useUnreadMentionsCount(userId: string): {
   })
 
   // Subscribe to real-time count updates
-  const { data: subscriptionData } = useSubscription(
-    UNREAD_MENTIONS_COUNT_SUBSCRIPTION,
-    {
-      variables: { userId },
-      skip: !isFeatureEnabled,
-    }
-  )
+  const { data: subscriptionData } = useSubscription(UNREAD_MENTIONS_COUNT_SUBSCRIPTION, {
+    variables: { userId },
+    skip: !isFeatureEnabled,
+  })
 
   const count = useMemo(() => {
     // Prefer subscription data, then query data, then store data
@@ -608,10 +588,7 @@ export function isSpecialMention(text: string): boolean {
 /**
  * Format mention for display
  */
-export function formatMention(
-  type: MentionType,
-  username?: string
-): string {
+export function formatMention(type: MentionType, username?: string): string {
   switch (type) {
     case 'here':
       return '@here'

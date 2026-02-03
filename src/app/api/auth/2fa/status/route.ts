@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getApolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 const GET_2FA_STATUS = gql`
   query Get2FAStatus($userId: uuid!) {
     nchat_user_2fa_settings(where: { user_id: { _eq: $userId } }) {
@@ -16,9 +18,7 @@ const GET_2FA_STATUS = gql`
       enabled_at
       last_used_at
     }
-    backup_codes_total: nchat_user_backup_codes_aggregate(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    backup_codes_total: nchat_user_backup_codes_aggregate(where: { user_id: { _eq: $userId } }) {
       aggregate {
         count
       }
@@ -50,10 +50,7 @@ export async function GET(request: NextRequest) {
     const userId = searchParams.get('userId')
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
     }
 
     const client = getApolloClient()
@@ -63,11 +60,8 @@ export async function GET(request: NextRequest) {
     })
 
     if (errors) {
-      console.error('GraphQL errors:', errors)
-      return NextResponse.json(
-        { error: 'Failed to fetch 2FA status' },
-        { status: 500 }
-      )
+      logger.error('GraphQL errors:', errors)
+      return NextResponse.json({ error: 'Failed to fetch 2FA status' }, { status: 500 })
     }
 
     const settings = data.nchat_user_2fa_settings?.[0]
@@ -89,10 +83,7 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('2FA status error:', error)
-    return NextResponse.json(
-      { error: 'Failed to get 2FA status' },
-      { status: 500 }
-    )
+    logger.error('2FA status error:', error)
+    return NextResponse.json({ error: 'Failed to get 2FA status' }, { status: 500 })
   }
 }

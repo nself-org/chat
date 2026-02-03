@@ -46,86 +46,82 @@ export interface EmojiSuggestionListRef {
 // Component
 // ============================================================================
 
-export const EmojiSuggestionList = forwardRef<
-  EmojiSuggestionListRef,
-  EmojiSuggestionListProps
->(function EmojiSuggestionList(
-  { items, selectedIndex, onSelect, onSelectionChange, className },
-  ref
-) {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
+export const EmojiSuggestionList = forwardRef<EmojiSuggestionListRef, EmojiSuggestionListProps>(
+  function EmojiSuggestionList(
+    { items, selectedIndex, onSelect, onSelectionChange, className },
+    ref
+  ) {
+    const containerRef = useRef<HTMLDivElement>(null)
+    const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
 
-  // Expose handlers to parent
-  useImperativeHandle(ref, () => ({
-    upHandler: () => {
-      const newIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1
-      onSelectionChange?.(newIndex)
-    },
-    downHandler: () => {
-      const newIndex = selectedIndex >= items.length - 1 ? 0 : selectedIndex + 1
-      onSelectionChange?.(newIndex)
-    },
-    enterHandler: () => {
-      const item = items[selectedIndex]
-      if (item) {
-        onSelect(item)
+    // Expose handlers to parent
+    useImperativeHandle(ref, () => ({
+      upHandler: () => {
+        const newIndex = selectedIndex <= 0 ? items.length - 1 : selectedIndex - 1
+        onSelectionChange?.(newIndex)
+      },
+      downHandler: () => {
+        const newIndex = selectedIndex >= items.length - 1 ? 0 : selectedIndex + 1
+        onSelectionChange?.(newIndex)
+      },
+      enterHandler: () => {
+        const item = items[selectedIndex]
+        if (item) {
+          onSelect(item)
+        }
+      },
+    }))
+
+    // Scroll selected item into view
+    useEffect(() => {
+      const selectedItem = itemRefs.current.get(selectedIndex)
+      if (selectedItem) {
+        selectedItem.scrollIntoView({ block: 'nearest' })
       }
-    },
-  }))
+    }, [selectedIndex])
 
-  // Scroll selected item into view
-  useEffect(() => {
-    const selectedItem = itemRefs.current.get(selectedIndex)
-    if (selectedItem) {
-      selectedItem.scrollIntoView({ block: 'nearest' })
+    if (items.length === 0) {
+      return (
+        <div
+          className={cn(
+            'rounded-lg border bg-popover p-3 text-sm text-muted-foreground shadow-md',
+            className
+          )}
+        >
+          No emojis found
+        </div>
+      )
     }
-  }, [selectedIndex])
 
-  if (items.length === 0) {
     return (
       <div
-        className={cn(
-          'rounded-lg border bg-popover p-3 text-sm text-muted-foreground shadow-md',
-          className
-        )}
+        ref={containerRef}
+        className={cn('overflow-hidden rounded-lg border bg-popover shadow-md', className)}
       >
-        No emojis found
+        <ScrollArea className="max-h-[300px]">
+          <div className="p-1">
+            {items.map((item, index) => (
+              <EmojiSuggestionListItem
+                key={item.shortcode}
+                ref={(el) => {
+                  if (el) {
+                    itemRefs.current.set(index, el)
+                  } else {
+                    itemRefs.current.delete(index)
+                  }
+                }}
+                emoji={item}
+                isSelected={index === selectedIndex}
+                onClick={() => onSelect(item)}
+                onMouseEnter={() => onSelectionChange?.(index)}
+              />
+            ))}
+          </div>
+        </ScrollArea>
       </div>
     )
   }
-
-  return (
-    <div
-      ref={containerRef}
-      className={cn(
-        'rounded-lg border bg-popover shadow-md overflow-hidden',
-        className
-      )}
-    >
-      <ScrollArea className="max-h-[300px]">
-        <div className="p-1">
-          {items.map((item, index) => (
-            <EmojiSuggestionListItem
-              key={item.shortcode}
-              ref={(el) => {
-                if (el) {
-                  itemRefs.current.set(index, el)
-                } else {
-                  itemRefs.current.delete(index)
-                }
-              }}
-              emoji={item}
-              isSelected={index === selectedIndex}
-              onClick={() => onSelect(item)}
-              onMouseEnter={() => onSelectionChange?.(index)}
-            />
-          ))}
-        </div>
-      </ScrollArea>
-    </div>
-  )
-})
+)
 
 // ============================================================================
 // EmojiSuggestionListItem Component
@@ -138,37 +134,33 @@ interface EmojiSuggestionListItemProps {
   onMouseEnter: () => void
 }
 
-const EmojiSuggestionListItem = forwardRef<
-  HTMLButtonElement,
-  EmojiSuggestionListItemProps
->(function EmojiSuggestionListItem(
-  { emoji, isSelected, onClick, onMouseEnter },
-  ref
-) {
-  return (
-    <button
-      ref={ref}
-      type="button"
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      className={cn(
-        'flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
-        isSelected ? 'bg-accent text-accent-foreground' : 'hover:bg-accent/50'
-      )}
-    >
-      {/* Emoji character */}
-      <span className="text-2xl leading-none" role="img" aria-label={emoji.name}>
-        {emoji.emoji}
-      </span>
+const EmojiSuggestionListItem = forwardRef<HTMLButtonElement, EmojiSuggestionListItemProps>(
+  function EmojiSuggestionListItem({ emoji, isSelected, onClick, onMouseEnter }, ref) {
+    return (
+      <button
+        ref={ref}
+        type="button"
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        className={cn(
+          'flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
+          isSelected ? 'text-accent-foreground bg-accent' : 'hover:bg-accent/50'
+        )}
+      >
+        {/* Emoji character */}
+        <span className="text-2xl leading-none" role="img" aria-label={emoji.name}>
+          {emoji.emoji}
+        </span>
 
-      {/* Emoji info */}
-      <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm truncate">:{emoji.shortcode}:</div>
-        <div className="text-xs text-muted-foreground truncate">{emoji.name}</div>
-      </div>
-    </button>
-  )
-})
+        {/* Emoji info */}
+        <div className="min-w-0 flex-1">
+          <div className="truncate text-sm font-medium">:{emoji.shortcode}:</div>
+          <div className="truncate text-xs text-muted-foreground">{emoji.name}</div>
+        </div>
+      </button>
+    )
+  }
+)
 
 // ============================================================================
 // Standalone Emoji Suggestion Popup
@@ -238,12 +230,7 @@ export interface EmojiGridProps {
   className?: string
 }
 
-export function EmojiGrid({
-  items,
-  onSelect,
-  columns = 8,
-  className,
-}: EmojiGridProps) {
+export function EmojiGrid({ items, onSelect, columns = 8, className }: EmojiGridProps) {
   return (
     <div
       className={cn('grid gap-1 p-2', className)}

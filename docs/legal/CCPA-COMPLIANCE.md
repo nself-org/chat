@@ -13,6 +13,7 @@ This document provides guidance on California Consumer Privacy Act (CCPA) compli
 **IMPORTANT:** This is a technical implementation guide, NOT legal advice. Consult with legal counsel to ensure full CCPA compliance for your specific use case and jurisdiction.
 
 **Scope:** This guide applies to:
+
 - California residents (consumers)
 - Businesses that serve California residents and meet CCPA thresholds
 
@@ -25,6 +26,7 @@ The California Consumer Privacy Act (CCPA) is a comprehensive privacy law that g
 ### 1.1 Who Must Comply?
 
 You must comply with CCPA if you:
+
 1. Are a for-profit business, AND
 2. Do business in California, AND
 3. Meet ONE of the following thresholds:
@@ -46,6 +48,7 @@ You must comply with CCPA if you:
 ### 1.3 CPRA (California Privacy Rights Act)
 
 CPRA amended CCPA effective January 1, 2023. Key changes:
+
 - Added "Right to Correct" and "Right to Limit Use of Sensitive Personal Information"
 - Created California Privacy Protection Agency (CPPA) for enforcement
 - Expanded definition of "sensitive personal information"
@@ -60,6 +63,7 @@ CPRA amended CCPA effective January 1, 2023. Key changes:
 ### 2.1 Right to Know (CCPA § 1798.100, 1798.110, 1798.115)
 
 Consumers can request disclosure of:
+
 - Categories of PI collected
 - Specific pieces of PI collected
 - Categories of sources from which PI was collected
@@ -72,6 +76,7 @@ Consumers can request disclosure of:
 **Verification:** Verify identity before disclosing PI
 
 **Implementation in nself-chat:**
+
 - Privacy Policy discloses categories and purposes (see `/docs/legal/PRIVACY-POLICY.md`)
 - Data export functionality provides specific pieces of PI
 - API endpoint: `/api/user/ccpa/know` (to be implemented)
@@ -83,6 +88,7 @@ Consumers can request deletion of their PI (with exceptions).
 **Timeline:** Respond within 45 days
 
 **Exceptions (you may refuse deletion if necessary for):**
+
 - Complete transaction or provide requested service
 - Detect security incidents, fraud, or illegal activity
 - Debug or repair errors
@@ -92,6 +98,7 @@ Consumers can request deletion of their PI (with exceptions).
 - Otherwise permitted by law
 
 **Implementation in nself-chat:**
+
 - Account Settings > Privacy & Data > Delete My Account
 - API endpoint: `/api/user/ccpa/delete`
 - 30-day grace period before permanent deletion
@@ -104,6 +111,7 @@ Consumers can request correction of inaccurate PI.
 **Timeline:** Respond within 45 days
 
 **Implementation in nself-chat:**
+
 - Account Settings > Profile (self-service correction)
 - Support request for data not user-editable
 - API endpoint: `/api/user/ccpa/correct`
@@ -113,6 +121,7 @@ Consumers can request correction of inaccurate PI.
 Consumers can opt out of the sale or sharing of their PI.
 
 **Implementation in nself-chat:**
+
 - **Good News:** nself-chat does NOT sell or share PI for monetary or valuable consideration
 - Privacy Policy clearly states "We do NOT sell your personal information"
 - No "Do Not Sell My Personal Information" link required if no selling occurs
@@ -121,12 +130,14 @@ Consumers can opt out of the sale or sharing of their PI.
 ### 2.5 Right to Limit Use of Sensitive PI (CPRA)
 
 Consumers can limit use of sensitive PI to:
+
 - Performing services reasonably expected
 - Ensuring security and integrity
 - Short-term, transient use
 - Certain other specified purposes
 
 **Sensitive PI includes:**
+
 - Social Security number, driver's license, passport number
 - Account login credentials
 - Precise geolocation
@@ -136,6 +147,7 @@ Consumers can limit use of sensitive PI to:
 - Health data, sex life, sexual orientation
 
 **Implementation in nself-chat:**
+
 - nself-chat does NOT intentionally collect most sensitive PI
 - Passwords are hashed (not considered "collected" in plaintext)
 - If collecting sensitive PI in the future, implement opt-out
@@ -145,16 +157,19 @@ Consumers can limit use of sensitive PI to:
 Businesses cannot discriminate against consumers who exercise their CCPA rights.
 
 **Prohibited Actions:**
+
 - ❌ Deny goods or services
 - ❌ Charge different prices or rates
 - ❌ Provide different level or quality of service
 - ❌ Suggest consumer will receive different price or service
 
 **Permitted (with notice):**
+
 - ✅ Offer financial incentives for collection, sale, or deletion of PI (if not discriminatory)
 - ✅ Charge different price or rate if difference is reasonably related to value of PI
 
 **Implementation in nself-chat:**
+
 - No discrimination based on CCPA rights exercise
 - No financial incentive programs currently
 - If implementing loyalty programs, provide separate notice
@@ -168,11 +183,13 @@ Businesses cannot discriminate against consumers who exercise their CCPA rights.
 Your Privacy Policy must disclose:
 
 **At or Before Collection:**
+
 - Categories of PI to be collected
 - Purposes for which PI will be used
 - If selling PI, right to opt-out
 
 **In Privacy Policy:**
+
 - Categories of PI collected in past 12 months
 - Categories of sources from which PI was collected
 - Business/commercial purposes for collecting PI
@@ -184,6 +201,7 @@ Your Privacy Policy must disclose:
 - Response timelines
 
 **Implementation in nself-chat:**
+
 - ✅ Privacy Policy template provided: `/docs/legal/PRIVACY-POLICY.md`
 - ✅ Includes all required disclosures
 - ✅ Update every 12 months or when material changes occur
@@ -191,10 +209,12 @@ Your Privacy Policy must disclose:
 ### 3.2 Notice at Collection
 
 When collecting PI, provide notice of:
+
 - Categories of PI being collected
 - Purposes for use
 
 **Implementation in nself-chat:**
+
 - Privacy notice during account registration
 - Link to full Privacy Policy: "By signing up, you agree to our Privacy Policy and Terms of Service"
 - Just-in-time notices for specific features (e.g., "We use your location to show nearby users")
@@ -204,6 +224,7 @@ When collecting PI, provide notice of:
 **Required if:** You sell or share PI
 
 **Implementation in nself-chat:**
+
 - ❌ Not required (we do NOT sell or share PI)
 - ✅ Privacy Policy states: "We do NOT sell your personal information"
 - If selling/sharing in the future:
@@ -215,11 +236,13 @@ When collecting PI, provide notice of:
 Consumers can designate an authorized agent to make requests on their behalf.
 
 **Requirements:**
+
 - Verify authorized agent (written permission from consumer)
 - Verify consumer's identity
 - May require consumer to confirm authorization directly
 
 **Implementation in nself-chat:**
+
 - Support requests from authorized agents
 - Require:
   - Proof of authorization (signed letter, power of attorney)
@@ -228,12 +251,14 @@ Consumers can designate an authorized agent to make requests on their behalf.
 ### 3.5 Contracts with Service Providers
 
 Service providers must contractually agree to:
+
 - Process PI only for limited business purpose
 - Not sell PI
 - Not retain, use, or disclose PI for any purpose other than performing services
 - Certify understanding of restrictions
 
 **Implementation in nself-chat:**
+
 - Review contracts with:
   - Cloud hosting provider (AWS/GCP/Azure)
   - Nhost (authentication)
@@ -248,20 +273,20 @@ Service providers must contractually agree to:
 
 ### 4.1 Categories Collected by nself-chat
 
-| Category | Examples | Collected? | Purpose | Disclosed to Third Parties? | Sold? |
-|----------|----------|------------|---------|------------------------------|-------|
-| **A. Identifiers** | Name, email, username, IP address | ✅ Yes | Account creation, authentication, security | Yes (service providers) | ❌ No |
-| **B. Personal Info (Cal. Civ. Code § 1798.80(e))** | Name, email, phone (if provided) | ✅ Yes | Account management, communication | Yes (service providers) | ❌ No |
-| **C. Protected Classifications** | Age (if collected for compliance) | ⚠️ Minimal | Age verification (13+) | No | ❌ No |
-| **D. Commercial Information** | Purchase records, billing history | ✅ Yes (paid plans) | Billing, payment processing | Yes (payment processor) | ❌ No |
-| **E. Biometric Information** | None | ❌ No | N/A | N/A | ❌ No |
-| **F. Internet/Network Activity** | Browser, device, IP, pages viewed, errors | ✅ Yes | Security, analytics, debugging | Yes (Sentry) | ❌ No |
-| **G. Geolocation Data** | Approximate location (from IP) | ⚠️ Approximate | Analytics, fraud prevention | Yes (service providers) | ❌ No |
-| **H. Sensory Data** | Audio (voice messages, if enabled) | ⚠️ Optional | Voice messaging feature | Yes (storage provider) | ❌ No |
-| **I. Professional/Employment Info** | Company name, job title (if provided) | ⚠️ Optional | User profile | No | ❌ No |
-| **J. Non-Public Education Info** | None | ❌ No | N/A | N/A | ❌ No |
-| **K. Inferences** | User preferences, behavior patterns | ⚠️ Derived | Personalization | No | ❌ No |
-| **L. Sensitive Personal Information** | Account login credentials (hashed), precise geolocation (if enabled), message contents (user-generated) | ⚠️ Limited | Authentication, messaging, location features | Yes (service providers) | ❌ No |
+| Category                                           | Examples                                                                                                | Collected?          | Purpose                                      | Disclosed to Third Parties? | Sold? |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------- | --------------------------- | ----- |
+| **A. Identifiers**                                 | Name, email, username, IP address                                                                       | ✅ Yes              | Account creation, authentication, security   | Yes (service providers)     | ❌ No |
+| **B. Personal Info (Cal. Civ. Code § 1798.80(e))** | Name, email, phone (if provided)                                                                        | ✅ Yes              | Account management, communication            | Yes (service providers)     | ❌ No |
+| **C. Protected Classifications**                   | Age (if collected for compliance)                                                                       | ⚠️ Minimal          | Age verification (13+)                       | No                          | ❌ No |
+| **D. Commercial Information**                      | Purchase records, billing history                                                                       | ✅ Yes (paid plans) | Billing, payment processing                  | Yes (payment processor)     | ❌ No |
+| **E. Biometric Information**                       | None                                                                                                    | ❌ No               | N/A                                          | N/A                         | ❌ No |
+| **F. Internet/Network Activity**                   | Browser, device, IP, pages viewed, errors                                                               | ✅ Yes              | Security, analytics, debugging               | Yes (Sentry)                | ❌ No |
+| **G. Geolocation Data**                            | Approximate location (from IP)                                                                          | ⚠️ Approximate      | Analytics, fraud prevention                  | Yes (service providers)     | ❌ No |
+| **H. Sensory Data**                                | Audio (voice messages, if enabled)                                                                      | ⚠️ Optional         | Voice messaging feature                      | Yes (storage provider)      | ❌ No |
+| **I. Professional/Employment Info**                | Company name, job title (if provided)                                                                   | ⚠️ Optional         | User profile                                 | No                          | ❌ No |
+| **J. Non-Public Education Info**                   | None                                                                                                    | ❌ No               | N/A                                          | N/A                         | ❌ No |
+| **K. Inferences**                                  | User preferences, behavior patterns                                                                     | ⚠️ Derived          | Personalization                              | No                          | ❌ No |
+| **L. Sensitive Personal Information**              | Account login credentials (hashed), precise geolocation (if enabled), message contents (user-generated) | ⚠️ Limited          | Authentication, messaging, location features | Yes (service providers)     | ❌ No |
 
 ### 4.2 Categories of Sources
 
@@ -300,12 +325,14 @@ Service providers must contractually agree to:
 ### 5.1 Request Methods
 
 Provide at least two methods for submitting requests:
+
 - ✅ Toll-free phone number (if you have one)
 - ✅ Website form or portal
 - ✅ Email address
 - ✅ In-app functionality (preferred for digital services)
 
 **Implementation in nself-chat:**
+
 - Email: [privacy@yourcompany.com]
 - In-app: Account Settings > Privacy & Data > Submit CCPA Request
 - Support portal: [INSERT URL]
@@ -314,11 +341,13 @@ Provide at least two methods for submitting requests:
 ### 5.2 Verification Process
 
 **Standard Verification (for non-account-based requests):**
+
 1. Request consumer to provide information that matches information you already have
 2. Match at least 2 or 3 data points (depending on sensitivity)
 3. If unable to verify, deny request and explain
 
 **Account-Based Verification (for nself-chat users):**
+
 1. Require login to authenticated account
 2. For sensitive requests (deletion, specific PI), require additional verification:
    - Email confirmation link
@@ -326,38 +355,45 @@ Provide at least two methods for submitting requests:
    - Two-factor authentication (if enabled)
 
 **Authorized Agent Verification:**
+
 1. Require written authorization from consumer
 2. Verify consumer's identity directly
 3. Verify authorized agent's identity
 
 **Password-Protected Account Exception:**
+
 - If consumer has password-protected account, verify through login
 - No additional verification required unless PI is sensitive
 
 ### 5.3 Response Requirements
 
 **Timeline:**
+
 - Respond within **45 days** of receipt
 - Extend by additional 45 days if needed (notify consumer of extension and reason)
 
 **Format:**
+
 - Provide information in portable, easily usable format
 - For "Right to Know" requests: JSON, CSV, or other structured format
 - For "Right to Delete": Confirmation of deletion
 
 **Free:**
+
 - First two requests per 12-month period are free
 - For excessive or repetitive requests, you may:
   - Charge reasonable fee (based on administrative costs)
   - Refuse request (if manifestly unfounded or excessive)
 
 **Documentation:**
+
 - Log all requests and responses
 - Maintain records for at least 24 months
 
 ### 5.4 Response Templates
 
 **Right to Know (Categories):**
+
 ```
 Subject: Your CCPA Right to Know Request
 
@@ -391,6 +427,7 @@ Best regards,
 ```
 
 **Right to Know (Specific Pieces):**
+
 ```
 Subject: Your CCPA Right to Know Request (Specific Data)
 
@@ -411,6 +448,7 @@ Best regards,
 ```
 
 **Right to Delete:**
+
 ```
 Subject: Your CCPA Right to Delete Request
 
@@ -436,6 +474,7 @@ Best regards,
 ```
 
 **Request Denial (Unable to Verify):**
+
 ```
 Subject: Unable to Process Your CCPA Request
 
@@ -461,20 +500,21 @@ Best regards,
 
 ## 6. CCPA vs. GDPR Comparison
 
-| Aspect | CCPA | GDPR |
-|--------|------|------|
-| **Scope** | California residents | EU/EEA residents |
-| **Who Must Comply** | Businesses meeting revenue/data thresholds | Any organization processing EU data |
-| **Consent** | Opt-out model (for sale of PI) | Opt-in model (for most processing) |
-| **Right to Access** | Right to Know (categories and specific pieces) | Right of Access |
-| **Right to Delete** | Right to Delete (with exceptions) | Right to Erasure (with exceptions) |
-| **Right to Correct** | Right to Correct (CPRA) | Right to Rectification |
-| **Right to Portability** | Right to Know includes portability | Right to Data Portability |
-| **Opt-Out** | Opt-out of sale/sharing | Opt-in for most processing |
-| **Penalties** | Up to $7,500 per intentional violation | Up to €20M or 4% global revenue |
-| **Private Right of Action** | Yes (for data breaches) | No (regulatory enforcement only) |
+| Aspect                      | CCPA                                           | GDPR                                |
+| --------------------------- | ---------------------------------------------- | ----------------------------------- |
+| **Scope**                   | California residents                           | EU/EEA residents                    |
+| **Who Must Comply**         | Businesses meeting revenue/data thresholds     | Any organization processing EU data |
+| **Consent**                 | Opt-out model (for sale of PI)                 | Opt-in model (for most processing)  |
+| **Right to Access**         | Right to Know (categories and specific pieces) | Right of Access                     |
+| **Right to Delete**         | Right to Delete (with exceptions)              | Right to Erasure (with exceptions)  |
+| **Right to Correct**        | Right to Correct (CPRA)                        | Right to Rectification              |
+| **Right to Portability**    | Right to Know includes portability             | Right to Data Portability           |
+| **Opt-Out**                 | Opt-out of sale/sharing                        | Opt-in for most processing          |
+| **Penalties**               | Up to $7,500 per intentional violation         | Up to €20M or 4% global revenue     |
+| **Private Right of Action** | Yes (for data breaches)                        | No (regulatory enforcement only)    |
 
 **Implementation Tip:** If you comply with GDPR, you're mostly CCPA-compliant. Additional CCPA-specific requirements:
+
 - "Do Not Sell" link (if selling PI)
 - CCPA-specific language in Privacy Policy
 - Response timelines (45 days vs. GDPR's 1 month)
@@ -517,23 +557,28 @@ Best regards,
 ### 8.1 Regulatory Enforcement
 
 **California Privacy Protection Agency (CPPA):**
+
 - Can assess civil penalties up to **$2,500 per violation**
 - Up to **$7,500 per intentional violation** or violations involving minors
 
 **Attorney General:**
+
 - Can bring enforcement actions
 - 30-day cure period before penalties (for certain violations)
 
 ### 8.2 Private Right of Action
 
 Consumers can sue for data breaches involving:
+
 - Unauthorized access to or exfiltration, theft, or disclosure of **non-encrypted or non-redacted personal information**
 
 **Statutory Damages:**
+
 - $100 to $750 per consumer per incident, OR
 - Actual damages, whichever is greater
 
 **Class Actions:**
+
 - Consumers can bring class action lawsuits for data breaches
 
 ### 8.3 Mitigation Strategies
@@ -567,11 +612,13 @@ Consumers can sue for data breaches involving:
 ### 9.1 California Online Privacy Protection Act (CalOPPA)
 
 **Requirements:**
+
 - Post conspicuous privacy policy
 - Disclose how you respond to Do Not Track (DNT) signals
 - Disclose if third parties collect PI for behavioral advertising
 
 **Implementation in nself-chat:**
+
 - ✅ Privacy Policy posted and linked in footer
 - ✅ DNT disclosure: "We do not currently respond to DNT signals"
 - ✅ Third-party disclosure: "We use Sentry for error tracking; they do not use data for advertising"
@@ -579,18 +626,22 @@ Consumers can sue for data breaches involving:
 ### 9.2 California Shine the Light Law (Cal. Civ. Code § 1798.83)
 
 **Requirements:**
+
 - California residents can request information about PI shared with third parties for direct marketing
 
 **Implementation in nself-chat:**
+
 - ❌ Not applicable (we do NOT share PI with third parties for their direct marketing)
 - ✅ Privacy Policy states: "We do not share your personal information with third parties for their direct marketing purposes"
 
 ### 9.3 COPPA (Children's Online Privacy Protection Act)
 
 **Requirements:**
+
 - Obtain verifiable parental consent before collecting PI from children under 13
 
 **Implementation in nself-chat:**
+
 - ✅ Terms of Service require users to be 13+ years old
 - ✅ Privacy Policy states: "The Service is not intended for children under 13"
 - ✅ If collect child data, delete promptly and notify parents
@@ -625,15 +676,18 @@ Consumers can sue for data breaches involving:
 For CCPA compliance questions, contact:
 
 **Privacy Team:**
+
 - Email: [privacy@yourcompany.com]
 - Phone: [INSERT TOLL-FREE NUMBER]
 - Mail: [INSERT PHYSICAL ADDRESS]
 
 **California Attorney General:**
+
 - Website: [https://oag.ca.gov/contact](https://oag.ca.gov/contact)
 - Phone: (916) 210-6276
 
 **California Privacy Protection Agency:**
+
 - Website: [https://cppa.ca.gov/contact](https://cppa.ca.gov/contact)
 
 ---

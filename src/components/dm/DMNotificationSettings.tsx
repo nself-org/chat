@@ -1,43 +1,32 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import {
-  Bell,
-  BellOff,
-  Volume2,
-  VolumeX,
-  Clock,
-  Settings,
-} from 'lucide-react';
-import type { DirectMessage, DMNotificationSetting } from '@/lib/dm/dm-types';
-import { getMutePresets, getMuteTimeRemaining, type MuteOptions } from '@/lib/dm';
-import { useDMStore } from '@/stores/dm-store';
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Bell, BellOff, Volume2, VolumeX, Clock, Settings } from 'lucide-react'
+import type { DirectMessage, DMNotificationSetting } from '@/lib/dm/dm-types'
+import { getMutePresets, getMuteTimeRemaining, type MuteOptions } from '@/lib/dm'
+import { useDMStore } from '@/stores/dm-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface DMNotificationSettingsProps {
-  dm: DirectMessage;
-  currentUserId: string;
-  variant?: 'popover' | 'inline';
-  className?: string;
+  dm: DirectMessage
+  currentUserId: string
+  variant?: 'popover' | 'inline'
+  className?: string
 }
 
 // ============================================================================
@@ -50,59 +39,51 @@ export function DMNotificationSettings({
   variant = 'popover',
   className,
 }: DMNotificationSettingsProps) {
-  const {
-    mutedDMs,
-    notificationPreferences,
-    setDMMuted,
-    updateNotificationPreference,
-  } = useDMStore();
+  const { mutedDMs, notificationPreferences, setDMMuted, updateNotificationPreference } =
+    useDMStore()
 
-  const isMuted = mutedDMs.has(dm.id);
-  const preference = notificationPreferences.get(dm.id);
-  const notificationSetting = preference?.setting || 'all';
-  const muteUntil = preference?.muteUntil || null;
+  const isMuted = mutedDMs.has(dm.id)
+  const preference = notificationPreferences.get(dm.id)
+  const notificationSetting = preference?.setting || 'all'
+  const muteUntil = preference?.muteUntil || null
 
-  const mutePresets = getMutePresets();
-  const muteTimeRemaining = getMuteTimeRemaining(muteUntil);
+  const mutePresets = getMutePresets()
+  const muteTimeRemaining = getMuteTimeRemaining(muteUntil)
 
   const handleNotificationChange = (value: DMNotificationSetting) => {
-    updateNotificationPreference(dm.id, { setting: value });
-    // TODO: Call API to update
-  };
+    updateNotificationPreference(dm.id, { setting: value })
+  }
 
   const handleMute = (preset: MuteOptions) => {
-    let until: string | null = null;
+    let until: string | null = null
     if (preset.duration !== null) {
-      const now = new Date();
-      let ms = preset.duration;
+      const now = new Date()
+      let ms = preset.duration
       switch (preset.unit) {
         case 'minutes':
-          ms *= 60 * 1000;
-          break;
+          ms *= 60 * 1000
+          break
         case 'hours':
-          ms *= 60 * 60 * 1000;
-          break;
+          ms *= 60 * 60 * 1000
+          break
         case 'days':
-          ms *= 24 * 60 * 60 * 1000;
-          break;
+          ms *= 24 * 60 * 60 * 1000
+          break
       }
-      until = new Date(now.getTime() + ms).toISOString();
+      until = new Date(now.getTime() + ms).toISOString()
     }
-    setDMMuted(dm.id, true, until);
-    updateNotificationPreference(dm.id, { muteUntil: until });
-    // TODO: Call API to update
-  };
+    setDMMuted(dm.id, true, until)
+    updateNotificationPreference(dm.id, { muteUntil: until })
+  }
 
   const handleUnmute = () => {
-    setDMMuted(dm.id, false, null);
-    updateNotificationPreference(dm.id, { muteUntil: null });
-    // TODO: Call API to update
-  };
+    setDMMuted(dm.id, false, null)
+    updateNotificationPreference(dm.id, { muteUntil: null })
+  }
 
   const handleSoundToggle = (enabled: boolean) => {
-    updateNotificationPreference(dm.id, { soundEnabled: enabled });
-    // TODO: Call API to update
-  };
+    updateNotificationPreference(dm.id, { soundEnabled: enabled })
+  }
 
   const content = (
     <div className="space-y-4">
@@ -142,9 +123,12 @@ export function DMNotificationSettings({
         {isMuted ? (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground flex items-center gap-1.5">
+              <span className="flex items-center gap-1.5 text-muted-foreground">
                 <VolumeX className="h-4 w-4" />
-                Muted {muteTimeRemaining.remaining ? `for ${muteTimeRemaining.remaining}` : 'indefinitely'}
+                Muted{' '}
+                {muteTimeRemaining.remaining
+                  ? `for ${muteTimeRemaining.remaining}`
+                  : 'indefinitely'}
               </span>
             </div>
             <Button variant="outline" size="sm" onClick={handleUnmute}>
@@ -156,8 +140,8 @@ export function DMNotificationSettings({
           <Select
             value=""
             onValueChange={(value) => {
-              const preset = mutePresets.find((p) => p.label === value);
-              if (preset) handleMute(preset.value);
+              const preset = mutePresets.find((p) => p.label === value)
+              if (preset) handleMute(preset.value)
             }}
           >
             <SelectTrigger>
@@ -187,27 +171,23 @@ export function DMNotificationSettings({
         />
       </div>
     </div>
-  );
+  )
 
   if (variant === 'inline') {
-    return <div className={className}>{content}</div>;
+    return <div className={className}>{content}</div>
   }
 
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button variant="ghost" size="icon" className={cn('h-9 w-9', className)}>
-          {isMuted ? (
-            <BellOff className="h-4 w-4" />
-          ) : (
-            <Bell className="h-4 w-4" />
-          )}
+          {isMuted ? <BellOff className="h-4 w-4" /> : <Bell className="h-4 w-4" />}
           <span className="sr-only">Notification settings</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64" align="end">
         <div className="space-y-2">
-          <h4 className="font-medium text-sm flex items-center gap-2">
+          <h4 className="flex items-center gap-2 text-sm font-medium">
             <Settings className="h-4 w-4" />
             Notification Settings
           </h4>
@@ -215,7 +195,7 @@ export function DMNotificationSettings({
         </div>
       </PopoverContent>
     </Popover>
-  );
+  )
 }
 
-DMNotificationSettings.displayName = 'DMNotificationSettings';
+DMNotificationSettings.displayName = 'DMNotificationSettings'

@@ -495,7 +495,8 @@ export function createLocationError(
       case GeolocationPositionError.PERMISSION_DENIED:
         return {
           code: 'PERMISSION_DENIED',
-          message: 'Location permission was denied. Please enable location access in your browser settings.',
+          message:
+            'Location permission was denied. Please enable location access in your browser settings.',
           originalError: error,
         }
       case GeolocationPositionError.POSITION_UNAVAILABLE:

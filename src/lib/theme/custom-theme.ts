@@ -7,13 +7,19 @@
 
 import { ThemeColors, ThemePreset, themePresets } from '@/lib/theme-presets'
 
+import { logger } from '@/lib/logger'
+
 /**
  * Font family options for theme customization
  */
 export const fontFamilies = [
   { value: 'Inter, system-ui, sans-serif', label: 'Inter (Default)', category: 'Sans-serif' },
   { value: 'system-ui, sans-serif', label: 'System UI', category: 'Sans-serif' },
-  { value: '-apple-system, BlinkMacSystemFont, sans-serif', label: 'Apple System', category: 'Sans-serif' },
+  {
+    value: '-apple-system, BlinkMacSystemFont, sans-serif',
+    label: 'Apple System',
+    category: 'Sans-serif',
+  },
   { value: 'Arial, sans-serif', label: 'Arial', category: 'Sans-serif' },
   { value: 'Helvetica, sans-serif', label: 'Helvetica', category: 'Sans-serif' },
   { value: '"Segoe UI", sans-serif', label: 'Segoe UI', category: 'Sans-serif' },
@@ -294,7 +300,9 @@ export function importThemeJSON(json: string): CustomThemeConfig {
       },
     }
   } catch (error) {
-    throw new Error(`Failed to import theme: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Failed to import theme: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -315,7 +323,9 @@ export function parseThemeFromShareURL(encoded: string): CustomThemeConfig {
     const json = atob(encoded)
     return importThemeJSON(json)
   } catch (error) {
-    throw new Error(`Failed to parse theme URL: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(
+      `Failed to parse theme URL: ${error instanceof Error ? error.message : 'Unknown error'}`
+    )
   }
 }
 
@@ -411,7 +421,7 @@ export function saveCustomThemeToStorage(theme: CustomThemeConfig): void {
   try {
     localStorage.setItem('custom-theme', JSON.stringify(theme))
   } catch (error) {
-    console.error('Failed to save custom theme:', error)
+    logger.error('Failed to save custom theme:', error)
   }
 }
 
@@ -424,7 +434,7 @@ export function loadCustomThemeFromStorage(): CustomThemeConfig | null {
     if (!stored) return null
     return importThemeJSON(stored)
   } catch (error) {
-    console.error('Failed to load custom theme:', error)
+    logger.error('Failed to load custom theme:', error)
     return null
   }
 }
@@ -436,6 +446,6 @@ export function clearCustomThemeFromStorage(): void {
   try {
     localStorage.removeItem('custom-theme')
   } catch (error) {
-    console.error('Failed to clear custom theme:', error)
+    logger.error('Failed to clear custom theme:', error)
   }
 }

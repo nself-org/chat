@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/select'
 import { Loader2, Settings, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { logger } from '@/lib/logger'
 import {
   BaseModal,
   ModalHeader,
@@ -118,7 +119,7 @@ export function SettingsModal({
       await onSave(values)
       onOpenChange(false)
     } catch (error) {
-      console.error('Save settings failed:', error)
+      logger.error('Save settings failed:',  error)
     } finally {
       if (externalLoading === undefined) {
         setInternalLoading(false)
@@ -209,10 +210,8 @@ export function SettingsModal({
             <Input
               id={setting.key}
               type="number"
-              value={value as number ?? ''}
-              onChange={(e) =>
-                handleValueChange(setting.key, e.target.valueAsNumber || 0)
-              }
+              value={(value as number) ?? ''}
+              onChange={(e) => handleValueChange(setting.key, e.target.valueAsNumber || 0)}
               placeholder={setting.placeholder}
               min={setting.min}
               max={setting.max}
@@ -233,7 +232,7 @@ export function SettingsModal({
             )}
             <div className="flex items-center gap-2">
               <div
-                className="w-10 h-10 rounded-md border"
+                className="h-10 w-10 rounded-md border"
                 style={{ backgroundColor: String(value || '#000000') }}
               />
               <Input
@@ -241,7 +240,7 @@ export function SettingsModal({
                 type="color"
                 value={String(value || '#000000')}
                 onChange={(e) => handleValueChange(setting.key, e.target.value)}
-                className="w-full h-10"
+                className="h-10 w-full"
                 disabled={loading}
               />
             </div>
@@ -285,7 +284,7 @@ export function SettingsModal({
     >
       <ModalHeader>
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center h-10 w-10 rounded-full bg-primary/10 text-primary">
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full text-primary">
             <Settings className="h-5 w-5" />
           </div>
           <div>
@@ -303,9 +302,7 @@ export function SettingsModal({
                 <div className="mb-4">
                   <h4 className="text-sm font-semibold">{section.title}</h4>
                   {section.description && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {section.description}
-                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">{section.description}</p>
                   )}
                 </div>
               )}
@@ -314,9 +311,7 @@ export function SettingsModal({
                 {section.settings.map((setting) => renderSetting(setting))}
               </div>
 
-              {sectionIndex < sections.length - 1 && (
-                <Separator className="mt-6" />
-              )}
+              {sectionIndex < sections.length - 1 && <Separator className="mt-6" />}
             </div>
           ))}
         </div>
@@ -324,12 +319,7 @@ export function SettingsModal({
 
       <ModalFooter>
         {showResetButton && (
-          <Button
-            variant="ghost"
-            onClick={handleReset}
-            disabled={loading}
-            className="mr-auto"
-          >
+          <Button variant="ghost" onClick={handleReset} disabled={loading} className="mr-auto">
             Reset to defaults
           </Button>
         )}

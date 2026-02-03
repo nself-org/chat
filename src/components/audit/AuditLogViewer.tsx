@@ -5,14 +5,7 @@
  */
 
 import { useState, useCallback, useEffect } from 'react'
-import {
-  Activity,
-  Download,
-  RefreshCw,
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-} from 'lucide-react'
+import { Activity, Download, RefreshCw, Settings, ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -113,7 +106,15 @@ export function AuditLogViewer({
     if (!externalEntries) {
       applyFiltersAndSort()
     }
-  }, [entries, filters, sort, pagination.page, pagination.pageSize, applyFiltersAndSort, externalEntries])
+  }, [
+    entries,
+    filters,
+    sort,
+    pagination.page,
+    pagination.pageSize,
+    applyFiltersAndSort,
+    externalEntries,
+  ])
 
   // Handlers
   const handleRefresh = useCallback(async () => {
@@ -152,8 +153,7 @@ export function AuditLogViewer({
     selectEntry(null)
   }, [selectEntry])
 
-  const handleExportComplete = useCallback((filename: string, recordCount: number) => {
-  }, [])
+  const handleExportComplete = useCallback((filename: string, recordCount: number) => {}, [])
 
   // Displayed entries (with local filtering if using external entries)
   const displayedEntries = externalEntries ?? filteredEntries
@@ -183,31 +183,25 @@ export function AuditLogViewer({
                 onClick={handleRefresh}
                 disabled={isRefreshing || isLoading}
               >
-                <RefreshCw
-                  className={cn('h-4 w-4 mr-1', isRefreshing && 'animate-spin')}
-                />
+                <RefreshCw className={cn('mr-1 h-4 w-4', isRefreshing && 'animate-spin')} />
                 Refresh
               </Button>
               {showExport && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsExportOpen(true)}
-                >
-                  <Download className="h-4 w-4 mr-1" />
+                <Button variant="outline" size="sm" onClick={() => setIsExportOpen(true)}>
+                  <Download className="mr-1 h-4 w-4" />
                   Export
                 </Button>
               )}
               {showSettings && onSettingsClick && (
                 <Button variant="outline" size="sm" onClick={onSettingsClick}>
-                  <Settings className="h-4 w-4 mr-1" />
+                  <Settings className="mr-1 h-4 w-4" />
                   Settings
                 </Button>
               )}
             </div>
           </div>
         </CardHeader>
-        <CardContent className="pt-0 space-y-4">
+        <CardContent className="space-y-4 pt-0">
           {/* Search */}
           {showSearch && (
             <AuditLogSearch
@@ -231,19 +225,14 @@ export function AuditLogViewer({
             <div className="flex items-center gap-4">
               <span className="text-muted-foreground">
                 Showing{' '}
-                <span className="font-medium text-foreground">
-                  {displayedEntries.length}
-                </span>{' '}
-                of{' '}
+                <span className="font-medium text-foreground">{displayedEntries.length}</span> of{' '}
                 <span className="font-medium text-foreground">
                   {externalEntries?.length ?? pagination.totalCount}
                 </span>{' '}
                 entries
               </span>
               {selectedEntryIds.length > 0 && (
-                <Badge variant="secondary">
-                  {selectedEntryIds.length} selected
-                </Badge>
+                <Badge variant="secondary">{selectedEntryIds.length} selected</Badge>
               )}
             </div>
             <div className="flex items-center gap-2">
@@ -252,7 +241,7 @@ export function AuditLogViewer({
                 value={pagination.pageSize.toString()}
                 onValueChange={(v) => setPageSize(parseInt(v))}
               >
-                <SelectTrigger className="w-[80px] h-8">
+                <SelectTrigger className="h-8 w-[80px]">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -294,7 +283,7 @@ export function AuditLogViewer({
               onClick={() => setPage(pagination.page - 1)}
               disabled={pagination.page <= 1}
             >
-              <ChevronLeft className="h-4 w-4 mr-1" />
+              <ChevronLeft className="mr-1 h-4 w-4" />
               Previous
             </Button>
             <Button
@@ -304,18 +293,14 @@ export function AuditLogViewer({
               disabled={pagination.page >= pagination.totalPages}
             >
               Next
-              <ChevronRight className="h-4 w-4 ml-1" />
+              <ChevronRight className="ml-1 h-4 w-4" />
             </Button>
           </div>
         </div>
       )}
 
       {/* Detail Modal */}
-      <AuditLogDetail
-        entry={selectedEntry}
-        open={isDetailOpen}
-        onClose={handleDetailClose}
-      />
+      <AuditLogDetail entry={selectedEntry} open={isDetailOpen} onClose={handleDetailClose} />
 
       {/* Export Modal */}
       <AuditLogExport

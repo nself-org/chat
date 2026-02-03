@@ -163,10 +163,8 @@ export function getActivityTrend(
   const firstHalf = recentData.slice(0, Math.floor(recentData.length / 2))
   const secondHalf = recentData.slice(Math.floor(recentData.length / 2))
 
-  const firstAvg =
-    firstHalf.reduce((sum, d) => sum + d.messageCount, 0) / firstHalf.length
-  const secondAvg =
-    secondHalf.reduce((sum, d) => sum + d.messageCount, 0) / secondHalf.length
+  const firstAvg = firstHalf.reduce((sum, d) => sum + d.messageCount, 0) / firstHalf.length
+  const secondAvg = secondHalf.reduce((sum, d) => sum + d.messageCount, 0) / secondHalf.length
 
   const changePercent = ((secondAvg - firstAvg) / (firstAvg || 1)) * 100
 
@@ -340,9 +338,7 @@ export function compareChannels(
     .filter((c): c is ChannelComparison => c !== null)
 
   // Calculate ranks
-  const sortedByMembers = [...comparisons].sort(
-    (a, b) => b.stats.memberCount - a.stats.memberCount
-  )
+  const sortedByMembers = [...comparisons].sort((a, b) => b.stats.memberCount - a.stats.memberCount)
   const sortedByActivity = [...comparisons].sort(
     (a, b) => b.stats.messageCountWeek - a.stats.messageCountWeek
   )

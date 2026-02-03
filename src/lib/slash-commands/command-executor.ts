@@ -13,7 +13,9 @@ import type {
   ParsedCommand,
   CommandArgValue,
 } from './command-types'
+
 import { parseCommand, argsToObject } from './command-parser'
+import { logger } from '@/lib/logger'
 import {
   getCommandByTrigger,
   canUserUseCommand,
@@ -149,7 +151,7 @@ export async function executeCommand(
   try {
     return await executeAction(command, fullContext, parsed)
   } catch (error) {
-    console.error('Command execution error:', error)
+    logger.error('Command execution error:',  error)
     return {
       success: false,
       error:

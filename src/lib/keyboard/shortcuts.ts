@@ -9,28 +9,23 @@
 // Types
 // ============================================================================
 
-export type ShortcutCategory =
-  | 'Navigation'
-  | 'Messages'
-  | 'Formatting'
-  | 'UI'
-  | 'Actions';
+export type ShortcutCategory = 'Navigation' | 'Messages' | 'Formatting' | 'UI' | 'Actions'
 
 export interface ShortcutDefinition {
   /** The keyboard key combination (uses react-hotkeys-hook format) */
-  key: string;
+  key: string
   /** Human-readable label for the shortcut */
-  label: string;
+  label: string
   /** Category for grouping in the shortcuts modal */
-  category: ShortcutCategory;
+  category: ShortcutCategory
   /** Optional description for more context */
-  description?: string;
+  description?: string
   /** Whether this shortcut should work when an input is focused */
-  enableOnFormTags?: boolean;
+  enableOnFormTags?: boolean
   /** Whether to prevent default browser behavior */
-  preventDefault?: boolean;
+  preventDefault?: boolean
   /** Scopes where this shortcut is active */
-  scopes?: string[];
+  scopes?: string[]
 }
 
 // ============================================================================
@@ -340,14 +335,14 @@ export const SHORTCUTS = {
     description: 'Open your profile settings',
     preventDefault: true,
   },
-} as const;
+} as const
 
 // ============================================================================
 // Type exports
 // ============================================================================
 
-export type ShortcutKey = keyof typeof SHORTCUTS;
-export type Shortcut = (typeof SHORTCUTS)[ShortcutKey];
+export type ShortcutKey = keyof typeof SHORTCUTS
+export type Shortcut = (typeof SHORTCUTS)[ShortcutKey]
 
 // ============================================================================
 // Helper functions
@@ -357,15 +352,15 @@ export type Shortcut = (typeof SHORTCUTS)[ShortcutKey];
  * Get all shortcuts for a specific category
  */
 export function getShortcutsByCategory(category: ShortcutCategory): Array<{
-  id: ShortcutKey;
-  shortcut: ShortcutDefinition;
+  id: ShortcutKey
+  shortcut: ShortcutDefinition
 }> {
   return Object.entries(SHORTCUTS)
     .filter(([, shortcut]) => shortcut.category === category)
     .map(([id, shortcut]) => ({
       id: id as ShortcutKey,
       shortcut: shortcut as ShortcutDefinition,
-    }));
+    }))
 }
 
 /**
@@ -375,21 +370,15 @@ export function getShortcutsGrouped(): Record<
   ShortcutCategory,
   Array<{ id: ShortcutKey; shortcut: ShortcutDefinition }>
 > {
-  const categories: ShortcutCategory[] = [
-    'Navigation',
-    'Messages',
-    'Formatting',
-    'UI',
-    'Actions',
-  ];
+  const categories: ShortcutCategory[] = ['Navigation', 'Messages', 'Formatting', 'UI', 'Actions']
 
   return categories.reduce(
     (acc, category) => {
-      acc[category] = getShortcutsByCategory(category);
-      return acc;
+      acc[category] = getShortcutsByCategory(category)
+      return acc
     },
     {} as Record<ShortcutCategory, Array<{ id: ShortcutKey; shortcut: ShortcutDefinition }>>
-  );
+  )
 }
 
 /**
@@ -401,45 +390,45 @@ export function formatKeyForDisplay(key: string, isMac: boolean = true): string 
     .map((part) => {
       switch (part.toLowerCase()) {
         case 'mod':
-          return isMac ? '\u2318' : 'Ctrl';
+          return isMac ? '\u2318' : 'Ctrl'
         case 'alt':
-          return isMac ? '\u2325' : 'Alt';
+          return isMac ? '\u2325' : 'Alt'
         case 'shift':
-          return isMac ? '\u21E7' : 'Shift';
+          return isMac ? '\u21E7' : 'Shift'
         case 'ctrl':
-          return isMac ? '\u2303' : 'Ctrl';
+          return isMac ? '\u2303' : 'Ctrl'
         case 'enter':
-          return isMac ? '\u21A9' : 'Enter';
+          return isMac ? '\u21A9' : 'Enter'
         case 'escape':
-          return 'Esc';
+          return 'Esc'
         case 'backspace':
-          return isMac ? '\u232B' : 'Backspace';
+          return isMac ? '\u232B' : 'Backspace'
         case 'arrowup':
-          return '\u2191';
+          return '\u2191'
         case 'arrowdown':
-          return '\u2193';
+          return '\u2193'
         case 'arrowleft':
-          return '\u2190';
+          return '\u2190'
         case 'arrowright':
-          return '\u2192';
+          return '\u2192'
         default:
-          return part.toUpperCase();
+          return part.toUpperCase()
       }
     })
-    .join(isMac ? '' : '+');
+    .join(isMac ? '' : '+')
 }
 
 /**
  * Check if the current platform is macOS
  */
 export function isMacOS(): boolean {
-  if (typeof window === 'undefined') return false;
-  return navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+  if (typeof window === 'undefined') return false
+  return navigator.platform.toUpperCase().indexOf('MAC') >= 0
 }
 
 /**
  * Get all shortcut categories
  */
 export function getCategories(): ShortcutCategory[] {
-  return ['Navigation', 'Messages', 'Formatting', 'UI', 'Actions'];
+  return ['Navigation', 'Messages', 'Formatting', 'UI', 'Actions']
 }

@@ -57,9 +57,30 @@ const presetStatuses: Array<{ emoji: string; text: string }> = [
 // ============================================================================
 
 const commonEmojis = [
-  '😀', '😊', '🎉', '🔥', '💪', '👋', '🙏', '💡',
-  '⚡', '🚀', '💻', '📱', '🎯', '✅', '❤️', '⭐',
-  '🌟', '🎮', '🎨', '📚', '🎵', '🏃', '🍕', '☕',
+  '😀',
+  '😊',
+  '🎉',
+  '🔥',
+  '💪',
+  '👋',
+  '🙏',
+  '💡',
+  '⚡',
+  '🚀',
+  '💻',
+  '📱',
+  '🎯',
+  '✅',
+  '❤️',
+  '⭐',
+  '🌟',
+  '🎮',
+  '🎨',
+  '📚',
+  '🎵',
+  '🏃',
+  '🍕',
+  '☕',
 ]
 
 // ============================================================================
@@ -182,13 +203,13 @@ export const SetStatusModal: React.FC<SetStatusModalProps> = ({
 
               {/* Simple emoji picker dropdown */}
               {showEmojiPicker && (
-                <div className="absolute top-12 left-0 z-50 p-3 bg-popover border rounded-md shadow-lg">
+                <div className="absolute left-0 top-12 z-50 rounded-md border bg-popover p-3 shadow-lg">
                   <div className="grid grid-cols-8 gap-1">
                     {commonEmojis.map((e) => (
                       <button
                         key={e}
                         onClick={() => handleEmojiClick(e)}
-                        className="p-1 text-lg hover:bg-muted rounded transition-colors"
+                        className="rounded p-1 text-lg transition-colors hover:bg-muted"
                       >
                         {e}
                       </button>
@@ -197,7 +218,7 @@ export const SetStatusModal: React.FC<SetStatusModalProps> = ({
                 </div>
               )}
             </div>
-            <div className="flex-1 relative">
+            <div className="relative flex-1">
               <Input
                 placeholder="What's your status?"
                 value={text}
@@ -208,7 +229,7 @@ export const SetStatusModal: React.FC<SetStatusModalProps> = ({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+                  className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2"
                   onClick={() => {
                     setEmoji('')
                     setText('')
@@ -244,9 +265,7 @@ export const SetStatusModal: React.FC<SetStatusModalProps> = ({
 
           {/* Preset statuses */}
           <div>
-            <Label className="text-sm text-muted-foreground mb-2 block">
-              Quick select
-            </Label>
+            <Label className="mb-2 block text-sm text-muted-foreground">Quick select</Label>
             <ScrollArea className="h-40">
               <div className="space-y-1">
                 {presetStatuses.map((preset, index) => (
@@ -254,7 +273,7 @@ export const SetStatusModal: React.FC<SetStatusModalProps> = ({
                     key={index}
                     onClick={() => handlePresetClick(preset)}
                     className={cn(
-                      'flex items-center gap-3 w-full p-2 rounded-md text-left transition-colors',
+                      'flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors',
                       emoji === preset.emoji && text === preset.text
                         ? 'bg-primary/10 text-primary'
                         : 'hover:bg-muted'

@@ -13,8 +13,10 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 ### API Routes
 
 #### 1. `/src/app/api/webhooks/incoming/[token]/route.ts`
+
 **Status:** ✅ Complete
 **Features:**
+
 - Token-based authentication
 - Rate limiting (60 req/min per IP)
 - GraphQL integration for webhook validation
@@ -25,6 +27,7 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - Error handling with delivery status updates
 
 **Key Functions:**
+
 - `handleWebhookPost()` - Main POST handler with full error handling
 - `formatWebhookMessage()` - Converts webhook payload to message content
 - Validates webhook token via `GET_WEBHOOK_BY_TOKEN` query
@@ -34,8 +37,10 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 ---
 
 #### 2. `/src/app/api/webhooks/slack/route.ts`
+
 **Status:** ✅ Complete
 **Features:**
+
 - URL verification challenge handling
 - Signature verification with `X-Slack-Signature`
 - Timestamp-based replay attack prevention
@@ -45,12 +50,14 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - Thread support via `thread_ts`
 
 **Supported Events:**
+
 - `message` - New messages in channels
 - `reaction_added` / `reaction_removed` - Message reactions
 - `channel_created` / `channel_rename` / `channel_deleted` - Channel events
 - `member_joined_channel` / `member_left_channel` - Member events
 
 **Key Functions:**
+
 - `processSlackEvent()` - Routes events to appropriate handlers
 - `handleSlackMessage()` - Processes message events
 - `handleSlackReaction()` - Processes reaction events
@@ -61,8 +68,10 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 ---
 
 #### 3. `/src/app/api/webhooks/github/route.ts`
+
 **Status:** ✅ Complete
 **Features:**
+
 - HMAC-SHA256 signature verification
 - Support for 10+ GitHub event types
 - Rich formatted notifications
@@ -72,6 +81,7 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - Deployment status updates
 
 **Supported Events:**
+
 - `push` - Code pushes with commit details
 - `pull_request` - PR lifecycle events
 - `issues` - Issue lifecycle events
@@ -81,6 +91,7 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - `deployment` / `deployment_status` - Deployment tracking
 
 **Key Functions:**
+
 - `processGitHubEvent()` - Routes GitHub events
 - `handlePushEvent()` - Formats push notifications
 - `handlePullRequestEvent()` - Formats PR notifications
@@ -91,8 +102,10 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 ---
 
 #### 4. `/src/app/api/webhooks/jira/route.ts`
+
 **Status:** ✅ Complete
 **Features:**
+
 - Signature verification support
 - Issue lifecycle tracking
 - Comment notifications
@@ -101,6 +114,7 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - Priority and assignee change tracking
 
 **Supported Events:**
+
 - `jira:issue_created` - New issues
 - `jira:issue_updated` - Issue changes
 - `jira:issue_deleted` - Issue deletions
@@ -108,6 +122,7 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - `sprint_started` / `sprint_closed` - Sprint events
 
 **Key Functions:**
+
 - `processJiraEvent()` - Routes Jira events
 - `handleIssueCreated()` - New issue notifications
 - `handleIssueUpdated()` - Tracks significant changes only
@@ -118,8 +133,10 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 ---
 
 #### 5. `/src/app/api/webhooks/discord/route.ts`
+
 **Status:** ✅ Complete
 **Features:**
+
 - Webhook message reception
 - Rich embed support
 - Channel mapping via query parameter
@@ -129,6 +146,7 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 **Note:** Discord primarily uses Gateway WebSocket for bot events. This endpoint handles webhook messages from Discord → nself-chat.
 
 **Key Functions:**
+
 - `processDiscordWebhook()` - Main processing logic
 - `formatDiscordMessage()` - Converts Discord embeds to nself-chat format
 - `getDiscordChannelMapping()` - Channel mapping lookup (TODO: implement DB query)
@@ -136,8 +154,10 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 ---
 
 #### 6. `/src/app/api/webhooks/telegram/route.ts`
+
 **Status:** ✅ Complete
 **Features:**
+
 - Secret token verification
 - Multiple update type support
 - Media message handling (photos, documents, videos, voice)
@@ -146,12 +166,14 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - Edited message support
 
 **Supported Updates:**
+
 - `message` - New messages
 - `edited_message` - Message edits
 - `channel_post` - Channel posts
 - `callback_query` - Inline button callbacks
 
 **Key Functions:**
+
 - `verifyTelegramWebhook()` - Constant-time token comparison
 - `processTelegramMessage()` - Message processing
 - `processTelegramEditedMessage()` - Edit handling
@@ -162,22 +184,27 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 ### Supporting Infrastructure
 
 #### 7. `/src/lib/apollo-server.ts`
+
 **Status:** ✅ Complete
 **Features:**
+
 - Server-side Apollo Client for API routes
 - Admin authentication with `x-hasura-admin-secret`
 - Network-only fetch policy for fresh data
 - Singleton pattern for efficiency
 
 **Key Functions:**
+
 - `getApolloClient()` - Get/create server Apollo client
 - `resetApolloServerClient()` - Testing utility
 
 ---
 
 #### 8. `/src/lib/webhooks/webhook-queue.ts`
+
 **Status:** ✅ Complete (existing)
 **Features:**
+
 - BullMQ + Redis queue management
 - Exponential backoff retry logic
 - Rate limiting support
@@ -186,6 +213,7 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - Health checks
 
 **Key Classes:**
+
 - `WebhookQueueManager` - Queue management
 - `OutgoingWebhookPayload` - Payload interface
 - `WebhookDeliveryResult` - Delivery result tracking
@@ -193,8 +221,10 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 ---
 
 #### 9. `/src/lib/webhooks/outgoing-webhooks.ts`
+
 **Status:** ✅ Complete (existing)
 **Features:**
+
 - Outgoing webhook management
 - Event subscription
 - Delivery statistics
@@ -202,14 +232,17 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - LocalStorage persistence
 
 **Key Classes:**
+
 - `OutgoingWebhookManager` - Webhook CRUD operations
 - Event types for 20+ event categories
 
 ---
 
 #### 10. `/src/lib/integrations/webhook-handler.ts`
+
 **Status:** ✅ Complete (existing)
 **Features:**
+
 - Signature verification for all platforms
 - Platform detection from headers
 - Event routing
@@ -217,6 +250,7 @@ All webhook endpoints and supporting infrastructure have been implemented with p
 - Replay attack prevention (Slack)
 
 **Key Classes:**
+
 - `WebhookHandlerManager` - Central webhook router
 - `verifyGitHubSignature()` - GitHub verification
 - `verifySlackSignature()` - Slack verification with timestamp
@@ -256,6 +290,7 @@ From `/src/graphql/messages.ts`:
 ### 1. Signature Verification
 
 **GitHub (HMAC-SHA256):**
+
 ```typescript
 Header: X-Hub-Signature-256
 Format: sha256={signature}
@@ -264,6 +299,7 @@ Secret: GITHUB_WEBHOOK_SECRET
 ```
 
 **Slack (HMAC-SHA256 with timestamp):**
+
 ```typescript
 Header: X-Slack-Signature
 Format: v0={signature}
@@ -273,6 +309,7 @@ Timestamp validation: Max 5 minutes old
 ```
 
 **Jira (HMAC-SHA256):**
+
 ```typescript
 Header: X-Hub-Signature
 Format: sha256={signature}
@@ -281,6 +318,7 @@ Secret: JIRA_WEBHOOK_SECRET
 ```
 
 **Telegram (Secret Token):**
+
 ```typescript
 Header: X-Telegram-Bot-Api-Secret-Token
 Comparison: Constant-time comparison
@@ -290,6 +328,7 @@ Secret: TELEGRAM_WEBHOOK_SECRET
 ### 2. Rate Limiting
 
 Implemented via `/src/lib/api/middleware.ts`:
+
 - 60 requests per minute per IP
 - Applied to incoming webhook endpoint
 - Returns 429 Too Many Requests on limit exceeded
@@ -297,6 +336,7 @@ Implemented via `/src/lib/api/middleware.ts`:
 ### 3. Token-Based Authentication
 
 Incoming webhooks use UUID tokens:
+
 - Generated on webhook creation
 - Stored in database
 - Validated on every request
@@ -392,20 +432,25 @@ REDIS_DB=0
 The following helper functions are placeholders and need database implementation:
 
 ### Slack
+
 - `getSlackChannelMapping(slackChannelId, teamId)` → Query `slack_channel_mappings` table
 - `getSlackUserMapping(slackUserId, teamId)` → Query `slack_user_mappings` table
 - `getThreadMapping(slackThreadTs)` → Query `slack_thread_mappings` table
 
 ### GitHub
+
 - `getGitHubChannelMapping(repository)` → Query `github_channel_mappings` table
 
 ### Jira
+
 - `getJiraChannelMapping(projectKey)` → Query `jira_channel_mappings` table
 
 ### Discord
+
 - `getDiscordChannelMapping(discordChannelId)` → Query `discord_channel_mappings` table
 
 ### Telegram
+
 - `getTelegramChannelMapping(chatId)` → Query `telegram_channel_mappings` table
 - `getTelegramUserMapping(user)` → Query `telegram_user_mappings` table
 - `getTelegramThreadMapping(messageId)` → Query `telegram_thread_mappings` table
@@ -532,6 +577,7 @@ Create test files in `/src/app/api/webhooks/__tests__/`:
 ### Logging
 
 All webhook activity is logged with:
+
 - Webhook ID
 - Event type
 - Source IP

@@ -18,13 +18,7 @@ import { Preferences } from '@capacitor/preferences'
 // Types
 // =============================================================================
 
-export type BiometryType =
-  | 'none'
-  | 'touchId'
-  | 'faceId'
-  | 'fingerprint'
-  | 'iris'
-  | 'multiple'
+export type BiometryType = 'none' | 'touchId' | 'faceId' | 'fingerprint' | 'iris' | 'multiple'
 
 export type BiometryStrength = 'strong' | 'weak' | 'none'
 
@@ -225,17 +219,14 @@ class BiometricService {
    * Set up event listeners
    */
   private async setupListeners(): Promise<void> {
-    const listener = await Biometric.addListener(
-      'biometryChanged',
-      (data) => {
-        console.log('Biometry changed:', data)
-        this.biometryInfo = {
-          ...this.biometryInfo!,
-          isAvailable: data.available,
-          biometryType: data.type,
-        }
+    const listener = await Biometric.addListener('biometryChanged', (data) => {
+      console.log('Biometry changed:', data)
+      this.biometryInfo = {
+        ...this.biometryInfo!,
+        isAvailable: data.available,
+        biometryType: data.type,
       }
-    )
+    })
     this.listeners.push(listener)
   }
 
@@ -491,11 +482,7 @@ class BiometricService {
   /**
    * Store sensitive data with biometric protection
    */
-  async setSecureItem(
-    key: string,
-    value: string,
-    requireBiometry: boolean = true
-  ): Promise<void> {
+  async setSecureItem(key: string, value: string, requireBiometry: boolean = true): Promise<void> {
     await Biometric.setSecureItem({
       key,
       value,
@@ -510,10 +497,7 @@ class BiometricService {
   /**
    * Get sensitive data with biometric authentication
    */
-  async getSecureItem(
-    key: string,
-    authOptions?: BiometricAuthOptions
-  ): Promise<string | null> {
+  async getSecureItem(key: string, authOptions?: BiometricAuthOptions): Promise<string | null> {
     const { value } = await Biometric.getSecureItem({ key, authOptions })
     return value
   }
@@ -685,12 +669,9 @@ export function useBiometricAuth(): UseBiometricAuthResult {
     setIsEnabled(false)
   }, [])
 
-  const storeCredentials = React.useCallback(
-    async (userId: string, token: string) => {
-      await biometricAuth.storeCredentials(userId, token)
-    },
-    []
-  )
+  const storeCredentials = React.useCallback(async (userId: string, token: string) => {
+    await biometricAuth.storeCredentials(userId, token)
+  }, [])
 
   const getCredentials = React.useCallback(async (userId: string) => {
     const creds = await biometricAuth.getCredentials(userId)

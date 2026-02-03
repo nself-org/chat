@@ -1,12 +1,6 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import {
-  Webhook,
-  WebhookDelivery,
-  WebhookStats,
-  WebhooksStore,
-  WebhooksState,
-} from './types'
+import { Webhook, WebhookDelivery, WebhookStats, WebhooksStore, WebhooksState } from './types'
 
 // ============================================================================
 // INITIAL STATE
@@ -62,9 +56,7 @@ export const useWebhookStore = create<WebhooksStore>()(
         updateWebhook: (id: string, updates: Partial<Webhook>) => {
           set(
             (state) => ({
-              webhooks: state.webhooks.map((w) =>
-                w.id === id ? { ...w, ...updates } : w
-              ),
+              webhooks: state.webhooks.map((w) => (w.id === id ? { ...w, ...updates } : w)),
               selectedWebhook:
                 state.selectedWebhook?.id === id
                   ? { ...state.selectedWebhook, ...updates }
@@ -82,8 +74,7 @@ export const useWebhookStore = create<WebhooksStore>()(
           set(
             (state) => ({
               webhooks: state.webhooks.filter((w) => w.id !== id),
-              selectedWebhook:
-                state.selectedWebhook?.id === id ? null : state.selectedWebhook,
+              selectedWebhook: state.selectedWebhook?.id === id ? null : state.selectedWebhook,
             }),
             false,
             'removeWebhook'
@@ -115,10 +106,7 @@ export const useWebhookStore = create<WebhooksStore>()(
           set(
             (state) => ({
               deliveries: [delivery, ...state.deliveries],
-              recentDeliveries: [delivery, ...state.recentDeliveries].slice(
-                0,
-                10
-              ),
+              recentDeliveries: [delivery, ...state.recentDeliveries].slice(0, 10),
             }),
             false,
             'addDelivery'
@@ -131,9 +119,7 @@ export const useWebhookStore = create<WebhooksStore>()(
         updateDelivery: (id: string, updates: Partial<WebhookDelivery>) => {
           set(
             (state) => ({
-              deliveries: state.deliveries.map((d) =>
-                d.id === id ? { ...d, ...updates } : d
-              ),
+              deliveries: state.deliveries.map((d) => (d.id === id ? { ...d, ...updates } : d)),
               recentDeliveries: state.recentDeliveries.map((d) =>
                 d.id === id ? { ...d, ...updates } : d
               ),
@@ -190,9 +176,7 @@ export const useWebhookStore = create<WebhooksStore>()(
         name: 'nchat-webhooks-store',
         partialize: (state) => ({
           // Only persist non-sensitive data
-          selectedWebhook: state.selectedWebhook
-            ? { id: state.selectedWebhook.id }
-            : null,
+          selectedWebhook: state.selectedWebhook ? { id: state.selectedWebhook.id } : null,
         }),
       }
     ),
@@ -215,27 +199,21 @@ export const selectWebhooksByStatus = (status: Webhook['status']) => {
  * Select webhooks by channel
  */
 export const selectWebhooksByChannel = (channelId: string) => {
-  return useWebhookStore
-    .getState()
-    .webhooks.filter((w) => w.channel_id === channelId)
+  return useWebhookStore.getState().webhooks.filter((w) => w.channel_id === channelId)
 }
 
 /**
  * Select active webhooks count
  */
 export const selectActiveWebhooksCount = () => {
-  return useWebhookStore
-    .getState()
-    .webhooks.filter((w) => w.status === 'active').length
+  return useWebhookStore.getState().webhooks.filter((w) => w.status === 'active').length
 }
 
 /**
  * Select failed deliveries
  */
 export const selectFailedDeliveries = () => {
-  return useWebhookStore
-    .getState()
-    .deliveries.filter((d) => d.status === 'failed')
+  return useWebhookStore.getState().deliveries.filter((d) => d.status === 'failed')
 }
 
 /**
@@ -256,9 +234,7 @@ export const selectPendingDeliveries = () => {
  */
 export const useWebhooksByStatus = (status: Webhook['status'] | 'all') => {
   return useWebhookStore((state) =>
-    status === 'all'
-      ? state.webhooks
-      : state.webhooks.filter((w) => w.status === status)
+    status === 'all' ? state.webhooks : state.webhooks.filter((w) => w.status === status)
   )
 }
 
@@ -267,9 +243,7 @@ export const useWebhooksByStatus = (status: Webhook['status'] | 'all') => {
  */
 export const useWebhooksByChannel = (channelId: string | 'all') => {
   return useWebhookStore((state) =>
-    channelId === 'all'
-      ? state.webhooks
-      : state.webhooks.filter((w) => w.channel_id === channelId)
+    channelId === 'all' ? state.webhooks : state.webhooks.filter((w) => w.channel_id === channelId)
   )
 }
 
@@ -283,13 +257,9 @@ export const useWebhookById = (id: string) => {
 /**
  * Hook to get deliveries filtered by status
  */
-export const useDeliveriesByStatus = (
-  status: WebhookDelivery['status'] | 'all'
-) => {
+export const useDeliveriesByStatus = (status: WebhookDelivery['status'] | 'all') => {
   return useWebhookStore((state) =>
-    status === 'all'
-      ? state.deliveries
-      : state.deliveries.filter((d) => d.status === status)
+    status === 'all' ? state.deliveries : state.deliveries.filter((d) => d.status === status)
   )
 }
 

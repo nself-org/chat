@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useRef, useCallback, useEffect, useState } from 'react';
+import { useRef, useCallback, useEffect, useState } from 'react'
 
 const FOCUSABLE_SELECTORS = [
   'a[href]',
@@ -14,121 +14,123 @@ const FOCUSABLE_SELECTORS = [
   'embed',
   '[contenteditable]',
   '[tabindex]:not([tabindex="-1"])',
-].join(', ');
+].join(', ')
 
 /**
  * Hook for managing focus within a container
  */
 export function useFocusManagement<T extends HTMLElement = HTMLDivElement>() {
-  const containerRef = useRef<T>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<T>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
 
   /**
    * Get all focusable elements within the container
    */
   const getFocusableElements = useCallback((): HTMLElement[] => {
-    if (!containerRef.current) return [];
-    const elements = containerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS);
+    if (!containerRef.current) return []
+    const elements = containerRef.current.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS)
     return Array.from(elements).filter(
       (el) => !el.hasAttribute('disabled') && el.offsetParent !== null
-    );
-  }, []);
+    )
+  }, [])
 
   /**
    * Focus the first focusable element in the container
    */
   const focusFirst = useCallback(() => {
-    const elements = getFocusableElements();
+    const elements = getFocusableElements()
     if (elements.length > 0) {
-      elements[0].focus();
-      return true;
+      elements[0].focus()
+      return true
     }
-    return false;
-  }, [getFocusableElements]);
+    return false
+  }, [getFocusableElements])
 
   /**
    * Focus the last focusable element in the container
    */
   const focusLast = useCallback(() => {
-    const elements = getFocusableElements();
+    const elements = getFocusableElements()
     if (elements.length > 0) {
-      elements[elements.length - 1].focus();
-      return true;
+      elements[elements.length - 1].focus()
+      return true
     }
-    return false;
-  }, [getFocusableElements]);
+    return false
+  }, [getFocusableElements])
 
   /**
    * Focus a specific element by index
    */
   const focusByIndex = useCallback(
     (index: number) => {
-      const elements = getFocusableElements();
+      const elements = getFocusableElements()
       if (elements.length > 0 && index >= 0 && index < elements.length) {
-        elements[index].focus();
-        return true;
+        elements[index].focus()
+        return true
       }
-      return false;
+      return false
     },
     [getFocusableElements]
-  );
+  )
 
   /**
    * Focus the next focusable element
    */
   const focusNext = useCallback(() => {
-    const elements = getFocusableElements();
-    if (elements.length === 0) return false;
+    const elements = getFocusableElements()
+    if (elements.length === 0) return false
 
-    const currentIndex = elements.findIndex((el) => el === document.activeElement);
-    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % elements.length;
-    elements[nextIndex].focus();
-    return true;
-  }, [getFocusableElements]);
+    const currentIndex = elements.findIndex((el) => el === document.activeElement)
+    const nextIndex = currentIndex === -1 ? 0 : (currentIndex + 1) % elements.length
+    elements[nextIndex].focus()
+    return true
+  }, [getFocusableElements])
 
   /**
    * Focus the previous focusable element
    */
   const focusPrevious = useCallback(() => {
-    const elements = getFocusableElements();
-    if (elements.length === 0) return false;
+    const elements = getFocusableElements()
+    if (elements.length === 0) return false
 
-    const currentIndex = elements.findIndex((el) => el === document.activeElement);
+    const currentIndex = elements.findIndex((el) => el === document.activeElement)
     const prevIndex =
-      currentIndex === -1 ? elements.length - 1 : (currentIndex - 1 + elements.length) % elements.length;
-    elements[prevIndex].focus();
-    return true;
-  }, [getFocusableElements]);
+      currentIndex === -1
+        ? elements.length - 1
+        : (currentIndex - 1 + elements.length) % elements.length
+    elements[prevIndex].focus()
+    return true
+  }, [getFocusableElements])
 
   /**
    * Store the currently focused element for later restoration
    */
   const saveFocus = useCallback(() => {
-    previousFocusRef.current = document.activeElement as HTMLElement;
-  }, []);
+    previousFocusRef.current = document.activeElement as HTMLElement
+  }, [])
 
   /**
    * Restore focus to the previously saved element
    */
   const restoreFocus = useCallback(() => {
     if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
-      previousFocusRef.current.focus();
-      previousFocusRef.current = null;
-      return true;
+      previousFocusRef.current.focus()
+      previousFocusRef.current = null
+      return true
     }
-    return false;
-  }, []);
+    return false
+  }, [])
 
   /**
    * Focus the container itself
    */
   const focusContainer = useCallback(() => {
     if (containerRef.current) {
-      containerRef.current.focus();
-      return true;
+      containerRef.current.focus()
+      return true
     }
-    return false;
-  }, []);
+    return false
+  }, [])
 
   return {
     containerRef,
@@ -141,63 +143,61 @@ export function useFocusManagement<T extends HTMLElement = HTMLDivElement>() {
     saveFocus,
     restoreFocus,
     focusContainer,
-  };
+  }
 }
 
 /**
  * Hook to detect if the user is using keyboard navigation
  */
 export function useFocusVisible(): boolean {
-  const [focusVisible, setFocusVisible] = useState(false);
+  const [focusVisible, setFocusVisible] = useState(false)
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Tab') {
-        setFocusVisible(true);
+        setFocusVisible(true)
       }
-    };
+    }
 
     const handleMouseDown = () => {
-      setFocusVisible(false);
-    };
+      setFocusVisible(false)
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('keydown', handleKeyDown)
+    window.addEventListener('mousedown', handleMouseDown)
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('mousedown', handleMouseDown);
-    };
-  }, []);
+      window.removeEventListener('keydown', handleKeyDown)
+      window.removeEventListener('mousedown', handleMouseDown)
+    }
+  }, [])
 
-  return focusVisible;
+  return focusVisible
 }
 
 /**
  * Hook for focus trap with return focus
  */
-export function useFocusReturn<T extends HTMLElement = HTMLDivElement>(
-  active: boolean = true
-) {
-  const containerRef = useRef<T>(null);
-  const returnFocusRef = useRef<HTMLElement | null>(null);
+export function useFocusReturn<T extends HTMLElement = HTMLDivElement>(active: boolean = true) {
+  const containerRef = useRef<T>(null)
+  const returnFocusRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     if (active) {
-      returnFocusRef.current = document.activeElement as HTMLElement;
+      returnFocusRef.current = document.activeElement as HTMLElement
     }
 
     return () => {
       if (active && returnFocusRef.current) {
         // Use setTimeout to allow the component to unmount first
         setTimeout(() => {
-          returnFocusRef.current?.focus();
-        }, 0);
+          returnFocusRef.current?.focus()
+        }, 0)
       }
-    };
-  }, [active]);
+    }
+  }, [active])
 
-  return containerRef;
+  return containerRef
 }
 
 /**
@@ -206,22 +206,22 @@ export function useFocusReturn<T extends HTMLElement = HTMLDivElement>(
 export function useFocusOnMount<T extends HTMLElement = HTMLElement>(
   options: { delay?: number; condition?: boolean } = {}
 ) {
-  const { delay = 0, condition = true } = options;
-  const ref = useRef<T>(null);
+  const { delay = 0, condition = true } = options
+  const ref = useRef<T>(null)
 
   useEffect(() => {
-    if (!condition) return;
+    if (!condition) return
 
     const timeoutId = setTimeout(() => {
       if (ref.current) {
-        ref.current.focus();
+        ref.current.focus()
       }
-    }, delay);
+    }, delay)
 
-    return () => clearTimeout(timeoutId);
-  }, [delay, condition]);
+    return () => clearTimeout(timeoutId)
+  }, [delay, condition])
 
-  return ref;
+  return ref
 }
 
 /**
@@ -231,46 +231,45 @@ export function useDialogFocus<T extends HTMLElement = HTMLDivElement>(
   isOpen: boolean,
   initialFocusId?: string
 ) {
-  const containerRef = useRef<T>(null);
-  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const containerRef = useRef<T>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
 
   useEffect(() => {
     if (isOpen) {
       // Save current focus
-      previousFocusRef.current = document.activeElement as HTMLElement;
+      previousFocusRef.current = document.activeElement as HTMLElement
 
       // Focus initial element or first focusable
       const focusInitial = () => {
         if (initialFocusId) {
-          const element = document.getElementById(initialFocusId);
+          const element = document.getElementById(initialFocusId)
           if (element) {
-            element.focus();
-            return;
+            element.focus()
+            return
           }
         }
 
         if (containerRef.current) {
-          const firstFocusable = containerRef.current.querySelector<HTMLElement>(
-            FOCUSABLE_SELECTORS
-          );
+          const firstFocusable =
+            containerRef.current.querySelector<HTMLElement>(FOCUSABLE_SELECTORS)
           if (firstFocusable) {
-            firstFocusable.focus();
+            firstFocusable.focus()
           } else {
-            containerRef.current.focus();
+            containerRef.current.focus()
           }
         }
-      };
+      }
 
       // Use RAF to ensure DOM is ready
-      requestAnimationFrame(focusInitial);
+      requestAnimationFrame(focusInitial)
     } else if (previousFocusRef.current) {
       // Restore focus when closing
-      previousFocusRef.current.focus();
-      previousFocusRef.current = null;
+      previousFocusRef.current.focus()
+      previousFocusRef.current = null
     }
-  }, [isOpen, initialFocusId]);
+  }, [isOpen, initialFocusId])
 
-  return containerRef;
+  return containerRef
 }
 
 /**
@@ -281,6 +280,6 @@ export const focusVisibleClasses = {
   outline: 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary',
   none: 'focus:outline-none focus-visible:outline-none',
   within: 'focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2',
-} as const;
+} as const
 
-export default useFocusManagement;
+export default useFocusManagement

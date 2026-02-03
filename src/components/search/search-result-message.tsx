@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { formatDistanceToNow, format } from 'date-fns';
-import { Hash, ExternalLink, MessageSquare, Pin, Star, Paperclip } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import type { MessageSearchResult } from '@/stores/search-store';
+import * as React from 'react'
+import { formatDistanceToNow, format } from 'date-fns'
+import { Hash, ExternalLink, MessageSquare, Pin, Star, Paperclip } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import type { MessageSearchResult } from '@/stores/search-store'
 
 // ============================================================================
 // Types
@@ -15,19 +15,19 @@ import type { MessageSearchResult } from '@/stores/search-store';
 
 export interface SearchResultMessageProps {
   /** The message search result data */
-  result: MessageSearchResult;
+  result: MessageSearchResult
   /** The search query to highlight */
-  query?: string;
+  query?: string
   /** Whether this result is currently selected/focused */
-  isSelected?: boolean;
+  isSelected?: boolean
   /** Callback when "Jump to message" is clicked */
-  onJumpToMessage?: (result: MessageSearchResult) => void;
+  onJumpToMessage?: (result: MessageSearchResult) => void
   /** Callback when "Show context" is clicked */
-  onShowContext?: (result: MessageSearchResult) => void;
+  onShowContext?: (result: MessageSearchResult) => void
   /** Callback when the result is clicked */
-  onClick?: (result: MessageSearchResult) => void;
+  onClick?: (result: MessageSearchResult) => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -44,25 +44,25 @@ export function SearchResultMessage({
   className,
 }: SearchResultMessageProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
   const handleJump = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onJumpToMessage?.(result);
-  };
+    e.stopPropagation()
+    onJumpToMessage?.(result)
+  }
 
   const handleContext = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onShowContext?.(result);
-  };
+    e.stopPropagation()
+    onShowContext?.(result)
+  }
 
   // Format timestamp
-  const timestamp = new Date(result.timestamp);
-  const isRecent = Date.now() - timestamp.getTime() < 24 * 60 * 60 * 1000;
+  const timestamp = new Date(result.timestamp)
+  const isRecent = Date.now() - timestamp.getTime() < 24 * 60 * 60 * 1000
   const timeDisplay = isRecent
     ? formatDistanceToNow(timestamp, { addSuffix: true })
-    : format(timestamp, 'MMM d, yyyy');
+    : format(timestamp, 'MMM d, yyyy')
 
   // Get author initials for avatar fallback
   const initials = result.authorName
@@ -70,7 +70,7 @@ export function SearchResultMessage({
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2)
 
   return (
     <div
@@ -79,22 +79,20 @@ export function SearchResultMessage({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
         'group relative flex gap-3 rounded-lg border p-3 transition-colors',
         'hover:bg-accent/50 cursor-pointer',
-        isSelected && 'bg-accent border-primary/50',
+        isSelected && 'border-primary/50 bg-accent',
         className
       )}
     >
       {/* Avatar */}
       <Avatar className="h-9 w-9 shrink-0">
-        {result.authorAvatar && (
-          <AvatarImage src={result.authorAvatar} alt={result.authorName} />
-        )}
+        {result.authorAvatar && <AvatarImage src={result.authorAvatar} alt={result.authorName} />}
         <AvatarFallback className="text-xs">{initials}</AvatarFallback>
       </Avatar>
 
@@ -118,21 +116,15 @@ export function SearchResultMessage({
 
           {/* Indicators */}
           <div className="ml-auto flex items-center gap-1">
-            {result.isPinned && (
-              <Pin className="h-3.5 w-3.5 text-muted-foreground" />
-            )}
-            {result.isStarred && (
-              <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
-            )}
+            {result.isPinned && <Pin className="h-3.5 w-3.5 text-muted-foreground" />}
+            {result.isStarred && <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />}
             {result.threadId && (
               <Badge variant="secondary" className="h-5 gap-1 px-1.5 text-xs">
                 <MessageSquare className="h-3 w-3" />
                 Thread
               </Badge>
             )}
-            {result.hasAttachments && (
-              <Paperclip className="h-3.5 w-3.5 text-muted-foreground" />
-            )}
+            {result.hasAttachments && <Paperclip className="h-3.5 w-3.5 text-muted-foreground" />}
           </div>
         </div>
 
@@ -192,7 +184,7 @@ export function SearchResultMessage({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -200,11 +192,11 @@ export function SearchResultMessage({
 // ============================================================================
 
 export interface CompactMessageResultProps {
-  result: MessageSearchResult;
-  query?: string;
-  isSelected?: boolean;
-  onClick?: (result: MessageSearchResult) => void;
-  className?: string;
+  result: MessageSearchResult
+  query?: string
+  isSelected?: boolean
+  onClick?: (result: MessageSearchResult) => void
+  className?: string
 }
 
 export function CompactMessageResult({
@@ -215,11 +207,11 @@ export function CompactMessageResult({
   className,
 }: CompactMessageResultProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
-  const timestamp = new Date(result.timestamp);
-  const timeDisplay = format(timestamp, 'MMM d');
+  const timestamp = new Date(result.timestamp)
+  const timeDisplay = format(timestamp, 'MMM d')
 
   return (
     <div
@@ -228,8 +220,8 @@ export function CompactMessageResult({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
@@ -240,15 +232,13 @@ export function CompactMessageResult({
       )}
     >
       <Hash className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-      <span className="shrink-0 font-medium text-muted-foreground">
-        {result.channelName}
-      </span>
+      <span className="shrink-0 font-medium text-muted-foreground">{result.channelName}</span>
       <span className="min-w-0 flex-1 truncate">
         <HighlightedText text={result.content} query={query} maxLength={80} />
       </span>
       <span className="shrink-0 text-xs text-muted-foreground">{timeDisplay}</span>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -256,30 +246,23 @@ export function CompactMessageResult({
 // ============================================================================
 
 interface HighlightedTextProps {
-  text: string;
-  query: string;
-  maxLength?: number;
-  className?: string;
+  text: string
+  query: string
+  maxLength?: number
+  className?: string
 }
 
-export function HighlightedText({
-  text,
-  query,
-  maxLength,
-  className,
-}: HighlightedTextProps) {
-  const displayText = maxLength && text.length > maxLength
-    ? text.slice(0, maxLength) + '...'
-    : text;
+export function HighlightedText({ text, query, maxLength, className }: HighlightedTextProps) {
+  const displayText = maxLength && text.length > maxLength ? text.slice(0, maxLength) + '...' : text
 
   if (!query.trim()) {
-    return <span className={className}>{displayText}</span>;
+    return <span className={className}>{displayText}</span>
   }
 
   // Escape regex special characters
-  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regex = new RegExp(`(${escapedQuery})`, 'gi');
-  const parts = displayText.split(regex);
+  const escapedQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const regex = new RegExp(`(${escapedQuery})`, 'gi')
+  const parts = displayText.split(regex)
 
   return (
     <span className={className}>
@@ -296,7 +279,7 @@ export function HighlightedText({
         )
       )}
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -305,12 +288,7 @@ export function HighlightedText({
 
 export function MessageResultSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex gap-3 rounded-lg border p-3 animate-pulse',
-        className
-      )}
-    >
+    <div className={cn('flex animate-pulse gap-3 rounded-lg border p-3', className)}>
       <div className="h-9 w-9 shrink-0 rounded-full bg-muted" />
       <div className="min-w-0 flex-1 space-y-2">
         <div className="flex items-center gap-2">
@@ -322,7 +300,7 @@ export function MessageResultSkeleton({ className }: { className?: string }) {
         <div className="h-4 w-3/4 rounded bg-muted" />
       </div>
     </div>
-  );
+  )
 }
 
-export default SearchResultMessage;
+export default SearchResultMessage

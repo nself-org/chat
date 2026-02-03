@@ -102,27 +102,26 @@ export function useStatus(): UseStatusReturn {
     await fetchStatuses()
   }, [fetchStatuses])
 
-  const createStatus = useCallback(async (
-    type: StatusType,
-    content: string,
-    mediaUrl?: string
-  ): Promise<Status> => {
-    // API call would go here
-    const newStatus: Status = {
-      id: 'status-' + Date.now(),
-      userId: 'current-user',
-      type,
-      content,
-      mediaUrl,
-      backgroundColor: type === 'text' ? '#4F46E5' : undefined,
-      viewerIds: [],
-      expiresAt: new Date(Date.now() + 24 * 3600000),
-      createdAt: new Date(),
-    }
+  const createStatus = useCallback(
+    async (type: StatusType, content: string, mediaUrl?: string): Promise<Status> => {
+      // API call would go here
+      const newStatus: Status = {
+        id: 'status-' + Date.now(),
+        userId: 'current-user',
+        type,
+        content,
+        mediaUrl,
+        backgroundColor: type === 'text' ? '#4F46E5' : undefined,
+        viewerIds: [],
+        expiresAt: new Date(Date.now() + 24 * 3600000),
+        createdAt: new Date(),
+      }
 
-    setMyStatuses((prev) => [...prev, newStatus])
-    return newStatus
-  }, [])
+      setMyStatuses((prev) => [...prev, newStatus])
+      return newStatus
+    },
+    []
+  )
 
   const deleteStatus = useCallback(async (statusId: string) => {
     // API call would go here
@@ -135,9 +134,7 @@ export function useStatus(): UseStatusReturn {
       prev.map((group) => ({
         ...group,
         statuses: group.statuses.map((s) =>
-          s.id === statusId
-            ? { ...s, viewerIds: [...s.viewerIds, 'current-user'] }
-            : s
+          s.id === statusId ? { ...s, viewerIds: [...s.viewerIds, 'current-user'] } : s
         ),
         hasViewed: group.statuses.some((s) => s.id === statusId) ? true : group.hasViewed,
       }))

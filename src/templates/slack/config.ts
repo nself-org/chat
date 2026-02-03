@@ -63,7 +63,7 @@ export const slackColors = {
     border: '#3B3D42',
     text: '#D1D2D3',
     textMuted: '#9B9C9E',
-  }
+  },
 } as const
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -402,7 +402,8 @@ export const slackTemplate: PlatformTemplate = {
 
   id: 'slack',
   name: 'Slack',
-  description: 'Complete Slack clone with pixel-perfect UI, aubergine sidebar, and all core features',
+  description:
+    'Complete Slack clone with pixel-perfect UI, aubergine sidebar, and all core features',
   version: '2.0.0',
   author: 'nself',
 
@@ -574,15 +575,7 @@ export const slackTemplate: PlatformTemplate = {
     gifPicker: true,
 
     // Message actions (Slack's action toolbar)
-    messageActions: [
-      'react',
-      'thread',
-      'share',
-      'bookmark',
-      'pin',
-      'edit',
-      'delete',
-    ],
+    messageActions: ['react', 'thread', 'share', 'bookmark', 'pin', 'edit', 'delete'],
     showActionsOnHover: true,
 
     // Real-time features

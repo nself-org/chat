@@ -27,22 +27,23 @@ export class FauxAuthService {
 
     // Find user from predefined list
     const predefinedUser = authConfig.devAuth.availableUsers.find(
-      u => u.email.toLowerCase() === normalizedEmail
+      (u) => u.email.toLowerCase() === normalizedEmail
     )
 
-    const user = predefinedUser ? {
-      ...predefinedUser,
-      createdAt: new Date().toISOString(),
-    } : {
-      id: `dev-user-${Date.now()}`,
-      email: normalizedEmail,
-      username: normalizedEmail.split('@')[0],
-      displayName: normalizedEmail.split('@')[0],
-      role: 'member' as const,
-      avatarUrl: null,
-      createdAt: new Date().toISOString(),
-    }
-
+    const user = predefinedUser
+      ? {
+          ...predefinedUser,
+          createdAt: new Date().toISOString(),
+        }
+      : {
+          id: `dev-user-${Date.now()}`,
+          email: normalizedEmail,
+          username: normalizedEmail.split('@')[0],
+          displayName: normalizedEmail.split('@')[0],
+          role: 'member' as const,
+          avatarUrl: null,
+          createdAt: new Date().toISOString(),
+        }
 
     this.currentUser = user
     this.isAuthenticated = true
@@ -123,7 +124,7 @@ export class FauxAuthService {
 
   // Quick user switching for dev mode
   async switchUser(userId: string): Promise<AuthResponse | null> {
-    const user = authConfig.devAuth.availableUsers.find(u => u.id === userId)
+    const user = authConfig.devAuth.availableUsers.find((u) => u.id === userId)
     if (!user) return null
 
     this.currentUser = { ...user, createdAt: new Date().toISOString() }
@@ -140,11 +141,14 @@ export class FauxAuthService {
   private persistSession(): void {
     if (typeof window === 'undefined') return
 
-    localStorage.setItem('nchat-dev-session', JSON.stringify({
-      user: this.currentUser,
-      isAuthenticated: this.isAuthenticated,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-dev-session',
+      JSON.stringify({
+        user: this.currentUser,
+        isAuthenticated: this.isAuthenticated,
+        timestamp: Date.now(),
+      })
+    )
   }
 
   private loadSession(): void {

@@ -43,24 +43,14 @@ export function NotificationToggle({
         <div className="space-y-0.5">
           <Label
             htmlFor={id}
-            className={cn(
-              'text-sm font-medium cursor-pointer',
-              disabled && 'cursor-not-allowed'
-            )}
+            className={cn('cursor-pointer text-sm font-medium', disabled && 'cursor-not-allowed')}
           >
             {label}
           </Label>
-          {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          )}
+          {description && <p className="text-sm text-muted-foreground">{description}</p>}
         </div>
       </div>
-      <Switch
-        id={id}
-        checked={checked}
-        onCheckedChange={onCheckedChange}
-        disabled={disabled}
-      />
+      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} />
     </div>
   )
 }
@@ -83,9 +73,7 @@ export function NotificationToggleGroup({
       {(title || description) && (
         <div className="space-y-1">
           {title && <h4 className="text-sm font-medium">{title}</h4>}
-          {description && (
-            <p className="text-sm text-muted-foreground">{description}</p>
-          )}
+          {description && <p className="text-sm text-muted-foreground">{description}</p>}
         </div>
       )}
       <div className="space-y-2">{children}</div>
@@ -114,32 +102,18 @@ export function SimpleNotificationToggle({
 }: SimpleNotificationToggleProps) {
   return (
     <div
-      className={cn(
-        'flex items-center justify-between py-2',
-        disabled && 'opacity-50',
-        className
-      )}
+      className={cn('flex items-center justify-between py-2', disabled && 'opacity-50', className)}
     >
       <div className="space-y-0.5 pr-4">
         <Label
           htmlFor={id}
-          className={cn(
-            'text-sm font-medium cursor-pointer',
-            disabled && 'cursor-not-allowed'
-          )}
+          className={cn('cursor-pointer text-sm font-medium', disabled && 'cursor-not-allowed')}
         >
           {label}
         </Label>
-        {description && (
-          <p className="text-xs text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-xs text-muted-foreground">{description}</p>}
       </div>
-      <Switch
-        id={id}
-        checked={checked}
-        onCheckedChange={onCheckedChange}
-        disabled={disabled}
-      />
+      <Switch id={id} checked={checked} onCheckedChange={onCheckedChange} disabled={disabled} />
     </div>
   )
 }

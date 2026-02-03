@@ -19,7 +19,11 @@ type ViewMode = 'preview' | 'code'
 const EMAIL_TYPES: { id: EmailType; label: string; description: string }[] = [
   { id: 'welcome', label: 'Welcome', description: 'Sent when a user signs up' },
   { id: 'passwordReset', label: 'Password Reset', description: 'Sent for password recovery' },
-  { id: 'emailVerification', label: 'Email Verification', description: 'Sent to verify email address' },
+  {
+    id: 'emailVerification',
+    label: 'Email Verification',
+    description: 'Sent to verify email address',
+  },
   { id: 'invitation', label: 'Invitation', description: 'Sent when inviting users' },
   { id: 'notification', label: 'Notification', description: 'General notifications' },
 ]
@@ -42,24 +46,33 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
     onValidChange?.(true)
   }, [markStepComplete, onValidChange])
 
-  const handleColorChange = useCallback((field: string, color: string) => {
-    updateEmailTemplates({ [field]: color })
-  }, [updateEmailTemplates])
+  const handleColorChange = useCallback(
+    (field: string, color: string) => {
+      updateEmailTemplates({ [field]: color })
+    },
+    [updateEmailTemplates]
+  )
 
-  const handleFooterTextChange = useCallback((text: string) => {
-    updateEmailTemplates({ footerText: text })
-  }, [updateEmailTemplates])
+  const handleFooterTextChange = useCallback(
+    (text: string) => {
+      updateEmailTemplates({ footerText: text })
+    },
+    [updateEmailTemplates]
+  )
 
-  const handleLogoUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      const reader = new FileReader()
-      reader.onload = () => {
-        updateEmailTemplates({ headerLogo: reader.result as string })
+  const handleLogoUpload = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (file) {
+        const reader = new FileReader()
+        reader.onload = () => {
+          updateEmailTemplates({ headerLogo: reader.result as string })
+        }
+        reader.readAsDataURL(file)
       }
-      reader.readAsDataURL(file)
-    }
-  }, [updateEmailTemplates])
+    },
+    [updateEmailTemplates]
+  )
 
   const useAppLogo = useCallback(() => {
     if (config.logo.original) {
@@ -71,19 +84,17 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
     <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-cyan-400 to-cyan-600 rounded-xl mb-4 shadow-lg">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-cyan-600 shadow-lg">
           <Mail className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-          Email Templates
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">Email Templates</h2>
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Customize how your emails look. These will be used for all transactional emails.
         </p>
       </div>
 
-      <div className="max-w-4xl mx-auto">
-        <div className="grid md:grid-cols-[300px,1fr] gap-6">
+      <div className="mx-auto max-w-4xl">
+        <div className="grid gap-6 md:grid-cols-[300px,1fr]">
           {/* Settings panel */}
           <div className="space-y-6">
             {/* Email type selector */}
@@ -98,9 +109,9 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
                     type="button"
                     onClick={() => setSelectedType(type.id)}
                     className={cn(
-                      'w-full text-left px-3 py-2 rounded-lg transition-colors',
+                      'w-full rounded-lg px-3 py-2 text-left transition-colors',
                       selectedType === type.id
-                        ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300'
+                        ? 'dark:bg-sky-900/30 bg-sky-100 text-sky-700 dark:text-sky-300'
                         : 'hover:bg-zinc-100 dark:hover:bg-zinc-800'
                     )}
                   >
@@ -117,16 +128,16 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
                 Header Logo
               </label>
               {config.emailTemplates.headerLogo ? (
-                <div className="relative rounded-lg border border-zinc-200 dark:border-zinc-700 p-3 bg-white dark:bg-zinc-800">
+                <div className="relative rounded-lg border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800">
                   <img
                     src={config.emailTemplates.headerLogo}
                     alt="Email logo"
-                    className="max-h-12 mx-auto"
+                    className="mx-auto max-h-12"
                   />
                   <button
                     type="button"
                     onClick={() => updateEmailTemplates({ headerLogo: undefined })}
-                    className="absolute top-1 right-1 text-xs text-red-500 hover:text-red-600"
+                    className="absolute right-1 top-1 text-xs text-red-500 hover:text-red-600"
                   >
                     Remove
                   </button>
@@ -141,7 +152,7 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
                       className="w-full"
                       size="sm"
                     >
-                      <ImageIcon className="h-4 w-4 mr-2" />
+                      <ImageIcon className="mr-2 h-4 w-4" />
                       Use App Logo
                     </Button>
                   )}
@@ -152,7 +163,7 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
                       onChange={handleLogoUpload}
                       className="hidden"
                     />
-                    <div className="w-full text-center py-2 px-3 text-sm border border-dashed border-zinc-300 dark:border-zinc-600 rounded-lg cursor-pointer hover:border-sky-400 transition-colors">
+                    <div className="w-full cursor-pointer rounded-lg border border-dashed border-zinc-300 px-3 py-2 text-center text-sm transition-colors hover:border-sky-400 dark:border-zinc-600">
                       Upload custom logo
                     </div>
                   </label>
@@ -162,12 +173,10 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
 
             {/* Colors */}
             <div className="space-y-3">
-              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-                Colors
-              </label>
+              <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Colors</label>
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <span className="text-xs text-zinc-500 block mb-1">Button</span>
+                  <span className="mb-1 block text-xs text-zinc-500">Button</span>
                   <ColorPicker
                     value={config.emailTemplates.primaryButtonColor || config.colors.primary}
                     onChange={(color) => handleColorChange('primaryButtonColor', color)}
@@ -175,7 +184,7 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
                   />
                 </div>
                 <div>
-                  <span className="text-xs text-zinc-500 block mb-1">Background</span>
+                  <span className="mb-1 block text-xs text-zinc-500">Background</span>
                   <ColorPicker
                     value={config.emailTemplates.backgroundColor || config.colors.muted}
                     onChange={(color) => handleColorChange('backgroundColor', color)}
@@ -195,7 +204,7 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
                 value={config.emailTemplates.footerText || ''}
                 onChange={(e) => handleFooterTextChange(e.target.value)}
                 placeholder={`© ${new Date().getFullYear()} ${config.appInfo.appName}`}
-                className="w-full px-3 py-2 text-sm border border-zinc-200 dark:border-zinc-700 rounded-lg bg-white dark:bg-zinc-800"
+                className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-800"
               />
             </div>
           </div>
@@ -208,10 +217,10 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
                 type="button"
                 onClick={() => setViewMode('preview')}
                 className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg transition-colors',
+                  'flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors',
                   viewMode === 'preview'
-                    ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900'
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                    ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                    : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'
                 )}
               >
                 <Eye className="h-4 w-4" />
@@ -221,10 +230,10 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
                 type="button"
                 onClick={() => setViewMode('code')}
                 className={cn(
-                  'flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg transition-colors',
+                  'flex items-center gap-2 rounded-lg px-3 py-1.5 text-sm transition-colors',
                   viewMode === 'code'
-                    ? 'bg-zinc-900 dark:bg-white text-white dark:text-zinc-900'
-                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                    ? 'bg-zinc-900 text-white dark:bg-white dark:text-zinc-900'
+                    : 'bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'
                 )}
               >
                 <Code className="h-4 w-4" />
@@ -234,16 +243,16 @@ export function Step6EmailTemplates({ onValidChange, className }: Step6EmailTemp
 
             {/* Preview iframe */}
             {viewMode === 'preview' ? (
-              <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 overflow-hidden bg-white">
+              <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700">
                 <iframe
                   srcDoc={previewHtml}
                   title="Email preview"
-                  className="w-full h-[500px]"
+                  className="h-[500px] w-full"
                   sandbox="allow-same-origin"
                 />
               </div>
             ) : (
-              <pre className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-900 text-zinc-100 p-4 overflow-x-auto text-xs h-[500px] overflow-y-auto">
+              <pre className="h-[500px] overflow-x-auto overflow-y-auto rounded-xl border border-zinc-200 bg-zinc-900 p-4 text-xs text-zinc-100 dark:border-zinc-700">
                 <code>{previewHtml}</code>
               </pre>
             )}

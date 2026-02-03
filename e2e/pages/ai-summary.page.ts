@@ -19,25 +19,17 @@ export class AISummaryPage {
     this.summarizeButton = page.locator(
       'button:has-text("Summarize"), [data-testid="summarize-button"]'
     )
-    this.summaryPanel = page.locator(
-      '[data-testid="summary-panel"], .summary-panel'
-    )
-    this.sentimentIndicator = page.locator(
-      '[data-testid="sentiment"], .sentiment-indicator'
-    )
+    this.summaryPanel = page.locator('[data-testid="summary-panel"], .summary-panel')
+    this.sentimentIndicator = page.locator('[data-testid="sentiment"], .sentiment-indicator')
     this.downloadButton = page.locator(
       'button:has-text("Download"), [data-testid="download-summary"]'
     )
-    this.digestPanel = page.locator(
-      '[data-testid="digest-panel"], .digest-panel'
-    )
+    this.digestPanel = page.locator('[data-testid="digest-panel"], .digest-panel')
   }
 
   async summarizeThread(messageIndex: number = 0) {
     // Hover over message to show actions
-    const message = this.page
-      .locator('[data-testid="message-item"]')
-      .nth(messageIndex)
+    const message = this.page.locator('[data-testid="message-item"]').nth(messageIndex)
     await message.hover()
 
     // Click reply to open thread
@@ -56,9 +48,7 @@ export class AISummaryPage {
   }
 
   async getSummaryText(): Promise<string> {
-    const summaryText = this.page.locator(
-      '[data-testid="summary-text"], .summary-text'
-    )
+    const summaryText = this.page.locator('[data-testid="summary-text"], .summary-text')
     return (await summaryText.textContent()) || ''
   }
 
@@ -97,9 +87,7 @@ export class AISummaryPage {
   }
 
   async getKeyTopics(): Promise<string[]> {
-    const topics = this.page.locator(
-      '[data-testid="key-topic"], .key-topic'
-    )
+    const topics = this.page.locator('[data-testid="key-topic"], .key-topic')
     const count = await topics.count()
     const topicTexts: string[] = []
 
@@ -168,9 +156,7 @@ export class AISummaryPage {
   }
 
   async shareSummary(shareWith: 'channel' | 'dm' | 'email') {
-    const shareButton = this.page.locator(
-      'button:has-text("Share"), [data-testid="share-summary"]'
-    )
+    const shareButton = this.page.locator('button:has-text("Share"), [data-testid="share-summary"]')
     await shareButton.click()
     await this.page.waitForTimeout(200)
 
@@ -182,9 +168,7 @@ export class AISummaryPage {
   }
 
   async checkSummaryQuality(): Promise<'good' | 'fair' | 'poor'> {
-    const qualityIndicator = this.page.locator(
-      '[data-testid="summary-quality"], .summary-quality'
-    )
+    const qualityIndicator = this.page.locator('[data-testid="summary-quality"], .summary-quality')
     const quality = await qualityIndicator.getAttribute('data-quality')
     return (quality as 'good' | 'fair' | 'poor') || 'fair'
   }

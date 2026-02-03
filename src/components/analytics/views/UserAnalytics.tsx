@@ -1,37 +1,30 @@
-'use client';
+'use client'
 
 /**
  * UserAnalytics - Detailed user analytics view
  */
 
-import * as React from 'react';
-import {
-  Users,
-  UserPlus,
-  UserMinus,
-  Activity,
-  Heart,
-  FileText,
-} from 'lucide-react';
+import * as React from 'react'
+import { Users, UserPlus, UserMinus, Activity, Heart, FileText } from 'lucide-react'
 
-import { cn } from '@/lib/utils';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { cn } from '@/lib/utils'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
-import { ActiveUsersChart } from '../charts/ActiveUsersChart';
-import { GrowthChart } from '../charts/GrowthChart';
-import { UserEngagementChart } from '../charts/UserEngagementChart';
-import { TopUsersTable } from '../tables/TopUsersTable';
-import { InactiveUsersTable } from '../tables/InactiveUsersTable';
+import { ActiveUsersChart } from '../charts/ActiveUsersChart'
+import { GrowthChart } from '../charts/GrowthChart'
+import { UserEngagementChart } from '../charts/UserEngagementChart'
+import { TopUsersTable } from '../tables/TopUsersTable'
+import { InactiveUsersTable } from '../tables/InactiveUsersTable'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface UserAnalyticsProps {
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -39,12 +32,12 @@ interface UserAnalyticsProps {
 // ============================================================================
 
 interface StatCardProps {
-  title: string;
-  value: number | string;
-  description?: string;
-  icon: React.ReactNode;
-  trend?: 'up' | 'down' | 'stable';
-  trendValue?: string;
+  title: string
+  value: number | string
+  description?: string
+  icon: React.ReactNode
+  trend?: 'up' | 'down' | 'stable'
+  trendValue?: string
 }
 
 function StatCard({ title, value, description, icon, trend, trendValue }: StatCardProps) {
@@ -62,11 +55,7 @@ function StatCard({ title, value, description, icon, trend, trendValue }: StatCa
               <span
                 className={cn(
                   'mr-1 font-medium',
-                  trend === 'up'
-                    ? 'text-green-600'
-                    : trend === 'down'
-                      ? 'text-red-600'
-                      : ''
+                  trend === 'up' ? 'text-green-600' : trend === 'down' ? 'text-red-600' : ''
                 )}
               >
                 {trendValue}
@@ -77,7 +66,7 @@ function StatCard({ title, value, description, icon, trend, trendValue }: StatCa
         )}
       </CardContent>
     </Card>
-  );
+  )
 }
 
 // ============================================================================
@@ -85,27 +74,27 @@ function StatCard({ title, value, description, icon, trend, trendValue }: StatCa
 // ============================================================================
 
 export function UserAnalytics({ className }: UserAnalyticsProps) {
-  const { summary, activeUsers, userGrowth, isLoading, fetchSectionData } = useAnalyticsStore();
+  const { summary, activeUsers, userGrowth, isLoading, fetchSectionData } = useAnalyticsStore()
 
   // Fetch user data on mount
   React.useEffect(() => {
-    fetchSectionData('users');
-  }, [fetchSectionData]);
+    fetchSectionData('users')
+  }, [fetchSectionData])
 
   // Calculate growth stats
   const growthStats = React.useMemo(() => {
-    if (!userGrowth || userGrowth.length === 0) return null;
+    if (!userGrowth || userGrowth.length === 0) return null
 
-    const totalNew = userGrowth.reduce((sum, d) => sum + d.newUsers, 0);
-    const totalChurned = userGrowth.reduce((sum, d) => sum + d.churnedUsers, 0);
-    const netGrowth = totalNew - totalChurned;
+    const totalNew = userGrowth.reduce((sum, d) => sum + d.newUsers, 0)
+    const totalChurned = userGrowth.reduce((sum, d) => sum + d.churnedUsers, 0)
+    const netGrowth = totalNew - totalChurned
 
-    const startTotal = userGrowth[0].totalUsers - userGrowth[0].newUsers;
-    const endTotal = userGrowth[userGrowth.length - 1].totalUsers;
-    const growthRate = startTotal > 0 ? ((endTotal - startTotal) / startTotal) * 100 : 0;
+    const startTotal = userGrowth[0].totalUsers - userGrowth[0].newUsers
+    const endTotal = userGrowth[userGrowth.length - 1].totalUsers
+    const growthRate = startTotal > 0 ? ((endTotal - startTotal) / startTotal) * 100 : 0
 
-    return { totalNew, totalChurned, netGrowth, growthRate };
-  }, [userGrowth]);
+    return { totalNew, totalChurned, netGrowth, growthRate }
+  }, [userGrowth])
 
   return (
     <div className={cn('space-y-6', className)}>
@@ -154,7 +143,7 @@ export function UserAnalytics({ className }: UserAnalyticsProps) {
             <CardContent>
               <div className="text-3xl font-bold">{activeUsers.dau.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
-                {((activeUsers.dauWauRatio) * 100).toFixed(1)}% of WAU
+                {(activeUsers.dauWauRatio * 100).toFixed(1)}% of WAU
               </p>
             </CardContent>
           </Card>
@@ -174,7 +163,7 @@ export function UserAnalytics({ className }: UserAnalyticsProps) {
             <CardContent>
               <div className="text-3xl font-bold">{activeUsers.mau.toLocaleString()}</div>
               <p className="text-xs text-muted-foreground">
-                {((activeUsers.dauMauRatio) * 100).toFixed(1)}% DAU/MAU stickiness
+                {(activeUsers.dauMauRatio * 100).toFixed(1)}% DAU/MAU stickiness
               </p>
             </CardContent>
           </Card>
@@ -294,7 +283,7 @@ export function UserAnalytics({ className }: UserAnalyticsProps) {
         </TabsContent>
       </Tabs>
     </div>
-  );
+  )
 }
 
-export default UserAnalytics;
+export default UserAnalytics

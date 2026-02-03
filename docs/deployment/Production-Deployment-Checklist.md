@@ -21,11 +21,13 @@ Use this checklist before deploying nself-chat to production.
 ### 2. Security Configuration ✓
 
 - [ ] Development auth is disabled:
+
   ```bash
   NEXT_PUBLIC_USE_DEV_AUTH=false
   ```
 
 - [ ] Strong secrets are generated (use openssl):
+
   ```bash
   openssl rand -base64 48
   ```
@@ -52,11 +54,13 @@ Use this checklist before deploying nself-chat to production.
 ### 4. Build Validation ✓
 
 - [ ] TypeScript compiles without errors:
+
   ```bash
   pnpm type-check
   ```
 
 - [ ] Build succeeds:
+
   ```bash
   pnpm build
   ```
@@ -66,11 +70,13 @@ Use this checklist before deploying nself-chat to production.
 ### 5. Testing ✓
 
 - [ ] All tests pass:
+
   ```bash
   pnpm test
   ```
 
 - [ ] E2E tests pass (if applicable):
+
   ```bash
   pnpm test:e2e
   ```
@@ -160,6 +166,7 @@ kubectl rollout status deployment/nchat
 If deployment fails:
 
 1. **Immediate Rollback**:
+
    ```bash
    # Vercel
    vercel rollback
@@ -188,6 +195,7 @@ If deployment fails:
 ### Issue: "Missing required environment variables"
 
 **Solution**:
+
 ```bash
 # Verify all required variables are set
 pnpm validate:env:prod
@@ -196,6 +204,7 @@ pnpm validate:env:prod
 ### Issue: "Production URLs cannot use localhost"
 
 **Solution**:
+
 ```bash
 # Update URLs to production endpoints
 NEXT_PUBLIC_GRAPHQL_URL=https://api.example.com/v1/graphql
@@ -206,6 +215,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.example.com/v1/storage
 ### Issue: "JWT_SECRET must be at least 32 characters long"
 
 **Solution**:
+
 ```bash
 # Generate a secure secret
 openssl rand -base64 48
@@ -214,6 +224,7 @@ openssl rand -base64 48
 ### Issue: "NEXT_PUBLIC_USE_DEV_AUTH is enabled in production"
 
 **Solution**:
+
 ```bash
 # Disable development auth
 NEXT_PUBLIC_USE_DEV_AUTH=false

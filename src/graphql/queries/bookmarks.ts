@@ -262,10 +262,7 @@ export const GET_BOOKMARK_STATS = gql`
     }
 
     # By channel
-    by_channel: nchat_bookmarks(
-      where: { user_id: { _eq: $userId } }
-      distinct_on: channel_id
-    ) {
+    by_channel: nchat_bookmarks(where: { user_id: { _eq: $userId } }, distinct_on: channel_id) {
       message {
         channel_id
         channel {
@@ -277,10 +274,7 @@ export const GET_BOOKMARK_STATS = gql`
 
     # Recent activity (last 30 days)
     recent: nchat_bookmarks_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        bookmarked_at: { _gte: "now() - interval '30 days'" }
-      }
+      where: { user_id: { _eq: $userId }, bookmarked_at: { _gte: "now() - interval '30 days'" } }
     ) {
       aggregate {
         count
@@ -320,11 +314,7 @@ export const GET_COLLECTION_WITH_BOOKMARKS = gql`
   query GetCollectionWithBookmarks($collectionId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_bookmark_collections_by_pk(id: $collectionId) {
       ...BookmarkCollectionFields
-      bookmarks(
-        order_by: { bookmarked_at: desc }
-        limit: $limit
-        offset: $offset
-      ) {
+      bookmarks(order_by: { bookmarked_at: desc }, limit: $limit, offset: $offset) {
         ...BookmarkWithMessageFields
       }
     }
@@ -373,12 +363,7 @@ export const SEARCH_SAVED_MESSAGES = gql`
       where: {
         _and: [
           { user_id: { _eq: $userId } }
-          {
-            _or: [
-              { content: { _ilike: $searchQuery } }
-              { note: { _ilike: $searchQuery } }
-            ]
-          }
+          { _or: [{ content: { _ilike: $searchQuery } }, { note: { _ilike: $searchQuery } }] }
           { source_channel_id: { _eq: $channelId } }
           { saved_at: { _gte: $fromDate } }
           { saved_at: { _lte: $toDate } }

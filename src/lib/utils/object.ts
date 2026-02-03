@@ -6,7 +6,7 @@
 /**
  * Generic object type
  */
-export type AnyObject = Record<string, unknown>;
+export type AnyObject = Record<string, unknown>
 
 /**
  * Check if a value is a plain object
@@ -15,11 +15,11 @@ export type AnyObject = Record<string, unknown>;
  */
 export function isPlainObject(value: unknown): value is AnyObject {
   if (typeof value !== 'object' || value === null) {
-    return false;
+    return false
   }
 
-  const proto = Object.getPrototypeOf(value);
-  return proto === null || proto === Object.prototype;
+  const proto = Object.getPrototypeOf(value)
+  return proto === null || proto === Object.prototype
 }
 
 /**
@@ -31,37 +31,31 @@ export function isPlainObject(value: unknown): value is AnyObject {
  * deepMerge({ a: 1, b: { c: 2 } }, { b: { d: 3 } })
  * // { a: 1, b: { c: 2, d: 3 } }
  */
-export function deepMerge<T extends AnyObject>(
-  target: T,
-  ...sources: Partial<T>[]
-): T {
+export function deepMerge<T extends AnyObject>(target: T, ...sources: Partial<T>[]): T {
   if (!sources.length) {
-    return target;
+    return target
   }
 
-  const result = { ...target } as T;
+  const result = { ...target } as T
 
   for (const source of sources) {
     if (!isPlainObject(source)) {
-      continue;
+      continue
     }
 
     for (const key of Object.keys(source)) {
-      const sourceValue = source[key as keyof typeof source];
-      const targetValue = result[key as keyof T];
+      const sourceValue = source[key as keyof typeof source]
+      const targetValue = result[key as keyof T]
 
       if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
-        (result as AnyObject)[key] = deepMerge(
-          targetValue as AnyObject,
-          sourceValue as AnyObject
-        );
+        ;(result as AnyObject)[key] = deepMerge(targetValue as AnyObject, sourceValue as AnyObject)
       } else if (sourceValue !== undefined) {
-        (result as AnyObject)[key] = sourceValue;
+        ;(result as AnyObject)[key] = sourceValue
       }
     }
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -72,23 +66,20 @@ export function deepMerge<T extends AnyObject>(
  * @example
  * pick({ a: 1, b: 2, c: 3 }, ['a', 'c']) // { a: 1, c: 3 }
  */
-export function pick<T extends AnyObject, K extends keyof T>(
-  obj: T,
-  keys: K[]
-): Pick<T, K> {
+export function pick<T extends AnyObject, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
   if (!obj || typeof obj !== 'object') {
-    return {} as Pick<T, K>;
+    return {} as Pick<T, K>
   }
 
-  const result = {} as Pick<T, K>;
+  const result = {} as Pick<T, K>
 
   for (const key of keys) {
     if (key in obj) {
-      result[key] = obj[key];
+      result[key] = obj[key]
     }
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -99,24 +90,21 @@ export function pick<T extends AnyObject, K extends keyof T>(
  * @example
  * omit({ a: 1, b: 2, c: 3 }, ['b']) // { a: 1, c: 3 }
  */
-export function omit<T extends AnyObject, K extends keyof T>(
-  obj: T,
-  keys: K[]
-): Omit<T, K> {
+export function omit<T extends AnyObject, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
   if (!obj || typeof obj !== 'object') {
-    return {} as Omit<T, K>;
+    return {} as Omit<T, K>
   }
 
-  const keysToOmit = new Set<string | number | symbol>(keys);
-  const result = {} as Omit<T, K>;
+  const keysToOmit = new Set<string | number | symbol>(keys)
+  const result = {} as Omit<T, K>
 
   for (const key of Object.keys(obj)) {
     if (!keysToOmit.has(key)) {
-      (result as AnyObject)[key] = obj[key];
+      ;(result as AnyObject)[key] = obj[key]
     }
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -127,61 +115,61 @@ export function omit<T extends AnyObject, K extends keyof T>(
  * const original = { a: { b: 1 } };
  * const clone = deepClone(original);
  * clone.a.b = 2;
- * console.log(original.a.b); // 1
+ * // console.log(original.a.b); // 1
  */
 export function deepClone<T>(obj: T): T {
   // Handle primitives and null
   if (obj === null || typeof obj !== 'object') {
-    return obj;
+    return obj
   }
 
   // Handle Date
   if (obj instanceof Date) {
-    return new Date(obj.getTime()) as T;
+    return new Date(obj.getTime()) as T
   }
 
   // Handle Array
   if (Array.isArray(obj)) {
-    return obj.map((item) => deepClone(item)) as T;
+    return obj.map((item) => deepClone(item)) as T
   }
 
   // Handle Map
   if (obj instanceof Map) {
-    const result = new Map();
+    const result = new Map()
     obj.forEach((value, key) => {
-      result.set(deepClone(key), deepClone(value));
-    });
-    return result as T;
+      result.set(deepClone(key), deepClone(value))
+    })
+    return result as T
   }
 
   // Handle Set
   if (obj instanceof Set) {
-    const result = new Set();
+    const result = new Set()
     obj.forEach((value) => {
-      result.add(deepClone(value));
-    });
-    return result as T;
+      result.add(deepClone(value))
+    })
+    return result as T
   }
 
   // Handle plain objects
   if (isPlainObject(obj)) {
-    const result: AnyObject = {};
+    const result: AnyObject = {}
     for (const key of Object.keys(obj)) {
-      result[key] = deepClone(obj[key]);
+      result[key] = deepClone(obj[key])
     }
-    return result as T;
+    return result as T
   }
 
   // For other objects, try structuredClone if available, otherwise return reference
   if (typeof structuredClone === 'function') {
     try {
-      return structuredClone(obj);
+      return structuredClone(obj)
     } catch {
       // Fall through to return original
     }
   }
 
-  return obj;
+  return obj
 }
 
 /**
@@ -197,93 +185,93 @@ export function deepClone<T>(obj: T): T {
 export function isEqual(a: unknown, b: unknown): boolean {
   // Same reference or primitive equality
   if (a === b) {
-    return true;
+    return true
   }
 
   // Handle null/undefined
   if (a === null || b === null || a === undefined || b === undefined) {
-    return a === b;
+    return a === b
   }
 
   // Different types
   if (typeof a !== typeof b) {
-    return false;
+    return false
   }
 
   // Handle Date
   if (a instanceof Date && b instanceof Date) {
-    return a.getTime() === b.getTime();
+    return a.getTime() === b.getTime()
   }
 
   // Handle RegExp
   if (a instanceof RegExp && b instanceof RegExp) {
-    return a.toString() === b.toString();
+    return a.toString() === b.toString()
   }
 
   // Handle Array
   if (Array.isArray(a) && Array.isArray(b)) {
     if (a.length !== b.length) {
-      return false;
+      return false
     }
     for (let i = 0; i < a.length; i++) {
       if (!isEqual(a[i], b[i])) {
-        return false;
+        return false
       }
     }
-    return true;
+    return true
   }
 
   // Handle Map
   if (a instanceof Map && b instanceof Map) {
     if (a.size !== b.size) {
-      return false;
+      return false
     }
     for (const [key, value] of a) {
       if (!b.has(key) || !isEqual(value, b.get(key))) {
-        return false;
+        return false
       }
     }
-    return true;
+    return true
   }
 
   // Handle Set
   if (a instanceof Set && b instanceof Set) {
     if (a.size !== b.size) {
-      return false;
+      return false
     }
     for (const value of a) {
       if (!b.has(value)) {
-        return false;
+        return false
       }
     }
-    return true;
+    return true
   }
 
   // Handle objects
   if (typeof a === 'object' && typeof b === 'object') {
-    const aObj = a as AnyObject;
-    const bObj = b as AnyObject;
+    const aObj = a as AnyObject
+    const bObj = b as AnyObject
 
-    const aKeys = Object.keys(aObj);
-    const bKeys = Object.keys(bObj);
+    const aKeys = Object.keys(aObj)
+    const bKeys = Object.keys(bObj)
 
     if (aKeys.length !== bKeys.length) {
-      return false;
+      return false
     }
 
     for (const key of aKeys) {
       if (!Object.prototype.hasOwnProperty.call(bObj, key)) {
-        return false;
+        return false
       }
       if (!isEqual(aObj[key], bObj[key])) {
-        return false;
+        return false
       }
     }
 
-    return true;
+    return true
   }
 
-  return false;
+  return false
 }
 
 /**
@@ -293,26 +281,26 @@ export function isEqual(a: unknown, b: unknown): boolean {
  */
 export function isEmpty(obj: unknown): boolean {
   if (obj === null || obj === undefined) {
-    return true;
+    return true
   }
 
   if (Array.isArray(obj)) {
-    return obj.length === 0;
+    return obj.length === 0
   }
 
   if (obj instanceof Map || obj instanceof Set) {
-    return obj.size === 0;
+    return obj.size === 0
   }
 
   if (typeof obj === 'object') {
-    return Object.keys(obj).length === 0;
+    return Object.keys(obj).length === 0
   }
 
   if (typeof obj === 'string') {
-    return obj.length === 0;
+    return obj.length === 0
   }
 
-  return false;
+  return false
 }
 
 /**
@@ -326,32 +314,28 @@ export function isEmpty(obj: unknown): boolean {
  * get({ a: { b: 1 } }, 'a.c', 'default') // 'default'
  * get({ a: [1, 2, 3] }, 'a.1') // 2
  */
-export function get<T = unknown>(
-  obj: unknown,
-  path: string | string[],
-  defaultValue?: T
-): T {
+export function get<T = unknown>(obj: unknown, path: string | string[], defaultValue?: T): T {
   if (!obj || typeof obj !== 'object') {
-    return defaultValue as T;
+    return defaultValue as T
   }
 
-  const keys = Array.isArray(path) ? path : path.split('.');
+  const keys = Array.isArray(path) ? path : path.split('.')
 
-  let result: unknown = obj;
+  let result: unknown = obj
 
   for (const key of keys) {
     if (result === null || result === undefined) {
-      return defaultValue as T;
+      return defaultValue as T
     }
 
     if (typeof result !== 'object') {
-      return defaultValue as T;
+      return defaultValue as T
     }
 
-    result = (result as AnyObject)[key];
+    result = (result as AnyObject)[key]
   }
 
-  return (result === undefined ? defaultValue : result) as T;
+  return (result === undefined ? defaultValue : result) as T
 }
 
 /**
@@ -363,30 +347,26 @@ export function get<T = unknown>(
  * @example
  * set({ a: { b: 1 } }, 'a.c', 2) // { a: { b: 1, c: 2 } }
  */
-export function set<T extends AnyObject>(
-  obj: T,
-  path: string | string[],
-  value: unknown
-): T {
-  const keys = Array.isArray(path) ? path : path.split('.');
-  const result = deepClone(obj);
+export function set<T extends AnyObject>(obj: T, path: string | string[], value: unknown): T {
+  const keys = Array.isArray(path) ? path : path.split('.')
+  const result = deepClone(obj)
 
-  let current: AnyObject = result;
+  let current: AnyObject = result
 
   for (let i = 0; i < keys.length - 1; i++) {
-    const key = keys[i];
+    const key = keys[i]
     if (!(key in current) || typeof current[key] !== 'object') {
       // Determine if next key is array index
-      const nextKey = keys[i + 1];
-      current[key] = /^\d+$/.test(nextKey) ? [] : {};
+      const nextKey = keys[i + 1]
+      current[key] = /^\d+$/.test(nextKey) ? [] : {}
     }
-    current = current[key] as AnyObject;
+    current = current[key] as AnyObject
   }
 
-  const lastKey = keys[keys.length - 1];
-  current[lastKey] = value;
+  const lastKey = keys[keys.length - 1]
+  current[lastKey] = value
 
-  return result;
+  return result
 }
 
 /**
@@ -396,27 +376,27 @@ export function set<T extends AnyObject>(
  * @returns New object with property deleted
  */
 export function unset<T extends AnyObject>(obj: T, path: string | string[]): T {
-  const keys = Array.isArray(path) ? path : path.split('.');
-  const result = deepClone(obj);
+  const keys = Array.isArray(path) ? path : path.split('.')
+  const result = deepClone(obj)
 
   if (keys.length === 0) {
-    return result;
+    return result
   }
 
-  let current: AnyObject = result;
+  let current: AnyObject = result
 
   for (let i = 0; i < keys.length - 1; i++) {
-    const key = keys[i];
+    const key = keys[i]
     if (!(key in current) || typeof current[key] !== 'object') {
-      return result; // Path doesn't exist
+      return result // Path doesn't exist
     }
-    current = current[key] as AnyObject;
+    current = current[key] as AnyObject
   }
 
-  const lastKey = keys[keys.length - 1];
-  delete current[lastKey];
+  const lastKey = keys[keys.length - 1]
+  delete current[lastKey]
 
-  return result;
+  return result
 }
 
 /**
@@ -427,23 +407,23 @@ export function unset<T extends AnyObject>(obj: T, path: string | string[]): T {
  */
 export function has(obj: unknown, path: string | string[]): boolean {
   if (!obj || typeof obj !== 'object') {
-    return false;
+    return false
   }
 
-  const keys = Array.isArray(path) ? path : path.split('.');
-  let current: unknown = obj;
+  const keys = Array.isArray(path) ? path : path.split('.')
+  let current: unknown = obj
 
   for (const key of keys) {
     if (current === null || current === undefined || typeof current !== 'object') {
-      return false;
+      return false
     }
     if (!Object.prototype.hasOwnProperty.call(current, key)) {
-      return false;
+      return false
     }
-    current = (current as AnyObject)[key];
+    current = (current as AnyObject)[key]
   }
 
-  return true;
+  return true
 }
 
 /**
@@ -454,24 +434,21 @@ export function has(obj: unknown, path: string | string[]): boolean {
  * @example
  * flatten({ a: { b: 1, c: { d: 2 } } }) // { 'a.b': 1, 'a.c.d': 2 }
  */
-export function flattenObject(
-  obj: AnyObject,
-  prefix: string = ''
-): Record<string, unknown> {
-  const result: Record<string, unknown> = {};
+export function flattenObject(obj: AnyObject, prefix: string = ''): Record<string, unknown> {
+  const result: Record<string, unknown> = {}
 
   for (const key of Object.keys(obj)) {
-    const value = obj[key];
-    const newKey = prefix ? `${prefix}.${key}` : key;
+    const value = obj[key]
+    const newKey = prefix ? `${prefix}.${key}` : key
 
     if (isPlainObject(value)) {
-      Object.assign(result, flattenObject(value, newKey));
+      Object.assign(result, flattenObject(value, newKey))
     } else {
-      result[newKey] = value;
+      result[newKey] = value
     }
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -482,24 +459,24 @@ export function flattenObject(
  * unflattenObject({ 'a.b': 1, 'a.c.d': 2 }) // { a: { b: 1, c: { d: 2 } } }
  */
 export function unflattenObject(obj: Record<string, unknown>): AnyObject {
-  const result: AnyObject = {};
+  const result: AnyObject = {}
 
   for (const key of Object.keys(obj)) {
-    const keys = key.split('.');
-    let current = result;
+    const keys = key.split('.')
+    let current = result
 
     for (let i = 0; i < keys.length - 1; i++) {
-      const k = keys[i];
+      const k = keys[i]
       if (!(k in current)) {
-        current[k] = {};
+        current[k] = {}
       }
-      current = current[k] as AnyObject;
+      current = current[k] as AnyObject
     }
 
-    current[keys[keys.length - 1]] = obj[key];
+    current[keys[keys.length - 1]] = obj[key]
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -515,16 +492,16 @@ export function mapValues<T extends AnyObject, U>(
   fn: (value: T[keyof T], key: keyof T) => U
 ): Record<keyof T, U> {
   if (!obj || typeof obj !== 'object') {
-    return {} as Record<keyof T, U>;
+    return {} as Record<keyof T, U>
   }
 
-  const result = {} as Record<keyof T, U>;
+  const result = {} as Record<keyof T, U>
 
   for (const key of Object.keys(obj) as (keyof T)[]) {
-    result[key] = fn(obj[key], key);
+    result[key] = fn(obj[key], key)
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -538,17 +515,17 @@ export function mapKeys<T extends AnyObject>(
   fn: (key: keyof T, value: T[keyof T]) => string
 ): Record<string, T[keyof T]> {
   if (!obj || typeof obj !== 'object') {
-    return {};
+    return {}
   }
 
-  const result: Record<string, T[keyof T]> = {};
+  const result: Record<string, T[keyof T]> = {}
 
   for (const key of Object.keys(obj) as (keyof T)[]) {
-    const newKey = fn(key, obj[key]);
-    result[newKey] = obj[key];
+    const newKey = fn(key, obj[key])
+    result[newKey] = obj[key]
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -564,18 +541,18 @@ export function filterObject<T extends AnyObject>(
   predicate: (value: T[keyof T], key: keyof T) => boolean
 ): Partial<T> {
   if (!obj || typeof obj !== 'object') {
-    return {};
+    return {}
   }
 
-  const result: Partial<T> = {};
+  const result: Partial<T> = {}
 
   for (const key of Object.keys(obj) as (keyof T)[]) {
     if (predicate(obj[key], key)) {
-      result[key] = obj[key];
+      result[key] = obj[key]
     }
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -584,7 +561,7 @@ export function filterObject<T extends AnyObject>(
  * @returns Object without nullish values
  */
 export function compact<T extends AnyObject>(obj: T): Partial<T> {
-  return filterObject(obj, (value) => value !== null && value !== undefined);
+  return filterObject(obj, (value) => value !== null && value !== undefined)
 }
 
 /**
@@ -592,16 +569,14 @@ export function compact<T extends AnyObject>(obj: T): Partial<T> {
  * @param entries - Array of [key, value] pairs
  * @returns Object
  */
-export function fromEntries<K extends string | number, V>(
-  entries: [K, V][]
-): Record<K, V> {
-  const result = {} as Record<K, V>;
+export function fromEntries<K extends string | number, V>(entries: [K, V][]): Record<K, V> {
+  const result = {} as Record<K, V>
 
   for (const [key, value] of entries) {
-    result[key] = value;
+    result[key] = value
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -611,19 +586,17 @@ export function fromEntries<K extends string | number, V>(
  * @example
  * invert({ a: '1', b: '2' }) // { '1': 'a', '2': 'b' }
  */
-export function invert<T extends Record<string, string | number>>(
-  obj: T
-): Record<string, keyof T> {
-  const result: Record<string, keyof T> = {};
+export function invert<T extends Record<string, string | number>>(obj: T): Record<string, keyof T> {
+  const result: Record<string, keyof T> = {}
 
   for (const key of Object.keys(obj)) {
-    const value = obj[key];
+    const value = obj[key]
     if (typeof value === 'string' || typeof value === 'number') {
-      result[String(value)] = key;
+      result[String(value)] = key
     }
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -638,27 +611,27 @@ export function mergeWith<T extends AnyObject>(
   source: Partial<T>,
   customizer: (targetValue: unknown, sourceValue: unknown, key: string) => unknown
 ): T {
-  const result = { ...target } as T;
+  const result = { ...target } as T
 
   for (const key of Object.keys(source)) {
-    const targetValue = result[key as keyof T];
-    const sourceValue = source[key as keyof T];
-    const customValue = customizer(targetValue, sourceValue, key);
+    const targetValue = result[key as keyof T]
+    const sourceValue = source[key as keyof T]
+    const customValue = customizer(targetValue, sourceValue, key)
 
     if (customValue !== undefined) {
-      (result as AnyObject)[key] = customValue;
+      ;(result as AnyObject)[key] = customValue
     } else if (isPlainObject(sourceValue) && isPlainObject(targetValue)) {
-      (result as AnyObject)[key] = mergeWith(
+      ;(result as AnyObject)[key] = mergeWith(
         targetValue as AnyObject,
         sourceValue as Partial<AnyObject>,
         customizer
-      );
+      )
     } else if (sourceValue !== undefined) {
-      (result as AnyObject)[key] = sourceValue;
+      ;(result as AnyObject)[key] = sourceValue
     }
   }
 
-  return result;
+  return result
 }
 
 /**
@@ -667,22 +640,19 @@ export function mergeWith<T extends AnyObject>(
  * @param obj2 - Second object
  * @returns Object containing only changed/added properties
  */
-export function diff<T extends AnyObject>(
-  obj1: T,
-  obj2: T
-): Partial<T> {
-  const result: Partial<T> = {};
+export function diff<T extends AnyObject>(obj1: T, obj2: T): Partial<T> {
+  const result: Partial<T> = {}
 
-  const allKeys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
+  const allKeys = new Set([...Object.keys(obj1), ...Object.keys(obj2)])
 
   for (const key of allKeys) {
-    const val1 = obj1[key as keyof T];
-    const val2 = obj2[key as keyof T];
+    const val1 = obj1[key as keyof T]
+    const val2 = obj2[key as keyof T]
 
     if (!isEqual(val1, val2)) {
-      result[key as keyof T] = val2;
+      result[key as keyof T] = val2
     }
   }
 
-  return result;
+  return result
 }

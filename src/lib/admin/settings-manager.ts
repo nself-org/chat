@@ -310,9 +310,7 @@ export function validateSecuritySettings(
 /**
  * Validate limit settings
  */
-export function validateLimitSettings(
-  settings: Partial<LimitSettings>
-): SettingsValidationError[] {
+export function validateLimitSettings(settings: Partial<LimitSettings>): SettingsValidationError[] {
   const errors: SettingsValidationError[] = []
 
   if (settings.maxFileSize !== undefined) {
@@ -449,9 +447,7 @@ export function validateIntegrationSettings(
 /**
  * Validate all settings
  */
-export function validateSettings(
-  settings: Partial<GlobalSettings>
-): SettingsValidationResult {
+export function validateSettings(settings: Partial<GlobalSettings>): SettingsValidationResult {
   const errors: SettingsValidationError[] = []
 
   if (settings.general) {
@@ -487,9 +483,7 @@ export function validateSettings(
 /**
  * Read settings with default values
  */
-export function readSettings(
-  stored: Partial<GlobalSettings> | null | undefined
-): GlobalSettings {
+export function readSettings(stored: Partial<GlobalSettings> | null | undefined): GlobalSettings {
   if (!stored) {
     return { ...defaultGlobalSettings }
   }
@@ -572,9 +566,7 @@ export function updateSettings(
 /**
  * Reset settings to defaults
  */
-export function resetToDefaults(
-  section?: keyof GlobalSettings
-): GlobalSettings {
+export function resetToDefaults(section?: keyof GlobalSettings): GlobalSettings {
   if (!section) {
     return { ...defaultGlobalSettings }
   }
@@ -585,8 +577,10 @@ export function resetToDefaults(
     security: section === 'security' ? { ...defaultSecuritySettings } : defaults.security,
     features: section === 'features' ? { ...defaultFeatureSettings } : defaults.features,
     limits: section === 'limits' ? { ...defaultLimitSettings } : defaults.limits,
-    notifications: section === 'notifications' ? { ...defaultNotificationSettings } : defaults.notifications,
-    integrations: section === 'integrations' ? { ...defaultIntegrationSettings } : defaults.integrations,
+    notifications:
+      section === 'notifications' ? { ...defaultNotificationSettings } : defaults.notifications,
+    integrations:
+      section === 'integrations' ? { ...defaultIntegrationSettings } : defaults.integrations,
   }
 }
 

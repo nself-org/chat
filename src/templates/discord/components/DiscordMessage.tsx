@@ -12,15 +12,7 @@
 import { useState, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { discordColors } from '../config'
-import {
-  Smile,
-  MessageSquare,
-  MoreHorizontal,
-  Pin,
-  Reply,
-  Pencil,
-  Trash2,
-} from 'lucide-react'
+import { Smile, MessageSquare, MoreHorizontal, Pin, Reply, Pencil, Trash2 } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -121,8 +113,8 @@ export function DiscordMessage({
     <div
       className={cn(
         'group relative py-0.5 pl-[72px] pr-12',
-        'hover:bg-[#2E3035] transition-colors',
-        isPinned && 'bg-[#444] border-l-2 border-yellow-500',
+        'transition-colors hover:bg-[#2E3035]',
+        isPinned && 'border-l-2 border-yellow-500 bg-[#444]',
         className
       )}
       onMouseEnter={() => setShowActions(true)}
@@ -130,45 +122,39 @@ export function DiscordMessage({
     >
       {/* Hover Actions */}
       {showActions && (
-        <div
-          className="absolute -top-4 right-4 flex items-center bg-[#2B2D31] rounded shadow-lg border border-[#1E1F22] z-10"
-        >
+        <div className="absolute -top-4 right-4 z-10 flex items-center rounded border border-[#1E1F22] bg-[#2B2D31] shadow-lg">
           <ActionButton
-            icon={<Smile className="w-5 h-5" />}
+            icon={<Smile className="h-5 w-5" />}
             onClick={() => onReactionAdd?.('👍')}
           />
-          <ActionButton icon={<Reply className="w-5 h-5" />} onClick={onReplyClick} />
-          <ActionButton icon={<Pin className="w-5 h-5" />} onClick={onPinClick} />
-          <ActionButton icon={<Pencil className="w-5 h-5" />} onClick={onEditClick} />
-          <ActionButton
-            icon={<Trash2 className="w-5 h-5" />}
-            onClick={onDeleteClick}
-            danger
-          />
-          <ActionButton icon={<MoreHorizontal className="w-5 h-5" />} />
+          <ActionButton icon={<Reply className="h-5 w-5" />} onClick={onReplyClick} />
+          <ActionButton icon={<Pin className="h-5 w-5" />} onClick={onPinClick} />
+          <ActionButton icon={<Pencil className="h-5 w-5" />} onClick={onEditClick} />
+          <ActionButton icon={<Trash2 className="h-5 w-5" />} onClick={onDeleteClick} danger />
+          <ActionButton icon={<MoreHorizontal className="h-5 w-5" />} />
         </div>
       )}
 
       {/* Reply Reference */}
       {isReply && replyTo && (
-        <div className="flex items-center gap-1 mb-1 ml-[-52px] text-sm">
-          <div className="w-8 h-5 flex items-center justify-center">
-            <div className="w-6 h-3 border-l-2 border-t-2 border-gray-500 rounded-tl" />
+        <div className="mb-1 ml-[-52px] flex items-center gap-1 text-sm">
+          <div className="flex h-5 w-8 items-center justify-center">
+            <div className="h-3 w-6 rounded-tl border-l-2 border-t-2 border-gray-500" />
           </div>
           <span className="text-gray-400">@{replyTo.userName}</span>
-          <span className="text-gray-500 truncate max-w-[300px]">{replyTo.content}</span>
+          <span className="max-w-[300px] truncate text-gray-500">{replyTo.content}</span>
         </div>
       )}
 
       {/* Avatar (only for first message in group) */}
       {isFirstInGroup && (
         <div className="absolute left-4 top-1">
-          <div className="w-10 h-10 rounded-full overflow-hidden">
+          <div className="h-10 w-10 overflow-hidden rounded-full">
             {userAvatar ? (
-              <img src={userAvatar} alt={userName} className="w-full h-full object-cover" />
+              <img src={userAvatar} alt={userName} className="h-full w-full object-cover" />
             ) : (
               <div
-                className="w-full h-full flex items-center justify-center text-white font-bold"
+                className="flex h-full w-full items-center justify-center font-bold text-white"
                 style={{ backgroundColor: roleColor || discordColors.blurple }}
               >
                 {userName[0]?.toUpperCase()}
@@ -182,7 +168,7 @@ export function DiscordMessage({
       <div>
         {/* Header (only for first message in group) */}
         {isFirstInGroup && (
-          <div className="flex items-center gap-2 mb-0.5">
+          <div className="mb-0.5 flex items-center gap-2">
             <button
               className="font-medium hover:underline"
               style={{ color: roleColor || discordColors.gray100 }}
@@ -191,7 +177,7 @@ export function DiscordMessage({
             </button>
             {isBot && (
               <span
-                className="px-1 py-0.5 rounded text-[10px] font-semibold uppercase"
+                className="rounded px-1 py-0.5 text-[10px] font-semibold uppercase"
                 style={{ backgroundColor: discordColors.blurple, color: 'white' }}
               >
                 BOT
@@ -217,24 +203,19 @@ export function DiscordMessage({
         {/* Text Content */}
         <div style={{ color: discordColors.gray100 }} className="whitespace-pre-wrap break-words">
           {content}
-          {isEdited && (
-            <span className="text-xs text-gray-500 ml-1">(edited)</span>
-          )}
+          {isEdited && <span className="ml-1 text-xs text-gray-500">(edited)</span>}
         </div>
 
         {/* Attachments */}
         {attachments.length > 0 && (
           <div className="mt-2 space-y-2">
             {attachments.map((attachment, index) => (
-              <div
-                key={index}
-                className="rounded overflow-hidden max-w-[400px]"
-              >
+              <div key={index} className="max-w-[400px] overflow-hidden rounded">
                 {attachment.type === 'image' && (
                   <img
                     src={attachment.url}
                     alt={attachment.name || 'Image'}
-                    className="max-w-full h-auto rounded"
+                    className="h-auto max-w-full rounded"
                   />
                 )}
               </div>
@@ -244,7 +225,7 @@ export function DiscordMessage({
 
         {/* Reactions */}
         {reactions.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-2">
+          <div className="mt-2 flex flex-wrap gap-1">
             {reactions.map((reaction, index) => (
               <button
                 key={index}
@@ -254,11 +235,11 @@ export function DiscordMessage({
                     : onReactionAdd?.(reaction.emoji)
                 }
                 className={cn(
-                  'inline-flex items-center gap-1 px-2 py-0.5 rounded text-sm',
+                  'inline-flex items-center gap-1 rounded px-2 py-0.5 text-sm',
                   'border transition-colors',
                   reaction.hasReacted
-                    ? 'bg-[#5865F233] border-[#5865F2] text-[#DEE0FC]'
-                    : 'bg-[#2B2D31] border-[#1E1F22] text-gray-300 hover:border-gray-500'
+                    ? 'border-[#5865F2] bg-[#5865F233] text-[#DEE0FC]'
+                    : 'border-[#1E1F22] bg-[#2B2D31] text-gray-300 hover:border-gray-500'
                 )}
               >
                 <span>{reaction.emoji}</span>
@@ -267,9 +248,9 @@ export function DiscordMessage({
             ))}
             <button
               onClick={() => onReactionAdd?.('👍')}
-              className="w-7 h-7 rounded bg-[#2B2D31] border border-[#1E1F22] text-gray-500 hover:text-gray-300 flex items-center justify-center"
+              className="flex h-7 w-7 items-center justify-center rounded border border-[#1E1F22] bg-[#2B2D31] text-gray-500 hover:text-gray-300"
             >
-              <Smile className="w-4 h-4" />
+              <Smile className="h-4 w-4" />
             </button>
           </div>
         )}
@@ -293,8 +274,8 @@ function ActionButton({
       className={cn(
         'p-2 transition-colors',
         danger
-          ? 'text-gray-400 hover:text-red-400 hover:bg-red-500/10'
-          : 'text-gray-400 hover:text-gray-200 hover:bg-white/5'
+          ? 'text-gray-400 hover:bg-red-500/10 hover:text-red-400'
+          : 'text-gray-400 hover:bg-white/5 hover:text-gray-200'
       )}
     >
       {icon}

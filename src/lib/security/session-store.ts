@@ -341,7 +341,11 @@ export function parseUserAgent(userAgent: string): {
     os = 'Linux'
   } else if (userAgent.includes('Android')) {
     os = 'Android'
-  } else if (userAgent.includes('iOS') || userAgent.includes('iPhone') || userAgent.includes('iPad')) {
+  } else if (
+    userAgent.includes('iOS') ||
+    userAgent.includes('iPhone') ||
+    userAgent.includes('iPad')
+  ) {
     os = 'iOS'
   }
 

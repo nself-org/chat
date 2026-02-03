@@ -2,14 +2,14 @@
 
 <div align="center">
 
-![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)
+![Version](https://img.shields.io/badge/version-0.9.1-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Platform](https://img.shields.io/badge/platform-Web%20%7C%20Desktop%20%7C%20Mobile-lightgrey.svg)
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen.svg)
 
 **White-Label Team Communication Platform**
 
-*Build your own Slack in minutes with Next.js 15 + nself CLI*
+_Build your own Slack in minutes with Next.js 15 + nself CLI_
 
 [🎯 Quick Start](#-5-minute-quick-start) • [📚 Guides](#-documentation-sections) • [🚀 Deploy](#-deployment) • [💬 Community](https://github.com/acamarata/nself-chat/discussions)
 
@@ -53,6 +53,7 @@ open http://localhost:3000
 ```
 
 **🎉 Done!** You now have:
+
 - ✅ Complete team chat application running
 - ✅ 8 test users ready to use (owner, admin, moderator, member, guest, alice, bob, charlie)
 - ✅ 9-step setup wizard for customization
@@ -67,6 +68,7 @@ open http://localhost:3000
 ## 📚 Documentation Sections
 
 ### 🎯 Getting Started
+
 Perfect for first-time users and quick setup.
 
 - **[🚀 Quick Start](getting-started/QUICK-START)** - Get running in 5 minutes
@@ -74,6 +76,7 @@ Perfect for first-time users and quick setup.
 - **[🎓 Getting Started Tutorial](getting-started/Getting-Started)** - Complete walkthrough
 
 ### ✨ Features
+
 Discover what nself-chat can do.
 
 - **[📋 Features Overview](features/Features)** - Complete feature list
@@ -91,13 +94,16 @@ Discover what nself-chat can do.
 - **[🎨 White-Label](features/White-Label-Guide)** - Complete customization
 
 ### 📖 Guides
+
 Step-by-step implementation and usage guides.
 
 #### For End Users
+
 - **[👤 User Guide](guides/USER-GUIDE)** - Complete user documentation
 - **[⚙️ Settings Quick Start](guides/Settings-Quick-Start)** - Configure your account
 
 #### For Developers
+
 - **[💬 Advanced Messaging](guides/advanced-messaging-implementation-summary)** - Edit, delete, forward, pin
 - **[🔐 E2EE Implementation](guides/E2EE-Implementation)** - Add encryption
 - **[🔍 Search Implementation](guides/Search-Implementation)** - MeiliSearch integration
@@ -109,12 +115,14 @@ Step-by-step implementation and usage guides.
 - **[🌍 Internationalization](guides/internationalization)** - i18n setup
 
 #### For Administrators
+
 - **[🔒 Enterprise Features](guides/enterprise/README)** - SSO, RBAC, audit logging
 - **[🔐 SSO Setup](guides/enterprise/SSO-Setup)** - Single sign-on
 - **[👥 RBAC Guide](guides/enterprise/RBAC-Guide)** - Role-based access control
 - **[📝 Audit Logging](guides/enterprise/Audit-Logging)** - Compliance and auditing
 
 ### ⚙️ Configuration
+
 Configure nself-chat for your needs.
 
 - **[📝 Configuration Guide](configuration/Configuration)** - Complete reference
@@ -122,6 +130,7 @@ Configure nself-chat for your needs.
 - **[🔧 Environment Variables](configuration/Environment-Variables)** - All variables
 
 ### 📡 API Reference
+
 GraphQL API documentation and examples.
 
 - **[📝 API Overview](api/API)** - Getting started with the API
@@ -132,6 +141,7 @@ GraphQL API documentation and examples.
 - **[📊 GraphQL Schema](api/graphql-schema)** - Full schema reference
 
 ### 🚀 Deployment
+
 Deploy nself-chat to production.
 
 - **[📝 Deployment Overview](deployment/DEPLOYMENT)** - Production deployment guide
@@ -143,6 +153,7 @@ Deploy nself-chat to production.
 - **[🌐 Multi-Tenant](Multi-Tenant-Deployment)** - Multi-tenant architecture
 
 ### 📚 Reference
+
 Technical reference and architecture.
 
 - **[🏗️ Architecture](reference/Architecture)** - System design
@@ -153,6 +164,7 @@ Technical reference and architecture.
 - **[📖 SPORT Reference](reference/SPORT)** - Complete API reference
 
 #### Quick Reference Cards
+
 - **[🔐 2FA Quick Reference](reference/2FA-Quick-Reference)**
 - **[💬 Advanced Messaging Quick Reference](reference/advanced-messaging-quick-reference)**
 - **[📞 Call Management Quick Reference](reference/Call-Management-Quick-Reference)**
@@ -167,6 +179,7 @@ Technical reference and architecture.
 - **[🎙️ Voice Calling Quick Start](reference/Voice-Calling-Quick-Start)**
 
 ### 🔐 Security
+
 Security features and best practices.
 
 - **[🔐 Security Overview](security/SECURITY)** - Security architecture
@@ -179,6 +192,7 @@ Security features and best practices.
 - **[📋 Best Practices](security/security-best-practices)** - Security checklist
 
 ### 🆘 Troubleshooting
+
 Common issues and solutions.
 
 - **[❓ FAQ](troubleshooting/FAQ)** - Frequently asked questions
@@ -186,6 +200,7 @@ Common issues and solutions.
 - **[📖 Operations Runbook](troubleshooting/RUNBOOK)** - Ops guide
 
 ### ℹ️ About
+
 Project information and planning.
 
 - **[📋 Changelog](about/Changelog)** - Version history
@@ -199,14 +214,18 @@ Project information and planning.
 ## 🎯 Quick Navigation by Role
 
 ### 👤 I'm an End User
+
 Start here to learn how to use nself-chat:
+
 1. **[Quick Start](getting-started/QUICK-START)** - Get started in 5 minutes
 2. **[User Guide](guides/USER-GUIDE)** - Learn all features
 3. **[Settings](guides/Settings-Quick-Start)** - Customize your experience
 4. **[FAQ](troubleshooting/FAQ)** - Common questions
 
 ### 👨‍💼 I'm an Administrator
+
 Deploy and manage nself-chat:
+
 1. **[Installation Guide](getting-started/Installation)** - Detailed setup
 2. **[Configuration](configuration/Configuration)** - Configure everything
 3. **[Deployment](deployment/DEPLOYMENT)** - Production deployment
@@ -215,7 +234,9 @@ Deploy and manage nself-chat:
 6. **[Enterprise Features](guides/enterprise/README)** - SSO, RBAC, auditing
 
 ### 👨‍💻 I'm a Developer
+
 Build and extend nself-chat:
+
 1. **[Getting Started](getting-started/Getting-Started)** - Development setup
 2. **[Architecture](reference/Architecture)** - System design
 3. **[API Documentation](api/API-DOCUMENTATION)** - GraphQL API
@@ -225,7 +246,9 @@ Build and extend nself-chat:
 7. **[Testing Guide](guides/testing-guide)** - Test your code
 
 ### 🚀 I'm DevOps
+
 Deploy and operate nself-chat:
+
 1. **[Docker Deployment](deployment/Deployment-Docker)** - Docker setup
 2. **[Kubernetes Deployment](deployment/Deployment-Kubernetes)** - K8s setup
 3. **[Helm Charts](deployment/Deployment-Helm)** - Helm deployment
@@ -235,37 +258,44 @@ Deploy and operate nself-chat:
 
 ---
 
-## 🌟 What's New in v0.3.0
+## 🌟 What's New in v0.9.1
 
-**Major Feature Release** - 85+ new features across 8 feature categories!
+**Documentation Excellence & Plugin System** - Comprehensive documentation polish and extensible plugin architecture!
 
 ### 🎯 Highlights
 
 #### 💬 Advanced Messaging
+
 Edit, delete, forward, pin, star messages • Read receipts • Typing indicators
 **[Learn More →](guides/advanced-messaging-implementation-summary)**
 
 #### 🎨 GIFs & Stickers
+
 Tenor GIF integration • Custom sticker packs • 2 default packs included
 **[Learn More →](features/GIF-Sticker-Implementation)**
 
 #### 📊 Interactive Polls
+
 Multi-choice polls • Anonymous voting • Live results • Poll expiration
 **[Learn More →](features/Polls-Implementation)**
 
 #### 🔐 Enhanced Security
+
 2FA with TOTP • PIN lock + biometrics • Device management • Session security
 **[Learn More →](security/2FA-Implementation-Summary)** • **[PIN Lock →](security/PIN-LOCK-SYSTEM)**
 
 #### 🔍 Powerful Search
+
 MeiliSearch integration • Advanced filters • Search operators • Saved searches
 **[Learn More →](guides/Search-Implementation)**
 
 #### 🤖 Bot Platform
+
 Bot SDK • Webhook delivery • 16 permissions • Management UI
 **[Learn More →](features/Bots)**
 
 #### 🌐 Social Integration
+
 Twitter, Instagram, LinkedIn • Auto-post to channels • Rich embeds
 **[Learn More →](features/Social-Media-Integration)**
 
@@ -314,6 +344,7 @@ Twitter, Instagram, LinkedIn • Auto-post to channels • Rich embeds
 ## 💻 Tech Stack
 
 ### Frontend
+
 - **Framework:** Next.js 15.5.10, React 19.0.0, TypeScript 5.7.3
 - **UI:** Tailwind CSS 3.4.17, Radix UI, Framer Motion 11.18.0
 - **State:** Zustand 5.0.3, Apollo Client 3.12.8
@@ -322,6 +353,7 @@ Twitter, Instagram, LinkedIn • Auto-post to channels • Rich embeds
 - **Real-time:** Socket.io 4.8.1, GraphQL subscriptions
 
 ### Backend (via nself CLI)
+
 - **Database:** PostgreSQL with 60+ extensions
 - **GraphQL:** Hasura GraphQL Engine
 - **Auth:** Nhost Authentication (11 providers)
@@ -330,6 +362,7 @@ Twitter, Instagram, LinkedIn • Auto-post to channels • Rich embeds
 - **Cache:** Redis
 
 ### Development
+
 - **Testing:** Jest 29.7.0, Playwright 1.50.1
 - **Linting:** ESLint 9.18.0, Prettier 3.4.2
 - **CI/CD:** 19 GitHub Actions workflows
@@ -339,33 +372,36 @@ Twitter, Instagram, LinkedIn • Auto-post to channels • Rich embeds
 
 ## 📊 Project Stats
 
-| Metric | Value |
-|--------|-------|
-| **Version** | 0.5.0 |
-| **Release Date** | January 31, 2026 |
-| **Total Features** | 85+ |
-| **Components** | 75+ directories |
-| **Custom Hooks** | 60+ hooks |
-| **Database Tables** | 28+ tables |
-| **API Endpoints** | 25+ endpoints |
-| **Theme Presets** | 25+ themes |
-| **Auth Providers** | 11 providers |
-| **CI Workflows** | 19 workflows |
-| **Documentation Pages** | 170+ pages |
-| **Lines of Code** | 50,000+ |
+| Metric                  | Value            |
+| ----------------------- | ---------------- |
+| **Version**             | 0.9.1            |
+| **Release Date**        | February 3, 2026 |
+| **Total Features**      | 150+             |
+| **Components**          | 75+ directories  |
+| **Custom Hooks**        | 60+ hooks        |
+| **Database Tables**     | 50+ tables       |
+| **API Endpoints**       | 40+ endpoints    |
+| **Theme Presets**       | 25+ themes       |
+| **Auth Providers**      | 11 providers     |
+| **CI Workflows**        | 19 workflows     |
+| **Documentation Pages** | 333+ pages       |
+| **Lines of Code**       | 60,000+          |
 
 ---
 
 ## 🤝 Community & Support
 
 ### Getting Help
+
 - 📖 **Documentation** - You're reading it!
 - 💬 **Discussions** - [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)
 - 🐛 **Issues** - [GitHub Issues](https://github.com/acamarata/nself-chat/issues)
 - 📧 **Email** - support@nself.org
 
 ### Contributing
+
 We welcome contributions! See our **[Contributing Guide](about/Contributing)** for:
+
 - Code of conduct
 - Development setup
 - Pull request process
@@ -373,6 +409,7 @@ We welcome contributions! See our **[Contributing Guide](about/Contributing)** f
 - Testing requirements
 
 ### Links
+
 - **[GitHub Repository](https://github.com/acamarata/nself-chat)**
 - **[nself CLI](https://github.com/acamarata/nself)** - Backend infrastructure
 - **[Demo Application](https://demo.nself-chat.org)** - Live demo
@@ -388,6 +425,7 @@ We welcome contributions! See our **[Contributing Guide](about/Contributing)** f
 ## 🙏 Acknowledgments
 
 Built with love using:
+
 - [Next.js](https://nextjs.org/) - React framework
 - [nself CLI](https://github.com/acamarata/nself) - Backend infrastructure
 - [Radix UI](https://www.radix-ui.com/) - UI components
@@ -403,9 +441,9 @@ Built with love using:
 
 ---
 
-**Version 0.5.0** • **January 2026**
+**Version 0.9.1** • **February 2026**
 
-*nself-chat - White-label team communication platform*
+_nself-chat - White-label team communication platform_
 
 **[Edit this page on GitHub](https://github.com/acamarata/nself-chat/edit/main/docs/Home.md)**
 

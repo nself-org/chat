@@ -23,9 +23,7 @@ export default function RootLayout({ children }) {
   return (
     <html>
       <body>
-        <PinLockWrapper>
-          {children}
-        </PinLockWrapper>
+        <PinLockWrapper>{children}</PinLockWrapper>
       </body>
     </html>
   )
@@ -35,6 +33,7 @@ export default function RootLayout({ children }) {
 ### 3. Add Settings Page
 
 Settings page already created at:
+
 ```
 /settings/security/pin-lock
 ```
@@ -121,8 +120,7 @@ const verification = await verifyBiometric()
 
 ```tsx
 import { PinSetup } from '@/components/security/PinSetup'
-
-<PinSetup
+;<PinSetup
   userId={user.id}
   userName={user.email}
   onComplete={(settings) => console.log('Setup complete', settings)}
@@ -134,22 +132,14 @@ import { PinSetup } from '@/components/security/PinSetup'
 
 ```tsx
 import { PinLock } from '@/components/security/PinLock'
-
-<PinLock
-  onUnlock={() => console.log('Unlocked')}
-  onForgotPin={() => console.log('Forgot PIN')}
-/>
+;<PinLock onUnlock={() => console.log('Unlocked')} onForgotPin={() => console.log('Forgot PIN')} />
 ```
 
 ### PinManage
 
 ```tsx
 import { PinManage } from '@/components/security/PinManage'
-
-<PinManage
-  userId={user.id}
-  userName={user.email}
-/>
+;<PinManage userId={user.id} userName={user.email} />
 ```
 
 ---
@@ -159,6 +149,7 @@ import { PinManage } from '@/components/security/PinManage'
 ### PIN not persisting?
 
 Check localStorage:
+
 ```js
 localStorage.getItem('nself_chat_pin_settings')
 ```
@@ -166,6 +157,7 @@ localStorage.getItem('nself_chat_pin_settings')
 ### Biometric not working?
 
 Check WebAuthn support:
+
 ```js
 import { isBiometricAvailable } from '@/lib/security/biometric'
 const available = await isBiometricAvailable()
@@ -174,6 +166,7 @@ const available = await isBiometricAvailable()
 ### Session not locking?
 
 Check timeout settings:
+
 ```js
 import { getSessionDebugInfo } from '@/lib/security/session'
 console.log(getSessionDebugInfo())
@@ -199,8 +192,8 @@ clearAllCredentials()
 ### Lock Timeout
 
 ```typescript
-0  // Never
-5  // 5 minutes
+0 // Never
+5 // 5 minutes
 15 // 15 minutes (default)
 30 // 30 minutes
 60 // 1 hour
@@ -210,9 +203,9 @@ clearAllCredentials()
 
 ```typescript
 {
-  lockOnClose: boolean      // Lock when app closes
+  lockOnClose: boolean // Lock when app closes
   lockOnBackground: boolean // Lock when app backgrounds
-  lockTimeoutMinutes: 0|5|15|30|60
+  lockTimeoutMinutes: 0 | 5 | 15 | 30 | 60
   biometricEnabled: boolean
 }
 ```
@@ -269,11 +262,7 @@ import {
 ### Biometric Module
 
 ```typescript
-import {
-  registerBiometric,
-  verifyBiometric,
-  isBiometricAvailable,
-} from '@/lib/security/biometric'
+import { registerBiometric, verifyBiometric, isBiometricAvailable } from '@/lib/security/biometric'
 ```
 
 ---

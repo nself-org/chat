@@ -8,7 +8,12 @@
 import { unfurlFromHtml, hasPreviewMetadata, mightHavePreview } from '@/lib/link-preview/unfurl'
 import type { LinkPreviewData } from '@/lib/link-preview/preview-types'
 import { isValidUrl, sanitizeUrl, extractDomain } from '@/lib/link-preview/preview-sanitizer'
-import { isDirectImageUrl, isDirectVideoUrl, getImageFormat, getVideoFormat } from '@/lib/link-preview/domain-handlers'
+import {
+  isDirectImageUrl,
+  isDirectVideoUrl,
+  getImageFormat,
+  getVideoFormat,
+} from '@/lib/link-preview/domain-handlers'
 
 // ============================================================================
 // Constants
@@ -58,7 +63,9 @@ function isSafeUrl(url: string): { safe: boolean; reason?: string } {
 
     // Check for blocked domains
     const hostname = parsed.hostname.toLowerCase()
-    if (BLOCKED_DOMAINS.some((blocked) => hostname === blocked || hostname.endsWith(`.${blocked}`))) {
+    if (
+      BLOCKED_DOMAINS.some((blocked) => hostname === blocked || hostname.endsWith(`.${blocked}`))
+    ) {
       return { safe: false, reason: 'Domain is blocked' }
     }
 
@@ -74,14 +81,14 @@ function isSafeUrl(url: string): { safe: boolean; reason?: string } {
         (a === 172 && b >= 16 && b <= 31) ||
         (a === 192 && b === 168) ||
         a === 127 || // Loopback
-        a === 169 && b === 254 // Link-local
+        (a === 169 && b === 254) // Link-local
       ) {
         return { safe: false, reason: 'Private IP addresses are not allowed' }
       }
     }
 
     // Check for blocked ports
-    const port = parsed.port ? parseInt(parsed.port, 10) : (parsed.protocol === 'https:' ? 443 : 80)
+    const port = parsed.port ? parseInt(parsed.port, 10) : parsed.protocol === 'https:' ? 443 : 80
     if (BLOCKED_PORTS.includes(port)) {
       return { safe: false, reason: 'Port is blocked' }
     }
@@ -220,11 +227,11 @@ async function fetchWithProtection(url: string): Promise<string> {
       method: 'GET',
       headers: {
         'User-Agent': UNFURL_CONFIG.USER_AGENT,
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate',
         'Cache-Control': 'no-cache',
-        'Pragma': 'no-cache',
+        Pragma: 'no-cache',
       },
       signal: controller.signal,
       redirect: 'follow',
@@ -482,9 +489,7 @@ export async function unfurlUrls(
   // Process in batches to limit concurrency
   for (let i = 0; i < uniqueUrls.length; i += concurrency) {
     const batch = uniqueUrls.slice(i, i + concurrency)
-    const batchResults = await Promise.all(
-      batch.map((url) => unfurlUrl(url, unfurlOptions))
-    )
+    const batchResults = await Promise.all(batch.map((url) => unfurlUrl(url, unfurlOptions)))
 
     batch.forEach((url, index) => {
       results.set(url, batchResults[index])

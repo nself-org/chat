@@ -103,12 +103,7 @@ export function BotProfile({
       {/* Header */}
       <div className="flex items-start gap-4">
         {onBack && (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={onBack}
-            className="mt-2"
-          >
+          <Button variant="ghost" size="icon" onClick={onBack} className="mt-2">
             <ArrowLeft className="h-5 w-5" />
           </Button>
         )}
@@ -120,22 +115,20 @@ export function BotProfile({
           </AvatarFallback>
         </Avatar>
 
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 flex-wrap">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl font-bold">{bot.name}</h1>
-            {bot.verified && (
-              <CheckCircle className="h-5 w-5 text-primary flex-shrink-0" />
-            )}
+            {bot.verified && <CheckCircle className="h-5 w-5 flex-shrink-0 text-primary" />}
             {bot.featured && (
-              <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+              <Badge className="border-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
                 Featured
               </Badge>
             )}
           </div>
 
-          <p className="text-muted-foreground mt-1">{bot.description}</p>
+          <p className="mt-1 text-muted-foreground">{bot.description}</p>
 
-          <div className="flex flex-wrap items-center gap-4 mt-3">
+          <div className="mt-3 flex flex-wrap items-center gap-4">
             {bot.rating !== undefined && (
               <div className="flex items-center gap-1">
                 <div className="flex">
@@ -153,9 +146,7 @@ export function BotProfile({
                     />
                   ))}
                 </div>
-                <span className="text-sm font-medium">
-                  {bot.rating.toFixed(1)}
-                </span>
+                <span className="text-sm font-medium">{bot.rating.toFixed(1)}</span>
                 {bot.reviewsCount !== undefined && (
                   <span className="text-sm text-muted-foreground">
                     ({bot.reviewsCount} reviews)
@@ -171,17 +162,11 @@ export function BotProfile({
               </div>
             )}
 
-            {bot.category && (
-              <Badge variant="secondary">{bot.category}</Badge>
-            )}
+            {bot.category && <Badge variant="secondary">{bot.category}</Badge>}
           </div>
         </div>
 
-        <Button
-          size="lg"
-          onClick={() => onInstall?.(bot)}
-          disabled={installed || loading}
-        >
+        <Button size="lg" onClick={() => onInstall?.(bot)} disabled={installed || loading}>
           {installed ? 'Installed' : 'Install'}
         </Button>
       </div>
@@ -212,7 +197,7 @@ export function BotProfile({
                     href={bot.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline flex items-center gap-1"
+                    className="flex items-center gap-1 text-primary hover:underline"
                   >
                     {new URL(bot.website).hostname}
                     <ExternalLink className="h-3 w-3" />
@@ -229,7 +214,7 @@ export function BotProfile({
                     href={bot.supportUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline flex items-center gap-1"
+                    className="flex items-center gap-1 text-primary hover:underline"
                   >
                     Get help
                     <ExternalLink className="h-3 w-3" />
@@ -246,7 +231,7 @@ export function BotProfile({
                     href={bot.privacyPolicyUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline flex items-center gap-1"
+                    className="flex items-center gap-1 text-primary hover:underline"
                   >
                     View policy
                     <ExternalLink className="h-3 w-3" />
@@ -255,22 +240,10 @@ export function BotProfile({
               />
             )}
             {bot.owner && (
-              <InfoCard
-                icon={User}
-                title="Developer"
-                content={bot.owner.displayName}
-              />
+              <InfoCard icon={User} title="Developer" content={bot.owner.displayName} />
             )}
-            <InfoCard
-              icon={Calendar}
-              title="Added"
-              content={formatDate(bot.createdAt)}
-            />
-            <InfoCard
-              icon={Calendar}
-              title="Updated"
-              content={formatDate(bot.updatedAt)}
-            />
+            <InfoCard icon={Calendar} title="Added" content={formatDate(bot.createdAt)} />
+            <InfoCard icon={Calendar} title="Updated" content={formatDate(bot.updatedAt)} />
           </div>
 
           {/* Permissions */}
@@ -289,8 +262,8 @@ export function BotProfile({
 
         <TabsContent value="commands" className="mt-6">
           {commands.length === 0 ? (
-            <div className="text-center py-12 rounded-lg border border-dashed">
-              <Terminal className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+            <div className="rounded-lg border border-dashed py-12 text-center">
+              <Terminal className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
               <p className="font-medium">No commands available</p>
               <p className="text-sm text-muted-foreground">
                 This bot doesn&apos;t have any slash commands
@@ -303,31 +276,24 @@ export function BotProfile({
                   <CardContent className="pt-4">
                     <div className="flex items-start justify-between">
                       <div>
-                        <code className="text-lg font-mono font-semibold text-primary">
+                        <code className="font-mono text-lg font-semibold text-primary">
                           {command.name}
                         </code>
-                        <p className="text-muted-foreground mt-1">
-                          {command.description}
-                        </p>
+                        <p className="mt-1 text-muted-foreground">{command.description}</p>
                       </div>
                     </div>
 
                     <div className="mt-3">
-                      <p className="text-sm font-medium mb-1">Usage</p>
-                      <code className="text-sm bg-muted px-2 py-1 rounded">
-                        {command.usage}
-                      </code>
+                      <p className="mb-1 text-sm font-medium">Usage</p>
+                      <code className="rounded bg-muted px-2 py-1 text-sm">{command.usage}</code>
                     </div>
 
                     {command.examples && command.examples.length > 0 && (
                       <div className="mt-3">
-                        <p className="text-sm font-medium mb-1">Examples</p>
+                        <p className="mb-1 text-sm font-medium">Examples</p>
                         <div className="space-y-1">
                           {command.examples.map((example, i) => (
-                            <code
-                              key={i}
-                              className="block text-sm bg-muted px-2 py-1 rounded"
-                            >
+                            <code key={i} className="block rounded bg-muted px-2 py-1 text-sm">
                               {example}
                             </code>
                           ))}
@@ -350,10 +316,8 @@ export function BotProfile({
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="text-center">
-                  <div className="text-4xl font-bold">
-                    {bot.rating?.toFixed(1) || '-'}
-                  </div>
-                  <div className="flex justify-center mt-1">
+                  <div className="text-4xl font-bold">{bot.rating?.toFixed(1) || '-'}</div>
+                  <div className="mt-1 flex justify-center">
                     {getStarRating(bot.rating || 0).map((star, i) => (
                       <Star
                         key={i}
@@ -368,7 +332,7 @@ export function BotProfile({
                       />
                     ))}
                   </div>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     {bot.reviewsCount || 0} reviews
                   </p>
                 </div>
@@ -376,13 +340,10 @@ export function BotProfile({
                 <div className="space-y-2">
                   {[5, 4, 3, 2, 1].map((stars) => (
                     <div key={stars} className="flex items-center gap-2">
-                      <span className="text-sm w-3">{stars}</span>
+                      <span className="w-3 text-sm">{stars}</span>
                       <Star className="h-3 w-3 fill-amber-400 text-amber-400" />
-                      <Progress
-                        value={ratingDistribution[stars] || 0}
-                        className="flex-1 h-2"
-                      />
-                      <span className="text-sm text-muted-foreground w-8">
+                      <Progress value={ratingDistribution[stars] || 0} className="h-2 flex-1" />
+                      <span className="w-8 text-sm text-muted-foreground">
                         {ratingDistribution[stars]?.toFixed(0) || 0}%
                       </span>
                     </div>
@@ -394,12 +355,10 @@ export function BotProfile({
             {/* Reviews List */}
             <div className="space-y-4">
               {reviews.length === 0 ? (
-                <div className="text-center py-12 rounded-lg border border-dashed">
-                  <Star className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
+                <div className="rounded-lg border border-dashed py-12 text-center">
+                  <Star className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
                   <p className="font-medium">No reviews yet</p>
-                  <p className="text-sm text-muted-foreground">
-                    Be the first to review this bot
-                  </p>
+                  <p className="text-sm text-muted-foreground">Be the first to review this bot</p>
                 </div>
               ) : (
                 <>
@@ -422,7 +381,7 @@ export function BotProfile({
                                 {formatDate(review.createdAt)}
                               </span>
                             </div>
-                            <div className="flex mt-1">
+                            <div className="mt-1 flex">
                               {getStarRating(review.rating).map((star, i) => (
                                 <Star
                                   key={i}
@@ -436,9 +395,7 @@ export function BotProfile({
                               ))}
                             </div>
                             {review.comment && (
-                              <p className="mt-2 text-muted-foreground">
-                                {review.comment}
-                              </p>
+                              <p className="mt-2 text-muted-foreground">{review.comment}</p>
                             )}
                           </div>
                         </div>
@@ -447,11 +404,7 @@ export function BotProfile({
                   ))}
 
                   {onLoadMoreReviews && (
-                    <Button
-                      variant="outline"
-                      className="w-full"
-                      onClick={onLoadMoreReviews}
-                    >
+                    <Button variant="outline" className="w-full" onClick={onLoadMoreReviews}>
                       Load More Reviews
                     </Button>
                   )}
@@ -495,9 +448,7 @@ function InfoCard({
 // HELPER FUNCTIONS
 // ============================================================================
 
-function calculateRatingDistribution(
-  reviews: BotReview[]
-): Record<number, number> {
+function calculateRatingDistribution(reviews: BotReview[]): Record<number, number> {
   if (reviews.length === 0) return {}
 
   const counts: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 }
@@ -524,27 +475,27 @@ function calculateRatingDistribution(
 
 export function BotProfileSkeleton() {
   return (
-    <div className="space-y-6 animate-pulse">
+    <div className="animate-pulse space-y-6">
       <div className="flex items-start gap-4">
         <div className="h-20 w-20 rounded-full bg-muted" />
         <div className="flex-1 space-y-3">
-          <div className="h-8 w-48 bg-muted rounded" />
-          <div className="h-4 w-96 bg-muted rounded" />
+          <div className="h-8 w-48 rounded bg-muted" />
+          <div className="h-4 w-96 rounded bg-muted" />
           <div className="flex gap-4">
-            <div className="h-4 w-24 bg-muted rounded" />
-            <div className="h-4 w-24 bg-muted rounded" />
+            <div className="h-4 w-24 rounded bg-muted" />
+            <div className="h-4 w-24 rounded bg-muted" />
           </div>
         </div>
-        <div className="h-10 w-24 bg-muted rounded" />
+        <div className="h-10 w-24 rounded bg-muted" />
       </div>
 
       <div className="h-px bg-muted" />
 
-      <div className="h-10 w-64 bg-muted rounded" />
+      <div className="h-10 w-64 rounded bg-muted" />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-20 bg-muted rounded-lg" />
+          <div key={i} className="h-20 rounded-lg bg-muted" />
         ))}
       </div>
     </div>

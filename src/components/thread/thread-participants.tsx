@@ -2,12 +2,7 @@
 
 import * as React from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { ThreadParticipant } from '@/hooks/use-thread'
 
@@ -100,7 +95,7 @@ export function ThreadParticipants({
         className={cn(
           'flex items-center',
           config.container,
-          onClick && 'cursor-pointer hover:opacity-80 transition-opacity',
+          onClick && 'cursor-pointer transition-opacity hover:opacity-80',
           className
         )}
         onClick={onClick}
@@ -123,9 +118,7 @@ export function ThreadParticipants({
                     alt={participant.user.display_name || participant.user.username}
                   />
                   <AvatarFallback className={cn(config.text, 'font-medium')}>
-                    {getInitials(
-                      participant.user.display_name || participant.user.username
-                    )}
+                    {getInitials(participant.user.display_name || participant.user.username)}
                   </AvatarFallback>
                 </Avatar>
               </TooltipTrigger>
@@ -158,7 +151,7 @@ export function ThreadParticipants({
                   +{overflowCount}
                 </div>
               </TooltipTrigger>
-              <TooltipContent side="top" className="text-xs max-w-[200px]">
+              <TooltipContent side="top" className="max-w-[200px] text-xs">
                 <p>{overflowTooltip}</p>
               </TooltipContent>
             </Tooltip>
@@ -167,12 +160,7 @@ export function ThreadParticipants({
 
         {/* Optional count display */}
         {showCount && (
-          <span
-            className={cn(
-              'ml-2 text-muted-foreground',
-              config.text
-            )}
-          >
+          <span className={cn('ml-2 text-muted-foreground', config.text)}>
             {participants.length} {participants.length === 1 ? 'participant' : 'participants'}
           </span>
         )}
@@ -190,10 +178,7 @@ export interface ThreadParticipantListProps {
   className?: string
 }
 
-export function ThreadParticipantList({
-  participants,
-  className,
-}: ThreadParticipantListProps) {
+export function ThreadParticipantList({ participants, className }: ThreadParticipantListProps) {
   const getInitials = (name: string) => {
     const parts = name.split(' ')
     if (parts.length >= 2) {
@@ -207,7 +192,7 @@ export function ThreadParticipantList({
       {participants.map((participant) => (
         <div
           key={participant.id}
-          className="flex items-center gap-3 px-2 py-1.5 rounded-md hover:bg-muted/50 transition-colors"
+          className="hover:bg-muted/50 flex items-center gap-3 rounded-md px-2 py-1.5 transition-colors"
         >
           <Avatar className="h-8 w-8">
             <AvatarImage
@@ -215,23 +200,17 @@ export function ThreadParticipantList({
               alt={participant.user.display_name || participant.user.username}
             />
             <AvatarFallback className="text-xs">
-              {getInitials(
-                participant.user.display_name || participant.user.username
-              )}
+              {getInitials(participant.user.display_name || participant.user.username)}
             </AvatarFallback>
           </Avatar>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium truncate">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium">
               {participant.user.display_name || participant.user.username}
             </p>
-            <p className="text-xs text-muted-foreground truncate">
-              @{participant.user.username}
-            </p>
+            <p className="truncate text-xs text-muted-foreground">@{participant.user.username}</p>
           </div>
           {participant.user.status && (
-            <span className="text-xs text-muted-foreground">
-              {participant.user.status}
-            </span>
+            <span className="text-xs text-muted-foreground">{participant.user.status}</span>
           )}
         </div>
       ))}

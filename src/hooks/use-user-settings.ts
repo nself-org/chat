@@ -137,7 +137,8 @@ export function useProfileSettings() {
     } catch (error) {
       toast({
         title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to upload avatar. Please try again.',
+        description:
+          error instanceof Error ? error.message : 'Failed to upload avatar. Please try again.',
         variant: 'destructive',
       })
       throw error
@@ -188,7 +189,8 @@ export function useAccountSettings() {
 
   const [updateEmailMutation, { loading: updatingEmail }] = useMutation(UPDATE_USER_EMAIL)
   const [connectOAuthMutation, { loading: connecting }] = useMutation(CONNECT_OAUTH_ACCOUNT)
-  const [disconnectOAuthMutation, { loading: disconnecting }] = useMutation(DISCONNECT_OAUTH_ACCOUNT)
+  const [disconnectOAuthMutation, { loading: disconnecting }] =
+    useMutation(DISCONNECT_OAUTH_ACCOUNT)
   const [enableTwoFactorMutation, { loading: enabling2FA }] = useMutation(ENABLE_TWO_FACTOR_AUTH)
   const [disableTwoFactorMutation, { loading: disabling2FA }] = useMutation(DISABLE_TWO_FACTOR_AUTH)
   const [deleteAccountMutation, { loading: deleting }] = useMutation(DELETE_USER_ACCOUNT)

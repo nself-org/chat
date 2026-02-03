@@ -29,11 +29,7 @@ export { createReminderBot, reminderBotManifest }
 export { createWelcomeBot, welcomeBotManifest }
 
 // Hello Bot - additional exports
-export {
-  helloCommand,
-  waveCommand,
-  goodbyeCommand,
-} from './hello-bot'
+export { helloCommand, waveCommand, goodbyeCommand } from './hello-bot'
 
 // Poll Bot - additional exports
 export {
@@ -84,12 +80,7 @@ export {
 export function registerAllBots() {
   const runtime = getRuntime()
 
-  const bots = [
-    createHelloBot(),
-    createPollBot(),
-    createReminderBot(),
-    createWelcomeBot(),
-  ]
+  const bots = [createHelloBot(), createPollBot(), createReminderBot(), createWelcomeBot()]
 
   runtime.startAll()
 

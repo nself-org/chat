@@ -49,7 +49,7 @@ describe('InlineCode', () => {
 
 describe('CodeBlock', () => {
   const sampleCode = `function greet(name) {
-  return \`Hello, \${name}!\`
+  return `Hello, \${name}!`
 }`
 
   it('renders code with syntax highlighting', () => {

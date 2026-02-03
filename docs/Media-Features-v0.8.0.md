@@ -15,6 +15,7 @@ This document describes the comprehensive camera and media features implemented 
 **Location**: `src/lib/media/image-compression.ts`
 
 **Features**:
+
 - Aggressive compression with 70-90% size reduction
 - Multiple compression presets (high, medium, low, thumbnail, aggressive)
 - Target size compression (iterative quality adjustment)
@@ -24,38 +25,40 @@ This document describes the comprehensive camera and media features implemented 
 - Progress callbacks for UI feedback
 
 **Usage**:
+
 ```typescript
-import { compressImage, aggressiveCompress, smartCompress } from '@/lib/media/image-compression';
+import { compressImage, aggressiveCompress, smartCompress } from '@/lib/media/image-compression'
 
 // Basic compression
 const result = await compressImage(imageFile, {
   maxWidth: 1920,
   maxHeight: 1920,
   quality: 0.7,
-});
+})
 
 // Aggressive compression (70-90% reduction)
-const aggressive = await aggressiveCompress(imageFile);
+const aggressive = await aggressiveCompress(imageFile)
 
 // Smart compression (context-aware)
-const smart = await smartCompress(imageFile, 'chat'); // 'chat' | 'profile' | 'attachment'
+const smart = await smartCompress(imageFile, 'chat') // 'chat' | 'profile' | 'attachment'
 
 // Target size compression
 const targeted = await compressImage(imageFile, {
   targetSizeKB: 500, // Compress to ~500KB
-});
+})
 ```
 
 **Results**:
+
 ```typescript
 interface CompressionResult {
-  blob: Blob;
-  originalSize: number;
-  compressedSize: number;
-  reductionPercent: number; // e.g., 85% reduction
-  width: number;
-  height: number;
-  format: ImageFormat;
+  blob: Blob
+  originalSize: number
+  compressedSize: number
+  reductionPercent: number // e.g., 85% reduction
+  width: number
+  height: number
+  format: ImageFormat
 }
 ```
 
@@ -64,6 +67,7 @@ interface CompressionResult {
 **Location**: `platforms/capacitor/src/native/camera.ts`
 
 **Features**:
+
 - Photo capture (native camera)
 - Gallery photo selection
 - Multiple image selection (up to 10 images on web)
@@ -72,21 +76,22 @@ interface CompressionResult {
 - Image metadata extraction
 
 **Usage**:
+
 ```typescript
-import { camera } from '@/lib/capacitor/camera';
+import { camera } from '@/lib/capacitor/camera'
 
 // Take photo
-const photo = await camera.takePhoto();
+const photo = await camera.takePhoto()
 
 // Pick from gallery
-const photo = await camera.pickPhoto();
+const photo = await camera.pickPhoto()
 
 // Pick multiple (web only without plugin)
-const photos = await camera.pickPhotos(10);
+const photos = await camera.pickPhotos(10)
 
 // Check/request permissions
-const hasPermission = await camera.checkCameraPermission();
-const granted = await camera.requestCameraPermission();
+const hasPermission = await camera.checkCameraPermission()
+const granted = await camera.requestCameraPermission()
 ```
 
 ### 3. Video Recording & Trimming
@@ -94,6 +99,7 @@ const granted = await camera.requestCameraPermission();
 **Location**: `src/lib/capacitor/video.ts`
 
 **Features**:
+
 - Video recording with max duration (5 minutes)
 - Gallery video selection
 - Video trimming UI (web-based using MediaRecorder)
@@ -102,24 +108,25 @@ const granted = await camera.requestCameraPermission();
 - Video validation (size, duration limits)
 
 **Usage**:
+
 ```typescript
-import { video, trimVideoWeb } from '@/lib/capacitor/video';
+import { video, trimVideoWeb } from '@/lib/capacitor/video'
 
 // Record video
 const recording = await video.recordVideo({
   maxDuration: 300, // 5 minutes
   quality: 'medium',
   saveToGallery: true,
-});
+})
 
 // Pick video
-const picked = await video.pickVideo();
+const picked = await video.pickVideo()
 
 // Trim video (web)
-const trimmed = await trimVideoWeb(videoFile, 5, 60); // 5s to 60s
+const trimmed = await trimVideoWeb(videoFile, 5, 60) // 5s to 60s
 
 // Validate video
-const validation = await video.validateVideo(path, 300, 100);
+const validation = await video.validateVideo(path, 300, 100)
 ```
 
 ### 4. Voice Recording
@@ -127,6 +134,7 @@ const validation = await video.validateVideo(path, 300, 100);
 **Location**: `src/lib/capacitor/voice-recording.ts`
 
 **Features**:
+
 - Voice note recording (max 5 minutes)
 - Real-time waveform visualization
 - Pause/Resume recording
@@ -135,35 +143,37 @@ const validation = await video.validateVideo(path, 300, 100);
 - Multiple audio format support (WebM, Ogg, MP4)
 
 **Usage**:
+
 ```typescript
-import { voiceRecorder, drawWaveform, formatDuration } from '@/lib/capacitor/voice-recording';
+import { voiceRecorder, drawWaveform, formatDuration } from '@/lib/capacitor/voice-recording'
 
 // Start recording
 await voiceRecorder.startRecording({
   maxDuration: 300,
   quality: 'medium',
-});
+})
 
 // Stop recording
-const recording = await voiceRecorder.stopRecording();
+const recording = await voiceRecorder.stopRecording()
 
 // Pause/Resume
-voiceRecorder.pauseRecording();
-voiceRecorder.resumeRecording();
+voiceRecorder.pauseRecording()
+voiceRecorder.resumeRecording()
 
 // Get current waveform for visualization
-const waveform = voiceRecorder.getCurrentWaveform();
+const waveform = voiceRecorder.getCurrentWaveform()
 ```
 
 **Recording Result**:
+
 ```typescript
 interface VoiceRecording {
-  uri: string;
-  path?: string;
-  duration: number;
-  size: number;
-  format: string;
-  waveformData?: number[]; // For visualization
+  uri: string
+  path?: string
+  duration: number
+  size: number
+  format: string
+  waveformData?: number[] // For visualization
 }
 ```
 
@@ -172,6 +182,7 @@ interface VoiceRecording {
 **Location**: `src/lib/media/lazy-loading.ts`
 
 **Features**:
+
 - IntersectionObserver-based lazy loading
 - Progressive image loading with LQIP (Low Quality Image Placeholder)
 - Blur-to-sharp transition
@@ -180,25 +191,26 @@ interface VoiceRecording {
 - Fallback for unsupported browsers
 
 **Usage**:
+
 ```typescript
-import { getLazyLoader, getProgressiveLoader, generateLQIP } from '@/lib/media/lazy-loading';
+import { getLazyLoader, getProgressiveLoader, generateLQIP } from '@/lib/media/lazy-loading'
 
 // Basic lazy loading
 const loader = getLazyLoader({
   rootMargin: '50px',
   fadeInDuration: 300,
-});
-loader.observe(imgElement);
+})
+loader.observe(imgElement)
 
 // Progressive loading with blur placeholder
 const progressiveLoader = getProgressiveLoader({
   blurAmount: 10,
   transitionDuration: 300,
-});
-progressiveLoader.observe(imgElement);
+})
+progressiveLoader.observe(imgElement)
 
 // Generate LQIP
-const lqip = await generateLQIP(imageFile, 20, 0.1);
+const lqip = await generateLQIP(imageFile, 20, 0.1)
 ```
 
 ### 6. Image Editor
@@ -206,6 +218,7 @@ const lqip = await generateLQIP(imageFile, 20, 0.1);
 **Location**: `src/components/media/ImageEditor.tsx`
 
 **Features**:
+
 - Crop with draggable area
 - Rotate (90° increments and custom angle)
 - Zoom controls
@@ -220,10 +233,10 @@ const lqip = await generateLQIP(imageFile, 20, 0.1);
 - Canvas-based editing
 
 **Usage**:
-```tsx
-import { ImageEditor } from '@/components/media/ImageEditor';
 
-<ImageEditor
+```tsx
+import { ImageEditor } from '@/components/media/ImageEditor'
+;<ImageEditor
   imageUrl={imageUrl}
   imageFile={imageFile}
   onSave={(blob) => {
@@ -232,7 +245,7 @@ import { ImageEditor } from '@/components/media/ImageEditor';
   onCancel={() => {
     // Handle cancel
   }}
-  aspectRatio={16/9} // Optional
+  aspectRatio={16 / 9} // Optional
 />
 ```
 
@@ -243,6 +256,7 @@ import { ImageEditor } from '@/components/media/ImageEditor';
 **Location**: `src/components/media/ImagePicker.tsx`
 
 **Features**:
+
 - Multi-select (up to 10 images)
 - Camera capture on native
 - Gallery selection
@@ -252,10 +266,10 @@ import { ImageEditor } from '@/components/media/ImageEditor';
 - Compression progress
 
 **Usage**:
-```tsx
-import { ImagePicker } from '@/components/media/ImagePicker';
 
-<ImagePicker
+```tsx
+import { ImagePicker } from '@/components/media/ImagePicker'
+;<ImagePicker
   maxImages={10}
   maxSizeMB={10}
   allowCamera={true}
@@ -276,6 +290,7 @@ import { ImagePicker } from '@/components/media/ImagePicker';
 **Location**: `src/components/media/VideoPicker.tsx`
 
 **Features**:
+
 - Video recording
 - Gallery selection
 - Video trimming UI
@@ -284,10 +299,10 @@ import { ImagePicker } from '@/components/media/ImagePicker';
 - Thumbnail preview
 
 **Usage**:
-```tsx
-import { VideoPicker } from '@/components/media/VideoPicker';
 
-<VideoPicker
+```tsx
+import { VideoPicker } from '@/components/media/VideoPicker'
+;<VideoPicker
   maxDurationSeconds={300}
   maxSizeMB={100}
   allowCamera={true}
@@ -307,6 +322,7 @@ import { VideoPicker } from '@/components/media/VideoPicker';
 **Location**: `src/components/media/VoiceRecorder.tsx`
 
 **Features**:
+
 - Waveform visualization
 - Pause/Resume
 - Playback preview
@@ -315,10 +331,10 @@ import { VideoPicker } from '@/components/media/VideoPicker';
 - Cancel recording
 
 **Usage**:
-```tsx
-import { VoiceRecorder } from '@/components/media/VoiceRecorder';
 
-<VoiceRecorder
+```tsx
+import { VoiceRecorder } from '@/components/media/VoiceRecorder'
+;<VoiceRecorder
   maxDuration={300}
   onRecordingComplete={(recording) => {
     // Handle recording
@@ -335,6 +351,7 @@ import { VoiceRecorder } from '@/components/media/VoiceRecorder';
 **Location**: `src/components/chat/ImageLazy.tsx`
 
 **Features**:
+
 - Automatic lazy loading
 - Progressive loading with blur
 - Fade-in animation
@@ -342,17 +359,17 @@ import { VoiceRecorder } from '@/components/media/VoiceRecorder';
 - Low-quality placeholder support
 
 **Usage**:
-```tsx
-import { ImageLazy } from '@/components/chat/ImageLazy';
 
-<ImageLazy
+```tsx
+import { ImageLazy } from '@/components/chat/ImageLazy'
+;<ImageLazy
   src={imageUrl}
   lowQualitySrc={lqipUrl}
   progressive={true}
   fadeInDuration={300}
   blurAmount={10}
   alt="Description"
-  className="w-full h-auto"
+  className="h-auto w-full"
 />
 ```
 
@@ -361,6 +378,7 @@ import { ImageLazy } from '@/components/chat/ImageLazy';
 **Location**: `src/lib/capacitor/permissions.ts`
 
 **Features**:
+
 - Unified permission API
 - Camera permission
 - Photo library permission
@@ -370,29 +388,27 @@ import { ImageLazy } from '@/components/chat/ImageLazy';
 - Multi-permission requests
 
 **Usage**:
+
 ```typescript
-import { permissions, requestPermissionWithRationale } from '@/lib/capacitor/permissions';
+import { permissions, requestPermissionWithRationale } from '@/lib/capacitor/permissions'
 
 // Check permission
-const result = await permissions.checkCameraPermission();
+const result = await permissions.checkCameraPermission()
 
 // Request permission
-const status = await permissions.requestCameraPermission();
+const status = await permissions.requestCameraPermission()
 
 // Request with rationale
-const status = await requestPermissionWithRationale(
-  'camera',
-  async (message) => {
-    // Show dialog with rationale
-    return confirm(message);
-  }
-);
+const status = await requestPermissionWithRationale('camera', async (message) => {
+  // Show dialog with rationale
+  return confirm(message)
+})
 
 // Check multiple permissions
-const results = await permissions.checkPermissions(['camera', 'microphone', 'photos']);
+const results = await permissions.checkPermissions(['camera', 'microphone', 'photos'])
 
 // Request multiple permissions
-const statuses = await permissions.requestPermissions(['camera', 'microphone']);
+const statuses = await permissions.requestPermissions(['camera', 'microphone'])
 ```
 
 ## Integration Examples
@@ -400,33 +416,33 @@ const statuses = await permissions.requestPermissions(['camera', 'microphone']);
 ### Chat Message with Media
 
 ```tsx
-import { ImagePicker } from '@/components/media/ImagePicker';
-import { VideoPicker } from '@/components/media/VideoPicker';
-import { VoiceRecorder } from '@/components/media/VoiceRecorder';
-import { compressImage } from '@/lib/media/image-compression';
+import { ImagePicker } from '@/components/media/ImagePicker'
+import { VideoPicker } from '@/components/media/VideoPicker'
+import { VoiceRecorder } from '@/components/media/VoiceRecorder'
+import { compressImage } from '@/lib/media/image-compression'
 
 function ChatInput() {
-  const [showImagePicker, setShowImagePicker] = useState(false);
-  const [showVideoPicker, setShowVideoPicker] = useState(false);
-  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false);
+  const [showImagePicker, setShowImagePicker] = useState(false)
+  const [showVideoPicker, setShowVideoPicker] = useState(false)
+  const [showVoiceRecorder, setShowVoiceRecorder] = useState(false)
 
   const handleImagesSelected = async (images: SelectedImage[]) => {
     // Upload compressed images
     for (const image of images) {
-      await uploadImage(image.blob);
+      await uploadImage(image.blob)
     }
-    setShowImagePicker(false);
-  };
+    setShowImagePicker(false)
+  }
 
   const handleVideoSelected = async (blob: Blob, metadata: VideoMetadata) => {
-    await uploadVideo(blob);
-    setShowVideoPicker(false);
-  };
+    await uploadVideo(blob)
+    setShowVideoPicker(false)
+  }
 
   const handleVoiceRecording = async (recording: VoiceRecording) => {
-    await uploadVoiceNote(recording);
-    setShowVoiceRecorder(false);
-  };
+    await uploadVoiceNote(recording)
+    setShowVoiceRecorder(false)
+  }
 
   return (
     <div>
@@ -437,17 +453,11 @@ function ChatInput() {
 
       {/* Pickers */}
       {showImagePicker && (
-        <ImagePicker
-          onImagesSelected={handleImagesSelected}
-          onError={console.error}
-        />
+        <ImagePicker onImagesSelected={handleImagesSelected} onError={console.error} />
       )}
 
       {showVideoPicker && (
-        <VideoPicker
-          onVideoSelected={handleVideoSelected}
-          onError={console.error}
-        />
+        <VideoPicker onVideoSelected={handleVideoSelected} onError={console.error} />
       )}
 
       {showVoiceRecorder && (
@@ -457,15 +467,15 @@ function ChatInput() {
         />
       )}
     </div>
-  );
+  )
 }
 ```
 
 ### Lazy Loading in Message List
 
 ```tsx
-import { ImageLazy } from '@/components/chat/ImageLazy';
-import { generateLQIP } from '@/lib/media/lazy-loading';
+import { ImageLazy } from '@/components/chat/ImageLazy'
+import { generateLQIP } from '@/lib/media/lazy-loading'
 
 function MessageImage({ message }) {
   return (
@@ -476,7 +486,7 @@ function MessageImage({ message }) {
       className="max-w-md rounded-lg"
       alt={message.altText}
     />
-  );
+  )
 }
 ```
 
@@ -510,22 +520,21 @@ function MessageImage({ message }) {
 
 ## Browser/Platform Support
 
-| Feature | Web | iOS | Android |
-|---------|-----|-----|---------|
-| Image Compression | ✅ | ✅ | ✅ |
-| Camera Capture | ❌* | ✅ | ✅ |
-| Gallery Selection | ✅ | ✅ | ✅ |
-| Multi-select | ✅ | ❌** | ❌** |
-| Video Recording | ❌* | ✅ | ✅ |
-| Video Trimming | ✅ | ❌*** | ❌*** |
-| Voice Recording | ✅ | ✅ | ✅ |
-| Waveform | ✅ | ✅ | ✅ |
-| Lazy Loading | ✅ | ✅ | ✅ |
-| Progressive Loading | ✅ | ✅ | ✅ |
+| Feature             | Web  | iOS      | Android  |
+| ------------------- | ---- | -------- | -------- |
+| Image Compression   | ✅   | ✅       | ✅       |
+| Camera Capture      | ❌\* | ✅       | ✅       |
+| Gallery Selection   | ✅   | ✅       | ✅       |
+| Multi-select        | ✅   | ❌\*\*   | ❌\*\*   |
+| Video Recording     | ❌\* | ✅       | ✅       |
+| Video Trimming      | ✅   | ❌\*\*\* | ❌\*\*\* |
+| Voice Recording     | ✅   | ✅       | ✅       |
+| Waveform            | ✅   | ✅       | ✅       |
+| Lazy Loading        | ✅   | ✅       | ✅       |
+| Progressive Loading | ✅   | ✅       | ✅       |
 
-*Web camera/video requires getUserMedia API (HTTPS only)
-**Native multi-select requires @capacitor-community/media plugin
-***Native video trimming requires capacitor-video-editor plugin
+\*Web camera/video requires getUserMedia API (HTTPS only)
+**Native multi-select requires @capacitor-community/media plugin \***Native video trimming requires capacitor-video-editor plugin
 
 ## Configuration
 
@@ -590,10 +599,10 @@ BLUR_AMOUNT = 10px
 
 ```typescript
 // Check if permission can be requested
-const result = await permissions.checkCameraPermission();
+const result = await permissions.checkCameraPermission()
 if (result.status === 'denied' && !result.canRequest) {
   // Permission permanently denied - show settings prompt
-  await permissions.openAppSettings();
+  await permissions.openAppSettings()
 }
 ```
 
@@ -601,7 +610,7 @@ if (result.status === 'denied' && !result.canRequest) {
 
 ```typescript
 // Use concurrent processing
-await batchCompress(files, options, 3); // 3 concurrent
+await batchCompress(files, options, 3) // 3 concurrent
 
 // Or disable compression for small images
 if (file.size < 500 * 1024) {
@@ -613,9 +622,9 @@ if (file.size < 500 * 1024) {
 
 ```typescript
 // Validate size before loading
-const maxSize = 100 * 1024 * 1024; // 100MB
+const maxSize = 100 * 1024 * 1024 // 100MB
 if (file.size > maxSize) {
-  throw new Error('Video too large');
+  throw new Error('Video too large')
 }
 
 // Use streaming for server upload
@@ -625,6 +634,7 @@ if (file.size > maxSize) {
 ## Testing
 
 All features have been tested with:
+
 - Multiple image formats (JPEG, PNG, WebP, HEIC)
 - Various image sizes (100KB - 20MB)
 - Different video formats (MP4, MOV, WebM)
@@ -646,6 +656,7 @@ All features have been tested with:
 ## Files Created
 
 ### Libraries
+
 - ✅ `src/lib/media/image-compression.ts` - Image compression library
 - ✅ `src/lib/capacitor/video.ts` - Video recording & management
 - ✅ `src/lib/capacitor/voice-recording.ts` - Voice recording with waveform
@@ -653,6 +664,7 @@ All features have been tested with:
 - ✅ `src/lib/capacitor/permissions.ts` - Permission management
 
 ### Components
+
 - ✅ `src/components/media/ImageEditor.tsx` - Image editor (crop, rotate, filters)
 - ✅ `src/components/media/ImagePicker.tsx` - Multi-select image picker
 - ✅ `src/components/media/VideoPicker.tsx` - Video picker with trimming
@@ -660,6 +672,7 @@ All features have been tested with:
 - ✅ `src/components/chat/ImageLazy.tsx` - Lazy loading image component
 
 ### Enhanced
+
 - ✅ `platforms/capacitor/src/native/camera.ts` - Enhanced with multi-select
 
 ## Conclusion

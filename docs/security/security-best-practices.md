@@ -25,6 +25,7 @@
 ### DO ✅
 
 **Always use middleware for protected routes:**
+
 ```typescript
 // Good: Composable middleware pattern
 export const POST = compose(
@@ -36,6 +37,7 @@ export const POST = compose(
 ```
 
 **Validate user permissions at every level:**
+
 ```typescript
 // Good: Check permissions before action
 async function deleteChannel(channelId: string, userId: string) {
@@ -48,9 +50,11 @@ async function deleteChannel(channelId: string, userId: string) {
 ```
 
 **Use strong password requirements:**
+
 ```typescript
 // Good: Comprehensive password validation
-export const passwordSchema = z.string()
+export const passwordSchema = z
+  .string()
   .min(8, 'Password must be at least 8 characters')
   .regex(/[a-z]/, 'Must contain lowercase letter')
   .regex(/[A-Z]/, 'Must contain uppercase letter')
@@ -61,6 +65,7 @@ export const passwordSchema = z.string()
 ### DON'T ❌
 
 **Never trust client-side validation alone:**
+
 ```typescript
 // Bad: Only client-side check
 if (user.role === 'admin') {
@@ -75,6 +80,7 @@ if (!['owner', 'admin'].includes(user.role)) {
 ```
 
 **Never expose sensitive user data:**
+
 ```typescript
 // Bad: Returning password hash
 return { ...user, password: user.encrypted_password }
@@ -91,6 +97,7 @@ return safeUser
 ### DO ✅
 
 **Always validate input with Zod schemas:**
+
 ```typescript
 // Good: Comprehensive validation
 import { validateRequestBody } from '@/lib/validation/validate'
@@ -103,6 +110,7 @@ export async function POST(request: NextRequest) {
 ```
 
 **Sanitize user-generated content:**
+
 ```typescript
 // Good: HTML sanitization
 import { sanitizeHtml } from '@/lib/validation/validate'
@@ -111,16 +119,18 @@ const safeContent = sanitizeHtml(userInput)
 ```
 
 **Validate file uploads thoroughly:**
+
 ```typescript
 // Good: Multi-layer validation
 const uploadInitSchema = z.object({
-  filename: z.string()
+  filename: z
+    .string()
     .min(1)
     .max(255)
     .regex(/^[^<>:"/\\|?*]+$/, 'Invalid filename'),
-  contentType: z.string()
-    .regex(/^[a-z]+\/[a-z0-9\-\+\.]+$/i),
-  size: z.number()
+  contentType: z.string().regex(/^[a-z]+\/[a-z0-9\-\+\.]+$/i),
+  size: z
+    .number()
     .int()
     .positive()
     .max(100 * 1024 * 1024, 'Max 100MB'),
@@ -130,6 +140,7 @@ const uploadInitSchema = z.object({
 ### DON'T ❌
 
 **Never trust raw request data:**
+
 ```typescript
 // Bad: Direct use of request data
 const { email, password } = await request.json()
@@ -141,6 +152,7 @@ await pool.query('SELECT * FROM users WHERE email = $1', [email])
 ```
 
 **Never allow unvalidated redirects:**
+
 ```typescript
 // Bad: Open redirect vulnerability
 const redirectTo = request.query.get('redirect')
@@ -161,6 +173,7 @@ if (!allowedUrls.includes(redirectTo)) {
 ### DO ✅
 
 **Implement rate limiting on all endpoints:**
+
 ```typescript
 // Good: Aggressive rate limiting on auth endpoints
 export const POST = compose(
@@ -170,29 +183,23 @@ export const POST = compose(
 ```
 
 **Use CSRF protection for state-changing operations:**
+
 ```typescript
 // Good: CSRF protection on mutations
-export const POST = compose(
-  withErrorHandler,
-  withCsrfProtection,
-  withAuth
-)(handleUpdate)
+export const POST = compose(withErrorHandler, withCsrfProtection, withAuth)(handleUpdate)
 ```
 
 **Return consistent error responses:**
+
 ```typescript
 // Good: Structured error response
-return errorResponse(
-  'Invalid credentials',
-  'INVALID_CREDENTIALS',
-  401,
-  { attemptedEmail: email }
-)
+return errorResponse('Invalid credentials', 'INVALID_CREDENTIALS', 401, { attemptedEmail: email })
 ```
 
 ### DON'T ❌
 
 **Never expose stack traces in production:**
+
 ```typescript
 // Bad: Leaking implementation details
 catch (error) {
@@ -207,17 +214,18 @@ catch (error) {
 ```
 
 **Never allow unrestricted CORS:**
+
 ```typescript
 // Bad: Wildcard CORS with credentials
 withCors({
   origin: '*',
-  credentials: true
+  credentials: true,
 })
 
 // Good: Specific origins
 withCors({
   origin: ['https://nchat.app', 'https://app.nchat.io'],
-  credentials: true
+  credentials: true,
 })
 ```
 
@@ -228,24 +236,24 @@ withCors({
 ### DO ✅
 
 **Always use parameterized queries:**
+
 ```typescript
 // Good: Parameterized PostgreSQL query
-const result = await pool.query(
-  'SELECT * FROM users WHERE email = $1',
-  [email]
-)
+const result = await pool.query('SELECT * FROM users WHERE email = $1', [email])
 ```
 
 **Use GraphQL with Hasura (auto-parameterized):**
+
 ```typescript
 // Good: GraphQL mutation (safe by default)
 const { data } = await apolloClient.mutate({
   mutation: UPDATE_USER,
-  variables: { id, updates }
+  variables: { id, updates },
 })
 ```
 
 **Implement row-level security:**
+
 ```sql
 -- Good: RLS policy
 CREATE POLICY user_access ON messages
@@ -259,6 +267,7 @@ CREATE POLICY user_access ON messages
 ### DON'T ❌
 
 **Never build SQL queries with string concatenation:**
+
 ```typescript
 // Bad: SQL injection vulnerability
 const query = `SELECT * FROM users WHERE email = '${email}'`
@@ -269,6 +278,7 @@ await pool.query('SELECT * FROM users WHERE email = $1', [email])
 ```
 
 **Never store passwords in plain text:**
+
 ```typescript
 // Bad: Plain text password
 await db.users.insert({ email, password })
@@ -285,6 +295,7 @@ await db.users.insert({ email, encrypted_password: hashedPassword })
 ### DO ✅
 
 **Validate file types with multiple checks:**
+
 ```typescript
 // Good: Multi-layer file validation
 function validateFile(file: File) {
@@ -313,6 +324,7 @@ function validateFile(file: File) {
 ```
 
 **Generate unique, unpredictable filenames:**
+
 ```typescript
 // Good: UUID-based filename
 import { randomUUID } from 'crypto'
@@ -323,6 +335,7 @@ const key = `uploads/${year}/${month}/${day}/${fileId}.${ext}`
 ```
 
 **Use presigned URLs with expiration:**
+
 ```typescript
 // Good: Short-lived presigned URL
 const presignedUrl = await generatePresignedUrl(
@@ -336,6 +349,7 @@ const presignedUrl = await generatePresignedUrl(
 ### DON'T ❌
 
 **Never trust user-provided filenames:**
+
 ```typescript
 // Bad: Using user filename directly
 const filePath = `/uploads/${userFilename}`
@@ -346,15 +360,13 @@ const filePath = `/uploads/${randomUUID()}-${safeFilename}`
 ```
 
 **Never allow executable uploads:**
+
 ```typescript
 // Bad: Allowing any file type
 const ALLOWED_TYPES = ['*']
 
 // Good: Explicit whitelist
-const ALLOWED_TYPES = [
-  'image/jpeg', 'image/png', 'image/gif',
-  'application/pdf', 'text/plain'
-]
+const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain']
 ```
 
 ---
@@ -364,6 +376,7 @@ const ALLOWED_TYPES = [
 ### DO ✅
 
 **Use Content Security Policy:**
+
 ```typescript
 // Good: Restrictive CSP in next.config.js
 headers: [
@@ -374,12 +387,13 @@ headers: [
       "script-src 'self' 'nonce-{NONCE}'",
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
-    ].join('; ')
-  }
+    ].join('; '),
+  },
 ]
 ```
 
 **Sanitize before rendering user content:**
+
 ```typescript
 // Good: Using DOMPurify for rich content
 import DOMPurify from 'dompurify'
@@ -391,19 +405,21 @@ function MessageContent({ html }: { html: string }) {
 ```
 
 **Use secure cookie settings:**
+
 ```typescript
 // Good: Secure cookie configuration
 response.cookies.set('session', token, {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
   sameSite: 'strict',
-  maxAge: 86400
+  maxAge: 86400,
 })
 ```
 
 ### DON'T ❌
 
 **Never use dangerouslySetInnerHTML without sanitization:**
+
 ```typescript
 // Bad: XSS vulnerability
 <div dangerouslySetInnerHTML={{ __html: userInput }} />
@@ -413,6 +429,7 @@ response.cookies.set('session', token, {
 ```
 
 **Never store sensitive data in localStorage:**
+
 ```typescript
 // Bad: Sensitive data in localStorage
 localStorage.setItem('accessToken', token)
@@ -429,6 +446,7 @@ localStorage.setItem('password', password)
 ### DO ✅
 
 **Use environment variables for secrets:**
+
 ```typescript
 // Good: Environment variable with validation
 const JWT_SECRET = process.env.JWT_SECRET
@@ -438,6 +456,7 @@ if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
 ```
 
 **Use a secrets manager in production:**
+
 ```typescript
 // Good: AWS Secrets Manager integration
 import { SecretsManager } from '@aws-sdk/client-secrets-manager'
@@ -450,6 +469,7 @@ async function getSecret(secretName: string) {
 ```
 
 **Rotate secrets regularly:**
+
 ```typescript
 // Good: Implement secret rotation
 async function rotateJwtSecret() {
@@ -462,6 +482,7 @@ async function rotateJwtSecret() {
 ### DON'T ❌
 
 **Never commit secrets to version control:**
+
 ```bash
 # Bad: Secrets in .env file committed to Git
 .env
@@ -471,6 +492,7 @@ async function rotateJwtSecret() {
 ```
 
 **Never use default or weak secrets:**
+
 ```typescript
 // Bad: Weak default secret
 const SECRET = process.env.SECRET || 'secret123'
@@ -486,6 +508,7 @@ if (SECRET.length < 32) {
 ```
 
 **Never log sensitive information:**
+
 ```typescript
 // Bad: Logging passwords
 console.log('User login:', { email, password })
@@ -501,24 +524,21 @@ console.log('User login:', { email })
 ### DO ✅
 
 **Use structured error handling:**
+
 ```typescript
 // Good: Structured error with context
 try {
   await processPayment(amount)
 } catch (error) {
   if (error instanceof PaymentError) {
-    return errorResponse(
-      'Payment failed',
-      'PAYMENT_ERROR',
-      400,
-      { reason: error.reason }
-    )
+    return errorResponse('Payment failed', 'PAYMENT_ERROR', 400, { reason: error.reason })
   }
   throw error // Re-throw unexpected errors
 }
 ```
 
 **Log errors with context:**
+
 ```typescript
 // Good: Contextual error logging
 catch (error) {
@@ -535,6 +555,7 @@ catch (error) {
 ### DON'T ❌
 
 **Never expose internal errors to users:**
+
 ```typescript
 // Bad: Exposing database errors
 catch (error) {
@@ -553,6 +574,7 @@ catch (error) {
 ```
 
 **Never suppress errors silently:**
+
 ```typescript
 // Bad: Silent failure
 try {
@@ -578,13 +600,14 @@ try {
 ### DO ✅
 
 **Write security-focused tests:**
+
 ```typescript
 // Good: Test authentication
 describe('POST /api/config', () => {
   it('requires authentication', async () => {
     const response = await fetch('/api/config', {
       method: 'POST',
-      body: JSON.stringify({ branding: { appName: 'Test' } })
+      body: JSON.stringify({ branding: { appName: 'Test' } }),
     })
     expect(response.status).toBe(401)
   })
@@ -593,7 +616,7 @@ describe('POST /api/config', () => {
     const response = await fetch('/api/config', {
       method: 'POST',
       headers: { Authorization: 'Bearer member-token' },
-      body: JSON.stringify({ branding: { appName: 'Test' } })
+      body: JSON.stringify({ branding: { appName: 'Test' } }),
     })
     expect(response.status).toBe(403)
   })
@@ -601,6 +624,7 @@ describe('POST /api/config', () => {
 ```
 
 **Test input validation:**
+
 ```typescript
 // Good: Test validation boundaries
 describe('Input Validation', () => {
@@ -618,17 +642,20 @@ describe('Input Validation', () => {
 ```
 
 **Test rate limiting:**
+
 ```typescript
 // Good: Verify rate limiting works
 describe('Rate Limiting', () => {
   it('blocks after limit exceeded', async () => {
     // Make 6 requests (limit is 5)
-    const requests = Array(6).fill(null).map(() =>
-      fetch('/api/auth/signin', {
-        method: 'POST',
-        body: JSON.stringify({ email: 'test@example.com', password: 'wrong' })
-      })
-    )
+    const requests = Array(6)
+      .fill(null)
+      .map(() =>
+        fetch('/api/auth/signin', {
+          method: 'POST',
+          body: JSON.stringify({ email: 'test@example.com', password: 'wrong' }),
+        })
+      )
     const responses = await Promise.all(requests)
     const lastResponse = responses[responses.length - 1]
     expect(lastResponse.status).toBe(429) // Too Many Requests
@@ -639,9 +666,12 @@ describe('Rate Limiting', () => {
 ### DON'T ❌
 
 **Never skip security tests:**
+
 ```typescript
 // Bad: Skipping security tests
-it.skip('SQL injection protection', () => { /* ... */ })
+it.skip('SQL injection protection', () => {
+  /* ... */
+})
 
 // Good: Fix the test or the code
 it('SQL injection protection', () => {
@@ -656,41 +686,49 @@ it('SQL injection protection', () => {
 ### Security Checklist for Pull Requests
 
 **Authentication & Authorization:**
+
 - [ ] All new endpoints have appropriate authentication
 - [ ] Role-based access control properly implemented
 - [ ] No authentication bypasses in conditional logic
 
 **Input Validation:**
+
 - [ ] All user input validated with Zod schemas
 - [ ] No direct use of `request.json()` without validation
 - [ ] File uploads properly validated
 
 **SQL & Database:**
+
 - [ ] All queries parameterized (no string concatenation)
 - [ ] No raw SQL with user input
 - [ ] GraphQL queries use variables, not inline values
 
 **Secrets & Configuration:**
+
 - [ ] No hardcoded secrets or API keys
 - [ ] Environment variables properly used
 - [ ] No secrets in logs or error messages
 
 **Error Handling:**
+
 - [ ] Errors don't expose sensitive information
 - [ ] Generic error messages for users
 - [ ] Detailed errors only in server logs
 
 **Dependencies:**
+
 - [ ] New dependencies security-scanned
 - [ ] No known vulnerabilities in new packages
 - [ ] Dependency versions locked
 
 **Frontend:**
+
 - [ ] No `dangerouslySetInnerHTML` without sanitization
 - [ ] User content properly escaped
 - [ ] No sensitive data in client-side storage
 
 **Testing:**
+
 - [ ] Security tests included for new features
 - [ ] Edge cases tested
 - [ ] Negative tests (invalid input) included
@@ -713,18 +751,21 @@ it('SQL injection protection', () => {
 ## Security Resources
 
 ### Documentation
+
 - [OWASP Top 10](https://owasp.org/www-project-top-ten/)
 - [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 - [Next.js Security Headers](https://nextjs.org/docs/advanced-features/security-headers)
 - [GraphQL Security Best Practices](https://graphql.org/learn/best-practices/)
 
 ### Tools
+
 - [npm audit](https://docs.npmjs.com/cli/v8/commands/npm-audit) - Dependency vulnerability scanning
 - [Snyk](https://snyk.io/) - Continuous security monitoring
 - [OWASP ZAP](https://www.zaproxy.org/) - Penetration testing
 - [SonarQube](https://www.sonarqube.org/) - Static code analysis
 
 ### Training
+
 - [OWASP WebGoat](https://owasp.org/www-project-webgoat/) - Security training
 - [PortSwigger Web Security Academy](https://portswigger.net/web-security) - Free courses
 - [HackerOne CTF](https://www.hackerone.com/for-hackers/hacker101) - Capture the Flag challenges

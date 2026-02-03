@@ -4,9 +4,9 @@
  * Manages analytics data, filters, and UI state for the analytics dashboard
  */
 
-import { create } from 'zustand';
-import { devtools } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { create } from 'zustand'
+import { devtools } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 import type {
   DateRange,
@@ -30,9 +30,11 @@ import type {
   ReportHistory,
   ExportFormat,
   AnalyticsSectionType,
-} from '@/lib/analytics/analytics-types';
+} from '@/lib/analytics/analytics-types'
 
-import { getAnalyticsAggregator } from '@/lib/analytics/analytics-aggregator';
+import { getAnalyticsAggregator } from '@/lib/analytics/analytics-aggregator'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -47,118 +49,118 @@ export type AnalyticsViewType =
   | 'files'
   | 'search'
   | 'bots'
-  | 'reports';
+  | 'reports'
 
 export interface AnalyticsState {
   // View State
-  currentView: AnalyticsViewType;
-  isLoading: boolean;
-  error: string | null;
-  lastUpdated: Date | null;
+  currentView: AnalyticsViewType
+  isLoading: boolean
+  error: string | null
+  lastUpdated: Date | null
 
   // Filters
-  dateRange: DateRange;
-  dateRangePreset: DateRangePreset;
-  granularity: TimeGranularity;
-  selectedChannelIds: string[];
-  selectedUserIds: string[];
-  includeBots: boolean;
+  dateRange: DateRange
+  dateRangePreset: DateRangePreset
+  granularity: TimeGranularity
+  selectedChannelIds: string[]
+  selectedUserIds: string[]
+  includeBots: boolean
 
   // Dashboard Data
-  dashboardData: DashboardData | null;
-  summary: AnalyticsSummary | null;
+  dashboardData: DashboardData | null
+  summary: AnalyticsSummary | null
 
   // Individual Section Data (for detailed views)
-  messageVolume: MessageVolumeData[];
-  userActivity: UserActivityData[];
-  channelActivity: ChannelActivityData[];
-  reactions: ReactionData[];
-  fileUploads: FileUploadData[];
-  searchQueries: SearchQueryData[];
-  peakHours: PeakHoursData[];
-  topMessages: TopMessageData[];
-  inactiveUsers: InactiveUserData[];
-  userGrowth: UserGrowthData[];
-  activeUsers: ActiveUsersData | null;
+  messageVolume: MessageVolumeData[]
+  userActivity: UserActivityData[]
+  channelActivity: ChannelActivityData[]
+  reactions: ReactionData[]
+  fileUploads: FileUploadData[]
+  searchQueries: SearchQueryData[]
+  peakHours: PeakHoursData[]
+  topMessages: TopMessageData[]
+  inactiveUsers: InactiveUserData[]
+  userGrowth: UserGrowthData[]
+  activeUsers: ActiveUsersData | null
 
   // Comparison Data
-  comparisonEnabled: boolean;
-  comparisonDateRange: DateRange | null;
-  comparisonData: DashboardData | null;
+  comparisonEnabled: boolean
+  comparisonDateRange: DateRange | null
+  comparisonData: DashboardData | null
 
   // Reports
-  scheduledReports: ScheduledReportConfig[];
-  reportHistory: ReportHistory[];
+  scheduledReports: ScheduledReportConfig[]
+  reportHistory: ReportHistory[]
 
   // Export State
-  isExporting: boolean;
-  exportProgress: number;
+  isExporting: boolean
+  exportProgress: number
 
   // UI State
-  sidebarCollapsed: boolean;
-  selectedChartType: 'line' | 'bar' | 'area';
-  showDataLabels: boolean;
+  sidebarCollapsed: boolean
+  selectedChartType: 'line' | 'bar' | 'area'
+  showDataLabels: boolean
 }
 
 export interface AnalyticsActions {
   // View Actions
-  setCurrentView: (view: AnalyticsViewType) => void;
+  setCurrentView: (view: AnalyticsViewType) => void
 
   // Filter Actions
-  setDateRange: (range: DateRange) => void;
-  setDateRangePreset: (preset: DateRangePreset) => void;
-  setGranularity: (granularity: TimeGranularity) => void;
-  setSelectedChannels: (channelIds: string[]) => void;
-  setSelectedUsers: (userIds: string[]) => void;
-  toggleIncludeBots: () => void;
-  resetFilters: () => void;
+  setDateRange: (range: DateRange) => void
+  setDateRangePreset: (preset: DateRangePreset) => void
+  setGranularity: (granularity: TimeGranularity) => void
+  setSelectedChannels: (channelIds: string[]) => void
+  setSelectedUsers: (userIds: string[]) => void
+  toggleIncludeBots: () => void
+  resetFilters: () => void
 
   // Data Actions
-  fetchDashboardData: () => Promise<void>;
-  fetchSectionData: (section: AnalyticsSectionType) => Promise<void>;
-  refreshData: () => Promise<void>;
-  clearData: () => void;
+  fetchDashboardData: () => Promise<void>
+  fetchSectionData: (section: AnalyticsSectionType) => Promise<void>
+  refreshData: () => Promise<void>
+  clearData: () => void
 
   // Comparison Actions
-  toggleComparison: () => void;
-  setComparisonDateRange: (range: DateRange | null) => void;
-  fetchComparisonData: () => Promise<void>;
+  toggleComparison: () => void
+  setComparisonDateRange: (range: DateRange | null) => void
+  fetchComparisonData: () => Promise<void>
 
   // Report Actions
-  addScheduledReport: (report: ScheduledReportConfig) => void;
-  updateScheduledReport: (id: string, updates: Partial<ScheduledReportConfig>) => void;
-  deleteScheduledReport: (id: string) => void;
-  addReportHistory: (history: ReportHistory) => void;
+  addScheduledReport: (report: ScheduledReportConfig) => void
+  updateScheduledReport: (id: string, updates: Partial<ScheduledReportConfig>) => void
+  deleteScheduledReport: (id: string) => void
+  addReportHistory: (history: ReportHistory) => void
 
   // Export Actions
-  exportData: (format: ExportFormat, sections: AnalyticsSectionType[]) => Promise<void>;
-  setExportProgress: (progress: number) => void;
+  exportData: (format: ExportFormat, sections: AnalyticsSectionType[]) => Promise<void>
+  setExportProgress: (progress: number) => void
 
   // UI Actions
-  toggleSidebar: () => void;
-  setChartType: (type: 'line' | 'bar' | 'area') => void;
-  toggleDataLabels: () => void;
+  toggleSidebar: () => void
+  setChartType: (type: 'line' | 'bar' | 'area') => void
+  toggleDataLabels: () => void
 
   // Error Handling
-  setError: (error: string | null) => void;
-  clearError: () => void;
+  setError: (error: string | null) => void
+  clearError: () => void
 }
 
-export type AnalyticsStore = AnalyticsState & AnalyticsActions;
+export type AnalyticsStore = AnalyticsState & AnalyticsActions
 
 // ============================================================================
 // Initial State
 // ============================================================================
 
 const getDefaultDateRange = (): DateRange => {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   return {
     start: new Date(today.getTime() - 30 * 24 * 60 * 60 * 1000),
     end: new Date(today.getTime() + 24 * 60 * 60 * 1000),
     preset: 'last30days',
-  };
-};
+  }
+}
 
 const initialState: AnalyticsState = {
   // View State
@@ -209,7 +211,7 @@ const initialState: AnalyticsState = {
   sidebarCollapsed: false,
   selectedChartType: 'area',
   showDataLabels: false,
-};
+}
 
 // ============================================================================
 // Store
@@ -224,7 +226,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setCurrentView: (view) =>
         set(
           (state) => {
-            state.currentView = view;
+            state.currentView = view
           },
           false,
           'analytics/setCurrentView'
@@ -234,9 +236,9 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setDateRange: (range) =>
         set(
           (state) => {
-            state.dateRange = range;
+            state.dateRange = range
             if (range.preset) {
-              state.dateRangePreset = range.preset;
+              state.dateRangePreset = range.preset
             }
           },
           false,
@@ -246,10 +248,10 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setDateRangePreset: (preset) =>
         set(
           (state) => {
-            state.dateRangePreset = preset;
-            const aggregator = getAnalyticsAggregator();
+            state.dateRangePreset = preset
+            const aggregator = getAnalyticsAggregator()
             if (preset !== 'custom') {
-              state.dateRange = aggregator.getDateRangePreset(preset);
+              state.dateRange = aggregator.getDateRangePreset(preset)
             }
           },
           false,
@@ -259,7 +261,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setGranularity: (granularity) =>
         set(
           (state) => {
-            state.granularity = granularity;
+            state.granularity = granularity
           },
           false,
           'analytics/setGranularity'
@@ -268,7 +270,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setSelectedChannels: (channelIds) =>
         set(
           (state) => {
-            state.selectedChannelIds = channelIds;
+            state.selectedChannelIds = channelIds
           },
           false,
           'analytics/setSelectedChannels'
@@ -277,7 +279,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setSelectedUsers: (userIds) =>
         set(
           (state) => {
-            state.selectedUserIds = userIds;
+            state.selectedUserIds = userIds
           },
           false,
           'analytics/setSelectedUsers'
@@ -286,7 +288,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       toggleIncludeBots: () =>
         set(
           (state) => {
-            state.includeBots = !state.includeBots;
+            state.includeBots = !state.includeBots
           },
           false,
           'analytics/toggleIncludeBots'
@@ -295,12 +297,12 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       resetFilters: () =>
         set(
           (state) => {
-            state.dateRange = getDefaultDateRange();
-            state.dateRangePreset = 'last30days';
-            state.granularity = 'day';
-            state.selectedChannelIds = [];
-            state.selectedUserIds = [];
-            state.includeBots = false;
+            state.dateRange = getDefaultDateRange()
+            state.dateRangePreset = 'last30days'
+            state.granularity = 'day'
+            state.selectedChannelIds = []
+            state.selectedUserIds = []
+            state.includeBots = false
           },
           false,
           'analytics/resetFilters'
@@ -308,191 +310,193 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
 
       // Data Actions
       fetchDashboardData: async () => {
-        const { dateRange, granularity, selectedChannelIds, selectedUserIds, includeBots } = get();
+        const { dateRange, granularity, selectedChannelIds, selectedUserIds, includeBots } = get()
 
         set(
           (state) => {
-            state.isLoading = true;
-            state.error = null;
+            state.isLoading = true
+            state.error = null
           },
           false,
           'analytics/fetchDashboardData/start'
-        );
+        )
 
         try {
-          const aggregator = getAnalyticsAggregator();
+          const aggregator = getAnalyticsAggregator()
           const filters: AnalyticsFilters = {
             dateRange,
             granularity,
             channelIds: selectedChannelIds.length > 0 ? selectedChannelIds : undefined,
             userIds: selectedUserIds.length > 0 ? selectedUserIds : undefined,
             includeBots,
-          };
+          }
 
-          const data = await aggregator.aggregateDashboardData(filters);
+          const data = await aggregator.aggregateDashboardData(filters)
 
           set(
             (state) => {
-              state.dashboardData = data;
-              state.summary = data.summary;
-              state.messageVolume = data.messageVolume;
-              state.userActivity = data.topUsers;
-              state.channelActivity = data.channelActivity;
-              state.reactions = data.reactions;
-              state.fileUploads = data.fileUploads;
-              state.peakHours = data.peakHours;
-              state.topMessages = data.topMessages;
-              state.inactiveUsers = data.inactiveUsers;
-              state.userGrowth = data.userGrowth;
-              state.activeUsers = data.activeUsers;
-              state.isLoading = false;
-              state.lastUpdated = new Date();
+              state.dashboardData = data
+              state.summary = data.summary
+              state.messageVolume = data.messageVolume
+              state.userActivity = data.topUsers
+              state.channelActivity = data.channelActivity
+              state.reactions = data.reactions
+              state.fileUploads = data.fileUploads
+              state.peakHours = data.peakHours
+              state.topMessages = data.topMessages
+              state.inactiveUsers = data.inactiveUsers
+              state.userGrowth = data.userGrowth
+              state.activeUsers = data.activeUsers
+              state.isLoading = false
+              state.lastUpdated = new Date()
             },
             false,
             'analytics/fetchDashboardData/success'
-          );
+          )
         } catch (error) {
           set(
             (state) => {
-              state.isLoading = false;
-              state.error = error instanceof Error ? error.message : 'Failed to fetch analytics data';
+              state.isLoading = false
+              state.error =
+                error instanceof Error ? error.message : 'Failed to fetch analytics data'
             },
             false,
             'analytics/fetchDashboardData/error'
-          );
+          )
         }
       },
 
       fetchSectionData: async (section) => {
-        const { dateRange, granularity, selectedChannelIds, selectedUserIds, includeBots } = get();
+        const { dateRange, granularity, selectedChannelIds, selectedUserIds, includeBots } = get()
 
         set(
           (state) => {
-            state.isLoading = true;
-            state.error = null;
+            state.isLoading = true
+            state.error = null
           },
           false,
           `analytics/fetchSectionData/${section}/start`
-        );
+        )
 
         try {
-          const aggregator = getAnalyticsAggregator();
+          const aggregator = getAnalyticsAggregator()
           const filters: AnalyticsFilters = {
             dateRange,
             granularity,
             channelIds: selectedChannelIds.length > 0 ? selectedChannelIds : undefined,
             userIds: selectedUserIds.length > 0 ? selectedUserIds : undefined,
             includeBots,
-          };
+          }
 
           switch (section) {
             case 'messages':
-              const messageData = await aggregator.aggregateMessageData(filters);
+              const messageData = await aggregator.aggregateMessageData(filters)
               set(
                 (state) => {
-                  state.messageVolume = messageData.volume;
-                  state.topMessages = messageData.topMessages;
+                  state.messageVolume = messageData.volume
+                  state.topMessages = messageData.topMessages
                 },
                 false,
                 'analytics/fetchSectionData/messages'
-              );
-              break;
+              )
+              break
 
             case 'users':
-              const userData = await aggregator.aggregateUserData(filters);
+              const userData = await aggregator.aggregateUserData(filters)
               set(
                 (state) => {
-                  state.userActivity = userData.topUsers;
-                  state.inactiveUsers = userData.inactiveUsers;
-                  state.userGrowth = userData.growth;
-                  state.activeUsers = userData.activeUsers;
+                  state.userActivity = userData.topUsers
+                  state.inactiveUsers = userData.inactiveUsers
+                  state.userGrowth = userData.growth
+                  state.activeUsers = userData.activeUsers
                 },
                 false,
                 'analytics/fetchSectionData/users'
-              );
-              break;
+              )
+              break
 
             case 'channels':
-              const channelData = await aggregator.aggregateChannelData(filters);
+              const channelData = await aggregator.aggregateChannelData(filters)
               set(
                 (state) => {
-                  state.channelActivity = channelData.channels;
+                  state.channelActivity = channelData.channels
                 },
                 false,
                 'analytics/fetchSectionData/channels'
-              );
-              break;
+              )
+              break
 
             case 'reactions':
-              const reactionData = await aggregator.aggregateReactionData(filters);
+              const reactionData = await aggregator.aggregateReactionData(filters)
               set(
                 (state) => {
-                  state.reactions = reactionData.reactions;
+                  state.reactions = reactionData.reactions
                 },
                 false,
                 'analytics/fetchSectionData/reactions'
-              );
-              break;
+              )
+              break
 
             case 'files':
-              const fileData = await aggregator.aggregateFileData(filters);
+              const fileData = await aggregator.aggregateFileData(filters)
               set(
                 (state) => {
-                  state.fileUploads = fileData.uploads;
+                  state.fileUploads = fileData.uploads
                 },
                 false,
                 'analytics/fetchSectionData/files'
-              );
-              break;
+              )
+              break
 
             case 'search':
-              const searchData = await aggregator.aggregateSearchData(filters);
+              const searchData = await aggregator.aggregateSearchData(filters)
               set(
                 (state) => {
-                  state.searchQueries = searchData.topQueries;
+                  state.searchQueries = searchData.topQueries
                 },
                 false,
                 'analytics/fetchSectionData/search'
-              );
-              break;
+              )
+              break
 
             case 'peakHours':
-              const peakData = await aggregator.aggregatePeakHoursData(filters);
+              const peakData = await aggregator.aggregatePeakHoursData(filters)
               set(
                 (state) => {
-                  state.peakHours = peakData.hours;
+                  state.peakHours = peakData.hours
                 },
                 false,
                 'analytics/fetchSectionData/peakHours'
-              );
-              break;
+              )
+              break
           }
 
           set(
             (state) => {
-              state.isLoading = false;
-              state.lastUpdated = new Date();
+              state.isLoading = false
+              state.lastUpdated = new Date()
             },
             false,
             `analytics/fetchSectionData/${section}/complete`
-          );
+          )
         } catch (error) {
           set(
             (state) => {
-              state.isLoading = false;
-              state.error = error instanceof Error ? error.message : `Failed to fetch ${section} data`;
+              state.isLoading = false
+              state.error =
+                error instanceof Error ? error.message : `Failed to fetch ${section} data`
             },
             false,
             `analytics/fetchSectionData/${section}/error`
-          );
+          )
         }
       },
 
       refreshData: async () => {
-        const { currentView, fetchDashboardData, fetchSectionData } = get();
+        const { currentView, fetchDashboardData, fetchSectionData } = get()
 
         if (currentView === 'overview') {
-          await fetchDashboardData();
+          await fetchDashboardData()
         } else {
           const sectionMap: Record<AnalyticsViewType, AnalyticsSectionType | null> = {
             overview: null,
@@ -504,11 +508,11 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
             search: 'search',
             bots: 'bots',
             reports: null,
-          };
+          }
 
-          const section = sectionMap[currentView];
+          const section = sectionMap[currentView]
           if (section) {
-            await fetchSectionData(section);
+            await fetchSectionData(section)
           }
         }
       },
@@ -516,20 +520,20 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       clearData: () =>
         set(
           (state) => {
-            state.dashboardData = null;
-            state.summary = null;
-            state.messageVolume = [];
-            state.userActivity = [];
-            state.channelActivity = [];
-            state.reactions = [];
-            state.fileUploads = [];
-            state.searchQueries = [];
-            state.peakHours = [];
-            state.topMessages = [];
-            state.inactiveUsers = [];
-            state.userGrowth = [];
-            state.activeUsers = null;
-            state.lastUpdated = null;
+            state.dashboardData = null
+            state.summary = null
+            state.messageVolume = []
+            state.userActivity = []
+            state.channelActivity = []
+            state.reactions = []
+            state.fileUploads = []
+            state.searchQueries = []
+            state.peakHours = []
+            state.topMessages = []
+            state.inactiveUsers = []
+            state.userGrowth = []
+            state.activeUsers = null
+            state.lastUpdated = null
           },
           false,
           'analytics/clearData'
@@ -539,14 +543,14 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       toggleComparison: () =>
         set(
           (state) => {
-            state.comparisonEnabled = !state.comparisonEnabled;
+            state.comparisonEnabled = !state.comparisonEnabled
             if (!state.comparisonEnabled) {
-              state.comparisonDateRange = null;
-              state.comparisonData = null;
+              state.comparisonDateRange = null
+              state.comparisonData = null
             } else {
               // Default to previous period
-              const aggregator = getAnalyticsAggregator();
-              state.comparisonDateRange = aggregator.getPreviousDateRange(state.dateRange);
+              const aggregator = getAnalyticsAggregator()
+              state.comparisonDateRange = aggregator.getPreviousDateRange(state.dateRange)
             }
           },
           false,
@@ -556,54 +560,61 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setComparisonDateRange: (range) =>
         set(
           (state) => {
-            state.comparisonDateRange = range;
+            state.comparisonDateRange = range
           },
           false,
           'analytics/setComparisonDateRange'
         ),
 
       fetchComparisonData: async () => {
-        const { comparisonDateRange, granularity, selectedChannelIds, selectedUserIds, includeBots } = get();
+        const {
+          comparisonDateRange,
+          granularity,
+          selectedChannelIds,
+          selectedUserIds,
+          includeBots,
+        } = get()
 
-        if (!comparisonDateRange) return;
+        if (!comparisonDateRange) return
 
         set(
           (state) => {
-            state.isLoading = true;
+            state.isLoading = true
           },
           false,
           'analytics/fetchComparisonData/start'
-        );
+        )
 
         try {
-          const aggregator = getAnalyticsAggregator();
+          const aggregator = getAnalyticsAggregator()
           const filters: AnalyticsFilters = {
             dateRange: comparisonDateRange,
             granularity,
             channelIds: selectedChannelIds.length > 0 ? selectedChannelIds : undefined,
             userIds: selectedUserIds.length > 0 ? selectedUserIds : undefined,
             includeBots,
-          };
+          }
 
-          const data = await aggregator.aggregateDashboardData(filters);
+          const data = await aggregator.aggregateDashboardData(filters)
 
           set(
             (state) => {
-              state.comparisonData = data;
-              state.isLoading = false;
+              state.comparisonData = data
+              state.isLoading = false
             },
             false,
             'analytics/fetchComparisonData/success'
-          );
+          )
         } catch (error) {
           set(
             (state) => {
-              state.isLoading = false;
-              state.error = error instanceof Error ? error.message : 'Failed to fetch comparison data';
+              state.isLoading = false
+              state.error =
+                error instanceof Error ? error.message : 'Failed to fetch comparison data'
             },
             false,
             'analytics/fetchComparisonData/error'
-          );
+          )
         }
       },
 
@@ -611,7 +622,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       addScheduledReport: (report) =>
         set(
           (state) => {
-            state.scheduledReports.push(report);
+            state.scheduledReports.push(report)
           },
           false,
           'analytics/addScheduledReport'
@@ -620,9 +631,9 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       updateScheduledReport: (id, updates) =>
         set(
           (state) => {
-            const index = state.scheduledReports.findIndex((r) => r.id === id);
+            const index = state.scheduledReports.findIndex((r) => r.id === id)
             if (index !== -1) {
-              Object.assign(state.scheduledReports[index], updates);
+              Object.assign(state.scheduledReports[index], updates)
             }
           },
           false,
@@ -632,7 +643,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       deleteScheduledReport: (id) =>
         set(
           (state) => {
-            state.scheduledReports = state.scheduledReports.filter((r) => r.id !== id);
+            state.scheduledReports = state.scheduledReports.filter((r) => r.id !== id)
           },
           false,
           'analytics/deleteScheduledReport'
@@ -641,10 +652,10 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       addReportHistory: (history) =>
         set(
           (state) => {
-            state.reportHistory.unshift(history);
+            state.reportHistory.unshift(history)
             // Keep only last 100 entries
             if (state.reportHistory.length > 100) {
-              state.reportHistory = state.reportHistory.slice(0, 100);
+              state.reportHistory = state.reportHistory.slice(0, 100)
             }
           },
           false,
@@ -653,27 +664,27 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
 
       // Export Actions
       exportData: async (format, sections) => {
-        const { dashboardData, dateRange, setExportProgress } = get();
+        const { dashboardData, dateRange, setExportProgress } = get()
 
         if (!dashboardData) {
-          console.warn('No data to export');
-          return;
+          logger.warn('No data to export')
+          return
         }
 
         set(
           (state) => {
-            state.isExporting = true;
-            state.exportProgress = 0;
+            state.isExporting = true
+            state.exportProgress = 0
           },
           false,
           'analytics/exportData/start'
-        );
+        )
 
         try {
           // Dynamic import to avoid bundling export module in main chunk
-          const { exportFullReport } = await import('@/lib/analytics/analytics-export');
+          const { exportFullReport } = await import('@/lib/analytics/analytics-export')
 
-          setExportProgress(30);
+          setExportProgress(30)
 
           const reportData = {
             summary: dashboardData.summary,
@@ -688,44 +699,44 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
             inactiveUsers: dashboardData.inactiveUsers,
             userGrowth: dashboardData.userGrowth,
             dateRange,
-          };
+          }
 
-          setExportProgress(60);
+          setExportProgress(60)
 
           exportFullReport(reportData, {
             format,
             sections,
             dateRange,
             includeCharts: false,
-          });
+          })
 
-          setExportProgress(100);
+          setExportProgress(100)
 
           set(
             (state) => {
-              state.isExporting = false;
-              state.exportProgress = 0;
+              state.isExporting = false
+              state.exportProgress = 0
             },
             false,
             'analytics/exportData/success'
-          );
+          )
         } catch (error) {
           set(
             (state) => {
-              state.isExporting = false;
-              state.exportProgress = 0;
-              state.error = error instanceof Error ? error.message : 'Export failed';
+              state.isExporting = false
+              state.exportProgress = 0
+              state.error = error instanceof Error ? error.message : 'Export failed'
             },
             false,
             'analytics/exportData/error'
-          );
+          )
         }
       },
 
       setExportProgress: (progress) =>
         set(
           (state) => {
-            state.exportProgress = progress;
+            state.exportProgress = progress
           },
           false,
           'analytics/setExportProgress'
@@ -735,7 +746,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       toggleSidebar: () =>
         set(
           (state) => {
-            state.sidebarCollapsed = !state.sidebarCollapsed;
+            state.sidebarCollapsed = !state.sidebarCollapsed
           },
           false,
           'analytics/toggleSidebar'
@@ -744,7 +755,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setChartType: (type) =>
         set(
           (state) => {
-            state.selectedChartType = type;
+            state.selectedChartType = type
           },
           false,
           'analytics/setChartType'
@@ -753,7 +764,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       toggleDataLabels: () =>
         set(
           (state) => {
-            state.showDataLabels = !state.showDataLabels;
+            state.showDataLabels = !state.showDataLabels
           },
           false,
           'analytics/toggleDataLabels'
@@ -763,7 +774,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       setError: (error) =>
         set(
           (state) => {
-            state.error = error;
+            state.error = error
           },
           false,
           'analytics/setError'
@@ -772,7 +783,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
       clearError: () =>
         set(
           (state) => {
-            state.error = null;
+            state.error = null
           },
           false,
           'analytics/clearError'
@@ -780,7 +791,7 @@ export const useAnalyticsStore = create<AnalyticsStore>()(
     })),
     { name: 'analytics-store' }
   )
-);
+)
 
 // ============================================================================
 // Selectors
@@ -792,19 +803,14 @@ export const selectFilters = (state: AnalyticsStore): AnalyticsFilters => ({
   channelIds: state.selectedChannelIds.length > 0 ? state.selectedChannelIds : undefined,
   userIds: state.selectedUserIds.length > 0 ? state.selectedUserIds : undefined,
   includeBots: state.includeBots,
-});
+})
 
-export const selectIsDataLoaded = (state: AnalyticsStore): boolean =>
-  state.dashboardData !== null;
+export const selectIsDataLoaded = (state: AnalyticsStore): boolean => state.dashboardData !== null
 
-export const selectHasError = (state: AnalyticsStore): boolean =>
-  state.error !== null;
+export const selectHasError = (state: AnalyticsStore): boolean => state.error !== null
 
-export const selectMessageStats = (state: AnalyticsStore) =>
-  state.summary?.messages || null;
+export const selectMessageStats = (state: AnalyticsStore) => state.summary?.messages || null
 
-export const selectUserStats = (state: AnalyticsStore) =>
-  state.summary?.users || null;
+export const selectUserStats = (state: AnalyticsStore) => state.summary?.users || null
 
-export const selectChannelStats = (state: AnalyticsStore) =>
-  state.summary?.channels || null;
+export const selectChannelStats = (state: AnalyticsStore) => state.summary?.channels || null

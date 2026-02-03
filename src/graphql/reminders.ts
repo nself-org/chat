@@ -221,11 +221,7 @@ export const GET_REMINDERS = gql`
  * Get upcoming reminders (pending status, sorted by remind_at)
  */
 export const GET_UPCOMING_REMINDERS = gql`
-  query GetUpcomingReminders(
-    $userId: uuid!
-    $fromDate: timestamptz!
-    $limit: Int = 20
-  ) {
+  query GetUpcomingReminders($userId: uuid!, $fromDate: timestamptz!, $limit: Int = 20) {
     nchat_reminders(
       where: {
         user_id: { _eq: $userId }
@@ -245,16 +241,9 @@ export const GET_UPCOMING_REMINDERS = gql`
  * Get past/completed reminders
  */
 export const GET_PAST_REMINDERS = gql`
-  query GetPastReminders(
-    $userId: uuid!
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetPastReminders($userId: uuid!, $limit: Int = 50, $offset: Int = 0) {
     nchat_reminders(
-      where: {
-        user_id: { _eq: $userId }
-        status: { _in: ["completed", "dismissed"] }
-      }
+      where: { user_id: { _eq: $userId }, status: { _in: ["completed", "dismissed"] } }
       order_by: { completed_at: desc_nulls_last, remind_at: desc }
       limit: $limit
       offset: $offset
@@ -320,12 +309,7 @@ export const GET_MESSAGE_REMINDER = gql`
  */
 export const GET_REMINDERS_COUNT = gql`
   query GetRemindersCount($userId: uuid!) {
-    nchat_reminders_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        status: { _eq: "pending" }
-      }
-    ) {
+    nchat_reminders_aggregate(where: { user_id: { _eq: $userId }, status: { _eq: "pending" } }) {
       aggregate {
         count
       }
@@ -339,11 +323,7 @@ export const GET_REMINDERS_COUNT = gql`
 export const GET_DUE_REMINDERS = gql`
   query GetDueReminders($userId: uuid!, $now: timestamptz!) {
     nchat_reminders(
-      where: {
-        user_id: { _eq: $userId }
-        status: { _eq: "pending" }
-        remind_at: { _lte: $now }
-      }
+      where: { user_id: { _eq: $userId }, status: { _eq: "pending" }, remind_at: { _lte: $now } }
       order_by: { remind_at: asc }
     ) {
       ...Reminder
@@ -443,11 +423,7 @@ export const COMPLETE_REMINDER = gql`
   mutation CompleteReminder($id: uuid!) {
     update_nchat_reminders_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        status: "completed"
-        completed_at: "now()"
-        updated_at: "now()"
-      }
+      _set: { status: "completed", completed_at: "now()", updated_at: "now()" }
     ) {
       ...Reminder
     }
@@ -462,10 +438,7 @@ export const DISMISS_REMINDER = gql`
   mutation DismissReminder($id: uuid!) {
     update_nchat_reminders_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        status: "dismissed"
-        updated_at: "now()"
-      }
+      _set: { status: "dismissed", updated_at: "now()" }
     ) {
       id
       status
@@ -487,9 +460,7 @@ export const SNOOZE_REMINDER = gql`
         remind_at: $snoozedUntil
         updated_at: "now()"
       }
-      _inc: {
-        snooze_count: 1
-      }
+      _inc: { snooze_count: 1 }
     ) {
       ...Reminder
     }
@@ -504,11 +475,7 @@ export const UNSNOOZE_REMINDER = gql`
   mutation UnsnoozeReminder($id: uuid!) {
     update_nchat_reminders_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        status: "pending"
-        snoozed_until: null
-        updated_at: "now()"
-      }
+      _set: { status: "pending", snoozed_until: null, updated_at: "now()" }
     ) {
       ...Reminder
     }
@@ -537,11 +504,7 @@ export const BULK_COMPLETE_REMINDERS = gql`
   mutation BulkCompleteReminders($ids: [uuid!]!) {
     update_nchat_reminders(
       where: { id: { _in: $ids }, status: { _eq: "pending" } }
-      _set: {
-        status: "completed"
-        completed_at: "now()"
-        updated_at: "now()"
-      }
+      _set: { status: "completed", completed_at: "now()", updated_at: "now()" }
     ) {
       affected_rows
       returning {
@@ -564,11 +527,7 @@ export const BULK_COMPLETE_REMINDERS = gql`
 export const REMINDER_DUE_SUBSCRIPTION = gql`
   subscription ReminderDue($userId: uuid!, $now: timestamptz!) {
     nchat_reminders(
-      where: {
-        user_id: { _eq: $userId }
-        status: { _eq: "pending" }
-        remind_at: { _lte: $now }
-      }
+      where: { user_id: { _eq: $userId }, status: { _eq: "pending" }, remind_at: { _lte: $now } }
       order_by: { remind_at: asc }
     ) {
       ...Reminder
@@ -583,10 +542,7 @@ export const REMINDER_DUE_SUBSCRIPTION = gql`
 export const REMINDERS_SUBSCRIPTION = gql`
   subscription RemindersSubscription($userId: uuid!) {
     nchat_reminders(
-      where: {
-        user_id: { _eq: $userId }
-        status: { _eq: "pending" }
-      }
+      where: { user_id: { _eq: $userId }, status: { _eq: "pending" } }
       order_by: { remind_at: asc }
     ) {
       ...Reminder

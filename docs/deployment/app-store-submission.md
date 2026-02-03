@@ -9,12 +9,14 @@
 ## Quick Reference
 
 **Timeline:**
+
 - Preparation: 2-4 hours
 - Upload: 15-30 minutes
 - Review: 1-3 days (typical)
 - Release: Immediate or scheduled
 
 **Checklist:**
+
 - [ ] App built and tested
 - [ ] Screenshots captured (all sizes)
 - [ ] App description written
@@ -31,6 +33,7 @@
 ### 1. App Store Connect Setup
 
 **Required Information:**
+
 - Apple Developer account ($99/year)
 - App ID: `io.nself.chat`
 - App name: nChat
@@ -71,6 +74,7 @@
 ### Required Sizes
 
 **iPhone:**
+
 1. **6.7" Display** (iPhone 14 Pro Max, 15 Pro Max)
    - Size: 1290 × 2796 pixels
    - Required: 3-10 screenshots
@@ -87,6 +91,7 @@
    - Priority: ⭐
 
 **iPad:**
+
 1. **12.9" iPad Pro** (3rd gen and later)
    - Size: 2048 × 2732 pixels
    - Optional but recommended
@@ -263,11 +268,13 @@ https://nchat.io/privacy
 **Maximum:** 100 characters (including commas)
 
 **Suggested Keywords:**
+
 ```
 chat, messaging, team, communication, slack, discord, telegram, group chat, collaboration, workspace, channels, dm, voice messages, file sharing
 ```
 
 **Tips:**
+
 - No spaces after commas
 - Use lowercase
 - Research competitor keywords
@@ -281,11 +288,13 @@ chat, messaging, team, communication, slack, discord, telegram, group chat, coll
 **Limit:** 170 characters
 
 **Example:**
+
 ```
 NEW in v0.8.0: Native iOS app with offline mode, background sync, voice messages, and biometric security! Download now.
 ```
 
 **Tips:**
+
 - Update with each version
 - Highlight latest features
 - Visible without update
@@ -356,6 +365,7 @@ Server: https://demo.nchat.io
 ```
 
 **Pre-populate with:**
+
 - 3-5 channels with sample messages
 - Sample files and images
 - Example voice messages
@@ -417,9 +427,11 @@ Thank you!
 ✅ Yes
 
 **Which exemption?**
+
 - (e) Use of encryption limited to authentication, digital signature, decryption of data or files, or standard encryption
 
 **Explanation:**
+
 ```
 nChat uses standard HTTPS/TLS encryption for network communications and standard iOS encryption APIs for local data storage. It does not implement any proprietary or non-standard encryption algorithms.
 
@@ -439,12 +451,15 @@ All encryption is standard and exempt under Category 5, Part 2.
 ### Age Rating Questionnaire
 
 **Unrestricted Web Access:**
+
 - [ ] No
 
 **Simulated Gambling:**
+
 - [ ] No
 
 **Frequent/Intense:**
+
 - Cartoon or Fantasy Violence: [ ] No
 - Realistic Violence: [ ] No
 - Prolonged Graphic or Sadistic Violence: [ ] No
@@ -455,9 +470,11 @@ All encryption is standard and exempt under Category 5, Part 2.
 - Alcohol, Tobacco, or Drug Use: [ ] No
 
 **Infrequent/Mild:**
+
 - All of above: [ ] No
 
 **Medical/Treatment Information:**
+
 - [ ] No
 
 **Expected Rating:** 4+
@@ -598,11 +615,13 @@ nChat Team
 ## Expedited Review
 
 **When to request:**
+
 - Critical bug fix
 - Security vulnerability
 - Time-sensitive feature
 
 **How to request:**
+
 1. Submit app normally
 2. Wait 24 hours
 3. Visit App Store Connect
@@ -610,6 +629,7 @@ nChat Team
 5. Explain urgency
 
 **Example:**
+
 ```
 Reason for Expedite Request:
 
@@ -633,16 +653,19 @@ Thank you for your consideration.
 ### Release Strategy
 
 **Option 1: Immediate Release**
+
 - Release as soon as approved
 - Maximum speed to users
 - Less control over timing
 
 **Option 2: Scheduled Release**
+
 - Set specific date/time
 - Coordinate with marketing
 - Global time zone considerations
 
 **Option 3: Manual Release**
+
 - Release when ready
 - Full control
 - Can delay if needed
@@ -650,12 +673,14 @@ Thank you for your consideration.
 ### Post-Release
 
 1. **Monitor Crash Reports**
+
    ```
    App Store Connect → Analytics → Crashes
    Sentry dashboard for detailed reports
    ```
 
 2. **Monitor Ratings/Reviews**
+
    ```
    App Store Connect → Ratings and Reviews
    Respond to reviews within 48h
@@ -663,6 +688,7 @@ Thank you for your consideration.
    ```
 
 3. **Track Analytics**
+
    ```
    App Store Connect → Analytics → Metrics
    Firebase Analytics for detailed user behavior
@@ -688,6 +714,7 @@ Thank you for your consideration.
 ## Support
 
 **Questions about submission?**
+
 - Email: appstore@nself.org
 - Slack: #ios-app-store
 - Docs: https://docs.nchat.io/deployment/ios

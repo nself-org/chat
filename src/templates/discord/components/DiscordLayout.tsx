@@ -43,10 +43,7 @@ export function DiscordLayout({
 }: DiscordLayoutProps) {
   return (
     <div
-      className={cn(
-        'discord-template flex h-screen w-screen overflow-hidden',
-        className
-      )}
+      className={cn('discord-template flex h-screen w-screen overflow-hidden', className)}
       style={{
         fontFamily: '"gg sans", "Noto Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
         backgroundColor: discordColors.gray700,
@@ -55,7 +52,7 @@ export function DiscordLayout({
       {/* Server List (Guild Bar) */}
       {serverList && (
         <aside
-          className="flex-shrink-0 flex flex-col overflow-y-auto"
+          className="flex flex-shrink-0 flex-col overflow-y-auto"
           style={{
             width: discordLayout.serverListWidth,
             backgroundColor: discordColors.gray850,
@@ -68,7 +65,7 @@ export function DiscordLayout({
       {/* Channel Sidebar */}
       {channelSidebar && (
         <aside
-          className="flex-shrink-0 flex flex-col"
+          className="flex flex-shrink-0 flex-col"
           style={{
             width: discordLayout.channelListWidth,
             backgroundColor: discordColors.gray750,
@@ -79,7 +76,7 @@ export function DiscordLayout({
       )}
 
       {/* Main Content Area */}
-      <div className="flex flex-col flex-1 min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Header */}
         {header && (
           <header
@@ -94,10 +91,10 @@ export function DiscordLayout({
         )}
 
         {/* Content + Member List */}
-        <div className="flex flex-1 min-h-0">
+        <div className="flex min-h-0 flex-1">
           {/* Main Chat Area */}
           <main
-            className="flex-1 flex flex-col min-w-0"
+            className="flex min-w-0 flex-1 flex-col"
             style={{ backgroundColor: discordColors.gray700 }}
           >
             {children}

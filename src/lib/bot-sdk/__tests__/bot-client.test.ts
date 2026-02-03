@@ -544,7 +544,10 @@ describe('BotClient', () => {
     it('should handle thread replies', async () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        text: () => Promise.resolve(JSON.stringify({ messageId: 'msg-125', channelId: 'channel-1', timestamp: '' })),
+        text: () =>
+          Promise.resolve(
+            JSON.stringify({ messageId: 'msg-125', channelId: 'channel-1', timestamp: '' })
+          ),
       })
 
       await client.sendMessage({
@@ -568,7 +571,10 @@ describe('BotClient', () => {
       for (let i = 0; i < 50; i++) {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          text: () => Promise.resolve(JSON.stringify({ messageId: `msg-${i}`, channelId: 'ch', timestamp: '' })),
+          text: () =>
+            Promise.resolve(
+              JSON.stringify({ messageId: `msg-${i}`, channelId: 'ch', timestamp: '' })
+            ),
         })
         await client.sendMessage({ channelId: 'ch', message: 'test' })
       }
@@ -813,7 +819,10 @@ describe('BotClient', () => {
       for (let i = 0; i < 10; i++) {
         mockFetch.mockResolvedValueOnce({
           ok: true,
-          text: () => Promise.resolve(JSON.stringify({ messageId: `msg-${i}`, channelId: 'ch', timestamp: '' })),
+          text: () =>
+            Promise.resolve(
+              JSON.stringify({ messageId: `msg-${i}`, channelId: 'ch', timestamp: '' })
+            ),
         })
         await client.sendMessage({ channelId: 'ch', message: 'test' })
       }

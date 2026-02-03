@@ -60,14 +60,14 @@ export function fuzzyScore(query: string, target: string): number {
 
   // Starts with query (high priority)
   if (lowerTarget.startsWith(lowerQuery)) {
-    return 0.9 + (0.09 * query.length / target.length)
+    return 0.9 + (0.09 * query.length) / target.length
   }
 
   // Contains query
   if (lowerTarget.includes(lowerQuery)) {
     const position = lowerTarget.indexOf(lowerQuery)
     // Earlier position = higher score
-    return 0.5 + (0.4 * (1 - position / target.length))
+    return 0.5 + 0.4 * (1 - position / target.length)
   }
 
   // Word boundary match
@@ -94,7 +94,7 @@ export function fuzzyScore(query: string, target: string): number {
   }
 
   if (queryIndex === lowerQuery.length) {
-    const baseScore = 0.2 + (consecutiveBonus / query.length)
+    const baseScore = 0.2 + consecutiveBonus / query.length
     return Math.min(baseScore, 0.39)
   }
 
@@ -222,11 +222,7 @@ export function filterGroupMentions(
 
   if (permissions.canMentionHere) {
     const here = GROUP_MENTIONS.here
-    if (
-      !query ||
-      here.label.toLowerCase().includes(lowerQuery) ||
-      'here'.includes(lowerQuery)
-    ) {
+    if (!query || here.label.toLowerCase().includes(lowerQuery) || 'here'.includes(lowerQuery)) {
       groups.push(here)
     }
   }
@@ -252,9 +248,7 @@ export function filterGroupMentions(
 /**
  * Convert a user to a mention suggestion
  */
-export function userToSuggestion(
-  user: MentionableUser & { score?: number }
-): MentionSuggestion {
+export function userToSuggestion(user: MentionableUser & { score?: number }): MentionSuggestion {
   return {
     type: 'user',
     id: user.id,
@@ -292,9 +286,7 @@ export function channelToSuggestion(
 /**
  * Convert a group mention to a suggestion
  */
-export function groupMentionToSuggestion(
-  group: GroupMentionInfo
-): MentionSuggestion {
+export function groupMentionToSuggestion(group: GroupMentionInfo): MentionSuggestion {
   return {
     type: 'group',
     id: group.type,
@@ -308,9 +300,7 @@ export function groupMentionToSuggestion(
 /**
  * Convert a role to a mention suggestion
  */
-export function roleToSuggestion(
-  role: MentionableRole & { score?: number }
-): MentionSuggestion {
+export function roleToSuggestion(role: MentionableRole & { score?: number }): MentionSuggestion {
   return {
     type: 'role',
     id: role.id,
@@ -353,9 +343,7 @@ export interface FilterSuggestionsOptions {
 /**
  * Filter and combine all mention suggestions
  */
-export function filterMentionSuggestions(
-  options: FilterSuggestionsOptions
-): MentionSuggestion[] {
+export function filterMentionSuggestions(options: FilterSuggestionsOptions): MentionSuggestion[] {
   const {
     users = [],
     channels = [],

@@ -154,7 +154,7 @@ describe('useChannelReadStatus', () => {
 
       const readByMsg5 = result.current.getReadBy('msg-5')
       expect(readByMsg5).toHaveLength(3)
-      expect(readByMsg5.map(s => s.user?.display_name)).toEqual(['Alice', 'Bob', 'Current User'])
+      expect(readByMsg5.map((s) => s.user?.display_name)).toEqual(['Alice', 'Bob', 'Current User'])
     })
 
     it('should return users who read a different message', () => {
@@ -356,8 +356,12 @@ describe('useMarkRead', () => {
 
     // Default mutation mocks - called 2 times for markRead, updateLastRead
     mockUseMutation
-      .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
-      .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
+      .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<
+        typeof useMutation
+      >)
+      .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<
+        typeof useMutation
+      >)
   })
 
   // ==========================================================================
@@ -367,7 +371,12 @@ describe('useMarkRead', () => {
   describe('markRead', () => {
     it('should call mutation with correct variables', async () => {
       mockMarkReadMutation.mockResolvedValue({
-        data: { insert_nchat_read_status_one: { channel_id: testChannelId, last_read_at: new Date().toISOString() } },
+        data: {
+          insert_nchat_read_status_one: {
+            channel_id: testChannelId,
+            last_read_at: new Date().toISOString(),
+          },
+        },
       })
 
       const { result } = renderHook(() => useMarkRead())
@@ -394,11 +403,20 @@ describe('useMarkRead', () => {
       // Re-setup mutations after auth mock change
       mockUseMutation
         .mockReset()
-        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       mockMarkReadMutation.mockResolvedValue({
-        data: { insert_nchat_read_status_one: { channel_id: testChannelId, last_read_at: new Date().toISOString() } },
+        data: {
+          insert_nchat_read_status_one: {
+            channel_id: testChannelId,
+            last_read_at: new Date().toISOString(),
+          },
+        },
       })
 
       const { result } = renderHook(() => useMarkRead())
@@ -450,8 +468,12 @@ describe('useMarkRead', () => {
       // Re-setup mutations after auth mock change
       mockUseMutation
         .mockReset()
-        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       mockUpdateLastReadMutation.mockResolvedValue({
         data: { update_nchat_channel_members: { affected_rows: 1 } },
@@ -485,8 +507,12 @@ describe('useMarkRead', () => {
       // Re-setup mutations after auth mock change
       mockUseMutation
         .mockReset()
-        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       const { result } = renderHook(() => useMarkRead())
 
@@ -505,8 +531,12 @@ describe('useMarkRead', () => {
       // Re-setup mutations after auth mock change
       mockUseMutation
         .mockReset()
-        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       const { result } = renderHook(() => useMarkRead())
 
@@ -525,8 +555,12 @@ describe('useMarkRead', () => {
       // Re-setup mutations after auth mock change
       mockUseMutation
         .mockReset()
-        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       const { result } = renderHook(() => useMarkRead())
 
@@ -545,8 +579,12 @@ describe('useMarkRead', () => {
       // Re-setup mutations after auth mock change
       mockUseMutation
         .mockReset()
-        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       const { result } = renderHook(() => useMarkRead())
 
@@ -571,8 +609,12 @@ describe('useMarkRead', () => {
 
       // Reset mocks for rerender
       mockUseMutation
-        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
-        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<typeof useMutation>)
+        .mockReturnValueOnce([mockMarkReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
+        .mockReturnValueOnce([mockUpdateLastReadMutation, { loading: false }] as ReturnType<
+          typeof useMutation
+        >)
 
       rerender()
 

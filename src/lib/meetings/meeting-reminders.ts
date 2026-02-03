@@ -4,7 +4,7 @@
  * Handles reminder scheduling, notifications, and timing calculations
  */
 
-import { Meeting, MeetingReminder, ReminderTiming } from './meeting-types';
+import { Meeting, MeetingReminder, ReminderTiming } from './meeting-types'
 
 // ============================================================================
 // Constants
@@ -17,7 +17,7 @@ export const REMINDER_TIMINGS: ReminderTiming[] = [
   '30min',
   '1hour',
   '1day',
-];
+]
 
 export const REMINDER_LABELS: Record<ReminderTiming, string> = {
   '5min': '5 minutes before',
@@ -26,7 +26,7 @@ export const REMINDER_LABELS: Record<ReminderTiming, string> = {
   '30min': '30 minutes before',
   '1hour': '1 hour before',
   '1day': '1 day before',
-};
+}
 
 export const REMINDER_MILLISECONDS: Record<ReminderTiming, number> = {
   '5min': 5 * 60 * 1000,
@@ -35,9 +35,9 @@ export const REMINDER_MILLISECONDS: Record<ReminderTiming, number> = {
   '30min': 30 * 60 * 1000,
   '1hour': 60 * 60 * 1000,
   '1day': 24 * 60 * 60 * 1000,
-};
+}
 
-export const DEFAULT_REMINDERS: ReminderTiming[] = ['15min'];
+export const DEFAULT_REMINDERS: ReminderTiming[] = ['15min']
 
 // ============================================================================
 // Reminder Time Calculations
@@ -50,11 +50,10 @@ export function calculateReminderTime(
   meetingStartTime: Date | string,
   timing: ReminderTiming
 ): Date {
-  const startTime = typeof meetingStartTime === 'string'
-    ? new Date(meetingStartTime)
-    : meetingStartTime;
+  const startTime =
+    typeof meetingStartTime === 'string' ? new Date(meetingStartTime) : meetingStartTime
 
-  return new Date(startTime.getTime() - REMINDER_MILLISECONDS[timing]);
+  return new Date(startTime.getTime() - REMINDER_MILLISECONDS[timing])
 }
 
 /**
@@ -65,8 +64,8 @@ export function shouldReminderBeSent(
   timing: ReminderTiming,
   currentTime: Date = new Date()
 ): boolean {
-  const reminderTime = calculateReminderTime(meetingStartTime, timing);
-  return currentTime >= reminderTime;
+  const reminderTime = calculateReminderTime(meetingStartTime, timing)
+  return currentTime >= reminderTime
 }
 
 /**
@@ -77,8 +76,8 @@ export function getTimeUntilReminder(
   timing: ReminderTiming,
   currentTime: Date = new Date()
 ): number {
-  const reminderTime = calculateReminderTime(meetingStartTime, timing);
-  return Math.max(0, reminderTime.getTime() - currentTime.getTime());
+  const reminderTime = calculateReminderTime(meetingStartTime, timing)
+  return Math.max(0, reminderTime.getTime() - currentTime.getTime())
 }
 
 /**
@@ -92,12 +91,12 @@ export function getNextPendingReminder(
   const pendingReminders = reminders
     .filter((r) => r.isEnabled && !r.sentAt)
     .sort((a, b) => {
-      const timeA = getTimeUntilReminder(meetingStartTime, a.timing, currentTime);
-      const timeB = getTimeUntilReminder(meetingStartTime, b.timing, currentTime);
-      return timeA - timeB;
-    });
+      const timeA = getTimeUntilReminder(meetingStartTime, a.timing, currentTime)
+      const timeB = getTimeUntilReminder(meetingStartTime, b.timing, currentTime)
+      return timeA - timeB
+    })
 
-  return pendingReminders[0] ?? null;
+  return pendingReminders[0] ?? null
 }
 
 /**
@@ -110,10 +109,10 @@ export function getRemindersToSend(
 ): MeetingReminder[] {
   return reminders.filter((r) => {
     if (!r.isEnabled || r.sentAt) {
-      return false;
+      return false
     }
-    return shouldReminderBeSent(meetingStartTime, r.timing, currentTime);
-  });
+    return shouldReminderBeSent(meetingStartTime, r.timing, currentTime)
+  })
 }
 
 // ============================================================================
@@ -134,7 +133,7 @@ export function createDefaultReminders(
     timing,
     sentAt: null,
     isEnabled: true,
-  }));
+  }))
 }
 
 /**
@@ -144,18 +143,18 @@ export function mergeReminders(
   existingReminders: MeetingReminder[],
   preferredTimings: ReminderTiming[]
 ): MeetingReminder[] {
-  const existingTimings = new Set(existingReminders.map((r) => r.timing));
+  const existingTimings = new Set(existingReminders.map((r) => r.timing))
 
   // Update existing reminders
   const updatedReminders = existingReminders.map((r) => ({
     ...r,
     isEnabled: preferredTimings.includes(r.timing),
-  }));
+  }))
 
   // Note: New timings would need to be created via the API
   // This function just updates the enabled state
 
-  return updatedReminders;
+  return updatedReminders
 }
 
 // ============================================================================
@@ -163,11 +162,11 @@ export function mergeReminders(
 // ============================================================================
 
 export interface ReminderNotification {
-  title: string;
-  body: string;
-  meetingId: string;
-  meetingLink: string;
-  timing: ReminderTiming;
+  title: string
+  body: string
+  meetingId: string
+  meetingLink: string
+  timing: ReminderTiming
 }
 
 /**
@@ -177,7 +176,7 @@ export function generateReminderNotification(
   meeting: Meeting,
   timing: ReminderTiming
 ): ReminderNotification {
-  const timeLabel = REMINDER_LABELS[timing];
+  const timeLabel = REMINDER_LABELS[timing]
 
   return {
     title: `Meeting in ${formatTimingShort(timing)}`,
@@ -185,7 +184,7 @@ export function generateReminderNotification(
     meetingId: meeting.id,
     meetingLink: meeting.meetingLink,
     timing,
-  };
+  }
 }
 
 /**
@@ -194,19 +193,19 @@ export function generateReminderNotification(
 export function formatTimingShort(timing: ReminderTiming): string {
   switch (timing) {
     case '5min':
-      return '5 min';
+      return '5 min'
     case '10min':
-      return '10 min';
+      return '10 min'
     case '15min':
-      return '15 min';
+      return '15 min'
     case '30min':
-      return '30 min';
+      return '30 min'
     case '1hour':
-      return '1 hr';
+      return '1 hr'
     case '1day':
-      return '1 day';
+      return '1 day'
     default:
-      return timing;
+      return timing
   }
 }
 
@@ -219,9 +218,9 @@ export function formatTimingShort(timing: ReminderTiming): string {
  */
 export function canShowBrowserNotification(): boolean {
   if (typeof window === 'undefined' || !('Notification' in window)) {
-    return false;
+    return false
   }
-  return Notification.permission === 'granted';
+  return Notification.permission === 'granted'
 }
 
 /**
@@ -229,19 +228,19 @@ export function canShowBrowserNotification(): boolean {
  */
 export async function requestNotificationPermission(): Promise<boolean> {
   if (typeof window === 'undefined' || !('Notification' in window)) {
-    return false;
+    return false
   }
 
   if (Notification.permission === 'granted') {
-    return true;
+    return true
   }
 
   if (Notification.permission === 'denied') {
-    return false;
+    return false
   }
 
-  const permission = await Notification.requestPermission();
-  return permission === 'granted';
+  const permission = await Notification.requestPermission()
+  return permission === 'granted'
 }
 
 /**
@@ -252,7 +251,7 @@ export function showReminderNotification(
   onClick?: () => void
 ): void {
   if (!canShowBrowserNotification()) {
-    return;
+    return
   }
 
   const browserNotification = new Notification(notification.title, {
@@ -260,19 +259,19 @@ export function showReminderNotification(
     icon: '/icons/meeting-icon.png',
     tag: `meeting-reminder-${notification.meetingId}`,
     requireInteraction: true,
-  });
+  })
 
   if (onClick) {
     browserNotification.onclick = () => {
-      onClick();
-      browserNotification.close();
-    };
+      onClick()
+      browserNotification.close()
+    }
   }
 
   // Auto-close after 30 seconds
   setTimeout(() => {
-    browserNotification.close();
-  }, 30000);
+    browserNotification.close()
+  }, 30000)
 }
 
 // ============================================================================
@@ -280,18 +279,18 @@ export function showReminderNotification(
 // ============================================================================
 
 interface ScheduledReminder {
-  meetingId: string;
-  timing: ReminderTiming;
-  timeoutId: ReturnType<typeof setTimeout>;
+  meetingId: string
+  timing: ReminderTiming
+  timeoutId: ReturnType<typeof setTimeout>
 }
 
-const scheduledReminders: Map<string, ScheduledReminder> = new Map();
+const scheduledReminders: Map<string, ScheduledReminder> = new Map()
 
 /**
  * Get unique key for a reminder
  */
 function getReminderKey(meetingId: string, timing: ReminderTiming): string {
-  return `${meetingId}:${timing}`;
+  return `${meetingId}:${timing}`
 }
 
 /**
@@ -302,41 +301,41 @@ export function scheduleReminder(
   timing: ReminderTiming,
   onReminder: (notification: ReminderNotification) => void
 ): void {
-  const key = getReminderKey(meeting.id, timing);
+  const key = getReminderKey(meeting.id, timing)
 
   // Cancel existing scheduled reminder
-  cancelReminder(meeting.id, timing);
+  cancelReminder(meeting.id, timing)
 
-  const timeUntil = getTimeUntilReminder(meeting.scheduledStartAt, timing);
+  const timeUntil = getTimeUntilReminder(meeting.scheduledStartAt, timing)
 
   if (timeUntil <= 0) {
     // Reminder time has passed
-    return;
+    return
   }
 
   const timeoutId = setTimeout(() => {
-    const notification = generateReminderNotification(meeting, timing);
-    onReminder(notification);
-    scheduledReminders.delete(key);
-  }, timeUntil);
+    const notification = generateReminderNotification(meeting, timing)
+    onReminder(notification)
+    scheduledReminders.delete(key)
+  }, timeUntil)
 
   scheduledReminders.set(key, {
     meetingId: meeting.id,
     timing,
     timeoutId,
-  });
+  })
 }
 
 /**
  * Cancel a scheduled reminder
  */
 export function cancelReminder(meetingId: string, timing: ReminderTiming): void {
-  const key = getReminderKey(meetingId, timing);
-  const scheduled = scheduledReminders.get(key);
+  const key = getReminderKey(meetingId, timing)
+  const scheduled = scheduledReminders.get(key)
 
   if (scheduled) {
-    clearTimeout(scheduled.timeoutId);
-    scheduledReminders.delete(key);
+    clearTimeout(scheduled.timeoutId)
+    scheduledReminders.delete(key)
   }
 }
 
@@ -346,8 +345,8 @@ export function cancelReminder(meetingId: string, timing: ReminderTiming): void 
 export function cancelAllReminders(meetingId: string): void {
   for (const [key, scheduled] of scheduledReminders.entries()) {
     if (scheduled.meetingId === meetingId) {
-      clearTimeout(scheduled.timeoutId);
-      scheduledReminders.delete(key);
+      clearTimeout(scheduled.timeoutId)
+      scheduledReminders.delete(key)
     }
   }
 }
@@ -360,10 +359,10 @@ export function scheduleAllReminders(
   reminders: MeetingReminder[],
   onReminder: (notification: ReminderNotification) => void
 ): void {
-  const enabledReminders = reminders.filter((r) => r.isEnabled && !r.sentAt);
+  const enabledReminders = reminders.filter((r) => r.isEnabled && !r.sentAt)
 
   for (const reminder of enabledReminders) {
-    scheduleReminder(meeting, reminder.timing, onReminder);
+    scheduleReminder(meeting, reminder.timing, onReminder)
   }
 }
 
@@ -371,11 +370,11 @@ export function scheduleAllReminders(
  * Get list of all currently scheduled reminders
  */
 export function getScheduledReminders(): Array<{
-  meetingId: string;
-  timing: ReminderTiming;
+  meetingId: string
+  timing: ReminderTiming
 }> {
   return Array.from(scheduledReminders.values()).map(({ meetingId, timing }) => ({
     meetingId,
     timing,
-  }));
+  }))
 }

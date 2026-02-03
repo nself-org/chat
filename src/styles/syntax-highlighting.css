@@ -294,7 +294,9 @@ pre::-webkit-scrollbar-thumb:hover {
 
 /* Code block container hover effects */
 .code-block-container {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .code-block-container:hover {
@@ -348,11 +350,13 @@ pre::-webkit-scrollbar-thumb:hover {
 }
 
 /* Inline code hover effect */
-code[class*="inline"] {
-  transition: background-color 0.15s ease, transform 0.15s ease;
+code[class*='inline'] {
+  transition:
+    background-color 0.15s ease,
+    transform 0.15s ease;
 }
 
-code[class*="inline"]:hover {
+code[class*='inline']:hover {
   background-color: hsl(var(--muted) / 0.8);
   transform: translateY(-1px);
 }

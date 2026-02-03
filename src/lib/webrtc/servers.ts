@@ -220,7 +220,10 @@ export function validateIceServers(servers: IceServer[]): {
 /**
  * Test connectivity to a STUN server
  */
-export async function testStunServer(serverUrl: string, timeoutMs: number = 5000): Promise<{
+export async function testStunServer(
+  serverUrl: string,
+  timeoutMs: number = 5000
+): Promise<{
   success: boolean
   latencyMs?: number
   error?: string

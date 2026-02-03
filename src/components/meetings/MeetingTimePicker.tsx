@@ -1,44 +1,40 @@
-'use client';
+'use client'
 
 /**
  * MeetingTimePicker - Date, time, and duration selection for meetings
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
-import { Calendar, Clock, Globe } from 'lucide-react';
-import { getDurationOptions, generateTimeSlots } from '@/lib/meetings';
+} from '@/components/ui/select'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar, Clock, Globe } from 'lucide-react'
+import { getDurationOptions, generateTimeSlots } from '@/lib/meetings'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface MeetingTimePickerProps {
-  date: Date;
-  time: string;
-  duration: number;
-  timezone: string;
-  onDateChange: (date: Date) => void;
-  onTimeChange: (time: string) => void;
-  onDurationChange: (duration: number) => void;
-  onTimezoneChange: (timezone: string) => void;
-  errors?: Record<string, string>;
-  minDate?: Date;
+  date: Date
+  time: string
+  duration: number
+  timezone: string
+  onDateChange: (date: Date) => void
+  onTimeChange: (time: string) => void
+  onDurationChange: (duration: number) => void
+  onTimezoneChange: (timezone: string) => void
+  errors?: Record<string, string>
+  minDate?: Date
 }
 
 // ============================================================================
@@ -59,10 +55,10 @@ const TIMEZONES = [
   { value: 'Asia/Shanghai', label: 'Shanghai (CST)' },
   { value: 'Asia/Dubai', label: 'Dubai (GST)' },
   { value: 'Australia/Sydney', label: 'Sydney (AEST)' },
-];
+]
 
-const DURATION_OPTIONS = getDurationOptions();
-const TIME_SLOTS = generateTimeSlots(30, 0, 24);
+const DURATION_OPTIONS = getDurationOptions()
+const TIME_SLOTS = generateTimeSlots(30, 0, 24)
 
 // ============================================================================
 // Component
@@ -80,7 +76,7 @@ export function MeetingTimePicker({
   errors = {},
   minDate = new Date(),
 }: MeetingTimePickerProps) {
-  const [isCalendarOpen, setIsCalendarOpen] = React.useState(false);
+  const [isCalendarOpen, setIsCalendarOpen] = React.useState(false)
 
   // Format date for display
   const formattedDate = date.toLocaleDateString('en-US', {
@@ -88,74 +84,74 @@ export function MeetingTimePicker({
     month: 'short',
     day: 'numeric',
     year: 'numeric',
-  });
+  })
 
   // Format date for input
-  const inputDateValue = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+  const inputDateValue = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
 
   // Handle date input change
   const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newDate = new Date(e.target.value + 'T00:00:00');
+    const newDate = new Date(e.target.value + 'T00:00:00')
     if (!isNaN(newDate.getTime())) {
-      onDateChange(newDate);
+      onDateChange(newDate)
     }
-  };
+  }
 
   // Generate calendar days
   const generateCalendarDays = () => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const startDayOfWeek = firstDay.getDay();
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstDay = new Date(year, month, 1)
+    const lastDay = new Date(year, month + 1, 0)
+    const startDayOfWeek = firstDay.getDay()
 
-    const days: Array<{ date: Date; isCurrentMonth: boolean; isDisabled: boolean }> = [];
+    const days: Array<{ date: Date; isCurrentMonth: boolean; isDisabled: boolean }> = []
 
     // Previous month days
     for (let i = startDayOfWeek - 1; i >= 0; i--) {
-      const d = new Date(year, month, -i);
-      days.push({ date: d, isCurrentMonth: false, isDisabled: true });
+      const d = new Date(year, month, -i)
+      days.push({ date: d, isCurrentMonth: false, isDisabled: true })
     }
 
     // Current month days
     for (let day = 1; day <= lastDay.getDate(); day++) {
-      const d = new Date(year, month, day);
-      const isDisabled = d < new Date(minDate.toDateString());
-      days.push({ date: d, isCurrentMonth: true, isDisabled });
+      const d = new Date(year, month, day)
+      const isDisabled = d < new Date(minDate.toDateString())
+      days.push({ date: d, isCurrentMonth: true, isDisabled })
     }
 
     // Next month days to fill the grid
-    const remaining = 42 - days.length;
+    const remaining = 42 - days.length
     for (let i = 1; i <= remaining; i++) {
-      const d = new Date(year, month + 1, i);
-      days.push({ date: d, isCurrentMonth: false, isDisabled: true });
+      const d = new Date(year, month + 1, i)
+      days.push({ date: d, isCurrentMonth: false, isDisabled: true })
     }
 
-    return days;
-  };
+    return days
+  }
 
-  const calendarDays = generateCalendarDays();
+  const calendarDays = generateCalendarDays()
 
   // Navigate months
   const goToPrevMonth = () => {
-    const newDate = new Date(date);
-    newDate.setMonth(newDate.getMonth() - 1);
-    onDateChange(newDate);
-  };
+    const newDate = new Date(date)
+    newDate.setMonth(newDate.getMonth() - 1)
+    onDateChange(newDate)
+  }
 
   const goToNextMonth = () => {
-    const newDate = new Date(date);
-    newDate.setMonth(newDate.getMonth() + 1);
-    onDateChange(newDate);
-  };
+    const newDate = new Date(date)
+    newDate.setMonth(newDate.getMonth() + 1)
+    onDateChange(newDate)
+  }
 
   // Select a day
   const selectDay = (day: Date) => {
-    const newDate = new Date(date);
-    newDate.setFullYear(day.getFullYear(), day.getMonth(), day.getDate());
-    onDateChange(newDate);
-    setIsCalendarOpen(false);
-  };
+    const newDate = new Date(date)
+    newDate.setFullYear(day.getFullYear(), day.getMonth(), day.getDate())
+    onDateChange(newDate)
+    setIsCalendarOpen(false)
+  }
 
   // Check if a date is selected
   const isSelected = (day: Date) => {
@@ -163,18 +159,18 @@ export function MeetingTimePicker({
       day.getFullYear() === date.getFullYear() &&
       day.getMonth() === date.getMonth() &&
       day.getDate() === date.getDate()
-    );
-  };
+    )
+  }
 
   // Check if a date is today
   const isToday = (day: Date) => {
-    const today = new Date();
+    const today = new Date()
     return (
       day.getFullYear() === today.getFullYear() &&
       day.getMonth() === today.getMonth() &&
       day.getDate() === today.getDate()
-    );
-  };
+    )
+  }
 
   return (
     <div className="space-y-4">
@@ -197,34 +193,24 @@ export function MeetingTimePicker({
           <PopoverContent className="w-auto p-0" align="start">
             <div className="p-3">
               {/* Month Navigation */}
-              <div className="flex items-center justify-between mb-2">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={goToPrevMonth}
-                  className="h-7 w-7 p-0"
-                >
+              <div className="mb-2 flex items-center justify-between">
+                <Button variant="ghost" size="sm" onClick={goToPrevMonth} className="h-7 w-7 p-0">
                   &lt;
                 </Button>
                 <span className="text-sm font-medium">
                   {date.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
                 </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={goToNextMonth}
-                  className="h-7 w-7 p-0"
-                >
+                <Button variant="ghost" size="sm" onClick={goToNextMonth} className="h-7 w-7 p-0">
                   &gt;
                 </Button>
               </div>
 
               {/* Day Headers */}
-              <div className="grid grid-cols-7 gap-1 mb-1">
+              <div className="mb-1 grid grid-cols-7 gap-1">
                 {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
                   <div
                     key={day}
-                    className="h-8 w-8 flex items-center justify-center text-xs text-muted-foreground"
+                    className="flex h-8 w-8 items-center justify-center text-xs text-muted-foreground"
                   >
                     {day}
                   </div>
@@ -239,14 +225,12 @@ export function MeetingTimePicker({
                     onClick={() => !day.isDisabled && selectDay(day.date)}
                     disabled={day.isDisabled}
                     className={cn(
-                      'h-8 w-8 text-sm rounded-md flex items-center justify-center',
+                      'flex h-8 w-8 items-center justify-center rounded-md text-sm',
                       !day.isCurrentMonth && 'text-muted-foreground/50',
-                      day.isDisabled && 'opacity-50 cursor-not-allowed',
-                      isSelected(day.date) && 'bg-primary text-primary-foreground',
+                      day.isDisabled && 'cursor-not-allowed opacity-50',
+                      isSelected(day.date) && 'text-primary-foreground bg-primary',
                       isToday(day.date) && !isSelected(day.date) && 'border border-primary',
-                      !day.isDisabled &&
-                        !isSelected(day.date) &&
-                        'hover:bg-accent'
+                      !day.isDisabled && !isSelected(day.date) && 'hover:bg-accent'
                     )}
                   >
                     {day.date.getDate()}
@@ -294,9 +278,7 @@ export function MeetingTimePicker({
               ))}
             </SelectContent>
           </Select>
-          {errors.duration && (
-            <p className="text-sm text-red-500">{errors.duration}</p>
-          )}
+          {errors.duration && <p className="text-sm text-red-500">{errors.duration}</p>}
         </div>
       </div>
 
@@ -322,16 +304,16 @@ export function MeetingTimePicker({
       <div className="text-sm text-muted-foreground">
         Ends at{' '}
         {(() => {
-          const [hours, minutes] = time.split(':').map(Number);
-          const endDate = new Date(date);
-          endDate.setHours(hours, minutes + duration);
+          const [hours, minutes] = time.split(':').map(Number)
+          const endDate = new Date(date)
+          endDate.setHours(hours, minutes + duration)
           return endDate.toLocaleTimeString('en-US', {
             hour: 'numeric',
             minute: '2-digit',
             hour12: true,
-          });
+          })
         })()}
       </div>
     </div>
-  );
+  )
 }

@@ -5,6 +5,7 @@ Complete semantic search implementation with OpenAI embeddings and pgvector.
 ## Overview
 
 The Smart Search System provides powerful semantic search capabilities using:
+
 - **OpenAI text-embedding-3-small** for generating vector embeddings
 - **pgvector** PostgreSQL extension for vector similarity search
 - **Hybrid search** combining semantic and keyword-based approaches
@@ -49,6 +50,7 @@ The Smart Search System provides powerful semantic search capabilities using:
 ### 1. Database Schema (028_pgvector_semantic_search.sql)
 
 **Tables:**
+
 - `nchat_messages.embedding` - Vector embeddings (1536 dimensions)
 - `nchat_embedding_cache` - Cache for generated embeddings
 - `nchat_embedding_queue` - Queue for background processing
@@ -56,11 +58,13 @@ The Smart Search System provides powerful semantic search capabilities using:
 - `nchat_saved_searches` - Saved search queries
 
 **Indexes:**
+
 - HNSW index on embeddings for fast similarity search
 - Composite indexes for filtered searches
 - Full-text search indexes for hybrid search
 
 **Functions:**
+
 - `nchat_search_messages_semantic()` - Semantic similarity search
 - `nchat_find_similar_messages()` - Find related messages
 - `nchat_queue_embedding()` - Queue message for embedding
@@ -70,6 +74,7 @@ The Smart Search System provides powerful semantic search capabilities using:
 ### 2. Embeddings Service (src/lib/ai/embeddings.ts)
 
 **Features:**
+
 - OpenAI API integration
 - Batch embedding generation
 - LRU cache with automatic eviction
@@ -78,6 +83,7 @@ The Smart Search System provides powerful semantic search capabilities using:
 - Error handling and retry logic
 
 **Usage:**
+
 ```typescript
 import { getEmbeddingService } from '@/lib/ai/embeddings'
 
@@ -102,6 +108,7 @@ console.log(`Total cost: $${stats.totalCost}`)
 ### 3. Vector Store (src/lib/database/vector-store.ts)
 
 **Features:**
+
 - PostgreSQL connection pooling
 - Vector similarity search
 - Embedding CRUD operations
@@ -109,6 +116,7 @@ console.log(`Total cost: $${stats.totalCost}`)
 - Coverage statistics
 
 **Usage:**
+
 ```typescript
 import { getVectorStore } from '@/lib/database/vector-store'
 
@@ -129,22 +137,20 @@ const similar = await vectorStore.findSimilarMessages('message-id', {
 })
 
 // Store embedding
-await vectorStore.storeEmbedding(
-  'message-id',
-  embedding,
-  'text-embedding-3-small'
-)
+await vectorStore.storeEmbedding('message-id', embedding, 'text-embedding-3-small')
 ```
 
 ### 4. Search Filters (src/lib/search/filters.ts)
 
 **Features:**
+
 - Fluent API for building search filters
 - SQL generation with parameterization
 - Filter validation
 - Support for complex queries
 
 **Usage:**
+
 ```typescript
 import { createFilterBuilder } from '@/lib/search/filters'
 
@@ -165,6 +171,7 @@ const { sql, params } = builder.buildQuery()
 ### 5. Embedding Worker (src/lib/workers/embedding-worker.ts)
 
 **Features:**
+
 - Background processing of embedding queue
 - Configurable batch size and polling interval
 - Automatic retry on failures
@@ -172,6 +179,7 @@ const { sql, params } = builder.buildQuery()
 - Graceful shutdown
 
 **Usage:**
+
 ```typescript
 import { startEmbeddingWorker } from '@/lib/workers/embedding-worker'
 
@@ -194,9 +202,11 @@ await worker.stop()
 ## API Endpoints
 
 ### POST /api/ai/search
+
 Search messages with natural language queries.
 
 **Request:**
+
 ```json
 {
   "query": "how to deploy the application",
@@ -214,6 +224,7 @@ Search messages with natural language queries.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -236,20 +247,20 @@ Search messages with natural language queries.
 ```
 
 ### POST /api/ai/embed
+
 Generate embeddings for text content.
 
 **Request:**
+
 ```json
 {
-  "texts": [
-    "First message content",
-    "Second message content"
-  ],
+  "texts": ["First message content", "Second message content"],
   "model": "text-embedding-3-small"
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -265,14 +276,17 @@ Generate embeddings for text content.
 ```
 
 ### GET /api/search/suggestions
+
 Get search suggestions based on history.
 
 **Request:**
+
 ```
 GET /api/search/suggestions?q=deploy&limit=10&userId=user-123
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -287,9 +301,11 @@ GET /api/search/suggestions?q=deploy&limit=10&userId=user-123
 ```
 
 ### GET /api/workers/embeddings
+
 Get embedding worker status and stats.
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -318,9 +334,11 @@ Get embedding worker status and stats.
 ```
 
 ### POST /api/workers/embeddings
+
 Start or stop the embedding worker.
 
 **Request:**
+
 ```json
 {
   "action": "start",
@@ -368,10 +386,10 @@ Start the embedding worker in your application:
 import { startEmbeddingWorker } from '@/lib/workers/embedding-worker'
 
 await startEmbeddingWorker({
-  batchSize: 20,           // Process 20 messages at a time
-  pollIntervalMs: 10000,   // Check queue every 10 seconds
-  idleDelayMs: 60000,      // Wait 60 seconds when queue is empty
-  maxRetries: 3,           // Retry failed embeddings 3 times
+  batchSize: 20, // Process 20 messages at a time
+  pollIntervalMs: 10000, // Check queue every 10 seconds
+  idleDelayMs: 60000, // Wait 60 seconds when queue is empty
+  maxRetries: 3, // Retry failed embeddings 3 times
 })
 ```
 
@@ -381,13 +399,13 @@ await startEmbeddingWorker({
 
 With 10,000 messages and text-embedding-3-small:
 
-| Operation | Time | Cost |
-|-----------|------|------|
-| Generate embedding (single) | ~150ms | $0.000003 |
-| Generate embeddings (batch 100) | ~2s | $0.0003 |
-| Semantic search (no filters) | ~50ms | - |
-| Semantic search (with filters) | ~30ms | - |
-| Hybrid search | ~80ms | - |
+| Operation                       | Time   | Cost      |
+| ------------------------------- | ------ | --------- |
+| Generate embedding (single)     | ~150ms | $0.000003 |
+| Generate embeddings (batch 100) | ~2s    | $0.0003   |
+| Semantic search (no filters)    | ~50ms  | -         |
+| Semantic search (with filters)  | ~30ms  | -         |
+| Hybrid search                   | ~80ms  | -         |
 
 ### Optimization Tips
 
@@ -478,18 +496,21 @@ console.log(`Cache hit rate: ${(stats.hitRate * 100).toFixed(1)}%`)
 ### Common Issues
 
 **1. "pgvector extension not found"**
+
 ```sql
 -- Install pgvector extension
 CREATE EXTENSION IF NOT EXISTS vector;
 ```
 
 **2. "OpenAI API key not configured"**
+
 ```bash
 # Set environment variable
 export OPENAI_API_KEY=sk-...
 ```
 
 **3. "Worker not processing queue"**
+
 ```typescript
 // Check worker status
 const worker = getEmbeddingWorker()
@@ -501,6 +522,7 @@ await worker.start()
 ```
 
 **4. "Slow semantic search"**
+
 ```sql
 -- Verify HNSW index exists
 SELECT indexname, indexdef
@@ -516,6 +538,7 @@ CREATE INDEX idx_messages_embedding_hnsw
 ```
 
 **5. "High API costs"**
+
 ```typescript
 // Increase cache size
 const service = new EmbeddingService()

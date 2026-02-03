@@ -5,11 +5,7 @@
  * Handles entities, markdown conversion, and notification formatting.
  */
 
-import type {
-  TelegramUser,
-  TelegramChat,
-  TelegramMessage,
-} from '../types'
+import type { TelegramUser, TelegramChat, TelegramMessage } from '../types'
 
 import type {
   TelegramUpdate,
@@ -50,12 +46,12 @@ export type TelegramNotificationIcon =
   | 'telegram'
 
 export type TelegramNotificationColor =
-  | 'green'   // success, join
-  | 'blue'    // message, telegram brand
-  | 'purple'  // premium
-  | 'red'     // error, leave
-  | 'yellow'  // warning
-  | 'gray'    // neutral
+  | 'green' // success, join
+  | 'blue' // message, telegram brand
+  | 'purple' // premium
+  | 'red' // error, leave
+  | 'yellow' // warning
+  | 'gray' // neutral
 
 export interface TelegramNotificationMetadata {
   updateType: string
@@ -75,9 +71,7 @@ export interface TelegramNotificationMetadata {
 /**
  * Format a Telegram update into a notification
  */
-export function formatTelegramNotification(
-  update: TelegramUpdate
-): FormattedTelegramNotification {
+export function formatTelegramNotification(update: TelegramUpdate): FormattedTelegramNotification {
   if (update.message) {
     return formatMessageUpdate(update.message, 'message')
   }
@@ -143,7 +137,8 @@ function formatMessageUpdate(
     icon = 'document'
   } else if ((message as unknown as { sticker?: { emoji?: string } }).sticker) {
     title = 'Sticker'
-    body = (message as unknown as { sticker: { emoji?: string } }).sticker.emoji || 'Sticker received'
+    body =
+      (message as unknown as { sticker: { emoji?: string } }).sticker.emoji || 'Sticker received'
     icon = 'sticker'
   } else if ((message as unknown as { poll?: { question: string } }).poll) {
     title = 'Poll'
@@ -157,7 +152,9 @@ function formatMessageUpdate(
     title = 'Contact'
     body = (message as unknown as { contact: { first_name: string } }).contact.first_name
     icon = 'contact'
-  } else if ((message as unknown as { new_chat_members?: TelegramUser[] }).new_chat_members?.length) {
+  } else if (
+    (message as unknown as { new_chat_members?: TelegramUser[] }).new_chat_members?.length
+  ) {
     title = 'Member Joined'
     const members = (message as unknown as { new_chat_members: TelegramUser[] }).new_chat_members
     body = members.map((u) => u.first_name).join(', ') + ' joined'
@@ -367,9 +364,17 @@ export function convertTelegramMessageToChat(message: TelegramMessage): {
   // Apply entity formatting
   let html = text
   if ((message as unknown as { entities?: TelegramMessageEntity[] }).entities) {
-    html = applyEntitiesToHtml(text, (message as unknown as { entities: TelegramMessageEntity[] }).entities)
-  } else if ((message as unknown as { caption_entities?: TelegramMessageEntity[] }).caption_entities) {
-    html = applyEntitiesToHtml(text, (message as unknown as { caption_entities: TelegramMessageEntity[] }).caption_entities)
+    html = applyEntitiesToHtml(
+      text,
+      (message as unknown as { entities: TelegramMessageEntity[] }).entities
+    )
+  } else if (
+    (message as unknown as { caption_entities?: TelegramMessageEntity[] }).caption_entities
+  ) {
+    html = applyEntitiesToHtml(
+      text,
+      (message as unknown as { caption_entities: TelegramMessageEntity[] }).caption_entities
+    )
   }
 
   // Build attachments
@@ -614,7 +619,26 @@ function convertToTelegramHtml(html: string): string {
  */
 function convertToTelegramMarkdownV2(text: string): string {
   // Escape special characters for MarkdownV2
-  const specialChars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+  const specialChars = [
+    '_',
+    '*',
+    '[',
+    ']',
+    '(',
+    ')',
+    '~',
+    '`',
+    '>',
+    '#',
+    '+',
+    '-',
+    '=',
+    '|',
+    '{',
+    '}',
+    '.',
+    '!',
+  ]
 
   let result = text
   for (const char of specialChars) {

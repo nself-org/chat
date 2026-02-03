@@ -7,6 +7,8 @@
 
 import * as Sentry from '@sentry/nextjs'
 
+import { logger } from '@/lib/logger'
+
 // Only initialize Sentry if DSN is configured
 const SENTRY_DSN = process.env.SENTRY_DSN || process.env.NEXT_PUBLIC_SENTRY_DSN
 
@@ -37,7 +39,7 @@ if (SENTRY_DSN) {
       // Filter sensitive data from edge requests
       if (event.request?.headers) {
         const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key']
-        sensitiveHeaders.forEach(header => {
+        sensitiveHeaders.forEach((header) => {
           if (event.request?.headers?.[header]) {
             event.request.headers[header] = '[Filtered]'
           }
@@ -69,11 +71,11 @@ if (SENTRY_DSN) {
 
   // Log initialization (only in development)
   if (process.env.NODE_ENV === 'development') {
-    console.log('[Sentry] Edge runtime monitoring initialized')
+    // REMOVED: console.log('[Sentry] Edge runtime monitoring initialized')
   }
 } else {
   // Log warning if DSN is not configured (only in production)
   if (process.env.NODE_ENV === 'production') {
-    console.warn('[Sentry] DSN not configured - error tracking disabled')
+    logger.warn('[Sentry] DSN not configured - error tracking disabled')
   }
 }

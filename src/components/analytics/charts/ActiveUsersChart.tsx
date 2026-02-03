@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
 /**
  * ActiveUsersChart - Shows DAU/WAU/MAU metrics
  */
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Bar,
   BarChart,
@@ -18,20 +18,20 @@ import {
   Line,
   LineChart,
   ComposedChart,
-} from 'recharts';
+} from 'recharts'
 
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface ActiveUsersChartProps {
-  height?: number;
-  variant?: 'simple' | 'detailed';
-  className?: string;
+  height?: number
+  variant?: 'simple' | 'detailed'
+  className?: string
 }
 
 // ============================================================================
@@ -39,33 +39,30 @@ interface ActiveUsersChartProps {
 // ============================================================================
 
 interface TooltipProps {
-  active?: boolean;
+  active?: boolean
   payload?: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
-  label?: string;
+    name: string
+    value: number
+    color: string
+  }>
+  label?: string
 }
 
 function CustomTooltip({ active, payload, label }: TooltipProps) {
-  if (!active || !payload || !payload.length) return null;
+  if (!active || !payload || !payload.length) return null
 
   return (
     <div className="rounded-lg border bg-background p-3 shadow-md">
       <p className="mb-2 font-medium">{label}</p>
       {payload.map((entry, index) => (
         <div key={index} className="flex items-center gap-2 text-sm">
-          <div
-            className="h-3 w-3 rounded-full"
-            style={{ backgroundColor: entry.color }}
-          />
+          <div className="h-3 w-3 rounded-full" style={{ backgroundColor: entry.color }} />
           <span className="text-muted-foreground">{entry.name}:</span>
           <span className="font-medium">{entry.value.toLocaleString()}</span>
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -77,11 +74,11 @@ export function ActiveUsersChart({
   variant = 'simple',
   className,
 }: ActiveUsersChartProps) {
-  const { activeUsers, userGrowth, isLoading } = useAnalyticsStore();
+  const { activeUsers, userGrowth, isLoading } = useAnalyticsStore()
 
   // Simple chart data - DAU/WAU/MAU bars
   const simpleChartData = React.useMemo(() => {
-    if (!activeUsers) return [];
+    if (!activeUsers) return []
 
     return [
       {
@@ -102,12 +99,12 @@ export function ActiveUsersChart({
         color: '#f59e0b',
         description: 'Monthly Active Users',
       },
-    ];
-  }, [activeUsers]);
+    ]
+  }, [activeUsers])
 
   // Detailed chart data - trends over time
   const detailedChartData = React.useMemo(() => {
-    if (!userGrowth || userGrowth.length === 0) return [];
+    if (!userGrowth || userGrowth.length === 0) return []
 
     return userGrowth.map((d, index) => ({
       date: new Date(d.timestamp).toLocaleDateString('en-US', {
@@ -118,30 +115,27 @@ export function ActiveUsersChart({
       newUsers: d.newUsers,
       // Simulate DAU based on a percentage of total
       dau: Math.floor(d.totalUsers * (0.3 + Math.random() * 0.2)),
-    }));
-  }, [userGrowth]);
+    }))
+  }, [userGrowth])
 
   if (isLoading) {
     return (
       <div className={cn('w-full', className)} style={{ height }}>
         <Skeleton className="h-full w-full" />
       </div>
-    );
+    )
   }
 
   if (variant === 'simple') {
     if (simpleChartData.length === 0) {
       return (
         <div
-          className={cn(
-            'flex items-center justify-center text-muted-foreground',
-            className
-          )}
+          className={cn('flex items-center justify-center text-muted-foreground', className)}
           style={{ height }}
         >
           No user data available
         </div>
-      );
+      )
     }
 
     return (
@@ -178,36 +172,29 @@ export function ActiveUsersChart({
         {activeUsers && (
           <div className="mt-4 flex justify-center gap-6 text-sm">
             <div className="text-center">
-              <div className="font-medium">
-                {((activeUsers.dauWauRatio) * 100).toFixed(1)}%
-              </div>
+              <div className="font-medium">{(activeUsers.dauWauRatio * 100).toFixed(1)}%</div>
               <div className="text-muted-foreground">DAU/WAU</div>
             </div>
             <div className="text-center">
-              <div className="font-medium">
-                {((activeUsers.dauMauRatio) * 100).toFixed(1)}%
-              </div>
+              <div className="font-medium">{(activeUsers.dauMauRatio * 100).toFixed(1)}%</div>
               <div className="text-muted-foreground">DAU/MAU</div>
             </div>
           </div>
         )}
       </div>
-    );
+    )
   }
 
   // Detailed variant - line chart over time
   if (detailedChartData.length === 0) {
     return (
       <div
-        className={cn(
-          'flex items-center justify-center text-muted-foreground',
-          className
-        )}
+        className={cn('flex items-center justify-center text-muted-foreground', className)}
         style={{ height }}
       >
         No trend data available
       </div>
-    );
+    )
   }
 
   return (
@@ -246,16 +233,11 @@ export function ActiveUsersChart({
             strokeWidth={2}
             dot={false}
           />
-          <Bar
-            dataKey="newUsers"
-            name="New Users"
-            fill="#f59e0b"
-            opacity={0.6}
-          />
+          <Bar dataKey="newUsers" name="New Users" fill="#f59e0b" opacity={0.6} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>
-  );
+  )
 }
 
-export default ActiveUsersChart;
+export default ActiveUsersChart

@@ -6,6 +6,8 @@
 
 import { useState, useCallback } from 'react'
 
+import { logger } from '@/lib/logger'
+
 interface SearchFilters {
   type?: 'all' | 'messages' | 'files' | 'users' | 'channels'
   channelIds?: string[]
@@ -68,9 +70,10 @@ export function useSearch() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           query: query.trim(),
-          types: searchFilters?.type === 'all' || !searchFilters?.type
-            ? ['messages', 'files', 'users', 'channels']
-            : [searchFilters.type],
+          types:
+            searchFilters?.type === 'all' || !searchFilters?.type
+              ? ['messages', 'files', 'users', 'channels']
+              : [searchFilters.type],
           channelIds: searchFilters?.channelIds,
           userIds: searchFilters?.userIds,
           dateFrom: searchFilters?.dateFrom,
@@ -109,43 +112,49 @@ export function useSearch() {
     }
   }, [])
 
-  const saveSearch = useCallback(async (name: string, query: string, searchFilters: Record<string, unknown>) => {
-    try {
-      // In production, save to API
-      // For now, use localStorage
-      const saved = localStorage.getItem('saved_searches')
-      const savedSearches = saved ? JSON.parse(saved) : []
+  const saveSearch = useCallback(
+    async (name: string, query: string, searchFilters: Record<string, unknown>) => {
+      try {
+        // In production, save to API
+        // For now, use localStorage
+        const saved = localStorage.getItem('saved_searches')
+        const savedSearches = saved ? JSON.parse(saved) : []
 
-      const newSearch = {
-        id: `search-${Date.now()}`,
-        name,
-        query,
-        filters: searchFilters,
-        createdAt: new Date().toISOString(),
-        useCount: 0,
+        const newSearch = {
+          id: `search-${Date.now()}`,
+          name,
+          query,
+          filters: searchFilters,
+          createdAt: new Date().toISOString(),
+          useCount: 0,
+        }
+
+        savedSearches.push(newSearch)
+        localStorage.setItem('saved_searches', JSON.stringify(savedSearches))
+
+        return newSearch
+      } catch (err) {
+        logger.error('Error saving search:', err)
+        throw err
       }
+    },
+    []
+  )
 
-      savedSearches.push(newSearch)
-      localStorage.setItem('saved_searches', JSON.stringify(savedSearches))
-
-      return newSearch
-    } catch (err) {
-      console.error('Error saving search:', err)
-      throw err
-    }
-  }, [])
-
-  const loadSavedSearch = useCallback((savedQuery: string, savedFilters: Record<string, unknown>) => {
-    setFilters(savedFilters)
-    return search(savedQuery, savedFilters as SearchFilters)
-  }, [search])
+  const loadSavedSearch = useCallback(
+    (savedQuery: string, savedFilters: Record<string, unknown>) => {
+      setFilters(savedFilters)
+      return search(savedQuery, savedFilters as SearchFilters)
+    },
+    [search]
+  )
 
   const loadSearchHistory = useCallback(() => {
     try {
       const history = localStorage.getItem('search_history')
       return history ? JSON.parse(history) : []
     } catch (err) {
-      console.error('Error loading search history:', err)
+      logger.error('Error loading search history:', err)
       return []
     }
   }, [])
@@ -154,7 +163,7 @@ export function useSearch() {
     try {
       localStorage.removeItem('search_history')
     } catch (err) {
-      console.error('Error clearing search history:', err)
+      logger.error('Error clearing search history:', err)
     }
   }, [])
 
@@ -192,7 +201,7 @@ function saveSearchHistory(query: string, filters: Record<string, unknown>) {
 
     localStorage.setItem('search_history', JSON.stringify(trimmed))
   } catch (err) {
-    console.error('Error saving search history:', err)
+    logger.error('Error saving search history:', err)
   }
 }
 

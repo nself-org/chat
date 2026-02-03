@@ -11,17 +11,7 @@
 import { useState, useRef, KeyboardEvent, ChangeEvent } from 'react'
 import { cn } from '@/lib/utils'
 import { WHATSAPP_COLORS } from '../config'
-import {
-  Smile,
-  Paperclip,
-  Send,
-  Mic,
-  X,
-  Camera,
-  Image,
-  File,
-  User,
-} from 'lucide-react'
+import { Smile, Paperclip, Send, Mic, X, Camera, Image, File, User } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -79,10 +69,7 @@ export function WhatsAppComposer({
     // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
-      textareaRef.current.style.height = `${Math.min(
-        textareaRef.current.scrollHeight,
-        150
-      )}px`
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 150)}px`
     }
   }
 
@@ -107,28 +94,28 @@ export function WhatsAppComposer({
     <div className={cn('relative', className)} style={{ backgroundColor: '#202C33' }}>
       {/* Reply Preview */}
       {replyTo && (
-        <div className="flex items-center gap-2 px-4 py-2 border-b border-[#2A3942]">
+        <div className="flex items-center gap-2 border-b border-[#2A3942] px-4 py-2">
           <div
-            className="w-1 h-full min-h-[32px] rounded"
+            className="h-full min-h-[32px] w-1 rounded"
             style={{ backgroundColor: replyTo.color || WHATSAPP_COLORS.primaryGreen }}
           />
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div
               className="text-sm font-medium"
               style={{ color: replyTo.color || WHATSAPP_COLORS.primaryGreen }}
             >
               {replyTo.senderName}
             </div>
-            <div className="text-sm truncate" style={{ color: WHATSAPP_COLORS.textSecondaryDark }}>
+            <div className="truncate text-sm" style={{ color: WHATSAPP_COLORS.textSecondaryDark }}>
               {replyTo.content}
             </div>
           </div>
           <button
             onClick={onCancelReply}
-            className="p-1 rounded-full hover:bg-white/5"
+            className="rounded-full p-1 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <X className="w-5 h-5" />
+            <X className="h-5 w-5" />
           </button>
         </div>
       )}
@@ -138,60 +125,42 @@ export function WhatsAppComposer({
         {/* Emoji Button */}
         <button
           onClick={onEmojiClick}
-          className="p-2 rounded-full hover:bg-white/5 flex-shrink-0 self-end"
+          className="flex-shrink-0 self-end rounded-full p-2 hover:bg-white/5"
           style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
         >
-          <Smile className="w-6 h-6" />
+          <Smile className="h-6 w-6" />
         </button>
 
         {/* Attachment Button */}
         <div className="relative flex-shrink-0 self-end">
           <button
             onClick={() => setShowAttachMenu(!showAttachMenu)}
-            className={cn(
-              'p-2 rounded-full transition-transform',
-              showAttachMenu && 'rotate-45'
-            )}
+            className={cn('rounded-full p-2 transition-transform', showAttachMenu && 'rotate-45')}
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Paperclip className="w-6 h-6" />
+            <Paperclip className="h-6 w-6" />
           </button>
 
           {/* Attachment Menu */}
           {showAttachMenu && (
             <div
-              className="absolute bottom-14 left-0 flex flex-col gap-2 p-2 rounded-lg shadow-lg"
+              className="absolute bottom-14 left-0 flex flex-col gap-2 rounded-lg p-2 shadow-lg"
               style={{ backgroundColor: '#233138' }}
             >
               <AttachButton
-                icon={<Image className="w-6 h-6" />}
+                icon={<Image className="h-6 w-6" />}
                 label="Photos & Videos"
                 color="#BF59CF"
               />
-              <AttachButton
-                icon={<Camera className="w-6 h-6" />}
-                label="Camera"
-                color="#F2566B"
-              />
-              <AttachButton
-                icon={<File className="w-6 h-6" />}
-                label="Document"
-                color="#5157AE"
-              />
-              <AttachButton
-                icon={<User className="w-6 h-6" />}
-                label="Contact"
-                color="#009DE2"
-              />
+              <AttachButton icon={<Camera className="h-6 w-6" />} label="Camera" color="#F2566B" />
+              <AttachButton icon={<File className="h-6 w-6" />} label="Document" color="#5157AE" />
+              <AttachButton icon={<User className="h-6 w-6" />} label="Contact" color="#009DE2" />
             </div>
           )}
         </div>
 
         {/* Text Input */}
-        <div
-          className="flex-1 rounded-lg px-3 py-2"
-          style={{ backgroundColor: '#2A3942' }}
-        >
+        <div className="flex-1 rounded-lg px-3 py-2" style={{ backgroundColor: '#2A3942' }}>
           <textarea
             ref={textareaRef}
             value={currentValue}
@@ -200,7 +169,7 @@ export function WhatsAppComposer({
             placeholder={placeholder}
             disabled={disabled}
             rows={1}
-            className="w-full bg-transparent text-[15px] resize-none focus:outline-none"
+            className="w-full resize-none bg-transparent text-[15px] focus:outline-none"
             style={{
               color: WHATSAPP_COLORS.textPrimaryDark,
               minHeight: 24,
@@ -214,20 +183,20 @@ export function WhatsAppComposer({
           <button
             onClick={handleSend}
             disabled={disabled}
-            className="p-2 rounded-full flex-shrink-0 self-end"
+            className="flex-shrink-0 self-end rounded-full p-2"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Send className="w-6 h-6" />
+            <Send className="h-6 w-6" />
           </button>
         ) : (
           <button
             onMouseDown={onVoiceStart}
             onMouseUp={onVoiceEnd}
             onMouseLeave={onVoiceEnd}
-            className="p-2 rounded-full flex-shrink-0 self-end"
+            className="flex-shrink-0 self-end rounded-full p-2"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Mic className="w-6 h-6" />
+            <Mic className="h-6 w-6" />
           </button>
         )}
       </div>
@@ -247,12 +216,9 @@ function AttachButton({
   onClick?: () => void
 }) {
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-3 p-2 rounded hover:bg-white/5"
-    >
+    <button onClick={onClick} className="flex items-center gap-3 rounded p-2 hover:bg-white/5">
       <div
-        className="w-12 h-12 rounded-full flex items-center justify-center text-white"
+        className="flex h-12 w-12 items-center justify-center rounded-full text-white"
         style={{ backgroundColor: color }}
       >
         {icon}

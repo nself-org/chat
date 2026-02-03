@@ -3,27 +3,32 @@
  * Manages identity keys, prekeys, and master keys for E2EE
  */
 
-import { crypto, PBKDF2_ITERATIONS } from './crypto';
-import { signalClient, type IdentityKeyPair, type SignedPreKeyPair, type PreKeyPair } from './signal-client';
-import type { ApolloClient } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { crypto, PBKDF2_ITERATIONS } from './crypto'
+import {
+  signalClient,
+  type IdentityKeyPair,
+  type SignedPreKeyPair,
+  type PreKeyPair,
+} from './signal-client'
+import type { ApolloClient } from '@apollo/client'
+import { gql } from '@apollo/client'
 
 // ============================================================================
 // TYPES
 // ============================================================================
 
 export interface MasterKeyInfo {
-  salt: Uint8Array;
-  keyHash: Uint8Array;
-  iterations: number;
+  salt: Uint8Array
+  keyHash: Uint8Array
+  iterations: number
 }
 
 export interface DeviceKeys {
-  deviceId: string;
-  registrationId: number;
-  identityKeyPair: IdentityKeyPair;
-  signedPreKey: SignedPreKeyPair;
-  oneTimePreKeys: PreKeyPair[];
+  deviceId: string
+  registrationId: number
+  identityKeyPair: IdentityKeyPair
+  signedPreKey: SignedPreKeyPair
+  oneTimePreKeys: PreKeyPair[]
 }
 
 // ============================================================================
@@ -53,7 +58,7 @@ const SAVE_IDENTITY_KEY = gql`
       device_id
     }
   }
-`;
+`
 
 const SAVE_SIGNED_PREKEY = gql`
   mutation SaveSignedPreKey(
@@ -81,7 +86,7 @@ const SAVE_SIGNED_PREKEY = gql`
       id
     }
   }
-`;
+`
 
 const SAVE_ONE_TIME_PREKEYS = gql`
   mutation SaveOneTimePreKeys($prekeys: [nchat_one_time_prekeys_insert_input!]!) {
@@ -95,7 +100,7 @@ const SAVE_ONE_TIME_PREKEYS = gql`
       affected_rows
     }
   }
-`;
+`
 
 const SAVE_MASTER_KEY = gql`
   mutation SaveMasterKey(
@@ -121,7 +126,7 @@ const SAVE_MASTER_KEY = gql`
       id
     }
   }
-`;
+`
 
 const GET_MASTER_KEY_INFO = gql`
   query GetMasterKeyInfo {
@@ -133,32 +138,30 @@ const GET_MASTER_KEY_INFO = gql`
       recovery_code_hash
     }
   }
-`;
+`
 
 const GET_IDENTITY_KEYS = gql`
   query GetIdentityKeys($deviceId: String!) {
-    nchat_identity_keys(
-      where: { device_id: { _eq: $deviceId }, is_active: { _eq: true } }
-    ) {
+    nchat_identity_keys(where: { device_id: { _eq: $deviceId }, is_active: { _eq: true } }) {
       device_id
       identity_key_public
       identity_key_private_encrypted
       registration_id
     }
   }
-`;
+`
 
 // ============================================================================
 // KEY MANAGER CLASS
 // ============================================================================
 
 export class KeyManager {
-  private apolloClient: ApolloClient<any>;
-  private masterKey: Uint8Array | null = null;
-  private deviceKeys: Map<string, DeviceKeys> = new Map();
+  private apolloClient: ApolloClient<any>
+  private masterKey: Uint8Array | null = null
+  private deviceKeys: Map<string, DeviceKeys> = new Map()
 
   constructor(apolloClient: ApolloClient<any>) {
-    this.apolloClient = apolloClient;
+    this.apolloClient = apolloClient
   }
 
   // ==========================================================================
@@ -174,36 +177,36 @@ export class KeyManager {
     const { data } = await this.apolloClient.query({
       query: GET_MASTER_KEY_INFO,
       fetchPolicy: 'network-only',
-    });
+    })
 
     if (data.nchat_user_master_keys.length > 0) {
       // Master key exists, derive and verify
-      const info = data.nchat_user_master_keys[0];
-      const salt = new Uint8Array(info.salt);
-      const keyHash = new Uint8Array(info.key_hash);
-      const iterations = info.iterations;
+      const info = data.nchat_user_master_keys[0]
+      const salt = new Uint8Array(info.salt)
+      const keyHash = new Uint8Array(info.key_hash)
+      const iterations = info.iterations
 
-      const derivedKey = await crypto.deriveMasterKey(password, salt, iterations);
+      const derivedKey = await crypto.deriveMasterKey(password, salt, iterations)
 
       if (!crypto.verifyMasterKey(derivedKey, keyHash)) {
-        throw new Error('Invalid password');
+        throw new Error('Invalid password')
       }
 
-      this.masterKey = derivedKey;
+      this.masterKey = derivedKey
     } else {
       // Create new master key
-      const salt = crypto.generateSalt();
-      const masterKey = await crypto.deriveMasterKey(password, salt);
-      const keyHash = crypto.hash256(masterKey);
+      const salt = crypto.generateSalt()
+      const masterKey = await crypto.deriveMasterKey(password, salt)
+      const keyHash = crypto.hash256(masterKey)
 
       // Generate recovery code
-      const recoveryCode = crypto.generateRecoveryCode();
-      const recoveryKey = await crypto.deriveRecoveryKey(recoveryCode, salt);
-      const recoveryCodeHash = crypto.hash256(crypto.stringToBytes(recoveryCode));
+      const recoveryCode = crypto.generateRecoveryCode()
+      const recoveryKey = await crypto.deriveRecoveryKey(recoveryCode, salt)
+      const recoveryCodeHash = crypto.hash256(crypto.stringToBytes(recoveryCode))
 
       // Encrypt master key with recovery key
-      const { ciphertext, iv } = await crypto.encryptAESGCM(masterKey, recoveryKey);
-      const masterKeyBackup = crypto.encodeEncryptedData(ciphertext, iv);
+      const { ciphertext, iv } = await crypto.encryptAESGCM(masterKey, recoveryKey)
+      const masterKeyBackup = crypto.encodeEncryptedData(ciphertext, iv)
 
       // Save to database
       await this.apolloClient.mutate({
@@ -215,13 +218,13 @@ export class KeyManager {
           masterKeyBackupEncrypted: Array.from(masterKeyBackup),
           recoveryCodeHash: Array.from(recoveryCodeHash),
         },
-      });
+      })
 
-      this.masterKey = masterKey;
+      this.masterKey = masterKey
 
       // Store recovery code securely (user should write this down)
       if (typeof window !== 'undefined') {
-        sessionStorage.setItem('e2ee_recovery_code', recoveryCode);
+        sessionStorage.setItem('e2ee_recovery_code', recoveryCode)
       }
     }
   }
@@ -233,29 +236,29 @@ export class KeyManager {
     const { data } = await this.apolloClient.query({
       query: GET_MASTER_KEY_INFO,
       fetchPolicy: 'network-only',
-    });
+    })
 
     if (data.nchat_user_master_keys.length === 0) {
-      throw new Error('No master key found');
+      throw new Error('No master key found')
     }
 
-    const info = data.nchat_user_master_keys[0];
-    const salt = new Uint8Array(info.salt);
-    const recoveryCodeHash = new Uint8Array(info.recovery_code_hash);
-    const masterKeyBackup = new Uint8Array(info.master_key_backup_encrypted);
+    const info = data.nchat_user_master_keys[0]
+    const salt = new Uint8Array(info.salt)
+    const recoveryCodeHash = new Uint8Array(info.recovery_code_hash)
+    const masterKeyBackup = new Uint8Array(info.master_key_backup_encrypted)
 
     // Verify recovery code
-    const computedHash = crypto.hash256(crypto.stringToBytes(recoveryCode));
+    const computedHash = crypto.hash256(crypto.stringToBytes(recoveryCode))
     if (!crypto.constantTimeEqual(computedHash, recoveryCodeHash)) {
-      throw new Error('Invalid recovery code');
+      throw new Error('Invalid recovery code')
     }
 
     // Derive recovery key and decrypt master key
-    const recoveryKey = await crypto.deriveRecoveryKey(recoveryCode, salt);
-    const { ciphertext, iv } = crypto.decodeEncryptedData(masterKeyBackup);
-    const masterKey = await crypto.decryptAESGCM(ciphertext, recoveryKey, iv);
+    const recoveryKey = await crypto.deriveRecoveryKey(recoveryCode, salt)
+    const { ciphertext, iv } = crypto.decodeEncryptedData(masterKeyBackup)
+    const masterKey = await crypto.decryptAESGCM(ciphertext, recoveryKey, iv)
 
-    this.masterKey = masterKey;
+    this.masterKey = masterKey
   }
 
   /**
@@ -263,9 +266,9 @@ export class KeyManager {
    */
   getMasterKey(): Uint8Array {
     if (!this.masterKey) {
-      throw new Error('Master key not initialized');
+      throw new Error('Master key not initialized')
     }
-    return this.masterKey;
+    return this.masterKey
   }
 
   /**
@@ -273,8 +276,8 @@ export class KeyManager {
    */
   clearMasterKey(): void {
     if (this.masterKey) {
-      crypto.secureWipe(this.masterKey);
-      this.masterKey = null;
+      crypto.secureWipe(this.masterKey)
+      this.masterKey = null
     }
   }
 
@@ -287,21 +290,21 @@ export class KeyManager {
    */
   async generateDeviceKeys(deviceId?: string): Promise<DeviceKeys> {
     if (!this.masterKey) {
-      throw new Error('Master key not initialized');
+      throw new Error('Master key not initialized')
     }
 
     // Generate or use provided device ID
-    const actualDeviceId = deviceId || crypto.generateDeviceId();
-    const registrationId = crypto.generateRegistrationId();
+    const actualDeviceId = deviceId || crypto.generateDeviceId()
+    const registrationId = crypto.generateRegistrationId()
 
     // Generate identity key pair
-    const identityKeyPair = await signalClient.generateIdentityKeyPair();
+    const identityKeyPair = await signalClient.generateIdentityKeyPair()
 
     // Generate signed prekey (ID 1 for first key)
-    const signedPreKey = await signalClient.generateSignedPreKey(identityKeyPair, 1);
+    const signedPreKey = await signalClient.generateSignedPreKey(identityKeyPair, 1)
 
     // Generate 100 one-time prekeys
-    const oneTimePreKeys = await signalClient.generateOneTimePreKeys(1, 100);
+    const oneTimePreKeys = await signalClient.generateOneTimePreKeys(1, 100)
 
     const deviceKeys: DeviceKeys = {
       deviceId: actualDeviceId,
@@ -309,12 +312,12 @@ export class KeyManager {
       identityKeyPair,
       signedPreKey,
       oneTimePreKeys,
-    };
+    }
 
     // Cache in memory
-    this.deviceKeys.set(actualDeviceId, deviceKeys);
+    this.deviceKeys.set(actualDeviceId, deviceKeys)
 
-    return deviceKeys;
+    return deviceKeys
   }
 
   /**
@@ -322,13 +325,15 @@ export class KeyManager {
    */
   async uploadDeviceKeys(deviceKeys: DeviceKeys): Promise<void> {
     if (!this.masterKey) {
-      throw new Error('Master key not initialized');
+      throw new Error('Master key not initialized')
     }
 
     // Encrypt identity private key
-    const { ciphertext: identityPrivateEncrypted, iv: identityIv } =
-      await crypto.encryptAESGCM(deviceKeys.identityKeyPair.privateKey, this.masterKey);
-    const identityPrivateEncoded = crypto.encodeEncryptedData(identityPrivateEncrypted, identityIv);
+    const { ciphertext: identityPrivateEncrypted, iv: identityIv } = await crypto.encryptAESGCM(
+      deviceKeys.identityKeyPair.privateKey,
+      this.masterKey
+    )
+    const identityPrivateEncoded = crypto.encodeEncryptedData(identityPrivateEncrypted, identityIv)
 
     // Save identity key
     await this.apolloClient.mutate({
@@ -339,15 +344,17 @@ export class KeyManager {
         identityKeyPrivateEncrypted: Array.from(identityPrivateEncoded),
         registrationId: deviceKeys.registrationId,
       },
-    });
+    })
 
     // Encrypt and save signed prekey
-    const { ciphertext: signedPrivateEncrypted, iv: signedIv } =
-      await crypto.encryptAESGCM(deviceKeys.signedPreKey.keyPair.privateKey, this.masterKey);
-    const signedPrivateEncoded = crypto.encodeEncryptedData(signedPrivateEncrypted, signedIv);
+    const { ciphertext: signedPrivateEncrypted, iv: signedIv } = await crypto.encryptAESGCM(
+      deviceKeys.signedPreKey.keyPair.privateKey,
+      this.masterKey
+    )
+    const signedPrivateEncoded = crypto.encodeEncryptedData(signedPrivateEncrypted, signedIv)
 
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7); // 7 days
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 7) // 7 days
 
     await this.apolloClient.mutate({
       mutation: SAVE_SIGNED_PREKEY,
@@ -359,27 +366,27 @@ export class KeyManager {
         signature: Array.from(deviceKeys.signedPreKey.signature),
         expiresAt: expiresAt.toISOString(),
       },
-    });
+    })
 
     // Encrypt and save one-time prekeys
     const prekeyObjects = await Promise.all(
       deviceKeys.oneTimePreKeys.map(async (prekey) => {
-        const { ciphertext, iv } = await crypto.encryptAESGCM(prekey.privateKey, this.masterKey!);
-        const privateKeyEncoded = crypto.encodeEncryptedData(ciphertext, iv);
+        const { ciphertext, iv } = await crypto.encryptAESGCM(prekey.privateKey, this.masterKey!)
+        const privateKeyEncoded = crypto.encodeEncryptedData(ciphertext, iv)
 
         return {
           device_id: deviceKeys.deviceId,
           key_id: prekey.keyId,
           public_key: Array.from(prekey.publicKey),
           private_key_encrypted: Array.from(privateKeyEncoded),
-        };
+        }
       })
-    );
+    )
 
     await this.apolloClient.mutate({
       mutation: SAVE_ONE_TIME_PREKEYS,
       variables: { prekeys: prekeyObjects },
-    });
+    })
   }
 
   /**
@@ -387,12 +394,12 @@ export class KeyManager {
    */
   async loadDeviceKeys(deviceId: string): Promise<DeviceKeys | null> {
     if (!this.masterKey) {
-      throw new Error('Master key not initialized');
+      throw new Error('Master key not initialized')
     }
 
     // Check cache first
     if (this.deviceKeys.has(deviceId)) {
-      return this.deviceKeys.get(deviceId)!;
+      return this.deviceKeys.get(deviceId)!
     }
 
     // Load from database
@@ -400,25 +407,23 @@ export class KeyManager {
       query: GET_IDENTITY_KEYS,
       variables: { deviceId },
       fetchPolicy: 'network-only',
-    });
+    })
 
     if (data.nchat_identity_keys.length === 0) {
-      return null;
+      return null
     }
 
-    const key = data.nchat_identity_keys[0];
+    const key = data.nchat_identity_keys[0]
 
     // Decrypt private key
-    const privateKeyEncoded = new Uint8Array(key.identity_key_private_encrypted);
-    const { ciphertext, iv } = crypto.decodeEncryptedData(privateKeyEncoded);
-    const privateKey = await crypto.decryptAESGCM(ciphertext, this.masterKey, iv);
+    const privateKeyEncoded = new Uint8Array(key.identity_key_private_encrypted)
+    const { ciphertext, iv } = crypto.decodeEncryptedData(privateKeyEncoded)
+    const privateKey = await crypto.decryptAESGCM(ciphertext, this.masterKey, iv)
 
     const identityKeyPair: IdentityKeyPair = {
       publicKey: new Uint8Array(key.identity_key_public),
       privateKey,
-    };
-
-    // TODO: Load signed prekey and one-time prekeys
+    }
 
     const deviceKeys: DeviceKeys = {
       deviceId: key.device_id,
@@ -430,12 +435,12 @@ export class KeyManager {
         signature: new Uint8Array(0),
       },
       oneTimePreKeys: [],
-    };
+    }
 
     // Cache in memory
-    this.deviceKeys.set(deviceId, deviceKeys);
+    this.deviceKeys.set(deviceId, deviceKeys)
 
-    return deviceKeys;
+    return deviceKeys
   }
 
   /**
@@ -443,32 +448,32 @@ export class KeyManager {
    */
   async rotateSignedPreKey(deviceId: string): Promise<void> {
     if (!this.masterKey) {
-      throw new Error('Master key not initialized');
+      throw new Error('Master key not initialized')
     }
 
-    const deviceKeys = await this.loadDeviceKeys(deviceId);
+    const deviceKeys = await this.loadDeviceKeys(deviceId)
     if (!deviceKeys) {
-      throw new Error('Device keys not found');
+      throw new Error('Device keys not found')
     }
 
     // Get next signed prekey ID
-    const nextKeyId = deviceKeys.signedPreKey.keyId + 1;
+    const nextKeyId = deviceKeys.signedPreKey.keyId + 1
 
     // Generate new signed prekey
     const newSignedPreKey = await signalClient.generateSignedPreKey(
       deviceKeys.identityKeyPair,
       nextKeyId
-    );
+    )
 
     // Encrypt and save
     const { ciphertext, iv } = await crypto.encryptAESGCM(
       newSignedPreKey.keyPair.privateKey,
       this.masterKey
-    );
-    const privateKeyEncoded = crypto.encodeEncryptedData(ciphertext, iv);
+    )
+    const privateKeyEncoded = crypto.encodeEncryptedData(ciphertext, iv)
 
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 7);
+    const expiresAt = new Date()
+    expiresAt.setDate(expiresAt.getDate() + 7)
 
     await this.apolloClient.mutate({
       mutation: SAVE_SIGNED_PREKEY,
@@ -480,10 +485,10 @@ export class KeyManager {
         signature: Array.from(newSignedPreKey.signature),
         expiresAt: expiresAt.toISOString(),
       },
-    });
+    })
 
     // Update cache
-    deviceKeys.signedPreKey = newSignedPreKey;
+    deviceKeys.signedPreKey = newSignedPreKey
   }
 
   /**
@@ -491,42 +496,42 @@ export class KeyManager {
    */
   async replenishOneTimePreKeys(deviceId: string, count: number = 50): Promise<void> {
     if (!this.masterKey) {
-      throw new Error('Master key not initialized');
+      throw new Error('Master key not initialized')
     }
 
-    const deviceKeys = await this.loadDeviceKeys(deviceId);
+    const deviceKeys = await this.loadDeviceKeys(deviceId)
     if (!deviceKeys) {
-      throw new Error('Device keys not found');
+      throw new Error('Device keys not found')
     }
 
     // Get next prekey ID
-    const startId = Math.max(...deviceKeys.oneTimePreKeys.map((k) => k.keyId), 0) + 1;
+    const startId = Math.max(...deviceKeys.oneTimePreKeys.map((k) => k.keyId), 0) + 1
 
     // Generate new prekeys
-    const newPrekeys = await signalClient.generateOneTimePreKeys(startId, count);
+    const newPrekeys = await signalClient.generateOneTimePreKeys(startId, count)
 
     // Encrypt and save
     const prekeyObjects = await Promise.all(
       newPrekeys.map(async (prekey) => {
-        const { ciphertext, iv } = await crypto.encryptAESGCM(prekey.privateKey, this.masterKey!);
-        const privateKeyEncoded = crypto.encodeEncryptedData(ciphertext, iv);
+        const { ciphertext, iv } = await crypto.encryptAESGCM(prekey.privateKey, this.masterKey!)
+        const privateKeyEncoded = crypto.encodeEncryptedData(ciphertext, iv)
 
         return {
           device_id: deviceId,
           key_id: prekey.keyId,
           public_key: Array.from(prekey.publicKey),
           private_key_encrypted: Array.from(privateKeyEncoded),
-        };
+        }
       })
-    );
+    )
 
     await this.apolloClient.mutate({
       mutation: SAVE_ONE_TIME_PREKEYS,
       variables: { prekeys: prekeyObjects },
-    });
+    })
 
     // Update cache
-    deviceKeys.oneTimePreKeys.push(...newPrekeys);
+    deviceKeys.oneTimePreKeys.push(...newPrekeys)
   }
 }
 
@@ -534,4 +539,4 @@ export class KeyManager {
 // EXPORTS
 // ============================================================================
 
-export default KeyManager;
+export default KeyManager

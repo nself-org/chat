@@ -12,14 +12,14 @@
 
 ## File Summary
 
-| File | Lines | Size | Purpose |
-|------|-------|------|---------|
-| `use-user.ts` | 618 | 16KB | User operations hook |
-| `UserProfile.tsx` | 382 | 13KB | Profile view component |
-| `user-settings.tsx` | 744 | 25KB | Main settings page |
-| `privacy-settings.tsx` | 554 | 18KB | Privacy controls |
-| `notification-settings.tsx` | 795 | 25KB | Notification preferences |
-| **Total** | **3,093** | **97KB** | - |
+| File                        | Lines     | Size     | Purpose                  |
+| --------------------------- | --------- | -------- | ------------------------ |
+| `use-user.ts`               | 618       | 16KB     | User operations hook     |
+| `UserProfile.tsx`           | 382       | 13KB     | Profile view component   |
+| `user-settings.tsx`         | 744       | 25KB     | Main settings page       |
+| `privacy-settings.tsx`      | 554       | 18KB     | Privacy controls         |
+| `notification-settings.tsx` | 795       | 25KB     | Notification preferences |
+| **Total**                   | **3,093** | **97KB** | -                        |
 
 ---
 
@@ -112,6 +112,7 @@
 ## Data Flow
 
 ### 1. Profile View
+
 ```
 User clicks profile
   └─► UserProfile component renders
@@ -121,6 +122,7 @@ User clicks profile
 ```
 
 ### 2. Edit Profile
+
 ```
 User clicks "Edit Profile"
   └─► EditProfileForm shows
@@ -133,6 +135,7 @@ User clicks "Edit Profile"
 ```
 
 ### 3. Upload Avatar
+
 ```
 User selects image file
   └─► File converted to preview
@@ -145,6 +148,7 @@ User selects image file
 ```
 
 ### 4. Privacy Settings
+
 ```
 User changes privacy toggle
   └─► Local state updated
@@ -157,6 +161,7 @@ User changes privacy toggle
 ```
 
 ### 5. Block User
+
 ```
 User clicks "Block"
   └─► Confirmation dialog shows
@@ -168,6 +173,7 @@ User clicks "Block"
 ```
 
 ### 6. Export Data
+
 ```
 User clicks "Export Data"
   └─► useUser.exportData(options)
@@ -178,6 +184,7 @@ User clicks "Export Data"
 ```
 
 ### 7. Delete Account
+
 ```
 User clicks "Delete Account"
   └─► Warning dialog shows
@@ -212,6 +219,7 @@ App
 ## State Structure
 
 ### User Store (Zustand)
+
 ```typescript
 {
   currentUser: UserProfile | null,
@@ -227,6 +235,7 @@ App
 ```
 
 ### Privacy Settings State
+
 ```typescript
 {
   showOnlineStatus: boolean,
@@ -249,6 +258,7 @@ App
 ```
 
 ### Notification Settings State
+
 ```typescript
 {
   enabled: boolean,
@@ -292,6 +302,7 @@ App
 ## Feature Map
 
 ### Profile Features (15)
+
 1. ✅ View full profile
 2. ✅ Edit profile inline
 3. ✅ Upload avatar
@@ -309,6 +320,7 @@ App
 15. ✅ Action buttons (message, block, report)
 
 ### Privacy Features (12)
+
 16. ✅ Show online status
 17. ✅ Who can see last seen
 18. ✅ Show typing indicator
@@ -323,6 +335,7 @@ App
 27. ✅ DND schedule
 
 ### Notification Features (18)
+
 28. ✅ Master notification toggle
 29. ✅ Desktop notifications
 30. ✅ Desktop sound
@@ -343,6 +356,7 @@ App
 45. ✅ Quiet hours schedule
 
 ### Account Features (8)
+
 46. ✅ Change email
 47. ✅ Change password
 48. ✅ Two-factor auth
@@ -353,6 +367,7 @@ App
 53. ✅ Export user data
 
 ### Appearance Features (7)
+
 54. ✅ Theme selection (light/dark/system)
 55. ✅ Compact mode
 56. ✅ Show timestamps
@@ -362,6 +377,7 @@ App
 60. ✅ Date format
 
 ### Data Features (2)
+
 61. ✅ Export all data
 62. ✅ Delete account
 
@@ -372,6 +388,7 @@ App
 ## Integration Checklist
 
 ### Backend Integration
+
 - [ ] Connect GraphQL mutations
 - [ ] Connect GraphQL queries
 - [ ] Connect GraphQL subscriptions (real-time)
@@ -383,6 +400,7 @@ App
 - [ ] Implement push notifications
 
 ### Testing
+
 - [ ] Unit tests for useUser hook
 - [ ] Unit tests for components
 - [ ] Integration tests for settings flow
@@ -392,6 +410,7 @@ App
 - [ ] Performance tests
 
 ### Monitoring
+
 - [ ] Error tracking (Sentry integration)
 - [ ] Analytics events
 - [ ] Performance metrics
@@ -402,18 +421,21 @@ App
 ## Performance Considerations
 
 ### Bundle Size Optimization
+
 - Components use code splitting ready structure
 - Heavy components (image cropper) not yet added
 - Tree-shakeable exports
 - Minimal external dependencies
 
 ### Runtime Performance
+
 - Debounced form inputs (ready to add)
 - Optimistic updates in store
 - Lazy loading ready
 - Memo-ized components where needed
 
 ### Data Efficiency
+
 - Fetch only necessary user fields
 - Cache user data in store
 - Incremental updates
@@ -424,24 +446,28 @@ App
 ## Security Considerations
 
 ### Authentication
+
 - Password verification for sensitive actions
 - Session validation
 - Token refresh handling
 - Logout on account deletion
 
 ### Authorization
+
 - RBAC checks for profile viewing
 - Owner-only settings protection
 - Admin-only user management
 - Guest restrictions
 
 ### Data Protection
+
 - Input sanitization
 - XSS prevention
 - CSRF protection
 - Rate limiting (backend)
 
 ### Privacy
+
 - Respect privacy settings in queries
 - Blocked user filtering
 - DND mode enforcement
@@ -452,24 +478,28 @@ App
 ## Accessibility Features
 
 ### Keyboard Navigation
+
 - Tab order optimization
 - Focus management
 - Keyboard shortcuts ready
 - Escape key handling
 
 ### Screen Readers
+
 - ARIA labels on all interactive elements
 - Semantic HTML structure
 - Live region announcements
 - Role attributes
 
 ### Visual
+
 - High contrast support
 - Reduced motion support
 - Focus indicators
 - Color-blind friendly
 
 ### Forms
+
 - Clear error messages
 - Associated labels
 - Field validation feedback
@@ -480,6 +510,7 @@ App
 ## Browser Compatibility
 
 ### Tested/Supported
+
 - Chrome/Edge 90+
 - Firefox 88+
 - Safari 14+
@@ -487,6 +518,7 @@ App
 - Chrome Mobile 90+
 
 ### Features Used
+
 - CSS Grid
 - Flexbox
 - CSS Custom Properties
@@ -500,6 +532,7 @@ App
 ## Future Enhancements
 
 ### Phase 1 (Quick Wins)
+
 - [ ] Avatar cropping UI
 - [ ] Cover image adjustment
 - [ ] Profile themes
@@ -507,6 +540,7 @@ App
 - [ ] Keyboard shortcuts
 
 ### Phase 2 (Advanced)
+
 - [ ] Multiple profile pictures
 - [ ] Profile video
 - [ ] Custom profile fields
@@ -514,6 +548,7 @@ App
 - [ ] Social media integrations
 
 ### Phase 3 (Enterprise)
+
 - [ ] SSO integration
 - [ ] LDAP sync
 - [ ] Profile templates
@@ -525,6 +560,7 @@ App
 ## Support & Documentation
 
 ### User Documentation
+
 - Profile editing guide
 - Privacy settings explained
 - Notification preferences guide
@@ -532,6 +568,7 @@ App
 - Data export instructions
 
 ### Developer Documentation
+
 - Component API reference
 - Hook usage examples
 - GraphQL schema

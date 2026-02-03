@@ -10,7 +10,7 @@ import {
   ParticipantRole,
   ParticipantStatus,
   InviteParticipantsInput,
-} from './meeting-types';
+} from './meeting-types'
 
 // ============================================================================
 // Constants
@@ -21,14 +21,14 @@ export const ROLE_HIERARCHY: Record<ParticipantRole, number> = {
   'co-host': 3,
   presenter: 2,
   participant: 1,
-};
+}
 
 export const ROLE_LABELS: Record<ParticipantRole, string> = {
   host: 'Host',
   'co-host': 'Co-host',
   presenter: 'Presenter',
   participant: 'Participant',
-};
+}
 
 export const STATUS_LABELS: Record<ParticipantStatus, string> = {
   invited: 'Invited',
@@ -37,7 +37,7 @@ export const STATUS_LABELS: Record<ParticipantStatus, string> = {
   tentative: 'Tentative',
   joined: 'In Meeting',
   left: 'Left',
-};
+}
 
 export const STATUS_COLORS: Record<ParticipantStatus, string> = {
   invited: 'text-muted-foreground',
@@ -46,7 +46,7 @@ export const STATUS_COLORS: Record<ParticipantStatus, string> = {
   tentative: 'text-yellow-600',
   joined: 'text-blue-600',
   left: 'text-muted-foreground',
-};
+}
 
 // ============================================================================
 // Role & Permission Utilities
@@ -56,7 +56,7 @@ export const STATUS_COLORS: Record<ParticipantStatus, string> = {
  * Check if a user has a specific role or higher
  */
 export function hasRole(userRole: ParticipantRole, requiredRole: ParticipantRole): boolean {
-  return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[requiredRole];
+  return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[requiredRole]
 }
 
 /**
@@ -64,20 +64,26 @@ export function hasRole(userRole: ParticipantRole, requiredRole: ParticipantRole
  */
 export function canPerformAction(
   userRole: ParticipantRole,
-  action: 'mute-others' | 'remove-participant' | 'assign-co-host' | 'end-meeting' | 'record' | 'screen-share'
+  action:
+    | 'mute-others'
+    | 'remove-participant'
+    | 'assign-co-host'
+    | 'end-meeting'
+    | 'record'
+    | 'screen-share'
 ): boolean {
   switch (action) {
     case 'mute-others':
     case 'remove-participant':
-      return hasRole(userRole, 'co-host');
+      return hasRole(userRole, 'co-host')
     case 'assign-co-host':
     case 'end-meeting':
     case 'record':
-      return hasRole(userRole, 'host');
+      return hasRole(userRole, 'host')
     case 'screen-share':
-      return hasRole(userRole, 'presenter');
+      return hasRole(userRole, 'presenter')
     default:
-      return false;
+      return false
   }
 }
 
@@ -85,16 +91,16 @@ export function canPerformAction(
  * Get available roles that a user can assign
  */
 export function getAssignableRoles(assignerRole: ParticipantRole): ParticipantRole[] {
-  const roles: ParticipantRole[] = [];
-  const assignerLevel = ROLE_HIERARCHY[assignerRole];
+  const roles: ParticipantRole[] = []
+  const assignerLevel = ROLE_HIERARCHY[assignerRole]
 
   if (assignerLevel >= ROLE_HIERARCHY['host']) {
-    roles.push('co-host', 'presenter', 'participant');
+    roles.push('co-host', 'presenter', 'participant')
   } else if (assignerLevel >= ROLE_HIERARCHY['co-host']) {
-    roles.push('presenter', 'participant');
+    roles.push('presenter', 'participant')
   }
 
-  return roles;
+  return roles
 }
 
 // ============================================================================
@@ -105,31 +111,25 @@ export function getAssignableRoles(assignerRole: ParticipantRole): ParticipantRo
  * Check if a user is the host of a meeting
  */
 export function isHost(meeting: Meeting, userId: string): boolean {
-  return meeting.hostId === userId;
+  return meeting.hostId === userId
 }
 
 /**
  * Get a participant's role in a meeting
  */
-export function getParticipantRole(
-  meeting: Meeting,
-  userId: string
-): ParticipantRole | null {
+export function getParticipantRole(meeting: Meeting, userId: string): ParticipantRole | null {
   if (meeting.hostId === userId) {
-    return 'host';
+    return 'host'
   }
-  const participant = meeting.participants.find((p) => p.userId === userId);
-  return participant?.role ?? null;
+  const participant = meeting.participants.find((p) => p.userId === userId)
+  return participant?.role ?? null
 }
 
 /**
  * Check if a user is a participant in a meeting
  */
 export function isParticipant(meeting: Meeting, userId: string): boolean {
-  return (
-    meeting.hostId === userId ||
-    meeting.participants.some((p) => p.userId === userId)
-  );
+  return meeting.hostId === userId || meeting.participants.some((p) => p.userId === userId)
 }
 
 /**
@@ -141,13 +141,13 @@ export function groupParticipantsByStatus(
   return participants.reduce(
     (acc, p) => {
       if (!acc[p.status]) {
-        acc[p.status] = [];
+        acc[p.status] = []
       }
-      acc[p.status].push(p);
-      return acc;
+      acc[p.status].push(p)
+      return acc
     },
     {} as Record<ParticipantStatus, MeetingParticipant[]>
-  );
+  )
 }
 
 /**
@@ -159,13 +159,13 @@ export function groupParticipantsByRole(
   return participants.reduce(
     (acc, p) => {
       if (!acc[p.role]) {
-        acc[p.role] = [];
+        acc[p.role] = []
       }
-      acc[p.role].push(p);
-      return acc;
+      acc[p.role].push(p)
+      return acc
     },
     {} as Record<ParticipantRole, MeetingParticipant[]>
-  );
+  )
 }
 
 /**
@@ -174,24 +174,24 @@ export function groupParticipantsByRole(
 export function sortParticipants(participants: MeetingParticipant[]): MeetingParticipant[] {
   return [...participants].sort((a, b) => {
     // First sort by role (higher roles first)
-    const roleComparison = ROLE_HIERARCHY[b.role] - ROLE_HIERARCHY[a.role];
+    const roleComparison = ROLE_HIERARCHY[b.role] - ROLE_HIERARCHY[a.role]
     if (roleComparison !== 0) {
-      return roleComparison;
+      return roleComparison
     }
     // Then sort alphabetically by name
-    return (a.displayName ?? '').localeCompare(b.displayName ?? '');
-  });
+    return (a.displayName ?? '').localeCompare(b.displayName ?? '')
+  })
 }
 
 /**
  * Get response statistics for a meeting
  */
 export function getResponseStats(participants: MeetingParticipant[]): {
-  total: number;
-  accepted: number;
-  declined: number;
-  tentative: number;
-  pending: number;
+  total: number
+  accepted: number
+  declined: number
+  tentative: number
+  pending: number
 } {
   const stats = {
     total: participants.length,
@@ -199,26 +199,26 @@ export function getResponseStats(participants: MeetingParticipant[]): {
     declined: 0,
     tentative: 0,
     pending: 0,
-  };
+  }
 
   participants.forEach((p) => {
     switch (p.status) {
       case 'accepted':
-        stats.accepted++;
-        break;
+        stats.accepted++
+        break
       case 'declined':
-        stats.declined++;
-        break;
+        stats.declined++
+        break
       case 'tentative':
-        stats.tentative++;
-        break;
+        stats.tentative++
+        break
       case 'invited':
-        stats.pending++;
-        break;
+        stats.pending++
+        break
     }
-  });
+  })
 
-  return stats;
+  return stats
 }
 
 // ============================================================================
@@ -233,7 +233,7 @@ export function createParticipants(
   userIds: string[],
   role: ParticipantRole = 'participant'
 ): Omit<MeetingParticipant, 'id' | 'displayName' | 'avatarUrl' | 'email'>[] {
-  const now = new Date().toISOString();
+  const now = new Date().toISOString()
   return userIds.map((userId) => ({
     meetingId,
     userId,
@@ -243,7 +243,7 @@ export function createParticipants(
     respondedAt: null,
     joinedAt: null,
     leftAt: null,
-  }));
+  }))
 }
 
 /**
@@ -253,23 +253,23 @@ export function validateInviteInput(
   input: InviteParticipantsInput,
   existingParticipants: MeetingParticipant[]
 ): { isValid: boolean; errors: string[] } {
-  const errors: string[] = [];
+  const errors: string[] = []
 
   if (!input.userIds?.length) {
-    errors.push('At least one user must be invited');
+    errors.push('At least one user must be invited')
   }
 
   // Check for duplicate invites
-  const existingUserIds = new Set(existingParticipants.map((p) => p.userId));
-  const duplicates = input.userIds.filter((id) => existingUserIds.has(id));
+  const existingUserIds = new Set(existingParticipants.map((p) => p.userId))
+  const duplicates = input.userIds.filter((id) => existingUserIds.has(id))
   if (duplicates.length > 0) {
-    errors.push(`${duplicates.length} user(s) are already participants`);
+    errors.push(`${duplicates.length} user(s) are already participants`)
   }
 
   return {
     isValid: errors.length === 0,
     errors,
-  };
+  }
 }
 
 // ============================================================================
@@ -282,28 +282,28 @@ export function validateInviteInput(
 export function canChangeResponse(participant: MeetingParticipant, meeting: Meeting): boolean {
   // Cannot change if meeting has ended
   if (meeting.status === 'ended' || meeting.status === 'cancelled') {
-    return false;
+    return false
   }
   // Cannot change if already joined
   if (participant.status === 'joined') {
-    return false;
+    return false
   }
-  return true;
+  return true
 }
 
 /**
  * Get available response options for a participant
  */
 export function getResponseOptions(): Array<{
-  value: ParticipantStatus;
-  label: string;
-  icon: string;
+  value: ParticipantStatus
+  label: string
+  icon: string
 }> {
   return [
     { value: 'accepted', label: 'Accept', icon: 'check' },
     { value: 'declined', label: 'Decline', icon: 'x' },
     { value: 'tentative', label: 'Maybe', icon: 'help-circle' },
-  ];
+  ]
 }
 
 // ============================================================================
@@ -318,27 +318,27 @@ export function generateInviteMessage(
   hostName: string,
   recipientName: string
 ): string {
-  const startDate = new Date(meeting.scheduledStartAt);
-  const endDate = new Date(meeting.scheduledEndAt);
+  const startDate = new Date(meeting.scheduledStartAt)
+  const endDate = new Date(meeting.scheduledEndAt)
 
   const dateStr = startDate.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
-  });
+  })
 
   const startTime = startDate.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
-  });
+  })
 
   const endTime = endDate.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
     hour12: true,
-  });
+  })
 
   return `Hi ${recipientName},
 
@@ -352,35 +352,32 @@ ${hostName} has invited you to a meeting.
 ${meeting.description ? `**Details:** ${meeting.description}\n` : ''}
 **Join:** ${meeting.meetingLink}
 
-Please respond to let the organizer know if you can attend.`;
+Please respond to let the organizer know if you can attend.`
 }
 
 /**
  * Generate meeting update message
  */
-export function generateUpdateMessage(
-  meeting: Meeting,
-  changedFields: string[]
-): string {
+export function generateUpdateMessage(meeting: Meeting, changedFields: string[]): string {
   const changes = changedFields.map((field) => {
     switch (field) {
       case 'scheduledStartAt':
       case 'scheduledEndAt':
-        return 'Time has been changed';
+        return 'Time has been changed'
       case 'title':
-        return 'Title has been updated';
+        return 'Title has been updated'
       case 'description':
-        return 'Description has been updated';
+        return 'Description has been updated'
       default:
-        return `${field} has been updated`;
+        return `${field} has been updated`
     }
-  });
+  })
 
   return `The meeting "${meeting.title}" has been updated:
 
 ${changes.map((c) => `- ${c}`).join('\n')}
 
-Please check the meeting details for the latest information.`;
+Please check the meeting details for the latest information.`
 }
 
 /**
@@ -391,5 +388,5 @@ export function generateCancellationMessage(
   hostName: string,
   reason?: string
 ): string {
-  return `The meeting "${meeting.title}" scheduled for ${new Date(meeting.scheduledStartAt).toLocaleDateString()} has been cancelled by ${hostName}.${reason ? `\n\nReason: ${reason}` : ''}`;
+  return `The meeting "${meeting.title}" scheduled for ${new Date(meeting.scheduledStartAt).toLocaleDateString()} has been cancelled by ${hostName}.${reason ? `\n\nReason: ${reason}` : ''}`
 }

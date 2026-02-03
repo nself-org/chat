@@ -262,10 +262,7 @@ export function getContrastingForeground(backgroundColor: string): string {
 /**
  * Generate a color scale from a base color
  */
-export function generateColorScale(
-  hex: string,
-  steps: number = 10
-): Record<number, string> {
+export function generateColorScale(hex: string, steps: number = 10): Record<number, string> {
   const scale: Record<number, string> = {}
   const hsl = hexToHsl(hex)
 
@@ -380,9 +377,7 @@ export function generateGradient(
   colors: string[],
   direction: 'to right' | 'to bottom' | 'to bottom right' = 'to right'
 ): string {
-  const stops = colors
-    .map((color, i) => `${color} ${(i / (colors.length - 1)) * 100}%`)
-    .join(', ')
+  const stops = colors.map((color, i) => `${color} ${(i / (colors.length - 1)) * 100}%`).join(', ')
   return `linear-gradient(${direction}, ${stops})`
 }
 

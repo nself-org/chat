@@ -42,8 +42,9 @@ pnpm ios:run
 ## Testing Required
 
 Test on:
+
 - iPhone 12 Mini (5.4")
-- iPhone 13 (6.1") 
+- iPhone 13 (6.1")
 - iPhone 14 Pro (6.1")
 - iPhone 15 Pro Max (6.7") ⭐
 - iPad Pro 12.9"
@@ -51,6 +52,7 @@ Test on:
 ## App Store Assets
 
 Screenshots needed (capture via Xcode simulator):
+
 - 6.7" display: 1290 x 2796
 - 6.5" display: 1242 x 2688
 - 5.5" display: 1242 x 2208

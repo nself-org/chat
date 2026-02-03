@@ -565,7 +565,10 @@ export function codeBlock(code: string, language = ''): string {
  * Format text as blockquote
  */
 export function blockquote(text: string): string {
-  return text.split('\n').map((line) => `> ${line}`).join('\n')
+  return text
+    .split('\n')
+    .map((line) => `> ${line}`)
+    .join('\n')
 }
 
 /**

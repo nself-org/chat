@@ -175,13 +175,8 @@ export default function ChannelPage({ params }: ChannelPageProps) {
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   // Store actions
-  const {
-    setActiveChannel,
-    toggleMuteChannel,
-    toggleStarChannel,
-    mutedChannels,
-    starredChannels,
-  } = useChannelStore()
+  const { setActiveChannel, toggleMuteChannel, toggleStarChannel, mutedChannels, starredChannels } =
+    useChannelStore()
 
   // Typing indicator hook - integrates with WebSocket and store
   const { typingUsers, stopTyping } = useChannelTyping({
@@ -257,9 +252,7 @@ export default function ChannelPage({ params }: ChannelPageProps) {
         createdAt: new Date(),
         isEdited: false,
         replyToId,
-        replyTo: replyToId
-          ? messages.find((m) => m.id === replyToId)
-          : undefined,
+        replyTo: replyToId ? messages.find((m) => m.id === replyToId) : undefined,
       }
 
       setMessages((prev) => [...prev, newMessage])
@@ -271,9 +264,7 @@ export default function ChannelPage({ params }: ChannelPageProps) {
   const handleEditMessage = useCallback((messageId: string, content: string) => {
     setMessages((prev) =>
       prev.map((msg) =>
-        msg.id === messageId
-          ? { ...msg, content, isEdited: true, editedAt: new Date() }
-          : msg
+        msg.id === messageId ? { ...msg, content, isEdited: true, editedAt: new Date() } : msg
       )
     )
   }, [])
@@ -404,9 +395,7 @@ export default function ChannelPage({ params }: ChannelPageProps) {
   // Handle unpin message
   const handleUnpinMessage = useCallback((messageId: string) => {
     setMessages((prev) =>
-      prev.map((msg) =>
-        msg.id === messageId ? { ...msg, isPinned: false } : msg
-      )
+      prev.map((msg) => (msg.id === messageId ? { ...msg, isPinned: false } : msg))
     )
     setPinnedMessages((prev) => prev.filter((msg) => msg.id !== messageId))
   }, [])
@@ -447,7 +436,7 @@ export default function ChannelPage({ params }: ChannelPageProps) {
   return (
     <div className="flex h-full">
       {/* Main Chat Area */}
-      <div className="flex flex-1 flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Channel Header */}
         <ChannelHeader
           channel={channel}
@@ -523,7 +512,13 @@ export default function ChannelPage({ params }: ChannelPageProps) {
 
 function generateMockMessages(
   channel: Channel,
-  currentUser: { id: string; username: string; displayName: string; avatarUrl?: string; role: string } | null
+  currentUser: {
+    id: string
+    username: string
+    displayName: string
+    avatarUrl?: string
+    role: string
+  } | null
 ): Message[] {
   const baseMessages: Partial<Message>[] = [
     {

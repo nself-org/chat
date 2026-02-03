@@ -239,13 +239,7 @@ class MessageDeliveryHandler {
   private handleReadEvent(payload: MessageReadPayload): void {
     const { messageId, userId, readCount, totalRecipients, readAt } = payload
 
-    handleMessageRead(
-      messageId,
-      userId,
-      new Date(readAt),
-      readCount,
-      totalRecipients
-    )
+    handleMessageRead(messageId, userId, new Date(readAt), readCount, totalRecipients)
   }
 
   private handleFailedEvent(payload: MessageFailedPayload): void {
@@ -277,10 +271,7 @@ class MessageDeliveryHandler {
     const retried = this.retryMessage(clientMessageId)
     if (!retried) {
       handleMessageFailed(clientMessageId, 'Message acknowledgement timeout')
-      this.options.onMessageFailed(
-        clientMessageId,
-        'Message acknowledgement timeout'
-      )
+      this.options.onMessageFailed(clientMessageId, 'Message acknowledgement timeout')
     }
   }
 

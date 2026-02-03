@@ -10,12 +10,7 @@ import { useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -167,9 +162,7 @@ export function InviteLinkDisplay({
   const [showQR, setShowQR] = useState(showQRCode)
 
   const link = buildInviteLink(code)
-  const title = invite?.channelName
-    ? `Join ${invite.channelName}`
-    : 'You have been invited'
+  const title = invite?.channelName ? `Join ${invite.channelName}` : 'You have been invited'
 
   // Handle copy
   const handleCopy = useCallback(async () => {
@@ -199,9 +192,7 @@ export function InviteLinkDisplay({
   )
 
   // Metadata
-  const expiresIn = invite?.expiresAt
-    ? formatTimeUntilExpiry(invite.expiresAt)
-    : null
+  const expiresIn = invite?.expiresAt ? formatTimeUntilExpiry(invite.expiresAt) : null
   const remainingUses =
     invite?.maxUses !== null && invite?.maxUses !== undefined
       ? getRemainingUses(invite.maxUses, invite.useCount)
@@ -213,20 +204,13 @@ export function InviteLinkDisplay({
   if (variant === 'compact') {
     return (
       <div className={cn('flex items-center gap-2', className)}>
-        <div className="flex-1 min-w-0">
-          <code className="text-sm bg-muted px-2 py-1 rounded truncate block">
-            {link}
-          </code>
+        <div className="min-w-0 flex-1">
+          <code className="block truncate rounded bg-muted px-2 py-1 text-sm">{link}</code>
         </div>
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={handleCopy}
-                className="shrink-0"
-              >
+              <Button variant="outline" size="icon" onClick={handleCopy} className="shrink-0">
                 {copied ? (
                   <Check className="h-4 w-4 text-green-600" />
                 ) : (
@@ -234,9 +218,7 @@ export function InviteLinkDisplay({
                 )}
               </Button>
             </TooltipTrigger>
-            <TooltipContent>
-              {copied ? 'Copied!' : 'Copy link'}
-            </TooltipContent>
+            <TooltipContent>{copied ? 'Copied!' : 'Copy link'}</TooltipContent>
           </Tooltip>
         </TooltipProvider>
       </div>
@@ -246,35 +228,24 @@ export function InviteLinkDisplay({
   // Card variant
   if (variant === 'card') {
     return (
-      <div
-        className={cn(
-          'border rounded-xl p-4 bg-card space-y-4',
-          className
-        )}
-      >
+      <div className={cn('space-y-4 rounded-xl border bg-card p-4', className)}>
         {/* Link Display */}
         <div className="space-y-2">
-          <label className="text-sm font-medium text-muted-foreground">
-            Invite Link
-          </label>
+          <label className="text-sm font-medium text-muted-foreground">Invite Link</label>
           <div className="flex items-center gap-2">
             <div className="relative flex-1">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={link}
-                readOnly
-                className="pl-9 font-mono text-sm"
-              />
+              <Link2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input value={link} readOnly className="pl-9 font-mono text-sm" />
             </div>
             <Button onClick={handleCopy} variant="outline">
               {copied ? (
                 <>
-                  <Check className="h-4 w-4 mr-2 text-green-600" />
+                  <Check className="mr-2 h-4 w-4 text-green-600" />
                   Copied
                 </>
               ) : (
                 <>
-                  <Copy className="h-4 w-4 mr-2" />
+                  <Copy className="mr-2 h-4 w-4" />
                   Copy
                 </>
               )}
@@ -285,11 +256,7 @@ export function InviteLinkDisplay({
         {/* Metadata */}
         {showMeta && (expiresIn || remainingUses !== null) && (
           <div className="flex flex-wrap gap-2">
-            {expiresIn && (
-              <Badge variant="secondary">
-                Expires in {expiresIn}
-              </Badge>
-            )}
+            {expiresIn && <Badge variant="secondary">Expires in {expiresIn}</Badge>}
             {remainingUses !== null && (
               <Badge variant="secondary">
                 {remainingUses === 0
@@ -302,19 +269,13 @@ export function InviteLinkDisplay({
 
         {/* Share Options */}
         {showShare && (
-          <div className="flex items-center gap-2 pt-2 border-t">
-            <span className="text-sm text-muted-foreground mr-2">
-              Share via:
-            </span>
+          <div className="flex items-center gap-2 border-t pt-2">
+            <span className="mr-2 text-sm text-muted-foreground">Share via:</span>
             {shareMethods.slice(0, 4).map((method) => (
               <TooltipProvider key={method.id}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleShareMethod(method)}
-                    >
+                    <Button variant="ghost" size="icon" onClick={() => handleShareMethod(method)}>
                       {method.icon}
                     </Button>
                   </TooltipTrigger>
@@ -326,13 +287,9 @@ export function InviteLinkDisplay({
         )}
 
         {/* QR Code Toggle */}
-        <div className="flex items-center justify-between pt-2 border-t">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setShowQR(!showQR)}
-          >
-            <QrCodeIcon className="h-4 w-4 mr-2" />
+        <div className="flex items-center justify-between border-t pt-2">
+          <Button variant="ghost" size="sm" onClick={() => setShowQR(!showQR)}>
+            <QrCodeIcon className="mr-2 h-4 w-4" />
             {showQR ? 'Hide QR Code' : 'Show QR Code'}
           </Button>
         </div>
@@ -353,18 +310,14 @@ export function InviteLinkDisplay({
       {/* Link Input with Copy Button */}
       <div className="flex items-center gap-2">
         <div className="relative flex-1">
-          <Input
-            value={link}
-            readOnly
-            className="pr-10 font-mono text-sm"
-          />
+          <Input value={link} readOnly className="pr-10 font-mono text-sm" />
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+                  className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
                   onClick={handleCopy}
                 >
                   {copied ? (
@@ -374,9 +327,7 @@ export function InviteLinkDisplay({
                   )}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
-                {copied ? 'Copied!' : 'Copy link'}
-              </TooltipContent>
+              <TooltipContent>{copied ? 'Copied!' : 'Copy link'}</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </div>
@@ -386,17 +337,15 @@ export function InviteLinkDisplay({
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">
-                <Share2 className="h-4 w-4 mr-2" />
+                <Share2 className="mr-2 h-4 w-4" />
                 Share
-                <ChevronDown className="h-4 w-4 ml-2" />
+                <ChevronDown className="ml-2 h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               {shareMethods.map((method, index) => (
                 <div key={method.id}>
-                  {index === shareMethods.length - 1 && (
-                    <DropdownMenuSeparator />
-                  )}
+                  {index === shareMethods.length - 1 && <DropdownMenuSeparator />}
                   <DropdownMenuItem onClick={() => handleShareMethod(method)}>
                     {method.icon}
                     <span className="ml-2">{method.label}</span>
@@ -411,11 +360,7 @@ export function InviteLinkDisplay({
       {/* Metadata Badges */}
       {showMeta && (expiresIn || remainingUses !== null) && (
         <div className="flex flex-wrap gap-2">
-          {expiresIn && (
-            <Badge variant="outline">
-              Expires in {expiresIn}
-            </Badge>
-          )}
+          {expiresIn && <Badge variant="outline">Expires in {expiresIn}</Badge>}
           {remainingUses !== null && (
             <Badge variant="outline">
               {remainingUses === 0

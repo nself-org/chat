@@ -8,7 +8,7 @@
 
 import { useAuth } from '@/contexts/auth-context'
 import { PinManage } from '@/components/security/PinManage'
-import { Card, CardContent} from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import { Shield } from 'lucide-react'
 
 export default function PinLockSettingsPage() {
@@ -33,13 +33,13 @@ export default function PinLockSettingsPage() {
       <div className="space-y-6">
         {/* Page Header */}
         <div className="space-y-2">
-          <h1 className="text-3xl font-bold flex items-center gap-2">
+          <h1 className="flex items-center gap-2 text-3xl font-bold">
             <Shield className="h-8 w-8" />
             PIN Lock
           </h1>
           <p className="text-muted-foreground">
-            Secure your account with a PIN lock. Your app will require a PIN to unlock after
-            periods of inactivity or when closed.
+            Secure your account with a PIN lock. Your app will require a PIN to unlock after periods
+            of inactivity or when closed.
           </p>
         </div>
 

@@ -10,21 +10,21 @@ import {
   generateQRCode,
   verifyTOTP,
   formatSecretForDisplay,
-  getRemainingSeconds
+  getRemainingSeconds,
 } from '@/lib/2fa/totp'
 
 import {
   generateBackupCodes,
   hashBackupCode,
   verifyBackupCode,
-  formatBackupCodesForDownload
+  formatBackupCodesForDownload,
 } from '@/lib/2fa/backup-codes'
 
 import {
   getDeviceInfo,
   generateDeviceFingerprint,
   createDeviceRecord,
-  getDeviceTrustExpiry
+  getDeviceTrustExpiry,
 } from '@/lib/2fa/device-fingerprint'
 ```
 
@@ -35,7 +35,7 @@ import {
 ```typescript
 const { secret, base32, otpauthUrl } = generateTOTPSecret({
   name: 'user@example.com',
-  issuer: 'nchat'
+  issuer: 'nchat',
 })
 
 // secret: ASCII encoded secret
@@ -255,7 +255,7 @@ clearDeviceTrust()
 // 1. Generate secret and QR code
 const { secret, base32, otpauthUrl } = generateTOTPSecret({
   name: email,
-  issuer: 'nchat'
+  issuer: 'nchat',
 })
 
 const qrCodeDataUrl = await generateQRCode(otpauthUrl)
@@ -273,15 +273,13 @@ const isValid = verifyTOTP(userCode, secret)
 
 if (isValid) {
   // 5. Hash backup codes for storage
-  const hashedCodes = await Promise.all(
-    backupCodes.map(code => hashBackupCode(code))
-  )
+  const hashedCodes = await Promise.all(backupCodes.map((code) => hashBackupCode(code)))
 
   // 6. Save to database
   await saveToDatabase({
     userId,
     secret,
-    backupCodes: hashedCodes
+    backupCodes: hashedCodes,
   })
 }
 ```
@@ -324,7 +322,7 @@ if (isValid && rememberDevice) {
     userId,
     deviceId: device.deviceId,
     deviceName: device.deviceName,
-    trustedUntil: getDeviceTrustExpiry(30)
+    trustedUntil: getDeviceTrustExpiry(30),
   })
 
   markDeviceAsTrusted()
@@ -344,9 +342,7 @@ if (shouldRegenerateCodes(status.backupCodes.unused)) {
 
 // Regenerate codes
 const newCodes = generateBackupCodes(10)
-const hashedCodes = await Promise.all(
-  newCodes.map(code => hashBackupCode(code))
-)
+const hashedCodes = await Promise.all(newCodes.map((code) => hashBackupCode(code)))
 
 // Delete old codes and insert new ones
 await deleteAllBackupCodes(userId)
@@ -390,6 +386,7 @@ try {
 ## Security Notes
 
 ### TOTP
+
 - ✅ Uses industry-standard RFC 6238
 - ✅ 32-byte secret (256 bits of entropy)
 - ✅ 30-second time window
@@ -398,6 +395,7 @@ try {
 - ⚠️ Secret must be transmitted securely (HTTPS)
 
 ### Backup Codes
+
 - ✅ Bcrypt hashing (10 rounds)
 - ✅ Single-use (invalidated after use)
 - ✅ 8-character hex codes (16^8 combinations)
@@ -405,6 +403,7 @@ try {
 - ⚠️ Generate new codes if < 3 remaining
 
 ### Device Fingerprinting
+
 - ✅ Multiple signals for uniqueness
 - ✅ SHA-256 hashing
 - ⚠️ Can be spoofed by determined attacker
@@ -413,23 +412,20 @@ try {
 
 ## Performance
 
-| Operation | Time |
-|-----------|------|
-| Generate TOTP secret | <1ms |
-| Generate QR code | ~50ms |
-| Verify TOTP code | <1ms |
-| Generate backup codes | <1ms |
-| Hash backup code | ~100ms (bcrypt) |
-| Verify backup code | ~100ms (bcrypt) |
-| Generate fingerprint | <10ms |
+| Operation             | Time            |
+| --------------------- | --------------- |
+| Generate TOTP secret  | <1ms            |
+| Generate QR code      | ~50ms           |
+| Verify TOTP code      | <1ms            |
+| Generate backup codes | <1ms            |
+| Hash backup code      | ~100ms (bcrypt) |
+| Verify backup code    | ~100ms (bcrypt) |
+| Generate fingerprint  | <10ms           |
 
 ## Testing
 
 ```typescript
-import {
-  generateTestTOTPSetup,
-  generateTOTPToken
-} from '@/lib/2fa/totp'
+import { generateTestTOTPSetup, generateTOTPToken } from '@/lib/2fa/totp'
 
 // Generate complete test setup
 const setup = await generateTestTOTPSetup('test@example.com')
@@ -446,10 +442,10 @@ expect(verifyTOTP(validToken, secret)).toBe(true)
 
 ```json
 {
-  "speakeasy": "^2.0.0",      // TOTP implementation
-  "qrcode": "^1.5.4",         // QR code generation
-  "bcryptjs": "^2.4.3",       // Hashing (isomorphic)
-  "crypto": "built-in"        // Node.js crypto module
+  "speakeasy": "^2.0.0", // TOTP implementation
+  "qrcode": "^1.5.4", // QR code generation
+  "bcryptjs": "^2.4.3", // Hashing (isomorphic)
+  "crypto": "built-in" // Node.js crypto module
 }
 ```
 

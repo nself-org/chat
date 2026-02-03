@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Hash, Users, Lock, Check, Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import type { OnboardingStepProps, SuggestedChannel } from '@/lib/onboarding/onboarding-types';
+import { useState } from 'react'
+import { Hash, Users, Lock, Check, Star } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import type { OnboardingStepProps, SuggestedChannel } from '@/lib/onboarding/onboarding-types'
 
 interface JoinChannelsStepProps extends OnboardingStepProps {
-  suggestedChannels?: SuggestedChannel[];
-  selectedChannelIds?: string[];
-  onSelectionChange?: (channelIds: string[]) => void;
+  suggestedChannels?: SuggestedChannel[]
+  selectedChannelIds?: string[]
+  onSelectionChange?: (channelIds: string[]) => void
 }
 
 // Default suggested channels for demo
@@ -96,7 +96,7 @@ const defaultSuggestedChannels: SuggestedChannel[] = [
     isDefault: true,
     isRecommended: false,
   },
-];
+]
 
 export function JoinChannelsStep({
   onNext,
@@ -111,72 +111,70 @@ export function JoinChannelsStep({
   const [selectedIds, setSelectedIds] = useState<string[]>(
     initialSelected ??
       suggestedChannels.filter((c) => c.isDefault || c.isRecommended).map((c) => c.id)
-  );
-  const [searchQuery, setSearchQuery] = useState('');
+  )
+  const [searchQuery, setSearchQuery] = useState('')
 
   const toggleChannel = (channelId: string) => {
-    const channel = suggestedChannels.find((c) => c.id === channelId);
-    if (channel?.isDefault) return; // Can't unselect default channels
+    const channel = suggestedChannels.find((c) => c.id === channelId)
+    if (channel?.isDefault) return // Can't unselect default channels
 
     const newSelected = selectedIds.includes(channelId)
       ? selectedIds.filter((id) => id !== channelId)
-      : [...selectedIds, channelId];
+      : [...selectedIds, channelId]
 
-    setSelectedIds(newSelected);
-    onSelectionChange?.(newSelected);
-  };
+    setSelectedIds(newSelected)
+    onSelectionChange?.(newSelected)
+  }
 
   const selectAll = () => {
-    const allIds = suggestedChannels.map((c) => c.id);
-    setSelectedIds(allIds);
-    onSelectionChange?.(allIds);
-  };
+    const allIds = suggestedChannels.map((c) => c.id)
+    setSelectedIds(allIds)
+    onSelectionChange?.(allIds)
+  }
 
   const selectRecommended = () => {
     const recommendedIds = suggestedChannels
       .filter((c) => c.isDefault || c.isRecommended)
-      .map((c) => c.id);
-    setSelectedIds(recommendedIds);
-    onSelectionChange?.(recommendedIds);
-  };
+      .map((c) => c.id)
+    setSelectedIds(recommendedIds)
+    onSelectionChange?.(recommendedIds)
+  }
 
   const filteredChannels = suggestedChannels.filter(
     (channel) =>
       channel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       channel.description?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  )
 
   // Group channels by category
   const groupedChannels = filteredChannels.reduce(
     (acc, channel) => {
-      const category = channel.category || 'Other';
+      const category = channel.category || 'Other'
       if (!acc[category]) {
-        acc[category] = [];
+        acc[category] = []
       }
-      acc[category].push(channel);
-      return acc;
+      acc[category].push(channel)
+      return acc
     },
     {} as Record<string, SuggestedChannel[]>
-  );
+  )
 
   return (
     <div className="flex flex-col px-4 py-6">
       {/* Header */}
-      <div className="text-center mb-6">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4">
-          <Hash className="w-8 h-8 text-primary" />
+      <div className="mb-6 text-center">
+        <div className="from-primary/20 to-primary/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br">
+          <Hash className="h-8 w-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-          Join Channels
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">Join Channels</h2>
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Select the channels you'd like to join. You can always join more later.
         </p>
       </div>
 
       {/* Search and Quick Actions */}
-      <div className="max-w-lg mx-auto w-full mb-4">
-        <div className="flex flex-col sm:flex-row gap-3 mb-4">
+      <div className="mx-auto mb-4 w-full max-w-lg">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row">
           <Input
             placeholder="Search channels..."
             value={searchQuery}
@@ -199,16 +197,16 @@ export function JoinChannelsStep({
       </div>
 
       {/* Channel List */}
-      <div className="max-w-lg mx-auto w-full flex-1 overflow-y-auto max-h-[400px] space-y-6">
+      <div className="mx-auto max-h-[400px] w-full max-w-lg flex-1 space-y-6 overflow-y-auto">
         {Object.entries(groupedChannels).map(([category, channels]) => (
           <div key={category}>
-            <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wide mb-2">
+            <h3 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-500">
               {category}
             </h3>
             <div className="space-y-2">
               {channels.map((channel) => {
-                const isSelected = selectedIds.includes(channel.id);
-                const isDefault = channel.isDefault;
+                const isSelected = selectedIds.includes(channel.id)
+                const isDefault = channel.isDefault
 
                 return (
                   <button
@@ -217,29 +215,29 @@ export function JoinChannelsStep({
                     onClick={() => toggleChannel(channel.id)}
                     disabled={isDefault}
                     className={cn(
-                      'w-full flex items-start gap-3 p-3 rounded-lg border-2 transition-all text-left',
+                      'flex w-full items-start gap-3 rounded-lg border-2 p-3 text-left transition-all',
                       isSelected
-                        ? 'border-primary bg-primary/5'
-                        : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600',
+                        ? 'bg-primary/5 border-primary'
+                        : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600',
                       isDefault && 'cursor-default'
                     )}
                   >
                     {/* Selection Indicator */}
                     <div
                       className={cn(
-                        'w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5',
+                        'mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded border-2',
                         isSelected
                           ? 'border-primary bg-primary'
                           : 'border-zinc-300 dark:border-zinc-600'
                       )}
                     >
-                      {isSelected && <Check className="w-3 h-3 text-white" />}
+                      {isSelected && <Check className="h-3 w-3 text-white" />}
                     </div>
 
                     {/* Channel Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
-                        <Hash className="w-4 h-4 text-zinc-400" />
+                    <div className="min-w-0 flex-1">
+                      <div className="mb-1 flex items-center gap-2">
+                        <Hash className="h-4 w-4 text-zinc-400" />
                         <span className="font-medium text-zinc-900 dark:text-white">
                           {channel.name}
                         </span>
@@ -250,38 +248,38 @@ export function JoinChannelsStep({
                         )}
                         {channel.isRecommended && !channel.isDefault && (
                           <Badge variant="outline" className="text-xs">
-                            <Star className="w-3 h-3 mr-1" />
+                            <Star className="mr-1 h-3 w-3" />
                             Recommended
                           </Badge>
                         )}
                       </div>
                       {channel.description && (
-                        <p className="text-sm text-zinc-600 dark:text-zinc-400 truncate">
+                        <p className="truncate text-sm text-zinc-600 dark:text-zinc-400">
                           {channel.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-1 mt-1 text-xs text-zinc-500">
-                        <Users className="w-3 h-3" />
+                      <div className="mt-1 flex items-center gap-1 text-xs text-zinc-500">
+                        <Users className="h-3 w-3" />
                         <span>{channel.memberCount} members</span>
                       </div>
                     </div>
                   </button>
-                );
+                )
               })}
             </div>
           </div>
         ))}
 
         {filteredChannels.length === 0 && (
-          <div className="text-center py-8 text-zinc-500">
-            <Hash className="w-12 h-12 mx-auto mb-2 opacity-30" />
+          <div className="py-8 text-center text-zinc-500">
+            <Hash className="mx-auto mb-2 h-12 w-12 opacity-30" />
             <p>No channels found matching your search.</p>
           </div>
         )}
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-between items-center mt-6 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+      <div className="mt-6 flex items-center justify-between border-t border-zinc-200 pt-6 dark:border-zinc-700">
         <div>
           {!isFirst && (
             <Button variant="ghost" onClick={onPrev}>
@@ -302,5 +300,5 @@ export function JoinChannelsStep({
         </div>
       </div>
     </div>
-  );
+  )
 }

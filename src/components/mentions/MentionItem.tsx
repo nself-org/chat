@@ -13,7 +13,12 @@ import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { getInitials, getPresenceColor } from '@/stores/user-store'
 import type { MentionSuggestion, SuggestionType } from '@/lib/mentions/mention-types'
-import type { MentionableUser, MentionableChannel, GroupMentionInfo, MentionableRole } from '@/lib/mentions/mention-types'
+import type {
+  MentionableUser,
+  MentionableChannel,
+  GroupMentionInfo,
+  MentionableRole,
+} from '@/lib/mentions/mention-types'
 
 // ============================================================================
 // Types
@@ -37,12 +42,7 @@ export interface MentionItemProps {
 // ============================================================================
 
 const HashIcon = () => (
-  <svg
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -53,12 +53,7 @@ const HashIcon = () => (
 )
 
 const LockIcon = () => (
-  <svg
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -69,12 +64,7 @@ const LockIcon = () => (
 )
 
 const UsersIcon = () => (
-  <svg
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -85,12 +75,7 @@ const UsersIcon = () => (
 )
 
 const RadioIcon = () => (
-  <svg
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -101,12 +86,7 @@ const RadioIcon = () => (
 )
 
 const ShieldIcon = () => (
-  <svg
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -117,12 +97,7 @@ const ShieldIcon = () => (
 )
 
 const BotIcon = () => (
-  <svg
-    className="h-4 w-4"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
+  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -162,45 +137,41 @@ function getIconForSuggestion(suggestion: MentionSuggestion) {
 // Component
 // ============================================================================
 
-export const MentionItem = forwardRef<HTMLButtonElement, MentionItemProps>(
-  function MentionItem(
-    { suggestion, isSelected = false, onClick, onMouseEnter, className },
-    ref
-  ) {
-    const renderContent = () => {
-      switch (suggestion.type) {
-        case 'user':
-          return <UserMentionItem user={suggestion.data as MentionableUser} />
-        case 'channel':
-          return <ChannelMentionItem channel={suggestion.data as MentionableChannel} />
-        case 'group':
-          return <GroupMentionItem group={suggestion.data as GroupMentionInfo} />
-        case 'role':
-          return <RoleMentionItem role={suggestion.data as MentionableRole} />
-        default:
-          return null
-      }
+export const MentionItem = forwardRef<HTMLButtonElement, MentionItemProps>(function MentionItem(
+  { suggestion, isSelected = false, onClick, onMouseEnter, className },
+  ref
+) {
+  const renderContent = () => {
+    switch (suggestion.type) {
+      case 'user':
+        return <UserMentionItem user={suggestion.data as MentionableUser} />
+      case 'channel':
+        return <ChannelMentionItem channel={suggestion.data as MentionableChannel} />
+      case 'group':
+        return <GroupMentionItem group={suggestion.data as GroupMentionInfo} />
+      case 'role':
+        return <RoleMentionItem role={suggestion.data as MentionableRole} />
+      default:
+        return null
     }
-
-    return (
-      <button
-        ref={ref}
-        type="button"
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        className={cn(
-          'flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
-          isSelected
-            ? 'bg-accent text-accent-foreground'
-            : 'hover:bg-accent/50',
-          className
-        )}
-      >
-        {renderContent()}
-      </button>
-    )
   }
-)
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      className={cn(
+        'flex w-full items-center gap-3 rounded-md px-3 py-2 text-left transition-colors',
+        isSelected ? 'text-accent-foreground bg-accent' : 'hover:bg-accent/50',
+        className
+      )}
+    >
+      {renderContent()}
+    </button>
+  )
+})
 
 // ============================================================================
 // Sub-components
@@ -211,21 +182,15 @@ interface UserMentionItemProps {
 }
 
 function UserMentionItem({ user }: UserMentionItemProps) {
-  const presenceColor = user.presence
-    ? getPresenceColor(user.presence)
-    : '#6B7280'
+  const presenceColor = user.presence ? getPresenceColor(user.presence) : '#6B7280'
 
   return (
     <>
       {/* Avatar with presence indicator */}
       <div className="relative">
         <Avatar className="h-8 w-8">
-          {user.avatarUrl && (
-            <AvatarImage src={user.avatarUrl} alt={user.displayName} />
-          )}
-          <AvatarFallback className="text-xs">
-            {getInitials(user.displayName)}
-          </AvatarFallback>
+          {user.avatarUrl && <AvatarImage src={user.avatarUrl} alt={user.displayName} />}
+          <AvatarFallback className="text-xs">{getInitials(user.displayName)}</AvatarFallback>
         </Avatar>
         {/* Online status indicator */}
         {user.presence && (
@@ -236,26 +201,20 @@ function UserMentionItem({ user }: UserMentionItemProps) {
         )}
         {/* Bot indicator */}
         {user.isBot && (
-          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-primary-foreground">
+          <span className="text-primary-foreground absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary">
             <BotIcon />
           </span>
         )}
       </div>
 
       {/* User info */}
-      <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm truncate">{user.displayName}</div>
-        <div className="text-xs text-muted-foreground truncate">
-          @{user.username}
-        </div>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium">{user.displayName}</div>
+        <div className="truncate text-xs text-muted-foreground">@{user.username}</div>
       </div>
 
       {/* Role badge */}
-      {user.role && (
-        <span className="text-xs text-muted-foreground capitalize">
-          {user.role}
-        </span>
-      )}
+      {user.role && <span className="text-xs capitalize text-muted-foreground">{user.role}</span>}
 
       {/* Presence label for screen readers */}
       {user.presence && (
@@ -286,19 +245,15 @@ function ChannelMentionItem({ channel }: ChannelMentionItemProps) {
       </div>
 
       {/* Channel info */}
-      <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm truncate">{channel.name}</div>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium">{channel.name}</div>
         {channel.description && (
-          <div className="text-xs text-muted-foreground truncate">
-            {channel.description}
-          </div>
+          <div className="truncate text-xs text-muted-foreground">{channel.description}</div>
         )}
       </div>
 
       {/* Type indicator */}
-      {channel.type === 'private' && (
-        <span className="text-xs text-muted-foreground">Private</span>
-      )}
+      {channel.type === 'private' && <span className="text-xs text-muted-foreground">Private</span>}
     </>
   )
 }
@@ -311,22 +266,20 @@ function GroupMentionItem({ group }: GroupMentionItemProps) {
   return (
     <>
       {/* Group icon */}
-      <div className="flex h-8 w-8 items-center justify-center rounded-md bg-warning/10 text-warning">
+      <div className="bg-warning/10 text-warning flex h-8 w-8 items-center justify-center rounded-md">
         {group.icon === 'users' && <UsersIcon />}
         {group.icon === 'radio' && <RadioIcon />}
         {group.icon === 'hash' && <HashIcon />}
       </div>
 
       {/* Group info */}
-      <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm truncate">{group.label}</div>
-        <div className="text-xs text-muted-foreground truncate">
-          {group.description}
-        </div>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium">{group.label}</div>
+        <div className="truncate text-xs text-muted-foreground">{group.description}</div>
       </div>
 
       {/* Warning indicator */}
-      <span className="text-xs text-warning">Notifies many</span>
+      <span className="text-warning text-xs">Notifies many</span>
     </>
   )
 }
@@ -350,8 +303,8 @@ function RoleMentionItem({ role }: RoleMentionItemProps) {
       </div>
 
       {/* Role info */}
-      <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm truncate">@{role.name}</div>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium">@{role.name}</div>
         <div className="text-xs text-muted-foreground">
           {role.memberCount} {role.memberCount === 1 ? 'member' : 'members'}
         </div>

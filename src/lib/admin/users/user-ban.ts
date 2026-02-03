@@ -50,9 +50,10 @@ export async function unbanUser(data: UnbanUserInput): Promise<UserActionResult>
 // Ban History Operations
 // ============================================================================
 
-export async function fetchBannedUsers(
-  pagination?: { page: number; perPage: number }
-): Promise<{ users: AdminUser[]; total: number }> {
+export async function fetchBannedUsers(pagination?: {
+  page: number
+  perPage: number
+}): Promise<{ users: AdminUser[]; total: number }> {
   const params = new URLSearchParams()
   if (pagination) {
     params.set('page', pagination.page.toString())
@@ -262,10 +263,7 @@ export function canBanUser(adminUser: AdminUser, targetUser: AdminUser): boolean
   if (adminUser.id === targetUser.id) return false
 
   // Admins cannot ban other admins
-  if (
-    adminUser.role.name === 'admin' &&
-    ['admin', 'owner'].includes(targetUser.role.name)
-  ) {
+  if (adminUser.role.name === 'admin' && ['admin', 'owner'].includes(targetUser.role.name)) {
     return false
   }
 

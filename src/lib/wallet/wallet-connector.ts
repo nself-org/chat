@@ -9,7 +9,7 @@
 // Types
 // ============================================================================
 
-export type WalletProvider = 'metamask' | 'coinbase' | 'walletconnect';
+export type WalletProvider = 'metamask' | 'coinbase' | 'walletconnect'
 
 export type ChainId =
   | '0x1' // Ethereum Mainnet
@@ -20,64 +20,64 @@ export type ChainId =
   | '0xa4b1' // Arbitrum One
   | '0xa' // Optimism
   | '0x38' // BNB Smart Chain
-  | '0x2105'; // Base
+  | '0x2105' // Base
 
 export interface ChainConfig {
-  chainId: ChainId;
-  chainName: string;
+  chainId: ChainId
+  chainName: string
   nativeCurrency: {
-    name: string;
-    symbol: string;
-    decimals: number;
-  };
-  rpcUrls: string[];
-  blockExplorerUrls: string[];
+    name: string
+    symbol: string
+    decimals: number
+  }
+  rpcUrls: string[]
+  blockExplorerUrls: string[]
 }
 
 export interface WalletState {
-  isConnected: boolean;
-  address: string | null;
-  chainId: ChainId | null;
-  provider: WalletProvider | null;
-  balance: string | null;
+  isConnected: boolean
+  address: string | null
+  chainId: ChainId | null
+  provider: WalletProvider | null
+  balance: string | null
 }
 
 export interface ConnectOptions {
-  provider?: WalletProvider;
-  chainId?: ChainId;
+  provider?: WalletProvider
+  chainId?: ChainId
 }
 
 export interface SignMessageOptions {
-  message: string;
-  address?: string;
+  message: string
+  address?: string
 }
 
 export interface SignedMessage {
-  message: string;
-  signature: string;
-  address: string;
+  message: string
+  signature: string
+  address: string
 }
 
 export interface WalletError {
-  code: number;
-  message: string;
-  provider: WalletProvider | null;
+  code: number
+  message: string
+  provider: WalletProvider | null
 }
 
 export interface WalletConnectorResult<T> {
-  success: boolean;
-  data?: T;
-  error?: WalletError;
+  success: boolean
+  data?: T
+  error?: WalletError
 }
 
 export interface EthereumProvider {
-  isMetaMask?: boolean;
-  isCoinbaseWallet?: boolean;
-  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-  on: (event: string, callback: (...args: unknown[]) => void) => void;
-  removeListener: (event: string, callback: (...args: unknown[]) => void) => void;
-  selectedAddress?: string | null;
-  chainId?: string;
+  isMetaMask?: boolean
+  isCoinbaseWallet?: boolean
+  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>
+  on: (event: string, callback: (...args: unknown[]) => void) => void
+  removeListener: (event: string, callback: (...args: unknown[]) => void) => void
+  selectedAddress?: string | null
+  chainId?: string
 }
 
 // ============================================================================
@@ -148,7 +148,7 @@ export const SUPPORTED_CHAINS: Record<ChainId, ChainConfig> = {
     rpcUrls: ['https://mainnet.base.org'],
     blockExplorerUrls: ['https://basescan.org'],
   },
-};
+}
 
 // ============================================================================
 // Error Codes
@@ -164,7 +164,7 @@ export const WALLET_ERROR_CODES = {
   INVALID_PARAMS: -32602,
   INTERNAL_ERROR: -32603,
   CHAIN_NOT_ADDED: 4902,
-} as const;
+} as const
 
 // ============================================================================
 // Wallet Connector Class
@@ -177,13 +177,13 @@ export class WalletConnector {
     chainId: null,
     provider: null,
     balance: null,
-  };
+  }
 
-  private eventListeners: Map<string, Set<(...args: unknown[]) => void>> = new Map();
-  private ethereumProvider: EthereumProvider | null = null;
+  private eventListeners: Map<string, Set<(...args: unknown[]) => void>> = new Map()
+  private ethereumProvider: EthereumProvider | null = null
 
   constructor() {
-    this.detectProvider();
+    this.detectProvider()
   }
 
   // ==========================================================================
@@ -194,8 +194,11 @@ export class WalletConnector {
    * Detect available wallet providers
    */
   private detectProvider(): void {
-    if (typeof window !== 'undefined' && (window as unknown as { ethereum?: EthereumProvider }).ethereum) {
-      this.ethereumProvider = (window as unknown as { ethereum: EthereumProvider }).ethereum;
+    if (
+      typeof window !== 'undefined' &&
+      (window as unknown as { ethereum?: EthereumProvider }).ethereum
+    ) {
+      this.ethereumProvider = (window as unknown as { ethereum: EthereumProvider }).ethereum
     }
   }
 
@@ -203,46 +206,46 @@ export class WalletConnector {
    * Check if MetaMask is available
    */
   isMetaMaskAvailable(): boolean {
-    return this.ethereumProvider?.isMetaMask === true;
+    return this.ethereumProvider?.isMetaMask === true
   }
 
   /**
    * Check if Coinbase Wallet is available
    */
   isCoinbaseWalletAvailable(): boolean {
-    return this.ethereumProvider?.isCoinbaseWallet === true;
+    return this.ethereumProvider?.isCoinbaseWallet === true
   }
 
   /**
    * Check if WalletConnect is available (always available as it's QR-based)
    */
   isWalletConnectAvailable(): boolean {
-    return true;
+    return true
   }
 
   /**
    * Get available wallet providers
    */
   getAvailableProviders(): WalletProvider[] {
-    const providers: WalletProvider[] = [];
-    if (this.isMetaMaskAvailable()) providers.push('metamask');
-    if (this.isCoinbaseWalletAvailable()) providers.push('coinbase');
-    if (this.isWalletConnectAvailable()) providers.push('walletconnect');
-    return providers;
+    const providers: WalletProvider[] = []
+    if (this.isMetaMaskAvailable()) providers.push('metamask')
+    if (this.isCoinbaseWalletAvailable()) providers.push('coinbase')
+    if (this.isWalletConnectAvailable()) providers.push('walletconnect')
+    return providers
   }
 
   /**
    * Get the Ethereum provider
    */
   getEthereumProvider(): EthereumProvider | null {
-    return this.ethereumProvider;
+    return this.ethereumProvider
   }
 
   /**
    * Set the Ethereum provider (for testing)
    */
   setEthereumProvider(provider: EthereumProvider | null): void {
-    this.ethereumProvider = provider;
+    this.ethereumProvider = provider
   }
 
   // ==========================================================================
@@ -253,7 +256,7 @@ export class WalletConnector {
    * Connect to a wallet
    */
   async connect(options: ConnectOptions = {}): Promise<WalletConnectorResult<WalletState>> {
-    const provider = options.provider ?? 'metamask';
+    const provider = options.provider ?? 'metamask'
 
     if (provider === 'metamask' || provider === 'coinbase') {
       if (!this.ethereumProvider) {
@@ -264,13 +267,13 @@ export class WalletConnector {
             message: `${provider === 'metamask' ? 'MetaMask' : 'Coinbase Wallet'} not found. Please install the extension.`,
             provider,
           },
-        };
+        }
       }
 
       try {
         const accounts = (await this.ethereumProvider.request({
           method: 'eth_requestAccounts',
-        })) as string[];
+        })) as string[]
 
         if (!accounts || accounts.length === 0) {
           return {
@@ -280,22 +283,22 @@ export class WalletConnector {
               message: 'No accounts found',
               provider,
             },
-          };
+          }
         }
 
         const chainId = (await this.ethereumProvider.request({
           method: 'eth_chainId',
-        })) as ChainId;
+        })) as ChainId
 
         // Switch chain if requested
         if (options.chainId && options.chainId !== chainId) {
-          const switchResult = await this.switchChain(options.chainId);
+          const switchResult = await this.switchChain(options.chainId)
           if (!switchResult.success) {
-            return switchResult as unknown as WalletConnectorResult<WalletState>;
+            return switchResult as unknown as WalletConnectorResult<WalletState>
           }
         }
 
-        const balance = await this.getBalance(accounts[0]);
+        const balance = await this.getBalance(accounts[0])
 
         this.state = {
           isConnected: true,
@@ -303,17 +306,17 @@ export class WalletConnector {
           chainId: options.chainId ?? chainId,
           provider,
           balance: balance.data ?? null,
-        };
+        }
 
-        this.setupEventListeners();
-        this.emit('connect', this.state);
+        this.setupEventListeners()
+        this.emit('connect', this.state)
 
         return {
           success: true,
           data: this.state,
-        };
+        }
       } catch (error) {
-        const err = error as { code?: number; message?: string };
+        const err = error as { code?: number; message?: string }
         return {
           success: false,
           error: {
@@ -321,7 +324,7 @@ export class WalletConnector {
             message: err.message ?? 'Failed to connect',
             provider,
           },
-        };
+        }
       }
     }
 
@@ -333,16 +336,16 @@ export class WalletConnector {
         message: 'WalletConnect requires additional configuration',
         provider,
       },
-    };
+    }
   }
 
   /**
    * Disconnect from wallet
    */
   async disconnect(): Promise<WalletConnectorResult<void>> {
-    this.removeEventListeners();
+    this.removeEventListeners()
 
-    const previousState = { ...this.state };
+    const previousState = { ...this.state }
 
     this.state = {
       isConnected: false,
@@ -350,39 +353,39 @@ export class WalletConnector {
       chainId: null,
       provider: null,
       balance: null,
-    };
+    }
 
-    this.emit('disconnect', previousState);
+    this.emit('disconnect', previousState)
 
-    return { success: true };
+    return { success: true }
   }
 
   /**
    * Check if wallet is connected
    */
   isConnected(): boolean {
-    return this.state.isConnected;
+    return this.state.isConnected
   }
 
   /**
    * Get current wallet state
    */
   getState(): WalletState {
-    return { ...this.state };
+    return { ...this.state }
   }
 
   /**
    * Get connected address
    */
   getAddress(): string | null {
-    return this.state.address;
+    return this.state.address
   }
 
   /**
    * Get current chain ID
    */
   getChainId(): ChainId | null {
-    return this.state.chainId;
+    return this.state.chainId
   }
 
   // ==========================================================================
@@ -401,28 +404,28 @@ export class WalletConnector {
           message: 'Wallet provider not found',
           provider: this.state.provider,
         },
-      };
+      }
     }
 
     try {
       await this.ethereumProvider.request({
         method: 'wallet_switchEthereumChain',
         params: [{ chainId }],
-      });
+      })
 
-      this.state.chainId = chainId;
-      this.emit('chainChanged', chainId);
+      this.state.chainId = chainId
+      this.emit('chainChanged', chainId)
 
       return {
         success: true,
         data: chainId,
-      };
+      }
     } catch (error) {
-      const err = error as { code?: number; message?: string };
+      const err = error as { code?: number; message?: string }
 
       // Chain not added, try to add it
       if (err.code === WALLET_ERROR_CODES.CHAIN_NOT_ADDED || err.code === 4902) {
-        return this.addChain(chainId);
+        return this.addChain(chainId)
       }
 
       return {
@@ -432,7 +435,7 @@ export class WalletConnector {
           message: err.message ?? 'Failed to switch chain',
           provider: this.state.provider,
         },
-      };
+      }
     }
   }
 
@@ -448,10 +451,10 @@ export class WalletConnector {
           message: 'Wallet provider not found',
           provider: this.state.provider,
         },
-      };
+      }
     }
 
-    const chainConfig = SUPPORTED_CHAINS[chainId];
+    const chainConfig = SUPPORTED_CHAINS[chainId]
     if (!chainConfig) {
       return {
         success: false,
@@ -460,24 +463,24 @@ export class WalletConnector {
           message: `Chain ${chainId} is not supported`,
           provider: this.state.provider,
         },
-      };
+      }
     }
 
     try {
       await this.ethereumProvider.request({
         method: 'wallet_addEthereumChain',
         params: [chainConfig],
-      });
+      })
 
-      this.state.chainId = chainId;
-      this.emit('chainChanged', chainId);
+      this.state.chainId = chainId
+      this.emit('chainChanged', chainId)
 
       return {
         success: true,
         data: chainId,
-      };
+      }
     } catch (error) {
-      const err = error as { code?: number; message?: string };
+      const err = error as { code?: number; message?: string }
       return {
         success: false,
         error: {
@@ -485,7 +488,7 @@ export class WalletConnector {
           message: err.message ?? 'Failed to add chain',
           provider: this.state.provider,
         },
-      };
+      }
     }
   }
 
@@ -493,21 +496,21 @@ export class WalletConnector {
    * Get chain configuration
    */
   getChainConfig(chainId: ChainId): ChainConfig | null {
-    return SUPPORTED_CHAINS[chainId] ?? null;
+    return SUPPORTED_CHAINS[chainId] ?? null
   }
 
   /**
    * Get all supported chains
    */
   getSupportedChains(): ChainConfig[] {
-    return Object.values(SUPPORTED_CHAINS);
+    return Object.values(SUPPORTED_CHAINS)
   }
 
   /**
    * Check if a chain is supported
    */
   isChainSupported(chainId: string): boolean {
-    return chainId in SUPPORTED_CHAINS;
+    return chainId in SUPPORTED_CHAINS
   }
 
   // ==========================================================================
@@ -518,7 +521,7 @@ export class WalletConnector {
    * Get balance for an address
    */
   async getBalance(address?: string): Promise<WalletConnectorResult<string>> {
-    const targetAddress = address ?? this.state.address;
+    const targetAddress = address ?? this.state.address
 
     if (!targetAddress) {
       return {
@@ -528,7 +531,7 @@ export class WalletConnector {
           message: 'Address is required',
           provider: this.state.provider,
         },
-      };
+      }
     }
 
     if (!this.ethereumProvider) {
@@ -539,21 +542,21 @@ export class WalletConnector {
           message: 'Wallet provider not found',
           provider: this.state.provider,
         },
-      };
+      }
     }
 
     try {
       const balance = (await this.ethereumProvider.request({
         method: 'eth_getBalance',
         params: [targetAddress, 'latest'],
-      })) as string;
+      })) as string
 
       return {
         success: true,
         data: balance,
-      };
+      }
     } catch (error) {
-      const err = error as { code?: number; message?: string };
+      const err = error as { code?: number; message?: string }
       return {
         success: false,
         error: {
@@ -561,7 +564,7 @@ export class WalletConnector {
           message: err.message ?? 'Failed to get balance',
           provider: this.state.provider,
         },
-      };
+      }
     }
   }
 
@@ -569,12 +572,12 @@ export class WalletConnector {
    * Update the current balance
    */
   async refreshBalance(): Promise<WalletConnectorResult<string>> {
-    const result = await this.getBalance();
+    const result = await this.getBalance()
     if (result.success && result.data) {
-      this.state.balance = result.data;
-      this.emit('balanceChanged', result.data);
+      this.state.balance = result.data
+      this.emit('balanceChanged', result.data)
     }
-    return result;
+    return result
   }
 
   // ==========================================================================
@@ -585,7 +588,7 @@ export class WalletConnector {
    * Sign a message
    */
   async signMessage(options: SignMessageOptions): Promise<WalletConnectorResult<SignedMessage>> {
-    const address = options.address ?? this.state.address;
+    const address = options.address ?? this.state.address
 
     if (!address) {
       return {
@@ -595,7 +598,7 @@ export class WalletConnector {
           message: 'Address is required',
           provider: this.state.provider,
         },
-      };
+      }
     }
 
     if (!this.ethereumProvider) {
@@ -606,14 +609,14 @@ export class WalletConnector {
           message: 'Wallet provider not found',
           provider: this.state.provider,
         },
-      };
+      }
     }
 
     try {
       const signature = (await this.ethereumProvider.request({
         method: 'personal_sign',
         params: [options.message, address],
-      })) as string;
+      })) as string
 
       return {
         success: true,
@@ -622,9 +625,9 @@ export class WalletConnector {
           signature,
           address,
         },
-      };
+      }
     } catch (error) {
-      const err = error as { code?: number; message?: string };
+      const err = error as { code?: number; message?: string }
       return {
         success: false,
         error: {
@@ -632,7 +635,7 @@ export class WalletConnector {
           message: err.message ?? 'Failed to sign message',
           provider: this.state.provider,
         },
-      };
+      }
     }
   }
 
@@ -645,7 +648,7 @@ export class WalletConnector {
     value: Record<string, unknown>,
     address?: string
   ): Promise<WalletConnectorResult<string>> {
-    const signerAddress = address ?? this.state.address;
+    const signerAddress = address ?? this.state.address
 
     if (!signerAddress) {
       return {
@@ -655,7 +658,7 @@ export class WalletConnector {
           message: 'Address is required',
           provider: this.state.provider,
         },
-      };
+      }
     }
 
     if (!this.ethereumProvider) {
@@ -666,7 +669,7 @@ export class WalletConnector {
           message: 'Wallet provider not found',
           provider: this.state.provider,
         },
-      };
+      }
     }
 
     try {
@@ -675,19 +678,19 @@ export class WalletConnector {
         primaryType: Object.keys(types).find((t) => t !== 'EIP712Domain'),
         domain,
         message: value,
-      });
+      })
 
       const signature = (await this.ethereumProvider.request({
         method: 'eth_signTypedData_v4',
         params: [signerAddress, data],
-      })) as string;
+      })) as string
 
       return {
         success: true,
         data: signature,
-      };
+      }
     } catch (error) {
-      const err = error as { code?: number; message?: string };
+      const err = error as { code?: number; message?: string }
       return {
         success: false,
         error: {
@@ -695,7 +698,7 @@ export class WalletConnector {
           message: err.message ?? 'Failed to sign typed data',
           provider: this.state.provider,
         },
-      };
+      }
     }
   }
 
@@ -707,37 +710,37 @@ export class WalletConnector {
    * Set up event listeners for wallet events
    */
   private setupEventListeners(): void {
-    if (!this.ethereumProvider) return;
+    if (!this.ethereumProvider) return
 
     const handleAccountsChanged = (accounts: unknown) => {
-      const accountArray = accounts as string[];
+      const accountArray = accounts as string[]
       if (accountArray.length === 0) {
-        this.disconnect();
+        this.disconnect()
       } else {
-        this.state.address = accountArray[0];
-        this.emit('accountsChanged', accountArray);
+        this.state.address = accountArray[0]
+        this.emit('accountsChanged', accountArray)
       }
-    };
+    }
 
     const handleChainChanged = (chainId: unknown) => {
-      this.state.chainId = chainId as ChainId;
-      this.emit('chainChanged', chainId);
-    };
+      this.state.chainId = chainId as ChainId
+      this.emit('chainChanged', chainId)
+    }
 
     const handleDisconnect = () => {
-      this.disconnect();
-    };
+      this.disconnect()
+    }
 
-    this.ethereumProvider.on('accountsChanged', handleAccountsChanged);
-    this.ethereumProvider.on('chainChanged', handleChainChanged);
-    this.ethereumProvider.on('disconnect', handleDisconnect);
+    this.ethereumProvider.on('accountsChanged', handleAccountsChanged)
+    this.ethereumProvider.on('chainChanged', handleChainChanged)
+    this.ethereumProvider.on('disconnect', handleDisconnect)
   }
 
   /**
    * Remove event listeners
    */
   private removeEventListeners(): void {
-    if (!this.ethereumProvider) return;
+    if (!this.ethereumProvider) return
 
     // In a real implementation, we would store references to the handlers
     // and remove them properly
@@ -748,23 +751,23 @@ export class WalletConnector {
    */
   on(event: string, callback: (...args: unknown[]) => void): void {
     if (!this.eventListeners.has(event)) {
-      this.eventListeners.set(event, new Set());
+      this.eventListeners.set(event, new Set())
     }
-    this.eventListeners.get(event)!.add(callback);
+    this.eventListeners.get(event)!.add(callback)
   }
 
   /**
    * Unsubscribe from an event
    */
   off(event: string, callback: (...args: unknown[]) => void): void {
-    this.eventListeners.get(event)?.delete(callback);
+    this.eventListeners.get(event)?.delete(callback)
   }
 
   /**
    * Emit an event
    */
   private emit(event: string, ...args: unknown[]): void {
-    this.eventListeners.get(event)?.forEach((callback) => callback(...args));
+    this.eventListeners.get(event)?.forEach((callback) => callback(...args))
   }
 
   // ==========================================================================
@@ -776,60 +779,60 @@ export class WalletConnector {
    */
   formatAddress(address: string, start: number = 6, end: number = 4): string {
     if (!address || address.length < start + end) {
-      return address;
+      return address
     }
-    return `${address.slice(0, start)}...${address.slice(-end)}`;
+    return `${address.slice(0, start)}...${address.slice(-end)}`
   }
 
   /**
    * Convert wei to ether
    */
   weiToEther(wei: string): string {
-    const weiValue = BigInt(wei);
-    const ether = Number(weiValue) / 1e18;
-    return ether.toFixed(6);
+    const weiValue = BigInt(wei)
+    const ether = Number(weiValue) / 1e18
+    return ether.toFixed(6)
   }
 
   /**
    * Convert ether to wei
    */
   etherToWei(ether: string): string {
-    const etherValue = parseFloat(ether);
-    const wei = Math.floor(etherValue * 1e18);
-    return '0x' + wei.toString(16);
+    const etherValue = parseFloat(ether)
+    const wei = Math.floor(etherValue * 1e18)
+    return '0x' + wei.toString(16)
   }
 
   /**
    * Validate an Ethereum address
    */
   isValidAddress(address: string): boolean {
-    return /^0x[a-fA-F0-9]{40}$/.test(address);
+    return /^0x[a-fA-F0-9]{40}$/.test(address)
   }
 
   /**
    * Get block explorer URL for address
    */
   getAddressExplorerUrl(address: string, chainId?: ChainId): string | null {
-    const chain = chainId ?? this.state.chainId;
-    if (!chain) return null;
+    const chain = chainId ?? this.state.chainId
+    if (!chain) return null
 
-    const config = SUPPORTED_CHAINS[chain];
-    if (!config || !config.blockExplorerUrls[0]) return null;
+    const config = SUPPORTED_CHAINS[chain]
+    if (!config || !config.blockExplorerUrls[0]) return null
 
-    return `${config.blockExplorerUrls[0]}/address/${address}`;
+    return `${config.blockExplorerUrls[0]}/address/${address}`
   }
 
   /**
    * Get block explorer URL for transaction
    */
   getTxExplorerUrl(txHash: string, chainId?: ChainId): string | null {
-    const chain = chainId ?? this.state.chainId;
-    if (!chain) return null;
+    const chain = chainId ?? this.state.chainId
+    if (!chain) return null
 
-    const config = SUPPORTED_CHAINS[chain];
-    if (!config || !config.blockExplorerUrls[0]) return null;
+    const config = SUPPORTED_CHAINS[chain]
+    if (!config || !config.blockExplorerUrls[0]) return null
 
-    return `${config.blockExplorerUrls[0]}/tx/${txHash}`;
+    return `${config.blockExplorerUrls[0]}/tx/${txHash}`
   }
 }
 
@@ -837,21 +840,21 @@ export class WalletConnector {
 // Singleton Instance
 // ============================================================================
 
-let walletConnectorInstance: WalletConnector | null = null;
+let walletConnectorInstance: WalletConnector | null = null
 
 /**
  * Get the wallet connector singleton
  */
 export function getWalletConnector(): WalletConnector {
   if (!walletConnectorInstance) {
-    walletConnectorInstance = new WalletConnector();
+    walletConnectorInstance = new WalletConnector()
   }
-  return walletConnectorInstance;
+  return walletConnectorInstance
 }
 
 /**
  * Reset the wallet connector (for testing)
  */
 export function resetWalletConnector(): void {
-  walletConnectorInstance = null;
+  walletConnectorInstance = null
 }

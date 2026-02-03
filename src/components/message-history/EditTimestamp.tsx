@@ -1,12 +1,7 @@
 'use client'
 
 import { Clock, Calendar } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import {
   formatMessageTime,
@@ -106,19 +101,12 @@ export interface TimeRangeProps {
   className?: string
 }
 
-export function TimeRange({
-  from,
-  to,
-  showIcons = false,
-  className,
-}: TimeRangeProps) {
+export function TimeRange({ from, to, showIcons = false, className }: TimeRangeProps) {
   const duration = to.getTime() - from.getTime()
   const durationText = formatDuration(duration)
 
   return (
-    <div
-      className={cn('flex items-center gap-2 text-sm text-muted-foreground', className)}
-    >
+    <div className={cn('flex items-center gap-2 text-sm text-muted-foreground', className)}>
       <EditTimestamp timestamp={from} showIcon={showIcons} format="absolute" />
       <span className="text-muted-foreground/50">-</span>
       <EditTimestamp timestamp={to} showIcon={showIcons} format="absolute" />
@@ -175,20 +163,11 @@ export function VersionTimestamp({
   className,
 }: VersionTimestampProps) {
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2 text-sm',
-        className
-      )}
-    >
+    <div className={cn('flex items-center gap-2 text-sm', className)}>
       <span className="font-medium text-foreground">
         Version {versionNumber}
-        {isOriginal && (
-          <span className="ml-1 text-xs text-muted-foreground">(original)</span>
-        )}
-        {isCurrent && (
-          <span className="ml-1 text-xs text-primary">(current)</span>
-        )}
+        {isOriginal && <span className="ml-1 text-xs text-muted-foreground">(original)</span>}
+        {isCurrent && <span className="ml-1 text-xs text-primary">(current)</span>}
       </span>
       <span className="text-muted-foreground">-</span>
       <EditTimestamp timestamp={createdAt} format="relative" />
@@ -208,11 +187,7 @@ export interface EditTimingProps {
   className?: string
 }
 
-export function EditTiming({
-  originalAt,
-  editedAt,
-  className,
-}: EditTimingProps) {
+export function EditTiming({ originalAt, editedAt, className }: EditTimingProps) {
   const timeSinceOriginal = editedAt.getTime() - originalAt.getTime()
   const timingText = formatDuration(timeSinceOriginal)
 
@@ -220,12 +195,7 @@ export function EditTiming({
     <TooltipProvider delayDuration={300}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <span
-            className={cn(
-              'text-xs text-muted-foreground',
-              className
-            )}
-          >
+          <span className={cn('text-xs text-muted-foreground', className)}>
             {timingText} after original
           </span>
         </TooltipTrigger>

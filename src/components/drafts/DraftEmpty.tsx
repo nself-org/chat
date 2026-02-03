@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * DraftEmpty - Empty state for no drafts
@@ -6,10 +6,10 @@
  * Shown when there are no drafts
  */
 
-import * as React from 'react';
-import { FileText, Pencil, Clock, Hash } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import * as React from 'react'
+import { FileText, Pencil, Clock, Hash } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 // ============================================================================
 // Types
@@ -17,24 +17,24 @@ import { Button } from '@/components/ui/button';
 
 export interface DraftEmptyProps {
   /** Title text */
-  title?: string;
+  title?: string
   /** Description text */
-  description?: string;
+  description?: string
   /** Show icon */
-  showIcon?: boolean;
+  showIcon?: boolean
   /** Custom icon */
-  icon?: React.ReactNode;
+  icon?: React.ReactNode
   /** Action button */
   action?: {
-    label: string;
-    onClick: () => void;
-  };
+    label: string
+    onClick: () => void
+  }
   /** Show tips */
-  showTips?: boolean;
+  showTips?: boolean
   /** Size variant */
-  size?: 'sm' | 'default' | 'lg';
+  size?: 'sm' | 'default' | 'lg'
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -54,7 +54,7 @@ const tips = [
     icon: Hash,
     text: 'Each channel and DM has its own draft',
   },
-];
+]
 
 // ============================================================================
 // Size Classes
@@ -81,7 +81,7 @@ const sizeClasses = {
     default: 'text-sm',
     lg: 'text-base',
   },
-};
+}
 
 // ============================================================================
 // Component
@@ -98,48 +98,24 @@ export function DraftEmpty({
   className,
 }: DraftEmptyProps) {
   return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center text-center p-8',
-        className
-      )}
-    >
+    <div className={cn('flex flex-col items-center justify-center p-8 text-center', className)}>
       {/* Icon */}
       {showIcon && (
         <div
           className={cn(
-            'flex items-center justify-center rounded-full bg-muted mb-4',
+            'mb-4 flex items-center justify-center rounded-full bg-muted',
             sizeClasses.iconContainer[size]
           )}
         >
-          {icon || (
-            <FileText
-              className={cn(
-                'text-muted-foreground',
-                sizeClasses.icon[size]
-              )}
-            />
-          )}
+          {icon || <FileText className={cn('text-muted-foreground', sizeClasses.icon[size])} />}
         </div>
       )}
 
       {/* Title */}
-      <h3
-        className={cn(
-          'font-semibold text-foreground mb-2',
-          sizeClasses.title[size]
-        )}
-      >
-        {title}
-      </h3>
+      <h3 className={cn('mb-2 font-semibold text-foreground', sizeClasses.title[size])}>{title}</h3>
 
       {/* Description */}
-      <p
-        className={cn(
-          'text-muted-foreground max-w-sm',
-          sizeClasses.description[size]
-        )}
-      >
+      <p className={cn('max-w-sm text-muted-foreground', sizeClasses.description[size])}>
         {description}
       </p>
 
@@ -152,17 +128,12 @@ export function DraftEmpty({
 
       {/* Tips */}
       {showTips && size !== 'sm' && (
-        <div className="mt-8 pt-6 border-t w-full max-w-md">
-          <p className="text-xs font-medium text-muted-foreground mb-4">
-            Tips
-          </p>
+        <div className="mt-8 w-full max-w-md border-t pt-6">
+          <p className="mb-4 text-xs font-medium text-muted-foreground">Tips</p>
           <div className="space-y-3">
             {tips.map((tip, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-3 text-left"
-              >
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-muted flex-shrink-0">
+              <div key={index} className="flex items-start gap-3 text-left">
+                <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-muted">
                   <tip.icon className="h-3 w-3 text-muted-foreground" />
                 </div>
                 <p className="text-sm text-muted-foreground">{tip.text}</p>
@@ -172,7 +143,7 @@ export function DraftEmpty({
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -180,17 +151,14 @@ export function DraftEmpty({
 // ============================================================================
 
 export interface DraftEmptyCompactProps {
-  message?: string;
-  className?: string;
+  message?: string
+  className?: string
 }
 
 /**
  * Compact empty state for inline use
  */
-export function DraftEmptyCompact({
-  message = 'No drafts',
-  className,
-}: DraftEmptyCompactProps) {
+export function DraftEmptyCompact({ message = 'No drafts', className }: DraftEmptyCompactProps) {
   return (
     <div
       className={cn(
@@ -201,7 +169,7 @@ export function DraftEmptyCompact({
       <FileText className="h-4 w-4" />
       <span>{message}</span>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -209,35 +177,24 @@ export function DraftEmptyCompact({
 // ============================================================================
 
 export interface DraftSearchEmptyProps {
-  searchTerm: string;
-  onClear?: () => void;
-  className?: string;
+  searchTerm: string
+  onClear?: () => void
+  className?: string
 }
 
 /**
  * Empty state for no search results
  */
-export function DraftSearchEmpty({
-  searchTerm,
-  onClear,
-  className,
-}: DraftSearchEmptyProps) {
+export function DraftSearchEmpty({ searchTerm, onClear, className }: DraftSearchEmptyProps) {
   return (
-    <div
-      className={cn(
-        'flex flex-col items-center justify-center text-center p-8',
-        className
-      )}
-    >
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted mb-4">
+    <div className={cn('flex flex-col items-center justify-center p-8 text-center', className)}>
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
         <FileText className="h-6 w-6 text-muted-foreground" />
       </div>
 
-      <h3 className="font-semibold text-foreground mb-2">No drafts found</h3>
+      <h3 className="mb-2 font-semibold text-foreground">No drafts found</h3>
 
-      <p className="text-sm text-muted-foreground max-w-sm">
-        No drafts match "{searchTerm}"
-      </p>
+      <p className="max-w-sm text-sm text-muted-foreground">No drafts match "{searchTerm}"</p>
 
       {onClear && (
         <Button variant="outline" size="sm" onClick={onClear} className="mt-4">
@@ -245,7 +202,7 @@ export function DraftSearchEmpty({
         </Button>
       )}
     </div>
-  );
+  )
 }
 
-export default DraftEmpty;
+export default DraftEmpty

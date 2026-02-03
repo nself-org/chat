@@ -177,7 +177,7 @@ export function MessageContextMenu({
                 {QUICK_REACTIONS.map(({ emoji, label }) => (
                   <button
                     key={emoji}
-                    className="flex h-8 w-8 items-center justify-center rounded-md text-lg hover:bg-accent transition-colors"
+                    className="flex h-8 w-8 items-center justify-center rounded-md text-lg transition-colors hover:bg-accent"
                     onClick={() => onReact?.(message, emoji)}
                     title={label}
                   >
@@ -230,10 +230,7 @@ export function MessageContextMenu({
           Copy text
         </ContextMenuItemWithIcon>
 
-        <ContextMenuItemWithIcon
-          icon={<Link2 className="h-4 w-4" />}
-          onClick={handleCopyLink}
-        >
+        <ContextMenuItemWithIcon icon={<Link2 className="h-4 w-4" />} onClick={handleCopyLink}>
           Copy link to message
         </ContextMenuItemWithIcon>
 

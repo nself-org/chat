@@ -25,7 +25,7 @@ import {
   UserPlus,
   Users,
   type LucideIcon,
-} from 'lucide-react';
+} from 'lucide-react'
 
 import type {
   Command,
@@ -37,15 +37,15 @@ import type {
   CommandRegistryOptions,
   CommandExecutionContext,
   CommandPriority,
-} from './command-types';
+} from './command-types'
 
 // ============================================================================
 // Registry Class
 // ============================================================================
 
 export class CommandRegistry {
-  private commands: Map<string, Command> = new Map();
-  private options: CommandRegistryOptions;
+  private commands: Map<string, Command> = new Map()
+  private options: CommandRegistryOptions
   private categoryOrder: CommandCategory[] = [
     'recent',
     'navigation',
@@ -57,7 +57,7 @@ export class CommandRegistry {
     'action',
     'settings',
     'message',
-  ];
+  ]
 
   constructor(options: CommandRegistryOptions = {}) {
     this.options = {
@@ -66,10 +66,10 @@ export class CommandRegistry {
       persistHistory: true,
       historyKey: 'nchat-command-history',
       ...options,
-    };
+    }
 
     if (this.options.enableBuiltIn) {
-      this.registerBuiltInCommands();
+      this.registerBuiltInCommands()
     }
   }
 
@@ -81,7 +81,7 @@ export class CommandRegistry {
    * Register a single command
    */
   register(command: Command): void {
-    this.commands.set(command.id, command);
+    this.commands.set(command.id, command)
   }
 
   /**
@@ -89,7 +89,7 @@ export class CommandRegistry {
    */
   registerMany(commands: Command[]): void {
     for (const command of commands) {
-      this.register(command);
+      this.register(command)
     }
   }
 
@@ -97,17 +97,17 @@ export class CommandRegistry {
    * Unregister a command by ID
    */
   unregister(commandId: string): boolean {
-    return this.commands.delete(commandId);
+    return this.commands.delete(commandId)
   }
 
   /**
    * Update an existing command
    */
   update(commandId: string, updates: Partial<Command>): boolean {
-    const command = this.commands.get(commandId);
-    if (!command) return false;
-    this.commands.set(commandId, { ...command, ...updates } as Command);
-    return true;
+    const command = this.commands.get(commandId)
+    if (!command) return false
+    this.commands.set(commandId, { ...command, ...updates } as Command)
+    return true
   }
 
   // ============================================================================
@@ -118,51 +118,51 @@ export class CommandRegistry {
    * Get a command by ID
    */
   get(commandId: string): Command | undefined {
-    return this.commands.get(commandId);
+    return this.commands.get(commandId)
   }
 
   /**
    * Get all registered commands
    */
   getAll(): Command[] {
-    return Array.from(this.commands.values());
+    return Array.from(this.commands.values())
   }
 
   /**
    * Get commands by category
    */
   getByCategory(category: CommandCategory): Command[] {
-    return this.getAll().filter((cmd) => cmd.category === category);
+    return this.getAll().filter((cmd) => cmd.category === category)
   }
 
   /**
    * Get commands grouped by category
    */
   getGroupedByCategory(): Map<CommandCategory, Command[]> {
-    const grouped = new Map<CommandCategory, Command[]>();
+    const grouped = new Map<CommandCategory, Command[]>()
 
     for (const category of this.categoryOrder) {
-      const commands = this.getByCategory(category);
+      const commands = this.getByCategory(category)
       if (commands.length > 0) {
-        grouped.set(category, this.sortCommands(commands));
+        grouped.set(category, this.sortCommands(commands))
       }
     }
 
-    return grouped;
+    return grouped
   }
 
   /**
    * Check if a command exists
    */
   has(commandId: string): boolean {
-    return this.commands.has(commandId);
+    return this.commands.has(commandId)
   }
 
   /**
    * Get total command count
    */
   get size(): number {
-    return this.commands.size;
+    return this.commands.size
   }
 
   // ============================================================================
@@ -174,13 +174,13 @@ export class CommandRegistry {
    */
   registerChannels(
     channels: Array<{
-      id: string;
-      name: string;
-      type: 'public' | 'private' | 'direct' | 'group';
-      unreadCount?: number;
-      memberCount?: number;
-      isStarred?: boolean;
-      isMuted?: boolean;
+      id: string
+      name: string
+      type: 'public' | 'private' | 'direct' | 'group'
+      unreadCount?: number
+      memberCount?: number
+      isStarred?: boolean
+      isMuted?: boolean
     }>
   ): void {
     for (const channel of channels) {
@@ -199,8 +199,8 @@ export class CommandRegistry {
         icon: channel.type === 'private' ? Lock : Hash,
         keywords: ['channel', channel.name, channel.type],
         priority: channel.isStarred ? 'high' : 'normal',
-      };
-      this.register(command);
+      }
+      this.register(command)
     }
   }
 
@@ -209,12 +209,12 @@ export class CommandRegistry {
    */
   registerUsers(
     users: Array<{
-      id: string;
-      username: string;
-      displayName: string;
-      avatarUrl?: string;
-      presence?: 'online' | 'away' | 'dnd' | 'offline' | 'invisible';
-      role?: string;
+      id: string
+      username: string
+      displayName: string
+      avatarUrl?: string
+      presence?: 'online' | 'away' | 'dnd' | 'offline' | 'invisible'
+      role?: string
     }>
   ): void {
     for (const user of users) {
@@ -232,8 +232,8 @@ export class CommandRegistry {
         icon: MessageSquare,
         keywords: ['dm', 'message', user.username, user.displayName],
         priority: user.presence === 'online' ? 'high' : 'normal',
-      };
-      this.register(dmCommand);
+      }
+      this.register(dmCommand)
 
       // User view command
       const userCommand: UserCommandData = {
@@ -249,8 +249,8 @@ export class CommandRegistry {
         presence: user.presence,
         icon: User,
         keywords: ['user', 'profile', user.username, user.displayName],
-      };
-      this.register(userCommand);
+      }
+      this.register(userCommand)
     }
   }
 
@@ -259,12 +259,8 @@ export class CommandRegistry {
    */
   clearDynamicCommands(): void {
     for (const [id] of this.commands) {
-      if (
-        id.startsWith('channel:') ||
-        id.startsWith('dm:') ||
-        id.startsWith('user:')
-      ) {
-        this.commands.delete(id);
+      if (id.startsWith('channel:') || id.startsWith('dm:') || id.startsWith('user:')) {
+        this.commands.delete(id)
       }
     }
   }
@@ -286,8 +282,8 @@ export class CommandRegistry {
         keywords: ['search', 'find', 'messages'],
         priority: 'high',
         execute: (ctx) => {
-          ctx.navigate('/search?type=messages');
-          ctx.closeCommandPalette();
+          ctx.navigate('/search?type=messages')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -298,8 +294,8 @@ export class CommandRegistry {
         icon: Search,
         keywords: ['search', 'find', 'files', 'attachments'],
         execute: (ctx) => {
-          ctx.navigate('/search?type=files');
-          ctx.closeCommandPalette();
+          ctx.navigate('/search?type=files')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -310,8 +306,8 @@ export class CommandRegistry {
         icon: Users,
         keywords: ['search', 'find', 'users', 'members', 'people'],
         execute: (ctx) => {
-          ctx.navigate('/search?type=users');
-          ctx.closeCommandPalette();
+          ctx.navigate('/search?type=users')
+          ctx.closeCommandPalette()
         },
       },
 
@@ -327,8 +323,8 @@ export class CommandRegistry {
         priority: 'high',
         execute: (ctx) => {
           // This will trigger the create channel modal
-          ctx.data?.openModal?.('create-channel');
-          ctx.closeCommandPalette();
+          ctx.data?.openModal?.('create-channel')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -341,8 +337,8 @@ export class CommandRegistry {
         keywords: ['create', 'new', 'dm', 'message', 'direct'],
         priority: 'high',
         execute: (ctx) => {
-          ctx.navigate('/messages/new');
-          ctx.closeCommandPalette();
+          ctx.navigate('/messages/new')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -353,8 +349,8 @@ export class CommandRegistry {
         icon: UserPlus,
         keywords: ['create', 'new', 'group', 'message'],
         execute: (ctx) => {
-          ctx.navigate('/messages/new?type=group');
-          ctx.closeCommandPalette();
+          ctx.navigate('/messages/new?type=group')
+          ctx.closeCommandPalette()
         },
       },
 
@@ -367,8 +363,8 @@ export class CommandRegistry {
         icon: User,
         keywords: ['settings', 'profile', 'edit', 'account'],
         execute: (ctx) => {
-          ctx.navigate('/settings/profile');
-          ctx.closeCommandPalette();
+          ctx.navigate('/settings/profile')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -379,8 +375,8 @@ export class CommandRegistry {
         icon: Bell,
         keywords: ['settings', 'notifications', 'alerts'],
         execute: (ctx) => {
-          ctx.navigate('/settings/notifications');
-          ctx.closeCommandPalette();
+          ctx.navigate('/settings/notifications')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -392,8 +388,8 @@ export class CommandRegistry {
         shortcut: { keys: 'mod+,' },
         keywords: ['settings', 'preferences', 'options'],
         execute: (ctx) => {
-          ctx.navigate('/settings');
-          ctx.closeCommandPalette();
+          ctx.navigate('/settings')
+          ctx.closeCommandPalette()
         },
       },
 
@@ -408,8 +404,8 @@ export class CommandRegistry {
         keywords: ['theme', 'dark', 'light', 'mode', 'toggle'],
         priority: 'high',
         execute: (ctx) => {
-          ctx.data?.toggleTheme?.();
-          ctx.closeCommandPalette();
+          ctx.data?.toggleTheme?.()
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -421,8 +417,8 @@ export class CommandRegistry {
         shortcut: { keys: 'mod+shift+a' },
         keywords: ['mark', 'read', 'all', 'clear', 'unread'],
         execute: (ctx) => {
-          ctx.data?.markAllAsRead?.();
-          ctx.closeCommandPalette();
+          ctx.data?.markAllAsRead?.()
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -433,8 +429,8 @@ export class CommandRegistry {
         icon: BellOff,
         keywords: ['dnd', 'disturb', 'notifications', 'mute', 'quiet'],
         execute: (ctx) => {
-          ctx.data?.toggleDND?.();
-          ctx.closeCommandPalette();
+          ctx.data?.toggleDND?.()
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -446,8 +442,8 @@ export class CommandRegistry {
         shortcut: { keys: 'mod+\\' },
         keywords: ['sidebar', 'toggle', 'show', 'hide'],
         execute: (ctx) => {
-          ctx.data?.toggleSidebar?.();
-          ctx.closeCommandPalette();
+          ctx.data?.toggleSidebar?.()
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -460,8 +456,8 @@ export class CommandRegistry {
         keywords: ['keyboard', 'shortcuts', 'hotkeys', 'keys'],
         priority: 'normal',
         execute: (ctx) => {
-          ctx.data?.openModal?.('keyboard-shortcuts');
-          ctx.closeCommandPalette();
+          ctx.data?.openModal?.('keyboard-shortcuts')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -472,8 +468,8 @@ export class CommandRegistry {
         icon: HelpCircle,
         keywords: ['help', 'support', 'docs', 'documentation'],
         execute: (ctx) => {
-          ctx.navigate('/help');
-          ctx.closeCommandPalette();
+          ctx.navigate('/help')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -485,8 +481,8 @@ export class CommandRegistry {
         keywords: ['sign', 'out', 'logout', 'exit'],
         requiresConfirmation: true,
         execute: (ctx) => {
-          ctx.data?.signOut?.();
-          ctx.closeCommandPalette();
+          ctx.data?.signOut?.()
+          ctx.closeCommandPalette()
         },
       },
 
@@ -499,8 +495,8 @@ export class CommandRegistry {
         icon: Hash,
         keywords: ['home', 'main', 'start'],
         execute: (ctx) => {
-          ctx.navigate('/chat');
-          ctx.closeCommandPalette();
+          ctx.navigate('/chat')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -511,8 +507,8 @@ export class CommandRegistry {
         icon: MessageSquare,
         keywords: ['threads', 'replies'],
         execute: (ctx) => {
-          ctx.navigate('/threads');
-          ctx.closeCommandPalette();
+          ctx.navigate('/threads')
+          ctx.closeCommandPalette()
         },
       },
       {
@@ -523,13 +519,13 @@ export class CommandRegistry {
         icon: Star,
         keywords: ['starred', 'saved', 'favorites'],
         execute: (ctx) => {
-          ctx.navigate('/starred');
-          ctx.closeCommandPalette();
+          ctx.navigate('/starred')
+          ctx.closeCommandPalette()
         },
       },
-    ];
+    ]
 
-    this.registerMany(builtInCommands);
+    this.registerMany(builtInCommands)
   }
 
   // ============================================================================
@@ -544,18 +540,18 @@ export class CommandRegistry {
       high: 0,
       normal: 1,
       low: 2,
-    };
+    }
 
     return commands.sort((a, b) => {
-      const priorityA = priorityOrder[a.priority || 'normal'];
-      const priorityB = priorityOrder[b.priority || 'normal'];
+      const priorityA = priorityOrder[a.priority || 'normal']
+      const priorityB = priorityOrder[b.priority || 'normal']
 
       if (priorityA !== priorityB) {
-        return priorityA - priorityB;
+        return priorityA - priorityB
       }
 
-      return a.name.localeCompare(b.name);
-    });
+      return a.name.localeCompare(b.name)
+    })
   }
 
   /**
@@ -573,8 +569,8 @@ export class CommandRegistry {
       action: 'Actions',
       search: 'Search',
       create: 'Create',
-    };
-    return names[category] || category;
+    }
+    return names[category] || category
   }
 
   /**
@@ -592,17 +588,17 @@ export class CommandRegistry {
       action: Settings,
       search: Search,
       create: Plus,
-    };
-    return icons[category] || Settings;
+    }
+    return icons[category] || Settings
   }
 
   /**
    * Reset the registry
    */
   reset(): void {
-    this.commands.clear();
+    this.commands.clear()
     if (this.options.enableBuiltIn) {
-      this.registerBuiltInCommands();
+      this.registerBuiltInCommands()
     }
   }
 }
@@ -611,25 +607,23 @@ export class CommandRegistry {
 // Singleton Instance
 // ============================================================================
 
-let registryInstance: CommandRegistry | null = null;
+let registryInstance: CommandRegistry | null = null
 
 /**
  * Get the global command registry instance
  */
-export function getCommandRegistry(
-  options?: CommandRegistryOptions
-): CommandRegistry {
+export function getCommandRegistry(options?: CommandRegistryOptions): CommandRegistry {
   if (!registryInstance) {
-    registryInstance = new CommandRegistry(options);
+    registryInstance = new CommandRegistry(options)
   }
-  return registryInstance;
+  return registryInstance
 }
 
 /**
  * Reset the global registry instance
  */
 export function resetCommandRegistry(): void {
-  registryInstance = null;
+  registryInstance = null
 }
 
-export default CommandRegistry;
+export default CommandRegistry

@@ -124,7 +124,7 @@ export function JoinChannelButton({
         onClick={showLeaveConfirm ? undefined : handleClick}
         disabled={isLoading}
         className={cn(
-          'group hover:bg-destructive hover:text-destructive-foreground hover:border-destructive',
+          'group hover:border-destructive hover:bg-destructive hover:text-destructive-foreground',
           className
         )}
       >
@@ -133,7 +133,7 @@ export function JoinChannelButton({
         ) : (
           <>
             <Check className="mr-2 h-4 w-4 group-hover:hidden" />
-            <LogOut className="mr-2 h-4 w-4 hidden group-hover:block" />
+            <LogOut className="mr-2 hidden h-4 w-4 group-hover:block" />
           </>
         )}
         <span className="group-hover:hidden">Joined</span>
@@ -162,11 +162,9 @@ export function JoinChannelButton({
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleLeaveConfirm}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               >
-                {isLoading ? (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                ) : null}
+                {isLoading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
                 Leave Channel
               </AlertDialogAction>
             </AlertDialogFooter>

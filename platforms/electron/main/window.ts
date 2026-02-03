@@ -5,40 +5,40 @@
  * Includes state persistence, bounds validation, and multi-monitor support.
  */
 
-import { app, BrowserWindow, screen, shell, nativeTheme } from 'electron';
-import path from 'path';
-import log from 'electron-log';
-import settingsStore, { WindowState } from './store';
+import { app, BrowserWindow, screen, shell, nativeTheme } from 'electron'
+import path from 'path'
+import log from 'electron-log'
+import settingsStore, { WindowState } from './store'
 
-let mainWindow: BrowserWindow | null = null;
+let mainWindow: BrowserWindow | null = null
 
 export function getMainWindow(): BrowserWindow | null {
-  return mainWindow;
+  return mainWindow
 }
 
 function getValidWindowBounds(): WindowState {
-  const storedState = settingsStore.getWindowState();
-  const { width, height, x, y, isMaximized, isFullScreen } = storedState;
+  const storedState = settingsStore.getWindowState()
+  const { width, height, x, y, isMaximized, isFullScreen } = storedState
 
   // Get all displays
-  const displays = screen.getAllDisplays();
+  const displays = screen.getAllDisplays()
 
   // Check if the stored position is within any display
-  let isPositionValid = false;
+  let isPositionValid = false
   if (x !== undefined && y !== undefined) {
     for (const display of displays) {
-      const { x: dX, y: dY, width: dW, height: dH } = display.bounds;
+      const { x: dX, y: dY, width: dW, height: dH } = display.bounds
       if (x >= dX && x < dX + dW && y >= dY && y < dY + dH) {
-        isPositionValid = true;
-        break;
+        isPositionValid = true
+        break
       }
     }
   }
 
   // If position is invalid, center on primary display
   if (!isPositionValid) {
-    const primaryDisplay = screen.getPrimaryDisplay();
-    const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize;
+    const primaryDisplay = screen.getPrimaryDisplay()
+    const { width: screenWidth, height: screenHeight } = primaryDisplay.workAreaSize
     return {
       width: Math.min(width, screenWidth),
       height: Math.min(height, screenHeight),
@@ -46,21 +46,21 @@ function getValidWindowBounds(): WindowState {
       y: Math.floor((screenHeight - height) / 2),
       isMaximized,
       isFullScreen,
-    };
+    }
   }
 
-  return storedState;
+  return storedState
 }
 
 function saveWindowState(): void {
-  if (!mainWindow || mainWindow.isDestroyed()) return;
+  if (!mainWindow || mainWindow.isDestroyed()) return
 
-  const isMaximized = mainWindow.isMaximized();
-  const isFullScreen = mainWindow.isFullScreen();
+  const isMaximized = mainWindow.isMaximized()
+  const isFullScreen = mainWindow.isFullScreen()
 
   // Only save bounds if not maximized/fullscreen
   if (!isMaximized && !isFullScreen) {
-    const bounds = mainWindow.getBounds();
+    const bounds = mainWindow.getBounds()
     settingsStore.setWindowState({
       x: bounds.x,
       y: bounds.y,
@@ -68,15 +68,15 @@ function saveWindowState(): void {
       height: bounds.height,
       isMaximized,
       isFullScreen,
-    });
+    })
   } else {
-    settingsStore.setWindowState({ isMaximized, isFullScreen });
+    settingsStore.setWindowState({ isMaximized, isFullScreen })
   }
 }
 
 export async function createMainWindow(): Promise<BrowserWindow> {
-  const windowState = getValidWindowBounds();
-  const isDev = process.env.NODE_ENV === 'development';
+  const windowState = getValidWindowBounds()
+  const isDev = process.env.NODE_ENV === 'development'
 
   // Create the browser window
   mainWindow = new BrowserWindow({
@@ -105,75 +105,75 @@ export async function createMainWindow(): Promise<BrowserWindow> {
       spellcheck: settingsStore.get('spellcheck'),
       zoomFactor: settingsStore.get('zoomLevel'),
     },
-  });
+  })
 
   // Apply stored state
   if (windowState.isMaximized) {
-    mainWindow.maximize();
+    mainWindow.maximize()
   }
   if (windowState.isFullScreen) {
-    mainWindow.setFullScreen(true);
+    mainWindow.setFullScreen(true)
   }
 
   // Load the app
-  const serverUrl = settingsStore.get('serverUrl');
+  const serverUrl = settingsStore.get('serverUrl')
   if (isDev) {
-    await mainWindow.loadURL('http://localhost:3000');
+    await mainWindow.loadURL('http://localhost:3000')
   } else {
     // In production, load from the exported static files
-    const appPath = path.join(process.resourcesPath, 'app', 'index.html');
-    await mainWindow.loadFile(appPath);
+    const appPath = path.join(process.resourcesPath, 'app', 'index.html')
+    await mainWindow.loadFile(appPath)
   }
 
   // Show window when ready
   mainWindow.once('ready-to-show', () => {
     if (!settingsStore.get('startMinimized')) {
-      mainWindow?.show();
+      mainWindow?.show()
     }
-    log.info('Main window ready to show');
-  });
+    log.info('Main window ready to show')
+  })
 
   // Save window state on move/resize
-  mainWindow.on('resize', saveWindowState);
-  mainWindow.on('move', saveWindowState);
-  mainWindow.on('maximize', saveWindowState);
-  mainWindow.on('unmaximize', saveWindowState);
-  mainWindow.on('enter-full-screen', saveWindowState);
-  mainWindow.on('leave-full-screen', saveWindowState);
+  mainWindow.on('resize', saveWindowState)
+  mainWindow.on('move', saveWindowState)
+  mainWindow.on('maximize', saveWindowState)
+  mainWindow.on('unmaximize', saveWindowState)
+  mainWindow.on('enter-full-screen', saveWindowState)
+  mainWindow.on('leave-full-screen', saveWindowState)
 
   // Handle window close
   mainWindow.on('close', (event) => {
     if (settingsStore.get('minimizeToTray') && settingsStore.get('showTrayIcon')) {
-      event.preventDefault();
-      mainWindow?.hide();
-      log.info('Window hidden to tray');
+      event.preventDefault()
+      mainWindow?.hide()
+      log.info('Window hidden to tray')
     } else {
-      saveWindowState();
+      saveWindowState()
     }
-  });
+  })
 
   // Handle window closed
   mainWindow.on('closed', () => {
-    mainWindow = null;
-    log.info('Main window closed');
-  });
+    mainWindow = null
+    log.info('Main window closed')
+  })
 
   // Open external links in default browser
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith('http://') || url.startsWith('https://')) {
-      shell.openExternal(url);
+      shell.openExternal(url)
     }
-    return { action: 'deny' };
-  });
+    return { action: 'deny' }
+  })
 
   // Handle navigation
   mainWindow.webContents.on('will-navigate', (event, url) => {
-    const appUrl = isDev ? 'http://localhost:3000' : `file://${process.resourcesPath}`;
+    const appUrl = isDev ? 'http://localhost:3000' : `file://${process.resourcesPath}`
     if (!url.startsWith(appUrl)) {
-      event.preventDefault();
-      shell.openExternal(url);
+      event.preventDefault()
+      shell.openExternal(url)
     }
-  });
+  })
 
   // Handle context menu for spellcheck
   mainWindow.webContents.on('context-menu', (event, params) => {
@@ -186,93 +186,94 @@ export async function createMainWindow(): Promise<BrowserWindow> {
         { type: 'separator' as const },
         {
           label: 'Add to Dictionary',
-          click: () => mainWindow?.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord),
+          click: () =>
+            mainWindow?.webContents.session.addWordToSpellCheckerDictionary(params.misspelledWord),
         },
-      ]);
-      menu.popup();
+      ])
+      menu.popup()
     }
-  });
+  })
 
   // Dev tools
   if (isDev || settingsStore.get('devToolsEnabled')) {
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    mainWindow.webContents.openDevTools({ mode: 'detach' })
   }
 
-  log.info('Main window created successfully');
-  return mainWindow;
+  log.info('Main window created successfully')
+  return mainWindow
 }
 
 export function showMainWindow(): void {
   if (!mainWindow) {
-    createMainWindow();
-    return;
+    createMainWindow()
+    return
   }
 
   if (mainWindow.isMinimized()) {
-    mainWindow.restore();
+    mainWindow.restore()
   }
-  mainWindow.show();
-  mainWindow.focus();
+  mainWindow.show()
+  mainWindow.focus()
 }
 
 export function hideMainWindow(): void {
-  mainWindow?.hide();
+  mainWindow?.hide()
 }
 
 export function toggleMainWindow(): void {
   if (mainWindow?.isVisible()) {
-    hideMainWindow();
+    hideMainWindow()
   } else {
-    showMainWindow();
+    showMainWindow()
   }
 }
 
 export function focusMainWindow(): void {
-  mainWindow?.focus();
+  mainWindow?.focus()
 }
 
 export function minimizeMainWindow(): void {
-  mainWindow?.minimize();
+  mainWindow?.minimize()
 }
 
 export function maximizeMainWindow(): void {
   if (mainWindow?.isMaximized()) {
-    mainWindow.unmaximize();
+    mainWindow.unmaximize()
   } else {
-    mainWindow?.maximize();
+    mainWindow?.maximize()
   }
 }
 
 export function setFullScreen(fullScreen: boolean): void {
-  mainWindow?.setFullScreen(fullScreen);
+  mainWindow?.setFullScreen(fullScreen)
 }
 
 export function toggleFullScreen(): void {
-  mainWindow?.setFullScreen(!mainWindow.isFullScreen());
+  mainWindow?.setFullScreen(!mainWindow.isFullScreen())
 }
 
 export function setZoomLevel(level: number): void {
-  const clampedLevel = Math.max(0.5, Math.min(2, level));
-  settingsStore.set('zoomLevel', clampedLevel);
-  mainWindow?.webContents.setZoomFactor(clampedLevel);
+  const clampedLevel = Math.max(0.5, Math.min(2, level))
+  settingsStore.set('zoomLevel', clampedLevel)
+  mainWindow?.webContents.setZoomFactor(clampedLevel)
 }
 
 export function getZoomLevel(): number {
-  return mainWindow?.webContents.getZoomFactor() ?? 1;
+  return mainWindow?.webContents.getZoomFactor() ?? 1
 }
 
 export function reloadWindow(): void {
-  mainWindow?.reload();
+  mainWindow?.reload()
 }
 
 export function forceReloadWindow(): void {
-  mainWindow?.webContents.reloadIgnoringCache();
+  mainWindow?.webContents.reloadIgnoringCache()
 }
 
 export function clearCache(): Promise<void> {
-  return mainWindow?.webContents.session.clearCache() ?? Promise.resolve();
+  return mainWindow?.webContents.session.clearCache() ?? Promise.resolve()
 }
 
 export function clearStorageData(): Promise<void> {
-  return mainWindow?.webContents.session.clearStorageData() ?? Promise.resolve();
+  return mainWindow?.webContents.session.clearStorageData() ?? Promise.resolve()
 }

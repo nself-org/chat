@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
 /**
  * ReactionChart - Shows popular reactions
  */
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Bar,
   BarChart,
@@ -17,21 +17,21 @@ import {
   PieChart,
   Pie,
   Legend,
-} from 'recharts';
+} from 'recharts'
 
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface ReactionChartProps {
-  height?: number;
-  variant?: 'bar' | 'pie';
-  limit?: number;
-  className?: string;
+  height?: number
+  variant?: 'bar' | 'pie'
+  limit?: number
+  className?: string
 }
 
 // ============================================================================
@@ -49,7 +49,7 @@ const COLORS = [
   '#14b8a6', // teal
   '#84cc16', // lime
   '#a855f7', // violet
-];
+]
 
 // ============================================================================
 // Emoji Display Map
@@ -71,10 +71,10 @@ const EMOJI_MAP: Record<string, string> = {
   '+1': '\uD83D\uDC4D',
   '-1': '\uD83D\uDC4E',
   tada: '\uD83C\uDF89',
-};
+}
 
 function getEmoji(name: string): string {
-  return EMOJI_MAP[name.toLowerCase()] || name;
+  return EMOJI_MAP[name.toLowerCase()] || name
 }
 
 // ============================================================================
@@ -82,22 +82,22 @@ function getEmoji(name: string): string {
 // ============================================================================
 
 interface TooltipProps {
-  active?: boolean;
+  active?: boolean
   payload?: Array<{
-    value: number;
+    value: number
     payload: {
-      emoji: string;
-      count: number;
-      percentage: number;
-      users: number;
-    };
-  }>;
+      emoji: string
+      count: number
+      percentage: number
+      users: number
+    }
+  }>
 }
 
 function CustomTooltip({ active, payload }: TooltipProps) {
-  if (!active || !payload || !payload.length) return null;
+  if (!active || !payload || !payload.length) return null
 
-  const data = payload[0].payload;
+  const data = payload[0].payload
 
   return (
     <div className="rounded-lg border bg-background p-3 shadow-md">
@@ -117,7 +117,7 @@ function CustomTooltip({ active, payload }: TooltipProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -130,11 +130,11 @@ export function ReactionChart({
   limit = 10,
   className,
 }: ReactionChartProps) {
-  const { reactions, isLoading } = useAnalyticsStore();
+  const { reactions, isLoading } = useAnalyticsStore()
 
   // Transform data
   const chartData = React.useMemo(() => {
-    if (!reactions || reactions.length === 0) return [];
+    if (!reactions || reactions.length === 0) return []
 
     return reactions.slice(0, limit).map((reaction) => ({
       emoji: reaction.emoji,
@@ -142,29 +142,26 @@ export function ReactionChart({
       count: reaction.count,
       percentage: reaction.percentage,
       users: reaction.users,
-    }));
-  }, [reactions, limit]);
+    }))
+  }, [reactions, limit])
 
   if (isLoading) {
     return (
       <div className={cn('w-full', className)} style={{ height }}>
         <Skeleton className="h-full w-full" />
       </div>
-    );
+    )
   }
 
   if (chartData.length === 0) {
     return (
       <div
-        className={cn(
-          'flex items-center justify-center text-muted-foreground',
-          className
-        )}
+        className={cn('flex items-center justify-center text-muted-foreground', className)}
         style={{ height }}
       >
         No reaction data available
       </div>
-    );
+    )
   }
 
   if (variant === 'pie') {
@@ -180,34 +177,25 @@ export function ReactionChart({
               outerRadius={90}
               dataKey="count"
               nameKey="displayEmoji"
-              label={({ displayEmoji, percentage }) =>
-                `${displayEmoji} ${percentage.toFixed(0)}%`
-              }
+              label={({ displayEmoji, percentage }) => `${displayEmoji} ${percentage.toFixed(0)}%`}
               labelLine={false}
             >
               {chartData.map((_, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                />
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
             <Tooltip content={<CustomTooltip />} />
           </PieChart>
         </ResponsiveContainer>
       </div>
-    );
+    )
   }
 
   return (
     <div className={cn('w-full', className)} style={{ height }}>
       <ResponsiveContainer width="100%" height="100%">
         <BarChart data={chartData} layout="vertical">
-          <CartesianGrid
-            strokeDasharray="3 3"
-            className="stroke-muted"
-            horizontal
-          />
+          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal />
           <XAxis
             type="number"
             tick={{ fontSize: 12 }}
@@ -226,16 +214,13 @@ export function ReactionChart({
           <Tooltip content={<CustomTooltip />} />
           <Bar dataKey="count" radius={[0, 4, 4, 0]}>
             {chartData.map((_, index) => (
-              <Cell
-                key={`cell-${index}`}
-                fill={COLORS[index % COLORS.length]}
-              />
+              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Bar>
         </BarChart>
       </ResponsiveContainer>
     </div>
-  );
+  )
 }
 
-export default ReactionChart;
+export default ReactionChart

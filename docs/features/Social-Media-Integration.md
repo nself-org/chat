@@ -219,7 +219,7 @@ For production, replace cron with a proper job queue:
 import Bull from 'bull'
 
 const socialPollQueue = new Bull('social-media-poll', {
-  redis: process.env.REDIS_URL
+  redis: process.env.REDIS_URL,
 })
 
 // Add recurring job
@@ -227,7 +227,7 @@ socialPollQueue.add(
   'poll-all',
   {},
   {
-    repeat: { cron: '*/5 * * * *' } // Every 5 minutes
+    repeat: { cron: '*/5 * * * *' }, // Every 5 minutes
   }
 )
 
@@ -261,6 +261,7 @@ LIMIT 10;
 ```
 
 Monitor for:
+
 - High error rates
 - Token expiration
 - Failed imports
@@ -268,40 +269,44 @@ Monitor for:
 
 ## API Endpoints
 
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/social/twitter/auth` | GET | Start Twitter OAuth |
-| `/api/social/twitter/callback` | GET | Twitter OAuth callback |
-| `/api/social/instagram/auth` | GET | Start Instagram OAuth |
-| `/api/social/instagram/callback` | GET | Instagram OAuth callback |
-| `/api/social/linkedin/auth` | GET | Start LinkedIn OAuth |
-| `/api/social/linkedin/callback` | GET | LinkedIn OAuth callback |
-| `/api/social/accounts` | GET | List all accounts |
-| `/api/social/accounts` | POST | Create account |
-| `/api/social/accounts` | DELETE | Delete account |
-| `/api/social/poll` | POST | Trigger import (manual or all) |
-| `/api/social/poll` | GET | Health check |
+| Endpoint                         | Method | Description                    |
+| -------------------------------- | ------ | ------------------------------ |
+| `/api/social/twitter/auth`       | GET    | Start Twitter OAuth            |
+| `/api/social/twitter/callback`   | GET    | Twitter OAuth callback         |
+| `/api/social/instagram/auth`     | GET    | Start Instagram OAuth          |
+| `/api/social/instagram/callback` | GET    | Instagram OAuth callback       |
+| `/api/social/linkedin/auth`      | GET    | Start LinkedIn OAuth           |
+| `/api/social/linkedin/callback`  | GET    | LinkedIn OAuth callback        |
+| `/api/social/accounts`           | GET    | List all accounts              |
+| `/api/social/accounts`           | POST   | Create account                 |
+| `/api/social/accounts`           | DELETE | Delete account                 |
+| `/api/social/poll`               | POST   | Trigger import (manual or all) |
+| `/api/social/poll`               | GET    | Health check                   |
 
 ## Troubleshooting
 
 ### OAuth Errors
 
 **"Invalid redirect URI"**
+
 - Ensure callback URLs are added in developer portal
 - Check `NEXT_PUBLIC_APP_URL` matches registered URL
 
 **"Insufficient permissions"**
+
 - Request additional scopes in developer portal
 - Re-authorize the account
 
 ### Import Errors
 
 **"Failed to fetch posts"**
+
 - Check access token validity
 - Verify API credentials
 - Check rate limits
 
 **"No posts imported"**
+
 - Verify filters aren't too restrictive
 - Check if account has recent posts
 - Ensure account is active
@@ -309,10 +314,12 @@ Monitor for:
 ### Token Expiration
 
 Tokens will automatically refresh if:
+
 - Refresh token is available (Twitter)
 - Token hasn't fully expired (Instagram)
 
 If refresh fails, admin must re-authenticate:
+
 1. Go to Admin → Social Media
 2. Click account
 3. Click "Reconnect"
@@ -331,18 +338,19 @@ If refresh fails, admin must re-authenticate:
 
 ## Cost Breakdown
 
-| Service | Tier | Cost |
-|---------|------|------|
-| Twitter API | Essential | $100/month |
-| Instagram API | Free | $0 |
-| LinkedIn API | Free | $0 |
-| **Total** | | **$100/month** |
+| Service       | Tier      | Cost           |
+| ------------- | --------- | -------------- |
+| Twitter API   | Essential | $100/month     |
+| Instagram API | Free      | $0             |
+| LinkedIn API  | Free      | $0             |
+| **Total**     |           | **$100/month** |
 
 Note: Twitter is the only paid service. Instagram and LinkedIn APIs are free for standard usage.
 
 ## Support
 
 For issues or questions:
+
 - Check logs in `nchat_social_import_logs`
 - Review Sentry errors (if enabled)
 - Contact nself-chat support

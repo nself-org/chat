@@ -14,9 +14,7 @@ import type {
 // Impersonation Operations
 // ============================================================================
 
-export async function startImpersonation(
-  data: ImpersonateUserInput
-): Promise<UserActionResult> {
+export async function startImpersonation(data: ImpersonateUserInput): Promise<UserActionResult> {
   const response = await fetch('/api/admin/impersonate/start', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -60,9 +58,10 @@ export async function getActiveImpersonation(): Promise<ImpersonationSession | n
   return response.json()
 }
 
-export async function getImpersonationHistory(
-  pagination?: { page: number; perPage: number }
-): Promise<{ sessions: ImpersonationSession[]; total: number }> {
+export async function getImpersonationHistory(pagination?: {
+  page: number
+  perPage: number
+}): Promise<{ sessions: ImpersonationSession[]; total: number }> {
   const params = new URLSearchParams()
   if (pagination) {
     params.set('page', pagination.page.toString())
@@ -268,10 +267,7 @@ export async function getImpersonationAuditLog(
   return response.json()
 }
 
-export function logImpersonationAction(
-  action: string,
-  details?: Record<string, unknown>
-): void {
+export function logImpersonationAction(action: string, details?: Record<string, unknown>): void {
   // This would be called internally to log actions during impersonation
   // In production, this would send to the server
 }

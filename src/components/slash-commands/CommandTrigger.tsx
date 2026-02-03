@@ -83,9 +83,7 @@ export function CommandTrigger({ value, aliases = [], onChange }: CommandTrigger
       <div className="space-y-2">
         <Label htmlFor="trigger">Command Trigger</Label>
         <div className="relative">
-          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-            /
-          </span>
+          <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">/</span>
           <Input
             id="trigger"
             value={value}
@@ -112,7 +110,7 @@ export function CommandTrigger({ value, aliases = [], onChange }: CommandTrigger
 
       {/* Preview */}
       {value && (
-        <div className="rounded-lg border bg-muted/50 p-3">
+        <div className="bg-muted/50 rounded-lg border p-3">
           <p className="text-sm">
             Users will type: <code className="rounded bg-muted px-1 font-mono">/{value}</code>
           </p>
@@ -173,9 +171,7 @@ export function CommandTrigger({ value, aliases = [], onChange }: CommandTrigger
             <Plus className="h-4 w-4" />
           </Button>
         </div>
-        <p className="text-xs text-muted-foreground">
-          Maximum 5 aliases. Press Enter to add.
-        </p>
+        <p className="text-xs text-muted-foreground">Maximum 5 aliases. Press Enter to add.</p>
       </div>
     </div>
   )

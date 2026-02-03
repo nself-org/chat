@@ -37,6 +37,7 @@ Server-Side Audit Trail (PostgreSQL)
 ```
 
 **Why Client-Side?**
+
 - Faster unlock (no network round-trip)
 - Privacy (PIN never transmitted)
 - Offline support
@@ -49,6 +50,7 @@ Server-Side Audit Trail (PostgreSQL)
 ### Tables Created by Migration 012
 
 #### `user_pin_settings`
+
 ```sql
 - id (UUID, PK)
 - user_id (UUID, FK to auth.users)
@@ -65,6 +67,7 @@ Server-Side Audit Trail (PostgreSQL)
 ```
 
 #### `user_pin_attempts`
+
 ```sql
 - id (UUID, PK)
 - user_id (UUID, FK)
@@ -78,6 +81,7 @@ Server-Side Audit Trail (PostgreSQL)
 ```
 
 #### `user_sessions` (extended)
+
 ```sql
 -- Added columns:
 - locked_until (TIMESTAMPTZ)
@@ -86,6 +90,7 @@ Server-Side Audit Trail (PostgreSQL)
 ```
 
 #### `user_biometric_credentials`
+
 ```sql
 - id (UUID, PK)
 - user_id (UUID, FK)
@@ -144,9 +149,7 @@ export default function RootLayout({ children }) {
     <html>
       <body>
         <Providers>
-          <PinLockWrapper>
-            {children}
-          </PinLockWrapper>
+          <PinLockWrapper>{children}</PinLockWrapper>
         </Providers>
       </body>
     </html>
@@ -163,12 +166,7 @@ import { PinManage } from '@/components/security/PinManage'
 export default function PinLockPage() {
   const { user } = useAuth()
 
-  return (
-    <PinManage
-      userId={user.id}
-      userName={user.email}
-    />
-  )
+  return <PinManage userId={user.id} userName={user.email} />
 }
 ```
 
@@ -178,14 +176,7 @@ export default function PinLockPage() {
 import { usePinLock } from '@/hooks/use-pin-lock'
 
 function MyComponent() {
-  const {
-    isLocked,
-    hasPinSetup,
-    lock,
-    unlock,
-    verifyAndUnlock,
-    lockoutInfo,
-  } = usePinLock()
+  const { isLocked, hasPinSetup, lock, unlock, verifyAndUnlock, lockoutInfo } = usePinLock()
 
   // Manual lock
   const handleLock = () => lock('manual')
@@ -203,9 +194,7 @@ function MyComponent() {
   return (
     <div>
       {isLocked ? 'Locked' : 'Unlocked'}
-      {lockoutInfo.isLocked && (
-        <p>Locked for {lockoutInfo.remainingMinutes} minutes</p>
-      )}
+      {lockoutInfo.isLocked && <p>Locked for {lockoutInfo.remainingMinutes} minutes</p>}
     </div>
   )
 }
@@ -249,9 +238,9 @@ type LockTimeout = 0 | 5 | 15 | 30 | 60 // minutes
 
 ```typescript
 interface LockTriggers {
-  lockOnClose: boolean      // Lock when app closes
+  lockOnClose: boolean // Lock when app closes
   lockOnBackground: boolean // Lock when app goes to background
-  lockTimeout: LockTimeout  // Inactivity timeout
+  lockTimeout: LockTimeout // Inactivity timeout
 }
 ```
 
@@ -259,9 +248,9 @@ interface LockTriggers {
 
 ```typescript
 const LOCKOUT_POLICY = {
-  maxAttempts: 5,           // Failed attempts before lockout
-  lookbackMinutes: 15,      // Check attempts in last 15 min
-  lockoutDuration: 30,      // Lockout for 30 minutes
+  maxAttempts: 5, // Failed attempts before lockout
+  lookbackMinutes: 15, // Check attempts in last 15 min
+  lockoutDuration: 30, // Lockout for 30 minutes
 }
 ```
 
@@ -307,12 +296,14 @@ const LOCKOUT_POLICY = {
 ### PIN Module (`src/lib/security/pin.ts`)
 
 #### Validation
+
 ```typescript
 isValidPinFormat(pin: string): boolean
 getPinStrength(pin: string): { strength, message }
 ```
 
 #### Cryptography
+
 ```typescript
 generateSalt(): string
 hashPin(pin: string, salt?: string): Promise<{ hash, salt }>
@@ -320,6 +311,7 @@ verifyPin(pin: string, hash: string, salt: string): Promise<boolean>
 ```
 
 #### Storage
+
 ```typescript
 storePinSettings(settings: PinSettings): void
 loadPinSettings(): PinSettings | null
@@ -328,6 +320,7 @@ hasPinConfigured(): boolean
 ```
 
 #### Setup/Management
+
 ```typescript
 setupPin(pin, confirmPin, options): Promise<PinSetupResult>
 changePin(current, newPin, confirm): Promise<PinSetupResult>
@@ -336,6 +329,7 @@ disablePin(currentPin): Promise<boolean>
 ```
 
 #### Attempt Tracking
+
 ```typescript
 recordLocalPinAttempt(success: boolean, reason?: string): void
 getRecentFailedAttempts(minutes?: number): StoredAttempt[]
@@ -346,6 +340,7 @@ clearAttemptHistory(): void
 ### Session Module (`src/lib/security/session.ts`)
 
 #### Activity Tracking
+
 ```typescript
 updateLastActivity(): void
 getLastActivityTime(): number
@@ -355,6 +350,7 @@ getFormattedTimeSinceActivity(): string
 ```
 
 #### Lock State
+
 ```typescript
 getLockState(): LockState
 lockSession(reason?: string): void
@@ -364,6 +360,7 @@ clearLockState(): void
 ```
 
 #### Timeout Management
+
 ```typescript
 checkSessionTimeout(): { hasTimedOut, minutesSinceActivity, timeoutMinutes }
 checkAndLockIfNeeded(): boolean
@@ -371,6 +368,7 @@ setupAutoLockChecker(onLocked: () => void): () => void
 ```
 
 #### App Lifecycle
+
 ```typescript
 handleAppVisible(): { shouldLock, reason }
 handleAppHidden(): void
@@ -383,6 +381,7 @@ setupActivityListeners(): () => void
 ### Biometric Module (`src/lib/security/biometric.ts`)
 
 #### Availability
+
 ```typescript
 isWebAuthnSupported(): boolean
 isBiometricAvailable(): Promise<boolean>
@@ -390,16 +389,19 @@ getBiometricType(): Promise<string>
 ```
 
 #### Registration
+
 ```typescript
 registerBiometric(userId, userName, deviceName?): Promise<BiometricSetupResult>
 ```
 
 #### Verification
+
 ```typescript
 verifyBiometric(): Promise<BiometricVerifyResult>
 ```
 
 #### Credential Management
+
 ```typescript
 getStoredCredentials(): BiometricCredential[]
 removeCredential(credentialId: string): boolean
@@ -564,14 +566,14 @@ console.log(getSessionDebugInfo())
 
 ### Browser Support
 
-| Browser | PIN Lock | Biometric |
-|---------|----------|-----------|
-| Chrome 90+ | ✅ | ✅ |
-| Firefox 90+ | ✅ | ✅ |
-| Safari 14+ | ✅ | ✅ |
-| Edge 90+ | ✅ | ✅ |
-| Mobile Safari | ✅ | ✅ |
-| Mobile Chrome | ✅ | ✅ |
+| Browser       | PIN Lock | Biometric |
+| ------------- | -------- | --------- |
+| Chrome 90+    | ✅       | ✅        |
+| Firefox 90+   | ✅       | ✅        |
+| Safari 14+    | ✅       | ✅        |
+| Edge 90+      | ✅       | ✅        |
+| Mobile Safari | ✅       | ✅        |
+| Mobile Chrome | ✅       | ✅        |
 
 ---
 

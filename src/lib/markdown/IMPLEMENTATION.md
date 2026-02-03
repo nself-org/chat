@@ -9,6 +9,7 @@ Complete, production-ready markdown parsing and rendering system integrated with
 ### ✅ Completed Features
 
 #### Rich Text Editor (TipTap)
+
 - [x] **Complete editor component** - `/src/components/editor/rich-editor.tsx`
 - [x] **Toolbar with all formatting options** - `/src/components/editor/editor-toolbar.tsx`
 - [x] **Keyboard shortcuts** - Cmd+B (bold), Cmd+I (italic), etc.
@@ -17,6 +18,7 @@ Complete, production-ready markdown parsing and rendering system integrated with
 - [x] **Auto-focus and ref API** - Full programmatic control
 
 #### Text Formatting
+
 - [x] **Bold** - `**text**` or Cmd+B
 - [x] **Italic** - `*text*` or Cmd+I
 - [x] **Underline** - `<u>text</u>` or Cmd+U
@@ -27,6 +29,7 @@ Complete, production-ready markdown parsing and rendering system integrated with
 - [x] **Headings** - H1-H6 support
 
 #### Lists & Blocks
+
 - [x] **Bullet lists** - `-` or `*` prefix
 - [x] **Numbered lists** - `1.` prefix
 - [x] **Blockquotes** - `>` prefix
@@ -34,6 +37,7 @@ Complete, production-ready markdown parsing and rendering system integrated with
 - [x] **Hard breaks** - Shift+Enter
 
 #### Mentions & Emojis
+
 - [x] **@mentions** - Autocomplete dropdown with avatars
 - [x] **#channels** - Channel autocomplete
 - [x] **:emoji:** - Emoji shortcodes with picker
@@ -41,6 +45,7 @@ Complete, production-ready markdown parsing and rendering system integrated with
 - [x] **Presence indicators** - Online/away/dnd/offline
 
 #### Markdown System
+
 - [x] **Parser** - `/src/lib/markdown/parser.ts`
   - JSON ↔ Markdown conversion
   - HTML generation with sanitization
@@ -53,6 +58,7 @@ Complete, production-ready markdown parsing and rendering system integrated with
   - Preview and raw modes
 
 #### Integration Points
+
 - [x] **Database storage** - Convert to markdown for storage
 - [x] **Display** - Render markdown as formatted React components
 - [x] **Copy/paste** - Preserve formatting
@@ -163,6 +169,7 @@ function EditorWithPreview() {
 ## Keyboard Shortcuts
 
 ### Text Formatting
+
 - `Cmd+B` - Bold
 - `Cmd+I` - Italic
 - `Cmd+U` - Underline
@@ -171,17 +178,20 @@ function EditorWithPreview() {
 - `Cmd+Shift+E` - Code block
 
 ### Links & Lists
+
 - `Cmd+K` - Insert link
 - `Cmd+Shift+8` - Bullet list
 - `Cmd+Shift+7` - Ordered list
 
 ### Editor Actions
+
 - `Enter` - Submit message
 - `Shift+Enter` - New line
 - `Cmd+Z` - Undo
 - `Cmd+Shift+Z` - Redo
 
 ### Autocomplete
+
 - `@` - Mention user
 - `#` - Mention channel
 - `:` - Insert emoji
@@ -274,6 +284,7 @@ pnpm test src/lib/markdown/__tests__/parser.test.ts
 ```
 
 Test coverage:
+
 - ✅ Text formatting (bold, italic, etc.)
 - ✅ Code blocks and syntax highlighting
 - ✅ Links and auto-linking
@@ -288,6 +299,7 @@ Test coverage:
 ## Examples
 
 See `/src/components/editor/examples.tsx` for complete working examples:
+
 - Basic chat editor
 - Editor with live preview
 - Markdown renderer
@@ -372,6 +384,7 @@ const json = markdownToJson(message.content)
 ## Support
 
 For issues or questions:
+
 1. Check `/src/components/editor/examples.tsx` for working examples
 2. Review `/src/lib/markdown/README.md` for API documentation
 3. Run tests to verify functionality

@@ -37,6 +37,7 @@ import type {
   GiphyCategory,
   GiphyCategoriesResponse,
 } from '@/types/gif'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Constants

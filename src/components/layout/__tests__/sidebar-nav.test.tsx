@@ -22,9 +22,7 @@ const mockUsePathname = usePathname as jest.MockedFunction<typeof usePathname>
 // Test Data
 // ============================================================================
 
-const createMockChannel = (
-  overrides: Partial<SidebarChannel> = {}
-): SidebarChannel => ({
+const createMockChannel = (overrides: Partial<SidebarChannel> = {}): SidebarChannel => ({
   id: 'channel-1',
   name: 'general',
   slug: 'general',
@@ -62,9 +60,7 @@ const mockSections: SidebarSection[] = [
   {
     id: 'section-2',
     title: 'Projects',
-    channels: [
-      createMockChannel({ id: 'ch-4', name: 'project-alpha', slug: 'project-alpha' }),
-    ],
+    channels: [createMockChannel({ id: 'ch-4', name: 'project-alpha', slug: 'project-alpha' })],
     collapsed: true,
   },
 ]
@@ -256,9 +252,7 @@ describe('SidebarNav', () => {
 
     it('calls onCreateChannel when add button clicked', () => {
       const onCreateChannel = jest.fn()
-      render(
-        <SidebarNav sections={mockSections} onCreateChannel={onCreateChannel} />
-      )
+      render(<SidebarNav sections={mockSections} onCreateChannel={onCreateChannel} />)
       const addButton = screen.getByTestId('section-add-channels')
       fireEvent.click(addButton)
       expect(onCreateChannel).toHaveBeenCalledTimes(1)
@@ -266,9 +260,7 @@ describe('SidebarNav', () => {
 
     it('calls onCreateDM when DM add button clicked', () => {
       const onCreateDM = jest.fn()
-      render(
-        <SidebarNav directMessages={mockDirectMessages} onCreateDM={onCreateDM} />
-      )
+      render(<SidebarNav directMessages={mockDirectMessages} onCreateDM={onCreateDM} />)
       const addButton = screen.getByTestId('section-add-direct-messages')
       fireEvent.click(addButton)
       expect(onCreateDM).toHaveBeenCalledTimes(1)
@@ -276,12 +268,7 @@ describe('SidebarNav', () => {
 
     it('toggles section collapse on header click', () => {
       const onSectionToggle = jest.fn()
-      render(
-        <SidebarNav
-          sections={mockSections}
-          onSectionToggle={onSectionToggle}
-        />
-      )
+      render(<SidebarNav sections={mockSections} onSectionToggle={onSectionToggle} />)
 
       // Click to collapse
       fireEvent.click(screen.getByTestId('section-toggle-channels'))
@@ -299,23 +286,13 @@ describe('SidebarNav', () => {
 
   describe('Channel Menu', () => {
     it('shows channel menu on hover', () => {
-      render(
-        <SidebarNav
-          sections={mockSections}
-          onChannelAction={jest.fn()}
-        />
-      )
+      render(<SidebarNav sections={mockSections} onChannelAction={jest.fn()} />)
       expect(screen.getByTestId('channel-menu-ch-1')).toBeInTheDocument()
     })
 
     it('calls onChannelAction with mute action', async () => {
       const onChannelAction = jest.fn()
-      render(
-        <SidebarNav
-          sections={mockSections}
-          onChannelAction={onChannelAction}
-        />
-      )
+      render(<SidebarNav sections={mockSections} onChannelAction={onChannelAction} />)
 
       fireEvent.click(screen.getByTestId('channel-menu-ch-1'))
       fireEvent.click(screen.getByText('Mute'))
@@ -324,12 +301,7 @@ describe('SidebarNav', () => {
 
     it('calls onChannelAction with leave action', () => {
       const onChannelAction = jest.fn()
-      render(
-        <SidebarNav
-          sections={mockSections}
-          onChannelAction={onChannelAction}
-        />
-      )
+      render(<SidebarNav sections={mockSections} onChannelAction={onChannelAction} />)
 
       fireEvent.click(screen.getByTestId('channel-menu-ch-1'))
       fireEvent.click(screen.getByText('Leave Channel'))
@@ -338,12 +310,7 @@ describe('SidebarNav', () => {
 
     it('calls onChannelAction with settings action', () => {
       const onChannelAction = jest.fn()
-      render(
-        <SidebarNav
-          sections={mockSections}
-          onChannelAction={onChannelAction}
-        />
-      )
+      render(<SidebarNav sections={mockSections} onChannelAction={onChannelAction} />)
 
       fireEvent.click(screen.getByTestId('channel-menu-ch-1'))
       fireEvent.click(screen.getByText('Settings'))
@@ -358,9 +325,7 @@ describe('SidebarNav', () => {
           channels: [createMockChannel({ id: 'ch-1', isMuted: true })],
         },
       ]
-      render(
-        <SidebarNav sections={sections} onChannelAction={jest.fn()} />
-      )
+      render(<SidebarNav sections={sections} onChannelAction={jest.fn()} />)
 
       fireEvent.click(screen.getByTestId('channel-menu-ch-1'))
       expect(screen.getByText('Unmute')).toBeInTheDocument()
@@ -398,13 +363,7 @@ describe('SidebarNav', () => {
       const onOpenSearch = jest.fn()
       const onOpenSettings = jest.fn()
 
-      render(
-        <SidebarNav
-          collapsed
-          onOpenSearch={onOpenSearch}
-          onOpenSettings={onOpenSettings}
-        />
-      )
+      render(<SidebarNav collapsed onOpenSearch={onOpenSearch} onOpenSettings={onOpenSettings} />)
 
       fireEvent.click(screen.getByTestId('sidebar-search-collapsed'))
       expect(onOpenSearch).toHaveBeenCalledTimes(1)

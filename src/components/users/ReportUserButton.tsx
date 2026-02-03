@@ -139,7 +139,7 @@ const ReportUserButton = React.forwardRef<HTMLButtonElement, ReportUserButtonPro
             variant={variant}
             size={size}
             className={cn(
-              'text-destructive hover:text-destructive hover:bg-destructive/10',
+              'hover:bg-destructive/10 text-destructive hover:text-destructive',
               className
             )}
             disabled={disabled}
@@ -156,8 +156,8 @@ const ReportUserButton = React.forwardRef<HTMLButtonElement, ReportUserButtonPro
               Report {userName}
             </DialogTitle>
             <DialogDescription>
-              Please select a reason for reporting this user. Our team will review
-              your report and take appropriate action.
+              Please select a reason for reporting this user. Our team will review your report and
+              take appropriate action.
             </DialogDescription>
           </DialogHeader>
 
@@ -170,23 +170,15 @@ const ReportUserButton = React.forwardRef<HTMLButtonElement, ReportUserButtonPro
                 onValueChange={(value) => setReason(value as ReportReason)}
               >
                 {REPORT_REASONS.map((item) => (
-                  <div
-                    key={item.value}
-                    className="flex items-start space-x-3 space-y-0"
-                  >
+                  <div key={item.value} className="flex items-start space-x-3 space-y-0">
                     <RadioGroupItem
                       value={item.value}
                       id={`reason-${item.value}`}
                       className="mt-1"
                     />
-                    <Label
-                      htmlFor={`reason-${item.value}`}
-                      className="font-normal cursor-pointer"
-                    >
+                    <Label htmlFor={`reason-${item.value}`} className="cursor-pointer font-normal">
                       <span className="font-medium">{item.label}</span>
-                      <p className="text-xs text-muted-foreground">
-                        {item.description}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{item.description}</p>
                     </Label>
                   </div>
                 ))}
@@ -204,26 +196,16 @@ const ReportUserButton = React.forwardRef<HTMLButtonElement, ReportUserButtonPro
                 rows={3}
                 maxLength={500}
               />
-              <p className="text-xs text-muted-foreground text-right">
-                {details.length}/500
-              </p>
+              <p className="text-right text-xs text-muted-foreground">{details.length}/500</p>
             </div>
           </div>
 
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setIsOpen(false)}
-              disabled={isLoading}
-            >
+            <Button variant="outline" onClick={() => setIsOpen(false)} disabled={isLoading}>
               Cancel
             </Button>
-            <Button
-              variant="destructive"
-              onClick={handleSubmit}
-              disabled={!reason || isLoading}
-            >
-              {isLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+            <Button variant="destructive" onClick={handleSubmit} disabled={!reason || isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Submit Report
             </Button>
           </DialogFooter>

@@ -78,7 +78,7 @@ export function ThemeSelector({ className, variant = 'cards' }: ThemeSelectorPro
               className={cn(
                 'flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors',
                 isActive
-                  ? 'border-primary bg-primary text-primary-foreground'
+                  ? 'text-primary-foreground border-primary bg-primary'
                   : 'border-input bg-background hover:bg-muted'
               )}
             >
@@ -93,11 +93,7 @@ export function ThemeSelector({ className, variant = 'cards' }: ThemeSelectorPro
 
   if (variant === 'radio') {
     return (
-      <RadioGroup
-        value={theme}
-        onValueChange={setTheme}
-        className={cn('space-y-2', className)}
-      >
+      <RadioGroup value={theme} onValueChange={setTheme} className={cn('space-y-2', className)}>
         {themeOptions.map((option) => {
           const Icon = option.icon
           return (
@@ -128,8 +124,8 @@ export function ThemeSelector({ className, variant = 'cards' }: ThemeSelectorPro
             className={cn(
               'relative flex flex-col items-center gap-2 rounded-lg border p-4 text-center transition-all',
               isActive
-                ? 'border-primary bg-primary/5 ring-2 ring-primary ring-offset-2'
-                : 'border-input hover:border-muted-foreground/50 hover:bg-muted/50'
+                ? 'bg-primary/5 border-primary ring-2 ring-primary ring-offset-2'
+                : 'hover:border-muted-foreground/50 hover:bg-muted/50 border-input'
             )}
           >
             {isActive && (
@@ -140,7 +136,7 @@ export function ThemeSelector({ className, variant = 'cards' }: ThemeSelectorPro
             <div
               className={cn(
                 'flex h-10 w-10 items-center justify-center rounded-full',
-                isActive ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                isActive ? 'text-primary-foreground bg-primary' : 'bg-muted'
               )}
             >
               <Icon className="h-5 w-5" />

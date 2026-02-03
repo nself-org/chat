@@ -1,57 +1,57 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { History, ExternalLink, CheckCircle2, XCircle, Clock, Loader2 } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { Button } from '@/components/ui/button';
-import { useWalletStore } from '@/stores/wallet-store';
-import { useWallet } from '@/hooks/use-wallet';
-import { cn } from '@/lib/utils';
-import type { PendingTransaction } from '@/lib/wallet/transaction-manager';
+import * as React from 'react'
+import { History, ExternalLink, CheckCircle2, XCircle, Clock, Loader2 } from 'lucide-react'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Button } from '@/components/ui/button'
+import { useWalletStore } from '@/stores/wallet-store'
+import { useWallet } from '@/hooks/use-wallet'
+import { cn } from '@/lib/utils'
+import type { PendingTransaction } from '@/lib/wallet/transaction-manager'
 
 interface TransactionHistoryProps {
-  className?: string;
+  className?: string
 }
 
 export function TransactionHistory({ className }: TransactionHistoryProps) {
-  const { pendingTransactions } = useWalletStore();
-  const { chainId } = useWallet();
+  const { pendingTransactions } = useWalletStore()
+  const { chainId } = useWallet()
 
   const getStatusIcon = (status: PendingTransaction['status']) => {
     switch (status) {
       case 'confirmed':
-        return <CheckCircle2 className="h-4 w-4 text-green-600" />;
+        return <CheckCircle2 className="h-4 w-4 text-green-600" />
       case 'failed':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-red-600" />
       case 'pending':
       case 'submitted':
       case 'confirming':
-        return <Loader2 className="h-4 w-4 animate-spin text-blue-600" />;
+        return <Loader2 className="h-4 w-4 animate-spin text-blue-600" />
       case 'cancelled':
-        return <XCircle className="h-4 w-4 text-gray-600" />;
+        return <XCircle className="h-4 w-4 text-gray-600" />
       default:
-        return <Clock className="h-4 w-4 text-gray-600" />;
+        return <Clock className="h-4 w-4 text-gray-600" />
     }
-  };
+  }
 
   const getStatusText = (status: PendingTransaction['status']) => {
     switch (status) {
       case 'confirmed':
-        return 'Confirmed';
+        return 'Confirmed'
       case 'failed':
-        return 'Failed';
+        return 'Failed'
       case 'pending':
-        return 'Pending';
+        return 'Pending'
       case 'submitted':
-        return 'Submitted';
+        return 'Submitted'
       case 'confirming':
-        return 'Confirming';
+        return 'Confirming'
       case 'cancelled':
-        return 'Cancelled';
+        return 'Cancelled'
       default:
-        return status;
+        return status
     }
-  };
+  }
 
   const getExplorerUrl = (hash: string) => {
     const explorers: Record<string, string> = {
@@ -62,24 +62,24 @@ export function TransactionHistory({ className }: TransactionHistoryProps) {
       '0x13881': 'https://mumbai.polygonscan.com',
       '0xa4b1': 'https://arbiscan.io',
       '0x2105': 'https://basescan.org',
-    };
+    }
 
-    const explorer = chainId ? explorers[chainId] : explorers['0x1'];
-    return `${explorer}/tx/${hash}`;
-  };
+    const explorer = chainId ? explorers[chainId] : explorers['0x1']
+    return `${explorer}/tx/${hash}`
+  }
 
   const formatTimestamp = (date: Date) => {
-    const now = new Date();
-    const diff = now.getTime() - date.getTime();
-    const minutes = Math.floor(diff / 60000);
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
+    const now = new Date()
+    const diff = now.getTime() - date.getTime()
+    const minutes = Math.floor(diff / 60000)
+    const hours = Math.floor(minutes / 60)
+    const days = Math.floor(hours / 24)
 
-    if (days > 0) return `${days}d ago`;
-    if (hours > 0) return `${hours}h ago`;
-    if (minutes > 0) return `${minutes}m ago`;
-    return 'Just now';
-  };
+    if (days > 0) return `${days}d ago`
+    if (hours > 0) return `${hours}h ago`
+    if (minutes > 0) return `${minutes}m ago`
+    return 'Just now'
+  }
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -97,7 +97,7 @@ export function TransactionHistory({ className }: TransactionHistoryProps) {
         </div>
       ) : (
         <ScrollArea className="h-[400px] rounded-lg border">
-          <div className="p-4 space-y-3">
+          <div className="space-y-3 p-4">
             {pendingTransactions
               .slice()
               .reverse()
@@ -110,9 +110,7 @@ export function TransactionHistory({ className }: TransactionHistoryProps) {
                     {getStatusIcon(tx.status)}
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium">
-                          {getStatusText(tx.status)}
-                        </span>
+                        <span className="text-sm font-medium">{getStatusText(tx.status)}</span>
                         <span className="text-xs text-muted-foreground">
                           {formatTimestamp(tx.submittedAt)}
                         </span>
@@ -130,11 +128,7 @@ export function TransactionHistory({ className }: TransactionHistoryProps) {
                           Value: {parseInt(tx.request.value, 16) / 1e18} ETH
                         </div>
                       )}
-                      {tx.error && (
-                        <div className="text-xs text-red-600">
-                          Error: {tx.error}
-                        </div>
-                      )}
+                      {tx.error && <div className="text-xs text-red-600">Error: {tx.error}</div>}
                     </div>
                   </div>
                   <Button
@@ -151,5 +145,5 @@ export function TransactionHistory({ className }: TransactionHistoryProps) {
         </ScrollArea>
       )}
     </div>
-  );
+  )
 }

@@ -162,11 +162,11 @@ export interface VersionComparison {
  * Who can view edit history.
  */
 export type HistoryViewPermission =
-  | 'everyone'      // All users can view history
-  | 'author-only'   // Only message author can view
-  | 'moderators'    // Moderators and above
-  | 'admins'        // Admins and owner only
-  | 'disabled'      // No one can view (history still tracked)
+  | 'everyone' // All users can view history
+  | 'author-only' // Only message author can view
+  | 'moderators' // Moderators and above
+  | 'admins' // Admins and owner only
+  | 'disabled' // No one can view (history still tracked)
 
 /**
  * Edit history retention settings.
@@ -272,10 +272,10 @@ export interface AdminHistoryItem {
  * Bulk action for admin history management.
  */
 export type AdminHistoryAction =
-  | 'clear-history'     // Clear all edit history
-  | 'restore-original'  // Restore to original version
-  | 'delete-versions'   // Delete specific versions
-  | 'export-history'    // Export history data
+  | 'clear-history' // Clear all edit history
+  | 'restore-original' // Restore to original version
+  | 'delete-versions' // Delete specific versions
+  | 'export-history' // Export history data
 
 /**
  * Result of an admin history action.

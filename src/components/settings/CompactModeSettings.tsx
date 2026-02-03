@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import { SettingsSection } from './settings-section';
-import { SettingsToggle } from './SettingsToggle';
-import { useSettingsStore } from '@/stores/settings-store';
+import { SettingsSection } from './settings-section'
+import { SettingsToggle } from './SettingsToggle'
+import { useSettingsStore } from '@/stores/settings-store'
 
 interface CompactModeSettingsProps {
-  className?: string;
+  className?: string
 }
 
 /**
  * CompactModeSettings - Toggle compact mode
  */
 export function CompactModeSettings({ className }: CompactModeSettingsProps) {
-  const { settings, updateAppearance } = useSettingsStore();
+  const { settings, updateAppearance } = useSettingsStore()
 
   return (
     <SettingsSection
@@ -44,5 +44,5 @@ export function CompactModeSettings({ className }: CompactModeSettingsProps) {
         onCheckedChange={(checked) => updateAppearance({ showTimestamps: checked })}
       />
     </SettingsSection>
-  );
+  )
 }

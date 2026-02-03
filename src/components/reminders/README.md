@@ -22,18 +22,10 @@ function MyApp() {
       <RemindersList userId={currentUser.id} />
 
       {/* Quick remind from message */}
-      <MessageQuickRemind
-        messageId={message.id}
-        channelId={channel.id}
-        userId={currentUser.id}
-      />
+      <MessageQuickRemind messageId={message.id} channelId={channel.id} userId={currentUser.id} />
 
       {/* Create/Edit modal */}
-      <SetReminderModal
-        open={isOpen}
-        onOpenChange={setIsOpen}
-        userId={currentUser.id}
-      />
+      <SetReminderModal open={isOpen} onOpenChange={setIsOpen} userId={currentUser.id} />
     </>
   )
 }
@@ -46,6 +38,7 @@ function MyApp() {
 Main modal for creating and editing reminders.
 
 **Features**:
+
 - Quick time presets (20min, 1hr, 3hr, tomorrow, next week)
 - Custom date/time picker with timezone
 - Recurring reminder options (daily, weekly, monthly, yearly)
@@ -54,6 +47,7 @@ Main modal for creating and editing reminders.
 - Preview panel
 
 **Props**:
+
 ```typescript
 interface SetReminderModalProps {
   open?: boolean
@@ -75,6 +69,7 @@ interface SetReminderModalProps {
 Display and manage all reminders with filtering and grouping.
 
 **Features**:
+
 - Upcoming/Completed tabs
 - Search and filter (status, type, channel)
 - Group by date or channel
@@ -83,6 +78,7 @@ Display and manage all reminders with filtering and grouping.
 - Loading skeletons
 
 **Props**:
+
 ```typescript
 interface RemindersListProps {
   userId: string
@@ -105,6 +101,7 @@ interface RemindersListProps {
 Individual reminder card with actions.
 
 **Features**:
+
 - Message preview (for message reminders)
 - Quick actions (complete, edit, delete, snooze)
 - Status badges
@@ -112,6 +109,7 @@ Individual reminder card with actions.
 - Channel link
 
 **Props**:
+
 ```typescript
 interface ReminderItemProps {
   reminder: Reminder
@@ -132,12 +130,14 @@ interface ReminderItemProps {
 Notification components for due reminders.
 
 **Components**:
+
 - `ReminderNotification`: Full-featured notification card
 - `ReminderToast`: Toast-style notification
 - `ReminderBell`: Badge icon with count
 - `ReminderNotificationContainer`: Container for managing notifications
 
 **Features**:
+
 - Auto-show when reminder is due
 - Quick actions (Complete, Snooze, Dismiss)
 - Desktop notifications
@@ -145,9 +145,10 @@ Notification components for due reminders.
 - Navigate to message/channel
 
 **Usage**:
+
 ```tsx
 // Add to root layout
-<ReminderNotificationContainer userId={user.id} />
+;<ReminderNotificationContainer userId={user.id} />
 
 // Or use hook directly
 const { activeNotification, dismissNotification } = useReminderNotifications()
@@ -160,17 +161,20 @@ const { activeNotification, dismissNotification } = useReminderNotifications()
 Quick reminder creation from messages.
 
 **Components**:
+
 - `QuickRemind`: Dropdown menu with presets
 - `QuickRemindButtons`: Button grid layout
 - `MessageQuickRemind`: Integrated with message actions
 
 **Features**:
+
 - One-click reminder creation
 - Preset times (20min, 1hr, 3hr, tomorrow, next week)
 - Custom time option
 - Message context aware
 
 **Usage**:
+
 ```tsx
 // In message dropdown
 <QuickRemind
@@ -194,10 +198,12 @@ Quick reminder creation from messages.
 Date and time selection with timezone support.
 
 **Components**:
+
 - `ReminderTimePicker`: Full picker with date, time, timezone
 - `CompactTimePicker`: Compact version
 
 **Features**:
+
 - Calendar date picker
 - Hour/minute time picker
 - Timezone selector (IANA format)
@@ -205,6 +211,7 @@ Date and time selection with timezone support.
 - Future validation
 
 **Props**:
+
 ```typescript
 interface ReminderTimePickerProps {
   value: Date
@@ -279,15 +286,8 @@ Zustand store for global reminder state.
 import { useReminderStore } from '@/lib/reminders/reminder-store'
 
 function MyComponent() {
-  const {
-    reminders,
-    dueReminders,
-    isModalOpen,
-    filter,
-    setFilter,
-    openModal,
-    closeModal,
-  } = useReminderStore()
+  const { reminders, dueReminders, isModalOpen, filter, setFilter, openModal, closeModal } =
+    useReminderStore()
 
   return <div>{/* Your UI */}</div>
 }
@@ -309,9 +309,7 @@ function MessageWithReminder({ message, user }) {
   return (
     <>
       <Message {...message}>
-        <button onClick={() => setShowModal(true)}>
-          Set Reminder
-        </button>
+        <button onClick={() => setShowModal(true)}>Set Reminder</button>
       </Message>
 
       <SetReminderModal
@@ -418,10 +416,7 @@ function AppLayout({ children, user }) {
 All components use Tailwind CSS and Radix UI primitives. Override styles using className prop:
 
 ```tsx
-<RemindersList
-  className="custom-reminders-list"
-  maxHeight="800px"
-/>
+<RemindersList className="custom-reminders-list" maxHeight="800px" />
 ```
 
 CSS variables for theming:
@@ -456,6 +451,7 @@ CSS variables for theming:
 - Edge 90+
 
 Notifications require:
+
 - `Notification API` support
 - User permission
 
@@ -466,12 +462,7 @@ Notifications require:
 All components are fully typed. Import types:
 
 ```tsx
-import type {
-  Reminder,
-  ReminderDraft,
-  ReminderFilter,
-  RecurrenceRule,
-} from '@/graphql/reminders'
+import type { Reminder, ReminderDraft, ReminderFilter, RecurrenceRule } from '@/graphql/reminders'
 
 import type {
   RemindersListProps,
@@ -491,13 +482,7 @@ import { SetReminderModal } from '@/components/reminders'
 test('creates reminder', async () => {
   const onSuccess = jest.fn()
 
-  render(
-    <SetReminderModal
-      open
-      userId="user-1"
-      onSuccess={onSuccess}
-    />
-  )
+  render(<SetReminderModal open userId="user-1" onSuccess={onSuccess} />)
 
   // Enter content
   const input = screen.getByPlaceholderText('Enter your reminder...')

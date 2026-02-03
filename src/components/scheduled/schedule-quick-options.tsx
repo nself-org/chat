@@ -17,14 +17,7 @@
 
 import { useMemo, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
-import {
-  Clock,
-  Sunrise,
-  Sunset,
-  Calendar,
-  CalendarDays,
-  Settings2,
-} from 'lucide-react'
+import { Clock, Sunrise, Sunset, Calendar, CalendarDays, Settings2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // ============================================================================
@@ -252,7 +245,7 @@ export function ScheduleQuickOptions({
             disabled={disabled}
             className="text-xs"
           >
-            <Settings2 className="h-3 w-3 mr-1" />
+            <Settings2 className="mr-1 h-3 w-3" />
             Custom
           </Button>
         )}
@@ -271,28 +264,25 @@ export function ScheduleQuickOptions({
             onClick={() => handleOptionClick(option)}
             disabled={disabled}
             className={cn(
-              'flex items-center gap-3 w-full p-3 rounded-lg border text-left transition-colors',
-              'hover:bg-accent hover:border-accent',
+              'flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors',
+              'hover:border-accent hover:bg-accent',
               'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-              selectedOption === option.id &&
-                'bg-accent border-primary ring-1 ring-primary',
-              disabled && 'opacity-50 cursor-not-allowed'
+              selectedOption === option.id && 'border-primary bg-accent ring-1 ring-primary',
+              disabled && 'cursor-not-allowed opacity-50'
             )}
           >
             <div
               className={cn(
-                'flex items-center justify-center h-10 w-10 rounded-full',
+                'flex h-10 w-10 items-center justify-center rounded-full',
                 'bg-muted text-muted-foreground',
                 selectedOption === option.id && 'bg-primary/10 text-primary'
               )}
             >
               {option.icon}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm">{option.label}</p>
-              <p className="text-xs text-muted-foreground truncate">
-                {formatOptionTime(option)}
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">{option.label}</p>
+              <p className="truncate text-xs text-muted-foreground">{formatOptionTime(option)}</p>
             </div>
           </button>
         ))}
@@ -304,28 +294,25 @@ export function ScheduleQuickOptions({
             onClick={onCustomClick}
             disabled={disabled}
             className={cn(
-              'flex items-center gap-3 w-full p-3 rounded-lg border text-left transition-colors',
-              'hover:bg-accent hover:border-accent',
+              'flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors',
+              'hover:border-accent hover:bg-accent',
               'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
-              selectedOption === 'custom' &&
-                'bg-accent border-primary ring-1 ring-primary',
-              disabled && 'opacity-50 cursor-not-allowed'
+              selectedOption === 'custom' && 'border-primary bg-accent ring-1 ring-primary',
+              disabled && 'cursor-not-allowed opacity-50'
             )}
           >
             <div
               className={cn(
-                'flex items-center justify-center h-10 w-10 rounded-full',
+                'flex h-10 w-10 items-center justify-center rounded-full',
                 'bg-muted text-muted-foreground',
                 selectedOption === 'custom' && 'bg-primary/10 text-primary'
               )}
             >
               <Settings2 className="h-4 w-4" />
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-medium text-sm">Custom date & time</p>
-              <p className="text-xs text-muted-foreground">
-                Choose a specific date and time
-              </p>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-medium">Custom date & time</p>
+              <p className="text-xs text-muted-foreground">Choose a specific date and time</p>
             </div>
           </button>
         )}

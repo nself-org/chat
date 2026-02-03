@@ -21,7 +21,13 @@ export interface WebVitalMetric {
   rating: 'good' | 'needs-improvement' | 'poor'
   delta: number
   id: string
-  navigationType: 'navigate' | 'reload' | 'back-forward' | 'back-forward-cache' | 'prerender' | 'restore'
+  navigationType:
+    | 'navigate'
+    | 'reload'
+    | 'back-forward'
+    | 'back-forward-cache'
+    | 'prerender'
+    | 'restore'
   entries: PerformanceEntry[]
   route?: string
   category?: string
@@ -62,13 +68,13 @@ const DEFAULT_CONFIG: WebVitalsConfig = {
  */
 function sendToConsole(metric: WebVitalMetric) {
   if (DEFAULT_CONFIG.debug) {
-    console.log('[Web Vitals]', {
-      name: metric.name,
-      value: Math.round(metric.value),
-      rating: metric.rating,
-      delta: Math.round(metric.delta),
-      route: metric.route,
-    })
+    // REMOVED: console.log('[Web Vitals]', {
+    //   name: metric.name,
+    //   value: Math.round(metric.value),
+    //   rating: metric.rating,
+    //   delta: Math.round(metric.delta),
+    //   route: metric.route,
+    // })
   }
 }
 
@@ -97,7 +103,12 @@ function sendToSentry(metric: WebVitalMetric) {
   if (typeof window !== 'undefined' && 'Sentry' in window) {
     // @ts-ignore - Sentry types
     window.Sentry?.captureMessage(`Web Vital: ${metric.name}`, {
-      level: metric.rating === 'good' ? 'info' : metric.rating === 'needs-improvement' ? 'warning' : 'error',
+      level:
+        metric.rating === 'good'
+          ? 'info'
+          : metric.rating === 'needs-improvement'
+            ? 'warning'
+            : 'error',
       tags: {
         web_vital: metric.name,
         rating: metric.rating,
@@ -147,11 +158,7 @@ function handleMetric(metric: WebVitalMetric, config: WebVitalsConfig) {
 /**
  * Track custom performance metric
  */
-export function trackCustomMetric(
-  name: string,
-  value: number,
-  metadata?: Record<string, any>
-) {
+export function trackCustomMetric(name: string, value: number, metadata?: Record<string, any>) {
   const metric: WebVitalMetric = {
     name,
     value,

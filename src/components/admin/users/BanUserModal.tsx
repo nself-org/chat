@@ -85,9 +85,7 @@ export function BanUserModal({ open, user, onClose, onBanned }: BanUserModalProp
         const bannedUntil =
           banType === 'permanent' || duration === 'permanent'
             ? undefined
-            : new Date(
-                Date.now() + parseDuration(duration)
-              ).toISOString()
+            : new Date(Date.now() + parseDuration(duration)).toISOString()
 
         updateUserInList(user.id, {
           isBanned: true,
@@ -162,9 +160,7 @@ export function BanUserModal({ open, user, onClose, onBanned }: BanUserModalProp
                   <strong>Currently banned</strong>
                 </p>
                 {user.banReason && (
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Reason: {user.banReason}
-                  </p>
+                  <p className="mt-1 text-sm text-muted-foreground">Reason: {user.banReason}</p>
                 )}
                 {user.bannedUntil && (
                   <p className="text-sm text-muted-foreground">
@@ -174,11 +170,7 @@ export function BanUserModal({ open, user, onClose, onBanned }: BanUserModalProp
               </div>
 
               <div className="flex items-center space-x-2">
-                <Switch
-                  id="notify-unban"
-                  checked={notifyUser}
-                  onCheckedChange={setNotifyUser}
-                />
+                <Switch id="notify-unban" checked={notifyUser} onCheckedChange={setNotifyUser} />
                 <Label htmlFor="notify-unban">Notify user of unban</Label>
               </div>
             </div>
@@ -222,13 +214,11 @@ export function BanUserModal({ open, user, onClose, onBanned }: BanUserModalProp
                       <SelectValue placeholder="Select duration" />
                     </SelectTrigger>
                     <SelectContent>
-                      {BAN_DURATION_OPTIONS.filter((d) => d.value !== 'permanent').map(
-                        (option) => (
-                          <SelectItem key={option.value} value={option.value}>
-                            {option.label}
-                          </SelectItem>
-                        )
-                      )}
+                      {BAN_DURATION_OPTIONS.filter((d) => d.value !== 'permanent').map((option) => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -238,10 +228,7 @@ export function BanUserModal({ open, user, onClose, onBanned }: BanUserModalProp
               <div className="space-y-2">
                 <Label htmlFor="reason">Reason</Label>
                 <Select value={reason} onValueChange={setReason}>
-                  <SelectTrigger
-                    id="reason"
-                    className={errors.reason ? 'border-red-500' : ''}
-                  >
+                  <SelectTrigger id="reason" className={errors.reason ? 'border-red-500' : ''}>
                     <SelectValue placeholder="Select a reason" />
                   </SelectTrigger>
                   <SelectContent>
@@ -252,9 +239,7 @@ export function BanUserModal({ open, user, onClose, onBanned }: BanUserModalProp
                     ))}
                   </SelectContent>
                 </Select>
-                {errors.reason && (
-                  <p className="text-sm text-red-500">{errors.reason}</p>
-                )}
+                {errors.reason && <p className="text-sm text-red-500">{errors.reason}</p>}
               </div>
 
               {/* Custom Reason */}
@@ -284,19 +269,13 @@ export function BanUserModal({ open, user, onClose, onBanned }: BanUserModalProp
 
               {/* Notify User */}
               <div className="flex items-center space-x-2">
-                <Switch
-                  id="notify-ban"
-                  checked={notifyUser}
-                  onCheckedChange={setNotifyUser}
-                />
+                <Switch id="notify-ban" checked={notifyUser} onCheckedChange={setNotifyUser} />
                 <Label htmlFor="notify-ban">Notify user by email</Label>
               </div>
             </div>
           )}
 
-          {errors.submit && (
-            <p className="text-sm text-red-500 mt-4">{errors.submit}</p>
-          )}
+          {errors.submit && <p className="mt-4 text-sm text-red-500">{errors.submit}</p>}
 
           <DialogFooter className="mt-6">
             <Button type="button" variant="outline" onClick={handleClose}>

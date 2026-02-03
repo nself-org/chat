@@ -86,7 +86,7 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
         <div
           ref={ref}
           className={cn(
-            'flex items-center gap-3 p-2 rounded-lg transition-colors',
+            'flex items-center gap-3 rounded-lg p-2 transition-colors',
             'hover:bg-muted/50 cursor-pointer',
             selected && 'bg-primary/10',
             className
@@ -95,14 +95,12 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
           {...props}
         >
           <UserAvatar user={user} size="sm" presence={user.presence} />
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-sm truncate">
-                {user.displayName}
-              </span>
+              <span className="truncate text-sm font-medium">{user.displayName}</span>
               <RoleBadge role={user.role} size="xs" />
             </div>
-            <span className="text-xs text-muted-foreground truncate block">
+            <span className="block truncate text-xs text-muted-foreground">
               {user.title || `@${user.username}`}
             </span>
           </div>
@@ -125,7 +123,7 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
         >
           {/* Cover/Header */}
           <div
-            className="h-20 bg-gradient-to-r from-primary/20 to-primary/10"
+            className="from-primary/20 to-primary/10 h-20 bg-gradient-to-r"
             style={{
               backgroundImage: user.coverUrl ? `url(${user.coverUrl})` : undefined,
               backgroundSize: 'cover',
@@ -133,27 +131,23 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
             }}
           />
 
-          <CardContent className="pt-0 -mt-10">
+          <CardContent className="-mt-10 pt-0">
             {/* Avatar and basic info */}
-            <div className="flex items-end gap-4 mb-4">
+            <div className="mb-4 flex items-end gap-4">
               <UserAvatar
                 user={user}
                 size="xl"
                 presence={user.presence}
                 className="ring-4 ring-background"
               />
-              <div className="flex-1 min-w-0 pb-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-semibold text-lg truncate">
-                    {user.displayName}
-                  </h3>
+              <div className="min-w-0 flex-1 pb-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="truncate text-lg font-semibold">{user.displayName}</h3>
                   <RoleBadge role={user.role} size="sm" />
                 </div>
-                <p className="text-sm text-muted-foreground truncate">
+                <p className="truncate text-sm text-muted-foreground">
                   @{user.username}
-                  {user.pronouns && (
-                    <span className="ml-2 text-xs">({user.pronouns})</span>
-                  )}
+                  {user.pronouns && <span className="ml-2 text-xs">({user.pronouns})</span>}
                 </p>
               </div>
             </div>
@@ -161,9 +155,7 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
             {/* Title and Department */}
             {(user.title || user.department) && (
               <div className="mb-3">
-                {user.title && (
-                  <p className="font-medium text-sm">{user.title}</p>
-                )}
+                {user.title && <p className="text-sm font-medium">{user.title}</p>}
                 {user.department && (
                   <p className="text-sm text-muted-foreground">
                     {user.department}
@@ -179,7 +171,7 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
             )}
 
             {/* Location and timezone */}
-            <div className="flex flex-wrap gap-3 text-sm text-muted-foreground mb-3">
+            <div className="mb-3 flex flex-wrap gap-3 text-sm text-muted-foreground">
               {user.location && (
                 <div className="flex items-center gap-1">
                   <MapPin className="h-3.5 w-3.5" />
@@ -210,18 +202,16 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
 
             {/* Bio preview */}
             {user.bio && (
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                {user.bio}
-              </p>
+              <p className="mb-4 line-clamp-2 text-sm text-muted-foreground">{user.bio}</p>
             )}
 
             {/* Badges */}
             {user.badges && user.badges.length > 0 && (
-              <div className="flex flex-wrap gap-1 mb-4">
+              <div className="mb-4 flex flex-wrap gap-1">
                 {user.badges.slice(0, 4).map((badge) => (
                   <span
                     key={badge.id}
-                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs bg-muted"
+                    className="inline-flex items-center gap-1 rounded-full bg-muted px-2 py-0.5 text-xs"
                     style={{ backgroundColor: badge.color }}
                   >
                     {badge.icon && <span>{badge.icon}</span>}
@@ -238,7 +228,7 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
 
             {/* Actions */}
             {showActions && (
-              <div className="flex items-center gap-2 pt-3 border-t">
+              <div className="flex items-center gap-2 border-t pt-3">
                 {onMessage && (
                   <Button
                     variant="default"
@@ -249,7 +239,7 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
                       onMessage()
                     }}
                   >
-                    <MessageSquare className="h-4 w-4 mr-2" />
+                    <MessageSquare className="mr-2 h-4 w-4" />
                     Message
                   </Button>
                 )}
@@ -267,34 +257,22 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
                 )}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={(e) => e.stopPropagation()}
-                    >
+                    <Button variant="ghost" size="sm" onClick={(e) => e.stopPropagation()}>
                       <MoreHorizontal className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     {onViewProfile && (
-                      <DropdownMenuItem onClick={onViewProfile}>
-                        View Profile
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={onViewProfile}>View Profile</DropdownMenuItem>
                     )}
                     <DropdownMenuSeparator />
                     {onBlock && (
-                      <DropdownMenuItem
-                        onClick={onBlock}
-                        className="text-destructive"
-                      >
+                      <DropdownMenuItem onClick={onBlock} className="text-destructive">
                         Block User
                       </DropdownMenuItem>
                     )}
                     {onReport && (
-                      <DropdownMenuItem
-                        onClick={onReport}
-                        className="text-destructive"
-                      >
+                      <DropdownMenuItem onClick={onReport} className="text-destructive">
                         Report User
                       </DropdownMenuItem>
                     )}
@@ -312,7 +290,7 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
       <Card
         ref={ref}
         className={cn(
-          'w-full overflow-hidden transition-shadow hover:shadow-md cursor-pointer',
+          'w-full cursor-pointer overflow-hidden transition-shadow hover:shadow-md',
           selected && 'ring-2 ring-primary',
           className
         )}
@@ -322,23 +300,15 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
             <UserAvatar user={user} size="lg" presence={user.presence} />
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-semibold truncate">{user.displayName}</h3>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="truncate font-semibold">{user.displayName}</h3>
                 <RoleBadge role={user.role} size="xs" />
               </div>
-              <p className="text-sm text-muted-foreground truncate">
-                @{user.username}
-              </p>
-              {user.title && (
-                <p className="text-sm text-muted-foreground mt-1">{user.title}</p>
-              )}
+              <p className="truncate text-sm text-muted-foreground">@{user.username}</p>
+              {user.title && <p className="mt-1 text-sm text-muted-foreground">{user.title}</p>}
               {user.customStatus && (
-                <UserStatus
-                  status={user.customStatus}
-                  variant="compact"
-                  className="mt-2"
-                />
+                <UserStatus status={user.customStatus} variant="compact" className="mt-2" />
               )}
             </div>
             {showActions && (
@@ -369,29 +339,17 @@ const UserCard = React.forwardRef<HTMLDivElement, UserCardProps>(
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     {onViewProfile && (
-                      <DropdownMenuItem onClick={onViewProfile}>
-                        View Profile
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={onViewProfile}>View Profile</DropdownMenuItem>
                     )}
-                    {onCall && (
-                      <DropdownMenuItem onClick={onCall}>
-                        Start Call
-                      </DropdownMenuItem>
-                    )}
+                    {onCall && <DropdownMenuItem onClick={onCall}>Start Call</DropdownMenuItem>}
                     <DropdownMenuSeparator />
                     {onBlock && (
-                      <DropdownMenuItem
-                        onClick={onBlock}
-                        className="text-destructive"
-                      >
+                      <DropdownMenuItem onClick={onBlock} className="text-destructive">
                         Block User
                       </DropdownMenuItem>
                     )}
                     {onReport && (
-                      <DropdownMenuItem
-                        onClick={onReport}
-                        className="text-destructive"
-                      >
+                      <DropdownMenuItem onClick={onReport} className="text-destructive">
                         Report User
                       </DropdownMenuItem>
                     )}

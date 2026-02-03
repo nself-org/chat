@@ -22,15 +22,9 @@ export class SearchPage {
     this.searchInput = page.locator(
       '[data-testid="search-input"], input[placeholder*="Search"], input[type="search"]'
     )
-    this.searchResults = page.locator(
-      '[data-testid="search-results"], .search-results'
-    )
-    this.advancedFilters = page.locator(
-      '[data-testid="advanced-filters"], .advanced-filters'
-    )
-    this.searchHistory = page.locator(
-      '[data-testid="search-history"], .search-history'
-    )
+    this.searchResults = page.locator('[data-testid="search-results"], .search-results')
+    this.advancedFilters = page.locator('[data-testid="advanced-filters"], .advanced-filters')
+    this.searchHistory = page.locator('[data-testid="search-history"], .search-history')
   }
 
   async openCommandPalette() {
@@ -54,9 +48,7 @@ export class SearchPage {
   }
 
   async selectResult(index: number = 0) {
-    const results = this.page.locator(
-      '[data-testid="search-result-item"], .search-result-item'
-    )
+    const results = this.page.locator('[data-testid="search-result-item"], .search-result-item')
     await results.nth(index).click()
     await this.page.waitForLoadState('networkidle')
   }
@@ -106,19 +98,13 @@ export class SearchPage {
   }
 
   async saveSearch(name: string) {
-    const saveButton = this.page.locator(
-      'button:has-text("Save"), [data-testid="save-search"]'
-    )
+    const saveButton = this.page.locator('button:has-text("Save"), [data-testid="save-search"]')
     await saveButton.click()
 
-    const nameInput = this.page.locator(
-      'input[placeholder*="name"], [data-testid="search-name"]'
-    )
+    const nameInput = this.page.locator('input[placeholder*="name"], [data-testid="search-name"]')
     await nameInput.fill(name)
 
-    const confirmButton = this.page.locator(
-      'button:has-text("Save"), button:has-text("Confirm")'
-    )
+    const confirmButton = this.page.locator('button:has-text("Save"), button:has-text("Confirm")')
     await confirmButton.last().click()
     await this.page.waitForTimeout(500)
   }
@@ -127,9 +113,7 @@ export class SearchPage {
     await this.page.goto('/search')
     await this.page.waitForLoadState('networkidle')
 
-    const savedSearch = this.page.locator(
-      `[data-testid="saved-search"]:has-text("${name}")`
-    )
+    const savedSearch = this.page.locator(`[data-testid="saved-search"]:has-text("${name}")`)
     await savedSearch.click()
     await this.page.waitForTimeout(500)
   }
@@ -144,8 +128,6 @@ export class SearchPage {
   }
 
   async getSearchSuggestions() {
-    return this.page.locator(
-      '[data-testid="search-suggestion"], .search-suggestion'
-    )
+    return this.page.locator('[data-testid="search-suggestion"], .search-suggestion')
   }
 }

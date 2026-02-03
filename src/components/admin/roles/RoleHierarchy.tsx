@@ -7,14 +7,7 @@ import { canManageRole, sortRolesByPosition } from '@/lib/admin/roles/role-hiera
 import { RoleBadge } from './RoleBadge'
 import { RoleIconPreview } from './RoleIcon'
 import { Button } from '@/components/ui/button'
-import {
-  GripVertical,
-  ArrowUp,
-  ArrowDown,
-  Shield,
-  Users,
-  Lock,
-} from 'lucide-react'
+import { GripVertical, ArrowUp, ArrowDown, Shield, Users, Lock } from 'lucide-react'
 
 interface RoleHierarchyProps {
   roles: Role[]
@@ -38,10 +31,7 @@ export function RoleHierarchy({
   onReorder,
   className,
 }: RoleHierarchyProps) {
-  const sortedRoles = React.useMemo(
-    () => sortRolesByPosition(roles),
-    [roles]
-  )
+  const sortedRoles = React.useMemo(() => sortRolesByPosition(roles), [roles])
 
   const canManage = (role: Role): boolean => {
     if (!currentUserPermissions) return false
@@ -65,13 +55,13 @@ export function RoleHierarchy({
   return (
     <div className={cn('space-y-1', className)}>
       <div className="mb-4 text-sm text-muted-foreground">
-        Roles are displayed from highest authority (top) to lowest (bottom).
-        Higher roles can manage lower roles.
+        Roles are displayed from highest authority (top) to lowest (bottom). Higher roles can manage
+        lower roles.
       </div>
 
       <div className="relative">
         {/* Hierarchy line */}
-        <div className="absolute left-5 top-0 bottom-0 w-0.5 bg-border" />
+        <div className="absolute bottom-0 left-5 top-0 w-0.5 bg-border" />
 
         {/* Role items */}
         <div className="space-y-2">
@@ -150,16 +140,16 @@ function HierarchyItem({
   return (
     <div
       className={cn(
-        'group relative flex items-center gap-3 rounded-lg border p-3 pl-10 cursor-pointer transition-all',
+        'group relative flex cursor-pointer items-center gap-3 rounded-lg border p-3 pl-10 transition-all',
         'hover:shadow-sm',
-        isSelected && 'ring-2 ring-primary bg-primary/5',
+        isSelected && 'bg-primary/5 ring-2 ring-primary',
         !canEdit && 'opacity-75'
       )}
       onClick={onSelect}
     >
       {/* Position indicator */}
       <div
-        className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 rounded-full border-2 bg-background"
+        className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border-2 bg-background"
         style={{ borderColor: role.color }}
       />
 
@@ -182,14 +172,12 @@ function HierarchyItem({
         )}
       </div>
 
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="font-medium truncate" style={{ color: role.color }}>
+          <span className="truncate font-medium" style={{ color: role.color }}>
             {role.name}
           </span>
-          {role.isBuiltIn && (
-            <Lock size={12} className="text-muted-foreground" />
-          )}
+          {role.isBuiltIn && <Lock size={12} className="text-muted-foreground" />}
         </div>
         <div className="flex items-center gap-3 text-xs text-muted-foreground">
           <span className="font-mono">Position: {role.position}</span>
@@ -255,11 +243,7 @@ interface HierarchyComparisonProps {
   className?: string
 }
 
-export function HierarchyComparison({
-  roleA,
-  roleB,
-  className,
-}: HierarchyComparisonProps) {
+export function HierarchyComparison({ roleA, roleB, className }: HierarchyComparisonProps) {
   const isAHigher = roleA.position > roleB.position
   const higher = isAHigher ? roleA : roleB
   const lower = isAHigher ? roleB : roleA
@@ -277,11 +261,9 @@ export function HierarchyComparison({
 
       <div className="rounded-lg border p-3 text-sm text-muted-foreground">
         <p>
-          <strong style={{ color: higher.color }}>{higher.name}</strong> has
-          position {higher.position}, which is{' '}
-          {higher.position - lower.position} higher than{' '}
-          <strong style={{ color: lower.color }}>{lower.name}</strong>{' '}
-          (position {lower.position}).
+          <strong style={{ color: higher.color }}>{higher.name}</strong> has position{' '}
+          {higher.position}, which is {higher.position - lower.position} higher than{' '}
+          <strong style={{ color: lower.color }}>{lower.name}</strong> (position {lower.position}).
         </p>
       </div>
     </div>

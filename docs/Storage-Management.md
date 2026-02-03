@@ -39,28 +39,31 @@ The storage management system provides comprehensive quota tracking, usage monit
 ### Storage Quotas
 
 **Default Quotas:**
+
 - User: 5 GB
 - Channel: 10 GB
 - Team: 100 GB
 
 **Quota Tracking:**
+
 ```typescript
 interface StorageQuota {
   entityId: string
   entityType: 'user' | 'channel' | 'team'
-  limit: number              // Total limit in bytes
-  used: number               // Current usage in bytes
-  percentage: number         // Usage percentage (0-100)
+  limit: number // Total limit in bytes
+  used: number // Current usage in bytes
+  percentage: number // Usage percentage (0-100)
   softLimitThreshold: number // Warning threshold (default: 80%)
   softLimitExceeded: boolean // True if over soft limit
   hardLimitExceeded: boolean // True if over hard limit
-  lastCalculated: Date       // Last calculation timestamp
+  lastCalculated: Date // Last calculation timestamp
 }
 ```
 
 ### Usage Breakdown
 
 Track storage by:
+
 - **Type**: Messages, files, images, videos, audio, documents, archives, code, cache
 - **User**: Individual user contributions (team/channel view)
 - **Channel**: Per-channel usage (team view)
@@ -92,12 +95,12 @@ interface StorageUsageBreakdown {
 
 Four built-in tiers with upgrade paths:
 
-| Tier | Storage | Max File | Retention | Price |
-|------|---------|----------|-----------|-------|
-| Free | 5 GB | 10 MB | 90 days | $0 |
-| Starter | 25 GB | 100 MB | 1 year | $9.99 |
-| Professional | 100 GB | 500 MB | Unlimited | $29.99 |
-| Enterprise | 1 TB | Unlimited | Unlimited | $99.99 |
+| Tier         | Storage | Max File  | Retention | Price  |
+| ------------ | ------- | --------- | --------- | ------ |
+| Free         | 5 GB    | 10 MB     | 90 days   | $0     |
+| Starter      | 25 GB   | 100 MB    | 1 year    | $9.99  |
+| Professional | 100 GB  | 500 MB    | Unlimited | $29.99 |
+| Enterprise   | 1 TB    | Unlimited | Unlimited | $99.99 |
 
 ### Quota Warnings
 
@@ -135,15 +138,16 @@ Automated storage cleanup with configurable policies:
 ```typescript
 interface CleanupPolicy {
   enabled: boolean
-  deleteOlderThan?: number           // Days
-  compressImagesOlderThan?: number   // Days
-  archiveMessagesOlderThan?: number  // Days
-  deleteCacheOlderThan?: number      // Days
-  maintainFreeSpace?: number         // Percentage
+  deleteOlderThan?: number // Days
+  compressImagesOlderThan?: number // Days
+  archiveMessagesOlderThan?: number // Days
+  deleteCacheOlderThan?: number // Days
+  maintainFreeSpace?: number // Percentage
 }
 ```
 
 **Actions:**
+
 - Delete old files
 - Compress images
 - Archive messages
@@ -156,15 +160,15 @@ Team-wide analytics:
 
 ```typescript
 interface StorageStats {
-  totalAllocated: number    // Total storage limit
-  totalUsed: number         // Current usage
-  totalAvailable: number    // Remaining space
-  fileCount: number         // Total files
-  userCount: number         // Active users
-  channelCount: number      // Active channels
-  averageFileSize: number   // Avg file size
-  largestFileSize: number   // Largest file
-  growthRate: number        // Bytes/day
+  totalAllocated: number // Total storage limit
+  totalUsed: number // Current usage
+  totalAvailable: number // Remaining space
+  fileCount: number // Total files
+  userCount: number // Active users
+  channelCount: number // Active channels
+  averageFileSize: number // Avg file size
+  largestFileSize: number // Largest file
+  growthRate: number // Bytes/day
   daysUntilFull: number | null // Estimated days
 }
 ```
@@ -176,6 +180,7 @@ interface StorageStats {
 Retrieve storage information.
 
 **Query Parameters:**
+
 - `action`: Operation type
   - `stats` - Overall statistics
   - `quota` - Entity quota (requires `entityId`, `entityType`)
@@ -187,18 +192,17 @@ Retrieve storage information.
 
 ```typescript
 // Get team statistics
-const stats = await fetch('/api/storage?action=stats')
-  .then(res => res.json())
+const stats = await fetch('/api/storage?action=stats').then((res) => res.json())
 
 // Get user quota
-const quota = await fetch(
-  '/api/storage?action=quota&entityId=user-123&entityType=user'
-).then(res => res.json())
+const quota = await fetch('/api/storage?action=quota&entityId=user-123&entityType=user').then(
+  (res) => res.json()
+)
 
 // Check if upload allowed
 const check = await fetch(
   '/api/storage?action=check-upload&entityId=user-123&entityType=user&fileSize=5242880'
-).then(res => res.json())
+).then((res) => res.json())
 ```
 
 ### POST /api/storage
@@ -206,6 +210,7 @@ const check = await fetch(
 Update storage or trigger actions.
 
 **Request Body:**
+
 ```typescript
 {
   action: string,
@@ -218,6 +223,7 @@ Update storage or trigger actions.
 **Actions:**
 
 1. **update-quota**: Change quota limit
+
 ```typescript
 {
   action: 'update-quota',
@@ -228,6 +234,7 @@ Update storage or trigger actions.
 ```
 
 2. **record-upload**: Track file upload
+
 ```typescript
 {
   action: 'record-upload',
@@ -238,6 +245,7 @@ Update storage or trigger actions.
 ```
 
 3. **record-deletion**: Track file deletion
+
 ```typescript
 {
   action: 'record-deletion',
@@ -248,6 +256,7 @@ Update storage or trigger actions.
 ```
 
 4. **cleanup**: Apply cleanup policy
+
 ```typescript
 {
   action: 'cleanup',
@@ -262,6 +271,7 @@ Update storage or trigger actions.
 ```
 
 5. **optimize**: Optimize storage
+
 ```typescript
 {
   action: 'optimize',
@@ -271,6 +281,7 @@ Update storage or trigger actions.
 ```
 
 6. **delete-old-files**: Delete old files
+
 ```typescript
 {
   action: 'delete-old-files',
@@ -281,6 +292,7 @@ Update storage or trigger actions.
 ```
 
 7. **archive-messages**: Archive old messages
+
 ```typescript
 {
   action: 'archive-messages',
@@ -291,6 +303,7 @@ Update storage or trigger actions.
 ```
 
 8. **clear-cache**: Clear cached data
+
 ```typescript
 {
   action: 'clear-cache',
@@ -300,6 +313,7 @@ Update storage or trigger actions.
 ```
 
 9. **acknowledge-warning**: Dismiss warning
+
 ```typescript
 {
   action: 'acknowledge-warning',
@@ -312,6 +326,7 @@ Update storage or trigger actions.
 Delete files or clear storage.
 
 **Query Parameters:**
+
 - `entityId`: Entity ID (required)
 - `entityType`: Entity type (required)
 - `fileId`: Specific file to delete (optional)
@@ -320,16 +335,10 @@ Delete files or clear storage.
 
 ```typescript
 // Delete specific file
-await fetch(
-  '/api/storage?entityId=user-123&entityType=user&fileId=file-456',
-  { method: 'DELETE' }
-)
+await fetch('/api/storage?entityId=user-123&entityType=user&fileId=file-456', { method: 'DELETE' })
 
 // Clear all storage
-await fetch(
-  '/api/storage?entityId=user-123&entityType=user',
-  { method: 'DELETE' }
-)
+await fetch('/api/storage?entityId=user-123&entityType=user', { method: 'DELETE' })
 ```
 
 ## Usage Examples
@@ -403,7 +412,7 @@ console.log(formatBytes(size, 3)) // "5.000 MB"
 import { getQuotaStatus } from '@/lib/storage/quota-manager'
 
 const used = 4.5 * 1024 * 1024 * 1024 // 4.5 GB
-const limit = 5 * 1024 * 1024 * 1024  // 5 GB
+const limit = 5 * 1024 * 1024 * 1024 // 5 GB
 
 const status = getQuotaStatus(used, limit)
 // Returns: 'critical' (90% used)
@@ -418,6 +427,7 @@ const status = getQuotaStatus(used, limit)
 Full storage management dashboard for administrators.
 
 **Features:**
+
 - Storage overview (total, used, growth rate)
 - Usage breakdown by type
 - User and channel breakdowns
@@ -426,6 +436,7 @@ Full storage management dashboard for administrators.
 - Quick actions
 
 **Props:**
+
 ```typescript
 interface StorageManagementProps {
   className?: string
@@ -433,6 +444,7 @@ interface StorageManagementProps {
 ```
 
 **Usage:**
+
 ```tsx
 <StorageManagement className="my-4" />
 ```
@@ -442,6 +454,7 @@ interface StorageManagementProps {
 Personal storage usage widget for user settings.
 
 **Features:**
+
 - Quota display with progress bar
 - Usage breakdown by type
 - Quick cleanup actions
@@ -449,6 +462,7 @@ Personal storage usage widget for user settings.
 - Upgrade prompts
 
 **Props:**
+
 ```typescript
 interface StorageUsageProps {
   className?: string
@@ -456,6 +470,7 @@ interface StorageUsageProps {
 ```
 
 **Usage:**
+
 ```tsx
 <StorageUsage className="my-4" />
 ```
@@ -549,12 +564,7 @@ Example queries for storage data:
 ```graphql
 # Get user storage quota
 query GetUserStorageQuota($userId: String!) {
-  storage_quotas(
-    where: {
-      entity_id: { _eq: $userId }
-      entity_type: { _eq: "user" }
-    }
-  ) {
+  storage_quotas(where: { entity_id: { _eq: $userId }, entity_type: { _eq: "user" } }) {
     limit_bytes
     soft_limit_threshold
   }
@@ -592,10 +602,7 @@ query GetStorageByType($entityId: String!, $entityType: String!) {
 # Get largest files
 query GetLargestFiles($entityId: String!, $limit: Int = 10) {
   storage_usage(
-    where: {
-      entity_id: { _eq: $entityId }
-      deleted_at: { _is_null: true }
-    }
+    where: { entity_id: { _eq: $entityId }, deleted_at: { _is_null: true } }
     order_by: { file_size: desc }
     limit: $limit
   ) {

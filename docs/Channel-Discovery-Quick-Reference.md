@@ -15,8 +15,7 @@ const { channels, isLoading, search } = useChannelDiscovery()
 
 // 3. Render the browser
 import { ChannelBrowser } from '@/components/channels/ChannelBrowser'
-
-<ChannelBrowser channels={channels} isLoading={isLoading} />
+;<ChannelBrowser channels={channels} isLoading={isLoading} />
 ```
 
 ---
@@ -41,6 +40,7 @@ import { ChannelBrowser } from '@/components/channels/ChannelBrowser'
 ```
 
 **Props**:
+
 - `channels: Channel[]` - Channel list
 - `joinedChannelIds?: Set<string>` - User's channels
 - `isLoading?: boolean` - Loading state
@@ -72,6 +72,7 @@ import { ChannelBrowser } from '@/components/channels/ChannelBrowser'
 ```
 
 **Layouts**:
+
 - `tree` - Collapsible tree with categories
 - `grid` - Grid layout grouped by category
 - `list` - Flat list of all channels
@@ -95,6 +96,7 @@ import { ChannelBrowser } from '@/components/channels/ChannelBrowser'
 ```
 
 **Variants**:
+
 - `default` - Full card with stats
 - `compact` - Horizontal condensed
 - `featured` - With gradient background
@@ -115,6 +117,7 @@ import { ChannelBrowser } from '@/components/channels/ChannelBrowser'
 ```
 
 **Features**:
+
 - User selection
 - Invite link generation
 - Email invitations
@@ -130,32 +133,32 @@ import { ChannelBrowser } from '@/components/channels/ChannelBrowser'
 ```tsx
 const {
   // State
-  channels,           // All channels
-  filteredChannels,   // Filtered results
-  results,            // Discovery results with scores
-  stats,              // Statistics
-  filters,            // Current filters
-  isLoading,          // Loading state
-  error,              // Error state
-  hasMore,            // More results available
-  total,              // Total count
+  channels, // All channels
+  filteredChannels, // Filtered results
+  results, // Discovery results with scores
+  stats, // Statistics
+  filters, // Current filters
+  isLoading, // Loading state
+  error, // Error state
+  hasMore, // More results available
+  total, // Total count
 
   // Actions
-  setFilters,         // Set filters
-  resetFilters,       // Reset all filters
-  applyQuickFilter,   // Apply quick filter
-  search,             // Search channels
-  clearSearch,        // Clear search
-  fetchChannels,      // Fetch channels
-  fetchMore,          // Load more
-  refresh,            // Refresh data
+  setFilters, // Set filters
+  resetFilters, // Reset all filters
+  applyQuickFilter, // Apply quick filter
+  search, // Search channels
+  clearSearch, // Clear search
+  fetchChannels, // Fetch channels
+  fetchMore, // Load more
+  refresh, // Refresh data
 
   // Recommendations
-  getFeatured,        // Get featured channels
-  getPopular,         // Get popular channels
-  getTrending,        // Get trending channels
-  getNew,             // Get new channels
-  getSuggested,       // Get suggested channels
+  getFeatured, // Get featured channels
+  getPopular, // Get popular channels
+  getTrending, // Get trending channels
+  getNew, // Get new channels
+  getSuggested, // Get suggested channels
 } = useChannelDiscovery({
   autoFetch: true,
   enableRealtime: false,
@@ -165,7 +168,7 @@ const {
   initialFilters: {
     type: 'public',
     sortBy: 'activity',
-  }
+  },
 })
 ```
 
@@ -177,16 +180,16 @@ const {
 
 ```typescript
 setFilters({
-  query: 'engineering',           // Search text
-  type: 'public',                // 'public' | 'private' | 'all'
-  categoryId: 'teams',           // Category filter
-  sortBy: 'activity',            // Sort field
-  sortDirection: 'desc',         // 'asc' | 'desc'
-  hasActivity: true,             // Only active
-  memberCountMin: 10,            // Min members
-  memberCountMax: 100,           // Max members
-  excludeJoined: false,          // Exclude joined
-  excludePrivate: false,         // Exclude private
+  query: 'engineering', // Search text
+  type: 'public', // 'public' | 'private' | 'all'
+  categoryId: 'teams', // Category filter
+  sortBy: 'activity', // Sort field
+  sortDirection: 'desc', // 'asc' | 'desc'
+  hasActivity: true, // Only active
+  memberCountMin: 10, // Min members
+  memberCountMax: 100, // Max members
+  excludeJoined: false, // Exclude joined
+  excludePrivate: false, // Exclude private
 })
 ```
 
@@ -202,13 +205,13 @@ setFilters({
 ### Quick Filters
 
 ```typescript
-applyQuickFilter('all')       // All channels
-applyQuickFilter('public')    // Public only
-applyQuickFilter('private')   // Private only
-applyQuickFilter('active')    // Recently active
-applyQuickFilter('new')       // Recently created
-applyQuickFilter('popular')   // Most members
-applyQuickFilter('trending')  // Trending now
+applyQuickFilter('all') // All channels
+applyQuickFilter('public') // Public only
+applyQuickFilter('private') // Private only
+applyQuickFilter('active') // Recently active
+applyQuickFilter('new') // Recently created
+applyQuickFilter('popular') // Most members
+applyQuickFilter('trending') // Trending now
 ```
 
 ---
@@ -247,6 +250,7 @@ GET /api/channels/discover
 ```
 
 **Query Params**:
+
 ```bash
 ?q=engineering          # Search
 &category=teams         # Category
@@ -261,6 +265,7 @@ GET /api/channels/discover
 ```
 
 **Response**:
+
 ```json
 {
   "channels": [...],
@@ -279,13 +284,16 @@ GET /api/channels/discover
 
 ```graphql
 query GetPublicChannels($limit: Int, $offset: Int) {
-  nchat_channels(
-    where: { is_private: { _eq: false } }
-    limit: $limit
-    offset: $offset
-  ) {
-    id name slug description
-    members_aggregate { aggregate { count } }
+  nchat_channels(where: { is_private: { _eq: false } }, limit: $limit, offset: $offset) {
+    id
+    name
+    slug
+    description
+    members_aggregate {
+      aggregate {
+        count
+      }
+    }
   }
 }
 ```
@@ -295,15 +303,13 @@ query GetPublicChannels($limit: Int, $offset: Int) {
 ```graphql
 query SearchChannels($query: String!, $limit: Int) {
   nchat_channels(
-    where: {
-      _or: [
-        { name: { _ilike: $query } }
-        { description: { _ilike: $query } }
-      ]
-    }
+    where: { _or: [{ name: { _ilike: $query } }, { description: { _ilike: $query } }] }
     limit: $limit
   ) {
-    id name slug description
+    id
+    name
+    slug
+    description
   }
 }
 ```
@@ -317,7 +323,9 @@ query GetTrendingChannels($limit: Int, $since: timestamptz!) {
     order_by: { messages_aggregate: { count: desc } }
     limit: $limit
   ) {
-    id name slug
+    id
+    name
+    slug
   }
 }
 ```
@@ -425,10 +433,10 @@ const { refresh } = useChannelDiscovery()
 ```typescript
 const levels = {
   'very-active': 'text-green-600 border-green-500',
-  'active': 'text-emerald-600 border-emerald-500',
-  'moderate': 'text-yellow-600 border-yellow-500',
-  'quiet': 'text-orange-600 border-orange-500',
-  'inactive': 'text-gray-500 border-gray-400',
+  active: 'text-emerald-600 border-emerald-500',
+  moderate: 'text-yellow-600 border-yellow-500',
+  quiet: 'text-orange-600 border-orange-500',
+  inactive: 'text-gray-500 border-gray-400',
 }
 ```
 
@@ -436,13 +444,13 @@ const levels = {
 
 ```typescript
 const colors = {
-  general: '#6366f1',      // Indigo
+  general: '#6366f1', // Indigo
   announcements: '#f59e0b', // Amber
-  teams: '#10b981',         // Emerald
-  projects: '#8b5cf6',      // Violet
-  support: '#ef4444',       // Red
-  social: '#ec4899',        // Pink
-  resources: '#06b6d4',     // Cyan
+  teams: '#10b981', // Emerald
+  projects: '#8b5cf6', // Violet
+  support: '#ef4444', // Red
+  social: '#ec4899', // Pink
+  resources: '#06b6d4', // Cyan
 }
 ```
 

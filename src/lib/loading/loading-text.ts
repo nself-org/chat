@@ -187,7 +187,9 @@ export const TIME_BASED_LOADING = {
 /**
  * Get a random loading message (for variety)
  */
-export function getRandomLoadingText(category: 'generic' | 'chat' | 'user' | 'admin' = 'generic'): string {
+export function getRandomLoadingText(
+  category: 'generic' | 'chat' | 'user' | 'admin' = 'generic'
+): string {
   let messages: readonly string[]
 
   switch (category) {
@@ -225,11 +227,7 @@ export function getLoadingTextForDuration(estimatedMs: number): string {
 /**
  * Format upload progress text
  */
-export function formatUploadProgress(
-  loaded: number,
-  total: number,
-  speed?: number
-): string {
+export function formatUploadProgress(loaded: number, total: number, speed?: number): string {
   const percentage = Math.round((loaded / total) * 100)
   const loadedMB = (loaded / 1024 / 1024).toFixed(1)
   const totalMB = (total / 1024 / 1024).toFixed(1)
@@ -278,6 +276,6 @@ export function getProgressiveMessage(elapsedMs: number): string {
  * Animated dots for loading text
  */
 export function animateLoadingDots(text: string, count: number = 3): string {
-  const dotsCount = (Math.floor(Date.now() / 500) % (count + 1))
+  const dotsCount = Math.floor(Date.now() / 500) % (count + 1)
   return text + '.'.repeat(dotsCount)
 }

@@ -7,6 +7,7 @@
  * - Support for multiple countries
  */
 
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderMetadata,
@@ -82,7 +83,11 @@ export class PhoneSmsProvider extends BaseAuthProvider {
 
     // If we have a verification code, verify it
     if (phoneCreds.verificationCode) {
-      return this.verifyCode(phoneCreds.phoneNumber, phoneCreds.countryCode, phoneCreds.verificationCode)
+      return this.verifyCode(
+        phoneCreds.phoneNumber,
+        phoneCreds.countryCode,
+        phoneCreds.verificationCode
+      )
     }
 
     // Otherwise, send a verification code
@@ -97,12 +102,18 @@ export class PhoneSmsProvider extends BaseAuthProvider {
     return this.createErrorResult(result.error!)
   }
 
-  async signUp(credentials: AuthCredentials, metadata?: Record<string, unknown>): Promise<AuthResult> {
+  async signUp(
+    credentials: AuthCredentials,
+    metadata?: Record<string, unknown>
+  ): Promise<AuthResult> {
     // For phone auth, signUp is the same as signIn
     return this.signIn(credentials)
   }
 
-  async sendVerificationCode(phoneNumber: string, countryCode: string): Promise<{ success: boolean; error?: AuthError }> {
+  async sendVerificationCode(
+    phoneNumber: string,
+    countryCode: string
+  ): Promise<{ success: boolean; error?: AuthError }> {
     if (!this.isEnabled()) {
       return {
         success: false,
@@ -121,7 +132,10 @@ export class PhoneSmsProvider extends BaseAuthProvider {
     if (!this.isCountryAllowed(countryCode)) {
       return {
         success: false,
-        error: this.createError('COUNTRY_NOT_ALLOWED', 'Phone authentication is not available in your country'),
+        error: this.createError(
+          'COUNTRY_NOT_ALLOWED',
+          'Phone authentication is not available in your country'
+        ),
       }
     }
 
@@ -141,7 +155,10 @@ export class PhoneSmsProvider extends BaseAuthProvider {
         const data = await response.json()
         return {
           success: false,
-          error: this.createError('SEND_FAILED', data.error?.message || 'Failed to send verification code'),
+          error: this.createError(
+            'SEND_FAILED',
+            data.error?.message || 'Failed to send verification code'
+          ),
         }
       }
 
@@ -156,7 +173,7 @@ export class PhoneSmsProvider extends BaseAuthProvider {
 
       return { success: true }
     } catch (error) {
-      console.error('SMS send error:', error)
+      logger.error('SMS send error:',  error)
       return {
         success: false,
         error: this.createError('NETWORK_ERROR', 'Failed to send verification code'),
@@ -171,7 +188,7 @@ export class PhoneSmsProvider extends BaseAuthProvider {
         headers: this.getAuthHeaders(),
       })
     } catch (error) {
-      console.error('Sign out error:', error)
+      logger.error('Sign out error:',  error)
     }
 
     this.pendingVerification = null
@@ -210,10 +227,8 @@ export class PhoneSmsProvider extends BaseAuthProvider {
         data.session.refreshToken
       )
     } catch (error) {
-      console.error('Token refresh error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to refresh token')
-      )
+      logger.error('Token refresh error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to refresh token'))
     }
   }
 
@@ -223,13 +238,20 @@ export class PhoneSmsProvider extends BaseAuthProvider {
     )
   }
 
-  private async verifyCode(phoneNumber: string, countryCode: string, code: string): Promise<AuthResult> {
+  private async verifyCode(
+    phoneNumber: string,
+    countryCode: string,
+    code: string
+  ): Promise<AuthResult> {
     // Check if we have a pending verification
     this.loadPendingVerification()
 
     if (!this.pendingVerification) {
       return this.createErrorResult(
-        this.createError('NO_PENDING_VERIFICATION', 'No verification code was sent. Please request a new code.')
+        this.createError(
+          'NO_PENDING_VERIFICATION',
+          'No verification code was sent. Please request a new code.'
+        )
       )
     }
 
@@ -237,7 +259,10 @@ export class PhoneSmsProvider extends BaseAuthProvider {
     if (Date.now() > this.pendingVerification.expiresAt) {
       this.clearPendingVerification()
       return this.createErrorResult(
-        this.createError('CODE_EXPIRED', 'Verification code has expired. Please request a new code.')
+        this.createError(
+          'CODE_EXPIRED',
+          'Verification code has expired. Please request a new code.'
+        )
       )
     }
 
@@ -269,7 +294,10 @@ export class PhoneSmsProvider extends BaseAuthProvider {
         this.persistPendingVerification()
 
         return this.createErrorResult(
-          this.createError('VERIFICATION_FAILED', data.error?.message || 'Invalid verification code')
+          this.createError(
+            'VERIFICATION_FAILED',
+            data.error?.message || 'Invalid verification code'
+          )
         )
       }
 
@@ -294,10 +322,8 @@ export class PhoneSmsProvider extends BaseAuthProvider {
 
       return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
     } catch (error) {
-      console.error('Code verification error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to verify code')
-      )
+      logger.error('Code verification error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to verify code'))
     }
   }
 
@@ -330,7 +356,11 @@ export class PhoneSmsProvider extends BaseAuthProvider {
   }
 
   private getAuthApiUrl(): string {
-    return this.extendedConfig.authApiUrl || process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1'
+    return (
+      this.extendedConfig.authApiUrl ||
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      'http://localhost:4000/v1'
+    )
   }
 
   private getAuthHeaders(): Record<string, string> {
@@ -344,16 +374,16 @@ export class PhoneSmsProvider extends BaseAuthProvider {
   private mapUserResponse(userData: Record<string, unknown>, phoneNumber: string): AuthUser {
     return {
       id: userData.id as string,
-      email: userData.email as string || `${phoneNumber.replace('+', '')}@phone.placeholder`,
-      username: userData.displayName as string || phoneNumber.slice(-4),
-      displayName: userData.displayName as string || `User ${phoneNumber.slice(-4)}`,
+      email: (userData.email as string) || `${phoneNumber.replace('+', '')}@phone.placeholder`,
+      username: (userData.displayName as string) || phoneNumber.slice(-4),
+      displayName: (userData.displayName as string) || `User ${phoneNumber.slice(-4)}`,
       avatarUrl: userData.avatarUrl as string | undefined,
       role: (userData.defaultRole as AuthUser['role']) || 'member',
       emailVerified: false,
       phoneNumber,
       phoneVerified: true,
       metadata: {
-        ...(userData.metadata as Record<string, unknown> || {}),
+        ...((userData.metadata as Record<string, unknown>) || {}),
         provider: 'phone-sms',
       },
       createdAt: userData.createdAt as string,
@@ -363,10 +393,13 @@ export class PhoneSmsProvider extends BaseAuthProvider {
 
   private persistSession(session: { accessToken: string; refreshToken: string }): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem('nchat-phone-session', JSON.stringify({
-      ...session,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-phone-session',
+      JSON.stringify({
+        ...session,
+        timestamp: Date.now(),
+      })
+    )
   }
 
   private getStoredSession(): { accessToken: string; refreshToken: string } | null {

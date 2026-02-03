@@ -96,20 +96,14 @@ export function DuplicateRole({
             <Copy size={18} />
             Duplicate Role
           </DialogTitle>
-          <DialogDescription>
-            Create a copy of this role with a new name
-          </DialogDescription>
+          <DialogDescription>Create a copy of this role with a new name</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-4">
           {/* Source role preview */}
           <div className="flex items-center gap-3 rounded-lg border p-3">
             <span className="text-sm text-muted-foreground">Source:</span>
-            <RoleBadge
-              name={role.name}
-              color={role.color}
-              icon={role.icon}
-            />
+            <RoleBadge name={role.name} color={role.color} icon={role.icon} />
           </div>
 
           {/* New name input */}
@@ -132,9 +126,7 @@ export function DuplicateRole({
               <Checkbox
                 id="copyPermissions"
                 checked={copyPermissions}
-                onCheckedChange={(checked) =>
-                  setCopyPermissions(checked as boolean)
-                }
+                onCheckedChange={(checked) => setCopyPermissions(checked as boolean)}
               />
               <Label htmlFor="copyPermissions" className="cursor-pointer">
                 Copy permissions ({role.permissions.length} permissions)
@@ -145,9 +137,7 @@ export function DuplicateRole({
               <Checkbox
                 id="copyAppearance"
                 checked={copyAppearance}
-                onCheckedChange={(checked) =>
-                  setCopyAppearance(checked as boolean)
-                }
+                onCheckedChange={(checked) => setCopyAppearance(checked as boolean)}
               />
               <Label htmlFor="copyAppearance" className="cursor-pointer">
                 Copy appearance (color and icon)
@@ -158,9 +148,7 @@ export function DuplicateRole({
               <Checkbox
                 id="copySettings"
                 checked={copySettings}
-                onCheckedChange={(checked) =>
-                  setCopySettings(checked as boolean)
-                }
+                onCheckedChange={(checked) => setCopySettings(checked as boolean)}
               />
               <Label htmlFor="copySettings" className="cursor-pointer">
                 Copy settings (mentionable)
@@ -180,8 +168,8 @@ export function DuplicateRole({
 
           {/* Errors */}
           {errors.length > 0 && (
-            <div className="flex items-start gap-2 rounded-lg border border-destructive bg-destructive/10 p-3">
-              <AlertCircle className="h-4 w-4 text-destructive mt-0.5" />
+            <div className="bg-destructive/10 flex items-start gap-2 rounded-lg border border-destructive p-3">
+              <AlertCircle className="mt-0.5 h-4 w-4 text-destructive" />
               <ul className="list-inside list-disc text-sm text-destructive">
                 {errors.map((error, i) => (
                   <li key={i}>{error}</li>
@@ -192,11 +180,7 @@ export function DuplicateRole({
         </div>
 
         <DialogFooter>
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isSubmitting}
-          >
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
             Cancel
           </Button>
           <Button onClick={handleDuplicate} disabled={isSubmitting}>

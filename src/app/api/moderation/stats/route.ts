@@ -9,14 +9,13 @@ import { getApolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
 import { captureError } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const GET_MODERATION_STATS = gql`
-  query GetModerationStats(
-    $startDate: timestamptz!
-    $endDate: timestamptz!
-  ) {
+  query GetModerationStats($startDate: timestamptz!, $endDate: timestamptz!) {
     # Queue statistics
     queue_stats: nchat_moderation_queue_aggregate(
       where: { created_at: { _gte: $startDate, _lte: $endDate } }
@@ -46,9 +45,7 @@ const GET_MODERATION_STATS = gql`
     }
 
     # Pending queue items
-    pending_items: nchat_moderation_queue_aggregate(
-      where: { status: { _eq: "pending" } }
-    ) {
+    pending_items: nchat_moderation_queue_aggregate(where: { status: { _eq: "pending" } }) {
       aggregate {
         count
       }
@@ -56,10 +53,7 @@ const GET_MODERATION_STATS = gql`
 
     # High priority items
     high_priority: nchat_moderation_queue_aggregate(
-      where: {
-        status: { _eq: "pending" }
-        priority: { _in: ["high", "critical"] }
-      }
+      where: { status: { _eq: "pending" }, priority: { _in: ["high", "critical"] } }
     ) {
       aggregate {
         count
@@ -85,10 +79,7 @@ const GET_MODERATION_STATS = gql`
 
     # Top moderators
     top_moderators: nchat_moderation_actions(
-      where: {
-        created_at: { _gte: $startDate, _lte: $endDate }
-        is_automated: { _eq: false }
-      }
+      where: { created_at: { _gte: $startDate, _lte: $endDate }, is_automated: { _eq: false } }
       distinct_on: moderator_id
       order_by: { moderator_id: desc }
     ) {
@@ -173,7 +164,7 @@ export async function GET(request: NextRequest) {
       autoActionEffectiveness,
     })
   } catch (error) {
-    console.error('Moderation stats error:', error)
+    logger.error('Moderation stats error:', error)
     captureError(error as Error, {
       tags: { feature: 'moderation', endpoint: 'stats' },
     })

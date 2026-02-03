@@ -35,13 +35,10 @@ const mockBots: Bot[] = []
  * GET /api/bots/[id]
  * Get a specific bot by ID
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const bot = mockBots.find(b => b.id === id)
+    const bot = mockBots.find((b) => b.id === id)
 
     if (!bot) {
       return NextResponse.json(
@@ -77,15 +74,12 @@ export async function GET(
  * PUT /api/bots/[id]
  * Update a bot
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const body = await request.json()
 
-    const botIndex = mockBots.findIndex(b => b.id === id)
+    const botIndex = mockBots.findIndex((b) => b.id === id)
 
     if (botIndex === -1) {
       return NextResponse.json(
@@ -107,7 +101,8 @@ export async function PUT(
     if (body.config !== undefined) bot.config = body.config
     if (body.enabled !== undefined) bot.enabled = body.enabled
     if (body.sandbox_enabled !== undefined) bot.sandbox_enabled = body.sandbox_enabled
-    if (body.rate_limit_per_minute !== undefined) bot.rate_limit_per_minute = body.rate_limit_per_minute
+    if (body.rate_limit_per_minute !== undefined)
+      bot.rate_limit_per_minute = body.rate_limit_per_minute
     if (body.timeout_ms !== undefined) bot.timeout_ms = body.timeout_ms
 
     bot.updated_at = new Date()
@@ -152,7 +147,7 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params
-    const botIndex = mockBots.findIndex(b => b.id === id)
+    const botIndex = mockBots.findIndex((b) => b.id === id)
 
     if (botIndex === -1) {
       return NextResponse.json(

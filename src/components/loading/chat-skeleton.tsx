@@ -32,7 +32,7 @@ export function ChatSkeleton({
   return (
     <div className={cn('flex h-full', className)}>
       {/* Main chat area */}
-      <div className="flex flex-1 flex-col min-w-0">
+      <div className="flex min-w-0 flex-1 flex-col">
         {/* Header */}
         {showHeader && <ChatHeaderSkeleton />}
 
@@ -56,12 +56,7 @@ export function ChatSkeleton({
  */
 export function ChatHeaderSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between border-b px-4 py-3',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between border-b px-4 py-3', className)}>
       {/* Left: Channel info */}
       <div className="flex items-center gap-3">
         <Skeleton className="h-6 w-6 rounded" />
@@ -76,7 +71,7 @@ export function ChatHeaderSkeleton({ className }: { className?: string }) {
         <Skeleton className="h-8 w-8 rounded" />
         <Skeleton className="h-8 w-8 rounded" />
         <Skeleton className="h-8 w-8 rounded" />
-        <div className="h-6 w-px bg-border mx-1" />
+        <div className="mx-1 h-6 w-px bg-border" />
         <Skeleton className="h-8 w-8 rounded" />
       </div>
     </div>
@@ -90,7 +85,7 @@ export function ChatInputSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('border-t p-4', className)}>
       {/* Typing indicator area */}
-      <div className="h-4 mb-2" />
+      <div className="mb-2 h-4" />
 
       {/* Input container */}
       <div className="flex items-end gap-2 rounded-lg border bg-background p-2">
@@ -113,18 +108,9 @@ export function ChatInputSkeleton({ className }: { className?: string }) {
 /**
  * Chat member panel skeleton
  */
-export function ChatMemberPanelSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function ChatMemberPanelSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'w-60 border-l flex flex-col',
-        className
-      )}
-    >
+    <div className={cn('flex w-60 flex-col border-l', className)}>
       {/* Panel header */}
       <div className="flex items-center justify-between border-b px-4 py-3">
         <LineSkeleton width={80} height={14} />
@@ -144,7 +130,7 @@ export function ChatMemberPanelSkeleton({
  */
 export function ThreadPanelSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('w-96 border-l flex flex-col h-full', className)}>
+    <div className={cn('flex h-full w-96 flex-col border-l', className)}>
       {/* Thread header */}
       <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
@@ -173,13 +159,9 @@ export function ThreadPanelSkeleton({ className }: { className?: string }) {
 /**
  * Channel info panel skeleton
  */
-export function ChannelInfoPanelSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function ChannelInfoPanelSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('w-80 border-l flex flex-col', className)}>
+    <div className={cn('flex w-80 flex-col border-l', className)}>
       {/* Header */}
       <div className="flex items-center justify-between border-b px-4 py-3">
         <LineSkeleton width={100} height={16} />
@@ -190,7 +172,7 @@ export function ChannelInfoPanelSkeleton({
       <div className="flex-1 overflow-y-auto">
         {/* Channel info section */}
         <div className="border-b p-4">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="mb-4 flex items-center gap-3">
             <Skeleton className="h-12 w-12 rounded-lg" />
             <div>
               <LineSkeleton width={100} height={16} />
@@ -206,7 +188,7 @@ export function ChannelInfoPanelSkeleton({
 
         {/* Members section */}
         <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
+          <div className="mb-3 flex items-center justify-between">
             <LineSkeleton width={80} height={14} />
             <LineSkeleton width={20} height={12} />
           </div>
@@ -231,12 +213,7 @@ export function ChannelInfoPanelSkeleton({
  */
 export function EmptyChatSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        'flex h-full flex-col items-center justify-center gap-4',
-        className
-      )}
-    >
+    <div className={cn('flex h-full flex-col items-center justify-center gap-4', className)}>
       <Skeleton className="h-24 w-24 rounded-2xl" />
       <LineSkeleton width={200} height={20} />
       <LineSkeleton width={280} height={14} />

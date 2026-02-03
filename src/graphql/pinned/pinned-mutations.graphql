@@ -17,10 +17,7 @@ mutation PinMessage(
       note: $note
       position: $position
     }
-    on_conflict: {
-      constraint: pinned_messages_channel_id_message_id_key
-      update_columns: []
-    }
+    on_conflict: { constraint: pinned_messages_channel_id_message_id_key, update_columns: [] }
   ) {
     id
     message_id
@@ -62,10 +59,7 @@ mutation UnpinMessageById($pinId: uuid!) {
 # Unpin a message by message ID
 mutation UnpinMessageByMessageId($channelId: uuid!, $messageId: uuid!) {
   delete_nchat_pinned_messages(
-    where: {
-      channel_id: { _eq: $channelId }
-      message_id: { _eq: $messageId }
-    }
+    where: { channel_id: { _eq: $channelId }, message_id: { _eq: $messageId } }
   ) {
     affected_rows
     returning {
@@ -78,10 +72,7 @@ mutation UnpinMessageByMessageId($channelId: uuid!, $messageId: uuid!) {
 
 # Update pin note
 mutation UpdatePinNote($pinId: uuid!, $note: String) {
-  update_nchat_pinned_messages_by_pk(
-    pk_columns: { id: $pinId }
-    _set: { note: $note }
-  ) {
+  update_nchat_pinned_messages_by_pk(pk_columns: { id: $pinId }, _set: { note: $note }) {
     id
     note
   }
@@ -100,10 +91,7 @@ mutation ReorderPinnedMessages($updates: [nchat_pinned_messages_updates!]!) {
 
 # Update single pin position
 mutation UpdatePinPosition($pinId: uuid!, $position: Int!) {
-  update_nchat_pinned_messages_by_pk(
-    pk_columns: { id: $pinId }
-    _set: { position: $position }
-  ) {
+  update_nchat_pinned_messages_by_pk(pk_columns: { id: $pinId }, _set: { position: $position }) {
     id
     position
   }
@@ -134,12 +122,7 @@ mutation UpdateChannelPinConfig(
     }
     on_conflict: {
       constraint: channel_settings_pkey
-      update_columns: [
-        pin_max_count
-        pin_permission
-        pin_show_banner
-        pin_notify_on_pin
-      ]
+      update_columns: [pin_max_count, pin_permission, pin_show_banner, pin_notify_on_pin]
     }
   ) {
     channel_id

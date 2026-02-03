@@ -32,26 +32,35 @@ export function useChannelMessages(channelId: string | null) {
     return (data?.nchat_messages ?? []) as Message[]
   }, [data])
 
-  const sendMessage = useCallback(async (content: string, replyToId?: string) => {
-    if (!channelId) return null
-    const result = await sendMessageMutation({
-      variables: { channelId, content, replyToId },
-    })
-    return result.data?.insert_nchat_messages_one
-  }, [channelId, sendMessageMutation])
+  const sendMessage = useCallback(
+    async (content: string, replyToId?: string) => {
+      if (!channelId) return null
+      const result = await sendMessageMutation({
+        variables: { channelId, content, replyToId },
+      })
+      return result.data?.insert_nchat_messages_one
+    },
+    [channelId, sendMessageMutation]
+  )
 
-  const updateMessage = useCallback(async (messageId: string, content: string) => {
-    const result = await updateMessageMutation({
-      variables: { messageId, content },
-    })
-    return result.data?.update_nchat_messages_by_pk
-  }, [updateMessageMutation])
+  const updateMessage = useCallback(
+    async (messageId: string, content: string) => {
+      const result = await updateMessageMutation({
+        variables: { messageId, content },
+      })
+      return result.data?.update_nchat_messages_by_pk
+    },
+    [updateMessageMutation]
+  )
 
-  const deleteMessage = useCallback(async (messageId: string) => {
-    await deleteMessageMutation({
-      variables: { messageId },
-    })
-  }, [deleteMessageMutation])
+  const deleteMessage = useCallback(
+    async (messageId: string) => {
+      await deleteMessageMutation({
+        variables: { messageId },
+      })
+    },
+    [deleteMessageMutation]
+  )
 
   return {
     messages,

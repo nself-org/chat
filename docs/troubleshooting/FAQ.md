@@ -40,6 +40,7 @@ Yes! ɳChat is open-source under the MIT License. You can use it freely for comm
 ### How does ɳChat compare to Slack/Discord?
 
 ɳChat provides feature parity with major platforms:
+
 - **78+ features** across messaging, channels, files, users, and integrations
 - **Self-hosted** - full control over your data
 - **White-label** - complete branding customization
@@ -60,6 +61,7 @@ Yes! ɳChat is open-source under the MIT License. You can use it freely for comm
 ### How long does setup take?
 
 Initial setup takes **under 5 minutes**:
+
 1. Clone repository (30 seconds)
 2. Install dependencies (2-3 minutes)
 3. Start dev server (30 seconds)
@@ -68,6 +70,7 @@ Initial setup takes **under 5 minutes**:
 ### Do I need Docker?
 
 Docker is **optional** for development. The setup wizard can:
+
 - Use Docker for backend services (recommended)
 - Connect to existing services
 - Skip backend for frontend-only development
@@ -94,6 +97,7 @@ curl -X DELETE http://localhost:3000/api/config
 ### What features are included?
 
 **78+ features** including:
+
 - Real-time messaging with threads and reactions
 - Voice and video calls (WebRTC)
 - File uploads with previews
@@ -113,6 +117,7 @@ Yes, ɳChat uses WebRTC for peer-to-peer calls. No third-party services required
 ### Can I integrate with Slack/Discord?
 
 Yes! Built-in integrations:
+
 - **Slack**: Import channels, messages, and users
 - **Discord**: Bot integration and webhooks
 - **API**: Custom integrations via webhooks
@@ -120,6 +125,7 @@ Yes! Built-in integrations:
 ### Does it support mobile?
 
 Yes! Multiple deployment options:
+
 - **PWA**: Progressive Web App (works on all mobile browsers)
 - **Capacitor**: Native iOS and Android apps
 - **React Native**: Full native mobile apps
@@ -127,6 +133,7 @@ Yes! Multiple deployment options:
 ### How many users can it support?
 
 Tested with:
+
 - **100+ concurrent users** (single server)
 - **1,000+ total users** (with proper infrastructure)
 - Scales horizontally with load balancers
@@ -138,6 +145,7 @@ Tested with:
 ### What tech stack is used?
 
 **Frontend**:
+
 - Next.js 15.1.6 (App Router)
 - React 19.0.0
 - TypeScript 5.7.3
@@ -146,6 +154,7 @@ Tested with:
 - Apollo Client (GraphQL)
 
 **Backend** (via ɳSelf CLI):
+
 - PostgreSQL 16
 - Hasura GraphQL Engine
 - Nhost Auth
@@ -162,6 +171,7 @@ Tested with:
 ### Are there test users for development?
 
 Yes! 8 test users with different roles:
+
 - `owner@nself.org` - Full permissions
 - `admin@nself.org` - User/channel management
 - `moderator@nself.org` - Content moderation
@@ -190,6 +200,7 @@ pnpm test:watch
 ### Can I use Yarn or npm?
 
 The project requires **pnpm** for:
+
 - Faster installs (content-addressable storage)
 - Strict dependency resolution
 - Monorepo support
@@ -213,6 +224,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed guides.
 ### How much does hosting cost?
 
 **Estimated monthly costs**:
+
 - **Vercel Free Tier**: $0 (frontend only)
 - **Vercel Pro**: $20/month
 - **VPS (DigitalOcean)**: $12-50/month
@@ -222,6 +234,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed guides.
 ### Do I need a database?
 
 Yes, PostgreSQL 14+ is required. Options:
+
 - **Managed**: AWS RDS, DigitalOcean, Supabase ($15-50/month)
 - **Self-hosted**: On same VPS as app (free)
 - **Development**: Docker container (free)
@@ -229,6 +242,7 @@ Yes, PostgreSQL 14+ is required. Options:
 ### How do I set up SSL/TLS?
 
 **Free SSL (Let's Encrypt)**:
+
 ```bash
 sudo certbot --nginx -d chat.yourdomain.com
 ```
@@ -239,6 +253,7 @@ sudo certbot --nginx -d chat.yourdomain.com
 ### Can I deploy to multiple regions?
 
 Yes! Use:
+
 - **Vercel Edge Network** (automatic global distribution)
 - **Kubernetes** with multi-region clusters
 - **CDN** (Cloudflare, Fastly) for static assets
@@ -281,6 +296,7 @@ pnpm type-check
 ### GraphQL connection fails
 
 Check backend services:
+
 ```bash
 cd .backend
 nself status
@@ -292,12 +308,14 @@ nself restart
 ### Authentication not working
 
 **Development mode**:
+
 ```bash
 # Ensure dev auth is enabled
 echo "NEXT_PUBLIC_USE_DEV_AUTH=true" >> .env.local
 ```
 
 **Production mode**:
+
 ```bash
 # Check auth service
 curl https://auth.yourdomain.com/healthz
@@ -317,6 +335,7 @@ images: {
 ### WebSocket connection drops
 
 Check Nginx configuration for WebSocket upgrade:
+
 ```nginx
 proxy_set_header Upgrade $http_upgrade;
 proxy_set_header Connection 'upgrade';
@@ -329,6 +348,7 @@ proxy_set_header Connection 'upgrade';
 ### Is ɳChat secure?
 
 Yes! Security features:
+
 - **JWT authentication** with refresh tokens
 - **RBAC** (role-based access control)
 - **HTTPS** required in production
@@ -340,6 +360,7 @@ Yes! Security features:
 ### Where is data stored?
 
 You control data storage:
+
 - **Database**: Your PostgreSQL instance
 - **Files**: Your S3/MinIO bucket
 - **Sessions**: Redis or database
@@ -355,6 +376,7 @@ You control data storage:
 ### Can I enable end-to-end encryption?
 
 E2E encryption is on the roadmap (v0.4.0). Current encryption:
+
 - Transport layer (TLS/SSL)
 - Database encryption at rest
 - Password hashing
@@ -362,6 +384,7 @@ E2E encryption is on the roadmap (v0.4.0). Current encryption:
 ### How do I report a security issue?
 
 See [SECURITY.md](./SECURITY.md) for responsible disclosure:
+
 - Email: security@nself.org
 - DO NOT open public GitHub issues
 - Response within 48 hours
@@ -373,12 +396,14 @@ See [SECURITY.md](./SECURITY.md) for responsible disclosure:
 ### How fast is ɳChat?
 
 **Lighthouse scores**:
+
 - Performance: 90+
 - Accessibility: 95+
 - Best Practices: 90+
 - SEO: 90+
 
 **Real-world metrics**:
+
 - First Contentful Paint: <1.5s
 - Largest Contentful Paint: <2.5s
 - Time to Interactive: <3s
@@ -390,6 +415,7 @@ See [SECURITY.md](./SECURITY.md) for responsible disclosure:
 - **Average page**: 200-300 KB
 
 Optimizations:
+
 - Code splitting with dynamic imports
 - Tree shaking unused code
 - Image optimization (AVIF/WebP)
@@ -404,6 +430,7 @@ Optimizations:
 ### Does it work offline?
 
 Yes! Progressive Web App features:
+
 - Service worker caching
 - IndexedDB for message storage
 - Queue for offline actions
@@ -416,6 +443,7 @@ Yes! Progressive Web App features:
 ### How can I contribute?
 
 Many ways to contribute:
+
 - **Code**: Fix bugs, add features
 - **Documentation**: Improve guides, add examples
 - **Design**: UI/UX improvements
@@ -442,6 +470,7 @@ No Contributor License Agreement required. By contributing, you agree to the MIT
 ### Can I request features?
 
 Yes! Use GitHub Discussions:
+
 1. Check if already requested
 2. Describe use case
 3. Explain expected behavior
@@ -465,4 +494,4 @@ Yes! Use GitHub Discussions:
 
 ---
 
-*Can't find your question? Ask in [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)!*
+_Can't find your question? Ask in [GitHub Discussions](https://github.com/acamarata/nself-chat/discussions)!_

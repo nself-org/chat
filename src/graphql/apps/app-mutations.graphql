@@ -50,14 +50,8 @@ mutation InstallApp(
 # Uninstall an app
 mutation UninstallApp($appId: uuid!, $userId: uuid!) {
   update_nchat_app_installations(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      status: "uninstalled"
-      updated_at: "now()"
-    }
+    where: { app_id: { _eq: $appId }, user_id: { _eq: $userId } }
+    _set: { status: "uninstalled", updated_at: "now()" }
   ) {
     affected_rows
     returning {
@@ -69,20 +63,10 @@ mutation UninstallApp($appId: uuid!, $userId: uuid!) {
 }
 
 # Update app installation settings
-mutation UpdateAppSettings(
-  $appId: uuid!
-  $userId: uuid!
-  $settings: jsonb!
-) {
+mutation UpdateAppSettings($appId: uuid!, $userId: uuid!, $settings: jsonb!) {
   update_nchat_app_installations(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      settings: $settings
-      updated_at: "now()"
-    }
+    where: { app_id: { _eq: $appId }, user_id: { _eq: $userId } }
+    _set: { settings: $settings, updated_at: "now()" }
   ) {
     affected_rows
     returning {
@@ -94,20 +78,10 @@ mutation UpdateAppSettings(
 }
 
 # Update granted permissions
-mutation UpdateAppPermissions(
-  $appId: uuid!
-  $userId: uuid!
-  $permissions: jsonb!
-) {
+mutation UpdateAppPermissions($appId: uuid!, $userId: uuid!, $permissions: jsonb!) {
   update_nchat_app_installations(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      granted_permissions: $permissions
-      updated_at: "now()"
-    }
+    where: { app_id: { _eq: $appId }, user_id: { _eq: $userId } }
+    _set: { granted_permissions: $permissions, updated_at: "now()" }
   ) {
     affected_rows
     returning {
@@ -121,14 +95,8 @@ mutation UpdateAppPermissions(
 # Pause an app (disable temporarily)
 mutation PauseApp($appId: uuid!, $userId: uuid!) {
   update_nchat_app_installations(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      status: "paused"
-      updated_at: "now()"
-    }
+    where: { app_id: { _eq: $appId }, user_id: { _eq: $userId } }
+    _set: { status: "paused", updated_at: "now()" }
   ) {
     affected_rows
     returning {
@@ -142,15 +110,8 @@ mutation PauseApp($appId: uuid!, $userId: uuid!) {
 # Resume a paused app
 mutation ResumeApp($appId: uuid!, $userId: uuid!) {
   update_nchat_app_installations(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-      status: { _eq: "paused" }
-    }
-    _set: {
-      status: "active"
-      updated_at: "now()"
-    }
+    where: { app_id: { _eq: $appId }, user_id: { _eq: $userId }, status: { _eq: "paused" } }
+    _set: { status: "active", updated_at: "now()" }
   ) {
     affected_rows
     returning {
@@ -162,20 +123,10 @@ mutation ResumeApp($appId: uuid!, $userId: uuid!) {
 }
 
 # Update installed app version
-mutation UpdateAppVersion(
-  $appId: uuid!
-  $userId: uuid!
-  $version: String!
-) {
+mutation UpdateAppVersion($appId: uuid!, $userId: uuid!, $version: String!) {
   update_nchat_app_installations(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      installed_version: $version
-      updated_at: "now()"
-    }
+    where: { app_id: { _eq: $appId }, user_id: { _eq: $userId } }
+    _set: { installed_version: $version, updated_at: "now()" }
   ) {
     affected_rows
     returning {
@@ -189,13 +140,8 @@ mutation UpdateAppVersion(
 # Record app usage
 mutation RecordAppUsage($appId: uuid!, $userId: uuid!) {
   update_nchat_app_installations(
-    where: {
-      app_id: { _eq: $appId }
-      user_id: { _eq: $userId }
-    }
-    _set: {
-      last_used_at: "now()"
-    }
+    where: { app_id: { _eq: $appId }, user_id: { _eq: $userId } }
+    _set: { last_used_at: "now()" }
   ) {
     affected_rows
   }
@@ -206,19 +152,9 @@ mutation RecordAppUsage($appId: uuid!, $userId: uuid!) {
 # ============================================================================
 
 # Create or update a rating
-mutation RateApp(
-  $appId: uuid!
-  $userId: uuid!
-  $rating: Int!
-  $review: String
-) {
+mutation RateApp($appId: uuid!, $userId: uuid!, $rating: Int!, $review: String) {
   insert_nchat_app_ratings_one(
-    object: {
-      app_id: $appId
-      user_id: $userId
-      rating: $rating
-      review: $review
-    }
+    object: { app_id: $appId, user_id: $userId, rating: $rating, review: $review }
     on_conflict: {
       constraint: nchat_app_ratings_app_id_user_id_key
       update_columns: [rating, review, updated_at]
@@ -244,10 +180,7 @@ mutation DeleteRating($id: uuid!) {
 
 # Mark rating as helpful
 mutation MarkRatingHelpful($id: uuid!) {
-  update_nchat_app_ratings_by_pk(
-    pk_columns: { id: $id }
-    _inc: { helpful_count: 1 }
-  ) {
+  update_nchat_app_ratings_by_pk(pk_columns: { id: $id }, _inc: { helpful_count: 1 }) {
     id
     helpful_count
   }
@@ -255,35 +188,21 @@ mutation MarkRatingHelpful($id: uuid!) {
 
 # Report a rating
 mutation ReportRating($id: uuid!, $reason: String!) {
-  update_nchat_app_ratings_by_pk(
-    pk_columns: { id: $id }
-    _set: { reported: true }
-  ) {
+  update_nchat_app_ratings_by_pk(pk_columns: { id: $id }, _set: { reported: true }) {
     id
     reported
   }
   # Also insert a report record
-  insert_nchat_app_rating_reports_one(
-    object: {
-      rating_id: $id
-      reason: $reason
-    }
-  ) {
+  insert_nchat_app_rating_reports_one(object: { rating_id: $id, reason: $reason }) {
     id
   }
 }
 
 # Developer response to a rating
-mutation RespondToRating(
-  $ratingId: uuid!
-  $response: String!
-) {
+mutation RespondToRating($ratingId: uuid!, $response: String!) {
   update_nchat_app_ratings_by_pk(
     pk_columns: { id: $ratingId }
-    _set: {
-      developer_response: $response
-      developer_response_at: "now()"
-    }
+    _set: { developer_response: $response, developer_response_at: "now()" }
   ) {
     id
     developer_response
@@ -373,14 +292,8 @@ mutation PublishAppVersion(
 ) {
   update_nchat_apps_by_pk(
     pk_columns: { id: $appId }
-    _set: {
-      current_version: $version
-      permissions: $permissions
-      updated_at: "now()"
-    }
-    _append: {
-      versions: [{ version: $version, releaseDate: "now()", changelog: $changelog }]
-    }
+    _set: { current_version: $version, permissions: $permissions, updated_at: "now()" }
+    _append: { versions: [{ version: $version, releaseDate: "now()", changelog: $changelog }] }
   ) {
     id
     current_version
@@ -393,10 +306,7 @@ mutation PublishAppVersion(
 mutation SubmitAppForReview($appId: uuid!) {
   update_nchat_apps_by_pk(
     pk_columns: { id: $appId }
-    _set: {
-      status: "pending"
-      updated_at: "now()"
-    }
+    _set: { status: "pending", updated_at: "now()" }
   ) {
     id
     status
@@ -407,12 +317,7 @@ mutation SubmitAppForReview($appId: uuid!) {
 mutation ApproveApp($appId: uuid!) {
   update_nchat_apps_by_pk(
     pk_columns: { id: $appId }
-    _set: {
-      status: "active"
-      visibility: "public"
-      published_at: "now()"
-      updated_at: "now()"
-    }
+    _set: { status: "active", visibility: "public", published_at: "now()", updated_at: "now()" }
   ) {
     id
     status
@@ -425,13 +330,8 @@ mutation ApproveApp($appId: uuid!) {
 mutation RejectApp($appId: uuid!, $reason: String!) {
   update_nchat_apps_by_pk(
     pk_columns: { id: $appId }
-    _set: {
-      status: "rejected"
-      updated_at: "now()"
-    }
-    _append: {
-      metadata: { rejectionReason: $reason, rejectedAt: "now()" }
-    }
+    _set: { status: "rejected", updated_at: "now()" }
+    _append: { metadata: { rejectionReason: $reason, rejectedAt: "now()" } }
   ) {
     id
     status
@@ -442,10 +342,7 @@ mutation RejectApp($appId: uuid!, $reason: String!) {
 mutation FeatureApp($appId: uuid!, $featured: Boolean!) {
   update_nchat_apps_by_pk(
     pk_columns: { id: $appId }
-    _set: {
-      featured: $featured
-      updated_at: "now()"
-    }
+    _set: { featured: $featured, updated_at: "now()" }
   ) {
     id
     featured
@@ -456,10 +353,7 @@ mutation FeatureApp($appId: uuid!, $featured: Boolean!) {
 mutation DeprecateApp($appId: uuid!) {
   update_nchat_apps_by_pk(
     pk_columns: { id: $appId }
-    _set: {
-      status: "deprecated"
-      updated_at: "now()"
-    }
+    _set: { status: "deprecated", updated_at: "now()" }
   ) {
     id
     status
@@ -467,17 +361,10 @@ mutation DeprecateApp($appId: uuid!) {
 }
 
 # Update app install counts (typically done by a trigger/function)
-mutation UpdateAppInstallCounts(
-  $appId: uuid!
-  $installCount: Int!
-  $activeInstallCount: Int!
-) {
+mutation UpdateAppInstallCounts($appId: uuid!, $installCount: Int!, $activeInstallCount: Int!) {
   update_nchat_apps_by_pk(
     pk_columns: { id: $appId }
-    _set: {
-      install_count: $installCount
-      active_install_count: $activeInstallCount
-    }
+    _set: { install_count: $installCount, active_install_count: $activeInstallCount }
   ) {
     id
     install_count
@@ -494,11 +381,7 @@ mutation UpdateAppRatingStats(
 ) {
   update_nchat_apps_by_pk(
     pk_columns: { id: $appId }
-    _set: {
-      rating: $rating
-      rating_count: $ratingCount
-      review_count: $reviewCount
-    }
+    _set: { rating: $rating, rating_count: $ratingCount, review_count: $reviewCount }
   ) {
     id
     rating

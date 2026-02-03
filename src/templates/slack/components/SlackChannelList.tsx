@@ -67,22 +67,22 @@ export function SlackChannelList({
       <div className="flex items-center justify-between px-4 py-1">
         <button
           onClick={handleToggle}
-          className="flex items-center gap-1 text-sm font-medium text-white/70 hover:text-white transition-colors"
+          className="flex items-center gap-1 text-sm font-medium text-white/70 transition-colors hover:text-white"
         >
           {collapsible &&
             (isCollapsed ? (
-              <ChevronRight className="w-3 h-3" />
+              <ChevronRight className="h-3 w-3" />
             ) : (
-              <ChevronDown className="w-3 h-3" />
+              <ChevronDown className="h-3 w-3" />
             ))}
           <span>{title}</span>
         </button>
         {onAddChannel && (
           <button
             onClick={onAddChannel}
-            className="p-1 rounded text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+            className="rounded p-1 text-white/70 transition-colors hover:bg-white/10 hover:text-white"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus className="h-3.5 w-3.5" />
           </button>
         )}
       </div>
@@ -130,21 +130,21 @@ function ChannelItem({
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-2 w-full px-4 py-1 text-sm transition-colors',
+        'flex w-full items-center gap-2 px-4 py-1 text-sm transition-colors',
         isActive
           ? 'bg-[#1264A3] text-white'
           : hasUnread
-          ? 'text-white font-medium hover:bg-white/10'
-          : 'text-white/70 hover:bg-white/10 hover:text-white'
+            ? 'font-medium text-white hover:bg-white/10'
+            : 'text-white/70 hover:bg-white/10 hover:text-white'
       )}
     >
-      <Icon className="w-4 h-4 flex-shrink-0 opacity-80" />
-      <span className="truncate flex-1 text-left">{channel.name}</span>
+      <Icon className="h-4 w-4 flex-shrink-0 opacity-80" />
+      <span className="flex-1 truncate text-left">{channel.name}</span>
 
       {/* Mention Badge */}
       {hasMention && (
         <span
-          className="flex-shrink-0 min-w-[18px] h-[18px] px-1.5 rounded-full text-xs font-bold flex items-center justify-center"
+          className="flex h-[18px] min-w-[18px] flex-shrink-0 items-center justify-center rounded-full px-1.5 text-xs font-bold"
           style={{ backgroundColor: slackColors.red }}
         >
           {channel.mentionCount}
@@ -152,14 +152,10 @@ function ChannelItem({
       )}
 
       {/* Unread Dot (when no mentions) */}
-      {hasUnread && !hasMention && (
-        <span className="flex-shrink-0 w-2 h-2 rounded-full bg-white" />
-      )}
+      {hasUnread && !hasMention && <span className="h-2 w-2 flex-shrink-0 rounded-full bg-white" />}
 
       {/* Muted Indicator */}
-      {channel.isMuted && (
-        <span className="flex-shrink-0 text-xs text-white/40">muted</span>
-      )}
+      {channel.isMuted && <span className="flex-shrink-0 text-xs text-white/40">muted</span>}
     </button>
   )
 }

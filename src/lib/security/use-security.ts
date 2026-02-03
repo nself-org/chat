@@ -18,6 +18,7 @@ import {
   type PasswordStrength,
   type TwoFactorSetupData,
 } from './two-factor'
+import { logger } from '@/lib/logger'
 import {
   GET_SESSIONS,
   GET_LOGIN_HISTORY,
@@ -122,13 +123,10 @@ export function useSecurity() {
     }
   )
 
-  const { data: backupCodesData, refetch: refetchBackupCodes } = useQuery(
-    GET_BACKUP_CODES_COUNT,
-    {
-      variables: { userId: user?.id },
-      skip: !user?.id,
-    }
-  )
+  const { data: backupCodesData, refetch: refetchBackupCodes } = useQuery(GET_BACKUP_CODES_COUNT, {
+    variables: { userId: user?.id },
+    skip: !user?.id,
+  })
 
   // GraphQL mutations
   const [revokeSessionMutation] = useMutation(REVOKE_SESSION)
@@ -143,10 +141,7 @@ export function useSecurity() {
    * Change user password
    */
   const changePassword = useCallback(
-    async (
-      currentPassword: string,
-      newPassword: string
-    ): Promise<ChangePasswordResult> => {
+    async (currentPassword: string, newPassword: string): Promise<ChangePasswordResult> => {
       if (!user?.id) {
         return { success: false, error: 'Not authenticated' }
       }
@@ -183,8 +178,7 @@ export function useSecurity() {
 
         return { success: true }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Failed to change password'
+        const errorMessage = error instanceof Error ? error.message : 'Failed to change password'
         setPasswordError(errorMessage)
         return { success: false, error: errorMessage }
       } finally {
@@ -223,8 +217,7 @@ export function useSecurity() {
 
       return { success: true, data: setupData }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to setup 2FA'
+      const errorMessage = error instanceof Error ? error.message : 'Failed to setup 2FA'
       setTwoFactorError(errorMessage)
       return { success: false, error: errorMessage }
     } finally {
@@ -277,8 +270,7 @@ export function useSecurity() {
 
         return { success: true }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Failed to verify 2FA'
+        const errorMessage = error instanceof Error ? error.message : 'Failed to verify 2FA'
         setTwoFactorError(errorMessage)
         return { success: false, error: errorMessage }
       } finally {
@@ -321,8 +313,7 @@ export function useSecurity() {
 
         return { success: true }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Failed to disable 2FA'
+        const errorMessage = error instanceof Error ? error.message : 'Failed to disable 2FA'
         setTwoFactorError(errorMessage)
         return { success: false, error: errorMessage }
       } finally {
@@ -362,7 +353,7 @@ export function useSecurity() {
 
       return data.backupCodes
     } catch (error) {
-      console.error('Failed to regenerate backup codes:', error)
+      logger.error('Failed to regenerate backup codes:',  error)
       return null
     }
   }, [user?.id, refetchBackupCodes])
@@ -412,8 +403,7 @@ export function useSecurity() {
 
         return { success: true }
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Failed to revoke session'
+        const errorMessage = error instanceof Error ? error.message : 'Failed to revoke session'
         sessionStore.setRevokeError(errorMessage)
         return { success: false, error: errorMessage }
       } finally {
@@ -453,8 +443,7 @@ export function useSecurity() {
 
       return { success: true }
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to revoke sessions'
+      const errorMessage = error instanceof Error ? error.message : 'Failed to revoke sessions'
       sessionStore.setRevokeError(errorMessage)
       return { success: false, error: errorMessage }
     } finally {
@@ -484,7 +473,7 @@ export function useSecurity() {
         await refetchSecuritySettings()
         return true
       } catch (error) {
-        console.error('Failed to update alert preferences:', error)
+        logger.error('Failed to update alert preferences:',  error)
         return false
       }
     },
@@ -495,21 +484,17 @@ export function useSecurity() {
   // Computed Values
   // ============================================================================
 
-  const securitySettings: SecuritySettings | null =
-    securitySettingsData?.nchat_users_by_pk
-      ? {
-          twoFactorEnabled:
-            securitySettingsData.nchat_users_by_pk.two_factor_enabled || false,
-          twoFactorMethod:
-            securitySettingsData.nchat_users_by_pk.two_factor_method || undefined,
-          passwordLastChanged:
-            securitySettingsData.nchat_users_by_pk.password_changed_at || undefined,
-          ...(securitySettingsData.nchat_users_by_pk.security_settings || {}),
-        }
-      : null
+  const securitySettings: SecuritySettings | null = securitySettingsData?.nchat_users_by_pk
+    ? {
+        twoFactorEnabled: securitySettingsData.nchat_users_by_pk.two_factor_enabled || false,
+        twoFactorMethod: securitySettingsData.nchat_users_by_pk.two_factor_method || undefined,
+        passwordLastChanged:
+          securitySettingsData.nchat_users_by_pk.password_changed_at || undefined,
+        ...(securitySettingsData.nchat_users_by_pk.security_settings || {}),
+      }
+    : null
 
-  const backupCodesRemaining =
-    backupCodesData?.nchat_backup_codes_aggregate?.aggregate?.count || 0
+  const backupCodesRemaining = backupCodesData?.nchat_backup_codes_aggregate?.aggregate?.count || 0
 
   const sessions = sessionsData?.nchat_user_sessions?.map(transformSession) || []
 

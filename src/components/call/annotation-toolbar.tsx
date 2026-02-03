@@ -71,7 +71,7 @@ function ToolButton({ icon, label, isActive, onClick, disabled }: ToolButtonProp
       title={label}
       className={cn(
         'h-9 w-9',
-        isActive && 'bg-primary text-primary-foreground hover:bg-primary/90'
+        isActive && 'text-primary-foreground hover:bg-primary/90 bg-primary'
       )}
     >
       {icon}
@@ -106,7 +106,7 @@ export function AnnotationToolbar({
   return (
     <div
       className={cn(
-        'flex gap-1 bg-black/70 backdrop-blur-sm rounded-lg p-2',
+        'flex gap-1 rounded-lg bg-black/70 p-2 backdrop-blur-sm',
         orientation === 'vertical' ? 'flex-col' : 'flex-row items-center',
         className
       )}
@@ -158,7 +158,7 @@ export function AnnotationToolbar({
       </div>
 
       {/* Divider */}
-      <div className={cn('bg-white/20', orientation === 'vertical' ? 'h-px w-full' : 'w-px h-6')} />
+      <div className={cn('bg-white/20', orientation === 'vertical' ? 'h-px w-full' : 'h-6 w-px')} />
 
       {/* Style Controls */}
       <div className={cn('flex gap-1', orientation === 'vertical' ? 'flex-col' : 'flex-row')}>
@@ -169,7 +169,7 @@ export function AnnotationToolbar({
             size="icon"
             variant="ghost"
             onClick={() => setShowColorPicker(!showColorPicker)}
-            className="h-9 w-9 relative"
+            className="relative h-9 w-9"
             aria-label="Choose color"
             title="Choose color"
           >
@@ -181,8 +181,8 @@ export function AnnotationToolbar({
           {showColorPicker && (
             <div
               className={cn(
-                'absolute z-10 p-2 bg-black/90 backdrop-blur-sm rounded-lg shadow-lg',
-                orientation === 'vertical' ? 'left-full ml-2 top-0' : 'bottom-full mb-2 left-0'
+                'absolute z-10 rounded-lg bg-black/90 p-2 shadow-lg backdrop-blur-sm',
+                orientation === 'vertical' ? 'left-full top-0 ml-2' : 'bottom-full left-0 mb-2'
               )}
             >
               <div className="grid grid-cols-5 gap-1">
@@ -223,8 +223,8 @@ export function AnnotationToolbar({
           {showStrokePicker && (
             <div
               className={cn(
-                'absolute z-10 p-2 bg-black/90 backdrop-blur-sm rounded-lg shadow-lg',
-                orientation === 'vertical' ? 'left-full ml-2 top-0' : 'bottom-full mb-2 left-0'
+                'absolute z-10 rounded-lg bg-black/90 p-2 shadow-lg backdrop-blur-sm',
+                orientation === 'vertical' ? 'left-full top-0 ml-2' : 'bottom-full left-0 mb-2'
               )}
             >
               <div className="flex flex-col gap-2">
@@ -237,7 +237,7 @@ export function AnnotationToolbar({
                       setShowStrokePicker(false)
                     }}
                     className={cn(
-                      'flex items-center justify-center h-8 px-3 rounded hover:bg-white/10',
+                      'flex h-8 items-center justify-center rounded px-3 hover:bg-white/10',
                       strokeWidth === width && 'bg-white/20'
                     )}
                   >
@@ -254,7 +254,7 @@ export function AnnotationToolbar({
       </div>
 
       {/* Divider */}
-      <div className={cn('bg-white/20', orientation === 'vertical' ? 'h-px w-full' : 'w-px h-6')} />
+      <div className={cn('bg-white/20', orientation === 'vertical' ? 'h-px w-full' : 'h-6 w-px')} />
 
       {/* Action Buttons */}
       <div className={cn('flex gap-1', orientation === 'vertical' ? 'flex-col' : 'flex-row')}>

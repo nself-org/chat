@@ -27,16 +27,11 @@ export {
   proxyGifCategories,
   proxyGifRandom,
   DEFAULT_GIF_CATEGORIES,
-} from './gif-service';
-export type { GifService } from './gif-service';
+} from './gif-service'
+export type { GifService } from './gif-service'
 
 // Hooks
-export {
-  useGif,
-  useGifSearch,
-  useGifTrending,
-  useGifCategories,
-} from './use-gif';
+export { useGif, useGifSearch, useGifTrending, useGifCategories } from './use-gif'
 export type {
   UseGifResult,
   UseGifSearchResult,
@@ -44,7 +39,7 @@ export type {
   UseGifTrendingResult,
   UseGifTrendingOptions,
   UseGifCategoriesResult,
-} from './use-gif';
+} from './use-gif'
 
 // Store
 export {
@@ -60,13 +55,8 @@ export {
   getFormattedSearchHistory,
   isRecentGif,
   getMostUsedGifs,
-} from './gif-store';
-export type {
-  GifState,
-  GifActions,
-  GifStore,
-  GifPickerState,
-} from './gif-store';
+} from './gif-store'
+export type { GifState, GifActions, GifStore, GifPickerState } from './gif-store'
 
 // Re-export types for convenience
 export type {
@@ -80,4 +70,4 @@ export type {
   GifCategoriesResponse,
   GifHistoryItem,
   GifSearchHistoryItem,
-} from '@/types/gif';
+} from '@/types/gif'

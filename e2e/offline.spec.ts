@@ -64,9 +64,7 @@ test.describe('Offline Status Detection', () => {
     await page.waitForTimeout(1000)
 
     // Should no longer show offline indicator
-    const offlineIndicator = page.locator(
-      '[data-testid="offline-indicator"], .offline-indicator'
-    )
+    const offlineIndicator = page.locator('[data-testid="offline-indicator"], .offline-indicator')
 
     const isOffline = await offlineIndicator.isVisible().catch(() => false)
 
@@ -196,10 +194,7 @@ test.describe('Message Queuing While Offline', () => {
     await context.setOffline(false)
   })
 
-  test('should prevent sending while offline with feedback', async ({
-    page,
-    context,
-  }) => {
+  test('should prevent sending while offline with feedback', async ({ page, context }) => {
     await context.setOffline(true)
     await page.waitForTimeout(500)
 
@@ -292,19 +287,23 @@ test.describe('Offline Indicator Display', () => {
     await page.goto('/chat')
     await page.waitForLoadState('networkidle')
 
-    const indicator = page.locator(
-      '[data-testid="connection-indicator"], .connection-indicator'
-    )
+    const indicator = page.locator('[data-testid="connection-indicator"], .connection-indicator')
 
     // Get initial state
-    const initialClasses = await indicator.first().getAttribute('class').catch(() => '')
+    const initialClasses = await indicator
+      .first()
+      .getAttribute('class')
+      .catch(() => '')
 
     // Go offline
     await context.setOffline(true)
     await page.waitForTimeout(1000)
 
     // Get offline state classes
-    const offlineClasses = await indicator.first().getAttribute('class').catch(() => '')
+    const offlineClasses = await indicator
+      .first()
+      .getAttribute('class')
+      .catch(() => '')
 
     // Classes should change
     expect(offlineClasses || initialClasses).toBeTruthy()
@@ -500,9 +499,7 @@ test.describe('Cache Messages for Offline Viewing', () => {
     await page.waitForTimeout(1000)
 
     // Messages should still be visible from cache
-    const cachedMessages = page.locator(
-      '[data-testid="message-item"], .message-item, article'
-    )
+    const cachedMessages = page.locator('[data-testid="message-item"], .message-item, article')
     const cachedCount = await cachedMessages.count()
 
     expect(cachedCount).toBeGreaterThanOrEqual(0)
@@ -528,9 +525,7 @@ test.describe('Cache Messages for Offline Viewing', () => {
 
   test('should load cached channel history', async ({ page, context }) => {
     // Navigate through channels to cache them
-    const channels = page.locator(
-      '[data-testid="channel-item"], .channel-item, a[href*="/chat/"]'
-    )
+    const channels = page.locator('[data-testid="channel-item"], .channel-item, a[href*="/chat/"]')
 
     if ((await channels.count()) > 0) {
       // Click first channel
@@ -542,9 +537,7 @@ test.describe('Cache Messages for Offline Viewing', () => {
       await page.waitForTimeout(1000)
 
       // Channel should still display
-      const messages = page.locator(
-        '[data-testid="message-item"], .message-item, article'
-      )
+      const messages = page.locator('[data-testid="message-item"], .message-item, article')
 
       // May have cached messages
       const count = await messages.count()
@@ -560,9 +553,7 @@ test.describe('Cache Messages for Offline Viewing', () => {
     await page.waitForTimeout(500)
 
     // Messages should load from server and cache
-    const messages = page.locator(
-      '[data-testid="message-item"], .message-item, article'
-    )
+    const messages = page.locator('[data-testid="message-item"], .message-item, article')
 
     await page.waitForTimeout(1000)
     const onlineCount = await messages.count()
@@ -588,10 +579,7 @@ test.describe('Service Worker Functionality', () => {
     expect(typeof swRegistered).toBe('boolean')
   })
 
-  test('should handle offline requests with service worker', async ({
-    page,
-    context,
-  }) => {
+  test('should handle offline requests with service worker', async ({ page, context }) => {
     await page.goto('/chat')
     await page.waitForLoadState('networkidle')
 
@@ -655,10 +643,7 @@ test.describe('Offline Media Handling', () => {
     }
   })
 
-  test('should show placeholder for uncached media offline', async ({
-    page,
-    context,
-  }) => {
+  test('should show placeholder for uncached media offline', async ({ page, context }) => {
     await context.setOffline(true)
     await page.waitForTimeout(1000)
 

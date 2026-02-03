@@ -22,9 +22,7 @@ export interface CalendarProps {
 }
 
 function Calendar({ className, selected, onSelect, defaultMonth }: CalendarProps) {
-  const [currentMonth, setCurrentMonth] = React.useState(
-    defaultMonth ?? selected ?? new Date()
-  )
+  const [currentMonth, setCurrentMonth] = React.useState(defaultMonth ?? selected ?? new Date())
 
   const year = currentMonth.getFullYear()
   const month = currentMonth.getMonth()
@@ -47,19 +45,13 @@ function Calendar({ className, selected, onSelect, defaultMonth }: CalendarProps
   const isSelected = (day: number) => {
     if (!selected) return false
     return (
-      selected.getFullYear() === year &&
-      selected.getMonth() === month &&
-      selected.getDate() === day
+      selected.getFullYear() === year && selected.getMonth() === month && selected.getDate() === day
     )
   }
 
   const isToday = (day: number) => {
     const today = new Date()
-    return (
-      today.getFullYear() === year &&
-      today.getMonth() === month &&
-      today.getDate() === day
-    )
+    return today.getFullYear() === year && today.getMonth() === month && today.getDate() === day
   }
 
   const days: (number | null)[] = []
@@ -72,11 +64,11 @@ function Calendar({ className, selected, onSelect, defaultMonth }: CalendarProps
 
   return (
     <div className={cn('p-3', className)}>
-      <div className="flex items-center justify-between mb-2">
+      <div className="mb-2 flex items-center justify-between">
         <button
           type="button"
           onClick={prevMonth}
-          className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
+          className="hover:text-accent-foreground inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-accent"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -84,7 +76,7 @@ function Calendar({ className, selected, onSelect, defaultMonth }: CalendarProps
         <button
           type="button"
           onClick={nextMonth}
-          className="inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-accent hover:text-accent-foreground"
+          className="hover:text-accent-foreground inline-flex h-7 w-7 items-center justify-center rounded-md hover:bg-accent"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
@@ -105,10 +97,10 @@ function Calendar({ className, selected, onSelect, defaultMonth }: CalendarProps
                 type="button"
                 onClick={() => onSelect?.(new Date(year, month, day))}
                 className={cn(
-                  'inline-flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+                  'hover:text-accent-foreground inline-flex h-8 w-8 items-center justify-center rounded-md text-sm transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                   isSelected(day) &&
-                    'bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground',
-                  isToday(day) && !isSelected(day) && 'bg-accent text-accent-foreground'
+                    'text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground bg-primary',
+                  isToday(day) && !isSelected(day) && 'text-accent-foreground bg-accent'
                 )}
               >
                 {day}

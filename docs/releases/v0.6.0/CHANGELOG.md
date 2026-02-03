@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🚀 Added
 
 #### Real-Time Communication
+
 - **Voice Messages** - Complete audio recording and playback system with waveform visualization
 - **Video Conferencing** - WebRTC integration with Daily.co supporting up to 50 participants
 - **Live Status** - Real-time presence indicators (online/away/busy/offline)
@@ -20,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Typing Indicators** - Real-time typing status with user avatars
 
 #### Media & Rich Content
+
 - **Sticker System** - Custom sticker packs with categories, upload, and management
 - **GIF Integration** - Giphy and Tenor search with favorites and trending
 - **Social Media Embeds** - Rich previews for Twitter, YouTube, GitHub, LinkedIn, Spotify
@@ -27,6 +29,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **File Attachments** - Drag-and-drop upload with progress tracking and thumbnails
 
 #### Integrations
+
 - **Slack Integration** - Channel import, message import, webhooks, OAuth
 - **GitHub Integration** - PR/issue tracking, notifications, status updates, OAuth
 - **JIRA Integration** - Ticket tracking, status sync, comment threading, OAuth
@@ -34,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Webhooks** - Incoming/outgoing webhooks with payload templates and retry logic
 
 #### UI Components
+
 - `VoiceRecorder.tsx` - Audio recording component with waveform
 - `VoicePlayer.tsx` - Audio playback with controls
 - `VideoCall.tsx` - Video conferencing interface
@@ -45,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `TypingIndicator.tsx` - Typing status display
 
 #### API Routes
+
 - `/api/voice/upload` - Voice message upload endpoint
 - `/api/video/room` - Video room creation endpoint
 - `/api/stickers/*` - Sticker management endpoints
@@ -58,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `/api/webhooks/outgoing` - Outgoing webhook dispatcher
 
 #### Database
+
 - `nchat_sticker_packs` - Sticker pack metadata
 - `nchat_stickers` - Individual stickers
 - `nchat_link_previews` - Cached URL previews
@@ -71,6 +77,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### ⚡ Changed
 
 #### Performance
+
 - **Logo.svg Optimization** - Reduced from 282KB to 789 bytes (99.7% reduction)
 - **Apollo Client Cache** - Implemented cache-first policy (50-70% fewer queries)
 - **Channel List Rendering** - Added React.memo for performance (40% faster)
@@ -78,12 +85,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Component Exports** - Optimized for better tree-shaking
 
 #### Build System
+
 - **Environment Validation** - Made lazy to support SKIP_ENV_VALIDATION flag
 - **Suspense Boundaries** - Added for useSearchParams in client components
 - **Component Exports** - Fixed mismatches between declarations and exports
 - **Docker Configuration** - Removed standalone output for better optimization
 
 #### User Experience
+
 - **Notification System** - Improved grouping and priority handling
 - **File Upload** - Enhanced drag-and-drop experience
 - **Video Call UI** - Floating windows and grid/spotlight layouts
@@ -92,6 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 🔒 Security
 
 #### Critical Fixes
+
 - **CSRF Protection** - Applied to all API routes
 - **XSS Prevention** - Integrated DOMPurify for message sanitization
 - **SQL Injection Prevention** - ESLint rules + parameterized queries
@@ -100,6 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Race Condition Fixes** - Improved Zustand store synchronization
 
 #### Enhancements
+
 - **Security Headers** - Configured CSP, HSTS, X-Frame-Options
 - **OAuth Security** - State parameter validation for all providers
 - **Webhook Signatures** - HMAC verification for incoming webhooks
@@ -138,6 +149,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### 📦 Dependencies
 
 #### Added
+
 - `@daily-co/daily-js@^0.x.x` - Video conferencing SDK
 - `giphy-js-sdk-core@^4.x.x` - Giphy API client
 - `dompurify@^3.x.x` - XSS sanitization
@@ -146,6 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `socket.io-client@^4.x.x` - Real-time communication
 
 #### Updated
+
 - All dependencies audited for security vulnerabilities
 - React 19.0.0 compatibility verified
 - Next.js 15.1.6 optimizations applied
@@ -213,29 +226,30 @@ No changes required - all improvements are automatic.
 
 ## Version Comparison
 
-| Feature | v0.5.0 | v0.6.0 |
-|---------|--------|--------|
-| Voice Messages | ❌ | ✅ |
-| Video Conferencing | ❌ | ✅ |
-| Stickers | ❌ | ✅ |
-| GIF Integration | ❌ | ✅ |
-| Social Embeds | ❌ | ✅ |
-| Slack Integration | ❌ | ✅ |
-| GitHub Integration | ❌ | ✅ |
-| JIRA Integration | ❌ | ✅ |
-| Google Drive Integration | ❌ | ✅ |
-| Webhooks | ❌ | ✅ |
-| Push Notifications | ❌ | ✅ |
-| Email Notifications | Basic | Advanced |
-| Security Hardening | Basic | Enterprise |
-| Performance | Good | Excellent |
-| Documentation | 50 pages | 185 pages |
+| Feature                  | v0.5.0   | v0.6.0     |
+| ------------------------ | -------- | ---------- |
+| Voice Messages           | ❌       | ✅         |
+| Video Conferencing       | ❌       | ✅         |
+| Stickers                 | ❌       | ✅         |
+| GIF Integration          | ❌       | ✅         |
+| Social Embeds            | ❌       | ✅         |
+| Slack Integration        | ❌       | ✅         |
+| GitHub Integration       | ❌       | ✅         |
+| JIRA Integration         | ❌       | ✅         |
+| Google Drive Integration | ❌       | ✅         |
+| Webhooks                 | ❌       | ✅         |
+| Push Notifications       | ❌       | ✅         |
+| Email Notifications      | Basic    | Advanced   |
+| Security Hardening       | Basic    | Enterprise |
+| Performance              | Good     | Excellent  |
+| Documentation            | 50 pages | 185 pages  |
 
 ---
 
 ## Credits
 
 **Developed by:**
+
 - 40+ parallel AI agents
 - 5 coordinated development waves
 - 8 QA/CR reviewers
@@ -243,6 +257,7 @@ No changes required - all improvements are automatic.
 - Performance optimization team
 
 **Special Thanks:**
+
 - nself CLI team
 - Daily.co
 - Giphy and Tenor

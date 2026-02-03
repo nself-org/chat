@@ -2,12 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { History, X, Maximize2, Minimize2 } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
@@ -93,7 +88,7 @@ export function EditHistory({
         className={cn(
           'flex flex-col gap-0 p-0',
           isFullscreen
-            ? 'h-screen max-h-screen w-screen max-w-screen rounded-none'
+            ? 'max-w-screen h-screen max-h-screen w-screen rounded-none'
             : 'max-h-[85vh] max-w-4xl',
           className
         )}
@@ -116,18 +111,9 @@ export function EditHistory({
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="h-8 w-8"
             >
-              {isFullscreen ? (
-                <Minimize2 className="h-4 w-4" />
-              ) : (
-                <Maximize2 className="h-4 w-4" />
-              )}
+              {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="h-8 w-8"
-            >
+            <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
               <X className="h-4 w-4" />
             </Button>
           </div>
@@ -140,7 +126,7 @@ export function EditHistory({
           </div>
         ) : !history ? (
           <div className="flex flex-1 flex-col items-center justify-center py-12">
-            <History className="h-12 w-12 text-muted-foreground/50" />
+            <History className="text-muted-foreground/50 h-12 w-12" />
             <h3 className="mt-4 text-lg font-medium">No Edit History</h3>
             <p className="mt-1 text-sm text-muted-foreground">
               This message has not been edited yet.
@@ -337,12 +323,7 @@ export function EditHistoryPanel({
           </Button>
         )}
       </div>
-      <EditHistoryList
-        history={history}
-        mode="compact"
-        maxHeight={maxHeight}
-        className="p-2"
-      />
+      <EditHistoryList history={history} mode="compact" maxHeight={maxHeight} className="p-2" />
     </div>
   )
 }

@@ -89,12 +89,7 @@ export function ModerationItem({
   const isResolved = report.status === 'resolved' || report.status === 'dismissed'
 
   return (
-    <Card
-      className={cn(
-        'transition-all hover:shadow-md',
-        isResolved && 'opacity-60'
-      )}
-    >
+    <Card className={cn('transition-all hover:shadow-md', isResolved && 'opacity-60')}>
       <CardContent className="p-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           {/* Report Info */}
@@ -154,7 +149,7 @@ export function ModerationItem({
                     <span className="text-sm font-medium">
                       {report.reportedMessage.user.displayName}
                     </span>
-                    <p className="mt-1 text-sm text-muted-foreground line-clamp-3">
+                    <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">
                       {report.reportedMessage.content}
                     </p>
                   </div>
@@ -179,7 +174,7 @@ export function ModerationItem({
 
             {/* Resolution (if resolved) */}
             {isResolved && report.resolution && (
-              <div className="rounded-lg border-l-2 border-primary bg-primary/5 p-3">
+              <div className="bg-primary/5 rounded-lg border-l-2 border-primary p-3">
                 <div className="mb-1 flex items-center gap-2 text-xs text-muted-foreground">
                   <CheckCircle className="h-3 w-3" />
                   <span>
@@ -221,11 +216,7 @@ export function ModerationItem({
               {/* More Actions Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    disabled={isProcessing}
-                  >
+                  <Button size="sm" variant="ghost" disabled={isProcessing}>
                     <MoreHorizontal className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>

@@ -26,10 +26,7 @@ export const UPDATE_PROFILE = gql`
 
 export const UPLOAD_AVATAR = gql`
   mutation UploadAvatar($userId: uuid!, $avatarUrl: String!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { avatar_url: $avatarUrl }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { avatar_url: $avatarUrl }) {
       id
       avatar_url
       updated_at
@@ -39,10 +36,7 @@ export const UPLOAD_AVATAR = gql`
 
 export const REMOVE_AVATAR = gql`
   mutation RemoveAvatar($userId: uuid!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { avatar_url: null }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { avatar_url: null }) {
       id
       avatar_url
       updated_at
@@ -79,10 +73,7 @@ export const UPDATE_PASSWORD = gql`
 
 export const ENABLE_2FA = gql`
   mutation Enable2FA($userId: uuid!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { two_factor_enabled: true }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { two_factor_enabled: true }) {
       id
       two_factor_enabled
       updated_at
@@ -92,10 +83,7 @@ export const ENABLE_2FA = gql`
 
 export const DISABLE_2FA = gql`
   mutation Disable2FA($userId: uuid!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { two_factor_enabled: false }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { two_factor_enabled: false }) {
       id
       two_factor_enabled
       updated_at
@@ -129,18 +117,9 @@ export const UPDATE_NOTIFICATION_PREFERENCES = gql`
 `
 
 export const UPDATE_PUSH_SUBSCRIPTION = gql`
-  mutation UpdatePushSubscription(
-    $userId: uuid!
-    $endpoint: String!
-    $keys: jsonb!
-  ) {
+  mutation UpdatePushSubscription($userId: uuid!, $endpoint: String!, $keys: jsonb!) {
     insert_nchat_push_subscriptions_one(
-      object: {
-        user_id: $userId
-        endpoint: $endpoint
-        keys: $keys
-        enabled: true
-      }
+      object: { user_id: $userId, endpoint: $endpoint, keys: $keys, enabled: true }
       on_conflict: {
         constraint: push_subscriptions_user_id_endpoint_key
         update_columns: [keys, enabled, updated_at]
@@ -170,10 +149,7 @@ export const DISABLE_PUSH_SUBSCRIPTION = gql`
 
 export const UPDATE_PRIVACY_SETTINGS = gql`
   mutation UpdatePrivacySettings($userId: uuid!, $settings: jsonb!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { privacy_settings: $settings }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { privacy_settings: $settings }) {
       id
       privacy_settings
       updated_at
@@ -208,10 +184,7 @@ export const CLEAR_LOCATION_HISTORY = gql`
 
 export const UPDATE_THEME_PREFERENCES = gql`
   mutation UpdateThemePreferences($userId: uuid!, $theme: jsonb!) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { theme_preferences: $theme }
-    ) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { theme_preferences: $theme }) {
       id
       theme_preferences
       updated_at

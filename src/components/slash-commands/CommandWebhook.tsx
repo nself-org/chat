@@ -97,7 +97,7 @@ export function CommandWebhook({ webhook = {}, onChange }: CommandWebhookProps) 
   return (
     <div className="space-y-6">
       {/* Description */}
-      <div className="rounded-lg border bg-muted/30 p-4">
+      <div className="bg-muted/30 rounded-lg border p-4">
         <div className="flex items-center gap-2">
           <Webhook className="h-5 w-5 text-primary" />
           <h3 className="font-medium">Webhook Configuration</h3>
@@ -148,7 +148,7 @@ export function CommandWebhook({ webhook = {}, onChange }: CommandWebhookProps) 
             {Object.entries(webhook.headers).map(([key, value]) => (
               <div
                 key={key}
-                className="flex items-center gap-2 rounded border bg-muted/30 px-3 py-2"
+                className="bg-muted/30 flex items-center gap-2 rounded border px-3 py-2"
               >
                 <code className="flex-1 text-sm">
                   <span className="font-medium">{key}:</span> {value}
@@ -321,11 +321,7 @@ export function CommandWebhook({ webhook = {}, onChange }: CommandWebhookProps) 
 
       {/* Test Button */}
       <div className="space-y-3">
-        <Button
-          variant="outline"
-          onClick={handleTestWebhook}
-          disabled={!webhook.url || isTesting}
-        >
+        <Button variant="outline" onClick={handleTestWebhook} disabled={!webhook.url || isTesting}>
           {isTesting ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           ) : (

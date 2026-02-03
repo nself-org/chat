@@ -48,9 +48,9 @@ Custom sounds are stored in localStorage and managed by the sound system.
 To test sounds, use the Test Notification button in the UI or:
 
 ```typescript
-import { playNotificationSound } from '@/lib/notifications/notification-sounds';
+import { playNotificationSound } from '@/lib/notifications/notification-sounds'
 
-playNotificationSound('mention', 80); // soundId, volume
+playNotificationSound('mention', 80) // soundId, volume
 ```
 
 ## License

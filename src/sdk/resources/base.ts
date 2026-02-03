@@ -17,7 +17,9 @@ export abstract class BaseResource {
    * Make a GET request
    */
   protected async _get<T>(path: string, params?: object): Promise<T> {
-    const queryString = params ? `?${new URLSearchParams(params as Record<string, string>).toString()}` : ''
+    const queryString = params
+      ? `?${new URLSearchParams(params as Record<string, string>).toString()}`
+      : ''
     return this.client.request<T>('GET', `${path}${queryString}`)
   }
 

@@ -31,6 +31,8 @@ import { useScreenRecording } from '@/hooks/use-screen-recording'
 import type { ScreenShare } from '@/lib/webrtc/screen-capture'
 import type { AnnotationTool } from '@/lib/webrtc/screen-annotator'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -114,7 +116,7 @@ export function ScreenSharePanel({
         frameRate: 30,
       })
     } catch (error) {
-      console.error('Failed to start screen share:', error)
+      logger.error('Failed to start screen share:', error)
     }
   }
 
@@ -136,7 +138,7 @@ export function ScreenSharePanel({
         format: 'webm',
       })
     } catch (error) {
-      console.error('Failed to start recording:', error)
+      logger.error('Failed to start recording:', error)
     }
   }
 
@@ -148,7 +150,7 @@ export function ScreenSharePanel({
         // Recording stopped successfully
       }
     } catch (error) {
-      console.error('Failed to stop recording:', error)
+      logger.error('Failed to stop recording:', error)
     }
   }
 
@@ -159,62 +161,47 @@ export function ScreenSharePanel({
       try {
         await updateQuality(newQuality)
       } catch (error) {
-        console.error('Failed to update quality:', error)
+        logger.error('Failed to update quality:', error)
       }
     }
   }
 
   return (
-    <div className={cn('relative w-full h-full bg-gray-900 rounded-lg overflow-hidden', className)}>
+    <div className={cn('relative h-full w-full overflow-hidden rounded-lg bg-gray-900', className)}>
       {/* Video Display */}
-      <div className="relative w-full h-full">
+      <div className="relative h-full w-full">
         {isScreenSharing && screenStream ? (
           <>
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              className="w-full h-full object-contain"
-            />
+            <video ref={videoRef} autoPlay playsInline className="h-full w-full object-contain" />
             {/* Annotation Canvas Overlay */}
             {showAnnotations && (
               <canvas
                 ref={canvasRef}
-                className="absolute inset-0 w-full h-full pointer-events-none"
+                className="pointer-events-none absolute inset-0 h-full w-full"
               />
             )}
           </>
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex h-full items-center justify-center">
             <div className="text-center text-muted-foreground">
-              <Monitor className="h-16 w-16 mx-auto mb-4 opacity-50" />
+              <Monitor className="mx-auto mb-4 h-16 w-16 opacity-50" />
               <p className="text-lg font-medium">No screen share active</p>
-              <p className="text-sm mt-2">Click the button below to start sharing</p>
+              <p className="mt-2 text-sm">Click the button below to start sharing</p>
             </div>
           </div>
         )}
       </div>
 
       {/* Controls Overlay */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-black/70 backdrop-blur-sm rounded-lg p-2">
+      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-lg bg-black/70 p-2 backdrop-blur-sm">
         {/* Screen Share Toggle */}
         {!isScreenSharing ? (
-          <Button
-            onClick={handleStartScreenShare}
-            size="sm"
-            variant="default"
-            className="gap-2"
-          >
+          <Button onClick={handleStartScreenShare} size="sm" variant="default" className="gap-2">
             <Monitor className="h-4 w-4" />
             Start Sharing
           </Button>
         ) : (
-          <Button
-            onClick={handleStopScreenShare}
-            size="sm"
-            variant="destructive"
-            className="gap-2"
-          >
+          <Button onClick={handleStopScreenShare} size="sm" variant="destructive" className="gap-2">
             <MonitorOff className="h-4 w-4" />
             Stop Sharing
           </Button>
@@ -237,12 +224,7 @@ export function ScreenSharePanel({
         {isScreenSharing && showRecording && (
           <>
             {!isRecording ? (
-              <Button
-                onClick={handleStartRecording}
-                size="sm"
-                variant="ghost"
-                className="gap-2"
-              >
+              <Button onClick={handleStartRecording} size="sm" variant="ghost" className="gap-2">
                 <Circle className="h-4 w-4 text-red-500" />
                 Record
               </Button>
@@ -256,15 +238,10 @@ export function ScreenSharePanel({
                 >
                   {isPaused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
                 </Button>
-                <Button
-                  onClick={handleStopRecording}
-                  size="sm"
-                  variant="ghost"
-                  className="gap-2"
-                >
+                <Button onClick={handleStopRecording} size="sm" variant="ghost" className="gap-2">
                   <StopCircle className="h-4 w-4" />
                 </Button>
-                <span className="text-sm font-mono text-white px-2">
+                <span className="px-2 font-mono text-sm text-white">
                   {formatDuration(duration)}
                 </span>
               </>
@@ -277,7 +254,7 @@ export function ScreenSharePanel({
           <select
             value={quality}
             onChange={(e) => handleQualityChange(e.target.value as typeof quality)}
-            className="text-sm bg-white/10 text-white border-none rounded px-2 py-1"
+            className="rounded border-none bg-white/10 px-2 py-1 text-sm text-white"
           >
             <option value="720p">720p</option>
             <option value="1080p">1080p</option>
@@ -288,7 +265,7 @@ export function ScreenSharePanel({
 
       {/* Annotation Toolbar */}
       {showToolbar && isScreenSharing && (
-        <div className="absolute top-4 left-4 flex flex-col gap-2 bg-black/70 backdrop-blur-sm rounded-lg p-2">
+        <div className="absolute left-4 top-4 flex flex-col gap-2 rounded-lg bg-black/70 p-2 backdrop-blur-sm">
           <Button
             onClick={() => setSelectedTool('pen')}
             size="icon"
@@ -321,26 +298,14 @@ export function ScreenSharePanel({
           >
             <Eraser className="h-4 w-4" />
           </Button>
-          <div className="h-px bg-white/20 my-1" />
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8"
-          >
+          <div className="my-1 h-px bg-white/20" />
+          <Button size="icon" variant="ghost" className="h-8 w-8">
             <Undo2 className="h-4 w-4" />
           </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8"
-          >
+          <Button size="icon" variant="ghost" className="h-8 w-8">
             <Redo2 className="h-4 w-4" />
           </Button>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="h-8 w-8"
-          >
+          <Button size="icon" variant="ghost" className="h-8 w-8">
             <Trash2 className="h-4 w-4" />
           </Button>
         </div>
@@ -348,8 +313,8 @@ export function ScreenSharePanel({
 
       {/* Recording Indicator */}
       {isRecording && (
-        <div className="absolute top-4 right-4 flex items-center gap-2 bg-red-500 text-white rounded-full px-3 py-1.5 text-sm font-medium">
-          <span className="h-2 w-2 bg-white rounded-full animate-pulse" />
+        <div className="absolute right-4 top-4 flex items-center gap-2 rounded-full bg-red-500 px-3 py-1.5 text-sm font-medium text-white">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-white" />
           REC
         </div>
       )}

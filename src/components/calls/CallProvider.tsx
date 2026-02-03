@@ -53,18 +53,17 @@ export function CallProvider({ children }: CallProviderProps) {
   const _activeCall = useCallStore((state) => state.activeCall)
 
   // Get remote participant (first one for 1:1 calls)
-  const remoteUser = participants.length > 0
-    ? {
-        id: participants[0].id,
-        name: participants[0].name,
-        avatarUrl: participants[0].avatarUrl,
-      }
-    : null
+  const remoteUser =
+    participants.length > 0
+      ? {
+          id: participants[0].id,
+          name: participants[0].name,
+          avatarUrl: participants[0].avatarUrl,
+        }
+      : null
 
   // Get remote stream (first one for 1:1 calls)
-  const remoteStream = remoteStreams.size > 0
-    ? Array.from(remoteStreams.values())[0]
-    : null
+  const remoteStream = remoteStreams.size > 0 ? Array.from(remoteStreams.values())[0] : null
 
   // Determine connection quality based on call state
   const connectionQuality: 'excellent' | 'good' | 'fair' | 'poor' =
@@ -73,15 +72,16 @@ export function CallProvider({ children }: CallProviderProps) {
   const isReconnecting = callState === 'reconnecting'
 
   // Get first incoming call
-  const incomingCall = incomingCalls.length > 0
-    ? {
-        id: incomingCalls[0].id,
-        callerId: incomingCalls[0].callerId,
-        callerName: incomingCalls[0].callerName,
-        callerAvatarUrl: incomingCalls[0].callerAvatarUrl,
-        type: incomingCalls[0].type,
-      }
-    : null
+  const incomingCall =
+    incomingCalls.length > 0
+      ? {
+          id: incomingCalls[0].id,
+          callerId: incomingCalls[0].callerId,
+          callerName: incomingCalls[0].callerName,
+          callerAvatarUrl: incomingCalls[0].callerAvatarUrl,
+          type: incomingCalls[0].type,
+        }
+      : null
 
   return (
     <>

@@ -196,9 +196,7 @@ export class BiometricWeb implements BiometricPlugin {
   /**
    * Create new credential and authenticate
    */
-  private async createAndAuthenticate(
-    options: BiometricAuthOptions
-  ): Promise<BiometricAuthResult> {
+  private async createAndAuthenticate(options: BiometricAuthOptions): Promise<BiometricAuthResult> {
     const userId = crypto.getRandomValues(new Uint8Array(16))
     const userName = 'user@nchat.local'
 

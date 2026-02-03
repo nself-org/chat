@@ -79,10 +79,7 @@ export function SlackComposer({
     // Auto-resize textarea
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto'
-      textareaRef.current.style.height = `${Math.min(
-        textareaRef.current.scrollHeight,
-        300
-      )}px`
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 300)}px`
     }
   }
 
@@ -119,35 +116,23 @@ export function SlackComposer({
         className={cn(
           'rounded-lg border transition-colors',
           isFocused
-            ? 'border-gray-500 dark:border-gray-400 shadow-sm'
+            ? 'border-gray-500 shadow-sm dark:border-gray-400'
             : 'border-gray-300 dark:border-[#35383C]',
           'bg-white dark:bg-[#222529]'
         )}
       >
         {/* Formatting Toolbar */}
-        <div className="flex items-center gap-0.5 px-3 py-1 border-b border-gray-200 dark:border-[#35383C]">
-          <FormatButton icon={<Bold className="w-4 h-4" />} tooltip="Bold" />
-          <FormatButton icon={<Italic className="w-4 h-4" />} tooltip="Italic" />
-          <FormatButton
-            icon={<Strikethrough className="w-4 h-4" />}
-            tooltip="Strikethrough"
-          />
-          <div className="w-px h-4 bg-gray-200 dark:bg-[#35383C] mx-1" />
-          <FormatButton icon={<Link className="w-4 h-4" />} tooltip="Link" />
-          <div className="w-px h-4 bg-gray-200 dark:bg-[#35383C] mx-1" />
-          <FormatButton
-            icon={<ListOrdered className="w-4 h-4" />}
-            tooltip="Ordered list"
-          />
-          <FormatButton
-            icon={<List className="w-4 h-4" />}
-            tooltip="Bulleted list"
-          />
-          <div className="w-px h-4 bg-gray-200 dark:bg-[#35383C] mx-1" />
-          <FormatButton
-            icon={<Code className="w-4 h-4" />}
-            tooltip="Code block"
-          />
+        <div className="flex items-center gap-0.5 border-b border-gray-200 px-3 py-1 dark:border-[#35383C]">
+          <FormatButton icon={<Bold className="h-4 w-4" />} tooltip="Bold" />
+          <FormatButton icon={<Italic className="h-4 w-4" />} tooltip="Italic" />
+          <FormatButton icon={<Strikethrough className="h-4 w-4" />} tooltip="Strikethrough" />
+          <div className="mx-1 h-4 w-px bg-gray-200 dark:bg-[#35383C]" />
+          <FormatButton icon={<Link className="h-4 w-4" />} tooltip="Link" />
+          <div className="mx-1 h-4 w-px bg-gray-200 dark:bg-[#35383C]" />
+          <FormatButton icon={<ListOrdered className="h-4 w-4" />} tooltip="Ordered list" />
+          <FormatButton icon={<List className="h-4 w-4" />} tooltip="Bulleted list" />
+          <div className="mx-1 h-4 w-px bg-gray-200 dark:bg-[#35383C]" />
+          <FormatButton icon={<Code className="h-4 w-4" />} tooltip="Code block" />
         </div>
 
         {/* Text Input */}
@@ -163,17 +148,17 @@ export function SlackComposer({
             disabled={disabled}
             rows={1}
             className={cn(
-              'w-full px-3 py-2.5 resize-none',
+              'w-full resize-none px-3 py-2.5',
               'bg-transparent text-gray-900 dark:text-white',
               'placeholder-gray-400 dark:placeholder-gray-500',
               'focus:outline-none',
-              'min-h-[44px] max-h-[300px]'
+              'max-h-[300px] min-h-[44px]'
             )}
           />
         </div>
 
         {/* Bottom Actions */}
-        <div className="flex items-center justify-between px-3 py-1 border-t border-gray-200 dark:border-[#35383C]">
+        <div className="flex items-center justify-between border-t border-gray-200 px-3 py-1 dark:border-[#35383C]">
           <div className="flex items-center gap-0.5">
             <input
               ref={fileInputRef}
@@ -183,46 +168,40 @@ export function SlackComposer({
               className="hidden"
             />
             <ActionButton
-              icon={<Plus className="w-4 h-4" />}
+              icon={<Plus className="h-4 w-4" />}
               onClick={handleFileClick}
               tooltip="Add attachment"
             />
+            <ActionButton icon={<Mic className="h-4 w-4" />} tooltip="Record audio clip" />
+            <ActionButton icon={<Video className="h-4 w-4" />} tooltip="Record video clip" />
+            <div className="mx-1 h-4 w-px bg-gray-200 dark:bg-[#35383C]" />
             <ActionButton
-              icon={<Mic className="w-4 h-4" />}
-              tooltip="Record audio clip"
-            />
-            <ActionButton
-              icon={<Video className="w-4 h-4" />}
-              tooltip="Record video clip"
-            />
-            <div className="w-px h-4 bg-gray-200 dark:bg-[#35383C] mx-1" />
-            <ActionButton
-              icon={<Smile className="w-4 h-4" />}
+              icon={<Smile className="h-4 w-4" />}
               onClick={onEmojiClick}
               tooltip="Emoji"
             />
             <ActionButton
-              icon={<AtSign className="w-4 h-4" />}
+              icon={<AtSign className="h-4 w-4" />}
               onClick={onMentionClick}
               tooltip="Mention someone"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
-              <ChevronDown className="w-3 h-3" />
+            <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+              <ChevronDown className="h-3 w-3" />
             </button>
             <button
               onClick={handleSend}
               disabled={!currentValue.trim() || disabled}
               className={cn(
-                'p-1.5 rounded',
+                'rounded p-1.5',
                 currentValue.trim()
                   ? 'bg-[#007A5A] text-white hover:bg-[#006646]'
-                  : 'bg-gray-100 dark:bg-[#35383C] text-gray-400'
+                  : 'bg-gray-100 text-gray-400 dark:bg-[#35383C]'
               )}
             >
-              <Send className="w-4 h-4" />
+              <Send className="h-4 w-4" />
             </button>
           </div>
         </div>
@@ -247,10 +226,10 @@ function FormatButton({
       onClick={onClick}
       title={tooltip}
       className={cn(
-        'p-1.5 rounded',
+        'rounded p-1.5',
         isActive
-          ? 'bg-gray-200 dark:bg-[#35383C] text-gray-900 dark:text-white'
-          : 'text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#35383C] hover:text-gray-700 dark:hover:text-gray-200'
+          ? 'bg-gray-200 text-gray-900 dark:bg-[#35383C] dark:text-white'
+          : 'text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-[#35383C] dark:hover:text-gray-200'
       )}
     >
       {icon}
@@ -271,7 +250,7 @@ function ActionButton({
     <button
       onClick={onClick}
       title={tooltip}
-      className="p-1.5 rounded text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-[#35383C] hover:text-gray-700 dark:hover:text-gray-200"
+      className="rounded p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-[#35383C] dark:hover:text-gray-200"
     >
       {icon}
     </button>

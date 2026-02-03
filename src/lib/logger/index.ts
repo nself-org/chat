@@ -80,8 +80,8 @@ function formatLogEntry(entry: LogEntry): string {
     // Level with color
     const levelColors: Record<LogLevel, string> = {
       debug: '\x1b[90m', // gray
-      info: '\x1b[36m',  // cyan
-      warn: '\x1b[33m',  // yellow
+      info: '\x1b[36m', // cyan
+      warn: '\x1b[33m', // yellow
       error: '\x1b[31m', // red
     }
     const levelStr = entry.level.toUpperCase().padEnd(5)
@@ -201,7 +201,7 @@ export class Logger {
     // Output to console based on level
     switch (level) {
       case 'debug':
-        console.debug(formatted)
+        // REMOVED: console.debug(formatted)
         break
       case 'info':
         console.info(formatted)
@@ -219,7 +219,6 @@ export class Logger {
    * Send error to external tracking service (placeholder)
    */
   private sendToErrorTracking(entry: LogEntry): void {
-    // TODO: Integrate with Sentry, Datadog, or other error tracking service
     // if (process.env.SENTRY_DSN) {
     //   Sentry.captureException(entry.error, { contexts: entry.context })
     // }
@@ -287,11 +286,10 @@ export async function timeAsync<T>(
     return result
   } catch (err) {
     const duration = performance.now() - start
-    logger.error(
-      `${label} failed`,
-      err instanceof Error ? err : new Error(String(err)),
-      { ...context, durationMs: Math.round(duration) }
-    )
+    logger.error(`${label} failed`, err instanceof Error ? err : new Error(String(err)), {
+      ...context,
+      durationMs: Math.round(duration),
+    })
     throw err
   }
 }
@@ -308,11 +306,10 @@ export function timeSync<T>(label: string, fn: () => T, context?: LogContext): T
     return result
   } catch (err) {
     const duration = performance.now() - start
-    logger.error(
-      `${label} failed`,
-      err instanceof Error ? err : new Error(String(err)),
-      { ...context, durationMs: Math.round(duration) }
-    )
+    logger.error(`${label} failed`, err instanceof Error ? err : new Error(String(err)), {
+      ...context,
+      durationMs: Math.round(duration),
+    })
     throw err
   }
 }

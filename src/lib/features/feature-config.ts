@@ -18,14 +18,14 @@
  * ```
  */
 
-import { FEATURES, type FeatureFlag, ALL_FEATURES } from './feature-flags';
+import { FEATURES, type FeatureFlag, ALL_FEATURES } from './feature-flags'
 import type {
   FeatureState,
   FeatureSource,
   FeatureEnabledMap,
   FeatureStateMap,
   FeatureConfig,
-} from './types';
+} from './types'
 
 // ============================================================================
 // DEFAULT CONFIGURATION
@@ -134,7 +134,7 @@ export const DEFAULT_FEATURE_STATES: FeatureEnabledMap = {
   [FEATURES.MODERATION_WARNINGS]: true,
   [FEATURES.MODERATION_BANS]: true,
   [FEATURES.MODERATION_SLOW_MODE]: true,
-};
+}
 
 // ============================================================================
 // ENVIRONMENT VARIABLE MAPPING
@@ -145,7 +145,7 @@ export const DEFAULT_FEATURE_STATES: FeatureEnabledMap = {
  * @example featureFlagToEnvVar('messages.edit') -> 'NEXT_PUBLIC_FEATURE_MESSAGES_EDIT'
  */
 export function featureFlagToEnvVar(flag: FeatureFlag): string {
-  return `NEXT_PUBLIC_FEATURE_${flag.replace('.', '_').toUpperCase()}`;
+  return `NEXT_PUBLIC_FEATURE_${flag.replace('.', '_').toUpperCase()}`
 }
 
 /**
@@ -153,13 +153,11 @@ export function featureFlagToEnvVar(flag: FeatureFlag): string {
  * @example envVarToFeatureFlag('NEXT_PUBLIC_FEATURE_MESSAGES_EDIT') -> 'messages.edit'
  */
 export function envVarToFeatureFlag(envVar: string): FeatureFlag | null {
-  const match = envVar.match(/^NEXT_PUBLIC_FEATURE_(.+)$/);
-  if (!match) return null;
+  const match = envVar.match(/^NEXT_PUBLIC_FEATURE_(.+)$/)
+  if (!match) return null
 
-  const flagPart = match[1].toLowerCase().replace('_', '.');
-  return ALL_FEATURES.includes(flagPart as FeatureFlag)
-    ? (flagPart as FeatureFlag)
-    : null;
+  const flagPart = match[1].toLowerCase().replace('_', '.')
+  return ALL_FEATURES.includes(flagPart as FeatureFlag) ? (flagPart as FeatureFlag) : null
 }
 
 // ============================================================================
@@ -169,25 +167,25 @@ export function envVarToFeatureFlag(envVar: string): FeatureFlag | null {
 /**
  * Runtime feature overrides (for testing and admin overrides)
  */
-const runtimeOverrides: Map<FeatureFlag, boolean> = new Map();
+const runtimeOverrides: Map<FeatureFlag, boolean> = new Map()
 
 /**
  * Cached feature states
  */
-let featureStateCache: FeatureStateMap | null = null;
+let featureStateCache: FeatureStateMap | null = null
 
 /**
  * Get feature state from environment variable
  */
 function getEnvFeatureState(flag: FeatureFlag): boolean | null {
-  if (typeof process === 'undefined') return null;
+  if (typeof process === 'undefined') return null
 
-  const envVar = featureFlagToEnvVar(flag);
-  const value = process.env[envVar];
+  const envVar = featureFlagToEnvVar(flag)
+  const value = process.env[envVar]
 
-  if (value === undefined || value === '') return null;
+  if (value === undefined || value === '') return null
 
-  return value.toLowerCase() === 'true' || value === '1';
+  return value.toLowerCase() === 'true' || value === '1'
 }
 
 /**
@@ -201,18 +199,18 @@ export function getFeatureState(flag: FeatureFlag): FeatureState {
       enabled: runtimeOverrides.get(flag)!,
       source: 'override',
       updatedAt: Date.now(),
-    };
+    }
   }
 
   // 2. Check environment variables
-  const envValue = getEnvFeatureState(flag);
+  const envValue = getEnvFeatureState(flag)
   if (envValue !== null) {
     return {
       flag,
       enabled: envValue,
       source: 'env',
       updatedAt: Date.now(),
-    };
+    }
   }
 
   // 3. Fall back to defaults
@@ -221,38 +219,38 @@ export function getFeatureState(flag: FeatureFlag): FeatureState {
     enabled: DEFAULT_FEATURE_STATES[flag] ?? false,
     source: 'default',
     updatedAt: Date.now(),
-  };
+  }
 }
 
 /**
  * Get all feature states
  */
 export function getAllFeatureStates(): FeatureStateMap {
-  if (featureStateCache) return featureStateCache;
+  if (featureStateCache) return featureStateCache
 
-  const states: Partial<FeatureStateMap> = {};
+  const states: Partial<FeatureStateMap> = {}
   for (const flag of ALL_FEATURES) {
-    states[flag] = getFeatureState(flag);
+    states[flag] = getFeatureState(flag)
   }
 
-  featureStateCache = states as FeatureStateMap;
-  return featureStateCache;
+  featureStateCache = states as FeatureStateMap
+  return featureStateCache
 }
 
 /**
  * Get all enabled features
  */
 export function getEnabledFeatures(): FeatureFlag[] {
-  const states = getAllFeatureStates();
-  return ALL_FEATURES.filter((flag) => states[flag].enabled);
+  const states = getAllFeatureStates()
+  return ALL_FEATURES.filter((flag) => states[flag].enabled)
 }
 
 /**
  * Get all disabled features
  */
 export function getDisabledFeatures(): FeatureFlag[] {
-  const states = getAllFeatureStates();
-  return ALL_FEATURES.filter((flag) => !states[flag].enabled);
+  const states = getAllFeatureStates()
+  return ALL_FEATURES.filter((flag) => !states[flag].enabled)
 }
 
 // ============================================================================
@@ -264,35 +262,35 @@ export function getDisabledFeatures(): FeatureFlag[] {
  * This is the primary function for runtime feature checks
  */
 export function isFeatureEnabled(flag: FeatureFlag): boolean {
-  return getFeatureState(flag).enabled;
+  return getFeatureState(flag).enabled
 }
 
 /**
  * Check if all specified features are enabled
  */
 export function areAllFeaturesEnabled(flags: FeatureFlag[]): boolean {
-  return flags.every((flag) => isFeatureEnabled(flag));
+  return flags.every((flag) => isFeatureEnabled(flag))
 }
 
 /**
  * Check if any of the specified features are enabled
  */
 export function isAnyFeatureEnabled(flags: FeatureFlag[]): boolean {
-  return flags.some((flag) => isFeatureEnabled(flag));
+  return flags.some((flag) => isFeatureEnabled(flag))
 }
 
 /**
  * Get a simple enabled/disabled map for all features
  */
 export function getFeatureEnabledMap(): FeatureEnabledMap {
-  const states = getAllFeatureStates();
-  const map: Partial<FeatureEnabledMap> = {};
+  const states = getAllFeatureStates()
+  const map: Partial<FeatureEnabledMap> = {}
 
   for (const flag of ALL_FEATURES) {
-    map[flag] = states[flag].enabled;
+    map[flag] = states[flag].enabled
   }
 
-  return map as FeatureEnabledMap;
+  return map as FeatureEnabledMap
 }
 
 // ============================================================================
@@ -303,36 +301,33 @@ export function getFeatureEnabledMap(): FeatureEnabledMap {
  * Set a runtime override for a feature
  * Useful for A/B testing, admin overrides, or development
  */
-export function setFeatureOverride(
-  flag: FeatureFlag,
-  enabled: boolean
-): FeatureState {
-  runtimeOverrides.set(flag, enabled);
-  clearFeatureCache();
-  return getFeatureState(flag);
+export function setFeatureOverride(flag: FeatureFlag, enabled: boolean): FeatureState {
+  runtimeOverrides.set(flag, enabled)
+  clearFeatureCache()
+  return getFeatureState(flag)
 }
 
 /**
  * Remove a runtime override for a feature
  */
 export function clearFeatureOverride(flag: FeatureFlag): void {
-  runtimeOverrides.delete(flag);
-  clearFeatureCache();
+  runtimeOverrides.delete(flag)
+  clearFeatureCache()
 }
 
 /**
  * Clear all runtime overrides
  */
 export function clearAllFeatureOverrides(): void {
-  runtimeOverrides.clear();
-  clearFeatureCache();
+  runtimeOverrides.clear()
+  clearFeatureCache()
 }
 
 /**
  * Get all current runtime overrides
  */
 export function getFeatureOverrides(): Map<FeatureFlag, boolean> {
-  return new Map(runtimeOverrides);
+  return new Map(runtimeOverrides)
 }
 
 /**
@@ -340,7 +335,7 @@ export function getFeatureOverrides(): Map<FeatureFlag, boolean> {
  * Call this when feature states may have changed
  */
 export function clearFeatureCache(): void {
-  featureStateCache = null;
+  featureStateCache = null
 }
 
 // ============================================================================
@@ -360,7 +355,7 @@ export const PRESET_MINIMAL: FeatureFlag[] = [
   FEATURES.USERS_PRESENCE,
   FEATURES.SEARCH_MESSAGES,
   FEATURES.NOTIFICATIONS_DESKTOP,
-];
+]
 
 /**
  * Standard feature preset - Most common features
@@ -384,12 +379,12 @@ export const PRESET_STANDARD: FeatureFlag[] = [
   FEATURES.SEARCH_FILES,
   FEATURES.SEARCH_USERS,
   FEATURES.NOTIFICATIONS_SOUND,
-];
+]
 
 /**
  * Full feature preset - All features enabled
  */
-export const PRESET_FULL: FeatureFlag[] = [...ALL_FEATURES];
+export const PRESET_FULL: FeatureFlag[] = [...ALL_FEATURES]
 
 /**
  * Apply a feature preset
@@ -399,19 +394,19 @@ export function applyFeaturePreset(
   options: { clearExisting?: boolean } = {}
 ): void {
   if (options.clearExisting) {
-    clearAllFeatureOverrides();
+    clearAllFeatureOverrides()
   }
 
   // Disable all features first
   for (const flag of ALL_FEATURES) {
     if (!preset.includes(flag)) {
-      setFeatureOverride(flag, false);
+      setFeatureOverride(flag, false)
     }
   }
 
   // Enable preset features
   for (const flag of preset) {
-    setFeatureOverride(flag, true);
+    setFeatureOverride(flag, true)
   }
 }
 
@@ -1102,11 +1097,11 @@ export const FEATURE_CONFIGS: Record<FeatureFlag, FeatureConfig> = {
     defaultEnabled: true,
     userConfigurable: false,
   },
-};
+}
 
 /**
  * Get feature configuration by flag
  */
 export function getFeatureConfig(flag: FeatureFlag): FeatureConfig {
-  return FEATURE_CONFIGS[flag];
+  return FEATURE_CONFIGS[flag]
 }

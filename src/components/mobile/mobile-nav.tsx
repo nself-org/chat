@@ -2,14 +2,7 @@
 
 import { memo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import {
-  Hash,
-  MessageSquare,
-  Search,
-  Bell,
-  User,
-  Home,
-} from 'lucide-react'
+import { Hash, MessageSquare, Search, Bell, User, Home } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useMobileStore, type MobileView } from '@/lib/mobile/mobile-store'
 import { useSafeArea } from '@/lib/mobile/use-viewport'
@@ -92,7 +85,7 @@ export const MobileNav = memo(function MobileNav({
           className={cn(
             'fixed bottom-0 left-0 right-0 z-50',
             'bg-background/95 backdrop-blur-lg',
-            'border-t border-border/50',
+            'border-border/50 border-t',
             'safe-area-bottom',
             className
           )}
@@ -149,7 +142,7 @@ const NavButton = memo(function NavButton({
       onClick={onClick}
       className={cn(
         'relative flex flex-col items-center justify-center',
-        'min-w-[64px] py-2 px-3',
+        'min-w-[64px] px-3 py-2',
         'transition-colors duration-200',
         'touch-manipulation',
         isActive ? 'text-primary' : 'text-muted-foreground'
@@ -180,7 +173,7 @@ const NavButton = memo(function NavButton({
               className={cn(
                 'absolute -right-2 -top-1',
                 'flex items-center justify-center',
-                'min-w-[18px] h-[18px] px-1',
+                'h-[18px] min-w-[18px] px-1',
                 'text-[10px] font-semibold',
                 'bg-destructive text-destructive-foreground',
                 'rounded-full'
@@ -233,8 +226,8 @@ export const MobileNavFAB = memo(function MobileNavFAB({
         'fixed z-50',
         'flex items-center justify-center',
         'h-14 w-14 rounded-full',
-        'bg-primary text-primary-foreground',
-        'shadow-lg shadow-primary/25',
+        'text-primary-foreground bg-primary',
+        'shadow-primary/25 shadow-lg',
         'touch-manipulation',
         className
       )}
@@ -275,7 +268,7 @@ export const MobileNavCompact = memo(function MobileNavCompact({
         'fixed bottom-0 left-0 right-0 z-50',
         'flex items-center justify-around',
         'bg-background/95 backdrop-blur-lg',
-        'border-t border-border/50',
+        'border-border/50 border-t',
         'py-2',
         className
       )}
@@ -289,7 +282,7 @@ export const MobileNavCompact = memo(function MobileNavCompact({
             key={id}
             onClick={() => setActiveView(id)}
             className={cn(
-              'relative p-3 rounded-full',
+              'relative rounded-full p-3',
               'transition-colors duration-200',
               isActive ? 'bg-primary/10 text-primary' : 'text-muted-foreground'
             )}

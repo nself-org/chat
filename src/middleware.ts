@@ -15,10 +15,7 @@
 
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import {
-  tenantMiddleware,
-  getDefaultTenantConfig,
-} from '@/lib/tenants/tenant-middleware'
+import { tenantMiddleware, getDefaultTenantConfig } from '@/lib/tenants/tenant-middleware'
 
 /**
  * Routes that don't require authentication
@@ -37,43 +34,27 @@ const PUBLIC_ROUTES = [
 /**
  * Development-only routes (blocked in production)
  */
-const DEV_ONLY_ROUTES = [
-  '/dev',
-]
+const DEV_ONLY_ROUTES = ['/dev']
 
 /**
  * Routes that require authentication
  */
-const PROTECTED_ROUTES = [
-  '/chat',
-  '/settings',
-  '/admin',
-  '/setup',
-]
+const PROTECTED_ROUTES = ['/chat', '/settings', '/admin', '/setup']
 
 /**
  * Routes that require admin role
  */
-const ADMIN_ROUTES = [
-  '/admin',
-]
+const ADMIN_ROUTES = ['/admin']
 
 /**
  * API routes that should bypass middleware
  */
-const API_ROUTES = [
-  '/api',
-]
+const API_ROUTES = ['/api']
 
 /**
  * Static assets and Next.js internal routes
  */
-const IGNORED_PATHS = [
-  '/_next',
-  '/favicon.ico',
-  '/robots.txt',
-  '/sitemap.xml',
-]
+const IGNORED_PATHS = ['/_next', '/favicon.ico', '/robots.txt', '/sitemap.xml']
 
 /**
  * Check if path matches any pattern in the list
@@ -305,8 +286,13 @@ export async function middleware(request: NextRequest) {
   // Handle public routes (login, signup)
   if (isPublicRoute(pathname)) {
     // If authenticated and trying to access login/signup, redirect to chat
-    if (isAuthenticated && (pathname === '/login' || pathname === '/signup' ||
-        pathname === '/auth/signin' || pathname === '/auth/signup')) {
+    if (
+      isAuthenticated &&
+      (pathname === '/login' ||
+        pathname === '/signup' ||
+        pathname === '/auth/signin' ||
+        pathname === '/auth/signup')
+    ) {
       const response = NextResponse.redirect(new URL('/chat', request.url))
       return addSecurityHeaders(response, isDev)
     }

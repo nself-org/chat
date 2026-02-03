@@ -27,14 +27,14 @@
 
 ### Quick Facts
 
-| Property | Value |
-|----------|-------|
-| **Current Version** | v0.4.2 |
-| **License** | Open Source |
-| **Platform** | macOS, Linux, Windows (WSL2) |
-| **Requirements** | Docker/Podman, 16GB+ RAM |
-| **Language** | Go (CLI), Multiple (Services) |
-| **Project Structure** | `.backend/` directory |
+| Property              | Value                         |
+| --------------------- | ----------------------------- |
+| **Current Version**   | v0.4.2                        |
+| **License**           | Open Source                   |
+| **Platform**          | macOS, Linux, Windows (WSL2)  |
+| **Requirements**      | Docker/Podman, 16GB+ RAM      |
+| **Language**          | Go (CLI), Multiple (Services) |
+| **Project Structure** | `.backend/` directory         |
 
 ---
 
@@ -52,6 +52,7 @@ nself CLI is a **backend-as-code** infrastructure tool that bundles:
 - **Monitoring Stack** - Prometheus, Grafana, Loki, and more
 
 All services are:
+
 - ✅ **Pre-configured** - Works out of the box with sensible defaults
 - ✅ **Production-ready** - Battle-tested configurations
 - ✅ **Docker-based** - Consistent across environments
@@ -61,6 +62,7 @@ All services are:
 ### The Problem nself CLI Solves
 
 **Traditional Approach:**
+
 ```bash
 # Install PostgreSQL
 brew install postgresql@16
@@ -91,6 +93,7 @@ docker run -d hasura/graphql-engine
 ```
 
 **With nself CLI:**
+
 ```bash
 nself init myapp
 cd myapp/.backend
@@ -329,17 +332,17 @@ volumes/
 
 ### Port Mapping
 
-| Service | Internal Port | External Port | URL |
-|---------|---------------|---------------|-----|
-| Nginx | 80, 443 | 80, 443 | http://localhost |
-| Hasura | 8080 | 8080 | http://api.localhost/v1/graphql |
-| Auth | 4000 | - | http://auth.localhost/v1/auth |
-| PostgreSQL | 5432 | 5432 | localhost:5432 |
-| MinIO | 9000, 9001 | - | http://storage.localhost |
-| Redis | 6379 | 6379 | localhost:6379 |
-| Storage | 5001 | - | http://storage.localhost/v1/storage |
-| Mailpit | 8025 | 8025 | http://localhost:8025 |
-| nself-admin | 3021 | 3021 | http://localhost:3021 |
+| Service     | Internal Port | External Port | URL                                 |
+| ----------- | ------------- | ------------- | ----------------------------------- |
+| Nginx       | 80, 443       | 80, 443       | http://localhost                    |
+| Hasura      | 8080          | 8080          | http://api.localhost/v1/graphql     |
+| Auth        | 4000          | -             | http://auth.localhost/v1/auth       |
+| PostgreSQL  | 5432          | 5432          | localhost:5432                      |
+| MinIO       | 9000, 9001    | -             | http://storage.localhost            |
+| Redis       | 6379          | 6379          | localhost:6379                      |
+| Storage     | 5001          | -             | http://storage.localhost/v1/storage |
+| Mailpit     | 8025          | 8025          | http://localhost:8025               |
+| nself-admin | 3021          | 3021          | http://localhost:3021               |
 
 ---
 
@@ -348,6 +351,7 @@ volumes/
 ### Core Services (Always Enabled)
 
 #### 1. **PostgreSQL**
+
 - **Image**: `postgres:16-alpine`
 - **Purpose**: Primary data store
 - **Configuration**:
@@ -357,6 +361,7 @@ volumes/
 - **Health Check**: `pg_isready`
 
 #### 2. **Hasura GraphQL Engine**
+
 - **Image**: `hasura/graphql-engine:v2.44.0`
 - **Purpose**: GraphQL API layer
 - **Features**:
@@ -367,6 +372,7 @@ volumes/
 - **Console**: Enabled in dev mode
 
 #### 3. **Nhost Auth**
+
 - **Image**: `nhost/hasura-auth:0.36.0`
 - **Purpose**: Authentication service
 - **Features**:
@@ -377,6 +383,7 @@ volumes/
 - **Health Check**: `/healthz` endpoint
 
 #### 4. **Nginx**
+
 - **Image**: `nginx:alpine`
 - **Purpose**: Reverse proxy and SSL termination
 - **Features**:
@@ -388,16 +395,19 @@ volumes/
 ### Optional Services (Enable as Needed)
 
 #### 5. **MinIO** (`MINIO_ENABLED=true`)
+
 - **Purpose**: S3-compatible object storage
 - **Console**: Port 9001
 - **Default Credentials**: minioadmin/minioadmin
 
 #### 6. **Redis** (`REDIS_ENABLED=true`)
+
 - **Purpose**: Caching and session storage
 - **Persistence**: AOF + RDB snapshots
 - **Eviction**: LRU policy
 
 #### 7. **Hasura Storage** (Auto-enabled with MinIO)
+
 - **Purpose**: File upload/download API
 - **Features**:
   - S3 integration
@@ -405,22 +415,26 @@ volumes/
   - Image transformations
 
 #### 8. **Mailpit** (`MAILPIT_ENABLED=true`)
+
 - **Purpose**: Email testing (development)
 - **UI**: Port 8025
 - **SMTP**: Port 1025
 - **Replaces**: MailHog (deprecated)
 
 #### 9. **MeiliSearch** (`MEILISEARCH_ENABLED=true`)
+
 - **Purpose**: Full-text search
 - **API**: Port 7700
 - **Features**: Instant search, typo tolerance
 
 #### 10. **Serverless Functions** (`FUNCTIONS_ENABLED=true`)
+
 - **Purpose**: Custom business logic
 - **Runtime**: Node.js, Python, Go
 - **Deployment**: Hot reload in dev
 
 #### 11. **MLflow** (`MLFLOW_ENABLED=true`)
+
 - **Purpose**: ML experiment tracking
 - **UI**: Port 5000
 - **Storage**: S3/MinIO backend
@@ -429,22 +443,23 @@ volumes/
 
 Enables 10 services for full observability:
 
-| Service | Port | Purpose |
-|---------|------|---------|
-| Prometheus | 9090 | Metrics storage |
-| Grafana | 3000 | Dashboards |
-| Loki | 3100 | Log aggregation |
-| Promtail | 9080 | Log collection |
-| Alertmanager | 9093 | Alert routing |
-| Node Exporter | 9100 | Host metrics |
-| cAdvisor | 8080 | Container metrics |
-| Jaeger | 16686 | Trace UI |
-| Tempo | 3200 | Trace storage |
-| OTEL Collector | 4317 | Telemetry pipeline |
+| Service        | Port  | Purpose            |
+| -------------- | ----- | ------------------ |
+| Prometheus     | 9090  | Metrics storage    |
+| Grafana        | 3000  | Dashboards         |
+| Loki           | 3100  | Log aggregation    |
+| Promtail       | 9080  | Log collection     |
+| Alertmanager   | 9093  | Alert routing      |
+| Node Exporter  | 9100  | Host metrics       |
+| cAdvisor       | 8080  | Container metrics  |
+| Jaeger         | 16686 | Trace UI           |
+| Tempo          | 3200  | Trace storage      |
+| OTEL Collector | 4317  | Telemetry pipeline |
 
 ### Administrative Services
 
 #### **nself-admin** (`NSELF_ADMIN_ENABLED=true`)
+
 - **Port**: 3021 (NOT 3100 - Loki uses 3100)
 - **Purpose**: Web-based admin panel
 - **Features**:
@@ -553,73 +568,73 @@ Architecture:
 
 ### vs. Firebase
 
-| Feature | nself CLI | Firebase |
-|---------|-----------|----------|
-| **Hosting** | Self-hosted | Cloud only |
-| **Cost** | Free (your infra) | Pay per use |
-| **Database** | PostgreSQL (SQL) | Firestore (NoSQL) |
-| **Queries** | GraphQL + SQL | Limited queries |
-| **Lock-in** | None | Vendor lock-in |
-| **Offline** | Full control | Limited |
-| **Extensions** | 60+ PostgreSQL | Limited |
-| **Auth** | Self-hosted | Cloud-based |
+| Feature        | nself CLI         | Firebase          |
+| -------------- | ----------------- | ----------------- |
+| **Hosting**    | Self-hosted       | Cloud only        |
+| **Cost**       | Free (your infra) | Pay per use       |
+| **Database**   | PostgreSQL (SQL)  | Firestore (NoSQL) |
+| **Queries**    | GraphQL + SQL     | Limited queries   |
+| **Lock-in**    | None              | Vendor lock-in    |
+| **Offline**    | Full control      | Limited           |
+| **Extensions** | 60+ PostgreSQL    | Limited           |
+| **Auth**       | Self-hosted       | Cloud-based       |
 
 **Winner**: nself CLI for self-hosting, Firebase for quick prototypes
 
 ### vs. Supabase
 
-| Feature | nself CLI | Supabase |
-|---------|-----------|----------|
-| **Hosting** | Self-hosted | Cloud or self-host |
-| **Cost** | Free | Free tier + paid |
-| **GraphQL** | Hasura (advanced) | PostgREST (basic) |
-| **Auth** | Nhost Auth | Supabase Auth |
-| **Storage** | MinIO | Supabase Storage |
-| **Admin UI** | nself-admin | Supabase Studio |
-| **Flexibility** | Very high | Medium |
-| **Setup** | One command | Docker Compose |
+| Feature         | nself CLI         | Supabase           |
+| --------------- | ----------------- | ------------------ |
+| **Hosting**     | Self-hosted       | Cloud or self-host |
+| **Cost**        | Free              | Free tier + paid   |
+| **GraphQL**     | Hasura (advanced) | PostgREST (basic)  |
+| **Auth**        | Nhost Auth        | Supabase Auth      |
+| **Storage**     | MinIO             | Supabase Storage   |
+| **Admin UI**    | nself-admin       | Supabase Studio    |
+| **Flexibility** | Very high         | Medium             |
+| **Setup**       | One command       | Docker Compose     |
 
 **Winner**: Tie - nself CLI for control, Supabase for managed service
 
 ### vs. Hasura Cloud
 
-| Feature | nself CLI | Hasura Cloud |
-|---------|-----------|--------------|
-| **Hosting** | Self-hosted | Cloud only |
-| **Cost** | Free | $99+/month |
-| **Features** | Full stack | GraphQL only |
-| **Auth** | Included (Nhost) | Bring your own |
-| **Storage** | Included (MinIO) | Bring your own |
-| **Database** | Included | Bring your own |
-| **Setup** | One command | Manual config |
+| Feature      | nself CLI        | Hasura Cloud   |
+| ------------ | ---------------- | -------------- |
+| **Hosting**  | Self-hosted      | Cloud only     |
+| **Cost**     | Free             | $99+/month     |
+| **Features** | Full stack       | GraphQL only   |
+| **Auth**     | Included (Nhost) | Bring your own |
+| **Storage**  | Included (MinIO) | Bring your own |
+| **Database** | Included         | Bring your own |
+| **Setup**    | One command      | Manual config  |
 
 **Winner**: nself CLI (Hasura Cloud is expensive for small teams)
 
 ### vs. AWS Amplify
 
-| Feature | nself CLI | AWS Amplify |
-|---------|-----------|-------------|
-| **Vendor** | Open source | AWS |
-| **Cost** | Free | Pay per use |
-| **Lock-in** | None | AWS ecosystem |
-| **Database** | PostgreSQL | DynamoDB/Aurora |
-| **Learning** | Standard tech | AWS-specific |
-| **Local Dev** | Full-featured | Limited |
-| **Deployment** | Flexible | AWS only |
+| Feature        | nself CLI     | AWS Amplify     |
+| -------------- | ------------- | --------------- |
+| **Vendor**     | Open source   | AWS             |
+| **Cost**       | Free          | Pay per use     |
+| **Lock-in**    | None          | AWS ecosystem   |
+| **Database**   | PostgreSQL    | DynamoDB/Aurora |
+| **Learning**   | Standard tech | AWS-specific    |
+| **Local Dev**  | Full-featured | Limited         |
+| **Deployment** | Flexible      | AWS only        |
 
 **Winner**: nself CLI for portability, Amplify for AWS shops
 
 ### vs. Docker Compose
 
-| Feature | nself CLI | Docker Compose |
-|---------|-----------|----------------|
-| **Setup** | Automated | Manual |
-| **Config** | Smart defaults | Full manual config |
-| **Services** | 20+ ready | Build yourself |
-| **Updates** | One command | Manual updates |
-| **Monitoring** | Built-in | DIY |
-| **Docs** | Comprehensive | Per-service |
-| **Time to prod** | Hours | Days/weeks |
+| Feature          | nself CLI      | Docker Compose     |
+| ---------------- | -------------- | ------------------ |
+| **Setup**        | Automated      | Manual             |
+| **Config**       | Smart defaults | Full manual config |
+| **Services**     | 20+ ready      | Build yourself     |
+| **Updates**      | One command    | Manual updates     |
+| **Monitoring**   | Built-in       | DIY                |
+| **Docs**         | Comprehensive  | Per-service        |
+| **Time to prod** | Hours          | Days/weeks         |
 
 **Winner**: nself CLI (it generates optimized Docker Compose!)
 

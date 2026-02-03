@@ -182,10 +182,10 @@ export default function ExportPage() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
+    <div className="container mx-auto max-w-4xl px-4 py-8">
       {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center gap-2 mb-4">
+        <div className="mb-4 flex items-center gap-2">
           <Link href="/admin" className="text-muted-foreground hover:text-foreground">
             Admin
           </Link>
@@ -193,24 +193,22 @@ export default function ExportPage() {
           <span>Export</span>
         </div>
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-primary/10 rounded-lg">
+          <div className="bg-primary/10 rounded-lg p-3">
             <Download className="h-8 w-8 text-primary" />
           </div>
           <div>
             <h1 className="text-3xl font-bold">Export Data</h1>
-            <p className="text-muted-foreground">
-              Export your nchat data for backup or migration
-            </p>
+            <p className="text-muted-foreground">Export your nchat data for backup or migration</p>
           </div>
         </div>
       </div>
 
       {/* Data Overview */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="mb-8 grid grid-cols-3 gap-4">
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+              <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900">
                 <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
@@ -223,7 +221,7 @@ export default function ExportPage() {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+              <div className="rounded-full bg-green-100 p-2 dark:bg-green-900">
                 <Hash className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
@@ -236,7 +234,7 @@ export default function ExportPage() {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+              <div className="rounded-full bg-purple-100 p-2 dark:bg-purple-900">
                 <MessageSquare className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
@@ -259,50 +257,42 @@ export default function ExportPage() {
           <CardContent>
             <div className="grid grid-cols-2 gap-4">
               <div
-                className={`border rounded-lg p-4 cursor-pointer transition-all hover:border-primary ${
-                  config.format === 'json' ? 'border-primary bg-primary/5' : ''
+                className={`cursor-pointer rounded-lg border p-4 transition-all hover:border-primary ${
+                  config.format === 'json' ? 'bg-primary/5 border-primary' : ''
                 }`}
                 onClick={() => handleFormatChange('json')}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`p-2 rounded-full ${
-                      config.format === 'json'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
+                    className={`rounded-full p-2 ${
+                      config.format === 'json' ? 'text-primary-foreground bg-primary' : 'bg-muted'
                     }`}
                   >
                     <FileJson className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-medium">JSON</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Full data with nested structure
-                    </p>
+                    <p className="text-sm text-muted-foreground">Full data with nested structure</p>
                   </div>
                 </div>
               </div>
               <div
-                className={`border rounded-lg p-4 cursor-pointer transition-all hover:border-primary ${
-                  config.format === 'csv' ? 'border-primary bg-primary/5' : ''
+                className={`cursor-pointer rounded-lg border p-4 transition-all hover:border-primary ${
+                  config.format === 'csv' ? 'bg-primary/5 border-primary' : ''
                 }`}
                 onClick={() => handleFormatChange('csv')}
               >
                 <div className="flex items-center gap-3">
                   <div
-                    className={`p-2 rounded-full ${
-                      config.format === 'csv'
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-muted'
+                    className={`rounded-full p-2 ${
+                      config.format === 'csv' ? 'text-primary-foreground bg-primary' : 'bg-muted'
                     }`}
                   >
                     <FileSpreadsheet className="h-6 w-6" />
                   </div>
                   <div>
                     <h3 className="font-medium">CSV</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Flat data for spreadsheets
-                    </p>
+                    <p className="text-sm text-muted-foreground">Flat data for spreadsheets</p>
                   </div>
                 </div>
               </div>
@@ -358,26 +348,23 @@ export default function ExportPage() {
               </TabsContent>
 
               <TabsContent value="channels" className="space-y-4">
-                <div className="flex items-center justify-between p-3 border rounded-lg">
+                <div className="flex items-center justify-between rounded-lg border p-3">
                   <div>
                     <Label>Export All Channels</Label>
                     <p className="text-xs text-muted-foreground">
                       Include all channels in the export
                     </p>
                   </div>
-                  <Switch
-                    checked={selectAllChannels}
-                    onCheckedChange={handleSelectAllChannels}
-                  />
+                  <Switch checked={selectAllChannels} onCheckedChange={handleSelectAllChannels} />
                 </div>
 
                 {!selectAllChannels && (
-                  <ScrollArea className="h-[250px] border rounded-lg p-2">
+                  <ScrollArea className="h-[250px] rounded-lg border p-2">
                     <div className="space-y-2">
                       {MOCK_CHANNELS.map((channel) => (
                         <div
                           key={channel.id}
-                          className={`flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors ${
+                          className={`flex cursor-pointer items-center justify-between rounded-lg border p-3 transition-colors ${
                             selectedChannels.has(channel.id)
                               ? 'bg-primary/5 border-primary'
                               : 'hover:bg-muted'
@@ -386,14 +373,14 @@ export default function ExportPage() {
                         >
                           <div className="flex items-center gap-3">
                             <div
-                              className={`w-5 h-5 rounded border flex items-center justify-center ${
+                              className={`flex h-5 w-5 items-center justify-center rounded border ${
                                 selectedChannels.has(channel.id)
-                                  ? 'bg-primary border-primary'
+                                  ? 'border-primary bg-primary'
                                   : 'border-input'
                               }`}
                             >
                               {selectedChannels.has(channel.id) && (
-                                <CheckCircle2 className="h-4 w-4 text-primary-foreground" />
+                                <CheckCircle2 className="text-primary-foreground h-4 w-4" />
                               )}
                             </div>
                             <span className="font-medium">#{channel.name}</span>
@@ -490,9 +477,7 @@ export default function ExportPage() {
               <div className="flex justify-between text-sm">
                 <span>Channels</span>
                 <span className="font-medium">
-                  {selectAllChannels
-                    ? 'All channels'
-                    : `${selectedChannels.size} selected`}
+                  {selectAllChannels ? 'All channels' : `${selectedChannels.size} selected`}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -509,10 +494,7 @@ export default function ExportPage() {
 
         {/* Export Progress / Status */}
         {(isExporting || exportComplete || exportError) && (
-          <Alert
-            variant={exportError ? 'destructive' : 'default'}
-            className="mt-4"
-          >
+          <Alert variant={exportError ? 'destructive' : 'default'} className="mt-4">
             {isExporting ? (
               <>
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -525,9 +507,7 @@ export default function ExportPage() {
               <>
                 <CheckCircle2 className="h-4 w-4" />
                 <AlertTitle>Export Complete</AlertTitle>
-                <AlertDescription>
-                  Your export has been downloaded successfully.
-                </AlertDescription>
+                <AlertDescription>Your export has been downloaded successfully.</AlertDescription>
               </>
             ) : (
               <>
@@ -540,12 +520,7 @@ export default function ExportPage() {
         )}
 
         {/* Export Button */}
-        <Button
-          onClick={handleExport}
-          disabled={isExporting}
-          className="w-full"
-          size="lg"
-        >
+        <Button onClick={handleExport} disabled={isExporting} className="w-full" size="lg">
           {isExporting ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -586,12 +561,12 @@ function ExportToggle({
 }: ExportToggleProps) {
   return (
     <div
-      className={`flex items-center justify-between p-3 rounded-lg border ${
+      className={`flex items-center justify-between rounded-lg border p-3 ${
         disabled ? 'opacity-50' : ''
       }`}
     >
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-muted rounded-full">{icon}</div>
+        <div className="rounded-full bg-muted p-2">{icon}</div>
         <div>
           <Label className="font-medium">{label}</Label>
           <p className="text-xs text-muted-foreground">{description}</p>

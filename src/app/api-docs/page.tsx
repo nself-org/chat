@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic'
 import { useEffect, useState } from 'react'
 import 'swagger-ui-react/swagger-ui.css'
 
+import { logger } from '@/lib/logger'
+
 // Dynamically import SwaggerUI to avoid SSR issues
 const SwaggerUI = dynamic(() => import('swagger-ui-react'), { ssr: false })
 
@@ -14,29 +16,29 @@ export default function ApiDocsPage() {
   useEffect(() => {
     // Fetch the OpenAPI spec
     fetch('/openapi.yaml')
-      .then(response => {
+      .then((response) => {
         if (!response.ok) {
           throw new Error('Failed to fetch OpenAPI spec')
         }
         return response.text()
       })
-      .then(yamlText => {
+      .then((yamlText) => {
         // SwaggerUI can parse YAML directly
         setSpec(yamlText)
       })
-      .catch(err => {
-        console.error('Error loading OpenAPI spec:', err)
+      .catch((err) => {
+        logger.error('Error loading OpenAPI spec:', err)
         setError(err.message)
       })
   }, [])
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
-        <div className="max-w-md w-full bg-white shadow-lg rounded-lg p-6">
-          <div className="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
+        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-lg">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100">
             <svg
-              className="w-6 h-6 text-red-600"
+              className="h-6 w-6 text-red-600"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -49,10 +51,10 @@ export default function ApiDocsPage() {
               />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 text-center mb-2">
+          <h2 className="mb-2 text-center text-xl font-semibold text-gray-900">
             Failed to Load API Documentation
           </h2>
-          <p className="text-gray-600 text-center">{error}</p>
+          <p className="text-center text-gray-600">{error}</p>
         </div>
       </div>
     )
@@ -60,9 +62,9 @@ export default function ApiDocsPage() {
 
   if (!spec) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="flex min-h-screen items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mb-4" />
+          <div className="mb-4 inline-block h-12 w-12 animate-spin rounded-full border-b-2 border-indigo-600" />
           <p className="text-gray-600">Loading API documentation...</p>
         </div>
       </div>

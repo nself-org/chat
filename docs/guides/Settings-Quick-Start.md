@@ -23,7 +23,8 @@ import { usePrivacySettings } from '@/hooks/use-user-settings'
 ## Profile Settings
 
 ```typescript
-const { updateProfile, uploadAvatar, removeAvatar, updating, uploadingAvatar, removingAvatar } = useProfileSettings()
+const { updateProfile, uploadAvatar, removeAvatar, updating, uploadingAvatar, removingAvatar } =
+  useProfileSettings()
 
 // Update profile
 await updateProfile({
@@ -252,12 +253,14 @@ STORAGE_BUCKET=nchat-uploads
 ## Testing in Development
 
 1. Start the backend:
+
    ```bash
    cd .backend
    nself start
    ```
 
 2. Start the frontend:
+
    ```bash
    pnpm dev
    ```
@@ -271,21 +274,25 @@ STORAGE_BUCKET=nchat-uploads
 ## Common Issues
 
 ### Avatar upload fails
+
 - Ensure storage service is running
 - Check `NEXT_PUBLIC_STORAGE_URL` is set
 - Verify file is a valid image format
 
 ### Email change doesn't work
+
 - Check password is correct
 - Ensure email is unique
 - Verify database has `email_verified` column
 
 ### 2FA setup fails
+
 - Ensure database has 2FA columns
 - Check API routes are accessible
 - Verify TOTP code is 6 digits
 
 ### Location history won't clear
+
 - Run database migration
 - Check `nchat_user_locations` table exists
 - Verify user has permissions

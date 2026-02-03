@@ -3,12 +3,7 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -136,20 +131,20 @@ export function ChannelHeader({
         )}
       >
         {/* Left Section: Channel Info */}
-        <div className="flex items-center gap-3 min-w-0 flex-1">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           {/* Channel Icon */}
           <ChannelIcon
             type={channel.type}
             name={channel.name}
-            className="text-muted-foreground flex-shrink-0"
+            className="flex-shrink-0 text-muted-foreground"
           />
 
           {/* Channel Name with Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-1 hover:bg-accent rounded-md px-1 py-0.5 -ml-1 transition-colors min-w-0">
-                <h1 className="text-lg font-semibold truncate">{channel.name}</h1>
-                <ChevronDown className="h-4 w-4 text-muted-foreground flex-shrink-0" />
+              <button className="-ml-1 flex min-w-0 items-center gap-1 rounded-md px-1 py-0.5 transition-colors hover:bg-accent">
+                <h1 className="truncate text-lg font-semibold">{channel.name}</h1>
+                <ChevronDown className="h-4 w-4 flex-shrink-0 text-muted-foreground" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
@@ -177,10 +172,7 @@ export function ChannelHeader({
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onToggleStar}>
                 <Star
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    isStarred && 'fill-yellow-500 text-yellow-500'
-                  )}
+                  className={cn('mr-2 h-4 w-4', isStarred && 'fill-yellow-500 text-yellow-500')}
                 />
                 {isStarred ? 'Unstar channel' : 'Star channel'}
               </DropdownMenuItem>
@@ -195,10 +187,10 @@ export function ChannelHeader({
           {/* Topic */}
           {channel.topic && (
             <>
-              <div className="h-4 w-px bg-border flex-shrink-0" />
+              <div className="h-4 w-px flex-shrink-0 bg-border" />
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <p className="text-sm text-muted-foreground truncate max-w-[300px] cursor-help">
+                  <p className="max-w-[300px] cursor-help truncate text-sm text-muted-foreground">
                     {channel.topic}
                   </p>
                 </TooltipTrigger>
@@ -211,14 +203,14 @@ export function ChannelHeader({
         </div>
 
         {/* Right Section: Actions */}
-        <div className="flex items-center gap-1 flex-shrink-0">
+        <div className="flex flex-shrink-0 items-center gap-1">
           {/* Member Avatars */}
           {members.length > 0 && (
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={onOpenMemberList}
-                  className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-accent transition-colors mr-2"
+                  className="mr-2 flex items-center gap-2 rounded-md px-2 py-1 transition-colors hover:bg-accent"
                 >
                   <UserAvatarGroup
                     users={members}
@@ -226,9 +218,7 @@ export function ChannelHeader({
                     size="xs"
                     onOverflowClick={onOpenMemberList}
                   />
-                  <span className="text-sm text-muted-foreground">
-                    {channel.memberCount}
-                  </span>
+                  <span className="text-sm text-muted-foreground">{channel.memberCount}</span>
                 </button>
               </TooltipTrigger>
               <TooltipContent>View members</TooltipContent>
@@ -253,12 +243,7 @@ export function ChannelHeader({
           {/* Search */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onOpenSearch}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onOpenSearch}>
                 <Search className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -268,12 +253,7 @@ export function ChannelHeader({
           {/* Voice Call */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onStartCall}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onStartCall}>
                 <Phone className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -283,12 +263,7 @@ export function ChannelHeader({
           {/* Video Call */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onStartVideoCall}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onStartVideoCall}>
                 <Video className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -305,10 +280,7 @@ export function ChannelHeader({
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem onClick={onToggleStar}>
                 <Star
-                  className={cn(
-                    'mr-2 h-4 w-4',
-                    isStarred && 'fill-yellow-500 text-yellow-500'
-                  )}
+                  className={cn('mr-2 h-4 w-4', isStarred && 'fill-yellow-500 text-yellow-500')}
                 />
                 {isStarred ? 'Unstar' : 'Star'}
               </DropdownMenuItem>
@@ -375,10 +347,10 @@ export function DMHeader({
         <div className="flex items-center gap-3">
           <button
             onClick={onOpenProfile}
-            className="flex items-center gap-3 hover:bg-accent rounded-md px-2 py-1 -ml-2 transition-colors"
+            className="-ml-2 flex items-center gap-3 rounded-md px-2 py-1 transition-colors hover:bg-accent"
           >
             <div className="relative">
-              <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-sm font-medium">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm font-medium">
                 {user.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
@@ -403,7 +375,7 @@ export function DMHeader({
             <div className="text-left">
               <h1 className="text-lg font-semibold">{user.displayName}</h1>
               {user.customStatus?.text && (
-                <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                <p className="max-w-[200px] truncate text-xs text-muted-foreground">
                   {user.customStatus.emoji} {user.customStatus.text}
                 </p>
               )}
@@ -415,12 +387,7 @@ export function DMHeader({
         <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onStartCall}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onStartCall}>
                 <Phone className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -429,12 +396,7 @@ export function DMHeader({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onStartVideoCall}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onStartVideoCall}>
                 <Video className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -443,12 +405,7 @@ export function DMHeader({
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onOpenProfile}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onOpenProfile}>
                 <Info className="h-4 w-4" />
               </Button>
             </TooltipTrigger>

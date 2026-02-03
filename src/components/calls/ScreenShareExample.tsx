@@ -12,20 +12,13 @@ import { useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  Monitor,
-  Square,
-  Circle,
-  Download,
-  Trash2,
-  Play,
-  Pause,
-  StopCircle,
-} from 'lucide-react'
+import { Monitor, Square, Circle, Download, Trash2, Play, Pause, StopCircle } from 'lucide-react'
 import { ScreenShareControls } from './ScreenShareControls'
 import { ScreenShareOverlay } from './ScreenShareOverlay'
 import { useScreenShare } from '@/hooks/use-screen-share'
 import { useScreenRecording } from '@/hooks/use-screen-recording'
+
+import { logger } from '@/lib/logger'
 
 // =============================================================================
 // Component
@@ -54,7 +47,7 @@ export function ScreenShareExample() {
       setAnnotationsEnabled(false)
     },
     onError: (error) => {
-      console.error('Screen share error:', error)
+      logger.error('Screen share error:', error)
       alert(`Screen share error: ${error.message}`)
     },
   })
@@ -63,7 +56,7 @@ export function ScreenShareExample() {
   const recording = useScreenRecording({
     onStart: () => {},
     onStop: () => {},
-    onError: (error) => console.error('Recording error:', error),
+    onError: (error) => logger.error('Recording error:', error),
   })
 
   // ==========================================================================
@@ -93,7 +86,7 @@ export function ScreenShareExample() {
   // ==========================================================================
 
   return (
-    <div className="container mx-auto p-4 space-y-4">
+    <div className="container mx-auto space-y-4 p-4">
       {/* Header */}
       <Card>
         <CardHeader>
@@ -134,15 +127,13 @@ export function ScreenShareExample() {
             <div className="flex items-center gap-2">
               <Badge variant="outline">
                 <div className="flex items-center gap-1">
-                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                  <div className="h-2 w-2 animate-pulse rounded-full bg-green-500" />
                   Sharing
                 </div>
               </Badge>
               {screenShare.activeShares.length > 0 && (
                 <>
-                  <Badge variant="outline">
-                    {screenShare.activeShares[0].type}
-                  </Badge>
+                  <Badge variant="outline">{screenShare.activeShares[0].type}</Badge>
                   {screenShare.activeShares[0].hasAudio && (
                     <Badge variant="outline">System Audio</Badge>
                   )}
@@ -151,7 +142,7 @@ export function ScreenShareExample() {
               {recording.isRecording && (
                 <Badge variant="destructive">
                   <div className="flex items-center gap-1">
-                    <div className="h-2 w-2 rounded-full bg-white animate-pulse" />
+                    <div className="h-2 w-2 animate-pulse rounded-full bg-white" />
                     Recording {recording.formatDuration(recording.duration)}
                   </div>
                 </Badge>
@@ -184,9 +175,7 @@ export function ScreenShareExample() {
                       Pause
                     </Button>
                   )}
-                  <Badge variant="outline">
-                    {recording.formatFileSize(recording.size)}
-                  </Badge>
+                  <Badge variant="outline">{recording.formatFileSize(recording.size)}</Badge>
                 </>
               )}
             </div>
@@ -198,13 +187,13 @@ export function ScreenShareExample() {
       {screenShare.isScreenSharing && (
         <Card>
           <CardContent className="p-4">
-            <div className="relative bg-black rounded-lg overflow-hidden aspect-video">
+            <div className="relative aspect-video overflow-hidden rounded-lg bg-black">
               <video
                 ref={videoRef}
                 autoPlay
                 playsInline
                 muted
-                className="w-full h-full object-contain"
+                className="h-full w-full object-contain"
               />
 
               {/* Annotation Overlay */}
@@ -225,7 +214,7 @@ export function ScreenShareExample() {
               {!screenShare.screenStream && (
                 <div className="absolute inset-0 flex items-center justify-center text-muted-foreground">
                   <div className="text-center">
-                    <Monitor className="h-16 w-16 mx-auto mb-2 opacity-50" />
+                    <Monitor className="mx-auto mb-2 h-16 w-16 opacity-50" />
                     <p>Screen share will appear here</p>
                   </div>
                 </div>
@@ -241,11 +230,7 @@ export function ScreenShareExample() {
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
               <span>Recordings</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={recording.clearRecordings}
-              >
+              <Button variant="ghost" size="sm" onClick={recording.clearRecordings}>
                 <Trash2 className="mr-2 h-4 w-4" />
                 Clear All
               </Button>
@@ -256,16 +241,13 @@ export function ScreenShareExample() {
               {recording.recordings.map((rec) => (
                 <div
                   key={rec.id}
-                  className="flex items-center justify-between p-3 border rounded-lg"
+                  className="flex items-center justify-between rounded-lg border p-3"
                 >
                   <div className="flex-1">
-                    <div className="font-medium">
-                      Recording #{rec.id.split('-').pop()}
-                    </div>
+                    <div className="font-medium">Recording #{rec.id.split('-').pop()}</div>
                     <div className="text-sm text-muted-foreground">
                       {recording.formatDuration(rec.duration)} •{' '}
-                      {recording.formatFileSize(rec.size)} •{' '}
-                      {rec.format.toUpperCase()}
+                      {recording.formatFileSize(rec.size)} • {rec.format.toUpperCase()}
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -295,18 +277,17 @@ export function ScreenShareExample() {
       {/* Info */}
       <Card>
         <CardContent className="p-4">
-          <div className="text-sm text-muted-foreground space-y-1">
+          <div className="space-y-1 text-sm text-muted-foreground">
             <p>
-              <strong>Features:</strong> Screen/window/tab sharing, system
-              audio (Chrome/Edge), quality control, annotations, recording
+              <strong>Features:</strong> Screen/window/tab sharing, system audio (Chrome/Edge),
+              quality control, annotations, recording
             </p>
             <p>
-              <strong>Browser Support:</strong> Chrome 72+, Edge 79+, Firefox
-              66+, Safari 13+
+              <strong>Browser Support:</strong> Chrome 72+, Edge 79+, Firefox 66+, Safari 13+
             </p>
             <p>
-              <strong>Shortcuts:</strong> Ctrl+Z (undo), Ctrl+Y (redo), Ctrl+D
-              (pen), Ctrl+E (eraser)
+              <strong>Shortcuts:</strong> Ctrl+Z (undo), Ctrl+Y (redo), Ctrl+D (pen), Ctrl+E
+              (eraser)
             </p>
           </div>
         </CardContent>

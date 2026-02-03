@@ -96,27 +96,17 @@ export function LocationPermission({
 
   // Check if geolocation is supported
   if (!isGeolocationSupported()) {
-    return (
-      <PermissionUnavailable variant={variant} className={className} />
-    )
+    return <PermissionUnavailable variant={variant} className={className} />
   }
 
   // Already granted
   if (permissionState === 'granted') {
-    return (
-      <PermissionGranted variant={variant} className={className} />
-    )
+    return <PermissionGranted variant={variant} className={className} />
   }
 
   // Denied - show instructions
   if (permissionState === 'denied') {
-    return (
-      <PermissionDenied
-        variant={variant}
-        error={error}
-        className={className}
-      />
-    )
+    return <PermissionDenied variant={variant} error={error} className={className} />
   }
 
   // Prompt - show request UI
@@ -141,12 +131,7 @@ interface PermissionPromptProps {
   className?: string
 }
 
-function PermissionPrompt({
-  variant,
-  isLoading,
-  onRequest,
-  className,
-}: PermissionPromptProps) {
+function PermissionPrompt({ variant, isLoading, onRequest, className }: PermissionPromptProps) {
   if (variant === 'inline') {
     return (
       <div className={cn('flex items-center gap-3', className)}>
@@ -155,11 +140,7 @@ function PermissionPrompt({
           Enable location to share your position
         </span>
         <Button size="sm" onClick={onRequest} disabled={isLoading}>
-          {isLoading ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            'Enable'
-          )}
+          {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Enable'}
         </Button>
       </div>
     )
@@ -173,15 +154,15 @@ function PermissionPrompt({
         className
       )}
     >
-      <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+      <div className="bg-primary/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
         <MapPin className="h-8 w-8 text-primary" />
       </div>
 
       <h3 className="mb-2 text-lg font-semibold">Enable Location Access</h3>
 
       <p className="mb-6 text-sm text-muted-foreground">
-        To share your location with others, we need access to your device&apos;s location.
-        Your location is only shared when you choose to share it.
+        To share your location with others, we need access to your device&apos;s location. Your
+        location is only shared when you choose to share it.
       </p>
 
       <div className="space-y-3">
@@ -237,9 +218,7 @@ function PermissionGranted({ variant, className }: PermissionGrantedProps) {
       <div className="flex items-center gap-3">
         <CheckCircle className="h-5 w-5 text-green-600" />
         <div>
-          <p className="font-medium text-green-800 dark:text-green-200">
-            Location Access Enabled
-          </p>
+          <p className="font-medium text-green-800 dark:text-green-200">Location Access Enabled</p>
           <p className="text-sm text-green-700 dark:text-green-300">
             You can now share your location with others.
           </p>
@@ -272,14 +251,9 @@ function PermissionDenied({ variant, error, className }: PermissionDeniedProps) 
   }
 
   return (
-    <div
-      className={cn(
-        'rounded-lg border border-destructive/30 bg-destructive/5 p-6',
-        className
-      )}
-    >
+    <div className={cn('border-destructive/30 bg-destructive/5 rounded-lg border p-6', className)}>
       <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
+        <div className="bg-destructive/10 flex h-10 w-10 items-center justify-center rounded-full">
           <AlertCircle className="h-5 w-5 text-destructive" />
         </div>
         <div>
@@ -318,12 +292,12 @@ function PermissionUnavailable({ variant, className }: PermissionUnavailableProp
   }
 
   return (
-    <div className={cn('rounded-lg border bg-muted/50 p-6 text-center', className)}>
+    <div className={cn('bg-muted/50 rounded-lg border p-6 text-center', className)}>
       <AlertCircle className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
       <h3 className="mb-2 font-semibold">Location Not Available</h3>
       <p className="text-sm text-muted-foreground">
-        Your browser or device doesn&apos;t support location services.
-        Try using a different browser or device.
+        Your browser or device doesn&apos;t support location services. Try using a different browser
+        or device.
       </p>
     </div>
   )

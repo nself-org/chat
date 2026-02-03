@@ -189,10 +189,7 @@ export const MARK_MESSAGE_READ = gql`
   mutation MarkMessageRead($messageId: uuid!, $userId: uuid!) {
     insert_nchat_read_receipts_one(
       object: { message_id: $messageId, user_id: $userId, read_at: "now()" }
-      on_conflict: {
-        constraint: read_receipts_message_id_user_id_key
-        update_columns: [read_at]
-      }
+      on_conflict: { constraint: read_receipts_message_id_user_id_key, update_columns: [read_at] }
     ) {
       id
       message_id
@@ -234,12 +231,7 @@ export const CREATE_THREAD = gql`
 `
 
 export const REPLY_TO_THREAD = gql`
-  mutation ReplyToThread(
-    $threadId: uuid!
-    $channelId: uuid!
-    $content: String!
-    $mentions: jsonb
-  ) {
+  mutation ReplyToThread($threadId: uuid!, $channelId: uuid!, $content: String!, $mentions: jsonb) {
     insert_nchat_messages_one(
       object: {
         reply_to_id: $threadId
@@ -360,11 +352,7 @@ export const CANCEL_SCHEDULED_MESSAGE = gql`
 `
 
 export const UPDATE_SCHEDULED_MESSAGE = gql`
-  mutation UpdateScheduledMessage(
-    $messageId: uuid!
-    $content: String
-    $scheduledFor: timestamptz
-  ) {
+  mutation UpdateScheduledMessage($messageId: uuid!, $content: String, $scheduledFor: timestamptz) {
     update_nchat_scheduled_messages_by_pk(
       pk_columns: { id: $messageId }
       _set: { content: $content, scheduled_for: $scheduledFor }

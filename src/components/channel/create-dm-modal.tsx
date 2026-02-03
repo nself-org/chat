@@ -3,12 +3,7 @@
 import * as React from 'react'
 import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  MessageSquare,
-  Search,
-  X,
-  Users,
-} from 'lucide-react'
+import { MessageSquare, Search, X, Users } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -26,6 +21,8 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useChannelStore, type Channel } from '@/stores/channel-store'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -88,8 +85,7 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
     if (query) {
       users = users.filter(
         (u) =>
-          u.displayName.toLowerCase().includes(query) ||
-          u.username.toLowerCase().includes(query)
+          u.displayName.toLowerCase().includes(query) || u.username.toLowerCase().includes(query)
       )
     }
 
@@ -137,9 +133,7 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
       }
 
       // Create new DM
-      const dmSlug = isGroupDM
-        ? `group-${Date.now()}`
-        : `dm-${selectedUsers[0].username}`
+      const dmSlug = isGroupDM ? `group-${Date.now()}` : `dm-${selectedUsers[0].username}`
 
       const newDM: Channel = {
         id: `dm-${Date.now()}`,
@@ -170,7 +164,7 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
       router.push(`/chat/dm/${dmSlug}`)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to create DM:', error)
+      logger.error('Failed to create DM:', error)
     } finally {
       setIsLoading(false)
     }
@@ -184,22 +178,16 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
             <MessageSquare className="h-5 w-5 text-muted-foreground" />
             New Message
           </DialogTitle>
-          <DialogDescription>
-            Start a conversation with one or more people.
-          </DialogDescription>
+          <DialogDescription>Start a conversation with one or more people.</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4 py-2">
           {/* Search Input */}
           <div className="space-y-2">
             <Label>To:</Label>
-            <div className="flex flex-wrap items-center gap-1 p-2 border rounded-lg min-h-[42px]">
+            <div className="flex min-h-[42px] flex-wrap items-center gap-1 rounded-lg border p-2">
               {selectedUsers.map((user) => (
-                <Badge
-                  key={user.id}
-                  variant="secondary"
-                  className="pl-1 pr-0.5 py-0.5 gap-1"
-                >
+                <Badge key={user.id} variant="secondary" className="gap-1 py-0.5 pl-1 pr-0.5">
                   <Avatar className="h-4 w-4">
                     <AvatarImage src={user.avatarUrl} />
                     <AvatarFallback className="text-[8px]">
@@ -210,7 +198,7 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
                   <button
                     type="button"
                     onClick={() => handleRemoveUser(user.id)}
-                    className="p-0.5 rounded hover:bg-muted transition-colors"
+                    className="rounded p-0.5 transition-colors hover:bg-muted"
                   >
                     <X className="h-3 w-3" />
                   </button>
@@ -220,7 +208,7 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={selectedUsers.length === 0 ? 'Search for people...' : ''}
-                className="flex-1 min-w-[100px] border-0 p-0 h-6 focus-visible:ring-0"
+                className="h-6 min-w-[100px] flex-1 border-0 p-0 focus-visible:ring-0"
               />
             </div>
           </div>
@@ -236,7 +224,7 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
                       key={user.id}
                       type="button"
                       className={cn(
-                        'w-full flex items-center gap-3 p-2 rounded-md transition-colors text-left',
+                        'flex w-full items-center gap-3 rounded-md p-2 text-left transition-colors',
                         isSelected ? 'bg-accent' : 'hover:bg-accent/50'
                       )}
                       onClick={() => handleToggleUser(user)}
@@ -245,9 +233,7 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
                       <div className="relative">
                         <Avatar className="h-8 w-8">
                           <AvatarImage src={user.avatarUrl} />
-                          <AvatarFallback>
-                            {user.displayName.charAt(0)}
-                          </AvatarFallback>
+                          <AvatarFallback>{user.displayName.charAt(0)}</AvatarFallback>
                         </Avatar>
                         <span
                           className={cn(
@@ -256,13 +242,9 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
                           )}
                         />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          {user.displayName}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          @{user.username}
-                        </p>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">{user.displayName}</p>
+                        <p className="truncate text-xs text-muted-foreground">@{user.username}</p>
                       </div>
                     </button>
                   )
@@ -277,11 +259,9 @@ export function CreateDmModal({ open, onOpenChange }: CreateDmModalProps) {
 
           {/* Group DM indicator */}
           {isGroupDM && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted/50 p-2 rounded-md">
+            <div className="bg-muted/50 flex items-center gap-2 rounded-md p-2 text-xs text-muted-foreground">
               <Users className="h-4 w-4" />
-              <span>
-                This will create a group conversation with {selectedUsers.length} people
-              </span>
+              <span>This will create a group conversation with {selectedUsers.length} people</span>
             </div>
           )}
         </div>

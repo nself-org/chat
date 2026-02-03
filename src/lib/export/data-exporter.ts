@@ -90,11 +90,7 @@ const GET_MESSAGES_FOR_EXPORT = gql`
           avatar_url
         }
       }
-      replies(
-        where: { is_deleted: { _eq: false } }
-        order_by: { created_at: asc }
-        limit: 100
-      ) {
+      replies(where: { is_deleted: { _eq: false } }, order_by: { created_at: asc }, limit: 100) {
         id
         content
         user_id
@@ -110,11 +106,7 @@ const GET_MESSAGES_FOR_EXPORT = gql`
 `
 
 const GET_MESSAGES_COUNT = gql`
-  query GetMessagesCount(
-    $channelIds: [uuid!]
-    $fromDate: timestamptz
-    $toDate: timestamptz
-  ) {
+  query GetMessagesCount($channelIds: [uuid!], $fromDate: timestamptz, $toDate: timestamptz) {
     nchat_messages_aggregate(
       where: {
         channel_id: { _in: $channelIds }
@@ -234,14 +226,10 @@ export class DataExporter {
     }
 
     // Fetch channels and users if requested
-    const channels = options.includeChannelData
-      ? await this.fetchChannels(channelIds)
-      : undefined
+    const channels = options.includeChannelData ? await this.fetchChannels(channelIds) : undefined
 
-    const userIds = [...new Set(messages.map(m => m.userId))]
-    const users = options.includeUserData
-      ? await this.fetchUsers(userIds)
-      : undefined
+    const userIds = [...new Set(messages.map((m) => m.userId))]
+    const users = options.includeUserData ? await this.fetchUsers(userIds) : undefined
 
     // Anonymize if requested (GDPR compliance)
     if (options.anonymize) {
@@ -272,10 +260,7 @@ export class DataExporter {
           query: gql`
             query GetUserDirectMessages($userId: uuid!) {
               nchat_channel_members(
-                where: {
-                  user_id: { _eq: $userId }
-                  channel: { type: { _eq: "direct" } }
-                }
+                where: { user_id: { _eq: $userId }, channel: { type: { _eq: "direct" } } }
               ) {
                 channel_id
               }
@@ -312,10 +297,7 @@ export class DataExporter {
   /**
    * Get total message count
    */
-  private async getMessageCount(
-    channelIds: string[],
-    options: ExportOptions
-  ): Promise<number> {
+  private async getMessageCount(channelIds: string[], options: ExportOptions): Promise<number> {
     if (channelIds.length === 0) return 0
 
     const { data } = await this.client.query({
@@ -430,13 +412,10 @@ export class DataExporter {
   /**
    * Process attachments
    */
-  private processAttachments(
-    attachments: any,
-    embedFiles: boolean
-  ): ExportedAttachment[] {
+  private processAttachments(attachments: any, embedFiles: boolean): ExportedAttachment[] {
     if (!Array.isArray(attachments)) return []
 
-    return attachments.map(att => ({
+    return attachments.map((att) => ({
       id: att.id || att.file_id,
       fileName: att.file_name || att.name,
       fileType: att.file_type || att.type,
@@ -451,7 +430,7 @@ export class DataExporter {
    * Process reactions
    */
   private processReactions(reactions: any[]): ExportedReaction[] {
-    return reactions.map(reaction => ({
+    return reactions.map((reaction) => ({
       emoji: reaction.emoji,
       userId: reaction.user_id,
       username: reaction.user?.username || 'Unknown',
@@ -466,7 +445,7 @@ export class DataExporter {
   private processThread(replies: any[]): ExportedThread {
     return {
       totalReplies: replies.length,
-      replies: replies.map(reply => ({
+      replies: replies.map((reply) => ({
         id: reply.id,
         content: reply.content,
         userId: reply.user_id,
@@ -480,9 +459,7 @@ export class DataExporter {
    * Add edit history to messages
    */
   private async addEditHistory(messages: ExportedMessage[]): Promise<void> {
-    const editedMessageIds = messages
-      .filter(m => m.isEdited)
-      .map(m => m.id)
+    const editedMessageIds = messages.filter((m) => m.isEdited).map((m) => m.id)
 
     if (editedMessageIds.length === 0) return
 
@@ -501,7 +478,7 @@ export class DataExporter {
     for (const message of messages) {
       const history = historyByMessageId.get(message.id)
       if (history) {
-        message.editHistory = history.map(h => ({
+        message.editHistory = history.map((h) => ({
           content: h.content,
           editedAt: h.edited_at,
           editedBy: h.editor?.username || 'Unknown',
@@ -625,17 +602,17 @@ export class DataExporter {
     options: ExportOptions,
     userId: string
   ): ExportMetadata {
-    const uniqueUsers = new Set(messages.map(m => m.userId))
-    const uniqueChannels = new Set(messages.map(m => m.channelId))
+    const uniqueUsers = new Set(messages.map((m) => m.userId))
+    const uniqueChannels = new Set(messages.map((m) => m.channelId))
     const totalFiles = messages.reduce((sum, m) => sum + (m.attachments?.length || 0), 0)
     const totalReactions = messages.reduce((sum, m) => sum + (m.reactions?.length || 0), 0)
-    const totalThreads = messages.filter(m => m.thread?.totalReplies).length
+    const totalThreads = messages.filter((m) => m.thread?.totalReplies).length
 
     // Get user info (would come from auth context in real implementation)
     const exportedBy = {
       id: userId,
-      email: users?.find(u => u.id === userId)?.email || 'unknown@example.com',
-      username: users?.find(u => u.id === userId)?.username || 'Unknown',
+      email: users?.find((u) => u.id === userId)?.email || 'unknown@example.com',
+      username: users?.find((u) => u.id === userId)?.username || 'Unknown',
     }
 
     return {

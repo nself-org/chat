@@ -2,11 +2,7 @@
  * @fileoverview Tests for typed Socket.io client
  */
 
-import {
-  createTypedSocket,
-  getTypedSocket,
-  disconnectTypedSocket,
-} from '../typed-socket'
+import { createTypedSocket, getTypedSocket, disconnectTypedSocket } from '../typed-socket'
 
 // Mock socket.io-client
 jest.mock('socket.io-client', () => ({
@@ -164,9 +160,7 @@ describe('typed-socket', () => {
     it('should allow creating new socket after disconnect', () => {
       const mockSocket1 = { connected: false, disconnect: jest.fn() }
       const mockSocket2 = { connected: false, disconnect: jest.fn() }
-      mockIo
-        .mockReturnValueOnce(mockSocket1 as any)
-        .mockReturnValueOnce(mockSocket2 as any)
+      mockIo.mockReturnValueOnce(mockSocket1 as any).mockReturnValueOnce(mockSocket2 as any)
 
       const socket1 = createTypedSocket()
       disconnectTypedSocket()
@@ -181,10 +175,7 @@ describe('typed-socket', () => {
   describe('socket configuration', () => {
     it('should use correct URL from config', () => {
       createTypedSocket()
-      expect(mockIo).toHaveBeenCalledWith(
-        expect.stringContaining('localhost'),
-        expect.any(Object)
-      )
+      expect(mockIo).toHaveBeenCalledWith(expect.stringContaining('localhost'), expect.any(Object))
     })
 
     it('should have reconnection enabled', () => {

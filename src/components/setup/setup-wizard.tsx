@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { setupSteps, setupPhases, landingThemeTemplates, authProviderDescriptions, authPermissionDescriptions, type AppConfig } from '@/config/app-config'
+import {
+  setupSteps,
+  setupPhases,
+  landingThemeTemplates,
+  authProviderDescriptions,
+  authPermissionDescriptions,
+  type AppConfig,
+} from '@/config/app-config'
 import { Button } from '@/components/ui/button'
 import { ProgressStepper } from './progress-stepper'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
@@ -30,9 +37,18 @@ interface SetupWizardProps {
   onConfigUpdate?: (updates: Partial<AppConfig>) => void
 }
 
-export function SetupWizard({ initialConfig, onComplete, initialStep, visitedSteps: externalVisitedSteps, setVisitedSteps: setExternalVisitedSteps, onConfigUpdate }: SetupWizardProps) {
+export function SetupWizard({
+  initialConfig,
+  onComplete,
+  initialStep,
+  visitedSteps: externalVisitedSteps,
+  setVisitedSteps: setExternalVisitedSteps,
+  onConfigUpdate,
+}: SetupWizardProps) {
   const router = useRouter()
-  const [currentStep, setCurrentStep] = useState(initialStep ?? initialConfig.setup.currentStep ?? 0)
+  const [currentStep, setCurrentStep] = useState(
+    initialStep ?? initialConfig.setup.currentStep ?? 0
+  )
   const [config, setConfig] = useState<AppConfig>(initialConfig)
   const [isValid, setIsValid] = useState(true)
   const [visitedSteps, setVisitedSteps] = useState<Set<number>>(
@@ -54,15 +70,15 @@ export function SetupWizard({ initialConfig, onComplete, initialStep, visitedSte
     const newConfig = { ...config }
     for (const [key, value] of Object.entries(updates)) {
       if (value && typeof value === 'object' && !Array.isArray(value) && key in config) {
-        (newConfig as any)[key] = { ...(config as any)[key], ...value }
+        ;(newConfig as any)[key] = { ...(config as any)[key], ...value }
       } else {
-        (newConfig as any)[key] = value
+        ;(newConfig as any)[key] = value
       }
     }
     newConfig.setup = {
       ...config.setup,
       currentStep: currentStep,
-      visitedSteps: Array.from(visitedSteps)
+      visitedSteps: Array.from(visitedSteps),
     }
     setConfig(newConfig)
 
@@ -124,7 +140,9 @@ export function SetupWizard({ initialConfig, onComplete, initialStep, visitedSte
       case 7:
         return <AuthMethodsStep config={config} onUpdate={updateConfig} onValidate={setIsValid} />
       case 8:
-        return <AccessPermissionsStep config={config} onUpdate={updateConfig} onValidate={setIsValid} />
+        return (
+          <AccessPermissionsStep config={config} onUpdate={updateConfig} onValidate={setIsValid} />
+        )
       case 9:
         return <FeaturesStep config={config} onUpdate={updateConfig} onValidate={setIsValid} />
       case 10:
@@ -142,18 +160,16 @@ export function SetupWizard({ initialConfig, onComplete, initialStep, visitedSte
   return (
     <div className="w-full overflow-hidden rounded-xl bg-white dark:bg-zinc-900">
       {/* Step Content */}
-      <div className="px-6 py-8 min-h-[500px] bg-white dark:bg-zinc-900">
-        {renderStep()}
-      </div>
+      <div className="min-h-[500px] bg-white px-6 py-8 dark:bg-zinc-900">{renderStep()}</div>
 
       {/* Navigation Footer - Protocol style */}
-      <div className="px-6 py-4 border-t border-zinc-900/10 dark:border-white/10 rounded-b-xl flex justify-between bg-zinc-100 dark:bg-zinc-800/40">
+      <div className="flex justify-between rounded-b-xl border-t border-zinc-900/10 bg-zinc-100 px-6 py-4 dark:border-white/10 dark:bg-zinc-800/40">
         {!isFirstStep ? (
-          <button 
+          <button
             onClick={prevStep}
-            className="inline-flex items-center gap-1.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-100 py-2 px-4 text-zinc-900 hover:bg-zinc-200 dark:bg-zinc-800/40 dark:text-zinc-400 dark:ring-1 dark:ring-inset dark:ring-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
+            className="inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-zinc-100 px-4 py-2 text-sm font-medium text-zinc-900 transition hover:bg-zinc-200 dark:bg-zinc-800/40 dark:text-zinc-400 dark:ring-1 dark:ring-inset dark:ring-zinc-800 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
           >
-            <span className="text-sm leading-none flex items-center">‹</span>
+            <span className="flex items-center text-sm leading-none">‹</span>
             Back
           </button>
         ) : (
@@ -161,22 +177,22 @@ export function SetupWizard({ initialConfig, onComplete, initialStep, visitedSte
         )}
 
         {isLastStep ? (
-          <button 
+          <button
             onClick={handleComplete}
             disabled={!isValid}
-            className="inline-flex items-center gap-1.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-900 py-2 px-4 text-white hover:bg-zinc-700 dark:bg-[#00D4FF]/10 dark:text-[#00D4FF] dark:ring-1 dark:ring-inset dark:ring-[#00D4FF]/20 dark:hover:bg-[#00D4FF]/10 dark:hover:text-[#0EA5E9] dark:hover:ring-[#0EA5E9] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-[#00D4FF]/10 dark:text-[#00D4FF] dark:ring-1 dark:ring-inset dark:ring-[#00D4FF]/20 dark:hover:bg-[#00D4FF]/10 dark:hover:text-[#0EA5E9] dark:hover:ring-[#0EA5E9]"
           >
             Complete Setup
             <span className="text-base leading-none">✓</span>
           </button>
         ) : (
-          <button 
+          <button
             onClick={nextStep}
             disabled={!isValid}
-            className="inline-flex items-center gap-1.5 justify-center overflow-hidden text-sm font-medium transition rounded-full bg-zinc-900 py-2 px-4 text-white hover:bg-zinc-700 dark:bg-[#00D4FF]/10 dark:text-[#00D4FF] dark:ring-1 dark:ring-inset dark:ring-[#00D4FF]/20 dark:hover:bg-[#00D4FF]/10 dark:hover:text-[#0EA5E9] dark:hover:ring-[#0EA5E9] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-[#00D4FF]/10 dark:text-[#00D4FF] dark:ring-1 dark:ring-inset dark:ring-[#00D4FF]/20 dark:hover:bg-[#00D4FF]/10 dark:hover:text-[#0EA5E9] dark:hover:ring-[#0EA5E9]"
           >
             Next
-            <span className="text-sm leading-none flex items-center">›</span>
+            <span className="flex items-center text-sm leading-none">›</span>
           </button>
         )}
       </div>

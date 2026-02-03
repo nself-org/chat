@@ -28,7 +28,8 @@ const spinnerVariants = cva(
 )
 
 export interface SpinnerProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'color'>,
     VariantProps<typeof spinnerVariants> {
   /** Optional text to display next to the spinner */
   text?: string
@@ -62,12 +63,7 @@ export function Spinner({
   }
 
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2',
-        textPosition === 'bottom' && 'flex-col'
-      )}
-    >
+    <div className={cn('flex items-center gap-2', textPosition === 'bottom' && 'flex-col')}>
       {spinner}
       <span
         className={cn(
@@ -85,20 +81,9 @@ export function Spinner({
 /**
  * Centered spinner for use in containers
  */
-export function CenteredSpinner({
-  size = 'lg',
-  color,
-  text,
-  className,
-  ...props
-}: SpinnerProps) {
+export function CenteredSpinner({ size = 'lg', color, text, className, ...props }: SpinnerProps) {
   return (
-    <div
-      className={cn(
-        'flex h-full w-full items-center justify-center',
-        className
-      )}
-    >
+    <div className={cn('flex h-full w-full items-center justify-center', className)}>
       <Spinner size={size} color={color} text={text} textPosition="bottom" {...props} />
     </div>
   )

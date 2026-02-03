@@ -1,0 +1,37 @@
+-- Rollback migration
+
+DROP TABLE IF EXISTS nchat_sessions CASCADE;
+DROP TABLE IF EXISTS nchat_app_configuration CASCADE;
+DROP TABLE IF EXISTS nchat_bots CASCADE;
+DROP TABLE IF EXISTS nchat_incoming_webhooks CASCADE;
+DROP TABLE IF EXISTS nchat_webhooks CASCADE;
+DROP TABLE IF EXISTS nchat_integrations CASCADE;
+DROP TABLE IF EXISTS nchat_audit_logs CASCADE;
+DROP TABLE IF EXISTS nchat_search_index CASCADE;
+DROP TABLE IF EXISTS nchat_pinned_messages CASCADE;
+DROP TABLE IF EXISTS nchat_bookmarks CASCADE;
+DROP TABLE IF EXISTS nchat_invoices CASCADE;
+DROP TABLE IF EXISTS nchat_subscriptions CASCADE;
+DROP TABLE IF EXISTS nchat_plans CASCADE;
+DROP TABLE IF EXISTS nchat_permissions CASCADE;
+DROP TABLE IF EXISTS nchat_user_roles CASCADE;
+DROP TABLE IF EXISTS nchat_roles CASCADE;
+DROP TABLE IF EXISTS nchat_workspace_invites CASCADE;
+DROP TABLE IF EXISTS nchat_workspace_members CASCADE;
+DROP TABLE IF EXISTS nchat_workspaces CASCADE;
+DROP TABLE IF EXISTS nchat_push_subscriptions CASCADE;
+DROP TABLE IF EXISTS nchat_notifications CASCADE;
+DROP TABLE IF EXISTS nchat_media CASCADE;
+DROP TABLE IF EXISTS nchat_attachments CASCADE;
+DROP TABLE IF EXISTS nchat_custom_emojis CASCADE;
+DROP TABLE IF EXISTS nchat_reactions CASCADE;
+DROP TABLE IF EXISTS nchat_thread_members CASCADE;
+DROP TABLE IF EXISTS nchat_threads CASCADE;
+DROP TABLE IF EXISTS nchat_messages CASCADE;
+DROP TABLE IF EXISTS nchat_channel_members CASCADE;
+DROP TABLE IF EXISTS nchat_channels CASCADE;
+DROP TABLE IF EXISTS nchat_categories CASCADE;
+DROP TABLE IF EXISTS nchat_user_settings CASCADE;
+DROP TABLE IF EXISTS nchat_presence CASCADE;
+DROP TABLE IF EXISTS nchat_profiles CASCADE;
+DROP TABLE IF EXISTS nchat_users CASCADE;

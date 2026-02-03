@@ -6,20 +6,21 @@ Complete list of all 32 nself-chat plugins that can be extracted for modular dep
 
 ## Plugin Categories
 
-| Category | Plugins | Description |
-|----------|---------|-------------|
-| Core Communication | 6 | Essential messaging features |
-| Media & Files | 7 | Media handling and uploads |
-| Rich Content | 5 | Enhanced content types |
-| Automation | 6 | Bots, webhooks, workflows |
-| Authentication | 4 | Auth providers and security |
-| Admin & Analytics | 4 | Management and monitoring |
+| Category           | Plugins | Description                  |
+| ------------------ | ------- | ---------------------------- |
+| Core Communication | 6       | Essential messaging features |
+| Media & Files      | 7       | Media handling and uploads   |
+| Rich Content       | 5       | Enhanced content types       |
+| Automation         | 6       | Bots, webhooks, workflows    |
+| Authentication     | 4       | Auth providers and security  |
+| Admin & Analytics  | 4       | Management and monitoring    |
 
 ---
 
 ## Core Communication Plugins (6)
 
 ### @nself/plugin-channels
+
 **Channel management system**
 
 - Public and private channels
@@ -35,6 +36,7 @@ pnpm add @nself/plugin-channels
 ---
 
 ### @nself/plugin-dm
+
 **Direct messaging**
 
 - 1-on-1 conversations
@@ -49,6 +51,7 @@ pnpm add @nself/plugin-dm
 ---
 
 ### @nself/plugin-threads
+
 **Threaded conversations**
 
 - Reply in thread
@@ -63,6 +66,7 @@ pnpm add @nself/plugin-threads
 ---
 
 ### @nself/plugin-reactions
+
 **Emoji reactions**
 
 - React to messages
@@ -77,6 +81,7 @@ pnpm add @nself/plugin-reactions
 ---
 
 ### @nself/plugin-mentions
+
 **@mention system**
 
 - @user mentions
@@ -91,6 +96,7 @@ pnpm add @nself/plugin-mentions
 ---
 
 ### @nself/plugin-search
+
 **Full-text search**
 
 - Message search
@@ -107,6 +113,7 @@ pnpm add @nself/plugin-search
 ## Media & Files Plugins (7)
 
 ### @nself/plugin-files
+
 **File upload and management**
 
 - Multi-file upload
@@ -121,6 +128,7 @@ pnpm add @nself/plugin-files
 ---
 
 ### @nself/plugin-voice
+
 **Voice messages**
 
 - Audio recording
@@ -135,6 +143,7 @@ pnpm add @nself/plugin-voice
 ---
 
 ### @nself/plugin-video
+
 **Video calling**
 
 - 1-on-1 video calls
@@ -150,6 +159,7 @@ pnpm add @nself/plugin-video
 ---
 
 ### @nself/plugin-screen-share
+
 **Screen sharing**
 
 - Full screen share
@@ -164,6 +174,7 @@ pnpm add @nself/plugin-screen-share
 ---
 
 ### @nself/plugin-gallery
+
 **Media gallery**
 
 - Image viewer
@@ -178,6 +189,7 @@ pnpm add @nself/plugin-gallery
 ---
 
 ### @nself/plugin-gifs
+
 **GIF picker**
 
 - Giphy integration
@@ -192,6 +204,7 @@ pnpm add @nself/plugin-gifs
 ---
 
 ### @nself/plugin-stickers
+
 **Sticker packs**
 
 - Pre-made packs
@@ -208,6 +221,7 @@ pnpm add @nself/plugin-stickers
 ## Rich Content Plugins (5)
 
 ### @nself/plugin-polls
+
 **Polls and voting**
 
 - Multiple choice
@@ -222,6 +236,7 @@ pnpm add @nself/plugin-polls
 ---
 
 ### @nself/plugin-code
+
 **Code blocks**
 
 - Syntax highlighting
@@ -236,6 +251,7 @@ pnpm add @nself/plugin-code
 ---
 
 ### @nself/plugin-unfurl
+
 **Link previews**
 
 - Open Graph support
@@ -250,6 +266,7 @@ pnpm add @nself/plugin-unfurl
 ---
 
 ### @nself/plugin-emoji
+
 **Custom emoji**
 
 - Upload custom emoji
@@ -264,6 +281,7 @@ pnpm add @nself/plugin-emoji
 ---
 
 ### @nself/plugin-markdown
+
 **Rich text formatting**
 
 - Markdown parsing
@@ -279,6 +297,7 @@ pnpm add @nself/plugin-markdown
 ## Automation Plugins (6)
 
 ### @nself/plugin-bots
+
 **Bot SDK**
 
 - Bot creation
@@ -293,6 +312,7 @@ pnpm add @nself/plugin-bots
 ---
 
 ### @nself/plugin-webhooks
+
 **Webhook system**
 
 - Incoming webhooks
@@ -307,6 +327,7 @@ pnpm add @nself/plugin-webhooks
 ---
 
 ### @nself/plugin-commands
+
 **Slash commands**
 
 - Custom /commands
@@ -321,6 +342,7 @@ pnpm add @nself/plugin-commands
 ---
 
 ### @nself/plugin-workflows
+
 **Automation workflows**
 
 - Visual builder
@@ -335,6 +357,7 @@ pnpm add @nself/plugin-workflows
 ---
 
 ### @nself/plugin-reminders
+
 **Reminder system**
 
 - Set reminders
@@ -349,6 +372,7 @@ pnpm add @nself/plugin-reminders
 ---
 
 ### @nself/plugin-scheduled
+
 **Scheduled messages**
 
 - Schedule send
@@ -365,6 +389,7 @@ pnpm add @nself/plugin-scheduled
 ## Authentication Plugins (4)
 
 ### @nself/plugin-idme
+
 **ID.me verification**
 
 - Military verification
@@ -380,6 +405,7 @@ pnpm add @nself/plugin-idme
 ---
 
 ### @nself/plugin-phone-auth
+
 **Phone/SMS authentication**
 
 - OTP via SMS
@@ -394,6 +420,7 @@ pnpm add @nself/plugin-phone-auth
 ---
 
 ### @nself/plugin-oauth
+
 **OAuth providers**
 
 - Google
@@ -410,6 +437,7 @@ pnpm add @nself/plugin-oauth
 ---
 
 ### @nself/plugin-mfa
+
 **Multi-factor authentication**
 
 - TOTP (authenticator apps)
@@ -426,6 +454,7 @@ pnpm add @nself/plugin-mfa
 ## Admin & Analytics Plugins (4)
 
 ### @nself/plugin-analytics
+
 **Usage analytics**
 
 - Message statistics
@@ -441,6 +470,7 @@ pnpm add @nself/plugin-analytics
 ---
 
 ### @nself/plugin-audit
+
 **Audit logging**
 
 - All action logging
@@ -455,6 +485,7 @@ pnpm add @nself/plugin-audit
 ---
 
 ### @nself/plugin-moderation
+
 **Content moderation**
 
 - Profanity filter
@@ -469,6 +500,7 @@ pnpm add @nself/plugin-moderation
 ---
 
 ### @nself/plugin-compliance
+
 **Compliance tools**
 
 - GDPR compliance
@@ -485,6 +517,7 @@ pnpm add @nself/plugin-compliance
 ## Platform Plugins (4)
 
 ### @nself/plugin-desktop
+
 **Desktop apps**
 
 - Tauri integration
@@ -499,6 +532,7 @@ pnpm add @nself/plugin-desktop
 ---
 
 ### @nself/plugin-mobile
+
 **Mobile apps**
 
 - Capacitor integration
@@ -513,6 +547,7 @@ pnpm add @nself/plugin-mobile
 ---
 
 ### @nself/plugin-pwa
+
 **Progressive Web App**
 
 - Service worker
@@ -527,6 +562,7 @@ pnpm add @nself/plugin-pwa
 ---
 
 ### @nself/plugin-offline
+
 **Offline mode**
 
 - Message queue

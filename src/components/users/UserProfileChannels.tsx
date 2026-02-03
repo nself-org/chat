@@ -24,15 +24,12 @@ const UserProfileChannels = React.forwardRef<HTMLDivElement, UserProfileChannels
       return (
         <div
           ref={ref}
-          className={cn(
-            'flex flex-col items-center justify-center py-12 text-center',
-            className
-          )}
+          className={cn('flex flex-col items-center justify-center py-12 text-center', className)}
           {...props}
         >
-          <Hash className="h-12 w-12 text-muted-foreground mb-4" />
-          <h3 className="text-lg font-medium mb-2">No shared channels</h3>
-          <p className="text-sm text-muted-foreground max-w-sm">
+          <Hash className="mb-4 h-12 w-12 text-muted-foreground" />
+          <h3 className="mb-2 text-lg font-medium">No shared channels</h3>
+          <p className="max-w-sm text-sm text-muted-foreground">
             You don't share any channels with this user yet.
           </p>
         </div>
@@ -47,28 +44,26 @@ const UserProfileChannels = React.forwardRef<HTMLDivElement, UserProfileChannels
               key={channel.id}
               onClick={() => onChannelClick?.(channel)}
               className={cn(
-                'w-full flex items-center gap-3 p-3 rounded-lg',
-                'hover:bg-muted/50 transition-colors text-left'
+                'flex w-full items-center gap-3 rounded-lg p-3',
+                'hover:bg-muted/50 text-left transition-colors'
               )}
             >
-              <div className="flex items-center justify-center h-10 w-10 rounded-lg bg-muted">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-muted">
                 {channel.isPrivate ? (
                   <Lock className="h-5 w-5 text-muted-foreground" />
                 ) : (
                   <Hash className="h-5 w-5 text-muted-foreground" />
                 )}
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h4 className="font-medium truncate">{channel.name}</h4>
+                  <h4 className="truncate font-medium">{channel.name}</h4>
                   {channel.isPrivate && (
                     <span className="text-xs text-muted-foreground">Private</span>
                   )}
                 </div>
                 {channel.description && (
-                  <p className="text-sm text-muted-foreground truncate">
-                    {channel.description}
-                  </p>
+                  <p className="truncate text-sm text-muted-foreground">{channel.description}</p>
                 )}
               </div>
               {channel.memberCount !== undefined && (

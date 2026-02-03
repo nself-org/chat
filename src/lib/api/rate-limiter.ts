@@ -14,6 +14,8 @@
 import { NextRequest } from 'next/server'
 import Redis from 'ioredis'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -211,7 +213,7 @@ function getRedisClient(): Redis | null {
   const redisUrl = process.env.REDIS_URL || process.env.UPSTASH_REDIS_URL
 
   if (!redisUrl) {
-    console.warn('[RateLimiter] No Redis URL configured, using in-memory fallback')
+    logger.warn('[RateLimiter] No Redis URL configured, using in-memory fallback')
     return null
   }
 
@@ -231,23 +233,23 @@ function getRedisClient(): Redis | null {
 
     redisClient.on('connect', () => {
       redisAvailable = true
-      console.log('[RateLimiter] Redis connected successfully')
+      // REMOVED: console.log('[RateLimiter] Redis connected successfully')
     })
 
     redisClient.on('error', (error) => {
       redisAvailable = false
-      console.error('[RateLimiter] Redis error:', error.message)
+      logger.error('[RateLimiter] Redis error:',  error.message)
     })
 
     // Attempt to connect
     redisClient.connect().catch((error) => {
-      console.error('[RateLimiter] Failed to connect to Redis:', error.message)
+      logger.error('[RateLimiter] Failed to connect to Redis:',  error.message)
       redisAvailable = false
     })
 
     return redisClient
   } catch (error) {
-    console.error('[RateLimiter] Failed to initialize Redis:', error)
+    logger.error('[RateLimiter] Failed to initialize Redis:',  error)
     return null
   }
 }
@@ -352,7 +354,7 @@ export class RateLimiter {
         return await this.checkInMemory(key, config, now, resetAt)
       }
     } catch (error) {
-      console.error('[RateLimiter] Error checking rate limit:', error)
+      logger.error('[RateLimiter] Error checking rate limit:',  error)
       // On error, fall back to in-memory
       this.useRedis = false
       return await this.checkInMemory(key, config, now, resetAt)
@@ -479,10 +481,7 @@ export class RateLimiter {
   /**
    * Token bucket algorithm for burst protection
    */
-  async checkTokenBucket(
-    identifier: string,
-    config: RateLimitConfig
-  ): Promise<RateLimitResult> {
+  async checkTokenBucket(identifier: string, config: RateLimitConfig): Promise<RateLimitResult> {
     const key = config.keyPrefix ? `${config.keyPrefix}:tb:${identifier}` : `tb:${identifier}`
     const now = Date.now()
     const capacity = config.maxRequests
@@ -495,7 +494,7 @@ export class RateLimiter {
         return await this.checkTokenBucketInMemory(key, config, now, capacity, refillRate)
       }
     } catch (error) {
-      console.error('[RateLimiter] Error checking token bucket:', error)
+      logger.error('[RateLimiter] Error checking token bucket:',  error)
       this.useRedis = false
       return await this.checkTokenBucketInMemory(key, config, now, capacity, refillRate)
     }
@@ -637,7 +636,7 @@ export class RateLimiter {
         await inMemoryStore.delete(key)
       }
     } catch (error) {
-      console.error('[RateLimiter] Error resetting rate limit:', error)
+      logger.error('[RateLimiter] Error resetting rate limit:',  error)
     }
   }
 
@@ -687,7 +686,7 @@ export class RateLimiter {
         }
       }
     } catch (error) {
-      console.error('[RateLimiter] Error getting status:', error)
+      logger.error('[RateLimiter] Error getting status:',  error)
       return {
         allowed: true,
         remaining: limit,

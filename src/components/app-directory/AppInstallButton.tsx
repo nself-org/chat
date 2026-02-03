@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { useState } from 'react';
-import { Check, Download, Loader2, Pause, Play, Settings, Trash2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import * as React from 'react'
+import { useState } from 'react'
+import { Check, Download, Loader2, Pause, Play, Settings, Trash2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -12,14 +12,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui/dropdown-menu'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,55 +29,51 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { useAppDirectoryStore } from '@/stores/app-directory-store';
-import { AppPermissions } from './AppPermissions';
-import type { App, PermissionScope } from '@/lib/app-directory/app-types';
-import { getRequiredPermissions, getOptionalPermissions } from '@/lib/app-directory/app-permissions';
-import Link from 'next/link';
+} from '@/components/ui/alert-dialog'
+import { useAppDirectoryStore } from '@/stores/app-directory-store'
+import { AppPermissions } from './AppPermissions'
+import type { App, PermissionScope } from '@/lib/app-directory/app-types'
+import { getRequiredPermissions, getOptionalPermissions } from '@/lib/app-directory/app-permissions'
+import Link from 'next/link'
 
 interface AppInstallButtonProps {
-  app: App;
-  variant?: 'default' | 'compact';
-  className?: string;
+  app: App
+  variant?: 'default' | 'compact'
+  className?: string
 }
 
-export function AppInstallButton({
-  app,
-  variant = 'default',
-  className,
-}: AppInstallButtonProps) {
+export function AppInstallButton({ app, variant = 'default', className }: AppInstallButtonProps) {
   const { isAppInstalled, getInstallation, installApp, uninstallApp, isInstalling, error } =
-    useAppDirectoryStore();
+    useAppDirectoryStore()
 
-  const isInstalled = isAppInstalled(app.id);
-  const installation = getInstallation(app.id);
-  const isCurrentlyInstalling = isInstalling === app.id;
+  const isInstalled = isAppInstalled(app.id)
+  const installation = getInstallation(app.id)
+  const isCurrentlyInstalling = isInstalling === app.id
 
-  const [showPermissions, setShowPermissions] = useState(false);
-  const [showUninstallConfirm, setShowUninstallConfirm] = useState(false);
-  const [selectedPermissions, setSelectedPermissions] = useState<PermissionScope[]>([]);
+  const [showPermissions, setShowPermissions] = useState(false)
+  const [showUninstallConfirm, setShowUninstallConfirm] = useState(false)
+  const [selectedPermissions, setSelectedPermissions] = useState<PermissionScope[]>([])
 
   // Prepare permissions when dialog opens
   const handleInstallClick = () => {
-    const required = getRequiredPermissions(app.permissions).map((p) => p.scope);
-    const optional = getOptionalPermissions(app.permissions).map((p) => p.scope);
-    setSelectedPermissions([...required, ...optional]);
-    setShowPermissions(true);
-  };
+    const required = getRequiredPermissions(app.permissions).map((p) => p.scope)
+    const optional = getOptionalPermissions(app.permissions).map((p) => p.scope)
+    setSelectedPermissions([...required, ...optional])
+    setShowPermissions(true)
+  }
 
   const handleConfirmInstall = async () => {
     await installApp(app.id, {
       appId: app.id,
       permissions: selectedPermissions,
-    });
-    setShowPermissions(false);
-  };
+    })
+    setShowPermissions(false)
+  }
 
   const handleUninstall = async () => {
-    await uninstallApp(app.id);
-    setShowUninstallConfirm(false);
-  };
+    await uninstallApp(app.id)
+    setShowUninstallConfirm(false)
+  }
 
   // Installed state with dropdown menu
   if (isInstalled) {
@@ -90,13 +86,13 @@ export function AppInstallButton({
           disabled={isCurrentlyInstalling}
         >
           {isCurrentlyInstalling ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
-            <Check className="w-4 h-4 text-green-500" />
+            <Check className="h-4 w-4 text-green-500" />
           )}
           Installed
         </Button>
-      );
+      )
     }
 
     return (
@@ -109,9 +105,9 @@ export function AppInstallButton({
               disabled={isCurrentlyInstalling}
             >
               {isCurrentlyInstalling ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                <Check className="w-4 h-4 text-green-500" />
+                <Check className="h-4 w-4 text-green-500" />
               )}
               Installed
             </Button>
@@ -119,18 +115,18 @@ export function AppInstallButton({
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem asChild>
               <Link href={`/apps/${app.slug}/settings`}>
-                <Settings className="w-4 h-4 mr-2" />
+                <Settings className="mr-2 h-4 w-4" />
                 App Settings
               </Link>
             </DropdownMenuItem>
             {installation?.status === 'paused' ? (
               <DropdownMenuItem>
-                <Play className="w-4 h-4 mr-2" />
+                <Play className="mr-2 h-4 w-4" />
                 Resume App
               </DropdownMenuItem>
             ) : (
               <DropdownMenuItem>
-                <Pause className="w-4 h-4 mr-2" />
+                <Pause className="mr-2 h-4 w-4" />
                 Pause App
               </DropdownMenuItem>
             )}
@@ -139,7 +135,7 @@ export function AppInstallButton({
               className="text-destructive focus:text-destructive"
               onClick={() => setShowUninstallConfirm(true)}
             >
-              <Trash2 className="w-4 h-4 mr-2" />
+              <Trash2 className="mr-2 h-4 w-4" />
               Uninstall
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -158,12 +154,12 @@ export function AppInstallButton({
               <AlertDialogCancel>Cancel</AlertDialogCancel>
               <AlertDialogAction
                 onClick={handleUninstall}
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
               >
                 {isCurrentlyInstalling ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 ) : (
-                  <Trash2 className="w-4 h-4 mr-2" />
+                  <Trash2 className="mr-2 h-4 w-4" />
                 )}
                 Uninstall
               </AlertDialogAction>
@@ -171,7 +167,7 @@ export function AppInstallButton({
           </AlertDialogContent>
         </AlertDialog>
       </>
-    );
+    )
   }
 
   // Not installed state
@@ -184,9 +180,9 @@ export function AppInstallButton({
         size={variant === 'compact' ? 'sm' : 'default'}
       >
         {isCurrentlyInstalling ? (
-          <Loader2 className="w-4 h-4 animate-spin" />
+          <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
-          <Download className="w-4 h-4" />
+          <Download className="h-4 w-4" />
         )}
         {isCurrentlyInstalling ? 'Installing...' : 'Install'}
       </Button>
@@ -208,18 +204,16 @@ export function AppInstallButton({
               selectedPermissions={selectedPermissions}
               onPermissionToggle={(scope, selected) => {
                 if (selected) {
-                  setSelectedPermissions([...selectedPermissions, scope]);
+                  setSelectedPermissions([...selectedPermissions, scope])
                 } else {
-                  setSelectedPermissions(selectedPermissions.filter((p) => p !== scope));
+                  setSelectedPermissions(selectedPermissions.filter((p) => p !== scope))
                 }
               }}
             />
           </div>
 
           {error && (
-            <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-lg">
-              {error}
-            </div>
+            <div className="bg-destructive/10 rounded-lg p-3 text-sm text-destructive">{error}</div>
           )}
 
           <DialogFooter>
@@ -229,12 +223,12 @@ export function AppInstallButton({
             <Button onClick={handleConfirmInstall} disabled={isCurrentlyInstalling}>
               {isCurrentlyInstalling ? (
                 <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Installing...
                 </>
               ) : (
                 <>
-                  <Download className="w-4 h-4 mr-2" />
+                  <Download className="mr-2 h-4 w-4" />
                   Install App
                 </>
               )}
@@ -243,5 +237,5 @@ export function AppInstallButton({
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

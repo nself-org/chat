@@ -74,19 +74,21 @@ export function validateCreatePollInput(input: CreatePollInput): ValidationResul
     errors.push(`Maximum ${POLL_CONSTANTS.MAX_OPTIONS} options allowed`)
   } else {
     // Check for empty options
-    const emptyOptions = input.options.filter(opt => !opt.text?.trim())
+    const emptyOptions = input.options.filter((opt) => !opt.text?.trim())
     if (emptyOptions.length > 0) {
       errors.push('All options must have text')
     }
 
     // Check for too long options
-    const longOptions = input.options.filter(opt => opt.text.length > POLL_CONSTANTS.MAX_OPTION_LENGTH)
+    const longOptions = input.options.filter(
+      (opt) => opt.text.length > POLL_CONSTANTS.MAX_OPTION_LENGTH
+    )
     if (longOptions.length > 0) {
       errors.push(`Options must be ${POLL_CONSTANTS.MAX_OPTION_LENGTH} characters or less`)
     }
 
     // Check for duplicates (case insensitive)
-    const optionTexts = input.options.map(opt => opt.text.trim().toLowerCase())
+    const optionTexts = input.options.map((opt) => opt.text.trim().toLowerCase())
     const uniqueTexts = new Set(optionTexts)
     if (uniqueTexts.size !== optionTexts.length) {
       errors.push('Options must be unique')
@@ -104,10 +106,18 @@ export function validateCreatePollInput(input: CreatePollInput): ValidationResul
       if (settings.minSelections && settings.minSelections < 1) {
         errors.push('Minimum selections must be at least 1')
       }
-      if (settings.maxSelections && settings.minSelections && settings.minSelections > settings.maxSelections) {
+      if (
+        settings.maxSelections &&
+        settings.minSelections &&
+        settings.minSelections > settings.maxSelections
+      ) {
         errors.push('Minimum selections cannot exceed maximum selections')
       }
-      if (settings.maxSelections && input.options && settings.maxSelections > input.options.length) {
+      if (
+        settings.maxSelections &&
+        input.options &&
+        settings.maxSelections > input.options.length
+      ) {
         errors.push('Maximum selections cannot exceed number of options')
       }
     }
@@ -162,8 +172,8 @@ export function validateVoteInput(poll: Poll, input: CastVoteInput): ValidationR
   }
 
   // Check if options exist
-  const validOptionIds = poll.options.map(opt => opt.id)
-  const invalidOptions = input.optionIds.filter(id => !validOptionIds.includes(id))
+  const validOptionIds = poll.options.map((opt) => opt.id)
+  const invalidOptions = input.optionIds.filter((id) => !validOptionIds.includes(id))
   if (invalidOptions.length > 0) {
     errors.push('Invalid option(s) selected')
   }
@@ -210,7 +220,10 @@ export function validateUpdatePollInput(poll: Poll, input: UpdatePollInput): Val
   }
 
   // Validate description
-  if (input.description !== undefined && input.description.length > POLL_CONSTANTS.MAX_DESCRIPTION_LENGTH) {
+  if (
+    input.description !== undefined &&
+    input.description.length > POLL_CONSTANTS.MAX_DESCRIPTION_LENGTH
+  ) {
     errors.push(`Description must be ${POLL_CONSTANTS.MAX_DESCRIPTION_LENGTH} characters or less`)
   }
 
@@ -333,24 +346,24 @@ export function processPollVote(
 ): Poll {
   // Create a deep copy of the poll
   const updatedPoll = { ...poll }
-  updatedPoll.options = poll.options.map(opt => ({ ...opt }))
+  updatedPoll.options = poll.options.map((opt) => ({ ...opt }))
 
   // Track voter IDs if not anonymous
   const voterIds = new Set<string>()
-  poll.options.forEach(opt => {
+  poll.options.forEach((opt) => {
     if (opt.voterIds) {
-      opt.voterIds.forEach(id => voterIds.add(id))
+      opt.voterIds.forEach((id) => voterIds.add(id))
     }
   })
 
   // Remove previous vote if exists
   if (previousVote) {
-    previousVote.optionIds.forEach(optionId => {
-      const option = updatedPoll.options.find(opt => opt.id === optionId)
+    previousVote.optionIds.forEach((optionId) => {
+      const option = updatedPoll.options.find((opt) => opt.id === optionId)
       if (option) {
         option.voteCount = Math.max(0, option.voteCount - 1)
         if (option.voterIds) {
-          option.voterIds = option.voterIds.filter(id => id !== userId)
+          option.voterIds = option.voterIds.filter((id) => id !== userId)
         }
       }
     })
@@ -358,8 +371,8 @@ export function processPollVote(
   }
 
   // Add new vote
-  optionIds.forEach(optionId => {
-    const option = updatedPoll.options.find(opt => opt.id === optionId)
+  optionIds.forEach((optionId) => {
+    const option = updatedPoll.options.find((opt) => opt.id === optionId)
     if (option) {
       option.voteCount += 1
       if (!poll.settings.isAnonymous) {
@@ -395,14 +408,14 @@ export function processPollVote(
  */
 export function removePollVote(poll: Poll, userId: string, vote: PollVote): Poll {
   const updatedPoll = { ...poll }
-  updatedPoll.options = poll.options.map(opt => ({ ...opt }))
+  updatedPoll.options = poll.options.map((opt) => ({ ...opt }))
 
-  vote.optionIds.forEach(optionId => {
-    const option = updatedPoll.options.find(opt => opt.id === optionId)
+  vote.optionIds.forEach((optionId) => {
+    const option = updatedPoll.options.find((opt) => opt.id === optionId)
     if (option) {
       option.voteCount = Math.max(0, option.voteCount - 1)
       if (option.voterIds) {
-        option.voterIds = option.voterIds.filter(id => id !== userId)
+        option.voterIds = option.voterIds.filter((id) => id !== userId)
       }
     }
   })
@@ -412,9 +425,9 @@ export function removePollVote(poll: Poll, userId: string, vote: PollVote): Poll
 
   // Count unique voters
   const voterIds = new Set<string>()
-  updatedPoll.options.forEach(opt => {
+  updatedPoll.options.forEach((opt) => {
     if (opt.voterIds) {
-      opt.voterIds.forEach(id => voterIds.add(id))
+      opt.voterIds.forEach((id) => voterIds.add(id))
     }
   })
   updatedPoll.totalVoters = voterIds.size
@@ -513,7 +526,7 @@ export function addPollOption(poll: Poll, optionText: string, emoji?: string): P
 
   // Check for duplicates
   const isDuplicate = poll.options.some(
-    opt => opt.text.toLowerCase() === trimmedText.toLowerCase()
+    (opt) => opt.text.toLowerCase() === trimmedText.toLowerCase()
   )
   if (isDuplicate) {
     throw new Error('This option already exists')
@@ -616,7 +629,7 @@ export function preparePollExport(poll: Poll): PollExportData {
 
   return {
     poll,
-    results: poll.options.map(option => ({
+    results: poll.options.map((option) => ({
       option,
       voters: [], // Would be populated from database in real implementation
     })),
@@ -649,7 +662,7 @@ export function exportPollAsCSV(poll: Poll): string {
 
   // Results table
   lines.push('"Option","Votes","Percentage"')
-  poll.options.forEach(option => {
+  poll.options.forEach((option) => {
     lines.push(`"${option.text.replace(/"/g, '""')}",${option.voteCount},${option.percentage}%`)
   })
 

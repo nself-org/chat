@@ -180,7 +180,7 @@ class DeepLinkService {
    */
   private async checkInitialUrl(): Promise<void> {
     try {
-      const { url } = await App.getLaunchUrl() ?? { url: null }
+      const { url } = (await App.getLaunchUrl()) ?? { url: null }
       if (url) {
         this.log('App launched with URL:', url)
         await this.handleDeepLink(url)
@@ -301,10 +301,7 @@ class DeepLinkService {
   /**
    * Match path against pattern and extract parameters
    */
-  private matchPattern(
-    pathname: string,
-    pattern: string
-  ): Record<string, string> | null {
+  private matchPattern(pathname: string, pattern: string): Record<string, string> | null {
     const pathParts = pathname.split('/').filter(Boolean)
     const patternParts = pattern.split('/').filter(Boolean)
 
@@ -338,8 +335,7 @@ class DeepLinkService {
     try {
       const parsed = new URL(url)
       return (
-        parsed.protocol === 'https:' &&
-        this.options.universalLinkDomains.includes(parsed.hostname)
+        parsed.protocol === 'https:' && this.options.universalLinkDomains.includes(parsed.hostname)
       )
     } catch {
       return false
@@ -484,9 +480,7 @@ export interface UseDeepLinkResult {
   parseDeepLink: (url: string) => DeepLinkParams
 }
 
-export function useDeepLink(
-  onDeepLink?: (params: DeepLinkParams) => void
-): UseDeepLinkResult {
+export function useDeepLink(onDeepLink?: (params: DeepLinkParams) => void): UseDeepLinkResult {
   const [deepLinkParams, setDeepLinkParams] = React.useState<DeepLinkParams | null>(null)
   const [isReady, setIsReady] = React.useState(false)
 
@@ -523,11 +517,7 @@ export function useDeepLink(
   }, [onDeepLink])
 
   const createDeepLinkFn = React.useCallback(
-    (
-      route: DeepLinkRoute,
-      params?: Record<string, string>,
-      query?: Record<string, string>
-    ) => {
+    (route: DeepLinkRoute, params?: Record<string, string>, query?: Record<string, string>) => {
       return deepLinking.createDeepLink(route, params, query)
     },
     []
@@ -568,9 +558,7 @@ export function useChannelDeepLink(
   }, [onChannelOpen])
 }
 
-export function useInviteDeepLink(
-  onInvite?: (inviteCode: string) => void
-): void {
+export function useInviteDeepLink(onInvite?: (inviteCode: string) => void): void {
   React.useEffect(() => {
     deepLinking.registerRouteHandler('invite', (params) => {
       onInvite?.(params.params.inviteCode)
@@ -607,7 +595,7 @@ export async function wasLaunchedFromDeepLink(): Promise<boolean> {
   if (!Capacitor.isNativePlatform()) return false
 
   try {
-    const { url } = await App.getLaunchUrl() ?? { url: null }
+    const { url } = (await App.getLaunchUrl()) ?? { url: null }
     return url !== null
   } catch {
     return false

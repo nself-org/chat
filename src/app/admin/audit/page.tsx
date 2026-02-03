@@ -21,11 +21,7 @@ import {
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 
 import { AdminLayout } from '@/components/admin/admin-layout'
 import { useAuditStore } from '@/stores/audit-store'
@@ -43,7 +39,15 @@ import {
 // ============================================================================
 
 function generateMockAuditData(): AuditLogEntry[] {
-  const categories: AuditCategory[] = ['user', 'message', 'channel', 'file', 'admin', 'security', 'integration']
+  const categories: AuditCategory[] = [
+    'user',
+    'message',
+    'channel',
+    'file',
+    'admin',
+    'security',
+    'integration',
+  ]
   const severities: AuditSeverity[] = ['info', 'warning', 'error', 'critical']
   const userActions = ['login', 'logout', 'signup', 'password_change', 'profile_update']
   const securityActions = ['failed_login', 'api_key_create', 'mfa_enable', 'suspicious_activity']
@@ -86,9 +90,12 @@ function generateMockAuditData(): AuditLogEntry[] {
     const user = users[Math.floor(Math.random() * users.length)]
     const timestamp = new Date(now.getTime() - Math.random() * 7 * 24 * 60 * 60 * 1000)
     const success = Math.random() > 0.1
-    const severity = category === 'security'
-      ? severities[Math.floor(Math.random() * severities.length)]
-      : success ? 'info' : 'warning'
+    const severity =
+      category === 'security'
+        ? severities[Math.floor(Math.random() * severities.length)]
+        : success
+          ? 'info'
+          : 'warning'
 
     entries.push({
       id: `entry-${i}`,
@@ -109,11 +116,16 @@ function generateMockAuditData(): AuditLogEntry[] {
       errorMessage: success ? undefined : 'Action failed due to permission denied',
       ipAddress: `192.168.1.${Math.floor(Math.random() * 255)}`,
       requestId: `req-${Math.random().toString(36).substr(2, 9)}`,
-      resource: category === 'channel' ? {
-        type: 'channel',
-        id: `channel-${Math.floor(Math.random() * 10)}`,
-        name: ['general', 'random', 'engineering', 'design', 'marketing'][Math.floor(Math.random() * 5)],
-      } : undefined,
+      resource:
+        category === 'channel'
+          ? {
+              type: 'channel',
+              id: `channel-${Math.floor(Math.random() * 10)}`,
+              name: ['general', 'random', 'engineering', 'design', 'marketing'][
+                Math.floor(Math.random() * 5)
+              ],
+            }
+          : undefined,
     })
   }
 
@@ -127,14 +139,8 @@ function generateMockAuditData(): AuditLogEntry[] {
 export default function AuditLogPage() {
   const { user, loading: authLoading } = useAuth()
   const router = useRouter()
-  const {
-    entries,
-    statistics,
-    isLoading,
-    setEntries,
-    refreshStatistics,
-    setLoading,
-  } = useAuditStore()
+  const { entries, statistics, isLoading, setEntries, refreshStatistics, setLoading } =
+    useAuditStore()
 
   // Prefix with underscore as it's unused
   const _statistics = statistics
@@ -204,11 +210,11 @@ export default function AuditLogPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-3">
+            <h1 className="flex items-center gap-3 text-3xl font-bold">
               <Activity className="h-8 w-8" />
               Audit Logs
             </h1>
-            <p className="text-muted-foreground mt-1">
+            <p className="mt-1 text-muted-foreground">
               Monitor and review all system activities and security events
             </p>
           </div>
@@ -217,7 +223,11 @@ export default function AuditLogPage() {
               <PopoverTrigger asChild>
                 <Button variant="outline" size="sm">
                   <Calendar className="mr-2 h-4 w-4" />
-                  {dateRange === '7d' ? 'Last 7 days' : dateRange === '30d' ? 'Last 30 days' : 'Last 90 days'}
+                  {dateRange === '7d'
+                    ? 'Last 7 days'
+                    : dateRange === '30d'
+                      ? 'Last 30 days'
+                      : 'Last 90 days'}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-40">
@@ -229,18 +239,17 @@ export default function AuditLogPage() {
                       className="w-full justify-start"
                       onClick={() => setDateRange(range)}
                     >
-                      {range === '7d' ? 'Last 7 days' : range === '30d' ? 'Last 30 days' : 'Last 90 days'}
+                      {range === '7d'
+                        ? 'Last 7 days'
+                        : range === '30d'
+                          ? 'Last 30 days'
+                          : 'Last 90 days'}
                     </Button>
                   ))}
                 </div>
               </PopoverContent>
             </Popover>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleRefresh}
-              disabled={isLoading}
-            >
+            <Button variant="outline" size="sm" onClick={handleRefresh} disabled={isLoading}>
               <RefreshCw className={cn('mr-2 h-4 w-4', isLoading && 'animate-spin')} />
               Refresh
             </Button>
@@ -256,7 +265,7 @@ export default function AuditLogPage() {
         </div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <AuditSummaryCard
             title="Total Events"
             value={entries.length}
@@ -314,17 +323,11 @@ export default function AuditLogPage() {
           </TabsContent>
 
           <TabsContent value="security">
-            <AuditSecurityEvents
-              entries={entries}
-              onEntryClick={(entry) => {}}
-            />
+            <AuditSecurityEvents entries={entries} onEntryClick={(entry) => {}} />
           </TabsContent>
 
           <TabsContent value="admin">
-            <AuditAdminActions
-              entries={entries}
-              onEntryClick={(entry) => {}}
-            />
+            <AuditAdminActions entries={entries} onEntryClick={(entry) => {}} />
           </TabsContent>
         </Tabs>
       </div>

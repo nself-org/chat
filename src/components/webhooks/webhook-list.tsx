@@ -14,11 +14,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { WebhookItem, WebhookItemSkeleton } from './webhook-item'
-import {
-  Webhook as WebhookType,
-  WebhookStatus,
-  WebhookFilterOptions,
-} from '@/lib/webhooks'
+import { Webhook as WebhookType, WebhookStatus, WebhookFilterOptions } from '@/lib/webhooks'
 import { cn } from '@/lib/utils'
 
 // ============================================================================
@@ -108,13 +104,11 @@ export function WebhookList({
           break
         case 'last_used_at':
           comparison =
-            new Date(a.last_used_at || 0).getTime() -
-            new Date(b.last_used_at || 0).getTime()
+            new Date(a.last_used_at || 0).getTime() - new Date(b.last_used_at || 0).getTime()
           break
         case 'created_at':
         default:
-          comparison =
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          comparison = new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
           break
       }
 
@@ -147,15 +141,8 @@ export function WebhookList({
             </div>
             <div className="flex items-center gap-2">
               {onRefresh && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={onRefresh}
-                  disabled={isLoading}
-                >
-                  <RefreshCw
-                    className={cn('h-4 w-4', isLoading && 'animate-spin')}
-                  />
+                <Button variant="ghost" size="icon" onClick={onRefresh} disabled={isLoading}>
+                  <RefreshCw className={cn('h-4 w-4', isLoading && 'animate-spin')} />
                 </Button>
               )}
               {onCreateNew && (
@@ -174,7 +161,7 @@ export function WebhookList({
         {showFilters && (
           <div className="flex flex-wrap items-center gap-2">
             {/* Search */}
-            <div className="relative flex-1 min-w-[200px]">
+            <div className="relative min-w-[200px] flex-1">
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search webhooks..."
@@ -227,7 +214,7 @@ export function WebhookList({
               onValueChange={(value) => {
                 const [sortBy, sortOrder] = value.split('-') as [
                   WebhookFilterOptions['sortBy'],
-                  WebhookFilterOptions['sortOrder']
+                  WebhookFilterOptions['sortOrder'],
                 ]
                 setFilters((prev) => ({ ...prev, sortBy, sortOrder }))
               }}
@@ -249,7 +236,7 @@ export function WebhookList({
 
         {/* Error State */}
         {error && (
-          <div className="rounded-lg border border-destructive bg-destructive/10 p-4 text-sm text-destructive">
+          <div className="bg-destructive/10 rounded-lg border border-destructive p-4 text-sm text-destructive">
             {error}
           </div>
         )}
@@ -259,13 +246,11 @@ export function WebhookList({
           <div className="space-y-3 pr-4">
             {isLoading ? (
               // Loading skeletons
-              Array.from({ length: 3 }).map((_, i) => (
-                <WebhookItemSkeleton key={i} />
-              ))
+              Array.from({ length: 3 }).map((_, i) => <WebhookItemSkeleton key={i} />)
             ) : filteredWebhooks.length === 0 ? (
               // Empty state
               <div className="flex flex-col items-center justify-center py-12 text-center">
-                <Webhook className="h-12 w-12 text-muted-foreground/50" />
+                <Webhook className="text-muted-foreground/50 h-12 w-12" />
                 <h3 className="mt-4 text-lg font-semibold">
                   {filters.search || filters.status !== 'all'
                     ? 'No matching webhooks'
@@ -340,11 +325,7 @@ export function SimpleWebhookList({
   }
 
   if (webhooks.length === 0) {
-    return (
-      <div className="py-8 text-center text-muted-foreground">
-        No webhooks available
-      </div>
-    )
+    return <div className="py-8 text-center text-muted-foreground">No webhooks available</div>
   }
 
   return (

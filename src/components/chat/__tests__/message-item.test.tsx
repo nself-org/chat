@@ -172,9 +172,7 @@ describe('MessageItem Component', () => {
 
       render(<MessageItem message={message} />)
 
-      expect(screen.getByTestId('message-content')).toHaveTextContent(
-        'Test message content'
-      )
+      expect(screen.getByTestId('message-content')).toHaveTextContent('Test message content')
     })
 
     it('should render author display name', () => {
@@ -284,9 +282,7 @@ describe('MessageItem Component', () => {
 
       render(<MessageItem message={message} />)
 
-      expect(screen.getByTestId('message-attachments')).toHaveTextContent(
-        '2 attachments'
-      )
+      expect(screen.getByTestId('message-attachments')).toHaveTextContent('2 attachments')
     })
 
     it('should not render attachments section when no attachments', () => {
@@ -395,9 +391,7 @@ describe('MessageItem Component', () => {
 
       render(<MessageItem message={message} />)
 
-      expect(screen.getByTestId('reply-indicator')).toHaveTextContent(
-        'Reply to: Parent message'
-      )
+      expect(screen.getByTestId('reply-indicator')).toHaveTextContent('Reply to: Parent message')
     })
 
     it('should call onScrollToMessage when clicking reply indicator', async () => {
@@ -407,9 +401,7 @@ describe('MessageItem Component', () => {
         replyTo: createMockMessage({ id: 'parent-msg', content: 'Parent message' }),
       })
 
-      render(
-        <MessageItem message={message} onScrollToMessage={onScrollToMessage} />
-      )
+      render(<MessageItem message={message} onScrollToMessage={onScrollToMessage} />)
 
       // The InlineReplyIndicator handles the click, our mock just renders text
       expect(screen.getByTestId('reply-indicator')).toBeInTheDocument()

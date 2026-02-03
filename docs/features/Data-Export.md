@@ -48,6 +48,7 @@ Navigate to: **Settings → Privacy & Security → Data Export**
 ### Export History
 
 View all past export requests with:
+
 - Status (Pending, Processing, Completed, Failed, Expired, Cancelled)
 - Real-time progress (percentage and items processed)
 - Download links for completed exports
@@ -157,6 +158,7 @@ The export system supports these GDPR rights:
 ### Anonymization
 
 When enabled:
+
 - User names → "User 1", "User 2", etc.
 - Email addresses → anonymous@anonymized.local
 - Avatar URLs → Removed
@@ -199,6 +201,7 @@ Content-Type: application/json
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -215,6 +218,7 @@ GET /api/export?id={exportId}&action=status
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -250,6 +254,7 @@ DELETE /api/export?id={exportId}
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -268,16 +273,16 @@ DELETE /api/export?id={exportId}
 
 ## Export Formats Comparison
 
-| Feature | JSON | CSV | HTML | PDF |
-|---------|------|-----|------|-----|
-| Machine Readable | ✅ | ✅ | ⚠️ | ❌ |
-| Human Readable | ⚠️ | ⚠️ | ✅ | ✅ |
-| Preserves Structure | ✅ | ❌ | ✅ | ✅ |
-| Includes Metadata | ✅ | ❌ | ✅ | ✅ |
-| Spreadsheet Compatible | ❌ | ✅ | ❌ | ❌ |
-| Printable | ❌ | ❌ | ✅ | ✅ |
-| File Size | Medium | Small | Large | Large |
-| Processing Speed | Fast | Fast | Medium | Slow |
+| Feature                | JSON   | CSV   | HTML   | PDF   |
+| ---------------------- | ------ | ----- | ------ | ----- |
+| Machine Readable       | ✅     | ✅    | ⚠️     | ❌    |
+| Human Readable         | ⚠️     | ⚠️    | ✅     | ✅    |
+| Preserves Structure    | ✅     | ❌    | ✅     | ✅    |
+| Includes Metadata      | ✅     | ❌    | ✅     | ✅    |
+| Spreadsheet Compatible | ❌     | ✅    | ❌     | ❌    |
+| Printable              | ❌     | ❌    | ✅     | ✅    |
+| File Size              | Medium | Small | Large  | Large |
+| Processing Speed       | Fast   | Fast  | Medium | Slow  |
 
 ## Usage Examples
 
@@ -356,12 +361,12 @@ const options: ExportOptions = {
 
 ### Estimated Times
 
-| Data Volume | Estimated Time |
-|-------------|----------------|
-| < 1,000 messages | 1-2 minutes |
-| 1,000-10,000 messages | 2-5 minutes |
-| 10,000-100,000 messages | 5-15 minutes |
-| > 100,000 messages | 15-60 minutes |
+| Data Volume             | Estimated Time |
+| ----------------------- | -------------- |
+| < 1,000 messages        | 1-2 minutes    |
+| 1,000-10,000 messages   | 2-5 minutes    |
+| 10,000-100,000 messages | 5-15 minutes   |
+| > 100,000 messages      | 15-60 minutes  |
 
 ## Troubleshooting
 
@@ -423,6 +428,7 @@ EXPORT_RATE_LIMIT_PER_DAY=5
 ### Monitoring
 
 Track these metrics:
+
 - Export request rate
 - Processing duration
 - File sizes
@@ -452,6 +458,7 @@ Track these metrics:
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: [nself-chat/issues](https://github.com/nself/nself-chat/issues)
 - Documentation: [docs.nself.org](https://docs.nself.org)
 - Email: support@nself.org

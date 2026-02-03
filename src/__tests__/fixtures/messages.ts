@@ -114,7 +114,11 @@ export const mockMessages = {
     userId: mockUsers.bob.id,
     user: mockUsers.bob,
     reactions: [
-      { emoji: '👍', count: 3, users: [mockUsers.alice.id, mockUsers.bob.id, mockUsers.charlie.id] },
+      {
+        emoji: '👍',
+        count: 3,
+        users: [mockUsers.alice.id, mockUsers.bob.id, mockUsers.charlie.id],
+      },
       { emoji: '❤️', count: 1, users: [mockUsers.alice.id] },
     ],
   }),

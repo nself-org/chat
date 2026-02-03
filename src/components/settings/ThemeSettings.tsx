@@ -1,21 +1,21 @@
-'use client';
+'use client'
 
-import { useEffect, useState } from 'react';
-import { useTheme } from 'next-themes';
-import { SettingsSection } from './settings-section';
-import { cn } from '@/lib/utils';
-import { Sun, Moon, Monitor, Check } from 'lucide-react';
+import { useEffect, useState } from 'react'
+import { useTheme } from 'next-themes'
+import { SettingsSection } from './settings-section'
+import { cn } from '@/lib/utils'
+import { Sun, Moon, Monitor, Check } from 'lucide-react'
 
 interface ThemeOption {
-  value: string;
-  label: string;
-  icon: React.ElementType;
-  description: string;
+  value: string
+  label: string
+  icon: React.ElementType
+  description: string
   preview: {
-    bg: string;
-    surface: string;
-    text: string;
-  };
+    bg: string
+    surface: string
+    text: string
+  }
 }
 
 const themeOptions: ThemeOption[] = [
@@ -52,22 +52,22 @@ const themeOptions: ThemeOption[] = [
       text: 'text-gray-500',
     },
   },
-];
+]
 
 interface ThemeSettingsProps {
-  className?: string;
+  className?: string
 }
 
 /**
  * ThemeSettings - Light/dark/system theme selection
  */
 export function ThemeSettings({ className }: ThemeSettingsProps) {
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false)
+  const { theme, setTheme } = useTheme()
 
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   if (!mounted) {
     return (
@@ -78,14 +78,11 @@ export function ThemeSettings({ className }: ThemeSettingsProps) {
       >
         <div className="grid gap-4 sm:grid-cols-3">
           {themeOptions.map((option) => (
-            <div
-              key={option.value}
-              className="h-32 animate-pulse rounded-lg border bg-muted"
-            />
+            <div key={option.value} className="h-32 animate-pulse rounded-lg border bg-muted" />
           ))}
         </div>
       </SettingsSection>
-    );
+    )
   }
 
   return (
@@ -96,8 +93,8 @@ export function ThemeSettings({ className }: ThemeSettingsProps) {
     >
       <div className="grid gap-4 sm:grid-cols-3">
         {themeOptions.map((option) => {
-          const Icon = option.icon;
-          const isActive = theme === option.value;
+          const Icon = option.icon
+          const isActive = theme === option.value
 
           return (
             <button
@@ -108,30 +105,24 @@ export function ThemeSettings({ className }: ThemeSettingsProps) {
                 'group relative flex flex-col overflow-hidden rounded-lg border text-left transition-all',
                 isActive
                   ? 'border-primary ring-2 ring-primary ring-offset-2'
-                  : 'border-input hover:border-muted-foreground/50'
+                  : 'hover:border-muted-foreground/50 border-input'
               )}
             >
               {/* Preview */}
-              <div
-                className={cn(
-                  'h-20 p-3',
-                  option.preview.bg
-                )}
-              >
-                <div
-                  className={cn(
-                    'h-full rounded',
-                    option.preview.surface
-                  )}
-                >
+              <div className={cn('h-20 p-3', option.preview.bg)}>
+                <div className={cn('h-full rounded', option.preview.surface)}>
                   <div className="flex h-full flex-col justify-between p-2">
                     <div className="space-y-1">
-                      <div className={cn('h-1.5 w-12 rounded', option.preview.text, 'opacity-30')} />
+                      <div
+                        className={cn('h-1.5 w-12 rounded', option.preview.text, 'opacity-30')}
+                      />
                       <div className={cn('h-1 w-8 rounded', option.preview.text, 'opacity-20')} />
                     </div>
                     <div className="flex gap-1">
                       <div className={cn('h-4 w-4 rounded', option.preview.text, 'opacity-20')} />
-                      <div className={cn('h-4 flex-1 rounded', option.preview.text, 'opacity-10')} />
+                      <div
+                        className={cn('h-4 flex-1 rounded', option.preview.text, 'opacity-10')}
+                      />
                     </div>
                   </div>
                 </div>
@@ -142,25 +133,21 @@ export function ThemeSettings({ className }: ThemeSettingsProps) {
                 <div
                   className={cn(
                     'flex h-8 w-8 items-center justify-center rounded-full',
-                    isActive ? 'bg-primary text-primary-foreground' : 'bg-muted'
+                    isActive ? 'text-primary-foreground bg-primary' : 'bg-muted'
                   )}
                 >
                   <Icon className="h-4 w-4" />
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium">{option.label}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {option.description}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{option.description}</p>
                 </div>
-                {isActive && (
-                  <Check className="h-4 w-4 text-primary" />
-                )}
+                {isActive && <Check className="h-4 w-4 text-primary" />}
               </div>
             </button>
-          );
+          )
         })}
       </div>
     </SettingsSection>
-  );
+  )
 }

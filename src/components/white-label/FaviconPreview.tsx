@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { Monitor, Smartphone, Tablet, Globe, Download, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { logger } from '@/lib/logger'
 import {
   generateFavicons,
   downloadFaviconsAsZip,
@@ -55,7 +56,7 @@ export function FaviconPreview({
         onFaviconsGenerated?.(generated)
       } catch (err) {
         setError('Failed to generate favicons')
-        console.error(err)
+        logger.error('Failed to generate favicons', { error: err })
       } finally {
         setIsGenerating(false)
       }
@@ -71,7 +72,7 @@ export function FaviconPreview({
     try {
       await downloadFaviconsAsZip(favicons, appName, themeColor, backgroundColor)
     } catch (err) {
-      console.error('Failed to download favicons:', err)
+      logger.error('Failed to download favicons:', err as Error)
     } finally {
       setIsDownloading(false)
     }
@@ -89,8 +90,13 @@ export function FaviconPreview({
 
   if (!source) {
     return (
-      <div className={cn('rounded-xl border border-zinc-200 dark:border-zinc-700 p-8 text-center', className)}>
-        <Monitor className="h-12 w-12 mx-auto text-zinc-300 dark:text-zinc-600" />
+      <div
+        className={cn(
+          'rounded-xl border border-zinc-200 p-8 text-center dark:border-zinc-700',
+          className
+        )}
+      >
+        <Monitor className="mx-auto h-12 w-12 text-zinc-300 dark:text-zinc-600" />
         <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
           Upload a logo to generate favicon previews
         </p>
@@ -100,18 +106,26 @@ export function FaviconPreview({
 
   if (isGenerating) {
     return (
-      <div className={cn('rounded-xl border border-zinc-200 dark:border-zinc-700 p-8 text-center', className)}>
-        <Loader2 className="h-12 w-12 mx-auto text-sky-500 animate-spin" />
-        <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">
-          Generating favicons...
-        </p>
+      <div
+        className={cn(
+          'rounded-xl border border-zinc-200 p-8 text-center dark:border-zinc-700',
+          className
+        )}
+      >
+        <Loader2 className="mx-auto h-12 w-12 animate-spin text-sky-500" />
+        <p className="mt-3 text-sm text-zinc-500 dark:text-zinc-400">Generating favicons...</p>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className={cn('rounded-xl border border-red-200 dark:border-red-800 p-8 text-center bg-red-50 dark:bg-red-900/20', className)}>
+      <div
+        className={cn(
+          'rounded-xl border border-red-200 bg-red-50 p-8 text-center dark:border-red-800 dark:bg-red-900/20',
+          className
+        )}
+      >
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
       </div>
     )
@@ -126,10 +140,10 @@ export function FaviconPreview({
             key={device.id}
             onClick={() => setActiveDevice(device.id)}
             className={cn(
-              'flex items-center gap-2 px-3 py-2 text-sm rounded-lg transition-colors',
+              'flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors',
               activeDevice === device.id
-                ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300'
-                : 'text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800'
+                ? 'dark:bg-sky-900/30 bg-sky-100 text-sky-700 dark:text-sky-300'
+                : 'text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800'
             )}
           >
             <device.icon className="h-4 w-4" />
@@ -139,31 +153,29 @@ export function FaviconPreview({
       </div>
 
       {/* Preview area */}
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 p-6">
+      <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-700 dark:bg-zinc-800">
         {activeDevice === 'browser' && (
           <div className="space-y-4">
             {/* Browser tab mockup */}
-            <div className="bg-white dark:bg-zinc-900 rounded-lg shadow-lg overflow-hidden">
+            <div className="overflow-hidden rounded-lg bg-white shadow-lg dark:bg-zinc-900">
               {/* Browser chrome */}
-              <div className="bg-zinc-100 dark:bg-zinc-800 px-3 py-2 flex items-center gap-2">
+              <div className="flex items-center gap-2 bg-zinc-100 px-3 py-2 dark:bg-zinc-800">
                 <div className="flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-400" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                  <div className="w-3 h-3 rounded-full bg-green-400" />
+                  <div className="h-3 w-3 rounded-full bg-red-400" />
+                  <div className="h-3 w-3 rounded-full bg-yellow-400" />
+                  <div className="h-3 w-3 rounded-full bg-green-400" />
                 </div>
                 {/* Tab */}
-                <div className="flex items-center gap-2 bg-white dark:bg-zinc-900 px-3 py-1 rounded-t-lg ml-2">
-                  {getFavicon(16) && (
-                    <img src={getFavicon(16)} alt="Favicon" className="w-4 h-4" />
-                  )}
-                  <span className="text-xs text-zinc-700 dark:text-zinc-300 truncate max-w-[100px]">
+                <div className="ml-2 flex items-center gap-2 rounded-t-lg bg-white px-3 py-1 dark:bg-zinc-900">
+                  {getFavicon(16) && <img src={getFavicon(16)} alt="Favicon" className="h-4 w-4" />}
+                  <span className="max-w-[100px] truncate text-xs text-zinc-700 dark:text-zinc-300">
                     {appName}
                   </span>
                 </div>
               </div>
               {/* Address bar */}
-              <div className="bg-zinc-50 dark:bg-zinc-800 px-3 py-1.5 border-t border-zinc-200 dark:border-zinc-700">
-                <div className="bg-white dark:bg-zinc-900 rounded px-2 py-0.5 text-xs text-zinc-500">
+              <div className="border-t border-zinc-200 bg-zinc-50 px-3 py-1.5 dark:border-zinc-700 dark:bg-zinc-800">
+                <div className="rounded bg-white px-2 py-0.5 text-xs text-zinc-500 dark:bg-zinc-900">
                   https://example.com
                 </div>
               </div>
@@ -174,10 +186,8 @@ export function FaviconPreview({
             {/* Bookmark bar mockup */}
             <div className="flex items-center gap-2 text-xs text-zinc-500">
               <span>Bookmarks bar:</span>
-              <div className="flex items-center gap-1.5 bg-white dark:bg-zinc-900 px-2 py-1 rounded shadow-sm">
-                {getFavicon(16) && (
-                  <img src={getFavicon(16)} alt="Favicon" className="w-4 h-4" />
-                )}
+              <div className="flex items-center gap-1.5 rounded bg-white px-2 py-1 shadow-sm dark:bg-zinc-900">
+                {getFavicon(16) && <img src={getFavicon(16)} alt="Favicon" className="h-4 w-4" />}
                 <span className="text-zinc-700 dark:text-zinc-300">{appName}</span>
               </div>
             </div>
@@ -187,26 +197,26 @@ export function FaviconPreview({
         {activeDevice === 'mobile' && (
           <div className="flex justify-center">
             {/* iPhone mockup */}
-            <div className="w-[200px] bg-black rounded-[2rem] p-2 shadow-xl">
-              <div className="bg-white dark:bg-zinc-900 rounded-[1.5rem] overflow-hidden">
+            <div className="w-[200px] rounded-[2rem] bg-black p-2 shadow-xl">
+              <div className="overflow-hidden rounded-[1.5rem] bg-white dark:bg-zinc-900">
                 {/* Status bar */}
-                <div className="bg-zinc-100 dark:bg-zinc-800 px-4 py-2 flex items-center justify-between">
+                <div className="flex items-center justify-between bg-zinc-100 px-4 py-2 dark:bg-zinc-800">
                   <span className="text-[10px] text-zinc-600 dark:text-zinc-400">9:41</span>
                   <div className="flex gap-1">
-                    <div className="w-4 h-2 bg-zinc-400 rounded-sm" />
+                    <div className="h-2 w-4 rounded-sm bg-zinc-400" />
                   </div>
                 </div>
                 {/* Home screen with icon */}
-                <div className="p-6 h-48 flex items-center justify-center">
+                <div className="flex h-48 items-center justify-center p-6">
                   <div className="text-center">
                     {getFavicon(180) && (
                       <img
                         src={getFavicon(180)}
                         alt="App icon"
-                        className="w-16 h-16 rounded-2xl shadow-lg mx-auto"
+                        className="mx-auto h-16 w-16 rounded-2xl shadow-lg"
                       />
                     )}
-                    <span className="block mt-2 text-xs text-zinc-700 dark:text-zinc-300 truncate">
+                    <span className="mt-2 block truncate text-xs text-zinc-700 dark:text-zinc-300">
                       {appName}
                     </span>
                   </div>
@@ -219,19 +229,15 @@ export function FaviconPreview({
         {activeDevice === 'tablet' && (
           <div className="flex justify-center">
             {/* iPad mockup */}
-            <div className="w-[300px] bg-black rounded-xl p-2 shadow-xl">
-              <div className="bg-white dark:bg-zinc-900 rounded-lg overflow-hidden">
+            <div className="w-[300px] rounded-xl bg-black p-2 shadow-xl">
+              <div className="overflow-hidden rounded-lg bg-white dark:bg-zinc-900">
                 {/* PWA splash simulation */}
                 <div
-                  className="h-48 flex items-center justify-center"
+                  className="flex h-48 items-center justify-center"
                   style={{ backgroundColor: backgroundColor }}
                 >
                   {getFavicon(512) && (
-                    <img
-                      src={getFavicon(512)}
-                      alt="PWA icon"
-                      className="w-24 h-24"
-                    />
+                    <img src={getFavicon(512)} alt="PWA icon" className="h-24 w-24" />
                   )}
                 </div>
               </div>
@@ -242,25 +248,17 @@ export function FaviconPreview({
 
       {/* Generated sizes */}
       <div className="space-y-2">
-        <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
-          Generated Sizes
-        </div>
+        <div className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Generated Sizes</div>
         <div className="flex flex-wrap gap-2">
           {FAVICON_SIZES.slice(0, 6).map((sizeInfo) => {
             const favicon = getFavicon(sizeInfo.size)
             return (
               <div
                 key={sizeInfo.size}
-                className="flex items-center gap-2 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg px-2 py-1"
+                className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-2 py-1 dark:border-zinc-700 dark:bg-zinc-800"
                 title={sizeInfo.purpose}
               >
-                {favicon && (
-                  <img
-                    src={favicon}
-                    alt={sizeInfo.name}
-                    className="w-4 h-4"
-                  />
-                )}
+                {favicon && <img src={favicon} alt={sizeInfo.name} className="h-4 w-4" />}
                 <span className="text-xs text-zinc-500">{sizeInfo.size}px</span>
               </div>
             )
@@ -275,9 +273,9 @@ export function FaviconPreview({
         className="w-full"
       >
         {isDownloading ? (
-          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
         ) : (
-          <Download className="h-4 w-4 mr-2" />
+          <Download className="mr-2 h-4 w-4" />
         )}
         {isDownloading ? 'Preparing download...' : 'Download All Favicons (ZIP)'}
       </Button>

@@ -9,7 +9,7 @@ metadata:
   labels:
     app.kubernetes.io/name: nself-chat
     app.kubernetes.io/component: frontend
-    app.kubernetes.io/version: "1.0.0"
+    app.kubernetes.io/version: '1.0.0'
 spec:
   replicas: 2
   revisionHistoryLimit: 5
@@ -28,9 +28,9 @@ spec:
         app.kubernetes.io/name: nself-chat
         app.kubernetes.io/component: frontend
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "3000"
-        prometheus.io/path: "/api/metrics"
+        prometheus.io/scrape: 'true'
+        prometheus.io/port: '3000'
+        prometheus.io/path: '/api/metrics'
     spec:
       serviceAccountName: nself-chat
       securityContext:
@@ -55,11 +55,11 @@ spec:
                 name: nself-chat-secrets
           resources:
             requests:
-              cpu: "100m"
-              memory: "256Mi"
+              cpu: '100m'
+              memory: '256Mi'
             limits:
-              cpu: "1000m"
-              memory: "1Gi"
+              cpu: '1000m'
+              memory: '1Gi'
           livenessProbe:
             httpGet:
               path: /api/health

@@ -19,22 +19,18 @@ export default function SetupManagementPage() {
   }, [user, router])
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-4xl">
-      <Button
-        variant="ghost"
-        className="mb-6"
-        onClick={() => router.push('/settings')}
-      >
-        <ArrowLeft className="h-4 w-4 mr-2" />
+    <div className="container mx-auto max-w-4xl px-4 py-8">
+      <Button variant="ghost" className="mb-6" onClick={() => router.push('/settings')}>
+        <ArrowLeft className="mr-2 h-4 w-4" />
         Back to Settings
       </Button>
 
       <div className="mb-8">
-        <h1 className="text-3xl font-bold flex items-center gap-3">
+        <h1 className="flex items-center gap-3 text-3xl font-bold">
           <Settings className="h-8 w-8" />
           Setup Management
         </h1>
-        <p className="text-muted-foreground mt-2">
+        <p className="mt-2 text-muted-foreground">
           Configure application settings, branding, and features
         </p>
       </div>
@@ -54,13 +50,20 @@ export default function SetupManagementPage() {
             <p>
               The setup wizard and configuration management is being redesigned. In the meantime:
             </p>
-            <ul className="list-disc list-inside space-y-1 ml-4">
+            <ul className="ml-4 list-inside list-disc space-y-1">
               <li>Configure your application using environment variables</li>
-              <li>Select a platform template via <code className="bg-muted px-1 rounded">NEXT_PUBLIC_PLATFORM_TEMPLATE</code></li>
-              <li>Customize features via <code className="bg-muted px-1 rounded">NEXT_PUBLIC_FEATURE_*</code> variables</li>
+              <li>
+                Select a platform template via{' '}
+                <code className="rounded bg-muted px-1">NEXT_PUBLIC_PLATFORM_TEMPLATE</code>
+              </li>
+              <li>
+                Customize features via{' '}
+                <code className="rounded bg-muted px-1">NEXT_PUBLIC_FEATURE_*</code> variables
+              </li>
             </ul>
             <p className="mt-4">
-              See <code className="bg-muted px-1 rounded">.env.example</code> for all available options.
+              See <code className="rounded bg-muted px-1">.env.example</code> for all available
+              options.
             </p>
           </div>
         </CardContent>

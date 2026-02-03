@@ -13,10 +13,12 @@ Comprehensive mobile UI optimizations for nself-chat, delivering a native-app-li
 ### 1. Dark Mode System
 
 **Files**:
+
 - `/src/hooks/use-dark-mode.ts`
 - `/src/components/ui/dark-mode-toggle.tsx`
 
 **Features**:
+
 - System preference detection (`prefers-color-scheme`)
 - Persistent user override (localStorage)
 - Smooth transitions between modes
@@ -25,6 +27,7 @@ Comprehensive mobile UI optimizations for nself-chat, delivering a native-app-li
 - Automatic theme switching
 
 **Usage**:
+
 ```tsx
 import { useDarkMode } from '@/hooks/use-dark-mode'
 import { DarkModeToggle } from '@/components/ui/dark-mode-toggle'
@@ -44,6 +47,7 @@ const { isDark, colorScheme, setColorScheme, toggle } = useDarkMode()
 **File**: `/src/components/mobile/VirtualMessageList.tsx`
 
 **Features**:
+
 - Uses `@tanstack/react-virtual` for optimal performance
 - Renders only visible messages (1000+ messages smoothly)
 - Dynamic row heights
@@ -54,15 +58,16 @@ const { isDark, colorScheme, setColorScheme, toggle } = useDarkMode()
 - Maintains scroll position when loading older messages
 
 **Performance**:
+
 - Handles 10,000+ messages
 - Memory efficient (only renders ~10-15 messages at once)
 - Smooth scrolling at 60fps on low-end devices
 
 **Usage**:
+
 ```tsx
 import { VirtualMessageList } from '@/components/mobile'
-
-<VirtualMessageList
+;<VirtualMessageList
   messages={messages}
   isLoading={isLoading}
   hasMore={hasMore}
@@ -78,6 +83,7 @@ import { VirtualMessageList } from '@/components/mobile'
 **File**: `/src/components/mobile/LongPressMenu.tsx`
 
 **Features**:
+
 - Customizable duration (default 500ms)
 - Haptic feedback support
 - Smart positioning (avoids screen edges)
@@ -87,6 +93,7 @@ import { VirtualMessageList } from '@/components/mobile'
 - Portal-based rendering
 
 **Usage**:
+
 ```tsx
 import { LongPressMenu } from '@/components/mobile'
 
@@ -111,6 +118,7 @@ const { handlers } = useLongPress(handleLongPress, { duration: 500 })
 **File**: `/src/components/mobile/PinchZoom.tsx`
 
 **Features**:
+
 - Pinch gesture support (1x to 4x zoom)
 - Double-tap to zoom
 - Pan when zoomed
@@ -121,10 +129,10 @@ const { handlers } = useLongPress(handleLongPress, { duration: 500 })
 - Auto-hide controls
 
 **Usage**:
+
 ```tsx
 import { PinchZoom } from '@/components/mobile'
-
-<PinchZoom
+;<PinchZoom
   minScale={1}
   maxScale={4}
   enableRotation
@@ -141,6 +149,7 @@ import { PinchZoom } from '@/components/mobile'
 **File**: `/src/components/mobile/SkeletonLoader.tsx`
 
 **Features**:
+
 - Multiple skeleton types (message, channel, user, image, video, list, card, text, avatar)
 - Animation variants (pulse, wave)
 - Customizable count and styling
@@ -148,6 +157,7 @@ import { PinchZoom } from '@/components/mobile'
 - Dark mode compatible
 
 **Usage**:
+
 ```tsx
 import { SkeletonLoader, MessageSkeleton } from '@/components/mobile'
 
@@ -167,6 +177,7 @@ import { SkeletonLoader, MessageSkeleton } from '@/components/mobile'
 **File**: `/src/components/mobile/PullToRefresh.tsx`
 
 **Features**:
+
 - Pull down gesture
 - Visual feedback with icon animation
 - Haptic feedback
@@ -176,10 +187,10 @@ import { SkeletonLoader, MessageSkeleton } from '@/components/mobile'
 - Works with virtual scrolling
 
 **Usage**:
+
 ```tsx
 import { PullToRefresh } from '@/components/mobile'
-
-<PullToRefresh
+;<PullToRefresh
   onRefresh={async () => {
     await fetchNewMessages()
   }}
@@ -200,6 +211,7 @@ const { refreshState, pullDistance, handlers, indicatorProps } = usePullToRefres
 **File**: `/src/components/mobile/TouchOptimized.tsx`
 
 **Features**:
+
 - Meets iOS (44pt) and Android (48dp) minimum tap targets
 - Haptic feedback support
 - Multiple component types
@@ -207,6 +219,7 @@ const { refreshState, pullDistance, handlers, indicatorProps } = usePullToRefres
 - Keyboard accessible
 
 **Components**:
+
 - `TouchButton` - Touch-friendly button (48px height)
 - `TouchLink` - Touch-friendly link
 - `TouchIconButton` - Icon button with proper sizing
@@ -216,6 +229,7 @@ const { refreshState, pullDistance, handlers, indicatorProps } = usePullToRefres
 - `TouchArea` - Wrapper to ensure minimum size
 
 **Usage**:
+
 ```tsx
 import { TouchButton, TouchIconButton, TouchListItem } from '@/components/mobile'
 
@@ -239,12 +253,14 @@ import { TouchButton, TouchIconButton, TouchListItem } from '@/components/mobile
 ### 8. Performance Optimization Utilities
 
 **Files**:
+
 - `/src/lib/performance/lazy-components.ts`
 - `/src/lib/performance/optimization.ts`
 
 **Features**:
 
 #### Lazy Loading
+
 - Centralized lazy component loading
 - Preload capabilities
 - Route-based preloading
@@ -252,6 +268,7 @@ import { TouchButton, TouchIconButton, TouchListItem } from '@/components/mobile
 - Network-aware preloading
 
 #### Optimization Utilities
+
 - Debounce & throttle functions and hooks
 - Deep memoization
 - Chunked processing for expensive operations
@@ -260,6 +277,7 @@ import { TouchButton, TouchIconButton, TouchListItem } from '@/components/mobile
 - Battery & network optimization
 
 **Usage**:
+
 ```tsx
 import { LazyMessageList, preloadChatComponents } from '@/lib/performance/lazy-components'
 import { debounce, useDebounce, memoize } from '@/lib/performance/optimization'
@@ -285,6 +303,7 @@ const expensiveResult = useMemo(() => memoize(expensiveFunction)(data), [data])
 **File**: `/src/lib/accessibility/a11y-utils.ts`
 
 **Features**:
+
 - Screen reader announcements
 - Focus management (trap, restore, auto-focus)
 - Keyboard navigation
@@ -295,6 +314,7 @@ const expensiveResult = useMemo(() => memoize(expensiveFunction)(data), [data])
 - Form field accessibility
 
 **Usage**:
+
 ```tsx
 import {
   useAnnounce,
@@ -331,17 +351,20 @@ const isAccessible = meetsWCAGAA('#000000', '#FFFFFF') // true
 ## Performance Metrics
 
 ### Bundle Size
+
 - Main bundle: ~180KB gzipped (target: <200KB) ✅
 - Lazy chunks: 20-50KB each
 - Total reduction: ~40% from code splitting
 
 ### Performance
+
 - Time to Interactive: <3s on 3G
 - First Contentful Paint: <1.5s
 - Lighthouse Mobile Score: 95+ ✅
 - 60fps scrolling with 1000+ messages ✅
 
 ### Accessibility
+
 - WCAG 2.1 AA compliant ✅
 - Screen reader tested (NVDA, VoiceOver)
 - Keyboard navigation supported
@@ -351,12 +374,14 @@ const isAccessible = meetsWCAGAA('#000000', '#FFFFFF') // true
 ## Mobile-Specific Optimizations
 
 ### Touch Targets
+
 - Minimum 44pt (iOS) / 48dp (Android) ✅
 - All interactive elements meet requirements
 - Proper spacing between touch targets
 - Visual feedback on touch
 
 ### Gestures
+
 - Swipe to reveal actions ✅
 - Pull to refresh ✅
 - Pinch to zoom ✅
@@ -364,12 +389,14 @@ const isAccessible = meetsWCAGAA('#000000', '#FFFFFF') // true
 - Double tap to zoom
 
 ### Network Optimization
+
 - Adaptive quality based on connection
 - Offline support indicators
 - Reduced data mode support
 - Smart preloading (not on slow connections)
 
 ### Battery Optimization
+
 - Reduced animations on battery
 - Efficient virtual scrolling
 - Optimized re-renders
@@ -378,6 +405,7 @@ const isAccessible = meetsWCAGAA('#000000', '#FFFFFF') // true
 ## Testing
 
 ### Manual Testing Checklist
+
 - [ ] Dark mode switches correctly
 - [ ] Virtual scrolling smooth at 60fps
 - [ ] Long press triggers menu
@@ -390,6 +418,7 @@ const isAccessible = meetsWCAGAA('#000000', '#FFFFFF') // true
 - [ ] Works in high contrast mode
 
 ### Device Testing
+
 - [ ] iPhone 12 (iOS 15+)
 - [ ] iPhone SE (small screen)
 - [ ] Samsung Galaxy S21 (Android 12+)
@@ -397,6 +426,7 @@ const isAccessible = meetsWCAGAA('#000000', '#FFFFFF') // true
 - [ ] Low-end Android (< 4GB RAM)
 
 ### Browser Testing
+
 - [ ] Safari iOS
 - [ ] Chrome Android
 - [ ] Firefox Android
@@ -469,6 +499,7 @@ const isAccessible = meetsWCAGAA('#000000', '#FFFFFF') // true
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: [nself-chat/issues](https://github.com/nself/nself-chat/issues)
 - Documentation: `/docs/`
 - API Reference: `/docs/API.md`

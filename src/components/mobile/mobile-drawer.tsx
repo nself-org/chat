@@ -185,12 +185,7 @@ export const MobileDrawer = memo(function MobileDrawer({
             dragElastic={0.1}
             onDrag={handleDrag}
             onDragEnd={handleDragEnd}
-            className={cn(
-              'fixed z-50',
-              'bg-background shadow-2xl',
-              config.classes,
-              className
-            )}
+            className={cn('fixed z-50', 'bg-background shadow-2xl', config.classes, className)}
             style={{
               ...config.size,
               ...safePadding,
@@ -199,7 +194,7 @@ export const MobileDrawer = memo(function MobileDrawer({
             {/* Drag handle (for bottom drawer) */}
             {showHandle && position === 'bottom' && (
               <div className="flex justify-center py-3">
-                <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+                <div className="bg-muted-foreground/30 h-1 w-10 rounded-full" />
               </div>
             )}
 
@@ -211,9 +206,7 @@ export const MobileDrawer = memo(function MobileDrawer({
                   position === 'bottom' ? 'pb-3' : 'h-14'
                 )}
               >
-                {title && (
-                  <h2 className="text-lg font-semibold">{title}</h2>
-                )}
+                {title && <h2 className="text-lg font-semibold">{title}</h2>}
                 {showClose && (
                   <Button
                     variant="ghost"
@@ -228,12 +221,7 @@ export const MobileDrawer = memo(function MobileDrawer({
             )}
 
             {/* Content */}
-            <div
-              className={cn(
-                'flex-1 overflow-y-auto',
-                contentClassName
-              )}
-            >
+            <div className={cn('flex-1 overflow-y-auto', contentClassName)}>
               {children || drawer.content}
             </div>
           </motion.div>
@@ -421,7 +409,7 @@ export const SnapDrawer = memo(function SnapDrawer({
             }}
           >
             <div className="flex justify-center py-3">
-              <div className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+              <div className="bg-muted-foreground/30 h-1 w-10 rounded-full" />
             </div>
 
             {title && (
@@ -430,9 +418,7 @@ export const SnapDrawer = memo(function SnapDrawer({
               </div>
             )}
 
-            <div className="flex-1 overflow-y-auto">
-              {children}
-            </div>
+            <div className="flex-1 overflow-y-auto">{children}</div>
           </motion.div>
         </>
       )}

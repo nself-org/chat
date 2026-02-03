@@ -1,43 +1,43 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react'
 import {
   setupUpdateListeners,
   checkForUpdates,
   installUpdate,
   isUpdaterAvailable,
   type UpdateInfo,
-} from '@/lib/tauri';
-import { useTauri } from '@/hooks/useTauri';
+} from '@/lib/tauri'
+import { useTauri } from '@/hooks/useTauri'
 
 export interface UpdateNotificationProps {
   /**
    * Whether to automatically check for updates on mount
    */
-  autoCheck?: boolean;
+  autoCheck?: boolean
   /**
    * Callback when an update is found
    */
-  onUpdateFound?: (info: UpdateInfo) => void;
+  onUpdateFound?: (info: UpdateInfo) => void
   /**
    * Callback when update installation starts
    */
-  onInstallStart?: () => void;
+  onInstallStart?: () => void
   /**
    * Custom render function for the notification
    */
-  children?: (props: UpdateNotificationRenderProps) => React.ReactNode;
+  children?: (props: UpdateNotificationRenderProps) => React.ReactNode
 }
 
 export interface UpdateNotificationRenderProps {
-  updateInfo: UpdateInfo | null;
-  isChecking: boolean;
-  isDownloading: boolean;
-  downloadProgress: number;
-  error: string | null;
-  checkForUpdates: () => Promise<void>;
-  installUpdate: () => Promise<void>;
-  dismiss: () => void;
+  updateInfo: UpdateInfo | null
+  isChecking: boolean
+  isDownloading: boolean
+  downloadProgress: number
+  error: string | null
+  checkForUpdates: () => Promise<void>
+  installUpdate: () => Promise<void>
+  dismiss: () => void
 }
 
 /**
@@ -49,95 +49,95 @@ export function UpdateNotification({
   onInstallStart,
   children,
 }: UpdateNotificationProps) {
-  const { isTauri } = useTauri();
-  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null);
-  const [isChecking, setIsChecking] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
-  const [downloadProgress, setDownloadProgress] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [dismissed, setDismissed] = useState(false);
+  const { isTauri } = useTauri()
+  const [updateInfo, setUpdateInfo] = useState<UpdateInfo | null>(null)
+  const [isChecking, setIsChecking] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [downloadProgress, setDownloadProgress] = useState(0)
+  const [error, setError] = useState<string | null>(null)
+  const [dismissed, setDismissed] = useState(false)
 
   // Set up update event listeners
   useEffect(() => {
-    if (!isTauri || !isUpdaterAvailable()) return;
+    if (!isTauri || !isUpdaterAvailable()) return
 
-    let cleanup: (() => void) | undefined;
+    let cleanup: (() => void) | undefined
 
     setupUpdateListeners({
       onUpdateAvailable: (info) => {
-        setUpdateInfo(info);
-        onUpdateFound?.(info);
+        setUpdateInfo(info)
+        onUpdateFound?.(info)
       },
       onNoUpdateAvailable: () => {
-        setUpdateInfo(null);
+        setUpdateInfo(null)
       },
       onDownloadStart: () => {
-        setIsDownloading(true);
-        setDownloadProgress(0);
-        onInstallStart?.();
+        setIsDownloading(true)
+        setDownloadProgress(0)
+        onInstallStart?.()
       },
       onDownloadProgress: (progress) => {
-        setDownloadProgress(progress);
+        setDownloadProgress(progress)
       },
       onDownloadComplete: () => {
-        setIsDownloading(false);
-        setDownloadProgress(100);
+        setIsDownloading(false)
+        setDownloadProgress(100)
       },
       onError: (err) => {
-        setError(err);
-        setIsDownloading(false);
+        setError(err)
+        setIsDownloading(false)
       },
     }).then((unsub) => {
-      cleanup = unsub;
-    });
+      cleanup = unsub
+    })
 
     return () => {
-      cleanup?.();
-    };
-  }, [isTauri, onUpdateFound, onInstallStart]);
+      cleanup?.()
+    }
+  }, [isTauri, onUpdateFound, onInstallStart])
 
   // Auto-check for updates
   useEffect(() => {
-    if (!isTauri || !autoCheck || !isUpdaterAvailable()) return;
+    if (!isTauri || !autoCheck || !isUpdaterAvailable()) return
 
-    handleCheckForUpdates();
-  }, [isTauri, autoCheck]);
+    handleCheckForUpdates()
+  }, [isTauri, autoCheck])
 
   const handleCheckForUpdates = useCallback(async () => {
-    if (!isTauri || !isUpdaterAvailable()) return;
+    if (!isTauri || !isUpdaterAvailable()) return
 
-    setIsChecking(true);
-    setError(null);
+    setIsChecking(true)
+    setError(null)
 
     try {
-      const info = await checkForUpdates();
-      setUpdateInfo(info);
+      const info = await checkForUpdates()
+      setUpdateInfo(info)
       if (info) {
-        onUpdateFound?.(info);
+        onUpdateFound?.(info)
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to check for updates');
+      setError(err instanceof Error ? err.message : 'Failed to check for updates')
     } finally {
-      setIsChecking(false);
+      setIsChecking(false)
     }
-  }, [isTauri, onUpdateFound]);
+  }, [isTauri, onUpdateFound])
 
   const handleInstallUpdate = useCallback(async () => {
-    if (!isTauri || !isUpdaterAvailable() || !updateInfo) return;
+    if (!isTauri || !isUpdaterAvailable() || !updateInfo) return
 
-    setError(null);
-    onInstallStart?.();
+    setError(null)
+    onInstallStart?.()
 
     try {
-      await installUpdate();
+      await installUpdate()
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to install update');
+      setError(err instanceof Error ? err.message : 'Failed to install update')
     }
-  }, [isTauri, updateInfo, onInstallStart]);
+  }, [isTauri, updateInfo, onInstallStart])
 
   const handleDismiss = useCallback(() => {
-    setDismissed(true);
-  }, []);
+    setDismissed(true)
+  }, [])
 
   // Custom render
   if (children) {
@@ -154,12 +154,12 @@ export function UpdateNotification({
           dismiss: handleDismiss,
         })}
       </>
-    );
+    )
   }
 
   // Don't render if not in Tauri, no update, or dismissed
   if (!isTauri || !updateInfo || dismissed) {
-    return null;
+    return null
   }
 
   // Default UI
@@ -213,8 +213,7 @@ export function UpdateNotification({
           color: 'var(--text-secondary, #666)',
         }}
       >
-        Version {updateInfo.version} is available. You have version{' '}
-        {updateInfo.currentVersion}.
+        Version {updateInfo.version} is available. You have version {updateInfo.currentVersion}.
       </p>
 
       {updateInfo.body && (
@@ -313,7 +312,7 @@ export function UpdateNotification({
         </button>
       </div>
     </div>
-  );
+  )
 }
 
-export default UpdateNotification;
+export default UpdateNotification

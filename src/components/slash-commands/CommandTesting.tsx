@@ -62,8 +62,15 @@ export function CommandTesting({ command }: CommandTestingProps) {
       category: command.category || 'custom',
       arguments: command.arguments || [],
       permissions: command.permissions || { minRole: 'member', allowGuests: false },
-      channels: command.channels || { allowedTypes: ['public', 'private', 'direct', 'group'], allowInThreads: true },
-      responseConfig: command.responseConfig || { type: 'ephemeral', ephemeral: true, showTyping: false },
+      channels: command.channels || {
+        allowedTypes: ['public', 'private', 'direct', 'group'],
+        allowInThreads: true,
+      },
+      responseConfig: command.responseConfig || {
+        type: 'ephemeral',
+        ephemeral: true,
+        showTyping: false,
+      },
       actionType: command.actionType || 'message',
       action: command.action || { type: 'message' },
       isEnabled: true,
@@ -84,7 +91,8 @@ export function CommandTesting({ command }: CommandTestingProps) {
             success: true,
             response: {
               type: command.responseConfig?.type || 'ephemeral',
-              content: 'Command parsed successfully. In production, this would execute the configured action.',
+              content:
+                'Command parsed successfully. In production, this would execute the configured action.',
               ephemeral: true,
             },
           }
@@ -159,7 +167,8 @@ export function CommandTesting({ command }: CommandTestingProps) {
             </Button>
           </div>
           <p className="text-xs text-muted-foreground">
-            Press Enter or click Test to run. Results show parsing and validation, not actual execution.
+            Press Enter or click Test to run. Results show parsing and validation, not actual
+            execution.
           </p>
         </div>
 
@@ -257,7 +266,9 @@ function TestResultCard({ result }: { result: TestResult }) {
     <div
       className={cn(
         'rounded-lg border',
-        result.result?.success ? 'border-green-500/20 bg-green-500/5' : 'border-red-500/20 bg-red-500/5'
+        result.result?.success
+          ? 'border-green-500/20 bg-green-500/5'
+          : 'border-red-500/20 bg-red-500/5'
       )}
     >
       {/* Header */}
@@ -270,7 +281,7 @@ function TestResultCard({ result }: { result: TestResult }) {
         ) : (
           <XCircle className="h-5 w-5 text-red-500" />
         )}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <code className="block truncate font-mono text-sm">{result.input}</code>
           <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
             <span>{result.timestamp.toLocaleTimeString()}</span>
@@ -290,7 +301,7 @@ function TestResultCard({ result }: { result: TestResult }) {
           {result.parsed && (
             <div className="space-y-2">
               <h4 className="text-xs font-medium uppercase text-muted-foreground">Parsing</h4>
-              <div className="rounded bg-muted/50 p-2">
+              <div className="bg-muted/50 rounded p-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">Valid:</span>
                   <span className={result.parsed.isValid ? 'text-green-500' : 'text-red-500'}>
@@ -344,14 +355,18 @@ function TestResultCard({ result }: { result: TestResult }) {
             <div className="space-y-2">
               <h4 className="text-xs font-medium uppercase text-muted-foreground">Error</h4>
               <div className="rounded bg-red-500/10 p-2">
-                <pre className="text-sm text-red-600 whitespace-pre-wrap">{result.result.error}</pre>
+                <pre className="whitespace-pre-wrap text-sm text-red-600">
+                  {result.result.error}
+                </pre>
               </div>
             </div>
           )}
 
           {result.result?.success && result.result.response && (
             <div className="space-y-2">
-              <h4 className="text-xs font-medium uppercase text-muted-foreground">Response Preview</h4>
+              <h4 className="text-xs font-medium uppercase text-muted-foreground">
+                Response Preview
+              </h4>
               <div className="rounded bg-green-500/10 p-2">
                 <p className="text-sm">{result.result.response.content}</p>
                 <div className="mt-2 flex gap-2">

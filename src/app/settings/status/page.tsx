@@ -1,25 +1,19 @@
-'use client';
+'use client'
 
-import { useEffect, useState, useCallback } from 'react';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useEffect, useState, useCallback } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Separator } from '@/components/ui/separator';
+} from '@/components/ui/select'
+import { Separator } from '@/components/ui/separator'
 import {
   Dialog,
   DialogContent,
@@ -27,7 +21,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui/dialog'
 import {
   Circle,
   CircleDot,
@@ -39,24 +33,24 @@ import {
   Settings,
   User,
   Pencil,
-} from 'lucide-react';
-import { usePresenceStore } from '@/stores/presence-store';
+} from 'lucide-react'
+import { usePresenceStore } from '@/stores/presence-store'
 import {
   StatusPicker,
   CustomStatusPicker,
   PresenceStatus,
   PresenceIndicator,
-} from '@/components/presence';
+} from '@/components/presence'
 import type {
   PresenceStatus as PresenceStatusType,
   CustomStatus,
   PresenceSettings,
-} from '@/lib/presence/presence-types';
-import { DEFAULT_PRESENCE_SETTINGS, PRESENCE_LABELS } from '@/lib/presence/presence-types';
+} from '@/lib/presence/presence-types'
+import { DEFAULT_PRESENCE_SETTINGS, PRESENCE_LABELS } from '@/lib/presence/presence-types'
 
 export default function StatusSettingsPage() {
-  const [mounted, setMounted] = useState(false);
-  const [showStatusPicker, setShowStatusPicker] = useState(false);
+  const [mounted, setMounted] = useState(false)
+  const [showStatusPicker, setShowStatusPicker] = useState(false)
 
   const {
     myStatus,
@@ -66,31 +60,31 @@ export default function StatusSettingsPage() {
     setMyCustomStatus,
     clearMyCustomStatus,
     updateSettings,
-  } = usePresenceStore();
+  } = usePresenceStore()
 
   // Avoid hydration mismatch
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   const handleStatusChange = useCallback(
     (status: PresenceStatusType) => {
-      setMyStatus(status);
+      setMyStatus(status)
     },
     [setMyStatus]
-  );
+  )
 
   const handleCustomStatusChange = useCallback(
     (status: CustomStatus | null) => {
       if (status) {
-        setMyCustomStatus(status);
+        setMyCustomStatus(status)
       } else {
-        clearMyCustomStatus();
+        clearMyCustomStatus()
       }
-      setShowStatusPicker(false);
+      setShowStatusPicker(false)
     },
     [setMyCustomStatus, clearMyCustomStatus]
-  );
+  )
 
   const handleSettingChange = useCallback(
     <K extends keyof PresenceSettings>(
@@ -103,15 +97,15 @@ export default function StatusSettingsPage() {
           ...settings[section],
           [key]: value,
         },
-      } as Partial<PresenceSettings>);
+      } as Partial<PresenceSettings>)
     },
     [settings, updateSettings]
-  );
+  )
 
   if (!mounted) {
     return (
       <div className="container max-w-2xl py-8">
-        <h1 className="mb-8 text-3xl font-bold flex items-center gap-3">
+        <h1 className="mb-8 flex items-center gap-3 text-3xl font-bold">
           <CircleDot className="h-8 w-8" />
           Status Settings
         </h1>
@@ -121,12 +115,12 @@ export default function StatusSettingsPage() {
           </CardHeader>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
     <div className="container max-w-2xl py-8">
-      <h1 className="mb-8 text-3xl font-bold flex items-center gap-3">
+      <h1 className="mb-8 flex items-center gap-3 text-3xl font-bold">
         <CircleDot className="h-8 w-8" />
         Status Settings
       </h1>
@@ -142,7 +136,7 @@ export default function StatusSettingsPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Status display */}
-            <div className="flex items-center justify-between p-4 rounded-lg bg-muted/50">
+            <div className="bg-muted/50 flex items-center justify-between rounded-lg p-4">
               <PresenceStatus
                 status={myStatus}
                 customStatus={myCustomStatus ?? undefined}
@@ -153,7 +147,7 @@ export default function StatusSettingsPage() {
               <Dialog open={showStatusPicker} onOpenChange={setShowStatusPicker}>
                 <DialogTrigger asChild>
                   <Button variant="outline" size="sm">
-                    <Pencil className="h-4 w-4 mr-2" />
+                    <Pencil className="mr-2 h-4 w-4" />
                     Edit
                   </Button>
                 </DialogTrigger>
@@ -166,9 +160,7 @@ export default function StatusSettingsPage() {
                   </DialogHeader>
                   <div className="space-y-6 py-4">
                     <div>
-                      <Label className="text-sm font-medium mb-3 block">
-                        Presence
-                      </Label>
+                      <Label className="mb-3 block text-sm font-medium">Presence</Label>
                       <StatusPicker
                         value={myStatus}
                         onChange={handleStatusChange}
@@ -177,9 +169,7 @@ export default function StatusSettingsPage() {
                     </div>
                     <Separator />
                     <div>
-                      <Label className="text-sm font-medium mb-3 block">
-                        Custom Status
-                      </Label>
+                      <Label className="mb-3 block text-sm font-medium">Custom Status</Label>
                       <CustomStatusPicker
                         value={myCustomStatus ?? undefined}
                         onChange={handleCustomStatusChange}
@@ -193,29 +183,25 @@ export default function StatusSettingsPage() {
 
             {/* Quick status buttons */}
             <div>
-              <Label className="text-sm font-medium mb-3 block">
-                Quick status change
-              </Label>
+              <Label className="mb-3 block text-sm font-medium">Quick status change</Label>
               <div className="flex flex-wrap gap-2">
-                {(['online', 'away', 'dnd', 'invisible'] as PresenceStatusType[]).map(
-                  (status) => (
-                    <Button
-                      key={status}
-                      variant={myStatus === status ? 'secondary' : 'outline'}
-                      size="sm"
-                      onClick={() => handleStatusChange(status)}
-                      className="gap-2"
-                    >
-                      <PresenceIndicator
-                        status={status}
-                        size="xs"
-                        position="inline"
-                        animate={false}
-                      />
-                      {PRESENCE_LABELS[status]}
-                    </Button>
-                  )
-                )}
+                {(['online', 'away', 'dnd', 'invisible'] as PresenceStatusType[]).map((status) => (
+                  <Button
+                    key={status}
+                    variant={myStatus === status ? 'secondary' : 'outline'}
+                    size="sm"
+                    onClick={() => handleStatusChange(status)}
+                    className="gap-2"
+                  >
+                    <PresenceIndicator
+                      status={status}
+                      size="xs"
+                      position="inline"
+                      animate={false}
+                    />
+                    {PRESENCE_LABELS[status]}
+                  </Button>
+                ))}
               </div>
             </div>
           </CardContent>
@@ -242,9 +228,7 @@ export default function StatusSettingsPage() {
               </div>
               <Switch
                 checked={settings.autoAway.enabled}
-                onCheckedChange={(checked) =>
-                  handleSettingChange('autoAway', 'enabled', checked)
-                }
+                onCheckedChange={(checked) => handleSettingChange('autoAway', 'enabled', checked)}
               />
             </div>
 
@@ -278,11 +262,7 @@ export default function StatusSettingsPage() {
                   <Select
                     value={settings.autoAway.setStatus}
                     onValueChange={(value) =>
-                      handleSettingChange(
-                        'autoAway',
-                        'setStatus',
-                        value as PresenceStatusType
-                      )
+                      handleSettingChange('autoAway', 'setStatus', value as PresenceStatusType)
                     }
                   >
                     <SelectTrigger className="w-full">
@@ -306,9 +286,7 @@ export default function StatusSettingsPage() {
               <Eye className="h-5 w-5" />
               Privacy
             </CardTitle>
-            <CardDescription>
-              Control what others can see about your activity
-            </CardDescription>
+            <CardDescription>Control what others can see about your activity</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -337,9 +315,7 @@ export default function StatusSettingsPage() {
                   <MessageSquare className="h-4 w-4" />
                   Show typing indicator
                 </Label>
-                <p className="text-sm text-muted-foreground">
-                  Let others see when you are typing
-                </p>
+                <p className="text-sm text-muted-foreground">Let others see when you are typing</p>
               </div>
               <Switch
                 checked={settings.privacy.showTypingIndicator}
@@ -378,9 +354,7 @@ export default function StatusSettingsPage() {
               <Moon className="h-5 w-5" />
               Do Not Disturb Schedule
             </CardTitle>
-            <CardDescription>
-              Automatically enable DND during specific hours
-            </CardDescription>
+            <CardDescription>Automatically enable DND during specific hours</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between">
@@ -427,26 +401,24 @@ export default function StatusSettingsPage() {
                 <div className="space-y-2">
                   <Label>Days</Label>
                   <div className="flex flex-wrap gap-2">
-                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(
-                      (day, index) => {
-                        const isSelected = settings.dndSchedule.days.includes(index);
-                        return (
-                          <Button
-                            key={day}
-                            variant={isSelected ? 'secondary' : 'outline'}
-                            size="sm"
-                            onClick={() => {
-                              const newDays = isSelected
-                                ? settings.dndSchedule.days.filter((d) => d !== index)
-                                : [...settings.dndSchedule.days, index].sort();
-                              handleSettingChange('dndSchedule', 'days', newDays);
-                            }}
-                          >
-                            {day}
-                          </Button>
-                        );
-                      }
-                    )}
+                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => {
+                      const isSelected = settings.dndSchedule.days.includes(index)
+                      return (
+                        <Button
+                          key={day}
+                          variant={isSelected ? 'secondary' : 'outline'}
+                          size="sm"
+                          onClick={() => {
+                            const newDays = isSelected
+                              ? settings.dndSchedule.days.filter((d) => d !== index)
+                              : [...settings.dndSchedule.days, index].sort()
+                            handleSettingChange('dndSchedule', 'days', newDays)
+                          }}
+                        >
+                          {day}
+                        </Button>
+                      )
+                    })}
                   </div>
                 </div>
               </>
@@ -461,20 +433,15 @@ export default function StatusSettingsPage() {
               <Settings className="h-5 w-5" />
               Reset Settings
             </CardTitle>
-            <CardDescription>
-              Reset all status settings to their default values
-            </CardDescription>
+            <CardDescription>Reset all status settings to their default values</CardDescription>
           </CardHeader>
           <CardContent>
-            <Button
-              variant="outline"
-              onClick={() => updateSettings(DEFAULT_PRESENCE_SETTINGS)}
-            >
+            <Button variant="outline" onClick={() => updateSettings(DEFAULT_PRESENCE_SETTINGS)}>
               Reset to defaults
             </Button>
           </CardContent>
         </Card>
       </div>
     </div>
-  );
+  )
 }

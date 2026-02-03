@@ -27,10 +27,7 @@ export { WhatsAppLayout } from './components/WhatsAppLayout'
 export type { WhatsAppLayoutProps } from './components/WhatsAppLayout'
 
 export { WhatsAppChatList } from './components/WhatsAppChatList'
-export type {
-  WhatsAppChatListProps,
-  WhatsAppChatData,
-} from './components/WhatsAppChatList'
+export type { WhatsAppChatListProps, WhatsAppChatData } from './components/WhatsAppChatList'
 
 export { WhatsAppChatView } from './components/WhatsAppChatView'
 export type { WhatsAppChatViewProps } from './components/WhatsAppChatView'
@@ -46,13 +43,7 @@ export { WhatsAppComposer } from './components/WhatsAppComposer'
 export type { WhatsAppComposerProps } from './components/WhatsAppComposer'
 
 export { WhatsAppStatus } from './components/WhatsAppStatus'
-export type {
-  WhatsAppStatusProps,
-  WhatsAppStatusData,
-} from './components/WhatsAppStatus'
+export type { WhatsAppStatusProps, WhatsAppStatusData } from './components/WhatsAppStatus'
 
 export { WhatsAppCalls } from './components/WhatsAppCalls'
-export type {
-  WhatsAppCallsProps,
-  WhatsAppCallData,
-} from './components/WhatsAppCalls'
+export type { WhatsAppCallsProps, WhatsAppCallData } from './components/WhatsAppCalls'

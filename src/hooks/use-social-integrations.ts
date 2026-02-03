@@ -7,6 +7,8 @@ import { useQuery, useMutation, gql } from '@apollo/client'
 import { useCallback } from 'react'
 import type { SocialIntegration } from '@/lib/social/types'
 
+import { logger } from '@/lib/logger'
+
 const GET_SOCIAL_INTEGRATIONS = gql`
   query GetSocialIntegrations {
     nchat_social_integrations(order_by: { created_at: desc }) {
@@ -78,10 +80,7 @@ const CREATE_INTEGRATION = gql`
 `
 
 const UPDATE_INTEGRATION = gql`
-  mutation UpdateSocialIntegration(
-    $id: uuid!
-    $updates: nchat_social_integrations_set_input!
-  ) {
+  mutation UpdateSocialIntegration($id: uuid!, $updates: nchat_social_integrations_set_input!) {
     update_nchat_social_integrations_by_pk(pk_columns: { id: $id }, _set: $updates) {
       id
       auto_post
@@ -108,7 +107,7 @@ export function useSocialIntegrations(accountId?: string) {
 
   const { data, loading, error, refetch } = useQuery(query, {
     variables,
-    fetchPolicy: 'cache-and-network'
+    fetchPolicy: 'cache-and-network',
   })
 
   const [createIntegrationMutation] = useMutation(CREATE_INTEGRATION)
@@ -144,15 +143,15 @@ export function useSocialIntegrations(accountId?: string) {
               exclude_retweets: input.excludeRetweets || false,
               exclude_replies: input.excludeReplies || false,
               min_engagement: input.minEngagement || 0,
-              created_by: input.createdBy
-            }
+              created_by: input.createdBy,
+            },
           },
-          refetchQueries: [query]
+          refetchQueries: [query],
         })
 
         return data?.insert_nchat_social_integrations_one
       } catch (err) {
-        console.error('Failed to create integration:', err)
+        logger.error('Failed to create integration:', err)
         throw err
       }
     },
@@ -184,14 +183,14 @@ export function useSocialIntegrations(accountId?: string) {
               filter_keywords: updates.filterKeywords,
               exclude_retweets: updates.excludeRetweets,
               exclude_replies: updates.excludeReplies,
-              min_engagement: updates.minEngagement
-            }
-          }
+              min_engagement: updates.minEngagement,
+            },
+          },
         })
 
         return data?.update_nchat_social_integrations_by_pk
       } catch (err) {
-        console.error('Failed to update integration:', err)
+        logger.error('Failed to update integration:', err)
         throw err
       }
     },
@@ -209,10 +208,10 @@ export function useSocialIntegrations(accountId?: string) {
           update(cache) {
             cache.evict({ id: `nchat_social_integrations:${id}` })
             cache.gc()
-          }
+          },
         })
       } catch (err) {
-        console.error('Failed to delete integration:', err)
+        logger.error('Failed to delete integration:', err)
         throw err
       }
     },
@@ -237,6 +236,6 @@ export function useSocialIntegrations(accountId?: string) {
     createIntegration,
     updateIntegration,
     deleteIntegration,
-    getIntegrationsByChannel
+    getIntegrationsByChannel,
   }
 }

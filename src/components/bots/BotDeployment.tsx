@@ -57,11 +57,7 @@ const MOCK_CHANNELS = [
 // MAIN COMPONENT
 // ============================================================================
 
-export function BotDeployment({
-  bot,
-  onDeploy,
-  className,
-}: BotDeploymentProps) {
+export function BotDeployment({ bot, onDeploy, className }: BotDeploymentProps) {
   const [deployConfig, setDeployConfig] = useState<DeployConfig>({
     channels: [],
     enabled: true,
@@ -84,10 +80,7 @@ export function BotDeployment({
   const toggleAllChannels = () => {
     setDeployConfig((prev) => ({
       ...prev,
-      channels:
-        prev.channels.length === MOCK_CHANNELS.length
-          ? []
-          : MOCK_CHANNELS.map((c) => c.id),
+      channels: prev.channels.length === MOCK_CHANNELS.length ? [] : MOCK_CHANNELS.map((c) => c.id),
     }))
   }
 
@@ -118,24 +111,19 @@ export function BotDeployment({
 
   if (isDeployed) {
     return (
-      <div className={cn('text-center py-12', className)}>
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center">
+      <div className={cn('py-12 text-center', className)}>
+        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
           <svg
-            className="w-8 h-8 text-green-600"
+            className="h-8 w-8 text-green-600"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="text-xl font-semibold mb-2">Bot Deployed!</h3>
-        <p className="text-muted-foreground mb-6">
+        <h3 className="mb-2 text-xl font-semibold">Bot Deployed!</h3>
+        <p className="mb-6 text-muted-foreground">
           Your bot "{bot.name}" is now active and ready to use.
         </p>
         <div className="space-y-2 text-sm text-muted-foreground">
@@ -159,7 +147,7 @@ export function BotDeployment({
     <div className={cn('space-y-6', className)}>
       {/* Summary */}
       <Card className="p-4">
-        <h4 className="font-medium mb-3">Bot Summary</h4>
+        <h4 className="mb-3 font-medium">Bot Summary</h4>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="text-muted-foreground">Name:</span>
@@ -184,12 +172,10 @@ export function BotDeployment({
 
       {/* Channel Selection */}
       <div>
-        <div className="flex justify-between items-center mb-3">
+        <div className="mb-3 flex items-center justify-between">
           <h4 className="font-medium">Active Channels</h4>
           <Button variant="ghost" size="sm" onClick={toggleAllChannels}>
-            {deployConfig.channels.length === MOCK_CHANNELS.length
-              ? 'Deselect All'
-              : 'Select All'}
+            {deployConfig.channels.length === MOCK_CHANNELS.length ? 'Deselect All' : 'Select All'}
           </Button>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -197,10 +183,10 @@ export function BotDeployment({
             <label
               key={channel.id}
               className={cn(
-                'flex items-center gap-2 p-3 rounded-md border cursor-pointer transition-colors',
+                'flex cursor-pointer items-center gap-2 rounded-md border p-3 transition-colors',
                 deployConfig.channels.includes(channel.id)
-                  ? 'border-primary bg-primary/5'
-                  : 'border-input hover:bg-muted/50'
+                  ? 'bg-primary/5 border-primary'
+                  : 'hover:bg-muted/50 border-input'
               )}
             >
               <input
@@ -212,23 +198,23 @@ export function BotDeployment({
             </label>
           ))}
         </div>
-        <p className="text-xs text-muted-foreground mt-2">
+        <p className="mt-2 text-xs text-muted-foreground">
           Leave empty to activate in all channels
         </p>
       </div>
 
       {/* Permissions */}
       <div>
-        <h4 className="font-medium mb-3">Permissions</h4>
+        <h4 className="mb-3 font-medium">Permissions</h4>
         <div className="space-y-2">
           {PERMISSIONS.map((permission) => (
             <label
               key={permission.id}
               className={cn(
-                'flex items-start gap-3 p-3 rounded-md border cursor-pointer transition-colors',
+                'flex cursor-pointer items-start gap-3 rounded-md border p-3 transition-colors',
                 deployConfig.permissions.includes(permission.id)
-                  ? 'border-primary bg-primary/5'
-                  : 'border-input hover:bg-muted/50'
+                  ? 'bg-primary/5 border-primary'
+                  : 'hover:bg-muted/50 border-input'
               )}
             >
               <input
@@ -239,9 +225,7 @@ export function BotDeployment({
               />
               <div>
                 <span className="font-medium">{permission.label}</span>
-                <p className="text-sm text-muted-foreground">
-                  {permission.description}
-                </p>
+                <p className="text-sm text-muted-foreground">{permission.description}</p>
               </div>
             </label>
           ))}
@@ -250,7 +234,7 @@ export function BotDeployment({
 
       {/* Enable Toggle */}
       <Card className="p-4">
-        <label className="flex items-center justify-between cursor-pointer">
+        <label className="flex cursor-pointer items-center justify-between">
           <div>
             <span className="font-medium">Enable Bot</span>
             <p className="text-sm text-muted-foreground">
@@ -260,25 +244,18 @@ export function BotDeployment({
           <input
             type="checkbox"
             checked={deployConfig.enabled}
-            onChange={(e) =>
-              setDeployConfig((prev) => ({ ...prev, enabled: e.target.checked }))
-            }
-            className="w-5 h-5"
+            onChange={(e) => setDeployConfig((prev) => ({ ...prev, enabled: e.target.checked }))}
+            className="h-5 w-5"
           />
         </label>
       </Card>
 
       {/* Deploy Button */}
-      <Button
-        onClick={handleDeploy}
-        disabled={isDeploying}
-        className="w-full"
-        size="lg"
-      >
+      <Button onClick={handleDeploy} disabled={isDeploying} className="w-full" size="lg">
         {isDeploying ? (
           <>
             <svg
-              className="animate-spin -ml-1 mr-3 h-5 w-5"
+              className="-ml-1 mr-3 h-5 w-5 animate-spin"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -305,11 +282,8 @@ export function BotDeployment({
       </Button>
 
       {/* Help */}
-      <div className="text-sm text-muted-foreground text-center">
-        <p>
-          After deployment, you can manage this bot from the Bots section in
-          Settings.
-        </p>
+      <div className="text-center text-sm text-muted-foreground">
+        <p>After deployment, you can manage this bot from the Bots section in Settings.</p>
       </div>
     </div>
   )

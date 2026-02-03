@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ImageViewer Component - Zoomable, pannable image viewer
@@ -6,10 +6,10 @@
  * Features zoom/pan controls, rotation, download button, and navigation arrows.
  */
 
-import * as React from 'react';
-import { useCallback, useRef, useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import * as React from 'react'
+import { useCallback, useRef, useState, useEffect } from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 import {
   ZoomIn,
   ZoomOut,
@@ -21,56 +21,56 @@ import {
   ChevronRight,
   X,
   Info,
-} from 'lucide-react';
+} from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface ImageViewerItem {
-  id: string;
-  url: string;
-  fileName: string;
-  width?: number;
-  height?: number;
+  id: string
+  url: string
+  fileName: string
+  width?: number
+  height?: number
 }
 
 export interface ImageViewerProps {
-  item: ImageViewerItem;
-  zoom?: number;
-  panX?: number;
-  panY?: number;
-  rotation?: number;
-  minZoom?: number;
-  maxZoom?: number;
-  zoomStep?: number;
-  rotationStep?: number;
-  showControls?: boolean;
-  showNavigation?: boolean;
-  showClose?: boolean;
-  showDownload?: boolean;
-  showInfo?: boolean;
-  canGoNext?: boolean;
-  canGoPrevious?: boolean;
-  onZoomChange?: (zoom: number) => void;
-  onPanChange?: (x: number, y: number) => void;
-  onRotationChange?: (degrees: number) => void;
-  onDownload?: () => void;
-  onNext?: () => void;
-  onPrevious?: () => void;
-  onClose?: () => void;
-  onInfoClick?: () => void;
-  className?: string;
+  item: ImageViewerItem
+  zoom?: number
+  panX?: number
+  panY?: number
+  rotation?: number
+  minZoom?: number
+  maxZoom?: number
+  zoomStep?: number
+  rotationStep?: number
+  showControls?: boolean
+  showNavigation?: boolean
+  showClose?: boolean
+  showDownload?: boolean
+  showInfo?: boolean
+  canGoNext?: boolean
+  canGoPrevious?: boolean
+  onZoomChange?: (zoom: number) => void
+  onPanChange?: (x: number, y: number) => void
+  onRotationChange?: (degrees: number) => void
+  onDownload?: () => void
+  onNext?: () => void
+  onPrevious?: () => void
+  onClose?: () => void
+  onInfoClick?: () => void
+  className?: string
 }
 
 // ============================================================================
 // Constants
 // ============================================================================
 
-const DEFAULT_MIN_ZOOM = 0.1;
-const DEFAULT_MAX_ZOOM = 5;
-const DEFAULT_ZOOM_STEP = 0.25;
-const DEFAULT_ROTATION_STEP = 90;
+const DEFAULT_MIN_ZOOM = 0.1
+const DEFAULT_MAX_ZOOM = 5
+const DEFAULT_ZOOM_STEP = 0.25
+const DEFAULT_ROTATION_STEP = 90
 
 // ============================================================================
 // Component
@@ -103,120 +103,120 @@ export function ImageViewer({
   onInfoClick,
   className,
 }: ImageViewerProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const imageRef = useRef<HTMLImageElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null)
+  const imageRef = useRef<HTMLImageElement>(null)
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [error, setError] = useState(false);
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 })
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [error, setError] = useState(false)
 
   // Reset state when item changes
   useEffect(() => {
-    setIsLoaded(false);
-    setError(false);
-  }, [item.id]);
+    setIsLoaded(false)
+    setError(false)
+  }, [item.id])
 
   // Zoom handlers
   const handleZoomIn = useCallback(() => {
-    const newZoom = Math.min(zoom + zoomStep, maxZoom);
-    onZoomChange?.(newZoom);
-  }, [zoom, zoomStep, maxZoom, onZoomChange]);
+    const newZoom = Math.min(zoom + zoomStep, maxZoom)
+    onZoomChange?.(newZoom)
+  }, [zoom, zoomStep, maxZoom, onZoomChange])
 
   const handleZoomOut = useCallback(() => {
-    const newZoom = Math.max(zoom - zoomStep, minZoom);
-    onZoomChange?.(newZoom);
-  }, [zoom, zoomStep, minZoom, onZoomChange]);
+    const newZoom = Math.max(zoom - zoomStep, minZoom)
+    onZoomChange?.(newZoom)
+  }, [zoom, zoomStep, minZoom, onZoomChange])
 
   const handleResetZoom = useCallback(() => {
-    onZoomChange?.(1);
-    onPanChange?.(0, 0);
-    onRotationChange?.(0);
-  }, [onZoomChange, onPanChange, onRotationChange]);
+    onZoomChange?.(1)
+    onPanChange?.(0, 0)
+    onRotationChange?.(0)
+  }, [onZoomChange, onPanChange, onRotationChange])
 
   // Rotation handlers
   const handleRotateLeft = useCallback(() => {
-    onRotationChange?.((rotation - rotationStep + 360) % 360);
-  }, [rotation, rotationStep, onRotationChange]);
+    onRotationChange?.((rotation - rotationStep + 360) % 360)
+  }, [rotation, rotationStep, onRotationChange])
 
   const handleRotateRight = useCallback(() => {
-    onRotationChange?.((rotation + rotationStep) % 360);
-  }, [rotation, rotationStep, onRotationChange]);
+    onRotationChange?.((rotation + rotationStep) % 360)
+  }, [rotation, rotationStep, onRotationChange])
 
   // Wheel zoom handler
   const handleWheel = useCallback(
     (e: React.WheelEvent) => {
-      e.preventDefault();
-      const delta = e.deltaY > 0 ? -zoomStep : zoomStep;
-      const newZoom = Math.max(minZoom, Math.min(maxZoom, zoom + delta));
-      onZoomChange?.(newZoom);
+      e.preventDefault()
+      const delta = e.deltaY > 0 ? -zoomStep : zoomStep
+      const newZoom = Math.max(minZoom, Math.min(maxZoom, zoom + delta))
+      onZoomChange?.(newZoom)
     },
     [zoom, minZoom, maxZoom, zoomStep, onZoomChange]
-  );
+  )
 
   // Pan handlers
   const handleMouseDown = useCallback(
     (e: React.MouseEvent) => {
       if (zoom > 1) {
-        setIsDragging(true);
-        setDragStart({ x: e.clientX - panX, y: e.clientY - panY });
+        setIsDragging(true)
+        setDragStart({ x: e.clientX - panX, y: e.clientY - panY })
       }
     },
     [zoom, panX, panY]
-  );
+  )
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
       if (isDragging) {
-        const newX = e.clientX - dragStart.x;
-        const newY = e.clientY - dragStart.y;
-        onPanChange?.(newX, newY);
+        const newX = e.clientX - dragStart.x
+        const newY = e.clientY - dragStart.y
+        onPanChange?.(newX, newY)
       }
     },
     [isDragging, dragStart, onPanChange]
-  );
+  )
 
   const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-  }, []);
+    setIsDragging(false)
+  }, [])
 
   // Double-click to toggle zoom
   const handleDoubleClick = useCallback(() => {
     if (zoom === 1) {
-      onZoomChange?.(2);
+      onZoomChange?.(2)
     } else {
-      handleResetZoom();
+      handleResetZoom()
     }
-  }, [zoom, onZoomChange, handleResetZoom]);
+  }, [zoom, onZoomChange, handleResetZoom])
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       switch (e.key) {
         case 'ArrowLeft':
-          if (canGoPrevious) onPrevious?.();
-          break;
+          if (canGoPrevious) onPrevious?.()
+          break
         case 'ArrowRight':
-          if (canGoNext) onNext?.();
-          break;
+          if (canGoNext) onNext?.()
+          break
         case 'Escape':
-          onClose?.();
-          break;
+          onClose?.()
+          break
         case '+':
         case '=':
-          handleZoomIn();
-          break;
+          handleZoomIn()
+          break
         case '-':
-          handleZoomOut();
-          break;
+          handleZoomOut()
+          break
         case '0':
-          handleResetZoom();
-          break;
+          handleResetZoom()
+          break
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [
     canGoNext,
     canGoPrevious,
@@ -226,14 +226,14 @@ export function ImageViewer({
     handleZoomIn,
     handleZoomOut,
     handleResetZoom,
-  ]);
+  ])
 
   // Image styles
   const imageStyles: React.CSSProperties = {
     transform: `translate(${panX}px, ${panY}px) scale(${zoom}) rotate(${rotation}deg)`,
     transition: isDragging ? 'none' : 'transform 0.2s ease-out',
     cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
-  };
+  }
 
   return (
     <div
@@ -252,14 +252,20 @@ export function ImageViewer({
     >
       {/* Loading indicator */}
       {!isLoaded && !error && (
-        <div className="absolute inset-0 flex items-center justify-center" data-testid="loading-indicator">
+        <div
+          className="absolute inset-0 flex items-center justify-center"
+          data-testid="loading-indicator"
+        >
           <div className="h-10 w-10 animate-spin rounded-full border-4 border-white/20 border-t-white" />
         </div>
       )}
 
       {/* Error state */}
       {error && (
-        <div className="flex flex-col items-center justify-center text-white" data-testid="error-state">
+        <div
+          className="flex flex-col items-center justify-center text-white"
+          data-testid="error-state"
+        >
           <p className="text-lg">Failed to load image</p>
           <p className="mt-1 text-sm text-white/60">{item.fileName}</p>
         </div>
@@ -271,10 +277,7 @@ export function ImageViewer({
         src={item.url}
         alt={item.fileName}
         style={imageStyles}
-        className={cn(
-          'max-h-full max-w-full select-none object-contain',
-          !isLoaded && 'opacity-0'
-        )}
+        className={cn('max-h-full max-w-full select-none object-contain', !isLoaded && 'opacity-0')}
         draggable={false}
         onLoad={() => setIsLoaded(true)}
         onError={() => setError(true)}
@@ -420,7 +423,7 @@ export function ImageViewer({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default ImageViewer;
+export default ImageViewer

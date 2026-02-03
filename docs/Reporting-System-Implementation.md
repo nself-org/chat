@@ -17,6 +17,7 @@ Complete implementation of a production-ready Reporting & Flagging System for ns
 Universal reporting modal supporting users, messages, and channels.
 
 **Features:**
+
 - Multi-target support (user, message, channel)
 - Category-based classification with 7+ default categories
 - Evidence collection (screenshots, links, text, files)
@@ -28,12 +29,14 @@ Universal reporting modal supporting users, messages, and channels.
 - Responsive design (mobile-friendly)
 
 **Key Components:**
+
 - `ReportModal` - Main modal component
 - `TargetPreview` - Context preview for reported item
 - `EvidenceItem` - Evidence attachment display
 - Evidence form with type selection
 
 **Props:**
+
 ```typescript
 interface ReportModalProps {
   open?: boolean
@@ -53,6 +56,7 @@ interface ReportModalProps {
 Admin/moderator interface for managing report queue.
 
 **Features:**
+
 - Filterable report list (status, priority, type, search)
 - Bulk selection and actions
 - Detailed report view dialog
@@ -66,6 +70,7 @@ Admin/moderator interface for managing report queue.
 - Loading states and error handling
 
 **Key Components:**
+
 - `ReportQueue` - Main queue component
 - `ReportCard` - Individual report card
 - `ReportDetailDialog` - Detailed view dialog
@@ -73,6 +78,7 @@ Admin/moderator interface for managing report queue.
 - Bulk action toolbar
 
 **Props:**
+
 ```typescript
 interface ReportQueueProps {
   initialStatus?: ReportStatus
@@ -91,6 +97,7 @@ interface ReportQueueProps {
 Server-side report processing engine.
 
 **Features:**
+
 - Report submission with validation
 - Action processing (9 action types)
 - Auto-escalation based on rules
@@ -101,12 +108,14 @@ Server-side report processing engine.
 - Custom action executors
 
 **Key Classes:**
+
 - `ReportHandler` - Main handler class
 - Action processors for each action type
 - Notification queue management
 - Escalation rule engine
 
 **Actions Supported:**
+
 1. `approve` - No violation found
 2. `dismiss` - Invalid/duplicate report
 3. `escalate` - Increase priority
@@ -118,6 +127,7 @@ Server-side report processing engine.
 9. `resolve` - Manual resolution
 
 **Configuration:**
+
 ```typescript
 interface ReportHandlerConfig {
   enableAutoModeration: boolean
@@ -137,15 +147,16 @@ RESTful API for report management.
 
 **Endpoints:**
 
-| Method | Endpoint | Description | Auth Required |
-|--------|----------|-------------|---------------|
-| GET | `/api/reports` | List reports with filters | Moderator |
-| POST | `/api/reports` | Submit new report | User |
-| PATCH | `/api/reports` | Update report/process action | Moderator |
-| DELETE | `/api/reports` | Delete report | Admin |
-| OPTIONS | `/api/reports` | CORS preflight | - |
+| Method  | Endpoint       | Description                  | Auth Required |
+| ------- | -------------- | ---------------------------- | ------------- |
+| GET     | `/api/reports` | List reports with filters    | Moderator     |
+| POST    | `/api/reports` | Submit new report            | User          |
+| PATCH   | `/api/reports` | Update report/process action | Moderator     |
+| DELETE  | `/api/reports` | Delete report                | Admin         |
+| OPTIONS | `/api/reports` | CORS preflight               | -             |
 
 **Security:**
+
 - Authentication verification
 - Role-based authorization
 - Input validation and sanitization
@@ -153,6 +164,7 @@ RESTful API for report management.
 - CORS configuration
 
 **Response Format:**
+
 ```typescript
 interface APIResponse<T = unknown> {
   success: boolean
@@ -167,6 +179,7 @@ interface APIResponse<T = unknown> {
 #### 5. `/src/components/moderation/README.md` (618 lines)
 
 Comprehensive documentation including:
+
 - Architecture overview
 - Component usage examples
 - API reference
@@ -182,15 +195,15 @@ Comprehensive documentation including:
 
 Pre-configured with 7 default categories:
 
-| Category | Priority | Evidence | Auto-Escalate | Description |
-|----------|----------|----------|---------------|-------------|
-| **Spam** | Low | No | No | Unsolicited advertising or repeated messages |
-| **Harassment** | High | Yes | Yes | Targeted harassment or bullying |
-| **Hate Speech** | Urgent | Yes | Yes | Content promoting hatred against protected groups |
-| **Inappropriate Content** | Medium | Yes | No | NSFW or inappropriate material |
-| **Impersonation** | High | Yes | Yes | Pretending to be another user or entity |
-| **Scam/Fraud** | Urgent | Yes | Yes | Fraudulent activity or scam attempts |
-| **Other** | Low | No | No | Issues not covered by other categories |
+| Category                  | Priority | Evidence | Auto-Escalate | Description                                       |
+| ------------------------- | -------- | -------- | ------------- | ------------------------------------------------- |
+| **Spam**                  | Low      | No       | No            | Unsolicited advertising or repeated messages      |
+| **Harassment**            | High     | Yes      | Yes           | Targeted harassment or bullying                   |
+| **Hate Speech**           | Urgent   | Yes      | Yes           | Content promoting hatred against protected groups |
+| **Inappropriate Content** | Medium   | Yes      | No            | NSFW or inappropriate material                    |
+| **Impersonation**         | High     | Yes      | Yes           | Pretending to be another user or entity           |
+| **Scam/Fraud**            | Urgent   | Yes      | Yes           | Fraudulent activity or scam attempts              |
+| **Other**                 | Low      | No       | No            | Issues not covered by other categories            |
 
 ## Data Flow
 
@@ -270,9 +283,7 @@ function MessageActions({ message, currentUser }) {
 
   return (
     <>
-      <button onClick={() => setShowReport(true)}>
-        Report Message
-      </button>
+      <button onClick={() => setShowReport(true)}>Report Message</button>
 
       <ReportModal
         open={showReport}

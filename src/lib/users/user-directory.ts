@@ -47,10 +47,7 @@ export interface DirectoryStats {
 /**
  * Filter users based on search query
  */
-export function filterBySearch(
-  users: ExtendedUserProfile[],
-  query: string
-): ExtendedUserProfile[] {
+export function filterBySearch(users: ExtendedUserProfile[], query: string): ExtendedUserProfile[] {
   if (!query.trim()) return users
 
   const normalizedQuery = query.toLowerCase().trim()
@@ -67,9 +64,7 @@ export function filterBySearch(
       user.location,
     ]
 
-    return searchableFields.some(
-      (field) => field?.toLowerCase().includes(normalizedQuery)
-    )
+    return searchableFields.some((field) => field?.toLowerCase().includes(normalizedQuery))
   })
 }
 
@@ -109,10 +104,7 @@ export function filterByDepartment(
 /**
  * Filter users by team
  */
-export function filterByTeam(
-  users: ExtendedUserProfile[],
-  team: string
-): ExtendedUserProfile[] {
+export function filterByTeam(users: ExtendedUserProfile[], team: string): ExtendedUserProfile[] {
   if (!team || team === 'all') return users
   return users.filter((user) => user.team === team)
 }

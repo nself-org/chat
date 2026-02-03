@@ -22,7 +22,10 @@ export interface UserBadgeProps {
 }
 
 // Size configurations
-const sizeConfig: Record<BadgeSize, { icon: string; text: string; padding: string; height: string }> = {
+const sizeConfig: Record<
+  BadgeSize,
+  { icon: string; text: string; padding: string; height: string }
+> = {
   xs: { icon: 'w-3 h-3', text: 'text-[10px]', padding: 'px-1 py-0.5', height: 'h-4' },
   sm: { icon: 'w-3.5 h-3.5', text: 'text-xs', padding: 'px-1.5 py-0.5', height: 'h-5' },
   md: { icon: 'w-4 h-4', text: 'text-sm', padding: 'px-2 py-1', height: 'h-6' },
@@ -189,13 +192,7 @@ export function UserBadge({
 
   const badgeElement = (
     <span
-      className={`
-        inline-flex items-center gap-1 rounded-full font-medium
-        ${config.padding} ${config.height} ${config.text}
-        ${animationClass}
-        ${onClick ? 'cursor-pointer hover:opacity-80 transition-opacity' : ''}
-        ${className}
-      `}
+      className={`inline-flex items-center gap-1 rounded-full font-medium ${config.padding} ${config.height} ${config.text} ${animationClass} ${onClick ? 'cursor-pointer transition-opacity hover:opacity-80' : ''} ${className} `}
       style={{
         ...getBackgroundStyle(badge.style),
         color: badge.style.textColor,
@@ -211,11 +208,7 @@ export function UserBadge({
         className={config.icon}
         style={{ color: badge.style.iconColor || badge.style.textColor }}
       />
-      {showLabel && (
-        <span className="truncate max-w-[80px]">
-          {badge.shortName || badge.name}
-        </span>
-      )}
+      {showLabel && <span className="max-w-[80px] truncate">{badge.shortName || badge.name}</span>}
     </span>
   )
 
@@ -223,16 +216,9 @@ export function UserBadge({
     return (
       <span className="group relative inline-block">
         {badgeElement}
-        <span
-          className="
-            absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1
-            text-xs text-white bg-gray-900 rounded shadow-lg
-            opacity-0 group-hover:opacity-100 transition-opacity
-            pointer-events-none whitespace-nowrap z-50
-          "
-        >
+        <span className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-2 -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
           {badge.tooltip || badge.description}
-          <span className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
+          <span className="absolute left-1/2 top-full -translate-x-1/2 border-4 border-transparent border-t-gray-900" />
         </span>
       </span>
     )

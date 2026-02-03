@@ -5,10 +5,10 @@
  * These can be used as-is or as starting points for custom bots.
  */
 
-export { HelloBot, createHelloBot } from './hello-bot';
-export { PollBot, createPollBot } from './poll-bot';
-export { ReminderBot, createReminderBot } from './reminder-bot';
-export { WelcomeBot, createWelcomeBot } from './welcome-bot';
+export { HelloBot, createHelloBot } from './hello-bot'
+export { PollBot, createPollBot } from './poll-bot'
+export { ReminderBot, createReminderBot } from './reminder-bot'
+export { WelcomeBot, createWelcomeBot } from './welcome-bot'
 
 // Bot metadata for the marketplace
 export const EXAMPLE_BOTS = [
@@ -44,4 +44,4 @@ export const EXAMPLE_BOTS = [
     category: 'community',
     commands: ['/setwelcome', '/welcomemessage'],
   },
-] as const;
+] as const

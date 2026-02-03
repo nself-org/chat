@@ -7,9 +7,12 @@
 
 import { MeiliSearch, Index } from 'meilisearch'
 
+import { logger } from '@/lib/logger'
+
 // MeiliSearch configuration
 const MEILISEARCH_HOST = process.env.NEXT_PUBLIC_MEILISEARCH_URL || 'http://search.localhost:7700'
-const MEILISEARCH_API_KEY = process.env.MEILISEARCH_MASTER_KEY || 'nchat-search-dev-key-32-chars-long'
+const MEILISEARCH_API_KEY =
+  process.env.MEILISEARCH_MASTER_KEY || 'nchat-search-dev-key-32-chars-long'
 
 // Index names
 export const INDEX_NAMES = {
@@ -19,7 +22,7 @@ export const INDEX_NAMES = {
   CHANNELS: 'channels',
 } as const
 
-export type IndexName = typeof INDEX_NAMES[keyof typeof INDEX_NAMES]
+export type IndexName = (typeof INDEX_NAMES)[keyof typeof INDEX_NAMES]
 
 // Initialize MeiliSearch client
 let client: MeiliSearch | null = null
@@ -48,23 +51,23 @@ export async function initializeIndexes(): Promise<void> {
 
   try {
     // Create indexes if they don't exist
-    await Promise.all([
-      client.createIndex(INDEX_NAMES.MESSAGES, { primaryKey: 'id' }),
-      client.createIndex(INDEX_NAMES.FILES, { primaryKey: 'id' }),
-      client.createIndex(INDEX_NAMES.USERS, { primaryKey: 'id' }),
-      client.createIndex(INDEX_NAMES.CHANNELS, { primaryKey: 'id' }),
-    ].map(p => p.catch(() => {
-      // Ignore errors if index already exists
-    })))
+    await Promise.all(
+      [
+        client.createIndex(INDEX_NAMES.MESSAGES, { primaryKey: 'id' }),
+        client.createIndex(INDEX_NAMES.FILES, { primaryKey: 'id' }),
+        client.createIndex(INDEX_NAMES.USERS, { primaryKey: 'id' }),
+        client.createIndex(INDEX_NAMES.CHANNELS, { primaryKey: 'id' }),
+      ].map((p) =>
+        p.catch(() => {
+          // Ignore errors if index already exists
+        })
+      )
+    )
 
     // Configure messages index
     const messagesIndex = getIndex(INDEX_NAMES.MESSAGES)
     await Promise.all([
-      messagesIndex.updateSearchableAttributes([
-        'content',
-        'author_name',
-        'channel_name',
-      ]),
+      messagesIndex.updateSearchableAttributes(['content', 'author_name', 'channel_name']),
       messagesIndex.updateFilterableAttributes([
         'channel_id',
         'author_id',
@@ -76,9 +79,7 @@ export async function initializeIndexes(): Promise<void> {
         'is_starred',
         'thread_id',
       ]),
-      messagesIndex.updateSortableAttributes([
-        'created_at',
-      ]),
+      messagesIndex.updateSortableAttributes(['created_at']),
       messagesIndex.updateRankingRules([
         'words',
         'typo',
@@ -107,52 +108,31 @@ export async function initializeIndexes(): Promise<void> {
         'created_at',
         'size',
       ]),
-      filesIndex.updateSortableAttributes([
-        'created_at',
-        'size',
-      ]),
+      filesIndex.updateSortableAttributes(['created_at', 'size']),
     ])
 
     // Configure users index
     const usersIndex = getIndex(INDEX_NAMES.USERS)
     await Promise.all([
-      usersIndex.updateSearchableAttributes([
-        'display_name',
-        'username',
-        'email',
-        'bio',
-      ]),
-      usersIndex.updateFilterableAttributes([
-        'role',
-        'is_active',
-        'created_at',
-      ]),
-      usersIndex.updateSortableAttributes([
-        'created_at',
-      ]),
+      usersIndex.updateSearchableAttributes(['display_name', 'username', 'email', 'bio']),
+      usersIndex.updateFilterableAttributes(['role', 'is_active', 'created_at']),
+      usersIndex.updateSortableAttributes(['created_at']),
     ])
 
     // Configure channels index
     const channelsIndex = getIndex(INDEX_NAMES.CHANNELS)
     await Promise.all([
-      channelsIndex.updateSearchableAttributes([
-        'name',
-        'description',
-        'topic',
-      ]),
+      channelsIndex.updateSearchableAttributes(['name', 'description', 'topic']),
       channelsIndex.updateFilterableAttributes([
         'is_private',
         'is_archived',
         'created_by',
         'created_at',
       ]),
-      channelsIndex.updateSortableAttributes([
-        'created_at',
-      ]),
+      channelsIndex.updateSortableAttributes(['created_at']),
     ])
-
   } catch (error) {
-    console.error('Error initializing MeiliSearch indexes:', error)
+    logger.error('Error initializing MeiliSearch indexes:', error)
     throw error
   }
 }
@@ -258,7 +238,7 @@ export async function clearIndex(indexName: IndexName): Promise<void> {
 export async function deleteAllIndexes(): Promise<void> {
   const client = getMeiliSearchClient()
   await Promise.all(
-    Object.values(INDEX_NAMES).map(indexName =>
+    Object.values(INDEX_NAMES).map((indexName) =>
       client.deleteIndex(indexName).catch(() => {
         // Ignore errors if index doesn't exist
       })

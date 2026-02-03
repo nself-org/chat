@@ -43,7 +43,10 @@ export interface ChannelCategoriesProps {
 // Icon Mapping
 // ============================================================================
 
-const CATEGORY_ICON_MAP: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
+const CATEGORY_ICON_MAP: Record<
+  string,
+  React.ComponentType<{ className?: string; style?: React.CSSProperties }>
+> = {
   MessageSquare,
   Megaphone,
   Users,
@@ -125,10 +128,7 @@ export function ChannelCategories({
                 <Icon className="mr-1.5 h-4 w-4" />
                 {category.name}
                 {showCounts && (
-                  <Badge
-                    variant={isSelected ? 'outline' : 'secondary'}
-                    className="ml-2 h-5 px-1.5"
-                  >
+                  <Badge variant={isSelected ? 'outline' : 'secondary'} className="ml-2 h-5 px-1.5">
                     {count}
                   </Badge>
                 )}
@@ -179,7 +179,7 @@ export function ChannelCategories({
           <button
             onClick={() => onCategorySelect?.(null)}
             className={cn(
-              'w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors',
+              'flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors',
               'hover:bg-accent',
               selectedCategory === null && 'bg-accent font-medium'
             )}
@@ -189,9 +189,7 @@ export function ChannelCategories({
               <span>All Channels</span>
             </div>
             {showCounts && (
-              <span className="text-xs text-muted-foreground">
-                {categoryCounts.get(null) || 0}
-              </span>
+              <span className="text-xs text-muted-foreground">{categoryCounts.get(null) || 0}</span>
             )}
           </button>
         )}
@@ -205,22 +203,17 @@ export function ChannelCategories({
               key={category.id}
               onClick={() => onCategorySelect?.(category.id)}
               className={cn(
-                'w-full flex items-center justify-between px-3 py-2 rounded-md text-sm transition-colors',
+                'flex w-full items-center justify-between rounded-md px-3 py-2 text-sm transition-colors',
                 'hover:bg-accent',
                 isSelected && 'bg-accent font-medium'
               )}
             >
               <div className="flex items-center gap-2">
-                <Icon
-                  className="h-4 w-4"
-                  style={{ color: category.color }}
-                />
+                <Icon className="h-4 w-4" style={{ color: category.color }} />
                 <span>{category.name}</span>
               </div>
               <div className="flex items-center gap-2">
-                {showCounts && (
-                  <span className="text-xs text-muted-foreground">{count}</span>
-                )}
+                {showCounts && <span className="text-xs text-muted-foreground">{count}</span>}
                 {isSelected && <Check className="h-4 w-4 text-primary" />}
               </div>
             </button>
@@ -232,22 +225,22 @@ export function ChannelCategories({
 
   // Default variant - card style
   return (
-    <div className={cn('grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3', className)}>
+    <div className={cn('grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4', className)}>
       {showAllOption && (
         <button
           onClick={() => onCategorySelect?.(null)}
           className={cn(
-            'flex flex-col items-center justify-center p-4 rounded-lg border transition-colors',
+            'flex flex-col items-center justify-center rounded-lg border p-4 transition-colors',
             'hover:border-primary/50 hover:bg-accent',
-            selectedCategory === null && 'border-primary bg-primary/5'
+            selectedCategory === null && 'bg-primary/5 border-primary'
           )}
         >
-          <div className="p-2 rounded-lg bg-muted mb-2">
+          <div className="mb-2 rounded-lg bg-muted p-2">
             <Hash className="h-5 w-5 text-muted-foreground" />
           </div>
           <span className="text-sm font-medium">All Channels</span>
           {showCounts && (
-            <span className="text-xs text-muted-foreground mt-1">
+            <span className="mt-1 text-xs text-muted-foreground">
               {categoryCounts.get(null) || 0} channels
             </span>
           )}
@@ -263,22 +256,17 @@ export function ChannelCategories({
             key={category.id}
             onClick={() => onCategorySelect?.(category.id)}
             className={cn(
-              'flex flex-col items-center justify-center p-4 rounded-lg border transition-colors',
+              'flex flex-col items-center justify-center rounded-lg border p-4 transition-colors',
               'hover:border-primary/50 hover:bg-accent',
-              isSelected && 'border-primary bg-primary/5'
+              isSelected && 'bg-primary/5 border-primary'
             )}
           >
-            <div
-              className="p-2 rounded-lg mb-2"
-              style={{ backgroundColor: `${category.color}20` }}
-            >
+            <div className="mb-2 rounded-lg p-2" style={{ backgroundColor: `${category.color}20` }}>
               <Icon className="h-5 w-5" style={{ color: category.color }} />
             </div>
             <span className="text-sm font-medium">{category.name}</span>
             {showCounts && (
-              <span className="text-xs text-muted-foreground mt-1">
-                {count} channels
-              </span>
+              <span className="mt-1 text-xs text-muted-foreground">{count} channels</span>
             )}
           </button>
         )

@@ -12,7 +12,12 @@ import {
 // ============================================================================
 
 const mockMembers: ChannelMember[] = [
-  { id: '1', name: 'Alice Smith', email: 'alice@example.com', avatarUrl: 'https://example.com/alice.jpg' },
+  {
+    id: '1',
+    name: 'Alice Smith',
+    email: 'alice@example.com',
+    avatarUrl: 'https://example.com/alice.jpg',
+  },
   { id: '2', name: 'Bob Jones', email: 'bob@example.com' },
   { id: '3', name: 'Charlie Brown', email: 'charlie@example.com' },
 ]
@@ -190,10 +195,11 @@ describe('CreateChannelModal', () => {
       const emojiButton = screen.getByRole('button', { name: '' })
       // Click on the emoji picker trigger
       const buttons = screen.getAllByRole('button')
-      const emojiPickerButton = buttons.find(btn =>
-        btn.querySelector('svg') &&
-        !btn.textContent?.includes('Cancel') &&
-        !btn.textContent?.includes('Create')
+      const emojiPickerButton = buttons.find(
+        (btn) =>
+          btn.querySelector('svg') &&
+          !btn.textContent?.includes('Cancel') &&
+          !btn.textContent?.includes('Create')
       )
 
       if (emojiPickerButton) {
@@ -305,7 +311,7 @@ describe('CreateChannelModal', () => {
 
       // Find and click the remove button on the badge
       const removeButtons = screen.getAllByRole('button')
-      const badgeRemove = removeButtons.find(btn =>
+      const badgeRemove = removeButtons.find((btn) =>
         btn.querySelector('svg')?.classList.contains('h-3')
       )
 
@@ -443,12 +449,7 @@ describe('CreateChannelModal', () => {
 
     it('closes modal on successful submission', async () => {
       const onOpenChange = jest.fn()
-      render(
-        <CreateChannelModal
-          {...defaultProps}
-          onOpenChange={onOpenChange}
-        />
-      )
+      render(<CreateChannelModal {...defaultProps} onOpenChange={onOpenChange} />)
 
       const nameInput = screen.getByLabelText(/name/i)
       await userEvent.type(nameInput, 'test')
@@ -462,9 +463,9 @@ describe('CreateChannelModal', () => {
     })
 
     it('shows loading state during submission', async () => {
-      const onSubmit = jest.fn().mockImplementation(
-        () => new Promise(resolve => setTimeout(resolve, 100))
-      )
+      const onSubmit = jest
+        .fn()
+        .mockImplementation(() => new Promise((resolve) => setTimeout(resolve, 100)))
       render(<CreateChannelModal {...defaultProps} onSubmit={onSubmit} />)
 
       const nameInput = screen.getByLabelText(/name/i)

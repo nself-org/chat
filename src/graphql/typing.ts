@@ -134,9 +134,7 @@ export const EXTEND_TYPING = gql`
         channel_id: { _eq: $channelId }
         thread_id: { _eq: $threadId }
       }
-      _set: {
-        expires_at: "now() + interval '10 seconds'"
-      }
+      _set: { expires_at: "now() + interval '10 seconds'" }
     ) {
       affected_rows
       returning {
@@ -156,10 +154,7 @@ export const STOP_TYPING = gql`
       where: {
         user_id: { _eq: $userId }
         channel_id: { _eq: $channelId }
-        _or: [
-          { thread_id: { _eq: $threadId } }
-          { thread_id: { _is_null: true } }
-        ]
+        _or: [{ thread_id: { _eq: $threadId } }, { thread_id: { _is_null: true } }]
       }
     ) {
       affected_rows
@@ -172,9 +167,7 @@ export const STOP_TYPING = gql`
  */
 export const STOP_ALL_TYPING = gql`
   mutation StopAllTyping($userId: uuid!) {
-    delete_nchat_typing_indicators(
-      where: { user_id: { _eq: $userId } }
-    ) {
+    delete_nchat_typing_indicators(where: { user_id: { _eq: $userId } }) {
       affected_rows
     }
   }
@@ -185,9 +178,7 @@ export const STOP_ALL_TYPING = gql`
  */
 export const CLEANUP_EXPIRED_TYPING = gql`
   mutation CleanupExpiredTyping {
-    delete_nchat_typing_indicators(
-      where: { expires_at: { _lt: "now()" } }
-    ) {
+    delete_nchat_typing_indicators(where: { expires_at: { _lt: "now()" } }) {
       affected_rows
     }
   }
@@ -257,10 +248,7 @@ export const TYPING_SUBSCRIPTION = gql`
 export const THREAD_TYPING_SUBSCRIPTION = gql`
   subscription ThreadTypingSubscription($threadId: uuid!) {
     nchat_typing_indicators(
-      where: {
-        thread_id: { _eq: $threadId }
-        expires_at: { _gt: "now()" }
-      }
+      where: { thread_id: { _eq: $threadId }, expires_at: { _gt: "now()" } }
       order_by: { started_at: asc }
     ) {
       id
@@ -282,10 +270,7 @@ export const TYPING_STREAM_SUBSCRIPTION = gql`
     nchat_typing_indicators_stream(
       cursor: { initial_value: { started_at: "now()" } }
       batch_size: 10
-      where: {
-        channel_id: { _eq: $channelId }
-        expires_at: { _gt: "now()" }
-      }
+      where: { channel_id: { _eq: $channelId }, expires_at: { _gt: "now()" } }
     ) {
       id
       user_id
@@ -331,9 +316,7 @@ export const ALL_CHANNELS_TYPING_SUBSCRIPTION = gql`
       where: {
         expires_at: { _gt: "now()" }
         user_id: { _neq: $userId }
-        channel: {
-          members: { user_id: { _eq: $userId } }
-        }
+        channel: { members: { user_id: { _eq: $userId } } }
       }
     ) {
       id

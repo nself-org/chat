@@ -16,7 +16,7 @@ export class LinkedInClient implements SocialAPIClient {
       clientId: process.env.LINKEDIN_CLIENT_ID || '',
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET || '',
       redirectUri: process.env.NEXT_PUBLIC_APP_URL + '/api/social/linkedin/callback' || '',
-      scopes: ['r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social']
+      scopes: ['r_liteprofile', 'r_emailaddress', 'w_member_social', 'r_organization_social'],
     }
 
     if (!this.config.clientId || !this.config.clientSecret) {
@@ -33,7 +33,7 @@ export class LinkedInClient implements SocialAPIClient {
       client_id: this.config.clientId,
       redirect_uri: this.config.redirectUri,
       scope: this.config.scopes.join(' '),
-      state
+      state,
     })
 
     return `${LINKEDIN_AUTH_BASE}/authorization?${params.toString()}`
@@ -42,21 +42,23 @@ export class LinkedInClient implements SocialAPIClient {
   /**
    * Exchange authorization code for access token
    */
-  async authenticate(code: string): Promise<{ accessToken: string; refreshToken?: string; expiresAt?: Date }> {
+  async authenticate(
+    code: string
+  ): Promise<{ accessToken: string; refreshToken?: string; expiresAt?: Date }> {
     const params = new URLSearchParams({
       grant_type: 'authorization_code',
       code,
       redirect_uri: this.config.redirectUri,
       client_id: this.config.clientId,
-      client_secret: this.config.clientSecret
+      client_secret: this.config.clientSecret,
     })
 
     const response = await fetch(`${LINKEDIN_AUTH_BASE}/accessToken`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: params.toString()
+      body: params.toString(),
     })
 
     if (!response.ok) {
@@ -69,22 +71,24 @@ export class LinkedInClient implements SocialAPIClient {
     return {
       accessToken: data.access_token,
       refreshToken: data.refresh_token, // LinkedIn may not provide refresh tokens
-      expiresAt: data.expires_in ? new Date(Date.now() + data.expires_in * 1000) : undefined
+      expiresAt: data.expires_in ? new Date(Date.now() + data.expires_in * 1000) : undefined,
     }
   }
 
   /**
    * Get authenticated user's profile information
    */
-  async getAccountInfo(accessToken: string): Promise<{ id: string; name: string; handle?: string; avatarUrl?: string }> {
+  async getAccountInfo(
+    accessToken: string
+  ): Promise<{ id: string; name: string; handle?: string; avatarUrl?: string }> {
     // Get basic profile
     const profileResponse = await fetch(
       `${LINKEDIN_API_BASE}/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))`,
       {
         headers: {
-          'Authorization': `Bearer ${accessToken}`,
-          'Accept': 'application/json'
-        }
+          Authorization: `Bearer ${accessToken}`,
+          Accept: 'application/json',
+        },
       }
     )
 
@@ -103,21 +107,26 @@ export class LinkedInClient implements SocialAPIClient {
       avatarUrl = largest.identifiers?.[0]?.identifier
     }
 
-    const firstName = profile.firstName?.localized?.en_US || profile.firstName?.localized?.['*'] || ''
+    const firstName =
+      profile.firstName?.localized?.en_US || profile.firstName?.localized?.['*'] || ''
     const lastName = profile.lastName?.localized?.en_US || profile.lastName?.localized?.['*'] || ''
     const name = `${firstName} ${lastName}`.trim()
 
     return {
       id: profile.id,
       name: name || 'LinkedIn User',
-      avatarUrl
+      avatarUrl,
     }
   }
 
   /**
    * Get recent posts (shares) from the user
    */
-  async getRecentPosts(accessToken: string, personUrn: string, since?: string): Promise<SocialPost[]> {
+  async getRecentPosts(
+    accessToken: string,
+    personUrn: string,
+    since?: string
+  ): Promise<SocialPost[]> {
     // LinkedIn uses URN format: urn:li:person:ABC123
     const author = `urn:li:person:${personUrn}`
 
@@ -133,9 +142,9 @@ export class LinkedInClient implements SocialAPIClient {
 
     const response = await fetch(url, {
       headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Accept': 'application/json'
-      }
+        Authorization: `Bearer ${accessToken}`,
+        Accept: 'application/json',
+      },
     })
 
     if (!response.ok) {
@@ -196,7 +205,7 @@ export class LinkedInClient implements SocialAPIClient {
         },
         posted_at: new Date(post.created.time).toISOString(),
         imported_at: new Date().toISOString(),
-        was_posted_to_channel: false
+        was_posted_to_channel: false,
       }
     })
   }

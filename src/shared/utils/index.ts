@@ -216,7 +216,10 @@ export function deepClone<T>(obj: T): T {
 /**
  * Check if two objects are equal (shallow)
  */
-export function shallowEqual(obj1: Record<string, unknown>, obj2: Record<string, unknown>): boolean {
+export function shallowEqual(
+  obj1: Record<string, unknown>,
+  obj2: Record<string, unknown>
+): boolean {
   const keys1 = Object.keys(obj1)
   const keys2 = Object.keys(obj2)
   if (keys1.length !== keys2.length) return false
@@ -309,7 +312,9 @@ export function getFileExtension(filename: string): string {
 /**
  * Get file type from MIME type
  */
-export function getFileType(mimeType: string): 'image' | 'video' | 'audio' | 'document' | 'unknown' {
+export function getFileType(
+  mimeType: string
+): 'image' | 'video' | 'audio' | 'document' | 'unknown' {
   if (mimeType.startsWith('image/')) return 'image'
   if (mimeType.startsWith('video/')) return 'video'
   if (mimeType.startsWith('audio/')) return 'audio'

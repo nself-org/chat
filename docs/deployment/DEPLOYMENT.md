@@ -216,7 +216,7 @@ services:
   app:
     image: nchat:latest
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
       - NEXT_PUBLIC_GRAPHQL_URL=${NEXT_PUBLIC_GRAPHQL_URL}
@@ -243,7 +243,7 @@ services:
   hasura:
     image: hasura/graphql-engine:v2.37.0
     ports:
-      - "8080:8080"
+      - '8080:8080'
     environment:
       - HASURA_GRAPHQL_DATABASE_URL=postgres://nchat_user:${POSTGRES_PASSWORD}@postgres:5432/nchat_production
       - HASURA_GRAPHQL_ADMIN_SECRET=${HASURA_ADMIN_SECRET}
@@ -259,8 +259,8 @@ services:
   nginx:
     image: nginx:alpine
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./deploy/docker/nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/certs
@@ -299,6 +299,7 @@ docker-compose down
 #### 1. Create Kubernetes Manifests
 
 **Namespace** (`k8s/namespace.yaml`):
+
 ```yaml
 apiVersion: v1
 kind: Namespace
@@ -307,6 +308,7 @@ metadata:
 ```
 
 **Deployment** (`k8s/deployment.yaml`):
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -324,40 +326,41 @@ spec:
         app: nchat
     spec:
       containers:
-      - name: nchat
-        image: nchat:1.0.0
-        ports:
-        - containerPort: 3000
-        env:
-        - name: NODE_ENV
-          value: "production"
-        - name: NEXT_PUBLIC_GRAPHQL_URL
-          valueFrom:
-            secretKeyRef:
-              name: nchat-secrets
-              key: graphql-url
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/ready
-            port: 3000
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: nchat
+          image: nchat:1.0.0
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: 'production'
+            - name: NEXT_PUBLIC_GRAPHQL_URL
+              valueFrom:
+                secretKeyRef:
+                  name: nchat-secrets
+                  key: graphql-url
+          resources:
+            requests:
+              memory: '256Mi'
+              cpu: '100m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/ready
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
 ```
 
 **Service** (`k8s/service.yaml`):
+
 ```yaml
 apiVersion: v1
 kind: Service
@@ -369,12 +372,13 @@ spec:
   selector:
     app: nchat
   ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 3000
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
 ```
 
 **Ingress** (`k8s/ingress.yaml`):
+
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -382,23 +386,23 @@ metadata:
   name: nchat-ingress
   namespace: nchat
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: 'letsencrypt-prod'
 spec:
   tls:
-  - hosts:
-    - chat.yourdomain.com
-    secretName: nchat-tls
+    - hosts:
+        - chat.yourdomain.com
+      secretName: nchat-tls
   rules:
-  - host: chat.yourdomain.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: nchat-service
-            port:
-              number: 80
+    - host: chat.yourdomain.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nchat-service
+                port:
+                  number: 80
 ```
 
 #### 2. Deploy to Kubernetes
@@ -474,23 +478,26 @@ pnpm start
 #### 3. Configure PM2
 
 **`ecosystem.config.js`**:
+
 ```javascript
 module.exports = {
-  apps: [{
-    name: 'nchat',
-    script: 'node_modules/.bin/next',
-    args: 'start',
-    cwd: '/var/www/nchat',
-    instances: 'max',
-    exec_mode: 'cluster',
-    env: {
-      NODE_ENV: 'production',
-      PORT: 3000
+  apps: [
+    {
+      name: 'nchat',
+      script: 'node_modules/.bin/next',
+      args: 'start',
+      cwd: '/var/www/nchat',
+      instances: 'max',
+      exec_mode: 'cluster',
+      env: {
+        NODE_ENV: 'production',
+        PORT: 3000,
+      },
+      error_file: '/var/log/nchat/error.log',
+      out_file: '/var/log/nchat/access.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
     },
-    error_file: '/var/log/nchat/error.log',
-    out_file: '/var/log/nchat/access.log',
-    log_date_format: 'YYYY-MM-DD HH:mm:ss Z'
-  }]
+  ],
 }
 ```
 
@@ -511,6 +518,7 @@ pm2 monit
 #### 4. Configure Nginx
 
 **`/etc/nginx/sites-available/nchat`**:
+
 ```nginx
 upstream nchat_upstream {
     server 127.0.0.1:3000;
@@ -741,6 +749,7 @@ curl -w "@curl-format.txt" -o /dev/null -s https://chat.yourdomain.com
 ```
 
 **`curl-format.txt`**:
+
 ```
 time_namelookup:  %{time_namelookup}\n
 time_connect:  %{time_connect}\n
@@ -908,6 +917,7 @@ kubectl rollout undo deployment/nchat-app -n nchat
 ## Support
 
 For deployment assistance:
+
 - **Documentation**: https://docs.nself.org
 - **GitHub Issues**: https://github.com/acamarata/nself-chat/issues
 - **Discord**: Join our community server
@@ -915,4 +925,4 @@ For deployment assistance:
 
 ---
 
-*Last updated: 2026-01-29*
+_Last updated: 2026-01-29_

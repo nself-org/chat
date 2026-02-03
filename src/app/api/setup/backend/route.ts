@@ -15,6 +15,8 @@ import { promisify } from 'util'
 import * as fs from 'fs'
 import * as path from 'path'
 
+import { logger } from '@/lib/logger'
+
 const execAsync = promisify(exec)
 
 // Paths
@@ -31,7 +33,7 @@ export async function GET() {
     const status = await getBackendStatus()
     return NextResponse.json(status)
   } catch (error) {
-    console.error('Backend status error:', error)
+    logger.error('Backend status error:', error)
     return NextResponse.json(
       { error: 'Failed to get backend status', details: String(error) },
       { status: 500 }
@@ -74,13 +76,10 @@ export async function POST(request: NextRequest) {
         return NextResponse.json(await getServiceUrls())
 
       default:
-        return NextResponse.json(
-          { error: `Unknown action: ${action}` },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: `Unknown action: ${action}` }, { status: 400 })
     }
   } catch (error) {
-    console.error('Backend action error:', error)
+    logger.error('Backend action error:', error)
     return NextResponse.json(
       { error: 'Backend action failed', details: String(error) },
       { status: 500 }
@@ -222,7 +221,7 @@ async function startBackend() {
     )
 
     // Wait a bit for services to fully start
-    await new Promise(resolve => setTimeout(resolve, 5000))
+    await new Promise((resolve) => setTimeout(resolve, 5000))
 
     const status = await getBackendStatus()
 
@@ -252,10 +251,9 @@ async function stopBackend() {
   const nself = getNselfCommand()
 
   try {
-    const { stdout, stderr } = await execAsync(
-      `cd "${BACKEND_DIR}" && ${nself} stop 2>&1`,
-      { timeout: 60000 }
-    )
+    const { stdout, stderr } = await execAsync(`cd "${BACKEND_DIR}" && ${nself} stop 2>&1`, {
+      timeout: 60000,
+    })
 
     return {
       success: true,
@@ -282,12 +280,11 @@ async function restartBackend() {
   const nself = getNselfCommand()
 
   try {
-    const { stdout, stderr } = await execAsync(
-      `cd "${BACKEND_DIR}" && ${nself} restart 2>&1`,
-      { timeout: 180000 }
-    )
+    const { stdout, stderr } = await execAsync(`cd "${BACKEND_DIR}" && ${nself} restart 2>&1`, {
+      timeout: 180000,
+    })
 
-    await new Promise(resolve => setTimeout(resolve, 5000))
+    await new Promise((resolve) => setTimeout(resolve, 5000))
     const status = await getBackendStatus()
 
     return {
@@ -378,10 +375,9 @@ async function getServiceUrls() {
   const nself = getNselfCommand()
 
   try {
-    const { stdout } = await execAsync(
-      `cd "${BACKEND_DIR}" && ${nself} urls 2>&1`,
-      { timeout: 10000 }
-    )
+    const { stdout } = await execAsync(`cd "${BACKEND_DIR}" && ${nself} urls 2>&1`, {
+      timeout: 10000,
+    })
 
     const urls = parseUrlsOutput(stdout)
 
@@ -400,7 +396,9 @@ async function getServiceUrls() {
 /**
  * Parse nself status text output
  */
-function parseStatusOutput(output: string): Record<string, { name: string; running: boolean; healthy: boolean }> {
+function parseStatusOutput(
+  output: string
+): Record<string, { name: string; running: boolean; healthy: boolean }> {
   const services: Record<string, { name: string; running: boolean; healthy: boolean }> = {}
 
   const servicePatterns = [
@@ -417,9 +415,13 @@ function parseStatusOutput(output: string): Record<string, { name: string; runni
   const lines = output.toLowerCase().split('\n')
 
   for (const { name, patterns } of servicePatterns) {
-    const line = lines.find(l => patterns.some(p => l.includes(p)))
+    const line = lines.find((l) => patterns.some((p) => l.includes(p)))
     if (line) {
-      const running = line.includes('running') || line.includes('up') || line.includes('✓') || line.includes('healthy')
+      const running =
+        line.includes('running') ||
+        line.includes('up') ||
+        line.includes('✓') ||
+        line.includes('healthy')
       const healthy = line.includes('healthy') || (running && !line.includes('unhealthy'))
       services[name] = { name, running, healthy }
     }
@@ -448,7 +450,7 @@ function parseUrlsOutput(output: string): Record<string, string> {
     if (urlMatch) {
       const url = urlMatch[1]
       for (const { key, patterns } of urlPatterns) {
-        if (patterns.some(p => line.toLowerCase().includes(p))) {
+        if (patterns.some((p) => line.toLowerCase().includes(p))) {
           urls[key] = url
           break
         }

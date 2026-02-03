@@ -48,12 +48,12 @@ export type NotificationIcon =
   | 'github'
 
 export type NotificationColor =
-  | 'green'    // opened, created, success
-  | 'purple'   // merged
-  | 'red'      // closed, failed
-  | 'blue'     // info, comment
-  | 'yellow'   // pending, warning
-  | 'gray'     // neutral
+  | 'green' // opened, created, success
+  | 'purple' // merged
+  | 'red' // closed, failed
+  | 'blue' // info, comment
+  | 'yellow' // pending, warning
+  | 'gray' // neutral
 
 export interface NotificationMetadata {
   eventType: string

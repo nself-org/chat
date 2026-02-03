@@ -65,13 +65,7 @@ export interface UseWebhooksOptions {
 }
 
 export function useWebhooks(options: UseWebhooksOptions = {}) {
-  const {
-    autoFetch = true,
-    realtime = false,
-    channelId,
-    status,
-    limit = 50,
-  } = options
+  const { autoFetch = true, realtime = false, channelId, status, limit = 50 } = options
 
   const { config } = useAppConfig()
   const webhooksEnabled = config?.integrations?.webhooks?.enabled ?? false
@@ -136,48 +130,39 @@ export function useWebhooks(options: UseWebhooksOptions = {}) {
   // MUTATIONS
   // ==========================================================================
 
-  const [createWebhookMutation] = useMutation<CreateWebhookResponse>(
-    CREATE_WEBHOOK,
-    {
-      onCompleted: (data) => {
-        if (data?.insert_nchat_webhooks_one) {
-          addWebhook(data.insert_nchat_webhooks_one)
-        }
-      },
-      onError: (err) => {
-        setError(err.message)
-      },
-    }
-  )
+  const [createWebhookMutation] = useMutation<CreateWebhookResponse>(CREATE_WEBHOOK, {
+    onCompleted: (data) => {
+      if (data?.insert_nchat_webhooks_one) {
+        addWebhook(data.insert_nchat_webhooks_one)
+      }
+    },
+    onError: (err) => {
+      setError(err.message)
+    },
+  })
 
-  const [updateWebhookMutation] = useMutation<UpdateWebhookResponse>(
-    UPDATE_WEBHOOK,
-    {
-      onCompleted: (data) => {
-        if (data?.update_nchat_webhooks_by_pk) {
-          const updated = data.update_nchat_webhooks_by_pk
-          updateWebhookInStore(updated.id, updated)
-        }
-      },
-      onError: (err) => {
-        setError(err.message)
-      },
-    }
-  )
+  const [updateWebhookMutation] = useMutation<UpdateWebhookResponse>(UPDATE_WEBHOOK, {
+    onCompleted: (data) => {
+      if (data?.update_nchat_webhooks_by_pk) {
+        const updated = data.update_nchat_webhooks_by_pk
+        updateWebhookInStore(updated.id, updated)
+      }
+    },
+    onError: (err) => {
+      setError(err.message)
+    },
+  })
 
-  const [deleteWebhookMutation] = useMutation<DeleteWebhookResponse>(
-    DELETE_WEBHOOK,
-    {
-      onCompleted: (data) => {
-        if (data?.delete_nchat_webhooks_by_pk) {
-          removeWebhook(data.delete_nchat_webhooks_by_pk.id)
-        }
-      },
-      onError: (err) => {
-        setError(err.message)
-      },
-    }
-  )
+  const [deleteWebhookMutation] = useMutation<DeleteWebhookResponse>(DELETE_WEBHOOK, {
+    onCompleted: (data) => {
+      if (data?.delete_nchat_webhooks_by_pk) {
+        removeWebhook(data.delete_nchat_webhooks_by_pk.id)
+      }
+    },
+    onError: (err) => {
+      setError(err.message)
+    },
+  })
 
   const [regenerateUrlMutation] = useMutation(REGENERATE_WEBHOOK_URL, {
     onCompleted: (data) => {
@@ -404,8 +389,7 @@ export function useWebhooks(options: UseWebhooksOptions = {}) {
       const webhook = webhooks.find((w) => w.id === id)
       if (!webhook) return null
 
-      const newStatus: WebhookStatus =
-        webhook.status === 'active' ? 'paused' : 'active'
+      const newStatus: WebhookStatus = webhook.status === 'active' ? 'paused' : 'active'
 
       return updateWebhook({ id, status: newStatus })
     },
@@ -490,12 +474,7 @@ export interface UseWebhookOptions {
 }
 
 export function useWebhook(options: UseWebhookOptions) {
-  const {
-    webhookId,
-    fetchDeliveries = true,
-    fetchStats = true,
-    realtime = false,
-  } = options
+  const { webhookId, fetchDeliveries = true, fetchStats = true, realtime = false } = options
 
   const { config } = useAppConfig()
   const webhooksEnabled = config?.integrations?.webhooks?.enabled ?? false
@@ -548,8 +527,9 @@ export function useWebhook(options: UseWebhookOptions) {
   })
 
   // Fetch stats
-  const { loading: statsLoading, error: statsError } =
-    useQuery<GetWebhookStatsResponse>(GET_WEBHOOK_STATS, {
+  const { loading: statsLoading, error: statsError } = useQuery<GetWebhookStatsResponse>(
+    GET_WEBHOOK_STATS,
+    {
       variables: { webhookId },
       skip: !webhookId || !fetchStats || !webhooksEnabled,
       onCompleted: (data) => {
@@ -571,7 +551,8 @@ export function useWebhook(options: UseWebhookOptions) {
       onError: (err) => {
         setError(err.message)
       },
-    })
+    }
+  )
 
   // Real-time deliveries subscription
   useSubscription(WEBHOOK_DELIVERIES_SUBSCRIPTION, {
@@ -585,10 +566,7 @@ export function useWebhook(options: UseWebhookOptions) {
   })
 
   const refresh = useCallback(async () => {
-    await Promise.all([
-      refetchWebhook(),
-      fetchDeliveries && refetchDeliveries(),
-    ])
+    await Promise.all([refetchWebhook(), fetchDeliveries && refetchDeliveries()])
   }, [refetchWebhook, refetchDeliveries, fetchDeliveries])
 
   return {
@@ -596,11 +574,7 @@ export function useWebhook(options: UseWebhookOptions) {
     deliveries,
     stats,
     isLoading: webhookLoading || deliveriesLoading || statsLoading,
-    error:
-      webhookError?.message ||
-      deliveriesError?.message ||
-      statsError?.message ||
-      null,
+    error: webhookError?.message || deliveriesError?.message || statsError?.message || null,
     webhooksEnabled,
     refresh,
   }
@@ -623,26 +597,23 @@ export function useWebhookDeliveries(options: UseWebhookDeliveriesOptions) {
   const { config } = useAppConfig()
   const webhooksEnabled = config?.integrations?.webhooks?.enabled ?? false
 
-  const { deliveries, setDeliveries, updateDelivery, setError } =
-    useWebhookStore()
+  const { deliveries, setDeliveries, updateDelivery, setError } = useWebhookStore()
 
-  const {
-    loading,
-    error,
-    refetch,
-    fetchMore,
-  } = useQuery<GetWebhookDeliveriesResponse>(GET_WEBHOOK_DELIVERIES, {
-    variables: { webhookId, status, limit },
-    skip: !webhookId || !webhooksEnabled,
-    onCompleted: (data) => {
-      if (data?.nchat_webhook_deliveries) {
-        setDeliveries(data.nchat_webhook_deliveries)
-      }
-    },
-    onError: (err) => {
-      setError(err.message)
-    },
-  })
+  const { loading, error, refetch, fetchMore } = useQuery<GetWebhookDeliveriesResponse>(
+    GET_WEBHOOK_DELIVERIES,
+    {
+      variables: { webhookId, status, limit },
+      skip: !webhookId || !webhooksEnabled,
+      onCompleted: (data) => {
+        if (data?.nchat_webhook_deliveries) {
+          setDeliveries(data.nchat_webhook_deliveries)
+        }
+      },
+      onError: (err) => {
+        setError(err.message)
+      },
+    }
+  )
 
   // Real-time updates
   useSubscription(WEBHOOK_DELIVERIES_SUBSCRIPTION, {
@@ -690,11 +661,7 @@ export function useWebhookDeliveries(options: UseWebhookDeliveriesOptions) {
 /**
  * Generate webhook URL from parts
  */
-export function generateWebhookUrl(
-  baseUrl: string,
-  webhookId: string,
-  token: string
-): string {
+export function generateWebhookUrl(baseUrl: string, webhookId: string, token: string): string {
   return `${baseUrl}/api/webhooks/${webhookId}/${token}`
 }
 

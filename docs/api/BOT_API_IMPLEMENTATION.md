@@ -53,6 +53,7 @@ Created comprehensive database schema:
   - IP addresses
 
 **Row-Level Security (RLS):**
+
 - Admins/owners can manage all bots
 - Users can view their own bots
 - Proper access control on all tables
@@ -74,11 +75,13 @@ Comprehensive token utilities:
 - `isTokenExpired()` - Expiration checks
 
 **Webhook utilities:**
+
 - `generateWebhookSecret()` - HMAC secret generation
 - `signWebhookPayload()` - HMAC-SHA256 signing
 - `verifyWebhookSignature()` - Signature verification
 
 **Rate limiting:**
+
 - `checkRateLimit()` - 100 requests/minute per bot
 - In-memory cache (production should use Redis)
 
@@ -91,34 +94,41 @@ Comprehensive token utilities:
 **16 Permissions across 6 categories:**
 
 **Messages:**
+
 - `messages.send` - Send messages
 - `messages.read` - Read history
 - `messages.delete` - Delete own messages
 - `messages.edit` - Edit own messages
 
 **Channels:**
+
 - `channels.create` - Create channels
 - `channels.read` - Read channel info
 - `channels.update` - Update settings (dangerous)
 - `channels.delete` - Delete channels (dangerous)
 
 **Reactions:**
+
 - `reactions.add` - Add reactions
 - `reactions.remove` - Remove reactions
 
 **Users:**
+
 - `users.read` - Read user info
 - `users.update` - Update bot profile (dangerous)
 
 **Files:**
+
 - `files.upload` - Upload files
 - `files.read` - Read file info
 
 **Threads:**
+
 - `threads.create` - Create threads
 - `threads.read` - Read threads
 
 **Functions:**
+
 - `checkBotPermission()` - Database permission check
 - `getBotPermissions()` - Get all permissions
 - `grantBotPermission()` - Grant permission
@@ -132,6 +142,7 @@ Comprehensive token utilities:
 **File:** `src/lib/api/bot-auth.ts`
 
 **Features:**
+
 - Token extraction and verification
 - Rate limiting with headers
 - Permission checking
@@ -139,16 +150,15 @@ Comprehensive token utilities:
 - Error handling
 
 **Middleware wrapper:**
+
 ```typescript
-export const POST = withBotAuth(
-  async (request, auth) => {
-    // Handler code
-  },
-  BotPermission.MESSAGES_SEND
-);
+export const POST = withBotAuth(async (request, auth) => {
+  // Handler code
+}, BotPermission.MESSAGES_SEND)
 ```
 
 **Auth result includes:**
+
 - Bot ID
 - User ID
 - Bot name
@@ -160,39 +170,50 @@ export const POST = withBotAuth(
 ### 5. Bot API Endpoints ✅
 
 #### POST /api/bots/send-message
+
 **File:** `src/app/api/bots/send-message/route.ts`
+
 - Send messages to channels
 - Supports attachments
 - Metadata tracking
 - Permission: `messages.send`
 
 #### POST /api/bots/create-channel
+
 **File:** `src/app/api/bots/create-channel/route.ts`
+
 - Create public/private channels
 - Name validation (lowercase, hyphens, underscores)
 - Duplicate detection
 - Permission: `channels.create`
 
 #### GET /api/bots/channel-info
+
 **File:** `src/app/api/bots/channel-info/route.ts`
+
 - Get channel details
 - Member and message counts
 - Permission: `channels.read`
 
 #### POST /api/bots/add-reaction
+
 **File:** `src/app/api/bots/add-reaction/route.ts`
+
 - Add emoji reactions
 - Unicode and shortcode support
 - Message existence validation
 - Permission: `reactions.add`
 
 #### GET /api/bots/user-info
+
 **File:** `src/app/api/bots/user-info/route.ts`
+
 - Get user profile
 - Message count statistics
 - Permission: `users.read`
 
 **All endpoints include:**
+
 - Authentication
 - Rate limiting
 - Permission checks
@@ -206,6 +227,7 @@ export const POST = withBotAuth(
 **File:** `src/lib/bots/webhooks.ts`
 
 **Features:**
+
 - Event-based delivery
 - HMAC-SHA256 signatures
 - Automatic retry (up to 5 attempts)
@@ -214,6 +236,7 @@ export const POST = withBotAuth(
 - Statistics tracking
 
 **Supported Events:**
+
 - `message.created`
 - `message.updated`
 - `message.deleted`
@@ -226,11 +249,13 @@ export const POST = withBotAuth(
 - `reaction.removed`
 
 **Functions:**
+
 - `triggerWebhooks()` - Main delivery function
 - `testWebhook()` - Test delivery
 - Helper functions for each event type
 
 **Webhook Headers:**
+
 - `X-Webhook-Event` - Event type
 - `X-Webhook-Signature` - HMAC signature
 - `X-Webhook-Delivery` - Webhook ID
@@ -243,6 +268,7 @@ export const POST = withBotAuth(
 **File:** `src/graphql/bots.ts` (extended)
 
 **Added Queries:**
+
 - `GET_BOT_TOKENS` - List tokens
 - `GET_BOT_WEBHOOKS` - List webhooks
 - `GET_WEBHOOK_LOGS` - Webhook delivery logs
@@ -251,6 +277,7 @@ export const POST = withBotAuth(
 - `GET_BOT_API_LOGS` - API call logs
 
 **Added Mutations:**
+
 - `CREATE_BOT_TOKEN` - Generate token
 - `REVOKE_BOT_TOKEN` - Deactivate token
 - `DELETE_BOT_TOKEN` - Remove token
@@ -265,6 +292,7 @@ export const POST = withBotAuth(
 ### 8. React Hooks ✅
 
 #### `src/hooks/use-bots.ts`
+
 - `useBots()` - List all bots
 - `useBot()` - Get single bot
 - `useCreateBot()` - Create bot
@@ -272,6 +300,7 @@ export const POST = withBotAuth(
 - `useDeleteBot()` - Delete bot
 
 #### `src/hooks/use-bot-tokens.ts`
+
 - `useBotTokens()` - List tokens
 - `useGenerateBotToken()` - Generate token (returns plaintext)
 - `useRevokeBotToken()` - Revoke token
@@ -294,6 +323,7 @@ export const POST = withBotAuth(
 **File:** `src/components/admin/BotManager.tsx`
 
 **Features:**
+
 - List all bots with statistics
 - Create new bots
 - Delete bots
@@ -302,6 +332,7 @@ export const POST = withBotAuth(
 - Token/webhook/permission counts
 
 **UI Elements:**
+
 - Bot cards with avatars
 - Status badges (active/inactive)
 - Type badges (custom/integration/system)
@@ -317,6 +348,7 @@ export const POST = withBotAuth(
 **Comprehensive documentation with:**
 
 **5 Sections:**
+
 1. **Overview** - Getting started, rate limits, permissions
 2. **Authentication** - Token creation, usage, format
 3. **Endpoints** - All 5 API endpoints with examples
@@ -324,6 +356,7 @@ export const POST = withBotAuth(
 5. **Examples** - cURL, JavaScript, Python code samples
 
 **Features:**
+
 - Interactive tabs
 - Code blocks with copy button
 - Request/response examples
@@ -370,6 +403,7 @@ nself-chat/
 ## Testing Checklist
 
 ### Database
+
 - [x] Migration runs successfully
 - [x] All tables created
 - [x] Indexes created
@@ -378,6 +412,7 @@ nself-chat/
 - [x] Triggers functioning
 
 ### Token Generation
+
 - [x] Generate valid tokens
 - [x] Hash tokens correctly
 - [x] Verify tokens
@@ -386,6 +421,7 @@ nself-chat/
 - [x] Expiration checks
 
 ### API Endpoints
+
 - [x] Send message endpoint
 - [x] Create channel endpoint
 - [x] Get channel info endpoint
@@ -393,6 +429,7 @@ nself-chat/
 - [x] Get user info endpoint
 
 ### Authentication
+
 - [x] Token verification
 - [x] Permission checking
 - [x] Rate limiting
@@ -400,6 +437,7 @@ nself-chat/
 - [x] API logging
 
 ### Webhooks
+
 - [x] Event triggering
 - [x] Payload signing
 - [x] Retry logic
@@ -407,18 +445,21 @@ nself-chat/
 - [x] Statistics tracking
 
 ### Permissions
+
 - [x] Check permissions
 - [x] Grant permissions
 - [x] Revoke permissions
 - [x] Scope validation
 
 ### UI Components
+
 - [x] Bot manager loads
 - [x] Create bot dialog
 - [x] Delete bot confirmation
 - [x] Statistics display
 
 ### Documentation
+
 - [x] All sections complete
 - [x] Code examples working
 - [x] Copy functionality
@@ -472,15 +513,12 @@ curl -X POST http://localhost:3000/api/bots/send-message \
 ### Verifying Webhook Signatures
 
 ```javascript
-const crypto = require('crypto');
+const crypto = require('crypto')
 
 function verifyWebhook(payload, signature, secret) {
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
+  const expectedSignature = crypto.createHmac('sha256', secret).update(payload).digest('hex')
 
-  return signature === 'sha256=' + expectedSignature;
+  return signature === 'sha256=' + expectedSignature
 }
 ```
 
@@ -630,6 +668,7 @@ curl http://localhost:3000/api/health
 ## Changelog
 
 ### v0.3.0 (2026-01-30)
+
 - ✅ Initial bot API implementation
 - ✅ Database schema with 7 tables
 - ✅ Token generation and management

@@ -132,10 +132,7 @@ export interface AndroidWidgetPlugin {
   /**
    * Update widget data
    */
-  updateWidget(options: {
-    widgetId: number
-    data: AndroidWidgetData
-  }): Promise<void>
+  updateWidget(options: { widgetId: number; data: AndroidWidgetData }): Promise<void>
 
   /**
    * Update all widgets of a specific type
@@ -271,33 +268,24 @@ class AndroidWidgetService {
    */
   private async setupListeners(): Promise<void> {
     // Widget action listener
-    const actionListener = await AndroidWidget.addListener(
-      'widgetAction',
-      (data) => {
-        console.log('Widget action received:', data)
-        this.handleWidgetAction(data.widgetId, data.action)
-      }
-    )
+    const actionListener = await AndroidWidget.addListener('widgetAction', (data) => {
+      console.log('Widget action received:', data)
+      this.handleWidgetAction(data.widgetId, data.action)
+    })
     this.listeners.push(actionListener)
 
     // Widget configured listener
-    const configuredListener = await AndroidWidget.addListener(
-      'widgetConfigured',
-      (data) => {
-        console.log('Widget configured:', data.widget)
-        this.widgets.set(data.widget.widgetId, data.widget)
-      }
-    )
+    const configuredListener = await AndroidWidget.addListener('widgetConfigured', (data) => {
+      console.log('Widget configured:', data.widget)
+      this.widgets.set(data.widget.widgetId, data.widget)
+    })
     this.listeners.push(configuredListener)
 
     // Widget deleted listener
-    const deletedListener = await AndroidWidget.addListener(
-      'widgetDeleted',
-      (data) => {
-        console.log('Widget deleted:', data.widgetId)
-        this.widgets.delete(data.widgetId)
-      }
-    )
+    const deletedListener = await AndroidWidget.addListener('widgetDeleted', (data) => {
+      console.log('Widget deleted:', data.widgetId)
+      this.widgets.delete(data.widgetId)
+    })
     this.listeners.push(deletedListener)
   }
 
@@ -454,9 +442,7 @@ class AndroidWidgetService {
    * Get widgets by type
    */
   getWidgetsByType(widgetType: AndroidWidgetType): AndroidWidgetConfig[] {
-    return Array.from(this.widgets.values()).filter(
-      (widget) => widget.widgetType === widgetType
-    )
+    return Array.from(this.widgets.values()).filter((widget) => widget.widgetType === widgetType)
   }
 
   /**
@@ -530,19 +516,13 @@ export function useAndroidWidgets(): UseAndroidWidgetsResult {
     []
   )
 
-  const updateRecentMessages = React.useCallback(
-    async (messages: AndroidWidgetMessage[]) => {
-      await androidWidgets.updateRecentMessagesWidget(messages)
-    },
-    []
-  )
+  const updateRecentMessages = React.useCallback(async (messages: AndroidWidgetMessage[]) => {
+    await androidWidgets.updateRecentMessagesWidget(messages)
+  }, [])
 
-  const updateChannelList = React.useCallback(
-    async (channels: AndroidWidgetChannel[]) => {
-      await androidWidgets.updateChannelListWidget(channels)
-    },
-    []
-  )
+  const updateChannelList = React.useCallback(async (channels: AndroidWidgetChannel[]) => {
+    await androidWidgets.updateChannelListWidget(channels)
+  }, [])
 
   const pinWidget = React.useCallback(async (widgetType: AndroidWidgetType) => {
     return androidWidgets.pinWidget(widgetType)

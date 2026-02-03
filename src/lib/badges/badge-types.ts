@@ -7,12 +7,12 @@
 
 // Badge categories for organization
 export type BadgeCategory =
-  | 'role'           // User role badges (owner, admin, moderator)
-  | 'verification'   // Verification status badges (verified, government)
-  | 'achievement'    // Achievement-based badges (veteran, contributor)
-  | 'membership'     // Membership tier badges (premium, sponsor)
-  | 'status'         // Status badges (online, away, busy)
-  | 'special'        // Special event or limited badges
+  | 'role' // User role badges (owner, admin, moderator)
+  | 'verification' // Verification status badges (verified, government)
+  | 'achievement' // Achievement-based badges (veteran, contributor)
+  | 'membership' // Membership tier badges (premium, sponsor)
+  | 'status' // Status badges (online, away, busy)
+  | 'special' // Special event or limited badges
 
 // Badge priority determines display order (higher = more important)
 export type BadgePriority = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
@@ -36,23 +36,23 @@ export interface BadgeStyle {
 export interface Badge {
   id: string
   name: string
-  shortName?: string      // Abbreviated name for compact display
+  shortName?: string // Abbreviated name for compact display
   description: string
   category: BadgeCategory
   priority: BadgePriority
   style: BadgeStyle
   tooltip?: string
   icon: string
-  visible: boolean        // Whether badge is visible in lists
-  stackable: boolean      // Can user have multiple of this badge type
-  expiresAt?: Date        // Optional expiration
+  visible: boolean // Whether badge is visible in lists
+  stackable: boolean // Can user have multiple of this badge type
+  expiresAt?: Date // Optional expiration
   metadata?: Record<string, unknown>
 }
 
 // User badge instance (assigned to a user)
 export interface UserBadge extends Badge {
   assignedAt: Date
-  assignedBy?: string     // User ID who assigned the badge
+  assignedBy?: string // User ID who assigned the badge
   reason?: string
   expiresAt?: Date
 }
@@ -471,7 +471,7 @@ export function getBadge(id: string): Badge | undefined {
 
 // Get badges by category
 export function getBadgesByCategory(category: BadgeCategory): Badge[] {
-  return Object.values(BADGE_DEFINITIONS).filter(b => b.category === category)
+  return Object.values(BADGE_DEFINITIONS).filter((b) => b.category === category)
 }
 
 // Get badges sorted by priority

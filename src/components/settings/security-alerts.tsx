@@ -8,12 +8,7 @@
  */
 
 import { useState } from 'react'
-import {
-  Bell,
-  AlertTriangle,
-  Mail,
-  Smartphone,
-} from 'lucide-react'
+import { Bell, AlertTriangle, Mail, Smartphone } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
@@ -91,7 +86,7 @@ function AlertSettingRow({
   onTogglePush: (id: string) => void
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 py-4">
+    <div className="flex flex-col justify-between gap-4 py-4 sm:flex-row sm:items-center">
       <div className="space-y-0.5">
         <Label className="text-base font-medium">{setting.label}</Label>
         <p className="text-sm text-muted-foreground">{setting.description}</p>
@@ -135,9 +130,7 @@ export function SecurityAlerts({ onSettingsChange }: SecurityAlertsProps) {
 
   const handleToggleEmail = (id: string) => {
     setSettings((prev) => {
-      const updated = prev.map((s) =>
-        s.id === id ? { ...s, email: !s.email } : s
-      )
+      const updated = prev.map((s) => (s.id === id ? { ...s, email: !s.email } : s))
       onSettingsChange?.(updated)
       return updated
     })
@@ -145,9 +138,7 @@ export function SecurityAlerts({ onSettingsChange }: SecurityAlertsProps) {
 
   const handleTogglePush = (id: string) => {
     setSettings((prev) => {
-      const updated = prev.map((s) =>
-        s.id === id ? { ...s, push: !s.push } : s
-      )
+      const updated = prev.map((s) => (s.id === id ? { ...s, push: !s.push } : s))
       onSettingsChange?.(updated)
       return updated
     })
@@ -176,23 +167,21 @@ export function SecurityAlerts({ onSettingsChange }: SecurityAlertsProps) {
           <Bell className="h-5 w-5" />
           <CardTitle className="text-lg">Security Alerts</CardTitle>
         </div>
-        <CardDescription>
-          Choose how you want to be notified about security events
-        </CardDescription>
+        <CardDescription>Choose how you want to be notified about security events</CardDescription>
       </CardHeader>
 
       <CardContent>
         {/* Header with toggle all buttons */}
-        <div className="flex items-center justify-end gap-6 pb-4 border-b">
+        <div className="flex items-center justify-end gap-6 border-b pb-4">
           <button
-            className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
             onClick={enableAllEmail}
           >
             <Mail className="h-4 w-4" />
             <span>Enable all</span>
           </button>
           <button
-            className="text-sm text-muted-foreground hover:text-foreground flex items-center gap-1"
+            className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
             onClick={enableAllPush}
           >
             <Smartphone className="h-4 w-4" />
@@ -215,13 +204,13 @@ export function SecurityAlerts({ onSettingsChange }: SecurityAlertsProps) {
         <Separator className="my-6" />
 
         {/* Additional info */}
-        <div className="flex items-start gap-3 p-4 bg-muted/50 rounded-lg">
-          <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
+        <div className="bg-muted/50 flex items-start gap-3 rounded-lg p-4">
+          <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-amber-500" />
           <div className="text-sm">
             <p className="font-medium">Important security alerts</p>
             <p className="text-muted-foreground">
-              Critical security alerts (like account lockouts) will always be sent
-              to your email, regardless of these settings.
+              Critical security alerts (like account lockouts) will always be sent to your email,
+              regardless of these settings.
             </p>
           </div>
         </div>

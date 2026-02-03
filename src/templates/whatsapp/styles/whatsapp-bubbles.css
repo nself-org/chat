@@ -212,7 +212,7 @@
   position: absolute;
   top: 4px;
   right: 4px;
-  color: #F4C430;
+  color: #f4c430;
   width: 12px;
   height: 12px;
 }
@@ -298,18 +298,28 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F44336;
+  background: #f44336;
   border-radius: 3px;
   color: white;
   font-size: 10px;
   font-weight: bold;
 }
 
-.wa-bubble-document-icon.pdf { background: #F44336; }
-.wa-bubble-document-icon.doc { background: #2196F3; }
-.wa-bubble-document-icon.xls { background: #4CAF50; }
-.wa-bubble-document-icon.ppt { background: #FF9800; }
-.wa-bubble-document-icon.zip { background: #9C27B0; }
+.wa-bubble-document-icon.pdf {
+  background: #f44336;
+}
+.wa-bubble-document-icon.doc {
+  background: #2196f3;
+}
+.wa-bubble-document-icon.xls {
+  background: #4caf50;
+}
+.wa-bubble-document-icon.ppt {
+  background: #ff9800;
+}
+.wa-bubble-document-icon.zip {
+  background: #9c27b0;
+}
 
 .wa-bubble-document-info {
   flex: 1;
@@ -411,7 +421,7 @@
 .wa-bubble-location-map {
   width: 280px;
   height: 160px;
-  background: #E5E3DF;
+  background: #e5e3df;
   border-radius: 5px;
   overflow: hidden;
 }
@@ -479,7 +489,8 @@
  * ───────────────────────────────────────────────────────────────────────────── */
 
 @keyframes wa-pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
     transform: scale(1);
   }

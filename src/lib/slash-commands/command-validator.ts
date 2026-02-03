@@ -242,9 +242,10 @@ function validateDescription(description?: string): CommandValidationError[] {
 /**
  * Validate command arguments
  */
-function validateArguments(
-  args?: CommandArgument[]
-): { errors: CommandValidationError[]; warnings: CommandValidationWarning[] } {
+function validateArguments(args?: CommandArgument[]): {
+  errors: CommandValidationError[]
+  warnings: CommandValidationWarning[]
+} {
   const errors: CommandValidationError[] = []
   const warnings: CommandValidationWarning[] = []
 
@@ -357,7 +358,8 @@ function validateArgument(arg: CommandArgument): CommandValidationError[] {
   if (!/^[a-zA-Z][a-zA-Z0-9_]*$/.test(arg.name.replace(/\s+/g, '_'))) {
     errors.push({
       field: `arguments.${arg.name}`,
-      message: 'Argument name must start with a letter and contain only letters, numbers, and underscores',
+      message:
+        'Argument name must start with a letter and contain only letters, numbers, and underscores',
       code: 'ARG_INVALID_NAME',
     })
   }
@@ -400,10 +402,7 @@ function validateArgument(arg: CommandArgument): CommandValidationError[] {
       }
     }
 
-    if (
-      arg.validation.minLength !== undefined &&
-      arg.validation.maxLength !== undefined
-    ) {
+    if (arg.validation.minLength !== undefined && arg.validation.maxLength !== undefined) {
       if (arg.validation.minLength > arg.validation.maxLength) {
         errors.push({
           field: `arguments.${arg.name}`,
@@ -456,9 +455,7 @@ function validatePermissions(
 /**
  * Validate channels config
  */
-function validateChannels(
-  channels?: Partial<SlashCommand['channels']>
-): CommandValidationError[] {
+function validateChannels(channels?: Partial<SlashCommand['channels']>): CommandValidationError[] {
   const errors: CommandValidationError[] = []
 
   if (!channels) {
@@ -516,9 +513,10 @@ function validateResponseConfig(
 /**
  * Validate action configuration
  */
-function validateAction(
-  command: CommandDraft
-): { errors: CommandValidationError[]; warnings: CommandValidationWarning[] } {
+function validateAction(command: CommandDraft): {
+  errors: CommandValidationError[]
+  warnings: CommandValidationWarning[]
+} {
   const errors: CommandValidationError[] = []
   const warnings: CommandValidationWarning[] = []
 
@@ -628,9 +626,7 @@ function validateAction(
 /**
  * Validate webhook configuration
  */
-function validateWebhook(
-  webhook: SlashCommand['webhook']
-): CommandValidationError[] {
+function validateWebhook(webhook: SlashCommand['webhook']): CommandValidationError[] {
   const errors: CommandValidationError[] = []
 
   if (!webhook) {
@@ -690,9 +686,7 @@ function validateWebhook(
 /**
  * Validate workflow configuration
  */
-function validateWorkflow(
-  workflow: SlashCommand['workflow']
-): CommandValidationError[] {
+function validateWorkflow(workflow: SlashCommand['workflow']): CommandValidationError[] {
   const errors: CommandValidationError[] = []
 
   if (!workflow) {

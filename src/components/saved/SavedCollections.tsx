@@ -1,43 +1,37 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Folder, Plus, Pencil, Trash2, Share2, MoreHorizontal } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import * as React from 'react'
+import { Folder, Plus, Pencil, Trash2, Share2, MoreHorizontal } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import type { SavedCollection } from '@/lib/saved';
+} from '@/components/ui/dropdown-menu'
+import type { SavedCollection } from '@/lib/saved'
 
 export interface SavedCollectionsProps {
   /** List of collections */
-  collections: SavedCollection[];
+  collections: SavedCollection[]
   /** Callback when collection is clicked */
-  onSelect: (collection: SavedCollection) => void;
+  onSelect: (collection: SavedCollection) => void
   /** Callback to create new collection */
-  onCreate?: () => void;
+  onCreate?: () => void
   /** Callback to edit collection */
-  onEdit?: (collection: SavedCollection) => void;
+  onEdit?: (collection: SavedCollection) => void
   /** Callback to delete collection */
-  onDelete?: (collection: SavedCollection) => void;
+  onDelete?: (collection: SavedCollection) => void
   /** Callback to share collection */
-  onShare?: (collection: SavedCollection) => void;
+  onShare?: (collection: SavedCollection) => void
   /** Loading state */
-  isLoading?: boolean;
+  isLoading?: boolean
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 /**
@@ -54,8 +48,8 @@ export function SavedCollections({
   className,
 }: SavedCollectionsProps) {
   const sortedCollections = React.useMemo(() => {
-    return [...collections].sort((a, b) => a.position - b.position);
-  }, [collections]);
+    return [...collections].sort((a, b) => a.position - b.position)
+  }, [collections])
 
   if (isLoading) {
     return (
@@ -65,7 +59,7 @@ export function SavedCollections({
             <CardHeader className="pb-2">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded bg-muted" />
-                <div className="space-y-1.5 flex-1">
+                <div className="flex-1 space-y-1.5">
                   <div className="h-4 w-24 rounded bg-muted" />
                   <div className="h-3 w-16 rounded bg-muted" />
                 </div>
@@ -77,7 +71,7 @@ export function SavedCollections({
           </Card>
         ))}
       </div>
-    );
+    )
   }
 
   return (
@@ -92,7 +86,7 @@ export function SavedCollections({
         </div>
         {onCreate && (
           <Button onClick={onCreate}>
-            <Plus className="h-4 w-4 mr-2" />
+            <Plus className="mr-2 h-4 w-4" />
             New Collection
           </Button>
         )}
@@ -102,14 +96,14 @@ export function SavedCollections({
       {collections.length === 0 ? (
         <Card className="p-8">
           <div className="text-center">
-            <Folder className="h-12 w-12 text-muted-foreground mx-auto mb-3" />
-            <h3 className="font-medium mb-1">No collections yet</h3>
-            <p className="text-sm text-muted-foreground mb-4">
+            <Folder className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
+            <h3 className="mb-1 font-medium">No collections yet</h3>
+            <p className="mb-4 text-sm text-muted-foreground">
               Create collections to organize your saved messages.
             </p>
             {onCreate && (
               <Button onClick={onCreate}>
-                <Plus className="h-4 w-4 mr-2" />
+                <Plus className="mr-2 h-4 w-4" />
                 Create your first collection
               </Button>
             )}
@@ -130,7 +124,7 @@ export function SavedCollections({
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -138,27 +132,18 @@ export function SavedCollections({
 // ============================================================================
 
 interface CollectionCardProps {
-  collection: SavedCollection;
-  onSelect: () => void;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  onShare?: () => void;
+  collection: SavedCollection
+  onSelect: () => void
+  onEdit?: () => void
+  onDelete?: () => void
+  onShare?: () => void
 }
 
-function CollectionCard({
-  collection,
-  onSelect,
-  onEdit,
-  onDelete,
-  onShare,
-}: CollectionCardProps) {
-  const hasMenu = onEdit || onDelete || onShare;
+function CollectionCard({ collection, onSelect, onEdit, onDelete, onShare }: CollectionCardProps) {
+  const hasMenu = onEdit || onDelete || onShare
 
   return (
-    <Card
-      className="group cursor-pointer transition-colors hover:bg-muted/30"
-      onClick={onSelect}
-    >
+    <Card className="hover:bg-muted/30 group cursor-pointer transition-colors" onClick={onSelect}>
       <CardHeader className="pb-2">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
@@ -176,11 +161,9 @@ function CollectionCard({
               <Folder className="h-5 w-5" />
             </div>
             <div>
-              <CardTitle className="text-base flex items-center gap-2">
+              <CardTitle className="flex items-center gap-2 text-base">
                 {collection.name}
-                {collection.isShared && (
-                  <Share2 className="h-3 w-3 text-muted-foreground" />
-                )}
+                {collection.isShared && <Share2 className="h-3 w-3 text-muted-foreground" />}
               </CardTitle>
               <CardDescription className="text-xs">
                 {collection.itemCount} item{collection.itemCount !== 1 ? 's' : ''}
@@ -194,7 +177,7 @@ function CollectionCard({
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="h-8 w-8 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <MoreHorizontal className="h-4 w-4" />
@@ -205,22 +188,22 @@ function CollectionCard({
                 {onEdit && (
                   <DropdownMenuItem
                     onClick={(e) => {
-                      e.stopPropagation();
-                      onEdit();
+                      e.stopPropagation()
+                      onEdit()
                     }}
                   >
-                    <Pencil className="h-4 w-4 mr-2" />
+                    <Pencil className="mr-2 h-4 w-4" />
                     Edit
                   </DropdownMenuItem>
                 )}
                 {onShare && (
                   <DropdownMenuItem
                     onClick={(e) => {
-                      e.stopPropagation();
-                      onShare();
+                      e.stopPropagation()
+                      onShare()
                     }}
                   >
-                    <Share2 className="h-4 w-4 mr-2" />
+                    <Share2 className="mr-2 h-4 w-4" />
                     Share
                   </DropdownMenuItem>
                 )}
@@ -229,12 +212,12 @@ function CollectionCard({
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       onClick={(e) => {
-                        e.stopPropagation();
-                        onDelete();
+                        e.stopPropagation()
+                        onDelete()
                       }}
                       className="text-destructive focus:text-destructive"
                     >
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="mr-2 h-4 w-4" />
                       Delete
                     </DropdownMenuItem>
                   </>
@@ -246,11 +229,9 @@ function CollectionCard({
       </CardHeader>
       {collection.description && (
         <CardContent>
-          <p className="text-sm text-muted-foreground line-clamp-2">
-            {collection.description}
-          </p>
+          <p className="line-clamp-2 text-sm text-muted-foreground">{collection.description}</p>
         </CardContent>
       )}
     </Card>
-  );
+  )
 }

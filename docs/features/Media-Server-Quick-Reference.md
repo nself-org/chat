@@ -4,13 +4,13 @@ Quick reference guide for nself-chat media server operations.
 
 ## Services
 
-| Service | Port | URL | Purpose |
-|---------|------|-----|---------|
-| Media Server | 3100 | http://localhost:3100 | Main API |
-| TURN Server | 3478 | turn:localhost:3478 | NAT traversal |
-| Redis | 6379 | redis://localhost:6379 | State management |
-| Prometheus | 9091 | http://localhost:9091 | Metrics |
-| Grafana | 3001 | http://localhost:3001 | Dashboards |
+| Service      | Port | URL                    | Purpose          |
+| ------------ | ---- | ---------------------- | ---------------- |
+| Media Server | 3100 | http://localhost:3100  | Main API         |
+| TURN Server  | 3478 | turn:localhost:3478    | NAT traversal    |
+| Redis        | 6379 | redis://localhost:6379 | State management |
+| Prometheus   | 9091 | http://localhost:9091  | Metrics          |
+| Grafana      | 3001 | http://localhost:3001  | Dashboards       |
 
 ## Common Commands
 
@@ -237,34 +237,34 @@ socket.emit('consume', {
 ```typescript
 // Participant joined
 socket.on('participant-joined', (data) => {
-  console.log('Participant joined:', data.participantId);
-});
+  console.log('Participant joined:', data.participantId)
+})
 
 // Participant left
 socket.on('participant-left', (data) => {
-  console.log('Participant left:', data.participantId);
-});
+  console.log('Participant left:', data.participantId)
+})
 
 // New producer
 socket.on('new-producer', (data) => {
-  console.log('New producer:', data.producerId);
+  console.log('New producer:', data.producerId)
   // Start consuming
-});
+})
 
 // Producer paused
 socket.on('producer-paused', (data) => {
-  console.log('Producer paused:', data.producerId);
-});
+  console.log('Producer paused:', data.producerId)
+})
 
 // Producer resumed
 socket.on('producer-resumed', (data) => {
-  console.log('Producer resumed:', data.producerId);
-});
+  console.log('Producer resumed:', data.producerId)
+})
 
 // Producer closed
 socket.on('producer-closed', (data) => {
-  console.log('Producer closed:', data.producerId);
-});
+  console.log('Producer closed:', data.producerId)
+})
 ```
 
 ## Configuration Files
@@ -284,7 +284,7 @@ export const config = {
     enabled: true,
     dir: '/recordings',
   },
-};
+}
 ```
 
 ### TURN Server
@@ -307,8 +307,8 @@ services:
   media-server:
     build: ./custom-services/media-server
     ports:
-      - "3100:3100"
-      - "40000-49999:40000-49999/udp"
+      - '3100:3100'
+      - '40000-49999:40000-49999/udp'
     environment:
       MEDIASOUP_ANNOUNCED_IP: ${MEDIA_SERVER_PUBLIC_IP}
 ```

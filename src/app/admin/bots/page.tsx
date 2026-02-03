@@ -37,9 +37,7 @@ export default function BotsManagementPage() {
   // State
   const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [listStyle, setListStyle] = useState<'table' | 'cards'>('table')
-  const [selectedBotForProfile, setSelectedBotForProfile] = useState<Bot | null>(
-    null
-  )
+  const [selectedBotForProfile, setSelectedBotForProfile] = useState<Bot | null>(null)
 
   // Bots hook
   const {
@@ -68,9 +66,7 @@ export default function BotsManagementPage() {
   const store = useBotStore()
 
   // Bot details hooks
-  const { commands, loading: commandsLoading } = useBotCommands(
-    selectedBotForProfile?.id || null
-  )
+  const { commands, loading: commandsLoading } = useBotCommands(selectedBotForProfile?.id || null)
   const {
     reviews,
     loading: reviewsLoading,
@@ -149,13 +145,13 @@ export default function BotsManagementPage() {
     return (
       <AdminLayout>
         <div className="flex flex-col items-center justify-center py-20">
-          <div className="rounded-full bg-muted p-4 mb-4">
+          <div className="mb-4 rounded-full bg-muted p-4">
             <BotIcon className="h-8 w-8 text-muted-foreground" />
           </div>
-          <h2 className="text-xl font-semibold mb-2">Bots feature is disabled</h2>
-          <p className="text-muted-foreground text-center max-w-md">
-            The bots feature is currently disabled for this workspace. Enable it
-            in the feature settings to manage bot integrations.
+          <h2 className="mb-2 text-xl font-semibold">Bots feature is disabled</h2>
+          <p className="max-w-md text-center text-muted-foreground">
+            The bots feature is currently disabled for this workspace. Enable it in the feature
+            settings to manage bot integrations.
           </p>
         </div>
       </AdminLayout>
@@ -169,27 +165,14 @@ export default function BotsManagementPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-3xl font-bold">Bots</h1>
-            <p className="text-muted-foreground">
-              Manage bot integrations for your workspace
-            </p>
+            <p className="text-muted-foreground">Manage bot integrations for your workspace</p>
           </div>
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={refreshBots}
-              disabled={isLoading}
-            >
-              <RefreshCw
-                className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`}
-              />
+            <Button variant="outline" size="sm" onClick={refreshBots} disabled={isLoading}>
+              <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setViewMode('marketplace')}
-            >
+            <Button variant="outline" size="sm" onClick={() => setViewMode('marketplace')}>
               <Store className="mr-2 h-4 w-4" />
               Marketplace
             </Button>
@@ -202,7 +185,7 @@ export default function BotsManagementPage() {
 
         {/* Error Display */}
         {error && (
-          <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-destructive">
+          <div className="border-destructive/50 bg-destructive/10 rounded-lg border p-4 text-destructive">
             {error}
           </div>
         )}
@@ -213,9 +196,7 @@ export default function BotsManagementPage() {
             bot={selectedBotForProfile}
             commands={commands}
             reviews={reviews}
-            installed={installedBots.some(
-              (i) => i.botId === selectedBotForProfile.id
-            )}
+            installed={installedBots.some((i) => i.botId === selectedBotForProfile.id)}
             loading={commandsLoading || reviewsLoading}
             onInstall={handleInstallBot}
             onBack={handleBackFromProfile}
@@ -247,9 +228,7 @@ export default function BotsManagementPage() {
           <Tabs defaultValue="installed" className="space-y-4">
             <div className="flex items-center justify-between">
               <TabsList>
-                <TabsTrigger value="installed">
-                  Installed ({installedBots.length})
-                </TabsTrigger>
+                <TabsTrigger value="installed">Installed ({installedBots.length})</TabsTrigger>
                 <TabsTrigger value="available">Available</TabsTrigger>
               </TabsList>
               <div className="flex gap-2">
@@ -299,22 +278,17 @@ export default function BotsManagementPage() {
                   .filter((bot) => !installedBots.some((i) => i.botId === bot.id))
                   .slice(0, 6)
                   .map((bot) => (
-                    <div
-                      key={bot.id}
-                      className="rounded-lg border bg-card p-4 space-y-3"
-                    >
+                    <div key={bot.id} className="space-y-3 rounded-lg border bg-card p-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center">
+                        <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-full">
                           <BotIcon className="h-5 w-5 text-primary" />
                         </div>
                         <div>
                           <h3 className="font-medium">{bot.name}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {bot.category}
-                          </p>
+                          <p className="text-sm text-muted-foreground">{bot.category}</p>
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground line-clamp-2">
+                      <p className="line-clamp-2 text-sm text-muted-foreground">
                         {bot.description}
                       </p>
                       <div className="flex gap-2">
@@ -326,11 +300,7 @@ export default function BotsManagementPage() {
                         >
                           Details
                         </Button>
-                        <Button
-                          size="sm"
-                          className="flex-1"
-                          onClick={() => handleInstallBot(bot)}
-                        >
+                        <Button size="sm" className="flex-1" onClick={() => handleInstallBot(bot)}>
                           Install
                         </Button>
                       </div>

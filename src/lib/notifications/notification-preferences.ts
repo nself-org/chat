@@ -13,7 +13,9 @@ import type {
   ChannelNotificationLevel,
   DayOfWeek,
   NotificationType,
-} from './notification-types';
+} from './notification-types'
+
+import { logger } from '@/lib/logger'
 import {
   DEFAULT_NOTIFICATION_PREFERENCES,
   DEFAULT_QUIET_HOURS,
@@ -23,15 +25,15 @@ import {
   DEFAULT_EMAIL_SETTINGS,
   DEFAULT_MENTION_SETTINGS,
   DEFAULT_DM_SETTINGS,
-} from './notification-types';
+} from './notification-types'
 
 // ============================================================================
 // Storage Keys
 // ============================================================================
 
-const STORAGE_KEY = 'nchat-notification-preferences';
-const VERSION_KEY = 'nchat-notification-preferences-version';
-const CURRENT_VERSION = 1;
+const STORAGE_KEY = 'nchat-notification-preferences'
+const VERSION_KEY = 'nchat-notification-preferences-version'
+const CURRENT_VERSION = 1
 
 // ============================================================================
 // Load/Save Functions
@@ -42,22 +44,24 @@ const CURRENT_VERSION = 1;
  */
 export function loadPreferences(): NotificationPreferences {
   if (typeof window === 'undefined') {
-    return DEFAULT_NOTIFICATION_PREFERENCES;
+    return DEFAULT_NOTIFICATION_PREFERENCES
   }
 
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(STORAGE_KEY)
     if (!stored) {
-      return DEFAULT_NOTIFICATION_PREFERENCES;
+      return DEFAULT_NOTIFICATION_PREFERENCES
     }
 
-    const parsed = JSON.parse(stored);
-    const migrated = migratePreferences(parsed);
+    const parsed = JSON.parse(stored)
+    const migrated = migratePreferences(parsed)
 
-    return mergeWithDefaults(migrated);
+    return mergeWithDefaults(migrated)
   } catch (error) {
-    console.warn('Failed to load notification preferences:', error);
-    return DEFAULT_NOTIFICATION_PREFERENCES;
+    logger.warn('Failed to load notification preferences:', {
+      error: error instanceof Error ? error.message : String(error)
+    })
+    return DEFAULT_NOTIFICATION_PREFERENCES
   }
 }
 
@@ -66,21 +70,23 @@ export function loadPreferences(): NotificationPreferences {
  */
 export function savePreferences(preferences: NotificationPreferences): boolean {
   if (typeof window === 'undefined') {
-    return false;
+    return false
   }
 
   try {
     const toSave = {
       ...preferences,
       lastUpdated: new Date().toISOString(),
-    };
+    }
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-    localStorage.setItem(VERSION_KEY, String(CURRENT_VERSION));
-    return true;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave))
+    localStorage.setItem(VERSION_KEY, String(CURRENT_VERSION))
+    return true
   } catch (error) {
-    console.warn('Failed to save notification preferences:', error);
-    return false;
+    logger.warn('Failed to save notification preferences:', {
+      error: error instanceof Error ? error.message : String(error)
+    })
+    return false
   }
 }
 
@@ -88,10 +94,10 @@ export function savePreferences(preferences: NotificationPreferences): boolean {
  * Clear all preferences
  */
 export function clearPreferences(): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === 'undefined') return
 
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(VERSION_KEY);
+  localStorage.removeItem(STORAGE_KEY)
+  localStorage.removeItem(VERSION_KEY)
 }
 
 // ============================================================================
@@ -104,11 +110,10 @@ export function clearPreferences(): void {
 function migratePreferences(
   preferences: Partial<NotificationPreferences>
 ): Partial<NotificationPreferences> {
-  const version = typeof window !== 'undefined'
-    ? parseInt(localStorage.getItem(VERSION_KEY) || '0', 10)
-    : 0;
+  const version =
+    typeof window !== 'undefined' ? parseInt(localStorage.getItem(VERSION_KEY) || '0', 10) : 0
 
-  let migrated = { ...preferences };
+  let migrated = { ...preferences }
 
   // Migration logic for future versions
   if (version < 1) {
@@ -118,18 +123,16 @@ function migratePreferences(
       keywords: migrated.keywords || [],
       channelSettings: migrated.channelSettings || {},
       savedFilters: migrated.savedFilters || [],
-    };
+    }
   }
 
-  return migrated;
+  return migrated
 }
 
 /**
  * Merge loaded preferences with defaults
  */
-function mergeWithDefaults(
-  loaded: Partial<NotificationPreferences>
-): NotificationPreferences {
+function mergeWithDefaults(loaded: Partial<NotificationPreferences>): NotificationPreferences {
   return {
     globalEnabled: loaded.globalEnabled ?? DEFAULT_NOTIFICATION_PREFERENCES.globalEnabled,
     desktop: { ...DEFAULT_DESKTOP_SETTINGS, ...loaded.desktop },
@@ -149,9 +152,10 @@ function mergeWithDefaults(
     channelSettings: loaded.channelSettings || {},
     savedFilters: loaded.savedFilters || [],
     showSenderName: loaded.showSenderName ?? DEFAULT_NOTIFICATION_PREFERENCES.showSenderName,
-    showMessagePreview: loaded.showMessagePreview ?? DEFAULT_NOTIFICATION_PREFERENCES.showMessagePreview,
+    showMessagePreview:
+      loaded.showMessagePreview ?? DEFAULT_NOTIFICATION_PREFERENCES.showMessagePreview,
     lastUpdated: loaded.lastUpdated || new Date().toISOString(),
-  };
+  }
 }
 
 // ============================================================================
@@ -169,7 +173,7 @@ export function updateGlobalEnabled(
     ...preferences,
     globalEnabled: enabled,
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -183,7 +187,7 @@ export function updateDesktopSettings(
     ...preferences,
     desktop: { ...preferences.desktop, ...settings },
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -197,7 +201,7 @@ export function updatePushSettings(
     ...preferences,
     push: { ...preferences.push, ...settings },
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -211,7 +215,7 @@ export function updateEmailSettings(
     ...preferences,
     email: { ...preferences.email, ...settings },
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -225,7 +229,7 @@ export function updateSoundSettings(
     ...preferences,
     sound: { ...preferences.sound, ...settings },
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -239,7 +243,7 @@ export function updateQuietHours(
     ...preferences,
     quietHours: { ...preferences.quietHours, ...settings },
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -253,7 +257,7 @@ export function updateMentionSettings(
     ...preferences,
     mentions: { ...preferences.mentions, ...settings },
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -267,7 +271,7 @@ export function updateDMSettings(
     ...preferences,
     directMessages: { ...preferences.directMessages, ...settings },
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 // ============================================================================
@@ -281,7 +285,7 @@ export function getChannelSettings(
   preferences: NotificationPreferences,
   channelId: string
 ): ChannelNotificationSetting | undefined {
-  return preferences.channelSettings[channelId];
+  return preferences.channelSettings[channelId]
 }
 
 /**
@@ -296,7 +300,7 @@ export function updateChannelSettings(
     channelId,
     level: 'all' as ChannelNotificationLevel,
     overrideGlobal: false,
-  };
+  }
 
   return {
     ...preferences,
@@ -305,7 +309,7 @@ export function updateChannelSettings(
       [channelId]: { ...existing, ...settings },
     },
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -315,12 +319,12 @@ export function removeChannelSettings(
   preferences: NotificationPreferences,
   channelId: string
 ): NotificationPreferences {
-  const { [channelId]: _, ...rest } = preferences.channelSettings;
+  const { [channelId]: _, ...rest } = preferences.channelSettings
   return {
     ...preferences,
     channelSettings: rest,
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -335,7 +339,7 @@ export function muteChannel(
     level: 'nothing',
     muteUntil: until || null,
     overrideGlobal: true,
-  });
+  })
 }
 
 /**
@@ -349,7 +353,7 @@ export function unmuteChannel(
     level: 'all',
     muteUntil: null,
     overrideGlobal: true,
-  });
+  })
 }
 
 /**
@@ -364,7 +368,7 @@ export function setChannelLevel(
     level,
     muteUntil: level === 'nothing' ? null : undefined,
     overrideGlobal: true,
-  });
+  })
 }
 
 // ============================================================================
@@ -382,7 +386,7 @@ export function addKeyword(
     ...preferences,
     keywords: [...preferences.keywords, keyword],
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -395,11 +399,9 @@ export function updateKeyword(
 ): NotificationPreferences {
   return {
     ...preferences,
-    keywords: preferences.keywords.map((k) =>
-      k.id === keywordId ? { ...k, ...updates } : k
-    ),
+    keywords: preferences.keywords.map((k) => (k.id === keywordId ? { ...k, ...updates } : k)),
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -413,7 +415,7 @@ export function removeKeyword(
     ...preferences,
     keywords: preferences.keywords.filter((k) => k.id !== keywordId),
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 /**
@@ -429,7 +431,7 @@ export function toggleKeyword(
       k.id === keywordId ? { ...k, enabled: !k.enabled } : k
     ),
     lastUpdated: new Date().toISOString(),
-  };
+  }
 }
 
 // ============================================================================
@@ -439,43 +441,44 @@ export function toggleKeyword(
 /**
  * Validate preferences structure
  */
-export function validatePreferences(
-  preferences: Partial<NotificationPreferences>
-): { valid: boolean; errors: string[] } {
-  const errors: string[] = [];
+export function validatePreferences(preferences: Partial<NotificationPreferences>): {
+  valid: boolean
+  errors: string[]
+} {
+  const errors: string[] = []
 
   // Validate quiet hours
   if (preferences.quietHours) {
-    const { startTime, endTime } = preferences.quietHours;
-    const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    const { startTime, endTime } = preferences.quietHours
+    const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
 
     if (startTime && !timeRegex.test(startTime)) {
-      errors.push('Invalid quiet hours start time format');
+      errors.push('Invalid quiet hours start time format')
     }
     if (endTime && !timeRegex.test(endTime)) {
-      errors.push('Invalid quiet hours end time format');
+      errors.push('Invalid quiet hours end time format')
     }
   }
 
   // Validate sound volume
   if (preferences.sound?.volume !== undefined) {
     if (preferences.sound.volume < 0 || preferences.sound.volume > 100) {
-      errors.push('Sound volume must be between 0 and 100');
+      errors.push('Sound volume must be between 0 and 100')
     }
   }
 
   // Validate email settings
   if (preferences.email?.digestTime) {
-    const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/
     if (!timeRegex.test(preferences.email.digestTime)) {
-      errors.push('Invalid email digest time format');
+      errors.push('Invalid email digest time format')
     }
   }
 
   return {
     valid: errors.length === 0,
     errors,
-  };
+  }
 }
 
 // ============================================================================
@@ -486,34 +489,34 @@ export function validatePreferences(
  * Export preferences to JSON string
  */
 export function exportPreferences(preferences: NotificationPreferences): string {
-  return JSON.stringify(preferences, null, 2);
+  return JSON.stringify(preferences, null, 2)
 }
 
 /**
  * Import preferences from JSON string
  */
 export function importPreferences(json: string): {
-  preferences: NotificationPreferences | null;
-  error?: string;
+  preferences: NotificationPreferences | null
+  error?: string
 } {
   try {
-    const parsed = JSON.parse(json);
-    const validation = validatePreferences(parsed);
+    const parsed = JSON.parse(json)
+    const validation = validatePreferences(parsed)
 
     if (!validation.valid) {
       return {
         preferences: null,
         error: `Invalid preferences: ${validation.errors.join(', ')}`,
-      };
+      }
     }
 
-    const merged = mergeWithDefaults(parsed);
-    return { preferences: merged };
+    const merged = mergeWithDefaults(parsed)
+    return { preferences: merged }
   } catch (error) {
     return {
       preferences: null,
       error: 'Failed to parse preferences JSON',
-    };
+    }
   }
 }
 
@@ -529,65 +532,65 @@ export function getEffectiveSettings(
   type: NotificationType,
   channelId?: string
 ): {
-  desktop: boolean;
-  mobile: boolean;
-  email: boolean;
-  sound: boolean;
+  desktop: boolean
+  mobile: boolean
+  email: boolean
+  sound: boolean
 } {
   // Start with defaults based on type
-  let desktop = preferences.desktop.enabled;
-  let mobile = preferences.push.enabled;
-  let email = preferences.email.enabled && preferences.email.enabledTypes.includes(type);
-  let sound = preferences.sound.enabled;
+  let desktop = preferences.desktop.enabled
+  let mobile = preferences.push.enabled
+  let email = preferences.email.enabled && preferences.email.enabledTypes.includes(type)
+  let sound = preferences.sound.enabled
 
   // Apply type-specific settings
   switch (type) {
     case 'mention':
-      desktop = desktop && preferences.mentions.desktop;
-      mobile = mobile && preferences.mentions.mobile;
-      email = email && preferences.mentions.email;
-      break;
+      desktop = desktop && preferences.mentions.desktop
+      mobile = mobile && preferences.mentions.mobile
+      email = email && preferences.mentions.email
+      break
     case 'direct_message':
-      desktop = desktop && preferences.directMessages.desktop;
-      mobile = mobile && preferences.directMessages.mobile;
-      email = email && preferences.directMessages.email;
-      sound = sound && preferences.directMessages.playSound;
-      break;
+      desktop = desktop && preferences.directMessages.desktop
+      mobile = mobile && preferences.directMessages.mobile
+      email = email && preferences.directMessages.email
+      sound = sound && preferences.directMessages.playSound
+      break
     case 'thread_reply':
       if (!preferences.threadReplies) {
-        desktop = false;
-        mobile = false;
-        email = false;
-        sound = false;
+        desktop = false
+        mobile = false
+        email = false
+        sound = false
       }
-      break;
+      break
     case 'reaction':
       if (!preferences.reactions) {
-        desktop = false;
-        mobile = false;
-        email = false;
-        sound = false;
+        desktop = false
+        mobile = false
+        email = false
+        sound = false
       }
-      break;
+      break
   }
 
   // Apply channel-specific overrides
   if (channelId) {
-    const channelSettings = preferences.channelSettings[channelId];
+    const channelSettings = preferences.channelSettings[channelId]
     if (channelSettings?.overrideGlobal) {
       if (channelSettings.desktopEnabled !== undefined) {
-        desktop = desktop && channelSettings.desktopEnabled;
+        desktop = desktop && channelSettings.desktopEnabled
       }
       if (channelSettings.mobileEnabled !== undefined) {
-        mobile = mobile && channelSettings.mobileEnabled;
+        mobile = mobile && channelSettings.mobileEnabled
       }
       if (channelSettings.emailEnabled !== undefined) {
-        email = email && channelSettings.emailEnabled;
+        email = email && channelSettings.emailEnabled
       }
     }
   }
 
-  return { desktop, mobile, email, sound };
+  return { desktop, mobile, email, sound }
 }
 
 /**
@@ -596,28 +599,26 @@ export function getEffectiveSettings(
 export function hasAnyNotificationEnabled(preferences: NotificationPreferences): boolean {
   return (
     preferences.globalEnabled &&
-    (preferences.desktop.enabled ||
-      preferences.push.enabled ||
-      preferences.email.enabled)
-  );
+    (preferences.desktop.enabled || preferences.push.enabled || preferences.email.enabled)
+  )
 }
 
 /**
  * Get summary of notification settings
  */
 export function getPreferencesSummary(preferences: NotificationPreferences): {
-  globalEnabled: boolean;
-  desktopEnabled: boolean;
-  pushEnabled: boolean;
-  emailEnabled: boolean;
-  soundEnabled: boolean;
-  quietHoursEnabled: boolean;
-  keywordCount: number;
-  mutedChannelsCount: number;
+  globalEnabled: boolean
+  desktopEnabled: boolean
+  pushEnabled: boolean
+  emailEnabled: boolean
+  soundEnabled: boolean
+  quietHoursEnabled: boolean
+  keywordCount: number
+  mutedChannelsCount: number
 } {
   const mutedChannels = Object.values(preferences.channelSettings).filter(
     (cs) => cs.level === 'nothing' || (cs.muteUntil && new Date(cs.muteUntil) > new Date())
-  );
+  )
 
   return {
     globalEnabled: preferences.globalEnabled,
@@ -628,5 +629,5 @@ export function getPreferencesSummary(preferences: NotificationPreferences): {
     quietHoursEnabled: preferences.quietHours.enabled,
     keywordCount: preferences.keywords.filter((k) => k.enabled).length,
     mutedChannelsCount: mutedChannels.length,
-  };
+  }
 }

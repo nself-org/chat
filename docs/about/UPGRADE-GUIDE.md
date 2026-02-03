@@ -72,13 +72,13 @@ cd .backend && nself status
 
 ### Supported Upgrades
 
-| From Version | To Version | Direct Upgrade | Notes |
-|-------------|------------|----------------|-------|
-| 0.1.x | 0.2.0 | ✅ Yes | Database migration required |
-| 0.2.x | 0.3.0 | ✅ Yes | Configuration migration |
-| 0.3.x | 1.0.0 | ✅ Yes | Minor config updates, feature additions |
-| 0.1.x | 1.0.0 | ⚠️ Via 0.2.0 → 0.3.0 | Multi-step upgrade required |
-| 0.2.x | 1.0.0 | ⚠️ Via 0.3.0 | Upgrade to 0.3.0 first |
+| From Version | To Version | Direct Upgrade       | Notes                                   |
+| ------------ | ---------- | -------------------- | --------------------------------------- |
+| 0.1.x        | 0.2.0      | ✅ Yes               | Database migration required             |
+| 0.2.x        | 0.3.0      | ✅ Yes               | Configuration migration                 |
+| 0.3.x        | 1.0.0      | ✅ Yes               | Minor config updates, feature additions |
+| 0.1.x        | 1.0.0      | ⚠️ Via 0.2.0 → 0.3.0 | Multi-step upgrade required             |
+| 0.2.x        | 1.0.0      | ⚠️ Via 0.3.0         | Upgrade to 0.3.0 first                  |
 
 ### Upgrade Procedure
 
@@ -127,6 +127,7 @@ curl http://localhost:3000/api/health
 See [New Features in v1.0.0](#new-features-in-v100) section below for complete list.
 
 Major additions:
+
 - Voice & Video calls (WebRTC)
 - Bot SDK with marketplace
 - Payments (Stripe) & Crypto wallets
@@ -141,6 +142,7 @@ Major additions:
 **Minimal breaking changes** - mostly additive:
 
 1. **New Environment Variables** (Optional)
+
    ```bash
    # Stripe (optional)
    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...
@@ -211,6 +213,7 @@ nself db migrate status
 ```
 
 New tables created:
+
 - `nchat_calls` - Call records
 - `nchat_call_participants` - Call participants
 - `nchat_bots` - Bot registry
@@ -300,6 +303,7 @@ After upgrading, visit **Settings → Features** in the admin dashboard to:
 **Type**: Feature Release (Production-Ready)
 
 #### New Features
+
 - 860+ comprehensive tests (integration + E2E)
 - WCAG 2.1 AA accessibility compliance
 - Lighthouse CI automated monitoring
@@ -309,12 +313,15 @@ After upgrading, visit **Settings → Features** in the admin dashboard to:
 - Thread panel functionality
 
 #### Breaking Changes
+
 None - fully backward compatible with 0.2.x
 
 #### Configuration Changes
+
 No configuration changes required.
 
 #### Database Migrations
+
 No database migrations required.
 
 #### Steps
@@ -359,6 +366,7 @@ pnpm test
 **Type**: Major Feature Release
 
 #### New Features
+
 - 78+ features across 11 major areas
 - Real-time messaging with WebSocket
 - Voice/video calls (WebRTC)
@@ -461,6 +469,7 @@ curl http://localhost:3000/api/health
 **Type**: Documentation & Planning Update
 
 #### Changes
+
 - Enhanced setup wizard (12 steps instead of 9)
 - Comprehensive documentation
 - Sprint planning system
@@ -619,6 +628,7 @@ This section details all major features added in the v1.0.0 release.
 ### Voice & Video Communication
 
 **WebRTC-based calling system:**
+
 - One-on-one voice calls with call controls
 - One-on-one video calls with camera/mic toggles
 - Group voice calls (up to 50 participants)
@@ -631,6 +641,7 @@ This section details all major features added in the v1.0.0 release.
 - Bandwidth optimization
 
 **How to enable:**
+
 ```bash
 # .env.local
 NEXT_PUBLIC_ENABLE_VOICE_CALLS=true
@@ -641,6 +652,7 @@ NEXT_PUBLIC_TURN_SERVER_URL=turn:your-turn-server.com
 ### Bot SDK & Automation
 
 **Comprehensive bot framework:**
+
 - Create custom bots with slash commands
 - Webhook integrations (incoming/outgoing)
 - Event subscriptions (messages, joins, reactions, etc.)
@@ -650,6 +662,7 @@ NEXT_PUBLIC_TURN_SERVER_URL=turn:your-turn-server.com
 - Example bots included (Hello, Poll, Reminder, Welcome)
 
 **Example bot:**
+
 ```typescript
 import { bot, command, embed } from '@/lib/bot-sdk'
 
@@ -667,6 +680,7 @@ const weatherBot = bot('weather')
 ### Payments & Crypto
 
 **Integrated payment processing:**
+
 - Stripe integration for subscriptions and one-time payments
 - Payment history and invoicing
 - Crypto wallet support (MetaMask, WalletConnect)
@@ -675,6 +689,7 @@ const weatherBot = bot('weather')
 - Transaction history
 
 **Setup:**
+
 ```bash
 # .env.local
 NEXT_PUBLIC_ENABLE_PAYMENTS=true
@@ -688,6 +703,7 @@ NEXT_PUBLIC_ENABLE_CRYPTO=true
 ### Internationalization (i18n)
 
 **6 language support:**
+
 - English (en)
 - Spanish (es)
 - French (fr)
@@ -696,6 +712,7 @@ NEXT_PUBLIC_ENABLE_CRYPTO=true
 - Chinese (zh)
 
 **Features:**
+
 - Automatic locale detection
 - Timezone conversion
 - Number and date formatting per locale
@@ -703,6 +720,7 @@ NEXT_PUBLIC_ENABLE_CRYPTO=true
 - Language switcher UI
 
 **Usage:**
+
 ```typescript
 import { useTranslation } from '@/hooks/use-translation'
 
@@ -713,6 +731,7 @@ console.log(t('messages.welcome')) // Translated string
 ### Offline Mode
 
 **Full offline support:**
+
 - Service worker with cache-first strategy
 - Background sync for pending messages
 - Offline queue management
@@ -722,6 +741,7 @@ console.log(t('messages.welcome')) // Translated string
 - Automatic retry logic
 
 **Features:**
+
 - Send messages while offline (queued)
 - Read cached messages
 - Sync when back online
@@ -730,6 +750,7 @@ console.log(t('messages.welcome')) // Translated string
 ### Enhanced Security
 
 **Enterprise-grade security:**
+
 - End-to-end encryption for DMs (optional)
 - Two-factor authentication (TOTP)
 - Session management with device tracking
@@ -741,6 +762,7 @@ console.log(t('messages.welcome')) // Translated string
 - Data export and deletion
 
 **Enable E2E encryption:**
+
 ```typescript
 // In channel settings
 {
@@ -754,6 +776,7 @@ console.log(t('messages.welcome')) // Translated string
 ### Admin Dashboard Enhancements
 
 **Comprehensive admin tools:**
+
 - Analytics dashboard with charts (active users, messages, storage)
 - User management (create, suspend, delete, bulk operations)
 - Role assignment interface
@@ -769,6 +792,7 @@ console.log(t('messages.welcome')) // Translated string
 ### Accessibility (WCAG 2.1 AA)
 
 **Full accessibility compliance:**
+
 - Screen reader support with comprehensive ARIA labels
 - Keyboard navigation throughout the app
 - Focus management and skip links
@@ -779,6 +803,7 @@ console.log(t('messages.welcome')) // Translated string
 - Semantic HTML structure
 
 **Keyboard shortcuts:**
+
 - `Cmd+K` - Command palette
 - `Cmd+/` - Shortcuts help
 - `Esc` - Close modals
@@ -789,6 +814,7 @@ console.log(t('messages.welcome')) // Translated string
 ### Testing & Quality
 
 **860+ comprehensive tests:**
+
 - 479 E2E tests (Playwright) covering all user flows
 - 381 integration tests
 - Unit tests for all hooks and utilities
@@ -798,6 +824,7 @@ console.log(t('messages.welcome')) // Translated string
 - Lighthouse CI for performance monitoring
 
 **Run tests:**
+
 ```bash
 pnpm test           # Unit + integration
 pnpm test:e2e       # E2E tests
@@ -808,6 +835,7 @@ pnpm lighthouse     # Performance audit
 ### Platform Support
 
 **Multi-platform deployment:**
+
 - Web (Next.js 15 + React 19)
 - Desktop (Tauri - lightweight native)
 - Desktop (Electron - cross-platform)
@@ -818,6 +846,7 @@ pnpm lighthouse     # Performance audit
 - Kubernetes with Helm charts
 
 **Build commands:**
+
 ```bash
 pnpm build:web       # Web production
 pnpm build:tauri     # Desktop (Tauri)
@@ -829,6 +858,7 @@ pnpm build:docker    # Docker image
 ### Performance Optimizations
 
 **Production-ready performance:**
+
 - Bundle size: 103 KB (optimized, gzipped)
 - Lighthouse scores: 90+ across all metrics
 - Time to Interactive: <3 seconds
@@ -860,18 +890,22 @@ No breaking changes from 0.2.x.
 ### 0.2.0
 
 **Environment Variables:**
+
 - `NEXT_PUBLIC_API_URL` removed, use `NEXT_PUBLIC_GRAPHQL_URL`
 - `NEXT_PUBLIC_WS_URL` now required for WebSocket
 
 **API Changes:**
+
 - GraphQL schema updated with new subscription types
 - REST endpoint `/api/messages` removed, use GraphQL
 
 **Configuration:**
+
 - `app_configuration` table schema changed
 - Use migration script: `scripts/migrate-config-0.1-to-0.2.js`
 
 **Dependencies:**
+
 - Node.js 20+ now required (was 18+)
 - pnpm 9+ now required (was 8+)
 
@@ -912,6 +946,7 @@ console.log('Migration complete! New config saved to new_config.json')
 ```
 
 Run:
+
 ```bash
 node scripts/migrate-config-0.1-to-0.2.js old_config.json
 ```
@@ -986,6 +1021,7 @@ nself logs auth
 - **Older versions**: No support, upgrade recommended
 
 **Example** (when 0.4.0 releases):
+
 - 0.4.x: Full support
 - 0.3.x: Security updates for 6 months
 - 0.2.x and earlier: No support
@@ -1004,4 +1040,4 @@ If you encounter issues during upgrade:
 
 ---
 
-*Always backup before upgrading! When in doubt, test in staging first.*
+_Always backup before upgrading! When in doubt, test in staging first._

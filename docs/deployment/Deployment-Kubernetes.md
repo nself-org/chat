@@ -55,16 +55,21 @@ k8s/
 ### Manifest Details
 
 #### namespace.yaml
+
 Creates the `nself-chat` namespace with appropriate labels.
 
 #### configmap.yaml
+
 Non-sensitive configuration:
+
 - `NODE_ENV`: Environment mode
 - `NEXT_PUBLIC_*`: Public environment variables
 - `LOG_LEVEL`: Logging verbosity
 
 #### secrets.yaml
+
 Sensitive data template (do not commit actual values):
+
 - Database credentials
 - Hasura admin secret
 - JWT secret
@@ -72,7 +77,9 @@ Sensitive data template (do not commit actual values):
 - SMTP credentials
 
 #### deployment.yaml
+
 Application deployment with:
+
 - Rolling update strategy
 - Resource limits and requests
 - Liveness, readiness, and startup probes
@@ -80,27 +87,36 @@ Application deployment with:
 - Affinity rules
 
 #### service.yaml
+
 ClusterIP service exposing port 80 internally.
 
 #### ingress.yaml
+
 Ingress rules with:
+
 - TLS termination
 - Rate limiting annotations
 - WebSocket support
 - Security headers
 
 #### hpa.yaml
+
 Autoscaling based on:
+
 - CPU utilization (70% target)
 - Memory utilization (80% target)
 - Scale from 2 to 10 replicas
 
 #### pdb.yaml
+
 Pod Disruption Budget:
+
 - Minimum 1 pod available during disruptions
 
 #### networkpolicy.yaml
+
 Network segmentation:
+
 - Default deny ingress
 - Allow from ingress controller
 - Allow internal namespace communication
@@ -119,6 +135,7 @@ kubectl apply -f k8s/namespace.yaml
 **Important**: Never commit actual secrets to git!
 
 Option A: Create from command line:
+
 ```bash
 kubectl create secret generic nself-chat-secrets \
   --namespace=nself-chat \
@@ -130,6 +147,7 @@ kubectl create secret generic nself-chat-secrets \
 ```
 
 Option B: Use external secrets operator:
+
 ```yaml
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
@@ -200,9 +218,9 @@ Update `configmap.yaml` for non-sensitive configuration:
 
 ```yaml
 data:
-  NODE_ENV: "production"
-  NEXT_PUBLIC_APP_NAME: "My Chat App"
-  LOG_LEVEL: "warn"
+  NODE_ENV: 'production'
+  NEXT_PUBLIC_APP_NAME: 'My Chat App'
+  LOG_LEVEL: 'warn'
 ```
 
 ### Resource Limits
@@ -212,11 +230,11 @@ Adjust in `deployment.yaml`:
 ```yaml
 resources:
   requests:
-    cpu: "100m"
-    memory: "256Mi"
+    cpu: '100m'
+    memory: '256Mi'
   limits:
-    cpu: "1000m"
-    memory: "1Gi"
+    cpu: '1000m'
+    memory: '1Gi'
 ```
 
 ### Replica Count
@@ -236,8 +254,8 @@ Customize annotations in `ingress.yaml`:
 
 ```yaml
 annotations:
-  nginx.ingress.kubernetes.io/rate-limit: "20"
-  nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+  nginx.ingress.kubernetes.io/rate-limit: '20'
+  nginx.ingress.kubernetes.io/proxy-body-size: '100m'
 ```
 
 ## Scaling
@@ -290,7 +308,7 @@ metrics:
         name: http_requests_per_second
       target:
         type: AverageValue
-        averageValue: "100"
+        averageValue: '100'
 ```
 
 ## Monitoring
@@ -332,6 +350,7 @@ kubectl port-forward svc/prometheus 9090:9090 -n monitoring
 ```
 
 Visit http://localhost:9090 and query:
+
 - `container_cpu_usage_seconds_total{namespace="nself-chat"}`
 - `container_memory_usage_bytes{namespace="nself-chat"}`
 
@@ -372,6 +391,7 @@ kubectl logs <pod-name> -n nself-chat --previous
 ```
 
 Common issues:
+
 - **ImagePullBackOff**: Check image name and registry credentials
 - **CrashLoopBackOff**: Check application logs
 - **Pending**: Check resource availability

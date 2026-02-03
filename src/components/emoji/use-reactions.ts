@@ -76,8 +76,7 @@ export function useMessageReactions(
 
   // Mutations
   const [addReactionMutation, { loading: isAdding }] = useMutation(ADD_REACTION)
-  const [removeReactionMutation, { loading: isRemoving }] =
-    useMutation(REMOVE_REACTION)
+  const [removeReactionMutation, { loading: isRemoving }] = useMutation(REMOVE_REACTION)
 
   // Parse reactions from query
   const reactions: Reaction[] = useMemo(() => {
@@ -119,9 +118,7 @@ export function useMessageReactions(
   // Check if user has reacted with specific emoji
   const hasUserReacted = useCallback(
     (emoji: string): boolean => {
-      return reactions.some(
-        (r: Reaction) => r.emoji === emoji && r.user_id === user?.id
-      )
+      return reactions.some((r: Reaction) => r.emoji === emoji && r.user_id === user?.id)
     },
     [reactions, user?.id]
   )
@@ -236,8 +233,7 @@ export function useMessageReactions(
               variables: { messageId },
               data: {
                 nchat_reactions: existingData.nchat_reactions.filter(
-                  (r: Reaction) =>
-                    !(r.emoji === emoji && r.user_id === user.id)
+                  (r: Reaction) => !(r.emoji === emoji && r.user_id === user.id)
                 ),
               },
             })
@@ -292,13 +288,10 @@ export function useChannelReactions(
   const { channelId, enabled = true } = options
 
   // Subscribe to channel reactions
-  const { data, loading, error } = useSubscription(
-    CHANNEL_REACTIONS_SUBSCRIPTION,
-    {
-      variables: { channelId },
-      skip: !enabled || !channelId,
-    }
-  )
+  const { data, loading, error } = useSubscription(CHANNEL_REACTIONS_SUBSCRIPTION, {
+    variables: { channelId },
+    skip: !enabled || !channelId,
+  })
 
   const recentReactions: Reaction[] = useMemo(() => {
     return data?.nchat_reactions || []
@@ -323,9 +316,7 @@ interface UseBatchReactionsReturn {
   error: Error | null
 }
 
-export function useBatchReactions(
-  options: UseBatchReactionsOptions
-): UseBatchReactionsReturn {
+export function useBatchReactions(options: UseBatchReactionsOptions): UseBatchReactionsReturn {
   const { messageIds, enabled = true } = options
 
   const { data, loading, error } = useQuery(GET_MESSAGE_REACTIONS, {
@@ -399,9 +390,6 @@ export function hasUserReactedWithEmoji(
 }
 
 // Utility to get reaction count for specific emoji
-export function getReactionCountForEmoji(
-  reactions: Reaction[],
-  emoji: string
-): number {
+export function getReactionCountForEmoji(reactions: Reaction[], emoji: string): number {
   return reactions.filter((r) => r.emoji === emoji).length
 }

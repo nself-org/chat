@@ -29,19 +29,19 @@ import type { PlatformTemplate } from '../types'
 // WhatsApp Brand Colors
 export const WHATSAPP_COLORS = {
   // Primary greens
-  primaryGreen: '#25D366',      // WhatsApp green (lighter)
-  secondaryGreen: '#128C7E',    // Teal green
-  darkGreen: '#075E54',         // Dark teal (header)
+  primaryGreen: '#25D366', // WhatsApp green (lighter)
+  secondaryGreen: '#128C7E', // Teal green
+  darkGreen: '#075E54', // Dark teal (header)
 
   // Message bubbles
-  bubbleOutgoing: '#DCF8C6',    // Light green (own messages, light mode)
-  bubbleIncoming: '#FFFFFF',    // White (other messages, light mode)
+  bubbleOutgoing: '#DCF8C6', // Light green (own messages, light mode)
+  bubbleIncoming: '#FFFFFF', // White (other messages, light mode)
   bubbleOutgoingDark: '#005C4B', // Dark green (own messages, dark mode)
   bubbleIncomingDark: '#1F2C33', // Dark gray (other messages, dark mode)
 
   // Background
-  chatBgLight: '#ECE5DD',       // Doodle pattern background (light)
-  chatBgDark: '#0B141A',        // Dark background
+  chatBgLight: '#ECE5DD', // Doodle pattern background (light)
+  chatBgDark: '#0B141A', // Dark background
 
   // Text
   textPrimary: '#111B21',
@@ -50,8 +50,8 @@ export const WHATSAPP_COLORS = {
   textSecondaryDark: '#8696A0',
 
   // Checkmarks
-  checkGray: '#667781',         // Sent/Delivered
-  checkBlue: '#53BDEB',         // Read
+  checkGray: '#667781', // Sent/Delivered
+  checkBlue: '#53BDEB', // Read
 
   // Status
   online: '#25D366',
@@ -72,7 +72,8 @@ export const whatsappTemplate: PlatformTemplate = {
 
   id: 'whatsapp',
   name: 'WhatsApp',
-  description: 'Complete WhatsApp clone with 100% feature parity - teal accents, bubble messages with tails, double checkmark receipts, status stories, voice notes, and more',
+  description:
+    'Complete WhatsApp clone with 100% feature parity - teal accents, bubble messages with tails, double checkmark receipts, status stories, voice notes, and more',
   version: '2.0.0',
   author: 'nself',
 
@@ -90,7 +91,7 @@ export const whatsappTemplate: PlatformTemplate = {
       accentColor: '#075E54',
 
       // Background colors
-      backgroundColor: '#ECE5DD',  // Chat wallpaper background
+      backgroundColor: '#ECE5DD', // Chat wallpaper background
       surfaceColor: '#FFFFFF',
       cardColor: '#FFFFFF',
       popoverColor: '#FFFFFF',
@@ -124,8 +125,8 @@ export const whatsappTemplate: PlatformTemplate = {
       highlightBg: '#FFB80033',
 
       // WhatsApp-specific: Message bubbles
-      messageBubbleOwn: '#DCF8C6',    // Light green for own messages
-      messageBubbleOther: '#FFFFFF',  // White for others' messages
+      messageBubbleOwn: '#DCF8C6', // Light green for own messages
+      messageBubbleOther: '#FFFFFF', // White for others' messages
     },
 
     dark: {
@@ -169,7 +170,7 @@ export const whatsappTemplate: PlatformTemplate = {
       highlightBg: '#FFB80022',
 
       // WhatsApp-specific: Message bubbles
-      messageBubbleOwn: '#005C4B',    // Dark green for own messages
+      messageBubbleOwn: '#005C4B', // Dark green for own messages
       messageBubbleOther: '#1F2C33', // Dark gray for others' messages
     },
   },
@@ -231,20 +232,13 @@ export const whatsappTemplate: PlatformTemplate = {
     fileUploads: true,
     voiceMessages: true,
     codeBlocks: false, // WhatsApp doesn't have code blocks
-    markdown: false,   // WhatsApp has limited formatting (*bold*, _italic_, ~strikethrough~, ```monospace```)
+    markdown: false, // WhatsApp has limited formatting (*bold*, _italic_, ~strikethrough~, ```monospace```)
     linkPreviews: true,
     emojiPicker: 'native',
     gifPicker: true,
 
     // Message actions (long-press menu)
-    messageActions: [
-      'reply',
-      'react',
-      'forward',
-      'star',
-      'copy',
-      'delete',
-    ],
+    messageActions: ['reply', 'react', 'forward', 'star', 'copy', 'delete'],
     showActionsOnHover: false, // Long-press/right-click menu
 
     // Real-time (WhatsApp's signature features)

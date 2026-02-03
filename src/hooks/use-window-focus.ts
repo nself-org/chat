@@ -45,10 +45,7 @@ export function useWindowFocus(): boolean {
  * @param onFocus - Callback when window gains focus
  * @param onBlur - Callback when window loses focus
  */
-export function useWindowFocusEffect(
-  onFocus?: () => void,
-  onBlur?: () => void
-): boolean {
+export function useWindowFocusEffect(onFocus?: () => void, onBlur?: () => void): boolean {
   const [isFocused, setIsFocused] = useState<boolean>(() => {
     if (typeof window === 'undefined') return true
     return document.hasFocus()

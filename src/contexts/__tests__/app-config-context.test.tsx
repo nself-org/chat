@@ -54,7 +54,11 @@ function TestComponent() {
       <button
         onClick={() =>
           updateConfig({
-            setup: { isCompleted: true, currentStep: 9, visitedSteps: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] },
+            setup: {
+              isCompleted: true,
+              currentStep: 9,
+              visitedSteps: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+            },
           })
         }
       >
@@ -256,10 +260,7 @@ describe('AppConfigContext', () => {
       updateButton.click()
     })
 
-    expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-      'app-config',
-      expect.any(String)
-    )
+    expect(mockLocalStorage.setItem).toHaveBeenCalledWith('app-config', expect.any(String))
   })
 
   it('attempts to save to API on update', async () => {
@@ -285,11 +286,14 @@ describe('AppConfigContext', () => {
     })
 
     await waitFor(() => {
-      expect(mockFetch).toHaveBeenCalledWith('/api/config', expect.objectContaining({
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: expect.any(String),
-      }))
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/api/config',
+        expect.objectContaining({
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: expect.any(String),
+        })
+      )
     })
   })
 

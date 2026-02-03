@@ -99,9 +99,7 @@ describe('useTyping', () => {
     })
 
     it('should throttle typing events', () => {
-      const { result } = renderHook(() =>
-        useTyping(channelId, { throttleMs: 2000 })
-      )
+      const { result } = renderHook(() => useTyping(channelId, { throttleMs: 2000 }))
 
       // First typing event
       act(() => {
@@ -202,9 +200,7 @@ describe('useTyping', () => {
     })
 
     it('should auto-remove typing user after timeout', () => {
-      const { result } = renderHook(() =>
-        useTyping(channelId, { timeoutMs: 5000 })
-      )
+      const { result } = renderHook(() => useTyping(channelId, { timeoutMs: 5000 }))
 
       const subscribeCallback = mockSubscribe.mock.calls[0][1]
 

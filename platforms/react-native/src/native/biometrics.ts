@@ -167,10 +167,7 @@ export async function authenticateForAppUnlock(): Promise<BiometricAuthResult> {
 export async function authenticateForSensitiveAction(
   actionDescription: string
 ): Promise<BiometricAuthResult> {
-  return authenticateWithBiometrics(
-    `Authenticate to ${actionDescription}`,
-    'Use passcode'
-  )
+  return authenticateWithBiometrics(`Authenticate to ${actionDescription}`, 'Use passcode')
 }
 
 /**

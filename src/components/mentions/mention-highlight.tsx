@@ -28,11 +28,7 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import {
-  parseMentions,
-  getMentionType,
-  isSpecialMention,
-} from '@/lib/mentions/use-mentions'
+import { parseMentions, getMentionType, isSpecialMention } from '@/lib/mentions/use-mentions'
 import type { MentionType } from '@/lib/mentions/mention-store'
 
 // ============================================================================
@@ -75,11 +71,7 @@ export interface MentionHighlightedTextProps {
 // Helper Functions
 // ============================================================================
 
-function getMentionStyles(
-  type: MentionType,
-  isSelfMention: boolean,
-  clickable: boolean
-): string {
+function getMentionStyles(type: MentionType, isSelfMention: boolean, clickable: boolean): string {
   const baseStyles = 'inline-flex items-center rounded px-1 font-medium text-sm'
 
   // Self mention - more prominent styling
@@ -160,11 +152,7 @@ export function MentionHighlight({
   const icon = React.useMemo(() => {
     if (mentionType === 'here') {
       return (
-        <svg
-          className="h-3 w-3 mr-0.5"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
+        <svg className="mr-0.5 h-3 w-3" viewBox="0 0 24 24" fill="currentColor">
           <circle cx="12" cy="12" r="4" />
         </svg>
       )
@@ -172,7 +160,7 @@ export function MentionHighlight({
     if (mentionType === 'channel') {
       return (
         <svg
-          className="h-3 w-3 mr-0.5"
+          className="mr-0.5 h-3 w-3"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -185,7 +173,7 @@ export function MentionHighlight({
     if (mentionType === 'everyone') {
       return (
         <svg
-          className="h-3 w-3 mr-0.5"
+          className="mr-0.5 h-3 w-3"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
@@ -282,11 +270,7 @@ export function MentionHighlightedText({
           userId={userId}
           currentUserId={currentUserId}
           type={mentionType}
-          onClick={
-            onMentionClick
-              ? (id, type) => onMentionClick(id, type, username)
-              : undefined
-          }
+          onClick={onMentionClick ? (id, type) => onMentionClick(id, type, username) : undefined}
           clickable={!!onMentionClick}
         />
       )
@@ -318,17 +302,13 @@ export interface MentionBadgeProps {
   className?: string
 }
 
-export function MentionBadge({
-  count,
-  hasSelfMention = false,
-  className,
-}: MentionBadgeProps) {
+export function MentionBadge({ count, hasSelfMention = false, className }: MentionBadgeProps) {
   if (count === 0) return null
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium',
+        'inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium',
         hasSelfMention
           ? 'bg-primary/20 text-primary'
           : 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
@@ -415,9 +395,7 @@ export function containsSpecialMention(content: string): boolean {
  */
 export function extractMentionedUsernames(content: string): string[] {
   const mentions = parseMentions(content)
-  return mentions
-    .filter((m) => !isSpecialMention(m.text))
-    .map((m) => m.text.toLowerCase())
+  return mentions.filter((m) => !isSpecialMention(m.text)).map((m) => m.text.toLowerCase())
 }
 
 export default MentionHighlight

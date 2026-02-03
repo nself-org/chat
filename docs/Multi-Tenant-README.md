@@ -118,7 +118,7 @@ const tenant = await service.getTenantBySlug('acme')
 
 // Update tenant
 await service.updateTenant(tenant.id, {
-  name: 'Acme Corporation'
+  name: 'Acme Corporation',
 })
 
 // Delete tenant
@@ -135,13 +135,7 @@ import { getStripeBillingService } from '@/lib/billing/stripe-service'
 const billing = getStripeBillingService()
 
 // Create checkout session
-const session = await billing.createCheckoutSession(
-  tenant,
-  'pro',
-  'monthly',
-  successUrl,
-  cancelUrl
-)
+const session = await billing.createCheckoutSession(tenant, 'pro', 'monthly', successUrl, cancelUrl)
 
 // Manage subscription
 await billing.updateSubscription(tenant, 'enterprise', 'yearly')

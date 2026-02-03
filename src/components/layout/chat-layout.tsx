@@ -1,11 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import {
-  Panel,
-  PanelGroup,
-  PanelResizeHandle,
-} from 'react-resizable-panels'
+import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels'
 import { cn } from '@/lib/utils'
 import { useMediaQuery } from '@/hooks/use-media-query'
 
@@ -38,7 +34,7 @@ function ResizeHandle({ className }: { className?: string }) {
         className
       )}
     >
-      <div className="h-8 w-0.5 rounded-full bg-border opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="h-8 w-0.5 rounded-full bg-border opacity-0 transition-opacity group-hover:opacity-100" />
     </PanelResizeHandle>
   )
 }
@@ -61,11 +57,7 @@ export function ChatLayout({
 
   // Mobile layout - single panel at a time
   if (isMobile) {
-    return (
-      <div className={cn('flex h-full w-full', className)}>
-        {main}
-      </div>
-    )
+    return <div className={cn('flex h-full w-full', className)}>{main}</div>
   }
 
   // Tablet layout - sidebar + main, no thread/member list
@@ -73,12 +65,7 @@ export function ChatLayout({
     return (
       <div className={cn('flex h-full w-full', className)}>
         <PanelGroup direction="horizontal" autoSaveId="nchat-layout-tablet">
-          <Panel
-            defaultSize={25}
-            minSize={20}
-            maxSize={35}
-            className="hidden md:block"
-          >
+          <Panel defaultSize={25} minSize={20} maxSize={35} className="hidden md:block">
             {sidebar}
           </Panel>
           <ResizeHandle />
@@ -95,21 +82,13 @@ export function ChatLayout({
     <div className={cn('flex h-full w-full', className)}>
       <PanelGroup direction="horizontal" autoSaveId="nchat-layout-desktop">
         {/* Sidebar Panel */}
-        <Panel
-          defaultSize={18}
-          minSize={15}
-          maxSize={25}
-          className="hidden lg:block"
-        >
+        <Panel defaultSize={18} minSize={15} maxSize={25} className="hidden lg:block">
           {sidebar}
         </Panel>
         <ResizeHandle />
 
         {/* Main Content Panel */}
-        <Panel
-          defaultSize={showThread || showMemberList ? 50 : 82}
-          minSize={40}
-        >
+        <Panel defaultSize={showThread || showMemberList ? 50 : 82} minSize={40}>
           {main}
         </Panel>
 
@@ -117,11 +96,7 @@ export function ChatLayout({
         {showThread && thread && (
           <>
             <ResizeHandle />
-            <Panel
-              defaultSize={32}
-              minSize={25}
-              maxSize={45}
-            >
+            <Panel defaultSize={32} minSize={25} maxSize={45}>
               {thread}
             </Panel>
           </>
@@ -131,11 +106,7 @@ export function ChatLayout({
         {showMemberList && memberList && !showThread && (
           <>
             <ResizeHandle />
-            <Panel
-              defaultSize={20}
-              minSize={15}
-              maxSize={30}
-            >
+            <Panel defaultSize={20} minSize={15} maxSize={30}>
               {memberList}
             </Panel>
           </>
@@ -182,11 +153,7 @@ export function ChatLayoutProvider({ children }: { children: React.ReactNode }) 
     [showThread, showMemberList, showSidebar, activeThreadMessageId]
   )
 
-  return (
-    <ChatLayoutContext.Provider value={value}>
-      {children}
-    </ChatLayoutContext.Provider>
-  )
+  return <ChatLayoutContext.Provider value={value}>{children}</ChatLayoutContext.Provider>
 }
 
 export function useChatLayout() {

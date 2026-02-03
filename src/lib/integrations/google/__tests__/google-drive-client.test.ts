@@ -21,10 +21,7 @@ import {
   GOOGLE_DRIVE_DEFAULT_SCOPES,
   GOOGLE_MIME_TYPES,
 } from '../google-drive-client'
-import type {
-  IntegrationCredentials,
-  GoogleDriveFile,
-} from '../../types'
+import type { IntegrationCredentials, GoogleDriveFile } from '../../types'
 
 // ============================================================================
 // Mock Setup
@@ -227,10 +224,7 @@ describe('GoogleDriveApiClient', () => {
 
       await client.searchFiles('test', { mimeType: GOOGLE_MIME_TYPES.document })
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        expect.stringContaining('mimeType'),
-        expect.anything()
-      )
+      expect(mockFetch).toHaveBeenCalledWith(expect.stringContaining('mimeType'), expect.anything())
     })
   })
 
@@ -586,19 +580,17 @@ describe('GoogleDriveIntegrationProvider', () => {
     })
 
     it('should throw error on missing code', async () => {
-      await expect(
-        provider.handleCallback({ code: '', state: 'test' })
-      ).rejects.toThrow('Missing authorization code')
+      await expect(provider.handleCallback({ code: '', state: 'test' })).rejects.toThrow(
+        'Missing authorization code'
+      )
     })
 
     it('should throw error on API error', async () => {
-      mockFetch.mockResolvedValueOnce(
-        createMockResponse({ error: 'invalid_grant' })
-      )
+      mockFetch.mockResolvedValueOnce(createMockResponse({ error: 'invalid_grant' }))
 
-      await expect(
-        provider.handleCallback({ code: 'bad', state: 'test' })
-      ).rejects.toThrow('invalid_grant')
+      await expect(provider.handleCallback({ code: 'bad', state: 'test' })).rejects.toThrow(
+        'invalid_grant'
+      )
     })
   })
 
@@ -619,9 +611,9 @@ describe('GoogleDriveIntegrationProvider', () => {
     })
 
     it('should throw error without refresh token', async () => {
-      await expect(
-        provider.refreshToken({ accessToken: 'test' })
-      ).rejects.toThrow('No refresh token available')
+      await expect(provider.refreshToken({ accessToken: 'test' })).rejects.toThrow(
+        'No refresh token available'
+      )
     })
   })
 

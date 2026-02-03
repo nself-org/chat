@@ -26,7 +26,7 @@ interface ChatWithThreadsProps {
 
 export function ChatWithThreadsWrapper(props: ChatWithThreadsProps) {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-full">Loading...</div>}>
+    <Suspense fallback={<div className="flex h-full items-center justify-center">Loading...</div>}>
       <ChatWithThreads {...props} />
     </Suspense>
   )

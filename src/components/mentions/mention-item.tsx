@@ -58,7 +58,7 @@ function UnreadIndicator({ isUnread }: UnreadIndicatorProps) {
 
   return (
     <span
-      className="absolute left-2 top-1/2 -translate-y-1/2 h-2 w-2 rounded-full bg-primary"
+      className="absolute left-2 top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-primary"
       aria-label="Unread mention"
     />
   )
@@ -75,7 +75,7 @@ function MentionTypeBadge({ type }: MentionTypeBadgeProps) {
   return (
     <span
       className={cn(
-        'text-xs px-1.5 py-0.5 rounded-full',
+        'rounded-full px-1.5 py-0.5 text-xs',
         isGroupMention
           ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400'
           : 'bg-primary/10 text-primary'
@@ -92,13 +92,7 @@ interface ChannelLinkProps {
 
 function ChannelLink({ channel }: ChannelLinkProps) {
   const icon = channel.is_private ? (
-    <svg
-      className="h-3 w-3"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
+    <svg className="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
     </svg>
@@ -139,10 +133,7 @@ function MessagePreview({ content, mentionType }: MessagePreviewProps) {
 
       // Add highlighted mention
       parts.push(
-        <span
-          key={match.index}
-          className="font-medium text-primary bg-primary/10 rounded px-0.5"
-        >
+        <span key={match.index} className="bg-primary/10 rounded px-0.5 font-medium text-primary">
           {match[0]}
         </span>
       )
@@ -158,9 +149,7 @@ function MessagePreview({ content, mentionType }: MessagePreviewProps) {
     return parts.length > 0 ? parts : preview
   }, [preview])
 
-  return (
-    <p className="text-sm text-foreground/80 line-clamp-2">{highlightedContent}</p>
-  )
+  return <p className="text-foreground/80 line-clamp-2 text-sm">{highlightedContent}</p>
 }
 
 // ============================================================================
@@ -215,9 +204,9 @@ export function MentionItem({
         }
       }}
       className={cn(
-        'relative flex gap-3 p-3 cursor-pointer transition-colors',
+        'relative flex cursor-pointer gap-3 p-3 transition-colors',
         'hover:bg-accent/50',
-        'focus:outline-none focus:bg-accent/50',
+        'focus:bg-accent/50 focus:outline-none',
         !mention.is_read && 'bg-primary/5',
         isSelected && 'bg-accent',
         className
@@ -233,17 +222,17 @@ export function MentionItem({
       </Avatar>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 space-y-1">
+      <div className="min-w-0 flex-1 space-y-1">
         {/* Header row */}
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="font-medium text-sm truncate">
+          <div className="flex min-w-0 items-center gap-2">
+            <span className="truncate text-sm font-medium">
               {author.display_name || author.username}
             </span>
             <MentionTypeBadge type={mention.type} />
           </div>
           <time
-            className="text-xs text-muted-foreground shrink-0"
+            className="shrink-0 text-xs text-muted-foreground"
             dateTime={mention.created_at}
             title={formatMessageTimeTooltip(mention.created_at)}
           >
@@ -268,7 +257,7 @@ export function MentionItem({
             className="h-7 text-xs text-primary hover:text-primary"
           >
             <svg
-              className="h-3.5 w-3.5 mr-1"
+              className="mr-1 h-3.5 w-3.5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -287,7 +276,7 @@ export function MentionItem({
               className="h-7 text-xs text-muted-foreground hover:text-foreground"
             >
               <svg
-                className="h-3.5 w-3.5 mr-1"
+                className="mr-1 h-3.5 w-3.5"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -329,24 +318,20 @@ export function MentionItemCompact({
     <button
       onClick={() => onJumpToMessage?.(mention)}
       className={cn(
-        'w-full flex items-center gap-2 p-2 text-left',
+        'flex w-full items-center gap-2 p-2 text-left',
         'hover:bg-accent/50 rounded-md transition-colors',
-        'focus:outline-none focus:bg-accent/50',
+        'focus:bg-accent/50 focus:outline-none',
         !mention.is_read && 'bg-primary/5',
         className
       )}
     >
-      {!mention.is_read && (
-        <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-      )}
-      <span className="text-xs text-muted-foreground shrink-0">
-        #{channel.name}
-      </span>
-      <span className="font-medium text-sm truncate">
+      {!mention.is_read && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />}
+      <span className="shrink-0 text-xs text-muted-foreground">#{channel.name}</span>
+      <span className="truncate text-sm font-medium">
         {author.display_name || author.username}:
       </span>
-      <span className="text-sm text-muted-foreground truncate">{preview}</span>
-      <span className="text-xs text-muted-foreground shrink-0 ml-auto">
+      <span className="truncate text-sm text-muted-foreground">{preview}</span>
+      <span className="ml-auto shrink-0 text-xs text-muted-foreground">
         {formatRelativeTime(mention.created_at)}
       </span>
     </button>

@@ -54,7 +54,10 @@ export function getChannelTemplate(channelId: ChannelId): WelcomeTemplate | unde
 /**
  * Set a custom template for a channel
  */
-export function setChannelTemplate(channelId: ChannelId, template: Partial<WelcomeTemplate>): WelcomeTemplate {
+export function setChannelTemplate(
+  channelId: ChannelId,
+  template: Partial<WelcomeTemplate>
+): WelcomeTemplate {
   const existing = channelTemplates.get(channelId)
   const updated: WelcomeTemplate = {
     message: template.message ?? existing?.message ?? getDefaultTemplate().message,
@@ -82,7 +85,7 @@ export function deleteChannelTemplate(channelId: ChannelId): boolean {
  */
 export function getDefaultTemplate(): WelcomeTemplate {
   return {
-    message: 'Welcome to {channel}, {user}! We\'re glad to have you here.',
+    message: "Welcome to {channel}, {user}! We're glad to have you here.",
     enabled: true,
     sendDm: false,
     mentionUser: true,
@@ -214,7 +217,7 @@ export const PRESET_TEMPLATES = {
   },
   friendly: {
     name: 'Friendly',
-    message: 'Hey {user}! Welcome to {channel}. We\'re so happy you\'re here!',
+    message: "Hey {user}! Welcome to {channel}. We're so happy you're here!",
   },
   formal: {
     name: 'Formal',
@@ -234,11 +237,11 @@ export const PRESET_TEMPLATES = {
   },
   professional: {
     name: 'Professional',
-    message: 'Welcome aboard, {user}. We\'re pleased to have you join {channel}.',
+    message: "Welcome aboard, {user}. We're pleased to have you join {channel}.",
   },
   community: {
     name: 'Community',
-    message: ':heart: Welcome to our community, {user}! You\'re member #{memberCount} in {channel}!',
+    message: ":heart: Welcome to our community, {user}! You're member #{memberCount} in {channel}!",
   },
 }
 

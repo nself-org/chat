@@ -61,8 +61,8 @@ export class SlackParser {
     }
 
     // Store for reference
-    users.forEach(u => this.users.set(u.id, u))
-    channels.forEach(c => this.channels.set(c.id, c))
+    users.forEach((u) => this.users.set(u.id, u))
+    channels.forEach((c) => this.channels.set(c.id, c))
 
     // Parse messages for each channel
     const messagesByChannel: Record<string, SlackMessage[]> = {}
@@ -216,8 +216,8 @@ export class SlackParser {
     channels: UnifiedChannel[]
     messages: UnifiedMessage[]
   } {
-    const users = data.users.map(u => this.convertUser(u))
-    const channels = data.channels.map(c => this.convertChannel(c))
+    const users = data.users.map((u) => this.convertUser(u))
+    const channels = data.channels.map((c) => this.convertChannel(c))
 
     const messages: UnifiedMessage[] = []
     for (const [channelId, channelMessages] of Object.entries(data.messagesByChannel)) {
@@ -335,7 +335,8 @@ export class SlackParser {
       type,
       createdAt,
       editedAt,
-      threadId: message.thread_ts && message.thread_ts !== message.ts ? message.thread_ts : undefined,
+      threadId:
+        message.thread_ts && message.thread_ts !== message.ts ? message.thread_ts : undefined,
       attachments: attachments.length > 0 ? attachments : undefined,
       reactions: reactions.length > 0 ? reactions : undefined,
       metadata: {
@@ -353,7 +354,7 @@ export class SlackParser {
   convertAttachments(files?: SlackFile[]): UnifiedAttachment[] {
     if (!files) return []
 
-    return files.map(file => ({
+    return files.map((file) => ({
       externalId: file.id,
       name: file.name,
       url: file.url_private_download || file.url_private || '',
@@ -368,7 +369,7 @@ export class SlackParser {
   convertReactions(reactions?: SlackReaction[]): UnifiedReaction[] {
     if (!reactions) return []
 
-    return reactions.map(reaction => ({
+    return reactions.map((reaction) => ({
       emoji: `:${reaction.name}:`,
       userIds: reaction.users,
       count: reaction.count,

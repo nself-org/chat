@@ -13,10 +13,18 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
 import { Plus, Trash2, Loader2, X } from 'lucide-react'
 import { useAuth } from '@/contexts/auth-context'
+
+import { logger } from '@/lib/logger'
 
 const GET_CHANNELS = gql`
   query GetChannels {
@@ -66,7 +74,7 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
         excludeRetweets,
         excludeReplies,
         minEngagement,
-        createdBy: user.id
+        createdBy: user.id,
       })
 
       // Reset form
@@ -77,7 +85,7 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
       setExcludeReplies(false)
       setMinEngagement(0)
     } catch (error) {
-      console.error('Failed to create integration:', error)
+      logger.error('Failed to create integration:', error)
     } finally {
       setCreating(false)
     }
@@ -139,7 +147,7 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
           {/* Hashtags */}
           <div>
             <Label>Filter by Hashtags (optional)</Label>
-            <div className="flex gap-2 mt-2">
+            <div className="mt-2 flex gap-2">
               <Input
                 placeholder="Enter hashtag..."
                 value={newHashtag}
@@ -150,12 +158,12 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
                 Add
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               {hashtags.map((tag) => (
                 <Badge key={tag} variant="secondary">
                   #{tag}
                   <X
-                    className="h-3 w-3 ml-1 cursor-pointer"
+                    className="ml-1 h-3 w-3 cursor-pointer"
                     onClick={() => setHashtags(hashtags.filter((t) => t !== tag))}
                   />
                 </Badge>
@@ -166,7 +174,7 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
           {/* Keywords */}
           <div>
             <Label>Filter by Keywords (optional)</Label>
-            <div className="flex gap-2 mt-2">
+            <div className="mt-2 flex gap-2">
               <Input
                 placeholder="Enter keyword..."
                 value={newKeyword}
@@ -177,12 +185,12 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
                 Add
               </Button>
             </div>
-            <div className="flex flex-wrap gap-2 mt-2">
+            <div className="mt-2 flex flex-wrap gap-2">
               {keywords.map((keyword) => (
                 <Badge key={keyword} variant="secondary">
                   {keyword}
                   <X
-                    className="h-3 w-3 ml-1 cursor-pointer"
+                    className="ml-1 h-3 w-3 cursor-pointer"
                     onClick={() => setKeywords(keywords.filter((k) => k !== keyword))}
                   />
                 </Badge>
@@ -215,8 +223,8 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
           </div>
 
           <Button onClick={handleCreate} disabled={!selectedChannel || creating}>
-            {creating && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            <Plus className="h-4 w-4 mr-2" />
+            {creating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+            <Plus className="mr-2 h-4 w-4" />
             Create Integration
           </Button>
         </CardContent>
@@ -231,15 +239,22 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
           <CardContent>
             <div className="space-y-4">
               {integrations.map((integration: any) => (
-                <div key={integration.id} className="flex items-center justify-between p-4 border rounded-lg">
+                <div
+                  key={integration.id}
+                  className="flex items-center justify-between rounded-lg border p-4"
+                >
                   <div className="flex-1">
                     <h4 className="font-semibold">#{integration.channel.name}</h4>
-                    <div className="flex flex-wrap gap-2 mt-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {integration.filter_hashtags?.length > 0 && (
-                        <Badge variant="outline">Hashtags: {integration.filter_hashtags.join(', ')}</Badge>
+                        <Badge variant="outline">
+                          Hashtags: {integration.filter_hashtags.join(', ')}
+                        </Badge>
                       )}
                       {integration.filter_keywords?.length > 0 && (
-                        <Badge variant="outline">Keywords: {integration.filter_keywords.join(', ')}</Badge>
+                        <Badge variant="outline">
+                          Keywords: {integration.filter_keywords.join(', ')}
+                        </Badge>
                       )}
                       {integration.min_engagement > 0 && (
                         <Badge variant="outline">Min: {integration.min_engagement}</Badge>
@@ -249,9 +264,15 @@ export function SocialIntegrationSettings({ accountId, platform }: Props) {
                   <div className="flex items-center gap-2">
                     <Switch
                       checked={integration.auto_post}
-                      onCheckedChange={() => handleToggleAutoPost(integration.id, integration.auto_post)}
+                      onCheckedChange={() =>
+                        handleToggleAutoPost(integration.id, integration.auto_post)
+                      }
                     />
-                    <Button variant="outline" size="sm" onClick={() => handleDelete(integration.id)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleDelete(integration.id)}
+                    >
                       <Trash2 className="h-4 w-4 text-destructive" />
                     </Button>
                   </div>

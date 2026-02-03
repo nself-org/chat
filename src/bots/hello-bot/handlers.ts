@@ -101,14 +101,8 @@ export function getFarewell(style: string, includeEmoji: boolean): string {
 /**
  * Get a wave message
  */
-export function getWaveMessage(
-  sender: string,
-  target: string,
-  includeEmoji: boolean
-): string {
-  const message = randomFrom(waveMessages)
-    .replace('{sender}', sender)
-    .replace('{target}', target)
+export function getWaveMessage(sender: string, target: string, includeEmoji: boolean): string {
+  const message = randomFrom(waveMessages).replace('{sender}', sender).replace('{target}', target)
 
   return includeEmoji ? `${message}` : message
 }
@@ -117,13 +111,7 @@ export function getWaveMessage(
  * Get a random greeting for auto-responses
  */
 export function getRandomGreeting(): string {
-  const responses = [
-    'Hello!',
-    'Hey there!',
-    'Hi!',
-    'Howdy!',
-    'Greetings!',
-  ]
+  const responses = ['Hello!', 'Hey there!', 'Hi!', 'Howdy!', 'Greetings!']
   return randomFrom(responses)
 }
 
@@ -151,20 +139,14 @@ export async function handleGreetingMessage(
 
     const greeting = getGreeting(style, includeEmoji)
 
-    return response()
-      .text(`${greeting}, ${ctx.user.displayName}!`)
-      .reply()
-      .build()
+    return response().text(`${greeting}, ${ctx.user.displayName}!`).reply().build()
   }
 }
 
 /**
  * Handle mentions of the bot
  */
-export async function handleMention(
-  ctx: MessageContext,
-  api: BotApi
-): Promise<BotResponse | void> {
+export async function handleMention(ctx: MessageContext, api: BotApi): Promise<BotResponse | void> {
   if (!ctx.isMention) return
 
   const manifest = api.getBotInfo()

@@ -4,13 +4,7 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import {
-  View,
-  StyleSheet,
-  FlatList,
-  RefreshControl,
-  Pressable,
-} from 'react-native'
+import { View, StyleSheet, FlatList, RefreshControl, Pressable } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -41,13 +35,16 @@ export function HomeScreen() {
     setIsRefreshing(false)
   }, [refresh])
 
-  const handleChatPress = useCallback((channel: Channel) => {
-    if (channel.type === 'direct') {
-      navigation.navigate('Chat', { channelId: channel.id, title: channel.name })
-    } else {
-      navigation.navigate('Channel', { channelId: channel.id, title: channel.name })
-    }
-  }, [navigation])
+  const handleChatPress = useCallback(
+    (channel: Channel) => {
+      if (channel.type === 'direct') {
+        navigation.navigate('Chat', { channelId: channel.id, title: channel.name })
+      } else {
+        navigation.navigate('Channel', { channelId: channel.id, title: channel.name })
+      }
+    },
+    [navigation]
+  )
 
   const handleNewChat = useCallback(() => {
     // Navigate to new chat/channel creation
@@ -55,18 +52,12 @@ export function HomeScreen() {
   }, [navigation])
 
   const filteredChannels = searchQuery
-    ? channels.filter((c) =>
-        c.name.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    ? channels.filter((c) => c.name.toLowerCase().includes(searchQuery.toLowerCase()))
     : channels
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Header
-        title="Chats"
-        rightIcon="plus"
-        onRightPress={handleNewChat}
-      />
+      <Header title="Chats" rightIcon="plus" onRightPress={handleNewChat} />
 
       <View style={styles.searchContainer}>
         <SearchBar
@@ -89,9 +80,7 @@ export function HomeScreen() {
           />
         }
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            {/* Empty state component would go here */}
-          </View>
+          <View style={styles.emptyContainer}>{/* Empty state component would go here */}</View>
         }
       />
     </View>

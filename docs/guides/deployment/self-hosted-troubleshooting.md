@@ -22,6 +22,7 @@ sudo /usr/local/bin/diagnose-nchat
 ```
 
 This checks:
+
 - All service health
 - Disk space
 - Memory usage
@@ -55,6 +56,7 @@ openssl s_client -connect chat.example.com:443 -servername chat.example.com < /d
 ### Issue 1: Services Won't Start
 
 **Symptoms:**
+
 - Containers exit immediately
 - "Error starting userland proxy" message
 - Services show "Restarting" status
@@ -101,6 +103,7 @@ docker compose -f docker-compose.production.yml up -d
 ### Issue 2: Cannot Access Website (502 Bad Gateway)
 
 **Symptoms:**
+
 - 502 Bad Gateway error
 - "upstream prematurely closed connection"
 - Cannot load website
@@ -146,6 +149,7 @@ docker compose -f docker-compose.production.yml logs -f nchat
 ### Issue 3: SSL Certificate Problems
 
 **Symptoms:**
+
 - "Your connection is not private" warning
 - SSL certificate expired
 - Mixed content warnings
@@ -197,6 +201,7 @@ sudo certbot certonly --standalone -d NEW_DOMAIN.com
 ### Issue 4: Database Connection Errors
 
 **Symptoms:**
+
 - "could not connect to server"
 - "password authentication failed"
 - Application can't start
@@ -243,6 +248,7 @@ sudo /usr/local/bin/restore-nchat /var/backups/nself-chat/nchat-backup-LATEST.ta
 ### Issue 5: Out of Disk Space
 
 **Symptoms:**
+
 - "No space left on device"
 - Services crashing randomly
 - Cannot save files
@@ -296,6 +302,7 @@ docker compose -f docker-compose.production.yml exec nginx \
 ### Issue 6: High Memory Usage
 
 **Symptoms:**
+
 - Server running slow
 - OOM (Out of Memory) errors
 - Services being killed
@@ -343,6 +350,7 @@ docker compose -f docker-compose.production.yml restart
 ### Issue 7: Application Slow/Unresponsive
 
 **Symptoms:**
+
 - Pages load slowly
 - Timeouts
 - High CPU usage
@@ -389,6 +397,7 @@ docker compose -f docker-compose.production.yml restart postgres
 ### Issue 8: Email Not Sending
 
 **Symptoms:**
+
 - Password reset emails not received
 - Invitation emails not sent
 - No email notifications
@@ -677,6 +686,7 @@ sudo /usr/local/bin/diagnose-nchat --bundle
 ### Commercial Support
 
 For priority support:
+
 - Email: support@nself.chat
 - Include diagnostic bundle
 - Describe issue in detail

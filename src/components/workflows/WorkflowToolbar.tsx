@@ -11,12 +11,7 @@ import { cn } from '@/lib/utils'
 import { useWorkflowBuilderStore } from '@/stores/workflow-builder-store'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   Undo2,
   Redo2,
@@ -59,8 +54,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
     validate,
   } = useWorkflowBuilderStore()
 
-  const hasSelection =
-    canvas.selectedStepIds.length > 0 || canvas.selectedEdgeId
+  const hasSelection = canvas.selectedStepIds.length > 0 || canvas.selectedEdgeId
 
   const handleDelete = () => {
     if (canvas.selectedStepIds.length > 0) {
@@ -72,12 +66,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
 
   return (
     <TooltipProvider delayDuration={300}>
-      <div
-        className={cn(
-          'flex items-center gap-1 px-2 py-1 bg-card',
-          className
-        )}
-      >
+      <div className={cn('flex items-center gap-1 bg-card px-2 py-1', className)}>
         {/* Undo/Redo */}
         <div className="flex items-center">
           <Tooltip>
@@ -111,7 +100,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
           </Tooltip>
         </div>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Separator orientation="vertical" className="mx-1 h-6" />
 
         {/* Clipboard */}
         <div className="flex items-center">
@@ -147,12 +136,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={() => paste()}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => paste()}>
                 <Clipboard className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -175,7 +159,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
           </Tooltip>
         </div>
 
-        <Separator orientation="vertical" className="h-6 mx-1" />
+        <Separator orientation="vertical" className="mx-1 h-6" />
 
         {/* Zoom controls */}
         <div className="flex items-center">
@@ -194,7 +178,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
             <TooltipContent>Zoom Out</TooltipContent>
           </Tooltip>
 
-          <span className="text-xs text-muted-foreground w-12 text-center">
+          <span className="w-12 text-center text-xs text-muted-foreground">
             {Math.round(canvas.zoom * 100)}%
           </span>
 
@@ -215,12 +199,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={zoomToFit}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={zoomToFit}>
                 <Maximize2 className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -229,12 +208,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={resetZoom}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={resetZoom}>
                 <RotateCcw className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -248,12 +222,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
         <div className="flex items-center">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={validate}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={validate}>
                 <CheckCircle className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -269,7 +238,7 @@ export function WorkflowToolbar({ className }: WorkflowToolbarProps) {
             <TooltipContent>Test Run</TooltipContent>
           </Tooltip>
 
-          <Separator orientation="vertical" className="h-6 mx-1" />
+          <Separator orientation="vertical" className="mx-1 h-6" />
 
           <Tooltip>
             <TooltipTrigger asChild>

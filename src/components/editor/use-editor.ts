@@ -134,9 +134,7 @@ export interface EmojiSuggestionState {
 // Hook Implementation
 // ============================================================================
 
-export function useRichEditor(
-  options: UseRichEditorOptions = {}
-): UseRichEditorReturn {
+export function useRichEditor(options: UseRichEditorOptions = {}): UseRichEditorReturn {
   const {
     initialContent = '',
     placeholder = 'Type a message...',
@@ -249,10 +247,7 @@ export function useRichEditor(
             if (event.key === 'ArrowDown') {
               setMentionState((prev) => ({
                 ...prev,
-                selectedIndex: Math.min(
-                  prev.items.length - 1,
-                  prev.selectedIndex + 1
-                ),
+                selectedIndex: Math.min(prev.items.length - 1, prev.selectedIndex + 1),
               }))
               return true
             }
@@ -317,10 +312,7 @@ export function useRichEditor(
             if (event.key === 'ArrowDown') {
               setChannelState((prev) => ({
                 ...prev,
-                selectedIndex: Math.min(
-                  prev.items.length - 1,
-                  prev.selectedIndex + 1
-                ),
+                selectedIndex: Math.min(prev.items.length - 1, prev.selectedIndex + 1),
               }))
               return true
             }
@@ -385,10 +377,7 @@ export function useRichEditor(
             if (event.key === 'ArrowDown') {
               setEmojiState((prev) => ({
                 ...prev,
-                selectedIndex: Math.min(
-                  prev.items.length - 1,
-                  prev.selectedIndex + 1
-                ),
+                selectedIndex: Math.min(prev.items.length - 1, prev.selectedIndex + 1),
               }))
               return true
             }
@@ -414,10 +403,7 @@ export function useRichEditor(
   }, [placeholder, maxLength, onMaxLengthExceed, mentionState, channelState, emojiState])
 
   // Create extensions
-  const extensions = useMemo(
-    () => createEditorExtensions(extensionOptions),
-    [extensionOptions]
-  )
+  const extensions = useMemo(() => createEditorExtensions(extensionOptions), [extensionOptions])
 
   // Initialize editor
   const editor = useEditor({

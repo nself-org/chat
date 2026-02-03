@@ -1,12 +1,7 @@
 'use client'
 
 import { cn } from '@/lib/utils'
-import {
-  Skeleton,
-  CircleSkeleton,
-  LineSkeleton,
-  TextBlockSkeleton,
-} from './skeleton'
+import { Skeleton, CircleSkeleton, LineSkeleton, TextBlockSkeleton } from './skeleton'
 
 interface ProfileSkeletonProps {
   /** Show cover image */
@@ -35,18 +30,13 @@ export function ProfileSkeleton({
   return (
     <div className={cn('w-full', className)}>
       {/* Cover image */}
-      {showCover && (
-        <Skeleton className="h-32 w-full rounded-t-lg" />
-      )}
+      {showCover && <Skeleton className="h-32 w-full rounded-t-lg" />}
 
       {/* Profile content */}
       <div className={cn('px-4 pb-4', showCover && '-mt-12')}>
         {/* Avatar */}
         <div className="relative inline-block">
-          <CircleSkeleton
-            size={96}
-            className="border-4 border-background"
-          />
+          <CircleSkeleton size={96} className="border-4 border-background" />
           {/* Status badge */}
           <Skeleton className="absolute bottom-1 right-1 h-5 w-5 rounded-full border-2 border-background" />
         </div>
@@ -105,18 +95,14 @@ function ProfileStatSkeleton() {
  * Compact profile card skeleton
  * For hover cards and small displays
  */
-export function CompactProfileSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function CompactProfileSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('flex items-start gap-3 p-4', className)}>
       {/* Avatar */}
       <CircleSkeleton size={48} />
 
       {/* Info */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <LineSkeleton width={100} height={16} className="mb-1" />
         <LineSkeleton width={80} height={12} className="mb-2" />
         <LineSkeleton width="90%" height={12} />
@@ -128,11 +114,7 @@ export function CompactProfileSkeleton({
 /**
  * Profile header skeleton for profile page
  */
-export function ProfileHeaderSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function ProfileHeaderSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('relative', className)}>
       {/* Banner */}
@@ -141,10 +123,7 @@ export function ProfileHeaderSkeleton({
       {/* Profile info overlay */}
       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-background to-transparent p-6">
         <div className="flex items-end gap-4">
-          <CircleSkeleton
-            size={120}
-            className="border-4 border-background"
-          />
+          <CircleSkeleton size={120} className="border-4 border-background" />
           <div className="flex-1 pb-2">
             <LineSkeleton width={200} height={28} className="mb-2" />
             <LineSkeleton width={120} height={16} />
@@ -162,11 +141,7 @@ export function ProfileHeaderSkeleton({
 /**
  * Profile settings form skeleton
  */
-export function ProfileFormSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function ProfileFormSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('space-y-6', className)}>
       {/* Avatar upload */}
@@ -187,7 +162,7 @@ export function ProfileFormSkeleton({
       </div>
 
       {/* Save button */}
-      <div className="flex justify-end gap-2 pt-4 border-t">
+      <div className="flex justify-end gap-2 border-t pt-4">
         <Skeleton className="h-10 w-20 rounded-md" />
         <Skeleton className="h-10 w-24 rounded-md" />
       </div>
@@ -208,12 +183,7 @@ function ProfileFormFieldSkeleton({
   return (
     <div className="space-y-2">
       <LineSkeleton width={80} height={14} />
-      <Skeleton
-        className={cn(
-          'w-full rounded-md',
-          isTextarea ? 'h-24' : 'h-10'
-        )}
-      />
+      <Skeleton className={cn('w-full rounded-md', isTextarea ? 'h-24' : 'h-10')} />
     </div>
   )
 }
@@ -221,11 +191,7 @@ function ProfileFormFieldSkeleton({
 /**
  * Profile tab content skeleton
  */
-export function ProfileTabsSkeleton({
-  className,
-}: {
-  className?: string
-}) {
+export function ProfileTabsSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn('space-y-4', className)}>
       {/* Tab navigation */}
@@ -238,7 +204,7 @@ export function ProfileTabsSkeleton({
       {/* Tab content */}
       <div className="space-y-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="flex items-start gap-3 p-3 rounded-lg border">
+          <div key={i} className="flex items-start gap-3 rounded-lg border p-3">
             <Skeleton className="h-10 w-10 rounded" />
             <div className="flex-1">
               <LineSkeleton width="60%" height={14} className="mb-2" />

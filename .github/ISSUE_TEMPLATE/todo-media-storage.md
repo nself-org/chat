@@ -13,16 +13,19 @@ Integrate MinIO (or Nhost Storage) for handling file uploads including avatars, 
 ## Affected Components
 
 ### Avatar Management
+
 - [ ] `src/app/settings/profile/page.tsx:81` - Avatar upload
 - [ ] `src/app/settings/profile/page.tsx:87` - Avatar removal
 - [ ] `src/hooks/use-settings-mutations.ts:96` - Upload to storage service
 
 ### Message Attachments
+
 - [ ] `src/hooks/use-thread.ts:267` - File uploads in threads
 - [ ] File uploads in messages
 - [ ] File uploads in DMs
 
 ### File Preview and Download
+
 - [ ] `src/app/people/[id]/page.tsx:220` - File preview/download
 - [ ] Image viewer component
 - [ ] Video player component
@@ -33,13 +36,14 @@ Integrate MinIO (or Nhost Storage) for handling file uploads including avatars, 
 ### Storage Service Setup
 
 1. **MinIO Configuration:**
+
    ```yaml
    # docker-compose.yml
    minio:
      image: minio/minio:latest
      ports:
-       - "9000:9000"
-       - "9001:9001"
+       - '9000:9000'
+       - '9001:9001'
      environment:
        MINIO_ROOT_USER: ${MINIO_ROOT_USER}
        MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
@@ -63,6 +67,7 @@ Integrate MinIO (or Nhost Storage) for handling file uploads including avatars, 
 ### File Upload Implementation
 
 1. **Client-Side:**
+
    ```typescript
    // useFileUpload hook
    const { uploadFile, progress, error } = useFileUpload()
@@ -77,6 +82,7 @@ Integrate MinIO (or Nhost Storage) for handling file uploads including avatars, 
    ```
 
 2. **Server-Side:**
+
    ```typescript
    // /api/upload/route.ts
    export async function POST(request: NextRequest) {
@@ -90,6 +96,7 @@ Integrate MinIO (or Nhost Storage) for handling file uploads including avatars, 
    ```
 
 3. **GraphQL Mutations:**
+
    ```graphql
    mutation UploadAvatar($file: Upload!) {
      uploadAvatar(file: $file) {
@@ -121,12 +128,13 @@ Integrate MinIO (or Nhost Storage) for handling file uploads including avatars, 
    - **Archives:** zip, tar, gz (max 50MB)
 
 2. **Validation:**
+
    ```typescript
    const validateFile = (file: File) => {
      const maxSizes = {
-       'image/*': 10 * 1024 * 1024,  // 10MB
+       'image/*': 10 * 1024 * 1024, // 10MB
        'video/*': 100 * 1024 * 1024, // 100MB
-       'audio/*': 20 * 1024 * 1024,  // 20MB
+       'audio/*': 20 * 1024 * 1024, // 20MB
        'application/pdf': 25 * 1024 * 1024, // 25MB
      }
      // Validate size, type, extension
@@ -179,6 +187,7 @@ CREATE TABLE nchat_message_attachments (
 ## Testing Checklist
 
 ### Avatar Upload
+
 - [ ] Upload JPG avatar
 - [ ] Upload PNG avatar
 - [ ] Upload oversized image (should fail)
@@ -187,6 +196,7 @@ CREATE TABLE nchat_message_attachments (
 - [ ] View avatar in profile
 
 ### Message Attachments
+
 - [ ] Attach image to message
 - [ ] Attach PDF to message
 - [ ] Attach video to message
@@ -195,6 +205,7 @@ CREATE TABLE nchat_message_attachments (
 - [ ] Preview attachment inline
 
 ### Performance
+
 - [ ] Upload progress indicator
 - [ ] Chunked upload for large files
 - [ ] Resume interrupted uploads
@@ -221,4 +232,5 @@ CREATE TABLE nchat_message_attachments (
 - CDN service (optional, e.g., CloudFlare)
 
 ## Priority: High
+
 Essential for production use. Should be completed before v1.0.0 release.

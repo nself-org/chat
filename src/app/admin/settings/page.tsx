@@ -164,7 +164,7 @@ export default function SettingsPage() {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
+            <h1 className="flex items-center gap-2 text-3xl font-bold">
               <Settings className="h-8 w-8" />
               Workspace Settings
             </h1>
@@ -187,7 +187,7 @@ export default function SettingsPage() {
 
         {/* Settings Tabs */}
         <Tabs defaultValue="general" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-grid">
+          <TabsList className="grid w-full grid-cols-5 lg:inline-grid lg:w-auto">
             <TabsTrigger value="general" className="gap-2">
               <Globe className="h-4 w-4" />
               <span className="hidden sm:inline">General</span>
@@ -298,9 +298,7 @@ export default function SettingsPage() {
             <Card>
               <CardHeader>
                 <CardTitle>Security Settings</CardTitle>
-                <CardDescription>
-                  Configure authentication and security policies
-                </CardDescription>
+                <CardDescription>Configure authentication and security policies</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -378,7 +376,11 @@ export default function SettingsPage() {
                       max={20}
                       value={settings.security.maxLoginAttempts}
                       onChange={(e) =>
-                        updateSettings('security', 'maxLoginAttempts', parseInt(e.target.value) || 5)
+                        updateSettings(
+                          'security',
+                          'maxLoginAttempts',
+                          parseInt(e.target.value) || 5
+                        )
                       }
                     />
                   </div>
@@ -410,12 +412,36 @@ export default function SettingsPage() {
               <CardContent className="space-y-6">
                 <div className="grid gap-6 sm:grid-cols-2">
                   {[
-                    { key: 'enableDirectMessages', label: 'Direct Messages', desc: 'Allow private messaging between users' },
-                    { key: 'enableThreads', label: 'Threads', desc: 'Allow threaded replies to messages' },
-                    { key: 'enableReactions', label: 'Reactions', desc: 'Allow emoji reactions on messages' },
-                    { key: 'enableFileUploads', label: 'File Uploads', desc: 'Allow users to upload files' },
-                    { key: 'enableVoiceMessages', label: 'Voice Messages', desc: 'Allow voice message recording' },
-                    { key: 'enableVideoConferencing', label: 'Video Conferencing', desc: 'Enable video calls (requires integration)' },
+                    {
+                      key: 'enableDirectMessages',
+                      label: 'Direct Messages',
+                      desc: 'Allow private messaging between users',
+                    },
+                    {
+                      key: 'enableThreads',
+                      label: 'Threads',
+                      desc: 'Allow threaded replies to messages',
+                    },
+                    {
+                      key: 'enableReactions',
+                      label: 'Reactions',
+                      desc: 'Allow emoji reactions on messages',
+                    },
+                    {
+                      key: 'enableFileUploads',
+                      label: 'File Uploads',
+                      desc: 'Allow users to upload files',
+                    },
+                    {
+                      key: 'enableVoiceMessages',
+                      label: 'Voice Messages',
+                      desc: 'Allow voice message recording',
+                    },
+                    {
+                      key: 'enableVideoConferencing',
+                      label: 'Video Conferencing',
+                      desc: 'Enable video calls (requires integration)',
+                    },
                   ].map(({ key, label, desc }) => (
                     <div key={key} className="flex items-center justify-between">
                       <div className="space-y-0.5">
@@ -423,7 +449,9 @@ export default function SettingsPage() {
                         <p className="text-sm text-muted-foreground">{desc}</p>
                       </div>
                       <Switch
-                        checked={settings.features[key as keyof typeof settings.features] as boolean}
+                        checked={
+                          settings.features[key as keyof typeof settings.features] as boolean
+                        }
                         onCheckedChange={(checked) =>
                           updateSettings('features', key as keyof typeof settings.features, checked)
                         }
@@ -454,7 +482,9 @@ export default function SettingsPage() {
                     <Input
                       id="allowedFileTypes"
                       value={settings.features.allowedFileTypes}
-                      onChange={(e) => updateSettings('features', 'allowedFileTypes', e.target.value)}
+                      onChange={(e) =>
+                        updateSettings('features', 'allowedFileTypes', e.target.value)
+                      }
                       placeholder="jpg,png,pdf,doc"
                     />
                   </div>
@@ -531,7 +561,11 @@ export default function SettingsPage() {
                     max={100}
                     value={settings.moderation.maxMessagesPerMinute}
                     onChange={(e) =>
-                      updateSettings('moderation', 'maxMessagesPerMinute', parseInt(e.target.value) || 30)
+                      updateSettings(
+                        'moderation',
+                        'maxMessagesPerMinute',
+                        parseInt(e.target.value) || 30
+                      )
                     }
                   />
                   <p className="text-xs text-muted-foreground">
@@ -567,9 +601,7 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between">
                   <div className="space-y-0.5">
                     <Label>Email Notifications</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Send notifications via email
-                    </p>
+                    <p className="text-sm text-muted-foreground">Send notifications via email</p>
                   </div>
                   <Switch
                     checked={settings.notifications.enableEmailNotifications}

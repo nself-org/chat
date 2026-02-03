@@ -154,10 +154,11 @@ export class ExportService {
         usersExported: processedData.users?.length || 0,
         channelsExported: processedData.channels?.length || 0,
         messagesExported: processedData.messages?.length || 0,
-        attachmentsExported: processedData.messages?.reduce(
-          (count, msg) => count + (msg.attachments?.length || 0),
-          0
-        ) || 0,
+        attachmentsExported:
+          processedData.messages?.reduce(
+            (count, msg) => count + (msg.attachments?.length || 0),
+            0
+          ) || 0,
         fileSizeBytes: new Blob([exportContent]).size,
         duration,
       }
@@ -205,22 +206,22 @@ export class ExportService {
     // Filter by channel IDs
     if (filters.channelIds?.length) {
       const channelIdSet = new Set(filters.channelIds)
-      channels = channels?.filter(c => channelIdSet.has(c.id))
-      messages = messages?.filter(m => channelIdSet.has(m.channel_id))
+      channels = channels?.filter((c) => channelIdSet.has(c.id))
+      messages = messages?.filter((m) => channelIdSet.has(m.channel_id))
     }
 
     // Filter by user IDs
     if (filters.userIds?.length) {
       const userIdSet = new Set(filters.userIds)
-      users = users?.filter(u => userIdSet.has(u.id))
-      messages = messages?.filter(m => userIdSet.has(m.user_id))
+      users = users?.filter((u) => userIdSet.has(u.id))
+      messages = messages?.filter((m) => userIdSet.has(m.user_id))
     }
 
     // Filter by date range
     if (filters.dateRange) {
       const { start, end } = filters.dateRange
 
-      messages = messages?.filter(m => {
+      messages = messages?.filter((m) => {
         const msgDate = new Date(m.created_at)
         if (start && msgDate < new Date(start)) return false
         if (end && msgDate > new Date(end)) return false
@@ -231,15 +232,13 @@ export class ExportService {
     // Filter by message types
     if (filters.messageTypes?.length) {
       const typeSet = new Set(filters.messageTypes)
-      messages = messages?.filter(m => typeSet.has(m.type))
+      messages = messages?.filter((m) => typeSet.has(m.type))
     }
 
     // Filter by search query
     if (filters.searchQuery) {
       const query = filters.searchQuery.toLowerCase()
-      messages = messages?.filter(m =>
-        m.content.toLowerCase().includes(query)
-      )
+      messages = messages?.filter((m) => m.content.toLowerCase().includes(query))
     }
 
     // Apply options filters
@@ -248,15 +247,15 @@ export class ExportService {
     if (!options.includeMessages) messages = undefined
 
     if (messages && !options.includeAttachments) {
-      messages = messages.map(m => ({ ...m, attachments: undefined }))
+      messages = messages.map((m) => ({ ...m, attachments: undefined }))
     }
 
     if (messages && !options.includeReactions) {
-      messages = messages.map(m => ({ ...m, reactions: undefined }))
+      messages = messages.map((m) => ({ ...m, reactions: undefined }))
     }
 
     if (messages && !options.includeThreads) {
-      messages = messages.filter(m => !m.thread_id)
+      messages = messages.filter((m) => !m.thread_id)
     }
 
     return { users, channels, messages }
@@ -291,7 +290,7 @@ export class ExportService {
       )
 
       if (messages) {
-        messages = messages.map(m => ({
+        messages = messages.map((m) => ({
           ...m,
           user_id: userIdMap.get(m.user_id) || m.user_id,
           username: userIdMap.get(m.user_id) || m.username,
@@ -301,7 +300,7 @@ export class ExportService {
 
     // Flatten threads if requested
     if (options.flattenThreads && messages) {
-      messages = messages.map(m => ({
+      messages = messages.map((m) => ({
         ...m,
         thread_id: undefined,
         parent_id: undefined,
@@ -310,7 +309,7 @@ export class ExportService {
 
     // Remove metadata if not requested
     if (!options.includeMetadata && messages) {
-      messages = messages.map(m => {
+      messages = messages.map((m) => {
         const { ...rest } = m
         return rest
       })
@@ -337,10 +336,8 @@ export class ExportService {
           usersExported: data.users?.length || 0,
           channelsExported: data.channels?.length || 0,
           messagesExported: data.messages?.length || 0,
-          attachmentsExported: data.messages?.reduce(
-            (count, msg) => count + (msg.attachments?.length || 0),
-            0
-          ) || 0,
+          attachmentsExported:
+            data.messages?.reduce((count, msg) => count + (msg.attachments?.length || 0), 0) || 0,
           fileSizeBytes: 0,
           duration: 0,
         },
@@ -367,7 +364,7 @@ export class ExportService {
     // Users CSV section
     if (data.users?.length) {
       const userHeaders = ['id', 'username', 'display_name', 'email', 'role', 'created_at']
-      const userRows = data.users.map(u => [
+      const userRows = data.users.map((u) => [
         u.id,
         u.username,
         u.display_name,
@@ -380,8 +377,16 @@ export class ExportService {
 
     // Channels CSV section
     if (data.channels?.length) {
-      const channelHeaders = ['id', 'name', 'slug', 'description', 'type', 'is_private', 'created_at']
-      const channelRows = data.channels.map(c => [
+      const channelHeaders = [
+        'id',
+        'name',
+        'slug',
+        'description',
+        'type',
+        'is_private',
+        'created_at',
+      ]
+      const channelRows = data.channels.map((c) => [
         c.id,
         c.name,
         c.slug,
@@ -409,7 +414,7 @@ export class ExportService {
         messageHeaders.push('thread_id', 'parent_id')
       }
 
-      const messageRows = data.messages.map(m => {
+      const messageRows = data.messages.map((m) => {
         const row = [
           m.id,
           m.channel_id,
@@ -437,9 +442,9 @@ export class ExportService {
    */
   private arrayToCSV(data: (string | number | boolean)[][]): string {
     return data
-      .map(row =>
+      .map((row) =>
         row
-          .map(cell => {
+          .map((cell) => {
             const str = String(cell)
             // Escape quotes and wrap in quotes if contains comma, quote, or newline
             if (str.includes(',') || str.includes('"') || str.includes('\n')) {
@@ -475,9 +480,7 @@ export class ExportService {
 /**
  * Create default export config
  */
-export function createDefaultExportConfig(
-  overrides?: Partial<ExportConfig>
-): ExportConfig {
+export function createDefaultExportConfig(overrides?: Partial<ExportConfig>): ExportConfig {
   return {
     format: 'json',
     options: {
@@ -499,10 +502,7 @@ export function createDefaultExportConfig(
 /**
  * Generate filename for export
  */
-export function generateExportFilename(
-  format: ExportFormat,
-  prefix = 'nchat-export'
-): string {
+export function generateExportFilename(format: ExportFormat, prefix = 'nchat-export'): string {
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
   return `${prefix}-${timestamp}.${format}`
 }
@@ -510,11 +510,7 @@ export function generateExportFilename(
 /**
  * Download export file
  */
-export function downloadExport(
-  content: string,
-  filename: string,
-  mimeType: string
-): void {
+export function downloadExport(content: string, filename: string, mimeType: string): void {
   const blob = new Blob([content], { type: mimeType })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
@@ -546,9 +542,10 @@ export async function* streamExport(
     // CSV header
     yield 'id,channel_id,user_id,content,type,created_at,is_pinned\n'
     for await (const message of messages) {
-      const escapedContent = message.content.includes(',') || message.content.includes('"')
-        ? `"${message.content.replace(/"/g, '""')}"`
-        : message.content
+      const escapedContent =
+        message.content.includes(',') || message.content.includes('"')
+          ? `"${message.content.replace(/"/g, '""')}"`
+          : message.content
       yield `${message.id},${message.channel_id},${message.user_id},${escapedContent},${message.type},${message.created_at},${message.is_pinned}\n`
     }
   }
@@ -570,10 +567,5 @@ export function estimateExportSize(
 
   const overhead = format === 'json' ? 1000 : 100
 
-  return (
-    overhead +
-    userCount * userSize +
-    channelCount * channelSize +
-    messageCount * messageSize
-  )
+  return overhead + userCount * userSize + channelCount * channelSize + messageCount * messageSize
 }

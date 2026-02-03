@@ -54,26 +54,15 @@ export function ChannelHeader({
         {/* Back Button */}
         {onBackPress && (
           <Pressable style={styles.backButton} onPress={onBackPress}>
-            <Text style={[styles.backIcon, { color: theme.colors.primary }]}>
-              chevron-left
-            </Text>
+            <Text style={[styles.backIcon, { color: theme.colors.primary }]}>chevron-left</Text>
           </Pressable>
         )}
 
         {/* Title Area */}
-        <Pressable
-          style={styles.titleContainer}
-          onPress={onTitlePress}
-          disabled={!onTitlePress}
-        >
+        <Pressable style={styles.titleContainer} onPress={onTitlePress} disabled={!onTitlePress}>
           {/* Avatar or Channel Icon */}
           {isChannel ? (
-            <View
-              style={[
-                styles.channelIcon,
-                { backgroundColor: theme.colors.surface },
-              ]}
-            >
+            <View style={[styles.channelIcon, { backgroundColor: theme.colors.surface }]}>
               <Text style={{ color: theme.colors.primary, fontSize: 16, fontWeight: '600' }}>
                 {channelType === 'private' ? 'lock' : '#'}
               </Text>
@@ -84,17 +73,11 @@ export function ChannelHeader({
 
           {/* Title and Subtitle */}
           <View style={styles.titleText}>
-            <Text
-              style={[styles.title, { color: theme.colors.text }]}
-              numberOfLines={1}
-            >
+            <Text style={[styles.title, { color: theme.colors.text }]} numberOfLines={1}>
               {isChannel ? title : title}
             </Text>
             {subtitle && (
-              <Text
-                style={[styles.subtitle, { color: theme.colors.muted }]}
-                numberOfLines={1}
-              >
+              <Text style={[styles.subtitle, { color: theme.colors.muted }]} numberOfLines={1}>
                 {subtitle}
               </Text>
             )}

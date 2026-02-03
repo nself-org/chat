@@ -85,9 +85,7 @@ export const GET_MESSAGES = gql`
         is_deleted: { _eq: false }
         thread_id: { _is_null: true }
         created_at: { _lt: $before, _gt: $after }
-        _and: [
-          { _or: [{ thread_id: { _is_null: true } }, { thread_id: { _eq: $threadId } }] }
-        ]
+        _and: [{ _or: [{ thread_id: { _is_null: true } }, { thread_id: { _eq: $threadId } }] }]
       }
       order_by: { created_at: desc }
       limit: $limit
@@ -216,11 +214,7 @@ export const EDIT_MESSAGE = gql`
   mutation EditMessage($id: uuid!, $content: String!) {
     update_nchat_messages_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        content: $content
-        is_edited: true
-        edited_at: "now()"
-      }
+      _set: { content: $content, is_edited: true, edited_at: "now()" }
     ) {
       ...MessageFull
     }
@@ -235,10 +229,7 @@ export const DELETE_MESSAGE = gql`
   mutation DeleteMessage($id: uuid!) {
     update_nchat_messages_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        is_deleted: true
-        deleted_at: "now()"
-      }
+      _set: { is_deleted: true, deleted_at: "now()" }
     ) {
       id
       is_deleted
@@ -263,10 +254,7 @@ export const HARD_DELETE_MESSAGE = gql`
  */
 export const PIN_MESSAGE = gql`
   mutation PinMessage($id: uuid!) {
-    update_nchat_messages_by_pk(
-      pk_columns: { id: $id }
-      _set: { is_pinned: true }
-    ) {
+    update_nchat_messages_by_pk(pk_columns: { id: $id }, _set: { is_pinned: true }) {
       id
       is_pinned
     }
@@ -278,10 +266,7 @@ export const PIN_MESSAGE = gql`
  */
 export const UNPIN_MESSAGE = gql`
   mutation UnpinMessage($id: uuid!) {
-    update_nchat_messages_by_pk(
-      pk_columns: { id: $id }
-      _set: { is_pinned: false }
-    ) {
+    update_nchat_messages_by_pk(pk_columns: { id: $id }, _set: { is_pinned: false }) {
       id
       is_pinned
     }
@@ -324,10 +309,7 @@ export const BULK_DELETE_MESSAGES = gql`
   mutation BulkDeleteMessages($ids: [uuid!]!) {
     update_nchat_messages(
       where: { id: { _in: $ids } }
-      _set: {
-        is_deleted: true
-        deleted_at: "now()"
-      }
+      _set: { is_deleted: true, deleted_at: "now()" }
     ) {
       affected_rows
       returning {
@@ -367,10 +349,7 @@ export const MESSAGE_SUBSCRIPTION = gql`
 export const MESSAGE_UPDATED_SUBSCRIPTION = gql`
   subscription MessageUpdatedSubscription($channelId: uuid!) {
     nchat_messages(
-      where: {
-        channel_id: { _eq: $channelId }
-        is_edited: { _eq: true }
-      }
+      where: { channel_id: { _eq: $channelId }, is_edited: { _eq: true } }
       order_by: { edited_at: desc }
       limit: 1
     ) {
@@ -392,10 +371,7 @@ export const MESSAGE_UPDATED_SUBSCRIPTION = gql`
 export const MESSAGE_DELETED_SUBSCRIPTION = gql`
   subscription MessageDeletedSubscription($channelId: uuid!) {
     nchat_messages(
-      where: {
-        channel_id: { _eq: $channelId }
-        is_deleted: { _eq: true }
-      }
+      where: { channel_id: { _eq: $channelId }, is_deleted: { _eq: true } }
       order_by: { deleted_at: desc }
       limit: 1
     ) {

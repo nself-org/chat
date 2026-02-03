@@ -1,17 +1,18 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { Cookie, Shield, Info, Save, Loader2 } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { useComplianceStore } from '@/stores/compliance-store';
-import type { CookiePreferences } from '@/lib/compliance/compliance-types';
+import { useState, useEffect } from 'react'
+import { Cookie, Shield, Info, Save, Loader2 } from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { useComplianceStore } from '@/stores/compliance-store'
+import type { CookiePreferences } from '@/lib/compliance/compliance-types'
+import { logger } from '@/lib/logger'
 import {
   createDefaultCookiePreferences,
   updateCookiePreferences,
-} from '@/lib/compliance/consent-manager';
+} from '@/lib/compliance/consent-manager'
 
 const COOKIE_CATEGORIES = [
   {
@@ -42,99 +43,100 @@ const COOKIE_CATEGORIES = [
     required: false,
     examples: ['Ad targeting', 'Conversion tracking', 'Remarketing'],
   },
-];
+]
 
 export function CookieSettings() {
-  const [isSaving, setIsSaving] = useState(false);
-  const [hasChanges, setHasChanges] = useState(false);
+  const [isSaving, setIsSaving] = useState(false)
+  const [hasChanges, setHasChanges] = useState(false)
 
-  const { cookiePreferences, setCookiePreferences } = useComplianceStore();
+  const { cookiePreferences, setCookiePreferences } = useComplianceStore()
 
   // Initialize preferences if not present
   useEffect(() => {
     if (!cookiePreferences) {
-      setCookiePreferences(createDefaultCookiePreferences());
+      setCookiePreferences(createDefaultCookiePreferences())
     }
-  }, [cookiePreferences, setCookiePreferences]);
+  }, [cookiePreferences, setCookiePreferences])
 
-  const preferences = cookiePreferences || createDefaultCookiePreferences();
+  const preferences = cookiePreferences || createDefaultCookiePreferences()
 
-  const handleToggle = (category: keyof Omit<CookiePreferences, 'updatedAt' | 'essential'>, value: boolean) => {
-    const updated = updateCookiePreferences(preferences, { [category]: value });
-    setCookiePreferences(updated);
-    setHasChanges(true);
-  };
+  const handleToggle = (
+    category: keyof Omit<CookiePreferences, 'updatedAt' | 'essential'>,
+    value: boolean
+  ) => {
+    const updated = updateCookiePreferences(preferences, { [category]: value })
+    setCookiePreferences(updated)
+    setHasChanges(true)
+  }
 
   const handleSave = async () => {
-    setIsSaving(true);
+    setIsSaving(true)
     try {
       // API call would go here
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setHasChanges(false);
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      setHasChanges(false)
     } catch (error) {
-      console.error('Failed to save cookie preferences:', error);
+      logger.error('Failed to save cookie preferences:',  error)
     } finally {
-      setIsSaving(false);
+      setIsSaving(false)
     }
-  };
+  }
 
   const handleAcceptAll = () => {
     const updated = updateCookiePreferences(preferences, {
       functional: true,
       analytics: true,
       advertising: true,
-    });
-    setCookiePreferences(updated);
-    setHasChanges(true);
-  };
+    })
+    setCookiePreferences(updated)
+    setHasChanges(true)
+  }
 
   const handleRejectAll = () => {
     const updated = updateCookiePreferences(preferences, {
       functional: false,
       analytics: false,
       advertising: false,
-    });
-    setCookiePreferences(updated);
-    setHasChanges(true);
-  };
+    })
+    setCookiePreferences(updated)
+    setHasChanges(true)
+  }
 
   const getCategoryValue = (id: string): boolean => {
     switch (id) {
       case 'essential':
-        return true;
+        return true
       case 'functional':
-        return preferences.functional;
+        return preferences.functional
       case 'analytics':
-        return preferences.analytics;
+        return preferences.analytics
       case 'advertising':
-        return preferences.advertising;
+        return preferences.advertising
       default:
-        return false;
+        return false
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-2xl font-bold">
             <Cookie className="h-6 w-6" />
             Cookie Preferences
           </h2>
-          <p className="text-muted-foreground">
-            Manage how we use cookies on this website
-          </p>
+          <p className="text-muted-foreground">Manage how we use cookies on this website</p>
         </div>
         <Button onClick={handleSave} disabled={!hasChanges || isSaving}>
           {isSaving ? (
             <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               Saving...
             </>
           ) : (
             <>
-              <Save className="h-4 w-4 mr-2" />
+              <Save className="mr-2 h-4 w-4" />
               Save Preferences
             </>
           )}
@@ -165,10 +167,10 @@ export function CookieSettings() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg flex items-center gap-2">
+                  <CardTitle className="flex items-center gap-2 text-lg">
                     {category.name}
                     {category.required && (
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
+                      <span className="rounded bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
                         Required
                       </span>
                     )}
@@ -189,8 +191,8 @@ export function CookieSettings() {
             </CardHeader>
             <CardContent>
               <div className="text-sm text-muted-foreground">
-                <p className="font-medium mb-2">Examples:</p>
-                <ul className="list-disc list-inside space-y-1">
+                <p className="mb-2 font-medium">Examples:</p>
+                <ul className="list-inside list-disc space-y-1">
                   {category.examples.map((example, i) => (
                     <li key={i}>{example}</li>
                   ))}
@@ -204,17 +206,17 @@ export function CookieSettings() {
       {/* Information Section */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
+          <CardTitle className="flex items-center gap-2 text-base">
             <Info className="h-4 w-4" />
             About Cookies
           </CardTitle>
         </CardHeader>
-        <CardContent className="text-sm text-muted-foreground space-y-2">
+        <CardContent className="space-y-2 text-sm text-muted-foreground">
           <p>
-            Cookies are small text files stored on your device that help us
-            provide a better experience.
+            Cookies are small text files stored on your device that help us provide a better
+            experience.
           </p>
-          <ul className="list-disc list-inside space-y-1">
+          <ul className="list-inside list-disc space-y-1">
             <li>Your preferences are saved to your browser</li>
             <li>You can change these settings at any time</li>
             <li>Disabling certain cookies may affect functionality</li>
@@ -226,12 +228,10 @@ export function CookieSettings() {
             </li>
           </ul>
           {preferences.updatedAt && (
-            <p className="mt-4">
-              Last updated: {new Date(preferences.updatedAt).toLocaleString()}
-            </p>
+            <p className="mt-4">Last updated: {new Date(preferences.updatedAt).toLocaleString()}</p>
           )}
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

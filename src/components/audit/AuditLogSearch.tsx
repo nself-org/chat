@@ -101,13 +101,12 @@ export function AuditLogSearch({
     [onSearch, value]
   )
 
-  const shouldShowDropdown =
-    showSuggestions && showDropdown && isFocused && !value
+  const shouldShowDropdown = showSuggestions && showDropdown && isFocused && !value
 
   return (
     <div className={cn('relative', className)}>
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="text"
           value={value}
@@ -131,7 +130,7 @@ export function AuditLogSearch({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+            className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
             onClick={handleClear}
           >
             <X className="h-4 w-4" />
@@ -141,22 +140,17 @@ export function AuditLogSearch({
 
       {/* Suggestions Dropdown */}
       {shouldShowDropdown && (
-        <div className="absolute z-50 w-full mt-1 rounded-md border bg-popover shadow-lg">
+        <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-lg">
           {/* Recent Searches */}
           {recentSearches.length > 0 && (
-            <div className="p-2 border-b">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-muted-foreground flex items-center gap-1">
+            <div className="border-b p-2">
+              <div className="mb-2 flex items-center justify-between">
+                <span className="flex items-center gap-1 text-xs font-medium text-muted-foreground">
                   <Clock className="h-3 w-3" />
                   Recent Searches
                 </span>
                 {onClearRecent && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 text-xs"
-                    onClick={onClearRecent}
-                  >
+                  <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={onClearRecent}>
                     Clear
                   </Button>
                 )}
@@ -166,7 +160,7 @@ export function AuditLogSearch({
                   <Badge
                     key={index}
                     variant="secondary"
-                    className="cursor-pointer hover:bg-secondary/80"
+                    className="hover:bg-secondary/80 cursor-pointer"
                     onClick={() => handleSuggestionClick(search)}
                   >
                     {search}
@@ -178,7 +172,7 @@ export function AuditLogSearch({
 
           {/* Popular Searches */}
           <div className="p-2">
-            <span className="text-xs font-medium text-muted-foreground flex items-center gap-1 mb-2">
+            <span className="mb-2 flex items-center gap-1 text-xs font-medium text-muted-foreground">
               <TrendingUp className="h-3 w-3" />
               Popular Searches
             </span>

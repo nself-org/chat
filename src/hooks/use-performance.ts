@@ -41,7 +41,7 @@ interface RenderInfo {
  * ```tsx
  * function MyComponent() {
  *   const renderCount = useRenderCount()
- *   console.log(`Rendered ${renderCount} times`)
+ *   /* console.log `Rendered ${renderCount} times`)
  * }
  * ```
  */
@@ -135,8 +135,7 @@ export function usePerformanceMetrics(componentName: string): PerformanceMetrics
       renderTimes.current.push(renderTime)
 
       const renderCount = renderTimes.current.length
-      const averageRenderTime =
-        renderTimes.current.reduce((a, b) => a + b, 0) / renderCount
+      const averageRenderTime = renderTimes.current.reduce((a, b) => a + b, 0) / renderCount
       const slowestRenderTime = Math.max(...renderTimes.current)
 
       setMetrics({
@@ -170,7 +169,7 @@ export function usePerformanceMetrics(componentName: string): PerformanceMetrics
  * ```tsx
  * function MyComponent() {
  *   useComponentMount('MyComponent', (mountTime) => {
- *     console.log(`Mounted in ${mountTime}ms`)
+ *     /* console.log `Mounted in ${mountTime}ms`)
  *   })
  * }
  * ```
@@ -260,13 +259,10 @@ export function useThrottle<T>(value: T, interval: number): T {
       setThrottledValue(value)
       lastRun.current = now
     } else {
-      const handler = setTimeout(
-        () => {
-          setThrottledValue(value)
-          lastRun.current = Date.now()
-        },
-        interval - timeSinceLastRun
-      )
+      const handler = setTimeout(() => {
+        setThrottledValue(value)
+        lastRun.current = Date.now()
+      }, interval - timeSinceLastRun)
 
       return () => {
         clearTimeout(handler)

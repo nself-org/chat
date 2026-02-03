@@ -17,11 +17,13 @@ Capacitor allows us to build native iOS and Android apps using the same web code
 ## Prerequisites
 
 ### General Requirements
+
 - Node.js >= 20.0.0
 - pnpm >= 9.15.4
 - Capacitor CLI 6.x
 
 ### iOS Requirements
+
 - macOS (required for iOS development)
 - Xcode 15.0 or later
 - CocoaPods 1.10 or later
@@ -29,6 +31,7 @@ Capacitor allows us to build native iOS and Android apps using the same web code
 - Apple Developer account (for device testing and App Store)
 
 ### Android Requirements
+
 - Android Studio Hedgehog (2023.1.1) or later
 - Android SDK API 34
 - Java JDK 17
@@ -91,6 +94,7 @@ pnpm run open:android
 ### 1. Configure Signing
 
 In Xcode:
+
 1. Open `ios/App/App.xcworkspace`
 2. Select the `App` target
 3. Go to "Signing & Capabilities"
@@ -100,6 +104,7 @@ In Xcode:
 ### 2. Configure Push Notifications (APNs)
 
 #### Enable Push Notifications Capability
+
 1. In Xcode, select the `App` target
 2. Go to "Signing & Capabilities"
 3. Click "+ Capability"
@@ -111,6 +116,7 @@ In Xcode:
    - Audio (for voice messages)
 
 #### Create APNs Key
+
 1. Go to [Apple Developer Portal](https://developer.apple.com)
 2. Navigate to "Certificates, Identifiers & Profiles"
 3. Select "Keys" and create a new key
@@ -123,12 +129,15 @@ In Xcode:
 The app supports deep linking via `nchat://` URL scheme and Universal Links.
 
 #### Universal Links Setup
+
 1. Create an `apple-app-site-association` file on your server at:
+
    ```
    https://nchat.nself.org/.well-known/apple-app-site-association
    ```
 
 2. File contents:
+
    ```json
    {
      "applinks": {
@@ -180,6 +189,7 @@ npx @capacitor/assets generate --ios
 ```
 
 Or manually add assets to:
+
 - Icons: `ios/App/App/Assets.xcassets/AppIcon.appiconset/`
 - Splash: `ios/App/App/Assets.xcassets/Splash.imageset/`
 
@@ -188,18 +198,21 @@ Or manually add assets to:
 ### 1. Configure Package Name
 
 The package name is already set to `io.nself.chat` in:
+
 - `android/app/build.gradle`
 - `AndroidManifest.xml`
 
 ### 2. Configure Push Notifications (FCM)
 
 #### Setup Firebase Cloud Messaging
+
 1. Create a Firebase project at [Firebase Console](https://console.firebase.google.com)
 2. Add an Android app with package name: `io.nself.chat`
 3. Download `google-services.json`
 4. Copy it to `android/app/google-services.json`
 
 #### Update build.gradle
+
 The Firebase dependency is already configured. Just sync the project:
 
 ```bash
@@ -212,23 +225,26 @@ cd android
 The app supports deep linking via `nchat://` URL scheme and App Links.
 
 #### App Links Setup
+
 1. Create an `assetlinks.json` file on your server at:
+
    ```
    https://nchat.nself.org/.well-known/assetlinks.json
    ```
 
 2. File contents:
+
    ```json
-   [{
-     "relation": ["delegate_permission/common.handle_all_urls"],
-     "target": {
-       "namespace": "android_app",
-       "package_name": "io.nself.chat",
-       "sha256_cert_fingerprints": [
-         "YOUR_SHA256_FINGERPRINT"
-       ]
+   [
+     {
+       "relation": ["delegate_permission/common.handle_all_urls"],
+       "target": {
+         "namespace": "android_app",
+         "package_name": "io.nself.chat",
+         "sha256_cert_fingerprints": ["YOUR_SHA256_FINGERPRINT"]
+       }
      }
-   }]
+   ]
    ```
 
 3. Get your SHA256 fingerprint:
@@ -283,6 +299,7 @@ npx @capacitor/assets generate --android
 ```
 
 Or manually add assets to:
+
 - Icons: `android/app/src/main/res/mipmap-*/`
 - Splash: `android/app/src/main/res/drawable*/`
 
@@ -291,119 +308,119 @@ Or manually add assets to:
 ### Push Notifications
 
 ```typescript
-import { pushNotifications } from './src/native/push-notifications';
+import { pushNotifications } from './src/native/push-notifications'
 
 // Initialize
-await pushNotifications.initialize();
+await pushNotifications.initialize()
 
 // Get device token
-const token = pushNotifications.getToken();
+const token = pushNotifications.getToken()
 
 // Show local notification
 await pushNotifications.showLocalNotification({
   title: 'New Message',
   body: 'You have a new message from John',
   channelId: 'channel-123',
-});
+})
 
 // Set badge count (iOS)
-await pushNotifications.setBadgeCount(5);
+await pushNotifications.setBadgeCount(5)
 ```
 
 ### Camera
 
 ```typescript
-import { camera } from './src/native/camera';
+import { camera } from './src/native/camera'
 
 // Take photo
-const photo = await camera.takePhoto();
+const photo = await camera.takePhoto()
 
 // Pick from gallery
-const photo = await camera.pickPhoto();
+const photo = await camera.pickPhoto()
 
 // Request permissions
-const hasPermission = await camera.requestCameraPermission();
+const hasPermission = await camera.requestCameraPermission()
 ```
 
 ### Biometric Authentication
 
 ```typescript
-import { biometrics } from './src/native/biometrics';
+import { biometrics } from './src/native/biometrics'
 
 // Initialize
-await biometrics.initialize();
+await biometrics.initialize()
 
 // Check availability
-const isAvailable = await biometrics.checkAvailability();
+const isAvailable = await biometrics.checkAvailability()
 
 // Authenticate
 const success = await biometrics.authenticate({
   title: 'Authenticate',
   description: 'Verify your identity',
-});
+})
 ```
 
 ### File Picker
 
 ```typescript
-import { filePicker } from './src/native/file-picker';
+import { filePicker } from './src/native/file-picker'
 
 // Pick a file
-const file = await filePicker.pickFile();
+const file = await filePicker.pickFile()
 
 // Pick image
-const image = await filePicker.pickImage();
+const image = await filePicker.pickImage()
 
 // Pick multiple files
-const files = await filePicker.pickFiles({ multiple: true });
+const files = await filePicker.pickFiles({ multiple: true })
 ```
 
 ### Haptic Feedback
 
 ```typescript
-import { haptics } from './src/native/haptics';
+import { haptics } from './src/native/haptics'
 
 // Button press
-await haptics.buttonPress();
+await haptics.buttonPress()
 
 // Message sent
-await haptics.messageSent();
+await haptics.messageSent()
 
 // Error
-await haptics.error();
+await haptics.error()
 ```
 
 ### Share
 
 ```typescript
-import { share } from './src/native/share';
+import { share } from './src/native/share'
 
 // Share text
-await share.shareText('Check out nChat!');
+await share.shareText('Check out nChat!')
 
 // Share URL
-await share.shareUrl('https://nchat.nself.org', 'nChat');
+await share.shareUrl('https://nchat.nself.org', 'nChat')
 
 // Share file
-await share.shareFile('/path/to/file', 'image/png');
+await share.shareFile('/path/to/file', 'image/png')
 ```
 
 ### Offline Sync
 
 ```typescript
-import { offlineSync } from './src/native/offline-sync';
+import { offlineSync } from './src/native/offline-sync'
 
 // Initialize
-await offlineSync.initialize();
+await offlineSync.initialize()
 
 // Add to queue
 await offlineSync.addToQueue('SEND_MESSAGE', {
   channelId: '123',
   text: 'Hello',
-});
+})
 
 // Force sync
-await offlineSync.forceSync();
+await offlineSync.forceSync()
 ```
 
 ## Development Workflow
@@ -433,12 +450,14 @@ await offlineSync.forceSync();
 For faster development, use Capacitor's live reload:
 
 1. **Start dev server**:
+
    ```bash
    cd ../..
    pnpm dev
    ```
 
 2. **Update capacitor.config.ts**:
+
    ```typescript
    server: {
      url: 'http://192.168.1.100:3000',  // Your local IP
@@ -457,10 +476,12 @@ Now changes will hot-reload on the device!
 ### Debugging
 
 #### iOS
+
 - Use Safari Web Inspector (Safari > Develop > [Device] > [App])
 - View native logs in Xcode console
 
 #### Android
+
 - Use Chrome DevTools (chrome://inspect)
 - View native logs with adb logcat:
   ```bash
@@ -490,6 +511,7 @@ Now changes will hot-reload on the device!
 3. **Connect via USB**
 
 4. **Verify connection**:
+
    ```bash
    adb devices
    ```
@@ -514,6 +536,7 @@ Or use Fastlane (see Fastlane section below).
 ### Android (Play Store)
 
 1. **Build release bundle**:
+
    ```bash
    pnpm run build:android:bundle
    ```
@@ -592,6 +615,7 @@ pnpm run doctor           # Run Capacitor doctor
 ### iOS Issues
 
 **CocoaPods issues**
+
 ```bash
 cd ios/App
 pod deintegrate
@@ -599,10 +623,12 @@ pod install --repo-update
 ```
 
 **Signing issues**
+
 - Ensure you have a valid development team selected in Xcode
 - Check Bundle ID matches your Apple Developer account
 
 **Build errors**
+
 ```bash
 cd ios/App
 rm -rf Pods Podfile.lock
@@ -612,6 +638,7 @@ pod install
 ### Android Issues
 
 **Gradle sync failed**
+
 ```bash
 cd android
 ./gradlew clean
@@ -620,11 +647,13 @@ cd android
 ```
 
 **SDK version issues**
+
 - Open Android Studio
 - File > Project Structure
 - Update SDK versions to match requirements
 
 **ADB not found**
+
 - Add Android SDK platform-tools to PATH:
   ```bash
   export PATH="$HOME/Library/Android/sdk/platform-tools:$PATH"
@@ -633,6 +662,7 @@ cd android
 ### General Issues
 
 **Changes not appearing**
+
 ```bash
 # Full rebuild
 cd ../..
@@ -642,12 +672,14 @@ pnpm run sync
 ```
 
 **Plugin not found**
+
 ```bash
 pnpm install
 pnpm run sync
 ```
 
 **Native projects corrupted**
+
 ```bash
 pnpm run clean
 npx cap add ios
@@ -667,6 +699,7 @@ pnpm run sync
 ## Support
 
 For issues or questions:
+
 1. Check the troubleshooting section above
 2. Review Capacitor docs: https://capacitorjs.com/docs
 3. Check GitHub issues: https://github.com/ionic-team/capacitor/issues

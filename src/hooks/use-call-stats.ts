@@ -9,6 +9,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { PeerConnectionManager } from '@/lib/webrtc/peer-connection'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -112,7 +114,7 @@ export function useCallStats(options: UseCallStatsOptions): UseCallStatsReturn {
         onQualityChange?.(quality)
       }
     } catch (error) {
-      console.error('Failed to fetch call stats:', error)
+      logger.error('Failed to fetch call stats:', error)
       setStats(null)
     }
   }, [peerConnection, onQualityChange])

@@ -14,12 +14,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import type { FileAttachmentData } from './file-attachment'
 
 // ============================================================================
@@ -258,10 +253,7 @@ export function ImageLightbox({
   return (
     <div
       ref={containerRef}
-      className={cn(
-        'fixed inset-0 z-50 flex flex-col bg-black/95',
-        className
-      )}
+      className={cn('fixed inset-0 z-50 flex flex-col bg-black/95', className)}
       onWheel={handleWheel}
     >
       {/* Header */}
@@ -273,9 +265,7 @@ export function ImageLightbox({
               {currentIndex + 1} / {images.length}
             </span>
           )}
-          <span className="max-w-[300px] truncate text-sm text-white/70">
-            {currentImage.name}
-          </span>
+          <span className="max-w-[300px] truncate text-sm text-white/70">{currentImage.name}</span>
         </div>
 
         {/* Right: Controls */}
@@ -388,9 +378,7 @@ export function ImageLightbox({
                   ) : (
                     <Maximize2 className="h-4 w-4" />
                   )}
-                  <span className="sr-only">
-                    {isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}
-                  </span>
+                  <span className="sr-only">{isFullscreen ? 'Exit fullscreen' : 'Fullscreen'}</span>
                 </Button>
               </TooltipTrigger>
               <TooltipContent>

@@ -97,10 +97,8 @@ export function usePermission() {
       /**
        * Check if the current user can perform a modification action on another user
        */
-      canModifyUser: (
-        targetRole: Role,
-        action: 'delete' | 'demote' | 'ban'
-      ) => canModifyUser(userRole, targetRole, action),
+      canModifyUser: (targetRole: Role, action: 'delete' | 'demote' | 'ban') =>
+        canModifyUser(userRole, targetRole, action),
 
       /**
        * Check if the current user is an owner
@@ -115,8 +113,7 @@ export function usePermission() {
       /**
        * Check if the current user is a moderator or higher
        */
-      isModerator:
-        userRole === 'owner' || userRole === 'admin' || userRole === 'moderator',
+      isModerator: userRole === 'owner' || userRole === 'admin' || userRole === 'moderator',
 
       /**
        * Get all permissions for the current user's role
@@ -191,10 +188,7 @@ export function usePermission() {
    * Check if user can edit a resource (owner or has edit permission)
    */
   const canEditResource = useCallback(
-    (
-      permission: Permission,
-      resourceOwnerId: string | undefined
-    ): boolean => {
+    (permission: Permission, resourceOwnerId: string | undefined): boolean => {
       // Owner of resource can always edit
       if (userId && resourceOwnerId === userId) {
         return true
@@ -209,10 +203,7 @@ export function usePermission() {
    * Check if user can delete a resource (owner or has delete permission)
    */
   const canDeleteResource = useCallback(
-    (
-      permission: Permission,
-      resourceOwnerId: string | undefined
-    ): boolean => {
+    (permission: Permission, resourceOwnerId: string | undefined): boolean => {
       // Owner of resource can always delete
       if (userId && resourceOwnerId === userId) {
         return true
@@ -364,15 +355,9 @@ export function useIsAtLeastRole(role: Role): boolean {
  * const canBan = useCanManageUser(targetUser.role, 'ban')
  * ```
  */
-export function useCanManageUser(
-  targetRole: Role,
-  action: 'delete' | 'demote' | 'ban'
-): boolean {
+export function useCanManageUser(targetRole: Role, action: 'delete' | 'demote' | 'ban'): boolean {
   const { canModifyUser } = usePermission()
-  return useMemo(
-    () => canModifyUser(targetRole, action),
-    [canModifyUser, targetRole, action]
-  )
+  return useMemo(() => canModifyUser(targetRole, action), [canModifyUser, targetRole, action])
 }
 
 /**

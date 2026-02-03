@@ -12,6 +12,7 @@
 v0.8.0 introduces native mobile (iOS, Android) and desktop applications to nChat, completing the multi-platform vision. This release adds 32,537 lines of code across 487 files, implementing production-ready apps with offline mode, background sync, and comprehensive mobile features.
 
 **Key Metrics:**
+
 - **3 new platforms:** iOS, Android, Desktop (Windows/macOS/Linux)
 - **487 files changed:** 127 iOS, 98 Android, 67 Electron, 195 shared
 - **32,537 lines added:** 60% mobile, 25% desktop, 15% infrastructure
@@ -48,29 +49,34 @@ nChat v0.8.0 Multi-Platform Architecture
 ### Technology Stack
 
 **Shared Web Layer:**
+
 - Next.js 15.5.10
 - React 19.0.0
 - TypeScript 5.7.3
 - Tailwind CSS 3.4.17
 
 **iOS Platform:**
+
 - Capacitor 6.2.0
 - iOS 14.0+ SDK
 - Swift 5.9
 - Xcode 15+
 
 **Android Platform:**
+
 - Capacitor 6.2.0
 - Android SDK API 24+ (Android 7.0+)
 - Kotlin 1.9
 - Android Studio Hedgehog
 
 **Desktop Platform:**
+
 - Electron 28.x
 - Node.js 20.x
 - Chromium 120+
 
 **Cross-Platform:**
+
 - IndexedDB (offline storage)
 - Service Workers (background sync)
 - WebRTC (calls)
@@ -97,7 +103,7 @@ class PushNotificationService {
 
   async showLocalNotification(options) {
     await LocalNotifications.schedule({
-      notifications: [options]
+      notifications: [options],
     })
   }
 }
@@ -128,6 +134,7 @@ class OfflineSyncService {
 ```
 
 **Native Plugins:**
+
 - @capacitor/camera (photo/video capture)
 - @capacitor/push-notifications (APNs)
 - @capacitor/local-notifications (local alerts)
@@ -164,6 +171,7 @@ class OfflineSyncService {
 ```
 
 **Performance Optimizations:**
+
 - Virtual scrolling for 10,000+ messages
 - Image lazy loading
 - Progressive JPEG rendering
@@ -230,6 +238,7 @@ android {
 ```
 
 **Performance Optimizations:**
+
 - RecyclerView with DiffUtil
 - Image caching with Glide
 - WorkManager for background sync
@@ -253,15 +262,17 @@ export function createMainWindow() {
       preload: path.join(__dirname, '../preload/index.js'),
       contextIsolation: true,
       nodeIntegration: false,
-      webSecurity: true
-    }
+      webSecurity: true,
+    },
   })
 
   // Load app
   win.loadURL('http://localhost:3000')
 
   // Window events
-  win.on('closed', () => { /* cleanup */ })
+  win.on('closed', () => {
+    /* cleanup */
+  })
 
   return win
 }
@@ -272,7 +283,7 @@ export function showNotification(options) {
     title: options.title,
     body: options.body,
     icon: path.join(__dirname, '../resources/icon.png'),
-    actions: options.actions
+    actions: options.actions,
   })
 
   notification.show()
@@ -301,7 +312,7 @@ export const electronAPI = {
 
   // Platform info
   platform: process.platform,
-  versions: process.versions
+  versions: process.versions,
 }
 
 // Expose to renderer
@@ -348,27 +359,27 @@ export const schema = {
       indexes: {
         channelId: 'channelId',
         timestamp: 'timestamp',
-        userId: 'userId'
-      }
+        userId: 'userId',
+      },
     },
     channels: {
       keyPath: 'id',
       indexes: {
-        lastActivity: 'lastActivity'
-      }
+        lastActivity: 'lastActivity',
+      },
     },
     users: {
-      keyPath: 'id'
+      keyPath: 'id',
     },
     queue: {
       keyPath: 'id',
       autoIncrement: true,
       indexes: {
         type: 'type',
-        timestamp: 'timestamp'
-      }
-    }
-  }
+        timestamp: 'timestamp',
+      },
+    },
+  },
 }
 
 // Initialize database
@@ -378,7 +389,7 @@ const db = await openDB('nchat', schema.version, {
     Object.entries(schema.stores).forEach(([name, config]) => {
       const store = db.createObjectStore(name, {
         keyPath: config.keyPath,
-        autoIncrement: config.autoIncrement
+        autoIncrement: config.autoIncrement,
       })
 
       // Create indexes
@@ -388,7 +399,7 @@ const db = await openDB('nchat', schema.version, {
         })
       }
     })
-  }
+  },
 })
 ```
 
@@ -535,7 +546,7 @@ export async function capturePhoto(options?: CameraOptions) {
     quality: options?.quality || 90,
     allowEditing: options?.allowEditing || false,
     resultType: CameraResultType.Uri,
-    source: CameraSource.Camera
+    source: CameraSource.Camera,
   })
 
   // Convert to blob
@@ -543,7 +554,8 @@ export async function capturePhoto(options?: CameraOptions) {
   const blob = await response.blob()
 
   // Compress if needed
-  if (blob.size > 2 * 1024 * 1024) {  // 2 MB
+  if (blob.size > 2 * 1024 * 1024) {
+    // 2 MB
     return await compressImage(blob, 0.7)
   }
 
@@ -562,9 +574,13 @@ async function compressImage(blob: Blob, quality: number): Promise<Blob> {
       canvas.height = img.height
       ctx.drawImage(img, 0, 0)
 
-      canvas.toBlob((compressed) => {
-        resolve(compressed!)
-      }, 'image/jpeg', quality)
+      canvas.toBlob(
+        (compressed) => {
+          resolve(compressed!)
+        },
+        'image/jpeg',
+        quality
+      )
     }
     img.src = URL.createObjectURL(blob)
   })
@@ -584,19 +600,19 @@ export class VoiceRecorder {
       audio: {
         echoCancellation: true,
         noiseSuppression: true,
-        autoGainControl: true
-      }
+        autoGainControl: true,
+      },
     })
 
     this.mediaRecorder = new MediaRecorder(stream, {
-      mimeType: 'audio/webm;codecs=opus'
+      mimeType: 'audio/webm;codecs=opus',
     })
 
     this.mediaRecorder.ondataavailable = (e) => {
       this.chunks.push(e.data)
     }
 
-    this.mediaRecorder.start(100)  // Collect every 100ms
+    this.mediaRecorder.start(100) // Collect every 100ms
   }
 
   async stop(): Promise<Blob> {
@@ -608,7 +624,7 @@ export class VoiceRecorder {
       }
 
       this.mediaRecorder.stop()
-      this.mediaRecorder.stream.getTracks().forEach(track => track.stop())
+      this.mediaRecorder.stream.getTracks().forEach((track) => track.stop())
     })
   }
 
@@ -641,7 +657,7 @@ export class AnalyticsService {
   trackScreenView(screenName: string) {
     logEvent(this.analytics, 'screen_view', {
       screen_name: screenName,
-      screen_class: screenName
+      screen_class: screenName,
     })
   }
 
@@ -660,7 +676,7 @@ export class AnalyticsService {
 analytics.trackEvent('message_sent', {
   channel_id: '123',
   has_attachment: true,
-  attachment_type: 'image'
+  attachment_type: 'image',
 })
 ```
 
@@ -684,10 +700,7 @@ export function initSentry() {
     replaysOnErrorSampleRate: 1.0,
 
     // Integrations
-    integrations: [
-      new Sentry.BrowserTracing(),
-      new Sentry.Replay()
-    ],
+    integrations: [new Sentry.BrowserTracing(), new Sentry.Replay()],
 
     // Filter sensitive data
     beforeSend(event) {
@@ -697,7 +710,7 @@ export function initSentry() {
         delete event.request.headers?.Authorization
       }
       return event
-    }
+    },
   })
 }
 ```
@@ -784,48 +797,50 @@ module.exports = {
   testRunner: {
     args: {
       $0: 'jest',
-      config: 'e2e/mobile/jest.config.js'
+      config: 'e2e/mobile/jest.config.js',
     },
     jest: {
-      setupTimeout: 120000
-    }
+      setupTimeout: 120000,
+    },
   },
   apps: {
     'ios.debug': {
       type: 'ios.app',
       binaryPath: 'platforms/capacitor/ios/build/Build/Products/Debug-iphonesimulator/App.app',
-      build: 'xcodebuild -workspace platforms/capacitor/ios/App/App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath platforms/capacitor/ios/build'
+      build:
+        'xcodebuild -workspace platforms/capacitor/ios/App/App.xcworkspace -scheme App -configuration Debug -sdk iphonesimulator -derivedDataPath platforms/capacitor/ios/build',
     },
     'android.debug': {
       type: 'android.apk',
       binaryPath: 'platforms/capacitor/android/app/build/outputs/apk/debug/app-debug.apk',
-      build: 'cd platforms/capacitor/android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug'
-    }
+      build:
+        'cd platforms/capacitor/android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
+    },
   },
   devices: {
     simulator: {
       type: 'ios.simulator',
       device: {
-        type: 'iPhone 14 Pro'
-      }
+        type: 'iPhone 14 Pro',
+      },
     },
     emulator: {
       type: 'android.emulator',
       device: {
-        avdName: 'Pixel_6_API_33'
-      }
-    }
+        avdName: 'Pixel_6_API_33',
+      },
+    },
   },
   configurations: {
     'ios.sim.debug': {
       device: 'simulator',
-      app: 'ios.debug'
+      app: 'ios.debug',
     },
     'android.emu.debug': {
       device: 'emulator',
-      app: 'android.debug'
-    }
-  }
+      app: 'android.debug',
+    },
+  },
 }
 ```
 
@@ -903,39 +918,39 @@ describe('Messaging', () => {
 
 ### Lines of Code by Category
 
-| Category | Files | Lines | % |
-|----------|-------|-------|---|
-| iOS Native | 127 | 8,934 | 27% |
-| Android Native | 98 | 7,621 | 23% |
-| Electron Desktop | 67 | 5,498 | 17% |
-| Shared Mobile Code | 8 | 2,405 | 7% |
-| Build & CI/CD | 8 | 2,341 | 7% |
-| E2E Tests | 30 | 4,267 | 13% |
-| Documentation | 12 | 1,471 | 4% |
-| **Total** | **350** | **32,537** | **100%** |
+| Category           | Files   | Lines      | %        |
+| ------------------ | ------- | ---------- | -------- |
+| iOS Native         | 127     | 8,934      | 27%      |
+| Android Native     | 98      | 7,621      | 23%      |
+| Electron Desktop   | 67      | 5,498      | 17%      |
+| Shared Mobile Code | 8       | 2,405      | 7%       |
+| Build & CI/CD      | 8       | 2,341      | 7%       |
+| E2E Tests          | 30      | 4,267      | 13%      |
+| Documentation      | 12      | 1,471      | 4%       |
+| **Total**          | **350** | **32,537** | **100%** |
 
 ### File Types
 
-| Type | Files | Lines |
-|------|-------|-------|
-| TypeScript | 156 | 14,923 |
-| Swift | 42 | 3,412 |
-| Kotlin | 38 | 2,987 |
-| YAML (CI/CD) | 8 | 2,341 |
-| JSON (Config) | 67 | 4,156 |
-| Markdown (Docs) | 12 | 1,471 |
-| XML (Android) | 19 | 1,834 |
-| Other | 8 | 1,413 |
+| Type            | Files | Lines  |
+| --------------- | ----- | ------ |
+| TypeScript      | 156   | 14,923 |
+| Swift           | 42    | 3,412  |
+| Kotlin          | 38    | 2,987  |
+| YAML (CI/CD)    | 8     | 2,341  |
+| JSON (Config)   | 67    | 4,156  |
+| Markdown (Docs) | 12    | 1,471  |
+| XML (Android)   | 19    | 1,834  |
+| Other           | 8     | 1,413  |
 
 ### Test Coverage
 
-| Platform | Test Files | Test Cases | Coverage |
-|----------|------------|------------|----------|
-| iOS | 10 | 87 | 78% |
-| Android | 10 | 92 | 81% |
-| Desktop | 6 | 54 | 73% |
-| Shared | 4 | 38 | 85% |
-| **Total** | **30** | **271** | **79%** |
+| Platform  | Test Files | Test Cases | Coverage |
+| --------- | ---------- | ---------- | -------- |
+| iOS       | 10         | 87         | 78%      |
+| Android   | 10         | 92         | 81%      |
+| Desktop   | 6          | 54         | 73%      |
+| Shared    | 4          | 38         | 85%      |
+| **Total** | **30**     | **271**    | **79%**  |
 
 ---
 
@@ -943,35 +958,35 @@ describe('Messaging', () => {
 
 ### Build Times
 
-| Platform | Debug Build | Release Build |
-|----------|-------------|---------------|
-| iOS | 2m 34s | 8m 12s |
-| Android | 1m 47s | 5m 23s |
-| Electron (macOS) | 3m 15s | 12m 45s |
-| Electron (Windows) | 2m 52s | 11m 18s |
-| Electron (Linux) | 2m 41s | 10m 34s |
+| Platform           | Debug Build | Release Build |
+| ------------------ | ----------- | ------------- |
+| iOS                | 2m 34s      | 8m 12s        |
+| Android            | 1m 47s      | 5m 23s        |
+| Electron (macOS)   | 3m 15s      | 12m 45s       |
+| Electron (Windows) | 2m 52s      | 11m 18s       |
+| Electron (Linux)   | 2m 41s      | 10m 34s       |
 
 ### App Sizes
 
-| Platform | Debug | Release | Compressed |
-|----------|-------|---------|------------|
-| iOS IPA | 78 MB | 42 MB | 42 MB |
-| Android APK | 52 MB | 38 MB | 28 MB (AAB) |
-| macOS DMG | 142 MB | 98 MB | 87 MB |
-| Windows EXE | 135 MB | 92 MB | 78 MB |
-| Linux AppImage | 128 MB | 89 MB | 76 MB |
+| Platform       | Debug  | Release | Compressed  |
+| -------------- | ------ | ------- | ----------- |
+| iOS IPA        | 78 MB  | 42 MB   | 42 MB       |
+| Android APK    | 52 MB  | 38 MB   | 28 MB (AAB) |
+| macOS DMG      | 142 MB | 98 MB   | 87 MB       |
+| Windows EXE    | 135 MB | 92 MB   | 78 MB       |
+| Linux AppImage | 128 MB | 89 MB   | 76 MB       |
 
 ### Runtime Performance
 
-| Metric | iOS | Android | Desktop |
-|--------|-----|---------|---------|
-| Launch Time | 0.8s | 1.2s | 1.9s |
-| Memory (Idle) | 85 MB | 95 MB | 150 MB |
-| Memory (Active) | 142 MB | 168 MB | 250 MB |
-| CPU (Idle) | 1% | 2% | 2% |
-| CPU (Active) | 8% | 12% | 7% |
-| Battery/Hour | 5% | 6% | N/A |
-| FPS (Scrolling) | 60 | 60 | 60 |
+| Metric          | iOS    | Android | Desktop |
+| --------------- | ------ | ------- | ------- |
+| Launch Time     | 0.8s   | 1.2s    | 1.9s    |
+| Memory (Idle)   | 85 MB  | 95 MB   | 150 MB  |
+| Memory (Active) | 142 MB | 168 MB  | 250 MB  |
+| CPU (Idle)      | 1%     | 2%      | 2%      |
+| CPU (Active)    | 8%     | 12%     | 7%      |
+| Battery/Hour    | 5%     | 6%      | N/A     |
+| FPS (Scrolling) | 60     | 60      | 60      |
 
 ---
 
@@ -980,6 +995,7 @@ describe('Messaging', () => {
 ### Data Encryption
 
 **iOS Secure Enclave:**
+
 ```swift
 let access = SecAccessControlCreateWithFlags(
     kCFAllocatorDefault,
@@ -999,6 +1015,7 @@ SecItemAdd(query as CFDictionary, nil)
 ```
 
 **Android Hardware Keystore:**
+
 ```kotlin
 val keyGenerator = KeyGenerator.getInstance(
     KeyProperties.KEY_ALGORITHM_AES,
@@ -1131,6 +1148,7 @@ val key = keyGenerator.generateKey()
 v0.8.0 successfully delivers on the multi-platform vision, bringing nChat to iOS, Android, and desktop with 100% feature parity. The implementation prioritizes code reuse (85% shared), performance (60 FPS on all platforms), and user experience (native platform conventions).
 
 **Key Achievements:**
+
 - ✅ 3 new platforms launched
 - ✅ 487 files changed, 32,537 lines added
 - ✅ 79% test coverage
@@ -1138,6 +1156,7 @@ v0.8.0 successfully delivers on the multi-platform vision, bringing nChat to iOS
 - ✅ Zero breaking changes
 
 **Next Steps:**
+
 - Monitor app store reviews and user feedback
 - Optimize based on real-world usage data
 - Plan v0.9.0 features (video calls, screen sharing)

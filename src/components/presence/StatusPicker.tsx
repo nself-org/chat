@@ -1,15 +1,15 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 import {
   type PresenceStatus,
   PRESENCE_LABELS,
   PRESENCE_DESCRIPTIONS,
   getPresenceColor,
-} from '@/lib/presence/presence-types';
-import { PresenceIndicator } from './PresenceIndicator';
-import { Check } from 'lucide-react';
+} from '@/lib/presence/presence-types'
+import { PresenceIndicator } from './PresenceIndicator'
+import { Check } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -19,29 +19,29 @@ export interface StatusPickerProps {
   /**
    * Currently selected status
    */
-  value: PresenceStatus;
+  value: PresenceStatus
 
   /**
    * Callback when status is selected
    */
-  onChange: (status: PresenceStatus) => void;
+  onChange: (status: PresenceStatus) => void
 
   /**
    * Whether to show the invisible option
    * @default true
    */
-  showInvisible?: boolean;
+  showInvisible?: boolean
 
   /**
    * Whether to show descriptions
    * @default true
    */
-  showDescriptions?: boolean;
+  showDescriptions?: boolean
 
   /**
    * Additional class names
    */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -49,9 +49,9 @@ export interface StatusPickerProps {
 // ============================================================================
 
 const STATUS_OPTIONS: Array<{
-  value: PresenceStatus;
-  label: string;
-  description: string;
+  value: PresenceStatus
+  label: string
+  description: string
 }> = [
   {
     value: 'online',
@@ -73,7 +73,7 @@ const STATUS_OPTIONS: Array<{
     label: PRESENCE_LABELS.invisible,
     description: PRESENCE_DESCRIPTIONS.invisible,
   },
-];
+]
 
 // ============================================================================
 // Component
@@ -88,7 +88,7 @@ export function StatusPicker({
 }: StatusPickerProps) {
   const options = showInvisible
     ? STATUS_OPTIONS
-    : STATUS_OPTIONS.filter((o) => o.value !== 'invisible');
+    : STATUS_OPTIONS.filter((o) => o.value !== 'invisible')
 
   return (
     <div className={cn('flex flex-col', className)} role="radiogroup" aria-label="Status">
@@ -99,37 +99,28 @@ export function StatusPicker({
           aria-checked={value === option.value}
           onClick={() => onChange(option.value)}
           className={cn(
-            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors',
+            'flex items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
             'hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
             value === option.value && 'bg-muted'
           )}
         >
           {/* Status indicator */}
-          <PresenceIndicator
-            status={option.value}
-            size="md"
-            position="inline"
-            animate={false}
-          />
+          <PresenceIndicator status={option.value} size="md" position="inline" animate={false} />
 
           {/* Label and description */}
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-sm">{option.label}</span>
-              {value === option.value && (
-                <Check className="h-4 w-4 text-primary" />
-              )}
+              <span className="text-sm font-medium">{option.label}</span>
+              {value === option.value && <Check className="h-4 w-4 text-primary" />}
             </div>
             {showDescriptions && (
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {option.description}
-              </p>
+              <p className="mt-0.5 text-xs text-muted-foreground">{option.description}</p>
             )}
           </div>
         </button>
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -137,10 +128,10 @@ export function StatusPicker({
 // ============================================================================
 
 export interface CompactStatusPickerProps {
-  value: PresenceStatus;
-  onChange: (status: PresenceStatus) => void;
-  showInvisible?: boolean;
-  className?: string;
+  value: PresenceStatus
+  onChange: (status: PresenceStatus) => void
+  showInvisible?: boolean
+  className?: string
 }
 
 export function CompactStatusPicker({
@@ -151,14 +142,10 @@ export function CompactStatusPicker({
 }: CompactStatusPickerProps) {
   const options = showInvisible
     ? STATUS_OPTIONS
-    : STATUS_OPTIONS.filter((o) => o.value !== 'invisible');
+    : STATUS_OPTIONS.filter((o) => o.value !== 'invisible')
 
   return (
-    <div
-      className={cn('flex items-center gap-1', className)}
-      role="radiogroup"
-      aria-label="Status"
-    >
+    <div className={cn('flex items-center gap-1', className)} role="radiogroup" aria-label="Status">
       {options.map((option) => (
         <button
           key={option.value}
@@ -167,22 +154,17 @@ export function CompactStatusPicker({
           aria-label={option.label}
           onClick={() => onChange(option.value)}
           className={cn(
-            'p-2 rounded-lg transition-colors',
+            'rounded-lg p-2 transition-colors',
             'hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring',
             value === option.value && 'bg-muted ring-2 ring-ring'
           )}
           title={option.label}
         >
-          <PresenceIndicator
-            status={option.value}
-            size="lg"
-            position="inline"
-            animate={false}
-          />
+          <PresenceIndicator status={option.value} size="lg" position="inline" animate={false} />
         </button>
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -190,9 +172,9 @@ export function CompactStatusPicker({
 // ============================================================================
 
 export interface StatusButtonProps {
-  status: PresenceStatus;
-  onClick?: () => void;
-  className?: string;
+  status: PresenceStatus
+  onClick?: () => void
+  className?: string
 }
 
 export function StatusButton({ status, onClick, className }: StatusButtonProps) {
@@ -200,7 +182,7 @@ export function StatusButton({ status, onClick, className }: StatusButtonProps) 
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-2 px-3 py-1.5 rounded-md text-sm',
+        'flex items-center gap-2 rounded-md px-3 py-1.5 text-sm',
         'hover:bg-muted/50 focus:outline-none focus:ring-2 focus:ring-ring',
         'transition-colors',
         className
@@ -210,7 +192,7 @@ export function StatusButton({ status, onClick, className }: StatusButtonProps) 
       <PresenceIndicator status={status} size="sm" position="inline" />
       <span>{PRESENCE_LABELS[status]}</span>
     </button>
-  );
+  )
 }
 
-export default StatusPicker;
+export default StatusPicker

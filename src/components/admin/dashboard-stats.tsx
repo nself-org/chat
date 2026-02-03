@@ -140,9 +140,7 @@ export function StatsHeader({ lastUpdated, isLoading, onRefresh }: StatsHeaderPr
     <div className="flex items-center justify-between">
       <div>
         <h2 className="text-2xl font-bold tracking-tight">Dashboard Overview</h2>
-        <p className="text-muted-foreground">
-          Real-time statistics and metrics for your platform
-        </p>
+        <p className="text-muted-foreground">Real-time statistics and metrics for your platform</p>
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -175,8 +173,8 @@ export function StatsError({ error, onRetry }: StatsErrorProps) {
   return (
     <Card className="border-destructive">
       <CardContent className="flex flex-col items-center justify-center py-8">
-        <p className="text-destructive font-medium">Failed to load statistics</p>
-        <p className="text-sm text-muted-foreground mt-1">{error}</p>
+        <p className="font-medium text-destructive">Failed to load statistics</p>
+        <p className="mt-1 text-sm text-muted-foreground">{error}</p>
         {onRetry && (
           <Button variant="outline" size="sm" onClick={onRetry} className="mt-4">
             Try Again
@@ -197,7 +195,7 @@ export function StatsLoadingSkeleton() {
             <Skeleton className="h-4 w-4" />
           </CardHeader>
           <CardContent>
-            <Skeleton className="h-8 w-16 mb-2" />
+            <Skeleton className="mb-2 h-8 w-16" />
             <Skeleton className="h-4 w-32" />
           </CardContent>
         </Card>
@@ -254,7 +252,9 @@ export function StorageCard({
             </div>
             <Progress value={percentage} className="mt-2 h-2" />
             <div className="mt-2 flex items-center justify-between text-xs">
-              <span className={statusColor}>{statusLabel} ({percentage}%)</span>
+              <span className={statusColor}>
+                {statusLabel} ({percentage}%)
+              </span>
               {change !== null && (
                 <span
                   className={cn(
@@ -303,7 +303,7 @@ export function ActivitySummary({
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-sm font-medium flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-sm font-medium">
           <Activity className="h-4 w-4" />
           Activity Summary
         </CardTitle>
@@ -328,7 +328,7 @@ export function ActivitySummary({
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Most active</span>
-              <span className="font-medium truncate max-w-[150px]">
+              <span className="max-w-[150px] truncate font-medium">
                 {mostActiveChannels.length > 0
                   ? mostActiveChannels.slice(0, 2).join(', ')
                   : 'No data'}
@@ -422,7 +422,15 @@ export function DashboardStats({
         onClick: onChannelCardClick,
       },
     ]
-  }, [stats, userTrend, messageTrend, channelTrend, onUserCardClick, onMessageCardClick, onChannelCardClick])
+  }, [
+    stats,
+    userTrend,
+    messageTrend,
+    channelTrend,
+    onUserCardClick,
+    onMessageCardClick,
+    onChannelCardClick,
+  ])
 
   // Render error state
   if (error) {
@@ -503,7 +511,7 @@ export function DashboardStats({
         {/* Quick Stats */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-sm font-medium">
               <UserPlus className="h-4 w-4" />
               User Growth
             </CardTitle>
@@ -525,7 +533,7 @@ export function DashboardStats({
                   <span className="text-muted-foreground">Growth rate</span>
                   <span
                     className={cn(
-                      'font-medium flex items-center gap-1',
+                      'flex items-center gap-1 font-medium',
                       stats.users.growth >= 0
                         ? 'text-green-600 dark:text-green-400'
                         : 'text-red-600 dark:text-red-400'
@@ -557,7 +565,7 @@ export function DashboardStats({
         {/* Channel Stats */}
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm font-medium flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-sm font-medium">
               <Hash className="h-4 w-4" />
               Channel Distribution
             </CardTitle>

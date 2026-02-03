@@ -6,19 +6,19 @@ Get the keyboard shortcuts system up and running in 5 minutes.
 
 ```tsx
 // src/app/layout.tsx or src/app/chat/layout.tsx
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { ShortcutsModal } from '@/components/modals/ShortcutsModal';
-import { useGlobalShortcuts } from '@/hooks/use-global-shortcuts';
+import { useState } from 'react'
+import { ShortcutsModal } from '@/components/modals/ShortcutsModal'
+import { useGlobalShortcuts } from '@/hooks/use-global-shortcuts'
 
 export default function RootLayout({ children }) {
-  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
 
   // Register global shortcuts
   useGlobalShortcuts({
     onShowShortcuts: () => setShortcutsOpen(true),
-  });
+  })
 
   return (
     <html>
@@ -26,13 +26,10 @@ export default function RootLayout({ children }) {
         {children}
 
         {/* Shortcuts Modal - opens with ? or Cmd+/ */}
-        <ShortcutsModal
-          open={shortcutsOpen}
-          onOpenChange={setShortcutsOpen}
-        />
+        <ShortcutsModal open={shortcutsOpen} onOpenChange={setShortcutsOpen} />
       </body>
     </html>
-  );
+  )
 }
 ```
 
@@ -40,15 +37,15 @@ export default function RootLayout({ children }) {
 
 ```tsx
 // src/app/settings/keyboard/page.tsx
-import { KeyboardShortcuts } from '@/components/settings/KeyboardShortcuts';
+import { KeyboardShortcuts } from '@/components/settings/KeyboardShortcuts'
 
 export default function KeyboardSettingsPage() {
   return (
     <div className="container max-w-4xl py-8">
-      <h1 className="text-3xl font-bold mb-8">Keyboard Settings</h1>
+      <h1 className="mb-8 text-3xl font-bold">Keyboard Settings</h1>
       <KeyboardShortcuts />
     </div>
-  );
+  )
 }
 ```
 
@@ -58,30 +55,30 @@ export default function KeyboardSettingsPage() {
 
 ```tsx
 // src/components/QuickSwitcher.tsx
-import { useHotkey } from '@/hooks/use-hotkey';
-import { useState } from 'react';
+import { useHotkey } from '@/hooks/use-hotkey'
+import { useState } from 'react'
 
 export function QuickSwitcher() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
   // Open with Cmd+K
   useHotkey('mod+k', () => setIsOpen(true), {
     preventDefault: true,
-  });
+  })
 
   // Close with Escape
   useHotkey('escape', () => setIsOpen(false), {
     enabled: isOpen,
-  });
+  })
 
-  if (!isOpen) return null;
+  if (!isOpen) return null
 
   return (
     <div className="quick-switcher">
       <input placeholder="Search channels..." autoFocus />
       {/* Your switcher UI */}
     </div>
-  );
+  )
 }
 ```
 
@@ -89,32 +86,32 @@ export function QuickSwitcher() {
 
 ```tsx
 // src/components/MessageList.tsx
-import { useShortcut, useScopedKeyboard } from '@/lib/keyboard';
-import { useState } from 'react';
+import { useShortcut, useScopedKeyboard } from '@/lib/keyboard'
+import { useState } from 'react'
 
 export function MessageList({ messages }) {
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null)
 
   // Activate scope when message is selected
-  useScopedKeyboard('message-selected', !!selectedId);
+  useScopedKeyboard('message-selected', !!selectedId)
 
   // Reply with 'R'
   useShortcut('REPLY', () => {
     if (selectedId) {
-      handleReply(selectedId);
+      handleReply(selectedId)
     }
-  });
+  })
 
   // Delete with 'Backspace'
   useShortcut('DELETE_MESSAGE', () => {
     if (selectedId) {
-      handleDelete(selectedId);
+      handleDelete(selectedId)
     }
-  });
+  })
 
   return (
     <div>
-      {messages.map(msg => (
+      {messages.map((msg) => (
         <div
           key={msg.id}
           onClick={() => setSelectedId(msg.id)}
@@ -124,7 +121,7 @@ export function MessageList({ messages }) {
         </div>
       ))}
     </div>
-  );
+  )
 }
 ```
 
@@ -132,24 +129,24 @@ export function MessageList({ messages }) {
 
 ```tsx
 // src/components/MessageEditor.tsx
-import { useEditorShortcuts } from '@/hooks/use-editor-shortcuts';
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import { useState } from 'react';
+import { useEditorShortcuts } from '@/hooks/use-editor-shortcuts'
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
+import { useState } from 'react'
 
 export function MessageEditor() {
-  const [isFocused, setIsFocused] = useState(false);
+  const [isFocused, setIsFocused] = useState(false)
 
   const editor = useEditor({
     extensions: [StarterKit],
     content: '',
-  });
+  })
 
   // Formatting shortcuts (Cmd+B, Cmd+I, etc.)
   useEditorShortcuts({
     editor,
     isFocused,
-  });
+  })
 
   return (
     <EditorContent
@@ -157,7 +154,7 @@ export function MessageEditor() {
       onFocus={() => setIsFocused(true)}
       onBlur={() => setIsFocused(false)}
     />
-  );
+  )
 }
 ```
 
@@ -173,18 +170,18 @@ export function MessageEditor() {
 
 ### Quick Reference
 
-| Action | Shortcut | Category |
-|--------|----------|----------|
-| Quick Switcher | `Cmd+K` | Navigation |
-| Search | `Cmd+F` | Navigation |
-| Next Channel | `Alt+↓` | Navigation |
-| Previous Channel | `Alt+↑` | Navigation |
-| Reply | `R` | Messages |
-| React | `E` | Messages |
-| Bold | `Cmd+B` | Formatting |
-| Italic | `Cmd+I` | Formatting |
-| Show Shortcuts | `?` | UI |
-| Close Modal | `Esc` | UI |
+| Action           | Shortcut | Category   |
+| ---------------- | -------- | ---------- |
+| Quick Switcher   | `Cmd+K`  | Navigation |
+| Search           | `Cmd+F`  | Navigation |
+| Next Channel     | `Alt+↓`  | Navigation |
+| Previous Channel | `Alt+↑`  | Navigation |
+| Reply            | `R`      | Messages   |
+| React            | `E`      | Messages   |
+| Bold             | `Cmd+B`  | Formatting |
+| Italic           | `Cmd+I`  | Formatting |
+| Show Shortcuts   | `?`      | UI         |
+| Close Modal      | `Esc`    | UI         |
 
 See full list in shortcuts modal (`?`)
 
@@ -202,22 +199,26 @@ Users can customize shortcuts in Settings:
 ### Custom Shortcuts
 
 ```tsx
-import { useHotkey } from '@/hooks/use-hotkey';
+import { useHotkey } from '@/hooks/use-hotkey'
 
 // Simple custom shortcut
-useHotkey('mod+shift+x', () => {
-  console.log('Custom action!');
-}, {
-  preventDefault: true,
-});
+useHotkey(
+  'mod+shift+x',
+  () => {
+    console.log('Custom action!')
+  },
+  {
+    preventDefault: true,
+  }
+)
 ```
 
 ### Shortcut Manager
 
 ```tsx
-import { getShortcutManager } from '@/lib/shortcuts/shortcut-manager';
+import { getShortcutManager } from '@/lib/shortcuts/shortcut-manager'
 
-const manager = getShortcutManager();
+const manager = getShortcutManager()
 
 // Register multiple shortcuts
 manager.registerMultiple([
@@ -233,19 +234,19 @@ manager.registerMultiple([
     handler: () => console.log('Action 2'),
     priority: 90,
   },
-]);
+])
 ```
 
 ### Check Conflicts
 
 ```tsx
-import { useShortcutStore } from '@/lib/keyboard/shortcut-store';
+import { useShortcutStore } from '@/lib/keyboard/shortcut-store'
 
 function MyComponent() {
-  const conflicts = useShortcutStore(state => state.conflicts);
+  const conflicts = useShortcutStore((state) => state.conflicts)
 
   if (conflicts.length > 0) {
-    console.warn('Conflicts detected:', conflicts);
+    console.warn('Conflicts detected:', conflicts)
   }
 }
 ```
@@ -255,15 +256,16 @@ function MyComponent() {
 ### Shortcuts Not Working
 
 1. Check if shortcuts are enabled:
+
    ```tsx
-   const enabled = useShortcutStore(state => state.shortcutsEnabled);
+   const enabled = useShortcutStore((state) => state.shortcutsEnabled)
    ```
 
 2. Check for conflicts in Settings → Keyboard
 
 3. Verify scope is active:
    ```tsx
-   useScopedKeyboard('my-scope', isActive);
+   useScopedKeyboard('my-scope', isActive)
    ```
 
 ### Recording Not Working
@@ -281,6 +283,7 @@ function MyComponent() {
 ## Summary
 
 You now have:
+
 - ✅ Shortcuts modal (press `?`)
 - ✅ Global shortcuts registered
 - ✅ Settings page for customization

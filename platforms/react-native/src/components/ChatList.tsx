@@ -3,14 +3,7 @@
  */
 
 import React, { useCallback } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Pressable,
-  RefreshControlProps,
-} from 'react-native'
+import { View, Text, StyleSheet, FlatList, Pressable, RefreshControlProps } from 'react-native'
 
 import { useTheme } from '@theme'
 import { UserAvatar } from './UserAvatar'
@@ -35,81 +28,82 @@ export function ChatList({
 }: ChatListProps) {
   const { theme } = useTheme()
 
-  const renderItem = useCallback(({ item }: { item: Channel }) => {
-    const hasUnread = (item.unreadCount || 0) > 0
+  const renderItem = useCallback(
+    ({ item }: { item: Channel }) => {
+      const hasUnread = (item.unreadCount || 0) > 0
 
-    return (
-      <Pressable
-        style={[styles.chatItem, { borderBottomColor: theme.colors.border }]}
-        onPress={() => onChatPress(item)}
-      >
-        {/* Avatar */}
-        <View style={styles.avatarContainer}>
-          <UserAvatar size={52} />
-          {/* Online indicator for DMs */}
-          {item.type === 'direct' && (
-            <View
-              style={[
-                styles.onlineIndicator,
-                { backgroundColor: theme.colors.success, borderColor: theme.colors.background },
-              ]}
-            />
-          )}
-        </View>
+      return (
+        <Pressable
+          style={[styles.chatItem, { borderBottomColor: theme.colors.border }]}
+          onPress={() => onChatPress(item)}
+        >
+          {/* Avatar */}
+          <View style={styles.avatarContainer}>
+            <UserAvatar size={52} />
+            {/* Online indicator for DMs */}
+            {item.type === 'direct' && (
+              <View
+                style={[
+                  styles.onlineIndicator,
+                  { backgroundColor: theme.colors.success, borderColor: theme.colors.background },
+                ]}
+              />
+            )}
+          </View>
 
-        {/* Content */}
-        <View style={styles.content}>
-          <View style={styles.topRow}>
-            <Text
-              style={[
-                styles.name,
-                {
-                  color: theme.colors.text,
-                  fontWeight: hasUnread ? '700' : '600',
-                },
-              ]}
-              numberOfLines={1}
-            >
-              {item.type === 'public' || item.type === 'private' ? `#${item.name}` : item.name}
-            </Text>
-            {item.lastMessageAt && (
+          {/* Content */}
+          <View style={styles.content}>
+            <View style={styles.topRow}>
               <Text
                 style={[
-                  styles.time,
-                  { color: hasUnread ? theme.colors.primary : theme.colors.muted },
+                  styles.name,
+                  {
+                    color: theme.colors.text,
+                    fontWeight: hasUnread ? '700' : '600',
+                  },
                 ]}
+                numberOfLines={1}
               >
-                {formatRelativeTime(item.lastMessageAt)}
+                {item.type === 'public' || item.type === 'private' ? `#${item.name}` : item.name}
               </Text>
-            )}
-          </View>
-          <View style={styles.bottomRow}>
-            <Text
-              style={[
-                styles.preview,
-                {
-                  color: hasUnread ? theme.colors.text : theme.colors.muted,
-                  fontWeight: hasUnread ? '500' : '400',
-                },
-              ]}
-              numberOfLines={2}
-            >
-              {item.description || 'No messages yet'}
-            </Text>
-            {hasUnread && (
-              <View
-                style={[styles.badge, { backgroundColor: theme.colors.primary }]}
-              >
-                <Text style={[styles.badgeText, { color: theme.colors.buttonPrimaryText }]}>
-                  {item.unreadCount! > 99 ? '99+' : item.unreadCount}
+              {item.lastMessageAt && (
+                <Text
+                  style={[
+                    styles.time,
+                    { color: hasUnread ? theme.colors.primary : theme.colors.muted },
+                  ]}
+                >
+                  {formatRelativeTime(item.lastMessageAt)}
                 </Text>
-              </View>
-            )}
+              )}
+            </View>
+            <View style={styles.bottomRow}>
+              <Text
+                style={[
+                  styles.preview,
+                  {
+                    color: hasUnread ? theme.colors.text : theme.colors.muted,
+                    fontWeight: hasUnread ? '500' : '400',
+                  },
+                ]}
+                numberOfLines={2}
+              >
+                {item.description || 'No messages yet'}
+              </Text>
+              {hasUnread && (
+                <View style={[styles.badge, { backgroundColor: theme.colors.primary }]}>
+                  <Text style={[styles.badgeText, { color: theme.colors.buttonPrimaryText }]}>
+                    {item.unreadCount! > 99 ? '99+' : item.unreadCount}
+                  </Text>
+                </View>
+              )}
+            </View>
           </View>
-        </View>
-      </Pressable>
-    )
-  }, [theme, onChatPress])
+        </Pressable>
+      )
+    },
+    [theme, onChatPress]
+  )
 
   const keyExtractor = useCallback((item: Channel) => item.id, [])
 

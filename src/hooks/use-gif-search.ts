@@ -7,6 +7,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { tenorClient, type TenorGif } from '@/lib/tenor-client'
 
+import { logger } from '@/lib/logger'
+
 export interface UseGifSearchResult {
   gifs: TenorGif[]
   isLoading: boolean
@@ -39,7 +41,7 @@ export function useGifSearch(query?: string, limit = 20): UseGifSearchResult {
     tenorClient
       .trendingTerms(10)
       .then((terms) => setTrendingTerms(terms))
-      .catch((err) => console.error('Failed to fetch trending terms:', err))
+      .catch((err) => logger.error('Failed to fetch trending terms:', err))
   }, [isConfigured])
 
   // Fetch GIFs
@@ -61,7 +63,7 @@ export function useGifSearch(query?: string, limit = 20): UseGifSearchResult {
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to load GIFs'
         setError(errorMessage)
-        console.error('GIF search error:', err)
+        logger.error('GIF search error:', err)
       } finally {
         setIsLoading(false)
       }

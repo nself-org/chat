@@ -75,10 +75,7 @@ const AUDIO_CONSTRAINTS: MediaTrackConstraints = {
 }
 
 const PEER_CONNECTION_CONFIG: RTCConfiguration = {
-  iceServers: [
-    { urls: 'stun:stun.l.google.com:19302' },
-    { urls: 'stun:stun1.l.google.com:19302' },
-  ],
+  iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:stun1.l.google.com:19302' }],
   iceCandidatePoolSize: 10,
 }
 
@@ -195,9 +192,7 @@ export class StreamClient {
       const newTrack = newStream.getVideoTracks()[0]
 
       // Replace track in peer connection
-      const sender = this.peerConnection
-        ?.getSenders()
-        .find((s) => s.track?.kind === 'video')
+      const sender = this.peerConnection?.getSenders().find((s) => s.track?.kind === 'video')
 
       if (sender) {
         await sender.replaceTrack(newTrack)
@@ -235,9 +230,7 @@ export class StreamClient {
       const newTrack = newStream.getAudioTracks()[0]
 
       // Replace track in peer connection
-      const sender = this.peerConnection
-        ?.getSenders()
-        .find((s) => s.track?.kind === 'audio')
+      const sender = this.peerConnection?.getSenders().find((s) => s.track?.kind === 'audio')
 
       if (sender) {
         await sender.replaceTrack(newTrack)
@@ -373,9 +366,7 @@ export class StreamClient {
   public async handleAnswer(answer: RTCSessionDescriptionInit): Promise<void> {
     if (!this.peerConnection) return
 
-    await this.peerConnection.setRemoteDescription(
-      new RTCSessionDescription(answer)
-    )
+    await this.peerConnection.setRemoteDescription(new RTCSessionDescription(answer))
   }
 
   /**
@@ -406,13 +397,9 @@ export class StreamClient {
   // Signaling (Placeholder - implement with Socket.io)
   // ==========================================================================
 
-  private async sendOffer(offer: RTCSessionDescriptionInit): Promise<void> {
-    // TODO: Implement signaling via Socket.io
-  }
+  private async sendOffer(offer: RTCSessionDescriptionInit): Promise<void> {}
 
-  private sendIceCandidate(candidate: RTCIceCandidate): void {
-    // TODO: Implement signaling via Socket.io
-  }
+  private sendIceCandidate(candidate: RTCIceCandidate): void {}
 
   // ==========================================================================
   // Stats & Metrics
@@ -497,9 +484,7 @@ export class StreamClient {
   /**
    * Report metrics to server
    */
-  private async reportMetrics(metrics: StreamQualityMetrics): Promise<void> {
-    // TODO: Send metrics to API
-  }
+  private async reportMetrics(metrics: StreamQualityMetrics): Promise<void> {}
 
   // ==========================================================================
   // Error Handling

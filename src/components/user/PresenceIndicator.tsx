@@ -36,10 +36,10 @@
  * ```
  */
 
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 import {
   type PresenceStatus,
   type CustomStatus,
@@ -47,16 +47,11 @@ import {
   PRESENCE_COLORS,
   formatLastSeen,
   formatDurationRemaining,
-} from '@/lib/presence/presence-types';
-import { usePresenceStore, selectUserPresence } from '@/stores/presence-store';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { UserPresenceDot } from './user-presence-dot';
-import { Clock } from 'lucide-react';
+} from '@/lib/presence/presence-types'
+import { usePresenceStore, selectUserPresence } from '@/stores/presence-store'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { UserPresenceDot } from './user-presence-dot'
+import { Clock } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -64,31 +59,31 @@ import { Clock } from 'lucide-react';
 
 export interface PresenceIndicatorProps {
   /** User ID to show presence for */
-  userId: string;
+  userId: string
   /** Override presence status (if not using store) */
-  status?: PresenceStatus;
+  status?: PresenceStatus
   /** Override custom status */
-  customStatus?: CustomStatus | null;
+  customStatus?: CustomStatus | null
   /** Override last seen time */
-  lastSeenAt?: Date;
+  lastSeenAt?: Date
   /** Display variant */
-  variant?: 'dot' | 'badge' | 'inline' | 'full';
+  variant?: 'dot' | 'badge' | 'inline' | 'full'
   /** Position for badge variant */
-  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
   /** Size of the indicator */
-  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
   /** Show tooltip with details */
-  showTooltip?: boolean;
+  showTooltip?: boolean
   /** Show last seen timestamp */
-  showLastSeen?: boolean;
+  showLastSeen?: boolean
   /** Show custom status */
-  showCustomStatus?: boolean;
+  showCustomStatus?: boolean
   /** Animate online status */
-  animate?: boolean;
+  animate?: boolean
   /** Respect privacy settings (hide if user has privacy enabled) */
-  respectPrivacy?: boolean;
+  respectPrivacy?: boolean
   /** Additional className */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -107,39 +102,33 @@ const getStatusDisplay = (
   if (customStatus?.text) {
     const expiryText = customStatus.expiresAt
       ? ` (${formatDurationRemaining(customStatus.expiresAt)} left)`
-      : '';
+      : ''
 
     return {
       primary: `${customStatus.emoji || ''} ${customStatus.text}`.trim(),
       secondary: PRESENCE_LABELS[status] + expiryText,
-    };
+    }
   }
 
   // Show status label
-  const primary = PRESENCE_LABELS[status];
+  const primary = PRESENCE_LABELS[status]
 
   // Show last seen for offline/away users
-  if (
-    (status === 'offline' || status === 'away' || status === 'invisible') &&
-    lastSeenAt
-  ) {
+  if ((status === 'offline' || status === 'away' || status === 'invisible') && lastSeenAt) {
     return {
       primary,
       secondary: `Last seen ${formatLastSeen(lastSeenAt)}`,
-    };
+    }
   }
 
-  return { primary };
-};
+  return { primary }
+}
 
 // ============================================================================
 // PresenceIndicator Component
 // ============================================================================
 
-export const PresenceIndicator = React.forwardRef<
-  HTMLDivElement,
-  PresenceIndicatorProps
->(
+export const PresenceIndicator = React.forwardRef<HTMLDivElement, PresenceIndicatorProps>(
   (
     {
       userId,
@@ -159,43 +148,40 @@ export const PresenceIndicator = React.forwardRef<
     ref
   ) => {
     // Get presence from store if not provided
-    const presenceFromStore = usePresenceStore(selectUserPresence(userId));
-    const privacySettings = usePresenceStore((state) => state.settings.privacy);
+    const presenceFromStore = usePresenceStore(selectUserPresence(userId))
+    const privacySettings = usePresenceStore((state) => state.settings.privacy)
 
     // Use props if provided, otherwise use store values
-    const status = statusProp ?? presenceFromStore?.status ?? 'offline';
-    const customStatus = customStatusProp ?? presenceFromStore?.customStatus;
-    const lastSeenAt = lastSeenAtProp ?? presenceFromStore?.lastSeenAt;
+    const status = statusProp ?? presenceFromStore?.status ?? 'offline'
+    const customStatus = customStatusProp ?? presenceFromStore?.customStatus
+    const lastSeenAt = lastSeenAtProp ?? presenceFromStore?.lastSeenAt
 
     // Check privacy settings
     const shouldHidePresence =
-      respectPrivacy && !privacySettings.showLastSeen && status === 'offline';
+      respectPrivacy && !privacySettings.showLastSeen && status === 'offline'
 
-    const shouldHideCustomStatus =
-      respectPrivacy && !privacySettings.shareActivityStatus;
+    const shouldHideCustomStatus = respectPrivacy && !privacySettings.shareActivityStatus
 
     // Get display text
     const displayText = getStatusDisplay(
       status,
       shouldHideCustomStatus ? null : customStatus,
       showLastSeen ? lastSeenAt : undefined
-    );
+    )
 
     // Render tooltip content
     const renderTooltipContent = () => (
       <div className="space-y-1">
         <div className="font-medium">{displayText.primary}</div>
-        {displayText.secondary && (
-          <div className="text-xs opacity-90">{displayText.secondary}</div>
-        )}
+        {displayText.secondary && <div className="text-xs opacity-90">{displayText.secondary}</div>}
         {showLastSeen && lastSeenAt && !shouldHidePresence && (
-          <div className="text-xs opacity-75 flex items-center gap-1">
+          <div className="flex items-center gap-1 text-xs opacity-75">
             <Clock className="h-3 w-3" />
             {formatLastSeen(lastSeenAt)}
           </div>
         )}
       </div>
-    );
+    )
 
     // Render the indicator based on variant
     const renderIndicator = () => {
@@ -209,7 +195,7 @@ export const PresenceIndicator = React.forwardRef<
             animate={animate && status === 'online'}
             className={className}
           />
-        );
+        )
       }
 
       // Badge variant - absolute positioned dot (for avatars)
@@ -222,44 +208,36 @@ export const PresenceIndicator = React.forwardRef<
             animate={animate && status === 'online'}
             className={className}
           />
-        );
+        )
       }
 
       // Inline variant - dot with text
       if (variant === 'inline') {
         return (
-          <div
-            ref={ref}
-            className={cn('flex items-center gap-2', className)}
-          >
+          <div ref={ref} className={cn('flex items-center gap-2', className)}>
             <UserPresenceDot
               status={status}
               size={size}
               position="inline"
               animate={animate && status === 'online'}
             />
-            <div className="flex flex-col min-w-0">
-              <span className="text-sm font-medium truncate">
-                {displayText.primary}
-              </span>
+            <div className="flex min-w-0 flex-col">
+              <span className="truncate text-sm font-medium">{displayText.primary}</span>
               {displayText.secondary && (
-                <span className="text-xs text-muted-foreground truncate">
+                <span className="truncate text-xs text-muted-foreground">
                   {displayText.secondary}
                 </span>
               )}
             </div>
           </div>
-        );
+        )
       }
 
       // Full variant - complete presence card
       return (
         <div
           ref={ref}
-          className={cn(
-            'flex items-start gap-3 p-3 rounded-lg border bg-card',
-            className
-          )}
+          className={cn('flex items-start gap-3 rounded-lg border bg-card p-3', className)}
         >
           <UserPresenceDot
             status={status}
@@ -267,12 +245,9 @@ export const PresenceIndicator = React.forwardRef<
             position="inline"
             animate={animate && status === 'online'}
           />
-          <div className="flex-1 min-w-0 space-y-1">
+          <div className="min-w-0 flex-1 space-y-1">
             <div className="flex items-center gap-2">
-              <span
-                className="font-medium text-sm"
-                style={{ color: PRESENCE_COLORS[status] }}
-              >
+              <span className="text-sm font-medium" style={{ color: PRESENCE_COLORS[status] }}>
                 {PRESENCE_LABELS[status]}
               </span>
               {customStatus?.expiresAt && (
@@ -284,13 +259,9 @@ export const PresenceIndicator = React.forwardRef<
 
             {showCustomStatus && customStatus && (customStatus.text || customStatus.emoji) && (
               <div className="text-sm">
-                {customStatus.emoji && (
-                  <span className="mr-1">{customStatus.emoji}</span>
-                )}
+                {customStatus.emoji && <span className="mr-1">{customStatus.emoji}</span>}
                 {customStatus.text && (
-                  <span className="text-muted-foreground">
-                    {customStatus.text}
-                  </span>
+                  <span className="text-muted-foreground">{customStatus.text}</span>
                 )}
               </div>
             )}
@@ -303,10 +274,10 @@ export const PresenceIndicator = React.forwardRef<
             )}
           </div>
         </div>
-      );
-    };
+      )
+    }
 
-    const indicator = renderIndicator();
+    const indicator = renderIndicator()
 
     // Wrap in tooltip if requested
     if (showTooltip) {
@@ -319,14 +290,14 @@ export const PresenceIndicator = React.forwardRef<
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
-      );
+      )
     }
 
-    return indicator;
+    return indicator
   }
-);
+)
 
-PresenceIndicator.displayName = 'PresenceIndicator';
+PresenceIndicator.displayName = 'PresenceIndicator'
 
 // ============================================================================
 // Convenience Components
@@ -335,22 +306,22 @@ PresenceIndicator.displayName = 'PresenceIndicator';
 /**
  * Avatar badge variant - for overlaying on avatars
  */
-export const PresenceBadge: React.FC<
-  Omit<PresenceIndicatorProps, 'variant'>
-> = (props) => <PresenceIndicator {...props} variant="badge" />;
+export const PresenceBadge: React.FC<Omit<PresenceIndicatorProps, 'variant'>> = (props) => (
+  <PresenceIndicator {...props} variant="badge" />
+)
 
 /**
  * Inline status variant - for lists and sidebars
  */
-export const InlinePresence: React.FC<
-  Omit<PresenceIndicatorProps, 'variant'>
-> = (props) => <PresenceIndicator {...props} variant="inline" />;
+export const InlinePresence: React.FC<Omit<PresenceIndicatorProps, 'variant'>> = (props) => (
+  <PresenceIndicator {...props} variant="inline" />
+)
 
 /**
  * Full status card variant - for profiles
  */
-export const PresenceCard: React.FC<
-  Omit<PresenceIndicatorProps, 'variant'>
-> = (props) => <PresenceIndicator {...props} variant="full" />;
+export const PresenceCard: React.FC<Omit<PresenceIndicatorProps, 'variant'>> = (props) => (
+  <PresenceIndicator {...props} variant="full" />
+)
 
-export default PresenceIndicator;
+export default PresenceIndicator

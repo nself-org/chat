@@ -1,12 +1,7 @@
 'use client'
 
 import { Pencil } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { formatRelativeTime, formatMessageTimeTooltip } from '@/lib/date'
 
@@ -67,9 +62,7 @@ export function EditedIndicator({
             )}
           >
             <span>(edited)</span>
-            {showCount && editCount > 1 && (
-              <span className="font-medium">{editCount}x</span>
-            )}
+            {showCount && editCount > 1 && <span className="font-medium">{editCount}x</span>}
           </button>
         </TooltipTrigger>
         <TooltipContent side="top" className="max-w-xs">
@@ -78,9 +71,7 @@ export function EditedIndicator({
             <span>{tooltipText}</span>
           </div>
           {onClick && (
-            <p className="mt-1 text-xs text-muted-foreground">
-              Click to view edit history
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">Click to view edit history</p>
           )}
         </TooltipContent>
       </Tooltip>
@@ -100,11 +91,7 @@ export interface EditedBadgeProps {
   className?: string
 }
 
-export function EditedBadge({
-  editedAt,
-  onClick,
-  className,
-}: EditedBadgeProps) {
+export function EditedBadge({ editedAt, onClick, className }: EditedBadgeProps) {
   const tooltipText = `Edited ${formatRelativeTime(editedAt)}`
 
   return (
@@ -116,7 +103,7 @@ export function EditedBadge({
             onClick={onClick}
             className={cn(
               'inline-flex h-4 w-4 items-center justify-center rounded-full bg-muted transition-colors',
-              onClick && 'cursor-pointer hover:bg-muted-foreground/20',
+              onClick && 'hover:bg-muted-foreground/20 cursor-pointer',
               !onClick && 'cursor-default',
               className
             )}

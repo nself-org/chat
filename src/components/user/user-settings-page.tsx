@@ -13,13 +13,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
 import {
@@ -48,8 +42,7 @@ import {
 // Types
 // ============================================================================
 
-export interface UserSettingsPageProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface UserSettingsPageProps extends React.HTMLAttributes<HTMLDivElement> {
   user: UserProfile
   onSaveProfile?: (data: unknown) => Promise<void>
   onChangePassword?: (currentPassword: string, newPassword: string) => Promise<void>
@@ -121,8 +114,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
     const currentUser = useUserStore((state) => state.currentUser)
     const setMyPresence = useUserStore((state) => state.setMyPresence)
 
-    const [activeSection, setActiveSection] =
-      React.useState<SettingsSection>('profile')
+    const [activeSection, setActiveSection] = React.useState<SettingsSection>('profile')
     const [statusModalOpen, setStatusModalOpen] = React.useState(false)
 
     // Notification settings state
@@ -163,13 +155,9 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
     const displayUser = currentUser ?? user
 
     return (
-      <div
-        ref={ref}
-        className={cn('flex h-full', className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('flex h-full', className)} {...props}>
         {/* Sidebar navigation */}
-        <div className="w-64 border-r bg-muted/30">
+        <div className="bg-muted/30 w-64 border-r">
           <div className="p-4">
             <h2 className="text-lg font-semibold">Settings</h2>
           </div>
@@ -180,9 +168,9 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                   key={section.id}
                   onClick={() => setActiveSection(section.id)}
                   className={cn(
-                    'flex items-center gap-3 w-full px-3 py-2 rounded-md text-sm transition-colors',
+                    'flex w-full items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors',
                     activeSection === section.id
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'text-primary-foreground bg-primary'
                       : 'hover:bg-muted'
                   )}
                 >
@@ -197,7 +185,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
         {/* Main content */}
         <div className="flex-1 overflow-auto">
           <ScrollArea className="h-full">
-            <div className="max-w-2xl mx-auto p-6">
+            <div className="mx-auto max-w-2xl p-6">
               {/* Profile Section */}
               {activeSection === 'profile' && (
                 <div className="space-y-6">
@@ -212,29 +200,17 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-base">Status</CardTitle>
-                      <CardDescription>
-                        Set your presence and custom status
-                      </CardDescription>
+                      <CardDescription>Set your presence and custom status</CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="flex items-center gap-4">
-                        <UserAvatar
-                          user={displayUser}
-                          size="lg"
-                          presence={displayUser.presence}
-                        />
+                        <UserAvatar user={displayUser} size="lg" presence={displayUser.presence} />
                         <div className="flex-1">
                           <p className="font-medium">{displayUser.displayName}</p>
-                          <UserStatus
-                            status={displayUser.customStatus}
-                            variant="full"
-                          />
+                          <UserStatus status={displayUser.customStatus} variant="full" />
                         </div>
-                        <Button
-                          variant="outline"
-                          onClick={() => setStatusModalOpen(true)}
-                        >
-                          <Smile className="h-4 w-4 mr-2" />
+                        <Button variant="outline" onClick={() => setStatusModalOpen(true)}>
+                          <Smile className="mr-2 h-4 w-4" />
                           Set Status
                         </Button>
                       </div>
@@ -253,10 +229,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                   </Card>
 
                   {/* Profile edit form */}
-                  <EditProfileForm
-                    user={displayUser}
-                    onSave={onSaveProfile}
-                  />
+                  <EditProfileForm user={displayUser} onSave={onSaveProfile} />
 
                   <SetStatusModal
                     open={statusModalOpen}
@@ -302,9 +275,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                     <CardContent className="space-y-4">
                       <div className="grid gap-4">
                         <div className="space-y-2">
-                          <Label htmlFor="current-password">
-                            Current Password
-                          </Label>
+                          <Label htmlFor="current-password">Current Password</Label>
                           <Input
                             id="current-password"
                             type="password"
@@ -320,9 +291,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                           />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="confirm-password">
-                            Confirm New Password
-                          </Label>
+                          <Label htmlFor="confirm-password">Confirm New Password</Label>
                           <Input
                             id="confirm-password"
                             type="password"
@@ -336,9 +305,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
 
                   <Card className="border-destructive/50">
                     <CardHeader>
-                      <CardTitle className="text-base text-destructive">
-                        Danger Zone
-                      </CardTitle>
+                      <CardTitle className="text-base text-destructive">Danger Zone</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -378,9 +345,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                   <Card>
                     <CardHeader>
                       <CardTitle className="text-base">Theme</CardTitle>
-                      <CardDescription>
-                        Select your preferred color scheme
-                      </CardDescription>
+                      <CardDescription>Select your preferred color scheme</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="grid grid-cols-3 gap-4">
@@ -391,20 +356,16 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                         ].map((option) => (
                           <button
                             key={option.value}
-                            onClick={() =>
-                              setTheme(option.value as 'light' | 'dark' | 'system')
-                            }
+                            onClick={() => setTheme(option.value as 'light' | 'dark' | 'system')}
                             className={cn(
-                              'flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-colors',
+                              'flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors',
                               theme === option.value
-                                ? 'border-primary bg-primary/5'
-                                : 'border-transparent bg-muted hover:bg-muted/80'
+                                ? 'bg-primary/5 border-primary'
+                                : 'hover:bg-muted/80 border-transparent bg-muted'
                             )}
                           >
                             <option.icon className="h-6 w-6" />
-                            <span className="text-sm font-medium">
-                              {option.label}
-                            </span>
+                            <span className="text-sm font-medium">{option.label}</span>
                           </button>
                         ))}
                       </div>
@@ -437,9 +398,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="compact">Compact</SelectItem>
-                            <SelectItem value="comfortable">
-                              Comfortable
-                            </SelectItem>
+                            <SelectItem value="comfortable">Comfortable</SelectItem>
                             <SelectItem value="spacious">Spacious</SelectItem>
                           </SelectContent>
                         </Select>
@@ -450,9 +409,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                       <div className="flex items-center justify-between">
                         <div>
                           <Label>Font Size</Label>
-                          <p className="text-sm text-muted-foreground">
-                            Change the text size
-                          </p>
+                          <p className="text-sm text-muted-foreground">Change the text size</p>
                         </div>
                         <Select
                           value={appearanceSettings.fontSize}
@@ -490,9 +447,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
 
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">
-                        Notification Channels
-                      </CardTitle>
+                      <CardTitle className="text-base">Notification Channels</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {[
@@ -512,21 +467,14 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                           description: 'Receive email for missed messages',
                         },
                       ].map((item) => (
-                        <div
-                          key={item.key}
-                          className="flex items-center justify-between"
-                        >
+                        <div key={item.key} className="flex items-center justify-between">
                           <div>
                             <Label>{item.label}</Label>
-                            <p className="text-sm text-muted-foreground">
-                              {item.description}
-                            </p>
+                            <p className="text-sm text-muted-foreground">{item.description}</p>
                           </div>
                           <Switch
                             checked={
-                              notificationSettings[
-                                item.key as keyof typeof notificationSettings
-                              ]
+                              notificationSettings[item.key as keyof typeof notificationSettings]
                             }
                             onCheckedChange={(checked) =>
                               setNotificationSettings((prev) => ({
@@ -559,16 +507,11 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                           label: 'Someone reacts to my message',
                         },
                       ].map((item) => (
-                        <div
-                          key={item.key}
-                          className="flex items-center justify-between"
-                        >
+                        <div key={item.key} className="flex items-center justify-between">
                           <Label>{item.label}</Label>
                           <Switch
                             checked={
-                              notificationSettings[
-                                item.key as keyof typeof notificationSettings
-                              ]
+                              notificationSettings[item.key as keyof typeof notificationSettings]
                             }
                             onCheckedChange={(checked) =>
                               setNotificationSettings((prev) => ({
@@ -596,41 +539,28 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
 
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">
-                        Activity Status
-                      </CardTitle>
+                      <CardTitle className="text-base">Activity Status</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {[
                         {
                           key: 'showOnlineStatus',
                           label: 'Show online status',
-                          description:
-                            'Let others see when you are online',
+                          description: 'Let others see when you are online',
                         },
                         {
                           key: 'showReadReceipts',
                           label: 'Show read receipts',
-                          description:
-                            'Let others see when you have read their messages',
+                          description: 'Let others see when you have read their messages',
                         },
                       ].map((item) => (
-                        <div
-                          key={item.key}
-                          className="flex items-center justify-between"
-                        >
+                        <div key={item.key} className="flex items-center justify-between">
                           <div>
                             <Label>{item.label}</Label>
-                            <p className="text-sm text-muted-foreground">
-                              {item.description}
-                            </p>
+                            <p className="text-sm text-muted-foreground">{item.description}</p>
                           </div>
                           <Switch
-                            checked={
-                              privacySettings[
-                                item.key as keyof typeof privacySettings
-                              ]
-                            }
+                            checked={privacySettings[item.key as keyof typeof privacySettings]}
                             onCheckedChange={(checked) =>
                               setPrivacySettings((prev) => ({
                                 ...prev,
@@ -645,47 +575,33 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
 
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">
-                        Profile Visibility
-                      </CardTitle>
+                      <CardTitle className="text-base">Profile Visibility</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {[
                         {
                           key: 'allowDMsFromAnyone',
                           label: 'Allow DMs from anyone',
-                          description:
-                            'Let anyone send you direct messages',
+                          description: 'Let anyone send you direct messages',
                         },
                         {
                           key: 'showProfileToGuests',
                           label: 'Show profile to guests',
-                          description:
-                            'Allow guests to view your profile',
+                          description: 'Allow guests to view your profile',
                         },
                         {
                           key: 'showEmailToMembers',
                           label: 'Show email to members',
-                          description:
-                            'Allow members to see your email address',
+                          description: 'Allow members to see your email address',
                         },
                       ].map((item) => (
-                        <div
-                          key={item.key}
-                          className="flex items-center justify-between"
-                        >
+                        <div key={item.key} className="flex items-center justify-between">
                           <div>
                             <Label>{item.label}</Label>
-                            <p className="text-sm text-muted-foreground">
-                              {item.description}
-                            </p>
+                            <p className="text-sm text-muted-foreground">{item.description}</p>
                           </div>
                           <Switch
-                            checked={
-                              privacySettings[
-                                item.key as keyof typeof privacySettings
-                              ]
-                            }
+                            checked={privacySettings[item.key as keyof typeof privacySettings]}
                             onCheckedChange={(checked) =>
                               setPrivacySettings((prev) => ({
                                 ...prev,
@@ -705,30 +621,24 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                 <div className="space-y-6">
                   <div>
                     <h3 className="text-xl font-semibold">Accessibility</h3>
-                    <p className="text-sm text-muted-foreground">
-                      Make nchat easier to use
-                    </p>
+                    <p className="text-sm text-muted-foreground">Make nchat easier to use</p>
                   </div>
 
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">
-                        Visual Preferences
-                      </CardTitle>
+                      <CardTitle className="text-base">Visual Preferences</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       {[
                         {
                           key: 'reduceMotion',
                           label: 'Reduce motion',
-                          description:
-                            'Minimize animations and transitions',
+                          description: 'Minimize animations and transitions',
                         },
                         {
                           key: 'highContrast',
                           label: 'High contrast',
-                          description:
-                            'Increase contrast for better visibility',
+                          description: 'Increase contrast for better visibility',
                         },
                         {
                           key: 'largeText',
@@ -736,21 +646,14 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                           description: 'Use larger text throughout the app',
                         },
                       ].map((item) => (
-                        <div
-                          key={item.key}
-                          className="flex items-center justify-between"
-                        >
+                        <div key={item.key} className="flex items-center justify-between">
                           <div>
                             <Label>{item.label}</Label>
-                            <p className="text-sm text-muted-foreground">
-                              {item.description}
-                            </p>
+                            <p className="text-sm text-muted-foreground">{item.description}</p>
                           </div>
                           <Switch
                             checked={
-                              accessibilitySettings[
-                                item.key as keyof typeof accessibilitySettings
-                              ]
+                              accessibilitySettings[item.key as keyof typeof accessibilitySettings]
                             }
                             onCheckedChange={(checked) =>
                               setAccessibilitySettings((prev) => ({
@@ -766,9 +669,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
 
                   <Card>
                     <CardHeader>
-                      <CardTitle className="text-base">
-                        Screen Reader
-                      </CardTitle>
+                      <CardTitle className="text-base">Screen Reader</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="flex items-center justify-between">
@@ -779,9 +680,7 @@ const UserSettingsPage = React.forwardRef<HTMLDivElement, UserSettingsPageProps>
                           </p>
                         </div>
                         <Switch
-                          checked={
-                            accessibilitySettings.screenReaderAnnouncements
-                          }
+                          checked={accessibilitySettings.screenReaderAnnouncements}
                           onCheckedChange={(checked) =>
                             setAccessibilitySettings((prev) => ({
                               ...prev,

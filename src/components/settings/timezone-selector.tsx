@@ -64,10 +64,25 @@ const timezones: Timezone[] = [
 
   // Australia & Pacific
   { value: 'Australia/Perth', label: 'Perth', offset: 'UTC+8', region: 'Australia & Pacific' },
-  { value: 'Australia/Adelaide', label: 'Adelaide', offset: 'UTC+9:30', region: 'Australia & Pacific' },
+  {
+    value: 'Australia/Adelaide',
+    label: 'Adelaide',
+    offset: 'UTC+9:30',
+    region: 'Australia & Pacific',
+  },
   { value: 'Australia/Sydney', label: 'Sydney', offset: 'UTC+10', region: 'Australia & Pacific' },
-  { value: 'Australia/Melbourne', label: 'Melbourne', offset: 'UTC+10', region: 'Australia & Pacific' },
-  { value: 'Australia/Brisbane', label: 'Brisbane', offset: 'UTC+10', region: 'Australia & Pacific' },
+  {
+    value: 'Australia/Melbourne',
+    label: 'Melbourne',
+    offset: 'UTC+10',
+    region: 'Australia & Pacific',
+  },
+  {
+    value: 'Australia/Brisbane',
+    label: 'Brisbane',
+    offset: 'UTC+10',
+    region: 'Australia & Pacific',
+  },
   { value: 'Pacific/Auckland', label: 'Auckland', offset: 'UTC+12', region: 'Australia & Pacific' },
   { value: 'Pacific/Fiji', label: 'Fiji', offset: 'UTC+12', region: 'Australia & Pacific' },
 
@@ -120,9 +135,7 @@ export function TimezoneSelector({
             <span className="flex items-center gap-2">
               <span>{selectedTimezone.label}</span>
               {showOffset && (
-                <span className="text-xs text-muted-foreground">
-                  ({selectedTimezone.offset})
-                </span>
+                <span className="text-xs text-muted-foreground">({selectedTimezone.offset})</span>
               )}
             </span>
           )}
@@ -138,9 +151,7 @@ export function TimezoneSelector({
               <SelectItem key={timezone.value} value={timezone.value}>
                 <div className="flex items-center justify-between gap-4">
                   <span>{timezone.label}</span>
-                  <span className="text-xs text-muted-foreground">
-                    {timezone.offset}
-                  </span>
+                  <span className="text-xs text-muted-foreground">{timezone.offset}</span>
                 </div>
               </SelectItem>
             ))}

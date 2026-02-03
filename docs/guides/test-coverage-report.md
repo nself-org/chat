@@ -14,152 +14,152 @@ This document tracks the test coverage status for the nself-chat project.
 
 #### Components (`src/components/**/__tests__/`)
 
-| Component Category | Files | Coverage Status |
-|-------------------|-------|-----------------|
-| UI Components | 2 | ✅ Complete |
-| Chat Components | 6 | ✅ Complete |
-| Layout Components | 3 | ✅ Complete |
-| Admin Components | 1 | ✅ Complete |
-| Modals | 3 | ✅ Complete |
-| User Components | 1 | ✅ Complete |
-| Channel Components | 1 | ✅ Complete |
-| Thread Components | 3 | ✅ Complete |
-| Notifications | 2 | ✅ Complete |
-| Media Components | 2 | ✅ Complete |
-| Call Components | 2 | ✅ Complete |
-| Profile Components | 1 | ✅ Complete |
-| I18n Components | 3 | ✅ Complete |
-| Common Components | 1 | ✅ Complete |
-| Security Components | 1 | ✅ Complete |
+| Component Category  | Files | Coverage Status |
+| ------------------- | ----- | --------------- |
+| UI Components       | 2     | ✅ Complete     |
+| Chat Components     | 6     | ✅ Complete     |
+| Layout Components   | 3     | ✅ Complete     |
+| Admin Components    | 1     | ✅ Complete     |
+| Modals              | 3     | ✅ Complete     |
+| User Components     | 1     | ✅ Complete     |
+| Channel Components  | 1     | ✅ Complete     |
+| Thread Components   | 3     | ✅ Complete     |
+| Notifications       | 2     | ✅ Complete     |
+| Media Components    | 2     | ✅ Complete     |
+| Call Components     | 2     | ✅ Complete     |
+| Profile Components  | 1     | ✅ Complete     |
+| I18n Components     | 3     | ✅ Complete     |
+| Common Components   | 1     | ✅ Complete     |
+| Security Components | 1     | ✅ Complete     |
 
 **Total Component Tests**: 30+ test files
 
 #### Hooks (`src/hooks/__tests__/`)
 
-| Hook Category | Files | Coverage Status |
-|--------------|-------|-----------------|
-| Message Hooks | 2 | ✅ Complete |
-| Channel Hooks | 2 | ✅ Complete |
-| User Hooks | 1 | ✅ Complete |
-| Call Hooks | 2 | ✅ Complete |
-| Notification Hooks | 2 | ✅ Complete |
-| Translation Hooks | 2 | ✅ Complete |
-| Analytics Hooks | 1 | ✅ Complete |
-| Bot Hooks | 1 | ✅ Complete |
-| Admin Hooks | 1 | ✅ Complete |
-| Presence Hooks | 1 | ✅ Complete |
-| Reaction Hooks | 1 | ✅ Complete |
-| Read Receipts | 1 | ✅ Complete |
-| Media Gallery | 1 | ✅ Complete |
-| Encryption | 1 | ✅ Complete |
-| Typing | 1 | ✅ Complete |
+| Hook Category      | Files | Coverage Status |
+| ------------------ | ----- | --------------- |
+| Message Hooks      | 2     | ✅ Complete     |
+| Channel Hooks      | 2     | ✅ Complete     |
+| User Hooks         | 1     | ✅ Complete     |
+| Call Hooks         | 2     | ✅ Complete     |
+| Notification Hooks | 2     | ✅ Complete     |
+| Translation Hooks  | 2     | ✅ Complete     |
+| Analytics Hooks    | 1     | ✅ Complete     |
+| Bot Hooks          | 1     | ✅ Complete     |
+| Admin Hooks        | 1     | ✅ Complete     |
+| Presence Hooks     | 1     | ✅ Complete     |
+| Reaction Hooks     | 1     | ✅ Complete     |
+| Read Receipts      | 1     | ✅ Complete     |
+| Media Gallery      | 1     | ✅ Complete     |
+| Encryption         | 1     | ✅ Complete     |
+| Typing             | 1     | ✅ Complete     |
 
 **Total Hook Tests**: 20+ test files
 
 #### Stores (`src/stores/__tests__/`)
 
-| Store | Coverage Status |
-|-------|-----------------|
-| Channel Store | ✅ Complete |
-| Message Store | ✅ Complete |
-| User Store | ✅ Complete |
-| UI Store | ✅ Complete |
-| Notification Store | ✅ Complete |
-| Call Store | ✅ Complete |
-| Typing Store | ✅ Complete |
-| Presence Store | ✅ Complete |
-| Drafts Store | ✅ Complete |
-| Encryption Store | ✅ Complete |
-| RBAC Store | ✅ Complete |
-| Search Store | ✅ Complete |
-| Integration Store | ✅ Complete |
-| Read Receipts Store | ✅ Complete |
-| Telemetry Store | ✅ Complete |
-| A11y Store | ✅ Complete |
-| Gallery Store | ✅ Complete |
-| Locale Store | ✅ Complete |
-| Bot SDK Store | ✅ Complete |
-| Admin Dashboard Store | ✅ Complete |
+| Store                 | Coverage Status |
+| --------------------- | --------------- |
+| Channel Store         | ✅ Complete     |
+| Message Store         | ✅ Complete     |
+| User Store            | ✅ Complete     |
+| UI Store              | ✅ Complete     |
+| Notification Store    | ✅ Complete     |
+| Call Store            | ✅ Complete     |
+| Typing Store          | ✅ Complete     |
+| Presence Store        | ✅ Complete     |
+| Drafts Store          | ✅ Complete     |
+| Encryption Store      | ✅ Complete     |
+| RBAC Store            | ✅ Complete     |
+| Search Store          | ✅ Complete     |
+| Integration Store     | ✅ Complete     |
+| Read Receipts Store   | ✅ Complete     |
+| Telemetry Store       | ✅ Complete     |
+| A11y Store            | ✅ Complete     |
+| Gallery Store         | ✅ Complete     |
+| Locale Store          | ✅ Complete     |
+| Bot SDK Store         | ✅ Complete     |
+| Admin Dashboard Store | ✅ Complete     |
 
 **Total Store Tests**: 20 test files
 
 #### Contexts (`src/contexts/__tests__/`)
 
-| Context | Coverage Status |
-|---------|-----------------|
-| Auth Context | ✅ Complete |
-| App Config Context | ✅ Complete |
-| Theme Context | ✅ Complete |
-| Chat Context | ✅ Complete |
+| Context            | Coverage Status |
+| ------------------ | --------------- |
+| Auth Context       | ✅ Complete     |
+| App Config Context | ✅ Complete     |
+| Theme Context      | ✅ Complete     |
+| Chat Context       | ✅ Complete     |
 
 **Total Context Tests**: 4 test files
 
 #### GraphQL (`src/graphql/__tests__/`)
 
-| Category | Coverage Status |
-|----------|-----------------|
-| Queries | ✅ Complete |
-| Mutations | ✅ Complete |
-| Subscriptions | ✅ Complete |
-| Fragments | ✅ Complete |
-| Apollo Mocks | ✅ Complete |
+| Category      | Coverage Status |
+| ------------- | --------------- |
+| Queries       | ✅ Complete     |
+| Mutations     | ✅ Complete     |
+| Subscriptions | ✅ Complete     |
+| Fragments     | ✅ Complete     |
+| Apollo Mocks  | ✅ Complete     |
 
 **Total GraphQL Tests**: 5 test files
 
 #### Library Utilities (`src/lib/__tests__/`)
 
-| Utility | Coverage Status |
-|---------|-----------------|
-| Utils (cn, formatters) | ✅ Complete |
-| Date Utilities | ✅ Complete |
-| File Utilities | ✅ Complete |
-| Message Utilities | ✅ Complete |
+| Utility                | Coverage Status |
+| ---------------------- | --------------- |
+| Utils (cn, formatters) | ✅ Complete     |
+| Date Utilities         | ✅ Complete     |
+| File Utilities         | ✅ Complete     |
+| Message Utilities      | ✅ Complete     |
 
 **Total Library Tests**: 4+ test files (existing + new)
 
 ### Integration Tests (`src/__tests__/integration/`)
 
-| Test Suite | Coverage Status |
-|-----------|-----------------|
-| Chat Flow | ✅ Complete |
-| I18n RTL Formatting | ✅ Complete |
-| Bot Webhooks Commands | ✅ Complete |
-| Wallet Payments Subscriptions | ✅ Complete |
-| Search Discovery Indexing | ✅ Complete |
-| Analytics Privacy Consent | ✅ Complete |
+| Test Suite                    | Coverage Status |
+| ----------------------------- | --------------- |
+| Chat Flow                     | ✅ Complete     |
+| I18n RTL Formatting           | ✅ Complete     |
+| Bot Webhooks Commands         | ✅ Complete     |
+| Wallet Payments Subscriptions | ✅ Complete     |
+| Search Discovery Indexing     | ✅ Complete     |
+| Analytics Privacy Consent     | ✅ Complete     |
 
 **Total Integration Tests**: 6 test files
 
 ### API Route Tests (`src/app/api/__tests__/`)
 
-| API Route | Coverage Status |
-|----------|-----------------|
-| Config API | ✅ Complete |
-| Health Checks | ✅ Complete |
+| API Route     | Coverage Status |
+| ------------- | --------------- |
+| Config API    | ✅ Complete     |
+| Health Checks | ✅ Complete     |
 
 **Total API Tests**: 2+ test files (new)
 
 ### E2E Tests (`e2e/`)
 
-| Test Suite | Coverage Status |
-|-----------|-----------------|
-| Authentication | ✅ Complete |
-| Chat | ✅ Complete |
-| Calls | ✅ Complete |
-| Admin | ✅ Complete |
-| Setup Wizard | ✅ Complete |
-| Settings | ✅ Complete |
-| Search | ✅ Complete |
-| Bots | ✅ Complete |
-| Wallet | ✅ Complete |
-| Payments | ✅ Complete |
-| Offline | ✅ Complete |
-| I18n | ✅ Complete |
-| Accessibility | ✅ Complete |
-| Advanced Messaging | ✅ Complete |
+| Test Suite         | Coverage Status   |
+| ------------------ | ----------------- |
+| Authentication     | ✅ Complete       |
+| Chat               | ✅ Complete       |
+| Calls              | ✅ Complete       |
+| Admin              | ✅ Complete       |
+| Setup Wizard       | ✅ Complete       |
+| Settings           | ✅ Complete       |
+| Search             | ✅ Complete       |
+| Bots               | ✅ Complete       |
+| Wallet             | ✅ Complete       |
+| Payments           | ✅ Complete       |
+| Offline            | ✅ Complete       |
+| I18n               | ✅ Complete       |
+| Accessibility      | ✅ Complete       |
+| Advanced Messaging | ✅ Complete       |
 | Channel Management | ✅ Complete (new) |
-| Message Sending | ✅ Complete (new) |
-| Visual Regression | ✅ Complete (new) |
+| Message Sending    | ✅ Complete (new) |
+| Visual Regression  | ✅ Complete (new) |
 
 **Total E2E Tests**: 17 test files
 
@@ -179,48 +179,48 @@ This document tracks the test coverage status for the nself-chat project.
 
 ### Critical Paths (90%+ target)
 
-| Path | Estimated Coverage | Status |
-|------|-------------------|--------|
-| Authentication | High | ✅ Well Tested |
-| Message CRUD | High | ✅ Well Tested |
-| Channel Management | High | ✅ Well Tested |
-| Real-time Features | Medium-High | ✅ Well Tested |
+| Path               | Estimated Coverage | Status         |
+| ------------------ | ------------------ | -------------- |
+| Authentication     | High               | ✅ Well Tested |
+| Message CRUD       | High               | ✅ Well Tested |
+| Channel Management | High               | ✅ Well Tested |
+| Real-time Features | Medium-High        | ✅ Well Tested |
 
 ### High Priority (80%+ target)
 
-| Path | Estimated Coverage | Status |
-|------|-------------------|--------|
-| User Management | High | ✅ Well Tested |
-| File Uploads | Medium-High | ✅ Tested |
-| Search | Medium-High | ✅ Tested |
-| Notifications | High | ✅ Well Tested |
+| Path            | Estimated Coverage | Status         |
+| --------------- | ------------------ | -------------- |
+| User Management | High               | ✅ Well Tested |
+| File Uploads    | Medium-High        | ✅ Tested      |
+| Search          | Medium-High        | ✅ Tested      |
+| Notifications   | High               | ✅ Well Tested |
 
 ### Medium Priority (70%+ target)
 
-| Path | Estimated Coverage | Status |
-|------|-------------------|--------|
-| UI Components | High | ✅ Well Tested |
-| Utilities | High | ✅ Well Tested |
-| Forms | Medium-High | ✅ Tested |
+| Path          | Estimated Coverage | Status         |
+| ------------- | ------------------ | -------------- |
+| UI Components | High               | ✅ Well Tested |
+| Utilities     | High               | ✅ Well Tested |
+| Forms         | Medium-High        | ✅ Tested      |
 
 ## Visual Regression Testing
 
-| Category | Status |
-|----------|--------|
-| Setup | ✅ Complete |
-| Playwright Snapshots | ✅ Configured |
-| Percy Integration | ⚙️ Ready (needs token) |
+| Category              | Status                 |
+| --------------------- | ---------------------- |
+| Setup                 | ✅ Complete            |
+| Playwright Snapshots  | ✅ Configured          |
+| Percy Integration     | ⚙️ Ready (needs token) |
 | Chromatic Integration | ⚙️ Ready (needs token) |
-| CI/CD Workflow | ✅ Complete |
-| Documentation | ✅ Complete |
+| CI/CD Workflow        | ✅ Complete            |
+| Documentation         | ✅ Complete            |
 
 ## Documentation
 
-| Document | Status |
-|----------|--------|
-| Testing Guide | ✅ Complete |
+| Document                | Status      |
+| ----------------------- | ----------- |
+| Testing Guide           | ✅ Complete |
 | Visual Regression Guide | ✅ Complete |
-| Test Coverage Report | ✅ Complete |
+| Test Coverage Report    | ✅ Complete |
 
 ## Running Tests
 
@@ -313,5 +313,5 @@ The nself-chat project now has comprehensive test coverage across:
 
 ---
 
-*Last Updated: January 31, 2026*
-*Next Review: As needed when adding major features*
+_Last Updated: January 31, 2026_
+_Next Review: As needed when adding major features_

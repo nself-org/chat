@@ -57,7 +57,16 @@ export const CHAT_TYPES: TelegramFeature[] = [
     icon: 'user',
     settings: {
       maxMessageLength: 4096,
-      supportedMedia: ['photo', 'video', 'audio', 'document', 'sticker', 'gif', 'voice', 'video_note'],
+      supportedMedia: [
+        'photo',
+        'video',
+        'audio',
+        'document',
+        'sticker',
+        'gif',
+        'voice',
+        'video_note',
+      ],
     },
   },
   {
@@ -553,8 +562,8 @@ export const PRIVACY_FEATURES: TelegramFeature[] = [
     icon: 'bell-off',
     settings: {
       durations: [
-        1 * 60 * 60 * 1000,      // 1 hour
-        8 * 60 * 60 * 1000,      // 8 hours
+        1 * 60 * 60 * 1000, // 1 hour
+        8 * 60 * 60 * 1000, // 8 hours
         2 * 24 * 60 * 60 * 1000, // 2 days
         'forever',
       ],

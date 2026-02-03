@@ -389,17 +389,16 @@ export const restHandlers = [
     const body = (await request.json()) as { email: string; password: string }
 
     if (body.email === 'invalid@test.com') {
-      return HttpResponse.json(
-        { error: 'Invalid credentials' },
-        { status: 401 }
-      )
+      return HttpResponse.json({ error: 'Invalid credentials' }, { status: 401 })
     }
 
-    const user = mockUsers.find((u) => u.email === body.email) || createMockUser({
-      email: body.email,
-      username: body.email.split('@')[0],
-      displayName: body.email.split('@')[0],
-    })
+    const user =
+      mockUsers.find((u) => u.email === body.email) ||
+      createMockUser({
+        email: body.email,
+        username: body.email.split('@')[0],
+        displayName: body.email.split('@')[0],
+      })
 
     return HttpResponse.json({
       user,
@@ -422,10 +421,7 @@ export const restHandlers = [
     }
 
     if (body.email === 'existing@test.com') {
-      return HttpResponse.json(
-        { error: 'Email already exists' },
-        { status: 400 }
-      )
+      return HttpResponse.json({ error: 'Email already exists' }, { status: 400 })
     }
 
     const newUser = createMockUser({
@@ -517,17 +513,6 @@ export const mockDataStore = {
   },
 }
 
-export {
-  createMockUser,
-  createMockChannel,
-  createMockMessage,
-  createMockReaction,
-}
+export { createMockUser, createMockChannel, createMockMessage, createMockReaction }
 
-export type {
-  MockUser,
-  MockChannel,
-  MockMessage,
-  MockReaction,
-  MockAttachment,
-}
+export type { MockUser, MockChannel, MockMessage, MockReaction, MockAttachment }

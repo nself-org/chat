@@ -43,11 +43,7 @@ export interface AddBotModalProps {
   marketplaceBots?: BotType[]
   marketplaceLoading?: boolean
   onAddByToken: (token: string, channelIds: string[]) => Promise<void>
-  onInstallBot: (
-    botId: string,
-    channelIds: string[],
-    permissions: BotPermission[]
-  ) => Promise<void>
+  onInstallBot: (botId: string, channelIds: string[], permissions: BotPermission[]) => Promise<void>
   onOpenMarketplace?: () => void
 }
 
@@ -136,9 +132,7 @@ export function AddBotModal({
 
   const handleChannelToggle = (channelId: string) => {
     setSelectedChannels((prev) =>
-      prev.includes(channelId)
-        ? prev.filter((id) => id !== channelId)
-        : [...prev, channelId]
+      prev.includes(channelId) ? prev.filter((id) => id !== channelId) : [...prev, channelId]
     )
   }
 
@@ -218,7 +212,7 @@ export function AddBotModal({
                   className={cn(tokenError && 'border-destructive')}
                 />
                 {tokenError && (
-                  <p className="text-sm text-destructive flex items-center gap-1">
+                  <p className="flex items-center gap-1 text-sm text-destructive">
                     <AlertCircle className="h-3.5 w-3.5" />
                     {tokenError}
                   </p>
@@ -232,13 +226,8 @@ export function AddBotModal({
                 <Button variant="outline" onClick={handleClose}>
                   Cancel
                 </Button>
-                <Button
-                  onClick={handleTokenSubmit}
-                  disabled={!token.trim() || tokenValidating}
-                >
-                  {tokenValidating && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
+                <Button onClick={handleTokenSubmit} disabled={!token.trim() || tokenValidating}>
+                  {tokenValidating && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   Validate Token
                 </Button>
               </DialogFooter>
@@ -254,24 +243,19 @@ export function AddBotModal({
                       <BotCardSkeleton compact />
                     </>
                   ) : marketplaceBots.length > 0 ? (
-                    marketplaceBots.slice(0, 5).map((bot) => (
-                      <BotCard
-                        key={bot.id}
-                        bot={bot}
-                        compact
-                        onInstall={handleBotSelect}
-                      />
-                    ))
+                    marketplaceBots
+                      .slice(0, 5)
+                      .map((bot) => (
+                        <BotCard key={bot.id} bot={bot} compact onInstall={handleBotSelect} />
+                      ))
                   ) : (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No bots available
-                    </div>
+                    <div className="py-8 text-center text-muted-foreground">No bots available</div>
                   )}
                 </div>
               </ScrollArea>
 
               {onOpenMarketplace && (
-                <div className="mt-4 pt-4 border-t text-center">
+                <div className="mt-4 border-t pt-4 text-center">
                   <Button
                     variant="link"
                     onClick={() => {
@@ -290,7 +274,7 @@ export function AddBotModal({
 
         {step === 'permissions' && selectedBot && (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+            <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-3">
               <Avatar className="h-12 w-12">
                 <AvatarImage src={selectedBot.avatarUrl} />
                 <AvatarFallback>
@@ -300,13 +284,9 @@ export function AddBotModal({
               <div>
                 <div className="flex items-center gap-1.5">
                   <span className="font-medium">{selectedBot.name}</span>
-                  {selectedBot.verified && (
-                    <CheckCircle className="h-4 w-4 text-primary" />
-                  )}
+                  {selectedBot.verified && <CheckCircle className="h-4 w-4 text-primary" />}
                 </div>
-                <p className="text-sm text-muted-foreground">
-                  {selectedBot.description}
-                </p>
+                <p className="text-sm text-muted-foreground">{selectedBot.description}</p>
               </div>
             </div>
 
@@ -322,17 +302,11 @@ export function AddBotModal({
             </div>
 
             <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setStep('method')}
-              >
+              <Button variant="outline" onClick={() => setStep('method')}>
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
-              <Button
-                onClick={() => setStep('channels')}
-                disabled={!canProceedFromPermissions}
-              >
+              <Button onClick={() => setStep('channels')} disabled={!canProceedFromPermissions}>
                 Continue
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -342,7 +316,7 @@ export function AddBotModal({
 
         {step === 'channels' && selectedBot && (
           <div className="space-y-4">
-            <div className="flex items-center gap-3 p-3 rounded-lg bg-muted/50">
+            <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-3">
               <Avatar className="h-10 w-10">
                 <AvatarImage src={selectedBot.avatarUrl} />
                 <AvatarFallback>
@@ -358,16 +332,10 @@ export function AddBotModal({
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-2">
+              <div className="mb-2 flex items-center justify-between">
                 <Label>Install in channels</Label>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSelectAllChannels}
-                >
-                  {selectedChannels.length === channels.length
-                    ? 'Deselect all'
-                    : 'Select all'}
+                <Button variant="ghost" size="sm" onClick={handleSelectAllChannels}>
+                  {selectedChannels.length === channels.length ? 'Deselect all' : 'Select all'}
                 </Button>
               </div>
               <ScrollArea className="h-[200px] rounded-lg border p-2">
@@ -376,10 +344,8 @@ export function AddBotModal({
                     <label
                       key={channel.id}
                       className={cn(
-                        'flex items-center gap-3 rounded-md p-2 cursor-pointer transition-colors',
-                        selectedChannels.includes(channel.id)
-                          ? 'bg-primary/10'
-                          : 'hover:bg-muted'
+                        'flex cursor-pointer items-center gap-3 rounded-md p-2 transition-colors',
+                        selectedChannels.includes(channel.id) ? 'bg-primary/10' : 'hover:bg-muted'
                       )}
                     >
                       <Checkbox
@@ -394,7 +360,7 @@ export function AddBotModal({
                   ))}
                 </div>
               </ScrollArea>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="mt-2 text-sm text-muted-foreground">
                 {selectedChannels.length} channel
                 {selectedChannels.length !== 1 ? 's' : ''} selected
               </p>
@@ -403,17 +369,12 @@ export function AddBotModal({
             <DialogFooter>
               <Button
                 variant="outline"
-                onClick={() =>
-                  setStep(activeTab === 'token' ? 'method' : 'permissions')
-                }
+                onClick={() => setStep(activeTab === 'token' ? 'method' : 'permissions')}
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back
               </Button>
-              <Button
-                onClick={handleInstall}
-                disabled={!canProceedFromChannels || installing}
-              >
+              <Button onClick={handleInstall} disabled={!canProceedFromChannels || installing}>
                 {installing && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                 Install Bot
               </Button>
@@ -444,7 +405,7 @@ function Checkbox({ checked, onCheckedChange, className }: CheckboxProps) {
       onClick={() => onCheckedChange?.(!checked)}
       className={cn(
         'h-4 w-4 rounded border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-        checked && 'bg-primary text-primary-foreground',
+        checked && 'text-primary-foreground bg-primary',
         className
       )}
     >
@@ -456,11 +417,7 @@ function Checkbox({ checked, onCheckedChange, className }: CheckboxProps) {
           stroke="currentColor"
           strokeWidth={3}
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5 13l4 4L19 7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
         </svg>
       )}
     </button>

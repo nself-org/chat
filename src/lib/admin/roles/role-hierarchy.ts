@@ -39,9 +39,7 @@ export function getHighestRole(roles: Role[]): Role | undefined {
  */
 export function getLowestRole(roles: Role[]): Role | undefined {
   if (roles.length === 0) return undefined
-  return roles.reduce((lowest, current) =>
-    current.position < lowest.position ? current : lowest
-  )
+  return roles.reduce((lowest, current) => (current.position < lowest.position ? current : lowest))
 }
 
 /**
@@ -67,10 +65,7 @@ export function canManageRole(managerRole: Role, targetRole: Role): boolean {
 /**
  * Check if a user with given roles can manage a target role
  */
-export function canUserManageRole(
-  userRoles: Role[],
-  targetRole: Role
-): boolean {
+export function canUserManageRole(userRoles: Role[], targetRole: Role): boolean {
   const highestUserRole = getHighestRole(userRoles)
   if (!highestUserRole) return false
   return canManageRole(highestUserRole, targetRole)
@@ -84,19 +79,14 @@ export function getAssignableRoles(userRoles: Role[], allRoles: Role[]): Role[] 
   if (!highestUserRole) return []
 
   return allRoles.filter(
-    (role) =>
-      role.position < highestUserRole.position &&
-      role.id !== 'owner' // Owner role is never assignable
+    (role) => role.position < highestUserRole.position && role.id !== 'owner' // Owner role is never assignable
   )
 }
 
 /**
  * Get roles that a user can create (positions below their highest role)
  */
-export function getValidPositionsForNewRole(
-  userRoles: Role[],
-  allRoles: Role[]
-): number[] {
+export function getValidPositionsForNewRole(userRoles: Role[], allRoles: Role[]): number[] {
   const highestUserRole = getHighestRole(userRoles)
   if (!highestUserRole) return []
 
@@ -177,24 +167,14 @@ export function rebalancePositions(roles: Role[]): Role[] {
 /**
  * Move a role to a new position
  */
-export function moveRole(
-  roles: Role[],
-  roleId: string,
-  newPosition: number
-): Role[] {
-  return roles.map((role) =>
-    role.id === roleId ? { ...role, position: newPosition } : role
-  )
+export function moveRole(roles: Role[], roleId: string, newPosition: number): Role[] {
+  return roles.map((role) => (role.id === roleId ? { ...role, position: newPosition } : role))
 }
 
 /**
  * Swap positions of two roles
  */
-export function swapRolePositions(
-  roles: Role[],
-  roleIdA: string,
-  roleIdB: string
-): Role[] {
+export function swapRolePositions(roles: Role[], roleIdA: string, roleIdB: string): Role[] {
   const roleA = roles.find((r) => r.id === roleIdA)
   const roleB = roles.find((r) => r.id === roleIdB)
 
@@ -228,9 +208,7 @@ export function buildHierarchyTree(
     role,
     children: [], // Flat hierarchy for now
     depth: index,
-    canManage: currentUserHighestRole
-      ? canManageRole(currentUserHighestRole, role)
-      : false,
+    canManage: currentUserHighestRole ? canManageRole(currentUserHighestRole, role) : false,
   }))
 }
 
@@ -254,8 +232,7 @@ export function getRolePath(roles: Role[], targetRoleId: string): Role[] {
  * Compare two roles
  */
 export function compareRoles(roleA: Role, roleB: Role): RoleComparison {
-  const [higher, lower] =
-    roleA.position > roleB.position ? [roleA, roleB] : [roleB, roleA]
+  const [higher, lower] = roleA.position > roleB.position ? [roleA, roleB] : [roleB, roleA]
 
   const permA = new Set(roleA.permissions)
   const permB = new Set(roleB.permissions)
@@ -314,9 +291,7 @@ export function isValidPosition(
   allRoles: Role[],
   excludeRoleId?: string
 ): boolean {
-  const otherRoles = excludeRoleId
-    ? allRoles.filter((r) => r.id !== excludeRoleId)
-    : allRoles
+  const otherRoles = excludeRoleId ? allRoles.filter((r) => r.id !== excludeRoleId) : allRoles
 
   // Position must be positive
   if (position <= 0) return false
@@ -352,9 +327,7 @@ export function canMoveToPosition(
   }
 
   // Check for position conflicts
-  const conflictingRole = allRoles.find(
-    (r) => r.id !== role.id && r.position === newPosition
-  )
+  const conflictingRole = allRoles.find((r) => r.id !== role.id && r.position === newPosition)
   if (conflictingRole) {
     return {
       valid: false,

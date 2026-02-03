@@ -42,10 +42,7 @@ export async function downloadExport(exportId: string): Promise<Blob> {
 // Client-side Export
 // ============================================================================
 
-export function exportToCSV(
-  users: AdminUser[],
-  fields?: (keyof AdminUser)[]
-): string {
+export function exportToCSV(users: AdminUser[], fields?: (keyof AdminUser)[]): string {
   const defaultFields: (keyof AdminUser)[] = [
     'id',
     'username',
@@ -75,17 +72,14 @@ export function exportToCSV(
   return [header, ...rows].join('\n')
 }
 
-export function exportToJSON(
-  users: AdminUser[],
-  fields?: (keyof AdminUser)[]
-): string {
+export function exportToJSON(users: AdminUser[], fields?: (keyof AdminUser)[]): string {
   const data = fields
     ? users.map((user) => {
         const filtered: Partial<AdminUser> = {}
         for (const field of fields) {
           if (field in user) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (filtered as any)[field] = user[field]
+            ;(filtered as any)[field] = user[field]
           }
         }
         return filtered

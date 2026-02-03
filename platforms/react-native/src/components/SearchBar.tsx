@@ -3,13 +3,7 @@
  */
 
 import React, { forwardRef } from 'react'
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  Pressable,
-  TextInputProps,
-} from 'react-native'
+import { View, TextInput, StyleSheet, Pressable, TextInputProps } from 'react-native'
 import { Text } from 'react-native'
 
 import { useTheme } from '@theme'
@@ -44,12 +38,7 @@ export const SearchBar = forwardRef<TextInput, SearchBarProps>(
 
     return (
       <View style={styles.container}>
-        <View
-          style={[
-            styles.inputContainer,
-            { backgroundColor: theme.colors.inputBackground },
-          ]}
-        >
+        <View style={[styles.inputContainer, { backgroundColor: theme.colors.inputBackground }]}>
           {/* Search Icon */}
           <View style={styles.searchIcon}>
             <Text style={{ color: theme.colors.placeholder }}>search</Text>
@@ -72,12 +61,7 @@ export const SearchBar = forwardRef<TextInput, SearchBarProps>(
           {/* Clear Button */}
           {value.length > 0 && (
             <Pressable style={styles.clearButton} onPress={handleClear}>
-              <View
-                style={[
-                  styles.clearIcon,
-                  { backgroundColor: theme.colors.muted },
-                ]}
-              >
+              <View style={[styles.clearIcon, { backgroundColor: theme.colors.muted }]}>
                 <Text style={{ color: theme.colors.background, fontSize: 10 }}>X</Text>
               </View>
             </Pressable>
@@ -87,9 +71,7 @@ export const SearchBar = forwardRef<TextInput, SearchBarProps>(
         {/* Cancel Button */}
         {showCancelButton && (
           <Pressable style={styles.cancelButton} onPress={onCancel}>
-            <Text style={[styles.cancelText, { color: theme.colors.primary }]}>
-              Cancel
-            </Text>
+            <Text style={[styles.cancelText, { color: theme.colors.primary }]}>Cancel</Text>
           </Pressable>
         )}
       </View>

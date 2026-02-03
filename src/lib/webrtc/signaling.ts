@@ -248,9 +248,12 @@ export class SignalingManager {
       this.callbacks.onCallTimeout?.(payload)
     })
 
-    this.addListener(CALL_EVENTS.CALL_CANCELLED, (payload: { callId: string; cancelledBy: string }) => {
-      this.callbacks.onCallCancelled?.(payload)
-    })
+    this.addListener(
+      CALL_EVENTS.CALL_CANCELLED,
+      (payload: { callId: string; cancelledBy: string }) => {
+        this.callbacks.onCallCancelled?.(payload)
+      }
+    )
 
     this.addListener(CALL_EVENTS.CALL_OFFER, (payload: CallOfferPayload) => {
       this.callbacks.onOffer?.(payload)
@@ -284,13 +287,19 @@ export class SignalingManager {
       this.callbacks.onVideoChanged?.(payload)
     })
 
-    this.addListener(CALL_EVENTS.CALL_SCREEN_SHARE_STARTED, (payload: { callId: string; userId: string }) => {
-      this.callbacks.onScreenShareStarted?.(payload)
-    })
+    this.addListener(
+      CALL_EVENTS.CALL_SCREEN_SHARE_STARTED,
+      (payload: { callId: string; userId: string }) => {
+        this.callbacks.onScreenShareStarted?.(payload)
+      }
+    )
 
-    this.addListener(CALL_EVENTS.CALL_SCREEN_SHARE_STOPPED, (payload: { callId: string; userId: string }) => {
-      this.callbacks.onScreenShareStopped?.(payload)
-    })
+    this.addListener(
+      CALL_EVENTS.CALL_SCREEN_SHARE_STOPPED,
+      (payload: { callId: string; userId: string }) => {
+        this.callbacks.onScreenShareStopped?.(payload)
+      }
+    )
 
     this.addListener(CALL_EVENTS.CALL_ERROR, (payload: CallErrorPayload) => {
       this.callbacks.onError?.(payload)

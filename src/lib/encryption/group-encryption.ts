@@ -34,6 +34,8 @@ import {
 import { getIdentityManager } from './identity'
 import { getSessionManager } from './session'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -306,7 +308,9 @@ export class GroupEncryptionManager {
     // Check if we need to rotate the key
     if (senderKey.iteration >= KEY_ROTATION_THRESHOLD) {
       // Mark key for rotation (actual rotation happens when distributing new keys)
-      console.warn(`Sender key for group ${groupId} should be rotated (iteration ${senderKey.iteration})`)
+      console.warn(
+        `Sender key for group ${groupId} should be rotated (iteration ${senderKey.iteration})`
+      )
     }
 
     // Save updated sender key
@@ -343,10 +347,7 @@ export class GroupEncryptionManager {
    * @param message - The encrypted group message
    * @returns The decrypted plaintext
    */
-  async decryptGroupMessage(
-    senderId: string,
-    message: EncryptedGroupMessage
-  ): Promise<Uint8Array> {
+  async decryptGroupMessage(senderId: string, message: EncryptedGroupMessage): Promise<Uint8Array> {
     await this.ensureInitialized()
 
     // Get the sender's key for this group
@@ -388,10 +389,7 @@ export class GroupEncryptionManager {
     }
 
     // Derive message key (ratcheting if needed)
-    const messageKey = await this.deriveMessageKeyForIteration(
-      senderKey,
-      message.iteration
-    )
+    const messageKey = await this.deriveMessageKeyForIteration(senderKey, message.iteration)
 
     // Decrypt the ciphertext
     try {
@@ -597,7 +595,7 @@ export class GroupEncryptionManager {
             this.senderKeys.set(parsed.groupId, senderKey)
           }
         } catch (error) {
-          console.error(`Failed to load sender key ${key}:`, error)
+          logger.error(`Failed to load sender key ${key}:`, error)
         }
       }
     }
@@ -619,10 +617,7 @@ export class GroupEncryptionManager {
       createdAt: senderKey.createdAt,
     }
 
-    localStorage.setItem(
-      SENDER_KEY_STORAGE_PREFIX + senderKey.groupId,
-      JSON.stringify(stored)
-    )
+    localStorage.setItem(SENDER_KEY_STORAGE_PREFIX + senderKey.groupId, JSON.stringify(stored))
   }
 
   /**
@@ -655,7 +650,7 @@ export class GroupEncryptionManager {
             keys.push(receivedKey)
           }
         } catch (error) {
-          console.error(`Failed to load received key ${key}:`, error)
+          logger.error(`Failed to load received key ${key}:`, error)
         }
       }
     }

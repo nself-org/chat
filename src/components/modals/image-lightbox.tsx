@@ -245,14 +245,12 @@ export function ImageLightbox({
             'fixed z-50 outline-none',
             isFullscreen
               ? 'inset-0'
-              : 'left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-[95vw] h-[90vh] max-w-7xl'
+              : 'left-[50%] top-[50%] h-[90vh] w-[95vw] max-w-7xl translate-x-[-50%] translate-y-[-50%]'
           )}
           onPointerDownOutside={(e) => e.preventDefault()}
         >
           <VisuallyHidden.Root>
-            <DialogPrimitive.Title>
-              Image: {currentImage.name || 'Preview'}
-            </DialogPrimitive.Title>
+            <DialogPrimitive.Title>Image: {currentImage.name || 'Preview'}</DialogPrimitive.Title>
             <DialogPrimitive.Description>
               {hasMultipleImages
                 ? `Image ${currentIndex + 1} of ${images.length}`
@@ -261,15 +259,15 @@ export function ImageLightbox({
           </VisuallyHidden.Root>
 
           {/* Top toolbar */}
-          <div className="absolute top-0 left-0 right-0 z-10 flex items-center justify-between p-4 bg-gradient-to-b from-black/70 to-transparent">
+          <div className="absolute left-0 right-0 top-0 z-10 flex items-center justify-between bg-gradient-to-b from-black/70 to-transparent p-4">
             <div className="flex items-center gap-2">
               {currentImage.name && (
-                <span className="text-white text-sm font-medium truncate max-w-[200px] sm:max-w-[400px]">
+                <span className="max-w-[200px] truncate text-sm font-medium text-white sm:max-w-[400px]">
                   {currentImage.name}
                 </span>
               )}
               {hasMultipleImages && (
-                <span className="text-white/60 text-sm">
+                <span className="text-sm text-white/60">
                   {currentIndex + 1} / {images.length}
                 </span>
               )}
@@ -287,7 +285,7 @@ export function ImageLightbox({
               >
                 <ZoomOut className="h-4 w-4" />
               </Button>
-              <span className="text-white text-sm w-14 text-center font-mono">
+              <span className="w-14 text-center font-mono text-sm text-white">
                 {Math.round(zoom * 100)}%
               </span>
               <Button
@@ -301,7 +299,7 @@ export function ImageLightbox({
                 <ZoomIn className="h-4 w-4" />
               </Button>
 
-              <div className="w-px h-6 bg-white/20 mx-1" />
+              <div className="mx-1 h-6 w-px bg-white/20" />
 
               {/* Other controls */}
               <Button
@@ -345,7 +343,7 @@ export function ImageLightbox({
                 <Download className="h-4 w-4" />
               </Button>
 
-              <div className="w-px h-6 bg-white/20 mx-1" />
+              <div className="mx-1 h-6 w-px bg-white/20" />
 
               <Button
                 variant="ghost"
@@ -363,7 +361,7 @@ export function ImageLightbox({
           <div
             ref={containerRef}
             className={cn(
-              'flex items-center justify-center overflow-hidden w-full h-full',
+              'flex h-full w-full items-center justify-center overflow-hidden',
               zoom > 1 ? 'cursor-grab' : 'cursor-default',
               isDragging && 'cursor-grabbing'
             )}
@@ -376,7 +374,7 @@ export function ImageLightbox({
             {/* Loading indicator */}
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-8 h-8 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-white" />
               </div>
             )}
 
@@ -384,7 +382,7 @@ export function ImageLightbox({
               src={currentImage.url}
               alt={currentImage.name || 'Preview'}
               className={cn(
-                'max-w-full max-h-full object-contain select-none transition-opacity',
+                'max-h-full max-w-full select-none object-contain transition-opacity',
                 isLoading ? 'opacity-0' : 'opacity-100'
               )}
               style={{
@@ -404,7 +402,7 @@ export function ImageLightbox({
                 variant="ghost"
                 size="icon"
                 onClick={navigatePrevious}
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 h-12 w-12 rounded-full"
+                className="absolute left-4 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full text-white hover:bg-white/20"
                 title="Previous image (Left arrow)"
               >
                 <ChevronLeft className="h-8 w-8" />
@@ -413,7 +411,7 @@ export function ImageLightbox({
                 variant="ghost"
                 size="icon"
                 onClick={navigateNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-white hover:bg-white/20 h-12 w-12 rounded-full"
+                className="absolute right-4 top-1/2 h-12 w-12 -translate-y-1/2 rounded-full text-white hover:bg-white/20"
                 title="Next image (Right arrow)"
               >
                 <ChevronRight className="h-8 w-8" />
@@ -423,23 +421,23 @@ export function ImageLightbox({
 
           {/* Thumbnail strip */}
           {showThumbnails && hasMultipleImages && images.length <= 20 && (
-            <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
               <div className="flex justify-center gap-2 overflow-x-auto py-2">
                 {images.map((image, index) => (
                   <button
                     key={image.id}
                     onClick={() => setCurrentIndex(index)}
                     className={cn(
-                      'w-12 h-12 rounded-lg overflow-hidden border-2 transition-all flex-shrink-0',
+                      'h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg border-2 transition-all',
                       index === currentIndex
-                        ? 'border-white scale-110 shadow-lg'
-                        : 'border-transparent opacity-60 hover:opacity-100 hover:border-white/50'
+                        ? 'scale-110 border-white shadow-lg'
+                        : 'border-transparent opacity-60 hover:border-white/50 hover:opacity-100'
                     )}
                   >
                     <img
                       src={image.thumbnailUrl || image.url}
                       alt={image.name || `Thumbnail ${index + 1}`}
-                      className="w-full h-full object-cover"
+                      className="h-full w-full object-cover"
                     />
                   </button>
                 ))}
@@ -448,9 +446,8 @@ export function ImageLightbox({
           )}
 
           {/* Keyboard shortcuts help */}
-          <div className="absolute bottom-4 left-4 text-white/40 text-xs hidden sm:block">
-            Arrow keys: navigate | +/-: zoom | R: rotate | 0: reset | F: fullscreen | D:
-            download
+          <div className="absolute bottom-4 left-4 hidden text-xs text-white/40 sm:block">
+            Arrow keys: navigate | +/-: zoom | R: rotate | 0: reset | F: fullscreen | D: download
           </div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>

@@ -16,11 +16,13 @@ The deployment scripts automate the entire mobile app deployment process:
 Deploys iOS app to TestFlight or App Store.
 
 **Usage:**
+
 ```bash
 ./scripts/deploy-mobile-ios.sh [options]
 ```
 
 **Options:**
+
 - `--testflight` - Deploy to TestFlight (default)
 - `--production` - Deploy to App Store
 - `--skip-build` - Skip web build step
@@ -30,6 +32,7 @@ Deploys iOS app to TestFlight or App Store.
 - `--help` - Show help message
 
 **Required Environment Variables:**
+
 ```bash
 export APPLE_TEAM_ID="ABC123XYZ"           # Your Apple Team ID
 export APPLE_ID="developer@example.com"     # Your Apple ID
@@ -37,12 +40,14 @@ export APP_SPECIFIC_PASSWORD="xxxx-xxxx"    # App-specific password
 ```
 
 **Optional Environment Variables:**
+
 ```bash
 export IOS_SIGNING_IDENTITY="iPhone Distribution"
 export IOS_PROVISIONING_PROFILE="UUID-of-profile"
 ```
 
 **Examples:**
+
 ```bash
 # Deploy to TestFlight
 ./scripts/deploy-mobile-ios.sh --testflight
@@ -55,12 +60,14 @@ export IOS_PROVISIONING_PROFILE="UUID-of-profile"
 ```
 
 **Prerequisites:**
+
 - macOS with Xcode installed
 - Valid Apple Developer account
 - App created in App Store Connect
 - App-specific password generated
 
 **What it does:**
+
 1. Runs tests (unless `--skip-tests`)
 2. Builds Next.js web assets
 3. Syncs to iOS platform via Capacitor
@@ -71,6 +78,7 @@ export IOS_PROVISIONING_PROFILE="UUID-of-profile"
 8. Uploads to App Store Connect
 
 **Output:**
+
 - IPA file at: `platforms/capacitor/ios/build/ipa/App.ipa`
 - Build logs in terminal
 - Upload confirmation
@@ -82,11 +90,13 @@ export IOS_PROVISIONING_PROFILE="UUID-of-profile"
 Deploys Android app to Google Play testing tracks or production.
 
 **Usage:**
+
 ```bash
 ./scripts/deploy-mobile-android.sh [options]
 ```
 
 **Options:**
+
 - `--internal` - Deploy to Internal Testing (default)
 - `--beta` - Deploy to Beta track
 - `--production` - Deploy to Production track
@@ -97,6 +107,7 @@ Deploys Android app to Google Play testing tracks or production.
 - `--help` - Show help message
 
 **Required Environment Variables:**
+
 ```bash
 export ANDROID_KEYSTORE_PATH="/path/to/release.keystore"
 export ANDROID_KEYSTORE_PASSWORD="your-keystore-password"
@@ -105,11 +116,13 @@ export ANDROID_KEY_PASSWORD="your-key-password"
 ```
 
 **Optional Environment Variables:**
+
 ```bash
 export GOOGLE_PLAY_SERVICE_ACCOUNT="/path/to/service-account.json"
 ```
 
 **Examples:**
+
 ```bash
 # Deploy to Internal Testing
 ./scripts/deploy-mobile-android.sh --internal
@@ -125,12 +138,14 @@ export GOOGLE_PLAY_SERVICE_ACCOUNT="/path/to/service-account.json"
 ```
 
 **Prerequisites:**
+
 - Android SDK and build tools
 - Valid Google Play Developer account
 - App created in Google Play Console
 - Release keystore created
 
 **Creating a Release Keystore:**
+
 ```bash
 keytool -genkey -v \
   -keystore release.keystore \
@@ -143,6 +158,7 @@ keytool -genkey -v \
 ```
 
 **What it does:**
+
 1. Runs tests (unless `--skip-tests`)
 2. Builds Next.js web assets
 3. Syncs to Android platform via Capacitor
@@ -154,6 +170,7 @@ keytool -genkey -v \
 9. Optionally uploads to Play Console (if service account configured)
 
 **Output:**
+
 - AAB file at: `platforms/capacitor/dist/nchat-release.aab`
 - APK file at: `platforms/capacitor/dist/nchat-release.apk`
 - Build logs in terminal
@@ -181,6 +198,7 @@ keytool -genkey -v \
    - Save it securely
 
 4. **Set Environment Variables**
+
    ```bash
    # Add to ~/.bashrc or ~/.zshrc
    export APPLE_TEAM_ID="YOUR_TEAM_ID"
@@ -206,6 +224,7 @@ keytool -genkey -v \
    - Fill in basic information
 
 3. **Create Release Keystore**
+
    ```bash
    keytool -genkey -v \
      -keystore release.keystore \
@@ -219,6 +238,7 @@ keytool -genkey -v \
    ```
 
 4. **Set Environment Variables**
+
    ```bash
    # Add to ~/.bashrc or ~/.zshrc
    export ANDROID_KEYSTORE_PATH="/path/to/release.keystore"
@@ -238,19 +258,21 @@ keytool -genkey -v \
 
 ### iOS
 
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `APPLE_TEAM_ID` | Yes | Your Apple Team ID | `ABC123XYZ` |
-| `APPLE_ID` | Yes | Your Apple ID email | `dev@example.com` |
-| `APP_SPECIFIC_PASSWORD` | Yes | App-specific password | `xxxx-xxxx-xxxx-xxxx` |
-| `IOS_SIGNING_IDENTITY` | No | Code signing identity | `iPhone Distribution` |
-| `IOS_PROVISIONING_PROFILE` | No | Provisioning profile UUID | `UUID-string` |
+| Variable                   | Required | Description               | Example               |
+| -------------------------- | -------- | ------------------------- | --------------------- |
+| `APPLE_TEAM_ID`            | Yes      | Your Apple Team ID        | `ABC123XYZ`           |
+| `APPLE_ID`                 | Yes      | Your Apple ID email       | `dev@example.com`     |
+| `APP_SPECIFIC_PASSWORD`    | Yes      | App-specific password     | `xxxx-xxxx-xxxx-xxxx` |
+| `IOS_SIGNING_IDENTITY`     | No       | Code signing identity     | `iPhone Distribution` |
+| `IOS_PROVISIONING_PROFILE` | No       | Provisioning profile UUID | `UUID-string`         |
 
 **Finding Your Team ID:**
+
 1. Go to https://developer.apple.com/account/#/membership
 2. Look for "Team ID" in membership details
 
 **Generating App-Specific Password:**
+
 1. Go to https://appleid.apple.com/account/manage
 2. Security → App-Specific Passwords
 3. Generate new password
@@ -258,15 +280,16 @@ keytool -genkey -v \
 
 ### Android
 
-| Variable | Required | Description | Example |
-|----------|----------|-------------|---------|
-| `ANDROID_KEYSTORE_PATH` | Yes | Path to keystore file | `/path/to/release.keystore` |
-| `ANDROID_KEYSTORE_PASSWORD` | Yes | Keystore password | `secure-password` |
-| `ANDROID_KEY_ALIAS` | Yes | Key alias name | `upload-key` |
-| `ANDROID_KEY_PASSWORD` | Yes | Key password | `secure-password` |
-| `GOOGLE_PLAY_SERVICE_ACCOUNT` | No | Service account JSON | `/path/to/service.json` |
+| Variable                      | Required | Description           | Example                     |
+| ----------------------------- | -------- | --------------------- | --------------------------- |
+| `ANDROID_KEYSTORE_PATH`       | Yes      | Path to keystore file | `/path/to/release.keystore` |
+| `ANDROID_KEYSTORE_PASSWORD`   | Yes      | Keystore password     | `secure-password`           |
+| `ANDROID_KEY_ALIAS`           | Yes      | Key alias name        | `upload-key`                |
+| `ANDROID_KEY_PASSWORD`        | Yes      | Key password          | `secure-password`           |
+| `GOOGLE_PLAY_SERVICE_ACCOUNT` | No       | Service account JSON  | `/path/to/service.json`     |
 
 **Keystore Security:**
+
 - Store keystore in secure, backed-up location
 - Use strong, unique passwords
 - Never commit to version control
@@ -405,6 +428,7 @@ The scripts automatically set version from `package.json`:
 ```
 
 To update:
+
 ```bash
 # Update package.json version
 npm version minor  # or major, patch
@@ -425,6 +449,7 @@ npm version minor  # or major, patch
 ### Test Build Locally
 
 **iOS:**
+
 ```bash
 # Build for simulator
 cd platforms/capacitor
@@ -435,6 +460,7 @@ npx cap open ios
 ```
 
 **Android:**
+
 ```bash
 # Build debug APK
 cd platforms/capacitor
@@ -449,6 +475,7 @@ adb install -r android/app/build/outputs/apk/debug/app-debug.apk
 If you encounter build issues:
 
 **iOS:**
+
 ```bash
 cd platforms/capacitor/ios
 rm -rf build/
@@ -457,6 +484,7 @@ pod install --repo-update
 ```
 
 **Android:**
+
 ```bash
 cd platforms/capacitor/android
 ./gradlew clean
@@ -471,12 +499,14 @@ rm -rf .gradle/
 ### iOS Issues
 
 **"No signing certificate found"**
+
 ```bash
 # Enable automatic signing in Xcode
 # Or install certificates from developer.apple.com
 ```
 
 **"Archive creation failed"**
+
 ```bash
 # Open in Xcode for detailed error
 cd platforms/capacitor
@@ -486,6 +516,7 @@ npx cap open ios
 ```
 
 **"Upload failed - authentication"**
+
 ```bash
 # Verify app-specific password
 # Regenerate if needed at appleid.apple.com
@@ -494,6 +525,7 @@ npx cap open ios
 ### Android Issues
 
 **"Keystore not found"**
+
 ```bash
 # Check ANDROID_KEYSTORE_PATH is correct
 # Verify file exists
@@ -501,6 +533,7 @@ ls -la $ANDROID_KEYSTORE_PATH
 ```
 
 **"Build failed - Gradle error"**
+
 ```bash
 # Clean and rebuild
 cd platforms/capacitor/android
@@ -509,6 +542,7 @@ cd platforms/capacitor/android
 ```
 
 **"Version code must be greater than..."**
+
 ```bash
 # Script auto-increments using timestamp
 # Or manually update in android/app/build.gradle
@@ -517,6 +551,7 @@ cd platforms/capacitor/android
 ### Common Issues
 
 **"Tests failed"**
+
 ```bash
 # Skip tests temporarily
 ./scripts/deploy-mobile-ios.sh --skip-tests
@@ -527,6 +562,7 @@ pnpm test
 ```
 
 **"Build takes too long"**
+
 ```bash
 # Skip rebuild if already built
 ./scripts/deploy-mobile-ios.sh --skip-build

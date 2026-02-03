@@ -24,16 +24,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Search,
-  Plus,
-  Grid3X3,
-  List,
-  SortAsc,
-  Filter,
-  MoreHorizontal,
-  Loader2,
-} from 'lucide-react'
+import { Search, Plus, Grid3X3, List, SortAsc, Filter, MoreHorizontal, Loader2 } from 'lucide-react'
 import type { Workflow, WorkflowStatus } from '@/lib/workflows/workflow-types'
 
 interface WorkflowListProps {
@@ -101,9 +92,7 @@ export function WorkflowList({
     // Category filter
     if (categoryFilter !== 'all') {
       result = result.filter(
-        (w) =>
-          w.settings.category === categoryFilter ||
-          w.metadata?.category === categoryFilter
+        (w) => w.settings.category === categoryFilter || w.metadata?.category === categoryFilter
       )
     }
 
@@ -145,7 +134,7 @@ export function WorkflowList({
         <h2 className="text-lg font-semibold">Workflows</h2>
         {onCreateNew && (
           <Button onClick={onCreateNew}>
-            <Plus className="h-4 w-4 mr-1" />
+            <Plus className="mr-1 h-4 w-4" />
             New Workflow
           </Button>
         )}
@@ -154,13 +143,13 @@ export function WorkflowList({
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-2">
         {/* Search */}
-        <div className="relative flex-1 min-w-[200px] max-w-sm">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <div className="relative min-w-[200px] max-w-sm flex-1">
+          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search workflows..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 h-9"
+            className="h-9 pl-8"
           />
         </div>
 
@@ -169,7 +158,7 @@ export function WorkflowList({
           value={statusFilter}
           onValueChange={(v) => setStatusFilter(v as WorkflowStatus | 'all')}
         >
-          <SelectTrigger className="w-32 h-9">
+          <SelectTrigger className="h-9 w-32">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -184,7 +173,7 @@ export function WorkflowList({
         {/* Category filter */}
         {categories.length > 0 && (
           <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="w-36 h-9">
+            <SelectTrigger className="h-9 w-36">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
             <SelectContent>
@@ -202,31 +191,56 @@ export function WorkflowList({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="h-9">
-              <SortAsc className="h-4 w-4 mr-1" />
+              <SortAsc className="mr-1 h-4 w-4" />
               Sort
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => { setSortBy('updatedAt'); setSortOrder('desc') }}>
+            <DropdownMenuItem
+              onClick={() => {
+                setSortBy('updatedAt')
+                setSortOrder('desc')
+              }}
+            >
               Recently updated
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => { setSortBy('createdAt'); setSortOrder('desc') }}>
+            <DropdownMenuItem
+              onClick={() => {
+                setSortBy('createdAt')
+                setSortOrder('desc')
+              }}
+            >
               Recently created
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => { setSortBy('name'); setSortOrder('asc') }}>
+            <DropdownMenuItem
+              onClick={() => {
+                setSortBy('name')
+                setSortOrder('asc')
+              }}
+            >
               Name (A-Z)
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => { setSortBy('name'); setSortOrder('desc') }}>
+            <DropdownMenuItem
+              onClick={() => {
+                setSortBy('name')
+                setSortOrder('desc')
+              }}
+            >
               Name (Z-A)
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => { setSortBy('status'); setSortOrder('asc') }}>
+            <DropdownMenuItem
+              onClick={() => {
+                setSortBy('status')
+                setSortOrder('asc')
+              }}
+            >
               Status
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
         {/* View mode toggle */}
-        <div className="flex items-center border rounded-md">
+        <div className="flex items-center rounded-md border">
           <Button
             variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
             size="sm"
@@ -254,17 +268,17 @@ export function WorkflowList({
 
       {/* Workflow grid/list */}
       {filteredWorkflows.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="py-12 text-center">
           <p className="text-muted-foreground">No workflows found</p>
           {onCreateNew && (
             <Button variant="outline" className="mt-4" onClick={onCreateNew}>
-              <Plus className="h-4 w-4 mr-1" />
+              <Plus className="mr-1 h-4 w-4" />
               Create your first workflow
             </Button>
           )}
         </div>
       ) : viewMode === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {filteredWorkflows.map((workflow) => (
             <WorkflowCard
               key={workflow.id}

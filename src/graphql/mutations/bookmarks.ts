@@ -68,9 +68,7 @@ export const REMOVE_BOOKMARK = gql`
 
 export const REMOVE_BOOKMARK_BY_MESSAGE = gql`
   mutation RemoveBookmarkByMessage($userId: uuid!, $messageId: uuid!) {
-    delete_nchat_bookmarks(
-      where: { user_id: { _eq: $userId }, message_id: { _eq: $messageId } }
-    ) {
+    delete_nchat_bookmarks(where: { user_id: { _eq: $userId }, message_id: { _eq: $messageId } }) {
       affected_rows
       returning {
         id
@@ -81,12 +79,7 @@ export const REMOVE_BOOKMARK_BY_MESSAGE = gql`
 `
 
 export const UPDATE_BOOKMARK = gql`
-  mutation UpdateBookmark(
-    $bookmarkId: uuid!
-    $note: String
-    $tags: jsonb
-    $collectionIds: jsonb
-  ) {
+  mutation UpdateBookmark($bookmarkId: uuid!, $note: String, $tags: jsonb, $collectionIds: jsonb) {
     update_nchat_bookmarks_by_pk(
       pk_columns: { id: $bookmarkId }
       _set: { note: $note, tags: $tags, collection_ids: $collectionIds }
@@ -103,10 +96,7 @@ export const UPDATE_BOOKMARK = gql`
 
 export const ADD_BOOKMARK_TAG = gql`
   mutation AddBookmarkTag($bookmarkId: uuid!, $tag: String!) {
-    update_nchat_bookmarks_by_pk(
-      pk_columns: { id: $bookmarkId }
-      _append: { tags: [$tag] }
-    ) {
+    update_nchat_bookmarks_by_pk(pk_columns: { id: $bookmarkId }, _append: { tags: [$tag] }) {
       id
       tags
     }
@@ -115,10 +105,7 @@ export const ADD_BOOKMARK_TAG = gql`
 
 export const REMOVE_BOOKMARK_TAG = gql`
   mutation RemoveBookmarkTag($bookmarkId: uuid!, $tag: String!) {
-    update_nchat_bookmarks_by_pk(
-      pk_columns: { id: $bookmarkId }
-      _delete_elem: { tags: $tag }
-    ) {
+    update_nchat_bookmarks_by_pk(pk_columns: { id: $bookmarkId }, _delete_elem: { tags: $tag }) {
       id
       tags
     }
@@ -153,10 +140,7 @@ export const BATCH_ADD_BOOKMARKS = gql`
   mutation BatchAddBookmarks($bookmarks: [nchat_bookmarks_insert_input!]!) {
     insert_nchat_bookmarks(
       objects: $bookmarks
-      on_conflict: {
-        constraint: bookmarks_message_id_user_id_key
-        update_columns: [bookmarked_at]
-      }
+      on_conflict: { constraint: bookmarks_message_id_user_id_key, update_columns: [bookmarked_at] }
     ) {
       affected_rows
       returning {

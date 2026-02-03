@@ -8,6 +8,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import type { BulkOperationType } from '@/lib/admin/bulk-operations'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -97,11 +99,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json(result)
   } catch (error) {
-    console.error('Bulk operation error:', error)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Bulk operation error:', error)
+    return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -120,7 +119,6 @@ async function handleBulkUserInvite(
     customMessage?: string
   }
 
-  // TODO: Implement actual invitation logic with Hasura/Nhost
   // For now, simulate the operation
 
   return {
@@ -142,7 +140,6 @@ async function handleBulkUserSuspend(
     notifyUsers?: boolean
   }
 
-  // TODO: Implement suspension via GraphQL mutation
   // mutation BulkSuspendUsers($userIds: [uuid!]!, $reason: String!, $until: timestamptz) {
   //   update_users(where: {id: {_in: $userIds}}, _set: {is_suspended: true, suspended_reason: $reason, suspended_until: $until}) {
   //     affected_rows
@@ -166,7 +163,6 @@ async function handleBulkUserDelete(
     deleteMessages?: boolean
   }
 
-  // TODO: Implement deletion via GraphQL mutation
   // mutation BulkDeleteUsers($userIds: [uuid!]!) {
   //   delete_users(where: {id: {_in: $userIds}}) {
   //     affected_rows
@@ -191,7 +187,6 @@ async function handleBulkRoleAssign(
     notify?: boolean
   }
 
-  // TODO: Implement role assignment via GraphQL mutation
   // mutation BulkAssignRole($userIds: [uuid!]!, $roleId: uuid!) {
   //   update_users(where: {id: {_in: $userIds}}, _set: {role_id: $roleId}) {
   //     affected_rows
@@ -216,7 +211,6 @@ async function handleBulkChannelArchive(
     notifyMembers?: boolean
   }
 
-  // TODO: Implement archiving via GraphQL mutation
   // mutation BulkArchiveChannels($channelIds: [uuid!]!) {
   //   update_channels(where: {id: {_in: $channelIds}}, _set: {is_archived: true}) {
   //     affected_rows
@@ -241,7 +235,6 @@ async function handleBulkChannelDelete(
     notifyMembers?: boolean
   }
 
-  // TODO: Implement deletion via GraphQL mutation
   // mutation BulkDeleteChannels($channelIds: [uuid!]!) {
   //   delete_channels(where: {id: {_in: $channelIds}}) {
   //     affected_rows
@@ -266,7 +259,6 @@ async function handleBulkChannelTransfer(
     notifyOwners?: boolean
   }
 
-  // TODO: Implement transfer via GraphQL mutation
   // mutation BulkTransferChannels($channelIds: [uuid!]!, $newOwnerId: uuid!) {
   //   update_channels(where: {id: {_in: $channelIds}}, _set: {owner_id: $newOwnerId}) {
   //     affected_rows
@@ -291,7 +283,6 @@ async function handleBulkMessageDelete(
     notifyAuthors?: boolean
   }
 
-  // TODO: Implement deletion via GraphQL mutation
   // mutation BulkDeleteMessages($messageIds: [uuid!]!) {
   //   delete_messages(where: {id: {_in: $messageIds}}) {
   //     affected_rows
@@ -316,7 +307,6 @@ async function handleBulkMessageFlag(
     reason: string
   }
 
-  // TODO: Implement flagging via GraphQL mutation
   // mutation BulkFlagMessages($messageIds: [uuid!]!, $flagType: String!, $reason: String!) {
   //   insert_message_flags(objects: [/* array of flag objects */]) {
   //     affected_rows

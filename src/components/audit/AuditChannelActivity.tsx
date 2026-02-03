@@ -5,13 +5,7 @@
  */
 
 import { useState, useMemo } from 'react'
-import {
-  Hash,
-  Users,
-  Clock,
-  Activity,
-  TrendingUp,
-} from 'lucide-react'
+import { Hash, Users, Clock, Activity, TrendingUp } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -181,31 +175,27 @@ export function AuditChannelActivity({
       <Card>
         <CardContent className="p-4">
           <div className="flex items-start gap-4">
-            <div className="h-16 w-16 rounded-lg bg-primary/10 flex items-center justify-center">
+            <div className="bg-primary/10 flex h-16 w-16 items-center justify-center rounded-lg">
               <Hash className="h-8 w-8 text-primary" />
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold">{channelName}</h2>
-                {channelInfo?.isPrivate && (
-                  <Badge variant="secondary">Private</Badge>
-                )}
+                {channelInfo?.isPrivate && <Badge variant="secondary">Private</Badge>}
               </div>
               {channelInfo?.description && (
-                <p className="text-sm text-muted-foreground mt-1">
-                  {channelInfo.description}
-                </p>
+                <p className="mt-1 text-sm text-muted-foreground">{channelInfo.description}</p>
               )}
-              <p className="text-xs text-muted-foreground mt-1 font-mono">{channelId}</p>
+              <p className="mt-1 font-mono text-xs text-muted-foreground">{channelId}</p>
             </div>
             <div className="text-right">
               {channelInfo?.memberCount !== undefined && (
-                <div className="flex items-center gap-1 justify-end text-sm text-muted-foreground">
+                <div className="flex items-center justify-end gap-1 text-sm text-muted-foreground">
                   <Users className="h-4 w-4" />
                   {channelInfo.memberCount} members
                 </div>
               )}
-              <div className="flex items-center gap-1 justify-end text-sm text-muted-foreground mt-1">
+              <div className="mt-1 flex items-center justify-end gap-1 text-sm text-muted-foreground">
                 <Clock className="h-4 w-4" />
                 Last activity
               </div>
@@ -220,7 +210,7 @@ export function AuditChannelActivity({
       </Card>
 
       {/* Activity Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="p-4">
             <p className="text-sm text-muted-foreground">Total Events</p>
@@ -253,7 +243,7 @@ export function AuditChannelActivity({
       {summary.topActors.length > 0 && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-base flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-base">
               <TrendingUp className="h-4 w-4" />
               Top Contributors
             </CardTitle>
@@ -263,11 +253,9 @@ export function AuditChannelActivity({
               {summary.topActors.map((actor, index) => (
                 <div
                   key={actor.id}
-                  className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2"
+                  className="bg-muted/50 flex items-center gap-2 rounded-lg px-3 py-2"
                 >
-                  <span className="text-sm font-medium text-muted-foreground">
-                    #{index + 1}
-                  </span>
+                  <span className="text-sm font-medium text-muted-foreground">#{index + 1}</span>
                   <Avatar className="h-6 w-6">
                     <AvatarFallback className="text-xs">
                       {actor.name.charAt(0).toUpperCase()}
@@ -300,10 +288,7 @@ export function AuditChannelActivity({
             </SelectContent>
           </Select>
 
-          <Select
-            value={timeRange}
-            onValueChange={(v) => setTimeRange(v as typeof timeRange)}
-          >
+          <Select value={timeRange} onValueChange={(v) => setTimeRange(v as typeof timeRange)}>
             <SelectTrigger className="w-[130px]">
               <SelectValue placeholder="Time range" />
             </SelectTrigger>
@@ -338,7 +323,7 @@ export function AuditChannelActivity({
       {filteredEntries.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            <Activity className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <Activity className="mx-auto mb-2 h-8 w-8 opacity-50" />
             <p>No activity found for the selected filters</p>
           </CardContent>
         </Card>
@@ -350,13 +335,9 @@ export function AuditChannelActivity({
           maxHeight="500px"
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {filteredEntries.map((entry) => (
-            <AuditEventCard
-              key={entry.id}
-              entry={entry}
-              onClick={() => onEntryClick?.(entry)}
-            />
+            <AuditEventCard key={entry.id} entry={entry} onClick={() => onEntryClick?.(entry)} />
           ))}
         </div>
       )}

@@ -24,14 +24,7 @@ export type ReportReason =
 
 export type ReportStatus = 'pending' | 'reviewed' | 'resolved' | 'dismissed'
 
-export type MuteDuration =
-  | '15m'
-  | '1h'
-  | '4h'
-  | '24h'
-  | '7d'
-  | '30d'
-  | 'permanent'
+export type MuteDuration = '15m' | '1h' | '4h' | '24h' | '7d' | '30d' | 'permanent'
 
 export interface BlockUserVariables {
   userId: string
@@ -192,10 +185,7 @@ export const USER_MUTE_FRAGMENT = gql`
  */
 export const GET_BLOCKED_USERS = gql`
   query GetBlockedUsers($userId: uuid!) {
-    nchat_blocked_users(
-      where: { user_id: { _eq: $userId } }
-      order_by: { created_at: desc }
-    ) {
+    nchat_blocked_users(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }) {
       ...BlockedUser
     }
   }
@@ -208,12 +198,7 @@ export const GET_BLOCKED_USERS = gql`
 export const CHECK_USER_BLOCKED = gql`
   query CheckUserBlocked($userId: uuid!, $blockedUserId: uuid!) {
     nchat_blocked_users(
-      where: {
-        _and: [
-          { user_id: { _eq: $userId } }
-          { blocked_user_id: { _eq: $blockedUserId } }
-        ]
-      }
+      where: { _and: [{ user_id: { _eq: $userId } }, { blocked_user_id: { _eq: $blockedUserId } }] }
       limit: 1
     ) {
       id
@@ -236,11 +221,7 @@ export const GET_BLOCKED_USER_IDS = gql`
  * Get user reports (admin only)
  */
 export const GET_USER_REPORTS = gql`
-  query GetUserReports(
-    $status: String
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetUserReports($status: String, $limit: Int = 50, $offset: Int = 0) {
     nchat_user_reports(
       where: { status: { _eq: $status } }
       order_by: { created_at: desc }
@@ -249,9 +230,7 @@ export const GET_USER_REPORTS = gql`
     ) {
       ...UserReport
     }
-    nchat_user_reports_aggregate(
-      where: { status: { _eq: $status } }
-    ) {
+    nchat_user_reports_aggregate(where: { status: { _eq: $status } }) {
       aggregate {
         count
       }
@@ -264,11 +243,7 @@ export const GET_USER_REPORTS = gql`
  * Get message reports (admin only)
  */
 export const GET_MESSAGE_REPORTS = gql`
-  query GetMessageReports(
-    $status: String
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetMessageReports($status: String, $limit: Int = 50, $offset: Int = 0) {
     nchat_message_reports(
       where: { status: { _eq: $status } }
       order_by: { created_at: desc }
@@ -277,9 +252,7 @@ export const GET_MESSAGE_REPORTS = gql`
     ) {
       ...MessageReport
     }
-    nchat_message_reports_aggregate(
-      where: { status: { _eq: $status } }
-    ) {
+    nchat_message_reports_aggregate(where: { status: { _eq: $status } }) {
       aggregate {
         count
       }
@@ -292,11 +265,7 @@ export const GET_MESSAGE_REPORTS = gql`
  * Get all reports (combined user and message reports for admin)
  */
 export const GET_REPORTS_ADMIN = gql`
-  query GetReportsAdmin(
-    $status: String = "pending"
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetReportsAdmin($status: String = "pending", $limit: Int = 50, $offset: Int = 0) {
     user_reports: nchat_user_reports(
       where: { status: { _eq: $status } }
       order_by: { created_at: desc }
@@ -313,16 +282,12 @@ export const GET_REPORTS_ADMIN = gql`
     ) {
       ...MessageReport
     }
-    user_reports_count: nchat_user_reports_aggregate(
-      where: { status: { _eq: $status } }
-    ) {
+    user_reports_count: nchat_user_reports_aggregate(where: { status: { _eq: $status } }) {
       aggregate {
         count
       }
     }
-    message_reports_count: nchat_message_reports_aggregate(
-      where: { status: { _eq: $status } }
-    ) {
+    message_reports_count: nchat_message_reports_aggregate(where: { status: { _eq: $status } }) {
       aggregate {
         count
       }
@@ -340,10 +305,7 @@ export const GET_USER_MUTES = gql`
     nchat_user_mutes(
       where: {
         user_id: { _eq: $userId }
-        _or: [
-          { muted_until: { _gt: "now()" } }
-          { muted_until: { _is_null: true } }
-        ]
+        _or: [{ muted_until: { _gt: "now()" } }, { muted_until: { _is_null: true } }]
       }
       order_by: { muted_at: desc }
     ) {
@@ -361,18 +323,8 @@ export const CHECK_USER_MUTED = gql`
     nchat_user_mutes(
       where: {
         user_id: { _eq: $userId }
-        _or: [
-          { is_global: { _eq: true } }
-          { channel_id: { _eq: $channelId } }
-        ]
-        _and: [
-          {
-            _or: [
-              { muted_until: { _gt: "now()" } }
-              { muted_until: { _is_null: true } }
-            ]
-          }
-        ]
+        _or: [{ is_global: { _eq: true } }, { channel_id: { _eq: $channelId } }]
+        _and: [{ _or: [{ muted_until: { _gt: "now()" } }, { muted_until: { _is_null: true } }] }]
       }
       limit: 1
     ) {
@@ -393,10 +345,7 @@ export const CHECK_USER_MUTED = gql`
 export const BLOCK_USER = gql`
   mutation BlockUser($userId: uuid!, $blockedUserId: uuid!) {
     insert_nchat_blocked_users_one(
-      object: {
-        user_id: $userId
-        blocked_user_id: $blockedUserId
-      }
+      object: { user_id: $userId, blocked_user_id: $blockedUserId }
       on_conflict: {
         constraint: nchat_blocked_users_user_id_blocked_user_id_key
         update_columns: []
@@ -414,12 +363,7 @@ export const BLOCK_USER = gql`
 export const UNBLOCK_USER = gql`
   mutation UnblockUser($userId: uuid!, $blockedUserId: uuid!) {
     delete_nchat_blocked_users(
-      where: {
-        _and: [
-          { user_id: { _eq: $userId } }
-          { blocked_user_id: { _eq: $blockedUserId } }
-        ]
-      }
+      where: { _and: [{ user_id: { _eq: $userId } }, { blocked_user_id: { _eq: $blockedUserId } }] }
     ) {
       affected_rows
       returning {
@@ -581,10 +525,7 @@ export const UNMUTE_USER_BY_CONTEXT = gql`
     delete_nchat_user_mutes(
       where: {
         user_id: { _eq: $userId }
-        _or: [
-          { channel_id: { _eq: $channelId } }
-          { is_global: { _eq: $isGlobal } }
-        ]
+        _or: [{ channel_id: { _eq: $channelId } }, { is_global: { _eq: $isGlobal } }]
       }
     ) {
       affected_rows
@@ -604,10 +545,7 @@ export const UNMUTE_USER_BY_CONTEXT = gql`
  */
 export const BLOCKED_USERS_SUBSCRIPTION = gql`
   subscription BlockedUsersSubscription($userId: uuid!) {
-    nchat_blocked_users(
-      where: { user_id: { _eq: $userId } }
-      order_by: { created_at: desc }
-    ) {
+    nchat_blocked_users(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }) {
       ...BlockedUser
     }
   }
@@ -638,10 +576,7 @@ export const USER_MUTES_SUBSCRIPTION = gql`
     nchat_user_mutes(
       where: {
         user_id: { _eq: $userId }
-        _or: [
-          { muted_until: { _gt: "now()" } }
-          { muted_until: { _is_null: true } }
-        ]
+        _or: [{ muted_until: { _gt: "now()" } }, { muted_until: { _is_null: true } }]
       }
     ) {
       ...UserMute

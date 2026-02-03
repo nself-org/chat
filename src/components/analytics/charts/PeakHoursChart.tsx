@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
 /**
  * PeakHoursChart - Shows activity by hour of day
  */
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Bar,
   BarChart,
@@ -17,21 +17,21 @@ import {
   Legend,
   ComposedChart,
   Line,
-} from 'recharts';
+} from 'recharts'
 
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface PeakHoursChartProps {
-  height?: number;
-  variant?: 'bar' | 'heatmap';
-  showActiveUsers?: boolean;
-  className?: string;
+  height?: number
+  variant?: 'bar' | 'heatmap'
+  showActiveUsers?: boolean
+  className?: string
 }
 
 // ============================================================================
@@ -39,18 +39,18 @@ interface PeakHoursChartProps {
 // ============================================================================
 
 function formatHour(hour: number): string {
-  const period = hour >= 12 ? 'PM' : 'AM';
-  const displayHour = hour % 12 || 12;
-  return `${displayHour}${period}`;
+  const period = hour >= 12 ? 'PM' : 'AM'
+  const displayHour = hour % 12 || 12
+  return `${displayHour}${period}`
 }
 
 function getActivityColor(value: number, max: number): string {
-  const intensity = value / max;
-  if (intensity > 0.8) return '#6366f1'; // High activity - indigo
-  if (intensity > 0.6) return '#818cf8'; // Medium-high
-  if (intensity > 0.4) return '#a5b4fc'; // Medium
-  if (intensity > 0.2) return '#c7d2fe'; // Low-medium
-  return '#e0e7ff'; // Low activity
+  const intensity = value / max
+  if (intensity > 0.8) return '#6366f1' // High activity - indigo
+  if (intensity > 0.6) return '#818cf8' // Medium-high
+  if (intensity > 0.4) return '#a5b4fc' // Medium
+  if (intensity > 0.2) return '#c7d2fe' // Low-medium
+  return '#e0e7ff' // Low activity
 }
 
 // ============================================================================
@@ -58,37 +58,32 @@ function getActivityColor(value: number, max: number): string {
 // ============================================================================
 
 interface TooltipProps {
-  active?: boolean;
+  active?: boolean
   payload?: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
-  label?: string;
+    name: string
+    value: number
+    color: string
+  }>
+  label?: string
 }
 
 function CustomTooltip({ active, payload, label }: TooltipProps) {
-  if (!active || !payload || !payload.length) return null;
+  if (!active || !payload || !payload.length) return null
 
-  const hour = parseInt(label || '0', 10);
+  const hour = parseInt(label || '0', 10)
 
   return (
     <div className="rounded-lg border bg-background p-3 shadow-md">
       <p className="mb-2 font-medium">{formatHour(hour)}</p>
       {payload.map((entry, index) => (
         <div key={index} className="flex items-center gap-2 text-sm">
-          <div
-            className="h-3 w-3 rounded-full"
-            style={{ backgroundColor: entry.color }}
-          />
+          <div className="h-3 w-3 rounded-full" style={{ backgroundColor: entry.color }} />
           <span className="text-muted-foreground">{entry.name}:</span>
-          <span className="font-medium">
-            {entry.value.toLocaleString()}
-          </span>
+          <span className="font-medium">{entry.value.toLocaleString()}</span>
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -101,70 +96,67 @@ export function PeakHoursChart({
   showActiveUsers = true,
   className,
 }: PeakHoursChartProps) {
-  const { peakHours, isLoading } = useAnalyticsStore();
+  const { peakHours, isLoading } = useAnalyticsStore()
 
   // Transform data for chart
   const chartData = React.useMemo(() => {
-    if (!peakHours || peakHours.length === 0) return [];
+    if (!peakHours || peakHours.length === 0) return []
 
     return peakHours.map((d) => ({
       hour: d.hour,
       hourLabel: formatHour(d.hour),
       messages: d.messageCount,
       users: d.activeUsers,
-    }));
-  }, [peakHours]);
+    }))
+  }, [peakHours])
 
   // Find peak hour
   const peakInfo = React.useMemo(() => {
-    if (chartData.length === 0) return null;
+    if (chartData.length === 0) return null
 
-    const maxMessages = Math.max(...chartData.map((d) => d.messages));
-    const peakHour = chartData.find((d) => d.messages === maxMessages);
+    const maxMessages = Math.max(...chartData.map((d) => d.messages))
+    const peakHour = chartData.find((d) => d.messages === maxMessages)
 
-    const minMessages = Math.min(...chartData.map((d) => d.messages));
-    const quietHour = chartData.find((d) => d.messages === minMessages);
+    const minMessages = Math.min(...chartData.map((d) => d.messages))
+    const quietHour = chartData.find((d) => d.messages === minMessages)
 
     return {
       peak: peakHour,
       quiet: quietHour,
       maxMessages,
-    };
-  }, [chartData]);
+    }
+  }, [chartData])
 
   if (isLoading) {
     return (
       <div className={cn('w-full', className)} style={{ height }}>
         <Skeleton className="h-full w-full" />
       </div>
-    );
+    )
   }
 
   if (chartData.length === 0) {
     return (
       <div
-        className={cn(
-          'flex items-center justify-center text-muted-foreground',
-          className
-        )}
+        className={cn('flex items-center justify-center text-muted-foreground', className)}
         style={{ height }}
       >
         No activity data available
       </div>
-    );
+    )
   }
 
   if (variant === 'heatmap') {
     // Render as a heatmap-style grid
-    const maxMessages = Math.max(...chartData.map((d) => d.messages));
+    const maxMessages = Math.max(...chartData.map((d) => d.messages))
 
     return (
       <div className={cn('w-full', className)}>
-        <div className="grid grid-cols-12 gap-1 mb-4">
+        <div className="mb-4 grid grid-cols-12 gap-1">
           {chartData.map((d) => (
             <div
               key={d.hour}
-              className="aspect-square rounded-sm flex items-center justify-center text-xs font-medium transition-colors cursor-default"
+              className="flex aspect-square cursor-default items-center justify-center rounded-sm text-xs font-medium transition-colors"
               style={{
                 backgroundColor: getActivityColor(d.messages, maxMessages),
                 color: d.messages / maxMessages > 0.6 ? 'white' : 'inherit',
@@ -181,11 +173,7 @@ export function PeakHoursChart({
           <span>Low</span>
           <div className="flex gap-0.5">
             {['#e0e7ff', '#c7d2fe', '#a5b4fc', '#818cf8', '#6366f1'].map((color) => (
-              <div
-                key={color}
-                className="w-4 h-4 rounded-sm"
-                style={{ backgroundColor: color }}
-              />
+              <div key={color} className="h-4 w-4 rounded-sm" style={{ backgroundColor: color }} />
             ))}
           </div>
           <span>High</span>
@@ -195,21 +183,17 @@ export function PeakHoursChart({
         {peakInfo && (
           <div className="mt-4 flex justify-center gap-8 text-sm">
             <div className="text-center">
-              <div className="font-medium text-green-600">
-                {peakInfo.peak?.hourLabel}
-              </div>
+              <div className="font-medium text-green-600">{peakInfo.peak?.hourLabel}</div>
               <div className="text-muted-foreground">Peak hour</div>
             </div>
             <div className="text-center">
-              <div className="font-medium text-amber-600">
-                {peakInfo.quiet?.hourLabel}
-              </div>
+              <div className="font-medium text-amber-600">{peakInfo.quiet?.hourLabel}</div>
               <div className="text-muted-foreground">Quiet hour</div>
             </div>
           </div>
         )}
       </div>
-    );
+    )
   }
 
   // Default bar chart variant
@@ -245,12 +229,7 @@ export function PeakHoursChart({
           )}
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          <Bar
-            yAxisId="left"
-            dataKey="messages"
-            name="Messages"
-            radius={[4, 4, 0, 0]}
-          >
+          <Bar yAxisId="left" dataKey="messages" name="Messages" radius={[4, 4, 0, 0]}>
             {chartData.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
@@ -276,9 +255,7 @@ export function PeakHoursChart({
       {peakInfo && (
         <div className="mt-4 flex justify-center gap-8 text-sm">
           <div className="text-center">
-            <div className="font-medium text-indigo-600">
-              {peakInfo.peak?.hourLabel}
-            </div>
+            <div className="font-medium text-indigo-600">{peakInfo.peak?.hourLabel}</div>
             <div className="text-muted-foreground">
               Peak ({peakInfo.peak?.messages.toLocaleString()} messages)
             </div>
@@ -286,7 +263,7 @@ export function PeakHoursChart({
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default PeakHoursChart;
+export default PeakHoursChart

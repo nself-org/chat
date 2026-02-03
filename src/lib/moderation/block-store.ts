@@ -297,8 +297,7 @@ export const selectBlockModal = (state: BlockStore) => ({
   target: state.blockModalTarget,
 })
 
-export const selectBlockedCount = (state: BlockStore) =>
-  state.blockedUsers.length
+export const selectBlockedCount = (state: BlockStore) => state.blockedUsers.length
 
 export const selectIsBlocking = (state: BlockStore) => state.isBlocking
 

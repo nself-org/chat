@@ -42,13 +42,13 @@ export function LinkPreviewError({
   return (
     <div
       className={cn(
-        'flex items-center gap-3 p-3 rounded-lg border border-destructive/20 bg-destructive/5',
+        'border-destructive/20 bg-destructive/5 flex items-center gap-3 rounded-lg border p-3',
         className
       )}
     >
       <div className="flex-shrink-0">
         <svg
-          className="w-5 h-5 text-destructive"
+          className="h-5 w-5 text-destructive"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -62,34 +62,16 @@ export function LinkPreviewError({
         </svg>
       </div>
 
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-foreground truncate">
-          Failed to load preview
-        </p>
-        <p className="text-xs text-muted-foreground truncate">
-          {domain}
-        </p>
-        {error && (
-          <p className="text-xs text-destructive mt-1">
-            {error}
-          </p>
-        )}
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-foreground">Failed to load preview</p>
+        <p className="truncate text-xs text-muted-foreground">{domain}</p>
+        {error && <p className="mt-1 text-xs text-destructive">{error}</p>}
       </div>
 
-      <div className="flex items-center gap-2 flex-shrink-0">
+      <div className="flex flex-shrink-0 items-center gap-2">
         {showRetry && onRetry && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onRetry}
-            className="h-8 px-2"
-          >
-            <svg
-              className="w-4 h-4 mr-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+          <Button variant="ghost" size="sm" onClick={onRetry} className="h-8 px-2">
+            <svg className="mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -102,18 +84,8 @@ export function LinkPreviewError({
         )}
 
         {onDismiss && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onDismiss}
-            className="h-8 w-8 p-0"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+          <Button variant="ghost" size="sm" onClick={onDismiss} className="h-8 w-8 p-0">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"

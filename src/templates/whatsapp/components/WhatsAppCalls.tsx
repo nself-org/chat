@@ -58,41 +58,35 @@ export function WhatsAppCalls({
 }: WhatsAppCallsProps) {
   return (
     <div
-      className={cn('flex flex-col h-full', className)}
+      className={cn('flex h-full flex-col', className)}
       style={{ backgroundColor: WHATSAPP_COLORS.chatBgDark }}
     >
       {/* Header */}
-      <header
-        className="flex items-center justify-between px-4 py-2"
-        style={{ minHeight: 60 }}
-      >
-        <h1
-          className="text-xl font-bold"
-          style={{ color: WHATSAPP_COLORS.textPrimaryDark }}
-        >
+      <header className="flex items-center justify-between px-4 py-2" style={{ minHeight: 60 }}>
+        <h1 className="text-xl font-bold" style={{ color: WHATSAPP_COLORS.textPrimaryDark }}>
           Calls
         </h1>
         <div className="flex items-center gap-1">
           <button
             onClick={onNewCallClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="h-5 w-5" />
           </button>
           <button
             onClick={onSearchClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <Search className="w-5 h-5" />
+            <Search className="h-5 w-5" />
           </button>
           <button
             onClick={onMenuClick}
-            className="p-2 rounded-full hover:bg-white/5"
+            className="rounded-full p-2 hover:bg-white/5"
             style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
           >
-            <MoreVertical className="w-5 h-5" />
+            <MoreVertical className="h-5 w-5" />
           </button>
         </div>
       </header>
@@ -100,10 +94,10 @@ export function WhatsAppCalls({
       {/* Create Call Link */}
       <button className="flex items-center gap-4 px-4 py-3 hover:bg-white/5">
         <div
-          className="w-12 h-12 rounded-full flex items-center justify-center"
+          className="flex h-12 w-12 items-center justify-center rounded-full"
           style={{ backgroundColor: WHATSAPP_COLORS.primaryGreen }}
         >
-          <Phone className="w-6 h-6 text-[#111B21]" />
+          <Phone className="h-6 w-6 text-[#111B21]" />
         </div>
         <span style={{ color: WHATSAPP_COLORS.textPrimaryDark }} className="font-medium">
           Create call link
@@ -112,10 +106,7 @@ export function WhatsAppCalls({
 
       {/* Recent Label */}
       {calls.length > 0 && (
-        <div
-          className="px-4 py-2 text-sm"
-          style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
-        >
+        <div className="px-4 py-2 text-sm" style={{ color: WHATSAPP_COLORS.textSecondaryDark }}>
           Recent
         </div>
       )}
@@ -123,20 +114,16 @@ export function WhatsAppCalls({
       {/* Call List */}
       <div className="flex-1 overflow-y-auto">
         {calls.map((call) => (
-          <CallItem
-            key={call.id}
-            call={call}
-            onClick={() => onCallClick?.(call.id)}
-          />
+          <CallItem key={call.id} call={call} onClick={() => onCallClick?.(call.id)} />
         ))}
 
         {calls.length === 0 && (
-          <div className="flex flex-col items-center justify-center h-full px-8 text-center">
+          <div className="flex h-full flex-col items-center justify-center px-8 text-center">
             <div
-              className="w-24 h-24 rounded-full flex items-center justify-center mb-4"
+              className="mb-4 flex h-24 w-24 items-center justify-center rounded-full"
               style={{ backgroundColor: '#202C33' }}
             >
-              <Phone className="w-12 h-12" style={{ color: WHATSAPP_COLORS.textSecondaryDark }} />
+              <Phone className="h-12 w-12" style={{ color: WHATSAPP_COLORS.textSecondaryDark }} />
             </div>
             <p style={{ color: WHATSAPP_COLORS.textPrimaryDark }} className="mb-2">
               No recent calls
@@ -155,13 +142,7 @@ export function WhatsAppCalls({
 // Sub-components
 // -------------------------------------------------------------------------------
 
-function CallItem({
-  call,
-  onClick,
-}: {
-  call: WhatsAppCallData
-  onClick: () => void
-}) {
+function CallItem({ call, onClick }: { call: WhatsAppCallData; onClick: () => void }) {
   const formatTime = (date: Date) => {
     const now = new Date()
     const isToday = date.toDateString() === now.toDateString()
@@ -197,49 +178,29 @@ function CallItem({
     switch (call.type) {
       case 'incoming':
         return (
-          <PhoneIncoming
-            className={iconClass}
-            style={{ color: WHATSAPP_COLORS.primaryGreen }}
-          />
+          <PhoneIncoming className={iconClass} style={{ color: WHATSAPP_COLORS.primaryGreen }} />
         )
       case 'outgoing':
         return (
-          <PhoneOutgoing
-            className={iconClass}
-            style={{ color: WHATSAPP_COLORS.primaryGreen }}
-          />
+          <PhoneOutgoing className={iconClass} style={{ color: WHATSAPP_COLORS.primaryGreen }} />
         )
       case 'missed':
-        return (
-          <PhoneMissed
-            className={iconClass}
-            style={{ color: '#F15C6D' }}
-          />
-        )
+        return <PhoneMissed className={iconClass} style={{ color: '#F15C6D' }} />
     }
   }
 
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-3 w-full px-4 py-3 hover:bg-white/5"
-    >
+    <button onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3 hover:bg-white/5">
       {/* Avatar */}
-      <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+      <div className="h-12 w-12 flex-shrink-0 overflow-hidden rounded-full">
         {call.userAvatar ? (
-          <img
-            src={call.userAvatar}
-            alt={call.userName}
-            className="w-full h-full object-cover"
-          />
+          <img src={call.userAvatar} alt={call.userName} className="h-full w-full object-cover" />
         ) : (
           <div
-            className="w-full h-full flex items-center justify-center"
+            className="flex h-full w-full items-center justify-center"
             style={{ backgroundColor: '#6B7C85' }}
           >
-            <span className="text-white font-medium">
-              {call.userName[0]?.toUpperCase()}
-            </span>
+            <span className="font-medium text-white">{call.userName[0]?.toUpperCase()}</span>
           </div>
         )}
       </div>
@@ -248,9 +209,7 @@ function CallItem({
       <div className="flex-1 text-left">
         <div
           style={{
-            color: call.type === 'missed'
-              ? '#F15C6D'
-              : WHATSAPP_COLORS.textPrimaryDark,
+            color: call.type === 'missed' ? '#F15C6D' : WHATSAPP_COLORS.textPrimaryDark,
           }}
           className="font-medium"
         >
@@ -262,19 +221,13 @@ function CallItem({
         >
           {getCallIcon()}
           <span>{formatTime(call.time)}</span>
-          {call.duration && (
-            <span className="ml-1">({formatDuration(call.duration)})</span>
-          )}
+          {call.duration && <span className="ml-1">({formatDuration(call.duration)})</span>}
         </div>
       </div>
 
       {/* Call Type Icon */}
       <div style={{ color: WHATSAPP_COLORS.primaryGreen }}>
-        {call.callType === 'video' ? (
-          <Video className="w-5 h-5" />
-        ) : (
-          <Phone className="w-5 h-5" />
-        )}
+        {call.callType === 'video' ? <Video className="h-5 w-5" /> : <Phone className="h-5 w-5" />}
       </div>
     </button>
   )

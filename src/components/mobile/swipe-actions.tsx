@@ -1,22 +1,8 @@
 'use client'
 
-import {
-  memo,
-  useRef,
-  useCallback,
-  useState,
-  useEffect,
-  ReactNode,
-} from 'react'
+import { memo, useRef, useCallback, useState, useEffect, ReactNode } from 'react'
 import { motion, useAnimation, PanInfo } from 'framer-motion'
-import {
-  Reply,
-  Smile,
-  Trash2,
-  Pin,
-  Forward,
-  MoreHorizontal,
-} from 'lucide-react'
+import { Reply, Smile, Trash2, Pin, Forward, MoreHorizontal } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // ============================================================================
@@ -165,7 +151,14 @@ export const SwipeActions = memo(function SwipeActions({
 
       controls.set({ x: constrainedX })
     },
-    [disabled, leftActions.length, rightActions.length, leftActionsWidth, rightActionsWidth, controls]
+    [
+      disabled,
+      leftActions.length,
+      rightActions.length,
+      leftActionsWidth,
+      rightActionsWidth,
+      controls,
+    ]
   )
 
   // Handle drag start
@@ -253,16 +246,10 @@ export const SwipeActions = memo(function SwipeActions({
   }, [isRevealed, resetPosition])
 
   return (
-    <div
-      ref={containerRef}
-      className={cn('relative overflow-hidden', className)}
-    >
+    <div ref={containerRef} className={cn('relative overflow-hidden', className)}>
       {/* Left actions (revealed by swiping right) */}
       {leftActions.length > 0 && (
-        <div
-          className="absolute left-0 top-0 bottom-0 flex"
-          style={{ width: leftActionsWidth }}
-        >
+        <div className="absolute bottom-0 left-0 top-0 flex" style={{ width: leftActionsWidth }}>
           {leftActions.map((action) => (
             <ActionButton
               key={action.id}
@@ -277,10 +264,7 @@ export const SwipeActions = memo(function SwipeActions({
 
       {/* Right actions (revealed by swiping left) */}
       {rightActions.length > 0 && (
-        <div
-          className="absolute right-0 top-0 bottom-0 flex"
-          style={{ width: rightActionsWidth }}
-        >
+        <div className="absolute bottom-0 right-0 top-0 flex" style={{ width: rightActionsWidth }}>
           {rightActions.map((action) => (
             <ActionButton
               key={action.id}
@@ -302,10 +286,7 @@ export const SwipeActions = memo(function SwipeActions({
         onDragStart={handleDragStart}
         onDrag={handleDrag}
         onDragEnd={handleDragEnd}
-        className={cn(
-          'relative bg-background',
-          isDragging && 'cursor-grabbing'
-        )}
+        className={cn('relative bg-background', isDragging && 'cursor-grabbing')}
       >
         {children}
       </motion.div>

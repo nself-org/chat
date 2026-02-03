@@ -521,7 +521,7 @@ describe('RBAC Permissions System', () => {
       const allPermissions = Object.values(PERMISSIONS)
       const ownerPerms = DEFAULT_ROLE_PERMISSIONS.owner
 
-      allPermissions.forEach(perm => {
+      allPermissions.forEach((perm) => {
         expect(ownerPerms).toContain(perm)
       })
     })
@@ -553,9 +553,7 @@ describe('RBAC Permissions System', () => {
             expect(canManage).toBe(targetRole !== 'owner')
           } else {
             // Others can only manage roles strictly below them
-            expect(canManage).toBe(
-              ROLE_HIERARCHY[actorRole] > ROLE_HIERARCHY[targetRole]
-            )
+            expect(canManage).toBe(ROLE_HIERARCHY[actorRole] > ROLE_HIERARCHY[targetRole])
           }
         })
       })
@@ -576,7 +574,7 @@ describe('RBAC Permissions System', () => {
         PERMISSIONS.ROLE_DELETE,
       ]
 
-      roleModifyPerms.forEach(perm => {
+      roleModifyPerms.forEach((perm) => {
         expect(hasPermission('owner', perm)).toBe(true)
         expect(hasPermission('admin', perm)).toBe(false)
         expect(hasPermission('moderator', perm)).toBe(false)

@@ -54,13 +54,7 @@ jest.mock('../thread-header', () => ({
       <button onClick={onClose}>Close</button>
     </div>
   ),
-  ThreadHeaderCompact: ({
-    replyCount,
-    onClose,
-  }: {
-    replyCount: number
-    onClose: () => void
-  }) => (
+  ThreadHeaderCompact: ({ replyCount, onClose }: { replyCount: number; onClose: () => void }) => (
     <div data-testid="thread-header-compact">
       <span>{replyCount} replies</span>
       <button onClick={onClose}>Close</button>
@@ -138,9 +132,7 @@ jest.mock('../thread-participants', () => ({
 
 // Mock react-resizable-panels
 jest.mock('react-resizable-panels', () => ({
-  Panel: ({ children }: { children: React.ReactNode }) => (
-    <div data-testid="panel">{children}</div>
-  ),
+  Panel: ({ children }: { children: React.ReactNode }) => <div data-testid="panel">{children}</div>,
   PanelGroup: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="panel-group">{children}</div>
   ),

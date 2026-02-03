@@ -10,11 +10,7 @@
  */
 
 import { gql } from '@apollo/client'
-import {
-  THREAD_FRAGMENT,
-  MESSAGE_FULL_FRAGMENT,
-  USER_BASIC_FRAGMENT,
-} from '../fragments'
+import { THREAD_FRAGMENT, MESSAGE_FULL_FRAGMENT, USER_BASIC_FRAGMENT } from '../fragments'
 
 // ============================================================================
 // MUTATIONS
@@ -37,16 +33,9 @@ export const CREATE_THREAD = gql`
         parent_message_id: $parentMessageId
         message_count: 1
         last_reply_at: "now()"
-        participants: {
-          data: [{ user_id: $userId }]
-        }
+        participants: { data: [{ user_id: $userId }] }
         messages: {
-          data: [{
-            channel_id: $channelId
-            user_id: $userId
-            content: $content
-            type: "text"
-          }]
+          data: [{ channel_id: $channelId, user_id: $userId, content: $content, type: "text" }]
         }
       }
     ) {
@@ -95,10 +84,7 @@ export const REPLY_TO_THREAD = gql`
     }
     # Add user as participant if not already
     insert_nchat_thread_participants_one(
-      object: {
-        thread_id: $threadId
-        user_id: $userId
-      }
+      object: { thread_id: $threadId, user_id: $userId }
       on_conflict: {
         constraint: nchat_thread_participants_thread_id_user_id_key
         update_columns: []
@@ -116,11 +102,7 @@ export const REPLY_TO_THREAD = gql`
 export const JOIN_THREAD = gql`
   mutation JoinThread($threadId: uuid!, $userId: uuid!) {
     insert_nchat_thread_participants_one(
-      object: {
-        thread_id: $threadId
-        user_id: $userId
-        notifications_enabled: true
-      }
+      object: { thread_id: $threadId, user_id: $userId, notifications_enabled: true }
       on_conflict: {
         constraint: nchat_thread_participants_thread_id_user_id_key
         update_columns: [notifications_enabled]
@@ -141,10 +123,7 @@ export const JOIN_THREAD = gql`
 export const LEAVE_THREAD = gql`
   mutation LeaveThread($threadId: uuid!, $userId: uuid!) {
     delete_nchat_thread_participants(
-      where: {
-        thread_id: { _eq: $threadId }
-        user_id: { _eq: $userId }
-      }
+      where: { thread_id: { _eq: $threadId }, user_id: { _eq: $userId } }
     ) {
       affected_rows
     }
@@ -155,16 +134,9 @@ export const LEAVE_THREAD = gql`
  * Update thread notification settings
  */
 export const UPDATE_THREAD_NOTIFICATIONS = gql`
-  mutation UpdateThreadNotifications(
-    $threadId: uuid!
-    $userId: uuid!
-    $enabled: Boolean!
-  ) {
+  mutation UpdateThreadNotifications($threadId: uuid!, $userId: uuid!, $enabled: Boolean!) {
     update_nchat_thread_participants(
-      where: {
-        thread_id: { _eq: $threadId }
-        user_id: { _eq: $userId }
-      }
+      where: { thread_id: { _eq: $threadId }, user_id: { _eq: $userId } }
       _set: { notifications_enabled: $enabled }
     ) {
       affected_rows
@@ -182,10 +154,7 @@ export const UPDATE_THREAD_NOTIFICATIONS = gql`
 export const MARK_THREAD_READ = gql`
   mutation MarkThreadRead($threadId: uuid!, $userId: uuid!) {
     update_nchat_thread_participants(
-      where: {
-        thread_id: { _eq: $threadId }
-        user_id: { _eq: $userId }
-      }
+      where: { thread_id: { _eq: $threadId }, user_id: { _eq: $userId } }
       _set: { last_read_at: "now()" }
     ) {
       affected_rows
@@ -217,15 +186,11 @@ export const MARK_ALL_THREADS_READ = gql`
 export const DELETE_THREAD = gql`
   mutation DeleteThread($threadId: uuid!) {
     # Delete all messages in thread first
-    delete_nchat_messages(
-      where: { thread_id: { _eq: $threadId } }
-    ) {
+    delete_nchat_messages(where: { thread_id: { _eq: $threadId } }) {
       affected_rows
     }
     # Delete participants
-    delete_nchat_thread_participants(
-      where: { thread_id: { _eq: $threadId } }
-    ) {
+    delete_nchat_thread_participants(where: { thread_id: { _eq: $threadId } }) {
       affected_rows
     }
     # Delete the thread
@@ -303,18 +268,9 @@ export const UNLOCK_THREAD = gql`
  * Add users to a thread
  */
 export const ADD_THREAD_PARTICIPANTS = gql`
-  mutation AddThreadParticipants(
-    $threadId: uuid!
-    $userIds: [uuid!]!
-  ) {
+  mutation AddThreadParticipants($threadId: uuid!, $userIds: [uuid!]!) {
     insert_nchat_thread_participants(
-      objects: [
-        {
-          thread_id: $threadId
-          user_id: { _in: $userIds }
-          notifications_enabled: true
-        }
-      ]
+      objects: [{ thread_id: $threadId, user_id: { _in: $userIds }, notifications_enabled: true }]
       on_conflict: {
         constraint: nchat_thread_participants_thread_id_user_id_key
         update_columns: []
@@ -336,15 +292,9 @@ export const ADD_THREAD_PARTICIPANTS = gql`
  * Remove users from a thread
  */
 export const REMOVE_THREAD_PARTICIPANTS = gql`
-  mutation RemoveThreadParticipants(
-    $threadId: uuid!
-    $userIds: [uuid!]!
-  ) {
+  mutation RemoveThreadParticipants($threadId: uuid!, $userIds: [uuid!]!) {
     delete_nchat_thread_participants(
-      where: {
-        thread_id: { _eq: $threadId }
-        user_id: { _in: $userIds }
-      }
+      where: { thread_id: { _eq: $threadId }, user_id: { _in: $userIds } }
     ) {
       affected_rows
     }

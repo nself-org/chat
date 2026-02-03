@@ -85,9 +85,7 @@ export function ChannelSettings({
     isDefault: channel.isDefault,
   })
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
@@ -123,19 +121,19 @@ export function ChannelSettings({
       <Tabs defaultValue="general">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="general">
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="mr-2 h-4 w-4" />
             General
           </TabsTrigger>
           <TabsTrigger value="permissions">
-            <Shield className="h-4 w-4 mr-2" />
+            <Shield className="mr-2 h-4 w-4" />
             Permissions
           </TabsTrigger>
           <TabsTrigger value="members">
-            <Users className="h-4 w-4 mr-2" />
+            <Users className="mr-2 h-4 w-4" />
             Members
           </TabsTrigger>
           <TabsTrigger value="danger">
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Danger Zone
           </TabsTrigger>
         </TabsList>
@@ -145,9 +143,7 @@ export function ChannelSettings({
           <Card>
             <CardHeader>
               <CardTitle>Channel Information</CardTitle>
-              <CardDescription>
-                Basic information about this channel
-              </CardDescription>
+              <CardDescription>Basic information about this channel</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -198,9 +194,7 @@ export function ChannelSettings({
           <Card>
             <CardHeader>
               <CardTitle>Organization</CardTitle>
-              <CardDescription>
-                How this channel is organized in the sidebar
-              </CardDescription>
+              <CardDescription>How this channel is organized in the sidebar</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
@@ -236,9 +230,7 @@ export function ChannelSettings({
                 <Label htmlFor="category">Category</Label>
                 <Select
                   value={formData.categoryId}
-                  onValueChange={(value) =>
-                    setFormData((prev) => ({ ...prev, categoryId: value }))
-                  }
+                  onValueChange={(value) => setFormData((prev) => ({ ...prev, categoryId: value }))}
                   disabled={!isAdmin}
                 >
                   <SelectTrigger>
@@ -246,13 +238,11 @@ export function ChannelSettings({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="">No category</SelectItem>
-                    {DEFAULT_CATEGORIES.filter((c) => c.id !== 'archived').map(
-                      (category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      )
-                    )}
+                    {DEFAULT_CATEGORIES.filter((c) => c.id !== 'archived').map((category) => (
+                      <SelectItem key={category.id} value={category.id}>
+                        {category.name}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -264,13 +254,11 @@ export function ChannelSettings({
                     <button
                       key={color}
                       type="button"
-                      onClick={() =>
-                        isAdmin && setFormData((prev) => ({ ...prev, color }))
-                      }
+                      onClick={() => isAdmin && setFormData((prev) => ({ ...prev, color }))}
                       className={cn(
-                        'w-8 h-8 rounded-full border-2 transition-all',
+                        'h-8 w-8 rounded-full border-2 transition-all',
                         formData.color === color
-                          ? 'border-foreground scale-110'
+                          ? 'scale-110 border-foreground'
                           : 'border-transparent',
                         !isAdmin && 'cursor-not-allowed opacity-50'
                       )}
@@ -324,18 +312,14 @@ export function ChannelSettings({
           <Card className="border-destructive/50">
             <CardHeader>
               <CardTitle className="text-destructive">Danger Zone</CardTitle>
-              <CardDescription>
-                Irreversible actions that affect this channel
-              </CardDescription>
+              <CardDescription>Irreversible actions that affect this channel</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               {/* Leave Channel */}
-              <div className="flex items-center justify-between p-4 rounded-lg border">
+              <div className="flex items-center justify-between rounded-lg border p-4">
                 <div>
                   <p className="font-medium">Leave Channel</p>
-                  <p className="text-sm text-muted-foreground">
-                    Remove yourself from this channel
-                  </p>
+                  <p className="text-sm text-muted-foreground">Remove yourself from this channel</p>
                 </div>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
@@ -345,8 +329,7 @@ export function ChannelSettings({
                     <AlertDialogHeader>
                       <AlertDialogTitle>Leave channel?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to leave #{channel.name}? You can rejoin
-                        at any time.
+                        Are you sure you want to leave #{channel.name}? You can rejoin at any time.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
@@ -360,7 +343,7 @@ export function ChannelSettings({
               {isAdmin && (
                 <>
                   {/* Archive Channel */}
-                  <div className="flex items-center justify-between p-4 rounded-lg border">
+                  <div className="flex items-center justify-between rounded-lg border p-4">
                     <div>
                       <p className="font-medium">Archive Channel</p>
                       <p className="text-sm text-muted-foreground">
@@ -378,22 +361,20 @@ export function ChannelSettings({
                         <AlertDialogHeader>
                           <AlertDialogTitle>Archive channel?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This will archive #{channel.name}. No one will be able to
-                            send new messages, but the history will be preserved.
+                            This will archive #{channel.name}. No one will be able to send new
+                            messages, but the history will be preserved.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-                          <AlertDialogAction onClick={onArchive}>
-                            Archive
-                          </AlertDialogAction>
+                          <AlertDialogAction onClick={onArchive}>Archive</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   </div>
 
                   {/* Delete Channel */}
-                  <div className="flex items-center justify-between p-4 rounded-lg border border-destructive/50">
+                  <div className="border-destructive/50 flex items-center justify-between rounded-lg border p-4">
                     <div>
                       <p className="font-medium text-destructive">Delete Channel</p>
                       <p className="text-sm text-muted-foreground">
@@ -411,15 +392,15 @@ export function ChannelSettings({
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete channel?</AlertDialogTitle>
                           <AlertDialogDescription>
-                            This action cannot be undone. This will permanently delete
-                            #{channel.name} and all of its messages.
+                            This action cannot be undone. This will permanently delete #
+                            {channel.name} and all of its messages.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={onDelete}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
                           >
                             Delete Channel
                           </AlertDialogAction>

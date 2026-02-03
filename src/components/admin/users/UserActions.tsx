@@ -88,21 +88,12 @@ export function UserActions({
           <Shield className="mr-2 h-4 w-4" />
           Role
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => openResetPasswordModal(user)}
-        >
+        <Button variant="outline" size="sm" onClick={() => openResetPasswordModal(user)}>
           <Key className="mr-2 h-4 w-4" />
           Password
         </Button>
         {isBanned ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => openBanModal(user)}
-            disabled={isOwner}
-          >
+          <Button variant="outline" size="sm" onClick={() => openBanModal(user)} disabled={isOwner}>
             <UserCheck className="mr-2 h-4 w-4" />
             Unban
           </Button>
@@ -156,10 +147,7 @@ export function UserActions({
           Edit User
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          onClick={() => openRoleChangeModal(user)}
-          disabled={isOwner}
-        >
+        <DropdownMenuItem onClick={() => openRoleChangeModal(user)} disabled={isOwner}>
           <Shield className="mr-2 h-4 w-4" />
           Change Role
         </DropdownMenuItem>
@@ -171,10 +159,7 @@ export function UserActions({
           Reset Password
         </DropdownMenuItem>
 
-        <DropdownMenuItem
-          onClick={() => openImpersonateModal(user)}
-          disabled={isOwner}
-        >
+        <DropdownMenuItem onClick={() => openImpersonateModal(user)} disabled={isOwner}>
           <UserCog className="mr-2 h-4 w-4" />
           Impersonate
         </DropdownMenuItem>
@@ -194,10 +179,7 @@ export function UserActions({
         <DropdownMenuSeparator />
 
         {isBanned ? (
-          <DropdownMenuItem
-            onClick={() => openBanModal(user)}
-            disabled={isOwner}
-          >
+          <DropdownMenuItem onClick={() => openBanModal(user)} disabled={isOwner}>
             <UserCheck className="mr-2 h-4 w-4" />
             Unban User
           </DropdownMenuItem>

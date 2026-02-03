@@ -1,11 +1,11 @@
-'use client';
+'use client'
 
 /**
  * ResponseTimeChart - Shows response time metrics
  */
 
-import * as React from 'react';
-import { format } from 'date-fns';
+import * as React from 'react'
+import { format } from 'date-fns'
 import {
   Area,
   AreaChart,
@@ -21,20 +21,20 @@ import {
   YAxis,
   Legend,
   ReferenceLine,
-} from 'recharts';
+} from 'recharts'
 
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface ResponseTimeChartProps {
-  height?: number;
-  variant?: 'timeline' | 'distribution' | 'percentiles';
-  className?: string;
+  height?: number
+  variant?: 'timeline' | 'distribution' | 'percentiles'
+  className?: string
 }
 
 // ============================================================================
@@ -42,9 +42,9 @@ interface ResponseTimeChartProps {
 // ============================================================================
 
 function formatDuration(seconds: number): string {
-  if (seconds < 60) return `${Math.round(seconds)}s`;
-  if (seconds < 3600) return `${Math.round(seconds / 60)}m`;
-  return `${Math.round(seconds / 3600)}h`;
+  if (seconds < 60) return `${Math.round(seconds)}s`
+  if (seconds < 3600) return `${Math.round(seconds / 60)}m`
+  return `${Math.round(seconds / 3600)}h`
 }
 
 // ============================================================================
@@ -52,16 +52,16 @@ function formatDuration(seconds: number): string {
 // ============================================================================
 
 function generateMockResponseTimeData() {
-  const now = new Date();
-  const data = [];
+  const now = new Date()
+  const data = []
 
   for (let i = 29; i >= 0; i--) {
-    const date = new Date(now);
-    date.setDate(date.getDate() - i);
+    const date = new Date(now)
+    date.setDate(date.getDate() - i)
 
     // Simulate response times with some variation
-    const baseTime = 120 + Math.random() * 60; // 2-3 minutes base
-    const variation = Math.sin(i / 5) * 30; // Some wave pattern
+    const baseTime = 120 + Math.random() * 60 // 2-3 minutes base
+    const variation = Math.sin(i / 5) * 30 // Some wave pattern
 
     data.push({
       date: format(date, 'MMM d'),
@@ -69,10 +69,10 @@ function generateMockResponseTimeData() {
       median: Math.round((baseTime + variation) * 0.8),
       p95: Math.round((baseTime + variation) * 2),
       p99: Math.round((baseTime + variation) * 3),
-    });
+    })
   }
 
-  return data;
+  return data
 }
 
 function generateDistributionData() {
@@ -84,17 +84,17 @@ function generateDistributionData() {
     { range: '2-5m', min: 120, max: 300 },
     { range: '5-10m', min: 300, max: 600 },
     { range: '10m+', min: 600, max: Infinity },
-  ];
+  ]
 
   // Simulate a distribution (most responses are quick)
-  const total = 1000;
-  const distribution = [350, 280, 200, 100, 50, 20];
+  const total = 1000
+  const distribution = [350, 280, 200, 100, 50, 20]
 
   return buckets.map((bucket, index) => ({
     range: bucket.range,
     count: distribution[index],
     percentage: (distribution[index] / total) * 100,
-  }));
+  }))
 }
 
 // ============================================================================
@@ -102,33 +102,30 @@ function generateDistributionData() {
 // ============================================================================
 
 interface TimelineTooltipProps {
-  active?: boolean;
+  active?: boolean
   payload?: Array<{
-    name: string;
-    value: number;
-    color: string;
-  }>;
-  label?: string;
+    name: string
+    value: number
+    color: string
+  }>
+  label?: string
 }
 
 function TimelineTooltip({ active, payload, label }: TimelineTooltipProps) {
-  if (!active || !payload || !payload.length) return null;
+  if (!active || !payload || !payload.length) return null
 
   return (
     <div className="rounded-lg border bg-background p-3 shadow-md">
       <p className="mb-2 font-medium">{label}</p>
       {payload.map((entry, index) => (
         <div key={index} className="flex items-center gap-2 text-sm">
-          <div
-            className="h-3 w-3 rounded-full"
-            style={{ backgroundColor: entry.color }}
-          />
+          <div className="h-3 w-3 rounded-full" style={{ backgroundColor: entry.color }} />
           <span className="text-muted-foreground">{entry.name}:</span>
           <span className="font-medium">{formatDuration(entry.value)}</span>
         </div>
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -140,29 +137,29 @@ export function ResponseTimeChart({
   variant = 'timeline',
   className,
 }: ResponseTimeChartProps) {
-  const { isLoading, summary } = useAnalyticsStore();
+  const { isLoading, summary } = useAnalyticsStore()
 
   // Generate mock data since we don't have real response time tracking
-  const timelineData = React.useMemo(() => generateMockResponseTimeData(), []);
-  const distributionData = React.useMemo(() => generateDistributionData(), []);
+  const timelineData = React.useMemo(() => generateMockResponseTimeData(), [])
+  const distributionData = React.useMemo(() => generateDistributionData(), [])
 
   // Calculate overall averages
   const averages = React.useMemo(() => {
-    if (timelineData.length === 0) return null;
+    if (timelineData.length === 0) return null
 
-    const avgAverage = timelineData.reduce((sum, d) => sum + d.average, 0) / timelineData.length;
-    const avgMedian = timelineData.reduce((sum, d) => sum + d.median, 0) / timelineData.length;
-    const avgP95 = timelineData.reduce((sum, d) => sum + d.p95, 0) / timelineData.length;
+    const avgAverage = timelineData.reduce((sum, d) => sum + d.average, 0) / timelineData.length
+    const avgMedian = timelineData.reduce((sum, d) => sum + d.median, 0) / timelineData.length
+    const avgP95 = timelineData.reduce((sum, d) => sum + d.p95, 0) / timelineData.length
 
-    return { average: avgAverage, median: avgMedian, p95: avgP95 };
-  }, [timelineData]);
+    return { average: avgAverage, median: avgMedian, p95: avgP95 }
+  }, [timelineData])
 
   if (isLoading) {
     return (
       <div className={cn('w-full', className)} style={{ height }}>
         <Skeleton className="h-full w-full" />
       </div>
-    );
+    )
   }
 
   if (variant === 'distribution') {
@@ -187,8 +184,8 @@ export function ResponseTimeChart({
             />
             <Tooltip
               content={({ active, payload }) => {
-                if (!active || !payload || !payload.length) return null;
-                const data = payload[0].payload;
+                if (!active || !payload || !payload.length) return null
+                const data = payload[0].payload
                 return (
                   <div className="rounded-lg border bg-background p-3 shadow-md">
                     <p className="font-medium">{data.range}</p>
@@ -203,18 +200,14 @@ export function ResponseTimeChart({
                       </div>
                     </div>
                   </div>
-                );
+                )
               }}
             />
-            <Bar
-              dataKey="percentage"
-              fill="#6366f1"
-              radius={[4, 4, 0, 0]}
-            />
+            <Bar dataKey="percentage" fill="#6366f1" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
-    );
+    )
   }
 
   if (variant === 'percentiles') {
@@ -273,27 +266,21 @@ export function ResponseTimeChart({
         {averages && (
           <div className="mt-4 grid grid-cols-3 gap-4 text-center text-sm">
             <div>
-              <div className="font-medium text-green-600">
-                {formatDuration(averages.median)}
-              </div>
+              <div className="font-medium text-green-600">{formatDuration(averages.median)}</div>
               <div className="text-muted-foreground">Median</div>
             </div>
             <div>
-              <div className="font-medium text-amber-600">
-                {formatDuration(averages.p95)}
-              </div>
+              <div className="font-medium text-amber-600">{formatDuration(averages.p95)}</div>
               <div className="text-muted-foreground">P95</div>
             </div>
             <div>
-              <div className="font-medium text-red-600">
-                {formatDuration(averages.average)}
-              </div>
+              <div className="font-medium text-red-600">{formatDuration(averages.average)}</div>
               <div className="text-muted-foreground">Average</div>
             </div>
           </div>
         )}
       </div>
-    );
+    )
   }
 
   // Default timeline variant
@@ -345,7 +332,7 @@ export function ResponseTimeChart({
         </ComposedChart>
       </ResponsiveContainer>
     </div>
-  );
+  )
 }
 
-export default ResponseTimeChart;
+export default ResponseTimeChart

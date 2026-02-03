@@ -24,17 +24,17 @@ const TEST_DATA = {
   owner: {
     name: 'Test Owner',
     email: 'test-owner@example.com',
-    role: 'Platform Administrator'
+    role: 'Platform Administrator',
   },
   branding: {
     appName: 'Test App',
     tagline: 'A test application',
     companyName: 'Test Company',
-    websiteUrl: 'https://example.com'
+    websiteUrl: 'https://example.com',
   },
   theme: {
-    preset: 'slate'
-  }
+    preset: 'slate',
+  },
 }
 
 // ============================================================================
@@ -50,7 +50,9 @@ test.describe('Setup Wizard Navigation', () => {
 
   test('should display welcome step on first visit', async ({ page }) => {
     // Check for welcome step indicators
-    const welcomeHeading = page.locator('h1, h2').filter({ hasText: /welcome|introduction|getting started/i })
+    const welcomeHeading = page
+      .locator('h1, h2')
+      .filter({ hasText: /welcome|introduction|getting started/i })
     const stepIndicator = page.locator('[data-testid="step"], .step, [role="progressbar"]')
 
     // At least one should be visible
@@ -148,17 +150,20 @@ test.describe('Step 1: Welcome Step', () => {
   })
 
   test('should display welcome content', async ({ page }) => {
-    const welcomeText = page.locator(
-      'text=/welcome|introduction|getting started|setup|hello/i'
-    )
+    const welcomeText = page.locator('text=/welcome|introduction|getting started|setup|hello/i')
 
     await expect(welcomeText.first()).toBeVisible()
   })
 
   test('should have description text', async ({ page }) => {
-    const description = page.locator('p, div').filter({ hasText: /white.?label|team|communication|setup/i })
+    const description = page
+      .locator('p, div')
+      .filter({ hasText: /white.?label|team|communication|setup/i })
 
-    const isVisible = await description.first().isVisible().catch(() => false)
+    const isVisible = await description
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
@@ -220,7 +225,7 @@ test.describe('Step 3: Owner Info Step', () => {
 
       // Check for error message or disabled state
       const errorMsg = page.locator('[role="alert"], .error, .text-red-500').filter({
-        hasText: /email|invalid/i
+        hasText: /email|invalid/i,
       })
 
       const hasError = await errorMsg.isVisible().catch(() => false)
@@ -235,7 +240,7 @@ test.describe('Step 3: Owner Info Step', () => {
     const emailInput = page.locator('input[id="email"], input[type="email"]')
     const nextButton = page.locator('button:has-text("Next")')
 
-    if (await nameInput.isVisible() && await emailInput.isVisible()) {
+    if ((await nameInput.isVisible()) && (await emailInput.isVisible())) {
       await nameInput.fill(TEST_DATA.owner.name)
       await emailInput.fill(TEST_DATA.owner.email)
       await emailInput.blur()
@@ -379,14 +384,21 @@ test.describe('Step 4: Branding Step', () => {
   })
 
   test('should handle icon upload', async ({ page }) => {
-    const iconUploadArea = page.locator('[data-testid="icon-upload"], button:has-text("Generate Icon"), .upload-area')
+    const iconUploadArea = page.locator(
+      '[data-testid="icon-upload"], button:has-text("Generate Icon"), .upload-area'
+    )
 
-    const isVisible = await iconUploadArea.first().isVisible().catch(() => false)
+    const isVisible = await iconUploadArea
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
   test('should display icon generator button', async ({ page }) => {
-    const generateButton = page.locator('button:has-text("Generate Icon"), button:has-text("Generate")')
+    const generateButton = page.locator(
+      'button:has-text("Generate Icon"), button:has-text("Generate")'
+    )
 
     const isVisible = await generateButton.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -413,7 +425,9 @@ test.describe('Step 5: Theme Step', () => {
   })
 
   test('should select a theme preset', async ({ page }) => {
-    const themePresets = page.locator('[data-testid="theme-preset"], button[data-theme], [role="radio"]')
+    const themePresets = page.locator(
+      '[data-testid="theme-preset"], button[data-theme], [role="radio"]'
+    )
 
     if ((await themePresets.count()) > 0) {
       const firstPreset = themePresets.first()
@@ -421,7 +435,9 @@ test.describe('Step 5: Theme Step', () => {
 
       // Preset should be marked as selected
       const ariaChecked = await firstPreset.getAttribute('aria-checked')
-      const isSelected = ariaChecked === 'true' || (await firstPreset.evaluate((el) => el.classList.contains('selected')))
+      const isSelected =
+        ariaChecked === 'true' ||
+        (await firstPreset.evaluate((el) => el.classList.contains('selected')))
 
       expect(isSelected).toBe(true)
     }
@@ -441,7 +457,10 @@ test.describe('Step 5: Theme Step', () => {
       '[data-testid="color-scheme-toggle"], button:has-text("Dark"), button:has-text("Light"), [role="switch"]'
     )
 
-    const isVisible = await modeToggle.first().isVisible().catch(() => false)
+    const isVisible = await modeToggle
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
@@ -476,7 +495,7 @@ test.describe('Step 6: Landing Page Step', () => {
 
   test('should display landing page options', async ({ page }) => {
     const options = page.locator('button, [role="radio"], label').filter({
-      hasText: /landing|homepage|login|simple/i
+      hasText: /landing|homepage|login|simple/i,
     })
 
     const count = await options.count()
@@ -484,7 +503,9 @@ test.describe('Step 6: Landing Page Step', () => {
   })
 
   test('should allow landing page selection', async ({ page }) => {
-    const options = page.locator('[data-testid="landing-option"], button[data-landing], [role="radio"]')
+    const options = page.locator(
+      '[data-testid="landing-option"], button[data-landing], [role="radio"]'
+    )
 
     if ((await options.count()) > 0) {
       const firstOption = options.first()
@@ -562,14 +583,18 @@ test.describe('Step 8: Access Permissions Step', () => {
   })
 
   test('should display permission mode options', async ({ page }) => {
-    const options = page.locator('[data-testid="permission-mode"], [role="radio"], button[data-permission]')
+    const options = page.locator(
+      '[data-testid="permission-mode"], [role="radio"], button[data-permission]'
+    )
 
     const count = await options.count()
     expect(count).toBeGreaterThanOrEqual(0)
   })
 
   test('should allow selecting permission mode', async ({ page }) => {
-    const options = page.locator('[data-testid="permission-mode"], button[data-permission], [role="radio"]')
+    const options = page.locator(
+      '[data-testid="permission-mode"], button[data-permission], [role="radio"]'
+    )
 
     if ((await options.count()) > 0) {
       const firstOption = options.first()
@@ -584,10 +609,8 @@ test.describe('Step 8: Access Permissions Step', () => {
   })
 
   test('should show permission settings', async ({ page }) => {
-    const settings = page.locator(
-      'input[type="checkbox"], label, [role="checkbox"]'
-    ).filter({
-      hasText: /verification|domain|private|public/i
+    const settings = page.locator('input[type="checkbox"], label, [role="checkbox"]').filter({
+      hasText: /verification|domain|private|public/i,
     })
 
     const count = await settings.count()
@@ -606,7 +629,9 @@ test.describe('Step 9: Features Step', () => {
   })
 
   test('should display feature toggles', async ({ page }) => {
-    const toggles = page.locator('[data-testid="feature-toggle"], input[type="checkbox"], [role="switch"]')
+    const toggles = page.locator(
+      '[data-testid="feature-toggle"], input[type="checkbox"], [role="switch"]'
+    )
 
     const count = await toggles.count()
     expect(count).toBeGreaterThan(0)
@@ -637,7 +662,7 @@ test.describe('Step 9: Features Step', () => {
 
   test('should display feature categories', async ({ page }) => {
     const categories = page.locator('h3, h4').filter({
-      hasText: /messaging|channels|integrations|moderation/i
+      hasText: /messaging|channels|integrations|moderation/i,
     })
 
     const count = await categories.count()
@@ -657,11 +682,12 @@ test.describe('Step 12: Review Step', () => {
   })
 
   test('should display review/summary content', async ({ page }) => {
-    const reviewContent = page.locator(
-      'text=/review|summary|complete|launch/i'
-    )
+    const reviewContent = page.locator('text=/review|summary|complete|launch/i')
 
-    const isVisible = await reviewContent.first().isVisible().catch(() => false)
+    const isVisible = await reviewContent
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
@@ -670,7 +696,10 @@ test.describe('Step 12: Review Step', () => {
       'button:has-text("Complete"), button:has-text("Launch"), button:has-text("Finish")'
     )
 
-    const isVisible = await completeButton.first().isVisible().catch(() => false)
+    const isVisible = await completeButton
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
@@ -867,9 +896,11 @@ test.describe('Progress Stepper', () => {
       const firstStep = stepButtons.first()
 
       const isActive = await firstStep.evaluate((el) => {
-        return el.getAttribute('aria-current') === 'step' ||
-               el.classList.contains('active') ||
-               el.getAttribute('aria-selected') === 'true'
+        return (
+          el.getAttribute('aria-current') === 'step' ||
+          el.classList.contains('active') ||
+          el.getAttribute('aria-selected') === 'true'
+        )
       })
 
       expect(isActive).toBe(true)
@@ -893,9 +924,11 @@ test.describe('Progress Stepper', () => {
       const firstStep = stepButtons.first()
 
       const isCompleted = await firstStep.evaluate((el) => {
-        return el.classList.contains('completed') ||
-               el.classList.contains('done') ||
-               el.getAttribute('data-completed') === 'true'
+        return (
+          el.classList.contains('completed') ||
+          el.classList.contains('done') ||
+          el.getAttribute('data-completed') === 'true'
+        )
       })
 
       expect(typeof isCompleted).toBe('boolean')
@@ -941,7 +974,7 @@ test.describe('Form Validation', () => {
 
       // Look for error message
       const errorMsg = page.locator('[role="alert"], .error, .text-red-500').filter({
-        hasText: /email|invalid/i
+        hasText: /email|invalid/i,
       })
 
       const hasError = await errorMsg.isVisible().catch(() => false)
@@ -1066,7 +1099,7 @@ test.describe('Setup Wizard UI/UX', () => {
 
     // Look for hint text
     const hints = page.locator('p, small, .hint, [role="tooltip"]').filter({
-      hasText: /will be|used for|email address|contact/i
+      hasText: /will be|used for|email address|contact/i,
     })
 
     const count = await hints.count()
@@ -1118,7 +1151,7 @@ test.describe('Setup Wizard Error Handling', () => {
 
       // Should show validation message
       const errorMsg = page.locator('[role="alert"], .error, .text-red')
-      const hasValidation = await errorMsg.count().then(count => count > 0)
+      const hasValidation = await errorMsg.count().then((count) => count > 0)
 
       expect(typeof hasValidation).toBe('boolean')
     }

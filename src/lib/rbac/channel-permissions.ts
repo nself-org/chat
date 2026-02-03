@@ -148,9 +148,7 @@ export class ChannelPermissionManager {
     targetId: string
   ): ChannelPermissionOverride | undefined {
     const overrides = this.overrides.get(channelId) || []
-    return overrides.find(
-      (o) => o.targetType === targetType && o.targetId === targetId
-    )
+    return overrides.find((o) => o.targetType === targetType && o.targetId === targetId)
   }
 
   /**
@@ -469,11 +467,7 @@ export class ChannelPermissionManager {
    */
   canInvite(context: ChannelPermissionContext, basePermissions: Permission[]): boolean {
     // Check if user has invite permission
-    const result = this.checkPermission(
-      PERMISSIONS.CHANNEL_MANAGE,
-      context,
-      basePermissions
-    )
+    const result = this.checkPermission(PERMISSIONS.CHANNEL_MANAGE, context, basePermissions)
 
     if (result.allowed) return true
 

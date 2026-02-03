@@ -17,22 +17,14 @@ interface SuspenseWrapperProps {
  * Suspense wrapper with default loading fallback
  * Use to wrap lazy-loaded components
  */
-export function SuspenseWrapper({
-  fallback,
-  children,
-  className,
-}: SuspenseWrapperProps) {
+export function SuspenseWrapper({ fallback, children, className }: SuspenseWrapperProps) {
   const defaultFallback = (
     <div className={cn('flex h-full w-full items-center justify-center', className)}>
       <CenteredSpinner text="Loading..." />
     </div>
   )
 
-  return (
-    <Suspense fallback={fallback ?? defaultFallback}>
-      {children}
-    </Suspense>
-  )
+  return <Suspense fallback={fallback ?? defaultFallback}>{children}</Suspense>
 }
 
 interface LazyComponentWrapperProps<P extends object> {
@@ -75,16 +67,9 @@ interface PageSuspenseProps {
  * Page-level suspense wrapper
  * Provides consistent loading experience for route segments
  */
-export function PageSuspense({
-  children,
-  skeleton,
-  minHeight = '100vh',
-}: PageSuspenseProps) {
+export function PageSuspense({ children, skeleton, minHeight = '100vh' }: PageSuspenseProps) {
   const fallback = skeleton ?? (
-    <div
-      className="flex items-center justify-center"
-      style={{ minHeight }}
-    >
+    <div className="flex items-center justify-center" style={{ minHeight }}>
       <CenteredSpinner size="xl" text="Loading page..." />
     </div>
   )
@@ -117,10 +102,7 @@ export function SectionSuspense({
 
   const fallback = skeleton ?? (
     <div
-      className={cn(
-        'flex items-center justify-center rounded-lg bg-muted/30',
-        className
-      )}
+      className={cn('bg-muted/30 flex items-center justify-center rounded-lg', className)}
       style={{ minHeight: heightStyle }}
     >
       <CenteredSpinner size="md" />
@@ -176,17 +158,11 @@ export function ListSuspense({
   className,
 }: ListSuspenseProps) {
   const defaultSkeletonItem = (index: number) => (
-    <div
-      key={index}
-      className="h-12 w-full animate-pulse rounded-md bg-muted"
-    />
+    <div key={index} className="h-12 w-full animate-pulse rounded-md bg-muted" />
   )
 
   const fallback = (
-    <div
-      className={cn('flex flex-col', className)}
-      style={{ gap: `${gap}px` }}
-    >
+    <div className={cn('flex flex-col', className)} style={{ gap: `${gap}px` }}>
       {Array.from({ length: skeletonCount }).map((_, i) =>
         renderSkeletonItem ? renderSkeletonItem(i) : defaultSkeletonItem(i)
       )}
@@ -199,10 +175,7 @@ export function ListSuspense({
 /**
  * Higher-order component for adding suspense to lazy components
  */
-export function withSuspense<P extends object>(
-  Component: ComponentType<P>,
-  fallback?: ReactNode
-) {
+export function withSuspense<P extends object>(Component: ComponentType<P>, fallback?: ReactNode) {
   return function SuspenseComponent(props: P) {
     return (
       <SuspenseWrapper fallback={fallback}>

@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 interface TourNavigationProps {
-  onNext: () => void;
-  onPrev: () => void;
-  onSkip: () => void;
-  hasNext: boolean;
-  hasPrev: boolean;
-  isLastStep?: boolean;
-  className?: string;
+  onNext: () => void
+  onPrev: () => void
+  onSkip: () => void
+  hasNext: boolean
+  hasPrev: boolean
+  isLastStep?: boolean
+  className?: string
 }
 
 export function TourNavigation({
@@ -32,7 +32,7 @@ export function TourNavigation({
         disabled={!hasPrev}
         className="text-zinc-600 dark:text-zinc-400"
       >
-        <ChevronLeft className="w-4 h-4 mr-1" />
+        <ChevronLeft className="mr-1 h-4 w-4" />
         Back
       </Button>
 
@@ -52,11 +52,11 @@ export function TourNavigation({
           ) : (
             <>
               Next
-              <ChevronRight className="w-4 h-4 ml-1" />
+              <ChevronRight className="ml-1 h-4 w-4" />
             </>
           )}
         </Button>
       </div>
     </div>
-  );
+  )
 }

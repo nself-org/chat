@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
+import { useState } from 'react'
 import {
   FileText,
   Download,
@@ -11,19 +11,19 @@ import {
   Loader2,
   AlertCircle,
   BarChart3,
-} from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+} from 'lucide-react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
@@ -31,31 +31,32 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { useComplianceStore } from '@/stores/compliance-store';
-import type { ComplianceReport, ComplianceReportType } from '@/lib/compliance/compliance-types';
+} from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useComplianceStore } from '@/stores/compliance-store'
+import type { ComplianceReport, ComplianceReportType } from '@/lib/compliance/compliance-types'
+import { logger } from '@/lib/logger'
 import {
   REPORT_TYPE_CONFIGS,
   createReport,
   formatReportStatus,
-} from '@/lib/compliance/compliance-report';
+} from '@/lib/compliance/compliance-report'
 
 interface ReportCardProps {
-  report: ComplianceReport;
-  onDownload: (report: ComplianceReport) => void;
+  report: ComplianceReport
+  onDownload: (report: ComplianceReport) => void
 }
 
 function ReportCard({ report, onDownload }: ReportCardProps) {
-  const statusInfo = formatReportStatus(report.status);
-  const config = REPORT_TYPE_CONFIGS.find((c) => c.type === report.type);
+  const statusInfo = formatReportStatus(report.status)
+  const config = REPORT_TYPE_CONFIGS.find((c) => c.type === report.type)
 
   const StatusIcon = {
     pending: Clock,
     generating: Loader2,
     completed: CheckCircle,
     failed: AlertCircle,
-  }[report.status];
+  }[report.status]
 
   return (
     <Card>
@@ -63,139 +64,132 @@ function ReportCard({ report, onDownload }: ReportCardProps) {
         <div className="flex items-start justify-between">
           <div className="flex items-start gap-4">
             <div
-              className={`p-2 rounded-lg ${
+              className={`rounded-lg p-2 ${
                 report.status === 'completed'
                   ? 'bg-green-100 text-green-600'
                   : report.status === 'failed'
-                  ? 'bg-red-100 text-red-600'
-                  : 'bg-gray-100 text-gray-600'
+                    ? 'bg-red-100 text-red-600'
+                    : 'bg-gray-100 text-gray-600'
               }`}
             >
               <StatusIcon
-                className={`h-5 w-5 ${
-                  report.status === 'generating' ? 'animate-spin' : ''
-                }`}
+                className={`h-5 w-5 ${report.status === 'generating' ? 'animate-spin' : ''}`}
               />
             </div>
             <div>
               <div className="flex items-center gap-2">
                 <p className="font-medium">{report.name}</p>
-                <Badge
-                  variant={report.status === 'completed' ? 'default' : 'secondary'}
-                >
+                <Badge variant={report.status === 'completed' ? 'default' : 'secondary'}>
                   {statusInfo.label}
                 </Badge>
               </div>
-              <p className="text-sm text-muted-foreground mt-1">
-                {config?.description}
-              </p>
-              <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+              <p className="mt-1 text-sm text-muted-foreground">{config?.description}</p>
+              <div className="mt-2 flex items-center gap-4 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1">
                   <Calendar className="h-3 w-3" />
                   {new Date(report.generatedAt).toLocaleDateString()}
                 </span>
                 <span className="uppercase">{report.format}</span>
-                {report.fileSize && (
-                  <span>{(report.fileSize / 1024).toFixed(1)} KB</span>
-                )}
+                {report.fileSize && <span>{(report.fileSize / 1024).toFixed(1)} KB</span>}
               </div>
             </div>
           </div>
           {report.status === 'completed' && (
             <Button variant="outline" size="sm" onClick={() => onDownload(report)}>
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="mr-2 h-4 w-4" />
               Download
             </Button>
           )}
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 export function ComplianceReports() {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedType, setSelectedType] = useState<ComplianceReportType>('compliance_overview');
-  const [format, setFormat] = useState<'pdf' | 'csv' | 'json'>('pdf');
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [selectedType, setSelectedType] = useState<ComplianceReportType>('compliance_overview')
+  const [format, setFormat] = useState<'pdf' | 'csv' | 'json'>('pdf')
   const [dateRange, setDateRange] = useState({
     start: '',
     end: '',
-  });
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [activeTab, setActiveTab] = useState('recent');
+  })
+  const [isGenerating, setIsGenerating] = useState(false)
+  const [activeTab, setActiveTab] = useState('recent')
 
-  const { reports, addReport } = useComplianceStore();
+  const { reports, addReport } = useComplianceStore()
 
   const handleGenerate = async () => {
-    setIsGenerating(true);
+    setIsGenerating(true)
     try {
       const report = createReport(selectedType, 'admin-user', {
         format,
         dateRangeStart: dateRange.start ? new Date(dateRange.start) : undefined,
         dateRangeEnd: dateRange.end ? new Date(dateRange.end) : undefined,
-      });
+      })
 
-      addReport(report);
+      addReport(report)
 
       // Simulate report generation
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      setIsDialogOpen(false);
+      setIsDialogOpen(false)
     } catch (error) {
-      console.error('Failed to generate report:', error);
+      logger.error('Failed to generate report:',  error)
     } finally {
-      setIsGenerating(false);
+      setIsGenerating(false)
     }
-  };
+  }
 
   const handleDownload = (report: ComplianceReport) => {
     if (report.fileUrl) {
-      window.open(report.fileUrl, '_blank');
+      window.open(report.fileUrl, '_blank')
     } else {
-      alert('Report file is not yet available');
+      alert('Report file is not yet available')
     }
-  };
+  }
 
-  const recentReports = reports.slice().sort(
-    (a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime()
-  );
+  const recentReports = reports
+    .slice()
+    .sort((a, b) => new Date(b.generatedAt).getTime() - new Date(a.generatedAt).getTime())
 
   const reportsByCategory = REPORT_TYPE_CONFIGS.reduce(
     (acc, config) => {
       if (!acc[config.category]) {
-        acc[config.category] = [];
+        acc[config.category] = []
       }
-      acc[config.category].push(config);
-      return acc;
+      acc[config.category].push(config)
+      return acc
     },
     {} as Record<string, typeof REPORT_TYPE_CONFIGS>
-  );
+  )
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-2xl font-bold">
             <BarChart3 className="h-6 w-6" />
             Compliance Reports
           </h2>
-          <p className="text-muted-foreground">
-            Generate and download compliance documentation
-          </p>
+          <p className="text-muted-foreground">Generate and download compliance documentation</p>
         </div>
         <Button onClick={() => setIsDialogOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="mr-2 h-4 w-4" />
           Generate Report
         </Button>
       </div>
 
       {/* Quick Report Cards */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => {
-          setSelectedType('compliance_overview');
-          setIsDialogOpen(true);
-        }}>
+        <Card
+          className="hover:bg-muted/50 cursor-pointer transition-colors"
+          onClick={() => {
+            setSelectedType('compliance_overview')
+            setIsDialogOpen(true)
+          }}
+        >
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <FileText className="h-8 w-8 text-blue-500" />
@@ -206,10 +200,13 @@ export function ComplianceReports() {
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => {
-          setSelectedType('gdpr_compliance');
-          setIsDialogOpen(true);
-        }}>
+        <Card
+          className="hover:bg-muted/50 cursor-pointer transition-colors"
+          onClick={() => {
+            setSelectedType('gdpr_compliance')
+            setIsDialogOpen(true)
+          }}
+        >
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <FileText className="h-8 w-8 text-green-500" />
@@ -220,10 +217,13 @@ export function ComplianceReports() {
             </div>
           </CardContent>
         </Card>
-        <Card className="cursor-pointer hover:bg-muted/50 transition-colors" onClick={() => {
-          setSelectedType('retention_summary');
-          setIsDialogOpen(true);
-        }}>
+        <Card
+          className="hover:bg-muted/50 cursor-pointer transition-colors"
+          onClick={() => {
+            setSelectedType('retention_summary')
+            setIsDialogOpen(true)
+          }}
+        >
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
               <FileText className="h-8 w-8 text-orange-500" />
@@ -247,13 +247,11 @@ export function ComplianceReports() {
           {recentReports.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
-                <FileText className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <FileText className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
                 <h3 className="text-lg font-medium">No Reports Generated</h3>
-                <p className="text-muted-foreground mt-1">
-                  Generate your first compliance report
-                </p>
+                <p className="mt-1 text-muted-foreground">Generate your first compliance report</p>
                 <Button className="mt-4" onClick={() => setIsDialogOpen(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   Generate Report
                 </Button>
               </CardContent>
@@ -261,11 +259,7 @@ export function ComplianceReports() {
           ) : (
             <div className="space-y-4">
               {recentReports.map((report) => (
-                <ReportCard
-                  key={report.id}
-                  report={report}
-                  onDownload={handleDownload}
-                />
+                <ReportCard key={report.id} report={report} onDownload={handleDownload} />
               ))}
             </div>
           )}
@@ -274,25 +268,23 @@ export function ComplianceReports() {
         <TabsContent value="types" className="space-y-6">
           {Object.entries(reportsByCategory).map(([category, configs]) => (
             <div key={category}>
-              <h3 className="text-lg font-medium capitalize mb-3">{category}</h3>
+              <h3 className="mb-3 text-lg font-medium capitalize">{category}</h3>
               <div className="grid gap-4 md:grid-cols-2">
                 {configs.map((config) => (
                   <Card
                     key={config.type}
-                    className="cursor-pointer hover:bg-muted/50 transition-colors"
+                    className="hover:bg-muted/50 cursor-pointer transition-colors"
                     onClick={() => {
-                      setSelectedType(config.type);
-                      setIsDialogOpen(true);
+                      setSelectedType(config.type)
+                      setIsDialogOpen(true)
                     }}
                   >
                     <CardContent className="pt-6">
                       <div className="flex items-start justify-between">
                         <div>
                           <p className="font-medium">{config.name}</p>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            {config.description}
-                          </p>
-                          <div className="flex gap-1 mt-2">
+                          <p className="mt-1 text-sm text-muted-foreground">{config.description}</p>
+                          <div className="mt-2 flex gap-1">
                             {config.availableFormats.map((fmt) => (
                               <Badge key={fmt} variant="outline" className="text-xs">
                                 {fmt.toUpperCase()}
@@ -318,9 +310,7 @@ export function ComplianceReports() {
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Generate Report</DialogTitle>
-            <DialogDescription>
-              Configure and generate a compliance report
-            </DialogDescription>
+            <DialogDescription>Configure and generate a compliance report</DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
@@ -348,10 +338,7 @@ export function ComplianceReports() {
 
             <div className="space-y-2">
               <Label htmlFor="format">Format</Label>
-              <Select
-                value={format}
-                onValueChange={(v: 'pdf' | 'csv' | 'json') => setFormat(v)}
-              >
+              <Select value={format} onValueChange={(v: 'pdf' | 'csv' | 'json') => setFormat(v)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -378,9 +365,7 @@ export function ComplianceReports() {
                     id="start-date"
                     type="date"
                     value={dateRange.start}
-                    onChange={(e) =>
-                      setDateRange({ ...dateRange, start: e.target.value })
-                    }
+                    onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
                   />
                 </div>
                 <div className="flex-1">
@@ -391,15 +376,11 @@ export function ComplianceReports() {
                     id="end-date"
                     type="date"
                     value={dateRange.end}
-                    onChange={(e) =>
-                      setDateRange({ ...dateRange, end: e.target.value })
-                    }
+                    onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
                   />
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Leave empty for last 30 days
-              </p>
+              <p className="text-xs text-muted-foreground">Leave empty for last 30 days</p>
             </div>
           </div>
 
@@ -410,12 +391,12 @@ export function ComplianceReports() {
             <Button onClick={handleGenerate} disabled={isGenerating}>
               {isGenerating ? (
                 <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   Generating...
                 </>
               ) : (
                 <>
-                  <FileText className="h-4 w-4 mr-2" />
+                  <FileText className="mr-2 h-4 w-4" />
                   Generate Report
                 </>
               )}
@@ -424,5 +405,5 @@ export function ComplianceReports() {
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

@@ -5,7 +5,11 @@
  * 7 toxicity categories, threshold configuration, fallback detection, and caching.
  */
 
-import { ToxicityDetector, getToxicityDetector, DEFAULT_TOXICITY_CONFIG } from '../toxicity-detector'
+import {
+  ToxicityDetector,
+  getToxicityDetector,
+  DEFAULT_TOXICITY_CONFIG,
+} from '../toxicity-detector'
 import type { ToxicityDetectorConfig, PerspectiveAPIResult } from '../toxicity-detector'
 
 // ============================================================================

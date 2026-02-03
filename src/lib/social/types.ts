@@ -114,9 +114,13 @@ export interface OAuthConfig {
 }
 
 export interface SocialAPIClient {
-  authenticate(code: string): Promise<{ accessToken: string; refreshToken?: string; expiresAt?: Date }>
+  authenticate(
+    code: string
+  ): Promise<{ accessToken: string; refreshToken?: string; expiresAt?: Date }>
   refreshToken?(refreshToken: string): Promise<{ accessToken: string; expiresAt?: Date }>
-  getAccountInfo(accessToken: string): Promise<{ id: string; name: string; handle?: string; avatarUrl?: string }>
+  getAccountInfo(
+    accessToken: string
+  ): Promise<{ id: string; name: string; handle?: string; avatarUrl?: string }>
   getRecentPosts(accessToken: string, accountId: string, since?: string): Promise<SocialPost[]>
   revokeAccess?(accessToken: string): Promise<void>
 }

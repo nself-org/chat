@@ -25,14 +25,20 @@ export interface UseDraftsReturn {
   draftUpdatedAt: number | null
 
   // Draft actions
-  updateDraft: (content: string, options?: {
-    attachments?: unknown[]
-    mentions?: unknown[]
-  }) => void
-  saveDraft: (content: string, options?: {
-    attachments?: unknown[]
-    mentions?: unknown[]
-  }) => void
+  updateDraft: (
+    content: string,
+    options?: {
+      attachments?: unknown[]
+      mentions?: unknown[]
+    }
+  ) => void
+  saveDraft: (
+    content: string,
+    options?: {
+      attachments?: unknown[]
+      mentions?: unknown[]
+    }
+  ) => void
   clearDraft: () => void
   restoreDraft: () => DraftMessage | undefined
 
@@ -208,9 +214,7 @@ export function useDrafts(options: UseDraftsOptions): UseDraftsReturn {
   /**
    * Check if draft exists
    */
-  const hasDraft = user?.id
-    ? draftManager.hasDraft(channelId, user.id, replyToId, threadId)
-    : false
+  const hasDraft = user?.id ? draftManager.hasDraft(channelId, user.id, replyToId, threadId) : false
 
   /**
    * Get channel draft count
@@ -278,19 +282,22 @@ export function useAllDrafts() {
     setDraftsByChannel(new Map())
   }, [user?.id])
 
-  const clearChannelDrafts = useCallback((channelId: string) => {
-    if (!user?.id) return
+  const clearChannelDrafts = useCallback(
+    (channelId: string) => {
+      if (!user?.id) return
 
-    const count = draftManager.deleteChannelDrafts(channelId, user.id)
-    logger.info('Cleared channel drafts', { channelId, count })
+      const count = draftManager.deleteChannelDrafts(channelId, user.id)
+      logger.info('Cleared channel drafts', { channelId, count })
 
-    // Update state
-    const allDrafts = draftManager.getUserDrafts(user.id)
-    const grouped = draftManager.getAllDraftsGrouped(user.id)
+      // Update state
+      const allDrafts = draftManager.getUserDrafts(user.id)
+      const grouped = draftManager.getAllDraftsGrouped(user.id)
 
-    setDrafts(allDrafts)
-    setDraftsByChannel(grouped)
-  }, [user?.id])
+      setDrafts(allDrafts)
+      setDraftsByChannel(grouped)
+    },
+    [user?.id]
+  )
 
   return {
     drafts,

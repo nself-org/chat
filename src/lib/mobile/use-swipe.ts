@@ -310,7 +310,10 @@ export function useSwipe(options: SwipeOptions = {}): [SwipeState, SwipeHandlers
 /**
  * Simple swipe detection with just callbacks
  */
-export function useSimpleSwipe(callbacks: SwipeCallbacks, options: Omit<SwipeOptions, keyof SwipeCallbacks> = {}) {
+export function useSimpleSwipe(
+  callbacks: SwipeCallbacks,
+  options: Omit<SwipeOptions, keyof SwipeCallbacks> = {}
+) {
   return useSwipe({ ...options, ...callbacks })
 }
 

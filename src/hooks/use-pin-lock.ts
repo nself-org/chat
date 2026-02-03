@@ -15,6 +15,7 @@ import {
   checkLocalLockout,
   type PinSettings,
 } from '@/lib/security/pin'
+import { logger } from '@/lib/logger'
 import {
   isSessionLocked,
   getLockState,
@@ -257,7 +258,7 @@ export function usePinLock(): UsePinLockReturn {
           }
         }
       } catch (error) {
-        console.error('PIN verification error:', error)
+        logger.error('PIN verification error:',  error)
         return { success: false, error: 'An error occurred' }
       }
     },

@@ -100,11 +100,11 @@ pnpm install
 
 Three OpenAI models are supported:
 
-| Model | Dimensions | Cost (per 1M tokens) | Use Case |
-|-------|------------|---------------------|----------|
-| text-embedding-3-small | 1536 | $0.02 | Default, cost-effective |
-| text-embedding-3-large | 3072 | $0.13 | Higher accuracy |
-| text-embedding-ada-002 | 1536 | $0.10 | Legacy model |
+| Model                  | Dimensions | Cost (per 1M tokens) | Use Case                |
+| ---------------------- | ---------- | -------------------- | ----------------------- |
+| text-embedding-3-small | 1536       | $0.02                | Default, cost-effective |
+| text-embedding-3-large | 3072       | $0.13                | Higher accuracy         |
+| text-embedding-ada-002 | 1536       | $0.10                | Legacy model            |
 
 **Recommendation**: Use `text-embedding-3-small` for most applications.
 
@@ -174,6 +174,7 @@ http://localhost:3000/admin/embeddings
 ```
 
 Features:
+
 - Coverage statistics
 - Index health metrics
 - Job management
@@ -229,10 +230,10 @@ curl -X POST http://localhost:3000/api/admin/embeddings/cancel \
 #### Generate Embedding
 
 ```typescript
-import { embeddingService } from '@/lib/ai/embedding-service';
+import { embeddingService } from '@/lib/ai/embedding-service'
 
-const result = await embeddingService.generateEmbedding('Hello, world!');
-console.log(result.embedding); // [0.123, -0.456, ...]
+const result = await embeddingService.generateEmbedding('Hello, world!')
+console.log(result.embedding) // [0.123, -0.456, ...]
 ```
 
 #### Batch Generate
@@ -241,40 +242,40 @@ console.log(result.embedding); // [0.123, -0.456, ...]
 const results = await embeddingService.batchGenerateEmbeddings([
   { text: 'First message', messageId: 'msg-1' },
   { text: 'Second message', messageId: 'msg-2' },
-]);
+])
 
-console.log(results.totalTokens); // 150
-console.log(results.estimatedCost); // 0.000003
+console.log(results.totalTokens) // 150
+console.log(results.estimatedCost) // 0.000003
 ```
 
 #### Search by Similarity
 
 ```typescript
-import { vectorStore } from '@/lib/database/vector-store';
+import { vectorStore } from '@/lib/database/vector-store'
 
 const results = await vectorStore.search(queryEmbedding, {
   threshold: 0.7,
   limit: 10,
   channelId: 'channel-uuid',
-});
+})
 
 for (const result of results) {
-  console.log(`${result.similarity}: ${result.content}`);
+  console.log(`${result.similarity}: ${result.content}`)
 }
 ```
 
 #### Monitor Performance
 
 ```typescript
-import { embeddingMonitor } from '@/lib/ai/embedding-monitor';
+import { embeddingMonitor } from '@/lib/ai/embedding-monitor'
 
 // Get monitoring report
-const report = await embeddingMonitor.getReport(24); // Last 24 hours
+const report = await embeddingMonitor.getReport(24) // Last 24 hours
 
-console.log(`Avg duration: ${report.performance.avgDuration}ms`);
-console.log(`Success rate: ${report.performance.successRate}%`);
-console.log(`Cache hit rate: ${report.cache.hitRate}%`);
-console.log(`Total cost: $${report.cost.totalCost}`);
+console.log(`Avg duration: ${report.performance.avgDuration}ms`)
+console.log(`Success rate: ${report.performance.successRate}%`)
+console.log(`Cache hit rate: ${report.cache.hitRate}%`)
+console.log(`Total cost: $${report.cost.totalCost}`)
 ```
 
 ## Monitoring
@@ -363,16 +364,19 @@ pg_dump -U postgres -d nself_chat \
 ### Embeddings Not Generating
 
 1. Check OpenAI API key:
+
    ```bash
    echo $OPENAI_API_KEY
    ```
 
 2. Check worker status:
+
    ```bash
    ps aux | grep embedding-worker
    ```
 
 3. Check queue:
+
    ```sql
    SELECT COUNT(*) FROM nchat.embedding_queue;
    ```
@@ -388,6 +392,7 @@ pg_dump -U postgres -d nself_chat \
 ### Slow Search Performance
 
 1. Check index usage:
+
    ```sql
    EXPLAIN ANALYZE
    SELECT * FROM nchat.search_messages_by_embedding(
@@ -398,6 +403,7 @@ pg_dump -U postgres -d nself_chat \
    ```
 
 2. Rebuild index:
+
    ```sql
    SELECT nchat.optimize_embedding_index();
    ```
@@ -444,7 +450,7 @@ const results = await vectorStore.search(embedding, {
   threshold: 0.8, // Higher threshold = fewer results
   limit: 10,
   channelId: 'specific-channel', // Filter by channel
-});
+})
 ```
 
 ### Batch Processing
@@ -454,7 +460,7 @@ const results = await vectorStore.search(embedding, {
 const pipeline = new EmbeddingPipeline({
   batchSize: 500, // Larger batches = fewer API calls
   maxConcurrent: 10, // Parallel processing
-});
+})
 ```
 
 ## Security

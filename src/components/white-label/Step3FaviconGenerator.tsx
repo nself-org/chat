@@ -15,13 +15,8 @@ interface Step3FaviconGeneratorProps {
 }
 
 export function Step3FaviconGenerator({ onValidChange, className }: Step3FaviconGeneratorProps) {
-  const {
-    config,
-    updateFavicon,
-    setGeneratedFavicons,
-    setPreviewFavicon,
-    markStepComplete,
-  } = useWhiteLabelStore()
+  const { config, updateFavicon, setGeneratedFavicons, setPreviewFavicon, markStepComplete } =
+    useWhiteLabelStore()
 
   const [faviconSource, setFaviconSource] = useState<string | undefined>(
     config.favicon.original || config.logo.original
@@ -35,41 +30,54 @@ export function Step3FaviconGenerator({ onValidChange, className }: Step3Favicon
     }
   }, [config.logo.original, config.favicon.original, useCustomSource])
 
-  const handleFaviconsGenerated = useCallback((favicons: GeneratedFavicon[]) => {
-    setGeneratedFavicons(favicons)
+  const handleFaviconsGenerated = useCallback(
+    (favicons: GeneratedFavicon[]) => {
+      setGeneratedFavicons(favicons)
 
-    // Store favicon sizes
-    const sizes: Record<string, string> = {}
-    for (const favicon of favicons) {
-      const sizeKey = `${favicon.size}x${favicon.size}` as keyof typeof config.favicon.sizes
-      sizes[sizeKey] = favicon.dataUrl
-    }
+      // Store favicon sizes
+      const sizes: Record<string, string> = {}
+      for (const favicon of favicons) {
+        const sizeKey = `${favicon.size}x${favicon.size}` as keyof typeof config.favicon.sizes
+        sizes[sizeKey] = favicon.dataUrl
+      }
 
-    updateFavicon({
-      original: faviconSource,
-      sizes: sizes as typeof config.favicon.sizes,
-    })
+      updateFavicon({
+        original: faviconSource,
+        sizes: sizes as typeof config.favicon.sizes,
+      })
 
-    // Update preview favicon
-    const favicon32 = favicons.find((f) => f.size === 32)
-    if (favicon32) {
-      setPreviewFavicon(favicon32.dataUrl)
-    }
+      // Update preview favicon
+      const favicon32 = favicons.find((f) => f.size === 32)
+      if (favicon32) {
+        setPreviewFavicon(favicon32.dataUrl)
+      }
 
-    markStepComplete('favicon')
-    onValidChange?.(true)
-  }, [faviconSource, updateFavicon, setGeneratedFavicons, setPreviewFavicon, markStepComplete, onValidChange])
+      markStepComplete('favicon')
+      onValidChange?.(true)
+    },
+    [
+      faviconSource,
+      updateFavicon,
+      setGeneratedFavicons,
+      setPreviewFavicon,
+      markStepComplete,
+      onValidChange,
+    ]
+  )
 
-  const handleCustomSourceUpload = useCallback((dataUrl: string | null) => {
-    if (dataUrl) {
-      setFaviconSource(dataUrl)
-      updateFavicon({ original: dataUrl })
-      setUseCustomSource(true)
-    } else {
-      setFaviconSource(config.logo.original)
-      setUseCustomSource(false)
-    }
-  }, [config.logo.original, updateFavicon])
+  const handleCustomSourceUpload = useCallback(
+    (dataUrl: string | null) => {
+      if (dataUrl) {
+        setFaviconSource(dataUrl)
+        updateFavicon({ original: dataUrl })
+        setUseCustomSource(true)
+      } else {
+        setFaviconSource(config.logo.original)
+        setUseCustomSource(false)
+      }
+    },
+    [config.logo.original, updateFavicon]
+  )
 
   const handleUseLogo = useCallback(() => {
     if (config.logo.original) {
@@ -82,18 +90,16 @@ export function Step3FaviconGenerator({ onValidChange, className }: Step3Favicon
     <div className={cn('space-y-6', className)}>
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center justify-center w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-xl mb-4 shadow-lg">
+        <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-400 to-emerald-600 shadow-lg">
           <Globe className="h-6 w-6 text-white" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
-          Favicon Generator
-        </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">Favicon Generator</h2>
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Generate favicons for all platforms from your logo or upload a custom icon.
         </p>
       </div>
 
-      <div className="max-w-lg mx-auto space-y-6">
+      <div className="mx-auto max-w-lg space-y-6">
         {/* Source selection */}
         <div className="space-y-4">
           <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">
@@ -106,16 +112,16 @@ export function Step3FaviconGenerator({ onValidChange, className }: Step3Favicon
                 type="button"
                 onClick={handleUseLogo}
                 className={cn(
-                  'flex flex-col items-center p-4 rounded-xl border-2 transition-all',
+                  'flex flex-col items-center rounded-xl border-2 p-4 transition-all',
                   !useCustomSource
-                    ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20'
-                    : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
+                    ? 'dark:bg-sky-900/20 border-sky-500 bg-sky-50'
+                    : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600'
                 )}
               >
                 <img
                   src={config.logo.original}
                   alt="Logo"
-                  className="w-12 h-12 object-contain mb-2"
+                  className="mb-2 h-12 w-12 object-contain"
                 />
                 <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                   Use Logo
@@ -126,14 +132,14 @@ export function Step3FaviconGenerator({ onValidChange, className }: Step3Favicon
                 type="button"
                 onClick={() => setUseCustomSource(true)}
                 className={cn(
-                  'flex flex-col items-center p-4 rounded-xl border-2 transition-all',
+                  'flex flex-col items-center rounded-xl border-2 p-4 transition-all',
                   useCustomSource
-                    ? 'border-sky-500 bg-sky-50 dark:bg-sky-900/20'
-                    : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600'
+                    ? 'dark:bg-sky-900/20 border-sky-500 bg-sky-50'
+                    : 'border-zinc-200 hover:border-zinc-300 dark:border-zinc-700 dark:hover:border-zinc-600'
                 )}
               >
-                <div className="w-12 h-12 rounded-lg bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center mb-2">
-                  <Image className="w-6 h-6 text-zinc-400" />
+                <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-zinc-100 dark:bg-zinc-800">
+                  <Image className="h-6 w-6 text-zinc-400" />
                 </div>
                 <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
                   Custom Icon
@@ -141,14 +147,14 @@ export function Step3FaviconGenerator({ onValidChange, className }: Step3Favicon
               </button>
             </div>
           ) : (
-            <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-xl p-4">
+            <div className="rounded-xl border border-yellow-200 bg-yellow-50 p-4 dark:border-yellow-800 dark:bg-yellow-900/20">
               <div className="flex items-start gap-3">
-                <AlertCircle className="h-5 w-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-500" />
                 <div>
                   <p className="text-sm font-medium text-yellow-800 dark:text-yellow-200">
                     No logo uploaded
                   </p>
-                  <p className="text-xs text-yellow-600 dark:text-yellow-400 mt-1">
+                  <p className="mt-1 text-xs text-yellow-600 dark:text-yellow-400">
                     Upload a custom icon below, or go back and add a logo first.
                   </p>
                 </div>
@@ -181,11 +187,11 @@ export function Step3FaviconGenerator({ onValidChange, className }: Step3Favicon
         )}
 
         {/* Info box */}
-        <div className="bg-zinc-50 dark:bg-zinc-800/50 rounded-xl p-4">
-          <h4 className="text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+        <div className="rounded-xl bg-zinc-50 p-4 dark:bg-zinc-800/50">
+          <h4 className="mb-2 text-sm font-medium text-zinc-700 dark:text-zinc-300">
             What's included
           </h4>
-          <ul className="text-xs text-zinc-500 space-y-1 list-disc list-inside">
+          <ul className="list-inside list-disc space-y-1 text-xs text-zinc-500">
             <li>Favicons for browser tabs (16x16, 32x32)</li>
             <li>Apple Touch Icon (180x180)</li>
             <li>Android Chrome icons (192x192, 512x512)</li>

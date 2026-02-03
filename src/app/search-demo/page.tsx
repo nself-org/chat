@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * Search Demo Page
@@ -6,19 +6,15 @@
  * Demonstrates all Smart Search UI v0.7.0 components
  */
 
-import * as React from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import {
-  SearchResultCard,
-  SearchHistory,
-  AdvancedSearchBuilder,
-} from '@/components/search';
-import { SavedSearches } from '@/components/search/SavedSearches';
-import { DateRangePicker } from '@/components/ui/date-range-picker';
-import { SearchAnalytics } from '@/components/admin/search/SearchAnalytics';
-import type { MessageSearchResult } from '@/stores/search-store';
-import type { DateRange } from '@/components/ui/date-range-picker';
+import * as React from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { SearchResultCard, SearchHistory, AdvancedSearchBuilder } from '@/components/search'
+import { SavedSearches } from '@/components/search/SavedSearches'
+import { DateRangePicker } from '@/components/ui/date-range-picker'
+import { SearchAnalytics } from '@/components/admin/search/SearchAnalytics'
+import type { MessageSearchResult } from '@/stores/search-store'
+import type { DateRange } from '@/components/ui/date-range-picker'
 
 // Mock data
 const mockResult: MessageSearchResult = {
@@ -31,7 +27,8 @@ const mockResult: MessageSearchResult = {
   authorId: 'user1',
   authorName: 'Alice Johnson',
   authorAvatar: null,
-  content: 'Here is the project update you were looking for. We have completed the main features and are ready for testing.',
+  content:
+    'Here is the project update you were looking for. We have completed the main features and are ready for testing.',
   timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
   threadId: null,
   isPinned: false,
@@ -41,14 +38,14 @@ const mockResult: MessageSearchResult = {
     { emoji: '🎉', count: 3 },
   ],
   hasAttachments: true,
-};
+}
 
 export default function SearchDemoPage() {
-  const [dateRange, setDateRange] = React.useState<DateRange>({ from: null, to: null });
-  const [query, setQuery] = React.useState('');
+  const [dateRange, setDateRange] = React.useState<DateRange>({ from: null, to: null })
+  const [query, setQuery] = React.useState('')
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto space-y-6 p-6">
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-4xl font-bold tracking-tight">Smart Search UI Demo</h1>
@@ -196,8 +193,8 @@ export default function SearchDemoPage() {
             <CardContent>
               <AdvancedSearchBuilder
                 onChange={(query, parts) => {
-                  console.log('Query:', query);
-                  console.log('Parts:', parts);
+                  // REMOVED: console.log('Query:', query)
+                  // REMOVED: console.log('Parts:', parts)
                 }}
                 onSearch={(query) => console.log('Execute search:', query)}
               />
@@ -234,8 +231,8 @@ export default function SearchDemoPage() {
                 <DateRangePicker
                   value={dateRange}
                   onChange={(range) => {
-                    setDateRange(range);
-                    console.log('Date range:', range);
+                    setDateRange(range)
+                    // REMOVED: console.log('Date range:', range)
                   }}
                   showPresets={true}
                 />
@@ -244,13 +241,9 @@ export default function SearchDemoPage() {
               {dateRange.from && (
                 <div className="rounded-lg border bg-muted p-4">
                   <h4 className="mb-2 font-medium">Selected Range:</h4>
-                  <p className="text-sm">
-                    From: {dateRange.from.toLocaleDateString()}
-                  </p>
+                  <p className="text-sm">From: {dateRange.from.toLocaleDateString()}</p>
                   {dateRange.to && (
-                    <p className="text-sm">
-                      To: {dateRange.to.toLocaleDateString()}
-                    </p>
+                    <p className="text-sm">To: {dateRange.to.toLocaleDateString()}</p>
                   )}
                 </div>
               )}
@@ -351,5 +344,5 @@ export default function SearchDemoPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

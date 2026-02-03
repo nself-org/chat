@@ -1,15 +1,7 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import {
-  MapPin,
-  Navigation,
-  Clock,
-  Radio,
-  Share2,
-  Loader2,
-  ChevronRight,
-} from 'lucide-react'
+import { MapPin, Navigation, Clock, Radio, Share2, Loader2, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -27,6 +19,7 @@ import { LocationPermission } from './LocationPermission'
 import { NearbyPlaces } from './NearbyPlaces'
 import { LiveLocationIndicator } from './LiveLocationIndicator'
 import { StopSharingButton } from './StopSharingButton'
+import { logger } from '@/lib/logger'
 import {
   type Coordinates,
   type Place,
@@ -100,16 +93,14 @@ export function LocationSharing({
       getCurrentPosition()
         .then(setCurrentPosition)
         .catch((error) => {
-          console.error('Failed to get position:', error)
+          logger.error('Failed to get position:',  error)
         })
     }
   }, [hasPermission, isOpen, currentPosition])
 
   const handlePermissionGranted = useCallback(() => {
     setHasPermission(true)
-    getCurrentPosition()
-      .then(setCurrentPosition)
-      .catch(console.error)
+    getCurrentPosition().then(setCurrentPosition).catch(console.error)
   }, [])
 
   const handleShareCurrentLocation = useCallback(async () => {
@@ -219,10 +210,7 @@ export function LocationSharing({
 
         {/* Permission Check */}
         {hasPermission === false && (
-          <LocationPermission
-            onGranted={handlePermissionGranted}
-            variant="card"
-          />
+          <LocationPermission onGranted={handlePermissionGranted} variant="card" />
         )}
 
         {/* Main Content */}
@@ -282,7 +270,7 @@ export function LocationSharing({
 
             {/* Live Location Tab */}
             <TabsContent value="live" className="space-y-4">
-              <div className="rounded-lg border bg-primary/5 p-4">
+              <div className="bg-primary/5 rounded-lg border p-4">
                 <div className="flex items-start gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20">
                     <Radio className="h-5 w-5 text-green-500" />
@@ -290,8 +278,8 @@ export function LocationSharing({
                   <div>
                     <h4 className="font-semibold">Live Location</h4>
                     <p className="text-sm text-muted-foreground">
-                      Share your real-time location that updates automatically.
-                      Others can see where you are as you move.
+                      Share your real-time location that updates automatically. Others can see where
+                      you are as you move.
                     </p>
                   </div>
                 </div>
@@ -299,9 +287,7 @@ export function LocationSharing({
 
               {/* Duration Selection */}
               <div className="space-y-2">
-                <label className="text-sm font-medium">
-                  Share for:
-                </label>
+                <label className="text-sm font-medium">Share for:</label>
                 <LocationDuration
                   value={selectedDuration}
                   onChange={setSelectedDuration}
@@ -341,11 +327,7 @@ export function LocationSharing({
                         <MapPin className="h-4 w-4 text-primary" />
                         <span className="font-medium">{selectedPlace.name}</span>
                       </div>
-                      <Button
-                        size="sm"
-                        onClick={handleShareSelectedPlace}
-                        disabled={isLoading}
-                      >
+                      <Button size="sm" onClick={handleShareSelectedPlace} disabled={isLoading}>
                         {isLoading ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (
@@ -403,10 +385,7 @@ export function LocationShareButton({
       variant={variant}
       size={size}
       onClick={onClick}
-      className={cn(
-        isLiveSharing && 'text-green-500 hover:text-green-600',
-        className
-      )}
+      className={cn(isLiveSharing && 'text-green-500 hover:text-green-600', className)}
     >
       {isLiveSharing ? (
         <>

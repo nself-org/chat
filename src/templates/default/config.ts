@@ -173,16 +173,7 @@ export const defaultTemplate: PlatformTemplate = {
     gifPicker: true,
 
     // Message actions
-    messageActions: [
-      'reply',
-      'react',
-      'thread',
-      'edit',
-      'delete',
-      'pin',
-      'bookmark',
-      'copy',
-    ],
+    messageActions: ['reply', 'react', 'thread', 'edit', 'delete', 'pin', 'bookmark', 'copy'],
     showActionsOnHover: true,
 
     // Real-time

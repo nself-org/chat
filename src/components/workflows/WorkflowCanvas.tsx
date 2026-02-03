@@ -112,7 +112,7 @@ export function WorkflowCanvas({ className }: WorkflowCanvasProps) {
     <div
       ref={canvasRef}
       className={cn(
-        'relative overflow-hidden bg-muted/20',
+        'bg-muted/20 relative overflow-hidden',
         isPanning && 'cursor-grabbing',
         className
       )}
@@ -125,7 +125,7 @@ export function WorkflowCanvas({ className }: WorkflowCanvasProps) {
     >
       {/* Grid background */}
       <svg
-        className="absolute inset-0 w-full h-full pointer-events-none"
+        className="pointer-events-none absolute inset-0 h-full w-full"
         style={{
           backgroundImage: `
             radial-gradient(circle, hsl(var(--muted-foreground) / 0.15) 1px, transparent 1px)
@@ -135,16 +135,10 @@ export function WorkflowCanvas({ className }: WorkflowCanvasProps) {
         }}
       >
         {/* Edges */}
-        <g
-          transform={`translate(${canvas.pan.x}, ${canvas.pan.y}) scale(${canvas.zoom})`}
-        >
+        <g transform={`translate(${canvas.pan.x}, ${canvas.pan.y}) scale(${canvas.zoom})`}>
           {workflow.edges.map((edge) => {
-            const sourceStep = workflow.steps.find(
-              (s) => s.id === edge.sourceId
-            )
-            const targetStep = workflow.steps.find(
-              (s) => s.id === edge.targetId
-            )
+            const sourceStep = workflow.steps.find((s) => s.id === edge.sourceId)
+            const targetStep = workflow.steps.find((s) => s.id === edge.targetId)
 
             if (!sourceStep || !targetStep) return null
 
@@ -168,9 +162,7 @@ export function WorkflowCanvas({ className }: WorkflowCanvasProps) {
           {/* Connection line being drawn */}
           {isConnecting && connectionStart && (
             <ConnectionLine
-              startStep={workflow.steps.find(
-                (s) => s.id === connectionStart.stepId
-              )}
+              startStep={workflow.steps.find((s) => s.id === connectionStart.stepId)}
               canvasRef={canvasRef}
               zoom={canvas.zoom}
               pan={canvas.pan}
@@ -197,7 +189,7 @@ export function WorkflowCanvas({ className }: WorkflowCanvasProps) {
       </div>
 
       {/* Zoom indicator */}
-      <div className="absolute bottom-4 right-4 px-2 py-1 rounded bg-card/80 text-xs text-muted-foreground">
+      <div className="bg-card/80 absolute bottom-4 right-4 rounded px-2 py-1 text-xs text-muted-foreground">
         {Math.round(canvas.zoom * 100)}%
       </div>
     </div>

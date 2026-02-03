@@ -1,30 +1,26 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { X, Filter, ChevronDown } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import * as React from 'react'
+import { X, Filter, ChevronDown } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
-import { useAppDirectoryStore, selectHasActiveFilters } from '@/stores/app-directory-store';
-import type { AppType, AppPricing } from '@/lib/app-directory/app-types';
+} from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { useAppDirectoryStore, selectHasActiveFilters } from '@/stores/app-directory-store'
+import type { AppType, AppPricing } from '@/lib/app-directory/app-types'
 
 interface AppFiltersProps {
-  className?: string;
+  className?: string
 }
 
 const APP_TYPES: { value: AppType; label: string }[] = [
@@ -32,64 +28,64 @@ const APP_TYPES: { value: AppType; label: string }[] = [
   { value: 'integration', label: 'Integrations' },
   { value: 'plugin', label: 'Plugins' },
   { value: 'workflow', label: 'Workflows' },
-];
+]
 
 const PRICING_OPTIONS: { value: AppPricing; label: string }[] = [
   { value: 'free', label: 'Free' },
   { value: 'freemium', label: 'Freemium' },
   { value: 'paid', label: 'Paid' },
-];
+]
 
 const RATING_OPTIONS = [
   { value: 4, label: '4 stars & up' },
   { value: 3, label: '3 stars & up' },
   { value: 2, label: '2 stars & up' },
-];
+]
 
 export function AppFilters({ className }: AppFiltersProps) {
-  const { searchFilters, setSearchFilters, resetSearchFilters } = useAppDirectoryStore();
-  const hasActiveFilters = useAppDirectoryStore(selectHasActiveFilters);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const { searchFilters, setSearchFilters, resetSearchFilters } = useAppDirectoryStore()
+  const hasActiveFilters = useAppDirectoryStore(selectHasActiveFilters)
+  const [isOpen, setIsOpen] = React.useState(false)
 
   const activeFilterCount =
     searchFilters.types.length +
     searchFilters.pricing.length +
     (searchFilters.minRating > 0 ? 1 : 0) +
     (searchFilters.verified ? 1 : 0) +
-    (searchFilters.featured ? 1 : 0);
+    (searchFilters.featured ? 1 : 0)
 
   const handleTypeToggle = (type: AppType) => {
     const newTypes = searchFilters.types.includes(type)
       ? searchFilters.types.filter((t) => t !== type)
-      : [...searchFilters.types, type];
-    setSearchFilters({ types: newTypes });
-  };
+      : [...searchFilters.types, type]
+    setSearchFilters({ types: newTypes })
+  }
 
   const handlePricingToggle = (pricing: AppPricing) => {
     const newPricing = searchFilters.pricing.includes(pricing)
       ? searchFilters.pricing.filter((p) => p !== pricing)
-      : [...searchFilters.pricing, pricing];
-    setSearchFilters({ pricing: newPricing });
-  };
+      : [...searchFilters.pricing, pricing]
+    setSearchFilters({ pricing: newPricing })
+  }
 
   const handleRatingChange = (value: string) => {
-    setSearchFilters({ minRating: value === 'any' ? 0 : parseInt(value) });
-  };
+    setSearchFilters({ minRating: value === 'any' ? 0 : parseInt(value) })
+  }
 
   return (
-    <div className={cn('flex items-center gap-2 flex-wrap', className)}>
+    <div className={cn('flex flex-wrap items-center gap-2', className)}>
       {/* Filter Button with Popover */}
       <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button variant="outline" size="sm" className="gap-2">
-            <Filter className="w-4 h-4" />
+            <Filter className="h-4 w-4" />
             Filters
             {activeFilterCount > 0 && (
               <Badge variant="secondary" className="ml-1 h-5 px-1.5">
                 {activeFilterCount}
               </Badge>
             )}
-            <ChevronDown className="w-4 h-4" />
+            <ChevronDown className="h-4 w-4" />
           </Button>
         </PopoverTrigger>
         <PopoverContent className="w-80" align="start">
@@ -175,7 +171,7 @@ export function AppFilters({ className }: AppFiltersProps) {
             <div className="space-y-3">
               <Label className="text-sm font-medium">Additional</Label>
               <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2">
                   <input
                     type="checkbox"
                     checked={searchFilters.verified}
@@ -184,7 +180,7 @@ export function AppFilters({ className }: AppFiltersProps) {
                   />
                   <span className="text-sm">Verified apps only</span>
                 </label>
-                <label className="flex items-center gap-2 cursor-pointer">
+                <label className="flex cursor-pointer items-center gap-2">
                   <input
                     type="checkbox"
                     checked={searchFilters.featured}
@@ -223,16 +219,10 @@ export function AppFilters({ className }: AppFiltersProps) {
             />
           )}
           {searchFilters.verified && (
-            <FilterPill
-              label="Verified"
-              onRemove={() => setSearchFilters({ verified: false })}
-            />
+            <FilterPill label="Verified" onRemove={() => setSearchFilters({ verified: false })} />
           )}
           {searchFilters.featured && (
-            <FilterPill
-              label="Featured"
-              onRemove={() => setSearchFilters({ featured: false })}
-            />
+            <FilterPill label="Featured" onRemove={() => setSearchFilters({ featured: false })} />
           )}
           <Button
             variant="ghost"
@@ -245,24 +235,21 @@ export function AppFilters({ className }: AppFiltersProps) {
         </>
       )}
     </div>
-  );
+  )
 }
 
 interface FilterPillProps {
-  label: string;
-  onRemove: () => void;
+  label: string
+  onRemove: () => void
 }
 
 function FilterPill({ label, onRemove }: FilterPillProps) {
   return (
     <Badge variant="secondary" className="gap-1 pr-1">
       {label}
-      <button
-        onClick={onRemove}
-        className="ml-1 rounded-full p-0.5 hover:bg-muted-foreground/20"
-      >
-        <X className="w-3 h-3" />
+      <button onClick={onRemove} className="hover:bg-muted-foreground/20 ml-1 rounded-full p-0.5">
+        <X className="h-3 w-3" />
       </button>
     </Badge>
-  );
+  )
 }

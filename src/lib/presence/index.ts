@@ -5,29 +5,25 @@
  */
 
 // Types
-export * from './presence-types';
+export * from './presence-types'
 
 // Utilities
-export { IdleDetector, getIdleDetector, destroyIdleDetector } from './idle-detector';
+export { IdleDetector, getIdleDetector, destroyIdleDetector } from './idle-detector'
 export {
   TypingTracker,
   getTypingTracker,
   destroyTypingTracker,
   getTypingText,
-} from './typing-tracker';
-export {
-  PresenceTracker,
-  getPresenceTracker,
-  destroyPresenceTracker,
-} from './presence-tracker';
+} from './typing-tracker'
+export { PresenceTracker, getPresenceTracker, destroyPresenceTracker } from './presence-tracker'
 export {
   PresenceBroadcaster,
   getPresenceBroadcaster,
   destroyPresenceBroadcaster,
-} from './presence-broadcaster';
+} from './presence-broadcaster'
 export {
   PresenceManager,
   initializePresenceManager,
   getPresenceManager,
   destroyPresenceManager,
-} from './presence-manager';
+} from './presence-manager'

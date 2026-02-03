@@ -8,39 +8,39 @@
 // ============================================================================
 
 export interface LazyLoadOptions {
-  rootMargin?: string;
-  threshold?: number | number[];
-  placeholder?: string;
-  errorImage?: string;
-  fadeInDuration?: number;
-  onLoad?: (element: HTMLImageElement) => void;
-  onError?: (element: HTMLImageElement) => void;
+  rootMargin?: string
+  threshold?: number | number[]
+  placeholder?: string
+  errorImage?: string
+  fadeInDuration?: number
+  onLoad?: (element: HTMLImageElement) => void
+  onError?: (element: HTMLImageElement) => void
 }
 
 export interface ProgressiveImageOptions extends LazyLoadOptions {
-  lowQualityPlaceholder?: string; // LQIP (Low Quality Image Placeholder)
-  blurAmount?: number;
-  transitionDuration?: number;
+  lowQualityPlaceholder?: string // LQIP (Low Quality Image Placeholder)
+  blurAmount?: number
+  transitionDuration?: number
 }
 
 // ============================================================================
 // Constants
 // ============================================================================
 
-const DEFAULT_ROOT_MARGIN = '50px';
-const DEFAULT_THRESHOLD = 0.01;
-const DEFAULT_FADE_DURATION = 300;
-const DEFAULT_BLUR_AMOUNT = 10;
-const DEFAULT_TRANSITION_DURATION = 300;
+const DEFAULT_ROOT_MARGIN = '50px'
+const DEFAULT_THRESHOLD = 0.01
+const DEFAULT_FADE_DURATION = 300
+const DEFAULT_BLUR_AMOUNT = 10
+const DEFAULT_TRANSITION_DURATION = 300
 
 // ============================================================================
 // Lazy Loading Manager
 // ============================================================================
 
 class LazyImageLoader {
-  private observer: IntersectionObserver | null = null;
-  private images: Set<HTMLImageElement> = new Set();
-  private options: LazyLoadOptions;
+  private observer: IntersectionObserver | null = null
+  private images: Set<HTMLImageElement> = new Set()
+  private options: LazyLoadOptions
 
   constructor(options: LazyLoadOptions = {}) {
     this.options = {
@@ -48,9 +48,9 @@ class LazyImageLoader {
       threshold: options.threshold || DEFAULT_THRESHOLD,
       fadeInDuration: options.fadeInDuration || DEFAULT_FADE_DURATION,
       ...options,
-    };
+    }
 
-    this.init();
+    this.init()
   }
 
   /**
@@ -58,23 +58,23 @@ class LazyImageLoader {
    */
   private init(): void {
     if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
-      return;
+      return
     }
 
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const img = entry.target as HTMLImageElement;
-            this.loadImage(img);
+            const img = entry.target as HTMLImageElement
+            this.loadImage(img)
           }
-        });
+        })
       },
       {
         rootMargin: this.options.rootMargin,
         threshold: this.options.threshold,
       }
-    );
+    )
   }
 
   /**
@@ -83,12 +83,12 @@ class LazyImageLoader {
   observe(img: HTMLImageElement): void {
     if (!this.observer) {
       // Fallback: load immediately if IntersectionObserver not supported
-      this.loadImage(img);
-      return;
+      this.loadImage(img)
+      return
     }
 
-    this.images.add(img);
-    this.observer.observe(img);
+    this.images.add(img)
+    this.observer.observe(img)
   }
 
   /**
@@ -96,61 +96,61 @@ class LazyImageLoader {
    */
   unobserve(img: HTMLImageElement): void {
     if (this.observer) {
-      this.observer.unobserve(img);
+      this.observer.unobserve(img)
     }
-    this.images.delete(img);
+    this.images.delete(img)
   }
 
   /**
    * Load an image
    */
   private loadImage(img: HTMLImageElement): void {
-    const src = img.dataset.src;
-    const srcset = img.dataset.srcset;
+    const src = img.dataset.src
+    const srcset = img.dataset.srcset
 
-    if (!src) return;
+    if (!src) return
 
     // Set loading state
-    img.classList.add('lazy-loading');
+    img.classList.add('lazy-loading')
 
-    const tempImg = new Image();
+    const tempImg = new Image()
 
     tempImg.onload = () => {
-      img.src = src;
+      img.src = src
       if (srcset) {
-        img.srcset = srcset;
+        img.srcset = srcset
       }
 
-      img.classList.remove('lazy-loading');
-      img.classList.add('lazy-loaded');
+      img.classList.remove('lazy-loading')
+      img.classList.add('lazy-loaded')
 
       // Apply fade-in effect
       if (this.options.fadeInDuration && this.options.fadeInDuration > 0) {
-        img.style.opacity = '0';
-        img.style.transition = `opacity ${this.options.fadeInDuration}ms ease-in`;
+        img.style.opacity = '0'
+        img.style.transition = `opacity ${this.options.fadeInDuration}ms ease-in`
 
         setTimeout(() => {
-          img.style.opacity = '1';
-        }, 10);
+          img.style.opacity = '1'
+        }, 10)
       }
 
-      this.options.onLoad?.(img);
-      this.unobserve(img);
-    };
+      this.options.onLoad?.(img)
+      this.unobserve(img)
+    }
 
     tempImg.onerror = () => {
-      img.classList.remove('lazy-loading');
-      img.classList.add('lazy-error');
+      img.classList.remove('lazy-loading')
+      img.classList.add('lazy-error')
 
       if (this.options.errorImage) {
-        img.src = this.options.errorImage;
+        img.src = this.options.errorImage
       }
 
-      this.options.onError?.(img);
-      this.unobserve(img);
-    };
+      this.options.onError?.(img)
+      this.unobserve(img)
+    }
 
-    tempImg.src = src;
+    tempImg.src = src
   }
 
   /**
@@ -158,10 +158,10 @@ class LazyImageLoader {
    */
   disconnect(): void {
     if (this.observer) {
-      this.observer.disconnect();
-      this.observer = null;
+      this.observer.disconnect()
+      this.observer = null
     }
-    this.images.clear();
+    this.images.clear()
   }
 }
 
@@ -170,9 +170,9 @@ class LazyImageLoader {
 // ============================================================================
 
 class ProgressiveImageLoader {
-  private observer: IntersectionObserver | null = null;
-  private images: Set<HTMLImageElement> = new Set();
-  private options: ProgressiveImageOptions;
+  private observer: IntersectionObserver | null = null
+  private images: Set<HTMLImageElement> = new Set()
+  private options: ProgressiveImageOptions
 
   constructor(options: ProgressiveImageOptions = {}) {
     this.options = {
@@ -181,9 +181,9 @@ class ProgressiveImageLoader {
       blurAmount: options.blurAmount || DEFAULT_BLUR_AMOUNT,
       transitionDuration: options.transitionDuration || DEFAULT_TRANSITION_DURATION,
       ...options,
-    };
+    }
 
-    this.init();
+    this.init()
   }
 
   /**
@@ -191,23 +191,23 @@ class ProgressiveImageLoader {
    */
   private init(): void {
     if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
-      return;
+      return
     }
 
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const img = entry.target as HTMLImageElement;
-            this.loadHighResImage(img);
+            const img = entry.target as HTMLImageElement
+            this.loadHighResImage(img)
           }
-        });
+        })
       },
       {
         rootMargin: this.options.rootMargin,
         threshold: this.options.threshold,
       }
-    );
+    )
   }
 
   /**
@@ -215,20 +215,20 @@ class ProgressiveImageLoader {
    */
   observe(img: HTMLImageElement): void {
     if (!this.observer) {
-      this.loadHighResImage(img);
-      return;
+      this.loadHighResImage(img)
+      return
     }
 
     // Load low-quality placeholder immediately
-    const lqip = img.dataset.lqip || this.options.lowQualityPlaceholder;
+    const lqip = img.dataset.lqip || this.options.lowQualityPlaceholder
     if (lqip && !img.src) {
-      img.src = lqip;
-      img.style.filter = `blur(${this.options.blurAmount}px)`;
-      img.style.transform = 'scale(1.1)'; // Slightly scale up to hide blur edges
+      img.src = lqip
+      img.style.filter = `blur(${this.options.blurAmount}px)`
+      img.style.transform = 'scale(1.1)' // Slightly scale up to hide blur edges
     }
 
-    this.images.add(img);
-    this.observer.observe(img);
+    this.images.add(img)
+    this.observer.observe(img)
   }
 
   /**
@@ -236,56 +236,56 @@ class ProgressiveImageLoader {
    */
   unobserve(img: HTMLImageElement): void {
     if (this.observer) {
-      this.observer.unobserve(img);
+      this.observer.unobserve(img)
     }
-    this.images.delete(img);
+    this.images.delete(img)
   }
 
   /**
    * Load high-resolution image
    */
   private loadHighResImage(img: HTMLImageElement): void {
-    const src = img.dataset.src;
-    const srcset = img.dataset.srcset;
+    const src = img.dataset.src
+    const srcset = img.dataset.srcset
 
-    if (!src) return;
+    if (!src) return
 
-    const tempImg = new Image();
+    const tempImg = new Image()
 
     tempImg.onload = () => {
       // Create transition
-      img.style.transition = `filter ${this.options.transitionDuration}ms ease-out, transform ${this.options.transitionDuration}ms ease-out`;
+      img.style.transition = `filter ${this.options.transitionDuration}ms ease-out, transform ${this.options.transitionDuration}ms ease-out`
 
       // Update source
-      img.src = src;
+      img.src = src
       if (srcset) {
-        img.srcset = srcset;
+        img.srcset = srcset
       }
 
       // Remove blur
-      img.style.filter = 'blur(0px)';
-      img.style.transform = 'scale(1)';
+      img.style.filter = 'blur(0px)'
+      img.style.transform = 'scale(1)'
 
-      img.classList.add('progressive-loaded');
+      img.classList.add('progressive-loaded')
 
-      this.options.onLoad?.(img);
-      this.unobserve(img);
-    };
+      this.options.onLoad?.(img)
+      this.unobserve(img)
+    }
 
     tempImg.onerror = () => {
-      img.classList.add('progressive-error');
+      img.classList.add('progressive-error')
 
       if (this.options.errorImage) {
-        img.src = this.options.errorImage;
-        img.style.filter = 'blur(0px)';
-        img.style.transform = 'scale(1)';
+        img.src = this.options.errorImage
+        img.style.filter = 'blur(0px)'
+        img.style.transform = 'scale(1)'
       }
 
-      this.options.onError?.(img);
-      this.unobserve(img);
-    };
+      this.options.onError?.(img)
+      this.unobserve(img)
+    }
 
-    tempImg.src = src;
+    tempImg.src = src
   }
 
   /**
@@ -293,10 +293,10 @@ class ProgressiveImageLoader {
    */
   disconnect(): void {
     if (this.observer) {
-      this.observer.disconnect();
-      this.observer = null;
+      this.observer.disconnect()
+      this.observer = null
     }
-    this.images.clear();
+    this.images.clear()
   }
 }
 
@@ -313,36 +313,36 @@ export async function generateLQIP(
   quality: number = 0.1
 ): Promise<string> {
   return new Promise((resolve, reject) => {
-    const img = new Image();
-    const url = URL.createObjectURL(imageFile);
+    const img = new Image()
+    const url = URL.createObjectURL(imageFile)
 
     img.onload = () => {
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url)
 
-      const canvas = document.createElement('canvas');
-      const aspectRatio = img.width / img.height;
-      const height = Math.round(width / aspectRatio);
+      const canvas = document.createElement('canvas')
+      const aspectRatio = img.width / img.height
+      const height = Math.round(width / aspectRatio)
 
-      canvas.width = width;
-      canvas.height = height;
+      canvas.width = width
+      canvas.height = height
 
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d')
       if (!ctx) {
-        reject(new Error('Failed to get canvas context'));
-        return;
+        reject(new Error('Failed to get canvas context'))
+        return
       }
 
-      ctx.drawImage(img, 0, 0, width, height);
-      resolve(canvas.toDataURL('image/jpeg', quality));
-    };
+      ctx.drawImage(img, 0, 0, width, height)
+      resolve(canvas.toDataURL('image/jpeg', quality))
+    }
 
     img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Failed to load image'));
-    };
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to load image'))
+    }
 
-    img.src = url;
-  });
+    img.src = url
+  })
 }
 
 /**
@@ -352,23 +352,20 @@ export function preloadImages(urls: string[]): Promise<void[]> {
   return Promise.all(
     urls.map((url) => {
       return new Promise<void>((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve();
-        img.onerror = () => resolve(); // Resolve even on error
-        img.src = url;
-      });
+        const img = new Image()
+        img.onload = () => resolve()
+        img.onerror = () => resolve() // Resolve even on error
+        img.src = url
+      })
     })
-  );
+  )
 }
 
 /**
  * Check if IntersectionObserver is supported
  */
 export function isIntersectionObserverSupported(): boolean {
-  return (
-    typeof window !== 'undefined' &&
-    'IntersectionObserver' in window
-  );
+  return typeof window !== 'undefined' && 'IntersectionObserver' in window
 }
 
 /**
@@ -379,17 +376,17 @@ export function createBlurPlaceholder(
   height: number,
   color: string = '#e5e7eb'
 ): string {
-  const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
+  const canvas = document.createElement('canvas')
+  canvas.width = width
+  canvas.height = height
 
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return '';
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return ''
 
-  ctx.fillStyle = color;
-  ctx.fillRect(0, 0, width, height);
+  ctx.fillStyle = color
+  ctx.fillRect(0, 0, width, height)
 
-  return canvas.toDataURL('image/png');
+  return canvas.toDataURL('image/png')
 }
 
 // ============================================================================
@@ -397,17 +394,17 @@ export function createBlurPlaceholder(
 // ============================================================================
 
 // Create singleton instances
-let lazyLoader: LazyImageLoader | null = null;
-let progressiveLoader: ProgressiveImageLoader | null = null;
+let lazyLoader: LazyImageLoader | null = null
+let progressiveLoader: ProgressiveImageLoader | null = null
 
 /**
  * Get or create lazy loader instance
  */
 export function getLazyLoader(options?: LazyLoadOptions): LazyImageLoader {
   if (!lazyLoader) {
-    lazyLoader = new LazyImageLoader(options);
+    lazyLoader = new LazyImageLoader(options)
   }
-  return lazyLoader;
+  return lazyLoader
 }
 
 /**
@@ -415,9 +412,9 @@ export function getLazyLoader(options?: LazyLoadOptions): LazyImageLoader {
  */
 export function getProgressiveLoader(options?: ProgressiveImageOptions): ProgressiveImageLoader {
   if (!progressiveLoader) {
-    progressiveLoader = new ProgressiveImageLoader(options);
+    progressiveLoader = new ProgressiveImageLoader(options)
   }
-  return progressiveLoader;
+  return progressiveLoader
 }
 
 /**
@@ -425,14 +422,14 @@ export function getProgressiveLoader(options?: ProgressiveImageOptions): Progres
  */
 export function cleanup(): void {
   if (lazyLoader) {
-    lazyLoader.disconnect();
-    lazyLoader = null;
+    lazyLoader.disconnect()
+    lazyLoader = null
   }
   if (progressiveLoader) {
-    progressiveLoader.disconnect();
-    progressiveLoader = null;
+    progressiveLoader.disconnect()
+    progressiveLoader = null
   }
 }
 
 // Export classes for custom usage
-export { LazyImageLoader, ProgressiveImageLoader };
+export { LazyImageLoader, ProgressiveImageLoader }

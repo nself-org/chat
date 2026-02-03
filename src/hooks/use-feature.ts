@@ -40,10 +40,7 @@ export interface UseFeatureReturn {
    * @param feature - Optional specific feature within the category
    * @returns boolean indicating if the feature/category is enabled
    */
-  isEnabled: <C extends FeatureCategory>(
-    category: C,
-    feature?: keyof FeatureFlags[C]
-  ) => boolean
+  isEnabled: <C extends FeatureCategory>(category: C, feature?: keyof FeatureFlags[C]) => boolean
 
   /**
    * The complete feature flags object
@@ -86,10 +83,8 @@ export function useFeature(): UseFeatureReturn {
   }, [config?.features])
 
   return {
-    isEnabled: <C extends FeatureCategory>(
-      category: C,
-      feature?: keyof FeatureFlags[C]
-    ) => featureService.isEnabled(category, feature),
+    isEnabled: <C extends FeatureCategory>(category: C, feature?: keyof FeatureFlags[C]) =>
+      featureService.isEnabled(category, feature),
     flags: featureService.getFlags(),
   }
 }
@@ -139,9 +134,7 @@ export function useFeatureEnabled<C extends FeatureCategory>(
  * }
  * ```
  */
-export function useCategoryFlags<C extends FeatureCategory>(
-  category: C
-): FeatureFlags[C] {
+export function useCategoryFlags<C extends FeatureCategory>(category: C): FeatureFlags[C] {
   const { flags } = useFeature()
   return flags[category]
 }

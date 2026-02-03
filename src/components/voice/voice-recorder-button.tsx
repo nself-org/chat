@@ -20,12 +20,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Mic, MicOff, AlertCircle, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button, type ButtonProps } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   checkMicrophonePermission,
   requestMicrophonePermission,
@@ -37,9 +32,17 @@ import {
 // TYPES
 // ============================================================================
 
-export type RecorderButtonState = 'idle' | 'permission-prompt' | 'permission-denied' | 'recording' | 'unsupported'
+export type RecorderButtonState =
+  | 'idle'
+  | 'permission-prompt'
+  | 'permission-denied'
+  | 'recording'
+  | 'unsupported'
 
-export interface VoiceRecorderButtonProps extends Omit<ButtonProps, 'onClick' | 'onMouseDown' | 'onMouseUp' | 'onTouchStart' | 'onTouchEnd'> {
+export interface VoiceRecorderButtonProps extends Omit<
+  ButtonProps,
+  'onClick' | 'onMouseDown' | 'onMouseUp' | 'onTouchStart' | 'onTouchEnd'
+> {
   /** Current recording state from parent */
   isRecording?: boolean
   /** Whether recording is disabled */
@@ -253,7 +256,9 @@ export const VoiceRecorderButton = memo(function VoiceRecorderButton({
   // Get icon
   const getIcon = () => {
     if (!isSupported || permission?.state === 'denied') {
-      return <MicOff className="text-muted-foreground" style={{ width: iconSize, height: iconSize }} />
+      return (
+        <MicOff className="text-muted-foreground" style={{ width: iconSize, height: iconSize }} />
+      )
     }
     if (isCheckingPermission) {
       return <Loader2 className="animate-spin" style={{ width: iconSize, height: iconSize }} />
@@ -415,10 +420,7 @@ export const FloatingVoiceButton = memo(function FloatingVoiceButton({
     >
       <AnimatedVoiceRecorderButton
         size="lg"
-        className={cn(
-          'h-14 w-14 rounded-full shadow-lg',
-          className
-        )}
+        className={cn('h-14 w-14 rounded-full shadow-lg', className)}
         {...props}
       />
     </div>

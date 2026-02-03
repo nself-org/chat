@@ -143,11 +143,7 @@ await sentryMobile.captureMessage('Something happened', 'info', {
 })
 
 // Add breadcrumb
-await sentryMobile.addBreadcrumb(
-  'navigation',
-  'User navigated to settings',
-  { screen: 'settings' }
-)
+await sentryMobile.addBreadcrumb('navigation', 'User navigated to settings', { screen: 'settings' })
 ```
 
 ## Environment Variables

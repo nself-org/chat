@@ -1,63 +1,58 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import type { UserPresence, PresenceStatus } from '@/lib/presence/presence-types';
-import { getPresenceLabel, isActiveStatus } from '@/lib/presence/presence-types';
-import { PresenceIndicator } from './PresenceIndicator';
-import { CustomStatus as CustomStatusDisplay } from './CustomStatus';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import type { UserPresence, PresenceStatus } from '@/lib/presence/presence-types'
+import { getPresenceLabel, isActiveStatus } from '@/lib/presence/presence-types'
+import { PresenceIndicator } from './PresenceIndicator'
+import { CustomStatus as CustomStatusDisplay } from './CustomStatus'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface OnlineUserItem {
-  id: string;
-  displayName: string;
-  avatarUrl?: string;
-  status: PresenceStatus;
+  id: string
+  displayName: string
+  avatarUrl?: string
+  status: PresenceStatus
   customStatus?: {
-    emoji?: string;
-    text?: string;
-    expiresAt?: Date | null;
-  };
-  lastSeenAt?: Date;
+    emoji?: string
+    text?: string
+    expiresAt?: Date | null
+  }
+  lastSeenAt?: Date
 }
 
 export interface OnlineUsersProps {
   /**
    * List of users to display
    */
-  users: OnlineUserItem[];
+  users: OnlineUserItem[]
 
   /**
    * Callback when a user is clicked
    */
-  onUserClick?: (userId: string) => void;
+  onUserClick?: (userId: string) => void
 
   /**
    * Whether to show offline users
    * @default false
    */
-  showOffline?: boolean;
+  showOffline?: boolean
 
   /**
    * Maximum height of the list
    */
-  maxHeight?: string | number;
+  maxHeight?: string | number
 
   /**
    * Additional class names
    */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -73,10 +68,10 @@ export function OnlineUsers({
 }: OnlineUsersProps) {
   // Filter and sort users
   const filteredUsers = React.useMemo(() => {
-    let result = users;
+    let result = users
 
     if (!showOffline) {
-      result = result.filter((u) => isActiveStatus(u.status));
+      result = result.filter((u) => isActiveStatus(u.status))
     }
 
     // Sort: online first, then away, then dnd, then offline
@@ -86,45 +81,45 @@ export function OnlineUsers({
       dnd: 2,
       invisible: 3,
       offline: 4,
-    };
+    }
 
     return result.sort((a, b) => {
-      const orderDiff = statusOrder[a.status] - statusOrder[b.status];
-      if (orderDiff !== 0) return orderDiff;
-      return a.displayName.localeCompare(b.displayName);
-    });
-  }, [users, showOffline]);
+      const orderDiff = statusOrder[a.status] - statusOrder[b.status]
+      if (orderDiff !== 0) return orderDiff
+      return a.displayName.localeCompare(b.displayName)
+    })
+  }, [users, showOffline])
 
   // Group by status
   const grouped = React.useMemo(() => {
-    const groups: Record<string, OnlineUserItem[]> = {};
+    const groups: Record<string, OnlineUserItem[]> = {}
 
     filteredUsers.forEach((user) => {
-      const key = user.status === 'online' ? 'online' : user.status;
+      const key = user.status === 'online' ? 'online' : user.status
       if (!groups[key]) {
-        groups[key] = [];
+        groups[key] = []
       }
-      groups[key].push(user);
-    });
+      groups[key].push(user)
+    })
 
-    return groups;
-  }, [filteredUsers]);
+    return groups
+  }, [filteredUsers])
 
   if (filteredUsers.length === 0) {
     return (
       <div className={cn('p-4 text-center text-sm text-muted-foreground', className)}>
         No users online
       </div>
-    );
+    )
   }
 
   return (
     <ScrollArea style={{ maxHeight }} className={cn('w-full', className)}>
-      <div className="p-2 space-y-4">
+      <div className="space-y-4 p-2">
         {Object.entries(grouped).map(([status, groupUsers]) => (
           <div key={status}>
             {/* Group header */}
-            <div className="px-2 py-1 text-xs font-medium text-muted-foreground uppercase tracking-wider">
+            <div className="px-2 py-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
               {getPresenceLabel(status as PresenceStatus)} — {groupUsers.length}
             </div>
 
@@ -142,7 +137,7 @@ export function OnlineUsers({
         ))}
       </div>
     </ScrollArea>
-  );
+  )
 }
 
 // ============================================================================
@@ -150,8 +145,8 @@ export function OnlineUsers({
 // ============================================================================
 
 interface OnlineUserListItemProps {
-  user: OnlineUserItem;
-  onClick?: () => void;
+  user: OnlineUserItem
+  onClick?: () => void
 }
 
 function OnlineUserListItem({ user, onClick }: OnlineUserListItemProps) {
@@ -159,8 +154,8 @@ function OnlineUserListItem({ user, onClick }: OnlineUserListItemProps) {
     <button
       onClick={onClick}
       className={cn(
-        'flex items-center gap-3 w-full px-2 py-1.5 rounded-md',
-        'hover:bg-muted/50 transition-colors text-left'
+        'flex w-full items-center gap-3 rounded-md px-2 py-1.5',
+        'hover:bg-muted/50 text-left transition-colors'
       )}
     >
       {/* Avatar with presence indicator */}
@@ -171,26 +166,18 @@ function OnlineUserListItem({ user, onClick }: OnlineUserListItemProps) {
             {user.displayName.charAt(0).toUpperCase()}
           </AvatarFallback>
         </Avatar>
-        <PresenceIndicator
-          status={user.status}
-          size="sm"
-          position="bottom-right"
-        />
+        <PresenceIndicator status={user.status} size="sm" position="bottom-right" />
       </div>
 
       {/* User info */}
-      <div className="flex-1 min-w-0">
-        <div className="text-sm font-medium truncate">{user.displayName}</div>
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium">{user.displayName}</div>
         {user.customStatus && (user.customStatus.emoji || user.customStatus.text) && (
-          <CustomStatusDisplay
-            status={user.customStatus}
-            size="sm"
-            showExpiration={false}
-          />
+          <CustomStatusDisplay status={user.customStatus} size="sm" showExpiration={false} />
         )}
       </div>
     </button>
-  );
+  )
 }
 
 // ============================================================================
@@ -198,8 +185,8 @@ function OnlineUserListItem({ user, onClick }: OnlineUserListItemProps) {
 // ============================================================================
 
 export interface OnlineUsersCountProps {
-  count: number;
-  className?: string;
+  count: number
+  className?: string
 }
 
 export function OnlineUsersCount({ count, className }: OnlineUsersCountProps) {
@@ -207,7 +194,7 @@ export function OnlineUsersCount({ count, className }: OnlineUsersCountProps) {
     <span className={cn('text-sm text-muted-foreground', className)}>
       {count} {count === 1 ? 'member' : 'members'} online
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -215,11 +202,11 @@ export function OnlineUsersCount({ count, className }: OnlineUsersCountProps) {
 // ============================================================================
 
 export interface OnlineUsersAvatarsProps {
-  users: OnlineUserItem[];
-  maxDisplay?: number;
-  size?: 'sm' | 'md' | 'lg';
-  onUserClick?: (userId: string) => void;
-  className?: string;
+  users: OnlineUserItem[]
+  maxDisplay?: number
+  size?: 'sm' | 'md' | 'lg'
+  onUserClick?: (userId: string) => void
+  className?: string
 }
 
 export function OnlineUsersAvatars({
@@ -229,20 +216,20 @@ export function OnlineUsersAvatars({
   onUserClick,
   className,
 }: OnlineUsersAvatarsProps) {
-  const displayedUsers = users.slice(0, maxDisplay);
-  const remainingCount = Math.max(0, users.length - maxDisplay);
+  const displayedUsers = users.slice(0, maxDisplay)
+  const remainingCount = Math.max(0, users.length - maxDisplay)
 
   const sizeClasses = {
     sm: 'h-6 w-6',
     md: 'h-8 w-8',
     lg: 'h-10 w-10',
-  };
+  }
 
   const indicatorSizes = {
     sm: 'xs' as const,
     md: 'sm' as const,
     lg: 'md' as const,
-  };
+  }
 
   return (
     <TooltipProvider>
@@ -286,7 +273,7 @@ export function OnlineUsersAvatars({
         )}
       </div>
     </TooltipProvider>
-  );
+  )
 }
 
 // ============================================================================
@@ -294,10 +281,10 @@ export function OnlineUsersAvatars({
 // ============================================================================
 
 export interface CompactOnlineUsersProps {
-  users: OnlineUserItem[];
-  maxDisplay?: number;
-  showCount?: boolean;
-  className?: string;
+  users: OnlineUserItem[]
+  maxDisplay?: number
+  showCount?: boolean
+  className?: string
 }
 
 export function CompactOnlineUsers({
@@ -306,18 +293,16 @@ export function CompactOnlineUsers({
   showCount = true,
   className,
 }: CompactOnlineUsersProps) {
-  const onlineUsers = users.filter((u) => isActiveStatus(u.status));
+  const onlineUsers = users.filter((u) => isActiveStatus(u.status))
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
       <OnlineUsersAvatars users={onlineUsers.slice(0, maxDisplay)} size="sm" />
       {showCount && (
-        <span className="text-xs text-muted-foreground">
-          {onlineUsers.length} online
-        </span>
+        <span className="text-xs text-muted-foreground">{onlineUsers.length} online</span>
       )}
     </div>
-  );
+  )
 }
 
-export default OnlineUsers;
+export default OnlineUsers

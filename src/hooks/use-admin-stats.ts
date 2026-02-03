@@ -267,11 +267,7 @@ function generateComparisons(
   return comparisons
 }
 
-function createComparison(
-  field: string,
-  current: number,
-  previous: number
-): StatsComparison {
+function createComparison(field: string, current: number, previous: number): StatsComparison {
   return {
     field,
     current,

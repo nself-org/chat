@@ -27,11 +27,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import type { Channel } from '@/stores/channel-store'
 
@@ -173,9 +169,7 @@ export function ChannelSorting({
           <DropdownMenuLabel>Direction</DropdownMenuLabel>
           <DropdownMenuRadioGroup
             value={value.direction}
-            onValueChange={(dir) =>
-              onChange?.({ ...value, direction: dir as SortDirection })
-            }
+            onValueChange={(dir) => onChange?.({ ...value, direction: dir as SortDirection })}
           >
             <DropdownMenuRadioItem value="asc" className="gap-2">
               <SortAsc className="h-4 w-4" />
@@ -204,9 +198,7 @@ export function ChannelSorting({
         <PopoverContent className="w-[280px]" align="end">
           <div className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground uppercase">
-                Sort by
-              </Label>
+              <Label className="text-xs font-medium uppercase text-muted-foreground">Sort by</Label>
               <RadioGroup
                 value={value.field}
                 onValueChange={(field) => handleFieldChange(field as SortField)}
@@ -218,7 +210,7 @@ export function ChannelSorting({
                     <div className="flex-1 space-y-0.5">
                       <Label
                         htmlFor={`sort-${field}`}
-                        className="flex items-center gap-2 font-medium cursor-pointer"
+                        className="flex cursor-pointer items-center gap-2 font-medium"
                       >
                         <Icon className="h-4 w-4 text-muted-foreground" />
                         {label}
@@ -231,7 +223,7 @@ export function ChannelSorting({
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground uppercase">
+              <Label className="text-xs font-medium uppercase text-muted-foreground">
                 Direction
               </Label>
               <div className="flex gap-2">

@@ -82,10 +82,7 @@ const TRENDING_WINDOW_HOURS = 24
 // Filtering Functions
 // ============================================================================
 
-export function filterChannels(
-  channels: Channel[],
-  filters: DiscoveryFilters
-): Channel[] {
+export function filterChannels(channels: Channel[], filters: DiscoveryFilters): Channel[] {
   return channels.filter((channel) => {
     // Type filter
     if (filters.type && filters.type !== 'all' && channel.type !== filters.type) {
@@ -329,27 +326,19 @@ export function getDiscoveryResults(
       case 'memberCount':
         return multiplier * (a.channel.memberCount - b.channel.memberCount)
       case 'activity':
-        const aTime = a.channel.lastMessageAt
-          ? new Date(a.channel.lastMessageAt).getTime()
-          : 0
-        const bTime = b.channel.lastMessageAt
-          ? new Date(b.channel.lastMessageAt).getTime()
-          : 0
+        const aTime = a.channel.lastMessageAt ? new Date(a.channel.lastMessageAt).getTime() : 0
+        const bTime = b.channel.lastMessageAt ? new Date(b.channel.lastMessageAt).getTime() : 0
         return multiplier * (aTime - bTime)
       case 'created':
         return (
           multiplier *
-          (new Date(a.channel.createdAt).getTime() -
-            new Date(b.channel.createdAt).getTime())
+          (new Date(a.channel.createdAt).getTime() - new Date(b.channel.createdAt).getTime())
         )
       case 'trending':
         // Prioritize trending channels
         if (a.isTrending && !b.isTrending) return -1
         if (!a.isTrending && b.isTrending) return 1
-        return (
-          multiplier *
-          (a.channel.memberCount - b.channel.memberCount)
-        )
+        return multiplier * (a.channel.memberCount - b.channel.memberCount)
       default:
         return 0
     }
@@ -384,9 +373,7 @@ export function calculateDiscoveryStats(channels: Channel[]): DiscoveryStats {
 // Category-based Discovery
 // ============================================================================
 
-export function getChannelsByCategory(
-  channels: Channel[]
-): Map<string | null, Channel[]> {
+export function getChannelsByCategory(channels: Channel[]): Map<string | null, Channel[]> {
   const byCategory = new Map<string | null, Channel[]>()
 
   channels.forEach((channel) => {
@@ -414,10 +401,7 @@ export function getPopularChannels(channels: Channel[], limit: number = 10): Cha
     .slice(0, limit)
 }
 
-export function getRecentlyActiveChannels(
-  channels: Channel[],
-  limit: number = 10
-): Channel[] {
+export function getRecentlyActiveChannels(channels: Channel[], limit: number = 10): Channel[] {
   return [...channels]
     .filter((c) => c.lastMessageAt)
     .sort((a, b) => {

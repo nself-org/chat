@@ -5,74 +5,74 @@
  * Provides type-safe access to user preferences and app state.
  */
 
-import Store from 'electron-store';
+import Store from 'electron-store'
 
 export interface WindowState {
-  x?: number;
-  y?: number;
-  width: number;
-  height: number;
-  isMaximized: boolean;
-  isFullScreen: boolean;
+  x?: number
+  y?: number
+  width: number
+  height: number
+  isMaximized: boolean
+  isFullScreen: boolean
 }
 
 export interface NotificationSettings {
-  enabled: boolean;
-  sound: boolean;
-  showPreview: boolean;
-  doNotDisturb: boolean;
-  doNotDisturbStart?: string; // HH:mm format
-  doNotDisturbEnd?: string; // HH:mm format
+  enabled: boolean
+  sound: boolean
+  showPreview: boolean
+  doNotDisturb: boolean
+  doNotDisturbStart?: string // HH:mm format
+  doNotDisturbEnd?: string // HH:mm format
 }
 
 export interface GlobalShortcuts {
-  toggleWindow?: string;
-  showWindow?: string;
-  voiceCall?: string;
-  muteToggle?: string;
+  toggleWindow?: string
+  showWindow?: string
+  voiceCall?: string
+  muteToggle?: string
 }
 
 export interface AppSettings {
   // Window state
-  windowState: WindowState;
+  windowState: WindowState
 
   // Startup
-  launchAtStartup: boolean;
-  startMinimized: boolean;
+  launchAtStartup: boolean
+  startMinimized: boolean
 
   // Tray
-  minimizeToTray: boolean;
-  showTrayIcon: boolean;
+  minimizeToTray: boolean
+  showTrayIcon: boolean
 
   // Notifications
-  notifications: NotificationSettings;
+  notifications: NotificationSettings
 
   // Appearance
-  zoomLevel: number;
-  spellcheck: boolean;
-  spellcheckLanguages: string[];
+  zoomLevel: number
+  spellcheck: boolean
+  spellcheckLanguages: string[]
 
   // Global shortcuts
-  globalShortcuts: GlobalShortcuts;
+  globalShortcuts: GlobalShortcuts
 
   // Updates
-  autoUpdate: boolean;
-  updateChannel: 'stable' | 'beta' | 'alpha';
+  autoUpdate: boolean
+  updateChannel: 'stable' | 'beta' | 'alpha'
 
   // Connection
-  serverUrl: string;
-  proxyEnabled: boolean;
-  proxyUrl?: string;
+  serverUrl: string
+  proxyEnabled: boolean
+  proxyUrl?: string
 
   // Privacy
-  clearCacheOnExit: boolean;
+  clearCacheOnExit: boolean
 
   // Developer
-  devToolsEnabled: boolean;
+  devToolsEnabled: boolean
 
   // User session
-  lastUserId?: string;
-  lastWorkspaceId?: string;
+  lastUserId?: string
+  lastWorkspaceId?: string
 }
 
 const defaultSettings: AppSettings = {
@@ -107,11 +107,11 @@ const defaultSettings: AppSettings = {
   proxyEnabled: false,
   clearCacheOnExit: false,
   devToolsEnabled: false,
-};
+}
 
 class SettingsStore {
-  private store: Store<AppSettings>;
-  private static instance: SettingsStore;
+  private store: Store<AppSettings>
+  private static instance: SettingsStore
 
   private constructor() {
     this.store = new Store<AppSettings>({
@@ -175,80 +175,80 @@ class SettingsStore {
         lastWorkspaceId: { type: 'string' },
       } as const,
       clearInvalidConfig: true,
-    });
+    })
   }
 
   static getInstance(): SettingsStore {
     if (!SettingsStore.instance) {
-      SettingsStore.instance = new SettingsStore();
+      SettingsStore.instance = new SettingsStore()
     }
-    return SettingsStore.instance;
+    return SettingsStore.instance
   }
 
   // Generic get/set methods
   get<K extends keyof AppSettings>(key: K): AppSettings[K] {
-    return this.store.get(key);
+    return this.store.get(key)
   }
 
   set<K extends keyof AppSettings>(key: K, value: AppSettings[K]): void {
-    this.store.set(key, value);
+    this.store.set(key, value)
   }
 
   // Get all settings
   getAll(): AppSettings {
-    return this.store.store;
+    return this.store.store
   }
 
   // Reset to defaults
   reset(): void {
-    this.store.clear();
+    this.store.clear()
   }
 
   // Window state helpers
   getWindowState(): WindowState {
-    return this.get('windowState');
+    return this.get('windowState')
   }
 
   setWindowState(state: Partial<WindowState>): void {
-    const current = this.getWindowState();
-    this.set('windowState', { ...current, ...state });
+    const current = this.getWindowState()
+    this.set('windowState', { ...current, ...state })
   }
 
   // Notification helpers
   getNotificationSettings(): NotificationSettings {
-    return this.get('notifications');
+    return this.get('notifications')
   }
 
   setNotificationSettings(settings: Partial<NotificationSettings>): void {
-    const current = this.getNotificationSettings();
-    this.set('notifications', { ...current, ...settings });
+    const current = this.getNotificationSettings()
+    this.set('notifications', { ...current, ...settings })
   }
 
   // Check if Do Not Disturb is active
   isDoNotDisturbActive(): boolean {
-    const settings = this.getNotificationSettings();
-    if (!settings.doNotDisturb) return false;
+    const settings = this.getNotificationSettings()
+    if (!settings.doNotDisturb) return false
 
     if (!settings.doNotDisturbStart || !settings.doNotDisturbEnd) {
-      return true; // DND enabled without schedule = always active
+      return true // DND enabled without schedule = always active
     }
 
-    const now = new Date();
-    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const now = new Date()
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
 
     // Handle overnight schedules (e.g., 22:00 to 08:00)
     if (settings.doNotDisturbStart > settings.doNotDisturbEnd) {
-      return currentTime >= settings.doNotDisturbStart || currentTime < settings.doNotDisturbEnd;
+      return currentTime >= settings.doNotDisturbStart || currentTime < settings.doNotDisturbEnd
     }
 
-    return currentTime >= settings.doNotDisturbStart && currentTime < settings.doNotDisturbEnd;
+    return currentTime >= settings.doNotDisturbStart && currentTime < settings.doNotDisturbEnd
   }
 
   // Get the store path for debugging
   getStorePath(): string {
-    return this.store.path;
+    return this.store.path
   }
 }
 
-export const settingsStore = SettingsStore.getInstance();
-export default settingsStore;
+export const settingsStore = SettingsStore.getInstance()
+export default settingsStore

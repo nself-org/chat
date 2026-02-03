@@ -110,9 +110,7 @@ export const WaveformVisualizer = memo(function WaveformVisualizer({
       }
     } else if (staticData) {
       // Static waveform data
-      const amplitudes = Array.isArray(staticData)
-        ? staticData
-        : staticData.amplitudes
+      const amplitudes = Array.isArray(staticData) ? staticData : staticData.amplitudes
 
       if (amplitudes.length === barCount) {
         newBars = amplitudes
@@ -235,7 +233,7 @@ export const WaveformVisualizer = memo(function WaveformVisualizer({
       {/* Hover indicator line */}
       {interactive && isHovering && (
         <div
-          className="pointer-events-none absolute inset-y-0 w-0.5 bg-foreground/30 transition-all"
+          className="bg-foreground/30 pointer-events-none absolute inset-y-0 w-0.5 transition-all"
           style={{ left: `${hoverProgress}%` }}
         />
       )}

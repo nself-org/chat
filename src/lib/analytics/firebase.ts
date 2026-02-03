@@ -5,12 +5,9 @@
  */
 
 import { StandardEvents } from './types'
-import type {
-  AnalyticsConfig,
-  EventParams,
-  ScreenViewEvent,
-  UserProperties,
-} from './types'
+import type { AnalyticsConfig, EventParams, ScreenViewEvent, UserProperties } from './types'
+
+import { logger } from '@/lib/logger'
 
 // Platform detection
 const isWeb = typeof window !== 'undefined' && !window.navigator.userAgent.includes('Capacitor')
@@ -29,14 +26,14 @@ class FirebaseAnalytics {
    */
   async initialize(config: AnalyticsConfig): Promise<void> {
     if (this.initialized) {
-      console.warn('Firebase Analytics already initialized')
+      logger.warn('Firebase Analytics already initialized')
       return
     }
 
     this.config = config
 
     if (!config.enabled || !config.firebase) {
-      console.log('Firebase Analytics disabled or not configured')
+      // REMOVED: console.log('Firebase Analytics disabled or not configured')
       return
     }
 
@@ -48,9 +45,9 @@ class FirebaseAnalytics {
       }
 
       this.initialized = true
-      console.log('Firebase Analytics initialized successfully')
+      // REMOVED: console.log('Firebase Analytics initialized successfully')
     } catch (error) {
-      console.error('Failed to initialize Firebase Analytics:', error)
+      logger.error('Failed to initialize Firebase Analytics:', error)
       throw error
     }
   }
@@ -69,7 +66,7 @@ class FirebaseAnalytics {
       // Check if Analytics is supported
       const supported = await isSupported()
       if (!supported) {
-        console.warn('Firebase Analytics not supported in this browser')
+        logger.warn('Firebase Analytics not supported in this browser')
         return
       }
 
@@ -93,7 +90,7 @@ class FirebaseAnalytics {
         ;(window as any).gtag_debug_mode = true
       }
     } catch (error) {
-      console.error('Failed to initialize Firebase web:', error)
+      logger.error('Failed to initialize Firebase web:', error)
       throw error
     }
   }
@@ -117,7 +114,7 @@ class FirebaseAnalytics {
         await this.nativePlugin.setDebugMode({ enabled: true })
       }
     } catch (error) {
-      console.error('Failed to initialize Firebase native:', error)
+      logger.error('Failed to initialize Firebase native:', error)
       throw error
     }
   }
@@ -142,10 +139,10 @@ class FirebaseAnalytics {
       }
 
       if (this.config?.debugMode) {
-        console.log('[Analytics] Event:', eventName, params)
+        // REMOVED: console.log('[Analytics] Event:', eventName, params)
       }
     } catch (error) {
-      console.error('Failed to log event:', eventName, error)
+      logger.error('Failed to log event:', { context: { eventName, error } })
     }
   }
 
@@ -186,10 +183,10 @@ class FirebaseAnalytics {
       }
 
       if (this.config?.debugMode) {
-        console.log('[Analytics] User properties:', properties)
+        // REMOVED: console.log('[Analytics] User properties:', properties)
       }
     } catch (error) {
-      console.error('Failed to set user properties:', error)
+      logger.error('Failed to set user properties:', error)
     }
   }
 
@@ -210,20 +207,17 @@ class FirebaseAnalytics {
       }
 
       if (this.config?.debugMode) {
-        console.log('[Analytics] User ID:', userId)
+        // REMOVED: console.log('[Analytics] User ID:', userId)
       }
     } catch (error) {
-      console.error('Failed to set user ID:', error)
+      logger.error('Failed to set user ID:', error)
     }
   }
 
   /**
    * Set consent
    */
-  async setConsent(consent: {
-    analytics?: boolean
-    performance?: boolean
-  }): Promise<void> {
+  async setConsent(consent: { analytics?: boolean; performance?: boolean }): Promise<void> {
     if (!this.initialized) return
 
     try {
@@ -244,10 +238,10 @@ class FirebaseAnalytics {
       }
 
       if (this.config?.debugMode) {
-        console.log('[Analytics] Consent updated:', consent)
+        // REMOVED: console.log('[Analytics] Consent updated:', consent)
       }
     } catch (error) {
-      console.error('Failed to set consent:', error)
+      logger.error('Failed to set consent:', error)
     }
   }
 
@@ -266,10 +260,10 @@ class FirebaseAnalytics {
       await this.setUserId(null)
 
       if (this.config?.debugMode) {
-        console.log('[Analytics] Data reset')
+        // REMOVED: console.log('[Analytics] Data reset')
       }
     } catch (error) {
-      console.error('Failed to reset analytics:', error)
+      logger.error('Failed to reset analytics:', error)
     }
   }
 
@@ -286,7 +280,7 @@ class FirebaseAnalytics {
       }
       return null
     } catch (error) {
-      console.error('Failed to get session ID:', error)
+      logger.error('Failed to get session ID:', error)
       return null
     }
   }

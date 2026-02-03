@@ -16,21 +16,10 @@
  */
 
 import * as React from 'react'
-import {
-  Clock,
-  Sun,
-  Sunrise,
-  CalendarDays,
-  Settings2,
-  Timer,
-} from 'lucide-react'
+import { Clock, Sun, Sunrise, CalendarDays, Settings2, Timer } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   getPresetReminderTimes,
   getTomorrowMorning,
@@ -136,7 +125,7 @@ function QuickRemindItem({ option, onSelect, disabled }: QuickRemindItemProps) {
       disabled={disabled}
       className={cn(
         'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left',
-        'hover:bg-accent hover:text-accent-foreground',
+        'hover:text-accent-foreground hover:bg-accent',
         'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
         'disabled:cursor-not-allowed disabled:opacity-50',
         'transition-colors'
@@ -145,13 +134,9 @@ function QuickRemindItem({ option, onSelect, disabled }: QuickRemindItemProps) {
       <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-muted-foreground">
         {option.icon}
       </span>
-      <div className="flex-1 min-w-0">
-        <div className="font-medium text-sm">{option.label}</div>
-        {description && (
-          <div className="text-xs text-muted-foreground truncate">
-            {description}
-          </div>
-        )}
+      <div className="min-w-0 flex-1">
+        <div className="text-sm font-medium">{option.label}</div>
+        {description && <div className="truncate text-xs text-muted-foreground">{description}</div>}
       </div>
     </button>
   )
@@ -201,16 +186,16 @@ export function QuickRemindMenu({
             disabled={disabled}
             className={cn(
               'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left',
-              'hover:bg-accent hover:text-accent-foreground',
+              'hover:text-accent-foreground hover:bg-accent',
               'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
               'disabled:cursor-not-allowed disabled:opacity-50',
               'transition-colors'
             )}
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <span className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full text-primary">
               <Settings2 className="h-4 w-4" />
             </span>
-            <div className="font-medium text-sm">Custom time...</div>
+            <div className="text-sm font-medium">Custom time...</div>
           </button>
         </>
       )}
@@ -259,22 +244,13 @@ export function QuickRemind({
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          disabled={disabled}
-          className={cn('gap-2', className)}
-        >
+        <Button variant="ghost" size="sm" disabled={disabled} className={cn('gap-2', className)}>
           <Clock className="h-4 w-4" />
           {triggerLabel}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-64 p-2" align="start">
-        <QuickRemindMenu
-          onSelect={handleSelect}
-          onCustom={handleCustom}
-          disabled={disabled}
-        />
+        <QuickRemindMenu onSelect={handleSelect} onCustom={handleCustom} disabled={disabled} />
       </PopoverContent>
     </Popover>
   )

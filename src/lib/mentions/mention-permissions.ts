@@ -16,15 +16,8 @@
  * ```
  */
 
-import type {
-  MentionType,
-  MentionPermissions,
-  ChannelMentionSettings,
-} from './mention-types'
-import {
-  DEFAULT_MENTION_PERMISSIONS,
-  DEFAULT_CHANNEL_MENTION_SETTINGS,
-} from './mention-types'
+import type { MentionType, MentionPermissions, ChannelMentionSettings } from './mention-types'
+import { DEFAULT_MENTION_PERMISSIONS, DEFAULT_CHANNEL_MENTION_SETTINGS } from './mention-types'
 
 // ============================================================================
 // Types
@@ -80,14 +73,9 @@ export function roleAtLeast(userRole: UserRole, minRole: UserRole): boolean {
 /**
  * Get the effective role (highest of global and channel role)
  */
-export function getEffectiveRole(
-  globalRole: UserRole,
-  channelRole?: UserRole
-): UserRole {
+export function getEffectiveRole(globalRole: UserRole, channelRole?: UserRole): UserRole {
   if (!channelRole) return globalRole
-  return ROLE_HIERARCHY[globalRole] >= ROLE_HIERARCHY[channelRole]
-    ? globalRole
-    : channelRole
+  return ROLE_HIERARCHY[globalRole] >= ROLE_HIERARCHY[channelRole] ? globalRole : channelRole
 }
 
 /**
@@ -111,10 +99,7 @@ export function isModerator(role: UserRole): boolean {
 /**
  * Check if a user can use a specific mention type
  */
-export function canUseMention(
-  mentionType: MentionType,
-  context: PermissionContext
-): boolean {
+export function canUseMention(mentionType: MentionType, context: PermissionContext): boolean {
   const {
     userRole,
     channelRole,
@@ -179,9 +164,7 @@ export function canUseMention(
 /**
  * Get all mention permissions for a user in a context
  */
-export function getMentionPermissions(
-  context: PermissionContext
-): MentionPermissions {
+export function getMentionPermissions(context: PermissionContext): MentionPermissions {
   return {
     canMentionUsers: canUseMention('user', context),
     canMentionChannels: canUseMention('channel', context),
@@ -196,10 +179,7 @@ export function getMentionPermissions(
  * Check if user can use any group mention
  */
 export function canUseAnyGroupMention(context: PermissionContext): boolean {
-  return (
-    canUseMention('everyone', context) ||
-    canUseMention('here', context)
-  )
+  return canUseMention('everyone', context) || canUseMention('here', context)
 }
 
 // ============================================================================
@@ -224,11 +204,7 @@ export function mergeChannelSettings(
 export function channelAllowsGroupMentions(
   settings: ChannelMentionSettings = DEFAULT_CHANNEL_MENTION_SETTINGS
 ): boolean {
-  return (
-    settings.allowEveryone ||
-    settings.allowHere ||
-    settings.allowChannel
-  )
+  return settings.allowEveryone || settings.allowHere || settings.allowChannel
 }
 
 /**

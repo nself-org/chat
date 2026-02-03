@@ -210,17 +210,9 @@ export const DM_MESSAGE_FRAGMENT = gql`
  * Get all DMs for the current user
  */
 export const GET_USER_DMS = gql`
-  query GetUserDMs(
-    $userId: uuid!
-    $status: String = "active"
-    $limit: Int = 50
-    $offset: Int = 0
-  ) {
+  query GetUserDMs($userId: uuid!, $status: String = "active", $limit: Int = 50, $offset: Int = 0) {
     nchat_dm_participants(
-      where: {
-        user_id: { _eq: $userId }
-        dm: { status: { _eq: $status } }
-      }
+      where: { user_id: { _eq: $userId }, dm: { status: { _eq: $status } } }
       order_by: { dm: { last_message_at: desc_nulls_last } }
       limit: $limit
       offset: $offset
@@ -235,10 +227,7 @@ export const GET_USER_DMS = gql`
       muted_until
     }
     nchat_dm_participants_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        dm: { status: { _eq: $status } }
-      }
+      where: { user_id: { _eq: $userId }, dm: { status: { _eq: $status } } }
     ) {
       aggregate {
         count
@@ -278,10 +267,7 @@ export const GET_DM = gql`
  */
 export const GET_DM_BY_SLUG = gql`
   query GetDMBySlug($slug: String!) {
-    nchat_direct_messages(
-      where: { slug: { _eq: $slug } }
-      limit: 1
-    ) {
+    nchat_direct_messages(where: { slug: { _eq: $slug } }, limit: 1) {
       ...DMFull
     }
   }
@@ -320,22 +306,13 @@ export const GET_DM_MESSAGES = gql`
     $order: order_by = desc
   ) {
     nchat_dm_messages(
-      where: {
-        dm_id: { _eq: $dmId }
-        is_deleted: { _eq: false }
-        created_at: { _lt: $cursor }
-      }
+      where: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false }, created_at: { _lt: $cursor } }
       order_by: { created_at: $order }
       limit: $limit
     ) {
       ...DMMessage
     }
-    nchat_dm_messages_aggregate(
-      where: {
-        dm_id: { _eq: $dmId }
-        is_deleted: { _eq: false }
-      }
-    ) {
+    nchat_dm_messages_aggregate(where: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false } }) {
       aggregate {
         count
       }
@@ -349,21 +326,11 @@ export const GET_DM_MESSAGES = gql`
  */
 export const GET_TOTAL_DM_UNREAD_COUNT = gql`
   query GetTotalDMUnreadCount($userId: uuid!) {
-    nchat_dm_participants(
-      where: {
-        user_id: { _eq: $userId }
-        dm: { status: { _eq: "active" } }
-      }
-    ) {
+    nchat_dm_participants(where: { user_id: { _eq: $userId }, dm: { status: { _eq: "active" } } }) {
       dm_id
       last_read_at
       dm {
-        messages_aggregate(
-          where: {
-            is_deleted: { _eq: false }
-            user_id: { _neq: $userId }
-          }
-        ) {
+        messages_aggregate(where: { is_deleted: { _eq: false }, user_id: { _neq: $userId } }) {
           aggregate {
             count
           }
@@ -377,18 +344,9 @@ export const GET_TOTAL_DM_UNREAD_COUNT = gql`
  * Search DM messages
  */
 export const SEARCH_DM_MESSAGES = gql`
-  query SearchDMMessages(
-    $dmId: uuid!
-    $query: String!
-    $limit: Int = 20
-    $offset: Int = 0
-  ) {
+  query SearchDMMessages($dmId: uuid!, $query: String!, $limit: Int = 20, $offset: Int = 0) {
     nchat_dm_messages(
-      where: {
-        dm_id: { _eq: $dmId }
-        is_deleted: { _eq: false }
-        content: { _ilike: $query }
-      }
+      where: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false }, content: { _ilike: $query } }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
@@ -420,10 +378,7 @@ export const CREATE_OR_GET_DM = gql`
           ]
         }
       }
-      on_conflict: {
-        constraint: nchat_direct_messages_dm_unique
-        update_columns: [updated_at]
-      }
+      on_conflict: { constraint: nchat_direct_messages_dm_unique, update_columns: [updated_at] }
     ) {
       id
       slug
@@ -455,9 +410,7 @@ export const CREATE_GROUP_DM = gql`
         description: $description
         slug: ""
         created_by: $creatorId
-        participants: {
-          data: $participantIds
-        }
+        participants: { data: $participantIds }
       }
     ) {
       id
@@ -481,20 +434,10 @@ export const CREATE_GROUP_DM = gql`
  * Update DM settings (group only)
  */
 export const UPDATE_DM_SETTINGS = gql`
-  mutation UpdateDMSettings(
-    $dmId: uuid!
-    $name: String
-    $description: String
-    $avatarUrl: String
-  ) {
+  mutation UpdateDMSettings($dmId: uuid!, $name: String, $description: String, $avatarUrl: String) {
     update_nchat_direct_messages_by_pk(
       pk_columns: { id: $dmId }
-      _set: {
-        name: $name
-        description: $description
-        avatar_url: $avatarUrl
-        updated_at: "now()"
-      }
+      _set: { name: $name, description: $description, avatar_url: $avatarUrl, updated_at: "now()" }
     ) {
       id
       name
@@ -512,11 +455,7 @@ export const ARCHIVE_DM = gql`
   mutation ArchiveDM($dmId: uuid!, $userId: uuid!) {
     update_nchat_direct_messages_by_pk(
       pk_columns: { id: $dmId }
-      _set: {
-        status: "archived"
-        archived_at: "now()"
-        archived_by: $userId
-      }
+      _set: { status: "archived", archived_at: "now()", archived_by: $userId }
     ) {
       id
       status
@@ -533,11 +472,7 @@ export const UNARCHIVE_DM = gql`
   mutation UnarchiveDM($dmId: uuid!) {
     update_nchat_direct_messages_by_pk(
       pk_columns: { id: $dmId }
-      _set: {
-        status: "active"
-        archived_at: null
-        archived_by: null
-      }
+      _set: { status: "active", archived_at: null, archived_by: null }
     ) {
       id
       status
@@ -550,10 +485,7 @@ export const UNARCHIVE_DM = gql`
  */
 export const DELETE_DM = gql`
   mutation DeleteDM($dmId: uuid!) {
-    update_nchat_direct_messages_by_pk(
-      pk_columns: { id: $dmId }
-      _set: { status: "deleted" }
-    ) {
+    update_nchat_direct_messages_by_pk(pk_columns: { id: $dmId }, _set: { status: "deleted" }) {
       id
       status
     }
@@ -595,11 +527,7 @@ export const UPDATE_DM_MESSAGE = gql`
   mutation UpdateDMMessage($messageId: uuid!, $content: String!) {
     update_nchat_dm_messages_by_pk(
       pk_columns: { id: $messageId }
-      _set: {
-        content: $content
-        is_edited: true
-        edited_at: "now()"
-      }
+      _set: { content: $content, is_edited: true, edited_at: "now()" }
     ) {
       id
       content
@@ -616,10 +544,7 @@ export const DELETE_DM_MESSAGE = gql`
   mutation DeleteDMMessage($messageId: uuid!) {
     update_nchat_dm_messages_by_pk(
       pk_columns: { id: $messageId }
-      _set: {
-        is_deleted: true
-        deleted_at: "now()"
-      }
+      _set: { is_deleted: true, deleted_at: "now()" }
     ) {
       id
       is_deleted
@@ -634,14 +559,8 @@ export const DELETE_DM_MESSAGE = gql`
 export const MARK_DM_AS_READ = gql`
   mutation MarkDMAsRead($dmId: uuid!, $userId: uuid!, $messageId: uuid!) {
     update_nchat_dm_participants(
-      where: {
-        dm_id: { _eq: $dmId }
-        user_id: { _eq: $userId }
-      }
-      _set: {
-        last_read_at: "now()"
-        last_read_message_id: $messageId
-      }
+      where: { dm_id: { _eq: $dmId }, user_id: { _eq: $userId } }
+      _set: { last_read_at: "now()", last_read_message_id: $messageId }
     ) {
       affected_rows
       returning {
@@ -660,10 +579,7 @@ export const ADD_DM_PARTICIPANTS = gql`
   mutation AddDMParticipants($participants: [nchat_dm_participants_insert_input!]!) {
     insert_nchat_dm_participants(
       objects: $participants
-      on_conflict: {
-        constraint: nchat_dm_participants_dm_id_user_id_key
-        update_columns: []
-      }
+      on_conflict: { constraint: nchat_dm_participants_dm_id_user_id_key, update_columns: [] }
     ) {
       affected_rows
       returning {
@@ -685,12 +601,7 @@ export const ADD_DM_PARTICIPANTS = gql`
  */
 export const REMOVE_DM_PARTICIPANT = gql`
   mutation RemoveDMParticipant($dmId: uuid!, $userId: uuid!) {
-    delete_nchat_dm_participants(
-      where: {
-        dm_id: { _eq: $dmId }
-        user_id: { _eq: $userId }
-      }
-    ) {
+    delete_nchat_dm_participants(where: { dm_id: { _eq: $dmId }, user_id: { _eq: $userId } }) {
       affected_rows
     }
   }
@@ -701,12 +612,7 @@ export const REMOVE_DM_PARTICIPANT = gql`
  */
 export const LEAVE_DM = gql`
   mutation LeaveDM($dmId: uuid!, $userId: uuid!) {
-    delete_nchat_dm_participants(
-      where: {
-        dm_id: { _eq: $dmId }
-        user_id: { _eq: $userId }
-      }
-    ) {
+    delete_nchat_dm_participants(where: { dm_id: { _eq: $dmId }, user_id: { _eq: $userId } }) {
       affected_rows
     }
   }
@@ -724,15 +630,8 @@ export const UPDATE_DM_NOTIFICATION_SETTINGS = gql`
     $mutedUntil: timestamptz
   ) {
     update_nchat_dm_participants(
-      where: {
-        dm_id: { _eq: $dmId }
-        user_id: { _eq: $userId }
-      }
-      _set: {
-        notification_setting: $setting
-        is_muted: $isMuted
-        muted_until: $mutedUntil
-      }
+      where: { dm_id: { _eq: $dmId }, user_id: { _eq: $userId } }
+      _set: { notification_setting: $setting, is_muted: $isMuted, muted_until: $mutedUntil }
     ) {
       affected_rows
       returning {
@@ -751,11 +650,7 @@ export const UPDATE_DM_NOTIFICATION_SETTINGS = gql`
 export const ADD_DM_REACTION = gql`
   mutation AddDMReaction($messageId: uuid!, $userId: uuid!, $emoji: String!) {
     insert_nchat_dm_reactions_one(
-      object: {
-        message_id: $messageId
-        user_id: $userId
-        emoji: $emoji
-      }
+      object: { message_id: $messageId, user_id: $userId, emoji: $emoji }
       on_conflict: {
         constraint: nchat_dm_reactions_message_id_user_id_emoji_key
         update_columns: []
@@ -776,11 +671,7 @@ export const ADD_DM_REACTION = gql`
 export const REMOVE_DM_REACTION = gql`
   mutation RemoveDMReaction($messageId: uuid!, $userId: uuid!, $emoji: String!) {
     delete_nchat_dm_reactions(
-      where: {
-        message_id: { _eq: $messageId }
-        user_id: { _eq: $userId }
-        emoji: { _eq: $emoji }
-      }
+      where: { message_id: { _eq: $messageId }, user_id: { _eq: $userId }, emoji: { _eq: $emoji } }
     ) {
       affected_rows
     }
@@ -797,10 +688,7 @@ export const REMOVE_DM_REACTION = gql`
 export const DM_LIST_SUBSCRIPTION = gql`
   subscription DMListSubscription($userId: uuid!) {
     nchat_dm_participants(
-      where: {
-        user_id: { _eq: $userId }
-        dm: { status: { _eq: "active" } }
-      }
+      where: { user_id: { _eq: $userId }, dm: { status: { _eq: "active" } } }
       order_by: { dm: { last_message_at: desc_nulls_last } }
     ) {
       dm {
@@ -839,10 +727,7 @@ export const DM_SUBSCRIPTION = gql`
 export const DM_MESSAGES_SUBSCRIPTION = gql`
   subscription DMMessagesSubscription($dmId: uuid!, $limit: Int = 50) {
     nchat_dm_messages(
-      where: {
-        dm_id: { _eq: $dmId }
-        is_deleted: { _eq: false }
-      }
+      where: { dm_id: { _eq: $dmId }, is_deleted: { _eq: false } }
       order_by: { created_at: desc }
       limit: $limit
     ) {
@@ -881,24 +766,14 @@ export const DM_TYPING_SUBSCRIPTION = gql`
  */
 export const DM_UNREAD_COUNT_SUBSCRIPTION = gql`
   subscription DMUnreadCountSubscription($userId: uuid!) {
-    nchat_dm_participants(
-      where: {
-        user_id: { _eq: $userId }
-        dm: { status: { _eq: "active" } }
-      }
-    ) {
+    nchat_dm_participants(where: { user_id: { _eq: $userId }, dm: { status: { _eq: "active" } } }) {
       dm_id
       last_read_at
       is_muted
       dm {
         id
         last_message_at
-        messages_aggregate(
-          where: {
-            is_deleted: { _eq: false }
-            user_id: { _neq: $userId }
-          }
-        ) {
+        messages_aggregate(where: { is_deleted: { _eq: false }, user_id: { _neq: $userId } }) {
           aggregate {
             count
           }

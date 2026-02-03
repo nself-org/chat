@@ -152,9 +152,7 @@ export class BandwidthManager {
     return 'stable'
   }
 
-  private assessConnectionQuality(
-    stats: NetworkStats
-  ): 'excellent' | 'good' | 'fair' | 'poor' {
+  private assessConnectionQuality(stats: NetworkStats): 'excellent' | 'good' | 'fair' | 'poor' {
     const packetLossRate =
       stats.packetsLost / Math.max(stats.packetsLost + stats.packetsReceived, 1)
 
@@ -177,10 +175,7 @@ export class BandwidthManager {
     }
 
     // Fair: High RTT or some packet loss or high jitter
-    if (
-      stats.rtt < RTT_THRESHOLD_FAIR * 2 &&
-      packetLossRate < PACKET_LOSS_THRESHOLD_FAIR * 2
-    ) {
+    if (stats.rtt < RTT_THRESHOLD_FAIR * 2 && packetLossRate < PACKET_LOSS_THRESHOLD_FAIR * 2) {
       return 'fair'
     }
 
@@ -284,9 +279,7 @@ export class BandwidthManager {
   private getNextHigherQuality(): VideoQuality {
     const qualities: VideoQuality[] = ['180p', '360p', '720p', '1080p']
     const currentIndex = qualities.indexOf(this.currentQuality)
-    return currentIndex < qualities.length - 1
-      ? qualities[currentIndex + 1]
-      : this.currentQuality
+    return currentIndex < qualities.length - 1 ? qualities[currentIndex + 1] : this.currentQuality
   }
 
   private getQualityBitrate(quality: VideoQuality): number {

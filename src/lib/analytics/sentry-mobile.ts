@@ -6,6 +6,8 @@
 
 import type { AnalyticsConfig, UserProperties } from './types'
 
+import { logger } from '@/lib/logger'
+
 // Platform detection
 const isElectron = typeof window !== 'undefined' && (window as any).electron !== undefined
 const isCapacitor = typeof window !== 'undefined' && (window as any).Capacitor !== undefined
@@ -20,20 +22,20 @@ class SentryMobile {
    */
   async initialize(config: AnalyticsConfig): Promise<void> {
     if (this.initialized) {
-      console.warn('Sentry already initialized')
+      logger.warn('Sentry already initialized')
       return
     }
 
     this.config = config
 
     if (!config.enabled || !config.sentry) {
-      console.log('Sentry disabled or not configured')
+      // REMOVED: console.log('Sentry disabled or not configured')
       return
     }
 
     // Check if user has opted out
     if (!config.consent.errorTracking && !config.consent.crashReporting) {
-      console.log('User has opted out of error tracking')
+      // REMOVED: console.log('User has opted out of error tracking')
       return
     }
 
@@ -47,9 +49,9 @@ class SentryMobile {
       }
 
       this.initialized = true
-      console.log('Sentry initialized successfully')
+      // REMOVED: console.log('Sentry initialized successfully')
     } catch (error) {
-      console.error('Failed to initialize Sentry:', error)
+      logger.error('Failed to initialize Sentry:', error)
       throw error
     }
   }
@@ -99,7 +101,7 @@ class SentryMobile {
         ],
       })
     } catch (error) {
-      console.error('Failed to initialize Sentry Electron:', error)
+      logger.error('Failed to initialize Sentry Electron:', error)
       throw error
     }
   }
@@ -142,7 +144,7 @@ class SentryMobile {
 
       this.nativePlugin = Sentry
     } catch (error) {
-      console.error('Failed to initialize Sentry Capacitor:', error)
+      logger.error('Failed to initialize Sentry Capacitor:', error)
       throw error
     }
   }
@@ -165,10 +167,7 @@ class SentryMobile {
         replaysSessionSampleRate: this.config.sentry.replaysSampleRate || 0.1,
         replaysOnErrorSampleRate: 1.0,
 
-        integrations: [
-          Sentry.browserTracingIntegration(),
-          Sentry.replayIntegration(),
-        ],
+        integrations: [Sentry.browserTracingIntegration(), Sentry.replayIntegration()],
 
         beforeSend: (event) => {
           return this.filterSensitiveData(event)
@@ -177,7 +176,7 @@ class SentryMobile {
         debug: this.config.debugMode,
       })
     } catch (error) {
-      console.error('Failed to initialize Sentry web:', error)
+      logger.error('Failed to initialize Sentry web:', error)
       throw error
     }
   }
@@ -193,7 +192,7 @@ class SentryMobile {
 
     if (event.request?.headers) {
       const sensitiveHeaders = ['authorization', 'cookie', 'x-api-key']
-      sensitiveHeaders.forEach(header => {
+      sensitiveHeaders.forEach((header) => {
         delete event.request.headers[header]
       })
     }
@@ -203,7 +202,7 @@ class SentryMobile {
       event.breadcrumbs = event.breadcrumbs.map((breadcrumb: any) => {
         if (breadcrumb.data) {
           const sensitiveKeys = ['password', 'token', 'secret', 'apiKey', 'accessToken']
-          sensitiveKeys.forEach(key => {
+          sensitiveKeys.forEach((key) => {
             if (breadcrumb.data[key]) {
               breadcrumb.data[key] = '[Filtered]'
             }
@@ -239,10 +238,10 @@ class SentryMobile {
       }
 
       if (this.config?.debugMode) {
-        console.log('[Sentry] User context set:', user)
+        // REMOVED: console.log('[Sentry] User context set:', user)
       }
     } catch (error) {
-      console.error('Failed to set user context:', error)
+      logger.error('Failed to set user context:', error)
     }
   }
 
@@ -269,10 +268,10 @@ class SentryMobile {
       })
 
       if (this.config?.debugMode) {
-        console.log('[Sentry] Error captured:', error.message, context)
+        // REMOVED: console.log('[Sentry] Error captured:', error.message, context)
       }
     } catch (err) {
-      console.error('Failed to capture error:', err)
+      logger.error('Failed to capture error:', err)
     }
   }
 
@@ -299,10 +298,10 @@ class SentryMobile {
       })
 
       if (this.config?.debugMode) {
-        console.log('[Sentry] Message captured:', message, level)
+        // REMOVED: console.log('[Sentry] Message captured:', message, level)
       }
     } catch (error) {
-      console.error('Failed to capture message:', error)
+      logger.error('Failed to capture message:', error)
     }
   }
 
@@ -327,7 +326,7 @@ class SentryMobile {
         data,
       })
     } catch (error) {
-      console.error('Failed to add breadcrumb:', error)
+      logger.error('Failed to add breadcrumb:', error)
     }
   }
 
@@ -341,7 +340,7 @@ class SentryMobile {
       const Sentry = await this.getSentryModule()
       Sentry.setContext(name, context)
     } catch (error) {
-      console.error('Failed to set context:', error)
+      logger.error('Failed to set context:', error)
     }
   }
 
@@ -355,7 +354,7 @@ class SentryMobile {
       const Sentry = await this.getSentryModule()
       Sentry.setTag(key, value)
     } catch (error) {
-      console.error('Failed to set tag:', error)
+      logger.error('Failed to set tag:', error)
     }
   }
 
@@ -369,7 +368,7 @@ class SentryMobile {
       const Sentry = await this.getSentryModule()
       return Sentry.startTransaction({ name, op: operation })
     } catch (error) {
-      console.error('Failed to start transaction:', error)
+      logger.error('Failed to start transaction:', error)
       return null
     }
   }
@@ -405,7 +404,7 @@ class SentryMobile {
       await Sentry.close()
       this.initialized = false
     } catch (error) {
-      console.error('Failed to close Sentry:', error)
+      logger.error('Failed to close Sentry:', error)
     }
   }
 }

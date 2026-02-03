@@ -1,6 +1,12 @@
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-import type { Sticker, StickerPack, UserStickerPack, RecentSticker, FavoriteSticker } from '@/graphql/stickers'
+import type {
+  Sticker,
+  StickerPack,
+  UserStickerPack,
+  RecentSticker,
+  FavoriteSticker,
+} from '@/graphql/stickers'
 
 // ============================================================================
 // TYPES
@@ -130,43 +136,48 @@ export const useStickerStore = create<StickerStore>()(
       // Pack management
       setInstalledPacks: (packs) => set({ installedPacks: packs }),
 
-      addInstalledPack: (pack) => set((state) => ({
-        installedPacks: [...state.installedPacks, pack].sort((a, b) => a.position - b.position),
-      })),
+      addInstalledPack: (pack) =>
+        set((state) => ({
+          installedPacks: [...state.installedPacks, pack].sort((a, b) => a.position - b.position),
+        })),
 
-      removeInstalledPack: (packId) => set((state) => ({
-        installedPacks: state.installedPacks.filter((p) => p.pack_id !== packId),
-      })),
+      removeInstalledPack: (packId) =>
+        set((state) => ({
+          installedPacks: state.installedPacks.filter((p) => p.pack_id !== packId),
+        })),
 
-      reorderInstalledPacks: (packIds) => set((state) => {
-        const packsMap = new Map(state.installedPacks.map((p) => [p.pack_id, p]))
-        const reorderedPacks = packIds
-          .map((id, index) => {
-            const pack = packsMap.get(id)
-            if (pack) {
-              return { ...pack, position: index }
-            }
-            return null
-          })
-          .filter((p): p is UserStickerPack => p !== null)
+      reorderInstalledPacks: (packIds) =>
+        set((state) => {
+          const packsMap = new Map(state.installedPacks.map((p) => [p.pack_id, p]))
+          const reorderedPacks = packIds
+            .map((id, index) => {
+              const pack = packsMap.get(id)
+              if (pack) {
+                return { ...pack, position: index }
+              }
+              return null
+            })
+            .filter((p): p is UserStickerPack => p !== null)
 
-        return { installedPacks: reorderedPacks }
-      }),
+          return { installedPacks: reorderedPacks }
+        }),
 
       // Available packs
       setAvailablePacks: (packs) => set({ availablePacks: packs }),
 
-      addAvailablePack: (pack) => set((state) => ({
-        availablePacks: [...state.availablePacks, pack],
-      })),
+      addAvailablePack: (pack) =>
+        set((state) => ({
+          availablePacks: [...state.availablePacks, pack],
+        })),
 
       // Sticker caching
-      cachePackStickers: (packId, stickers) => set((state) => ({
-        cachedStickers: {
-          ...state.cachedStickers,
-          [packId]: stickers,
-        },
-      })),
+      cachePackStickers: (packId, stickers) =>
+        set((state) => ({
+          cachedStickers: {
+            ...state.cachedStickers,
+            [packId]: stickers,
+          },
+        })),
 
       getCachedStickers: (packId) => get().cachedStickers[packId],
 
@@ -185,47 +196,45 @@ export const useStickerStore = create<StickerStore>()(
       // Recent stickers
       setRecentStickers: (stickers) => set({ recentStickers: stickers }),
 
-      addRecentSticker: (sticker) => set((state) => {
-        // Remove if already exists, then add to front
-        const filtered = state.recentStickers.filter(
-          (s) => s.sticker_id !== sticker.sticker_id
-        )
-        // Keep only last 30 recent stickers
-        const limited = [sticker, ...filtered].slice(0, 30)
-        return { recentStickers: limited }
-      }),
+      addRecentSticker: (sticker) =>
+        set((state) => {
+          // Remove if already exists, then add to front
+          const filtered = state.recentStickers.filter((s) => s.sticker_id !== sticker.sticker_id)
+          // Keep only last 30 recent stickers
+          const limited = [sticker, ...filtered].slice(0, 30)
+          return { recentStickers: limited }
+        }),
 
       clearRecentStickers: () => set({ recentStickers: [] }),
 
       // Favorite stickers
       setFavoriteStickers: (stickers) => set({ favoriteStickers: stickers }),
 
-      addFavoriteSticker: (sticker) => set((state) => ({
-        favoriteStickers: [...state.favoriteStickers, sticker],
-      })),
+      addFavoriteSticker: (sticker) =>
+        set((state) => ({
+          favoriteStickers: [...state.favoriteStickers, sticker],
+        })),
 
-      removeFavoriteSticker: (stickerId) => set((state) => ({
-        favoriteStickers: state.favoriteStickers.filter(
-          (s) => s.sticker_id !== stickerId
-        ),
-      })),
+      removeFavoriteSticker: (stickerId) =>
+        set((state) => ({
+          favoriteStickers: state.favoriteStickers.filter((s) => s.sticker_id !== stickerId),
+        })),
 
-      reorderFavoriteStickers: (stickerIds) => set((state) => {
-        const stickersMap = new Map(
-          state.favoriteStickers.map((s) => [s.sticker_id, s])
-        )
-        const reorderedStickers = stickerIds
-          .map((id, index) => {
-            const sticker = stickersMap.get(id)
-            if (sticker) {
-              return { ...sticker, position: index }
-            }
-            return null
-          })
-          .filter((s): s is FavoriteSticker => s !== null)
+      reorderFavoriteStickers: (stickerIds) =>
+        set((state) => {
+          const stickersMap = new Map(state.favoriteStickers.map((s) => [s.sticker_id, s]))
+          const reorderedStickers = stickerIds
+            .map((id, index) => {
+              const sticker = stickersMap.get(id)
+              if (sticker) {
+                return { ...sticker, position: index }
+              }
+              return null
+            })
+            .filter((s): s is FavoriteSticker => s !== null)
 
-        return { favoriteStickers: reorderedStickers }
-      }),
+          return { favoriteStickers: reorderedStickers }
+        }),
 
       isFavorite: (stickerId) => {
         return get().favoriteStickers.some((s) => s.sticker_id === stickerId)

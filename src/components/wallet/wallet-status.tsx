@@ -1,36 +1,36 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Wallet, ChevronDown, RefreshCw } from 'lucide-react';
+import * as React from 'react'
+import { Wallet, ChevronDown, RefreshCw } from 'lucide-react'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { useWallet } from '@/hooks/use-wallet';
-import { useWalletStore } from '@/stores/wallet-store';
-import { cn } from '@/lib/utils';
+} from '@/components/ui/dropdown-menu'
+import { Button } from '@/components/ui/button'
+import { useWallet } from '@/hooks/use-wallet'
+import { useWalletStore } from '@/stores/wallet-store'
+import { cn } from '@/lib/utils'
 
 interface WalletStatusProps {
-  className?: string;
+  className?: string
 }
 
 export function WalletStatus({ className }: WalletStatusProps) {
-  const { isConnected, address, balance, formatAddress, weiToEther, refreshBalance } = useWallet();
-  const { setWalletModalOpen, setTransactionModalOpen } = useWalletStore();
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const { isConnected, address, balance, formatAddress, weiToEther, refreshBalance } = useWallet()
+  const { setWalletModalOpen, setTransactionModalOpen } = useWalletStore()
+  const [isRefreshing, setIsRefreshing] = React.useState(false)
 
   const handleRefresh = async () => {
-    setIsRefreshing(true);
-    await refreshBalance();
-    setTimeout(() => setIsRefreshing(false), 1000);
-  };
+    setIsRefreshing(true)
+    await refreshBalance()
+    setTimeout(() => setIsRefreshing(false), 1000)
+  }
 
   if (!isConnected || !address) {
-    return null;
+    return null
   }
 
   return (
@@ -39,7 +39,7 @@ export function WalletStatus({ className }: WalletStatusProps) {
         <Button variant="outline" className={cn('gap-2', className)}>
           <Wallet className="h-4 w-4" />
           <div className="flex flex-col items-start">
-            <span className="text-xs font-mono">{formatAddress(address)}</span>
+            <span className="font-mono text-xs">{formatAddress(address)}</span>
             {balance && (
               <span className="text-xs text-muted-foreground">
                 {parseFloat(weiToEther(balance)).toFixed(4)} ETH
@@ -63,10 +63,8 @@ export function WalletStatus({ className }: WalletStatusProps) {
           Refresh Balance
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setWalletModalOpen(true)}>
-          Disconnect
-        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setWalletModalOpen(true)}>Disconnect</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  );
+  )
 }

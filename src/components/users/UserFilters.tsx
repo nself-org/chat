@@ -11,23 +11,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Separator } from '@/components/ui/separator'
 import { type UserRole, type PresenceStatus } from '@/stores/user-store'
 import { useUserDirectoryStore } from '@/stores/user-directory-store'
-import {
-  Filter,
-  X,
-  Users,
-  Building2,
-  Briefcase,
-  MapPin,
-  Circle,
-} from 'lucide-react'
+import { Filter, X, Users, Building2, Briefcase, MapPin, Circle } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -117,7 +105,7 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
                 <Filter className="h-4 w-4" />
                 Filters
                 {hasActiveFilters && (
-                  <Badge variant="secondary" className="ml-1 h-5 w-5 p-0 justify-center">
+                  <Badge variant="secondary" className="ml-1 h-5 w-5 justify-center p-0">
                     {activeFilterCount}
                   </Badge>
                 )}
@@ -161,12 +149,7 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
             </PopoverContent>
           </Popover>
           {hasActiveFilters && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearFilters}
-              className="h-8 px-2"
-            >
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="h-8 px-2">
               <X className="h-4 w-4" />
             </Button>
           )}
@@ -178,10 +161,7 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
     return (
       <div
         ref={ref}
-        className={cn(
-          'flex flex-wrap items-center gap-3 p-4 bg-muted/30 rounded-lg',
-          className
-        )}
+        className={cn('bg-muted/30 flex flex-wrap items-center gap-3 rounded-lg p-4', className)}
         {...props}
       >
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -190,9 +170,12 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
         </div>
 
         {/* Role filter */}
-        <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as UserRole | 'all')}>
-          <SelectTrigger className="w-[140px] h-9">
-            <Users className="h-4 w-4 mr-2 text-muted-foreground" />
+        <Select
+          value={roleFilter}
+          onValueChange={(value) => setRoleFilter(value as UserRole | 'all')}
+        >
+          <SelectTrigger className="h-9 w-[140px]">
+            <Users className="mr-2 h-4 w-4 text-muted-foreground" />
             <SelectValue placeholder="Role" />
           </SelectTrigger>
           <SelectContent>
@@ -205,18 +188,19 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
         </Select>
 
         {/* Presence filter */}
-        <Select value={presenceFilter} onValueChange={(value) => setPresenceFilter(value as PresenceStatus | 'all')}>
-          <SelectTrigger className="w-[160px] h-9">
-            <Circle className="h-4 w-4 mr-2 text-muted-foreground" />
+        <Select
+          value={presenceFilter}
+          onValueChange={(value) => setPresenceFilter(value as PresenceStatus | 'all')}
+        >
+          <SelectTrigger className="h-9 w-[160px]">
+            <Circle className="mr-2 h-4 w-4 text-muted-foreground" />
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
             {PRESENCE_OPTIONS.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 <div className="flex items-center gap-2">
-                  {option.color && (
-                    <span className={cn('h-2 w-2 rounded-full', option.color)} />
-                  )}
+                  {option.color && <span className={cn('h-2 w-2 rounded-full', option.color)} />}
                   {option.label}
                 </div>
               </SelectItem>
@@ -227,8 +211,8 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
         {/* Department filter */}
         {showDepartmentFilter && departments.length > 0 && (
           <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
-            <SelectTrigger className="w-[160px] h-9">
-              <Building2 className="h-4 w-4 mr-2 text-muted-foreground" />
+            <SelectTrigger className="h-9 w-[160px]">
+              <Building2 className="mr-2 h-4 w-4 text-muted-foreground" />
               <SelectValue placeholder="Department" />
             </SelectTrigger>
             <SelectContent>
@@ -245,8 +229,8 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
         {/* Team filter */}
         {showTeamFilter && teams.length > 0 && (
           <Select value={teamFilter} onValueChange={setTeamFilter}>
-            <SelectTrigger className="w-[140px] h-9">
-              <Briefcase className="h-4 w-4 mr-2 text-muted-foreground" />
+            <SelectTrigger className="h-9 w-[140px]">
+              <Briefcase className="mr-2 h-4 w-4 text-muted-foreground" />
               <SelectValue placeholder="Team" />
             </SelectTrigger>
             <SelectContent>
@@ -263,8 +247,8 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
         {/* Location filter */}
         {showLocationFilter && locations.length > 0 && (
           <Select value={locationFilter} onValueChange={setLocationFilter}>
-            <SelectTrigger className="w-[160px] h-9">
-              <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+            <SelectTrigger className="h-9 w-[160px]">
+              <MapPin className="mr-2 h-4 w-4 text-muted-foreground" />
               <SelectValue placeholder="Location" />
             </SelectTrigger>
             <SelectContent>
@@ -286,7 +270,7 @@ const UserFilters = React.forwardRef<HTMLDivElement, UserFiltersProps>(
             onClick={clearFilters}
             className="h-9 px-3 text-muted-foreground hover:text-foreground"
           >
-            <X className="h-4 w-4 mr-1" />
+            <X className="mr-1 h-4 w-4" />
             Clear
           </Button>
         )}
@@ -342,7 +326,10 @@ function FilterContent({
       {/* Role */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Role</label>
-        <Select value={roleFilter} onValueChange={(value) => setRoleFilter(value as UserRole | 'all')}>
+        <Select
+          value={roleFilter}
+          onValueChange={(value) => setRoleFilter(value as UserRole | 'all')}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select role" />
           </SelectTrigger>
@@ -359,7 +346,10 @@ function FilterContent({
       {/* Status */}
       <div className="space-y-2">
         <label className="text-sm font-medium">Status</label>
-        <Select value={presenceFilter} onValueChange={(value) => setPresenceFilter(value as PresenceStatus | 'all')}>
+        <Select
+          value={presenceFilter}
+          onValueChange={(value) => setPresenceFilter(value as PresenceStatus | 'all')}
+        >
           <SelectTrigger className="w-full">
             <SelectValue placeholder="Select status" />
           </SelectTrigger>
@@ -367,9 +357,7 @@ function FilterContent({
             {PRESENCE_OPTIONS.map((option) => (
               <SelectItem key={option.value} value={option.value}>
                 <div className="flex items-center gap-2">
-                  {option.color && (
-                    <span className={cn('h-2 w-2 rounded-full', option.color)} />
-                  )}
+                  {option.color && <span className={cn('h-2 w-2 rounded-full', option.color)} />}
                   {option.label}
                 </div>
               </SelectItem>

@@ -77,7 +77,7 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
       <div ref={ref} className={cn('flex-shrink-0', className)} {...props}>
         {/* Cover photo */}
         <div
-          className="h-32 md:h-40 bg-gradient-to-r from-primary/30 via-primary/20 to-primary/10"
+          className="from-primary/30 via-primary/20 to-primary/10 h-32 bg-gradient-to-r md:h-40"
           style={{
             backgroundImage: user.coverUrl ? `url(${user.coverUrl})` : undefined,
             backgroundSize: 'cover',
@@ -86,8 +86,8 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
         />
 
         {/* Profile info section */}
-        <div className="relative px-6 pb-4 -mt-12 md:-mt-16">
-          <div className="flex flex-col md:flex-row md:items-end gap-4">
+        <div className="relative -mt-12 px-6 pb-4 md:-mt-16">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end">
             {/* Avatar */}
             <UserAvatar
               user={user}
@@ -97,16 +97,16 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
             />
 
             {/* Name and details */}
-            <div className="flex-1 min-w-0 md:pb-2">
-              <div className="flex items-center gap-3 flex-wrap">
-                <h1 className="text-2xl font-bold truncate">{user.displayName}</h1>
+            <div className="min-w-0 flex-1 md:pb-2">
+              <div className="flex flex-wrap items-center gap-3">
+                <h1 className="truncate text-2xl font-bold">{user.displayName}</h1>
                 <RoleBadge role={user.role} size="md" showTooltip />
               </div>
 
-              <div className="flex items-center gap-2 text-muted-foreground mt-1">
+              <div className="mt-1 flex items-center gap-2 text-muted-foreground">
                 <button
                   onClick={handleCopyUsername}
-                  className="hover:text-foreground transition-colors flex items-center gap-1"
+                  className="flex items-center gap-1 transition-colors hover:text-foreground"
                   title="Click to copy"
                 >
                   <span>@{user.username}</span>
@@ -122,7 +122,7 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
 
               {/* Title and department */}
               {(user.title || user.department) && (
-                <p className="text-sm text-muted-foreground mt-1">
+                <p className="mt-1 text-sm text-muted-foreground">
                   {user.title}
                   {user.title && user.department && ' - '}
                   {user.department}
@@ -130,7 +130,7 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
               )}
 
               {/* Presence status */}
-              <div className="flex items-center gap-2 mt-2">
+              <div className="mt-2 flex items-center gap-2">
                 <UserPresenceDot status={user.presence} size="sm" position="inline" />
                 <span className="text-sm capitalize">{user.presence}</span>
                 {user.presence === 'offline' && user.lastSeenAt && (
@@ -147,17 +147,17 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
             </div>
 
             {/* Action buttons */}
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex flex-wrap items-center gap-2">
               {isOwnProfile ? (
                 <Button onClick={onEditProfile}>
-                  <Edit className="h-4 w-4 mr-2" />
+                  <Edit className="mr-2 h-4 w-4" />
                   Edit Profile
                 </Button>
               ) : (
                 <>
                   {onMessage && (
                     <Button onClick={onMessage}>
-                      <MessageSquare className="h-4 w-4 mr-2" />
+                      <MessageSquare className="mr-2 h-4 w-4" />
                       Message
                     </Button>
                   )}
@@ -180,12 +180,12 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
                     <DropdownMenuContent align="end">
                       {onAddToContacts && (
                         <DropdownMenuItem onClick={onAddToContacts}>
-                          <UserPlus className="h-4 w-4 mr-2" />
+                          <UserPlus className="mr-2 h-4 w-4" />
                           Add to Contacts
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuItem onClick={handleCopyUsername}>
-                        <Copy className="h-4 w-4 mr-2" />
+                        <Copy className="mr-2 h-4 w-4" />
                         Copy Username
                       </DropdownMenuItem>
                       <DropdownMenuSeparator />
@@ -194,7 +194,7 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
                           onClick={onBlock}
                           className="text-destructive focus:text-destructive"
                         >
-                          <Ban className="h-4 w-4 mr-2" />
+                          <Ban className="mr-2 h-4 w-4" />
                           Block User
                         </DropdownMenuItem>
                       )}
@@ -203,7 +203,7 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
                           onClick={onReport}
                           className="text-destructive focus:text-destructive"
                         >
-                          <Flag className="h-4 w-4 mr-2" />
+                          <Flag className="mr-2 h-4 w-4" />
                           Report User
                         </DropdownMenuItem>
                       )}
@@ -215,7 +215,7 @@ const UserProfileHeader = React.forwardRef<HTMLDivElement, UserProfileHeaderProp
           </div>
 
           {/* Additional info row */}
-          <div className="flex flex-wrap items-center gap-4 mt-4 text-sm text-muted-foreground">
+          <div className="mt-4 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             {user.location && (
               <div className="flex items-center gap-1">
                 <MapPin className="h-4 w-4" />

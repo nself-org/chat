@@ -13,6 +13,7 @@ The nself-chat moderation system provides comprehensive, AI-powered content mode
 ### 1. Content Scanning
 
 #### Toxic Content Detection
+
 - **AI Model:** TensorFlow.js Toxicity Model
 - **Accuracy:** 80%+ on standard benchmarks
 - **Categories:**
@@ -25,6 +26,7 @@ The nself-chat moderation system provides comprehensive, AI-powered content mode
 - **Threshold:** Configurable (default 70%)
 
 #### NSFW Image Detection
+
 - **Implementation:** NSFWJS (planned)
 - **Categories:**
   - Pornography
@@ -35,6 +37,7 @@ The nself-chat moderation system provides comprehensive, AI-powered content mode
 - **Threshold:** Configurable (default 70%)
 
 #### Spam Detection
+
 - **Method:** Rule-based algorithm
 - **Detects:**
   - Excessive capitalization
@@ -46,6 +49,7 @@ The nself-chat moderation system provides comprehensive, AI-powered content mode
 - **Threshold:** Configurable (default 60%)
 
 #### Profanity Filter
+
 - **Method:** Pattern matching with obfuscation detection
 - **Features:**
   - Default profanity word list
@@ -59,13 +63,13 @@ The nself-chat moderation system provides comprehensive, AI-powered content mode
 
 The system can automatically take actions based on detection scores:
 
-| Action | Trigger | Effect |
-|--------|---------|--------|
-| **Flag** | Any threshold exceeded | Add to moderation queue |
-| **Hide** | Overall score ≥ 80% | Hide content until reviewed |
-| **Warn** | Overall score ≥ 70% | Send warning to user |
-| **Mute** | Overall score ≥ 90% | Temporarily mute user |
-| **Delete** | Manual only | Remove content permanently |
+| Action     | Trigger                | Effect                      |
+| ---------- | ---------------------- | --------------------------- |
+| **Flag**   | Any threshold exceeded | Add to moderation queue     |
+| **Hide**   | Overall score ≥ 80%    | Hide content until reviewed |
+| **Warn**   | Overall score ≥ 70%    | Send warning to user        |
+| **Mute**   | Overall score ≥ 90%    | Temporarily mute user       |
+| **Delete** | Manual only            | Remove content permanently  |
 
 ### 3. Moderation Queue
 
@@ -186,16 +190,13 @@ const moderationService = getModerationService()
 await moderationService.initialize()
 
 // Scan text
-const result = await moderationService.moderateText(
-  'message content',
-  {
-    userId: 'user-123',
-    messageCount: 5,
-    timeWindow: 60,
-    hasLinks: true,
-    linkCount: 2,
-  }
-)
+const result = await moderationService.moderateText('message content', {
+  userId: 'user-123',
+  messageCount: 5,
+  timeWindow: 60,
+  hasLinks: true,
+  linkCount: 2,
+})
 
 // Check result
 if (result.shouldFlag) {
@@ -205,9 +206,7 @@ if (result.shouldFlag) {
 }
 
 // Scan image
-const imageResult = await moderationService.moderateImage(
-  'https://example.com/image.jpg'
-)
+const imageResult = await moderationService.moderateImage('https://example.com/image.jpg')
 ```
 
 ### 2. Manage Queue
@@ -220,17 +219,11 @@ const apolloClient = getApolloClient()
 const queue = new ModerationQueue(apolloClient)
 
 // Add to queue
-await queue.addToQueue(
-  'message',
-  'message-id',
-  'user-id',
-  moderationResult,
-  {
-    contentText: 'message content',
-    channelId: 'channel-id',
-    userDisplayName: 'John Doe',
-  }
-)
+await queue.addToQueue('message', 'message-id', 'user-id', moderationResult, {
+  contentText: 'message content',
+  channelId: 'channel-id',
+  userDisplayName: 'John Doe',
+})
 
 // Get queue items
 const items = await queue.getQueueItems({
@@ -240,18 +233,10 @@ const items = await queue.getQueueItems({
 })
 
 // Approve content
-await queue.approveContent(
-  'item-id',
-  'moderator-id',
-  'Looks fine to me'
-)
+await queue.approveContent('item-id', 'moderator-id', 'Looks fine to me')
 
 // Reject content
-await queue.rejectContent(
-  'item-id',
-  'moderator-id',
-  'Violates community guidelines'
-)
+await queue.rejectContent('item-id', 'moderator-id', 'Violates community guidelines')
 ```
 
 ### 3. Configure Settings
@@ -291,6 +276,7 @@ const service = getModerationService({
 Scan content for violations.
 
 **Request:**
+
 ```json
 {
   "contentType": "text",
@@ -304,6 +290,7 @@ Scan content for violations.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -327,12 +314,14 @@ Scan content for violations.
 Get moderation queue items.
 
 **Query Parameters:**
+
 - `status`: pending | reviewing | approved | rejected
 - `priority`: low | medium | high | critical
 - `limit`: number (default 50)
 - `offset`: number (default 0)
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -358,6 +347,7 @@ Get moderation queue items.
 Take moderation action.
 
 **Request:**
+
 ```json
 {
   "itemId": "queue-item-id",
@@ -368,6 +358,7 @@ Take moderation action.
 ```
 
 **Actions:**
+
 - `approve`: Approve content
 - `reject`: Reject and delete content
 - `warn`: Warn user
@@ -379,32 +370,27 @@ Take moderation action.
 
 ```tsx
 import { ModerationQueue } from '@/components/admin/moderation-queue'
-
-<ModerationQueue
-  moderatorId="moderator-id"
-  moderatorRole="admin"
-/>
+;<ModerationQueue moderatorId="moderator-id" moderatorRole="admin" />
 ```
 
 ### Moderation Settings Component
 
 ```tsx
 import { ModerationSettings } from '@/components/admin/moderation-settings'
-
-<ModerationSettings />
+;<ModerationSettings />
 ```
 
 ## Performance
 
 ### Benchmarks
 
-| Operation | Average Time | 95th Percentile |
-|-----------|-------------|-----------------|
-| Text scan (toxicity) | 150ms | 250ms |
-| Text scan (spam) | 10ms | 20ms |
-| Text scan (profanity) | 5ms | 10ms |
-| Image scan (NSFW) | 300ms | 500ms |
-| Queue insertion | 50ms | 100ms |
+| Operation             | Average Time | 95th Percentile |
+| --------------------- | ------------ | --------------- |
+| Text scan (toxicity)  | 150ms        | 250ms           |
+| Text scan (spam)      | 10ms         | 20ms            |
+| Text scan (profanity) | 5ms          | 10ms            |
+| Image scan (NSFW)     | 300ms        | 500ms           |
+| Queue insertion       | 50ms         | 100ms           |
 
 ### Optimization Tips
 
@@ -419,11 +405,11 @@ import { ModerationSettings } from '@/components/admin/moderation-settings'
 ### Test Results
 
 | Detection Type | Accuracy | False Positives | False Negatives |
-|---------------|----------|-----------------|-----------------|
-| Toxicity | 82% | 8% | 10% |
-| Spam | 85% | 10% | 5% |
-| Profanity | 90% | 5% | 5% |
-| Overall | 85% | 7.7% | 6.7% |
+| -------------- | -------- | --------------- | --------------- |
+| Toxicity       | 82%      | 8%              | 10%             |
+| Spam           | 85%      | 10%             | 5%              |
+| Profanity      | 90%      | 5%              | 5%              |
+| Overall        | 85%      | 7.7%            | 6.7%            |
 
 ### Improving Accuracy
 
@@ -508,6 +494,7 @@ await tf.ready()
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/nself/nself-chat/issues
 - Email: support@nself.org
 - Documentation: https://nself.org/docs

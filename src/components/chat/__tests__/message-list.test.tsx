@@ -109,25 +109,14 @@ describe('MessageList Component', () => {
   ]
 
   it('shows loading skeleton when loading', () => {
-    render(
-      <MessageList
-        channelId="channel-1"
-        messages={[]}
-        isLoading={true}
-      />
-    )
+    render(<MessageList channelId="channel-1" messages={[]} isLoading={true} />)
 
     expect(screen.getByTestId('message-skeleton')).toBeInTheDocument()
   })
 
   it('shows empty state when no messages', () => {
     render(
-      <MessageList
-        channelId="channel-1"
-        channelName="general"
-        messages={[]}
-        isLoading={false}
-      />
+      <MessageList channelId="channel-1" channelName="general" messages={[]} isLoading={false} />
     )
 
     expect(screen.getByTestId('message-empty')).toBeInTheDocument()
@@ -135,12 +124,7 @@ describe('MessageList Component', () => {
   })
 
   it('renders message list container', () => {
-    render(
-      <MessageList
-        channelId="channel-1"
-        messages={mockMessages}
-      />
-    )
+    render(<MessageList channelId="channel-1" messages={mockMessages} />)
 
     // Component should render without errors
     const container = document.querySelector('.relative.flex.h-full.flex-col')
@@ -183,26 +167,14 @@ describe('MessageList Component', () => {
   })
 
   it('handles hasMore prop', () => {
-    render(
-      <MessageList
-        channelId="channel-1"
-        messages={mockMessages}
-        hasMore={true}
-      />
-    )
+    render(<MessageList channelId="channel-1" messages={mockMessages} hasMore={true} />)
 
     // Component should render without errors
     expect(document.querySelector('.relative.flex.h-full.flex-col')).toBeInTheDocument()
   })
 
   it('applies custom className', () => {
-    render(
-      <MessageList
-        channelId="channel-1"
-        messages={mockMessages}
-        className="custom-class"
-      />
-    )
+    render(<MessageList channelId="channel-1" messages={mockMessages} className="custom-class" />)
 
     expect(document.querySelector('.custom-class')).toBeInTheDocument()
   })

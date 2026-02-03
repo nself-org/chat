@@ -3,14 +3,7 @@
 import * as React from 'react'
 import { useState, useMemo, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  LayoutGrid,
-  List,
-  Plus,
-  Hash,
-  RefreshCw,
-  Loader2,
-} from 'lucide-react'
+import { LayoutGrid, List, Plus, Hash, RefreshCw, Loader2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -170,9 +163,9 @@ export function ChannelBrowser({
     if (filteredChannels.length === 0) {
       return (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-          <Hash className="h-12 w-12 text-muted-foreground/50 mb-4" />
-          <h3 className="text-lg font-medium mb-2">No channels found</h3>
-          <p className="text-sm text-muted-foreground mb-4">
+          <Hash className="text-muted-foreground/50 mb-4 h-12 w-12" />
+          <h3 className="mb-2 text-lg font-medium">No channels found</h3>
+          <p className="mb-4 text-sm text-muted-foreground">
             {searchQuery
               ? `No channels match "${searchQuery}"`
               : 'Try adjusting your filters or create a new channel'}
@@ -205,7 +198,7 @@ export function ChannelBrowser({
     }
 
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {filteredChannels.map((channel) => (
           <ChannelCard
             key={channel.id}
@@ -223,12 +216,10 @@ export function ChannelBrowser({
   return (
     <div className={cn('space-y-6', className)}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold">Channel Browser</h1>
-          <p className="text-muted-foreground">
-            Discover and join channels that interest you
-          </p>
+          <p className="text-muted-foreground">Discover and join channels that interest you</p>
         </div>
         <div className="flex items-center gap-2">
           {onRefresh && (
@@ -260,9 +251,7 @@ export function ChannelBrowser({
           <TabsList>
             <TabsTrigger value="discover">Discover</TabsTrigger>
             <TabsTrigger value="browse">Browse All</TabsTrigger>
-            {showCategories && (
-              <TabsTrigger value="categories">Categories</TabsTrigger>
-            )}
+            {showCategories && <TabsTrigger value="categories">Categories</TabsTrigger>}
           </TabsList>
 
           {activeTab === 'browse' && (
@@ -288,7 +277,7 @@ export function ChannelBrowser({
         </div>
 
         {/* Discover Tab */}
-        <TabsContent value="discover" className="space-y-8 mt-6">
+        <TabsContent value="discover" className="mt-6 space-y-8">
           {showSuggestions && user && (
             <ChannelSuggestions
               channels={channels}
@@ -350,13 +339,8 @@ export function ChannelBrowser({
         </TabsContent>
 
         {/* Browse Tab */}
-        <TabsContent value="browse" className="space-y-4 mt-6">
-          {showFilters && (
-            <ChannelFilters
-              filters={filters}
-              onFiltersChange={setFilters}
-            />
-          )}
+        <TabsContent value="browse" className="mt-6 space-y-4">
+          {showFilters && <ChannelFilters filters={filters} onFiltersChange={setFilters} />}
 
           {showCategories && (
             <ChannelCategories
@@ -371,11 +355,7 @@ export function ChannelBrowser({
           <div className="flex items-center justify-between text-sm text-muted-foreground">
             <span>{filteredChannels.length} channels</span>
             {searchQuery && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSearchQuery('')}
-              >
+              <Button variant="ghost" size="sm" onClick={() => setSearchQuery('')}>
                 Clear search
               </Button>
             )}

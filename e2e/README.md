@@ -1,8 +1,9 @@
-/**
- * E2E Tests README
- *
- * Comprehensive E2E test suite for nself-chat application using Playwright.
- */
+/\*\*
+
+- E2E Tests README
+-
+- Comprehensive E2E test suite for nself-chat application using Playwright.
+  \*/
 
 # E2E Test Suite
 

@@ -6,7 +6,14 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
 import { useAuth } from '@/contexts/auth-context'
 
 export default function SignUpPage() {
@@ -57,7 +64,7 @@ export default function SignUpPage() {
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             {error && (
-              <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+              <div className="bg-destructive/10 rounded-md p-3 text-sm text-destructive">
                 {error}
               </div>
             )}
@@ -106,9 +113,7 @@ export default function SignUpPage() {
                 required
                 disabled={loading}
               />
-              <p className="text-xs text-muted-foreground">
-                Must be at least 8 characters
-              </p>
+              <p className="text-xs text-muted-foreground">Must be at least 8 characters</p>
             </div>
           </CardContent>
           <CardFooter className="flex flex-col space-y-2">

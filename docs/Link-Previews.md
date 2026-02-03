@@ -5,12 +5,14 @@ Complete implementation of rich link previews with Open Graph metadata extractio
 ## Features
 
 ### Auto-Detection
+
 - ✅ Automatic URL detection in message content
 - ✅ Extracts up to 2-3 URLs per message (configurable)
 - ✅ Real-time preview fetching as messages are sent
 - ✅ Smart URL pattern matching
 
 ### Metadata Extraction
+
 - ✅ Open Graph protocol support (title, description, images, videos)
 - ✅ Twitter Card metadata
 - ✅ Fallback to basic HTML meta tags
@@ -19,6 +21,7 @@ Complete implementation of rich link previews with Open Graph metadata extractio
 - ✅ Author and publication date
 
 ### Platform-Specific Handlers
+
 - ✅ YouTube video previews with thumbnails
 - ✅ GitHub repository and issue/PR previews
 - ✅ Twitter/X post previews
@@ -27,6 +30,7 @@ Complete implementation of rich link previews with Open Graph metadata extractio
 - ✅ Direct image and video URL handling
 
 ### Security & Performance
+
 - ✅ SSRF protection (blocks private IPs and localhost)
 - ✅ Rate limiting per domain (10 requests/minute)
 - ✅ Client rate limiting (30 requests/minute)
@@ -36,6 +40,7 @@ Complete implementation of rich link previews with Open Graph metadata extractio
 - ✅ Blocked ports protection
 
 ### User Controls
+
 - ✅ Privacy mode to hide/show previews
 - ✅ Dismiss individual previews
 - ✅ Disable auto-unfurl option
@@ -142,8 +147,7 @@ The LinkPreview component automatically detects and displays previews for URLs i
 
 ```tsx
 import { MessageContent } from '@/components/chat/message-content'
-
-<MessageContent
+;<MessageContent
   content="Check out this article: https://example.com/article"
   showLinkPreviews={true} // Default: true
 />
@@ -155,8 +159,7 @@ You can also render previews manually:
 
 ```tsx
 import { LinkPreview } from '@/components/chat/LinkPreview'
-
-<LinkPreview
+;<LinkPreview
   content="https://github.com/vercel/next.js"
   maxPreviews={3}
   autoFetch={true}
@@ -242,6 +245,7 @@ CLIENT_RATE_LIMIT: 30 requests/minute
 ### SSRF Protection
 
 Automatically blocks:
+
 - Private IP ranges (10.x.x.x, 172.16-31.x.x, 192.168.x.x)
 - Loopback addresses (127.x.x.x, ::1)
 - Link-local addresses (169.254.x.x)
@@ -296,30 +300,35 @@ interface LinkPreviewData {
 ## Platform-Specific Features
 
 ### YouTube
+
 - Video ID extraction
 - Thumbnail URLs (hqdefault)
 - Embed URLs
 - Channel information (when available)
 
 ### GitHub
+
 - Repository previews with stars/forks
 - Issue and PR previews with state
 - User/organization information
 - OpenGraph images from GitHub CDN
 
 ### Twitter/X
+
 - Tweet ID and author extraction
 - oEmbed support
 - User verification badges
 - Media attachments
 
 ### Spotify
+
 - Track, album, playlist, artist previews
 - Embed URLs for playback
 - Album artwork
 - Artist information
 
 ### Code Snippets
+
 - GitHub Gist
 - CodePen
 - CodeSandbox
@@ -330,24 +339,28 @@ interface LinkPreviewData {
 The system handles various error conditions gracefully:
 
 ### Network Errors
+
 - Timeout (10 second limit)
 - DNS resolution failures
 - Connection refused
 - SSL/TLS errors
 
 ### Content Errors
+
 - Response too large (5MB limit)
 - Non-HTML content type
 - Missing metadata
 - Malformed HTML
 
 ### Security Errors
+
 - Private IP addresses
 - Blocked domains
 - SSRF attempts
 - Blocked ports
 
 ### Rate Limiting
+
 - Per-domain rate limits
 - Per-client rate limits
 - Automatic retry-after headers
@@ -355,12 +368,14 @@ The system handles various error conditions gracefully:
 ## Caching Strategy
 
 ### Server-Side Cache
+
 - In-memory cache (use Redis in production)
 - 1 hour default TTL
 - LRU eviction (max 1000 entries)
 - Automatic cache size management
 
 ### Client-Side Cache
+
 - Browser cache via Cache-Control headers
 - 1 hour max-age
 - Stale-while-revalidate for 24 hours
@@ -369,12 +384,14 @@ The system handles various error conditions gracefully:
 ## Performance
 
 ### Optimizations
+
 - Concurrent preview fetching (max 5 parallel)
 - Lazy image loading
 - Progressive preview rendering
 - Cache hits avoid network requests
 
 ### Metrics
+
 - Average fetch time: 200-500ms
 - Cache hit rate: ~80% (typical)
 - Memory usage: ~10KB per cached preview
@@ -421,18 +438,21 @@ describe('URL Unfurler', () => {
 ## Production Considerations
 
 ### Scaling
+
 - Replace in-memory cache with Redis
 - Use CDN for preview images
 - Implement distributed rate limiting
 - Add monitoring and logging
 
 ### Security
+
 - Regular security audits
 - Update SSRF protection rules
 - Monitor for abuse patterns
 - Implement IP allowlists
 
 ### Performance
+
 - Enable HTTP/2 for parallel fetches
 - Optimize image processing
 - Implement preview pre-caching
@@ -441,23 +461,27 @@ describe('URL Unfurler', () => {
 ## Troubleshooting
 
 ### Preview Not Loading
+
 1. Check network tab for API errors
 2. Verify URL is accessible
 3. Check rate limits
 4. Inspect browser console for errors
 
 ### SSRF Errors
+
 1. Verify URL is not private IP
 2. Check blocked domains list
 3. Ensure port is allowed
 
 ### Slow Performance
+
 1. Check cache hit rate
 2. Verify network latency
 3. Monitor API response times
 4. Check concurrent request limits
 
 ### Missing Metadata
+
 1. Verify site has Open Graph tags
 2. Check robots.txt for bot blocking
 3. Verify User-Agent is allowed

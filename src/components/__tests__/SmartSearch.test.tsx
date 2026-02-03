@@ -25,7 +25,9 @@ jest.mock('date-fns', () => ({
 // TEST DATA
 // ============================================================================
 
-const createMockSearchableMessage = (overrides: Partial<SearchableMessage> = {}): SearchableMessage => ({
+const createMockSearchableMessage = (
+  overrides: Partial<SearchableMessage> = {}
+): SearchableMessage => ({
   id: `msg-${Math.random().toString(36).substr(2, 9)}`,
   content: 'This is a test message',
   userId: 'user-1',

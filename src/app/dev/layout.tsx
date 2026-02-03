@@ -102,7 +102,7 @@ function Sidebar({
         {/* Header */}
         <div className="border-b p-4">
           <Link href="/dev" className="flex items-center gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <div className="text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <Code2 className="h-4 w-4" />
             </div>
             <div>
@@ -145,7 +145,7 @@ function Sidebar({
                           className={cn(
                             'flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors',
                             isActive
-                              ? 'bg-primary/10 text-primary font-medium'
+                              ? 'bg-primary/10 font-medium text-primary'
                               : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                           )}
                         >
@@ -171,12 +171,7 @@ function Sidebar({
         <div className="border-t p-4">
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">Theme</span>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onThemeToggle}
-              className="h-8 gap-2"
-            >
+            <Button variant="ghost" size="sm" onClick={onThemeToggle} className="h-8 gap-2">
               {theme === 'dark' ? (
                 <>
                   <Moon className="h-4 w-4" />
@@ -205,9 +200,7 @@ function DevBanner() {
     <div className="fixed left-64 right-0 top-0 z-30 border-b bg-amber-500/10 px-4 py-2">
       <div className="flex items-center justify-center gap-2 text-sm text-amber-600 dark:text-amber-400">
         <Sparkles className="h-4 w-4" />
-        <span>
-          Development Mode Only - These pages are not available in production
-        </span>
+        <span>Development Mode Only - These pages are not available in production</span>
       </div>
     </div>
   )
@@ -217,11 +210,7 @@ function DevBanner() {
 // Layout Component
 // ============================================================================
 
-export default function DevLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function DevLayout({ children }: { children: React.ReactNode }) {
   const [searchQuery, setSearchQuery] = useState('')
   const [theme, setTheme] = useState<'light' | 'dark'>('dark')
 
@@ -248,9 +237,7 @@ export default function DevLayout({
       />
       <DevBanner />
       <main className="ml-64 pt-10">
-        <div className="container max-w-5xl py-8">
-          {children}
-        </div>
+        <div className="container max-w-5xl py-8">{children}</div>
       </main>
     </div>
   )

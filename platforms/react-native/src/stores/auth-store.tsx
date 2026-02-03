@@ -2,7 +2,14 @@
  * Auth Store - Authentication state management
  */
 
-import React, { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  ReactNode,
+} from 'react'
 import { MMKV } from 'react-native-mmkv'
 
 import { STORAGE_KEYS } from '@shared/constants'
@@ -154,25 +161,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [])
 
-  const updateUser = useCallback(async (updates: Partial<User>) => {
-    if (!state.user) return
+  const updateUser = useCallback(
+    async (updates: Partial<User>) => {
+      if (!state.user) return
 
-    try {
-      // API call would go here
-      const updatedUser = { ...state.user, ...updates, updatedAt: new Date() }
+      try {
+        // API call would go here
+        const updatedUser = { ...state.user, ...updates, updatedAt: new Date() }
 
-      // Update stored user
-      storage.set(STORAGE_KEYS.USER, JSON.stringify(updatedUser))
+        // Update stored user
+        storage.set(STORAGE_KEYS.USER, JSON.stringify(updatedUser))
 
-      setState((prev) => ({
-        ...prev,
-        user: updatedUser,
-      }))
-    } catch (error) {
-      console.error('Update user failed:', error)
-      throw error
-    }
-  }, [state.user])
+        setState((prev) => ({
+          ...prev,
+          user: updatedUser,
+        }))
+      } catch (error) {
+        console.error('Update user failed:', error)
+        throw error
+      }
+    },
+    [state.user]
+  )
 
   const refreshToken = useCallback(async () => {
     try {

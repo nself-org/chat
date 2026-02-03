@@ -88,11 +88,7 @@ export {
 export type { FetchOptions } from './preview-fetcher'
 
 // Cache
-export {
-  PreviewCache,
-  getPreviewCache,
-  configurePreviewCache,
-} from './preview-cache'
+export { PreviewCache, getPreviewCache, configurePreviewCache } from './preview-cache'
 
 // Parsers
 export {

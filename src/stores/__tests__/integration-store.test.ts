@@ -206,9 +206,7 @@ describe('Integration Store', () => {
   describe('Connection Status', () => {
     beforeEach(() => {
       act(() => {
-        useIntegrationStore.getState().setIntegration(
-          createMockIntegration({ id: 'slack' })
-        )
+        useIntegrationStore.getState().setIntegration(createMockIntegration({ id: 'slack' }))
       })
     })
 
@@ -306,9 +304,9 @@ describe('Integration Store', () => {
   describe('Sync Status', () => {
     beforeEach(() => {
       act(() => {
-        useIntegrationStore.getState().setIntegration(
-          createMockIntegration({ id: 'slack', status: 'connected' })
-        )
+        useIntegrationStore
+          .getState()
+          .setIntegration(createMockIntegration({ id: 'slack', status: 'connected' }))
       })
     })
 
@@ -376,9 +374,7 @@ describe('Integration Store', () => {
   describe('Settings', () => {
     beforeEach(() => {
       act(() => {
-        useIntegrationStore.getState().setIntegration(
-          createMockIntegration({ id: 'slack' })
-        )
+        useIntegrationStore.getState().setIntegration(createMockIntegration({ id: 'slack' }))
       })
     })
 
@@ -555,11 +551,13 @@ describe('Integration Store', () => {
   describe('Utility Methods', () => {
     beforeEach(() => {
       act(() => {
-        useIntegrationStore.getState().setIntegrations([
-          createMockIntegration({ id: 'slack', category: 'communication', status: 'connected' }),
-          createMockIntegration({ id: 'github', category: 'devtools', status: 'connected' }),
-          createMockIntegration({ id: 'jira', category: 'productivity', status: 'disconnected' }),
-        ])
+        useIntegrationStore
+          .getState()
+          .setIntegrations([
+            createMockIntegration({ id: 'slack', category: 'communication', status: 'connected' }),
+            createMockIntegration({ id: 'github', category: 'devtools', status: 'connected' }),
+            createMockIntegration({ id: 'jira', category: 'productivity', status: 'disconnected' }),
+          ])
       })
     })
 
@@ -577,9 +575,7 @@ describe('Integration Store', () => {
 
     describe('getIntegrationsByCategory', () => {
       it('should get integrations by category', () => {
-        const integrations = useIntegrationStore
-          .getState()
-          .getIntegrationsByCategory('devtools')
+        const integrations = useIntegrationStore.getState().getIntegrationsByCategory('devtools')
 
         expect(integrations).toHaveLength(1)
         expect(integrations[0].id).toBe('github')
@@ -588,9 +584,7 @@ describe('Integration Store', () => {
 
     describe('getIntegrationsByStatus', () => {
       it('should get integrations by status', () => {
-        const connected = useIntegrationStore
-          .getState()
-          .getIntegrationsByStatus('connected')
+        const connected = useIntegrationStore.getState().getIntegrationsByStatus('connected')
 
         expect(connected).toHaveLength(2)
       })
@@ -612,10 +606,12 @@ describe('Integration Store', () => {
   describe('Selectors', () => {
     beforeEach(() => {
       act(() => {
-        useIntegrationStore.getState().setIntegrations([
-          createMockIntegration({ id: 'slack', status: 'connected' }),
-          createMockIntegration({ id: 'github', status: 'disconnected' }),
-        ])
+        useIntegrationStore
+          .getState()
+          .setIntegrations([
+            createMockIntegration({ id: 'slack', status: 'connected' }),
+            createMockIntegration({ id: 'github', status: 'disconnected' }),
+          ])
         useIntegrationStore.getState().setSettings('slack', createMockSettings('slack'))
         useIntegrationStore.getState().startSync('slack')
         useIntegrationStore.getState().selectIntegration('slack')
@@ -681,9 +677,7 @@ describe('Integration Store', () => {
   describe('Reset', () => {
     it('should reset store to initial state', () => {
       act(() => {
-        useIntegrationStore.getState().setIntegration(
-          createMockIntegration({ id: 'slack' })
-        )
+        useIntegrationStore.getState().setIntegration(createMockIntegration({ id: 'slack' }))
         useIntegrationStore.getState().setLoading(true)
         useIntegrationStore.getState().setGlobalError('Error')
         useIntegrationStore.getState().reset()

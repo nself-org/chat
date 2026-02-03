@@ -180,9 +180,7 @@ describe('ScreenCaptureManager', () => {
       const onError = jest.fn()
       const manager = createScreenCaptureManager({ onError })
 
-      await expect(
-        manager.startCapture('user-1', 'User One')
-      ).rejects.toThrow('Permission denied')
+      await expect(manager.startCapture('user-1', 'User One')).rejects.toThrow('Permission denied')
 
       expect(onError).toHaveBeenCalledWith(error)
     })
@@ -295,7 +293,8 @@ describe('Utility Functions', () => {
     it('should detect Chrome', () => {
       const originalUserAgent = navigator.userAgent
       Object.defineProperty(navigator, 'userAgent', {
-        value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        value:
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         writable: true,
       })
       Object.defineProperty(navigator, 'vendor', {

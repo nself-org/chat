@@ -36,11 +36,11 @@ nself-chat includes powerful AI features for message summarization and smart sea
 
 ### Supported AI Providers
 
-| Provider | Summarization | Semantic Search | Configuration |
-|----------|--------------|-----------------|---------------|
-| **OpenAI** | ✅ GPT-4o-mini | ✅ text-embedding-3-small | API key required |
-| **Anthropic** | ✅ Claude 3.5 Haiku | ⚠️ Fallback to local | API key required |
-| **Local** | ⚠️ Basic summary | ⚠️ Keyword search | No configuration needed |
+| Provider      | Summarization       | Semantic Search           | Configuration           |
+| ------------- | ------------------- | ------------------------- | ----------------------- |
+| **OpenAI**    | ✅ GPT-4o-mini      | ✅ text-embedding-3-small | API key required        |
+| **Anthropic** | ✅ Claude 3.5 Haiku | ⚠️ Fallback to local      | API key required        |
+| **Local**     | ⚠️ Basic summary    | ⚠️ Keyword search         | No configuration needed |
 
 > **Note**: Anthropic doesn't currently provide a dedicated embeddings API, so semantic search falls back to local embeddings when using Anthropic for summarization.
 
@@ -110,7 +110,7 @@ Quick 1-2 sentence overview of messages:
 ```typescript
 const summary = await summarizer.summarizeMessages(messages, {
   style: 'brief',
-  maxLength: 200
+  maxLength: 200,
 })
 ```
 
@@ -161,10 +161,10 @@ const catchUp = await summarizer.generateCatchUpSummary(messages)
 
 ```typescript
 interface SummaryOptions {
-  maxLength?: number        // Max tokens (default: 500)
+  maxLength?: number // Max tokens (default: 500)
   style?: 'brief' | 'detailed' | 'bullets'
   includeKeyPoints?: boolean
-  language?: string         // Future: multi-language support
+  language?: string // Future: multi-language support
 }
 ```
 
@@ -189,13 +189,13 @@ function MyComponent() {
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `messages` | `Message[]` | **required** | Messages to summarize |
-| `type` | `'brief' \| 'digest' \| 'thread' \| 'catchup'` | `'brief'` | Summary type |
-| `className` | `string` | - | Additional CSS classes |
-| `autoGenerate` | `boolean` | `false` | Auto-generate on mount |
-| `onSummaryGenerated` | `(summary: string) => void` | - | Callback when generated |
+| Prop                 | Type                                           | Default      | Description             |
+| -------------------- | ---------------------------------------------- | ------------ | ----------------------- |
+| `messages`           | `Message[]`                                    | **required** | Messages to summarize   |
+| `type`               | `'brief' \| 'digest' \| 'thread' \| 'catchup'` | `'brief'`    | Summary type            |
+| `className`          | `string`                                       | -            | Additional CSS classes  |
+| `autoGenerate`       | `boolean`                                      | `false`      | Auto-generate on mount  |
+| `onSummaryGenerated` | `(summary: string) => void`                    | -            | Callback when generated |
 
 ---
 
@@ -217,35 +217,32 @@ console.log(`Semantic search: ${search.getProvider() !== 'local'}`)
 ### Search API
 
 ```typescript
-const results = await search.search(
-  'discussion about authentication bug',
-  messages,
-  {
-    limit: 20,
-    threshold: 0.7,
-    includeContext: true,
-    contextSize: 2,
-    filters: {
-      channelId: 'channel-123',
-      userId: 'user-456',
-      dateFrom: new Date('2025-01-01'),
-      dateTo: new Date('2025-01-31'),
-      hasThread: true
-    },
-    rankBy: 'hybrid'  // 'relevance' | 'date' | 'hybrid'
-  }
-)
+const results = await search.search('discussion about authentication bug', messages, {
+  limit: 20,
+  threshold: 0.7,
+  includeContext: true,
+  contextSize: 2,
+  filters: {
+    channelId: 'channel-123',
+    userId: 'user-456',
+    dateFrom: new Date('2025-01-01'),
+    dateTo: new Date('2025-01-31'),
+    hasThread: true,
+  },
+  rankBy: 'hybrid', // 'relevance' | 'date' | 'hybrid'
+})
 ```
 
 ### Search Result Structure
 
 ```typescript
 interface SearchResult {
-  message: SearchableMessage    // The matched message
-  score: number                 // Relevance score (0-1)
+  message: SearchableMessage // The matched message
+  score: number // Relevance score (0-1)
   matchType: 'semantic' | 'keyword' | 'exact'
-  highlights?: string[]         // Highlighted excerpts
-  context?: {                   // Surrounding messages
+  highlights?: string[] // Highlighted excerpts
+  context?: {
+    // Surrounding messages
     before?: SearchableMessage[]
     after?: SearchableMessage[]
   }
@@ -254,21 +251,23 @@ interface SearchResult {
 
 ### Ranking Strategies
 
-| Strategy | Description | Best For |
-|----------|-------------|----------|
-| **relevance** | Sort by similarity score | Finding most relevant content |
-| **date** | Sort by recency | Finding recent mentions |
-| **hybrid** | Combine relevance (70%) + recency (30%) | Balanced results |
+| Strategy      | Description                             | Best For                      |
+| ------------- | --------------------------------------- | ----------------------------- |
+| **relevance** | Sort by similarity score                | Finding most relevant content |
+| **date**      | Sort by recency                         | Finding recent mentions       |
+| **hybrid**    | Combine relevance (70%) + recency (30%) | Balanced results              |
 
 ### Semantic vs. Keyword Search
 
 **Semantic Search** (OpenAI embeddings):
+
 - Understands meaning and context
 - Finds conceptually similar messages
 - Handles synonyms and paraphrasing
 - Example: "login issues" matches "authentication problems"
 
 **Keyword Search** (Fallback):
+
 - Exact and partial word matching
 - Fast and reliable
 - No API costs
@@ -296,16 +295,17 @@ function MyComponent() {
 
 **Props:**
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `messages` | `SearchableMessage[]` | **required** | Searchable messages |
-| `onMessageClick` | `(message: SearchableMessage) => void` | - | Click handler |
-| `placeholder` | `string` | `'Search messages with AI...'` | Input placeholder |
-| `className` | `string` | - | Additional CSS classes |
-| `showFilters` | `boolean` | `true` | Show filter controls |
-| `autoFocus` | `boolean` | `false` | Auto-focus on mount |
+| Prop             | Type                                   | Default                        | Description            |
+| ---------------- | -------------------------------------- | ------------------------------ | ---------------------- |
+| `messages`       | `SearchableMessage[]`                  | **required**                   | Searchable messages    |
+| `onMessageClick` | `(message: SearchableMessage) => void` | -                              | Click handler          |
+| `placeholder`    | `string`                               | `'Search messages with AI...'` | Input placeholder      |
+| `className`      | `string`                               | -                              | Additional CSS classes |
+| `showFilters`    | `boolean`                              | `true`                         | Show filter controls   |
+| `autoFocus`      | `boolean`                              | `false`                        | Auto-focus on mount    |
 
 **Features:**
+
 - Debounced search (300ms)
 - Keyboard navigation (arrow keys, Enter, Escape)
 - Advanced filtering UI
@@ -321,6 +321,7 @@ function MyComponent() {
 Generate message summaries server-side.
 
 **Request:**
+
 ```json
 {
   "messages": [
@@ -341,17 +342,23 @@ Generate message summaries server-side.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
   "summary": "Discussion about...",
-  "digest": { /* ChannelDigest */ },
-  "threadSummary": { /* ThreadSummary */ },
+  "digest": {
+    /* ChannelDigest */
+  },
+  "threadSummary": {
+    /* ThreadSummary */
+  },
   "provider": "openai"
 }
 ```
 
 **Limits:**
+
 - Maximum 500 messages per request
 - Rate limiting recommended
 
@@ -360,10 +367,13 @@ Generate message summaries server-side.
 Perform semantic search server-side.
 
 **Request:**
+
 ```json
 {
   "query": "authentication bug",
-  "messages": [ /* SearchableMessage[] */ ],
+  "messages": [
+    /* SearchableMessage[] */
+  ],
   "options": {
     "limit": 20,
     "threshold": 0.7,
@@ -373,10 +383,13 @@ Perform semantic search server-side.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
-  "results": [ /* SearchResult[] */ ],
+  "results": [
+    /* SearchResult[] */
+  ],
   "count": 15,
   "provider": "openai",
   "isSemanticSearch": true
@@ -384,6 +397,7 @@ Perform semantic search server-side.
 ```
 
 **Limits:**
+
 - Maximum 10,000 messages per request
 - Query minimum: 2 characters
 
@@ -392,6 +406,7 @@ Perform semantic search server-side.
 Check AI feature availability.
 
 **Response:**
+
 ```json
 {
   "summarization": {
@@ -427,7 +442,7 @@ async function generateDailyDigest(channelId: string) {
 
   const messages = await fetchMessages({
     channelId,
-    dateFrom: today
+    dateFrom: today,
   })
 
   const summarizer = getMessageSummarizer()
@@ -452,7 +467,7 @@ export function ChatSearch() {
   const { messages } = useMessages()
   const [selectedMessage, setSelectedMessage] = useState(null)
 
-  const searchableMessages = messages.map(msg => ({
+  const searchableMessages = messages.map((msg) => ({
     id: msg.id,
     content: msg.content,
     userId: msg.userId,
@@ -489,11 +504,7 @@ export function ThreadView({ threadMessages }: { threadMessages: Message[] }) {
   return (
     <div>
       {shouldShowSummary && (
-        <MessageSummary
-          messages={threadMessages}
-          type="thread"
-          autoGenerate={true}
-        />
+        <MessageSummary messages={threadMessages} type="thread" autoGenerate={true} />
       )}
 
       <MessageList messages={threadMessages} />
@@ -515,7 +526,7 @@ async function getCatchUpSummary(userId: string, channelId: string) {
   const missedMessages = await fetchMessages({
     channelId,
     dateFrom: lastSeen,
-    dateTo: new Date()
+    dateTo: new Date(),
   })
 
   if (missedMessages.length === 0) {
@@ -536,16 +547,19 @@ async function getCatchUpSummary(userId: string, channelId: string) {
 When no AI API keys are configured, the system automatically falls back to local implementations:
 
 **Summarization:**
+
 - Generates basic statistical summaries
 - Shows participant count, message count, time range
 - Displays recent messages
 
 **Search:**
+
 - Uses keyword-based search
 - Supports exact phrase matching
 - Includes partial word matching
 
 **User Experience:**
+
 - All UI components work normally
 - Badge shows "Basic" instead of "AI"
 - No error messages shown to users
@@ -566,12 +580,14 @@ try {
 ```
 
 **Failure Scenarios:**
+
 - API rate limits exceeded
 - Network connectivity issues
 - Invalid API keys
 - Service outages
 
 **Automatic Recovery:**
+
 - Falls back to local implementations
 - Logs errors to Sentry
 - No user-visible errors
@@ -584,6 +600,7 @@ try {
 ### Caching
 
 **Embedding Cache:**
+
 - Stores up to 1,000 recent embeddings
 - LRU eviction policy
 - Based on first 100 characters
@@ -604,12 +621,13 @@ search.clearCache()
 
 **Recommended Limits:**
 
-| Feature | Requests/min | Requests/hour |
-|---------|-------------|---------------|
-| Summarization | 10 | 100 |
-| Search | 30 | 300 |
+| Feature       | Requests/min | Requests/hour |
+| ------------- | ------------ | ------------- |
+| Summarization | 10           | 100           |
+| Search        | 30           | 300           |
 
 **Implementation:**
+
 ```typescript
 // Example rate limiter (implement in middleware)
 import { Ratelimit } from '@upstash/ratelimit'
@@ -630,10 +648,10 @@ if (!success) {
 
 **OpenAI Costs (Approximate):**
 
-| Operation | Model | Cost per 1K tokens |
-|-----------|-------|-------------------|
-| Summarization | gpt-4o-mini | $0.00015 (input) + $0.0006 (output) |
-| Embeddings | text-embedding-3-small | $0.00002 |
+| Operation     | Model                  | Cost per 1K tokens                  |
+| ------------- | ---------------------- | ----------------------------------- |
+| Summarization | gpt-4o-mini            | $0.00015 (input) + $0.0006 (output) |
+| Embeddings    | text-embedding-3-small | $0.00002                            |
 
 **Tips to Reduce Costs:**
 
@@ -652,12 +670,14 @@ const summary = await summarizer.summarizeMessages(recentMessages)
 ### Client vs. Server
 
 **Client-Side AI:**
+
 - Fast for interactive features
 - Requires exposing API keys (use `NEXT_PUBLIC_*`)
 - Harder to rate limit
 - Good for: Real-time search
 
 **Server-Side AI:**
+
 - Better security (no exposed keys)
 - Easy to rate limit
 - Better caching opportunities
@@ -670,21 +690,25 @@ const summary = await summarizer.summarizeMessages(recentMessages)
 ### Common Issues
 
 **1. "AI features not working"**
+
 - Check API keys are set in `.env.local`
 - Verify keys are valid
 - Check `/api/ai/status` endpoint
 
 **2. "Semantic search not available"**
+
 - OpenAI key required for embeddings
 - Anthropic doesn't support embeddings yet
 - Falls back to keyword search automatically
 
 **3. "Rate limit exceeded"**
+
 - Implement caching
 - Reduce request frequency
 - Consider upgrading API plan
 
 **4. "Summaries are low quality"**
+
 - Using local fallback (no API key)
 - Configure OpenAI or Anthropic API key
 - Increase `maxLength` in options
@@ -699,14 +723,14 @@ useEffect(() => {
   const summarizer = getMessageSummarizer()
   console.log('Summarizer:', {
     available: summarizer.available(),
-    provider: summarizer.getProvider()
+    provider: summarizer.getProvider(),
   })
 
   const search = getSmartSearch()
   console.log('Search:', {
     available: search.available(),
     provider: search.getProvider(),
-    semantic: search.getProvider() !== 'local'
+    semantic: search.getProvider() !== 'local',
   })
 }, [])
 ```

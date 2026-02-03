@@ -8,6 +8,8 @@
 import { isRetryableError, parseError, AppError } from './error-types'
 import { addSentryBreadcrumb } from '@/lib/sentry-utils'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Retry Configuration
 // ============================================================================
@@ -77,10 +79,7 @@ class CircuitBreaker {
     // Check circuit state
     if (this.state === CircuitState.OPEN) {
       // Check if we should transition to half-open
-      if (
-        this.lastFailureTime &&
-        Date.now() - this.lastFailureTime >= this.resetTimeMs
-      ) {
+      if (this.lastFailureTime && Date.now() - this.lastFailureTime >= this.resetTimeMs) {
         this.state = CircuitState.HALF_OPEN
         addSentryBreadcrumb(
           'circuit_breaker',
@@ -173,10 +172,7 @@ export class RetryManager {
   /**
    * Execute function with retry logic
    */
-  async execute<T>(
-    fn: () => Promise<T>,
-    operationName?: string
-  ): Promise<T> {
+  async execute<T>(fn: () => Promise<T>, operationName?: string): Promise<T> {
     const startTime = Date.now()
     let lastError: AppError | undefined
 
@@ -247,10 +243,7 @@ export class RetryManager {
    */
   private calculateDelay(attempt: number): number {
     // Exponential backoff: initialDelay * (multiplier ^ (attempt - 1))
-    let delay = this.config.initialDelayMs * Math.pow(
-      this.config.backoffMultiplier,
-      attempt - 1
-    )
+    let delay = this.config.initialDelayMs * Math.pow(this.config.backoffMultiplier, attempt - 1)
 
     // Cap at max delay
     delay = Math.min(delay, this.config.maxDelayMs)
@@ -268,7 +261,7 @@ export class RetryManager {
    * Sleep for specified milliseconds
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
+    return new Promise((resolve) => setTimeout(resolve, ms))
   }
 
   /**
@@ -300,10 +293,7 @@ export function createRetryManager(config?: RetryConfig): RetryManager {
 /**
  * Execute with retry using default config
  */
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  config?: RetryConfig
-): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, config?: RetryConfig): Promise<T> {
   const manager = new RetryManager(config)
   return manager.execute(fn)
 }
@@ -311,9 +301,7 @@ export async function withRetry<T>(
 /**
  * Execute with aggressive retry (more attempts, shorter delays)
  */
-export async function withAggressiveRetry<T>(
-  fn: () => Promise<T>
-): Promise<T> {
+export async function withAggressiveRetry<T>(fn: () => Promise<T>): Promise<T> {
   const manager = new RetryManager({
     maxAttempts: 5,
     initialDelayMs: 500,
@@ -326,9 +314,7 @@ export async function withAggressiveRetry<T>(
 /**
  * Execute with conservative retry (fewer attempts, longer delays)
  */
-export async function withConservativeRetry<T>(
-  fn: () => Promise<T>
-): Promise<T> {
+export async function withConservativeRetry<T>(fn: () => Promise<T>): Promise<T> {
   const manager = new RetryManager({
     maxAttempts: 2,
     initialDelayMs: 2000,
@@ -365,21 +351,14 @@ export interface RetryOptions {
  * Decorator to add retry logic to async methods
  */
 export function Retry(options?: RetryOptions) {
-  return function (
-    target: unknown,
-    propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) {
+  return function (target: unknown, propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value
 
     descriptor.value = async function (...args: unknown[]) {
       const manager = new RetryManager(options?.config)
       const operationName = options?.operationName || propertyKey
 
-      return manager.execute(
-        () => originalMethod.apply(this, args),
-        operationName
-      )
+      return manager.execute(() => originalMethod.apply(this, args), operationName)
     }
 
     return descriptor
@@ -417,11 +396,7 @@ export class OfflineQueue {
   /**
    * Add operation to queue
    */
-  enqueue<T>(
-    fn: () => Promise<T>,
-    operationName: string,
-    maxRetries = 3
-  ): string {
+  enqueue<T>(fn: () => Promise<T>, operationName: string, maxRetries = 3): string {
     const id = this.generateId()
     const operation: QueuedOperation<T> = {
       id,
@@ -534,7 +509,7 @@ export class OfflineQueue {
       )
       localStorage.setItem(this.STORAGE_KEY, serialized)
     } catch (error) {
-      console.error('Failed to save offline queue:', error)
+      logger.error('Failed to save offline queue:', error)
     }
   }
 
@@ -553,7 +528,7 @@ export class OfflineQueue {
       // for showing queued operation count to users
       // In practice, operations should be re-queued on app restart
     } catch (error) {
-      console.error('Failed to load offline queue:', error)
+      logger.error('Failed to load offline queue:', error)
     }
   }
 }

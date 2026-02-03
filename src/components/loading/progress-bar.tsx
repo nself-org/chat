@@ -55,17 +55,13 @@ export function ProgressBar({
 }: ProgressBarProps) {
   const clampedValue = Math.min(100, Math.max(0, value))
 
-  const barColorClass =
-    variant === 'gradient' ? gradientClasses[color] : colorClasses[color]
+  const barColorClass = variant === 'gradient' ? gradientClasses[color] : colorClasses[color]
 
   return (
     <div className={cn('w-full', className)}>
       {/* Progress bar track */}
       <div
-        className={cn(
-          'w-full overflow-hidden rounded-full bg-muted',
-          sizeClasses[size]
-        )}
+        className={cn('w-full overflow-hidden rounded-full bg-muted', sizeClasses[size])}
         role="progressbar"
         aria-valuenow={indeterminate ? undefined : clampedValue}
         aria-valuemin={0}
@@ -75,10 +71,7 @@ export function ProgressBar({
         {indeterminate ? (
           // Indeterminate animation
           <div
-            className={cn(
-              'h-full w-1/3 animate-[slide_1s_ease-in-out_infinite]',
-              barColorClass
-            )}
+            className={cn('h-full w-1/3 animate-[slide_1s_ease-in-out_infinite]', barColorClass)}
           />
         ) : (
           // Determinate progress
@@ -87,7 +80,7 @@ export function ProgressBar({
               'h-full transition-all duration-300 ease-out',
               barColorClass,
               variant === 'striped' &&
-                'bg-[length:1rem_1rem] bg-[linear-gradient(45deg,rgba(255,255,255,.15)_25%,transparent_25%,transparent_50%,rgba(255,255,255,.15)_50%,rgba(255,255,255,.15)_75%,transparent_75%,transparent)]',
+                'bg-[linear-gradient(45deg,rgba(255,255,255,.15)_25%,transparent_25%,transparent_50%,rgba(255,255,255,.15)_50%,rgba(255,255,255,.15)_75%,transparent_75%,transparent)] bg-[length:1rem_1rem]',
               variant === 'animated' && 'animate-[shimmer_2s_infinite]'
             )}
             style={{ width: `${clampedValue}%` }}
@@ -97,9 +90,7 @@ export function ProgressBar({
 
       {/* Percentage text */}
       {showPercentage && !indeterminate && (
-        <p className="mt-1 text-right text-xs text-muted-foreground">
-          {Math.round(clampedValue)}%
-        </p>
+        <p className="mt-1 text-right text-xs text-muted-foreground">{Math.round(clampedValue)}%</p>
       )}
     </div>
   )
@@ -139,11 +130,7 @@ export function CircularProgress({
 
   return (
     <div className={cn('relative inline-flex', className)}>
-      <svg
-        width={size}
-        height={size}
-        className={cn(indeterminate && 'animate-spin')}
-      >
+      <svg width={size} height={size} className={cn(indeterminate && 'animate-spin')}>
         {/* Background circle */}
         <circle
           cx={size / 2}
@@ -168,7 +155,7 @@ export function CircularProgress({
           className={cn(
             strokeColors[color],
             'transition-all duration-300 ease-out',
-            '-rotate-90 origin-center'
+            'origin-center -rotate-90'
           )}
           style={{ transformOrigin: `${size / 2}px ${size / 2}px` }}
         />
@@ -213,10 +200,7 @@ export function StepProgress({
           const isUpcoming = index > currentStep
 
           return (
-            <div
-              key={index}
-              className="flex flex-1 flex-col items-center"
-            >
+            <div key={index} className="flex flex-1 flex-col items-center">
               {/* Step indicator */}
               <div className="flex w-full items-center">
                 {/* Connector line (before) */}
@@ -224,9 +208,7 @@ export function StepProgress({
                   <div
                     className={cn(
                       'h-0.5 flex-1 transition-colors',
-                      isCompleted || isCurrent
-                        ? 'bg-primary'
-                        : 'bg-muted'
+                      isCompleted || isCurrent ? 'bg-primary' : 'bg-muted'
                     )}
                   />
                 )}
@@ -237,7 +219,7 @@ export function StepProgress({
                     className={cn(
                       'h-3 w-3 shrink-0 rounded-full transition-colors',
                       isCompleted && 'bg-primary',
-                      isCurrent && 'bg-primary ring-4 ring-primary/20',
+                      isCurrent && 'ring-primary/20 bg-primary ring-4',
                       isUpcoming && 'bg-muted'
                     )}
                   />
@@ -245,8 +227,7 @@ export function StepProgress({
                   <div
                     className={cn(
                       'flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 text-xs font-semibold transition-colors',
-                      isCompleted &&
-                        'border-primary bg-primary text-primary-foreground',
+                      isCompleted && 'text-primary-foreground border-primary bg-primary',
                       isCurrent && 'border-primary bg-background text-primary',
                       isUpcoming && 'border-muted bg-background text-muted-foreground'
                     )}
@@ -287,9 +268,7 @@ export function StepProgress({
                 <p
                   className={cn(
                     'mt-2 text-xs transition-colors',
-                    isCurrent
-                      ? 'font-medium text-foreground'
-                      : 'text-muted-foreground'
+                    isCurrent ? 'font-medium text-foreground' : 'text-muted-foreground'
                   )}
                 >
                   {stepLabels[index]}
@@ -353,7 +332,12 @@ export function UploadProgress({
       text: 'Upload failed',
       icon: (
         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       ),
     },
@@ -387,7 +371,7 @@ export function UploadProgress({
         </div>
 
         {/* File info and progress */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <p className="truncate text-sm font-medium">{fileName}</p>
             {onCancel && status === 'uploading' && (
@@ -397,15 +381,18 @@ export function UploadProgress({
                 aria-label="Cancel upload"
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             )}
           </div>
 
-          {fileSize && (
-            <p className="text-xs text-muted-foreground">{fileSize}</p>
-          )}
+          {fileSize && <p className="text-xs text-muted-foreground">{fileSize}</p>}
 
           {/* Progress bar */}
           <div className="mt-2">

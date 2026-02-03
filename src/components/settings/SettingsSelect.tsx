@@ -1,36 +1,36 @@
-'use client';
+'use client'
 
-import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles } from 'lucide-react';
+import { cn } from '@/lib/utils'
+import { Label } from '@/components/ui/label'
+import { Badge } from '@/components/ui/badge'
+import { Sparkles } from 'lucide-react'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 
 interface SelectOption {
-  value: string;
-  label: string;
-  description?: string;
-  disabled?: boolean;
+  value: string
+  label: string
+  description?: string
+  disabled?: boolean
 }
 
 interface SettingsSelectProps {
-  id: string;
-  label: string;
-  description?: string;
-  value: string;
-  onValueChange: (value: string) => void;
-  options: SelectOption[];
-  placeholder?: string;
-  disabled?: boolean;
-  premium?: boolean;
-  className?: string;
-  vertical?: boolean;
+  id: string
+  label: string
+  description?: string
+  value: string
+  onValueChange: (value: string) => void
+  options: SelectOption[]
+  placeholder?: string
+  disabled?: boolean
+  premium?: boolean
+  className?: string
+  vertical?: boolean
 }
 
 /**
@@ -51,13 +51,7 @@ export function SettingsSelect({
 }: SettingsSelectProps) {
   if (vertical) {
     return (
-      <div
-        className={cn(
-          'space-y-3 py-3',
-          disabled && 'opacity-60',
-          className
-        )}
-      >
+      <div className={cn('space-y-3 py-3', disabled && 'opacity-60', className)}>
         <div className="flex items-center gap-2">
           <Label
             htmlFor={id}
@@ -75,26 +69,18 @@ export function SettingsSelect({
             </Badge>
           )}
         </div>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
         <Select value={value} onValueChange={onValueChange} disabled={disabled}>
           <SelectTrigger id={id} className="w-full">
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
           <SelectContent>
             {options.map((option) => (
-              <SelectItem
-                key={option.value}
-                value={option.value}
-                disabled={option.disabled}
-              >
+              <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
                 <div>
                   <span>{option.label}</span>
                   {option.description && (
-                    <span className="ml-2 text-xs text-muted-foreground">
-                      {option.description}
-                    </span>
+                    <span className="ml-2 text-xs text-muted-foreground">{option.description}</span>
                   )}
                 </div>
               </SelectItem>
@@ -102,7 +88,7 @@ export function SettingsSelect({
           </SelectContent>
         </Select>
       </div>
-    );
+    )
   }
 
   return (
@@ -131,9 +117,7 @@ export function SettingsSelect({
             </Badge>
           )}
         </div>
-        {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
-        )}
+        {description && <p className="text-sm text-muted-foreground">{description}</p>}
       </div>
       <Select value={value} onValueChange={onValueChange} disabled={disabled}>
         <SelectTrigger id={id} className="w-[180px]">
@@ -141,16 +125,12 @@ export function SettingsSelect({
         </SelectTrigger>
         <SelectContent>
           {options.map((option) => (
-            <SelectItem
-              key={option.value}
-              value={option.value}
-              disabled={option.disabled}
-            >
+            <SelectItem key={option.value} value={option.value} disabled={option.disabled}>
               {option.label}
             </SelectItem>
           ))}
         </SelectContent>
       </Select>
     </div>
-  );
+  )
 }

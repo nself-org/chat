@@ -31,9 +31,7 @@ export function RoleIcon({
   const filteredIcons = React.useMemo(() => {
     if (!searchQuery) return ROLE_ICON_OPTIONS
     const query = searchQuery.toLowerCase()
-    return ROLE_ICON_OPTIONS.filter((icon) =>
-      icon.toLowerCase().includes(query)
-    )
+    return ROLE_ICON_OPTIONS.filter((icon) => icon.toLowerCase().includes(query))
   }, [searchQuery])
 
   const handleIconClick = (icon: string) => {
@@ -66,9 +64,7 @@ export function RoleIcon({
             className={cn(
               'relative flex h-10 w-10 items-center justify-center rounded-md border-2 transition-all',
               'hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2',
-              !value
-                ? 'border-primary bg-primary/10'
-                : 'border-transparent',
+              !value ? 'bg-primary/10 border-primary' : 'border-transparent',
               disabled && 'cursor-not-allowed opacity-50'
             )}
             onClick={() => handleIconClick('')}
@@ -77,16 +73,14 @@ export function RoleIcon({
             <span className="text-xs text-muted-foreground">None</span>
             {!value && (
               <Check
-                className="absolute -right-1 -top-1 rounded-full bg-primary p-0.5 text-primary-foreground"
+                className="text-primary-foreground absolute -right-1 -top-1 rounded-full bg-primary p-0.5"
                 size={14}
               />
             )}
           </button>
 
           {filteredIcons.map((iconName) => {
-            const IconComponent = Icons[
-              iconName as keyof typeof Icons
-            ] as React.ElementType
+            const IconComponent = Icons[iconName as keyof typeof Icons] as React.ElementType
             if (!IconComponent) return null
 
             const isSelected = value === iconName
@@ -99,21 +93,16 @@ export function RoleIcon({
                 className={cn(
                   'relative flex h-10 w-10 items-center justify-center rounded-md border-2 transition-all',
                   'hover:bg-accent focus:outline-none focus:ring-2 focus:ring-offset-2',
-                  isSelected
-                    ? 'border-primary bg-primary/10'
-                    : 'border-transparent',
+                  isSelected ? 'bg-primary/10 border-primary' : 'border-transparent',
                   disabled && 'cursor-not-allowed opacity-50'
                 )}
                 onClick={() => handleIconClick(iconName)}
                 title={iconName}
               >
-                <IconComponent
-                  size={20}
-                  style={{ color: isSelected ? color : undefined }}
-                />
+                <IconComponent size={20} style={{ color: isSelected ? color : undefined }} />
                 {isSelected && (
                   <Check
-                    className="absolute -right-1 -top-1 rounded-full bg-primary p-0.5 text-primary-foreground"
+                    className="text-primary-foreground absolute -right-1 -top-1 rounded-full bg-primary p-0.5"
                     size={14}
                   />
                 )}
@@ -161,13 +150,7 @@ export function RoleIconPreview({
   const IconComponent = Icons[icon as keyof typeof Icons] as React.ElementType
   if (!IconComponent) return null
 
-  return (
-    <IconComponent
-      size={size}
-      style={{ color }}
-      className={className}
-    />
-  )
+  return <IconComponent size={size} style={{ color }} className={className} />
 }
 
 export default RoleIcon

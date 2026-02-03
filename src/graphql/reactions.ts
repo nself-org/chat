@@ -46,16 +46,11 @@ export interface ReactionCount {
  */
 export const GET_MESSAGE_REACTIONS = gql`
   query GetMessageReactions($messageId: uuid!) {
-    nchat_reactions(
-      where: { message_id: { _eq: $messageId } }
-      order_by: { created_at: asc }
-    ) {
+    nchat_reactions(where: { message_id: { _eq: $messageId } }, order_by: { created_at: asc }) {
       ...Reaction
     }
     # Also get aggregated counts by emoji
-    nchat_reactions_aggregate(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    nchat_reactions_aggregate(where: { message_id: { _eq: $messageId } }) {
       aggregate {
         count
       }
@@ -114,11 +109,7 @@ export const GET_MESSAGES_REACTIONS = gql`
 export const CHECK_USER_REACTION = gql`
   query CheckUserReaction($messageId: uuid!, $userId: uuid!, $emoji: String!) {
     nchat_reactions(
-      where: {
-        message_id: { _eq: $messageId }
-        user_id: { _eq: $userId }
-        emoji: { _eq: $emoji }
-      }
+      where: { message_id: { _eq: $messageId }, user_id: { _eq: $userId }, emoji: { _eq: $emoji } }
       limit: 1
     ) {
       id
@@ -139,9 +130,7 @@ export const GET_POPULAR_REACTIONS = gql`
       emoji
     }
     # Get counts for each emoji
-    nchat_reactions_aggregate(
-      where: { message: { channel_id: { _eq: $channelId } } }
-    ) {
+    nchat_reactions_aggregate(where: { message: { channel_id: { _eq: $channelId } } }) {
       aggregate {
         count
       }
@@ -175,15 +164,8 @@ export const GET_USER_FREQUENT_REACTIONS = gql`
 export const ADD_REACTION = gql`
   mutation AddReaction($messageId: uuid!, $userId: uuid!, $emoji: String!) {
     insert_nchat_reactions_one(
-      object: {
-        message_id: $messageId
-        user_id: $userId
-        emoji: $emoji
-      }
-      on_conflict: {
-        constraint: nchat_reactions_message_id_user_id_emoji_key
-        update_columns: []
-      }
+      object: { message_id: $messageId, user_id: $userId, emoji: $emoji }
+      on_conflict: { constraint: nchat_reactions_message_id_user_id_emoji_key, update_columns: [] }
     ) {
       id
       emoji
@@ -210,11 +192,7 @@ export const ADD_REACTION = gql`
 export const REMOVE_REACTION = gql`
   mutation RemoveReaction($messageId: uuid!, $userId: uuid!, $emoji: String!) {
     delete_nchat_reactions(
-      where: {
-        message_id: { _eq: $messageId }
-        user_id: { _eq: $userId }
-        emoji: { _eq: $emoji }
-      }
+      where: { message_id: { _eq: $messageId }, user_id: { _eq: $userId }, emoji: { _eq: $emoji } }
     ) {
       affected_rows
       returning {
@@ -233,13 +211,7 @@ export const REMOVE_REACTION = gql`
  */
 export const TOGGLE_REACTION = gql`
   mutation ToggleReaction($messageId: uuid!, $userId: uuid!, $emoji: String!) {
-    toggle_reaction(
-      args: {
-        p_message_id: $messageId
-        p_user_id: $userId
-        p_emoji: $emoji
-      }
-    ) {
+    toggle_reaction(args: { p_message_id: $messageId, p_user_id: $userId, p_emoji: $emoji }) {
       id
       action
       reaction {
@@ -259,9 +231,7 @@ export const TOGGLE_REACTION = gql`
  */
 export const CLEAR_MESSAGE_REACTIONS = gql`
   mutation ClearMessageReactions($messageId: uuid!) {
-    delete_nchat_reactions(
-      where: { message_id: { _eq: $messageId } }
-    ) {
+    delete_nchat_reactions(where: { message_id: { _eq: $messageId } }) {
       affected_rows
     }
   }
@@ -272,12 +242,7 @@ export const CLEAR_MESSAGE_REACTIONS = gql`
  */
 export const REMOVE_USER_REACTIONS = gql`
   mutation RemoveUserReactions($messageId: uuid!, $userId: uuid!) {
-    delete_nchat_reactions(
-      where: {
-        message_id: { _eq: $messageId }
-        user_id: { _eq: $userId }
-      }
-    ) {
+    delete_nchat_reactions(where: { message_id: { _eq: $messageId }, user_id: { _eq: $userId } }) {
       affected_rows
       returning {
         id
@@ -294,10 +259,7 @@ export const BULK_ADD_REACTIONS = gql`
   mutation BulkAddReactions($reactions: [nchat_reactions_insert_input!]!) {
     insert_nchat_reactions(
       objects: $reactions
-      on_conflict: {
-        constraint: nchat_reactions_message_id_user_id_emoji_key
-        update_columns: []
-      }
+      on_conflict: { constraint: nchat_reactions_message_id_user_id_emoji_key, update_columns: [] }
     ) {
       affected_rows
       returning {
@@ -319,10 +281,7 @@ export const BULK_ADD_REACTIONS = gql`
  */
 export const MESSAGE_REACTIONS_SUBSCRIPTION = gql`
   subscription MessageReactionsSubscription($messageId: uuid!) {
-    nchat_reactions(
-      where: { message_id: { _eq: $messageId } }
-      order_by: { created_at: asc }
-    ) {
+    nchat_reactions(where: { message_id: { _eq: $messageId } }, order_by: { created_at: asc }) {
       ...Reaction
     }
   }

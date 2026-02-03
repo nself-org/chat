@@ -41,11 +41,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { formatFutureTime } from '@/lib/reminders/reminder-store'
 import { formatMessageTime, formatMessageTimeTooltip } from '@/lib/date'
@@ -79,21 +75,15 @@ interface ReminderContentPreviewProps {
   maxLength?: number
 }
 
-function ReminderContentPreview({
-  reminder,
-  maxLength = 100,
-}: ReminderContentPreviewProps) {
+function ReminderContentPreview({ reminder, maxLength = 100 }: ReminderContentPreviewProps) {
   const content = reminder.content
-  const truncated =
-    content.length > maxLength ? `${content.slice(0, maxLength)}...` : content
+  const truncated = content.length > maxLength ? `${content.slice(0, maxLength)}...` : content
 
   return (
     <div className="space-y-1">
-      <p className="text-sm font-medium line-clamp-2">{truncated}</p>
+      <p className="line-clamp-2 text-sm font-medium">{truncated}</p>
       {reminder.note && (
-        <p className="text-xs text-muted-foreground line-clamp-1">
-          Note: {reminder.note}
-        </p>
+        <p className="line-clamp-1 text-xs text-muted-foreground">Note: {reminder.note}</p>
       )}
     </div>
   )
@@ -104,10 +94,7 @@ interface ReminderTimeDisplayProps {
   showRelative?: boolean
 }
 
-function ReminderTimeDisplay({
-  reminder,
-  showRelative = true,
-}: ReminderTimeDisplayProps) {
+function ReminderTimeDisplay({ reminder, showRelative = true }: ReminderTimeDisplayProps) {
   const remindAt = new Date(reminder.remind_at)
   const now = new Date()
   const isPast = remindAt < now
@@ -120,7 +107,7 @@ function ReminderTimeDisplay({
           className={cn(
             'flex items-center gap-1.5 text-xs',
             isDue
-              ? 'text-destructive font-medium'
+              ? 'font-medium text-destructive'
               : isPast
                 ? 'text-muted-foreground'
                 : 'text-muted-foreground'
@@ -141,9 +128,7 @@ function ReminderTimeDisplay({
       <TooltipContent>
         <p>{formatMessageTimeTooltip(remindAt)}</p>
         {reminder.timezone && (
-          <p className="text-xs text-muted-foreground mt-1">
-            Timezone: {reminder.timezone}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">Timezone: {reminder.timezone}</p>
         )}
       </TooltipContent>
     </Tooltip>
@@ -258,8 +243,8 @@ function DefaultReminderItem({
             }}
             disabled={isLoading}
             className={cn(
-              'flex h-5 w-5 items-center justify-center rounded-full border-2 border-muted-foreground/50',
-              'hover:border-primary hover:bg-primary/10',
+              'border-muted-foreground/50 flex h-5 w-5 items-center justify-center rounded-full border-2',
+              'hover:bg-primary/10 hover:border-primary',
               'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
               'disabled:cursor-not-allowed disabled:opacity-50',
               'transition-colors'
@@ -275,7 +260,7 @@ function DefaultReminderItem({
             )}
           >
             {isCompleted ? (
-              <Check className="h-3 w-3 text-primary-foreground" />
+              <Check className="text-primary-foreground h-3 w-3" />
             ) : (
               <Bell className="h-3 w-3 text-muted-foreground" />
             )}
@@ -284,7 +269,7 @@ function DefaultReminderItem({
       </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0 space-y-2">
+      <div className="min-w-0 flex-1 space-y-2">
         <ReminderContentPreview reminder={reminder} />
 
         {/* Meta Info */}
@@ -309,33 +294,29 @@ function DefaultReminderItem({
 
         {/* Original Message Preview (if message reminder) */}
         {reminder.message && (
-          <div className="mt-2 rounded-md bg-muted/50 p-2">
-            <div className="flex items-center gap-2 mb-1">
+          <div className="bg-muted/50 mt-2 rounded-md p-2">
+            <div className="mb-1 flex items-center gap-2">
               <Avatar className="h-4 w-4">
                 <AvatarImage src={reminder.message.user.avatar_url} />
                 <AvatarFallback className="text-[8px]">
-                  {reminder.message.user.display_name?.[0] ||
-                    reminder.message.user.username[0]}
+                  {reminder.message.user.display_name?.[0] || reminder.message.user.username[0]}
                 </AvatarFallback>
               </Avatar>
               <span className="text-xs font-medium">
-                {reminder.message.user.display_name ||
-                  reminder.message.user.username}
+                {reminder.message.user.display_name || reminder.message.user.username}
               </span>
               <span className="text-xs text-muted-foreground">
                 {formatMessageTime(reminder.message.created_at)}
               </span>
             </div>
-            <p className="text-xs text-muted-foreground line-clamp-2">
-              {reminder.message.content}
-            </p>
+            <p className="line-clamp-2 text-xs text-muted-foreground">{reminder.message.content}</p>
           </div>
         )}
       </div>
 
       {/* Actions */}
       {showActions && isPending && (
-        <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex-shrink-0 opacity-0 transition-opacity group-hover:opacity-100">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -439,8 +420,8 @@ function CompactReminderItem({
           }}
           disabled={isLoading}
           className={cn(
-            'flex h-4 w-4 items-center justify-center rounded border border-muted-foreground/50',
-            'hover:border-primary hover:bg-primary/10',
+            'border-muted-foreground/50 flex h-4 w-4 items-center justify-center rounded border',
+            'hover:bg-primary/10 hover:border-primary',
             'disabled:cursor-not-allowed disabled:opacity-50'
           )}
         >
@@ -449,8 +430,8 @@ function CompactReminderItem({
       )}
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
-        <p className="text-sm truncate">{reminder.content}</p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm">{reminder.content}</p>
       </div>
 
       {/* Time */}
@@ -460,7 +441,7 @@ function CompactReminderItem({
 
       {/* Actions */}
       {isPending && (onEdit || onDelete) && (
-        <div className="flex-shrink-0 flex gap-1">
+        <div className="flex flex-shrink-0 gap-1">
           {onEdit && (
             <Button
               variant="ghost"
@@ -508,22 +489,22 @@ function NotificationReminderItem({
   return (
     <div
       className={cn(
-        'flex items-start gap-3 rounded-lg bg-background border p-3',
-        onClick && 'cursor-pointer hover:bg-accent/50',
+        'flex items-start gap-3 rounded-lg border bg-background p-3',
+        onClick && 'hover:bg-accent/50 cursor-pointer',
         className
       )}
       onClick={() => onClick?.(reminder)}
     >
-      <div className="flex-shrink-0 p-2 rounded-full bg-primary/10">
+      <div className="bg-primary/10 flex-shrink-0 rounded-full p-2">
         <Bell className="h-4 w-4 text-primary" />
       </div>
 
-      <div className="flex-1 min-w-0 space-y-1">
-        <p className="text-sm font-medium line-clamp-2">{reminder.content}</p>
+      <div className="min-w-0 flex-1 space-y-1">
+        <p className="line-clamp-2 text-sm font-medium">{reminder.content}</p>
         <ReminderTimeDisplay reminder={reminder} />
       </div>
 
-      <div className="flex-shrink-0 flex gap-1">
+      <div className="flex flex-shrink-0 gap-1">
         {onComplete && (
           <Button
             variant="ghost"
@@ -569,10 +550,7 @@ function NotificationReminderItem({
 // Main Component
 // ============================================================================
 
-export function ReminderItem({
-  variant = 'default',
-  ...props
-}: ReminderItemProps) {
+export function ReminderItem({ variant = 'default', ...props }: ReminderItemProps) {
   switch (variant) {
     case 'compact':
       return <CompactReminderItem {...props} />

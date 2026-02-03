@@ -7,6 +7,7 @@
  * - Token refresh support
  */
 
+import { logger } from '@/lib/logger'
 import {
   AuthProvider,
   AuthProviderMetadata,
@@ -73,10 +74,12 @@ export class AppleProvider extends BaseAuthProvider {
     // If we have OAuth credentials (from callback), process them
     const oauthCreds = credentials as OAuthCredentials
     if (oauthCreds.code && oauthCreds.state) {
-      return this.handleCallback(new URLSearchParams({
-        code: oauthCreds.code,
-        state: oauthCreds.state,
-      }))
+      return this.handleCallback(
+        new URLSearchParams({
+          code: oauthCreds.code,
+          state: oauthCreds.state,
+        })
+      )
     }
 
     // Otherwise, redirect to Apple
@@ -91,7 +94,10 @@ export class AppleProvider extends BaseAuthProvider {
     }
   }
 
-  async signUp(credentials: AuthCredentials, metadata?: Record<string, unknown>): Promise<AuthResult> {
+  async signUp(
+    credentials: AuthCredentials,
+    metadata?: Record<string, unknown>
+  ): Promise<AuthResult> {
     // For OAuth, signUp is the same as signIn
     return this.signIn(credentials)
   }
@@ -117,7 +123,10 @@ export class AppleProvider extends BaseAuthProvider {
     const error = params.get('error')
     if (error) {
       return this.createErrorResult(
-        this.createError('OAUTH_ERROR', params.get('error_description') || 'Apple authentication failed')
+        this.createError(
+          'OAUTH_ERROR',
+          params.get('error_description') || 'Apple authentication failed'
+        )
       )
     }
 
@@ -136,7 +145,10 @@ export class AppleProvider extends BaseAuthProvider {
 
         if (!response.ok) {
           return this.createErrorResult(
-            this.createError('AUTH_FAILED', data.error?.message || 'Failed to authenticate with Apple')
+            this.createError(
+              'AUTH_FAILED',
+              data.error?.message || 'Failed to authenticate with Apple'
+            )
           )
         }
 
@@ -154,7 +166,7 @@ export class AppleProvider extends BaseAuthProvider {
 
         return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
       } catch (error) {
-        console.error('Apple callback error:', error)
+        logger.error('Apple callback error:',  error)
         return this.createErrorResult(
           this.createError('NETWORK_ERROR', 'Failed to complete Apple authentication')
         )
@@ -191,7 +203,10 @@ export class AppleProvider extends BaseAuthProvider {
 
         if (!response.ok) {
           return this.createErrorResult(
-            this.createError('AUTH_FAILED', data.error?.message || 'Failed to authenticate with Apple')
+            this.createError(
+              'AUTH_FAILED',
+              data.error?.message || 'Failed to authenticate with Apple'
+            )
           )
         }
 
@@ -209,7 +224,7 @@ export class AppleProvider extends BaseAuthProvider {
 
         return this.createSuccessResult(user, data.session.accessToken, data.session.refreshToken)
       } catch (error) {
-        console.error('Apple code exchange error:', error)
+        logger.error('Apple code exchange error:',  error)
         return this.createErrorResult(
           this.createError('NETWORK_ERROR', 'Failed to complete Apple authentication')
         )
@@ -228,7 +243,7 @@ export class AppleProvider extends BaseAuthProvider {
         headers: this.getAuthHeaders(),
       })
     } catch (error) {
-      console.error('Sign out error:', error)
+      logger.error('Sign out error:',  error)
     }
 
     this.clearSession()
@@ -266,10 +281,8 @@ export class AppleProvider extends BaseAuthProvider {
         data.session.refreshToken
       )
     } catch (error) {
-      console.error('Token refresh error:', error)
-      return this.createErrorResult(
-        this.createError('NETWORK_ERROR', 'Failed to refresh token')
-      )
+      logger.error('Token refresh error:',  error)
+      return this.createErrorResult(this.createError('NETWORK_ERROR', 'Failed to refresh token'))
     }
   }
 
@@ -293,7 +306,7 @@ export class AppleProvider extends BaseAuthProvider {
         ...Array.from(hash.entries()),
       ])
 
-      this.handleCallback(allParams).then(result => {
+      this.handleCallback(allParams).then((result) => {
         if (result.success) {
           const url = new URL(window.location.href)
           url.search = ''
@@ -317,7 +330,11 @@ export class AppleProvider extends BaseAuthProvider {
   }
 
   private getAuthApiUrl(): string {
-    return this.extendedConfig.authApiUrl || process.env.NEXT_PUBLIC_AUTH_URL || 'http://localhost:4000/v1'
+    return (
+      this.extendedConfig.authApiUrl ||
+      process.env.NEXT_PUBLIC_AUTH_URL ||
+      'http://localhost:4000/v1'
+    )
   }
 
   private getRedirectUrl(): string {
@@ -344,7 +361,8 @@ export class AppleProvider extends BaseAuthProvider {
         try {
           const appleUser = JSON.parse(userStr)
           if (appleUser.name) {
-            displayName = `${appleUser.name.firstName || ''} ${appleUser.name.lastName || ''}`.trim()
+            displayName =
+              `${appleUser.name.firstName || ''} ${appleUser.name.lastName || ''}`.trim()
           }
         } catch {
           // Ignore parse errors
@@ -359,13 +377,14 @@ export class AppleProvider extends BaseAuthProvider {
     return {
       id: userData.id as string,
       email,
-      username: displayName?.replace(/\s+/g, '_').toLowerCase() || email?.split('@')[0] || 'apple_user',
+      username:
+        displayName?.replace(/\s+/g, '_').toLowerCase() || email?.split('@')[0] || 'apple_user',
       displayName: displayName || email?.split('@')[0] || 'Apple User',
       avatarUrl: userData.avatarUrl as string | undefined,
       role: (userData.defaultRole as AuthUser['role']) || 'member',
       emailVerified: true, // Apple verifies email
       metadata: {
-        ...(userData.metadata as Record<string, unknown> || {}),
+        ...((userData.metadata as Record<string, unknown>) || {}),
         provider: 'apple',
         isPrivateRelay,
       },
@@ -376,10 +395,13 @@ export class AppleProvider extends BaseAuthProvider {
 
   private persistSession(session: { accessToken: string; refreshToken: string }): void {
     if (typeof window === 'undefined') return
-    localStorage.setItem('nchat-apple-session', JSON.stringify({
-      ...session,
-      timestamp: Date.now(),
-    }))
+    localStorage.setItem(
+      'nchat-apple-session',
+      JSON.stringify({
+        ...session,
+        timestamp: Date.now(),
+      })
+    )
   }
 
   private getStoredSession(): { accessToken: string; refreshToken: string } | null {

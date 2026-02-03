@@ -26,12 +26,14 @@
 ### 1. Summaries Not Generating
 
 #### Symptoms
+
 - Loading spinner appears but never completes
 - "Failed to generate summary" error message
 - Empty summary returned
 - UI shows "No summary available"
 
 #### Causes
+
 1. **API Key Issues**
    - Missing or invalid Anthropic API key
    - API key not loaded in environment
@@ -55,6 +57,7 @@
 #### Solutions
 
 **Step 1: Verify API Key**
+
 ```bash
 # Check environment variable
 echo $ANTHROPIC_API_KEY
@@ -72,14 +75,15 @@ curl https://api.anthropic.com/v1/messages \
 ```
 
 **Step 2: Check Message Access**
+
 ```typescript
 // In browser console
-const messages = await fetch('/api/messages?channelId=YOUR_CHANNEL_ID')
-  .then(r => r.json())
+const messages = await fetch('/api/messages?channelId=YOUR_CHANNEL_ID').then((r) => r.json())
 console.log('Messages:', messages.length)
 ```
 
 **Step 3: Test Summarization Endpoint**
+
 ```bash
 curl -X POST http://localhost:3000/api/ai/summarize \
   -H "Content-Type: application/json" \
@@ -91,6 +95,7 @@ curl -X POST http://localhost:3000/api/ai/summarize \
 ```
 
 **Step 4: Check Logs**
+
 ```bash
 # Application logs
 docker logs nself-chat-app -f | grep "summarize"
@@ -100,6 +105,7 @@ docker logs nself-chat-app --tail 100 | grep -i error
 ```
 
 **Step 5: Verify Rate Limits**
+
 ```typescript
 // Check rate limiter state
 import { rateLimiter } from '@/lib/ai/rate-limiter'
@@ -108,6 +114,7 @@ console.log('Rate limit:', status)
 ```
 
 #### Prevention Tips
+
 - Set up health checks for Anthropic API
 - Implement retry logic with exponential backoff
 - Monitor API key usage in Anthropic dashboard
@@ -115,6 +122,7 @@ console.log('Rate limit:', status)
 - Set up alerts for API failures
 
 #### Related Logs
+
 ```bash
 # Summarization requests
 grep "Generating summary" /var/log/nself-chat/app.log
@@ -131,6 +139,7 @@ grep "Rate limit exceeded" /var/log/nself-chat/app.log
 ### 2. Poor Quality Summaries
 
 #### Symptoms
+
 - Summaries too short or too long
 - Missing important information
 - Hallucinated content not in messages
@@ -138,6 +147,7 @@ grep "Rate limit exceeded" /var/log/nself-chat/app.log
 - Repetitive or nonsensical output
 
 #### Causes
+
 1. **Prompt Issues**
    - System prompt not optimized
    - Missing context in prompt
@@ -156,6 +166,7 @@ grep "Rate limit exceeded" /var/log/nself-chat/app.log
 #### Solutions
 
 **Step 1: Review Summarization Prompt**
+
 ```typescript
 // Check current prompt in src/lib/ai/message-summarizer.ts
 import { MessageSummarizer } from '@/lib/ai/message-summarizer'
@@ -172,20 +183,24 @@ const summarizer = new MessageSummarizer({
 ```
 
 **Step 2: Adjust Model Parameters**
+
 ```typescript
 // In src/lib/ai/message-summarizer.ts
 const response = await anthropic.messages.create({
   model: 'claude-3-5-sonnet-20241022',
   max_tokens: 1024, // Increase for longer summaries
   temperature: 0.3, // Lower = more focused, higher = more creative
-  messages: [/* ... */],
+  messages: [
+    /* ... */
+  ],
 })
 ```
 
 **Step 3: Filter Message Input**
+
 ```typescript
 // Remove low-quality messages before summarization
-const qualityMessages = messages.filter(msg => {
+const qualityMessages = messages.filter((msg) => {
   // Remove very short messages
   if (msg.content.length < 10) return false
 
@@ -200,11 +215,12 @@ const qualityMessages = messages.filter(msg => {
 ```
 
 **Step 4: Add Context Enrichment**
+
 ```typescript
 // Add channel/thread context
 const contextPrompt = `
 Summarize the following conversation from #${channel.name}.
-Participants: ${participants.map(p => p.name).join(', ')}
+Participants: ${participants.map((p) => p.name).join(', ')}
 Time period: ${startDate} to ${endDate}
 Topic: ${thread?.title || 'General discussion'}
 
@@ -214,6 +230,7 @@ ${formatMessages(messages)}
 ```
 
 #### Prevention Tips
+
 - A/B test different prompts and collect feedback
 - Set minimum message thresholds (e.g., 5+ messages)
 - Implement summary quality scoring
@@ -221,6 +238,7 @@ ${formatMessages(messages)}
 - Periodically review summary quality metrics
 
 #### Related Logs
+
 ```bash
 # Summary requests with message counts
 grep "Summary generated" /var/log/nself-chat/app.log | grep "messages:"
@@ -234,12 +252,14 @@ grep "System prompt version" /var/log/nself-chat/app.log
 ### 3. Timeout Errors
 
 #### Symptoms
+
 - "Request timeout" error after 30-60 seconds
 - Summary generation aborted mid-process
 - Gateway timeout (504) errors
 - Client disconnects before completion
 
 #### Causes
+
 1. **Long Message Threads**
    - Too many messages to process
    - Very long individual messages
@@ -258,6 +278,7 @@ grep "System prompt version" /var/log/nself-chat/app.log
 #### Solutions
 
 **Step 1: Implement Chunking**
+
 ```typescript
 // In src/lib/ai/message-summarizer.ts
 async summarizeLarge(messages: Message[]): Promise<string> {
@@ -291,17 +312,21 @@ async summarizeLarge(messages: Message[]): Promise<string> {
 ```
 
 **Step 2: Increase Timeout Settings**
+
 ```typescript
 // In src/lib/ai/providers/anthropic-provider.ts
 const response = await fetch('https://api.anthropic.com/v1/messages', {
   method: 'POST',
-  headers: { /* ... */ },
+  headers: {
+    /* ... */
+  },
   body: JSON.stringify(payload),
   signal: AbortSignal.timeout(120000), // 120 seconds
 })
 ```
 
 **Step 3: Enable Streaming**
+
 ```typescript
 // Stream response to avoid timeouts
 async summarizeStreaming(messages: Message[]): Promise<string> {
@@ -325,6 +350,7 @@ async summarizeStreaming(messages: Message[]): Promise<string> {
 ```
 
 **Step 4: Add Progress Indicators**
+
 ```typescript
 // In API route (src/app/api/ai/summarize/route.ts)
 export async function POST(req: Request) {
@@ -353,6 +379,7 @@ export async function POST(req: Request) {
 ```
 
 #### Prevention Tips
+
 - Set appropriate timeout limits (60-120s)
 - Implement chunking for large threads
 - Use streaming for real-time feedback
@@ -360,6 +387,7 @@ export async function POST(req: Request) {
 - Monitor average response times
 
 #### Related Logs
+
 ```bash
 # Timeout errors
 grep "timeout" /var/log/nself-chat/app.log | grep "summarize"
@@ -373,12 +401,14 @@ grep "Summary took" /var/log/nself-chat/app.log | awk '$NF > 30000'
 ### 4. Language Issues
 
 #### Symptoms
+
 - Summaries in wrong language
 - Mixed languages in output
 - Translation instead of summary
 - Character encoding errors
 
 #### Causes
+
 1. **Message Language Detection**
    - Mixed language messages
    - Auto-detection failures
@@ -392,17 +422,19 @@ grep "Summary took" /var/log/nself-chat/app.log | awk '$NF > 30000'
 #### Solutions
 
 **Step 1: Add Language Detection**
+
 ```typescript
 import { franc } from 'franc'
 
 function detectLanguage(messages: Message[]): string {
-  const text = messages.map(m => m.content).join(' ')
+  const text = messages.map((m) => m.content).join(' ')
   const lang = franc(text, { minLength: 10 })
   return lang === 'und' ? 'en' : lang // Default to English
 }
 ```
 
 **Step 2: Update Prompt with Language**
+
 ```typescript
 async summarize(messages: Message[], language = 'en'): Promise<string> {
   const langNames = {
@@ -424,6 +456,7 @@ ${this.formatMessages(messages)}`
 ```
 
 **Step 3: Handle Mixed Languages**
+
 ```typescript
 async summarizeMultilingual(messages: Message[]): Promise<string> {
   // Group messages by language
@@ -447,6 +480,7 @@ async summarizeMultilingual(messages: Message[]): Promise<string> {
 ```
 
 #### Prevention Tips
+
 - Auto-detect message language
 - Allow users to specify summary language
 - Test with multilingual datasets
@@ -454,6 +488,7 @@ async summarizeMultilingual(messages: Message[]): Promise<string> {
 - Handle RTL languages properly
 
 #### Related Logs
+
 ```bash
 # Language detection
 grep "Language detected" /var/log/nself-chat/app.log
@@ -469,12 +504,14 @@ grep "encoding" /var/log/nself-chat/app.log
 ### 1. No Results Found
 
 #### Symptoms
+
 - Search returns empty results
 - "No matches found" message
 - Search works for some queries but not others
 - Newly added content not searchable
 
 #### Causes
+
 1. **Embeddings Not Generated**
    - Message embeddings missing
    - Embedding generation failed
@@ -493,6 +530,7 @@ grep "encoding" /var/log/nself-chat/app.log
 #### Solutions
 
 **Step 1: Verify Vector Extension**
+
 ```sql
 -- Connect to PostgreSQL
 \c nself_chat
@@ -509,6 +547,7 @@ SELECT COUNT(*) FROM message_embeddings WHERE embedding IS NOT NULL;
 ```
 
 **Step 2: Check Embedding Generation**
+
 ```typescript
 // Test embedding generation
 import { EmbeddingService } from '@/lib/ai/embedding-service'
@@ -520,6 +559,7 @@ console.log('First values:', embedding.slice(0, 5))
 ```
 
 **Step 3: Regenerate Missing Embeddings**
+
 ```typescript
 // In src/lib/ai/embedding-pipeline.ts
 async regenerateMissingEmbeddings(): Promise<void> {
@@ -542,6 +582,7 @@ async regenerateMissingEmbeddings(): Promise<void> {
 ```
 
 **Step 4: Lower Similarity Threshold**
+
 ```typescript
 // In src/lib/ai/embeddings.ts
 async searchMessages(query: string, options = {}) {
@@ -559,6 +600,7 @@ async searchMessages(query: string, options = {}) {
 ```
 
 **Step 5: Add Hybrid Search Fallback**
+
 ```typescript
 async search(query: string) {
   // Try vector search first
@@ -585,6 +627,7 @@ async fullTextSearch(query: string) {
 ```
 
 #### Prevention Tips
+
 - Monitor embedding generation queue
 - Set up alerts for embedding failures
 - Implement automatic retry for failed embeddings
@@ -592,6 +635,7 @@ async fullTextSearch(query: string) {
 - Test search with various query types
 
 #### Related Logs
+
 ```bash
 # Embedding generation
 grep "Generated embedding" /var/log/nself-chat/app.log
@@ -608,12 +652,14 @@ grep "No results found" /var/log/nself-chat/app.log
 ### 2. Irrelevant Results
 
 #### Symptoms
+
 - Search returns unrelated messages
 - Results don't match query intent
 - Poor ranking of results
 - Too many false positives
 
 #### Causes
+
 1. **Embedding Quality**
    - Low-quality message embeddings
    - Query embedding issues
@@ -632,6 +678,7 @@ grep "No results found" /var/log/nself-chat/app.log
 #### Solutions
 
 **Step 1: Improve Query Embeddings**
+
 ```typescript
 // Add query expansion
 async expandQuery(query: string): Promise<string> {
@@ -658,6 +705,7 @@ async search(query: string) {
 ```
 
 **Step 2: Implement Re-ranking**
+
 ```typescript
 async rerank(query: string, results: SearchResult[]): Promise<SearchResult[]> {
   // Score based on multiple factors
@@ -683,6 +731,7 @@ async rerank(query: string, results: SearchResult[]): Promise<SearchResult[]> {
 ```
 
 **Step 3: Add Metadata Filtering**
+
 ```typescript
 interface SearchOptions {
   channelIds?: string[]
@@ -725,6 +774,7 @@ async search(query: string, options: SearchOptions = {}) {
 ```
 
 **Step 4: Filter Out Noise**
+
 ```typescript
 async cleanupSearchIndex(): Promise<void> {
   // Remove embeddings for spam messages
@@ -752,6 +802,7 @@ async cleanupSearchIndex(): Promise<void> {
 ```
 
 #### Prevention Tips
+
 - Regularly clean search index
 - Implement feedback loop for search quality
 - Use query analytics to find common issues
@@ -759,6 +810,7 @@ async cleanupSearchIndex(): Promise<void> {
 - Monitor search result click-through rates
 
 #### Related Logs
+
 ```bash
 # Search relevance scores
 grep "Search similarity" /var/log/nself-chat/app.log
@@ -772,12 +824,14 @@ grep "Re-ranked results" /var/log/nself-chat/app.log
 ### 3. Slow Search Performance
 
 #### Symptoms
+
 - Search takes >3 seconds
 - Database CPU spikes during search
 - UI freezes while searching
 - Timeout errors on large searches
 
 #### Causes
+
 1. **Missing Indexes**
    - No vector index created
    - Missing GIN indexes for full-text
@@ -796,6 +850,7 @@ grep "Re-ranked results" /var/log/nself-chat/app.log
 #### Solutions
 
 **Step 1: Create Vector Indexes**
+
 ```sql
 -- Create IVFFLAT index for faster approximate search
 CREATE INDEX IF NOT EXISTS idx_message_embeddings_vector
@@ -813,6 +868,7 @@ USING hnsw (embedding vector_cosine_ops);
 ```
 
 **Step 2: Add Filter Indexes**
+
 ```sql
 -- Index on channel_id for filtering
 CREATE INDEX IF NOT EXISTS idx_messages_channel_id
@@ -832,6 +888,7 @@ ON messages USING GIN (to_tsvector('english', content));
 ```
 
 **Step 3: Implement Query Caching**
+
 ```typescript
 import { LRUCache } from 'lru-cache'
 
@@ -861,6 +918,7 @@ async search(query: string, options: SearchOptions = {}) {
 ```
 
 **Step 4: Optimize Query**
+
 ```sql
 -- Before: Slow query with multiple joins
 SELECT m.*, u.name, c.name as channel_name,
@@ -891,6 +949,7 @@ ORDER BY r.similarity DESC;
 ```
 
 **Step 5: Implement Pagination**
+
 ```typescript
 async searchPaginated(
   query: string,
@@ -934,6 +993,7 @@ async searchPaginated(
 ```
 
 #### Prevention Tips
+
 - Create all recommended indexes
 - Monitor query performance with EXPLAIN ANALYZE
 - Implement result caching
@@ -941,6 +1001,7 @@ async searchPaginated(
 - Consider read replicas for search traffic
 
 #### Related Logs
+
 ```bash
 # Slow queries
 grep "Query took" /var/log/nself-chat/app.log | awk '$NF > 3000'
@@ -956,12 +1017,14 @@ grep "Cache hit" /var/log/nself-chat/app.log | wc -l
 ### 1. Bot Not Responding
 
 #### Symptoms
+
 - Bot doesn't reply to mentions
 - Commands not recognized
 - No response in subscribed channels
 - Bot appears offline
 
 #### Causes
+
 1. **Registration Issues**
    - Bot not registered in database
    - Bot disabled or deleted
@@ -985,6 +1048,7 @@ grep "Cache hit" /var/log/nself-chat/app.log | wc -l
 #### Solutions
 
 **Step 1: Verify Bot Registration**
+
 ```sql
 -- Check bot exists and is enabled
 SELECT id, name, enabled, created_at
@@ -1006,6 +1070,7 @@ WHERE b.id = 'YOUR_BOT_ID';
 ```
 
 **Step 2: Test Bot Manually**
+
 ```typescript
 // In browser console or Node.js
 import { BotSDK } from '@/lib/bots/bot-sdk'
@@ -1024,6 +1089,7 @@ console.log('Bot response:', response)
 ```
 
 **Step 3: Check Event Listeners**
+
 ```typescript
 // In src/lib/bots/bot-manager.ts
 class BotManager {
@@ -1050,17 +1116,21 @@ class BotManager {
 ```
 
 **Step 4: Implement Health Checks**
+
 ```typescript
 // Add health check endpoint
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url)
   const botId = searchParams.get('botId')
 
-  const bot = await db.query(`
+  const bot = await db.query(
+    `
     SELECT id, name, enabled, last_active_at
     FROM bots
     WHERE id = $1
-  `, [botId])
+  `,
+    [botId]
+  )
 
   if (!bot.length) {
     return Response.json({ error: 'Bot not found' }, { status: 404 })
@@ -1080,6 +1150,7 @@ export async function GET(req: Request) {
 ```
 
 **Step 5: Auto-Restart Failed Bots**
+
 ```typescript
 // Bot supervisor process
 class BotSupervisor {
@@ -1105,13 +1176,14 @@ class BotSupervisor {
 
   async restart(botId: string): Promise<void> {
     await this.stopBot(botId)
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    await new Promise((resolve) => setTimeout(resolve, 1000))
     await this.startBot(botId)
   }
 }
 ```
 
 #### Prevention Tips
+
 - Implement bot health monitoring
 - Set up automatic restarts for crashed bots
 - Log all bot errors to Sentry
@@ -1119,6 +1191,7 @@ class BotSupervisor {
 - Monitor bot response times
 
 #### Related Logs
+
 ```bash
 # Bot registrations
 grep "Bot registered" /var/log/nself-chat/app.log
@@ -1135,12 +1208,14 @@ grep "Bot responded" /var/log/nself-chat/app.log
 ### 2. Bot Errors
 
 #### Symptoms
+
 - "Bot encountered an error" message
 - Stack traces in logs
 - Partial bot responses
 - Commands fail silently
 
 #### Causes
+
 1. **Code Errors**
    - Unhandled exceptions
    - Null reference errors
@@ -1159,6 +1234,7 @@ grep "Bot responded" /var/log/nself-chat/app.log
 #### Solutions
 
 **Step 1: Add Comprehensive Error Handling**
+
 ```typescript
 // In bot implementation
 class MyBot extends BotSDK {
@@ -1191,6 +1267,7 @@ class MyBot extends BotSDK {
 ```
 
 **Step 2: Implement Retry Logic**
+
 ```typescript
 async function withRetry<T>(
   fn: () => Promise<T>,
@@ -1222,6 +1299,7 @@ async callExternalAPI(endpoint: string): Promise<any> {
 ```
 
 **Step 3: Add Resource Limits**
+
 ```typescript
 class BotSDK {
   private maxConcurrentOperations = 10
@@ -1252,7 +1330,7 @@ class Semaphore {
       return
     }
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.waiting.push(resolve)
     })
   }
@@ -1269,6 +1347,7 @@ class Semaphore {
 ```
 
 **Step 4: Implement Circuit Breaker**
+
 ```typescript
 class CircuitBreaker {
   private failures = 0
@@ -1326,6 +1405,7 @@ async callAPI(endpoint: string): Promise<any> {
 ```
 
 #### Prevention Tips
+
 - Add error boundaries around all bot operations
 - Implement circuit breakers for external APIs
 - Set resource limits (memory, concurrency)
@@ -1333,6 +1413,7 @@ async callAPI(endpoint: string): Promise<any> {
 - Test error scenarios thoroughly
 
 #### Related Logs
+
 ```bash
 # Bot errors by type
 grep "Bot error" /var/log/nself-chat/app.log | cut -d':' -f3 | sort | uniq -c
@@ -1351,12 +1432,14 @@ grep "Circuit breaker" /var/log/nself-chat/app.log
 ### 1. False Positives
 
 #### Symptoms
+
 - Legitimate messages flagged
 - Users complaining about over-moderation
 - High false positive rate in metrics
 - Important messages blocked
 
 #### Causes
+
 1. **Model Sensitivity**
    - Toxicity threshold too low
    - Context not considered
@@ -1375,6 +1458,7 @@ grep "Circuit breaker" /var/log/nself-chat/app.log
 #### Solutions
 
 **Step 1: Adjust Thresholds**
+
 ```typescript
 // In src/lib/moderation/toxicity-detector.ts
 interface ToxicityThresholds {
@@ -1405,6 +1489,7 @@ async detectToxicity(content: string): Promise<ModerationResult> {
 ```
 
 **Step 2: Add Context Awareness**
+
 ```typescript
 async moderateWithContext(
   message: Message,
@@ -1439,6 +1524,7 @@ async moderateWithContext(
 ```
 
 **Step 3: Implement Allowlists**
+
 ```typescript
 // In src/lib/moderation/content-classifier.ts
 const allowedPatterns = [
@@ -1471,11 +1557,12 @@ async classify(content: string): Promise<Classification> {
 ```
 
 **Step 4: Add User Trust Scores**
+
 ```typescript
 interface UserTrustMetrics {
-  accountAge: number        // Days since joined
-  messageCount: number      // Total messages sent
-  flaggedCount: number      // Messages flagged
+  accountAge: number // Days since joined
+  messageCount: number // Total messages sent
+  flaggedCount: number // Messages flagged
   manualReviewCount: number // Manual reviews needed
   appealSuccessRate: number // % of successful appeals
 }
@@ -1506,6 +1593,7 @@ function calculateTrustScore(metrics: UserTrustMetrics): number {
 ```
 
 **Step 5: Enable User Appeals**
+
 ```typescript
 // Add appeal system
 async appealModeration(
@@ -1555,6 +1643,7 @@ async reviewAppeal(appealId: string, decision: 'approve' | 'reject'): Promise<vo
 ```
 
 #### Prevention Tips
+
 - Regularly review false positive rates
 - Implement user appeals process
 - Use context-aware moderation
@@ -1562,6 +1651,7 @@ async reviewAppeal(appealId: string, decision: 'approve' | 'reject'): Promise<vo
 - Monitor and adjust thresholds based on feedback
 
 #### Related Logs
+
 ```bash
 # False positives (later approved)
 grep "Appeal approved" /var/log/nself-chat/app.log
@@ -1577,12 +1667,14 @@ grep "Flagged:" /var/log/nself-chat/app.log | cut -d':' -f3 | sort | uniq -c
 ### 1. Rate Limiting Errors
 
 #### Symptoms
+
 - "Rate limit exceeded" errors
 - 429 HTTP status codes
 - Requests queued indefinitely
 - Intermittent API failures
 
 #### Causes
+
 1. **Anthropic API Limits**
    - Too many requests per minute
    - Token limits exceeded
@@ -1596,6 +1688,7 @@ grep "Flagged:" /var/log/nself-chat/app.log | cut -d':' -f3 | sort | uniq -c
 #### Solutions
 
 **Step 1: Implement Request Queue**
+
 ```typescript
 // In src/lib/ai/request-queue.ts
 import PQueue from 'p-queue'
@@ -1605,9 +1698,9 @@ class AnthropicRequestQueue {
 
   constructor() {
     this.queue = new PQueue({
-      concurrency: 5,     // Max 5 concurrent requests
-      interval: 60000,    // Per minute
-      intervalCap: 50,    // Max 50 requests per minute
+      concurrency: 5, // Max 5 concurrent requests
+      interval: 60000, // Per minute
+      intervalCap: 50, // Max 50 requests per minute
     })
   }
 
@@ -1627,11 +1720,9 @@ export const requestQueue = new AnthropicRequestQueue()
 ```
 
 **Step 2: Add Exponential Backoff**
+
 ```typescript
-async function withBackoff<T>(
-  fn: () => Promise<T>,
-  maxRetries = 5
-): Promise<T> {
+async function withBackoff<T>(fn: () => Promise<T>, maxRetries = 5): Promise<T> {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn()
@@ -1639,7 +1730,7 @@ async function withBackoff<T>(
       if (error.status === 429 && i < maxRetries - 1) {
         const delay = Math.min(1000 * Math.pow(2, i), 30000)
         console.log(`Rate limited, waiting ${delay}ms before retry ${i + 1}`)
-        await new Promise(resolve => setTimeout(resolve, delay))
+        await new Promise((resolve) => setTimeout(resolve, delay))
       } else {
         throw error
       }
@@ -1651,6 +1742,7 @@ async function withBackoff<T>(
 ```
 
 **Step 3: Monitor Rate Limits**
+
 ```typescript
 // Track rate limit headers
 class RateLimitMonitor {
@@ -1678,12 +1770,14 @@ async function makeRequest(payload: any): Promise<any> {
   if (monitor.shouldThrottle()) {
     const wait = monitor.getWaitTime()
     console.log(`Throttling requests, waiting ${wait}ms`)
-    await new Promise(resolve => setTimeout(resolve, wait))
+    await new Promise((resolve) => setTimeout(resolve, wait))
   }
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: { /* ... */ },
+    headers: {
+      /* ... */
+    },
     body: JSON.stringify(payload),
   })
 
@@ -1694,6 +1788,7 @@ async function makeRequest(payload: any): Promise<any> {
 ```
 
 #### Prevention Tips
+
 - Implement request queuing from the start
 - Monitor rate limit headers
 - Set up alerts for rate limit warnings
@@ -1701,6 +1796,7 @@ async function makeRequest(payload: any): Promise<any> {
 - Consider upgrading API tier if needed
 
 #### Related Logs
+
 ```bash
 # Rate limit errors
 grep "Rate limit" /var/log/nself-chat/app.log
@@ -1716,12 +1812,14 @@ grep "Queue size" /var/log/nself-chat/app.log
 ### 1. Slow AI Responses
 
 #### Symptoms
+
 - AI operations take >10 seconds
 - UI becomes unresponsive
 - Users abandon features
 - Timeout errors
 
 #### Causes
+
 1. **Large Inputs**
    - Too many messages sent to API
    - Very long individual messages
@@ -1740,10 +1838,11 @@ grep "Queue size" /var/log/nself-chat/app.log
 #### Solutions
 
 **Step 1: Optimize Input Size**
+
 ```typescript
 function prepareMessages(messages: Message[], maxTokens = 4000): Message[] {
   // Truncate very long messages
-  const truncated = messages.map(msg => ({
+  const truncated = messages.map((msg) => ({
     ...msg,
     content: msg.content.slice(0, 2000), // Max 2000 chars per message
   }))
@@ -1766,12 +1865,11 @@ function prepareMessages(messages: Message[], maxTokens = 4000): Message[] {
 ```
 
 **Step 2: Enable Parallel Processing**
+
 ```typescript
 async function processMultiple(items: any[]): Promise<any[]> {
   // Process in parallel with concurrency limit
-  const results = await Promise.all(
-    items.map(item => requestQueue.add(() => process(item)))
-  )
+  const results = await Promise.all(items.map((item) => requestQueue.add(() => process(item))))
 
   return results
 }
@@ -1791,6 +1889,7 @@ async function summarizeThreads(threadIds: string[]): Promise<Map<string, string
 ```
 
 **Step 3: Implement Response Streaming**
+
 ```typescript
 // Stream responses to show progress
 async function* streamSummary(messages: Message[]): AsyncGenerator<string> {
@@ -1828,6 +1927,7 @@ export async function POST(req: Request) {
 ```
 
 **Step 4: Add Aggressive Caching**
+
 ```typescript
 import { LRUCache } from 'lru-cache'
 
@@ -1839,7 +1939,10 @@ const summaryCache = new LRUCache<string, string>({
 
 // Generate cache key from message IDs
 function getCacheKey(messages: Message[]): string {
-  const ids = messages.map(m => m.id).sort().join(',')
+  const ids = messages
+    .map((m) => m.id)
+    .sort()
+    .join(',')
   return createHash('sha256').update(ids).digest('hex')
 }
 
@@ -1864,6 +1967,7 @@ async function summarizeWithCache(messages: Message[]): Promise<string> {
 ```
 
 #### Prevention Tips
+
 - Optimize input size before API calls
 - Use streaming for long operations
 - Cache aggressively
@@ -1871,6 +1975,7 @@ async function summarizeWithCache(messages: Message[]): Promise<string> {
 - Monitor and optimize slow endpoints
 
 #### Related Logs
+
 ```bash
 # Slow operations
 grep "took" /var/log/nself-chat/app.log | awk '$NF > 10000'
@@ -1884,27 +1989,35 @@ grep "Cache hit" /var/log/nself-chat/app.log | wc -l
 ## Common Error Messages
 
 ### Error: "API key not configured"
+
 **Solution**: Set `ANTHROPIC_API_KEY` environment variable
 
 ### Error: "Embedding dimensions mismatch"
+
 **Solution**: Regenerate all embeddings with consistent model
 
 ### Error: "Bot not found"
+
 **Solution**: Re-register bot in database
 
 ### Error: "Moderation queue full"
+
 **Solution**: Increase queue workers or clear backlog
 
 ### Error: "Vector extension not installed"
+
 **Solution**: Run `CREATE EXTENSION vector` in PostgreSQL
 
 ### Error: "Rate limit exceeded"
+
 **Solution**: Implement request queuing and backoff
 
 ### Error: "Context window exceeded"
+
 **Solution**: Truncate input messages
 
 ### Error: "Sentiment analysis failed"
+
 **Solution**: Check input language and format
 
 ---
@@ -1912,6 +2025,7 @@ grep "Cache hit" /var/log/nself-chat/app.log | wc -l
 ## Monitoring and Debugging
 
 ### Enable Debug Logging
+
 ```typescript
 // Set environment variable
 DEBUG=ai:*
@@ -1923,6 +2037,7 @@ log('Processing %d messages', messages.length)
 ```
 
 ### Check Service Health
+
 ```bash
 # API health
 curl http://localhost:3000/api/health
@@ -1935,6 +2050,7 @@ curl http://localhost:3000/api/ai/status
 ```
 
 ### Monitor Metrics
+
 ```typescript
 // Track key metrics
 import { metrics } from '@/lib/monitoring/metrics'
@@ -1949,6 +2065,7 @@ metrics.gauge('ai.queue.size', queue.size)
 **End of AI Features Troubleshooting Guide**
 
 For additional support:
+
 - Check `/Users/admin/Sites/nself-chat/.claude/COMMON-ISSUES.md`
 - Review Sentry error dashboard
 - Consult API documentation in `/Users/admin/Sites/nself-chat/docs/`

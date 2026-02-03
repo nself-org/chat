@@ -79,21 +79,14 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
                 style={[
                   styles.icon,
                   {
-                    color: isFocused
-                      ? theme.colors.tabBarActive
-                      : theme.colors.tabBarInactive,
+                    color: isFocused ? theme.colors.tabBarActive : theme.colors.tabBarInactive,
                   },
                 ]}
               >
                 {tab.icon}
               </Text>
               {tab.badge && tab.badge > 0 && (
-                <View
-                  style={[
-                    styles.badge,
-                    { backgroundColor: theme.colors.primary },
-                  ]}
-                >
+                <View style={[styles.badge, { backgroundColor: theme.colors.primary }]}>
                   <Text style={[styles.badgeText, { color: theme.colors.buttonPrimaryText }]}>
                     {tab.badge > 99 ? '99+' : tab.badge}
                   </Text>
@@ -104,9 +97,7 @@ export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
               style={[
                 styles.label,
                 {
-                  color: isFocused
-                    ? theme.colors.tabBarActive
-                    : theme.colors.tabBarInactive,
+                  color: isFocused ? theme.colors.tabBarActive : theme.colors.tabBarInactive,
                 },
               ]}
             >

@@ -197,9 +197,7 @@ export const useBookmarkStore = create<BookmarkStore>()(
             set(
               (state) => {
                 state.bookmarks = new Map(bookmarks.map((b) => [b.id, b]))
-                state.bookmarksByMessageId = new Map(
-                  bookmarks.map((b) => [b.message_id, b.id])
-                )
+                state.bookmarksByMessageId = new Map(bookmarks.map((b) => [b.message_id, b.id]))
               },
               false,
               'bookmark/setBookmarks'
@@ -502,19 +500,14 @@ export const useBookmarkStore = create<BookmarkStore>()(
               let comparison = 0
               switch (state.sortBy) {
                 case 'date':
-                  comparison =
-                    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+                  comparison = new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
                   break
                 case 'channel':
                   comparison = a.message.channel.name.localeCompare(b.message.channel.name)
                   break
                 case 'folder':
-                  const folderA = a.folder_id
-                    ? state.folders.get(a.folder_id)?.name ?? ''
-                    : ''
-                  const folderB = b.folder_id
-                    ? state.folders.get(b.folder_id)?.name ?? ''
-                    : ''
+                  const folderA = a.folder_id ? (state.folders.get(a.folder_id)?.name ?? '') : ''
+                  const folderB = b.folder_id ? (state.folders.get(b.folder_id)?.name ?? '') : ''
                   comparison = folderA.localeCompare(folderB)
                   break
               }
@@ -677,13 +670,11 @@ export const useBookmarkStore = create<BookmarkStore>()(
 // Selectors
 // ============================================================================
 
-export const selectAllBookmarks = (state: BookmarkStore) =>
-  Array.from(state.bookmarks.values())
+export const selectAllBookmarks = (state: BookmarkStore) => Array.from(state.bookmarks.values())
 
 export const selectBookmarkCount = (state: BookmarkStore) => state.totalCount
 
-export const selectAllFolders = (state: BookmarkStore) =>
-  Array.from(state.folders.values())
+export const selectAllFolders = (state: BookmarkStore) => Array.from(state.folders.values())
 
 export const selectFolderCount = (state: BookmarkStore) => state.folders.size
 
@@ -720,7 +711,9 @@ export const selectUniqueChannels = (state: BookmarkStore) => {
   return Array.from(channels.values())
 }
 
-export const selectRecentBookmarks = (limit = 5) => (state: BookmarkStore) =>
-  Array.from(state.bookmarks.values())
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .slice(0, limit)
+export const selectRecentBookmarks =
+  (limit = 5) =>
+  (state: BookmarkStore) =>
+    Array.from(state.bookmarks.values())
+      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+      .slice(0, limit)

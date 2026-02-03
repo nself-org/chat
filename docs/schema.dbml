@@ -1,0 +1,2588 @@
+// =============================================================================
+// nself-chat (nchat) Database Schema (DBML)
+// =============================================================================
+//
+// Complete database schema for nchat - a white-label team communication platform
+// with feature parity for WhatsApp, Telegram, Slack, and Discord.
+//
+// Version: 0.9.1
+// Last Updated: 2026-02-03
+//
+// Usage:
+//   nself db schema apply docs/schema.dbml
+//   nself db types typescript --output src/types/generated/database.ts
+//
+// Documentation: https://dbml.dbdiagram.io/docs
+//
+// =============================================================================
+
+Project nchat {
+  database_type: 'PostgreSQL'
+  Note: '''
+    nchat - White-label Team Communication Platform
+    Version: 0.9.1
+
+    Feature parity with:
+    - WhatsApp: E2EE, voice messages, status updates, communities
+    - Telegram: Channels, supergroups, bots, stickers, polls
+    - Slack: Workspaces, threads, integrations, slash commands
+    - Discord: Servers, roles, voice channels, live streaming
+
+    Capabilities:
+    - Multi-tenant organization support
+    - End-to-end encryption (Signal Protocol)
+    - Voice/video calls with WebRTC
+    - Live streaming with HLS
+    - Comprehensive RBAC
+    - GDPR/HIPAA compliance
+    - Full audit logging
+  '''
+}
+
+// =============================================================================
+// ENUMS
+// =============================================================================
+
+Enum user_status {
+  online
+  away
+  busy        // Do Not Disturb
+  offline
+  invisible
+}
+
+Enum channel_type {
+  public
+  private
+  direct      // 1-on-1 DM
+  group       // Group DM (2-8 people)
+  broadcast   // Telegram-style broadcast channel
+  voice       // Voice channel (Discord-style)
+  stage       // Stage channel for presentations
+  forum       // Forum-style channel with posts
+}
+
+Enum message_type {
+  text
+  image
+  video
+  audio
+  voice       // Voice message
+  file
+  sticker
+  gif
+  poll
+  location
+  contact
+  system      // Join/leave messages, etc.
+  code
+  embed       // Rich embed
+  forward     // Forwarded message
+}
+
+Enum message_status {
+  sending
+  sent
+  delivered
+  read
+  failed
+}
+
+Enum notification_level {
+  all
+  mentions
+  none
+}
+
+Enum role_type {
+  system      // Built-in roles (owner, admin, etc.)
+  custom      // User-created roles
+}
+
+Enum permission_scope {
+  global
+  organization
+  workspace
+  channel
+}
+
+Enum audit_action {
+  create
+  update
+  delete
+  join
+  leave
+  invite
+  kick
+  ban
+  unban
+  mute
+  unmute
+  pin
+  unpin
+  archive
+  unarchive
+  login
+  logout
+  export
+  import
+}
+
+Enum call_type {
+  voice_1on1
+  voice_group
+  video_1on1
+  video_group
+}
+
+Enum call_status {
+  initiating
+  ringing
+  connecting
+  connected
+  ended
+  failed
+  cancelled
+  declined
+  busy
+  timeout
+  no_answer
+}
+
+Enum call_participant_status {
+  invited
+  ringing
+  connecting
+  connected
+  disconnected
+  left
+  declined
+  busy
+}
+
+Enum stream_status {
+  scheduled
+  preparing
+  live
+  ended
+  cancelled
+}
+
+Enum stream_quality {
+  auto
+  "1080p"
+  "720p"
+  "480p"
+  "360p"
+}
+
+Enum report_status {
+  pending
+  reviewing
+  resolved
+  dismissed
+}
+
+Enum moderation_action_type {
+  warn
+  mute
+  kick
+  ban
+  delete_message
+  quarantine
+}
+
+Enum subscription_status {
+  active
+  past_due
+  cancelled
+  trialing
+  paused
+}
+
+Enum tenant_status {
+  active
+  suspended
+  trial
+  cancelled
+  pending
+}
+
+Enum billing_plan {
+  free
+  starter
+  pro
+  enterprise
+  custom
+}
+
+// =============================================================================
+// CORE ENTITIES - USERS
+// =============================================================================
+
+// User accounts (extends auth.users from Nhost)
+Table users {
+  id uuid [pk, note: 'Same as auth.users.id']
+
+  // Profile
+  username varchar(50) [unique, note: 'Unique username handle']
+  display_name varchar(100) [note: 'Display name shown in UI']
+  email varchar(255) [unique, not null]
+  phone varchar(20) [unique, note: 'Phone number for 2FA/WhatsApp-style']
+  avatar_url text
+  banner_url text
+
+  // Timestamps
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  deleted_at timestamptz [note: 'Soft delete timestamp']
+
+  indexes {
+    username
+    email
+    phone
+    created_at
+    deleted_at
+  }
+
+  Note: 'User accounts - core identity table'
+}
+
+// Extended user profile data
+Table user_profiles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [unique, not null, ref: > users.id]
+
+  // Bio and About
+  bio text [note: 'User biography/about text']
+  status_text varchar(128) [note: 'Custom status message']
+  status_emoji varchar(10) [note: 'Status emoji']
+  status_expiry timestamptz [note: 'When status expires']
+
+  // Location and Time
+  timezone varchar(50) [default: 'UTC']
+  locale varchar(10) [default: 'en']
+  country_code varchar(2) [note: 'ISO 3166-1 alpha-2']
+
+  // Preferences
+  theme_preference varchar(20) [default: 'system', note: 'light/dark/system']
+  language varchar(10) [default: 'en']
+
+  // Verification
+  is_verified boolean [default: false, note: 'Blue checkmark verified']
+  verified_at timestamptz
+  verification_type varchar(20) [note: 'official/celebrity/business']
+
+  // Flags
+  is_bot boolean [default: false, not null]
+  is_system boolean [default: false, not null]
+  is_banned boolean [default: false, not null]
+  ban_reason text
+  banned_at timestamptz
+  banned_by uuid [ref: > users.id]
+
+  // Activity
+  last_seen_at timestamptz
+  total_messages integer [default: 0, not null]
+
+  // Metadata
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    is_bot
+    is_banned
+    last_seen_at
+  }
+
+  Note: 'Extended user profile information'
+}
+
+// User settings and preferences
+Table user_settings {
+  user_id uuid [pk, ref: > users.id]
+
+  // Notification Settings
+  notification_sound boolean [default: true]
+  notification_vibrate boolean [default: true]
+  notification_preview boolean [default: true]
+  quiet_hours_enabled boolean [default: false]
+  quiet_hours_start time
+  quiet_hours_end time
+
+  // Privacy Settings
+  show_online_status boolean [default: true]
+  show_last_seen boolean [default: true]
+  show_read_receipts boolean [default: true]
+  show_typing_indicator boolean [default: true]
+  allow_direct_messages varchar(20) [default: 'everyone', note: 'everyone/contacts/none']
+  allow_invites boolean [default: true]
+  profile_visibility varchar(20) [default: 'members', note: 'public/members/contacts/private']
+
+  // Security Settings
+  two_factor_enabled boolean [default: false]
+  session_timeout_minutes integer [default: 10080, note: '7 days default']
+
+  // Accessibility
+  font_size varchar(10) [default: 'medium']
+  reduce_motion boolean [default: false]
+  high_contrast boolean [default: false]
+
+  // Full settings JSONB
+  settings jsonb [default: '{}', note: 'Full settings object']
+
+  updated_at timestamptz [default: `now()`, not null]
+
+  Note: 'User preferences and settings'
+}
+
+// User devices for push notifications and E2EE
+Table user_devices {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+
+  // Device Info
+  device_id varchar(255) [not null, note: 'Unique device identifier']
+  device_name varchar(100) [note: 'User-friendly device name']
+  device_type varchar(20) [not null, note: 'web/ios/android/desktop']
+  device_model varchar(100) [note: 'Device model info']
+  os_version varchar(50) [note: 'Operating system version']
+  app_version varchar(20) [note: 'App version installed']
+
+  // Push Notification Tokens
+  push_token text [note: 'FCM/APNs token']
+  push_provider varchar(20) [note: 'fcm/apns/web_push']
+  voip_token text [note: 'VoIP push token for calls']
+
+  // Status
+  is_active boolean [default: true, not null]
+  is_current boolean [default: false, note: 'Currently active device']
+
+  // Activity
+  last_active_at timestamptz [default: `now()`]
+  last_ip_address inet
+  last_user_agent text
+
+  // Metadata
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    device_id
+    (user_id, device_id) [unique]
+    push_token
+    is_active
+  }
+
+  Note: 'User devices for push notifications and multi-device support'
+}
+
+// =============================================================================
+// ORGANIZATIONS & MULTI-TENANCY
+// =============================================================================
+
+// Top-level organizations (multi-tenant support)
+Table organizations {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Identity
+  name varchar(255) [not null]
+  slug varchar(100) [unique, not null, note: 'URL-safe identifier']
+  custom_domain varchar(255) [unique, note: 'Custom domain for white-label']
+
+  // Branding
+  logo_url text
+  icon_url text
+  banner_url text
+  primary_color varchar(7) [note: 'Hex color']
+  branding jsonb [default: '{}', note: 'Full branding config']
+
+  // Status
+  status tenant_status [default: 'active', not null]
+
+  // Owner
+  owner_id uuid [not null, ref: > users.id]
+  owner_email varchar(255) [not null]
+
+  // Database Isolation (for schema-per-tenant)
+  schema_name varchar(100) [unique, note: 'PostgreSQL schema name']
+
+  // Billing
+  billing_plan billing_plan [default: 'free', not null]
+  billing_interval varchar(20) [default: 'monthly', note: 'monthly/yearly']
+  stripe_customer_id varchar(255) [unique]
+  stripe_subscription_id varchar(255) [unique]
+
+  // Resource Limits
+  limits jsonb [default: '{"maxUsers": 10, "maxChannels": 50, "maxStorageGB": 5}']
+
+  // Feature Flags
+  features jsonb [default: '{}', note: 'Feature toggles']
+
+  // Metadata
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  trial_ends_at timestamptz
+  suspended_at timestamptz
+
+  indexes {
+    slug
+    custom_domain
+    status
+    owner_id
+    stripe_customer_id
+  }
+
+  Note: 'Top-level organizations for multi-tenant support'
+}
+
+// Organization membership
+Table organization_members {
+  organization_id uuid [not null, ref: > organizations.id]
+  user_id uuid [not null, ref: > users.id]
+
+  // Role
+  role varchar(20) [default: 'member', not null, note: 'owner/admin/member']
+  custom_role_id uuid [ref: > roles.id]
+
+  // Status
+  is_owner boolean [default: false, not null]
+  is_admin boolean [default: false, not null]
+
+  // Metadata
+  joined_at timestamptz [default: `now()`, not null]
+  invited_by uuid [ref: > users.id]
+
+  indexes {
+    (organization_id, user_id) [pk]
+    organization_id
+    user_id
+  }
+
+  Note: 'Organization membership'
+}
+
+// Workspaces within organizations (Slack/Discord style)
+Table workspaces {
+  id uuid [pk, default: `gen_random_uuid()`]
+  organization_id uuid [not null, ref: > organizations.id]
+
+  // Basic Info
+  name varchar(100) [not null]
+  slug varchar(100) [not null]
+  description text
+  icon_url text
+  banner_url text
+
+  // Settings
+  settings jsonb [default: '{}']
+  features jsonb [default: '{}']
+
+  // Limits
+  max_members integer [default: 0, note: '0 = unlimited']
+  max_channels integer [default: 0]
+  max_file_size_mb integer [default: 100]
+
+  // Metadata
+  owner_id uuid [not null, ref: > users.id]
+  is_active boolean [default: true, not null]
+  is_discoverable boolean [default: false, note: 'Can be found in directory']
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    organization_id
+    slug
+    (organization_id, slug) [unique]
+    owner_id
+    is_active
+  }
+
+  Note: 'Workspaces/Servers within organizations'
+}
+
+// Workspace membership
+Table workspace_members {
+  workspace_id uuid [not null, ref: > workspaces.id]
+  user_id uuid [not null, ref: > users.id]
+
+  // Role
+  role_id uuid [ref: > roles.id]
+
+  // Settings
+  nickname varchar(50) [note: 'Workspace-specific nickname']
+  notification_level notification_level [default: 'all']
+
+  // Status
+  is_owner boolean [default: false, not null]
+  is_admin boolean [default: false, not null]
+
+  // Metadata
+  joined_at timestamptz [default: `now()`, not null]
+  invited_by uuid [ref: > users.id]
+
+  indexes {
+    (workspace_id, user_id) [pk]
+    workspace_id
+    user_id
+    role_id
+  }
+
+  Note: 'Workspace membership'
+}
+
+// =============================================================================
+// CHANNELS & CONVERSATIONS
+// =============================================================================
+
+// Channel categories (Discord-style organization)
+Table channel_categories {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > workspaces.id]
+
+  name varchar(100) [not null]
+  position integer [default: 0, not null]
+  is_collapsed boolean [default: false, not null]
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    workspace_id
+    position
+  }
+
+  Note: 'Channel organization categories (Discord-style sections)'
+}
+
+// All channel types (public, private, DM, group, broadcast, voice, stage)
+Table channels {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > workspaces.id]
+  category_id uuid [ref: > channel_categories.id]
+
+  // Basic Info
+  name varchar(100) [not null]
+  slug varchar(100) [not null]
+  description text
+  topic text [note: 'Current channel topic']
+  icon varchar(50) [note: 'Emoji or icon name']
+
+  // Type & Visibility
+  channel_type channel_type [default: 'public', not null]
+  is_private boolean [default: false, not null]
+  is_archived boolean [default: false, not null]
+  is_default boolean [default: false, not null, note: 'Auto-join for new members']
+  is_announcement boolean [default: false, not null, note: 'Only admins can post']
+  is_nsfw boolean [default: false, not null]
+  is_locked boolean [default: false, not null, note: 'No new messages allowed']
+
+  // Settings
+  slow_mode_interval integer [default: 0, note: 'Seconds between messages (0 = off)']
+  auto_archive_duration integer [note: 'Hours of inactivity before archive']
+  max_members integer [default: 0, note: '0 = unlimited']
+  message_retention_days integer [default: 0, note: '0 = forever']
+
+  // For DMs: store participant IDs
+  dm_participant_ids uuid[] [note: 'For DM/group DM channels']
+
+  // Metadata
+  position integer [default: 0, not null]
+  creator_id uuid [ref: > users.id]
+  last_message_at timestamptz
+  last_message_id uuid
+  message_count integer [default: 0, not null]
+  member_count integer [default: 0, not null]
+
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  archived_at timestamptz
+
+  indexes {
+    workspace_id
+    category_id
+    slug
+    channel_type
+    is_archived
+    is_default
+    position
+    last_message_at
+    (workspace_id, slug) [unique]
+    dm_participant_ids [type: gin]
+  }
+
+  Note: 'Chat channels (public, private, DM, group, broadcast, voice, stage)'
+}
+
+// Channel members
+Table channel_members {
+  channel_id uuid [not null, ref: > channels.id]
+  user_id uuid [not null, ref: > users.id]
+
+  // Channel-specific role
+  role varchar(20) [default: 'member', note: 'owner/admin/moderator/member']
+
+  // Settings
+  notification_level notification_level [default: 'all']
+  is_muted boolean [default: false, not null]
+  mute_until timestamptz
+
+  // Activity tracking
+  last_read_at timestamptz [default: `now()`, not null]
+  last_read_message_id uuid
+  mention_count integer [default: 0, not null]
+  unread_count integer [default: 0, not null]
+
+  // Metadata
+  joined_at timestamptz [default: `now()`, not null]
+  invited_by uuid [ref: > users.id]
+
+  indexes {
+    (channel_id, user_id) [pk]
+    channel_id
+    user_id
+    role
+    last_read_at
+  }
+
+  Note: 'Channel membership and preferences'
+}
+
+// Channel permission overrides (Discord-style)
+Table channel_permissions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > channels.id]
+
+  // Target: either a role or a user (one must be set)
+  role_id uuid [ref: > roles.id]
+  user_id uuid [ref: > users.id]
+
+  // Permissions (NULL = inherit, true = allow, false = deny)
+  can_view boolean
+  can_send_messages boolean
+  can_send_files boolean
+  can_send_embeds boolean
+  can_add_reactions boolean
+  can_mention_everyone boolean
+  can_manage_messages boolean
+  can_manage_threads boolean
+  can_manage_channel boolean
+  can_manage_permissions boolean
+  can_invite boolean
+  can_kick boolean
+  can_ban boolean
+  can_pin boolean
+  can_use_voice boolean
+  can_stream boolean
+  can_use_video boolean
+  can_mute_members boolean
+  can_speak boolean
+  can_screen_share boolean
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    channel_id
+    role_id
+    user_id
+    (channel_id, role_id, user_id) [unique]
+  }
+
+  Note: 'Per-channel permission overrides'
+}
+
+// =============================================================================
+// MESSAGING
+// =============================================================================
+
+// Core messages table
+Table messages {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > channels.id]
+  user_id uuid [not null, ref: > users.id]
+
+  // Content
+  content text [note: 'Message text (may be encrypted)']
+  content_type message_type [default: 'text', not null]
+  content_html text [note: 'Rendered HTML for rich text']
+
+  // Threading
+  thread_id uuid [ref: > threads.id, note: 'Parent thread']
+  reply_to_id uuid [ref: > messages.id, note: 'Direct reply to message']
+
+  // Forward tracking
+  forwarded_from_id uuid [ref: > messages.id]
+  forwarded_from_channel_id uuid [ref: > channels.id]
+
+  // Rich content (JSONB for flexibility)
+  attachments jsonb [default: '[]', note: 'File attachments']
+  embeds jsonb [default: '[]', note: 'Link previews, rich content']
+  mentions jsonb [default: '[]', note: '@user, @role, @channel mentions']
+  reactions_summary jsonb [default: '{}', note: 'Denormalized: {"emoji": count}']
+
+  // Delivery status
+  status message_status [default: 'sent', not null]
+
+  // Flags
+  is_edited boolean [default: false, not null]
+  is_deleted boolean [default: false, not null]
+  is_pinned boolean [default: false, not null]
+  is_system boolean [default: false, not null]
+  is_silent boolean [default: false, not null, note: 'No notification']
+
+  // Edit tracking
+  edit_count integer [default: 0]
+  edited_at timestamptz
+
+  // Deletion tracking
+  deleted_at timestamptz
+  deleted_by uuid [ref: > users.id]
+
+  // Pinning
+  pinned_at timestamptz
+  pinned_by uuid [ref: > users.id]
+
+  // Disappearing messages
+  expires_at timestamptz [note: 'Auto-delete after this time']
+
+  // E2EE fields
+  is_encrypted boolean [default: false, not null]
+  encrypted_payload bytea [note: 'Signal-encrypted content']
+  sender_device_id varchar(255)
+  encryption_version integer [default: 1]
+
+  // Metadata
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    channel_id
+    user_id
+    thread_id
+    reply_to_id
+    is_deleted
+    is_pinned
+    created_at
+    (channel_id, created_at) [note: 'Primary query pattern']
+    expires_at
+  }
+
+  Note: 'Chat messages - core messaging table'
+}
+
+// Message edit history
+Table message_edits {
+  id uuid [pk, default: `gen_random_uuid()`]
+  message_id uuid [not null, ref: > messages.id]
+
+  // Content snapshots
+  old_content text [not null]
+  new_content text [not null]
+
+  // Edit metadata
+  edited_by uuid [not null, ref: > users.id]
+  edit_reason text
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    message_id
+    created_at
+  }
+
+  Note: 'Tracks all edits made to messages for audit and history'
+}
+
+// Message reactions
+Table message_reactions {
+  message_id uuid [not null, ref: > messages.id]
+  user_id uuid [not null, ref: > users.id]
+  emoji varchar(50) [not null, note: 'Unicode emoji or custom emoji code']
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    (message_id, user_id, emoji) [pk]
+    message_id
+    user_id
+    emoji
+  }
+
+  Note: 'Message reactions (emoji)'
+}
+
+// Message mentions tracking
+Table message_mentions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  message_id uuid [not null, ref: > messages.id]
+
+  // Mention target (one must be set)
+  user_id uuid [ref: > users.id]
+  role_id uuid [ref: > roles.id]
+  channel_id uuid [ref: > channels.id]
+  is_everyone boolean [default: false, note: '@everyone mention']
+  is_here boolean [default: false, note: '@here mention']
+
+  // Notification status
+  is_notified boolean [default: false]
+  notified_at timestamptz
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    message_id
+    user_id
+    role_id
+    channel_id
+  }
+
+  Note: 'Message @mentions tracking'
+}
+
+// Message attachments (separate table for querying)
+Table message_attachments {
+  id uuid [pk, default: `gen_random_uuid()`]
+  message_id uuid [not null, ref: > messages.id]
+  file_id uuid [not null, ref: > files.id]
+
+  // Display order
+  position integer [default: 0]
+
+  // Optional caption
+  caption text
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    message_id
+    file_id
+  }
+
+  Note: 'Message to file attachments mapping'
+}
+
+// Message read receipts (individual message level)
+Table message_reads {
+  message_id uuid [not null, ref: > messages.id]
+  user_id uuid [not null, ref: > users.id]
+
+  read_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    (message_id, user_id) [pk]
+    message_id
+    user_id
+    read_at
+  }
+
+  Note: 'Per-message read receipts for delivery confirmation'
+}
+
+// Pinned messages (per channel)
+Table message_pins {
+  channel_id uuid [not null, ref: > channels.id]
+  message_id uuid [not null, ref: > messages.id]
+
+  pinned_by uuid [not null, ref: > users.id]
+  pinned_at timestamptz [default: `now()`, not null]
+  position integer [default: 0, not null]
+
+  indexes {
+    (channel_id, message_id) [pk]
+    channel_id
+    position
+  }
+
+  Note: 'Channel pinned messages'
+}
+
+// User bookmarks (saved messages)
+Table message_bookmarks {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  message_id uuid [not null, ref: > messages.id]
+
+  note text [note: 'User note about the bookmark']
+  folder varchar(100) [default: 'default', note: 'Organization folder']
+  tags text[] [note: 'User tags for organization']
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    message_id
+    folder
+    (user_id, message_id) [unique]
+  }
+
+  Note: 'User-saved messages (bookmarks/stars)'
+}
+
+// Scheduled messages
+Table scheduled_messages {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > channels.id]
+  user_id uuid [not null, ref: > users.id]
+
+  // Message content
+  content text [not null]
+  content_type message_type [default: 'text']
+  attachments jsonb [default: '[]']
+
+  // Schedule
+  scheduled_for timestamptz [not null]
+  timezone varchar(50) [default: 'UTC']
+
+  // Status
+  status varchar(20) [default: 'pending', note: 'pending/sent/cancelled/failed']
+  sent_at timestamptz
+  sent_message_id uuid [ref: > messages.id]
+  error_message text
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    channel_id
+    user_id
+    scheduled_for
+    status
+  }
+
+  Note: 'Scheduled/delayed messages'
+}
+
+// =============================================================================
+// THREADS
+// =============================================================================
+
+// Thread metadata
+Table threads {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > channels.id]
+  parent_message_id uuid [not null, ref: > messages.id]
+
+  // Optional thread title
+  name varchar(100)
+
+  // Settings
+  auto_archive_duration integer [default: 1440, note: 'Minutes (24h default)']
+  is_locked boolean [default: false, not null, note: 'Only mods can reply']
+  is_archived boolean [default: false, not null]
+
+  // Stats
+  message_count integer [default: 0, not null]
+  participant_count integer [default: 0, not null]
+
+  // Metadata
+  creator_id uuid [ref: > users.id]
+  last_message_at timestamptz
+  last_message_id uuid [ref: > messages.id]
+  archived_at timestamptz
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    channel_id
+    parent_message_id [unique]
+    creator_id
+    last_message_at
+    is_archived
+  }
+
+  Note: 'Threaded conversations'
+}
+
+// Thread participants/subscribers
+Table thread_participants {
+  thread_id uuid [not null, ref: > threads.id]
+  user_id uuid [not null, ref: > users.id]
+
+  // Subscription settings
+  is_subscribed boolean [default: true, not null]
+  notification_level notification_level [default: 'all']
+
+  // Read tracking
+  last_read_at timestamptz [default: `now()`, not null]
+  last_read_message_id uuid [ref: > messages.id]
+  mention_count integer [default: 0]
+
+  joined_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    (thread_id, user_id) [pk]
+    thread_id
+    user_id
+  }
+
+  Note: 'Thread participants and subscribers'
+}
+
+// =============================================================================
+// MEDIA & FILES
+// =============================================================================
+
+// File storage metadata
+Table files {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Ownership
+  user_id uuid [not null, ref: > users.id]
+  workspace_id uuid [ref: > workspaces.id]
+
+  // File info
+  filename varchar(255) [not null]
+  original_filename varchar(255) [not null]
+  mime_type varchar(100) [not null]
+  file_size bigint [not null, note: 'Size in bytes']
+  file_hash varchar(64) [note: 'SHA-256 hash for deduplication']
+
+  // Storage
+  storage_provider varchar(20) [default: 'minio', note: 's3/minio/gcs/azure']
+  storage_bucket varchar(100)
+  storage_key text [not null, note: 'Path in storage']
+  storage_url text [not null, note: 'Direct URL']
+  cdn_url text [note: 'CDN URL if available']
+
+  // Media dimensions (for images/videos)
+  width integer
+  height integer
+  duration integer [note: 'Duration in seconds for audio/video']
+
+  // Processing status
+  is_processed boolean [default: false]
+  processing_status varchar(20) [default: 'pending']
+  processing_error text
+
+  // Security
+  is_public boolean [default: false]
+  is_scanned boolean [default: false, note: 'Virus scan complete']
+  scan_result varchar(20) [note: 'clean/infected/error']
+
+  // Metadata
+  metadata jsonb [default: '{}', note: 'EXIF data, etc.']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  deleted_at timestamptz
+
+  indexes {
+    user_id
+    workspace_id
+    mime_type
+    file_hash
+    created_at
+  }
+
+  Note: 'File storage metadata'
+}
+
+// File thumbnails (generated previews)
+Table file_thumbnails {
+  id uuid [pk, default: `gen_random_uuid()`]
+  file_id uuid [not null, ref: > files.id]
+
+  // Thumbnail info
+  size varchar(20) [not null, note: 'small/medium/large']
+  width integer [not null]
+  height integer [not null]
+  mime_type varchar(100) [not null]
+  file_size integer [not null]
+
+  // Storage
+  storage_url text [not null]
+  cdn_url text
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    file_id
+    size
+    (file_id, size) [unique]
+  }
+
+  Note: 'Generated file thumbnails and previews'
+}
+
+// Voice messages (WhatsApp/Telegram style)
+Table voice_messages {
+  id uuid [pk, default: `gen_random_uuid()`]
+  message_id uuid [unique, not null, ref: > messages.id]
+  file_id uuid [not null, ref: > files.id]
+
+  // Audio info
+  duration_seconds integer [not null]
+  waveform_data jsonb [note: 'Visualization data']
+
+  // Transcription
+  transcription text
+  transcription_language varchar(10)
+  is_transcribed boolean [default: false]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    message_id
+    file_id
+  }
+
+  Note: 'Voice message metadata'
+}
+
+// Link unfurl cache (embeds)
+Table embeds {
+  id uuid [pk, default: `gen_random_uuid()`]
+  url text [unique, not null]
+
+  // Embed data
+  title varchar(500)
+  description text
+  site_name varchar(255)
+  image_url text
+  video_url text
+
+  // OG/Twitter card data
+  og_type varchar(50)
+  twitter_card varchar(50)
+
+  // Raw data
+  raw_data jsonb [default: '{}']
+
+  // Cache control
+  fetched_at timestamptz [default: `now()`]
+  expires_at timestamptz
+  fetch_error text
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    url
+    expires_at
+  }
+
+  Note: 'Link unfurl/preview cache'
+}
+
+// =============================================================================
+// REALTIME
+// =============================================================================
+
+// User presence (online status)
+Table presence {
+  user_id uuid [pk, ref: > users.id]
+
+  status user_status [not null, default: 'offline']
+  status_text varchar(128)
+  status_emoji varchar(10)
+
+  // Connection info
+  connection_id varchar(100)
+  device_type varchar(20) [note: 'web/desktop/mobile']
+
+  // Timing
+  last_seen_at timestamptz [default: `now()`, not null]
+  expires_at timestamptz [not null, note: 'TTL for cleanup']
+
+  indexes {
+    status
+    expires_at
+  }
+
+  Note: 'Real-time user presence (TTL managed by Redis)'
+}
+
+// Typing indicators
+Table typing_indicators {
+  channel_id uuid [not null, ref: > channels.id]
+  user_id uuid [not null, ref: > users.id]
+
+  started_at timestamptz [default: `now()`, not null]
+  expires_at timestamptz [not null, note: 'Auto-cleanup after 10s']
+
+  indexes {
+    (channel_id, user_id) [pk]
+    channel_id
+    expires_at
+  }
+
+  Note: 'Typing indicators (ephemeral, TTL managed)'
+}
+
+// =============================================================================
+// CALLS & MEDIA - VOICE/VIDEO
+// =============================================================================
+
+// Voice/Video call records
+Table calls {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [ref: > channels.id]
+
+  // Call info
+  call_type call_type [not null]
+  status call_status [default: 'initiating', not null]
+
+  // Initiator
+  initiator_id uuid [not null, ref: > users.id]
+
+  // Timing
+  started_at timestamptz
+  connected_at timestamptz
+  ended_at timestamptz
+  duration_seconds integer [note: 'Computed on end']
+
+  // Quality metrics
+  avg_packet_loss decimal(5,2)
+  avg_jitter decimal(8,2)
+  avg_round_trip_time decimal(8,2)
+
+  // Media settings
+  audio_codec varchar(50) [default: 'opus']
+  video_codec varchar(50)
+  sample_rate integer [default: 48000]
+
+  // Recording
+  is_recorded boolean [default: false]
+  recording_consent_given boolean [default: false]
+
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    channel_id
+    initiator_id
+    status
+    created_at
+  }
+
+  Note: 'Voice/video call records'
+}
+
+// Call participants
+Table call_participants {
+  id uuid [pk, default: `gen_random_uuid()`]
+  call_id uuid [not null, ref: > calls.id]
+  user_id uuid [not null, ref: > users.id]
+
+  status call_participant_status [default: 'invited', not null]
+
+  // Timing
+  invited_at timestamptz [default: `now()`, not null]
+  joined_at timestamptz
+  left_at timestamptz
+  duration_seconds integer
+
+  // Media state
+  is_muted boolean [default: false]
+  is_video_on boolean [default: false]
+  is_screen_sharing boolean [default: false]
+  is_speaking boolean [default: false]
+
+  // Quality
+  avg_packet_loss decimal(5,2)
+  avg_jitter decimal(8,2)
+  connection_quality varchar(20) [default: 'good', note: 'excellent/good/fair/poor']
+
+  // WebRTC
+  peer_connection_id varchar(255)
+  ice_connection_state varchar(50)
+
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    call_id
+    user_id
+    status
+    (call_id, user_id) [unique]
+  }
+
+  Note: 'Call participants'
+}
+
+// Call recordings
+Table call_recordings {
+  id uuid [pk, default: `gen_random_uuid()`]
+  call_id uuid [not null, ref: > calls.id]
+
+  // File info
+  file_id uuid [ref: > files.id]
+  file_url text [not null]
+  file_size bigint
+  file_format varchar(50) [default: 'webm']
+
+  duration_seconds integer [not null]
+
+  // Status
+  status varchar(50) [default: 'processing', note: 'processing/ready/failed/deleted']
+
+  // Access control
+  is_public boolean [default: false]
+  allowed_user_ids uuid[]
+
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    call_id
+    status
+  }
+
+  Note: 'Call recording metadata'
+}
+
+// =============================================================================
+// LIVE STREAMING
+// =============================================================================
+
+// Live streams
+Table streams {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > channels.id]
+  broadcaster_id uuid [not null, ref: > users.id]
+
+  // Stream info
+  title varchar(200) [not null]
+  description text
+  thumbnail_url text
+
+  // Status
+  status stream_status [default: 'scheduled', not null]
+
+  // Scheduling
+  scheduled_at timestamptz
+  started_at timestamptz
+  ended_at timestamptz
+
+  // Streaming config
+  stream_key varchar(64) [unique, note: 'RTMP/WebRTC ingest key']
+  ingest_url text
+  hls_manifest_url text
+
+  // Quality
+  max_resolution stream_quality [default: '1080p']
+  bitrate_kbps integer [default: 3000]
+  fps integer [default: 30]
+
+  // Recording
+  is_recorded boolean [default: true]
+  recording_url text
+  recording_duration_seconds integer
+
+  // Stats
+  peak_viewer_count integer [default: 0]
+  total_view_count integer [default: 0]
+  total_chat_messages integer [default: 0]
+  total_reactions integer [default: 0]
+
+  // Interactive features
+  enable_chat boolean [default: true]
+  enable_reactions boolean [default: true]
+  chat_mode varchar(20) [default: 'open', note: 'open/followers/subscribers/disabled']
+
+  // Metadata
+  tags text[]
+  language varchar(10) [default: 'en']
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    channel_id
+    broadcaster_id
+    status
+    scheduled_at
+    started_at
+  }
+
+  Note: 'Live streams with scheduling and recording'
+}
+
+// Stream viewers
+Table stream_viewers {
+  id uuid [pk, default: `gen_random_uuid()`]
+  stream_id uuid [not null, ref: > streams.id]
+  user_id uuid [ref: > users.id, note: 'NULL for anonymous']
+
+  session_id varchar(64) [not null]
+  ip_address inet
+  user_agent text
+
+  // Viewing session
+  joined_at timestamptz [default: `now()`, not null]
+  left_at timestamptz
+  total_watch_time_seconds integer [default: 0]
+
+  // Quality
+  selected_quality stream_quality [default: 'auto']
+
+  // Engagement
+  sent_chat_messages integer [default: 0]
+  sent_reactions integer [default: 0]
+
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    stream_id
+    user_id
+    session_id
+    joined_at
+  }
+
+  Note: 'Stream viewer sessions and watch time'
+}
+
+// =============================================================================
+// SECURITY & E2EE (Signal Protocol)
+// =============================================================================
+
+// User identity keys (long-term)
+Table encryption_keys {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  device_id varchar(255) [not null]
+
+  // Identity key
+  identity_key_public bytea [not null, note: '32 bytes public key']
+  identity_key_private_encrypted bytea [not null, note: 'Encrypted private key']
+  registration_id integer [not null, note: '14-bit random number']
+
+  // Status
+  is_active boolean [default: true, not null]
+
+  last_used_at timestamptz
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    device_id
+    (user_id, device_id) [unique]
+    is_active
+  }
+
+  Note: 'Long-term identity keys for Signal Protocol E2EE'
+}
+
+// Per-device keys (signed prekeys)
+Table device_keys {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  device_id varchar(255) [not null]
+
+  // Signed prekey
+  key_id integer [not null]
+  public_key bytea [not null, note: '32 bytes']
+  private_key_encrypted bytea [not null]
+  signature bytea [not null, note: '64 bytes Ed25519 signature']
+
+  // Status
+  is_active boolean [default: true, not null]
+  expires_at timestamptz [default: `now() + interval '7 days'`]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    device_id
+    (user_id, device_id, key_id) [unique]
+    is_active
+    expires_at
+  }
+
+  Note: 'Signed prekeys rotated weekly for Signal Protocol'
+}
+
+// One-time prekey bundles
+Table key_bundles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  device_id varchar(255) [not null]
+
+  // One-time prekey
+  key_id integer [not null]
+  public_key bytea [not null, note: '32 bytes']
+  private_key_encrypted bytea [not null]
+
+  // Consumption tracking
+  is_consumed boolean [default: false, not null]
+  consumed_at timestamptz
+  consumed_by uuid [ref: > users.id]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    device_id
+    (user_id, device_id, key_id) [unique]
+    is_consumed
+  }
+
+  Note: 'One-time prekeys providing perfect forward secrecy'
+}
+
+// Safety number verification
+Table safety_numbers {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  peer_user_id uuid [not null, ref: > users.id]
+
+  // Safety number (60-digit derived from identity keys)
+  safety_number varchar(60) [not null]
+
+  // Fingerprints
+  user_identity_fingerprint varchar(64) [not null]
+  peer_identity_fingerprint varchar(64) [not null]
+
+  // Verification
+  is_verified boolean [default: false, not null]
+  verified_at timestamptz
+  verified_method varchar(20) [note: 'qr_code/number_comparison']
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    peer_user_id
+    (user_id, peer_user_id) [unique]
+    is_verified
+  }
+
+  Note: 'Safety numbers for identity verification (Signal-style)'
+}
+
+// =============================================================================
+// NOTIFICATIONS
+// =============================================================================
+
+// Notification records
+Table notifications {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+
+  // Type
+  type varchar(50) [not null, note: 'mention/reply/dm/invite/system/etc.']
+  category varchar(50) [note: 'chat/social/security/billing']
+
+  // Content
+  title varchar(255) [not null]
+  body text
+  icon varchar(255)
+  image_url text
+  action_url text [note: 'Click destination']
+
+  // Context
+  workspace_id uuid [ref: > workspaces.id]
+  channel_id uuid [ref: > channels.id]
+  message_id uuid [ref: > messages.id]
+  actor_id uuid [ref: > users.id, note: 'Who triggered this']
+
+  // Data
+  data jsonb [default: '{}']
+
+  // Status
+  is_read boolean [default: false, not null]
+  read_at timestamptz
+  is_archived boolean [default: false, not null]
+
+  // Delivery
+  is_pushed boolean [default: false]
+  pushed_at timestamptz
+  push_error text
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    type
+    is_read
+    created_at
+    (user_id, is_read, created_at)
+  }
+
+  Note: 'User notifications'
+}
+
+// Notification preferences (per category)
+Table notification_preferences {
+  user_id uuid [not null, ref: > users.id]
+  category varchar(50) [not null]
+
+  // Channels
+  enabled boolean [default: true]
+  email_enabled boolean [default: true]
+  push_enabled boolean [default: true]
+  in_app_enabled boolean [default: true]
+
+  // Settings
+  frequency varchar(20) [default: 'instant', note: 'instant/hourly/daily/weekly']
+
+  updated_at timestamptz [default: `now()`]
+
+  indexes {
+    (user_id, category) [pk]
+  }
+
+  Note: 'Per-user notification preferences by category'
+}
+
+// Push notification subscriptions
+Table push_subscriptions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  device_id uuid [ref: > user_devices.id]
+
+  // Subscription info
+  endpoint text [not null, note: 'Push service endpoint']
+  auth_key text [note: 'Web Push auth key']
+  p256dh_key text [note: 'Web Push p256dh key']
+
+  // Provider
+  provider varchar(20) [not null, note: 'fcm/apns/web_push']
+
+  // Status
+  is_active boolean [default: true]
+  last_used_at timestamptz
+
+  created_at timestamptz [default: `now()`, not null]
+  expires_at timestamptz
+
+  indexes {
+    user_id
+    device_id
+    endpoint [unique]
+    is_active
+  }
+
+  Note: 'Push notification endpoints (FCM, APNs, Web Push)'
+}
+
+// =============================================================================
+// BILLING & SUBSCRIPTIONS
+// =============================================================================
+
+// Subscriptions (user or organization)
+Table subscriptions {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Owner (one must be set)
+  user_id uuid [ref: > users.id]
+  organization_id uuid [ref: > organizations.id]
+
+  // Stripe references
+  stripe_subscription_id varchar(255) [unique]
+  stripe_customer_id varchar(255)
+  stripe_price_id varchar(255)
+
+  // Plan
+  plan billing_plan [not null]
+  status subscription_status [default: 'active', not null]
+
+  // Billing period
+  current_period_start timestamptz
+  current_period_end timestamptz
+  cancel_at_period_end boolean [default: false]
+  cancelled_at timestamptz
+
+  // Trial
+  trial_start timestamptz
+  trial_end timestamptz
+
+  // Metadata
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    organization_id
+    stripe_subscription_id
+    status
+  }
+
+  Note: 'User/organization subscriptions'
+}
+
+// Invoice history
+Table invoices {
+  id uuid [pk, default: `gen_random_uuid()`]
+  subscription_id uuid [ref: > subscriptions.id]
+
+  // Stripe
+  stripe_invoice_id varchar(255) [unique]
+
+  // Amount
+  amount_due integer [not null, note: 'In cents']
+  amount_paid integer
+  currency varchar(3) [default: 'usd']
+
+  // Status
+  status varchar(20) [not null, note: 'draft/open/paid/void/uncollectible']
+
+  // URLs
+  invoice_pdf_url text
+  hosted_invoice_url text
+
+  // Dates
+  period_start timestamptz
+  period_end timestamptz
+  due_date timestamptz
+  paid_at timestamptz
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    subscription_id
+    stripe_invoice_id
+    status
+    created_at
+  }
+
+  Note: 'Billing history and invoices'
+}
+
+// Stored payment methods
+Table payment_methods {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Owner
+  user_id uuid [ref: > users.id]
+  organization_id uuid [ref: > organizations.id]
+
+  // Stripe
+  stripe_payment_method_id varchar(255) [unique, not null]
+
+  // Type
+  type varchar(20) [not null, note: 'card/bank_account/crypto']
+
+  // Card details (masked)
+  card_brand varchar(20)
+  card_last4 varchar(4)
+  card_exp_month integer
+  card_exp_year integer
+
+  // Status
+  is_default boolean [default: false]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    organization_id
+    stripe_payment_method_id
+    is_default
+  }
+
+  Note: 'Stored payment methods'
+}
+
+// Usage tracking for billing
+Table usage_tracking {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Owner
+  organization_id uuid [ref: > organizations.id]
+  subscription_id uuid [ref: > subscriptions.id]
+
+  // Period
+  period varchar(7) [not null, note: 'YYYY-MM format']
+
+  // Metrics
+  users_active integer [default: 0]
+  users_total integer [default: 0]
+  messages_sent integer [default: 0]
+  storage_bytes bigint [default: 0]
+  files_count integer [default: 0]
+  api_calls integer [default: 0]
+  call_minutes integer [default: 0]
+  stream_minutes integer [default: 0]
+
+  // Breakdown
+  api_calls_by_endpoint jsonb [default: '{}']
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    organization_id
+    subscription_id
+    period
+    (organization_id, period) [unique]
+  }
+
+  Note: 'Usage tracking for billing and limits enforcement'
+}
+
+// =============================================================================
+// MODERATION & COMPLIANCE
+// =============================================================================
+
+// User reports
+Table reports {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Reporter
+  reporter_id uuid [not null, ref: > users.id]
+
+  // Target (one must be set)
+  target_user_id uuid [ref: > users.id]
+  target_message_id uuid [ref: > messages.id]
+  target_channel_id uuid [ref: > channels.id]
+
+  // Report details
+  reason varchar(50) [not null, note: 'spam/harassment/hate/violence/etc.']
+  description text
+  evidence_urls text[]
+
+  // Status
+  status report_status [default: 'pending', not null]
+
+  // Resolution
+  resolved_at timestamptz
+  resolved_by uuid [ref: > users.id]
+  resolution_note text
+  action_taken moderation_action_type
+
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    reporter_id
+    target_user_id
+    target_message_id
+    status
+    created_at
+  }
+
+  Note: 'User reports for moderation'
+}
+
+// Moderation actions taken
+Table moderation_actions {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Target
+  target_user_id uuid [not null, ref: > users.id]
+
+  // Action
+  action_type moderation_action_type [not null]
+  reason text
+
+  // Duration (for temporary actions)
+  duration_minutes integer
+  expires_at timestamptz
+
+  // Context
+  workspace_id uuid [ref: > workspaces.id]
+  channel_id uuid [ref: > channels.id]
+  message_id uuid [ref: > messages.id]
+  report_id uuid [ref: > reports.id]
+
+  // Actor
+  moderator_id uuid [not null, ref: > users.id]
+  is_automated boolean [default: false, note: 'AI moderation']
+
+  // Status
+  is_active boolean [default: true]
+  revoked_at timestamptz
+  revoked_by uuid [ref: > users.id]
+  revoke_reason text
+
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    target_user_id
+    action_type
+    workspace_id
+    is_active
+    created_at
+  }
+
+  Note: 'Moderation actions taken against users'
+}
+
+// Audit logs (immutable)
+Table audit_logs {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Context
+  organization_id uuid [ref: > organizations.id]
+  workspace_id uuid [ref: > workspaces.id]
+
+  // Actor
+  actor_id uuid [ref: > users.id, note: 'NULL for system actions']
+  actor_type varchar(20) [not null, note: 'user/bot/system']
+
+  // Target
+  target_type varchar(50) [not null, note: 'user/channel/message/etc.']
+  target_id uuid [not null]
+  target_name varchar(255) [note: 'Snapshot at time of action']
+
+  // Action
+  action audit_action [not null]
+
+  // Details
+  changes jsonb [default: '{}', note: 'Before/after values']
+  reason text
+
+  // Context
+  ip_address inet
+  user_agent text
+  request_id varchar(100)
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    organization_id
+    workspace_id
+    actor_id
+    target_type
+    target_id
+    action
+    created_at
+    (organization_id, created_at)
+  }
+
+  Note: 'Immutable audit trail for all actions'
+}
+
+// Legal holds (prevent deletion)
+Table legal_holds {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  name varchar(255) [not null]
+  description text
+  matter_name varchar(255) [not null]
+  matter_number varchar(100)
+
+  // Scope
+  custodians uuid[] [not null, default: '{}', note: 'User IDs under hold']
+  channels uuid[] [default: '{}']
+
+  // Period
+  start_date timestamptz [not null]
+  end_date timestamptz
+
+  // Status
+  status varchar(50) [default: 'active', not null, note: 'active/released/expired']
+
+  // What to preserve
+  preserve_messages boolean [default: true]
+  preserve_files boolean [default: true]
+  preserve_audit_logs boolean [default: true]
+
+  // Notifications
+  notify_custodians boolean [default: true]
+  notification_sent timestamptz
+
+  // Management
+  created_by uuid [ref: > users.id]
+  released_by uuid [ref: > users.id]
+  released_at timestamptz
+  notes text
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    status
+    custodians [type: gin]
+    channels [type: gin]
+    start_date
+  }
+
+  Note: 'Legal holds to prevent data deletion during litigation'
+}
+
+// =============================================================================
+// CONFIGURATION
+// =============================================================================
+
+// Global app configuration
+Table app_configuration {
+  key varchar(100) [pk]
+  value jsonb [not null]
+
+  description text
+  is_sensitive boolean [default: false]
+
+  updated_at timestamptz [default: `now()`, not null]
+  updated_by uuid [ref: > users.id]
+
+  Note: 'Global application configuration (key-value)'
+}
+
+// Per-tenant configuration
+Table tenant_configuration {
+  organization_id uuid [not null, ref: > organizations.id]
+  key varchar(100) [not null]
+  value jsonb [not null]
+
+  updated_at timestamptz [default: `now()`, not null]
+  updated_by uuid [ref: > users.id]
+
+  indexes {
+    (organization_id, key) [pk]
+  }
+
+  Note: 'Per-tenant configuration overrides'
+}
+
+// Feature flags
+Table feature_flags {
+  id varchar(100) [pk, note: 'Feature identifier']
+
+  name varchar(255) [not null]
+  description text
+
+  // Default state
+  enabled boolean [default: false]
+
+  // Rollout
+  rollout_percentage integer [default: 0, note: '0-100']
+
+  // Targeting
+  allowed_organizations uuid[] [default: '{}']
+  allowed_users uuid[] [default: '{}']
+
+  metadata jsonb [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  Note: 'Feature flags for gradual rollout'
+}
+
+// =============================================================================
+// INTEGRATIONS & WEBHOOKS
+// =============================================================================
+
+// Outgoing webhooks
+Table webhooks {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > workspaces.id]
+  channel_id uuid [ref: > channels.id, note: 'NULL = workspace-wide']
+
+  name varchar(100) [not null]
+  url text [not null]
+  secret varchar(100) [note: 'HMAC secret']
+
+  // Events
+  events text[] [not null, default: '{}']
+  filters jsonb [default: '{}']
+
+  // Status
+  is_active boolean [default: true]
+
+  // Stats
+  total_deliveries integer [default: 0]
+  successful_deliveries integer [default: 0]
+  failed_deliveries integer [default: 0]
+  last_delivery_at timestamptz
+  last_delivery_status varchar(50)
+
+  created_by uuid [not null, ref: > users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    workspace_id
+    channel_id
+    is_active
+  }
+
+  Note: 'Outgoing webhook configurations'
+}
+
+// Connected integrations (Slack, GitHub, etc.)
+Table integrations {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > workspaces.id]
+
+  name varchar(255) [not null]
+  provider varchar(100) [not null, note: 'slack/discord/github/jira/etc.']
+
+  // Status
+  status varchar(50) [default: 'disconnected', not null]
+
+  // OAuth
+  access_token text
+  refresh_token text
+  token_expires_at timestamptz
+
+  // Provider config
+  config jsonb [default: '{}']
+
+  // Stats
+  last_sync_at timestamptz
+  sync_count integer [default: 0]
+  error_count integer [default: 0]
+  last_error text
+
+  created_by uuid [ref: > users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  connected_at timestamptz
+
+  indexes {
+    workspace_id
+    provider
+    status
+  }
+
+  Note: 'External service integrations'
+}
+
+// OAuth tokens for integrations
+Table oauth_tokens {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > users.id]
+  integration_id uuid [ref: > integrations.id]
+
+  provider varchar(100) [not null]
+
+  // Tokens (encrypted at rest)
+  access_token text [not null]
+  refresh_token text
+  token_type varchar(50) [default: 'bearer']
+
+  // Expiry
+  expires_at timestamptz
+
+  // Scopes
+  scopes text[]
+
+  // Provider user info
+  provider_user_id varchar(255)
+  provider_username varchar(255)
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    user_id
+    integration_id
+    provider
+    (user_id, provider) [unique]
+  }
+
+  Note: 'OAuth tokens for external services'
+}
+
+// =============================================================================
+// ROLES & PERMISSIONS (RBAC)
+// =============================================================================
+
+// Role definitions
+Table roles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > workspaces.id, note: 'NULL = global role']
+
+  name varchar(50) [not null]
+  slug varchar(50) [not null]
+  description text
+
+  // Display
+  color varchar(7) [note: 'Hex color']
+  icon varchar(50)
+
+  // Hierarchy
+  priority integer [default: 0, not null, note: 'Higher = more power']
+
+  // Flags
+  role_type role_type [default: 'custom', not null]
+  is_default boolean [default: false, not null]
+  is_mentionable boolean [default: true, not null]
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    workspace_id
+    slug
+    priority
+    role_type
+    (workspace_id, slug) [unique]
+  }
+
+  Note: 'Role definitions (system and custom)'
+}
+
+// Permission definitions
+Table permissions {
+  id varchar(100) [pk, note: 'e.g. channel.create, message.delete_any']
+
+  category varchar(50) [not null, note: 'channel/message/user/admin']
+  name varchar(100) [not null]
+  description text
+  scope permission_scope [default: 'workspace', not null]
+
+  // Flags
+  is_dangerous boolean [default: false, note: 'Requires extra confirmation']
+  requires_2fa boolean [default: false]
+
+  indexes {
+    category
+    scope
+  }
+
+  Note: 'Permission definitions catalog'
+}
+
+// Role-Permission mapping
+Table role_permissions {
+  role_id uuid [not null, ref: > roles.id]
+  permission_id varchar(100) [not null, ref: > permissions.id]
+
+  // Optional constraints
+  conditions jsonb [default: '{}', note: 'e.g. {"max_channels": 10}']
+
+  indexes {
+    (role_id, permission_id) [pk]
+    role_id
+    permission_id
+  }
+
+  Note: 'Role to permission mapping'
+}
+
+// User-Role assignment
+Table user_roles {
+  user_id uuid [not null, ref: > users.id]
+  role_id uuid [not null, ref: > roles.id]
+  workspace_id uuid [ref: > workspaces.id, note: 'NULL = global assignment']
+
+  // Temporary role support
+  expires_at timestamptz
+
+  // Metadata
+  granted_by uuid [ref: > users.id]
+  granted_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    (user_id, role_id, workspace_id) [pk]
+    user_id
+    role_id
+    workspace_id
+    expires_at
+  }
+
+  Note: 'User role assignments'
+}
+
+// =============================================================================
+// ADDITIONAL FEATURES
+// =============================================================================
+
+// Custom emoji
+Table custom_emoji {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > workspaces.id]
+
+  name varchar(50) [not null, note: 'Emoji name without colons']
+  image_url text [not null]
+
+  // Alias support
+  alias_of uuid [ref: > custom_emoji.id]
+
+  // Metadata
+  created_by uuid [not null, ref: > users.id]
+  is_animated boolean [default: false, not null]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    workspace_id
+    name
+    (workspace_id, name) [unique]
+  }
+
+  Note: 'Workspace custom emoji'
+}
+
+// Bots
+Table bots {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [unique, not null, ref: > users.id, note: 'Bot user account']
+  workspace_id uuid [not null, ref: > workspaces.id]
+
+  name varchar(100) [not null]
+  description text
+
+  // Auth
+  token varchar(100) [unique, not null]
+  token_expires_at timestamptz
+
+  // Permissions
+  permissions jsonb [default: '[]']
+
+  // Status
+  is_active boolean [default: true, not null]
+
+  created_by uuid [not null, ref: > users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    workspace_id
+    token
+    is_active
+  }
+
+  Note: 'Bot accounts'
+}
+
+// Slash commands
+Table slash_commands {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > workspaces.id]
+
+  name varchar(50) [not null, note: 'Command without /']
+  description varchar(255)
+  usage_hint varchar(255)
+
+  // Handler
+  handler_type varchar(20) [not null, note: 'webhook/bot/builtin']
+  handler_url text
+  handler_bot_id uuid [ref: > bots.id]
+
+  // Status
+  is_active boolean [default: true, not null]
+
+  created_by uuid [not null, ref: > users.id]
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    workspace_id
+    name
+    (workspace_id, name) [unique]
+    is_active
+  }
+
+  Note: 'Custom slash commands'
+}
+
+// Polls
+Table polls {
+  id uuid [pk, default: `gen_random_uuid()`]
+  message_id uuid [unique, not null, ref: > messages.id]
+
+  question varchar(500) [not null]
+  options jsonb [not null, note: 'Array of option objects']
+
+  // Settings
+  allows_multiple_answers boolean [default: false]
+  is_anonymous boolean [default: false]
+  closes_at timestamptz
+
+  // Stats
+  total_votes integer [default: 0]
+
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    message_id
+    closes_at
+  }
+
+  Note: 'Polls attached to messages'
+}
+
+// Poll votes
+Table poll_votes {
+  poll_id uuid [not null, ref: > polls.id]
+  user_id uuid [not null, ref: > users.id]
+  option_index integer [not null]
+
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    (poll_id, user_id, option_index) [pk]
+    poll_id
+    user_id
+  }
+
+  Note: 'Poll vote records'
+}
+
+// Invites
+Table invites {
+  id uuid [pk, default: `gen_random_uuid()`]
+
+  // Target
+  workspace_id uuid [ref: > workspaces.id]
+  channel_id uuid [ref: > channels.id]
+
+  code varchar(20) [unique, not null]
+
+  // Limits
+  max_uses integer [default: 0, note: '0 = unlimited']
+  uses integer [default: 0, not null]
+  expires_at timestamptz
+
+  // Flags
+  is_temporary boolean [default: false, note: 'Revoke on disconnect']
+
+  // Metadata
+  created_by uuid [not null, ref: > users.id]
+  created_at timestamptz [default: `now()`, not null]
+
+  indexes {
+    workspace_id
+    channel_id
+    code
+    expires_at
+  }
+
+  Note: 'Workspace and channel invite codes'
+}
+
+// Search index status (for MeiliSearch sync)
+Table search_index_status {
+  id varchar(50) [pk, note: 'Index name (messages, channels, users)']
+  workspace_id uuid [ref: > workspaces.id]
+
+  last_indexed_at timestamptz
+  last_indexed_id uuid
+  total_documents integer [default: 0]
+  status varchar(20) [default: 'idle', note: 'idle/indexing/error']
+  error text
+
+  updated_at timestamptz [default: `now()`, not null]
+
+  Note: 'Search index synchronization status'
+}
+
+// =============================================================================
+// TABLE GROUPS (for documentation)
+// =============================================================================
+
+TableGroup users_group {
+  users
+  user_profiles
+  user_settings
+  user_devices
+}
+
+TableGroup organizations_group {
+  organizations
+  organization_members
+  workspaces
+  workspace_members
+}
+
+TableGroup channels_group {
+  channel_categories
+  channels
+  channel_members
+  channel_permissions
+}
+
+TableGroup messaging_group {
+  messages
+  message_edits
+  message_reactions
+  message_mentions
+  message_attachments
+  message_reads
+  message_pins
+  message_bookmarks
+  scheduled_messages
+}
+
+TableGroup threads_group {
+  threads
+  thread_participants
+}
+
+TableGroup media_group {
+  files
+  file_thumbnails
+  voice_messages
+  embeds
+}
+
+TableGroup realtime_group {
+  presence
+  typing_indicators
+}
+
+TableGroup calls_group {
+  calls
+  call_participants
+  call_recordings
+}
+
+TableGroup streaming_group {
+  streams
+  stream_viewers
+}
+
+TableGroup security_group {
+  encryption_keys
+  device_keys
+  key_bundles
+  safety_numbers
+}
+
+TableGroup notifications_group {
+  notifications
+  notification_preferences
+  push_subscriptions
+}
+
+TableGroup billing_group {
+  subscriptions
+  invoices
+  payment_methods
+  usage_tracking
+}
+
+TableGroup moderation_group {
+  reports
+  moderation_actions
+  audit_logs
+  legal_holds
+}
+
+TableGroup config_group {
+  app_configuration
+  tenant_configuration
+  feature_flags
+}
+
+TableGroup integrations_group {
+  webhooks
+  integrations
+  oauth_tokens
+}
+
+TableGroup rbac_group {
+  roles
+  permissions
+  role_permissions
+  user_roles
+}
+
+TableGroup features_group {
+  custom_emoji
+  bots
+  slash_commands
+  polls
+  poll_votes
+  invites
+  search_index_status
+}

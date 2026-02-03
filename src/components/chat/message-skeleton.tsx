@@ -12,11 +12,7 @@ interface MessageSkeletonProps {
  * Loading skeleton for messages
  * Shows animated placeholder content while messages are loading
  */
-export function MessageSkeleton({
-  count = 3,
-  compact = false,
-  className,
-}: MessageSkeletonProps) {
+export function MessageSkeleton({ count = 3, compact = false, className }: MessageSkeletonProps) {
   return (
     <div className={cn('flex flex-col gap-4 p-4', className)}>
       {Array.from({ length: count }).map((_, i) => (
@@ -36,15 +32,10 @@ export function MessageSkeletonItem({
   showAvatar = true,
 }: MessageSkeletonItemProps) {
   return (
-    <div className={cn('flex gap-3 animate-pulse', compact && 'gap-2')}>
+    <div className={cn('flex animate-pulse gap-3', compact && 'gap-2')}>
       {/* Avatar */}
       {showAvatar && (
-        <div
-          className={cn(
-            'shrink-0 rounded-full bg-muted',
-            compact ? 'h-6 w-6' : 'h-9 w-9'
-          )}
-        />
+        <div className={cn('shrink-0 rounded-full bg-muted', compact ? 'h-6 w-6' : 'h-9 w-9')} />
       )}
 
       {/* Content */}

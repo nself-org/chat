@@ -28,17 +28,17 @@ nself-chat includes a comprehensive internationalization (i18n) framework that s
 
 nself-chat currently supports the following languages:
 
-| Language | Code | Direction | Completion | Native Name |
-|----------|------|-----------|------------|-------------|
-| English | `en` | LTR | 100% | English |
-| Spanish | `es` | LTR | 100% | Español |
-| French | `fr` | LTR | 100% | Français |
-| German | `de` | LTR | 100% | Deutsch |
-| Chinese (Simplified) | `zh` | LTR | 100% | 中文 |
-| Arabic | `ar` | RTL | 100% | العربية |
-| Japanese | `ja` | LTR | 95% | 日本語 |
-| Portuguese | `pt` | LTR | 95% | Português |
-| Russian | `ru` | LTR | 95% | Русский |
+| Language             | Code | Direction | Completion | Native Name |
+| -------------------- | ---- | --------- | ---------- | ----------- |
+| English              | `en` | LTR       | 100%       | English     |
+| Spanish              | `es` | LTR       | 100%       | Español     |
+| French               | `fr` | LTR       | 100%       | Français    |
+| German               | `de` | LTR       | 100%       | Deutsch     |
+| Chinese (Simplified) | `zh` | LTR       | 100%       | 中文        |
+| Arabic               | `ar` | RTL       | 100%       | العربية     |
+| Japanese             | `ja` | LTR       | 95%        | 日本語      |
+| Portuguese           | `pt` | LTR       | 95%        | Português   |
+| Russian              | `ru` | LTR       | 95%        | Русский     |
 
 ### Planned Languages
 
@@ -100,10 +100,11 @@ Translations are loaded dynamically using code-splitting:
 
 ```typescript
 // Dynamic import
-const translations = await import(`@/locales/${locale}/${namespace}.json`);
+const translations = await import(`@/locales/${locale}/${namespace}.json`)
 ```
 
 This ensures:
+
 - Small initial bundle size
 - On-demand loading of languages
 - Automatic code-splitting per locale
@@ -116,16 +117,16 @@ This ensures:
 ### Basic Translation
 
 ```typescript
-import { translate, t } from '@/lib/i18n/translator';
+import { translate, t } from '@/lib/i18n/translator'
 
 // Using translate function
-const text = translate('common:app.name');
+const text = translate('common:app.name')
 
 // Using shorthand
-const text = t('common:app.name');
+const text = t('common:app.name')
 
 // With default namespace (assumes 'common')
-const text = t('app.name');
+const text = t('app.name')
 ```
 
 ### With Interpolation
@@ -133,14 +134,14 @@ const text = t('app.name');
 ```typescript
 // Simple interpolation
 const text = t('time.ago', {
-  values: { time: '5 minutes' }
-});
+  values: { time: '5 minutes' },
+})
 // Output: "5 minutes ago"
 
 // Multiple values
 const text = t('validation.minLength', {
-  values: { min: 8 }
-});
+  values: { min: 8 },
+})
 // Output: "Must be at least 8 characters"
 ```
 
@@ -149,13 +150,13 @@ const text = t('validation.minLength', {
 ```typescript
 // Pluralization (automatic based on count)
 const text = t('time.minutes', {
-  count: 1
-});
+  count: 1,
+})
 // Output: "1 minute"
 
 const text = t('time.minutes', {
-  count: 5
-});
+  count: 5,
+})
 // Output: "5 minutes"
 ```
 
@@ -214,6 +215,7 @@ function MyComponent() {
 Translations are organized into namespaces:
 
 #### `common.json` - Common UI elements
+
 ```json
 {
   "app": {
@@ -236,6 +238,7 @@ Translations are organized into namespaces:
 ```
 
 #### `chat.json` - Chat-specific strings
+
 ```json
 {
   "messages": { ... },
@@ -254,6 +257,7 @@ Translations are organized into namespaces:
 ```
 
 #### `settings.json` - Settings UI
+
 ```json
 {
   "settings": { ... },
@@ -270,6 +274,7 @@ Translations are organized into namespaces:
 ```
 
 #### `admin.json` - Admin dashboard
+
 ```json
 {
   "admin": { ... },
@@ -328,10 +333,10 @@ The i18n system automatically detects RTL languages and applies appropriate styl
 
 ```typescript
 // Automatic detection and application
-import { getDirection, applyDocumentDirection } from '@/lib/i18n/rtl';
+import { getDirection, applyDocumentDirection } from '@/lib/i18n/rtl'
 
-const direction = getDirection('ar'); // 'rtl'
-applyDocumentDirection('ar'); // Applies dir="rtl" to <html>
+const direction = getDirection('ar') // 'rtl'
+applyDocumentDirection('ar') // Applies dir="rtl" to <html>
 ```
 
 ### RTL Component Wrapper
@@ -379,14 +384,14 @@ Use logical properties for RTL compatibility:
 ### Date Formatting
 
 ```typescript
-import { formatDate, formatRelativeTime } from '@/lib/i18n/date-formats';
+import { formatDate, formatRelativeTime } from '@/lib/i18n/date-formats'
 
 // Format date
-const formatted = formatDate(new Date(), 'long', 'en');
+const formatted = formatDate(new Date(), 'long', 'en')
 // Output: "January 31, 2026"
 
 // Relative time
-const relative = formatRelativeTime(new Date(), 'en');
+const relative = formatRelativeTime(new Date(), 'en')
 // Output: "just now"
 ```
 
@@ -402,18 +407,18 @@ const relative = formatRelativeTime(new Date(), 'en');
 ### Number Formatting
 
 ```typescript
-import { formatNumber, formatCurrency } from '@/lib/i18n/number-formats';
+import { formatNumber, formatCurrency } from '@/lib/i18n/number-formats'
 
 // Format number
-const num = formatNumber(1234.56, 'en');
+const num = formatNumber(1234.56, 'en')
 // Output: "1,234.56"
 
 // Format currency
-const price = formatCurrency(99.99, 'USD', 'en');
+const price = formatCurrency(99.99, 'USD', 'en')
 // Output: "$99.99"
 
 // Format percentage
-const percent = formatNumber(0.85, 'en', { style: 'percent' });
+const percent = formatNumber(0.85, 'en', { style: 'percent' })
 // Output: "85%"
 ```
 
@@ -426,6 +431,7 @@ We welcome translation contributions from the community! Here's how to contribut
 ### Quick Start
 
 1. **Fork the repository**
+
    ```bash
    git clone https://github.com/yourusername/nself-chat.git
    cd nself-chat
@@ -443,6 +449,7 @@ We welcome translation contributions from the community! Here's how to contribut
 4. **Update locale configuration**
 
    Edit `/src/lib/i18n/locales.ts`:
+
    ```typescript
    export const SUPPORTED_LOCALES = {
      // ... existing locales
@@ -458,12 +465,13 @@ We welcome translation contributions from the community! Here's how to contribut
        numberLocale: 'it-IT',
        pluralRule: 'other',
        isComplete: false,
-       completionPercent: 0
-     }
-   };
+       completionPercent: 0,
+     },
+   }
    ```
 
 5. **Test your translations**
+
    ```bash
    pnpm dev
    # Navigate to settings and change language
@@ -480,40 +488,46 @@ We welcome translation contributions from the community! Here's how to contribut
 ### Translation Guidelines
 
 #### 1. **Maintain Context**
-   - Understand the UI context where text appears
-   - Ask for screenshots if unclear
-   - Check similar apps in your language for terminology
+
+- Understand the UI context where text appears
+- Ask for screenshots if unclear
+- Check similar apps in your language for terminology
 
 #### 2. **Preserve Formatting**
-   - Keep interpolation variables: `{{name}}`, `{{count}}`
-   - Maintain HTML entities: `&nbsp;`, `&mdash;`
-   - Don't translate technical terms like "URL", "API", "OAuth"
+
+- Keep interpolation variables: `{{name}}`, `{{count}}`
+- Maintain HTML entities: `&nbsp;`, `&mdash;`
+- Don't translate technical terms like "URL", "API", "OAuth"
 
 #### 3. **Handle Plurals Correctly**
 
-   English uses `_one` and `_other`:
-   ```json
-   {
-     "messages_one": "{{count}} message",
-     "messages_other": "{{count}} messages"
-   }
-   ```
+English uses `_one` and `_other`:
 
-   Some languages need more forms:
-   - **Arabic**: `_zero`, `_one`, `_two`, `_few`, `_many`, `_other`
-   - **Polish**: `_one`, `_few`, `_many`, `_other`
-   - **Russian**: `_one`, `_few`, `_many`, `_other`
+```json
+{
+  "messages_one": "{{count}} message",
+  "messages_other": "{{count}} messages"
+}
+```
+
+Some languages need more forms:
+
+- **Arabic**: `_zero`, `_one`, `_two`, `_few`, `_many`, `_other`
+- **Polish**: `_one`, `_few`, `_many`, `_other`
+- **Russian**: `_one`, `_few`, `_many`, `_other`
 
 #### 4. **Use Appropriate Formality**
-   - Match the app's tone (professional but friendly)
-   - Use informal "you" where appropriate (tu vs. vous)
-   - Be consistent throughout
+
+- Match the app's tone (professional but friendly)
+- Use informal "you" where appropriate (tu vs. vous)
+- Be consistent throughout
 
 #### 5. **Test Edge Cases**
-   - Long words (German compounds)
-   - Short words (Chinese characters)
-   - RTL text (Arabic/Hebrew)
-   - Special characters
+
+- Long words (German compounds)
+- Short words (Chinese characters)
+- RTL text (Arabic/Hebrew)
+- Special characters
 
 ### Validation Checklist
 
@@ -596,6 +610,7 @@ node scripts/validate-translations.js --find-missing
 ### For Developers
 
 1. **Always use translation keys**
+
    ```typescript
    // ❌ Don't hardcode strings
    <button>Save</button>
@@ -605,6 +620,7 @@ node scripts/validate-translations.js --find-missing
    ```
 
 2. **Provide context in keys**
+
    ```typescript
    // ❌ Vague
    t('submit')
@@ -614,21 +630,23 @@ node scripts/validate-translations.js --find-missing
    ```
 
 3. **Use interpolation for dynamic content**
+
    ```typescript
    // ❌ Don't concatenate
-   const text = userName + " sent a message";
+   const text = userName + ' sent a message'
 
    // ✅ Use interpolation
-   const text = t('messages.userSent', { values: { user: userName } });
+   const text = t('messages.userSent', { values: { user: userName } })
    ```
 
 4. **Handle plurals properly**
+
    ```typescript
    // ❌ Manual plural logic
-   const text = count === 1 ? '1 message' : `${count} messages`;
+   const text = count === 1 ? '1 message' : `${count} messages`
 
    // ✅ Use plural keys
-   const text = t('messages.count', { count });
+   const text = t('messages.count', { count })
    ```
 
 ### For Translators
@@ -664,13 +682,14 @@ node scripts/validate-translations.js --find-missing
 **Problem**: Changing language doesn't update UI
 
 **Solutions**:
+
 ```typescript
 // Check if namespace is loaded
-const { loadNamespace } = useLocaleStore();
-await loadNamespace('chat');
+const { loadNamespace } = useLocaleStore()
+await loadNamespace('chat')
 
 // Force reload
-window.location.reload();
+window.location.reload()
 ```
 
 #### 2. **Missing translation keys**
@@ -678,6 +697,7 @@ window.location.reload();
 **Problem**: Seeing keys like `common:app.name` instead of translated text
 
 **Solutions**:
+
 - Check if key exists in translation file
 - Verify namespace is loaded
 - Check for typos in key name
@@ -688,6 +708,7 @@ window.location.reload();
 **Problem**: RTL languages display incorrectly
 
 **Solutions**:
+
 - Use logical CSS properties (`margin-inline-start` vs `margin-left`)
 - Wrap components in `<RTLWrapper>`
 - Check `dir` attribute on `<html>`
@@ -698,6 +719,7 @@ window.location.reload();
 **Problem**: Always showing same plural form
 
 **Solutions**:
+
 ```typescript
 // Ensure count is passed
 t('messages.count', { count: 5 }); // ✅
@@ -716,6 +738,7 @@ t('messages.count', { values: { count: 5 } }); // ❌
 **Problem**: Dates or numbers not formatted for locale
 
 **Solutions**:
+
 ```typescript
 // Use locale-aware formatting
 import { formatDate } from '@/lib/i18n/date-formats';
@@ -735,10 +758,11 @@ Enable i18n debug mode:
 export const i18nConfig = {
   debug: true, // Enable logging
   // ...
-};
+}
 ```
 
 This will log:
+
 - Missing translations
 - Fallback usage
 - Namespace loading

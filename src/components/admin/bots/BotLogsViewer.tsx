@@ -236,7 +236,7 @@ export function BotLogsViewer({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
+          <h2 className="flex items-center gap-2 text-2xl font-bold">
             <Terminal className="h-6 w-6" />
             {botName} Logs
           </h2>
@@ -252,11 +252,7 @@ export function BotLogsViewer({
             </Button>
           )}
           {onToggleStreaming && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={onToggleStreaming}
-            >
+            <Button variant="outline" size="sm" onClick={onToggleStreaming}>
               {streaming ? (
                 <>
                   <Pause className="mr-2 h-4 w-4" />
@@ -274,12 +270,7 @@ export function BotLogsViewer({
             <Download className="mr-2 h-4 w-4" />
             Download
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleClear}
-            disabled={logs.length === 0}
-          >
+          <Button variant="outline" size="sm" onClick={handleClear} disabled={logs.length === 0}>
             <Trash2 className="mr-2 h-4 w-4" />
             Clear
           </Button>
@@ -359,19 +350,14 @@ export function BotLogsViewer({
                   const config = getLogLevelConfig(log.level)
                   const Icon = config.icon
                   return (
-                    <div
-                      key={log.id}
-                      className="group rounded px-2 py-1 hover:bg-white/5"
-                    >
+                    <div key={log.id} className="group rounded px-2 py-1 hover:bg-white/5">
                       <div className="flex items-start gap-2">
                         <span className="text-muted-foreground">
                           {formatTimestamp(log.timestamp)}
                         </span>
                         <div className={`flex items-center gap-1 ${config.color}`}>
                           <Icon className="h-3 w-3" />
-                          <span className="w-12 text-xs font-bold">
-                            {log.level.toUpperCase()}
-                          </span>
+                          <span className="w-12 text-xs font-bold">{log.level.toUpperCase()}</span>
                         </div>
                         <span className="flex-1 text-white">{log.message}</span>
                       </div>

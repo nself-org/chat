@@ -13,8 +13,11 @@ import type {
   AuditCategory,
   ExportFormat,
 } from '@/lib/audit/audit-types'
+
 import { exportToCSV, exportToJSON, generateExportSummary } from '@/lib/audit/audit-export'
 import { filterAuditLogs, sortAuditLogs } from '@/lib/audit/audit-search'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Mock Data (In production, fetch from database)
@@ -137,7 +140,7 @@ export async function POST(request: NextRequest) {
       headers,
     })
   } catch (error) {
-    console.error('[Audit Export API] POST error:', error)
+    logger.error('[Audit Export API] POST error:', error)
     return NextResponse.json(
       {
         success: false,
@@ -233,7 +236,7 @@ export async function GET() {
       },
     })
   } catch (error) {
-    console.error('[Audit Export API] GET error:', error)
+    logger.error('[Audit Export API] GET error:', error)
     return NextResponse.json(
       {
         success: false,

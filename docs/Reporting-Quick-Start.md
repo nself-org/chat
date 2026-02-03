@@ -20,12 +20,8 @@ export function MessageActions({ message }) {
 
   return (
     <>
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setShowReport(true)}
-      >
-        <Flag className="h-4 w-4 mr-2" />
+      <Button variant="ghost" size="sm" onClick={() => setShowReport(true)}>
+        <Flag className="mr-2 h-4 w-4" />
         Report
       </Button>
 
@@ -68,9 +64,7 @@ export function UserProfileActions({ user }) {
 
   return (
     <>
-      <button onClick={() => setShowReport(true)}>
-        Report User
-      </button>
+      <button onClick={() => setShowReport(true)}>Report User</button>
 
       <ReportModal
         open={showReport}
@@ -166,7 +160,7 @@ export function AdminNav() {
       {/* ...other nav items... */}
 
       <a href="/admin/moderation/reports">
-        <Shield className="h-4 w-4 mr-2" />
+        <Shield className="mr-2 h-4 w-4" />
         Reports
       </a>
     </nav>
@@ -291,7 +285,7 @@ import { SUBMIT_REPORT, GET_REPORTS } from '@/graphql/moderation'
 // In your component or API route
 const [submitReport] = useMutation(SUBMIT_REPORT)
 const { data } = useQuery(GET_REPORTS, {
-  variables: { status: 'pending' }
+  variables: { status: 'pending' },
 })
 ```
 

@@ -21,6 +21,7 @@ The Bot Management UI provides a comprehensive suite of tools for managing bots 
 Comprehensive bot list with management capabilities.
 
 **Features:**
+
 - Search and filter bots
 - Sort by name, status, events handled, last active
 - Quick enable/disable toggle
@@ -30,6 +31,7 @@ Comprehensive bot list with management capabilities.
 - Export bot IDs
 
 **Props:**
+
 ```typescript
 interface BotManagerProps {
   bots: Bot[]
@@ -44,6 +46,7 @@ interface BotManagerProps {
 ```
 
 **Usage:**
+
 ```tsx
 <BotManager
   bots={bots}
@@ -62,6 +65,7 @@ interface BotManagerProps {
 Advanced code editor with TypeScript support.
 
 **Features:**
+
 - Code editor with syntax highlighting (textarea-based, extensible to Monaco)
 - Template selection dropdown
 - Bot configuration (name, description, settings)
@@ -73,12 +77,14 @@ Advanced code editor with TypeScript support.
 - Save, test, and deploy buttons
 
 **Tabs:**
+
 - **Code**: Main editor with template selection
 - **Configuration**: Basic bot settings
 - **Events**: Subscribe to bot events
 - **Permissions**: Grant required permissions
 
 **Props:**
+
 ```typescript
 interface BotEditorProps {
   bot?: Bot
@@ -89,6 +95,7 @@ interface BotEditorProps {
 ```
 
 **Templates Included:**
+
 - Blank Bot (starter template)
 - Echo Bot (message repeater)
 - Welcome Bot (greet new members)
@@ -99,6 +106,7 @@ interface BotEditorProps {
 Performance metrics and usage statistics.
 
 **Metrics:**
+
 - Events handled (with trend indicators)
 - Commands executed
 - Average response time
@@ -108,12 +116,14 @@ Performance metrics and usage statistics.
 - Uptime percentage
 
 **Charts:**
+
 - Usage over time (daily bar chart)
 - Top commands (ranked list with progress bars)
 - Error analysis (error type breakdown)
 - Engagement metrics
 
 **Props:**
+
 ```typescript
 interface BotAnalyticsProps {
   botId: string
@@ -130,6 +140,7 @@ interface BotAnalyticsProps {
 Real-time log streaming with filtering.
 
 **Features:**
+
 - Real-time log streaming (simulated with mock data)
 - Log level filtering (debug, info, warn, error)
 - Search logs by content
@@ -141,12 +152,14 @@ Real-time log streaming with filtering.
 - Metadata display
 
 **Log Levels:**
+
 - **Debug**: Development information (gray)
 - **Info**: Normal operations (blue)
 - **Warn**: Warnings and notices (yellow)
 - **Error**: Errors and failures (red)
 
 **Props:**
+
 ```typescript
 interface BotLogsViewerProps {
   botId: string
@@ -196,6 +209,7 @@ Pre-built bot templates gallery.
    - User engagement tracking
 
 **Features:**
+
 - Search templates
 - Filter by category
 - Template preview with code
@@ -204,6 +218,7 @@ Pre-built bot templates gallery.
 - Install count and ratings
 
 **Props:**
+
 ```typescript
 interface BotTemplatesProps {
   onInstall?: (template: BotTemplate) => void
@@ -216,6 +231,7 @@ interface BotTemplatesProps {
 Interactive testing environment.
 
 **Features:**
+
 - Send test events to bot
 - Quick scenario selection
 - Custom event configuration
@@ -227,6 +243,7 @@ Interactive testing environment.
 - Replay previous tests
 
 **Test Scenarios:**
+
 - Simple Message
 - Slash Command
 - Bot Mention
@@ -234,6 +251,7 @@ Interactive testing environment.
 - Reaction Added
 
 **Event Types Supported:**
+
 - message_created
 - message_edited
 - message_deleted
@@ -243,6 +261,7 @@ Interactive testing environment.
 - mention
 
 **Props:**
+
 ```typescript
 interface BotTestSandboxProps {
   botId: string
@@ -287,6 +306,7 @@ Comprehensive bot settings.
    - Environment variable validation
 
 **Props:**
+
 ```typescript
 interface BotConfigProps {
   bot: Bot
@@ -410,9 +430,11 @@ export class MyBot {
 ## Permissions
 
 Required user permissions:
+
 - **owner** or **admin** role to access `/admin/bots/manage`
 
 Bot permissions available:
+
 - `messages.read` - Read messages
 - `messages.write` - Send messages
 - `messages.delete` - Delete messages (dangerous)
@@ -455,6 +477,7 @@ Bot permissions available:
 ## Testing
 
 All components include:
+
 - TypeScript type safety
 - Props validation
 - Error boundaries
@@ -487,6 +510,7 @@ All components include:
 ## Dependencies
 
 All components use existing project dependencies:
+
 - React 19
 - Radix UI components
 - Tailwind CSS

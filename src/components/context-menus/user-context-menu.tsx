@@ -147,12 +147,8 @@ export function UserContextMenu({
         {/* User header */}
         <ContextMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
-              {targetUser.displayName}
-            </p>
-            <p className="text-xs leading-none text-muted-foreground">
-              @{targetUser.username}
-            </p>
+            <p className="text-sm font-medium leading-none">{targetUser.displayName}</p>
+            <p className="text-xs leading-none text-muted-foreground">@{targetUser.username}</p>
           </div>
         </ContextMenuLabel>
 
@@ -187,10 +183,7 @@ export function UserContextMenu({
         )}
 
         {/* Copy username */}
-        <ContextMenuItemWithIcon
-          icon={<Copy className="h-4 w-4" />}
-          onClick={handleCopyUsername}
-        >
+        <ContextMenuItemWithIcon icon={<Copy className="h-4 w-4" />} onClick={handleCopyUsername}>
           Copy username
         </ContextMenuItemWithIcon>
 
@@ -220,9 +213,7 @@ export function UserContextMenu({
             {/* Change role submenu */}
             {canChangeRole && (
               <ContextMenuSub>
-                <ContextMenuSubTrigger
-                  icon={getRoleIcon(targetUser.role || 'member')}
-                >
+                <ContextMenuSubTrigger icon={getRoleIcon(targetUser.role || 'member')}>
                   Change role
                 </ContextMenuSubTrigger>
                 <ContextMenuSubContent className="w-40">

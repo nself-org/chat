@@ -90,10 +90,7 @@ export class StreamManager {
   /**
    * Update stream
    */
-  public async updateStream(
-    streamId: string,
-    input: UpdateStreamInput
-  ): Promise<Stream> {
+  public async updateStream(streamId: string, input: UpdateStreamInput): Promise<Stream> {
     try {
       const response = await fetch(`${this.apiBaseUrl}/${streamId}`, {
         method: 'PATCH',
@@ -251,10 +248,7 @@ export class StreamManager {
   /**
    * Get past streams (ended with recordings)
    */
-  public async getPastStreams(
-    channelId?: string,
-    limit: number = 20
-  ): Promise<Stream[]> {
+  public async getPastStreams(channelId?: string, limit: number = 20): Promise<Stream[]> {
     try {
       const params = new URLSearchParams({
         ...(channelId && { channelId }),
@@ -278,10 +272,7 @@ export class StreamManager {
   /**
    * Get user's streams (as broadcaster)
    */
-  public async getUserStreams(
-    userId: string,
-    status?: StreamStatus
-  ): Promise<Stream[]> {
+  public async getUserStreams(userId: string, status?: StreamStatus): Promise<Stream[]> {
     try {
       const params = new URLSearchParams({
         userId,
@@ -357,12 +348,9 @@ export class StreamManager {
    */
   public async regenerateStreamKey(streamId: string): Promise<string> {
     try {
-      const response = await fetch(
-        `${this.apiBaseUrl}/${streamId}/regenerate-key`,
-        {
-          method: 'POST',
-        }
-      )
+      const response = await fetch(`${this.apiBaseUrl}/${streamId}/regenerate-key`, {
+        method: 'POST',
+      })
 
       if (!response.ok) {
         throw new Error(`Failed to regenerate stream key: ${response.statusText}`)
@@ -436,9 +424,7 @@ export class StreamManager {
 /**
  * Create stream manager instance
  */
-export function createStreamManager(
-  config: StreamManagerConfig = {}
-): StreamManager {
+export function createStreamManager(config: StreamManagerConfig = {}): StreamManager {
   return new StreamManager(config)
 }
 
@@ -451,9 +437,7 @@ let managerInstance: StreamManager | null = null
 /**
  * Get or create singleton stream manager instance
  */
-export function getStreamManager(
-  config: StreamManagerConfig = {}
-): StreamManager {
+export function getStreamManager(config: StreamManagerConfig = {}): StreamManager {
   if (!managerInstance) {
     managerInstance = new StreamManager(config)
   }

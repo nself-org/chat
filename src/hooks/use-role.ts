@@ -79,10 +79,7 @@ export function useRole(): UseRoleReturn {
   const roleMetadata = role ? getRoleMetadata(role) : null
 
   // Memoize computed values
-  const assignableRoles = useMemo(
-    () => (role ? getAssignableRoles(role) : []),
-    [role]
-  )
+  const assignableRoles = useMemo(() => (role ? getAssignableRoles(role) : []), [role])
 
   // Return object with all role utilities
   return useMemo(
@@ -97,8 +94,7 @@ export function useRole(): UseRoleReturn {
 
       hasExactRole: (exactRole: UserRole) => role === exactRole,
 
-      isRoleAllowed: (allowedRoles: UserRole[]) =>
-        role ? allowedRoles.includes(role) : false,
+      isRoleAllowed: (allowedRoles: UserRole[]) => (role ? allowedRoles.includes(role) : false),
 
       // Common role checks
       isOwner: role ? isOwner(role) : false,
@@ -151,11 +147,4 @@ export function useIsModerator(): boolean {
 }
 
 // Re-export types and constants for convenience
-export {
-  type UserRole,
-  ROLE_LEVELS,
-  ROLE_METADATA,
-  ALL_ROLES,
-  ADMIN_ROLES,
-  MODERATOR_ROLES,
-}
+export { type UserRole, ROLE_LEVELS, ROLE_METADATA, ALL_ROLES, ADMIN_ROLES, MODERATOR_ROLES }

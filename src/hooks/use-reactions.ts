@@ -55,28 +55,37 @@ export function useMessageReactions(messageId: string | null) {
     return Array.from(groups.values())
   }, [data, user?.id])
 
-  const addReaction = useCallback(async (emoji: string) => {
-    if (!messageId) return
-    await addReactionMutation({
-      variables: { messageId, emoji },
-    })
-  }, [messageId, addReactionMutation])
+  const addReaction = useCallback(
+    async (emoji: string) => {
+      if (!messageId) return
+      await addReactionMutation({
+        variables: { messageId, emoji },
+      })
+    },
+    [messageId, addReactionMutation]
+  )
 
-  const removeReaction = useCallback(async (emoji: string) => {
-    if (!messageId) return
-    await removeReactionMutation({
-      variables: { messageId, emoji },
-    })
-  }, [messageId, removeReactionMutation])
+  const removeReaction = useCallback(
+    async (emoji: string) => {
+      if (!messageId) return
+      await removeReactionMutation({
+        variables: { messageId, emoji },
+      })
+    },
+    [messageId, removeReactionMutation]
+  )
 
-  const toggleReaction = useCallback(async (emoji: string) => {
-    const group = reactions.find(r => r.emoji === emoji)
-    if (group?.userReacted) {
-      await removeReaction(emoji)
-    } else {
-      await addReaction(emoji)
-    }
-  }, [reactions, addReaction, removeReaction])
+  const toggleReaction = useCallback(
+    async (emoji: string) => {
+      const group = reactions.find((r) => r.emoji === emoji)
+      if (group?.userReacted) {
+        await removeReaction(emoji)
+      } else {
+        await addReaction(emoji)
+      }
+    },
+    [reactions, addReaction, removeReaction]
+  )
 
   return {
     reactions,

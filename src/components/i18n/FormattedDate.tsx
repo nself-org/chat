@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * FormattedDate Component
@@ -6,10 +6,10 @@
  * Renders dates formatted according to the current locale.
  */
 
-import * as React from 'react';
-import { useMemo } from 'react';
+import * as React from 'react'
+import { useMemo } from 'react'
 
-import { useLocaleStore } from '@/stores/locale-store';
+import { useLocaleStore } from '@/stores/locale-store'
 import {
   formatDate,
   formatTime,
@@ -17,7 +17,7 @@ import {
   formatSmartDate,
   formatMessageTime,
   type DateFormatPatterns,
-} from '@/lib/i18n/date-formats';
+} from '@/lib/i18n/date-formats'
 
 // ============================================================================
 // FormattedDate Component
@@ -25,13 +25,13 @@ import {
 
 interface FormattedDateProps {
   /** Date to format */
-  date: Date | number | string;
+  date: Date | number | string
   /** Format pattern or preset name */
-  format?: keyof DateFormatPatterns | string;
+  format?: keyof DateFormatPatterns | string
   /** Additional class name */
-  className?: string;
+  className?: string
   /** HTML element to render */
-  as?: keyof React.JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements
 }
 
 export function FormattedDate({
@@ -40,29 +40,29 @@ export function FormattedDate({
   className,
   as = 'time',
 }: FormattedDateProps) {
-  const locale = useLocaleStore((state) => state.currentLocale);
+  const locale = useLocaleStore((state) => state.currentLocale)
 
   const formattedDate = useMemo(
     () => formatDate(date, { pattern: format, locale }),
     [date, format, locale]
-  );
+  )
 
   const isoDate = useMemo(() => {
-    const d = typeof date === 'string' ? new Date(date) : new Date(date);
-    return d.toISOString();
-  }, [date]);
+    const d = typeof date === 'string' ? new Date(date) : new Date(date)
+    return d.toISOString()
+  }, [date])
 
-  const Component = as as React.ElementType;
+  const Component = as as React.ElementType
 
   if (as === 'time') {
     return (
       <time dateTime={isoDate} className={className}>
         {formattedDate}
       </time>
-    );
+    )
   }
 
-  return <Component className={className}>{formattedDate}</Component>;
+  return <Component className={className}>{formattedDate}</Component>
 }
 
 // ============================================================================
@@ -71,35 +71,31 @@ export function FormattedDate({
 
 interface FormattedTimeProps {
   /** Date/time to format */
-  date: Date | number | string;
+  date: Date | number | string
   /** Include seconds */
-  withSeconds?: boolean;
+  withSeconds?: boolean
   /** Additional class name */
-  className?: string;
+  className?: string
 }
 
-export function FormattedTime({
-  date,
-  withSeconds = false,
-  className,
-}: FormattedTimeProps) {
-  const locale = useLocaleStore((state) => state.currentLocale);
+export function FormattedTime({ date, withSeconds = false, className }: FormattedTimeProps) {
+  const locale = useLocaleStore((state) => state.currentLocale)
 
   const formattedTime = useMemo(
     () => formatTime(date, { locale, withSeconds }),
     [date, locale, withSeconds]
-  );
+  )
 
   const isoDate = useMemo(() => {
-    const d = typeof date === 'string' ? new Date(date) : new Date(date);
-    return d.toISOString();
-  }, [date]);
+    const d = typeof date === 'string' ? new Date(date) : new Date(date)
+    return d.toISOString()
+  }, [date])
 
   return (
     <time dateTime={isoDate} className={className}>
       {formattedTime}
     </time>
-  );
+  )
 }
 
 // ============================================================================
@@ -108,37 +104,33 @@ export function FormattedTime({
 
 interface RelativeTimeProps {
   /** Date to compare with now */
-  date: Date | number | string;
+  date: Date | number | string
   /** Include "ago" or "in" suffix */
-  addSuffix?: boolean;
+  addSuffix?: boolean
   /** Additional class name */
-  className?: string;
+  className?: string
   /** Update interval in milliseconds (0 = no auto-update) */
-  updateInterval?: number;
+  updateInterval?: number
 }
 
-export function RelativeTime({
-  date,
-  addSuffix = true,
-  className,
-}: RelativeTimeProps) {
-  const locale = useLocaleStore((state) => state.currentLocale);
+export function RelativeTime({ date, addSuffix = true, className }: RelativeTimeProps) {
+  const locale = useLocaleStore((state) => state.currentLocale)
 
   const formattedTime = useMemo(
     () => formatRelativeTime(date, { locale, addSuffix }),
     [date, locale, addSuffix]
-  );
+  )
 
   const isoDate = useMemo(() => {
-    const d = typeof date === 'string' ? new Date(date) : new Date(date);
-    return d.toISOString();
-  }, [date]);
+    const d = typeof date === 'string' ? new Date(date) : new Date(date)
+    return d.toISOString()
+  }, [date])
 
   return (
     <time dateTime={isoDate} className={className} title={isoDate}>
       {formattedTime}
     </time>
-  );
+  )
 }
 
 // ============================================================================
@@ -147,35 +139,31 @@ export function RelativeTime({
 
 interface SmartDateProps {
   /** Date to format */
-  date: Date | number | string;
+  date: Date | number | string
   /** Include time in output */
-  showTime?: boolean;
+  showTime?: boolean
   /** Additional class name */
-  className?: string;
+  className?: string
 }
 
-export function SmartDate({
-  date,
-  showTime = true,
-  className,
-}: SmartDateProps) {
-  const locale = useLocaleStore((state) => state.currentLocale);
+export function SmartDate({ date, showTime = true, className }: SmartDateProps) {
+  const locale = useLocaleStore((state) => state.currentLocale)
 
   const formattedDate = useMemo(
     () => formatSmartDate(date, { locale, showTime }),
     [date, locale, showTime]
-  );
+  )
 
   const isoDate = useMemo(() => {
-    const d = typeof date === 'string' ? new Date(date) : new Date(date);
-    return d.toISOString();
-  }, [date]);
+    const d = typeof date === 'string' ? new Date(date) : new Date(date)
+    return d.toISOString()
+  }, [date])
 
   return (
     <time dateTime={isoDate} className={className}>
       {formattedDate}
     </time>
-  );
+  )
 }
 
 // ============================================================================
@@ -184,29 +172,26 @@ export function SmartDate({
 
 interface MessageTimeProps {
   /** Message timestamp */
-  date: Date | number | string;
+  date: Date | number | string
   /** Additional class name */
-  className?: string;
+  className?: string
 }
 
 export function MessageTime({ date, className }: MessageTimeProps) {
-  const locale = useLocaleStore((state) => state.currentLocale);
+  const locale = useLocaleStore((state) => state.currentLocale)
 
-  const formattedTime = useMemo(
-    () => formatMessageTime(date, { locale }),
-    [date, locale]
-  );
+  const formattedTime = useMemo(() => formatMessageTime(date, { locale }), [date, locale])
 
   const isoDate = useMemo(() => {
-    const d = typeof date === 'string' ? new Date(date) : new Date(date);
-    return d.toISOString();
-  }, [date]);
+    const d = typeof date === 'string' ? new Date(date) : new Date(date)
+    return d.toISOString()
+  }, [date])
 
   return (
     <time dateTime={isoDate} className={className} title={isoDate}>
       {formattedTime}
     </time>
-  );
+  )
 }
 
-export default FormattedDate;
+export default FormattedDate

@@ -28,18 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
-import {
-  Calendar,
-  Clock,
-  ChevronLeft,
-  ChevronRight,
-  Globe,
-} from 'lucide-react'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { Calendar, Clock, ChevronLeft, ChevronRight, Globe } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   getUserTimezone,
@@ -305,10 +295,7 @@ export function SchedulePicker({
   )
 
   const commonTimezones = useMemo(() => getCommonTimezones(), [])
-  const currentTimezoneOffset = useMemo(
-    () => formatTimezoneOffset(timezone),
-    [timezone]
-  )
+  const currentTimezoneOffset = useMemo(() => formatTimezoneOffset(timezone), [timezone])
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -337,7 +324,7 @@ export function SchedulePicker({
           <PopoverContent className="w-auto p-0" align="start">
             <div className="p-3">
               {/* Month Navigation */}
-              <div className="flex items-center justify-between mb-4">
+              <div className="mb-4 flex items-center justify-between">
                 <Button
                   variant="ghost"
                   size="icon"
@@ -349,22 +336,17 @@ export function SchedulePicker({
                 <span className="text-sm font-medium">
                   {MONTHS[currentMonth.month]} {currentMonth.year}
                 </span>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleNextMonth}
-                  className="h-7 w-7"
-                >
+                <Button variant="ghost" size="icon" onClick={handleNextMonth} className="h-7 w-7">
                   <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
 
               {/* Days of Week Header */}
-              <div className="grid grid-cols-7 gap-1 mb-2">
+              <div className="mb-2 grid grid-cols-7 gap-1">
                 {DAYS_OF_WEEK.map((day) => (
                   <div
                     key={day}
-                    className="text-center text-xs font-medium text-muted-foreground py-1"
+                    className="py-1 text-center text-xs font-medium text-muted-foreground"
                   >
                     {day}
                   </div>
@@ -381,16 +363,14 @@ export function SchedulePicker({
                         onClick={() => handleDateSelect(day)}
                         disabled={isDateDisabled(day)}
                         className={cn(
-                          'w-full h-full rounded-md text-sm transition-colors',
-                          'hover:bg-accent hover:text-accent-foreground',
+                          'h-full w-full rounded-md text-sm transition-colors',
+                          'hover:text-accent-foreground hover:bg-accent',
                           'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
                           isDateSelected(day) &&
-                            'bg-primary text-primary-foreground hover:bg-primary/90',
-                          isToday(day) &&
-                            !isDateSelected(day) &&
-                            'border border-primary',
+                            'text-primary-foreground hover:bg-primary/90 bg-primary',
+                          isToday(day) && !isDateSelected(day) && 'border border-primary',
                           isDateDisabled(day) &&
-                            'opacity-50 cursor-not-allowed hover:bg-transparent'
+                            'cursor-not-allowed opacity-50 hover:bg-transparent'
                         )}
                       >
                         {day}
@@ -409,7 +389,7 @@ export function SchedulePicker({
         <Label className="text-sm font-medium">Time</Label>
         <div className="flex items-center gap-2">
           <div className="relative flex-1">
-            <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Clock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               type="number"
               min={0}
@@ -481,26 +461,19 @@ export function SchedulePicker({
 
       {/* Timezone Selector */}
       <div className="space-y-2">
-        <Label className="text-sm font-medium flex items-center gap-2">
+        <Label className="flex items-center gap-2 text-sm font-medium">
           <Globe className="h-4 w-4" />
           Timezone
         </Label>
-        <Select
-          value={timezone}
-          onValueChange={onTimezoneChange}
-          disabled={disabled}
-        >
+        <Select value={timezone} onValueChange={onTimezoneChange} disabled={disabled}>
           <SelectTrigger>
             <SelectValue>
-              {commonTimezones.find((tz) => tz.value === timezone)?.label ||
-                timezone}{' '}
-              ({currentTimezoneOffset})
+              {commonTimezones.find((tz) => tz.value === timezone)?.label || timezone} (
+              {currentTimezoneOffset})
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value={getUserTimezone()}>
-              Local ({getUserTimezone()})
-            </SelectItem>
+            <SelectItem value={getUserTimezone()}>Local ({getUserTimezone()})</SelectItem>
             {commonTimezones.map((tz) => (
               <SelectItem key={tz.value} value={tz.value}>
                 {tz.label}
@@ -511,10 +484,10 @@ export function SchedulePicker({
       </div>
 
       {/* Relative Time Display */}
-      <div className="rounded-lg bg-muted/50 p-3 text-center">
+      <div className="bg-muted/50 rounded-lg p-3 text-center">
         <p className="text-sm text-muted-foreground">Will be sent</p>
         <p className="text-lg font-medium text-primary">{relativeTime}</p>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="mt-1 text-xs text-muted-foreground">
           {value.toLocaleString('en-US', {
             weekday: 'short',
             month: 'short',

@@ -97,7 +97,7 @@ interface MessagePreviewProps {
 
 function MessagePreview({ message }: MessagePreviewProps) {
   return (
-    <div className="p-4 bg-muted/50 rounded-lg border space-y-3">
+    <div className="bg-muted/50 space-y-3 rounded-lg border p-4">
       {/* Channel info */}
       <div className="flex items-center gap-1 text-xs text-muted-foreground">
         <Hash className="h-3 w-3" />
@@ -110,24 +110,17 @@ function MessagePreview({ message }: MessagePreviewProps) {
       {/* Message content */}
       <div className="flex items-start gap-3">
         <Avatar className="h-8 w-8 flex-shrink-0">
-          <AvatarImage
-            src={message.user.avatarUrl}
-            alt={message.user.displayName}
-          />
+          <AvatarImage src={message.user.avatarUrl} alt={message.user.displayName} />
           <AvatarFallback className="text-xs">
             {getInitials(message.user.displayName)}
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-medium text-sm">
-              {message.user.displayName}
-            </span>
-            <span className="text-xs text-muted-foreground">
-              @{message.user.username}
-            </span>
+            <span className="text-sm font-medium">{message.user.displayName}</span>
+            <span className="text-xs text-muted-foreground">@{message.user.username}</span>
           </div>
-          <p className="text-sm mt-1 text-foreground/90 whitespace-pre-wrap break-words">
+          <p className="text-foreground/90 mt-1 whitespace-pre-wrap break-words text-sm">
             {truncateContent(message.content)}
           </p>
         </div>
@@ -226,8 +219,7 @@ export function ReportMessageModal({
           handleOpenChange(false)
         }, 2000)
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to submit report'
+        const errorMessage = err instanceof Error ? err.message : 'Failed to submit report'
         setSubmitError(errorMessage)
       } finally {
         setSubmitting(false)
@@ -255,20 +247,20 @@ export function ReportMessageModal({
         {submitSuccess ? (
           // Success state
           <div className="flex flex-col items-center justify-center py-8 text-center">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 mb-4">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
               <CheckCircle2 className="h-8 w-8 text-green-600 dark:text-green-400" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">Report Submitted</h3>
-            <p className="text-sm text-muted-foreground max-w-xs">
-              Thank you for reporting this message. Our moderation team will
-              review it and take appropriate action.
+            <h3 className="mb-2 text-lg font-semibold">Report Submitted</h3>
+            <p className="max-w-xs text-sm text-muted-foreground">
+              Thank you for reporting this message. Our moderation team will review it and take
+              appropriate action.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit}>
             <DialogHeader>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-destructive/10">
+              <div className="mb-2 flex items-center gap-3">
+                <div className="bg-destructive/10 flex h-10 w-10 items-center justify-center rounded-full">
                   <MessageSquare className="h-5 w-5 text-destructive" />
                 </div>
                 <DialogTitle>Report Message</DialogTitle>
@@ -288,8 +280,7 @@ export function ReportMessageModal({
               {/* Reason selection */}
               <div className="space-y-3">
                 <Label className="text-sm font-medium">
-                  Why are you reporting this message?{' '}
-                  <span className="text-destructive">*</span>
+                  Why are you reporting this message? <span className="text-destructive">*</span>
                 </Label>
                 <ScrollArea className="h-[180px] pr-4">
                   <RadioGroup
@@ -300,10 +291,10 @@ export function ReportMessageModal({
                       <div
                         key={reason.value}
                         className={cn(
-                          'flex items-start space-x-3 p-3 rounded-lg border transition-colors cursor-pointer',
+                          'flex cursor-pointer items-start space-x-3 rounded-lg border p-3 transition-colors',
                           selectedReason === reason.value
-                            ? 'border-primary bg-primary/5'
-                            : 'border-transparent hover:bg-muted/50'
+                            ? 'bg-primary/5 border-primary'
+                            : 'hover:bg-muted/50 border-transparent'
                         )}
                       >
                         <RadioGroupItem
@@ -311,12 +302,9 @@ export function ReportMessageModal({
                           id={`msg-${reason.value}`}
                           className="mt-0.5"
                         />
-                        <Label
-                          htmlFor={`msg-${reason.value}`}
-                          className="flex-1 cursor-pointer"
-                        >
+                        <Label htmlFor={`msg-${reason.value}`} className="flex-1 cursor-pointer">
                           <span className="font-medium">{reason.label}</span>
-                          <p className="text-xs text-muted-foreground mt-0.5">
+                          <p className="mt-0.5 text-xs text-muted-foreground">
                             {reason.description}
                           </p>
                         </Label>
@@ -340,14 +328,12 @@ export function ReportMessageModal({
                   maxLength={500}
                   className="resize-none"
                 />
-                <p className="text-xs text-muted-foreground text-right">
-                  {details.length}/500
-                </p>
+                <p className="text-right text-xs text-muted-foreground">{details.length}/500</p>
               </div>
 
               {/* Error message */}
               {submitError && (
-                <div className="flex items-center gap-2 p-3 bg-destructive/10 text-destructive text-sm rounded-lg">
+                <div className="bg-destructive/10 flex items-center gap-2 rounded-lg p-3 text-sm text-destructive">
                   <AlertTriangle className="h-4 w-4 flex-shrink-0" />
                   {submitError}
                 </div>

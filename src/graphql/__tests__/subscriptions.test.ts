@@ -29,9 +29,7 @@ import {
 // ============================================================================
 
 function getOperationName(doc: DocumentNode): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     return definition.name?.value
   }
@@ -39,9 +37,7 @@ function getOperationName(doc: DocumentNode): string | undefined {
 }
 
 function getOperationType(doc: DocumentNode): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
     return definition.operation
   }
@@ -49,25 +45,17 @@ function getOperationType(doc: DocumentNode): string | undefined {
 }
 
 function getVariableNames(doc: DocumentNode): string[] {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
-    return (
-      definition.variableDefinitions?.map((v) => v.variable.name.value) || []
-    )
+    return definition.variableDefinitions?.map((v) => v.variable.name.value) || []
   }
   return []
 }
 
 function getVariableType(doc: DocumentNode, varName: string): string | undefined {
-  const definition = doc.definitions.find(
-    (def) => def.kind === 'OperationDefinition'
-  )
+  const definition = doc.definitions.find((def) => def.kind === 'OperationDefinition')
   if (definition && definition.kind === 'OperationDefinition') {
-    const varDef = definition.variableDefinitions?.find(
-      (v) => v.variable.name.value === varName
-    )
+    const varDef = definition.variableDefinitions?.find((v) => v.variable.name.value === varName)
     if (varDef) {
       return printType(varDef.type)
     }
@@ -90,8 +78,7 @@ function printType(type: any): string {
 
 function hasFragmentDefinition(doc: DocumentNode, fragmentName: string): boolean {
   return doc.definitions.some(
-    (def) =>
-      def.kind === 'FragmentDefinition' && def.name.value === fragmentName
+    (def) => def.kind === 'FragmentDefinition' && def.name.value === fragmentName
   )
 }
 
@@ -429,9 +416,7 @@ describe('Reaction Subscriptions', () => {
     })
 
     it('should have correct operation name', () => {
-      expect(getOperationName(MESSAGE_REACTION_COUNTS_SUBSCRIPTION)).toBe(
-        'MessageReactionCounts'
-      )
+      expect(getOperationName(MESSAGE_REACTION_COUNTS_SUBSCRIPTION)).toBe('MessageReactionCounts')
     })
 
     it('should have required messageId variable', () => {
@@ -440,9 +425,7 @@ describe('Reaction Subscriptions', () => {
     })
 
     it('should have messageId as uuid! type', () => {
-      expect(getVariableType(MESSAGE_REACTION_COUNTS_SUBSCRIPTION, 'messageId')).toBe(
-        'uuid!'
-      )
+      expect(getVariableType(MESSAGE_REACTION_COUNTS_SUBSCRIPTION, 'messageId')).toBe('uuid!')
     })
   })
 
@@ -475,9 +458,7 @@ describe('Reaction Subscriptions', () => {
     })
 
     it('should have messageIds as [uuid!]! type', () => {
-      expect(getVariableType(CHANNEL_REACTIONS_SUBSCRIPTION, 'messageIds')).toBe(
-        '[uuid!]!'
-      )
+      expect(getVariableType(CHANNEL_REACTIONS_SUBSCRIPTION, 'messageIds')).toBe('[uuid!]!')
     })
   })
 })
@@ -488,10 +469,7 @@ describe('Reaction Subscriptions', () => {
 
 describe('Subscription Variable Validation', () => {
   it('all message subscriptions should require channelId', () => {
-    const messageSubscriptions = [
-      CHANNEL_MESSAGES_SUBSCRIPTION,
-      NEW_MESSAGE_SUBSCRIPTION,
-    ]
+    const messageSubscriptions = [CHANNEL_MESSAGES_SUBSCRIPTION, NEW_MESSAGE_SUBSCRIPTION]
 
     messageSubscriptions.forEach((subscription) => {
       const variables = getVariableNames(subscription)
@@ -512,13 +490,9 @@ describe('Subscription Variable Validation', () => {
 
   it('all reaction subscriptions should use correct variable types', () => {
     expect(getVariableType(MESSAGE_REACTIONS_SUBSCRIPTION, 'messageId')).toBe('uuid!')
-    expect(getVariableType(MESSAGE_REACTION_COUNTS_SUBSCRIPTION, 'messageId')).toBe(
-      'uuid!'
-    )
+    expect(getVariableType(MESSAGE_REACTION_COUNTS_SUBSCRIPTION, 'messageId')).toBe('uuid!')
     expect(getVariableType(CHANNEL_REACTIONS_SUBSCRIPTION, 'channelId')).toBe('uuid!')
-    expect(getVariableType(CHANNEL_REACTIONS_SUBSCRIPTION, 'messageIds')).toBe(
-      '[uuid!]!'
-    )
+    expect(getVariableType(CHANNEL_REACTIONS_SUBSCRIPTION, 'messageIds')).toBe('[uuid!]!')
   })
 })
 
@@ -548,9 +522,7 @@ describe('Subscription Document Structure', () => {
     })
 
     it(`${name} should have exactly one operation definition`, () => {
-      const operationDefs = doc.definitions.filter(
-        (def) => def.kind === 'OperationDefinition'
-      )
+      const operationDefs = doc.definitions.filter((def) => def.kind === 'OperationDefinition')
       expect(operationDefs).toHaveLength(1)
     })
 

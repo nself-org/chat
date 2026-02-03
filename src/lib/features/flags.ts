@@ -9,6 +9,8 @@
 
 import { isDevelopment, getPublicEnv } from '@/lib/environment'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -351,7 +353,7 @@ class FeatureFlagManager {
         this.overrides = new Map(Object.entries(parsed))
       }
     } catch (error) {
-      console.error('Failed to load feature flag overrides:', error)
+      logger.error('Failed to load feature flag overrides:', error)
     }
   }
 
@@ -365,7 +367,7 @@ class FeatureFlagManager {
       const obj = Object.fromEntries(this.overrides)
       localStorage.setItem('feature-flag-overrides', JSON.stringify(obj))
     } catch (error) {
-      console.error('Failed to save feature flag overrides:', error)
+      logger.error('Failed to save feature flag overrides:', error)
     }
   }
 }
@@ -393,10 +395,7 @@ export function isFeatureEnabled(
 /**
  * Get all enabled features
  */
-export function getEnabledFeatures(context?: {
-  userId?: string
-  role?: string
-}): FeatureFlagKey[] {
+export function getEnabledFeatures(context?: { userId?: string; role?: string }): FeatureFlagKey[] {
   const all = featureFlags.getAllFlags(context)
   return Object.entries(all)
     .filter(([, enabled]) => enabled)

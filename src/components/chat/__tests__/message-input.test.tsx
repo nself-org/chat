@@ -90,12 +90,16 @@ jest.mock('@tiptap/react', () => ({
   useEditor: jest.fn(() => mockEditor),
   EditorContent: ({ editor, onKeyDown }: { editor: any; onKeyDown: any }) => {
     const React = require('react')
-    return React.createElement('div', {
-      'data-testid': 'editor-content',
-      contentEditable: true,
-      onKeyDown,
-      suppressContentEditableWarning: true,
-    }, 'Test content')
+    return React.createElement(
+      'div',
+      {
+        'data-testid': 'editor-content',
+        contentEditable: true,
+        onKeyDown,
+        suppressContentEditableWarning: true,
+      },
+      'Test content'
+    )
   },
   Editor: jest.fn(),
 }))
@@ -116,10 +120,14 @@ jest.mock('emoji-picker-react', () => ({
   __esModule: true,
   default: ({ onEmojiClick }: any) => {
     const React = require('react')
-    return React.createElement('div', {
-      'data-testid': 'emoji-picker',
-      onClick: () => onEmojiClick({ emoji: '😀' }),
-    }, 'Emoji Picker')
+    return React.createElement(
+      'div',
+      {
+        'data-testid': 'emoji-picker',
+        onClick: () => onEmojiClick({ emoji: '😀' }),
+      },
+      'Emoji Picker'
+    )
   },
   Theme: { AUTO: 'auto' },
 }))
@@ -144,14 +152,22 @@ jest.mock('../reply-preview', () => ({
     const React = require('react')
     return React.createElement('div', { 'data-testid': 'reply-preview' }, [
       React.createElement('span', { key: 'content' }, `Replying to: ${message.content}`),
-      React.createElement('button', { key: 'close', onClick: onClose, 'data-testid': 'cancel-reply' }, 'Cancel'),
+      React.createElement(
+        'button',
+        { key: 'close', onClick: onClose, 'data-testid': 'cancel-reply' },
+        'Cancel'
+      ),
     ])
   },
   EditPreview: ({ message, onClose }: any) => {
     const React = require('react')
     return React.createElement('div', { 'data-testid': 'edit-preview' }, [
       React.createElement('span', { key: 'content' }, `Editing: ${message.content}`),
-      React.createElement('button', { key: 'close', onClick: onClose, 'data-testid': 'cancel-edit' }, 'Cancel'),
+      React.createElement(
+        'button',
+        { key: 'close', onClick: onClose, 'data-testid': 'cancel-edit' },
+        'Cancel'
+      ),
     ])
   },
 }))
@@ -224,7 +240,7 @@ describe('MessageInput Component', () => {
 
       // The emoji button uses Smile icon - find by the SVG class
       const buttons = screen.getAllByRole('button')
-      const emojiButton = buttons.find(b => b.querySelector('.lucide-smile'))
+      const emojiButton = buttons.find((b) => b.querySelector('.lucide-smile'))
       expect(emojiButton).toBeInTheDocument()
     })
 
@@ -233,7 +249,7 @@ describe('MessageInput Component', () => {
 
       // The attach button uses Paperclip icon
       const buttons = screen.getAllByRole('button')
-      const attachButton = buttons.find(b => b.querySelector('.lucide-paperclip'))
+      const attachButton = buttons.find((b) => b.querySelector('.lucide-paperclip'))
       expect(attachButton).toBeInTheDocument()
     })
 
@@ -242,7 +258,7 @@ describe('MessageInput Component', () => {
 
       // The mention button uses AtSign icon
       const buttons = screen.getAllByRole('button')
-      const mentionButton = buttons.find(b => b.querySelector('.lucide-at-sign'))
+      const mentionButton = buttons.find((b) => b.querySelector('.lucide-at-sign'))
       expect(mentionButton).toBeInTheDocument()
     })
 
@@ -412,13 +428,7 @@ describe('MessageInput Component', () => {
       const onEdit = jest.fn()
       const message = createMockMessage({ content: 'Original' })
 
-      render(
-        <MessageInput
-          {...defaultProps}
-          editingMessage={message}
-          onEdit={onEdit}
-        />
-      )
+      render(<MessageInput {...defaultProps} editingMessage={message} onEdit={onEdit} />)
 
       const editor = screen.getByTestId('editor-content')
       fireEvent.keyDown(editor, { key: 'Enter', shiftKey: false })
@@ -441,11 +451,7 @@ describe('MessageInput Component', () => {
       const message = createMockMessage()
 
       render(
-        <MessageInput
-          {...defaultProps}
-          editingMessage={message}
-          onCancelEdit={onCancelEdit}
-        />
+        <MessageInput {...defaultProps} editingMessage={message} onCancelEdit={onCancelEdit} />
       )
 
       const editor = screen.getByTestId('editor-content')
@@ -460,11 +466,7 @@ describe('MessageInput Component', () => {
       const message = createMockMessage()
 
       render(
-        <MessageInput
-          {...defaultProps}
-          editingMessage={message}
-          onCancelEdit={onCancelEdit}
-        />
+        <MessageInput {...defaultProps} editingMessage={message} onCancelEdit={onCancelEdit} />
       )
 
       await user.click(screen.getByTestId('cancel-edit'))
@@ -500,13 +502,7 @@ describe('MessageInput Component', () => {
       const onCancelReply = jest.fn()
       const message = createMockMessage()
 
-      render(
-        <MessageInput
-          {...defaultProps}
-          replyingTo={message}
-          onCancelReply={onCancelReply}
-        />
-      )
+      render(<MessageInput {...defaultProps} replyingTo={message} onCancelReply={onCancelReply} />)
 
       const editor = screen.getByTestId('editor-content')
       fireEvent.keyDown(editor, { key: 'Escape' })
@@ -519,13 +515,7 @@ describe('MessageInput Component', () => {
       const onCancelReply = jest.fn()
       const message = createMockMessage()
 
-      render(
-        <MessageInput
-          {...defaultProps}
-          replyingTo={message}
-          onCancelReply={onCancelReply}
-        />
-      )
+      render(<MessageInput {...defaultProps} replyingTo={message} onCancelReply={onCancelReply} />)
 
       await user.click(screen.getByTestId('cancel-reply'))
 
@@ -582,7 +572,7 @@ describe('MessageInput Component', () => {
 
       // Find emoji button by its icon
       const buttons = screen.getAllByRole('button')
-      const emojiButton = buttons.find(b => b.querySelector('.lucide-smile'))
+      const emojiButton = buttons.find((b) => b.querySelector('.lucide-smile'))
       expect(emojiButton).toBeDefined()
       if (emojiButton) {
         await user.click(emojiButton)
@@ -599,7 +589,7 @@ describe('MessageInput Component', () => {
 
       // Find emoji button by its icon
       const buttons = screen.getAllByRole('button')
-      const emojiButton = buttons.find(b => b.querySelector('.lucide-smile'))
+      const emojiButton = buttons.find((b) => b.querySelector('.lucide-smile'))
       expect(emojiButton).toBeDefined()
       if (emojiButton) {
         await user.click(emojiButton)
@@ -623,7 +613,7 @@ describe('MessageInput Component', () => {
 
       // Find mention button by its icon
       const buttons = screen.getAllByRole('button')
-      const mentionButton = buttons.find(b => b.querySelector('.lucide-at-sign'))
+      const mentionButton = buttons.find((b) => b.querySelector('.lucide-at-sign'))
       expect(mentionButton).toBeDefined()
       if (mentionButton) {
         await user.click(mentionButton)
@@ -638,9 +628,7 @@ describe('MessageInput Component', () => {
         { id: 'user-2', type: 'user', label: 'Bob', value: '@bob' },
       ]
 
-      render(
-        <MessageInput {...defaultProps} mentionSuggestions={suggestions} />
-      )
+      render(<MessageInput {...defaultProps} mentionSuggestions={suggestions} />)
 
       // Suggestions are passed to the TipTap extension
       expect(screen.getByTestId('editor-content')).toBeInTheDocument()
@@ -658,9 +646,10 @@ describe('MessageInput Component', () => {
 
       // Find the formatting toggle button (Bold icon)
       const buttons = screen.getAllByRole('button')
-      const formatButton = buttons.find((b) =>
-        b.querySelector('svg')?.classList.contains('lucide-bold') ||
-        b.getAttribute('aria-label')?.includes('formatting')
+      const formatButton = buttons.find(
+        (b) =>
+          b.querySelector('svg')?.classList.contains('lucide-bold') ||
+          b.getAttribute('aria-label')?.includes('formatting')
       )
 
       if (formatButton) {
@@ -786,9 +775,7 @@ describe('MessageInput Component', () => {
     })
 
     it('should handle channel change', () => {
-      const { rerender } = render(
-        <MessageInput {...defaultProps} channelId="channel-1" />
-      )
+      const { rerender } = render(<MessageInput {...defaultProps} channelId="channel-1" />)
 
       rerender(<MessageInput {...defaultProps} channelId="channel-2" />)
 

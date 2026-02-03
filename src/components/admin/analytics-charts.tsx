@@ -33,16 +33,14 @@ export function MessagesOverTimeChart({ data }: { data: ChartData[] }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-base">Messages Over Time</CardTitle>
-        <CardDescription>
-          Daily message volume for the selected period
-        </CardDescription>
+        <CardDescription>Daily message volume for the selected period</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] flex items-end gap-1">
+        <div className="flex h-[300px] items-end gap-1">
           {data.slice(-14).map((d, i) => (
             <div
               key={i}
-              className="flex-1 bg-primary/20 hover:bg-primary/40 transition-colors rounded-t"
+              className="bg-primary/20 hover:bg-primary/40 flex-1 rounded-t transition-colors"
               style={{
                 height: `${(d.messages / 600) * 100}%`,
                 minHeight: '4px',
@@ -77,7 +75,7 @@ export function PeakActivityChart({ data }: { data: PeakHour[] }) {
               <div className="flex-1">
                 <Progress value={(hour.messages / maxMessages) * 100} className="h-2" />
               </div>
-              <span className="w-12 text-sm text-right">{hour.messages}</span>
+              <span className="w-12 text-right text-sm">{hour.messages}</span>
             </div>
           ))}
         </div>
@@ -94,11 +92,11 @@ export function UserGrowthChart({ data }: { data: ChartData[] }) {
         <CardDescription>New user signups over time</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[300px] flex items-end gap-1">
+        <div className="flex h-[300px] items-end gap-1">
           {data.slice(-14).map((d, i) => (
             <div
               key={i}
-              className="flex-1 bg-green-500/20 hover:bg-green-500/40 transition-colors rounded-t"
+              className="flex-1 rounded-t bg-green-500/20 transition-colors hover:bg-green-500/40"
               style={{
                 height: `${(d.users / 25) * 100}%`,
                 minHeight: '4px',
@@ -116,7 +114,13 @@ export function UserGrowthChart({ data }: { data: ChartData[] }) {
   )
 }
 
-export function RoleDistributionChart({ data, totalCount }: { data: RoleDistribution[], totalCount: number }) {
+export function RoleDistributionChart({
+  data,
+  totalCount,
+}: {
+  data: RoleDistribution[]
+  totalCount: number
+}) {
   return (
     <Card>
       <CardHeader>
@@ -136,10 +140,7 @@ export function RoleDistributionChart({ data, totalCount }: { data: RoleDistribu
                   {role.count} ({((role.count / totalCount) * 100).toFixed(1)}%)
                 </span>
               </div>
-              <Progress
-                value={(role.count / totalCount) * 100}
-                className="h-2"
-              />
+              <Progress value={(role.count / totalCount) * 100} className="h-2" />
             </div>
           ))}
         </div>
@@ -156,11 +157,11 @@ export function DailyActiveUsersChart({ data }: { data: ChartData[] }) {
         <CardDescription>Number of users active each day</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="h-[200px] flex items-end gap-1">
+        <div className="flex h-[200px] items-end gap-1">
           {data.map((d, i) => (
             <div
               key={i}
-              className="flex-1 bg-blue-500/20 hover:bg-blue-500/40 transition-colors rounded-t"
+              className="flex-1 rounded-t bg-blue-500/20 transition-colors hover:bg-blue-500/40"
               style={{
                 height: `${(d.activeUsers / 70) * 100}%`,
                 minHeight: '4px',

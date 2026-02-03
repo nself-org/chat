@@ -112,11 +112,22 @@ jest.mock('@/components/ui/scroll-area', () => ({
 }))
 
 jest.mock('@/components/ui/tabs', () => ({
-  Tabs: ({ children, value, onValueChange }: { children: React.ReactNode; value: string; onValueChange: (v: string) => void }) => (
+  Tabs: ({
+    children,
+    value,
+    onValueChange,
+  }: {
+    children: React.ReactNode
+    value: string
+    onValueChange: (v: string) => void
+  }) => (
     <div data-testid="tabs" data-value={value}>
       {React.Children.map(children, (child) =>
         React.isValidElement(child)
-          ? React.cloneElement(child as React.ReactElement<{ onValueChange?: (v: string) => void }>, { onValueChange })
+          ? React.cloneElement(
+              child as React.ReactElement<{ onValueChange?: (v: string) => void }>,
+              { onValueChange }
+            )
           : child
       )}
     </div>
@@ -124,7 +135,17 @@ jest.mock('@/components/ui/tabs', () => ({
   TabsList: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="tabs-list">{children}</div>
   ),
-  TabsTrigger: ({ children, value, onClick, className }: { children: React.ReactNode; value: string; onClick?: () => void; className?: string }) => (
+  TabsTrigger: ({
+    children,
+    value,
+    onClick,
+    className,
+  }: {
+    children: React.ReactNode
+    value: string
+    onClick?: () => void
+    className?: string
+  }) => (
     <button data-testid={`tab-${value}`} onClick={onClick} className={className}>
       {children}
     </button>

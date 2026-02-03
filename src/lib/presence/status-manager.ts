@@ -38,55 +38,57 @@ import type {
   ActivityType,
   StatusDuration,
   PresenceSettings,
-} from './presence-types';
+} from './presence-types'
+
+import { logger } from '@/lib/logger'
 import {
   PRESET_ACTIVITIES,
   DURATION_OPTIONS,
   getPresetActivity,
   getDurationOption,
   isStatusExpired,
-} from './presence-types';
+} from './presence-types'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 export interface StatusChangeEvent {
-  userId: string;
-  previousStatus: PresenceStatus;
-  newStatus: PresenceStatus;
-  timestamp: Date;
-  reason?: 'manual' | 'auto-away' | 'schedule' | 'device-sync';
+  userId: string
+  previousStatus: PresenceStatus
+  newStatus: PresenceStatus
+  timestamp: Date
+  reason?: 'manual' | 'auto-away' | 'schedule' | 'device-sync'
 }
 
 export interface CustomStatusChangeEvent {
-  userId: string;
-  previousCustomStatus: CustomStatus | null;
-  newCustomStatus: CustomStatus | null;
-  timestamp: Date;
+  userId: string
+  previousCustomStatus: CustomStatus | null
+  newCustomStatus: CustomStatus | null
+  timestamp: Date
 }
 
 export interface StatusManagerOptions {
   /** User ID */
-  userId: string;
+  userId: string
   /** Initial status */
-  initialStatus?: PresenceStatus;
+  initialStatus?: PresenceStatus
   /** Initial custom status */
-  initialCustomStatus?: CustomStatus | null;
+  initialCustomStatus?: CustomStatus | null
   /** Presence settings */
-  settings?: PresenceSettings;
+  settings?: PresenceSettings
   /** Callback when status changes */
-  onStatusChange?: (event: StatusChangeEvent) => void;
+  onStatusChange?: (event: StatusChangeEvent) => void
   /** Callback when custom status changes */
-  onCustomStatusChange?: (event: CustomStatusChangeEvent) => void;
+  onCustomStatusChange?: (event: CustomStatusChangeEvent) => void
   /** Storage adapter for persistence */
-  storage?: StatusStorage;
+  storage?: StatusStorage
 }
 
 export interface StatusStorage {
-  save(key: string, value: any): Promise<void>;
-  load(key: string): Promise<any>;
-  remove(key: string): Promise<void>;
+  save(key: string, value: any): Promise<void>
+  load(key: string): Promise<any>
+  remove(key: string): Promise<void>
 }
 
 // ============================================================================
@@ -94,22 +96,22 @@ export interface StatusStorage {
 // ============================================================================
 
 class LocalStatusStorage implements StatusStorage {
-  private prefix = 'nchat:status:';
+  private prefix = 'nchat:status:'
 
   async save(key: string, value: any): Promise<void> {
-    if (typeof localStorage === 'undefined') return;
-    localStorage.setItem(this.prefix + key, JSON.stringify(value));
+    if (typeof localStorage === 'undefined') return
+    localStorage.setItem(this.prefix + key, JSON.stringify(value))
   }
 
   async load(key: string): Promise<any> {
-    if (typeof localStorage === 'undefined') return null;
-    const value = localStorage.getItem(this.prefix + key);
-    return value ? JSON.parse(value) : null;
+    if (typeof localStorage === 'undefined') return null
+    const value = localStorage.getItem(this.prefix + key)
+    return value ? JSON.parse(value) : null
   }
 
   async remove(key: string): Promise<void> {
-    if (typeof localStorage === 'undefined') return;
-    localStorage.removeItem(this.prefix + key);
+    if (typeof localStorage === 'undefined') return
+    localStorage.removeItem(this.prefix + key)
   }
 }
 
@@ -118,33 +120,33 @@ class LocalStatusStorage implements StatusStorage {
 // ============================================================================
 
 export class StatusManager {
-  private userId: string;
-  private currentStatus: PresenceStatus;
-  private previousStatus: PresenceStatus;
-  private customStatus: CustomStatus | null;
-  private settings: PresenceSettings;
-  private storage: StatusStorage;
-  private onStatusChange?: (event: StatusChangeEvent) => void;
-  private onCustomStatusChange?: (event: CustomStatusChangeEvent) => void;
-  private expirationCheckInterval?: NodeJS.Timeout;
-  private scheduleCheckInterval?: NodeJS.Timeout;
+  private userId: string
+  private currentStatus: PresenceStatus
+  private previousStatus: PresenceStatus
+  private customStatus: CustomStatus | null
+  private settings: PresenceSettings
+  private storage: StatusStorage
+  private onStatusChange?: (event: StatusChangeEvent) => void
+  private onCustomStatusChange?: (event: CustomStatusChangeEvent) => void
+  private expirationCheckInterval?: NodeJS.Timeout
+  private scheduleCheckInterval?: NodeJS.Timeout
 
   constructor(options: StatusManagerOptions) {
-    this.userId = options.userId;
-    this.currentStatus = options.initialStatus ?? 'online';
-    this.previousStatus = this.currentStatus;
-    this.customStatus = options.initialCustomStatus ?? null;
-    this.settings = options.settings ?? this.getDefaultSettings();
-    this.storage = options.storage ?? new LocalStatusStorage();
-    this.onStatusChange = options.onStatusChange;
-    this.onCustomStatusChange = options.onCustomStatusChange;
+    this.userId = options.userId
+    this.currentStatus = options.initialStatus ?? 'online'
+    this.previousStatus = this.currentStatus
+    this.customStatus = options.initialCustomStatus ?? null
+    this.settings = options.settings ?? this.getDefaultSettings()
+    this.storage = options.storage ?? new LocalStatusStorage()
+    this.onStatusChange = options.onStatusChange
+    this.onCustomStatusChange = options.onCustomStatusChange
 
     // Start expiration and schedule checks
-    this.startExpirationCheck();
-    this.startScheduleCheck();
+    this.startExpirationCheck()
+    this.startScheduleCheck()
 
     // Load persisted state
-    this.loadPersistedState();
+    this.loadPersistedState()
   }
 
   // ============================================================================
@@ -155,14 +157,14 @@ export class StatusManager {
    * Get current status
    */
   getStatus(): PresenceStatus {
-    return this.currentStatus;
+    return this.currentStatus
   }
 
   /**
    * Get custom status
    */
   getCustomStatus(): CustomStatus | null {
-    return this.customStatus;
+    return this.customStatus
   }
 
   /**
@@ -172,14 +174,14 @@ export class StatusManager {
     status: PresenceStatus,
     reason: StatusChangeEvent['reason'] = 'manual'
   ): Promise<void> {
-    if (status === this.currentStatus) return;
+    if (status === this.currentStatus) return
 
-    const previousStatus = this.currentStatus;
-    this.previousStatus = previousStatus;
-    this.currentStatus = status;
+    const previousStatus = this.currentStatus
+    this.previousStatus = previousStatus
+    this.currentStatus = status
 
     // Persist
-    await this.persistState();
+    await this.persistState()
 
     // Emit event
     this.onStatusChange?.({
@@ -188,25 +190,25 @@ export class StatusManager {
       newStatus: status,
       timestamp: new Date(),
       reason,
-    });
+    })
   }
 
   /**
    * Restore previous status
    */
   async restorePreviousStatus(): Promise<void> {
-    await this.setStatus(this.previousStatus, 'manual');
+    await this.setStatus(this.previousStatus, 'manual')
   }
 
   /**
    * Set custom status with optional expiration
    */
   async setCustomStatus(customStatus: CustomStatus | null): Promise<void> {
-    const previousCustomStatus = this.customStatus;
-    this.customStatus = customStatus;
+    const previousCustomStatus = this.customStatus
+    this.customStatus = customStatus
 
     // Persist
-    await this.persistState();
+    await this.persistState()
 
     // Emit event
     this.onCustomStatusChange?.({
@@ -214,45 +216,42 @@ export class StatusManager {
       previousCustomStatus,
       newCustomStatus: customStatus,
       timestamp: new Date(),
-    });
+    })
   }
 
   /**
    * Clear custom status
    */
   async clearCustomStatus(): Promise<void> {
-    await this.setCustomStatus(null);
+    await this.setCustomStatus(null)
   }
 
   /**
    * Check if custom status has expired
    */
   isCustomStatusExpired(): boolean {
-    return isStatusExpired(this.customStatus ?? undefined);
+    return isStatusExpired(this.customStatus ?? undefined)
   }
 
   /**
    * Apply a preset activity
    */
-  async applyPreset(
-    activityType: ActivityType,
-    duration?: StatusDuration
-  ): Promise<void> {
-    const preset = getPresetActivity(activityType);
+  async applyPreset(activityType: ActivityType, duration?: StatusDuration): Promise<void> {
+    const preset = getPresetActivity(activityType)
     if (!preset) {
-      throw new Error(`Unknown activity type: ${activityType}`);
+      throw new Error(`Unknown activity type: ${activityType}`)
     }
 
-    const durationValue = duration ?? preset.defaultDuration ?? 'indefinite';
-    const durationOption = getDurationOption(durationValue);
-    const expiresAt = durationOption?.getExpiresAt() ?? null;
+    const durationValue = duration ?? preset.defaultDuration ?? 'indefinite'
+    const durationOption = getDurationOption(durationValue)
+    const expiresAt = durationOption?.getExpiresAt() ?? null
 
     await this.setCustomStatus({
       emoji: preset.emoji,
       text: preset.text,
       expiresAt,
       activity: activityType,
-    });
+    })
   }
 
   // ============================================================================
@@ -265,9 +264,9 @@ export class StatusManager {
   canTransitionTo(newStatus: PresenceStatus): boolean {
     // All transitions allowed except offline can only go to online
     if (this.currentStatus === 'offline' && newStatus !== 'online') {
-      return false;
+      return false
     }
-    return true;
+    return true
   }
 
   /**
@@ -275,9 +274,9 @@ export class StatusManager {
    */
   getAllowedTransitions(): PresenceStatus[] {
     if (this.currentStatus === 'offline') {
-      return ['online'];
+      return ['online']
     }
-    return ['online', 'away', 'dnd', 'invisible', 'offline'];
+    return ['online', 'away', 'dnd', 'invisible', 'offline']
   }
 
   // ============================================================================
@@ -288,24 +287,24 @@ export class StatusManager {
    * Check if DND schedule should be active
    */
   shouldBeDndNow(): boolean {
-    if (!this.settings.dndSchedule.enabled) return false;
+    if (!this.settings.dndSchedule.enabled) return false
 
-    const now = new Date();
-    const currentDay = now.getDay();
-    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    const now = new Date()
+    const currentDay = now.getDay()
+    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
 
-    const { days, startTime, endTime } = this.settings.dndSchedule;
+    const { days, startTime, endTime } = this.settings.dndSchedule
 
     // Check if today is in schedule
-    if (!days.includes(currentDay)) return false;
+    if (!days.includes(currentDay)) return false
 
     // Check if current time is in range
     if (startTime <= endTime) {
       // Same day (e.g., 09:00 to 17:00)
-      return currentTime >= startTime && currentTime <= endTime;
+      return currentTime >= startTime && currentTime <= endTime
     } else {
       // Crosses midnight (e.g., 22:00 to 08:00)
-      return currentTime >= startTime || currentTime <= endTime;
+      return currentTime >= startTime || currentTime <= endTime
     }
   }
 
@@ -314,9 +313,9 @@ export class StatusManager {
    */
   async applyDndSchedule(): Promise<void> {
     if (this.shouldBeDndNow() && this.currentStatus !== 'dnd') {
-      await this.setStatus('dnd', 'schedule');
+      await this.setStatus('dnd', 'schedule')
     } else if (!this.shouldBeDndNow() && this.currentStatus === 'dnd') {
-      await this.restorePreviousStatus();
+      await this.restorePreviousStatus()
     }
   }
 
@@ -329,9 +328,9 @@ export class StatusManager {
    */
   getPublicStatus(): PresenceStatus {
     if (this.currentStatus === 'invisible') {
-      return 'offline';
+      return 'offline'
     }
-    return this.currentStatus;
+    return this.currentStatus
   }
 
   /**
@@ -339,16 +338,16 @@ export class StatusManager {
    */
   getPublicCustomStatus(): CustomStatus | null {
     if (!this.settings.privacy.shareActivityStatus) {
-      return null;
+      return null
     }
-    return this.customStatus;
+    return this.customStatus
   }
 
   /**
    * Check if last seen should be visible
    */
   shouldShowLastSeen(): boolean {
-    return this.settings.privacy.showLastSeen;
+    return this.settings.privacy.showLastSeen
   }
 
   // ============================================================================
@@ -364,7 +363,7 @@ export class StatusManager {
       previousStatus: this.previousStatus,
       customStatus: this.customStatus,
       timestamp: new Date().toISOString(),
-    });
+    })
   }
 
   /**
@@ -372,19 +371,19 @@ export class StatusManager {
    */
   private async loadPersistedState(): Promise<void> {
     try {
-      const state = await this.storage.load(`${this.userId}:status`);
-      if (!state) return;
+      const state = await this.storage.load(`${this.userId}:status`)
+      if (!state) return
 
-      this.currentStatus = state.currentStatus ?? 'online';
-      this.previousStatus = state.previousStatus ?? this.currentStatus;
-      this.customStatus = state.customStatus ?? null;
+      this.currentStatus = state.currentStatus ?? 'online'
+      this.previousStatus = state.previousStatus ?? this.currentStatus
+      this.customStatus = state.customStatus ?? null
 
       // Check if custom status expired
       if (this.isCustomStatusExpired()) {
-        this.customStatus = null;
+        this.customStatus = null
       }
     } catch (error) {
-      console.error('Failed to load persisted status:', error);
+      logger.error('Failed to load persisted status:',  error)
     }
   }
 
@@ -399,9 +398,9 @@ export class StatusManager {
     // Check every minute
     this.expirationCheckInterval = setInterval(() => {
       if (this.isCustomStatusExpired()) {
-        this.clearCustomStatus();
+        this.clearCustomStatus()
       }
-    }, 60 * 1000);
+    }, 60 * 1000)
   }
 
   /**
@@ -410,11 +409,11 @@ export class StatusManager {
   private startScheduleCheck(): void {
     // Check every minute
     this.scheduleCheckInterval = setInterval(() => {
-      this.applyDndSchedule();
-    }, 60 * 1000);
+      this.applyDndSchedule()
+    }, 60 * 1000)
 
     // Check immediately
-    this.applyDndSchedule();
+    this.applyDndSchedule()
   }
 
   /**
@@ -422,10 +421,10 @@ export class StatusManager {
    */
   destroy(): void {
     if (this.expirationCheckInterval) {
-      clearInterval(this.expirationCheckInterval);
+      clearInterval(this.expirationCheckInterval)
     }
     if (this.scheduleCheckInterval) {
-      clearInterval(this.scheduleCheckInterval);
+      clearInterval(this.scheduleCheckInterval)
     }
   }
 
@@ -455,7 +454,7 @@ export class StatusManager {
         endTime: '08:00',
         days: [0, 1, 2, 3, 4, 5, 6],
       },
-    };
+    }
   }
 }
 
@@ -466,24 +465,22 @@ export class StatusManager {
 /**
  * Create a status manager instance
  */
-export function createStatusManager(
-  options: StatusManagerOptions
-): StatusManager {
-  return new StatusManager(options);
+export function createStatusManager(options: StatusManagerOptions): StatusManager {
+  return new StatusManager(options)
 }
 
 /**
  * Validate status value
  */
 export function isValidStatus(status: string): status is PresenceStatus {
-  return ['online', 'away', 'dnd', 'invisible', 'offline'].includes(status);
+  return ['online', 'away', 'dnd', 'invisible', 'offline'].includes(status)
 }
 
 /**
  * Sanitize custom status text
  */
 export function sanitizeCustomStatusText(text: string): string {
-  return text.trim().slice(0, 100); // Max 100 characters
+  return text.trim().slice(0, 100) // Max 100 characters
 }
 
 /**
@@ -491,9 +488,9 @@ export function sanitizeCustomStatusText(text: string): string {
  */
 export function sanitizeCustomStatusEmoji(emoji: string): string {
   // Remove non-emoji characters and take first emoji
-  const emojiRegex = /\p{Emoji}/u;
-  const match = emoji.match(emojiRegex);
-  return match ? match[0] : '';
+  const emojiRegex = /\p{Emoji}/u
+  const match = emoji.match(emojiRegex)
+  return match ? match[0] : ''
 }
 
 /**
@@ -504,14 +501,14 @@ export function createCustomStatus(
   emoji?: string,
   duration?: StatusDuration
 ): CustomStatus {
-  const durationOption = duration ? getDurationOption(duration) : null;
-  const expiresAt = durationOption?.getExpiresAt() ?? null;
+  const durationOption = duration ? getDurationOption(duration) : null
+  const expiresAt = durationOption?.getExpiresAt() ?? null
 
   return {
     text: text ? sanitizeCustomStatusText(text) : undefined,
     emoji: emoji ? sanitizeCustomStatusEmoji(emoji) : undefined,
     expiresAt,
-  };
+  }
 }
 
-export default StatusManager;
+export default StatusManager

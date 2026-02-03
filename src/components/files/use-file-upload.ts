@@ -95,13 +95,11 @@ export interface UseFileUploadReturn {
  * } = useFileUpload({
  *   autoUpload: true,
  *   maxFiles: 10,
- *   onAllComplete: (results) => console.log('All done!', results),
+ *   onAllComplete: (results) => /* console.log 'All done!', results),
  * })
  * ```
  */
-export function useFileUpload(
-  options: UseFileUploadOptions = {}
-): UseFileUploadReturn {
+export function useFileUpload(options: UseFileUploadOptions = {}): UseFileUploadReturn {
   const {
     autoUpload = false,
     maxConcurrent = 3,
@@ -120,7 +118,9 @@ export function useFileUpload(
   const [files, setFiles] = React.useState<FileUploadState[]>([])
   const [uploadQueue, setUploadQueue] = React.useState<string[]>([])
   const [activeUploads, setActiveUploads] = React.useState<Set<string>>(new Set())
-  const [completedResults, setCompletedResults] = React.useState<Map<string, UploadResult>>(new Map())
+  const [completedResults, setCompletedResults] = React.useState<Map<string, UploadResult>>(
+    new Map()
+  )
   const [errors, setErrors] = React.useState<Map<string, UploadError>>(new Map())
 
   // Refs for abort controllers
@@ -276,9 +276,7 @@ export function useFileUpload(
           signal: controller.signal,
           onProgress: (progress: UploadProgress) => {
             setFiles((prev) =>
-              prev.map((f) =>
-                f.id === id ? { ...f, progress: progress.percentage } : f
-              )
+              prev.map((f) => (f.id === id ? { ...f, progress: progress.percentage } : f))
             )
           },
         })
@@ -368,9 +366,7 @@ export function useFileUpload(
   // Start uploading
   const startUpload = React.useCallback(() => {
     // Add all pending files to queue
-    const pendingIds = files
-      .filter((f) => f.status === 'pending')
-      .map((f) => f.id)
+    const pendingIds = files.filter((f) => f.status === 'pending').map((f) => f.id)
 
     setUploadQueue((prev) => {
       const newQueue = [...prev]
@@ -439,9 +435,7 @@ export function useFileUpload(
 
   // Get uploaded URLs
   const getUploadedUrls = React.useCallback(() => {
-    return files
-      .filter((f) => f.status === 'completed' && f.url)
-      .map((f) => f.url!)
+    return files.filter((f) => f.status === 'completed' && f.url).map((f) => f.url!)
   }, [files])
 
   // Get uploaded results

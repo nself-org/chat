@@ -3,17 +3,16 @@
 import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Permission } from '@/lib/admin/roles/role-types'
-import { PERMISSIONS, isDangerousPermission, requiresAdmin } from '@/lib/admin/roles/permission-types'
+import {
+  PERMISSIONS,
+  isDangerousPermission,
+  requiresAdmin,
+} from '@/lib/admin/roles/permission-types'
 import { Switch } from '@/components/ui/switch'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import { AlertTriangle, Shield, Lock} from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { AlertTriangle, Shield, Lock } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface PermissionToggleProps {
   permission: Permission
@@ -86,7 +85,7 @@ export function PermissionToggle({
         )}
 
         {/* Content */}
-        <div className={cn('flex-1 min-w-0', compact && 'py-0')}>
+        <div className={cn('min-w-0 flex-1', compact && 'py-0')}>
           <div className="flex items-center gap-2">
             <Label
               className={cn(
@@ -106,9 +105,7 @@ export function PermissionToggle({
                       <AlertTriangle className="h-4 w-4 text-amber-500" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">
-                        This is a sensitive permission. Grant with caution.
-                      </p>
+                      <p className="text-xs">This is a sensitive permission. Grant with caution.</p>
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -130,9 +127,7 @@ export function PermissionToggle({
                       <Lock className="h-3 w-3 text-muted-foreground" />
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p className="text-xs">
-                        Inherited from {inheritedFrom || 'another role'}
-                      </p>
+                      <p className="text-xs">Inherited from {inheritedFrom || 'another role'}</p>
                     </TooltipContent>
                   </Tooltip>
                 )}
@@ -147,9 +142,7 @@ export function PermissionToggle({
 
           {/* Inherited notice */}
           {inherited && inheritedFrom && (
-            <p className="text-xs text-muted-foreground mt-1">
-              Inherited from {inheritedFrom}
-            </p>
+            <p className="mt-1 text-xs text-muted-foreground">Inherited from {inheritedFrom}</p>
           )}
         </div>
       </div>
@@ -197,7 +190,7 @@ export function PermissionToggleCompact({
                 : 'bg-muted text-muted-foreground',
               !disabled && !inherited && 'hover:opacity-80',
               disabled && 'cursor-not-allowed opacity-50',
-              inherited && 'cursor-default ring-1 ring-inset ring-primary/30',
+              inherited && 'ring-primary/30 cursor-default ring-1 ring-inset',
               className
             )}
           >
@@ -211,9 +204,7 @@ export function PermissionToggleCompact({
         <TooltipContent>
           <p className="font-medium">{permDef?.name}</p>
           <p className="text-xs text-muted-foreground">{permDef?.description}</p>
-          {inherited && (
-            <p className="text-xs text-primary mt-1">Inherited from another role</p>
-          )}
+          {inherited && <p className="mt-1 text-xs text-primary">Inherited from another role</p>}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

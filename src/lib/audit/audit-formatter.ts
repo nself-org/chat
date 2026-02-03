@@ -24,7 +24,10 @@ import { eventDescriptionTemplates, getActionDisplayName } from './audit-events'
 /**
  * Format a date for display
  */
-export function formatTimestamp(date: Date | string, format: 'short' | 'long' | 'relative' = 'short'): string {
+export function formatTimestamp(
+  date: Date | string,
+  format: 'short' | 'long' | 'relative' = 'short'
+): string {
   const d = typeof date === 'string' ? new Date(date) : date
 
   switch (format) {
@@ -90,7 +93,11 @@ export function formatRelativeTime(date: Date): string {
  */
 export function formatDateRange(start: Date, end: Date): string {
   const startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-  const endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  const endStr = end.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
   return `${startStr} - ${endStr}`
 }
 
@@ -110,7 +117,8 @@ export function formatDescription(entry: AuditLogEntry): string {
   let description = template
 
   // Replace actor placeholder
-  const actorName = entry.actor.displayName ?? entry.actor.username ?? entry.actor.email ?? entry.actor.id
+  const actorName =
+    entry.actor.displayName ?? entry.actor.username ?? entry.actor.email ?? entry.actor.id
   description = description.replace('{actor}', actorName)
 
   // Replace target placeholder

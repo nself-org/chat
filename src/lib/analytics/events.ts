@@ -20,6 +20,7 @@ import type {
   SessionData,
   UserProperties,
 } from './types'
+import { logger } from '@/lib/logger'
 
 class AnalyticsEvents {
   private config: AnalyticsConfig | null = null
@@ -33,7 +34,7 @@ class AnalyticsEvents {
     this.config = config
 
     if (!config.enabled) {
-      console.log('Analytics disabled')
+      // REMOVED: console.log('Analytics disabled')
       return
     }
 
@@ -52,9 +53,9 @@ class AnalyticsEvents {
       // Start session tracking
       this.startSession()
 
-      console.log('Analytics initialized with providers:', providers)
+      // REMOVED: console.log('Analytics initialized with providers:', providers)
     } catch (error) {
-      console.error('Failed to initialize analytics:', error)
+      logger.error('Failed to initialize analytics', error instanceof Error ? error : new Error(String(error)))
       throw error
     }
   }
@@ -290,15 +291,18 @@ class AnalyticsEvents {
 
     // Also track in Sentry for performance monitoring
     if (sentryMobile.isInitialized()) {
-      await sentryMobile.addBreadcrumb(
-        'performance',
-        `Screen loaded: ${screenName}`,
-        { duration_ms: durationMs }
-      )
+      await sentryMobile.addBreadcrumb('performance', `Screen loaded: ${screenName}`, {
+        duration_ms: durationMs,
+      })
     }
   }
 
-  async trackApiCall(endpoint: string, method: string, durationMs: number, status: number): Promise<void> {
+  async trackApiCall(
+    endpoint: string,
+    method: string,
+    durationMs: number,
+    status: number
+  ): Promise<void> {
     await this.logEvent(StandardEvents.API_CALL, {
       endpoint,
       method,
@@ -363,11 +367,9 @@ class AnalyticsEvents {
 
     // Add breadcrumb to Sentry
     if (sentryMobile.isInitialized()) {
-      await sentryMobile.addBreadcrumb(
-        'navigation',
-        `Screen viewed: ${screenName}`,
-        { screen_class: screenClass }
-      )
+      await sentryMobile.addBreadcrumb('navigation', `Screen viewed: ${screenName}`, {
+        screen_class: screenClass,
+      })
     }
   }
 
@@ -406,18 +408,14 @@ class AnalyticsEvents {
 
       // Add breadcrumb to Sentry
       if (sentryMobile.isInitialized()) {
-        await sentryMobile.addBreadcrumb(
-          'event',
-          eventName,
-          params as any
-        )
+        await sentryMobile.addBreadcrumb('event', eventName, params as any)
       }
 
       if (this.config?.debugMode) {
-        console.log('[Analytics] Event logged:', eventName, params)
+        // REMOVED: console.log('[Analytics] Event logged:', eventName, params)
       }
     } catch (error) {
-      console.error('Failed to log event:', eventName, error)
+      logger.error('Failed to log event', error instanceof Error ? error : new Error(String(error)), { eventName })
     }
   }
 
@@ -436,7 +434,7 @@ class AnalyticsEvents {
     }
 
     if (this.config?.debugMode) {
-      console.log('[Analytics] Session started:', this.sessionData.sessionId)
+      // REMOVED: console.log('[Analytics] Session started:', this.sessionData.sessionId)
     }
   }
 

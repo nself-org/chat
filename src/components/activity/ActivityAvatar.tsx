@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ActivityAvatar Component
@@ -6,32 +6,32 @@
  * Displays user avatar(s) for an activity
  */
 
-import * as React from 'react';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { cn } from '@/lib/utils';
-import type { ActivityAvatarProps, ActivityActor } from '@/lib/activity/activity-types';
+import * as React from 'react'
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar'
+import { cn } from '@/lib/utils'
+import type { ActivityAvatarProps, ActivityActor } from '@/lib/activity/activity-types'
 
 // Size classes
 const sizeClasses = {
   sm: 'h-6 w-6 text-xs',
   md: 'h-8 w-8 text-sm',
   lg: 'h-10 w-10 text-base',
-};
+}
 
 const overlapClasses = {
   sm: '-ml-2',
   md: '-ml-3',
   lg: '-ml-4',
-};
+}
 
 /**
  * Get initials from a name
  */
 function getInitials(name: string): string {
-  const parts = name.split(' ').filter(Boolean);
-  if (parts.length === 0) return '?';
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase();
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+  const parts = name.split(' ').filter(Boolean)
+  if (parts.length === 0) return '?'
+  if (parts.length === 1) return parts[0].charAt(0).toUpperCase()
+  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
 }
 
 /**
@@ -56,14 +56,14 @@ function stringToColor(str: string): string {
     'bg-fuchsia-500',
     'bg-pink-500',
     'bg-rose-500',
-  ];
+  ]
 
-  let hash = 0;
+  let hash = 0
   for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    hash = str.charCodeAt(i) + ((hash << 5) - hash)
   }
 
-  return colors[Math.abs(hash) % colors.length];
+  return colors[Math.abs(hash) % colors.length]
 }
 
 /**
@@ -74,23 +74,21 @@ function SingleAvatar({
   size,
   className,
 }: {
-  actor: ActivityActor;
-  size: 'sm' | 'md' | 'lg';
-  className?: string;
+  actor: ActivityActor
+  size: 'sm' | 'md' | 'lg'
+  className?: string
 }) {
-  const initials = getInitials(actor.displayName);
-  const colorClass = stringToColor(actor.id);
+  const initials = getInitials(actor.displayName)
+  const colorClass = stringToColor(actor.id)
 
   return (
     <Avatar className={cn(sizeClasses[size], className)}>
-      {actor.avatarUrl ? (
-        <AvatarImage src={actor.avatarUrl} alt={actor.displayName} />
-      ) : null}
-      <AvatarFallback className={cn(colorClass, 'text-white font-medium')}>
+      {actor.avatarUrl ? <AvatarImage src={actor.avatarUrl} alt={actor.displayName} /> : null}
+      <AvatarFallback className={cn(colorClass, 'font-medium text-white')}>
         {initials}
       </AvatarFallback>
     </Avatar>
-  );
+  )
 }
 
 /**
@@ -101,21 +99,21 @@ function OverflowIndicator({
   size,
   className,
 }: {
-  count: number;
-  size: 'sm' | 'md' | 'lg';
-  className?: string;
+  count: number
+  size: 'sm' | 'md' | 'lg'
+  className?: string
 }) {
   return (
     <div
       className={cn(
-        'flex items-center justify-center rounded-full bg-muted text-muted-foreground font-medium border-2 border-background',
+        'flex items-center justify-center rounded-full border-2 border-background bg-muted font-medium text-muted-foreground',
         sizeClasses[size],
         className
       )}
     >
       +{count > 99 ? '99' : count}
     </div>
-  );
+  )
 }
 
 export function ActivityAvatar({
@@ -128,12 +126,12 @@ export function ActivityAvatar({
 }: ActivityAvatarProps) {
   // Single actor mode
   if (!actors) {
-    return <SingleAvatar actor={actor} size={size} className={className} />;
+    return <SingleAvatar actor={actor} size={size} className={className} />
   }
 
   // Multiple actors mode
-  const visibleActors = actors.actors.slice(0, maxVisible);
-  const overflowCount = actors.totalCount - maxVisible;
+  const visibleActors = actors.actors.slice(0, maxVisible)
+  const overflowCount = actors.totalCount - maxVisible
 
   return (
     <div className={cn('flex items-center', className)}>
@@ -142,21 +140,14 @@ export function ActivityAvatar({
           key={actorItem.id}
           actor={actorItem}
           size={size}
-          className={cn(
-            index > 0 && overlapClasses[size],
-            'border-2 border-background'
-          )}
+          className={cn(index > 0 && overlapClasses[size], 'border-2 border-background')}
         />
       ))}
       {showOverflow && overflowCount > 0 && (
-        <OverflowIndicator
-          count={overflowCount}
-          size={size}
-          className={overlapClasses[size]}
-        />
+        <OverflowIndicator count={overflowCount} size={size} className={overlapClasses[size]} />
       )}
     </div>
-  );
+  )
 }
 
-export default ActivityAvatar;
+export default ActivityAvatar

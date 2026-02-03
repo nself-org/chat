@@ -11,13 +11,7 @@
 import { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import { TELEGRAM_COLORS } from '../config'
-import {
-  ArrowLeft,
-  Search,
-  Phone,
-  MoreVertical,
-  Lock,
-} from 'lucide-react'
+import { ArrowLeft, Search, Phone, MoreVertical, Lock } from 'lucide-react'
 
 // -------------------------------------------------------------------------------
 // Types
@@ -85,55 +79,40 @@ export function TelegramChatView({
     return (
       <div
         className={cn(
-          'flex-1 flex items-center justify-center',
+          'flex flex-1 items-center justify-center',
           'bg-[#EFEAE2] dark:bg-[#0E1621]',
           className
         )}
       >
-        <p className="text-gray-500 dark:text-gray-400">
-          Select a chat to start messaging
-        </p>
+        <p className="text-gray-500 dark:text-gray-400">Select a chat to start messaging</p>
       </div>
     )
   }
 
   return (
-    <div
-      className={cn(
-        'flex flex-col h-full',
-        'bg-[#EFEAE2] dark:bg-[#0E1621]',
-        className
-      )}
-    >
+    <div className={cn('flex h-full flex-col', 'bg-[#EFEAE2] dark:bg-[#0E1621]', className)}>
       {/* Header */}
       <header
-        className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-[#17212B] shadow-sm"
+        className="flex items-center gap-2 bg-white px-4 py-2 shadow-sm dark:bg-[#17212B]"
         style={{ minHeight: 56 }}
       >
         {/* Back Button (mobile) */}
         <button
           onClick={onBackClick}
-          className="p-2 -ml-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#232E3C] text-gray-600 dark:text-gray-400 md:hidden"
+          className="-ml-2 rounded-full p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-[#232E3C] md:hidden"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="h-5 w-5" />
         </button>
 
         {/* Avatar & Info */}
-        <button
-          onClick={onHeaderClick}
-          className="flex items-center gap-3 flex-1 min-w-0"
-        >
+        <button onClick={onHeaderClick} className="flex min-w-0 flex-1 items-center gap-3">
           <div className="relative flex-shrink-0">
-            <div className="w-10 h-10 rounded-full overflow-hidden">
+            <div className="h-10 w-10 overflow-hidden rounded-full">
               {chatAvatar ? (
-                <img
-                  src={chatAvatar}
-                  alt={chatName}
-                  className="w-full h-full object-cover"
-                />
+                <img src={chatAvatar} alt={chatName} className="h-full w-full object-cover" />
               ) : (
                 <div
-                  className="w-full h-full flex items-center justify-center text-white font-medium"
+                  className="flex h-full w-full items-center justify-center font-medium text-white"
                   style={{ backgroundColor: TELEGRAM_COLORS.telegramBlue }}
                 >
                   {chatName[0]?.toUpperCase()}
@@ -142,26 +121,24 @@ export function TelegramChatView({
             </div>
             {chatType === 'secret' && (
               <span
-                className="absolute bottom-0 right-0 w-4 h-4 rounded-full flex items-center justify-center"
+                className="absolute bottom-0 right-0 flex h-4 w-4 items-center justify-center rounded-full"
                 style={{ backgroundColor: TELEGRAM_COLORS.online }}
               >
-                <Lock className="w-2.5 h-2.5 text-white" />
+                <Lock className="h-2.5 w-2.5 text-white" />
               </span>
             )}
           </div>
 
-          <div className="text-left min-w-0">
-            <h1 className="font-medium text-gray-900 dark:text-white truncate">
-              {chatName}
-            </h1>
+          <div className="min-w-0 text-left">
+            <h1 className="truncate font-medium text-gray-900 dark:text-white">{chatName}</h1>
             <p
               className={cn(
-                'text-sm truncate',
+                'truncate text-sm',
                 isOnline
                   ? 'text-[#2AABEE]'
                   : chatType === 'secret'
-                  ? 'text-green-500'
-                  : 'text-gray-500 dark:text-gray-400'
+                    ? 'text-green-500'
+                    : 'text-gray-500 dark:text-gray-400'
               )}
             >
               {getSubtitle()}
@@ -173,23 +150,23 @@ export function TelegramChatView({
         <div className="flex items-center gap-1">
           <button
             onClick={onSearchClick}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#232E3C] text-gray-600 dark:text-gray-400"
+            className="rounded-full p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-[#232E3C]"
           >
-            <Search className="w-5 h-5" />
+            <Search className="h-5 w-5" />
           </button>
           {chatType === 'private' && (
             <button
               onClick={onCallClick}
-              className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#232E3C] text-gray-600 dark:text-gray-400"
+              className="rounded-full p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-[#232E3C]"
             >
-              <Phone className="w-5 h-5" />
+              <Phone className="h-5 w-5" />
             </button>
           )}
           <button
             onClick={onMenuClick}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-[#232E3C] text-gray-600 dark:text-gray-400"
+            className="rounded-full p-2 text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-[#232E3C]"
           >
-            <MoreVertical className="w-5 h-5" />
+            <MoreVertical className="h-5 w-5" />
           </button>
         </div>
       </header>

@@ -5,18 +5,9 @@
  * Handles embeds, markdown conversion, and notification formatting.
  */
 
-import type {
-  DiscordUser,
-  DiscordGuild,
-  DiscordChannel,
-  DiscordMessage,
-} from '../types'
+import type { DiscordUser, DiscordGuild, DiscordChannel, DiscordMessage } from '../types'
 
-import type {
-  DiscordEmbed,
-  DiscordComponent,
-  DiscordGatewayEventType,
-} from './types'
+import type { DiscordEmbed, DiscordComponent, DiscordGatewayEventType } from './types'
 
 // ============================================================================
 // Types
@@ -47,12 +38,12 @@ export type DiscordNotificationIcon =
   | 'discord'
 
 export type DiscordNotificationColor =
-  | 'green'   // success, join
-  | 'blue'    // info, message
-  | 'purple'  // discord brand
-  | 'red'     // error, leave
-  | 'yellow'  // warning
-  | 'gray'    // neutral
+  | 'green' // success, join
+  | 'blue' // info, message
+  | 'purple' // discord brand
+  | 'red' // error, leave
+  | 'yellow' // warning
+  | 'gray' // neutral
 
 export interface DiscordNotificationMetadata {
   eventType: string
@@ -510,14 +501,14 @@ export function buildEmbed(options: {
   if (options.description) embed.description = options.description
   if (options.url) embed.url = options.url
   if (options.color) {
-    embed.color = typeof options.color === 'string'
-      ? parseInt(options.color.replace('#', ''), 16)
-      : options.color
+    embed.color =
+      typeof options.color === 'string'
+        ? parseInt(options.color.replace('#', ''), 16)
+        : options.color
   }
   if (options.timestamp) {
-    embed.timestamp = options.timestamp instanceof Date
-      ? options.timestamp.toISOString()
-      : options.timestamp
+    embed.timestamp =
+      options.timestamp instanceof Date ? options.timestamp.toISOString() : options.timestamp
   }
   if (options.footer) embed.footer = options.footer
   if (options.author) embed.author = options.author

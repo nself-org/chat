@@ -3,6 +3,7 @@
 ## Overview
 
 Comprehensive live streaming system for nself-chat v0.4.0 featuring:
+
 - WebRTC broadcast ingest
 - HLS adaptive streaming distribution
 - Low latency (<5 seconds)
@@ -95,11 +96,13 @@ nself db migrate up 016_live_streaming.sql
 ## Core Libraries
 
 ### 1. Stream Types (`src/lib/streaming/stream-types.ts`)
+
 - TypeScript interfaces for all streaming entities
 - Enums for status, quality levels, chat modes
 - Error classes
 
 ### 2. HLS Player (`src/lib/streaming/hls-player.ts`)
+
 - HLS.js wrapper for video playback
 - Adaptive bitrate streaming
 - Quality level selection
@@ -107,6 +110,7 @@ nself db migrate up 016_live_streaming.sql
 - Statistics monitoring
 
 ### 3. Stream Client (`src/lib/streaming/stream-client.ts`)
+
 - WebRTC broadcaster client
 - Camera/microphone access
 - Device switching
@@ -114,18 +118,21 @@ nself db migrate up 016_live_streaming.sql
 - Metrics reporting
 
 ### 4. Stream Manager (`src/lib/streaming/stream-manager.ts`)
+
 - High-level API for stream CRUD
 - Stream lifecycle (create, start, end)
 - Query operations (live, scheduled, past)
 - Viewer management
 
 ### 5. Stream Analytics (`src/lib/streaming/stream-analytics.ts`)
+
 - Event tracking (joins, leaves, chat, reactions)
 - Buffering monitoring
 - Quality metrics collection
 - Engagement calculations
 
 ### 6. Adaptive Bitrate (`src/lib/streaming/adaptive-bitrate.ts`)
+
 - Bandwidth estimation (EWMA, sliding window)
 - Level selection algorithms
 - Buffer-based ABR
@@ -317,44 +324,52 @@ function StreamReactionsComponent({ streamId }: { streamId: string }) {
 ## API Routes
 
 ### Create Stream
+
 ```
 POST /api/streams/create
 Body: { channelId, title, description, scheduledAt?, ... }
 ```
 
 ### Start Stream
+
 ```
 POST /api/streams/:id/start
 ```
 
 ### End Stream
+
 ```
 POST /api/streams/:id/end
 ```
 
 ### Get Stream
+
 ```
 GET /api/streams/:id
 ```
 
 ### Get Live Streams
+
 ```
 GET /api/streams/live?channelId=...
 ```
 
 ### Get HLS Manifest
+
 ```
 GET /api/streams/:id/hls
 Response: { manifestUrl: "https://..." }
 ```
 
 ### Viewer Count
+
 ```
 GET /api/streams/:id/viewers
 Response: { count: 42 }
 ```
 
 ### Chat Operations
+
 ```
 GET    /api/streams/:id/chat           # Get messages
 POST   /api/streams/:id/chat           # Send message
@@ -363,6 +378,7 @@ POST   /api/streams/:id/chat/:msgId/pin # Pin message
 ```
 
 ### Reactions
+
 ```
 POST /api/streams/:id/reactions
 Body: { emoji, positionX?, positionY? }
@@ -371,7 +387,9 @@ Body: { emoji, positionX?, positionY? }
 ## UI Components
 
 ### StreamBroadcaster
+
 Full broadcaster UI with:
+
 - Preview/Live video display
 - Go Live button
 - Camera/microphone selection
@@ -382,7 +400,9 @@ Full broadcaster UI with:
 - End stream button
 
 ### StreamViewer
+
 Viewer interface with:
+
 - HLS video player
 - Quality selector
 - Volume controls
@@ -393,14 +413,18 @@ Viewer interface with:
 - Reaction buttons
 
 ### StreamScheduler
+
 Schedule streams for future:
+
 - Date/time picker
 - Channel selection
 - Stream details
 - Notification settings
 
 ### StreamSettings
+
 Configure stream:
+
 - Title and description
 - Thumbnail upload
 - Quality presets (1080p, 720p, 480p, 360p)
@@ -496,26 +520,31 @@ STREAM_RECORDING_PATH=/var/recordings
 ## Socket.io Events
 
 ### Broadcaster → Server
+
 - `stream:start` - Stream went live
 - `stream:end` - Stream ended
 - `stream:quality-update` - Quality metrics
 
 ### Viewer ↔ Server
+
 - `stream:viewer-joined` - Viewer joined
 - `stream:viewer-left` - Viewer left
 - `stream:viewer-count` - Viewer count update
 
 ### Chat Events
+
 - `stream:chat-message` - New chat message
 - `stream:chat-deleted` - Message deleted
 - `stream:chat-pinned` - Message pinned
 
 ### Reaction Events
+
 - `stream:reaction` - Emoji reaction sent
 
 ## Testing
 
 ### Test Stream Creation
+
 ```bash
 curl -X POST http://localhost:3000/api/streams/create \
   -H "Content-Type: application/json" \
@@ -527,6 +556,7 @@ curl -X POST http://localhost:3000/api/streams/create \
 ```
 
 ### Test with OBS
+
 1. Open OBS Studio
 2. Settings → Stream
 3. Service: Custom
@@ -535,6 +565,7 @@ curl -X POST http://localhost:3000/api/streams/create \
 6. Start Streaming
 
 ### Test HLS Playback
+
 ```html
 <video id="video" controls></video>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
@@ -549,22 +580,26 @@ curl -X POST http://localhost:3000/api/streams/create \
 ## Performance Optimization
 
 ### 1. HLS Configuration
+
 - **Fragment Size**: 2-3 seconds for low latency
 - **Playlist Length**: 6-10 seconds
 - **Max Buffer**: 30 seconds
 - **Target Latency**: 3-5 seconds
 
 ### 2. Transcoding
+
 - Use hardware acceleration (NVENC, Quick Sync, VA-API)
 - Preset: veryfast for real-time
 - GOP size: 2x framerate for faster seeking
 
 ### 3. CDN Integration
+
 - Distribute HLS segments via CDN
 - Edge caching for manifest and segments
 - Geographic distribution
 
 ### 4. Database Optimization
+
 - Index on `status` and `channel_id` for live stream queries
 - Partition `stream_quality_metrics` by month
 - Archive old streams to cold storage
@@ -572,6 +607,7 @@ curl -X POST http://localhost:3000/api/streams/create \
 ## Monitoring & Analytics
 
 ### Key Metrics
+
 - Peak concurrent viewers
 - Average watch time
 - Buffering ratio
@@ -580,6 +616,7 @@ curl -X POST http://localhost:3000/api/streams/create \
 - Quality switching frequency
 
 ### Dashboards
+
 - Real-time viewer count
 - Stream health (bitrate, FPS, dropped frames)
 - Geographic distribution
@@ -602,24 +639,28 @@ curl -X POST http://localhost:3000/api/streams/create \
 ## Troubleshooting
 
 ### Stream Not Starting
+
 - Check WebRTC permissions
 - Verify stream key
 - Check media server logs
 - Test network connectivity
 
 ### High Latency
+
 - Enable low-latency mode in HLS player
 - Reduce buffer size
 - Check network bandwidth
 - Use LL-HLS if supported
 
 ### Buffering Issues
+
 - Lower quality level
 - Check upload bandwidth (broadcaster)
 - Check download bandwidth (viewer)
 - Verify CDN performance
 
 ### Chat Not Working
+
 - Check Socket.io connection
 - Verify authentication
 - Check RLS policies in database
@@ -628,6 +669,7 @@ curl -X POST http://localhost:3000/api/streams/create \
 ## Support
 
 For issues or questions:
+
 1. Check logs: `.backend/logs/`
 2. Review Hasura console for GraphQL errors
 3. Check Socket.io connection in browser dev tools

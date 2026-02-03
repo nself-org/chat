@@ -7,6 +7,8 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useAuth } from '@/contexts/auth-context'
 
+import { logger } from '@/lib/logger'
+
 export interface TwoFactorStatus {
   isEnabled: boolean
   enabledAt: string | null
@@ -53,7 +55,7 @@ export function use2FA() {
         setStatus(data.data)
       }
     } catch (err) {
-      console.error('Failed to fetch 2FA status:', err)
+      logger.error('Failed to fetch 2FA status:', err)
     }
   }, [user?.id])
 
@@ -235,12 +237,9 @@ export function use2FA() {
       setError(null)
 
       try {
-        const response = await fetch(
-          `/api/auth/2fa/trusted-devices?id=${deviceId}`,
-          {
-            method: 'DELETE',
-          }
-        )
+        const response = await fetch(`/api/auth/2fa/trusted-devices?id=${deviceId}`, {
+          method: 'DELETE',
+        })
 
         const data = await response.json()
 

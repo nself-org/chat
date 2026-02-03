@@ -11,6 +11,8 @@ import { getCache, type RedisCacheService } from '@/lib/redis-cache'
 import { addSentryBreadcrumb } from '@/lib/sentry-utils'
 import crypto from 'crypto'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -82,10 +84,7 @@ export class ResponseCache {
   private config: Required<CacheConfig>
   private statsKey: string
 
-  constructor(
-    namespace: string,
-    config?: Partial<CacheConfig>
-  ) {
+  constructor(namespace: string, config?: Partial<CacheConfig>) {
     this.config = {
       enabled: true,
       ttl: AI_CACHE_TTL.CHAT,
@@ -134,7 +133,7 @@ export class ResponseCache {
       await this.recordMiss()
       return null
     } catch (error) {
-      console.error('[ResponseCache] Error getting from cache:', error)
+      logger.error('[ResponseCache] Error getting from cache:', error)
       return null
     }
   }
@@ -169,7 +168,7 @@ export class ResponseCache {
         ttl,
       })
     } catch (error) {
-      console.error('[ResponseCache] Error setting cache:', error)
+      logger.error('[ResponseCache] Error setting cache:', error)
     }
   }
 
@@ -211,7 +210,6 @@ export class ResponseCache {
    * Cache with semantic key (for similar prompts)
    */
   async getBySemantic<T = any>(prompt: string, threshold: number = 0.9): Promise<T | null> {
-    // TODO: Implement semantic similarity search
     // For now, use exact match
     return this.get<T>(prompt)
   }
@@ -243,9 +241,7 @@ export class ResponseCache {
     }
   ): Promise<void> {
     await Promise.all(
-      Array.from(entries.entries()).map(([key, value]) =>
-        this.set(key, value, options)
-      )
+      Array.from(entries.entries()).map(([key, value]) => this.set(key, value, options))
     )
   }
 
@@ -305,20 +301,20 @@ export class ResponseCache {
   }
 
   private async recordHit(): Promise<void> {
-    const stats = await this.cache.get<{
+    const stats = (await this.cache.get<{
       hits: number
       misses: number
-    }>(this.statsKey) || { hits: 0, misses: 0 }
+    }>(this.statsKey)) || { hits: 0, misses: 0 }
 
     stats.hits++
     await this.cache.set(this.statsKey, stats, 86400) // 24 hours
   }
 
   private async recordMiss(): Promise<void> {
-    const stats = await this.cache.get<{
+    const stats = (await this.cache.get<{
       hits: number
       misses: number
-    }>(this.statsKey) || { hits: 0, misses: 0 }
+    }>(this.statsKey)) || { hits: 0, misses: 0 }
 
     stats.misses++
     await this.cache.set(this.statsKey, stats, 86400)
@@ -401,10 +397,7 @@ export class ResponseCache {
 
 const caches = new Map<string, ResponseCache>()
 
-export function getResponseCache(
-  namespace: string,
-  config?: Partial<CacheConfig>
-): ResponseCache {
+export function getResponseCache(namespace: string, config?: Partial<CacheConfig>): ResponseCache {
   if (!caches.has(namespace)) {
     caches.set(namespace, new ResponseCache(namespace, config))
   }
@@ -447,18 +440,12 @@ export function cached(
     ttl?: number
   }
 ) {
-  return function (
-    target: any,
-    propertyName: string,
-    descriptor: PropertyDescriptor
-  ) {
+  return function (target: any, propertyName: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value
 
     descriptor.value = async function (...args: any[]) {
       // Generate cache key
-      const key = options?.keyFn
-        ? options.keyFn(...args)
-        : JSON.stringify(args)
+      const key = options?.keyFn ? options.keyFn(...args) : JSON.stringify(args)
 
       // Try to get from cache
       const cached = await cache.get(key)

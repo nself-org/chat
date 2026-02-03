@@ -77,17 +77,16 @@ This document provides a comprehensive summary of the GIF and sticker support im
 
 ```typescript
 // Core functionality
-- search(query, limit, pos, contentFilter)
-- featured(limit, pos, contentFilter)
-- trendingTerms(limit)
-- autocomplete(query, limit)
-- categories(type)
-- registerShare(gifId)
-
-// Helper methods
-- getDisplayUrl(gif, size)
-- getThumbnailUrl(gif)
-- getDimensions(gif)
+;-search(query, limit, pos, contentFilter) -
+  featured(limit, pos, contentFilter) -
+  trendingTerms(limit) -
+  autocomplete(query, limit) -
+  categories(type) -
+  registerShare(gifId) -
+  // Helper methods
+  getDisplayUrl(gif, size) -
+  getThumbnailUrl(gif) -
+  getDimensions(gif)
 ```
 
 ### React Components
@@ -432,6 +431,7 @@ await addSticker({
 The migration creates two default sticker packs:
 
 ### 1. Reactions Pack
+
 - Thumbs Up 👍
 - Heart ❤️
 - Fire 🔥
@@ -440,6 +440,7 @@ The migration creates two default sticker packs:
 - Check ✅
 
 ### 2. Emoji Pack
+
 - Smile 🙂
 - Joy 😂
 - Cry 😢
@@ -447,7 +448,7 @@ The migration creates two default sticker packs:
 - Eyes 👀
 - Clap 👏
 
-*Note: These use SVG data URLs with emoji characters as placeholders. In production, replace with actual sticker images.*
+_Note: These use SVG data URLs with emoji characters as placeholders. In production, replace with actual sticker images._
 
 ---
 
@@ -460,6 +461,7 @@ The migration creates two default sticker packs:
 **Required API Key**: Get from [Google Developers Console](https://developers.google.com/tenor/guides/quickstart)
 
 **Endpoints Used**:
+
 - `/search` - Search GIFs by query
 - `/featured` - Get trending/featured GIFs
 - `/trending_terms` - Get trending search terms
@@ -576,6 +578,7 @@ echo "NEXT_PUBLIC_TENOR_API_KEY=your-api-key-here" >> .env.local
 ### 3. Install Dependencies (if needed)
 
 All required dependencies are already in package.json:
+
 - `react-dropzone` (file upload)
 - `emoji-picker-react` (emoji picker)
 - `@apollo/client` (GraphQL)
@@ -654,11 +657,13 @@ pnpm dev
 ## Support & Resources
 
 ### Documentation
+
 - [Tenor API Docs](https://developers.google.com/tenor)
 - [Hasura GraphQL](https://hasura.io/docs/latest/index/)
 - [React Dropzone](https://react-dropzone.js.org/)
 
 ### Getting Help
+
 - GitHub Issues: Report bugs or request features
 - Discord: Join nself community
 - Email: support@nself.org
@@ -670,6 +675,7 @@ pnpm dev
 ### v0.3.0 (2026-01-30)
 
 **Added**:
+
 - GIF search and sending via Tenor API
 - Custom sticker pack support
 - Sticker upload and management (admin)
@@ -680,12 +686,14 @@ pnpm dev
 - Feature flags for GIFs and stickers
 
 **Database**:
+
 - Added `nchat_sticker_packs` table
 - Added `nchat_stickers` table
 - Updated `nchat_messages` with GIF/sticker columns
 - Added 12 default stickers across 2 packs
 
 **Components**:
+
 - Created `GifPicker.tsx`
 - Created `StickerPicker.tsx`
 - Created `StickerPackManager.tsx`
@@ -694,11 +702,13 @@ pnpm dev
 - Updated `MessageContent.tsx`
 
 **Hooks**:
+
 - Created `use-gif-search.ts`
 - Created `use-stickers.ts`
 - Created `use-sticker-packs.ts`
 
 **Libraries**:
+
 - Created `tenor-client.ts`
 
 ---

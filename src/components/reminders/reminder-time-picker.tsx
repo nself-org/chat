@@ -28,11 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import {
   getCommonTimezones,
   formatTimezoneOffset,
@@ -164,9 +160,7 @@ export function ReminderTimePicker({
   const isInPast = value.getTime() < Date.now()
 
   // Get min date for input
-  const minDateStr = minDate
-    ? formatDateForInput(minDate)
-    : formatDateForInput(new Date())
+  const minDateStr = minDate ? formatDateForInput(minDate) : formatDateForInput(new Date())
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -186,7 +180,7 @@ export function ReminderTimePicker({
               min={minDateStr}
               disabled={disabled}
               className={cn(
-                'flex h-10 w-full rounded-xl border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background',
+                'flex h-10 w-full rounded-xl border border-input bg-background py-2 pl-10 pr-3 text-sm ring-offset-background',
                 'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
                 'disabled:cursor-not-allowed disabled:opacity-50',
                 isInPast && 'border-destructive'
@@ -208,7 +202,7 @@ export function ReminderTimePicker({
               onChange={handleTimeChange}
               disabled={disabled}
               className={cn(
-                'flex h-10 w-full rounded-xl border border-input bg-background pl-10 pr-3 py-2 text-sm ring-offset-background',
+                'flex h-10 w-full rounded-xl border border-input bg-background py-2 pl-10 pr-3 text-sm ring-offset-background',
                 'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
                 'disabled:cursor-not-allowed disabled:opacity-50',
                 isInPast && 'border-destructive'
@@ -266,11 +260,7 @@ export function ReminderTimePicker({
       {showTimezone && onTimezoneChange && (
         <div className="space-y-2">
           <Label className="text-sm font-medium">Timezone</Label>
-          <Select
-            value={timezone}
-            onValueChange={onTimezoneChange}
-            disabled={disabled}
-          >
+          <Select value={timezone} onValueChange={onTimezoneChange} disabled={disabled}>
             <SelectTrigger className="w-full">
               <Globe className="mr-2 h-4 w-4 text-muted-foreground" />
               <SelectValue placeholder="Select timezone" />
@@ -294,13 +284,11 @@ export function ReminderTimePicker({
         <div
           className={cn(
             'rounded-lg p-3 text-sm',
-            isInPast
-              ? 'bg-destructive/10 text-destructive'
-              : 'bg-muted text-muted-foreground'
+            isInPast ? 'bg-destructive/10 text-destructive' : 'bg-muted text-muted-foreground'
           )}
         >
           <div className="font-medium">{formatFutureTime(value)}</div>
-          <div className="text-xs mt-1">
+          <div className="mt-1 text-xs">
             {isInPast ? 'Please select a future time' : getRelativeTimeDescription(value)}
           </div>
         </div>

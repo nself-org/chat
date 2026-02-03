@@ -342,37 +342,37 @@ interface RecordingOptions {
 
 ## Annotation Tools
 
-| Tool | Description | Properties |
-|------|-------------|------------|
-| pen | Freehand drawing | color, strokeWidth |
-| arrow | Draw arrows | color, strokeWidth |
-| line | Straight lines | color, strokeWidth |
-| rectangle | Rectangles | color, strokeWidth, filled |
-| circle | Circles | color, strokeWidth, filled |
-| text | Text labels | color, fontSize, fontFamily |
-| eraser | Remove annotations | strokeWidth (eraser size) |
+| Tool      | Description        | Properties                  |
+| --------- | ------------------ | --------------------------- |
+| pen       | Freehand drawing   | color, strokeWidth          |
+| arrow     | Draw arrows        | color, strokeWidth          |
+| line      | Straight lines     | color, strokeWidth          |
+| rectangle | Rectangles         | color, strokeWidth, filled  |
+| circle    | Circles            | color, strokeWidth, filled  |
+| text      | Text labels        | color, fontSize, fontFamily |
+| eraser    | Remove annotations | strokeWidth (eraser size)   |
 
 ---
 
 ## Quality Settings
 
-| Quality | Resolution | Frame Rate | Bitrate | Network |
-|---------|-----------|------------|---------|---------|
-| Auto | 1920x1080 | 30fps | 2.5 Mbps | 5+ Mbps |
-| 720p | 1280x720 | 30fps | 1.5 Mbps | 3+ Mbps |
-| 1080p | 1920x1080 | 30fps | 2.5 Mbps | 5+ Mbps |
-| 4K | 3840x2160 | 60fps | 8 Mbps | 20+ Mbps |
+| Quality | Resolution | Frame Rate | Bitrate  | Network  |
+| ------- | ---------- | ---------- | -------- | -------- |
+| Auto    | 1920x1080  | 30fps      | 2.5 Mbps | 5+ Mbps  |
+| 720p    | 1280x720   | 30fps      | 1.5 Mbps | 3+ Mbps  |
+| 1080p   | 1920x1080  | 30fps      | 2.5 Mbps | 5+ Mbps  |
+| 4K      | 3840x2160  | 60fps      | 8 Mbps   | 20+ Mbps |
 
 ---
 
 ## Browser Support
 
-| Feature | Chrome | Edge | Firefox | Safari |
-|---------|--------|------|---------|--------|
-| Screen Share | ✅ 72+ | ✅ 79+ | ✅ 66+ | ✅ 13+ |
-| System Audio | ✅ 74+ | ✅ 79+ | ❌ | ❌ |
-| Recording | ✅ 47+ | ✅ 79+ | ✅ 25+ | ✅ 14.1+ |
-| Canvas | ✅ | ✅ | ✅ | ✅ |
+| Feature      | Chrome | Edge   | Firefox | Safari   |
+| ------------ | ------ | ------ | ------- | -------- |
+| Screen Share | ✅ 72+ | ✅ 79+ | ✅ 66+  | ✅ 13+   |
+| System Audio | ✅ 74+ | ✅ 79+ | ❌      | ❌       |
+| Recording    | ✅ 47+ | ✅ 79+ | ✅ 25+  | ✅ 14.1+ |
+| Canvas       | ✅     | ✅     | ✅      | ✅       |
 
 ---
 
@@ -411,14 +411,14 @@ useEffect(() => {
 }, [])
 ```
 
-| Shortcut | Action |
-|----------|--------|
-| Ctrl+Z | Undo |
-| Ctrl+Y | Redo |
-| Ctrl+D | Pen tool |
-| Ctrl+A | Arrow tool |
-| Ctrl+R | Rectangle tool |
-| Ctrl+E | Eraser tool |
+| Shortcut | Action         |
+| -------- | -------------- |
+| Ctrl+Z   | Undo           |
+| Ctrl+Y   | Redo           |
+| Ctrl+D   | Pen tool       |
+| Ctrl+A   | Arrow tool     |
+| Ctrl+R   | Rectangle tool |
+| Ctrl+E   | Eraser tool    |
 
 ---
 

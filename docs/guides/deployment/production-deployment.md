@@ -80,21 +80,21 @@ nself-chat is a white-label team communication platform built on Next.js 15 with
 
 ### Required Software
 
-| Software | Version | Purpose |
-|----------|---------|---------|
-| **Node.js** | 20.0+ | Frontend build |
-| **pnpm** | 9.15.4+ | Package management |
-| **Docker** | 24.0+ | Container runtime |
-| **nself CLI** | 0.4.2+ | Backend infrastructure |
-| **Git** | 2.40+ | Version control |
+| Software      | Version | Purpose                |
+| ------------- | ------- | ---------------------- |
+| **Node.js**   | 20.0+   | Frontend build         |
+| **pnpm**      | 9.15.4+ | Package management     |
+| **Docker**    | 24.0+   | Container runtime      |
+| **nself CLI** | 0.4.2+  | Backend infrastructure |
+| **Git**       | 2.40+   | Version control        |
 
 ### For Kubernetes Deployments
 
-| Tool | Version | Purpose |
-|------|---------|---------|
-| **kubectl** | 1.28+ | Kubernetes CLI |
-| **Helm** | 3.12+ | Package manager (optional) |
-| **cert-manager** | 1.13+ | SSL certificate management |
+| Tool             | Version | Purpose                    |
+| ---------------- | ------- | -------------------------- |
+| **kubectl**      | 1.28+   | Kubernetes CLI             |
+| **Helm**         | 3.12+   | Package manager (optional) |
+| **cert-manager** | 1.13+   | SSL certificate management |
 
 ### Required Accounts
 
@@ -196,12 +196,12 @@ Storage: Cloudflare R2 / AWS S3
 
 **Providers**: Hetzner, DigitalOcean, Linode, Vultr
 
-| Provider | Size | RAM | vCPU | Storage | Cost/month |
-|----------|------|-----|------|---------|------------|
-| **Hetzner** | CX31 | 8GB | 2 | 80GB SSD | €8.79 (~$10) ⭐ |
-| **DigitalOcean** | Basic | 8GB | 4 | 160GB SSD | $48 |
-| **Vultr** | HF | 8GB | 4 | 180GB SSD | $48 |
-| **Linode** | 8GB | 8GB | 4 | 160GB SSD | $48 |
+| Provider         | Size  | RAM | vCPU | Storage   | Cost/month      |
+| ---------------- | ----- | --- | ---- | --------- | --------------- |
+| **Hetzner**      | CX31  | 8GB | 2    | 80GB SSD  | €8.79 (~$10) ⭐ |
+| **DigitalOcean** | Basic | 8GB | 4    | 160GB SSD | $48             |
+| **Vultr**        | HF    | 8GB | 4    | 180GB SSD | $48             |
+| **Linode**       | 8GB   | 8GB | 4    | 160GB SSD | $48             |
 
 **✅ Pros**: Simple, cost-effective, easy to manage
 **❌ Cons**: Single point of failure, manual scaling
@@ -210,12 +210,12 @@ Storage: Cloudflare R2 / AWS S3
 
 **Managed Kubernetes Providers**:
 
-| Provider | Service | Min Cost/month | Auto-scaling |
-|----------|---------|----------------|--------------|
-| **DigitalOcean** | DOKS | $36 (3 nodes) | ✅ |
-| **Google Cloud** | GKE | $74 (3 nodes) | ✅ |
-| **AWS** | EKS | $73 (cluster) + nodes | ✅ |
-| **Linode** | LKE | $30 (3 nodes) | ✅ |
+| Provider         | Service | Min Cost/month        | Auto-scaling |
+| ---------------- | ------- | --------------------- | ------------ |
+| **DigitalOcean** | DOKS    | $36 (3 nodes)         | ✅           |
+| **Google Cloud** | GKE     | $74 (3 nodes)         | ✅           |
+| **AWS**          | EKS     | $73 (cluster) + nodes | ✅           |
+| **Linode**       | LKE     | $30 (3 nodes)         | ✅           |
 
 **✅ Pros**: Auto-scaling, high availability, zero-downtime deploys
 **❌ Cons**: Complex setup, higher costs
@@ -231,11 +231,11 @@ Storage: Cloudflare R2 / AWS S3
 
 ### Option 4: Fully Managed Platforms
 
-| Platform | Type | Cost/month | Best For |
-|----------|------|------------|----------|
-| **Railway** | Container | $5-50 | Quick deployments |
-| **Render** | Container | $7-100 | Simple setup |
-| **Fly.io** | Container | $0-50 | Global edge deployment |
+| Platform    | Type      | Cost/month | Best For               |
+| ----------- | --------- | ---------- | ---------------------- |
+| **Railway** | Container | $5-50      | Quick deployments      |
+| **Render**  | Container | $7-100     | Simple setup           |
+| **Fly.io**  | Container | $0-50      | Global edge deployment |
 
 **✅ Pros**: Zero infrastructure management
 **❌ Cons**: Higher costs at scale, vendor lock-in
@@ -1368,6 +1368,7 @@ NEXT_PUBLIC_RELEASE_VERSION=1.0.0
 ```
 
 **Sentry Features:**
+
 - ✅ Automatic error capture
 - ✅ Performance monitoring
 - ✅ Session replay
@@ -1409,6 +1410,7 @@ kubectl port-forward svc/grafana 3000:80 -n nself-chat
 ```
 
 **Pre-configured dashboards:**
+
 - Application Performance
 - Database Metrics
 - Redis Metrics
@@ -1420,11 +1422,11 @@ kubectl port-forward svc/grafana 3000:80 -n nself-chat
 
 **Endpoints:**
 
-| Endpoint | Purpose | Response |
-|----------|---------|----------|
-| `/api/health` | Basic health | `{"status":"ok"}` |
-| `/api/ready` | Readiness probe | `{"ready":true}` |
-| `/api/metrics` | Prometheus metrics | Metrics format |
+| Endpoint       | Purpose            | Response          |
+| -------------- | ------------------ | ----------------- |
+| `/api/health`  | Basic health       | `{"status":"ok"}` |
+| `/api/ready`   | Readiness probe    | `{"ready":true}`  |
+| `/api/metrics` | Prometheus metrics | Metrics format    |
 
 **Docker health check:**
 
@@ -1510,7 +1512,7 @@ groups:
         expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05
         for: 5m
         annotations:
-          summary: "High error rate detected"
+          summary: 'High error rate detected'
 
       - alert: HighResponseTime
         expr: histogram_quantile(0.95, http_request_duration_seconds_bucket) > 2
@@ -1522,6 +1524,7 @@ groups:
 ```
 
 **Alert destinations:**
+
 - Email
 - Slack
 - PagerDuty
@@ -1640,14 +1643,14 @@ aws s3 sync s3://nchat-storage s3://nchat-storage-backup
 
 **Recovery Time Objectives (RTO):**
 
-| Tier | Service | RTO | RPO |
-|------|---------|-----|-----|
-| **Critical** | Database | 1 hour | 5 minutes |
-| **Critical** | Authentication | 1 hour | 5 minutes |
-| **Critical** | Core API | 1 hour | 5 minutes |
-| **Important** | File Storage | 4 hours | 1 hour |
-| **Important** | Search | 4 hours | 1 hour |
-| **Low** | Analytics | 24 hours | 24 hours |
+| Tier          | Service        | RTO      | RPO       |
+| ------------- | -------------- | -------- | --------- |
+| **Critical**  | Database       | 1 hour   | 5 minutes |
+| **Critical**  | Authentication | 1 hour   | 5 minutes |
+| **Critical**  | Core API       | 1 hour   | 5 minutes |
+| **Important** | File Storage   | 4 hours  | 1 hour    |
+| **Important** | Search         | 4 hours  | 1 hour    |
+| **Low**       | Analytics      | 24 hours | 24 hours  |
 
 **Recovery Steps:**
 
@@ -1729,11 +1732,11 @@ docker run -d --name nself-chat-2 nself-chat:latest
 # Kubernetes deployment
 resources:
   requests:
-    cpu: "1000m"
-    memory: "2Gi"
+    cpu: '1000m'
+    memory: '2Gi'
   limits:
-    cpu: "4000m"
-    memory: "8Gi"
+    cpu: '4000m'
+    memory: '8Gi'
 ```
 
 **Upgrade VPS:**
@@ -1804,7 +1807,7 @@ aws rds create-db-instance-read-replica \
 redis:
   cluster:
     enabled: true
-    nodes: 6  # 3 masters + 3 replicas
+    nodes: 6 # 3 masters + 3 replicas
   persistence:
     enabled: true
     size: 10Gi
@@ -1862,30 +1865,30 @@ aws cloudfront create-distribution \
 
 ```javascript
 // load-test.js
-import http from 'k6/http';
-import { check, sleep } from 'k6';
+import http from 'k6/http'
+import { check, sleep } from 'k6'
 
 export let options = {
   stages: [
-    { duration: '2m', target: 100 },   // Ramp up
-    { duration: '5m', target: 100 },   // Stay at 100 users
-    { duration: '2m', target: 500 },   // Spike to 500
-    { duration: '5m', target: 500 },   // Stay at 500
-    { duration: '2m', target: 0 },     // Ramp down
+    { duration: '2m', target: 100 }, // Ramp up
+    { duration: '5m', target: 100 }, // Stay at 100 users
+    { duration: '2m', target: 500 }, // Spike to 500
+    { duration: '5m', target: 500 }, // Stay at 500
+    { duration: '2m', target: 0 }, // Ramp down
   ],
   thresholds: {
     http_req_duration: ['p(95)<500'], // 95% under 500ms
-    http_req_failed: ['rate<0.01'],   // Error rate < 1%
+    http_req_failed: ['rate<0.01'], // Error rate < 1%
   },
-};
+}
 
 export default function () {
-  const res = http.get('https://chat.example.com');
+  const res = http.get('https://chat.example.com')
   check(res, {
     'status is 200': (r) => r.status === 200,
     'response time OK': (r) => r.timings.duration < 500,
-  });
-  sleep(1);
+  })
+  sleep(1)
 }
 ```
 
@@ -2422,36 +2425,42 @@ kubectl rollout status deployment/nself-chat -n nself-chat
 <!-- /var/www/maintenance.html -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Maintenance - nchat</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .container {
-            text-align: center;
-            padding: 2rem;
-        }
-        h1 { font-size: 3rem; margin: 0 0 1rem 0; }
-        p { font-size: 1.25rem; opacity: 0.9; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+      }
+      .container {
+        text-align: center;
+        padding: 2rem;
+      }
+      h1 {
+        font-size: 3rem;
+        margin: 0 0 1rem 0;
+      }
+      p {
+        font-size: 1.25rem;
+        opacity: 0.9;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>🔧 We'll be back soon!</h1>
-        <p>We're performing scheduled maintenance.</p>
-        <p>Please check back in a few minutes.</p>
+      <h1>🔧 We'll be back soon!</h1>
+      <p>We're performing scheduled maintenance.</p>
+      <p>Please check back in a few minutes.</p>
     </div>
-</body>
+  </body>
 </html>
 ```
 
@@ -2494,15 +2503,15 @@ systemctl reload nginx
 
 **For 4GB RAM, 2 vCPU, 80GB SSD:**
 
-| Provider | Instance | RAM | vCPU | Storage | Bandwidth | Price/mo |
-|----------|----------|-----|------|---------|-----------|----------|
-| **Hetzner** ⭐ | CX21 | 4GB | 2 | 40GB SSD | 20TB | €5.83 (~$6) |
-| **Oracle** 🆓 | Free Tier (ARM) | 24GB | 4 | 200GB | 10TB | **$0** |
-| **Vultr** | Regular | 4GB | 2 | 80GB SSD | 3TB | $12 |
-| **DigitalOcean** | Basic | 4GB | 2 | 80GB SSD | 4TB | $24 |
-| **Linode** | 4GB | 4GB | 2 | 80GB SSD | 4TB | $24 |
-| **AWS** | t3.medium | 4GB | 2 | 40GB SSD | 100GB+pay | ~$30 |
-| **GCP** | e2-medium | 4GB | 2 | 40GB SSD | 100GB+pay | ~$32 |
+| Provider         | Instance        | RAM  | vCPU | Storage  | Bandwidth | Price/mo    |
+| ---------------- | --------------- | ---- | ---- | -------- | --------- | ----------- |
+| **Hetzner** ⭐   | CX21            | 4GB  | 2    | 40GB SSD | 20TB      | €5.83 (~$6) |
+| **Oracle** 🆓    | Free Tier (ARM) | 24GB | 4    | 200GB    | 10TB      | **$0**      |
+| **Vultr**        | Regular         | 4GB  | 2    | 80GB SSD | 3TB       | $12         |
+| **DigitalOcean** | Basic           | 4GB  | 2    | 80GB SSD | 4TB       | $24         |
+| **Linode**       | 4GB             | 4GB  | 2    | 80GB SSD | 4TB       | $24         |
+| **AWS**          | t3.medium       | 4GB  | 2    | 40GB SSD | 100GB+pay | ~$30        |
+| **GCP**          | e2-medium       | 4GB  | 2    | 40GB SSD | 100GB+pay | ~$32        |
 
 **💡 Best value**: Oracle Free Tier (if available) or Hetzner
 
@@ -2705,16 +2714,19 @@ This guide provides comprehensive instructions for deploying nself-chat to produ
 ### Quick Recommendations
 
 **🏢 Small Team (<100 users)**:
+
 - Deploy to: Hetzner VPS or Oracle Free Tier
 - Cost: $0-10/month
 - Time to deploy: 1-2 hours
 
 **🏢 Growing Team (100-1,000 users)**:
+
 - Deploy to: DigitalOcean Kubernetes or Railway
 - Cost: $50-200/month
 - Time to deploy: 2-4 hours
 
 **🏢 Enterprise (1,000+ users)**:
+
 - Deploy to: Multi-region Kubernetes (AWS/GCP/Azure)
 - Cost: $500-5,000+/month
 - Time to deploy: 1-2 weeks

@@ -15,6 +15,7 @@ import type {
   TelegramImportOptions,
   TelegramSyncResult,
 } from '../types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Constants
@@ -230,16 +231,14 @@ export class TelegramApiClient {
   /**
    * Get updates (for polling mode)
    */
-  async getUpdates(options?: {
-    offset?: number
-    limit?: number
-    timeout?: number
-  }): Promise<Array<{
-    update_id: number
-    message?: TelegramMessage
-    edited_message?: TelegramMessage
-    channel_post?: TelegramMessage
-  }>> {
+  async getUpdates(options?: { offset?: number; limit?: number; timeout?: number }): Promise<
+    Array<{
+      update_id: number
+      message?: TelegramMessage
+      edited_message?: TelegramMessage
+      channel_post?: TelegramMessage
+    }>
+  > {
     return this.request('getUpdates', options)
   }
 
@@ -250,9 +249,7 @@ export class TelegramApiClient {
   /**
    * Get file information
    */
-  async getFile(
-    fileId: string
-  ): Promise<{
+  async getFile(fileId: string): Promise<{
     file_id: string
     file_unique_id: string
     file_size?: number
@@ -330,7 +327,7 @@ export class TelegramIntegrationProvider implements IntegrationProvider {
       try {
         await this.client.deleteWebhook()
       } catch (error) {
-        console.warn('Failed to delete Telegram webhook:', error)
+        logger.warn('Failed to delete Telegram webhook:', { context: error })
       }
     }
     this.client = null
@@ -542,9 +539,6 @@ export function createTelegramProvider(config: TelegramClientConfig): TelegramIn
 /**
  * Verify Telegram webhook request
  */
-export function verifyTelegramWebhook(
-  secretToken: string,
-  receivedToken: string
-): boolean {
+export function verifyTelegramWebhook(secretToken: string, receivedToken: string): boolean {
   return secretToken === receivedToken
 }

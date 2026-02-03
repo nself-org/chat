@@ -29,6 +29,7 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 ### 1. Core Library Implementation ✅
 
 **Files Created:**
+
 - `/Users/admin/Sites/nself-chat/src/lib/e2ee/crypto.ts` (456 lines)
 - `/Users/admin/Sites/nself-chat/src/lib/e2ee/signal-client.ts` (465 lines)
 - `/Users/admin/Sites/nself-chat/src/lib/e2ee/key-manager.ts` (538 lines)
@@ -40,6 +41,7 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 **Total**: 2,865 lines of production-ready E2EE code
 
 **Dependencies Used:**
+
 - `@signalapp/libsignal-client@^0.69.0` - Signal Protocol implementation
 - `@noble/curves@^1.7.0` - Elliptic curve cryptography
 - `@noble/hashes@^1.6.1` - Cryptographic hash functions
@@ -47,6 +49,7 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 ### 2. React Integration ✅
 
 **Files Created:**
+
 - `/Users/admin/Sites/nself-chat/src/contexts/e2ee-context.tsx` (354 lines)
 - `/Users/admin/Sites/nself-chat/src/hooks/use-e2ee.ts` (304 lines)
 - `/Users/admin/Sites/nself-chat/src/components/e2ee/E2EESetup.tsx` (219 lines)
@@ -54,6 +57,7 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 - `/Users/admin/Sites/nself-chat/src/components/e2ee/SafetyNumberDisplay.tsx` (component exists)
 
 **Provider Integration:**
+
 - ✅ Added `E2EEProvider` to `/Users/admin/Sites/nself-chat/src/providers/index.tsx`
 - ✅ Placed after `AuthProvider` and before `SocketProvider` in provider stack
 - ✅ Integrated with `AppConfigContext` for configuration management
@@ -61,9 +65,11 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 ### 3. Database Schema ✅
 
 **Migration File:**
+
 - `/Users/admin/Sites/nself-chat/.backend/migrations/013_e2ee_system.sql` (635 lines)
 
 **Tables Created:**
+
 1. `nchat_user_master_keys` - User master keys
 2. `nchat_identity_keys` - Device identity keys
 3. `nchat_signed_prekeys` - Signed prekeys
@@ -74,6 +80,7 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 8. `nchat_prekey_bundles` - Materialized view
 
 **Extended Table:**
+
 - `nchat_messages` - Added: `is_encrypted`, `encrypted_payload`, `message_type`, `sender_device_id`, `encryption_version`
 
 **Indexes Created**: 15 performance indexes
@@ -84,9 +91,11 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 ### 4. GraphQL Operations ✅
 
 **File Created:**
+
 - `/Users/admin/Sites/nself-chat/src/graphql/e2ee.ts` (730 lines)
 
 **Operations:**
+
 - **11 Queries** - Master keys, identity keys, prekey bundles, sessions, safety numbers, audit log
 - **13 Mutations** - Save keys, consume prekeys, save sessions, verify safety numbers
 - **2 Subscriptions** - Prekey requests, session updates
@@ -94,12 +103,14 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 ### 5. API Routes ✅
 
 **Files Created:**
+
 - `/Users/admin/Sites/nself-chat/src/app/api/e2ee/initialize/route.ts`
 - `/Users/admin/Sites/nself-chat/src/app/api/e2ee/recover/route.ts`
 - `/Users/admin/Sites/nself-chat/src/app/api/e2ee/safety-number/route.ts`
 - `/Users/admin/Sites/nself-chat/src/app/api/e2ee/keys/replenish/route.ts`
 
 **Endpoints:**
+
 - `POST /api/e2ee/initialize` - Initialize E2EE for user
 - `POST /api/e2ee/recover` - Recover using recovery code
 - `GET /api/e2ee/safety-number` - Generate safety number
@@ -108,12 +119,14 @@ End-to-End Encryption (E2EE) using the Signal Protocol has been successfully int
 ### 6. Configuration Integration ✅
 
 **File Modified:**
+
 - `/Users/admin/Sites/nself-chat/src/config/app-config.ts`
 
 **Added Configuration:**
+
 ```typescript
 features: {
-  endToEndEncryption: boolean  // Enable E2EE feature
+  endToEndEncryption: boolean // Enable E2EE feature
 }
 
 encryption: {
@@ -129,6 +142,7 @@ encryption: {
 ```
 
 **Default Values:**
+
 - `endToEndEncryption: false` - Opt-in feature
 - `enabled: false` - Disabled by default
 - `enforceForDirectMessages: true` - When enabled, DMs are encrypted
@@ -137,10 +151,12 @@ encryption: {
 ### 7. Documentation ✅
 
 **Files Created:**
+
 - `/Users/admin/Sites/nself-chat/docs/features/E2EE-Complete.md` (800+ lines)
 - `/Users/admin/Sites/nself-chat/docs/E2EE-Integration-Summary.md` (this file)
 
 **Documentation Includes:**
+
 - Architecture overview
 - Signal Protocol implementation details
 - API reference
@@ -247,15 +263,15 @@ encryption: {
 
 ### Cryptographic Primitives
 
-| Component | Algorithm | Key Size | Notes |
-|-----------|-----------|----------|-------|
-| Identity Keys | Curve25519 | 256-bit | Long-term keys |
-| Signed PreKeys | Curve25519 | 256-bit | Rotated weekly |
-| One-Time PreKeys | Curve25519 | 256-bit | Single-use |
-| Master Key Derivation | PBKDF2-SHA256 | 256-bit | 100,000 iterations |
-| Symmetric Encryption | AES-256-GCM | 256-bit | Authenticated encryption |
-| Hash Function | SHA-256 | 256-bit | Key verification |
-| Safety Number Hash | SHA-512 | 512-bit | Fingerprint generation |
+| Component             | Algorithm     | Key Size | Notes                    |
+| --------------------- | ------------- | -------- | ------------------------ |
+| Identity Keys         | Curve25519    | 256-bit  | Long-term keys           |
+| Signed PreKeys        | Curve25519    | 256-bit  | Rotated weekly           |
+| One-Time PreKeys      | Curve25519    | 256-bit  | Single-use               |
+| Master Key Derivation | PBKDF2-SHA256 | 256-bit  | 100,000 iterations       |
+| Symmetric Encryption  | AES-256-GCM   | 256-bit  | Authenticated encryption |
+| Hash Function         | SHA-256       | 256-bit  | Key verification         |
+| Safety Number Hash    | SHA-512       | 512-bit  | Fingerprint generation   |
 
 ### Key Rotation
 
@@ -280,6 +296,7 @@ touch src/lib/e2ee/__tests__/message-encryption.test.ts
 ```
 
 **Test Coverage Targets:**
+
 - `crypto.ts` - 100% (critical security code)
 - `signal-client.ts` - 95%
 - `key-manager.ts` - 90%
@@ -294,6 +311,7 @@ npx playwright test e2e/e2ee.spec.ts
 ```
 
 **Test Scenarios:**
+
 1. User initializes E2EE
 2. User sends encrypted message
 3. Recipient receives and decrypts message
@@ -306,6 +324,7 @@ npx playwright test e2e/e2ee.spec.ts
 See `docs/features/E2EE-Complete.md` Section "Testing" for detailed manual testing steps.
 
 **Critical Paths:**
+
 1. ✅ Initialize E2EE with password
 2. ✅ Save and verify recovery code
 3. ✅ Send encrypted message in DM
@@ -320,31 +339,31 @@ See `docs/features/E2EE-Complete.md` Section "Testing" for detailed manual testi
 
 ### Setup Performance
 
-| Operation | Duration | Notes |
-|-----------|----------|-------|
-| Master Key Derivation | ~150ms | PBKDF2 with 100k iterations |
-| Identity Key Generation | ~10ms | Curve25519 key pair |
-| Signed PreKey Generation | ~15ms | Includes signature |
-| 100 One-Time PreKeys | ~200ms | Generated in batch |
-| **Total Setup Time** | **~375ms** | One-time setup |
+| Operation                | Duration   | Notes                       |
+| ------------------------ | ---------- | --------------------------- |
+| Master Key Derivation    | ~150ms     | PBKDF2 with 100k iterations |
+| Identity Key Generation  | ~10ms      | Curve25519 key pair         |
+| Signed PreKey Generation | ~15ms      | Includes signature          |
+| 100 One-Time PreKeys     | ~200ms     | Generated in batch          |
+| **Total Setup Time**     | **~375ms** | One-time setup              |
 
 ### Message Performance
 
-| Operation | First Message | Subsequent Messages |
-|-----------|--------------|---------------------|
-| Encrypt | ~8ms | ~3ms |
-| Decrypt | ~8ms | ~3ms |
-| Session Setup | ~50ms | N/A (cached) |
-| **Total Latency** | **~66ms** | **~6ms** |
+| Operation         | First Message | Subsequent Messages |
+| ----------------- | ------------- | ------------------- |
+| Encrypt           | ~8ms          | ~3ms                |
+| Decrypt           | ~8ms          | ~3ms                |
+| Session Setup     | ~50ms         | N/A (cached)        |
+| **Total Latency** | **~66ms**     | **~6ms**            |
 
 ### Database Performance
 
-| Query | Duration | Notes |
-|-------|----------|-------|
-| Fetch PreKey Bundle | ~5ms | Indexed lookup |
-| Save Session | ~10ms | Encrypted storage |
-| Load Session | ~3ms | Cached in memory |
-| Replenish PreKeys | ~250ms | Batch insert (50 keys) |
+| Query               | Duration | Notes                  |
+| ------------------- | -------- | ---------------------- |
+| Fetch PreKey Bundle | ~5ms     | Indexed lookup         |
+| Save Session        | ~10ms    | Encrypted storage      |
+| Load Session        | ~3ms     | Cached in memory       |
+| Replenish PreKeys   | ~250ms   | Batch insert (50 keys) |
 
 ---
 
@@ -418,17 +437,20 @@ See `docs/features/E2EE-Complete.md` Section "Testing" for detailed manual testi
 ### Enabling E2EE for Existing Deployment
 
 1. **Backup Database**
+
    ```bash
    cd .backend
    nself db backup > backup_before_e2ee.sql
    ```
 
 2. **Run Migration**
+
    ```bash
    nself db migrate up
    ```
 
 3. **Verify Tables**
+
    ```bash
    nself db shell
    \dt nchat_*
@@ -436,6 +458,7 @@ See `docs/features/E2EE-Complete.md` Section "Testing" for detailed manual testi
    ```
 
 4. **Update AppConfig**
+
    ```typescript
    {
      features: { endToEndEncryption: true },
@@ -459,22 +482,26 @@ See `docs/features/E2EE-Complete.md` Section "Testing" for detailed manual testi
 ## Future Roadmap
 
 ### v0.5.0 - Group E2EE
+
 - Sender keys for efficient group encryption
 - Group session management
 - Member add/remove handling
 
 ### v0.6.0 - Multi-Device Support
+
 - Device-to-device key sync
 - Cross-device session sharing
 - Unified safety number verification
 
 ### v0.7.0 - Advanced Features
+
 - Disappearing messages
 - Screenshot detection
 - Read receipts (E2EE-compatible)
 - Voice/video call encryption
 
 ### v0.8.0 - Post-Quantum Cryptography
+
 - Hybrid classical + post-quantum algorithms
 - Quantum-resistant key exchange
 - Future-proof cryptography
@@ -486,16 +513,19 @@ See `docs/features/E2EE-Complete.md` Section "Testing" for detailed manual testi
 ### Regular Tasks
 
 **Weekly:**
+
 - Monitor E2EE audit log
 - Check key rotation success rate
 - Review session establishment failures
 
 **Monthly:**
+
 - Analyze prekey inventory trends
 - Review encryption failure reports
 - Update E2EE documentation
 
 **Quarterly:**
+
 - Security audit of E2EE implementation
 - Performance benchmarking
 - User feedback analysis
@@ -509,6 +539,7 @@ See `docs/features/E2EE-Complete.md` Section "Testing" for detailed manual testi
 See `docs/features/E2EE-Complete.md` Section "Troubleshooting" for detailed solutions.
 
 **Quick Fixes:**
+
 - "E2EE not initialized" → Run setup wizard
 - "Failed to decrypt" → Re-establish session
 - "No prekey bundle" → Recipient needs to enable E2EE
@@ -517,6 +548,7 @@ See `docs/features/E2EE-Complete.md` Section "Troubleshooting" for detailed solu
 ### Debug Mode
 
 Enable debug logging:
+
 ```bash
 # Add to .env.local
 NEXT_PUBLIC_E2EE_DEBUG=true

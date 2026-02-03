@@ -122,9 +122,7 @@ export function CommandInfo({
           placeholder="Detailed explanation of how to use this command..."
           rows={3}
         />
-        <p className="text-xs text-muted-foreground">
-          Shown when user types /help [command]
-        </p>
+        <p className="text-xs text-muted-foreground">Shown when user types /help [command]</p>
       </div>
 
       {/* Usage */}
@@ -197,9 +195,7 @@ export function CommandInfo({
               ))}
             </SelectContent>
           </Select>
-          <p className="text-xs text-muted-foreground">
-            Icon shown next to command in list
-          </p>
+          <p className="text-xs text-muted-foreground">Icon shown next to command in list</p>
         </div>
       </div>
     </div>

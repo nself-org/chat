@@ -14,6 +14,8 @@ import {
 } from '@/lib/white-label/branding-schema'
 import type { GeneratedFavicon } from '@/lib/white-label/favicon-generator'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -102,7 +104,7 @@ export type WhiteLabelStore = WhiteLabelState & WhiteLabelActions
 const initialState: WhiteLabelState = {
   // Wizard State
   currentStep: 0,
-  steps: WIZARD_STEPS.map(step => ({ ...step })),
+  steps: WIZARD_STEPS.map((step) => ({ ...step })),
   isWizardOpen: false,
 
   // Branding Config
@@ -171,7 +173,7 @@ export const useWhiteLabelStore = create<WhiteLabelStore>()(
         goToStep: (stepId) =>
           set(
             (state) => {
-              const index = state.steps.findIndex(s => s.id === stepId)
+              const index = state.steps.findIndex((s) => s.id === stepId)
               if (index >= 0) {
                 state.currentStep = index
               }
@@ -183,7 +185,7 @@ export const useWhiteLabelStore = create<WhiteLabelStore>()(
         markStepComplete: (stepId) =>
           set(
             (state) => {
-              const step = state.steps.find(s => s.id === stepId)
+              const step = state.steps.find((s) => s.id === stepId)
               if (step) {
                 step.completed = true
               }
@@ -195,7 +197,7 @@ export const useWhiteLabelStore = create<WhiteLabelStore>()(
         markStepIncomplete: (stepId) =>
           set(
             (state) => {
-              const step = state.steps.find(s => s.id === stepId)
+              const step = state.steps.find((s) => s.id === stepId)
               if (step) {
                 step.completed = false
               }
@@ -226,7 +228,7 @@ export const useWhiteLabelStore = create<WhiteLabelStore>()(
           set(
             (state) => {
               state.currentStep = 0
-              state.steps = WIZARD_STEPS.map(step => ({ ...step }))
+              state.steps = WIZARD_STEPS.map((step) => ({ ...step }))
               state.config = { ...DEFAULT_BRANDING_CONFIG }
               state.isDirty = false
               state.generatedFavicons = []
@@ -474,7 +476,7 @@ export const useWhiteLabelStore = create<WhiteLabelStore>()(
               'whiteLabel/saveToLocalStorage'
             )
           } catch (error) {
-            console.error('Failed to save config to localStorage:', error)
+            logger.error('Failed to save config to localStorage:', error)
           }
         },
 
@@ -494,7 +496,7 @@ export const useWhiteLabelStore = create<WhiteLabelStore>()(
               return true
             }
           } catch (error) {
-            console.error('Failed to load config from localStorage:', error)
+            logger.error('Failed to load config from localStorage:', error)
           }
           return false
         },
@@ -559,13 +561,15 @@ export const useWhiteLabelStore = create<WhiteLabelStore>()(
 // ============================================================================
 
 export const selectCurrentStep = (state: WhiteLabelStore) => state.steps[state.currentStep]
-export const selectCompletedSteps = (state: WhiteLabelStore) => state.steps.filter(s => s.completed)
+export const selectCompletedSteps = (state: WhiteLabelStore) =>
+  state.steps.filter((s) => s.completed)
 export const selectProgress = (state: WhiteLabelStore) => {
-  const completed = state.steps.filter(s => s.completed).length
+  const completed = state.steps.filter((s) => s.completed).length
   return Math.round((completed / state.steps.length) * 100)
 }
 export const selectIsFirstStep = (state: WhiteLabelStore) => state.currentStep === 0
-export const selectIsLastStep = (state: WhiteLabelStore) => state.currentStep === state.steps.length - 1
+export const selectIsLastStep = (state: WhiteLabelStore) =>
+  state.currentStep === state.steps.length - 1
 export const selectCanProceed = (state: WhiteLabelStore) => {
   const current = state.steps[state.currentStep]
   return current.skippable || current.completed

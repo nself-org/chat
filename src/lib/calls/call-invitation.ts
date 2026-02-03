@@ -7,6 +7,8 @@
 
 import { EventEmitter } from 'events'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -147,9 +149,7 @@ export class CallInvitationManager extends EventEmitter {
    * Get all active invitations
    */
   getActiveInvitations(): CallInvitation[] {
-    return Array.from(this.invitations.values()).filter(
-      (inv) => inv.status === 'pending'
-    )
+    return Array.from(this.invitations.values()).filter((inv) => inv.status === 'pending')
   }
 
   /**
@@ -296,15 +296,18 @@ export class CallInvitationManager extends EventEmitter {
     // Play audio
     if (this.audio && !this.isRinging()) {
       this.audio.play().catch((err) => {
-        console.error('Failed to play ringtone:', err)
+        logger.error('Failed to play ringtone:', err)
       })
     }
 
     // Start vibration
     if (this.config.vibrate && typeof navigator !== 'undefined' && navigator.vibrate) {
-      this.vibrateInterval = setInterval(() => {
-        navigator.vibrate(this.config.vibratePattern)
-      }, this.config.vibratePattern.reduce((a, b) => a + b, 0))
+      this.vibrateInterval = setInterval(
+        () => {
+          navigator.vibrate(this.config.vibratePattern)
+        },
+        this.config.vibratePattern.reduce((a, b) => a + b, 0)
+      )
     }
 
     this.emit('ringing-started')
@@ -366,16 +369,13 @@ export class CallInvitationManager extends EventEmitter {
 
     // Show notification if permitted
     if (Notification.permission === 'granted') {
-      const notification = new Notification(
-        `Incoming ${invitation.type} call`,
-        {
-          body: `${invitation.callerName} is calling you`,
-          icon: invitation.callerAvatarUrl || '/icons/call-icon.png',
-          tag: `call-${invitation.id}`,
-          requireInteraction: true,
-          silent: !this.config.notificationSound,
-        }
-      )
+      const notification = new Notification(`Incoming ${invitation.type} call`, {
+        body: `${invitation.callerName} is calling you`,
+        icon: invitation.callerAvatarUrl || '/icons/call-icon.png',
+        tag: `call-${invitation.id}`,
+        requireInteraction: true,
+        silent: !this.config.notificationSound,
+      })
 
       // Handle notification clicks
       notification.onclick = () => {
@@ -454,8 +454,6 @@ export class CallInvitationManager extends EventEmitter {
 /**
  * Create a new call invitation manager
  */
-export function createInvitationManager(
-  config?: InvitationManagerConfig
-): CallInvitationManager {
+export function createInvitationManager(config?: InvitationManagerConfig): CallInvitationManager {
   return new CallInvitationManager(config)
 }

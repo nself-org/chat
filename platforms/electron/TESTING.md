@@ -429,6 +429,7 @@ When reporting issues, include:
 8. System logs
 
 **Log locations:**
+
 - **macOS**: `~/Library/Logs/nchat/main.log`
 - **Windows**: `%USERPROFILE%\AppData\Roaming\nchat\logs\main.log`
 - **Linux**: `~/.config/nchat/logs/main.log`

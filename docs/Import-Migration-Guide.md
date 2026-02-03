@@ -14,6 +14,7 @@ The Import & Migration Tools provide a comprehensive system for importing data f
 ## Features
 
 ### Core Features
+
 - ✅ Multi-platform support (Slack, Discord, CSV, JSON)
 - ✅ Complete import wizard with step-by-step guidance
 - ✅ Real-time progress tracking
@@ -28,6 +29,7 @@ The Import & Migration Tools provide a comprehensive system for importing data f
 - ✅ Cancel/retry support
 
 ### Import Options
+
 - Import users with profile data
 - Import channels (public/private)
 - Import messages with full history
@@ -193,6 +195,7 @@ slack-export.zip
 ### Slack Data Structure
 
 **channels.json:**
+
 ```json
 [
   {
@@ -212,6 +215,7 @@ slack-export.zip
 ```
 
 **users.json:**
+
 ```json
 [
   {
@@ -228,6 +232,7 @@ slack-export.zip
 ```
 
 **Messages:**
+
 ```json
 [
   {
@@ -321,6 +326,7 @@ Use DiscordChatExporter tool:
 The importer automatically detects field names. Common patterns:
 
 **Users CSV:**
+
 ```csv
 id,email,username,display_name,role
 1,john@example.com,john_doe,John Doe,member
@@ -328,6 +334,7 @@ id,email,username,display_name,role
 ```
 
 **Channels CSV:**
+
 ```csv
 id,name,description,is_private
 1,general,General discussion,false
@@ -335,6 +342,7 @@ id,name,description,is_private
 ```
 
 **Messages CSV:**
+
 ```csv
 id,channel_id,user_id,content,created_at
 1,1,1,"Hello world!",2024-01-01T12:00:00Z
@@ -344,6 +352,7 @@ id,channel_id,user_id,content,created_at
 ### JSON Format
 
 **Structured Format:**
+
 ```json
 {
   "users": [
@@ -374,6 +383,7 @@ id,channel_id,user_id,content,created_at
 ```
 
 **Array Format:**
+
 ```json
 [
   {
@@ -389,6 +399,7 @@ id,channel_id,user_id,content,created_at
 The importer automatically detects common field names:
 
 **User Fields:**
+
 - `id`, `user_id`, `userId`
 - `email`, `email_address`
 - `username`, `user_name`, `login`
@@ -397,6 +408,7 @@ The importer automatically detects common field names:
 - `role`, `type`, `level`
 
 **Channel Fields:**
+
 - `id`, `channel_id`, `channelId`
 - `name`, `channel_name`
 - `description`, `desc`, `topic`, `purpose`
@@ -404,6 +416,7 @@ The importer automatically detects common field names:
 - `created_by`, `creator`, `owner`
 
 **Message Fields:**
+
 - `id`, `message_id`, `messageId`
 - `channel_id`, `channelId`, `room_id`
 - `user_id`, `userId`, `author_id`, `sender_id`
@@ -448,28 +461,29 @@ const importer = new GenericImporter(options, mapping)
 ```typescript
 interface ImportOptions {
   // What to import
-  importUsers: boolean        // Import user accounts
-  importChannels: boolean     // Import channels
-  importMessages: boolean     // Import message history
-  importFiles: boolean        // Import file attachments
-  importReactions: boolean    // Import message reactions
-  importThreads: boolean      // Import threaded conversations
+  importUsers: boolean // Import user accounts
+  importChannels: boolean // Import channels
+  importMessages: boolean // Import message history
+  importFiles: boolean // Import file attachments
+  importReactions: boolean // Import message reactions
+  importThreads: boolean // Import threaded conversations
 
   // Filters
-  dateRangeStart?: Date       // Only import messages after this date
-  dateRangeEnd?: Date         // Only import messages before this date
-  channelFilter?: string[]    // Only import specific channels
-  userFilter?: string[]       // Only import specific users
+  dateRangeStart?: Date // Only import messages after this date
+  dateRangeEnd?: Date // Only import messages before this date
+  channelFilter?: string[] // Only import specific channels
+  userFilter?: string[] // Only import specific users
 
   // Behavior
-  preserveIds: boolean        // Try to preserve original IDs
-  overwriteExisting: boolean  // Overwrite existing data vs skip
+  preserveIds: boolean // Try to preserve original IDs
+  overwriteExisting: boolean // Overwrite existing data vs skip
 }
 ```
 
 ### Example Configurations
 
 **Full Import:**
+
 ```typescript
 {
   importUsers: true,
@@ -484,6 +498,7 @@ interface ImportOptions {
 ```
 
 **Users Only:**
+
 ```typescript
 {
   importUsers: true,
@@ -496,6 +511,7 @@ interface ImportOptions {
 ```
 
 **Recent Messages Only:**
+
 ```typescript
 {
   importUsers: true,
@@ -510,6 +526,7 @@ interface ImportOptions {
 ```
 
 **Specific Channels:**
+
 ```typescript
 {
   importUsers: true,
@@ -532,7 +549,7 @@ interface ImportProgress {
   currentStep: string
   totalSteps: number
   currentStepNumber: number
-  progress: number              // 0-100
+  progress: number // 0-100
   itemsProcessed: number
   itemsTotal: number
   errors: ImportError[]
@@ -660,6 +677,7 @@ interface ImportStats {
 ### REST API
 
 **Start Import:**
+
 ```typescript
 POST /api/import
 
@@ -683,6 +701,7 @@ Response:
 ```
 
 **Get Import Status:**
+
 ```typescript
 GET /api/import?id=import-123
 
@@ -696,6 +715,7 @@ Response:
 ```
 
 **Cancel Import:**
+
 ```typescript
 DELETE /api/import?id=import-123
 
@@ -735,26 +755,31 @@ Response:
 ### Common Issues
 
 **"Failed to parse export file"**
+
 - Verify file format (ZIP for Slack, JSON for Discord)
 - Check file is not corrupted
 - Ensure export is complete (not partial)
 
 **"No users found in export"**
+
 - Check export includes user data
 - Verify JSON structure is correct
 - For Discord, users are extracted from messages
 
 **"Messages skipped"**
+
 - Check date range filters
 - Verify channel filters
 - Ensure parent channels are imported first
 
 **"File import failed"**
+
 - Check file size limits
 - Verify file URLs are accessible
 - Ensure sufficient storage space
 
 **"High memory usage"**
+
 - Process in smaller batches
 - Reduce concurrent imports
 - Clear cache between imports
@@ -762,6 +787,7 @@ Response:
 ## Future Enhancements
 
 ### Planned Features
+
 - [ ] Background/async import with job queue
 - [ ] Import scheduling
 - [ ] Incremental sync (updates only)
@@ -774,6 +800,7 @@ Response:
 - [ ] Multi-file imports
 
 ### Platform Support
+
 - [ ] Microsoft Teams import
 - [ ] Mattermost import
 - [ ] Rocket.Chat import
@@ -789,6 +816,7 @@ Part of nChat platform. See main LICENSE file.
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/yourorg/nself-chat/issues
 - Documentation: /docs
 - Email: support@example.com

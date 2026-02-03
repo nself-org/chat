@@ -64,21 +64,21 @@ const sampleMarkdown = `# Rich Text Editor Demo
 Welcome to the **nself-chat** rich text editor! This editor supports:
 
 ## Text Formatting
-- **Bold text** with \`Cmd+B\`
-- *Italic text* with \`Cmd+I\`
-- <u>Underlined text</u> with \`Cmd+U\`
+- **Bold text** with `Cmd+B`
+- *Italic text* with `Cmd+I`
+- <u>Underlined text</u> with `Cmd+U`
 - ~~Strikethrough text~~
-- Inline \`code\` blocks
+- Inline `code` blocks
 
 ## Code Blocks
 
-\`\`\`typescript
+```typescript
 function greet(name: string): string {
-  return \`Hello, \${name}!\`;
+  return `Hello, \${name}!`;
 }
 
-console.log(greet("World"));
-\`\`\`
+// console.log(greet("World"));
+```
 
 ## Lists
 
@@ -112,7 +112,7 @@ Express yourself with emojis: :smile: :heart: :rocket:
 
 ---
 
-Try typing \`@\` to mention a user, \`#\` for channels, or \`:\` for emojis!
+Try typing `@` to mention a user, `#` for channels, or `:` for emojis!
 `
 
 // ============================================================================

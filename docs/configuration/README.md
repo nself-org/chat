@@ -7,9 +7,11 @@ Complete guide to configuring nself-chat for your needs.
 ## 📚 In This Section
 
 ### [📝 Configuration Guide](Configuration)
+
 Complete configuration reference covering all aspects of nself-chat.
 
 **Topics:**
+
 - AppConfig interface and structure
 - Setup wizard configuration
 - Development vs production modes
@@ -22,9 +24,11 @@ Complete configuration reference covering all aspects of nself-chat.
 ---
 
 ### [🔐 Authentication Setup](Authentication)
+
 Configure authentication providers and permissions.
 
 **Topics:**
+
 - Development mode (FauxAuth with test users)
 - Production mode (Nhost Auth)
 - 11 authentication providers:
@@ -42,10 +46,12 @@ Configure authentication providers and permissions.
 ---
 
 ### [🔧 Environment Variables](Environment-Variables)
+
 Complete reference of all environment variables.
 
 **Topics:**
-- Frontend variables (NEXT_PUBLIC_*)
+
+- Frontend variables (NEXT*PUBLIC*\*)
 - Backend variables (nself CLI)
 - Required vs optional variables
 - Development vs production values
@@ -76,6 +82,7 @@ That's it! The setup wizard will guide you through the rest.
 For production, configure:
 
 1. **Authentication** (`.env.local`):
+
 ```bash
 NEXT_PUBLIC_USE_DEV_AUTH=false
 NEXT_PUBLIC_GRAPHQL_URL=https://api.your-domain.com/v1/graphql
@@ -84,6 +91,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 ```
 
 2. **Backend** (`.backend/.env`):
+
 ```bash
 # Managed by nself CLI
 # See backend setup guide
@@ -96,6 +104,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 ## 📖 Configuration Topics
 
 ### Branding & White-Label
+
 - Custom app name and tagline
 - Logo and favicon upload
 - Color themes (25+ presets)
@@ -107,6 +116,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 ---
 
 ### Authentication & Security
+
 - Auth provider configuration
 - Access permissions (open, restricted, invite-only)
 - Email verification
@@ -114,6 +124,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 - Role-based access control (RBAC)
 
 **Guides:**
+
 - [Authentication Setup](Authentication)
 - [Security Overview](../security/SECURITY)
 - [RBAC Guide](../guides/enterprise/RBAC-Guide)
@@ -121,6 +132,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 ---
 
 ### Features & Functionality
+
 - Enable/disable features via toggles:
   - Channels (public, private)
   - Direct messages
@@ -140,6 +152,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 ---
 
 ### Integrations
+
 - Slack import/export
 - GitHub notifications
 - Jira integration
@@ -151,6 +164,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 ---
 
 ### Moderation
+
 - Auto-moderation settings
 - Profanity filter
 - Spam detection
@@ -158,6 +172,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 - User reporting
 
 **Guides:**
+
 - [Moderation System](../Moderation-System)
 - [Admin Advanced Features](../Admin-Advanced-Features)
 
@@ -168,6 +183,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 ### Development Environment
 
 **Characteristics:**
+
 - 8 test users with auto-login
 - FauxAuth service (no real backend)
 - Hot reload enabled
@@ -175,6 +191,7 @@ NEXT_PUBLIC_STORAGE_URL=https://storage.your-domain.com/v1/storage
 - Error stack traces
 
 **Setup:**
+
 ```bash
 # .env.local
 NEXT_PUBLIC_USE_DEV_AUTH=true
@@ -182,6 +199,7 @@ NEXT_PUBLIC_ENV=development
 ```
 
 **Test Users:**
+
 - owner@nself.org (owner)
 - admin@nself.org (admin)
 - moderator@nself.org (moderator)
@@ -195,12 +213,14 @@ All passwords: `password123`
 ### Staging Environment
 
 **Characteristics:**
+
 - Real authentication
 - Production-like setup
 - Monitoring enabled
 - Separate database
 
 **Setup:**
+
 ```bash
 # .env.local
 NEXT_PUBLIC_USE_DEV_AUTH=false
@@ -213,6 +233,7 @@ NEXT_PUBLIC_GRAPHQL_URL=https://api.staging.example.com/v1/graphql
 ### Production Environment
 
 **Characteristics:**
+
 - Real authentication
 - SSL/TLS required
 - Monitoring and alerting
@@ -220,6 +241,7 @@ NEXT_PUBLIC_GRAPHQL_URL=https://api.staging.example.com/v1/graphql
 - Performance optimization
 
 **Setup:**
+
 ```bash
 # .env.local
 NEXT_PUBLIC_USE_DEV_AUTH=false
@@ -266,12 +288,14 @@ nself-chat uses a dual-persistence strategy:
 2. **Database** - Persistent, multi-device sync
 
 **Flow:**
+
 1. Load from localStorage (instant)
 2. Fetch from database in background
 3. Merge and update localStorage
 4. Save changes to both
 
 **API:**
+
 - GET `/api/config` - Fetch config
 - POST `/api/config` - Update config
 
@@ -280,6 +304,7 @@ nself-chat uses a dual-persistence strategy:
 ## 🔐 Security Best Practices
 
 ### Environment Variables
+
 - ✅ Never commit `.env.local` to git
 - ✅ Use different values per environment
 - ✅ Rotate secrets regularly
@@ -287,6 +312,7 @@ nself-chat uses a dual-persistence strategy:
 - ❌ Don't expose secrets to client
 
 ### Authentication
+
 - ✅ Enable 2FA for admins
 - ✅ Require email verification
 - ✅ Use strong password requirements
@@ -294,6 +320,7 @@ nself-chat uses a dual-persistence strategy:
 - ✅ Monitor failed login attempts
 
 ### Access Control
+
 - ✅ Use invite-only mode for private teams
 - ✅ Configure domain restrictions
 - ✅ Implement RBAC
@@ -307,18 +334,22 @@ nself-chat uses a dual-persistence strategy:
 ## 🆘 Common Configuration Issues
 
 ### Setup Wizard Not Appearing
+
 **Cause:** Setup already completed
 **Solution:** Reset config in admin panel or database
 
 ### Test Users Not Working
+
 **Cause:** Production mode enabled
 **Solution:** Set `NEXT_PUBLIC_USE_DEV_AUTH=true`
 
 ### Theme Not Applying
+
 **Cause:** localStorage not syncing
 **Solution:** Clear browser cache and reload
 
 ### Auth Provider Not Working
+
 **Cause:** Missing credentials
 **Solution:** Check provider configuration in dashboard
 
@@ -338,6 +369,7 @@ nself-chat uses a dual-persistence strategy:
 ## 🎯 Next Steps
 
 After configuration:
+
 - **[Complete Setup Wizard](../guides/USER-GUIDE#setup-wizard)** - 9-step guided setup
 - **[Customize Theme](../features/White-Label-Guide)** - Brand your app
 - **[Deploy to Production](../deployment/DEPLOYMENT)** - Go live

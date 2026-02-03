@@ -148,9 +148,13 @@ describe('Error Detection', () => {
   it('detects auth errors', () => {
     expect(isAuthError(new AuthenticationError('Invalid token'))).toBe(true)
     expect(isAuthError(new AuthorizationError('Forbidden'))).toBe(true)
-    expect(isAuthError(new AppError('Test', ErrorCategory.SERVER, {
-      context: { statusCode: 401 }
-    }))).toBe(true)
+    expect(
+      isAuthError(
+        new AppError('Test', ErrorCategory.SERVER, {
+          context: { statusCode: 401 },
+        })
+      )
+    ).toBe(true)
     expect(isAuthError(new NetworkError('Connection failed'))).toBe(false)
   })
 
@@ -320,7 +324,7 @@ describe('RetryManager', () => {
 
   it('respects timeout', async () => {
     const fn = jest.fn().mockImplementation(() => {
-      return new Promise(resolve => setTimeout(resolve, 10000))
+      return new Promise((resolve) => setTimeout(resolve, 10000))
     })
 
     const manager = new RetryManager({
@@ -337,7 +341,8 @@ describe('RetryManager', () => {
 
   it('calls retry callback', async () => {
     const onRetry = jest.fn()
-    const fn = jest.fn()
+    const fn = jest
+      .fn()
       .mockRejectedValueOnce(new Error('Fail 1'))
       .mockRejectedValueOnce(new Error('Fail 2'))
       .mockResolvedValueOnce('success')
@@ -360,7 +365,8 @@ describe('RetryManager', () => {
   })
 
   it('respects shouldRetry callback', async () => {
-    const fn = jest.fn()
+    const fn = jest
+      .fn()
       .mockRejectedValueOnce(new ValidationError('Invalid'))
       .mockResolvedValueOnce('success')
 
@@ -413,9 +419,7 @@ describe('Retry Convenience Functions', () => {
 
   it('withAggressiveRetry uses correct config', async () => {
     const onRetry = jest.fn()
-    const fn = jest.fn()
-      .mockRejectedValueOnce(new Error('Fail'))
-      .mockResolvedValueOnce('success')
+    const fn = jest.fn().mockRejectedValueOnce(new Error('Fail')).mockResolvedValueOnce('success')
 
     // Mock RetryManager
     const originalRetryManager = RetryManager
@@ -568,8 +572,7 @@ describe('Integration Tests', () => {
   })
 
   it('handles validation error without retry', async () => {
-    const validateData = jest.fn()
-      .mockRejectedValueOnce(new ValidationError('Invalid email'))
+    const validateData = jest.fn().mockRejectedValueOnce(new ValidationError('Invalid email'))
 
     const manager = new RetryManager({
       shouldRetry: (error) => isRetryableError(error),

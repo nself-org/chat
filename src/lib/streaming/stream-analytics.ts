@@ -216,10 +216,7 @@ export class StreamAnalyticsCollector {
     const leaveEvents = this.events.filter((e) => e.type === 'viewer:leave')
     if (leaveEvents.length === 0) return 0
 
-    const totalWatchTime = leaveEvents.reduce(
-      (sum, event) => sum + (event.data.watchTime ?? 0),
-      0
-    )
+    const totalWatchTime = leaveEvents.reduce((sum, event) => sum + (event.data.watchTime ?? 0), 0)
 
     return Math.floor(totalWatchTime / leaveEvents.length)
   }
@@ -261,12 +258,8 @@ export class StreamAnalyticsCollector {
     const durationMinutes = duration / 60
 
     return {
-      chatRate: parseFloat(
-        (this.chatMessageTimestamps.length / durationMinutes).toFixed(2)
-      ),
-      reactionRate: parseFloat(
-        (this.reactionTimestamps.length / durationMinutes).toFixed(2)
-      ),
+      chatRate: parseFloat((this.chatMessageTimestamps.length / durationMinutes).toFixed(2)),
+      reactionRate: parseFloat((this.reactionTimestamps.length / durationMinutes).toFixed(2)),
     }
   }
 

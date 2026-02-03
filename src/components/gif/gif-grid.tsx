@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * GIF Grid Component
@@ -17,12 +17,12 @@
  * ```
  */
 
-import { useCallback, useRef, useEffect, memo } from 'react';
-import { Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { useInView } from '@/hooks/use-intersection-observer';
-import { GifPreview, GifPreviewWithActions, GifPreviewSkeleton } from './gif-preview';
-import type { Gif, GifGridProps } from '@/types/gif';
+import { useCallback, useRef, useEffect, memo } from 'react'
+import { Loader2 } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { useInView } from '@/hooks/use-intersection-observer'
+import { GifPreview, GifPreviewWithActions, GifPreviewSkeleton } from './gif-preview'
+import type { Gif, GifGridProps } from '@/types/gif'
 
 export const GifGrid = memo(function GifGrid({
   gifs,
@@ -37,78 +37,59 @@ export const GifGrid = memo(function GifGrid({
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0.1,
     rootMargin: '100px',
-  });
+  })
 
   // Trigger load more when sentinel is visible
   useEffect(() => {
     if (inView && hasMore && !loading && onLoadMore) {
-      onLoadMore();
+      onLoadMore()
     }
-  }, [inView, hasMore, loading, onLoadMore]);
+  }, [inView, hasMore, loading, onLoadMore])
 
   // Handle GIF selection
   const handleSelect = useCallback(
     (gif: Gif) => {
-      onSelect(gif);
+      onSelect(gif)
     },
     [onSelect]
-  );
+  )
 
   // Distribute GIFs into columns for masonry layout
-  const distributeIntoColumns = useCallback(
-    (items: Gif[], numColumns: number): Gif[][] => {
-      const cols: Gif[][] = Array.from({ length: numColumns }, () => []);
-      const heights: number[] = Array(numColumns).fill(0);
+  const distributeIntoColumns = useCallback((items: Gif[], numColumns: number): Gif[][] => {
+    const cols: Gif[][] = Array.from({ length: numColumns }, () => [])
+    const heights: number[] = Array(numColumns).fill(0)
 
-      items.forEach((gif) => {
-        // Find the shortest column
-        const shortestCol = heights.indexOf(Math.min(...heights));
-        cols[shortestCol].push(gif);
-        // Estimate height based on aspect ratio
-        heights[shortestCol] += 1 / (gif.aspectRatio || 1);
-      });
+    items.forEach((gif) => {
+      // Find the shortest column
+      const shortestCol = heights.indexOf(Math.min(...heights))
+      cols[shortestCol].push(gif)
+      // Estimate height based on aspect ratio
+      heights[shortestCol] += 1 / (gif.aspectRatio || 1)
+    })
 
-      return cols;
-    },
-    []
-  );
+    return cols
+  }, [])
 
-  const columnGifs = distributeIntoColumns(gifs, columns);
+  const columnGifs = distributeIntoColumns(gifs, columns)
 
   // Empty state
   if (!loading && gifs.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex flex-col items-center justify-center py-8 text-center',
-          className
-        )}
-      >
+      <div className={cn('flex flex-col items-center justify-center py-8 text-center', className)}>
         <p className="text-sm text-muted-foreground">No GIFs found</p>
-        <p className="text-xs text-muted-foreground/70 mt-1">
-          Try a different search term
-        </p>
+        <p className="text-muted-foreground/70 mt-1 text-xs">Try a different search term</p>
       </div>
-    );
+    )
   }
 
   return (
     <div className={cn('relative', className)}>
       {/* Masonry Grid */}
-      <div
-        className="grid gap-2"
-        style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
-      >
+      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
         {columnGifs.map((column, colIndex) => (
           <div key={colIndex} className="flex flex-col gap-2">
             {column.map((gif) => (
-              <GifPreview
-                key={gif.id}
-                gif={gif}
-                onClick={handleSelect}
-                showTitle
-                size="md"
-              />
+              <GifPreview key={gif.id} gif={gif} onClick={handleSelect} showTitle size="md" />
             ))}
           </div>
         ))}
@@ -116,17 +97,11 @@ export const GifGrid = memo(function GifGrid({
 
       {/* Loading state - skeletons */}
       {loading && gifs.length === 0 && (
-        <div
-          className="grid gap-2"
-          style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
-        >
+        <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
           {Array.from({ length: columns }).map((_, colIndex) => (
             <div key={colIndex} className="flex flex-col gap-2">
               {Array.from({ length: 4 }).map((_, i) => (
-                <GifPreviewSkeleton
-                  key={i}
-                  aspectRatio={0.8 + Math.random() * 0.4}
-                />
+                <GifPreviewSkeleton key={i} aspectRatio={0.8 + Math.random() * 0.4} />
               ))}
             </div>
           ))}
@@ -153,22 +128,20 @@ export const GifGrid = memo(function GifGrid({
       {/* End of results indicator */}
       {!hasMore && gifs.length > 0 && !loading && (
         <div className="flex items-center justify-center py-4">
-          <span className="text-xs text-muted-foreground">
-            No more GIFs to load
-          </span>
+          <span className="text-xs text-muted-foreground">No more GIFs to load</span>
         </div>
       )}
     </div>
-  );
-});
+  )
+})
 
 // ============================================================================
 // GIF Grid with Favorites Support
 // ============================================================================
 
 export interface GifGridWithFavoritesProps extends GifGridProps {
-  favoriteGifIds?: Set<string>;
-  onFavoriteToggle?: (gif: Gif) => void;
+  favoriteGifIds?: Set<string>
+  onFavoriteToggle?: (gif: Gif) => void
 }
 
 export const GifGridWithFavorites = memo(function GifGridWithFavorites({
@@ -185,61 +158,48 @@ export const GifGridWithFavorites = memo(function GifGridWithFavorites({
   const { ref: loadMoreRef, inView } = useInView({
     threshold: 0.1,
     rootMargin: '100px',
-  });
+  })
 
   useEffect(() => {
     if (inView && hasMore && !loading && onLoadMore) {
-      onLoadMore();
+      onLoadMore()
     }
-  }, [inView, hasMore, loading, onLoadMore]);
+  }, [inView, hasMore, loading, onLoadMore])
 
   const handleSelect = useCallback(
     (gif: Gif) => {
-      onSelect(gif);
+      onSelect(gif)
     },
     [onSelect]
-  );
+  )
 
-  const distributeIntoColumns = useCallback(
-    (items: Gif[], numColumns: number): Gif[][] => {
-      const cols: Gif[][] = Array.from({ length: numColumns }, () => []);
-      const heights: number[] = Array(numColumns).fill(0);
+  const distributeIntoColumns = useCallback((items: Gif[], numColumns: number): Gif[][] => {
+    const cols: Gif[][] = Array.from({ length: numColumns }, () => [])
+    const heights: number[] = Array(numColumns).fill(0)
 
-      items.forEach((gif) => {
-        const shortestCol = heights.indexOf(Math.min(...heights));
-        cols[shortestCol].push(gif);
-        heights[shortestCol] += 1 / (gif.aspectRatio || 1);
-      });
+    items.forEach((gif) => {
+      const shortestCol = heights.indexOf(Math.min(...heights))
+      cols[shortestCol].push(gif)
+      heights[shortestCol] += 1 / (gif.aspectRatio || 1)
+    })
 
-      return cols;
-    },
-    []
-  );
+    return cols
+  }, [])
 
-  const columnGifs = distributeIntoColumns(gifs, columns);
+  const columnGifs = distributeIntoColumns(gifs, columns)
 
   if (!loading && gifs.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex flex-col items-center justify-center py-8 text-center',
-          className
-        )}
-      >
+      <div className={cn('flex flex-col items-center justify-center py-8 text-center', className)}>
         <p className="text-sm text-muted-foreground">No GIFs found</p>
-        <p className="text-xs text-muted-foreground/70 mt-1">
-          Try a different search term
-        </p>
+        <p className="text-muted-foreground/70 mt-1 text-xs">Try a different search term</p>
       </div>
-    );
+    )
   }
 
   return (
     <div className={cn('relative', className)}>
-      <div
-        className="grid gap-2"
-        style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
-      >
+      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
         {columnGifs.map((column, colIndex) => (
           <div key={colIndex} className="flex flex-col gap-2">
             {column.map((gif) => (
@@ -258,17 +218,11 @@ export const GifGridWithFavorites = memo(function GifGridWithFavorites({
       </div>
 
       {loading && gifs.length === 0 && (
-        <div
-          className="grid gap-2"
-          style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
-        >
+        <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
           {Array.from({ length: columns }).map((_, colIndex) => (
             <div key={colIndex} className="flex flex-col gap-2">
               {Array.from({ length: 4 }).map((_, i) => (
-                <GifPreviewSkeleton
-                  key={i}
-                  aspectRatio={0.8 + Math.random() * 0.4}
-                />
+                <GifPreviewSkeleton key={i} aspectRatio={0.8 + Math.random() * 0.4} />
               ))}
             </div>
           ))}
@@ -292,25 +246,23 @@ export const GifGridWithFavorites = memo(function GifGridWithFavorites({
 
       {!hasMore && gifs.length > 0 && !loading && (
         <div className="flex items-center justify-center py-4">
-          <span className="text-xs text-muted-foreground">
-            No more GIFs to load
-          </span>
+          <span className="text-xs text-muted-foreground">No more GIFs to load</span>
         </div>
       )}
     </div>
-  );
-});
+  )
+})
 
 // ============================================================================
 // Simple Flat Grid (non-masonry)
 // ============================================================================
 
 export interface GifFlatGridProps {
-  gifs: Gif[];
-  onSelect: (gif: Gif) => void;
-  loading?: boolean;
-  columns?: number;
-  className?: string;
+  gifs: Gif[]
+  onSelect: (gif: Gif) => void
+  loading?: boolean
+  columns?: number
+  className?: string
 }
 
 export function GifFlatGrid({
@@ -322,30 +274,22 @@ export function GifFlatGrid({
 }: GifFlatGridProps) {
   const handleSelect = useCallback(
     (gif: Gif) => {
-      onSelect(gif);
+      onSelect(gif)
     },
     [onSelect]
-  );
+  )
 
   if (!loading && gifs.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex flex-col items-center justify-center py-8 text-center',
-          className
-        )}
-      >
+      <div className={cn('flex flex-col items-center justify-center py-8 text-center', className)}>
         <p className="text-sm text-muted-foreground">No GIFs</p>
       </div>
-    );
+    )
   }
 
   return (
     <div
-      className={cn(
-        'grid gap-2',
-        className
-      )}
+      className={cn('grid gap-2', className)}
       style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}
     >
       {loading &&
@@ -354,16 +298,10 @@ export function GifFlatGrid({
           <GifPreviewSkeleton key={i} aspectRatio={1} />
         ))}
       {gifs.map((gif) => (
-        <GifPreview
-          key={gif.id}
-          gif={gif}
-          onClick={handleSelect}
-          showTitle
-          size="sm"
-        />
+        <GifPreview key={gif.id} gif={gif} onClick={handleSelect} showTitle size="sm" />
       ))}
     </div>
-  );
+  )
 }
 
-export default GifGrid;
+export default GifGrid

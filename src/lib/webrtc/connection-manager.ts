@@ -5,7 +5,11 @@
  * and handles reconnection logic.
  */
 
-import { PeerConnectionManager, type PeerConnectionCallbacks, type PeerConnectionConfig } from './peer-connection'
+import {
+  PeerConnectionManager,
+  type PeerConnectionCallbacks,
+  type PeerConnectionConfig,
+} from './peer-connection'
 import { getIceServers } from './servers'
 import { IceCandidateManager, type IceManagerCallbacks } from './ice'
 import type { CallConnectionState } from '@/types/calls'

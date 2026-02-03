@@ -15,6 +15,7 @@ This document details the complete, production-ready internationalization (i18n)
 ### ✅ Core Infrastructure (100% Complete)
 
 #### 1. Translation System (`src/lib/i18n/`)
+
 - **translator.ts** - Core translation engine with interpolation, pluralization, and fallbacks
 - **i18n-config.ts** - Central configuration with environment-aware settings
 - **locales.ts** - Locale registry with metadata for 9 supported languages
@@ -26,32 +27,34 @@ This document details the complete, production-ready internationalization (i18n)
 - **index.ts** - Unified export module
 
 #### 2. React Integration (`src/hooks/`)
+
 - **use-translation.ts** - React hook for translations with namespaces and interpolation
 - **use-locale.ts** - React hook for locale management and formatting utilities
 
 #### 3. State Management (`src/stores/`)
+
 - **locale-store.ts** - Zustand store with persistence and lazy loading
 
 #### 4. Translation Files (`src/locales/`)
 
 **Complete Languages (100% translated, all namespaces):**
 
-| Language | Code | Namespaces | RTL | Status |
-|----------|------|------------|-----|--------|
-| English | `en` | common, chat, settings, admin, auth, errors | No | ✅ Complete |
-| German | `de` | common, chat, settings, admin, auth, errors | No | ✅ Complete |
-| Japanese | `ja` | common, chat, settings, admin, auth, errors | No | ✅ Complete |
-| Spanish | `es` | common, chat, settings | No | ⚠️ Partial (60%) |
-| French | `fr` | common, chat, settings | No | ⚠️ Partial (60%) |
+| Language | Code | Namespaces                                  | RTL | Status           |
+| -------- | ---- | ------------------------------------------- | --- | ---------------- |
+| English  | `en` | common, chat, settings, admin, auth, errors | No  | ✅ Complete      |
+| German   | `de` | common, chat, settings, admin, auth, errors | No  | ✅ Complete      |
+| Japanese | `ja` | common, chat, settings, admin, auth, errors | No  | ✅ Complete      |
+| Spanish  | `es` | common, chat, settings                      | No  | ⚠️ Partial (60%) |
+| French   | `fr` | common, chat, settings                      | No  | ⚠️ Partial (60%) |
 
 **Partially Complete Languages (need auth.json, errors.json, admin.json):**
 
-| Language | Code | Status | Notes |
-|----------|------|--------|-------|
-| Arabic | `ar` | 40% | RTL language, needs auth/errors/admin/settings |
-| Chinese (Simplified) | `zh` | 40% | Needs auth/errors/admin/settings |
-| Portuguese | `pt` | 40% | Needs auth/errors/admin/settings |
-| Russian | `ru` | 40% | Needs auth/errors/admin/settings |
+| Language             | Code | Status | Notes                                          |
+| -------------------- | ---- | ------ | ---------------------------------------------- |
+| Arabic               | `ar` | 40%    | RTL language, needs auth/errors/admin/settings |
+| Chinese (Simplified) | `zh` | 40%    | Needs auth/errors/admin/settings               |
+| Portuguese           | `pt` | 40%    | Needs auth/errors/admin/settings               |
+| Russian              | `ru` | 40%    | Needs auth/errors/admin/settings               |
 
 ---
 
@@ -60,15 +63,16 @@ This document details the complete, production-ready internationalization (i18n)
 ### 1. Translation Keys & Namespaces
 
 **Namespace System:**
+
 ```typescript
 // Supported namespaces
-const namespaces = ['common', 'chat', 'settings', 'admin', 'auth', 'errors'];
+const namespaces = ['common', 'chat', 'settings', 'admin', 'auth', 'errors']
 
 // Usage examples
-t('common:app.name')           // "nChat"
-t('chat:messages.send')        // "Send message"
-t('auth:signIn.title')         // "Welcome back"
-t('errors:network.offline')    // "You are offline"
+t('common:app.name') // "nChat"
+t('chat:messages.send') // "Send message"
+t('auth:signIn.title') // "Welcome back"
+t('errors:network.offline') // "You are offline"
 ```
 
 **Key Categories:**
@@ -99,6 +103,7 @@ t('validation.minLength', { min: 8 })
 ### 3. Pluralization (CLDR-Compliant)
 
 **English (2 forms):**
+
 ```json
 {
   "messages_one": "{{count}} message",
@@ -107,6 +112,7 @@ t('validation.minLength', { min: 8 })
 ```
 
 **Arabic (6 forms):**
+
 ```json
 {
   "messages_zero": "لا توجد رسائل",
@@ -121,9 +127,9 @@ t('validation.minLength', { min: 8 })
 ### 4. Date & Time Formatting
 
 ```typescript
-import { useLocale } from '@/hooks/use-locale';
+import { useLocale } from '@/hooks/use-locale'
 
-const { formatDate, formatTime, formatRelativeTime } = useLocale();
+const { formatDate, formatTime, formatRelativeTime } = useLocale()
 
 // Localized date formats
 formatDate(new Date(), { format: 'long' })
@@ -145,7 +151,7 @@ formatMessageTime(date)
 ### 5. Number & Currency Formatting
 
 ```typescript
-const { formatNumber, formatCurrency, formatBytes } = useLocale();
+const { formatNumber, formatCurrency, formatBytes } = useLocale()
 
 // Numbers with locale separators
 formatNumber(1234567.89)
@@ -169,12 +175,13 @@ formatBytes(1024 * 1024 * 5.5)
 ### 6. RTL (Right-to-Left) Support
 
 **Auto-detection and application:**
+
 ```typescript
-import { isRTL, applyDocumentDirection } from '@/lib/i18n/rtl';
+import { isRTL, applyDocumentDirection } from '@/lib/i18n/rtl'
 
 // Check if locale is RTL
-isRTL('ar')  // true
-isRTL('en')  // false
+isRTL('ar') // true
+isRTL('en') // false
 
 // Auto-apply direction to document
 applyDocumentDirection('ar')
@@ -183,6 +190,7 @@ applyDocumentDirection('ar')
 ```
 
 **RTL-aware styling:**
+
 ```typescript
 import { rtlClass, rtlStyles } from '@/lib/i18n/rtl';
 
@@ -199,6 +207,7 @@ const styles = rtlStyles({
 ### 7. Language Detection
 
 **Detection sources (in priority order):**
+
 1. Cookie (`NCHAT_LOCALE`)
 2. LocalStorage (`nchat-locale`)
 3. URL query parameter (`?lang=es`)
@@ -207,14 +216,15 @@ const styles = rtlStyles({
 6. Default locale (`en`)
 
 **Server-side detection:**
+
 ```typescript
-import { detectFromHeaders } from '@/lib/i18n/language-detector';
+import { detectFromHeaders } from '@/lib/i18n/language-detector'
 
 // In API route or middleware
 const result = detectFromHeaders({
   'accept-language': 'es-ES,es;q=0.9,en;q=0.8',
-  'cookie': 'NCHAT_LOCALE=es'
-});
+  cookie: 'NCHAT_LOCALE=es',
+})
 // Returns: { locale: 'es', source: 'cookie', confidence: 1.0 }
 ```
 
@@ -238,6 +248,7 @@ await loadAllNamespaces()
 ### 9. React Hooks
 
 **Translation Hook:**
+
 ```typescript
 import { useTranslation } from '@/hooks/use-translation';
 
@@ -255,6 +266,7 @@ function MyComponent() {
 ```
 
 **Locale Hook:**
+
 ```typescript
 import { useLocale } from '@/hooks/use-locale';
 
@@ -391,10 +403,10 @@ export const i18nConfig = {
   preloadNamespaces: false,
 
   // Separators
-  keySeparator: '.',              // common.app.name
-  namespaceSeparator: ':',        // chat:messages.send
-  pluralSeparator: '_',           // messages_one
-  contextSeparator: '_',          // greeting_male
+  keySeparator: '.', // common.app.name
+  namespaceSeparator: ':', // chat:messages.send
+  pluralSeparator: '_', // messages_one
+  contextSeparator: '_', // greeting_male
 
   // Interpolation
   interpolationStart: '{{',
@@ -408,14 +420,14 @@ export const i18nConfig = {
   // Persistence
   storageKey: 'nchat-locale',
   cookieName: 'NCHAT_LOCALE',
-  cookieMaxAge: 365 * 24 * 60 * 60,  // 1 year
+  cookieMaxAge: 365 * 24 * 60 * 60, // 1 year
   persistLocale: true,
 
   // Detection
   detectBrowserLocale: true,
   detectUrlLocale: false,
-  urlParamName: 'lang'
-};
+  urlParamName: 'lang',
+}
 ```
 
 ---
@@ -425,10 +437,10 @@ export const i18nConfig = {
 ### 1. Basic Translation
 
 ```tsx
-import { useTranslation } from '@/hooks/use-translation';
+import { useTranslation } from '@/hooks/use-translation'
 
 export function WelcomeMessage() {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('common')
 
   return (
     <div>
@@ -436,7 +448,7 @@ export function WelcomeMessage() {
       <p>{t('app.tagline')}</p>
       <button>{t('app.getStarted')}</button>
     </div>
-  );
+  )
 }
 ```
 
@@ -444,12 +456,12 @@ export function WelcomeMessage() {
 
 ```tsx
 export function UserGreeting({ name }: { name: string }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return (
     <h1>{t('common:greeting', { name })}</h1>
     // Output: "Hello, John!"
-  );
+  )
 }
 ```
 
@@ -457,13 +469,13 @@ export function UserGreeting({ name }: { name: string }) {
 
 ```tsx
 export function MessageCount({ count }: { count: number }) {
-  const { t } = useChatTranslation();
+  const { t } = useChatTranslation()
 
   return (
     <span>{t('messages.count', { count })}</span>
     // count = 1: "1 message"
     // count = 5: "5 messages"
-  );
+  )
 }
 ```
 
@@ -471,7 +483,7 @@ export function MessageCount({ count }: { count: number }) {
 
 ```tsx
 export function MessageTimestamp({ date }: { date: Date }) {
-  const { formatRelativeTime, formatMessageTime } = useLocale();
+  const { formatRelativeTime, formatMessageTime } = useLocale()
 
   return (
     <div>
@@ -481,51 +493,44 @@ export function MessageTimestamp({ date }: { date: Date }) {
       <span>{formatMessageTime(date)}</span>
       {/* "3:45 PM" (today) or "Jan 15" (this year) */}
     </div>
-  );
+  )
 }
 ```
 
 ### 5. Language Switcher
 
 ```tsx
-import { useLocale } from '@/hooks/use-locale';
-import { SUPPORTED_LOCALES } from '@/lib/i18n/locales';
+import { useLocale } from '@/hooks/use-locale'
+import { SUPPORTED_LOCALES } from '@/lib/i18n/locales'
 
 export function LanguageSwitcher() {
-  const { locale, setLocale, isLoading } = useLocale();
+  const { locale, setLocale, isLoading } = useLocale()
 
   return (
-    <select
-      value={locale}
-      onChange={(e) => setLocale(e.target.value)}
-      disabled={isLoading}
-    >
+    <select value={locale} onChange={(e) => setLocale(e.target.value)} disabled={isLoading}>
       {Object.values(SUPPORTED_LOCALES).map(({ code, name, flag }) => (
         <option key={code} value={code}>
           {flag} {name}
         </option>
       ))}
     </select>
-  );
+  )
 }
 ```
 
 ### 6. RTL Layout
 
 ```tsx
-import { useIsRTL } from '@/hooks/use-locale';
+import { useIsRTL } from '@/hooks/use-locale'
 
 export function ChatLayout({ children }) {
-  const isRTL = useIsRTL();
+  const isRTL = useIsRTL()
 
   return (
-    <div
-      dir={isRTL ? 'rtl' : 'ltr'}
-      className={isRTL ? 'rtl-layout' : 'ltr-layout'}
-    >
+    <div dir={isRTL ? 'rtl' : 'ltr'} className={isRTL ? 'rtl-layout' : 'ltr-layout'}>
       {children}
     </div>
-  );
+  )
 }
 ```
 
@@ -533,7 +538,7 @@ export function ChatLayout({ children }) {
 
 ```tsx
 export function FeatureAnnouncement() {
-  const { t, exists } = useTranslation('common');
+  const { t, exists } = useTranslation('common')
 
   return (
     <div>
@@ -543,19 +548,19 @@ export function FeatureAnnouncement() {
         <p>New feature coming soon!</p>
       )}
     </div>
-  );
+  )
 }
 ```
 
 ### 8. Error Messages
 
 ```tsx
-import { useErrorsTranslation } from '@/hooks/use-translation';
+import { useErrorsTranslation } from '@/hooks/use-translation'
 
 export function ErrorBoundary({ error }) {
-  const { t } = useErrorsTranslation();
+  const { t } = useErrorsTranslation()
 
-  const errorKey = `errors.${error.code}` || 'errors.unknown';
+  const errorKey = `errors.${error.code}` || 'errors.unknown'
 
   return (
     <div className="error">
@@ -563,7 +568,7 @@ export function ErrorBoundary({ error }) {
       <p>{t(errorKey)}</p>
       <button>{t('errors.tryAgain')}</button>
     </div>
-  );
+  )
 }
 ```
 
@@ -586,6 +591,7 @@ pnpm test:watch src/lib/i18n
 ```
 
 **Test files:**
+
 - `i18n-config.test.ts`
 - `translator.test.ts`
 - `locales.test.ts`
@@ -658,17 +664,17 @@ pnpm test:watch src/lib/i18n
 
 ```typescript
 // Old: react-i18next
-import { useTranslation } from 'react-i18next';
-const { t, i18n } = useTranslation();
-t('key', { value: 'x' });
-i18n.changeLanguage('es');
+import { useTranslation } from 'react-i18next'
+const { t, i18n } = useTranslation()
+t('key', { value: 'x' })
+i18n.changeLanguage('es')
 
 // New: nself-chat i18n
-import { useTranslation, useLocale } from '@/hooks/use-translation';
-const { t } = useTranslation();
-const { setLocale } = useLocale();
-t('key', { value: 'x' });
-setLocale('es');
+import { useTranslation, useLocale } from '@/hooks/use-translation'
+const { t } = useTranslation()
+const { setLocale } = useLocale()
+t('key', { value: 'x' })
+setLocale('es')
 ```
 
 ---
@@ -710,6 +716,7 @@ setLocale('es');
 ### Common Issues
 
 **1. Translations not showing**
+
 ```typescript
 // Check if namespace is loaded
 const { isLoading } = useLocale();
@@ -720,32 +727,35 @@ await loadNamespace('admin');
 ```
 
 **2. Locale not persisting**
+
 ```typescript
 // Check localStorage
-console.log(localStorage.getItem('nchat-locale'));
+console.log(localStorage.getItem('nchat-locale'))
 
 // Check cookie
-console.log(document.cookie);
+console.log(document.cookie)
 
 // Clear and reset
-clearPersistedLocale();
-setLocale('en');
+clearPersistedLocale()
+setLocale('en')
 ```
 
 **3. RTL layout issues**
+
 ```typescript
 // Ensure direction is applied
-import { applyDocumentDirection } from '@/lib/i18n/rtl';
+import { applyDocumentDirection } from '@/lib/i18n/rtl'
 useEffect(() => {
-  applyDocumentDirection(locale);
-}, [locale]);
+  applyDocumentDirection(locale)
+}, [locale])
 ```
 
 **4. Missing translations**
+
 ```typescript
 // Enable debug mode
 // In i18n-config.ts
-debug: true  // Shows warnings for missing keys
+debug: true // Shows warnings for missing keys
 
 // Check fallback chain
 // 1. Current locale
@@ -758,17 +768,20 @@ debug: true  // Shows warnings for missing keys
 ## Resources
 
 ### Documentation
+
 - Full i18n Guide: `/docs/guides/internationalization.md`
 - Translation Guide: `/src/locales/README.md`
 - API Reference: `/docs/api/i18n.md`
 
 ### External Resources
+
 - [CLDR Plural Rules](https://cldr.unicode.org/index/cldr-spec/plural-rules)
 - [ISO 639-1 Language Codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
 - [Unicode BCP 47](https://unicode.org/reports/tr35/#BCP_47_Conformance)
 - [Intl API](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl)
 
 ### Tools
+
 - [date-fns](https://date-fns.org/) - Date formatting
 - [Intl.NumberFormat](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/NumberFormat) - Number formatting
 

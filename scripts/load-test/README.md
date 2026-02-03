@@ -24,6 +24,7 @@ choco install k6
 ## Test Scenarios
 
 ### 1. Smoke Test
+
 Quick validation with minimal load (10 users, 1 minute)
 
 ```bash
@@ -31,6 +32,7 @@ k6 run --env SCENARIO=smoke api-load-test.js
 ```
 
 ### 2. Load Test
+
 Normal expected load (ramps to 500 users over 16 minutes)
 
 ```bash
@@ -38,6 +40,7 @@ k6 run --env SCENARIO=load api-load-test.js
 ```
 
 ### 3. Stress Test
+
 Beyond normal load to test limits (up to 2,000 users)
 
 ```bash
@@ -45,6 +48,7 @@ k6 run --env SCENARIO=stress api-load-test.js
 ```
 
 ### 4. Spike Test
+
 Sudden traffic spike simulation
 
 ```bash
@@ -52,6 +56,7 @@ k6 run --env SCENARIO=spike api-load-test.js
 ```
 
 ### 5. Soak Test
+
 Sustained load over extended period (1 hour)
 
 ```bash
@@ -59,6 +64,7 @@ k6 run --env SCENARIO=soak api-load-test.js
 ```
 
 ### 6. Scalability Test
+
 Target capacity test (10,000 users, 85 minutes)
 
 ```bash
@@ -66,6 +72,7 @@ k6 run --env SCENARIO=scalability api-load-test.js
 ```
 
 ### 7. Breakpoint Test
+
 Find system limits (keeps increasing load until failure)
 
 ```bash
@@ -94,6 +101,7 @@ k6 run api-load-test.js
 ## Interpreting Results
 
 ### Good Results ✅
+
 ```
 ✓ http_req_duration..........: avg=45ms  p(95)=89ms  p(99)=156ms
 ✓ http_req_failed............: 0.12%
@@ -106,6 +114,7 @@ k6 run api-load-test.js
 - Cache hit > 70%
 
 ### Warning Signs ⚠️
+
 ```
 ⚠ http_req_duration..........: avg=180ms p(95)=340ms p(99)=678ms
 ⚠ http_req_failed............: 4.5%
@@ -137,11 +146,13 @@ k6 report results/metrics.json --out results/report.html
 ## Monitoring During Tests
 
 ### Watch k6 Output
+
 ```bash
 k6 run api-load-test.js
 ```
 
 ### Monitor Application
+
 ```bash
 # Application logs
 docker-compose logs -f app
@@ -157,6 +168,7 @@ psql -h localhost -p 6432 -U postgres pgbouncer -c "SHOW POOLS;"
 ```
 
 ### System Resources
+
 ```bash
 # CPU and Memory
 htop
@@ -171,33 +183,39 @@ iotop
 ## Troubleshooting
 
 ### Connection Refused
+
 ```
 WARN[0005] Request Failed  error="dial tcp: lookup localhost: no such host"
 ```
 
 **Solution**: Verify services are running
+
 ```bash
 docker-compose ps
 curl http://localhost:8080/healthz
 ```
 
 ### Out of Memory
+
 ```
 ERRO[0234] thresholds: failed  error="not enough memory"
 ```
 
 **Solution**: Reduce concurrent users or increase available memory
+
 ```bash
 export SCENARIO=load  # Use smaller scenario
 k6 run --vus 100 api-load-test.js  # Override VUs
 ```
 
 ### Rate Limiting
+
 ```
 ✗ http_req_failed............: 45.2%  (rate limit errors)
 ```
 
 **Solution**: Adjust rate limits in application or space out requests
+
 ```javascript
 // In test script
 sleep(randomIntBetween(1, 3))
@@ -215,13 +233,13 @@ sleep(randomIntBetween(1, 3))
 
 ## Performance Targets
 
-| Metric | Target (p95) | Target (p99) |
-|--------|--------------|--------------|
-| API Response | <100ms | <200ms |
-| WebSocket Latency | <50ms | <100ms |
-| Database Query | <50ms | <100ms |
-| Error Rate | <1% | <5% |
-| Cache Hit Rate | >70% | >60% |
+| Metric            | Target (p95) | Target (p99) |
+| ----------------- | ------------ | ------------ |
+| API Response      | <100ms       | <200ms       |
+| WebSocket Latency | <50ms        | <100ms       |
+| Database Query    | <50ms        | <100ms       |
+| Error Rate        | <1%          | <5%          |
+| Cache Hit Rate    | >70%         | >60%         |
 
 ## Continuous Integration
 
@@ -232,7 +250,7 @@ Add to CI/CD pipeline:
 name: Load Test
 on:
   schedule:
-    - cron: '0 2 * * *'  # Daily at 2 AM
+    - cron: '0 2 * * *' # Daily at 2 AM
 
 jobs:
   load-test:

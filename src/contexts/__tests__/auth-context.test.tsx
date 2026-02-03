@@ -86,9 +86,7 @@ jest.mock('@/services/auth/faux-auth.service', () => {
     FauxAuthService: jest.fn().mockImplementation(() => ({
       signIn: jest.fn().mockImplementation(async (email: string) => {
         const normalizedEmail = email.toLowerCase().trim()
-        const predefinedUser = availableUsers.find(
-          u => u.email.toLowerCase() === normalizedEmail
-        )
+        const predefinedUser = availableUsers.find((u) => u.email.toLowerCase() === normalizedEmail)
         const user = predefinedUser
           ? { ...predefinedUser, createdAt: new Date().toISOString() }
           : {
@@ -107,23 +105,25 @@ jest.mock('@/services/auth/faux-auth.service', () => {
           refreshToken: `dev-refresh-${Date.now()}`,
         }
       }),
-      signUp: jest.fn().mockImplementation(async (email: string, _password: string, username: string) => {
-        const user = {
-          id: `dev-user-${Date.now()}`,
-          email,
-          username,
-          displayName: username,
-          role: 'member',
-          avatarUrl: null,
-          createdAt: new Date().toISOString(),
-        }
-        mockCurrentUser = user
-        return {
-          user,
-          accessToken: `dev-token-${Date.now()}`,
-          refreshToken: `dev-refresh-${Date.now()}`,
-        }
-      }),
+      signUp: jest
+        .fn()
+        .mockImplementation(async (email: string, _password: string, username: string) => {
+          const user = {
+            id: `dev-user-${Date.now()}`,
+            email,
+            username,
+            displayName: username,
+            role: 'member',
+            avatarUrl: null,
+            createdAt: new Date().toISOString(),
+          }
+          mockCurrentUser = user
+          return {
+            user,
+            accessToken: `dev-token-${Date.now()}`,
+            refreshToken: `dev-refresh-${Date.now()}`,
+          }
+        }),
       signOut: jest.fn().mockImplementation(async () => {
         mockCurrentUser = null
       }),
@@ -134,7 +134,7 @@ jest.mock('@/services/auth/faux-auth.service', () => {
         return mockCurrentUser !== null
       }),
       switchUser: jest.fn().mockImplementation(async (userId: string) => {
-        const user = availableUsers.find(u => u.id === userId)
+        const user = availableUsers.find((u) => u.id === userId)
         if (!user) return null
         mockCurrentUser = { ...user, createdAt: new Date().toISOString() }
         return {
@@ -158,7 +158,17 @@ jest.mock('@/services/auth/faux-auth.service', () => {
 // Test component factory - creates a new component for each test
 function createTestComponent() {
   return function TestComponent() {
-    const { user, loading, signIn, signUp, signOut, updateProfile, isAuthenticated, isDevMode, switchUser } = useAuth()
+    const {
+      user,
+      loading,
+      signIn,
+      signUp,
+      signOut,
+      updateProfile,
+      isAuthenticated,
+      isDevMode,
+      switchUser,
+    } = useAuth()
     return (
       <div>
         <div data-testid="loading">{loading.toString()}</div>
@@ -562,9 +572,7 @@ describe('AuthContext', () => {
 })
 
 describe('useAuth hook', () => {
-  const wrapper = ({ children }: { children: ReactNode }) => (
-    <AuthProvider>{children}</AuthProvider>
-  )
+  const wrapper = ({ children }: { children: ReactNode }) => <AuthProvider>{children}</AuthProvider>
 
   beforeEach(() => {
     jest.clearAllMocks()

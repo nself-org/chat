@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * Schedule Meeting Page - Dedicated page for scheduling meetings
@@ -6,37 +6,37 @@
  * Alternative to the modal for users who prefer a full-page experience
  */
 
-import * as React from 'react';
-import { Suspense } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
+import * as React from 'react'
+import { Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { Switch } from '@/components/ui/switch'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { useAuth } from '@/contexts/auth-context';
-import { useMeetings } from '@/hooks/useMeetings';
-import { MeetingTimePicker, MeetingParticipants, MeetingReminders } from '@/components/meetings';
+} from '@/components/ui/select'
+import { useAuth } from '@/contexts/auth-context'
+import { useMeetings } from '@/hooks/useMeetings'
+import { MeetingTimePicker, MeetingParticipants, MeetingReminders } from '@/components/meetings'
 import {
   CreateMeetingInput,
   RoomType,
   RecurrencePattern,
   ReminderTiming,
-} from '@/lib/meetings/meeting-types';
+} from '@/lib/meetings/meeting-types'
 import {
   DEFAULT_MEETING_SETTINGS,
   validateMeetingInput,
   getNextAvailableSlot,
-} from '@/lib/meetings';
+} from '@/lib/meetings'
 import {
   ArrowLeft,
   Video,
@@ -47,72 +47,87 @@ import {
   Settings,
   Loader2,
   CheckCircle,
-} from 'lucide-react';
+} from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface FormState {
-  title: string;
-  description: string;
-  roomType: RoomType;
-  date: Date;
-  startTime: string;
-  duration: number;
-  timezone: string;
-  isPrivate: boolean;
-  password: string;
-  isRecurring: boolean;
-  recurrencePattern: RecurrencePattern;
-  recurrenceInterval: number;
-  participantIds: string[];
-  reminderTimings: ReminderTiming[];
-  muteOnJoin: boolean;
-  videoOffOnJoin: boolean;
-  allowScreenShare: boolean;
-  waitingRoom: boolean;
-  enableChat: boolean;
+  title: string
+  description: string
+  roomType: RoomType
+  date: Date
+  startTime: string
+  duration: number
+  timezone: string
+  isPrivate: boolean
+  password: string
+  isRecurring: boolean
+  recurrencePattern: RecurrencePattern
+  recurrenceInterval: number
+  participantIds: string[]
+  reminderTimings: ReminderTiming[]
+  muteOnJoin: boolean
+  videoOffOnJoin: boolean
+  allowScreenShare: boolean
+  waitingRoom: boolean
+  enableChat: boolean
 }
 
 // ============================================================================
 // Constants
 // ============================================================================
 
-const ROOM_TYPES: Array<{ value: RoomType; label: string; description: string; icon: typeof Video }> = [
-  { value: 'video', label: 'Video Call', description: 'Face-to-face with video and audio', icon: Video },
+const ROOM_TYPES: Array<{
+  value: RoomType
+  label: string
+  description: string
+  icon: typeof Video
+}> = [
+  {
+    value: 'video',
+    label: 'Video Call',
+    description: 'Face-to-face with video and audio',
+    icon: Video,
+  },
   { value: 'audio', label: 'Audio Call', description: 'Voice-only conference call', icon: Phone },
-  { value: 'screenshare', label: 'Screen Share', description: 'Present and share your screen', icon: Monitor },
-];
+  {
+    value: 'screenshare',
+    label: 'Screen Share',
+    description: 'Present and share your screen',
+    icon: Monitor,
+  },
+]
 
 const RECURRENCE_OPTIONS: Array<{ value: RecurrencePattern; label: string }> = [
   { value: 'daily', label: 'Daily' },
   { value: 'weekly', label: 'Weekly' },
   { value: 'biweekly', label: 'Every 2 weeks' },
   { value: 'monthly', label: 'Monthly' },
-];
+]
 
 // ============================================================================
 // Component
 // ============================================================================
 
 function ScheduleMeetingPageContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const { user } = useAuth()
 
-  const channelId = searchParams.get('channel') || undefined;
+  const channelId = searchParams.get('channel') || undefined
 
-  const [activeStep, setActiveStep] = React.useState(0);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [isSuccess, setIsSuccess] = React.useState(false);
-  const [errors, setErrors] = React.useState<Record<string, string>>({});
+  const [activeStep, setActiveStep] = React.useState(0)
+  const [isSubmitting, setIsSubmitting] = React.useState(false)
+  const [isSuccess, setIsSuccess] = React.useState(false)
+  const [errors, setErrors] = React.useState<Record<string, string>>({})
 
-  const { createMeeting } = useMeetings({ userId: user?.id });
+  const { createMeeting } = useMeetings({ userId: user?.id })
 
   // Form state
   const [form, setForm] = React.useState<FormState>(() => {
-    const nextSlot = getNextAvailableSlot();
+    const nextSlot = getNextAvailableSlot()
     return {
       title: '',
       description: '',
@@ -133,34 +148,34 @@ function ScheduleMeetingPageContent() {
       allowScreenShare: true,
       waitingRoom: false,
       enableChat: true,
-    };
-  });
+    }
+  })
 
   // Update form field
   const updateForm = <K extends keyof FormState>(key: K, value: FormState[K]) => {
-    setForm((prev) => ({ ...prev, [key]: value }));
+    setForm((prev) => ({ ...prev, [key]: value }))
     setErrors((prev) => {
-      const next = { ...prev };
-      delete next[key];
-      return next;
-    });
-  };
+      const next = { ...prev }
+      delete next[key]
+      return next
+    })
+  }
 
   // Steps
   const steps = [
     { id: 'basic', title: 'Basic Info', icon: Calendar },
     { id: 'participants', title: 'Participants', icon: Users },
     { id: 'settings', title: 'Settings', icon: Settings },
-  ];
+  ]
 
   // Handle submit
   const handleSubmit = async () => {
     // Build input
-    const [hours, minutes] = form.startTime.split(':').map(Number);
-    const startDate = new Date(form.date);
-    startDate.setHours(hours, minutes, 0, 0);
+    const [hours, minutes] = form.startTime.split(':').map(Number)
+    const startDate = new Date(form.date)
+    startDate.setHours(hours, minutes, 0, 0)
 
-    const endDate = new Date(startDate.getTime() + form.duration * 60 * 1000);
+    const endDate = new Date(startDate.getTime() + form.duration * 60 * 1000)
 
     const input: CreateMeetingInput = {
       title: form.title,
@@ -188,94 +203,88 @@ function ScheduleMeetingPageContent() {
         waitingRoom: form.waitingRoom,
         enableChat: form.enableChat,
       },
-    };
+    }
 
     // Validate
-    const validation = validateMeetingInput(input);
+    const validation = validateMeetingInput(input)
     if (!validation.isValid) {
-      setErrors(validation.errors);
-      return;
+      setErrors(validation.errors)
+      return
     }
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
 
     try {
-      const meeting = await createMeeting(input);
+      const meeting = await createMeeting(input)
       if (meeting) {
-        setIsSuccess(true);
+        setIsSuccess(true)
         // Redirect after a short delay
         setTimeout(() => {
-          router.push('/meetings');
-        }, 2000);
+          router.push('/meetings')
+        }, 2000)
       }
     } catch (err) {
-      setErrors({ submit: (err as Error).message });
+      setErrors({ submit: (err as Error).message })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   // Success state
   if (isSuccess) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <Card className="w-full max-w-md text-center">
-          <CardContent className="pt-10 pb-8">
-            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold mb-2">Meeting Scheduled!</h2>
-            <p className="text-muted-foreground mb-4">
+          <CardContent className="pb-8 pt-10">
+            <CheckCircle className="mx-auto mb-4 h-16 w-16 text-green-500" />
+            <h2 className="mb-2 text-2xl font-bold">Meeting Scheduled!</h2>
+            <p className="mb-4 text-muted-foreground">
               Your meeting has been created successfully.
             </p>
-            <p className="text-sm text-muted-foreground">
-              Redirecting to meetings...
-            </p>
+            <p className="text-sm text-muted-foreground">Redirecting to meetings...</p>
           </CardContent>
         </Card>
       </div>
-    );
+    )
   }
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-4">
+        <div className="mx-auto flex max-w-4xl items-center gap-4 px-4 py-4">
           <Button variant="ghost" size="sm" onClick={() => router.back()}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
+            <ArrowLeft className="mr-2 h-4 w-4" />
             Back
           </Button>
           <div>
             <h1 className="text-xl font-bold">Schedule Meeting</h1>
-            <p className="text-sm text-muted-foreground">
-              Create a new scheduled meeting
-            </p>
+            <p className="text-sm text-muted-foreground">Create a new scheduled meeting</p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
+      <div className="mx-auto max-w-4xl px-4 py-8">
+        <div className="grid gap-8 lg:grid-cols-4">
           {/* Steps Navigation */}
           <div className="lg:col-span-1">
             <nav className="space-y-1">
               {steps.map((step, index) => {
-                const Icon = step.icon;
+                const Icon = step.icon
                 return (
                   <button
                     key={step.id}
                     onClick={() => setActiveStep(index)}
                     className={cn(
-                      'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-left transition-colors',
-                      activeStep === index
-                        ? 'bg-primary/10 text-primary'
-                        : 'hover:bg-accent'
+                      'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left transition-colors',
+                      activeStep === index ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
                     )}
                   >
                     <div
                       className={cn(
-                        'flex items-center justify-center h-8 w-8 rounded-full border-2',
+                        'flex h-8 w-8 items-center justify-center rounded-full border-2',
                         activeStep === index
-                          ? 'border-primary bg-primary text-primary-foreground'
+                          ? 'text-primary-foreground border-primary bg-primary'
                           : 'border-muted-foreground/30'
                       )}
                     >
@@ -287,7 +296,7 @@ function ScheduleMeetingPageContent() {
                     </div>
                     <span className="font-medium">{step.title}</span>
                   </button>
-                );
+                )
               })}
             </nav>
           </div>
@@ -316,9 +325,7 @@ function ScheduleMeetingPageContent() {
                         onChange={(e) => updateForm('title', e.target.value)}
                         className={cn(errors.title && 'border-red-500')}
                       />
-                      {errors.title && (
-                        <p className="text-sm text-red-500">{errors.title}</p>
-                      )}
+                      {errors.title && <p className="text-sm text-red-500">{errors.title}</p>}
                     </div>
 
                     <div className="space-y-2">
@@ -334,24 +341,22 @@ function ScheduleMeetingPageContent() {
 
                     <div className="space-y-2">
                       <Label>Meeting Type</Label>
-                      <div className="grid sm:grid-cols-3 gap-3">
+                      <div className="grid gap-3 sm:grid-cols-3">
                         {ROOM_TYPES.map(({ value, label, description, icon: Icon }) => (
                           <button
                             key={value}
                             type="button"
                             className={cn(
-                              'flex flex-col items-center gap-2 p-4 rounded-lg border-2 transition-colors text-center',
+                              'flex flex-col items-center gap-2 rounded-lg border-2 p-4 text-center transition-colors',
                               form.roomType === value
-                                ? 'border-primary bg-primary/5'
-                                : 'border-muted hover:border-muted-foreground/50'
+                                ? 'bg-primary/5 border-primary'
+                                : 'hover:border-muted-foreground/50 border-muted'
                             )}
                             onClick={() => updateForm('roomType', value)}
                           >
                             <Icon className="h-6 w-6" />
                             <span className="font-medium">{label}</span>
-                            <span className="text-xs text-muted-foreground">
-                              {description}
-                            </span>
+                            <span className="text-xs text-muted-foreground">{description}</span>
                           </button>
                         ))}
                       </div>
@@ -383,7 +388,7 @@ function ScheduleMeetingPageContent() {
                     </div>
 
                     {form.isRecurring && (
-                      <div className="pl-4 border-l-2 border-muted">
+                      <div className="border-l-2 border-muted pl-4">
                         <Label>Repeat</Label>
                         <Select
                           value={form.recurrencePattern}
@@ -474,9 +479,7 @@ function ScheduleMeetingPageContent() {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <Label>Mute on Join</Label>
-                          <p className="text-sm text-muted-foreground">
-                            Participants join muted
-                          </p>
+                          <p className="text-sm text-muted-foreground">Participants join muted</p>
                         </div>
                         <Switch
                           checked={form.muteOnJoin}
@@ -517,9 +520,7 @@ function ScheduleMeetingPageContent() {
                       <div className="flex items-center justify-between">
                         <div className="space-y-0.5">
                           <Label>Enable Chat</Label>
-                          <p className="text-sm text-muted-foreground">
-                            Allow in-meeting chat
-                          </p>
+                          <p className="text-sm text-muted-foreground">Allow in-meeting chat</p>
                         </div>
                         <Switch
                           checked={form.enableChat}
@@ -532,13 +533,13 @@ function ScheduleMeetingPageContent() {
 
                 {/* Error Message */}
                 {errors.submit && (
-                  <div className="p-3 text-sm text-red-500 bg-red-500/10 rounded-lg">
+                  <div className="rounded-lg bg-red-500/10 p-3 text-sm text-red-500">
                     {errors.submit}
                   </div>
                 )}
 
                 {/* Navigation Buttons */}
-                <div className="flex items-center justify-between pt-4 border-t">
+                <div className="flex items-center justify-between border-t pt-4">
                   <Button
                     variant="outline"
                     onClick={() => setActiveStep(Math.max(0, activeStep - 1))}
@@ -566,17 +567,19 @@ function ScheduleMeetingPageContent() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default function ScheduleMeetingPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      }
+    >
       <ScheduleMeetingPageContent />
     </Suspense>
-  );
+  )
 }

@@ -7,6 +7,8 @@
 
 import type { VideoQuality } from './video-processor'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -150,11 +152,7 @@ export class SimulcastManager {
   // Layer Management
   // ===========================================================================
 
-  async setLayerActive(
-    sender: RTCRtpSender,
-    rid: string,
-    active: boolean
-  ): Promise<void> {
+  async setLayerActive(sender: RTCRtpSender, rid: string, active: boolean): Promise<void> {
     const parameters = sender.getParameters()
 
     if (!parameters.encodings) {
@@ -168,10 +166,7 @@ export class SimulcastManager {
     }
   }
 
-  async setPreferredLayer(
-    sender: RTCRtpSender,
-    preferredRid: 'h' | 'm' | 'l'
-  ): Promise<void> {
+  async setPreferredLayer(sender: RTCRtpSender, preferredRid: 'h' | 'm' | 'l'): Promise<void> {
     const parameters = sender.getParameters()
 
     if (!parameters.encodings) {
@@ -237,9 +232,7 @@ export class SimulcastManager {
       return null
     }
 
-    const activeEncoding = parameters.encodings.find(
-      (e: RTCRtpEncodingParameters) => e.active
-    )
+    const activeEncoding = parameters.encodings.find((e: RTCRtpEncodingParameters) => e.active)
     return activeEncoding?.rid || null
   }
 }
@@ -273,10 +266,7 @@ export function getSimulcastConfig(quality: VideoQuality): SimulcastConfig {
   }
 }
 
-export function applySimulcastToSender(
-  sender: RTCRtpSender,
-  layers: SimulcastLayer[]
-): void {
+export function applySimulcastToSender(sender: RTCRtpSender, layers: SimulcastLayer[]): void {
   const parameters = sender.getParameters()
 
   if (!parameters.encodings) {
@@ -292,6 +282,6 @@ export function applySimulcastToSender(
   }))
 
   sender.setParameters(parameters).catch((err) => {
-    console.error('Failed to apply simulcast parameters:', err)
+    logger.error('Failed to apply simulcast parameters:', err)
   })
 }

@@ -137,10 +137,7 @@ export class ScreenRecorder {
       )
     }
 
-    return (
-      supportedTypes.find((t) => t.includes('mp4')) ??
-      supportedTypes[0]
-    )
+    return supportedTypes.find((t) => t.includes('mp4')) ?? supportedTypes[0]
   }
 
   /**
@@ -244,13 +241,7 @@ export class ScreenRecorder {
       this.canvasContext.clip()
 
       // Draw webcam
-      this.canvasContext.drawImage(
-        webcamVideo,
-        webcamX,
-        webcamY,
-        webcamWidth,
-        webcamHeight
-      )
+      this.canvasContext.drawImage(webcamVideo, webcamX, webcamY, webcamWidth, webcamHeight)
 
       this.canvasContext.restore()
 
@@ -327,10 +318,7 @@ export class ScreenRecorder {
   /**
    * Start recording
    */
-  async startRecording(
-    screenStream: MediaStream,
-    options: RecordingOptions = {}
-  ): Promise<void> {
+  async startRecording(screenStream: MediaStream, options: RecordingOptions = {}): Promise<void> {
     if (this.recorder) {
       throw new Error('Recording already in progress')
     }

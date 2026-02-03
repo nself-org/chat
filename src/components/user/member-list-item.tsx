@@ -50,7 +50,8 @@ const memberListItemVariants = cva(
 // ============================================================================
 
 export interface MemberListItemProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLDivElement>, 'onClick'>,
     VariantProps<typeof memberListItemVariants> {
   user: UserProfile
   showRole?: boolean
@@ -134,24 +135,12 @@ const MemberListItem = React.forwardRef<HTMLDivElement, MemberListItemProps>(
         />
 
         {/* User info */}
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span
-              className={cn(
-                'font-medium truncate',
-                size === 'sm' ? 'text-sm' : 'text-sm'
-              )}
-            >
+            <span className={cn('truncate font-medium', size === 'sm' ? 'text-sm' : 'text-sm')}>
               {user.displayName}
             </span>
-            {showRole && (
-              <RoleBadge
-                role={user.role}
-                size="xs"
-                variant="ghost"
-                showIcon={false}
-              />
-            )}
+            {showRole && <RoleBadge role={user.role} size="xs" variant="ghost" showIcon={false} />}
           </div>
 
           {/* Status or username */}
@@ -163,9 +152,7 @@ const MemberListItem = React.forwardRef<HTMLDivElement, MemberListItemProps>(
               className="truncate"
             />
           ) : (
-            <span className="text-xs text-muted-foreground truncate block">
-              @{user.username}
-            </span>
+            <span className="block truncate text-xs text-muted-foreground">@{user.username}</span>
           )}
         </div>
 
@@ -176,7 +163,7 @@ const MemberListItem = React.forwardRef<HTMLDivElement, MemberListItemProps>(
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+                className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
                 onClick={(e) => e.stopPropagation()}
               >
                 <MoreHorizontal className="h-4 w-4" />
@@ -189,21 +176,14 @@ const MemberListItem = React.forwardRef<HTMLDivElement, MemberListItemProps>(
                 </DropdownMenuItem>
               )}
               {onMessage && (
-                <DropdownMenuItem onClick={() => onMessage(user)}>
-                  Send Message
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onMessage(user)}>Send Message</DropdownMenuItem>
               )}
               {(onChangeRole || onRemove) && <DropdownMenuSeparator />}
               {onChangeRole && (
-                <DropdownMenuItem onClick={() => onChangeRole(user)}>
-                  Change Role
-                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onChangeRole(user)}>Change Role</DropdownMenuItem>
               )}
               {onRemove && (
-                <DropdownMenuItem
-                  onClick={() => onRemove(user)}
-                  className="text-destructive"
-                >
+                <DropdownMenuItem onClick={() => onRemove(user)} className="text-destructive">
                   Remove from Channel
                 </DropdownMenuItem>
               )}
@@ -235,52 +215,43 @@ MemberListItem.displayName = 'MemberListItem'
 // MemberListSection - Group header for member list
 // ============================================================================
 
-export interface MemberListSectionProps
-  extends React.HTMLAttributes<HTMLDivElement> {
+export interface MemberListSectionProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string
   count?: number
   collapsed?: boolean
   onToggle?: () => void
 }
 
-const MemberListSection = React.forwardRef<
-  HTMLDivElement,
-  MemberListSectionProps
->(({ className, title, count, collapsed, onToggle, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'flex items-center gap-2 px-2 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider',
-      onToggle && 'cursor-pointer hover:text-foreground transition-colors',
-      className
-    )}
-    onClick={onToggle}
-    {...props}
-  >
-    {onToggle && (
-      <span
-        className={cn(
-          'transition-transform',
-          collapsed && '-rotate-90'
-        )}
-      >
-        <svg
-          width="10"
-          height="10"
-          viewBox="0 0 10 10"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M3 2L7 5L3 8" stroke="currentColor" strokeWidth="1.5" />
-        </svg>
-      </span>
-    )}
-    <span>{title}</span>
-    {count !== undefined && (
-      <span className="text-muted-foreground/60">({count})</span>
-    )}
-  </div>
-))
+const MemberListSection = React.forwardRef<HTMLDivElement, MemberListSectionProps>(
+  ({ className, title, count, collapsed, onToggle, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        'flex items-center gap-2 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground',
+        onToggle && 'cursor-pointer transition-colors hover:text-foreground',
+        className
+      )}
+      onClick={onToggle}
+      {...props}
+    >
+      {onToggle && (
+        <span className={cn('transition-transform', collapsed && '-rotate-90')}>
+          <svg
+            width="10"
+            height="10"
+            viewBox="0 0 10 10"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M3 2L7 5L3 8" stroke="currentColor" strokeWidth="1.5" />
+          </svg>
+        </span>
+      )}
+      <span>{title}</span>
+      {count !== undefined && <span className="text-muted-foreground/60">({count})</span>}
+    </div>
+  )
+)
 MemberListSection.displayName = 'MemberListSection'
 
 export { MemberListItem, MemberListSection, memberListItemVariants }

@@ -45,6 +45,7 @@ The nself-chat Bot Framework is a complete, production-ready system for building
 Central management system for all bots.
 
 **Features:**
+
 - Bot lifecycle (register, enable, disable, destroy)
 - Event routing to bots
 - Command dispatching
@@ -53,6 +54,7 @@ Central management system for all bots.
 - Statistics tracking
 
 **Key Methods:**
+
 ```typescript
 const manager = getBotManager()
 
@@ -81,6 +83,7 @@ const stats = manager.getBotStats(botId)
 Central registry for all available bots.
 
 **Features:**
+
 - Bot factory registration
 - Bot discovery and search
 - Category management
@@ -88,12 +91,13 @@ Central registry for all available bots.
 - Bulk instantiation
 
 **Key Methods:**
+
 ```typescript
 // Registration
 registerBotFactory(botId, factory, manifest, {
   category: 'Productivity',
   featured: true,
-  tags: ['reminders', 'time-management']
+  tags: ['reminders', 'time-management'],
 })
 
 // Discovery
@@ -106,7 +110,7 @@ const searchResults = searchBots('reminder')
 const bot = await instantiateBot(botId, config)
 const bots = await instantiateBots([
   { botId: 'reminder-bot', config: {} },
-  { botId: 'welcome-bot', config: {} }
+  { botId: 'welcome-bot', config: {} },
 ])
 ```
 
@@ -115,6 +119,7 @@ const bots = await instantiateBots([
 Fluent API for building bots.
 
 **Example:**
+
 ```typescript
 import { bot, command, response, embed } from '@/lib/bots'
 
@@ -132,21 +137,14 @@ export function createMyBot() {
         .example('/greet Alice'),
       async (ctx, api) => {
         return response()
-          .embed(
-            embed()
-              .title('👋 Hello!')
-              .description(`Hi ${ctx.args.name}!`)
-              .color('#10B981')
-          )
+          .embed(embed().title('👋 Hello!').description(`Hi ${ctx.args.name}!`).color('#10B981'))
           .build()
       }
     )
 
     .onMessage(async (ctx, api) => {
       if (ctx.message.content.includes('hello')) {
-        return response()
-          .text('Hello there! 👋')
-          .build()
+        return response().text('Hello there! 👋').build()
       }
     })
 
@@ -165,6 +163,7 @@ export function createMyBot() {
 Set reminders for yourself or your team.
 
 **Commands:**
+
 - `/remind <time> "<message>"` - Set a reminder
 - `/reminders` - List your reminders
 - `/cancelreminder <id>` - Cancel a reminder
@@ -172,6 +171,7 @@ Set reminders for yourself or your team.
 - `/remindchannel <time> "<message>"` - Set channel reminder
 
 **Features:**
+
 - Personal and channel reminders
 - Snooze functionality
 - Recurring reminders
@@ -183,11 +183,13 @@ Set reminders for yourself or your team.
 Automatically welcome new members.
 
 **Commands:**
+
 - `/setwelcome "<message>"` - Set welcome message
 - `/testwelcome` - Preview welcome message
 - `/disablewelcome` - Disable welcomes
 
 **Features:**
+
 - Customizable messages with variables
 - Template system
 - Per-channel configuration
@@ -199,12 +201,14 @@ Automatically welcome new members.
 Create interactive polls and surveys.
 
 **Commands:**
+
 - `/poll "<question>" "<options>"` - Create a poll
 - `/quickpoll "<question>"` - Yes/no poll
 - `/pollresults <id>` - Show results
 - `/endpoll <id>` - End poll early
 
 **Features:**
+
 - Multiple choice polls
 - Yes/no quick polls
 - Timed polls
@@ -216,6 +220,7 @@ Create interactive polls and surveys.
 Answer frequently asked questions automatically.
 
 **Commands:**
+
 - `/faq <question>` - Search FAQ
 - `/addfaq "<question>" "<answer>"` - Add FAQ
 - `/removefaq <id>` - Remove FAQ
@@ -223,6 +228,7 @@ Answer frequently asked questions automatically.
 - `/listfaqs [category]` - List all FAQs
 
 **Features:**
+
 - Knowledge base management
 - Keyword matching
 - Auto-answer detection
@@ -235,6 +241,7 @@ Answer frequently asked questions automatically.
 Schedule messages and recurring tasks.
 
 **Commands:**
+
 - `/schedule <when> "<message>"` - Schedule a message
 - `/scheduled` - List scheduled messages
 - `/cancelschedule <id>` - Cancel schedule
@@ -243,6 +250,7 @@ Schedule messages and recurring tasks.
 - `/cancelrecurring <id>` - Cancel recurring task
 
 **Features:**
+
 - Scheduled messages
 - Recurring tasks
 - Per-user and per-channel
@@ -324,6 +332,7 @@ GET /api/bots/:id/logs?limit=100&offset=0
 ### Admin Components (`/src/components/admin/bots/`)
 
 **1. BotManager.tsx** - Main bot listing with:
+
 - Search and filters
 - Sorting (name, status, activity)
 - Pagination
@@ -334,6 +343,7 @@ GET /api/bots/:id/logs?limit=100&offset=0
 **2. bot-management.tsx** - Re-export wrapper for BotManager
 
 **Usage:**
+
 ```tsx
 import { BotManagement } from '@/components/admin/bots/bot-management'
 
@@ -358,11 +368,13 @@ function AdminPage() {
 ### Creating a New Bot
 
 1. **Create bot directory:**
+
 ```bash
 mkdir -p src/bots/my-bot
 ```
 
 2. **Create manifest.json:**
+
 ```json
 {
   "id": "my-bot",
@@ -379,6 +391,7 @@ mkdir -p src/bots/my-bot
 ```
 
 3. **Create index.ts:**
+
 ```typescript
 import { bot, command } from '@/lib/bots'
 import manifest from './manifest.json'
@@ -408,6 +421,7 @@ export { manifest }
 ```
 
 4. **Register in bot-registry.ts:**
+
 ```typescript
 import { default: createMyBot, manifest: myBotManifest } from '@/bots/my-bot'
 
@@ -430,7 +444,7 @@ command('name')
   .durationArg('time', 'Description')
   .choiceArg('choice', 'Description', [
     { label: 'Option 1', value: 'opt1' },
-    { label: 'Option 2', value: 'opt2' }
+    { label: 'Option 2', value: 'opt2' },
   ])
   .example('/name arg1 arg2')
   .cooldown(30)
@@ -450,12 +464,7 @@ response()
       .footer('Footer text')
       .timestamp()
   )
-  .button(
-    button('button-id')
-      .label('Click Me')
-      .style('primary')
-      .emoji('👍')
-  )
+  .button(button('button-id').label('Click Me').style('primary').emoji('👍'))
   .build()
 ```
 
@@ -536,7 +545,7 @@ describe('MyBot', () => {
     const api = createBotApi('my-bot', config, createMockServices())
 
     const context = createMockCommandContext({
-      command: { name: 'greet', args: { name: 'Alice' } }
+      command: { name: 'greet', args: { name: 'Alice' } },
     })
 
     const response = await bot.onCommand(context, api)
@@ -581,6 +590,7 @@ ENABLE_CUSTOM_BOTS=true
 ### Bot Statistics
 
 Each bot tracks:
+
 - Messages handled
 - Commands executed
 - Events processed
@@ -589,6 +599,7 @@ Each bot tracks:
 - Last activity
 
 Access via:
+
 ```typescript
 const stats = manager.getBotStats(botId)
 const allStats = manager.getAllStats()
@@ -597,6 +608,7 @@ const allStats = manager.getAllStats()
 ### Error Handling
 
 Bots auto-disable after:
+
 - Error rate > 50%
 - More than 10 events processed
 
@@ -607,6 +619,7 @@ Re-enable manually or fix issues.
 ### Permissions
 
 All bots must declare permissions:
+
 - `read_messages` - Read channel messages
 - `send_messages` - Send messages
 - `manage_messages` - Edit/delete messages
@@ -623,6 +636,7 @@ All bots must declare permissions:
 ### Sandboxing
 
 Bots run in isolated contexts with:
+
 - Rate limiting
 - Timeout protection
 - Permission validation
@@ -631,6 +645,7 @@ Bots run in isolated contexts with:
 ## Roadmap
 
 ### v1.1.0 (Planned)
+
 - [ ] Bot templates UI
 - [ ] Visual bot builder
 - [ ] Bot analytics dashboard
@@ -638,6 +653,7 @@ Bots run in isolated contexts with:
 - [ ] Custom bot upload
 
 ### v1.2.0 (Planned)
+
 - [ ] AI-powered bots
 - [ ] Natural language processing
 - [ ] Bot-to-bot communication
@@ -647,6 +663,7 @@ Bots run in isolated contexts with:
 ## Support
 
 ### Documentation
+
 - Main docs: `/docs/Bot-Framework-Complete.md`
 - API docs: `/src/app/api-docs/bots/page.tsx`
 - Examples: `/src/bots/*/`
@@ -654,18 +671,21 @@ Bots run in isolated contexts with:
 ### Common Issues
 
 **Bot not responding:**
+
 1. Check if bot is enabled
 2. Check permissions
 3. Check logs for errors
 4. Verify command syntax
 
 **Commands not working:**
+
 1. Check command prefix (default: `/`)
 2. Verify bot is in channel
 3. Check rate limiting
 4. Review command cooldown
 
 **Storage issues:**
+
 1. Check storage permissions
 2. Verify data serialization
 3. Check storage limits

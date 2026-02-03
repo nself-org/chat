@@ -91,15 +91,10 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
 
   return (
     <AlertDialog open={open} onOpenChange={(open) => !open && onClose()}>
-      <AlertDialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <AlertDialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center gap-3">
-            <div
-              className={cn(
-                'p-2 rounded-lg',
-                getCategoryBadgeClass(entry.category)
-              )}
-            >
+            <div className={cn('rounded-lg p-2', getCategoryBadgeClass(entry.category))}>
               {categoryIcons[entry.category]}
             </div>
             <div>
@@ -107,12 +102,12 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
                 {getActionDisplayName(entry.action)}
                 {entry.success ? (
                   <Badge variant="outline" className="bg-green-100 text-green-800">
-                    <Check className="h-3 w-3 mr-1" />
+                    <Check className="mr-1 h-3 w-3" />
                     Success
                   </Badge>
                 ) : (
                   <Badge variant="outline" className="bg-red-100 text-red-800">
-                    <X className="h-3 w-3 mr-1" />
+                    <X className="mr-1 h-3 w-3" />
                     Failed
                   </Badge>
                 )}
@@ -127,10 +122,10 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
         <div className="space-y-6 py-4">
           {/* Description */}
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground mb-2">Description</h4>
+            <h4 className="mb-2 text-sm font-medium text-muted-foreground">Description</h4>
             <p className="text-sm">{entry.description}</p>
             {entry.errorMessage && (
-              <div className="mt-2 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+              <div className="mt-2 rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20">
                 <p className="text-sm text-red-700 dark:text-red-300">
                   <strong>Error:</strong> {entry.errorMessage}
                 </p>
@@ -140,8 +135,8 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
 
           {/* Actor */}
           <div>
-            <h4 className="text-sm font-medium text-muted-foreground mb-2">Actor</h4>
-            <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+            <h4 className="mb-2 text-sm font-medium text-muted-foreground">Actor</h4>
+            <div className="bg-muted/50 flex items-start gap-3 rounded-lg p-3">
               <Avatar className="h-10 w-10">
                 <AvatarFallback>
                   {(entry.actor.displayName || entry.actor.username || entry.actor.id)
@@ -149,7 +144,7 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
                     .toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <div className="flex-1 min-w-0">
+              <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
                   <span className="font-medium">
                     {entry.actor.displayName || entry.actor.username || 'Unknown'}
@@ -161,7 +156,7 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
                 {entry.actor.email && (
                   <p className="text-sm text-muted-foreground">{entry.actor.email}</p>
                 )}
-                <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                   <span className="font-mono">{entry.actor.id}</span>
                   <Button
                     variant="ghost"
@@ -179,8 +174,8 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
           {/* Resource */}
           {entry.resource && (
             <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">Resource</h4>
-              <div className="p-3 rounded-lg bg-muted/50">
+              <h4 className="mb-2 text-sm font-medium text-muted-foreground">Resource</h4>
+              <div className="bg-muted/50 rounded-lg p-3">
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <span className="text-muted-foreground">Type:</span>
@@ -198,9 +193,9 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
                   )}
                 </div>
                 {entry.resource.previousValue !== undefined && (
-                  <div className="mt-3 pt-3 border-t">
+                  <div className="mt-3 border-t pt-3">
                     <span className="text-xs text-muted-foreground">Previous Value:</span>
-                    <pre className="mt-1 p-2 rounded bg-muted text-xs overflow-x-auto">
+                    <pre className="mt-1 overflow-x-auto rounded bg-muted p-2 text-xs">
                       {JSON.stringify(entry.resource.previousValue, null, 2)}
                     </pre>
                   </div>
@@ -208,7 +203,7 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
                 {entry.resource.newValue !== undefined && (
                   <div className="mt-3">
                     <span className="text-xs text-muted-foreground">New Value:</span>
-                    <pre className="mt-1 p-2 rounded bg-muted text-xs overflow-x-auto">
+                    <pre className="mt-1 overflow-x-auto rounded bg-muted p-2 text-xs">
                       {JSON.stringify(entry.resource.newValue, null, 2)}
                     </pre>
                   </div>
@@ -220,8 +215,8 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
           {/* Target */}
           {entry.target && (
             <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">Target</h4>
-              <div className="p-3 rounded-lg bg-muted/50">
+              <h4 className="mb-2 text-sm font-medium text-muted-foreground">Target</h4>
+              <div className="bg-muted/50 rounded-lg p-3">
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   <div>
                     <span className="text-muted-foreground">Type:</span>
@@ -246,14 +241,14 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
           <div className="grid grid-cols-2 gap-4">
             {/* Category & Severity */}
             <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">Category</h4>
+              <h4 className="mb-2 text-sm font-medium text-muted-foreground">Category</h4>
               <Badge className={cn('gap-1', getCategoryBadgeClass(entry.category))}>
                 {categoryIcons[entry.category]}
                 {entry.category}
               </Badge>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">Severity</h4>
+              <h4 className="mb-2 text-sm font-medium text-muted-foreground">Severity</h4>
               <Badge className={cn('gap-1', getSeverityBadgeClass(entry.severity))}>
                 {severityIcons[entry.severity]}
                 {entry.severity}
@@ -263,16 +258,16 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
             {/* IP & Location */}
             {entry.ipAddress && (
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                <h4 className="mb-2 flex items-center gap-1 text-sm font-medium text-muted-foreground">
                   <Globe className="h-4 w-4" />
                   IP Address
                 </h4>
-                <p className="text-sm font-mono">{entry.ipAddress}</p>
+                <p className="font-mono text-sm">{entry.ipAddress}</p>
               </div>
             )}
             {entry.geoLocation && (
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                <h4 className="mb-2 flex items-center gap-1 text-sm font-medium text-muted-foreground">
                   <Globe className="h-4 w-4" />
                   Location
                 </h4>
@@ -287,12 +282,12 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
             {/* Request ID */}
             {entry.requestId && (
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                <h4 className="mb-2 flex items-center gap-1 text-sm font-medium text-muted-foreground">
                   <Server className="h-4 w-4" />
                   Request ID
                 </h4>
                 <div className="flex items-center gap-1">
-                  <p className="text-xs font-mono truncate">{entry.requestId}</p>
+                  <p className="truncate font-mono text-xs">{entry.requestId}</p>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -308,12 +303,12 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
             {/* Correlation ID */}
             {entry.correlationId && (
               <div>
-                <h4 className="text-sm font-medium text-muted-foreground mb-2 flex items-center gap-1">
+                <h4 className="mb-2 flex items-center gap-1 text-sm font-medium text-muted-foreground">
                   <Server className="h-4 w-4" />
                   Correlation ID
                 </h4>
                 <div className="flex items-center gap-1">
-                  <p className="text-xs font-mono truncate">{entry.correlationId}</p>
+                  <p className="truncate font-mono text-xs">{entry.correlationId}</p>
                   <Button
                     variant="ghost"
                     size="icon"
@@ -330,21 +325,21 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
           {/* Metadata */}
           {entry.metadata && Object.keys(entry.metadata).length > 0 && (
             <div>
-              <h4 className="text-sm font-medium text-muted-foreground mb-2">
+              <h4 className="mb-2 text-sm font-medium text-muted-foreground">
                 Additional Metadata
               </h4>
-              <pre className="p-3 rounded-lg bg-muted text-xs overflow-x-auto">
+              <pre className="overflow-x-auto rounded-lg bg-muted p-3 text-xs">
                 {JSON.stringify(entry.metadata, null, 2)}
               </pre>
             </div>
           )}
 
           {/* Entry ID */}
-          <div className="pt-4 border-t">
+          <div className="border-t pt-4">
             <div className="flex items-center justify-between text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
                 <span>Entry ID:</span>
-                <code className="bg-muted px-1.5 py-0.5 rounded">{entry.id}</code>
+                <code className="rounded bg-muted px-1.5 py-0.5">{entry.id}</code>
                 <Button
                   variant="ghost"
                   size="icon"
@@ -364,11 +359,8 @@ export function AuditLogDetail({ entry, open, onClose }: AuditLogDetailProps) {
 
         <AlertDialogFooter>
           <AlertDialogCancel>Close</AlertDialogCancel>
-          <Button
-            variant="outline"
-            onClick={() => copyToClipboard(JSON.stringify(entry, null, 2))}
-          >
-            <Copy className="h-4 w-4 mr-2" />
+          <Button variant="outline" onClick={() => copyToClipboard(JSON.stringify(entry, null, 2))}>
+            <Copy className="mr-2 h-4 w-4" />
             Copy JSON
           </Button>
         </AlertDialogFooter>

@@ -24,14 +24,8 @@ import {
   LocationSocketEvents,
   type BroadcasterOptions,
 } from './location-broadcaster'
-import {
-  getCurrentPosition,
-  formatCoordinates,
-} from './location-tracker'
-import {
-  checkLocationPermission,
-  requestLocationPermission,
-} from './location-permissions'
+import { getCurrentPosition, formatCoordinates } from './location-tracker'
+import { checkLocationPermission, requestLocationPermission } from './location-permissions'
 import { reverseGeocode } from './geocoding'
 
 // ============================================================================
@@ -508,9 +502,7 @@ export class LocationManager {
 /**
  * Create a location manager.
  */
-export function createLocationManager(
-  options?: LocationManagerOptions
-): LocationManager {
+export function createLocationManager(options?: LocationManagerOptions): LocationManager {
   return new LocationManager(options)
 }
 
@@ -540,10 +532,7 @@ export function getAppleMapsUrl(destination: Coordinates): string {
 /**
  * Generate a shareable location URL.
  */
-export function getShareableLocationUrl(
-  coordinates: Coordinates,
-  label?: string
-): string {
+export function getShareableLocationUrl(coordinates: Coordinates, label?: string): string {
   const coords = formatCoordinates(coordinates, 6)
   const query = label ? `${label} (${coords})` : coords
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`

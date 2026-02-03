@@ -258,16 +258,12 @@ export const GET_ADMIN_STATS = gql`
         count
       }
     }
-    active_users_aggregate: nchat_users_aggregate(
-      where: { is_active: { _eq: true } }
-    ) {
+    active_users_aggregate: nchat_users_aggregate(where: { is_active: { _eq: true } }) {
       aggregate {
         count
       }
     }
-    banned_users_aggregate: nchat_users_aggregate(
-      where: { is_banned: { _eq: true } }
-    ) {
+    banned_users_aggregate: nchat_users_aggregate(where: { is_banned: { _eq: true } }) {
       aggregate {
         count
       }
@@ -282,17 +278,12 @@ export const GET_ADMIN_STATS = gql`
         count
       }
     }
-    pending_reports_aggregate: nchat_reports_aggregate(
-      where: { status: { _eq: "pending" } }
-    ) {
+    pending_reports_aggregate: nchat_reports_aggregate(where: { status: { _eq: "pending" } }) {
       aggregate {
         count
       }
     }
-    recent_users: nchat_users(
-      limit: 5
-      order_by: { created_at: desc }
-    ) {
+    recent_users: nchat_users(limit: 5, order_by: { created_at: desc }) {
       ...UserBasic
       created_at
     }
@@ -303,9 +294,7 @@ export const GET_ADMIN_STATS = gql`
         count
       }
     }
-    online_users_count: nchat_user_presence_aggregate(
-      where: { status: { _eq: "online" } }
-    ) {
+    online_users_count: nchat_user_presence_aggregate(where: { status: { _eq: "online" } }) {
       aggregate {
         count
       }
@@ -458,12 +447,7 @@ export const GET_MODERATION_QUEUE = gql`
     $type: String
   ) {
     nchat_reports(
-      where: {
-        _and: [
-          { status: { _eq: $status } }
-          { type: { _eq: $type } }
-        ]
-      }
+      where: { _and: [{ status: { _eq: $status } }, { type: { _eq: $type } }] }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
@@ -471,12 +455,7 @@ export const GET_MODERATION_QUEUE = gql`
       ...ModerationReport
     }
     nchat_reports_aggregate(
-      where: {
-        _and: [
-          { status: { _eq: $status } }
-          { type: { _eq: $type } }
-        ]
-      }
+      where: { _and: [{ status: { _eq: $status } }, { type: { _eq: $type } }] }
     ) {
       aggregate {
         count
@@ -490,19 +469,9 @@ export const GET_MODERATION_QUEUE = gql`
  * Get activity logs
  */
 export const GET_ACTIVITY_LOGS = gql`
-  query GetActivityLogs(
-    $limit: Int = 50
-    $offset: Int = 0
-    $type: String
-    $actorId: uuid
-  ) {
+  query GetActivityLogs($limit: Int = 50, $offset: Int = 0, $type: String, $actorId: uuid) {
     nchat_activity_logs(
-      where: {
-        _and: [
-          { type: { _eq: $type } }
-          { actor_id: { _eq: $actorId } }
-        ]
-      }
+      where: { _and: [{ type: { _eq: $type } }, { actor_id: { _eq: $actorId } }] }
       order_by: { created_at: desc }
       limit: $limit
       offset: $offset
@@ -533,15 +502,10 @@ export const GET_ROLES = gql`
  * Get analytics data for dashboard
  */
 export const GET_ANALYTICS_DATA = gql`
-  query GetAnalyticsData(
-    $startDate: timestamptz!
-    $endDate: timestamptz!
-  ) {
+  query GetAnalyticsData($startDate: timestamptz!, $endDate: timestamptz!) {
     # User signups by day
     user_signups: nchat_users(
-      where: {
-        created_at: { _gte: $startDate, _lte: $endDate }
-      }
+      where: { created_at: { _gte: $startDate, _lte: $endDate } }
       order_by: { created_at: asc }
     ) {
       id
@@ -550,9 +514,7 @@ export const GET_ANALYTICS_DATA = gql`
 
     # Messages by day
     messages: nchat_messages(
-      where: {
-        created_at: { _gte: $startDate, _lte: $endDate }
-      }
+      where: { created_at: { _gte: $startDate, _lte: $endDate } }
       order_by: { created_at: asc }
     ) {
       id
@@ -561,16 +523,10 @@ export const GET_ANALYTICS_DATA = gql`
     }
 
     # Active channels
-    active_channels: nchat_channels(
-      where: {
-        messages: { created_at: { _gte: $startDate } }
-      }
-    ) {
+    active_channels: nchat_channels(where: { messages: { created_at: { _gte: $startDate } } }) {
       id
       name
-      messages_aggregate(
-        where: { created_at: { _gte: $startDate, _lte: $endDate } }
-      ) {
+      messages_aggregate(where: { created_at: { _gte: $startDate, _lte: $endDate } }) {
         aggregate {
           count
         }
@@ -598,20 +554,10 @@ export const GET_ANALYTICS_DATA = gql`
  * Ban a user
  */
 export const BAN_USER = gql`
-  mutation BanUser(
-    $userId: uuid!
-    $reason: String!
-    $duration: String
-    $moderatorId: uuid!
-  ) {
+  mutation BanUser($userId: uuid!, $reason: String!, $duration: String, $moderatorId: uuid!) {
     update_nchat_users_by_pk(
       pk_columns: { id: $userId }
-      _set: {
-        is_banned: true
-        banned_at: "now()"
-        banned_until: $duration
-        ban_reason: $reason
-      }
+      _set: { is_banned: true, banned_at: "now()", banned_until: $duration, ban_reason: $reason }
     ) {
       id
       is_banned
@@ -632,10 +578,7 @@ export const BAN_USER = gql`
       id
     }
     # Set user offline
-    update_nchat_user_presence(
-      where: { user_id: { _eq: $userId } }
-      _set: { status: "offline" }
-    ) {
+    update_nchat_user_presence(where: { user_id: { _eq: $userId } }, _set: { status: "offline" }) {
       affected_rows
     }
   }
@@ -648,12 +591,7 @@ export const UNBAN_USER = gql`
   mutation UnbanUser($userId: uuid!, $moderatorId: uuid!) {
     update_nchat_users_by_pk(
       pk_columns: { id: $userId }
-      _set: {
-        is_banned: false
-        banned_at: null
-        banned_until: null
-        ban_reason: null
-      }
+      _set: { is_banned: false, banned_at: null, banned_until: null, ban_reason: null }
     ) {
       id
       is_banned
@@ -676,15 +614,8 @@ export const UNBAN_USER = gql`
  * Change user role
  */
 export const CHANGE_USER_ROLE = gql`
-  mutation ChangeUserRole(
-    $userId: uuid!
-    $roleId: uuid!
-    $moderatorId: uuid!
-  ) {
-    update_nchat_users_by_pk(
-      pk_columns: { id: $userId }
-      _set: { role_id: $roleId }
-    ) {
+  mutation ChangeUserRole($userId: uuid!, $roleId: uuid!, $moderatorId: uuid!) {
+    update_nchat_users_by_pk(pk_columns: { id: $userId }, _set: { role_id: $roleId }) {
       id
       role {
         id
@@ -714,10 +645,7 @@ export const DEACTIVATE_USER_ADMIN = gql`
   mutation DeactivateUserAdmin($userId: uuid!, $moderatorId: uuid!) {
     update_nchat_users_by_pk(
       pk_columns: { id: $userId }
-      _set: {
-        is_active: false
-        deactivated_at: "now()"
-      }
+      _set: { is_active: false, deactivated_at: "now()" }
     ) {
       id
       is_active
@@ -743,10 +671,7 @@ export const REACTIVATE_USER_ADMIN = gql`
   mutation ReactivateUserAdmin($userId: uuid!, $moderatorId: uuid!) {
     update_nchat_users_by_pk(
       pk_columns: { id: $userId }
-      _set: {
-        is_active: true
-        deactivated_at: null
-      }
+      _set: { is_active: true, deactivated_at: null }
     ) {
       id
       is_active
@@ -842,18 +767,10 @@ export const RESOLVE_REPORT = gql`
  * Delete a message (admin action)
  */
 export const DELETE_MESSAGE_ADMIN = gql`
-  mutation DeleteMessageAdmin(
-    $messageId: uuid!
-    $moderatorId: uuid!
-    $reason: String
-  ) {
+  mutation DeleteMessageAdmin($messageId: uuid!, $moderatorId: uuid!, $reason: String) {
     update_nchat_messages_by_pk(
       pk_columns: { id: $messageId }
-      _set: {
-        is_deleted: true
-        deleted_at: "now()"
-        deleted_by_id: $moderatorId
-      }
+      _set: { is_deleted: true, deleted_at: "now()", deleted_by_id: $moderatorId }
     ) {
       id
       is_deleted
@@ -876,17 +793,9 @@ export const DELETE_MESSAGE_ADMIN = gql`
  * Warn a user
  */
 export const WARN_USER = gql`
-  mutation WarnUser(
-    $userId: uuid!
-    $reason: String!
-    $moderatorId: uuid!
-  ) {
+  mutation WarnUser($userId: uuid!, $reason: String!, $moderatorId: uuid!) {
     insert_nchat_user_warnings_one(
-      object: {
-        user_id: $userId
-        reason: $reason
-        issued_by_id: $moderatorId
-      }
+      object: { user_id: $userId, reason: $reason, issued_by_id: $moderatorId }
     ) {
       id
       reason
@@ -910,10 +819,7 @@ export const WARN_USER = gql`
  * Delete a channel (admin action)
  */
 export const DELETE_CHANNEL_ADMIN = gql`
-  mutation DeleteChannelAdmin(
-    $channelId: uuid!
-    $moderatorId: uuid!
-  ) {
+  mutation DeleteChannelAdmin($channelId: uuid!, $moderatorId: uuid!) {
     delete_nchat_channels_by_pk(id: $channelId) {
       id
       name
@@ -935,16 +841,10 @@ export const DELETE_CHANNEL_ADMIN = gql`
  * Archive a channel (admin action)
  */
 export const ARCHIVE_CHANNEL_ADMIN = gql`
-  mutation ArchiveChannelAdmin(
-    $channelId: uuid!
-    $moderatorId: uuid!
-  ) {
+  mutation ArchiveChannelAdmin($channelId: uuid!, $moderatorId: uuid!) {
     update_nchat_channels_by_pk(
       pk_columns: { id: $channelId }
-      _set: {
-        is_archived: true
-        archived_at: "now()"
-      }
+      _set: { is_archived: true, archived_at: "now()" }
     ) {
       id
       is_archived
@@ -967,10 +867,7 @@ export const ARCHIVE_CHANNEL_ADMIN = gql`
  * Update workspace settings
  */
 export const UPDATE_WORKSPACE_SETTINGS = gql`
-  mutation UpdateWorkspaceSettings(
-    $settings: jsonb!
-    $moderatorId: uuid!
-  ) {
+  mutation UpdateWorkspaceSettings($settings: jsonb!, $moderatorId: uuid!) {
     insert_nchat_workspace_settings_one(
       object: { settings: $settings }
       on_conflict: {
@@ -1032,10 +929,7 @@ export const REPORTS_SUBSCRIPTION = gql`
  */
 export const ACTIVITY_LOGS_SUBSCRIPTION = gql`
   subscription ActivityLogsSubscription {
-    nchat_activity_logs(
-      order_by: { created_at: desc }
-      limit: 50
-    ) {
+    nchat_activity_logs(order_by: { created_at: desc }, limit: 50) {
       ...ActivityLog
     }
   }
@@ -1052,9 +946,7 @@ export const USER_COUNT_SUBSCRIPTION = gql`
         count
       }
     }
-    online: nchat_user_presence_aggregate(
-      where: { status: { _eq: "online" } }
-    ) {
+    online: nchat_user_presence_aggregate(where: { status: { _eq: "online" } }) {
       aggregate {
         count
       }

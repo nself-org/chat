@@ -8,6 +8,8 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 
+import { logger } from '@/lib/logger'
+
 interface CSPViolation {
   'document-uri': string
   'violated-directive': string
@@ -38,20 +40,14 @@ export async function POST(request: NextRequest) {
       !contentType?.includes('application/csp-report') &&
       !contentType?.includes('application/json')
     ) {
-      return NextResponse.json(
-        { error: 'Invalid content type' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid content type' }, { status: 400 })
     }
 
     const report: CSPReport = await request.json()
     const violation = report['csp-report']
 
     if (!violation) {
-      return NextResponse.json(
-        { error: 'Invalid CSP report format' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid CSP report format' }, { status: 400 })
     }
 
     // Log the violation
@@ -73,9 +69,8 @@ export async function POST(request: NextRequest) {
     // Log to console (in production, send to monitoring service)
     if (process.env.NODE_ENV === 'production') {
       // Only log in production to avoid noise during development
-      console.warn('[CSP VIOLATION]', JSON.stringify(logEntry, null, 2))
+            logger.warn('[CSP VIOLATION]', { context: JSON.stringify(logEntry, null, 2) })
 
-      // TODO: Send to monitoring service
       // await sendToMonitoring(logEntry)
     } else {
       // In development, log with more context
@@ -85,7 +80,7 @@ export async function POST(request: NextRequest) {
     return new NextResponse(null, { status: 204 })
   } catch (error) {
     // Log error but still return 204 to avoid browser retries
-    console.error('[CSP Report Error]', error)
+    logger.error('[CSP Report Error]',  error)
     return new NextResponse(null, { status: 204 })
   }
 }

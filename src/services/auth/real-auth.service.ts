@@ -1,5 +1,7 @@
 import { authConfig } from '@/config/auth.config'
 
+import { logger } from '@/lib/logger'
+
 export interface AuthResponse {
   user: any
   accessToken: string
@@ -80,12 +82,12 @@ export class RealAuthService {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${this.accessToken}`,
+            Authorization: `Bearer ${this.accessToken}`,
           },
           body: JSON.stringify({ refreshToken: this.refreshToken }),
         })
       } catch (error) {
-        console.error('Signout error:', error)
+        logger.error('Signout error:', error)
       }
     }
 
@@ -120,7 +122,7 @@ export class RealAuthService {
         refreshToken: data.session.refreshToken,
       }
     } catch (error) {
-      console.error('Token refresh error:', error)
+      logger.error('Token refresh error:', error)
       this.clearTokens()
       return null
     }
@@ -132,7 +134,7 @@ export class RealAuthService {
     try {
       const response = await fetch(`${authConfig.authUrl}/user`, {
         headers: {
-          'Authorization': `Bearer ${this.accessToken}`,
+          Authorization: `Bearer ${this.accessToken}`,
         },
       })
 
@@ -144,7 +146,7 @@ export class RealAuthService {
         // Retry with new token
         const retryResponse = await fetch(`${authConfig.authUrl}/user`, {
           headers: {
-            'Authorization': `Bearer ${refreshed.accessToken}`,
+            Authorization: `Bearer ${refreshed.accessToken}`,
           },
         })
 
@@ -154,7 +156,7 @@ export class RealAuthService {
 
       return await response.json()
     } catch (error) {
-      console.error('Get user error:', error)
+      logger.error('Get user error:', error)
       return null
     }
   }

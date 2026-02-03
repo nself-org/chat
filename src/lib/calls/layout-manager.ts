@@ -111,10 +111,7 @@ export class LayoutManager {
   // Layout Calculation
   // ===========================================================================
 
-  calculateLayout(
-    participantIds: string[],
-    dimensions: LayoutDimensions
-  ): LayoutResult {
+  calculateLayout(participantIds: string[], dimensions: LayoutDimensions): LayoutResult {
     if (this.screenShareParticipantId) {
       // Screen share takes priority
       return this.calculateScreenShareLayout(participantIds, dimensions)
@@ -195,7 +192,7 @@ export class LayoutManager {
 
     for (let cols = 1; cols <= Math.min(count, this.maxTilesPerRow); cols++) {
       const rows = Math.ceil(count / cols)
-      const tileAspect = (width / cols) / (height / rows)
+      const tileAspect = width / cols / (height / rows)
       const diff = Math.abs(tileAspect - this.aspectRatio)
 
       if (diff < bestDiff) {
@@ -235,7 +232,7 @@ export class LayoutManager {
 
     // Determine main participant (speaking or first)
     const mainParticipantId = this.speakingParticipantId || participantIds[0]
-    const thumbnailParticipantIds = participantIds.filter(id => id !== mainParticipantId)
+    const thumbnailParticipantIds = participantIds.filter((id) => id !== mainParticipantId)
 
     // Main tile
     const mainTile: ParticipantTile = {
@@ -303,9 +300,7 @@ export class LayoutManager {
     }
 
     // Other participants in thumbnails
-    const thumbnailParticipantIds = participantIds.filter(
-      id => id !== this.pinnedParticipantId
-    )
+    const thumbnailParticipantIds = participantIds.filter((id) => id !== this.pinnedParticipantId)
 
     const thumbnails: ParticipantTile[] = []
     const thumbnailCount = thumbnailParticipantIds.length
@@ -354,7 +349,7 @@ export class LayoutManager {
     const sidebarWidth = 240
     const mainWidth = containerWidth - sidebarWidth - this.gap
     const mainParticipantId = this.speakingParticipantId || participantIds[0]
-    const sidebarParticipantIds = participantIds.filter(id => id !== mainParticipantId)
+    const sidebarParticipantIds = participantIds.filter((id) => id !== mainParticipantId)
 
     // Main tile
     const mainTile: ParticipantTile = {
@@ -370,7 +365,8 @@ export class LayoutManager {
     // Sidebar tiles
     const thumbnails: ParticipantTile[] = []
     const sidebarTileHeight = Math.min(
-      (containerHeight - (sidebarParticipantIds.length + 1) * this.gap) / sidebarParticipantIds.length,
+      (containerHeight - (sidebarParticipantIds.length + 1) * this.gap) /
+        sidebarParticipantIds.length,
       THUMBNAIL_HEIGHT * 2
     )
 
@@ -403,7 +399,8 @@ export class LayoutManager {
   ): LayoutResult {
     // Similar to speaker but with no thumbnails
     const { containerWidth, containerHeight } = dimensions
-    const mainParticipantId = this.speakingParticipantId || this.pinnedParticipantId || participantIds[0]
+    const mainParticipantId =
+      this.speakingParticipantId || this.pinnedParticipantId || participantIds[0]
 
     if (!mainParticipantId) {
       return { tiles: [], mainTile: null, thumbnails: [] }

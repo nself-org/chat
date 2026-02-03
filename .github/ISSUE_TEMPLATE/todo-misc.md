@@ -13,12 +13,15 @@ Collection of small feature improvements and UI enhancements that don't fit into
 ## Affected Components
 
 ### Poll Functionality
+
 - [ ] `src/components/polls/poll-display.tsx:392` - Add option to poll
 
 ### Slash Commands
+
 - [ ] `src/components/slash-commands/SlashCommandBuilder.tsx:114` - Get user from auth context
 
 ### Emoji Settings
+
 - [ ] `src/components/settings/EmojiSettings.tsx:41` - Update emoji skin tone
 - [ ] `src/components/settings/EmojiSettings.tsx:51` - Update frequently used
 - [ ] `src/components/settings/EmojiSettings.tsx:61` - Update emoji suggestions
@@ -30,6 +33,7 @@ Collection of small feature improvements and UI enhancements that don't fit into
 **Current State:** Polls are displayed but users cannot add additional options after creation.
 
 **Implementation:**
+
 ```typescript
 const addPollOption = async (pollId: string, option: string) => {
   // Validate option text
@@ -56,13 +60,10 @@ const addPollOption = async (pollId: string, option: string) => {
 ```
 
 **GraphQL Mutation:**
+
 ```graphql
 mutation AddPollOption($pollId: uuid!, $optionText: String!) {
-  insert_nchat_poll_options_one(object: {
-    poll_id: $pollId
-    option_text: $optionText
-    votes: 0
-  }) {
+  insert_nchat_poll_options_one(object: { poll_id: $pollId, option_text: $optionText, votes: 0 }) {
     id
     option_text
     votes
@@ -71,6 +72,7 @@ mutation AddPollOption($pollId: uuid!, $optionText: String!) {
 ```
 
 **Requirements:**
+
 - Only allow if poll settings permit it
 - Validate option text (max 200 chars)
 - Prevent duplicate options
@@ -82,6 +84,7 @@ mutation AddPollOption($pollId: uuid!, $optionText: String!) {
 **Current State:** Draft saving uses hardcoded user ID string.
 
 **Fix:**
+
 ```typescript
 // Before
 const saved = saveDraft('current-user-id')
@@ -93,6 +96,7 @@ const saved = saveDraft(user?.id || 'anonymous')
 ```
 
 **Additional Improvements:**
+
 - Type safety for user ID
 - Handle unauthenticated state
 - Clear drafts on logout
@@ -103,6 +107,7 @@ const saved = saveDraft(user?.id || 'anonymous')
 **Features to Implement:**
 
 #### a) Emoji Skin Tone Preference
+
 ```typescript
 const updateSkinTone = async (tone: number) => {
   // tone: 1-6 (1 = default, 2-6 = skin tones)
@@ -116,6 +121,7 @@ const updateSkinTone = async (tone: number) => {
 ```
 
 #### b) Frequently Used Emojis
+
 ```typescript
 const trackEmojiUsage = async (emoji: string) => {
   const usage = getEmojiUsage()
@@ -139,6 +145,7 @@ const getFrequentlyUsed = () => {
 ```
 
 #### c) Emoji Suggestions
+
 ```typescript
 const updateEmojiSuggestions = async (enabled: boolean) => {
   await updateUserSettings({
@@ -177,6 +184,7 @@ ALTER TABLE nchat_polls ADD COLUMN IF NOT EXISTS allow_add_options boolean DEFAU
 ## UI/UX Improvements
 
 ### Poll Option Addition
+
 - Show "Add Option" button only if allowed
 - Inline input field for new option
 - Character counter (max 200)
@@ -184,6 +192,7 @@ ALTER TABLE nchat_polls ADD COLUMN IF NOT EXISTS allow_add_options boolean DEFAU
 - Show new option immediately (optimistic update)
 
 ### Emoji Picker
+
 - Skin tone selector in picker header
 - "Frequently Used" section at top
 - Emoji suggestions dropdown while typing
@@ -191,6 +200,7 @@ ALTER TABLE nchat_polls ADD COLUMN IF NOT EXISTS allow_add_options boolean DEFAU
 - Search emojis by name
 
 ### Slash Commands
+
 - Auto-save drafts every 2 seconds
 - Show "Draft saved" indicator
 - Restore draft on return
@@ -199,6 +209,7 @@ ALTER TABLE nchat_polls ADD COLUMN IF NOT EXISTS allow_add_options boolean DEFAU
 ## Testing Checklist
 
 ### Poll Options
+
 - [ ] Add option to poll (if allowed)
 - [ ] Cannot add to closed poll
 - [ ] Cannot add duplicate option
@@ -207,6 +218,7 @@ ALTER TABLE nchat_polls ADD COLUMN IF NOT EXISTS allow_add_options boolean DEFAU
 - [ ] RBAC permissions respected
 
 ### Emoji Settings
+
 - [ ] Change skin tone preference
 - [ ] Skin tone persists across sessions
 - [ ] Track emoji usage
@@ -215,6 +227,7 @@ ALTER TABLE nchat_polls ADD COLUMN IF NOT EXISTS allow_add_options boolean DEFAU
 - [ ] Toggle suggestions on/off
 
 ### Slash Commands
+
 - [ ] Draft saves with correct user ID
 - [ ] Draft restores on return
 - [ ] Draft clears on send
@@ -232,4 +245,5 @@ ALTER TABLE nchat_polls ADD COLUMN IF NOT EXISTS allow_add_options boolean DEFAU
 - Proper error handling and user feedback
 
 ## Priority: Low
+
 Nice-to-have polish features. Can be deferred to v1.1.0 or later.

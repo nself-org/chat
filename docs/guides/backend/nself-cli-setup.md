@@ -73,11 +73,13 @@ nself CLI v0.9.6 provides a complete self-hosted Backend-as-a-Service platform f
 ### Install nself CLI
 
 **One-line installer** (coming soon):
+
 ```bash
 curl -sSL https://install.nself.org | bash
 ```
 
 **Git clone method** (current):
+
 ```bash
 # Clone nself repository
 git clone https://github.com/acamarata/nself.git ~/Sites/nself
@@ -347,25 +349,25 @@ nself db restore latest       # Restore from latest backup
 
 Always running (4 containers):
 
-| Service | Port | URL | Purpose |
-|---------|------|-----|---------|
-| PostgreSQL | 5432 | Internal | Database |
-| Hasura | 8080 | https://api.local.nself.org | GraphQL API |
-| Auth | 4000 | https://auth.local.nself.org | Authentication |
-| Nginx | 80/443 | https://local.nself.org | Reverse proxy |
+| Service    | Port   | URL                          | Purpose        |
+| ---------- | ------ | ---------------------------- | -------------- |
+| PostgreSQL | 5432   | Internal                     | Database       |
+| Hasura     | 8080   | https://api.local.nself.org  | GraphQL API    |
+| Auth       | 4000   | https://auth.local.nself.org | Authentication |
+| Nginx      | 80/443 | https://local.nself.org      | Reverse proxy  |
 
 ### Optional Services
 
 Enable in `.env` with `SERVICE_ENABLED=true`:
 
-| Service | Variable | Port | URL | Purpose |
-|---------|----------|------|-----|---------|
-| Redis | `REDIS_ENABLED` | 6379 | Internal | Cache/sessions |
-| MinIO | `MINIO_ENABLED` | 9000/9001 | https://storage.local.nself.org | S3-compatible storage |
-| MeiliSearch | `MEILISEARCH_ENABLED` | 7700 | https://search.local.nself.org | Full-text search |
-| Admin UI | `NSELF_ADMIN_ENABLED` | 3021 | https://admin.local.nself.org | Backend dashboard |
-| Functions | `FUNCTIONS_ENABLED` | 3010 | https://functions.local.nself.org | Serverless runtime |
-| MailPit | `MAILPIT_ENABLED` | 8025 | https://mail.local.nself.org | Email testing (dev) |
+| Service     | Variable              | Port      | URL                               | Purpose               |
+| ----------- | --------------------- | --------- | --------------------------------- | --------------------- |
+| Redis       | `REDIS_ENABLED`       | 6379      | Internal                          | Cache/sessions        |
+| MinIO       | `MINIO_ENABLED`       | 9000/9001 | https://storage.local.nself.org   | S3-compatible storage |
+| MeiliSearch | `MEILISEARCH_ENABLED` | 7700      | https://search.local.nself.org    | Full-text search      |
+| Admin UI    | `NSELF_ADMIN_ENABLED` | 3021      | https://admin.local.nself.org     | Backend dashboard     |
+| Functions   | `FUNCTIONS_ENABLED`   | 3010      | https://functions.local.nself.org | Serverless runtime    |
+| MailPit     | `MAILPIT_ENABLED`     | 8025      | https://mail.local.nself.org      | Email testing (dev)   |
 
 **Note:** Port 3021 is used for nself-admin (NOT 3100 which conflicts with Loki).
 
@@ -379,6 +381,7 @@ MONITORING_ENABLED=true
 ```
 
 Includes:
+
 - Prometheus (metrics)
 - Grafana (dashboards) - https://grafana.local.nself.org
 - Loki (log aggregation)
@@ -409,11 +412,11 @@ ENV=production
 
 ### Environment-Aware Behavior
 
-| Command | Local | Staging | Production |
-|---------|-------|---------|------------|
-| `db mock` | ✅ Works | ✅ Works | ❌ Blocked |
-| `db reset` | ✅ Works | ⚠️ Requires confirmation | ❌ Blocked |
-| `db seed users` | Mock users | QA users | Only explicit users |
+| Command         | Local      | Staging                  | Production          |
+| --------------- | ---------- | ------------------------ | ------------------- |
+| `db mock`       | ✅ Works   | ✅ Works                 | ❌ Blocked          |
+| `db reset`      | ✅ Works   | ⚠️ Requires confirmation | ❌ Blocked          |
+| `db seed users` | Mock users | QA users                 | Only explicit users |
 
 ### Create Environments
 
@@ -686,16 +689,16 @@ nself start --fresh      # Clean start
 
 After `nself start`, access services at:
 
-| Service | Local URL | Credentials |
-|---------|-----------|-------------|
-| Hasura Console | https://api.local.nself.org/console | Admin secret from .env |
-| Hasura GraphQL | https://api.local.nself.org/v1/graphql | API endpoint |
-| Auth Service | https://auth.local.nself.org/v1/auth | Auth endpoints |
-| Admin Dashboard | https://admin.local.nself.org | admin / (from .env) |
-| Grafana | https://grafana.local.nself.org | admin / admin |
-| MinIO Console | https://storage.local.nself.org | minio / (from .env) |
-| MailPit | https://mail.local.nself.org | No auth (dev only) |
-| MeiliSearch | https://search.local.nself.org | Master key from .env |
+| Service         | Local URL                              | Credentials            |
+| --------------- | -------------------------------------- | ---------------------- |
+| Hasura Console  | https://api.local.nself.org/console    | Admin secret from .env |
+| Hasura GraphQL  | https://api.local.nself.org/v1/graphql | API endpoint           |
+| Auth Service    | https://auth.local.nself.org/v1/auth   | Auth endpoints         |
+| Admin Dashboard | https://admin.local.nself.org          | admin / (from .env)    |
+| Grafana         | https://grafana.local.nself.org        | admin / admin          |
+| MinIO Console   | https://storage.local.nself.org        | minio / (from .env)    |
+| MailPit         | https://mail.local.nself.org           | No auth (dev only)     |
+| MeiliSearch     | https://search.local.nself.org         | Master key from .env   |
 
 ---
 
@@ -717,4 +720,4 @@ After `nself start`, access services at:
 
 ---
 
-*Version: 1.0.0 | Date: January 31, 2026 | nself CLI v0.9.6*
+_Version: 1.0.0 | Date: January 31, 2026 | nself CLI v0.9.6_

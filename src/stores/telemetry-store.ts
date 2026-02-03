@@ -5,17 +5,17 @@
  * debug mode, and telemetry state.
  */
 
-import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { create } from 'zustand'
+import { devtools, persist } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 import {
   ConsentCategory,
   ConsentState,
   getDefaultConsentState,
   CONSENT_VERSION,
-} from '@/lib/analytics/privacy-filter';
-import { TrackedEvent } from '@/lib/analytics/analytics-client';
+} from '@/lib/analytics/privacy-filter'
+import { TrackedEvent } from '@/lib/analytics/analytics-client'
 
 // ============================================================================
 // Types
@@ -23,88 +23,88 @@ import { TrackedEvent } from '@/lib/analytics/analytics-client';
 
 export interface TelemetryState {
   // Consent State
-  consent: ConsentState;
-  consentBannerDismissed: boolean;
-  consentBannerShown: boolean;
+  consent: ConsentState
+  consentBannerDismissed: boolean
+  consentBannerShown: boolean
 
   // Debug Mode
-  debugMode: boolean;
-  debugPanelOpen: boolean;
+  debugMode: boolean
+  debugPanelOpen: boolean
 
   // Event Queue (for display in debug panel)
-  recentEvents: TrackedEvent[];
-  maxRecentEvents: number;
+  recentEvents: TrackedEvent[]
+  maxRecentEvents: number
 
   // Tracking State
-  trackingEnabled: boolean;
-  sessionId: string | null;
-  userId: string | null;
-  anonymousId: string | null;
+  trackingEnabled: boolean
+  sessionId: string | null
+  userId: string | null
+  anonymousId: string | null
 
   // Metrics
-  totalEventsTracked: number;
-  eventsTrackedThisSession: number;
-  lastEventTimestamp: number | null;
+  totalEventsTracked: number
+  eventsTrackedThisSession: number
+  lastEventTimestamp: number | null
 
   // Error Tracking
-  errorCount: number;
-  lastError: { message: string; timestamp: number } | null;
+  errorCount: number
+  lastError: { message: string; timestamp: number } | null
 
   // Performance
-  performanceMetricsEnabled: boolean;
-  coreWebVitalsEnabled: boolean;
+  performanceMetricsEnabled: boolean
+  coreWebVitalsEnabled: boolean
 
   // Status
-  initialized: boolean;
-  isLoading: boolean;
+  initialized: boolean
+  isLoading: boolean
 }
 
 export interface TelemetryActions {
   // Initialization
-  initialize: () => void;
-  reset: () => void;
+  initialize: () => void
+  reset: () => void
 
   // Consent Management
-  setConsent: (category: ConsentCategory, enabled: boolean) => void;
-  setFullConsent: (consent: ConsentState) => void;
-  acceptAllConsent: () => void;
-  rejectAllConsent: () => void;
-  dismissConsentBanner: () => void;
-  showConsentBanner: () => void;
+  setConsent: (category: ConsentCategory, enabled: boolean) => void
+  setFullConsent: (consent: ConsentState) => void
+  acceptAllConsent: () => void
+  rejectAllConsent: () => void
+  dismissConsentBanner: () => void
+  showConsentBanner: () => void
 
   // Debug Mode
-  setDebugMode: (enabled: boolean) => void;
-  toggleDebugMode: () => void;
-  setDebugPanelOpen: (open: boolean) => void;
-  toggleDebugPanel: () => void;
+  setDebugMode: (enabled: boolean) => void
+  toggleDebugMode: () => void
+  setDebugPanelOpen: (open: boolean) => void
+  toggleDebugPanel: () => void
 
   // Event Management
-  addRecentEvent: (event: TrackedEvent) => void;
-  clearRecentEvents: () => void;
+  addRecentEvent: (event: TrackedEvent) => void
+  clearRecentEvents: () => void
 
   // User Identification
-  setUserId: (userId: string | null) => void;
-  setAnonymousId: (anonymousId: string | null) => void;
-  setSessionId: (sessionId: string | null) => void;
+  setUserId: (userId: string | null) => void
+  setAnonymousId: (anonymousId: string | null) => void
+  setSessionId: (sessionId: string | null) => void
 
   // Tracking Control
-  setTrackingEnabled: (enabled: boolean) => void;
-  incrementEventCount: () => void;
+  setTrackingEnabled: (enabled: boolean) => void
+  incrementEventCount: () => void
 
   // Error Tracking
-  recordError: (message: string) => void;
-  clearError: () => void;
+  recordError: (message: string) => void
+  clearError: () => void
 
   // Performance
-  setPerformanceMetricsEnabled: (enabled: boolean) => void;
-  setCoreWebVitalsEnabled: (enabled: boolean) => void;
+  setPerformanceMetricsEnabled: (enabled: boolean) => void
+  setCoreWebVitalsEnabled: (enabled: boolean) => void
 
   // Helpers
-  hasConsent: (category: ConsentCategory) => boolean;
-  canTrack: () => boolean;
+  hasConsent: (category: ConsentCategory) => boolean
+  canTrack: () => boolean
 }
 
-export type TelemetryStore = TelemetryState & TelemetryActions;
+export type TelemetryStore = TelemetryState & TelemetryActions
 
 // ============================================================================
 // Initial State
@@ -146,7 +146,7 @@ const initialState: TelemetryState = {
   // Status
   initialized: false,
   isLoading: false,
-};
+}
 
 // ============================================================================
 // Store
@@ -166,23 +166,23 @@ export const useTelemetryStore = create<TelemetryStore>()(
           set(
             (state) => {
               if (state.initialized) {
-                return;
+                return
               }
 
               // Generate anonymous ID if not present
               if (!state.anonymousId) {
-                const timestamp = Date.now().toString(36);
-                const random = Math.random().toString(36).substring(2, 11);
-                state.anonymousId = `anon_${timestamp}${random}`;
+                const timestamp = Date.now().toString(36)
+                const random = Math.random().toString(36).substring(2, 11)
+                state.anonymousId = `anon_${timestamp}${random}`
               }
 
               // Check if consent needs to be shown
               if (!state.consentBannerDismissed && !state.consent[ConsentCategory.ANALYTICS]) {
-                state.consentBannerShown = true;
+                state.consentBannerShown = true
               }
 
-              state.initialized = true;
-              state.eventsTrackedThisSession = 0;
+              state.initialized = true
+              state.eventsTrackedThisSession = 0
             },
             false,
             'telemetry/initialize'
@@ -207,16 +207,16 @@ export const useTelemetryStore = create<TelemetryStore>()(
             (state) => {
               // Essential cannot be disabled
               if (category === ConsentCategory.ESSENTIAL) {
-                return;
+                return
               }
 
-              state.consent[category] = enabled;
-              state.consent.timestamp = Date.now();
-              state.consent.version = CONSENT_VERSION;
+              state.consent[category] = enabled
+              state.consent.timestamp = Date.now()
+              state.consent.version = CONSENT_VERSION
 
               // Disable tracking if analytics consent removed
               if (category === ConsentCategory.ANALYTICS && !enabled) {
-                state.recentEvents = [];
+                state.recentEvents = []
               }
             },
             false,
@@ -226,7 +226,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setFullConsent: (consent) =>
           set(
             (state) => {
-              state.consent = { ...consent, timestamp: Date.now() };
+              state.consent = { ...consent, timestamp: Date.now() }
             },
             false,
             'telemetry/setFullConsent'
@@ -242,9 +242,9 @@ export const useTelemetryStore = create<TelemetryStore>()(
                 [ConsentCategory.MARKETING]: true,
                 timestamp: Date.now(),
                 version: CONSENT_VERSION,
-              };
-              state.consentBannerDismissed = true;
-              state.consentBannerShown = false;
+              }
+              state.consentBannerDismissed = true
+              state.consentBannerShown = false
             },
             false,
             'telemetry/acceptAllConsent'
@@ -260,10 +260,10 @@ export const useTelemetryStore = create<TelemetryStore>()(
                 [ConsentCategory.MARKETING]: false,
                 timestamp: Date.now(),
                 version: CONSENT_VERSION,
-              };
-              state.consentBannerDismissed = true;
-              state.consentBannerShown = false;
-              state.recentEvents = [];
+              }
+              state.consentBannerDismissed = true
+              state.consentBannerShown = false
+              state.recentEvents = []
             },
             false,
             'telemetry/rejectAllConsent'
@@ -272,8 +272,8 @@ export const useTelemetryStore = create<TelemetryStore>()(
         dismissConsentBanner: () =>
           set(
             (state) => {
-              state.consentBannerDismissed = true;
-              state.consentBannerShown = false;
+              state.consentBannerDismissed = true
+              state.consentBannerShown = false
             },
             false,
             'telemetry/dismissConsentBanner'
@@ -282,7 +282,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         showConsentBanner: () =>
           set(
             (state) => {
-              state.consentBannerShown = true;
+              state.consentBannerShown = true
             },
             false,
             'telemetry/showConsentBanner'
@@ -295,9 +295,9 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setDebugMode: (enabled) =>
           set(
             (state) => {
-              state.debugMode = enabled;
+              state.debugMode = enabled
               if (!enabled) {
-                state.debugPanelOpen = false;
+                state.debugPanelOpen = false
               }
             },
             false,
@@ -307,9 +307,9 @@ export const useTelemetryStore = create<TelemetryStore>()(
         toggleDebugMode: () =>
           set(
             (state) => {
-              state.debugMode = !state.debugMode;
+              state.debugMode = !state.debugMode
               if (!state.debugMode) {
-                state.debugPanelOpen = false;
+                state.debugPanelOpen = false
               }
             },
             false,
@@ -319,7 +319,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setDebugPanelOpen: (open) =>
           set(
             (state) => {
-              state.debugPanelOpen = open && state.debugMode;
+              state.debugPanelOpen = open && state.debugMode
             },
             false,
             'telemetry/setDebugPanelOpen'
@@ -329,7 +329,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
           set(
             (state) => {
               if (state.debugMode) {
-                state.debugPanelOpen = !state.debugPanelOpen;
+                state.debugPanelOpen = !state.debugPanelOpen
               }
             },
             false,
@@ -343,11 +343,11 @@ export const useTelemetryStore = create<TelemetryStore>()(
         addRecentEvent: (event) =>
           set(
             (state) => {
-              state.recentEvents.unshift(event);
+              state.recentEvents.unshift(event)
               if (state.recentEvents.length > state.maxRecentEvents) {
-                state.recentEvents = state.recentEvents.slice(0, state.maxRecentEvents);
+                state.recentEvents = state.recentEvents.slice(0, state.maxRecentEvents)
               }
-              state.lastEventTimestamp = Date.now();
+              state.lastEventTimestamp = Date.now()
             },
             false,
             'telemetry/addRecentEvent'
@@ -356,7 +356,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         clearRecentEvents: () =>
           set(
             (state) => {
-              state.recentEvents = [];
+              state.recentEvents = []
             },
             false,
             'telemetry/clearRecentEvents'
@@ -369,7 +369,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setUserId: (userId) =>
           set(
             (state) => {
-              state.userId = userId;
+              state.userId = userId
             },
             false,
             'telemetry/setUserId'
@@ -378,7 +378,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setAnonymousId: (anonymousId) =>
           set(
             (state) => {
-              state.anonymousId = anonymousId;
+              state.anonymousId = anonymousId
             },
             false,
             'telemetry/setAnonymousId'
@@ -387,9 +387,9 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setSessionId: (sessionId) =>
           set(
             (state) => {
-              state.sessionId = sessionId;
+              state.sessionId = sessionId
               if (sessionId) {
-                state.eventsTrackedThisSession = 0;
+                state.eventsTrackedThisSession = 0
               }
             },
             false,
@@ -403,7 +403,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setTrackingEnabled: (enabled) =>
           set(
             (state) => {
-              state.trackingEnabled = enabled;
+              state.trackingEnabled = enabled
             },
             false,
             'telemetry/setTrackingEnabled'
@@ -412,8 +412,8 @@ export const useTelemetryStore = create<TelemetryStore>()(
         incrementEventCount: () =>
           set(
             (state) => {
-              state.totalEventsTracked++;
-              state.eventsTrackedThisSession++;
+              state.totalEventsTracked++
+              state.eventsTrackedThisSession++
             },
             false,
             'telemetry/incrementEventCount'
@@ -426,8 +426,8 @@ export const useTelemetryStore = create<TelemetryStore>()(
         recordError: (message) =>
           set(
             (state) => {
-              state.errorCount++;
-              state.lastError = { message, timestamp: Date.now() };
+              state.errorCount++
+              state.lastError = { message, timestamp: Date.now() }
             },
             false,
             'telemetry/recordError'
@@ -436,7 +436,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         clearError: () =>
           set(
             (state) => {
-              state.lastError = null;
+              state.lastError = null
             },
             false,
             'telemetry/clearError'
@@ -449,7 +449,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setPerformanceMetricsEnabled: (enabled) =>
           set(
             (state) => {
-              state.performanceMetricsEnabled = enabled;
+              state.performanceMetricsEnabled = enabled
             },
             false,
             'telemetry/setPerformanceMetricsEnabled'
@@ -458,7 +458,7 @@ export const useTelemetryStore = create<TelemetryStore>()(
         setCoreWebVitalsEnabled: (enabled) =>
           set(
             (state) => {
-              state.coreWebVitalsEnabled = enabled;
+              state.coreWebVitalsEnabled = enabled
             },
             false,
             'telemetry/setCoreWebVitalsEnabled'
@@ -469,20 +469,20 @@ export const useTelemetryStore = create<TelemetryStore>()(
         // ====================================================================
 
         hasConsent: (category) => {
-          const state = get();
+          const state = get()
           if (category === ConsentCategory.ESSENTIAL) {
-            return true;
+            return true
           }
-          return state.consent[category] === true;
+          return state.consent[category] === true
         },
 
         canTrack: () => {
-          const state = get();
+          const state = get()
           return (
             state.trackingEnabled &&
             state.initialized &&
             state.consent[ConsentCategory.ANALYTICS] === true
-          );
+          )
         },
       })),
       {
@@ -500,46 +500,44 @@ export const useTelemetryStore = create<TelemetryStore>()(
     ),
     { name: 'telemetry-store' }
   )
-);
+)
 
 // ============================================================================
 // Selectors
 // ============================================================================
 
-export const selectConsent = (state: TelemetryStore): ConsentState => state.consent;
+export const selectConsent = (state: TelemetryStore): ConsentState => state.consent
 
 export const selectHasAnalyticsConsent = (state: TelemetryStore): boolean =>
-  state.consent[ConsentCategory.ANALYTICS] === true;
+  state.consent[ConsentCategory.ANALYTICS] === true
 
 export const selectHasFunctionalConsent = (state: TelemetryStore): boolean =>
-  state.consent[ConsentCategory.FUNCTIONAL] === true;
+  state.consent[ConsentCategory.FUNCTIONAL] === true
 
 export const selectHasMarketingConsent = (state: TelemetryStore): boolean =>
-  state.consent[ConsentCategory.MARKETING] === true;
+  state.consent[ConsentCategory.MARKETING] === true
 
 export const selectShouldShowConsentBanner = (state: TelemetryStore): boolean =>
-  !state.consentBannerDismissed && state.consentBannerShown;
+  !state.consentBannerDismissed && state.consentBannerShown
 
-export const selectIsDebugMode = (state: TelemetryStore): boolean => state.debugMode;
+export const selectIsDebugMode = (state: TelemetryStore): boolean => state.debugMode
 
 export const selectIsDebugPanelOpen = (state: TelemetryStore): boolean =>
-  state.debugMode && state.debugPanelOpen;
+  state.debugMode && state.debugPanelOpen
 
-export const selectRecentEvents = (state: TelemetryStore): TrackedEvent[] => state.recentEvents;
+export const selectRecentEvents = (state: TelemetryStore): TrackedEvent[] => state.recentEvents
 
 export const selectEventStats = (state: TelemetryStore) => ({
   totalTracked: state.totalEventsTracked,
   sessionTracked: state.eventsTrackedThisSession,
   lastTimestamp: state.lastEventTimestamp,
-});
+})
 
 export const selectUserInfo = (state: TelemetryStore) => ({
   userId: state.userId,
   anonymousId: state.anonymousId,
   sessionId: state.sessionId,
-});
+})
 
 export const selectCanTrack = (state: TelemetryStore): boolean =>
-  state.trackingEnabled &&
-  state.initialized &&
-  state.consent[ConsentCategory.ANALYTICS] === true;
+  state.trackingEnabled && state.initialized && state.consent[ConsentCategory.ANALYTICS] === true

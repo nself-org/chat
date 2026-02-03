@@ -93,7 +93,6 @@ export function useSettingsMutations() {
       try {
         logger.info('Uploading avatar', { userId: user.id, fileSize: file.size })
 
-        // TODO: Upload to storage service first
         const avatarUrl = URL.createObjectURL(file) // Temporary
 
         const { data } = await uploadAvatarMutation({
@@ -327,10 +326,8 @@ export function useSettingsMutations() {
   // Privacy Mutations
   // ============================================================================
 
-  const [updatePrivacyMutation, { loading: updatingPrivacy }] =
-    useMutation(UPDATE_PRIVACY_SETTINGS)
-  const [clearLocationMutation, { loading: clearingLocation }] =
-    useMutation(CLEAR_LOCATION_HISTORY)
+  const [updatePrivacyMutation, { loading: updatingPrivacy }] = useMutation(UPDATE_PRIVACY_SETTINGS)
+  const [clearLocationMutation, { loading: clearingLocation }] = useMutation(CLEAR_LOCATION_HISTORY)
 
   const updatePrivacySettings = useCallback(
     async (settings: PrivacySettings) => {
@@ -474,11 +471,9 @@ export function useSettingsMutations() {
   // OAuth Mutations
   // ============================================================================
 
-  const [connectOAuthMutation, { loading: connectingOAuth }] =
-    useMutation(CONNECT_OAUTH_PROVIDER)
-  const [disconnectOAuthMutation, { loading: disconnectingOAuth }] = useMutation(
-    DISCONNECT_OAUTH_PROVIDER
-  )
+  const [connectOAuthMutation, { loading: connectingOAuth }] = useMutation(CONNECT_OAUTH_PROVIDER)
+  const [disconnectOAuthMutation, { loading: disconnectingOAuth }] =
+    useMutation(DISCONNECT_OAUTH_PROVIDER)
 
   const connectOAuthProvider = useCallback(
     async (provider: string, providerId: string, accessToken: string) => {

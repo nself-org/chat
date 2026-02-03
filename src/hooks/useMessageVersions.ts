@@ -83,16 +83,11 @@ export interface UseMessageVersionsReturn {
 /**
  * Hook for working with message versions and comparisons.
  */
-export function useMessageVersions(
-  options: UseMessageVersionsOptions
-): UseMessageVersionsReturn {
+export function useMessageVersions(options: UseMessageVersionsOptions): UseMessageVersionsReturn {
   const { messageId, initialLeftVersion, initialRightVersion } = options
 
   // Load history from cache
-  const history = useMemo(
-    () => getCachedHistory(messageId),
-    [messageId]
-  )
+  const history = useMemo(() => getCachedHistory(messageId), [messageId])
 
   const versions = history?.versions ?? []
 

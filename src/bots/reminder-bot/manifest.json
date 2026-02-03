@@ -7,11 +7,7 @@
   "icon": "bell",
   "homepage": "https://github.com/nself/nchat",
   "repository": "https://github.com/nself/nchat",
-  "permissions": [
-    "read_messages",
-    "send_messages",
-    "mention_users"
-  ],
+  "permissions": ["read_messages", "send_messages", "mention_users"],
   "commands": [
     {
       "name": "remind",
@@ -42,9 +38,7 @@
       "name": "reminders",
       "description": "List your active reminders",
       "aliases": ["myreminders"],
-      "examples": [
-        "/reminders"
-      ]
+      "examples": ["/reminders"]
     },
     {
       "name": "cancelreminder",
@@ -58,9 +52,7 @@
           "required": true
         }
       ],
-      "examples": [
-        "/cancelreminder rem_abc123"
-      ]
+      "examples": ["/cancelreminder rem_abc123"]
     },
     {
       "name": "snooze",
@@ -80,10 +72,7 @@
           "default": "10m"
         }
       ],
-      "examples": [
-        "/snooze rem_abc123",
-        "/snooze rem_abc123 30m"
-      ]
+      "examples": ["/snooze rem_abc123", "/snooze rem_abc123 30m"]
     },
     {
       "name": "remindchannel",

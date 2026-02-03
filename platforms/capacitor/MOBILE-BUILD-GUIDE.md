@@ -139,6 +139,7 @@ npx cap open ios
 #### 3. Configure Signing
 
 In Xcode:
+
 1. Select the App target
 2. Go to "Signing & Capabilities"
 3. Select your Team
@@ -148,6 +149,7 @@ In Xcode:
 #### 4. Configure Capabilities
 
 Enable the following capabilities:
+
 - ✅ Push Notifications
 - ✅ Background Modes (Audio, VoIP, Remote notifications)
 - ✅ App Groups (`group.io.nself.chat`)
@@ -187,6 +189,7 @@ The iOS widget is located in `ios/Widget/NChatWidget.swift`:
 - **Large Widget**: Shows 3 recent messages with details
 
 To test widgets:
+
 1. Build and run app on simulator/device
 2. Long-press home screen
 3. Tap "+" button
@@ -198,6 +201,7 @@ To test widgets:
 Located in `ios/ShareExtension/ShareViewController.swift`:
 
 Supports sharing:
+
 - Text
 - URLs
 - Images
@@ -205,6 +209,7 @@ Supports sharing:
 - Files
 
 To test:
+
 1. Open Photos or Safari
 2. Tap Share button
 3. Select "nChat"
@@ -215,11 +220,13 @@ To test:
 Located in `ios/AppClip/AppClipViewController.swift`:
 
 Lightweight version for:
+
 - Quick channel joining
 - Viewing shared messages
 - Trial before install
 
 To test:
+
 1. Configure associated domains
 2. Build App Clip target
 3. Test with App Clip code or NFC tag
@@ -301,6 +308,7 @@ npx cap run android
 Widget provider located in `android/src/main/java/io/nself/chat/widgets/NChatWidgetProvider.kt`:
 
 Features:
+
 - Shows recent messages
 - Displays unread count
 - Tap to open app
@@ -308,6 +316,7 @@ Features:
 Widget layouts in `android/app/src/main/res/layout/widget_nchat.xml`
 
 To test:
+
 1. Build and install app
 2. Long-press home screen
 3. Tap "Widgets"
@@ -319,12 +328,14 @@ To test:
 Share activity located in `android/src/main/java/io/nself/chat/ShareActivity.kt`:
 
 Supports sharing:
+
 - Text from any app
 - Images (single/multiple)
 - Videos
 - Files
 
 To test:
+
 1. Open any app (Photos, Chrome, etc.)
 2. Share content
 3. Select "nChat"
@@ -335,14 +346,17 @@ To test:
 Shortcut manager in `android/src/main/java/io/nself/chat/shortcuts/ShortcutManager.kt`:
 
 Static shortcuts:
+
 - New Message
 - Search
 - Start Call
 
 Dynamic shortcuts:
+
 - Recent channels (up to 4)
 
 To test:
+
 1. Long-press app icon
 2. See available shortcuts
 
@@ -365,6 +379,7 @@ To test:
 ```
 
 The script will:
+
 1. Build web app
 2. Export for Capacitor
 3. Sync to iOS
@@ -385,6 +400,7 @@ Output: `ios/build/ipa/App.ipa`
 ```
 
 The script will:
+
 1. Build web app
 2. Export for Capacitor
 3. Sync to Android
@@ -393,6 +409,7 @@ The script will:
 6. Sign (if keystore configured)
 
 Outputs:
+
 - AAB: `dist/nchat-release.aab`
 - APK: `dist/nchat-release.apk`
 
@@ -407,6 +424,7 @@ Outputs:
 Metadata location: `metadata/ios/`
 
 Required:
+
 - App icons (various sizes via Assets.xcassets)
 - Screenshots (6.5", 5.5", 12.9" iPad)
 - App preview videos (optional)
@@ -443,6 +461,7 @@ xcrun altool --upload-app \
 #### 4. Review Notes
 
 Provide test credentials:
+
 ```
 Email: demo@nchat.app
 Password: Demo2026!
@@ -457,6 +476,7 @@ Include notes from `metadata/ios/app-store-metadata.json`
 Metadata location: `metadata/android/`
 
 Required:
+
 - App icon (512x512)
 - Feature graphic (1024x500)
 - Screenshots (phone, 7" tablet, 10" tablet)
@@ -488,6 +508,7 @@ Required:
 #### 4. Content Rating
 
 Complete the content rating questionnaire:
+
 - No violence, sexual content, or harmful content
 - Rating: Everyone
 
@@ -506,6 +527,7 @@ Test instructions in `metadata/android/play-store-metadata.json`
 ### Manual Testing Checklist
 
 #### Core Features
+
 - [ ] Login/Signup
 - [ ] Channel browsing
 - [ ] Send/receive messages
@@ -519,6 +541,7 @@ Test instructions in `metadata/android/play-store-metadata.json`
 #### Platform-Specific
 
 **iOS:**
+
 - [ ] Face ID / Touch ID authentication
 - [ ] CallKit integration for calls
 - [ ] Home screen widget
@@ -528,6 +551,7 @@ Test instructions in `metadata/android/play-store-metadata.json`
 - [ ] iPad optimization
 
 **Android:**
+
 - [ ] Fingerprint / face unlock
 - [ ] Telecom integration
 - [ ] Home screen widget
@@ -672,6 +696,7 @@ GitHub Actions workflows are available in `.github/workflows/`:
 ### Secrets Required
 
 **iOS:**
+
 - `APPLE_ID` - Apple Developer account email
 - `APPLE_PASSWORD` - App-specific password
 - `TEAM_ID` - Developer Team ID
@@ -680,6 +705,7 @@ GitHub Actions workflows are available in `.github/workflows/`:
 - `PROVISIONING_PROFILE` - Base64 encoded profile
 
 **Android:**
+
 - `KEYSTORE_FILE` - Base64 encoded keystore
 - `KEYSTORE_PASSWORD` - Keystore password
 - `KEY_ALIAS` - Key alias

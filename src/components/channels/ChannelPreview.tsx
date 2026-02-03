@@ -20,7 +20,7 @@ import {
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback} from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import {
   Dialog,
@@ -109,13 +109,13 @@ export function ChannelPreview({
           </Button>
         )}
       </DialogTrigger>
-      <DialogContent className={cn('max-w-2xl max-h-[85vh] overflow-y-auto', className)}>
+      <DialogContent className={cn('max-h-[85vh] max-w-2xl overflow-y-auto', className)}>
         <DialogHeader>
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div
                 className={cn(
-                  'p-3 rounded-lg',
+                  'rounded-lg p-3',
                   channel.color ? `bg-[${channel.color}]/10` : 'bg-muted'
                 )}
               >
@@ -129,12 +129,10 @@ export function ChannelPreview({
                 <DialogTitle className="flex items-center gap-2">
                   {channel.name}
                   {channel.isDefault && (
-                    <Star className="h-4 w-4 text-yellow-500 fill-yellow-500" />
+                    <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
                   )}
                 </DialogTitle>
-                {channel.topic && (
-                  <DialogDescription>{channel.topic}</DialogDescription>
-                )}
+                {channel.topic && <DialogDescription>{channel.topic}</DialogDescription>}
               </div>
             </div>
             {showActions && (
@@ -209,7 +207,7 @@ export function ChannelPreview({
           {/* Description */}
           {channel.description && (
             <div>
-              <h4 className="text-sm font-medium mb-2">About</h4>
+              <h4 className="mb-2 text-sm font-medium">About</h4>
               <p className="text-sm text-muted-foreground">{channel.description}</p>
             </div>
           )}
@@ -238,7 +236,7 @@ export function ChannelPreview({
           {/* Detailed Stats */}
           {showStats && (
             <div>
-              <h4 className="text-sm font-medium mb-3">Channel Statistics</h4>
+              <h4 className="mb-3 text-sm font-medium">Channel Statistics</h4>
               <ChannelStats channel={channel} variant="compact" />
             </div>
           )}
@@ -246,7 +244,7 @@ export function ChannelPreview({
           {/* Similar Channels */}
           {showSimilar && allChannels.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium mb-3">Similar Channels</h4>
+              <h4 className="mb-3 text-sm font-medium">Similar Channels</h4>
               <SimilarChannels
                 targetChannel={channel}
                 allChannels={allChannels}
@@ -259,14 +257,12 @@ export function ChannelPreview({
           {/* Recent Members */}
           {channel.members && channel.members.length > 0 && (
             <div>
-              <h4 className="text-sm font-medium mb-3">Recent Members</h4>
+              <h4 className="mb-3 text-sm font-medium">Recent Members</h4>
               <div className="flex items-center gap-2">
                 <div className="flex -space-x-2">
                   {channel.members.slice(0, 5).map((member, index) => (
                     <Avatar key={member.userId} className="h-8 w-8 border-2 border-background">
-                      <AvatarFallback>
-                        {member.userId.slice(0, 2).toUpperCase()}
-                      </AvatarFallback>
+                      <AvatarFallback>{member.userId.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                   ))}
                 </div>

@@ -9,6 +9,8 @@ import { getEmbeddingService } from '@/lib/ai/embeddings'
 import { captureError, addSentryBreadcrumb } from '@/lib/sentry-utils'
 import { Pool } from 'pg'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -73,7 +75,7 @@ export class EmbeddingWorker {
    */
   public async start(): Promise<void> {
     if (this.isRunning) {
-      console.warn('Embedding worker is already running')
+      logger.warn('Embedding worker is already running')
       return
     }
 
@@ -86,7 +88,7 @@ export class EmbeddingWorker {
       config: this.config,
     })
 
-    console.log('[EmbeddingWorker] Started with config:', this.config)
+// REMOVED: console.log('[EmbeddingWorker] Started with config:', this.config)
 
     await this.processLoop()
   }
@@ -96,11 +98,11 @@ export class EmbeddingWorker {
    */
   public async stop(): Promise<void> {
     if (!this.isRunning) {
-      console.warn('Embedding worker is not running')
+      logger.warn('Embedding worker is not running')
       return
     }
 
-    console.log('[EmbeddingWorker] Stopping...')
+// REMOVED: console.log('[EmbeddingWorker] Stopping...')
     this.shouldStop = true
 
     // Wait for current processing to finish (max 30 seconds)
@@ -112,7 +114,7 @@ export class EmbeddingWorker {
     }
 
     if (this.isRunning) {
-      console.warn('[EmbeddingWorker] Force stopped after timeout')
+      logger.warn('[EmbeddingWorker] Force stopped after timeout')
       this.isRunning = false
     }
 
@@ -121,7 +123,7 @@ export class EmbeddingWorker {
       stats: this.stats,
     })
 
-    console.log('[EmbeddingWorker] Stopped')
+// REMOVED: console.log('[EmbeddingWorker] Stopped')
   }
 
   /**
@@ -147,7 +149,7 @@ export class EmbeddingWorker {
         // Short delay before next batch
         await this.sleep(this.config.pollIntervalMs)
       } catch (error) {
-        console.error('[EmbeddingWorker] Error in processing loop:', error)
+        logger.error('[EmbeddingWorker] Error in processing loop:',  error)
         captureError(error as Error, {
           tags: { worker: 'embedding-worker' },
         })
@@ -183,7 +185,7 @@ export class EmbeddingWorker {
     const messages = await this.fetchMessages(messageIds)
 
     if (messages.length === 0) {
-      console.warn('[EmbeddingWorker] No messages found for batch')
+      logger.warn('[EmbeddingWorker] No messages found for batch')
       for (const item of batch) {
         await this.vectorStore.markQueueFailed(item.id, 'Message not found')
       }
@@ -221,22 +223,20 @@ export class EmbeddingWorker {
         this.processingTimes.shift()
       }
       this.stats.averageProcessingTime =
-        this.processingTimes.reduce((a, b) => a + b, 0) /
-        this.processingTimes.length
+        this.processingTimes.reduce((a, b) => a + b, 0) / this.processingTimes.length
 
-      console.log(
-        `[EmbeddingWorker] Processed ${batch.length} embeddings in ${processingTime}ms (${result.cached} cached, ${result.generated} generated)`
-      )
+      // REMOVED: console.log(
+      //   `[EmbeddingWorker] Processed ${batch.length} embeddings in ${processingTime}ms (${result.cached} cached, ${result.generated} generated)`
+      // )
     } catch (error) {
-      console.error('[EmbeddingWorker] Error generating embeddings:', error)
+      logger.error('[EmbeddingWorker] Error generating embeddings:',  error)
       captureError(error as Error, {
         tags: { worker: 'embedding-worker', operation: 'generate-batch' },
         extra: { batchSize: batch.length },
       })
 
       // Mark all items in batch as failed
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error'
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       for (const item of batch) {
         await this.vectorStore.markQueueFailed(item.id, errorMessage)
         this.stats.totalFailed++
@@ -254,8 +254,7 @@ export class EmbeddingWorker {
   ): Promise<Array<{ id: string; content: string }>> {
     const pool = new Pool({
       connectionString:
-        process.env.DATABASE_URL ||
-        'postgresql://postgres:postgres@localhost:5432/postgres',
+        process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/postgres',
       max: 5,
     })
 
@@ -341,9 +340,7 @@ export function getEmbeddingWorker(config?: WorkerConfig): EmbeddingWorker {
 /**
  * Start the embedding worker
  */
-export async function startEmbeddingWorker(
-  config?: WorkerConfig
-): Promise<EmbeddingWorker> {
+export async function startEmbeddingWorker(config?: WorkerConfig): Promise<EmbeddingWorker> {
   const worker = getEmbeddingWorker(config)
   await worker.start()
   return worker

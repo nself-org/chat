@@ -27,7 +27,8 @@ module.exports = {
     },
     'ios.release': {
       type: 'ios.app',
-      binaryPath: 'platforms/capacitor/ios/App/build/Build/Products/Release-iphonesimulator/App.app',
+      binaryPath:
+        'platforms/capacitor/ios/App/build/Build/Products/Release-iphonesimulator/App.app',
       build: 'cd platforms/capacitor && npm run build:ios -- --configuration Release --simulator',
     },
 
@@ -36,7 +37,8 @@ module.exports = {
       type: 'android.apk',
       binaryPath: 'platforms/capacitor/android/app/build/outputs/apk/debug/app-debug.apk',
       build: 'cd platforms/capacitor && npm run build:android -- assembleDebug',
-      testBinaryPath: 'platforms/capacitor/android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk',
+      testBinaryPath:
+        'platforms/capacitor/android/app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk',
     },
     'android.release': {
       type: 'android.apk',

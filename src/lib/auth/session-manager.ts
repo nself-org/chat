@@ -473,7 +473,8 @@ export class SessionManager {
       id: `notif-${Date.now()}-${Math.random().toString(36).slice(2)}`,
       read: false,
       type: 'suspicious-activity',
-      severity: analysis.severity === 'critical' || analysis.severity === 'high' ? 'critical' : 'warning',
+      severity:
+        analysis.severity === 'critical' || analysis.severity === 'high' ? 'critical' : 'warning',
       title: 'Suspicious Activity Detected',
       message: `Suspicious login detected: ${analysis.reasons.join(', ')}`,
       session,

@@ -1,17 +1,12 @@
 'use client'
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  useCallback,
-  ReactNode,
-} from 'react'
+import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react'
 import { useAuth } from './auth-context'
 import { socketManager, SOCKET_EVENTS } from '@/lib/realtime'
 import { useToast } from '@/hooks/use-toast'
 import { captureError } from '@/lib/sentry-utils'
+
+import { logger } from '@/lib/logger'
 
 /**
  * Realtime connection state
@@ -70,8 +65,7 @@ export function RealtimeProvider({
   const { user } = useAuth()
   const { toast } = useToast()
 
-  const [connectionState, setConnectionState] =
-    useState<RealtimeConnectionState>('disconnected')
+  const [connectionState, setConnectionState] = useState<RealtimeConnectionState>('disconnected')
   const [reconnectAttempts, setReconnectAttempts] = useState(0)
   const [lastError, setLastError] = useState<Error | undefined>()
   const [socketId, setSocketId] = useState<string | undefined>()
@@ -83,7 +77,7 @@ export function RealtimeProvider({
    */
   const connect = useCallback(() => {
     if (!user) {
-      console.warn('[Realtime] Cannot connect without user')
+      logger.warn('[Realtime] Cannot connect without user')
       return
     }
 
@@ -108,7 +102,7 @@ export function RealtimeProvider({
         })
       }
     } catch (error) {
-      console.error('[Realtime] Connection error:', error)
+      logger.error('[Realtime] Connection error:', error)
       setConnectionState('error')
       setLastError(error as Error)
       captureError(error as Error, {
@@ -169,7 +163,7 @@ export function RealtimeProvider({
 
     // Handle disconnect
     const handleDisconnect = () => {
-      console.log('[Realtime] Disconnected')
+      // REMOVED: console.log('[Realtime] Disconnected')
       setConnectionState('disconnected')
 
       if (showNotifications) {
@@ -188,7 +182,7 @@ export function RealtimeProvider({
 
     // Handle reconnect
     const handleReconnect = (attemptNumber: number) => {
-      console.log(`[Realtime] Reconnected after ${attemptNumber} attempts`)
+      // REMOVED: console.log(`[Realtime] Reconnected after ${attemptNumber} attempts`)
       setConnectionState('connected')
       setReconnectAttempts(0)
 
@@ -202,14 +196,14 @@ export function RealtimeProvider({
 
     // Handle reconnect attempt
     const handleReconnectAttempt = (attemptNumber: number) => {
-      console.log(`[Realtime] Reconnection attempt ${attemptNumber}`)
+      // REMOVED: console.log(`[Realtime] Reconnection attempt ${attemptNumber}`)
       setConnectionState('reconnecting')
       setReconnectAttempts(attemptNumber)
     }
 
     // Handle error
     const handleError = (error: Error) => {
-      console.error('[Realtime] Error:', error)
+      logger.error('[Realtime] Error:', error)
       setLastError(error)
       setConnectionState('error')
       captureError(error, {
@@ -218,10 +212,7 @@ export function RealtimeProvider({
     }
 
     // Subscribe to events
-    const unsubscribeDisconnect = socketManager.on(
-      SOCKET_EVENTS.DISCONNECT,
-      handleDisconnect
-    )
+    const unsubscribeDisconnect = socketManager.on(SOCKET_EVENTS.DISCONNECT, handleDisconnect)
     const unsubscribeError = socketManager.on(SOCKET_EVENTS.ERROR, handleError)
 
     return () => {

@@ -3,15 +3,7 @@
 import React from 'react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import {
-  Search,
-  Home,
-  ArrowLeft,
-  Hash,
-  User,
-  FileQuestion,
-  MessageSquare,
-} from 'lucide-react'
+import { Search, Home, ArrowLeft, Hash, User, FileQuestion, MessageSquare } from 'lucide-react'
 
 type NotFoundType = 'channel' | 'user' | 'message' | 'file' | 'generic'
 
@@ -62,7 +54,10 @@ interface NotFoundProps {
   className?: string
 }
 
-const typeConfig: Record<NotFoundType, { icon: typeof Hash; defaultTitle: string; defaultDescription: string }> = {
+const typeConfig: Record<
+  NotFoundType,
+  { icon: typeof Hash; defaultTitle: string; defaultDescription: string }
+> = {
   channel: {
     icon: Hash,
     defaultTitle: 'Channel Not Found',
@@ -133,22 +128,20 @@ export function NotFound({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center min-h-[400px] p-8 text-center',
+        'flex min-h-[400px] flex-col items-center justify-center p-8 text-center',
         className
       )}
     >
       {/* Icon */}
-      <div className="mb-6 p-4 bg-zinc-100 dark:bg-zinc-800 rounded-full">
+      <div className="mb-6 rounded-full bg-zinc-100 p-4 dark:bg-zinc-800">
         <Icon className="h-12 w-12 text-zinc-400 dark:text-zinc-500" />
       </div>
 
       {/* Title */}
-      <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 mb-2">
-        {displayTitle}
-      </h2>
+      <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-zinc-100">{displayTitle}</h2>
 
       {/* Description */}
-      <p className="text-base text-zinc-600 dark:text-zinc-400 mb-8 max-w-md">
+      <p className="mb-8 max-w-md text-base text-zinc-600 dark:text-zinc-400">
         {displayDescription}
       </p>
 
@@ -156,19 +149,19 @@ export function NotFound({
       {showSearch && onSearch && (
         <form onSubmit={handleSearch} className="mb-8 w-full max-w-sm">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={searchPlaceholder}
               className={cn(
-                'w-full pl-10 pr-4 py-2 rounded-lg',
+                'w-full rounded-lg py-2 pl-10 pr-4',
                 'border border-zinc-200 dark:border-zinc-700',
                 'bg-white dark:bg-zinc-800',
                 'text-zinc-900 dark:text-zinc-100',
                 'placeholder:text-zinc-400 dark:placeholder:text-zinc-500',
-                'focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent'
+                'focus:border-transparent focus:outline-none focus:ring-2 focus:ring-primary'
               )}
             />
           </div>
@@ -176,7 +169,7 @@ export function NotFound({
       )}
 
       {/* Action buttons */}
-      <div className="flex flex-wrap gap-3 justify-center">
+      <div className="flex flex-wrap justify-center gap-3">
         {showHomeButton && (
           <Button onClick={handleHome} variant="default" className="gap-2">
             <Home className="h-4 w-4" />

@@ -40,11 +40,12 @@ export function StatsCard({
   ) : null
 
   // Determine trend direction from isPositive if direction not provided
-  const trendDirection = trend?.direction ?? (trend?.isPositive !== undefined
-    ? (trend.isPositive ? 'up' : 'down')
-    : 'neutral')
+  const trendDirection =
+    trend?.direction ??
+    (trend?.isPositive !== undefined ? (trend.isPositive ? 'up' : 'down') : 'neutral')
 
-  const TrendIcon = trendDirection === 'up' ? TrendingUp : trendDirection === 'down' ? TrendingDown : Minus
+  const TrendIcon =
+    trendDirection === 'up' ? TrendingUp : trendDirection === 'down' ? TrendingDown : Minus
 
   const trendColor =
     trendDirection === 'up'
@@ -79,9 +80,7 @@ export function StatsCard({
                 {typeof value === 'number' ? value.toLocaleString() : value}
               </span>
             </div>
-            {description && (
-              <p className="text-xs text-muted-foreground">{description}</p>
-            )}
+            {description && <p className="text-xs text-muted-foreground">{description}</p>}
             {trend && (
               <div className={cn('mt-2 flex items-center gap-1 text-xs', trendColor)}>
                 <TrendIcon className="h-3 w-3" />
@@ -89,9 +88,7 @@ export function StatsCard({
                   {trendDirection === 'up' ? '+' : trendDirection === 'down' ? '' : ''}
                   {trend.value}%
                 </span>
-                {trend.label && (
-                  <span className="text-muted-foreground">{trend.label}</span>
-                )}
+                {trend.label && <span className="text-muted-foreground">{trend.label}</span>}
               </div>
             )}
           </>
@@ -135,11 +132,7 @@ export function StatsGrid({ children, columns = 4, className }: StatsGridProps) 
     4: 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
   }
 
-  return (
-    <div className={cn('grid gap-4', gridCols[columns], className)}>
-      {children}
-    </div>
-  )
+  return <div className={cn('grid gap-4', gridCols[columns], className)}>{children}</div>
 }
 
 export default StatsCard

@@ -8,6 +8,7 @@
 'use client'
 
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { logger } from '@/lib/logger'
 import {
   CallStateMachine,
   createCallStateMachine,
@@ -64,9 +65,7 @@ export interface UseCallStateReturn {
 // Hook
 // =============================================================================
 
-export function useCallState(
-  options: UseCallStateOptions = {}
-): UseCallStateReturn {
+export function useCallState(options: UseCallStateOptions = {}): UseCallStateReturn {
   const { autoLog = false, ...config } = options
 
   // State machine instance
@@ -88,6 +87,9 @@ export function useCallState(
         setHistory((prev) => [...prev, event])
 
         if (autoLog) {
+          logger.info(`[Call State] ${event.from} -> ${event.to}`, {
+            reason: event.reason,
+          })
         }
 
         // Call user's onTransition
@@ -96,10 +98,10 @@ export function useCallState(
         }
       },
       onInvalidTransition: (from, to) => {
-        console.warn('[Call State] Invalid transition:', from, '->', to)
+        logger.warn(`[Call State] Invalid transition: ${from} -> ${to}`)
 
         if (config.onInvalidTransition) {
-          config.onInvalidTransition(from, to)
+          config.onInvalidTransition(from as CallState, to as CallState)
         }
       },
     })
@@ -145,12 +147,9 @@ export function useCallState(
   }, [isActive])
 
   // Transitions
-  const canTransitionTo = useCallback(
-    (targetState: CallState): boolean => {
-      return machineRef.current?.canTransitionTo(targetState) || false
-    },
-    []
-  )
+  const canTransitionTo = useCallback((targetState: CallState): boolean => {
+    return machineRef.current?.canTransitionTo(targetState) || false
+  }, [])
 
   const transition = useCallback(
     (targetState: CallState, reason?: string, metadata?: Record<string, any>): boolean => {

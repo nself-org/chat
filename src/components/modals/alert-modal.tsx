@@ -1,13 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
-import {
-  AlertTriangle,
-  AlertCircle,
-  CheckCircle2,
-  Info,
-  type LucideIcon,
-} from 'lucide-react'
+import { AlertTriangle, AlertCircle, CheckCircle2, Info, type LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import {
   BaseModal,
@@ -101,14 +95,14 @@ export function AlertModal({
         <div className="flex items-start gap-4">
           <div
             className={cn(
-              'flex items-center justify-center h-10 w-10 rounded-full shrink-0',
+              'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
               config.bgColor,
               config.iconColor
             )}
           >
             {customIcon || <IconComponent className="h-5 w-5" />}
           </div>
-          <div className="space-y-1.5 pt-0.5 flex-1">
+          <div className="flex-1 space-y-1.5 pt-0.5">
             <ModalTitle>{title}</ModalTitle>
             {typeof message === 'string' ? (
               <ModalDescription>{message}</ModalDescription>
@@ -119,7 +113,7 @@ export function AlertModal({
         </div>
       </ModalHeader>
 
-      {children && <ModalBody className="pt-4 pb-0">{children}</ModalBody>}
+      {children && <ModalBody className="pb-0 pt-4">{children}</ModalBody>}
 
       <ModalFooter className="pt-6">
         <Button onClick={handleClose} className="w-full sm:w-auto">

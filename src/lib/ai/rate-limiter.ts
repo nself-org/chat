@@ -137,10 +137,7 @@ export class RateLimiter {
   // Token Bucket Algorithm
   // ============================================================================
 
-  async checkLimit(
-    key: string,
-    options?: { cost?: number }
-  ): Promise<RateLimitResult> {
+  async checkLimit(key: string, options?: { cost?: number }): Promise<RateLimitResult> {
     const cost = options?.cost || 1
     const now = Date.now()
     const windowMs = this.config.windowMs
@@ -241,7 +238,7 @@ export class RateLimiter {
 
     try {
       // Get all timestamps in current window
-      const timestamps = await this.cache.get<number[]>(redisKey) || []
+      const timestamps = (await this.cache.get<number[]>(redisKey)) || []
 
       // Remove expired timestamps
       const validTimestamps = timestamps.filter((ts) => now - ts < windowMs)
@@ -294,19 +291,13 @@ export class RateLimiter {
   // Convenience Methods
   // ============================================================================
 
-  async checkUserLimit(
-    userId: string,
-    endpoint: string
-  ): Promise<RateLimitResult> {
+  async checkUserLimit(userId: string, endpoint: string): Promise<RateLimitResult> {
     const key = `user:${userId}:${endpoint}`
     addSentryBreadcrumb('ai', 'Checking user rate limit', { userId, endpoint })
     return this.checkLimit(key)
   }
 
-  async checkOrgLimit(
-    orgId: string,
-    endpoint: string
-  ): Promise<RateLimitResult> {
+  async checkOrgLimit(orgId: string, endpoint: string): Promise<RateLimitResult> {
     const key = `org:${orgId}:${endpoint}`
     addSentryBreadcrumb('ai', 'Checking org rate limit', { orgId, endpoint })
     return this.checkLimit(key)
@@ -402,10 +393,7 @@ export class RateLimiter {
 
 const limiterInstances = new Map<string, RateLimiter>()
 
-export function getRateLimiter(
-  name: string,
-  config: RateLimitConfig
-): RateLimiter {
+export function getRateLimiter(name: string, config: RateLimitConfig): RateLimiter {
   if (!limiterInstances.has(name)) {
     limiterInstances.set(name, new RateLimiter(config))
   }
@@ -457,9 +445,7 @@ export interface RateLimitCheckOptions {
   orgLimiter?: RateLimiter
 }
 
-export async function checkAIRateLimit(
-  options: RateLimitCheckOptions
-): Promise<RateLimitResult> {
+export async function checkAIRateLimit(options: RateLimitCheckOptions): Promise<RateLimitResult> {
   const { userId, orgId, endpoint, userLimiter, orgLimiter } = options
 
   // Check user limit first (most restrictive)

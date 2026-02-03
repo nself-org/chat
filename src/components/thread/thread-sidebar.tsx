@@ -24,12 +24,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -110,19 +105,17 @@ function ThreadItem({ thread, isSelected, onSelect, hasUnread }: ThreadItemProps
       type="button"
       onClick={onSelect}
       className={cn(
-        'w-full text-left px-3 py-2.5 rounded-lg transition-colors',
+        'w-full rounded-lg px-3 py-2.5 text-left transition-colors',
         'hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
         isSelected && 'bg-muted',
         hasUnread && 'bg-primary/5'
       )}
     >
       {/* Header row - Channel name and time */}
-      <div className="flex items-center justify-between gap-2 mb-1">
-        <div className="flex items-center gap-1.5 min-w-0">
+      <div className="mb-1 flex items-center justify-between gap-2">
+        <div className="flex min-w-0 items-center gap-1.5">
           {channel && (
-            <span className="text-xs text-muted-foreground truncate">
-              #{channel.name}
-            </span>
+            <span className="truncate text-xs text-muted-foreground">#{channel.name}</span>
           )}
           {hasUnread && (
             <Badge variant="default" className="h-4 px-1 text-[10px]">
@@ -131,7 +124,7 @@ function ThreadItem({ thread, isSelected, onSelect, hasUnread }: ThreadItemProps
           )}
         </div>
         {threadData.last_reply_at && (
-          <span className="text-xs text-muted-foreground shrink-0">
+          <span className="shrink-0 text-xs text-muted-foreground">
             {formatRelativeTime(threadData.last_reply_at)}
           </span>
         )}
@@ -139,19 +132,17 @@ function ThreadItem({ thread, isSelected, onSelect, hasUnread }: ThreadItemProps
 
       {/* Parent message preview */}
       {parentMessage && (
-        <div className="flex items-start gap-2 mb-1.5">
+        <div className="mb-1.5 flex items-start gap-2">
           <Avatar className="h-5 w-5 shrink-0">
             <AvatarImage
               src={parentMessage.user?.avatar_url}
               alt={parentMessage.user?.display_name || parentMessage.user?.username}
             />
             <AvatarFallback className="text-[8px]">
-              {getInitials(
-                parentMessage.user?.display_name || parentMessage.user?.username || '?'
-              )}
+              {getInitials(parentMessage.user?.display_name || parentMessage.user?.username || '?')}
             </AvatarFallback>
           </Avatar>
-          <p className="text-sm font-medium line-clamp-1">
+          <p className="line-clamp-1 text-sm font-medium">
             {truncateContent(parentMessage.content)}
           </p>
         </div>
@@ -167,8 +158,9 @@ function ThreadItem({ thread, isSelected, onSelect, hasUnread }: ThreadItemProps
         </div>
 
         {latestReply && (
-          <span className="text-xs text-muted-foreground truncate max-w-[120px]">
-            {latestReply.user?.display_name || latestReply.user?.username}: {truncateContent(latestReply.content, 30)}
+          <span className="max-w-[120px] truncate text-xs text-muted-foreground">
+            {latestReply.user?.display_name || latestReply.user?.username}:{' '}
+            {truncateContent(latestReply.content, 30)}
           </span>
         )}
       </div>
@@ -182,13 +174,13 @@ function ThreadItem({ thread, isSelected, onSelect, hasUnread }: ThreadItemProps
 
 function ThreadItemSkeleton() {
   return (
-    <div className="px-3 py-2.5 space-y-2">
+    <div className="space-y-2 px-3 py-2.5">
       <div className="flex items-center justify-between">
         <Skeleton className="h-3 w-20" />
         <Skeleton className="h-3 w-12" />
       </div>
       <div className="flex items-start gap-2">
-        <Skeleton className="h-5 w-5 rounded-full shrink-0" />
+        <Skeleton className="h-5 w-5 shrink-0 rounded-full" />
         <Skeleton className="h-4 w-full" />
       </div>
       <div className="flex items-center justify-between">
@@ -229,12 +221,12 @@ function EmptyState({ filter }: EmptyStateProps) {
   const { icon: Icon, title, description } = messages[filter]
 
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
+    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
         <Icon className="h-6 w-6 text-muted-foreground" />
       </div>
-      <h3 className="text-sm font-medium mb-1">{title}</h3>
-      <p className="text-xs text-muted-foreground max-w-[200px]">{description}</p>
+      <h3 className="mb-1 text-sm font-medium">{title}</h3>
+      <p className="max-w-[200px] text-xs text-muted-foreground">{description}</p>
     </div>
   )
 }
@@ -307,15 +299,10 @@ export function ThreadSidebar({
 
   return (
     <TooltipProvider>
-      <div
-        className={cn(
-          'flex flex-col h-full bg-background border-r',
-          className
-        )}
-      >
+      <div className={cn('flex h-full flex-col border-r bg-background', className)}>
         {/* Header */}
         {showHeader && (
-          <div className="flex items-center justify-between px-4 py-3 border-b">
+          <div className="flex items-center justify-between border-b px-4 py-3">
             <div className="flex items-center gap-2">
               <MessageSquare className="h-5 w-5 text-muted-foreground" />
               <h2 className="font-semibold">Threads</h2>
@@ -353,13 +340,11 @@ export function ThreadSidebar({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem onClick={handleMarkAllRead}>
-                    <CheckCheck className="h-4 w-4 mr-2" />
+                    <CheckCheck className="mr-2 h-4 w-4" />
                     Mark all as read
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => refetch()}>
-                    Refresh
-                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => refetch()}>Refresh</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
 
@@ -367,12 +352,7 @@ export function ThreadSidebar({
               {onClose && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-8 w-8"
-                      onClick={onClose}
-                    >
+                    <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onClose}>
                       <X className="h-4 w-4" />
                       <span className="sr-only">Close</span>
                     </Button>
@@ -386,22 +366,22 @@ export function ThreadSidebar({
 
         {/* Search bar (collapsible) */}
         {showSearch && (
-          <div className="px-3 py-2 border-b">
+          <div className="border-b px-3 py-2">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
                 placeholder="Search threads..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 h-8 text-sm"
+                className="h-8 pl-8 text-sm"
                 autoFocus
               />
               {searchQuery && (
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6"
+                  className="absolute right-1 top-1/2 h-6 w-6 -translate-y-1/2"
                   onClick={() => setSearchQuery('')}
                 >
                   <X className="h-3 w-3" />
@@ -418,16 +398,13 @@ export function ThreadSidebar({
           className="w-full"
         >
           <div className="border-b px-2">
-            <TabsList className="w-full h-9 p-0.5 bg-transparent">
-              <TabsTrigger
-                value="all"
-                className="flex-1 h-7 text-xs data-[state=active]:bg-muted"
-              >
+            <TabsList className="h-9 w-full bg-transparent p-0.5">
+              <TabsTrigger value="all" className="h-7 flex-1 text-xs data-[state=active]:bg-muted">
                 All
               </TabsTrigger>
               <TabsTrigger
                 value="unread"
-                className="flex-1 h-7 text-xs data-[state=active]:bg-muted"
+                className="h-7 flex-1 text-xs data-[state=active]:bg-muted"
               >
                 Unread
                 {unreadCount > 0 && (
@@ -438,7 +415,7 @@ export function ThreadSidebar({
               </TabsTrigger>
               <TabsTrigger
                 value="following"
-                className="flex-1 h-7 text-xs data-[state=active]:bg-muted"
+                className="h-7 flex-1 text-xs data-[state=active]:bg-muted"
               >
                 Following
               </TabsTrigger>
@@ -447,7 +424,7 @@ export function ThreadSidebar({
 
           {/* Thread list */}
           <ScrollArea className="flex-1">
-            <div className="p-2 space-y-1">
+            <div className="space-y-1 p-2">
               {/* Loading state */}
               {loading && threads.length === 0 && (
                 <>
@@ -459,8 +436,8 @@ export function ThreadSidebar({
 
               {/* Error state */}
               {error && !loading && (
-                <div className="flex flex-col items-center justify-center py-8 px-4 text-center">
-                  <p className="text-sm text-destructive mb-2">Failed to load threads</p>
+                <div className="flex flex-col items-center justify-center px-4 py-8 text-center">
+                  <p className="mb-2 text-sm text-destructive">Failed to load threads</p>
                   <Button variant="outline" size="sm" onClick={() => refetch()}>
                     Try again
                   </Button>
@@ -522,7 +499,7 @@ export function ThreadSidebarTrigger({
           >
             <MessageSquare className="h-5 w-5" />
             {displayCount > 0 && (
-              <span className="absolute -top-1 -right-1 h-4 min-w-4 px-1 flex items-center justify-center rounded-full bg-primary text-primary-foreground text-[10px] font-medium">
+              <span className="text-primary-foreground absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium">
                 {displayCount > 99 ? '99+' : displayCount}
               </span>
             )}

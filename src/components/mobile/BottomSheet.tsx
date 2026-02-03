@@ -344,7 +344,7 @@ export const BottomSheet = memo(
                     {/* Drag handle */}
                     {showHandle && (
                       <div className="flex items-center justify-center py-3">
-                        <div className="h-1.5 w-12 rounded-full bg-muted-foreground/30" />
+                        <div className="bg-muted-foreground/30 h-1.5 w-12 rounded-full" />
                       </div>
                     )}
 
@@ -357,9 +357,9 @@ export const BottomSheet = memo(
                           'absolute right-4 top-4 z-10',
                           'flex h-8 w-8 items-center justify-center',
                           'rounded-full bg-muted',
-                          'transition-colors hover:bg-muted/80',
+                          'hover:bg-muted/80 transition-colors',
                           'touch-manipulation',
-                          preventClose && 'opacity-50 cursor-not-allowed'
+                          preventClose && 'cursor-not-allowed opacity-50'
                         )}
                         aria-label="Close"
                       >
@@ -432,9 +432,7 @@ export const ActionBottomSheet = memo(function ActionBottomSheet({
         {(title || description) && (
           <div className="space-y-2">
             {title && <h3 className="text-lg font-semibold">{title}</h3>}
-            {description && (
-              <p className="text-sm text-muted-foreground">{description}</p>
-            )}
+            {description && <p className="text-sm text-muted-foreground">{description}</p>}
           </div>
         )}
 
@@ -453,14 +451,14 @@ export const ActionBottomSheet = memo(function ActionBottomSheet({
                 'transition-colors',
                 'touch-manipulation',
                 'min-h-[48px]',
-                !action.disabled && 'hover:bg-accent active:bg-accent/80',
-                action.disabled && 'opacity-50 cursor-not-allowed',
+                !action.disabled && 'active:bg-accent/80 hover:bg-accent',
+                action.disabled && 'cursor-not-allowed opacity-50',
                 action.variant === 'destructive' && !action.disabled && 'text-destructive'
               )}
               style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               {action.icon && (
-                <span className="flex h-5 w-5 items-center justify-center shrink-0">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center">
                   {action.icon}
                 </span>
               )}

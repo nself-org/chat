@@ -6,10 +6,7 @@
  */
 
 // Import types from parent for local use
-import type {
-  SlackMessage,
-  SlackFile,
-} from '../types'
+import type { SlackMessage, SlackFile } from '../types'
 
 // Re-export types from parent
 export type {

@@ -77,10 +77,7 @@ export const StickerPickerTrigger = forwardRef<HTMLButtonElement, StickerPickerT
         ref={ref}
         variant={variant}
         size={size}
-        className={cn(
-          'text-muted-foreground hover:text-foreground transition-colors',
-          className
-        )}
+        className={cn('text-muted-foreground transition-colors hover:text-foreground', className)}
         disabled={disabled}
         {...props}
       >
@@ -97,7 +94,7 @@ export const StickerPickerTrigger = forwardRef<HTMLButtonElement, StickerPickerT
         <PopoverContent
           side={pickerSide}
           align={pickerAlign}
-          className="w-auto p-0 border-0 shadow-xl"
+          className="w-auto border-0 p-0 shadow-xl"
           sideOffset={8}
         >
           <StickerPicker
@@ -161,9 +158,9 @@ export function CompactStickerButton({
           type="button"
           disabled={disabled}
           className={cn(
-            'p-1.5 rounded-md text-muted-foreground hover:text-foreground',
-            'hover:bg-accent transition-colors',
-            'disabled:opacity-50 disabled:cursor-not-allowed',
+            'rounded-md p-1.5 text-muted-foreground hover:text-foreground',
+            'transition-colors hover:bg-accent',
+            'disabled:cursor-not-allowed disabled:opacity-50',
             className
           )}
         >
@@ -173,13 +170,10 @@ export function CompactStickerButton({
       <PopoverContent
         side="top"
         align="end"
-        className="w-auto p-0 border-0 shadow-xl"
+        className="w-auto border-0 p-0 shadow-xl"
         sideOffset={8}
       >
-        <StickerPicker
-          onStickerSelect={handleStickerSelect}
-          onClose={() => setOpen(false)}
-        />
+        <StickerPicker onStickerSelect={handleStickerSelect} onClose={() => setOpen(false)} />
       </PopoverContent>
     </Popover>
   )
@@ -225,10 +219,7 @@ export function MessageInputStickerButton({
                 variant="ghost"
                 size="sm"
                 disabled={disabled}
-                className={cn(
-                  'h-8 w-8 p-0 text-muted-foreground hover:text-foreground',
-                  className
-                )}
+                className={cn('h-8 w-8 p-0 text-muted-foreground hover:text-foreground', className)}
               >
                 <StickerIcon className="h-5 w-5" />
                 <span className="sr-only">Send sticker</span>
@@ -238,7 +229,7 @@ export function MessageInputStickerButton({
           <PopoverContent
             side="top"
             align="end"
-            className="w-auto p-0 border-0 shadow-xl"
+            className="w-auto border-0 p-0 shadow-xl"
             sideOffset={8}
           >
             <StickerPicker
@@ -284,8 +275,8 @@ export function StickerQuickAccess({
         type="button"
         onClick={onMoreClick}
         className={cn(
-          'flex items-center justify-center w-8 h-8 rounded-lg',
-          'text-muted-foreground hover:text-foreground hover:bg-accent',
+          'flex h-8 w-8 items-center justify-center rounded-lg',
+          'text-muted-foreground hover:bg-accent hover:text-foreground',
           'transition-colors'
         )}
         title="More stickers"

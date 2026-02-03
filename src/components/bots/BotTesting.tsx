@@ -99,16 +99,13 @@ export function BotTesting({ bot, className }: BotTestingProps) {
           switch (action.type) {
             case 'send_message':
             case 'reply_message':
-              const message = processTemplate(
-                action.config.message as string,
-                {
-                  user: 'TestUser',
-                  channel: 'test-channel',
-                  message: userMessage,
-                  date: new Date().toLocaleDateString(),
-                  time: new Date().toLocaleTimeString(),
-                }
-              )
+              const message = processTemplate(action.config.message as string, {
+                user: 'TestUser',
+                channel: 'test-channel',
+                message: userMessage,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+              })
               addMessage('bot', message)
               break
 
@@ -124,16 +121,13 @@ export function BotTesting({ bot, className }: BotTestingProps) {
           if (action.config.isCommand) {
             const commandName = action.config.command as string
             if (userMessage.startsWith('/' + commandName)) {
-              const response = processTemplate(
-                action.config.response as string,
-                {
-                  user: 'TestUser',
-                  channel: 'test-channel',
-                  message: userMessage,
-                  date: new Date().toLocaleDateString(),
-                  time: new Date().toLocaleTimeString(),
-                }
-              )
+              const response = processTemplate(action.config.response as string, {
+                user: 'TestUser',
+                channel: 'test-channel',
+                message: userMessage,
+                date: new Date().toLocaleDateString(),
+                time: new Date().toLocaleTimeString(),
+              })
               addMessage('bot', response)
             }
           }
@@ -144,10 +138,7 @@ export function BotTesting({ bot, className }: BotTestingProps) {
   }
 
   // Process template variables
-  const processTemplate = (
-    template: string,
-    vars: Record<string, string>
-  ): string => {
+  const processTemplate = (template: string, vars: Record<string, string>): string => {
     let result = template
     for (const [key, value] of Object.entries(vars)) {
       result = result.replace(new RegExp(`\\{${key}\\}`, 'g'), value)
@@ -199,16 +190,13 @@ export function BotTesting({ bot, className }: BotTestingProps) {
       if (trigger.type === event) {
         for (const action of bot.actions.sort((a, b) => a.order - b.order)) {
           if (action.type === 'send_message' || action.type === 'reply_message') {
-            const message = processTemplate(
-              action.config.message as string,
-              {
-                user: 'NewUser',
-                channel: 'test-channel',
-                message: '',
-                date: new Date().toLocaleDateString(),
-                time: new Date().toLocaleTimeString(),
-              }
-            )
+            const message = processTemplate(action.config.message as string, {
+              user: 'NewUser',
+              channel: 'test-channel',
+              message: '',
+              date: new Date().toLocaleDateString(),
+              time: new Date().toLocaleTimeString(),
+            })
             addMessage('bot', message)
           }
         }
@@ -217,14 +205,12 @@ export function BotTesting({ bot, className }: BotTestingProps) {
   }
 
   return (
-    <div className={cn('flex flex-col h-[500px]', className)}>
+    <div className={cn('flex h-[500px] flex-col', className)}>
       {/* Header */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="mb-4 flex items-center justify-between">
         <div>
           <h4 className="font-medium">Test Sandbox</h4>
-          <p className="text-sm text-muted-foreground">
-            Test your bot before deploying
-          </p>
+          <p className="text-sm text-muted-foreground">Test your bot before deploying</p>
         </div>
         <Button variant="outline" size="sm" onClick={handleClear}>
           Clear Chat
@@ -232,32 +218,20 @@ export function BotTesting({ bot, className }: BotTestingProps) {
       </div>
 
       {/* Quick Actions */}
-      <div className="flex gap-2 mb-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => simulateEvent('user_joined')}
-        >
+      <div className="mb-4 flex gap-2">
+        <Button variant="outline" size="sm" onClick={() => simulateEvent('user_joined')}>
           Simulate Join
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => simulateEvent('user_left')}
-        >
+        <Button variant="outline" size="sm" onClick={() => simulateEvent('user_left')}>
           Simulate Leave
         </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => simulateEvent('reaction_added')}
-        >
+        <Button variant="outline" size="sm" onClick={() => simulateEvent('reaction_added')}>
           Simulate Reaction
         </Button>
       </div>
 
       {/* Messages */}
-      <Card className="flex-1 overflow-y-auto p-4 space-y-3">
+      <Card className="flex-1 space-y-3 overflow-y-auto p-4">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -268,25 +242,23 @@ export function BotTesting({ bot, className }: BotTestingProps) {
             )}
           >
             {message.type === 'bot' && (
-              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm">
+              <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full text-sm text-primary">
                 B
               </div>
             )}
             <div
               className={cn(
                 'max-w-[70%] rounded-lg px-3 py-2',
-                message.type === 'user' && 'bg-primary text-primary-foreground',
+                message.type === 'user' && 'text-primary-foreground bg-primary',
                 message.type === 'bot' && 'bg-muted',
-                message.type === 'system' && 'bg-muted/50 text-muted-foreground text-sm'
+                message.type === 'system' && 'bg-muted/50 text-sm text-muted-foreground'
               )}
             >
               <p className="whitespace-pre-wrap">{message.content}</p>
-              <p className="text-xs opacity-70 mt-1">
-                {message.timestamp.toLocaleTimeString()}
-              </p>
+              <p className="mt-1 text-xs opacity-70">{message.timestamp.toLocaleTimeString()}</p>
             </div>
             {message.type === 'user' && (
-              <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-sm">
+              <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-sm">
                 U
               </div>
             )}
@@ -294,10 +266,10 @@ export function BotTesting({ bot, className }: BotTestingProps) {
         ))}
         {isProcessing && (
           <div className="flex gap-2">
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary text-sm">
+            <div className="bg-primary/10 flex h-8 w-8 items-center justify-center rounded-full text-sm text-primary">
               B
             </div>
-            <div className="bg-muted rounded-lg px-3 py-2">
+            <div className="rounded-lg bg-muted px-3 py-2">
               <span className="animate-pulse">Thinking...</span>
             </div>
           </div>
@@ -306,14 +278,14 @@ export function BotTesting({ bot, className }: BotTestingProps) {
       </Card>
 
       {/* Input */}
-      <div className="flex gap-2 mt-4">
+      <div className="mt-4 flex gap-2">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type a message to test..."
-          className="flex-1 px-3 py-2 rounded-md border border-input bg-background"
+          className="flex-1 rounded-md border border-input bg-background px-3 py-2"
           disabled={isProcessing}
         />
         <Button onClick={handleSend} disabled={isProcessing || !input.trim()}>

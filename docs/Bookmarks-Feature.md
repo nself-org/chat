@@ -86,6 +86,7 @@ Export bookmarks in multiple formats:
 - **HTML**: Styled web page
 
 Export options:
+
 - Include/exclude content
 - Include/exclude attachments
 - Include/exclude metadata
@@ -294,12 +295,7 @@ mutation RemoveBookmark($bookmarkId: uuid!) {
 }
 
 # Update bookmark
-mutation UpdateBookmark(
-  $bookmarkId: uuid!
-  $note: String
-  $tags: jsonb
-  $collectionIds: jsonb
-) {
+mutation UpdateBookmark($bookmarkId: uuid!, $note: String, $tags: jsonb, $collectionIds: jsonb) {
   update_nchat_bookmarks_by_pk(
     pk_columns: { id: $bookmarkId }
     _set: { note: $note, tags: $tags, collection_ids: $collectionIds }
@@ -320,13 +316,7 @@ mutation CreateBookmarkCollection(
   $color: String
 ) {
   insert_nchat_bookmark_collections_one(
-    object: {
-      user_id: $userId
-      name: $name
-      description: $description
-      icon: $icon
-      color: $color
-    }
+    object: { user_id: $userId, name: $name, description: $description, icon: $icon, color: $color }
   ) {
     id
     name
@@ -652,15 +642,19 @@ permissions: {
 ### Common Issues
 
 **Issue**: Bookmarks not syncing across devices
+
 - **Solution**: Check WebSocket connection, verify GraphQL subscriptions
 
 **Issue**: Export not downloading
+
 - **Solution**: Check browser popup blocker, verify API response headers
 
 **Issue**: Search not working
+
 - **Solution**: Check search query length (min 2 characters), verify database indexes
 
 **Issue**: Collections not showing bookmarks
+
 - **Solution**: Verify collection_ids array in bookmark record
 
 ---
@@ -668,6 +662,7 @@ permissions: {
 ## API Reference
 
 See:
+
 - `/src/types/bookmark.ts` - TypeScript type definitions
 - `/src/graphql/queries/bookmarks.ts` - GraphQL queries
 - `/src/graphql/mutations/bookmarks.ts` - GraphQL mutations

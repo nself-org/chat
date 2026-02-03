@@ -5,6 +5,8 @@ import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Camera, Trash2, Upload, Loader2, ImageIcon } from 'lucide-react'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -87,7 +89,7 @@ const CoverPhotoUpload = React.forwardRef<HTMLDivElement, CoverPhotoUploadProps>
         } catch (err) {
           setError('Failed to upload image. Please try again.')
           setPreviewUrl(null)
-          console.error('Cover photo upload error:', err)
+          logger.error('Cover photo upload error:', err)
         } finally {
           setIsUploading(false)
         }
@@ -153,7 +155,7 @@ const CoverPhotoUpload = React.forwardRef<HTMLDivElement, CoverPhotoUploadProps>
         setPreviewUrl(null)
       } catch (err) {
         setError('Failed to remove image')
-        console.error('Cover photo remove error:', err)
+        logger.error('Cover photo remove error:', err)
       } finally {
         setIsUploading(false)
       }
@@ -172,11 +174,11 @@ const CoverPhotoUpload = React.forwardRef<HTMLDivElement, CoverPhotoUploadProps>
         {/* Cover photo area */}
         <div
           className={cn(
-            'relative w-full rounded-lg overflow-hidden border-2 border-dashed',
+            'relative w-full overflow-hidden rounded-lg border-2 border-dashed',
             'transition-colors',
             HEIGHT_CLASSES[height],
             displayUrl ? 'border-transparent' : 'border-muted-foreground/25',
-            isDragging && 'border-primary bg-primary/5',
+            isDragging && 'bg-primary/5 border-primary',
             !disabled && !isUploading && 'cursor-pointer'
           )}
           onClick={triggerFileSelect}
@@ -187,19 +189,13 @@ const CoverPhotoUpload = React.forwardRef<HTMLDivElement, CoverPhotoUploadProps>
         >
           {/* Background */}
           {displayUrl ? (
-            <img
-              src={displayUrl}
-              alt="Cover photo"
-              className="w-full h-full object-cover"
-            />
+            <img src={displayUrl} alt="Cover photo" className="h-full w-full object-cover" />
           ) : (
-            <div className="w-full h-full bg-gradient-to-r from-primary/20 via-primary/10 to-primary/5 flex items-center justify-center">
+            <div className="from-primary/20 via-primary/10 to-primary/5 flex h-full w-full items-center justify-center bg-gradient-to-r">
               <div className="text-center">
-                <ImageIcon className="h-8 w-8 mx-auto text-muted-foreground/50 mb-2" />
+                <ImageIcon className="text-muted-foreground/50 mx-auto mb-2 h-8 w-8" />
                 <p className="text-sm text-muted-foreground">
-                  {isDragging
-                    ? 'Drop image here'
-                    : 'Click or drag to upload cover photo'}
+                  {isDragging ? 'Drop image here' : 'Click or drag to upload cover photo'}
                 </p>
               </div>
             </div>
@@ -207,7 +203,7 @@ const CoverPhotoUpload = React.forwardRef<HTMLDivElement, CoverPhotoUploadProps>
 
           {/* Hover overlay with actions */}
           {!disabled && !isUploading && displayUrl && (
-            <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+            <div className="absolute inset-0 flex items-center justify-center gap-2 bg-black/50 opacity-0 transition-opacity hover:opacity-100">
               <Button
                 type="button"
                 variant="secondary"
@@ -217,7 +213,7 @@ const CoverPhotoUpload = React.forwardRef<HTMLDivElement, CoverPhotoUploadProps>
                   triggerFileSelect()
                 }}
               >
-                <Camera className="h-4 w-4 mr-2" />
+                <Camera className="mr-2 h-4 w-4" />
                 Change
               </Button>
               {onRemove && (
@@ -230,7 +226,7 @@ const CoverPhotoUpload = React.forwardRef<HTMLDivElement, CoverPhotoUploadProps>
                     handleRemove()
                   }}
                 >
-                  <Trash2 className="h-4 w-4 mr-2" />
+                  <Trash2 className="mr-2 h-4 w-4" />
                   Remove
                 </Button>
               )}
@@ -239,8 +235,8 @@ const CoverPhotoUpload = React.forwardRef<HTMLDivElement, CoverPhotoUploadProps>
 
           {/* Loading overlay */}
           {isUploading && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-              <Loader2 className="h-8 w-8 text-white animate-spin" />
+            <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+              <Loader2 className="h-8 w-8 animate-spin text-white" />
             </div>
           )}
         </div>

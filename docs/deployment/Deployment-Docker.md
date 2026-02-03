@@ -35,6 +35,7 @@ docker compose down
 ```
 
 The application will be available at:
+
 - **Application**: http://localhost:3000
 - **Hasura Console**: http://localhost:8080
 - **Mailpit**: http://localhost:8025
@@ -42,11 +43,11 @@ The application will be available at:
 
 ### Default Credentials (Development)
 
-| Service | Username | Password |
-|---------|----------|----------|
-| Hasura | - | `nself-admin-secret` |
-| MinIO | `minio` | `minio123` |
-| PostgreSQL | `postgres` | `postgres` |
+| Service    | Username   | Password             |
+| ---------- | ---------- | -------------------- |
+| Hasura     | -          | `nself-admin-secret` |
+| MinIO      | `minio`    | `minio123`           |
+| PostgreSQL | `postgres` | `postgres`           |
 
 ## Building Images
 
@@ -77,13 +78,13 @@ The application will be available at:
 
 The Dockerfile accepts these build arguments:
 
-| Argument | Description | Default |
-|----------|-------------|---------|
-| `NEXT_PUBLIC_GRAPHQL_URL` | GraphQL endpoint URL | - |
-| `NEXT_PUBLIC_AUTH_URL` | Auth service URL | - |
-| `NEXT_PUBLIC_STORAGE_URL` | Storage service URL | - |
-| `NEXT_PUBLIC_APP_NAME` | Application name | `nchat` |
-| `NEXT_PUBLIC_ENV` | Environment name | `production` |
+| Argument                  | Description          | Default      |
+| ------------------------- | -------------------- | ------------ |
+| `NEXT_PUBLIC_GRAPHQL_URL` | GraphQL endpoint URL | -            |
+| `NEXT_PUBLIC_AUTH_URL`    | Auth service URL     | -            |
+| `NEXT_PUBLIC_STORAGE_URL` | Storage service URL  | -            |
+| `NEXT_PUBLIC_APP_NAME`    | Application name     | `nchat`      |
+| `NEXT_PUBLIC_ENV`         | Environment name     | `production` |
 
 Example:
 
@@ -115,8 +116,8 @@ Development uses volume mounts for hot-reload:
 ```yaml
 volumes:
   - .:/app
-  - /app/node_modules    # Exclude node_modules
-  - /app/.next           # Exclude build output
+  - /app/node_modules # Exclude node_modules
+  - /app/.next # Exclude build output
 ```
 
 ### Environment Variables
@@ -185,11 +186,13 @@ SMTP_PASS=<smtp-password>
 For production, configure SSL certificates:
 
 1. Create SSL directory:
+
    ```bash
    mkdir -p docker/ssl
    ```
 
 2. Add certificates:
+
    ```bash
    docker/ssl/cert.pem
    docker/ssl/key.pem
@@ -233,7 +236,7 @@ All services include health checks:
 
 ```yaml
 healthcheck:
-  test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+  test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
   interval: 30s
   timeout: 10s
   retries: 3
@@ -246,19 +249,19 @@ Configure logging driver:
 
 ```yaml
 logging:
-  driver: "json-file"
+  driver: 'json-file'
   options:
-    max-size: "10m"
-    max-file: "3"
+    max-size: '10m'
+    max-file: '3'
 ```
 
 For centralized logging, use:
 
 ```yaml
 logging:
-  driver: "fluentd"
+  driver: 'fluentd'
   options:
-    fluentd-address: "localhost:24224"
+    fluentd-address: 'localhost:24224'
 ```
 
 ## Troubleshooting
@@ -302,6 +305,7 @@ docker builder prune
 ### Memory Issues
 
 Increase Docker memory limit (Docker Desktop):
+
 - Settings > Resources > Memory > 8GB
 
 ### Hot Reload Not Working
@@ -335,13 +339,14 @@ docker compose exec --user 1001 nchat sh
 
 The production image is optimized:
 
-| Stage | Purpose | Size |
-|-------|---------|------|
-| deps | Install dependencies | ~800MB |
-| builder | Build application | ~1.2GB |
-| runner | Production image | ~200MB |
+| Stage   | Purpose              | Size   |
+| ------- | -------------------- | ------ |
+| deps    | Install dependencies | ~800MB |
+| builder | Build application    | ~1.2GB |
+| runner  | Production image     | ~200MB |
 
 Further optimization:
+
 - Use `output: 'standalone'` in next.config.js
 - Minimize dependencies
 - Use multi-stage builds

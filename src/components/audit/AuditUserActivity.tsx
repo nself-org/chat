@@ -5,14 +5,7 @@
  */
 
 import { useState, useMemo } from 'react'
-import {
-  User,
-  Calendar,
-  Clock,
-  Activity,
-  Filter,
-  ChevronDown,
-} from 'lucide-react'
+import { User, Calendar, Clock, Activity, Filter, ChevronDown } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -85,9 +78,10 @@ function calculateActivitySummary(entries: AuditLogEntry[]): ActivitySummary {
     eventsByDayMap.set(date, (eventsByDayMap.get(date) || 0) + 1)
   })
 
-  const mostActiveCategory = (Object.entries(eventsByCategory) as [AuditCategory, number][])
-    .filter(([, count]) => count > 0)
-    .sort(([, a], [, b]) => b - a)[0]?.[0] || null
+  const mostActiveCategory =
+    (Object.entries(eventsByCategory) as [AuditCategory, number][])
+      .filter(([, count]) => count > 0)
+      .sort(([, a], [, b]) => b - a)[0]?.[0] || null
 
   const eventsByDay = Array.from(eventsByDayMap.entries())
     .map(([date, count]) => ({ date, count }))
@@ -173,10 +167,10 @@ export function AuditUserActivity({
               {userInfo?.email && userInfo.email !== displayName && (
                 <p className="text-sm text-muted-foreground">{userInfo.email}</p>
               )}
-              <p className="text-xs text-muted-foreground mt-1 font-mono">{userId}</p>
+              <p className="mt-1 font-mono text-xs text-muted-foreground">{userId}</p>
             </div>
             <div className="text-right text-sm text-muted-foreground">
-              <div className="flex items-center gap-1 justify-end">
+              <div className="flex items-center justify-end gap-1">
                 <Clock className="h-4 w-4" />
                 Last activity
               </div>
@@ -191,7 +185,7 @@ export function AuditUserActivity({
       </Card>
 
       {/* Activity Summary */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <Card>
           <CardContent className="p-4">
             <p className="text-sm text-muted-foreground">Total Events</p>
@@ -207,18 +201,15 @@ export function AuditUserActivity({
         <Card>
           <CardContent className="p-4">
             <p className="text-sm text-muted-foreground">Most Active</p>
-            <p className="text-2xl font-bold capitalize">
-              {summary.mostActiveCategory || 'N/A'}
-            </p>
+            <p className="text-2xl font-bold capitalize">{summary.mostActiveCategory || 'N/A'}</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-4">
             <p className="text-sm text-muted-foreground">Today</p>
             <p className="text-2xl font-bold">
-              {summary.eventsByDay.find(
-                (d) => d.date === new Date().toISOString().split('T')[0]
-              )?.count || 0}
+              {summary.eventsByDay.find((d) => d.date === new Date().toISOString().split('T')[0])
+                ?.count || 0}
             </p>
           </CardContent>
         </Card>
@@ -238,7 +229,7 @@ export function AuditUserActivity({
                 <Badge
                   key={category}
                   variant="outline"
-                  className={cn('text-sm py-1 px-3', getCategoryBadgeClass(category))}
+                  className={cn('px-3 py-1 text-sm', getCategoryBadgeClass(category))}
                 >
                   <span className="capitalize">{category}</span>
                   <span className="ml-2 font-bold">{count}</span>
@@ -270,10 +261,7 @@ export function AuditUserActivity({
             </SelectContent>
           </Select>
 
-          <Select
-            value={timeRange}
-            onValueChange={(v) => setTimeRange(v as typeof timeRange)}
-          >
+          <Select value={timeRange} onValueChange={(v) => setTimeRange(v as typeof timeRange)}>
             <SelectTrigger className="w-[130px]">
               <SelectValue placeholder="Time range" />
             </SelectTrigger>
@@ -308,7 +296,7 @@ export function AuditUserActivity({
       {filteredEntries.length === 0 ? (
         <Card>
           <CardContent className="py-8 text-center text-muted-foreground">
-            <Activity className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <Activity className="mx-auto mb-2 h-8 w-8 opacity-50" />
             <p>No activity found for the selected filters</p>
           </CardContent>
         </Card>
@@ -320,13 +308,9 @@ export function AuditUserActivity({
           maxHeight="500px"
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           {filteredEntries.map((entry) => (
-            <AuditEventCard
-              key={entry.id}
-              entry={entry}
-              onClick={() => onEntryClick?.(entry)}
-            />
+            <AuditEventCard key={entry.id} entry={entry} onClick={() => onEntryClick?.(entry)} />
           ))}
         </div>
       )}

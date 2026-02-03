@@ -21,13 +21,12 @@ import {
   SEARCH_CHANNEL_THREADS,
   GET_THREAD_ACTIVITY_FEED,
 } from '@/graphql/queries/threads'
-import {
-  CREATE_THREAD,
-  MARK_ALL_THREADS_READ,
-} from '@/graphql/mutations/threads'
+import { CREATE_THREAD, MARK_ALL_THREADS_READ } from '@/graphql/mutations/threads'
 import { USER_THREADS_SUBSCRIPTION } from '@/graphql/threads'
 import { useThreadStore } from '@/stores/thread-store'
 import type { Thread, ThreadMessage } from '@/stores/thread-store'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -111,12 +110,7 @@ export function useThreads({
   const currentUserId = userId || user?.id
 
   // Store actions
-  const {
-    setThreads,
-    setLoadingThreads,
-    setHasMoreThreads,
-    setThreadsCursor,
-  } = useThreadStore()
+  const { setThreads, setLoadingThreads, setHasMoreThreads, setThreadsCursor } = useThreadStore()
 
   // Determine which query to use
   const useChannelThreads = !!channelId
@@ -159,10 +153,7 @@ export function useThreads({
   })
 
   // Query: Unread count
-  const {
-    data: unreadData,
-    refetch: refetchUnreadCount,
-  } = useQuery(GET_UNREAD_THREADS_COUNT, {
+  const { data: unreadData, refetch: refetchUnreadCount } = useQuery(GET_UNREAD_THREADS_COUNT, {
     variables: { userId: currentUserId },
     skip: !currentUserId,
   })
@@ -196,13 +187,20 @@ export function useThreads({
     }
 
     if (useUserThreads && userThreadsData) {
-      return userThreadsData.nchat_thread_participants?.map(
-        (p: { thread: Thread }) => p.thread
-      ) || []
+      return (
+        userThreadsData.nchat_thread_participants?.map((p: { thread: Thread }) => p.thread) || []
+      )
     }
 
     return []
-  }, [channelThreadsData, userThreadsData, searchData, useChannelThreads, useUserThreads, useSearch])
+  }, [
+    channelThreadsData,
+    userThreadsData,
+    searchData,
+    useChannelThreads,
+    useUserThreads,
+    useSearch,
+  ])
 
   const unreadCount = useMemo(() => {
     return unreadData?.nchat_thread_participants_aggregate?.aggregate?.count || 0
@@ -248,7 +246,7 @@ export function useThreads({
 
         return thread || null
       } catch (err) {
-        console.error('Failed to create thread:', err)
+        logger.error('Failed to create thread:', err)
         return null
       }
     },
@@ -264,7 +262,7 @@ export function useThreads({
       })
       await refetchUnreadCount()
     } catch (err) {
-      console.error('Failed to mark all threads as read:', err)
+      logger.error('Failed to mark all threads as read:', err)
     }
   }, [currentUserId, markAllReadMutation, refetchUnreadCount])
 
@@ -279,7 +277,7 @@ export function useThreads({
       }
       await refetchUnreadCount()
     } catch (err) {
-      console.error('Failed to refresh threads:', err)
+      logger.error('Failed to refresh threads:', err)
     }
   }, [
     useSearch,
@@ -307,9 +305,15 @@ export function useThreads({
         })
       }
     } catch (err) {
-      console.error('Failed to load more threads:', err)
+      logger.error('Failed to load more threads:', err)
     }
-  }, [useChannelThreads, useUserThreads, threads.length, fetchMoreChannelThreads, fetchMoreUserThreads])
+  }, [
+    useChannelThreads,
+    useUserThreads,
+    threads.length,
+    fetchMoreChannelThreads,
+    fetchMoreUserThreads,
+  ])
 
   const searchThreads = useCallback(
     async (query: string) => {
@@ -322,7 +326,7 @@ export function useThreads({
           limit,
         })
       } catch (err) {
-        console.error('Failed to search threads:', err)
+        logger.error('Failed to search threads:', err)
       }
     },
     [channelId, limit, refetchSearch]
@@ -367,20 +371,12 @@ export function useThreads({
 // THREAD ACTIVITY HOOK
 // ============================================================================
 
-export function useThreadActivity(
-  options: { limit?: number } = {}
-): UseThreadActivityReturn {
+export function useThreadActivity(options: { limit?: number } = {}): UseThreadActivityReturn {
   const { limit = 50 } = options
   const { user } = useAuth()
 
   // Query: Get thread activity feed
-  const {
-    data,
-    loading,
-    error,
-    fetchMore,
-    refetch,
-  } = useQuery(GET_THREAD_ACTIVITY_FEED, {
+  const { data, loading, error, fetchMore, refetch } = useQuery(GET_THREAD_ACTIVITY_FEED, {
     variables: { userId: user?.id, limit },
     skip: !user?.id,
   })
@@ -389,43 +385,45 @@ export function useThreadActivity(
   const activityItems = useMemo<ThreadActivityItem[]>(() => {
     if (!data?.nchat_messages) return []
 
-    return data.nchat_messages.map((msg: {
-      id: string
-      thread_id: string
-      thread: {
+    return data.nchat_messages.map(
+      (msg: {
         id: string
-        parent_message_id: string
-        channel: {
+        thread_id: string
+        thread: {
           id: string
-          name: string
-          slug: string
+          parent_message_id: string
+          channel: {
+            id: string
+            name: string
+            slug: string
+          }
+        }
+        user_id: string
+        content: string
+        created_at: string
+        mentioned_users?: string[]
+      }) => {
+        // Determine activity type
+        let type: ThreadActivityItem['type'] = 'new_reply'
+        if (msg.mentioned_users?.includes(user?.id || '')) {
+          type = 'mentioned'
+        }
+        if (msg.id === msg.thread.parent_message_id) {
+          type = 'thread_created'
+        }
+
+        return {
+          id: msg.id,
+          type,
+          threadId: msg.thread.id,
+          messageId: msg.id,
+          message: msg as unknown as ThreadMessage,
+          channel: msg.thread.channel,
+          timestamp: new Date(msg.created_at),
+          isRead: false, // TODO: implement read state
         }
       }
-      user_id: string
-      content: string
-      created_at: string
-      mentioned_users?: string[]
-    }) => {
-      // Determine activity type
-      let type: ThreadActivityItem['type'] = 'new_reply'
-      if (msg.mentioned_users?.includes(user?.id || '')) {
-        type = 'mentioned'
-      }
-      if (msg.id === msg.thread.parent_message_id) {
-        type = 'thread_created'
-      }
-
-      return {
-        id: msg.id,
-        type,
-        threadId: msg.thread.id,
-        messageId: msg.id,
-        message: msg as unknown as ThreadMessage,
-        channel: msg.thread.channel,
-        timestamp: new Date(msg.created_at),
-        isRead: false, // TODO: implement read state
-      }
-    })
+    )
   }, [data, user?.id])
 
   // Actions
@@ -440,7 +438,7 @@ export function useThreadActivity(
         },
       })
     } catch (err) {
-      console.error('Failed to load more activity:', err)
+      logger.error('Failed to load more activity:', err)
     }
   }, [fetchMore, limit, activityItems.length])
 
@@ -448,7 +446,7 @@ export function useThreadActivity(
     try {
       await refetch()
     } catch (err) {
-      console.error('Failed to refresh activity:', err)
+      logger.error('Failed to refresh activity:', err)
     }
   }, [refetch])
 

@@ -56,26 +56,20 @@ export function WhatsAppStatus({
 }: WhatsAppStatusProps) {
   return (
     <div
-      className={cn('flex flex-col h-full', className)}
+      className={cn('flex h-full flex-col', className)}
       style={{ backgroundColor: WHATSAPP_COLORS.chatBgDark }}
     >
       {/* Header */}
-      <header
-        className="flex items-center justify-between px-4 py-2"
-        style={{ minHeight: 60 }}
-      >
-        <h1
-          className="text-xl font-bold"
-          style={{ color: WHATSAPP_COLORS.textPrimaryDark }}
-        >
+      <header className="flex items-center justify-between px-4 py-2" style={{ minHeight: 60 }}>
+        <h1 className="text-xl font-bold" style={{ color: WHATSAPP_COLORS.textPrimaryDark }}>
           Status
         </h1>
         <button
           onClick={onMenuClick}
-          className="p-2 rounded-full hover:bg-white/5"
+          className="rounded-full p-2 hover:bg-white/5"
           style={{ color: WHATSAPP_COLORS.textSecondaryDark }}
         >
-          <MoreVertical className="w-5 h-5" />
+          <MoreVertical className="h-5 w-5" />
         </button>
       </header>
 
@@ -84,11 +78,11 @@ export function WhatsAppStatus({
         {/* My Status */}
         <button
           onClick={onMyStatusClick}
-          className="flex items-center gap-3 w-full px-4 py-3 hover:bg-white/5"
+          className="flex w-full items-center gap-3 px-4 py-3 hover:bg-white/5"
         >
           <div className="relative">
-            <div className="w-14 h-14 rounded-full overflow-hidden bg-[#2A3942] flex items-center justify-center">
-              <svg viewBox="0 0 212 212" className="w-full h-full">
+            <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full bg-[#2A3942]">
+              <svg viewBox="0 0 212 212" className="h-full w-full">
                 <path
                   fill="#DFE5E7"
                   d="M106.251.5C164.653.5 212 47.846 212 106.25S164.653 212 106.25 212C47.846 212 .5 164.654.5 106.25S47.846.5 106.251.5z"
@@ -96,13 +90,13 @@ export function WhatsAppStatus({
               </svg>
             </div>
             <div
-              className="absolute bottom-0 right-0 w-6 h-6 rounded-full flex items-center justify-center border-2"
+              className="absolute bottom-0 right-0 flex h-6 w-6 items-center justify-center rounded-full border-2"
               style={{
                 backgroundColor: WHATSAPP_COLORS.primaryGreen,
                 borderColor: WHATSAPP_COLORS.chatBgDark,
               }}
             >
-              <Plus className="w-4 h-4 text-white" />
+              <Plus className="h-4 w-4 text-white" />
             </div>
           </div>
           <div className="text-left">
@@ -163,13 +157,7 @@ export function WhatsAppStatus({
 // Sub-components
 // -------------------------------------------------------------------------------
 
-function StatusItem({
-  status,
-  onClick,
-}: {
-  status: WhatsAppStatusData
-  onClick: () => void
-}) {
+function StatusItem({ status, onClick }: { status: WhatsAppStatusData; onClick: () => void }) {
   const formatTime = (date: Date) => {
     const now = new Date()
     const diffMs = now.getTime() - date.getTime()
@@ -186,10 +174,7 @@ function StatusItem({
   const isFullyViewed = progress >= 1
 
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-3 w-full px-4 py-3 hover:bg-white/5"
-    >
+    <button onClick={onClick} className="flex w-full items-center gap-3 px-4 py-3 hover:bg-white/5">
       {/* Avatar with Ring */}
       <div className="relative">
         <StatusRing
@@ -199,21 +184,19 @@ function StatusItem({
           size={56}
           isMuted={status.isMuted}
         />
-        <div className="absolute inset-1 rounded-full overflow-hidden">
+        <div className="absolute inset-1 overflow-hidden rounded-full">
           {status.userAvatar ? (
             <img
               src={status.userAvatar}
               alt={status.userName}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           ) : (
             <div
-              className="w-full h-full flex items-center justify-center"
+              className="flex h-full w-full items-center justify-center"
               style={{ backgroundColor: '#6B7C85' }}
             >
-              <span className="text-white font-medium">
-                {status.userName[0]?.toUpperCase()}
-              </span>
+              <span className="font-medium text-white">{status.userName[0]?.toUpperCase()}</span>
             </div>
           )}
         </div>
@@ -252,7 +235,7 @@ function StatusRing({
   const segmentAngle = (360 - gapAngle * totalSegments) / totalSegments
 
   return (
-    <svg width={size} height={size} className="transform -rotate-90">
+    <svg width={size} height={size} className="-rotate-90 transform">
       {Array.from({ length: totalSegments }).map((_, i) => {
         const isViewed = i < viewedSegments
         const startAngle = i * (segmentAngle + gapAngle)
@@ -266,13 +249,7 @@ function StatusRing({
             r={radius}
             fill="none"
             strokeWidth={strokeWidth}
-            stroke={
-              isMuted
-                ? '#8696A0'
-                : isViewed
-                ? '#8696A0'
-                : WHATSAPP_COLORS.primaryGreen
-            }
+            stroke={isMuted ? '#8696A0' : isViewed ? '#8696A0' : WHATSAPP_COLORS.primaryGreen}
             strokeDasharray={`${segmentLength} ${circumference}`}
             strokeDashoffset={-startAngle * (circumference / 360)}
             strokeLinecap="round"

@@ -1,13 +1,13 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 import {
   type CustomStatus as CustomStatusType,
   formatDurationRemaining,
   isStatusExpired,
-} from '@/lib/presence/presence-types';
-import { Clock, X } from 'lucide-react';
+} from '@/lib/presence/presence-types'
+import { Clock, X } from 'lucide-react'
 
 // ============================================================================
 // Types
@@ -17,36 +17,36 @@ export interface CustomStatusProps extends React.HTMLAttributes<HTMLDivElement> 
   /**
    * The custom status to display
    */
-  status: CustomStatusType | undefined;
+  status: CustomStatusType | undefined
 
   /**
    * Whether to show the expiration time
    * @default true
    */
-  showExpiration?: boolean;
+  showExpiration?: boolean
 
   /**
    * Whether to show a clear button
    * @default false
    */
-  showClear?: boolean;
+  showClear?: boolean
 
   /**
    * Callback when clear is clicked
    */
-  onClear?: () => void;
+  onClear?: () => void
 
   /**
    * Size variant
    * @default 'default'
    */
-  size?: 'sm' | 'default' | 'lg';
+  size?: 'sm' | 'default' | 'lg'
 
   /**
    * Maximum text length before truncation
    * @default 50
    */
-  maxLength?: number;
+  maxLength?: number
 }
 
 // ============================================================================
@@ -65,39 +65,35 @@ export function CustomStatus({
 }: CustomStatusProps) {
   // Don't render if no status or expired
   if (!status || (!status.emoji && !status.text)) {
-    return null;
+    return null
   }
 
   if (isStatusExpired(status)) {
-    return null;
+    return null
   }
 
-  const hasExpiration = status.expiresAt;
+  const hasExpiration = status.expiresAt
   const displayText = status.text
     ? status.text.length > maxLength
       ? `${status.text.slice(0, maxLength)}...`
       : status.text
-    : null;
+    : null
 
   const sizeClasses = {
     sm: 'text-xs gap-1',
     default: 'text-sm gap-1.5',
     lg: 'text-base gap-2',
-  };
+  }
 
   const emojiSizeClasses = {
     sm: 'text-sm',
     default: 'text-base',
     lg: 'text-lg',
-  };
+  }
 
   return (
     <div
-      className={cn(
-        'flex items-center text-muted-foreground',
-        sizeClasses[size],
-        className
-      )}
+      className={cn('flex items-center text-muted-foreground', sizeClasses[size], className)}
       {...props}
     >
       {/* Emoji */}
@@ -116,7 +112,7 @@ export function CustomStatus({
 
       {/* Expiration */}
       {showExpiration && hasExpiration && (
-        <span className="flex items-center gap-0.5 text-xs opacity-60 flex-shrink-0">
+        <span className="flex flex-shrink-0 items-center gap-0.5 text-xs opacity-60">
           <Clock className="h-3 w-3" />
           {formatDurationRemaining(status.expiresAt)}
         </span>
@@ -126,17 +122,17 @@ export function CustomStatus({
       {showClear && onClear && (
         <button
           onClick={(e) => {
-            e.stopPropagation();
-            onClear();
+            e.stopPropagation()
+            onClear()
           }}
-          className="p-0.5 rounded hover:bg-muted/80 transition-colors flex-shrink-0"
+          className="hover:bg-muted/80 flex-shrink-0 rounded p-0.5 transition-colors"
           aria-label="Clear status"
         >
           <X className="h-3 w-3" />
         </button>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -144,8 +140,8 @@ export function CustomStatus({
 // ============================================================================
 
 export interface CustomStatusBadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  status: CustomStatusType | undefined;
-  maxLength?: number;
+  status: CustomStatusType | undefined
+  maxLength?: number
 }
 
 export function CustomStatusBadge({
@@ -155,23 +151,23 @@ export function CustomStatusBadge({
   ...props
 }: CustomStatusBadgeProps) {
   if (!status || (!status.emoji && !status.text)) {
-    return null;
+    return null
   }
 
   if (isStatusExpired(status)) {
-    return null;
+    return null
   }
 
   const displayText = status.text
     ? status.text.length > maxLength
       ? `${status.text.slice(0, maxLength)}...`
       : status.text
-    : null;
+    : null
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full',
+        'inline-flex items-center gap-1 rounded-full px-1.5 py-0.5',
         'bg-muted text-xs text-muted-foreground',
         className
       )}
@@ -180,7 +176,7 @@ export function CustomStatusBadge({
       {status.emoji && <span>{status.emoji}</span>}
       {displayText && <span className="truncate">{displayText}</span>}
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -188,10 +184,10 @@ export function CustomStatusBadge({
 // ============================================================================
 
 export interface CustomStatusPreviewProps {
-  emoji?: string;
-  text?: string;
-  expiresAt?: Date | null;
-  className?: string;
+  emoji?: string
+  text?: string
+  expiresAt?: Date | null
+  className?: string
 }
 
 export function CustomStatusPreview({
@@ -202,40 +198,31 @@ export function CustomStatusPreview({
 }: CustomStatusPreviewProps) {
   if (!emoji && !text) {
     return (
-      <div className={cn('text-sm text-muted-foreground italic', className)}>
-        No status set
-      </div>
-    );
+      <div className={cn('text-sm italic text-muted-foreground', className)}>No status set</div>
+    )
   }
 
   return (
-    <div
-      className={cn(
-        'flex items-center gap-2 px-3 py-2 rounded-md bg-muted/50',
-        className
-      )}
-    >
+    <div className={cn('bg-muted/50 flex items-center gap-2 rounded-md px-3 py-2', className)}>
       {emoji && (
         <span className="text-lg" role="img" aria-label="status emoji">
           {emoji}
         </span>
       )}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <span className="text-sm">{text || 'No message'}</span>
         {expiresAt && (
-          <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
+          <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
             <Clock className="h-3 w-3" />
             <span>Clears in {formatDurationRemaining(expiresAt)}</span>
           </div>
         )}
         {!expiresAt && text && (
-          <div className="text-xs text-muted-foreground mt-0.5">
-            Does not expire
-          </div>
+          <div className="mt-0.5 text-xs text-muted-foreground">Does not expire</div>
         )}
       </div>
     </div>
-  );
+  )
 }
 
-export default CustomStatus;
+export default CustomStatus

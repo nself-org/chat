@@ -15,6 +15,7 @@ The bookmarks feature is built-in. No installation required!
 ### 1. Bookmark a Message
 
 #### From Message Actions
+
 ```typescript
 // Hover over any message and click the bookmark icon
 <MessageActions messageId={messageId}>
@@ -23,6 +24,7 @@ The bookmarks feature is built-in. No installation required!
 ```
 
 #### Using Hook
+
 ```typescript
 import { useBookmarkMutations } from '@/hooks/use-bookmarks'
 
@@ -161,11 +163,14 @@ await saveMessage({
 
 ```typescript
 // Search with filters
-const { bookmarks } = useBookmarks({
-  searchQuery: 'deployment',
-  channelId: 'channel-devops',
-  hasAttachments: true,
-}, 'bookmarked_at_desc')
+const { bookmarks } = useBookmarks(
+  {
+    searchQuery: 'deployment',
+    channelId: 'channel-devops',
+    hasAttachments: true,
+  },
+  'bookmarked_at_desc'
+)
 
 // Filter by tag
 const { bookmarks } = useBookmarks({
@@ -286,19 +291,9 @@ query GetMyBookmarks {
 ### Add Bookmark
 
 ```graphql
-mutation AddBookmark(
-  $messageId: uuid!
-  $userId: uuid!
-  $note: String
-  $tags: jsonb
-) {
+mutation AddBookmark($messageId: uuid!, $userId: uuid!, $note: String, $tags: jsonb) {
   insert_nchat_bookmarks_one(
-    object: {
-      message_id: $messageId
-      user_id: $userId
-      note: $note
-      tags: $tags
-    }
+    object: { message_id: $messageId, user_id: $userId, note: $note, tags: $tags }
   ) {
     id
     bookmarked_at
@@ -313,10 +308,7 @@ query SearchBookmarks($userId: uuid!, $query: String!) {
   nchat_bookmarks(
     where: {
       user_id: { _eq: $userId }
-      _or: [
-        { message: { content: { _ilike: $query } } }
-        { note: { _ilike: $query } }
-      ]
+      _or: [{ message: { content: { _ilike: $query } } }, { note: { _ilike: $query } }]
     }
   ) {
     id
@@ -331,29 +323,23 @@ query SearchBookmarks($userId: uuid!, $query: String!) {
 
 ## Keyboard Shortcuts (Planned)
 
-| Shortcut | Action |
-|----------|--------|
-| `Cmd/Ctrl + D` | Toggle bookmark on selected message |
-| `Cmd/Ctrl + Shift + B` | Open bookmarks panel |
-| `Cmd/Ctrl + Shift + S` | Open saved messages |
-| `/bookmark` | Quick bookmark command |
-| `/save` | Quick save to saved messages |
+| Shortcut               | Action                              |
+| ---------------------- | ----------------------------------- |
+| `Cmd/Ctrl + D`         | Toggle bookmark on selected message |
+| `Cmd/Ctrl + Shift + B` | Open bookmarks panel                |
+| `Cmd/Ctrl + Shift + S` | Open saved messages                 |
+| `/bookmark`            | Quick bookmark command              |
+| `/save`                | Quick save to saved messages        |
 
 ---
 
 ## Tips & Tricks
 
 ### 1. Use Tags for Organization
+
 ```typescript
 // Create a tagging system
-const commonTags = [
-  'important',
-  'follow-up',
-  'action-item',
-  'reference',
-  'decision',
-  'feedback',
-]
+const commonTags = ['important', 'follow-up', 'action-item', 'reference', 'decision', 'feedback']
 
 // Tag your bookmarks
 await addBookmark({
@@ -363,6 +349,7 @@ await addBookmark({
 ```
 
 ### 2. Create Subject-Based Collections
+
 ```typescript
 // Organize by topic
 const collections = [
@@ -374,6 +361,7 @@ const collections = [
 ```
 
 ### 3. Weekly Review
+
 ```typescript
 // Get bookmarks from last week
 const oneWeekAgo = new Date()
@@ -388,6 +376,7 @@ const { bookmarks } = useBookmarks({
 ```
 
 ### 4. Export for Reporting
+
 ```typescript
 // Export specific collection as CSV for reports
 await exportBookmarks('csv', {
@@ -397,6 +386,7 @@ await exportBookmarks('csv', {
 ```
 
 ### 5. Use Saved Messages as a Personal Inbox
+
 ```typescript
 // Save messages that need your attention
 await saveMessage({
@@ -422,17 +412,20 @@ await saveMessage({
 ## Troubleshooting
 
 ### Bookmarks Not Showing Up?
+
 - Check your filters - you might have active filters
 - Clear search query
 - Refresh the page
 - Check network connection
 
 ### Can't Add Bookmark?
+
 - Ensure you're authenticated
 - Check if message still exists
 - Verify permissions
 
 ### Export Not Working?
+
 - Check browser popup blocker
 - Try different format (JSON instead of CSV)
 - Check browser console for errors
@@ -449,6 +442,7 @@ await saveMessage({
 ---
 
 **Need Help?**
+
 - File an issue on GitHub
 - Check the FAQ
 - Ask in the community Discord

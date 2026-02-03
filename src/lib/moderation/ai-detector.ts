@@ -5,6 +5,8 @@
 
 import * as tf from '@tensorflow/tfjs'
 
+import { logger } from '@/lib/logger'
+
 // Toxic content model interface
 interface ToxicPrediction {
   label: string
@@ -61,16 +63,16 @@ class AIDetector {
     try {
       // Set TensorFlow backend
       await tf.ready()
-      console.log('TensorFlow.js ready, backend:', tf.getBackend())
+      // REMOVED: console.log('TensorFlow.js ready, backend:', tf.getBackend())
 
       // Load toxicity model
       // Using TensorFlow.js Toxicity model
       await this.loadToxicityModel()
 
       this.isInitialized = true
-      console.log('AI moderation models initialized')
+      // REMOVED: console.log('AI moderation models initialized')
     } catch (error) {
-      console.error('Failed to initialize AI models:', error)
+      logger.error('Failed to initialize AI models:', error)
       throw error
     } finally {
       this.isInitializing = false
@@ -96,9 +98,9 @@ class AIDetector {
         'toxicity',
       ]
       this.toxicityModel = await toxicity.load(threshold, toxicityLabels)
-      console.log('Toxicity model loaded')
+      // REMOVED: console.log('Toxicity model loaded')
     } catch (error) {
-      console.error('Failed to load toxicity model:', error)
+      logger.error('Failed to load toxicity model:', error)
       // Continue without toxicity model - will use fallback
       this.toxicityModel = null
     }
@@ -155,7 +157,7 @@ class AIDetector {
         return this.fallbackToxicityDetection(text)
       }
     } catch (error) {
-      console.error('Toxicity detection failed:', error)
+      logger.error('Toxicity detection failed:', error)
       return this.fallbackToxicityDetection(text)
     }
   }
@@ -211,7 +213,7 @@ class AIDetector {
         detectedLabels: [],
       }
     } catch (error) {
-      console.error('NSFW detection failed:', error)
+      logger.error('NSFW detection failed:', error)
       return {
         isNSFW: false,
         nsfwScore: 0,
@@ -224,12 +226,15 @@ class AIDetector {
   /**
    * Detect spam in text
    */
-  async detectSpam(text: string, metadata?: {
-    messageCount?: number
-    timeWindow?: number
-    hasLinks?: boolean
-    linkCount?: number
-  }): Promise<SpamResult> {
+  async detectSpam(
+    text: string,
+    metadata?: {
+      messageCount?: number
+      timeWindow?: number
+      hasLinks?: boolean
+      linkCount?: number
+    }
+  ): Promise<SpamResult> {
     const reasons: string[] = []
     let spamScore = 0
 

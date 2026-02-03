@@ -48,6 +48,7 @@ nself init my-app
 ```
 
 **Output:**
+
 ```
 🚀 Initializing new nself project: my-app
 ✓ Created directory structure
@@ -85,6 +86,7 @@ nself start
 ```
 
 **Output:**
+
 ```
 🐳 Starting nself services...
 
@@ -118,6 +120,7 @@ nself status
 ```
 
 **Expected Output:**
+
 ```
 Service     Status    Port    URL
 ──────────────────────────────────────────────────────
@@ -230,10 +233,7 @@ CREATE TABLE users (
 
 ```graphql
 mutation CreateUser {
-  insert_users_one(object: {
-    name: "Alice Johnson"
-    email: "alice@example.com"
-  }) {
+  insert_users_one(object: { name: "Alice Johnson", email: "alice@example.com" }) {
     id
     name
     email
@@ -275,25 +275,28 @@ subscription WatchUsers {
 ### Next.js Example
 
 **Install dependencies:**
+
 ```bash
 npm install @apollo/client graphql
 ```
 
 **Create Apollo Client** (`lib/apollo-client.ts`):
+
 ```typescript
-import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client'
 
 const apolloClient = new ApolloClient({
   link: new HttpLink({
     uri: 'http://api.localhost/v1/graphql',
   }),
   cache: new InMemoryCache(),
-});
+})
 
-export default apolloClient;
+export default apolloClient
 ```
 
 **Use in component:**
+
 ```typescript
 'use client';
 
@@ -346,21 +349,21 @@ function App() {
 ### Vue Example
 
 ```typescript
-import { createApp, provide, h } from 'vue';
-import { DefaultApolloClient } from '@vue/apollo-composable';
-import { ApolloClient, InMemoryCache } from '@apollo/client/core';
+import { createApp, provide, h } from 'vue'
+import { DefaultApolloClient } from '@vue/apollo-composable'
+import { ApolloClient, InMemoryCache } from '@apollo/client/core'
 
 const apolloClient = new ApolloClient({
   uri: 'http://api.localhost/v1/graphql',
   cache: new InMemoryCache(),
-});
+})
 
 const app = createApp({
   setup() {
-    provide(DefaultApolloClient, apolloClient);
+    provide(DefaultApolloClient, apolloClient)
   },
   render: () => h(App),
-});
+})
 ```
 
 ---
@@ -521,33 +524,33 @@ docker stats
 
 ### Service URLs
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| **GraphQL API** | http://api.localhost/v1/graphql | Main API endpoint |
-| **Hasura Console** | http://localhost:8080/console | GraphQL admin UI |
-| **Auth API** | http://auth.localhost/v1/auth | Authentication endpoints |
-| **Storage API** | http://storage.localhost/v1/storage | File upload/download |
-| **Email Testing** | http://localhost:8025 | Mailpit web UI |
-| **MinIO Console** | http://localhost:9001 | Object storage admin |
+| Service            | URL                                 | Purpose                  |
+| ------------------ | ----------------------------------- | ------------------------ |
+| **GraphQL API**    | http://api.localhost/v1/graphql     | Main API endpoint        |
+| **Hasura Console** | http://localhost:8080/console       | GraphQL admin UI         |
+| **Auth API**       | http://auth.localhost/v1/auth       | Authentication endpoints |
+| **Storage API**    | http://storage.localhost/v1/storage | File upload/download     |
+| **Email Testing**  | http://localhost:8025               | Mailpit web UI           |
+| **MinIO Console**  | http://localhost:9001               | Object storage admin     |
 
 ### Default Credentials
 
-| Service | Username | Password |
-|---------|----------|----------|
-| **PostgreSQL** | postgres | postgres-dev-password |
-| **Hasura Admin** | - | hasura-admin-secret-dev |
-| **MinIO** | minioadmin | minioadmin |
+| Service          | Username   | Password                |
+| ---------------- | ---------- | ----------------------- |
+| **PostgreSQL**   | postgres   | postgres-dev-password   |
+| **Hasura Admin** | -          | hasura-admin-secret-dev |
+| **MinIO**        | minioadmin | minioadmin              |
 
 ### Important Files
 
-| File | Purpose |
-|------|---------|
-| `.backend/.env` | Environment variables |
-| `.backend/docker-compose.yml` | Service definitions |
-| `.backend/hasura/metadata/` | Hasura configuration |
-| `.backend/hasura/migrations/` | Database migrations |
-| `.backend/nginx/nginx.conf` | Nginx configuration |
-| `.backend/ssl/certificates/` | SSL certificates |
+| File                          | Purpose               |
+| ----------------------------- | --------------------- |
+| `.backend/.env`               | Environment variables |
+| `.backend/docker-compose.yml` | Service definitions   |
+| `.backend/hasura/metadata/`   | Hasura configuration  |
+| `.backend/hasura/migrations/` | Database migrations   |
+| `.backend/nginx/nginx.conf`   | Nginx configuration   |
+| `.backend/ssl/certificates/`  | SSL certificates      |
 
 ---
 

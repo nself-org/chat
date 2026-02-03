@@ -71,12 +71,10 @@ export function WorkflowSidebar({ className }: WorkflowSidebarProps) {
     <div className={cn('flex flex-col bg-card', className)}>
       <Tabs
         value={sidebarTab}
-        onValueChange={(v) =>
-          setSidebarTab(v as 'steps' | 'variables' | 'settings')
-        }
-        className="flex flex-col h-full"
+        onValueChange={(v) => setSidebarTab(v as 'steps' | 'variables' | 'settings')}
+        className="flex h-full flex-col"
       >
-        <TabsList className="w-full justify-start rounded-none border-b px-2 h-10">
+        <TabsList className="h-10 w-full justify-start rounded-none border-b px-2">
           <TabsTrigger value="steps" className="text-xs">
             Steps
           </TabsTrigger>
@@ -88,15 +86,15 @@ export function WorkflowSidebar({ className }: WorkflowSidebarProps) {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="steps" className="flex-1 mt-0 overflow-hidden">
+        <TabsContent value="steps" className="mt-0 flex-1 overflow-hidden">
           <StepsPanel searchQuery={searchQuery} onSearchChange={setSearchQuery} />
         </TabsContent>
 
-        <TabsContent value="variables" className="flex-1 mt-0 overflow-hidden">
+        <TabsContent value="variables" className="mt-0 flex-1 overflow-hidden">
           <VariablesPanel />
         </TabsContent>
 
-        <TabsContent value="settings" className="flex-1 mt-0 overflow-hidden">
+        <TabsContent value="settings" className="mt-0 flex-1 overflow-hidden">
           <SettingsPanel />
         </TabsContent>
       </Tabs>
@@ -114,10 +112,7 @@ function StepsPanel({
 }) {
   const { startDrag, endDrag } = useWorkflowBuilderStore()
 
-  const handleDragStart = (
-    e: React.DragEvent,
-    type: StepType
-  ) => {
+  const handleDragStart = (e: React.DragEvent, type: StepType) => {
     e.dataTransfer.effectAllowed = 'copy'
     startDrag(type)
   }
@@ -147,30 +142,26 @@ function StepsPanel({
   }, [searchQuery])
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Search */}
-      <div className="p-2 border-b">
+      <div className="border-b p-2">
         <div className="relative">
-          <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             placeholder="Search steps..."
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            className="pl-8 h-8 text-sm"
+            className="h-8 pl-8 text-sm"
           />
         </div>
       </div>
 
       {/* Step categories */}
       <ScrollArea className="flex-1">
-        <Accordion
-          type="multiple"
-          defaultValue={stepCategories.map((c) => c.id)}
-          className="px-2"
-        >
+        <Accordion type="multiple" defaultValue={stepCategories.map((c) => c.id)} className="px-2">
           {/* Triggers category */}
           <AccordionItem value="triggers">
-            <AccordionTrigger className="text-sm py-2">
+            <AccordionTrigger className="py-2 text-sm">
               <div className="flex items-center gap-2">
                 <Zap className="h-4 w-4" />
                 Triggers
@@ -195,26 +186,21 @@ function StepsPanel({
                       onDragStart={(e) => handleDragStart(e, 'trigger')}
                       onDragEnd={handleDragEnd}
                       className={cn(
-                        'flex items-center gap-2 p-2 rounded-md cursor-grab',
+                        'flex cursor-grab items-center gap-2 rounded-md p-2',
                         'border border-transparent',
-                        'hover:bg-accent hover:border-border',
+                        'hover:border-border hover:bg-accent',
                         'active:cursor-grabbing'
                       )}
                     >
                       <div
-                        className="w-6 h-6 rounded flex items-center justify-center"
+                        className="flex h-6 w-6 items-center justify-center rounded"
                         style={{ backgroundColor: template.color + '20' }}
                       >
-                        <Zap
-                          className="h-3.5 w-3.5"
-                          style={{ color: template.color }}
-                        />
+                        <Zap className="h-3.5 w-3.5" style={{ color: template.color }} />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-medium truncate">
-                          {template.name}
-                        </p>
-                        <p className="text-[10px] text-muted-foreground truncate">
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-xs font-medium">{template.name}</p>
+                        <p className="truncate text-[10px] text-muted-foreground">
                           {template.description}
                         </p>
                       </div>
@@ -230,12 +216,11 @@ function StepsPanel({
             .filter((c) => c.id !== 'triggers')
             .map((category) => (
               <AccordionItem key={category.id} value={category.id}>
-                <AccordionTrigger className="text-sm py-2">
+                <AccordionTrigger className="py-2 text-sm">
                   <div className="flex items-center gap-2">
-                    {React.createElement(
-                      stepIcons[category.steps[0] as StepType] || Play,
-                      { className: 'h-4 w-4' }
-                    )}
+                    {React.createElement(stepIcons[category.steps[0] as StepType] || Play, {
+                      className: 'h-4 w-4',
+                    })}
                     {category.name}
                   </div>
                 </AccordionTrigger>
@@ -249,30 +234,26 @@ function StepsPanel({
                         <div
                           key={stepType}
                           draggable
-                          onDragStart={(e) =>
-                            handleDragStart(e, stepType as StepType)
-                          }
+                          onDragStart={(e) => handleDragStart(e, stepType as StepType)}
                           onDragEnd={handleDragEnd}
                           className={cn(
-                            'flex items-center gap-2 p-2 rounded-md cursor-grab',
+                            'flex cursor-grab items-center gap-2 rounded-md p-2',
                             'border border-transparent',
-                            'hover:bg-accent hover:border-border',
+                            'hover:border-border hover:bg-accent',
                             'active:cursor-grabbing'
                           )}
                         >
                           <div
-                            className="w-6 h-6 rounded flex items-center justify-center"
+                            className="flex h-6 w-6 items-center justify-center rounded"
                             style={{ backgroundColor: template.color + '20' }}
                           >
                             <span style={{ color: template.color }}>
                               <Icon className="h-3.5 w-3.5" />
                             </span>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-xs font-medium truncate">
-                              {template.name}
-                            </p>
-                            <p className="text-[10px] text-muted-foreground truncate">
+                          <div className="min-w-0 flex-1">
+                            <p className="truncate text-xs font-medium">{template.name}</p>
+                            <p className="truncate text-[10px] text-muted-foreground">
                               {template.description}
                             </p>
                           </div>
@@ -291,8 +272,7 @@ function StepsPanel({
 
 // Variables panel
 function VariablesPanel() {
-  const { workflow, addVariable, updateVariable, deleteVariable } =
-    useWorkflowBuilderStore()
+  const { workflow, addVariable, updateVariable, deleteVariable } = useWorkflowBuilderStore()
 
   const handleAddVariable = () => {
     addVariable({
@@ -305,38 +285,33 @@ function VariablesPanel() {
   if (!workflow) return null
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="p-2 border-b flex items-center justify-between">
+    <div className="flex h-full flex-col">
+      <div className="flex items-center justify-between border-b p-2">
         <span className="text-sm font-medium">Workflow Variables</span>
         <Button variant="ghost" size="sm" onClick={handleAddVariable}>
-          <Plus className="h-4 w-4 mr-1" />
+          <Plus className="mr-1 h-4 w-4" />
           Add
         </Button>
       </div>
 
       <ScrollArea className="flex-1">
-        <div className="p-2 space-y-2">
+        <div className="space-y-2 p-2">
           {workflow.variables.length === 0 ? (
-            <p className="text-xs text-muted-foreground text-center py-4">
+            <p className="py-4 text-center text-xs text-muted-foreground">
               No variables defined.
               <br />
               Click "Add" to create one.
             </p>
           ) : (
             workflow.variables.map((variable) => (
-              <div
-                key={variable.id}
-                className="p-2 rounded-md border bg-muted/30"
-              >
-                <div className="flex items-center justify-between mb-2">
+              <div key={variable.id} className="bg-muted/30 rounded-md border p-2">
+                <div className="mb-2 flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Variable className="h-4 w-4 text-muted-foreground" />
                     <Input
                       value={variable.name}
-                      onChange={(e) =>
-                        updateVariable(variable.id, { name: e.target.value })
-                      }
-                      className="h-6 text-xs font-mono w-32"
+                      onChange={(e) => updateVariable(variable.id, { name: e.target.value })}
+                      className="h-6 w-32 font-mono text-xs"
                     />
                   </div>
                   <Button
@@ -355,10 +330,15 @@ function VariablesPanel() {
                       value={variable.type}
                       onChange={(e) =>
                         updateVariable(variable.id, {
-                          type: e.target.value as 'string' | 'number' | 'boolean' | 'array' | 'object',
+                          type: e.target.value as
+                            | 'string'
+                            | 'number'
+                            | 'boolean'
+                            | 'array'
+                            | 'object',
                         })
                       }
-                      className="w-full h-6 text-xs rounded border bg-background"
+                      className="h-6 w-full rounded border bg-background text-xs"
                     >
                       <option value="string">String</option>
                       <option value="number">Number</option>
@@ -398,21 +378,17 @@ function SettingsPanel() {
 
   return (
     <ScrollArea className="flex-1">
-      <div className="p-3 space-y-4">
+      <div className="space-y-4 p-3">
         <div>
           <Label className="text-xs">Workflow Name</Label>
-          <Input
-            value={workflow.name}
-            className="h-8 text-sm mt-1"
-            readOnly
-          />
+          <Input value={workflow.name} className="mt-1 h-8 text-sm" readOnly />
         </div>
 
         <div>
           <Label className="text-xs">Description</Label>
           <Textarea
             value={workflow.description || ''}
-            className="text-sm mt-1 min-h-[60px]"
+            className="mt-1 min-h-[60px] text-sm"
             readOnly
           />
         </div>
@@ -422,7 +398,7 @@ function SettingsPanel() {
           <div className="mt-1">
             <span
               className={cn(
-                'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                'inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium',
                 workflow.status === 'active' &&
                   'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
                 workflow.status === 'draft' &&
@@ -436,8 +412,8 @@ function SettingsPanel() {
           </div>
         </div>
 
-        <div className="pt-2 border-t">
-          <h4 className="text-xs font-medium mb-2 flex items-center gap-1">
+        <div className="border-t pt-2">
+          <h4 className="mb-2 flex items-center gap-1 text-xs font-medium">
             <Settings className="h-3 w-3" />
             Runtime Settings
           </h4>
@@ -466,23 +442,21 @@ function SettingsPanel() {
           </div>
         </div>
 
-        <div className="pt-2 border-t">
-          <h4 className="text-xs font-medium mb-2">Tags</h4>
+        <div className="border-t pt-2">
+          <h4 className="mb-2 text-xs font-medium">Tags</h4>
           <div className="flex flex-wrap gap-1">
             {workflow.settings.tags?.map((tag) => (
               <span
                 key={tag}
-                className="inline-flex items-center px-2 py-0.5 rounded text-xs bg-muted"
+                className="inline-flex items-center rounded bg-muted px-2 py-0.5 text-xs"
               >
                 {tag}
               </span>
-            )) || (
-              <span className="text-xs text-muted-foreground">No tags</span>
-            )}
+            )) || <span className="text-xs text-muted-foreground">No tags</span>}
           </div>
         </div>
 
-        <div className="pt-2 border-t text-xs text-muted-foreground">
+        <div className="border-t pt-2 text-xs text-muted-foreground">
           <div className="flex justify-between">
             <span>Version</span>
             <span>{workflow.version}</span>

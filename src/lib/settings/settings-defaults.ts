@@ -11,7 +11,7 @@ import type {
   LanguageSettings,
   AdvancedSettings,
   UserSettings,
-} from './settings-types';
+} from './settings-types'
 
 // ============================================================================
 // Account Defaults
@@ -24,7 +24,7 @@ export const defaultAccountSettings: AccountSettings = {
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
   language: 'en',
   twoFactorEnabled: false,
-};
+}
 
 // ============================================================================
 // Appearance Defaults
@@ -44,7 +44,7 @@ export const defaultAppearanceSettings: AppearanceSettings = {
   animationsEnabled: true,
   reduceMotion: false,
   reduceTransparency: false,
-};
+}
 
 // ============================================================================
 // Notification Defaults
@@ -86,7 +86,7 @@ export const defaultNotificationSettings: NotificationSettings = {
     sound: 'none',
     desktop: false,
   },
-};
+}
 
 // ============================================================================
 // Privacy Defaults
@@ -105,7 +105,7 @@ export const defaultPrivacySettings: PrivacySettings = {
   allowInvites: true,
   allowMentions: true,
   blockList: [],
-};
+}
 
 // ============================================================================
 // Accessibility Defaults
@@ -124,7 +124,7 @@ export const defaultAccessibilitySettings: AccessibilitySettings = {
   screenReaderMode: false,
   announceMessages: false,
   preferCaptions: false,
-};
+}
 
 // ============================================================================
 // Language & Region Defaults
@@ -137,7 +137,7 @@ export const defaultLanguageSettings: LanguageSettings = {
   dateFormat: 'mdy',
   weekStart: 'sunday',
   numberFormat: 'en-US',
-};
+}
 
 // ============================================================================
 // Advanced Defaults
@@ -154,7 +154,7 @@ export const defaultAdvancedSettings: AdvancedSettings = {
   autoUpdate: true,
   syncEnabled: true,
   syncFrequency: 30000, // 30 seconds
-};
+}
 
 // ============================================================================
 // Combined Default Settings
@@ -168,7 +168,7 @@ export const defaultUserSettings: UserSettings = {
   accessibility: defaultAccessibilitySettings,
   language: defaultLanguageSettings,
   advanced: defaultAdvancedSettings,
-};
+}
 
 // ============================================================================
 // Settings Categories Configuration
@@ -231,7 +231,7 @@ export const settingsCategories = [
     href: '/settings/advanced',
     order: 7,
   },
-] as const;
+] as const
 
 // ============================================================================
 // Preset Colors
@@ -255,7 +255,7 @@ export const presetColors = [
   '#06b6d4', // Cyan
   '#0ea5e9', // Sky
   '#3b82f6', // Blue
-];
+]
 
 // ============================================================================
 // Font Options
@@ -266,14 +266,14 @@ export const fontFamilyOptions = [
   { value: 'inter', label: 'Inter', family: 'Inter, sans-serif' },
   { value: 'roboto', label: 'Roboto', family: 'Roboto, sans-serif' },
   { value: 'mono', label: 'Monospace', family: 'ui-monospace, monospace' },
-];
+]
 
 export const fontSizeOptions = [
   { value: 'small', label: 'Small', size: '14px' },
   { value: 'medium', label: 'Medium', size: '16px' },
   { value: 'large', label: 'Large', size: '18px' },
   { value: 'extra-large', label: 'Extra Large', size: '20px' },
-];
+]
 
 // ============================================================================
 // Notification Sound Options
@@ -285,7 +285,7 @@ export const notificationSoundOptions = [
   { value: 'bell', label: 'Bell', file: '/sounds/bell.mp3' },
   { value: 'pop', label: 'Pop', file: '/sounds/pop.mp3' },
   { value: 'none', label: 'None', file: null },
-];
+]
 
 // ============================================================================
 // Timezone Options (common ones)
@@ -306,7 +306,7 @@ export const commonTimezones = [
   { value: 'Asia/Shanghai', label: 'China Standard Time (CST)' },
   { value: 'Asia/Kolkata', label: 'India Standard Time (IST)' },
   { value: 'Australia/Sydney', label: 'Australian Eastern Time (AET)' },
-];
+]
 
 // ============================================================================
 // Language Options
@@ -326,4 +326,4 @@ export const languageOptions = [
   { value: 'ko', label: 'Korean' },
   { value: 'zh', label: 'Chinese (Simplified)' },
   { value: 'ar', label: 'Arabic' },
-];
+]

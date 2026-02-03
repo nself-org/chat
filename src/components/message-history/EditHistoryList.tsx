@@ -15,11 +15,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { cn } from '@/lib/utils'
 import type { MessageEditHistory, MessageVersion, VersionDiff } from '@/lib/message-history'
 import { calculateVersionDiff, getOriginalVersion } from '@/lib/message-history'
-import {
-  EditHistoryItem,
-  EditHistoryItemSkeleton,
-  CompactHistoryItem,
-} from './EditHistoryItem'
+import { EditHistoryItem, EditHistoryItemSkeleton, CompactHistoryItem } from './EditHistoryItem'
 
 export interface EditHistoryListProps {
   /** The message edit history */
@@ -68,9 +64,7 @@ export function EditHistoryList({
     if (!history) return []
 
     const sorted = [...history.versions].sort((a, b) =>
-      sortOrder === 'newest'
-        ? b.versionNumber - a.versionNumber
-        : a.versionNumber - b.versionNumber
+      sortOrder === 'newest' ? b.versionNumber - a.versionNumber : a.versionNumber - b.versionNumber
     )
 
     return sorted.map((version) => {
@@ -113,17 +107,10 @@ export function EditHistoryList({
 
   if (!history || history.versions.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex flex-col items-center justify-center py-8 text-center',
-          className
-        )}
-      >
-        <History className="h-12 w-12 text-muted-foreground/50" />
+      <div className={cn('flex flex-col items-center justify-center py-8 text-center', className)}>
+        <History className="text-muted-foreground/50 h-12 w-12" />
         <h3 className="mt-4 text-lg font-medium">No Edit History</h3>
-        <p className="mt-1 text-sm text-muted-foreground">
-          This message has not been edited yet.
-        </p>
+        <p className="mt-1 text-sm text-muted-foreground">This message has not been edited yet.</p>
       </div>
     )
   }
@@ -145,10 +132,7 @@ export function EditHistoryList({
 
         <div className="flex items-center gap-2">
           {/* Sort control */}
-          <Select
-            value={sortOrder}
-            onValueChange={(value) => setSortOrder(value as SortOrder)}
-          >
+          <Select value={sortOrder} onValueChange={(value) => setSortOrder(value as SortOrder)}>
             <SelectTrigger className="h-8 w-[120px]">
               <SelectValue />
             </SelectTrigger>
@@ -169,10 +153,7 @@ export function EditHistoryList({
           </Select>
 
           {/* Filter control */}
-          <Select
-            value={filter}
-            onValueChange={(value) => setFilter(value as FilterType)}
-          >
+          <Select value={filter} onValueChange={(value) => setFilter(value as FilterType)}>
             <SelectTrigger className="h-8 w-[120px]">
               <SelectValue />
             </SelectTrigger>
@@ -196,30 +177,28 @@ export function EditHistoryList({
         style={{ maxHeight: typeof maxHeight === 'number' ? `${maxHeight}px` : maxHeight }}
       >
         <div className="space-y-3">
-          {mode === 'full' ? (
-            filteredVersions.map(({ version, diff }, index) => (
-              <EditHistoryItem
-                key={version.id}
-                version={version}
-                diff={diff}
-                isSelected={selectedVersionIds.includes(version.id)}
-                onSelect={() => onSelectVersion?.(version)}
-                onRestore={() => onRestore?.(version)}
-                canRestore={canRestore}
-                isFirst={index === 0}
-                isLast={index === filteredVersions.length - 1}
-              />
-            ))
-          ) : (
-            filteredVersions.map(({ version }) => (
-              <CompactHistoryItem
-                key={version.id}
-                version={version}
-                isSelected={selectedVersionIds.includes(version.id)}
-                onClick={() => onSelectVersion?.(version)}
-              />
-            ))
-          )}
+          {mode === 'full'
+            ? filteredVersions.map(({ version, diff }, index) => (
+                <EditHistoryItem
+                  key={version.id}
+                  version={version}
+                  diff={diff}
+                  isSelected={selectedVersionIds.includes(version.id)}
+                  onSelect={() => onSelectVersion?.(version)}
+                  onRestore={() => onRestore?.(version)}
+                  canRestore={canRestore}
+                  isFirst={index === 0}
+                  isLast={index === filteredVersions.length - 1}
+                />
+              ))
+            : filteredVersions.map(({ version }) => (
+                <CompactHistoryItem
+                  key={version.id}
+                  version={version}
+                  isSelected={selectedVersionIds.includes(version.id)}
+                  onClick={() => onSelectVersion?.(version)}
+                />
+              ))}
         </div>
       </ScrollArea>
     </div>
@@ -235,19 +214,13 @@ export interface HistoryTimelineProps {
   className?: string
 }
 
-export function HistoryTimeline({
-  history,
-  onSelectVersion,
-  className,
-}: HistoryTimelineProps) {
-  const sortedVersions = [...history.versions].sort(
-    (a, b) => a.versionNumber - b.versionNumber
-  )
+export function HistoryTimeline({ history, onSelectVersion, className }: HistoryTimelineProps) {
+  const sortedVersions = [...history.versions].sort((a, b) => a.versionNumber - b.versionNumber)
 
   return (
     <div className={cn('relative', className)}>
       {/* Timeline line */}
-      <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-border" />
+      <div className="absolute bottom-0 left-4 top-0 w-0.5 bg-border" />
 
       {/* Timeline items */}
       <div className="space-y-4">
@@ -260,8 +233,8 @@ export function HistoryTimeline({
                 version.isCurrent
                   ? 'border-primary bg-primary'
                   : version.isOriginal
-                  ? 'border-green-500 bg-green-500'
-                  : 'border-muted-foreground bg-background'
+                    ? 'border-green-500 bg-green-500'
+                    : 'border-muted-foreground bg-background'
               )}
             />
 
@@ -269,7 +242,7 @@ export function HistoryTimeline({
             <button
               type="button"
               onClick={() => onSelectVersion?.(version)}
-              className="flex-1 rounded-md border bg-card p-3 text-left transition-colors hover:bg-muted/50"
+              className="hover:bg-muted/50 flex-1 rounded-md border bg-card p-3 text-left transition-colors"
             >
               <div className="flex items-center justify-between">
                 <span className="font-medium">
@@ -281,9 +254,7 @@ export function HistoryTimeline({
                   {version.editedBy.displayName}
                 </span>
               </div>
-              <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">
-                {version.content}
-              </p>
+              <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{version.content}</p>
             </button>
           </div>
         ))}
@@ -303,17 +274,10 @@ export interface HistoryStatsProps {
 export function HistoryStats({ history, className }: HistoryStatsProps) {
   const uniqueEditors = new Set(history.versions.map((v) => v.editedBy.id))
   const original = getOriginalVersion(history)
-  const lengthChange = original
-    ? history.currentContent.length - original.content.length
-    : 0
+  const lengthChange = original ? history.currentContent.length - original.content.length : 0
 
   return (
-    <div
-      className={cn(
-        'grid grid-cols-2 gap-4 rounded-md border p-4 sm:grid-cols-4',
-        className
-      )}
-    >
+    <div className={cn('grid grid-cols-2 gap-4 rounded-md border p-4 sm:grid-cols-4', className)}>
       <div>
         <p className="text-sm text-muted-foreground">Total Edits</p>
         <p className="text-2xl font-bold">{history.editCount}</p>

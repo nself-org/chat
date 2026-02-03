@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getApolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 const GET_TRUSTED_DEVICES = gql`
   query GetTrustedDevices($userId: uuid!) {
     nchat_user_trusted_devices(
@@ -57,10 +59,7 @@ export async function GET(request: NextRequest) {
     const action = searchParams.get('action') // 'list' or 'check'
 
     if (!userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'User ID is required' }, { status: 400 })
     }
 
     const client = getApolloClient()
@@ -73,11 +72,8 @@ export async function GET(request: NextRequest) {
       })
 
       if (errors) {
-        console.error('GraphQL errors:', errors)
-        return NextResponse.json(
-          { error: 'Failed to check device trust' },
-          { status: 500 }
-        )
+        logger.error('GraphQL errors:', errors)
+        return NextResponse.json({ error: 'Failed to check device trust' }, { status: 500 })
       }
 
       return NextResponse.json({
@@ -96,11 +92,8 @@ export async function GET(request: NextRequest) {
     })
 
     if (errors) {
-      console.error('GraphQL errors:', errors)
-      return NextResponse.json(
-        { error: 'Failed to fetch trusted devices' },
-        { status: 500 }
-      )
+      logger.error('GraphQL errors:', errors)
+      return NextResponse.json({ error: 'Failed to fetch trusted devices' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -111,11 +104,8 @@ export async function GET(request: NextRequest) {
       },
     })
   } catch (error) {
-    console.error('Trusted devices error:', error)
-    return NextResponse.json(
-      { error: 'Failed to get trusted devices' },
-      { status: 500 }
-    )
+    logger.error('Trusted devices error:', error)
+    return NextResponse.json({ error: 'Failed to get trusted devices' }, { status: 500 })
   }
 }
 
@@ -125,10 +115,7 @@ export async function DELETE(request: NextRequest) {
     const deviceId = searchParams.get('id')
 
     if (!deviceId) {
-      return NextResponse.json(
-        { error: 'Device ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Device ID is required' }, { status: 400 })
     }
 
     const client = getApolloClient()
@@ -138,11 +125,8 @@ export async function DELETE(request: NextRequest) {
     })
 
     if (errors) {
-      console.error('GraphQL errors:', errors)
-      return NextResponse.json(
-        { error: 'Failed to remove trusted device' },
-        { status: 500 }
-      )
+      logger.error('GraphQL errors:', errors)
+      return NextResponse.json({ error: 'Failed to remove trusted device' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -151,10 +135,7 @@ export async function DELETE(request: NextRequest) {
       data: data.delete_nchat_user_trusted_devices_by_pk,
     })
   } catch (error) {
-    console.error('Remove trusted device error:', error)
-    return NextResponse.json(
-      { error: 'Failed to remove trusted device' },
-      { status: 500 }
-    )
+    logger.error('Remove trusted device error:', error)
+    return NextResponse.json({ error: 'Failed to remove trusted device' }, { status: 500 })
   }
 }

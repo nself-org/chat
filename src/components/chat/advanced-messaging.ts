@@ -18,11 +18,7 @@ export { MessageForwardModal } from './message-forward-modal'
 export { ReactionPicker } from './reaction-picker'
 
 // Link Previews
-export {
-  LinkPreviewCard,
-  LinkPreviewSkeleton,
-  LinkPreviewError,
-} from './link-preview-card'
+export { LinkPreviewCard, LinkPreviewSkeleton, LinkPreviewError } from './link-preview-card'
 
 // Message Translation
 export { MessageTranslator } from './message-translator'

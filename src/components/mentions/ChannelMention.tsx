@@ -181,18 +181,14 @@ export function ChannelMentionCompact({
   return (
     <span
       className={cn(
-        'text-secondary-foreground font-medium cursor-pointer hover:underline',
+        'text-secondary-foreground cursor-pointer font-medium hover:underline',
         className
       )}
       onClick={onClick}
       role="button"
       tabIndex={0}
     >
-      {channelType === 'private' ? (
-        <LockIcon className="inline mr-0.5 -mt-0.5" />
-      ) : (
-        '#'
-      )}
+      {channelType === 'private' ? <LockIcon className="-mt-0.5 mr-0.5 inline" /> : '#'}
       {channelName}
     </span>
   )
@@ -226,7 +222,7 @@ export function ChannelMentionLink({
     <a
       href={linkHref}
       className={cn(
-        'mention mention-channel inline-flex items-center gap-0.5 text-secondary-foreground font-medium hover:underline',
+        'mention mention-channel text-secondary-foreground inline-flex items-center gap-0.5 font-medium hover:underline',
         className
       )}
       data-channel-id={channelId}

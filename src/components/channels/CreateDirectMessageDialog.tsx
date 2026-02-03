@@ -2,14 +2,7 @@
 
 import * as React from 'react'
 import { useState, useMemo } from 'react'
-import {
-  MessageCircle,
-  Search,
-  Users,
-  X,
-  Loader2,
-  Check,
-} from 'lucide-react'
+import { MessageCircle, Search, Users, X, Loader2, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -19,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { logger } from '@/lib/logger'
 import {
   Dialog,
   DialogContent,
@@ -119,7 +113,7 @@ export function CreateDirectMessageDialog({
       await onCreateDM?.(userId)
       handleClose()
     } catch (error) {
-      console.error('Failed to create DM:', error)
+      logger.error('Failed to create DM:',  error)
     } finally {
       setIsCreating(false)
     }
@@ -134,7 +128,7 @@ export function CreateDirectMessageDialog({
       await onCreateGroupDM?.(groupName.trim(), Array.from(selectedUsers))
       handleClose()
     } catch (error) {
-      console.error('Failed to create group DM:', error)
+      logger.error('Failed to create group DM:',  error)
     } finally {
       setIsCreating(false)
     }
@@ -160,7 +154,7 @@ export function CreateDirectMessageDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className={cn('max-w-md max-h-[600px] flex flex-col', className)}>
+      <DialogContent className={cn('flex max-h-[600px] max-w-md flex-col', className)}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5" />
@@ -174,20 +168,20 @@ export function CreateDirectMessageDialog({
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'direct' | 'group')}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="direct">
-              <MessageCircle className="h-4 w-4 mr-2" />
+              <MessageCircle className="mr-2 h-4 w-4" />
               Direct
             </TabsTrigger>
             <TabsTrigger value="group">
-              <Users className="h-4 w-4 mr-2" />
+              <Users className="mr-2 h-4 w-4" />
               Group
             </TabsTrigger>
           </TabsList>
 
           {/* Direct Message Tab */}
-          <TabsContent value="direct" className="flex-1 flex flex-col space-y-4 mt-4">
+          <TabsContent value="direct" className="mt-4 flex flex-1 flex-col space-y-4">
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search users..."
                 value={searchQuery}
@@ -198,10 +192,10 @@ export function CreateDirectMessageDialog({
             </div>
 
             {/* User List */}
-            <ScrollArea className="flex-1 -mx-6 px-6">
+            <ScrollArea className="-mx-6 flex-1 px-6">
               <div className="space-y-1">
                 {availableUsers.length === 0 ? (
-                  <p className="text-center text-sm text-muted-foreground py-8">
+                  <p className="py-8 text-center text-sm text-muted-foreground">
                     {searchQuery ? `No users match "${searchQuery}"` : 'No users available'}
                   </p>
                 ) : (
@@ -211,9 +205,9 @@ export function CreateDirectMessageDialog({
                       onClick={() => handleCreateDM(user.id)}
                       disabled={isCreating}
                       className={cn(
-                        'flex items-center gap-3 w-full p-3 rounded-lg',
-                        'hover:bg-accent transition-colors text-left',
-                        'disabled:opacity-50 disabled:cursor-not-allowed'
+                        'flex w-full items-center gap-3 rounded-lg p-3',
+                        'text-left transition-colors hover:bg-accent',
+                        'disabled:cursor-not-allowed disabled:opacity-50'
                       )}
                     >
                       <Avatar className="h-10 w-10">
@@ -222,14 +216,14 @@ export function CreateDirectMessageDialog({
                           {user.displayName.slice(0, 2).toUpperCase()}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{user.displayName}</p>
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate font-medium">{user.displayName}</p>
                         <p className="text-sm text-muted-foreground">@{user.username}</p>
                       </div>
                       {user.status && (
                         <div
                           className={cn(
-                            'w-2 h-2 rounded-full',
+                            'h-2 w-2 rounded-full',
                             user.status === 'online' && 'bg-green-500',
                             user.status === 'away' && 'bg-yellow-500',
                             user.status === 'busy' && 'bg-red-500',
@@ -245,7 +239,7 @@ export function CreateDirectMessageDialog({
           </TabsContent>
 
           {/* Group DM Tab */}
-          <TabsContent value="group" className="flex-1 flex flex-col space-y-4 mt-4">
+          <TabsContent value="group" className="mt-4 flex flex-1 flex-col space-y-4">
             {/* Group Name */}
             <div className="space-y-2">
               <Label htmlFor="group-name">Group Name</Label>
@@ -259,7 +253,7 @@ export function CreateDirectMessageDialog({
 
             {/* Selected Members */}
             {selectedUserObjects.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 p-3 border rounded-lg bg-muted/30">
+              <div className="bg-muted/30 flex flex-wrap gap-1.5 rounded-lg border p-3">
                 {selectedUserObjects.map((user) => (
                   <Badge key={user.id} variant="secondary" className="gap-1 pr-1">
                     {user.displayName}
@@ -277,7 +271,7 @@ export function CreateDirectMessageDialog({
 
             {/* Search */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 placeholder="Search users to add..."
                 value={searchQuery}
@@ -287,10 +281,10 @@ export function CreateDirectMessageDialog({
             </div>
 
             {/* User List */}
-            <ScrollArea className="flex-1 -mx-6 px-6">
+            <ScrollArea className="-mx-6 flex-1 px-6">
               <div className="space-y-1">
                 {availableUsers.length === 0 ? (
-                  <p className="text-center text-sm text-muted-foreground py-8">
+                  <p className="py-8 text-center text-sm text-muted-foreground">
                     {searchQuery ? `No users match "${searchQuery}"` : 'No users available'}
                   </p>
                 ) : (
@@ -300,8 +294,8 @@ export function CreateDirectMessageDialog({
                       <label
                         key={user.id}
                         className={cn(
-                          'flex items-center gap-3 p-3 rounded-lg cursor-pointer',
-                          'hover:bg-accent transition-colors',
+                          'flex cursor-pointer items-center gap-3 rounded-lg p-3',
+                          'transition-colors hover:bg-accent',
                           isSelected && 'bg-accent'
                         )}
                       >
@@ -315,8 +309,8 @@ export function CreateDirectMessageDialog({
                             {user.displayName.slice(0, 2).toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{user.displayName}</p>
+                        <div className="min-w-0 flex-1">
+                          <p className="truncate font-medium">{user.displayName}</p>
                           <p className="text-xs text-muted-foreground">@{user.username}</p>
                         </div>
                         {isSelected && <Check className="h-4 w-4 text-primary" />}

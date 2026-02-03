@@ -11,38 +11,40 @@
  * @module lib/ai/embedding-pipeline
  */
 
-import { gql } from '@apollo/client';
-import { apolloClient } from '@/lib/apollo-client';
-import { embeddingService, EmbeddingRequest } from './embedding-service';
-import { vectorStore, BatchEmbeddingOperation } from '@/lib/database/vector-store';
+import { gql } from '@apollo/client'
+import { apolloClient } from '@/lib/apollo-client'
+import { embeddingService, EmbeddingRequest } from './embedding-service'
+import { vectorStore, BatchEmbeddingOperation } from '@/lib/database/vector-store'
+
+import { logger } from '@/lib/logger'
 
 // ========================================
 // Types
 // ========================================
 
 export interface PipelineConfig {
-  batchSize: number;
-  maxRetries: number;
-  retryDelayMs: number;
-  maxConcurrent: number;
+  batchSize: number
+  maxRetries: number
+  retryDelayMs: number
+  maxConcurrent: number
 }
 
 export interface PipelineProgress {
-  jobId: string;
-  total: number;
-  processed: number;
-  successful: number;
-  failed: number;
-  percentage: number;
-  estimatedTimeRemaining: number;
+  jobId: string
+  total: number
+  processed: number
+  successful: number
+  failed: number
+  percentage: number
+  estimatedTimeRemaining: number
 }
 
 export interface MessageForEmbedding {
-  id: string;
-  content: string;
-  channelId: string;
-  userId: string;
-  createdAt: string;
+  id: string
+  content: string
+  channelId: string
+  userId: string
+  createdAt: string
 }
 
 // ========================================
@@ -69,7 +71,7 @@ const GET_MESSAGES_WITHOUT_EMBEDDINGS = gql`
       created_at
     }
   }
-`;
+`
 
 const COUNT_MESSAGES_WITHOUT_EMBEDDINGS = gql`
   query CountMessagesWithoutEmbeddings {
@@ -86,7 +88,7 @@ const COUNT_MESSAGES_WITHOUT_EMBEDDINGS = gql`
       }
     }
   }
-`;
+`
 
 const GET_MESSAGES_WITH_ERRORS = gql`
   query GetMessagesWithErrors($maxRetries: Int!, $limit: Int!) {
@@ -107,15 +109,12 @@ const GET_MESSAGES_WITH_ERRORS = gql`
       embedding_error
     }
   }
-`;
+`
 
 const GET_EMBEDDING_QUEUE = gql`
   query GetEmbeddingQueue($limit: Int!) {
     nchat_embedding_queue(
-      where: {
-        claimed_at: { _is_null: true }
-        retry_count: { _lt: 3 }
-      }
+      where: { claimed_at: { _is_null: true }, retry_count: { _lt: 3 } }
       order_by: [{ priority: desc }, { scheduled_at: asc }]
       limit: $limit
     ) {
@@ -125,7 +124,7 @@ const GET_EMBEDDING_QUEUE = gql`
       retry_count
     }
   }
-`;
+`
 
 const CLAIM_QUEUE_ITEMS = gql`
   mutation ClaimQueueItems($ids: [uuid!]!, $workerId: String!) {
@@ -140,7 +139,7 @@ const CLAIM_QUEUE_ITEMS = gql`
       }
     }
   }
-`;
+`
 
 const REMOVE_FROM_QUEUE = gql`
   mutation RemoveFromQueue($messageIds: [uuid!]!) {
@@ -148,7 +147,7 @@ const REMOVE_FROM_QUEUE = gql`
       affected_rows
     }
   }
-`;
+`
 
 const CREATE_EMBEDDING_JOB = gql`
   mutation CreateEmbeddingJob(
@@ -172,7 +171,7 @@ const CREATE_EMBEDDING_JOB = gql`
       created_at
     }
   }
-`;
+`
 
 const UPDATE_JOB_PROGRESS = gql`
   mutation UpdateJobProgress(
@@ -196,28 +195,20 @@ const UPDATE_JOB_PROGRESS = gql`
       status
     }
   }
-`;
+`
 
 const COMPLETE_JOB = gql`
-  mutation CompleteJob(
-    $jobId: uuid!
-    $status: String!
-    $errorMessage: String
-  ) {
+  mutation CompleteJob($jobId: uuid!, $status: String!, $errorMessage: String) {
     update_nchat_embedding_jobs_by_pk(
       pk_columns: { id: $jobId }
-      _set: {
-        status: $status
-        completed_at: "now()"
-        error_message: $errorMessage
-      }
+      _set: { status: $status, completed_at: "now()", error_message: $errorMessage }
     ) {
       id
       status
       completed_at
     }
   }
-`;
+`
 
 const START_JOB = gql`
   mutation StartJob($jobId: uuid!) {
@@ -228,7 +219,7 @@ const START_JOB = gql`
       id
     }
   }
-`;
+`
 
 // ========================================
 // Default Configuration
@@ -239,19 +230,19 @@ const DEFAULT_CONFIG: PipelineConfig = {
   maxRetries: 3,
   retryDelayMs: 5000,
   maxConcurrent: 5,
-};
+}
 
 // ========================================
 // Embedding Pipeline Class
 // ========================================
 
 export class EmbeddingPipeline {
-  private client = apolloClient;
-  private config: PipelineConfig;
-  private progressCallbacks = new Map<string, (progress: PipelineProgress) => void>();
+  private client = apolloClient
+  private config: PipelineConfig
+  private progressCallbacks = new Map<string, (progress: PipelineProgress) => void>()
 
   constructor(config: Partial<PipelineConfig> = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.config = { ...DEFAULT_CONFIG, ...config }
   }
 
   /**
@@ -265,12 +256,12 @@ export class EmbeddingPipeline {
     const { data: countData } = await this.client.query({
       query: COUNT_MESSAGES_WITHOUT_EMBEDDINGS,
       fetchPolicy: 'network-only',
-    });
+    })
 
-    const totalMessages = countData.nchat_messages_aggregate.aggregate.count;
+    const totalMessages = countData.nchat_messages_aggregate.aggregate.count
 
     if (totalMessages === 0) {
-      throw new Error('No messages need embeddings');
+      throw new Error('No messages need embeddings')
     }
 
     // Create job
@@ -282,21 +273,21 @@ export class EmbeddingPipeline {
         createdBy: userId || null,
         metadata: { batchSize: this.config.batchSize },
       },
-    });
+    })
 
-    const jobId = jobData.insert_nchat_embedding_jobs_one.id;
+    const jobId = jobData.insert_nchat_embedding_jobs_one.id
 
     // Register progress callback
     if (onProgress) {
-      this.progressCallbacks.set(jobId, onProgress);
+      this.progressCallbacks.set(jobId, onProgress)
     }
 
     // Start job asynchronously
     this.processJob(jobId, totalMessages).catch((error) => {
-      console.error(`Job ${jobId} failed:`, error);
-    });
+      logger.error(`Job ${jobId} failed:`, error)
+    })
 
-    return jobId;
+    return jobId
   }
 
   /**
@@ -314,12 +305,12 @@ export class EmbeddingPipeline {
         limit: 10000,
       },
       fetchPolicy: 'network-only',
-    });
+    })
 
-    const messages = data.nchat_messages;
+    const messages = data.nchat_messages
 
     if (messages.length === 0) {
-      throw new Error('No failed embeddings to retry');
+      throw new Error('No failed embeddings to retry')
     }
 
     // Create job
@@ -331,20 +322,20 @@ export class EmbeddingPipeline {
         createdBy: userId || null,
         metadata: { maxRetries: this.config.maxRetries },
       },
-    });
+    })
 
-    const jobId = jobData.insert_nchat_embedding_jobs_one.id;
+    const jobId = jobData.insert_nchat_embedding_jobs_one.id
 
     if (onProgress) {
-      this.progressCallbacks.set(jobId, onProgress);
+      this.progressCallbacks.set(jobId, onProgress)
     }
 
     // Process retries
     this.processRetryJob(jobId, messages).catch((error) => {
-      console.error(`Retry job ${jobId} failed:`, error);
-    });
+      logger.error(`Retry job ${jobId} failed:`, error)
+    })
 
-    return jobId;
+    return jobId
   }
 
   /**
@@ -359,23 +350,23 @@ export class EmbeddingPipeline {
       query: GET_EMBEDDING_QUEUE,
       variables: { limit },
       fetchPolicy: 'network-only',
-    });
+    })
 
-    const queueItems = data.nchat_embedding_queue;
+    const queueItems = data.nchat_embedding_queue
 
     if (queueItems.length === 0) {
-      return { processed: 0, successful: 0, failed: 0 };
+      return { processed: 0, successful: 0, failed: 0 }
     }
 
     // Claim queue items
-    const queueIds = queueItems.map((item: any) => item.id);
+    const queueIds = queueItems.map((item: any) => item.id)
     await this.client.mutate({
       mutation: CLAIM_QUEUE_ITEMS,
       variables: { ids: queueIds, workerId },
-    });
+    })
 
     // Get message details
-    const messageIds = queueItems.map((item: any) => item.message_id);
+    const messageIds = queueItems.map((item: any) => item.message_id)
     const { data: messagesData } = await this.client.query({
       query: gql`
         query GetQueuedMessages($ids: [uuid!]!) {
@@ -390,44 +381,44 @@ export class EmbeddingPipeline {
       `,
       variables: { ids: messageIds },
       fetchPolicy: 'network-only',
-    });
+    })
 
-    const messages: MessageForEmbedding[] = messagesData.nchat_messages;
+    const messages: MessageForEmbedding[] = messagesData.nchat_messages
 
     // Generate embeddings
-    const result = await this.processBatch(messages);
+    const result = await this.processBatch(messages)
 
     // Remove from queue
-    const successfulIds = result.successful.map((m) => m.id);
+    const successfulIds = result.successful.map((m) => m.id)
     if (successfulIds.length > 0) {
       await this.client.mutate({
         mutation: REMOVE_FROM_QUEUE,
         variables: { messageIds: successfulIds },
-      });
+      })
     }
 
     return {
       processed: messages.length,
       successful: result.successful.length,
       failed: result.failed.length,
-    };
+    }
   }
 
   /**
    * Process a single job
    */
   private async processJob(jobId: string, totalMessages: number): Promise<void> {
-    const startTime = Date.now();
-    let processed = 0;
-    let successful = 0;
-    let failed = 0;
+    const startTime = Date.now()
+    let processed = 0
+    let successful = 0
+    let failed = 0
 
     try {
       // Start job
       await this.client.mutate({
         mutation: START_JOB,
         variables: { jobId },
-      });
+      })
 
       // Process in batches
       while (processed < totalMessages) {
@@ -438,18 +429,18 @@ export class EmbeddingPipeline {
             offset: processed,
           },
           fetchPolicy: 'network-only',
-        });
+        })
 
-        const messages: MessageForEmbedding[] = data.nchat_messages;
+        const messages: MessageForEmbedding[] = data.nchat_messages
 
         if (messages.length === 0) {
-          break;
+          break
         }
 
-        const result = await this.processBatch(messages);
-        processed += messages.length;
-        successful += result.successful.length;
-        failed += result.failed.length;
+        const result = await this.processBatch(messages)
+        processed += messages.length
+        successful += result.successful.length
+        failed += result.failed.length
 
         // Update progress
         await this.updateProgress(jobId, {
@@ -458,7 +449,7 @@ export class EmbeddingPipeline {
           successful,
           failed,
           startTime,
-        });
+        })
       }
 
       // Complete job
@@ -469,9 +460,9 @@ export class EmbeddingPipeline {
           status: 'completed',
           errorMessage: null,
         },
-      });
+      })
     } catch (error) {
-      console.error(`Job ${jobId} error:`, error);
+      logger.error(`Job ${jobId} error:`, error)
 
       await this.client.mutate({
         mutation: COMPLETE_JOB,
@@ -480,9 +471,9 @@ export class EmbeddingPipeline {
           status: 'failed',
           errorMessage: error instanceof Error ? error.message : String(error),
         },
-      });
+      })
     } finally {
-      this.progressCallbacks.delete(jobId);
+      this.progressCallbacks.delete(jobId)
     }
   }
 
@@ -490,25 +481,25 @@ export class EmbeddingPipeline {
    * Process retry job
    */
   private async processRetryJob(jobId: string, messages: MessageForEmbedding[]): Promise<void> {
-    const startTime = Date.now();
-    let processed = 0;
-    let successful = 0;
-    let failed = 0;
+    const startTime = Date.now()
+    let processed = 0
+    let successful = 0
+    let failed = 0
 
     try {
       await this.client.mutate({
         mutation: START_JOB,
         variables: { jobId },
-      });
+      })
 
       // Process in batches
       for (let i = 0; i < messages.length; i += this.config.batchSize) {
-        const batch = messages.slice(i, i + this.config.batchSize);
-        const result = await this.processBatch(batch);
+        const batch = messages.slice(i, i + this.config.batchSize)
+        const result = await this.processBatch(batch)
 
-        processed += batch.length;
-        successful += result.successful.length;
-        failed += result.failed.length;
+        processed += batch.length
+        successful += result.successful.length
+        failed += result.failed.length
 
         await this.updateProgress(jobId, {
           total: messages.length,
@@ -516,13 +507,13 @@ export class EmbeddingPipeline {
           successful,
           failed,
           startTime,
-        });
+        })
       }
 
       await this.client.mutate({
         mutation: COMPLETE_JOB,
         variables: { jobId, status: 'completed', errorMessage: null },
-      });
+      })
     } catch (error) {
       await this.client.mutate({
         mutation: COMPLETE_JOB,
@@ -531,9 +522,9 @@ export class EmbeddingPipeline {
           status: 'failed',
           errorMessage: error instanceof Error ? error.message : String(error),
         },
-      });
+      })
     } finally {
-      this.progressCallbacks.delete(jobId);
+      this.progressCallbacks.delete(jobId)
     }
   }
 
@@ -543,18 +534,18 @@ export class EmbeddingPipeline {
   private async processBatch(
     messages: MessageForEmbedding[]
   ): Promise<{ successful: MessageForEmbedding[]; failed: MessageForEmbedding[] }> {
-    const successful: MessageForEmbedding[] = [];
-    const failed: MessageForEmbedding[] = [];
+    const successful: MessageForEmbedding[] = []
+    const failed: MessageForEmbedding[] = []
 
     try {
       // Prepare requests
       const requests: EmbeddingRequest[] = messages.map((msg) => ({
         text: msg.content,
         messageId: msg.id,
-      }));
+      }))
 
       // Generate embeddings
-      const response = await embeddingService.batchGenerateEmbeddings(requests);
+      const response = await embeddingService.batchGenerateEmbeddings(requests)
 
       // Prepare batch operations
       const operations: BatchEmbeddingOperation[] = response.embeddings.map((emb) => ({
@@ -564,14 +555,14 @@ export class EmbeddingPipeline {
           model: embeddingService.getModel(),
           version: embeddingService.getVersion(),
         },
-      }));
+      }))
 
       // Insert into vector store
-      await vectorStore.batchInsertEmbeddings(operations);
+      await vectorStore.batchInsertEmbeddings(operations)
 
-      successful.push(...messages);
+      successful.push(...messages)
     } catch (error) {
-      console.error('Batch processing error:', error);
+      logger.error('Batch processing error:', error)
 
       // Record errors for each message
       for (const message of messages) {
@@ -579,12 +570,12 @@ export class EmbeddingPipeline {
           message.id,
           error instanceof Error ? error.message : String(error),
           1
-        );
-        failed.push(message);
+        )
+        failed.push(message)
       }
     }
 
-    return { successful, failed };
+    return { successful, failed }
   }
 
   /**
@@ -593,14 +584,14 @@ export class EmbeddingPipeline {
   private async updateProgress(
     jobId: string,
     data: {
-      total: number;
-      processed: number;
-      successful: number;
-      failed: number;
-      startTime: number;
+      total: number
+      processed: number
+      successful: number
+      failed: number
+      startTime: number
     }
   ): Promise<void> {
-    const { total, processed, successful, failed, startTime } = data;
+    const { total, processed, successful, failed, startTime } = data
 
     // Update database
     await this.client.mutate({
@@ -612,14 +603,14 @@ export class EmbeddingPipeline {
         successfulEmbeddings: successful,
         failedEmbeddings: failed,
       },
-    });
+    })
 
     // Calculate progress
-    const percentage = Math.floor((processed / total) * 100);
-    const elapsed = Date.now() - startTime;
-    const avgTimePerMessage = elapsed / processed;
-    const remaining = total - processed;
-    const estimatedTimeRemaining = Math.floor(avgTimePerMessage * remaining);
+    const percentage = Math.floor((processed / total) * 100)
+    const elapsed = Date.now() - startTime
+    const avgTimePerMessage = elapsed / processed
+    const remaining = total - processed
+    const estimatedTimeRemaining = Math.floor(avgTimePerMessage * remaining)
 
     const progress: PipelineProgress = {
       jobId,
@@ -629,15 +620,15 @@ export class EmbeddingPipeline {
       failed,
       percentage,
       estimatedTimeRemaining,
-    };
+    }
 
     // Call callback if registered
-    const callback = this.progressCallbacks.get(jobId);
+    const callback = this.progressCallbacks.get(jobId)
     if (callback) {
-      callback(progress);
+      callback(progress)
     }
   }
 }
 
 // Export singleton instance
-export const embeddingPipeline = new EmbeddingPipeline();
+export const embeddingPipeline = new EmbeddingPipeline()

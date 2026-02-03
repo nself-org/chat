@@ -360,8 +360,7 @@ export const useUserStore = create<UserStore>()(
         ),
 
       // Utility actions
-      reset: () =>
-        set(() => initialState, false, 'user/reset'),
+      reset: () => set(() => initialState, false, 'user/reset'),
     })),
     { name: 'user-store' }
   )
@@ -373,14 +372,12 @@ export const useUserStore = create<UserStore>()(
 
 export const selectCurrentUser = (state: UserStore) => state.currentUser
 
-export const selectUserById = (userId: string) => (state: UserStore) =>
-  state.users[userId]
+export const selectUserById = (userId: string) => (state: UserStore) => state.users[userId]
 
 export const selectPresence = (userId: string) => (state: UserStore) =>
   state.presenceMap[userId] ?? 'offline'
 
-export const selectCustomStatus = (userId: string) => (state: UserStore) =>
-  state.statusMap[userId]
+export const selectCustomStatus = (userId: string) => (state: UserStore) => state.statusMap[userId]
 
 export const selectAllUsers = (state: UserStore) => Object.values(state.users)
 

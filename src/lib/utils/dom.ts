@@ -3,10 +3,12 @@
  * @module utils/dom
  */
 
+import { logger } from '@/lib/logger'
+
 /**
  * Check if we're running in a browser environment
  */
-export const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined';
+export const isBrowser = typeof window !== 'undefined' && typeof document !== 'undefined'
 
 /**
  * Copy text to clipboard
@@ -18,39 +20,41 @@ export const isBrowser = typeof window !== 'undefined' && typeof document !== 'u
  */
 export async function copyToClipboard(text: string): Promise<void> {
   if (!isBrowser) {
-    throw new Error('Clipboard API is not available in this environment');
+    throw new Error('Clipboard API is not available in this environment')
   }
 
   // Try the modern Clipboard API first
   if (navigator.clipboard && navigator.clipboard.writeText) {
     try {
-      await navigator.clipboard.writeText(text);
-      return;
+      await navigator.clipboard.writeText(text)
+      return
     } catch (err) {
       // Fall through to fallback
-      console.warn('Clipboard API failed, trying fallback:', err);
+      logger.warn('Clipboard API failed, trying fallback:', {
+        error: err instanceof Error ? err.message : String(err)
+      })
     }
   }
 
   // Fallback for older browsers
-  const textArea = document.createElement('textarea');
-  textArea.value = text;
-  textArea.style.position = 'fixed';
-  textArea.style.left = '-999999px';
-  textArea.style.top = '-999999px';
-  textArea.setAttribute('readonly', '');
-  document.body.appendChild(textArea);
+  const textArea = document.createElement('textarea')
+  textArea.value = text
+  textArea.style.position = 'fixed'
+  textArea.style.left = '-999999px'
+  textArea.style.top = '-999999px'
+  textArea.setAttribute('readonly', '')
+  document.body.appendChild(textArea)
 
   try {
-    textArea.focus();
-    textArea.select();
+    textArea.focus()
+    textArea.select()
 
-    const successful = document.execCommand('copy');
+    const successful = document.execCommand('copy')
     if (!successful) {
-      throw new Error('execCommand copy failed');
+      throw new Error('execCommand copy failed')
     }
   } finally {
-    document.body.removeChild(textArea);
+    document.body.removeChild(textArea)
   }
 }
 
@@ -60,14 +64,14 @@ export async function copyToClipboard(text: string): Promise<void> {
  */
 export async function readFromClipboard(): Promise<string> {
   if (!isBrowser) {
-    throw new Error('Clipboard API is not available in this environment');
+    throw new Error('Clipboard API is not available in this environment')
   }
 
   if (navigator.clipboard && navigator.clipboard.readText) {
-    return navigator.clipboard.readText();
+    return navigator.clipboard.readText()
   }
 
-  throw new Error('Clipboard read is not supported in this browser');
+  throw new Error('Clipboard read is not supported in this browser')
 }
 
 /**
@@ -75,9 +79,9 @@ export async function readFromClipboard(): Promise<string> {
  */
 export interface DownloadOptions {
   /** File name */
-  filename: string;
+  filename: string
   /** MIME type (default: determined from filename or 'application/octet-stream') */
-  mimeType?: string;
+  mimeType?: string
 }
 
 /**
@@ -88,20 +92,17 @@ export interface DownloadOptions {
  * downloadFile('Hello, World!', { filename: 'hello.txt' });
  * downloadFile(new Blob([data]), { filename: 'data.json', mimeType: 'application/json' });
  */
-export function downloadFile(
-  content: string | Blob | ArrayBuffer,
-  options: DownloadOptions
-): void {
+export function downloadFile(content: string | Blob | ArrayBuffer, options: DownloadOptions): void {
   if (!isBrowser) {
-    throw new Error('Download is not available in this environment');
+    throw new Error('Download is not available in this environment')
   }
 
-  const { filename } = options;
-  let { mimeType } = options;
+  const { filename } = options
+  let { mimeType } = options
 
   // Determine MIME type from filename if not provided
   if (!mimeType) {
-    const ext = filename.split('.').pop()?.toLowerCase();
+    const ext = filename.split('.').pop()?.toLowerCase()
     const mimeTypes: Record<string, string> = {
       txt: 'text/plain',
       json: 'application/json',
@@ -117,35 +118,35 @@ export function downloadFile(
       mp3: 'audio/mpeg',
       mp4: 'video/mp4',
       zip: 'application/zip',
-    };
-    mimeType = (ext && mimeTypes[ext]) || 'application/octet-stream';
+    }
+    mimeType = (ext && mimeTypes[ext]) || 'application/octet-stream'
   }
 
   // Create Blob from content
-  let blob: Blob;
+  let blob: Blob
   if (content instanceof Blob) {
-    blob = content;
+    blob = content
   } else if (content instanceof ArrayBuffer) {
-    blob = new Blob([content], { type: mimeType });
+    blob = new Blob([content], { type: mimeType })
   } else {
-    blob = new Blob([content], { type: mimeType });
+    blob = new Blob([content], { type: mimeType })
   }
 
   // Create download link
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.style.display = 'none';
-  document.body.appendChild(link);
+  const url = URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  link.style.display = 'none'
+  document.body.appendChild(link)
 
   try {
-    link.click();
+    link.click()
   } finally {
     // Clean up
-    document.body.removeChild(link);
+    document.body.removeChild(link)
     // Delay URL revocation to ensure download starts
-    setTimeout(() => URL.revokeObjectURL(url), 100);
+    setTimeout(() => URL.revokeObjectURL(url), 100)
   }
 }
 
@@ -156,59 +157,59 @@ export function downloadFile(
  */
 export async function downloadFromUrl(url: string, filename?: string): Promise<void> {
   if (!isBrowser) {
-    throw new Error('Download is not available in this environment');
+    throw new Error('Download is not available in this environment')
   }
 
   // If same-origin, we can use a simple link click
   try {
-    const urlObj = new URL(url, window.location.href);
-    const isSameOrigin = urlObj.origin === window.location.origin;
+    const urlObj = new URL(url, window.location.href)
+    const isSameOrigin = urlObj.origin === window.location.origin
 
     if (isSameOrigin) {
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = filename || url.split('/').pop() || 'download';
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      return;
+      const link = document.createElement('a')
+      link.href = url
+      link.download = filename || url.split('/').pop() || 'download'
+      link.style.display = 'none'
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      return
     }
   } catch {
     // Invalid URL, fall through to fetch
   }
 
   // For cross-origin, fetch and download
-  const response = await fetch(url);
-  const blob = await response.blob();
+  const response = await fetch(url)
+  const blob = await response.blob()
 
   downloadFile(blob, {
     filename: filename || url.split('/').pop() || 'download',
-  });
+  })
 }
 
 /**
  * Scroll behavior options
  */
-export type ScrollBehavior = 'auto' | 'smooth' | 'instant';
+export type ScrollBehavior = 'auto' | 'smooth' | 'instant'
 
 /**
  * Scroll alignment
  */
-export type ScrollAlignment = 'start' | 'center' | 'end' | 'nearest';
+export type ScrollAlignment = 'start' | 'center' | 'end' | 'nearest'
 
 /**
  * Scroll to element options
  */
 export interface ScrollToElementOptions {
   /** Scroll behavior */
-  behavior?: ScrollBehavior;
+  behavior?: ScrollBehavior
   /** Block alignment (vertical) */
-  block?: ScrollAlignment;
+  block?: ScrollAlignment
   /** Inline alignment (horizontal) */
-  inline?: ScrollAlignment;
+  inline?: ScrollAlignment
   /** Offset from target (pixels) */
-  offset?: number;
+  offset?: number
 }
 
 /**
@@ -223,42 +224,42 @@ export function scrollToElement(
   element: HTMLElement | string,
   options: ScrollToElementOptions = {}
 ): void {
-  if (!isBrowser) return;
+  if (!isBrowser) return
 
-  const { behavior = 'smooth', block = 'start', inline = 'nearest', offset = 0 } = options;
+  const { behavior = 'smooth', block = 'start', inline = 'nearest', offset = 0 } = options
 
-  let el: HTMLElement | null;
+  let el: HTMLElement | null
 
   if (typeof element === 'string') {
-    el = document.querySelector(element);
+    el = document.querySelector(element)
   } else {
-    el = element;
+    el = element
   }
 
   if (!el) {
-    console.warn('scrollToElement: Element not found');
-    return;
+    logger.warn('scrollToElement: Element not found')
+    return
   }
 
   // If there's an offset, we need to handle it manually
   if (offset !== 0) {
-    const elementRect = el.getBoundingClientRect();
-    const absoluteTop = elementRect.top + window.scrollY;
-    const absoluteLeft = elementRect.left + window.scrollX;
+    const elementRect = el.getBoundingClientRect()
+    const absoluteTop = elementRect.top + window.scrollY
+    const absoluteLeft = elementRect.left + window.scrollX
 
     window.scrollTo({
       top: absoluteTop - offset,
       left: absoluteLeft,
       behavior: behavior === 'instant' ? 'auto' : behavior,
-    });
-    return;
+    })
+    return
   }
 
   el.scrollIntoView({
     behavior: behavior === 'instant' ? 'auto' : behavior,
     block,
     inline,
-  });
+  })
 }
 
 /**
@@ -266,12 +267,12 @@ export function scrollToElement(
  * @param behavior - Scroll behavior
  */
 export function scrollToTop(behavior: ScrollBehavior = 'smooth'): void {
-  if (!isBrowser) return;
+  if (!isBrowser) return
 
   window.scrollTo({
     top: 0,
     behavior: behavior === 'instant' ? 'auto' : behavior,
-  });
+  })
 }
 
 /**
@@ -279,12 +280,12 @@ export function scrollToTop(behavior: ScrollBehavior = 'smooth'): void {
  * @param behavior - Scroll behavior
  */
 export function scrollToBottom(behavior: ScrollBehavior = 'smooth'): void {
-  if (!isBrowser) return;
+  if (!isBrowser) return
 
   window.scrollTo({
     top: document.documentElement.scrollHeight,
     behavior: behavior === 'instant' ? 'auto' : behavior,
-  });
+  })
 }
 
 /**
@@ -294,31 +295,31 @@ export function scrollToBottom(behavior: ScrollBehavior = 'smooth'): void {
  * @returns Whether the element is in view
  * @example
  * if (isElementInView(myElement)) {
- *   console.log('Element is visible!');
+ *   // console.log('Element is visible!');
  * }
  */
 export function isElementInView(
   element: HTMLElement,
   options: {
     /** Require full visibility (default: false, any part visible counts) */
-    fully?: boolean;
+    fully?: boolean
     /** Threshold for partial visibility (0-1, default: 0) */
-    threshold?: number;
+    threshold?: number
     /** Container element (default: viewport) */
-    container?: HTMLElement;
+    container?: HTMLElement
   } = {}
 ): boolean {
-  if (!isBrowser) return false;
+  if (!isBrowser) return false
 
-  const { fully = false, threshold = 0, container } = options;
+  const { fully = false, threshold = 0, container } = options
 
-  const rect = element.getBoundingClientRect();
+  const rect = element.getBoundingClientRect()
 
-  let containerRect: DOMRect;
+  let containerRect: DOMRect
   if (container) {
-    containerRect = container.getBoundingClientRect();
+    containerRect = container.getBoundingClientRect()
   } else {
-    containerRect = new DOMRect(0, 0, window.innerWidth, window.innerHeight);
+    containerRect = new DOMRect(0, 0, window.innerWidth, window.innerHeight)
   }
 
   if (fully) {
@@ -327,19 +328,19 @@ export function isElementInView(
       rect.left >= containerRect.left &&
       rect.bottom <= containerRect.bottom &&
       rect.right <= containerRect.right
-    );
+    )
   }
 
   if (threshold > 0) {
     const visibleHeight =
-      Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top);
+      Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top)
     const visibleWidth =
-      Math.min(rect.right, containerRect.right) - Math.max(rect.left, containerRect.left);
+      Math.min(rect.right, containerRect.right) - Math.max(rect.left, containerRect.left)
 
-    const visibleArea = Math.max(0, visibleHeight) * Math.max(0, visibleWidth);
-    const totalArea = rect.width * rect.height;
+    const visibleArea = Math.max(0, visibleHeight) * Math.max(0, visibleWidth)
+    const totalArea = rect.width * rect.height
 
-    return totalArea > 0 && visibleArea / totalArea >= threshold;
+    return totalArea > 0 && visibleArea / totalArea >= threshold
   }
 
   return (
@@ -347,7 +348,7 @@ export function isElementInView(
     rect.top < containerRect.bottom &&
     rect.right > containerRect.left &&
     rect.left < containerRect.right
-  );
+  )
 }
 
 /**
@@ -357,23 +358,23 @@ export function isElementInView(
  */
 export function getScrollParent(element: HTMLElement): HTMLElement | Document {
   if (!isBrowser) {
-    return document;
+    return document
   }
 
-  let parent: HTMLElement | null = element.parentElement;
+  let parent: HTMLElement | null = element.parentElement
 
   while (parent) {
-    const style = window.getComputedStyle(parent);
-    const overflow = style.overflow + style.overflowY + style.overflowX;
+    const style = window.getComputedStyle(parent)
+    const overflow = style.overflow + style.overflowY + style.overflowX
 
     if (/(auto|scroll|overlay)/.test(overflow)) {
-      return parent;
+      return parent
     }
 
-    parent = parent.parentElement;
+    parent = parent.parentElement
   }
 
-  return document;
+  return document
 }
 
 /**
@@ -383,20 +384,20 @@ export function getScrollParent(element: HTMLElement): HTMLElement | Document {
  */
 export function getScrollPosition(element?: HTMLElement): { x: number; y: number } {
   if (!isBrowser) {
-    return { x: 0, y: 0 };
+    return { x: 0, y: 0 }
   }
 
   if (element) {
     return {
       x: element.scrollLeft,
       y: element.scrollTop,
-    };
+    }
   }
 
   return {
     x: window.scrollX || window.pageXOffset || document.documentElement.scrollLeft,
     y: window.scrollY || window.pageYOffset || document.documentElement.scrollTop,
-  };
+  }
 }
 
 /**
@@ -405,24 +406,24 @@ export function getScrollPosition(element?: HTMLElement): { x: number; y: number
  * @returns Dimensions object
  */
 export function getElementDimensions(element: HTMLElement): {
-  width: number;
-  height: number;
-  outerWidth: number;
-  outerHeight: number;
-  offsetTop: number;
-  offsetLeft: number;
+  width: number
+  height: number
+  outerWidth: number
+  outerHeight: number
+  offsetTop: number
+  offsetLeft: number
 } {
   if (!isBrowser) {
-    return { width: 0, height: 0, outerWidth: 0, outerHeight: 0, offsetTop: 0, offsetLeft: 0 };
+    return { width: 0, height: 0, outerWidth: 0, outerHeight: 0, offsetTop: 0, offsetLeft: 0 }
   }
 
-  const rect = element.getBoundingClientRect();
-  const style = window.getComputedStyle(element);
+  const rect = element.getBoundingClientRect()
+  const style = window.getComputedStyle(element)
 
-  const marginTop = parseFloat(style.marginTop) || 0;
-  const marginBottom = parseFloat(style.marginBottom) || 0;
-  const marginLeft = parseFloat(style.marginLeft) || 0;
-  const marginRight = parseFloat(style.marginRight) || 0;
+  const marginTop = parseFloat(style.marginTop) || 0
+  const marginBottom = parseFloat(style.marginBottom) || 0
+  const marginLeft = parseFloat(style.marginLeft) || 0
+  const marginRight = parseFloat(style.marginRight) || 0
 
   return {
     width: rect.width,
@@ -431,7 +432,7 @@ export function getElementDimensions(element: HTMLElement): {
     outerHeight: rect.height + marginTop + marginBottom,
     offsetTop: element.offsetTop,
     offsetLeft: element.offsetLeft,
-  };
+  }
 }
 
 /**
@@ -443,26 +444,26 @@ export function focusElement(
   element: HTMLElement | string,
   options: { preventScroll?: boolean; scrollIntoView?: boolean } = {}
 ): void {
-  if (!isBrowser) return;
+  if (!isBrowser) return
 
-  const { preventScroll = false, scrollIntoView = false } = options;
+  const { preventScroll = false, scrollIntoView = false } = options
 
-  let el: HTMLElement | null;
+  let el: HTMLElement | null
 
   if (typeof element === 'string') {
-    el = document.querySelector(element);
+    el = document.querySelector(element)
   } else {
-    el = element;
+    el = element
   }
 
   if (!el || typeof el.focus !== 'function') {
-    return;
+    return
   }
 
-  el.focus({ preventScroll });
+  el.focus({ preventScroll })
 
   if (scrollIntoView && !preventScroll) {
-    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
   }
 }
 
@@ -478,15 +479,15 @@ export function dispatchCustomEvent<T = unknown>(
   eventName: string,
   detail?: T
 ): boolean {
-  if (!isBrowser) return false;
+  if (!isBrowser) return false
 
   const event = new CustomEvent(eventName, {
     detail,
     bubbles: true,
     cancelable: true,
-  });
+  })
 
-  return element.dispatchEvent(event);
+  return element.dispatchEvent(event)
 }
 
 /**
@@ -503,11 +504,11 @@ export function addEventListenerWithCleanup<K extends keyof HTMLElementEventMap>
   handler: (event: HTMLElementEventMap[K]) => void,
   options?: AddEventListenerOptions
 ): () => void {
-  element.addEventListener(event, handler as EventListener, options);
+  element.addEventListener(event, handler as EventListener, options)
 
   return () => {
-    element.removeEventListener(event, handler as EventListener, options);
-  };
+    element.removeEventListener(event, handler as EventListener, options)
+  }
 }
 
 /**
@@ -519,45 +520,45 @@ export function addEventListenerWithCleanup<K extends keyof HTMLElementEventMap>
 export function waitForElement(
   selector: string,
   options: {
-    timeout?: number;
-    parent?: HTMLElement | Document;
+    timeout?: number
+    parent?: HTMLElement | Document
   } = {}
 ): Promise<HTMLElement> {
   if (!isBrowser) {
-    return Promise.reject(new Error('Not in browser environment'));
+    return Promise.reject(new Error('Not in browser environment'))
   }
 
-  const { timeout = 5000, parent = document } = options;
+  const { timeout = 5000, parent = document } = options
 
   return new Promise((resolve, reject) => {
     // Check if element already exists
-    const existing = parent.querySelector<HTMLElement>(selector);
+    const existing = parent.querySelector<HTMLElement>(selector)
     if (existing) {
-      resolve(existing);
-      return;
+      resolve(existing)
+      return
     }
 
-    let timeoutId: ReturnType<typeof setTimeout>;
+    let timeoutId: ReturnType<typeof setTimeout>
 
     const observer = new MutationObserver((mutations, obs) => {
-      const element = parent.querySelector<HTMLElement>(selector);
+      const element = parent.querySelector<HTMLElement>(selector)
       if (element) {
-        obs.disconnect();
-        clearTimeout(timeoutId);
-        resolve(element);
+        obs.disconnect()
+        clearTimeout(timeoutId)
+        resolve(element)
       }
-    });
+    })
 
     observer.observe(parent, {
       childList: true,
       subtree: true,
-    });
+    })
 
     timeoutId = setTimeout(() => {
-      observer.disconnect();
-      reject(new Error(`Element "${selector}" not found within ${timeout}ms`));
-    }, timeout);
-  });
+      observer.disconnect()
+      reject(new Error(`Element "${selector}" not found within ${timeout}ms`))
+    }, timeout)
+  })
 }
 
 /**
@@ -566,31 +567,31 @@ export function waitForElement(
  */
 export function lockScroll(): () => void {
   if (!isBrowser) {
-    return () => {};
+    return () => {}
   }
 
-  const scrollY = window.scrollY;
-  const body = document.body;
+  const scrollY = window.scrollY
+  const body = document.body
 
   const originalStyles = {
     overflow: body.style.overflow,
     position: body.style.position,
     top: body.style.top,
     width: body.style.width,
-  };
+  }
 
-  body.style.overflow = 'hidden';
-  body.style.position = 'fixed';
-  body.style.top = `-${scrollY}px`;
-  body.style.width = '100%';
+  body.style.overflow = 'hidden'
+  body.style.position = 'fixed'
+  body.style.top = `-${scrollY}px`
+  body.style.width = '100%'
 
   return () => {
-    body.style.overflow = originalStyles.overflow;
-    body.style.position = originalStyles.position;
-    body.style.top = originalStyles.top;
-    body.style.width = originalStyles.width;
-    window.scrollTo(0, scrollY);
-  };
+    body.style.overflow = originalStyles.overflow
+    body.style.position = originalStyles.position
+    body.style.top = originalStyles.top
+    body.style.width = originalStyles.width
+    window.scrollTo(0, scrollY)
+  }
 }
 
 /**
@@ -598,15 +599,15 @@ export function lockScroll(): () => void {
  * @returns Active element
  */
 export function getActiveElement(): Element | null {
-  if (!isBrowser) return null;
+  if (!isBrowser) return null
 
-  let active = document.activeElement;
+  let active = document.activeElement
 
   while (active?.shadowRoot?.activeElement) {
-    active = active.shadowRoot.activeElement;
+    active = active.shadowRoot.activeElement
   }
 
-  return active;
+  return active
 }
 
 /**
@@ -616,6 +617,6 @@ export function getActiveElement(): Element | null {
  * @returns Whether parent contains child
  */
 export function containsElement(parent: HTMLElement, child: HTMLElement | null): boolean {
-  if (!child) return false;
-  return parent.contains(child);
+  if (!child) return false
+  return parent.contains(child)
 }

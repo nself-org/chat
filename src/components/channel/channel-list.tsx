@@ -135,7 +135,7 @@ export function ChannelList({ className, onChannelSelect }: ChannelListProps) {
     return (
       <div className="mb-4">
         <div
-          className="group flex items-center justify-between px-2 py-1 cursor-pointer hover:bg-accent/50 rounded-md transition-colors"
+          className="hover:bg-accent/50 group flex cursor-pointer items-center justify-between rounded-md px-2 py-1 transition-colors"
           onClick={onToggle}
         >
           <div className="flex items-center gap-1.5">
@@ -150,15 +150,13 @@ export function ChannelList({ className, onChannelSelect }: ChannelListProps) {
             <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {title}
             </span>
-            <span className="text-xs text-muted-foreground/60">
-              ({sortedChannels.length})
-            </span>
+            <span className="text-muted-foreground/60 text-xs">({sortedChannels.length})</span>
           </div>
           {isAdmin && (
             <Button
               variant="ghost"
               size="icon"
-              className="h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="h-5 w-5 opacity-0 transition-opacity group-hover:opacity-100"
               onClick={(e) => {
                 e.stopPropagation()
                 handleCreateChannel()
@@ -171,11 +169,7 @@ export function ChannelList({ className, onChannelSelect }: ChannelListProps) {
         {!isCollapsed && (
           <div className="mt-1 space-y-0.5">
             {sortedChannels.map((channel) => (
-              <ChannelItem
-                key={channel.id}
-                channel={channel}
-                onSelect={onChannelSelect}
-              />
+              <ChannelItem key={channel.id} channel={channel} onSelect={onChannelSelect} />
             ))}
           </div>
         )}
@@ -193,17 +187,17 @@ export function ChannelList({ className, onChannelSelect }: ChannelListProps) {
   }
 
   return (
-    <div className={cn('flex flex-col h-full', className)}>
+    <div className={cn('flex h-full flex-col', className)}>
       {/* Search */}
       <div className="px-3 py-2">
         <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
             placeholder="Search channels..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-8 h-8 text-sm"
+            className="h-8 pl-8 text-sm"
           />
         </div>
       </div>
@@ -213,19 +207,16 @@ export function ChannelList({ className, onChannelSelect }: ChannelListProps) {
         {/* Search Results */}
         {filteredChannels ? (
           <div className="py-2">
-            <div className="px-2 mb-2">
+            <div className="mb-2 px-2">
               <span className="text-xs text-muted-foreground">
-                {filteredChannels.length} result{filteredChannels.length !== 1 ? 's' : ''} for &quot;{searchQuery}&quot;
+                {filteredChannels.length} result{filteredChannels.length !== 1 ? 's' : ''} for
+                &quot;{searchQuery}&quot;
               </span>
             </div>
             {filteredChannels.length > 0 ? (
               <div className="space-y-0.5">
                 {filteredChannels.map((channel) => (
-                  <ChannelItem
-                    key={channel.id}
-                    channel={channel}
-                    onSelect={onChannelSelect}
-                  />
+                  <ChannelItem key={channel.id} channel={channel} onSelect={onChannelSelect} />
                 ))}
               </div>
             ) : (
@@ -235,13 +226,13 @@ export function ChannelList({ className, onChannelSelect }: ChannelListProps) {
             )}
           </div>
         ) : (
-          <div className="py-2 space-y-2">
+          <div className="space-y-2 py-2">
             {/* Starred Channels */}
             {starredChannelsList.length > 0 &&
               renderChannelSection(
                 'Starred',
                 starredChannelsList,
-                <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-500" />,
+                <Star className="h-3.5 w-3.5 fill-yellow-500 text-yellow-500" />,
                 'starred',
                 !showStarred,
                 () => setShowStarred(!showStarred)
@@ -259,11 +250,7 @@ export function ChannelList({ className, onChannelSelect }: ChannelListProps) {
                   onCreateChannel={handleCreateChannel}
                 >
                   {sortChannels(categoryChannels).map((channel) => (
-                    <ChannelItem
-                      key={channel.id}
-                      channel={channel}
-                      onSelect={onChannelSelect}
-                    />
+                    <ChannelItem key={channel.id} channel={channel} onSelect={onChannelSelect} />
                   ))}
                 </ChannelCategory>
               )
@@ -299,7 +286,7 @@ export function ChannelList({ className, onChannelSelect }: ChannelListProps) {
 
       {/* Footer Actions */}
       {isAdmin && (
-        <div className="p-2 border-t">
+        <div className="border-t p-2">
           <Button
             variant="ghost"
             className="w-full justify-start text-muted-foreground hover:text-foreground"

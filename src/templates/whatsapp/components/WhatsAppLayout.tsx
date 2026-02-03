@@ -27,11 +27,7 @@ export interface WhatsAppLayoutProps {
 // Component
 // -------------------------------------------------------------------------------
 
-export function WhatsAppLayout({
-  children,
-  chatList,
-  className,
-}: WhatsAppLayoutProps) {
+export function WhatsAppLayout({ children, chatList, className }: WhatsAppLayoutProps) {
   return (
     <div
       className={cn(
@@ -40,13 +36,14 @@ export function WhatsAppLayout({
         className
       )}
       style={{
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
       }}
     >
       {/* Chat List Sidebar */}
       {chatList && (
         <aside
-          className="flex-shrink-0 flex flex-col border-r"
+          className="flex flex-shrink-0 flex-col border-r"
           style={{
             width: 360,
             backgroundColor: WHATSAPP_COLORS.chatBgDark,
@@ -59,7 +56,7 @@ export function WhatsAppLayout({
 
       {/* Main Chat View */}
       <main
-        className="flex-1 flex flex-col min-w-0"
+        className="flex min-w-0 flex-1 flex-col"
         style={{ backgroundColor: WHATSAPP_COLORS.chatBgDark }}
       >
         {children}

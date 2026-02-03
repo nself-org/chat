@@ -23,25 +23,25 @@
 
 ### Minimum Requirements
 
-| Component | Requirement |
-|-----------|-------------|
+| Component            | Requirement                                  |
+| -------------------- | -------------------------------------------- |
 | **Operating System** | macOS 11+, Ubuntu 20.04+, Windows 10+ (WSL2) |
-| **CPU** | 2 cores (4+ recommended) |
-| **RAM** | 8GB minimum (16GB+ recommended) |
-| **Disk Space** | 10GB free (SSD recommended) |
-| **Docker** | 20.10.0+ |
-| **Docker Compose** | v2.0.0+ |
-| **Internet** | Required for initial setup |
+| **CPU**              | 2 cores (4+ recommended)                     |
+| **RAM**              | 8GB minimum (16GB+ recommended)              |
+| **Disk Space**       | 10GB free (SSD recommended)                  |
+| **Docker**           | 20.10.0+                                     |
+| **Docker Compose**   | v2.0.0+                                      |
+| **Internet**         | Required for initial setup                   |
 
 ### Recommended Requirements
 
 For production-like development:
 
-| Component | Recommended |
-|-----------|-------------|
-| **CPU** | 8 cores |
-| **RAM** | 32GB |
-| **Disk** | 100GB SSD |
+| Component  | Recommended   |
+| ---------- | ------------- |
+| **CPU**    | 8 cores       |
+| **RAM**    | 32GB          |
+| **Disk**   | 100GB SSD     |
 | **Docker** | Latest stable |
 
 ### Software Prerequisites
@@ -49,6 +49,7 @@ For production-like development:
 #### 1. **Docker Desktop** (macOS/Windows)
 
 **macOS:**
+
 ```bash
 # Install via Homebrew
 brew install --cask docker
@@ -58,6 +59,7 @@ brew install --cask docker
 ```
 
 **Windows (WSL2):**
+
 ```powershell
 # Install WSL2 first
 wsl --install
@@ -69,6 +71,7 @@ wsl --install
 ```
 
 **Verify Docker:**
+
 ```bash
 docker --version
 # Expected: Docker version 24.0.0 or higher
@@ -80,6 +83,7 @@ docker compose version
 #### 2. **Docker Engine** (Linux)
 
 **Ubuntu/Debian:**
+
 ```bash
 # Update package index
 sudo apt-get update
@@ -114,6 +118,7 @@ sudo usermod -aG docker $USER
 ```
 
 **Fedora/RHEL:**
+
 ```bash
 # Install Docker
 sudo dnf -y install dnf-plugins-core
@@ -130,6 +135,7 @@ sudo usermod -aG docker $USER
 ```
 
 **Arch Linux:**
+
 ```bash
 # Install Docker
 sudo pacman -S docker docker-compose
@@ -211,6 +217,7 @@ nself --version
 ```
 
 **Apple Silicon (M1/M2/M3):**
+
 ```bash
 # Download ARM binary
 curl -LO https://github.com/nself/nself/releases/download/v0.4.2/nself-darwin-arm64
@@ -235,11 +242,13 @@ nself --version
 #### Method 2: Package Manager
 
 **Snap (Ubuntu/Debian):**
+
 ```bash
 sudo snap install nself --classic
 ```
 
 **AUR (Arch Linux):**
+
 ```bash
 yay -S nself-cli
 # Or
@@ -273,6 +282,7 @@ nself --version
 ### Windows Installation (WSL2)
 
 **Prerequisites:**
+
 1. Windows 10 version 2004+ or Windows 11
 2. WSL2 installed and configured
 3. Docker Desktop with WSL2 backend
@@ -464,6 +474,7 @@ EOF
 ### 3. Set Up Shell Completion (Optional)
 
 **Bash:**
+
 ```bash
 # Add to ~/.bashrc
 echo 'eval "$(nself completion bash)"' >> ~/.bashrc
@@ -471,6 +482,7 @@ source ~/.bashrc
 ```
 
 **Zsh:**
+
 ```bash
 # Add to ~/.zshrc
 echo 'eval "$(nself completion zsh)"' >> ~/.zshrc
@@ -478,6 +490,7 @@ source ~/.zshrc
 ```
 
 **Fish:**
+
 ```bash
 # Add to ~/.config/fish/config.fish
 echo 'nself completion fish | source' >> ~/.config/fish/config.fish
@@ -666,11 +679,13 @@ docker system prune -a --volumes -f
 #### 1. Permission Denied (Linux)
 
 **Error:**
+
 ```
 Got permission denied while trying to connect to the Docker daemon socket
 ```
 
 **Solution:**
+
 ```bash
 # Add user to docker group
 sudo usermod -aG docker $USER
@@ -686,11 +701,13 @@ docker ps
 #### 2. Port Already in Use
 
 **Error:**
+
 ```
 Error: Port 5432 is already in use
 ```
 
 **Solution:**
+
 ```bash
 # Find process using port
 lsof -i :5432
@@ -705,11 +722,13 @@ POSTGRES_PORT=5433
 #### 3. Out of Disk Space
 
 **Error:**
+
 ```
 Error: No space left on device
 ```
 
 **Solution:**
+
 ```bash
 # Check disk usage
 df -h
@@ -728,11 +747,13 @@ docker volume prune -f
 #### 4. Docker Not Running
 
 **Error:**
+
 ```
 Cannot connect to the Docker daemon
 ```
 
 **Solution:**
+
 ```bash
 # macOS/Windows: Start Docker Desktop
 
@@ -746,11 +767,13 @@ docker ps
 #### 5. Network Issues
 
 **Error:**
+
 ```
 Error: Could not resolve host
 ```
 
 **Solution:**
+
 ```bash
 # Check Docker network
 docker network ls
@@ -766,11 +789,13 @@ nself restart
 #### 6. Installation Script Fails
 
 **Error:**
+
 ```
 curl: (7) Failed to connect to nself.org
 ```
 
 **Solution:**
+
 ```bash
 # Check internet connection
 ping google.com
@@ -786,11 +811,13 @@ curl -LO https://github.com/nself/nself/releases/download/v0.4.2/nself-$(uname -
 #### 7. M1/M2 Mac Issues
 
 **Error:**
+
 ```
 WARNING: The requested image's platform (linux/amd64) does not match the detected host platform
 ```
 
 **Solution:**
+
 ```bash
 # Use ARM builds
 export DOCKER_DEFAULT_PLATFORM=linux/arm64

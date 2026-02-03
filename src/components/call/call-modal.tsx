@@ -105,31 +105,29 @@ export function CallModal({
         <DialogOverlay className="bg-black/90" />
         <DialogContent
           className={cn(
-            'fixed inset-0 max-w-none h-screen w-screen border-0 p-0 rounded-none',
+            'fixed inset-0 h-screen w-screen max-w-none rounded-none border-0 p-0',
             'bg-gradient-to-br from-gray-900 to-gray-950',
             'flex flex-col',
-            isMinimized && 'bottom-auto top-auto right-4 bottom-4 h-auto w-96',
+            isMinimized && 'bottom-4 bottom-auto right-4 top-auto h-auto w-96',
             className
           )}
           aria-describedby={undefined}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-4 bg-black/20 backdrop-blur-sm">
+          <div className="flex items-center justify-between bg-black/20 p-4 backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2">
                 <div
                   className={cn(
                     'h-2 w-2 rounded-full',
                     callState === 'connected'
-                      ? 'bg-green-500 animate-pulse'
+                      ? 'animate-pulse bg-green-500'
                       : callState === 'reconnecting'
-                        ? 'bg-yellow-500 animate-pulse'
+                        ? 'animate-pulse bg-yellow-500'
                         : 'bg-gray-500'
                   )}
                 />
-                <span className="text-sm font-medium text-white">
-                  {getCallStateLabel()}
-                </span>
+                <span className="text-sm font-medium text-white">{getCallStateLabel()}</span>
               </div>
             </div>
 
@@ -151,7 +149,11 @@ export function CallModal({
                   onClick={onToggleMinimize}
                   className="text-white hover:bg-white/10"
                 >
-                  {isMinimized ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+                  {isMinimized ? (
+                    <Maximize2 className="h-4 w-4" />
+                  ) : (
+                    <Minimize2 className="h-4 w-4" />
+                  )}
                 </Button>
               )}
               <Button
@@ -173,7 +175,7 @@ export function CallModal({
           )}
 
           {/* Main Content */}
-          <div className="flex-1 flex flex-col items-center justify-center p-4 relative overflow-hidden">
+          <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden p-4">
             {/* Screen Share View */}
             {isScreenSharing ? (
               <ScreenSharePanel
@@ -181,19 +183,19 @@ export function CallModal({
                 userName={currentUserName}
                 showAnnotations
                 showRecording
-                className="w-full h-full"
+                className="h-full w-full"
               />
             ) : (
               <>
                 {/* Local Video Preview (Picture-in-Picture) */}
                 {callType === 'video' && isVideoEnabled && localStream && (
-                  <div className="absolute top-4 right-4 w-48 h-36 rounded-lg overflow-hidden border-2 border-white/20 shadow-xl z-10">
+                  <div className="absolute right-4 top-4 z-10 h-36 w-48 overflow-hidden rounded-lg border-2 border-white/20 shadow-xl">
                     <video
                       ref={videoRef}
                       autoPlay
                       playsInline
                       muted
-                      className="w-full h-full object-cover mirror"
+                      className="mirror h-full w-full object-cover"
                     />
                   </div>
                 )}
@@ -203,7 +205,7 @@ export function CallModal({
                   participants={participants}
                   callType={callType}
                   isScreenSharing={false}
-                  className="w-full h-full"
+                  className="h-full w-full"
                 />
               </>
             )}
@@ -264,33 +266,29 @@ export function MinimizedCall({
   return (
     <div
       className={cn(
-        'fixed bottom-4 right-4 w-80 rounded-xl shadow-2xl bg-card border',
+        'fixed bottom-4 right-4 w-80 rounded-xl border bg-card shadow-2xl',
         'flex flex-col gap-3 p-4',
         className
       )}
     >
       <button
         onClick={onExpand}
-        className="flex items-center gap-3 hover:bg-muted/50 rounded-lg p-2 transition-colors"
+        className="hover:bg-muted/50 flex items-center gap-3 rounded-lg p-2 transition-colors"
       >
-        <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+        <div className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-muted">
           {participantAvatar ? (
             <img
               src={participantAvatar}
               alt={participantName}
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
             />
           ) : (
-            <span className="text-sm font-medium">
-              {participantName.slice(0, 2).toUpperCase()}
-            </span>
+            <span className="text-sm font-medium">{participantName.slice(0, 2).toUpperCase()}</span>
           )}
         </div>
         <div className="flex-1 text-left">
           <p className="text-sm font-medium">{participantName}</p>
-          <p className="text-xs text-muted-foreground">
-            {formatCallDuration(callDuration)}
-          </p>
+          <p className="text-xs text-muted-foreground">{formatCallDuration(callDuration)}</p>
         </div>
         <Maximize2 className="h-4 w-4 text-muted-foreground" />
       </button>

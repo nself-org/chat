@@ -90,11 +90,13 @@ export JAVA_HOME=$(/usr/libexec/java_home -v 17)
 ```
 
 Reload shell:
+
 ```bash
 source ~/.zshrc  # or source ~/.bash_profile
 ```
 
 Verify installations:
+
 ```bash
 node --version           # v20.x.x
 pnpm --version          # 9.15.4
@@ -144,11 +146,13 @@ Navigate to **Store presence** > **Main store listing**
 **App name**: `nChat`
 
 **Short description** (max 80 characters):
+
 ```
 Team communication platform - messaging, calls, and collaboration
 ```
 
 **Full description** (max 4000 characters):
+
 ```
 nChat is a powerful, white-label team communication platform that brings together the best features of Slack, Discord, and Telegram into one unified experience.
 
@@ -273,6 +277,7 @@ cp /Users/admin/Sites/nself-chat/public/icon-512.png ./app-icon.png
 - **Content**: Promotional banner
 
 Create in design tool (Figma, Sketch, Photoshop):
+
 - Background: Brand gradient or solid color
 - Include app name: "nChat"
 - Tagline: "Team Communication Reimagined"
@@ -281,6 +286,7 @@ Create in design tool (Figma, Sketch, Photoshop):
 #### Screenshots
 
 **Phone Screenshots** (Required):
+
 - **Quantity**: Minimum 2, maximum 8
 - **Size**:
   - Minimum dimension: 320px
@@ -289,6 +295,7 @@ Create in design tool (Figma, Sketch, Photoshop):
 - **Recommended**: 1080 x 2400 pixels (matches common Android phones)
 
 **Tablet Screenshots** (Recommended):
+
 - **Quantity**: Up to 8
 - **Size**: 1800 x 2400 pixels or higher
 
@@ -325,6 +332,7 @@ pnpm run open:android
 ```
 
 **Screenshot Tips**:
+
 - Use realistic sample data (not lorem ipsum)
 - Show app with content (messages, channels)
 - Consistent theme/branding
@@ -339,6 +347,7 @@ pnpm run open:android
 - **File size**: Max 100MB
 
 Create promo video showing:
+
 - App launch and onboarding
 - Sending messages
 - Making a call
@@ -393,6 +402,7 @@ Required since July 2022:
 3. Answer questions about data collection:
 
 **Data Collected:**
+
 - **Personal Info**:
   - ✅ Name
   - ✅ Email address
@@ -408,16 +418,19 @@ Required since July 2022:
   - ✅ Device or other IDs
 
 **Data Usage:**
+
 - App functionality: ✅
 - Analytics: ✅
 - Personalization: ✅
 - Account management: ✅
 
 **Data Sharing:**
+
 - Do you share data with third parties? **Yes** (Firebase, analytics)
 - Select appropriate categories
 
 **Security:**
+
 - ✅ Data is encrypted in transit (HTTPS/TLS)
 - ✅ Users can request data deletion
 - ✅ Committed to Google Play Families Policy (if targeting children)
@@ -478,6 +491,7 @@ keytool -genkey -v \
 ```
 
 **CRITICAL**: Backup this keystore file securely!
+
 - Store in password manager
 - Keep encrypted backup in cloud storage
 - Never commit to git repository
@@ -723,6 +737,7 @@ adb shell am start -n io.nself.chat/.MainActivity
 ```
 
 **Test Checklist:**
+
 - [ ] App launches successfully
 - [ ] Login/signup works
 - [ ] Push notifications work
@@ -807,6 +822,7 @@ Please report bugs to: internal-testing@nchat.nself.org
 ### 5. View Feedback
 
 Monitor internal testing:
+
 - **Crashes**: Play Console > Quality > Android vitals
 - **Feedback**: Testing > Internal testing > Feedback
 - **Metrics**: Installs, crashes, ANR rate
@@ -829,17 +845,20 @@ Closed beta allows up to 2000 testers to test before public release.
 ### 2. Add Beta Testers
 
 **Method 1: Email List**
+
 1. Click **Testers** tab
 2. Create email list
 3. Add up to 2000 emails
 4. Save
 
 **Method 2: Google Group**
+
 1. Create Google Group: https://groups.google.com
 2. Add group email to Play Console
 3. Invite testers to join group
 
 **Method 3: Link Sharing**
+
 1. Enable "Public link" in Testers settings
 2. Share link with beta testers
 3. Anyone with link can join (subject to capacity)
@@ -959,6 +978,7 @@ Thank you for using nChat! Questions? Visit nchat.nself.org/support
    - Start manually when ready
 
 **Select staged rollout:**
+
 1. Select "Staged rollout"
 2. Set initial percentage: 20%
 3. Click **Save**
@@ -980,11 +1000,13 @@ Thank you for using nChat! Questions? Visit nchat.nself.org/support
 ### 4. Review Process
 
 **Timeline:**
+
 - **Under review**: Usually 1-7 days (often 24-48 hours)
 - **Publishing**: Minutes to 24 hours after approval
 - **Live**: Available on Play Store
 
 **Status:**
+
 - **Pending publication**: In review queue
 - **Under review**: Being reviewed
 - **Approved**: Passed review
@@ -1045,6 +1067,7 @@ play {
 ```
 
 **Deploy command:**
+
 ```bash
 ./gradlew publishReleaseBundle
 ```
@@ -1178,11 +1201,13 @@ fastlane production  # Deploy to production
 ### Versioning Strategy
 
 **Version Code**: Integer that must increase with each release
+
 - Internal: 1, 2, 3...
 - Beta: 10, 11, 12...
 - Production: 100, 101, 102...
 
 **Version Name**: User-facing semantic version
+
 - Format: MAJOR.MINOR.PATCH
 - Example: 0.8.0, 0.8.1, 0.9.0
 
@@ -1212,6 +1237,7 @@ echo "Updated to version $VERSION_NAME (code $NEW_CODE)"
 ```
 
 Usage:
+
 ```bash
 chmod +x scripts/bump-android-version.sh
 ./scripts/bump-android-version.sh 0.8.1
@@ -1226,6 +1252,7 @@ chmod +x scripts/bump-android-version.sh
 **Error: "SDK location not found"**
 
 Solution:
+
 ```bash
 # Create local.properties
 echo "sdk.dir=$ANDROID_HOME" > platforms/capacitor/android/local.properties
@@ -1234,6 +1261,7 @@ echo "sdk.dir=$ANDROID_HOME" > platforms/capacitor/android/local.properties
 **Error: "Gradle sync failed"**
 
 Solution:
+
 ```bash
 cd platforms/capacitor/android
 ./gradlew --stop
@@ -1244,6 +1272,7 @@ cd platforms/capacitor/android
 **Error: "Duplicate class found"**
 
 Solution: Check for dependency conflicts in `build.gradle`:
+
 ```gradle
 // Add to app/build.gradle
 configurations {
@@ -1256,6 +1285,7 @@ configurations {
 **Error: "keystore not found"**
 
 Solution:
+
 ```bash
 # Verify path in keystore.properties
 cat keystore.properties
@@ -1267,6 +1297,7 @@ ls -la keystore/nchat-upload.jks
 **Error: "incorrect keystore password"**
 
 Solution:
+
 ```bash
 # Test keystore manually
 keytool -list -v -keystore keystore/nchat-upload.jks
@@ -1284,6 +1315,7 @@ Solution: Increment version code in `build.gradle`
 **Error: "Upload certificate has fingerprint [...] but should have fingerprint [...]"**
 
 Solution:
+
 ```bash
 # First upload must use upload certificate
 # Cannot change certificate after first upload
@@ -1309,6 +1341,7 @@ Solution: Use the same keystore for all versions. If lost, cannot update app.
 **"Pre-launch report shows crashes"**
 
 Solution:
+
 1. Review crash stack traces
 2. Fix crashes in code
 3. Upload new version
@@ -1317,12 +1350,14 @@ Solution:
 **Rejected for policy violation**
 
 Common issues:
+
 - Missing privacy policy
 - Inadequate data safety disclosures
 - Misleading screenshots or description
 - Violation of developer policies
 
 Solution:
+
 1. Read rejection reason carefully
 2. Fix issues
 3. Reply in Policy Status section

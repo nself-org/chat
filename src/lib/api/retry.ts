@@ -125,16 +125,13 @@ function isRetryableError(error: unknown): boolean {
  *     maxRetries: 3,
  *     initialDelay: 1000,
  *     onRetry: (error, attempt) => {
- *       console.log(`Retry attempt ${attempt}`)
+ *       /* console.log `Retry attempt ${attempt}`)
  *     }
  *   }
  * )
  * ```
  */
-export async function retryAsync<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions = {}
-): Promise<T> {
+export async function retryAsync<T>(fn: () => Promise<T>, options: RetryOptions = {}): Promise<T> {
   const opts = { ...DEFAULT_OPTIONS, ...options }
   const startTime = Date.now()
 
@@ -212,13 +209,10 @@ export async function retryWithResult<T>(
   let attempts = 0
 
   try {
-    const data = await retryAsync(
-      async () => {
-        attempts++
-        return await fn()
-      },
-      options
-    )
+    const data = await retryAsync(async () => {
+      attempts++
+      return await fn()
+    }, options)
 
     return {
       success: true,

@@ -219,7 +219,7 @@ export class ImportService {
       }
 
       // Check for duplicate external IDs
-      const userIds = data.users.map(u => u.externalId)
+      const userIds = data.users.map((u) => u.externalId)
       const duplicateUserIds = userIds.filter((id, index) => userIds.indexOf(id) !== index)
       if (duplicateUserIds.length > 0) {
         warnings.push({
@@ -264,13 +264,13 @@ export class ImportService {
         }
 
         // Check if channel exists
-        const channelExists = data.channels.some(c => c.externalId === message.channelId)
+        const channelExists = data.channels.some((c) => c.externalId === message.channelId)
         if (!channelExists && options.importChannels) {
           orphanedMessages++
         }
 
         // Check if user exists
-        const userExists = data.users.some(u => u.externalId === message.userId)
+        const userExists = data.users.some((u) => u.externalId === message.userId)
         if (!userExists && options.importUsers) {
           messagesWithoutUser++
         }
@@ -312,9 +312,7 @@ export class ImportService {
     let failed = 0
 
     // Filter out bots if configured
-    const filteredUsers = config.options.skipBots
-      ? users.filter(u => !u.isBot)
-      : users
+    const filteredUsers = config.options.skipBots ? users.filter((u) => !u.isBot) : users
 
     // Deduplicate if configured
     const processedUsers = config.options.deduplicateUsers
@@ -369,9 +367,10 @@ export class ImportService {
 
     // Apply channel filter if specified
     const filteredChannels = config.options.channelFilter?.length
-      ? channels.filter(c =>
-          config.options.channelFilter!.includes(c.externalId) ||
-          config.options.channelFilter!.includes(c.name)
+      ? channels.filter(
+          (c) =>
+            config.options.channelFilter!.includes(c.externalId) ||
+            config.options.channelFilter!.includes(c.name)
         )
       : channels
 
@@ -435,7 +434,7 @@ export class ImportService {
     let filteredMessages = messages
     if (config.options.dateRange) {
       const { start, end } = config.options.dateRange
-      filteredMessages = messages.filter(m => {
+      filteredMessages = messages.filter((m) => {
         const msgDate = new Date(m.createdAt)
         if (start && msgDate < new Date(start)) return false
         if (end && msgDate > new Date(end)) return false
@@ -445,7 +444,7 @@ export class ImportService {
 
     // Skip system messages if configured
     if (config.options.skipSystemMessages) {
-      filteredMessages = filteredMessages.filter(m => m.type !== 'system')
+      filteredMessages = filteredMessages.filter((m) => m.type !== 'system')
     }
 
     // Sort messages by timestamp to maintain order
@@ -521,7 +520,7 @@ export class ImportService {
       }
 
       // Small delay between batches to avoid overwhelming the server
-      await new Promise(resolve => setTimeout(resolve, 50))
+      await new Promise((resolve) => setTimeout(resolve, 50))
     }
 
     return { imported, skipped, failed, attachmentsImported, attachmentsFailed, reactionsImported }
@@ -563,7 +562,7 @@ export class ImportService {
     const newId = crypto.randomUUID()
 
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
     return newId
   }
@@ -586,7 +585,7 @@ export class ImportService {
     const newId = crypto.randomUUID()
 
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 10))
+    await new Promise((resolve) => setTimeout(resolve, 10))
 
     return newId
   }
@@ -608,7 +607,7 @@ export class ImportService {
     const parentId = message.parentId ? this.messageIdMap[message.parentId] : undefined
 
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 5))
+    await new Promise((resolve) => setTimeout(resolve, 5))
 
     return newId
   }
@@ -625,7 +624,7 @@ export class ImportService {
     const newId = crypto.randomUUID()
 
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 5))
+    await new Promise((resolve) => setTimeout(resolve, 5))
 
     return newId
   }
@@ -639,7 +638,7 @@ export class ImportService {
   ): Promise<void> {
     // This would call the GraphQL mutation to add reactions
     // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 5))
+    await new Promise((resolve) => setTimeout(resolve, 5))
   }
 
   /**

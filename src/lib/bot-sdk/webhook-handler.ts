@@ -10,6 +10,7 @@ import type {
   WebhookConfig,
   BotId,
 } from './types'
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // TYPES
@@ -54,7 +55,7 @@ export function computeSignature(payload: string, secret: string): string {
   const combined = payload + secret
   for (let i = 0; i < combined.length; i++) {
     const char = combined.charCodeAt(i)
-    hash = ((hash << 5) - hash) + char
+    hash = (hash << 5) - hash + char
     hash = hash & hash // Convert to 32-bit integer
   }
   return `sha256=${Math.abs(hash).toString(16).padStart(64, '0')}`
@@ -63,11 +64,7 @@ export function computeSignature(payload: string, secret: string): string {
 /**
  * Verify webhook signature
  */
-export function verifySignature(
-  payload: string,
-  signature: string,
-  secret: string
-): boolean {
+export function verifySignature(payload: string, signature: string, secret: string): boolean {
   const expectedSignature = computeSignature(payload, secret)
 
   // Constant-time comparison to prevent timing attacks
@@ -176,10 +173,7 @@ export class WebhookRouter {
    * Check if a handler exists for an event type
    */
   hasHandler(eventType: WebhookEventType): boolean {
-    return (
-      (this.handlers.get(eventType)?.length ?? 0) > 0 ||
-      this.wildcardHandlers.length > 0
-    )
+    return (this.handlers.get(eventType)?.length ?? 0) > 0 || this.wildcardHandlers.length > 0
   }
 
   // ==========================================================================
@@ -207,7 +201,7 @@ export class WebhookRouter {
       await this.routePayload(payload)
       return { status: 200, body: { ok: true } }
     } catch (error) {
-      console.error('[WebhookRouter] Error handling webhook:', error)
+      logger.error('[WebhookRouter] Error handling webhook:', error)
       return { status: 500, body: { error: 'Internal server error' } }
     }
   }
@@ -217,16 +211,16 @@ export class WebhookRouter {
    */
   validateRequest(request: WebhookRequest): WebhookValidationResult {
     // Check body size
-    const bodyString = typeof request.body === 'string'
-      ? request.body
-      : JSON.stringify(request.body)
+    const bodyString =
+      typeof request.body === 'string' ? request.body : JSON.stringify(request.body)
 
     if (bodyString.length > this.config.maxBodySize) {
       return { isValid: false, error: 'Payload too large' }
     }
 
     // Check signature
-    const signature = request.headers['x-webhook-signature'] ||
+    const signature =
+      request.headers['x-webhook-signature'] ||
       request.headers['X-Webhook-Signature'] ||
       request.headers['x-signature']
 
@@ -239,7 +233,8 @@ export class WebhookRouter {
     }
 
     // Check timestamp
-    const timestampHeader = request.headers['x-webhook-timestamp'] ||
+    const timestampHeader =
+      request.headers['x-webhook-timestamp'] ||
       request.headers['X-Webhook-Timestamp'] ||
       request.headers['x-timestamp']
 
@@ -258,9 +253,7 @@ export class WebhookRouter {
    */
   parsePayload<T = unknown>(request: WebhookRequest): WebhookPayload<T> | null {
     try {
-      const body = typeof request.body === 'string'
-        ? JSON.parse(request.body)
-        : request.body
+      const body = typeof request.body === 'string' ? JSON.parse(request.body) : request.body
 
       if (!body.id || !body.type || !body.timestamp) {
         return null
@@ -289,10 +282,7 @@ export class WebhookRouter {
         try {
           await registration.handler(payload)
         } catch (error) {
-          console.error(
-            `[WebhookRouter] Handler error for '${payload.type}':`,
-            error
-          )
+          logger.error(`[WebhookRouter] Handler error for '${payload.type}':`, error)
         }
       })
     )
@@ -395,9 +385,8 @@ export class WebhookRequestBuilder {
   }
 
   build(): WebhookRequest {
-    const bodyString = typeof this.payload === 'string'
-      ? this.payload
-      : JSON.stringify(this.payload)
+    const bodyString =
+      typeof this.payload === 'string' ? this.payload : JSON.stringify(this.payload)
 
     if (this.secret) {
       this.headers['x-webhook-signature'] = computeSignature(bodyString, this.secret)

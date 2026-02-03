@@ -21,16 +21,17 @@ test.describe('Polls', () => {
     await expect(messagingPage.createPollButton).toBeVisible()
   })
 
-  test('should create a poll with multiple options', async ({ messagingPage, authenticatedPage }) => {
+  test('should create a poll with multiple options', async ({
+    messagingPage,
+    authenticatedPage,
+  }) => {
     const question = 'What is your favorite programming language?'
     const options = ['JavaScript', 'TypeScript', 'Python', 'Rust']
 
     await messagingPage.createPoll(question, options)
 
     // Verify poll appears in chat
-    const pollElement = authenticatedPage.locator(
-      `[data-testid="poll"]:has-text("${question}")`
-    )
+    const pollElement = authenticatedPage.locator(`[data-testid="poll"]:has-text("${question}")`)
     await expect(pollElement).toBeVisible({ timeout: 5000 })
 
     // Verify all options are present
@@ -49,9 +50,7 @@ test.describe('Polls', () => {
     await messagingPage.voteOnPoll(1)
 
     // Verify vote was recorded
-    const pollElement = authenticatedPage.locator(
-      `[data-testid="poll"]:has-text("${question}")`
-    )
+    const pollElement = authenticatedPage.locator(`[data-testid="poll"]:has-text("${question}")`)
     await expect(pollElement.locator('[data-testid="vote-count"]')).toContainText('1')
   })
 
@@ -65,9 +64,7 @@ test.describe('Polls', () => {
     await authenticatedPage.waitForTimeout(500)
 
     // Check results display
-    const pollElement = authenticatedPage.locator(
-      `[data-testid="poll"]:has-text("${question}")`
-    )
+    const pollElement = authenticatedPage.locator(`[data-testid="poll"]:has-text("${question}")`)
     const resultsBar = pollElement.locator('[data-testid="poll-results-bar"]')
     await expect(resultsBar).toBeVisible()
   })
@@ -85,9 +82,7 @@ test.describe('Polls', () => {
     await authenticatedPage.waitForTimeout(300)
 
     // Try to vote again
-    const pollElement = authenticatedPage.locator(
-      `[data-testid="poll"]:has-text("${question}")`
-    )
+    const pollElement = authenticatedPage.locator(`[data-testid="poll"]:has-text("${question}")`)
     const voteButtons = pollElement.locator('[data-testid="poll-vote-button"]')
 
     // Buttons should be disabled
@@ -99,9 +94,7 @@ test.describe('Polls', () => {
     const options = ['Yes', 'No']
     await messagingPage.createPoll(question, options)
 
-    const pollElement = authenticatedPage.locator(
-      `[data-testid="poll"]:has-text("${question}")`
-    )
+    const pollElement = authenticatedPage.locator(`[data-testid="poll"]:has-text("${question}")`)
     const expiryText = pollElement.locator('[data-testid="poll-expiry"]')
 
     // Should show expiry info or "No expiry"
@@ -159,10 +152,7 @@ test.describe('Scheduled Messages', () => {
     await expect(timeDisplay).toContainText(/\d{1,2}:\d{2}/)
   })
 
-  test('should allow canceling scheduled message', async ({
-    messagingPage,
-    authenticatedPage,
-  }) => {
+  test('should allow canceling scheduled message', async ({ messagingPage, authenticatedPage }) => {
     const message = 'Cancel test message'
     const futureDate = new Date()
     futureDate.setHours(futureDate.getHours() + 2)
@@ -251,7 +241,10 @@ test.describe('Message Forwarding', () => {
     await authenticatedPage.goto('/chat/general')
   })
 
-  test('should forward message to another channel', async ({ messagingPage, authenticatedPage }) => {
+  test('should forward message to another channel', async ({
+    messagingPage,
+    authenticatedPage,
+  }) => {
     // Send a message first
     const messageInput = authenticatedPage.locator('[data-testid="message-input"]')
     const sendButton = authenticatedPage.locator('[data-testid="send-message-button"]')
@@ -445,7 +438,9 @@ test.describe('Emoji Reactions', () => {
       await authenticatedPage.waitForTimeout(500)
 
       // Tooltip should show user name
-      const tooltip = authenticatedPage.locator('[role="tooltip"], [data-testid="reaction-tooltip"]')
+      const tooltip = authenticatedPage.locator(
+        '[role="tooltip"], [data-testid="reaction-tooltip"]'
+      )
       await expect(tooltip).toBeVisible()
       await expect(tooltip).toContainText(/owner/i)
     }

@@ -4,19 +4,14 @@ import * as React from 'react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { useBookmarkCount, useRecentBookmarks, useBookmarkPanel } from '@/lib/bookmarks/use-bookmarks'
+import {
+  useBookmarkCount,
+  useRecentBookmarks,
+  useBookmarkPanel,
+} from '@/lib/bookmarks/use-bookmarks'
 import { useBookmarkStore } from '@/lib/bookmarks/bookmark-store'
 import { BookmarkItem } from './bookmark-item'
 
@@ -114,17 +109,12 @@ function CollapsedButton({ count, onClick }: CollapsedButtonProps) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative w-10 h-10"
-            onClick={onClick}
-          >
+          <Button variant="ghost" size="icon" className="relative h-10 w-10" onClick={onClick}>
             <BookmarkIcon className="h-5 w-5" />
             {count > 0 && (
               <Badge
                 variant="secondary"
-                className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-xs"
+                className="absolute -right-1 -top-1 h-5 min-w-[20px] px-1 text-xs"
               >
                 {count > 99 ? '99+' : count}
               </Badge>
@@ -143,7 +133,11 @@ function CollapsedButton({ count, onClick }: CollapsedButtonProps) {
 // Bookmarks Sidebar Component
 // ============================================================================
 
-export function BookmarksSidebar({ collapsed = false, onOpenPanel, className }: BookmarksSidebarProps) {
+export function BookmarksSidebar({
+  collapsed = false,
+  onOpenPanel,
+  className,
+}: BookmarksSidebarProps) {
   const { count, loading: countLoading } = useBookmarkCount()
   const { recentBookmarks, loading: recentLoading } = useRecentBookmarks(5)
   const { open: openPanel } = useBookmarkPanel()
@@ -175,13 +169,10 @@ export function BookmarksSidebar({ collapsed = false, onOpenPanel, className }: 
           <CollapsibleTrigger asChild>
             <button
               type="button"
-              className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
             >
               <ChevronDownIcon
-                className={cn(
-                  'h-4 w-4 transition-transform',
-                  !isExpanded && '-rotate-90'
-                )}
+                className={cn('h-4 w-4 transition-transform', !isExpanded && '-rotate-90')}
               />
               <BookmarkIcon className="h-4 w-4" />
               <span>Saved Items</span>
@@ -195,12 +186,7 @@ export function BookmarksSidebar({ collapsed = false, onOpenPanel, className }: 
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-6 w-6"
-                  onClick={handleOpenPanel}
-                >
+                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={handleOpenPanel}>
                   <ArrowRightIcon className="h-3 w-3" />
                 </Button>
               </TooltipTrigger>
@@ -215,34 +201,25 @@ export function BookmarksSidebar({ collapsed = false, onOpenPanel, className }: 
         <CollapsibleContent>
           <div className="px-2 py-1">
             {recentLoading ? (
-              <div className="py-4 text-center text-sm text-muted-foreground">
-                Loading...
-              </div>
+              <div className="py-4 text-center text-sm text-muted-foreground">Loading...</div>
             ) : recentBookmarks.length === 0 ? (
               <div className="py-4 text-center text-sm text-muted-foreground">
-                <BookmarkIcon className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                <BookmarkIcon className="mx-auto mb-2 h-8 w-8 opacity-50" />
                 <p>No saved items yet</p>
-                <p className="text-xs mt-1">
-                  Click the bookmark icon on any message to save it
-                </p>
+                <p className="mt-1 text-xs">Click the bookmark icon on any message to save it</p>
               </div>
             ) : (
               <ScrollArea className="max-h-[200px]">
                 <div className="space-y-1">
                   {recentBookmarks.map((bookmark) => (
-                    <BookmarkItem
-                      key={bookmark.id}
-                      bookmark={bookmark}
-                      compact
-                      showChannel
-                    />
+                    <BookmarkItem key={bookmark.id} bookmark={bookmark} compact showChannel />
                   ))}
                 </div>
                 {count > 5 && (
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="w-full mt-2 text-xs text-muted-foreground"
+                    className="mt-2 w-full text-xs text-muted-foreground"
                     onClick={handleOpenPanel}
                   >
                     View all {count} saved items
@@ -291,14 +268,14 @@ export function BookmarksSidebarLink({
             <Button
               variant="ghost"
               size="icon"
-              className={cn('relative w-10 h-10', className)}
+              className={cn('relative h-10 w-10', className)}
               onClick={handleClick}
             >
               <BookmarkIcon className="h-5 w-5" />
               {!loading && count > 0 && (
                 <Badge
                   variant="secondary"
-                  className="absolute -top-1 -right-1 h-5 min-w-[20px] px-1 text-xs"
+                  className="absolute -right-1 -top-1 h-5 min-w-[20px] px-1 text-xs"
                 >
                   {count > 99 ? '99+' : count}
                 </Badge>
@@ -318,8 +295,8 @@ export function BookmarksSidebarLink({
       type="button"
       onClick={handleClick}
       className={cn(
-        'flex items-center justify-between w-full gap-2 px-3 py-2 rounded-md transition-colors',
-        'text-muted-foreground hover:text-foreground hover:bg-accent',
+        'flex w-full items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors',
+        'text-muted-foreground hover:bg-accent hover:text-foreground',
         className
       )}
     >

@@ -290,9 +290,7 @@ describe('ContextBlockBuilder', () => {
 
   describe('image', () => {
     it('should add image element', () => {
-      const block = new ContextBlockBuilder()
-        .image('https://example.com/icon.png', 'Icon')
-        .build()
+      const block = new ContextBlockBuilder().image('https://example.com/icon.png', 'Icon').build()
 
       expect(block.elements).toHaveLength(1)
       expect(block.elements[0].type).toBe('image')
@@ -357,9 +355,7 @@ describe('MessageBuilder', () => {
 
   describe('buttonBlock', () => {
     it('should add button block', () => {
-      const msg = new MessageBuilder()
-        .buttonBlock('action_1', 'Click Me', 'primary')
-        .build()
+      const msg = new MessageBuilder().buttonBlock('action_1', 'Click Me', 'primary').build()
 
       expect(msg.blocks).toHaveLength(1)
       expect((msg.blocks![0] as ButtonBlock).actionId).toBe('action_1')
@@ -379,10 +375,7 @@ describe('MessageBuilder', () => {
   describe('actions', () => {
     it('should add actions block with buttons', () => {
       const msg = new MessageBuilder()
-        .actions(
-          { type: 'button', text: 'Yes', actionId: 'yes' },
-          button('no').text('No')
-        )
+        .actions({ type: 'button', text: 'Yes', actionId: 'yes' }, button('no').text('No'))
         .build()
 
       expect(msg.blocks).toHaveLength(1)
@@ -411,9 +404,7 @@ describe('MessageBuilder', () => {
 
   describe('addBlock', () => {
     it('should add custom block', () => {
-      const msg = new MessageBuilder()
-        .addBlock({ type: 'divider' })
-        .build()
+      const msg = new MessageBuilder().addBlock({ type: 'divider' }).build()
 
       expect(msg.blocks).toHaveLength(1)
     })

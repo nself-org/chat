@@ -8,6 +8,8 @@ import { TwitterClient } from '@/lib/social/twitter-client'
 import { encryptToken } from '@/lib/social/encryption'
 import { headers } from 'next/headers'
 
+import { logger } from '@/lib/logger'
+
 // Lazy instantiate in route handler
 
 /**
@@ -26,12 +28,12 @@ export async function GET(request: NextRequest) {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
-      maxAge: 600 // 10 minutes
+      maxAge: 600, // 10 minutes
     })
 
     return response
   } catch (error) {
-    console.error('Twitter auth error:', error)
+    logger.error('Twitter auth error:', error)
     return NextResponse.json(
       { error: 'Failed to initiate Twitter authentication' },
       { status: 500 }

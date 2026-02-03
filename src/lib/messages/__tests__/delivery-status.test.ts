@@ -280,9 +280,9 @@ describe('Delivery Status Store', () => {
             userId: 'user-1',
             readAt: new Date(),
           })
-          useDeliveryStatusStore.getState().setReadReceipts('msg-1', [
-            { userId: 'user-2', readAt: new Date() },
-          ])
+          useDeliveryStatusStore
+            .getState()
+            .setReadReceipts('msg-1', [{ userId: 'user-2', readAt: new Date() }])
         })
 
         const receipts = useDeliveryStatusStore.getState().getReadReceipts('msg-1')
@@ -408,9 +408,7 @@ describe('Delivery Status Store', () => {
         })
 
         const entryAfter = useDeliveryStatusStore.getState().getStatusEntry('msg-1')
-        expect(entryAfter?.updatedAt.getTime()).toBeGreaterThanOrEqual(
-          timeBefore?.getTime() ?? 0
-        )
+        expect(entryAfter?.updatedAt.getTime()).toBeGreaterThanOrEqual(timeBefore?.getTime() ?? 0)
       })
 
       it('should do nothing for non-existent message', () => {

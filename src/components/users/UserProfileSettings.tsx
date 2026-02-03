@@ -66,21 +66,15 @@ const defaultSettings: ProfileSettingsData = {
 // ============================================================================
 
 const UserProfileSettings = React.forwardRef<HTMLDivElement, UserProfileSettingsProps>(
-  (
-    {
-      className,
-      initialSettings = defaultSettings,
-      onSave,
-      isLoading = false,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, initialSettings = defaultSettings, onSave, isLoading = false, ...props }, ref) => {
     const [settings, setSettings] = React.useState<ProfileSettingsData>(initialSettings)
     const [hasChanges, setHasChanges] = React.useState(false)
     const [isSaving, setIsSaving] = React.useState(false)
 
-    const handleVisibilityChange = (key: keyof ProfileSettingsData['visibility'], value: string) => {
+    const handleVisibilityChange = (
+      key: keyof ProfileSettingsData['visibility'],
+      value: string
+    ) => {
       setSettings((prev) => ({
         ...prev,
         visibility: {
@@ -124,9 +118,7 @@ const UserProfileSettings = React.forwardRef<HTMLDivElement, UserProfileSettings
         <Card>
           <CardHeader>
             <CardTitle>Privacy Settings</CardTitle>
-            <CardDescription>
-              Control who can see your personal information
-            </CardDescription>
+            <CardDescription>Control who can see your personal information</CardDescription>
           </CardHeader>
           <CardContent>
             <ProfileVisibility
@@ -141,9 +133,7 @@ const UserProfileSettings = React.forwardRef<HTMLDivElement, UserProfileSettings
         <Card>
           <CardHeader>
             <CardTitle>Profile Sections</CardTitle>
-            <CardDescription>
-              Choose which sections to display on your profile
-            </CardDescription>
+            <CardDescription>Choose which sections to display on your profile</CardDescription>
           </CardHeader>
           <CardContent>
             <ProfileSections
@@ -158,19 +148,12 @@ const UserProfileSettings = React.forwardRef<HTMLDivElement, UserProfileSettings
 
         {/* Action buttons */}
         <div className="flex items-center justify-end gap-3">
-          <Button
-            variant="outline"
-            onClick={handleReset}
-            disabled={!hasChanges || isSaving}
-          >
-            <RotateCcw className="h-4 w-4 mr-2" />
+          <Button variant="outline" onClick={handleReset} disabled={!hasChanges || isSaving}>
+            <RotateCcw className="mr-2 h-4 w-4" />
             Reset
           </Button>
-          <Button
-            onClick={handleSave}
-            disabled={!hasChanges || isSaving}
-          >
-            <Save className="h-4 w-4 mr-2" />
+          <Button onClick={handleSave} disabled={!hasChanges || isSaving}>
+            <Save className="mr-2 h-4 w-4" />
             {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>

@@ -5,6 +5,7 @@ This document describes the comprehensive animation system implemented in nself-
 ## Overview
 
 The animation system provides:
+
 - **Consistent UX**: Reusable animation variants for common patterns
 - **Premium Feel**: Smooth, spring-based physics animations
 - **Accessibility**: Respects user's motion preferences
@@ -20,6 +21,7 @@ Location: `/src/lib/animations.ts`
 #### 1. Message Animations
 
 **Message Entry** - Slide in from bottom with fade
+
 ```typescript
 import { messageEntry } from '@/lib/animations'
 
@@ -29,6 +31,7 @@ import { messageEntry } from '@/lib/animations'
 ```
 
 **Message Hover** - Background color transition
+
 ```typescript
 import { messageHover } from '@/lib/animations'
 
@@ -40,6 +43,7 @@ import { messageHover } from '@/lib/animations'
 #### 2. Reaction Animations
 
 **Reaction Burst** - Emoji reaction with burst effect
+
 ```typescript
 import { reactionBurst } from '@/lib/animations'
 
@@ -49,6 +53,7 @@ import { reactionBurst } from '@/lib/animations'
 ```
 
 **Reaction Pill Hover** - Subtle scale on hover
+
 ```typescript
 import { reactionPillHover } from '@/lib/animations'
 
@@ -60,6 +65,7 @@ import { reactionPillHover } from '@/lib/animations'
 #### 3. Modal & Dialog Animations
 
 **Modal Overlay** - Fade in backdrop
+
 ```typescript
 import { modalOverlay, modalContent } from '@/lib/animations'
 
@@ -71,6 +77,7 @@ import { modalOverlay, modalContent } from '@/lib/animations'
 ```
 
 **Sheet Slide** - Side drawer animation
+
 ```typescript
 import { sheetSlide } from '@/lib/animations'
 
@@ -82,6 +89,7 @@ import { sheetSlide } from '@/lib/animations'
 #### 4. Navigation & Page Transitions
 
 **Page Transition** - Fade and slide
+
 ```typescript
 import { PageTransition } from '@/components/ui/page-transition'
 
@@ -91,6 +99,7 @@ import { PageTransition } from '@/components/ui/page-transition'
 ```
 
 **Channel Switch** - Optimized for channel navigation
+
 ```typescript
 import { ChannelTransition } from '@/components/ui/page-transition'
 
@@ -100,6 +109,7 @@ import { ChannelTransition } from '@/components/ui/page-transition'
 ```
 
 **Sidebar Toggle** - Expand/collapse animation
+
 ```typescript
 import { sidebarToggle } from '@/lib/animations'
 
@@ -114,6 +124,7 @@ import { sidebarToggle } from '@/lib/animations'
 #### 5. Loading & Skeleton Animations
 
 **Skeleton Pulse** - Loading placeholder
+
 ```typescript
 import { skeletonPulse } from '@/lib/animations'
 
@@ -121,6 +132,7 @@ import { skeletonPulse } from '@/lib/animations'
 ```
 
 **Shimmer Effect** - Loading shimmer
+
 ```typescript
 import { shimmer } from '@/lib/animations'
 
@@ -128,6 +140,7 @@ import { shimmer } from '@/lib/animations'
 ```
 
 **Staggered Items** - Sequential reveal
+
 ```typescript
 import { staggerContainer, staggerItem } from '@/lib/animations'
 
@@ -143,6 +156,7 @@ import { staggerContainer, staggerItem } from '@/lib/animations'
 #### 6. UI Element Animations
 
 **Button Press** - Tactile button feedback
+
 ```typescript
 import { Button } from '@/components/ui/button'
 
@@ -150,6 +164,7 @@ import { Button } from '@/components/ui/button'
 ```
 
 **Tooltip** - Fade and slide
+
 ```typescript
 import { tooltip } from '@/lib/animations'
 
@@ -159,6 +174,7 @@ import { tooltip } from '@/lib/animations'
 ```
 
 **Dropdown Menu** - Cascade animation
+
 ```typescript
 import { dropdownMenu, dropdownItem } from '@/lib/animations'
 
@@ -172,6 +188,7 @@ import { dropdownMenu, dropdownItem } from '@/lib/animations'
 ```
 
 **Badge Bounce** - Notification badge
+
 ```typescript
 import { badgeBounce } from '@/lib/animations'
 
@@ -181,6 +198,7 @@ import { badgeBounce } from '@/lib/animations'
 ```
 
 **FAB Float** - Floating action button
+
 ```typescript
 import { fabFloat } from '@/lib/animations'
 
@@ -192,6 +210,7 @@ import { fabFloat } from '@/lib/animations'
 #### 7. Notification & Toast Animations
 
 **Toast Slide** - Slide from top
+
 ```typescript
 import { toastSlide } from '@/lib/animations'
 
@@ -201,6 +220,7 @@ import { toastSlide } from '@/lib/animations'
 ```
 
 **Notification Pulse** - Attention-grabbing pulse
+
 ```typescript
 import { notificationPulse } from '@/lib/animations'
 
@@ -212,6 +232,7 @@ import { notificationPulse } from '@/lib/animations'
 #### 8. Form & Input Animations
 
 **Input Focus** - Border highlight
+
 ```typescript
 import { Input } from '@/components/ui/input'
 
@@ -219,6 +240,7 @@ import { Input } from '@/components/ui/input'
 ```
 
 **Error Shake** - Validation feedback
+
 ```typescript
 import { errorShake } from '@/lib/animations'
 
@@ -228,6 +250,7 @@ import { errorShake } from '@/lib/animations'
 ```
 
 **Success Checkmark** - Confirmation animation
+
 ```typescript
 import { successCheckmark } from '@/lib/animations'
 
@@ -239,6 +262,7 @@ import { successCheckmark } from '@/lib/animations'
 #### 9. Scroll Animations
 
 **Scroll Reveal** - Fade in on scroll
+
 ```typescript
 import { ScrollReveal } from '@/components/ui/scroll-reveal'
 
@@ -248,6 +272,7 @@ import { ScrollReveal } from '@/components/ui/scroll-reveal'
 ```
 
 **Staggered Scroll Reveal** - Sequential reveal
+
 ```typescript
 import { StaggeredScrollReveal } from '@/components/ui/scroll-reveal'
 
@@ -259,6 +284,7 @@ import { StaggeredScrollReveal } from '@/components/ui/scroll-reveal'
 ```
 
 **Fade In On Scroll** - Directional fade
+
 ```typescript
 import { FadeInOnScroll } from '@/components/ui/scroll-reveal'
 
@@ -270,6 +296,7 @@ import { FadeInOnScroll } from '@/components/ui/scroll-reveal'
 #### 10. Mobile Gestures
 
 **Pull to Refresh** - Mobile refresh gesture
+
 ```typescript
 import { PullToRefresh } from '@/components/ui/pull-to-refresh'
 
@@ -281,6 +308,7 @@ import { PullToRefresh } from '@/components/ui/pull-to-refresh'
 ```
 
 **Swipe to Dismiss** - Swipeable items
+
 ```typescript
 import { swipeToDismiss } from '@/lib/animations'
 
@@ -290,6 +318,7 @@ import { swipeToDismiss } from '@/lib/animations'
 ```
 
 **Drag Reorder** - Drag and drop
+
 ```typescript
 import { dragReorder } from '@/lib/animations'
 

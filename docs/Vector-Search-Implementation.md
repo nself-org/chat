@@ -13,36 +13,42 @@ Complete vector database infrastructure for semantic search using PostgreSQL pgv
 ### Core Capabilities
 
 ✅ **Vector Storage**
+
 - PostgreSQL pgvector extension
 - 1536-dimensional embeddings (OpenAI)
 - HNSW index for fast similarity search
 - Automatic embedding triggers
 
 ✅ **Embedding Generation**
+
 - OpenAI API integration (3 models supported)
 - Batch processing (up to 2048 embeddings)
 - Automatic deduplication via content hash
 - Failed embedding retry logic
 
 ✅ **Search Operations**
+
 - Semantic similarity search
 - Multiple distance metrics (cosine, L2, inner product)
 - Channel and user filtering
 - Configurable thresholds
 
 ✅ **Background Processing**
+
 - Continuous queue processing worker
 - Periodic maintenance worker
 - Automatic index optimization
 - Cache cleanup
 
 ✅ **Monitoring & Analytics**
+
 - Real-time performance metrics
 - Quality score tracking
 - Cost tracking and reporting
 - Cache efficiency monitoring
 
 ✅ **Admin Dashboard**
+
 - Live coverage statistics
 - Job progress tracking
 - Performance charts
@@ -361,14 +367,16 @@ EXECUTE FUNCTION nchat.requeue_message_on_edit();
 Start bulk embedding generation.
 
 **Request:**
+
 ```json
 {
-  "type": "initial",    // or "repair"
-  "userId": "uuid"      // optional
+  "type": "initial", // or "repair"
+  "userId": "uuid" // optional
 }
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -382,10 +390,12 @@ Start bulk embedding generation.
 Get job status.
 
 **Query Parameters:**
+
 - `jobId` (optional) - Specific job ID
 - `limit` (optional) - Number of recent jobs (default: 10)
 
 **Response (single job):**
+
 ```json
 {
   "job": {
@@ -404,6 +414,7 @@ Get job status.
 ```
 
 **Response (multiple jobs):**
+
 ```json
 {
   "jobs": [
@@ -424,9 +435,11 @@ Get job status.
 Get comprehensive statistics.
 
 **Query Parameters:**
+
 - `days` (optional) - Number of days to include (default: 30)
 
 **Response:**
+
 ```json
 {
   "coverage": {
@@ -470,6 +483,7 @@ Get comprehensive statistics.
 Cancel a running job.
 
 **Request:**
+
 ```json
 {
   "jobId": "uuid"
@@ -477,6 +491,7 @@ Cancel a running job.
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -503,75 +518,72 @@ pnpm workers:start
 ### 2. Generate Embeddings
 
 ```typescript
-import { embeddingPipeline } from '@/lib/ai/embedding-pipeline';
+import { embeddingPipeline } from '@/lib/ai/embedding-pipeline'
 
 // Generate all embeddings
-const jobId = await embeddingPipeline.generateAllEmbeddings(
-  userId,
-  (progress) => {
-    console.log(`Progress: ${progress.percentage}%`);
-  }
-);
+const jobId = await embeddingPipeline.generateAllEmbeddings(userId, (progress) => {
+  console.log(`Progress: ${progress.percentage}%`)
+})
 
 // Monitor job
-const status = await fetch(`/api/admin/embeddings/status?jobId=${jobId}`);
+const status = await fetch(`/api/admin/embeddings/status?jobId=${jobId}`)
 ```
 
 ### 3. Semantic Search
 
 ```typescript
-import { embeddingService } from '@/lib/ai/embedding-service';
-import { vectorStore } from '@/lib/database/vector-store';
+import { embeddingService } from '@/lib/ai/embedding-service'
+import { vectorStore } from '@/lib/database/vector-store'
 
 // Generate query embedding
-const { embedding } = await embeddingService.generateEmbedding('search query');
+const { embedding } = await embeddingService.generateEmbedding('search query')
 
 // Search messages
 const results = await vectorStore.search(embedding, {
   threshold: 0.7,
   limit: 10,
   channelId: 'channel-uuid',
-});
+})
 
 // Display results
 for (const result of results) {
-  console.log(`[${(result.similarity * 100).toFixed(1)}%] ${result.content}`);
+  console.log(`[${(result.similarity * 100).toFixed(1)}%] ${result.content}`)
 }
 ```
 
 ### 4. Monitor Performance
 
 ```typescript
-import { embeddingMonitor } from '@/lib/ai/embedding-monitor';
+import { embeddingMonitor } from '@/lib/ai/embedding-monitor'
 
 // Get report
-const report = await embeddingMonitor.getReport(24);
+const report = await embeddingMonitor.getReport(24)
 
-console.log(`Success Rate: ${report.performance.successRate}%`);
-console.log(`Cache Hit Rate: ${report.cache.hitRate}%`);
-console.log(`Total Cost: $${report.cost.totalCost}`);
+console.log(`Success Rate: ${report.performance.successRate}%`)
+console.log(`Cache Hit Rate: ${report.cache.hitRate}%`)
+console.log(`Total Cost: $${report.cost.totalCost}`)
 
 // Check alerts
-const alerts = embeddingMonitor.getAlerts();
+const alerts = embeddingMonitor.getAlerts()
 for (const alert of alerts) {
-  console.warn(`[${alert.level}] ${alert.message}`);
+  console.warn(`[${alert.level}] ${alert.message}`)
 }
 ```
 
 ### 5. Quality Checks
 
 ```typescript
-import { getEmbeddingStats, detectAnomalies } from '@/lib/ai/embedding-utils';
+import { getEmbeddingStats, detectAnomalies } from '@/lib/ai/embedding-utils'
 
 // Check embedding quality
-const stats = getEmbeddingStats(embedding);
-console.log(`Quality Score: ${stats.qualityScore}/100`);
-console.log(`Anomalies: ${stats.anomalies.join(', ')}`);
+const stats = getEmbeddingStats(embedding)
+console.log(`Quality Score: ${stats.qualityScore}/100`)
+console.log(`Anomalies: ${stats.anomalies.join(', ')}`)
 
 // Compare embeddings
-import { compareEmbeddings } from '@/lib/ai/embedding-utils';
-const comparison = compareEmbeddings(embedding1, embedding2);
-console.log(`Cosine Similarity: ${comparison.cosineSimilarity}`);
+import { compareEmbeddings } from '@/lib/ai/embedding-utils'
+const comparison = compareEmbeddings(embedding1, embedding2)
+console.log(`Cosine Similarity: ${comparison.cosineSimilarity}`)
 ```
 
 ## Configuration
@@ -590,42 +602,42 @@ EMBEDDING_VERSION=1.0.0
 ### Pipeline Configuration
 
 ```typescript
-import { EmbeddingPipeline } from '@/lib/ai/embedding-pipeline';
+import { EmbeddingPipeline } from '@/lib/ai/embedding-pipeline'
 
 const pipeline = new EmbeddingPipeline({
-  batchSize: 100,        // Messages per batch
-  maxRetries: 3,         // Retry attempts
-  retryDelayMs: 5000,    // Delay between retries
-  maxConcurrent: 5,      // Concurrent batches
-});
+  batchSize: 100, // Messages per batch
+  maxRetries: 3, // Retry attempts
+  retryDelayMs: 5000, // Delay between retries
+  maxConcurrent: 5, // Concurrent batches
+})
 ```
 
 ### Worker Configuration
 
 ```typescript
 // embedding-worker.ts
-const POLL_INTERVAL_MS = 5000;      // Poll every 5 seconds
-const BATCH_SIZE = 50;              // Process 50 messages per batch
-const MAX_CONSECUTIVE_ERRORS = 5;   // Stop after 5 errors
+const POLL_INTERVAL_MS = 5000 // Poll every 5 seconds
+const BATCH_SIZE = 50 // Process 50 messages per batch
+const MAX_CONSECUTIVE_ERRORS = 5 // Stop after 5 errors
 
 // embedding-maintenance-worker.ts
-const CHECK_INTERVAL_MS = 3600000;  // Run every 1 hour
-const CACHE_CLEANUP_DAYS = 90;      // Clean entries unused for 90+ days
+const CHECK_INTERVAL_MS = 3600000 // Run every 1 hour
+const CACHE_CLEANUP_DAYS = 90 // Clean entries unused for 90+ days
 ```
 
 ## Performance Metrics
 
 ### Benchmarks (1M messages, avg 50 tokens)
 
-| Metric | Value |
-|--------|-------|
-| Total embeddings | 1,000,000 |
-| Total tokens | 50,000,000 |
-| Cost (small model) | $1.00 |
-| Processing time (10 workers) | ~2 hours |
-| Cache hit rate | 85%+ |
-| Index size | ~6 GB |
-| Search time (p95) | <50ms |
+| Metric                       | Value      |
+| ---------------------------- | ---------- |
+| Total embeddings             | 1,000,000  |
+| Total tokens                 | 50,000,000 |
+| Cost (small model)           | $1.00      |
+| Processing time (10 workers) | ~2 hours   |
+| Cache hit rate               | 85%+       |
+| Index size                   | ~6 GB      |
+| Search time (p95)            | <50ms      |
 
 ### Optimization Tips
 

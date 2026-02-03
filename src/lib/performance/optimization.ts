@@ -256,7 +256,7 @@ export function useWhyDidYouUpdate(name: string, props: Record<string, any>) {
       })
 
       if (Object.keys(changedProps).length > 0) {
-        console.log('[why-did-you-update]', name, changedProps)
+        // REMOVED: console.log('[why-did-you-update]', name, changedProps)
       }
     }
 

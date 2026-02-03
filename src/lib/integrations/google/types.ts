@@ -50,7 +50,8 @@ export const GOOGLE_DRIVE_MIME_TYPES = {
   html: 'text/html',
 } as const
 
-export type GoogleDriveMimeType = (typeof GOOGLE_DRIVE_MIME_TYPES)[keyof typeof GOOGLE_DRIVE_MIME_TYPES]
+export type GoogleDriveMimeType =
+  (typeof GOOGLE_DRIVE_MIME_TYPES)[keyof typeof GOOGLE_DRIVE_MIME_TYPES]
 
 /**
  * Google Drive file capability

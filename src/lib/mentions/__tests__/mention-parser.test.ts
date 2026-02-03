@@ -353,11 +353,7 @@ describe('parseAndResolveMentions', () => {
   })
 
   it('should resolve mixed mentions correctly', () => {
-    const result = parseAndResolveMentions(
-      '@john check #general and @jane',
-      users,
-      channels
-    )
+    const result = parseAndResolveMentions('@john check #general and @jane', users, channels)
     expect(result.userIds).toHaveLength(2)
     expect(result.channelIds).toHaveLength(1)
     expect(result.userIds).toContain('user-1')
@@ -365,11 +361,7 @@ describe('parseAndResolveMentions', () => {
   })
 
   it('should not duplicate user IDs', () => {
-    const result = parseAndResolveMentions(
-      '@john hello @john again',
-      users,
-      channels
-    )
+    const result = parseAndResolveMentions('@john hello @john again', users, channels)
     expect(result.userIds).toHaveLength(1)
     expect(result.mentions).toHaveLength(2)
   })

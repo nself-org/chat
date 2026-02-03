@@ -57,8 +57,10 @@ export function parseOpenGraph(html: string): OpenGraphData {
   }
 
   // Match all meta tags with property or name attributes
-  const metaRegex = /<meta\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["']\s+(?:[^>]*?\s+)?content=["']([^"']*)["'][^>]*>/gi
-  const metaRegexAlt = /<meta\s+(?:[^>]*?\s+)?content=["']([^"']*)["']\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["'][^>]*>/gi
+  const metaRegex =
+    /<meta\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["']\s+(?:[^>]*?\s+)?content=["']([^"']*)["'][^>]*>/gi
+  const metaRegexAlt =
+    /<meta\s+(?:[^>]*?\s+)?content=["']([^"']*)["']\s+(?:[^>]*?\s+)?(?:property|name)=["']([^"']+)["'][^>]*>/gi
 
   // Process standard order (property/name first)
   let match: RegExpExecArray | null
@@ -187,7 +189,9 @@ export function extractFallbackMetadata(html: string): Partial<OpenGraphData> {
   }
 
   // Extract canonical URL
-  const canonicalMatch = html.match(/<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']*)["'][^>]*>/i)
+  const canonicalMatch = html.match(
+    /<link\s+[^>]*rel=["']canonical["'][^>]*href=["']([^"']*)["'][^>]*>/i
+  )
   if (canonicalMatch) {
     fallback.url = canonicalMatch[1]
   }

@@ -66,16 +66,14 @@ const handleSend = () => {
 
 ```tsx
 import { TypingIndicator } from '@/components/chat/typing-indicator'
-
-<TypingIndicator users={typingUsers} maxAvatars={3} />
+;<TypingIndicator users={typingUsers} maxAvatars={3} />
 ```
 
 ### Pre-built Input
 
 ```tsx
 import { MessageInputWithTyping } from '@/components/chat/MessageInputWithTyping'
-
-<MessageInputWithTyping
+;<MessageInputWithTyping
   channelId={channelId}
   onSendMessage={handleSend}
   showCharCount
@@ -92,19 +90,15 @@ import { MessageInputWithTyping } from '@/components/chat/MessageInputWithTyping
 ```tsx
 import { usePresence } from '@/hooks/use-presence'
 
-const {
-  presence,
-  getPresence,
-  setOnline,
-  setAway,
-  setDnd,
-  currentStatus,
-} = usePresence(['user-1', 'user-2'])
+const { presence, getPresence, setOnline, setAway, setDnd, currentStatus } = usePresence([
+  'user-1',
+  'user-2',
+])
 
 // Get user status
 const user1 = getPresence('user-1')
-console.log(user1.status)  // 'online' | 'away' | 'dnd' | 'offline'
-console.log(user1.lastSeen)  // ISO timestamp
+console.log(user1.status) // 'online' | 'away' | 'dnd' | 'offline'
+console.log(user1.lastSeen) // ISO timestamp
 ```
 
 ### Change Status
@@ -164,7 +158,7 @@ useEffect(() => {
     console.log('New message:', message)
   })
 
-  return unsubscribe  // Cleanup
+  return unsubscribe // Cleanup
 }, [subscribe])
 ```
 
@@ -173,22 +167,22 @@ useEffect(() => {
 ## Common Events
 
 ```typescript
-SOCKET_EVENTS.CONNECT           // Connected to server
-SOCKET_EVENTS.DISCONNECT        // Disconnected
-SOCKET_EVENTS.ERROR            // Connection error
+SOCKET_EVENTS.CONNECT // Connected to server
+SOCKET_EVENTS.DISCONNECT // Disconnected
+SOCKET_EVENTS.ERROR // Connection error
 
-SOCKET_EVENTS.MESSAGE_NEW      // New message
-SOCKET_EVENTS.MESSAGE_UPDATE   // Message edited
-SOCKET_EVENTS.MESSAGE_DELETE   // Message deleted
-SOCKET_EVENTS.MESSAGE_TYPING   // User typing
+SOCKET_EVENTS.MESSAGE_NEW // New message
+SOCKET_EVENTS.MESSAGE_UPDATE // Message edited
+SOCKET_EVENTS.MESSAGE_DELETE // Message deleted
+SOCKET_EVENTS.MESSAGE_TYPING // User typing
 
-SOCKET_EVENTS.MESSAGE_SENT      // Message sent ACK
+SOCKET_EVENTS.MESSAGE_SENT // Message sent ACK
 SOCKET_EVENTS.MESSAGE_DELIVERED // Message delivered
-SOCKET_EVENTS.MESSAGE_READ     // Message read
+SOCKET_EVENTS.MESSAGE_READ // Message read
 
-SOCKET_EVENTS.PRESENCE_UPDATE   // User status change
-SOCKET_EVENTS.CHANNEL_UPDATE    // Channel updated
-SOCKET_EVENTS.REACTION_ADD     // Reaction added
+SOCKET_EVENTS.PRESENCE_UPDATE // User status change
+SOCKET_EVENTS.CHANNEL_UPDATE // Channel updated
+SOCKET_EVENTS.REACTION_ADD // Reaction added
 ```
 
 ---
@@ -229,9 +223,9 @@ useEffect(() => {
 
 ```tsx
 const { typingUsers } = useTyping(channelId, {
-  debounceMs: 300,    // Stop typing delay
-  timeoutMs: 5000,    // Remove indicator after
-  throttleMs: 2000,   // Min time between events
+  debounceMs: 300, // Stop typing delay
+  timeoutMs: 5000, // Remove indicator after
+  throttleMs: 2000, // Min time between events
 })
 ```
 
@@ -239,8 +233,8 @@ const { typingUsers } = useTyping(channelId, {
 
 ```tsx
 const { presence } = usePresence(userIds, {
-  autoAwayTimeout: 300000,   // 5 minutes
-  heartbeatInterval: 30000,  // 30 seconds
+  autoAwayTimeout: 300000, // 5 minutes
+  heartbeatInterval: 30000, // 30 seconds
   trackLastSeen: true,
 })
 ```
@@ -266,7 +260,7 @@ export function ChatRoom({ channelId, members }) {
   // Real-time hooks
   const { isConnected, subscribe, emit } = useSocket()
   const { typingUsers } = useTyping(channelId)
-  const { getPresence } = usePresence(members.map(m => m.id))
+  const { getPresence } = usePresence(members.map((m) => m.id))
 
   // Subscribe to new messages
   useEffect(() => {
@@ -289,9 +283,9 @@ export function ChatRoom({ channelId, members }) {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between border-b p-4">
         <h2>Chat Room</h2>
         <InlineConnectionStatus showLabel />
       </div>
@@ -301,18 +295,13 @@ export function ChatRoom({ channelId, members }) {
         {members.map((member) => (
           <div key={member.id} className="relative">
             <img src={member.avatar} className="h-8 w-8 rounded-full" />
-            <PresenceIndicator
-              userId={member.id}
-              size="sm"
-              position="bottom-right"
-              showTooltip
-            />
+            <PresenceIndicator userId={member.id} size="sm" position="bottom-right" showTooltip />
           </div>
         ))}
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-2">
+      <div className="flex-1 space-y-2 overflow-y-auto p-4">
         {messages.map((msg) => (
           <div key={msg.id}>
             <strong>{msg.author.name}</strong>: {msg.content}
@@ -324,7 +313,7 @@ export function ChatRoom({ channelId, members }) {
       <TypingIndicator users={typingUsers} />
 
       {/* Input */}
-      <div className="p-4 border-t">
+      <div className="border-t p-4">
         <MessageInputWithTyping
           channelId={channelId}
           onSendMessage={handleSend}
@@ -341,19 +330,20 @@ export function ChatRoom({ channelId, members }) {
 
 ## Cheat Sheet
 
-| Feature | Hook | Component |
-|---------|------|-----------|
-| Connection Status | `useRealtime()` | `<ConnectionStatus />` |
-| Typing Indicators | `useTyping(channelId)` | `<TypingIndicator users={} />` |
-| Presence | `usePresence(userIds)` | `<PresenceIndicator userId={} />` |
-| Socket Events | `useSocket()` | - |
-| Message Input | - | `<MessageInputWithTyping />` |
+| Feature           | Hook                   | Component                         |
+| ----------------- | ---------------------- | --------------------------------- |
+| Connection Status | `useRealtime()`        | `<ConnectionStatus />`            |
+| Typing Indicators | `useTyping(channelId)` | `<TypingIndicator users={} />`    |
+| Presence          | `usePresence(userIds)` | `<PresenceIndicator userId={} />` |
+| Socket Events     | `useSocket()`          | -                                 |
+| Message Input     | -                      | `<MessageInputWithTyping />`      |
 
 ---
 
 ## Best Practices
 
 ✅ **DO**:
+
 - Always clean up subscriptions in `useEffect`
 - Use `forceStopTyping()` when sending messages
 - Check `isConnected` before emitting
@@ -361,6 +351,7 @@ export function ChatRoom({ channelId, members }) {
 - Use debouncing for expensive operations
 
 ❌ **DON'T**:
+
 - Emit events without checking connection
 - Forget to unsubscribe from events
 - Track presence for 100+ users simultaneously
@@ -381,13 +372,13 @@ export function ChatRoom({ channelId, members }) {
 
 ## Troubleshooting
 
-| Issue | Solution |
-|-------|----------|
-| Won't connect | Check `NEXT_PUBLIC_SOCKET_URL` |
-| No typing events | Verify `channelId` matches |
-| High latency | Check network quality |
-| Presence not updating | Wait for heartbeat (30s) |
-| Events not received | Ensure subscription is active |
+| Issue                 | Solution                       |
+| --------------------- | ------------------------------ |
+| Won't connect         | Check `NEXT_PUBLIC_SOCKET_URL` |
+| No typing events      | Verify `channelId` matches     |
+| High latency          | Check network quality          |
+| Presence not updating | Wait for heartbeat (30s)       |
+| Events not received   | Ensure subscription is active  |
 
 ---
 

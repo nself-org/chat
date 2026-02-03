@@ -27,15 +27,15 @@ The CI/CD system provides:
 
 ### Build Matrix
 
-| Platform | Framework | Build Time | Cache | Signing |
-|----------|-----------|------------|-------|---------|
-| iOS | Capacitor | ~15 min | pnpm, CocoaPods | Apple Certificate |
-| Android | Capacitor | ~10 min | pnpm, Gradle | Android Keystore |
-| macOS | Electron/Tauri | ~20 min | pnpm, Electron, Rust | Apple Certificate + Notarization |
-| Windows | Electron/Tauri | ~15 min | pnpm, Electron, Rust | Code Signing Certificate |
-| Linux | Electron/Tauri | ~15 min | pnpm, Electron, Rust | GPG Signature |
-| Web | Next.js | ~5 min | pnpm | N/A |
-| Docker | Multi-arch | ~10 min | Docker buildx | N/A |
+| Platform | Framework      | Build Time | Cache                | Signing                          |
+| -------- | -------------- | ---------- | -------------------- | -------------------------------- |
+| iOS      | Capacitor      | ~15 min    | pnpm, CocoaPods      | Apple Certificate                |
+| Android  | Capacitor      | ~10 min    | pnpm, Gradle         | Android Keystore                 |
+| macOS    | Electron/Tauri | ~20 min    | pnpm, Electron, Rust | Apple Certificate + Notarization |
+| Windows  | Electron/Tauri | ~15 min    | pnpm, Electron, Rust | Code Signing Certificate         |
+| Linux    | Electron/Tauri | ~15 min    | pnpm, Electron, Rust | GPG Signature                    |
+| Web      | Next.js        | ~5 min     | pnpm                 | N/A                              |
+| Docker   | Multi-arch     | ~10 min    | Docker buildx        | N/A                              |
 
 ---
 
@@ -46,6 +46,7 @@ The CI/CD system provides:
 **Triggers**: Pull requests to `main` or `develop`
 
 **Jobs**:
+
 - ✅ **Lint & Format** - ESLint + Prettier
 - ✅ **Type Check** - TypeScript validation
 - ✅ **Unit Tests** - Jest tests with coverage
@@ -58,21 +59,23 @@ The CI/CD system provides:
 - ✅ **Lighthouse** - Performance metrics
 
 **Features**:
+
 - Smart change detection (only run relevant checks)
 - Parallel execution for speed
 - PR comments with status summary
 - Coverage reporting to Codecov
 
 **Example PR Comment**:
+
 ```markdown
 ## PR Checks Summary
 
-| Check | Status |
-|-------|--------|
+| Check         | Status     |
+| ------------- | ---------- |
 | Lint & Format | ✅ success |
-| Type Check | ✅ success |
-| Unit Tests | ✅ success |
-| Build | ✅ success |
+| Type Check    | ✅ success |
+| Unit Tests    | ✅ success |
+| Build         | ✅ success |
 
 ✅ All checks passed! Ready for review.
 ```
@@ -80,27 +83,33 @@ The CI/CD system provides:
 ### 2. iOS Build (`.github/workflows/ios-build.yml`)
 
 **Triggers**:
+
 - Push to `main` or `develop` (iOS files changed)
 - Pull requests
 - Manual dispatch
 
 **Build Types**:
+
 - **Debug**: Simulator build, automatic signing
 - **Release**: Device build, manual signing, IPA export
 
 **Caching**:
+
 - pnpm store
 - CocoaPods (Pods directory + cache)
 
 **Deployment**:
+
 - Automatic upload to TestFlight (main branch, release builds)
 - Requires Apple ID + App-Specific Password
 
 **Notifications**:
+
 - Slack on success/failure
 - Build summary in GitHub Actions
 
 **Manual Trigger**:
+
 ```bash
 gh workflow run ios-build.yml \
   -f build_type=release \
@@ -110,25 +119,30 @@ gh workflow run ios-build.yml \
 ### 3. Android Build (`.github/workflows/android-build.yml`)
 
 **Triggers**:
+
 - Push to `main` or `develop` (Android files changed)
 - Pull requests
 - Manual dispatch
 
 **Build Types**:
+
 - **Debug APK**: Unsigned, for testing
 - **Release APK**: Signed, for direct distribution
 - **Release AAB**: Signed, for Play Store
 
 **Caching**:
+
 - pnpm store
 - Gradle cache (~/.gradle)
 
 **Deployment**:
+
 - Automatic upload to Play Store (internal track)
 - Configurable rollout percentage
 - Multiple tracks: internal, alpha, beta, production
 
 **Manual Trigger**:
+
 ```bash
 gh workflow run android-build.yml \
   -f build_type=release \
@@ -140,31 +154,37 @@ gh workflow run android-build.yml \
 ### 4. Desktop Build (`.github/workflows/desktop-build.yml`)
 
 **Triggers**:
+
 - Push to `main` or `develop` (desktop files changed)
 - Pull requests
 - Manual dispatch
 
 **Platforms**:
+
 - **macOS**: Universal binary (.dmg), Apple signed & notarized
 - **Windows**: x64 + ia32 (.exe, .msi), code signed
 - **Linux**: x64 (.deb, .rpm, .AppImage, .snap), GPG signed
 
 **Frameworks**:
+
 - Electron (default)
 - Tauri (optional)
 - Both (build with both frameworks)
 
 **Caching**:
+
 - pnpm store
 - Electron cache
 - Rust cache (for Tauri)
 
 **Signing**:
+
 - macOS: Apple Certificate + Notarization
 - Windows: Code Signing Certificate (.pfx)
 - Linux: GPG signature
 
 **Manual Trigger**:
+
 ```bash
 gh workflow run desktop-build.yml \
   -f platform=all \
@@ -175,10 +195,12 @@ gh workflow run desktop-build.yml \
 ### 5. Release (`.github/workflows/release-v080.yml`)
 
 **Triggers**:
+
 - Git tags (e.g., `v0.8.0`)
 - Manual dispatch
 
 **Jobs**:
+
 1. **Prepare**: Version bump, changelog generation
 2. **Build Web**: Next.js production build
 3. **Build Docker**: Multi-arch images (amd64, arm64)
@@ -189,6 +211,7 @@ gh workflow run desktop-build.yml \
 8. **Notify**: Slack, email, Twitter announcements
 
 **Artifacts**:
+
 - Web tarball
 - Docker images (ghcr.io)
 - iOS IPA (if mobile enabled)
@@ -197,6 +220,7 @@ gh workflow run desktop-build.yml \
 
 **Changelog**:
 Automatically generated from commit messages using conventional commits:
+
 - `feat:` → ✨ Features
 - `fix:` → 🐛 Bug Fixes
 - `perf:` → ⚡ Performance
@@ -208,6 +232,7 @@ Automatically generated from commit messages using conventional commits:
 - `ci:` → 👷 CI/CD
 
 **Manual Trigger**:
+
 ```bash
 # Automatic version bump
 gh workflow run release-v080.yml \
@@ -230,6 +255,7 @@ All scripts are located in `/scripts/` and are executable.
 ### Version Management
 
 #### `generate-changelog.sh`
+
 Generates CHANGELOG.md from git commits using conventional commits.
 
 ```bash
@@ -237,12 +263,14 @@ Generates CHANGELOG.md from git commits using conventional commits.
 ```
 
 Features:
+
 - Categorizes commits by type
 - Supports emoji prefixes
 - Handles breaking changes
 - Links to commit hashes
 
 #### `version-bump.sh`
+
 Updates version across all platform configurations.
 
 ```bash
@@ -250,6 +278,7 @@ Updates version across all platform configurations.
 ```
 
 Updates:
+
 - `package.json`
 - `platforms/tauri/tauri.conf.json`
 - `platforms/tauri/Cargo.toml`
@@ -259,6 +288,7 @@ Updates:
 ### Mobile Deployment
 
 #### `deploy-testflight.sh`
+
 Uploads iOS app to TestFlight.
 
 ```bash
@@ -269,11 +299,13 @@ Uploads iOS app to TestFlight.
 ```
 
 Requirements:
+
 - `APPLE_ID` - Apple ID email
 - `APPLE_PASSWORD` - App-specific password
 - `APPLE_TEAM_ID` - Team ID
 
 #### `deploy-playstore.sh`
+
 Uploads Android app to Google Play Store.
 
 ```bash
@@ -284,9 +316,11 @@ Uploads Android app to Google Play Store.
 ```
 
 Requirements:
+
 - `PLAY_STORE_JSON_KEY` - Base64-encoded service account JSON
 
 Tracks:
+
 - `internal` - Internal testing
 - `alpha` - Closed alpha
 - `beta` - Open/closed beta
@@ -295,6 +329,7 @@ Tracks:
 ### Desktop Signing
 
 #### `sign-desktop.sh`
+
 Signs desktop applications for all platforms.
 
 ```bash
@@ -309,11 +344,13 @@ Signs desktop applications for all platforms.
 ```
 
 Requirements:
+
 - **macOS**: `CSC_LINK`, `CSC_KEY_PASSWORD`, `APPLE_TEAM_ID`
 - **Windows**: `WIN_CSC_LINK`, `WIN_CSC_KEY_PASSWORD`
 - **Linux**: `GPG_PRIVATE_KEY`, `GPG_PASSPHRASE`
 
 #### `notarize-macos.sh`
+
 Notarizes macOS applications with Apple.
 
 ```bash
@@ -321,11 +358,13 @@ Notarizes macOS applications with Apple.
 ```
 
 Requirements:
+
 - `APPLE_ID`
 - `APPLE_APP_SPECIFIC_PASSWORD`
 - `APPLE_TEAM_ID`
 
 Process:
+
 1. Submit to Apple notarization service
 2. Wait for approval (5-15 minutes)
 3. Staple ticket to app
@@ -359,6 +398,7 @@ MAC_CERTS_PASSWORD=certificate-password
 ```
 
 **Generate base64-encoded certificates**:
+
 ```bash
 # iOS/macOS certificate
 base64 -i Certificates.p12 -o certificates.txt
@@ -383,6 +423,7 @@ PLAY_STORE_JSON_KEY=<base64-encoded service-account.json>
 ```
 
 **Generate Android keystore**:
+
 ```bash
 # Create keystore
 keytool -genkey -v -keystore nchat-release.jks \
@@ -395,6 +436,7 @@ cat keystore.txt  # Copy to KEYSTORE_FILE secret
 ```
 
 **Create Play Store service account**:
+
 1. Go to Google Play Console
 2. Setup → API access
 3. Create new service account
@@ -418,6 +460,7 @@ GPG_PASSPHRASE=key-passphrase
 ```
 
 **Export GPG key**:
+
 ```bash
 # Export private key
 gpg --export-secret-keys --armor KEY_ID > private-key.asc
@@ -469,12 +512,14 @@ LHCI_GITHUB_APP_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxx
 ### Creating a Release
 
 1. **Prepare code**:
+
    ```bash
    git checkout main
    git pull origin main
    ```
 
 2. **Run release workflow**:
+
    ```bash
    # Option 1: Manual workflow dispatch
    gh workflow run release-v080.yml \
@@ -489,6 +534,7 @@ LHCI_GITHUB_APP_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxx
    ```
 
 3. **Monitor workflow**:
+
    ```bash
    gh run watch
    ```
@@ -502,6 +548,7 @@ LHCI_GITHUB_APP_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxx
 ### Testing Changes
 
 1. **Create PR**:
+
    ```bash
    git checkout -b feature/my-feature
    # Make changes
@@ -517,6 +564,7 @@ LHCI_GITHUB_APP_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxx
    - Build Check
 
 3. **Monitor PR checks**:
+
    ```bash
    gh pr checks
    ```
@@ -532,6 +580,7 @@ LHCI_GITHUB_APP_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxx
 ### Building Specific Platforms
 
 **iOS only**:
+
 ```bash
 gh workflow run ios-build.yml \
   -f build_type=release \
@@ -539,6 +588,7 @@ gh workflow run ios-build.yml \
 ```
 
 **Android only**:
+
 ```bash
 gh workflow run android-build.yml \
   -f build_type=release \
@@ -547,6 +597,7 @@ gh workflow run android-build.yml \
 ```
 
 **Desktop (macOS only)**:
+
 ```bash
 gh workflow run desktop-build.yml \
   -f platform=macos \
@@ -554,6 +605,7 @@ gh workflow run desktop-build.yml \
 ```
 
 **Desktop (all platforms)**:
+
 ```bash
 gh workflow run desktop-build.yml \
   -f platform=all \
@@ -568,21 +620,25 @@ gh workflow run desktop-build.yml \
 ### iOS Build Issues
 
 **Problem**: Certificate import fails
+
 ```
 Error: The specified item could not be found in the keychain
 ```
 
 **Solution**:
+
 1. Verify `CERTIFICATES_P12` is valid base64
 2. Check `CERTIFICATES_PASSWORD` matches certificate
 3. Ensure certificate is not expired
 
 **Problem**: Provisioning profile mismatch
+
 ```
 Error: No matching provisioning profile found
 ```
 
 **Solution**:
+
 1. Regenerate provisioning profile in Apple Developer portal
 2. Include correct devices for development
 3. Re-encode and update `PROVISIONING_PROFILE` secret
@@ -590,21 +646,25 @@ Error: No matching provisioning profile found
 ### Android Build Issues
 
 **Problem**: Keystore not found
+
 ```
 Error: Keystore file not found
 ```
 
 **Solution**:
+
 1. Verify `KEYSTORE_FILE` secret is set
 2. Check base64 encoding is valid
 3. Ensure keystore was created with correct alias
 
 **Problem**: Play Store upload fails
+
 ```
 Error: Invalid service account JSON
 ```
 
 **Solution**:
+
 1. Verify service account has correct permissions
 2. Re-download JSON key from Play Console
 3. Re-encode and update `PLAY_STORE_JSON_KEY`
@@ -612,11 +672,13 @@ Error: Invalid service account JSON
 ### Desktop Build Issues
 
 **Problem**: macOS notarization fails
+
 ```
 Error: Notarization failed with status: invalid
 ```
 
 **Solution**:
+
 1. Check notarization log: `cat notarization-log.json`
 2. Common issues:
    - App not signed with Developer ID
@@ -625,32 +687,38 @@ Error: Notarization failed with status: invalid
 3. Re-sign with correct settings
 
 **Problem**: Windows signing fails
+
 ```
 Error: No Windows signing tool found
 ```
 
 **Solution**:
+
 1. Install osslsigncode: `brew install osslsigncode`
 2. Or use Windows runner with signtool.exe
 
 ### Workflow Issues
 
 **Problem**: Workflow not triggering
+
 ```
 No workflow runs found
 ```
 
 **Solution**:
+
 1. Check workflow file syntax: `gh workflow view`
 2. Verify trigger conditions match
 3. Check branch protection rules
 
 **Problem**: Cache not restoring
+
 ```
 Cache not found
 ```
 
 **Solution**:
+
 1. Delete cache: `gh cache delete <cache-key>`
 2. Wait for new cache to be created
 3. Check cache key matches lock file hash
@@ -658,11 +726,13 @@ Cache not found
 ### Notification Issues
 
 **Problem**: Slack notifications not sending
+
 ```
 Slack webhook failed
 ```
 
 **Solution**:
+
 1. Verify `SLACK_WEBHOOK_URL` is valid
 2. Test webhook: `curl -X POST -H 'Content-type: application/json' --data '{"text":"Test"}' $SLACK_WEBHOOK_URL`
 3. Check Slack app permissions
@@ -672,6 +742,7 @@ Slack webhook failed
 ## Best Practices
 
 1. **Always test locally first**:
+
    ```bash
    pnpm lint
    pnpm type-check
@@ -680,6 +751,7 @@ Slack webhook failed
    ```
 
 2. **Use conventional commits**:
+
    ```bash
    feat: add new feature
    fix: resolve bug

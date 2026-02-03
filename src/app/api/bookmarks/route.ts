@@ -88,10 +88,7 @@ async function handleAddBookmark(data: {
     const { userId, messageId, note, tags, collectionIds } = data
 
     if (!userId || !messageId) {
-      return NextResponse.json(
-        { error: 'userId and messageId are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'userId and messageId are required' }, { status: 400 })
     }
 
     logger.info('Adding bookmark', { userId, messageId })
@@ -239,11 +236,7 @@ async function handleExportBookmarks(data: {
   }
 }
 
-async function handleExport(
-  userId: string,
-  format: string,
-  searchParams: URLSearchParams
-) {
+async function handleExport(userId: string, format: string, searchParams: URLSearchParams) {
   try {
     const includeContent = searchParams.get('includeContent') !== 'false'
     const includeAttachments = searchParams.get('includeAttachments') === 'true'
@@ -343,7 +336,7 @@ function convertToMarkdown(data: any): string {
         md += `> Note: ${b.note}\n\n`
       }
       if (b.tags && b.tags.length > 0) {
-        md += `Tags: ${b.tags.map((t: string) => `\`${t}\``).join(', ')}\n\n`
+        md += `Tags: ${b.tags.map((t: string) => `${t}`).join(', ')}\n\n`
       }
       md += `---\n\n`
     })

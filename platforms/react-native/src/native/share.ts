@@ -43,11 +43,7 @@ export async function shareText(content: ShareContent): Promise<boolean> {
 /**
  * Share a URL
  */
-export async function shareUrl(
-  url: string,
-  title?: string,
-  message?: string
-): Promise<boolean> {
+export async function shareUrl(url: string, title?: string, message?: string): Promise<boolean> {
   return shareText({
     url,
     title,
@@ -65,10 +61,7 @@ export async function isFileSharingAvailable(): Promise<boolean> {
 /**
  * Share a file
  */
-export async function shareFile(
-  uri: string,
-  options?: ShareFileOptions
-): Promise<void> {
+export async function shareFile(uri: string, options?: ShareFileOptions): Promise<void> {
   const isAvailable = await isFileSharingAvailable()
   if (!isAvailable) {
     throw new Error('File sharing is not available on this device')
@@ -89,10 +82,7 @@ export async function shareFile(
 /**
  * Share an image
  */
-export async function shareImage(
-  uri: string,
-  title?: string
-): Promise<void> {
+export async function shareImage(uri: string, title?: string): Promise<void> {
   return shareFile(uri, {
     mimeType: 'image/*',
     dialogTitle: title || 'Share Image',
@@ -102,10 +92,7 @@ export async function shareImage(
 /**
  * Share a video
  */
-export async function shareVideo(
-  uri: string,
-  title?: string
-): Promise<void> {
+export async function shareVideo(uri: string, title?: string): Promise<void> {
   return shareFile(uri, {
     mimeType: 'video/*',
     dialogTitle: title || 'Share Video',
@@ -115,10 +102,7 @@ export async function shareVideo(
 /**
  * Share multiple items (message + file)
  */
-export async function shareMultiple(
-  content: ShareContent,
-  fileUri?: string
-): Promise<boolean> {
+export async function shareMultiple(content: ShareContent, fileUri?: string): Promise<boolean> {
   // On iOS, we can share both at once
   // On Android, we typically need to choose one
   if (fileUri && Platform.OS === 'ios') {
@@ -180,9 +164,5 @@ export async function shareChannelInvite(
   channelName: string,
   inviteLink: string
 ): Promise<boolean> {
-  return shareUrl(
-    inviteLink,
-    `Join #${channelName}`,
-    `Join the #${channelName} channel on nChat`
-  )
+  return shareUrl(inviteLink, `Join #${channelName}`, `Join the #${channelName} channel on nChat`)
 }

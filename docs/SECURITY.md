@@ -62,11 +62,13 @@ When deploying nself-chat in production, please follow these security best pract
 ### Environment Configuration
 
 1. **Never use development authentication** in production:
+
    ```env
    NEXT_PUBLIC_USE_DEV_AUTH=false
    ```
 
 2. **Use strong secrets** (minimum 32 characters):
+
    ```env
    HASURA_ADMIN_SECRET=<strong-random-string>
    JWT_SECRET=<strong-random-string>
@@ -74,6 +76,7 @@ When deploying nself-chat in production, please follow these security best pract
    ```
 
 3. **Use production URLs** (never localhost):
+
    ```env
    NEXT_PUBLIC_APP_URL=https://your-domain.com
    NEXT_PUBLIC_GRAPHQL_URL=https://api.your-domain.com/v1/graphql
@@ -163,8 +166,8 @@ nself-chat includes the following security features:
 
 ## Security Audit History
 
-| Date | Auditor | Scope | Report |
-|------|---------|-------|--------|
+| Date       | Auditor  | Scope         | Report                                                    |
+| ---------- | -------- | ------------- | --------------------------------------------------------- |
 | 2026-01-29 | Internal | Full codebase | [docs/SECURITY-AUDIT.md](docs/security/SECURITY-AUDIT.md) |
 
 ## Compliance

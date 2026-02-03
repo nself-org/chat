@@ -20,11 +20,7 @@ export interface TeamChannelProps {
 // Component
 // ============================================================================
 
-export function TeamChannel({
-  isSelected = false,
-  onClick,
-  className,
-}: TeamChannelProps) {
+export function TeamChannel({ isSelected = false, onClick, className }: TeamChannelProps) {
   return (
     <Card
       className={cn(
@@ -36,34 +32,34 @@ export function TeamChannel({
     >
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
-          <div className="p-3 rounded-lg bg-green-500/10">
+          <div className="rounded-lg bg-green-500/10 p-3">
             <Users className="h-6 w-6 text-green-600" />
           </div>
           <Badge variant="secondary">Popular</Badge>
         </div>
         <CardTitle className="text-lg">Team Channel</CardTitle>
         <CardDescription>
-          A collaborative space for team discussions, updates, and coordination.
-          Perfect for department or project teams.
+          A collaborative space for team discussions, updates, and coordination. Perfect for
+          department or project teams.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <p className="text-sm font-medium">Included features:</p>
           <div className="flex flex-wrap gap-2">
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <MessageSquare className="h-3 w-3" />
               Threaded discussions
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <FileText className="h-3 w-3" />
               File sharing
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <AtSign className="h-3 w-3" />
               Mentions
             </Badge>
-            <Badge variant="outline" className="text-xs gap-1">
+            <Badge variant="outline" className="gap-1 text-xs">
               <Bell className="h-3 w-3" />
               Notifications
             </Badge>
@@ -71,9 +67,8 @@ export function TeamChannel({
         </div>
         <div className="text-xs text-muted-foreground">
           <p>
-            <strong>Best for:</strong> Engineering teams, marketing departments,
-            cross-functional projects, or any group that needs a dedicated space
-            for ongoing collaboration.
+            <strong>Best for:</strong> Engineering teams, marketing departments, cross-functional
+            projects, or any group that needs a dedicated space for ongoing collaboration.
           </p>
         </div>
       </CardContent>

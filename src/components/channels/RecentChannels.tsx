@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import {  ChevronRight, Activity } from 'lucide-react'
+import { ChevronRight, Activity } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
@@ -55,11 +55,8 @@ export function RecentChannels({
       return (
         <div className="space-y-2">
           {recentChannels.map((channel) => (
-            <div
-              key={channel.id}
-              className="flex items-center gap-3"
-            >
-              <div className="flex-1 min-w-0">
+            <div key={channel.id} className="flex items-center gap-3">
+              <div className="min-w-0 flex-1">
                 <ChannelCard
                   channel={channel}
                   isJoined={joinedChannelIds.has(channel.id)}
@@ -69,7 +66,7 @@ export function RecentChannels({
                 />
               </div>
               {channel.lastMessageAt && (
-                <span className="text-xs text-muted-foreground flex-shrink-0">
+                <span className="flex-shrink-0 text-xs text-muted-foreground">
                   {formatTimeAgo(new Date(channel.lastMessageAt))}
                 </span>
               )}
@@ -81,7 +78,7 @@ export function RecentChannels({
 
     if (layout === 'grid') {
       return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recentChannels.map((channel) => (
             <ChannelCard
               key={channel.id}

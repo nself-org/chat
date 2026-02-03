@@ -73,18 +73,12 @@ export function canSeeField(
   const visibility = visibilitySettings[field]
 
   // Handle contact-based visibility
-  if (
-    visibility === 'contacts' ||
-    (visibility as ActivityVisibility) === 'contacts'
-  ) {
+  if (visibility === 'contacts' || (visibility as ActivityVisibility) === 'contacts') {
     return isContact(viewerUserId, contacts)
   }
 
   // Handle public/everyone visibility
-  if (
-    visibility === 'public' ||
-    (visibility as ActivityVisibility) === 'everyone'
-  ) {
+  if (visibility === 'public' || (visibility as ActivityVisibility) === 'everyone') {
     return true
   }
 
@@ -174,10 +168,7 @@ export function updateContact(
 /**
  * Get contact by user ID
  */
-export function getContact(
-  userId: string,
-  contacts: Contact[]
-): Contact | undefined {
+export function getContact(userId: string, contacts: Contact[]): Contact | undefined {
   return contacts.find((contact) => contact.userId === userId)
 }
 
@@ -210,10 +201,7 @@ export function blockUser(
 /**
  * Unblock a user
  */
-export function unblockUser(
-  userId: string,
-  blockedUsers: BlockedUser[]
-): BlockedUser[] {
+export function unblockUser(userId: string, blockedUsers: BlockedUser[]): BlockedUser[] {
   return blockedUsers.filter((blocked) => blocked.userId !== userId)
 }
 
@@ -346,7 +334,9 @@ export function loadPrivacySettings(): PrivacySettings {
 
   try {
     const stored = localStorage.getItem(PRIVACY_STORAGE_KEY)
-    return stored ? { ...DEFAULT_PRIVACY_SETTINGS, ...JSON.parse(stored) } : DEFAULT_PRIVACY_SETTINGS
+    return stored
+      ? { ...DEFAULT_PRIVACY_SETTINGS, ...JSON.parse(stored) }
+      : DEFAULT_PRIVACY_SETTINGS
   } catch {
     return DEFAULT_PRIVACY_SETTINGS
   }

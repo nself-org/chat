@@ -34,6 +34,8 @@ import { PollOption, PollOptionCompact } from './poll-option'
 import { PollVotersModal } from './poll-voters-modal'
 import { PollResults } from './poll-results'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -51,7 +53,7 @@ interface PollDisplayProps {
 
 function PollSkeleton() {
   return (
-    <div className="p-4 border rounded-xl space-y-4">
+    <div className="space-y-4 rounded-xl border p-4">
       <div className="flex items-start gap-3">
         <Skeleton className="h-10 w-10 rounded-lg" />
         <div className="flex-1 space-y-2">
@@ -74,9 +76,7 @@ function PollSkeleton() {
 
 function PollTimer({ pollId }: { pollId: string }) {
   const { poll } = usePoll(pollId)
-  const [timeRemaining, setTimeRemaining] = useState(
-    poll ? getPollTimeRemaining(poll) : null
-  )
+  const [timeRemaining, setTimeRemaining] = useState(poll ? getPollTimeRemaining(poll) : null)
 
   useEffect(() => {
     if (!poll?.ends_at || poll.status === 'closed') {
@@ -139,10 +139,7 @@ export function PollDisplay({
 
   const [showResultsModal, setShowResultsModal] = useState(false)
 
-  const winningOptions = useMemo(
-    () => (poll ? findWinningOptions(poll) : []),
-    [poll]
-  )
+  const winningOptions = useMemo(() => (poll ? findWinningOptions(poll) : []), [poll])
 
   const settingsBadges = useMemo(
     () => (poll ? formatPollSettings(poll.settings) : []),
@@ -154,7 +151,7 @@ export function PollDisplay({
       try {
         await vote(optionId)
       } catch (err) {
-        console.error('Failed to vote:', err)
+        logger.error('Failed to vote:', err)
       }
     },
     [vote]
@@ -165,7 +162,7 @@ export function PollDisplay({
       try {
         await unvote(optionId)
       } catch (err) {
-        console.error('Failed to unvote:', err)
+        logger.error('Failed to unvote:', err)
       }
     },
     [unvote]
@@ -175,7 +172,7 @@ export function PollDisplay({
     try {
       await closePoll()
     } catch (err) {
-      console.error('Failed to close poll:', err)
+      logger.error('Failed to close poll:', err)
     }
   }, [closePoll])
 
@@ -183,7 +180,7 @@ export function PollDisplay({
     try {
       await reopenPoll()
     } catch (err) {
-      console.error('Failed to reopen poll:', err)
+      logger.error('Failed to reopen poll:', err)
     }
   }, [reopenPoll])
 
@@ -193,15 +190,10 @@ export function PollDisplay({
 
   if (error) {
     return (
-      <div className="p-4 border rounded-xl bg-destructive/5 border-destructive/20">
+      <div className="bg-destructive/5 border-destructive/20 rounded-xl border p-4">
         <p className="text-sm text-destructive">Failed to load poll</p>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => refetch()}
-          className="mt-2"
-        >
-          <RefreshCw className="h-4 w-4 mr-2" />
+        <Button variant="outline" size="sm" onClick={() => refetch()} className="mt-2">
+          <RefreshCw className="mr-2 h-4 w-4" />
           Retry
         </Button>
       </div>
@@ -215,10 +207,10 @@ export function PollDisplay({
   // Compact variant for message previews
   if (compact) {
     return (
-      <div className={cn('p-3 border rounded-lg bg-muted/30', className)}>
-        <div className="flex items-center gap-2 mb-2">
+      <div className={cn('bg-muted/30 rounded-lg border p-3', className)}>
+        <div className="mb-2 flex items-center gap-2">
           <BarChart3 className="h-4 w-4 text-primary" />
-          <span className="text-sm font-medium truncate">{poll.question}</span>
+          <span className="truncate text-sm font-medium">{poll.question}</span>
         </div>
         <div className="space-y-1">
           {poll.options.slice(0, 3).map((option) => (
@@ -231,12 +223,12 @@ export function PollDisplay({
             />
           ))}
           {poll.options.length > 3 && (
-            <p className="text-xs text-muted-foreground text-center pt-1">
+            <p className="pt-1 text-center text-xs text-muted-foreground">
               +{poll.options.length - 3} more options
             </p>
           )}
         </div>
-        <div className="flex items-center justify-between mt-2 text-xs text-muted-foreground">
+        <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
           <span>{poll.total_votes} votes</span>
           {isEnded ? (
             <span className="text-orange-500">Poll ended</span>
@@ -251,38 +243,24 @@ export function PollDisplay({
   // Full variant
   return (
     <>
-      <div
-        className={cn(
-          'border rounded-xl overflow-hidden',
-          isEnded && 'bg-muted/30',
-          className
-        )}
-      >
+      <div className={cn('overflow-hidden rounded-xl border', isEnded && 'bg-muted/30', className)}>
         {/* Header */}
-        <div className="p-4 border-b bg-muted/30">
+        <div className="bg-muted/30 border-b p-4">
           <div className="flex items-start gap-3">
-            <div
-              className={cn(
-                'p-2 rounded-lg',
-                isEnded ? 'bg-muted' : 'bg-primary/10'
-              )}
-            >
+            <div className={cn('rounded-lg p-2', isEnded ? 'bg-muted' : 'bg-primary/10')}>
               <BarChart3
-                className={cn(
-                  'h-5 w-5',
-                  isEnded ? 'text-muted-foreground' : 'text-primary'
-                )}
+                className={cn('h-5 w-5', isEnded ? 'text-muted-foreground' : 'text-primary')}
               />
             </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-base">{poll.question}</h3>
-              <div className="flex items-center gap-2 mt-1 flex-wrap">
+            <div className="min-w-0 flex-1">
+              <h3 className="text-base font-semibold">{poll.question}</h3>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
                 <span className="text-sm text-muted-foreground">
                   {poll.total_votes} vote{poll.total_votes !== 1 ? 's' : ''}
                 </span>
                 {isEnded ? (
                   <Badge variant="secondary" className="text-xs">
-                    <XCircle className="h-3 w-3 mr-1" />
+                    <XCircle className="mr-1 h-3 w-3" />
                     Closed
                   </Badge>
                 ) : (
@@ -290,7 +268,7 @@ export function PollDisplay({
                 )}
                 {hasVoted && (
                   <Badge variant="outline" className="text-xs text-green-600">
-                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                    <CheckCircle2 className="mr-1 h-3 w-3" />
                     Voted
                   </Badge>
                 )}
@@ -307,16 +285,13 @@ export function PollDisplay({
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => setShowResultsModal(true)}>
-                    <ChartPie className="h-4 w-4 mr-2" />
+                    <ChartPie className="mr-2 h-4 w-4" />
                     View Results
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   {isEnded ? (
-                    <DropdownMenuItem
-                      onClick={handleReopenPoll}
-                      disabled={reopening}
-                    >
-                      <RefreshCw className="h-4 w-4 mr-2" />
+                    <DropdownMenuItem onClick={handleReopenPoll} disabled={reopening}>
+                      <RefreshCw className="mr-2 h-4 w-4" />
                       Reopen Poll
                     </DropdownMenuItem>
                   ) : (
@@ -325,7 +300,7 @@ export function PollDisplay({
                       disabled={closing}
                       className="text-destructive"
                     >
-                      <XCircle className="h-4 w-4 mr-2" />
+                      <XCircle className="mr-2 h-4 w-4" />
                       Close Poll
                     </DropdownMenuItem>
                   )}
@@ -336,22 +311,22 @@ export function PollDisplay({
 
           {/* Settings badges */}
           {settingsBadges.length > 0 && (
-            <div className="flex flex-wrap gap-1.5 mt-3">
+            <div className="mt-3 flex flex-wrap gap-1.5">
               {poll.settings.isAnonymous && (
                 <Badge variant="outline" className="text-xs">
-                  <EyeOff className="h-3 w-3 mr-1" />
+                  <EyeOff className="mr-1 h-3 w-3" />
                   Anonymous
                 </Badge>
               )}
               {poll.settings.allowMultipleVotes && (
                 <Badge variant="outline" className="text-xs">
-                  <CheckCircle2 className="h-3 w-3 mr-1" />
+                  <CheckCircle2 className="mr-1 h-3 w-3" />
                   Multiple choices
                 </Badge>
               )}
               {poll.settings.allowAddOptions && (
                 <Badge variant="outline" className="text-xs">
-                  <Plus className="h-3 w-3 mr-1" />
+                  <Plus className="mr-1 h-3 w-3" />
                   Add options
                 </Badge>
               )}
@@ -360,7 +335,7 @@ export function PollDisplay({
         </div>
 
         {/* Options */}
-        <div className="p-4 space-y-2">
+        <div className="space-y-2 p-4">
           {poll.options.map((option) => (
             <PollOption
               key={option.id}
@@ -384,15 +359,8 @@ export function PollDisplay({
 
           {/* Add option button (if allowed) */}
           {poll.settings.allowAddOptions && !isEnded && (
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full mt-2"
-              onClick={() => {
-                // TODO: Implement add option functionality
-              }}
-            >
-              <Plus className="h-4 w-4 mr-2" />
+            <Button variant="outline" size="sm" className="mt-2 w-full" onClick={() => {}}>
+              <Plus className="mr-2 h-4 w-4" />
               Add Option
             </Button>
           )}
@@ -401,7 +369,7 @@ export function PollDisplay({
         {/* Footer */}
         {!isEnded && !hasVoted && !canVote && (
           <div className="px-4 pb-4">
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-center text-xs text-muted-foreground">
               {poll.settings.allowMultipleVotes
                 ? 'Select one or more options'
                 : 'Select an option to vote'}
@@ -410,7 +378,7 @@ export function PollDisplay({
         )}
 
         {isEnded && winningOptions.length > 0 && (
-          <div className="px-4 pb-4 pt-2 border-t bg-muted/20">
+          <div className="bg-muted/20 border-t px-4 pb-4 pt-2">
             <div className="flex items-center gap-2 text-sm">
               <CheckCircle2 className="h-4 w-4 text-green-500" />
               <span className="text-muted-foreground">Winner:</span>
@@ -435,11 +403,7 @@ export function PollDisplay({
 
       {/* Results Modal */}
       {showResultsModal && (
-        <PollResults
-          pollId={pollId}
-          open={showResultsModal}
-          onOpenChange={setShowResultsModal}
-        />
+        <PollResults pollId={pollId} open={showResultsModal} onOpenChange={setShowResultsModal} />
       )}
     </>
   )

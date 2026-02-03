@@ -52,37 +52,37 @@ useMessageActions({
 
 ## 🎯 Available Actions
 
-| Action | Description | Permission Required |
-|--------|-------------|-------------------|
-| `react` | Add emoji reaction | `canReact` |
-| `reply` | Reply to message | `canReply` |
-| `thread` | Start/view thread | `canThread` |
-| `edit` | Edit message | `canEdit` |
-| `delete` | Delete message | `canDelete` |
-| `pin` | Pin to channel | `canPin` |
-| `unpin` | Unpin from channel | `canPin` |
-| `bookmark` | Save message | `canBookmark` |
-| `unbookmark` | Unsave message | `canBookmark` |
-| `forward` | Forward message | `canForward` |
-| `copy` | Copy text | `canCopy` |
-| `copy-link` | Copy message link | `canCopy` |
-| `report` | Report message | `canReport` |
-| `mark-unread` | Mark as unread | `canMarkUnread` |
+| Action        | Description        | Permission Required |
+| ------------- | ------------------ | ------------------- |
+| `react`       | Add emoji reaction | `canReact`          |
+| `reply`       | Reply to message   | `canReply`          |
+| `thread`      | Start/view thread  | `canThread`         |
+| `edit`        | Edit message       | `canEdit`           |
+| `delete`      | Delete message     | `canDelete`         |
+| `pin`         | Pin to channel     | `canPin`            |
+| `unpin`       | Unpin from channel | `canPin`            |
+| `bookmark`    | Save message       | `canBookmark`       |
+| `unbookmark`  | Unsave message     | `canBookmark`       |
+| `forward`     | Forward message    | `canForward`        |
+| `copy`        | Copy text          | `canCopy`           |
+| `copy-link`   | Copy message link  | `canCopy`           |
+| `report`      | Report message     | `canReport`         |
+| `mark-unread` | Mark as unread     | `canMarkUnread`     |
 
 ## 🔒 Permissions by Role
 
 | Permission | Guest | Member | Moderator | Owner |
-|-----------|-------|--------|-----------|-------|
-| React | ❌ | ✅ | ✅ | ✅ |
-| Reply | ❌ | ✅ | ✅ | ✅ |
-| Thread | ❌ | ✅ | ✅ | ✅ |
-| Edit | ❌ | Own | Own | Own |
-| Delete | ❌ | Own | ✅ | ✅ |
-| Pin | ❌ | ❌ | ✅ | ✅ |
-| Bookmark | ❌ | ✅ | ✅ | ✅ |
-| Forward | ❌ | ✅ | ✅ | ✅ |
-| Report | ❌ | ✅ | ✅ | ✅ |
-| Copy | ✅ | ✅ | ✅ | ✅ |
+| ---------- | ----- | ------ | --------- | ----- |
+| React      | ❌    | ✅     | ✅        | ✅    |
+| Reply      | ❌    | ✅     | ✅        | ✅    |
+| Thread     | ❌    | ✅     | ✅        | ✅    |
+| Edit       | ❌    | Own    | Own       | Own   |
+| Delete     | ❌    | Own    | ✅        | ✅    |
+| Pin        | ❌    | ❌     | ✅        | ✅    |
+| Bookmark   | ❌    | ✅     | ✅        | ✅    |
+| Forward    | ❌    | ✅     | ✅        | ✅    |
+| Report     | ❌    | ✅     | ✅        | ✅    |
+| Copy       | ✅    | ✅     | ✅        | ✅    |
 
 ## 🎨 Component Variants
 
@@ -168,18 +168,18 @@ const { handleAction } = useMessageActions({
 
 ## ⌨️ Keyboard Shortcuts
 
-| Key | Action |
-|-----|--------|
-| **⌘C** | Copy text |
-| **⌘⇧C** | Copy link |
-| **R** | Reply |
-| **T** | Thread |
-| **E** | Edit |
-| **P** | Pin/Unpin |
-| **S** | Save |
-| **⌘F** | Forward |
-| **U** | Mark unread |
-| **⌘⌫** | Delete |
+| Key     | Action      |
+| ------- | ----------- |
+| **⌘C**  | Copy text   |
+| **⌘⇧C** | Copy link   |
+| **R**   | Reply       |
+| **T**   | Thread      |
+| **E**   | Edit        |
+| **P**   | Pin/Unpin   |
+| **S**   | Save        |
+| **⌘F**  | Forward     |
+| **U**   | Mark unread |
+| **⌘⌫**  | Delete      |
 
 ## 📱 Mobile Usage
 
@@ -243,7 +243,9 @@ if (canPerformAction('delete', message)) {
 ```tsx
 const { isLoading } = useMessageActions({ channelId })
 
-{isLoading && <LoadingSpinner />}
+{
+  isLoading && <LoadingSpinner />
+}
 ```
 
 ## 🎨 Custom Styling
@@ -274,11 +276,7 @@ import {
 } from '@/components/chat'
 
 // Types
-import type {
-  Message,
-  MessageAction,
-  MessageActionPermissions,
-} from '@/types/message'
+import type { Message, MessageAction, MessageActionPermissions } from '@/types/message'
 ```
 
 ## ⚠️ Common Pitfalls

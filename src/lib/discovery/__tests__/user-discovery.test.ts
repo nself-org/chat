@@ -12,7 +12,7 @@ import {
   type UserInfo,
   type UserStatus,
   type UserConnectionContext,
-} from '../user-discovery';
+} from '../user-discovery'
 
 // ============================================================================
 // Test Helpers
@@ -35,92 +35,89 @@ const createTestUser = (overrides?: Partial<UserInfo>): UserInfo => ({
   createdAt: new Date(),
   isActive: true,
   ...overrides,
-});
+})
 
 // ============================================================================
 // UserDiscoveryService Tests
 // ============================================================================
 
 describe('UserDiscoveryService', () => {
-  let service: UserDiscoveryService;
+  let service: UserDiscoveryService
 
   beforeEach(() => {
-    service = new UserDiscoveryService();
-  });
+    service = new UserDiscoveryService()
+  })
 
   describe('constructor', () => {
     it('should create service instance', () => {
-      expect(service).toBeDefined();
-    });
-  });
+      expect(service).toBeDefined()
+    })
+  })
 
   describe('setUsers', () => {
     it('should set users', () => {
-      const users = [
-        createTestUser({ id: 'user-1' }),
-        createTestUser({ id: 'user-2' }),
-      ];
-      service.setUsers(users);
+      const users = [createTestUser({ id: 'user-1' }), createTestUser({ id: 'user-2' })]
+      service.setUsers(users)
 
-      expect(service.getUserCount()).toBe(2);
-    });
+      expect(service.getUserCount()).toBe(2)
+    })
 
     it('should replace existing users', () => {
-      service.setUsers([createTestUser({ id: 'user-1' })]);
-      service.setUsers([createTestUser({ id: 'user-2' })]);
+      service.setUsers([createTestUser({ id: 'user-1' })])
+      service.setUsers([createTestUser({ id: 'user-2' })])
 
-      expect(service.getUserCount()).toBe(1);
-      expect(service.getUser('user-1')).toBeUndefined();
-    });
-  });
+      expect(service.getUserCount()).toBe(1)
+      expect(service.getUser('user-1')).toBeUndefined()
+    })
+  })
 
   describe('addUser', () => {
     it('should add a user', () => {
-      const user = createTestUser({ id: 'user-1' });
-      service.addUser(user);
+      const user = createTestUser({ id: 'user-1' })
+      service.addUser(user)
 
-      expect(service.getUser('user-1')).toBeDefined();
-    });
+      expect(service.getUser('user-1')).toBeDefined()
+    })
 
     it('should update existing user', () => {
-      const user1 = createTestUser({ id: 'user-1', displayName: 'Original' });
-      const user2 = createTestUser({ id: 'user-1', displayName: 'Updated' });
+      const user1 = createTestUser({ id: 'user-1', displayName: 'Original' })
+      const user2 = createTestUser({ id: 'user-1', displayName: 'Updated' })
 
-      service.addUser(user1);
-      service.addUser(user2);
+      service.addUser(user1)
+      service.addUser(user2)
 
-      expect(service.getUser('user-1')?.displayName).toBe('Updated');
-    });
-  });
+      expect(service.getUser('user-1')?.displayName).toBe('Updated')
+    })
+  })
 
   describe('removeUser', () => {
     it('should remove a user', () => {
-      service.addUser(createTestUser({ id: 'user-1' }));
-      service.removeUser('user-1');
+      service.addUser(createTestUser({ id: 'user-1' }))
+      service.removeUser('user-1')
 
-      expect(service.getUser('user-1')).toBeUndefined();
-    });
-  });
+      expect(service.getUser('user-1')).toBeUndefined()
+    })
+  })
 
   describe('updateStatus', () => {
     it('should update user status', () => {
-      service.addUser(createTestUser({ id: 'user-1', status: 'online' }));
-      service.updateStatus('user-1', 'away');
+      service.addUser(createTestUser({ id: 'user-1', status: 'online' }))
+      service.updateStatus('user-1', 'away')
 
-      expect(service.getStatus('user-1')).toBe('away');
-    });
+      expect(service.getStatus('user-1')).toBe('away')
+    })
 
     it('should update lastSeenAt for non-offline status', () => {
-      const user = createTestUser({ id: 'user-1', lastSeenAt: new Date('2020-01-01') });
-      service.addUser(user);
+      const user = createTestUser({ id: 'user-1', lastSeenAt: new Date('2020-01-01') })
+      service.addUser(user)
 
-      const before = service.getUser('user-1')?.lastSeenAt;
-      service.updateStatus('user-1', 'online');
-      const after = service.getUser('user-1')?.lastSeenAt;
+      const before = service.getUser('user-1')?.lastSeenAt
+      service.updateStatus('user-1', 'online')
+      const after = service.getUser('user-1')?.lastSeenAt
 
-      expect(after?.getTime()).toBeGreaterThan(before?.getTime() ?? 0);
-    });
-  });
+      expect(after?.getTime()).toBeGreaterThan(before?.getTime() ?? 0)
+    })
+  })
 
   describe('searchUsers', () => {
     beforeEach(() => {
@@ -143,77 +140,77 @@ describe('UserDiscoveryService', () => {
           displayName: 'Bob Smith',
           email: 'bob@example.com',
         }),
-      ]);
-    });
+      ])
+    })
 
     it('should search by username', () => {
-      const result = service.searchUsers('john');
+      const result = service.searchUsers('john')
 
-      expect(result.users.some((u) => u.username === 'johndoe')).toBe(true);
-    });
+      expect(result.users.some((u) => u.username === 'johndoe')).toBe(true)
+    })
 
     it('should search by display name', () => {
-      const result = service.searchUsers('Doe');
+      const result = service.searchUsers('Doe')
 
-      expect(result.users).toHaveLength(2);
-    });
+      expect(result.users).toHaveLength(2)
+    })
 
     it('should search by email', () => {
-      const result = service.searchUsers('bob@example');
+      const result = service.searchUsers('bob@example')
 
-      expect(result.users.some((u) => u.username === 'bobsmith')).toBe(true);
-    });
+      expect(result.users.some((u) => u.username === 'bobsmith')).toBe(true)
+    })
 
     it('should be case insensitive', () => {
-      const result = service.searchUsers('JOHN');
+      const result = service.searchUsers('JOHN')
 
-      expect(result.users.some((u) => u.username === 'johndoe')).toBe(true);
-    });
+      expect(result.users.some((u) => u.username === 'johndoe')).toBe(true)
+    })
 
     it('should rank exact matches higher', () => {
-      const result = service.searchUsers('johndoe');
+      const result = service.searchUsers('johndoe')
 
-      expect(result.users[0].username).toBe('johndoe');
-    });
+      expect(result.users[0].username).toBe('johndoe')
+    })
 
     it('should return empty for no matches', () => {
-      const result = service.searchUsers('nonexistent');
+      const result = service.searchUsers('nonexistent')
 
-      expect(result.users).toHaveLength(0);
-    });
+      expect(result.users).toHaveLength(0)
+    })
 
     it('should return all users for empty query', () => {
-      const result = service.searchUsers('');
+      const result = service.searchUsers('')
 
-      expect(result.users.length).toBe(3);
-    });
+      expect(result.users.length).toBe(3)
+    })
 
     it('should exclude inactive users', () => {
-      service.addUser(createTestUser({ id: 'inactive', username: 'inactive', isActive: false }));
+      service.addUser(createTestUser({ id: 'inactive', username: 'inactive', isActive: false }))
 
-      const result = service.searchUsers('inactive');
+      const result = service.searchUsers('inactive')
 
-      expect(result.users).toHaveLength(0);
-    });
+      expect(result.users).toHaveLength(0)
+    })
 
     it('should filter by status', () => {
-      service.updateStatus('user-1', 'online');
-      service.updateStatus('user-2', 'offline');
-      service.updateStatus('user-3', 'online');
+      service.updateStatus('user-1', 'online')
+      service.updateStatus('user-2', 'offline')
+      service.updateStatus('user-3', 'online')
 
-      const result = service.searchUsers('', { statuses: ['online'] });
+      const result = service.searchUsers('', { statuses: ['online'] })
 
-      expect(result.users.every((u) => u.status === 'online')).toBe(true);
-    });
+      expect(result.users.every((u) => u.status === 'online')).toBe(true)
+    })
 
     it('should filter by role', () => {
-      service.addUser(createTestUser({ id: 'admin', username: 'admin', role: 'admin' }));
+      service.addUser(createTestUser({ id: 'admin', username: 'admin', role: 'admin' }))
 
-      const result = service.searchUsers('', { roles: ['admin'] });
+      const result = service.searchUsers('', { roles: ['admin'] })
 
-      expect(result.users.every((u) => u.role === 'admin')).toBe(true);
-    });
-  });
+      expect(result.users.every((u) => u.role === 'admin')).toBe(true)
+    })
+  })
 
   describe('discover', () => {
     beforeEach(() => {
@@ -221,61 +218,61 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1', displayName: 'Alice', department: 'Engineering' }),
         createTestUser({ id: 'user-2', displayName: 'Bob', department: 'Design' }),
         createTestUser({ id: 'user-3', displayName: 'Charlie', department: 'Engineering' }),
-      ]);
-    });
+      ])
+    })
 
     it('should discover all active users', () => {
-      const result = service.discover();
+      const result = service.discover()
 
-      expect(result.users.length).toBe(3);
-    });
+      expect(result.users.length).toBe(3)
+    })
 
     it('should filter by department', () => {
-      const result = service.discover({ departments: ['Engineering'] });
+      const result = service.discover({ departments: ['Engineering'] })
 
-      expect(result.users.every((u) => u.department === 'Engineering')).toBe(true);
-    });
+      expect(result.users.every((u) => u.department === 'Engineering')).toBe(true)
+    })
 
     it('should sort by name', () => {
-      const result = service.discover({ sortBy: 'name' });
+      const result = service.discover({ sortBy: 'name' })
 
-      expect(result.users[0].displayName).toBe('Alice');
-      expect(result.users[1].displayName).toBe('Bob');
-      expect(result.users[2].displayName).toBe('Charlie');
-    });
+      expect(result.users[0].displayName).toBe('Alice')
+      expect(result.users[1].displayName).toBe('Bob')
+      expect(result.users[2].displayName).toBe('Charlie')
+    })
 
     it('should sort by status', () => {
-      service.updateStatus('user-1', 'offline');
-      service.updateStatus('user-2', 'online');
-      service.updateStatus('user-3', 'away');
+      service.updateStatus('user-1', 'offline')
+      service.updateStatus('user-2', 'online')
+      service.updateStatus('user-3', 'away')
 
-      const result = service.discover({ sortBy: 'status' });
+      const result = service.discover({ sortBy: 'status' })
 
-      expect(result.users[0].id).toBe('user-2'); // online
-    });
+      expect(result.users[0].id).toBe('user-2') // online
+    })
 
     it('should handle pagination', () => {
-      const page1 = service.discover({ limit: 2, offset: 0 });
-      const page2 = service.discover({ limit: 2, offset: 2 });
+      const page1 = service.discover({ limit: 2, offset: 0 })
+      const page2 = service.discover({ limit: 2, offset: 2 })
 
-      expect(page1.users).toHaveLength(2);
-      expect(page1.hasMore).toBe(true);
-      expect(page2.users).toHaveLength(1);
-      expect(page2.hasMore).toBe(false);
-    });
+      expect(page1.users).toHaveLength(2)
+      expect(page1.hasMore).toBe(true)
+      expect(page2.users).toHaveLength(1)
+      expect(page2.hasMore).toBe(false)
+    })
 
     it('should mark contacts correctly', () => {
-      service.setContacts('current-user', ['user-1']);
+      service.setContacts('current-user', ['user-1'])
 
-      const result = service.discover({ currentUserId: 'current-user' });
+      const result = service.discover({ currentUserId: 'current-user' })
 
-      const user1 = result.users.find((u) => u.id === 'user-1');
-      const user2 = result.users.find((u) => u.id === 'user-2');
+      const user1 = result.users.find((u) => u.id === 'user-1')
+      const user2 = result.users.find((u) => u.id === 'user-2')
 
-      expect(user1?.isContact).toBe(true);
-      expect(user2?.isContact).toBe(false);
-    });
-  });
+      expect(user1?.isContact).toBe(true)
+      expect(user2?.isContact).toBe(false)
+    })
+  })
 
   describe('getOnlineUsers', () => {
     it('should return only online users', () => {
@@ -283,13 +280,13 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1', status: 'online' }),
         createTestUser({ id: 'user-2', status: 'offline' }),
         createTestUser({ id: 'user-3', status: 'online' }),
-      ]);
+      ])
 
-      const online = service.getOnlineUsers();
+      const online = service.getOnlineUsers()
 
-      expect(online.every((u) => u.status === 'online')).toBe(true);
-    });
-  });
+      expect(online.every((u) => u.status === 'online')).toBe(true)
+    })
+  })
 
   describe('getAwayUsers', () => {
     it('should return away and busy users', () => {
@@ -297,13 +294,13 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1', status: 'away' }),
         createTestUser({ id: 'user-2', status: 'busy' }),
         createTestUser({ id: 'user-3', status: 'online' }),
-      ]);
+      ])
 
-      const away = service.getAwayUsers();
+      const away = service.getAwayUsers()
 
-      expect(away.every((u) => u.status === 'away' || u.status === 'busy')).toBe(true);
-    });
-  });
+      expect(away.every((u) => u.status === 'away' || u.status === 'busy')).toBe(true)
+    })
+  })
 
   describe('getRecentContacts', () => {
     it('should return recent contacts in order', () => {
@@ -311,45 +308,45 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1', displayName: 'User 1' }),
         createTestUser({ id: 'user-2', displayName: 'User 2' }),
         createTestUser({ id: 'user-3', displayName: 'User 3' }),
-      ]);
+      ])
 
-      service.addRecentInteraction('current', 'user-1');
-      service.addRecentInteraction('current', 'user-2');
-      service.addRecentInteraction('current', 'user-3');
+      service.addRecentInteraction('current', 'user-1')
+      service.addRecentInteraction('current', 'user-2')
+      service.addRecentInteraction('current', 'user-3')
 
-      const contacts = service.getRecentContacts('current');
+      const contacts = service.getRecentContacts('current')
 
-      expect(contacts[0].id).toBe('user-3'); // Most recent
-    });
+      expect(contacts[0].id).toBe('user-3') // Most recent
+    })
 
     it('should respect limit', () => {
       service.setUsers([
         createTestUser({ id: 'user-1' }),
         createTestUser({ id: 'user-2' }),
         createTestUser({ id: 'user-3' }),
-      ]);
+      ])
 
-      service.addRecentInteraction('current', 'user-1');
-      service.addRecentInteraction('current', 'user-2');
-      service.addRecentInteraction('current', 'user-3');
+      service.addRecentInteraction('current', 'user-1')
+      service.addRecentInteraction('current', 'user-2')
+      service.addRecentInteraction('current', 'user-3')
 
-      const contacts = service.getRecentContacts('current', 2);
+      const contacts = service.getRecentContacts('current', 2)
 
-      expect(contacts.length).toBeLessThanOrEqual(2);
-    });
+      expect(contacts.length).toBeLessThanOrEqual(2)
+    })
 
     it('should increment interaction count', () => {
-      service.setUsers([createTestUser({ id: 'user-1' })]);
+      service.setUsers([createTestUser({ id: 'user-1' })])
 
-      service.addRecentInteraction('current', 'user-1');
-      service.addRecentInteraction('current', 'user-1');
-      service.addRecentInteraction('current', 'user-1');
+      service.addRecentInteraction('current', 'user-1')
+      service.addRecentInteraction('current', 'user-1')
+      service.addRecentInteraction('current', 'user-1')
 
-      const contacts = service.getRecentContacts('current');
+      const contacts = service.getRecentContacts('current')
 
-      expect(contacts[0].matchScore).toBe(3); // interaction count as score
-    });
-  });
+      expect(contacts[0].matchScore).toBe(3) // interaction count as score
+    })
+  })
 
   describe('getSuggestedConnections', () => {
     beforeEach(() => {
@@ -357,24 +354,24 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1', displayName: 'User 1' }),
         createTestUser({ id: 'user-2', displayName: 'User 2' }),
         createTestUser({ id: 'user-3', displayName: 'User 3' }),
-      ]);
-    });
+      ])
+    })
 
     it('should suggest users based on mutual channels', () => {
-      service.setChannelMembers('channel-1', ['current', 'user-1']);
-      service.setChannelMembers('channel-2', ['current', 'user-1']);
+      service.setChannelMembers('channel-1', ['current', 'user-1'])
+      service.setChannelMembers('channel-2', ['current', 'user-1'])
 
       const context: UserConnectionContext = {
         userId: 'current',
         contacts: [],
         channelMemberships: ['channel-1', 'channel-2'],
         recentInteractions: [],
-      };
+      }
 
-      const suggestions = service.getSuggestedConnections(context);
+      const suggestions = service.getSuggestedConnections(context)
 
-      expect(suggestions.some((u) => u.id === 'user-1')).toBe(true);
-    });
+      expect(suggestions.some((u) => u.id === 'user-1')).toBe(true)
+    })
 
     it('should exclude existing contacts', () => {
       const context: UserConnectionContext = {
@@ -382,42 +379,42 @@ describe('UserDiscoveryService', () => {
         contacts: ['user-1'],
         channelMemberships: [],
         recentInteractions: [],
-      };
+      }
 
-      const suggestions = service.getSuggestedConnections(context);
+      const suggestions = service.getSuggestedConnections(context)
 
-      expect(suggestions.every((u) => u.id !== 'user-1')).toBe(true);
-    });
+      expect(suggestions.every((u) => u.id !== 'user-1')).toBe(true)
+    })
 
     it('should exclude self', () => {
-      service.addUser(createTestUser({ id: 'current' }));
+      service.addUser(createTestUser({ id: 'current' }))
 
       const context: UserConnectionContext = {
         userId: 'current',
         contacts: [],
         channelMemberships: [],
         recentInteractions: [],
-      };
+      }
 
-      const suggestions = service.getSuggestedConnections(context);
+      const suggestions = service.getSuggestedConnections(context)
 
-      expect(suggestions.every((u) => u.id !== 'current')).toBe(true);
-    });
+      expect(suggestions.every((u) => u.id !== 'current')).toBe(true)
+    })
 
     it('should mark as suggested', () => {
-      service.setChannelMembers('channel-1', ['current', 'user-1']);
+      service.setChannelMembers('channel-1', ['current', 'user-1'])
 
       const context: UserConnectionContext = {
         userId: 'current',
         contacts: [],
         channelMemberships: ['channel-1'],
         recentInteractions: [],
-      };
+      }
 
-      const suggestions = service.getSuggestedConnections(context);
+      const suggestions = service.getSuggestedConnections(context)
 
-      expect(suggestions.every((u) => u.isSuggested)).toBe(true);
-    });
+      expect(suggestions.every((u) => u.isSuggested)).toBe(true)
+    })
 
     it('should respect limit', () => {
       const context: UserConnectionContext = {
@@ -425,13 +422,13 @@ describe('UserDiscoveryService', () => {
         contacts: [],
         channelMemberships: [],
         recentInteractions: [],
-      };
+      }
 
-      const suggestions = service.getSuggestedConnections(context, 1);
+      const suggestions = service.getSuggestedConnections(context, 1)
 
-      expect(suggestions.length).toBeLessThanOrEqual(1);
-    });
-  });
+      expect(suggestions.length).toBeLessThanOrEqual(1)
+    })
+  })
 
   describe('getChannelMembers', () => {
     it('should return channel members', () => {
@@ -439,44 +436,44 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1' }),
         createTestUser({ id: 'user-2' }),
         createTestUser({ id: 'user-3' }),
-      ]);
-      service.setChannelMembers('channel-1', ['user-1', 'user-2']);
+      ])
+      service.setChannelMembers('channel-1', ['user-1', 'user-2'])
 
-      const members = service.getChannelMembers('channel-1');
+      const members = service.getChannelMembers('channel-1')
 
-      expect(members).toHaveLength(2);
-    });
+      expect(members).toHaveLength(2)
+    })
 
     it('should sort by status', () => {
       service.setUsers([
         createTestUser({ id: 'user-1', status: 'offline' }),
         createTestUser({ id: 'user-2', status: 'online' }),
-      ]);
-      service.setChannelMembers('channel-1', ['user-1', 'user-2']);
+      ])
+      service.setChannelMembers('channel-1', ['user-1', 'user-2'])
 
-      const members = service.getChannelMembers('channel-1');
+      const members = service.getChannelMembers('channel-1')
 
-      expect(members[0].id).toBe('user-2'); // online first
-    });
+      expect(members[0].id).toBe('user-2') // online first
+    })
 
     it('should filter by status', () => {
       service.setUsers([
         createTestUser({ id: 'user-1', status: 'offline' }),
         createTestUser({ id: 'user-2', status: 'online' }),
-      ]);
-      service.setChannelMembers('channel-1', ['user-1', 'user-2']);
+      ])
+      service.setChannelMembers('channel-1', ['user-1', 'user-2'])
 
-      const members = service.getChannelMembers('channel-1', { statuses: ['online'] });
+      const members = service.getChannelMembers('channel-1', { statuses: ['online'] })
 
-      expect(members.every((m) => m.status === 'online')).toBe(true);
-    });
+      expect(members.every((m) => m.status === 'online')).toBe(true)
+    })
 
     it('should return empty for unknown channel', () => {
-      const members = service.getChannelMembers('unknown');
+      const members = service.getChannelMembers('unknown')
 
-      expect(members).toHaveLength(0);
-    });
-  });
+      expect(members).toHaveLength(0)
+    })
+  })
 
   describe('getUsersByDepartment', () => {
     it('should return users in department', () => {
@@ -484,13 +481,13 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1', department: 'Engineering' }),
         createTestUser({ id: 'user-2', department: 'Design' }),
         createTestUser({ id: 'user-3', department: 'Engineering' }),
-      ]);
+      ])
 
-      const result = service.getUsersByDepartment('Engineering');
+      const result = service.getUsersByDepartment('Engineering')
 
-      expect(result.users.every((u) => u.department === 'Engineering')).toBe(true);
-    });
-  });
+      expect(result.users.every((u) => u.department === 'Engineering')).toBe(true)
+    })
+  })
 
   describe('getUsersByRole', () => {
     it('should return users with role', () => {
@@ -498,13 +495,13 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1', role: 'admin' }),
         createTestUser({ id: 'user-2', role: 'member' }),
         createTestUser({ id: 'user-3', role: 'admin' }),
-      ]);
+      ])
 
-      const result = service.getUsersByRole('admin');
+      const result = service.getUsersByRole('admin')
 
-      expect(result.users.every((u) => u.role === 'admin')).toBe(true);
-    });
-  });
+      expect(result.users.every((u) => u.role === 'admin')).toBe(true)
+    })
+  })
 
   describe('getDepartments', () => {
     it('should return unique departments', () => {
@@ -512,126 +509,123 @@ describe('UserDiscoveryService', () => {
         createTestUser({ id: 'user-1', department: 'Engineering' }),
         createTestUser({ id: 'user-2', department: 'Design' }),
         createTestUser({ id: 'user-3', department: 'Engineering' }),
-      ]);
+      ])
 
-      const departments = service.getDepartments();
+      const departments = service.getDepartments()
 
-      expect(departments).toContain('Engineering');
-      expect(departments).toContain('Design');
-      expect(departments).toHaveLength(2);
-    });
+      expect(departments).toContain('Engineering')
+      expect(departments).toContain('Design')
+      expect(departments).toHaveLength(2)
+    })
 
     it('should sort alphabetically', () => {
       service.setUsers([
         createTestUser({ id: 'user-1', department: 'Zebra' }),
         createTestUser({ id: 'user-2', department: 'Alpha' }),
-      ]);
+      ])
 
-      const departments = service.getDepartments();
+      const departments = service.getDepartments()
 
-      expect(departments[0]).toBe('Alpha');
-    });
+      expect(departments[0]).toBe('Alpha')
+    })
 
     it('should exclude inactive users', () => {
       service.setUsers([
         createTestUser({ id: 'user-1', department: 'Active', isActive: true }),
         createTestUser({ id: 'user-2', department: 'Inactive', isActive: false }),
-      ]);
+      ])
 
-      const departments = service.getDepartments();
+      const departments = service.getDepartments()
 
-      expect(departments).not.toContain('Inactive');
-    });
-  });
+      expect(departments).not.toContain('Inactive')
+    })
+  })
 
   describe('getUser', () => {
     it('should return user by ID', () => {
-      service.addUser(createTestUser({ id: 'user-1', displayName: 'Test' }));
+      service.addUser(createTestUser({ id: 'user-1', displayName: 'Test' }))
 
-      const user = service.getUser('user-1');
+      const user = service.getUser('user-1')
 
-      expect(user?.displayName).toBe('Test');
-    });
+      expect(user?.displayName).toBe('Test')
+    })
 
     it('should return undefined for non-existing user', () => {
-      const user = service.getUser('non-existent');
+      const user = service.getUser('non-existent')
 
-      expect(user).toBeUndefined();
-    });
-  });
+      expect(user).toBeUndefined()
+    })
+  })
 
   describe('getStatus', () => {
     it('should return cached status', () => {
-      service.addUser(createTestUser({ id: 'user-1', status: 'online' }));
-      service.updateStatus('user-1', 'away');
+      service.addUser(createTestUser({ id: 'user-1', status: 'online' }))
+      service.updateStatus('user-1', 'away')
 
-      expect(service.getStatus('user-1')).toBe('away');
-    });
+      expect(service.getStatus('user-1')).toBe('away')
+    })
 
     it('should return user status if not cached', () => {
-      service.addUser(createTestUser({ id: 'user-1', status: 'busy' }));
+      service.addUser(createTestUser({ id: 'user-1', status: 'busy' }))
 
-      expect(service.getStatus('user-1')).toBe('busy');
-    });
+      expect(service.getStatus('user-1')).toBe('busy')
+    })
 
     it('should return offline for unknown user', () => {
-      expect(service.getStatus('unknown')).toBe('offline');
-    });
-  });
+      expect(service.getStatus('unknown')).toBe('offline')
+    })
+  })
 
   describe('isContact', () => {
     it('should return true for contact', () => {
-      service.setContacts('user-1', ['user-2']);
+      service.setContacts('user-1', ['user-2'])
 
-      expect(service.isContact('user-1', 'user-2')).toBe(true);
-    });
+      expect(service.isContact('user-1', 'user-2')).toBe(true)
+    })
 
     it('should return false for non-contact', () => {
-      service.setContacts('user-1', ['user-2']);
+      service.setContacts('user-1', ['user-2'])
 
-      expect(service.isContact('user-1', 'user-3')).toBe(false);
-    });
+      expect(service.isContact('user-1', 'user-3')).toBe(false)
+    })
 
     it('should return false for unknown user', () => {
-      expect(service.isContact('unknown', 'user-1')).toBe(false);
-    });
-  });
+      expect(service.isContact('unknown', 'user-1')).toBe(false)
+    })
+  })
 
   describe('getUserCount', () => {
     it('should return total user count', () => {
-      service.setUsers([
-        createTestUser({ id: 'user-1' }),
-        createTestUser({ id: 'user-2' }),
-      ]);
+      service.setUsers([createTestUser({ id: 'user-1' }), createTestUser({ id: 'user-2' })])
 
-      expect(service.getUserCount()).toBe(2);
-    });
+      expect(service.getUserCount()).toBe(2)
+    })
 
     it('should return count by status', () => {
       service.setUsers([
         createTestUser({ id: 'user-1', status: 'online' }),
         createTestUser({ id: 'user-2', status: 'online' }),
         createTestUser({ id: 'user-3', status: 'offline' }),
-      ]);
+      ])
 
-      expect(service.getUserCount('online')).toBe(2);
-      expect(service.getUserCount('offline')).toBe(1);
-    });
-  });
+      expect(service.getUserCount('online')).toBe(2)
+      expect(service.getUserCount('offline')).toBe(1)
+    })
+  })
 
   describe('clear', () => {
     it('should clear all data', () => {
-      service.setUsers([createTestUser({ id: 'user-1' })]);
-      service.setContacts('user-1', ['user-2']);
-      service.updateStatus('user-1', 'away');
+      service.setUsers([createTestUser({ id: 'user-1' })])
+      service.setContacts('user-1', ['user-2'])
+      service.updateStatus('user-1', 'away')
 
-      service.clear();
+      service.clear()
 
-      expect(service.getUserCount()).toBe(0);
-      expect(service.isContact('user-1', 'user-2')).toBe(false);
-    });
-  });
-});
+      expect(service.getUserCount()).toBe(0)
+      expect(service.isContact('user-1', 'user-2')).toBe(false)
+    })
+  })
+})
 
 // ============================================================================
 // Factory Functions Tests
@@ -640,17 +634,17 @@ describe('UserDiscoveryService', () => {
 describe('Factory Functions', () => {
   describe('getUserDiscoveryService', () => {
     it('should return singleton instance', () => {
-      const service1 = getUserDiscoveryService();
-      const service2 = getUserDiscoveryService();
-      expect(service1).toBe(service2);
-    });
-  });
+      const service1 = getUserDiscoveryService()
+      const service2 = getUserDiscoveryService()
+      expect(service1).toBe(service2)
+    })
+  })
 
   describe('createUserDiscoveryService', () => {
     it('should create new instance each time', () => {
-      const service1 = createUserDiscoveryService();
-      const service2 = createUserDiscoveryService();
-      expect(service1).not.toBe(service2);
-    });
-  });
-});
+      const service1 = createUserDiscoveryService()
+      const service2 = createUserDiscoveryService()
+      expect(service1).not.toBe(service2)
+    })
+  })
+})

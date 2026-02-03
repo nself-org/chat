@@ -45,9 +45,7 @@ test.describe('Bot Management Page', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -71,12 +69,8 @@ test.describe('Bot Management Page', () => {
 
   test('should display installed bots list', async ({ page }) => {
     // Look for installed bots tab/section
-    const installedTab = page.locator(
-      '[role="tab"]:has-text("Installed"), text=/Installed/i'
-    )
-    const botTable = page.locator(
-      '[data-testid="bot-list"], table, [data-testid="installed-bots"]'
-    )
+    const installedTab = page.locator('[role="tab"]:has-text("Installed"), text=/Installed/i')
+    const botTable = page.locator('[data-testid="bot-list"], table, [data-testid="installed-bots"]')
 
     if (await installedTab.isVisible()) {
       await installedTab.click()
@@ -89,9 +83,7 @@ test.describe('Bot Management Page', () => {
 
   test('should display bot items in list', async ({ page }) => {
     // Look for bot items
-    const botItems = page.locator(
-      '[data-testid="bot-item"], tbody tr, [data-bot-id], .bot-card'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], tbody tr, [data-bot-id], .bot-card')
 
     const count = await botItems.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -119,9 +111,7 @@ test.describe('Bot Management Page', () => {
 
   test('should have refresh button', async ({ page }) => {
     // Look for refresh button
-    const refreshButton = page.locator(
-      'button:has-text("Refresh"), button[aria-label*="refresh"]'
-    )
+    const refreshButton = page.locator('button:has-text("Refresh"), button[aria-label*="refresh"]')
 
     const isVisible = await refreshButton.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -147,9 +137,7 @@ test.describe('Bot Management Page', () => {
 
   test('should display available bots tab', async ({ page }) => {
     // Look for available bots tab
-    const availableTab = page.locator(
-      '[role="tab"]:has-text("Available"), text=/Available/i'
-    )
+    const availableTab = page.locator('[role="tab"]:has-text("Available"), text=/Available/i')
 
     if (await availableTab.isVisible()) {
       await availableTab.click()
@@ -174,9 +162,7 @@ test.describe('Bot Creation & Installation', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -193,18 +179,14 @@ test.describe('Bot Creation & Installation', () => {
 
   test('should open add bot modal', async ({ page }) => {
     // Click add bot button
-    const addButton = page.locator(
-      'button:has-text("Add Bot"), button[data-testid="add-bot"]'
-    )
+    const addButton = page.locator('button:has-text("Add Bot"), button[data-testid="add-bot"]')
 
     if (await addButton.isVisible()) {
       await addButton.click()
       await page.waitForTimeout(300)
 
       // Modal should open
-      const modal = page.locator(
-        '[role="dialog"], .modal, [data-testid="add-bot-modal"]'
-      )
+      const modal = page.locator('[role="dialog"], .modal, [data-testid="add-bot-modal"]')
 
       const isOpen = await modal.isVisible().catch(() => false)
       expect(typeof isOpen).toBe('boolean')
@@ -256,9 +238,7 @@ test.describe('Bot Creation & Installation', () => {
       await page.waitForTimeout(300)
 
       // Look for permission checkboxes
-      const permissions = page.locator(
-        'input[type="checkbox"], label:has(input[type="checkbox"])'
-      )
+      const permissions = page.locator('input[type="checkbox"], label:has(input[type="checkbox"])')
 
       const count = await permissions.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -317,9 +297,7 @@ test.describe('Bot Creation & Installation', () => {
       await page.waitForTimeout(300)
 
       // Look for bot cards
-      const botCards = page.locator(
-        '[data-testid="bot-card"], .bot-card, [data-bot-id]'
-      )
+      const botCards = page.locator('[data-testid="bot-card"], .bot-card, [data-bot-id]')
 
       const count = await botCards.count()
       expect(count).toBeGreaterThanOrEqual(0)
@@ -362,18 +340,14 @@ test.describe('Bot Creation & Installation', () => {
       await page.waitForTimeout(300)
 
       // Look for search input
-      const searchInput = page.locator(
-        'input[placeholder*="search"], [data-testid="bot-search"]'
-      )
+      const searchInput = page.locator('input[placeholder*="search"], [data-testid="bot-search"]')
 
       if (await searchInput.isVisible()) {
         await searchInput.fill('reminder')
         await page.waitForTimeout(500)
 
         // Results should update
-        const botCards = page.locator(
-          '[data-testid="bot-card"], .bot-card'
-        )
+        const botCards = page.locator('[data-testid="bot-card"], .bot-card')
         expect(await botCards.count()).toBeGreaterThanOrEqual(0)
       }
     }
@@ -392,9 +366,7 @@ test.describe('Bot Commands', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.member.email)
@@ -489,9 +461,7 @@ test.describe('Bot Commands', () => {
       await page.waitForTimeout(1000)
 
       // Help message should appear
-      const helpMessage = page.locator(
-        'text=/help|commands|usage/i'
-      )
+      const helpMessage = page.locator('text=/help|commands|usage/i')
 
       const exists = await helpMessage.count()
       expect(exists).toBeGreaterThanOrEqual(0)
@@ -511,9 +481,7 @@ test.describe('Bot Commands', () => {
       await page.waitForTimeout(1000)
 
       // Status message should appear
-      const statusMessage = page.locator(
-        'text=/status|online|ready/i'
-      )
+      const statusMessage = page.locator('text=/status|online|ready/i')
 
       const exists = await statusMessage.count()
       expect(exists).toBeGreaterThanOrEqual(0)
@@ -533,9 +501,7 @@ test.describe('Bot Commands', () => {
       await page.waitForTimeout(1000)
 
       // Should show error or invalid command message
-      const errorMessage = page.locator(
-        'text=/unknown|not found|invalid|unrecognized/i'
-      )
+      const errorMessage = page.locator('text=/unknown|not found|invalid|unrecognized/i')
 
       // Either error shows or message is treated as text
       expect(true).toBe(true)
@@ -555,9 +521,7 @@ test.describe('Bot Responses', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.member.email)
@@ -574,14 +538,10 @@ test.describe('Bot Responses', () => {
 
   test('should display bot message', async ({ page }) => {
     // Look for messages
-    const messages = page.locator(
-      '[data-testid="message-item"], .message-item, article'
-    )
+    const messages = page.locator('[data-testid="message-item"], .message-item, article')
 
     // Look for bot indicator
-    const botMessages = page.locator(
-      '[data-testid="bot-message"], .bot-message, [data-bot-id]'
-    )
+    const botMessages = page.locator('[data-testid="bot-message"], .bot-message, [data-bot-id]')
 
     const count = await botMessages.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -589,9 +549,7 @@ test.describe('Bot Responses', () => {
 
   test('should display bot avatar/badge', async ({ page }) => {
     // Look for bot messages with avatar
-    const botAvatars = page.locator(
-      '[data-testid="bot-avatar"], .bot-avatar, img[alt*="bot"]'
-    )
+    const botAvatars = page.locator('[data-testid="bot-avatar"], .bot-avatar, img[alt*="bot"]')
 
     const count = await botAvatars.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -599,9 +557,7 @@ test.describe('Bot Responses', () => {
 
   test('should support bot message formatting', async ({ page }) => {
     // Look for formatted message (bold, italic, code, etc)
-    const formattedText = page.locator(
-      'strong, em, code, pre, [class*="font-"]'
-    )
+    const formattedText = page.locator('strong, em, code, pre, [class*="font-"]')
 
     const exists = await formattedText.count()
     expect(exists).toBeGreaterThanOrEqual(0)
@@ -609,9 +565,7 @@ test.describe('Bot Responses', () => {
 
   test('should support bot embeds and cards', async ({ page }) => {
     // Look for embed containers
-    const embeds = page.locator(
-      '[data-testid="embed"], .embed, [data-testid="card"], .card'
-    )
+    const embeds = page.locator('[data-testid="embed"], .embed, [data-testid="card"], .card')
 
     const count = await embeds.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -619,9 +573,7 @@ test.describe('Bot Responses', () => {
 
   test('should display bot action buttons', async ({ page }) => {
     // Look for bot message buttons/actions
-    const botActions = page.locator(
-      'button[data-action], .bot-action, [data-testid="bot-button"]'
-    )
+    const botActions = page.locator('button[data-action], .bot-action, [data-testid="bot-button"]')
 
     const count = await botActions.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -658,9 +610,7 @@ test.describe('Bot Configuration', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -677,9 +627,7 @@ test.describe('Bot Configuration', () => {
 
   test('should open bot settings modal', async ({ page }) => {
     // Look for installed bots
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       // Hover to show actions
@@ -704,9 +652,7 @@ test.describe('Bot Configuration', () => {
   })
 
   test('should display bot settings form', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       await botItems.first().hover()
@@ -729,9 +675,7 @@ test.describe('Bot Configuration', () => {
   })
 
   test('should update bot settings', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       await botItems.first().hover()
@@ -745,9 +689,7 @@ test.describe('Bot Configuration', () => {
         await page.waitForTimeout(300)
 
         // Look for save button
-        const saveButton = page.locator(
-          'button:has-text("Save"), button[type="submit"]'
-        )
+        const saveButton = page.locator('button:has-text("Save"), button[type="submit"]')
 
         if (await saveButton.isVisible()) {
           // Check if it's disabled or enabled
@@ -759,9 +701,7 @@ test.describe('Bot Configuration', () => {
   })
 
   test('should manage bot permissions', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       await botItems.first().hover()
@@ -798,9 +738,7 @@ test.describe('Bot Enable/Disable', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -826,15 +764,13 @@ test.describe('Bot Enable/Disable', () => {
   })
 
   test('should toggle bot enabled state', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       // Look for toggle switch
-      const toggleSwitch = botItems.first().locator(
-        'input[type="checkbox"], button[role="switch"], [role="switch"]'
-      )
+      const toggleSwitch = botItems
+        .first()
+        .locator('input[type="checkbox"], button[role="switch"], [role="switch"]')
 
       if (await toggleSwitch.isVisible()) {
         // Get initial state
@@ -851,15 +787,11 @@ test.describe('Bot Enable/Disable', () => {
   })
 
   test('should show disabled bot indication', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       // Look for disabled indicator
-      const disabledIndicator = botItems.first().locator(
-        '[class*="disabled"], [class*="opacity-"]'
-      )
+      const disabledIndicator = botItems.first().locator('[class*="disabled"], [class*="opacity-"]')
 
       const exists = await disabledIndicator.count()
       expect(exists).toBeGreaterThanOrEqual(0)
@@ -879,9 +811,7 @@ test.describe('Bot Deletion', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -897,9 +827,7 @@ test.describe('Bot Deletion', () => {
   })
 
   test('should display delete bot button', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       await botItems.first().hover()
@@ -915,9 +843,7 @@ test.describe('Bot Deletion', () => {
   })
 
   test('should show delete confirmation dialog', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       await botItems.first().hover()
@@ -931,9 +857,7 @@ test.describe('Bot Deletion', () => {
         await page.waitForTimeout(300)
 
         // Confirmation dialog should appear
-        const confirmDialog = page.locator(
-          '[role="alertdialog"], [role="dialog"], .confirm-dialog'
-        )
+        const confirmDialog = page.locator('[role="alertdialog"], [role="dialog"], .confirm-dialog')
 
         const isOpen = await confirmDialog.isVisible()
         expect(isOpen).toBe(true)
@@ -942,16 +866,12 @@ test.describe('Bot Deletion', () => {
   })
 
   test('should cancel bot deletion', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       await botItems.first().hover()
 
-      const deleteButton = page.locator(
-        'button[aria-label*="delete"], button:has-text("Delete")'
-      )
+      const deleteButton = page.locator('button[aria-label*="delete"], button:has-text("Delete")')
 
       if (await deleteButton.isVisible()) {
         await deleteButton.click()
@@ -974,18 +894,14 @@ test.describe('Bot Deletion', () => {
   })
 
   test('should confirm bot deletion', async ({ page }) => {
-    const botItems = page.locator(
-      '[data-testid="bot-item"], .bot-card, tbody tr'
-    )
+    const botItems = page.locator('[data-testid="bot-item"], .bot-card, tbody tr')
 
     if ((await botItems.count()) > 0) {
       const initialCount = await botItems.count()
 
       await botItems.first().hover()
 
-      const deleteButton = page.locator(
-        'button[aria-label*="delete"], button:has-text("Delete")'
-      )
+      const deleteButton = page.locator('button[aria-label*="delete"], button:has-text("Delete")')
 
       if (await deleteButton.isVisible()) {
         await deleteButton.click()
@@ -1021,9 +937,7 @@ test.describe('Bot Webhooks', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -1041,7 +955,10 @@ test.describe('Bot Webhooks', () => {
   test('should display webhooks page', async ({ page }) => {
     // Look for page heading
     const heading = page.locator('h1, h2')
-    const isVisible = await heading.first().isVisible().catch(() => false)
+    const isVisible = await heading
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 
@@ -1067,9 +984,7 @@ test.describe('Bot Webhooks', () => {
 
   test('should display webhook URL', async ({ page }) => {
     // Look for webhook URLs
-    const webhookUrls = page.locator(
-      '[data-testid="webhook-url"], code, [class*="url"]'
-    )
+    const webhookUrls = page.locator('[data-testid="webhook-url"], code, [class*="url"]')
 
     const count = await webhookUrls.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -1077,9 +992,7 @@ test.describe('Bot Webhooks', () => {
 
   test('should allow copying webhook URL', async ({ page }) => {
     // Look for copy button
-    const copyButton = page.locator(
-      'button[aria-label*="copy"], button:has(svg[class*="copy"])'
-    )
+    const copyButton = page.locator('button[aria-label*="copy"], button:has(svg[class*="copy"])')
 
     if (await copyButton.first().isVisible()) {
       await copyButton.first().click()
@@ -1092,9 +1005,7 @@ test.describe('Bot Webhooks', () => {
 
   test('should display webhook event types', async ({ page }) => {
     // Look for event type selectors
-    const eventSelectors = page.locator(
-      'input[type="checkbox"], label:has(input[type="checkbox"])'
-    )
+    const eventSelectors = page.locator('input[type="checkbox"], label:has(input[type="checkbox"])')
 
     const count = await eventSelectors.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -1128,9 +1039,7 @@ test.describe('Bot Permissions', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.owner.email)
@@ -1185,9 +1094,7 @@ test.describe('Bot Permissions', () => {
 
   test('should restrict admin-only permissions', async ({ page }) => {
     // Look for disabled permission controls
-    const disabledPermissions = page.locator(
-      'input[type="checkbox"][disabled]'
-    )
+    const disabledPermissions = page.locator('input[type="checkbox"][disabled]')
 
     const count = await disabledPermissions.count()
     expect(count).toBeGreaterThanOrEqual(0)
@@ -1219,9 +1126,7 @@ test.describe('Bot Error Handling', () => {
 
     const emailInput = page.locator('input[type="email"], input[name="email"]')
     if (await emailInput.isVisible()) {
-      const passwordInput = page.locator(
-        'input[type="password"], input[name="password"]'
-      )
+      const passwordInput = page.locator('input[type="password"], input[name="password"]')
       const submitButton = page.locator('button[type="submit"]')
 
       await emailInput.fill(TEST_USERS.member.email)
@@ -1278,7 +1183,10 @@ test.describe('Bot Error Handling', () => {
       '[data-testid="message-input"], [contenteditable="true"], textarea'
     )
 
-    const isVisible = await messageInput.first().isVisible().catch(() => false)
+    const isVisible = await messageInput
+      .first()
+      .isVisible()
+      .catch(() => false)
     expect(typeof isVisible).toBe('boolean')
   })
 })

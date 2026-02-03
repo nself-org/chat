@@ -2,12 +2,7 @@
 
 import { useCallback, useEffect, useMemo } from 'react'
 import { useQuery, useMutation, useSubscription } from '@apollo/client'
-import {
-  useBotStore,
-  mockBots,
-  mockCategories,
-  type BotCategory,
-} from './bot-store'
+import { useBotStore, mockBots, mockCategories, type BotCategory } from './bot-store'
 import {
   GET_INSTALLED_BOTS,
   GET_MARKETPLACE_BOTS,
@@ -58,11 +53,7 @@ export interface UseBotsResult {
   error: string | null
 
   // Actions
-  installBot: (
-    botId: string,
-    channelIds: string[],
-    permissions: BotPermission[]
-  ) => Promise<void>
+  installBot: (botId: string, channelIds: string[], permissions: BotPermission[]) => Promise<void>
   removeBot: (botId: string, channelId?: string) => Promise<void>
   updateBotSettings: (
     botId: string,
@@ -130,9 +121,7 @@ export function useBots(options: UseBotsOptions = {}): UseBotsResult {
     variables: { workspaceId, channelId },
     skip: !autoFetch || useMockData || !botsEnabled,
     onCompleted: (data) => {
-      const installations = data?.nchat_bot_installations?.map(
-        transformInstallation
-      )
+      const installations = data?.nchat_bot_installations?.map(transformInstallation)
       if (installations) {
         store.setInstalledBots(installations)
       }
@@ -152,9 +141,7 @@ export function useBots(options: UseBotsOptions = {}): UseBotsResult {
   } = useQuery(GET_MARKETPLACE_BOTS, {
     variables: {
       category: store.marketplaceFilters.category,
-      search: store.marketplaceFilters.search
-        ? `%${store.marketplaceFilters.search}%`
-        : undefined,
+      search: store.marketplaceFilters.search ? `%${store.marketplaceFilters.search}%` : undefined,
       featured: store.marketplaceFilters.featured,
       limit: 20,
       offset: 0,
@@ -173,94 +160,76 @@ export function useBots(options: UseBotsOptions = {}): UseBotsResult {
   })
 
   // Fetch featured bots
-  const { data: featuredData, loading: featuredLoading } = useQuery(
-    GET_FEATURED_BOTS,
-    {
-      variables: { limit: 6 },
-      skip: !autoFetch || useMockData || !botsEnabled,
-      onCompleted: (data) => {
-        const bots = data?.nchat_bots?.map(transformBot)
-        if (bots) {
-          store.setFeaturedBots(bots)
-        }
-      },
-    }
-  )
+  const { data: featuredData, loading: featuredLoading } = useQuery(GET_FEATURED_BOTS, {
+    variables: { limit: 6 },
+    skip: !autoFetch || useMockData || !botsEnabled,
+    onCompleted: (data) => {
+      const bots = data?.nchat_bots?.map(transformBot)
+      if (bots) {
+        store.setFeaturedBots(bots)
+      }
+    },
+  })
 
   // Fetch categories
-  const { data: categoriesData, loading: categoriesLoading } = useQuery(
-    GET_BOT_CATEGORIES,
-    {
-      skip: !autoFetch || useMockData || !botsEnabled,
-      onCompleted: (data) => {
-        const categories = data?.nchat_bot_categories?.map(transformCategory)
-        if (categories) {
-          store.setCategories(categories)
-        }
-      },
-    }
-  )
+  const { data: categoriesData, loading: categoriesLoading } = useQuery(GET_BOT_CATEGORIES, {
+    skip: !autoFetch || useMockData || !botsEnabled,
+    onCompleted: (data) => {
+      const categories = data?.nchat_bot_categories?.map(transformCategory)
+      if (categories) {
+        store.setCategories(categories)
+      }
+    },
+  })
 
   // ============================================================================
   // MUTATIONS
   // ============================================================================
 
-  const [installBotMutation, { loading: installLoading }] = useMutation(
-    INSTALL_BOT,
-    {
-      onCompleted: (data) => {
-        const installations = data?.insert_nchat_bot_installations?.returning
-        if (installations) {
-          for (const installation of installations) {
-            store.addInstalledBot(transformInstallation(installation))
-          }
+  const [installBotMutation, { loading: installLoading }] = useMutation(INSTALL_BOT, {
+    onCompleted: (data) => {
+      const installations = data?.insert_nchat_bot_installations?.returning
+      if (installations) {
+        for (const installation of installations) {
+          store.addInstalledBot(transformInstallation(installation))
         }
-      },
-    }
-  )
+      }
+    },
+  })
 
-  const [removeBotMutation, { loading: removeLoading }] = useMutation(
-    REMOVE_BOT,
-    {
-      onCompleted: (data, options) => {
-        const variables = options?.variables
-        if (variables) {
-          store.removeInstalledBot(variables.botId, variables.channelId)
-        }
-      },
-    }
-  )
+  const [removeBotMutation, { loading: removeLoading }] = useMutation(REMOVE_BOT, {
+    onCompleted: (data, options) => {
+      const variables = options?.variables
+      if (variables) {
+        store.removeInstalledBot(variables.botId, variables.channelId)
+      }
+    },
+  })
 
-  const [updateSettingsMutation, { loading: updateLoading }] = useMutation(
-    UPDATE_BOT_SETTINGS,
-    {
-      onCompleted: (data) => {
-        const installations = data?.update_nchat_bot_installations?.returning
-        if (installations?.[0]) {
-          const installation = transformInstallation(installations[0])
-          store.updateInstalledBotPermissions(
-            installation.botId,
-            installation.channelId,
-            installation.permissions
-          )
-        }
-      },
-    }
-  )
+  const [updateSettingsMutation, { loading: updateLoading }] = useMutation(UPDATE_BOT_SETTINGS, {
+    onCompleted: (data) => {
+      const installations = data?.update_nchat_bot_installations?.returning
+      if (installations?.[0]) {
+        const installation = transformInstallation(installations[0])
+        store.updateInstalledBotPermissions(
+          installation.botId,
+          installation.channelId,
+          installation.permissions
+        )
+      }
+    },
+  })
 
-  const [addByTokenMutation, { loading: addByTokenLoading }] = useMutation(
-    ADD_BOT_BY_TOKEN,
-    {
-      onCompleted: (data) => {
-        const result = data?.add_bot_by_token
-        if (result?.success && result.installations) {
-          for (const installation of result.installations) {
-            store.addInstalledBot(transformInstallation(installation))
-          }
+  const [addByTokenMutation, { loading: addByTokenLoading }] = useMutation(ADD_BOT_BY_TOKEN, {
+    onCompleted: (data) => {
+      const result = data?.add_bot_by_token
+      if (result?.success && result.installations) {
+        for (const installation of result.installations) {
+          store.addInstalledBot(transformInstallation(installation))
         }
-      },
-    }
-  )
+      }
+    },
+  })
 
   // ============================================================================
   // SUBSCRIPTIONS
@@ -270,14 +239,10 @@ export function useBots(options: UseBotsOptions = {}): UseBotsResult {
     variables: { channelId },
     skip: !channelId || useMockData || !botsEnabled,
     onData: ({ data }) => {
-      const installations = data?.data?.nchat_bot_installations?.map(
-        transformInstallation
-      )
+      const installations = data?.data?.nchat_bot_installations?.map(transformInstallation)
       if (installations && channelId) {
         // Update only installations for this channel
-        const currentBots = store.installedBots.filter(
-          (i) => i.channelId !== channelId
-        )
+        const currentBots = store.installedBots.filter((i) => i.channelId !== channelId)
         store.setInstalledBots([...currentBots, ...installations])
       }
     },
@@ -324,11 +289,7 @@ export function useBots(options: UseBotsOptions = {}): UseBotsResult {
   // ============================================================================
 
   const installBot = useCallback(
-    async (
-      botId: string,
-      channelIds: string[],
-      permissions: BotPermission[]
-    ) => {
+    async (botId: string, channelIds: string[], permissions: BotPermission[]) => {
       if (useMockData) {
         // Mock installation
         const bot = mockBots.find((b) => b.id === botId)
@@ -449,9 +410,7 @@ export function useBots(options: UseBotsOptions = {}): UseBotsResult {
       if (!useMockData) {
         refetchMarketplace?.()
       } else {
-        const filtered = category
-          ? mockBots.filter((b) => b.category === category)
-          : mockBots
+        const filtered = category ? mockBots.filter((b) => b.category === category) : mockBots
         store.setMarketplaceBots(filtered, filtered.length)
       }
     },
@@ -533,12 +492,7 @@ export function useBots(options: UseBotsOptions = {}): UseBotsResult {
       installedError?.message ||
       marketplaceError?.message ||
       null,
-    [
-      store.installedBotsError,
-      store.marketplaceError,
-      installedError,
-      marketplaceError,
-    ]
+    [store.installedBotsError, store.marketplaceError, installedError, marketplaceError]
   )
 
   // ============================================================================
@@ -613,10 +567,8 @@ function transformBot(data: Record<string, unknown>): Bot {
     owner: data.owner
       ? {
           id: (data.owner as Record<string, unknown>).id as string,
-          displayName: (data.owner as Record<string, unknown>)
-            .display_name as string,
-          avatarUrl: (data.owner as Record<string, unknown>)
-            .avatar_url as string | undefined,
+          displayName: (data.owner as Record<string, unknown>).display_name as string,
+          avatarUrl: (data.owner as Record<string, unknown>).avatar_url as string | undefined,
         }
       : undefined,
     installCount: data.install_count as number | undefined,
@@ -631,9 +583,7 @@ function transformBot(data: Record<string, unknown>): Bot {
   }
 }
 
-function transformInstallation(
-  data: Record<string, unknown>
-): BotInstallation {
+function transformInstallation(data: Record<string, unknown>): BotInstallation {
   return {
     id: data.id as string,
     botId: data.bot_id as string,
@@ -660,10 +610,8 @@ function transformCategory(data: Record<string, unknown>): BotCategory {
     description: data.description as string | undefined,
     icon: data.icon as string | undefined,
     botsCount:
-      (
-        (data.bots_count as Record<string, unknown>)
-          ?.aggregate as Record<string, unknown>
-      )?.count as number ?? 0,
+      (((data.bots_count as Record<string, unknown>)?.aggregate as Record<string, unknown>)
+        ?.count as number) ?? 0,
   }
 }
 
@@ -682,9 +630,7 @@ export function useBot(botId: string | null) {
     variables: { id: botId },
     skip: !botId || useMockData,
     onCompleted: (data) => {
-      const bot = data?.nchat_bots_by_pk
-        ? transformBot(data.nchat_bots_by_pk)
-        : null
+      const bot = data?.nchat_bots_by_pk ? transformBot(data.nchat_bots_by_pk) : null
       store.setSelectedBot(bot)
     },
   })
@@ -784,10 +730,8 @@ export function useBotReviews(botId: string | null) {
             user: rev.user
               ? {
                   id: (rev.user as Record<string, unknown>).id as string,
-                  displayName: (rev.user as Record<string, unknown>)
-                    .display_name as string,
-                  avatarUrl: (rev.user as Record<string, unknown>)
-                    .avatar_url as string | undefined,
+                  displayName: (rev.user as Record<string, unknown>).display_name as string,
+                  avatarUrl: (rev.user as Record<string, unknown>).avatar_url as string | undefined,
                 }
               : undefined,
           })

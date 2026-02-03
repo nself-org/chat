@@ -12,7 +12,7 @@
  */
 
 // Types
-export * from './notification-types';
+export * from './notification-types'
 
 // Notification Manager
 export {
@@ -22,7 +22,7 @@ export {
   type NotificationPayload,
   type DeliveryResult,
   type NotificationManagerOptions,
-} from './notification-manager';
+} from './notification-manager'
 
 // Preferences
 export {
@@ -53,7 +53,7 @@ export {
   getEffectiveSettings,
   hasAnyNotificationEnabled,
   getPreferencesSummary,
-} from './notification-preferences';
+} from './notification-preferences'
 
 // Quiet Hours
 export {
@@ -75,7 +75,7 @@ export {
   getAllDaysOfWeek,
   getWeekdays,
   getWeekendDays,
-} from './quiet-hours';
+} from './quiet-hours'
 
 // Keyword Matching
 export {
@@ -95,7 +95,7 @@ export {
   getKeywordStats,
   type MatchOptions,
   type HighlightedResult,
-} from './keyword-matcher';
+} from './keyword-matcher'
 
 // Sounds
 export {
@@ -121,7 +121,7 @@ export {
   getVolumeIcon,
   playTestSound,
   playTestBeep,
-} from './notification-sounds';
+} from './notification-sounds'
 
 // Channels
 export {
@@ -145,7 +145,7 @@ export {
   type DeliveryPayload,
   type EmailPayload,
   type InAppNotificationHandler,
-} from './notification-channels';
+} from './notification-channels'
 
 // Scheduler
 export {
@@ -164,4 +164,4 @@ export {
   type ScheduledNotification,
   type DigestConfig,
   type DigestContent,
-} from './notification-scheduler';
+} from './notification-scheduler'

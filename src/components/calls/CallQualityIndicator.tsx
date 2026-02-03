@@ -10,20 +10,8 @@
 import { useMemo } from 'react'
 import { QualityLevel, QualityMetrics } from '@/lib/calls'
 import { cn } from '@/lib/utils'
-import {
-  Signal,
-  SignalHigh,
-  SignalLow,
-  SignalMedium,
-  SignalZero,
-  Info,
-} from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Signal, SignalHigh, SignalLow, SignalMedium, SignalZero, Info } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Badge } from '@/components/ui/badge'
 
 // =============================================================================
@@ -59,16 +47,12 @@ export function CallQualityIndicator({
         <Tooltip>
           <TooltipTrigger asChild>
             <div className={cn('inline-flex items-center', className)}>
-              <config.icon
-                className={cn('h-4 w-4', config.iconClassName)}
-              />
+              <config.icon className={cn('h-4 w-4', config.iconClassName)} />
             </div>
           </TooltipTrigger>
           <TooltipContent>
             <div className="space-y-1">
-              <p className="font-medium">
-                {config.label} Quality
-              </p>
+              <p className="font-medium">{config.label} Quality</p>
               {metrics && (
                 <div className="text-xs text-muted-foreground">
                   <p>Packet Loss: {metrics.audioPacketLoss.toFixed(1)}%</p>
@@ -86,13 +70,9 @@ export function CallQualityIndicator({
   if (variant === 'simple') {
     return (
       <div className={cn('inline-flex items-center gap-2', className)}>
-        <config.icon
-          className={cn('h-4 w-4', config.iconClassName)}
-        />
+        <config.icon className={cn('h-4 w-4', config.iconClassName)} />
         {showLabel && (
-          <span className={cn('text-sm font-medium', config.textClassName)}>
-            {config.label}
-          </span>
+          <span className={cn('text-sm font-medium', config.textClassName)}>{config.label}</span>
         )}
       </div>
     )
@@ -104,16 +84,12 @@ export function CallQualityIndicator({
       {/* Quality header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <config.icon
-            className={cn('h-5 w-5', config.iconClassName)}
-          />
+          <config.icon className={cn('h-5 w-5', config.iconClassName)} />
           <span className={cn('text-sm font-medium', config.textClassName)}>
             {config.label} Quality
           </span>
         </div>
-        <Badge variant={config.badgeVariant}>
-          {quality}
-        </Badge>
+        <Badge variant={config.badgeVariant}>{quality}</Badge>
       </div>
 
       {/* Metrics */}
@@ -149,7 +125,7 @@ export function CallQualityIndicator({
 
           {/* Video metrics (if available) */}
           {metrics.videoReceiveBitrate > 0 && (
-            <div className="grid grid-cols-2 gap-2 text-xs border-t pt-2">
+            <div className="grid grid-cols-2 gap-2 border-t pt-2 text-xs">
               <MetricItem
                 label="Video Bitrate"
                 value={`${metrics.videoReceiveBitrate.toFixed(0)} kbps`}
@@ -273,12 +249,7 @@ export interface QualityAlertProps {
   onDismiss?: () => void
 }
 
-export function QualityAlert({
-  quality,
-  message,
-  suggestions,
-  onDismiss,
-}: QualityAlertProps) {
+export function QualityAlert({ quality, message, suggestions, onDismiss }: QualityAlertProps) {
   const config = getQualityConfig(quality)
 
   if (quality === 'excellent' || quality === 'good') {
@@ -288,20 +259,18 @@ export function QualityAlert({
   return (
     <div
       className={cn(
-        'rounded-lg border p-3 space-y-2',
+        'space-y-2 rounded-lg border p-3',
         quality === 'critical' && 'border-red-600 bg-red-50 dark:bg-red-950',
         quality === 'poor' && 'border-orange-600 bg-orange-50 dark:bg-orange-950',
         quality === 'fair' && 'border-yellow-600 bg-yellow-50 dark:bg-yellow-950'
       )}
     >
       <div className="flex items-start gap-2">
-        <Info className={cn('h-4 w-4 mt-0.5', config.iconClassName)} />
+        <Info className={cn('mt-0.5 h-4 w-4', config.iconClassName)} />
         <div className="flex-1 space-y-1">
-          <p className="text-sm font-medium">
-            {message || `Call quality is ${quality}`}
-          </p>
+          <p className="text-sm font-medium">{message || `Call quality is ${quality}`}</p>
           {suggestions && suggestions.length > 0 && (
-            <ul className="text-xs text-muted-foreground space-y-1">
+            <ul className="space-y-1 text-xs text-muted-foreground">
               {suggestions.map((suggestion, i) => (
                 <li key={i}>• {suggestion}</li>
               ))}

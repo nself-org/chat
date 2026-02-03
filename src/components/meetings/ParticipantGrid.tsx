@@ -1,34 +1,26 @@
-'use client';
+'use client'
 
 /**
  * ParticipantGrid - Video/audio participant grid layout
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
-import { RemoteParticipant, LocalUserState } from '@/lib/meetings/meeting-types';
-import {
-  Mic,
-  MicOff,
-  Video,
-  VideoOff,
-  Hand,
-  Crown,
-  MonitorUp,
-} from 'lucide-react';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { RemoteParticipant, LocalUserState } from '@/lib/meetings/meeting-types'
+import { Mic, MicOff, Video, VideoOff, Hand, Crown, MonitorUp } from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface ParticipantGridProps {
-  participants: RemoteParticipant[];
-  localUser: LocalUserState | undefined;
-  activeSpeakerId: string | null;
-  screenShareUserId: string | null;
-  maxVisible?: number;
+  participants: RemoteParticipant[]
+  localUser: LocalUserState | undefined
+  activeSpeakerId: string | null
+  screenShareUserId: string | null
+  maxVisible?: number
 }
 
 // ============================================================================
@@ -43,19 +35,19 @@ export function ParticipantGrid({
   maxVisible = 16,
 }: ParticipantGridProps) {
   // Calculate grid layout based on participant count
-  const totalParticipants = participants.length + 1; // +1 for local user
-  const visibleCount = Math.min(totalParticipants, maxVisible);
-  const overflowCount = totalParticipants - maxVisible;
+  const totalParticipants = participants.length + 1 // +1 for local user
+  const visibleCount = Math.min(totalParticipants, maxVisible)
+  const overflowCount = totalParticipants - maxVisible
 
   const getGridClass = (count: number): string => {
-    if (count === 1) return 'grid-cols-1';
-    if (count === 2) return 'grid-cols-2';
-    if (count <= 4) return 'grid-cols-2';
-    if (count <= 6) return 'grid-cols-3';
-    if (count <= 9) return 'grid-cols-3';
-    if (count <= 12) return 'grid-cols-4';
-    return 'grid-cols-4';
-  };
+    if (count === 1) return 'grid-cols-1'
+    if (count === 2) return 'grid-cols-2'
+    if (count <= 4) return 'grid-cols-2'
+    if (count <= 6) return 'grid-cols-3'
+    if (count <= 9) return 'grid-cols-3'
+    if (count <= 12) return 'grid-cols-4'
+    return 'grid-cols-4'
+  }
 
   const getInitials = (name: string) => {
     return name
@@ -63,11 +55,11 @@ export function ParticipantGrid({
       .map((n) => n[0])
       .join('')
       .toUpperCase()
-      .slice(0, 2);
-  };
+      .slice(0, 2)
+  }
 
   return (
-    <div className={cn('grid gap-2 h-full', getGridClass(visibleCount))}>
+    <div className={cn('grid h-full gap-2', getGridClass(visibleCount))}>
       {/* Local User Tile */}
       <ParticipantTile
         displayName="You"
@@ -99,12 +91,12 @@ export function ParticipantGrid({
 
       {/* Overflow indicator */}
       {overflowCount > 0 && (
-        <div className="bg-gray-800 rounded-lg flex items-center justify-center">
+        <div className="flex items-center justify-center rounded-lg bg-gray-800">
           <span className="text-2xl font-semibold">+{overflowCount}</span>
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -112,16 +104,16 @@ export function ParticipantGrid({
 // ============================================================================
 
 interface ParticipantTileProps {
-  displayName: string;
-  avatarUrl: string | null;
-  isMuted: boolean;
-  isVideoOn: boolean;
-  isScreenSharing: boolean;
-  isHandRaised: boolean;
-  isSpeaking: boolean;
-  isHost?: boolean;
-  isLocal?: boolean;
-  connectionQuality?: 'excellent' | 'good' | 'fair' | 'poor' | 'unknown';
+  displayName: string
+  avatarUrl: string | null
+  isMuted: boolean
+  isVideoOn: boolean
+  isScreenSharing: boolean
+  isHandRaised: boolean
+  isSpeaking: boolean
+  isHost?: boolean
+  isLocal?: boolean
+  connectionQuality?: 'excellent' | 'good' | 'fair' | 'poor' | 'unknown'
 }
 
 function ParticipantTile({
@@ -142,39 +134,39 @@ function ParticipantTile({
       .map((n) => n[0])
       .join('')
       .toUpperCase()
-      .slice(0, 2);
-  };
+      .slice(0, 2)
+  }
 
   const getConnectionColor = () => {
     switch (connectionQuality) {
       case 'excellent':
-        return 'bg-green-500';
+        return 'bg-green-500'
       case 'good':
-        return 'bg-green-400';
+        return 'bg-green-400'
       case 'fair':
-        return 'bg-yellow-500';
+        return 'bg-yellow-500'
       case 'poor':
-        return 'bg-red-500';
+        return 'bg-red-500'
       default:
-        return 'bg-gray-500';
+        return 'bg-gray-500'
     }
-  };
+  }
 
   return (
     <div
       className={cn(
-        'relative bg-gray-800 rounded-lg overflow-hidden flex items-center justify-center transition-all',
+        'relative flex items-center justify-center overflow-hidden rounded-lg bg-gray-800 transition-all',
         isSpeaking && 'ring-2 ring-green-500 ring-offset-2 ring-offset-gray-900'
       )}
     >
       {/* Video or Avatar */}
       {isVideoOn ? (
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-primary/5">
+        <div className="from-primary/20 to-primary/5 absolute inset-0 bg-gradient-to-br">
           {/* Video element would go here */}
           <div className="absolute inset-0 flex items-center justify-center">
             <Avatar className="h-20 w-20 border-2 border-white/20">
               <AvatarImage src={avatarUrl || undefined} />
-              <AvatarFallback className="text-2xl bg-primary/50">
+              <AvatarFallback className="bg-primary/50 text-2xl">
                 {getInitials(displayName)}
               </AvatarFallback>
             </Avatar>
@@ -184,11 +176,11 @@ function ParticipantTile({
         <Avatar
           className={cn(
             'h-20 w-20 border-2 transition-all',
-            isSpeaking ? 'border-green-500 scale-105' : 'border-gray-600'
+            isSpeaking ? 'scale-105 border-green-500' : 'border-gray-600'
           )}
         >
           <AvatarImage src={avatarUrl || undefined} />
-          <AvatarFallback className="text-2xl bg-gray-700">
+          <AvatarFallback className="bg-gray-700 text-2xl">
             {getInitials(displayName)}
           </AvatarFallback>
         </Avatar>
@@ -196,20 +188,20 @@ function ParticipantTile({
 
       {/* Speaking indicator */}
       {isSpeaking && (
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute inset-0 border-4 border-green-500 rounded-lg animate-pulse opacity-50" />
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute inset-0 animate-pulse rounded-lg border-4 border-green-500 opacity-50" />
         </div>
       )}
 
       {/* Top-left badges */}
-      <div className="absolute top-2 left-2 flex items-center gap-1">
+      <div className="absolute left-2 top-2 flex items-center gap-1">
         {isHost && (
-          <div className="p-1 rounded bg-yellow-500/80 text-white">
+          <div className="rounded bg-yellow-500/80 p-1 text-white">
             <Crown className="h-3 w-3" />
           </div>
         )}
         {isScreenSharing && (
-          <div className="p-1 rounded bg-blue-500/80 text-white">
+          <div className="rounded bg-blue-500/80 p-1 text-white">
             <MonitorUp className="h-3 w-3" />
           </div>
         )}
@@ -217,15 +209,15 @@ function ParticipantTile({
 
       {/* Top-right: Hand raised */}
       {isHandRaised && (
-        <div className="absolute top-2 right-2 p-1.5 rounded-full bg-yellow-500 text-white animate-bounce">
+        <div className="absolute right-2 top-2 animate-bounce rounded-full bg-yellow-500 p-1.5 text-white">
           <Hand className="h-4 w-4" />
         </div>
       )}
 
       {/* Bottom bar */}
-      <div className="absolute bottom-0 left-0 right-0 px-2 py-1.5 bg-gradient-to-t from-black/80 to-transparent">
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent px-2 py-1.5">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium truncate">
+          <span className="truncate text-sm font-medium">
             {displayName}
             {isLocal && ' (You)'}
           </span>
@@ -238,7 +230,14 @@ function ParticipantTile({
                     key={bar}
                     className={cn(
                       'w-0.5 rounded-full',
-                      bar <= (connectionQuality === 'excellent' ? 4 : connectionQuality === 'good' ? 3 : connectionQuality === 'fair' ? 2 : 1)
+                      bar <=
+                        (connectionQuality === 'excellent'
+                          ? 4
+                          : connectionQuality === 'good'
+                            ? 3
+                            : connectionQuality === 'fair'
+                              ? 2
+                              : 1)
                         ? getConnectionColor()
                         : 'bg-gray-600',
                       bar === 1 && 'h-1',
@@ -252,12 +251,7 @@ function ParticipantTile({
             )}
 
             {/* Audio indicator */}
-            <div
-              className={cn(
-                'p-0.5 rounded',
-                isMuted ? 'text-red-400' : 'text-white'
-              )}
-            >
+            <div className={cn('rounded p-0.5', isMuted ? 'text-red-400' : 'text-white')}>
               {isMuted ? (
                 <MicOff className="h-3.5 w-3.5" />
               ) : (
@@ -267,7 +261,7 @@ function ParticipantTile({
 
             {/* Video indicator */}
             {!isVideoOn && (
-              <div className="p-0.5 rounded text-red-400">
+              <div className="rounded p-0.5 text-red-400">
                 <VideoOff className="h-3.5 w-3.5" />
               </div>
             )}
@@ -275,5 +269,5 @@ function ParticipantTile({
         </div>
       </div>
     </div>
-  );
+  )
 }

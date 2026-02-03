@@ -14,15 +14,8 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import {
-  useBookmarks,
-  useBookmarkFilters,
-  useBookmarkPanel,
-} from '@/lib/bookmarks/use-bookmarks'
-import {
-  useBookmarkStore,
-  selectUniqueChannels,
-} from '@/lib/bookmarks/bookmark-store'
+import { useBookmarks, useBookmarkFilters, useBookmarkPanel } from '@/lib/bookmarks/use-bookmarks'
+import { useBookmarkStore, selectUniqueChannels } from '@/lib/bookmarks/bookmark-store'
 import { BookmarkItem } from './bookmark-item'
 import { BookmarkFolders } from './bookmark-folders'
 import { AddToFolderModal } from './add-to-folder-modal'
@@ -175,21 +168,21 @@ function FunnelIcon({ className }: { className?: string }) {
 
 function EmptyState({ hasFilters }: { hasFilters: boolean }) {
   return (
-    <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <BookmarkIcon className="h-12 w-12 text-muted-foreground/50 mb-4" />
+    <div className="flex flex-col items-center justify-center px-4 py-12 text-center">
+      <BookmarkIcon className="text-muted-foreground/50 mb-4 h-12 w-12" />
       {hasFilters ? (
         <>
-          <h3 className="text-lg font-medium mb-2">No matching saved items</h3>
+          <h3 className="mb-2 text-lg font-medium">No matching saved items</h3>
           <p className="text-sm text-muted-foreground">
             Try adjusting your filters or search query to find what you are looking for.
           </p>
         </>
       ) : (
         <>
-          <h3 className="text-lg font-medium mb-2">No saved items yet</h3>
-          <p className="text-sm text-muted-foreground max-w-sm">
-            Save messages by clicking the bookmark icon on any message. Saved items will
-            appear here for quick access.
+          <h3 className="mb-2 text-lg font-medium">No saved items yet</h3>
+          <p className="max-w-sm text-sm text-muted-foreground">
+            Save messages by clicking the bookmark icon on any message. Saved items will appear here
+            for quick access.
           </p>
         </>
       )}
@@ -209,9 +202,9 @@ function LoadingState() {
           <div className="flex items-start gap-3">
             <div className="h-10 w-10 rounded-full bg-muted" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 w-1/3 bg-muted rounded" />
-              <div className="h-3 w-full bg-muted rounded" />
-              <div className="h-3 w-2/3 bg-muted rounded" />
+              <div className="h-4 w-1/3 rounded bg-muted" />
+              <div className="h-3 w-full rounded bg-muted" />
+              <div className="h-3 w-2/3 rounded bg-muted" />
             </div>
           </div>
         </div>
@@ -285,9 +278,9 @@ function BookmarksPanelContent({ onJumpToMessage }: BookmarksPanelContentProps) 
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex h-full flex-col">
       {/* Search and Filters */}
-      <div className="p-4 border-b space-y-3">
+      <div className="space-y-3 border-b p-4">
         {/* Search */}
         <div className="relative">
           <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
@@ -301,7 +294,7 @@ function BookmarksPanelContent({ onJumpToMessage }: BookmarksPanelContentProps) 
             <Button
               variant="ghost"
               size="icon"
-              className="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+              className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2"
               onClick={() => setSearchQuery('')}
             >
               <XMarkIcon className="h-4 w-4" />
@@ -320,7 +313,7 @@ function BookmarksPanelContent({ onJumpToMessage }: BookmarksPanelContentProps) 
             <FunnelIcon className="h-4 w-4" />
             Filters
             {hasFilters && (
-              <span className="ml-1 px-1.5 py-0.5 text-xs bg-primary text-primary-foreground rounded-full">
+              <span className="text-primary-foreground ml-1 rounded-full bg-primary px-1.5 py-0.5 text-xs">
                 {[searchQuery, selectedChannelFilter].filter(Boolean).length}
               </span>
             )}
@@ -330,7 +323,7 @@ function BookmarksPanelContent({ onJumpToMessage }: BookmarksPanelContentProps) 
           <div className="flex items-center gap-2">
             <ArrowUpDownIcon className="h-4 w-4 text-muted-foreground" />
             <Select value={getSortValue()} onValueChange={handleSortChange}>
-              <SelectTrigger className="w-[140px] h-8">
+              <SelectTrigger className="h-8 w-[140px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -345,14 +338,14 @@ function BookmarksPanelContent({ onJumpToMessage }: BookmarksPanelContentProps) 
 
         {/* Expanded Filters */}
         {showFilters && (
-          <div className="pt-2 space-y-3">
+          <div className="space-y-3 pt-2">
             <div className="flex items-center gap-2">
               <HashIcon className="h-4 w-4 text-muted-foreground" />
               <Select
                 value={selectedChannelFilter ?? 'all'}
                 onValueChange={(value) => setChannelFilter(value === 'all' ? null : value)}
               >
-                <SelectTrigger className="flex-1 h-8">
+                <SelectTrigger className="h-8 flex-1">
                   <SelectValue placeholder="All channels" />
                 </SelectTrigger>
                 <SelectContent>
@@ -384,7 +377,7 @@ function BookmarksPanelContent({ onJumpToMessage }: BookmarksPanelContentProps) 
       <div className="flex-1 overflow-hidden">
         <div className="flex h-full">
           {/* Folders Sidebar */}
-          <div className="w-48 border-r flex-shrink-0 p-2 overflow-y-auto">
+          <div className="w-48 flex-shrink-0 overflow-y-auto border-r p-2">
             <BookmarkFolders />
           </div>
 
@@ -396,7 +389,7 @@ function BookmarksPanelContent({ onJumpToMessage }: BookmarksPanelContentProps) 
               <EmptyState hasFilters={hasFilters} />
             ) : (
               <ScrollArea className="h-full">
-                <div className="p-4 space-y-3">
+                <div className="space-y-3 p-4">
                   {/* Results count */}
                   <p className="text-sm text-muted-foreground">
                     {filteredBookmarks.length} saved item{filteredBookmarks.length !== 1 ? 's' : ''}
@@ -503,7 +496,7 @@ export function BookmarksPanel({
     <DialogPrimitive.Root open={isPanelOpen} onOpenChange={handleOpenChange}>
       <SlideOverContent className={className}>
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b">
+        <div className="flex items-center justify-between border-b px-4 py-3">
           <div className="flex items-center gap-2">
             <BookmarkIcon filled className="h-5 w-5 text-yellow-500" />
             <h2 className="text-lg font-semibold">Saved Items</h2>
@@ -536,10 +529,10 @@ export interface InlineBookmarksPanelProps {
 
 export function InlineBookmarksPanel({ onJumpToMessage, className }: InlineBookmarksPanelProps) {
   return (
-    <div className={cn('flex flex-col h-full bg-background', className)}>
+    <div className={cn('flex h-full flex-col bg-background', className)}>
       {/* Header */}
-      <div className="px-4 py-3 border-b">
-        <h2 className="text-lg font-semibold flex items-center gap-2">
+      <div className="border-b px-4 py-3">
+        <h2 className="flex items-center gap-2 text-lg font-semibold">
           <BookmarkIcon filled className="h-5 w-5 text-yellow-500" />
           Saved Items
         </h2>

@@ -82,16 +82,10 @@ export function UserManagement({ initialUsers = [], initialTotal = 0 }: UserMana
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-3xl font-bold">Users</h1>
-          <p className="text-muted-foreground">
-            Manage user accounts, roles, and permissions
-          </p>
+          <p className="text-muted-foreground">Manage user accounts, roles, and permissions</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-          >
+          <Button variant="outline" size="sm" onClick={() => setShowFilters(!showFilters)}>
             <Filter className="mr-2 h-4 w-4" />
             Filters
           </Button>
@@ -149,17 +143,9 @@ export function UserManagement({ initialUsers = [], initialTotal = 0 }: UserMana
       </Tabs>
 
       {/* Modals */}
-      <InviteModal
-        open={inviteModalOpen}
-        onClose={closeInviteModal}
-        mode={inviteModalMode}
-      />
+      <InviteModal open={inviteModalOpen} onClose={closeInviteModal} mode={inviteModalMode} />
 
-      <BanUserModal
-        open={banModalOpen}
-        user={banModalUser}
-        onClose={closeBanModal}
-      />
+      <BanUserModal open={banModalOpen} user={banModalUser} onClose={closeBanModal} />
     </div>
   )
 }

@@ -14,7 +14,10 @@ import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { getInitials } from '@/stores/user-store'
-import type { MentionNotification as MentionNotificationType, MentionType } from '@/lib/mentions/mention-types'
+import type {
+  MentionNotification as MentionNotificationType,
+  MentionType,
+} from '@/lib/mentions/mention-types'
 
 // ============================================================================
 // Types
@@ -64,12 +67,7 @@ function getMentionTypeIcon(type: MentionType) {
     case 'here':
     case 'channel':
       return (
-        <svg
-          className="h-4 w-4 text-warning"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="text-warning h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -80,12 +78,7 @@ function getMentionTypeIcon(type: MentionType) {
       )
     default:
       return (
-        <svg
-          className="h-4 w-4 text-primary"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="h-4 w-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -146,7 +139,7 @@ export function MentionNotification({
   return (
     <div
       className={cn(
-        'group relative flex gap-3 p-3 rounded-lg transition-colors cursor-pointer',
+        'group relative flex cursor-pointer gap-3 rounded-lg p-3 transition-colors',
         !notification.isRead && 'bg-primary/5',
         'hover:bg-accent/50',
         className
@@ -163,16 +156,13 @@ export function MentionNotification({
     >
       {/* Unread indicator */}
       {!notification.isRead && (
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-primary rounded-r" />
+        <div className="absolute left-0 top-1/2 h-8 w-1 -translate-y-1/2 rounded-r bg-primary" />
       )}
 
       {/* Avatar */}
       <Avatar className="h-10 w-10 flex-shrink-0">
         {notification.senderAvatarUrl && (
-          <AvatarImage
-            src={notification.senderAvatarUrl}
-            alt={notification.senderDisplayName}
-          />
+          <AvatarImage src={notification.senderAvatarUrl} alt={notification.senderDisplayName} />
         )}
         <AvatarFallback className="text-sm">
           {getInitials(notification.senderDisplayName)}
@@ -180,25 +170,18 @@ export function MentionNotification({
       </Avatar>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {/* Header */}
         <div className="flex items-center gap-2 text-sm">
-          <span className="font-semibold truncate">
-            {notification.senderDisplayName}
-          </span>
+          <span className="truncate font-semibold">{notification.senderDisplayName}</span>
           <span className="text-muted-foreground">
             {getMentionTypeLabel(notification.mentionType)}
           </span>
         </div>
 
         {/* Channel */}
-        <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-          <svg
-            className="h-3 w-3"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        <div className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -212,37 +195,25 @@ export function MentionNotification({
         </div>
 
         {/* Message preview */}
-        <p className="mt-1.5 text-sm text-foreground/80 line-clamp-2">
+        <p className="text-foreground/80 mt-1.5 line-clamp-2 text-sm">
           {notification.messagePreview}
         </p>
       </div>
 
       {/* Mention type icon */}
-      <div className="flex-shrink-0 mt-1">
-        {getMentionTypeIcon(notification.mentionType)}
-      </div>
+      <div className="mt-1 flex-shrink-0">{getMentionTypeIcon(notification.mentionType)}</div>
 
       {/* Mark as read button (on hover) */}
       {showMarkAsRead && !notification.isRead && (
         <Button
           variant="ghost"
           size="icon"
-          className="absolute right-2 top-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute right-2 top-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
           onClick={handleMarkAsRead}
           title="Mark as read"
         >
-          <svg
-            className="h-4 w-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
+          <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           <span className="sr-only">Mark as read</span>
         </Button>
@@ -275,7 +246,7 @@ function CompactMentionNotification({
   return (
     <div
       className={cn(
-        'flex items-center gap-2 px-3 py-2 rounded-md transition-colors cursor-pointer',
+        'flex cursor-pointer items-center gap-2 rounded-md px-3 py-2 transition-colors',
         !notification.isRead && 'bg-primary/5',
         'hover:bg-accent/50',
         className
@@ -285,17 +256,12 @@ function CompactMentionNotification({
       tabIndex={0}
     >
       {/* Unread dot */}
-      {!notification.isRead && (
-        <span className="h-2 w-2 rounded-full bg-primary flex-shrink-0" />
-      )}
+      {!notification.isRead && <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary" />}
 
       {/* Avatar */}
       <Avatar className="h-6 w-6 flex-shrink-0">
         {notification.senderAvatarUrl && (
-          <AvatarImage
-            src={notification.senderAvatarUrl}
-            alt={notification.senderDisplayName}
-          />
+          <AvatarImage src={notification.senderAvatarUrl} alt={notification.senderDisplayName} />
         )}
         <AvatarFallback className="text-[10px]">
           {getInitials(notification.senderDisplayName)}
@@ -303,19 +269,15 @@ function CompactMentionNotification({
       </Avatar>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
-        <span className="text-sm truncate">
+      <div className="min-w-0 flex-1">
+        <span className="truncate text-sm">
           <span className="font-medium">{notification.senderDisplayName}</span>
-          <span className="text-muted-foreground">
-            {' '}in #{notification.channelName}
-          </span>
+          <span className="text-muted-foreground"> in #{notification.channelName}</span>
         </span>
       </div>
 
       {/* Time */}
-      <span className="text-xs text-muted-foreground flex-shrink-0">
-        {timeAgo}
-      </span>
+      <span className="flex-shrink-0 text-xs text-muted-foreground">{timeAgo}</span>
     </div>
   )
 }
@@ -336,19 +298,9 @@ export function MentionNotificationHeader({
   className,
 }: MentionNotificationHeaderProps) {
   return (
-    <div
-      className={cn(
-        'flex items-center justify-between px-4 py-3 border-b',
-        className
-      )}
-    >
+    <div className={cn('flex items-center justify-between border-b px-4 py-3', className)}>
       <div className="flex items-center gap-2">
-        <svg
-          className="h-5 w-5 text-primary"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -358,19 +310,14 @@ export function MentionNotificationHeader({
         </svg>
         <h3 className="font-semibold">Mentions</h3>
         {unreadCount > 0 && (
-          <span className="inline-flex items-center justify-center h-5 min-w-5 px-1.5 rounded-full bg-primary text-primary-foreground text-xs font-medium">
+          <span className="text-primary-foreground inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-primary px-1.5 text-xs font-medium">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </div>
 
       {onMarkAllAsRead && unreadCount > 0 && (
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onMarkAllAsRead}
-          className="text-xs"
-        >
+        <Button variant="ghost" size="sm" onClick={onMarkAllAsRead} className="text-xs">
           Mark all as read
         </Button>
       )}
@@ -393,12 +340,9 @@ export function MentionNotificationEmpty({
 }: MentionNotificationEmptyProps) {
   return (
     <div
-      className={cn(
-        'flex flex-col items-center justify-center py-12 px-4 text-center',
-        className
-      )}
+      className={cn('flex flex-col items-center justify-center px-4 py-12 text-center', className)}
     >
-      <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center mb-4">
+      <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-muted">
         <svg
           className="h-6 w-6 text-muted-foreground"
           fill="none"
@@ -416,7 +360,7 @@ export function MentionNotificationEmpty({
       <h4 className="font-medium text-foreground">
         {filter === 'unread' ? 'No unread mentions' : 'No mentions'}
       </h4>
-      <p className="text-sm text-muted-foreground mt-1">
+      <p className="mt-1 text-sm text-muted-foreground">
         {filter === 'unread'
           ? "You're all caught up!"
           : "When someone mentions you, you'll see it here."}

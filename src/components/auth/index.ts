@@ -5,13 +5,7 @@
  */
 
 // Auth Guard - requires authentication
-export {
-  AuthGuard,
-  GuestGuard,
-  useAuthGuard,
-  useGuestGuard,
-  withAuthGuard,
-} from './auth-guard'
+export { AuthGuard, GuestGuard, useAuthGuard, useGuestGuard, withAuthGuard } from './auth-guard'
 
 // Role Guard - requires specific roles
 export {

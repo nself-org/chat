@@ -31,6 +31,8 @@ import { useTeamStore } from '@/stores/team-store'
 import { teamManager } from '@/lib/team/team-manager'
 import type { PlanTier } from '@/lib/team/team-types'
 
+import { logger } from '@/lib/logger'
+
 interface TeamBillingProps {
   teamId: string
 }
@@ -51,7 +53,7 @@ export function TeamBilling({ teamId }: TeamBillingProps) {
         setBilling(billingData)
         setUsage(usageData)
       } catch (error) {
-        console.error('Failed to load billing data:', error)
+        logger.error('Failed to load billing data:', error)
       } finally {
         setLoadingBilling(false)
         setIsLoading(false)
@@ -227,8 +229,7 @@ export function TeamBilling({ teamId }: TeamBillingProps) {
                   <span className="text-sm font-medium">Storage</span>
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {teamManager.formatFileSize(usage.storageUsed)} /{' '}
-                  {usage.storageQuota} GB
+                  {teamManager.formatFileSize(usage.storageUsed)} / {usage.storageQuota} GB
                 </span>
               </div>
               <Progress value={storagePercentage} />
@@ -242,8 +243,7 @@ export function TeamBilling({ teamId }: TeamBillingProps) {
                   <span className="text-sm font-medium">API Calls This Month</span>
                 </div>
                 <span className="text-sm text-muted-foreground">
-                  {usage.apiCallsThisMonth.toLocaleString()} /{' '}
-                  {usage.apiRateLimit.toLocaleString()}
+                  {usage.apiCallsThisMonth.toLocaleString()} / {usage.apiRateLimit.toLocaleString()}
                 </span>
               </div>
               <Progress value={usage.apiPercentage} />
@@ -299,7 +299,14 @@ export function TeamBilling({ teamId }: TeamBillingProps) {
               <CardHeader>
                 <CardTitle className="capitalize">{plan}</CardTitle>
                 <div className="text-3xl font-bold">
-                  ${plan === 'free' ? 0 : plan === 'starter' ? 29 : plan === 'professional' ? 99 : 'Custom'}
+                  $
+                  {plan === 'free'
+                    ? 0
+                    : plan === 'starter'
+                      ? 29
+                      : plan === 'professional'
+                        ? 99
+                        : 'Custom'}
                   {plan !== 'enterprise' && (
                     <span className="text-sm font-normal text-muted-foreground">/month</span>
                   )}

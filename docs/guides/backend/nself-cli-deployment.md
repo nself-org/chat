@@ -97,19 +97,21 @@ Remote Server
 
 Minimum requirements:
 
-| Resource | Staging | Production |
-|----------|---------|------------|
-| CPU | 2 cores | 4+ cores |
-| RAM | 4GB | 8GB+ |
-| Storage | 20GB | 50GB+ |
-| OS | Ubuntu 20.04+, Debian 11+, or RHEL 8+ | Same |
+| Resource | Staging                               | Production |
+| -------- | ------------------------------------- | ---------- |
+| CPU      | 2 cores                               | 4+ cores   |
+| RAM      | 4GB                                   | 8GB+       |
+| Storage  | 20GB                                  | 50GB+      |
+| OS       | Ubuntu 20.04+, Debian 11+, or RHEL 8+ | Same       |
 
 **Required Software** (installed automatically by nself):
+
 - Docker Engine 20.10+
 - Docker Compose v2
 - Git
 
 **Network Requirements**:
+
 - SSH access (port 22 or custom)
 - Inbound ports: 80 (HTTP), 443 (HTTPS)
 - Outbound access for Docker image pulls
@@ -399,12 +401,15 @@ nself deploy prod --force
 ### Zero-Downtime Strategies
 
 **Option 1: Rolling Deployment** (Recommended)
+
 ```bash
 nself deploy prod --rolling
 ```
+
 Restarts services one at a time.
 
 **Option 2: Blue-Green Deployment**
+
 ```bash
 # Deploy to inactive environment
 nself deploy blue-green
@@ -417,6 +422,7 @@ nself deploy blue-green rollback
 ```
 
 **Option 3: Canary Deployment**
+
 ```bash
 # Deploy to 20% of traffic
 nself deploy canary --percentage 20
@@ -559,6 +565,7 @@ nself deploy prod
 ### Other Providers
 
 Supported providers include:
+
 - DigitalOcean, AWS, GCP, Azure
 - Linode, Vultr, Hetzner, OVH
 - Scaleway, UpCloud, and 16+ more
@@ -625,6 +632,7 @@ MONITORING_ENABLED=true
 ```
 
 This deploys the full observability stack:
+
 - Prometheus (metrics collection)
 - Grafana (dashboards)
 - Loki (log aggregation)
@@ -646,6 +654,7 @@ open https://grafana.nchat.example.com
 ### Pre-Built Dashboards
 
 Grafana includes dashboards for:
+
 - PostgreSQL performance
 - Hasura metrics
 - Nginx request rates
@@ -906,4 +915,4 @@ nself infra provider server create digitalocean
 
 ---
 
-*Version: 1.0.0 | Date: January 31, 2026 | nself CLI v0.9.6*
+_Version: 1.0.0 | Date: January 31, 2026 | nself CLI v0.9.6_

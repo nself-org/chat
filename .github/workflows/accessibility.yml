@@ -1,0 +1,240 @@
+name: Accessibility Tests
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  a11y-lint:
+    name: Accessibility Linting (jsx-a11y)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint with jsx-a11y rules
+        run: pnpm lint
+        continue-on-error: false
+
+      - name: Upload ESLint results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eslint-results
+          path: .next/
+
+  a11y-unit:
+    name: Accessibility Unit Tests (jest-axe)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run accessibility unit tests
+        run: pnpm test -- --testPathPattern="a11y|accessibility" --passWithNoTests
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: a11y-unit-test-results
+          path: |
+            coverage/
+            test-results/
+
+  a11y-e2e:
+    name: Accessibility E2E Tests (Playwright + Axe)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build application
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
+          NEXT_PUBLIC_ENV: 'test'
+
+      - name: Run Playwright accessibility tests
+        run: pnpm test:e2e -- --grep "@a11y"
+        env:
+          CI: true
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-a11y-report
+          path: playwright-report/
+          retention-days: 30
+
+  lighthouse:
+    name: Lighthouse Accessibility Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+        env:
+          NEXT_PUBLIC_USE_DEV_AUTH: 'true'
+          NEXT_PUBLIC_ENV: 'test'
+
+      - name: Start application
+        run: |
+          pnpm start &
+          sleep 10
+        env:
+          PORT: 3000
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v11
+        with:
+          urls: |
+            http://localhost:3000
+            http://localhost:3000/chat
+            http://localhost:3000/settings
+          configPath: '.lighthouserc.json'
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Upload Lighthouse results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/
+
+  i18n-validation:
+    name: Translation Coverage Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.15.4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate translation coverage
+        run: pnpm tsx scripts/validate-translations.ts
+        continue-on-error: true
+
+      - name: Generate translation report
+        if: always()
+        run: |
+          echo "## Translation Coverage Report" >> $GITHUB_STEP_SUMMARY
+          pnpm tsx scripts/validate-translations.ts 2>&1 | tail -n 50 >> $GITHUB_STEP_SUMMARY
+
+  accessibility-summary:
+    name: Accessibility Summary
+    runs-on: ubuntu-latest
+    needs: [a11y-lint, a11y-unit, a11y-e2e, lighthouse, i18n-validation]
+    if: always()
+
+    steps:
+      - name: Generate summary
+        run: |
+          echo "# Accessibility Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Test Suite | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|------------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| ESLint jsx-a11y | ${{ needs.a11y-lint.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| jest-axe Unit Tests | ${{ needs.a11y-unit.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Playwright + Axe E2E | ${{ needs.a11y-e2e.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Lighthouse Audit | ${{ needs.lighthouse.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| i18n Validation | ${{ needs.i18n-validation.result }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [[ "${{ needs.a11y-lint.result }}" == "success" && \
+                "${{ needs.a11y-unit.result }}" == "success" && \
+                "${{ needs.a11y-e2e.result }}" == "success" && \
+                "${{ needs.lighthouse.result }}" == "success" ]]; then
+            echo "## ✅ All accessibility tests passed!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "## ❌ Some accessibility tests failed" >> $GITHUB_STEP_SUMMARY
+            echo "Please review the individual test results above." >> $GITHUB_STEP_SUMMARY
+          fi

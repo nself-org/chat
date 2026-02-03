@@ -7,11 +7,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { immer } from 'zustand/middleware/immer'
-import type {
-  InviteType,
-  InviteInfo,
-  InviteValidationError,
-} from './invite-service'
+import type { InviteType, InviteInfo, InviteValidationError } from './invite-service'
 
 // ============================================================================
 // Types
@@ -317,9 +313,7 @@ export const useInviteStore = create<InviteStore>()(
           set(
             (state) => {
               // Remove if already exists
-              const index = state.recentInvites.findIndex(
-                (i) => i.code === invite.code
-              )
+              const index = state.recentInvites.findIndex((i) => i.code === invite.code)
               if (index >= 0) {
                 state.recentInvites.splice(index, 1)
               }
@@ -327,10 +321,7 @@ export const useInviteStore = create<InviteStore>()(
               state.recentInvites.unshift(invite)
               // Trim to max
               if (state.recentInvites.length > MAX_RECENT_INVITES) {
-                state.recentInvites = state.recentInvites.slice(
-                  0,
-                  MAX_RECENT_INVITES
-                )
+                state.recentInvites = state.recentInvites.slice(0, MAX_RECENT_INVITES)
               }
             },
             false,
@@ -340,9 +331,7 @@ export const useInviteStore = create<InviteStore>()(
         removeRecentInvite: (code) =>
           set(
             (state) => {
-              const index = state.recentInvites.findIndex(
-                (i) => i.code === code
-              )
+              const index = state.recentInvites.findIndex((i) => i.code === code)
               if (index >= 0) {
                 state.recentInvites.splice(index, 1)
               }
@@ -374,9 +363,7 @@ export const useInviteStore = create<InviteStore>()(
         addActiveInvite: (invite) =>
           set(
             (state) => {
-              const exists = state.activeInvites.some(
-                (i) => i.id === invite.id
-              )
+              const exists = state.activeInvites.some((i) => i.id === invite.id)
               if (!exists) {
                 state.activeInvites.unshift(invite)
               }
@@ -468,11 +455,9 @@ export const useInviteStore = create<InviteStore>()(
 // Selectors
 // ============================================================================
 
-export const selectIsCreateModalOpen = (state: InviteStore) =>
-  state.isCreateModalOpen
+export const selectIsCreateModalOpen = (state: InviteStore) => state.isCreateModalOpen
 
-export const selectCreateModalOptions = (state: InviteStore) =>
-  state.createModalOptions
+export const selectCreateModalOptions = (state: InviteStore) => state.createModalOptions
 
 export const selectIsCreating = (state: InviteStore) => state.isCreating
 
@@ -492,15 +477,11 @@ export const selectRecentInvites = (state: InviteStore) => state.recentInvites
 
 export const selectActiveInvites = (state: InviteStore) => state.activeInvites
 
-export const selectIsLoadingInvites = (state: InviteStore) =>
-  state.isLoadingInvites
+export const selectIsLoadingInvites = (state: InviteStore) => state.isLoadingInvites
 
 export const selectInvitesError = (state: InviteStore) => state.invitesError
 
-export const selectHasCreatedInvite = (state: InviteStore) =>
-  state.createdInvite !== null
+export const selectHasCreatedInvite = (state: InviteStore) => state.createdInvite !== null
 
 export const selectCanAccept = (state: InviteStore) =>
-  state.invitePreview?.invite !== null &&
-  !state.invitePreview?.error &&
-  !state.isAccepting
+  state.invitePreview?.invite !== null && !state.invitePreview?.error && !state.isAccepting

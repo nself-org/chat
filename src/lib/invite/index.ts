@@ -65,8 +65,4 @@ export {
 } from './invite-store'
 
 // Hook exports
-export {
-  useInvite,
-  type UseInviteOptions,
-  type UseInviteReturn,
-} from './use-invite'
+export { useInvite, type UseInviteOptions, type UseInviteReturn } from './use-invite'

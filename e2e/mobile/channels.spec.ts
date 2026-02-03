@@ -70,7 +70,10 @@ describe('Mobile Channels', () => {
 
       await MobileTestHelper.tapElement(by.id('create-channel-button'))
       await MobileTestHelper.typeText(by.id('channel-name-input'), channelName)
-      await MobileTestHelper.typeText(by.id('channel-description-input'), 'Test channel description')
+      await MobileTestHelper.typeText(
+        by.id('channel-description-input'),
+        'Test channel description'
+      )
       await MobileTestHelper.tapElement(by.id('submit-channel-button'))
 
       // Should navigate to new channel

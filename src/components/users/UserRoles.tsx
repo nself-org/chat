@@ -111,16 +111,7 @@ function getRoleDescription(role: UserRole): string {
 // ============================================================================
 
 const UserRoles = React.forwardRef<HTMLDivElement, UserRolesProps>(
-  (
-    {
-      className,
-      role,
-      showPermissions = true,
-      customPermissions,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, role, showPermissions = true, customPermissions, ...props }, ref) => {
     const roleColor = getRoleColor(role)
     const roleLabel = getRoleLabel(role)
     const permissions = customPermissions
@@ -130,30 +121,26 @@ const UserRoles = React.forwardRef<HTMLDivElement, UserRolesProps>(
     return (
       <div ref={ref} className={cn('space-y-4', className)} {...props}>
         {/* Role header */}
-        <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+        <div className="bg-muted/50 flex items-center gap-3 rounded-lg p-4">
           <div
-            className="flex items-center justify-center h-12 w-12 rounded-full"
+            className="flex h-12 w-12 items-center justify-center rounded-full"
             style={{ backgroundColor: `${roleColor}20`, color: roleColor }}
           >
             {getRoleIcon(role)}
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <h4 className="font-semibold text-lg">{roleLabel}</h4>
+              <h4 className="text-lg font-semibold">{roleLabel}</h4>
               <RoleBadge role={role} size="sm" showIcon={false} />
             </div>
-            <p className="text-sm text-muted-foreground mt-1">
-              {getRoleDescription(role)}
-            </p>
+            <p className="mt-1 text-sm text-muted-foreground">{getRoleDescription(role)}</p>
           </div>
         </div>
 
         {/* Permissions list */}
         {showPermissions && permissions.length > 0 && (
           <div className="space-y-2">
-            <h5 className="text-sm font-medium text-muted-foreground">
-              Permissions
-            </h5>
+            <h5 className="text-sm font-medium text-muted-foreground">Permissions</h5>
             <ul className="space-y-2">
               {permissions.map((item, index) => (
                 <li
@@ -165,7 +152,7 @@ const UserRoles = React.forwardRef<HTMLDivElement, UserRolesProps>(
                 >
                   <span
                     className={cn(
-                      'flex items-center justify-center h-5 w-5 rounded-full',
+                      'flex h-5 w-5 items-center justify-center rounded-full',
                       item.included
                         ? 'bg-green-500/10 text-green-500'
                         : 'bg-muted text-muted-foreground'
@@ -174,7 +161,7 @@ const UserRoles = React.forwardRef<HTMLDivElement, UserRolesProps>(
                     {item.included ? (
                       <Check className="h-3 w-3" />
                     ) : (
-                      <span className="h-0.5 w-2 bg-current rounded-full" />
+                      <span className="h-0.5 w-2 rounded-full bg-current" />
                     )}
                   </span>
                   <span>{item.permission}</span>

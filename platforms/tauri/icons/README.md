@@ -5,6 +5,7 @@ This folder should contain the following icon files for the Tauri desktop applic
 ## Required Icons
 
 ### App Icons
+
 - `icon.icns` - macOS app icon (512x512 or 1024x1024)
 - `icon.ico` - Windows app icon (256x256 multi-resolution)
 - `32x32.png` - Small icon (32x32)
@@ -12,6 +13,7 @@ This folder should contain the following icon files for the Tauri desktop applic
 - `128x128@2x.png` - Retina icon (256x256)
 
 ### Tray Icons
+
 - `tray.png` - Default tray icon (22x22 or 44x44 for retina)
 - `tray-unread.png` - Tray icon with unread indicator
 - `tray-muted.png` - Tray icon when muted
@@ -22,12 +24,14 @@ This folder should contain the following icon files for the Tauri desktop applic
 You can generate these icons from a master 1024x1024 PNG using tools like:
 
 1. **tauri-icon** (recommended):
+
    ```bash
    npm install -g @aspect-dev/tauri-icon
    tauri-icon --input ./master-icon.png
    ```
 
 2. **ImageMagick**:
+
    ```bash
    # Generate PNGs
    convert master-icon.png -resize 32x32 32x32.png

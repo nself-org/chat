@@ -9,6 +9,7 @@ This implementation provides a complete Two-Factor Authentication system using T
 ## Features
 
 ### ✅ Core Features
+
 - **TOTP-based authentication** using `speakeasy` library
 - **QR code generation** for easy setup
 - **Manual entry support** for devices that can't scan QR codes
@@ -18,6 +19,7 @@ This implementation provides a complete Two-Factor Authentication system using T
 - **Password verification** before critical operations
 
 ### ✅ User Experience
+
 - **Multi-step setup wizard** with progress indication
 - **Real-time code countdown** (30-second refresh)
 - **Backup code management** (download, copy, print)
@@ -25,6 +27,7 @@ This implementation provides a complete Two-Factor Authentication system using T
 - **Activity logging** for security auditing
 
 ### ✅ Security Features
+
 - **Bcrypt-hashed backup codes** (never stored in plain text)
 - **Device fingerprinting** using browser/system info
 - **Time-based tokens** with drift tolerance (±30 seconds)
@@ -68,6 +71,7 @@ src/
 ### Tables
 
 #### `nchat_user_2fa_settings`
+
 ```sql
 - id: uuid (PK)
 - user_id: uuid (FK, unique)
@@ -80,6 +84,7 @@ src/
 ```
 
 #### `nchat_user_backup_codes`
+
 ```sql
 - id: uuid (PK)
 - user_id: uuid (FK)
@@ -89,6 +94,7 @@ src/
 ```
 
 #### `nchat_user_trusted_devices`
+
 ```sql
 - id: uuid (PK)
 - user_id: uuid (FK)
@@ -101,6 +107,7 @@ src/
 ```
 
 #### `nchat_2fa_verification_attempts`
+
 ```sql
 - id: uuid (PK)
 - user_id: uuid (FK)
@@ -114,6 +121,7 @@ src/
 ## Setup Flow
 
 ### 1. Initialize Setup
+
 ```typescript
 const response = await fetch('/api/auth/2fa/setup', {
   method: 'POST',
@@ -131,11 +139,13 @@ const response = await fetch('/api/auth/2fa/setup', {
 ```
 
 ### 2. User Scans QR Code
+
 - Open authenticator app
 - Scan QR code OR manually enter secret
 - App generates 6-digit codes every 30 seconds
 
 ### 3. Verify Code
+
 ```typescript
 const response = await fetch('/api/auth/2fa/verify-setup', {
   method: 'POST',
@@ -151,6 +161,7 @@ const response = await fetch('/api/auth/2fa/verify-setup', {
 ```
 
 ### 4. Save Backup Codes
+
 - User downloads or copies backup codes
 - Each code can only be used once
 - Codes are bcrypt-hashed in database
@@ -158,6 +169,7 @@ const response = await fetch('/api/auth/2fa/verify-setup', {
 ## Login Flow
 
 ### 1. Check 2FA Status
+
 ```typescript
 const response = await fetch(`/api/auth/2fa/status?userId=${userId}`)
 
@@ -167,6 +179,7 @@ if (response.data.isEnabled) {
 ```
 
 ### 2. Check Device Trust
+
 ```typescript
 const deviceId = getCurrentDeviceFingerprint()
 const response = await fetch(
@@ -181,14 +194,15 @@ if (response.data.isTrusted) {
 ```
 
 ### 3. Verify Code
+
 ```typescript
 const response = await fetch('/api/auth/2fa/verify', {
   method: 'POST',
   body: JSON.stringify({
     userId,
-    code: "123456", // or backup code
-    rememberDevice: true // optional
-  })
+    code: '123456', // or backup code
+    rememberDevice: true, // optional
+  }),
 })
 ```
 
@@ -205,9 +219,7 @@ function MyComponent() {
 
   return (
     <>
-      <button onClick={() => setShowSetup(true)}>
-        Enable 2FA
-      </button>
+      <button onClick={() => setShowSetup(true)}>Enable 2FA</button>
 
       <TwoFactorSetup
         open={showSetup}
@@ -309,9 +321,11 @@ function MyComponent() {
 ## API Reference
 
 ### POST `/api/auth/2fa/setup`
+
 Initialize 2FA setup - generates secret and QR code
 
 **Request:**
+
 ```json
 {
   "userId": "uuid",
@@ -320,6 +334,7 @@ Initialize 2FA setup - generates secret and QR code
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -334,9 +349,11 @@ Initialize 2FA setup - generates secret and QR code
 ```
 
 ### POST `/api/auth/2fa/verify-setup`
+
 Verify code and enable 2FA
 
 **Request:**
+
 ```json
 {
   "userId": "uuid",
@@ -347,6 +364,7 @@ Verify code and enable 2FA
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -355,9 +373,11 @@ Verify code and enable 2FA
 ```
 
 ### POST `/api/auth/2fa/verify`
+
 Verify 2FA code during login
 
 **Request:**
+
 ```json
 {
   "userId": "uuid",
@@ -367,6 +387,7 @@ Verify 2FA code during login
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -376,9 +397,11 @@ Verify 2FA code during login
 ```
 
 ### GET `/api/auth/2fa/status?userId=uuid`
+
 Get 2FA status for user
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -397,9 +420,11 @@ Get 2FA status for user
 ```
 
 ### POST `/api/auth/2fa/disable`
+
 Disable 2FA (requires password)
 
 **Request:**
+
 ```json
 {
   "userId": "uuid",
@@ -408,9 +433,11 @@ Disable 2FA (requires password)
 ```
 
 ### POST `/api/auth/2fa/backup-codes`
+
 Regenerate backup codes (requires password)
 
 **Request:**
+
 ```json
 {
   "userId": "uuid",
@@ -419,6 +446,7 @@ Regenerate backup codes (requires password)
 ```
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -429,9 +457,11 @@ Regenerate backup codes (requires password)
 ```
 
 ### GET `/api/auth/2fa/trusted-devices?userId=uuid`
+
 List trusted devices
 
 **Response:**
+
 ```json
 {
   "success": true,
@@ -443,6 +473,7 @@ List trusted devices
 ```
 
 ### DELETE `/api/auth/2fa/trusted-devices?id=uuid`
+
 Remove trusted device
 
 ## Supported Authenticator Apps
@@ -458,6 +489,7 @@ Remove trusted device
 ## Security Considerations
 
 ### Strengths
+
 1. **Industry-standard TOTP** - Uses RFC 6238 time-based algorithm
 2. **Secure secret generation** - 32-byte entropy (256 bits)
 3. **Bcrypt-hashed backups** - Backup codes never stored in plain text
@@ -466,6 +498,7 @@ Remove trusted device
 6. **Audit logging** - All attempts logged with IP and user agent
 
 ### Best Practices
+
 1. **Always require password** for disable/regenerate operations
 2. **Enforce backup code limits** - Warn when < 3 codes remain
 3. **Expire trusted devices** - 30-day maximum trust period
@@ -474,6 +507,7 @@ Remove trusted device
 6. **Rate limiting** - Prevent brute force attacks
 
 ### Known Limitations
+
 1. **Device fingerprinting** is not foolproof (can be spoofed)
 2. **QR code** must be transmitted securely (HTTPS only)
 3. **Backup codes** - Users may lose them
@@ -482,6 +516,7 @@ Remove trusted device
 ## Testing
 
 ### Test User Accounts (Dev Mode)
+
 When `NEXT_PUBLIC_USE_DEV_AUTH=true`, you can test with:
 
 ```typescript
@@ -493,6 +528,7 @@ When `NEXT_PUBLIC_USE_DEV_AUTH=true`, you can test with:
 ### Manual Testing Checklist
 
 #### Setup Flow
+
 - [ ] Open setup wizard
 - [ ] Generate QR code and secret
 - [ ] Scan QR code with authenticator app
@@ -501,6 +537,7 @@ When `NEXT_PUBLIC_USE_DEV_AUTH=true`, you can test with:
 - [ ] Confirm setup completion
 
 #### Login Flow
+
 - [ ] Sign in with 2FA-enabled account
 - [ ] See 2FA verification prompt
 - [ ] Enter correct code (success)
@@ -509,6 +546,7 @@ When `NEXT_PUBLIC_USE_DEV_AUTH=true`, you can test with:
 - [ ] Remember device (skip 2FA on next login)
 
 #### Management
+
 - [ ] View 2FA status
 - [ ] View backup codes remaining
 - [ ] Regenerate backup codes
@@ -556,21 +594,25 @@ describe('2FA Flow', () => {
 ## Troubleshooting
 
 ### "Invalid verification code" errors
+
 - **Clock sync issue**: Ensure device time is accurate
 - **Wrong secret**: Verify QR code was scanned correctly
 - **Code expired**: TOTP codes change every 30 seconds
 
 ### Backup codes not working
+
 - **Already used**: Each code is single-use
 - **Wrong format**: Codes are 8 characters (XXXX-XXXX)
 - **Case sensitive**: Codes are uppercase
 
 ### Device not remembered
+
 - **Cookies disabled**: Trust requires cookies/localStorage
 - **Private browsing**: Trust data not persisted
 - **Different browser**: Each browser is a different device
 
 ### QR code not scanning
+
 - **Camera permissions**: Check app has camera access
 - **Display quality**: Ensure QR code is sharp and clear
 - **Use manual entry**: Fall back to typing secret key
@@ -616,6 +658,7 @@ This implementation is part of the nchat project. See main project LICENSE.
 ## Credits
 
 Built using:
+
 - `speakeasy` - TOTP implementation
 - `qrcode` - QR code generation
 - `bcryptjs` - Password/backup code hashing

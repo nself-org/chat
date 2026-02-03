@@ -7,12 +7,7 @@ import { format, isToday, isYesterday, isSameDay } from 'date-fns'
 import { Loader2 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { ThreadMessage, ThreadAttachment, ThreadReaction } from '@/hooks/use-thread'
 
@@ -101,7 +96,7 @@ function MessageItem({
   return (
     <div
       className={cn(
-        'group flex items-start gap-3 px-4 py-1 hover:bg-muted/50 transition-colors',
+        'hover:bg-muted/50 group flex items-start gap-3 px-4 py-1 transition-colors',
         isOwnMessage && 'bg-primary/5'
       )}
     >
@@ -121,33 +116,27 @@ function MessageItem({
       </div>
 
       {/* Content column */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         {/* Name and timestamp */}
         {showName && (
-          <div className="flex items-baseline gap-2 mb-0.5">
-            <span className="text-sm font-semibold truncate">
+          <div className="mb-0.5 flex items-baseline gap-2">
+            <span className="truncate text-sm font-semibold">
               {message.user.display_name || message.user.username}
             </span>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span className="text-xs text-muted-foreground cursor-default">
+                <span className="cursor-default text-xs text-muted-foreground">
                   {format(messageDate, 'h:mm a')}
                 </span>
               </TooltipTrigger>
-              <TooltipContent>
-                {format(messageDate, 'EEEE, MMMM d, yyyy h:mm:ss a')}
-              </TooltipContent>
+              <TooltipContent>{format(messageDate, 'EEEE, MMMM d, yyyy h:mm:ss a')}</TooltipContent>
             </Tooltip>
-            {message.is_edited && (
-              <span className="text-xs text-muted-foreground">(edited)</span>
-            )}
+            {message.is_edited && <span className="text-xs text-muted-foreground">(edited)</span>}
           </div>
         )}
 
         {/* Message content */}
-        <div className="text-sm whitespace-pre-wrap break-words">
-          {message.content}
-        </div>
+        <div className="whitespace-pre-wrap break-words text-sm">{message.content}</div>
 
         {/* Attachments */}
         {message.attachments && message.attachments.length > 0 && (
@@ -166,16 +155,14 @@ function MessageItem({
                 <TooltipTrigger asChild>
                   <button
                     type="button"
-                    className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-muted hover:bg-muted/80 rounded-full text-xs transition-colors"
+                    className="hover:bg-muted/80 inline-flex items-center gap-1 rounded-full bg-muted px-1.5 py-0.5 text-xs transition-colors"
                     onClick={() => onReaction?.(emoji)}
                   >
                     <span>{emoji}</span>
                     <span className="text-muted-foreground">{count}</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent>
-                  {users.join(', ')}
-                </TooltipContent>
+                <TooltipContent>{users.join(', ')}</TooltipContent>
               </Tooltip>
             ))}
           </div>
@@ -186,13 +173,11 @@ function MessageItem({
       {!showName && (
         <Tooltip>
           <TooltipTrigger asChild>
-            <span className="text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity cursor-default shrink-0">
+            <span className="shrink-0 cursor-default text-[10px] text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100">
               {format(messageDate, 'h:mm')}
             </span>
           </TooltipTrigger>
-          <TooltipContent>
-            {format(messageDate, 'EEEE, MMMM d, yyyy h:mm:ss a')}
-          </TooltipContent>
+          <TooltipContent>{format(messageDate, 'EEEE, MMMM d, yyyy h:mm:ss a')}</TooltipContent>
         </Tooltip>
       )}
     </div>
@@ -218,7 +203,7 @@ function AttachmentPreview({ attachment }: AttachmentPreviewProps) {
         href={attachment.file_url}
         target="_blank"
         rel="noopener noreferrer"
-        className="block max-w-xs rounded-lg overflow-hidden border hover:opacity-90 transition-opacity"
+        className="block max-w-xs overflow-hidden rounded-lg border transition-opacity hover:opacity-90"
       >
         <img
           src={attachment.thumbnail_url || attachment.file_url}
@@ -235,7 +220,7 @@ function AttachmentPreview({ attachment }: AttachmentPreviewProps) {
       <video
         src={attachment.file_url}
         controls
-        className="max-w-xs max-h-48 rounded-lg border"
+        className="max-h-48 max-w-xs rounded-lg border"
         preload="metadata"
       />
     )
@@ -243,12 +228,7 @@ function AttachmentPreview({ attachment }: AttachmentPreviewProps) {
 
   if (isAudio) {
     return (
-      <audio
-        src={attachment.file_url}
-        controls
-        className="w-full max-w-xs"
-        preload="metadata"
-      />
+      <audio src={attachment.file_url} controls className="w-full max-w-xs" preload="metadata" />
     )
   }
 
@@ -258,13 +238,11 @@ function AttachmentPreview({ attachment }: AttachmentPreviewProps) {
       href={attachment.file_url}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex items-center gap-2 px-3 py-2 bg-muted rounded-lg hover:bg-muted/80 transition-colors"
+      className="hover:bg-muted/80 flex items-center gap-2 rounded-lg bg-muted px-3 py-2 transition-colors"
     >
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium truncate">{attachment.file_name}</p>
-        <p className="text-xs text-muted-foreground">
-          {formatFileSize(attachment.file_size)}
-        </p>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium">{attachment.file_name}</p>
+        <p className="text-xs text-muted-foreground">{formatFileSize(attachment.file_size)}</p>
       </div>
     </a>
   )
@@ -296,9 +274,7 @@ function groupReactions(reactions: ThreadReaction[]): GroupedReaction[] {
       }
     }
     acc[reaction.emoji].count++
-    acc[reaction.emoji].users.push(
-      reaction.user.display_name || reaction.user.username
-    )
+    acc[reaction.emoji].users.push(reaction.user.display_name || reaction.user.username)
     return acc
   }, {})
 
@@ -316,11 +292,9 @@ interface DateSeparatorProps {
 function DateSeparator({ date }: DateSeparatorProps) {
   return (
     <div className="flex items-center gap-3 px-4 py-2">
-      <div className="flex-1 h-px bg-border" />
-      <span className="text-xs font-medium text-muted-foreground">
-        {formatDateSeparator(date)}
-      </span>
-      <div className="flex-1 h-px bg-border" />
+      <div className="h-px flex-1 bg-border" />
+      <span className="text-xs font-medium text-muted-foreground">{formatDateSeparator(date)}</span>
+      <div className="h-px flex-1 bg-border" />
     </div>
   )
 }
@@ -348,7 +322,10 @@ export function ThreadMessageList({
 
   // Group messages with date separators
   const items = useMemo(() => {
-    const result: Array<{ type: 'date'; date: Date } | { type: 'message'; message: ThreadMessage; showHeader: boolean }> = []
+    const result: Array<
+      | { type: 'date'; date: Date }
+      | { type: 'message'; message: ThreadMessage; showHeader: boolean }
+    > = []
     let lastDate: Date | null = null
     let lastUserId: string | null = null
     let lastMessageTime: Date | null = null
@@ -423,8 +400,8 @@ export function ThreadMessageList({
   // Empty state
   if (!loading && messages.length === 0) {
     return (
-      <div className={cn('flex-1 flex items-center justify-center p-8', className)}>
-        <p className="text-sm text-muted-foreground text-center">
+      <div className={cn('flex flex-1 items-center justify-center p-8', className)}>
+        <p className="text-center text-sm text-muted-foreground">
           No replies yet. Be the first to reply!
         </p>
       </div>
@@ -434,7 +411,7 @@ export function ThreadMessageList({
   // Loading state
   if (loading && messages.length === 0) {
     return (
-      <div className={cn('flex-1 flex items-center justify-center', className)}>
+      <div className={cn('flex flex-1 items-center justify-center', className)}>
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     )
@@ -492,9 +469,7 @@ export function ThreadMessageList({
                     showAvatar={item.showHeader}
                     showName={item.showHeader}
                     onReaction={
-                      onReaction
-                        ? (emoji) => onReaction(item.message.id, emoji)
-                        : undefined
+                      onReaction ? (emoji) => onReaction(item.message.id, emoji) : undefined
                     }
                   />
                 )}

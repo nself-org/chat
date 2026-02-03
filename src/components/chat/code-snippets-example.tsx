@@ -57,7 +57,7 @@ class ApiClient {
   }
 
   async getUser(id: string): Promise<User> {
-    const response = await fetch(\`\${this.baseUrl}/users/\${id}\`)
+    const response = await fetch(\\\`\${this.baseUrl}/users/\${id}\\\`)
     if (!response.ok) {
       throw new Error('Failed to fetch user')
     }
@@ -149,7 +149,7 @@ func main() {
 
   // Handle snippet share
   const handleShare = async (snippet: CodeSnippet) => {
-    console.log('Sharing snippet:', snippet)
+// REMOVED: console.log('Sharing snippet:', snippet)
     // In production, this would send to the backend
     alert(`Shared: ${snippet.title} (${snippet.language})`)
   }

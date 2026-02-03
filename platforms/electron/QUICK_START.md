@@ -33,6 +33,7 @@ npm run build:all
 ## 3. Start Development (30 seconds)
 
 **Option A: From project root**
+
 ```bash
 cd ../..
 pnpm dev &  # Start Next.js dev server
@@ -41,6 +42,7 @@ npm run start:dev  # Start Electron
 ```
 
 **Option B: Using the Next.js build**
+
 ```bash
 cd ../..
 pnpm build  # Build Next.js app
@@ -72,6 +74,7 @@ Done! Your installer is in `dist-electron/`
 ### 1. Making Changes
 
 **Main Process (Node.js code):**
+
 ```bash
 # Edit files in platforms/electron/main/
 # Then rebuild
@@ -82,6 +85,7 @@ npm run watch:main
 ```
 
 **Renderer (Next.js app):**
+
 ```bash
 # From project root
 pnpm dev  # Changes auto-reload
@@ -97,12 +101,14 @@ npm run start:dev
 ### 3. Debugging
 
 **Main Process:**
+
 ```bash
 # Add debugger; statement in code
 # Or use VS Code debugger
 ```
 
 **Renderer:**
+
 - Press `Cmd/Ctrl+Shift+I` for DevTools
 - Console shows errors and logs
 
@@ -181,6 +187,7 @@ export GH_TOKEN=github_token
 ## Troubleshooting
 
 ### "Cannot find module" error
+
 ```bash
 # Reinstall dependencies
 rm -rf node_modules
@@ -188,12 +195,14 @@ npm install
 ```
 
 ### TypeScript errors
+
 ```bash
 # Rebuild TypeScript
 npm run build:all
 ```
 
 ### White screen on startup
+
 ```bash
 # Check Next.js build exists
 ls -la ../../out
@@ -204,6 +213,7 @@ pnpm build
 ```
 
 ### Build fails
+
 ```bash
 # Clear cache
 rm -rf dist-electron

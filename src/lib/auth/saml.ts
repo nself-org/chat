@@ -7,10 +7,37 @@
  * - Just-in-Time (JIT) user provisioning
  * - Attribute mapping
  * - Multi-tenant support
+ *
+ * Database-backed storage using GraphQL/Hasura for production use.
  */
 
 import { captureError, addSentryBreadcrumb } from '@/lib/sentry-utils'
 import { logAuditEvent } from '@/lib/audit/audit-logger'
+import { apolloClient } from '@/lib/apollo-client'
+import { logger } from '@/lib/logger'
+import {
+  GET_SSO_CONNECTIONS,
+  GET_SSO_CONNECTION,
+  GET_SSO_CONNECTION_BY_DOMAIN,
+  INSERT_SSO_CONNECTION,
+  UPDATE_SSO_CONNECTION,
+  DELETE_SSO_CONNECTION,
+  GET_USER_BY_EMAIL_FOR_SSO,
+  GET_ROLE_BY_NAME,
+  INSERT_SSO_USER,
+  UPDATE_SSO_USER,
+  type SSOConnectionRow,
+  type GetSSOConnectionsResult,
+  type GetSSOConnectionResult,
+  type GetSSOConnectionByDomainResult,
+  type InsertSSOConnectionResult,
+  type UpdateSSOConnectionResult,
+  type DeleteSSOConnectionResult,
+  type GetUserByEmailResult,
+  type GetRoleByNameResult,
+  type InsertSSOUserResult,
+  type UpdateSSOUserResult,
+} from '@/graphql/sso-connections'
 import { UserRole } from './roles'
 
 // ============================================================================
@@ -159,6 +186,8 @@ export type SSOErrorCode =
   | 'ROLE_MAPPING_FAILED'
   | 'CONNECTION_DISABLED'
   | 'CONFIGURATION_ERROR'
+  | 'DATABASE_ERROR'
+  | 'USER_CREATION_FAILED'
 
 // ============================================================================
 // Provider Presets
@@ -168,7 +197,7 @@ export type SSOErrorCode =
  * Pre-configured SAML attribute mappings for common providers
  */
 export const SAML_PROVIDER_PRESETS: Record<SSOProvider, Partial<SAMLAttributeMapping>> = {
-  'okta': {
+  okta: {
     email: 'email',
     firstName: 'firstName',
     lastName: 'lastName',
@@ -191,7 +220,7 @@ export const SAML_PROVIDER_PRESETS: Record<SSOProvider, Partial<SAMLAttributeMap
     displayName: 'displayName',
     username: 'email',
   },
-  'onelogin': {
+  onelogin: {
     email: 'email',
     firstName: 'firstName',
     lastName: 'lastName',
@@ -199,7 +228,7 @@ export const SAML_PROVIDER_PRESETS: Record<SSOProvider, Partial<SAMLAttributeMap
     username: 'username',
     groups: 'memberOf',
   },
-  'auth0': {
+  auth0: {
     email: 'email',
     firstName: 'given_name',
     lastName: 'family_name',
@@ -214,7 +243,7 @@ export const SAML_PROVIDER_PRESETS: Record<SSOProvider, Partial<SAMLAttributeMap
     username: 'uid',
     groups: 'memberOf',
   },
-  'jumpcloud': {
+  jumpcloud: {
     email: 'email',
     firstName: 'firstname',
     lastName: 'lastname',
@@ -235,14 +264,50 @@ export const SAML_PROVIDER_PRESETS: Record<SSOProvider, Partial<SAMLAttributeMap
  * Provider display names
  */
 export const SSO_PROVIDER_NAMES: Record<SSOProvider, string> = {
-  'okta': 'Okta',
+  okta: 'Okta',
   'azure-ad': 'Microsoft Azure AD',
   'google-workspace': 'Google Workspace',
-  'onelogin': 'OneLogin',
-  'auth0': 'Auth0',
+  onelogin: 'OneLogin',
+  auth0: 'Auth0',
   'ping-identity': 'Ping Identity',
-  'jumpcloud': 'JumpCloud',
+  jumpcloud: 'JumpCloud',
   'generic-saml': 'Generic SAML 2.0',
+}
+
+// ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Convert database row to SSOConnection object
+ */
+function rowToConnection(row: SSOConnectionRow): SSOConnection {
+  return {
+    id: row.id,
+    name: row.name,
+    provider: row.provider as SSOProvider,
+    enabled: row.enabled,
+    config: row.config as unknown as SAMLConfiguration,
+    domains: row.domains,
+    createdAt: new Date(row.created_at),
+    updatedAt: new Date(row.updated_at),
+    metadata: row.metadata,
+  }
+}
+
+/**
+ * Convert SSOConnection object to database insert variables
+ */
+function connectionToVariables(connection: SSOConnection) {
+  return {
+    id: connection.id,
+    name: connection.name,
+    provider: connection.provider,
+    enabled: connection.enabled,
+    domains: connection.domains || [],
+    config: connection.config,
+    metadata: connection.metadata || {},
+  }
 }
 
 // ============================================================================
@@ -250,17 +315,26 @@ export const SSO_PROVIDER_NAMES: Record<SSOProvider, string> = {
 // ============================================================================
 
 export class SAMLService {
-  private connections: Map<string, SSOConnection> = new Map()
-
   /**
-   * Add an SSO connection
+   * Add an SSO connection to the database
    */
   async addConnection(connection: SSOConnection): Promise<void> {
     try {
       // Validate configuration
       this.validateConfiguration(connection.config)
 
-      this.connections.set(connection.id, connection)
+      const { data, errors } = await apolloClient.mutate<InsertSSOConnectionResult>({
+        mutation: INSERT_SSO_CONNECTION,
+        variables: connectionToVariables(connection),
+      })
+
+      if (errors && errors.length > 0) {
+        throw new Error(`GraphQL error: ${errors.map((e) => e.message).join(', ')}`)
+      }
+
+      if (!data?.insert_nchat_sso_connections_one) {
+        throw new Error('Failed to create SSO connection')
+      }
 
       await logAuditEvent({
         action: 'sso_connection_created',
@@ -288,32 +362,48 @@ export class SAMLService {
   }
 
   /**
-   * Update an SSO connection
+   * Update an SSO connection in the database
    */
   async updateConnection(id: string, updates: Partial<SSOConnection>): Promise<void> {
-    const connection = this.connections.get(id)
-    if (!connection) {
+    // First, fetch the existing connection to merge updates
+    const existing = await this.getConnection(id)
+    if (!existing) {
       throw new Error(`SSO connection not found: ${id}`)
     }
 
-    const updated = {
-      ...connection,
-      ...updates,
-      updatedAt: new Date(),
-    }
-
     if (updates.config) {
-      this.validateConfiguration(updated.config)
+      const mergedConfig = { ...existing.config, ...updates.config }
+      this.validateConfiguration(mergedConfig)
     }
 
-    this.connections.set(id, updated)
+    const variables: Record<string, unknown> = { id }
+
+    if (updates.name !== undefined) variables.name = updates.name
+    if (updates.provider !== undefined) variables.provider = updates.provider
+    if (updates.enabled !== undefined) variables.enabled = updates.enabled
+    if (updates.domains !== undefined) variables.domains = updates.domains
+    if (updates.config !== undefined) variables.config = { ...existing.config, ...updates.config }
+    if (updates.metadata !== undefined) variables.metadata = updates.metadata
+
+    const { data, errors } = await apolloClient.mutate<UpdateSSOConnectionResult>({
+      mutation: UPDATE_SSO_CONNECTION,
+      variables,
+    })
+
+    if (errors && errors.length > 0) {
+      throw new Error(`GraphQL error: ${errors.map((e) => e.message).join(', ')}`)
+    }
+
+    if (!data?.update_nchat_sso_connections_by_pk) {
+      throw new Error(`SSO connection not found: ${id}`)
+    }
 
     await logAuditEvent({
       action: 'sso_connection_updated',
       actor: { type: 'system', id: 'system' },
       category: 'admin',
       severity: 'info',
-      description: `SSO connection updated: ${connection.name}`,
+      description: `SSO connection updated: ${existing.name}`,
       metadata: {
         connectionId: id,
         changes: Object.keys(updates),
@@ -322,15 +412,26 @@ export class SAMLService {
   }
 
   /**
-   * Remove an SSO connection
+   * Remove an SSO connection from the database
    */
   async removeConnection(id: string): Promise<void> {
-    const connection = this.connections.get(id)
+    const connection = await this.getConnection(id)
     if (!connection) {
       throw new Error(`SSO connection not found: ${id}`)
     }
 
-    this.connections.delete(id)
+    const { data, errors } = await apolloClient.mutate<DeleteSSOConnectionResult>({
+      mutation: DELETE_SSO_CONNECTION,
+      variables: { id },
+    })
+
+    if (errors && errors.length > 0) {
+      throw new Error(`GraphQL error: ${errors.map((e) => e.message).join(', ')}`)
+    }
+
+    if (!data?.delete_nchat_sso_connections_by_pk) {
+      throw new Error(`Failed to delete SSO connection: ${id}`)
+    }
 
     await logAuditEvent({
       action: 'sso_connection_deleted',
@@ -346,29 +447,69 @@ export class SAMLService {
   }
 
   /**
-   * Get SSO connection by ID
+   * Get SSO connection by ID from the database
    */
-  getConnection(id: string): SSOConnection | undefined {
-    return this.connections.get(id)
+  async getConnection(id: string): Promise<SSOConnection | undefined> {
+    const { data, errors } = await apolloClient.query<GetSSOConnectionResult>({
+      query: GET_SSO_CONNECTION,
+      variables: { id },
+      fetchPolicy: 'network-only', // Always fetch fresh data for SSO operations
+    })
+
+    if (errors && errors.length > 0) {
+      throw new Error(`GraphQL error: ${errors.map((e) => e.message).join(', ')}`)
+    }
+
+    if (!data?.nchat_sso_connections_by_pk) {
+      return undefined
+    }
+
+    return rowToConnection(data.nchat_sso_connections_by_pk)
   }
 
   /**
-   * Get all SSO connections
+   * Get all SSO connections from the database
    */
-  getAllConnections(): SSOConnection[] {
-    return Array.from(this.connections.values())
+  async getAllConnections(): Promise<SSOConnection[]> {
+    const { data, errors } = await apolloClient.query<GetSSOConnectionsResult>({
+      query: GET_SSO_CONNECTIONS,
+      variables: { limit: 100, offset: 0, enabledOnly: false },
+      fetchPolicy: 'network-only',
+    })
+
+    if (errors && errors.length > 0) {
+      throw new Error(`GraphQL error: ${errors.map((e) => e.message).join(', ')}`)
+    }
+
+    if (!data?.nchat_sso_connections) {
+      return []
+    }
+
+    return data.nchat_sso_connections.map(rowToConnection)
   }
 
   /**
-   * Get SSO connection by email domain
+   * Get SSO connection by email domain from the database
    */
-  getConnectionByDomain(email: string): SSOConnection | undefined {
+  async getConnectionByDomain(email: string): Promise<SSOConnection | undefined> {
     const domain = email.split('@')[1]?.toLowerCase()
     if (!domain) return undefined
 
-    return Array.from(this.connections.values()).find(
-      (conn) => conn.enabled && conn.domains?.includes(domain)
-    )
+    const { data, errors } = await apolloClient.query<GetSSOConnectionByDomainResult>({
+      query: GET_SSO_CONNECTION_BY_DOMAIN,
+      variables: { domain },
+      fetchPolicy: 'network-only',
+    })
+
+    if (errors && errors.length > 0) {
+      throw new Error(`GraphQL error: ${errors.map((e) => e.message).join(', ')}`)
+    }
+
+    if (!data?.nchat_sso_connections || data.nchat_sso_connections.length === 0) {
+      return undefined
+    }
+
+    return rowToConnection(data.nchat_sso_connections[0])
   }
 
   /**
@@ -387,10 +528,14 @@ export class SAMLService {
     <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
                                  Location="${config.spAssertionConsumerUrl}"
                                  index="1" />
-    ${config.spSingleLogoutUrl ? `
+    ${
+      config.spSingleLogoutUrl
+        ? `
     <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
                            Location="${config.spSingleLogoutUrl}" />
-    ` : ''}
+    `
+        : ''
+    }
   </md:SPSSODescriptor>
 </md:EntityDescriptor>`
   }
@@ -399,7 +544,7 @@ export class SAMLService {
    * Initiate SAML SSO login
    */
   async initiateLogin(connectionId: string, relayState?: string): Promise<string> {
-    const connection = this.connections.get(connectionId)
+    const connection = await this.getConnection(connectionId)
     if (!connection) {
       throw new Error('SSO connection not found')
     }
@@ -431,12 +576,9 @@ export class SAMLService {
   /**
    * Process SAML assertion and create/update user
    */
-  async processAssertion(
-    connectionId: string,
-    samlResponse: string
-  ): Promise<SSOLoginResult> {
+  async processAssertion(connectionId: string, samlResponse: string): Promise<SSOLoginResult> {
     try {
-      const connection = this.connections.get(connectionId)
+      const connection = await this.getConnection(connectionId)
       if (!connection) {
         return {
           success: false,
@@ -545,20 +687,177 @@ export class SAMLService {
   }
 
   private buildAuthnRequest(config: SAMLConfiguration, relayState?: string): string {
-    // This is a simplified example - in production, use a proper SAML library
+    // Generate a unique request ID
     const requestId = `_${crypto.randomUUID()}`
     const issueInstant = new Date().toISOString()
 
-    return `${config.idpSsoUrl}?SAMLRequest=...&RelayState=${relayState ?? ''}`
+    // Build the SAML AuthnRequest XML
+    const authnRequest = `
+      <samlp:AuthnRequest
+        xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+        xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+        ID="${requestId}"
+        Version="2.0"
+        IssueInstant="${issueInstant}"
+        Destination="${config.idpSsoUrl}"
+        AssertionConsumerServiceURL="${config.spAssertionConsumerUrl}"
+        ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+        ${config.forceAuthn ? 'ForceAuthn="true"' : ''}>
+        <saml:Issuer>${config.spEntityId}</saml:Issuer>
+        <samlp:NameIDPolicy
+          Format="urn:oasis:names:tc:SAML:1.1:nameid-format:${config.nameIdFormat ?? 'email'}"
+          AllowCreate="true"/>
+      </samlp:AuthnRequest>
+    `.trim()
+
+    // Base64 encode and URL encode the request
+    const encodedRequest = Buffer.from(authnRequest).toString('base64')
+    const urlEncodedRequest = encodeURIComponent(encodedRequest)
+
+    // Build the redirect URL
+    let redirectUrl = `${config.idpSsoUrl}?SAMLRequest=${urlEncodedRequest}`
+    if (relayState) {
+      redirectUrl += `&RelayState=${encodeURIComponent(relayState)}`
+    }
+
+    return redirectUrl
   }
 
+  /**
+   * Parse SAML assertion from response
+   *
+   * IMPORTANT: This implementation requires the `samlify` npm package for production use.
+   *
+   * To install samlify:
+   *   pnpm add samlify
+   *
+   * samlify provides:
+   * - Full SAML 2.0 response parsing and validation
+   * - XML signature verification
+   * - Certificate validation
+   * - Assertion decryption support
+   *
+   * Alternative packages: passport-saml, node-saml
+   *
+   * Example integration with samlify:
+   * ```typescript
+   * import * as samlify from 'samlify'
+   *
+   * const idp = samlify.IdentityProvider({
+   *   metadata: idpMetadataXml,
+   *   // or provide manually:
+   *   entityID: config.idpEntityId,
+   *   signingCert: config.idpCertificate,
+   *   singleSignOnService: [{
+   *     Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+   *     Location: config.idpSsoUrl,
+   *   }],
+   * })
+   *
+   * const sp = samlify.ServiceProvider({
+   *   entityID: config.spEntityId,
+   *   assertionConsumerService: [{
+   *     Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+   *     Location: config.spAssertionConsumerUrl,
+   *   }],
+   * })
+   *
+   * const { extract } = await sp.parseLoginResponse(idp, 'post', { body: { SAMLResponse: samlResponse } })
+   * // extract contains: nameID, attributes, sessionIndex, etc.
+   * ```
+   */
   private async parseAssertion(
     samlResponse: string,
     config: SAMLConfiguration
   ): Promise<SAMLAssertion> {
-    // In production, use a proper SAML library like samlify or passport-saml
-    // This is a placeholder implementation
-    throw new Error('SAML parsing not implemented - use samlify or passport-saml')
+    // Check if samlify is available
+    let samlify: typeof import('samlify') | null = null
+    try {
+      samlify = await import('samlify')
+    } catch {
+      // samlify not installed
+    }
+
+    if (!samlify) {
+      // Provide detailed instructions when samlify is not available
+      throw new Error(
+        'SAML parsing requires the samlify package. ' +
+          'Please install it with: pnpm add samlify\n\n' +
+          'samlify provides secure SAML 2.0 response parsing with:\n' +
+          '- XML signature verification\n' +
+          '- Certificate validation\n' +
+          '- Assertion decryption\n\n' +
+          'See https://github.com/tngan/samlify for documentation.'
+      )
+    }
+
+    // Configure the Identity Provider from our config
+    const idp = samlify.IdentityProvider({
+      entityID: config.idpEntityId,
+      signingCert: config.idpCertificate,
+      singleSignOnService: [
+        {
+          Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+          Location: config.idpSsoUrl,
+        },
+      ],
+      ...(config.idpSloUrl && {
+        singleLogoutService: [
+          {
+            Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect',
+            Location: config.idpSloUrl,
+          },
+        ],
+      }),
+    })
+
+    // Configure the Service Provider
+    const sp = samlify.ServiceProvider({
+      entityID: config.spEntityId,
+      assertionConsumerService: [
+        {
+          Binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
+          Location: config.spAssertionConsumerUrl,
+        },
+      ],
+      wantAssertionsSigned: config.wantAssertionsSigned ?? true,
+      wantMessageSigned: config.wantMessagesSigned ?? false,
+      signatureConfig: {
+        prefix: 'ds',
+        location: { reference: '/samlp:Response/saml:Issuer', action: 'after' },
+      },
+    })
+
+    // Parse the SAML response
+    const parseResult = await sp.parseLoginResponse(idp, 'post', {
+      body: { SAMLResponse: samlResponse },
+    })
+
+    // Extract assertion data from samlify result
+    const extract = parseResult.extract
+
+    // Convert samlify result to our SAMLAssertion format
+    const assertion: SAMLAssertion = {
+      nameId: extract.nameID || '',
+      sessionIndex: extract.sessionIndex?.sessionIndex,
+      attributes: extract.attributes || {},
+      issuer: config.idpEntityId,
+      authenticatedAt: extract.sessionIndex?.authnInstant
+        ? new Date(extract.sessionIndex.authnInstant)
+        : undefined,
+    }
+
+    // Parse conditions if available
+    if (extract.conditions) {
+      if (extract.conditions.notBefore) {
+        assertion.notBefore = new Date(extract.conditions.notBefore)
+      }
+      if (extract.conditions.notOnOrAfter) {
+        assertion.notOnOrAfter = new Date(extract.conditions.notOnOrAfter)
+      }
+    }
+
+    return assertion
   }
 
   private validateAssertion(
@@ -602,10 +901,18 @@ export class SAMLService {
 
     return {
       email,
-      firstName: attributeMapping.firstName ? this.getAttributeValue(attrs, attributeMapping.firstName) : undefined,
-      lastName: attributeMapping.lastName ? this.getAttributeValue(attrs, attributeMapping.lastName) : undefined,
-      displayName: attributeMapping.displayName ? this.getAttributeValue(attrs, attributeMapping.displayName) : undefined,
-      username: attributeMapping.username ? this.getAttributeValue(attrs, attributeMapping.username) : undefined,
+      firstName: attributeMapping.firstName
+        ? this.getAttributeValue(attrs, attributeMapping.firstName)
+        : undefined,
+      lastName: attributeMapping.lastName
+        ? this.getAttributeValue(attrs, attributeMapping.lastName)
+        : undefined,
+      displayName: attributeMapping.displayName
+        ? this.getAttributeValue(attrs, attributeMapping.displayName)
+        : undefined,
+      username: attributeMapping.username
+        ? this.getAttributeValue(attrs, attributeMapping.username)
+        : undefined,
     }
   }
 
@@ -641,6 +948,15 @@ export class SAMLService {
     return matches[0]?.nchatRole ?? config.defaultRole ?? 'member'
   }
 
+  /**
+   * Provision or update user in the database
+   *
+   * This method:
+   * 1. Queries for existing user by email
+   * 2. If user exists and updateUserOnLogin is true, updates their attributes
+   * 3. If user doesn't exist and jitProvisioning is true, creates them
+   * 4. Uses the nchat_users table via GraphQL
+   */
   private async provisionUser(
     attributes: {
       email: string
@@ -660,26 +976,177 @@ export class SAMLService {
     isNewUser: boolean
     metadata?: Record<string, unknown>
   }> {
-    // In production, this would interact with your user database
-    // For now, return a mock user
-    const displayName = attributes.displayName
-      || `${attributes.firstName || ''} ${attributes.lastName || ''}`.trim()
-      || attributes.email.split('@')[0]
+    // Compute display name
+    const displayName =
+      attributes.displayName ||
+      `${attributes.firstName || ''} ${attributes.lastName || ''}`.trim() ||
+      attributes.email.split('@')[0]
 
-    const username = attributes.username || attributes.email.split('@')[0]
+    // Compute username (ensure it's valid)
+    const username = this.sanitizeUsername(attributes.username || attributes.email.split('@')[0])
+
+    // Query for existing user by email
+    const { data: existingUserData, errors: queryErrors } =
+      await apolloClient.query<GetUserByEmailResult>({
+        query: GET_USER_BY_EMAIL_FOR_SSO,
+        variables: { email: attributes.email.toLowerCase() },
+        fetchPolicy: 'network-only',
+      })
+
+    if (queryErrors && queryErrors.length > 0) {
+      throw new Error(
+        `Database error querying user: ${queryErrors.map((e) => e.message).join(', ')}`
+      )
+    }
+
+    const existingUser = existingUserData?.nchat_users?.[0]
+
+    // Get role ID for the mapped role
+    const roleId = await this.getRoleIdByName(role)
+
+    if (existingUser) {
+      // User exists - check if we should update
+      if (config.updateUserOnLogin) {
+        const ssoMetadata = {
+          ssoLastLogin: new Date().toISOString(),
+          ssoProvisioned: true,
+          ...(existingUser.metadata?.ssoProvisioned
+            ? {}
+            : { ssoFirstLogin: new Date().toISOString() }),
+        }
+
+        const { data: updateData, errors: updateErrors } =
+          await apolloClient.mutate<UpdateSSOUserResult>({
+            mutation: UPDATE_SSO_USER,
+            variables: {
+              id: existingUser.id,
+              displayName,
+              roleId,
+              metadata: ssoMetadata,
+            },
+          })
+
+        if (updateErrors && updateErrors.length > 0) {
+          throw new Error(
+            `Database error updating user: ${updateErrors.map((e) => e.message).join(', ')}`
+          )
+        }
+
+        const updatedUser = updateData?.update_nchat_users_by_pk
+
+        return {
+          id: updatedUser?.id || existingUser.id,
+          email: attributes.email,
+          username: existingUser.username,
+          displayName: updatedUser?.display_name || displayName,
+          role: (updatedUser?.role?.name as UserRole) || role,
+          isNewUser: false,
+          metadata: {
+            ...existingUser.metadata,
+            ...ssoMetadata,
+          },
+        }
+      }
+
+      // Return existing user without updating
+      return {
+        id: existingUser.id,
+        email: existingUser.email,
+        username: existingUser.username,
+        displayName: existingUser.display_name,
+        role: (existingUser.role?.name as UserRole) || role,
+        isNewUser: false,
+        metadata: existingUser.metadata,
+      }
+    }
+
+    // User doesn't exist - check if JIT provisioning is enabled
+    if (!config.jitProvisioning) {
+      throw new Error('User not found and JIT provisioning is disabled')
+    }
+
+    // Create new user
+    const newUserId = crypto.randomUUID()
+    const ssoMetadata = {
+      ssoProvisioned: true,
+      ssoFirstLogin: new Date().toISOString(),
+      ssoLastLogin: new Date().toISOString(),
+    }
+
+    const { data: insertData, errors: insertErrors } =
+      await apolloClient.mutate<InsertSSOUserResult>({
+        mutation: INSERT_SSO_USER,
+        variables: {
+          id: newUserId,
+          email: attributes.email.toLowerCase(),
+          username,
+          displayName,
+          roleId,
+          metadata: ssoMetadata,
+        },
+      })
+
+    if (insertErrors && insertErrors.length > 0) {
+      throw new Error(
+        `Database error creating user: ${insertErrors.map((e) => e.message).join(', ')}`
+      )
+    }
+
+    const newUser = insertData?.insert_nchat_users_one
+    if (!newUser) {
+      throw new Error('Failed to create user via SSO provisioning')
+    }
+
+    addSentryBreadcrumb('sso', 'User provisioned via SSO', {
+      userId: newUser.id,
+      email: attributes.email,
+    })
 
     return {
-      id: crypto.randomUUID(),
-      email: attributes.email,
-      username,
-      displayName,
-      role,
-      isNewUser: config.jitProvisioning,
-      metadata: {
-        ssoProvisioned: true,
-        provisionedAt: new Date().toISOString(),
-      },
+      id: newUser.id,
+      email: newUser.email,
+      username: newUser.username,
+      displayName: newUser.display_name,
+      role: (newUser.role?.name as UserRole) || role,
+      isNewUser: true,
+      metadata: ssoMetadata,
     }
+  }
+
+  /**
+   * Get role ID by role name
+   */
+  private async getRoleIdByName(roleName: UserRole): Promise<string | null> {
+    try {
+      const { data, errors } = await apolloClient.query<GetRoleByNameResult>({
+        query: GET_ROLE_BY_NAME,
+        variables: { name: roleName },
+        fetchPolicy: 'cache-first', // Roles don't change often
+      })
+
+      if (errors && errors.length > 0) {
+        logger.error('Error fetching role:', errors)
+        return null
+      }
+
+      return data?.nchat_roles?.[0]?.id || null
+    } catch (error) {
+      logger.error('Error fetching role by name:', error)
+      return null
+    }
+  }
+
+  /**
+   * Sanitize username to ensure it's valid
+   */
+  private sanitizeUsername(input: string): string {
+    // Convert to lowercase, replace invalid chars with underscore
+    return input
+      .toLowerCase()
+      .replace(/[^a-z0-9_-]/g, '_')
+      .replace(/_+/g, '_') // Collapse multiple underscores
+      .replace(/^_|_$/g, '') // Remove leading/trailing underscores
+      .substring(0, 50) // Limit length
   }
 }
 
@@ -744,7 +1211,7 @@ export async function testSSOConnection(connectionId: string): Promise<{
 }> {
   try {
     const service = getSAMLService()
-    const connection = service.getConnection(connectionId)
+    const connection = await service.getConnection(connectionId)
 
     if (!connection) {
       return { success: false, error: 'Connection not found' }
@@ -761,13 +1228,25 @@ export async function testSSOConnection(connectionId: string): Promise<{
       return { success: false, error: 'IdP certificate is missing' }
     }
 
-    // In production, you would test the actual connection here
+    // Test IdP SSO URL connectivity
+    try {
+      const response = await fetch(connection.config.idpSsoUrl, {
+        method: 'HEAD',
+        mode: 'no-cors', // Just check if reachable
+      })
+      // Even with no-cors, we get a response if the server is up
+      // The actual status might be opaque, but it means the URL is reachable
+    } catch {
+      return { success: false, error: 'IdP SSO URL is not reachable' }
+    }
+
     return {
       success: true,
       details: {
         provider: connection.provider,
         idpEntityId: connection.config.idpEntityId,
         jitProvisioning: connection.config.jitProvisioning,
+        domains: connection.domains,
       },
     }
   } catch (error) {

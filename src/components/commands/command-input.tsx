@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * CommandInput Component
@@ -18,12 +18,12 @@
  * ```
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import type { SlashCommand, CommandArg } from '@/lib/commands';
-import type { ParsedCommand, ArgSuggestion } from '@/lib/commands';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import type { SlashCommand, CommandArg } from '@/lib/commands'
+import type { ParsedCommand, ArgSuggestion } from '@/lib/commands'
 
 // ============================================================================
 // Types
@@ -31,44 +31,44 @@ import type { ParsedCommand, ArgSuggestion } from '@/lib/commands';
 
 export interface CommandInputProps {
   /** The command being entered */
-  command: SlashCommand;
+  command: SlashCommand
   /** Current input value */
-  value: string;
+  value: string
   /** Callback when value changes */
-  onChange: (value: string) => void;
+  onChange: (value: string) => void
   /** Callback when command is submitted */
-  onSubmit: (value: string) => void;
+  onSubmit: (value: string) => void
   /** Callback when input is cancelled */
-  onCancel: () => void;
+  onCancel: () => void
   /** Parsed command for validation feedback */
-  parsedCommand?: ParsedCommand;
+  parsedCommand?: ParsedCommand
   /** Whether the input is disabled */
-  disabled?: boolean;
+  disabled?: boolean
   /** Placeholder text */
-  placeholder?: string;
+  placeholder?: string
   /** Auto focus on mount */
-  autoFocus?: boolean;
+  autoFocus?: boolean
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 export interface ArgumentInputProps {
   /** The argument definition */
-  arg: CommandArg;
+  arg: CommandArg
   /** Current value */
-  value: string;
+  value: string
   /** Callback when value changes */
-  onChange: (value: string) => void;
+  onChange: (value: string) => void
   /** Whether the argument has an error */
-  hasError?: boolean;
+  hasError?: boolean
   /** Error message */
-  errorMessage?: string;
+  errorMessage?: string
   /** Suggestions for the argument */
-  suggestions?: ArgSuggestion[];
+  suggestions?: ArgSuggestion[]
   /** Callback when suggestion is selected */
-  onSuggestionSelect?: (suggestion: ArgSuggestion) => void;
+  onSuggestionSelect?: (suggestion: ArgSuggestion) => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -85,56 +85,56 @@ export function ArgumentInput({
   onSuggestionSelect,
   className,
 }: ArgumentInputProps) {
-  const [showSuggestions, setShowSuggestions] = React.useState(false);
-  const inputRef = React.useRef<HTMLInputElement>(null);
+  const [showSuggestions, setShowSuggestions] = React.useState(false)
+  const inputRef = React.useRef<HTMLInputElement>(null)
 
   const handleFocus = () => {
     if (suggestions.length > 0) {
-      setShowSuggestions(true);
+      setShowSuggestions(true)
     }
-  };
+  }
 
   const handleBlur = () => {
     // Delay to allow click on suggestion
-    setTimeout(() => setShowSuggestions(false), 200);
-  };
+    setTimeout(() => setShowSuggestions(false), 200)
+  }
 
   const handleSuggestionClick = (suggestion: ArgSuggestion) => {
-    onChange(suggestion.value);
-    onSuggestionSelect?.(suggestion);
-    setShowSuggestions(false);
-    inputRef.current?.focus();
-  };
+    onChange(suggestion.value)
+    onSuggestionSelect?.(suggestion)
+    setShowSuggestions(false)
+    inputRef.current?.focus()
+  }
 
   // Get input type based on argument type
   const getInputType = (): string => {
     switch (arg.type) {
       case 'emoji':
-        return 'text';
+        return 'text'
       default:
-        return 'text';
+        return 'text'
     }
-  };
+  }
 
   // Get prefix based on argument type
   const getPrefix = (): string | null => {
     switch (arg.type) {
       case 'user':
-        return '@';
+        return '@'
       case 'channel':
-        return '#';
+        return '#'
       default:
-        return null;
+        return null
     }
-  };
+  }
 
-  const prefix = getPrefix();
+  const prefix = getPrefix()
 
   return (
     <div className={cn('relative', className)}>
-      <label className="block text-xs font-medium text-muted-foreground mb-1">
+      <label className="mb-1 block text-xs font-medium text-muted-foreground">
         {arg.name}
-        {arg.required && <span className="text-destructive ml-0.5">*</span>}
+        {arg.required && <span className="ml-0.5 text-destructive">*</span>}
       </label>
 
       <div className="relative">
@@ -158,17 +158,15 @@ export function ArgumentInput({
         />
       </div>
 
-      {hasError && errorMessage && (
-        <p className="text-xs text-destructive mt-1">{errorMessage}</p>
-      )}
+      {hasError && errorMessage && <p className="mt-1 text-xs text-destructive">{errorMessage}</p>}
 
       {arg.description && !hasError && (
-        <p className="text-xs text-muted-foreground mt-1">{arg.description}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{arg.description}</p>
       )}
 
       {/* Suggestions Dropdown */}
       {showSuggestions && suggestions.length > 0 && (
-        <div className="absolute z-10 w-full mt-1 bg-popover border rounded-md shadow-md">
+        <div className="absolute z-10 mt-1 w-full rounded-md border bg-popover shadow-md">
           {suggestions.map((suggestion, index) => (
             <button
               key={index}
@@ -183,16 +181,14 @@ export function ArgumentInput({
             >
               <span className="font-medium">{suggestion.label}</span>
               {suggestion.description && (
-                <span className="text-xs text-muted-foreground">
-                  {suggestion.description}
-                </span>
+                <span className="text-xs text-muted-foreground">{suggestion.description}</span>
               )}
             </button>
           ))}
         </div>
       )}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -200,13 +196,13 @@ export function ArgumentInput({
 // ============================================================================
 
 interface SuggestionChipsProps {
-  suggestions: ArgSuggestion[];
-  onSelect: (suggestion: ArgSuggestion) => void;
-  className?: string;
+  suggestions: ArgSuggestion[]
+  onSelect: (suggestion: ArgSuggestion) => void
+  className?: string
 }
 
 function SuggestionChips({ suggestions, onSelect, className }: SuggestionChipsProps) {
-  if (suggestions.length === 0) return null;
+  if (suggestions.length === 0) return null
 
   return (
     <div className={cn('flex flex-wrap gap-1.5', className)}>
@@ -216,8 +212,8 @@ function SuggestionChips({ suggestions, onSelect, className }: SuggestionChipsPr
           type="button"
           onClick={() => onSelect(suggestion)}
           className={cn(
-            'inline-flex items-center px-2 py-1 rounded-md text-xs',
-            'bg-muted hover:bg-muted/80 text-muted-foreground',
+            'inline-flex items-center rounded-md px-2 py-1 text-xs',
+            'hover:bg-muted/80 bg-muted text-muted-foreground',
             'transition-colors'
           )}
         >
@@ -225,7 +221,7 @@ function SuggestionChips({ suggestions, onSelect, className }: SuggestionChipsPr
         </button>
       ))}
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -244,63 +240,61 @@ export function CommandInput({
   autoFocus = true,
   className,
 }: CommandInputProps) {
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const [localValue, setLocalValue] = React.useState(value);
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  const [localValue, setLocalValue] = React.useState(value)
 
   // Sync local value with prop
   React.useEffect(() => {
-    setLocalValue(value);
-  }, [value]);
+    setLocalValue(value)
+  }, [value])
 
   // Auto focus on mount
   React.useEffect(() => {
     if (autoFocus && inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.focus()
     }
-  }, [autoFocus]);
+  }, [autoFocus])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = e.target.value;
-    setLocalValue(newValue);
-    onChange(newValue);
-  };
+    const newValue = e.target.value
+    setLocalValue(newValue)
+    onChange(newValue)
+  }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      const fullCommand = `/${command.name} ${localValue}`.trim();
-      onSubmit(fullCommand);
+      e.preventDefault()
+      const fullCommand = `/${command.name} ${localValue}`.trim()
+      onSubmit(fullCommand)
     } else if (e.key === 'Escape') {
-      e.preventDefault();
-      onCancel();
+      e.preventDefault()
+      onCancel()
     }
-  };
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const fullCommand = `/${command.name} ${localValue}`.trim();
-    onSubmit(fullCommand);
-  };
+    e.preventDefault()
+    const fullCommand = `/${command.name} ${localValue}`.trim()
+    onSubmit(fullCommand)
+  }
 
   // Get validation errors
-  const errors = parsedCommand?.errors || [];
-  const hasErrors = errors.length > 0;
+  const errors = parsedCommand?.errors || []
+  const hasErrors = errors.length > 0
 
   // Build placeholder from command args
   const buildPlaceholder = (): string => {
-    if (placeholder) return placeholder;
-    if (command.args.length === 0) return '';
+    if (placeholder) return placeholder
+    if (command.args.length === 0) return ''
 
-    return command.args
-      .map((arg) => (arg.required ? `<${arg.name}>` : `[${arg.name}]`))
-      .join(' ');
-  };
+    return command.args.map((arg) => (arg.required ? `<${arg.name}>` : `[${arg.name}]`)).join(' ')
+  }
 
   // Get quick suggestions based on first argument
   const getQuickSuggestions = (): ArgSuggestion[] => {
-    if (command.args.length === 0 || localValue.trim()) return [];
+    if (command.args.length === 0 || localValue.trim()) return []
 
-    const firstArg = command.args[0];
+    const firstArg = command.args[0]
     switch (firstArg.type) {
       case 'duration':
         return [
@@ -308,27 +302,27 @@ export function CommandInput({
           { value: '30m', label: '30 min', type: 'duration' },
           { value: '1h', label: '1 hour', type: 'duration' },
           { value: '2h', label: '2 hours', type: 'duration' },
-        ];
+        ]
       case 'emoji':
         return [
           { value: ':coffee:', label: 'Coffee', type: 'emoji' },
           { value: ':palm_tree:', label: 'Vacation', type: 'emoji' },
           { value: ':house:', label: 'WFH', type: 'emoji' },
-        ];
+        ]
       default:
-        return [];
+        return []
     }
-  };
+  }
 
-  const quickSuggestions = getQuickSuggestions();
+  const quickSuggestions = getQuickSuggestions()
 
   return (
     <form onSubmit={handleSubmit} className={cn('space-y-3', className)}>
       {/* Command Header */}
       <div className="flex items-center gap-2">
-        <div className="flex items-center gap-1.5 px-2 py-1 bg-muted rounded-md">
+        <div className="flex items-center gap-1.5 rounded-md bg-muted px-2 py-1">
           <span className="text-muted-foreground">/</span>
-          <span className="font-medium text-sm">{command.name}</span>
+          <span className="text-sm font-medium">{command.name}</span>
         </div>
         <span className="text-sm text-muted-foreground">{command.description}</span>
       </div>
@@ -343,17 +337,15 @@ export function CommandInput({
             onKeyDown={handleKeyDown}
             placeholder={buildPlaceholder()}
             disabled={disabled}
-            className={cn(
-              hasErrors && 'border-destructive focus-visible:ring-destructive'
-            )}
+            className={cn(hasErrors && 'border-destructive focus-visible:ring-destructive')}
           />
 
           {/* Quick Suggestions */}
           <SuggestionChips
             suggestions={quickSuggestions}
             onSelect={(suggestion) => {
-              setLocalValue(suggestion.value);
-              onChange(suggestion.value);
+              setLocalValue(suggestion.value)
+              onChange(suggestion.value)
             }}
           />
 
@@ -369,20 +361,13 @@ export function CommandInput({
           )}
 
           {/* Usage Hint */}
-          <p className="text-xs text-muted-foreground font-mono">
-            Usage: {command.usage}
-          </p>
+          <p className="font-mono text-xs text-muted-foreground">Usage: {command.usage}</p>
         </div>
       )}
 
       {/* Action Buttons */}
       <div className="flex items-center justify-end gap-2">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="ghost" size="sm" onClick={onCancel}>
           Cancel
         </Button>
         <Button
@@ -394,7 +379,7 @@ export function CommandInput({
         </Button>
       </div>
     </form>
-  );
+  )
 }
 
 // ============================================================================
@@ -403,17 +388,17 @@ export function CommandInput({
 
 export interface InlineCommandInputProps {
   /** Current full input value (including /) */
-  value: string;
+  value: string
   /** Callback when value changes */
-  onChange: (value: string) => void;
+  onChange: (value: string) => void
   /** Callback when command is submitted */
-  onSubmit: (value: string) => void;
+  onSubmit: (value: string) => void
   /** Callback when input is cancelled (Escape) */
-  onCancel: () => void;
+  onCancel: () => void
   /** Parsed command for validation */
-  parsedCommand?: ParsedCommand;
+  parsedCommand?: ParsedCommand
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 export function InlineCommandInput({
@@ -426,16 +411,16 @@ export function InlineCommandInput({
 }: InlineCommandInputProps) {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      onSubmit(value);
+      e.preventDefault()
+      onSubmit(value)
     } else if (e.key === 'Escape') {
-      e.preventDefault();
-      onCancel();
+      e.preventDefault()
+      onCancel()
     }
-  };
+  }
 
-  const errors = parsedCommand?.errors || [];
-  const hasErrors = errors.length > 0;
+  const errors = parsedCommand?.errors || []
+  const hasErrors = errors.length > 0
 
   return (
     <div className={cn('relative', className)}>
@@ -444,7 +429,7 @@ export function InlineCommandInput({
         onChange={(e) => onChange(e.target.value)}
         onKeyDown={handleKeyDown}
         className={cn(
-          'w-full min-h-[44px] max-h-[200px] px-3 py-2 resize-none',
+          'max-h-[200px] min-h-[44px] w-full resize-none px-3 py-2',
           'bg-transparent text-foreground placeholder:text-muted-foreground',
           'focus:outline-none',
           hasErrors && 'text-destructive'
@@ -454,19 +439,19 @@ export function InlineCommandInput({
 
       {/* Inline validation hint */}
       {hasErrors && (
-        <div className="absolute bottom-full left-0 mb-1 px-2 py-1 bg-destructive text-destructive-foreground text-xs rounded">
+        <div className="absolute bottom-full left-0 mb-1 rounded bg-destructive px-2 py-1 text-xs text-destructive-foreground">
           {errors[0]?.message}
         </div>
       )}
 
       {/* Command suggestion hint */}
       {parsedCommand?.command && !parsedCommand.isComplete && (
-        <div className="absolute bottom-full left-0 mb-1 px-2 py-1 bg-muted text-muted-foreground text-xs rounded font-mono">
+        <div className="absolute bottom-full left-0 mb-1 rounded bg-muted px-2 py-1 font-mono text-xs text-muted-foreground">
           {parsedCommand.command.usage}
         </div>
       )}
     </div>
-  );
+  )
 }
 
-export default CommandInput;
+export default CommandInput

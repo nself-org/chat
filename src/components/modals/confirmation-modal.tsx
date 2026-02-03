@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/button'
 import { Loader2, AlertTriangle, Info, CheckCircle2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { logger } from '@/lib/logger'
+
 export type ConfirmationVariant = 'default' | 'destructive' | 'warning' | 'success'
 
 interface ConfirmationModalProps {
@@ -90,7 +92,7 @@ export function ConfirmationModal({
       await onConfirm()
       onOpenChange(false)
     } catch (error) {
-      console.error('Confirmation action failed:', error)
+      logger.error('Confirmation action failed:', error)
     } finally {
       setLoading(false)
     }
@@ -105,7 +107,7 @@ export function ConfirmationModal({
           <div className="flex items-start gap-4">
             <div
               className={cn(
-                'flex items-center justify-center h-10 w-10 rounded-full shrink-0',
+                'flex h-10 w-10 shrink-0 items-center justify-center rounded-full',
                 config.iconBg,
                 config.iconColor
               )}
@@ -114,28 +116,18 @@ export function ConfirmationModal({
             </div>
             <div className="space-y-1.5 pt-0.5">
               <DialogTitle>{title}</DialogTitle>
-              {description && (
-                <DialogDescription>{description}</DialogDescription>
-              )}
+              {description && <DialogDescription>{description}</DialogDescription>}
             </div>
           </div>
         </DialogHeader>
 
         {children && <div className="mt-2">{children}</div>}
 
-        <DialogFooter className="gap-2 sm:gap-0 mt-4">
-          <Button
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={loading}
-          >
+        <DialogFooter className="mt-4 gap-2 sm:gap-0">
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
             {cancelText}
           </Button>
-          <Button
-            variant={config.buttonVariant}
-            onClick={handleConfirm}
-            disabled={loading}
-          >
+          <Button variant={config.buttonVariant} onClick={handleConfirm} disabled={loading}>
             {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {confirmText}
           </Button>
@@ -168,8 +160,7 @@ export function DeleteConfirmationModal({
       onConfirm={onConfirm}
       title={title || `Delete ${itemName}?`}
       description={
-        description ||
-        `Are you sure you want to delete ${itemName}? This action cannot be undone.`
+        description || `Are you sure you want to delete ${itemName}? This action cannot be undone.`
       }
       confirmText="Delete"
       variant="destructive"
@@ -193,20 +184,19 @@ export function UnsavedChangesModal({
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader className="space-y-4">
           <div className="flex items-start gap-4">
-            <div className="flex items-center justify-center h-10 w-10 rounded-full shrink-0 bg-yellow-500/10 text-yellow-600 dark:text-yellow-500">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-yellow-500/10 text-yellow-600 dark:text-yellow-500">
               <AlertTriangle className="h-5 w-5" />
             </div>
             <div className="space-y-1.5 pt-0.5">
               <DialogTitle>Unsaved changes</DialogTitle>
               <DialogDescription>
-                You have unsaved changes. Do you want to save them before
-                leaving?
+                You have unsaved changes. Do you want to save them before leaving?
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
 
-        <DialogFooter className="gap-2 sm:gap-0 flex-col sm:flex-row mt-4">
+        <DialogFooter className="mt-4 flex-col gap-2 sm:flex-row sm:gap-0">
           {onDiscard && (
             <Button
               variant="ghost"

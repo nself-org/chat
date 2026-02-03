@@ -136,8 +136,8 @@ export function AttachmentContextMenu({
         <ContextMenuLabel className="font-normal">
           <div className="flex items-center gap-2">
             {getFileTypeIcon(attachment.type)}
-            <div className="flex flex-col min-w-0">
-              <p className="text-sm font-medium truncate">{attachment.name}</p>
+            <div className="flex min-w-0 flex-col">
+              <p className="truncate text-sm font-medium">{attachment.name}</p>
               <p className="text-xs text-muted-foreground">
                 {formatFileSize(attachment.size)}
                 {attachment.mimeType && ` - ${attachment.mimeType}`}
@@ -168,10 +168,7 @@ export function AttachmentContextMenu({
         <ContextMenuSeparator />
 
         {/* Copy link */}
-        <ContextMenuItemWithIcon
-          icon={<Link2 className="h-4 w-4" />}
-          onClick={handleCopyLink}
-        >
+        <ContextMenuItemWithIcon icon={<Link2 className="h-4 w-4" />} onClick={handleCopyLink}>
           Copy link
         </ContextMenuItemWithIcon>
 

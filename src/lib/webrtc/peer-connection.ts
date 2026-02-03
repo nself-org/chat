@@ -5,6 +5,8 @@
  * Handles ICE candidates, media tracks, and connection state.
  */
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -301,7 +303,7 @@ export class PeerConnectionManager {
       try {
         await this.pc.addIceCandidate(candidate)
       } catch (error) {
-        console.error('Failed to add pending ICE candidate:', error)
+        logger.error('Failed to add pending ICE candidate:', error)
       }
     }
   }
@@ -377,27 +379,19 @@ export class PeerConnectionManager {
   }
 
   getLocalAudioTracks(): TrackInfo[] {
-    return Array.from(this.localTracks.values()).filter(
-      (info) => info.track.kind === 'audio'
-    )
+    return Array.from(this.localTracks.values()).filter((info) => info.track.kind === 'audio')
   }
 
   getLocalVideoTracks(): TrackInfo[] {
-    return Array.from(this.localTracks.values()).filter(
-      (info) => info.track.kind === 'video'
-    )
+    return Array.from(this.localTracks.values()).filter((info) => info.track.kind === 'video')
   }
 
   getRemoteAudioTracks(): TrackInfo[] {
-    return Array.from(this.remoteTracks.values()).filter(
-      (info) => info.track.kind === 'audio'
-    )
+    return Array.from(this.remoteTracks.values()).filter((info) => info.track.kind === 'audio')
   }
 
   getRemoteVideoTracks(): TrackInfo[] {
-    return Array.from(this.remoteTracks.values()).filter(
-      (info) => info.track.kind === 'video'
-    )
+    return Array.from(this.remoteTracks.values()).filter((info) => info.track.kind === 'video')
   }
 
   // ===========================================================================

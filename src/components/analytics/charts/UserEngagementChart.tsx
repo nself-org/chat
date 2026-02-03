@@ -1,10 +1,10 @@
-'use client';
+'use client'
 
 /**
  * UserEngagementChart - Shows user engagement metrics
  */
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   Radar,
   RadarChart,
@@ -20,20 +20,20 @@ import {
   XAxis,
   YAxis,
   Cell,
-} from 'recharts';
+} from 'recharts'
 
-import { cn } from '@/lib/utils';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { cn } from '@/lib/utils'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface UserEngagementChartProps {
-  height?: number;
-  variant?: 'radar' | 'bar';
-  className?: string;
+  height?: number
+  variant?: 'radar' | 'bar'
+  className?: string
 }
 
 // ============================================================================
@@ -44,7 +44,7 @@ const COLORS = {
   primary: '#6366f1',
   secondary: '#10b981',
   tertiary: '#f59e0b',
-};
+}
 
 // ============================================================================
 // Component
@@ -55,23 +55,23 @@ export function UserEngagementChart({
   variant = 'radar',
   className,
 }: UserEngagementChartProps) {
-  const { summary, userActivity, isLoading } = useAnalyticsStore();
+  const { summary, userActivity, isLoading } = useAnalyticsStore()
 
   // Radar chart data - engagement metrics normalized to 100
   const radarData = React.useMemo(() => {
-    if (!summary || !userActivity) return [];
+    if (!summary || !userActivity) return []
 
-    const totalUsers = userActivity.length || 1;
-    const totalMessages = userActivity.reduce((sum, u) => sum + u.messageCount, 0);
-    const totalReactions = userActivity.reduce((sum, u) => sum + u.reactionCount, 0);
-    const totalFiles = userActivity.reduce((sum, u) => sum + u.fileCount, 0);
-    const totalThreads = userActivity.reduce((sum, u) => sum + u.threadCount, 0);
+    const totalUsers = userActivity.length || 1
+    const totalMessages = userActivity.reduce((sum, u) => sum + u.messageCount, 0)
+    const totalReactions = userActivity.reduce((sum, u) => sum + u.reactionCount, 0)
+    const totalFiles = userActivity.reduce((sum, u) => sum + u.fileCount, 0)
+    const totalThreads = userActivity.reduce((sum, u) => sum + u.threadCount, 0)
 
     // Normalize to percentage of "ideal" engagement
-    const maxMessagesPerUser = 100;
-    const maxReactionsPerUser = 50;
-    const maxFilesPerUser = 10;
-    const maxThreadsPerUser = 20;
+    const maxMessagesPerUser = 100
+    const maxReactionsPerUser = 50
+    const maxFilesPerUser = 10
+    const maxThreadsPerUser = 20
 
     return [
       {
@@ -96,19 +96,20 @@ export function UserEngagementChart({
       },
       {
         metric: 'Active Rate',
-        value: summary.users.activeUsers.value > 0
-          ? (summary.users.activeUsers.value / summary.users.totalUsers.value) * 100
-          : 0,
+        value:
+          summary.users.activeUsers.value > 0
+            ? (summary.users.activeUsers.value / summary.users.totalUsers.value) * 100
+            : 0,
         fullMark: 100,
       },
-    ];
-  }, [summary, userActivity]);
+    ]
+  }, [summary, userActivity])
 
   // Bar chart data - per-user averages
   const barData = React.useMemo(() => {
-    if (!userActivity || userActivity.length === 0) return [];
+    if (!userActivity || userActivity.length === 0) return []
 
-    const totalUsers = userActivity.length;
+    const totalUsers = userActivity.length
     const totals = userActivity.reduce(
       (acc, user) => ({
         messages: acc.messages + user.messageCount,
@@ -117,7 +118,7 @@ export function UserEngagementChart({
         threads: acc.threads + user.threadCount,
       }),
       { messages: 0, reactions: 0, files: 0, threads: 0 }
-    );
+    )
 
     return [
       {
@@ -140,30 +141,29 @@ export function UserEngagementChart({
         value: Math.round(totals.threads / totalUsers),
         color: '#ec4899',
       },
-    ];
-  }, [userActivity]);
+    ]
+  }, [userActivity])
 
   if (isLoading) {
     return (
       <div className={cn('w-full', className)} style={{ height }}>
         <Skeleton className="h-full w-full" />
       </div>
-    );
+    )
   }
 
-  if ((variant === 'radar' && radarData.length === 0) ||
-      (variant === 'bar' && barData.length === 0)) {
+  if (
+    (variant === 'radar' && radarData.length === 0) ||
+    (variant === 'bar' && barData.length === 0)
+  ) {
     return (
       <div
-        className={cn(
-          'flex items-center justify-center text-muted-foreground',
-          className
-        )}
+        className={cn('flex items-center justify-center text-muted-foreground', className)}
         style={{ height }}
       >
         No engagement data available
       </div>
-    );
+    )
   }
 
   if (variant === 'radar') {
@@ -192,21 +192,24 @@ export function UserEngagementChart({
             />
             <Tooltip
               content={({ active, payload }) => {
-                if (!active || !payload || !payload.length) return null;
+                if (!active || !payload || !payload.length) return null
                 return (
-                  <div className="rounded-lg border bg-background p-2 shadow-md text-sm">
-                    <span className="font-medium">
-                      {payload[0].payload.metric}:
-                    </span>{' '}
-                    <span>{typeof payload[0].value === 'number' ? payload[0].value.toFixed(1) : payload[0].value}%</span>
+                  <div className="rounded-lg border bg-background p-2 text-sm shadow-md">
+                    <span className="font-medium">{payload[0].payload.metric}:</span>{' '}
+                    <span>
+                      {typeof payload[0].value === 'number'
+                        ? payload[0].value.toFixed(1)
+                        : payload[0].value}
+                      %
+                    </span>
                   </div>
-                );
+                )
               }}
             />
           </RadarChart>
         </ResponsiveContainer>
       </div>
-    );
+    )
   }
 
   return (
@@ -229,13 +232,13 @@ export function UserEngagementChart({
           />
           <Tooltip
             content={({ active, payload }) => {
-              if (!active || !payload || !payload.length) return null;
+              if (!active || !payload || !payload.length) return null
               return (
-                <div className="rounded-lg border bg-background p-2 shadow-md text-sm">
+                <div className="rounded-lg border bg-background p-2 text-sm shadow-md">
                   <span className="font-medium">{payload[0].payload.name}:</span>{' '}
                   <span>{payload[0].value} per user</span>
                 </div>
-              );
+              )
             }}
           />
           <Bar dataKey="value" radius={[4, 4, 0, 0]}>
@@ -256,7 +259,7 @@ export function UserEngagementChart({
         ))}
       </div>
     </div>
-  );
+  )
 }
 
-export default UserEngagementChart;
+export default UserEngagementChart

@@ -19,6 +19,7 @@ This document summarizes the comprehensive security audit and implementation con
 **Status**: ✅ IMPLEMENTED
 
 **Enhanced Headers:**
+
 - Content Security Policy (CSP) - Comprehensive policy with script/style restrictions
 - Strict-Transport-Security (HSTS) - max-age=31536000, includeSubDomains
 - X-Frame-Options - SAMEORIGIN (clickjacking protection)
@@ -39,14 +40,15 @@ This document summarizes the comprehensive security audit and implementation con
 
 **Protected Endpoints:**
 
-| Endpoint | Limit | Window | Purpose |
-|----------|-------|--------|---------|
-| /api/auth/signin | 5 requests | 15 minutes | Brute force protection |
-| /api/auth/signup | 3 requests | 1 hour | Signup abuse prevention |
-| /api/upload | 30 requests | 1 minute | Upload spam prevention |
-| /api/webhooks/* | 60 requests | 1 minute | Webhook abuse prevention |
+| Endpoint         | Limit       | Window     | Purpose                  |
+| ---------------- | ----------- | ---------- | ------------------------ |
+| /api/auth/signin | 5 requests  | 15 minutes | Brute force protection   |
+| /api/auth/signup | 3 requests  | 1 hour     | Signup abuse prevention  |
+| /api/upload      | 30 requests | 1 minute   | Upload spam prevention   |
+| /api/webhooks/\* | 60 requests | 1 minute   | Webhook abuse prevention |
 
 **Files Updated:**
+
 - `/Users/admin/Sites/nself-chat/src/app/api/auth/signin/route.ts`
 - `/Users/admin/Sites/nself-chat/src/app/api/auth/signup/route.ts`
 - `/Users/admin/Sites/nself-chat/src/app/api/webhooks/incoming/[token]/route.ts`
@@ -60,6 +62,7 @@ This document summarizes the comprehensive security audit and implementation con
 **Status**: ✅ IMPLEMENTED
 
 **Comprehensive Schemas Created:**
+
 - Authentication (signin, signup, password change, OAuth)
 - User management (profile, settings)
 - Channels (create, update)
@@ -71,10 +74,12 @@ This document summarizes the comprehensive security audit and implementation con
 - Search queries
 
 **Files Created:**
+
 - `/Users/admin/Sites/nself-chat/src/lib/validation/schemas.ts` (650+ lines)
 - `/Users/admin/Sites/nself-chat/src/lib/validation/validate.ts` (350+ lines)
 
 **Key Features:**
+
 - SQL injection prevention
 - XSS protection via HTML sanitization
 - Filename sanitization
@@ -89,6 +94,7 @@ This document summarizes the comprehensive security audit and implementation con
 **Status**: ✅ ENHANCED
 
 **Security Measures:**
+
 - Multi-layer file type validation (extension, MIME type, content)
 - File size limits by type (10MB images, 100MB videos, etc.)
 - Filename sanitization (path traversal prevention)
@@ -97,14 +103,24 @@ This document summarizes the comprehensive security audit and implementation con
 - Rate limiting (30 uploads per minute)
 
 **File Updated:**
+
 - `/Users/admin/Sites/nself-chat/src/app/api/upload/route.ts`
 
 **Validation Schema:**
+
 ```typescript
 uploadInitSchema = z.object({
-  filename: z.string().min(1).max(255).regex(/^[^<>:"/\\|?*]+$/),
+  filename: z
+    .string()
+    .min(1)
+    .max(255)
+    .regex(/^[^<>:"/\\|?*]+$/),
   contentType: z.string().regex(/^[a-z]+\/[a-z0-9\-\+\.]+$/i),
-  size: z.number().int().positive().max(100 * 1024 * 1024),
+  size: z
+    .number()
+    .int()
+    .positive()
+    .max(100 * 1024 * 1024),
 })
 ```
 
@@ -115,6 +131,7 @@ uploadInitSchema = z.object({
 **Status**: ✅ IMPLEMENTED
 
 **Implementation:**
+
 - Double-submit cookie pattern with HMAC signing
 - Synchronizer token pattern
 - Automatic token generation and validation
@@ -122,19 +139,18 @@ uploadInitSchema = z.object({
 - Token expiration (24 hours)
 
 **Files Created:**
+
 - `/Users/admin/Sites/nself-chat/src/lib/security/csrf.ts`
 - `/Users/admin/Sites/nself-chat/src/app/api/csrf/route.ts`
 
 **Usage:**
+
 ```typescript
-export const POST = compose(
-  withErrorHandler,
-  withCsrfProtection,
-  withAuth
-)(handler)
+export const POST = compose(withErrorHandler, withCsrfProtection, withAuth)(handler)
 ```
 
 **Client-Side Integration:**
+
 ```typescript
 // Get CSRF token
 const response = await fetch('/api/csrf')
@@ -145,8 +161,8 @@ fetch('/api/protected', {
   method: 'POST',
   headers: {
     [headerName]: csrfToken,
-    'Content-Type': 'application/json'
-  }
+    'Content-Type': 'application/json',
+  },
 })
 ```
 
@@ -157,6 +173,7 @@ fetch('/api/protected', {
 **Status**: ✅ SECURE (with recommendations)
 
 **Implemented:**
+
 - JWT-based authentication with expiration
 - Bcrypt password hashing (12 rounds)
 - Strong password requirements (8+ chars, mixed case, numbers, symbols)
@@ -165,6 +182,7 @@ fetch('/api/protected', {
 - Token validation on every request
 
 **Vulnerabilities Found:**
+
 ```typescript
 // ⚠️ CRITICAL: Default secrets in development
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
@@ -179,18 +197,17 @@ const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-producti
 **Status**: ✅ PROTECTED
 
 **Measures:**
+
 - Parameterized queries in PostgreSQL
 - GraphQL with Hasura (auto-parameterized)
 - Input validation with Zod
 - No string concatenation in queries
 
 **Example:**
+
 ```typescript
 // ✅ SAFE: Parameterized query
-const result = await pool.query(
-  'SELECT * FROM users WHERE email = $1',
-  [email]
-)
+const result = await pool.query('SELECT * FROM users WHERE email = $1', [email])
 
 // ❌ DANGEROUS: String concatenation (not found in codebase)
 const query = `SELECT * FROM users WHERE email = '${email}'`
@@ -203,6 +220,7 @@ const query = `SELECT * FROM users WHERE email = '${email}'`
 **Status**: ✅ PROTECTED
 
 **Layers of Protection:**
+
 1. Content Security Policy headers
 2. React automatic escaping
 3. HTML sanitization in input schemas
@@ -210,8 +228,10 @@ const query = `SELECT * FROM users WHERE email = '${email}'`
 5. TipTap editor sanitization
 
 **Safe Text Schema:**
+
 ```typescript
-export const safeTextSchema = z.string()
+export const safeTextSchema = z
+  .string()
   .max(10000)
   .transform((val) => {
     return val
@@ -227,9 +247,11 @@ export const safeTextSchema = z.string()
 ## Documentation Created
 
 ### 1. Security Audit Report
+
 **File**: `/Users/admin/Sites/nself-chat/docs/security/security-audit.md`
 **Content**: 1,000+ lines
 **Coverage**:
+
 - OWASP Top 10 analysis
 - Penetration testing results
 - Security headers verification
@@ -238,9 +260,11 @@ export const safeTextSchema = z.string()
 - Vulnerability findings and remediation
 
 ### 2. Security Best Practices Guide
+
 **File**: `/Users/admin/Sites/nself-chat/docs/security/security-best-practices.md`
 **Content**: 800+ lines
 **Coverage**:
+
 - Authentication & authorization patterns
 - Input validation guidelines
 - API security best practices
@@ -253,9 +277,11 @@ export const safeTextSchema = z.string()
 - Code review guidelines
 
 ### 3. security.txt File (RFC 9116)
+
 **File**: `/Users/admin/Sites/nself-chat/public/.well-known/security.txt`
 **Content**: RFC 9116 compliant
 **Coverage**:
+
 - Security contact information
 - Disclosure policy
 - Scope definition
@@ -264,9 +290,11 @@ export const safeTextSchema = z.string()
 - Safe harbor statement
 
 ### 4. Security Policy (Already Exists)
+
 **File**: `/Users/admin/Sites/nself-chat/docs/security/SECURITY.md`
 **Content**: Comprehensive security policy
 **Coverage**:
+
 - Vulnerability reporting
 - Response timeline
 - Severity classification
@@ -279,18 +307,18 @@ export const safeTextSchema = z.string()
 
 ### OWASP Top 10 Assessment
 
-| Vulnerability | Status | Risk Level |
-|--------------|--------|------------|
-| A01: Broken Access Control | ✅ PASS | LOW |
-| A02: Cryptographic Failures | ⚠️ REVIEW | MEDIUM |
-| A03: Injection | ✅ PASS | LOW |
-| A04: Insecure Design | ✅ PASS | LOW |
-| A05: Security Misconfiguration | ⚠️ REVIEW | MEDIUM |
-| A06: Vulnerable Components | ✅ PASS | LOW |
-| A07: Authentication Failures | ✅ PASS | LOW |
-| A08: Data Integrity Failures | ✅ PASS | LOW |
-| A09: Logging Failures | ⚠️ NEEDS IMPROVEMENT | MEDIUM |
-| A10: SSRF | ✅ PASS | LOW |
+| Vulnerability                  | Status               | Risk Level |
+| ------------------------------ | -------------------- | ---------- |
+| A01: Broken Access Control     | ✅ PASS              | LOW        |
+| A02: Cryptographic Failures    | ⚠️ REVIEW            | MEDIUM     |
+| A03: Injection                 | ✅ PASS              | LOW        |
+| A04: Insecure Design           | ✅ PASS              | LOW        |
+| A05: Security Misconfiguration | ⚠️ REVIEW            | MEDIUM     |
+| A06: Vulnerable Components     | ✅ PASS              | LOW        |
+| A07: Authentication Failures   | ✅ PASS              | LOW        |
+| A08: Data Integrity Failures   | ✅ PASS              | LOW        |
+| A09: Logging Failures          | ⚠️ NEEDS IMPROVEMENT | MEDIUM     |
+| A10: SSRF                      | ✅ PASS              | LOW        |
 
 **Overall Security Grade**: B+ (Good)
 **After Critical Fixes**: A- (Excellent)
@@ -300,13 +328,16 @@ export const safeTextSchema = z.string()
 ## Critical Issues Found
 
 ### 1. Default Secrets in Code
+
 **Severity**: CRITICAL
 **Risk**: Production deployment with weak secrets
 **Files**:
+
 - `/Users/admin/Sites/nself-chat/src/app/api/auth/signin/route.ts`
 - `/Users/admin/Sites/nself-chat/src/lib/security/csrf.ts`
 
 **Remediation**:
+
 ```typescript
 // Before (VULNERABLE):
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
@@ -319,11 +350,13 @@ if (!JWT_SECRET && process.env.NODE_ENV === 'production') {
 ```
 
 ### 2. TypeScript Build Errors Ignored
+
 **Severity**: HIGH
 **Risk**: Type safety bypassed, potential runtime errors
 **File**: `/Users/admin/Sites/nself-chat/next.config.js`
 
 **Remediation**:
+
 ```javascript
 // Before (VULNERABLE):
 typescript: {
@@ -337,9 +370,11 @@ typescript: {
 ```
 
 ### 3. Insufficient Audit Logging
+
 **Severity**: MEDIUM
 **Risk**: Security incidents may go undetected
 **Impact**: No tracking of:
+
 - Failed login attempts
 - Permission changes
 - Admin actions
@@ -412,29 +447,30 @@ typescript: {
 
 ### Code Coverage
 
-| Category | Coverage |
-|----------|----------|
-| Input Validation | 95%+ |
-| Authentication | 100% |
-| Rate Limiting | 80% |
-| CSRF Protection | 90% |
-| Security Headers | 100% |
-| File Upload Security | 100% |
+| Category             | Coverage |
+| -------------------- | -------- |
+| Input Validation     | 95%+     |
+| Authentication       | 100%     |
+| Rate Limiting        | 80%      |
+| CSRF Protection      | 90%      |
+| Security Headers     | 100%     |
+| File Upload Security | 100%     |
 
 ### Vulnerability Remediation
 
-| Priority | Count | Status |
-|----------|-------|--------|
-| Critical | 2 | ⚠️ Needs Fix |
-| High | 1 | ⚠️ Needs Fix |
-| Medium | 3 | ⚠️ Needs Fix |
-| Low | 5 | 📋 Tracked |
+| Priority | Count | Status       |
+| -------- | ----- | ------------ |
+| Critical | 2     | ⚠️ Needs Fix |
+| High     | 1     | ⚠️ Needs Fix |
+| Medium   | 3     | ⚠️ Needs Fix |
+| Low      | 5     | 📋 Tracked   |
 
 ---
 
 ## Files Modified/Created
 
 ### Modified Files (6)
+
 1. `/Users/admin/Sites/nself-chat/next.config.js` - Security headers
 2. `/Users/admin/Sites/nself-chat/src/app/api/auth/signin/route.ts` - Rate limiting
 3. `/Users/admin/Sites/nself-chat/src/app/api/auth/signup/route.ts` - Rate limiting
@@ -443,6 +479,7 @@ typescript: {
 6. `/Users/admin/Sites/nself-chat/docs/security/security-audit.md` - Updated with OWASP analysis
 
 ### Created Files (6)
+
 1. `/Users/admin/Sites/nself-chat/src/lib/validation/schemas.ts` - Zod validation schemas
 2. `/Users/admin/Sites/nself-chat/src/lib/validation/validate.ts` - Validation utilities
 3. `/Users/admin/Sites/nself-chat/src/lib/security/csrf.ts` - CSRF protection
@@ -457,6 +494,7 @@ typescript: {
 ### Immediate (Before Production Launch)
 
 1. **Fix Critical Issues**
+
    ```bash
    # Remove all default secrets
    grep -r "|| '" src/ | grep -i secret
@@ -469,6 +507,7 @@ typescript: {
    ```
 
 2. **Environment Setup**
+
    ```bash
    # Generate secure secrets
    openssl rand -base64 32  # JWT_SECRET
@@ -480,6 +519,7 @@ typescript: {
    ```
 
 3. **Verification**
+
    ```bash
    # Security audit
    npm audit --audit-level=high
@@ -527,6 +567,7 @@ typescript: {
 The nself-chat application has undergone comprehensive security hardening and is **production-ready pending critical fixes**. The implementation includes:
 
 ✅ **Strong Foundation**:
+
 - Comprehensive input validation
 - Rate limiting on critical endpoints
 - CSRF protection
@@ -534,6 +575,7 @@ The nself-chat application has undergone comprehensive security hardening and is
 - File upload security
 
 ⚠️ **Critical Fixes Required**:
+
 - Remove default secrets
 - Re-enable TypeScript validation
 - Implement audit logging

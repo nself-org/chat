@@ -5,6 +5,7 @@
  * session key derivation, and forward secrecy implementation.
  */
 
+import { logger } from '@/lib/logger'
 import {
   KeyPair,
   exportKey,
@@ -315,7 +316,7 @@ export async function decryptMessage(
         options.verificationKey
       )
     } catch (error) {
-      console.error('Signature verification failed:', error)
+      logger.error('Signature verification failed:',  error)
       verified = false
     }
   } else {
@@ -455,21 +456,12 @@ export function initializeRatchetState(): RatchetState {
 /**
  * Derives a new chain key using HKDF
  */
-export async function deriveChainKey(
-  rootKey: CryptoKey,
-  info: string
-): Promise<CryptoKey> {
+export async function deriveChainKey(rootKey: CryptoKey, info: string): Promise<CryptoKey> {
   // Export root key for derivation
   const rawRootKey = await crypto.subtle.exportKey('raw', rootKey)
 
   // Use HKDF to derive new key material
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    rawRootKey,
-    'HKDF',
-    false,
-    ['deriveKey']
-  )
+  const keyMaterial = await crypto.subtle.importKey('raw', rawRootKey, 'HKDF', false, ['deriveKey'])
 
   return crypto.subtle.deriveKey(
     {
@@ -550,10 +542,7 @@ export async function ratchetReceive(
 /**
  * Signs a message with an ECDSA private key
  */
-export async function signMessage(
-  message: string,
-  signingKey: CryptoKey
-): Promise<string> {
+export async function signMessage(message: string, signingKey: CryptoKey): Promise<string> {
   try {
     const encodedMessage = stringToArrayBuffer(message)
 
@@ -655,10 +644,7 @@ export class MessageEncryption {
   /**
    * Gets or creates a session key for a peer
    */
-  async getOrCreateSessionKey(
-    peerId: string,
-    peerPublicKey: JsonWebKey
-  ): Promise<SessionKey> {
+  async getOrCreateSessionKey(peerId: string, peerPublicKey: JsonWebKey): Promise<SessionKey> {
     if (!this.ownKeyPair) {
       throw new Error('Message encryption not initialized')
     }
@@ -714,12 +700,7 @@ export class MessageEncryption {
       throw new Error('Message encryption not initialized')
     }
 
-    return decryptMessage(
-      encryptedMessage,
-      this.ownKeyPair.privateKey,
-      senderPublicKey,
-      options
-    )
+    return decryptMessage(encryptedMessage, this.ownKeyPair.privateKey, senderPublicKey, options)
   }
 
   /**

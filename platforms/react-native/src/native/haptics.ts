@@ -4,7 +4,14 @@
 
 import * as Haptics from 'expo-haptics'
 
-export type HapticStyle = 'light' | 'medium' | 'heavy' | 'success' | 'warning' | 'error' | 'selection'
+export type HapticStyle =
+  | 'light'
+  | 'medium'
+  | 'heavy'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'selection'
 
 /**
  * Trigger haptic feedback

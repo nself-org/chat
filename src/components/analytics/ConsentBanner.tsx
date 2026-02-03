@@ -14,6 +14,8 @@ import { Shield, X, Settings } from 'lucide-react'
 import { analyticsPrivacy, hasProvidedConsent } from '@/lib/analytics/privacy'
 import { analytics } from '@/lib/analytics'
 
+import { logger } from '@/lib/logger'
+
 export function ConsentBanner() {
   const [isVisible, setIsVisible] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -36,7 +38,7 @@ export function ConsentBanner() {
 
       setIsVisible(false)
     } catch (error) {
-      console.error('Failed to accept analytics:', error)
+      logger.error('Failed to accept analytics:', error)
     } finally {
       setSaving(false)
     }
@@ -48,7 +50,7 @@ export function ConsentBanner() {
       await analyticsPrivacy.rejectAll()
       setIsVisible(false)
     } catch (error) {
-      console.error('Failed to reject analytics:', error)
+      logger.error('Failed to reject analytics:', error)
     } finally {
       setSaving(false)
     }
@@ -64,8 +66,8 @@ export function ConsentBanner() {
   }
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-      <div className="fixed inset-x-0 bottom-0 sm:bottom-4 sm:left-1/2 sm:-translate-x-1/2 sm:max-w-2xl p-4">
+    <div className="bg-background/80 fixed inset-0 z-50 backdrop-blur-sm">
+      <div className="fixed inset-x-0 bottom-0 p-4 sm:bottom-4 sm:left-1/2 sm:max-w-2xl sm:-translate-x-1/2">
         <Card className="shadow-lg">
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
@@ -76,21 +78,19 @@ export function ConsentBanner() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-6 w-6 -mt-2 -mr-2"
+                className="-mr-2 -mt-2 h-6 w-6"
                 onClick={handleRejectAll}
                 disabled={saving}
               >
                 <X className="h-4 w-4" />
               </Button>
             </div>
-            <CardDescription>
-              We use analytics to improve your experience
-            </CardDescription>
+            <CardDescription>We use analytics to improve your experience</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="text-sm text-muted-foreground space-y-2">
+            <div className="space-y-2 text-sm text-muted-foreground">
               <p>We collect:</p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
+              <ul className="ml-2 list-inside list-disc space-y-1">
                 <li>Usage patterns (features you use, screens you visit)</li>
                 <li>Performance data (app speed, load times)</li>
                 <li>Error reports (to fix bugs)</li>
@@ -98,7 +98,7 @@ export function ConsentBanner() {
               </ul>
 
               <p className="mt-3 font-medium">We do NOT collect:</p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
+              <ul className="ml-2 list-inside list-disc space-y-1">
                 <li>Your messages or conversations</li>
                 <li>Files or attachments</li>
                 <li>Passwords or tokens</li>
@@ -112,12 +112,8 @@ export function ConsentBanner() {
               </AlertDescription>
             </Alert>
 
-            <div className="flex flex-col sm:flex-row gap-2">
-              <Button
-                onClick={handleAcceptAll}
-                disabled={saving}
-                className="flex-1"
-              >
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button onClick={handleAcceptAll} disabled={saving} className="flex-1">
                 Accept All
               </Button>
               <Button
@@ -139,7 +135,7 @@ export function ConsentBanner() {
               </Button>
             </div>
 
-            <p className="text-xs text-center text-muted-foreground">
+            <p className="text-center text-xs text-muted-foreground">
               By using nChat, you agree to our{' '}
               <a href="/privacy" className="underline hover:text-foreground">
                 Privacy Policy

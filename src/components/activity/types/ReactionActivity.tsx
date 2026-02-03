@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * ReactionActivity Component
@@ -6,29 +6,25 @@
  * Displays a reaction activity
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { ActivityAvatar } from '../ActivityAvatar';
-import { ActivityDate } from '../ActivityDate';
-import type { ReactionActivity as ReactionActivityType } from '@/lib/activity/activity-types';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { ActivityAvatar } from '../ActivityAvatar'
+import { ActivityDate } from '../ActivityDate'
+import type { ReactionActivity as ReactionActivityType } from '@/lib/activity/activity-types'
 
 interface ReactionActivityProps {
-  activity: ReactionActivityType;
-  onClick?: () => void;
-  className?: string;
+  activity: ReactionActivityType
+  onClick?: () => void
+  className?: string
 }
 
-export function ReactionActivity({
-  activity,
-  onClick,
-  className,
-}: ReactionActivityProps) {
-  const { actor, emoji, message, channel, isRead, createdAt } = activity;
+export function ReactionActivity({ activity, onClick, className }: ReactionActivityProps) {
+  const { actor, emoji, message, channel, isRead, createdAt } = activity
 
   return (
     <div
       className={cn(
-        'group flex gap-3 p-3 rounded-lg transition-colors cursor-pointer',
+        'group flex cursor-pointer gap-3 rounded-lg p-3 transition-colors',
         'hover:bg-muted/50',
         !isRead && 'bg-primary/5',
         className
@@ -38,34 +34,34 @@ export function ReactionActivity({
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onClick?.();
+          e.preventDefault()
+          onClick?.()
         }
       }}
     >
       {/* Unread indicator */}
       {!isRead && (
-        <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r-full" />
+        <div className="absolute left-0 top-1/2 h-6 w-1 -translate-y-1/2 rounded-r-full bg-primary" />
       )}
 
       {/* Avatar */}
       <ActivityAvatar actor={actor} size="md" />
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <div className="flex items-start justify-between gap-2">
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             {/* Header */}
             <p className={cn('text-sm', !isRead && 'font-medium')}>
               <span className="font-medium">{actor.displayName}</span>
               {' reacted '}
-              <span className="text-lg mx-1">{emoji}</span>
+              <span className="mx-1 text-lg">{emoji}</span>
               {' to your message'}
             </p>
 
             {/* Message preview */}
-            <div className="mt-2 p-2 rounded-md bg-muted/50 border-l-2 border-muted-foreground/20">
-              <p className="text-sm text-muted-foreground line-clamp-2">
+            <div className="bg-muted/50 border-muted-foreground/20 mt-2 rounded-md border-l-2 p-2">
+              <p className="line-clamp-2 text-sm text-muted-foreground">
                 {message.contentPreview || message.content}
               </p>
             </div>
@@ -81,7 +77,7 @@ export function ReactionActivity({
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default ReactionActivity;
+export default ReactionActivity

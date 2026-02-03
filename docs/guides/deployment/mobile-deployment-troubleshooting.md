@@ -29,6 +29,7 @@ Comprehensive troubleshooting guide for common mobile deployment issues on iOS a
 **Symptom**: Build fails during script execution phase.
 
 **Solution**:
+
 ```bash
 # Clean build folder
 cd platforms/capacitor/ios
@@ -49,6 +50,7 @@ cd ../..
 **Symptom**: Swift modules not found during build.
 
 **Solution**:
+
 ```bash
 # Clean build and derived data
 cd platforms/capacitor/ios
@@ -70,6 +72,7 @@ cd ../..
 **Symptom**: Xcode cannot find source files.
 
 **Solution**:
+
 1. Open Xcode: `cd platforms/capacitor && npx cap open ios`
 2. Check file references in Project Navigator (red files = missing)
 3. Remove missing file references
@@ -81,6 +84,7 @@ cd ../..
 **Symptom**: App won't launch on simulator.
 
 **Solution**:
+
 ```bash
 # Reset simulator
 xcrun simctl shutdown all
@@ -97,6 +101,7 @@ npx cap run ios
 **Symptom**: Build fails due to circular dependencies between targets.
 
 **Solution**:
+
 1. Open project in Xcode
 2. Select project → Build Phases
 3. Check "Target Dependencies"
@@ -112,6 +117,7 @@ npx cap run ios
 **Solution**:
 
 **Option 1: Automatic Signing (Recommended)**
+
 1. Open in Xcode: `npx cap open ios`
 2. Select project → Signing & Capabilities
 3. Enable "Automatically manage signing"
@@ -119,6 +125,7 @@ npx cap run ios
 5. Xcode downloads certificates automatically
 
 **Option 2: Manual Signing**
+
 ```bash
 # Download certificates from developer.apple.com
 # Double-click to install in Keychain
@@ -133,6 +140,7 @@ security find-identity -v -p codesigning
 **Symptom**: No matching provisioning profile for bundle identifier.
 
 **Solution**:
+
 1. Go to https://developer.apple.com
 2. Certificates, Identifiers & Profiles → Profiles
 3. Create new profile:
@@ -151,6 +159,7 @@ security find-identity -v -p codesigning
 **Symptom**: Entitlements mismatch.
 
 **Solution**:
+
 1. Check App ID capabilities at developer.apple.com
 2. Enable required capabilities (Push Notifications, etc.)
 3. Regenerate provisioning profile
@@ -163,6 +172,7 @@ security find-identity -v -p codesigning
 **Symptom**: Signing not configured properly.
 
 **Solution**:
+
 ```bash
 # Set signing identity
 export IOS_SIGNING_IDENTITY="iPhone Distribution"
@@ -183,6 +193,7 @@ export IOS_SIGNING_IDENTITY="iPhone Distribution"
 **Causes & Solutions**:
 
 **Missing App Icon**
+
 ```bash
 # Ensure app icon is 1024x1024, no transparency
 # Check: platforms/capacitor/ios/App/App/Assets.xcassets/AppIcon.appiconset/
@@ -190,6 +201,7 @@ export IOS_SIGNING_IDENTITY="iPhone Distribution"
 ```
 
 **Invalid Bundle Identifier**
+
 ```bash
 # Check Info.plist
 /usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" \
@@ -199,6 +211,7 @@ export IOS_SIGNING_IDENTITY="iPhone Distribution"
 ```
 
 **Missing Required Architecture**
+
 ```bash
 # Ensure building for generic iOS device
 xcodebuild -showBuildSettings -workspace ... | grep ARCHS
@@ -210,6 +223,7 @@ xcodebuild -showBuildSettings -workspace ... | grep ARCHS
 **Symptom**: Old architecture specified.
 
 **Solution**:
+
 ```bash
 # Edit Info.plist
 cd platforms/capacitor/ios/App/App
@@ -223,6 +237,7 @@ cd platforms/capacitor/ios/App/App
 **Symptom**: Cannot authenticate for upload.
 
 **Solution**:
+
 ```bash
 # Generate app-specific password at:
 # https://appleid.apple.com/account/manage
@@ -243,6 +258,7 @@ xcrun altool --upload-app ... --password "@keychain:AC_PASSWORD"
 **Symptom**: Provisioning profile issues during upload.
 
 **Solution**:
+
 ```bash
 # Use automatic signing with export
 # Ensure ExportOptions.plist uses:
@@ -268,6 +284,7 @@ xcrun altool --upload-app ... --password "@keychain:AC_PASSWORD"
 
 2. **Missing encryption declaration**
    - Add to Info.plist:
+
    ```xml
    <key>ITSAppUsesNonExemptEncryption</key>
    <false/>
@@ -283,6 +300,7 @@ xcrun altool --upload-app ... --password "@keychain:AC_PASSWORD"
 **Symptom**: Upload successful but build not visible.
 
 **Solution**:
+
 1. Wait 10-30 minutes for processing
 2. Check email for processing failure notification
 3. Verify build number is newer than existing builds
@@ -294,12 +312,14 @@ xcrun altool --upload-app ... --password "@keychain:AC_PASSWORD"
 **Symptom**: External testing rejected by review team.
 
 **Common Reasons**:
+
 - Crash on launch
 - Sign-in required with no test account
 - Broken core functionality
 - Inappropriate content
 
 **Solution**:
+
 1. Read rejection email carefully
 2. Fix reported issues
 3. Add test account in App Store Connect if needed
@@ -312,6 +332,7 @@ xcrun altool --upload-app ... --password "@keychain:AC_PASSWORD"
 **Reason**: App crashes or has broken functionality.
 
 **Solution**:
+
 1. Test thoroughly before submission
 2. Fix all crashes
 3. Test on multiple iOS versions
@@ -323,6 +344,7 @@ xcrun altool --upload-app ... --password "@keychain:AC_PASSWORD"
 **Reason**: UI issues or poor user experience.
 
 **Solution**:
+
 1. Review Apple Human Interface Guidelines
 2. Fix UI issues
 3. Test on all screen sizes
@@ -334,6 +356,7 @@ xcrun altool --upload-app ... --password "@keychain:AC_PASSWORD"
 **Reason**: Missing privacy policy or data collection disclosure.
 
 **Solution**:
+
 1. Add privacy policy URL in App Store Connect
 2. Declare data collection in App Privacy section
 3. Add privacy policy to app if needed
@@ -351,6 +374,7 @@ xcrun altool --upload-app ... --password "@keychain:AC_PASSWORD"
 **Symptom**: Generic Gradle build failure.
 
 **Diagnosis**:
+
 ```bash
 # Run with detailed logging
 cd platforms/capacitor/android
@@ -362,6 +386,7 @@ cd platforms/capacitor/android
 **Common Solutions**:
 
 **OutOfMemoryError**
+
 ```bash
 # Increase Gradle memory
 echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=512m" \
@@ -369,6 +394,7 @@ echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=512m" \
 ```
 
 **Missing SDK/tools**
+
 ```bash
 # Install via Android Studio
 # Tools → SDK Manager → Install missing components
@@ -383,6 +409,7 @@ sdkmanager "build-tools;34.0.0"
 **Symptom**: Dependency resolution failures.
 
 **Solution**:
+
 ```bash
 # Clear Gradle cache
 cd platforms/capacitor/android
@@ -401,6 +428,7 @@ rm -rf .gradle/
 **Symptom**: Resource merging conflicts.
 
 **Solution**:
+
 ```bash
 # Check for duplicate resources
 # Look in: android/app/src/main/res/
@@ -416,6 +444,7 @@ rm -rf .gradle/
 **Symptom**: AndroidManifest.xml conflicts.
 
 **Solution**:
+
 ```bash
 # View detailed merger error
 ./gradlew assembleRelease --debug | grep -A 50 "Manifest merger"
@@ -435,6 +464,7 @@ rm -rf .gradle/
 **Symptom**: Same class defined in multiple dependencies.
 
 **Solution**:
+
 ```bash
 # Edit android/app/build.gradle
 dependencies {
@@ -457,6 +487,7 @@ configurations.all {
 **Symptom**: Cannot find keystore for signing.
 
 **Solution**:
+
 ```bash
 # Verify path
 ls -la "$ANDROID_KEYSTORE_PATH"
@@ -478,6 +509,7 @@ export ANDROID_KEYSTORE_PATH="/full/path/to/release.keystore"
 **Symptom**: Wrong password or corrupted keystore.
 
 **Solution**:
+
 ```bash
 # Verify keystore
 keytool -list -v -keystore release.keystore
@@ -497,6 +529,7 @@ file release.keystore
 **Symptom**: APK/AAB already signed.
 
 **Solution**:
+
 ```bash
 # Clean build completely
 cd platforms/capacitor/android
@@ -518,6 +551,7 @@ rm -rf app/build/outputs/
 **Common Causes**:
 
 **Version Code Too Low**
+
 ```bash
 # Version code must be higher than previous
 # Edit android/app/build.gradle
@@ -528,6 +562,7 @@ versionCode 123456789  # Must be > previous
 ```
 
 **Missing Permissions**
+
 ```bash
 # Ensure required permissions in AndroidManifest.xml
 <uses-permission android:name="android.permission.INTERNET" />
@@ -535,6 +570,7 @@ versionCode 123456789  # Must be > previous
 ```
 
 **Invalid Package Name**
+
 ```bash
 # Verify package name matches Play Console
 # android/app/build.gradle:
@@ -548,6 +584,7 @@ applicationId "com.yourcompany.nchat"
 **Symptom**: Missing 64-bit architecture.
 
 **Solution**:
+
 ```bash
 # Edit android/app/build.gradle
 android {
@@ -567,6 +604,7 @@ android {
 **Symptom**: Target SDK requirements not met.
 
 **Solution**:
+
 ```bash
 # Edit android/app/build.gradle
 android {
@@ -588,12 +626,14 @@ android {
 **Symptom**: App approved but not visible.
 
 **Common Causes**:
+
 1. **Country restrictions** - Check availability
 2. **Device compatibility** - Check supported devices
 3. **Age restrictions** - Content rating applied
 4. **Search indexing** - Can take 24-48 hours
 
 **Solution**:
+
 1. Go to Play Console → Production
 2. Check rollout status
 3. Verify "Available on Google Play" is Yes
@@ -605,6 +645,7 @@ android {
 **Symptom**: App crashes during automated testing.
 
 **Solution**:
+
 1. Review Pre-launch report in Play Console
 2. Check crash logs and screenshots
 3. Common issues:
@@ -618,6 +659,7 @@ android {
 **Symptom**: Cannot create new release while one is pending.
 
 **Solution**:
+
 - Wait for current review to complete
 - Or cancel current review (loses position in queue)
 - Or create release in different track
@@ -629,6 +671,7 @@ android {
 ### Build takes too long
 
 **iOS**:
+
 ```bash
 # Disable Bitcode (if not needed)
 # In Xcode: Build Settings → Enable Bitcode → No
@@ -641,6 +684,7 @@ android {
 ```
 
 **Android**:
+
 ```bash
 # Enable Gradle daemon
 echo "org.gradle.daemon=true" >> gradle.properties
@@ -693,6 +737,7 @@ npx capacitor-assets generate --android
 **Debug Steps**:
 
 **iOS**:
+
 ```bash
 # View crash logs in Xcode
 # Window → Devices and Simulators → View Device Logs
@@ -702,6 +747,7 @@ npx capacitor-assets generate --android
 ```
 
 **Android**:
+
 ```bash
 # View logcat
 adb logcat | grep "com.yourcompany.nchat"
@@ -711,12 +757,14 @@ adb logcat | grep "com.yourcompany.nchat"
 ```
 
 **Common Causes**:
+
 - Missing native dependencies
 - Capacitor plugin not synced
 - Native code errors
 - Missing permissions
 
 **Solution**:
+
 ```bash
 # Re-sync Capacitor
 cd platforms/capacitor
@@ -737,6 +785,7 @@ cd android && ./gradlew clean
 ### iOS Debugging
 
 **Xcode Console**:
+
 ```bash
 # Open iOS project
 cd platforms/capacitor
@@ -747,6 +796,7 @@ npx cap open ios
 ```
 
 **Safari Web Inspector**:
+
 ```bash
 # Enable in Safari: Develop → Simulator → localhost
 # Inspect web content in Capacitor WebView
@@ -754,6 +804,7 @@ npx cap open ios
 ```
 
 **Instruments**:
+
 ```bash
 # Profile performance
 # Xcode → Product → Profile
@@ -763,6 +814,7 @@ npx cap open ios
 ### Android Debugging
 
 **Android Studio Logcat**:
+
 ```bash
 # View real-time logs
 # Android Studio → Logcat tab
@@ -770,6 +822,7 @@ npx cap open ios
 ```
 
 **Chrome DevTools**:
+
 ```bash
 # Navigate to: chrome://inspect
 # Click "Inspect" next to your app
@@ -777,6 +830,7 @@ npx cap open ios
 ```
 
 **ADB Commands**:
+
 ```bash
 # View logs
 adb logcat
@@ -800,6 +854,7 @@ adb shell getprop ro.build.version.release
 ### Network Debugging
 
 **iOS**:
+
 ```bash
 # Use Charles Proxy or Proxyman
 # Configure simulator/device to use proxy
@@ -809,6 +864,7 @@ adb shell getprop ro.build.version.release
 ```
 
 **Android**:
+
 ```bash
 # Use Charles Proxy or Proxyman
 # Or Chrome DevTools Network tab
@@ -822,6 +878,7 @@ adb shell am broadcast -a android.intent.action.PROXY_CHANGE
 ### Performance Monitoring
 
 **Sentry Integration**:
+
 ```bash
 # Already configured in nself-chat
 # View errors at: sentry.io
@@ -831,6 +888,7 @@ adb shell am broadcast -a android.intent.action.PROXY_CHANGE
 ```
 
 **Firebase Performance**:
+
 ```bash
 # Add to iOS: ios/App/App/GoogleService-Info.plist
 # Add to Android: android/app/google-services.json
@@ -859,6 +917,7 @@ If you're still stuck after trying these solutions:
    - Error message (full output)
    - Steps to reproduce
    - Environment details:
+
      ```bash
      # iOS
      xcodebuild -version

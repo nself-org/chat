@@ -57,10 +57,7 @@ const MIN_QUERY_LENGTH = 1
 // Search Functions
 // ============================================================================
 
-export function searchChannels(
-  channels: Channel[],
-  options: SearchOptions
-): SearchResult[] {
+export function searchChannels(channels: Channel[], options: SearchOptions): SearchResult[] {
   const {
     query,
     fields = DEFAULT_SEARCH_FIELDS,
@@ -154,7 +151,7 @@ function calculateSearchMatch(
         : 0
 
       relevance +=
-        (matches.length * fieldWeight + exactMatchBonus + startsWithBonus + wordBoundaryBonus)
+        matches.length * fieldWeight + exactMatchBonus + startsWithBonus + wordBoundaryBonus
 
       highlights.push({
         field,
@@ -167,10 +164,7 @@ function calculateSearchMatch(
   return { relevance, highlights }
 }
 
-function getFieldValue(
-  channel: Channel,
-  field: Exclude<SearchField, 'all'>
-): string | null {
+function getFieldValue(channel: Channel, field: Exclude<SearchField, 'all'>): string | null {
   switch (field) {
     case 'name':
       return channel.name
@@ -196,11 +190,7 @@ function getFieldWeight(field: Exclude<SearchField, 'all'>): number {
   }
 }
 
-function findMatches(
-  text: string,
-  query: string,
-  pattern: RegExp
-): HighlightMatch[] {
+function findMatches(text: string, query: string, pattern: RegExp): HighlightMatch[] {
   const matches: HighlightMatch[] = []
 
   // First try exact match
@@ -324,10 +314,7 @@ export function addToSearchHistory(query: string): void {
   if (query.length < MIN_QUERY_LENGTH) return
 
   const history = getSearchHistory()
-  const newHistory = [query, ...history.filter((h) => h !== query)].slice(
-    0,
-    MAX_HISTORY_ITEMS
-  )
+  const newHistory = [query, ...history.filter((h) => h !== query)].slice(0, MAX_HISTORY_ITEMS)
   localStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory))
 }
 
@@ -447,10 +434,7 @@ export const QUICK_FILTERS: QuickFilter[] = [
   },
 ]
 
-export function applyQuickFilter(
-  channels: Channel[],
-  filterId: string
-): Channel[] {
+export function applyQuickFilter(channels: Channel[], filterId: string): Channel[] {
   const filter = QUICK_FILTERS.find((f) => f.id === filterId)
   if (!filter) return channels
   return channels.filter(filter.filter)

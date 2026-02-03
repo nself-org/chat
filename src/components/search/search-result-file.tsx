@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { formatDistanceToNow, format } from 'date-fns';
+import * as React from 'react'
+import { formatDistanceToNow, format } from 'date-fns'
 import {
   FileText,
   FileImage,
@@ -14,11 +14,11 @@ import {
   Download,
   ExternalLink,
   Hash,
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import type { FileSearchResult } from '@/stores/search-store';
-import { HighlightedText } from './search-result-message';
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import type { FileSearchResult } from '@/stores/search-store'
+import { HighlightedText } from './search-result-message'
 
 // ============================================================================
 // Types
@@ -26,29 +26,26 @@ import { HighlightedText } from './search-result-message';
 
 export interface SearchResultFileProps {
   /** The file search result data */
-  result: FileSearchResult;
+  result: FileSearchResult
   /** The search query to highlight */
-  query?: string;
+  query?: string
   /** Whether this result is currently selected/focused */
-  isSelected?: boolean;
+  isSelected?: boolean
   /** Callback when "Download" is clicked */
-  onDownload?: (result: FileSearchResult) => void;
+  onDownload?: (result: FileSearchResult) => void
   /** Callback when "Jump to message" is clicked */
-  onJumpToMessage?: (result: FileSearchResult) => void;
+  onJumpToMessage?: (result: FileSearchResult) => void
   /** Callback when the result is clicked */
-  onClick?: (result: FileSearchResult) => void;
+  onClick?: (result: FileSearchResult) => void
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
 // File Type Configuration
 // ============================================================================
 
-const fileTypeConfig: Record<
-  string,
-  { icon: React.ElementType; color: string }
-> = {
+const fileTypeConfig: Record<string, { icon: React.ElementType; color: string }> = {
   // Images
   'image/png': { icon: FileImage, color: 'text-pink-500' },
   'image/jpeg': { icon: FileImage, color: 'text-pink-500' },
@@ -96,30 +93,30 @@ const fileTypeConfig: Record<
   'text/html': { icon: FileCode, color: 'text-orange-500' },
   'text/css': { icon: FileCode, color: 'text-blue-400' },
   'text/plain': { icon: FileText, color: 'text-gray-500' },
-};
+}
 
 function getFileTypeConfig(mimeType: string): { icon: React.ElementType; color: string } {
   // Check for exact match
   if (fileTypeConfig[mimeType]) {
-    return fileTypeConfig[mimeType];
+    return fileTypeConfig[mimeType]
   }
 
   // Check for category match
   if (mimeType.startsWith('image/')) {
-    return { icon: FileImage, color: 'text-pink-500' };
+    return { icon: FileImage, color: 'text-pink-500' }
   }
   if (mimeType.startsWith('video/')) {
-    return { icon: FileVideo, color: 'text-purple-500' };
+    return { icon: FileVideo, color: 'text-purple-500' }
   }
   if (mimeType.startsWith('audio/')) {
-    return { icon: FileAudio, color: 'text-green-500' };
+    return { icon: FileAudio, color: 'text-green-500' }
   }
   if (mimeType.startsWith('text/')) {
-    return { icon: FileText, color: 'text-gray-500' };
+    return { icon: FileText, color: 'text-gray-500' }
   }
 
   // Default
-  return { icon: File, color: 'text-muted-foreground' };
+  return { icon: File, color: 'text-muted-foreground' }
 }
 
 // ============================================================================
@@ -136,34 +133,34 @@ export function SearchResultFile({
   className,
 }: SearchResultFileProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
   const handleDownload = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onDownload?.(result);
-  };
+    e.stopPropagation()
+    onDownload?.(result)
+  }
 
   const handleJump = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onJumpToMessage?.(result);
-  };
+    e.stopPropagation()
+    onJumpToMessage?.(result)
+  }
 
   // Get file icon and color
-  const { icon: FileIcon, color: iconColor } = getFileTypeConfig(result.fileType);
+  const { icon: FileIcon, color: iconColor } = getFileTypeConfig(result.fileType)
 
   // Format timestamp
-  const timestamp = new Date(result.uploadedAt);
-  const isRecent = Date.now() - timestamp.getTime() < 24 * 60 * 60 * 1000;
+  const timestamp = new Date(result.uploadedAt)
+  const isRecent = Date.now() - timestamp.getTime() < 24 * 60 * 60 * 1000
   const timeDisplay = isRecent
     ? formatDistanceToNow(timestamp, { addSuffix: true })
-    : format(timestamp, 'MMM d, yyyy');
+    : format(timestamp, 'MMM d, yyyy')
 
   // Format file size
-  const fileSize = formatFileSize(result.fileSize);
+  const fileSize = formatFileSize(result.fileSize)
 
   // Check if we can show a thumbnail
-  const showThumbnail = result.thumbnailUrl && result.fileType.startsWith('image/');
+  const showThumbnail = result.thumbnailUrl && result.fileType.startsWith('image/')
 
   return (
     <div
@@ -172,14 +169,14 @@ export function SearchResultFile({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
         'group relative flex gap-3 rounded-lg border p-3 transition-colors',
         'hover:bg-accent/50 cursor-pointer',
-        isSelected && 'bg-accent border-primary/50',
+        isSelected && 'border-primary/50 bg-accent',
         className
       )}
     >
@@ -249,19 +246,14 @@ export function SearchResultFile({
             <Download className="h-3 w-3" />
             Download
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleJump}
-            className="h-7 gap-1 px-2 text-xs"
-          >
+          <Button variant="ghost" size="sm" onClick={handleJump} className="h-7 gap-1 px-2 text-xs">
             <ExternalLink className="h-3 w-3" />
             Jump to message
           </Button>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -269,11 +261,11 @@ export function SearchResultFile({
 // ============================================================================
 
 export interface CompactFileResultProps {
-  result: FileSearchResult;
-  query?: string;
-  isSelected?: boolean;
-  onClick?: (result: FileSearchResult) => void;
-  className?: string;
+  result: FileSearchResult
+  query?: string
+  isSelected?: boolean
+  onClick?: (result: FileSearchResult) => void
+  className?: string
 }
 
 export function CompactFileResult({
@@ -284,11 +276,11 @@ export function CompactFileResult({
   className,
 }: CompactFileResultProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
-  const { icon: FileIcon, color: iconColor } = getFileTypeConfig(result.fileType);
-  const fileSize = formatFileSize(result.fileSize);
+  const { icon: FileIcon, color: iconColor } = getFileTypeConfig(result.fileType)
+  const fileSize = formatFileSize(result.fileSize)
 
   return (
     <div
@@ -297,8 +289,8 @@ export function CompactFileResult({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
@@ -314,7 +306,7 @@ export function CompactFileResult({
       </span>
       <span className="shrink-0 text-xs text-muted-foreground">{fileSize}</span>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -322,12 +314,12 @@ export function CompactFileResult({
 // ============================================================================
 
 export interface FileGridItemProps {
-  result: FileSearchResult;
-  query?: string;
-  isSelected?: boolean;
-  onClick?: (result: FileSearchResult) => void;
-  onDownload?: (result: FileSearchResult) => void;
-  className?: string;
+  result: FileSearchResult
+  query?: string
+  isSelected?: boolean
+  onClick?: (result: FileSearchResult) => void
+  onDownload?: (result: FileSearchResult) => void
+  className?: string
 }
 
 export function FileGridItem({
@@ -339,17 +331,17 @@ export function FileGridItem({
   className,
 }: FileGridItemProps) {
   const handleClick = () => {
-    onClick?.(result);
-  };
+    onClick?.(result)
+  }
 
   const handleDownload = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onDownload?.(result);
-  };
+    e.stopPropagation()
+    onDownload?.(result)
+  }
 
-  const { icon: FileIcon, color: iconColor } = getFileTypeConfig(result.fileType);
-  const showThumbnail = result.thumbnailUrl && result.fileType.startsWith('image/');
-  const fileSize = formatFileSize(result.fileSize);
+  const { icon: FileIcon, color: iconColor } = getFileTypeConfig(result.fileType)
+  const showThumbnail = result.thumbnailUrl && result.fileType.startsWith('image/')
+  const fileSize = formatFileSize(result.fileSize)
 
   return (
     <div
@@ -358,14 +350,14 @@ export function FileGridItem({
       onClick={handleClick}
       onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          handleClick();
+          e.preventDefault()
+          handleClick()
         }
       }}
       className={cn(
         'group relative flex flex-col rounded-lg border transition-colors',
         'hover:bg-accent/50 cursor-pointer',
-        isSelected && 'bg-accent border-primary/50',
+        isSelected && 'border-primary/50 bg-accent',
         className
       )}
     >
@@ -388,7 +380,7 @@ export function FileGridItem({
           type="button"
           onClick={handleDownload}
           className={cn(
-            'absolute right-2 top-2 rounded-full bg-background/80 p-1.5',
+            'bg-background/80 absolute right-2 top-2 rounded-full p-1.5',
             'opacity-0 transition-opacity hover:bg-background',
             'group-hover:opacity-100',
             isSelected && 'opacity-100'
@@ -407,7 +399,7 @@ export function FileGridItem({
         <div className="text-xs text-muted-foreground">{fileSize}</div>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -416,9 +408,7 @@ export function FileGridItem({
 
 export function FileResultSkeleton({ className }: { className?: string }) {
   return (
-    <div
-      className={cn('flex gap-3 rounded-lg border p-3 animate-pulse', className)}
-    >
+    <div className={cn('flex animate-pulse gap-3 rounded-lg border p-3', className)}>
       <div className="h-12 w-12 shrink-0 rounded-lg bg-muted" />
       <div className="min-w-0 flex-1 space-y-2">
         <div className="h-4 w-48 rounded bg-muted" />
@@ -429,7 +419,7 @@ export function FileResultSkeleton({ className }: { className?: string }) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -437,13 +427,13 @@ export function FileResultSkeleton({ className }: { className?: string }) {
 // ============================================================================
 
 function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return '0 B'
 
-  const units = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  const size = bytes / Math.pow(1024, i);
+  const units = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(1024))
+  const size = bytes / Math.pow(1024, i)
 
-  return `${size.toFixed(i === 0 ? 0 : 1)} ${units[i]}`;
+  return `${size.toFixed(i === 0 ? 0 : 1)} ${units[i]}`
 }
 
-export default SearchResultFile;
+export default SearchResultFile

@@ -1,6 +1,6 @@
-'use client';
+'use client'
 
-import * as React from 'react';
+import * as React from 'react'
 import {
   User,
   MessageSquare,
@@ -16,14 +16,16 @@ import {
   VolumeX,
   UserX,
   type LucideIcon,
-} from 'lucide-react';
-import { useContextMenuStore, type UserTarget } from '@/lib/context-menu/context-menu-store';
-import { PositionedContextMenu } from './base-context-menu';
-import { MenuItem } from './menu-item';
-import { MenuSeparator } from './menu-separator';
-import { MenuSubmenu, MenuSubmenuTrigger, MenuSubmenuContent } from './menu-submenu';
-import { useBlockStore } from '@/lib/moderation/block-store';
-import { useReportStore } from '@/lib/moderation/report-store';
+} from 'lucide-react'
+import { useContextMenuStore, type UserTarget } from '@/lib/context-menu/context-menu-store'
+import { PositionedContextMenu } from './base-context-menu'
+import { MenuItem } from './menu-item'
+import { MenuSeparator } from './menu-separator'
+import { MenuSubmenu, MenuSubmenuTrigger, MenuSubmenuContent } from './menu-submenu'
+import { useBlockStore } from '@/lib/moderation/block-store'
+import { useReportStore } from '@/lib/moderation/report-store'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Types
@@ -33,15 +35,15 @@ export interface UserContextMenuProps {
   /**
    * Called when an action is performed
    */
-  onAction?: (action: string, data: UserActionData) => void;
+  onAction?: (action: string, data: UserActionData) => void
 }
 
 export interface UserActionData {
-  userId: string;
-  username: string;
-  channelId?: string;
-  action: UserAction;
-  newRole?: UserRole;
+  userId: string
+  username: string
+  channelId?: string
+  action: UserAction
+  newRole?: UserRole
 }
 
 export type UserAction =
@@ -55,9 +57,9 @@ export type UserAction =
   | 'block'
   | 'unblock'
   | 'report'
-  | 'mute';
+  | 'mute'
 
-export type UserRole = 'owner' | 'admin' | 'moderator' | 'member' | 'guest';
+export type UserRole = 'owner' | 'admin' | 'moderator' | 'member' | 'guest'
 
 // Role options with icons
 const ROLE_OPTIONS: { value: UserRole; label: string; icon: LucideIcon }[] = [
@@ -66,27 +68,27 @@ const ROLE_OPTIONS: { value: UserRole; label: string; icon: LucideIcon }[] = [
   { value: 'moderator', label: 'Moderator', icon: Shield },
   { value: 'member', label: 'Member', icon: User },
   { value: 'guest', label: 'Guest', icon: User },
-];
+]
 
 // ============================================================================
 // Component
 // ============================================================================
 
 export function UserContextMenu({ onAction }: UserContextMenuProps) {
-  const target = useContextMenuStore((state) => state.target);
-  const closeMenu = useContextMenuStore((state) => state.closeMenu);
+  const target = useContextMenuStore((state) => state.target)
+  const closeMenu = useContextMenuStore((state) => state.closeMenu)
 
   // Block store for checking block status
-  const { isUserBlocked, openBlockModal } = useBlockStore();
-  const { openReportUserModal } = useReportStore();
+  const { isUserBlocked, openBlockModal } = useBlockStore()
+  const { openReportUserModal } = useReportStore()
 
   // Mute modal state
-  const [muteModalOpen, setMuteModalOpen] = React.useState(false);
+  const [muteModalOpen, setMuteModalOpen] = React.useState(false)
 
   // Type guard for user target
-  const userTarget = target?.type === 'user' ? (target as UserTarget) : null;
+  const userTarget = target?.type === 'user' ? (target as UserTarget) : null
 
-  if (!userTarget) return null;
+  if (!userTarget) return null
 
   const {
     userId,
@@ -97,10 +99,10 @@ export function UserContextMenu({ onAction }: UserContextMenuProps) {
     canChangeRole,
     canRemoveFromChannel,
     canSendMessage,
-  } = userTarget;
+  } = userTarget
 
   // Check if this user is blocked
-  const isBlocked = isUserBlocked(userId);
+  const isBlocked = isUserBlocked(userId)
 
   const handleAction = (action: UserAction, newRole?: UserRole) => {
     onAction?.(action, {
@@ -109,23 +111,23 @@ export function UserContextMenu({ onAction }: UserContextMenuProps) {
       channelId,
       action,
       newRole,
-    });
-    closeMenu();
-  };
+    })
+    closeMenu()
+  }
 
   const handleCopyUsername = async () => {
     try {
-      await navigator.clipboard.writeText(`@${username}`);
-      handleAction('copy-username');
+      await navigator.clipboard.writeText(`@${username}`)
+      handleAction('copy-username')
     } catch (error) {
-      console.error('Failed to copy username:', error);
+      logger.error('Failed to copy username:', error)
     }
-  };
+  }
 
   const handleMention = () => {
     // This would typically insert @username into the message input
-    handleAction('mention');
-  };
+    handleAction('mention')
+  }
 
   const handleBlock = () => {
     openBlockModal({
@@ -133,9 +135,9 @@ export function UserContextMenu({ onAction }: UserContextMenuProps) {
       username,
       displayName,
       avatarUrl: undefined, // Would need to add this to UserTarget if available
-    });
-    handleAction('block');
-  };
+    })
+    handleAction('block')
+  }
 
   const handleReport = () => {
     openReportUserModal({
@@ -143,48 +145,36 @@ export function UserContextMenu({ onAction }: UserContextMenuProps) {
       username,
       displayName,
       avatarUrl: undefined, // Would need to add this to UserTarget if available
-    });
-    handleAction('report');
-  };
+    })
+    handleAction('report')
+  }
 
   const handleMute = () => {
-    setMuteModalOpen(true);
-    handleAction('mute');
-  };
+    setMuteModalOpen(true)
+    handleAction('mute')
+  }
 
   return (
     <PositionedContextMenu>
       {/* View Profile */}
-      <MenuItem
-        icon={User}
-        onSelect={() => handleAction('view-profile')}
-      >
+      <MenuItem icon={User} onSelect={() => handleAction('view-profile')}>
         View profile
       </MenuItem>
 
       {/* Send Direct Message */}
       {canSendMessage && (
-        <MenuItem
-          icon={MessageSquare}
-          onSelect={() => handleAction('send-message')}
-        >
+        <MenuItem icon={MessageSquare} onSelect={() => handleAction('send-message')}>
           Send message
         </MenuItem>
       )}
 
       {/* Mention */}
-      <MenuItem
-        icon={AtSign}
-        onSelect={handleMention}
-      >
+      <MenuItem icon={AtSign} onSelect={handleMention}>
         Mention @{username}
       </MenuItem>
 
       {/* Copy Username */}
-      <MenuItem
-        icon={Copy}
-        onSelect={handleCopyUsername}
-      >
+      <MenuItem icon={Copy} onSelect={handleCopyUsername}>
         Copy username
       </MenuItem>
 
@@ -194,9 +184,7 @@ export function UserContextMenu({ onAction }: UserContextMenuProps) {
       {/* Change Role (admin only) */}
       {canChangeRole && (
         <MenuSubmenu>
-          <MenuSubmenuTrigger icon={ShieldAlert}>
-            Change role
-          </MenuSubmenuTrigger>
+          <MenuSubmenuTrigger icon={ShieldAlert}>Change role</MenuSubmenuTrigger>
           <MenuSubmenuContent>
             {ROLE_OPTIONS.map(({ value, label, icon: Icon }) => (
               <MenuItem
@@ -217,22 +205,14 @@ export function UserContextMenu({ onAction }: UserContextMenuProps) {
 
       {/* Remove from Channel (admin only, in channel context) */}
       {canRemoveFromChannel && channelId && (
-        <MenuItem
-          icon={UserMinus}
-          danger
-          onSelect={() => handleAction('remove-from-channel')}
-        >
+        <MenuItem icon={UserMinus} danger onSelect={() => handleAction('remove-from-channel')}>
           Remove from channel
         </MenuItem>
       )}
 
       {/* Ban User (admin only) */}
       {canChangeRole && (
-        <MenuItem
-          icon={Ban}
-          danger
-          onSelect={() => handleAction('ban')}
-        >
+        <MenuItem icon={Ban} danger onSelect={() => handleAction('ban')}>
           Ban user
         </MenuItem>
       )}
@@ -242,46 +222,32 @@ export function UserContextMenu({ onAction }: UserContextMenuProps) {
 
       {/* Block/Unblock User */}
       {isBlocked ? (
-        <MenuItem
-          icon={UserX}
-          onSelect={() => handleAction('unblock')}
-        >
+        <MenuItem icon={UserX} onSelect={() => handleAction('unblock')}>
           Unblock user
         </MenuItem>
       ) : (
-        <MenuItem
-          icon={UserX}
-          danger
-          onSelect={handleBlock}
-        >
+        <MenuItem icon={UserX} danger onSelect={handleBlock}>
           Block user
         </MenuItem>
       )}
 
       {/* Report User */}
-      <MenuItem
-        icon={Flag}
-        danger
-        onSelect={handleReport}
-      >
+      <MenuItem icon={Flag} danger onSelect={handleReport}>
         Report user
       </MenuItem>
 
       {/* Mute User (moderator only) */}
       {canChangeRole && (
-        <MenuItem
-          icon={VolumeX}
-          onSelect={handleMute}
-        >
+        <MenuItem icon={VolumeX} onSelect={handleMute}>
           Mute user
         </MenuItem>
       )}
     </PositionedContextMenu>
-  );
+  )
 }
 
 // ============================================================================
 // Exports
 // ============================================================================
 
-export { ROLE_OPTIONS };
+export { ROLE_OPTIONS }

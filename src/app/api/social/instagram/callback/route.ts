@@ -7,6 +7,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { InstagramClient } from '@/lib/social/instagram-client'
 import { encryptToken } from '@/lib/social/encryption'
 
+import { logger } from '@/lib/logger'
+
 // Lazy instantiate in route handler
 
 /**
@@ -55,7 +57,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/social/accounts`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         platform: 'instagram',
@@ -64,8 +66,8 @@ export async function GET(request: NextRequest) {
         account_handle: accountInfo.handle,
         avatar_url: accountInfo.avatarUrl,
         access_token_encrypted: encryptedAccessToken,
-        token_expires_at: expiresAt?.toISOString()
-      })
+        token_expires_at: expiresAt?.toISOString(),
+      }),
     })
 
     if (!response.ok) {
@@ -80,7 +82,7 @@ export async function GET(request: NextRequest) {
 
     return successResponse
   } catch (error) {
-    console.error('Instagram callback error:', error)
+    logger.error('Instagram callback error:', error)
     return NextResponse.redirect(
       `${process.env.NEXT_PUBLIC_APP_URL}/admin/social?error=${encodeURIComponent(String(error))}`
     )

@@ -147,9 +147,7 @@ describe('EmptyState', () => {
     })
 
     it('allows overriding preset description', () => {
-      render(
-        <EmptyState type="no-messages" description="Custom description" />
-      )
+      render(<EmptyState type="no-messages" description="Custom description" />)
       expect(screen.getByText('Custom description')).toBeInTheDocument()
     })
   })

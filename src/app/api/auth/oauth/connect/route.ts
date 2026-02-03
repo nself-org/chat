@@ -5,6 +5,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+
+import { logger } from '@/lib/logger'
 // import { authConfig } from '@/config/auth.config'
 
 const OAUTH_CONFIGS = {
@@ -31,26 +33,20 @@ export async function GET(request: NextRequest) {
     const provider = searchParams.get('provider')
 
     if (!provider || !(provider in OAUTH_CONFIGS)) {
-      return NextResponse.json(
-        { error: 'Invalid OAuth provider' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid OAuth provider' }, { status: 400 })
     }
 
     const config = OAUTH_CONFIGS[provider as keyof typeof OAUTH_CONFIGS]
 
     if (!config.clientId) {
-      return NextResponse.json(
-        { error: `${provider} OAuth not configured` },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: `${provider} OAuth not configured` }, { status: 400 })
     }
 
     // Build OAuth URL
     const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/oauth/callback`
-    const state = Buffer.from(
-      JSON.stringify({ provider, timestamp: Date.now() })
-    ).toString('base64')
+    const state = Buffer.from(JSON.stringify({ provider, timestamp: Date.now() })).toString(
+      'base64'
+    )
 
     const authUrl = new URL(config.authUrl)
     authUrl.searchParams.set('client_id', config.clientId)
@@ -63,10 +59,7 @@ export async function GET(request: NextRequest) {
       data: { authUrl: authUrl.toString() },
     })
   } catch (error) {
-    console.error('OAuth connection error:', error)
-    return NextResponse.json(
-      { error: 'Failed to initialize OAuth connection' },
-      { status: 500 }
-    )
+    logger.error('OAuth connection error:', error)
+    return NextResponse.json({ error: 'Failed to initialize OAuth connection' }, { status: 500 })
   }
 }

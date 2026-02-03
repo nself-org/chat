@@ -9,14 +9,7 @@
 // Types
 // =============================================================================
 
-export type AnnotationTool =
-  | 'pen'
-  | 'arrow'
-  | 'line'
-  | 'rectangle'
-  | 'circle'
-  | 'text'
-  | 'eraser'
+export type AnnotationTool = 'pen' | 'arrow' | 'line' | 'rectangle' | 'circle' | 'text' | 'eraser'
 
 export type AnnotationColor = string
 
@@ -468,11 +461,7 @@ export class ScreenAnnotator {
   /**
    * Check if point is near annotation
    */
-  private isPointNearAnnotation(
-    point: Point,
-    annotation: Annotation,
-    radius: number
-  ): boolean {
+  private isPointNearAnnotation(point: Point, annotation: Annotation, radius: number): boolean {
     switch (annotation.tool) {
       case 'pen':
         return annotation.points.some((p) => this.distance(point, p) < radius)

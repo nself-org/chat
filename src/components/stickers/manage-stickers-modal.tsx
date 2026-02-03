@@ -1,16 +1,7 @@
 'use client'
 
 import { useState, useCallback, useMemo } from 'react'
-import {
-  GripVertical,
-  Trash2,
-  Search,
-  Plus,
-  Clock,
-  Heart,
-  Loader2,
-  Package,
-} from 'lucide-react'
+import { GripVertical, Trash2, Search, Plus, Clock, Heart, Loader2, Package } from 'lucide-react'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import {
@@ -77,9 +68,9 @@ function DraggablePackItem({
   return (
     <div
       className={cn(
-        'flex items-center gap-3 p-3 rounded-lg border bg-card transition-all',
-        isDragging && 'opacity-50 scale-95',
-        isDragOver && 'border-primary bg-primary/5'
+        'flex items-center gap-3 rounded-lg border bg-card p-3 transition-all',
+        isDragging && 'scale-95 opacity-50',
+        isDragOver && 'bg-primary/5 border-primary'
       )}
       draggable
       onDragStart={() => onDragStart(pack.pack_id)}
@@ -92,16 +83,16 @@ function DraggablePackItem({
       {/* Drag Handle */}
       <button
         type="button"
-        className="cursor-grab active:cursor-grabbing text-muted-foreground hover:text-foreground"
+        className="cursor-grab text-muted-foreground hover:text-foreground active:cursor-grabbing"
         aria-label="Drag to reorder"
       >
         <GripVertical className="h-5 w-5" />
       </button>
 
       {/* Pack Thumbnail */}
-      <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-muted flex-shrink-0">
+      <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
         {imageError ? (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             <Package className="h-5 w-5 text-muted-foreground" />
           </div>
         ) : (
@@ -116,8 +107,8 @@ function DraggablePackItem({
       </div>
 
       {/* Pack Info */}
-      <div className="flex-1 min-w-0">
-        <h4 className="font-medium text-sm truncate">{pack.pack.name}</h4>
+      <div className="min-w-0 flex-1">
+        <h4 className="truncate text-sm font-medium">{pack.pack.name}</h4>
         <p className="text-xs text-muted-foreground">
           {pack.pack.sticker_count} stickers
           {pack.pack.is_animated && ' - Animated'}
@@ -132,11 +123,7 @@ function DraggablePackItem({
         disabled={isRemoving}
         className="text-muted-foreground hover:text-destructive"
       >
-        {isRemoving ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <Trash2 className="h-4 w-4" />
-        )}
+        {isRemoving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
       </Button>
     </div>
   )
@@ -165,10 +152,10 @@ function FavoriteStickerItem({ favorite, onRemove }: FavoriteStickerItemProps) {
   }, [onRemove, favorite.sticker_id])
 
   return (
-    <div className="relative group">
-      <div className="w-16 h-16 rounded-lg overflow-hidden bg-muted">
+    <div className="group relative">
+      <div className="h-16 w-16 overflow-hidden rounded-lg bg-muted">
         {imageError ? (
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             <span className="text-xs text-muted-foreground">Error</span>
           </div>
         ) : (
@@ -186,17 +173,13 @@ function FavoriteStickerItem({ favorite, onRemove }: FavoriteStickerItemProps) {
         onClick={handleRemove}
         disabled={isRemoving}
         className={cn(
-          'absolute -top-1 -right-1 p-1 rounded-full',
+          'absolute -right-1 -top-1 rounded-full p-1',
           'bg-destructive text-destructive-foreground',
-          'opacity-0 group-hover:opacity-100 transition-opacity',
+          'opacity-0 transition-opacity group-hover:opacity-100',
           'disabled:opacity-50'
         )}
       >
-        {isRemoving ? (
-          <Loader2 className="h-3 w-3 animate-spin" />
-        ) : (
-          <Trash2 className="h-3 w-3" />
-        )}
+        {isRemoving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Trash2 className="h-3 w-3" />}
       </button>
     </div>
   )
@@ -229,20 +212,26 @@ export function ManageStickersModal({
   const [isClearingRecent, setIsClearingRecent] = useState(false)
 
   // Handle pack removal
-  const handleRemovePack = useCallback(async (packId: string) => {
-    await removePack(packId)
-  }, [removePack])
+  const handleRemovePack = useCallback(
+    async (packId: string) => {
+      await removePack(packId)
+    },
+    [removePack]
+  )
 
   // Handle drag and drop reordering
   const handleDragStart = useCallback((packId: string) => {
     setDraggedPackId(packId)
   }, [])
 
-  const handleDragOver = useCallback((packId: string) => {
-    if (packId !== draggedPackId) {
-      setDragOverPackId(packId)
-    }
-  }, [draggedPackId])
+  const handleDragOver = useCallback(
+    (packId: string) => {
+      if (packId !== draggedPackId) {
+        setDragOverPackId(packId)
+      }
+    },
+    [draggedPackId]
+  )
 
   const handleDragEnd = useCallback(() => {
     if (draggedPackId && dragOverPackId && draggedPackId !== dragOverPackId) {
@@ -263,9 +252,12 @@ export function ManageStickersModal({
   }, [draggedPackId, dragOverPackId, installedPacks, reorderPacks])
 
   // Handle favorite removal
-  const handleRemoveFavorite = useCallback(async (stickerId: string) => {
-    await removeFromFavorites(stickerId)
-  }, [removeFromFavorites])
+  const handleRemoveFavorite = useCallback(
+    async (stickerId: string) => {
+      await removeFromFavorites(stickerId)
+    },
+    [removeFromFavorites]
+  )
 
   // Handle clear recent
   const handleClearRecent = useCallback(async () => {
@@ -278,11 +270,14 @@ export function ManageStickersModal({
   }, [clearRecentStickers])
 
   // Stats
-  const stats = useMemo(() => ({
-    packs: installedPacks.length,
-    favorites: favoriteStickers.length,
-    recent: recentStickers.length,
-  }), [installedPacks.length, favoriteStickers.length, recentStickers.length])
+  const stats = useMemo(
+    () => ({
+      packs: installedPacks.length,
+      favorites: favoriteStickers.length,
+      recent: recentStickers.length,
+    }),
+    [installedPacks.length, favoriteStickers.length, recentStickers.length]
+  )
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -297,15 +292,15 @@ export function ManageStickersModal({
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as ManageTab)}>
           <TabsList className="w-full">
             <TabsTrigger value="packs" className="flex-1">
-              <Package className="h-4 w-4 mr-2" />
+              <Package className="mr-2 h-4 w-4" />
               Packs ({stats.packs})
             </TabsTrigger>
             <TabsTrigger value="favorites" className="flex-1">
-              <Heart className="h-4 w-4 mr-2" />
+              <Heart className="mr-2 h-4 w-4" />
               Favorites ({stats.favorites})
             </TabsTrigger>
             <TabsTrigger value="recent" className="flex-1">
-              <Clock className="h-4 w-4 mr-2" />
+              <Clock className="mr-2 h-4 w-4" />
               Recent ({stats.recent})
             </TabsTrigger>
           </TabsList>
@@ -317,28 +312,28 @@ export function ManageStickersModal({
                 <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
               </div>
             ) : installedPacks.length === 0 ? (
-              <div className="text-center py-12">
-                <Package className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <h3 className="font-medium mb-1">No sticker packs</h3>
-                <p className="text-sm text-muted-foreground mb-4">
+              <div className="py-12 text-center">
+                <Package className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
+                <h3 className="mb-1 font-medium">No sticker packs</h3>
+                <p className="mb-4 text-sm text-muted-foreground">
                   Add some sticker packs to get started
                 </p>
                 {onAddPackClick && (
                   <Button onClick={onAddPackClick}>
-                    <Plus className="h-4 w-4 mr-2" />
+                    <Plus className="mr-2 h-4 w-4" />
                     Browse Packs
                   </Button>
                 )}
               </div>
             ) : (
               <div className="space-y-2">
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4 flex items-center justify-between">
                   <p className="text-sm text-muted-foreground">
                     Drag to reorder your sticker packs
                   </p>
                   {onAddPackClick && (
                     <Button variant="outline" size="sm" onClick={onAddPackClick}>
-                      <Plus className="h-4 w-4 mr-2" />
+                      <Plus className="mr-2 h-4 w-4" />
                       Add Pack
                     </Button>
                   )}
@@ -366,9 +361,9 @@ export function ManageStickersModal({
           {/* Favorites Tab */}
           <TabsContent value="favorites" className="mt-4">
             {favoriteStickers.length === 0 ? (
-              <div className="text-center py-12">
-                <Heart className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <h3 className="font-medium mb-1">No favorites</h3>
+              <div className="py-12 text-center">
+                <Heart className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
+                <h3 className="mb-1 font-medium">No favorites</h3>
                 <p className="text-sm text-muted-foreground">
                   Long-press on a sticker to add it to favorites
                 </p>
@@ -391,12 +386,10 @@ export function ManageStickersModal({
           {/* Recent Tab */}
           <TabsContent value="recent" className="mt-4">
             {recentStickers.length === 0 ? (
-              <div className="text-center py-12">
-                <Clock className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-                <h3 className="font-medium mb-1">No recent stickers</h3>
-                <p className="text-sm text-muted-foreground">
-                  Stickers you send will appear here
-                </p>
+              <div className="py-12 text-center">
+                <Clock className="mx-auto mb-3 h-12 w-12 text-muted-foreground" />
+                <h3 className="mb-1 font-medium">No recent stickers</h3>
+                <p className="text-sm text-muted-foreground">Stickers you send will appear here</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -411,9 +404,9 @@ export function ManageStickersModal({
                     disabled={isClearingRecent}
                   >
                     {isClearingRecent ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : (
-                      <Trash2 className="h-4 w-4 mr-2" />
+                      <Trash2 className="mr-2 h-4 w-4" />
                     )}
                     Clear All
                   </Button>
@@ -423,7 +416,7 @@ export function ManageStickersModal({
                     {recentStickers.map((recent) => (
                       <div
                         key={recent.id}
-                        className="relative w-16 h-16 rounded-lg overflow-hidden bg-muted"
+                        className="relative h-16 w-16 overflow-hidden rounded-lg bg-muted"
                       >
                         <Image
                           src={recent.sticker.thumbnail_url || recent.sticker.url}
@@ -432,7 +425,7 @@ export function ManageStickersModal({
                           className="object-contain p-1"
                         />
                         {recent.use_count > 1 && (
-                          <span className="absolute bottom-0.5 right-0.5 text-[10px] px-1 rounded bg-black/60 text-white">
+                          <span className="absolute bottom-0.5 right-0.5 rounded bg-black/60 px-1 text-[10px] text-white">
                             {recent.use_count}x
                           </span>
                         )}

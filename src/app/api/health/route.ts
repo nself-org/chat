@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 
 export async function GET() {
   const startTime = Date.now()
-  
+
   const result = {
     status: 'healthy',
     timestamp: new Date().toISOString(),

@@ -1,0 +1,1403 @@
+// ╔═══════════════════════════════════════════════════════════════════════════╗
+// ║          NCHAT DATABASE SCHEMA                                            ║
+// ║          Complete Team Communication Platform Schema                       ║
+// ╠═══════════════════════════════════════════════════════════════════════════╣
+// ║  Version: 1.0.0                                                           ║
+// ║  Updated: 2026-02-03                                                      ║
+// ║  DBML Docs: https://dbml.dbdiagram.io/docs                               ║
+// ╚═══════════════════════════════════════════════════════════════════════════╝
+
+Project nchat {
+  database_type: 'PostgreSQL'
+  Note: '''
+    nchat - White-Label Team Communication Platform
+    
+    Features:
+    - Real-time messaging with threads
+    - Channels (public/private) and DMs
+    - File attachments and media
+    - User presence and status
+    - Role-based access control (RBAC)
+    - Multi-tenant support
+    - Audit logging
+  '''
+}
+
+// ============================================================================
+// ENUMS
+// ============================================================================
+
+Enum user_status {
+  active
+  inactive
+  suspended
+  deleted
+}
+
+Enum presence_status {
+  online
+  away
+  dnd       // Do Not Disturb
+  offline
+  invisible
+}
+
+Enum channel_type {
+  public
+  private
+  direct
+  group
+  announcement
+}
+
+Enum message_type {
+  text
+  system
+  bot
+  file
+  voice
+  video
+  embed
+}
+
+Enum member_role {
+  owner
+  admin
+  moderator
+  member
+  guest
+}
+
+Enum notification_type {
+  message
+  mention
+  reaction
+  thread_reply
+  channel_invite
+  system
+}
+
+Enum attachment_type {
+  image
+  video
+  audio
+  document
+  archive
+  other
+}
+
+Enum subscription_status {
+  trialing
+  active
+  past_due
+  canceled
+  unpaid
+}
+
+Enum audit_action {
+  create
+  read
+  update
+  delete
+  login
+  logout
+  invite
+  join
+  leave
+  kick
+  ban
+  unban
+  mute
+  unmute
+  pin
+  unpin
+  archive
+  unarchive
+}
+
+// ============================================================================
+// USERS & PROFILES
+// ============================================================================
+
+Table nchat_users {
+  id uuid [pk, default: `gen_random_uuid()`]
+  email varchar(255) [unique, not null]
+  display_name varchar(100) [not null]
+  username varchar(50) [unique]
+  avatar_url text
+  status user_status [default: 'active', not null]
+  email_verified boolean [default: false, not null]
+  phone varchar(20)
+  phone_verified boolean [default: false]
+  locale varchar(10) [default: 'en']
+  timezone varchar(50) [default: 'UTC']
+  metadata jsonb [default: '{}']
+  last_seen_at timestamptz
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  deleted_at timestamptz
+  
+  indexes {
+    email
+    username
+    status
+    created_at
+    last_seen_at
+  }
+  
+  Note: 'Core user table - synced with Nhost Auth'
+}
+
+Table nchat_profiles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [unique, not null, ref: > nchat_users.id]
+  bio text
+  title varchar(100)
+  company varchar(100)
+  location varchar(100)
+  website varchar(255)
+  social_links jsonb [default: '{}']
+  pronouns varchar(50)
+  banner_url text
+  theme_preference varchar(50) [default: 'system']
+  custom_status varchar(100)
+  custom_status_emoji varchar(10)
+  custom_status_expires_at timestamptz
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    user_id
+  }
+  
+  Note: 'Extended user profile information'
+}
+
+Table nchat_presence {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [unique, not null, ref: > nchat_users.id]
+  status presence_status [default: 'offline', not null]
+  custom_message varchar(255)
+  last_heartbeat_at timestamptz [default: `now()`]
+  current_channel_id uuid [ref: > nchat_channels.id]
+  device_info jsonb [default: '{}']
+  is_mobile boolean [default: false]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    user_id
+    status
+    last_heartbeat_at
+  }
+  
+  Note: 'Real-time user presence tracking'
+}
+
+Table nchat_user_settings {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [unique, not null, ref: > nchat_users.id]
+  
+  // Notification Settings
+  notifications_enabled boolean [default: true]
+  notification_sound boolean [default: true]
+  notification_desktop boolean [default: true]
+  notification_mobile boolean [default: true]
+  notification_email boolean [default: false]
+  notification_email_frequency varchar(20) [default: 'instant']
+  quiet_hours_enabled boolean [default: false]
+  quiet_hours_start time
+  quiet_hours_end time
+  
+  // Privacy Settings
+  show_online_status boolean [default: true]
+  show_typing_indicator boolean [default: true]
+  read_receipts boolean [default: true]
+  allow_dm_from varchar(20) [default: 'everyone']
+  
+  // Display Settings
+  compact_mode boolean [default: false]
+  theme varchar(50) [default: 'system']
+  font_size varchar(20) [default: 'medium']
+  message_density varchar(20) [default: 'default']
+  
+  // Keyboard Shortcuts
+  keyboard_shortcuts_enabled boolean [default: true]
+  custom_shortcuts jsonb [default: '{}']
+  
+  // Accessibility
+  reduce_motion boolean [default: false]
+  high_contrast boolean [default: false]
+  screen_reader_mode boolean [default: false]
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    user_id
+  }
+  
+  Note: 'User preferences and settings'
+}
+
+// ============================================================================
+// CHANNELS & CATEGORIES
+// ============================================================================
+
+Table nchat_categories {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > nchat_workspaces.id]
+  name varchar(100) [not null]
+  description text
+  position integer [default: 0, not null]
+  is_collapsed boolean [default: false]
+  created_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    position
+    name
+  }
+  
+  Note: 'Channel organization categories (like Discord)'
+}
+
+Table nchat_channels {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > nchat_workspaces.id]
+  category_id uuid [ref: > nchat_categories.id]
+  name varchar(100) [not null]
+  slug varchar(100) [not null]
+  description text
+  topic varchar(500)
+  type channel_type [default: 'public', not null]
+  icon varchar(50)
+  color varchar(7)
+  position integer [default: 0]
+  is_default boolean [default: false]
+  is_archived boolean [default: false]
+  is_readonly boolean [default: false]
+  is_nsfw boolean [default: false]
+  slowmode_seconds integer [default: 0]
+  max_members integer
+  member_count integer [default: 0]
+  message_count integer [default: 0]
+  last_message_at timestamptz
+  last_message_id uuid
+  retention_days integer
+  created_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  archived_at timestamptz
+  
+  indexes {
+    workspace_id
+    category_id
+    slug
+    type
+    is_archived
+    position
+    last_message_at
+    (workspace_id, slug) [unique]
+  }
+  
+  Note: 'Chat channels - public, private, direct messages'
+}
+
+Table nchat_channel_members {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > nchat_channels.id]
+  user_id uuid [not null, ref: > nchat_users.id]
+  role member_role [default: 'member', not null]
+  nickname varchar(100)
+  
+  // Permissions overrides (null = inherit from role)
+  can_read boolean
+  can_write boolean
+  can_manage boolean
+  can_invite boolean
+  can_pin boolean
+  can_delete_messages boolean
+  can_mention_everyone boolean
+  
+  // Status
+  is_muted boolean [default: false]
+  muted_until timestamptz
+  is_pinned boolean [default: false]
+  notification_level varchar(20) [default: 'all']
+  
+  // Read tracking
+  last_read_message_id uuid
+  last_read_at timestamptz
+  unread_count integer [default: 0]
+  mention_count integer [default: 0]
+  
+  joined_at timestamptz [default: `now()`, not null]
+  invited_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    channel_id
+    user_id
+    role
+    (channel_id, user_id) [unique]
+    last_read_at
+  }
+  
+  Note: 'Channel membership and permissions'
+}
+
+// ============================================================================
+// MESSAGES & THREADS
+// ============================================================================
+
+Table nchat_messages {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > nchat_channels.id]
+  user_id uuid [ref: > nchat_users.id]
+  thread_id uuid [ref: > nchat_threads.id]
+  parent_message_id uuid [ref: > nchat_messages.id]
+  
+  // Content
+  content text
+  content_html text
+  content_plain text
+  type message_type [default: 'text', not null]
+  metadata jsonb [default: '{}']
+  
+  // Rich content
+  mentions uuid[] [default: '{}']
+  mentioned_roles varchar(50)[] [default: '{}']
+  mentioned_channels uuid[] [default: '{}']
+  embeds jsonb [default: '[]']
+  
+  // Status flags
+  is_edited boolean [default: false]
+  is_pinned boolean [default: false]
+  is_deleted boolean [default: false]
+  is_system boolean [default: false]
+  
+  // Counts
+  reaction_count integer [default: 0]
+  reply_count integer [default: 0]
+  
+  // Scheduling
+  scheduled_at timestamptz
+  published_at timestamptz
+  
+  // Timestamps
+  edited_at timestamptz
+  deleted_at timestamptz
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    channel_id
+    user_id
+    thread_id
+    parent_message_id
+    created_at
+    is_deleted
+    is_pinned
+    (channel_id, created_at)
+  }
+  
+  Note: 'Chat messages with threading support'
+}
+
+Table nchat_threads {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > nchat_channels.id]
+  root_message_id uuid [unique, not null, ref: > nchat_messages.id]
+  name varchar(100)
+  
+  // Counts
+  message_count integer [default: 0]
+  participant_count integer [default: 0]
+  
+  // Status
+  is_locked boolean [default: false]
+  is_archived boolean [default: false]
+  auto_archive_duration integer [default: 10080] // 7 days in minutes
+  
+  // Timestamps
+  last_message_at timestamptz
+  last_message_id uuid
+  archived_at timestamptz
+  created_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    channel_id
+    root_message_id
+    last_message_at
+    is_archived
+  }
+  
+  Note: 'Message threads (like Slack threads)'
+}
+
+Table nchat_thread_members {
+  id uuid [pk, default: `gen_random_uuid()`]
+  thread_id uuid [not null, ref: > nchat_threads.id]
+  user_id uuid [not null, ref: > nchat_users.id]
+  last_read_message_id uuid [ref: > nchat_messages.id]
+  last_read_at timestamptz
+  unread_count integer [default: 0]
+  is_subscribed boolean [default: true]
+  joined_at timestamptz [default: `now()`, not null]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    thread_id
+    user_id
+    (thread_id, user_id) [unique]
+  }
+  
+  Note: 'Thread membership and read tracking'
+}
+
+Table nchat_reactions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  message_id uuid [not null, ref: > nchat_messages.id]
+  user_id uuid [not null, ref: > nchat_users.id]
+  emoji varchar(50) [not null]
+  emoji_id uuid [ref: > nchat_custom_emojis.id]
+  created_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    message_id
+    user_id
+    emoji
+    (message_id, user_id, emoji) [unique]
+  }
+  
+  Note: 'Message reactions'
+}
+
+Table nchat_custom_emojis {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > nchat_workspaces.id]
+  name varchar(50) [not null]
+  image_url text [not null]
+  animated boolean [default: false]
+  created_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    name
+    (workspace_id, name) [unique]
+  }
+  
+  Note: 'Custom emoji per workspace'
+}
+
+// ============================================================================
+// ATTACHMENTS & MEDIA
+// ============================================================================
+
+Table nchat_attachments {
+  id uuid [pk, default: `gen_random_uuid()`]
+  message_id uuid [ref: > nchat_messages.id]
+  user_id uuid [not null, ref: > nchat_users.id]
+  
+  // File info
+  filename varchar(255) [not null]
+  original_filename varchar(255) [not null]
+  file_path text [not null]
+  url text [not null]
+  
+  // Metadata
+  type attachment_type [not null]
+  mime_type varchar(100) [not null]
+  size_bytes bigint [not null]
+  
+  // Image/video specific
+  width integer
+  height integer
+  duration_seconds integer
+  
+  // Thumbnails
+  thumbnail_url text
+  thumbnail_width integer
+  thumbnail_height integer
+  
+  // Processing
+  is_processed boolean [default: false]
+  processing_error text
+  blurhash varchar(100)
+  
+  // Metadata
+  metadata jsonb [default: '{}']
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    message_id
+    user_id
+    type
+    mime_type
+    created_at
+  }
+  
+  Note: 'File attachments for messages'
+}
+
+Table nchat_media {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > nchat_workspaces.id]
+  user_id uuid [not null, ref: > nchat_users.id]
+  
+  // File info
+  filename varchar(255) [not null]
+  original_filename varchar(255) [not null]
+  file_path text [not null]
+  url text [not null]
+  
+  // Metadata
+  type attachment_type [not null]
+  mime_type varchar(100) [not null]
+  size_bytes bigint [not null]
+  
+  // Image/video specific
+  width integer
+  height integer
+  duration_seconds integer
+  
+  // Thumbnails
+  thumbnail_url text
+  blurhash varchar(100)
+  
+  // Usage tracking
+  reference_count integer [default: 0]
+  last_accessed_at timestamptz
+  
+  // Metadata
+  alt_text text
+  description text
+  tags varchar(50)[] [default: '{}']
+  metadata jsonb [default: '{}']
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    user_id
+    type
+    tags
+    created_at
+  }
+  
+  Note: 'Media library for workspace'
+}
+
+// ============================================================================
+// NOTIFICATIONS
+// ============================================================================
+
+Table nchat_notifications {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > nchat_users.id]
+  type notification_type [not null]
+  
+  // Source
+  channel_id uuid [ref: > nchat_channels.id]
+  message_id uuid [ref: > nchat_messages.id]
+  thread_id uuid [ref: > nchat_threads.id]
+  actor_id uuid [ref: > nchat_users.id]
+  
+  // Content
+  title varchar(255) [not null]
+  body text
+  data jsonb [default: '{}']
+  action_url text
+  
+  // Status
+  is_read boolean [default: false]
+  read_at timestamptz
+  is_seen boolean [default: false]
+  seen_at timestamptz
+  
+  // Delivery
+  push_sent boolean [default: false]
+  push_sent_at timestamptz
+  email_sent boolean [default: false]
+  email_sent_at timestamptz
+  
+  created_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    user_id
+    type
+    is_read
+    is_seen
+    created_at
+    (user_id, is_read)
+    (user_id, created_at)
+  }
+  
+  Note: 'User notifications'
+}
+
+Table nchat_push_subscriptions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > nchat_users.id]
+  endpoint text [not null]
+  p256dh text [not null]
+  auth text [not null]
+  user_agent text
+  device_type varchar(20)
+  is_active boolean [default: true]
+  last_used_at timestamptz
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    user_id
+    endpoint [unique]
+    is_active
+  }
+  
+  Note: 'Web push notification subscriptions'
+}
+
+// ============================================================================
+// WORKSPACES & ORGANIZATIONS
+// ============================================================================
+
+Table nchat_workspaces {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar(100) [not null]
+  slug varchar(100) [unique, not null]
+  description text
+  
+  // Branding
+  logo_url text
+  icon_url text
+  banner_url text
+  primary_color varchar(7)
+  
+  // Settings
+  is_public boolean [default: false]
+  is_discoverable boolean [default: false]
+  allow_invites boolean [default: true]
+  require_approval boolean [default: false]
+  default_channel_id uuid
+  
+  // Features
+  features jsonb [default: '{}']
+  
+  // Limits
+  max_members integer
+  max_channels integer
+  max_storage_bytes bigint
+  
+  // Stats
+  member_count integer [default: 0]
+  channel_count integer [default: 0]
+  message_count integer [default: 0]
+  storage_used_bytes bigint [default: 0]
+  
+  // Ownership
+  owner_id uuid [ref: > nchat_users.id]
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    slug
+    owner_id
+    is_public
+    is_discoverable
+  }
+  
+  Note: 'Workspaces (like Slack workspaces or Discord servers)'
+}
+
+Table nchat_workspace_members {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > nchat_workspaces.id]
+  user_id uuid [not null, ref: > nchat_users.id]
+  role member_role [default: 'member', not null]
+  nickname varchar(100)
+  
+  // Status
+  is_owner boolean [default: false]
+  is_banned boolean [default: false]
+  ban_reason text
+  banned_at timestamptz
+  banned_by uuid [ref: > nchat_users.id]
+  
+  // Timestamps
+  joined_at timestamptz [default: `now()`, not null]
+  invited_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    user_id
+    role
+    (workspace_id, user_id) [unique]
+  }
+  
+  Note: 'Workspace membership'
+}
+
+Table nchat_workspace_invites {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > nchat_workspaces.id]
+  code varchar(20) [unique, not null]
+  
+  // Invite settings
+  max_uses integer
+  uses integer [default: 0]
+  expires_at timestamptz
+  
+  // Targeting
+  target_email varchar(255)
+  target_role member_role [default: 'member']
+  
+  // Tracking
+  created_by uuid [ref: > nchat_users.id]
+  is_revoked boolean [default: false]
+  revoked_at timestamptz
+  revoked_by uuid [ref: > nchat_users.id]
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    code
+    target_email
+    expires_at
+    is_revoked
+  }
+  
+  Note: 'Workspace invitation links'
+}
+
+// ============================================================================
+// ROLES & PERMISSIONS (RBAC)
+// ============================================================================
+
+Table nchat_roles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > nchat_workspaces.id]
+  name varchar(50) [not null]
+  description text
+  color varchar(7)
+  icon varchar(50)
+  position integer [default: 0]
+  
+  // Flags
+  is_default boolean [default: false]
+  is_system boolean [default: false]
+  is_mentionable boolean [default: true]
+  is_hoisted boolean [default: false] // Show separately in member list
+  
+  // Permissions bitmask
+  permissions bigint [default: 0]
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    name
+    position
+    is_default
+    (workspace_id, name) [unique]
+  }
+  
+  Note: 'Custom roles per workspace'
+}
+
+Table nchat_user_roles {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > nchat_users.id]
+  role_id uuid [not null, ref: > nchat_roles.id]
+  workspace_id uuid [not null, ref: > nchat_workspaces.id]
+  granted_by uuid [ref: > nchat_users.id]
+  granted_at timestamptz [default: `now()`, not null]
+  expires_at timestamptz
+  
+  indexes {
+    user_id
+    role_id
+    workspace_id
+    (user_id, role_id, workspace_id) [unique]
+  }
+  
+  Note: 'User role assignments'
+}
+
+Table nchat_permissions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar(100) [unique, not null]
+  description text
+  category varchar(50) [not null]
+  bit_position integer [unique, not null]
+  is_dangerous boolean [default: false]
+  
+  indexes {
+    name
+    category
+    bit_position
+  }
+  
+  Note: 'Permission definitions'
+}
+
+// ============================================================================
+// BILLING & SUBSCRIPTIONS
+// ============================================================================
+
+Table nchat_plans {
+  id uuid [pk, default: `gen_random_uuid()`]
+  name varchar(100) [not null]
+  slug varchar(50) [unique, not null]
+  description text
+  
+  // Pricing
+  price_monthly_cents integer [not null]
+  price_yearly_cents integer
+  currency varchar(3) [default: 'USD']
+  
+  // Limits
+  max_members integer
+  max_channels integer
+  max_storage_bytes bigint
+  max_file_size_bytes bigint
+  
+  // Features
+  features jsonb [default: '{}']
+  
+  // Status
+  is_active boolean [default: true]
+  is_public boolean [default: true]
+  sort_order integer [default: 0]
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    slug
+    is_active
+    is_public
+    sort_order
+  }
+  
+  Note: 'Subscription plans'
+}
+
+Table nchat_subscriptions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > nchat_workspaces.id]
+  plan_id uuid [not null, ref: > nchat_plans.id]
+  
+  // Status
+  status subscription_status [default: 'trialing', not null]
+  
+  // Billing
+  stripe_subscription_id varchar(100)
+  stripe_customer_id varchar(100)
+  
+  // Dates
+  trial_ends_at timestamptz
+  current_period_start timestamptz
+  current_period_end timestamptz
+  canceled_at timestamptz
+  ended_at timestamptz
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    plan_id
+    status
+    stripe_subscription_id
+    current_period_end
+  }
+  
+  Note: 'Workspace subscriptions'
+}
+
+Table nchat_invoices {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > nchat_workspaces.id]
+  subscription_id uuid [ref: > nchat_subscriptions.id]
+  
+  // Stripe
+  stripe_invoice_id varchar(100) [unique]
+  
+  // Amounts
+  amount_cents integer [not null]
+  tax_cents integer [default: 0]
+  total_cents integer [not null]
+  currency varchar(3) [default: 'USD']
+  
+  // Status
+  status varchar(20) [not null]
+  
+  // Dates
+  period_start timestamptz
+  period_end timestamptz
+  due_date timestamptz
+  paid_at timestamptz
+  
+  // PDF
+  invoice_pdf_url text
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    subscription_id
+    stripe_invoice_id
+    status
+    created_at
+  }
+  
+  Note: 'Billing invoices'
+}
+
+// ============================================================================
+// BOOKMARKS & SAVED ITEMS
+// ============================================================================
+
+Table nchat_bookmarks {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > nchat_users.id]
+  message_id uuid [ref: > nchat_messages.id]
+  channel_id uuid [ref: > nchat_channels.id]
+  note text
+  folder varchar(100)
+  tags varchar(50)[] [default: '{}']
+  created_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    user_id
+    message_id
+    channel_id
+    folder
+    created_at
+    (user_id, message_id) [unique]
+  }
+  
+  Note: 'User bookmarks/saved items'
+}
+
+Table nchat_pinned_messages {
+  id uuid [pk, default: `gen_random_uuid()`]
+  channel_id uuid [not null, ref: > nchat_channels.id]
+  message_id uuid [not null, ref: > nchat_messages.id]
+  pinned_by uuid [not null, ref: > nchat_users.id]
+  pinned_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    channel_id
+    message_id
+    (channel_id, message_id) [unique]
+  }
+  
+  Note: 'Pinned messages per channel'
+}
+
+// ============================================================================
+// SEARCH & INDEXING
+// ============================================================================
+
+Table nchat_search_index {
+  id uuid [pk, default: `gen_random_uuid()`]
+  entity_type varchar(50) [not null]
+  entity_id uuid [not null]
+  workspace_id uuid [ref: > nchat_workspaces.id]
+  channel_id uuid [ref: > nchat_channels.id]
+  user_id uuid [ref: > nchat_users.id]
+  
+  // Searchable content
+  title text
+  content text [not null]
+  content_tsv tsvector
+  
+  // Metadata
+  metadata jsonb [default: '{}']
+  
+  // Timestamps
+  indexed_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    entity_type
+    entity_id
+    workspace_id
+    channel_id
+    user_id
+    (entity_type, entity_id) [unique]
+  }
+  
+  Note: 'Full-text search index'
+}
+
+// ============================================================================
+// AUDIT LOGS
+// ============================================================================
+
+Table nchat_audit_logs {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > nchat_workspaces.id]
+  user_id uuid [ref: > nchat_users.id]
+  
+  // Action details
+  action audit_action [not null]
+  entity_type varchar(50) [not null]
+  entity_id uuid
+  
+  // Context
+  channel_id uuid [ref: > nchat_channels.id]
+  target_user_id uuid [ref: > nchat_users.id]
+  
+  // Changes
+  old_values jsonb
+  new_values jsonb
+  metadata jsonb [default: '{}']
+  
+  // Request info
+  ip_address inet
+  user_agent text
+  request_id varchar(36)
+  
+  created_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    user_id
+    action
+    entity_type
+    entity_id
+    created_at
+    (workspace_id, created_at)
+  }
+  
+  Note: 'Comprehensive audit trail'
+}
+
+// ============================================================================
+// INTEGRATIONS & WEBHOOKS
+// ============================================================================
+
+Table nchat_integrations {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > nchat_workspaces.id]
+  name varchar(100) [not null]
+  type varchar(50) [not null]
+  
+  // Configuration
+  config jsonb [default: '{}']
+  credentials_encrypted text
+  
+  // Status
+  is_enabled boolean [default: true]
+  last_sync_at timestamptz
+  last_error text
+  error_count integer [default: 0]
+  
+  created_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    type
+    is_enabled
+  }
+  
+  Note: 'Third-party integrations (Slack, GitHub, etc.)'
+}
+
+Table nchat_webhooks {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > nchat_workspaces.id]
+  channel_id uuid [ref: > nchat_channels.id]
+  
+  name varchar(100) [not null]
+  url text [not null]
+  secret varchar(100)
+  
+  // Events
+  events varchar(50)[] [not null]
+  
+  // Status
+  is_enabled boolean [default: true]
+  last_triggered_at timestamptz
+  last_error text
+  failure_count integer [default: 0]
+  
+  created_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    channel_id
+    is_enabled
+  }
+  
+  Note: 'Outgoing webhooks'
+}
+
+Table nchat_incoming_webhooks {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [not null, ref: > nchat_workspaces.id]
+  channel_id uuid [not null, ref: > nchat_channels.id]
+  
+  name varchar(100) [not null]
+  token varchar(100) [unique, not null]
+  
+  // Customization
+  avatar_url text
+  username varchar(100)
+  
+  // Status
+  is_enabled boolean [default: true]
+  last_used_at timestamptz
+  message_count integer [default: 0]
+  
+  created_by uuid [ref: > nchat_users.id]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    channel_id
+    token
+    is_enabled
+  }
+  
+  Note: 'Incoming webhooks for external services'
+}
+
+// ============================================================================
+// BOTS & APPS
+// ============================================================================
+
+Table nchat_bots {
+  id uuid [pk, default: `gen_random_uuid()`]
+  workspace_id uuid [ref: > nchat_workspaces.id]
+  owner_id uuid [not null, ref: > nchat_users.id]
+  
+  name varchar(100) [not null]
+  username varchar(50) [unique, not null]
+  description text
+  avatar_url text
+  
+  // Authentication
+  token_hash text [not null]
+  
+  // Permissions
+  permissions bigint [default: 0]
+  
+  // Status
+  is_enabled boolean [default: true]
+  is_verified boolean [default: false]
+  is_public boolean [default: false]
+  
+  // Stats
+  install_count integer [default: 0]
+  message_count integer [default: 0]
+  last_active_at timestamptz
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    workspace_id
+    owner_id
+    username
+    is_enabled
+    is_public
+  }
+  
+  Note: 'Bot applications'
+}
+
+// ============================================================================
+// APP CONFIGURATION
+// ============================================================================
+
+Table nchat_app_configuration {
+  id uuid [pk, default: `gen_random_uuid()`]
+  key varchar(50) [unique, not null, default: 'primary']
+  
+  // Setup
+  setup jsonb [default: '{"isCompleted": false, "currentStep": 1}']
+  
+  // Owner
+  owner jsonb [default: '{}']
+  
+  // Branding
+  branding jsonb [default: '{}']
+  
+  // Landing & Homepage
+  landing_theme varchar(50) [default: 'simple-landing']
+  homepage jsonb [default: '{}']
+  
+  // Auth
+  auth_providers jsonb [default: '{}']
+  auth_permissions jsonb [default: '{}']
+  
+  // Features
+  features jsonb [default: '{}']
+  
+  // Integrations
+  integrations jsonb [default: '{}']
+  
+  // Moderation
+  moderation jsonb [default: '{}']
+  
+  // Theme
+  theme jsonb [default: '{}']
+  
+  // SEO
+  seo jsonb [default: '{}']
+  
+  // Legal
+  legal jsonb [default: '{}']
+  
+  // Social
+  social jsonb [default: '{}']
+  
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    key
+  }
+  
+  Note: 'Global app configuration (from setup wizard)'
+}
+
+// ============================================================================
+// SESSIONS & DEVICES
+// ============================================================================
+
+Table nchat_sessions {
+  id uuid [pk, default: `gen_random_uuid()`]
+  user_id uuid [not null, ref: > nchat_users.id]
+  
+  // Token (hashed)
+  token_hash text [not null]
+  refresh_token_hash text
+  
+  // Device info
+  user_agent text
+  ip_address inet
+  device_type varchar(20)
+  device_name varchar(100)
+  os varchar(50)
+  browser varchar(50)
+  location varchar(100)
+  
+  // Status
+  is_active boolean [default: true]
+  last_active_at timestamptz [default: `now()`]
+  
+  // Timestamps
+  expires_at timestamptz [not null]
+  created_at timestamptz [default: `now()`, not null]
+  updated_at timestamptz [default: `now()`, not null]
+  
+  indexes {
+    user_id
+    is_active
+    expires_at
+    last_active_at
+    (user_id, is_active)
+  }
+  
+  Note: 'User sessions for multi-device support'
+}
+
+// ============================================================================
+// TABLE GROUPS
+// ============================================================================
+
+TableGroup users_and_profiles {
+  nchat_users
+  nchat_profiles
+  nchat_presence
+  nchat_user_settings
+}
+
+TableGroup channels_and_messages {
+  nchat_categories
+  nchat_channels
+  nchat_channel_members
+  nchat_messages
+  nchat_threads
+  nchat_thread_members
+  nchat_reactions
+  nchat_custom_emojis
+}
+
+TableGroup media_and_attachments {
+  nchat_attachments
+  nchat_media
+}
+
+TableGroup notifications {
+  nchat_notifications
+  nchat_push_subscriptions
+}
+
+TableGroup workspaces {
+  nchat_workspaces
+  nchat_workspace_members
+  nchat_workspace_invites
+}
+
+TableGroup rbac {
+  nchat_roles
+  nchat_user_roles
+  nchat_permissions
+}
+
+TableGroup billing {
+  nchat_plans
+  nchat_subscriptions
+  nchat_invoices
+}
+
+TableGroup bookmarks_and_search {
+  nchat_bookmarks
+  nchat_pinned_messages
+  nchat_search_index
+}
+
+TableGroup audit_and_logs {
+  nchat_audit_logs
+}
+
+TableGroup integrations {
+  nchat_integrations
+  nchat_webhooks
+  nchat_incoming_webhooks
+  nchat_bots
+}
+
+TableGroup configuration {
+  nchat_app_configuration
+  nchat_sessions
+}

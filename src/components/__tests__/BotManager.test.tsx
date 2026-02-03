@@ -105,7 +105,9 @@ describe('BotManager Component', () => {
 
     // Should show relative time (e.g., "5m ago", "2h ago", etc.)
     const cells = screen.getAllByRole('cell')
-    const hasTimeInfo = cells.some((cell) => cell.textContent?.includes('ago') || cell.textContent === 'Never')
+    const hasTimeInfo = cells.some(
+      (cell) => cell.textContent?.includes('ago') || cell.textContent === 'Never'
+    )
     expect(hasTimeInfo).toBe(true)
   })
 

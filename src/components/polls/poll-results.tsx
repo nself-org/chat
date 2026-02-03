@@ -116,13 +116,13 @@ function ResultsBarChart({ results }: { results: PollResultsData }) {
                 </Badge>
               </div>
             </div>
-            <div className="relative h-8 bg-muted rounded-lg overflow-hidden">
+            <div className="relative h-8 overflow-hidden rounded-lg bg-muted">
               <div
                 className={cn(
-                  'absolute inset-y-0 left-0 transition-all duration-500 rounded-lg',
+                  'absolute inset-y-0 left-0 rounded-lg transition-all duration-500',
                   isWinner && results.status === 'closed'
                     ? 'bg-gradient-to-r from-yellow-400 to-yellow-500'
-                    : 'bg-gradient-to-r from-primary/60 to-primary'
+                    : 'from-primary/60 bg-gradient-to-r to-primary'
                 )}
                 style={{ width: `${option.percentage}%` }}
               />
@@ -189,13 +189,10 @@ function ResultsPieChart({ results }: { results: PollResultsData }) {
     <div className="flex flex-col items-center gap-6">
       {/* Pie Chart */}
       <div className="relative">
-        <div
-          className="w-48 h-48 rounded-full"
-          style={{ background: conicGradient }}
-        />
+        <div className="h-48 w-48 rounded-full" style={{ background: conicGradient }} />
         {/* Center hole for donut effect */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-24 h-24 rounded-full bg-background flex flex-col items-center justify-center">
+          <div className="flex h-24 w-24 flex-col items-center justify-center rounded-full bg-background">
             <span className="text-2xl font-bold">{results.totalVotes}</span>
             <span className="text-xs text-muted-foreground">votes</span>
           </div>
@@ -203,14 +200,14 @@ function ResultsPieChart({ results }: { results: PollResultsData }) {
       </div>
 
       {/* Legend */}
-      <div className="grid grid-cols-2 gap-2 w-full">
+      <div className="grid w-full grid-cols-2 gap-2">
         {sortedOptions.map((option, index) => (
           <div key={option.id} className="flex items-center gap-2">
             <div
-              className="w-3 h-3 rounded-sm flex-shrink-0"
+              className="h-3 w-3 flex-shrink-0 rounded-sm"
               style={{ backgroundColor: chartColors[index % chartColors.length] }}
             />
-            <span className="text-sm truncate flex-1">{option.text}</span>
+            <span className="flex-1 truncate text-sm">{option.text}</span>
             <span className="text-sm text-muted-foreground">{option.percentage}%</span>
           </div>
         ))}
@@ -247,12 +244,10 @@ function ResultsStats({ results }: { results: PollResultsData }) {
     <div className="space-y-4">
       {/* Winner */}
       {stats.winners.length > 0 && results.status === 'closed' && (
-        <div className="p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-4">
+          <div className="mb-2 flex items-center gap-2">
             <Trophy className="h-5 w-5 text-yellow-500" />
-            <span className="font-semibold">
-              {stats.isTie ? 'Tied Winners' : 'Winner'}
-            </span>
+            <span className="font-semibold">{stats.isTie ? 'Tied Winners' : 'Winner'}</span>
           </div>
           <div className="space-y-1">
             {stats.winners.map((winner) => (
@@ -269,32 +264,32 @@ function ResultsStats({ results }: { results: PollResultsData }) {
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 gap-4">
-        <div className="p-3 rounded-lg bg-muted/50">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+        <div className="bg-muted/50 rounded-lg p-3">
+          <div className="mb-1 flex items-center gap-2 text-muted-foreground">
             <Users className="h-4 w-4" />
             <span className="text-xs">Total Votes</span>
           </div>
           <span className="text-2xl font-bold">{stats.totalVotes}</span>
         </div>
 
-        <div className="p-3 rounded-lg bg-muted/50">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+        <div className="bg-muted/50 rounded-lg p-3">
+          <div className="mb-1 flex items-center gap-2 text-muted-foreground">
             <BarChart3 className="h-4 w-4" />
             <span className="text-xs">Options</span>
           </div>
           <span className="text-2xl font-bold">{stats.totalOptions}</span>
         </div>
 
-        <div className="p-3 rounded-lg bg-muted/50">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+        <div className="bg-muted/50 rounded-lg p-3">
+          <div className="mb-1 flex items-center gap-2 text-muted-foreground">
             <TrendingUp className="h-4 w-4" />
             <span className="text-xs">Highest</span>
           </div>
           <span className="text-2xl font-bold">{stats.maxVotes}</span>
         </div>
 
-        <div className="p-3 rounded-lg bg-muted/50">
-          <div className="flex items-center gap-2 text-muted-foreground mb-1">
+        <div className="bg-muted/50 rounded-lg p-3">
+          <div className="mb-1 flex items-center gap-2 text-muted-foreground">
             <TrendingUp className="h-4 w-4 rotate-180" />
             <span className="text-xs">Lowest</span>
           </div>
@@ -309,7 +304,7 @@ function ResultsStats({ results }: { results: PollResultsData }) {
         <div className="flex flex-wrap gap-2">
           {results.settings.allowMultipleVotes && (
             <Badge variant="outline" className="text-xs">
-              <CheckCircle2 className="h-3 w-3 mr-1" />
+              <CheckCircle2 className="mr-1 h-3 w-3" />
               Multiple choices
             </Badge>
           )}
@@ -328,18 +323,10 @@ function ResultsStats({ results }: { results: PollResultsData }) {
 
       {/* Timestamps */}
       <div className="space-y-1 text-xs text-muted-foreground">
-        <p>
-          Created: {new Date(results.createdAt).toLocaleString()}
-        </p>
-        {results.closedAt && (
-          <p>
-            Closed: {new Date(results.closedAt).toLocaleString()}
-          </p>
-        )}
+        <p>Created: {new Date(results.createdAt).toLocaleString()}</p>
+        {results.closedAt && <p>Closed: {new Date(results.closedAt).toLocaleString()}</p>}
         {results.endsAt && !results.closedAt && (
-          <p>
-            Ends: {new Date(results.endsAt).toLocaleString()}
-          </p>
+          <p>Ends: {new Date(results.endsAt).toLocaleString()}</p>
         )}
       </div>
     </div>
@@ -385,16 +372,14 @@ export function PollResults({ pollId, open, onOpenChange }: PollResultsProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-hidden flex flex-col">
+      <DialogContent className="flex max-h-[90vh] flex-col overflow-hidden sm:max-w-[600px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <ChartPie className="h-5 w-5 text-primary" />
             Poll Results
           </DialogTitle>
           {results && (
-            <DialogDescription className="line-clamp-2">
-              {results.question}
-            </DialogDescription>
+            <DialogDescription className="line-clamp-2">{results.question}</DialogDescription>
           )}
         </DialogHeader>
 
@@ -417,17 +402,15 @@ export function PollResults({ pollId, open, onOpenChange }: PollResultsProps) {
           <>
             {/* Status badge */}
             <div className="flex items-center gap-2">
-              <Badge
-                variant={results.status === 'closed' ? 'secondary' : 'default'}
-              >
+              <Badge variant={results.status === 'closed' ? 'secondary' : 'default'}>
                 {results.status === 'closed' ? (
                   <>
-                    <Clock className="h-3 w-3 mr-1" />
+                    <Clock className="mr-1 h-3 w-3" />
                     Closed
                   </>
                 ) : (
                   <>
-                    <CheckCircle2 className="h-3 w-3 mr-1" />
+                    <CheckCircle2 className="mr-1 h-3 w-3" />
                     Active
                   </>
                 )}
@@ -440,7 +423,7 @@ export function PollResults({ pollId, open, onOpenChange }: PollResultsProps) {
             <Tabs
               value={activeTab}
               onValueChange={(v) => setActiveTab(v as typeof activeTab)}
-              className="flex-1 flex flex-col"
+              className="flex flex-1 flex-col"
             >
               <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="bar" className="gap-2">
@@ -457,7 +440,7 @@ export function PollResults({ pollId, open, onOpenChange }: PollResultsProps) {
                 </TabsTrigger>
               </TabsList>
 
-              <ScrollArea className="flex-1 -mx-6 px-6">
+              <ScrollArea className="-mx-6 flex-1 px-6">
                 <div className="py-4">
                   <TabsContent value="bar" className="mt-0">
                     <ResultsBarChart results={results} />
@@ -482,7 +465,7 @@ export function PollResults({ pollId, open, onOpenChange }: PollResultsProps) {
           </Button>
           {results && (
             <Button onClick={handleExport}>
-              <Download className="h-4 w-4 mr-2" />
+              <Download className="mr-2 h-4 w-4" />
               Export Results
             </Button>
           )}

@@ -53,6 +53,7 @@ Centralized error handling:
 - `handleErrorBoundaryError()` - React errors
 
 Features:
+
 - Toast notifications
 - Sentry reporting
 - Error tracking
@@ -70,6 +71,7 @@ Retry logic with exponential backoff:
 - `OfflineQueue` - Queue operations when offline
 
 Features:
+
 - Exponential backoff
 - Jitter to prevent thundering herd
 - Circuit breaker pattern
@@ -129,10 +131,7 @@ import { offlineQueue } from '@/lib/errors'
 import { showQueuedToast } from '@/components/errors'
 
 if (!navigator.onLine) {
-  offlineQueue.enqueue(
-    async () => await sendMessage(message),
-    'Send message'
-  )
+  offlineQueue.enqueue(async () => await sendMessage(message), 'Send message')
   showQueuedToast('Message', offlineQueue.size())
   return
 }
@@ -243,18 +242,21 @@ if (shouldReportError(error)) {
 ## Best Practices
 
 1. **Use specific error types**
+
    ```typescript
    throw new ValidationError('Email is required')
    ```
 
 2. **Add context**
+
    ```typescript
    await handleError(error, {
-     context: { userId, channelId, operation: 'send_message' }
+     context: { userId, channelId, operation: 'send_message' },
    })
    ```
 
 3. **Choose appropriate retry**
+
    ```typescript
    // Critical operations
    await withAggressiveRetry(() => saveData())
@@ -264,6 +266,7 @@ if (shouldReportError(error)) {
    ```
 
 4. **Handle offline**
+
    ```typescript
    if (!navigator.onLine) {
      offlineQueue.enqueue(() => operation(), 'Operation')
@@ -275,7 +278,7 @@ if (shouldReportError(error)) {
 5. **Don't over-report**
    ```typescript
    await handleError(error, {
-     reportToSentry: error.severity >= ErrorSeverity.MEDIUM
+     reportToSentry: error.severity >= ErrorSeverity.MEDIUM,
    })
    ```
 

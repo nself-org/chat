@@ -26,15 +26,15 @@ http://localhost:3000/admin/social
 
 ## File Locations
 
-| What | Where |
-|------|-------|
-| Migration | `.backend/migrations/012_social_media_integration.sql` |
-| API Clients | `src/lib/social/*-client.ts` |
-| API Routes | `src/app/api/social/**` |
-| React Hooks | `src/hooks/use-social-*.ts` |
-| Components | `src/components/admin/Social*.tsx` |
-| GraphQL | `src/graphql/social-media.ts` |
-| Docs | `docs/Social-Media-Integration.md` |
+| What        | Where                                                  |
+| ----------- | ------------------------------------------------------ |
+| Migration   | `.backend/migrations/012_social_media_integration.sql` |
+| API Clients | `src/lib/social/*-client.ts`                           |
+| API Routes  | `src/app/api/social/**`                                |
+| React Hooks | `src/hooks/use-social-*.ts`                            |
+| Components  | `src/components/admin/Social*.tsx`                     |
+| GraphQL     | `src/graphql/social-media.ts`                          |
+| Docs        | `docs/Social-Media-Integration.md`                     |
 
 ## Common Tasks
 
@@ -64,7 +64,7 @@ await createIntegration({
   filterHashtags: ['news', 'updates'],
   filterKeywords: ['launch'],
   minEngagement: 10,
-  createdBy: user.id
+  createdBy: user.id,
 })
 ```
 
@@ -79,7 +79,7 @@ const result = await triggerImport(accountId)
 fetch('/api/social/poll', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ accountId: 'optional' })
+  body: JSON.stringify({ accountId: 'optional' }),
 })
 ```
 
@@ -176,10 +176,12 @@ crontab -e
 
 ```json
 {
-  "crons": [{
-    "path": "/api/social/poll",
-    "schedule": "*/5 * * * *"
-  }]
+  "crons": [
+    {
+      "path": "/api/social/poll",
+      "schedule": "*/5 * * * *"
+    }
+  ]
 }
 ```
 
@@ -200,7 +202,7 @@ import type {
   SocialAccount,
   SocialPost,
   SocialIntegration,
-  SocialPlatform
+  SocialPlatform,
 } from '@/lib/social/types'
 
 const platform: SocialPlatform = 'twitter' | 'instagram' | 'linkedin'
@@ -237,9 +239,9 @@ await client.mutate({
     message: {
       channel_id: channelId,
       content: JSON.stringify(messageContent),
-      type: 'social_embed'
-    }
-  }
+      type: 'social_embed',
+    },
+  },
 })
 ```
 
@@ -334,12 +336,12 @@ import { matchesFilters } from '@/lib/social/filters'
 const testPost = {
   content: 'Check out our new #product launch!',
   hashtags: ['product'],
-  engagement: { likes: 50 }
+  engagement: { likes: 50 },
 }
 
 const testIntegration = {
   filter_hashtags: ['product'],
-  min_engagement: 10
+  min_engagement: 10,
 }
 
 console.log(matchesFilters(testPost, testIntegration)) // true
@@ -347,13 +349,13 @@ console.log(matchesFilters(testPost, testIntegration)) // true
 
 ## Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| OAuth redirect error | Check `NEXT_PUBLIC_APP_URL` matches registered callback |
-| No posts imported | Check filters, verify account has recent posts |
-| Token expired | Implement refresh logic or re-authenticate |
-| Rate limit hit | Reduce polling frequency or implement backoff |
-| Posts not appearing in channel | Check integration `auto_post` is true |
+| Issue                          | Solution                                                |
+| ------------------------------ | ------------------------------------------------------- |
+| OAuth redirect error           | Check `NEXT_PUBLIC_APP_URL` matches registered callback |
+| No posts imported              | Check filters, verify account has recent posts          |
+| Token expired                  | Implement refresh logic or re-authenticate              |
+| Rate limit hit                 | Reduce polling frequency or implement backoff           |
+| Posts not appearing in channel | Check integration `auto_post` is true                   |
 
 ## Performance Tips
 

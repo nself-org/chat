@@ -20,6 +20,8 @@ import { useUserManagementStore } from '@/stores/user-management-store'
 import { getUserInitials } from '@/lib/admin/users/user-manager'
 import type { AdminUser } from '@/lib/admin/users/user-types'
 
+import { logger } from '@/lib/logger'
+
 interface UnbanUserModalProps {
   open: boolean
   user: AdminUser | null
@@ -27,12 +29,7 @@ interface UnbanUserModalProps {
   onUnbanned?: () => void
 }
 
-export function UnbanUserModal({
-  open,
-  user,
-  onClose,
-  onUnbanned,
-}: UnbanUserModalProps) {
+export function UnbanUserModal({ open, user, onClose, onUnbanned }: UnbanUserModalProps) {
   const [reason, setReason] = useState('')
   const [notifyUser, setNotifyUser] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -57,7 +54,7 @@ export function UnbanUserModal({
       onUnbanned?.()
       handleClose()
     } catch (error) {
-      console.error('Failed to unban user:', error)
+      logger.error('Failed to unban user:', error)
     } finally {
       setIsSubmitting(false)
     }
@@ -77,14 +74,13 @@ export function UnbanUserModal({
         <AlertDialogHeader>
           <AlertDialogTitle>Unban User</AlertDialogTitle>
           <AlertDialogDescription>
-            Remove the ban from this user's account and restore their access to
-            the workspace.
+            Remove the ban from this user's account and restore their access to the workspace.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         <div className="py-4">
           {/* User Info */}
-          <div className="flex items-center gap-3 mb-4">
+          <div className="mb-4 flex items-center gap-3">
             <Avatar className="h-10 w-10">
               <AvatarImage src={user.avatarUrl} alt={user.displayName} />
               <AvatarFallback>{getUserInitials(user.displayName)}</AvatarFallback>
@@ -101,7 +97,7 @@ export function UnbanUserModal({
               <p className="font-medium">Ban Reason:</p>
               <p className="text-muted-foreground">{user.banReason}</p>
               {user.bannedAt && (
-                <p className="text-muted-foreground mt-1">
+                <p className="mt-1 text-muted-foreground">
                   Banned on: {new Date(user.bannedAt).toLocaleDateString()}
                 </p>
               )}
@@ -109,7 +105,7 @@ export function UnbanUserModal({
           )}
 
           {/* Unban Reason */}
-          <div className="space-y-2 mb-4">
+          <div className="mb-4 space-y-2">
             <Label htmlFor="unban-reason">Reason for Unban (optional)</Label>
             <Textarea
               id="unban-reason"
@@ -122,11 +118,7 @@ export function UnbanUserModal({
 
           {/* Notify User */}
           <div className="flex items-center space-x-2">
-            <Switch
-              id="notify-unban"
-              checked={notifyUser}
-              onCheckedChange={setNotifyUser}
-            />
+            <Switch id="notify-unban" checked={notifyUser} onCheckedChange={setNotifyUser} />
             <Label htmlFor="notify-unban">Notify user by email</Label>
           </div>
         </div>

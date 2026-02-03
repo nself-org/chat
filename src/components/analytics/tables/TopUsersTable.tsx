@@ -1,26 +1,18 @@
-'use client';
+'use client'
 
 /**
  * TopUsersTable - Table showing most active users
  */
 
-import * as React from 'react';
-import { format } from 'date-fns';
-import {
-  MessageSquare,
-  Heart,
-  FileText,
-  MessagesSquare,
-  Crown,
-  Medal,
-  Award,
-} from 'lucide-react';
+import * as React from 'react'
+import { format } from 'date-fns'
+import { MessageSquare, Heart, FileText, MessagesSquare, Crown, Medal, Award } from 'lucide-react'
 
-import { cn } from '@/lib/utils';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
 import {
   Table,
   TableBody,
@@ -28,25 +20,20 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+} from '@/components/ui/table'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
-import { useAnalyticsStore } from '@/stores/analytics-store';
+import { useAnalyticsStore } from '@/stores/analytics-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface TopUsersTableProps {
-  limit?: number;
-  sortBy?: 'messages' | 'reactions' | 'engagement';
-  showDetails?: boolean;
-  className?: string;
+  limit?: number
+  sortBy?: 'messages' | 'reactions' | 'engagement'
+  showDetails?: boolean
+  className?: string
 }
 
 // ============================================================================
@@ -55,9 +42,9 @@ interface TopUsersTableProps {
 
 function formatNumber(value: number): string {
   if (value >= 1000) {
-    return `${(value / 1000).toFixed(1)}K`;
+    return `${(value / 1000).toFixed(1)}K`
   }
-  return value.toLocaleString();
+  return value.toLocaleString()
 }
 
 function getInitials(name: string): string {
@@ -66,28 +53,28 @@ function getInitials(name: string): string {
     .map((n) => n[0])
     .join('')
     .toUpperCase()
-    .slice(0, 2);
+    .slice(0, 2)
 }
 
 function getRankIcon(rank: number) {
   switch (rank) {
     case 1:
-      return <Crown className="h-4 w-4 text-yellow-500" />;
+      return <Crown className="h-4 w-4 text-yellow-500" />
     case 2:
-      return <Medal className="h-4 w-4 text-gray-400" />;
+      return <Medal className="h-4 w-4 text-gray-400" />
     case 3:
-      return <Award className="h-4 w-4 text-amber-600" />;
+      return <Award className="h-4 w-4 text-amber-600" />
     default:
-      return null;
+      return null
   }
 }
 
 function getEngagementLevel(score: number): { label: string; color: string } {
-  if (score >= 500) return { label: 'Very High', color: 'text-green-600' };
-  if (score >= 200) return { label: 'High', color: 'text-emerald-600' };
-  if (score >= 100) return { label: 'Medium', color: 'text-amber-600' };
-  if (score >= 50) return { label: 'Low', color: 'text-orange-600' };
-  return { label: 'Very Low', color: 'text-red-600' };
+  if (score >= 500) return { label: 'Very High', color: 'text-green-600' }
+  if (score >= 200) return { label: 'High', color: 'text-emerald-600' }
+  if (score >= 100) return { label: 'Medium', color: 'text-amber-600' }
+  if (score >= 50) return { label: 'Low', color: 'text-orange-600' }
+  return { label: 'Very Low', color: 'text-red-600' }
 }
 
 // ============================================================================
@@ -100,31 +87,31 @@ export function TopUsersTable({
   showDetails = true,
   className,
 }: TopUsersTableProps) {
-  const { userActivity, isLoading } = useAnalyticsStore();
+  const { userActivity, isLoading } = useAnalyticsStore()
 
   // Sort and limit data
   const tableData = React.useMemo(() => {
-    if (!userActivity || userActivity.length === 0) return [];
+    if (!userActivity || userActivity.length === 0) return []
 
     return [...userActivity]
       .sort((a, b) => {
         switch (sortBy) {
           case 'messages':
-            return b.messageCount - a.messageCount;
+            return b.messageCount - a.messageCount
           case 'reactions':
-            return b.reactionCount - a.reactionCount;
+            return b.reactionCount - a.reactionCount
           default:
-            return b.engagementScore - a.engagementScore;
+            return b.engagementScore - a.engagementScore
         }
       })
-      .slice(0, limit);
-  }, [userActivity, sortBy, limit]);
+      .slice(0, limit)
+  }, [userActivity, sortBy, limit])
 
   // Calculate max engagement for progress bars
   const maxEngagement = React.useMemo(() => {
-    if (tableData.length === 0) return 1;
-    return Math.max(...tableData.map((u) => u.engagementScore));
-  }, [tableData]);
+    if (tableData.length === 0) return 1
+    return Math.max(...tableData.map((u) => u.engagementScore))
+  }, [tableData])
 
   if (isLoading) {
     return (
@@ -140,20 +127,15 @@ export function TopUsersTable({
           ))}
         </div>
       </div>
-    );
+    )
   }
 
   if (tableData.length === 0) {
     return (
-      <div
-        className={cn(
-          'flex h-40 items-center justify-center text-muted-foreground',
-          className
-        )}
-      >
+      <div className={cn('flex h-40 items-center justify-center text-muted-foreground', className)}>
         No user data available
       </div>
-    );
+    )
   }
 
   return (
@@ -177,8 +159,8 @@ export function TopUsersTable({
           </TableHeader>
           <TableBody>
             {tableData.map((user, index) => {
-              const engagement = getEngagementLevel(user.engagementScore);
-              const rank = index + 1;
+              const engagement = getEngagementLevel(user.engagementScore)
+              const rank = index + 1
 
               return (
                 <TableRow key={user.userId}>
@@ -186,9 +168,7 @@ export function TopUsersTable({
                     <div className="flex items-center gap-1">
                       {getRankIcon(rank)}
                       {!getRankIcon(rank) && (
-                        <span className="font-medium text-muted-foreground">
-                          {rank}
-                        </span>
+                        <span className="font-medium text-muted-foreground">{rank}</span>
                       )}
                     </div>
                   </TableCell>
@@ -202,9 +182,7 @@ export function TopUsersTable({
                       </Avatar>
                       <div>
                         <div className="font-medium">{user.displayName}</div>
-                        <div className="text-xs text-muted-foreground">
-                          @{user.username}
-                        </div>
+                        <div className="text-xs text-muted-foreground">@{user.username}</div>
                       </div>
                     </div>
                   </TableCell>
@@ -252,10 +230,7 @@ export function TopUsersTable({
                     </>
                   )}
                   <TableCell className="text-right">
-                    <Badge
-                      variant="outline"
-                      className={cn('font-medium', engagement.color)}
-                    >
+                    <Badge variant="outline" className={cn('font-medium', engagement.color)}>
                       {engagement.label}
                     </Badge>
                   </TableCell>
@@ -266,7 +241,7 @@ export function TopUsersTable({
                     />
                   </TableCell>
                 </TableRow>
-              );
+              )
             })}
           </TableBody>
         </Table>
@@ -284,7 +259,7 @@ export function TopUsersTable({
         )}
       </div>
     </TooltipProvider>
-  );
+  )
 }
 
-export default TopUsersTable;
+export default TopUsersTable

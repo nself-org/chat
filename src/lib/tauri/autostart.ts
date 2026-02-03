@@ -5,13 +5,15 @@
  * in Tauri desktop apps.
  */
 
-import { invoke, invokeOrFallback, isTauri } from './tauri-bridge';
+import { invoke, invokeOrFallback, isTauri } from './tauri-bridge'
+
+import { logger } from '@/lib/logger'
 
 /**
  * Check if auto-start feature is available
  */
 export function isAutoStartAvailable(): boolean {
-  return isTauri();
+  return isTauri()
 }
 
 /**
@@ -19,10 +21,10 @@ export function isAutoStartAvailable(): boolean {
  */
 export async function enableAutoStart(): Promise<void> {
   if (!isTauri()) {
-    console.warn('Auto-start is only available in desktop app');
-    return;
+    logger.warn('Auto-start is only available in desktop app')
+    return
   }
-  return invoke('enable_autostart');
+  return invoke('enable_autostart')
 }
 
 /**
@@ -30,10 +32,10 @@ export async function enableAutoStart(): Promise<void> {
  */
 export async function disableAutoStart(): Promise<void> {
   if (!isTauri()) {
-    console.warn('Auto-start is only available in desktop app');
-    return;
+    logger.warn('Auto-start is only available in desktop app')
+    return
   }
-  return invoke('disable_autostart');
+  return invoke('disable_autostart')
 }
 
 /**
@@ -41,12 +43,12 @@ export async function disableAutoStart(): Promise<void> {
  */
 export async function isAutoStartEnabled(): Promise<boolean> {
   if (!isTauri()) {
-    return false;
+    return false
   }
   try {
-    return await invoke<boolean>('is_autostart_enabled');
+    return await invoke<boolean>('is_autostart_enabled')
   } catch {
-    return false;
+    return false
   }
 }
 
@@ -54,13 +56,13 @@ export async function isAutoStartEnabled(): Promise<boolean> {
  * Toggle auto-start at login
  */
 export async function toggleAutoStart(): Promise<boolean> {
-  const enabled = await isAutoStartEnabled();
+  const enabled = await isAutoStartEnabled()
   if (enabled) {
-    await disableAutoStart();
-    return false;
+    await disableAutoStart()
+    return false
   } else {
-    await enableAutoStart();
-    return true;
+    await enableAutoStart()
+    return true
   }
 }
 
@@ -70,4 +72,4 @@ export default {
   disableAutoStart,
   isAutoStartEnabled,
   toggleAutoStart,
-};
+}

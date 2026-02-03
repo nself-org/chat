@@ -5,6 +5,8 @@
  * SECURITY: PIN hash is NEVER transmitted to server, only stored locally
  */
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Constants
 // ============================================================================
@@ -70,7 +72,8 @@ export function getPinStrength(pin: string): {
   }
 
   // Check for sequential patterns (1234, 4321)
-  const hasSequential = /(?:0123|1234|2345|3456|4567|5678|6789|9876|8765|7654|6543|5432|4321|3210)/.test(pin)
+  const hasSequential =
+    /(?:0123|1234|2345|3456|4567|5678|6789|9876|8765|7654|6543|5432|4321|3210)/.test(pin)
 
   // Check for repeating digits (1111, 2222)
   const hasRepeating = /^(\d)\1+$/.test(pin)
@@ -100,7 +103,7 @@ export function getPinStrength(pin: string): {
 export function generateSalt(): string {
   const buffer = new Uint8Array(SALT_LENGTH)
   crypto.getRandomValues(buffer)
-  return Array.from(buffer, byte => byte.toString(16).padStart(2, '0')).join('')
+  return Array.from(buffer, (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
 /**
@@ -118,7 +121,7 @@ function hexToBytes(hex: string): Uint8Array {
  * Convert Uint8Array to hex string
  */
 function bytesToHex(bytes: Uint8Array): string {
-  return Array.from(bytes, byte => byte.toString(16).padStart(2, '0')).join('')
+  return Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('')
 }
 
 /**
@@ -128,10 +131,7 @@ function bytesToHex(bytes: Uint8Array): string {
  * @param salt - Hex-encoded salt (optional, generates new one if not provided)
  * @returns Object with hash and salt (both hex-encoded)
  */
-export async function hashPin(
-  pin: string,
-  salt?: string
-): Promise<{ hash: string; salt: string }> {
+export async function hashPin(pin: string, salt?: string): Promise<{ hash: string; salt: string }> {
   // Validate PIN format
   if (!isValidPinFormat(pin)) {
     throw new Error('PIN must be 4-6 digits')
@@ -146,13 +146,9 @@ export async function hashPin(
   const pinBytes = encoder.encode(pin)
 
   // Import key material
-  const keyMaterial = await crypto.subtle.importKey(
-    'raw',
-    pinBytes,
-    { name: 'PBKDF2' },
-    false,
-    ['deriveBits']
-  )
+  const keyMaterial = await crypto.subtle.importKey('raw', pinBytes, { name: 'PBKDF2' }, false, [
+    'deriveBits',
+  ])
 
   // Derive key using PBKDF2
   const hashBuffer = await crypto.subtle.deriveBits(
@@ -210,7 +206,7 @@ export function storePinSettings(settings: PinSettings): void {
   try {
     localStorage.setItem(PIN_STORAGE_KEY, JSON.stringify(settings))
   } catch (error) {
-    console.error('Failed to store PIN settings:', error)
+    logger.error('Failed to store PIN settings:', error)
     throw new Error('Failed to store PIN settings')
   }
 }
@@ -227,13 +223,13 @@ export function loadPinSettings(): PinSettings | null {
 
     // Validate required fields
     if (!settings.pinHash || !settings.pinSalt) {
-      console.warn('Invalid PIN settings in localStorage')
+      logger.warn('Invalid PIN settings in localStorage')
       return null
     }
 
     return settings
   } catch (error) {
-    console.error('Failed to load PIN settings:', error)
+    logger.error('Failed to load PIN settings:', error)
     return null
   }
 }
@@ -245,7 +241,7 @@ export function clearPinSettings(): void {
   try {
     localStorage.removeItem(PIN_STORAGE_KEY)
   } catch (error) {
-    console.error('Failed to clear PIN settings:', error)
+    logger.error('Failed to clear PIN settings:', error)
   }
 }
 
@@ -287,7 +283,7 @@ export function recordLocalPinAttempt(success: boolean, failureReason?: string):
     const recentAttempts = attempts.slice(0, MAX_STORED_ATTEMPTS)
     localStorage.setItem(ATTEMPTS_STORAGE_KEY, JSON.stringify(recentAttempts))
   } catch (error) {
-    console.error('Failed to record PIN attempt:', error)
+    logger.error('Failed to record PIN attempt:', error)
   }
 }
 
@@ -302,7 +298,7 @@ export function getRecentFailedAttempts(minutes: number = 15): StoredAttempt[] {
     const attempts: StoredAttempt[] = JSON.parse(stored)
     const cutoff = Date.now() - minutes * 60 * 1000
 
-    return attempts.filter(attempt => !attempt.success && attempt.timestamp > cutoff)
+    return attempts.filter((attempt) => !attempt.success && attempt.timestamp > cutoff)
   } catch {
     return []
   }
@@ -315,7 +311,7 @@ export function clearAttemptHistory(): void {
   try {
     localStorage.removeItem(ATTEMPTS_STORAGE_KEY)
   } catch (error) {
-    console.error('Failed to clear attempt history:', error)
+    logger.error('Failed to clear attempt history:', error)
   }
 }
 
@@ -413,7 +409,7 @@ export async function setupPin(
 
     return { success: true, settings }
   } catch (error) {
-    console.error('PIN setup failed:', error)
+    logger.error('PIN setup failed:', error)
     return { success: false, error: 'Failed to setup PIN' }
   }
 }
@@ -434,11 +430,7 @@ export async function changePin(
     }
 
     // Verify current PIN
-    const isValid = await verifyPin(
-      currentPin,
-      existingSettings.pinHash,
-      existingSettings.pinSalt
-    )
+    const isValid = await verifyPin(currentPin, existingSettings.pinHash, existingSettings.pinSalt)
 
     if (!isValid) {
       return { success: false, error: 'Current PIN is incorrect' }
@@ -452,7 +444,7 @@ export async function changePin(
       biometricEnabled: existingSettings.biometricEnabled,
     })
   } catch (error) {
-    console.error('PIN change failed:', error)
+    logger.error('PIN change failed:', error)
     return { success: false, error: 'Failed to change PIN' }
   }
 }
@@ -477,7 +469,7 @@ export function updatePinSettings(
     storePinSettings(updatedSettings)
     return true
   } catch (error) {
-    console.error('Failed to update PIN settings:', error)
+    logger.error('Failed to update PIN settings:', error)
     return false
   }
 }

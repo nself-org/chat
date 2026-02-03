@@ -59,9 +59,9 @@ test.describe('Profile Settings', () => {
     await settingsPage.saveProfileButton.click()
 
     // Wait for success message
-    await expect(
-      authenticatedPage.locator('[role="alert"]:has-text("saved")')
-    ).toBeVisible({ timeout: 5000 })
+    await expect(authenticatedPage.locator('[role="alert"]:has-text("saved")')).toBeVisible({
+      timeout: 5000,
+    })
 
     // Verify bio was saved
     await authenticatedPage.reload()
@@ -142,9 +142,7 @@ test.describe('Account Settings', () => {
   test('should change password with valid inputs', async ({ settingsPage, authenticatedPage }) => {
     await settingsPage.changePasswordButton.click()
 
-    const currentPasswordInput = authenticatedPage.locator(
-      '[data-testid="current-password-input"]'
-    )
+    const currentPasswordInput = authenticatedPage.locator('[data-testid="current-password-input"]')
     const newPasswordInput = authenticatedPage.locator('[data-testid="new-password-input"]')
     const confirmPasswordInput = authenticatedPage.locator('[data-testid="confirm-password-input"]')
     const submitButton = authenticatedPage.locator('[data-testid="submit-password-change"]')
@@ -156,7 +154,9 @@ test.describe('Account Settings', () => {
 
     // Should show success message
     await expect(
-      authenticatedPage.locator('[role="alert"]:has-text("password"), [role="alert"]:has-text("changed")')
+      authenticatedPage.locator(
+        '[role="alert"]:has-text("password"), [role="alert"]:has-text("changed")'
+      )
     ).toBeVisible({ timeout: 5000 })
   })
 
@@ -495,15 +495,12 @@ test.describe('Security Settings', () => {
     const ipAddress = firstEntry.locator('[data-testid="login-ip"]')
     const location = firstEntry.locator('[data-testid="login-location"]')
 
-    const hasDetails =
-      (await ipAddress.isVisible()) || (await location.isVisible())
+    const hasDetails = (await ipAddress.isVisible()) || (await location.isVisible())
     expect(hasDetails || true).toBe(true) // Graceful assertion
   })
 
   test('should show security alerts toggle', async ({ authenticatedPage }) => {
-    const securityAlertsToggle = authenticatedPage.locator(
-      '[data-testid="toggle-security-alerts"]'
-    )
+    const securityAlertsToggle = authenticatedPage.locator('[data-testid="toggle-security-alerts"]')
 
     if (await securityAlertsToggle.isVisible()) {
       await expect(securityAlertsToggle).toBeVisible()
@@ -578,7 +575,10 @@ test.describe('Settings Navigation', () => {
 })
 
 test.describe('Settings Accessibility', () => {
-  test('should have proper labels for form elements', async ({ settingsPage, authenticatedPage }) => {
+  test('should have proper labels for form elements', async ({
+    settingsPage,
+    authenticatedPage,
+  }) => {
     await settingsPage.navigateToProfile()
 
     // Check for labels

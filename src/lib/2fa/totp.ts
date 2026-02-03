@@ -8,6 +8,8 @@
 import * as speakeasy from 'speakeasy'
 import QRCode from 'qrcode'
 
+import { logger } from '@/lib/logger'
+
 /**
  * Generate a new TOTP secret
  * @returns Base32 encoded secret and otpauth URL
@@ -54,7 +56,7 @@ export async function generateQRCode(otpauthUrl: string): Promise<string> {
 
     return qrCodeDataUrl
   } catch (error) {
-    console.error('QR code generation error:', error)
+    logger.error('QR code generation error:', error)
     throw new Error('Failed to generate QR code')
   }
 }
@@ -66,11 +68,7 @@ export async function generateQRCode(otpauthUrl: string): Promise<string> {
  * @param window - Time window for validation (default: 1 = ±30 seconds)
  * @returns true if token is valid
  */
-export function verifyTOTP(
-  token: string,
-  secret: string,
-  window: number = 1
-): boolean {
+export function verifyTOTP(token: string, secret: string, window: number = 1): boolean {
   try {
     // Remove spaces and validate format
     const cleanToken = token.replace(/\s/g, '')
@@ -88,7 +86,7 @@ export function verifyTOTP(
 
     return verified
   } catch (error) {
-    console.error('TOTP verification error:', error)
+    logger.error('TOTP verification error:', error)
     return false
   }
 }

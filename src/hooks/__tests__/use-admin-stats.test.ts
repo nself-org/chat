@@ -180,8 +180,12 @@ describe('useAdminStats Hook', () => {
     })
 
     it('should calculate message growth', () => {
-      const current = createTestStats({ messages: { total: 1100, today: 50, avgPerDay: 100, peakHour: 14 } })
-      const previous = createTestStats({ messages: { total: 1000, today: 50, avgPerDay: 100, peakHour: 14 } })
+      const current = createTestStats({
+        messages: { total: 1100, today: 50, avgPerDay: 100, peakHour: 14 },
+      })
+      const previous = createTestStats({
+        messages: { total: 1000, today: 50, avgPerDay: 100, peakHour: 14 },
+      })
 
       act(() => {
         useAdminDashboardStore.getState().setStats(current)
@@ -194,8 +198,12 @@ describe('useAdminStats Hook', () => {
     })
 
     it('should calculate channel growth', () => {
-      const current = createTestStats({ channels: { total: 22, public: 15, private: 7, mostActive: [] } })
-      const previous = createTestStats({ channels: { total: 20, public: 15, private: 5, mostActive: [] } })
+      const current = createTestStats({
+        channels: { total: 22, public: 15, private: 7, mostActive: [] },
+      })
+      const previous = createTestStats({
+        channels: { total: 20, public: 15, private: 5, mostActive: [] },
+      })
 
       act(() => {
         useAdminDashboardStore.getState().setStats(current)
@@ -208,8 +216,12 @@ describe('useAdminStats Hook', () => {
     })
 
     it('should calculate storage growth', () => {
-      const current = createTestStats({ storage: { used: 2000000000, limit: 5000000000, percentage: 40 } })
-      const previous = createTestStats({ storage: { used: 1000000000, limit: 5000000000, percentage: 20 } })
+      const current = createTestStats({
+        storage: { used: 2000000000, limit: 5000000000, percentage: 40 },
+      })
+      const previous = createTestStats({
+        storage: { used: 1000000000, limit: 5000000000, percentage: 20 },
+      })
 
       act(() => {
         useAdminDashboardStore.getState().setStats(current)
@@ -315,9 +327,7 @@ describe('useAdminStats Hook', () => {
 
       const { result } = renderHook(() => useAdminStats())
 
-      const totalUsersComparison = result.current.comparisons.find(
-        (c) => c.field === 'Total Users'
-      )
+      const totalUsersComparison = result.current.comparisons.find((c) => c.field === 'Total Users')
       expect(totalUsersComparison?.trend).toBe('up')
     })
   })

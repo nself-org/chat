@@ -6,6 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Camera, Trash2, Upload } from 'lucide-react'
 
+import { logger } from '@/lib/logger'
+
 interface AvatarUploadProps {
   currentAvatarUrl?: string
   fallback?: string
@@ -83,7 +85,7 @@ export function AvatarUpload({
       } catch (err) {
         setError('Failed to upload image')
         setPreviewUrl(null)
-        console.error('Avatar upload error:', err)
+        logger.error('Avatar upload error:', err)
       } finally {
         setIsUploading(false)
         // Reset file input
@@ -104,7 +106,7 @@ export function AvatarUpload({
       setPreviewUrl(null)
     } catch (err) {
       setError('Failed to remove image')
-      console.error('Avatar remove error:', err)
+      logger.error('Avatar remove error:', err)
     } finally {
       setIsUploading(false)
     }
@@ -119,7 +121,7 @@ export function AvatarUpload({
   return (
     <div className={cn('flex items-center gap-4', className)}>
       {/* Avatar with overlay buttons */}
-      <div className="relative group">
+      <div className="group relative">
         <Avatar className={cn(sizeClasses[size], 'border-2 border-muted')}>
           <AvatarImage src={displayUrl} alt="Avatar" />
           <AvatarFallback className="text-lg font-medium">
@@ -161,7 +163,11 @@ export function AvatarUpload({
 
         {/* Loading indicator */}
         {isUploading && (
-          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60" aria-label="Uploading" role="status">
+          <div
+            className="absolute inset-0 flex items-center justify-center rounded-full bg-black/60"
+            aria-label="Uploading"
+            role="status"
+          >
             <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
           </div>
         )}
@@ -193,9 +199,7 @@ export function AvatarUpload({
             </Button>
           )}
         </div>
-        <p className="text-xs text-muted-foreground">
-          JPG, PNG, or GIF. Max 2MB.
-        </p>
+        <p className="text-xs text-muted-foreground">JPG, PNG, or GIF. Max 2MB.</p>
         {error && <p className="text-xs text-destructive">{error}</p>}
       </div>
 

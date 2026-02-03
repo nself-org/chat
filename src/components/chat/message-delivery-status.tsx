@@ -14,18 +14,10 @@
 import { memo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Check, CheckCheck, Clock, AlertCircle, RefreshCw } from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import {
-  useMessageStatus,
-  useShowDeliveryStatus,
-} from '@/lib/messages/use-message-status'
+import { useMessageStatus, useShowDeliveryStatus } from '@/lib/messages/use-message-status'
 import {
   type DeliveryStatus,
   getStatusDescription,
@@ -208,13 +200,7 @@ const ReadReceiptsBadge = memo(function ReadReceiptsBadge({
   }
 
   return (
-    <span
-      className={cn(
-        textSizes[size],
-        'ml-0.5 text-muted-foreground',
-        className
-      )}
-    >
+    <span className={cn(textSizes[size], 'ml-0.5 text-muted-foreground', className)}>
       {readCount}/{totalRecipients}
     </span>
   )
@@ -245,9 +231,7 @@ const StatusTooltipContent = memo(function StatusTooltipContent({
     <div className="space-y-1">
       <div className="font-medium">{description}</div>
 
-      {status === 'failed' && error && (
-        <div className="text-xs text-destructive">{error}</div>
-      )}
+      {status === 'failed' && error && <div className="text-xs text-destructive">{error}</div>}
 
       {status === 'read' && totalRecipients && totalRecipients > 1 && (
         <div className="text-xs text-muted-foreground">
@@ -257,9 +241,7 @@ const StatusTooltipContent = memo(function StatusTooltipContent({
       )}
 
       {updatedAt && (
-        <div className="text-xs text-muted-foreground">
-          {format(updatedAt, 'MMM d, h:mm a')}
-        </div>
+        <div className="text-xs text-muted-foreground">{format(updatedAt, 'MMM d, h:mm a')}</div>
       )}
     </div>
   )
@@ -294,16 +276,8 @@ export const MessageDeliveryStatus = memo(function MessageDeliveryStatus({
   })
 
   // Get message status
-  const {
-    status,
-    statusEntry,
-    isFailed,
-    error,
-    readCount,
-    totalRecipients,
-    retryCount,
-    retry,
-  } = useMessageStatus({ messageId })
+  const { status, statusEntry, isFailed, error, readCount, totalRecipients, retryCount, retry } =
+    useMessageStatus({ messageId })
 
   // Handle retry click
   const handleRetry = useCallback(() => {
@@ -330,7 +304,7 @@ export const MessageDeliveryStatus = memo(function MessageDeliveryStatus({
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-5 w-5 hover:bg-destructive/10"
+                className="hover:bg-destructive/10 h-5 w-5"
                 onClick={handleRetry}
               >
                 <RefreshCw className="h-3 w-3 text-destructive" />
@@ -358,11 +332,7 @@ export const MessageDeliveryStatus = memo(function MessageDeliveryStatus({
         <DeliveryStatusIcon status={status} size={size} />
       </AnimatePresence>
       {showReadCount && status === 'read' && (
-        <ReadReceiptsBadge
-          readCount={readCount}
-          totalRecipients={totalRecipients}
-          size={size}
-        />
+        <ReadReceiptsBadge readCount={readCount} totalRecipients={totalRecipients} size={size} />
       )}
     </div>
   )

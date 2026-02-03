@@ -769,8 +769,7 @@ export const selectReportsPagination = (state: AdminStore) => ({
   totalPages: Math.ceil(state.reportsTotal / state.reportsPerPage),
 })
 
-export const selectPendingReportsCount = (state: AdminStore) =>
-  state.stats.pendingReports
+export const selectPendingReportsCount = (state: AdminStore) => state.stats.pendingReports
 
 export const selectBanUserModal = (state: AdminStore) => ({
   isOpen: state.banUserModalOpen,

@@ -102,19 +102,13 @@ jest.mock('@apollo/client', () => {
       refetch: jest.fn(),
       fetchMore: jest.fn(),
     })),
-    useMutation: jest.fn(() => [
-      jest.fn(),
-      { data: null, loading: false, error: null },
-    ]),
+    useMutation: jest.fn(() => [jest.fn(), { data: null, loading: false, error: null }]),
     useSubscription: jest.fn(() => ({
       data: null,
       loading: false,
       error: null,
     })),
-    useLazyQuery: jest.fn(() => [
-      jest.fn(),
-      { data: null, loading: false, error: null },
-    ]),
+    useLazyQuery: jest.fn(() => [jest.fn(), { data: null, loading: false, error: null }]),
     useApolloClient: jest.fn(() => mockApolloClient),
     ApolloProvider: ({ children }: { children: React.ReactNode }) => children,
     ApolloClient: jest.fn(() => mockApolloClient),
@@ -382,8 +376,7 @@ jest.mock('emoji-picker-react', () => {
     default: ({ onEmojiClick }: { onEmojiClick: (data: any) => void }) =>
       React.createElement('div', {
         'data-testid': 'emoji-picker',
-        onClick: () =>
-          onEmojiClick({ emoji: '👍', names: ['thumbs_up'], unified: '1f44d' }),
+        onClick: () => onEmojiClick({ emoji: '👍', names: ['thumbs_up'], unified: '1f44d' }),
       }),
     Theme: { AUTO: 'auto', LIGHT: 'light', DARK: 'dark' },
     EmojiStyle: { NATIVE: 'native', APPLE: 'apple' },

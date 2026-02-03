@@ -34,6 +34,8 @@ import {
 import { useBookmarkFolders, useBookmarkFilters } from '@/lib/bookmarks/use-bookmarks'
 import { useBookmarkStore, type BookmarkFolder } from '@/lib/bookmarks/bookmark-store'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -223,7 +225,7 @@ function FolderDialog({ folder, open, onOpenChange, onSave }: FolderDialogProps)
       await onSave(name.trim(), color)
       onOpenChange(false)
     } catch (error) {
-      console.error('Failed to save folder:', error)
+      logger.error('Failed to save folder:', error)
     } finally {
       setIsSaving(false)
     }
@@ -264,11 +266,9 @@ function FolderDialog({ folder, open, onOpenChange, onSave }: FolderDialogProps)
                   type="button"
                   onClick={() => setColor(c.value)}
                   className={cn(
-                    'w-8 h-8 rounded-full border-2 transition-all',
-                    color === c.value
-                      ? 'ring-2 ring-offset-2 ring-primary'
-                      : 'hover:scale-110',
-                    !c.value && 'bg-muted border-border'
+                    'h-8 w-8 rounded-full border-2 transition-all',
+                    color === c.value ? 'ring-2 ring-primary ring-offset-2' : 'hover:scale-110',
+                    !c.value && 'border-border bg-muted'
                   )}
                   style={c.value ? { backgroundColor: c.value, borderColor: c.value } : undefined}
                   title={c.name}
@@ -306,17 +306,17 @@ function FolderItem({ folder, isSelected, onSelect, onEdit, onDelete }: FolderIt
   return (
     <div
       className={cn(
-        'group flex items-center justify-between gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors',
+        'group flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors',
         isSelected ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
       )}
       onClick={onSelect}
     >
-      <div className="flex items-center gap-2 min-w-0">
+      <div className="flex min-w-0 items-center gap-2">
         <FolderIcon
           className={cn('h-4 w-4 flex-shrink-0', folder.color && 'text-current')}
           style={folder.color ? { color: folder.color } : undefined}
         />
-        <span className="text-sm truncate">{folder.name}</span>
+        <span className="truncate text-sm">{folder.name}</span>
         <span className="text-xs text-muted-foreground">({folder.bookmark_count})</span>
       </div>
       <DropdownMenu>
@@ -324,7 +324,7 @@ function FolderItem({ folder, isSelected, onSelect, onEdit, onDelete }: FolderIt
           <Button
             variant="ghost"
             size="icon"
-            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
             onClick={(e) => e.stopPropagation()}
           >
             <MoreVerticalIcon className="h-3 w-3" />
@@ -337,7 +337,7 @@ function FolderItem({ folder, isSelected, onSelect, onEdit, onDelete }: FolderIt
               onEdit()
             }}
           >
-            <PencilIcon className="h-4 w-4 mr-2" />
+            <PencilIcon className="mr-2 h-4 w-4" />
             Edit folder
           </DropdownMenuItem>
           <DropdownMenuSeparator />
@@ -348,7 +348,7 @@ function FolderItem({ folder, isSelected, onSelect, onEdit, onDelete }: FolderIt
             }}
             className="text-destructive focus:text-destructive"
           >
-            <TrashIcon className="h-4 w-4 mr-2" />
+            <TrashIcon className="mr-2 h-4 w-4" />
             Delete folder
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -365,8 +365,8 @@ export function BookmarkFolders({ onFolderSelect, className }: BookmarkFoldersPr
   const { folders, createFolder, updateFolder, deleteFolder } = useBookmarkFolders()
   const { selectedFolderId, setFolderFilter } = useBookmarkFilters()
   const { totalCount } = useBookmarkStore()
-  const uncategorizedCount = useBookmarkStore((state) =>
-    Array.from(state.bookmarks.values()).filter((b) => !b.folder_id).length
+  const uncategorizedCount = useBookmarkStore(
+    (state) => Array.from(state.bookmarks.values()).filter((b) => !b.folder_id).length
   )
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = React.useState(false)
@@ -403,7 +403,7 @@ export function BookmarkFolders({ onFolderSelect, className }: BookmarkFoldersPr
       {/* All Bookmarks */}
       <div
         className={cn(
-          'flex items-center justify-between gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors',
+          'flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors',
           selectedFolderId === null ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
         )}
         onClick={() => handleSelectFolder(null)}
@@ -419,7 +419,7 @@ export function BookmarkFolders({ onFolderSelect, className }: BookmarkFoldersPr
       {uncategorizedCount > 0 && uncategorizedCount !== totalCount && (
         <div
           className={cn(
-            'flex items-center justify-between gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors',
+            'flex cursor-pointer items-center justify-between gap-2 rounded-md px-3 py-2 transition-colors',
             selectedFolderId === 'uncategorized' ? 'bg-primary/10 text-primary' : 'hover:bg-accent'
           )}
           onClick={() => handleSelectFolder('uncategorized')}
@@ -448,7 +448,7 @@ export function BookmarkFolders({ onFolderSelect, className }: BookmarkFoldersPr
       <Button
         variant="ghost"
         size="sm"
-        className="w-full justify-start gap-2 mt-2"
+        className="mt-2 w-full justify-start gap-2"
         onClick={() => setIsCreateDialogOpen(true)}
       >
         <PlusIcon className="h-4 w-4" />
@@ -471,7 +471,10 @@ export function BookmarkFolders({ onFolderSelect, className }: BookmarkFoldersPr
       />
 
       {/* Delete Confirmation */}
-      <AlertDialog open={!!deletingFolder} onOpenChange={(open) => !open && setDeletingFolder(null)}>
+      <AlertDialog
+        open={!!deletingFolder}
+        onOpenChange={(open) => !open && setDeletingFolder(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Folder</AlertDialogTitle>
@@ -484,7 +487,7 @@ export function BookmarkFolders({ onFolderSelect, className }: BookmarkFoldersPr
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteFolder}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
             >
               Delete
             </AlertDialogAction>

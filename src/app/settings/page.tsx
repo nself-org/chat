@@ -5,15 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SettingsLayout } from '@/components/settings'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import {
-  User,
-  Bell,
-  Shield,
-  Settings,
-  Keyboard,
-  Palette,
-  ChevronRight,
-} from 'lucide-react'
+import { User, Bell, Shield, Settings, Keyboard, Palette, ChevronRight } from 'lucide-react'
 
 interface SettingsCard {
   title: string
@@ -77,9 +69,7 @@ export default function SettingsPage() {
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Settings</h1>
-          <p className="text-muted-foreground">
-            Manage your account settings and preferences
-          </p>
+          <p className="text-muted-foreground">Manage your account settings and preferences</p>
         </div>
 
         {/* Mobile settings grid */}
@@ -88,16 +78,14 @@ export default function SettingsPage() {
             const Icon = card.icon
             return (
               <Link key={card.href} href={card.href}>
-                <Card className="transition-colors hover:bg-muted/50">
+                <Card className="hover:bg-muted/50 transition-colors">
                   <CardHeader className="flex flex-row items-center gap-4 p-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+                    <div className="bg-primary/10 flex h-12 w-12 shrink-0 items-center justify-center rounded-lg">
                       <Icon className="h-6 w-6 text-primary" />
                     </div>
                     <div className="flex-1 space-y-1">
                       <CardTitle className="text-base">{card.title}</CardTitle>
-                      <CardDescription className="text-sm">
-                        {card.description}
-                      </CardDescription>
+                      <CardDescription className="text-sm">{card.description}</CardDescription>
                     </div>
                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </CardHeader>
@@ -109,9 +97,7 @@ export default function SettingsPage() {
 
         {/* Desktop message - user will be redirected */}
         <div className="hidden md:block">
-          <p className="text-muted-foreground">
-            Select a settings category from the sidebar.
-          </p>
+          <p className="text-muted-foreground">Select a settings category from the sidebar.</p>
         </div>
       </div>
     </SettingsLayout>

@@ -309,10 +309,7 @@ export async function refreshAccessToken(
 /**
  * Revoke access token
  */
-export async function revokeToken(
-  config: DiscordOAuthConfig,
-  token: string
-): Promise<void> {
+export async function revokeToken(config: DiscordOAuthConfig, token: string): Promise<void> {
   const response = await fetch('https://discord.com/api/oauth2/token/revoke', {
     method: 'POST',
     headers: {
@@ -446,10 +443,7 @@ export function parseScopes(scopeString: string): string[] {
 /**
  * Check if token has required scopes
  */
-export function hasRequiredScopes(
-  tokenScopes: string,
-  requiredScopes: string[]
-): boolean {
+export function hasRequiredScopes(tokenScopes: string, requiredScopes: string[]): boolean {
   const scopes = parseScopes(tokenScopes)
   return requiredScopes.every((required) => scopes.includes(required))
 }

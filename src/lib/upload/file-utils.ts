@@ -5,7 +5,7 @@
  * thumbnail generation, and dimension extraction.
  */
 
-import { FileType } from '@/stores/attachment-store';
+import { FileType } from '@/stores/attachment-store'
 
 // ============================================================================
 // Constants
@@ -66,7 +66,7 @@ export const FILE_ICONS: Record<string, string> = {
 
   // Default
   default: 'file',
-};
+}
 
 export const FILE_TYPE_LABELS: Record<FileType, string> = {
   image: 'Image',
@@ -75,17 +75,17 @@ export const FILE_TYPE_LABELS: Record<FileType, string> = {
   document: 'Document',
   archive: 'Archive',
   other: 'File',
-};
+}
 
-export const PREVIEWABLE_TYPES: FileType[] = ['image', 'video', 'audio'];
+export const PREVIEWABLE_TYPES: FileType[] = ['image', 'video', 'audio']
 
-export const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff'];
-export const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'ogv'];
-export const AUDIO_EXTENSIONS = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'wma'];
-export const DOCUMENT_EXTENSIONS = ['pdf', 'doc', 'docx', 'txt', 'md', 'rtf', 'odt'];
-export const SPREADSHEET_EXTENSIONS = ['xls', 'xlsx', 'csv', 'ods'];
-export const PRESENTATION_EXTENSIONS = ['ppt', 'pptx', 'odp'];
-export const ARCHIVE_EXTENSIONS = ['zip', 'rar', '7z', 'gz', 'tar', 'bz2'];
+export const IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp', 'tiff']
+export const VIDEO_EXTENSIONS = ['mp4', 'webm', 'mov', 'avi', 'mkv', 'ogv']
+export const AUDIO_EXTENSIONS = ['mp3', 'wav', 'ogg', 'flac', 'aac', 'm4a', 'wma']
+export const DOCUMENT_EXTENSIONS = ['pdf', 'doc', 'docx', 'txt', 'md', 'rtf', 'odt']
+export const SPREADSHEET_EXTENSIONS = ['xls', 'xlsx', 'csv', 'ods']
+export const PRESENTATION_EXTENSIONS = ['ppt', 'pptx', 'odp']
+export const ARCHIVE_EXTENSIONS = ['zip', 'rar', '7z', 'gz', 'tar', 'bz2']
 
 // ============================================================================
 // File Type Detection
@@ -95,9 +95,9 @@ export const ARCHIVE_EXTENSIONS = ['zip', 'rar', '7z', 'gz', 'tar', 'bz2'];
  * Get the file type category from a MIME type
  */
 export function getFileTypeFromMime(mimeType: string): FileType {
-  if (mimeType.startsWith('image/')) return 'image';
-  if (mimeType.startsWith('video/')) return 'video';
-  if (mimeType.startsWith('audio/')) return 'audio';
+  if (mimeType.startsWith('image/')) return 'image'
+  if (mimeType.startsWith('video/')) return 'video'
+  if (mimeType.startsWith('audio/')) return 'audio'
 
   if (
     mimeType.includes('zip') ||
@@ -106,7 +106,7 @@ export function getFileTypeFromMime(mimeType: string): FileType {
     mimeType.includes('gzip') ||
     mimeType.includes('tar')
   ) {
-    return 'archive';
+    return 'archive'
   }
 
   if (
@@ -118,31 +118,31 @@ export function getFileTypeFromMime(mimeType: string): FileType {
     mimeType.includes('presentation') ||
     mimeType.startsWith('text/')
   ) {
-    return 'document';
+    return 'document'
   }
 
-  return 'other';
+  return 'other'
 }
 
 /**
  * Get the file type from a file extension
  */
 export function getFileTypeFromExtension(extension: string): FileType {
-  const ext = extension.toLowerCase().replace('.', '');
+  const ext = extension.toLowerCase().replace('.', '')
 
-  if (IMAGE_EXTENSIONS.includes(ext)) return 'image';
-  if (VIDEO_EXTENSIONS.includes(ext)) return 'video';
-  if (AUDIO_EXTENSIONS.includes(ext)) return 'audio';
+  if (IMAGE_EXTENSIONS.includes(ext)) return 'image'
+  if (VIDEO_EXTENSIONS.includes(ext)) return 'video'
+  if (AUDIO_EXTENSIONS.includes(ext)) return 'audio'
   if (
     DOCUMENT_EXTENSIONS.includes(ext) ||
     SPREADSHEET_EXTENSIONS.includes(ext) ||
     PRESENTATION_EXTENSIONS.includes(ext)
   ) {
-    return 'document';
+    return 'document'
   }
-  if (ARCHIVE_EXTENSIONS.includes(ext)) return 'archive';
+  if (ARCHIVE_EXTENSIONS.includes(ext)) return 'archive'
 
-  return 'other';
+  return 'other'
 }
 
 /**
@@ -151,13 +151,13 @@ export function getFileTypeFromExtension(extension: string): FileType {
 export function getFileType(file: File): FileType {
   // Try MIME type first
   if (file.type) {
-    const typeFromMime = getFileTypeFromMime(file.type);
-    if (typeFromMime !== 'other') return typeFromMime;
+    const typeFromMime = getFileTypeFromMime(file.type)
+    if (typeFromMime !== 'other') return typeFromMime
   }
 
   // Fall back to extension
-  const extension = getFileExtension(file.name);
-  return getFileTypeFromExtension(extension);
+  const extension = getFileExtension(file.name)
+  return getFileTypeFromExtension(extension)
 }
 
 // ============================================================================
@@ -168,33 +168,33 @@ export function getFileType(file: File): FileType {
  * Get the file extension from a filename
  */
 export function getFileExtension(fileName: string): string {
-  const parts = fileName.split('.');
-  return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : '';
+  const parts = fileName.split('.')
+  return parts.length > 1 ? parts[parts.length - 1].toLowerCase() : ''
 }
 
 /**
  * Get the filename without extension
  */
 export function getFileBaseName(fileName: string): string {
-  const lastDot = fileName.lastIndexOf('.');
-  return lastDot > 0 ? fileName.substring(0, lastDot) : fileName;
+  const lastDot = fileName.lastIndexOf('.')
+  return lastDot > 0 ? fileName.substring(0, lastDot) : fileName
 }
 
 /**
  * Truncate a filename to a maximum length
  */
 export function truncateFileName(fileName: string, maxLength: number = 30): string {
-  if (fileName.length <= maxLength) return fileName;
+  if (fileName.length <= maxLength) return fileName
 
-  const extension = getFileExtension(fileName);
-  const baseName = getFileBaseName(fileName);
-  const availableLength = maxLength - extension.length - 4; // 4 for "..." and "."
+  const extension = getFileExtension(fileName)
+  const baseName = getFileBaseName(fileName)
+  const availableLength = maxLength - extension.length - 4 // 4 for "..." and "."
 
   if (availableLength <= 0) {
-    return fileName.substring(0, maxLength - 3) + '...';
+    return fileName.substring(0, maxLength - 3) + '...'
   }
 
-  return `${baseName.substring(0, availableLength)}...${extension ? '.' + extension : ''}`;
+  return `${baseName.substring(0, availableLength)}...${extension ? '.' + extension : ''}`
 }
 
 /**
@@ -204,7 +204,7 @@ export function sanitizeFileName(fileName: string): string {
   return fileName
     .replace(/[^a-zA-Z0-9.\-_]/g, '_')
     .replace(/_+/g, '_')
-    .replace(/^_|_$/g, '');
+    .replace(/^_|_$/g, '')
 }
 
 // ============================================================================
@@ -215,13 +215,13 @@ export function sanitizeFileName(fileName: string): string {
  * Format file size to human-readable string
  */
 export function formatFileSize(bytes: number): string {
-  if (bytes === 0) return '0 B';
+  if (bytes === 0) return '0 B'
 
-  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
-  const k = 1024;
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  const units = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
+  const k = 1024
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
 
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${units[i]}`;
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${units[i]}`
 }
 
 /**
@@ -234,15 +234,15 @@ export function parseFileSize(sizeString: string): number {
     MB: 1024 * 1024,
     GB: 1024 * 1024 * 1024,
     TB: 1024 * 1024 * 1024 * 1024,
-  };
+  }
 
-  const match = sizeString.match(/^(\d+(?:\.\d+)?)\s*(B|KB|MB|GB|TB)?$/i);
-  if (!match) return 0;
+  const match = sizeString.match(/^(\d+(?:\.\d+)?)\s*(B|KB|MB|GB|TB)?$/i)
+  if (!match) return 0
 
-  const value = parseFloat(match[1]);
-  const unit = (match[2] || 'B').toUpperCase();
+  const value = parseFloat(match[1])
+  const unit = (match[2] || 'B').toUpperCase()
 
-  return Math.round(value * (units[unit] || 1));
+  return Math.round(value * (units[unit] || 1))
 }
 
 // ============================================================================
@@ -253,7 +253,7 @@ export function parseFileSize(sizeString: string): number {
  * Get the icon name for a file based on its MIME type
  */
 export function getFileIcon(mimeType: string): string {
-  return FILE_ICONS[mimeType] || FILE_ICONS.default;
+  return FILE_ICONS[mimeType] || FILE_ICONS.default
 }
 
 /**
@@ -262,17 +262,17 @@ export function getFileIcon(mimeType: string): string {
 export function getFileTypeIcon(fileType: FileType): string {
   switch (fileType) {
     case 'image':
-      return 'image';
+      return 'image'
     case 'video':
-      return 'video';
+      return 'video'
     case 'audio':
-      return 'music';
+      return 'music'
     case 'document':
-      return 'file-text';
+      return 'file-text'
     case 'archive':
-      return 'archive';
+      return 'archive'
     default:
-      return 'file';
+      return 'file'
   }
 }
 
@@ -282,17 +282,17 @@ export function getFileTypeIcon(fileType: FileType): string {
 export function getFileTypeColor(fileType: FileType): string {
   switch (fileType) {
     case 'image':
-      return 'text-blue-500';
+      return 'text-blue-500'
     case 'video':
-      return 'text-purple-500';
+      return 'text-purple-500'
     case 'audio':
-      return 'text-green-500';
+      return 'text-green-500'
     case 'document':
-      return 'text-orange-500';
+      return 'text-orange-500'
     case 'archive':
-      return 'text-yellow-500';
+      return 'text-yellow-500'
     default:
-      return 'text-gray-500';
+      return 'text-gray-500'
   }
 }
 
@@ -301,29 +301,32 @@ export function getFileTypeColor(fileType: FileType): string {
 // ============================================================================
 
 export interface FileValidationResult {
-  valid: boolean;
-  error?: string;
+  valid: boolean
+  error?: string
 }
 
 export interface FileValidationOptions {
-  maxSize?: number;
-  allowedTypes?: string[];
-  allowedExtensions?: string[];
-  minSize?: number;
+  maxSize?: number
+  allowedTypes?: string[]
+  allowedExtensions?: string[]
+  minSize?: number
 }
 
 /**
  * Validate a file against specified constraints
  */
-export function validateFile(file: File, options: FileValidationOptions = {}): FileValidationResult {
-  const { maxSize, allowedTypes, allowedExtensions, minSize } = options;
+export function validateFile(
+  file: File,
+  options: FileValidationOptions = {}
+): FileValidationResult {
+  const { maxSize, allowedTypes, allowedExtensions, minSize } = options
 
   // Check minimum size
   if (minSize !== undefined && file.size < minSize) {
     return {
       valid: false,
       error: `File is too small. Minimum size is ${formatFileSize(minSize)}.`,
-    };
+    }
   }
 
   // Check maximum size
@@ -331,43 +334,41 @@ export function validateFile(file: File, options: FileValidationOptions = {}): F
     return {
       valid: false,
       error: `File is too large. Maximum size is ${formatFileSize(maxSize)}.`,
-    };
+    }
   }
 
   // Check allowed MIME types
   if (allowedTypes && allowedTypes.length > 0) {
     const isAllowed = allowedTypes.some((type) => {
       if (type.endsWith('/*')) {
-        const prefix = type.slice(0, -1);
-        return file.type.startsWith(prefix);
+        const prefix = type.slice(0, -1)
+        return file.type.startsWith(prefix)
       }
-      return file.type === type;
-    });
+      return file.type === type
+    })
 
     if (!isAllowed) {
       return {
         valid: false,
         error: 'File type is not allowed.',
-      };
+      }
     }
   }
 
   // Check allowed extensions
   if (allowedExtensions && allowedExtensions.length > 0) {
-    const extension = getFileExtension(file.name);
-    const normalizedExtensions = allowedExtensions.map((ext) =>
-      ext.toLowerCase().replace('.', '')
-    );
+    const extension = getFileExtension(file.name)
+    const normalizedExtensions = allowedExtensions.map((ext) => ext.toLowerCase().replace('.', ''))
 
     if (!normalizedExtensions.includes(extension)) {
       return {
         valid: false,
         error: `File extension .${extension} is not allowed.`,
-      };
+      }
     }
   }
 
-  return { valid: true };
+  return { valid: true }
 }
 
 /**
@@ -377,32 +378,32 @@ export function validateFiles(
   files: File[],
   options: FileValidationOptions & { maxFiles?: number } = {}
 ): {
-  valid: File[];
-  invalid: { file: File; error: string }[];
+  valid: File[]
+  invalid: { file: File; error: string }[]
 } {
-  const { maxFiles, ...fileOptions } = options;
-  const valid: File[] = [];
-  const invalid: { file: File; error: string }[] = [];
+  const { maxFiles, ...fileOptions } = options
+  const valid: File[] = []
+  const invalid: { file: File; error: string }[] = []
 
   // Check max files
   if (maxFiles !== undefined && files.length > maxFiles) {
     files.slice(maxFiles).forEach((file) => {
-      invalid.push({ file, error: `Maximum ${maxFiles} files allowed.` });
-    });
-    files = files.slice(0, maxFiles);
+      invalid.push({ file, error: `Maximum ${maxFiles} files allowed.` })
+    })
+    files = files.slice(0, maxFiles)
   }
 
   // Validate each file
   files.forEach((file) => {
-    const result = validateFile(file, fileOptions);
+    const result = validateFile(file, fileOptions)
     if (result.valid) {
-      valid.push(file);
+      valid.push(file)
     } else {
-      invalid.push({ file, error: result.error! });
+      invalid.push({ file, error: result.error! })
     }
-  });
+  })
 
-  return { valid, invalid };
+  return { valid, invalid }
 }
 
 // ============================================================================
@@ -410,8 +411,8 @@ export function validateFiles(
 // ============================================================================
 
 export interface MediaDimensions {
-  width: number;
-  height: number;
+  width: number
+  height: number
 }
 
 /**
@@ -420,25 +421,25 @@ export interface MediaDimensions {
 export function getImageDimensions(file: File): Promise<MediaDimensions> {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('image/')) {
-      reject(new Error('File is not an image'));
-      return;
+      reject(new Error('File is not an image'))
+      return
     }
 
-    const img = new Image();
-    const url = URL.createObjectURL(file);
+    const img = new Image()
+    const url = URL.createObjectURL(file)
 
     img.onload = () => {
-      URL.revokeObjectURL(url);
-      resolve({ width: img.naturalWidth, height: img.naturalHeight });
-    };
+      URL.revokeObjectURL(url)
+      resolve({ width: img.naturalWidth, height: img.naturalHeight })
+    }
 
     img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Failed to load image'));
-    };
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to load image'))
+    }
 
-    img.src = url;
-  });
+    img.src = url
+  })
 }
 
 /**
@@ -447,29 +448,29 @@ export function getImageDimensions(file: File): Promise<MediaDimensions> {
 export function getVideoDimensions(file: File): Promise<MediaDimensions & { duration: number }> {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('video/')) {
-      reject(new Error('File is not a video'));
-      return;
+      reject(new Error('File is not a video'))
+      return
     }
 
-    const video = document.createElement('video');
-    const url = URL.createObjectURL(file);
+    const video = document.createElement('video')
+    const url = URL.createObjectURL(file)
 
     video.onloadedmetadata = () => {
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url)
       resolve({
         width: video.videoWidth,
         height: video.videoHeight,
         duration: video.duration,
-      });
-    };
+      })
+    }
 
     video.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Failed to load video'));
-    };
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to load video'))
+    }
 
-    video.src = url;
-  });
+    video.src = url
+  })
 }
 
 /**
@@ -478,25 +479,25 @@ export function getVideoDimensions(file: File): Promise<MediaDimensions & { dura
 export function getAudioDuration(file: File): Promise<number> {
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('audio/')) {
-      reject(new Error('File is not audio'));
-      return;
+      reject(new Error('File is not audio'))
+      return
     }
 
-    const audio = document.createElement('audio');
-    const url = URL.createObjectURL(file);
+    const audio = document.createElement('audio')
+    const url = URL.createObjectURL(file)
 
     audio.onloadedmetadata = () => {
-      URL.revokeObjectURL(url);
-      resolve(audio.duration);
-    };
+      URL.revokeObjectURL(url)
+      resolve(audio.duration)
+    }
 
     audio.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Failed to load audio'));
-    };
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to load audio'))
+    }
 
-    audio.src = url;
-  });
+    audio.src = url
+  })
 }
 
 // ============================================================================
@@ -504,81 +505,78 @@ export function getAudioDuration(file: File): Promise<number> {
 // ============================================================================
 
 export interface ThumbnailOptions {
-  maxWidth?: number;
-  maxHeight?: number;
-  quality?: number;
-  format?: 'image/jpeg' | 'image/png' | 'image/webp';
+  maxWidth?: number
+  maxHeight?: number
+  quality?: number
+  format?: 'image/jpeg' | 'image/png' | 'image/webp'
 }
 
 /**
  * Generate a thumbnail for an image file
  */
-export function generateImageThumbnail(
-  file: File,
-  options: ThumbnailOptions = {}
-): Promise<Blob> {
-  const { maxWidth = 200, maxHeight = 200, quality = 0.8, format = 'image/jpeg' } = options;
+export function generateImageThumbnail(file: File, options: ThumbnailOptions = {}): Promise<Blob> {
+  const { maxWidth = 200, maxHeight = 200, quality = 0.8, format = 'image/jpeg' } = options
 
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('image/')) {
-      reject(new Error('File is not an image'));
-      return;
+      reject(new Error('File is not an image'))
+      return
     }
 
-    const img = new Image();
-    const url = URL.createObjectURL(file);
+    const img = new Image()
+    const url = URL.createObjectURL(file)
 
     img.onload = () => {
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url)
 
       // Calculate dimensions maintaining aspect ratio
-      let { naturalWidth: width, naturalHeight: height } = img;
-      const aspectRatio = width / height;
+      let { naturalWidth: width, naturalHeight: height } = img
+      const aspectRatio = width / height
 
       if (width > maxWidth) {
-        width = maxWidth;
-        height = width / aspectRatio;
+        width = maxWidth
+        height = width / aspectRatio
       }
 
       if (height > maxHeight) {
-        height = maxHeight;
-        width = height * aspectRatio;
+        height = maxHeight
+        width = height * aspectRatio
       }
 
       // Create canvas and draw
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(width);
-      canvas.height = Math.round(height);
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(width)
+      canvas.height = Math.round(height)
 
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d')
       if (!ctx) {
-        reject(new Error('Failed to get canvas context'));
-        return;
+        reject(new Error('Failed to get canvas context'))
+        return
       }
 
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 
       // Convert to blob
       canvas.toBlob(
         (blob) => {
           if (blob) {
-            resolve(blob);
+            resolve(blob)
           } else {
-            reject(new Error('Failed to generate thumbnail'));
+            reject(new Error('Failed to generate thumbnail'))
           }
         },
         format,
         quality
-      );
-    };
+      )
+    }
 
     img.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Failed to load image'));
-    };
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to load image'))
+    }
 
-    img.src = url;
-  });
+    img.src = url
+  })
 }
 
 /**
@@ -594,72 +592,72 @@ export function generateVideoThumbnail(
     quality = 0.8,
     format = 'image/jpeg',
     captureTime = 0,
-  } = options;
+  } = options
 
   return new Promise((resolve, reject) => {
     if (!file.type.startsWith('video/')) {
-      reject(new Error('File is not a video'));
-      return;
+      reject(new Error('File is not a video'))
+      return
     }
 
-    const video = document.createElement('video');
-    const url = URL.createObjectURL(file);
+    const video = document.createElement('video')
+    const url = URL.createObjectURL(file)
 
     video.onloadeddata = () => {
-      video.currentTime = Math.min(captureTime, video.duration);
-    };
+      video.currentTime = Math.min(captureTime, video.duration)
+    }
 
     video.onseeked = () => {
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(url)
 
       // Calculate dimensions maintaining aspect ratio
-      let { videoWidth: width, videoHeight: height } = video;
-      const aspectRatio = width / height;
+      let { videoWidth: width, videoHeight: height } = video
+      const aspectRatio = width / height
 
       if (width > maxWidth) {
-        width = maxWidth;
-        height = width / aspectRatio;
+        width = maxWidth
+        height = width / aspectRatio
       }
 
       if (height > maxHeight) {
-        height = maxHeight;
-        width = height * aspectRatio;
+        height = maxHeight
+        width = height * aspectRatio
       }
 
       // Create canvas and draw
-      const canvas = document.createElement('canvas');
-      canvas.width = Math.round(width);
-      canvas.height = Math.round(height);
+      const canvas = document.createElement('canvas')
+      canvas.width = Math.round(width)
+      canvas.height = Math.round(height)
 
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d')
       if (!ctx) {
-        reject(new Error('Failed to get canvas context'));
-        return;
+        reject(new Error('Failed to get canvas context'))
+        return
       }
 
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
 
       // Convert to blob
       canvas.toBlob(
         (blob) => {
           if (blob) {
-            resolve(blob);
+            resolve(blob)
           } else {
-            reject(new Error('Failed to generate thumbnail'));
+            reject(new Error('Failed to generate thumbnail'))
           }
         },
         format,
         quality
-      );
-    };
+      )
+    }
 
     video.onerror = () => {
-      URL.revokeObjectURL(url);
-      reject(new Error('Failed to load video'));
-    };
+      URL.revokeObjectURL(url)
+      reject(new Error('Failed to load video'))
+    }
 
-    video.src = url;
-  });
+    video.src = url
+  })
 }
 
 // ============================================================================
@@ -670,17 +668,17 @@ export function generateVideoThumbnail(
  * Format duration in seconds to mm:ss or hh:mm:ss
  */
 export function formatDuration(seconds: number): string {
-  if (!isFinite(seconds) || seconds < 0) return '0:00';
+  if (!isFinite(seconds) || seconds < 0) return '0:00'
 
-  const hours = Math.floor(seconds / 3600);
-  const minutes = Math.floor((seconds % 3600) / 60);
-  const secs = Math.floor(seconds % 60);
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = Math.floor(seconds % 60)
 
   if (hours > 0) {
-    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
   }
 
-  return `${minutes}:${secs.toString().padStart(2, '0')}`;
+  return `${minutes}:${secs.toString().padStart(2, '0')}`
 }
 
 // ============================================================================
@@ -691,11 +689,11 @@ export function formatDuration(seconds: number): string {
  * Create a preview URL for a file (blob URL)
  */
 export function createPreviewUrl(file: File): string | null {
-  const fileType = getFileType(file);
+  const fileType = getFileType(file)
   if (PREVIEWABLE_TYPES.includes(fileType)) {
-    return URL.createObjectURL(file);
+    return URL.createObjectURL(file)
   }
-  return null;
+  return null
 }
 
 /**
@@ -703,7 +701,7 @@ export function createPreviewUrl(file: File): string | null {
  */
 export function revokePreviewUrl(url: string | null): void {
   if (url && url.startsWith('blob:')) {
-    URL.revokeObjectURL(url);
+    URL.revokeObjectURL(url)
   }
 }
 
@@ -715,7 +713,7 @@ export function revokePreviewUrl(url: string | null): void {
  * Get MIME type from file extension
  */
 export function getMimeTypeFromExtension(extension: string): string {
-  const ext = extension.toLowerCase().replace('.', '');
+  const ext = extension.toLowerCase().replace('.', '')
 
   const mimeTypes: Record<string, string> = {
     // Images
@@ -773,43 +771,43 @@ export function getMimeTypeFromExtension(extension: string): string {
     js: 'text/javascript',
     json: 'application/json',
     xml: 'application/xml',
-  };
+  }
 
-  return mimeTypes[ext] || 'application/octet-stream';
+  return mimeTypes[ext] || 'application/octet-stream'
 }
 
 /**
  * Check if a file is previewable in the browser
  */
 export function isPreviewable(file: File): boolean {
-  const fileType = getFileType(file);
-  return PREVIEWABLE_TYPES.includes(fileType);
+  const fileType = getFileType(file)
+  return PREVIEWABLE_TYPES.includes(fileType)
 }
 
 /**
  * Check if a file is an image
  */
 export function isImage(file: File): boolean {
-  return getFileType(file) === 'image';
+  return getFileType(file) === 'image'
 }
 
 /**
  * Check if a file is a video
  */
 export function isVideo(file: File): boolean {
-  return getFileType(file) === 'video';
+  return getFileType(file) === 'video'
 }
 
 /**
  * Check if a file is audio
  */
 export function isAudio(file: File): boolean {
-  return getFileType(file) === 'audio';
+  return getFileType(file) === 'audio'
 }
 
 /**
  * Check if a file is a document
  */
 export function isDocument(file: File): boolean {
-  return getFileType(file) === 'document';
+  return getFileType(file) === 'document'
 }

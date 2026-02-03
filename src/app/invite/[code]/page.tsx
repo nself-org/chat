@@ -22,9 +22,7 @@ interface InvitePageProps {
 // Metadata
 // ============================================================================
 
-export async function generateMetadata({
-  params,
-}: InvitePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: InvitePageProps): Promise<Metadata> {
   const { code } = await params
 
   return {

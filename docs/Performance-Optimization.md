@@ -67,32 +67,32 @@ This guide documents comprehensive performance optimizations implemented in nsel
 
 ### Response Time Targets
 
-| Metric | Target (p95) | Target (p99) | Critical (p99.9) |
-|--------|--------------|--------------|------------------|
-| API Response Time | <100ms | <200ms | <500ms |
-| WebSocket Latency | <50ms | <100ms | <200ms |
-| Database Query Time | <50ms | <100ms | <300ms |
-| Page Load Time (TTI) | <2s | <3s | <5s |
-| Message Send Latency | <50ms | <100ms | <200ms |
+| Metric               | Target (p95) | Target (p99) | Critical (p99.9) |
+| -------------------- | ------------ | ------------ | ---------------- |
+| API Response Time    | <100ms       | <200ms       | <500ms           |
+| WebSocket Latency    | <50ms        | <100ms       | <200ms           |
+| Database Query Time  | <50ms        | <100ms       | <300ms           |
+| Page Load Time (TTI) | <2s          | <3s          | <5s              |
+| Message Send Latency | <50ms        | <100ms       | <200ms           |
 
 ### Throughput Targets
 
-| Metric | Target | Peak |
-|--------|--------|------|
-| Concurrent Users | 10,000 | 15,000 |
-| Requests per Second | 10,000 RPS | 20,000 RPS |
-| Messages per Second | 5,000 MPS | 10,000 MPS |
-| WebSocket Connections | 10,000 | 15,000 |
-| Database Connections | 100-200 | 300 |
+| Metric                | Target     | Peak       |
+| --------------------- | ---------- | ---------- |
+| Concurrent Users      | 10,000     | 15,000     |
+| Requests per Second   | 10,000 RPS | 20,000 RPS |
+| Messages per Second   | 5,000 MPS  | 10,000 MPS |
+| WebSocket Connections | 10,000     | 15,000     |
+| Database Connections  | 100-200    | 300        |
 
 ### Resource Utilization Targets
 
-| Resource | Normal | Peak | Critical |
-|----------|--------|------|----------|
-| CPU Usage | <60% | <80% | <90% |
-| Memory Usage | <70% | <85% | <95% |
-| Database CPU | <50% | <70% | <85% |
-| Cache Hit Rate | >80% | >70% | >60% |
+| Resource       | Normal | Peak | Critical |
+| -------------- | ------ | ---- | -------- |
+| CPU Usage      | <60%   | <80% | <90%     |
+| Memory Usage   | <70%   | <85% | <95%     |
+| Database CPU   | <50%   | <70% | <85%     |
+| Cache Hit Rate | >80%   | >70% | >60%     |
 
 ---
 
@@ -140,6 +140,7 @@ CREATE TABLE nchat_messages_2026_01
 ```
 
 **Benefits**:
+
 - Faster queries on recent data
 - Easier archival of old data
 - Improved maintenance operations
@@ -166,6 +167,7 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY nchat_channel_stats;
 ```
 
 **Views Created**:
+
 - `nchat_channel_stats` - Channel activity metrics
 - `nchat_user_activity_stats` - User engagement metrics
 - `nchat_message_engagement_stats` - Message interaction metrics
@@ -228,6 +230,7 @@ server_idle_timeout = 600
 ```
 
 **Benefits**:
+
 - Reduce PostgreSQL connection overhead
 - Support 10,000 client connections with only 100 database connections
 - 100x connection multiplexing
@@ -248,11 +251,12 @@ const complexityAnalyzer = new QueryComplexityAnalyzer({
     nchat_messages: 5,
     search_messages: 10,
     // ... field costs
-  }
+  },
 })
 ```
 
 **Features**:
+
 - Prevent expensive queries
 - Rate limiting by complexity
 - Query depth limits
@@ -268,6 +272,7 @@ const users = await dataLoader.loadUsers([id1, id2, id3])
 ```
 
 **Benefits**:
+
 - Batch multiple requests into single query
 - Automatic caching within request
 - Eliminates N+1 query problems
@@ -300,6 +305,7 @@ const batchHttpLink = new BatchHttpLink({
 ```
 
 **Benefits**:
+
 - Multiple queries sent in single HTTP request
 - Reduced network overhead
 - Lower latency
@@ -320,6 +326,7 @@ const ws = new OptimizedWebSocket({
 ```
 
 **Benefits**:
+
 - Load balance across multiple connections
 - Failover support
 - Better throughput
@@ -332,6 +339,7 @@ ws.emit('message', data)
 ```
 
 **Configuration**:
+
 ```typescript
 {
   enableBatching: true,
@@ -352,6 +360,7 @@ ws.emit('message', data)
 ```
 
 **Benefits**:
+
 - 60-80% bandwidth reduction
 - Lower data transfer costs
 - Faster transmission of large messages
@@ -360,7 +369,7 @@ ws.emit('message', data)
 
 ```typescript
 {
-  heartbeatInterval: 30000  // 30 seconds
+  heartbeatInterval: 30000 // 30 seconds
 }
 ```
 
@@ -392,6 +401,7 @@ const HeavyComponent = lazyWithRetry(() => import('./HeavyComponent'))
 ```
 
 **Benefits**:
+
 - Render only visible messages
 - Support thousands of messages without lag
 - Constant memory usage
@@ -425,6 +435,7 @@ pnpm build:analyze
 ```
 
 **Optimizations**:
+
 - Tree shaking
 - Dynamic imports
 - Minimize dependencies
@@ -467,14 +478,14 @@ pnpm build:analyze
 
 ### Cache Keys and TTLs
 
-| Data Type | Cache Key Pattern | TTL | Invalidation |
-|-----------|-------------------|-----|--------------|
-| User Profile | `user:profile:{id}` | 30 min | On update |
-| Channel List | `channels:list:{page}` | 15 min | On create/delete |
-| Messages | `channel:messages:{id}:{page}` | 5 min | On new message |
-| User Presence | `user:presence:{id}` | 1 min | On status change |
-| Search Results | `search:messages:{query}` | 1 hour | - |
-| Online Users | `analytics:online_users` | 1 min | Continuous |
+| Data Type      | Cache Key Pattern              | TTL    | Invalidation     |
+| -------------- | ------------------------------ | ------ | ---------------- |
+| User Profile   | `user:profile:{id}`            | 30 min | On update        |
+| Channel List   | `channels:list:{page}`         | 15 min | On create/delete |
+| Messages       | `channel:messages:{id}:{page}` | 5 min  | On new message   |
+| User Presence  | `user:presence:{id}`           | 1 min  | On status change |
+| Search Results | `search:messages:{query}`      | 1 hour | -                |
+| Online Users   | `analytics:online_users`       | 1 min  | Continuous       |
 
 ### Cache Invalidation Strategy
 
@@ -525,15 +536,15 @@ k6 run --env SCENARIO=scalability scripts/load-test/api-load-test.js
 
 ### Test Scenarios
 
-| Scenario | Duration | Max Users | Purpose |
-|----------|----------|-----------|---------|
-| Smoke | 1 min | 10 | Quick validation |
-| Load | 16 min | 500 | Normal load testing |
-| Stress | 29 min | 2,000 | Beyond normal limits |
-| Spike | 8 min | 2,000 | Traffic spikes |
-| Soak | 1 hour | 1,000 | Sustained load |
-| Scalability | 85 min | 10,000 | Target capacity |
-| Breakpoint | 27 min | 10,000+ | Find limits |
+| Scenario    | Duration | Max Users | Purpose              |
+| ----------- | -------- | --------- | -------------------- |
+| Smoke       | 1 min    | 10        | Quick validation     |
+| Load        | 16 min   | 500       | Normal load testing  |
+| Stress      | 29 min   | 2,000     | Beyond normal limits |
+| Spike       | 8 min    | 2,000     | Traffic spikes       |
+| Soak        | 1 hour   | 1,000     | Sustained load       |
+| Scalability | 85 min   | 10,000    | Target capacity      |
+| Breakpoint  | 27 min   | 10,000+   | Find limits          |
 
 ### Interpreting Results
 
@@ -545,11 +556,13 @@ k6 run --env SCENARIO=scalability scripts/load-test/api-load-test.js
 ```
 
 **Good Results**:
+
 - ✅ p95 < 100ms
 - ✅ Error rate < 1%
 - ✅ Cache hit rate > 70%
 
 **Warning Signs**:
+
 - ⚠️ p95 > 200ms
 - ⚠️ Error rate > 5%
 - ⚠️ Cache hit rate < 50%
@@ -621,14 +634,14 @@ SHOW DATABASES;
 
 ### Alerting Thresholds
 
-| Metric | Warning | Critical |
-|--------|---------|----------|
-| API p95 response time | > 150ms | > 300ms |
-| Error rate | > 1% | > 5% |
-| CPU usage | > 70% | > 90% |
-| Memory usage | > 80% | > 95% |
-| Database connections | > 150 | > 180 |
-| Cache hit rate | < 70% | < 50% |
+| Metric                | Warning | Critical |
+| --------------------- | ------- | -------- |
+| API p95 response time | > 150ms | > 300ms  |
+| Error rate            | > 1%    | > 5%     |
+| CPU usage             | > 70%   | > 90%    |
+| Memory usage          | > 80%   | > 95%    |
+| Database connections  | > 150   | > 180    |
+| Cache hit rate        | < 70%   | < 50%    |
 
 ---
 
@@ -639,6 +652,7 @@ SHOW DATABASES;
 **Symptoms**: API p95 > 200ms
 
 **Diagnosis**:
+
 ```sql
 -- Find slow queries
 SELECT query, mean_exec_time, calls
@@ -648,6 +662,7 @@ ORDER BY mean_exec_time DESC;
 ```
 
 **Solutions**:
+
 1. Add missing indexes
 2. Optimize query (use EXPLAIN ANALYZE)
 3. Increase cache TTLs
@@ -658,6 +673,7 @@ ORDER BY mean_exec_time DESC;
 **Symptoms**: Connection errors, high `max_connections` usage
 
 **Diagnosis**:
+
 ```sql
 SELECT count(*), state
 FROM pg_stat_activity
@@ -665,6 +681,7 @@ GROUP BY state;
 ```
 
 **Solutions**:
+
 1. Verify PgBouncer is routing traffic
 2. Increase PgBouncer pool sizes
 3. Check for connection leaks
@@ -675,11 +692,13 @@ GROUP BY state;
 **Symptoms**: Cache hit rate < 60%
 
 **Diagnosis**:
+
 ```bash
 redis-cli INFO stats | grep keyspace
 ```
 
 **Solutions**:
+
 1. Increase cache TTLs
 2. Pre-warm cache on deployment
 3. Implement cache prefetching
@@ -690,6 +709,7 @@ redis-cli INFO stats | grep keyspace
 **Symptoms**: Increasing memory usage over time
 
 **Diagnosis**:
+
 ```bash
 # Node.js heap dump
 node --inspect app.js
@@ -700,6 +720,7 @@ SELECT * FROM pg_stat_activity WHERE state = 'idle in transaction';
 ```
 
 **Solutions**:
+
 1. Fix unclosed database connections
 2. Clear old Redis keys
 3. Implement proper cleanup in WebSocket handlers
@@ -744,24 +765,24 @@ SELECT * FROM pg_stat_activity WHERE state = 'idle in transaction';
 
 ### Results
 
-| Scenario | Max Users | RPS | p95 Response | p99 Response | Error Rate | Cache Hit |
-|----------|-----------|-----|--------------|--------------|------------|-----------|
-| Smoke | 10 | 50 | 45ms | 78ms | 0% | 85% |
-| Load | 500 | 2,500 | 89ms | 156ms | 0.12% | 78% |
-| Stress | 2,000 | 8,000 | 134ms | 245ms | 0.8% | 72% |
-| Scalability | 10,000 | 15,000 | 98ms | 189ms | 0.5% | 75% |
+| Scenario    | Max Users | RPS    | p95 Response | p99 Response | Error Rate | Cache Hit |
+| ----------- | --------- | ------ | ------------ | ------------ | ---------- | --------- |
+| Smoke       | 10        | 50     | 45ms         | 78ms         | 0%         | 85%       |
+| Load        | 500       | 2,500  | 89ms         | 156ms        | 0.12%      | 78%       |
+| Stress      | 2,000     | 8,000  | 134ms        | 245ms        | 0.8%       | 72%       |
+| Scalability | 10,000    | 15,000 | 98ms         | 189ms        | 0.5%       | 75%       |
 
 ### Resource Usage at 10k Users
 
-| Resource | Usage | Limit | Headroom |
-|----------|-------|-------|----------|
-| App CPU | 62% | 800% | 238% |
-| App Memory | 18GB | 32GB | 14GB |
-| DB CPU | 45% | 400% | 155% |
-| DB Memory | 11GB | 16GB | 5GB |
-| Redis CPU | 28% | 200% | 72% |
-| Redis Memory | 8GB | 13GB | 5GB |
-| DB Connections | 95 | 200 | 105 |
+| Resource       | Usage | Limit | Headroom |
+| -------------- | ----- | ----- | -------- |
+| App CPU        | 62%   | 800%  | 238%     |
+| App Memory     | 18GB  | 32GB  | 14GB     |
+| DB CPU         | 45%   | 400%  | 155%     |
+| DB Memory      | 11GB  | 16GB  | 5GB      |
+| Redis CPU      | 28%   | 200%  | 72%      |
+| Redis Memory   | 8GB   | 13GB  | 5GB      |
+| DB Connections | 95    | 200   | 105      |
 
 **✅ Successfully supports 10,000 concurrent users with headroom for spikes**
 
@@ -780,6 +801,7 @@ SELECT * FROM pg_stat_activity WHERE state = 'idle in transaction';
 ## Changelog
 
 ### v0.5.0 (2026-01-30)
+
 - Initial performance optimization implementation
 - Database indexing and partitioning
 - Redis caching layer

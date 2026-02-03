@@ -23,11 +23,7 @@ import {
 } from '@/lib/messages/polls'
 
 const CREATE_POLL_MUTATION = gql`
-  mutation CreatePoll(
-    $channelId: uuid!
-    $messageId: uuid!
-    $pollData: jsonb!
-  ) {
+  mutation CreatePoll($channelId: uuid!, $messageId: uuid!, $pollData: jsonb!) {
     insert_nchat_messages_one(
       object: {
         channel_id: $channelId
@@ -43,17 +39,9 @@ const CREATE_POLL_MUTATION = gql`
 `
 
 const VOTE_ON_POLL_MUTATION = gql`
-  mutation VoteOnPoll(
-    $pollId: String!
-    $userId: uuid!
-    $optionIds: jsonb!
-  ) {
+  mutation VoteOnPoll($pollId: String!, $userId: uuid!, $optionIds: jsonb!) {
     insert_nchat_poll_votes_one(
-      object: {
-        poll_id: $pollId
-        user_id: $userId
-        option_ids: $optionIds
-      }
+      object: { poll_id: $pollId, user_id: $userId, option_ids: $optionIds }
       on_conflict: {
         constraint: poll_votes_poll_id_user_id_key
         update_columns: [option_ids, updated_at]
@@ -83,12 +71,7 @@ const CLOSE_POLL_MUTATION = gql`
 
 const ADD_POLL_OPTION_MUTATION = gql`
   mutation AddPollOption($pollId: String!, $optionText: String!) {
-    insert_nchat_poll_options_one(
-      object: {
-        poll_id: $pollId
-        text: $optionText
-      }
-    ) {
+    insert_nchat_poll_options_one(object: { poll_id: $pollId, text: $optionText }) {
       id
       text
       votes
@@ -127,12 +110,7 @@ const GET_POLL_QUERY = gql`
 
 const GET_USER_VOTE_QUERY = gql`
   query GetUserVote($pollId: String!, $userId: uuid!) {
-    nchat_poll_votes(
-      where: {
-        poll_id: { _eq: $pollId }
-        user_id: { _eq: $userId }
-      }
-    ) {
+    nchat_poll_votes(where: { poll_id: { _eq: $pollId }, user_id: { _eq: $userId } }) {
       id
       option_ids
       created_at
@@ -156,7 +134,11 @@ export function usePolls(options: UsePollsOptions = {}) {
   const [addOptionMutation, { loading: isAddingOption }] = useMutation(ADD_POLL_OPTION_MUTATION)
 
   // Queries
-  const { data: pollData, loading: isLoadingPoll, refetch: refetchPoll } = useQuery(GET_POLL_QUERY, {
+  const {
+    data: pollData,
+    loading: isLoadingPoll,
+    refetch: refetchPoll,
+  } = useQuery(GET_POLL_QUERY, {
     variables: { pollId: options.pollId },
     skip: !options.pollId,
   })
@@ -167,185 +149,209 @@ export function usePolls(options: UsePollsOptions = {}) {
   })
 
   const poll = useMemo(() => pollData?.nchat_polls_by_pk as Poll | undefined, [pollData])
-  const userVote = useMemo(() => voteData?.nchat_poll_votes?.[0]?.option_ids as string[] | undefined, [voteData])
+  const userVote = useMemo(
+    () => voteData?.nchat_poll_votes?.[0]?.option_ids as string[] | undefined,
+    [voteData]
+  )
 
   /**
    * Create a new poll
    */
-  const createPollHandler = useCallback(async (input: CreatePollInput) => {
-    if (!user) {
-      toast({
-        title: 'Error',
-        description: 'You must be logged in to create a poll',
-        variant: 'destructive',
-      })
-      return
-    }
+  const createPollHandler = useCallback(
+    async (input: CreatePollInput) => {
+      if (!user) {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in to create a poll',
+          variant: 'destructive',
+        })
+        return
+      }
 
-    try {
-      logger.debug('Creating poll', { input })
+      try {
+        logger.debug('Creating poll', { input })
 
-      // Generate a message ID for the poll
-      const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+        // Generate a message ID for the poll
+        const messageId = `msg_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
-      // Create poll data
-      const pollData = createPoll(input, user.id, messageId)
+        // Create poll data
+        const pollData = createPoll(input, user.id, messageId)
 
-      await createPollMutation({
-        variables: {
-          channelId: input.channelId,
-          messageId,
-          pollData,
-        },
-      })
+        await createPollMutation({
+          variables: {
+            channelId: input.channelId,
+            messageId,
+            pollData,
+          },
+        })
 
-      toast({
-        title: 'Poll created',
-        description: 'Your poll has been posted to the channel',
-      })
+        toast({
+          title: 'Poll created',
+          description: 'Your poll has been posted to the channel',
+        })
 
-      logger.info('Poll created successfully', { pollId: pollData.id })
-    } catch (error) {
-      logger.error('Failed to create poll', error instanceof Error ? error : new Error(String(error)))
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to create poll',
-        variant: 'destructive',
-      })
-      throw error
-    }
-  }, [user, createPollMutation, toast])
+        logger.info('Poll created successfully', { pollId: pollData.id })
+      } catch (error) {
+        logger.error(
+          'Failed to create poll',
+          error instanceof Error ? error : new Error(String(error))
+        )
+        toast({
+          title: 'Error',
+          description: error instanceof Error ? error.message : 'Failed to create poll',
+          variant: 'destructive',
+        })
+        throw error
+      }
+    },
+    [user, createPollMutation, toast]
+  )
 
   /**
    * Vote on a poll
    */
-  const vote = useCallback(async (pollId: string, optionIds: string[]) => {
-    if (!user) {
-      toast({
-        title: 'Error',
-        description: 'You must be logged in to vote',
-        variant: 'destructive',
-      })
-      return
-    }
+  const vote = useCallback(
+    async (pollId: string, optionIds: string[]) => {
+      if (!user) {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in to vote',
+          variant: 'destructive',
+        })
+        return
+      }
 
-    try {
-      logger.debug('Voting on poll', { pollId, optionIds })
+      try {
+        logger.debug('Voting on poll', { pollId, optionIds })
 
-      await voteMutation({
-        variables: {
-          pollId,
-          userId: user.id,
-          optionIds,
-        },
-      })
+        await voteMutation({
+          variables: {
+            pollId,
+            userId: user.id,
+            optionIds,
+          },
+        })
 
-      toast({
-        title: 'Vote recorded',
-        description: 'Your vote has been saved',
-      })
+        toast({
+          title: 'Vote recorded',
+          description: 'Your vote has been saved',
+        })
 
-      // Refetch poll data to update results
-      await refetchPoll()
-      await refetchVote()
+        // Refetch poll data to update results
+        await refetchPoll()
+        await refetchVote()
 
-      logger.info('Vote recorded successfully', { pollId, optionIds })
-    } catch (error) {
-      logger.error('Failed to vote', error instanceof Error ? error : new Error(String(error)))
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to record vote',
-        variant: 'destructive',
-      })
-      throw error
-    }
-  }, [user, voteMutation, refetchPoll, refetchVote, toast])
+        logger.info('Vote recorded successfully', { pollId, optionIds })
+      } catch (error) {
+        logger.error('Failed to vote', error instanceof Error ? error : new Error(String(error)))
+        toast({
+          title: 'Error',
+          description: error instanceof Error ? error.message : 'Failed to record vote',
+          variant: 'destructive',
+        })
+        throw error
+      }
+    },
+    [user, voteMutation, refetchPoll, refetchVote, toast]
+  )
 
   /**
    * Close a poll
    */
-  const closePollHandler = useCallback(async (pollId: string) => {
-    if (!user) {
-      toast({
-        title: 'Error',
-        description: 'You must be logged in to close a poll',
-        variant: 'destructive',
-      })
-      return
-    }
+  const closePollHandler = useCallback(
+    async (pollId: string) => {
+      if (!user) {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in to close a poll',
+          variant: 'destructive',
+        })
+        return
+      }
 
-    try {
-      logger.debug('Closing poll', { pollId })
+      try {
+        logger.debug('Closing poll', { pollId })
 
-      await closePollMutation({
-        variables: {
-          pollId,
-          closedBy: user.id,
-        },
-      })
+        await closePollMutation({
+          variables: {
+            pollId,
+            closedBy: user.id,
+          },
+        })
 
-      toast({
-        title: 'Poll closed',
-        description: 'The poll has been closed and voting is now disabled',
-      })
+        toast({
+          title: 'Poll closed',
+          description: 'The poll has been closed and voting is now disabled',
+        })
 
-      // Refetch poll data
-      await refetchPoll()
+        // Refetch poll data
+        await refetchPoll()
 
-      logger.info('Poll closed successfully', { pollId })
-    } catch (error) {
-      logger.error('Failed to close poll', error instanceof Error ? error : new Error(String(error)))
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to close poll',
-        variant: 'destructive',
-      })
-      throw error
-    }
-  }, [user, closePollMutation, refetchPoll, toast])
+        logger.info('Poll closed successfully', { pollId })
+      } catch (error) {
+        logger.error(
+          'Failed to close poll',
+          error instanceof Error ? error : new Error(String(error))
+        )
+        toast({
+          title: 'Error',
+          description: error instanceof Error ? error.message : 'Failed to close poll',
+          variant: 'destructive',
+        })
+        throw error
+      }
+    },
+    [user, closePollMutation, refetchPoll, toast]
+  )
 
   /**
    * Add an option to a poll
    */
-  const addOption = useCallback(async (pollId: string, optionText: string) => {
-    if (!user) {
-      toast({
-        title: 'Error',
-        description: 'You must be logged in to add an option',
-        variant: 'destructive',
-      })
-      return
-    }
+  const addOption = useCallback(
+    async (pollId: string, optionText: string) => {
+      if (!user) {
+        toast({
+          title: 'Error',
+          description: 'You must be logged in to add an option',
+          variant: 'destructive',
+        })
+        return
+      }
 
-    try {
-      logger.debug('Adding poll option', { pollId, optionText })
+      try {
+        logger.debug('Adding poll option', { pollId, optionText })
 
-      await addOptionMutation({
-        variables: {
-          pollId,
-          optionText,
-        },
-      })
+        await addOptionMutation({
+          variables: {
+            pollId,
+            optionText,
+          },
+        })
 
-      toast({
-        title: 'Option added',
-        description: 'Your option has been added to the poll',
-      })
+        toast({
+          title: 'Option added',
+          description: 'Your option has been added to the poll',
+        })
 
-      // Refetch poll data
-      await refetchPoll()
+        // Refetch poll data
+        await refetchPoll()
 
-      logger.info('Poll option added successfully', { pollId, optionText })
-    } catch (error) {
-      logger.error('Failed to add poll option', error instanceof Error ? error : new Error(String(error)))
-      toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to add option',
-        variant: 'destructive',
-      })
-      throw error
-    }
-  }, [user, addOptionMutation, refetchPoll, toast])
+        logger.info('Poll option added successfully', { pollId, optionText })
+      } catch (error) {
+        logger.error(
+          'Failed to add poll option',
+          error instanceof Error ? error : new Error(String(error))
+        )
+        toast({
+          title: 'Error',
+          description: error instanceof Error ? error.message : 'Failed to add option',
+          variant: 'destructive',
+        })
+        throw error
+      }
+    },
+    [user, addOptionMutation, refetchPoll, toast]
+  )
 
   return {
     // Data

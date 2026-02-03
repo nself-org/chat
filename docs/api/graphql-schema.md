@@ -195,10 +195,7 @@ query GetMessages($channelId: uuid!, $limit: Int = 50) {
 
 ```graphql
 query GetThreadReplies($parentId: uuid!) {
-  nchat_messages(
-    where: { parent_id: { _eq: $parentId } }
-    order_by: { created_at: asc }
-  ) {
+  nchat_messages(where: { parent_id: { _eq: $parentId } }, order_by: { created_at: asc }) {
     id
     content
     created_at
@@ -217,13 +214,7 @@ query GetThreadReplies($parentId: uuid!) {
 
 ```graphql
 mutation SendMessage($channelId: uuid!, $content: String!) {
-  insert_nchat_messages_one(
-    object: {
-      channel_id: $channelId
-      content: $content
-      type: "text"
-    }
-  ) {
+  insert_nchat_messages_one(object: { channel_id: $channelId, content: $content, type: "text" }) {
     id
     content
     created_at
@@ -239,13 +230,7 @@ mutation SendMessage($channelId: uuid!, $content: String!) {
 
 ```graphql
 mutation CreateChannel($name: String!, $description: String, $type: String!) {
-  insert_nchat_channels_one(
-    object: {
-      name: $name
-      description: $description
-      type: $type
-    }
-  ) {
+  insert_nchat_channels_one(object: { name: $name, description: $description, type: $type }) {
     id
     name
     description
@@ -260,14 +245,8 @@ mutation CreateChannel($name: String!, $description: String, $type: String!) {
 ```graphql
 mutation AddReaction($messageId: uuid!, $emoji: String!) {
   insert_nchat_reactions_one(
-    object: {
-      message_id: $messageId
-      emoji: $emoji
-    }
-    on_conflict: {
-      constraint: nchat_reactions_message_id_user_id_emoji_key
-      update_columns: []
-    }
+    object: { message_id: $messageId, emoji: $emoji }
+    on_conflict: { constraint: nchat_reactions_message_id_user_id_emoji_key, update_columns: [] }
   ) {
     id
     emoji
@@ -285,11 +264,7 @@ mutation AddReaction($messageId: uuid!, $emoji: String!) {
 mutation UpdateMessage($id: uuid!, $content: String!) {
   update_nchat_messages_by_pk(
     pk_columns: { id: $id }
-    _set: {
-      content: $content
-      is_edited: true
-      edited_at: "now()"
-    }
+    _set: { content: $content, is_edited: true, edited_at: "now()" }
   ) {
     id
     content
@@ -305,10 +280,7 @@ mutation UpdateMessage($id: uuid!, $content: String!) {
 mutation DeleteMessage($id: uuid!) {
   update_nchat_messages_by_pk(
     pk_columns: { id: $id }
-    _set: {
-      is_deleted: true
-      deleted_at: "now()"
-    }
+    _set: { is_deleted: true, deleted_at: "now()" }
   ) {
     id
     is_deleted
@@ -323,10 +295,7 @@ mutation DeleteMessage($id: uuid!) {
 ```graphql
 subscription OnNewMessage($channelId: uuid!) {
   nchat_messages(
-    where: {
-      channel_id: { _eq: $channelId }
-      is_deleted: { _eq: false }
-    }
+    where: { channel_id: { _eq: $channelId }, is_deleted: { _eq: false } }
     order_by: { created_at: desc }
     limit: 1
   ) {
@@ -371,9 +340,7 @@ subscription OnMessageUpdate($messageId: uuid!) {
 
 ```graphql
 subscription OnUserPresence {
-  nchat_users(
-    where: { is_online: { _eq: true } }
-  ) {
+  nchat_users(where: { is_online: { _eq: true } }) {
     id
     display_name
     is_online
@@ -445,11 +412,7 @@ order_by: {
 ```graphql
 # Limit and offset
 query GetMessages($limit: Int!, $offset: Int!) {
-  nchat_messages(
-    limit: $limit
-    offset: $offset
-    order_by: { created_at: desc }
-  ) {
+  nchat_messages(limit: $limit, offset: $offset, order_by: { created_at: desc }) {
     id
     content
   }
@@ -458,9 +421,7 @@ query GetMessages($limit: Int!, $offset: Int!) {
 # Cursor-based (recommended for large datasets)
 query GetMessages($cursor: timestamptz) {
   nchat_messages(
-    where: {
-      created_at: { _lt: $cursor }
-    }
+    where: { created_at: { _lt: $cursor } }
     limit: 50
     order_by: { created_at: desc }
   ) {
@@ -476,9 +437,7 @@ query GetMessages($cursor: timestamptz) {
 ```graphql
 # Count
 query CountMessages($channelId: uuid!) {
-  nchat_messages_aggregate(
-    where: { channel_id: { _eq: $channelId } }
-  ) {
+  nchat_messages_aggregate(where: { channel_id: { _eq: $channelId } }) {
     aggregate {
       count
     }

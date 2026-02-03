@@ -2,10 +2,7 @@ import { gql } from '@apollo/client'
 
 export const GET_CHANNELS = gql`
   query GetChannels {
-    nchat_channels(
-      where: { is_archived: { _eq: false } }
-      order_by: { position: asc, name: asc }
-    ) {
+    nchat_channels(where: { is_archived: { _eq: false } }, order_by: { position: asc, name: asc }) {
       id
       name
       slug

@@ -42,8 +42,8 @@ const createMockMediaStream = (tracks: MediaStreamTrack[] = []): MediaStream => 
     id: `stream-${Date.now()}`,
     active: true,
     getTracks: jest.fn(() => tracks),
-    getAudioTracks: jest.fn(() => tracks.filter(t => t.kind === 'audio')),
-    getVideoTracks: jest.fn(() => tracks.filter(t => t.kind === 'video')),
+    getAudioTracks: jest.fn(() => tracks.filter((t) => t.kind === 'audio')),
+    getVideoTracks: jest.fn(() => tracks.filter((t) => t.kind === 'video')),
     addTrack: jest.fn(),
     removeTrack: jest.fn(),
     clone: jest.fn(),
@@ -55,23 +55,24 @@ const createMockMediaStream = (tracks: MediaStreamTrack[] = []): MediaStream => 
   } as unknown as MediaStream
 }
 
-const createMockRTCRtpSender = (): RTCRtpSender => ({
-  track: null,
-  transport: null,
-  dtmf: null,
-  replaceTrack: jest.fn().mockResolvedValue(undefined),
-  getParameters: jest.fn(() => ({
-    transactionId: '',
-    codecs: [],
-    headerExtensions: [],
-    rtcp: { cname: '', reducedSize: false },
-    encodings: [],
-  })),
-  setParameters: jest.fn().mockResolvedValue(undefined),
-  getStats: jest.fn().mockResolvedValue(new Map()),
-  setStreams: jest.fn(),
-  transform: null,
-} as unknown as RTCRtpSender)
+const createMockRTCRtpSender = (): RTCRtpSender =>
+  ({
+    track: null,
+    transport: null,
+    dtmf: null,
+    replaceTrack: jest.fn().mockResolvedValue(undefined),
+    getParameters: jest.fn(() => ({
+      transactionId: '',
+      codecs: [],
+      headerExtensions: [],
+      rtcp: { cname: '', reducedSize: false },
+      encodings: [],
+    })),
+    setParameters: jest.fn().mockResolvedValue(undefined),
+    getStats: jest.fn().mockResolvedValue(new Map()),
+    setStreams: jest.fn(),
+    transform: null,
+  }) as unknown as RTCRtpSender
 
 const createMockPeerConnection = () => {
   const mockSender = createMockRTCRtpSender()
@@ -108,11 +109,17 @@ const createMockPeerConnection = () => {
       type: 'answer',
       sdp: 'mock-answer-sdp',
     }),
-    setLocalDescription: jest.fn().mockImplementation(function (this: typeof pc, desc?: RTCSessionDescriptionInit) {
+    setLocalDescription: jest.fn().mockImplementation(function (
+      this: typeof pc,
+      desc?: RTCSessionDescriptionInit
+    ) {
       this.localDescription = desc ? new RTCSessionDescription(desc) : null
       return Promise.resolve()
     }),
-    setRemoteDescription: jest.fn().mockImplementation(function (this: typeof pc, desc: RTCSessionDescriptionInit) {
+    setRemoteDescription: jest.fn().mockImplementation(function (
+      this: typeof pc,
+      desc: RTCSessionDescriptionInit
+    ) {
       this.remoteDescription = new RTCSessionDescription(desc)
       return Promise.resolve()
     }),
@@ -150,7 +157,9 @@ let mockPeerConnection: ReturnType<typeof createMockPeerConnection>
 
 beforeEach(() => {
   mockPeerConnection = createMockPeerConnection()
-  global.RTCPeerConnection = jest.fn(() => mockPeerConnection) as unknown as typeof RTCPeerConnection
+  global.RTCPeerConnection = jest.fn(
+    () => mockPeerConnection
+  ) as unknown as typeof RTCPeerConnection
   global.RTCSessionDescription = jest.fn((init) => init) as unknown as typeof RTCSessionDescription
   global.RTCIceCandidate = jest.fn((init) => init) as unknown as typeof RTCIceCandidate
 })
@@ -433,9 +442,7 @@ describe('PeerConnectionManager', () => {
     it('should throw if connection not created', async () => {
       const manager = new PeerConnectionManager()
       const candidate = { candidate: 'test', sdpMid: '0', sdpMLineIndex: 0 }
-      await expect(manager.addIceCandidate(candidate)).rejects.toThrow(
-        'PeerConnection not created'
-      )
+      await expect(manager.addIceCandidate(candidate)).rejects.toThrow('PeerConnection not created')
     })
   })
 

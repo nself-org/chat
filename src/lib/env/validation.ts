@@ -7,6 +7,8 @@
 
 import { z } from 'zod'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Environment Schemas
 // ============================================================================
@@ -196,11 +198,7 @@ export function validateProductionEnv() {
   const env = validatePublicEnv()
 
   if (env.NEXT_PUBLIC_ENV === 'production') {
-    const required = [
-      'NEXT_PUBLIC_GRAPHQL_URL',
-      'NEXT_PUBLIC_AUTH_URL',
-      'NEXT_PUBLIC_STORAGE_URL',
-    ]
+    const required = ['NEXT_PUBLIC_GRAPHQL_URL', 'NEXT_PUBLIC_AUTH_URL', 'NEXT_PUBLIC_STORAGE_URL']
 
     const missing = required.filter((key) => !process.env[key])
 

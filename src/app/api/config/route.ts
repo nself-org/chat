@@ -45,6 +45,18 @@ import {
   type AuthenticatedRequest,
 } from '@/lib/api/middleware'
 import { withCsrfProtection } from '@/lib/security/csrf'
+import { getApolloClient } from '@/lib/apollo-server'
+import {
+  GET_APP_CONFIG,
+  UPDATE_APP_CONFIG,
+  GET_APP_CONFIG_HISTORY,
+  type GetAppConfigResponse,
+  type GetAppConfigHistoryResponse,
+  type AppConfigurationRow,
+} from '@/graphql/app-config'
+import { INSERT_AUDIT_LOG } from '@/graphql/audit/audit-mutations'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Configuration
@@ -59,19 +71,31 @@ const CONFIG = {
 }
 
 // ============================================================================
-// In-Memory Storage (Mock - Use Database in Production)
+// Config Section Mapping
 // ============================================================================
 
-// Store the current configuration in memory
-// In production, this would be stored in the database
-let currentConfig: AppConfig = { ...defaultAppConfig }
-
-// Config update history for audit
-const configHistory: Array<{
-  timestamp: string
-  updatedBy: string
-  changes: Partial<AppConfig>
-}> = []
+/**
+ * Maps AppConfig top-level keys to their database category.
+ * Each section of the config is stored as a separate key-value row.
+ */
+const CONFIG_SECTIONS: (keyof AppConfig)[] = [
+  'setup',
+  'owner',
+  'branding',
+  'landingTheme',
+  'homepage',
+  'authProviders',
+  'authPermissions',
+  'features',
+  'integrations',
+  'moderation',
+  'encryption',
+  'theme',
+  'seo',
+  'legal',
+  'social',
+  'enterprise',
+]
 
 // ============================================================================
 // Helpers
@@ -96,10 +120,7 @@ function deepMerge<T>(target: T, source: Partial<T>): T {
       typeof targetValue === 'object' &&
       !Array.isArray(targetValue)
     ) {
-      result[typedKey] = deepMerge(
-        targetValue as object,
-        sourceValue as object
-      ) as T[keyof T]
+      result[typedKey] = deepMerge(targetValue as object, sourceValue as object) as T[keyof T]
     } else if (sourceValue !== undefined) {
       result[typedKey] = sourceValue
     }
@@ -188,7 +209,13 @@ function validateConfigUpdate(
   // Validate auth permissions
   if (updates.authPermissions) {
     if (updates.authPermissions.mode !== undefined) {
-      const validModes = ['allow-all', 'verified-only', 'idme-roles', 'domain-restricted', 'admin-only']
+      const validModes = [
+        'allow-all',
+        'verified-only',
+        'idme-roles',
+        'domain-restricted',
+        'admin-only',
+      ]
       if (!validModes.includes(updates.authPermissions.mode)) {
         errors.push(`authPermissions.mode must be one of: ${validModes.join(', ')}`)
       }
@@ -217,45 +244,177 @@ function validateConfigUpdate(
 }
 
 /**
- * Get configuration from database (mock implementation)
+ * Convert database rows to AppConfig object.
+ * Each row has a key (section name) and value (JSON string).
  */
-async function getConfigFromDatabase(): Promise<AppConfig> {
-  // In production, this would query the database via GraphQL:
-  // const { data } = await graphqlClient.query({
-  //   query: GET_APP_CONFIG,
-  // })
-  // return data?.app_configuration?.[0]?.config || defaultAppConfig
+function rowsToConfig(rows: AppConfigurationRow[]): AppConfig {
+  const config = { ...defaultAppConfig }
 
-  return currentConfig
+  for (const row of rows) {
+    const key = row.key as keyof AppConfig
+    if (CONFIG_SECTIONS.includes(key)) {
+      try {
+        const parsed = JSON.parse(row.value)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(config as Record<string, unknown>)[key] = parsed
+      } catch (e) {
+        logger.error(`Failed to parse config value for key "${String(key)}":`, e)
+      }
+    }
+  }
+
+  return config
 }
 
 /**
- * Save configuration to database (mock implementation)
+ * Convert AppConfig object to database rows for upsert.
  */
-async function saveConfigToDatabase(
-  config: AppConfig,
-  updatedBy: string
-): Promise<void> {
-  // In production, this would save to the database via GraphQL:
-  // await graphqlClient.mutate({
-  //   mutation: UPSERT_APP_CONFIG,
-  //   variables: { config, updatedBy }
-  // })
+function configToRows(config: AppConfig): Array<{ key: string; value: string; category: string }> {
+  const rows: Array<{ key: string; value: string; category: string }> = []
 
-  // Record history
-  configHistory.push({
-    timestamp: new Date().toISOString(),
-    updatedBy,
-    changes: config,
-  })
-
-  // Keep only last 100 history entries
-  if (configHistory.length > 100) {
-    configHistory.shift()
+  for (const section of CONFIG_SECTIONS) {
+    const value = config[section]
+    if (value !== undefined) {
+      rows.push({
+        key: String(section),
+        value: JSON.stringify(value),
+        category: getCategoryForSection(section),
+      })
+    }
   }
 
-  // Update in-memory config
-  currentConfig = config
+  return rows
+}
+
+/**
+ * Get the category for a config section (for organization purposes).
+ */
+function getCategoryForSection(section: keyof AppConfig): string {
+  const categoryMap: Record<string, string> = {
+    setup: 'system',
+    owner: 'identity',
+    branding: 'identity',
+    landingTheme: 'appearance',
+    homepage: 'appearance',
+    theme: 'appearance',
+    authProviders: 'authentication',
+    authPermissions: 'authentication',
+    features: 'features',
+    integrations: 'features',
+    moderation: 'security',
+    encryption: 'security',
+    enterprise: 'security',
+    seo: 'metadata',
+    legal: 'metadata',
+    social: 'metadata',
+  }
+  return categoryMap[String(section)] || 'general'
+}
+
+/**
+ * Get configuration from database via GraphQL.
+ * Falls back to default config if database is unavailable.
+ */
+async function getConfigFromDatabase(): Promise<AppConfig> {
+  try {
+    const client = getApolloClient()
+    const { data } = await client.query<GetAppConfigResponse>({
+      query: GET_APP_CONFIG,
+      fetchPolicy: 'network-only',
+    })
+
+    if (!data?.app_configuration || data.app_configuration.length === 0) {
+      // No config in database yet, return defaults
+      return { ...defaultAppConfig }
+    }
+
+    return rowsToConfig(data.app_configuration)
+  } catch (error) {
+    logger.error('Failed to fetch config from database:', error)
+    // Return default config on database error (graceful degradation for reads)
+    return { ...defaultAppConfig }
+  }
+}
+
+/**
+ * Get configuration history from audit logs.
+ */
+async function getConfigHistory(limit: number = 10): Promise<
+  Array<{
+    timestamp: string
+    updatedBy: string
+    changes: Record<string, unknown>
+  }>
+> {
+  try {
+    const client = getApolloClient()
+    const { data } = await client.query<GetAppConfigHistoryResponse>({
+      query: GET_APP_CONFIG_HISTORY,
+      variables: { limit },
+      fetchPolicy: 'network-only',
+    })
+
+    if (!data?.nchat_audit_logs) {
+      return []
+    }
+
+    return data.nchat_audit_logs.map((entry) => ({
+      timestamp: entry.timestamp,
+      updatedBy: entry.actor_email || 'unknown',
+      changes: entry.resource_new_value || {},
+    }))
+  } catch (error) {
+    logger.error('Failed to fetch config history:', error)
+    return []
+  }
+}
+
+/**
+ * Save configuration to database via GraphQL.
+ * Also records an audit log entry for the change.
+ * Throws on database error (writes should fail explicitly).
+ */
+async function saveConfigToDatabase(config: AppConfig, updatedBy: string): Promise<void> {
+  const client = getApolloClient()
+
+  // Convert config to rows for upsert
+  const rows = configToRows(config)
+
+  try {
+    // Save config to database
+    await client.mutate({
+      mutation: UPDATE_APP_CONFIG,
+      variables: { objects: rows },
+    })
+
+    // Record audit log entry
+    await client.mutate({
+      mutation: INSERT_AUDIT_LOG,
+      variables: {
+        object: {
+          category: 'admin',
+          action: 'config.update',
+          severity: 'info',
+          actor_id: null, // Will be populated if we have user context
+          actor_type: 'user',
+          actor_email: updatedBy,
+          resource_type: 'app_configuration',
+          resource_id: 'global',
+          resource_name: 'App Configuration',
+          resource_new_value: config,
+          description: `App configuration updated by ${updatedBy}`,
+          success: true,
+          metadata: {
+            sections_updated: Object.keys(config),
+            config_version: CONFIG.CONFIG_VERSION,
+          },
+        },
+      },
+    })
+  } catch (error) {
+    logger.error('Failed to save config to database:', error)
+    throw new Error('Failed to save configuration to database')
+  }
 }
 
 // ============================================================================
@@ -277,9 +436,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         return forbiddenResponse('Admin access required for history')
       }
 
+      // Fetch history from audit logs
+      const history = await getConfigHistory(10)
+
       return successResponse({
         config,
-        history: configHistory.slice(-10), // Last 10 changes
+        history,
         version: CONFIG.CONFIG_VERSION,
       })
     }
@@ -297,7 +459,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
       }
     )
   } catch (error) {
-    console.error('Error in GET /api/config:', error)
+    logger.error('Error in GET /api/config:', error)
     return internalErrorResponse('Failed to get configuration')
   }
 }
@@ -339,18 +501,13 @@ async function handlePost(request: AuthenticatedRequest): Promise<NextResponse> 
       message: 'Configuration updated successfully',
     })
   } catch (error) {
-    console.error('Error in POST /api/config:', error)
+    logger.error('Error in POST /api/config:', error)
     return internalErrorResponse('Failed to update configuration')
   }
 }
 
 // Apply admin middleware with CSRF protection
-export const POST = compose(
-  withErrorHandler,
-  withCsrfProtection,
-  withAuth,
-  withAdmin
-)(handlePost)
+export const POST = compose(withErrorHandler, withCsrfProtection, withAuth, withAdmin)(handlePost)
 
 // ============================================================================
 // PATCH Handler - Partial Update (Admin Only)
@@ -380,17 +537,12 @@ async function handlePatch(request: AuthenticatedRequest): Promise<NextResponse>
       message: 'Configuration updated successfully',
     })
   } catch (error) {
-    console.error('Error in PATCH /api/config:', error)
+    logger.error('Error in PATCH /api/config:', error)
     return internalErrorResponse('Failed to update configuration')
   }
 }
 
-export const PATCH = compose(
-  withErrorHandler,
-  withCsrfProtection,
-  withAuth,
-  withAdmin
-)(handlePatch)
+export const PATCH = compose(withErrorHandler, withCsrfProtection, withAuth, withAdmin)(handlePatch)
 
 // ============================================================================
 // Route Configuration

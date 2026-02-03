@@ -23,10 +23,7 @@ interface DelayStepPropertiesProps {
   onUpdate: (config: Record<string, unknown>) => void
 }
 
-export function DelayStepProperties({
-  step,
-  onUpdate,
-}: DelayStepPropertiesProps) {
+export function DelayStepProperties({ step, onUpdate }: DelayStepPropertiesProps) {
   const config = step.config
 
   return (
@@ -38,7 +35,7 @@ export function DelayStepProperties({
           value={config.delayType}
           onValueChange={(value) => onUpdate({ delayType: value as DelayType })}
         >
-          <SelectTrigger className="h-8 text-sm mt-1">
+          <SelectTrigger className="mt-1 h-8 text-sm">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -53,19 +50,19 @@ export function DelayStepProperties({
       {config.delayType === 'fixed' && (
         <div>
           <Label className="text-xs">Duration</Label>
-          <div className="flex gap-2 mt-1">
+          <div className="mt-1 flex gap-2">
             <Input
               type="number"
               value={config.duration || 60}
               onChange={(e) => onUpdate({ duration: parseInt(e.target.value) })}
-              className="h-8 text-sm flex-1"
+              className="h-8 flex-1 text-sm"
               min={1}
             />
             <Select
               value={config.durationUnit || 'seconds'}
               onValueChange={(value) => onUpdate({ durationUnit: value })}
             >
-              <SelectTrigger className="h-8 text-sm w-28">
+              <SelectTrigger className="h-8 w-28 text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -78,7 +75,7 @@ export function DelayStepProperties({
           </div>
 
           {/* Duration presets */}
-          <div className="flex flex-wrap gap-1 mt-2">
+          <div className="mt-2 flex flex-wrap gap-1">
             {[
               { label: '30s', duration: 30, unit: 'seconds' },
               { label: '1m', duration: 1, unit: 'minutes' },
@@ -90,10 +87,8 @@ export function DelayStepProperties({
               <button
                 key={preset.label}
                 type="button"
-                onClick={() =>
-                  onUpdate({ duration: preset.duration, durationUnit: preset.unit })
-                }
-                className="px-2 py-0.5 text-[10px] rounded bg-muted hover:bg-muted/80"
+                onClick={() => onUpdate({ duration: preset.duration, durationUnit: preset.unit })}
+                className="hover:bg-muted/80 rounded bg-muted px-2 py-0.5 text-[10px]"
               >
                 {preset.label}
               </button>
@@ -109,12 +104,10 @@ export function DelayStepProperties({
           <Input
             type="datetime-local"
             value={config.untilTime?.slice(0, 16) || ''}
-            onChange={(e) =>
-              onUpdate({ untilTime: new Date(e.target.value).toISOString() })
-            }
-            className="h-8 text-sm mt-1"
+            onChange={(e) => onUpdate({ untilTime: new Date(e.target.value).toISOString() })}
+            className="mt-1 h-8 text-sm"
           />
-          <p className="text-[10px] text-muted-foreground mt-1">
+          <p className="mt-1 text-[10px] text-muted-foreground">
             Workflow will pause until this time
           </p>
         </div>
@@ -124,10 +117,10 @@ export function DelayStepProperties({
       {config.delayType === 'until_condition' && (
         <div>
           <p className="text-xs text-muted-foreground">
-            Configure the condition that must be met to continue.
-            The workflow will check periodically until the condition is true.
+            Configure the condition that must be met to continue. The workflow will check
+            periodically until the condition is true.
           </p>
-          <p className="text-[10px] text-muted-foreground mt-2">
+          <p className="mt-2 text-[10px] text-muted-foreground">
             Note: Configure conditions in a linked Condition step.
           </p>
         </div>
@@ -141,34 +134,33 @@ export function DelayStepProperties({
             type="number"
             value={config.maxWaitDuration || 3600000}
             onChange={(e) => onUpdate({ maxWaitDuration: parseInt(e.target.value) })}
-            className="h-8 text-sm mt-1"
+            className="mt-1 h-8 text-sm"
             min={1000}
           />
-          <p className="text-[10px] text-muted-foreground mt-1">
+          <p className="mt-1 text-[10px] text-muted-foreground">
             Failsafe: max time to wait before continuing anyway
           </p>
         </div>
       )}
 
       {/* Info */}
-      <div className="pt-2 border-t">
+      <div className="border-t pt-2">
         <p className="text-[10px] text-muted-foreground">
           {config.delayType === 'fixed' && (
             <>
-              The workflow will pause for the specified duration before
-              continuing to the next step.
+              The workflow will pause for the specified duration before continuing to the next step.
             </>
           )}
           {config.delayType === 'until_time' && (
             <>
-              The workflow will pause until the specified date and time.
-              If the time has already passed, it will continue immediately.
+              The workflow will pause until the specified date and time. If the time has already
+              passed, it will continue immediately.
             </>
           )}
           {config.delayType === 'until_condition' && (
             <>
-              The workflow will poll periodically until the condition is met
-              or the max wait duration is reached.
+              The workflow will poll periodically until the condition is met or the max wait
+              duration is reached.
             </>
           )}
         </p>

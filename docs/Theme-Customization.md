@@ -5,6 +5,7 @@ Complete theme customization system for nself-chat with color pickers, typograph
 ## Features
 
 ### Color Customization
+
 - **16 customizable colors** organized by category:
   - **Brand**: Primary, Secondary, Accent
   - **Surfaces**: Background, Surface, Border
@@ -17,6 +18,7 @@ Complete theme customization system for nself-chat with color pickers, typograph
 - Live preview of changes
 
 ### Typography
+
 - **Font Family Selection**
   - 17 pre-configured fonts
   - Categorized by Sans-serif, Serif, Monospace
@@ -27,6 +29,7 @@ Complete theme customization system for nself-chat with color pickers, typograph
   - Real-time preview
 
 ### Spacing & Layout
+
 - **Border Radius**
   - 7 preset options (None to Full)
   - Visual preview buttons
@@ -36,6 +39,7 @@ Complete theme customization system for nself-chat with color pickers, typograph
   - Live preview
 
 ### Theme Presets
+
 - **25+ built-in presets**
   - nself (Default)
   - Slack, Discord
@@ -46,6 +50,7 @@ Complete theme customization system for nself-chat with color pickers, typograph
 - One-click application
 
 ### Advanced Features
+
 - **Custom CSS Injection**
   - Code editor for custom styles
   - Syntax highlighting
@@ -98,14 +103,7 @@ export default function ThemeSettingsPage() {
 import { useThemeCustomizer } from '@/hooks/use-theme-customizer'
 
 function MyComponent() {
-  const {
-    theme,
-    isModified,
-    updateColor,
-    loadPreset,
-    saveTheme,
-    exportJSON,
-  } = useThemeCustomizer()
+  const { theme, isModified, updateColor, loadPreset, saveTheme, exportJSON } = useThemeCustomizer()
 
   // Update a single color
   const handleColorChange = (color: string) => {
@@ -153,11 +151,7 @@ applyCustomTheme(theme)
 ### Import/Export
 
 ```tsx
-import {
-  exportThemeJSON,
-  importThemeJSON,
-  generateThemeShareURL,
-} from '@/lib/theme/custom-theme'
+import { exportThemeJSON, importThemeJSON, generateThemeShareURL } from '@/lib/theme/custom-theme'
 
 // Export
 const json = exportThemeJSON(theme)
@@ -183,40 +177,49 @@ const url = generateThemeShareURL(theme)
 Returns an object with:
 
 #### State
+
 - `theme: CustomThemeConfig` - Current theme configuration
 - `isModified: boolean` - Whether theme has unsaved changes
 - `isLoading: boolean` - Whether theme is loading
 
 #### Color Actions
+
 - `updateColor(key, value)` - Update a single color
 - `updateColors(colors)` - Update multiple colors at once
 - `resetColor(key)` - Reset a color to original
 - `resetAllColors()` - Reset all colors to original
 
 #### Typography Actions
+
 - `setFontFamily(font)` - Set font family
 - `setFontScale(scale)` - Set font size scale (0.75-1.5)
 
 #### Spacing Actions
+
 - `setBorderRadius(radius)` - Set border radius
 - `setSpacingScale(scale)` - Set spacing scale (0.75-1.5)
 
 #### Color Scheme
+
 - `setColorScheme(scheme)` - Set 'light', 'dark', or 'system'
 
 #### Custom CSS
+
 - `setCustomCSS(css)` - Set custom CSS string
 
 #### Preset Actions
+
 - `loadPreset(key, colorScheme?)` - Load a theme preset
 - `resetToPreset()` - Reset to last saved preset
 
 #### Save/Load Actions
+
 - `saveTheme()` - Save to AppConfig and localStorage
 - `loadTheme()` - Load from localStorage
 - `resetTheme()` - Reset to default theme
 
 #### Import/Export
+
 - `exportJSON()` - Export theme as JSON string
 - `importJSON(json)` - Import theme from JSON string
 - `generateShareURL()` - Generate shareable URL
@@ -282,9 +285,9 @@ const { updateColors, saveTheme } = useThemeCustomizer()
 
 // Apply brand colors
 updateColors({
-  primaryColor: '#FF6B00',    // Brand orange
-  secondaryColor: '#00B4D8',  // Brand blue
-  accentColor: '#FFD60A',     // Brand yellow
+  primaryColor: '#FF6B00', // Brand orange
+  secondaryColor: '#00B4D8', // Brand blue
+  accentColor: '#FFD60A', // Brand yellow
 })
 
 // Save to persist
@@ -460,6 +463,7 @@ setCustomCSS(`
 ## Best Practices
 
 ### 1. Maintain Contrast
+
 Always ensure sufficient contrast between text and background colors for accessibility.
 
 ```tsx
@@ -471,9 +475,11 @@ const textColor = getContrastingTextColor(bgColor)
 ```
 
 ### 2. Test Both Light and Dark Modes
+
 If using 'system' color scheme, test your custom colors in both modes.
 
 ### 3. Export Your Theme
+
 Always export your custom theme as a backup:
 
 ```tsx
@@ -482,14 +488,16 @@ downloadJSON() // Downloads theme-custom-1706800000000.json
 ```
 
 ### 4. Use Presets as Starting Points
+
 Start with a preset close to your brand, then customize:
 
 ```tsx
-loadPreset('ocean', 'dark')  // Start with ocean theme
-updateColor('primaryColor', '#FF6B00')  // Customize primary color
+loadPreset('ocean', 'dark') // Start with ocean theme
+updateColor('primaryColor', '#FF6B00') // Customize primary color
 ```
 
 ### 5. Preview Before Saving
+
 Use the live preview to see changes before committing:
 
 ```tsx
@@ -502,6 +510,7 @@ await saveTheme()
 ## Troubleshooting
 
 ### Theme Not Applying
+
 If theme changes don't appear:
 
 1. Check if custom CSS has syntax errors
@@ -509,6 +518,7 @@ If theme changes don't appear:
 3. Clear localStorage and reload: `localStorage.removeItem('custom-theme')`
 
 ### Import Fails
+
 If importing a theme fails:
 
 1. Validate JSON format
@@ -516,6 +526,7 @@ If importing a theme fails:
 3. Check console for specific error message
 
 ### Colors Look Wrong
+
 If colors appear incorrect:
 
 1. Check browser developer tools for CSS variable values

@@ -2,22 +2,11 @@
 
 import * as React from 'react'
 import { cn } from '@/lib/utils'
-import {
-  Permission,
-  PermissionCategory,
-  EffectivePermissions,
-} from '@/lib/admin/roles/role-types'
-import {
-  PERMISSION_CATEGORIES,
-  getPermissionsByCategory,
-} from '@/lib/admin/roles/permission-types'
+import { Permission, PermissionCategory, EffectivePermissions } from '@/lib/admin/roles/role-types'
+import { PERMISSION_CATEGORIES, getPermissionsByCategory } from '@/lib/admin/roles/permission-types'
 import { PermissionToggle } from './PermissionToggle'
 import { Checkbox } from '@/components/ui/checkbox'
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from '@/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import * as Icons from 'lucide-react'
 import { ChevronDown } from 'lucide-react'
 
@@ -53,9 +42,7 @@ export function PermissionGroup({
   const permissions = getPermissionsByCategory(category)
 
   // Calculate stats
-  const enabledCount = permissions.filter((p) =>
-    enabledPermissions.includes(p.id)
-  ).length
+  const enabledCount = permissions.filter((p) => enabledPermissions.includes(p.id)).length
   const allEnabled = enabledCount === permissions.length
   const someEnabled = enabledCount > 0 && enabledCount < permissions.length
 
@@ -79,9 +66,7 @@ export function PermissionGroup({
     })
   }
 
-  const IconComponent = Icons[
-    categoryDef.icon as keyof typeof Icons
-  ] as React.ElementType
+  const IconComponent = Icons[categoryDef.icon as keyof typeof Icons] as React.ElementType
 
   return (
     <Collapsible
@@ -89,7 +74,7 @@ export function PermissionGroup({
       onOpenChange={setIsOpen}
       className={cn('rounded-lg border', className)}
     >
-      <CollapsibleTrigger className="flex w-full items-center gap-3 p-4 hover:bg-accent/50">
+      <CollapsibleTrigger className="hover:bg-accent/50 flex w-full items-center gap-3 p-4">
         <ChevronDown
           className={cn(
             'h-4 w-4 text-muted-foreground transition-transform',
@@ -97,15 +82,11 @@ export function PermissionGroup({
           )}
         />
 
-        {IconComponent && (
-          <IconComponent className="h-5 w-5 text-muted-foreground" />
-        )}
+        {IconComponent && <IconComponent className="h-5 w-5 text-muted-foreground" />}
 
         <div className="flex-1 text-left">
           <div className="font-medium">{categoryDef.name}</div>
-          <div className="text-sm text-muted-foreground">
-            {categoryDef.description}
-          </div>
+          <div className="text-sm text-muted-foreground">{categoryDef.description}</div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -130,7 +111,7 @@ export function PermissionGroup({
       </CollapsibleTrigger>
 
       <CollapsibleContent>
-        <div className="border-t p-4 space-y-1">
+        <div className="space-y-1 border-t p-4">
           {permissions.map((perm) => {
             const isEnabled = enabledPermissions.includes(perm.id)
             const canGrant = canGrantPermission(perm.id)

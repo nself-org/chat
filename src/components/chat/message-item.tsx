@@ -147,11 +147,7 @@ export const MessageItem = memo(function MessageItem({
   }
 
   return (
-    <MessageContextMenu
-      message={message}
-      permissions={adjustedPermissions}
-      onAction={handleAction}
-    >
+    <MessageContextMenu message={message} permissions={adjustedPermissions} onAction={handleAction}>
       <motion.div
         variants={messageEntry}
         initial="initial"
@@ -189,20 +185,13 @@ export const MessageItem = memo(function MessageItem({
         </AnimatePresence>
 
         <div
-          className={cn(
-            'flex gap-3',
-            isGrouped && !showAvatar && 'pl-12',
-            isCompact && 'gap-2'
-          )}
+          className={cn('flex gap-3', isGrouped && !showAvatar && 'pl-12', isCompact && 'gap-2')}
         >
           {/* Avatar */}
           {showAvatar && !isGrouped && (
             <div className="shrink-0 pt-0.5">
               <Avatar className={cn('h-9 w-9', isCompact && 'h-6 w-6')}>
-                <AvatarImage
-                  src={message.user.avatarUrl}
-                  alt={message.user.displayName}
-                />
+                <AvatarImage src={message.user.avatarUrl} alt={message.user.displayName} />
                 <AvatarFallback className={cn(isCompact && 'text-xs')}>
                   {message.user.displayName.charAt(0).toUpperCase()}
                 </AvatarFallback>
@@ -240,12 +229,7 @@ export const MessageItem = memo(function MessageItem({
             {/* Header (author + time + delivery status) - only for non-grouped messages */}
             {!isGrouped && (
               <div className="mb-0.5 flex items-baseline gap-2">
-                <span
-                  className={cn(
-                    'font-semibold hover:underline',
-                    isCompact && 'text-sm'
-                  )}
-                >
+                <span className={cn('font-semibold hover:underline', isCompact && 'text-sm')}>
                   {message.user.displayName}
                 </span>
                 <span className="text-xs text-muted-foreground">
@@ -352,9 +336,7 @@ function formatMessageTime(date: Date): string {
 
   // Within the last week
   const now = new Date()
-  const diffDays = Math.floor(
-    (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
-  )
+  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
   if (diffDays < 7) {
     return format(date, 'EEEE') + ' at ' + format(date, 'h:mm a')
   }
@@ -365,9 +347,7 @@ function formatMessageTime(date: Date): string {
 /**
  * Compact message item for thread view
  */
-export const CompactMessageItem = memo(function CompactMessageItem(
-  props: MessageItemProps
-) {
+export const CompactMessageItem = memo(function CompactMessageItem(props: MessageItemProps) {
   return <MessageItem {...props} isCompact showAvatar />
 })
 
@@ -389,11 +369,7 @@ interface MessageGroupProps {
   className?: string
 }
 
-export function MessageGroup({
-  messages,
-  className,
-  ...props
-}: MessageGroupProps) {
+export function MessageGroup({ messages, className, ...props }: MessageGroupProps) {
   if (messages.length === 0) return null
 
   return (

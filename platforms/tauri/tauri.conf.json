@@ -99,9 +99,7 @@
     },
     "deep-link": {
       "desktop": {
-        "schemes": [
-          "nchat"
-        ]
+        "schemes": ["nchat"]
       }
     },
     "autostart": {
@@ -110,9 +108,7 @@
     "updater": {
       "active": true,
       "pubkey": "",
-      "endpoints": [
-        "https://releases.nself.org/nchat/{{target}}/{{arch}}/{{current_version}}"
-      ]
+      "endpoints": ["https://releases.nself.org/nchat/{{target}}/{{arch}}/{{current_version}}"]
     },
     "global-shortcut": {
       "all": true

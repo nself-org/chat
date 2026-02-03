@@ -9,19 +9,8 @@
 
 import { UserStatus } from '@/lib/calls'
 import { cn } from '@/lib/utils'
-import {
-  Circle,
-  Phone,
-  Moon,
-  MinusCircle,
-  XCircle,
-} from 'lucide-react'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Circle, Phone, Moon, MinusCircle, XCircle } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 
 // =============================================================================
 // Types
@@ -89,16 +78,12 @@ export function UserStatusIndicator({
       {variant === 'badge' && (
         <div
           className={cn(
-            'inline-flex items-center gap-1.5 px-2 py-1 rounded-full',
+            'inline-flex items-center gap-1.5 rounded-full px-2 py-1',
             config.badgeClassName
           )}
         >
-          {config.icon && (
-            <config.icon className={cn(sizes.icon, config.iconClassName)} />
-          )}
-          <span className={cn(sizes.text, 'font-medium')}>
-            {customMessage || config.label}
-          </span>
+          {config.icon && <config.icon className={cn(sizes.icon, config.iconClassName)} />}
+          <span className={cn(sizes.text, 'font-medium')}>{customMessage || config.label}</span>
         </div>
       )}
 
@@ -131,9 +116,7 @@ export function UserStatusIndicator({
   return (
     <TooltipProvider>
       <Tooltip>
-        <TooltipTrigger asChild>
-          {indicator}
-        </TooltipTrigger>
+        <TooltipTrigger asChild>{indicator}</TooltipTrigger>
         <TooltipContent>
           <p>{customMessage || config.label}</p>
         </TooltipContent>
@@ -224,11 +207,7 @@ export interface UserStatusMenuProps {
   className?: string
 }
 
-export function UserStatusMenu({
-  currentStatus,
-  onStatusChange,
-  className,
-}: UserStatusMenuProps) {
+export function UserStatusMenu({ currentStatus, onStatusChange, className }: UserStatusMenuProps) {
   const statuses: Array<{
     status: UserStatus
     label: string
@@ -268,24 +247,17 @@ export function UserStatusMenu({
           key={status}
           onClick={() => onStatusChange(status)}
           className={cn(
-            'w-full flex items-center gap-3 px-3 py-2 rounded-lg',
-            'hover:bg-accent transition-colors',
+            'flex w-full items-center gap-3 rounded-lg px-3 py-2',
+            'transition-colors hover:bg-accent',
             currentStatus === status && 'bg-accent'
           )}
         >
-          <UserStatusIndicator
-            status={status}
-            variant="dot"
-            size="md"
-            showTooltip={false}
-          />
+          <UserStatusIndicator status={status} variant="dot" size="md" showTooltip={false} />
           <div className="flex-1 text-left">
             <p className="text-sm font-medium">{label}</p>
             <p className="text-xs text-muted-foreground">{description}</p>
           </div>
-          {currentStatus === status && (
-            <Circle className="h-2 w-2 fill-current" />
-          )}
+          {currentStatus === status && <Circle className="h-2 w-2 fill-current" />}
         </button>
       ))}
     </div>

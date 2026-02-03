@@ -69,10 +69,12 @@ describe('useTypingStore', () => {
     it('should update startedAt timestamp', () => {
       const contextKey = 'channel:ch-1'
       const oldTimestamp = Date.now() - 10000
-      act(() => useTypingStore.getState().setUserTyping(contextKey, {
-        ...mockTypingUser,
-        startedAt: oldTimestamp,
-      }))
+      act(() =>
+        useTypingStore.getState().setUserTyping(contextKey, {
+          ...mockTypingUser,
+          startedAt: oldTimestamp,
+        })
+      )
 
       const users = useTypingStore.getState().getTypingUsers(contextKey)
       expect(users[0].startedAt).toBeGreaterThan(oldTimestamp)
@@ -325,14 +327,10 @@ describe('getTypingIndicatorText', () => {
   })
 
   it('should return text for three users', () => {
-    expect(getTypingIndicatorText(createUsers(3))).toBe(
-      'Alice, Bob, and Charlie are typing...'
-    )
+    expect(getTypingIndicatorText(createUsers(3))).toBe('Alice, Bob, and Charlie are typing...')
   })
 
   it('should return text for many users', () => {
-    expect(getTypingIndicatorText(createUsers(5))).toBe(
-      'Alice, Bob, and 3 others are typing...'
-    )
+    expect(getTypingIndicatorText(createUsers(5))).toBe('Alice, Bob, and 3 others are typing...')
   })
 })

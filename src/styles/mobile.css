@@ -140,8 +140,12 @@
 
 /* Full height minus nav and header */
 .mobile-content {
-  min-height: calc(100vh - var(--mobile-header-height) - var(--mobile-nav-height) - var(--sat) - var(--sab));
-  min-height: calc(100dvh - var(--mobile-header-height) - var(--mobile-nav-height) - var(--sat) - var(--sab));
+  min-height: calc(
+    100vh - var(--mobile-header-height) - var(--mobile-nav-height) - var(--sat) - var(--sab)
+  );
+  min-height: calc(
+    100dvh - var(--mobile-header-height) - var(--mobile-nav-height) - var(--sat) - var(--sab)
+  );
 }
 
 /* ============================================================================
@@ -181,12 +185,12 @@
 
 /* Prevent zoom on input focus (iOS) */
 @media (max-width: 767px) {
-  input[type="text"],
-  input[type="email"],
-  input[type="password"],
-  input[type="search"],
-  input[type="tel"],
-  input[type="url"],
+  input[type='text'],
+  input[type='email'],
+  input[type='password'],
+  input[type='search'],
+  input[type='tel'],
+  input[type='url'],
   textarea,
   select {
     font-size: 16px !important;

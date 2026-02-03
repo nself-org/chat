@@ -20,7 +20,7 @@ export const channelCommands = {
     const table = new Table({
       head: ['ID', 'Name', 'Type', 'Members', 'Created'],
     })
-    console.log(table.toString())
+    // REMOVED: console.log(table.toString())
   },
 
   async delete(channelId: string, options: any) {

@@ -89,6 +89,7 @@ The Message Scheduling & Drafts system provides:
 ### Draft Messages
 
 #### Auto-Save
+
 - Debounced auto-save (default: 1 second delay)
 - Saves to localStorage automatically
 - No manual save required
@@ -103,6 +104,7 @@ updateDraft(content)
 ```
 
 #### Multi-Draft Support
+
 - Multiple drafts per channel (default: 5)
 - Separate drafts for replies and threads
 - Draft indicators in channel list
@@ -119,6 +121,7 @@ const threadDraft = useDrafts({ channelId, threadId })
 ```
 
 #### Draft Restoration
+
 - Automatically restored on channel switch
 - Callback when draft is restored
 - Manual restore available
@@ -128,7 +131,7 @@ const { restoreDraft } = useDrafts({
   channelId,
   onDraftRestored: (draft) => {
     console.log('Draft restored:', draft.content)
-  }
+  },
 })
 
 // Manual restore
@@ -138,6 +141,7 @@ const draft = restoreDraft()
 ### Scheduled Messages
 
 #### Quick Schedules
+
 - 30 minutes
 - 1 hour
 - 2 hours
@@ -156,12 +160,14 @@ const draft = restoreDraft()
 ```
 
 #### Custom Scheduling
+
 - Date picker
 - Time picker
 - Timezone aware
 - Validation (min 5 minutes future)
 
 #### Edit Scheduled Messages
+
 - Update content
 - Change scheduled time
 - Cannot edit sent messages
@@ -171,11 +177,12 @@ const { updateMessage } = useScheduledMessage(messageId)
 
 updateMessage({
   content: 'Updated content',
-  scheduledAt: new Date('2024-12-25 09:00')
+  scheduledAt: new Date('2024-12-25 09:00'),
 })
 ```
 
 #### Cancel/Delete
+
 - Cancel pending messages
 - Delete any message
 - Confirmation dialog
@@ -191,6 +198,7 @@ deleteMessage()
 ```
 
 #### Send Now
+
 - Send scheduled message immediately
 - Bypasses scheduled time
 - Marks as sent
@@ -204,6 +212,7 @@ await sendNow(messageId)
 ### Job Queue
 
 #### Automatic Processing
+
 - Polls every 30 seconds (configurable)
 - Processes messages due for sending
 - Batch processing (10 messages per cycle)
@@ -212,11 +221,12 @@ await sendNow(messageId)
 ```typescript
 const { start, stop } = useMessageScheduler({
   autoStart: true,
-  pollInterval: 30000 // 30 seconds
+  pollInterval: 30000, // 30 seconds
 })
 ```
 
 #### Retry Logic
+
 - Maximum 3 retry attempts (configurable)
 - 1-minute delay between retries (configurable)
 - Exponential backoff available
@@ -233,6 +243,7 @@ const { start, stop } = useMessageScheduler({
 ```
 
 #### Failure Handling
+
 - Error tracking
 - User notifications
 - Manual retry option
@@ -268,6 +279,7 @@ import { ScheduleMessageModal } from '@/components/chat/ScheduleMessageModal'
 ```
 
 **Props:**
+
 - `channelId` (required): Channel to send message to
 - `isOpen` (required): Modal open state
 - `onClose` (required): Close handler
@@ -291,6 +303,7 @@ import { ScheduledMessagesList } from '@/components/chat/ScheduledMessagesList'
 ```
 
 **Features:**
+
 - View all scheduled messages
 - Edit scheduled messages
 - Cancel scheduled messages
@@ -318,6 +331,7 @@ import { MessageInputWithDrafts } from '@/components/chat/MessageInputWithDrafts
 ```
 
 **Features:**
+
 - Auto-save drafts
 - Draft indicator
 - Character count
@@ -357,7 +371,7 @@ const {
   threadId: 'thread-789', // Optional
   onDraftRestored: (draft) => {
     console.log('Draft restored:', draft)
-  }
+  },
 })
 ```
 
@@ -375,14 +389,8 @@ Hook for getting all drafts for current user.
 ```typescript
 import { useAllDrafts } from '@/hooks/use-drafts'
 
-const {
-  drafts,
-  draftsByChannel,
-  totalCount,
-  channelCount,
-  clearAllDrafts,
-  clearChannelDrafts,
-} = useAllDrafts()
+const { drafts, draftsByChannel, totalCount, channelCount, clearAllDrafts, clearChannelDrafts } =
+  useAllDrafts()
 ```
 
 ### useChannelDraftIndicator
@@ -405,14 +413,9 @@ Hook for managing the message scheduler.
 ```typescript
 import { useMessageScheduler } from '@/hooks/use-message-scheduler'
 
-const {
-  isRunning,
-  start,
-  stop,
-  sendNow,
-} = useMessageScheduler({
+const { isRunning, start, stop, sendNow } = useMessageScheduler({
   autoStart: true, // Auto-start on mount
-  pollInterval: 30000 // 30 seconds
+  pollInterval: 30000, // 30 seconds
 })
 ```
 
@@ -423,13 +426,8 @@ Hook for getting scheduled messages list.
 ```typescript
 import { useScheduledMessagesList } from '@/hooks/use-message-scheduler'
 
-const {
-  messages,
-  pendingCount,
-  failedCount,
-  upcomingMessages,
-  overdueMessages,
-} = useScheduledMessagesList('channel-123', 'user-456')
+const { messages, pendingCount, failedCount, upcomingMessages, overdueMessages } =
+  useScheduledMessagesList('channel-123', 'user-456')
 ```
 
 ### useScheduledMessage
@@ -439,13 +437,8 @@ Hook for managing a single scheduled message.
 ```typescript
 import { useScheduledMessage } from '@/hooks/use-message-scheduler'
 
-const {
-  message,
-  updateMessage,
-  cancelMessage,
-  deleteMessage,
-  retryMessage,
-} = useScheduledMessage('sched-123')
+const { message, updateMessage, cancelMessage, deleteMessage, retryMessage } =
+  useScheduledMessage('sched-123')
 ```
 
 ## Libraries
@@ -457,22 +450,28 @@ Core draft management library.
 ```typescript
 import { getDraftManager, DraftManager } from '@/lib/messaging/drafts'
 
-const draftManager = getDraftManager({
-  autoSaveDelay: 1000, // 1 second
-  maxDraftsPerChannel: 5,
-  maxDraftAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-}, {
-  onDraftSaved: (draft) => console.log('Draft saved'),
-  onDraftDeleted: (draftId) => console.log('Draft deleted'),
-  onDraftRestored: (draft) => console.log('Draft restored'),
-})
+const draftManager = getDraftManager(
+  {
+    autoSaveDelay: 1000, // 1 second
+    maxDraftsPerChannel: 5,
+    maxDraftAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+  },
+  {
+    onDraftSaved: (draft) => console.log('Draft saved'),
+    onDraftDeleted: (draftId) => console.log('Draft deleted'),
+    onDraftRestored: (draft) => console.log('Draft restored'),
+  }
+)
 
 // Save draft
-draftManager.saveDraft({
-  channelId: 'channel-123',
-  userId: 'user-456',
-  content: 'Hello world'
-}, true) // true = auto-save
+draftManager.saveDraft(
+  {
+    channelId: 'channel-123',
+    userId: 'user-456',
+    content: 'Hello world',
+  },
+  true
+) // true = auto-save
 
 // Get draft
 const draft = draftManager.getDraft('channel-123', 'user-456')
@@ -654,11 +653,13 @@ function App() {
 Get scheduled messages.
 
 **Query Parameters:**
+
 - `channelId` (optional): Filter by channel
 - `userId` (optional): Filter by user
 - `status` (optional): Filter by status (pending, sent, failed, cancelled)
 
 **Response:**
+
 ```json
 {
   "scheduledMessages": [...],
@@ -671,6 +672,7 @@ Get scheduled messages.
 Create a scheduled message.
 
 **Body:**
+
 ```json
 {
   "channelId": "channel-123",
@@ -685,6 +687,7 @@ Create a scheduled message.
 ```
 
 **Response:**
+
 ```json
 {
   "scheduledMessage": {...},
@@ -697,6 +700,7 @@ Create a scheduled message.
 Update a scheduled message.
 
 **Body:**
+
 ```json
 {
   "messageId": "sched-123",
@@ -706,6 +710,7 @@ Update a scheduled message.
 ```
 
 **Response:**
+
 ```json
 {
   "scheduledMessage": {...},
@@ -718,9 +723,11 @@ Update a scheduled message.
 Cancel/delete a scheduled message.
 
 **Query Parameters:**
+
 - `messageId` (required): Message ID to cancel
 
 **Response:**
+
 ```json
 {
   "message": "Scheduled message cancelled successfully",
@@ -766,7 +773,7 @@ describe('DraftManager', () => {
     const draft = manager.saveDraft({
       channelId: 'test',
       userId: 'user',
-      content: 'Test draft'
+      content: 'Test draft',
     })
 
     const retrieved = manager.getDraft('test', 'user')
@@ -790,11 +797,11 @@ describe('MessageScheduler', () => {
       userId: 'user',
       content: 'Test',
       scheduledAt: Date.now() + 1000,
-      maxRetries: 3
+      maxRetries: 3,
     })
 
     // Wait for message to be due
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 2000))
 
     expect(sendMock).toHaveBeenCalled()
   })

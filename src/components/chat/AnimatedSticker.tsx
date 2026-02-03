@@ -182,10 +182,7 @@ const LottieAnimation = memo(function LottieAnimation({
   if (error) {
     return (
       <div
-        className={cn(
-          'flex items-center justify-center bg-muted/30 rounded',
-          className
-        )}
+        className={cn('bg-muted/30 flex items-center justify-center rounded', className)}
         style={{ width, height }}
       >
         <AlertCircle className="h-6 w-6 text-muted-foreground" />
@@ -200,10 +197,7 @@ const LottieAnimation = memo(function LottieAnimation({
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       )}
-      <div
-        ref={containerRef}
-        className={cn('h-full w-full', isLoading && 'opacity-0')}
-      />
+      <div ref={containerRef} className={cn('h-full w-full', isLoading && 'opacity-0')} />
     </div>
   )
 })
@@ -280,10 +274,7 @@ const ImageAnimation = memo(function ImageAnimation({
   if (error) {
     return (
       <div
-        className={cn(
-          'flex items-center justify-center bg-muted/30 rounded',
-          className
-        )}
+        className={cn('bg-muted/30 flex items-center justify-center rounded', className)}
         style={{ width, height }}
       >
         <AlertCircle className="h-6 w-6 text-muted-foreground" />
@@ -299,7 +290,7 @@ const ImageAnimation = memo(function ImageAnimation({
         onClick={onClick || togglePlayback}
       >
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-muted/30 rounded">
+          <div className="bg-muted/30 absolute inset-0 flex items-center justify-center rounded">
             <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
           </div>
         )}
@@ -322,13 +313,9 @@ const ImageAnimation = memo(function ImageAnimation({
 
   // GIF or APNG (use img tag)
   return (
-    <div
-      className={cn('relative', className)}
-      style={{ width, height }}
-      onClick={onClick}
-    >
+    <div className={cn('relative', className)} style={{ width, height }} onClick={onClick}>
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-muted/30 rounded">
+        <div className="bg-muted/30 absolute inset-0 flex items-center justify-center rounded">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
       )}
@@ -460,7 +447,7 @@ export const AnimatedSticker = memo(function AnimatedSticker({
           onClick={togglePlayback}
           className={cn(
             'absolute inset-0 flex items-center justify-center',
-            'bg-black/0 hover:bg-black/20 transition-colors',
+            'bg-black/0 transition-colors hover:bg-black/20',
             'opacity-0 hover:opacity-100 focus:opacity-100',
             'rounded'
           )}
@@ -491,9 +478,7 @@ export function isAnimatedFormat(format: StickerFormat): boolean {
 /**
  * Get the appropriate component for a sticker type
  */
-export function getStickerComponent(
-  sticker: Sticker
-): typeof AnimatedSticker | 'img' {
+export function getStickerComponent(sticker: Sticker): typeof AnimatedSticker | 'img' {
   if (sticker.type === 'animated' || sticker.type === 'video') {
     return AnimatedSticker
   }

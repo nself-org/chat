@@ -44,11 +44,13 @@ Global Flags:
 Initialize a new nself project.
 
 **Syntax:**
+
 ```bash
 nself init [PROJECT_NAME] [options]
 ```
 
 **Options:**
+
 ```bash
 --template, -t TEMPLATE    Use project template (default, minimal, full)
 --demo                     Initialize with demo data
@@ -58,6 +60,7 @@ nself init [PROJECT_NAME] [options]
 ```
 
 **Examples:**
+
 ```bash
 # Basic initialization
 nself init my-app
@@ -79,6 +82,7 @@ nself init my-app --env prod
 ```
 
 **Generated Structure:**
+
 ```
 PROJECT_NAME/
 └── .backend/
@@ -103,11 +107,13 @@ PROJECT_NAME/
 Generate or update docker-compose.yml file.
 
 **Syntax:**
+
 ```bash
 nself build [options]
 ```
 
 **Options:**
+
 ```bash
 --update                Update existing configuration
 --force                 Overwrite without confirmation
@@ -117,6 +123,7 @@ nself build [options]
 ```
 
 **Examples:**
+
 ```bash
 # Regenerate docker-compose.yml
 nself build
@@ -140,11 +147,13 @@ nself build --force
 Start all or specific services.
 
 **Syntax:**
+
 ```bash
 nself start [SERVICE...] [options]
 ```
 
 **Options:**
+
 ```bash
 --detach, -d           Run in background (default)
 --build               Build images before starting
@@ -155,6 +164,7 @@ nself start [SERVICE...] [options]
 ```
 
 **Examples:**
+
 ```bash
 # Start all services
 nself start
@@ -176,6 +186,7 @@ nself start --no-detach
 ```
 
 **Service Names:**
+
 - `postgres` - PostgreSQL database
 - `hasura` - Hasura GraphQL Engine
 - `auth` - Nhost Auth service
@@ -195,16 +206,19 @@ nself start --no-detach
 Stop all or specific services.
 
 **Syntax:**
+
 ```bash
 nself stop [SERVICE...] [options]
 ```
 
 **Options:**
+
 ```bash
 --timeout, -t SECONDS   Shutdown timeout (default: 10)
 ```
 
 **Examples:**
+
 ```bash
 # Stop all services
 nself stop
@@ -226,17 +240,20 @@ nself stop --timeout 0
 Restart all or specific services.
 
 **Syntax:**
+
 ```bash
 nself restart [SERVICE...] [options]
 ```
 
 **Options:**
+
 ```bash
 --timeout, -t SECONDS   Shutdown timeout
 --no-deps              Don't restart linked services
 ```
 
 **Examples:**
+
 ```bash
 # Restart all services
 nself restart
@@ -255,17 +272,20 @@ nself restart --timeout 5
 Show status of all services.
 
 **Syntax:**
+
 ```bash
 nself status [options]
 ```
 
 **Options:**
+
 ```bash
 --format FORMAT    Output format (table, json, yaml)
 --watch, -w        Continuously watch status
 ```
 
 **Examples:**
+
 ```bash
 # Show status (default table format)
 nself status
@@ -281,6 +301,7 @@ nself status --format yaml
 ```
 
 **Output:**
+
 ```
 Service     Status    Health    Port    Uptime
 ─────────────────────────────────────────────────
@@ -301,11 +322,13 @@ mailpit     running   healthy   8025    2h 13m
 View service logs.
 
 **Syntax:**
+
 ```bash
 nself logs [SERVICE...] [options]
 ```
 
 **Options:**
+
 ```bash
 --follow, -f          Follow log output
 --tail LINES          Number of lines to show (default: 100)
@@ -316,6 +339,7 @@ nself logs [SERVICE...] [options]
 ```
 
 **Examples:**
+
 ```bash
 # View all logs
 nself logs
@@ -346,11 +370,13 @@ nself logs --since 30m --until now
 List running containers.
 
 **Syntax:**
+
 ```bash
 nself ps [options]
 ```
 
 **Options:**
+
 ```bash
 --all, -a        Show all containers (including stopped)
 --quiet, -q      Only show container IDs
@@ -358,6 +384,7 @@ nself ps [options]
 ```
 
 **Examples:**
+
 ```bash
 # List running containers
 nself ps
@@ -379,11 +406,13 @@ nself ps --services
 Stop and remove containers.
 
 **Syntax:**
+
 ```bash
 nself down [options]
 ```
 
 **Options:**
+
 ```bash
 --volumes, -v          Remove volumes
 --remove-orphans       Remove orphaned containers
@@ -391,6 +420,7 @@ nself down [options]
 ```
 
 **Examples:**
+
 ```bash
 # Stop and remove containers
 nself down
@@ -412,11 +442,13 @@ nself down --timeout 0
 Execute command in a running service.
 
 **Syntax:**
+
 ```bash
 nself exec [SERVICE] [COMMAND]
 ```
 
 **Options:**
+
 ```bash
 --user, -u USER     Run as user
 --workdir DIR       Working directory
@@ -427,6 +459,7 @@ nself exec [SERVICE] [COMMAND]
 ```
 
 **Examples:**
+
 ```bash
 # Open PostgreSQL shell
 nself exec postgres psql -U postgres
@@ -453,17 +486,20 @@ nself exec --env DEBUG=true hasura node index.js
 Run database migrations.
 
 **Syntax:**
+
 ```bash
 nself db:migrate [DIRECTION] [options]
 ```
 
 **Directions:**
+
 - `up` - Apply migrations (default)
 - `down` - Rollback migrations
 - `status` - Show migration status
 - `version` - Show current version
 
 **Options:**
+
 ```bash
 --step, -s NUMBER     Number of migrations to apply/rollback
 --version VERSION     Migrate to specific version
@@ -472,6 +508,7 @@ nself db:migrate [DIRECTION] [options]
 ```
 
 **Examples:**
+
 ```bash
 # Apply all pending migrations
 nself db:migrate up
@@ -499,11 +536,13 @@ nself db:migrate up --dry-run
 Create new database migration.
 
 **Syntax:**
+
 ```bash
 nself db:create [NAME] [options]
 ```
 
 **Options:**
+
 ```bash
 --sql FILE          Use SQL file
 --type TYPE         Migration type (sql, hasura)
@@ -511,6 +550,7 @@ nself db:create [NAME] [options]
 ```
 
 **Examples:**
+
 ```bash
 # Create migration
 nself db:create create_users_table
@@ -529,17 +569,20 @@ nself db:create --type hasura add_permissions
 Seed database with data.
 
 **Syntax:**
+
 ```bash
 nself db:seed [FILE] [options]
 ```
 
 **Options:**
+
 ```bash
 --env ENV          Environment (dev, staging, prod)
 --force           Overwrite existing data
 ```
 
 **Examples:**
+
 ```bash
 # Run default seed file
 nself db:seed
@@ -558,17 +601,20 @@ nself db:seed --force
 Reset database (WARNING: destructive!).
 
 **Syntax:**
+
 ```bash
 nself db:reset [options]
 ```
 
 **Options:**
+
 ```bash
 --force          Skip confirmation
 --seed          Run seeds after reset
 ```
 
 **Examples:**
+
 ```bash
 # Reset database (will ask confirmation)
 nself db:reset
@@ -587,11 +633,13 @@ nself db:reset --force
 Backup database to file.
 
 **Syntax:**
+
 ```bash
 nself db:dump [FILE] [options]
 ```
 
 **Options:**
+
 ```bash
 --format FORMAT      Output format (sql, custom, tar)
 --compress          Compress output
@@ -600,6 +648,7 @@ nself db:dump [FILE] [options]
 ```
 
 **Examples:**
+
 ```bash
 # Dump to default file
 nself db:dump
@@ -621,17 +670,20 @@ nself db:dump schema.sql --schema-only
 Restore database from backup.
 
 **Syntax:**
+
 ```bash
 nself db:restore [FILE] [options]
 ```
 
 **Options:**
+
 ```bash
 --force          Drop existing database
 --clean         Clean before restore
 ```
 
 **Examples:**
+
 ```bash
 # Restore from file
 nself db:restore backup.sql
@@ -652,17 +704,20 @@ nself db:restore backup.sql --clean
 Open Hasura Console.
 
 **Syntax:**
+
 ```bash
 nself console [options]
 ```
 
 **Options:**
+
 ```bash
 --port PORT         Console port (default: 9695)
 --no-browser       Don't open browser
 ```
 
 **Examples:**
+
 ```bash
 # Open console
 nself console
@@ -681,16 +736,19 @@ nself console --no-browser
 Show all service URLs.
 
 **Syntax:**
+
 ```bash
 nself urls [options]
 ```
 
 **Options:**
+
 ```bash
 --format FORMAT    Output format (table, json, list)
 ```
 
 **Examples:**
+
 ```bash
 # Show URLs (table format)
 nself urls
@@ -703,6 +761,7 @@ nself urls --format list
 ```
 
 **Output:**
+
 ```
 Service          URL
 ────────────────────────────────────────────────
@@ -723,17 +782,20 @@ Redis            localhost:6379
 Diagnose common issues.
 
 **Syntax:**
+
 ```bash
 nself doctor [options]
 ```
 
 **Options:**
+
 ```bash
 --fix             Attempt to fix issues
 --verbose        Show detailed diagnostics
 ```
 
 **Examples:**
+
 ```bash
 # Run diagnostics
 nself doctor
@@ -746,6 +808,7 @@ nself doctor --verbose
 ```
 
 **Checks:**
+
 - Docker installation
 - Docker Compose version
 - Port availability
@@ -762,17 +825,20 @@ nself doctor --verbose
 Start development mode with hot reload.
 
 **Syntax:**
+
 ```bash
 nself dev [options]
 ```
 
 **Options:**
+
 ```bash
 --watch           Watch for file changes
 --reload          Auto-reload on changes
 ```
 
 **Examples:**
+
 ```bash
 # Start dev mode
 nself dev
@@ -793,11 +859,13 @@ nself dev --reload
 Manage configuration.
 
 **Syntax:**
+
 ```bash
 nself config [SUBCOMMAND] [options]
 ```
 
 **Subcommands:**
+
 ```bash
 get KEY             Get configuration value
 set KEY VALUE       Set configuration value
@@ -808,6 +876,7 @@ reset               Reset to defaults
 ```
 
 **Examples:**
+
 ```bash
 # List all config
 nself config list
@@ -835,11 +904,13 @@ nself config reset
 Manage environment variables.
 
 **Syntax:**
+
 ```bash
 nself env [SUBCOMMAND]
 ```
 
 **Subcommands:**
+
 ```bash
 list                List all variables
 get KEY             Get variable value
@@ -850,6 +921,7 @@ import FILE         Import from file
 ```
 
 **Examples:**
+
 ```bash
 # List all env vars
 nself env list
@@ -874,11 +946,13 @@ nself env import .env.backup
 Create backup of project.
 
 **Syntax:**
+
 ```bash
 nself backup [options]
 ```
 
 **Options:**
+
 ```bash
 --output DIR        Output directory
 --compress         Compress backup
@@ -887,6 +961,7 @@ nself backup [options]
 ```
 
 **Examples:**
+
 ```bash
 # Full backup
 nself backup
@@ -908,11 +983,13 @@ nself backup --database-only
 Restore from backup.
 
 **Syntax:**
+
 ```bash
 nself restore [BACKUP_FILE] [options]
 ```
 
 **Options:**
+
 ```bash
 --force           Overwrite existing
 --database-only   Only restore database
@@ -920,6 +997,7 @@ nself restore [BACKUP_FILE] [options]
 ```
 
 **Examples:**
+
 ```bash
 # Restore from backup
 nself restore backup-2026-02-01.tar.gz
@@ -938,11 +1016,13 @@ nself restore backup.tar.gz --database-only
 Clean up Docker resources.
 
 **Syntax:**
+
 ```bash
 nself clean [options]
 ```
 
 **Options:**
+
 ```bash
 --all              Remove all resources
 --volumes          Remove volumes
@@ -951,6 +1031,7 @@ nself clean [options]
 ```
 
 **Examples:**
+
 ```bash
 # Clean stopped containers
 nself clean
@@ -972,17 +1053,20 @@ nself clean --all --force
 Upgrade nself CLI.
 
 **Syntax:**
+
 ```bash
 nself upgrade [options]
 ```
 
 **Options:**
+
 ```bash
 --version VERSION    Upgrade to specific version
 --check             Only check for updates
 ```
 
 **Examples:**
+
 ```bash
 # Upgrade to latest
 nself upgrade
@@ -1003,11 +1087,13 @@ nself upgrade --version v0.4.2
 Manage Docker networks.
 
 **Syntax:**
+
 ```bash
 nself network [SUBCOMMAND]
 ```
 
 **Subcommands:**
+
 ```bash
 create              Create network
 remove              Remove network
@@ -1016,6 +1102,7 @@ list                List networks
 ```
 
 **Examples:**
+
 ```bash
 # List networks
 nself network list
@@ -1035,11 +1122,13 @@ nself network create
 Manage Docker volumes.
 
 **Syntax:**
+
 ```bash
 nself volume [SUBCOMMAND]
 ```
 
 **Subcommands:**
+
 ```bash
 list                List volumes
 inspect VOLUME      Inspect volume
@@ -1048,6 +1137,7 @@ prune              Remove unused volumes
 ```
 
 **Examples:**
+
 ```bash
 # List volumes
 nself volume list
@@ -1069,17 +1159,20 @@ nself volume prune
 View service metrics.
 
 **Syntax:**
+
 ```bash
 nself metrics [SERVICE] [options]
 ```
 
 **Options:**
+
 ```bash
 --interval SECONDS   Update interval (default: 5)
 --format FORMAT     Output format (table, json)
 ```
 
 **Examples:**
+
 ```bash
 # View all metrics
 nself metrics

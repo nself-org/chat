@@ -235,9 +235,7 @@ export function notFoundResponse(
 /**
  * 405 Method Not Allowed
  */
-export function methodNotAllowedResponse(
-  allowedMethods: string[]
-): NextResponse<ApiErrorResponse> {
+export function methodNotAllowedResponse(allowedMethods: string[]): NextResponse<ApiErrorResponse> {
   return NextResponse.json(
     {
       success: false,
@@ -275,9 +273,7 @@ export function validationErrorResponse(
 /**
  * 429 Too Many Requests
  */
-export function rateLimitResponse(
-  retryAfter?: number
-): NextResponse<ApiErrorResponse> {
+export function rateLimitResponse(retryAfter?: number): NextResponse<ApiErrorResponse> {
   const headers: HeadersInit = {}
   if (retryAfter) {
     headers['Retry-After'] = String(retryAfter)

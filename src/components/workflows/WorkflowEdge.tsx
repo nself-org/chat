@@ -95,7 +95,7 @@ export function WorkflowEdge({
         className={cn(
           'transition-all',
           getEdgeColor(),
-          isSelected ? 'stroke-[3] stroke-primary' : 'stroke-2'
+          isSelected ? 'stroke-primary stroke-[3]' : 'stroke-2'
         )}
         strokeLinecap="round"
         markerEnd={isSelected ? 'url(#arrowhead-selected)' : 'url(#arrowhead)'}
@@ -117,7 +117,7 @@ export function WorkflowEdge({
           <text
             textAnchor="middle"
             dominantBaseline="middle"
-            className="text-[10px] fill-muted-foreground select-none"
+            className="select-none fill-muted-foreground text-[10px]"
           >
             {edge.label}
           </text>
@@ -126,18 +126,8 @@ export function WorkflowEdge({
 
       {/* Arrow marker definitions */}
       <defs>
-        <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="9"
-          refY="3.5"
-          orient="auto"
-        >
-          <polygon
-            points="0 0, 10 3.5, 0 7"
-            fill="hsl(var(--muted-foreground))"
-          />
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="hsl(var(--muted-foreground))" />
         </marker>
         <marker
           id="arrowhead-selected"

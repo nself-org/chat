@@ -1,6 +1,6 @@
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
-});
+})
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -56,7 +56,8 @@ const nextConfig = {
   compiler: {
     removeConsole: process.env.NODE_ENV === 'production' ? { exclude: ['error', 'warn'] } : false,
     // Enable React compiler optimizations
-    reactRemoveProperties: process.env.NODE_ENV === 'production' ? { properties: ['^data-testid$'] } : false,
+    reactRemoveProperties:
+      process.env.NODE_ENV === 'production' ? { properties: ['^data-testid$'] } : false,
   },
   // Performance optimizations
   poweredByHeader: false,
@@ -114,7 +115,7 @@ const nextConfig = {
               "base-uri 'self'",
               "form-action 'self'",
               "frame-ancestors 'self'",
-              "upgrade-insecure-requests",
+              'upgrade-insecure-requests',
             ].join('; '),
           },
           {
@@ -141,7 +142,7 @@ const nextConfig = {
           },
         ],
       },
-    ];
+    ]
   },
   async rewrites() {
     return [
@@ -149,8 +150,8 @@ const nextConfig = {
         source: '/api/graphql',
         destination: process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://api.localhost/v1/graphql',
       },
-    ];
+    ]
   },
-};
+}
 
-module.exports = withBundleAnalyzer(nextConfig);
+module.exports = withBundleAnalyzer(nextConfig)

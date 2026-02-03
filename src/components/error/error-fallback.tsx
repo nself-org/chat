@@ -88,32 +88,28 @@ export function ErrorFallback({
   return (
     <div
       className={cn(
-        'flex flex-col items-center justify-center min-h-[300px] p-8',
+        'flex min-h-[300px] flex-col items-center justify-center p-8',
         'bg-white dark:bg-zinc-900',
         className
       )}
     >
-      <div className="max-w-md w-full text-center">
+      <div className="w-full max-w-md text-center">
         {/* Icon */}
-        <div className="mb-6 inline-flex p-4 bg-red-100 dark:bg-red-900/30 rounded-full">
+        <div className="mb-6 inline-flex rounded-full bg-red-100 p-4 dark:bg-red-900/30">
           <AlertTriangle className="h-10 w-10 text-red-600 dark:text-red-400" />
         </div>
 
         {/* Title */}
-        <h2 className="text-xl font-semibold text-zinc-900 dark:text-zinc-100 mb-2">
-          {title}
-        </h2>
+        <h2 className="mb-2 text-xl font-semibold text-zinc-900 dark:text-zinc-100">{title}</h2>
 
         {/* Description */}
-        <p className="text-sm text-zinc-600 dark:text-zinc-400 mb-6">
-          {description}
-        </p>
+        <p className="mb-6 text-sm text-zinc-600 dark:text-zinc-400">{description}</p>
 
         {/* Error message (dev only) */}
         {showStack && error && (
           <div className="mb-6 text-left">
-            <div className="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
-              <code className="text-sm text-red-700 dark:text-red-400 break-words">
+            <div className="rounded-lg border border-red-200 bg-red-50 p-3 dark:border-red-800 dark:bg-red-900/20">
+              <code className="break-words text-sm text-red-700 dark:text-red-400">
                 {error.message}
               </code>
             </div>
@@ -121,7 +117,7 @@ export function ErrorFallback({
         )}
 
         {/* Action buttons */}
-        <div className="flex flex-wrap gap-3 justify-center mb-6">
+        <div className="mb-6 flex flex-wrap justify-center gap-3">
           {onReset && (
             <Button onClick={onReset} variant="default" className="gap-2">
               <RefreshCw className="h-4 w-4" />
@@ -159,7 +155,7 @@ export function ErrorFallback({
           <div className="text-left">
             <button
               onClick={() => setShowDetails(!showDetails)}
-              className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 mb-2"
+              className="mb-2 flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
             >
               {showDetails ? (
                 <ChevronUp className="h-4 w-4" />
@@ -174,7 +170,7 @@ export function ErrorFallback({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="absolute top-2 right-2 h-8 w-8 p-0"
+                  className="absolute right-2 top-2 h-8 w-8 p-0"
                   onClick={handleCopyError}
                   title="Copy error details"
                 >
@@ -185,17 +181,17 @@ export function ErrorFallback({
                   )}
                 </Button>
 
-                <div className="bg-zinc-100 dark:bg-zinc-800 rounded-lg overflow-hidden">
-                  <pre className="p-4 pr-12 text-xs text-zinc-700 dark:text-zinc-300 overflow-auto max-h-64">
+                <div className="overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-800">
+                  <pre className="max-h-64 overflow-auto p-4 pr-12 text-xs text-zinc-700 dark:text-zinc-300">
                     {error.stack}
                   </pre>
 
                   {errorInfo?.componentStack && (
                     <>
-                      <div className="px-4 py-2 bg-zinc-200 dark:bg-zinc-700 text-xs font-medium text-zinc-600 dark:text-zinc-400">
+                      <div className="bg-zinc-200 px-4 py-2 text-xs font-medium text-zinc-600 dark:bg-zinc-700 dark:text-zinc-400">
                         Component Stack
                       </div>
-                      <pre className="p-4 text-xs text-zinc-700 dark:text-zinc-300 overflow-auto max-h-40">
+                      <pre className="max-h-40 overflow-auto p-4 text-xs text-zinc-700 dark:text-zinc-300">
                         {errorInfo.componentStack}
                       </pre>
                     </>

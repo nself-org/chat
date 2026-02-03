@@ -866,10 +866,7 @@ describe('Auto-Clear Functions', () => {
 
       setupAutoClearOnUnload(storage)
 
-      expect(addEventListenerMock).toHaveBeenCalledWith(
-        'beforeunload',
-        expect.any(Function)
-      )
+      expect(addEventListenerMock).toHaveBeenCalledWith('beforeunload', expect.any(Function))
     })
 
     it('should return cleanup function', async () => {
@@ -879,10 +876,7 @@ describe('Auto-Clear Functions', () => {
       const cleanup = setupAutoClearOnUnload(storage)
       cleanup()
 
-      expect(removeEventListenerMock).toHaveBeenCalledWith(
-        'beforeunload',
-        expect.any(Function)
-      )
+      expect(removeEventListenerMock).toHaveBeenCalledWith('beforeunload', expect.any(Function))
     })
 
     it('should preserve specified keys', async () => {

@@ -21,13 +21,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -147,7 +141,7 @@ export function ChannelDigestView({
       case 'rising':
         return <TrendingUp className="h-3 w-3 text-green-600" />
       case 'declining':
-        return <TrendingUp className="h-3 w-3 text-red-600 rotate-180" />
+        return <TrendingUp className="h-3 w-3 rotate-180 text-red-600" />
       default:
         return <BarChart3 className="h-3 w-3 text-gray-600" />
     }
@@ -183,7 +177,8 @@ export function ChannelDigestView({
               )}
             </CardTitle>
             <CardDescription>
-              {period === 'daily' ? 'Daily' : period === 'weekly' ? 'Weekly' : 'Custom'} summary of channel activity
+              {period === 'daily' ? 'Daily' : period === 'weekly' ? 'Weekly' : 'Custom'} summary of
+              channel activity
             </CardDescription>
           </div>
 
@@ -207,12 +202,12 @@ export function ChannelDigestView({
               >
                 {loading ? (
                   <>
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Generating...
                   </>
                 ) : (
                   <>
-                    <Sparkles className="h-4 w-4 mr-2" />
+                    <Sparkles className="mr-2 h-4 w-4" />
                     Generate Digest
                   </>
                 )}
@@ -239,47 +234,43 @@ export function ChannelDigestView({
             </TabsList>
 
             {/* Overview Tab */}
-            <TabsContent value="overview" className="space-y-4 mt-4">
+            <TabsContent value="overview" className="mt-4 space-y-4">
               {/* Digest Summary */}
               <div className="space-y-2">
                 <h4 className="text-sm font-semibold">Summary</h4>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {digest.digest}
-                </p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{digest.digest}</p>
               </div>
 
               <Separator />
 
               {/* Quick Stats */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                <div className="p-3 rounded-lg border bg-card">
-                  <div className="flex items-center gap-2 mb-1">
+              <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+                <div className="rounded-lg border bg-card p-3">
+                  <div className="mb-1 flex items-center gap-2">
                     <MessageSquare className="h-4 w-4 text-muted-foreground" />
                     <span className="text-xs text-muted-foreground">Messages</span>
                   </div>
                   <p className="text-2xl font-bold">{digest.statistics.totalMessages}</p>
                 </div>
 
-                <div className="p-3 rounded-lg border bg-card">
-                  <div className="flex items-center gap-2 mb-1">
+                <div className="rounded-lg border bg-card p-3">
+                  <div className="mb-1 flex items-center gap-2">
                     <Users className="h-4 w-4 text-muted-foreground" />
                     <span className="text-xs text-muted-foreground">Active Users</span>
                   </div>
                   <p className="text-2xl font-bold">{digest.statistics.activeUsers}</p>
                 </div>
 
-                <div className="p-3 rounded-lg border bg-card">
-                  <div className="flex items-center gap-2 mb-1">
+                <div className="rounded-lg border bg-card p-3">
+                  <div className="mb-1 flex items-center gap-2">
                     <Clock className="h-4 w-4 text-muted-foreground" />
                     <span className="text-xs text-muted-foreground">Peak Hour</span>
                   </div>
-                  <p className="text-2xl font-bold">
-                    {digest.statistics.peakActivityHour}:00
-                  </p>
+                  <p className="text-2xl font-bold">{digest.statistics.peakActivityHour}:00</p>
                 </div>
 
-                <div className="p-3 rounded-lg border bg-card">
-                  <div className="flex items-center gap-2 mb-1">
+                <div className="rounded-lg border bg-card p-3">
+                  <div className="mb-1 flex items-center gap-2">
                     <BarChart3 className="h-4 w-4 text-muted-foreground" />
                     <span className="text-xs text-muted-foreground">Avg Response</span>
                   </div>
@@ -299,10 +290,10 @@ export function ChannelDigestView({
                       {digest.topMessages.slice(0, 3).map((msg) => (
                         <div
                           key={msg.messageId}
-                          className="p-3 rounded-lg border bg-card cursor-pointer hover:bg-accent transition-colors"
+                          className="cursor-pointer rounded-lg border bg-card p-3 transition-colors hover:bg-accent"
                           onClick={() => onMessageClick?.(msg.messageId)}
                         >
-                          <div className="flex items-start justify-between gap-2 mb-2">
+                          <div className="mb-2 flex items-start justify-between gap-2">
                             <div className="flex items-center gap-2">
                               <span className="text-sm font-medium">{msg.author}</span>
                               <Badge variant="outline" className="text-xs">
@@ -313,10 +304,10 @@ export function ChannelDigestView({
                               {new Date(msg.timestamp).toLocaleString()}
                             </span>
                           </div>
-                          <p className="text-sm text-muted-foreground line-clamp-2">
+                          <p className="line-clamp-2 text-sm text-muted-foreground">
                             {msg.content}
                           </p>
-                          <div className="flex gap-2 mt-2">
+                          <div className="mt-2 flex gap-2">
                             {msg.reactions > 0 && (
                               <span className="text-xs text-muted-foreground">
                                 {msg.reactions} reactions
@@ -337,19 +328,14 @@ export function ChannelDigestView({
             </TabsContent>
 
             {/* Highlights Tab */}
-            <TabsContent value="highlights" className="space-y-4 mt-4">
+            <TabsContent value="highlights" className="mt-4 space-y-4">
               {digest.highlights.length > 0 ? (
                 <ScrollArea className="max-h-96">
                   <div className="space-y-3">
                     {digest.highlights.map((highlight) => (
-                      <div
-                        key={highlight.id}
-                        className="p-4 rounded-lg border bg-card"
-                      >
+                      <div key={highlight.id} className="rounded-lg border bg-card p-4">
                         <div className="flex items-start gap-3">
-                          <span className="text-2xl">
-                            {getHighlightIcon(highlight.type)}
-                          </span>
+                          <span className="text-2xl">{getHighlightIcon(highlight.type)}</span>
                           <div className="flex-1 space-y-2">
                             <div className="flex items-center gap-2">
                               <Badge variant="secondary" className="text-xs">
@@ -373,22 +359,19 @@ export function ChannelDigestView({
                   </div>
                 </ScrollArea>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="py-8 text-center text-muted-foreground">
                   No highlights found for this period
                 </div>
               )}
             </TabsContent>
 
             {/* Topics Tab */}
-            <TabsContent value="topics" className="space-y-4 mt-4">
+            <TabsContent value="topics" className="mt-4 space-y-4">
               {digest.trendingTopics.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                   {digest.trendingTopics.map((topic, index) => (
-                    <div
-                      key={index}
-                      className="p-4 rounded-lg border bg-card"
-                    >
-                      <div className="flex items-start justify-between mb-2">
+                    <div key={index} className="rounded-lg border bg-card p-4">
+                      <div className="mb-2 flex items-start justify-between">
                         <h4 className="text-sm font-semibold">{topic.topic}</h4>
                         <div className="flex items-center gap-1">
                           {getTrendIcon(topic.trend)}
@@ -416,14 +399,14 @@ export function ChannelDigestView({
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="py-8 text-center text-muted-foreground">
                   No trending topics identified
                 </div>
               )}
             </TabsContent>
 
             {/* Stats Tab */}
-            <TabsContent value="stats" className="space-y-4 mt-4">
+            <TabsContent value="stats" className="mt-4 space-y-4">
               <div className="space-y-4">
                 {/* Sentiment Distribution */}
                 <div className="space-y-2">
@@ -435,7 +418,7 @@ export function ChannelDigestView({
                         {digest.statistics.sentiment.positive.toFixed(1)}%
                       </span>
                     </div>
-                    <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-2 overflow-hidden rounded-full bg-secondary">
                       <div
                         className="h-full bg-green-500"
                         style={{ width: `${digest.statistics.sentiment.positive}%` }}
@@ -448,7 +431,7 @@ export function ChannelDigestView({
                         {digest.statistics.sentiment.neutral.toFixed(1)}%
                       </span>
                     </div>
-                    <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-2 overflow-hidden rounded-full bg-secondary">
                       <div
                         className="h-full bg-gray-500"
                         style={{ width: `${digest.statistics.sentiment.neutral}%` }}
@@ -461,7 +444,7 @@ export function ChannelDigestView({
                         {digest.statistics.sentiment.negative.toFixed(1)}%
                       </span>
                     </div>
-                    <div className="h-2 bg-secondary rounded-full overflow-hidden">
+                    <div className="h-2 overflow-hidden rounded-full bg-secondary">
                       <div
                         className="h-full bg-red-500"
                         style={{ width: `${digest.statistics.sentiment.negative}%` }}
@@ -474,8 +457,8 @@ export function ChannelDigestView({
 
                 {/* Most Active User */}
                 {digest.statistics.mostActiveUser.messageCount > 0 && (
-                  <div className="p-4 rounded-lg border bg-card">
-                    <h4 className="text-sm font-semibold mb-2">Most Active</h4>
+                  <div className="rounded-lg border bg-card p-4">
+                    <h4 className="mb-2 text-sm font-semibold">Most Active</h4>
                     <div className="flex items-center justify-between">
                       <span className="text-sm">{digest.statistics.mostActiveUser.userName}</span>
                       <Badge variant="default">
@@ -487,7 +470,7 @@ export function ChannelDigestView({
 
                 {/* Next Digest */}
                 <Separator />
-                <div className="p-4 rounded-lg border bg-card">
+                <div className="rounded-lg border bg-card p-4">
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
                       <h4 className="text-sm font-semibold">Next Digest</h4>

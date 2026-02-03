@@ -1,0 +1,74 @@
+# LiveKit SFU Configuration for ɳChat
+# Provides WebRTC infrastructure for voice/video calls and streaming
+
+version: '3.8'
+
+services:
+  livekit:
+    image: livekit/livekit-server:v1.5.2
+    container_name: nchat-livekit
+    restart: unless-stopped
+    ports:
+      - "7880:7880"    # HTTP API
+      - "7881:7881"    # RTC (WebRTC connections)
+      - "7882:7882"    # TURN/UDP
+      - "50000-50100:50000-50100/udp"  # RTC port range
+    environment:
+      - LIVEKIT_KEYS=${LIVEKIT_API_KEY:-devkey}:${LIVEKIT_API_SECRET:-secret}
+      - LIVEKIT_PORT=7880
+      - LIVEKIT_RTC_PORT=7881
+      - LIVEKIT_TURN_PORT=7882
+    volumes:
+      - ./livekit.yaml:/livekit.yaml:ro
+      - livekit_data:/data
+    command: --config /livekit.yaml
+    networks:
+      - nchat-network
+
+  # Optional: LiveKit Egress for recording and streaming
+  livekit-egress:
+    image: livekit/egress:v1.7.0
+    container_name: nchat-livekit-egress
+    restart: unless-stopped
+    environment:
+      - EGRESS_CONFIG_FILE=/egress.yaml
+      - LIVEKIT_URL=ws://livekit:7880
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-devkey}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-secret}
+    volumes:
+      - ./livekit-egress.yaml:/egress.yaml:ro
+      - livekit_recordings:/recordings
+    depends_on:
+      - livekit
+    networks:
+      - nchat-network
+
+  # Optional: LiveKit Ingress for RTMP/WHIP streaming
+  livekit-ingress:
+    image: livekit/ingress:v1.1.0
+    container_name: nchat-livekit-ingress
+    restart: unless-stopped
+    ports:
+      - "1935:1935"   # RTMP
+      - "8088:8088"   # WHIP
+    environment:
+      - INGRESS_CONFIG_FILE=/ingress.yaml
+      - LIVEKIT_URL=ws://livekit:7880
+      - LIVEKIT_API_KEY=${LIVEKIT_API_KEY:-devkey}
+      - LIVEKIT_API_SECRET=${LIVEKIT_API_SECRET:-secret}
+    volumes:
+      - ./livekit-ingress.yaml:/ingress.yaml:ro
+    depends_on:
+      - livekit
+    networks:
+      - nchat-network
+
+volumes:
+  livekit_data:
+    driver: local
+  livekit_recordings:
+    driver: local
+
+networks:
+  nchat-network:
+    external: true

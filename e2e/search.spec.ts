@@ -92,9 +92,7 @@ test.describe('Global Search Access', () => {
 
     await page.waitForTimeout(500)
 
-    const searchInput = page.locator(
-      '[data-testid="search-input"], input[placeholder*="Search"]'
-    )
+    const searchInput = page.locator('[data-testid="search-input"], input[placeholder*="Search"]')
 
     if (await searchInput.isVisible()) {
       const isFocused = await searchInput.evaluate((el) => document.activeElement === el)
@@ -103,9 +101,7 @@ test.describe('Global Search Access', () => {
   })
 
   test('should close search on Escape key', async ({ page }) => {
-    const searchInput = page.locator(
-      '[data-testid="search-input"], input[placeholder*="Search"]'
-    )
+    const searchInput = page.locator('[data-testid="search-input"], input[placeholder*="Search"]')
 
     if (await searchInput.isVisible()) {
       await searchInput.click()
@@ -181,9 +177,7 @@ test.describe('Message Search', () => {
       await page.keyboard.type('message')
       await page.waitForTimeout(500)
 
-      const messageResult = page.locator(
-        '[data-testid="message-result"], .message-preview'
-      )
+      const messageResult = page.locator('[data-testid="message-result"], .message-preview')
 
       if ((await messageResult.count()) > 0) {
         const firstResult = messageResult.first()
@@ -308,16 +302,12 @@ test.describe('Channel Search', () => {
       await page.waitForTimeout(500)
 
       // Look for channel results with icon
-      const channelResult = page.locator(
-        '[data-testid="channel-result"], .channel-result'
-      )
+      const channelResult = page.locator('[data-testid="channel-result"], .channel-result')
 
       if ((await channelResult.count()) > 0) {
         const firstResult = channelResult.first()
 
-        const channelIcon = firstResult.locator(
-          '[data-testid="channel-icon"], .channel-icon, svg'
-        )
+        const channelIcon = firstResult.locator('[data-testid="channel-icon"], .channel-icon, svg')
 
         const hasIcon = await channelIcon.isVisible().catch(() => false)
         expect(typeof hasIcon).toBe('boolean')
@@ -335,9 +325,7 @@ test.describe('Channel Search', () => {
       await page.keyboard.type('general')
       await page.waitForTimeout(500)
 
-      const channelResult = page.locator(
-        '[data-testid="channel-result"], .channel-result'
-      )
+      const channelResult = page.locator('[data-testid="channel-result"], .channel-result')
 
       if ((await channelResult.count()) > 0) {
         const firstResult = channelResult.first()
@@ -362,9 +350,7 @@ test.describe('Channel Search', () => {
       await page.keyboard.type('general')
       await page.waitForTimeout(500)
 
-      const channelResult = page.locator(
-        '[data-testid="channel-result"], .channel-result'
-      )
+      const channelResult = page.locator('[data-testid="channel-result"], .channel-result')
 
       if ((await channelResult.count()) > 0) {
         await channelResult.first().click()
@@ -414,9 +400,7 @@ test.describe('User/Contact Search', () => {
       await page.waitForTimeout(500)
 
       // Look for user results
-      const userResult = page.locator(
-        '[data-testid="user-result"], [data-testid="contact-result"]'
-      )
+      const userResult = page.locator('[data-testid="user-result"], [data-testid="contact-result"]')
 
       const resultCount = await userResult.count()
       expect(resultCount).toBeGreaterThanOrEqual(0)
@@ -433,9 +417,7 @@ test.describe('User/Contact Search', () => {
       await page.keyboard.type('member')
       await page.waitForTimeout(500)
 
-      const userResult = page.locator(
-        '[data-testid="user-result"], [data-testid="contact-result"]'
-      )
+      const userResult = page.locator('[data-testid="user-result"], [data-testid="contact-result"]')
 
       if ((await userResult.count()) > 0) {
         const firstResult = userResult.first()
@@ -460,9 +442,7 @@ test.describe('User/Contact Search', () => {
       await page.keyboard.type('member')
       await page.waitForTimeout(500)
 
-      const userResult = page.locator(
-        '[data-testid="user-result"], [data-testid="contact-result"]'
-      )
+      const userResult = page.locator('[data-testid="user-result"], [data-testid="contact-result"]')
 
       if ((await userResult.count()) > 0) {
         const firstResult = userResult.first()
@@ -488,9 +468,7 @@ test.describe('User/Contact Search', () => {
       await page.keyboard.type('member')
       await page.waitForTimeout(500)
 
-      const userResult = page.locator(
-        '[data-testid="user-result"], [data-testid="contact-result"]'
-      )
+      const userResult = page.locator('[data-testid="user-result"], [data-testid="contact-result"]')
 
       if ((await userResult.count()) > 0) {
         await userResult.first().click()
@@ -770,9 +748,7 @@ test.describe('Recent Searches', () => {
       await page.waitForTimeout(300)
 
       // Look for recent searches
-      const recentSearches = page.locator(
-        '[data-testid="recent-searches"], text=/recent/i'
-      )
+      const recentSearches = page.locator('[data-testid="recent-searches"], text=/recent/i')
 
       const hasRecent = await recentSearches.isVisible().catch(() => false)
       expect(typeof hasRecent).toBe('boolean')
@@ -794,9 +770,7 @@ test.describe('Recent Searches', () => {
       await searchInput.first().fill('')
       await page.waitForTimeout(300)
 
-      const recentItem = page.locator(
-        '[data-testid="recent-search-item"], .recent-search'
-      )
+      const recentItem = page.locator('[data-testid="recent-search-item"], .recent-search')
 
       if ((await recentItem.count()) > 0) {
         const itemText = await recentItem.first().textContent()
@@ -836,9 +810,7 @@ test.describe('Recent Searches', () => {
 test.describe('Channel-Specific Search', () => {
   test('should search within current channel', async ({ page }) => {
     // Navigate to a channel first
-    const channels = page.locator(
-      '[data-testid="channel-item"], .channel-item, a[href*="/chat/"]'
-    )
+    const channels = page.locator('[data-testid="channel-item"], .channel-item, a[href*="/chat/"]')
 
     const channelCount = await channels.count()
 
@@ -868,9 +840,7 @@ test.describe('Channel-Specific Search', () => {
   })
 
   test('should indicate search scope (channel vs global)', async ({ page }) => {
-    const channels = page.locator(
-      '[data-testid="channel-item"], .channel-item, a[href*="/chat/"]'
-    )
+    const channels = page.locator('[data-testid="channel-item"], .channel-item, a[href*="/chat/"]')
 
     const channelCount = await channels.count()
 
@@ -878,9 +848,7 @@ test.describe('Channel-Specific Search', () => {
       await channels.first().click()
       await page.waitForTimeout(500)
 
-      const searchInput = page.locator(
-        '[data-testid="search-input"], input[placeholder*="Search"]'
-      )
+      const searchInput = page.locator('[data-testid="search-input"], input[placeholder*="Search"]')
 
       if (await searchInput.isVisible()) {
         // Look for scope indicator
@@ -895,9 +863,7 @@ test.describe('Channel-Specific Search', () => {
   })
 
   test('should allow switching between channel and global search', async ({ page }) => {
-    const channels = page.locator(
-      '[data-testid="channel-item"], .channel-item, a[href*="/chat/"]'
-    )
+    const channels = page.locator('[data-testid="channel-item"], .channel-item, a[href*="/chat/"]')
 
     const channelCount = await channels.count()
 
@@ -905,9 +871,7 @@ test.describe('Channel-Specific Search', () => {
       await channels.first().click()
       await page.waitForTimeout(500)
 
-      const searchInput = page.locator(
-        '[data-testid="search-input"], input[placeholder*="Search"]'
-      )
+      const searchInput = page.locator('[data-testid="search-input"], input[placeholder*="Search"]')
 
       if (await searchInput.isVisible()) {
         // Look for scope toggle
@@ -1012,9 +976,7 @@ test.describe('Search Result Navigation', () => {
       await page.waitForTimeout(500)
 
       // Look for results container
-      const resultsContainer = page.locator(
-        '[data-testid="search-results"], .search-results'
-      )
+      const resultsContainer = page.locator('[data-testid="search-results"], .search-results')
 
       if (await resultsContainer.isVisible()) {
         // Scroll to bottom
@@ -1066,9 +1028,7 @@ test.describe('Search Experience', () => {
       await page.waitForTimeout(500)
 
       // Look for no results message
-      const noResults = page.locator(
-        '[data-testid="no-results"], text=/no results|not found/i'
-      )
+      const noResults = page.locator('[data-testid="no-results"], text=/no results|not found/i')
 
       // May show no results
       expect(true).toBe(true)
@@ -1112,9 +1072,7 @@ test.describe('Search Experience', () => {
       const queryValue = await searchInput.first().inputValue()
 
       // Navigate to result
-      const searchResult = page.locator(
-        '[data-testid="search-result-item"], .search-result'
-      )
+      const searchResult = page.locator('[data-testid="search-result-item"], .search-result')
 
       if ((await searchResult.count()) > 0) {
         await searchResult.first().click()
@@ -1125,7 +1083,10 @@ test.describe('Search Experience', () => {
         await page.waitForTimeout(300)
 
         // Query should be preserved
-        const newQueryValue = await searchInput.first().inputValue().catch(() => '')
+        const newQueryValue = await searchInput
+          .first()
+          .inputValue()
+          .catch(() => '')
         expect(newQueryValue || queryValue).toBeTruthy()
       }
     }

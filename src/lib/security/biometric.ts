@@ -4,6 +4,8 @@
  * Provides fingerprint/face unlock functionality via WebAuthn API
  */
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -60,7 +62,7 @@ export async function isBiometricAvailable(): Promise<boolean> {
  * Get biometric type description
  */
 export async function getBiometricType(): Promise<string> {
-  if (!await isBiometricAvailable()) {
+  if (!(await isBiometricAvailable())) {
     return 'Not available'
   }
 
@@ -105,7 +107,7 @@ function storeCredential(credential: BiometricCredential): void {
 
     localStorage.setItem(CREDENTIAL_STORAGE_KEY, JSON.stringify(credentials))
   } catch (error) {
-    console.error('Failed to store credential:', error)
+    logger.error('Failed to store credential:', error)
     throw new Error('Failed to store credential')
   }
 }
@@ -127,7 +129,7 @@ export function getStoredCredentials(): BiometricCredential[] {
  */
 function findCredential(credentialId: string): BiometricCredential | null {
   const credentials = getStoredCredentials()
-  return credentials.find(c => c.credentialId === credentialId) || null
+  return credentials.find((c) => c.credentialId === credentialId) || null
 }
 
 /**
@@ -136,7 +138,7 @@ function findCredential(credentialId: string): BiometricCredential | null {
 function updateCredentialLastUsed(credentialId: string): void {
   try {
     const credentials = getStoredCredentials()
-    const updated = credentials.map(c => {
+    const updated = credentials.map((c) => {
       if (c.credentialId === credentialId) {
         return { ...c, lastUsedAt: new Date().toISOString() }
       }
@@ -145,7 +147,7 @@ function updateCredentialLastUsed(credentialId: string): void {
 
     localStorage.setItem(CREDENTIAL_STORAGE_KEY, JSON.stringify(updated))
   } catch (error) {
-    console.error('Failed to update credential:', error)
+    logger.error('Failed to update credential:', error)
   }
 }
 
@@ -155,7 +157,7 @@ function updateCredentialLastUsed(credentialId: string): void {
 export function removeCredential(credentialId: string): boolean {
   try {
     const credentials = getStoredCredentials()
-    const filtered = credentials.filter(c => c.credentialId !== credentialId)
+    const filtered = credentials.filter((c) => c.credentialId !== credentialId)
 
     localStorage.setItem(CREDENTIAL_STORAGE_KEY, JSON.stringify(filtered))
     return true
@@ -171,7 +173,7 @@ export function clearAllCredentials(): void {
   try {
     localStorage.removeItem(CREDENTIAL_STORAGE_KEY)
   } catch (error) {
-    console.error('Failed to clear credentials:', error)
+    logger.error('Failed to clear credentials:', error)
   }
 }
 
@@ -196,7 +198,7 @@ export async function registerBiometric(
 ): Promise<BiometricSetupResult> {
   try {
     // Check availability
-    if (!await isBiometricAvailable()) {
+    if (!(await isBiometricAvailable())) {
       return {
         success: false,
         error: 'Biometric authentication is not available on this device',
@@ -219,7 +221,7 @@ export async function registerBiometric(
         displayName: userName,
       },
       pubKeyCredParams: [
-        { type: 'public-key', alg: -7 },  // ES256
+        { type: 'public-key', alg: -7 }, // ES256
         { type: 'public-key', alg: -257 }, // RS256
       ],
       authenticatorSelection: {
@@ -232,9 +234,9 @@ export async function registerBiometric(
     }
 
     // Create credential
-    const credential = await navigator.credentials.create({
+    const credential = (await navigator.credentials.create({
       publicKey: publicKeyOptions,
-    }) as PublicKeyCredential | null
+    })) as PublicKeyCredential | null
 
     if (!credential) {
       return { success: false, error: 'Failed to create credential' }
@@ -248,8 +250,10 @@ export async function registerBiometric(
     // Detect credential type
     const biometricType = await getBiometricType()
     let credentialType: BiometricCredential['credentialType'] = 'other'
-    if (biometricType.toLowerCase().includes('fingerprint') ||
-        biometricType.toLowerCase().includes('touch')) {
+    if (
+      biometricType.toLowerCase().includes('fingerprint') ||
+      biometricType.toLowerCase().includes('touch')
+    ) {
       credentialType = 'fingerprint'
     } else if (biometricType.toLowerCase().includes('face')) {
       credentialType = 'face'
@@ -273,7 +277,7 @@ export async function registerBiometric(
       credential: biometricCredential,
     }
   } catch (error) {
-    console.error('Biometric registration failed:', error)
+    logger.error('Biometric registration failed:', error)
 
     // Handle specific errors
     if (error instanceof Error) {
@@ -308,7 +312,7 @@ export async function verifyBiometric(): Promise<BiometricVerifyResult> {
     }
 
     // Check availability
-    if (!await isBiometricAvailable()) {
+    if (!(await isBiometricAvailable())) {
       return {
         success: false,
         error: 'Biometric authentication is not available',
@@ -319,7 +323,7 @@ export async function verifyBiometric(): Promise<BiometricVerifyResult> {
     const challenge = crypto.getRandomValues(new Uint8Array(32))
 
     // Prepare allowed credentials
-    const allowCredentials = storedCredentials.map(c => ({
+    const allowCredentials = storedCredentials.map((c) => ({
       type: 'public-key' as const,
       id: base64ToArrayBuffer(c.credentialId),
     }))
@@ -334,9 +338,9 @@ export async function verifyBiometric(): Promise<BiometricVerifyResult> {
     }
 
     // Get credential
-    const credential = await navigator.credentials.get({
+    const credential = (await navigator.credentials.get({
       publicKey: publicKeyOptions,
-    }) as PublicKeyCredential | null
+    })) as PublicKeyCredential | null
 
     if (!credential) {
       return { success: false, error: 'Biometric verification failed' }
@@ -359,7 +363,7 @@ export async function verifyBiometric(): Promise<BiometricVerifyResult> {
       credentialId,
     }
   } catch (error) {
-    console.error('Biometric verification failed:', error)
+    logger.error('Biometric verification failed:', error)
 
     // Handle specific errors
     if (error instanceof Error) {
@@ -420,9 +424,7 @@ export function getCredentialIcon(type: BiometricCredential['credentialType']): 
 /**
  * Get credential type description
  */
-export function getCredentialTypeDescription(
-  type: BiometricCredential['credentialType']
-): string {
+export function getCredentialTypeDescription(type: BiometricCredential['credentialType']): string {
   switch (type) {
     case 'fingerprint':
       return 'Fingerprint'

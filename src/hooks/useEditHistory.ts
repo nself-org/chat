@@ -69,9 +69,7 @@ export interface UseEditHistoryReturn {
 /**
  * Hook for managing message edit history.
  */
-export function useEditHistory(
-  options: UseEditHistoryOptions = {}
-): UseEditHistoryReturn {
+export function useEditHistory(options: UseEditHistoryOptions = {}): UseEditHistoryReturn {
   const { messageId, autoLoad = false } = options
   const { user } = useAuth()
 
@@ -79,9 +77,7 @@ export function useEditHistory(
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [currentMessageId, setCurrentMessageId] = useState<string | null>(
-    messageId ?? null
-  )
+  const [currentMessageId, setCurrentMessageId] = useState<string | null>(messageId ?? null)
 
   // Get settings from store or load them
   const settings = useMemo(() => loadHistorySettings(), [])
@@ -95,36 +91,31 @@ export function useEditHistory(
   }, [user, history, settings])
 
   // Load history for a message
-  const loadHistory = useCallback(
-    async (msgId: string): Promise<MessageEditHistory | null> => {
-      setIsLoading(true)
-      setError(null)
-      setCurrentMessageId(msgId)
+  const loadHistory = useCallback(async (msgId: string): Promise<MessageEditHistory | null> => {
+    setIsLoading(true)
+    setError(null)
+    setCurrentMessageId(msgId)
 
-      try {
-        // Try cache first
-        const cached = getCachedHistory(msgId)
-        if (cached) {
-          setHistory(cached)
-          setIsLoading(false)
-          return cached
-        }
-
-        // TODO: Fetch from server via GraphQL
-        // For now, return null (no history)
-        setHistory(null)
+    try {
+      // Try cache first
+      const cached = getCachedHistory(msgId)
+      if (cached) {
+        setHistory(cached)
         setIsLoading(false)
-        return null
-      } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Failed to load history'
-        setError(errorMessage)
-        setIsLoading(false)
-        return null
+        return cached
       }
-    },
-    []
-  )
+
+      // For now, return null (no history)
+      setHistory(null)
+      setIsLoading(false)
+      return null
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load history'
+      setError(errorMessage)
+      setIsLoading(false)
+      return null
+    }
+  }, [])
 
   // Record a new edit
   const recordEdit = useCallback(
@@ -241,12 +232,7 @@ export function useEditHistory(
     (messageAuthorId: string): boolean => {
       if (!user) return false
       const userRole = (user.role as UserRole) ?? 'member'
-      const perms = getHistoryPermissions(
-        settings,
-        userRole,
-        user.id,
-        messageAuthorId
-      )
+      const perms = getHistoryPermissions(settings, userRole, user.id, messageAuthorId)
       return perms.canView
     },
     [user, settings]
@@ -295,9 +281,7 @@ export function useIsEdited(messageId: string): {
 /**
  * Hook for edit history permissions only.
  */
-export function useHistoryPermissions(
-  messageAuthorId: string
-): HistoryPermissions | null {
+export function useHistoryPermissions(messageAuthorId: string): HistoryPermissions | null {
   const { user } = useAuth()
   const settings = useMemo(() => loadHistorySettings(), [])
 

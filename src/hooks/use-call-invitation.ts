@@ -57,9 +57,7 @@ export interface UseCallInvitationReturn {
 // Hook
 // =============================================================================
 
-export function useCallInvitation(
-  options: UseCallInvitationOptions = {}
-): UseCallInvitationReturn {
+export function useCallInvitation(options: UseCallInvitationOptions = {}): UseCallInvitationReturn {
   const { autoAccept = false, onInvitationReceived, ...config } = options
   const { toast } = useToast()
 
@@ -101,11 +99,7 @@ export function useCallInvitation(
         }
       },
       onTimeout: (invitation) => {
-        setInvitations((prev) =>
-          prev.map((inv) =>
-            inv.id === invitation.id ? invitation : inv
-          )
-        )
+        setInvitations((prev) => prev.map((inv) => (inv.id === invitation.id ? invitation : inv)))
 
         toast({
           title: 'Missed call',
@@ -118,22 +112,14 @@ export function useCallInvitation(
         }
       },
       onAccepted: (invitation) => {
-        setInvitations((prev) =>
-          prev.map((inv) =>
-            inv.id === invitation.id ? invitation : inv
-          )
-        )
+        setInvitations((prev) => prev.map((inv) => (inv.id === invitation.id ? invitation : inv)))
 
         if (config.onAccepted) {
           config.onAccepted(invitation)
         }
       },
       onDeclined: (invitation) => {
-        setInvitations((prev) =>
-          prev.map((inv) =>
-            inv.id === invitation.id ? invitation : inv
-          )
-        )
+        setInvitations((prev) => prev.map((inv) => (inv.id === invitation.id ? invitation : inv)))
 
         toast({
           title: 'Call declined',
@@ -145,11 +131,7 @@ export function useCallInvitation(
         }
       },
       onCancelled: (invitation) => {
-        setInvitations((prev) =>
-          prev.map((inv) =>
-            inv.id === invitation.id ? invitation : inv
-          )
-        )
+        setInvitations((prev) => prev.map((inv) => (inv.id === invitation.id ? invitation : inv)))
 
         toast({
           title: 'Call cancelled',

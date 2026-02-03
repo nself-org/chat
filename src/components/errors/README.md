@@ -40,6 +40,7 @@ React error boundary components:
 - `ComponentErrorBoundary` - Component-level
 
 Features:
+
 - Automatic error catching
 - Sentry integration
 - Retry functionality
@@ -86,6 +87,7 @@ function App() {
 ```
 
 Shows full-screen error UI with:
+
 - Large error icon
 - Error title and message
 - Try Again button
@@ -108,6 +110,7 @@ function Page() {
 ```
 
 Shows centered error UI with:
+
 - Error icon
 - Error message
 - Retry and Go Back buttons
@@ -127,6 +130,7 @@ function Section() {
 ```
 
 Shows inline error UI with:
+
 - Error icon and message
 - Retry button
 
@@ -145,6 +149,7 @@ function Component() {
 ```
 
 Shows compact error UI with:
+
 - Error icon and message
 - Small retry button
 
@@ -391,6 +396,7 @@ try {
 ```
 
 Errors propagate up through boundaries:
+
 1. Component error caught by ComponentErrorBoundary
 2. If not caught, propagates to SectionErrorBoundary
 3. Then to PageErrorBoundary
@@ -448,6 +454,7 @@ All error components use Tailwind CSS and respect the app theme:
 - `bg-warning` - Warning backgrounds
 
 Icons from `lucide-react`:
+
 - `AlertTriangle` - Generic errors
 - `WifiOff` - Network/offline errors
 - `Lock` - Auth/permission errors
@@ -459,6 +466,7 @@ Icons from `lucide-react`:
 ## Accessibility
 
 Error components include:
+
 - Semantic HTML
 - ARIA labels
 - Keyboard navigation

@@ -152,9 +152,9 @@ test.describe('Natural Language Query Input', () => {
     await page.keyboard.press('Meta+K')
     await page.waitForTimeout(300)
 
-    const searchInput = page.locator(
-      '[data-testid="semantic-search-input"], [data-testid="search-input"], input'
-    ).first()
+    const searchInput = page
+      .locator('[data-testid="semantic-search-input"], [data-testid="search-input"], input')
+      .first()
 
     if (await searchInput.isVisible()) {
       // Type natural language query
@@ -210,9 +210,9 @@ test.describe('Natural Language Query Input', () => {
     await page.keyboard.press('Meta+K')
     await page.waitForTimeout(300)
 
-    const searchInput = page.locator(
-      '[data-testid="semantic-search-input"], textarea, input'
-    ).first()
+    const searchInput = page
+      .locator('[data-testid="semantic-search-input"], textarea, input')
+      .first()
 
     if (await searchInput.isVisible()) {
       await searchInput.fill('Find me all discussions\nabout API improvements\nfrom this month')
@@ -366,9 +366,7 @@ test.describe('Search Filters', () => {
       await page.waitForTimeout(300)
 
       // Look for filter count badge
-      const filterCount = page.locator(
-        '[data-testid="filter-count"], .badge, text=/\\d+ filter/i'
-      )
+      const filterCount = page.locator('[data-testid="filter-count"], .badge, text=/\\d+ filter/i')
 
       const hasCount = await filterCount.isVisible().catch(() => false)
       expect(typeof hasCount).toBe('boolean')
@@ -480,9 +478,7 @@ test.describe('Search Results Display', () => {
       await page.waitForTimeout(2000)
 
       // Look for message previews
-      const resultItems = page.locator(
-        '[data-testid="search-result-item"], .search-result'
-      )
+      const resultItems = page.locator('[data-testid="search-result-item"], .search-result')
 
       if ((await resultItems.count()) > 0) {
         const firstResult = resultItems.first()
@@ -691,7 +687,9 @@ test.describe('Result Navigation', () => {
         await page.waitForTimeout(300)
 
         // Look for quick preview/tooltip
-        const preview = page.locator('[role="tooltip"], .preview-popup, [data-testid="quick-preview"]')
+        const preview = page.locator(
+          '[role="tooltip"], .preview-popup, [data-testid="quick-preview"]'
+        )
 
         const isVisible = await preview.isVisible().catch(() => false)
         expect(typeof isVisible).toBe('boolean')
@@ -787,9 +785,7 @@ test.describe('Saved Searches', () => {
     await page.waitForTimeout(300)
 
     // Look for saved search items
-    const savedSearchItems = page.locator(
-      '[data-testid="saved-search-item"], .saved-search'
-    )
+    const savedSearchItems = page.locator('[data-testid="saved-search-item"], .saved-search')
 
     if ((await savedSearchItems.count()) > 0) {
       await savedSearchItems.first().click()
@@ -846,9 +842,7 @@ test.describe('Search History', () => {
     await page.waitForTimeout(300)
 
     // Look for recent searches section
-    const recentSection = page.locator(
-      '[data-testid="recent-searches"], text=/recent/i'
-    )
+    const recentSection = page.locator('[data-testid="recent-searches"], text=/recent/i')
 
     const isVisible = await recentSection.isVisible().catch(() => false)
     expect(typeof isVisible).toBe('boolean')
@@ -1044,9 +1038,7 @@ test.describe('Search Error Handling', () => {
       await page.waitForTimeout(2000)
 
       // Look for retry button
-      const retryButton = page.locator(
-        '[data-testid="retry-search"], button:has-text("Retry")'
-      )
+      const retryButton = page.locator('[data-testid="retry-search"], button:has-text("Retry")')
 
       const isVisible = await retryButton.isVisible().catch(() => false)
       expect(typeof isVisible).toBe('boolean')
@@ -1068,9 +1060,7 @@ test.describe('Search Error Handling', () => {
       await page.waitForTimeout(500)
 
       // May show validation message
-      const validationMessage = page.locator(
-        'text=/too short|minimum length|at least/i'
-      )
+      const validationMessage = page.locator('text=/too short|minimum length|at least/i')
 
       const hasMessage = await validationMessage.isVisible().catch(() => false)
       expect(typeof hasMessage).toBe('boolean')

@@ -20,66 +20,59 @@
 // TYPES
 // ============================================================================
 
-export type EmbedType =
-  | 'twitter'
-  | 'youtube'
-  | 'github'
-  | 'spotify'
-  | 'image'
-  | 'video'
-  | 'generic';
+export type EmbedType = 'twitter' | 'youtube' | 'github' | 'spotify' | 'image' | 'video' | 'generic'
 
 export interface ParsedTwitterUrl {
-  type: 'twitter';
-  username: string;
-  tweetId?: string;
-  isThread?: boolean;
+  type: 'twitter'
+  username: string
+  tweetId?: string
+  isThread?: boolean
 }
 
 export interface ParsedYouTubeUrl {
-  type: 'youtube';
-  videoId: string;
-  timestamp?: number;
-  playlistId?: string;
-  isShort?: boolean;
-  isLive?: boolean;
+  type: 'youtube'
+  videoId: string
+  timestamp?: number
+  playlistId?: string
+  isShort?: boolean
+  isLive?: boolean
 }
 
 export interface ParsedGitHubUrl {
-  type: 'github';
-  owner: string;
-  repo?: string;
-  contentType: 'repo' | 'issue' | 'pr' | 'gist' | 'user' | 'file' | 'commit';
-  number?: number;
-  gistId?: string;
-  filePath?: string;
-  lineStart?: number;
-  lineEnd?: number;
-  commitSha?: string;
+  type: 'github'
+  owner: string
+  repo?: string
+  contentType: 'repo' | 'issue' | 'pr' | 'gist' | 'user' | 'file' | 'commit'
+  number?: number
+  gistId?: string
+  filePath?: string
+  lineStart?: number
+  lineEnd?: number
+  commitSha?: string
 }
 
 export interface ParsedSpotifyUrl {
-  type: 'spotify';
-  contentType: 'track' | 'album' | 'playlist' | 'artist' | 'episode' | 'show';
-  id: string;
+  type: 'spotify'
+  contentType: 'track' | 'album' | 'playlist' | 'artist' | 'episode' | 'show'
+  id: string
 }
 
 export interface ParsedImageUrl {
-  type: 'image';
-  url: string;
-  extension: string;
+  type: 'image'
+  url: string
+  extension: string
 }
 
 export interface ParsedVideoUrl {
-  type: 'video';
-  url: string;
-  extension: string;
+  type: 'video'
+  url: string
+  extension: string
 }
 
 export interface ParsedGenericUrl {
-  type: 'generic';
-  url: string;
-  domain: string;
+  type: 'generic'
+  url: string
+  domain: string
 }
 
 export type ParsedUrl =
@@ -89,7 +82,7 @@ export type ParsedUrl =
   | ParsedSpotifyUrl
   | ParsedImageUrl
   | ParsedVideoUrl
-  | ParsedGenericUrl;
+  | ParsedGenericUrl
 
 // ============================================================================
 // URL PATTERNS
@@ -105,7 +98,7 @@ export const TWITTER_PATTERNS = {
   user: /^https?:\/\/(?:www\.)?(twitter|x)\.com\/(\w+)\/?$/i,
   // Twitter thread (quoted tweet)
   thread: /^https?:\/\/(?:www\.)?(twitter|x)\.com\/(\w+)\/status\/(\d+)\?.*t=(\d+)/i,
-} as const;
+} as const
 
 /**
  * YouTube URL patterns
@@ -125,7 +118,7 @@ export const YOUTUBE_PATTERNS = {
   playlist: /^https?:\/\/(?:www\.)?youtube\.com\/playlist\?(?:.*&)?list=([a-zA-Z0-9_-]+)/i,
   // Channel: youtube.com/channel/CHANNEL_ID or youtube.com/@username
   channel: /^https?:\/\/(?:www\.)?youtube\.com\/(?:channel\/([a-zA-Z0-9_-]+)|@(\w+))/i,
-} as const;
+} as const
 
 /**
  * GitHub URL patterns
@@ -144,8 +137,9 @@ export const GITHUB_PATTERNS = {
   // File with optional line numbers: github.com/owner/repo/blob/branch/path#L1-L10
   file: /^https?:\/\/(?:www\.)?github\.com\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_.-]+)\/blob\/([^#]+?)(?:#L(\d+)(?:-L(\d+))?)?$/i,
   // Commit: github.com/owner/repo/commit/sha
-  commit: /^https?:\/\/(?:www\.)?github\.com\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_.-]+)\/commit\/([a-fA-F0-9]+)/i,
-} as const;
+  commit:
+    /^https?:\/\/(?:www\.)?github\.com\/([a-zA-Z0-9_-]+)\/([a-zA-Z0-9_.-]+)\/commit\/([a-fA-F0-9]+)/i,
+} as const
 
 /**
  * Spotify URL patterns
@@ -156,14 +150,17 @@ export const SPOTIFY_PATTERNS = {
   // Album: open.spotify.com/album/ID
   album: /^(?:https?:\/\/open\.spotify\.com\/album\/([a-zA-Z0-9]+)|spotify:album:([a-zA-Z0-9]+))/i,
   // Playlist: open.spotify.com/playlist/ID
-  playlist: /^(?:https?:\/\/open\.spotify\.com\/playlist\/([a-zA-Z0-9]+)|spotify:playlist:([a-zA-Z0-9]+))/i,
+  playlist:
+    /^(?:https?:\/\/open\.spotify\.com\/playlist\/([a-zA-Z0-9]+)|spotify:playlist:([a-zA-Z0-9]+))/i,
   // Artist: open.spotify.com/artist/ID
-  artist: /^(?:https?:\/\/open\.spotify\.com\/artist\/([a-zA-Z0-9]+)|spotify:artist:([a-zA-Z0-9]+))/i,
+  artist:
+    /^(?:https?:\/\/open\.spotify\.com\/artist\/([a-zA-Z0-9]+)|spotify:artist:([a-zA-Z0-9]+))/i,
   // Episode: open.spotify.com/episode/ID
-  episode: /^(?:https?:\/\/open\.spotify\.com\/episode\/([a-zA-Z0-9]+)|spotify:episode:([a-zA-Z0-9]+))/i,
+  episode:
+    /^(?:https?:\/\/open\.spotify\.com\/episode\/([a-zA-Z0-9]+)|spotify:episode:([a-zA-Z0-9]+))/i,
   // Show/Podcast: open.spotify.com/show/ID
   show: /^(?:https?:\/\/open\.spotify\.com\/show\/([a-zA-Z0-9]+)|spotify:show:([a-zA-Z0-9]+))/i,
-} as const;
+} as const
 
 /**
  * Direct media URL patterns
@@ -175,13 +172,13 @@ export const MEDIA_PATTERNS = {
   video: /^https?:\/\/[^\s]+\.(mp4|webm|ogg|mov|avi|mkv|m4v)(?:\?[^\s]*)?$/i,
   // Audio extensions
   audio: /^https?:\/\/[^\s]+\.(mp3|wav|ogg|m4a|aac|flac)(?:\?[^\s]*)?$/i,
-} as const;
+} as const
 
 /**
  * Generic URL pattern to match any valid URL
  */
 export const GENERIC_URL_PATTERN =
-  /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/i;
+  /^https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/i
 
 // ============================================================================
 // URL DETECTION & PARSING
@@ -192,28 +189,28 @@ export const GENERIC_URL_PATTERN =
  */
 export function detectEmbedType(url: string): EmbedType {
   // Check for direct media first
-  if (MEDIA_PATTERNS.image.test(url)) return 'image';
-  if (MEDIA_PATTERNS.video.test(url)) return 'video';
+  if (MEDIA_PATTERNS.image.test(url)) return 'image'
+  if (MEDIA_PATTERNS.video.test(url)) return 'video'
 
   // Check for specific platforms
   for (const pattern of Object.values(TWITTER_PATTERNS)) {
-    if (pattern.test(url)) return 'twitter';
+    if (pattern.test(url)) return 'twitter'
   }
 
   for (const pattern of Object.values(YOUTUBE_PATTERNS)) {
-    if (pattern.test(url)) return 'youtube';
+    if (pattern.test(url)) return 'youtube'
   }
 
   for (const pattern of Object.values(GITHUB_PATTERNS)) {
-    if (pattern.test(url)) return 'github';
+    if (pattern.test(url)) return 'github'
   }
 
   for (const pattern of Object.values(SPOTIFY_PATTERNS)) {
-    if (pattern.test(url)) return 'spotify';
+    if (pattern.test(url)) return 'spotify'
   }
 
   // Default to generic
-  return 'generic';
+  return 'generic'
 }
 
 /**
@@ -221,85 +218,85 @@ export function detectEmbedType(url: string): EmbedType {
  */
 export function parseTwitterUrl(url: string): ParsedTwitterUrl | null {
   // Check for tweet
-  const tweetMatch = url.match(TWITTER_PATTERNS.tweet);
+  const tweetMatch = url.match(TWITTER_PATTERNS.tweet)
   if (tweetMatch) {
     return {
       type: 'twitter',
       username: tweetMatch[2],
       tweetId: tweetMatch[3],
       isThread: TWITTER_PATTERNS.thread.test(url),
-    };
+    }
   }
 
   // Check for user profile
-  const userMatch = url.match(TWITTER_PATTERNS.user);
+  const userMatch = url.match(TWITTER_PATTERNS.user)
   if (userMatch) {
     return {
       type: 'twitter',
       username: userMatch[2],
-    };
+    }
   }
 
-  return null;
+  return null
 }
 
 /**
  * Parse a YouTube URL
  */
 export function parseYouTubeUrl(url: string): ParsedYouTubeUrl | null {
-  let videoId: string | null = null;
-  let isShort = false;
-  let isLive = false;
+  let videoId: string | null = null
+  let isShort = false
+  let isLive = false
 
   // Check each pattern
-  const watchMatch = url.match(YOUTUBE_PATTERNS.watch);
+  const watchMatch = url.match(YOUTUBE_PATTERNS.watch)
   if (watchMatch) {
-    videoId = watchMatch[1];
+    videoId = watchMatch[1]
   }
 
-  const shortMatch = url.match(YOUTUBE_PATTERNS.short);
+  const shortMatch = url.match(YOUTUBE_PATTERNS.short)
   if (shortMatch) {
-    videoId = shortMatch[1];
+    videoId = shortMatch[1]
   }
 
-  const embedMatch = url.match(YOUTUBE_PATTERNS.embed);
+  const embedMatch = url.match(YOUTUBE_PATTERNS.embed)
   if (embedMatch) {
-    videoId = embedMatch[1];
+    videoId = embedMatch[1]
   }
 
-  const shortsMatch = url.match(YOUTUBE_PATTERNS.shorts);
+  const shortsMatch = url.match(YOUTUBE_PATTERNS.shorts)
   if (shortsMatch) {
-    videoId = shortsMatch[1];
-    isShort = true;
+    videoId = shortsMatch[1]
+    isShort = true
   }
 
-  const liveMatch = url.match(YOUTUBE_PATTERNS.live);
+  const liveMatch = url.match(YOUTUBE_PATTERNS.live)
   if (liveMatch) {
-    videoId = liveMatch[1];
-    isLive = true;
+    videoId = liveMatch[1]
+    isLive = true
   }
 
-  if (!videoId) return null;
+  if (!videoId) return null
 
   // Extract timestamp if present (t=123 or t=1h2m3s)
-  let timestamp: number | undefined;
-  const timestampMatch = url.match(/[?&]t=(\d+)/);
+  let timestamp: number | undefined
+  const timestampMatch = url.match(/[?&]t=(\d+)/)
   if (timestampMatch) {
-    timestamp = parseInt(timestampMatch[1], 10);
+    timestamp = parseInt(timestampMatch[1], 10)
   } else {
     // Try parsing h:m:s format
-    const hmsMatch = url.match(/[?&]t=(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/);
+    const hmsMatch = url.match(/[?&]t=(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/)
     if (hmsMatch) {
-      const hours = parseInt(hmsMatch[1] || '0', 10);
-      const minutes = parseInt(hmsMatch[2] || '0', 10);
-      const seconds = parseInt(hmsMatch[3] || '0', 10);
-      timestamp = hours * 3600 + minutes * 60 + seconds;
+      const hours = parseInt(hmsMatch[1] || '0', 10)
+      const minutes = parseInt(hmsMatch[2] || '0', 10)
+      const seconds = parseInt(hmsMatch[3] || '0', 10)
+      timestamp = hours * 3600 + minutes * 60 + seconds
     }
   }
 
   // Extract playlist ID if present
-  const playlistMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/);
-  const playlistId = playlistMatch ? playlistMatch[1] : undefined;
+  const playlistMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/)
+  const playlistId = playlistMatch ? playlistMatch[1] : undefined
 
   return {
     type: 'youtube',
@@ -308,7 +305,7 @@ export function parseYouTubeUrl(url: string): ParsedYouTubeUrl | null {
     playlistId,
     isShort,
     isLive,
-  };
+  }
 }
 
 /**
@@ -316,18 +313,18 @@ export function parseYouTubeUrl(url: string): ParsedYouTubeUrl | null {
  */
 export function parseGitHubUrl(url: string): ParsedGitHubUrl | null {
   // Check for gist first (different domain)
-  const gistMatch = url.match(GITHUB_PATTERNS.gist);
+  const gistMatch = url.match(GITHUB_PATTERNS.gist)
   if (gistMatch) {
     return {
       type: 'github',
       owner: gistMatch[1],
       contentType: 'gist',
       gistId: gistMatch[2],
-    };
+    }
   }
 
   // Check for issue
-  const issueMatch = url.match(GITHUB_PATTERNS.issue);
+  const issueMatch = url.match(GITHUB_PATTERNS.issue)
   if (issueMatch) {
     return {
       type: 'github',
@@ -335,11 +332,11 @@ export function parseGitHubUrl(url: string): ParsedGitHubUrl | null {
       repo: issueMatch[2],
       contentType: 'issue',
       number: parseInt(issueMatch[3], 10),
-    };
+    }
   }
 
   // Check for PR
-  const prMatch = url.match(GITHUB_PATTERNS.pr);
+  const prMatch = url.match(GITHUB_PATTERNS.pr)
   if (prMatch) {
     return {
       type: 'github',
@@ -347,11 +344,11 @@ export function parseGitHubUrl(url: string): ParsedGitHubUrl | null {
       repo: prMatch[2],
       contentType: 'pr',
       number: parseInt(prMatch[3], 10),
-    };
+    }
   }
 
   // Check for commit
-  const commitMatch = url.match(GITHUB_PATTERNS.commit);
+  const commitMatch = url.match(GITHUB_PATTERNS.commit)
   if (commitMatch) {
     return {
       type: 'github',
@@ -359,11 +356,11 @@ export function parseGitHubUrl(url: string): ParsedGitHubUrl | null {
       repo: commitMatch[2],
       contentType: 'commit',
       commitSha: commitMatch[3],
-    };
+    }
   }
 
   // Check for file
-  const fileMatch = url.match(GITHUB_PATTERNS.file);
+  const fileMatch = url.match(GITHUB_PATTERNS.file)
   if (fileMatch) {
     return {
       type: 'github',
@@ -373,31 +370,31 @@ export function parseGitHubUrl(url: string): ParsedGitHubUrl | null {
       filePath: fileMatch[3],
       lineStart: fileMatch[4] ? parseInt(fileMatch[4], 10) : undefined,
       lineEnd: fileMatch[5] ? parseInt(fileMatch[5], 10) : undefined,
-    };
+    }
   }
 
   // Check for repo
-  const repoMatch = url.match(GITHUB_PATTERNS.repo);
+  const repoMatch = url.match(GITHUB_PATTERNS.repo)
   if (repoMatch) {
     return {
       type: 'github',
       owner: repoMatch[1],
       repo: repoMatch[2],
       contentType: 'repo',
-    };
+    }
   }
 
   // Check for user profile
-  const userMatch = url.match(GITHUB_PATTERNS.user);
+  const userMatch = url.match(GITHUB_PATTERNS.user)
   if (userMatch) {
     return {
       type: 'github',
       owner: userMatch[1],
       contentType: 'user',
-    };
+    }
   }
 
-  return null;
+  return null
 }
 
 /**
@@ -405,132 +402,130 @@ export function parseGitHubUrl(url: string): ParsedGitHubUrl | null {
  */
 export function parseSpotifyUrl(url: string): ParsedSpotifyUrl | null {
   // Check each content type
-  const trackMatch = url.match(SPOTIFY_PATTERNS.track);
+  const trackMatch = url.match(SPOTIFY_PATTERNS.track)
   if (trackMatch) {
     return {
       type: 'spotify',
       contentType: 'track',
       id: trackMatch[1] || trackMatch[2],
-    };
+    }
   }
 
-  const albumMatch = url.match(SPOTIFY_PATTERNS.album);
+  const albumMatch = url.match(SPOTIFY_PATTERNS.album)
   if (albumMatch) {
     return {
       type: 'spotify',
       contentType: 'album',
       id: albumMatch[1] || albumMatch[2],
-    };
+    }
   }
 
-  const playlistMatch = url.match(SPOTIFY_PATTERNS.playlist);
+  const playlistMatch = url.match(SPOTIFY_PATTERNS.playlist)
   if (playlistMatch) {
     return {
       type: 'spotify',
       contentType: 'playlist',
       id: playlistMatch[1] || playlistMatch[2],
-    };
+    }
   }
 
-  const artistMatch = url.match(SPOTIFY_PATTERNS.artist);
+  const artistMatch = url.match(SPOTIFY_PATTERNS.artist)
   if (artistMatch) {
     return {
       type: 'spotify',
       contentType: 'artist',
       id: artistMatch[1] || artistMatch[2],
-    };
+    }
   }
 
-  const episodeMatch = url.match(SPOTIFY_PATTERNS.episode);
+  const episodeMatch = url.match(SPOTIFY_PATTERNS.episode)
   if (episodeMatch) {
     return {
       type: 'spotify',
       contentType: 'episode',
       id: episodeMatch[1] || episodeMatch[2],
-    };
+    }
   }
 
-  const showMatch = url.match(SPOTIFY_PATTERNS.show);
+  const showMatch = url.match(SPOTIFY_PATTERNS.show)
   if (showMatch) {
     return {
       type: 'spotify',
       contentType: 'show',
       id: showMatch[1] || showMatch[2],
-    };
+    }
   }
 
-  return null;
+  return null
 }
 
 /**
  * Parse a media URL (image/video)
  */
-export function parseMediaUrl(
-  url: string
-): ParsedImageUrl | ParsedVideoUrl | null {
-  const imageMatch = url.match(MEDIA_PATTERNS.image);
+export function parseMediaUrl(url: string): ParsedImageUrl | ParsedVideoUrl | null {
+  const imageMatch = url.match(MEDIA_PATTERNS.image)
   if (imageMatch) {
-    const extension = imageMatch[1].toLowerCase();
+    const extension = imageMatch[1].toLowerCase()
     return {
       type: 'image',
       url,
       extension,
-    };
+    }
   }
 
-  const videoMatch = url.match(MEDIA_PATTERNS.video);
+  const videoMatch = url.match(MEDIA_PATTERNS.video)
   if (videoMatch) {
-    const extension = videoMatch[1].toLowerCase();
+    const extension = videoMatch[1].toLowerCase()
     return {
       type: 'video',
       url,
       extension,
-    };
+    }
   }
 
-  return null;
+  return null
 }
 
 /**
  * Parse any URL and return structured data
  */
 export function parseUrl(url: string): ParsedUrl {
-  const type = detectEmbedType(url);
+  const type = detectEmbedType(url)
 
   switch (type) {
     case 'twitter': {
-      const parsed = parseTwitterUrl(url);
-      if (parsed) return parsed;
-      break;
+      const parsed = parseTwitterUrl(url)
+      if (parsed) return parsed
+      break
     }
     case 'youtube': {
-      const parsed = parseYouTubeUrl(url);
-      if (parsed) return parsed;
-      break;
+      const parsed = parseYouTubeUrl(url)
+      if (parsed) return parsed
+      break
     }
     case 'github': {
-      const parsed = parseGitHubUrl(url);
-      if (parsed) return parsed;
-      break;
+      const parsed = parseGitHubUrl(url)
+      if (parsed) return parsed
+      break
     }
     case 'spotify': {
-      const parsed = parseSpotifyUrl(url);
-      if (parsed) return parsed;
-      break;
+      const parsed = parseSpotifyUrl(url)
+      if (parsed) return parsed
+      break
     }
     case 'image':
     case 'video': {
-      const parsed = parseMediaUrl(url);
-      if (parsed) return parsed;
-      break;
+      const parsed = parseMediaUrl(url)
+      if (parsed) return parsed
+      break
     }
   }
 
   // Default to generic URL
-  let domain = 'unknown';
+  let domain = 'unknown'
   try {
-    const urlObj = new URL(url);
-    domain = urlObj.hostname.replace(/^www\./, '');
+    const urlObj = new URL(url)
+    domain = urlObj.hostname.replace(/^www\./, '')
   } catch {
     // Invalid URL, keep default
   }
@@ -539,7 +534,7 @@ export function parseUrl(url: string): ParsedUrl {
     type: 'generic',
     url,
     domain,
-  };
+  }
 }
 
 // ============================================================================
@@ -551,8 +546,8 @@ export function parseUrl(url: string): ParsedUrl {
  */
 export function extractUrls(text: string): string[] {
   const urlRegex =
-    /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi;
-  return text.match(urlRegex) || [];
+    /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi
+  return text.match(urlRegex) || []
 }
 
 /**
@@ -562,19 +557,19 @@ export function extractUrlsWithPositions(
   text: string
 ): Array<{ url: string; start: number; end: number }> {
   const urlRegex =
-    /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi;
-  const results: Array<{ url: string; start: number; end: number }> = [];
-  let match: RegExpExecArray | null;
+    /https?:\/\/(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi
+  const results: Array<{ url: string; start: number; end: number }> = []
+  let match: RegExpExecArray | null
 
   while ((match = urlRegex.exec(text)) !== null) {
     results.push({
       url: match[0],
       start: match.index,
       end: match.index + match[0].length,
-    });
+    })
   }
 
-  return results;
+  return results
 }
 
 /**
@@ -582,10 +577,10 @@ export function extractUrlsWithPositions(
  */
 export function isValidUrl(str: string): boolean {
   try {
-    new URL(str);
-    return GENERIC_URL_PATTERN.test(str);
+    new URL(str)
+    return GENERIC_URL_PATTERN.test(str)
   } catch {
-    return false;
+    return false
   }
 }
 
@@ -594,10 +589,10 @@ export function isValidUrl(str: string): boolean {
  */
 export function getDomain(url: string): string {
   try {
-    const urlObj = new URL(url);
-    return urlObj.hostname.replace(/^www\./, '');
+    const urlObj = new URL(url)
+    return urlObj.hostname.replace(/^www\./, '')
   } catch {
-    return '';
+    return ''
   }
 }
 
@@ -611,8 +606,8 @@ export function isEmbeddable(url: string): boolean {
     '127.0.0.1',
     '0.0.0.0',
     // Add any other domains to block
-  ];
+  ]
 
-  const domain = getDomain(url);
-  return !blockedDomains.some((blocked) => domain.includes(blocked));
+  const domain = getDomain(url)
+  return !blockedDomains.some((blocked) => domain.includes(blocked))
 }

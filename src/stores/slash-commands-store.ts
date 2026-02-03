@@ -234,9 +234,7 @@ export const useSlashCommandsStore = create<SlashCommandsStore>()(
                 command.aliases?.forEach((alias) => {
                   state.commandsByTrigger.delete(alias)
                 })
-                state.customCommands = state.customCommands.filter(
-                  (c) => c.id !== id
-                )
+                state.customCommands = state.customCommands.filter((c) => c.id !== id)
               },
               false,
               'slashCommands/removeCommand'
@@ -340,7 +338,7 @@ export const useSlashCommandsStore = create<SlashCommandsStore>()(
               icon: draft.icon,
               order: draft.order,
               cooldown: draft.cooldown,
-              createdAt: draft.id ? (get().commands.get(draft.id)?.createdAt || now) : now,
+              createdAt: draft.id ? get().commands.get(draft.id)?.createdAt || now : now,
               updatedAt: now,
               createdBy,
             }
@@ -525,24 +523,20 @@ export const useSlashCommandsStore = create<SlashCommandsStore>()(
 // Selectors
 // ============================================================================
 
-export const selectAllCommands = (state: SlashCommandsStore) =>
-  Array.from(state.commands.values())
+export const selectAllCommands = (state: SlashCommandsStore) => Array.from(state.commands.values())
 
 export const selectEnabledCommands = (state: SlashCommandsStore) =>
   Array.from(state.commands.values()).filter((c) => c.isEnabled)
 
-export const selectBuiltInCommands = (state: SlashCommandsStore) =>
-  state.builtInCommands
+export const selectBuiltInCommands = (state: SlashCommandsStore) => state.builtInCommands
 
-export const selectCustomCommands = (state: SlashCommandsStore) =>
-  state.customCommands
+export const selectCustomCommands = (state: SlashCommandsStore) => state.customCommands
 
 export const selectCommandById = (id: string) => (state: SlashCommandsStore) =>
   state.commands.get(id)
 
-export const selectCommandByTrigger =
-  (trigger: string) => (state: SlashCommandsStore) =>
-    state.commandsByTrigger.get(trigger.toLowerCase())
+export const selectCommandByTrigger = (trigger: string) => (state: SlashCommandsStore) =>
+  state.commandsByTrigger.get(trigger.toLowerCase())
 
 export const selectFilteredCommands = (state: SlashCommandsStore) => {
   let commands = Array.from(state.commands.values())
@@ -575,14 +569,14 @@ export const selectFilteredCommands = (state: SlashCommandsStore) => {
   })
 }
 
-export const selectIsEditing = (state: SlashCommandsStore) =>
-  state.editingCommand !== null
+export const selectIsEditing = (state: SlashCommandsStore) => state.editingCommand !== null
 
-export const selectEditingCommand = (state: SlashCommandsStore) =>
-  state.editingCommand
+export const selectEditingCommand = (state: SlashCommandsStore) => state.editingCommand
 
-export const selectRecentExecutions = (count = 10) => (state: SlashCommandsStore) =>
-  state.executionHistory.slice(0, count)
+export const selectRecentExecutions =
+  (count = 10) =>
+  (state: SlashCommandsStore) =>
+    state.executionHistory.slice(0, count)
 
 // ============================================================================
 // Hooks
@@ -593,9 +587,7 @@ export const selectRecentExecutions = (count = 10) => (state: SlashCommandsStore
  */
 export function useInitializeSlashCommands() {
   const initialize = useSlashCommandsStore((state) => state.initialize)
-  const isInitialized = useSlashCommandsStore(
-    (state) => state.commands.size > 0
-  )
+  const isInitialized = useSlashCommandsStore((state) => state.commands.size > 0)
 
   if (!isInitialized) {
     initialize()

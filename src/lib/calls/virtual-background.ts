@@ -7,6 +7,8 @@
 
 import { SelfieSegmentation } from '@mediapipe/selfie_segmentation'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -168,7 +170,7 @@ export class VirtualBackground {
         this.selfieSegmentation.send({ image: dummyCanvas }).catch(reject)
       })
     } catch (error) {
-      console.error('Failed to initialize virtual background:', error)
+      logger.error('Failed to initialize virtual background:', error)
       throw error
     }
   }
@@ -290,7 +292,7 @@ export class VirtualBackground {
         this.selfieSegmentation.send({ image: this.videoElement! })
       })
     } catch (error) {
-      console.error('Error processing frame:', error)
+      logger.error('Error processing frame:', error)
     }
 
     requestAnimationFrame(() => this.processFrame())

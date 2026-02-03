@@ -203,10 +203,7 @@ export function isArchive(mimeType: string): boolean {
  */
 export function isPreviewable(mimeType: string): boolean {
   return (
-    isImage(mimeType) ||
-    isVideo(mimeType) ||
-    isAudio(mimeType) ||
-    mimeType === 'application/pdf'
+    isImage(mimeType) || isVideo(mimeType) || isAudio(mimeType) || mimeType === 'application/pdf'
   )
 }
 
@@ -356,10 +353,7 @@ export function sanitizeFileName(filename: string, maxLength: number = 255): str
 /**
  * Generate a unique filename by appending a number if file already exists
  */
-export function generateUniqueFileName(
-  filename: string,
-  existingNames: string[]
-): string {
+export function generateUniqueFileName(filename: string, existingNames: string[]): string {
   const existingSet = new Set(existingNames.map((n) => n.toLowerCase()))
 
   if (!existingSet.has(filename.toLowerCase())) {
@@ -393,10 +387,7 @@ export function isFileSizeAllowed(sizeBytes: number, maxSizeBytes: number): bool
 /**
  * Check if file type is allowed
  */
-export function isFileTypeAllowed(
-  mimeType: string,
-  allowedTypes: string[]
-): boolean {
+export function isFileTypeAllowed(mimeType: string, allowedTypes: string[]): boolean {
   const normalizedMime = mimeType.toLowerCase()
 
   return allowedTypes.some((allowed) => {

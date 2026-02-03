@@ -7,11 +7,7 @@
   "icon": "wave",
   "homepage": "https://github.com/nself/nchat",
   "repository": "https://github.com/nself/nchat",
-  "permissions": [
-    "read_messages",
-    "send_messages",
-    "mention_users"
-  ],
+  "permissions": ["read_messages", "send_messages", "mention_users"],
   "commands": [
     {
       "name": "hello",
@@ -25,11 +21,7 @@
           "required": false
         }
       ],
-      "examples": [
-        "/hello",
-        "/hello World",
-        "/hi @alice"
-      ],
+      "examples": ["/hello", "/hello World", "/hi @alice"],
       "cooldown": 3
     },
     {
@@ -43,19 +35,13 @@
           "required": false
         }
       ],
-      "examples": [
-        "/wave",
-        "/wave @bob"
-      ]
+      "examples": ["/wave", "/wave @bob"]
     },
     {
       "name": "goodbye",
       "description": "Say goodbye",
       "aliases": ["bye", "cya"],
-      "examples": [
-        "/goodbye",
-        "/bye"
-      ]
+      "examples": ["/goodbye", "/bye"]
     }
   ],
   "triggers": [

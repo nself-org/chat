@@ -48,6 +48,7 @@ open http://localhost:3000
 ```
 
 **Development mode features:**
+
 - 8 pre-configured test users
 - Auto-login as owner@nself.org
 - No backend setup required initially
@@ -194,6 +195,7 @@ psql -U postgres -d nchat_production -f migrations/002_rbac_system.sql
 ```
 
 **v0.3.0 migrations to apply:**
+
 - `012_advanced_messaging_features.sql`
 - `012_gifs_stickers.sql`
 - `012_polls_system.sql`
@@ -229,6 +231,7 @@ Choose your deployment method:
 ### What is nself CLI?
 
 nself CLI is a complete backend-as-a-service toolkit that provides:
+
 - PostgreSQL with 60+ extensions
 - Hasura GraphQL engine
 - Nhost authentication
@@ -287,17 +290,17 @@ nself logs hasura
 
 ### Service Ports
 
-| Service | Port | Description |
-|---------|------|-------------|
-| Hasura GraphQL | 8080 | GraphQL API endpoint |
-| Auth | 4000 | Authentication service |
-| PostgreSQL | 5432 | Database |
-| MinIO | 9000 | Object storage (S3-compatible) |
-| MinIO Console | 9001 | MinIO web UI |
-| MeiliSearch | 7700 | Search engine |
-| Redis | 6379 | Cache and job queue |
-| nself Admin | 3021 | Admin dashboard |
-| Grafana | 3000 | Monitoring dashboards |
+| Service        | Port | Description                    |
+| -------------- | ---- | ------------------------------ |
+| Hasura GraphQL | 8080 | GraphQL API endpoint           |
+| Auth           | 4000 | Authentication service         |
+| PostgreSQL     | 5432 | Database                       |
+| MinIO          | 9000 | Object storage (S3-compatible) |
+| MinIO Console  | 9001 | MinIO web UI                   |
+| MeiliSearch    | 7700 | Search engine                  |
+| Redis          | 6379 | Cache and job queue            |
+| nself Admin    | 3021 | Admin dashboard                |
+| Grafana        | 3000 | Monitoring dashboards          |
 
 ### Configuration
 

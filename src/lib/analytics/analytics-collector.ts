@@ -21,66 +21,67 @@ import type {
   ResponseTimeData,
   UserGrowthData,
   ChannelGrowthData,
-} from './analytics-types';
+} from './analytics-types'
+import { captureError } from '@/lib/sentry-utils'
 
 // ============================================================================
 // Raw Data Types (from database)
 // ============================================================================
 
 interface RawMessage {
-  id: string;
-  content: string;
-  channel_id: string;
-  user_id: string;
-  created_at: string;
-  updated_at: string;
-  deleted_at: string | null;
-  reply_count: number;
-  has_attachments: boolean;
-  thread_id: string | null;
+  id: string
+  content: string
+  channel_id: string
+  user_id: string
+  created_at: string
+  updated_at: string
+  deleted_at: string | null
+  reply_count: number
+  has_attachments: boolean
+  thread_id: string | null
 }
 
 interface RawUser {
-  id: string;
-  username: string;
-  display_name: string;
-  avatar_url: string | null;
-  created_at: string;
-  last_active_at: string;
-  is_bot: boolean;
+  id: string
+  username: string
+  display_name: string
+  avatar_url: string | null
+  created_at: string
+  last_active_at: string
+  is_bot: boolean
 }
 
 interface RawChannel {
-  id: string;
-  name: string;
-  type: 'public' | 'private' | 'direct';
-  created_at: string;
-  member_count: number;
+  id: string
+  name: string
+  type: 'public' | 'private' | 'direct'
+  created_at: string
+  member_count: number
 }
 
 interface RawReaction {
-  id: string;
-  emoji: string;
-  message_id: string;
-  user_id: string;
-  created_at: string;
+  id: string
+  emoji: string
+  message_id: string
+  user_id: string
+  created_at: string
 }
 
 interface RawFile {
-  id: string;
-  name: string;
-  mime_type: string;
-  size: number;
-  user_id: string;
-  created_at: string;
+  id: string
+  name: string
+  mime_type: string
+  size: number
+  user_id: string
+  created_at: string
 }
 
 interface RawSearchLog {
-  id: string;
-  query: string;
-  user_id: string;
-  result_count: number;
-  created_at: string;
+  id: string
+  query: string
+  user_id: string
+  result_count: number
+  created_at: string
 }
 
 // ============================================================================
@@ -88,43 +89,40 @@ interface RawSearchLog {
 // ============================================================================
 
 export class AnalyticsCollector {
-  private graphqlEndpoint: string;
-  private authToken: string | null;
+  private graphqlEndpoint: string
+  private authToken: string | null
 
   constructor(graphqlEndpoint: string, authToken?: string) {
-    this.graphqlEndpoint = graphqlEndpoint;
-    this.authToken = authToken || null;
+    this.graphqlEndpoint = graphqlEndpoint
+    this.authToken = authToken || null
   }
 
   // --------------------------------------------------------------------------
   // GraphQL Query Helper
   // --------------------------------------------------------------------------
 
-  private async query<T>(
-    query: string,
-    variables?: Record<string, unknown>
-  ): Promise<T> {
+  private async query<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-    };
+    }
 
     if (this.authToken) {
-      headers['Authorization'] = `Bearer ${this.authToken}`;
+      headers['Authorization'] = `Bearer ${this.authToken}`
     }
 
     const response = await fetch(this.graphqlEndpoint, {
       method: 'POST',
       headers,
       body: JSON.stringify({ query, variables }),
-    });
+    })
 
-    const result = await response.json();
+    const result = await response.json()
 
     if (result.errors) {
-      throw new Error(result.errors[0]?.message || 'GraphQL query failed');
+      throw new Error(result.errors[0]?.message || 'GraphQL query failed')
     }
 
-    return result.data;
+    return result.data
   }
 
   // --------------------------------------------------------------------------
@@ -132,10 +130,10 @@ export class AnalyticsCollector {
   // --------------------------------------------------------------------------
 
   async collectMessageVolume(filters: AnalyticsFilters): Promise<MessageVolumeData[]> {
-    const { dateRange, granularity, channelIds } = filters;
+    const { dateRange, granularity, channelIds } = filters
 
     // Generate time buckets based on granularity
-    const buckets = this.generateTimeBuckets(dateRange, granularity);
+    const buckets = this.generateTimeBuckets(dateRange, granularity)
 
     const query = `
       query GetMessageVolume($start: timestamptz!, $end: timestamptz!, $channelIds: [uuid!]) {
@@ -151,20 +149,24 @@ export class AnalyticsCollector {
           created_at
         }
       }
-    `;
+    `
 
     try {
       const data = await this.query<{ nchat_messages: RawMessage[] }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
         channelIds,
-      });
+      })
 
       // Group messages into time buckets
-      return this.groupMessagesByTimeBucket(data.nchat_messages, buckets, granularity);
-    } catch {
-      // Return mock data for development
-      return this.generateMockMessageVolume(dateRange, granularity);
+      return this.groupMessagesByTimeBucket(data.nchat_messages, buckets, granularity)
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectMessageVolume' },
+      })
+      throw new Error(
+        `Failed to collect message volume: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -172,7 +174,7 @@ export class AnalyticsCollector {
     filters: AnalyticsFilters,
     limit: number = 10
   ): Promise<TopMessageData[]> {
-    const { dateRange } = filters;
+    const { dateRange } = filters
 
     const query = `
       query GetTopMessages($start: timestamptz!, $end: timestamptz!, $limit: Int!) {
@@ -209,23 +211,25 @@ export class AnalyticsCollector {
           }
         }
       }
-    `;
+    `
 
     try {
-      const data = await this.query<{ nchat_messages: Array<{
-        id: string;
-        content: string;
-        channel_id: string;
-        created_at: string;
-        reply_count: number;
-        channel: { id: string; name: string };
-        user: { id: string; username: string; display_name: string; avatar_url: string | null };
-        reactions_aggregate: { aggregate: { count: number } };
-      }> }>(query, {
+      const data = await this.query<{
+        nchat_messages: Array<{
+          id: string
+          content: string
+          channel_id: string
+          created_at: string
+          reply_count: number
+          channel: { id: string; name: string }
+          user: { id: string; username: string; display_name: string; avatar_url: string | null }
+          reactions_aggregate: { aggregate: { count: number } }
+        }>
+      }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
         limit,
-      });
+      })
 
       return data.nchat_messages.map((msg) => ({
         messageId: msg.id,
@@ -238,9 +242,14 @@ export class AnalyticsCollector {
         reactionCount: msg.reactions_aggregate.aggregate.count,
         replyCount: msg.reply_count,
         timestamp: new Date(msg.created_at),
-      }));
-    } catch {
-      return this.generateMockTopMessages(limit);
+      }))
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectTopMessages' },
+      })
+      throw new Error(
+        `Failed to collect top messages: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -252,7 +261,7 @@ export class AnalyticsCollector {
     filters: AnalyticsFilters,
     limit: number = 50
   ): Promise<UserActivityData[]> {
-    const { dateRange, includeBots } = filters;
+    const { dateRange, includeBots } = filters
 
     const query = `
       query GetUserActivity($start: timestamptz!, $end: timestamptz!, $limit: Int!, $includeBots: Boolean!) {
@@ -287,24 +296,26 @@ export class AnalyticsCollector {
           }
         }
       }
-    `;
+    `
 
     try {
-      const data = await this.query<{ nchat_users: Array<{
-        id: string;
-        username: string;
-        display_name: string;
-        avatar_url: string | null;
-        last_active_at: string;
-        messages_aggregate: { aggregate: { count: number } };
-        reactions_aggregate: { aggregate: { count: number } };
-        files_aggregate: { aggregate: { count: number } };
-      }> }>(query, {
+      const data = await this.query<{
+        nchat_users: Array<{
+          id: string
+          username: string
+          display_name: string
+          avatar_url: string | null
+          last_active_at: string
+          messages_aggregate: { aggregate: { count: number } }
+          reactions_aggregate: { aggregate: { count: number } }
+          files_aggregate: { aggregate: { count: number } }
+        }>
+      }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
         limit,
         includeBots: includeBots || false,
-      });
+      })
 
       return data.nchat_users.map((user) => ({
         userId: user.id,
@@ -321,18 +332,20 @@ export class AnalyticsCollector {
           user.reactions_aggregate.aggregate.count,
           user.files_aggregate.aggregate.count
         ),
-      }));
-    } catch {
-      return this.generateMockUserActivity(limit);
+      }))
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectUserActivity' },
+      })
+      throw new Error(
+        `Failed to collect user activity: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
-  async collectInactiveUsers(
-    days: number = 30,
-    limit: number = 50
-  ): Promise<InactiveUserData[]> {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - days);
+  async collectInactiveUsers(days: number = 30, limit: number = 50): Promise<InactiveUserData[]> {
+    const cutoffDate = new Date()
+    cutoffDate.setDate(cutoffDate.getDate() - days)
 
     const query = `
       query GetInactiveUsers($cutoff: timestamptz!, $limit: Int!) {
@@ -356,27 +369,29 @@ export class AnalyticsCollector {
           }
         }
       }
-    `;
+    `
 
     try {
-      const data = await this.query<{ nchat_users: Array<{
-        id: string;
-        username: string;
-        display_name: string;
-        avatar_url: string | null;
-        last_active_at: string;
-        messages_aggregate: { aggregate: { count: number } };
-      }> }>(query, {
+      const data = await this.query<{
+        nchat_users: Array<{
+          id: string
+          username: string
+          display_name: string
+          avatar_url: string | null
+          last_active_at: string
+          messages_aggregate: { aggregate: { count: number } }
+        }>
+      }>(query, {
         cutoff: cutoffDate.toISOString(),
         limit,
-      });
+      })
 
-      const now = new Date();
+      const now = new Date()
       return data.nchat_users.map((user) => {
-        const lastActive = new Date(user.last_active_at);
+        const lastActive = new Date(user.last_active_at)
         const daysSinceActive = Math.floor(
           (now.getTime() - lastActive.getTime()) / (1000 * 60 * 60 * 24)
-        );
+        )
 
         return {
           userId: user.id,
@@ -386,16 +401,21 @@ export class AnalyticsCollector {
           lastActive,
           daysSinceActive,
           totalMessages: user.messages_aggregate.aggregate.count,
-        };
-      });
-    } catch {
-      return this.generateMockInactiveUsers(limit);
+        }
+      })
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectInactiveUsers' },
+      })
+      throw new Error(
+        `Failed to collect inactive users: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
   async collectUserGrowth(filters: AnalyticsFilters): Promise<UserGrowthData[]> {
-    const { dateRange, granularity } = filters;
-    const buckets = this.generateTimeBuckets(dateRange, granularity);
+    const { dateRange, granularity } = filters
+    const buckets = this.generateTimeBuckets(dateRange, granularity)
 
     const query = `
       query GetUserGrowth($start: timestamptz!, $end: timestamptz!) {
@@ -416,26 +436,26 @@ export class AnalyticsCollector {
           }
         }
       }
-    `;
+    `
 
     try {
       const data = await this.query<{
-        nchat_users: Array<{ id: string; created_at: string }>;
-        total_users: { aggregate: { count: number } };
+        nchat_users: Array<{ id: string; created_at: string }>
+        total_users: { aggregate: { count: number } }
       }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
-      });
+      })
 
-      let runningTotal = data.total_users.aggregate.count;
+      let runningTotal = data.total_users.aggregate.count
 
       return buckets.map((bucket) => {
         const newUsers = data.nchat_users.filter((user) => {
-          const createdAt = new Date(user.created_at);
-          return createdAt >= bucket.start && createdAt < bucket.end;
-        }).length;
+          const createdAt = new Date(user.created_at)
+          return createdAt >= bucket.start && createdAt < bucket.end
+        }).length
 
-        runningTotal += newUsers;
+        runningTotal += newUsers
 
         return {
           timestamp: bucket.start,
@@ -443,10 +463,15 @@ export class AnalyticsCollector {
           totalUsers: runningTotal,
           churnedUsers: 0, // Would need additional tracking
           netGrowth: newUsers,
-        };
-      });
-    } catch {
-      return this.generateMockUserGrowth(dateRange, granularity);
+        }
+      })
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectUserGrowth' },
+      })
+      throw new Error(
+        `Failed to collect user growth: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -458,7 +483,7 @@ export class AnalyticsCollector {
     filters: AnalyticsFilters,
     limit: number = 20
   ): Promise<ChannelActivityData[]> {
-    const { dateRange, channelTypes } = filters;
+    const { dateRange, channelTypes } = filters
 
     const query = `
       query GetChannelActivity($start: timestamptz!, $end: timestamptz!, $limit: Int!) {
@@ -490,25 +515,27 @@ export class AnalyticsCollector {
           }
         }
       }
-    `;
+    `
 
     try {
-      const data = await this.query<{ nchat_channels: Array<{
-        id: string;
-        name: string;
-        type: 'public' | 'private' | 'direct';
-        members_aggregate: { aggregate: { count: number } };
-        messages_aggregate: { aggregate: { count: number } };
-        messages: Array<{ user_id: string }>;
-      }> }>(query, {
+      const data = await this.query<{
+        nchat_channels: Array<{
+          id: string
+          name: string
+          type: 'public' | 'private' | 'direct'
+          members_aggregate: { aggregate: { count: number } }
+          messages_aggregate: { aggregate: { count: number } }
+          messages: Array<{ user_id: string }>
+        }>
+      }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
         limit,
-      });
+      })
 
       return data.nchat_channels.map((channel) => {
-        const memberCount = channel.members_aggregate.aggregate.count;
-        const activeUsers = channel.messages.length;
+        const memberCount = channel.members_aggregate.aggregate.count
+        const activeUsers = channel.messages.length
 
         return {
           channelId: channel.id,
@@ -520,10 +547,15 @@ export class AnalyticsCollector {
           lastActivity: new Date(), // Would need additional query
           engagementRate: memberCount > 0 ? (activeUsers / memberCount) * 100 : 0,
           growthRate: 0, // Would need historical data
-        };
-      });
-    } catch {
-      return this.generateMockChannelActivity(limit);
+        }
+      })
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectChannelActivity' },
+      })
+      throw new Error(
+        `Failed to collect channel activity: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -531,29 +563,92 @@ export class AnalyticsCollector {
     channelId: string,
     filters: AnalyticsFilters
   ): Promise<ChannelGrowthData[]> {
-    const { dateRange, granularity } = filters;
-    const buckets = this.generateTimeBuckets(dateRange, granularity);
+    const { dateRange, granularity } = filters
+    const buckets = this.generateTimeBuckets(dateRange, granularity)
 
-    // Mock implementation - would need member join/leave tracking
-    return buckets.map((bucket) => ({
-      timestamp: bucket.start,
-      channelId,
-      channelName: 'Channel',
-      newMembers: Math.floor(Math.random() * 5),
-      leftMembers: Math.floor(Math.random() * 2),
-      totalMembers: 50 + Math.floor(Math.random() * 20),
-    }));
+    const query = `
+      query GetChannelGrowth($channelId: uuid!, $start: timestamptz!, $end: timestamptz!) {
+        nchat_channel_member_events(
+          where: {
+            channel_id: { _eq: $channelId }
+            created_at: { _gte: $start, _lte: $end }
+          }
+          order_by: { created_at: asc }
+        ) {
+          id
+          event_type
+          created_at
+        }
+        channel: nchat_channels_by_pk(id: $channelId) {
+          name
+          members_aggregate(where: { joined_at: { _lt: $start } }) {
+            aggregate {
+              count
+            }
+          }
+        }
+      }
+    `
+
+    try {
+      const data = await this.query<{
+        nchat_channel_member_events: Array<{
+          id: string
+          event_type: 'joined' | 'left'
+          created_at: string
+        }>
+        channel: {
+          name: string
+          members_aggregate: { aggregate: { count: number } }
+        } | null
+      }>(query, {
+        channelId,
+        start: dateRange.start.toISOString(),
+        end: dateRange.end.toISOString(),
+      })
+
+      if (!data.channel) {
+        throw new Error(`Channel ${channelId} not found`)
+      }
+
+      let runningTotal = data.channel.members_aggregate.aggregate.count
+      const channelName = data.channel.name
+
+      return buckets.map((bucket) => {
+        const eventsInBucket = data.nchat_channel_member_events.filter((event) => {
+          const createdAt = new Date(event.created_at)
+          return createdAt >= bucket.start && createdAt < bucket.end
+        })
+
+        const newMembers = eventsInBucket.filter((e) => e.event_type === 'joined').length
+        const leftMembers = eventsInBucket.filter((e) => e.event_type === 'left').length
+        runningTotal += newMembers - leftMembers
+
+        return {
+          timestamp: bucket.start,
+          channelId,
+          channelName,
+          newMembers,
+          leftMembers,
+          totalMembers: runningTotal,
+        }
+      })
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectChannelGrowth' },
+      })
+      throw new Error(
+        `Failed to collect channel growth: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
+    }
   }
 
   // --------------------------------------------------------------------------
   // Reaction Collection
   // --------------------------------------------------------------------------
 
-  async collectReactions(
-    filters: AnalyticsFilters,
-    limit: number = 20
-  ): Promise<ReactionData[]> {
-    const { dateRange } = filters;
+  async collectReactions(filters: AnalyticsFilters, limit: number = 20): Promise<ReactionData[]> {
+    const { dateRange } = filters
 
     const query = `
       query GetReactions($start: timestamptz!, $end: timestamptz!) {
@@ -566,31 +661,31 @@ export class AnalyticsCollector {
           user_id
         }
       }
-    `;
+    `
 
     try {
       const data = await this.query<{ nchat_reactions: RawReaction[] }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
-      });
+      })
 
       // Aggregate reactions by emoji
-      const emojiCounts = new Map<string, { count: number; users: Set<string> }>();
+      const emojiCounts = new Map<string, { count: number; users: Set<string> }>()
 
       data.nchat_reactions.forEach((reaction) => {
-        const existing = emojiCounts.get(reaction.emoji);
+        const existing = emojiCounts.get(reaction.emoji)
         if (existing) {
-          existing.count++;
-          existing.users.add(reaction.user_id);
+          existing.count++
+          existing.users.add(reaction.user_id)
         } else {
           emojiCounts.set(reaction.emoji, {
             count: 1,
             users: new Set([reaction.user_id]),
-          });
+          })
         }
-      });
+      })
 
-      const totalReactions = data.nchat_reactions.length;
+      const totalReactions = data.nchat_reactions.length
 
       return Array.from(emojiCounts.entries())
         .map(([emoji, data]) => ({
@@ -601,9 +696,12 @@ export class AnalyticsCollector {
           users: data.users.size,
         }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, limit);
-    } catch {
-      return this.generateMockReactions(limit);
+        .slice(0, limit)
+    } catch (error) {
+      captureError(error as Error, { tags: { collector: 'analytics', method: 'collectReactions' } })
+      throw new Error(
+        `Failed to collect reactions: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -612,8 +710,8 @@ export class AnalyticsCollector {
   // --------------------------------------------------------------------------
 
   async collectFileUploads(filters: AnalyticsFilters): Promise<FileUploadData[]> {
-    const { dateRange, granularity } = filters;
-    const buckets = this.generateTimeBuckets(dateRange, granularity);
+    const { dateRange, granularity } = filters
+    const buckets = this.generateTimeBuckets(dateRange, granularity)
 
     const query = `
       query GetFileUploads($start: timestamptz!, $end: timestamptz!) {
@@ -629,38 +727,43 @@ export class AnalyticsCollector {
           created_at
         }
       }
-    `;
+    `
 
     try {
       const data = await this.query<{ nchat_files: RawFile[] }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
-      });
+      })
 
       return buckets.map((bucket) => {
         const filesInBucket = data.nchat_files.filter((file) => {
-          const createdAt = new Date(file.created_at);
-          return createdAt >= bucket.start && createdAt < bucket.end;
-        });
+          const createdAt = new Date(file.created_at)
+          return createdAt >= bucket.start && createdAt < bucket.end
+        })
 
-        const fileTypes: Record<string, number> = {};
-        let totalSize = 0;
+        const fileTypes: Record<string, number> = {}
+        let totalSize = 0
 
         filesInBucket.forEach((file) => {
-          const type = this.categorizeFileType(file.mime_type);
-          fileTypes[type] = (fileTypes[type] || 0) + 1;
-          totalSize += file.size;
-        });
+          const type = this.categorizeFileType(file.mime_type)
+          fileTypes[type] = (fileTypes[type] || 0) + 1
+          totalSize += file.size
+        })
 
         return {
           timestamp: bucket.start,
           count: filesInBucket.length,
           totalSize,
           fileTypes,
-        };
-      });
-    } catch {
-      return this.generateMockFileUploads(dateRange, granularity);
+        }
+      })
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectFileUploads' },
+      })
+      throw new Error(
+        `Failed to collect file uploads: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -672,7 +775,7 @@ export class AnalyticsCollector {
     filters: AnalyticsFilters,
     limit: number = 50
   ): Promise<SearchQueryData[]> {
-    const { dateRange } = filters;
+    const { dateRange } = filters
 
     const query = `
       query GetSearchQueries($start: timestamptz!, $end: timestamptz!) {
@@ -687,40 +790,43 @@ export class AnalyticsCollector {
           created_at
         }
       }
-    `;
+    `
 
     try {
       const data = await this.query<{ nchat_search_logs: RawSearchLog[] }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
-      });
+      })
 
       // Aggregate by query
-      const queryCounts = new Map<string, {
-        count: number;
-        totalResults: number;
-        lastSearched: Date;
-      }>();
+      const queryCounts = new Map<
+        string,
+        {
+          count: number
+          totalResults: number
+          lastSearched: Date
+        }
+      >()
 
       data.nchat_search_logs.forEach((log) => {
-        const normalizedQuery = log.query.toLowerCase().trim();
-        const existing = queryCounts.get(normalizedQuery);
-        const searchDate = new Date(log.created_at);
+        const normalizedQuery = log.query.toLowerCase().trim()
+        const existing = queryCounts.get(normalizedQuery)
+        const searchDate = new Date(log.created_at)
 
         if (existing) {
-          existing.count++;
-          existing.totalResults += log.result_count;
+          existing.count++
+          existing.totalResults += log.result_count
           if (searchDate > existing.lastSearched) {
-            existing.lastSearched = searchDate;
+            existing.lastSearched = searchDate
           }
         } else {
           queryCounts.set(normalizedQuery, {
             count: 1,
             totalResults: log.result_count,
             lastSearched: searchDate,
-          });
+          })
         }
-      });
+      })
 
       return Array.from(queryCounts.entries())
         .map(([query, data]) => ({
@@ -731,9 +837,14 @@ export class AnalyticsCollector {
           lastSearched: data.lastSearched,
         }))
         .sort((a, b) => b.count - a.count)
-        .slice(0, limit);
-    } catch {
-      return this.generateMockSearchQueries(limit);
+        .slice(0, limit)
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectSearchQueries' },
+      })
+      throw new Error(
+        `Failed to collect search queries: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -742,7 +853,7 @@ export class AnalyticsCollector {
   // --------------------------------------------------------------------------
 
   async collectPeakHours(filters: AnalyticsFilters): Promise<PeakHoursData[]> {
-    const { dateRange } = filters;
+    const { dateRange } = filters
 
     const query = `
       query GetMessagesByHour($start: timestamptz!, $end: timestamptz!) {
@@ -755,37 +866,42 @@ export class AnalyticsCollector {
           user_id
         }
       }
-    `;
+    `
 
     try {
-      const data = await this.query<{ nchat_messages: Array<{
-        created_at: string;
-        user_id: string;
-      }> }>(query, {
+      const data = await this.query<{
+        nchat_messages: Array<{
+          created_at: string
+          user_id: string
+        }>
+      }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
-      });
+      })
 
       // Group by hour
       const hourlyData = new Array(24).fill(null).map(() => ({
         messages: 0,
         users: new Set<string>(),
-      }));
+      }))
 
       data.nchat_messages.forEach((msg) => {
-        const hour = new Date(msg.created_at).getHours();
-        hourlyData[hour].messages++;
-        hourlyData[hour].users.add(msg.user_id);
-      });
+        const hour = new Date(msg.created_at).getHours()
+        hourlyData[hour].messages++
+        hourlyData[hour].users.add(msg.user_id)
+      })
 
       return hourlyData.map((data, hour) => ({
         hour,
         messageCount: data.messages,
         activeUsers: data.users.size,
         averageResponseTime: 0, // Would need response time tracking
-      }));
-    } catch {
-      return this.generateMockPeakHours();
+      }))
+    } catch (error) {
+      captureError(error as Error, { tags: { collector: 'analytics', method: 'collectPeakHours' } })
+      throw new Error(
+        `Failed to collect peak hours: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -797,7 +913,7 @@ export class AnalyticsCollector {
     filters: AnalyticsFilters,
     limit: number = 20
   ): Promise<BotActivityData[]> {
-    const { dateRange } = filters;
+    const { dateRange } = filters
 
     const query = `
       query GetBotActivity($start: timestamptz!, $end: timestamptz!, $limit: Int!) {
@@ -819,21 +935,23 @@ export class AnalyticsCollector {
           }
         }
       }
-    `;
+    `
 
     try {
-      const data = await this.query<{ nchat_users: Array<{
-        id: string;
-        username: string;
-        display_name: string;
-        avatar_url: string | null;
-        last_active_at: string;
-        messages_aggregate: { aggregate: { count: number } };
-      }> }>(query, {
+      const data = await this.query<{
+        nchat_users: Array<{
+          id: string
+          username: string
+          display_name: string
+          avatar_url: string | null
+          last_active_at: string
+          messages_aggregate: { aggregate: { count: number } }
+        }>
+      }>(query, {
         start: dateRange.start.toISOString(),
         end: dateRange.end.toISOString(),
         limit,
-      });
+      })
 
       return data.nchat_users.map((bot) => ({
         botId: bot.id,
@@ -844,9 +962,14 @@ export class AnalyticsCollector {
         errorCount: 0, // Would need error tracking
         lastActive: new Date(bot.last_active_at),
         channels: [], // Would need channel membership query
-      }));
-    } catch {
-      return this.generateMockBotActivity(limit);
+      }))
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectBotActivity' },
+      })
+      throw new Error(
+        `Failed to collect bot activity: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
     }
   }
 
@@ -854,22 +977,96 @@ export class AnalyticsCollector {
   // Response Time Collection
   // --------------------------------------------------------------------------
 
-  async collectResponseTimes(
-    filters: AnalyticsFilters
-  ): Promise<ResponseTimeData[]> {
-    // Response time tracking would require thread/reply timestamp comparison
-    // This is a simplified mock implementation
-    const { dateRange, granularity, channelIds } = filters;
-    const buckets = this.generateTimeBuckets(dateRange, granularity);
+  async collectResponseTimes(filters: AnalyticsFilters): Promise<ResponseTimeData[]> {
+    const { dateRange, granularity, channelIds } = filters
+    const buckets = this.generateTimeBuckets(dateRange, granularity)
 
-    return buckets.map((bucket) => ({
-      timestamp: bucket.start,
-      channelId: channelIds?.[0] || 'all',
-      channelName: 'All Channels',
-      averageTime: Math.random() * 300 + 60, // 1-6 minutes
-      medianTime: Math.random() * 180 + 30, // 0.5-3.5 minutes
-      messageCount: Math.floor(Math.random() * 100) + 20,
-    }));
+    // Query messages and their replies to calculate response times
+    const query = `
+      query GetResponseTimes($start: timestamptz!, $end: timestamptz!, $channelIds: [uuid!]) {
+        nchat_messages(
+          where: {
+            created_at: { _gte: $start, _lte: $end }
+            thread_id: { _is_not_null: true }
+            ${channelIds?.length ? 'channel_id: { _in: $channelIds }' : ''}
+          }
+          order_by: { created_at: asc }
+        ) {
+          id
+          channel_id
+          created_at
+          thread_id
+          thread {
+            created_at
+          }
+          channel {
+            id
+            name
+          }
+        }
+      }
+    `
+
+    try {
+      const data = await this.query<{
+        nchat_messages: Array<{
+          id: string
+          channel_id: string
+          created_at: string
+          thread_id: string
+          thread: { created_at: string }
+          channel: { id: string; name: string }
+        }>
+      }>(query, {
+        start: dateRange.start.toISOString(),
+        end: dateRange.end.toISOString(),
+        channelIds,
+      })
+
+      return buckets.map((bucket) => {
+        const repliesInBucket = data.nchat_messages.filter((msg) => {
+          const createdAt = new Date(msg.created_at)
+          return createdAt >= bucket.start && createdAt < bucket.end
+        })
+
+        // Calculate response times (time between thread creation and reply)
+        const responseTimes = repliesInBucket.map((reply) => {
+          const replyTime = new Date(reply.created_at).getTime()
+          const threadTime = new Date(reply.thread.created_at).getTime()
+          return (replyTime - threadTime) / 1000 // Convert to seconds
+        })
+
+        const averageTime =
+          responseTimes.length > 0
+            ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length
+            : 0
+
+        // Calculate median
+        const sortedTimes = [...responseTimes].sort((a, b) => a - b)
+        const medianTime =
+          sortedTimes.length > 0 ? sortedTimes[Math.floor(sortedTimes.length / 2)] : 0
+
+        // Get channel info (use first channel if multiple, or 'all')
+        const channelId = channelIds?.[0] || 'all'
+        const channelName = repliesInBucket[0]?.channel?.name || 'All Channels'
+
+        return {
+          timestamp: bucket.start,
+          channelId,
+          channelName,
+          averageTime,
+          medianTime,
+          messageCount: repliesInBucket.length,
+        }
+      })
+    } catch (error) {
+      captureError(error as Error, {
+        tags: { collector: 'analytics', method: 'collectResponseTimes' },
+      })
+      throw new Error(
+        `Failed to collect response times: ${error instanceof Error ? error.message : 'Unknown error'}`
+      )
+    }
   }
 
   // --------------------------------------------------------------------------
@@ -880,44 +1077,44 @@ export class AnalyticsCollector {
     dateRange: DateRange,
     granularity: TimeGranularity
   ): Array<{ start: Date; end: Date }> {
-    const buckets: Array<{ start: Date; end: Date }> = [];
-    const current = new Date(dateRange.start);
+    const buckets: Array<{ start: Date; end: Date }> = []
+    const current = new Date(dateRange.start)
 
     while (current < dateRange.end) {
-      const bucketStart = new Date(current);
-      let bucketEnd: Date;
+      const bucketStart = new Date(current)
+      let bucketEnd: Date
 
       switch (granularity) {
         case 'hour':
-          bucketEnd = new Date(current.getTime() + 60 * 60 * 1000);
-          break;
+          bucketEnd = new Date(current.getTime() + 60 * 60 * 1000)
+          break
         case 'day':
-          bucketEnd = new Date(current);
-          bucketEnd.setDate(bucketEnd.getDate() + 1);
-          break;
+          bucketEnd = new Date(current)
+          bucketEnd.setDate(bucketEnd.getDate() + 1)
+          break
         case 'week':
-          bucketEnd = new Date(current);
-          bucketEnd.setDate(bucketEnd.getDate() + 7);
-          break;
+          bucketEnd = new Date(current)
+          bucketEnd.setDate(bucketEnd.getDate() + 7)
+          break
         case 'month':
-          bucketEnd = new Date(current);
-          bucketEnd.setMonth(bucketEnd.getMonth() + 1);
-          break;
+          bucketEnd = new Date(current)
+          bucketEnd.setMonth(bucketEnd.getMonth() + 1)
+          break
         case 'year':
-          bucketEnd = new Date(current);
-          bucketEnd.setFullYear(bucketEnd.getFullYear() + 1);
-          break;
+          bucketEnd = new Date(current)
+          bucketEnd.setFullYear(bucketEnd.getFullYear() + 1)
+          break
       }
 
       buckets.push({
         start: bucketStart,
         end: bucketEnd > dateRange.end ? new Date(dateRange.end) : bucketEnd,
-      });
+      })
 
-      current.setTime(bucketEnd.getTime());
+      current.setTime(bucketEnd.getTime())
     }
 
-    return buckets;
+    return buckets
   }
 
   private groupMessagesByTimeBucket(
@@ -927,221 +1124,39 @@ export class AnalyticsCollector {
   ): MessageVolumeData[] {
     return buckets.map((bucket) => {
       const messagesInBucket = messages.filter((msg) => {
-        const createdAt = new Date(msg.created_at);
-        return createdAt >= bucket.start && createdAt < bucket.end;
-      });
+        const createdAt = new Date(msg.created_at)
+        return createdAt >= bucket.start && createdAt < bucket.end
+      })
 
       // Count by channel
-      const channelBreakdown: Record<string, number> = {};
+      const channelBreakdown: Record<string, number> = {}
       messagesInBucket.forEach((msg) => {
-        channelBreakdown[msg.channel_id] =
-          (channelBreakdown[msg.channel_id] || 0) + 1;
-      });
+        channelBreakdown[msg.channel_id] = (channelBreakdown[msg.channel_id] || 0) + 1
+      })
 
       return {
         timestamp: bucket.start,
         count: messagesInBucket.length,
         channelBreakdown,
-      };
-    });
+      }
+    })
   }
 
-  private calculateEngagementScore(
-    messages: number,
-    reactions: number,
-    files: number
-  ): number {
+  private calculateEngagementScore(messages: number, reactions: number, files: number): number {
     // Weighted engagement score
-    return messages * 1 + reactions * 0.5 + files * 2;
+    return messages * 1 + reactions * 0.5 + files * 2
   }
 
   private categorizeFileType(mimeType: string): string {
-    if (mimeType.startsWith('image/')) return 'Images';
-    if (mimeType.startsWith('video/')) return 'Videos';
-    if (mimeType.startsWith('audio/')) return 'Audio';
-    if (mimeType.includes('pdf')) return 'Documents';
-    if (mimeType.includes('spreadsheet') || mimeType.includes('excel'))
-      return 'Spreadsheets';
-    if (mimeType.includes('document') || mimeType.includes('word'))
-      return 'Documents';
-    if (mimeType.includes('presentation') || mimeType.includes('powerpoint'))
-      return 'Presentations';
-    if (mimeType.includes('zip') || mimeType.includes('archive'))
-      return 'Archives';
-    return 'Other';
-  }
-
-  // --------------------------------------------------------------------------
-  // Mock Data Generators (for development)
-  // --------------------------------------------------------------------------
-
-  private generateMockMessageVolume(
-    dateRange: DateRange,
-    granularity: TimeGranularity
-  ): MessageVolumeData[] {
-    const buckets = this.generateTimeBuckets(dateRange, granularity);
-    return buckets.map((bucket) => ({
-      timestamp: bucket.start,
-      count: Math.floor(Math.random() * 500) + 100,
-      channelBreakdown: {
-        general: Math.floor(Math.random() * 200) + 50,
-        random: Math.floor(Math.random() * 150) + 30,
-        announcements: Math.floor(Math.random() * 50) + 10,
-      },
-    }));
-  }
-
-  private generateMockTopMessages(limit: number): TopMessageData[] {
-    return Array.from({ length: limit }, (_, i) => ({
-      messageId: `msg-${i}`,
-      content: `This is a popular message that received many reactions and replies. Message ${i + 1}`,
-      channelId: `channel-${i % 5}`,
-      channelName: ['general', 'random', 'announcements', 'dev', 'support'][i % 5],
-      authorId: `user-${i % 10}`,
-      authorName: ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve'][i % 5],
-      reactionCount: Math.floor(Math.random() * 50) + 10,
-      replyCount: Math.floor(Math.random() * 20) + 2,
-      timestamp: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-    }));
-  }
-
-  private generateMockUserActivity(limit: number): UserActivityData[] {
-    const names = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Ivy', 'Jack'];
-    return Array.from({ length: limit }, (_, i) => ({
-      userId: `user-${i}`,
-      username: names[i % names.length].toLowerCase(),
-      displayName: names[i % names.length],
-      lastActive: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000),
-      messageCount: Math.floor(Math.random() * 500) + 50,
-      reactionCount: Math.floor(Math.random() * 200) + 20,
-      fileCount: Math.floor(Math.random() * 30) + 2,
-      threadCount: Math.floor(Math.random() * 50) + 5,
-      engagementScore: Math.floor(Math.random() * 1000) + 100,
-    }));
-  }
-
-  private generateMockInactiveUsers(limit: number): InactiveUserData[] {
-    const names = ['Inactive1', 'Inactive2', 'Inactive3', 'OldUser', 'GoneUser'];
-    return Array.from({ length: Math.min(limit, 10) }, (_, i) => ({
-      userId: `inactive-${i}`,
-      username: names[i % names.length].toLowerCase(),
-      displayName: names[i % names.length],
-      lastActive: new Date(Date.now() - (30 + Math.random() * 60) * 24 * 60 * 60 * 1000),
-      daysSinceActive: 30 + Math.floor(Math.random() * 60),
-      totalMessages: Math.floor(Math.random() * 100) + 10,
-    }));
-  }
-
-  private generateMockUserGrowth(
-    dateRange: DateRange,
-    granularity: TimeGranularity
-  ): UserGrowthData[] {
-    const buckets = this.generateTimeBuckets(dateRange, granularity);
-    let total = 100;
-
-    return buckets.map((bucket) => {
-      const newUsers = Math.floor(Math.random() * 10) + 1;
-      const churned = Math.floor(Math.random() * 3);
-      total += newUsers - churned;
-
-      return {
-        timestamp: bucket.start,
-        newUsers,
-        totalUsers: total,
-        churnedUsers: churned,
-        netGrowth: newUsers - churned,
-      };
-    });
-  }
-
-  private generateMockChannelActivity(limit: number): ChannelActivityData[] {
-    const channels = ['general', 'random', 'announcements', 'dev', 'support', 'design', 'marketing'];
-    return channels.slice(0, limit).map((name, i) => ({
-      channelId: `channel-${i}`,
-      channelName: name,
-      channelType: i === 2 ? 'private' : 'public',
-      memberCount: Math.floor(Math.random() * 100) + 20,
-      messageCount: Math.floor(Math.random() * 1000) + 100,
-      activeUsers: Math.floor(Math.random() * 50) + 10,
-      lastActivity: new Date(Date.now() - Math.random() * 60 * 60 * 1000),
-      engagementRate: Math.random() * 80 + 20,
-      growthRate: (Math.random() - 0.3) * 20,
-    }));
-  }
-
-  private generateMockReactions(limit: number): ReactionData[] {
-    const emojis = ['thumbsup', 'heart', 'laugh', 'wow', 'sad', 'angry', 'fire', 'rocket', 'eyes', 'clap'];
-    const total = 1000;
-
-    return emojis.slice(0, limit).map((emoji, i) => {
-      const count = Math.floor((total / (i + 1)) * (0.8 + Math.random() * 0.4));
-      return {
-        emoji,
-        emojiName: emoji,
-        count,
-        percentage: (count / total) * 100,
-        users: Math.floor(count * 0.3),
-      };
-    });
-  }
-
-  private generateMockFileUploads(
-    dateRange: DateRange,
-    granularity: TimeGranularity
-  ): FileUploadData[] {
-    const buckets = this.generateTimeBuckets(dateRange, granularity);
-    return buckets.map((bucket) => ({
-      timestamp: bucket.start,
-      count: Math.floor(Math.random() * 50) + 10,
-      totalSize: Math.floor(Math.random() * 100000000) + 10000000,
-      fileTypes: {
-        Images: Math.floor(Math.random() * 20) + 5,
-        Documents: Math.floor(Math.random() * 15) + 3,
-        Videos: Math.floor(Math.random() * 5) + 1,
-        Other: Math.floor(Math.random() * 10) + 2,
-      },
-    }));
-  }
-
-  private generateMockSearchQueries(limit: number): SearchQueryData[] {
-    const queries = ['how to', 'meeting', 'deadline', 'project', 'bug', 'feature', 'help', 'update', 'status', 'report'];
-    return queries.slice(0, limit).map((query, i) => ({
-      query,
-      count: Math.floor(Math.random() * 100) + 10 - i * 5,
-      resultCount: Math.floor(Math.random() * 50) + 5,
-      clickThroughRate: Math.random() * 0.6 + 0.2,
-      lastSearched: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-    }));
-  }
-
-  private generateMockPeakHours(): PeakHoursData[] {
-    return Array.from({ length: 24 }, (_, hour) => {
-      // Simulate typical work patterns
-      let multiplier = 1;
-      if (hour >= 9 && hour <= 11) multiplier = 3;
-      else if (hour >= 14 && hour <= 17) multiplier = 2.5;
-      else if (hour >= 0 && hour <= 6) multiplier = 0.2;
-
-      return {
-        hour,
-        messageCount: Math.floor(Math.random() * 100 * multiplier) + 10,
-        activeUsers: Math.floor(Math.random() * 30 * multiplier) + 5,
-        averageResponseTime: Math.random() * 300 + 60,
-      };
-    });
-  }
-
-  private generateMockBotActivity(limit: number): BotActivityData[] {
-    const bots = ['HelpBot', 'NotifyBot', 'GitHubBot', 'SlackBot', 'CalendarBot'];
-    return bots.slice(0, limit).map((name, i) => ({
-      botId: `bot-${i}`,
-      botName: name,
-      messageCount: Math.floor(Math.random() * 500) + 50,
-      commandCount: Math.floor(Math.random() * 200) + 20,
-      errorCount: Math.floor(Math.random() * 10),
-      lastActive: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000),
-      channels: ['general', 'dev', 'support'].slice(0, Math.floor(Math.random() * 3) + 1),
-    }));
+    if (mimeType.startsWith('image/')) return 'Images'
+    if (mimeType.startsWith('video/')) return 'Videos'
+    if (mimeType.startsWith('audio/')) return 'Audio'
+    if (mimeType.includes('pdf')) return 'Documents'
+    if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return 'Spreadsheets'
+    if (mimeType.includes('document') || mimeType.includes('word')) return 'Documents'
+    if (mimeType.includes('presentation') || mimeType.includes('powerpoint')) return 'Presentations'
+    if (mimeType.includes('zip') || mimeType.includes('archive')) return 'Archives'
+    return 'Other'
   }
 }
 
@@ -1149,19 +1164,17 @@ export class AnalyticsCollector {
 // Singleton Instance
 // ============================================================================
 
-let collectorInstance: AnalyticsCollector | null = null;
+let collectorInstance: AnalyticsCollector | null = null
 
 export function getAnalyticsCollector(): AnalyticsCollector {
   if (!collectorInstance) {
-    const graphqlUrl =
-      process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://api.localhost/v1/graphql';
-    collectorInstance = new AnalyticsCollector(graphqlUrl);
+    const graphqlUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://api.localhost/v1/graphql'
+    collectorInstance = new AnalyticsCollector(graphqlUrl)
   }
-  return collectorInstance;
+  return collectorInstance
 }
 
 export function setAnalyticsCollectorAuth(token: string): void {
-  const graphqlUrl =
-    process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://api.localhost/v1/graphql';
-  collectorInstance = new AnalyticsCollector(graphqlUrl, token);
+  const graphqlUrl = process.env.NEXT_PUBLIC_GRAPHQL_URL || 'http://api.localhost/v1/graphql'
+  collectorInstance = new AnalyticsCollector(graphqlUrl, token)
 }

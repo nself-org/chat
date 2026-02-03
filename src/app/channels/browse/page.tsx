@@ -88,7 +88,7 @@ export default function ChannelBrowsePage() {
   )
 
   return (
-    <div className="container max-w-7xl py-8 space-y-8">
+    <div className="container max-w-7xl space-y-8 py-8">
       {/* Header */}
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Browse Channels</h1>
@@ -99,28 +99,28 @@ export default function ChannelBrowsePage() {
 
       {/* Stats */}
       {stats && (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="p-4 rounded-lg border bg-card">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="rounded-lg border bg-card p-4">
             <div className="text-2xl font-bold">{stats.totalChannels}</div>
             <div className="text-xs text-muted-foreground">Total Channels</div>
           </div>
-          <div className="p-4 rounded-lg border bg-card">
+          <div className="rounded-lg border bg-card p-4">
             <div className="text-2xl font-bold">{stats.publicChannels}</div>
             <div className="text-xs text-muted-foreground">Public</div>
           </div>
-          <div className="p-4 rounded-lg border bg-card">
+          <div className="rounded-lg border bg-card p-4">
             <div className="text-2xl font-bold">{stats.privateChannels}</div>
             <div className="text-xs text-muted-foreground">Private</div>
           </div>
-          <div className="p-4 rounded-lg border bg-card">
+          <div className="rounded-lg border bg-card p-4">
             <div className="text-2xl font-bold">{stats.totalMembers}</div>
             <div className="text-xs text-muted-foreground">Members</div>
           </div>
-          <div className="p-4 rounded-lg border bg-card">
+          <div className="rounded-lg border bg-card p-4">
             <div className="text-2xl font-bold">{stats.activeToday}</div>
             <div className="text-xs text-muted-foreground">Active Today</div>
           </div>
-          <div className="p-4 rounded-lg border bg-card">
+          <div className="rounded-lg border bg-card p-4">
             <div className="text-2xl font-bold">{stats.newThisWeek}</div>
             <div className="text-xs text-muted-foreground">New This Week</div>
           </div>
@@ -176,7 +176,7 @@ export default function ChannelBrowsePage() {
         <div className="flex justify-center pt-4">
           <button
             onClick={() => fetchMore()}
-            className="px-6 py-2 rounded-lg border bg-card hover:bg-accent transition-colors"
+            className="rounded-lg border bg-card px-6 py-2 transition-colors hover:bg-accent"
           >
             Load More Channels
           </button>
@@ -185,13 +185,10 @@ export default function ChannelBrowsePage() {
 
       {/* Error State */}
       {error && (
-        <div className="p-4 rounded-lg border border-destructive bg-destructive/10 text-destructive">
+        <div className="bg-destructive/10 rounded-lg border border-destructive p-4 text-destructive">
           <p className="font-medium">Failed to load channels</p>
-          <p className="text-sm mt-1">{error.message}</p>
-          <button
-            onClick={() => refresh()}
-            className="mt-2 text-sm underline hover:no-underline"
-          >
+          <p className="mt-1 text-sm">{error.message}</p>
+          <button onClick={() => refresh()} className="mt-2 text-sm underline hover:no-underline">
             Try again
           </button>
         </div>

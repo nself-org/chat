@@ -112,8 +112,8 @@ export function StopSharingButton({
             Stop Sharing Location?
           </AlertDialogTitle>
           <AlertDialogDescription>
-            This will stop sharing your live location with everyone who can see it.
-            You can start sharing again at any time.
+            This will stop sharing your live location with everyone who can see it. You can start
+            sharing again at any time.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -121,7 +121,7 @@ export function StopSharingButton({
           <AlertDialogAction
             onClick={handleStop}
             disabled={isLoading}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            className="hover:bg-destructive/90 bg-destructive text-destructive-foreground"
           >
             {isLoading ? (
               <>
@@ -157,7 +157,7 @@ export function InlineStopButton({ onStop, className }: InlineStopButtonProps) {
     <button
       onClick={onStop}
       className={cn(
-        'inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive/20',
+        'bg-destructive/10 hover:bg-destructive/20 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium text-destructive transition-colors',
         className
       )}
     >
@@ -183,11 +183,7 @@ interface IconStopButtonProps {
 /**
  * Icon-only stop button.
  */
-export function IconStopButton({
-  onStop,
-  size = 'md',
-  className,
-}: IconStopButtonProps) {
+export function IconStopButton({ onStop, size = 'md', className }: IconStopButtonProps) {
   const sizeClasses = {
     sm: 'h-6 w-6',
     md: 'h-8 w-8',

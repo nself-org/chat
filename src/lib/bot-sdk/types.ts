@@ -95,7 +95,13 @@ export interface ContextBlock {
   elements: (TextBlock | ImageBlock)[]
 }
 
-export type Block = TextBlock | ImageBlock | ButtonBlock | DividerBlock | ActionsBlock | ContextBlock
+export type Block =
+  | TextBlock
+  | ImageBlock
+  | ButtonBlock
+  | DividerBlock
+  | ActionsBlock
+  | ContextBlock
 
 export interface RichMessage {
   text?: string

@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * OfflineIndicator - Indicator for offline mode
@@ -7,20 +7,20 @@
  * information about cached data availability.
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { useConnectionStatus } from '@/hooks/useConnectionStatus';
-import { useOfflineStore } from '@/stores/offline-store';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { useConnectionStatus } from '@/hooks/useConnectionStatus'
+import { useOfflineStore } from '@/stores/offline-store'
 
 // =============================================================================
 // Types
 // =============================================================================
 
 export interface OfflineIndicatorProps {
-  className?: string;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'minimal' | 'detailed';
-  showCacheInfo?: boolean;
+  className?: string
+  size?: 'sm' | 'md' | 'lg'
+  variant?: 'minimal' | 'detailed'
+  showCacheInfo?: boolean
 }
 
 // =============================================================================
@@ -33,24 +33,24 @@ export function OfflineIndicator({
   variant = 'minimal',
   showCacheInfo = false,
 }: OfflineIndicatorProps) {
-  const { isOffline, offlineDurationText } = useConnectionStatus();
-  const { cacheStats, cachedChannelIds } = useOfflineStore();
+  const { isOffline, offlineDurationText } = useConnectionStatus()
+  const { cacheStats, cachedChannelIds } = useOfflineStore()
 
   if (!isOffline) {
-    return null;
+    return null
   }
 
   const sizeClasses = {
     sm: 'text-xs',
     md: 'text-sm',
     lg: 'text-base',
-  };
+  }
 
   const iconSizes = {
     sm: 'h-3 w-3',
     md: 'h-4 w-4',
     lg: 'h-5 w-5',
-  };
+  }
 
   if (variant === 'minimal') {
     return (
@@ -61,12 +61,7 @@ export function OfflineIndicator({
           className
         )}
       >
-        <svg
-          className={cn(iconSizes[size])}
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
+        <svg className={cn(iconSizes[size])} fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -76,19 +71,19 @@ export function OfflineIndicator({
         </svg>
         <span>Offline</span>
       </div>
-    );
+    )
   }
 
   // Detailed variant
   return (
     <div
       className={cn(
-        'rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 p-3',
+        'rounded-lg border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800/50',
         className
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="rounded-full bg-gray-200 dark:bg-gray-700 p-2">
+        <div className="rounded-full bg-gray-200 p-2 dark:bg-gray-700">
           <svg
             className="h-5 w-5 text-gray-500 dark:text-gray-400"
             fill="none"
@@ -115,11 +110,11 @@ export function OfflineIndicator({
           </p>
 
           {showCacheInfo && (
-            <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">
+            <div className="mt-2 border-t border-gray-200 pt-2 dark:border-gray-700">
               <p className="text-xs text-gray-500 dark:text-gray-400">
                 <span className="font-medium">Cached data available:</span>
               </p>
-              <ul className="mt-1 text-xs text-gray-500 dark:text-gray-400 space-y-0.5">
+              <ul className="mt-1 space-y-0.5 text-xs text-gray-500 dark:text-gray-400">
                 {cachedChannelIds.length > 0 && (
                   <li>
                     {cachedChannelIds.length} channel
@@ -132,16 +127,14 @@ export function OfflineIndicator({
                     {cacheStats.messageCount !== 1 ? 's' : ''}
                   </li>
                 )}
-                {(!cachedChannelIds.length && !cacheStats?.messageCount) && (
-                  <li>No cached data</li>
-                )}
+                {!cachedChannelIds.length && !cacheStats?.messageCount && <li>No cached data</li>}
               </ul>
             </div>
           )}
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default OfflineIndicator;
+export default OfflineIndicator

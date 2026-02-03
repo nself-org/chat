@@ -46,15 +46,15 @@ export async function GET(request: NextRequest) {
 
     // Apply filters
     if (enabled !== null) {
-      bots = bots.filter(b => b.enabled === (enabled === 'true'))
+      bots = bots.filter((b) => b.enabled === (enabled === 'true'))
     }
 
     if (template_id) {
-      bots = bots.filter(b => b.template_id === template_id)
+      bots = bots.filter((b) => b.template_id === template_id)
     }
 
     if (created_by) {
-      bots = bots.filter(b => b.created_by === created_by)
+      bots = bots.filter((b) => b.created_by === created_by)
     }
 
     logger.info('Retrieved bots', { count: bots.length })
@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     const requiredFields = ['name', 'description', 'code']
-    const missingFields = requiredFields.filter(field => !body[field])
+    const missingFields = requiredFields.filter((field) => !body[field])
 
     if (missingFields.length > 0) {
       return NextResponse.json(
@@ -132,11 +132,14 @@ export async function POST(request: NextRequest) {
       version: bot.version,
     })
 
-    return NextResponse.json({
-      success: true,
-      data: bot,
-      message: 'Bot created successfully',
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: bot,
+        message: 'Bot created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     logger.error('Failed to create bot', error as Error)
 

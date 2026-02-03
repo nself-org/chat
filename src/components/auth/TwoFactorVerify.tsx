@@ -31,12 +31,7 @@ interface TwoFactorVerifyProps {
   userId: string
 }
 
-export function TwoFactorVerify({
-  open,
-  onVerified,
-  onCancel,
-  userId,
-}: TwoFactorVerifyProps) {
+export function TwoFactorVerify({ open, onVerified, onCancel, userId }: TwoFactorVerifyProps) {
   const [code, setCode] = useState('')
   const [rememberDevice, setRememberDevice] = useState(false)
   const [useBackupCode, setUseBackupCode] = useState(false)
@@ -116,7 +111,7 @@ export function TwoFactorVerify({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <div className="flex items-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+            <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-lg">
               {useBackupCode ? (
                 <Key className="h-6 w-6 text-primary" />
               ) : (
@@ -143,9 +138,7 @@ export function TwoFactorVerify({
           )}
 
           <div className="space-y-2">
-            <Label htmlFor="2fa-code">
-              {useBackupCode ? 'Backup Code' : 'Verification Code'}
-            </Label>
+            <Label htmlFor="2fa-code">{useBackupCode ? 'Backup Code' : 'Verification Code'}</Label>
             <Input
               id="2fa-code"
               type="text"
@@ -185,7 +178,7 @@ export function TwoFactorVerify({
             />
             <Label
               htmlFor="remember-device"
-              className="text-sm font-normal leading-tight cursor-pointer"
+              className="cursor-pointer text-sm font-normal leading-tight"
             >
               Trust this device for 30 days
               <span className="block text-xs text-muted-foreground">
@@ -216,7 +209,7 @@ export function TwoFactorVerify({
           </Button>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex-col gap-2 sm:flex-row">
           <Button
             variant="outline"
             onClick={handleCancel}

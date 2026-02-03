@@ -36,11 +36,13 @@ Release documentation, migration guides, and version-specific information for ns
 ### For Users
 
 **What's New:**
+
 - Latest features: [v0.7.0 Release Notes](v0.7.0/RELEASE-NOTES.md)
 - Previous release: [v0.6.0 Release Notes](v0.6.0/RELEASE-NOTES.md)
 - Version comparison: [Version Comparison](../VERSION-COMPARISON.md)
 
 **Upgrading:**
+
 - From v0.6.0 to v0.7.0: [v0.7.0 Upgrade Guide](v0.7.0/UPGRADE-GUIDE.md)
 - From v0.5.0 to v0.6.0: [v0.6.0 Upgrade Guide](v0.6.0/UPGRADE-GUIDE.md)
 - From v0.4.x to v0.5.0: [v0.5.0 Plan](v0.5.0-PLAN.md)
@@ -49,12 +51,14 @@ Release documentation, migration guides, and version-specific information for ns
 ### For Developers
 
 **Migration:**
+
 - v0.7.0 changes: [v0.7.0 Changelog](v0.7.0/CHANGELOG.md) (no breaking changes)
 - v0.6.0 changes: [v0.6.0 Changelog](v0.6.0/CHANGELOG.md) (no breaking changes)
 - v0.4.0 breaking changes: [v0.4.0 Breaking Changes](v0.4.0-BREAKING-CHANGES.md)
 - Step-by-step migration: [v0.4.0 Migration Guide](v0.4.0-MIGRATION-GUIDE.md)
 
 **Planning:**
+
 - Version comparison: [Version Comparison](../VERSION-COMPARISON.md)
 - Future roadmap: See individual release notes
 
@@ -70,6 +74,7 @@ Release documentation, migration guides, and version-specific information for ns
 **Status:** ✅ Stable
 
 **Major Features:**
+
 - AI Message Summarization (thread & channel digests)
 - Smart Semantic Search (pgvector embeddings)
 - Bot Framework & SDK (5 pre-built templates)
@@ -80,12 +85,14 @@ Release documentation, migration guides, and version-specific information for ns
 - Search UI (command palette, visual query builder)
 
 **Stats:**
+
 - 29,600+ lines of code
 - 101 files created/modified
 - 285+ comprehensive tests
 - 15+ documentation pages
 
 **Documentation:**
+
 - [v0.7.0 Release Notes](v0.7.0/RELEASE-NOTES.md) - Complete AI features
 - [v0.7.0 Changelog](v0.7.0/CHANGELOG.md) - Detailed changelog
 - [v0.7.0 Upgrade Guide](v0.7.0/UPGRADE-GUIDE.md) - Upgrade from v0.6.0
@@ -95,6 +102,7 @@ Release documentation, migration guides, and version-specific information for ns
 **Status:** ✅ Stable
 
 **Major Features:**
+
 - Voice Messages (audio recording/playback)
 - Video Conferencing (WebRTC, up to 50 participants)
 - Live Status & Presence (typing indicators, online status)
@@ -105,12 +113,14 @@ Release documentation, migration guides, and version-specific information for ns
 - Webhooks (incoming/outgoing)
 
 **Stats:**
+
 - 50,000+ lines of code
 - 250+ files created/modified
 - 185 documentation pages
 - 94/100 quality score
 
 **Documentation:**
+
 - [v0.6.0 Release Notes](v0.6.0/RELEASE-NOTES.md) - Full release notes
 - [v0.6.0 Changelog](v0.6.0/CHANGELOG.md) - Complete changelog
 - [v0.6.0 Upgrade Guide](v0.6.0/UPGRADE-GUIDE.md) - Upgrade from v0.5.0
@@ -120,6 +130,7 @@ Release documentation, migration guides, and version-specific information for ns
 **Status:** Legacy
 
 **Major Features:**
+
 - Multi-tenant SaaS architecture
 - Billing and subscription management (Stripe)
 - Advanced moderation (manual + rules-based)
@@ -128,6 +139,7 @@ Release documentation, migration guides, and version-specific information for ns
 - Enhanced integrations foundation
 
 **Documentation:**
+
 - [v0.5.0 Plan](v0.5.0-PLAN.md) - Complete feature breakdown
 - [v0.5.0 Changelog](CHANGELOG-v0.5.0.md) - Detailed changelog
 - [v0.5.0 Compliance](v0.5.0-COMPLIANCE-SUMMARY.md) - Compliance updates
@@ -137,6 +149,7 @@ Release documentation, migration guides, and version-specific information for ns
 **Status:** Legacy
 
 **Major Features:**
+
 - End-to-end encryption (E2EE)
 - Voice and video calling
 - Live streaming
@@ -146,6 +159,7 @@ Release documentation, migration guides, and version-specific information for ns
 - Mobile optimizations
 
 **Documentation:**
+
 - [v0.4.0 Release Notes](v0.4.0-RELEASE-NOTES.md) - Full release notes
 - [v0.4.0 Upgrade Guide](v0.4.0-UPGRADE-GUIDE.md) - Upgrade instructions
 - [v0.4.0 Migration Guide](v0.4.0-MIGRATION-GUIDE.md) - Migration steps
@@ -156,6 +170,7 @@ Release documentation, migration guides, and version-specific information for ns
 **Status:** Deprecated
 
 **Major Features:**
+
 - Core messaging platform
 - Channel management
 - User authentication
@@ -164,6 +179,7 @@ Release documentation, migration guides, and version-specific information for ns
 - Theme system
 
 **Documentation:**
+
 - See [About section](../about/RELEASE-NOTES-v0.3.0.md) for legacy release notes
 
 ## Upgrade Paths
@@ -182,6 +198,7 @@ v0.3.x → v0.4.0 → v0.5.0 → v0.6.0 → v0.7.0 (complete migration)
 ### Migration Strategy
 
 **For Major Version Upgrades (e.g., v0.3 → v0.4):**
+
 1. Read the release notes
 2. Review breaking changes
 3. Follow migration guide step-by-step
@@ -191,6 +208,7 @@ v0.3.x → v0.4.0 → v0.5.0 → v0.6.0 → v0.7.0 (complete migration)
 7. Verify functionality
 
 **For Minor Version Upgrades (e.g., v0.4.0 → v0.4.1):**
+
 1. Review changelog
 2. Update dependencies
 3. Run database migrations (if any)
@@ -199,16 +217,19 @@ v0.3.x → v0.4.0 → v0.5.0 → v0.6.0 → v0.7.0 (complete migration)
 ## Release Cadence
 
 **Major Releases (x.0.0):**
+
 - Frequency: Every 3-4 months
 - Contains: New features, breaking changes, major improvements
 - Documentation: Full release notes, migration guides, upgrade guides
 
 **Minor Releases (0.x.0):**
+
 - Frequency: Monthly
 - Contains: New features, improvements, no breaking changes
 - Documentation: Release notes, changelog
 
 **Patch Releases (0.0.x):**
+
 - Frequency: As needed
 - Contains: Bug fixes, security patches
 - Documentation: Changelog only
@@ -217,17 +238,20 @@ v0.3.x → v0.4.0 → v0.5.0 → v0.6.0 → v0.7.0 (complete migration)
 
 **Definition:**
 A breaking change is any modification that:
+
 - Requires code changes in existing implementations
 - Changes API contracts or responses
 - Modifies database schema in incompatible ways
 - Removes or renames features
 
 **Communication:**
+
 - Breaking changes are documented in dedicated BREAKING-CHANGES.md files
 - Migration guides provide step-by-step upgrade instructions
 - Deprecation warnings are included 1 major version before removal
 
 **Support Window:**
+
 - Current version (v0.7.x): Full support
 - Previous version (v0.6.x): Security patches + critical fixes
 - v0.5.x: Security patches only
@@ -238,6 +262,7 @@ A breaking change is any modification that:
 All changelogs follow the [Keep a Changelog](https://keepachangelog.com/) format:
 
 **Categories:**
+
 - **Added**: New features
 - **Changed**: Changes to existing features
 - **Deprecated**: Features marked for removal
@@ -246,19 +271,23 @@ All changelogs follow the [Keep a Changelog](https://keepachangelog.com/) format
 - **Security**: Security improvements
 
 **Example:**
+
 ```markdown
 ## [0.7.0] - 2026-01-31
 
 ### Added
+
 - AI Message Summarization
 - Smart Semantic Search
 - Bot Framework & SDK
 
 ### Changed
+
 - Enhanced search with vector embeddings
 - Improved moderation with AI detection
 
 ### Fixed
+
 - Embedding generation race conditions
 - Bot state persistence issues
 ```
@@ -274,6 +303,7 @@ nself-chat follows [Semantic Versioning 2.0.0](https://semver.org/):
 - **PATCH**: Bug fixes (backward-compatible)
 
 **Pre-release Identifiers:**
+
 - `alpha`: Early development, unstable
 - `beta`: Feature-complete, testing phase
 - `rc`: Release candidate, final testing

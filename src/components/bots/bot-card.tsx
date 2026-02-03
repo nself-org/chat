@@ -78,7 +78,7 @@ export function BotCard({
     return (
       <div
         className={cn(
-          'flex items-center gap-3 rounded-lg border bg-card p-3 transition-colors hover:bg-accent/50 cursor-pointer',
+          'hover:bg-accent/50 flex cursor-pointer items-center gap-3 rounded-lg border bg-card p-3 transition-colors',
           className
         )}
         onClick={handleCardClick}
@@ -90,16 +90,12 @@ export function BotCard({
           </AvatarFallback>
         </Avatar>
 
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
-            <span className="font-medium truncate">{bot.name}</span>
-            {bot.verified && (
-              <CheckCircle className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-            )}
+            <span className="truncate font-medium">{bot.name}</span>
+            {bot.verified && <CheckCircle className="h-3.5 w-3.5 flex-shrink-0 text-primary" />}
           </div>
-          <p className="text-sm text-muted-foreground truncate">
-            {bot.description}
-          </p>
+          <p className="truncate text-sm text-muted-foreground">{bot.description}</p>
         </div>
 
         {installed ? (
@@ -118,7 +114,7 @@ export function BotCard({
   return (
     <Card
       className={cn(
-        'cursor-pointer transition-all hover:shadow-md hover:border-primary/50',
+        'hover:border-primary/50 cursor-pointer transition-all hover:shadow-md',
         className
       )}
       onClick={handleCardClick}
@@ -132,12 +128,10 @@ export function BotCard({
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex-1 min-w-0">
+          <div className="min-w-0 flex-1">
             <div className="flex items-center gap-1.5">
-              <CardTitle className="text-base truncate">{bot.name}</CardTitle>
-              {bot.verified && (
-                <CheckCircle className="h-4 w-4 text-primary flex-shrink-0" />
-              )}
+              <CardTitle className="truncate text-base">{bot.name}</CardTitle>
+              {bot.verified && <CheckCircle className="h-4 w-4 flex-shrink-0 text-primary" />}
             </div>
             {bot.category && (
               <Badge variant="secondary" className="mt-1 text-xs">
@@ -147,7 +141,7 @@ export function BotCard({
           </div>
 
           {bot.featured && (
-            <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-white border-0">
+            <Badge className="border-0 bg-gradient-to-r from-amber-500 to-orange-500 text-white">
               Featured
             </Badge>
           )}
@@ -155,12 +149,10 @@ export function BotCard({
       </CardHeader>
 
       <CardContent className="pb-3">
-        <CardDescription className="line-clamp-2">
-          {bot.description}
-        </CardDescription>
+        <CardDescription className="line-clamp-2">{bot.description}</CardDescription>
       </CardContent>
 
-      <CardFooter className="flex items-center justify-between pt-3 border-t">
+      <CardFooter className="flex items-center justify-between border-t pt-3">
         <div className="flex items-center gap-4 text-sm text-muted-foreground">
           {bot.rating !== undefined && (
             <div className="flex items-center gap-1">
@@ -202,12 +194,12 @@ export function BotCardSkeleton({ compact = false }: { compact?: boolean }) {
   if (compact) {
     return (
       <div className="flex items-center gap-3 rounded-lg border bg-card p-3">
-        <div className="h-10 w-10 rounded-full bg-muted animate-pulse" />
+        <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
         <div className="flex-1 space-y-2">
-          <div className="h-4 w-24 bg-muted animate-pulse rounded" />
-          <div className="h-3 w-48 bg-muted animate-pulse rounded" />
+          <div className="h-4 w-24 animate-pulse rounded bg-muted" />
+          <div className="h-3 w-48 animate-pulse rounded bg-muted" />
         </div>
-        <div className="h-8 w-16 bg-muted animate-pulse rounded" />
+        <div className="h-8 w-16 animate-pulse rounded bg-muted" />
       </div>
     )
   }
@@ -216,25 +208,25 @@ export function BotCardSkeleton({ compact = false }: { compact?: boolean }) {
     <Card>
       <CardHeader className="pb-3">
         <div className="flex items-start gap-3">
-          <div className="h-12 w-12 rounded-full bg-muted animate-pulse" />
+          <div className="h-12 w-12 animate-pulse rounded-full bg-muted" />
           <div className="flex-1 space-y-2">
-            <div className="h-5 w-32 bg-muted animate-pulse rounded" />
-            <div className="h-5 w-20 bg-muted animate-pulse rounded" />
+            <div className="h-5 w-32 animate-pulse rounded bg-muted" />
+            <div className="h-5 w-20 animate-pulse rounded bg-muted" />
           </div>
         </div>
       </CardHeader>
       <CardContent className="pb-3">
         <div className="space-y-2">
-          <div className="h-4 w-full bg-muted animate-pulse rounded" />
-          <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
+          <div className="h-4 w-full animate-pulse rounded bg-muted" />
+          <div className="h-4 w-3/4 animate-pulse rounded bg-muted" />
         </div>
       </CardContent>
-      <CardFooter className="flex items-center justify-between pt-3 border-t">
+      <CardFooter className="flex items-center justify-between border-t pt-3">
         <div className="flex items-center gap-4">
-          <div className="h-4 w-12 bg-muted animate-pulse rounded" />
-          <div className="h-4 w-12 bg-muted animate-pulse rounded" />
+          <div className="h-4 w-12 animate-pulse rounded bg-muted" />
+          <div className="h-4 w-12 animate-pulse rounded bg-muted" />
         </div>
-        <div className="h-8 w-16 bg-muted animate-pulse rounded" />
+        <div className="h-8 w-16 animate-pulse rounded bg-muted" />
       </CardFooter>
     </Card>
   )

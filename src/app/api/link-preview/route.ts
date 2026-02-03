@@ -37,11 +37,18 @@ export async function GET(request: NextRequest) {
       logger.info('Link preview fetched successfully', { url, cached: result.cached })
       return NextResponse.json(result)
     } else {
-      logger.warn('Link preview fetch failed', { url, error: result.error, errorCode: result.errorCode })
+      logger.warn('Link preview fetch failed', {
+        url,
+        error: result.error,
+        errorCode: result.errorCode,
+      })
       return NextResponse.json(result, { status: 400 })
     }
   } catch (error) {
-    logger.error('Link preview API error', error instanceof Error ? error : new Error(String(error)))
+    logger.error(
+      'Link preview API error',
+      error instanceof Error ? error : new Error(String(error))
+    )
     return NextResponse.json(
       {
         success: false,

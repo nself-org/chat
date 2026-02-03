@@ -38,14 +38,16 @@ export function SpeakerView({
     const participant = participants.find((p) => p.id === participantId)
     if (!participant) return null
 
-    const streamIndex = participants.findIndex((p) => p.id === participantId && p.id !== participant.id)
+    const streamIndex = participants.findIndex(
+      (p) => p.id === participantId && p.id !== participant.id
+    )
     return streamIndex >= 0 ? remoteStreams[streamIndex] : localStream
   }
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative h-full w-full">
       {/* Main Speaker */}
-      {mainTile && (
+      {mainTile &&
         (() => {
           const participant = participants.find((p) => p.id === mainTile.participantId)
           if (!participant) return null
@@ -68,8 +70,7 @@ export function SpeakerView({
               }}
             />
           )
-        })()
-      )}
+        })()}
 
       {/* Thumbnails */}
       {thumbnails.map((tile) => {

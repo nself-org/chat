@@ -1,18 +1,18 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/switch'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui/select'
 import {
   Bell,
   BellOff,
@@ -23,19 +23,19 @@ import {
   Archive,
   Trash2,
   AlertTriangle,
-} from 'lucide-react';
-import type { DirectMessage, DMNotificationSetting } from '@/lib/dm/dm-types';
-import { getMutePresets, type MuteOptions } from '@/lib/dm';
-import { useDMStore } from '@/stores/dm-store';
+} from 'lucide-react'
+import type { DirectMessage, DMNotificationSetting } from '@/lib/dm/dm-types'
+import { getMutePresets, type MuteOptions } from '@/lib/dm'
+import { useDMStore } from '@/stores/dm-store'
 
 // ============================================================================
 // Types
 // ============================================================================
 
 interface DMSettingsProps {
-  dm: DirectMessage;
-  currentUserId: string;
-  className?: string;
+  dm: DirectMessage
+  currentUserId: string
+  className?: string
 }
 
 // ============================================================================
@@ -53,62 +53,60 @@ export function DMSettings({ dm, currentUserId, className }: DMSettingsProps) {
     archiveDM,
     removeDM,
     updateNotificationPreference,
-  } = useDMStore();
+  } = useDMStore()
 
-  const isMuted = mutedDMs.has(dm.id);
-  const isStarred = starredDMs.has(dm.id);
-  const preference = notificationPreferences.get(dm.id);
-  const notificationSetting = preference?.setting || 'all';
+  const isMuted = mutedDMs.has(dm.id)
+  const isStarred = starredDMs.has(dm.id)
+  const preference = notificationPreferences.get(dm.id)
+  const notificationSetting = preference?.setting || 'all'
 
-  const mutePresets = getMutePresets();
+  const mutePresets = getMutePresets()
 
   const handleNotificationSettingChange = (value: DMNotificationSetting) => {
-    updateNotificationPreference(dm.id, { setting: value });
-  };
+    updateNotificationPreference(dm.id, { setting: value })
+  }
 
   const handleMuteChange = (value: string) => {
     if (value === 'unmute') {
-      setDMMuted(dm.id, false, null);
+      setDMMuted(dm.id, false, null)
     } else {
-      const preset = mutePresets.find((p) => p.label === value);
+      const preset = mutePresets.find((p) => p.label === value)
       if (preset) {
         // Calculate mute expiry
-        let muteUntil: string | null = null;
+        let muteUntil: string | null = null
         if (preset.value.duration !== null) {
-          const now = new Date();
-          let ms = preset.value.duration;
+          const now = new Date()
+          let ms = preset.value.duration
           switch (preset.value.unit) {
             case 'minutes':
-              ms *= 60 * 1000;
-              break;
+              ms *= 60 * 1000
+              break
             case 'hours':
-              ms *= 60 * 60 * 1000;
-              break;
+              ms *= 60 * 60 * 1000
+              break
             case 'days':
-              ms *= 24 * 60 * 60 * 1000;
-              break;
+              ms *= 24 * 60 * 60 * 1000
+              break
           }
-          muteUntil = new Date(now.getTime() + ms).toISOString();
+          muteUntil = new Date(now.getTime() + ms).toISOString()
         }
-        setDMMuted(dm.id, true, muteUntil);
+        setDMMuted(dm.id, true, muteUntil)
       }
     }
-  };
+  }
 
   return (
     <div className={cn('space-y-6', className)}>
       {/* Notification Settings */}
       <section>
-        <h3 className="text-sm font-semibold mb-4">Notifications</h3>
+        <h3 className="mb-4 text-sm font-semibold">Notifications</h3>
 
         <div className="space-y-4">
           {/* Notification Level */}
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="notification-level">Notification level</Label>
-              <p className="text-xs text-muted-foreground">
-                Choose when to receive notifications
-              </p>
+              <p className="text-xs text-muted-foreground">Choose when to receive notifications</p>
             </div>
             <Select
               value={notificationSetting}
@@ -148,10 +146,7 @@ export function DMSettings({ dm, currentUserId, className }: DMSettingsProps) {
                 {isMuted ? 'Currently muted' : 'You will still receive messages'}
               </p>
             </div>
-            <Select
-              value={isMuted ? 'muted' : 'unmute'}
-              onValueChange={handleMuteChange}
-            >
+            <Select value={isMuted ? 'muted' : 'unmute'} onValueChange={handleMuteChange}>
               <SelectTrigger className="w-[140px]">
                 <SelectValue>
                   {isMuted ? (
@@ -187,9 +182,7 @@ export function DMSettings({ dm, currentUserId, className }: DMSettingsProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label htmlFor="sound">Sound</Label>
-              <p className="text-xs text-muted-foreground">
-                Play sound for new messages
-              </p>
+              <p className="text-xs text-muted-foreground">Play sound for new messages</p>
             </div>
             <Switch
               id="sound"
@@ -206,7 +199,7 @@ export function DMSettings({ dm, currentUserId, className }: DMSettingsProps) {
 
       {/* Quick Actions */}
       <section>
-        <h3 className="text-sm font-semibold mb-4">Quick Actions</h3>
+        <h3 className="mb-4 text-sm font-semibold">Quick Actions</h3>
 
         <div className="space-y-2">
           <Button
@@ -242,7 +235,7 @@ export function DMSettings({ dm, currentUserId, className }: DMSettingsProps) {
 
       {/* Danger Zone */}
       <section>
-        <h3 className="text-sm font-semibold mb-4 text-destructive flex items-center gap-2">
+        <h3 className="mb-4 flex items-center gap-2 text-sm font-semibold text-destructive">
           <AlertTriangle className="h-4 w-4" />
           Danger Zone
         </h3>
@@ -262,7 +255,7 @@ export function DMSettings({ dm, currentUserId, className }: DMSettingsProps) {
         </div>
       </section>
     </div>
-  );
+  )
 }
 
-DMSettings.displayName = 'DMSettings';
+DMSettings.displayName = 'DMSettings'

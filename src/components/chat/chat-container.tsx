@@ -49,17 +49,14 @@ export function ChatContainer({
   className,
 }: ChatContainerProps) {
   const { user } = useAuth()
-  const messageListRef = React.useRef<{ scrollToBottom: (behavior?: ScrollBehavior) => void; scrollToMessage: (id: string) => void } | null>(null)
+  const messageListRef = React.useRef<{
+    scrollToBottom: (behavior?: ScrollBehavior) => void
+    scrollToMessage: (id: string) => void
+  } | null>(null)
 
   // Get store state for editing/replying
-  const {
-    editingMessage,
-    replyingTo,
-    startEditing,
-    stopEditing,
-    startReplying,
-    stopReplying,
-  } = useMessageStore()
+  const { editingMessage, replyingTo, startEditing, stopEditing, startReplying, stopReplying } =
+    useMessageStore()
 
   // Handle send message
   const handleSendMessage = React.useCallback(
@@ -80,14 +77,7 @@ export function ChatContainer({
       // Scroll to bottom after sending
       setTimeout(() => messageListRef.current?.scrollToBottom(), 100)
     },
-    [
-      editingMessage,
-      replyingTo,
-      onSendMessage,
-      onEditMessage,
-      stopEditing,
-      stopReplying,
-    ]
+    [editingMessage, replyingTo, onSendMessage, onEditMessage, stopEditing, stopReplying]
   )
 
   // Handle message actions
@@ -142,13 +132,15 @@ export function ChatContainer({
   }
 
   return (
-    <div className={cn('flex h-full flex-col relative', className)}>
+    <div className={cn('relative flex h-full flex-col', className)}>
       {/* Messages Area */}
       <MessageList
         ref={messageListRef}
         channelId={channel.id}
         channelName={channel.name}
-        channelType={channel.type === 'direct' ? 'dm' : channel.type === 'group' ? 'group-dm' : channel.type}
+        channelType={
+          channel.type === 'direct' ? 'dm' : channel.type === 'group' ? 'group-dm' : channel.type
+        }
         messages={messages}
         isLoading={loading}
         hasMore={hasMore}
@@ -163,19 +155,11 @@ export function ChatContainer({
       />
 
       {/* Reply Preview */}
-      {replyingTo && (
-        <ReplyPreview
-          message={replyingTo.message}
-          onCancel={stopReplying}
-        />
-      )}
+      {replyingTo && <ReplyPreview message={replyingTo.message} onCancel={stopReplying} />}
 
       {/* Edit Preview */}
       {editingMessage && (
-        <EditPreview
-          originalContent={editingMessage.originalContent}
-          onCancel={stopEditing}
-        />
+        <EditPreview originalContent={editingMessage.originalContent} onCancel={stopEditing} />
       )}
 
       {/* Message Input */}
@@ -195,21 +179,16 @@ interface ReplyPreviewProps {
 
 function ReplyPreview({ message, onCancel }: ReplyPreviewProps) {
   return (
-    <div className="flex items-center gap-2 px-4 py-2 border-t bg-muted/50">
-      <div className="flex-1 min-w-0">
+    <div className="bg-muted/50 flex items-center gap-2 border-t px-4 py-2">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span className="text-xs font-medium text-primary">
             Replying to {message.user.displayName}
           </span>
         </div>
-        <p className="text-xs text-muted-foreground truncate">
-          {message.content}
-        </p>
+        <p className="truncate text-xs text-muted-foreground">{message.content}</p>
       </div>
-      <button
-        onClick={onCancel}
-        className="p-1 hover:bg-muted rounded transition-colors"
-      >
+      <button onClick={onCancel} className="rounded p-1 transition-colors hover:bg-muted">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -241,21 +220,14 @@ interface EditPreviewProps {
 
 function EditPreview({ originalContent, onCancel }: EditPreviewProps) {
   return (
-    <div className="flex items-center gap-2 px-4 py-2 border-t bg-amber-500/10">
-      <div className="flex-1 min-w-0">
+    <div className="flex items-center gap-2 border-t bg-amber-500/10 px-4 py-2">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-xs font-medium text-amber-600">
-            Editing message
-          </span>
+          <span className="text-xs font-medium text-amber-600">Editing message</span>
         </div>
-        <p className="text-xs text-muted-foreground truncate">
-          {originalContent}
-        </p>
+        <p className="truncate text-xs text-muted-foreground">{originalContent}</p>
       </div>
-      <button
-        onClick={onCancel}
-        className="p-1 hover:bg-muted rounded transition-colors"
-      >
+      <button onClick={onCancel} className="rounded p-1 transition-colors hover:bg-muted">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -341,7 +313,7 @@ export function ScrollToBottomButton({
       className={cn(
         'absolute bottom-20 right-4 z-10',
         'flex items-center gap-2 rounded-full',
-        'bg-primary text-primary-foreground',
+        'text-primary-foreground bg-primary',
         'px-4 py-2 shadow-lg',
         'hover:bg-primary/90 transition-colors',
         'animate-in fade-in slide-in-from-bottom-2'

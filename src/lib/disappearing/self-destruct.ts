@@ -5,10 +5,7 @@
  * and UI cleanup for expired messages.
  */
 
-import type {
-  DisappearingMessageData,
-  DisappearingMessageType,
-} from './disappearing-types';
+import type { DisappearingMessageData, DisappearingMessageType } from './disappearing-types'
 
 // ============================================================================
 // Types
@@ -16,23 +13,23 @@ import type {
 
 export interface SelfDestructOptions {
   /** Whether to clear content from memory */
-  clearContent: boolean;
+  clearContent: boolean
   /** Whether to remove from UI immediately */
-  removeFromUI: boolean;
+  removeFromUI: boolean
   /** Whether to notify other users */
-  notifyPeers: boolean;
+  notifyPeers: boolean
   /** Custom animation for removal */
-  animationType?: 'fade' | 'burn' | 'dissolve' | 'none';
+  animationType?: 'fade' | 'burn' | 'dissolve' | 'none'
   /** Duration of removal animation in ms */
-  animationDuration?: number;
+  animationDuration?: number
 }
 
 export interface DestructionResult {
-  success: boolean;
-  messageId: string;
-  channelId: string;
-  destructedAt: Date;
-  reason: 'timer_expired' | 'view_once_viewed' | 'burn_complete' | 'manual';
+  success: boolean
+  messageId: string
+  channelId: string
+  destructedAt: Date
+  reason: 'timer_expired' | 'view_once_viewed' | 'burn_complete' | 'manual'
 }
 
 // Default options for different message types
@@ -58,7 +55,7 @@ const DEFAULT_OPTIONS: Record<DisappearingMessageType, SelfDestructOptions> = {
     animationType: 'burn',
     animationDuration: 800,
   },
-};
+}
 
 // ============================================================================
 // Self-Destruct Functions
@@ -68,7 +65,7 @@ const DEFAULT_OPTIONS: Record<DisappearingMessageType, SelfDestructOptions> = {
  * Get default options for a message type.
  */
 export function getDefaultOptions(type: DisappearingMessageType): SelfDestructOptions {
-  return { ...DEFAULT_OPTIONS[type] };
+  return { ...DEFAULT_OPTIONS[type] }
 }
 
 /**
@@ -77,31 +74,31 @@ export function getDefaultOptions(type: DisappearingMessageType): SelfDestructOp
  */
 export function prepareForDestruction(
   message: {
-    id: string;
-    channelId: string;
-    content: string;
-    attachments?: unknown[];
-    disappearing?: DisappearingMessageData | null;
+    id: string
+    channelId: string
+    content: string
+    attachments?: unknown[]
+    disappearing?: DisappearingMessageData | null
   },
   options?: Partial<SelfDestructOptions>
 ): {
-  clearedMessage: typeof message;
-  options: SelfDestructOptions;
+  clearedMessage: typeof message
+  options: SelfDestructOptions
 } {
-  const type = message.disappearing?.type || 'regular';
-  const finalOptions = { ...DEFAULT_OPTIONS[type], ...options };
+  const type = message.disappearing?.type || 'regular'
+  const finalOptions = { ...DEFAULT_OPTIONS[type], ...options }
 
-  const clearedMessage = { ...message };
+  const clearedMessage = { ...message }
 
   if (finalOptions.clearContent) {
-    clearedMessage.content = '';
-    clearedMessage.attachments = [];
+    clearedMessage.content = ''
+    clearedMessage.attachments = []
   }
 
   return {
     clearedMessage,
     options: finalOptions,
-  };
+  }
 }
 
 /**
@@ -113,35 +110,35 @@ export async function executeSelfDestruct(
   channelId: string,
   options: SelfDestructOptions,
   callbacks: {
-    onAnimationStart?: () => void;
-    onContentCleared?: () => void;
-    onRemoved?: () => void;
-    onNotifyPeers?: () => void;
+    onAnimationStart?: () => void
+    onContentCleared?: () => void
+    onRemoved?: () => void
+    onNotifyPeers?: () => void
   } = {}
 ): Promise<DestructionResult> {
-  const startTime = Date.now();
+  const startTime = Date.now()
 
   // Start animation
-  callbacks.onAnimationStart?.();
+  callbacks.onAnimationStart?.()
 
   // Clear content
   if (options.clearContent) {
-    callbacks.onContentCleared?.();
+    callbacks.onContentCleared?.()
   }
 
   // Wait for animation
   if (options.animationType !== 'none' && options.animationDuration) {
-    await new Promise((resolve) => setTimeout(resolve, options.animationDuration));
+    await new Promise((resolve) => setTimeout(resolve, options.animationDuration))
   }
 
   // Remove from UI
   if (options.removeFromUI) {
-    callbacks.onRemoved?.();
+    callbacks.onRemoved?.()
   }
 
   // Notify peers
   if (options.notifyPeers) {
-    callbacks.onNotifyPeers?.();
+    callbacks.onNotifyPeers?.()
   }
 
   return {
@@ -150,7 +147,7 @@ export async function executeSelfDestruct(
     channelId,
     destructedAt: new Date(),
     reason: 'timer_expired',
-  };
+  }
 }
 
 /**
@@ -158,35 +155,35 @@ export async function executeSelfDestruct(
  */
 export function getBurnAnimationStyles(progress: number): React.CSSProperties {
   // Progress goes from 0 (just started) to 1 (fully burned)
-  const intensity = Math.min(1, progress * 1.5);
-  const blur = progress * 4;
-  const brightness = 1 + progress * 0.5;
-  const saturate = 1 - progress * 0.5;
-  const scale = 1 - progress * 0.1;
-  const opacity = 1 - progress;
+  const intensity = Math.min(1, progress * 1.5)
+  const blur = progress * 4
+  const brightness = 1 + progress * 0.5
+  const saturate = 1 - progress * 0.5
+  const scale = 1 - progress * 0.1
+  const opacity = 1 - progress
 
   return {
     filter: `blur(${blur}px) brightness(${brightness}) saturate(${saturate})`,
     transform: `scale(${scale})`,
     opacity,
     transition: 'all 0.1s linear',
-  };
+  }
 }
 
 /**
  * Create a dissolve animation effect CSS.
  */
 export function getDissolveAnimationStyles(progress: number): React.CSSProperties {
-  const opacity = 1 - progress;
-  const blur = progress * 8;
-  const scale = 1 + progress * 0.05;
+  const opacity = 1 - progress
+  const blur = progress * 8
+  const scale = 1 + progress * 0.05
 
   return {
     filter: `blur(${blur}px)`,
     transform: `scale(${scale})`,
     opacity,
     transition: 'all 0.1s ease-out',
-  };
+  }
 }
 
 /**
@@ -196,7 +193,7 @@ export function getFadeAnimationStyles(progress: number): React.CSSProperties {
   return {
     opacity: 1 - progress,
     transition: 'opacity 0.3s ease-out',
-  };
+  }
 }
 
 /**
@@ -208,13 +205,13 @@ export function getAnimationStyles(
 ): React.CSSProperties {
   switch (type) {
     case 'burn':
-      return getBurnAnimationStyles(progress);
+      return getBurnAnimationStyles(progress)
     case 'dissolve':
-      return getDissolveAnimationStyles(progress);
+      return getDissolveAnimationStyles(progress)
     case 'fade':
-      return getFadeAnimationStyles(progress);
+      return getFadeAnimationStyles(progress)
     default:
-      return {};
+      return {}
   }
 }
 
@@ -230,29 +227,29 @@ export function getAnimationStyles(
 export function secureClear(value: string): string {
   // Overwrite the string in place if possible
   // In JavaScript, strings are immutable, so we just return empty
-  return '';
+  return ''
 }
 
 /**
  * Clear all sensitive data from a message object.
  */
 export function clearMessageContent(message: {
-  content?: string | null;
-  attachments?: unknown[] | null;
-  linkPreviews?: unknown[] | null;
-  voiceMessage?: unknown | null;
+  content?: string | null
+  attachments?: unknown[] | null
+  linkPreviews?: unknown[] | null
+  voiceMessage?: unknown | null
 }): void {
   if (message.content) {
-    message.content = null;
+    message.content = null
   }
   if (message.attachments) {
-    message.attachments = null;
+    message.attachments = null
   }
   if (message.linkPreviews) {
-    message.linkPreviews = null;
+    message.linkPreviews = null
   }
   if (message.voiceMessage) {
-    message.voiceMessage = null;
+    message.voiceMessage = null
   }
 }
 
@@ -265,25 +262,25 @@ export function clearMessageContent(message: {
  */
 export async function batchDestruct(
   messages: Array<{
-    id: string;
-    channelId: string;
-    disappearing?: DisappearingMessageData | null;
+    id: string
+    channelId: string
+    disappearing?: DisappearingMessageData | null
   }>,
   onDestroyed: (messageId: string, channelId: string) => void
 ): Promise<DestructionResult[]> {
-  const results: DestructionResult[] = [];
+  const results: DestructionResult[] = []
 
   for (const message of messages) {
-    if (!message.disappearing) continue;
+    if (!message.disappearing) continue
 
-    const options = getDefaultOptions(message.disappearing.type);
+    const options = getDefaultOptions(message.disappearing.type)
     const result = await executeSelfDestruct(message.id, message.channelId, options, {
       onRemoved: () => onDestroyed(message.id, message.channelId),
-    });
-    results.push(result);
+    })
+    results.push(result)
   }
 
-  return results;
+  return results
 }
 
 /**
@@ -291,16 +288,16 @@ export async function batchDestruct(
  */
 export function findExpiredMessages(
   messages: Array<{
-    id: string;
-    disappearing?: DisappearingMessageData | null;
+    id: string
+    disappearing?: DisappearingMessageData | null
   }>
 ): string[] {
-  const now = Date.now();
+  const now = Date.now()
 
   return messages
     .filter((m) => {
-      if (!m.disappearing?.expiresAt) return false;
-      return new Date(m.disappearing.expiresAt).getTime() <= now;
+      if (!m.disappearing?.expiresAt) return false
+      return new Date(m.disappearing.expiresAt).getTime() <= now
     })
-    .map((m) => m.id);
+    .map((m) => m.id)
 }

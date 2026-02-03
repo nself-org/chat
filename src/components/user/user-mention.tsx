@@ -15,14 +15,10 @@ const userMentionVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          'bg-primary/10 text-primary hover:bg-primary/20',
-        highlight:
-          'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-500/30',
-        subtle:
-          'text-primary hover:bg-primary/10 hover:underline',
-        muted:
-          'text-muted-foreground hover:text-foreground hover:underline',
+        default: 'bg-primary/10 text-primary hover:bg-primary/20',
+        highlight: 'bg-yellow-500/20 text-yellow-700 dark:text-yellow-400 hover:bg-yellow-500/30',
+        subtle: 'text-primary hover:bg-primary/10 hover:underline',
+        muted: 'text-muted-foreground hover:text-foreground hover:underline',
       },
       size: {
         sm: 'text-xs',
@@ -42,7 +38,8 @@ const userMentionVariants = cva(
 // ============================================================================
 
 export interface UserMentionProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'onClick'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLSpanElement>, 'onClick'>,
     VariantProps<typeof userMentionVariants> {
   userId?: string
   user?: UserProfile
@@ -87,9 +84,7 @@ const UserMention = React.forwardRef<HTMLSpanElement, UserMentionProps>(
     }, [userProp, userId, getUser])
 
     // Check if this is the current user
-    const isSelf =
-      isCurrentUser ??
-      (user && currentUser && user.id === currentUser.id)
+    const isSelf = isCurrentUser ?? (user && currentUser && user.id === currentUser.id)
 
     // Use highlight variant for self-mentions
     const effectiveVariant = isSelf ? 'highlight' : variant
@@ -100,10 +95,7 @@ const UserMention = React.forwardRef<HTMLSpanElement, UserMentionProps>(
     const mentionContent = (
       <span
         ref={ref}
-        className={cn(
-          userMentionVariants({ variant: effectiveVariant, size }),
-          className
-        )}
+        className={cn(userMentionVariants({ variant: effectiveVariant, size }), className)}
         onClick={user && onClick ? () => onClick(user) : undefined}
         role={onClick || onViewProfile ? 'button' : undefined}
         tabIndex={onClick || onViewProfile ? 0 : undefined}
@@ -148,7 +140,8 @@ UserMention.displayName = 'UserMention'
 // ============================================================================
 
 export interface EveryoneMentionProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'onClick'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLSpanElement>, 'onClick'>,
     VariantProps<typeof userMentionVariants> {
   onClick?: () => void
 }
@@ -174,7 +167,8 @@ EveryoneMention.displayName = 'EveryoneMention'
 // ============================================================================
 
 export interface HereMentionProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'onClick'>,
+  extends
+    Omit<React.HTMLAttributes<HTMLSpanElement>, 'onClick'>,
     VariantProps<typeof userMentionVariants> {
   onClick?: () => void
 }
@@ -199,8 +193,10 @@ HereMention.displayName = 'HereMention'
 // ChannelMention - Channel mention display
 // ============================================================================
 
-export interface ChannelMentionProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, 'onClick'> {
+export interface ChannelMentionProps extends Omit<
+  React.HTMLAttributes<HTMLSpanElement>,
+  'onClick'
+> {
   channelName: string
   channelId?: string
   onClick?: (channelId?: string) => void
@@ -304,10 +300,4 @@ export function parseMentions(text: string): ParsedMention[] {
   return mentions.sort((a, b) => a.start - b.start)
 }
 
-export {
-  UserMention,
-  EveryoneMention,
-  HereMention,
-  ChannelMention,
-  userMentionVariants,
-}
+export { UserMention, EveryoneMention, HereMention, ChannelMention, userMentionVariants }

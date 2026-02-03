@@ -11,7 +11,7 @@ import type {
   FeatureDiscoveryConfig,
   WhatsNewItem,
   WhatsNewState,
-} from './onboarding-types';
+} from './onboarding-types'
 
 // ============================================================================
 // Feature Tip Definitions
@@ -39,7 +39,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'reactions',
     type: 'tooltip',
     title: 'Quick Reactions',
-    description: 'Hover over a message and click the emoji icon to add a reaction. Express yourself without cluttering the chat!',
+    description:
+      'Hover over a message and click the emoji icon to add a reaction. Express yourself without cluttering the chat!',
     targetSelector: '[data-feature="reaction-button"]',
     placement: 'top',
     priority: 2,
@@ -52,8 +53,9 @@ export const featureTips: FeatureTip[] = [
     id: 'mentions-intro',
     featureId: 'mentions',
     type: 'inline',
-    title: 'Get Someone\'s Attention',
-    description: 'Type @ followed by a name to mention someone. They\'ll receive a notification. Use @channel or @here to notify everyone.',
+    title: "Get Someone's Attention",
+    description:
+      "Type @ followed by a name to mention someone. They'll receive a notification. Use @channel or @here to notify everyone.",
     priority: 3,
     dismissible: true,
     showOnce: true,
@@ -65,7 +67,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'file-upload',
     type: 'tooltip',
     title: 'Share Files Easily',
-    description: 'Drag and drop files into the chat or click the attachment button. You can share images, documents, and more.',
+    description:
+      'Drag and drop files into the chat or click the attachment button. You can share images, documents, and more.',
     targetSelector: '[data-feature="file-upload"]',
     placement: 'top',
     priority: 4,
@@ -79,7 +82,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'voice-messages',
     type: 'spotlight',
     title: 'Send Voice Messages',
-    description: 'Click the microphone icon to record and send voice messages. Perfect for quick updates when typing isn\'t convenient.',
+    description:
+      "Click the microphone icon to record and send voice messages. Perfect for quick updates when typing isn't convenient.",
     targetSelector: '[data-feature="voice-message"]',
     placement: 'top',
     priority: 5,
@@ -93,7 +97,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'scheduled-messages',
     type: 'tooltip',
     title: 'Schedule Messages',
-    description: 'Click the clock icon next to the send button to schedule a message for later. Great for working across time zones!',
+    description:
+      'Click the clock icon next to the send button to schedule a message for later. Great for working across time zones!',
     targetSelector: '[data-feature="schedule-message"]',
     placement: 'top',
     priority: 6,
@@ -107,7 +112,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'search-filters',
     type: 'inline',
     title: 'Advanced Search',
-    description: 'Use filters like "from:@user", "in:#channel", "has:link", or "before:date" to find exactly what you\'re looking for.',
+    description:
+      'Use filters like "from:@user", "in:#channel", "has:link", or "before:date" to find exactly what you\'re looking for.',
     priority: 7,
     dismissible: true,
     showOnce: false,
@@ -119,7 +125,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'keyboard-shortcuts',
     type: 'modal',
     title: 'Work Faster with Shortcuts',
-    description: 'Press ? to see all keyboard shortcuts. Use Cmd/Ctrl+K to quickly switch channels, and Cmd/Ctrl+/ to search.',
+    description:
+      'Press ? to see all keyboard shortcuts. Use Cmd/Ctrl+K to quickly switch channels, and Cmd/Ctrl+/ to search.',
     priority: 8,
     dismissible: true,
     showOnce: true,
@@ -131,7 +138,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'channel-bookmarks',
     type: 'tooltip',
     title: 'Bookmark Important Channels',
-    description: 'Right-click on a channel and select "Bookmark" to pin it to the top of your sidebar for quick access.',
+    description:
+      'Right-click on a channel and select "Bookmark" to pin it to the top of your sidebar for quick access.',
     targetSelector: '[data-feature="channel-bookmark"]',
     placement: 'right',
     priority: 9,
@@ -145,7 +153,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'message-pinning',
     type: 'tooltip',
     title: 'Pin Important Messages',
-    description: 'Click the pin icon on any message to pin it to the channel. Pinned messages are easy to find later.',
+    description:
+      'Click the pin icon on any message to pin it to the channel. Pinned messages are easy to find later.',
     targetSelector: '[data-feature="pin-message"]',
     placement: 'left',
     priority: 10,
@@ -159,7 +168,8 @@ export const featureTips: FeatureTip[] = [
     featureId: 'custom-status',
     type: 'spotlight',
     title: 'Set Your Status',
-    description: 'Click on your profile picture to set a custom status. Let your team know what you\'re working on or when you\'ll be away.',
+    description:
+      "Click on your profile picture to set a custom status. Let your team know what you're working on or when you'll be away.",
     targetSelector: '[data-feature="user-status"]',
     placement: 'bottom',
     priority: 11,
@@ -173,41 +183,45 @@ export const featureTips: FeatureTip[] = [
     featureId: 'do-not-disturb',
     type: 'inline',
     title: 'Focus Mode',
-    description: 'Enable Do Not Disturb to pause all notifications. Set a schedule in Settings to automatically enable it during certain hours.',
+    description:
+      'Enable Do Not Disturb to pause all notifications. Set a schedule in Settings to automatically enable it during certain hours.',
     priority: 12,
     dismissible: true,
     showOnce: true,
   },
-];
+]
 
 // ============================================================================
 // Pro Tips
 // ============================================================================
 
 export interface ProTip {
-  id: string;
-  title: string;
-  description: string;
-  category: 'productivity' | 'communication' | 'organization' | 'advanced';
+  id: string
+  title: string
+  description: string
+  category: 'productivity' | 'communication' | 'organization' | 'advanced'
 }
 
 export const proTips: ProTip[] = [
   {
     id: 'markdown-formatting',
     title: 'Use Markdown for Rich Text',
-    description: 'Format your messages with *bold*, _italic_, `code`, and more. Start a line with > for a quote.',
+    description:
+      'Format your messages with *bold*, _italic_, `code`, and more. Start a line with > for a quote.',
     category: 'communication',
   },
   {
     id: 'slash-commands',
     title: 'Try Slash Commands',
-    description: 'Type / in the message input to see available commands like /giphy, /poll, or /remind.',
+    description:
+      'Type / in the message input to see available commands like /giphy, /poll, or /remind.',
     category: 'productivity',
   },
   {
     id: 'channel-organization',
     title: 'Organize with Channel Sections',
-    description: 'Drag channels into custom sections in the sidebar to keep your workspace organized.',
+    description:
+      'Drag channels into custom sections in the sidebar to keep your workspace organized.',
     category: 'organization',
   },
   {
@@ -219,19 +233,22 @@ export const proTips: ProTip[] = [
   {
     id: 'quick-emoji',
     title: 'Quick Emoji Shortcut',
-    description: 'Type : followed by an emoji name (like :smile:) to quickly insert emojis without opening the picker.',
+    description:
+      'Type : followed by an emoji name (like :smile:) to quickly insert emojis without opening the picker.',
     category: 'productivity',
   },
   {
     id: 'code-blocks',
     title: 'Share Code Snippets',
-    description: 'Wrap code in triple backticks (```) for syntax-highlighted code blocks. Add the language name for proper highlighting.',
+    description:
+      'Wrap code in triple backticks (```) for syntax-highlighted code blocks. Add the language name for proper highlighting.',
     category: 'communication',
   },
   {
     id: 'link-previews',
     title: 'Rich Link Previews',
-    description: 'Share links and nchat will automatically show previews for websites, GitHub repos, and more.',
+    description:
+      'Share links and nchat will automatically show previews for websites, GitHub repos, and more.',
     category: 'communication',
   },
   {
@@ -240,23 +257,23 @@ export const proTips: ProTip[] = [
     description: 'Drag files directly from your computer into any chat to share them instantly.',
     category: 'productivity',
   },
-];
+]
 
 /**
  * Get a random pro tip
  */
 export function getRandomProTip(excludeIds: string[] = []): ProTip | null {
-  const available = proTips.filter((tip) => !excludeIds.includes(tip.id));
-  if (available.length === 0) return null;
-  const index = Math.floor(Math.random() * available.length);
-  return available[index];
+  const available = proTips.filter((tip) => !excludeIds.includes(tip.id))
+  if (available.length === 0) return null
+  const index = Math.floor(Math.random() * available.length)
+  return available[index]
 }
 
 /**
  * Get pro tips by category
  */
 export function getProTipsByCategory(category: ProTip['category']): ProTip[] {
-  return proTips.filter((tip) => tip.category === category);
+  return proTips.filter((tip) => tip.category === category)
 }
 
 // ============================================================================
@@ -264,10 +281,10 @@ export function getProTipsByCategory(category: ProTip['category']): ProTip[] {
 // ============================================================================
 
 export interface KeyboardShortcutTip {
-  id: string;
-  shortcut: string;
-  description: string;
-  context?: string;
+  id: string
+  shortcut: string
+  description: string
+  context?: string
 }
 
 export const keyboardShortcutTips: KeyboardShortcutTip[] = [
@@ -275,24 +292,43 @@ export const keyboardShortcutTips: KeyboardShortcutTip[] = [
   { id: 'search', shortcut: 'Cmd/Ctrl + /', description: 'Open search' },
   { id: 'new-message', shortcut: 'Cmd/Ctrl + N', description: 'Start a new message' },
   { id: 'upload-file', shortcut: 'Cmd/Ctrl + U', description: 'Upload a file' },
-  { id: 'edit-message', shortcut: 'Up Arrow', description: 'Edit your last message', context: 'In empty message input' },
-  { id: 'bold', shortcut: 'Cmd/Ctrl + B', description: 'Bold selected text', context: 'While composing' },
-  { id: 'italic', shortcut: 'Cmd/Ctrl + I', description: 'Italicize selected text', context: 'While composing' },
+  {
+    id: 'edit-message',
+    shortcut: 'Up Arrow',
+    description: 'Edit your last message',
+    context: 'In empty message input',
+  },
+  {
+    id: 'bold',
+    shortcut: 'Cmd/Ctrl + B',
+    description: 'Bold selected text',
+    context: 'While composing',
+  },
+  {
+    id: 'italic',
+    shortcut: 'Cmd/Ctrl + I',
+    description: 'Italicize selected text',
+    context: 'While composing',
+  },
   { id: 'toggle-sidebar', shortcut: 'Cmd/Ctrl + Shift + D', description: 'Toggle sidebar' },
   { id: 'mark-read', shortcut: 'Escape', description: 'Mark channel as read' },
-  { id: 'prev-unread', shortcut: 'Alt + Shift + Up', description: 'Jump to previous unread channel' },
+  {
+    id: 'prev-unread',
+    shortcut: 'Alt + Shift + Up',
+    description: 'Jump to previous unread channel',
+  },
   { id: 'next-unread', shortcut: 'Alt + Shift + Down', description: 'Jump to next unread channel' },
   { id: 'help', shortcut: '?', description: 'Show all keyboard shortcuts' },
-];
+]
 
 /**
  * Get a random keyboard shortcut tip
  */
 export function getRandomShortcutTip(excludeIds: string[] = []): KeyboardShortcutTip | null {
-  const available = keyboardShortcutTips.filter((tip) => !excludeIds.includes(tip.id));
-  if (available.length === 0) return null;
-  const index = Math.floor(Math.random() * available.length);
-  return available[index];
+  const available = keyboardShortcutTips.filter((tip) => !excludeIds.includes(tip.id))
+  if (available.length === 0) return null
+  const index = Math.floor(Math.random() * available.length)
+  return available[index]
 }
 
 // ============================================================================
@@ -309,7 +345,7 @@ export function createInitialFeatureDiscoveryState(userId: string): FeatureDisco
     dismissedTips: [],
     seenTips: [],
     lastTipShownAt: undefined,
-  };
+  }
 }
 
 /**
@@ -319,44 +355,38 @@ export function markFeatureDiscovered(
   state: FeatureDiscoveryState,
   featureId: FeatureId
 ): FeatureDiscoveryState {
-  if (state.discoveredFeatures.includes(featureId)) return state;
+  if (state.discoveredFeatures.includes(featureId)) return state
 
   return {
     ...state,
     discoveredFeatures: [...state.discoveredFeatures, featureId],
-  };
+  }
 }
 
 /**
  * Mark tip as seen
  */
-export function markTipSeen(
-  state: FeatureDiscoveryState,
-  tipId: string
-): FeatureDiscoveryState {
-  if (state.seenTips.includes(tipId)) return state;
+export function markTipSeen(state: FeatureDiscoveryState, tipId: string): FeatureDiscoveryState {
+  if (state.seenTips.includes(tipId)) return state
 
   return {
     ...state,
     seenTips: [...state.seenTips, tipId],
     lastTipShownAt: new Date(),
-  };
+  }
 }
 
 /**
  * Dismiss tip
  */
-export function dismissTip(
-  state: FeatureDiscoveryState,
-  tipId: string
-): FeatureDiscoveryState {
-  if (state.dismissedTips.includes(tipId)) return state;
+export function dismissTip(state: FeatureDiscoveryState, tipId: string): FeatureDiscoveryState {
+  if (state.dismissedTips.includes(tipId)) return state
 
   return {
     ...state,
     dismissedTips: [...state.dismissedTips, tipId],
     seenTips: state.seenTips.filter((id) => id !== tipId),
-  };
+  }
 }
 
 /**
@@ -366,67 +396,64 @@ export function getNextTipToShow(
   state: FeatureDiscoveryState,
   config: FeatureDiscoveryConfig
 ): FeatureTip | null {
-  if (!config.enabled) return null;
+  if (!config.enabled) return null
 
   // Check tip frequency
   if (state.lastTipShownAt) {
-    const now = new Date();
-    const lastShown = new Date(state.lastTipShownAt);
-    const hoursSinceLastTip = (now.getTime() - lastShown.getTime()) / (1000 * 60 * 60);
+    const now = new Date()
+    const lastShown = new Date(state.lastTipShownAt)
+    const hoursSinceLastTip = (now.getTime() - lastShown.getTime()) / (1000 * 60 * 60)
 
     switch (config.tipFrequency) {
       case 'daily':
-        if (hoursSinceLastTip < 24) return null;
-        break;
+        if (hoursSinceLastTip < 24) return null
+        break
       case 'weekly':
-        if (hoursSinceLastTip < 168) return null;
-        break;
+        if (hoursSinceLastTip < 168) return null
+        break
       case 'first_time_only':
         // Don't show any more tips
-        break;
+        break
     }
   }
 
   // Find available tips
   const availableTips = featureTips.filter((tip) => {
     // Skip dismissed tips
-    if (state.dismissedTips.includes(tip.id)) return false;
+    if (state.dismissedTips.includes(tip.id)) return false
 
     // Skip already seen tips if showOnce is true
-    if (tip.showOnce && state.seenTips.includes(tip.id)) return false;
+    if (tip.showOnce && state.seenTips.includes(tip.id)) return false
 
-    return true;
-  });
+    return true
+  })
 
-  if (availableTips.length === 0) return null;
+  if (availableTips.length === 0) return null
 
   // Sort by priority and return highest priority
-  availableTips.sort((a, b) => a.priority - b.priority);
-  return availableTips[0];
+  availableTips.sort((a, b) => a.priority - b.priority)
+  return availableTips[0]
 }
 
 /**
  * Check if a feature has been discovered
  */
-export function isFeatureDiscovered(
-  state: FeatureDiscoveryState,
-  featureId: FeatureId
-): boolean {
-  return state.discoveredFeatures.includes(featureId);
+export function isFeatureDiscovered(state: FeatureDiscoveryState, featureId: FeatureId): boolean {
+  return state.discoveredFeatures.includes(featureId)
 }
 
 /**
  * Get feature tip by ID
  */
 export function getFeatureTipById(tipId: string): FeatureTip | undefined {
-  return featureTips.find((tip) => tip.id === tipId);
+  return featureTips.find((tip) => tip.id === tipId)
 }
 
 /**
  * Get tips for a specific feature
  */
 export function getTipsForFeature(featureId: FeatureId): FeatureTip[] {
-  return featureTips.filter((tip) => tip.featureId === featureId);
+  return featureTips.filter((tip) => tip.featureId === featureId)
 }
 
 // ============================================================================
@@ -437,7 +464,8 @@ export const whatsNewItems: WhatsNewItem[] = [
   {
     id: 'voice-messages-v1',
     title: 'Voice Messages',
-    description: 'Now you can record and send voice messages directly in chat. Perfect for quick updates when typing isn\'t convenient.',
+    description:
+      "Now you can record and send voice messages directly in chat. Perfect for quick updates when typing isn't convenient.",
     icon: 'Mic',
     learnMoreUrl: '/docs/voice-messages',
     releaseDate: new Date('2024-01-15'),
@@ -446,7 +474,8 @@ export const whatsNewItems: WhatsNewItem[] = [
   {
     id: 'threads-v2',
     title: 'Improved Threads',
-    description: 'Threads now support more features including reactions, file attachments, and better navigation.',
+    description:
+      'Threads now support more features including reactions, file attachments, and better navigation.',
     icon: 'MessageSquare',
     learnMoreUrl: '/docs/threads',
     releaseDate: new Date('2024-01-10'),
@@ -455,13 +484,14 @@ export const whatsNewItems: WhatsNewItem[] = [
   {
     id: 'search-filters-v1',
     title: 'Advanced Search Filters',
-    description: 'Find messages faster with new search filters like "from:", "in:", "has:", and date ranges.',
+    description:
+      'Find messages faster with new search filters like "from:", "in:", "has:", and date ranges.',
     icon: 'Search',
     learnMoreUrl: '/docs/search',
     releaseDate: new Date('2024-01-05'),
     category: 'feature',
   },
-];
+]
 
 /**
  * Create initial what's new state
@@ -471,7 +501,7 @@ export function createInitialWhatsNewState(): WhatsNewState {
     lastSeenVersion: '0.0.0',
     seenItems: [],
     dismissedUntil: undefined,
-  };
+  }
 }
 
 /**
@@ -480,22 +510,22 @@ export function createInitialWhatsNewState(): WhatsNewState {
 export function getUnseenWhatsNewItems(state: WhatsNewState): WhatsNewItem[] {
   // Check if dismissed
   if (state.dismissedUntil && new Date(state.dismissedUntil) > new Date()) {
-    return [];
+    return []
   }
 
-  return whatsNewItems.filter((item) => !state.seenItems.includes(item.id));
+  return whatsNewItems.filter((item) => !state.seenItems.includes(item.id))
 }
 
 /**
  * Mark what's new item as seen
  */
 export function markWhatsNewSeen(state: WhatsNewState, itemId: string): WhatsNewState {
-  if (state.seenItems.includes(itemId)) return state;
+  if (state.seenItems.includes(itemId)) return state
 
   return {
     ...state,
     seenItems: [...state.seenItems, itemId],
-  };
+  }
 }
 
 /**
@@ -505,20 +535,20 @@ export function markAllWhatsNewSeen(state: WhatsNewState): WhatsNewState {
   return {
     ...state,
     seenItems: whatsNewItems.map((item) => item.id),
-  };
+  }
 }
 
 /**
  * Dismiss what's new for a duration
  */
 export function dismissWhatsNew(state: WhatsNewState, days: number = 7): WhatsNewState {
-  const dismissedUntil = new Date();
-  dismissedUntil.setDate(dismissedUntil.getDate() + days);
+  const dismissedUntil = new Date()
+  dismissedUntil.setDate(dismissedUntil.getDate() + days)
 
   return {
     ...state,
     dismissedUntil,
-  };
+  }
 }
 
 // ============================================================================
@@ -531,4 +561,4 @@ export const defaultFeatureDiscoveryConfig: FeatureDiscoveryConfig = {
   showKeyboardShortcutTips: true,
   tipFrequency: 'daily',
   maxTipsPerSession: 3,
-};
+}

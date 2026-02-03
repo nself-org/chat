@@ -4,9 +4,9 @@
  * Admin dashboard for monitoring application performance in real-time
  */
 
-'use client';
+'use client'
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react'
 import {
   Activity,
   TrendingUp,
@@ -24,8 +24,8 @@ import {
   AlertCircle,
   ChevronDown,
   ChevronUp,
-} from 'lucide-react';
-import { usePerformance, usePerformanceWarnings } from '@/hooks/use-performance';
+} from 'lucide-react'
+import { usePerformance, usePerformanceWarnings } from '@/hooks/use-performance'
 import {
   formatMetricValue,
   formatDuration,
@@ -34,66 +34,53 @@ import {
   getScoreGrade,
   exportToCSV,
   exportToJSON,
-} from '@/lib/performance/metrics';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
+} from '@/lib/performance/metrics'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
+import { Progress } from '@/components/ui/progress'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { cn } from '@/lib/utils'
 
 // ============================================================================
 // Main Component
 // ============================================================================
 
 export default function PerformanceMonitor() {
-  const {
-    snapshot,
-    score,
-    metrics,
-    customMetrics,
-    stats,
-    trends,
-    refresh,
-    reset,
-  } = usePerformance();
+  const { snapshot, score, metrics, customMetrics, stats, trends, refresh, reset } =
+    usePerformance()
 
-  const {
-    warnings,
-    criticalWarnings,
-    activeWarnings,
-    clearWarning,
-    clearAllWarnings,
-  } = usePerformanceWarnings();
+  const { warnings, criticalWarnings, activeWarnings, clearWarning, clearAllWarnings } =
+    usePerformanceWarnings()
 
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
     new Set(['overview', 'vitals'])
-  );
+  )
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) => {
-      const next = new Set(prev);
+      const next = new Set(prev)
       if (next.has(section)) {
-        next.delete(section);
+        next.delete(section)
       } else {
-        next.add(section);
+        next.add(section)
       }
-      return next;
-    });
-  };
+      return next
+    })
+  }
 
   const handleExport = (format: 'csv' | 'json') => {
-    const data = format === 'csv' ? exportToCSV(metrics) : exportToJSON(metrics);
-    const blob = new Blob([data], { type: format === 'csv' ? 'text/csv' : 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `performance-metrics-${Date.now()}.${format}`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  };
+    const data = format === 'csv' ? exportToCSV(metrics) : exportToJSON(metrics)
+    const blob = new Blob([data], { type: format === 'csv' ? 'text/csv' : 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `performance-metrics-${Date.now()}.${format}`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
 
   return (
     <div className="space-y-6 p-6">
@@ -107,19 +94,19 @@ export default function PerformanceMonitor() {
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={() => handleExport('csv')}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export CSV
           </Button>
           <Button variant="outline" size="sm" onClick={() => handleExport('json')}>
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export JSON
           </Button>
           <Button variant="outline" size="sm" onClick={refresh}>
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
           <Button variant="destructive" size="sm" onClick={reset}>
-            <Trash2 className="h-4 w-4 mr-2" />
+            <Trash2 className="mr-2 h-4 w-4" />
             Reset
           </Button>
         </div>
@@ -146,13 +133,13 @@ export default function PerformanceMonitor() {
               {activeWarnings.map((warning) => (
                 <div
                   key={warning.id}
-                  className="flex items-start justify-between p-3 bg-white dark:bg-gray-900 rounded-lg"
+                  className="flex items-start justify-between rounded-lg bg-white p-3 dark:bg-gray-900"
                 >
                   <div className="flex items-start gap-3">
                     {warning.severity === 'critical' ? (
-                      <XCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                      <XCircle className="mt-0.5 h-5 w-5 text-red-600" />
                     ) : (
-                      <AlertCircle className="h-5 w-5 text-yellow-600 mt-0.5" />
+                      <AlertCircle className="mt-0.5 h-5 w-5 text-yellow-600" />
                     )}
                     <div>
                       <p className="font-medium">{warning.message}</p>
@@ -161,11 +148,7 @@ export default function PerformanceMonitor() {
                       </p>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => clearWarning(warning.id)}
-                  >
+                  <Button variant="ghost" size="sm" onClick={() => clearWarning(warning.id)}>
                     Dismiss
                   </Button>
                 </div>
@@ -182,7 +165,7 @@ export default function PerformanceMonitor() {
         expanded={expandedSections.has('overview')}
         onToggle={() => toggleSection('overview')}
       >
-        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
           <Card className="md:col-span-2">
             <CardHeader>
               <CardTitle>Overall Score</CardTitle>
@@ -190,8 +173,8 @@ export default function PerformanceMonitor() {
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-center">
-                <div className="relative w-32 h-32">
-                  <svg className="w-32 h-32 transform -rotate-90">
+                <div className="relative h-32 w-32">
+                  <svg className="h-32 w-32 -rotate-90 transform">
                     <circle
                       cx="64"
                       cy="64"
@@ -210,10 +193,7 @@ export default function PerformanceMonitor() {
                       fill="none"
                       strokeDasharray={`${2 * Math.PI * 56}`}
                       strokeDashoffset={`${2 * Math.PI * 56 * (1 - score.overall / 100)}`}
-                      className={cn(
-                        'transition-all duration-500',
-                        getScoreColor(score.overall)
-                      )}
+                      className={cn('transition-all duration-500', getScoreColor(score.overall))}
                     />
                   </svg>
                   <div className="absolute inset-0 flex flex-col items-center justify-center">
@@ -243,7 +223,7 @@ export default function PerformanceMonitor() {
         expanded={expandedSections.has('vitals')}
         onToggle={() => toggleSection('vitals')}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
           <VitalCard
             name="LCP"
             label="Largest Contentful Paint"
@@ -294,7 +274,7 @@ export default function PerformanceMonitor() {
         expanded={expandedSections.has('custom')}
         onToggle={() => toggleSection('custom')}
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <MetricCard
             title="API Response Time"
             stats={stats.apiResponseTime}
@@ -362,7 +342,7 @@ export default function PerformanceMonitor() {
         </Tabs>
       </CollapsibleSection>
     </div>
-  );
+  )
 }
 
 // ============================================================================
@@ -370,11 +350,11 @@ export default function PerformanceMonitor() {
 // ============================================================================
 
 interface CollapsibleSectionProps {
-  title: string;
-  icon: React.ComponentType<{ className?: string }>;
-  expanded: boolean;
-  onToggle: () => void;
-  children: React.ReactNode;
+  title: string
+  icon: React.ComponentType<{ className?: string }>
+  expanded: boolean
+  onToggle: () => void
+  children: React.ReactNode
 }
 
 function CollapsibleSection({
@@ -395,22 +375,18 @@ function CollapsibleSection({
             <Icon className="h-5 w-5" />
             <CardTitle>{title}</CardTitle>
           </div>
-          {expanded ? (
-            <ChevronUp className="h-5 w-5" />
-          ) : (
-            <ChevronDown className="h-5 w-5" />
-          )}
+          {expanded ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
         </div>
       </CardHeader>
       {expanded && <CardContent className="pt-6">{children}</CardContent>}
     </Card>
-  );
+  )
 }
 
 interface ScoreCardProps {
-  title: string;
-  score: number;
-  icon: React.ComponentType<{ className?: string }>;
+  title: string
+  score: number
+  icon: React.ComponentType<{ className?: string }>
 }
 
 function ScoreCard({ title, score, icon: Icon }: ScoreCardProps) {
@@ -424,34 +400,32 @@ function ScoreCard({ title, score, icon: Icon }: ScoreCardProps) {
       </CardHeader>
       <CardContent>
         <div className="space-y-2">
-          <div className={cn('text-3xl font-bold', getScoreColor(score))}>
-            {score}
-          </div>
+          <div className={cn('text-3xl font-bold', getScoreColor(score))}>{score}</div>
           <Progress value={score} className="h-2" />
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 interface VitalCardProps {
-  name: string;
-  label: string;
-  value: number | undefined;
-  unit: string;
-  thresholds: { good: number; poor: number };
-  score: number;
+  name: string
+  label: string
+  value: number | undefined
+  unit: string
+  thresholds: { good: number; poor: number }
+  score: number
 }
 
 function VitalCard({ name, label, value, unit, thresholds, score }: VitalCardProps) {
   const getRating = (): 'good' | 'needs-improvement' | 'poor' => {
-    if (!value) return 'good';
-    if (value <= thresholds.good) return 'good';
-    if (value <= thresholds.poor) return 'needs-improvement';
-    return 'poor';
-  };
+    if (!value) return 'good'
+    if (value <= thresholds.good) return 'good'
+    if (value <= thresholds.poor) return 'needs-improvement'
+    return 'poor'
+  }
 
-  const rating = getRating();
+  const rating = getRating()
 
   return (
     <Card>
@@ -469,31 +443,36 @@ function VitalCard({ name, label, value, unit, thresholds, score }: VitalCardPro
           </div>
           <div className="flex items-center justify-between">
             <Badge
-              variant={rating === 'good' ? 'default' : rating === 'poor' ? 'destructive' : 'secondary'}
+              variant={
+                rating === 'good' ? 'default' : rating === 'poor' ? 'destructive' : 'secondary'
+              }
             >
               {rating.replace('-', ' ')}
             </Badge>
-            <span className={cn('text-sm font-medium', getScoreColor(score))}>
-              Score: {score}
-            </span>
+            <span className={cn('text-sm font-medium', getScoreColor(score))}>Score: {score}</span>
           </div>
           <Progress value={score} className="h-2" />
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 interface MetricCardProps {
-  title: string;
-  stats: any;
-  trend: any;
-  unit: string;
-  icon: React.ComponentType<{ className?: string }>;
+  title: string
+  stats: any
+  trend: any
+  unit: string
+  icon: React.ComponentType<{ className?: string }>
 }
 
 function MetricCard({ title, stats, trend, unit, icon: Icon }: MetricCardProps) {
-  const TrendIcon = trend.direction === 'improving' ? TrendingDown : trend.direction === 'degrading' ? TrendingUp : null;
+  const TrendIcon =
+    trend.direction === 'improving'
+      ? TrendingDown
+      : trend.direction === 'degrading'
+        ? TrendingUp
+        : null
 
   return (
     <Card>
@@ -522,34 +501,38 @@ function MetricCard({ title, stats, trend, unit, icon: Icon }: MetricCardProps) 
           <div className="grid grid-cols-3 gap-2 text-sm">
             <div>
               <p className="text-muted-foreground">Min</p>
-              <p className="font-medium">{formatMetricValue(stats.min, unit as 'ms' | 'bytes' | 'count' | 'percent')}</p>
+              <p className="font-medium">
+                {formatMetricValue(stats.min, unit as 'ms' | 'bytes' | 'count' | 'percent')}
+              </p>
             </div>
             <div>
               <p className="text-muted-foreground">Median</p>
-              <p className="font-medium">{formatMetricValue(stats.median, unit as 'ms' | 'bytes' | 'count' | 'percent')}</p>
+              <p className="font-medium">
+                {formatMetricValue(stats.median, unit as 'ms' | 'bytes' | 'count' | 'percent')}
+              </p>
             </div>
             <div>
               <p className="text-muted-foreground">Max</p>
-              <p className="font-medium">{formatMetricValue(stats.max, unit as 'ms' | 'bytes' | 'count' | 'percent')}</p>
+              <p className="font-medium">
+                {formatMetricValue(stats.max, unit as 'ms' | 'bytes' | 'count' | 'percent')}
+              </p>
             </div>
           </div>
           {TrendIcon && (
-            <div className="flex items-center gap-2 pt-2 border-t">
+            <div className="flex items-center gap-2 border-t pt-2">
               <TrendIcon
                 className={cn(
                   'h-4 w-4',
                   trend.direction === 'improving' ? 'text-green-600' : 'text-red-600'
                 )}
               />
-              <span className="text-sm">
-                {Math.abs(trend.change).toFixed(1)}% vs previous hour
-              </span>
+              <span className="text-sm">{Math.abs(trend.change).toFixed(1)}% vs previous hour</span>
             </div>
           )}
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }
 
 function MetricsTable({ metrics }: { metrics: any[] }) {
@@ -575,8 +558,8 @@ function MetricsTable({ metrics }: { metrics: any[] }) {
                     metric.rating === 'good'
                       ? 'default'
                       : metric.rating === 'poor'
-                      ? 'destructive'
-                      : 'secondary'
+                        ? 'destructive'
+                        : 'secondary'
                   }
                 >
                   {metric.rating}
@@ -590,7 +573,7 @@ function MetricsTable({ metrics }: { metrics: any[] }) {
         </tbody>
       </table>
     </div>
-  );
+  )
 }
 
 function CustomMetricsTable({ metrics }: { metrics: any[] }) {
@@ -609,9 +592,7 @@ function CustomMetricsTable({ metrics }: { metrics: any[] }) {
           {metrics.map((metric, idx) => (
             <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-gray-900">
               <td className="px-4 py-3 text-sm font-medium">{metric.name}</td>
-              <td className="px-4 py-3 text-sm">
-                {formatMetricValue(metric.value, metric.unit)}
-              </td>
+              <td className="px-4 py-3 text-sm">{formatMetricValue(metric.value, metric.unit)}</td>
               <td className="px-4 py-3">
                 {metric.tags && (
                   <div className="flex flex-wrap gap-1">
@@ -631,5 +612,5 @@ function CustomMetricsTable({ metrics }: { metrics: any[] }) {
         </tbody>
       </table>
     </div>
-  );
+  )
 }

@@ -15,14 +15,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from '@/components/ui/dialog'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -50,7 +56,7 @@ export function CreatePollModal({
   onClose,
   onCreatePoll,
   channelId,
-  defaultSettings
+  defaultSettings,
 }: CreatePollModalProps) {
   const { toast } = useToast()
   const [activeTab, setActiveTab] = useState<'basic' | 'advanced'>('basic')
@@ -119,18 +125,24 @@ export function CreatePollModal({
   }, [options])
 
   // Remove option
-  const handleRemoveOption = useCallback((index: number) => {
-    if (options.length > MIN_OPTIONS) {
-      setOptions(options.filter((_, i) => i !== index))
-    }
-  }, [options])
+  const handleRemoveOption = useCallback(
+    (index: number) => {
+      if (options.length > MIN_OPTIONS) {
+        setOptions(options.filter((_, i) => i !== index))
+      }
+    },
+    [options]
+  )
 
   // Update option
-  const handleOptionChange = useCallback((index: number, value: string) => {
-    const newOptions = [...options]
-    newOptions[index] = value
-    setOptions(newOptions)
-  }, [options])
+  const handleOptionChange = useCallback(
+    (index: number, value: string) => {
+      const newOptions = [...options]
+      newOptions[index] = value
+      setOptions(newOptions)
+    },
+    [options]
+  )
 
   // Handle quick duration selection
   const handleQuickDuration = useCallback((duration: string) => {
@@ -185,7 +197,7 @@ export function CreatePollModal({
     }
 
     // Validate options
-    const trimmedOptions = options.map(o => o.trim()).filter(o => o.length > 0)
+    const trimmedOptions = options.map((o) => o.trim()).filter((o) => o.length > 0)
     if (trimmedOptions.length < MIN_OPTIONS) {
       validationErrors.push(`At least ${MIN_OPTIONS} options are required`)
     }
@@ -240,7 +252,7 @@ export function CreatePollModal({
     minSelections,
     hasExpiration,
     expirationDate,
-    expirationTime
+    expirationTime,
   ])
 
   // Handle create poll
@@ -250,11 +262,12 @@ export function CreatePollModal({
       return
     }
 
-    const trimmedOptions = options.map(o => o.trim()).filter(o => o.length > 0)
+    const trimmedOptions = options.map((o) => o.trim()).filter((o) => o.length > 0)
 
-    const closesAt = hasExpiration && expirationDate && expirationTime
-      ? new Date(`${expirationDate}T${expirationTime}`)
-      : undefined
+    const closesAt =
+      hasExpiration && expirationDate && expirationTime
+        ? new Date(`${expirationDate}T${expirationTime}`)
+        : undefined
 
     const settings: PollSettings = {
       type: allowMultiple ? 'multiple' : 'single',
@@ -275,7 +288,7 @@ export function CreatePollModal({
     const input: CreatePollInput = {
       question: question.trim(),
       description: description.trim() || undefined,
-      options: trimmedOptions.map(text => ({ text })),
+      options: trimmedOptions.map((text) => ({ text })),
       settings,
       channelId,
       closesAt,
@@ -319,7 +332,7 @@ export function CreatePollModal({
     channelId,
     onCreatePoll,
     onClose,
-    toast
+    toast,
   ])
 
   // Calculate minimum expiration time
@@ -336,22 +349,20 @@ export function CreatePollModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary" />
             Create a Poll
           </DialogTitle>
-          <DialogDescription>
-            Ask your team a question and gather their opinions
-          </DialogDescription>
+          <DialogDescription>Ask your team a question and gather their opinions</DialogDescription>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as 'basic' | 'advanced')}>
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="basic">Basic</TabsTrigger>
             <TabsTrigger value="advanced">
-              <Settings2 className="h-4 w-4 mr-2" />
+              <Settings2 className="mr-2 h-4 w-4" />
               Advanced
             </TabsTrigger>
           </TabsList>
@@ -372,7 +383,7 @@ export function CreatePollModal({
                 rows={2}
                 className="resize-none"
               />
-              <div className="text-xs text-muted-foreground text-right">
+              <div className="text-right text-xs text-muted-foreground">
                 {question.length}/{MAX_QUESTION_LENGTH}
               </div>
             </div>
@@ -389,7 +400,7 @@ export function CreatePollModal({
                 rows={2}
                 className="resize-none"
               />
-              <div className="text-xs text-muted-foreground text-right">
+              <div className="text-right text-xs text-muted-foreground">
                 {description.length}/{MAX_DESCRIPTION_LENGTH}
               </div>
             </div>
@@ -430,7 +441,7 @@ export function CreatePollModal({
                   onClick={handleAddOption}
                   className="w-full"
                 >
-                  <Plus className="h-4 w-4 mr-2" />
+                  <Plus className="mr-2 h-4 w-4" />
                   Add Option
                 </Button>
               )}
@@ -450,11 +461,7 @@ export function CreatePollModal({
                     Let people select more than one option
                   </div>
                 </div>
-                <Switch
-                  id="multiple"
-                  checked={allowMultiple}
-                  onCheckedChange={setAllowMultiple}
-                />
+                <Switch id="multiple" checked={allowMultiple} onCheckedChange={setAllowMultiple} />
               </div>
 
               {allowMultiple && (
@@ -477,7 +484,7 @@ export function CreatePollModal({
                         id="max-selections"
                         type="number"
                         min={minSelections}
-                        max={options.filter(o => o.trim()).length || MAX_OPTIONS}
+                        max={options.filter((o) => o.trim()).length || MAX_OPTIONS}
                         value={maxSelections}
                         onChange={(e) => setMaxSelections(parseInt(e.target.value, 10) || 2)}
                       />
@@ -493,11 +500,7 @@ export function CreatePollModal({
                     Hide who voted for each option
                   </div>
                 </div>
-                <Switch
-                  id="anonymous"
-                  checked={isAnonymous}
-                  onCheckedChange={setIsAnonymous}
-                />
+                <Switch id="anonymous" checked={isAnonymous} onCheckedChange={setIsAnonymous} />
               </div>
             </div>
 
@@ -508,7 +511,7 @@ export function CreatePollModal({
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="has-expiration">
-                    <Calendar className="h-4 w-4 inline mr-2" />
+                    <Calendar className="mr-2 inline h-4 w-4" />
                     Poll Expiration
                   </Label>
                   <div className="text-xs text-muted-foreground">
@@ -583,7 +586,7 @@ export function CreatePollModal({
           <TabsContent value="advanced" className="space-y-6 py-4">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <div className="space-y-0.5 flex-1">
+                <div className="flex-1 space-y-0.5">
                   <Label htmlFor="vote-change">Allow Vote Changes</Label>
                   <div className="text-xs text-muted-foreground">
                     Let people change their vote after submitting
@@ -597,7 +600,7 @@ export function CreatePollModal({
               </div>
 
               <div className="flex items-center justify-between">
-                <div className="space-y-0.5 flex-1">
+                <div className="flex-1 space-y-0.5">
                   <Label htmlFor="add-options">Allow Adding Options</Label>
                   <div className="text-xs text-muted-foreground">
                     Let participants suggest new options
@@ -611,7 +614,7 @@ export function CreatePollModal({
               </div>
 
               <div className="flex items-center justify-between">
-                <div className="space-y-0.5 flex-1">
+                <div className="flex-1 space-y-0.5">
                   <Label htmlFor="real-time">Show Real-Time Results</Label>
                   <div className="text-xs text-muted-foreground">
                     Update vote counts in real-time
@@ -626,7 +629,7 @@ export function CreatePollModal({
 
               {!isAnonymous && (
                 <div className="flex items-center justify-between">
-                  <div className="space-y-0.5 flex-1">
+                  <div className="flex-1 space-y-0.5">
                     <Label htmlFor="voter-names">Show Voter Names</Label>
                     <div className="text-xs text-muted-foreground">
                       Display who voted for each option
@@ -667,8 +670,8 @@ export function CreatePollModal({
 
         {/* Errors */}
         {errors.length > 0 && (
-          <div className="p-3 border border-destructive/50 bg-destructive/10 rounded-md">
-            <ul className="text-sm text-destructive space-y-1">
+          <div className="border-destructive/50 bg-destructive/10 rounded-md border p-3">
+            <ul className="space-y-1 text-sm text-destructive">
               {errors.map((error, index) => (
                 <li key={index}>• {error}</li>
               ))}

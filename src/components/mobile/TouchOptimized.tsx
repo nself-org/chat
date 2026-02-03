@@ -55,8 +55,7 @@ const touchButtonVariants = cva(
 )
 
 export interface TouchButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof touchButtonVariants> {
+  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof touchButtonVariants> {
   hapticFeedback?: boolean
 }
 
@@ -75,41 +74,38 @@ export interface TouchButtonProps
  * </TouchButton>
  * ```
  */
-export const TouchButton = forwardRef<HTMLButtonElement, TouchButtonProps>(
-  function TouchButton(
-    { className, variant, size, rounded, hapticFeedback = false, onClick, ...props },
-    ref
-  ) {
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-      // Trigger haptic feedback if enabled
-      if (hapticFeedback && 'vibrate' in navigator) {
-        navigator.vibrate(10)
-      }
-
-      onClick?.(e)
+export const TouchButton = forwardRef<HTMLButtonElement, TouchButtonProps>(function TouchButton(
+  { className, variant, size, rounded, hapticFeedback = false, onClick, ...props },
+  ref
+) {
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // Trigger haptic feedback if enabled
+    if (hapticFeedback && 'vibrate' in navigator) {
+      navigator.vibrate(10)
     }
 
-    return (
-      <button
-        ref={ref}
-        className={cn(touchButtonVariants({ variant, size, rounded }), className)}
-        onClick={handleClick}
-        style={{
-          WebkitTapHighlightColor: 'transparent',
-        }}
-        {...props}
-      />
-    )
+    onClick?.(e)
   }
-)
+
+  return (
+    <button
+      ref={ref}
+      className={cn(touchButtonVariants({ variant, size, rounded }), className)}
+      onClick={handleClick}
+      style={{
+        WebkitTapHighlightColor: 'transparent',
+      }}
+      {...props}
+    />
+  )
+})
 
 // ============================================================================
 // Touch-Optimized Link
 // ============================================================================
 
 export interface TouchLinkProps
-  extends AnchorHTMLAttributes<HTMLAnchorElement>,
-    VariantProps<typeof touchButtonVariants> {
+  extends AnchorHTMLAttributes<HTMLAnchorElement>, VariantProps<typeof touchButtonVariants> {
   hapticFeedback?: boolean
 }
 
@@ -117,32 +113,38 @@ export interface TouchLinkProps
  * Touch-optimized link component
  * Meets minimum tap target requirements
  */
-export const TouchLink = forwardRef<HTMLAnchorElement, TouchLinkProps>(
-  function TouchLink(
-    { className, variant = 'link', size = 'default', rounded, hapticFeedback = false, onClick, ...props },
-    ref
-  ) {
-    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-      if (hapticFeedback && 'vibrate' in navigator) {
-        navigator.vibrate(10)
-      }
-
-      onClick?.(e)
+export const TouchLink = forwardRef<HTMLAnchorElement, TouchLinkProps>(function TouchLink(
+  {
+    className,
+    variant = 'link',
+    size = 'default',
+    rounded,
+    hapticFeedback = false,
+    onClick,
+    ...props
+  },
+  ref
+) {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (hapticFeedback && 'vibrate' in navigator) {
+      navigator.vibrate(10)
     }
 
-    return (
-      <a
-        ref={ref}
-        className={cn(touchButtonVariants({ variant, size, rounded }), className)}
-        onClick={handleClick}
-        style={{
-          WebkitTapHighlightColor: 'transparent',
-        }}
-        {...props}
-      />
-    )
+    onClick?.(e)
   }
-)
+
+  return (
+    <a
+      ref={ref}
+      className={cn(touchButtonVariants({ variant, size, rounded }), className)}
+      onClick={handleClick}
+      style={{
+        WebkitTapHighlightColor: 'transparent',
+      }}
+      {...props}
+    />
+  )
+})
 
 // ============================================================================
 // Touch-Optimized Icon Button
@@ -165,26 +167,24 @@ export interface TouchIconButtonProps extends TouchButtonProps {
  * ```
  */
 export const TouchIconButton = memo(
-  forwardRef<HTMLButtonElement, TouchIconButtonProps>(
-    function TouchIconButton(
-      { icon, label, showLabel = false, size = 'icon', className, ...props },
-      ref
-    ) {
-      return (
-        <TouchButton
-          ref={ref}
-          size={size}
-          rounded="full"
-          className={cn(showLabel && 'gap-2', className)}
-          aria-label={label}
-          {...props}
-        >
-          {icon}
-          {showLabel && <span className="text-sm">{label}</span>}
-        </TouchButton>
-      )
-    }
-  )
+  forwardRef<HTMLButtonElement, TouchIconButtonProps>(function TouchIconButton(
+    { icon, label, showLabel = false, size = 'icon', className, ...props },
+    ref
+  ) {
+    return (
+      <TouchButton
+        ref={ref}
+        size={size}
+        rounded="full"
+        className={cn(showLabel && 'gap-2', className)}
+        aria-label={label}
+        {...props}
+      >
+        {icon}
+        {showLabel && <span className="text-sm">{label}</span>}
+      </TouchButton>
+    )
+  })
 )
 
 // ============================================================================
@@ -287,9 +287,9 @@ export const TouchCheckbox = memo(function TouchCheckbox({
   return (
     <label
       className={cn(
-        'flex min-h-[48px] items-center gap-3 touch-manipulation select-none',
+        'flex min-h-[48px] touch-manipulation select-none items-center gap-3',
         !disabled && 'cursor-pointer',
-        disabled && 'opacity-50 cursor-not-allowed',
+        disabled && 'cursor-not-allowed opacity-50',
         className
       )}
     >
@@ -335,9 +335,9 @@ export const TouchRadio = memo(function TouchRadio({
   return (
     <label
       className={cn(
-        'flex min-h-[48px] items-center gap-3 touch-manipulation select-none',
+        'flex min-h-[48px] touch-manipulation select-none items-center gap-3',
         !disabled && 'cursor-pointer',
-        disabled && 'opacity-50 cursor-not-allowed',
+        disabled && 'cursor-not-allowed opacity-50',
         className
       )}
     >
@@ -386,7 +386,7 @@ export const TouchArea = memo(function TouchArea({
 }: TouchAreaProps) {
   return (
     <div
-      className={cn('inline-flex items-center justify-center touch-manipulation', className)}
+      className={cn('inline-flex touch-manipulation items-center justify-center', className)}
       style={{
         minHeight,
         minWidth,

@@ -50,103 +50,117 @@ export function createStandupWorkflow(
   }
 
   // Create announcement message
-  const announcement = createMessageStep({ x: 250, y: 310 }, {
-    target: 'channel',
-    channelId: teamChannelId,
-    content: `Good morning team! It's standup time.
+  const announcement = createMessageStep(
+    { x: 250, y: 310 },
+    {
+      target: 'channel',
+      channelId: teamChannelId,
+      content: `Good morning team! It's standup time.
 
 Please take a moment to share your update. I'll collect everyone's responses and post a summary shortly.
 
 Check your DMs for the standup form.`,
-    parseVariables: true,
-  })
+      parseVariables: true,
+    }
+  )
   announcement.name = 'Announce Standup'
   announcement.description = 'Post announcement to team channel'
 
   // Loop through team members
-  const loopMembers = createLoopStep({ x: 250, y: 440 }, {
-    loopType: 'for_each',
-    collection: 'teamMembers',
-    itemVariableName: 'currentMember',
-    indexVariableName: 'memberIndex',
-    maxIterations: 50,
-  }) as LoopStep
+  const loopMembers = createLoopStep(
+    { x: 250, y: 440 },
+    {
+      loopType: 'for_each',
+      collection: 'teamMembers',
+      itemVariableName: 'currentMember',
+      indexVariableName: 'memberIndex',
+      maxIterations: 50,
+    }
+  ) as LoopStep
   loopMembers.name = 'Loop Team Members'
   loopMembers.description = 'Send standup form to each team member'
 
   // Create standup form (sent to each member)
-  const standupForm = createFormStep({ x: 100, y: 570 }, {
-    title: 'Daily Standup',
-    description: 'Share your daily update with the team',
-    target: 'user',
-    fields: [
-      {
-        id: 'yesterday',
-        name: 'yesterday',
-        label: 'What did you accomplish yesterday?',
-        type: 'textarea',
-        placeholder: 'List your completed tasks...',
-        required: true,
-        validation: {
-          minLength: 10,
-          maxLength: 500,
+  const standupForm = createFormStep(
+    { x: 100, y: 570 },
+    {
+      title: 'Daily Standup',
+      description: 'Share your daily update with the team',
+      target: 'user',
+      fields: [
+        {
+          id: 'yesterday',
+          name: 'yesterday',
+          label: 'What did you accomplish yesterday?',
+          type: 'textarea',
+          placeholder: 'List your completed tasks...',
+          required: true,
+          validation: {
+            minLength: 10,
+            maxLength: 500,
+          },
         },
-      },
-      {
-        id: 'today',
-        name: 'today',
-        label: 'What are you working on today?',
-        type: 'textarea',
-        placeholder: 'List your planned tasks...',
-        required: true,
-        validation: {
-          minLength: 10,
-          maxLength: 500,
+        {
+          id: 'today',
+          name: 'today',
+          label: 'What are you working on today?',
+          type: 'textarea',
+          placeholder: 'List your planned tasks...',
+          required: true,
+          validation: {
+            minLength: 10,
+            maxLength: 500,
+          },
         },
-      },
-      {
-        id: 'blockers',
-        name: 'blockers',
-        label: 'Any blockers or challenges?',
-        type: 'textarea',
-        placeholder: 'Describe any obstacles (or write "None" if clear)',
-        required: false,
-      },
-      {
-        id: 'mood',
-        name: 'mood',
-        label: 'How are you feeling today?',
-        type: 'select',
-        options: [
-          { label: 'Great', value: 'great' },
-          { label: 'Good', value: 'good' },
-          { label: 'Okay', value: 'okay' },
-          { label: 'Struggling', value: 'struggling' },
-        ],
-        required: false,
-      },
-    ],
-    submitLabel: 'Submit Standup',
-    timeoutSeconds: 7200, // 2 hours to respond
-  })
+        {
+          id: 'blockers',
+          name: 'blockers',
+          label: 'Any blockers or challenges?',
+          type: 'textarea',
+          placeholder: 'Describe any obstacles (or write "None" if clear)',
+          required: false,
+        },
+        {
+          id: 'mood',
+          name: 'mood',
+          label: 'How are you feeling today?',
+          type: 'select',
+          options: [
+            { label: 'Great', value: 'great' },
+            { label: 'Good', value: 'good' },
+            { label: 'Okay', value: 'okay' },
+            { label: 'Struggling', value: 'struggling' },
+          ],
+          required: false,
+        },
+      ],
+      submitLabel: 'Submit Standup',
+      timeoutSeconds: 7200, // 2 hours to respond
+    }
+  )
   standupForm.name = 'Standup Form'
   standupForm.description = 'Collect standup response from team member'
 
   // Wait for responses
-  const waitForResponses = createDelayStep({ x: 250, y: 700 }, {
-    delayType: 'fixed',
-    duration: 2,
-    durationUnit: 'hours',
-    maxWaitDuration: 7200000, // 2 hours max
-  })
+  const waitForResponses = createDelayStep(
+    { x: 250, y: 700 },
+    {
+      delayType: 'fixed',
+      duration: 2,
+      durationUnit: 'hours',
+      maxWaitDuration: 7200000, // 2 hours max
+    }
+  )
   waitForResponses.name = 'Wait for Responses'
   waitForResponses.description = 'Wait 2 hours for team members to respond'
 
   // Create summary message
-  const postSummary = createMessageStep({ x: 250, y: 830 }, {
-    target: 'channel',
-    channelId: teamChannelId,
-    content: `**Daily Standup Summary** - {{trigger.data.date}}
+  const postSummary = createMessageStep(
+    { x: 250, y: 830 },
+    {
+      target: 'channel',
+      channelId: teamChannelId,
+      content: `**Daily Standup Summary** - {{trigger.data.date}}
 
 {{#each variables.responses}}
 ---
@@ -163,28 +177,32 @@ Check your DMs for the standup form.`,
 
 ---
 *{{variables.responseCount}}/{{variables.teamCount}} team members responded*`,
-    parseVariables: true,
-    embeds: [
-      {
-        title: 'Standup Complete',
-        color: '#10B981',
-        fields: [
-          { name: 'Responses', value: '{{variables.responseCount}}', inline: true },
-          { name: 'Team Size', value: '{{variables.teamCount}}', inline: true },
-        ],
-        timestamp: true,
-      },
-    ],
-  })
+      parseVariables: true,
+      embeds: [
+        {
+          title: 'Standup Complete',
+          color: '#10B981',
+          fields: [
+            { name: 'Responses', value: '{{variables.responseCount}}', inline: true },
+            { name: 'Team Size', value: '{{variables.teamCount}}', inline: true },
+          ],
+          timestamp: true,
+        },
+      ],
+    }
+  )
   postSummary.name = 'Post Summary'
   postSummary.description = 'Post the standup summary to the team channel'
 
   // End step
-  const end = createEndStep({ x: 250, y: 960 }, {
-    status: 'success',
-    message: 'Daily standup completed',
-    outputVariables: ['responses', 'responseCount'],
-  })
+  const end = createEndStep(
+    { x: 250, y: 960 },
+    {
+      status: 'success',
+      message: 'Daily standup completed',
+      outputVariables: ['responses', 'responseCount'],
+    }
+  )
   end.name = 'End'
   end.description = 'Standup workflow complete'
 

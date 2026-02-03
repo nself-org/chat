@@ -42,6 +42,7 @@ This document provides a comprehensive guide to the complete, production-ready v
 ## Features Checklist
 
 ### ✅ Voice Calls (1:1)
+
 - [x] Initiate voice call
 - [x] Accept/reject incoming call
 - [x] Call ringing UI with ringtone
@@ -55,6 +56,7 @@ This document provides a comprehensive guide to the complete, production-ready v
 - [x] Missed call notifications
 
 ### ✅ Video Calls (1:1)
+
 - [x] Initiate video call
 - [x] Accept/reject incoming call
 - [x] Call ringing UI
@@ -66,6 +68,7 @@ This document provides a comprehensive guide to the complete, production-ready v
 - [x] End call
 
 ### ✅ Advanced Features
+
 - [x] Screen sharing
 - [x] Background blur for video
 - [x] Noise suppression
@@ -78,6 +81,7 @@ This document provides a comprehensive guide to the complete, production-ready v
 - [x] Picture-in-picture support
 
 ### ⏳ Partial/Not Implemented
+
 - [ ] Group calls (infrastructure ready, needs UI)
 - [ ] Virtual backgrounds (requires additional processing)
 - [ ] Call recording
@@ -233,6 +237,7 @@ NEXT_PUBLIC_CALL_RECONNECT_ATTEMPTS=5
 For production, you MUST have a TURN server. Here are the options:
 
 ### Option 1: Managed TURN Services
+
 - **Twilio STUN/TURN**: https://www.twilio.com/stun-turn
 - **Xirsys**: https://xirsys.com/
 - **Metered**: https://www.metered.ca/tools/openrelay/
@@ -371,6 +376,7 @@ const iceConfig = {
 ### No Audio/Video
 
 1. **Check Permissions**
+
    ```typescript
    const permissions = await navigator.mediaDevices.getUserMedia({
      audio: true,
@@ -381,13 +387,20 @@ const iceConfig = {
 2. **Check Device Enumeration**
    ```typescript
    const devices = await navigator.mediaDevices.enumerateDevices()
-   console.log('Audio inputs:', devices.filter(d => d.kind === 'audioinput'))
-   console.log('Video inputs:', devices.filter(d => d.kind === 'videoinput'))
+   console.log(
+     'Audio inputs:',
+     devices.filter((d) => d.kind === 'audioinput')
+   )
+   console.log(
+     'Video inputs:',
+     devices.filter((d) => d.kind === 'videoinput')
+   )
    ```
 
 ### Connection Fails
 
 1. **Test STUN/TURN**
+
    ```typescript
    import { testAllServers } from '@/lib/webrtc/servers'
    const results = await testAllServers()
@@ -411,6 +424,7 @@ const iceConfig = {
 ### Poor Quality
 
 1. **Reduce Video Quality**
+
    ```typescript
    await mediaManager.applyVideoConstraints({
      width: { ideal: 640 },
@@ -429,6 +443,7 @@ const iceConfig = {
 ## Performance Optimization
 
 ### 1. Lazy Loading
+
 Only load WebRTC modules when needed:
 
 ```typescript
@@ -439,6 +454,7 @@ const loadCallManager = async () => {
 ```
 
 ### 2. Adaptive Bitrate
+
 Automatically adjust quality based on network conditions:
 
 ```typescript
@@ -451,6 +467,7 @@ bandwidthManager.on('quality-change', (quality) => {
 ```
 
 ### 3. Simulcast
+
 For group calls, enable simulcast to send multiple quality streams:
 
 ```typescript
@@ -462,16 +479,19 @@ await setupSimulcast(peerConnection, stream)
 ## Security Considerations
 
 ### 1. TURN Credentials
+
 - **Never** expose TURN credentials in client code
 - Use a server endpoint to generate time-limited credentials
 - Implement proper authentication before providing credentials
 
 ### 2. Signaling Security
+
 - All signaling goes through authenticated Socket.io connections
 - Validate user permissions before allowing calls
 - Implement rate limiting on call initiation
 
 ### 3. Media Security
+
 - All media is encrypted via WebRTC (SRTP)
 - Use HTTPS and WSS in production
 - Consider end-to-end encryption for sensitive calls
@@ -516,13 +536,13 @@ test('initiate voice call', async ({ page, context }) => {
 
 ## Browser Compatibility
 
-| Feature | Chrome | Firefox | Safari | Edge |
-|---------|--------|---------|--------|------|
-| Voice Calls | ✅ | ✅ | ✅ | ✅ |
-| Video Calls | ✅ | ✅ | ✅ | ✅ |
-| Screen Share | ✅ | ✅ | ✅ | ✅ |
-| Background Blur | ✅ | ⚠️ | ❌ | ✅ |
-| Virtual BG | ✅ | ❌ | ❌ | ✅ |
+| Feature         | Chrome | Firefox | Safari | Edge |
+| --------------- | ------ | ------- | ------ | ---- |
+| Voice Calls     | ✅     | ✅      | ✅     | ✅   |
+| Video Calls     | ✅     | ✅      | ✅     | ✅   |
+| Screen Share    | ✅     | ✅      | ✅     | ✅   |
+| Background Blur | ✅     | ⚠️      | ❌     | ✅   |
+| Virtual BG      | ✅     | ❌      | ❌     | ✅   |
 
 ⚠️ = Partial support
 ❌ = Not supported
@@ -539,6 +559,7 @@ test('initiate voice call', async ({ page, context }) => {
 ## Support
 
 For issues or questions:
+
 1. Check console logs for detailed error messages
 2. Use the built-in diagnostic tools (`testAllServers`, `getConnectionStats`)
 3. Review WebRTC internals at `chrome://webrtc-internals/`

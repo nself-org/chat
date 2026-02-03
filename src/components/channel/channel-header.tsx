@@ -28,17 +28,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import {
-  useChannelStore,
-  selectActiveChannel,
-  type Channel,
-} from '@/stores/channel-store'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useChannelStore, selectActiveChannel, type Channel } from '@/stores/channel-store'
 import { useUIStore } from '@/stores/ui-store'
 import { useAuth } from '@/contexts/auth-context'
 
@@ -97,12 +88,7 @@ export function ChannelHeader({
 
   // Store state
   const channel = useChannelStore(selectActiveChannel)
-  const {
-    starredChannels,
-    mutedChannels,
-    toggleStarChannel,
-    toggleMuteChannel,
-  } = useChannelStore()
+  const { starredChannels, mutedChannels, toggleStarChannel, toggleMuteChannel } = useChannelStore()
   const { toggleMembersPanel, membersPanelOpen, openModal } = useUIStore()
 
   if (!channel) {
@@ -153,31 +139,29 @@ export function ChannelHeader({
     <TooltipProvider delayDuration={300}>
       <div
         className={cn(
-          'flex h-14 items-center justify-between border-b px-4 bg-background',
+          'flex h-14 items-center justify-between border-b bg-background px-4',
           className
         )}
       >
         {/* Left Section - Channel Info */}
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex min-w-0 items-center gap-2">
           <ChannelIcon channel={channel} />
 
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <h1 className="font-semibold truncate">
+              <h1 className="truncate font-semibold">
                 {isDM ? channel.otherUserName || channel.name : channel.name}
               </h1>
               {isStarred && (
-                <Star className="h-4 w-4 text-yellow-500 fill-yellow-500 flex-shrink-0" />
+                <Star className="h-4 w-4 flex-shrink-0 fill-yellow-500 text-yellow-500" />
               )}
-              {isMuted && (
-                <BellOff className="h-4 w-4 text-muted-foreground flex-shrink-0" />
-              )}
+              {isMuted && <BellOff className="h-4 w-4 flex-shrink-0 text-muted-foreground" />}
             </div>
 
             {/* Topic/Description */}
             {channel.topic && (
               <button
-                className="text-xs text-muted-foreground hover:text-foreground truncate max-w-md text-left transition-colors"
+                className="max-w-md truncate text-left text-xs text-muted-foreground transition-colors hover:text-foreground"
                 onClick={handleInfoClick}
               >
                 {channel.topic}
@@ -188,7 +172,7 @@ export function ChannelHeader({
           {/* Channel Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-6 w-6 ml-1">
+              <Button variant="ghost" size="icon" className="ml-1 h-6 w-6">
                 <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -247,7 +231,7 @@ export function ChannelHeader({
                   size="sm"
                   className={cn(
                     'gap-1.5 text-muted-foreground hover:text-foreground',
-                    membersPanelOpen && 'bg-accent text-accent-foreground'
+                    membersPanelOpen && 'text-accent-foreground bg-accent'
                   )}
                   onClick={handleMembersClick}
                 >
@@ -264,12 +248,7 @@ export function ChannelHeader({
           {/* Search in Channel */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onSearchClick}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onSearchClick}>
                 <Search className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -281,12 +260,7 @@ export function ChannelHeader({
           {/* Pinned Messages */}
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8"
-                onClick={onPinnedClick}
-              >
+              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onPinnedClick}>
                 <Pin className="h-4 w-4" />
               </Button>
             </TooltipTrigger>
@@ -300,12 +274,7 @@ export function ChannelHeader({
             <>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    disabled
-                  >
+                  <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
                     <Phone className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>
@@ -316,12 +285,7 @@ export function ChannelHeader({
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    disabled
-                  >
+                  <Button variant="ghost" size="icon" className="h-8 w-8" disabled>
                     <Video className="h-4 w-4" />
                   </Button>
                 </TooltipTrigger>

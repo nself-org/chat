@@ -8,15 +8,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getStripeBillingService } from '@/lib/billing/stripe-service'
 import Stripe from 'stripe'
 
+import { logger } from '@/lib/logger'
+
 export async function POST(request: NextRequest) {
   try {
     const signature = request.headers.get('stripe-signature')
 
     if (!signature) {
-      return NextResponse.json(
-        { error: 'Missing stripe signature' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing stripe signature' }, { status: 400 })
     }
 
     // Get raw body
@@ -39,7 +38,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ received: true })
   } catch (error: any) {
-    console.error('Error processing webhook:', error)
+    logger.error('Error processing webhook:', error)
     return NextResponse.json(
       { error: 'Webhook processing failed', details: error.message },
       { status: 400 }

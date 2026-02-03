@@ -271,10 +271,7 @@ export const GET_ACTIVE_POLLS = gql`
       where: {
         channel_id: { _eq: $channelId }
         status: { _eq: "active" }
-        _or: [
-          { ends_at: { _is_null: true } }
-          { ends_at: { _gt: "now()" } }
-        ]
+        _or: [{ ends_at: { _is_null: true } }, { ends_at: { _gt: "now()" } }]
       }
       order_by: { created_at: desc }
     ) {
@@ -330,9 +327,7 @@ export const GET_POLL_RESULTS = gql`
  */
 export const GET_USER_VOTES = gql`
   query GetUserVotes($pollId: uuid!, $userId: uuid!) {
-    nchat_poll_votes(
-      where: { poll_id: { _eq: $pollId }, user_id: { _eq: $userId } }
-    ) {
+    nchat_poll_votes(where: { poll_id: { _eq: $pollId }, user_id: { _eq: $userId } }) {
       id
       option_id
       created_at
@@ -403,11 +398,7 @@ export const CREATE_POLL = gql`
 export const VOTE_POLL = gql`
   mutation VotePoll($pollId: uuid!, $optionId: uuid!, $userId: uuid!) {
     insert_nchat_poll_votes_one(
-      object: {
-        poll_id: $pollId
-        option_id: $optionId
-        user_id: $userId
-      }
+      object: { poll_id: $pollId, option_id: $optionId, user_id: $userId }
       on_conflict: {
         constraint: nchat_poll_votes_poll_id_option_id_user_id_key
         update_columns: []
@@ -428,11 +419,7 @@ export const VOTE_POLL = gql`
 export const REMOVE_VOTE = gql`
   mutation RemoveVote($pollId: uuid!, $optionId: uuid!, $userId: uuid!) {
     delete_nchat_poll_votes(
-      where: {
-        poll_id: { _eq: $pollId }
-        option_id: { _eq: $optionId }
-        user_id: { _eq: $userId }
-      }
+      where: { poll_id: { _eq: $pollId }, option_id: { _eq: $optionId }, user_id: { _eq: $userId } }
     ) {
       affected_rows
     }
@@ -444,9 +431,7 @@ export const REMOVE_VOTE = gql`
  */
 export const REMOVE_USER_VOTES = gql`
   mutation RemoveUserVotes($pollId: uuid!, $userId: uuid!) {
-    delete_nchat_poll_votes(
-      where: { poll_id: { _eq: $pollId }, user_id: { _eq: $userId } }
-    ) {
+    delete_nchat_poll_votes(where: { poll_id: { _eq: $pollId }, user_id: { _eq: $userId } }) {
       affected_rows
     }
   }
@@ -490,10 +475,7 @@ export const REOPEN_POLL = gql`
  */
 export const UPDATE_POLL_SETTINGS = gql`
   mutation UpdatePollSettings($pollId: uuid!, $settings: jsonb!) {
-    update_nchat_polls_by_pk(
-      pk_columns: { id: $pollId }
-      _set: { settings: $settings }
-    ) {
+    update_nchat_polls_by_pk(pk_columns: { id: $pollId }, _set: { settings: $settings }) {
       id
       settings
     }
@@ -505,10 +487,7 @@ export const UPDATE_POLL_SETTINGS = gql`
  */
 export const UPDATE_POLL_END_DATE = gql`
   mutation UpdatePollEndDate($pollId: uuid!, $endsAt: timestamptz) {
-    update_nchat_polls_by_pk(
-      pk_columns: { id: $pollId }
-      _set: { ends_at: $endsAt }
-    ) {
+    update_nchat_polls_by_pk(pk_columns: { id: $pollId }, _set: { ends_at: $endsAt }) {
       id
       ends_at
     }
@@ -520,9 +499,7 @@ export const UPDATE_POLL_END_DATE = gql`
  */
 export const ADD_POLL_OPTION = gql`
   mutation AddPollOption($pollId: uuid!, $text: String!, $position: Int!) {
-    insert_nchat_poll_options_one(
-      object: { poll_id: $pollId, text: $text, position: $position }
-    ) {
+    insert_nchat_poll_options_one(object: { poll_id: $pollId, text: $text, position: $position }) {
       id
       poll_id
       text
@@ -569,10 +546,7 @@ export const POLL_UPDATED_SUBSCRIPTION = gql`
  */
 export const POLL_VOTES_SUBSCRIPTION = gql`
   subscription PollVotes($pollId: uuid!) {
-    nchat_poll_votes(
-      where: { poll_id: { _eq: $pollId } }
-      order_by: { created_at: desc }
-    ) {
+    nchat_poll_votes(where: { poll_id: { _eq: $pollId } }, order_by: { created_at: desc }) {
       id
       poll_id
       option_id

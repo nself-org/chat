@@ -54,7 +54,13 @@ const statusColors: Record<string, string> = {
   banned: 'bg-red-500',
 }
 
-type SortableColumn = 'username' | 'displayName' | 'email' | 'createdAt' | 'lastSeenAt' | 'messagesCount'
+type SortableColumn =
+  | 'username'
+  | 'displayName'
+  | 'email'
+  | 'createdAt'
+  | 'lastSeenAt'
+  | 'messagesCount'
 
 const columns: { key: SortableColumn; label: string; sortable: boolean; className?: string }[] = [
   { key: 'displayName', label: 'User', sortable: true },
@@ -77,12 +83,8 @@ export function UserTable({
   onSortChange,
   onUserClick,
 }: UserTableProps) {
-  const {
-    selectedUserIds,
-    toggleUserSelection,
-    selectAllUsers,
-    clearUserSelection,
-  } = useUserManagementStore()
+  const { selectedUserIds, toggleUserSelection, selectAllUsers, clearUserSelection } =
+    useUserManagementStore()
 
   const totalPages = Math.ceil(total / perPage)
   const startItem = (page - 1) * perPage + 1
@@ -133,7 +135,7 @@ export function UserTable({
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b bg-muted/50">
+              <tr className="bg-muted/50 border-b">
                 <th className="w-12 px-4 py-3">
                   <Checkbox
                     checked={isAllSelected}
@@ -203,7 +205,9 @@ export function UserTable({
               {isLoading ? (
                 Array.from({ length: perPage }).map((_, i) => (
                   <tr key={i} className="border-b">
-                    <td className="px-4 py-3"><div className="h-4 w-4 animate-pulse rounded bg-muted" /></td>
+                    <td className="px-4 py-3">
+                      <div className="h-4 w-4 animate-pulse rounded bg-muted" />
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
                         <div className="h-10 w-10 animate-pulse rounded-full bg-muted" />
@@ -213,11 +217,21 @@ export function UserTable({
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3"><div className="h-5 w-16 animate-pulse rounded bg-muted" /></td>
-                    <td className="hidden px-4 py-3 md:table-cell"><div className="h-5 w-16 animate-pulse rounded bg-muted" /></td>
-                    <td className="hidden px-4 py-3 lg:table-cell"><div className="h-4 w-20 animate-pulse rounded bg-muted" /></td>
-                    <td className="hidden px-4 py-3 lg:table-cell"><div className="h-4 w-20 animate-pulse rounded bg-muted" /></td>
-                    <td className="hidden px-4 py-3 xl:table-cell"><div className="h-4 w-12 animate-pulse rounded bg-muted" /></td>
+                    <td className="px-4 py-3">
+                      <div className="h-5 w-16 animate-pulse rounded bg-muted" />
+                    </td>
+                    <td className="hidden px-4 py-3 md:table-cell">
+                      <div className="h-5 w-16 animate-pulse rounded bg-muted" />
+                    </td>
+                    <td className="hidden px-4 py-3 lg:table-cell">
+                      <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+                    </td>
+                    <td className="hidden px-4 py-3 lg:table-cell">
+                      <div className="h-4 w-20 animate-pulse rounded bg-muted" />
+                    </td>
+                    <td className="hidden px-4 py-3 xl:table-cell">
+                      <div className="h-4 w-12 animate-pulse rounded bg-muted" />
+                    </td>
                   </tr>
                 ))
               ) : users.length === 0 ? (
@@ -235,7 +249,7 @@ export function UserTable({
                     <tr
                       key={user.id}
                       className={cn(
-                        'border-b last:border-b-0 hover:bg-muted/50 cursor-pointer',
+                        'hover:bg-muted/50 cursor-pointer border-b last:border-b-0',
                         isSelected && 'bg-muted/30'
                       )}
                       onClick={() => onUserClick?.(user)}
@@ -261,9 +275,7 @@ export function UserTable({
                             >
                               {user.displayName}
                             </Link>
-                            <div className="text-sm text-muted-foreground">
-                              @{user.username}
-                            </div>
+                            <div className="text-sm text-muted-foreground">@{user.username}</div>
                           </div>
                         </div>
                       </td>
@@ -302,7 +314,9 @@ export function UserTable({
       {/* Pagination */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <span>Showing {startItem} to {endItem} of {total.toLocaleString()} users</span>
+          <span>
+            Showing {startItem} to {endItem} of {total.toLocaleString()} users
+          </span>
           <Select
             value={perPage.toString()}
             onValueChange={(value) => onPerPageChange(parseInt(value, 10))}

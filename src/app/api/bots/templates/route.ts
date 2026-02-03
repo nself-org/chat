@@ -7,7 +7,12 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createLogger } from '@/lib/logger'
-import { allTemplates, getTemplate, getTemplatesByCategory, getFeaturedTemplates } from '@/lib/bots/templates'
+import {
+  allTemplates,
+  getTemplate,
+  getTemplatesByCategory,
+  getFeaturedTemplates,
+} from '@/lib/bots/templates'
 
 const logger = createLogger('BotTemplatesAPI')
 
@@ -21,7 +26,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category')
     const featured = searchParams.get('featured')
 
-    let templates: readonly typeof allTemplates[number][] = allTemplates
+    let templates: readonly (typeof allTemplates)[number][] = allTemplates
 
     if (featured === 'true') {
       templates = getFeaturedTemplates()
@@ -69,7 +74,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     const requiredFields = ['id', 'name', 'description', 'category', 'code']
-    const missingFields = requiredFields.filter(field => !body[field])
+    const missingFields = requiredFields.filter((field) => !body[field])
 
     if (missingFields.length > 0) {
       return NextResponse.json(
@@ -103,11 +108,14 @@ export async function POST(request: NextRequest) {
       name: template.name,
     })
 
-    return NextResponse.json({
-      success: true,
-      data: template,
-      message: 'Template created successfully',
-    }, { status: 201 })
+    return NextResponse.json(
+      {
+        success: true,
+        data: template,
+        message: 'Template created successfully',
+      },
+      { status: 201 }
+    )
   } catch (error) {
     logger.error('Failed to create template', error as Error)
 

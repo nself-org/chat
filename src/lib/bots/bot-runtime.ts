@@ -48,11 +48,7 @@ export class BotInstance {
   private reactionHandlers: ReactionHandler[] = []
   private cleanupFunctions: Array<() => void> = []
 
-  constructor(
-    manifest: BotManifest,
-    config: BotConfig,
-    services: BotServices
-  ) {
+  constructor(manifest: BotManifest, config: BotConfig, services: BotServices) {
     this.manifest = manifest
     this.config = config
     this.state = {
@@ -84,10 +80,7 @@ export class BotInstance {
       this.commands.register(cmdDef, handler)
     } else {
       // Create a simple command definition
-      this.commands.register(
-        { name, description: `Command: ${name}` },
-        handler
-      )
+      this.commands.register({ name, description: `Command: ${name}` }, handler)
     }
     return this
   }
@@ -223,7 +216,7 @@ export class BotInstance {
   stop(): void {
     this.state.status = 'inactive'
     // Run all cleanup functions
-    this.cleanupFunctions.forEach(fn => {
+    this.cleanupFunctions.forEach((fn) => {
       try {
         fn()
       } catch (error) {

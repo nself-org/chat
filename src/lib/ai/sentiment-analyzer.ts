@@ -125,16 +125,7 @@ const EMOTION_LEXICON = {
     'depressed',
     'down',
   ],
-  anger: [
-    'angry',
-    'frustrated',
-    'annoyed',
-    'irritated',
-    'furious',
-    'mad',
-    'upset',
-    'outraged',
-  ],
+  anger: ['angry', 'frustrated', 'annoyed', 'irritated', 'furious', 'mad', 'upset', 'outraged'],
   fear: [
     'afraid',
     'scared',
@@ -145,33 +136,10 @@ const EMOTION_LEXICON = {
     'frightened',
     'terrified',
   ],
-  surprise: [
-    'surprised',
-    'shocked',
-    'amazed',
-    'astonished',
-    'unexpected',
-    'wow',
-    'incredible',
-  ],
+  surprise: ['surprised', 'shocked', 'amazed', 'astonished', 'unexpected', 'wow', 'incredible'],
   disgust: ['disgusting', 'awful', 'terrible', 'horrible', 'gross', 'nasty'],
-  trust: [
-    'trust',
-    'believe',
-    'reliable',
-    'confident',
-    'sure',
-    'certain',
-    'agree',
-  ],
-  anticipation: [
-    'excited',
-    'looking forward',
-    'anticipate',
-    'expect',
-    'hope',
-    'eager',
-  ],
+  trust: ['trust', 'believe', 'reliable', 'confident', 'sure', 'certain', 'agree'],
+  anticipation: ['excited', 'looking forward', 'anticipate', 'expect', 'hope', 'eager'],
 }
 
 const POSITIVE_WORDS = [
@@ -216,15 +184,7 @@ const NEGATIVE_WORDS = [
   'annoying',
 ]
 
-const TOXIC_PATTERNS = [
-  'stupid',
-  'idiot',
-  'dumb',
-  'useless',
-  'pathetic',
-  'trash',
-  'garbage',
-]
+const TOXIC_PATTERNS = ['stupid', 'idiot', 'dumb', 'useless', 'pathetic', 'trash', 'garbage']
 
 /**
  * Sentiment Analyzer class
@@ -349,9 +309,7 @@ export class SentimentAnalyzer {
 
     try {
       // Analyze each message
-      const analyses = await Promise.all(
-        messages.map((msg) => this.analyzeMessage(msg, options))
-      )
+      const analyses = await Promise.all(messages.map((msg) => this.analyzeMessage(msg, options)))
 
       // Create data points
       const sentiments: SentimentDataPoint[] = messages.map((msg, index) => ({
@@ -482,10 +440,7 @@ export class SentimentAnalyzer {
   /**
    * Build sentiment analysis prompt
    */
-  private buildSentimentPrompt(
-    message: Message,
-    options: SentimentOptions
-  ): string {
+  private buildSentimentPrompt(message: Message, options: SentimentOptions): string {
     let prompt = `Analyze the sentiment and emotion of this message. Provide:
 1. Sentiment (positive/negative/neutral/mixed)
 2. Emotion (joy/sadness/anger/fear/surprise/disgust/trust/anticipation/neutral)
@@ -515,8 +470,7 @@ Message: "${message.content}"`
     }
 
     const model = this.config.model || DEFAULT_OPENAI_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
+    const endpoint = this.config.endpoint || 'https://api.openai.com/v1/chat/completions'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -558,8 +512,7 @@ Message: "${message.content}"`
     }
 
     const model = this.config.model || DEFAULT_ANTHROPIC_MODEL
-    const endpoint =
-      this.config.endpoint || 'https://api.anthropic.com/v1/messages'
+    const endpoint = this.config.endpoint || 'https://api.anthropic.com/v1/messages'
 
     const response = await fetch(endpoint, {
       method: 'POST',
@@ -588,10 +541,7 @@ Message: "${message.content}"`
   /**
    * Parse AI response
    */
-  private parseAIResponse(
-    response: string,
-    message: Message
-  ): SentimentAnalysisResult {
+  private parseAIResponse(response: string, message: Message): SentimentAnalysisResult {
     try {
       const parsed = JSON.parse(response)
 
@@ -617,19 +567,12 @@ Message: "${message.content}"`
   /**
    * Local sentiment analysis (rule-based)
    */
-  private analyzeLocally(
-    message: Message,
-    options: SentimentOptions
-  ): SentimentAnalysisResult {
+  private analyzeLocally(message: Message, options: SentimentOptions): SentimentAnalysisResult {
     const content = message.content.toLowerCase()
 
     // Count positive and negative words
-    const positiveCount = POSITIVE_WORDS.filter((word) =>
-      content.includes(word)
-    ).length
-    const negativeCount = NEGATIVE_WORDS.filter((word) =>
-      content.includes(word)
-    ).length
+    const positiveCount = POSITIVE_WORDS.filter((word) => content.includes(word)).length
+    const negativeCount = NEGATIVE_WORDS.filter((word) => content.includes(word)).length
 
     // Calculate sentiment
     const total = positiveCount + negativeCount || 1
@@ -648,9 +591,7 @@ Message: "${message.content}"`
     const emotion = this.detectEmotion(content)
 
     // Detect toxicity
-    const toxicity = options.detectToxicity
-      ? this.detectToxicity(content)
-      : 0
+    const toxicity = options.detectToxicity ? this.detectToxicity(content) : 0
 
     // Determine emotional intensity
     const emotionalIntensity = this.determineIntensity(content)
@@ -666,9 +607,7 @@ Message: "${message.content}"`
         neutral: neutralPercent,
       },
       context: {
-        keywords: [...POSITIVE_WORDS, ...NEGATIVE_WORDS].filter((word) =>
-          content.includes(word)
-        ),
+        keywords: [...POSITIVE_WORDS, ...NEGATIVE_WORDS].filter((word) => content.includes(word)),
         indicators: {
           positive: POSITIVE_WORDS.filter((word) => content.includes(word)),
           negative: NEGATIVE_WORDS.filter((word) => content.includes(word)),
@@ -699,14 +638,11 @@ Message: "${message.content}"`
    * Detect toxicity
    */
   private detectToxicity(content: string): number {
-    const toxicMatches = TOXIC_PATTERNS.filter((pattern) =>
-      content.includes(pattern)
-    ).length
+    const toxicMatches = TOXIC_PATTERNS.filter((pattern) => content.includes(pattern)).length
 
     // Also check for excessive caps and exclamation marks
-    const capsRatio =
-      (content.match(/[A-Z]/g)?.length || 0) / (content.length || 1)
-    const exclamationCount = (content.match(/!/g)?.length || 0)
+    const capsRatio = (content.match(/[A-Z]/g)?.length || 0) / (content.length || 1)
+    const exclamationCount = content.match(/!/g)?.length || 0
 
     let toxicity = toxicMatches * 30
     if (capsRatio > 0.5) toxicity += 20
@@ -719,13 +655,11 @@ Message: "${message.content}"`
    * Determine emotional intensity
    */
   private determineIntensity(content: string): 'low' | 'medium' | 'high' {
-    const capsRatio =
-      (content.match(/[A-Z]/g)?.length || 0) / (content.length || 1)
-    const exclamationCount = (content.match(/!/g)?.length || 0)
-    const emotionalWords =
-      [...POSITIVE_WORDS, ...NEGATIVE_WORDS].filter((word) =>
-        content.includes(word)
-      ).length
+    const capsRatio = (content.match(/[A-Z]/g)?.length || 0) / (content.length || 1)
+    const exclamationCount = content.match(/!/g)?.length || 0
+    const emotionalWords = [...POSITIVE_WORDS, ...NEGATIVE_WORDS].filter((word) =>
+      content.includes(word)
+    ).length
 
     const intensity = capsRatio * 100 + exclamationCount * 10 + emotionalWords * 5
 
@@ -737,9 +671,7 @@ Message: "${message.content}"`
   /**
    * Determine trend from sentiment data points
    */
-  private determineTrend(
-    sentiments: SentimentDataPoint[]
-  ): 'improving' | 'declining' | 'stable' {
+  private determineTrend(sentiments: SentimentDataPoint[]): 'improving' | 'declining' | 'stable' {
     if (sentiments.length < 3) return 'stable'
 
     // Compare first third vs last third
@@ -747,10 +679,8 @@ Message: "${message.content}"`
     const firstThird = sentiments.slice(0, third)
     const lastThird = sentiments.slice(-third)
 
-    const firstAvg =
-      firstThird.reduce((sum, s) => sum + s.score, 0) / firstThird.length
-    const lastAvg =
-      lastThird.reduce((sum, s) => sum + s.score, 0) / lastThird.length
+    const firstAvg = firstThird.reduce((sum, s) => sum + s.score, 0) / firstThird.length
+    const lastAvg = lastThird.reduce((sum, s) => sum + s.score, 0) / lastThird.length
 
     const diff = lastAvg - firstAvg
 
@@ -769,8 +699,7 @@ Message: "${message.content}"`
     const mean = scores.reduce((sum, score) => sum + score, 0) / scores.length
 
     const variance =
-      scores.reduce((sum, score) => sum + Math.pow(score - mean, 2), 0) /
-      scores.length
+      scores.reduce((sum, score) => sum + Math.pow(score - mean, 2), 0) / scores.length
 
     return Math.min(Math.sqrt(variance) * 100, 100)
   }
@@ -868,10 +797,7 @@ Message: "${message.content}"`
   /**
    * Create empty morale report
    */
-  private createEmptyMoraleReport(period: {
-    start: Date
-    end: Date
-  }): TeamMoraleReport {
+  private createEmptyMoraleReport(period: { start: Date; end: Date }): TeamMoraleReport {
     return {
       overall: 'neutral',
       score: 50,
@@ -893,9 +819,7 @@ let sentimentAnalyzer: SentimentAnalyzer | null = null
 /**
  * Get or create the global sentiment analyzer instance
  */
-export function getSentimentAnalyzer(
-  config?: Partial<SentimentAnalyzerConfig>
-): SentimentAnalyzer {
+export function getSentimentAnalyzer(config?: Partial<SentimentAnalyzerConfig>): SentimentAnalyzer {
   if (!sentimentAnalyzer || config) {
     sentimentAnalyzer = new SentimentAnalyzer(config)
   }

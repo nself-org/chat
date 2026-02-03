@@ -1,23 +1,10 @@
 'use client'
 
 import * as React from 'react'
-import {
-  Download,
-  ExternalLink,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize2,
-} from 'lucide-react'
+import { Download, ExternalLink, Play, Pause, Volume2, VolumeX, Maximize2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
 import { FileIcon } from './file-icon'
 import { formatFileSize, getFileCategory } from '@/lib/storage/upload'
 
@@ -222,17 +209,12 @@ function ImageAttachment({
     <div className={cn('group relative inline-block', className)}>
       {/* Image */}
       <div
-        className={cn(
-          'relative overflow-hidden rounded-lg bg-muted',
-          onClick && 'cursor-pointer'
-        )}
+        className={cn('relative overflow-hidden rounded-lg bg-muted', onClick && 'cursor-pointer')}
         style={displayStyle}
         onClick={onClick}
       >
         {/* Loading skeleton */}
-        {!loaded && (
-          <div className="absolute inset-0 animate-pulse bg-muted" />
-        )}
+        {!loaded && <div className="absolute inset-0 animate-pulse bg-muted" />}
 
         <img
           src={file.thumbnailUrl || file.url}
@@ -263,14 +245,10 @@ function ImageAttachment({
               </p>
             )}
             {showFileSize && (
-              <p className="text-xs text-muted-foreground">
-                {formatFileSize(file.size)}
-              </p>
+              <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
             )}
           </div>
-          {showDownload && (
-            <DownloadButton url={file.url} name={file.name} size="sm" />
-          )}
+          {showDownload && <DownloadButton url={file.url} name={file.name} size="sm" />}
         </div>
       )}
     </div>
@@ -326,10 +304,7 @@ function VideoAttachment({
   return (
     <div className={cn('group relative inline-block', className)}>
       {/* Video player */}
-      <div
-        className="relative overflow-hidden rounded-lg bg-black"
-        style={{ maxWidth, maxHeight }}
-      >
+      <div className="relative overflow-hidden rounded-lg bg-black" style={{ maxWidth, maxHeight }}>
         <video
           ref={videoRef}
           src={file.url}
@@ -345,13 +320,9 @@ function VideoAttachment({
         <div className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/30">
           <button
             onClick={togglePlay}
-            className="rounded-full bg-white/90 p-3 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-white"
+            className="rounded-full bg-white/90 p-3 opacity-0 transition-opacity hover:bg-white group-hover:opacity-100"
           >
-            {isPlaying ? (
-              <Pause className="h-6 w-6" />
-            ) : (
-              <Play className="h-6 w-6 pl-0.5" />
-            )}
+            {isPlaying ? <Pause className="h-6 w-6" /> : <Play className="h-6 w-6 pl-0.5" />}
           </button>
         </div>
 
@@ -361,11 +332,7 @@ function VideoAttachment({
             onClick={toggleMute}
             className="rounded-full bg-black/50 p-1.5 text-white hover:bg-black/70"
           >
-            {isMuted ? (
-              <VolumeX className="h-4 w-4" />
-            ) : (
-              <Volume2 className="h-4 w-4" />
-            )}
+            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
           </button>
         </div>
 
@@ -387,14 +354,10 @@ function VideoAttachment({
               </p>
             )}
             {showFileSize && (
-              <p className="text-xs text-muted-foreground">
-                {formatFileSize(file.size)}
-              </p>
+              <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
             )}
           </div>
-          {showDownload && (
-            <DownloadButton url={file.url} name={file.name} size="sm" />
-          )}
+          {showDownload && <DownloadButton url={file.url} name={file.name} size="sm" />}
         </div>
       )}
     </div>
@@ -466,21 +429,15 @@ function AudioAttachment({
         onPause={() => setIsPlaying(false)}
         onEnded={() => setIsPlaying(false)}
         onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={(e) =>
-          setDuration((e.target as HTMLAudioElement).duration)
-        }
+        onLoadedMetadata={(e) => setDuration((e.target as HTMLAudioElement).duration)}
       />
 
       {/* Play button */}
       <button
         onClick={togglePlay}
-        className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90"
+        className="text-primary-foreground hover:bg-primary/90 flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary"
       >
-        {isPlaying ? (
-          <Pause className="h-5 w-5" />
-        ) : (
-          <Play className="h-5 w-5 pl-0.5" />
-        )}
+        {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 pl-0.5" />}
       </button>
 
       {/* Progress and info */}
@@ -488,10 +445,7 @@ function AudioAttachment({
         {/* Progress bar */}
         <div className="relative">
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full bg-primary transition-all"
-              style={{ width: `${progress}%` }}
-            />
+            <div className="h-full bg-primary transition-all" style={{ width: `${progress}%` }} />
           </div>
           <input
             type="range"
@@ -520,9 +474,7 @@ function AudioAttachment({
       </div>
 
       {/* Download button */}
-      {showDownload && (
-        <DownloadButton url={file.url} name={file.name} size="sm" />
-      )}
+      {showDownload && <DownloadButton url={file.url} name={file.name} size="sm" />}
     </div>
   )
 }
@@ -563,19 +515,14 @@ function GenericAttachment({
       <div className="min-w-0 flex-1">
         {showFileName && (
           <p
-            className={cn(
-              'truncate font-medium',
-              compact ? 'text-sm' : 'text-base'
-            )}
+            className={cn('truncate font-medium', compact ? 'text-sm' : 'text-base')}
             title={file.name}
           >
             {file.name}
           </p>
         )}
         {showFileSize && (
-          <p className="text-xs text-muted-foreground">
-            {formatFileSize(file.size)}
-          </p>
+          <p className="text-xs text-muted-foreground">{formatFileSize(file.size)}</p>
         )}
       </div>
 

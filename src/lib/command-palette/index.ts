@@ -5,14 +5,10 @@
  */
 
 // Types
-export * from './command-types';
+export * from './command-types'
 
 // Registry
-export {
-  CommandRegistry,
-  getCommandRegistry,
-  resetCommandRegistry,
-} from './command-registry';
+export { CommandRegistry, getCommandRegistry, resetCommandRegistry } from './command-registry'
 
 // Search
 export {
@@ -28,7 +24,7 @@ export {
   getHighlightedSegments,
   detectQueryMode,
   getSearchPlaceholder,
-} from './command-search';
+} from './command-search'
 
 // Executor
 export {
@@ -39,7 +35,7 @@ export {
   createContextualExecutor,
   type ExecutionResult,
   type ExecutorOptions,
-} from './command-executor';
+} from './command-executor'
 
 // History
 export {
@@ -47,4 +43,4 @@ export {
   getCommandHistory,
   resetCommandHistory,
   type CommandHistoryOptions,
-} from './command-history';
+} from './command-history'

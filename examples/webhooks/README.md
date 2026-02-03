@@ -7,18 +7,22 @@ This directory contains practical examples for testing and integrating with the 
 ### Testing Scripts
 
 #### `incoming-basic.sh`
+
 Simple script to test incoming webhooks with basic text messages.
 
 **Usage:**
+
 ```bash
 chmod +x incoming-basic.sh
 ./incoming-basic.sh http://localhost:3000/api/webhooks/incoming/YOUR_TOKEN
 ```
 
 #### `incoming-rich.sh`
+
 Advanced script demonstrating rich embeds, fields, attachments, and formatting.
 
 **Usage:**
+
 ```bash
 chmod +x incoming-rich.sh
 ./incoming-rich.sh http://localhost:3000/api/webhooks/incoming/YOUR_TOKEN
@@ -27,20 +31,24 @@ chmod +x incoming-rich.sh
 ### Server Examples
 
 #### `outgoing-server.js`
+
 Complete Express.js server that receives and validates outgoing webhooks.
 
 **Setup:**
+
 ```bash
 npm install express body-parser
 node outgoing-server.js
 ```
 
 **Configure nself-chat:**
+
 1. Create outgoing webhook
 2. Set URL to: `http://localhost:4000/webhook`
 3. Set secret to match `WEBHOOK_SECRET` environment variable
 
 **Features:**
+
 - Signature verification
 - Event routing
 - Request logging
@@ -49,9 +57,11 @@ node outgoing-server.js
 ### Code Examples
 
 #### `signature-verify.ts`
+
 TypeScript examples for verifying webhook signatures from different platforms.
 
 **Includes:**
+
 - GitHub signature verification (HMAC-SHA256)
 - Slack signature verification (with timestamp validation)
 - Jira signature verification
@@ -60,6 +70,7 @@ TypeScript examples for verifying webhook signatures from different platforms.
 - Express middleware example
 
 **Usage in your code:**
+
 ```typescript
 import { verifyGitHubSignature } from './signature-verify'
 
@@ -74,6 +85,7 @@ if (!isValid) {
 ### 1. Test Incoming Webhook
 
 Create a webhook in nself-chat:
+
 ```bash
 # Via API or UI, get webhook token
 WEBHOOK_TOKEN="your-token-here"
@@ -85,6 +97,7 @@ WEBHOOK_TOKEN="your-token-here"
 ### 2. Test Outgoing Webhook
 
 Start the test server:
+
 ```bash
 # Terminal 1: Start webhook receiver
 export WEBHOOK_SECRET="my-secret-key"
@@ -92,6 +105,7 @@ node outgoing-server.js
 ```
 
 Configure outgoing webhook in nself-chat:
+
 - URL: `http://localhost:4000/webhook`
 - Secret: `my-secret-key`
 - Events: `message.created`, `channel.created`
@@ -227,5 +241,6 @@ curl -X POST $WEBHOOK_URL \
 ## Support
 
 For issues or questions:
+
 - GitHub Issues: https://github.com/your-org/nself-chat/issues
 - Documentation: https://docs.nself-chat.com

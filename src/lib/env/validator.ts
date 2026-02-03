@@ -7,6 +7,8 @@
 
 import { z } from 'zod'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Environment Schemas
 // =============================================================================
@@ -271,21 +273,21 @@ export function logEnvStatus(): void {
     return
   }
 
-  console.error('❌ Environment validation failed:\n')
+  logger.error('❌ Environment validation failed:\n')
 
   if (status.missing.length > 0) {
-    console.error('Missing variables:')
-    status.missing.forEach((v) => console.error(`  - ${v}`))
+    logger.error('Missing variables:')
+    status.missing.forEach((v) => logger.error(`  - ${v}`))
   }
 
   if (status.invalid.length > 0) {
-    console.error('\nInvalid variables:')
-    status.invalid.forEach((v) => console.error(`  - ${v}`))
+    logger.error('\nInvalid variables:')
+    status.invalid.forEach((v) => logger.error(`  - ${v}`))
   }
 
   if (status.warnings.length > 0) {
-    console.warn('\n⚠️  Warnings:')
-    status.warnings.forEach((w) => console.warn(`  - ${w}`))
+    logger.warn('\n⚠️  Warnings:')
+    status.warnings.forEach((w) => logger.warn(`  - ${w}`))
   }
 }
 
@@ -346,21 +348,20 @@ if (process.env.NODE_ENV !== 'test') {
   const result = validateEnv()
 
   if (!result.success) {
-    console.error('\n🔴 ENVIRONMENT VALIDATION FAILED\n')
+    logger.error('\n🔴 ENVIRONMENT VALIDATION FAILED\n')
     logEnvStatus()
 
     // Fail fast in production
     if (isProduction()) {
-      console.error('\n❌ Cannot start application with invalid environment variables')
+      logger.error('\n❌ Cannot start application with invalid environment variables')
       process.exit(1)
     }
   } else if (isDevelopment()) {
-
     // Log warnings in development
     const status = getEnvStatus()
     if (status.warnings.length > 0) {
-      console.warn('\n⚠️  Environment warnings:')
-      status.warnings.forEach((w) => console.warn(`  - ${w}`))
+      logger.warn('\n⚠️  Environment warnings:')
+      status.warnings.forEach((w) => logger.warn(`  - ${w}`))
     }
   }
 }

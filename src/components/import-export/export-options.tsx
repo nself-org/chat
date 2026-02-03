@@ -34,11 +34,7 @@ import {
 } from '@/components/ui/select'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import type {
-  ExportFormat,
-  ExportConfig,
-  ExportProgress,
-} from '@/lib/import-export/types'
+import type { ExportFormat, ExportConfig, ExportProgress } from '@/lib/import-export/types'
 import {
   createDefaultExportConfig,
   generateExportFilename,
@@ -340,13 +336,13 @@ export function ExportOptions({
                     </SelectContent>
                   </Select>
                   {selectedChannels.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {selectedChannels.map((id) => {
                         const channel = channels.find((c) => c.id === id)
                         return channel ? (
                           <span
                             key={id}
-                            className="px-2 py-1 bg-muted rounded-md text-sm flex items-center gap-1"
+                            className="flex items-center gap-1 rounded-md bg-muted px-2 py-1 text-sm"
                           >
                             #{channel.name}
                             <button
@@ -401,10 +397,7 @@ export function ExportOptions({
 
       {/* Progress / Download */}
       {progress && (
-        <Alert
-          variant={progress.status === 'failed' ? 'destructive' : 'default'}
-          className="mt-4"
-        >
+        <Alert variant={progress.status === 'failed' ? 'destructive' : 'default'} className="mt-4">
           {progress.status === 'generating' ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -417,9 +410,7 @@ export function ExportOptions({
             <>
               <CheckCircle2 className="h-4 w-4" />
               <AlertTitle>Export Complete</AlertTitle>
-              <AlertDescription>
-                Your export has been downloaded successfully.
-              </AlertDescription>
+              <AlertDescription>Your export has been downloaded successfully.</AlertDescription>
             </>
           ) : (
             <>
@@ -432,12 +423,7 @@ export function ExportOptions({
       )}
 
       {/* Export Button */}
-      <Button
-        onClick={handleExport}
-        disabled={isExporting}
-        className="w-full"
-        size="lg"
-      >
+      <Button onClick={handleExport} disabled={isExporting} className="w-full" size="lg">
         {isExporting ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -471,16 +457,16 @@ function FormatCard({ title, description, icon, selected, onClick }: FormatCardP
   return (
     <div
       className={cn(
-        'border rounded-lg p-4 cursor-pointer transition-all hover:border-primary',
-        selected && 'border-primary bg-primary/5'
+        'cursor-pointer rounded-lg border p-4 transition-all hover:border-primary',
+        selected && 'bg-primary/5 border-primary'
       )}
       onClick={onClick}
     >
       <div className="flex items-center gap-3">
         <div
           className={cn(
-            'p-2 rounded-full',
-            selected ? 'bg-primary text-primary-foreground' : 'bg-muted'
+            'rounded-full p-2',
+            selected ? 'text-primary-foreground bg-primary' : 'bg-muted'
           )}
         >
           {icon}
@@ -514,12 +500,12 @@ function ExportToggle({
   return (
     <div
       className={cn(
-        'flex items-center justify-between p-3 rounded-lg border',
+        'flex items-center justify-between rounded-lg border p-3',
         disabled && 'opacity-50'
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="p-2 bg-muted rounded-full">{icon}</div>
+        <div className="rounded-full bg-muted p-2">{icon}</div>
         <div>
           <Label className="font-medium">{label}</Label>
           <p className="text-xs text-muted-foreground">{description}</p>

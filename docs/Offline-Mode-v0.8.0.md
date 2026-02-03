@@ -52,7 +52,7 @@ The offline mode system provides comprehensive support for working without an in
 IndexedDB wrapper for offline data persistence.
 
 ```typescript
-import { messageStorage, channelStorage, queueStorage } from '@/lib/offline/offline-storage';
+import { messageStorage, channelStorage, queueStorage } from '@/lib/offline/offline-storage'
 
 // Save messages
 await messageStorage.save({
@@ -64,10 +64,10 @@ await messageStorage.save({
   createdAt: new Date(),
   reactions: [],
   attachments: [],
-});
+})
 
 // Get last 1000 messages for a channel
-const messages = await messageStorage.getByChannel('channel-1', 1000);
+const messages = await messageStorage.getByChannel('channel-1', 1000)
 
 // Queue an action while offline
 await queueStorage.add({
@@ -77,7 +77,7 @@ await queueStorage.add({
   priority: 'high',
   status: 'pending',
   // ...
-});
+})
 ```
 
 ### 2. Sync Manager (`sync-manager.ts`)
@@ -85,31 +85,31 @@ await queueStorage.add({
 Orchestrates sync operations with the server.
 
 ```typescript
-import { getSyncManager } from '@/lib/offline/sync-manager';
+import { getSyncManager } from '@/lib/offline/sync-manager'
 
 const syncManager = getSyncManager({
   autoSync: true,
   syncInterval: 30000, // 30 seconds
   syncOnReconnect: true,
   batteryThreshold: 20, // Don't sync below 20%
-});
+})
 
 // Initialize
-await syncManager.initialize();
+await syncManager.initialize()
 
 // Perform incremental sync (only new data)
-const result = await syncManager.incrementalSync();
+const result = await syncManager.incrementalSync()
 
 // Perform full sync (all data)
-const fullResult = await syncManager.fullSync();
+const fullResult = await syncManager.fullSync()
 
 // Sync specific channel
-const channelResult = await syncManager.syncChannel('channel-1');
+const channelResult = await syncManager.syncChannel('channel-1')
 
 // Listen to sync events
 syncManager.subscribe((event) => {
-  console.log('Sync event:', event.type, event.data);
-});
+  console.log('Sync event:', event.type, event.data)
+})
 ```
 
 ### 3. Conflict Resolver (`conflict-resolver.ts`)
@@ -117,26 +117,26 @@ syncManager.subscribe((event) => {
 Handles data conflicts during sync.
 
 ```typescript
-import { getConflictResolver } from '@/lib/offline/conflict-resolver';
+import { getConflictResolver } from '@/lib/offline/conflict-resolver'
 
-const resolver = getConflictResolver();
+const resolver = getConflictResolver()
 
 // Set user choice callback for complex conflicts
 resolver.setUserChoiceCallback(async (conflict) => {
   // Show UI to user for manual resolution
-  const choice = await showConflictDialog(conflict);
-  return choice;
-});
+  const choice = await showConflictDialog(conflict)
+  return choice
+})
 
 // Resolve conflict automatically
-const resolution = await resolver.autoResolve(conflict);
+const resolution = await resolver.autoResolve(conflict)
 
 if (resolution.resolved) {
   // Use resolved result
-  await save(resolution.result);
+  await save(resolution.result)
 } else if (resolution.needsUserInput) {
   // Show UI for manual resolution
-  await showConflictUI(conflict);
+  await showConflictUI(conflict)
 }
 ```
 
@@ -145,15 +145,15 @@ if (resolution.resolved) {
 Manages offline file caching with LRU eviction.
 
 ```typescript
-import { getAttachmentCache } from '@/lib/offline/attachment-cache';
+import { getAttachmentCache } from '@/lib/offline/attachment-cache'
 
 const cache = getAttachmentCache({
   maxSize: 100 * 1024 * 1024, // 100MB
   maxFileSize: 25 * 1024 * 1024, // 25MB per file
   generateThumbnails: true,
-});
+})
 
-await cache.initialize();
+await cache.initialize()
 
 // Download and cache an attachment
 const attachment = await cache.download(
@@ -167,20 +167,20 @@ const attachment = await cache.download(
     size: 1024000,
   },
   (progress) => {
-    console.log(`Downloaded ${progress.percent}%`);
+    console.log(`Downloaded ${progress.percent}%`)
   }
-);
+)
 
 // Get cached attachment
-const cached = await cache.get('att-1');
+const cached = await cache.get('att-1')
 if (cached) {
-  const dataUrl = await cache.getDataUrl('att-1');
+  const dataUrl = await cache.getDataUrl('att-1')
   // Use data URL in <img> tag
 }
 
 // Get cache statistics
-const stats = await cache.getStats();
-console.log(`Cache: ${stats.count} files, ${stats.usagePercent}% full`);
+const stats = await cache.getStats()
+console.log(`Cache: ${stats.count} files, ${stats.usagePercent}% full`)
 ```
 
 ### 5. Network Detector (`network-detector.ts`)
@@ -188,25 +188,25 @@ console.log(`Cache: ${stats.count} files, ${stats.usagePercent}% full`);
 Monitors network status and quality.
 
 ```typescript
-import { getNetworkDetector } from '@/lib/offline/network-detector';
+import { getNetworkDetector } from '@/lib/offline/network-detector'
 
-const detector = getNetworkDetector();
+const detector = getNetworkDetector()
 
 // Subscribe to network changes
 detector.subscribe((info) => {
-  console.log('Network state:', info.state);
-  console.log('Quality:', info.quality);
-  console.log('Connection type:', info.type);
-  console.log('RTT:', info.rtt);
-});
+  console.log('Network state:', info.state)
+  console.log('Quality:', info.quality)
+  console.log('Connection type:', info.type)
+  console.log('RTT:', info.rtt)
+})
 
 // Check current status
-const isOnline = detector.isOnline();
-const quality = detector.getQuality();
-const isSlow = detector.isSlowConnection();
+const isOnline = detector.isOnline()
+const quality = detector.getQuality()
+const isSlow = detector.isSlowConnection()
 
 // Start periodic connectivity check
-detector.startPeriodicCheck(10000, '/api/health');
+detector.startPeriodicCheck(10000, '/api/health')
 ```
 
 ## React Hooks
@@ -297,25 +297,25 @@ import { SyncProgress, SyncProgressToast } from '@/components/ui/sync-progress';
 15-minute interval background updates.
 
 ```typescript
-import { backgroundFetchService } from '@/lib/ios/background-fetch';
+import { backgroundFetchService } from '@/lib/ios/background-fetch'
 
 // Configure
 await backgroundFetchService.configure({
   minimumInterval: 900, // 15 minutes (minimum allowed by iOS)
   stopOnTerminate: false,
   enableHeadless: true,
-});
+})
 
 // Start
-await backgroundFetchService.start();
+await backgroundFetchService.start()
 
 // Listen for fetch events
 backgroundFetchService.onFetch('my-handler', (result) => {
-  console.log('Background fetch completed:', result);
+  console.log('Background fetch completed:', result)
   if (result.newData) {
-    showNotification(`${result.messages} new messages`);
+    showNotification(`${result.messages} new messages`)
   }
-});
+})
 ```
 
 ### Android WorkManager
@@ -323,7 +323,7 @@ backgroundFetchService.onFetch('my-handler', (result) => {
 Battery-efficient background jobs.
 
 ```typescript
-import { workManager } from '@/lib/android/work-manager';
+import { workManager } from '@/lib/android/work-manager'
 
 // Initialize
 await workManager.initialize({
@@ -331,17 +331,17 @@ await workManager.initialize({
   syncIntervalMinutes: 15,
   requiresCharging: false,
   requiresWifi: false,
-});
+})
 
 // Trigger immediate sync
-await workManager.syncNow();
+await workManager.syncNow()
 
 // Update sync interval
-await workManager.updateSyncInterval(30); // 30 minutes
+await workManager.updateSyncInterval(30) // 30 minutes
 
 // Get sync statistics
-const stats = await workManager.getSyncStats();
-console.log('Last sync:', new Date(stats.lastSyncTime));
+const stats = await workManager.getSyncStats()
+console.log('Last sync:', new Date(stats.lastSyncTime))
 ```
 
 ## Configuration
@@ -379,7 +379,7 @@ const DEFAULT_OFFLINE_CONFIG = {
   // Network settings
   networkCheckInterval: 10000,
   networkCheckUrl: '/api/health',
-};
+}
 ```
 
 ## Testing Offline Scenarios
@@ -425,16 +425,16 @@ const DEFAULT_OFFLINE_CONFIG = {
 ### Monitoring
 
 ```typescript
-import { getStorageStats } from '@/lib/offline/offline-storage';
+import { getStorageStats } from '@/lib/offline/offline-storage'
 
-const stats = await getStorageStats();
+const stats = await getStorageStats()
 console.log('Storage stats:', {
   channels: stats.channels,
   messages: stats.messages,
   users: stats.users,
   queue: stats.queue,
   size: `${(stats.estimatedSize / 1024 / 1024).toFixed(2)}MB`,
-});
+})
 ```
 
 ## Best Practices

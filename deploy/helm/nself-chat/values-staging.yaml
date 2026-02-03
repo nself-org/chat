@@ -25,10 +25,10 @@ ingress:
   className: nginx
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: staging-basic-auth
-    nginx.ingress.kubernetes.io/auth-realm: "Staging Environment"
+    nginx.ingress.kubernetes.io/auth-realm: 'Staging Environment'
   hosts:
     - host: chat-staging.nself.io
       paths:
@@ -58,10 +58,10 @@ autoscaling:
 
 # Staging environment config
 config:
-  NODE_ENV: production  # Use production mode for realistic testing
+  NODE_ENV: production # Use production mode for realistic testing
   NEXT_PUBLIC_ENV: staging
-  NEXT_PUBLIC_USE_DEV_AUTH: "false"
-  NEXT_PUBLIC_APP_NAME: "nchat (Staging)"
+  NEXT_PUBLIC_USE_DEV_AUTH: 'false'
+  NEXT_PUBLIC_APP_NAME: 'nchat (Staging)'
   LOG_LEVEL: debug
   LOG_FORMAT: json
 

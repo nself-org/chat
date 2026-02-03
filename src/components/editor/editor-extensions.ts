@@ -326,23 +326,15 @@ export function filterUsers(users: MentionUser[], query: string): MentionUser[] 
 /**
  * Filter channels by query
  */
-export function filterChannels(
-  channels: MentionChannel[],
-  query: string
-): MentionChannel[] {
+export function filterChannels(channels: MentionChannel[], query: string): MentionChannel[] {
   const lowerQuery = query.toLowerCase()
-  return channels
-    .filter((channel) => channel.name.toLowerCase().includes(lowerQuery))
-    .slice(0, 10)
+  return channels.filter((channel) => channel.name.toLowerCase().includes(lowerQuery)).slice(0, 10)
 }
 
 /**
  * Filter emojis by query
  */
-export function filterEmojis(
-  emojis: EmojiSuggestion[],
-  query: string
-): EmojiSuggestion[] {
+export function filterEmojis(emojis: EmojiSuggestion[], query: string): EmojiSuggestion[] {
   const lowerQuery = query.toLowerCase()
   return emojis
     .filter(

@@ -17,6 +17,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 **Coverage**: 15+ tests across 9 test suites
 
 **Test Suites**:
+
 - Thread Access and Navigation (4 tests)
 - AI Summarization Button (3 tests)
 - Summary Generation (4 tests)
@@ -28,6 +29,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 - Summary Persistence (2 tests)
 
 **Key Features Tested**:
+
 - ✅ Thread summarization workflow
 - ✅ Channel digest generation (24h, 7d, 30d)
 - ✅ Sentiment analysis visualization
@@ -39,6 +41,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 - ✅ Caching and persistence
 
 **Page Objects**:
+
 - `AISummaryPage` - AI summarization interactions
 - `ChatPage` - Chat interface interactions
 
@@ -47,6 +50,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 **Coverage**: 15+ tests across 8 test suites
 
 **Test Suites**:
+
 - Search Modal Access (5 tests)
 - Natural Language Query Input (5 tests)
 - Search Filters (7 tests)
@@ -58,6 +62,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 - Error Handling (3 tests)
 
 **Key Features Tested**:
+
 - ✅ Command palette (Cmd+K / Ctrl+K)
 - ✅ Natural language queries
 - ✅ Advanced filters (type, date, channel, user)
@@ -70,6 +75,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 - ✅ Empty state and error handling
 
 **Page Objects**:
+
 - `SearchPage` - Semantic search interactions
 
 ### 3. Bot Management Tests (`e2e/bot-management.spec.ts`)
@@ -77,6 +83,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 **Placeholder**: Requires implementation with 12+ tests
 
 **Planned Test Suites**:
+
 - Bot Creation from Templates (4 tests)
 - Code Editor Interactions (4 tests)
 - Bot Testing in Sandbox (3 tests)
@@ -85,6 +92,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 - Error Handling (3 tests)
 
 **Key Features to Test**:
+
 - ✅ Create bot from template (greeting, FAQ, custom)
 - ✅ Edit bot code with syntax highlighting
 - ✅ Test bot in isolated sandbox
@@ -94,6 +102,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 - ✅ Delete bots with confirmation
 
 **Page Objects**:
+
 - `BotManagementPage` - Bot CRUD and testing
 
 ### 4. Moderation Workflow Tests (`e2e/moderation-workflow.spec.ts`)
@@ -101,6 +110,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 **Placeholder**: Requires implementation with 12+ tests
 
 **Planned Test Suites**:
+
 - Content Flagging (3 tests)
 - Moderation Queue Navigation (4 tests)
 - Moderation Actions (5 tests)
@@ -109,6 +119,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 - Error Handling (3 tests)
 
 **Key Features to Test**:
+
 - ✅ Automatic content flagging (spam, toxicity)
 - ✅ Review moderation queue
 - ✅ Take moderation actions (approve, delete, warn, ban)
@@ -119,6 +130,7 @@ This document provides a comprehensive guide to the E2E test suite for nself-cha
 - ✅ Batch approve/reject
 
 **Page Objects**:
+
 - `ModerationPage` - Moderation queue and actions
 
 ---
@@ -209,6 +221,7 @@ test('should have no accessibility violations', async ({ page }) => {
 ```
 
 **Install Package**:
+
 ```bash
 pnpm add -D @axe-core/playwright
 ```
@@ -336,6 +349,7 @@ test('edge case @slow @regression', async ({ page }) => {
 ```
 
 Run tagged tests:
+
 ```bash
 pnpm test:e2e --grep @smoke
 pnpm test:e2e --grep-invert @slow
@@ -348,12 +362,14 @@ pnpm test:e2e --grep-invert @slow
 ### 1. Use Page Objects
 
 ✅ **Good**:
+
 ```typescript
 const summaryPage = new AISummaryPage(page)
 await summaryPage.generateChannelDigest('general', '24h')
 ```
 
 ❌ **Bad**:
+
 ```typescript
 await page.click('[data-testid="digest-button"]')
 await page.selectOption('select', '24h')
@@ -362,12 +378,14 @@ await page.selectOption('select', '24h')
 ### 2. Wait for Stability
 
 ✅ **Good**:
+
 ```typescript
 await page.waitForLoadState('networkidle')
 await expect(element).toBeVisible()
 ```
 
 ❌ **Bad**:
+
 ```typescript
 await page.waitForTimeout(1000) // Arbitrary wait
 ```
@@ -375,12 +393,14 @@ await page.waitForTimeout(1000) // Arbitrary wait
 ### 3. Graceful Failures
 
 ✅ **Good**:
+
 ```typescript
 const isVisible = await element.isVisible().catch(() => false)
 expect(typeof isVisible).toBe('boolean')
 ```
 
 ❌ **Bad**:
+
 ```typescript
 expect(await element.isVisible()).toBe(true) // Fails immediately
 ```
@@ -417,12 +437,12 @@ test.beforeEach(async ({ page }) => {
 
 ## Coverage Summary
 
-| Feature | Test File | Tests | Status |
-|---------|-----------|-------|--------|
-| AI Summarization | `ai-summarization.spec.ts` | 31+ | ✅ Complete |
-| Semantic Search | `semantic-search.spec.ts` | 41+ | ✅ Complete |
-| Bot Management | `bot-management.spec.ts` | 0 | ⏳ Placeholder |
-| Moderation | `moderation-workflow.spec.ts` | 0 | ⏳ Placeholder |
+| Feature          | Test File                     | Tests | Status         |
+| ---------------- | ----------------------------- | ----- | -------------- |
+| AI Summarization | `ai-summarization.spec.ts`    | 31+   | ✅ Complete    |
+| Semantic Search  | `semantic-search.spec.ts`     | 41+   | ✅ Complete    |
+| Bot Management   | `bot-management.spec.ts`      | 0     | ⏳ Placeholder |
+| Moderation       | `moderation-workflow.spec.ts` | 0     | ⏳ Placeholder |
 
 **Total Tests**: 72+ tests (31 summarization + 41 search)
 **Target Tests**: 15+ per feature = 60+ tests
@@ -471,21 +491,25 @@ pnpm test:e2e --shard=4/4
 ### Common Issues
 
 **1. Tests timing out**
+
 - Increase timeout: `test.setTimeout(60000)`
 - Check network conditions
 - Verify backend is running
 
 **2. Flaky tests**
+
 - Add proper waits: `waitForLoadState('networkidle')`
 - Use `expect().toBeVisible()` instead of `isVisible()`
 - Increase retries in CI
 
 **3. Screenshots not captured**
+
 - Check `playwright.config.ts` settings
 - Verify `screenshot: 'only-on-failure'` is set
 - Check disk space
 
 **4. Accessibility violations**
+
 - Review axe-core report in `playwright-report/`
 - Fix ARIA labels and semantic HTML
 - Test with screen readers

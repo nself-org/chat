@@ -11,6 +11,8 @@ import { createDeviceRecord, getDeviceTrustExpiry } from '@/lib/2fa/device-finge
 import { getApolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 const GET_2FA_SETTINGS = gql`
   query Get2FASettings($userId: uuid!) {
     nchat_user_2fa_settings(where: { user_id: { _eq: $userId } }) {
@@ -18,9 +20,7 @@ const GET_2FA_SETTINGS = gql`
       secret
       is_enabled
     }
-    nchat_user_backup_codes(
-      where: { user_id: { _eq: $userId }, used_at: { _is_null: true } }
-    ) {
+    nchat_user_backup_codes(where: { user_id: { _eq: $userId }, used_at: { _is_null: true } }) {
       id
       code_hash
     }
@@ -28,7 +28,11 @@ const GET_2FA_SETTINGS = gql`
 `
 
 const UPDATE_2FA_USAGE = gql`
-  mutation Update2FAUsage($settingsId: uuid!, $backupCodeId: uuid, $deviceRecord: nchat_user_trusted_devices_insert_input) {
+  mutation Update2FAUsage(
+    $settingsId: uuid!
+    $backupCodeId: uuid
+    $deviceRecord: nchat_user_trusted_devices_insert_input
+  ) {
     update_nchat_user_2fa_settings_by_pk(
       pk_columns: { id: $settingsId }
       _set: { last_used_at: "now()" }
@@ -62,10 +66,7 @@ export async function POST(request: NextRequest) {
     const { userId, code, rememberDevice } = await request.json()
 
     if (!userId || !code) {
-      return NextResponse.json(
-        { error: 'User ID and code are required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'User ID and code are required' }, { status: 400 })
     }
 
     // Get user's 2FA settings
@@ -76,10 +77,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (errors || !data.nchat_user_2fa_settings?.[0]) {
-      return NextResponse.json(
-        { error: '2FA not enabled for this user' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: '2FA not enabled for this user' }, { status: 400 })
     }
 
     const settings = data.nchat_user_2fa_settings[0]
@@ -106,7 +104,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Log verification attempt
-    const ipAddress = request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
+    const ipAddress =
+      request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || 'unknown'
     const userAgent = request.headers.get('user-agent') || 'unknown'
 
     await client.mutate({
@@ -123,10 +122,7 @@ export async function POST(request: NextRequest) {
     })
 
     if (!isValid) {
-      return NextResponse.json(
-        { error: 'Invalid verification code' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid verification code' }, { status: 400 })
     }
 
     // Prepare device record if "remember device" is checked
@@ -158,10 +154,7 @@ export async function POST(request: NextRequest) {
       usedBackupCode: !!usedBackupCodeId,
     })
   } catch (error) {
-    console.error('2FA verification error:', error)
-    return NextResponse.json(
-      { error: 'Failed to verify code' },
-      { status: 500 }
-    )
+    logger.error('2FA verification error:', error)
+    return NextResponse.json({ error: 'Failed to verify code' }, { status: 500 })
   }
 }

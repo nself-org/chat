@@ -109,17 +109,13 @@ export const useScheduledStore = create<ScheduledMessagesState>()(
         // Sort messages by scheduled_at within each channel
         for (const channelId of Object.keys(messagesByChannel)) {
           messagesByChannel[channelId].sort(
-            (a, b) =>
-              new Date(a.scheduled_at).getTime() -
-              new Date(b.scheduled_at).getTime()
+            (a, b) => new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime()
           )
         }
 
         set({
           messages: messages.sort(
-            (a, b) =>
-              new Date(a.scheduled_at).getTime() -
-              new Date(b.scheduled_at).getTime()
+            (a, b) => new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime()
           ),
           messagesById,
           messagesByChannel,
@@ -129,9 +125,7 @@ export const useScheduledStore = create<ScheduledMessagesState>()(
       addMessage: (message) => {
         set((state) => {
           const newMessages = [...state.messages, message].sort(
-            (a, b) =>
-              new Date(a.scheduled_at).getTime() -
-              new Date(b.scheduled_at).getTime()
+            (a, b) => new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime()
           )
 
           const newMessagesById = {
@@ -143,9 +137,7 @@ export const useScheduledStore = create<ScheduledMessagesState>()(
           const newMessagesByChannel = {
             ...state.messagesByChannel,
             [message.channel_id]: [...channelMessages, message].sort(
-              (a, b) =>
-                new Date(a.scheduled_at).getTime() -
-                new Date(b.scheduled_at).getTime()
+              (a, b) => new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime()
             ),
           }
 
@@ -170,11 +162,7 @@ export const useScheduledStore = create<ScheduledMessagesState>()(
 
           const newMessages = state.messages
             .map((msg) => (msg.id === id ? updatedMessage : msg))
-            .sort(
-              (a, b) =>
-                new Date(a.scheduled_at).getTime() -
-                new Date(b.scheduled_at).getTime()
-            )
+            .sort((a, b) => new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime())
 
           // Update channel grouping
           const newMessagesByChannel = { ...state.messagesByChannel }
@@ -184,9 +172,7 @@ export const useScheduledStore = create<ScheduledMessagesState>()(
             newMessagesByChannel[channelId] = newMessagesByChannel[channelId]
               .map((msg) => (msg.id === id ? updatedMessage : msg))
               .sort(
-                (a, b) =>
-                  new Date(a.scheduled_at).getTime() -
-                  new Date(b.scheduled_at).getTime()
+                (a, b) => new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime()
               )
           }
 
@@ -217,8 +203,7 @@ export const useScheduledStore = create<ScheduledMessagesState>()(
             messages: newMessages,
             messagesById: newMessagesById,
             messagesByChannel: newMessagesByChannel,
-            selectedMessageId:
-              state.selectedMessageId === id ? null : state.selectedMessageId,
+            selectedMessageId: state.selectedMessageId === id ? null : state.selectedMessageId,
           }
         })
       },
@@ -299,11 +284,9 @@ export const useScheduledStore = create<ScheduledMessagesState>()(
       // Selectors
       getMessageById: (id) => get().messagesById[id],
 
-      getMessagesForChannel: (channelId) =>
-        get().messagesByChannel[channelId] || [],
+      getMessagesForChannel: (channelId) => get().messagesByChannel[channelId] || [],
 
-      getPendingCount: () =>
-        get().messages.filter((msg) => msg.status === 'pending').length,
+      getPendingCount: () => get().messages.filter((msg) => msg.status === 'pending').length,
 
       getNextScheduled: () => {
         const pending = get().messages.filter((msg) => msg.status === 'pending')

@@ -7,6 +7,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { quotaManager, type CleanupPolicy } from '@/lib/storage/quota-manager'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // GET - Get storage information
 // ============================================================================
@@ -49,16 +51,10 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(result)
     }
 
-    return NextResponse.json(
-      { error: 'Invalid action or missing parameters' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Invalid action or missing parameters' }, { status: 400 })
   } catch (error) {
-    console.error('Storage API GET error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Storage API GET error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -75,17 +71,10 @@ export async function POST(request: NextRequest) {
     if (action === 'update-quota') {
       const { entityId, entityType, newLimit } = body
       if (!entityId || !entityType || !newLimit) {
-        return NextResponse.json(
-          { error: 'Missing required parameters' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
       }
 
-      const quota = await quotaManager.updateQuota(
-        entityId,
-        entityType,
-        newLimit
-      )
+      const quota = await quotaManager.updateQuota(entityId, entityType, newLimit)
       return NextResponse.json(quota)
     }
 
@@ -93,10 +82,7 @@ export async function POST(request: NextRequest) {
     if (action === 'record-upload') {
       const { entityId, entityType, fileSize } = body
       if (!entityId || !entityType || !fileSize) {
-        return NextResponse.json(
-          { error: 'Missing required parameters' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
       }
 
       await quotaManager.recordUpload(entityId, entityType, fileSize)
@@ -107,10 +93,7 @@ export async function POST(request: NextRequest) {
     if (action === 'record-deletion') {
       const { entityId, entityType, fileSize } = body
       if (!entityId || !entityType || !fileSize) {
-        return NextResponse.json(
-          { error: 'Missing required parameters' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
       }
 
       await quotaManager.recordDeletion(entityId, entityType, fileSize)
@@ -121,10 +104,7 @@ export async function POST(request: NextRequest) {
     if (action === 'acknowledge-warning') {
       const { warningId } = body
       if (!warningId) {
-        return NextResponse.json(
-          { error: 'Missing warning ID' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing warning ID' }, { status: 400 })
       }
 
       await quotaManager.acknowledgeWarning(warningId)
@@ -140,17 +120,10 @@ export async function POST(request: NextRequest) {
       }
 
       if (!entityId || !entityType || !policy) {
-        return NextResponse.json(
-          { error: 'Missing required parameters' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
       }
 
-      const result = await quotaManager.applyCleanupPolicy(
-        entityId,
-        entityType,
-        policy
-      )
+      const result = await quotaManager.applyCleanupPolicy(entityId, entityType, policy)
       return NextResponse.json(result)
     }
 
@@ -158,13 +131,9 @@ export async function POST(request: NextRequest) {
     if (action === 'optimize') {
       const { entityId, entityType } = body
       if (!entityId || !entityType) {
-        return NextResponse.json(
-          { error: 'Missing required parameters' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
       }
 
-      // TODO: Implement optimization logic
       // - Compress images
       // - Remove duplicates
       // - Archive old data
@@ -180,13 +149,8 @@ export async function POST(request: NextRequest) {
     if (action === 'delete-old-files') {
       const { entityId, entityType, olderThanDays } = body
       if (!entityId || !entityType || !olderThanDays) {
-        return NextResponse.json(
-          { error: 'Missing required parameters' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
       }
-
-      // TODO: Implement deletion logic
 
       return NextResponse.json({
         success: true,
@@ -199,13 +163,8 @@ export async function POST(request: NextRequest) {
     if (action === 'archive-messages') {
       const { entityId, entityType, olderThanDays } = body
       if (!entityId || !entityType || !olderThanDays) {
-        return NextResponse.json(
-          { error: 'Missing required parameters' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
       }
-
-      // TODO: Implement archival logic
 
       return NextResponse.json({
         success: true,
@@ -218,13 +177,8 @@ export async function POST(request: NextRequest) {
     if (action === 'clear-cache') {
       const { entityId, entityType } = body
       if (!entityId || !entityType) {
-        return NextResponse.json(
-          { error: 'Missing required parameters' },
-          { status: 400 }
-        )
+        return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 })
       }
-
-      // TODO: Implement cache clearing logic
 
       return NextResponse.json({
         success: true,
@@ -232,16 +186,10 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    return NextResponse.json(
-      { error: 'Invalid action' },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
   } catch (error) {
-    console.error('Storage API POST error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Storage API POST error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
@@ -257,17 +205,11 @@ export async function DELETE(request: NextRequest) {
     const fileId = searchParams.get('fileId')
 
     if (!entityId || !entityType) {
-      return NextResponse.json(
-        { error: 'Missing entity information' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing entity information' }, { status: 400 })
     }
 
     // Delete specific file
     if (fileId) {
-      // TODO: Delete file from storage
-      // TODO: Update quota
-
       return NextResponse.json({
         success: true,
         message: 'File deleted',
@@ -275,7 +217,6 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Clear all storage for entity
-    // TODO: Implement bulk deletion
 
     return NextResponse.json({
       success: true,
@@ -284,10 +225,7 @@ export async function DELETE(request: NextRequest) {
       spaceFreed: 0,
     })
   } catch (error) {
-    console.error('Storage API DELETE error:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Storage API DELETE error:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

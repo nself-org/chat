@@ -33,6 +33,8 @@ import {
 import { cn } from '@/lib/utils'
 import { type AppConfig } from '@/config/app-config'
 
+import { logger } from '@/lib/logger'
+
 interface BackendSetupStepProps {
   config: AppConfig
   onUpdate: (updates: Partial<AppConfig>) => void
@@ -59,7 +61,15 @@ interface ServiceStatus {
   url?: string
 }
 
-type SetupPhase = 'checking' | 'install' | 'init' | 'build' | 'start' | 'verify' | 'complete' | 'error'
+type SetupPhase =
+  | 'checking'
+  | 'install'
+  | 'init'
+  | 'build'
+  | 'start'
+  | 'verify'
+  | 'complete'
+  | 'error'
 
 export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupStepProps) {
   const [phase, setPhase] = useState<SetupPhase>('checking')
@@ -124,7 +134,7 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
         })
       }
     } catch (err) {
-      console.error('Status check failed:', err)
+      logger.error('Status check failed:', err)
       setError('Failed to check backend status')
       setPhase('error')
     }
@@ -177,8 +187,8 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
     switch (phase) {
       case 'checking':
         return (
-          <div className="flex flex-col items-center py-12 space-y-4">
-            <Loader2 className="w-12 h-12 animate-spin text-primary" />
+          <div className="flex flex-col items-center space-y-4 py-12">
+            <Loader2 className="h-12 w-12 animate-spin text-primary" />
             <p className="text-lg">Checking backend status...</p>
           </div>
         )
@@ -186,14 +196,14 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
       case 'install':
         return (
           <div className="space-y-6">
-            <div className="p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+            <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/10 p-4">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-yellow-500" />
                 <div>
                   <h4 className="font-semibold text-yellow-600 dark:text-yellow-400">
                     nself CLI Not Found
                   </h4>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     The nself CLI is required to run the backend services. Install it with one
                     command:
                   </p>
@@ -208,7 +218,7 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
             />
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Info className="w-4 h-4" />
+              <Info className="h-4 w-4" />
               <span>After installation, click &quot;Refresh&quot; to continue.</span>
             </div>
 
@@ -216,18 +226,18 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
               <button
                 onClick={checkStatus}
                 disabled={isProcessing}
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                className="text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-lg bg-primary px-4 py-2 disabled:opacity-50"
               >
-                <RefreshCw className={cn('w-4 h-4', isProcessing && 'animate-spin')} />
+                <RefreshCw className={cn('h-4 w-4', isProcessing && 'animate-spin')} />
                 Refresh Status
               </button>
               <a
                 href="https://nself.org"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-muted"
+                className="flex items-center gap-2 rounded-lg border px-4 py-2 hover:bg-muted"
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="h-4 w-4" />
                 nself Documentation
               </a>
             </div>
@@ -237,16 +247,16 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
       case 'init':
         return (
           <div className="space-y-6">
-            <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <div className="rounded-lg border border-blue-500/20 bg-blue-500/10 p-4">
               <div className="flex items-start gap-3">
-                <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500" />
                 <div>
                   <h4 className="font-semibold text-blue-600 dark:text-blue-400">
                     Initialize Backend
                   </h4>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    The backend folder exists but hasn&apos;t been initialized. This will create
-                    the configuration files needed to run services.
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    The backend folder exists but hasn&apos;t been initialized. This will create the
+                    configuration files needed to run services.
                   </p>
                 </div>
               </div>
@@ -256,12 +266,12 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
               <button
                 onClick={() => executeCommand('init', { demo: true })}
                 disabled={isProcessing}
-                className="flex flex-col items-center gap-3 p-6 border-2 rounded-lg hover:border-primary hover:bg-primary/5 transition-all disabled:opacity-50"
+                className="hover:bg-primary/5 flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all hover:border-primary disabled:opacity-50"
               >
-                <Server className="w-8 h-8 text-primary" />
+                <Server className="h-8 w-8 text-primary" />
                 <div className="text-center">
                   <h4 className="font-semibold">Full Demo Setup</h4>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     All services enabled with sample data
                   </p>
                 </div>
@@ -270,12 +280,12 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
               <button
                 onClick={() => executeCommand('init')}
                 disabled={isProcessing}
-                className="flex flex-col items-center gap-3 p-6 border-2 rounded-lg hover:border-primary hover:bg-primary/5 transition-all disabled:opacity-50"
+                className="hover:bg-primary/5 flex flex-col items-center gap-3 rounded-lg border-2 p-6 transition-all hover:border-primary disabled:opacity-50"
               >
-                <Database className="w-8 h-8 text-muted-foreground" />
+                <Database className="h-8 w-8 text-muted-foreground" />
                 <div className="text-center">
                   <h4 className="font-semibold">Minimal Setup</h4>
-                  <p className="text-xs text-muted-foreground mt-1">
+                  <p className="mt-1 text-xs text-muted-foreground">
                     Core services only, configure later
                   </p>
                 </div>
@@ -284,7 +294,7 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
 
             {isProcessing && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Initializing backend... This may take a moment.
               </div>
             )}
@@ -294,12 +304,12 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
       case 'build':
         return (
           <div className="space-y-6">
-            <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <div className="rounded-lg border border-blue-500/20 bg-blue-500/10 p-4">
               <div className="flex items-start gap-3">
-                <Info className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                <Info className="mt-0.5 h-5 w-5 flex-shrink-0 text-blue-500" />
                 <div>
                   <h4 className="font-semibold text-blue-600 dark:text-blue-400">Build Backend</h4>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Generate Docker configuration and prepare services for launch.
                   </p>
                 </div>
@@ -309,12 +319,12 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
             <button
               onClick={() => executeCommand('build')}
               disabled={isProcessing}
-              className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
+              className="text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-lg bg-primary px-6 py-3 disabled:opacity-50"
             >
               {isProcessing ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
-                <HardDrive className="w-5 h-5" />
+                <HardDrive className="h-5 w-5" />
               )}
               Build Backend Configuration
             </button>
@@ -324,14 +334,14 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
       case 'start':
         return (
           <div className="space-y-6">
-            <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+            <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-500" />
                 <div>
                   <h4 className="font-semibold text-green-600 dark:text-green-400">
                     Ready to Start
                   </h4>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     Backend is configured and ready to launch. This will start all required
                     services.
                   </p>
@@ -342,19 +352,19 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
             <button
               onClick={() => executeCommand('start')}
               disabled={isProcessing}
-              className="flex items-center gap-2 px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
+              className="flex items-center gap-2 rounded-lg bg-green-600 px-6 py-3 text-white hover:bg-green-700 disabled:opacity-50"
             >
               {isProcessing ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
-                <Play className="w-5 h-5" />
+                <Play className="h-5 w-5" />
               )}
               Start Backend Services
             </button>
 
             {isProcessing && (
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <Loader2 className="w-4 h-4 animate-spin" />
+                <Loader2 className="h-4 w-4 animate-spin" />
                 Starting services... This may take up to a minute.
               </div>
             )}
@@ -364,14 +374,14 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
       case 'complete':
         return (
           <div className="space-y-6">
-            <div className="p-4 bg-green-500/10 border border-green-500/20 rounded-lg">
+            <div className="rounded-lg border border-green-500/20 bg-green-500/10 p-4">
               <div className="flex items-start gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-green-500" />
                 <div>
                   <h4 className="font-semibold text-green-600 dark:text-green-400">
                     Backend Running
                   </h4>
-                  <p className="text-sm text-muted-foreground mt-1">
+                  <p className="mt-1 text-sm text-muted-foreground">
                     All backend services are up and running. You can proceed to the next step.
                   </p>
                 </div>
@@ -379,7 +389,7 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
             </div>
 
             {/* Service Status Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
               {Object.entries(status?.services || {}).map(([name, service]) => (
                 <ServiceCard key={name} name={name} service={service} />
               ))}
@@ -390,25 +400,25 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
               <button
                 onClick={() => executeCommand('restart')}
                 disabled={isProcessing}
-                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-muted disabled:opacity-50"
+                className="flex items-center gap-2 rounded-lg border px-4 py-2 hover:bg-muted disabled:opacity-50"
               >
-                <RefreshCw className={cn('w-4 h-4', isProcessing && 'animate-spin')} />
+                <RefreshCw className={cn('h-4 w-4', isProcessing && 'animate-spin')} />
                 Restart
               </button>
               <button
                 onClick={() => executeCommand('stop')}
                 disabled={isProcessing}
-                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-muted disabled:opacity-50"
+                className="flex items-center gap-2 rounded-lg border px-4 py-2 hover:bg-muted disabled:opacity-50"
               >
-                <Square className="w-4 h-4" />
+                <Square className="h-4 w-4" />
                 Stop
               </button>
               <button
                 onClick={checkStatus}
                 disabled={isProcessing}
-                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-muted disabled:opacity-50"
+                className="flex items-center gap-2 rounded-lg border px-4 py-2 hover:bg-muted disabled:opacity-50"
               >
-                <RefreshCw className={cn('w-4 h-4', isProcessing && 'animate-spin')} />
+                <RefreshCw className={cn('h-4 w-4', isProcessing && 'animate-spin')} />
                 Refresh
               </button>
             </div>
@@ -418,12 +428,12 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
       case 'error':
         return (
           <div className="space-y-6">
-            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-lg">
+            <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
               <div className="flex items-start gap-3">
-                <XCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                <XCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500" />
                 <div>
                   <h4 className="font-semibold text-red-600 dark:text-red-400">Setup Error</h4>
-                  <p className="text-sm text-muted-foreground mt-1">{error}</p>
+                  <p className="mt-1 text-sm text-muted-foreground">{error}</p>
                 </div>
               </div>
             </div>
@@ -431,18 +441,18 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
             <div className="flex gap-3">
               <button
                 onClick={checkStatus}
-                className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+                className="text-primary-foreground hover:bg-primary/90 flex items-center gap-2 rounded-lg bg-primary px-4 py-2"
               >
-                <RefreshCw className="w-4 h-4" />
+                <RefreshCw className="h-4 w-4" />
                 Try Again
               </button>
               <a
                 href="https://nself.org/docs/troubleshooting"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-muted"
+                className="flex items-center gap-2 rounded-lg border px-4 py-2 hover:bg-muted"
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="h-4 w-4" />
                 Troubleshooting Guide
               </a>
             </div>
@@ -468,19 +478,19 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
             <div key={step} className="flex items-center">
               <div
                 className={cn(
-                  'w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium',
+                  'flex h-8 w-8 items-center justify-center rounded-full text-sm font-medium',
                   isComplete
                     ? 'bg-green-500 text-white'
                     : isCurrent
-                    ? 'bg-primary text-primary-foreground'
-                    : 'bg-muted text-muted-foreground'
+                      ? 'text-primary-foreground bg-primary'
+                      : 'bg-muted text-muted-foreground'
                 )}
               >
-                {isComplete ? <CheckCircle2 className="w-4 h-4" /> : index + 1}
+                {isComplete ? <CheckCircle2 className="h-4 w-4" /> : index + 1}
               </div>
               {index < 4 && (
                 <div
-                  className={cn('w-full h-1 mx-2', isComplete ? 'bg-green-500' : 'bg-muted')}
+                  className={cn('mx-2 h-1 w-full', isComplete ? 'bg-green-500' : 'bg-muted')}
                   style={{ width: '60px' }}
                 />
               )}
@@ -504,11 +514,11 @@ export function BackendSetupStep({ config, onUpdate, onValidate }: BackendSetupS
       {/* Terminal Output */}
       {output.length > 0 && (
         <div className="mt-6">
-          <div className="flex items-center gap-2 mb-2">
-            <Terminal className="w-4 h-4" />
+          <div className="mb-2 flex items-center gap-2">
+            <Terminal className="h-4 w-4" />
             <span className="text-sm font-medium">Command Output</span>
           </div>
-          <div className="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-xs max-h-48 overflow-y-auto">
+          <div className="max-h-48 overflow-y-auto rounded-lg bg-gray-900 p-4 font-mono text-xs text-gray-100">
             {output.map((line, i) => (
               <div key={i} className={cn(line.startsWith('>') ? 'text-green-400' : '')}>
                 {line || '\u00A0'}
@@ -532,13 +542,13 @@ function CommandBlock({
   copied: boolean
 }) {
   return (
-    <div className="relative bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm">
+    <div className="relative rounded-lg bg-gray-900 p-4 font-mono text-sm text-gray-100">
       <code>{command}</code>
       <button
         onClick={() => onCopy(command)}
-        className="absolute top-2 right-2 p-2 hover:bg-gray-800 rounded"
+        className="absolute right-2 top-2 rounded p-2 hover:bg-gray-800"
       >
-        {copied ? <Check className="w-4 h-4 text-green-400" /> : <Copy className="w-4 h-4" />}
+        {copied ? <Check className="h-4 w-4 text-green-400" /> : <Copy className="h-4 w-4" />}
       </button>
     </div>
   )
@@ -549,18 +559,18 @@ function ServiceCard({ name, service }: { name: string; service: ServiceStatus }
   const statusColor = service.healthy
     ? 'text-green-500 bg-green-500/10 border-green-500/20'
     : service.running
-    ? 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20'
-    : 'text-red-500 bg-red-500/10 border-red-500/20'
+      ? 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20'
+      : 'text-red-500 bg-red-500/10 border-red-500/20'
 
   const StatusIcon = service.healthy ? CheckCircle2 : service.running ? AlertTriangle : XCircle
 
   return (
-    <div className={cn('p-3 rounded-lg border', statusColor)}>
+    <div className={cn('rounded-lg border p-3', statusColor)}>
       <div className="flex items-center gap-2">
-        <StatusIcon className="w-4 h-4" />
-        <span className="font-medium text-sm capitalize">{name}</span>
+        <StatusIcon className="h-4 w-4" />
+        <span className="text-sm font-medium capitalize">{name}</span>
       </div>
-      <p className="text-xs mt-1 opacity-70">
+      <p className="mt-1 text-xs opacity-70">
         {service.healthy ? 'Healthy' : service.running ? 'Running' : 'Stopped'}
       </p>
     </div>

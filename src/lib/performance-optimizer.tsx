@@ -9,6 +9,8 @@ import React, { Suspense, lazy, memo, useMemo, useCallback } from 'react'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import dynamic from 'next/dynamic'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Dynamic Import with Loading States
 // ============================================================================
@@ -217,7 +219,7 @@ export const VirtualMessageList = memo(function VirtualMessageList({
         ))}
       </div>
       {isLoading && (
-        <div className="text-center py-4">
+        <div className="py-4 text-center">
           <span>Loading...</span>
         </div>
       )}
@@ -309,10 +311,7 @@ export const LazyImage = memo(function LazyImage({
 export function useDeepMemo<T>(factory: () => T, deps: any[]): T {
   const ref = React.useRef<{ deps: any[]; value: T } | undefined>(undefined)
 
-  if (
-    !ref.current ||
-    !deps.every((dep, i) => Object.is(dep, ref.current!.deps[i]))
-  ) {
+  if (!ref.current || !deps.every((dep, i) => Object.is(dep, ref.current!.deps[i]))) {
     ref.current = { deps, value: factory() }
   }
 
@@ -456,7 +455,7 @@ export function usePerformanceMonitor(componentName: string): PerformanceMetrics
     metrics.current.totalRenders++
 
     if (process.env.NODE_ENV === 'development') {
-      console.log(`[Performance] ${componentName} render time: ${renderTime.toFixed(2)}ms`)
+      // REMOVED: console.log(`[Performance] ${componentName} render time: ${renderTime.toFixed(2)}ms`)
     }
 
     startTime.current = performance.now()
@@ -481,7 +480,7 @@ export function lazyWithRetry<T extends React.ComponentType<any>>(
       return await importFn()
     } catch (error) {
       if (retries > 0) {
-        console.warn(`Retry loading component (${retries} attempts left)`)
+        logger.warn(`Retry loading component (${retries} attempts left)`)
         return retryImport()
       }
       throw error
@@ -522,9 +521,7 @@ export function memoWithShallowCompare<P extends object>(
 
     if (prevKeys.length !== nextKeys.length) return false
 
-    return prevKeys.every((key) =>
-      Object.is(prevProps[key as keyof P], nextProps[key as keyof P])
-    )
+    return prevKeys.every((key) => Object.is(prevProps[key as keyof P], nextProps[key as keyof P]))
   })
 }
 
@@ -540,10 +537,10 @@ export function registerServiceWorker(swUrl: string = '/sw.js'): Promise<void> {
   return navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
-      console.log('[SW] Registered:', registration)
+      // REMOVED: console.log('[SW] Registered:', registration)
     })
     .catch((error) => {
-      console.error('[SW] Registration failed:', error)
+      logger.error('[SW] Registration failed:', error)
       throw error
     })
 }
@@ -553,7 +550,5 @@ export function unregisterServiceWorker(): Promise<boolean> {
     return Promise.resolve(false)
   }
 
-  return navigator.serviceWorker
-    .ready
-    .then((registration) => registration.unregister())
+  return navigator.serviceWorker.ready.then((registration) => registration.unregister())
 }

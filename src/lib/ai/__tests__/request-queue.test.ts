@@ -48,7 +48,10 @@ const mockCache = {
 
   async srem(key: string, member: string): Promise<void> {
     const current = this.data.get(key) || []
-    this.data.set(key, current.filter((m: string) => m !== member))
+    this.data.set(
+      key,
+      current.filter((m: string) => m !== member)
+    )
   },
 
   clear() {
@@ -112,10 +115,7 @@ describe('RequestQueue', () => {
     })
 
     it('should enqueue with priority', async () => {
-      const requestId = await queue.enqueue(
-        { data: 'test' },
-        { priority: RequestPriority.HIGH }
-      )
+      const requestId = await queue.enqueue({ data: 'test' }, { priority: RequestPriority.HIGH })
 
       expect(requestId).toBeTruthy()
     })
@@ -378,9 +378,7 @@ describe('RequestQueue', () => {
       await queue.enqueue({ data: 'test' })
       const request = await queue.dequeue()
 
-      await expect(
-        queue.processBatch([request!])
-      ).resolves.not.toThrow()
+      await expect(queue.processBatch([request!])).resolves.not.toThrow()
     })
 
     it('should retry with exponential backoff', async () => {
@@ -417,7 +415,7 @@ describe('RequestQueue', () => {
   describe('Timeout Handling', () => {
     it('should timeout long-running requests', async () => {
       const slowProcessor = jest.fn().mockImplementation(() => {
-        return new Promise(resolve => setTimeout(() => resolve({ success: true }), 100000))
+        return new Promise((resolve) => setTimeout(() => resolve({ success: true }), 100000))
       })
 
       const slowQueue = new RequestQueue('slow-queue', slowProcessor)
@@ -425,9 +423,7 @@ describe('RequestQueue', () => {
       await slowQueue.enqueue({ data: 'test' }, { timeout: 100 })
       const request = await slowQueue.dequeue()
 
-      await expect(
-        slowQueue.processBatch([request!])
-      ).resolves.not.toThrow()
+      await expect(slowQueue.processBatch([request!])).resolves.not.toThrow()
 
       slowQueue.stop()
     })
@@ -441,7 +437,7 @@ describe('RequestQueue', () => {
       const concurrentProcessor = jest.fn().mockImplementation(async () => {
         processing++
         maxConcurrent = Math.max(maxConcurrent, processing)
-        await new Promise(resolve => setTimeout(resolve, 50))
+        await new Promise((resolve) => setTimeout(resolve, 50))
         processing--
         return { success: true }
       })

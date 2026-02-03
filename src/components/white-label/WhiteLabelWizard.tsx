@@ -29,11 +29,7 @@ interface WhiteLabelWizardProps {
   className?: string
 }
 
-export function WhiteLabelWizard({
-  onComplete,
-  onClose,
-  className,
-}: WhiteLabelWizardProps) {
+export function WhiteLabelWizard({ onComplete, onClose, className }: WhiteLabelWizardProps) {
   const {
     currentStep,
     steps,
@@ -62,12 +58,15 @@ export function WhiteLabelWizard({
     onComplete?.()
   }, [saveToLocalStorage, closeWizard, onComplete])
 
-  const handleStepValidChange = useCallback((isValid: boolean) => {
-    setStepValid((prev) => ({
-      ...prev,
-      [currentStepData?.id || '']: isValid,
-    }))
-  }, [currentStepData?.id])
+  const handleStepValidChange = useCallback(
+    (isValid: boolean) => {
+      setStepValid((prev) => ({
+        ...prev,
+        [currentStepData?.id || '']: isValid,
+      }))
+    },
+    [currentStepData?.id]
+  )
 
   const canProceed = currentStepData?.skippable || stepValid[currentStepData?.id || '']
 
@@ -97,7 +96,7 @@ export function WhiteLabelWizard({
   }
 
   return (
-    <div className={cn('flex flex-col h-full bg-white dark:bg-zinc-900', className)}>
+    <div className={cn('flex h-full flex-col bg-white dark:bg-zinc-900', className)}>
       {/* Header */}
       <div className="flex-shrink-0 border-b border-zinc-200 dark:border-zinc-700">
         <div className="flex items-center justify-between px-6 py-4">
@@ -111,7 +110,7 @@ export function WhiteLabelWizard({
           </div>
           <button
             onClick={handleClose}
-            className="p-2 text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+            className="rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-zinc-800 dark:hover:text-zinc-300"
             aria-label="Close wizard"
           >
             <X className="h-5 w-5" />
@@ -120,7 +119,7 @@ export function WhiteLabelWizard({
 
         {/* Progress bar */}
         <div className="px-6 pb-4">
-          <div className="h-1.5 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-1.5 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
             <div
               className="h-full bg-sky-500 transition-all duration-300"
               style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
@@ -129,8 +128,8 @@ export function WhiteLabelWizard({
         </div>
 
         {/* Step indicators */}
-        <div className="px-6 pb-4 overflow-x-auto">
-          <div className="flex items-center gap-2 min-w-max">
+        <div className="overflow-x-auto px-6 pb-4">
+          <div className="flex min-w-max items-center gap-2">
             {steps.map((step, index) => {
               const isActive = index === currentStep
               const isCompleted = step.completed
@@ -146,14 +145,14 @@ export function WhiteLabelWizard({
                   }}
                   disabled={!isPast && !isCompleted && index !== currentStep}
                   className={cn(
-                    'flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition-all',
+                    'flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium transition-all',
                     isActive
-                      ? 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-300'
+                      ? 'dark:bg-sky-900/30 bg-sky-100 text-sky-700 dark:text-sky-300'
                       : isCompleted
-                        ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 cursor-pointer'
+                        ? 'cursor-pointer bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300'
                         : isPast
-                          ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 cursor-pointer'
-                          : 'bg-zinc-50 dark:bg-zinc-800/50 text-zinc-400 dark:text-zinc-500 cursor-not-allowed'
+                          ? 'cursor-pointer bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400'
+                          : 'cursor-not-allowed bg-zinc-50 text-zinc-400 dark:bg-zinc-800/50 dark:text-zinc-500'
                   )}
                 >
                   {isCompleted ? (
@@ -172,22 +171,16 @@ export function WhiteLabelWizard({
 
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
-        <div className="max-w-4xl mx-auto px-6 py-8">
-          {renderStep()}
-        </div>
+        <div className="mx-auto max-w-4xl px-6 py-8">{renderStep()}</div>
       </div>
 
       {/* Footer */}
-      <div className="flex-shrink-0 border-t border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800/50">
+      <div className="flex-shrink-0 border-t border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50">
         <div className="flex items-center justify-between px-6 py-4">
           <div>
             {!isFirstStep ? (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={prevStep}
-              >
-                <ChevronLeft className="h-4 w-4 mr-1" />
+              <Button type="button" variant="outline" onClick={prevStep}>
+                <ChevronLeft className="mr-1 h-4 w-4" />
                 Back
               </Button>
             ) : (
@@ -197,32 +190,20 @@ export function WhiteLabelWizard({
 
           <div className="flex items-center gap-3">
             {currentStepData?.skippable && !isLastStep && (
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={nextStep}
-                className="text-zinc-500"
-              >
+              <Button type="button" variant="ghost" onClick={nextStep} className="text-zinc-500">
                 Skip
               </Button>
             )}
 
             {isLastStep ? (
-              <Button
-                type="button"
-                onClick={handleComplete}
-              >
-                <Check className="h-4 w-4 mr-1" />
+              <Button type="button" onClick={handleComplete}>
+                <Check className="mr-1 h-4 w-4" />
                 Complete Setup
               </Button>
             ) : (
-              <Button
-                type="button"
-                onClick={nextStep}
-                disabled={!canProceed}
-              >
+              <Button type="button" onClick={nextStep} disabled={!canProceed}>
                 Next
-                <ChevronRight className="h-4 w-4 ml-1" />
+                <ChevronRight className="ml-1 h-4 w-4" />
               </Button>
             )}
           </div>
@@ -239,11 +220,7 @@ interface WhiteLabelWizardModalProps {
   onComplete?: () => void
 }
 
-export function WhiteLabelWizardModal({
-  isOpen,
-  onClose,
-  onComplete,
-}: WhiteLabelWizardModalProps) {
+export function WhiteLabelWizardModal({ isOpen, onClose, onComplete }: WhiteLabelWizardModalProps) {
   // Lock body scroll when open
   useEffect(() => {
     if (isOpen) {
@@ -261,13 +238,10 @@ export function WhiteLabelWizardModal({
   return (
     <div className="fixed inset-0 z-50">
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={onClose}
-      />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal */}
-      <div className="absolute inset-4 md:inset-8 lg:inset-12 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden">
+      <div className="absolute inset-4 overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-zinc-900 md:inset-8 lg:inset-12">
         <WhiteLabelWizard onClose={onClose} onComplete={onComplete} />
       </div>
     </div>

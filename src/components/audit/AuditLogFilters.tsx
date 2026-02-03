@@ -5,15 +5,7 @@
  */
 
 import { useState } from 'react'
-import {
-  Filter,
-  X,
-  Calendar,
-  User,
-  Tag,
-  AlertCircle,
-  Activity,
-} from 'lucide-react'
+import { Filter, X, Calendar, User, Tag, AlertCircle, Activity } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
@@ -69,12 +61,7 @@ const actorTypes: ActorType[] = ['user', 'system', 'bot', 'integration', 'anonym
 // Component
 // ============================================================================
 
-export function AuditLogFilters({
-  filters,
-  onChange,
-  onClear,
-  className,
-}: AuditLogFiltersProps) {
+export function AuditLogFilters({ filters, onChange, onClear, className }: AuditLogFiltersProps) {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const hasActiveFilters =
@@ -144,7 +131,7 @@ export function AuditLogFilters({
               variant={filters.category?.includes(category) ? 'default' : 'outline'}
               size="sm"
               onClick={() => toggleCategory(category)}
-              className="capitalize h-8"
+              className="h-8 capitalize"
             >
               {categoryDisplayNames[category]}
             </Button>
@@ -152,7 +139,12 @@ export function AuditLogFilters({
         </div>
 
         {hasActiveFilters && (
-          <Button variant="ghost" size="sm" onClick={onClear} className="gap-1 text-muted-foreground">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClear}
+            className="gap-1 text-muted-foreground"
+          >
             <X className="h-4 w-4" />
             Clear
           </Button>
@@ -161,8 +153,8 @@ export function AuditLogFilters({
 
       {/* Expanded Filters */}
       {isExpanded && (
-        <div className="rounded-lg border bg-card p-4 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="space-y-4 rounded-lg border bg-card p-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {/* Severity Filter */}
             <div className="space-y-2">
               <Label className="flex items-center gap-2">
@@ -176,7 +168,7 @@ export function AuditLogFilters({
                     variant={filters.severity?.includes(severity) ? 'default' : 'outline'}
                     size="sm"
                     onClick={() => toggleSeverity(severity)}
-                    className="capitalize h-7 text-xs"
+                    className="h-7 text-xs capitalize"
                   >
                     {severityDisplayNames[severity]}
                   </Button>
@@ -244,9 +236,7 @@ export function AuditLogFilters({
               <Input
                 type="date"
                 value={formatDate(filters.startDate)}
-                onChange={(e) =>
-                  onChange({ startDate: parseDate(e.target.value) })
-                }
+                onChange={(e) => onChange({ startDate: parseDate(e.target.value) })}
               />
             </div>
 
@@ -259,9 +249,7 @@ export function AuditLogFilters({
               <Input
                 type="date"
                 value={formatDate(filters.endDate)}
-                onChange={(e) =>
-                  onChange({ endDate: parseDate(e.target.value) })
-                }
+                onChange={(e) => onChange({ endDate: parseDate(e.target.value) })}
               />
             </div>
 
@@ -274,9 +262,7 @@ export function AuditLogFilters({
               <Input
                 placeholder="Filter by IP..."
                 value={filters.ipAddress || ''}
-                onChange={(e) =>
-                  onChange({ ipAddress: e.target.value || undefined })
-                }
+                onChange={(e) => onChange({ ipAddress: e.target.value || undefined })}
               />
             </div>
 
@@ -289,9 +275,7 @@ export function AuditLogFilters({
               <Input
                 placeholder="Filter by actor ID..."
                 value={filters.actorId || ''}
-                onChange={(e) =>
-                  onChange({ actorId: e.target.value || undefined })
-                }
+                onChange={(e) => onChange({ actorId: e.target.value || undefined })}
               />
             </div>
 
@@ -304,23 +288,21 @@ export function AuditLogFilters({
               <Input
                 placeholder="Filter by resource ID..."
                 value={filters.resourceId || ''}
-                onChange={(e) =>
-                  onChange({ resourceId: e.target.value || undefined })
-                }
+                onChange={(e) => onChange({ resourceId: e.target.value || undefined })}
               />
             </div>
           </div>
 
           {/* Active Filter Summary */}
           {hasActiveFilters && (
-            <div className="pt-2 border-t">
+            <div className="border-t pt-2">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm text-muted-foreground">Active filters:</span>
                 {filters.category?.map((cat) => (
                   <Badge
                     key={cat}
                     variant="secondary"
-                    className="gap-1 cursor-pointer"
+                    className="cursor-pointer gap-1"
                     onClick={() => toggleCategory(cat)}
                   >
                     {categoryDisplayNames[cat]}
@@ -331,7 +313,7 @@ export function AuditLogFilters({
                   <Badge
                     key={sev}
                     variant="secondary"
-                    className="gap-1 cursor-pointer"
+                    className="cursor-pointer gap-1"
                     onClick={() => toggleSeverity(sev)}
                   >
                     {severityDisplayNames[sev]}
@@ -341,7 +323,7 @@ export function AuditLogFilters({
                 {filters.actorType && (
                   <Badge
                     variant="secondary"
-                    className="gap-1 cursor-pointer"
+                    className="cursor-pointer gap-1"
                     onClick={() => onChange({ actorType: undefined })}
                   >
                     Actor: {filters.actorType}
@@ -351,7 +333,7 @@ export function AuditLogFilters({
                 {filters.success !== undefined && (
                   <Badge
                     variant="secondary"
-                    className="gap-1 cursor-pointer"
+                    className="cursor-pointer gap-1"
                     onClick={() => onChange({ success: undefined })}
                   >
                     Status: {filters.success ? 'Success' : 'Failed'}
@@ -361,7 +343,7 @@ export function AuditLogFilters({
                 {filters.startDate && (
                   <Badge
                     variant="secondary"
-                    className="gap-1 cursor-pointer"
+                    className="cursor-pointer gap-1"
                     onClick={() => onChange({ startDate: undefined })}
                   >
                     From: {formatDate(filters.startDate)}
@@ -371,7 +353,7 @@ export function AuditLogFilters({
                 {filters.endDate && (
                   <Badge
                     variant="secondary"
-                    className="gap-1 cursor-pointer"
+                    className="cursor-pointer gap-1"
                     onClick={() => onChange({ endDate: undefined })}
                   >
                     To: {formatDate(filters.endDate)}

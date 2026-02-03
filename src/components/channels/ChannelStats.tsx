@@ -95,7 +95,7 @@ export function ChannelStats({
     return (
       <div className={cn('space-y-6', className)}>
         {/* Overview Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           <StatCard
             icon={<Users className="h-4 w-4" />}
             label="Total Members"
@@ -238,7 +238,7 @@ export function ChannelStats({
 
   // Default variant
   return (
-    <div className={cn('grid grid-cols-2 sm:grid-cols-4 gap-4', className)}>
+    <div className={cn('grid grid-cols-2 gap-4 sm:grid-cols-4', className)}>
       <StatCard
         icon={<Users className="h-4 w-4" />}
         label="Members"
@@ -279,12 +279,12 @@ interface StatCardProps {
 
 function StatCard({ icon, label, value, subValue, trend }: StatCardProps) {
   return (
-    <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
-      <div className="p-2 rounded-md bg-background text-muted-foreground">{icon}</div>
-      <div className="flex-1 min-w-0">
+    <div className="bg-muted/50 flex items-start gap-3 rounded-lg p-3">
+      <div className="rounded-md bg-background p-2 text-muted-foreground">{icon}</div>
+      <div className="min-w-0 flex-1">
         <p className="text-xs text-muted-foreground">{label}</p>
         <div className="flex items-center gap-1.5">
-          <p className="text-lg font-semibold truncate">{value}</p>
+          <p className="truncate text-lg font-semibold">{value}</p>
           {trend && <TrendIndicator trend={trend} size="sm" />}
         </div>
         {subValue && <p className="text-xs text-muted-foreground">{subValue}</p>}

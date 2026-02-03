@@ -31,6 +31,7 @@ Type-safe client library for all nChat APIs.
 **Location**: `/src/sdk/`
 
 **Features**:
+
 - ✅ Full TypeScript support with comprehensive types
 - ✅ GraphQL and REST API support
 - ✅ Built-in authentication handling
@@ -39,24 +40,25 @@ Type-safe client library for all nChat APIs.
 - ✅ Automatic retry logic
 
 **Quick Example**:
+
 ```typescript
 import { NChatClient } from '@nchat/sdk'
 
 const client = new NChatClient({
   apiUrl: 'https://api.nchat.example.com',
-  apiKey: 'your-api-key'
+  apiKey: 'your-api-key',
 })
 
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 client.setToken(token)
 
 const message = await client.messages.send({
   channelId: 'channel-123',
-  content: 'Hello, world!'
+  content: 'Hello, world!',
 })
 ```
 
@@ -69,6 +71,7 @@ Command-line interface for development, deployment, and management.
 **Location**: `/src/cli/`
 
 **Features**:
+
 - ✅ Development server management
 - ✅ Backend service orchestration
 - ✅ Database migrations and seeding
@@ -77,6 +80,7 @@ Command-line interface for development, deployment, and management.
 - ✅ Backup and restore
 
 **Quick Example**:
+
 ```bash
 # Development
 nchat-cli dev start
@@ -104,6 +108,7 @@ Comprehensive API reference with interactive examples.
 **Location**: `/docs/api/`
 
 **Included**:
+
 - ✅ REST API reference
 - ✅ GraphQL schema documentation
 - ✅ Authentication guide
@@ -112,6 +117,7 @@ Comprehensive API reference with interactive examples.
 - ✅ Error handling guide
 
 **API Endpoints**:
+
 - **REST**: `https://api.nchat.example.com/api`
 - **GraphQL**: `https://api.nchat.example.com/graphql`
 - **WebSocket**: `wss://api.nchat.example.com/socket.io`
@@ -123,6 +129,7 @@ Comprehensive API reference with interactive examples.
 Interactive API exploration and testing.
 
 **REST API Explorer** (Swagger UI):
+
 - URL: http://localhost:3000/api-docs
 - Interactive REST API documentation
 - Try API calls directly in browser
@@ -130,6 +137,7 @@ Interactive API exploration and testing.
 - Code snippet generation
 
 **GraphQL Playground** (GraphiQL):
+
 - URL: http://localhost:3000/graphql-playground
 - Interactive GraphQL query builder
 - Schema exploration
@@ -195,20 +203,20 @@ import { NChatClient } from '@nchat/sdk'
 
 const client = new NChatClient({
   apiUrl: 'https://api.nchat.example.com',
-  apiKey: process.env.NCHAT_API_KEY
+  apiKey: process.env.NCHAT_API_KEY,
 })
 
 // Create bot
 const bot = await client.bots.create({
   name: 'Welcome Bot',
   username: 'welcomebot',
-  description: 'Welcomes new members'
+  description: 'Welcomes new members',
 })
 
 // Send welcome message
 await client.bots.sendMessage(bot.id, {
   channelId: 'general',
-  content: 'Welcome to the team! 👋'
+  content: 'Welcome to the team! 👋',
 })
 ```
 
@@ -338,12 +346,14 @@ NCHAT_API_KEY=your-api-key
 Base URL: `https://api.nchat.example.com/api`
 
 **Authentication Endpoints**:
+
 - `POST /api/auth/signup` - Sign up new user
 - `POST /api/auth/signin` - Sign in existing user
 - `POST /api/auth/signout` - Sign out
 - `POST /api/auth/refresh` - Refresh access token
 
 **Channel Endpoints**:
+
 - `GET /api/channels` - List channels
 - `POST /api/channels` - Create channel
 - `GET /api/channels/{id}` - Get channel
@@ -351,6 +361,7 @@ Base URL: `https://api.nchat.example.com/api`
 - `DELETE /api/channels/{id}` - Delete channel
 
 **Message Endpoints**:
+
 - `GET /api/channels/{id}/messages` - List messages
 - `POST /api/messages` - Send message
 - `PATCH /api/messages/{id}` - Update message
@@ -363,6 +374,7 @@ Base URL: `https://api.nchat.example.com/api`
 Endpoint: `https://api.nchat.example.com/graphql`
 
 **Example Query**:
+
 ```graphql
 query GetChannels {
   nchat_channels(limit: 10) {
@@ -375,14 +387,10 @@ query GetChannels {
 ```
 
 **Example Mutation**:
+
 ```graphql
 mutation SendMessage($channelId: uuid!, $content: String!) {
-  insert_nchat_messages_one(
-    object: {
-      channel_id: $channelId
-      content: $content
-    }
-  ) {
+  insert_nchat_messages_one(object: { channel_id: $channelId, content: $content }) {
     id
     content
     created_at
@@ -391,6 +399,7 @@ mutation SendMessage($channelId: uuid!, $content: String!) {
 ```
 
 **Example Subscription**:
+
 ```graphql
 subscription OnNewMessage($channelId: uuid!) {
   nchat_messages(
@@ -412,18 +421,19 @@ subscription OnNewMessage($channelId: uuid!) {
 ## 🎨 SDK Examples
 
 ### Authentication
+
 ```typescript
 // Sign up
 const { user, token } = await client.auth.signUp({
   email: 'user@example.com',
   password: 'SecurePass123!',
-  displayName: 'John Doe'
+  displayName: 'John Doe',
 })
 
 // Sign in
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 // Enable 2FA
@@ -432,12 +442,13 @@ const { backupCodes } = await client.auth.verify2FA('123456')
 ```
 
 ### Channels
+
 ```typescript
 // Create channel
 const channel = await client.channels.create({
   name: 'general',
   description: 'General discussion',
-  type: 'public'
+  type: 'public',
 })
 
 // List channels
@@ -448,11 +459,12 @@ await client.channels.join(channel.id)
 ```
 
 ### Messages
+
 ```typescript
 // Send message
 const message = await client.messages.send({
   channelId: 'channel-123',
-  content: 'Hello, world!'
+  content: 'Hello, world!',
 })
 
 // Add reaction
@@ -462,17 +474,18 @@ await client.messages.react(message.id, '👍')
 await client.messages.send({
   channelId: 'channel-123',
   content: 'Reply',
-  parentId: message.id
+  parentId: message.id,
 })
 ```
 
 ### Webhooks
+
 ```typescript
 // Create webhook
 const webhook = await client.webhooks.create({
   name: 'My Webhook',
   url: 'https://example.com/webhook',
-  events: ['message.created', 'channel.created']
+  events: ['message.created', 'channel.created'],
 })
 
 // Test webhook
@@ -484,6 +497,7 @@ const { success } = await client.webhooks.test(webhook.id)
 ## 🚀 CLI Examples
 
 ### Development
+
 ```bash
 # Start everything
 nchat-cli dev backend --detach
@@ -498,6 +512,7 @@ nchat-cli dev build --analyze
 ```
 
 ### Database
+
 ```bash
 # Migrations
 nchat-cli db migrate
@@ -512,6 +527,7 @@ nchat-cli db restore ./backup.sql
 ```
 
 ### User Management
+
 ```bash
 # Create user
 nchat-cli user create \
@@ -527,6 +543,7 @@ nchat-cli user suspend user-123 --reason "Violation"
 ```
 
 ### Deployment
+
 ```bash
 # Deploy to Vercel
 nchat-cli deploy vercel --prod
@@ -545,12 +562,14 @@ nchat-cli deploy k8s --namespace production
 All API requests require authentication via:
 
 1. **API Key** (Server-to-Server):
+
 ```bash
 curl https://api.nchat.example.com/api/channels \
   -H "X-API-Key: your-api-key"
 ```
 
 2. **JWT Token** (User Authentication):
+
 ```bash
 curl https://api.nchat.example.com/api/channels \
   -H "Authorization: Bearer your-jwt-token"

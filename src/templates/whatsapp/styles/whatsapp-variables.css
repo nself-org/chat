@@ -8,81 +8,81 @@
   /* ─────────────────────────────────────────────────────────────────────────────
    * WhatsApp Brand Colors
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-primary-green: #25D366;
-  --wa-secondary-green: #128C7E;
-  --wa-dark-green: #075E54;
-  --wa-light-green: #DCF8C6;
+  --wa-primary-green: #25d366;
+  --wa-secondary-green: #128c7e;
+  --wa-dark-green: #075e54;
+  --wa-light-green: #dcf8c6;
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Message Bubbles (Light Mode)
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-bubble-outgoing: #DCF8C6;
-  --wa-bubble-outgoing-hover: #D0F0BC;
-  --wa-bubble-incoming: #FFFFFF;
-  --wa-bubble-incoming-hover: #F5F5F5;
+  --wa-bubble-outgoing: #dcf8c6;
+  --wa-bubble-outgoing-hover: #d0f0bc;
+  --wa-bubble-incoming: #ffffff;
+  --wa-bubble-incoming-hover: #f5f5f5;
   --wa-bubble-reply: rgba(0, 0, 0, 0.05);
   --wa-bubble-shadow: 0 1px 0.5px rgba(11, 20, 26, 0.13);
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Background Colors (Light Mode)
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-bg-chat: #ECE5DD;
-  --wa-bg-sidebar: #FFFFFF;
-  --wa-bg-header: #F0F2F5;
-  --wa-bg-input: #F0F2F5;
-  --wa-bg-search: #F0F2F5;
-  --wa-bg-dropdown: #FFFFFF;
-  --wa-bg-modal: #FFFFFF;
+  --wa-bg-chat: #ece5dd;
+  --wa-bg-sidebar: #ffffff;
+  --wa-bg-header: #f0f2f5;
+  --wa-bg-input: #f0f2f5;
+  --wa-bg-search: #f0f2f5;
+  --wa-bg-dropdown: #ffffff;
+  --wa-bg-modal: #ffffff;
   --wa-bg-overlay: rgba(11, 20, 26, 0.5);
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Text Colors (Light Mode)
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-text-primary: #111B21;
+  --wa-text-primary: #111b21;
   --wa-text-secondary: #667781;
-  --wa-text-muted: #8696A0;
-  --wa-text-light: #FFFFFF;
-  --wa-text-link: #027EB5;
+  --wa-text-muted: #8696a0;
+  --wa-text-light: #ffffff;
+  --wa-text-link: #027eb5;
   --wa-text-timestamp: #667781;
-  --wa-text-bubble-outgoing: #111B21;
-  --wa-text-bubble-incoming: #111B21;
+  --wa-text-bubble-outgoing: #111b21;
+  --wa-text-bubble-incoming: #111b21;
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Border Colors (Light Mode)
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-border-light: #E9EDEF;
-  --wa-border-medium: #D1D7DB;
-  --wa-border-dark: #C4CCD0;
+  --wa-border-light: #e9edef;
+  --wa-border-medium: #d1d7db;
+  --wa-border-dark: #c4ccd0;
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Checkmark Colors
    * ───────────────────────────────────────────────────────────────────────────── */
   --wa-check-gray: #667781;
-  --wa-check-blue: #53BDEB;
-  --wa-check-pending: #8696A0;
+  --wa-check-blue: #53bdeb;
+  --wa-check-pending: #8696a0;
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Status Colors
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-status-online: #25D366;
-  --wa-status-typing: #25D366;
-  --wa-status-recording: #25D366;
-  --wa-status-away: #8696A0;
+  --wa-status-online: #25d366;
+  --wa-status-typing: #25d366;
+  --wa-status-recording: #25d366;
+  --wa-status-away: #8696a0;
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Unread Badge
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-unread-bg: #25D366;
-  --wa-unread-text: #FFFFFF;
-  --wa-unread-muted-bg: #8696A0;
+  --wa-unread-bg: #25d366;
+  --wa-unread-text: #ffffff;
+  --wa-unread-muted-bg: #8696a0;
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Icons
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-icon-primary: #54656F;
-  --wa-icon-secondary: #8696A0;
-  --wa-icon-accent: #00A884;
-  --wa-icon-header: #54656F;
+  --wa-icon-primary: #54656f;
+  --wa-icon-secondary: #8696a0;
+  --wa-icon-accent: #00a884;
+  --wa-icon-header: #54656f;
 
   /* ─────────────────────────────────────────────────────────────────────────────
    * Sizing
@@ -100,7 +100,9 @@
   /* ─────────────────────────────────────────────────────────────────────────────
    * Typography
    * ───────────────────────────────────────────────────────────────────────────── */
-  --wa-font-family: 'Segoe UI', Helvetica Neue, Helvetica, Lucida Grande, Arial, Ubuntu, Cantarell, Fira Sans, sans-serif;
+  --wa-font-family:
+    'Segoe UI', Helvetica Neue, Helvetica, Lucida Grande, Arial, Ubuntu, Cantarell, Fira Sans,
+    sans-serif;
   --wa-font-size-xs: 11px;
   --wa-font-size-sm: 12px;
   --wa-font-size-base: 14.2px;
@@ -131,63 +133,83 @@
  * =============================================================================== */
 
 .dark,
-[data-theme="dark"] {
+[data-theme='dark'] {
   /* Message Bubbles (Dark Mode) */
-  --wa-bubble-outgoing: #005C4B;
-  --wa-bubble-outgoing-hover: #004D40;
-  --wa-bubble-incoming: #1F2C33;
-  --wa-bubble-incoming-hover: #2A3942;
+  --wa-bubble-outgoing: #005c4b;
+  --wa-bubble-outgoing-hover: #004d40;
+  --wa-bubble-incoming: #1f2c33;
+  --wa-bubble-incoming-hover: #2a3942;
   --wa-bubble-reply: rgba(255, 255, 255, 0.05);
   --wa-bubble-shadow: 0 1px 0.5px rgba(0, 0, 0, 0.3);
 
   /* Background Colors (Dark Mode) */
-  --wa-bg-chat: #0B141A;
-  --wa-bg-sidebar: #111B21;
-  --wa-bg-header: #202C33;
-  --wa-bg-input: #2A3942;
-  --wa-bg-search: #202C33;
+  --wa-bg-chat: #0b141a;
+  --wa-bg-sidebar: #111b21;
+  --wa-bg-header: #202c33;
+  --wa-bg-input: #2a3942;
+  --wa-bg-search: #202c33;
   --wa-bg-dropdown: #233138;
-  --wa-bg-modal: #111B21;
+  --wa-bg-modal: #111b21;
   --wa-bg-overlay: rgba(11, 20, 26, 0.85);
 
   /* Text Colors (Dark Mode) */
-  --wa-text-primary: #E9EDEF;
-  --wa-text-secondary: #8696A0;
+  --wa-text-primary: #e9edef;
+  --wa-text-secondary: #8696a0;
   --wa-text-muted: #667781;
-  --wa-text-light: #E9EDEF;
-  --wa-text-link: #53BDEB;
-  --wa-text-timestamp: #8696A0;
-  --wa-text-bubble-outgoing: #E9EDEF;
-  --wa-text-bubble-incoming: #E9EDEF;
+  --wa-text-light: #e9edef;
+  --wa-text-link: #53bdeb;
+  --wa-text-timestamp: #8696a0;
+  --wa-text-bubble-outgoing: #e9edef;
+  --wa-text-bubble-incoming: #e9edef;
 
   /* Border Colors (Dark Mode) */
-  --wa-border-light: #2A3942;
-  --wa-border-medium: #2A3942;
-  --wa-border-dark: #3B4A54;
+  --wa-border-light: #2a3942;
+  --wa-border-medium: #2a3942;
+  --wa-border-dark: #3b4a54;
 
   /* Icons (Dark Mode) */
-  --wa-icon-primary: #AEBAC1;
-  --wa-icon-secondary: #8696A0;
-  --wa-icon-accent: #00A884;
-  --wa-icon-header: #AEBAC1;
+  --wa-icon-primary: #aebac1;
+  --wa-icon-secondary: #8696a0;
+  --wa-icon-accent: #00a884;
+  --wa-icon-header: #aebac1;
 
   /* Accent colors (Dark Mode) */
-  --wa-primary-green: #00A884;
+  --wa-primary-green: #00a884;
 }
 
 /* ===============================================================================
  * Utility Classes
  * =============================================================================== */
 
-.wa-text-primary { color: var(--wa-text-primary); }
-.wa-text-secondary { color: var(--wa-text-secondary); }
-.wa-text-muted { color: var(--wa-text-muted); }
-.wa-text-link { color: var(--wa-text-link); }
+.wa-text-primary {
+  color: var(--wa-text-primary);
+}
+.wa-text-secondary {
+  color: var(--wa-text-secondary);
+}
+.wa-text-muted {
+  color: var(--wa-text-muted);
+}
+.wa-text-link {
+  color: var(--wa-text-link);
+}
 
-.wa-bg-chat { background-color: var(--wa-bg-chat); }
-.wa-bg-sidebar { background-color: var(--wa-bg-sidebar); }
-.wa-bg-header { background-color: var(--wa-bg-header); }
-.wa-bg-input { background-color: var(--wa-bg-input); }
+.wa-bg-chat {
+  background-color: var(--wa-bg-chat);
+}
+.wa-bg-sidebar {
+  background-color: var(--wa-bg-sidebar);
+}
+.wa-bg-header {
+  background-color: var(--wa-bg-header);
+}
+.wa-bg-input {
+  background-color: var(--wa-bg-input);
+}
 
-.wa-border-light { border-color: var(--wa-border-light); }
-.wa-border-medium { border-color: var(--wa-border-medium); }
+.wa-border-light {
+  border-color: var(--wa-border-light);
+}
+.wa-border-medium {
+  border-color: var(--wa-border-medium);
+}

@@ -15,6 +15,8 @@ import {
 } from '@/components/settings'
 import { User } from 'lucide-react'
 
+import { logger } from '@/lib/logger'
+
 interface ProfileFormData {
   displayName: string
   username: string
@@ -51,9 +53,7 @@ export default function ProfileSettingsPage() {
     }
   }, [user])
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
     setSaved(false)
@@ -71,20 +71,17 @@ export default function ProfileSettingsPage() {
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (error) {
-      console.error('Failed to update profile:', error)
+      logger.error('Failed to update profile:', error)
     } finally {
       setLoading(false)
     }
   }
 
   const handleAvatarUpload = async (file: File) => {
-    // TODO: Implement avatar upload
     // In a real implementation, you would upload to storage and update the user's avatarUrl
   }
 
-  const handleAvatarRemove = async () => {
-    // TODO: Implement avatar removal
-  }
+  const handleAvatarRemove = async () => {}
 
   if (!user) {
     return (
@@ -101,7 +98,7 @@ export default function ProfileSettingsPage() {
       <div className="space-y-6">
         {/* Page Header */}
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+          <div className="bg-primary/10 flex h-10 w-10 items-center justify-center rounded-lg">
             <User className="h-5 w-5 text-primary" />
           </div>
           <div>
@@ -203,9 +200,7 @@ export default function ProfileSettingsPage() {
                 maxLength={160}
                 rows={3}
               />
-              <p className="text-xs text-muted-foreground">
-                {formData.bio.length}/160 characters
-              </p>
+              <p className="text-xs text-muted-foreground">{formData.bio.length}/160 characters</p>
             </SettingsRow>
           </SettingsSection>
 
@@ -220,11 +215,9 @@ export default function ProfileSettingsPage() {
                   <p className="font-medium">
                     {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
                   </p>
-                  <p className="text-sm text-muted-foreground">
-                    {getRoleDescription(user.role)}
-                  </p>
+                  <p className="text-sm text-muted-foreground">{getRoleDescription(user.role)}</p>
                 </div>
-                <div className="rounded-full bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
+                <div className="bg-primary/10 rounded-full px-3 py-1 text-sm font-medium text-primary">
                   {user.role}
                 </div>
               </div>
@@ -244,9 +237,7 @@ export default function ProfileSettingsPage() {
             >
               <TimezoneSelector
                 value={formData.timezone}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, timezone: value }))
-                }
+                onValueChange={(value) => setFormData((prev) => ({ ...prev, timezone: value }))}
                 disabled={loading}
               />
             </SettingsRow>
@@ -259,9 +250,7 @@ export default function ProfileSettingsPage() {
             >
               <LanguageSelector
                 value={formData.language}
-                onValueChange={(value) =>
-                  setFormData((prev) => ({ ...prev, language: value }))
-                }
+                onValueChange={(value) => setFormData((prev) => ({ ...prev, language: value }))}
                 disabled={loading}
               />
             </SettingsRow>

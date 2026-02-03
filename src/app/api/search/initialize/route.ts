@@ -8,6 +8,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { initializeIndexes, healthCheck } from '@/lib/search/meilisearch-client'
 
+import { logger } from '@/lib/logger'
+
 export const runtime = 'nodejs'
 
 /**
@@ -39,7 +41,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       version: health.version,
     })
   } catch (error) {
-    console.error('Error initializing search:', error)
+    logger.error('Error initializing search:', error)
 
     return NextResponse.json(
       {

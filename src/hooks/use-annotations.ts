@@ -8,6 +8,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { logger } from '@/lib/logger'
 import {
   ScreenAnnotator,
   createScreenAnnotator,
@@ -158,18 +159,9 @@ export function useAnnotations(options: UseAnnotationsOptions): UseAnnotationsRe
         annotatorRef.current = null
       }
     } catch (error) {
-      console.error('Failed to initialize annotator:', error)
+      logger.error('Failed to initialize annotator:',  error)
     }
-  }, [
-    canvas,
-    userId,
-    userName,
-    isEnabled,
-    onAnnotationAdded,
-    onAnnotationsCleared,
-    onUndo,
-    onRedo,
-  ]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [canvas, userId, userName, isEnabled, onAnnotationAdded, onAnnotationsCleared, onUndo, onRedo]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ==========================================================================
   // Set Tool

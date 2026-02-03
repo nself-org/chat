@@ -6,6 +6,8 @@
 import type { ApolloClient } from '@apollo/client'
 import { gql } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 export type ModerationActionType =
   | 'flag'
   | 'hide'
@@ -156,10 +158,7 @@ const UNBAN_USER = gql`
 
 const WARN_USER = gql`
   mutation WarnUser($userId: uuid!, $reason: String!) {
-    insert_nchat_user_warnings_one(object: {
-      user_id: $userId
-      reason: $reason
-    }) {
+    insert_nchat_user_warnings_one(object: { user_id: $userId, reason: $reason }) {
       id
       created_at
     }
@@ -168,10 +167,7 @@ const WARN_USER = gql`
 
 const GET_USER_WARNINGS = gql`
   query GetUserWarnings($userId: uuid!) {
-    nchat_user_warnings(
-      where: { user_id: { _eq: $userId } }
-      order_by: { created_at: desc }
-    ) {
+    nchat_user_warnings(where: { user_id: { _eq: $userId } }, order_by: { created_at: desc }) {
       id
       reason
       created_at
@@ -218,7 +214,7 @@ export class ModerationActions {
         actionId: result.data?.insert_nchat_moderation_actions_one?.id,
       }
     } catch (error) {
-      console.error('Flag content error:', error)
+      logger.error('Flag content error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -270,7 +266,7 @@ export class ModerationActions {
         affectedItems: [targetId],
       }
     } catch (error) {
-      console.error('Hide content error:', error)
+      logger.error('Hide content error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -318,7 +314,7 @@ export class ModerationActions {
         affectedItems: [targetId],
       }
     } catch (error) {
-      console.error('Delete content error:', error)
+      logger.error('Delete content error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -361,7 +357,7 @@ export class ModerationActions {
         actionId: actionResult.data?.insert_nchat_moderation_actions_one?.id,
       }
     } catch (error) {
-      console.error('Warn user error:', error)
+      logger.error('Warn user error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -415,7 +411,7 @@ export class ModerationActions {
         actionId: actionResult.data?.insert_nchat_moderation_actions_one?.id,
       }
     } catch (error) {
-      console.error('Mute user error:', error)
+      logger.error('Mute user error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -452,7 +448,7 @@ export class ModerationActions {
         actionId: actionResult.data?.insert_nchat_moderation_actions_one?.id,
       }
     } catch (error) {
-      console.error('Unmute user error:', error)
+      logger.error('Unmute user error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -506,7 +502,7 @@ export class ModerationActions {
         actionId: actionResult.data?.insert_nchat_moderation_actions_one?.id,
       }
     } catch (error) {
-      console.error('Ban user error:', error)
+      logger.error('Ban user error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -543,7 +539,7 @@ export class ModerationActions {
         actionId: actionResult.data?.insert_nchat_moderation_actions_one?.id,
       }
     } catch (error) {
-      console.error('Unban user error:', error)
+      logger.error('Unban user error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -592,7 +588,7 @@ export class ModerationActions {
         actionId: actionResult.data?.insert_nchat_moderation_actions_one?.id,
       }
     } catch (error) {
-      console.error('Approve content error:', error)
+      logger.error('Approve content error:', error)
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',

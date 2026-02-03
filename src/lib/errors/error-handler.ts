@@ -65,10 +65,7 @@ class ErrorHandler {
   /**
    * Handle an error with optional retry and user notification
    */
-  async handle(
-    error: unknown,
-    options: ErrorHandlerOptions = {}
-  ): Promise<ErrorHandlerResult> {
+  async handle(error: unknown, options: ErrorHandlerOptions = {}): Promise<ErrorHandlerResult> {
     const appError = parseError(error)
     const {
       showToast = true,
@@ -158,14 +155,9 @@ class ErrorHandler {
     const { duration = 5000, allowRetry = false, onRetry } = options
 
     // Determine toast title based on error category
-    const title =
-      options.title ||
-      this.getErrorTitle(error.category) ||
-      'Error'
+    const title = options.title || this.getErrorTitle(error.category) || 'Error'
 
-    const description =
-      options.description ||
-      error.userMessage
+    const description = options.description || error.userMessage
 
     // Import toast from use-toast hook (returns object with toast function)
     // We can't use JSX in .ts files, so we use the action callback approach
@@ -271,9 +263,7 @@ class ErrorHandler {
     timestamps.push(now)
 
     // Clean old timestamps
-    const recentTimestamps = timestamps.filter(
-      ts => now - ts < this.ERROR_WINDOW_MS
-    )
+    const recentTimestamps = timestamps.filter((ts) => now - ts < this.ERROR_WINDOW_MS)
     this.errorTimestamps.set(key, recentTimestamps)
   }
 
@@ -445,10 +435,7 @@ export interface ErrorBoundaryFallbackProps {
   resetError: () => void
 }
 
-export function handleErrorBoundaryError(
-  error: Error,
-  errorInfo: React.ErrorInfo
-): AppError {
+export function handleErrorBoundaryError(error: Error, errorInfo: React.ErrorInfo): AppError {
   const appError = parseError(error)
 
   // Add React error info to context (create new object since context is readonly)

@@ -160,10 +160,7 @@ export const GET_SCHEDULED_MESSAGE = gql`
  * Get all pending scheduled messages for a specific channel
  */
 export const GET_CHANNEL_SCHEDULED_MESSAGES = gql`
-  query GetChannelScheduledMessages(
-    $channelId: uuid!
-    $userId: uuid!
-  ) {
+  query GetChannelScheduledMessages($channelId: uuid!, $userId: uuid!) {
     nchat_scheduled_messages(
       where: {
         channel_id: { _eq: $channelId }
@@ -184,10 +181,7 @@ export const GET_CHANNEL_SCHEDULED_MESSAGES = gql`
 export const GET_SCHEDULED_MESSAGES_COUNT = gql`
   query GetScheduledMessagesCount($userId: uuid!) {
     nchat_scheduled_messages_aggregate(
-      where: {
-        user_id: { _eq: $userId }
-        status: { _eq: "pending" }
-      }
+      where: { user_id: { _eq: $userId }, status: { _eq: "pending" } }
     ) {
       aggregate {
         count
@@ -267,10 +261,7 @@ export const DELETE_SCHEDULED_MESSAGE = gql`
   mutation DeleteScheduledMessage($id: uuid!) {
     update_nchat_scheduled_messages_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        status: "cancelled"
-        updated_at: "now()"
-      }
+      _set: { status: "cancelled", updated_at: "now()" }
     ) {
       id
       status
@@ -298,10 +289,7 @@ export const SEND_SCHEDULED_NOW = gql`
   mutation SendScheduledNow($id: uuid!) {
     update_nchat_scheduled_messages_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        scheduled_at: "now()"
-        updated_at: "now()"
-      }
+      _set: { scheduled_at: "now()", updated_at: "now()" }
     ) {
       ...ScheduledMessage
     }
@@ -316,10 +304,7 @@ export const BULK_CANCEL_SCHEDULED_MESSAGES = gql`
   mutation BulkCancelScheduledMessages($ids: [uuid!]!) {
     update_nchat_scheduled_messages(
       where: { id: { _in: $ids }, status: { _eq: "pending" } }
-      _set: {
-        status: "cancelled"
-        updated_at: "now()"
-      }
+      _set: { status: "cancelled", updated_at: "now()" }
     ) {
       affected_rows
       returning {
@@ -340,10 +325,7 @@ export const BULK_CANCEL_SCHEDULED_MESSAGES = gql`
 export const SCHEDULED_MESSAGES_SUBSCRIPTION = gql`
   subscription ScheduledMessagesSubscription($userId: uuid!) {
     nchat_scheduled_messages(
-      where: {
-        user_id: { _eq: $userId }
-        status: { _eq: "pending" }
-      }
+      where: { user_id: { _eq: $userId }, status: { _eq: "pending" } }
       order_by: { scheduled_at: asc }
     ) {
       ...ScheduledMessage

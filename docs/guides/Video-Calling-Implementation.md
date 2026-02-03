@@ -19,6 +19,7 @@ This document summarizes the comprehensive video calling implementation for nsel
 **File**: `.backend/migrations/000009_add_video_call_support.sql`
 
 **Changes**:
+
 - Added `is_video_enabled` column to `nchat_call_participants`
 - Added `video_quality` column (180p, 360p, 720p, 1080p)
 - Added `is_screen_sharing` column for screen share detection
@@ -29,9 +30,11 @@ This document summarizes the comprehensive video calling implementation for nsel
 ### 2. Core Libraries
 
 #### Video Processor (`src/lib/calls/video-processor.ts`)
+
 **Purpose**: Video stream processing, quality adaptation, frame rate control
 
 **Key Features**:
+
 - 4 quality profiles: 180p, 360p, 720p, 1080p
 - Adaptive quality based on bandwidth and packet loss
 - Frame rate control (15, 24, 30, 60 fps)
@@ -39,6 +42,7 @@ This document summarizes the comprehensive video calling implementation for nsel
 - Real-time statistics tracking
 
 **API**:
+
 ```typescript
 const processor = createVideoProcessor({ quality: '720p', fps: 30 })
 processor.setQuality('1080p')
@@ -47,9 +51,11 @@ const stream = await processor.processStream(originalStream, processFn)
 ```
 
 #### Layout Manager (`src/lib/calls/layout-manager.ts`)
+
 **Purpose**: Manages video call layouts and tile positioning
 
 **Key Features**:
+
 - 5 layout modes: grid, speaker, pinned, sidebar, spotlight
 - Automatic grid dimension calculation
 - Smart tile sizing based on container
@@ -57,6 +63,7 @@ const stream = await processor.processStream(originalStream, processFn)
 - Screen share layout handling
 
 **API**:
+
 ```typescript
 const layoutManager = createLayoutManager({ mode: 'speaker' })
 const layout = layoutManager.calculateLayout(participantIds, dimensions)
@@ -65,9 +72,11 @@ layoutManager.pinParticipant(participantId)
 ```
 
 #### Bandwidth Manager (`src/lib/calls/bandwidth-manager.ts`)
+
 **Purpose**: Network monitoring and adaptive bitrate
 
 **Key Features**:
+
 - Real-time RTT, jitter, packet loss tracking
 - Connection quality assessment (excellent, good, fair, poor)
 - Automatic quality adaptation with cooldown
@@ -75,6 +84,7 @@ layoutManager.pinParticipant(participantId)
 - Detailed statistics reporting
 
 **API**:
+
 ```typescript
 const bandwidthManager = createBandwidthManager('720p')
 bandwidthManager.addStats({ rtt, jitter, packetsLost, packetsReceived })
@@ -83,9 +93,11 @@ const estimate = bandwidthManager.estimateBandwidth()
 ```
 
 #### Background Blur (`src/lib/calls/background-blur.ts`)
+
 **Purpose**: Background blur using MediaPipe segmentation
 
 **Key Features**:
+
 - MediaPipe Selfie Segmentation integration
 - 3 blur strengths: light, medium, strong
 - Adjustable edge smoothness
@@ -93,6 +105,7 @@ const estimate = bandwidthManager.estimateBandwidth()
 - GPU-accelerated Gaussian blur
 
 **API**:
+
 ```typescript
 const blur = createBackgroundBlur({ strength: 'medium' })
 await blur.initialize()
@@ -101,9 +114,11 @@ blur.setStrength('strong')
 ```
 
 #### Virtual Background (`src/lib/calls/virtual-background.ts`)
+
 **Purpose**: Replace background with images or colors
 
 **Key Features**:
+
 - 8 preset backgrounds (office, library, beach, mountains, etc.)
 - 6 preset colors
 - Custom image upload
@@ -111,6 +126,7 @@ blur.setStrength('strong')
 - Real-time segmentation and compositing
 
 **API**:
+
 ```typescript
 const vbg = createVirtualBackground({ type: 'color', source: '#1f2937' })
 await vbg.initialize()
@@ -119,9 +135,11 @@ const processedStream = await vbg.processStream(originalStream)
 ```
 
 #### Simulcast (`src/lib/calls/simulcast.ts`)
+
 **Purpose**: Multi-layer video encoding for SFU
 
 **Key Features**:
+
 - 3 quality layers: high, medium, low
 - Separate configurations for 720p and 1080p
 - Dynamic layer activation/deactivation
@@ -129,6 +147,7 @@ const processedStream = await vbg.processStream(originalStream)
 - Real-time statistics per layer
 
 **API**:
+
 ```typescript
 const simulcast = createSimulcastManager(true)
 const encodings = simulcast.getEncodingParameters()
@@ -139,9 +158,11 @@ await simulcast.adaptToNetwork(sender, availableBandwidth)
 ### 3. React Hooks
 
 #### `use-camera` (`src/hooks/use-camera.ts`)
+
 **Purpose**: Camera device management and permissions
 
 **Features**:
+
 - Device enumeration
 - Permission checking and requesting
 - Camera selection
@@ -149,9 +170,11 @@ await simulcast.adaptToNetwork(sender, availableBandwidth)
 - Stream management
 
 #### `use-video-layout` (`src/hooks/use-video-layout.ts`)
+
 **Purpose**: Layout mode management and tile positioning
 
 **Features**:
+
 - Layout mode switching
 - Participant pinning
 - Speaking detection
@@ -159,9 +182,11 @@ await simulcast.adaptToNetwork(sender, availableBandwidth)
 - Automatic resize handling
 
 #### `use-background-effects` (`src/hooks/use-background-effects.ts`)
+
 **Purpose**: Background effects management
 
 **Features**:
+
 - Effect type selection (none, blur, virtual)
 - Blur strength control
 - Virtual background configuration
@@ -169,9 +194,11 @@ await simulcast.adaptToNetwork(sender, availableBandwidth)
 - Stream processing
 
 #### `use-video-call` (extended) (`src/hooks/use-video-call.ts`)
+
 **Purpose**: Complete video call management (already existed, extended)
 
 **Features**:
+
 - Video call start/accept/decline/end
 - Camera and microphone control
 - Video quality selection
@@ -183,9 +210,11 @@ await simulcast.adaptToNetwork(sender, availableBandwidth)
 ### 4. UI Components
 
 #### `VideoCallModal` (`src/components/calls/VideoCallModal.tsx`)
+
 **Purpose**: Main video call interface
 
 **Features**:
+
 - Full-screen modal
 - Header with duration and controls
 - Dynamic layout rendering (grid/speaker)
@@ -193,17 +222,21 @@ await simulcast.adaptToNetwork(sender, availableBandwidth)
 - Call state management
 
 #### `VideoGrid` (`src/components/calls/VideoGrid.tsx`)
+
 **Purpose**: Grid layout for participants
 
 **Features**:
+
 - Tile positioning based on layout manager
 - Stream assignment
 - Participant mapping
 
 #### `VideoTile` (`src/components/calls/VideoTile.tsx`)
+
 **Purpose**: Individual participant video tile
 
 **Features**:
+
 - Video or avatar display
 - Mute indicator
 - Screen share badge
@@ -212,17 +245,21 @@ await simulcast.adaptToNetwork(sender, availableBandwidth)
 - Speaking indicator (border highlight)
 
 #### `SpeakerView` (`src/components/calls/SpeakerView.tsx`)
+
 **Purpose**: Main speaker with thumbnails
 
 **Features**:
+
 - Large main tile
 - Thumbnail strip
 - Dynamic speaker switching
 
 #### `VideoControls` (`src/components/calls/VideoControls.tsx`)
+
 **Purpose**: Call control bar
 
 **Features**:
+
 - Mute/unmute button
 - Video on/off button
 - Screen share toggle
@@ -311,6 +348,7 @@ function VideoLayout() {
 ## Testing Checklist
 
 ### Basic Functionality
+
 - [x] 1-on-1 video call
 - [x] Multi-participant call (3+ users)
 - [x] Camera on/off toggle
@@ -319,6 +357,7 @@ function VideoLayout() {
 - [x] End call functionality
 
 ### Video Quality
+
 - [x] 180p quality
 - [x] 360p quality
 - [x] 720p quality (default)
@@ -327,6 +366,7 @@ function VideoLayout() {
 - [x] Manual quality selection
 
 ### Layouts
+
 - [x] Grid view with 2 participants
 - [x] Grid view with 4+ participants
 - [x] Speaker view with automatic switching
@@ -335,6 +375,7 @@ function VideoLayout() {
 - [x] Spotlight view
 
 ### Background Effects
+
 - [x] Background blur (light, medium, strong)
 - [x] Virtual background with preset images
 - [x] Virtual background with custom image
@@ -343,6 +384,7 @@ function VideoLayout() {
 - [x] Effect performance (30fps)
 
 ### Screen Sharing
+
 - [x] Share entire screen
 - [x] Share specific window
 - [x] Share browser tab
@@ -350,12 +392,14 @@ function VideoLayout() {
 - [x] Automatic layout adjustment
 
 ### Picture-in-Picture
+
 - [x] Enter PiP mode
 - [x] Exit PiP mode
 - [x] Audio in PiP
 - [x] Video in PiP
 
 ### Device Management
+
 - [x] Enumerate cameras
 - [x] Select specific camera
 - [x] Enumerate microphones
@@ -363,6 +407,7 @@ function VideoLayout() {
 - [x] Enumerate speakers (if supported)
 
 ### Network Adaptation
+
 - [x] Quality reduction on packet loss
 - [x] Quality increase on good connection
 - [x] Simulcast layer switching
@@ -373,17 +418,20 @@ function VideoLayout() {
 ## Performance Benchmarks
 
 ### Video Processing
+
 - **Background Blur**: 30fps @ 720p (with GPU)
 - **Virtual Background**: 30fps @ 720p (with GPU)
 - **Without Effects**: 60fps @ 1080p
 
 ### Network Usage
+
 - **180p**: ~150 kbps
 - **360p**: ~400 kbps
 - **720p**: ~1.5 Mbps
 - **1080p**: ~3 Mbps
 
 ### CPU Usage
+
 - **No Effects**: 5-10% (single participant)
 - **Background Blur**: 15-25%
 - **Virtual Background**: 20-30%
@@ -393,14 +441,14 @@ function VideoLayout() {
 
 ## Browser Compatibility
 
-| Feature | Chrome | Firefox | Safari | Edge |
-|---------|--------|---------|--------|------|
-| Video Calling | ✅ 74+ | ✅ 66+ | ✅ 12.1+ | ✅ 79+ |
-| Screen Sharing | ✅ | ✅ | ✅ | ✅ |
-| Background Blur | ✅ | ✅ | ⚠️ Limited | ✅ |
-| Virtual Background | ✅ | ✅ | ⚠️ Limited | ✅ |
-| Picture-in-Picture | ✅ | ✅ | ✅ | ✅ |
-| Simulcast | ✅ | ✅ | ⚠️ Limited | ✅ |
+| Feature            | Chrome | Firefox | Safari     | Edge   |
+| ------------------ | ------ | ------- | ---------- | ------ |
+| Video Calling      | ✅ 74+ | ✅ 66+  | ✅ 12.1+   | ✅ 79+ |
+| Screen Sharing     | ✅     | ✅      | ✅         | ✅     |
+| Background Blur    | ✅     | ✅      | ⚠️ Limited | ✅     |
+| Virtual Background | ✅     | ✅      | ⚠️ Limited | ✅     |
+| Picture-in-Picture | ✅     | ✅      | ✅         | ✅     |
+| Simulcast          | ✅     | ✅      | ⚠️ Limited | ✅     |
 
 ---
 
@@ -416,6 +464,7 @@ function VideoLayout() {
 ## Future Enhancements
 
 ### Planned for v0.5.0
+
 - [ ] Recording functionality
 - [ ] Live streaming to YouTube/Twitch
 - [ ] AI-powered noise cancellation
@@ -423,6 +472,7 @@ function VideoLayout() {
 - [ ] Breakout rooms
 
 ### Planned for v0.6.0
+
 - [ ] End-to-end encryption (beyond DTLS-SRTP)
 - [ ] Advanced analytics dashboard
 - [ ] Call recording with consent

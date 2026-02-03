@@ -10,6 +10,8 @@
 import Hls, { type HlsConfig, type Events } from 'hls.js'
 import type { BitrateLevel, HLSStats, StreamQuality } from './stream-types'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // Types
 // ============================================================================
@@ -130,7 +132,7 @@ export class HLSPlayerManager {
         try {
           await this.videoElement.play()
         } catch (error) {
-          console.error('Failed to auto-play:', error)
+          logger.error('Failed to auto-play:', error)
         }
       })
     }
@@ -173,15 +175,15 @@ export class HLSPlayerManager {
       if (data.fatal) {
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            console.error('Fatal network error, trying to recover...')
+            logger.error('Fatal network error,  trying to recover...')
             this.hls?.startLoad()
             break
           case Hls.ErrorTypes.MEDIA_ERROR:
-            console.error('Fatal media error, trying to recover...')
+            logger.error('Fatal media error,  trying to recover...')
             this.hls?.recoverMediaError()
             break
           default:
-            console.error('Fatal error, cannot recover')
+            logger.error('Fatal error,  cannot recover')
             this.destroy()
             break
         }
@@ -220,9 +222,7 @@ export class HLSPlayerManager {
 
     // Find matching level by height
     const targetHeight = this.qualityToHeight(quality)
-    const levelIndex = this.availableLevels.findIndex(
-      (level) => level.height === targetHeight
-    )
+    const levelIndex = this.availableLevels.findIndex((level) => level.height === targetHeight)
 
     if (levelIndex !== -1) {
       this.hls.currentLevel = levelIndex

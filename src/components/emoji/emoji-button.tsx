@@ -49,10 +49,7 @@ export const EmojiButton = forwardRef<HTMLButtonElement, EmojiButtonProps>(
         ref={ref}
         variant={variant}
         size={size}
-        className={cn(
-          'text-muted-foreground hover:text-foreground transition-colors',
-          className
-        )}
+        className={cn('text-muted-foreground transition-colors hover:text-foreground', className)}
         disabled={disabled}
         {...props}
       >
@@ -128,9 +125,9 @@ export function CompactEmojiButton({
         type="button"
         disabled={disabled}
         className={cn(
-          'p-1.5 rounded-md text-muted-foreground hover:text-foreground',
-          'hover:bg-accent transition-colors',
-          'disabled:opacity-50 disabled:cursor-not-allowed',
+          'rounded-md p-1.5 text-muted-foreground hover:text-foreground',
+          'transition-colors hover:bg-accent',
+          'disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
       >
@@ -174,10 +171,7 @@ export function MessageInputEmojiButton({
               variant="ghost"
               size="sm"
               disabled={disabled}
-              className={cn(
-                'h-8 w-8 p-0 text-muted-foreground hover:text-foreground',
-                className
-              )}
+              className={cn('h-8 w-8 p-0 text-muted-foreground hover:text-foreground', className)}
             >
               <Smile className="h-5 w-5" />
               <span className="sr-only">Add emoji</span>

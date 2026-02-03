@@ -20,12 +20,7 @@ query GetNotificationPreferences($userId: uuid!) {
 # ----------------------------------------------------------------------------
 
 query GetChannelNotificationSettings($userId: uuid!, $channelId: uuid!) {
-  nchat_channel_members(
-    where: {
-      user_id: { _eq: $userId }
-      channel_id: { _eq: $channelId }
-    }
-  ) {
+  nchat_channel_members(where: { user_id: { _eq: $userId }, channel_id: { _eq: $channelId } }) {
     id
     channel_id
     user_id
@@ -77,10 +72,7 @@ query GetMutedChannels($userId: uuid!) {
   nchat_channel_members(
     where: {
       user_id: { _eq: $userId }
-      _or: [
-        { notification_level: { _eq: "nothing" } }
-        { muted_until: { _gt: "now()" } }
-      ]
+      _or: [{ notification_level: { _eq: "nothing" } }, { muted_until: { _gt: "now()" } }]
     }
   ) {
     id
@@ -139,10 +131,7 @@ query GetQuietHoursSettings($userId: uuid!) {
 # ----------------------------------------------------------------------------
 
 query GetPushTokens($userId: uuid!) {
-  nchat_push_tokens(
-    where: { user_id: { _eq: $userId } }
-    order_by: { updated_at: desc }
-  ) {
+  nchat_push_tokens(where: { user_id: { _eq: $userId } }, order_by: { updated_at: desc }) {
     id
     token
     platform
@@ -241,11 +230,7 @@ query GetNotificationHistory(
 
 query GetUnreadNotificationCounts($userId: uuid!) {
   total: nchat_notifications_aggregate(
-    where: {
-      user_id: { _eq: $userId }
-      is_read: { _eq: false }
-      is_archived: { _eq: false }
-    }
+    where: { user_id: { _eq: $userId }, is_read: { _eq: false }, is_archived: { _eq: false } }
   ) {
     aggregate {
       count

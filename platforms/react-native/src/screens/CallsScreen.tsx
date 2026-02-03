@@ -3,15 +3,7 @@
  */
 
 import React, { useCallback, useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  RefreshControl,
-  Pressable,
-  Alert,
-} from 'react-native'
+import { View, Text, StyleSheet, FlatList, RefreshControl, Pressable, Alert } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
@@ -44,12 +36,10 @@ export function CallsScreen() {
     setIsRefreshing(false)
   }, [refresh])
 
-  const handleCallPress = useCallback((call: Call) => {
-    // Show call options
-    Alert.alert(
-      'Call',
-      `Start a call with this contact?`,
-      [
+  const handleCallPress = useCallback(
+    (call: Call) => {
+      // Show call options
+      Alert.alert('Call', `Start a call with this contact?`, [
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Audio Call',
@@ -59,18 +49,17 @@ export function CallsScreen() {
           text: 'Video Call',
           onPress: () => initiateCall(call.participants[0]?.userId, 'video'),
         },
-      ]
-    )
-  }, [initiateCall])
+      ])
+    },
+    [initiateCall]
+  )
 
   const handleNewCall = useCallback(() => {
     // Navigate to contacts to start a new call
     navigation.navigate('Search')
   }, [navigation])
 
-  const filteredCalls = filter === 'missed'
-    ? calls.filter((c) => c.status === 'missed')
-    : calls
+  const filteredCalls = filter === 'missed' ? calls.filter((c) => c.status === 'missed') : calls
 
   const getCallIcon = (call: Call) => {
     if (call.status === 'missed') {
@@ -157,11 +146,7 @@ export function CallsScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <Header
-        title="Calls"
-        rightIcon="phone-plus"
-        onRightPress={handleNewCall}
-      />
+      <Header title="Calls" rightIcon="phone-plus" onRightPress={handleNewCall} />
 
       {/* Filter Tabs */}
       <View style={[styles.filterContainer, { borderBottomColor: theme.colors.border }]}>
@@ -210,10 +195,7 @@ export function CallsScreen() {
         renderItem={renderCall}
         keyExtractor={(item) => item.id}
         ListEmptyComponent={renderEmptyState}
-        contentContainerStyle={[
-          styles.listContent,
-          { paddingBottom: insets.bottom },
-        ]}
+        contentContainerStyle={[styles.listContent, { paddingBottom: insets.bottom }]}
         refreshControl={
           <RefreshControl
             refreshing={isRefreshing}

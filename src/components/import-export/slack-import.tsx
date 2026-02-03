@@ -200,7 +200,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
         <Info className="h-4 w-4" />
         <AlertTitle>How to export from Slack</AlertTitle>
         <AlertDescription className="mt-2 space-y-2">
-          <ol className="list-decimal list-inside space-y-1 text-sm">
+          <ol className="list-inside list-decimal space-y-1 text-sm">
             <li>Go to your Slack workspace settings</li>
             <li>Navigate to Import/Export Data</li>
             <li>Click Export and wait for the export to complete</li>
@@ -210,7 +210,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
             href="https://slack.com/help/articles/201658943-Export-your-workspace-data"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-primary inline-flex items-center gap-1 text-sm hover:underline mt-2"
+            className="mt-2 inline-flex items-center gap-1 text-sm text-primary hover:underline"
           >
             Learn more about Slack exports
             <ExternalLink className="h-3 w-3" />
@@ -223,7 +223,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
         <CardContent className="pt-6">
           <div
             className={cn(
-              'border-2 border-dashed rounded-lg p-12 text-center transition-colors cursor-pointer',
+              'cursor-pointer rounded-lg border-2 border-dashed p-12 text-center transition-colors',
               isProcessing ? 'opacity-50' : 'hover:border-primary'
             )}
             onClick={() => inputRef.current?.click()}
@@ -251,7 +251,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
             />
             {isProcessing ? (
               <div className="space-y-4">
-                <Loader2 className="h-12 w-12 mx-auto animate-spin text-primary" />
+                <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
                 <p className="text-lg font-medium">Processing Slack export...</p>
                 <p className="text-sm text-muted-foreground">
                   This may take a moment for large exports
@@ -259,7 +259,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
               </div>
             ) : (
               <div className="space-y-4">
-                <FileArchive className="h-12 w-12 mx-auto text-muted-foreground" />
+                <FileArchive className="mx-auto h-12 w-12 text-muted-foreground" />
                 <div>
                   <p className="text-lg font-medium">Drop your Slack export here</p>
                   <p className="text-sm text-muted-foreground">
@@ -294,7 +294,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 dark:bg-blue-900 rounded-full">
+              <div className="rounded-full bg-blue-100 p-2 dark:bg-blue-900">
                 <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
@@ -307,7 +307,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 dark:bg-green-900 rounded-full">
+              <div className="rounded-full bg-green-100 p-2 dark:bg-green-900">
                 <Hash className="h-5 w-5 text-green-600 dark:text-green-400" />
               </div>
               <div>
@@ -320,7 +320,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
         <Card>
           <CardContent className="pt-4">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 dark:bg-purple-900 rounded-full">
+              <div className="rounded-full bg-purple-100 p-2 dark:bg-purple-900">
                 <MessageSquare className="h-5 w-5 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
@@ -349,13 +349,12 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
           <ScrollArea className="h-[300px]">
             <div className="space-y-2">
               {data?.channels.map((channel) => {
-                const messageCount =
-                  data.messagesByChannel[channel.id]?.length || 0
+                const messageCount = data.messagesByChannel[channel.id]?.length || 0
                 return (
                   <div
                     key={channel.id}
                     className={cn(
-                      'flex items-center justify-between p-3 rounded-lg border cursor-pointer transition-colors',
+                      'flex cursor-pointer items-center justify-between rounded-lg border p-3 transition-colors',
                       selectedChannels.has(channel.id)
                         ? 'bg-primary/5 border-primary'
                         : 'hover:bg-muted'
@@ -365,29 +364,27 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
                     <div className="flex items-center gap-3">
                       <div
                         className={cn(
-                          'w-5 h-5 rounded border flex items-center justify-center',
+                          'flex h-5 w-5 items-center justify-center rounded border',
                           selectedChannels.has(channel.id)
-                            ? 'bg-primary border-primary'
+                            ? 'border-primary bg-primary'
                             : 'border-input'
                         )}
                       >
                         {selectedChannels.has(channel.id) && (
-                          <CheckCircle2 className="h-4 w-4 text-primary-foreground" />
+                          <CheckCircle2 className="text-primary-foreground h-4 w-4" />
                         )}
                       </div>
                       <div>
                         <p className="font-medium">#{channel.name}</p>
                         {channel.purpose?.value && (
-                          <p className="text-xs text-muted-foreground line-clamp-1">
+                          <p className="line-clamp-1 text-xs text-muted-foreground">
                             {channel.purpose.value}
                           </p>
                         )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      {channel.is_private && (
-                        <Badge variant="secondary">Private</Badge>
-                      )}
+                      {channel.is_private && <Badge variant="secondary">Private</Badge>}
                       <Badge variant="outline">{messageCount} messages</Badge>
                     </div>
                   </div>
@@ -407,9 +404,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label>Import Users</Label>
-              <p className="text-xs text-muted-foreground">
-                Create user accounts for Slack users
-              </p>
+              <p className="text-xs text-muted-foreground">Create user accounts for Slack users</p>
             </div>
             <Switch
               checked={config.options.importUsers}
@@ -419,9 +414,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label>Skip Bot Users</Label>
-              <p className="text-xs text-muted-foreground">
-                Exclude Slack bots from import
-              </p>
+              <p className="text-xs text-muted-foreground">Exclude Slack bots from import</p>
             </div>
             <Switch
               checked={config.options.skipBots}
@@ -431,9 +424,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label>Import Attachments</Label>
-              <p className="text-xs text-muted-foreground">
-                Include file attachments in messages
-              </p>
+              <p className="text-xs text-muted-foreground">Include file attachments in messages</p>
             </div>
             <Switch
               checked={config.options.importAttachments}
@@ -443,9 +434,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
           <div className="flex items-center justify-between">
             <div>
               <Label>Import Reactions</Label>
-              <p className="text-xs text-muted-foreground">
-                Include emoji reactions on messages
-              </p>
+              <p className="text-xs text-muted-foreground">Include emoji reactions on messages</p>
             </div>
             <Switch
               checked={config.options.importReactions}
@@ -460,7 +449,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Warnings</AlertTitle>
           <AlertDescription>
-            <ul className="list-disc list-inside mt-2">
+            <ul className="mt-2 list-inside list-disc">
               {warnings.map((warning, index) => (
                 <li key={index}>{warning.message}</li>
               ))}
@@ -474,10 +463,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
         <Button variant="outline" onClick={() => setStep('upload')}>
           Back
         </Button>
-        <Button
-          onClick={startImport}
-          disabled={selectedChannels.size === 0}
-        >
+        <Button onClick={startImport} disabled={selectedChannels.size === 0}>
           Start Import
           <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
@@ -490,8 +476,8 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <div className="text-center space-y-6">
-            <Loader2 className="h-16 w-16 mx-auto animate-spin text-primary" />
+          <div className="space-y-6 text-center">
+            <Loader2 className="mx-auto h-16 w-16 animate-spin text-primary" />
             <div>
               <h3 className="text-xl font-semibold">Importing Slack data...</h3>
               <p className="text-muted-foreground">
@@ -511,8 +497,8 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <div className="text-center space-y-6">
-            <div className="w-20 h-20 mx-auto bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center">
+          <div className="space-y-6 text-center">
+            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-green-100 dark:bg-green-900">
               <CheckCircle2 className="h-10 w-10 text-green-600 dark:text-green-400" />
             </div>
             <div>
@@ -521,7 +507,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
                 Your Slack data has been imported successfully
               </p>
             </div>
-            <div className="grid grid-cols-3 gap-4 max-w-md mx-auto">
+            <div className="mx-auto grid max-w-md grid-cols-3 gap-4">
               <div className="text-center">
                 <p className="text-2xl font-bold">{preview?.stats.totalUsers || 0}</p>
                 <p className="text-sm text-muted-foreground">Users</p>
@@ -535,9 +521,7 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
                 <p className="text-sm text-muted-foreground">Messages</p>
               </div>
             </div>
-            <Button onClick={() => onImportComplete?.({ success: true, stats: {} })}>
-              Done
-            </Button>
+            <Button onClick={() => onImportComplete?.({ success: true, stats: {} })}>Done</Button>
           </div>
         </CardContent>
       </Card>
@@ -563,12 +547,8 @@ export function SlackImport({ onImportComplete, onCancel }: SlackImportProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-[#4A154B] rounded-lg">
-          <svg
-            className="h-8 w-8 text-white"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
+        <div className="rounded-lg bg-[#4A154B] p-3">
+          <svg className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
             <path d="M5.042 15.165a2.528 2.528 0 0 1-2.52 2.523A2.528 2.528 0 0 1 0 15.165a2.527 2.527 0 0 1 2.522-2.52h2.52v2.52zM6.313 15.165a2.527 2.527 0 0 1 2.521-2.52 2.527 2.527 0 0 1 2.521 2.52v6.313A2.528 2.528 0 0 1 8.834 24a2.528 2.528 0 0 1-2.521-2.522v-6.313zM8.834 5.042a2.528 2.528 0 0 1-2.521-2.52A2.528 2.528 0 0 1 8.834 0a2.528 2.528 0 0 1 2.521 2.522v2.52H8.834zM8.834 6.313a2.528 2.528 0 0 1 2.521 2.521 2.528 2.528 0 0 1-2.521 2.521H2.522A2.528 2.528 0 0 1 0 8.834a2.528 2.528 0 0 1 2.522-2.521h6.312zM18.956 8.834a2.528 2.528 0 0 1 2.522-2.521A2.528 2.528 0 0 1 24 8.834a2.528 2.528 0 0 1-2.522 2.521h-2.522V8.834zM17.688 8.834a2.528 2.528 0 0 1-2.523 2.521 2.527 2.527 0 0 1-2.52-2.521V2.522A2.527 2.527 0 0 1 15.165 0a2.528 2.528 0 0 1 2.523 2.522v6.312zM15.165 18.956a2.528 2.528 0 0 1 2.523 2.522A2.528 2.528 0 0 1 15.165 24a2.527 2.527 0 0 1-2.52-2.522v-2.522h2.52zM15.165 17.688a2.527 2.527 0 0 1-2.52-2.523 2.526 2.526 0 0 1 2.52-2.52h6.313A2.527 2.527 0 0 1 24 15.165a2.528 2.528 0 0 1-2.522 2.523h-6.313z" />
           </svg>
         </div>

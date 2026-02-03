@@ -41,12 +41,7 @@ export async function compressImage(
     outputFormat?: 'jpeg' | 'png' | 'webp'
   } = {}
 ): Promise<File> {
-  const {
-    maxWidth = 512,
-    maxHeight = 512,
-    quality = 0.85,
-    outputFormat = 'jpeg',
-  } = options
+  const { maxWidth = 512, maxHeight = 512, quality = 0.85, outputFormat = 'jpeg' } = options
 
   return new Promise((resolve, reject) => {
     const reader = new FileReader()

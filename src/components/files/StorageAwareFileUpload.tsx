@@ -12,19 +12,13 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
-import {
-  Upload,
-  AlertTriangle,
-  CheckCircle2,
-  XCircle,
-  File,
-  X,
-  HardDrive,
-} from 'lucide-react'
+import { Upload, AlertTriangle, CheckCircle2, XCircle, File, X, HardDrive } from 'lucide-react'
 import { useStorageQuota, useQuotaCheck } from '@/hooks/use-storage-quota'
 import { uploadFile, formatFileSize, type UploadResult } from '@/lib/storage/upload'
 import { formatBytes, getQuotaStatus } from '@/lib/storage/quota-manager'
 import { cn } from '@/lib/utils'
+
+import { logger } from '@/lib/logger'
 
 interface StorageAwareFileUploadProps {
   onUploadComplete?: (result: UploadResult) => void
@@ -95,8 +89,7 @@ export function StorageAwareFileUpload({
       setSelectedFile(null)
       setUploadProgress(0)
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Upload failed'
+      const errorMessage = error instanceof Error ? error.message : 'Upload failed'
       setUploadError(errorMessage)
       onUploadError?.(error instanceof Error ? error : new Error(errorMessage))
     } finally {
@@ -231,17 +224,10 @@ export function StorageAwareFileUpload({
             <File className="h-8 w-8 shrink-0 text-muted-foreground" />
             <div className="flex-1 overflow-hidden">
               <p className="truncate font-medium">{selectedFile.name}</p>
-              <p className="text-sm text-muted-foreground">
-                {formatFileSize(selectedFile.size)}
-              </p>
+              <p className="text-sm text-muted-foreground">{formatFileSize(selectedFile.size)}</p>
             </div>
             {!uploading && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleCancel}
-                className="shrink-0"
-              >
+              <Button variant="ghost" size="icon" onClick={handleCancel} className="shrink-0">
                 <X className="h-4 w-4" />
               </Button>
             )}
@@ -261,11 +247,7 @@ export function StorageAwareFileUpload({
           {/* Upload Button */}
           {!uploading && (
             <div className="flex gap-2">
-              <Button
-                onClick={handleUpload}
-                disabled={uploading}
-                className="flex-1"
-              >
+              <Button onClick={handleUpload} disabled={uploading} className="flex-1">
                 <Upload className="mr-2 h-4 w-4" />
                 Upload File
               </Button>
@@ -319,7 +301,7 @@ export function CompactStorageUpload({
         await recordUpload(file.size)
         onUploadComplete?.(result)
       } catch (error) {
-        console.error('Upload failed:', error)
+        logger.error('Upload failed:', error)
         alert('Upload failed')
       } finally {
         setUploading(false)

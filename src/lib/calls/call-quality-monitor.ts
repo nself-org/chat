@@ -7,6 +7,8 @@
 
 import { EventEmitter } from 'events'
 
+import { logger } from '@/lib/logger'
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -135,7 +137,9 @@ const DEFAULT_THRESHOLDS: QualityThresholds = {
   },
 }
 
-const DEFAULT_CONFIG: Required<Omit<QualityMonitorConfig, 'thresholds' | 'onMetrics' | 'onAlert' | 'onQualityChange'>> = {
+const DEFAULT_CONFIG: Required<
+  Omit<QualityMonitorConfig, 'thresholds' | 'onMetrics' | 'onAlert' | 'onQualityChange'>
+> = {
   interval: 2000, // 2 seconds
   enableAlerts: true,
   alertCooldown: 10000, // 10 seconds
@@ -147,7 +151,9 @@ const DEFAULT_CONFIG: Required<Omit<QualityMonitorConfig, 'thresholds' | 'onMetr
 
 export class CallQualityMonitor extends EventEmitter {
   private peerConnection: RTCPeerConnection | null = null
-  private config: Required<Omit<QualityMonitorConfig, 'thresholds' | 'onMetrics' | 'onAlert' | 'onQualityChange'>>
+  private config: Required<
+    Omit<QualityMonitorConfig, 'thresholds' | 'onMetrics' | 'onAlert' | 'onQualityChange'>
+  >
   private callbacks: QualityMonitorConfig
   private thresholds: QualityThresholds
   private interval: NodeJS.Timeout | null = null
@@ -240,7 +246,7 @@ export class CallQualityMonitor extends EventEmitter {
         this.checkForIssues(metrics)
       }
     } catch (error) {
-      console.error('Error collecting quality metrics:', error)
+      logger.error('Error collecting quality metrics:', error)
     }
   }
 
@@ -435,11 +441,7 @@ export class CallQualityMonitor extends EventEmitter {
    * Calculate overall quality level
    */
   private calculateOverallQuality(metrics: QualityMetrics): QualityLevel {
-    const levels = [
-      metrics.audioQuality,
-      metrics.videoQuality,
-      metrics.networkQuality,
-    ]
+    const levels = [metrics.audioQuality, metrics.videoQuality, metrics.networkQuality]
 
     // Worst quality determines overall
     if (levels.includes('critical')) return 'critical'
@@ -452,10 +454,7 @@ export class CallQualityMonitor extends EventEmitter {
   /**
    * Generate quality change alert
    */
-  private generateQualityChangeAlert(
-    previous: QualityLevel,
-    current: QualityLevel
-  ): void {
+  private generateQualityChangeAlert(previous: QualityLevel, current: QualityLevel): void {
     const qualityOrder: QualityLevel[] = ['excellent', 'good', 'fair', 'poor', 'critical']
     const prevIndex = qualityOrder.indexOf(previous)
     const currIndex = qualityOrder.indexOf(current)
@@ -516,11 +515,7 @@ export class CallQualityMonitor extends EventEmitter {
   /**
    * Create specific alert
    */
-  private createAlert(
-    type: string,
-    value: number,
-    metrics: QualityMetrics
-  ): void {
+  private createAlert(type: string, value: number, metrics: QualityMetrics): void {
     // Check cooldown
     const lastAlert = this.lastAlertTime.get(type)
     if (lastAlert && Date.now() - lastAlert < this.config.alertCooldown) {
@@ -646,7 +641,7 @@ export class CallQualityMonitor extends EventEmitter {
       const typedKey = key as keyof typeof avg
       const currentValue = avg[typedKey]
       if (currentValue !== undefined) {
-        avg[typedKey] = (currentValue as number) / n as any
+        avg[typedKey] = ((currentValue as number) / n) as any
       }
     }
 
@@ -671,8 +666,6 @@ export class CallQualityMonitor extends EventEmitter {
 /**
  * Create a new call quality monitor
  */
-export function createQualityMonitor(
-  config?: QualityMonitorConfig
-): CallQualityMonitor {
+export function createQualityMonitor(config?: QualityMonitorConfig): CallQualityMonitor {
   return new CallQualityMonitor(config)
 }

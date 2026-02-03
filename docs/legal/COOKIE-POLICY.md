@@ -39,12 +39,12 @@ We use the following types of cookies on the Service:
 
 These cookies are essential for the Service to function and cannot be disabled.
 
-| Cookie Name | Purpose | Duration | Type |
-|-------------|---------|----------|------|
-| `session_token` | User authentication and session management | Session | First-party |
-| `jwt_token` | Stores JSON Web Token for API authentication | 7 days | First-party |
-| `csrf_token` | Cross-Site Request Forgery protection | Session | First-party |
-| `cookie_consent` | Stores your cookie consent preferences | 1 year | First-party |
+| Cookie Name      | Purpose                                      | Duration | Type        |
+| ---------------- | -------------------------------------------- | -------- | ----------- |
+| `session_token`  | User authentication and session management   | Session  | First-party |
+| `jwt_token`      | Stores JSON Web Token for API authentication | 7 days   | First-party |
+| `csrf_token`     | Cross-Site Request Forgery protection        | Session  | First-party |
+| `cookie_consent` | Stores your cookie consent preferences       | 1 year   | First-party |
 
 **Legal Basis:** These cookies are necessary to perform the contract (Terms of Service) and provide the Service.
 
@@ -52,12 +52,12 @@ These cookies are essential for the Service to function and cannot be disabled.
 
 These cookies remember your preferences and settings to enhance your experience.
 
-| Cookie Name | Purpose | Duration | Type |
-|-------------|---------|----------|------|
-| `theme_preference` | Remembers your light/dark mode preference | 1 year | First-party |
-| `language` | Stores your preferred language | 1 year | First-party |
-| `sidebar_state` | Remembers sidebar collapsed/expanded state | 1 year | First-party |
-| `notification_settings` | Stores notification preferences | 1 year | First-party |
+| Cookie Name             | Purpose                                    | Duration | Type        |
+| ----------------------- | ------------------------------------------ | -------- | ----------- |
+| `theme_preference`      | Remembers your light/dark mode preference  | 1 year   | First-party |
+| `language`              | Stores your preferred language             | 1 year   | First-party |
+| `sidebar_state`         | Remembers sidebar collapsed/expanded state | 1 year   | First-party |
+| `notification_settings` | Stores notification preferences            | 1 year   | First-party |
 
 **Legal Basis:** Consent (optional cookies that improve user experience).
 
@@ -65,16 +65,17 @@ These cookies remember your preferences and settings to enhance your experience.
 
 These cookies help us understand how users interact with the Service to improve performance and features.
 
-| Cookie Name | Purpose | Duration | Type |
-|-------------|---------|----------|------|
-| `_ga` | Google Analytics - Distinguishes users | 2 years | Third-party (Google) |
-| `_gid` | Google Analytics - Distinguishes users | 24 hours | Third-party (Google) |
-| `_gat` | Google Analytics - Throttles request rate | 1 minute | Third-party (Google) |
-| `sentry_session` | Sentry - Error tracking and performance monitoring | Session | Third-party (Sentry) |
+| Cookie Name      | Purpose                                            | Duration | Type                 |
+| ---------------- | -------------------------------------------------- | -------- | -------------------- |
+| `_ga`            | Google Analytics - Distinguishes users             | 2 years  | Third-party (Google) |
+| `_gid`           | Google Analytics - Distinguishes users             | 24 hours | Third-party (Google) |
+| `_gat`           | Google Analytics - Throttles request rate          | 1 minute | Third-party (Google) |
+| `sentry_session` | Sentry - Error tracking and performance monitoring | Session  | Third-party (Sentry) |
 
 **Legal Basis:** Consent (you can opt out of analytics cookies).
 
 **Third-Party Privacy Policies:**
+
 - Google Analytics: [https://policies.google.com/privacy](https://policies.google.com/privacy)
 - Sentry: [https://sentry.io/privacy/](https://sentry.io/privacy/)
 
@@ -91,11 +92,13 @@ In addition to cookies, we use the following tracking technologies:
 ### 3.1 Local Storage
 
 We use browser local storage to:
+
 - Cache application configuration for faster loading
 - Store user preferences offline
 - Enable offline functionality
 
 **Data Stored:**
+
 - `app-config`: Application configuration and settings
 - `user-preferences`: User-specific preferences
 - `theme-config`: Theme and color settings
@@ -103,22 +106,26 @@ We use browser local storage to:
 ### 3.2 Session Storage
 
 We use session storage for:
+
 - Temporary state management during your session
 - Form data preservation (to prevent data loss)
 
 ### 3.3 Web Beacons (Pixels)
 
 We may use web beacons in emails to:
+
 - Track email open rates (transactional emails)
 - Measure email campaign effectiveness (marketing emails, with consent)
 
 ### 3.4 Device Fingerprinting
 
 We collect limited device information for:
+
 - Fraud prevention and security
 - Analytics and error tracking
 
 **Information Collected:**
+
 - Browser type and version
 - Operating system
 - Screen resolution
@@ -133,24 +140,28 @@ We collect limited device information for:
 We use cookies for the following purposes:
 
 ### 4.1 Authentication and Security
+
 - Authenticate users and maintain login sessions
 - Protect against Cross-Site Request Forgery (CSRF) attacks
 - Detect and prevent fraud and abuse
 - Enable two-factor authentication (2FA)
 
 ### 4.2 Functionality and Preferences
+
 - Remember your settings and preferences (theme, language, layout)
 - Provide personalized content and features
 - Enable offline functionality
 - Restore your session after disconnection
 
 ### 4.3 Performance and Analytics
+
 - Understand how users interact with the Service
 - Identify performance issues and errors
 - Monitor application health and uptime
 - Conduct A/B testing to improve features
 
 ### 4.4 Communication
+
 - Track email delivery and engagement (for transactional emails)
 - Provide targeted support based on your usage patterns
 
@@ -163,12 +174,14 @@ Some cookies are set by third-party services we use:
 ### 5.1 Analytics and Monitoring
 
 **Google Analytics** (if enabled)
+
 - **Purpose:** Website traffic and user behavior analysis
 - **Cookies:** `_ga`, `_gid`, `_gat`
 - **Privacy Policy:** [https://policies.google.com/privacy](https://policies.google.com/privacy)
 - **Opt-Out:** [https://tools.google.com/dlpage/gaoptout](https://tools.google.com/dlpage/gaoptout)
 
 **Sentry**
+
 - **Purpose:** Error tracking and performance monitoring
 - **Cookies:** `sentry_session`
 - **Privacy Policy:** [https://sentry.io/privacy/](https://sentry.io/privacy/)
@@ -195,23 +208,27 @@ You have several options to manage cookies:
 ### 6.1 Cookie Consent Banner
 
 When you first visit the Service, you'll see a cookie consent banner that allows you to:
+
 - Accept all cookies
 - Reject non-essential cookies
 - Customize your cookie preferences
 
 You can change your preferences at any time through:
+
 - **In-App Settings:** Account Settings > Privacy & Cookies
 - **Footer Link:** "Cookie Settings" link in the footer
 
 ### 6.2 Browser Settings
 
 You can configure your browser to:
+
 - Block all cookies
 - Accept only first-party cookies
 - Delete cookies when you close the browser
 - Notify you before accepting cookies
 
 **How to Manage Cookies in Popular Browsers:**
+
 - **Chrome:** Settings > Privacy and security > Cookies and other site data
 - **Firefox:** Settings > Privacy & Security > Cookies and Site Data
 - **Safari:** Preferences > Privacy > Cookies and website data
@@ -235,6 +252,7 @@ Some browsers support a "Do Not Track" (DNT) signal. We do not currently respond
 ### 6.5 Mobile Devices
 
 On mobile devices, you can:
+
 - **iOS:** Settings > Privacy > Tracking > "Allow Apps to Request to Track"
 - **Android:** Settings > Google > Ads > "Opt out of Ads Personalization"
 
@@ -247,12 +265,14 @@ On mobile devices, you can:
 Under the General Data Protection Regulation (GDPR), we obtain consent for non-essential cookies.
 
 **Legal Basis for Cookies:**
+
 - **Strictly Necessary:** Legitimate interest / Contractual necessity
 - **Functional:** Consent (opt-in)
 - **Analytics:** Consent (opt-in)
 - **Marketing:** Consent (opt-in, if applicable)
 
 **Your Rights:**
+
 - Withdraw consent at any time
 - Object to processing based on legitimate interests
 - Request deletion of data collected via cookies
@@ -264,6 +284,7 @@ Under the Privacy and Electronic Communications Regulations (PECR), we comply wi
 ### 7.3 ePrivacy Directive (EU)
 
 We comply with the EU ePrivacy Directive (Cookie Law) by:
+
 - Providing clear information about cookies
 - Obtaining consent before setting non-essential cookies
 - Allowing users to withdraw consent
@@ -271,6 +292,7 @@ We comply with the EU ePrivacy Directive (Cookie Law) by:
 ### 7.4 CCPA (California)
 
 Under the California Consumer Privacy Act (CCPA), cookies may be considered "personal information." You have the right to:
+
 - Know what cookies are used and for what purpose
 - Opt out of the "sale" of personal information (we do NOT sell data)
 - Request deletion of data collected via cookies
@@ -284,6 +306,7 @@ We comply with cookie and privacy laws in all jurisdictions where we operate.
 ## 8. Data Security
 
 Cookie data is protected using:
+
 - **Secure Flag:** Cookies transmitted only over HTTPS
 - **HttpOnly Flag:** Prevents JavaScript access to sensitive cookies
 - **SameSite Attribute:** Protects against CSRF attacks
@@ -297,13 +320,13 @@ Despite these measures, no method of transmission over the Internet is 100% secu
 
 Cookies are retained for the following periods:
 
-| Cookie Type | Retention Period | Reason |
-|-------------|------------------|--------|
-| Session cookies | Until browser closes | Authentication and security |
-| Authentication tokens | 7 days | User convenience (remember login) |
-| Preference cookies | 1 year | User experience |
-| Analytics cookies | 2 years (Google) | Compliance with analytics provider |
-| Consent preferences | 1 year | Record of consent |
+| Cookie Type           | Retention Period     | Reason                             |
+| --------------------- | -------------------- | ---------------------------------- |
+| Session cookies       | Until browser closes | Authentication and security        |
+| Authentication tokens | 7 days               | User convenience (remember login)  |
+| Preference cookies    | 1 year               | User experience                    |
+| Analytics cookies     | 2 years (Google)     | Compliance with analytics provider |
+| Consent preferences   | 1 year               | Record of consent                  |
 
 After expiration, cookies are automatically deleted by your browser.
 
@@ -320,6 +343,7 @@ The Service is not intended for children under 13 (or 16 in the EEA). We do not 
 We may update this Cookie Policy from time to time. Changes will be posted on this page with an updated "Last Updated" date.
 
 For material changes, we will:
+
 - Notify you via email (if you have provided one)
 - Display a prominent notice in the Service
 - Re-prompt you for consent (for cookie preference changes)
@@ -339,6 +363,7 @@ If you have questions about this Cookie Policy or our use of cookies, please con
 **Phone:** [INSERT PHONE NUMBER]
 
 ### Data Protection Officer (if applicable)
+
 **Name:** [INSERT DPO NAME]
 **Email:** [dpo@yourcompany.com]
 
@@ -348,29 +373,29 @@ If you have questions about this Cookie Policy or our use of cookies, please con
 
 ### Current Cookies (Complete List)
 
-| Cookie Name | Category | Purpose | Duration | Domain | Third-Party |
-|-------------|----------|---------|----------|--------|-------------|
-| `session_token` | Essential | Authentication | Session | [yourdomain.com] | No |
-| `jwt_token` | Essential | API auth | 7 days | [yourdomain.com] | No |
-| `csrf_token` | Essential | CSRF protection | Session | [yourdomain.com] | No |
-| `cookie_consent` | Essential | Consent record | 1 year | [yourdomain.com] | No |
-| `theme_preference` | Functional | Theme setting | 1 year | [yourdomain.com] | No |
-| `language` | Functional | Language | 1 year | [yourdomain.com] | No |
-| `sidebar_state` | Functional | UI state | 1 year | [yourdomain.com] | No |
-| `notification_settings` | Functional | Notifications | 1 year | [yourdomain.com] | No |
-| `_ga` | Analytics | User analytics | 2 years | [.yourdomain.com] | Yes (Google) |
-| `_gid` | Analytics | User analytics | 24 hours | [.yourdomain.com] | Yes (Google) |
-| `_gat` | Analytics | Rate limiting | 1 minute | [.yourdomain.com] | Yes (Google) |
-| `sentry_session` | Analytics | Error tracking | Session | [yourdomain.com] | Yes (Sentry) |
+| Cookie Name             | Category   | Purpose         | Duration | Domain            | Third-Party  |
+| ----------------------- | ---------- | --------------- | -------- | ----------------- | ------------ |
+| `session_token`         | Essential  | Authentication  | Session  | [yourdomain.com]  | No           |
+| `jwt_token`             | Essential  | API auth        | 7 days   | [yourdomain.com]  | No           |
+| `csrf_token`            | Essential  | CSRF protection | Session  | [yourdomain.com]  | No           |
+| `cookie_consent`        | Essential  | Consent record  | 1 year   | [yourdomain.com]  | No           |
+| `theme_preference`      | Functional | Theme setting   | 1 year   | [yourdomain.com]  | No           |
+| `language`              | Functional | Language        | 1 year   | [yourdomain.com]  | No           |
+| `sidebar_state`         | Functional | UI state        | 1 year   | [yourdomain.com]  | No           |
+| `notification_settings` | Functional | Notifications   | 1 year   | [yourdomain.com]  | No           |
+| `_ga`                   | Analytics  | User analytics  | 2 years  | [.yourdomain.com] | Yes (Google) |
+| `_gid`                  | Analytics  | User analytics  | 24 hours | [.yourdomain.com] | Yes (Google) |
+| `_gat`                  | Analytics  | Rate limiting   | 1 minute | [.yourdomain.com] | Yes (Google) |
+| `sentry_session`        | Analytics  | Error tracking  | Session  | [yourdomain.com]  | Yes (Sentry) |
 
 ### Local Storage Items
 
-| Storage Key | Purpose | Data Type | Sensitive? |
-|-------------|---------|-----------|------------|
-| `app-config` | App configuration | JSON object | No |
-| `user-preferences` | User preferences | JSON object | No |
-| `theme-config` | Theme settings | JSON object | No |
-| `draft-messages` | Message drafts | String | Yes (cleared on send) |
+| Storage Key        | Purpose           | Data Type   | Sensitive?            |
+| ------------------ | ----------------- | ----------- | --------------------- |
+| `app-config`       | App configuration | JSON object | No                    |
+| `user-preferences` | User preferences  | JSON object | No                    |
+| `theme-config`     | Theme settings    | JSON object | No                    |
+| `draft-messages`   | Message drafts    | String      | Yes (cleared on send) |
 
 ---
 
@@ -394,24 +419,28 @@ If you have questions about this Cookie Policy or our use of cookies, please con
 ## Appendix C: Cookie Consent Flow
 
 ### Initial Visit (No Consent Yet)
+
 1. User visits the Service for the first time
 2. Cookie consent banner appears
 3. Only essential cookies are set
 4. User chooses: Accept All, Reject Non-Essential, or Customize
 
 ### Accept All
+
 1. User clicks "Accept All"
 2. All cookies (essential, functional, analytics) are enabled
 3. Consent is recorded in `cookie_consent` cookie
 4. Banner is hidden
 
 ### Reject Non-Essential
+
 1. User clicks "Reject Non-Essential"
 2. Only essential cookies are enabled
 3. Consent preference is recorded
 4. Banner is hidden
 
 ### Customize
+
 1. User clicks "Customize" or "Cookie Settings"
 2. Modal opens with granular options:
    - Essential (always on, grayed out)
@@ -423,6 +452,7 @@ If you have questions about this Cookie Policy or our use of cookies, please con
 5. Consent is recorded
 
 ### Changing Preferences
+
 1. User can access cookie settings via:
    - Account Settings > Privacy & Cookies
    - Footer link "Cookie Settings"

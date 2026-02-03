@@ -13,6 +13,7 @@ Enhanced search functionality has been implemented for nself-chat v0.3.0, provid
 ## Features Implemented
 
 ### Core Search Features
+
 - ✅ Full-text search across messages, files, users, channels
 - ✅ Search operators (from:, in:, has:, is:, before:, after:)
 - ✅ Real-time indexing as content is created/updated
@@ -25,6 +26,7 @@ Enhanced search functionality has been implemented for nself-chat v0.3.0, provid
 - ✅ Sort by relevance or date
 
 ### Search Operators
+
 ```
 from:username      - Filter by sender
 in:channel-name    - Filter by channel
@@ -169,6 +171,7 @@ cp .env.example .env.local
 ```
 
 Add to `.env.local`:
+
 ```bash
 NEXT_PUBLIC_MEILISEARCH_URL=http://search.localhost:7700
 MEILISEARCH_MASTER_KEY=nchat-search-dev-key-32-chars-long
@@ -177,12 +180,14 @@ MEILISEARCH_MASTER_KEY=nchat-search-dev-key-32-chars-long
 ### 3. Ensure MeiliSearch is Running
 
 Check if MeiliSearch is enabled in `.backend/.env.dev`:
+
 ```bash
 cd .backend
 cat .env.dev | grep MEILISEARCH
 ```
 
 Should show:
+
 ```
 SEARCH_ENGINE=meilisearch
 MEILISEARCH_ENABLED=true
@@ -192,17 +197,20 @@ MEILISEARCH_PORT=7700
 ```
 
 Start the backend if not running:
+
 ```bash
 cd .backend
 nself start
 ```
 
 Verify MeiliSearch is running:
+
 ```bash
 nself status | grep meilisearch
 ```
 
 Or check directly:
+
 ```bash
 curl http://search.localhost:7700/health
 ```
@@ -217,6 +225,7 @@ nself db migrate
 ```
 
 This creates:
+
 - `nchat_search_history` table
 - `nchat_saved_searches` table
 - Message flag columns (has_link, has_file, has_image, is_pinned, is_starred)
@@ -231,6 +240,7 @@ curl -X POST http://localhost:3000/api/search/initialize
 ```
 
 Or use the health check to verify:
+
 ```bash
 curl http://localhost:3000/api/search/initialize
 ```
@@ -252,6 +262,7 @@ Press **Cmd+K** (Mac) or **Ctrl+K** (Windows/Linux) to open the search modal.
 ### Basic Search
 
 Type your search query:
+
 ```
 project update
 ```
@@ -259,6 +270,7 @@ project update
 ### Search with Operators
 
 Use operators to filter results:
+
 ```
 project update from:john in:general has:file after:2024-01-01
 ```
@@ -266,6 +278,7 @@ project update from:john in:general has:file after:2024-01-01
 ### Advanced Filters
 
 Click the "Filters" button to access:
+
 - Date range picker
 - Channel/user filters
 - Content type toggles
@@ -290,6 +303,7 @@ Click the "Filters" button to access:
 ### Automatic Indexing
 
 Content should be automatically indexed when:
+
 - A message is created
 - A file is uploaded
 - A user is registered
@@ -311,7 +325,7 @@ await indexMessage({
   created_at: message.created_at,
   has_link: /https?:\/\//.test(message.content),
   has_file: message.attachments?.length > 0,
-  has_image: message.attachments?.some(a => a.mime_type.startsWith('image/')),
+  has_image: message.attachments?.some((a) => a.mime_type.startsWith('image/')),
   is_pinned: false,
   is_starred: false,
 })
@@ -323,7 +337,12 @@ To index existing content, create a script:
 
 ```typescript
 // scripts/reindex-search.ts
-import { reindexAllMessages, reindexAllFiles, reindexAllUsers, reindexAllChannels } from '@/lib/search/indexer'
+import {
+  reindexAllMessages,
+  reindexAllFiles,
+  reindexAllUsers,
+  reindexAllChannels,
+} from '@/lib/search/indexer'
 import { apolloClient } from '@/lib/apollo-client'
 import { GET_ALL_MESSAGES, GET_ALL_FILES, GET_ALL_USERS, GET_ALL_CHANNELS } from '@/graphql/queries'
 
@@ -333,7 +352,7 @@ async function reindex() {
   // Messages
   const fetchMessages = async () => {
     const { data } = await apolloClient.query({ query: GET_ALL_MESSAGES })
-    return data.messages.map(m => ({
+    return data.messages.map((m) => ({
       id: m.id,
       content: m.content,
       author_id: m.author_id,
@@ -343,7 +362,7 @@ async function reindex() {
       created_at: m.created_at,
       has_link: /https?:\/\//.test(m.content),
       has_file: m.attachments?.length > 0,
-      has_image: m.attachments?.some(a => a.mime_type.startsWith('image/')),
+      has_image: m.attachments?.some((a) => a.mime_type.startsWith('image/')),
       is_pinned: m.is_pinned || false,
       is_starred: m.is_starred || false,
     }))
@@ -367,6 +386,7 @@ reindex().catch(console.error)
 ```
 
 Run the script:
+
 ```bash
 pnpm tsx scripts/reindex-search.ts
 ```
@@ -580,6 +600,7 @@ curl -X POST http://localhost:3000/api/search/initialize
 ### Port 7700 Already in Use
 
 Check what's using port 7700:
+
 ```bash
 lsof -i :7700
 ```
@@ -635,6 +656,7 @@ The enhanced search system is now fully implemented and ready for use. It provid
 - **Highlighted results** with context
 
 To start using it:
+
 1. Install dependencies: `pnpm install`
 2. Start backend: `cd .backend && nself start`
 3. Initialize indexes: `curl -X POST http://localhost:3000/api/search/initialize`

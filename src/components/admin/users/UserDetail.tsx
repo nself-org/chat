@@ -138,9 +138,7 @@ export function UserDetail({ user, isEditing = false, onSave, onCancel }: UserDe
         </Link>
         <div className="flex-1">
           <h1 className="text-3xl font-bold">User Details</h1>
-          <p className="text-muted-foreground">
-            View and manage user account information
-          </p>
+          <p className="text-muted-foreground">View and manage user account information</p>
         </div>
         <div className="flex gap-2">
           {editMode ? (
@@ -286,7 +284,7 @@ export function UserDetail({ user, isEditing = false, onSave, onCancel }: UserDe
                     href={user.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-primary hover:underline flex items-center gap-1"
+                    className="flex items-center gap-1 text-primary hover:underline"
                   >
                     {user.website.replace(/^https?:\/\//, '')}
                     <ExternalLink className="h-3 w-3" />
@@ -410,9 +408,7 @@ export function UserDetail({ user, isEditing = false, onSave, onCancel }: UserDe
                   <Card>
                     <CardHeader className="pb-2">
                       <CardDescription>Channels</CardDescription>
-                      <CardTitle className="text-2xl">
-                        {user.channelsCount}
-                      </CardTitle>
+                      <CardTitle className="text-2xl">{user.channelsCount}</CardTitle>
                     </CardHeader>
                     <CardContent>
                       <div className="flex items-center text-xs text-muted-foreground">
@@ -474,9 +470,7 @@ export function UserDetail({ user, isEditing = false, onSave, onCancel }: UserDe
               <Card>
                 <CardHeader>
                   <CardTitle>Moderation Actions</CardTitle>
-                  <CardDescription>
-                    Take action on this user account
-                  </CardDescription>
+                  <CardDescription>Take action on this user account</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex flex-wrap gap-2">
@@ -488,10 +482,7 @@ export function UserDetail({ user, isEditing = false, onSave, onCancel }: UserDe
                       <Ban className="mr-2 h-4 w-4" />
                       {status === 'banned' ? 'Unban User' : 'Ban User'}
                     </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => openResetPasswordModal(user)}
-                    >
+                    <Button variant="outline" onClick={() => openResetPasswordModal(user)}>
                       <Key className="mr-2 h-4 w-4" />
                       Reset Password
                     </Button>
@@ -518,14 +509,19 @@ export function UserDetail({ user, isEditing = false, onSave, onCancel }: UserDe
                   <CardHeader>
                     <CardTitle className="text-red-600">User is Banned</CardTitle>
                     <CardDescription>
-                      This user was banned {user.bannedAt && `on ${new Date(user.bannedAt).toLocaleDateString()}`}
+                      This user was banned{' '}
+                      {user.bannedAt && `on ${new Date(user.bannedAt).toLocaleDateString()}`}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-2 text-sm">
-                      <p><strong>Reason:</strong> {user.banReason || 'No reason provided'}</p>
+                      <p>
+                        <strong>Reason:</strong> {user.banReason || 'No reason provided'}
+                      </p>
                       {user.bannedUntil && (
-                        <p><strong>Until:</strong> {new Date(user.bannedUntil).toLocaleString()}</p>
+                        <p>
+                          <strong>Until:</strong> {new Date(user.bannedUntil).toLocaleString()}
+                        </p>
                       )}
                     </div>
                   </CardContent>

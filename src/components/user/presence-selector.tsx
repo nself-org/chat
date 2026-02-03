@@ -19,21 +19,16 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Label } from '@/components/ui/label'
-import {
-  Circle,
-  Moon,
-  MinusCircle,
-  CircleOff,
-  Sparkles,
-  ChevronDown,
-} from 'lucide-react'
+import { Circle, Moon, MinusCircle, CircleOff, Sparkles, ChevronDown } from 'lucide-react'
 
 // ============================================================================
 // Types
 // ============================================================================
 
-export interface PresenceSelectorProps
-  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+export interface PresenceSelectorProps extends Omit<
+  React.HTMLAttributes<HTMLDivElement>,
+  'onChange'
+> {
   value?: PresenceStatus
   onChange?: (presence: PresenceStatus) => void
   showAutoOption?: boolean
@@ -118,12 +113,9 @@ const PresenceSelector = React.forwardRef<HTMLDivElement, PresenceSelectorProps>
       }
     }
 
-    const options = showAutoOption
-      ? [autoOption, ...presenceOptions]
-      : presenceOptions
+    const options = showAutoOption ? [autoOption, ...presenceOptions] : presenceOptions
 
-    const currentOption =
-      presenceOptions.find((opt) => opt.value === value) ?? presenceOptions[0]
+    const currentOption = presenceOptions.find((opt) => opt.value === value) ?? presenceOptions[0]
 
     // Dropdown variant
     if (variant === 'dropdown') {
@@ -145,7 +137,7 @@ const PresenceSelector = React.forwardRef<HTMLDivElement, PresenceSelectorProps>
                   />
                   <span>{isAuto ? 'Auto' : currentOption.label}</span>
                 </div>
-                <ChevronDown className="h-4 w-4 ml-2 opacity-50" />
+                <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
@@ -180,9 +172,7 @@ const PresenceSelector = React.forwardRef<HTMLDivElement, PresenceSelectorProps>
                   />
                   <div className="flex flex-col">
                     <span className="font-medium">{option.label}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {option.description}
-                    </span>
+                    <span className="text-xs text-muted-foreground">{option.description}</span>
                   </div>
                 </DropdownMenuItem>
               ))}
@@ -198,20 +188,18 @@ const PresenceSelector = React.forwardRef<HTMLDivElement, PresenceSelectorProps>
         <div ref={ref} className={className} {...props}>
           <RadioGroup
             value={isAuto ? 'auto' : value}
-            onValueChange={(val) =>
-              handleChange(val as PresenceStatus | 'auto')
-            }
+            onValueChange={(val) => handleChange(val as PresenceStatus | 'auto')}
             className="space-y-2"
           >
             {options.map((option) => (
               <div
                 key={option.value}
-                className="flex items-center space-x-3 p-2 rounded-md hover:bg-muted cursor-pointer"
+                className="flex cursor-pointer items-center space-x-3 rounded-md p-2 hover:bg-muted"
               >
                 <RadioGroupItem value={option.value} id={option.value} />
                 <Label
                   htmlFor={option.value}
-                  className="flex items-center gap-3 cursor-pointer flex-1"
+                  className="flex flex-1 cursor-pointer items-center gap-3"
                 >
                   {option.value === 'auto' ? (
                     option.icon
@@ -225,9 +213,7 @@ const PresenceSelector = React.forwardRef<HTMLDivElement, PresenceSelectorProps>
                   )}
                   <div className="flex flex-col">
                     <span className="font-medium">{option.label}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {option.description}
-                    </span>
+                    <span className="text-xs text-muted-foreground">{option.description}</span>
                   </div>
                 </Label>
               </div>
@@ -239,24 +225,17 @@ const PresenceSelector = React.forwardRef<HTMLDivElement, PresenceSelectorProps>
 
     // Buttons variant
     return (
-      <div
-        ref={ref}
-        className={cn('flex flex-wrap gap-2', className)}
-        {...props}
-      >
+      <div ref={ref} className={cn('flex flex-wrap gap-2', className)} {...props}>
         {options.map((option) => (
           <Button
             key={option.value}
             variant={
-              (isAuto && option.value === 'auto') ||
-              (!isAuto && option.value === value)
+              (isAuto && option.value === 'auto') || (!isAuto && option.value === value)
                 ? 'default'
                 : 'outline'
             }
             size={size === 'sm' ? 'sm' : size === 'lg' ? 'lg' : 'default'}
-            onClick={() =>
-              handleChange(option.value as PresenceStatus | 'auto')
-            }
+            onClick={() => handleChange(option.value as PresenceStatus | 'auto')}
             className="gap-2"
           >
             {option.value === 'auto' ? (

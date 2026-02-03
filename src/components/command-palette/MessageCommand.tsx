@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * MessageCommand
@@ -6,12 +6,12 @@
  * Specialized command item for jumping to messages.
  */
 
-import * as React from 'react';
-import { Command as CommandPrimitive } from 'cmdk';
-import { MessageSquare, Hash, Calendar } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { MessageCommandData } from '@/lib/command-palette/command-types';
-import { formatDistanceToNow } from 'date-fns';
+import * as React from 'react'
+import { Command as CommandPrimitive } from 'cmdk'
+import { MessageSquare, Hash, Calendar } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import type { MessageCommandData } from '@/lib/command-palette/command-types'
+import { formatDistanceToNow } from 'date-fns'
 
 // ============================================================================
 // Types
@@ -19,13 +19,13 @@ import { formatDistanceToNow } from 'date-fns';
 
 export interface MessageCommandProps {
   /** Message command data */
-  command: MessageCommandData;
+  command: MessageCommandData
   /** Whether this item is currently selected */
-  isSelected?: boolean;
+  isSelected?: boolean
   /** Click handler */
-  onSelect?: (command: MessageCommandData) => void;
+  onSelect?: (command: MessageCommandData) => void
   /** Additional CSS classes */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -40,11 +40,11 @@ export function MessageCommand({
 }: MessageCommandProps) {
   const timeAgo = React.useMemo(() => {
     try {
-      return formatDistanceToNow(new Date(command.timestamp), { addSuffix: true });
+      return formatDistanceToNow(new Date(command.timestamp), { addSuffix: true })
     } catch {
-      return '';
+      return ''
     }
-  }, [command.timestamp]);
+  }, [command.timestamp])
 
   return (
     <CommandPrimitive.Item
@@ -52,10 +52,10 @@ export function MessageCommand({
       onSelect={() => onSelect?.(command)}
       className={cn(
         'relative flex cursor-pointer select-none items-center gap-3 rounded-md px-3 py-2 text-sm outline-none',
-        'aria-selected:bg-accent aria-selected:text-accent-foreground',
+        'aria-selected:text-accent-foreground aria-selected:bg-accent',
         'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
-        'hover:bg-accent hover:text-accent-foreground',
-        isSelected && 'bg-accent text-accent-foreground',
+        'hover:text-accent-foreground hover:bg-accent',
+        isSelected && 'text-accent-foreground bg-accent',
         className
       )}
       data-selected={isSelected}
@@ -87,7 +87,7 @@ export function MessageCommand({
         {timeAgo}
       </div>
     </CommandPrimitive.Item>
-  );
+  )
 }
 
-export default MessageCommand;
+export default MessageCommand

@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
 import { Loader2, Type } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { logger } from '@/lib/logger'
 import {
   BaseModal,
   ModalHeader,
@@ -125,7 +126,7 @@ export function PromptModal({
       await onSubmit(value)
       onOpenChange(false)
     } catch (err) {
-      console.error('Submit failed:', err)
+      logger.error('Submit failed:',  err)
       setError(err instanceof Error ? err.message : 'An error occurred')
     } finally {
       if (externalLoading === undefined) {
@@ -146,9 +147,7 @@ export function PromptModal({
     }
   }
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newValue = e.target.value
     setValue(newValue)
     // Clear error when user starts typing
@@ -174,22 +173,22 @@ export function PromptModal({
     >
       <ModalHeader>
         <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center h-10 w-10 rounded-full shrink-0 bg-primary/10 text-primary">
+          <div className="bg-primary/10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-primary">
             <Type className="h-5 w-5" />
           </div>
-          <div className="space-y-1.5 pt-0.5 flex-1">
+          <div className="flex-1 space-y-1.5 pt-0.5">
             <ModalTitle>{title}</ModalTitle>
             {message && <ModalDescription>{message}</ModalDescription>}
           </div>
         </div>
       </ModalHeader>
 
-      <ModalBody className="pt-4 pb-0">
+      <ModalBody className="pb-0 pt-4">
         <div className="space-y-2">
           {label && (
             <Label htmlFor={inputId} className="text-sm font-medium">
               {label}
-              {required && <span className="text-destructive ml-1">*</span>}
+              {required && <span className="ml-1 text-destructive">*</span>}
             </Label>
           )}
 
@@ -217,9 +216,7 @@ export function PromptModal({
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
               disabled={loading}
-              className={cn(
-                error && 'border-destructive focus-visible:ring-destructive'
-              )}
+              className={cn(error && 'border-destructive focus-visible:ring-destructive')}
               maxLength={maxLength}
             />
           )}
@@ -231,7 +228,7 @@ export function PromptModal({
             ) : helperText ? (
               <p className="text-sm text-muted-foreground">{helperText}</p>
             ) : maxLength ? (
-              <p className="text-sm text-muted-foreground text-right">
+              <p className="text-right text-sm text-muted-foreground">
                 {value.length}/{maxLength}
               </p>
             ) : null}

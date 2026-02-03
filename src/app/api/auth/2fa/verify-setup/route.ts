@@ -10,16 +10,17 @@ import { hashBackupCode } from '@/lib/2fa/backup-codes'
 import { getApolloClient } from '@/lib/apollo-client'
 import { gql } from '@apollo/client'
 
+import { logger } from '@/lib/logger'
+
 const ENABLE_2FA_MUTATION = gql`
-  mutation Enable2FA($userId: uuid!, $secret: String!, $backupCodes: [nchat_user_backup_codes_insert_input!]!) {
+  mutation Enable2FA(
+    $userId: uuid!
+    $secret: String!
+    $backupCodes: [nchat_user_backup_codes_insert_input!]!
+  ) {
     # Insert 2FA settings
     insert_nchat_user_2fa_settings_one(
-      object: {
-        user_id: $userId
-        secret: $secret
-        is_enabled: true
-        enabled_at: "now()"
-      }
+      object: { user_id: $userId, secret: $secret, is_enabled: true, enabled_at: "now()" }
       on_conflict: {
         constraint: nchat_user_2fa_settings_user_id_key
         update_columns: [secret, is_enabled, enabled_at, updated_at]
@@ -45,20 +46,14 @@ export async function POST(request: NextRequest) {
     const { userId, secret, code, backupCodes } = await request.json()
 
     if (!userId || !secret || !code || !backupCodes) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
     // Verify TOTP code
     const isValid = verifyTOTP(code, secret)
 
     if (!isValid) {
-      return NextResponse.json(
-        { error: 'Invalid verification code' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Invalid verification code' }, { status: 400 })
     }
 
     // Hash all backup codes
@@ -81,11 +76,8 @@ export async function POST(request: NextRequest) {
     })
 
     if (errors) {
-      console.error('GraphQL errors:', errors)
-      return NextResponse.json(
-        { error: 'Failed to enable 2FA' },
-        { status: 500 }
-      )
+      logger.error('GraphQL errors:', errors)
+      return NextResponse.json({ error: 'Failed to enable 2FA' }, { status: 500 })
     }
 
     return NextResponse.json({
@@ -94,10 +86,7 @@ export async function POST(request: NextRequest) {
       data: data.insert_nchat_user_2fa_settings_one,
     })
   } catch (error) {
-    console.error('2FA verify setup error:', error)
-    return NextResponse.json(
-      { error: 'Failed to verify and enable 2FA' },
-      { status: 500 }
-    )
+    logger.error('2FA verify setup error:', error)
+    return NextResponse.json({ error: 'Failed to verify and enable 2FA' }, { status: 500 })
   }
 }

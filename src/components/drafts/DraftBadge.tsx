@@ -1,4 +1,4 @@
-'use client';
+'use client'
 
 /**
  * DraftBadge - Badge showing draft count
@@ -6,16 +6,11 @@
  * Displays total number of drafts, typically in sidebar
  */
 
-import * as React from 'react';
-import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
-import { useDraftCount } from '@/hooks/useDrafts';
+import * as React from 'react'
+import { cn } from '@/lib/utils'
+import { Badge } from '@/components/ui/badge'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip'
+import { useDraftCount } from '@/hooks/useDrafts'
 
 // ============================================================================
 // Types
@@ -23,21 +18,21 @@ import { useDraftCount } from '@/hooks/useDrafts';
 
 export interface DraftBadgeProps {
   /** Override the count (otherwise uses store) */
-  count?: number;
+  count?: number
   /** Maximum count to display (e.g., 99+) */
-  maxCount?: number;
+  maxCount?: number
   /** Show badge when count is 0 */
-  showZero?: boolean;
+  showZero?: boolean
   /** Badge variant */
-  variant?: 'default' | 'secondary' | 'outline' | 'destructive';
+  variant?: 'default' | 'secondary' | 'outline' | 'destructive'
   /** Size variant */
-  size?: 'sm' | 'default' | 'lg';
+  size?: 'sm' | 'default' | 'lg'
   /** Show tooltip */
-  showTooltip?: boolean;
+  showTooltip?: boolean
   /** Animate on count change */
-  animate?: boolean;
+  animate?: boolean
   /** Additional class names */
-  className?: string;
+  className?: string
 }
 
 // ============================================================================
@@ -48,7 +43,7 @@ const sizeClasses = {
   sm: 'h-4 min-w-[16px] px-1 text-[10px]',
   default: 'h-5 min-w-[20px] px-1.5 text-xs',
   lg: 'h-6 min-w-[24px] px-2 text-sm',
-};
+}
 
 // ============================================================================
 // Component
@@ -64,24 +59,19 @@ export function DraftBadge({
   animate = true,
   className,
 }: DraftBadgeProps) {
-  const storeCount = useDraftCount();
-  const count = countProp ?? storeCount;
+  const storeCount = useDraftCount()
+  const count = countProp ?? storeCount
 
   // Don't render if count is 0 and showZero is false
   if (count === 0 && !showZero) {
-    return null;
+    return null
   }
 
   // Format count
-  const displayCount = count > maxCount ? `${maxCount}+` : count.toString();
+  const displayCount = count > maxCount ? `${maxCount}+` : count.toString()
 
   // Tooltip text
-  const tooltipText =
-    count === 0
-      ? 'No drafts'
-      : count === 1
-      ? '1 draft'
-      : `${count} drafts`;
+  const tooltipText = count === 0 ? 'No drafts' : count === 1 ? '1 draft' : `${count} drafts`
 
   const badge = (
     <Badge
@@ -96,10 +86,10 @@ export function DraftBadge({
     >
       {displayCount}
     </Badge>
-  );
+  )
 
   if (!showTooltip) {
-    return badge;
+    return badge
   }
 
   return (
@@ -109,7 +99,7 @@ export function DraftBadge({
         <TooltipContent side="top">{tooltipText}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
-  );
+  )
 }
 
 // ============================================================================
@@ -117,30 +107,25 @@ export function DraftBadge({
 // ============================================================================
 
 export interface DraftBadgeInlineProps {
-  count?: number;
-  className?: string;
+  count?: number
+  className?: string
 }
 
 /**
  * Inline text badge for draft count
  */
 export function DraftBadgeInline({ count: countProp, className }: DraftBadgeInlineProps) {
-  const storeCount = useDraftCount();
-  const count = countProp ?? storeCount;
+  const storeCount = useDraftCount()
+  const count = countProp ?? storeCount
 
-  if (count === 0) return null;
+  if (count === 0) return null
 
   return (
-    <span
-      className={cn(
-        'inline-flex items-center gap-1 text-xs text-amber-600',
-        className
-      )}
-    >
+    <span className={cn('inline-flex items-center gap-1 text-xs text-amber-600', className)}>
       <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
       {count} draft{count !== 1 ? 's' : ''}
     </span>
-  );
+  )
 }
 
 // ============================================================================
@@ -148,9 +133,9 @@ export function DraftBadgeInline({ count: countProp, className }: DraftBadgeInli
 // ============================================================================
 
 export interface DraftDotBadgeProps {
-  count?: number;
-  showCount?: boolean;
-  className?: string;
+  count?: number
+  showCount?: boolean
+  className?: string
 }
 
 /**
@@ -161,21 +146,17 @@ export function DraftDotBadge({
   showCount = false,
   className,
 }: DraftDotBadgeProps) {
-  const storeCount = useDraftCount();
-  const count = countProp ?? storeCount;
+  const storeCount = useDraftCount()
+  const count = countProp ?? storeCount
 
-  if (count === 0) return null;
+  if (count === 0) return null
 
   return (
-    <span
-      className={cn('inline-flex items-center gap-1', className)}
-    >
+    <span className={cn('inline-flex items-center gap-1', className)}>
       <span className="h-2 w-2 rounded-full bg-amber-500" />
-      {showCount && (
-        <span className="text-xs text-muted-foreground">{count}</span>
-      )}
+      {showCount && <span className="text-xs text-muted-foreground">{count}</span>}
     </span>
-  );
+  )
 }
 
-export default DraftBadge;
+export default DraftBadge

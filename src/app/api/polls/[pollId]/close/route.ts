@@ -8,6 +8,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { Poll } from '@/types/poll'
 import { closePoll, canManagePoll } from '@/lib/polls/poll-manager'
 
+import { logger } from '@/lib/logger'
+
 // ============================================================================
 // POST - Close Poll
 // ============================================================================
@@ -20,32 +22,21 @@ export async function POST(
     const { pollId } = await params
 
     if (!pollId) {
-      return NextResponse.json(
-        { error: 'Poll ID is required' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Poll ID is required' }, { status: 400 })
     }
 
-    // TODO: Get user ID from session/auth
     const userId = 'user_mock_id'
     const userRole = 'member' // TODO: Get from session
 
-    // TODO: Fetch poll from database
     const poll = null as Poll | null
 
     if (!poll) {
-      return NextResponse.json(
-        { error: 'Poll not found' },
-        { status: 404 }
-      )
+      return NextResponse.json({ error: 'Poll not found' }, { status: 404 })
     }
 
     // Check if poll is already closed
     if (poll.status === 'closed') {
-      return NextResponse.json(
-        { error: 'Poll is already closed' },
-        { status: 400 }
-      )
+      return NextResponse.json({ error: 'Poll is already closed' }, { status: 400 })
     }
 
     // Check permissions
@@ -59,17 +50,12 @@ export async function POST(
     // Close poll
     const closedPoll = closePoll(poll, userId)
 
-    // TODO: Update poll in database
-
     return NextResponse.json({
       poll: closedPoll,
       message: 'Poll closed successfully',
     })
   } catch (error) {
-    console.error('Failed to close poll:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    logger.error('Failed to close poll:', error)
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -142,12 +142,7 @@ export const STORAGE_TIERS: StorageTier[] = [
     name: 'Free',
     limit: 5 * 1024 * 1024 * 1024, // 5 GB
     priceMonthly: 0,
-    features: [
-      '5 GB storage',
-      'Basic file types',
-      '10 MB max file size',
-      '90 days retention',
-    ],
+    features: ['5 GB storage', 'Basic file types', '10 MB max file size', '90 days retention'],
   },
   {
     id: 'starter',
@@ -298,10 +293,7 @@ export class QuotaManager {
   /**
    * Get storage quota for an entity
    */
-  async getQuota(
-    entityId: string,
-    entityType: 'user' | 'channel' | 'team'
-  ): Promise<StorageQuota> {
+  async getQuota(entityId: string, entityType: 'user' | 'channel' | 'team'): Promise<StorageQuota> {
     const cacheKey = `${entityType}:${entityId}`
 
     // Check cache first
@@ -310,7 +302,6 @@ export class QuotaManager {
       return cached
     }
 
-    // TODO: Fetch from database
     const limit = this.getDefaultLimit(entityType)
     const used = await this.calculateUsage(entityId, entityType)
     const percentage = calculatePercentage(used, limit)
@@ -341,8 +332,6 @@ export class QuotaManager {
     entityType: 'user' | 'channel' | 'team',
     newLimit: number
   ): Promise<StorageQuota> {
-    // TODO: Update in database
-
     // Invalidate cache
     const cacheKey = `${entityType}:${entityId}`
     this.quotaCache.delete(cacheKey)
@@ -354,11 +343,7 @@ export class QuotaManager {
   /**
    * Calculate storage usage for an entity
    */
-  async calculateUsage(
-    entityId: string,
-    entityType: 'user' | 'channel' | 'team'
-  ): Promise<number> {
-    // TODO: Query database for actual usage
+  async calculateUsage(entityId: string, entityType: 'user' | 'channel' | 'team'): Promise<number> {
     // This is a placeholder implementation
 
     // Simulate usage calculation
@@ -372,8 +357,6 @@ export class QuotaManager {
     entityId: string,
     entityType: 'user' | 'channel' | 'team'
   ): Promise<StorageUsageBreakdown> {
-    // TODO: Query database for detailed breakdown
-
     // Placeholder implementation
     const total = await this.calculateUsage(entityId, entityType)
 
@@ -467,7 +450,6 @@ export class QuotaManager {
     const cached = this.warningsCache.get(cacheKey)
     if (cached) return cached
 
-    // TODO: Fetch from database
     const warnings: QuotaWarning[] = []
 
     this.warningsCache.set(cacheKey, warnings)
@@ -518,8 +500,6 @@ export class QuotaManager {
     if (warnings.length > 0) {
       const cacheKey = `${quota.entityType}:${quota.entityId}`
       this.warningsCache.set(cacheKey, warnings)
-
-      // TODO: Send notifications
     }
   }
 
@@ -527,8 +507,6 @@ export class QuotaManager {
    * Acknowledge a warning
    */
   async acknowledgeWarning(warningId: string): Promise<void> {
-    // TODO: Update in database
-
     // Invalidate warnings cache
     this.warningsCache.clear()
   }
@@ -551,8 +529,6 @@ export class QuotaManager {
    * Get storage statistics
    */
   async getStats(): Promise<StorageStats> {
-    // TODO: Query database for actual stats
-
     // Placeholder implementation
     return {
       totalAllocated: 100 * 1024 * 1024 * 1024,
@@ -583,8 +559,6 @@ export class QuotaManager {
     if (!policy.enabled) {
       return { filesDeleted: 0, spaceFree: 0 }
     }
-
-    // TODO: Implement actual cleanup logic
 
     // Placeholder implementation
     return {

@@ -97,14 +97,17 @@ export function useViewport(): ViewportState & ViewportBreakpoints {
   }, [updateViewport])
 
   // Calculate breakpoints
-  const breakpoints: ViewportBreakpoints = useMemo(() => ({
-    xs: state.width < BREAKPOINTS.sm,
-    sm: state.width >= BREAKPOINTS.sm,
-    md: state.width >= BREAKPOINTS.md,
-    lg: state.width >= BREAKPOINTS.lg,
-    xl: state.width >= BREAKPOINTS.xl,
-    xxl: state.width >= BREAKPOINTS.xxl,
-  }), [state.width])
+  const breakpoints: ViewportBreakpoints = useMemo(
+    () => ({
+      xs: state.width < BREAKPOINTS.sm,
+      sm: state.width >= BREAKPOINTS.sm,
+      md: state.width >= BREAKPOINTS.md,
+      lg: state.width >= BREAKPOINTS.lg,
+      xl: state.width >= BREAKPOINTS.xl,
+      xxl: state.width >= BREAKPOINTS.xxl,
+    }),
+    [state.width]
+  )
 
   return {
     ...state,
@@ -202,8 +205,9 @@ export function useSafeArea(): SafeAreaInsets {
  */
 export function useVisualViewport() {
   const [viewport, setViewport] = useState(() => ({
-    width: typeof window !== 'undefined' ? window.visualViewport?.width ?? window.innerWidth : 0,
-    height: typeof window !== 'undefined' ? window.visualViewport?.height ?? window.innerHeight : 0,
+    width: typeof window !== 'undefined' ? (window.visualViewport?.width ?? window.innerWidth) : 0,
+    height:
+      typeof window !== 'undefined' ? (window.visualViewport?.height ?? window.innerHeight) : 0,
     offsetTop: 0,
     offsetLeft: 0,
     scale: 1,
@@ -262,7 +266,9 @@ export function useVisualViewport() {
  */
 export function useOrientation(): Orientation {
   const [orientation, setOrientation] = useState<Orientation>(() =>
-    typeof window !== 'undefined' && window.innerHeight > window.innerWidth ? 'portrait' : 'landscape'
+    typeof window !== 'undefined' && window.innerHeight > window.innerWidth
+      ? 'portrait'
+      : 'landscape'
   )
 
   useEffect(() => {

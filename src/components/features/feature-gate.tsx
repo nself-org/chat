@@ -305,8 +305,7 @@ export function withFeatureGate<P extends object, C extends FeatureCategory>(
   feature?: keyof FeatureFlags[C],
   FallbackComponent?: React.ComponentType<P>
 ): React.FC<P> {
-  const displayName =
-    WrappedComponent.displayName || WrappedComponent.name || 'Component'
+  const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component'
 
   const FeatureGatedComponent: React.FC<P> = (props) => {
     const { isEnabled } = useFeature()

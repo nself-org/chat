@@ -11,8 +11,7 @@ const toggleGroupVariants = cva(
     variants: {
       variant: {
         default: 'bg-transparent',
-        outline:
-          'border border-input bg-transparent hover:bg-accent hover:text-accent-foreground',
+        outline: 'border border-input bg-transparent hover:bg-accent hover:text-accent-foreground',
       },
       size: {
         default: 'h-10 px-3',
@@ -27,9 +26,7 @@ const toggleGroupVariants = cva(
   }
 )
 
-const ToggleGroupContext = React.createContext<
-  VariantProps<typeof toggleGroupVariants>
->({
+const ToggleGroupContext = React.createContext<VariantProps<typeof toggleGroupVariants>>({
   variant: 'default',
   size: 'default',
 })
@@ -44,9 +41,7 @@ const ToggleGroup = React.forwardRef<
     className={cn('flex items-center justify-center gap-1', className)}
     {...props}
   >
-    <ToggleGroupContext.Provider value={{ variant, size }}>
-      {children}
-    </ToggleGroupContext.Provider>
+    <ToggleGroupContext.Provider value={{ variant, size }}>{children}</ToggleGroupContext.Provider>
   </ToggleGroupPrimitive.Root>
 ))
 ToggleGroup.displayName = ToggleGroupPrimitive.Root.displayName

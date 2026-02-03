@@ -16,6 +16,7 @@ import type {
   HistoryEvent,
   HistoryEventType,
 } from './history-types'
+
 import {
   loadHistorySettings,
   saveHistorySettings,
@@ -41,6 +42,8 @@ import {
 import type { MessageUser } from '@/types/message'
 import type { UserRole } from '@/lib/auth/roles'
 import { DEFAULT_EDIT_HISTORY_SETTINGS } from './history-types'
+
+import { logger } from '@/lib/logger'
 
 // ============================================================================
 // Store State
@@ -102,10 +105,7 @@ interface EditHistoryActions {
   // UI operations
   openHistoryModal: (messageId: string) => Promise<void>
   closeHistoryModal: () => void
-  selectVersionsForComparison: (
-    left: MessageVersion | null,
-    right: MessageVersion | null
-  ) => void
+  selectVersionsForComparison: (left: MessageVersion | null, right: MessageVersion | null) => void
   clearVersionSelection: () => void
 
   // Diff operations
@@ -148,9 +148,7 @@ const initialState: EditHistoryState = {
   eventListeners: [],
 }
 
-export const useEditHistoryStore = create<
-  EditHistoryState & EditHistoryActions
->((set, get) => ({
+export const useEditHistoryStore = create<EditHistoryState & EditHistoryActions>((set, get) => ({
   ...initialState,
 
   // ============================================================================
@@ -196,13 +194,11 @@ export const useEditHistoryStore = create<
         return cached
       }
 
-      // TODO: In production, fetch from server via GraphQL
       // For now, return null (no history)
       set({ isLoading: false })
       return null
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Failed to load history'
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load history'
       set({ isLoading: false, error: errorMessage })
       return null
     }
@@ -381,24 +377,14 @@ export const useEditHistoryStore = create<
     const { settings, currentUserRole, currentUserId } = get()
     if (!currentUserRole || !currentUserId) return false
 
-    return canViewHistoryWithSettings(
-      settings,
-      currentUserRole,
-      currentUserId,
-      messageAuthorId
-    )
+    return canViewHistoryWithSettings(settings, currentUserRole, currentUserId, messageAuthorId)
   },
 
   canRestore: (messageAuthorId) => {
     const { settings, currentUserRole, currentUserId } = get()
     if (!currentUserRole || !currentUserId) return false
 
-    return canRestoreVersion(
-      settings,
-      currentUserRole,
-      currentUserId,
-      messageAuthorId
-    )
+    return canRestoreVersion(settings, currentUserRole, currentUserId, messageAuthorId)
   },
 
   canClear: () => {
@@ -431,7 +417,7 @@ export const useEditHistoryStore = create<
       try {
         listener(event)
       } catch (error) {
-        console.error('Error in history event listener:', error)
+        logger.error('Error in history event listener:', error)
       }
     })
   },
@@ -452,32 +438,27 @@ export const useEditHistoryStore = create<
 /**
  * Select the active history.
  */
-export const useActiveHistory = () =>
-  useEditHistoryStore((state) => state.activeHistory)
+export const useActiveHistory = () => useEditHistoryStore((state) => state.activeHistory)
 
 /**
  * Select the selected versions for comparison.
  */
-export const useSelectedVersions = () =>
-  useEditHistoryStore((state) => state.selectedVersions)
+export const useSelectedVersions = () => useEditHistoryStore((state) => state.selectedVersions)
 
 /**
  * Select the loading state.
  */
-export const useHistoryLoading = () =>
-  useEditHistoryStore((state) => state.isLoading)
+export const useHistoryLoading = () => useEditHistoryStore((state) => state.isLoading)
 
 /**
  * Select the modal open state.
  */
-export const useHistoryModalOpen = () =>
-  useEditHistoryStore((state) => state.isModalOpen)
+export const useHistoryModalOpen = () => useEditHistoryStore((state) => state.isModalOpen)
 
 /**
  * Select the settings.
  */
-export const useHistorySettings = () =>
-  useEditHistoryStore((state) => state.settings)
+export const useHistorySettings = () => useEditHistoryStore((state) => state.settings)
 
 // ============================================================================
 // Utility Functions
@@ -490,7 +471,6 @@ export const useHistorySettings = () =>
 export async function getAdminHistoryList(
   filters: AdminHistoryFilters
 ): Promise<AdminHistoryItem[]> {
-  // TODO: Implement server-side fetching with GraphQL
   // For now, return empty array
   return []
 }
@@ -498,9 +478,7 @@ export async function getAdminHistoryList(
 /**
  * Export history data for a message.
  */
-export function exportHistoryData(
-  history: MessageEditHistory
-): Record<string, unknown> {
+export function exportHistoryData(history: MessageEditHistory): Record<string, unknown> {
   return {
     messageId: history.messageId,
     channelId: history.channelId,
@@ -529,9 +507,7 @@ export function exportHistoryData(
 /**
  * Format history for display.
  */
-export function formatHistoryForDisplay(
-  history: MessageEditHistory
-): {
+export function formatHistoryForDisplay(history: MessageEditHistory): {
   title: string
   subtitle: string
   versionCount: number

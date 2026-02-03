@@ -4,9 +4,7 @@
  */
 
 // Re-export app config types
-export type {
-  AppConfig,
-} from '../../config/app-config'
+export type { AppConfig } from '../../config/app-config'
 
 // User types
 export interface User {

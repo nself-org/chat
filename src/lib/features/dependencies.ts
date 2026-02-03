@@ -13,7 +13,7 @@
  * const validation = validateFeatureDependencies(FEATURES.SCREEN_SHARE, enabledFeatures)
  *
  * if (!validation.valid) {
- *   console.log('Missing dependencies:', validation.missingDependencies)
+ *   // console.log('Missing dependencies:', validation.missingDependencies)
  * }
  *
  * // Auto-enable dependencies when enabling a feature
@@ -21,14 +21,14 @@
  * ```
  */
 
-import { FEATURES, type FeatureFlag, ALL_FEATURES } from './feature-flags';
+import { FEATURES, type FeatureFlag, ALL_FEATURES } from './feature-flags'
 import type {
   FeatureDependency,
   FeatureDependencyMap,
   DependencyValidationResult,
   FeatureEnabledMap,
-} from './types';
-import { isFeatureEnabled } from './feature-config';
+} from './types'
+import { isFeatureEnabled } from './feature-config'
 
 // ============================================================================
 // DEPENDENCY DEFINITIONS
@@ -42,9 +42,7 @@ import { isFeatureEnabled } from './feature-config';
  * - `autoEnables`: Features that should be automatically enabled when this feature is enabled
  * - `conflictsWith`: Features that cannot be enabled simultaneously
  */
-export const FEATURE_DEPENDENCIES: Partial<
-  Record<FeatureFlag, FeatureDependency>
-> = {
+export const FEATURE_DEPENDENCIES: Partial<Record<FeatureFlag, FeatureDependency>> = {
   // ============================================================================
   // MESSAGING DEPENDENCIES
   // ============================================================================
@@ -408,7 +406,7 @@ export const FEATURE_DEPENDENCIES: Partial<
     feature: FEATURES.MODERATION_SLOW_MODE,
     requires: [FEATURES.MODERATION_TOOLS],
   },
-};
+}
 
 // ============================================================================
 // CONFLICT DEFINITIONS
@@ -421,7 +419,7 @@ export const FEATURE_DEPENDENCIES: Partial<
 export const FEATURE_CONFLICTS: Array<[FeatureFlag, FeatureFlag]> = [
   // Example: If you had conflicting features, define them here
   // [FEATURES.SIMPLE_MODE, FEATURES.ADVANCED_MODE],
-];
+]
 
 // ============================================================================
 // DEPENDENCY FUNCTIONS
@@ -430,49 +428,47 @@ export const FEATURE_CONFLICTS: Array<[FeatureFlag, FeatureFlag]> = [
 /**
  * Get the dependency definition for a feature
  */
-export function getFeatureDependency(
-  feature: FeatureFlag
-): FeatureDependency | null {
-  return FEATURE_DEPENDENCIES[feature] || null;
+export function getFeatureDependency(feature: FeatureFlag): FeatureDependency | null {
+  return FEATURE_DEPENDENCIES[feature] || null
 }
 
 /**
  * Get all features that a feature requires (direct dependencies)
  */
 export function getRequiredFeatures(feature: FeatureFlag): FeatureFlag[] {
-  const dep = FEATURE_DEPENDENCIES[feature];
-  return dep?.requires || [];
+  const dep = FEATURE_DEPENDENCIES[feature]
+  return dep?.requires || []
 }
 
 /**
  * Get all features that enhance a feature (optional dependencies)
  */
 export function getEnhancingFeatures(feature: FeatureFlag): FeatureFlag[] {
-  const dep = FEATURE_DEPENDENCIES[feature];
-  return dep?.enhancedBy || [];
+  const dep = FEATURE_DEPENDENCIES[feature]
+  return dep?.enhancedBy || []
 }
 
 /**
  * Get all features that should be auto-enabled with a feature
  */
 export function getAutoEnabledFeatures(feature: FeatureFlag): FeatureFlag[] {
-  const dep = FEATURE_DEPENDENCIES[feature];
-  return dep?.autoEnables || [];
+  const dep = FEATURE_DEPENDENCIES[feature]
+  return dep?.autoEnables || []
 }
 
 /**
  * Get all features that depend on a specific feature
  */
 export function getDependentFeatures(feature: FeatureFlag): FeatureFlag[] {
-  const dependents: FeatureFlag[] = [];
+  const dependents: FeatureFlag[] = []
 
   for (const [flag, dep] of Object.entries(FEATURE_DEPENDENCIES)) {
     if (dep?.requires?.includes(feature)) {
-      dependents.push(flag as FeatureFlag);
+      dependents.push(flag as FeatureFlag)
     }
   }
 
-  return dependents;
+  return dependents
 }
 
 /**
@@ -482,32 +478,32 @@ export function getAllRequiredFeatures(
   feature: FeatureFlag,
   visited: Set<FeatureFlag> = new Set()
 ): FeatureFlag[] {
-  if (visited.has(feature)) return [];
-  visited.add(feature);
+  if (visited.has(feature)) return []
+  visited.add(feature)
 
-  const directDeps = getRequiredFeatures(feature);
-  const allDeps = [...directDeps];
+  const directDeps = getRequiredFeatures(feature)
+  const allDeps = [...directDeps]
 
   for (const dep of directDeps) {
-    const transitiveDeps = getAllRequiredFeatures(dep, visited);
-    allDeps.push(...transitiveDeps);
+    const transitiveDeps = getAllRequiredFeatures(dep, visited)
+    allDeps.push(...transitiveDeps)
   }
 
-  return [...new Set(allDeps)];
+  return [...new Set(allDeps)]
 }
 
 /**
  * Get features that conflict with a specific feature
  */
 export function getConflictingFeatures(feature: FeatureFlag): FeatureFlag[] {
-  const conflicts: FeatureFlag[] = [];
+  const conflicts: FeatureFlag[] = []
 
   for (const [a, b] of FEATURE_CONFLICTS) {
-    if (a === feature) conflicts.push(b);
-    if (b === feature) conflicts.push(a);
+    if (a === feature) conflicts.push(b)
+    if (b === feature) conflicts.push(a)
   }
 
-  return conflicts;
+  return conflicts
 }
 
 // ============================================================================
@@ -522,50 +518,49 @@ export function validateFeatureDependencies(
   enabledFeatures: FeatureFlag[] | FeatureEnabledMap
 ): DependencyValidationResult {
   // Normalize input to array
-  const enabled =
-    Array.isArray(enabledFeatures)
-      ? enabledFeatures
-      : Object.entries(enabledFeatures)
-          .filter(([_, v]) => v)
-          .map(([k]) => k as FeatureFlag);
+  const enabled = Array.isArray(enabledFeatures)
+    ? enabledFeatures
+    : Object.entries(enabledFeatures)
+        .filter(([_, v]) => v)
+        .map(([k]) => k as FeatureFlag)
 
-  const enabledSet = new Set(enabled);
-  const missingDependencies: FeatureFlag[] = [];
-  const conflicts: FeatureFlag[] = [];
-  const shouldAutoEnable: FeatureFlag[] = [];
-  const warnings: string[] = [];
+  const enabledSet = new Set(enabled)
+  const missingDependencies: FeatureFlag[] = []
+  const conflicts: FeatureFlag[] = []
+  const shouldAutoEnable: FeatureFlag[] = []
+  const warnings: string[] = []
 
   // Check required dependencies
-  const required = getAllRequiredFeatures(feature);
+  const required = getAllRequiredFeatures(feature)
   for (const dep of required) {
     if (!enabledSet.has(dep)) {
-      missingDependencies.push(dep);
+      missingDependencies.push(dep)
     }
   }
 
   // Check conflicts
-  const conflicting = getConflictingFeatures(feature);
+  const conflicting = getConflictingFeatures(feature)
   for (const conflict of conflicting) {
     if (enabledSet.has(conflict)) {
-      conflicts.push(conflict);
+      conflicts.push(conflict)
     }
   }
 
   // Check auto-enabled features
-  const autoEnabled = getAutoEnabledFeatures(feature);
+  const autoEnabled = getAutoEnabledFeatures(feature)
   for (const auto of autoEnabled) {
     if (!enabledSet.has(auto)) {
-      shouldAutoEnable.push(auto);
+      shouldAutoEnable.push(auto)
     }
   }
 
   // Check for enhancing features that could be enabled
-  const enhancing = getEnhancingFeatures(feature);
-  const missingEnhancements = enhancing.filter((f) => !enabledSet.has(f));
+  const enhancing = getEnhancingFeatures(feature)
+  const missingEnhancements = enhancing.filter((f) => !enabledSet.has(f))
   if (missingEnhancements.length > 0) {
     warnings.push(
       `Consider enabling these features for better experience: ${missingEnhancements.join(', ')}`
-    );
+    )
   }
 
   return {
@@ -574,7 +569,7 @@ export function validateFeatureDependencies(
     conflicts,
     shouldAutoEnable,
     warnings,
-  };
+  }
 }
 
 /**
@@ -583,30 +578,27 @@ export function validateFeatureDependencies(
 export function validateAllFeatures(
   enabledFeatures: FeatureFlag[] | FeatureEnabledMap
 ): Record<FeatureFlag, DependencyValidationResult> {
-  const enabled =
-    Array.isArray(enabledFeatures)
-      ? enabledFeatures
-      : Object.entries(enabledFeatures)
-          .filter(([_, v]) => v)
-          .map(([k]) => k as FeatureFlag);
+  const enabled = Array.isArray(enabledFeatures)
+    ? enabledFeatures
+    : Object.entries(enabledFeatures)
+        .filter(([_, v]) => v)
+        .map(([k]) => k as FeatureFlag)
 
-  const results: Partial<Record<FeatureFlag, DependencyValidationResult>> = {};
+  const results: Partial<Record<FeatureFlag, DependencyValidationResult>> = {}
 
   for (const feature of enabled) {
-    results[feature] = validateFeatureDependencies(feature, enabled);
+    results[feature] = validateFeatureDependencies(feature, enabled)
   }
 
-  return results as Record<FeatureFlag, DependencyValidationResult>;
+  return results as Record<FeatureFlag, DependencyValidationResult>
 }
 
 /**
  * Check if any feature has unmet dependencies
  */
-export function hasUnmetDependencies(
-  enabledFeatures: FeatureFlag[] | FeatureEnabledMap
-): boolean {
-  const validations = validateAllFeatures(enabledFeatures);
-  return Object.values(validations).some((v) => !v.valid);
+export function hasUnmetDependencies(enabledFeatures: FeatureFlag[] | FeatureEnabledMap): boolean {
+  const validations = validateAllFeatures(enabledFeatures)
+  return Object.values(validations).some((v) => !v.valid)
 }
 
 /**
@@ -615,16 +607,16 @@ export function hasUnmetDependencies(
 export function getAllUnmetDependencies(
   enabledFeatures: FeatureFlag[] | FeatureEnabledMap
 ): FeatureFlag[] {
-  const validations = validateAllFeatures(enabledFeatures);
-  const unmet = new Set<FeatureFlag>();
+  const validations = validateAllFeatures(enabledFeatures)
+  const unmet = new Set<FeatureFlag>()
 
   for (const validation of Object.values(validations)) {
     for (const dep of validation.missingDependencies) {
-      unmet.add(dep);
+      unmet.add(dep)
     }
   }
 
-  return Array.from(unmet);
+  return Array.from(unmet)
 }
 
 // ============================================================================
@@ -636,31 +628,31 @@ export function getAllUnmetDependencies(
  * including all transitive dependencies and auto-enabled features
  */
 export function getFeaturesToEnable(feature: FeatureFlag): FeatureFlag[] {
-  const toEnable = new Set<FeatureFlag>([feature]);
+  const toEnable = new Set<FeatureFlag>([feature])
 
   // Add all required dependencies (transitive)
-  const required = getAllRequiredFeatures(feature);
+  const required = getAllRequiredFeatures(feature)
   for (const dep of required) {
-    toEnable.add(dep);
+    toEnable.add(dep)
     // Also add dependencies of dependencies
-    const depDeps = getAllRequiredFeatures(dep);
+    const depDeps = getAllRequiredFeatures(dep)
     for (const dd of depDeps) {
-      toEnable.add(dd);
+      toEnable.add(dd)
     }
   }
 
   // Add auto-enabled features
-  const autoEnabled = getAutoEnabledFeatures(feature);
+  const autoEnabled = getAutoEnabledFeatures(feature)
   for (const auto of autoEnabled) {
-    toEnable.add(auto);
+    toEnable.add(auto)
     // Also add dependencies of auto-enabled features
-    const autoDeps = getAllRequiredFeatures(auto);
+    const autoDeps = getAllRequiredFeatures(auto)
     for (const ad of autoDeps) {
-      toEnable.add(ad);
+      toEnable.add(ad)
     }
   }
 
-  return Array.from(toEnable);
+  return Array.from(toEnable)
 }
 
 /**
@@ -671,9 +663,9 @@ export function autoEnableDependencies(
   feature: FeatureFlag,
   currentEnabled: FeatureFlag[]
 ): FeatureFlag[] {
-  const toEnable = getFeaturesToEnable(feature);
-  const newEnabled = new Set([...currentEnabled, ...toEnable]);
-  return Array.from(newEnabled);
+  const toEnable = getFeaturesToEnable(feature)
+  const newEnabled = new Set([...currentEnabled, ...toEnable])
+  return Array.from(newEnabled)
 }
 
 /**
@@ -684,35 +676,32 @@ export function getFeaturesToDisable(
   feature: FeatureFlag,
   currentEnabled: FeatureFlag[]
 ): FeatureFlag[] {
-  const toDisable = new Set<FeatureFlag>([feature]);
-  const enabledSet = new Set(currentEnabled);
+  const toDisable = new Set<FeatureFlag>([feature])
+  const enabledSet = new Set(currentEnabled)
 
   // Find all features that depend on this feature
-  const dependents = getDependentFeatures(feature);
+  const dependents = getDependentFeatures(feature)
   for (const dep of dependents) {
     if (enabledSet.has(dep)) {
-      toDisable.add(dep);
+      toDisable.add(dep)
       // Recursively find features depending on this dependent
-      const nestedDeps = getFeaturesToDisable(dep, currentEnabled);
+      const nestedDeps = getFeaturesToDisable(dep, currentEnabled)
       for (const nd of nestedDeps) {
-        toDisable.add(nd);
+        toDisable.add(nd)
       }
     }
   }
 
-  return Array.from(toDisable);
+  return Array.from(toDisable)
 }
 
 /**
  * Disable a feature and cascade disable dependent features
  * Returns a new enabled features list
  */
-export function cascadeDisable(
-  feature: FeatureFlag,
-  currentEnabled: FeatureFlag[]
-): FeatureFlag[] {
-  const toDisable = new Set(getFeaturesToDisable(feature, currentEnabled));
-  return currentEnabled.filter((f) => !toDisable.has(f));
+export function cascadeDisable(feature: FeatureFlag, currentEnabled: FeatureFlag[]): FeatureFlag[] {
+  const toDisable = new Set(getFeaturesToDisable(feature, currentEnabled))
+  return currentEnabled.filter((f) => !toDisable.has(f))
 }
 
 // ============================================================================
@@ -726,68 +715,74 @@ export function canSafelyDisable(
   feature: FeatureFlag,
   currentEnabled: FeatureFlag[]
 ): { safe: boolean; willDisable: FeatureFlag[] } {
-  const willDisable = getFeaturesToDisable(feature, currentEnabled).filter(
-    (f) => f !== feature
-  );
+  const willDisable = getFeaturesToDisable(feature, currentEnabled).filter((f) => f !== feature)
   return {
     safe: willDisable.length === 0,
     willDisable,
-  };
+  }
 }
 
 /**
  * Get a dependency graph for visualization
  */
 export function getDependencyGraph(): {
-  nodes: FeatureFlag[];
-  edges: Array<{ from: FeatureFlag; to: FeatureFlag; type: 'requires' | 'enhances' | 'autoEnables' }>;
+  nodes: FeatureFlag[]
+  edges: Array<{
+    from: FeatureFlag
+    to: FeatureFlag
+    type: 'requires' | 'enhances' | 'autoEnables'
+  }>
 } {
-  const nodes = [...ALL_FEATURES];
-  const edges: Array<{ from: FeatureFlag; to: FeatureFlag; type: 'requires' | 'enhances' | 'autoEnables' }> = [];
+  const nodes = [...ALL_FEATURES]
+  const edges: Array<{
+    from: FeatureFlag
+    to: FeatureFlag
+    type: 'requires' | 'enhances' | 'autoEnables'
+  }> = []
 
   for (const [feature, dep] of Object.entries(FEATURE_DEPENDENCIES)) {
-    const from = feature as FeatureFlag;
+    const from = feature as FeatureFlag
 
     for (const req of dep?.requires || []) {
-      edges.push({ from, to: req, type: 'requires' });
+      edges.push({ from, to: req, type: 'requires' })
     }
 
     for (const enh of dep?.enhancedBy || []) {
-      edges.push({ from, to: enh, type: 'enhances' });
+      edges.push({ from, to: enh, type: 'enhances' })
     }
 
     for (const auto of dep?.autoEnables || []) {
-      edges.push({ from, to: auto, type: 'autoEnables' });
+      edges.push({ from, to: auto, type: 'autoEnables' })
     }
   }
 
-  return { nodes, edges };
+  return { nodes, edges }
 }
 
 /**
  * Sort features by dependency order (dependencies first)
  */
 export function sortByDependencyOrder(features: FeatureFlag[]): FeatureFlag[] {
-  const sorted: FeatureFlag[] = [];
-  const visited = new Set<FeatureFlag>();
+  const sorted: FeatureFlag[] = []
+  const visited = new Set<FeatureFlag>()
 
   function visit(feature: FeatureFlag) {
-    if (visited.has(feature)) return;
-    visited.add(feature);
+    if (visited.has(feature)) return
+    visited.add(feature)
 
-    const deps = getRequiredFeatures(feature);
+    const deps = getRequiredFeatures(feature)
     for (const dep of deps) {
       if (features.includes(dep)) {
-        visit(dep);
+        visit(dep)
       }
     }
 
-    sorted.push(feature);
+    sorted.push(feature)
   }
 
   for (const feature of features) {
-    visit(feature);
+    visit(feature)
   }
 
-  return sorted;
+  return sorted
 }

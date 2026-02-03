@@ -409,7 +409,7 @@ async function processPayment(amount: number, userId: string) {
 
       const response = await fetch('/api/payments', {
         method: 'POST',
-        body: JSON.stringify({ amount, userId })
+        body: JSON.stringify({ amount, userId }),
       })
 
       if (!response.ok) {
@@ -421,7 +421,6 @@ async function processPayment(amount: number, userId: string) {
 
     logger.info('Payment successful', { amount, userId })
     return result
-
   } catch (error) {
     const breakerState = paymentServiceBreaker.getState()
 
@@ -429,7 +428,7 @@ async function processPayment(amount: number, userId: string) {
       logger.error('Payment service circuit breaker open', error, {
         failures: breakerState.failures,
         userId,
-        amount
+        amount,
       })
 
       // Store failed payment for retry later
@@ -548,6 +547,7 @@ describe('Feature with utilities', () => {
 ---
 
 **See Also**:
+
 - [Utilities Documentation](./README.md)
 - [API Documentation](../API.md)
 - [Performance Guide](performance/performance-summary.md)

@@ -21,7 +21,12 @@ function WelcomeScreen({ navigation }: NativeStackScreenProps<AuthStackParamList
   const insets = useSafeAreaInsets()
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.background, paddingTop: insets.top },
+      ]}
+    >
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <View style={[styles.logo, { backgroundColor: theme.colors.primary }]}>
@@ -47,9 +52,7 @@ function WelcomeScreen({ navigation }: NativeStackScreenProps<AuthStackParamList
           style={[styles.secondaryButton, { backgroundColor: theme.colors.surface }]}
           onPress={() => navigation.navigate('SignIn')}
         >
-          <Text style={[styles.secondaryButtonText, { color: theme.colors.text }]}>
-            Sign In
-          </Text>
+          <Text style={[styles.secondaryButtonText, { color: theme.colors.text }]}>Sign In</Text>
         </Pressable>
       </View>
     </View>
@@ -67,15 +70,18 @@ function SignInScreen({ navigation }: NativeStackScreenProps<AuthStackParamList,
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.background, paddingTop: insets.top },
+      ]}
+    >
       <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={{ color: theme.colors.primary }}>Back</Text>
       </Pressable>
       <View style={styles.content}>
         <Text style={[styles.title, { color: theme.colors.text }]}>Sign In</Text>
-        <Text style={[styles.subtitle, { color: theme.colors.muted }]}>
-          Welcome back
-        </Text>
+        <Text style={[styles.subtitle, { color: theme.colors.muted }]}>Welcome back</Text>
         {/* Form fields would go here */}
       </View>
       <View style={[styles.buttons, { paddingBottom: insets.bottom + 16 }]}>
@@ -87,10 +93,7 @@ function SignInScreen({ navigation }: NativeStackScreenProps<AuthStackParamList,
             Sign In
           </Text>
         </Pressable>
-        <Pressable
-          style={styles.linkButton}
-          onPress={() => navigation.navigate('ForgotPassword')}
-        >
+        <Pressable style={styles.linkButton} onPress={() => navigation.navigate('ForgotPassword')}>
           <Text style={{ color: theme.colors.primary }}>Forgot Password?</Text>
         </Pressable>
       </View>
@@ -103,15 +106,18 @@ function SignUpScreen({ navigation }: NativeStackScreenProps<AuthStackParamList,
   const insets = useSafeAreaInsets()
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.background, paddingTop: insets.top },
+      ]}
+    >
       <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={{ color: theme.colors.primary }}>Back</Text>
       </Pressable>
       <View style={styles.content}>
         <Text style={[styles.title, { color: theme.colors.text }]}>Create Account</Text>
-        <Text style={[styles.subtitle, { color: theme.colors.muted }]}>
-          Join nChat today
-        </Text>
+        <Text style={[styles.subtitle, { color: theme.colors.muted }]}>Join nChat today</Text>
         {/* Form fields would go here */}
       </View>
       <View style={[styles.buttons, { paddingBottom: insets.bottom + 16 }]}>
@@ -128,12 +134,19 @@ function SignUpScreen({ navigation }: NativeStackScreenProps<AuthStackParamList,
   )
 }
 
-function ForgotPasswordScreen({ navigation }: NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>) {
+function ForgotPasswordScreen({
+  navigation,
+}: NativeStackScreenProps<AuthStackParamList, 'ForgotPassword'>) {
   const { theme } = useTheme()
   const insets = useSafeAreaInsets()
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.background, paddingTop: insets.top },
+      ]}
+    >
       <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
         <Text style={{ color: theme.colors.primary }}>Back</Text>
       </Pressable>
@@ -157,13 +170,21 @@ function ForgotPasswordScreen({ navigation }: NativeStackScreenProps<AuthStackPa
   )
 }
 
-function VerifyEmailScreen({ route, navigation }: NativeStackScreenProps<AuthStackParamList, 'VerifyEmail'>) {
+function VerifyEmailScreen({
+  route,
+  navigation,
+}: NativeStackScreenProps<AuthStackParamList, 'VerifyEmail'>) {
   const { theme } = useTheme()
   const insets = useSafeAreaInsets()
   const { email } = route.params
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.background, paddingTop: insets.top },
+      ]}
+    >
       <View style={styles.content}>
         <Text style={[styles.title, { color: theme.colors.text }]}>Verify Email</Text>
         <Text style={[styles.subtitle, { color: theme.colors.muted }]}>

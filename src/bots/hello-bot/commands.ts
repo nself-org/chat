@@ -25,20 +25,13 @@ export const helloCommand: CommandHandler = async (
   if (targetName) {
     // Check if it's a user mention
     if (targetName.startsWith('<@') && targetName.endsWith('>')) {
-      return response()
-        .text(`${greeting} ${targetName}!`)
-        .reply()
-        .build()
+      return response().text(`${greeting} ${targetName}!`).reply().build()
     }
-    return response()
-      .text(`${greeting} ${targetName}!`)
-      .build()
+    return response().text(`${greeting} ${targetName}!`).build()
   }
 
   // Greet the command user
-  return response()
-    .text(`${greeting} ${ctx.user.displayName}!`)
-    .build()
+  return response().text(`${greeting} ${ctx.user.displayName}!`).build()
 }
 
 /**
@@ -62,9 +55,7 @@ export const waveCommand: CommandHandler = async (
     return response().text(message).build()
   }
 
-  return response()
-    .text(`${ctx.user.displayName} waves${waveEmoji}`)
-    .build()
+  return response().text(`${ctx.user.displayName} waves${waveEmoji}`).build()
 }
 
 /**

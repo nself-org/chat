@@ -62,9 +62,7 @@ query GetOnlineUsers($limit: Int = 100) {
 
 # Get online users count
 query GetOnlineUsersCount {
-  nchat_user_presence_aggregate(
-    where: { status: { _in: ["online", "away", "dnd"] } }
-  ) {
+  nchat_user_presence_aggregate(where: { status: { _in: ["online", "away", "dnd"] } }) {
     aggregate {
       count
     }
@@ -76,12 +74,7 @@ query GetUsersWithCustomStatus($limit: Int = 50) {
   nchat_user_presence(
     where: {
       _and: [
-        {
-          _or: [
-            { custom_status: { _is_null: false } }
-            { custom_emoji: { _is_null: false } }
-          ]
-        }
+        { _or: [{ custom_status: { _is_null: false } }, { custom_emoji: { _is_null: false } }] }
         {
           _or: [
             { custom_status_expires_at: { _is_null: true } }

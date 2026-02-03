@@ -63,13 +63,13 @@ import { NChatClient } from '@nchat/sdk'
 
 const client = new NChatClient({
   apiUrl: 'http://localhost:3000',
-  apiKey: 'your-api-key'
+  apiKey: 'your-api-key',
 })
 
 // Authenticate
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 client.setToken(token)
@@ -77,7 +77,7 @@ client.setToken(token)
 // Send a message
 const message = await client.messages.send({
   channelId: 'channel-123',
-  content: 'Hello from the SDK!'
+  content: 'Hello from the SDK!',
 })
 
 console.log('Message sent:', message.id)
@@ -95,17 +95,19 @@ console.log('Message sent:', message.id)
 ✅ **Retry Logic** - Automatic retry with configurable options
 
 **Installation**:
+
 ```bash
 npm install @nchat/sdk
 ```
 
 **Usage**:
+
 ```typescript
 import { NChatClient } from '@nchat/sdk'
 
 const client = new NChatClient({
   apiUrl: 'https://api.nchat.example.com',
-  apiKey: 'your-api-key'
+  apiKey: 'your-api-key',
 })
 ```
 
@@ -121,11 +123,13 @@ const client = new NChatClient({
 ✅ **Deployment** - Deploy to Vercel, Docker, K8s
 
 **Installation**:
+
 ```bash
 npm install -g @nchat/cli
 ```
 
 **Usage**:
+
 ```bash
 # Development
 nchat-cli dev start
@@ -151,11 +155,13 @@ nchat-cli deploy vercel --prod
 ✅ **Rate Limiting** - Rate limit information
 
 **Endpoints**:
+
 - REST: `https://api.nchat.example.com/api`
 - GraphQL: `https://api.nchat.example.com/graphql`
 - WebSocket: `wss://api.nchat.example.com/socket.io`
 
 **Explore APIs**:
+
 - REST Explorer: `/api-docs`
 - GraphQL Playground: `/graphql-playground`
 
@@ -170,6 +176,7 @@ nchat-cli deploy vercel --prod
 ✅ **Code Generation** - Generate code snippets
 
 **Access**:
+
 - http://localhost:3000/api-docs (Swagger UI)
 - http://localhost:3000/graphql-playground (GraphiQL)
 
@@ -178,18 +185,19 @@ nchat-cli deploy vercel --prod
 ### Authentication
 
 #### Using SDK
+
 ```typescript
 // Sign up
 const { user, token } = await client.auth.signUp({
   email: 'newuser@example.com',
   password: 'SecurePassword123!',
-  displayName: 'John Doe'
+  displayName: 'John Doe',
 })
 
 // Sign in
 const { user, token } = await client.auth.signIn({
   email: 'user@example.com',
-  password: 'password123'
+  password: 'password123',
 })
 
 // Set token
@@ -200,6 +208,7 @@ await client.auth.signOut()
 ```
 
 #### Using REST API
+
 ```bash
 # Sign up
 curl -X POST https://api.nchat.example.com/api/auth/signup \
@@ -222,12 +231,13 @@ curl -X POST https://api.nchat.example.com/api/auth/signin \
 ### Managing Channels
 
 #### Using SDK
+
 ```typescript
 // Create channel
 const channel = await client.channels.create({
   name: 'general',
   description: 'General discussion',
-  type: 'public'
+  type: 'public',
 })
 
 // List channels
@@ -238,6 +248,7 @@ await client.channels.join(channel.id)
 ```
 
 #### Using CLI
+
 ```bash
 # Create channel
 nchat-cli channel create --name general --type public
@@ -252,37 +263,34 @@ nchat-cli channel delete channel-123
 ### Sending Messages
 
 #### Using SDK
+
 ```typescript
 // Simple message
 const message = await client.messages.send({
   channelId: 'channel-123',
-  content: 'Hello, world!'
+  content: 'Hello, world!',
 })
 
 // Message with mentions
 await client.messages.send({
   channelId: 'channel-123',
   content: 'Hey @john!',
-  mentions: ['user-456']
+  mentions: ['user-456'],
 })
 
 // Reply in thread
 await client.messages.send({
   channelId: 'channel-123',
   content: 'This is a reply',
-  parentId: 'message-789'
+  parentId: 'message-789',
 })
 ```
 
 #### Using GraphQL
+
 ```graphql
 mutation SendMessage($channelId: uuid!, $content: String!) {
-  insert_nchat_messages_one(
-    object: {
-      channel_id: $channelId
-      content: $content
-    }
-  ) {
+  insert_nchat_messages_one(object: { channel_id: $channelId, content: $content }) {
     id
     content
     created_at
@@ -297,6 +305,7 @@ mutation SendMessage($channelId: uuid!, $content: String!) {
 ### User Management
 
 #### Using SDK
+
 ```typescript
 // Get current user
 const user = await client.users.me()
@@ -307,11 +316,12 @@ const { data: users } = await client.users.search('john')
 // Update profile
 await client.users.update({
   displayName: 'New Name',
-  avatarUrl: 'https://example.com/avatar.jpg'
+  avatarUrl: 'https://example.com/avatar.jpg',
 })
 ```
 
 #### Using CLI
+
 ```bash
 # Create user
 nchat-cli user create \
@@ -427,9 +437,7 @@ Handle pagination correctly:
 
 ```typescript
 // Load all results
-async function* paginateAll<T>(
-  fetcher: (options: ListOptions) => Promise<PaginatedResult<T>>
-) {
+async function* paginateAll<T>(fetcher: (options: ListOptions) => Promise<PaginatedResult<T>>) {
   let offset = 0
   const limit = 50
 
@@ -453,10 +461,7 @@ for await (const message of paginateAll((opts) => client.messages.list('channel-
 Respect rate limits:
 
 ```typescript
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3
-): Promise<T> {
+async function withRetry<T>(operation: () => Promise<T>, maxRetries = 3): Promise<T> {
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await operation()

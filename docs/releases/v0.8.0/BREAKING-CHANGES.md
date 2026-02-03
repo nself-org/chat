@@ -31,11 +31,13 @@ Your existing nChat deployment will work without any modifications:
 v0.8.0 adds new platforms and features without modifying existing ones:
 
 **New Platforms:**
+
 - iOS app (new)
 - Android app (new)
 - Desktop apps (new)
 
 **New Features:**
+
 - Offline mode (optional)
 - Background sync (optional)
 - Mobile-specific APIs (new)
@@ -46,17 +48,17 @@ v0.8.0 adds new platforms and features without modifying existing ones:
 
 ## Compatibility Matrix
 
-| Component | v0.7.0 | v0.8.0 | Compatible |
-|-----------|--------|--------|------------|
-| Web App | ✅ | ✅ | ✅ Yes |
-| API | ✅ | ✅ | ✅ Yes |
-| Database | ✅ | ✅ | ✅ Yes |
-| Config | ✅ | ✅ | ✅ Yes |
-| Auth | ✅ | ✅ | ✅ Yes |
-| Integrations | ✅ | ✅ | ✅ Yes |
-| iOS App | ❌ | ✅ | N/A New |
-| Android App | ❌ | ✅ | N/A New |
-| Desktop Apps | ❌ | ✅ | N/A New |
+| Component    | v0.7.0 | v0.8.0 | Compatible |
+| ------------ | ------ | ------ | ---------- |
+| Web App      | ✅     | ✅     | ✅ Yes     |
+| API          | ✅     | ✅     | ✅ Yes     |
+| Database     | ✅     | ✅     | ✅ Yes     |
+| Config       | ✅     | ✅     | ✅ Yes     |
+| Auth         | ✅     | ✅     | ✅ Yes     |
+| Integrations | ✅     | ✅     | ✅ Yes     |
+| iOS App      | ❌     | ✅     | N/A New    |
+| Android App  | ❌     | ✅     | N/A New    |
+| Desktop Apps | ❌     | ✅     | N/A New    |
 
 ---
 
@@ -88,6 +90,7 @@ If you need to rollback for any reason:
 **None.** No features have been deprecated in v0.8.0.
 
 All v0.7.0 features remain fully supported:
+
 - ✅ Web chat interface
 - ✅ Channel management
 - ✅ Direct messages
@@ -388,6 +391,7 @@ If you believe you've found a breaking change:
 ### What Changed
 
 **Added:**
+
 - iOS app (new platform)
 - Android app (new platform)
 - Desktop apps (new platforms)
@@ -398,20 +402,23 @@ If you believe you've found a breaking change:
 - Mobile docs (new documentation)
 
 **Modified:**
+
 - Nothing (all changes are additive)
 
 **Removed:**
+
 - Nothing (no features removed)
 
 **Deprecated:**
+
 - Nothing (no features deprecated)
 
 ### Version Compatibility
 
-| Version | Compatible with v0.8.0 |
-|---------|------------------------|
-| v0.7.0  | ✅ Yes (100%) |
-| v0.6.0  | ✅ Yes (via v0.7.0) |
+| Version | Compatible with v0.8.0     |
+| ------- | -------------------------- |
+| v0.7.0  | ✅ Yes (100%)              |
+| v0.6.0  | ✅ Yes (via v0.7.0)        |
 | v0.5.0  | ⚠️ Upgrade to v0.7.0 first |
 | <v0.5.0 | ⚠️ Upgrade to v0.7.0 first |
 

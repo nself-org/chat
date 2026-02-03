@@ -18,7 +18,7 @@ export class InstagramClient implements SocialAPIClient {
       clientId: process.env.INSTAGRAM_APP_ID || '',
       clientSecret: process.env.INSTAGRAM_APP_SECRET || '',
       redirectUri: process.env.NEXT_PUBLIC_APP_URL + '/api/social/instagram/callback' || '',
-      scopes: ['instagram_basic', 'instagram_content_publish', 'pages_read_engagement']
+      scopes: ['instagram_basic', 'instagram_content_publish', 'pages_read_engagement'],
     }
 
     if (!this.config.clientId || !this.config.clientSecret) {
@@ -35,7 +35,7 @@ export class InstagramClient implements SocialAPIClient {
       redirect_uri: this.config.redirectUri,
       scope: this.config.scopes.join(','),
       response_type: 'code',
-      state
+      state,
     })
 
     return `${FACEBOOK_AUTH_BASE}?${params.toString()}`
@@ -44,13 +44,15 @@ export class InstagramClient implements SocialAPIClient {
   /**
    * Exchange authorization code for access token
    */
-  async authenticate(code: string): Promise<{ accessToken: string; refreshToken?: string; expiresAt?: Date }> {
+  async authenticate(
+    code: string
+  ): Promise<{ accessToken: string; refreshToken?: string; expiresAt?: Date }> {
     const params = new URLSearchParams({
       client_id: this.config.clientId,
       client_secret: this.config.clientSecret,
       grant_type: 'authorization_code',
       redirect_uri: this.config.redirectUri,
-      code
+      code,
     })
 
     const response = await fetch(`${FACEBOOK_GRAPH_BASE}/oauth/access_token?${params.toString()}`)
@@ -71,12 +73,14 @@ export class InstagramClient implements SocialAPIClient {
   /**
    * Exchange short-lived token for long-lived token (60 days)
    */
-  private async exchangeForLongLivedToken(shortToken: string): Promise<{ accessToken: string; expiresAt?: Date }> {
+  private async exchangeForLongLivedToken(
+    shortToken: string
+  ): Promise<{ accessToken: string; expiresAt?: Date }> {
     const params = new URLSearchParams({
       grant_type: 'fb_exchange_token',
       client_id: this.config.clientId,
       client_secret: this.config.clientSecret,
-      fb_exchange_token: shortToken
+      fb_exchange_token: shortToken,
     })
 
     const response = await fetch(`${FACEBOOK_GRAPH_BASE}/oauth/access_token?${params.toString()}`)
@@ -89,7 +93,7 @@ export class InstagramClient implements SocialAPIClient {
 
     return {
       accessToken: data.access_token,
-      expiresAt: data.expires_in ? new Date(Date.now() + data.expires_in * 1000) : undefined
+      expiresAt: data.expires_in ? new Date(Date.now() + data.expires_in * 1000) : undefined,
     }
   }
 
@@ -99,10 +103,12 @@ export class InstagramClient implements SocialAPIClient {
   async refreshToken(accessToken: string): Promise<{ accessToken: string; expiresAt?: Date }> {
     const params = new URLSearchParams({
       grant_type: 'ig_refresh_token',
-      access_token: accessToken
+      access_token: accessToken,
     })
 
-    const response = await fetch(`${INSTAGRAM_GRAPH_BASE}/refresh_access_token?${params.toString()}`)
+    const response = await fetch(
+      `${INSTAGRAM_GRAPH_BASE}/refresh_access_token?${params.toString()}`
+    )
 
     if (!response.ok) {
       throw new Error('Instagram token refresh failed')
@@ -112,14 +118,16 @@ export class InstagramClient implements SocialAPIClient {
 
     return {
       accessToken: data.access_token,
-      expiresAt: data.expires_in ? new Date(Date.now() + data.expires_in * 1000) : undefined
+      expiresAt: data.expires_in ? new Date(Date.now() + data.expires_in * 1000) : undefined,
     }
   }
 
   /**
    * Get Instagram Business Account info
    */
-  async getAccountInfo(accessToken: string): Promise<{ id: string; name: string; handle?: string; avatarUrl?: string }> {
+  async getAccountInfo(
+    accessToken: string
+  ): Promise<{ id: string; name: string; handle?: string; avatarUrl?: string }> {
     // First, get the Facebook Page ID
     const pageResponse = await fetch(
       `${FACEBOOK_GRAPH_BASE}/me/accounts?access_token=${accessToken}`
@@ -167,14 +175,18 @@ export class InstagramClient implements SocialAPIClient {
       id: accountData.id,
       name: accountData.name || accountData.username,
       handle: accountData.username,
-      avatarUrl: accountData.profile_picture_url
+      avatarUrl: accountData.profile_picture_url,
     }
   }
 
   /**
    * Get recent Instagram posts
    */
-  async getRecentPosts(accessToken: string, accountId: string, since?: string): Promise<SocialPost[]> {
+  async getRecentPosts(
+    accessToken: string,
+    accountId: string,
+    since?: string
+  ): Promise<SocialPost[]> {
     const fields = [
       'id',
       'caption',
@@ -185,7 +197,7 @@ export class InstagramClient implements SocialAPIClient {
       'username',
       'like_count',
       'comments_count',
-      'children{media_type,media_url}'
+      'children{media_type,media_url}',
     ].join(',')
 
     let url = `${FACEBOOK_GRAPH_BASE}/${accountId}/media?fields=${fields}&access_token=${accessToken}&limit=100`
@@ -243,11 +255,11 @@ export class InstagramClient implements SocialAPIClient {
         mentions: mentions.length > 0 ? mentions : undefined,
         engagement: {
           likes: post.like_count,
-          comments: post.comments_count
+          comments: post.comments_count,
         },
         posted_at: post.timestamp,
         imported_at: new Date().toISOString(),
-        was_posted_to_channel: false
+        was_posted_to_channel: false,
       }
     })
   }

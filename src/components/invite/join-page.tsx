@@ -56,7 +56,10 @@ export interface JoinPageProps {
 // Error Messages
 // ============================================================================
 
-const ERROR_MESSAGES: Record<InviteValidationError | 'unknown', { title: string; description: string }> = {
+const ERROR_MESSAGES: Record<
+  InviteValidationError | 'unknown',
+  { title: string; description: string }
+> = {
   invalid_code: {
     title: 'Invalid Invite',
     description: 'This invite link appears to be invalid or malformed.',
@@ -101,11 +104,11 @@ const ERROR_MESSAGES: Record<InviteValidationError | 'unknown', { title: string;
 
 function LoadingState() {
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
-        <Skeleton className="h-16 w-16 rounded-full mx-auto mb-4" />
-        <Skeleton className="h-6 w-48 mx-auto mb-2" />
-        <Skeleton className="h-4 w-64 mx-auto" />
+        <Skeleton className="mx-auto mb-4 h-16 w-16 rounded-full" />
+        <Skeleton className="mx-auto mb-2 h-6 w-48" />
+        <Skeleton className="mx-auto h-4 w-64" />
       </CardHeader>
       <CardContent className="space-y-4">
         <Skeleton className="h-20 w-full rounded-xl" />
@@ -134,9 +137,9 @@ function ErrorState({ error, showHomeButton = true }: ErrorStateProps) {
   const { title, description } = ERROR_MESSAGES[error]
 
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
-        <div className="p-4 rounded-full bg-destructive/10 w-fit mx-auto mb-4">
+        <div className="bg-destructive/10 mx-auto mb-4 w-fit rounded-full p-4">
           <AlertCircle className="h-8 w-8 text-destructive" />
         </div>
         <h2 className="text-xl font-semibold">{title}</h2>
@@ -146,7 +149,7 @@ function ErrorState({ error, showHomeButton = true }: ErrorStateProps) {
         <CardFooter className="flex justify-center">
           <Button asChild variant="outline">
             <Link href="/">
-              <Home className="h-4 w-4 mr-2" />
+              <Home className="mr-2 h-4 w-4" />
               Go Home
             </Link>
           </Button>
@@ -167,9 +170,9 @@ interface SuccessStateProps {
 
 function SuccessState({ invite, onContinue }: SuccessStateProps) {
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
-        <div className="p-4 rounded-full bg-green-500/10 w-fit mx-auto mb-4">
+        <div className="mx-auto mb-4 w-fit rounded-full bg-green-500/10 p-4">
           <CheckCircle className="h-8 w-8 text-green-600" />
         </div>
         <h2 className="text-xl font-semibold">Welcome!</h2>
@@ -185,7 +188,7 @@ function SuccessState({ invite, onContinue }: SuccessStateProps) {
       <CardFooter>
         <Button className="w-full" onClick={onContinue}>
           Continue to Chat
-          <ArrowRight className="h-4 w-4 ml-2" />
+          <ArrowRight className="ml-2 h-4 w-4" />
         </Button>
       </CardFooter>
     </Card>
@@ -203,38 +206,32 @@ interface AuthRequiredProps {
 
 function AuthRequiredState({ code, invite }: AuthRequiredProps) {
   return (
-    <Card className="w-full max-w-md mx-auto">
+    <Card className="mx-auto w-full max-w-md">
       <CardHeader className="text-center">
-        <div className="p-4 rounded-full bg-primary/10 w-fit mx-auto mb-4">
+        <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-4">
           {invite.channelIsPrivate ? (
             <Lock className="h-8 w-8 text-primary" />
           ) : (
             <Hash className="h-8 w-8 text-primary" />
           )}
         </div>
-        <h2 className="text-xl font-semibold">
-          Join {invite.channelName || 'Channel'}
-        </h2>
-        <p className="text-muted-foreground">
-          Sign in or create an account to accept this invite
-        </p>
+        <h2 className="text-xl font-semibold">Join {invite.channelName || 'Channel'}</h2>
+        <p className="text-muted-foreground">Sign in or create an account to accept this invite</p>
       </CardHeader>
 
       <CardContent className="space-y-4">
         {/* Invite Info */}
-        <div className="rounded-xl bg-muted/50 p-4 space-y-3">
-          {invite.channelDescription && (
-            <p className="text-sm">{invite.channelDescription}</p>
-          )}
+        <div className="bg-muted/50 space-y-3 rounded-xl p-4">
+          {invite.channelDescription && <p className="text-sm">{invite.channelDescription}</p>}
           <div className="flex flex-wrap gap-2">
             <Badge variant="secondary">
-              <Users className="h-3 w-3 mr-1" />
+              <Users className="mr-1 h-3 w-3" />
               {invite.channelMembersCount} member
               {invite.channelMembersCount !== 1 ? 's' : ''}
             </Badge>
             {invite.channelIsPrivate && (
               <Badge variant="secondary">
-                <Lock className="h-3 w-3 mr-1" />
+                <Lock className="mr-1 h-3 w-3" />
                 Private
               </Badge>
             )}
@@ -258,13 +255,13 @@ function AuthRequiredState({ code, invite }: AuthRequiredProps) {
       <CardFooter className="flex-col gap-2">
         <Button asChild className="w-full">
           <Link href={`/auth/signin?redirect=/invite/${code}`}>
-            <LogIn className="h-4 w-4 mr-2" />
+            <LogIn className="mr-2 h-4 w-4" />
             Sign In
           </Link>
         </Button>
         <Button asChild variant="outline" className="w-full">
           <Link href={`/auth/signup?redirect=/invite/${code}`}>
-            <UserPlus className="h-4 w-4 mr-2" />
+            <UserPlus className="mr-2 h-4 w-4" />
             Create Account
           </Link>
         </Button>
@@ -282,14 +279,8 @@ export function JoinPage({ code, className }: JoinPageProps) {
   const { user, loading: authLoading } = useAuth()
   const { config } = useAppConfig()
 
-  const {
-    fetchInvite,
-    acceptInvite,
-    invitePreview,
-    isAccepting,
-    acceptError,
-    acceptSuccess,
-  } = useInvite()
+  const { fetchInvite, acceptInvite, invitePreview, isAccepting, acceptError, acceptSuccess } =
+    useInvite()
 
   const [hasAttemptedFetch, setHasAttemptedFetch] = useState(false)
 
@@ -324,12 +315,10 @@ export function JoinPage({ code, className }: JoinPageProps) {
   const error = invitePreview?.error || (acceptError ? 'unknown' : null)
 
   // Calculate metadata
-  const expiresIn = invite?.expiresAt
-    ? formatTimeUntilExpiry(invite.expiresAt)
-    : null
+  const expiresIn = invite?.expiresAt ? formatTimeUntilExpiry(invite.expiresAt) : null
 
   return (
-    <div className={cn('min-h-screen flex flex-col', className)}>
+    <div className={cn('flex min-h-screen flex-col', className)}>
       {/* Header */}
       <header className="border-b py-4">
         <div className="container flex items-center justify-between">
@@ -341,9 +330,7 @@ export function JoinPage({ code, className }: JoinPageProps) {
                 className="h-8"
               />
             ) : (
-              <span className="font-bold text-xl">
-                {config?.branding?.appName || 'nchat'}
-              </span>
+              <span className="text-xl font-bold">{config?.branding?.appName || 'nchat'}</span>
             )}
           </Link>
           {!user && !authLoading && (
@@ -355,7 +342,7 @@ export function JoinPage({ code, className }: JoinPageProps) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center p-4">
+      <main className="flex flex-1 items-center justify-center p-4">
         {/* Loading State */}
         {isLoading && <LoadingState />}
 
@@ -374,9 +361,9 @@ export function JoinPage({ code, className }: JoinPageProps) {
 
         {/* Invite Preview (logged in, ready to accept) */}
         {!isLoading && !error && !acceptSuccess && invite && user && (
-          <Card className="w-full max-w-md mx-auto">
+          <Card className="mx-auto w-full max-w-md">
             <CardHeader className="text-center">
-              <div className="p-4 rounded-full bg-primary/10 w-fit mx-auto mb-4">
+              <div className="bg-primary/10 mx-auto mb-4 w-fit rounded-full p-4">
                 {invite.type === 'workspace' ? (
                   <Globe className="h-8 w-8 text-primary" />
                 ) : invite.channelIsPrivate ? (
@@ -390,34 +377,32 @@ export function JoinPage({ code, className }: JoinPageProps) {
                   ? 'Join Workspace'
                   : `Join ${invite.channelName || 'Channel'}`}
               </h2>
-              <p className="text-muted-foreground">
-                {invite.creatorName} has invited you to join
-              </p>
+              <p className="text-muted-foreground">{invite.creatorName} has invited you to join</p>
             </CardHeader>
 
             <CardContent className="space-y-4">
               {/* Channel/Workspace Info */}
-              <div className="rounded-xl bg-muted/50 p-4 space-y-3">
+              <div className="bg-muted/50 space-y-3 rounded-xl p-4">
                 {invite.channelDescription && (
                   <p className="text-sm">{invite.channelDescription}</p>
                 )}
                 <div className="flex flex-wrap gap-2">
                   {invite.type === 'channel' && (
                     <Badge variant="secondary">
-                      <Users className="h-3 w-3 mr-1" />
+                      <Users className="mr-1 h-3 w-3" />
                       {invite.channelMembersCount} member
                       {invite.channelMembersCount !== 1 ? 's' : ''}
                     </Badge>
                   )}
                   {invite.channelIsPrivate && (
                     <Badge variant="secondary">
-                      <Lock className="h-3 w-3 mr-1" />
+                      <Lock className="mr-1 h-3 w-3" />
                       Private
                     </Badge>
                   )}
                   {expiresIn && (
                     <Badge variant="outline">
-                      <Clock className="h-3 w-3 mr-1" />
+                      <Clock className="mr-1 h-3 w-3" />
                       Expires in {expiresIn}
                     </Badge>
                   )}
@@ -433,42 +418,35 @@ export function JoinPage({ code, className }: JoinPageProps) {
                   </AvatarFallback>
                 </Avatar>
                 <span>
-                  Invited by{' '}
-                  <span className="font-medium">{invite.creatorName}</span>
+                  Invited by <span className="font-medium">{invite.creatorName}</span>
                 </span>
               </div>
 
               {/* Accept Error */}
               {acceptError && (
-                <div className="rounded-xl bg-destructive/10 border border-destructive/20 p-3 flex items-start gap-2">
-                  <AlertCircle className="h-5 w-5 text-destructive shrink-0 mt-0.5" />
+                <div className="bg-destructive/10 border-destructive/20 flex items-start gap-2 rounded-xl border p-3">
+                  <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" />
                   <p className="text-sm text-destructive">{acceptError}</p>
                 </div>
               )}
             </CardContent>
 
             <CardFooter className="flex-col gap-2">
-              <Button
-                className="w-full"
-                onClick={handleAccept}
-                disabled={isAccepting}
-              >
+              <Button className="w-full" onClick={handleAccept} disabled={isAccepting}>
                 {isAccepting ? (
                   <>
-                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     Joining...
                   </>
                 ) : (
                   <>
-                    <UserPlus className="h-4 w-4 mr-2" />
+                    <UserPlus className="mr-2 h-4 w-4" />
                     Accept Invite
                   </>
                 )}
               </Button>
               <Button asChild variant="ghost" className="w-full">
-                <Link href="/chat">
-                  Maybe Later
-                </Link>
+                <Link href="/chat">Maybe Later</Link>
               </Button>
             </CardFooter>
           </Card>
@@ -478,8 +456,7 @@ export function JoinPage({ code, className }: JoinPageProps) {
       {/* Footer */}
       <footer className="border-t py-4">
         <div className="container text-center text-sm text-muted-foreground">
-          {config?.branding?.companyName || 'nself'} &copy;{' '}
-          {new Date().getFullYear()}
+          {config?.branding?.companyName || 'nself'} &copy; {new Date().getFullYear()}
         </div>
       </footer>
     </div>

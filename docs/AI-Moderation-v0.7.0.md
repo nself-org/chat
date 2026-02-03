@@ -9,6 +9,7 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 ### Core Components
 
 #### 1. AI Moderator Core (`src/lib/moderation/ai-moderator.ts`)
+
 - **Multi-model approach** combining multiple AI detectors
 - **Confidence scoring** based on model agreement
 - **Auto-action decision logic** with configurable thresholds
@@ -16,6 +17,7 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 - **User violation tracking** with trust scoring
 
 **Key Features:**
+
 - Content analysis with detailed issue detection
 - Configurable moderation policies
 - User behavior history tracking
@@ -23,6 +25,7 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 - Automated action recommendations
 
 #### 2. Toxicity Detector (`src/lib/moderation/toxicity-detector.ts`)
+
 - **Google Perspective API integration**
 - Detects: toxicity, severe toxicity, insults, profanity, threats, identity attacks
 - **Fallback detection** using rule-based patterns
@@ -30,6 +33,7 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 - Configurable thresholds for each category
 
 **Detection Categories:**
+
 - Toxicity (general harmful content)
 - Severe Toxicity (extreme harmful content)
 - Insult (personal attacks)
@@ -39,12 +43,14 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 - Sexually Explicit (adult content)
 
 #### 3. ML Spam Detector (`src/lib/moderation/spam-detector-ml.ts`)
+
 - **Pattern-based detection** with ML-inspired heuristics
 - **User behavior analysis** (message rate, duplicates)
 - **Link spam detection** with domain whitelisting
 - **Promotional content detection**
 
 **Spam Types Detected:**
+
 - Link spam (excessive URLs)
 - Promotional content (marketing, sales)
 - Repetitive content (flooding)
@@ -54,6 +60,7 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 - High message frequency
 
 #### 4. Content Classifier (`src/lib/moderation/content-classifier.ts`)
+
 - **Category detection** (technical, business, social, etc.)
 - **Language detection** (10+ languages)
 - **Sentiment analysis** (positive/negative/neutral)
@@ -61,12 +68,14 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 - **Topic extraction** (hashtags, keywords)
 
 **Categories:**
+
 - General, Technical, Business, Social
 - Support, Announcement, Question
 - Feedback, Complaint, Praise
 - Warning categories (inappropriate, harassment, spam)
 
 #### 5. Moderation Actions (`src/lib/moderation/actions.ts`)
+
 - **Comprehensive action types** (flag, hide, delete, warn, mute, ban)
 - **Bulk operations** for efficient moderation
 - **Action audit trail** with reversibility tracking
@@ -74,6 +83,7 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 - **User warning system**
 
 **Available Actions:**
+
 - Flag: Mark for manual review
 - Hide: Hide content from users
 - Delete: Permanently remove content
@@ -88,11 +98,13 @@ The v0.7.0 release introduces a comprehensive AI-powered auto-moderation system 
 ### API Routes
 
 #### `/api/moderation/analyze` (POST, GET, PUT)
+
 - **POST**: Analyze content with AI moderation
 - **GET**: Get current moderation policy
 - **PUT**: Update moderation policy
 
 Request Example:
+
 ```json
 {
   "contentId": "msg_123",
@@ -108,6 +120,7 @@ Request Example:
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -135,9 +148,11 @@ Response:
 ```
 
 #### `/api/moderation/batch` (POST)
+
 Process multiple content items in parallel
 
 Request:
+
 ```json
 {
   "items": [
@@ -157,6 +172,7 @@ Request:
 ```
 
 Response:
+
 ```json
 {
   "success": true,
@@ -174,10 +190,12 @@ Response:
 ```
 
 #### `/api/moderation/actions` (POST, GET)
+
 - **POST**: Take moderation action (single or bulk)
 - **GET**: Get action audit log
 
 Single Action:
+
 ```json
 {
   "action": "mute",
@@ -191,6 +209,7 @@ Single Action:
 ```
 
 Bulk Action:
+
 ```json
 {
   "action": "hide",
@@ -212,17 +231,21 @@ Bulk Action:
 ```
 
 #### `/api/moderation/queue` (GET, POST)
+
 Manage moderation queue
 
 #### `/api/moderation/stats` (GET)
+
 Get analytics and statistics
 
 Query Parameters:
+
 - `period`: 1d, 7d, 30d, 90d, all
 - `startDate`: Custom start date
 - `endDate`: Custom end date
 
 Response:
+
 ```json
 {
   "success": true,
@@ -245,6 +268,7 @@ Response:
 ### UI Components
 
 #### ModerationDashboard
+
 - **Location**: `src/components/admin/moderation/ModerationDashboard.tsx`
 - Real-time analytics with charts
 - Key metrics display
@@ -253,6 +277,7 @@ Response:
 - Automation effectiveness metrics
 
 **Features:**
+
 - Period selection (24h, 7d, 30d, 90d)
 - Queue status distribution (pie chart)
 - Priority distribution (bar chart)
@@ -260,6 +285,7 @@ Response:
 - AI moderation performance metrics
 
 #### ModerationQueue
+
 - **Location**: `src/components/admin/moderation/ModerationQueue.tsx`
 - Displays flagged content for review
 - Filterable by status and priority
@@ -267,17 +293,20 @@ Response:
 - Detailed item analysis
 
 **Filters:**
+
 - Pending items
 - High priority items
 - All items
 
 **Actions per item:**
+
 - Approve
 - Delete
 - Warn User
 - Hide
 
 **Displayed Information:**
+
 - Priority level (low, medium, high, critical)
 - Status (pending, reviewing, approved, rejected)
 - Content type
@@ -288,6 +317,7 @@ Response:
 - Confidence score
 
 #### ModerationSettings
+
 - **Location**: `src/components/admin/moderation/ModerationSettings.tsx`
 - Configure AI detection features
 - Adjust thresholds
@@ -295,6 +325,7 @@ Response:
 - Manage custom word lists
 
 **Settings Tabs:**
+
 1. **Detection**: Enable/disable AI features
 2. **Thresholds**: Adjust sensitivity (0-100%)
 3. **Auto Actions**: Configure automated responses
@@ -305,6 +336,7 @@ Response:
 #### Tables
 
 **nchat_moderation_queue**
+
 ```sql
 CREATE TABLE nchat_moderation_queue (
   id UUID PRIMARY KEY,
@@ -340,6 +372,7 @@ CREATE TABLE nchat_moderation_queue (
 ```
 
 **nchat_moderation_actions**
+
 ```sql
 CREATE TABLE nchat_moderation_actions (
   id UUID PRIMARY KEY,
@@ -364,6 +397,7 @@ CREATE TABLE nchat_moderation_actions (
 ```
 
 **nchat_user_moderation_history**
+
 ```sql
 CREATE TABLE nchat_user_moderation_history (
   user_id UUID PRIMARY KEY,
@@ -388,6 +422,7 @@ CREATE TABLE nchat_user_moderation_history (
 ```
 
 **nchat_user_warnings**
+
 ```sql
 CREATE TABLE nchat_user_warnings (
   id UUID PRIMARY KEY,
@@ -419,15 +454,15 @@ interface ModerationPolicy {
 
   // Thresholds
   thresholds: {
-    toxicity: number          // 0-1, default: 0.7
-    nsfw: number             // 0-1, default: 0.7
-    spam: number             // 0-1, default: 0.6
-    profanity: number        // 0-1, default: 0.5
-    flagThreshold: number    // 0-1, default: 0.5
-    hideThreshold: number    // 0-1, default: 0.8
-    warnThreshold: number    // 0-1, default: 0.7
-    muteThreshold: number    // 0-1, default: 0.85
-    banThreshold: number     // 0-1, default: 0.95
+    toxicity: number // 0-1, default: 0.7
+    nsfw: number // 0-1, default: 0.7
+    spam: number // 0-1, default: 0.6
+    profanity: number // 0-1, default: 0.5
+    flagThreshold: number // 0-1, default: 0.5
+    hideThreshold: number // 0-1, default: 0.8
+    warnThreshold: number // 0-1, default: 0.7
+    muteThreshold: number // 0-1, default: 0.85
+    banThreshold: number // 0-1, default: 0.95
     maxViolationsPerDay: number
     maxViolationsPerWeek: number
     maxViolationsTotal: number
@@ -465,15 +500,10 @@ import { getAIModerator } from '@/lib/moderation/ai-moderator'
 const moderator = getAIModerator()
 await moderator.initialize()
 
-const analysis = await moderator.analyzeContent(
-  'msg_123',
-  'text',
-  'Message content here',
-  {
-    userId: 'user_456',
-    channelId: 'channel_789',
-  }
-)
+const analysis = await moderator.analyzeContent('msg_123', 'text', 'Message content here', {
+  userId: 'user_456',
+  channelId: 'channel_789',
+})
 
 if (analysis.shouldFlag) {
   // Add to moderation queue
@@ -488,7 +518,7 @@ const response = await fetch('/api/moderation/batch', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    items: messages.map(msg => ({
+    items: messages.map((msg) => ({
       contentId: msg.id,
       contentType: 'text',
       content: msg.content,
@@ -536,6 +566,7 @@ const response = await fetch('/api/moderation/actions', {
 ## Roadmap
 
 ### v0.8.0 Enhancements
+
 - [ ] Advanced ML models (BERT, GPT-based)
 - [ ] Image NSFW detection (NSFW.js integration)
 - [ ] Video content moderation
@@ -546,6 +577,7 @@ const response = await fetch('/api/moderation/actions', {
 - [ ] Advanced analytics (ROC curves, precision/recall)
 
 ### Future Features
+
 - [ ] Federated moderation (cross-server)
 - [ ] Community moderation voting
 - [ ] AI training dashboard
@@ -560,6 +592,7 @@ MIT License - See LICENSE file for details
 ## Support
 
 For issues, questions, or feature requests:
+
 - GitHub Issues: [nself-chat/issues](https://github.com/nself/nself-chat/issues)
 - Documentation: [docs/](../docs/)
 - Community: [Discord](https://discord.gg/nself)

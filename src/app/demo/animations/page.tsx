@@ -50,7 +50,7 @@ function AnimationsDemoContent() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl font-bold mb-2">Animation Showcase</h1>
+            <h1 className="mb-2 text-4xl font-bold">Animation Showcase</h1>
             <p className="text-muted-foreground">
               Interactive demonstration of all animation variants in nself-chat
             </p>
@@ -58,20 +58,16 @@ function AnimationsDemoContent() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 space-y-8">
+      <div className="container mx-auto space-y-8 px-4 py-8">
         {/* Messages */}
         <ScrollReveal>
           <Card>
             <CardHeader>
               <CardTitle>Message Animations</CardTitle>
-              <CardDescription>
-                Slide in with fade effect - used for new messages
-              </CardDescription>
+              <CardDescription>Slide in with fade effect - used for new messages</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button onClick={() => setMessageCount(messageCount + 1)}>
-                Add Message
-              </Button>
+              <Button onClick={() => setMessageCount(messageCount + 1)}>Add Message</Button>
 
               <motion.div variants={staggerContainer} initial="initial" animate="animate">
                 <AnimatePresence mode="popLayout">
@@ -80,9 +76,9 @@ function AnimationsDemoContent() {
                       key={i}
                       variants={messageEntry}
                       layout
-                      className="flex items-start gap-3 p-4 rounded-lg bg-muted/50 mb-2"
+                      className="bg-muted/50 mb-2 flex items-start gap-3 rounded-lg p-4"
                     >
-                      <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center">
+                      <div className="bg-primary/20 flex h-10 w-10 items-center justify-center rounded-full">
                         {i + 1}
                       </div>
                       <div className="flex-1">
@@ -104,9 +100,7 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Reaction Animations</CardTitle>
-              <CardDescription>
-                Burst effect for emoji reactions
-              </CardDescription>
+              <CardDescription>Burst effect for emoji reactions</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2">
@@ -115,7 +109,7 @@ function AnimationsDemoContent() {
                   initial="initial"
                   whileHover="hover"
                   whileTap="tap"
-                  className="flex items-center gap-1 rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-sm"
+                  className="border-primary/50 bg-primary/10 flex items-center gap-1 rounded-full border px-3 py-1 text-sm"
                 >
                   <ThumbsUp className="h-4 w-4" />
                   <span>12</span>
@@ -152,16 +146,22 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Button Animations</CardTitle>
-              <CardDescription>
-                Tactile press feedback with scale
-              </CardDescription>
+              <CardDescription>Tactile press feedback with scale</CardDescription>
             </CardHeader>
             <CardContent className="flex flex-wrap gap-3">
               <Button animated>Primary</Button>
-              <Button animated variant="secondary">Secondary</Button>
-              <Button animated variant="outline">Outline</Button>
-              <Button animated variant="destructive">Destructive</Button>
-              <Button animated variant="ghost">Ghost</Button>
+              <Button animated variant="secondary">
+                Secondary
+              </Button>
+              <Button animated variant="outline">
+                Outline
+              </Button>
+              <Button animated variant="destructive">
+                Destructive
+              </Button>
+              <Button animated variant="ghost">
+                Ghost
+              </Button>
             </CardContent>
           </Card>
         </FadeInOnScroll>
@@ -171,9 +171,7 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Form Validation Animations</CardTitle>
-              <CardDescription>
-                Shake on error, checkmark on success
-              </CardDescription>
+              <CardDescription>Shake on error, checkmark on success</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex gap-2">
@@ -222,14 +220,10 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Modal Animations</CardTitle>
-              <CardDescription>
-                Overlay fade with content scale
-              </CardDescription>
+              <CardDescription>Overlay fade with content scale</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={() => setShowModal(true)}>
-                Open Modal
-              </Button>
+              <Button onClick={() => setShowModal(true)}>Open Modal</Button>
 
               <AnimatePresence>
                 {showModal && (
@@ -249,13 +243,11 @@ function AnimationsDemoContent() {
                       exit="exit"
                       className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg border bg-background p-6 shadow-lg"
                     >
-                      <h2 className="text-xl font-semibold mb-2">Modal Title</h2>
-                      <p className="text-muted-foreground mb-4">
+                      <h2 className="mb-2 text-xl font-semibold">Modal Title</h2>
+                      <p className="mb-4 text-muted-foreground">
                         This modal demonstrates smooth entry and exit animations.
                       </p>
-                      <Button onClick={() => setShowModal(false)}>
-                        Close
-                      </Button>
+                      <Button onClick={() => setShowModal(false)}>Close</Button>
                     </motion.div>
                   </>
                 )}
@@ -269,15 +261,15 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Toast Animations</CardTitle>
-              <CardDescription>
-                Slide from top notification
-              </CardDescription>
+              <CardDescription>Slide from top notification</CardDescription>
             </CardHeader>
             <CardContent>
-              <Button onClick={() => {
-                setShowToast(true)
-                setTimeout(() => setShowToast(false), 3000)
-              }}>
+              <Button
+                onClick={() => {
+                  setShowToast(true)
+                  setTimeout(() => setShowToast(false), 3000)
+                }}
+              >
                 Show Toast
               </Button>
 
@@ -288,7 +280,7 @@ function AnimationsDemoContent() {
                     initial="initial"
                     animate="animate"
                     exit="exit"
-                    className="fixed top-4 right-4 z-50 rounded-lg border bg-background p-4 shadow-lg"
+                    className="fixed right-4 top-4 z-50 rounded-lg border bg-background p-4 shadow-lg"
                   >
                     <div className="flex items-center gap-2">
                       <CheckCircle2 className="h-5 w-5 text-green-500" />
@@ -311,16 +303,12 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Badge Animations</CardTitle>
-              <CardDescription>
-                Bounce effect for notifications
-              </CardDescription>
+              <CardDescription>Bounce effect for notifications</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex gap-4">
                 <div className="relative">
-                  <Button variant="outline">
-                    Messages
-                  </Button>
+                  <Button variant="outline">Messages</Button>
                   <motion.div
                     variants={badgeBounce}
                     initial="initial"
@@ -332,9 +320,7 @@ function AnimationsDemoContent() {
                 </div>
 
                 <div className="relative">
-                  <Button variant="outline">
-                    Notifications
-                  </Button>
+                  <Button variant="outline">Notifications</Button>
                   <motion.div
                     variants={badgeBounce}
                     initial="initial"
@@ -354,9 +340,7 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Loading Skeletons</CardTitle>
-              <CardDescription>
-                Animated placeholders while loading
-              </CardDescription>
+              <CardDescription>Animated placeholders while loading</CardDescription>
             </CardHeader>
             <CardContent>
               <MessageListSkeleton count={5} />
@@ -369,21 +353,19 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Pull to Refresh (Mobile)</CardTitle>
-              <CardDescription>
-                Drag down to refresh content
-              </CardDescription>
+              <CardDescription>Drag down to refresh content</CardDescription>
             </CardHeader>
             <CardContent>
               <PullToRefresh onRefresh={handleRefresh}>
-                <div className="h-64 overflow-auto border rounded-lg p-4">
+                <div className="h-64 overflow-auto rounded-lg border p-4">
                   {refreshing ? (
-                    <div className="flex items-center justify-center h-full">
+                    <div className="flex h-full items-center justify-center">
                       <Loader2 className="h-8 w-8 animate-spin text-primary" />
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {Array.from({ length: 10 }).map((_, i) => (
-                        <div key={i} className="p-4 bg-muted rounded">
+                        <div key={i} className="rounded bg-muted p-4">
                           Item {i + 1}
                         </div>
                       ))}
@@ -400,18 +382,14 @@ function AnimationsDemoContent() {
           <Card>
             <CardHeader>
               <CardTitle>Staggered Scroll Reveal</CardTitle>
-              <CardDescription>
-                Items reveal sequentially as you scroll
-              </CardDescription>
+              <CardDescription>Items reveal sequentially as you scroll</CardDescription>
             </CardHeader>
             <CardContent className="grid gap-4 md:grid-cols-3">
               <Card>
                 <CardContent className="pt-6">
                   <div className="text-4xl font-bold text-primary">1</div>
                   <div className="mt-2 font-semibold">First Item</div>
-                  <div className="text-sm text-muted-foreground">
-                    This appears first
-                  </div>
+                  <div className="text-sm text-muted-foreground">This appears first</div>
                 </CardContent>
               </Card>
 
@@ -419,9 +397,7 @@ function AnimationsDemoContent() {
                 <CardContent className="pt-6">
                   <div className="text-4xl font-bold text-primary">2</div>
                   <div className="mt-2 font-semibold">Second Item</div>
-                  <div className="text-sm text-muted-foreground">
-                    This appears second
-                  </div>
+                  <div className="text-sm text-muted-foreground">This appears second</div>
                 </CardContent>
               </Card>
 
@@ -429,9 +405,7 @@ function AnimationsDemoContent() {
                 <CardContent className="pt-6">
                   <div className="text-4xl font-bold text-primary">3</div>
                   <div className="mt-2 font-semibold">Third Item</div>
-                  <div className="text-sm text-muted-foreground">
-                    This appears third
-                  </div>
+                  <div className="text-sm text-muted-foreground">This appears third</div>
                 </CardContent>
               </Card>
             </CardContent>
@@ -444,11 +418,13 @@ function AnimationsDemoContent() {
 
 export default function AnimationsDemo() {
   return (
-    <Suspense fallback={
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      }
+    >
       <AnimationsDemoContent />
     </Suspense>
   )

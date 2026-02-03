@@ -26,6 +26,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from 'recharts'
+import { logger } from '@/lib/logger'
 import {
   Activity,
   DollarSign,
@@ -139,7 +140,7 @@ export default function AIUsageDashboard() {
         })
       }
     } catch (error) {
-      console.error('Error fetching AI usage data:', error)
+      logger.error('Error fetching AI usage data:',  error)
     } finally {
       setLoading(false)
     }
@@ -179,7 +180,7 @@ export default function AIUsageDashboard() {
 
   if (loading && !usageData) {
     return (
-      <div className="flex items-center justify-center h-96">
+      <div className="flex h-96 items-center justify-center">
         <RefreshCw className="h-8 w-8 animate-spin text-muted-foreground" />
       </div>
     )
@@ -191,21 +192,19 @@ export default function AIUsageDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">AI Usage Dashboard</h1>
-          <p className="text-muted-foreground">
-            Monitor AI usage, costs, and performance metrics
-          </p>
+          <p className="text-muted-foreground">Monitor AI usage, costs, and performance metrics</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm" onClick={fetchData}>
-            <RefreshCw className="h-4 w-4 mr-2" />
+            <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
           <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
+            <Download className="mr-2 h-4 w-4" />
             Export
           </Button>
           <Button variant="outline" size="sm">
-            <Settings className="h-4 w-4 mr-2" />
+            <Settings className="mr-2 h-4 w-4" />
             Settings
           </Button>
         </div>
@@ -221,15 +220,15 @@ export default function AIUsageDashboard() {
 
       {/* Budget Alert */}
       {budgetStatus && budgetStatus.exceeded && (
-        <Card className="border-destructive bg-destructive/10">
+        <Card className="bg-destructive/10 border-destructive">
           <CardContent className="pt-6">
             <div className="flex items-start gap-4">
               <AlertTriangle className="h-5 w-5 text-destructive" />
               <div className="flex-1">
                 <h4 className="font-semibold text-destructive">Budget Limit Exceeded</h4>
                 <p className="text-sm text-muted-foreground">
-                  Current spending ({formatCurrency(budgetStatus.current)}) exceeds the{' '}
-                  {period} budget limit ({formatCurrency(budgetStatus.limit)})
+                  Current spending ({formatCurrency(budgetStatus.current)}) exceeds the {period}{' '}
+                  budget limit ({formatCurrency(budgetStatus.limit)})
                 </p>
               </div>
             </div>
@@ -251,7 +250,7 @@ export default function AIUsageDashboard() {
             {budgetStatus && (
               <div className="mt-2">
                 <Progress value={budgetStatus.percentUsed} className="h-2" />
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="mt-1 text-xs text-muted-foreground">
                   {budgetStatus.percentUsed.toFixed(1)}% of {period} budget
                 </p>
               </div>
@@ -282,10 +281,7 @@ export default function AIUsageDashboard() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {cacheData?.summarization
-                ? (cacheData.summarization.hitRate * 100).toFixed(1)
-                : '0'}
-              %
+              {cacheData?.summarization ? (cacheData.summarization.hitRate * 100).toFixed(1) : '0'}%
             </div>
             <p className="text-xs text-muted-foreground">
               {cacheData?.summarization
@@ -386,12 +382,7 @@ export default function AIUsageDashboard() {
                   <Tooltip />
                   <Legend />
                   <Bar yAxisId="left" dataKey="requests" fill="#6366f1" name="Requests" />
-                  <Bar
-                    yAxisId="right"
-                    dataKey="cost"
-                    fill="#8b5cf6"
-                    name="Cost ($)"
-                  />
+                  <Bar yAxisId="right" dataKey="cost" fill="#8b5cf6" name="Cost ($)" />
                 </BarChart>
               </ResponsiveContainer>
             </CardContent>
@@ -404,17 +395,13 @@ export default function AIUsageDashboard() {
               <Card key={name}>
                 <CardHeader>
                   <CardTitle className="capitalize">{name} Cache</CardTitle>
-                  <CardDescription>
-                    {stats.totalRequests} total requests
-                  </CardDescription>
+                  <CardDescription>{stats.totalRequests} total requests</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="mb-2 flex items-center justify-between">
                       <span className="text-sm font-medium">Hit Rate</span>
-                      <span className="text-sm font-bold">
-                        {(stats.hitRate * 100).toFixed(1)}%
-                      </span>
+                      <span className="text-sm font-bold">{(stats.hitRate * 100).toFixed(1)}%</span>
                     </div>
                     <Progress value={stats.hitRate * 100} />
                   </div>
@@ -449,7 +436,7 @@ export default function AIUsageDashboard() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                     <div>
                       <div className="text-sm text-muted-foreground">Queued</div>
                       <div className="text-2xl font-bold">
@@ -492,7 +479,7 @@ export default function AIUsageDashboard() {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
-                <h4 className="font-semibold mb-2">Providers</h4>
+                <h4 className="mb-2 font-semibold">Providers</h4>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm">OpenAI</span>
@@ -509,7 +496,7 @@ export default function AIUsageDashboard() {
                 </div>
               </div>
               <div>
-                <h4 className="font-semibold mb-2">Caching</h4>
+                <h4 className="mb-2 font-semibold">Caching</h4>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Cache Enabled</span>

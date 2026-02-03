@@ -1,33 +1,33 @@
-'use client';
+'use client'
 
-import { useEffect, useCallback, useRef } from 'react';
+import { useEffect, useCallback, useRef } from 'react'
 
-export type KeyboardShortcutHandler = (event: KeyboardEvent) => void | boolean;
+export type KeyboardShortcutHandler = (event: KeyboardEvent) => void | boolean
 
 export interface KeyboardShortcut {
   /** Unique identifier for the shortcut */
-  id: string;
+  id: string
   /** Keys to match (e.g., ['Cmd', 'K'] or ['Ctrl', 'K']) */
-  keys: string[];
+  keys: string[]
   /** Description of what the shortcut does */
-  description: string;
+  description: string
   /** Handler function to call when shortcut is triggered */
-  handler: KeyboardShortcutHandler;
+  handler: KeyboardShortcutHandler
   /** Whether the shortcut is enabled */
-  enabled?: boolean;
+  enabled?: boolean
   /** Prevent default browser behavior */
-  preventDefault?: boolean;
+  preventDefault?: boolean
   /** Stop event propagation */
-  stopPropagation?: boolean;
+  stopPropagation?: boolean
   /** Category for grouping */
-  category?: string;
+  category?: string
 }
 
 export interface UseKeyboardShortcutsOptions {
   /** Whether shortcuts are enabled globally */
-  enabled?: boolean;
+  enabled?: boolean
   /** Whether to ignore shortcuts when typing in input fields */
-  ignoreInputFields?: boolean;
+  ignoreInputFields?: boolean
 }
 
 /**
@@ -55,147 +55,145 @@ export interface UseKeyboardShortcutsOptions {
  * }, []);
  * ```
  */
-export function useKeyboardShortcuts(
-  options: UseKeyboardShortcutsOptions = {}
-) {
-  const { enabled = true, ignoreInputFields = true } = options;
-  const shortcutsRef = useRef<Map<string, KeyboardShortcut>>(new Map());
+export function useKeyboardShortcuts(options: UseKeyboardShortcutsOptions = {}) {
+  const { enabled = true, ignoreInputFields = true } = options
+  const shortcutsRef = useRef<Map<string, KeyboardShortcut>>(new Map())
 
   const registerShortcut = useCallback((shortcut: KeyboardShortcut) => {
     shortcutsRef.current.set(shortcut.id, {
       ...shortcut,
       enabled: shortcut.enabled ?? true,
-    });
-    return shortcut;
-  }, []);
+    })
+    return shortcut
+  }, [])
 
   const unregisterShortcut = useCallback((id: string) => {
-    shortcutsRef.current.delete(id);
-  }, []);
+    shortcutsRef.current.delete(id)
+  }, [])
 
   const getShortcuts = useCallback(() => {
-    return Array.from(shortcutsRef.current.values());
-  }, []);
+    return Array.from(shortcutsRef.current.values())
+  }, [])
 
   const isModifierKey = useCallback((key: string) => {
-    return ['Control', 'Alt', 'Shift', 'Meta', 'Cmd', 'Ctrl'].includes(key);
-  }, []);
+    return ['Control', 'Alt', 'Shift', 'Meta', 'Cmd', 'Ctrl'].includes(key)
+  }, [])
 
   const normalizeKey = useCallback((key: string, event: KeyboardEvent) => {
     // Normalize Cmd/Ctrl for cross-platform compatibility
     if (key === 'Cmd' || key === 'Ctrl') {
-      return event.metaKey || event.ctrlKey ? key : null;
+      return event.metaKey || event.ctrlKey ? key : null
     }
-    if (key === 'Alt') return event.altKey ? key : null;
-    if (key === 'Shift') return event.shiftKey ? key : null;
-    return key;
-  }, []);
+    if (key === 'Alt') return event.altKey ? key : null
+    if (key === 'Shift') return event.shiftKey ? key : null
+    return key
+  }, [])
 
   const matchesShortcut = useCallback(
     (event: KeyboardEvent, shortcut: KeyboardShortcut) => {
-      const { keys } = shortcut;
+      const { keys } = shortcut
 
       // Get pressed keys
-      const pressedKeys = [];
-      if (event.metaKey || event.ctrlKey) pressedKeys.push('Cmd');
-      if (event.altKey) pressedKeys.push('Alt');
-      if (event.shiftKey) pressedKeys.push('Shift');
+      const pressedKeys = []
+      if (event.metaKey || event.ctrlKey) pressedKeys.push('Cmd')
+      if (event.altKey) pressedKeys.push('Alt')
+      if (event.shiftKey) pressedKeys.push('Shift')
 
       // Add the main key (not a modifier)
       if (!isModifierKey(event.key)) {
-        pressedKeys.push(event.key);
+        pressedKeys.push(event.key)
       }
 
       // Check if all shortcut keys are pressed
       return keys.every((key) => {
         if (key === 'Cmd' || key === 'Ctrl') {
-          return event.metaKey || event.ctrlKey;
+          return event.metaKey || event.ctrlKey
         }
-        if (key === 'Alt') return event.altKey;
-        if (key === 'Shift') return event.shiftKey;
-        return event.key === key || event.key.toLowerCase() === key.toLowerCase();
-      });
+        if (key === 'Alt') return event.altKey
+        if (key === 'Shift') return event.shiftKey
+        return event.key === key || event.key.toLowerCase() === key.toLowerCase()
+      })
     },
     [isModifierKey]
-  );
+  )
 
   const shouldIgnoreEvent = useCallback(
     (event: KeyboardEvent) => {
-      if (!ignoreInputFields) return false;
+      if (!ignoreInputFields) return false
 
-      const target = event.target as HTMLElement;
-      const tagName = target.tagName.toLowerCase();
+      const target = event.target as HTMLElement
+      const tagName = target.tagName.toLowerCase()
       const isEditable =
         target.isContentEditable ||
         tagName === 'input' ||
         tagName === 'textarea' ||
-        tagName === 'select';
+        tagName === 'select'
 
-      return isEditable;
+      return isEditable
     },
     [ignoreInputFields]
-  );
+  )
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled) return
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (shouldIgnoreEvent(event)) return;
+      if (shouldIgnoreEvent(event)) return
 
       for (const shortcut of shortcutsRef.current.values()) {
-        if (!shortcut.enabled) continue;
+        if (!shortcut.enabled) continue
 
         if (matchesShortcut(event, shortcut)) {
           if (shortcut.preventDefault) {
-            event.preventDefault();
+            event.preventDefault()
           }
           if (shortcut.stopPropagation) {
-            event.stopPropagation();
+            event.stopPropagation()
           }
 
-          const result = shortcut.handler(event);
+          const result = shortcut.handler(event)
 
           // If handler returns false, stop checking other shortcuts
-          if (result === false) break;
+          if (result === false) break
         }
       }
-    };
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown)
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [enabled, shouldIgnoreEvent, matchesShortcut]);
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [enabled, shouldIgnoreEvent, matchesShortcut])
 
   return {
     registerShortcut,
     unregisterShortcut,
     getShortcuts,
-  };
+  }
 }
 
 /**
  * Format keyboard shortcut for display
  */
 export function formatShortcut(keys: string[]): string {
-  const isMac = typeof navigator !== 'undefined' && navigator.platform.includes('Mac');
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.includes('Mac')
 
   return keys
     .map((key) => {
-      if (key === 'Cmd') return isMac ? '⌘' : 'Ctrl';
-      if (key === 'Ctrl') return isMac ? '⌃' : 'Ctrl';
-      if (key === 'Alt') return isMac ? '⌥' : 'Alt';
-      if (key === 'Shift') return isMac ? '⇧' : 'Shift';
-      if (key === 'Enter') return '↵';
-      if (key === 'Escape' || key === 'Esc') return 'Esc';
-      if (key === 'ArrowUp') return '↑';
-      if (key === 'ArrowDown') return '↓';
-      if (key === 'ArrowLeft') return '←';
-      if (key === 'ArrowRight') return '→';
-      return key;
+      if (key === 'Cmd') return isMac ? '⌘' : 'Ctrl'
+      if (key === 'Ctrl') return isMac ? '⌃' : 'Ctrl'
+      if (key === 'Alt') return isMac ? '⌥' : 'Alt'
+      if (key === 'Shift') return isMac ? '⇧' : 'Shift'
+      if (key === 'Enter') return '↵'
+      if (key === 'Escape' || key === 'Esc') return 'Esc'
+      if (key === 'ArrowUp') return '↑'
+      if (key === 'ArrowDown') return '↓'
+      if (key === 'ArrowLeft') return '←'
+      if (key === 'ArrowRight') return '→'
+      return key
     })
-    .join(isMac ? '' : '+');
+    .join(isMac ? '' : '+')
 }
 
 /**
@@ -207,13 +205,29 @@ export const DEFAULT_SHORTCUTS = {
   SEARCH: { keys: ['Cmd', 'F'], description: 'Search messages', category: 'Global' },
   SETTINGS: { keys: ['Cmd', ','], description: 'Open settings', category: 'Global' },
   TOGGLE_SIDEBAR: { keys: ['Cmd', '\\'], description: 'Toggle sidebar', category: 'Global' },
-  ACCESSIBILITY_MENU: { keys: ['Cmd', 'Shift', 'A'], description: 'Open accessibility menu', category: 'Global' },
+  ACCESSIBILITY_MENU: {
+    keys: ['Cmd', 'Shift', 'A'],
+    description: 'Open accessibility menu',
+    category: 'Global',
+  },
 
   // Navigation
   NEXT_CHANNEL: { keys: ['Alt', 'ArrowDown'], description: 'Next channel', category: 'Navigation' },
-  PREV_CHANNEL: { keys: ['Alt', 'ArrowUp'], description: 'Previous channel', category: 'Navigation' },
-  NEXT_UNREAD: { keys: ['Alt', 'Shift', 'ArrowDown'], description: 'Next unread channel', category: 'Navigation' },
-  PREV_UNREAD: { keys: ['Alt', 'Shift', 'ArrowUp'], description: 'Previous unread channel', category: 'Navigation' },
+  PREV_CHANNEL: {
+    keys: ['Alt', 'ArrowUp'],
+    description: 'Previous channel',
+    category: 'Navigation',
+  },
+  NEXT_UNREAD: {
+    keys: ['Alt', 'Shift', 'ArrowDown'],
+    description: 'Next unread channel',
+    category: 'Navigation',
+  },
+  PREV_UNREAD: {
+    keys: ['Alt', 'Shift', 'ArrowUp'],
+    description: 'Previous unread channel',
+    category: 'Navigation',
+  },
 
   // Messaging
   NEW_MESSAGE: { keys: ['Cmd', 'N'], description: 'New message', category: 'Messaging' },
@@ -239,6 +253,6 @@ export const DEFAULT_SHORTCUTS = {
   // Close/Cancel
   CLOSE_MODAL: { keys: ['Escape'], description: 'Close modal', category: 'Actions' },
   CANCEL: { keys: ['Escape'], description: 'Cancel action', category: 'Actions' },
-} as const;
+} as const
 
-export default useKeyboardShortcuts;
+export default useKeyboardShortcuts

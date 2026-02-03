@@ -63,9 +63,9 @@ export function LinkPreviewCard({
 
   if (isLoading) {
     return (
-      <div className={cn('border rounded-lg overflow-hidden bg-card', className)}>
+      <div className={cn('overflow-hidden rounded-lg border bg-card', className)}>
         <Skeleton className="h-48 w-full" />
-        <div className="p-3 space-y-2">
+        <div className="space-y-2 p-3">
           <Skeleton className="h-4 w-3/4" />
           <Skeleton className="h-3 w-full" />
           <Skeleton className="h-3 w-2/3" />
@@ -88,7 +88,7 @@ export function LinkPreviewCard({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -10 }}
         className={cn(
-          'block border rounded-lg overflow-hidden bg-card hover:border-primary/50 transition-colors group relative',
+          'hover:border-primary/50 group relative block overflow-hidden rounded-lg border bg-card transition-colors',
           className
         )}
         style={{
@@ -107,7 +107,7 @@ export function LinkPreviewCard({
               e.stopPropagation()
               onDismiss()
             }}
-            className="absolute top-2 right-2 z-10 h-6 w-6 bg-background/80 hover:bg-background opacity-0 group-hover:opacity-100 transition-opacity"
+            className="bg-background/80 absolute right-2 top-2 z-10 h-6 w-6 opacity-0 transition-opacity hover:bg-background group-hover:opacity-100"
           >
             <X className="h-3 w-3" />
           </Button>
@@ -118,22 +118,20 @@ export function LinkPreviewCard({
           <div className="relative w-full bg-muted">
             {hasImage && (
               <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                {!imageLoaded && (
-                  <Skeleton className="absolute inset-0" />
-                )}
+                {!imageLoaded && <Skeleton className="absolute inset-0" />}
                 <img
                   src={preview.image}
                   alt={preview.imageAlt || preview.title}
                   onLoad={() => setImageLoaded(true)}
                   onError={() => setImageError(true)}
                   className={cn(
-                    'absolute inset-0 w-full h-full object-cover transition-opacity',
+                    'absolute inset-0 h-full w-full object-cover transition-opacity',
                     imageLoaded ? 'opacity-100' : 'opacity-0'
                   )}
                 />
                 {preview.type === 'video' && (
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <div className="w-16 h-16 rounded-full bg-black/60 flex items-center justify-center">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-black/60">
                       <Video className="h-8 w-8 text-white" />
                     </div>
                   </div>
@@ -144,7 +142,7 @@ export function LinkPreviewCard({
         )}
 
         {/* Content */}
-        <div className="p-3 space-y-2">
+        <div className="space-y-2 p-3">
           {/* Header with Favicon and Site Name */}
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
             {preview.favicon && (
@@ -165,20 +163,20 @@ export function LinkPreviewCard({
           </div>
 
           {/* Title */}
-          <h4 className="font-semibold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+          <h4 className="line-clamp-2 text-sm font-semibold leading-snug transition-colors group-hover:text-primary">
             {preview.title}
           </h4>
 
           {/* Description */}
           {preview.description && (
-            <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+            <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
               {preview.description}
             </p>
           )}
 
           {/* Author & Date */}
           {(preview.author || preview.publishedDate) && (
-            <div className="flex items-center gap-2 text-xs text-muted-foreground pt-1">
+            <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
               {preview.author && (
                 <span className="truncate">
                   {preview.authorUrl ? (
@@ -194,9 +192,7 @@ export function LinkPreviewCard({
                   )}
                 </span>
               )}
-              {preview.author && preview.publishedDate && (
-                <span>•</span>
-              )}
+              {preview.author && preview.publishedDate && <span>•</span>}
               {preview.publishedDate && (
                 <span>
                   {new Date(preview.publishedDate).toLocaleDateString('en-US', {
@@ -210,7 +206,7 @@ export function LinkPreviewCard({
           )}
 
           {/* Footer with URL */}
-          <div className="flex items-center gap-1 text-xs text-muted-foreground pt-1 border-t">
+          <div className="flex items-center gap-1 border-t pt-1 text-xs text-muted-foreground">
             <ExternalLink className="h-3 w-3 shrink-0" />
             <span className="truncate">{preview.domain}</span>
           </div>
@@ -226,9 +222,9 @@ export function LinkPreviewCard({
  */
 export function LinkPreviewSkeleton({ className }: { className?: string }) {
   return (
-    <div className={cn('border rounded-lg overflow-hidden bg-card', className)}>
+    <div className={cn('overflow-hidden rounded-lg border bg-card', className)}>
       <Skeleton className="h-48 w-full" />
-      <div className="p-3 space-y-2">
+      <div className="space-y-2 p-3">
         <div className="flex items-center gap-2">
           <Skeleton className="h-4 w-4 rounded" />
           <Skeleton className="h-3 w-24" />
@@ -258,34 +254,32 @@ export function LinkPreviewError({
   const domain = url.replace(/^https?:\/\//, '').split('/')[0]
 
   return (
-    <div className={cn('border rounded-lg p-3 bg-card relative group', className)}>
+    <div className={cn('group relative rounded-lg border bg-card p-3', className)}>
       {onDismiss && (
         <Button
           type="button"
           variant="ghost"
           size="icon"
           onClick={onDismiss}
-          className="absolute top-2 right-2 h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute right-2 top-2 h-6 w-6 opacity-0 transition-opacity group-hover:opacity-100"
         >
           <X className="h-3 w-3" />
         </Button>
       )}
       <div className="flex items-start gap-3">
-        <div className="shrink-0 mt-0.5">
+        <div className="mt-0.5 shrink-0">
           <Globe className="h-4 w-4 text-muted-foreground" />
         </div>
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <a
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-sm font-medium hover:underline line-clamp-1"
+            className="line-clamp-1 text-sm font-medium hover:underline"
           >
             {domain}
           </a>
-          <p className="text-xs text-muted-foreground mt-1">
-            Preview unavailable
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">Preview unavailable</p>
         </div>
       </div>
     </div>

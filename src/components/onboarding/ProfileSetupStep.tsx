@@ -1,17 +1,17 @@
-'use client';
+'use client'
 
-import { useState, useEffect } from 'react';
-import { User } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { cn } from '@/lib/utils';
-import type { OnboardingStepProps, UserProfile } from '@/lib/onboarding/onboarding-types';
+import { useState, useEffect } from 'react'
+import { User } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
+import type { OnboardingStepProps, UserProfile } from '@/lib/onboarding/onboarding-types'
 
 interface ProfileSetupStepProps extends OnboardingStepProps {
-  initialData?: Partial<UserProfile>;
-  onDataChange?: (data: Partial<UserProfile>) => void;
+  initialData?: Partial<UserProfile>
+  onDataChange?: (data: Partial<UserProfile>) => void
 }
 
 export function ProfileSetupStep({
@@ -30,63 +30,63 @@ export function ProfileSetupStep({
     title: '',
     department: '',
     ...initialData,
-  });
+  })
 
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const handleChange = (field: keyof UserProfile, value: string) => {
-    const newData = { ...formData, [field]: value };
-    setFormData(newData);
-    onDataChange?.(newData);
+    const newData = { ...formData, [field]: value }
+    setFormData(newData)
+    onDataChange?.(newData)
 
     // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => {
-        const next = { ...prev };
-        delete next[field];
-        return next;
-      });
+        const next = { ...prev }
+        delete next[field]
+        return next
+      })
     }
-  };
+  }
 
   const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {}
 
     if (!formData.displayName?.trim()) {
-      newErrors.displayName = 'Display name is required';
+      newErrors.displayName = 'Display name is required'
     } else if (formData.displayName.length < 2) {
-      newErrors.displayName = 'Display name must be at least 2 characters';
+      newErrors.displayName = 'Display name must be at least 2 characters'
     } else if (formData.displayName.length > 50) {
-      newErrors.displayName = 'Display name must be less than 50 characters';
+      newErrors.displayName = 'Display name must be less than 50 characters'
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleNext = () => {
     if (validate()) {
-      onNext();
+      onNext()
     }
-  };
+  }
 
   return (
     <div className="flex flex-col px-4 py-6">
       {/* Header */}
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center mx-auto mb-4">
-          <User className="w-8 h-8 text-primary" />
+      <div className="mb-8 text-center">
+        <div className="from-primary/20 to-primary/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br">
+          <User className="h-8 w-8 text-primary" />
         </div>
-        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white mb-2">
+        <h2 className="mb-2 text-2xl font-bold text-zinc-900 dark:text-white">
           Set Up Your Profile
         </h2>
-        <p className="text-zinc-600 dark:text-zinc-400 max-w-md mx-auto">
+        <p className="mx-auto max-w-md text-zinc-600 dark:text-zinc-400">
           Tell us a bit about yourself so your teammates know who you are.
         </p>
       </div>
 
       {/* Form */}
-      <div className="max-w-md mx-auto w-full space-y-6">
+      <div className="mx-auto w-full max-w-md space-y-6">
         {/* Display Name - Required */}
         <div className="space-y-2">
           <Label htmlFor="displayName" className="flex items-center gap-1">
@@ -100,12 +100,8 @@ export function ProfileSetupStep({
             onChange={(e) => handleChange('displayName', e.target.value)}
             className={cn(errors.displayName && 'border-red-500')}
           />
-          {errors.displayName && (
-            <p className="text-sm text-red-500">{errors.displayName}</p>
-          )}
-          <p className="text-xs text-zinc-500">
-            This is how you'll appear to others
-          </p>
+          {errors.displayName && <p className="text-sm text-red-500">{errors.displayName}</p>}
+          <p className="text-xs text-zinc-500">This is how you'll appear to others</p>
         </div>
 
         {/* Full Name - Optional */}
@@ -152,14 +148,12 @@ export function ProfileSetupStep({
             rows={3}
             className="resize-none"
           />
-          <p className="text-xs text-zinc-500">
-            {(formData.bio?.length || 0)}/200 characters
-          </p>
+          <p className="text-xs text-zinc-500">{formData.bio?.length || 0}/200 characters</p>
         </div>
       </div>
 
       {/* Navigation */}
-      <div className="flex justify-between items-center mt-8 pt-6 border-t border-zinc-200 dark:border-zinc-700">
+      <div className="mt-8 flex items-center justify-between border-t border-zinc-200 pt-6 dark:border-zinc-700">
         <div>
           {!isFirst && (
             <Button variant="ghost" onClick={onPrev}>
@@ -174,11 +168,9 @@ export function ProfileSetupStep({
               Skip
             </Button>
           )}
-          <Button onClick={handleNext}>
-            Continue
-          </Button>
+          <Button onClick={handleNext}>Continue</Button>
         </div>
       </div>
     </div>
-  );
+  )
 }

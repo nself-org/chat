@@ -1,10 +1,9 @@
 'use client'
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
-export interface EnhancedInputProps
-  extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface EnhancedInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string
   error?: string
   icon?: React.ReactNode
@@ -43,28 +42,31 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
       <div className="relative">
         <div className="relative">
           {icon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 z-10">
-              <div className={cn(
-                "transition-colors",
-                isFocused ? "text-[#00D4FF]" : "text-zinc-400 dark:text-zinc-500"
-              )}>
+            <div className="absolute left-3 top-1/2 z-10 -translate-y-1/2">
+              <div
+                className={cn(
+                  'transition-colors',
+                  isFocused ? 'text-[#00D4FF]' : 'text-zinc-400 dark:text-zinc-500'
+                )}
+              >
                 {icon}
               </div>
             </div>
           )}
-          
+
           <input
             type={type}
             className={cn(
-              "peer w-full rounded-xl border bg-white dark:bg-zinc-900 px-3 py-3 text-sm text-zinc-900 dark:text-white transition-all duration-200 placeholder-transparent",
+              'peer w-full rounded-xl border bg-white px-3 py-3 text-sm text-zinc-900 placeholder-transparent transition-all duration-200 dark:bg-zinc-900 dark:text-white',
               // Default border - Protocol style
-              "border-zinc-900/10 dark:border-white/10",
+              'border-zinc-900/10 dark:border-white/10',
               // Focus states - nself blue
-              "focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/20 focus:border-[#00D4FF]",
+              'focus:border-[#00D4FF] focus:outline-none focus:ring-2 focus:ring-[#00D4FF]/20',
               // Error states
-              error && "border-red-400 dark:border-red-500 focus:border-red-500 focus:ring-red-500/20",
+              error &&
+                'border-red-400 focus:border-red-500 focus:ring-red-500/20 dark:border-red-500',
               // Icon padding
-              icon && "pl-10",
+              icon && 'pl-10',
               className
             )}
             ref={ref}
@@ -78,17 +80,21 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
           {label && (
             <label
               className={cn(
-                "absolute left-3 top-3 text-sm transition-all duration-200 pointer-events-none",
+                'pointer-events-none absolute left-3 top-3 text-sm transition-all duration-200',
                 // Icon padding - different position when icon is present
-                icon && "left-10",
+                icon && 'left-10',
                 // Active/focused state - Protocol background
-                isActive && "-top-2 left-2 bg-white dark:bg-zinc-900 px-1 text-xs",
+                isActive && '-top-2 left-2 bg-white px-1 text-xs dark:bg-zinc-900',
                 // Color states - nself blue when focused
-                isFocused && !error ? "text-[#00D4FF]" : error ? "text-red-500" : "text-zinc-600 dark:text-zinc-400",
+                isFocused && !error
+                  ? 'text-[#00D4FF]'
+                  : error
+                    ? 'text-red-500'
+                    : 'text-zinc-600 dark:text-zinc-400',
                 // Peer selectors for floating effect
-                "peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-600 dark:peer-placeholder-shown:text-zinc-400",
-                icon && "peer-placeholder-shown:left-10",
-                "peer-focus:-top-2 peer-focus:left-2 peer-focus:bg-white dark:peer-focus:bg-zinc-900 peer-focus:px-1 peer-focus:text-xs peer-focus:text-[#00D4FF]"
+                'peer-placeholder-shown:top-3 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-600 dark:peer-placeholder-shown:text-zinc-400',
+                icon && 'peer-placeholder-shown:left-10',
+                'peer-focus:-top-2 peer-focus:left-2 peer-focus:bg-white peer-focus:px-1 peer-focus:text-xs peer-focus:text-[#00D4FF] dark:peer-focus:bg-zinc-900'
               )}
             >
               {label}
@@ -96,16 +102,12 @@ const EnhancedInput = React.forwardRef<HTMLInputElement, EnhancedInputProps>(
           )}
         </div>
 
-        {error && (
-          <p className="mt-1.5 text-sm text-red-600 dark:text-red-400">
-            {error}
-          </p>
-        )}
+        {error && <p className="mt-1.5 text-sm text-red-600 dark:text-red-400">{error}</p>}
       </div>
     )
   }
 )
 
-EnhancedInput.displayName = "EnhancedInput"
+EnhancedInput.displayName = 'EnhancedInput'
 
 export { EnhancedInput }

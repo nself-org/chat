@@ -53,9 +53,7 @@ export const MessageContent = memo(function MessageContent({
     return (
       <div className={cn('message-content', className)}>
         <GifContent url={gifUrl} metadata={gifMetadata} />
-        {content && (
-          <p className="mt-2 text-sm text-muted-foreground">{content}</p>
-        )}
+        {content && <p className="mt-2 text-sm text-muted-foreground">{content}</p>}
       </div>
     )
   }
@@ -74,12 +72,32 @@ export const MessageContent = memo(function MessageContent({
     // Sanitize HTML to prevent XSS attacks
     const sanitizedHtml = DOMPurify.sanitize(contentHtml, {
       ALLOWED_TAGS: [
-        'p', 'br', 'strong', 'em', 'u', 'del', 'code', 'pre',
-        'a', 'ul', 'ol', 'li', 'blockquote', 'h1', 'h2', 'h3',
-        'h4', 'h5', 'h6', 'span', 'div', 'img'
+        'p',
+        'br',
+        'strong',
+        'em',
+        'u',
+        'del',
+        'code',
+        'pre',
+        'a',
+        'ul',
+        'ol',
+        'li',
+        'blockquote',
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'span',
+        'div',
+        'img',
       ],
       ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class', 'target', 'rel'],
-      ALLOWED_URI_REGEXP: /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
+      ALLOWED_URI_REGEXP:
+        /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|sms|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
     })
 
     return (
@@ -90,11 +108,7 @@ export const MessageContent = memo(function MessageContent({
     )
   }
 
-  return (
-    <div className={cn('message-content text-sm', className)}>
-      {renderedContent}
-    </div>
-  )
+  return <div className={cn('message-content text-sm', className)}>{renderedContent}</div>
 })
 
 /**
@@ -126,9 +140,7 @@ function parseMessageContent(
         i++
       }
 
-      elements.push(
-        <CodeBlock key={key++} code={codeLines.join('\n')} language={language} />
-      )
+      elements.push(<CodeBlock key={key++} code={codeLines.join('\n')} language={language} />)
       i++ // Skip closing ```
       continue
     }
@@ -144,7 +156,7 @@ function parseMessageContent(
       elements.push(
         <blockquote
           key={key++}
-          className="border-l-4 border-muted-foreground/30 pl-3 italic text-muted-foreground"
+          className="border-muted-foreground/30 border-l-4 pl-3 italic text-muted-foreground"
         >
           {quoteLines.join('\n')}
         </blockquote>
@@ -234,17 +246,14 @@ function parseInlineContent(
     // Check for overlap
     const overlaps = usedRanges.some(
       ([start, rangeEnd]) =>
-        (match.index >= start && match.index < rangeEnd) ||
-        (end > start && end <= rangeEnd)
+        (match.index >= start && match.index < rangeEnd) || (end > start && end <= rangeEnd)
     )
 
     if (overlaps) continue
 
     // Add text before match
     if (match.index > lastIndex) {
-      elements.push(
-        <span key={key++}>{text.slice(lastIndex, match.index)}</span>
-      )
+      elements.push(<span key={key++}>{text.slice(lastIndex, match.index)}</span>)
     }
 
     // Add formatted element
@@ -276,14 +285,10 @@ function parseInlineContent(
         )
         break
       case 'mention':
-        elements.push(
-          <UserMention key={key++} username={match.content} />
-        )
+        elements.push(<UserMention key={key++} username={match.content} />)
         break
       case 'channel':
-        elements.push(
-          <ChannelMention key={key++} channelName={match.content} />
-        )
+        elements.push(<ChannelMention key={key++} channelName={match.content} />)
         break
       case 'emoji':
         elements.push(<Emoji key={key++} name={match.content} />)
@@ -318,7 +323,7 @@ function InlineCode({ children }: { children: React.ReactNode }) {
  */
 function CodeBlock({ code, language }: { code: string; language?: string }) {
   return (
-    <div className="my-2 overflow-hidden rounded-lg border bg-muted/50">
+    <div className="bg-muted/50 my-2 overflow-hidden rounded-lg border">
       {/* Header with language */}
       {language && (
         <div className="border-b bg-muted px-3 py-1.5 text-xs font-medium text-muted-foreground">
@@ -337,13 +342,7 @@ function CodeBlock({ code, language }: { code: string; language?: string }) {
 /**
  * External link component
  */
-function ExternalLink({
-  href,
-  children,
-}: {
-  href: string
-  children: React.ReactNode
-}) {
+function ExternalLink({ href, children }: { href: string; children: React.ReactNode }) {
   // Validate URL
   const isValidUrl = href.startsWith('http://') || href.startsWith('https://')
 
@@ -370,7 +369,7 @@ function UserMention({ username }: { username: string }) {
   return (
     <Link
       href={`/users/${username}`}
-      className="inline-flex items-center rounded bg-primary/10 px-1 py-0.5 font-medium text-primary hover:bg-primary/20"
+      className="bg-primary/10 hover:bg-primary/20 inline-flex items-center rounded px-1 py-0.5 font-medium text-primary"
     >
       @{username}
     </Link>
@@ -459,7 +458,7 @@ function GifContent({
 
   return (
     <div
-      className="relative overflow-hidden rounded-lg border bg-muted/30"
+      className="bg-muted/30 relative overflow-hidden rounded-lg border"
       style={{
         width: `${displayWidth}px`,
         height: `${displayHeight}px`,

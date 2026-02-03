@@ -357,10 +357,7 @@ export class PermissionCache {
   /**
    * Set multiple permission results in batch
    */
-  setBatch(
-    request: BatchPermissionRequest,
-    results: Map<Permission, PermissionResult>
-  ): void {
+  setBatch(request: BatchPermissionRequest, results: Map<Permission, PermissionResult>): void {
     results.forEach((result, permission) => {
       const key: CacheKey = {
         userId: request.userId,
@@ -682,9 +679,7 @@ export function withBatchCache(
     const batchResult = cache.getBatch(request)
 
     // Compute missing permissions
-    const missingPermissions = request.permissions.filter(
-      (p) => !batchResult.results.has(p)
-    )
+    const missingPermissions = request.permissions.filter((p) => !batchResult.results.has(p))
 
     for (const permission of missingPermissions) {
       const key: CacheKey = {

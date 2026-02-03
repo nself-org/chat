@@ -21,17 +21,12 @@ import { JumpToUnreadButton } from '@/components/chat/JumpToUnread'
 import { UnreadLine } from '@/components/chat/UnreadIndicator'
 
 function ChatView({ channelId, messages }) {
-  const {
-    unreadCount,
-    mentionCount,
-    firstUnreadMessageId,
-    hasUnread,
-    markChannelAsRead,
-  } = useUnread({
-    channelId,
-    messages,
-    autoMarkRead: true,
-  })
+  const { unreadCount, mentionCount, firstUnreadMessageId, hasUnread, markChannelAsRead } =
+    useUnread({
+      channelId,
+      messages,
+      autoMarkRead: true,
+    })
 
   const handleJumpToUnread = () => {
     // Scroll to first unread message
@@ -64,7 +59,7 @@ function ChannelList({ channels, onSelect }) {
 
   return (
     <div>
-      {channels.map(channel => (
+      {channels.map((channel) => (
         <SidebarUnread
           key={channel.id}
           channelName={channel.name}
@@ -85,21 +80,22 @@ function ChannelList({ channels, onSelect }) {
 import { UnreadLine } from '@/components/chat/UnreadIndicator'
 
 // In your message list rendering
-{messages.map((message, index) => (
-  <React.Fragment key={message.id}>
-    {/* Show unread line before first unread message */}
-    {message.id === firstUnreadMessageId && (
-      <UnreadLine count={messages.length - index} />
-    )}
+{
+  messages.map((message, index) => (
+    <React.Fragment key={message.id}>
+      {/* Show unread line before first unread message */}
+      {message.id === firstUnreadMessageId && <UnreadLine count={messages.length - index} />}
 
-    <MessageItem message={message} />
-  </React.Fragment>
-))}
+      <MessageItem message={message} />
+    </React.Fragment>
+  ))
+}
 ```
 
 ## 🎯 Features
 
 ### Tracking
+
 - [x] Per-channel last read position
 - [x] Unread message counts
 - [x] Unread mention tracking
@@ -109,6 +105,7 @@ import { UnreadLine } from '@/components/chat/UnreadIndicator'
 - [x] Manual mark as read/unread
 
 ### UI Components
+
 - [x] **UnreadBadge** - Count badge for channels
 - [x] **UnreadDot** - Minimal dot indicator
 - [x] **UnreadLine** - Horizontal divider in messages
@@ -117,12 +114,14 @@ import { UnreadLine } from '@/components/chat/UnreadIndicator'
 - [x] **MentionHighlight** - Highlight mentioned messages
 
 ### Navigation
+
 - [x] **JumpToUnreadButton** - Jump to first unread
 - [x] **JumpToChannel** - Navigate between unread channels
 - [x] **JumpToMention** - Jump to next mention
 - [x] **UnreadNavigation** - Combined navigation controls
 
 ### Keyboard Shortcuts
+
 - `Alt+Shift+U` - Jump to first unread
 - `Alt+Shift+M` - Jump to next mention
 - `Alt+Shift+↑` - Previous unread channel
@@ -235,10 +234,10 @@ Track unread across all channels:
 
 ```tsx
 const {
-  allStates,        // Record<channelId, UnreadState>
-  totalUnread,      // Total unread count
-  totalMentions,    // Total mention count
-  markAllAsRead,    // Mark all channels as read
+  allStates, // Record<channelId, UnreadState>
+  totalUnread, // Total unread count
+  totalMentions, // Total mention count
+  markAllAsRead, // Mark all channels as read
 } = useAllUnread()
 ```
 
@@ -285,8 +284,11 @@ tracker.markAsRead(channelId, messageId, messageTimestamp)
 tracker.markAsUnread(channelId, messageId, messageTimestamp)
 
 // Calculate unread
-const { unreadCount, mentionCount, firstUnreadMessageId } =
-  tracker.calculateUnread(channelId, messages, currentUserId)
+const { unreadCount, mentionCount, firstUnreadMessageId } = tracker.calculateUnread(
+  channelId,
+  messages,
+  currentUserId
+)
 
 // Subscribe to changes
 const unsubscribe = tracker.subscribe(channelId, () => {
@@ -353,19 +355,23 @@ import { renderHook, act } from '@testing-library/react'
 import { useUnread } from '@/hooks/use-unread'
 
 test('tracks unread messages', () => {
-  const { result } = renderHook(() => useUnread({
-    channelId: 'test',
-    messages: mockMessages,
-  }))
+  const { result } = renderHook(() =>
+    useUnread({
+      channelId: 'test',
+      messages: mockMessages,
+    })
+  )
 
   expect(result.current.unreadCount).toBe(5)
 })
 
 test('marks as read', () => {
-  const { result } = renderHook(() => useUnread({
-    channelId: 'test',
-    messages: mockMessages,
-  }))
+  const { result } = renderHook(() =>
+    useUnread({
+      channelId: 'test',
+      messages: mockMessages,
+    })
+  )
 
   act(() => {
     result.current.markChannelAsRead()
@@ -378,6 +384,7 @@ test('marks as read', () => {
 ## 📖 Full Documentation
 
 See `/docs/Unread-System.md` for complete documentation including:
+
 - Architecture details
 - Advanced features
 - Integration guide
@@ -388,6 +395,7 @@ See `/docs/Unread-System.md` for complete documentation including:
 ## 📝 Examples
 
 See `/src/components/chat/UnreadIntegrationExample.tsx` for complete examples:
+
 - Channel sidebar with unread badges
 - Message list with unread line
 - Complete chat interface

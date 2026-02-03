@@ -1,18 +1,13 @@
 'use client'
 
 import { useCallback, useEffect, useState } from 'react'
-import {
-  MapPin,
-  Crosshair,
-  Search,
-  Loader2,
-  Navigation,
-} from 'lucide-react'
+import { MapPin, Crosshair, Search, Loader2, Navigation } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { LocationMap } from './LocationMap'
 import { NearbyPlaces } from './NearbyPlaces'
+import { logger } from '@/lib/logger'
 import {
   type Coordinates,
   type Place,
@@ -60,9 +55,7 @@ export function LocationPicker({
   height = 400,
   className,
 }: LocationPickerProps) {
-  const [coordinates, setCoordinates] = useState<Coordinates | null>(
-    initialCoordinates || null
-  )
+  const [coordinates, setCoordinates] = useState<Coordinates | null>(initialCoordinates || null)
   const [address, setAddress] = useState<string | null>(null)
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null)
   const [isLoading, setIsLoading] = useState(false)
@@ -97,7 +90,7 @@ export function LocationPicker({
       setCoordinates(position)
       setSelectedPlace(null)
     } catch (error) {
-      console.error('Failed to get current location:', error)
+      logger.error('Failed to get current location:',  error)
     } finally {
       setIsGettingLocation(false)
     }
@@ -124,7 +117,7 @@ export function LocationPicker({
       const results = await searchPlaces(searchQuery, coordinates || undefined)
       setSearchResults(results)
     } catch (error) {
-      console.error('Search failed:', error)
+      logger.error('Search failed:',  error)
     } finally {
       setIsSearching(false)
     }
@@ -132,18 +125,14 @@ export function LocationPicker({
 
   const handleConfirm = useCallback(() => {
     if (coordinates) {
-      onSelect(
-        coordinates,
-        address || undefined,
-        selectedPlace || undefined
-      )
+      onSelect(coordinates, address || undefined, selectedPlace || undefined)
     }
   }, [coordinates, address, selectedPlace, onSelect])
 
   return (
     <div className={cn('flex flex-col overflow-hidden rounded-lg border', className)}>
       {/* Header with tabs */}
-      <div className="flex items-center gap-2 border-b bg-muted/30 p-2">
+      <div className="bg-muted/30 flex items-center gap-2 border-b p-2">
         <Button
           variant={activeTab === 'map' ? 'secondary' : 'ghost'}
           size="sm"
@@ -210,16 +199,12 @@ export function LocationPicker({
               {isLoading || isGettingLocation ? (
                 <>
                   <Loader2 className="mx-auto mb-2 h-8 w-8 animate-spin text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">
-                    Getting your location...
-                  </p>
+                  <p className="text-sm text-muted-foreground">Getting your location...</p>
                 </>
               ) : (
                 <>
                   <MapPin className="mx-auto mb-2 h-8 w-8 text-muted-foreground" />
-                  <p className="text-sm text-muted-foreground">
-                    Unable to get location
-                  </p>
+                  <p className="text-sm text-muted-foreground">Unable to get location</p>
                   <Button
                     variant="outline"
                     size="sm"
@@ -237,10 +222,7 @@ export function LocationPicker({
         {/* Nearby Places Tab */}
         {activeTab === 'places' && coordinates && (
           <div className="h-full overflow-auto p-2">
-            <NearbyPlaces
-              coordinates={coordinates}
-              onPlaceSelect={handlePlaceSelect}
-            />
+            <NearbyPlaces coordinates={coordinates} onPlaceSelect={handlePlaceSelect} />
           </div>
         )}
 
@@ -273,11 +255,9 @@ export function LocationPicker({
                       onClick={() => handlePlaceSelect(place)}
                     >
                       <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <div className="flex-1 min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="truncate font-medium">{place.name}</p>
-                        <p className="truncate text-xs text-muted-foreground">
-                          {place.address}
-                        </p>
+                        <p className="truncate text-xs text-muted-foreground">{place.address}</p>
                       </div>
                     </button>
                   ))}
@@ -297,17 +277,15 @@ export function LocationPicker({
       </div>
 
       {/* Footer with selected location and actions */}
-      <div className="border-t bg-muted/30 p-3">
+      <div className="bg-muted/30 border-t p-3">
         {coordinates && (
           <div className="mb-3 flex items-start gap-2">
             <MapPin className="mt-0.5 h-4 w-4 text-primary" />
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               {selectedPlace ? (
                 <>
                   <p className="truncate font-medium">{selectedPlace.name}</p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {selectedPlace.address}
-                  </p>
+                  <p className="truncate text-xs text-muted-foreground">{selectedPlace.address}</p>
                 </>
               ) : address ? (
                 <p className="truncate text-sm">{address}</p>
@@ -326,11 +304,7 @@ export function LocationPicker({
               Cancel
             </Button>
           )}
-          <Button
-            className="flex-1"
-            disabled={!coordinates}
-            onClick={handleConfirm}
-          >
+          <Button className="flex-1" disabled={!coordinates} onClick={handleConfirm}>
             <MapPin className="mr-2 h-4 w-4" />
             Select Location
           </Button>

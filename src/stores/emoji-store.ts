@@ -5,9 +5,9 @@
  * skin tone preferences, and picker state.
  */
 
-import { create } from 'zustand';
-import { devtools, persist, subscribeWithSelector } from 'zustand/middleware';
-import { immer } from 'zustand/middleware/immer';
+import { create } from 'zustand'
+import { devtools, persist, subscribeWithSelector } from 'zustand/middleware'
+import { immer } from 'zustand/middleware/immer'
 
 import type {
   SkinTone,
@@ -21,13 +21,13 @@ import type {
   EmojiUsage,
   Emoji,
   EmojiStore,
-} from '@/lib/emoji/emoji-types';
+} from '@/lib/emoji/emoji-types'
 
 import {
   generateSuggestions,
   detectAutocompleteTrigger,
   INITIAL_AUTOCOMPLETE_STATE,
-} from '@/lib/emoji/emoji-autocomplete';
+} from '@/lib/emoji/emoji-autocomplete'
 
 import {
   getRecentEmojis,
@@ -35,14 +35,11 @@ import {
   getFrequentEmojis,
   saveFrequentEmojis,
   getTopFrequentEmojis,
-} from '@/lib/emoji/emoji-recent';
+} from '@/lib/emoji/emoji-recent'
 
-import {
-  getLocalCustomEmojis,
-  saveLocalCustomEmojis,
-} from '@/lib/emoji/emoji-custom';
+import { getLocalCustomEmojis, saveLocalCustomEmojis } from '@/lib/emoji/emoji-custom'
 
-import { getSavedSkinTone, saveSkinTone } from '@/lib/emoji/emoji-skin-tone';
+import { getSavedSkinTone, saveSkinTone } from '@/lib/emoji/emoji-skin-tone'
 
 // ============================================================================
 // Constants
@@ -55,10 +52,10 @@ const DEFAULT_QUICK_REACTIONS = [
   '\u{1F389}', // tada
   '\u{1F914}', // thinking
   '\u{1F440}', // eyes
-];
+]
 
-const DEFAULT_MAX_RECENT = 36;
-const DEFAULT_MAX_SUGGESTIONS = 8;
+const DEFAULT_MAX_RECENT = 36
+const DEFAULT_MAX_SUGGESTIONS = 8
 
 // ============================================================================
 // Initial State
@@ -72,7 +69,7 @@ const initialPickerState: PickerState = {
   activeCategory: 'recent',
   searchQuery: '',
   previewEmoji: null,
-};
+}
 
 const initialState = {
   // Recent emojis
@@ -104,7 +101,7 @@ const initialState = {
   // Settings
   autoReplaceShortcodes: true,
   showRecentFirst: true,
-};
+}
 
 // ============================================================================
 // Store
@@ -124,14 +121,12 @@ export const useEmojiStore = create<EmojiStore>()(
           addRecentEmoji: (emoji, isCustom = false, customEmojiId) =>
             set(
               (state) => {
-                const now = Date.now();
+                const now = Date.now()
 
                 // Remove if already exists
                 state.recentEmojis = state.recentEmojis.filter((r) =>
-                  isCustom
-                    ? r.customEmojiId !== customEmojiId
-                    : r.emoji !== emoji || r.isCustom
-                );
+                  isCustom ? r.customEmojiId !== customEmojiId : r.emoji !== emoji || r.isCustom
+                )
 
                 // Add to front
                 state.recentEmojis.unshift({
@@ -139,21 +134,21 @@ export const useEmojiStore = create<EmojiStore>()(
                   isCustom,
                   customEmojiId,
                   usedAt: now,
-                });
+                })
 
                 // Trim to max
                 if (state.recentEmojis.length > state.maxRecentEmojis) {
-                  state.recentEmojis = state.recentEmojis.slice(0, state.maxRecentEmojis);
+                  state.recentEmojis = state.recentEmojis.slice(0, state.maxRecentEmojis)
                 }
 
                 // Also record usage
-                const existing = state.frequentEmojis.get(emoji);
+                const existing = state.frequentEmojis.get(emoji)
                 if (existing) {
                   state.frequentEmojis.set(emoji, {
                     ...existing,
                     count: existing.count + 1,
                     lastUsedAt: now,
-                  });
+                  })
                 } else {
                   state.frequentEmojis.set(emoji, {
                     emoji,
@@ -162,7 +157,7 @@ export const useEmojiStore = create<EmojiStore>()(
                     count: 1,
                     lastUsedAt: now,
                     firstUsedAt: now,
-                  });
+                  })
                 }
               },
               false,
@@ -172,7 +167,7 @@ export const useEmojiStore = create<EmojiStore>()(
           clearRecentEmojis: () =>
             set(
               (state) => {
-                state.recentEmojis = [];
+                state.recentEmojis = []
               },
               false,
               'emoji/clearRecentEmojis'
@@ -181,9 +176,9 @@ export const useEmojiStore = create<EmojiStore>()(
           setMaxRecentEmojis: (max) =>
             set(
               (state) => {
-                state.maxRecentEmojis = max;
+                state.maxRecentEmojis = max
                 if (state.recentEmojis.length > max) {
-                  state.recentEmojis = state.recentEmojis.slice(0, max);
+                  state.recentEmojis = state.recentEmojis.slice(0, max)
                 }
               },
               false,
@@ -197,15 +192,15 @@ export const useEmojiStore = create<EmojiStore>()(
           recordEmojiUsage: (emoji, isCustom = false, customEmojiId) =>
             set(
               (state) => {
-                const now = Date.now();
-                const existing = state.frequentEmojis.get(emoji);
+                const now = Date.now()
+                const existing = state.frequentEmojis.get(emoji)
 
                 if (existing) {
                   state.frequentEmojis.set(emoji, {
                     ...existing,
                     count: existing.count + 1,
                     lastUsedAt: now,
-                  });
+                  })
                 } else {
                   state.frequentEmojis.set(emoji, {
                     emoji,
@@ -214,7 +209,7 @@ export const useEmojiStore = create<EmojiStore>()(
                     count: 1,
                     lastUsedAt: now,
                     firstUsedAt: now,
-                  });
+                  })
                 }
               },
               false,
@@ -222,17 +217,17 @@ export const useEmojiStore = create<EmojiStore>()(
             ),
 
           getTopEmojis: (count) => {
-            const state = get();
+            const state = get()
             return Array.from(state.frequentEmojis.values())
               .sort((a, b) => b.count - a.count)
               .slice(0, count)
-              .map((u) => u.emoji);
+              .map((u) => u.emoji)
           },
 
           clearFrequentEmojis: () =>
             set(
               (state) => {
-                state.frequentEmojis.clear();
+                state.frequentEmojis.clear()
               },
               false,
               'emoji/clearFrequentEmojis'
@@ -245,52 +240,53 @@ export const useEmojiStore = create<EmojiStore>()(
           loadCustomEmojis: async () => {
             set(
               (state) => {
-                state.customEmojisLoading = true;
-                state.customEmojisError = null;
+                state.customEmojisLoading = true
+                state.customEmojisError = null
               },
               false,
               'emoji/loadCustomEmojis/start'
-            );
+            )
 
             try {
               // Load from local storage for now
               // In production, this would fetch from API
-              const local = getLocalCustomEmojis();
+              const local = getLocalCustomEmojis()
 
               set(
                 (state) => {
-                  state.customEmojis = local;
+                  state.customEmojis = local
                   state.customEmojiCategories = Array.from(
                     new Set(
                       Array.from(local.values())
                         .map((e) => e.category)
                         .filter((c): c is string => !!c)
                     )
-                  );
-                  state.customEmojisLoaded = true;
-                  state.customEmojisLoading = false;
+                  )
+                  state.customEmojisLoaded = true
+                  state.customEmojisLoading = false
                 },
                 false,
                 'emoji/loadCustomEmojis/success'
-              );
+              )
             } catch (error) {
               set(
                 (state) => {
-                  state.customEmojisError = error instanceof Error ? error.message : 'Failed to load custom emojis';
-                  state.customEmojisLoading = false;
+                  state.customEmojisError =
+                    error instanceof Error ? error.message : 'Failed to load custom emojis'
+                  state.customEmojisLoading = false
                 },
                 false,
                 'emoji/loadCustomEmojis/error'
-              );
+              )
             }
           },
 
           addCustomEmoji: (emoji) =>
             set(
               (state) => {
-                state.customEmojis.set(emoji.id, emoji);
+                state.customEmojis.set(emoji.id, emoji)
                 if (emoji.category && !state.customEmojiCategories.includes(emoji.category)) {
-                  state.customEmojiCategories.push(emoji.category);
+                  state.customEmojiCategories.push(emoji.category)
                 }
               },
               false,
@@ -300,13 +296,13 @@ export const useEmojiStore = create<EmojiStore>()(
           updateCustomEmoji: (id, updates) =>
             set(
               (state) => {
-                const existing = state.customEmojis.get(id);
+                const existing = state.customEmojis.get(id)
                 if (existing) {
                   state.customEmojis.set(id, {
                     ...existing,
                     ...updates,
                     updatedAt: new Date().toISOString(),
-                  });
+                  })
                 }
               },
               false,
@@ -316,26 +312,23 @@ export const useEmojiStore = create<EmojiStore>()(
           removeCustomEmoji: (id) =>
             set(
               (state) => {
-                state.customEmojis.delete(id);
+                state.customEmojis.delete(id)
               },
               false,
               'emoji/removeCustomEmoji'
             ),
 
           getCustomEmojiByShortcode: (shortcode) => {
-            const state = get();
-            const normalized = shortcode.toLowerCase().replace(/^:|:$/g, '');
+            const state = get()
+            const normalized = shortcode.toLowerCase().replace(/^:|:$/g, '')
 
             for (const emoji of state.customEmojis.values()) {
-              if (
-                emoji.name === normalized ||
-                emoji.aliases.includes(normalized)
-              ) {
-                return emoji;
+              if (emoji.name === normalized || emoji.aliases.includes(normalized)) {
+                return emoji
               }
             }
 
-            return undefined;
+            return undefined
           },
 
           // ==================================================================
@@ -345,8 +338,8 @@ export const useEmojiStore = create<EmojiStore>()(
           setSkinTone: (tone) =>
             set(
               (state) => {
-                state.skinTone = tone;
-                saveSkinTone(tone);
+                state.skinTone = tone
+                saveSkinTone(tone)
               },
               false,
               'emoji/setSkinTone'
@@ -359,12 +352,12 @@ export const useEmojiStore = create<EmojiStore>()(
           openPicker: (messageId, channelId, position) =>
             set(
               (state) => {
-                state.picker.isOpen = true;
-                state.picker.targetMessageId = messageId ?? null;
-                state.picker.targetChannelId = channelId ?? null;
-                state.picker.position = position ?? null;
-                state.picker.searchQuery = '';
-                state.picker.activeCategory = 'recent';
+                state.picker.isOpen = true
+                state.picker.targetMessageId = messageId ?? null
+                state.picker.targetChannelId = channelId ?? null
+                state.picker.position = position ?? null
+                state.picker.searchQuery = ''
+                state.picker.activeCategory = 'recent'
               },
               false,
               'emoji/openPicker'
@@ -373,7 +366,7 @@ export const useEmojiStore = create<EmojiStore>()(
           closePicker: () =>
             set(
               (state) => {
-                state.picker = { ...initialPickerState };
+                state.picker = { ...initialPickerState }
               },
               false,
               'emoji/closePicker'
@@ -382,7 +375,7 @@ export const useEmojiStore = create<EmojiStore>()(
           setPickerCategory: (category) =>
             set(
               (state) => {
-                state.picker.activeCategory = category;
+                state.picker.activeCategory = category
               },
               false,
               'emoji/setPickerCategory'
@@ -391,7 +384,7 @@ export const useEmojiStore = create<EmojiStore>()(
           setPickerSearch: (query) =>
             set(
               (state) => {
-                state.picker.searchQuery = query;
+                state.picker.searchQuery = query
               },
               false,
               'emoji/setPickerSearch'
@@ -400,7 +393,7 @@ export const useEmojiStore = create<EmojiStore>()(
           setPreviewEmoji: (emoji) =>
             set(
               (state) => {
-                state.picker.previewEmoji = emoji;
+                state.picker.previewEmoji = emoji
               },
               false,
               'emoji/setPreviewEmoji'
@@ -415,8 +408,8 @@ export const useEmojiStore = create<EmojiStore>()(
               (state) => {
                 const customEmojis = Array.from(state.customEmojis.values()).filter(
                   (e) => e.enabled
-                );
-                const recentEmojis = state.recentEmojis.map((r) => r.emoji);
+                )
+                const recentEmojis = state.recentEmojis.map((r) => r.emoji)
 
                 const suggestions = generateSuggestions(
                   query,
@@ -427,7 +420,7 @@ export const useEmojiStore = create<EmojiStore>()(
                   },
                   customEmojis,
                   recentEmojis
-                );
+                )
 
                 state.autocomplete = {
                   isActive: suggestions.length > 0,
@@ -436,7 +429,7 @@ export const useEmojiStore = create<EmojiStore>()(
                   selectedIndex: 0,
                   triggerPosition,
                   cursorPosition,
-                };
+                }
               },
               false,
               'emoji/startAutocomplete'
@@ -445,10 +438,10 @@ export const useEmojiStore = create<EmojiStore>()(
           updateAutocomplete: (suggestions) =>
             set(
               (state) => {
-                state.autocomplete.suggestions = suggestions;
-                state.autocomplete.isActive = suggestions.length > 0;
+                state.autocomplete.suggestions = suggestions
+                state.autocomplete.isActive = suggestions.length > 0
                 if (state.autocomplete.selectedIndex >= suggestions.length) {
-                  state.autocomplete.selectedIndex = Math.max(0, suggestions.length - 1);
+                  state.autocomplete.selectedIndex = Math.max(0, suggestions.length - 1)
                 }
               },
               false,
@@ -458,8 +451,8 @@ export const useEmojiStore = create<EmojiStore>()(
           setAutocompleteIndex: (index) =>
             set(
               (state) => {
-                const maxIndex = state.autocomplete.suggestions.length - 1;
-                state.autocomplete.selectedIndex = Math.max(0, Math.min(index, maxIndex));
+                const maxIndex = state.autocomplete.suggestions.length - 1
+                state.autocomplete.selectedIndex = Math.max(0, Math.min(index, maxIndex))
               },
               false,
               'emoji/setAutocompleteIndex'
@@ -468,7 +461,7 @@ export const useEmojiStore = create<EmojiStore>()(
           closeAutocomplete: () =>
             set(
               (state) => {
-                state.autocomplete = { ...INITIAL_AUTOCOMPLETE_STATE };
+                state.autocomplete = { ...INITIAL_AUTOCOMPLETE_STATE }
               },
               false,
               'emoji/closeAutocomplete'
@@ -481,7 +474,7 @@ export const useEmojiStore = create<EmojiStore>()(
           setQuickReactions: (emojis) =>
             set(
               (state) => {
-                state.quickReactions = emojis.slice(0, 6);
+                state.quickReactions = emojis.slice(0, 6)
               },
               false,
               'emoji/setQuickReactions'
@@ -491,7 +484,7 @@ export const useEmojiStore = create<EmojiStore>()(
             set(
               (state) => {
                 if (!state.quickReactions.includes(emoji)) {
-                  state.quickReactions = [...state.quickReactions.slice(0, 5), emoji];
+                  state.quickReactions = [...state.quickReactions.slice(0, 5), emoji]
                 }
               },
               false,
@@ -501,7 +494,7 @@ export const useEmojiStore = create<EmojiStore>()(
           removeQuickReaction: (emoji) =>
             set(
               (state) => {
-                state.quickReactions = state.quickReactions.filter((e) => e !== emoji);
+                state.quickReactions = state.quickReactions.filter((e) => e !== emoji)
               },
               false,
               'emoji/removeQuickReaction'
@@ -514,7 +507,7 @@ export const useEmojiStore = create<EmojiStore>()(
           setAutoReplaceShortcodes: (enabled) =>
             set(
               (state) => {
-                state.autoReplaceShortcodes = enabled;
+                state.autoReplaceShortcodes = enabled
               },
               false,
               'emoji/setAutoReplaceShortcodes'
@@ -523,7 +516,7 @@ export const useEmojiStore = create<EmojiStore>()(
           setShowRecentFirst: (enabled) =>
             set(
               (state) => {
-                state.showRecentFirst = enabled;
+                state.showRecentFirst = enabled
               },
               false,
               'emoji/setShowRecentFirst'
@@ -550,11 +543,11 @@ export const useEmojiStore = create<EmojiStore>()(
         // Custom serialization for Map objects
         storage: {
           getItem: (name) => {
-            const str = localStorage.getItem(name);
-            if (!str) return null;
+            const str = localStorage.getItem(name)
+            if (!str) return null
 
             try {
-              const data = JSON.parse(str);
+              const data = JSON.parse(str)
               return {
                 ...data,
                 state: {
@@ -564,9 +557,9 @@ export const useEmojiStore = create<EmojiStore>()(
                   // Load skin tone from dedicated storage
                   skinTone: getSavedSkinTone(),
                 },
-              };
+              }
             } catch {
-              return null;
+              return null
             }
           },
           setItem: (name, value) => {
@@ -577,8 +570,8 @@ export const useEmojiStore = create<EmojiStore>()(
                 frequentEmojis: Array.from(value.state.frequentEmojis.entries()),
                 customEmojis: Array.from(value.state.customEmojis.entries()),
               },
-            };
-            localStorage.setItem(name, JSON.stringify(data));
+            }
+            localStorage.setItem(name, JSON.stringify(data))
           },
           removeItem: (name) => localStorage.removeItem(name),
         },
@@ -599,87 +592,75 @@ export const useEmojiStore = create<EmojiStore>()(
     ),
     { name: 'emoji-store' }
   )
-);
+)
 
 // ============================================================================
 // Selectors
 // ============================================================================
 
-export const selectRecentEmojis = (state: EmojiStore) => state.recentEmojis;
+export const selectRecentEmojis = (state: EmojiStore) => state.recentEmojis
 
 export const selectRecentEmojiStrings = (state: EmojiStore) =>
-  state.recentEmojis.map((r) => r.emoji);
+  state.recentEmojis.map((r) => r.emoji)
 
-export const selectFrequentEmojis = (state: EmojiStore) => state.frequentEmojis;
+export const selectFrequentEmojis = (state: EmojiStore) => state.frequentEmojis
 
 export const selectTopEmojis = (count: number) => (state: EmojiStore) =>
   Array.from(state.frequentEmojis.values())
     .sort((a, b) => b.count - a.count)
     .slice(0, count)
-    .map((u) => u.emoji);
+    .map((u) => u.emoji)
 
-export const selectCustomEmojis = (state: EmojiStore) =>
-  Array.from(state.customEmojis.values());
+export const selectCustomEmojis = (state: EmojiStore) => Array.from(state.customEmojis.values())
 
 export const selectEnabledCustomEmojis = (state: EmojiStore) =>
-  Array.from(state.customEmojis.values()).filter((e) => e.enabled);
+  Array.from(state.customEmojis.values()).filter((e) => e.enabled)
 
 export const selectCustomEmojisByCategory = (category: string) => (state: EmojiStore) =>
-  Array.from(state.customEmojis.values()).filter((e) => e.category === category);
+  Array.from(state.customEmojis.values()).filter((e) => e.category === category)
 
-export const selectCustomEmojiCategories = (state: EmojiStore) =>
-  state.customEmojiCategories;
+export const selectCustomEmojiCategories = (state: EmojiStore) => state.customEmojiCategories
 
-export const selectCustomEmojisLoaded = (state: EmojiStore) =>
-  state.customEmojisLoaded;
+export const selectCustomEmojisLoaded = (state: EmojiStore) => state.customEmojisLoaded
 
-export const selectCustomEmojisLoading = (state: EmojiStore) =>
-  state.customEmojisLoading;
+export const selectCustomEmojisLoading = (state: EmojiStore) => state.customEmojisLoading
 
-export const selectSkinTone = (state: EmojiStore) => state.skinTone;
+export const selectSkinTone = (state: EmojiStore) => state.skinTone
 
-export const selectPicker = (state: EmojiStore) => state.picker;
+export const selectPicker = (state: EmojiStore) => state.picker
 
-export const selectPickerIsOpen = (state: EmojiStore) => state.picker.isOpen;
+export const selectPickerIsOpen = (state: EmojiStore) => state.picker.isOpen
 
-export const selectPickerCategory = (state: EmojiStore) =>
-  state.picker.activeCategory;
+export const selectPickerCategory = (state: EmojiStore) => state.picker.activeCategory
 
-export const selectPickerSearch = (state: EmojiStore) =>
-  state.picker.searchQuery;
+export const selectPickerSearch = (state: EmojiStore) => state.picker.searchQuery
 
-export const selectPreviewEmoji = (state: EmojiStore) =>
-  state.picker.previewEmoji;
+export const selectPreviewEmoji = (state: EmojiStore) => state.picker.previewEmoji
 
-export const selectAutocomplete = (state: EmojiStore) => state.autocomplete;
+export const selectAutocomplete = (state: EmojiStore) => state.autocomplete
 
-export const selectAutocompleteIsActive = (state: EmojiStore) =>
-  state.autocomplete.isActive;
+export const selectAutocompleteIsActive = (state: EmojiStore) => state.autocomplete.isActive
 
-export const selectAutocompleteSuggestions = (state: EmojiStore) =>
-  state.autocomplete.suggestions;
+export const selectAutocompleteSuggestions = (state: EmojiStore) => state.autocomplete.suggestions
 
-export const selectAutocompleteIndex = (state: EmojiStore) =>
-  state.autocomplete.selectedIndex;
+export const selectAutocompleteIndex = (state: EmojiStore) => state.autocomplete.selectedIndex
 
-export const selectQuickReactions = (state: EmojiStore) => state.quickReactions;
+export const selectQuickReactions = (state: EmojiStore) => state.quickReactions
 
-export const selectAutoReplaceShortcodes = (state: EmojiStore) =>
-  state.autoReplaceShortcodes;
+export const selectAutoReplaceShortcodes = (state: EmojiStore) => state.autoReplaceShortcodes
 
-export const selectShowRecentFirst = (state: EmojiStore) =>
-  state.showRecentFirst;
+export const selectShowRecentFirst = (state: EmojiStore) => state.showRecentFirst
 
 // ============================================================================
 // Derived Selectors
 // ============================================================================
 
 export const selectCurrentAutocompleteSuggestion = (state: EmojiStore) => {
-  const { suggestions, selectedIndex } = state.autocomplete;
-  return suggestions[selectedIndex] ?? null;
-};
+  const { suggestions, selectedIndex } = state.autocomplete
+  return suggestions[selectedIndex] ?? null
+}
 
 export const selectPickerTarget = (state: EmojiStore) => ({
   messageId: state.picker.targetMessageId,
   channelId: state.picker.targetChannelId,
-});
+})

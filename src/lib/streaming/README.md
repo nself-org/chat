@@ -152,7 +152,7 @@ const {
   availableMicrophones,
 
   // Info
-  duration
+  duration,
 } = useLiveStream(options)
 ```
 
@@ -186,7 +186,7 @@ const {
   // Info
   latency,
   volume,
-  isMuted
+  isMuted,
 } = useStreamViewer(options)
 ```
 
@@ -202,34 +202,28 @@ const {
   deleteMessage,
   pinMessage,
   unpinMessage,
-  clear
+  clear,
 } = useStreamChat(options)
 ```
 
 ### useStreamReactions()
 
 ```typescript
-const {
-  reactions,
-  recentReactions,
-  isSending,
-  error,
-  sendReaction,
-  clearReactions
-} = useStreamReactions(options)
+const { reactions, recentReactions, isSending, error, sendReaction, clearReactions } =
+  useStreamReactions(options)
 ```
 
 ## Quality Levels
 
 Supported quality presets:
 
-| Quality | Resolution | Bitrate | FPS | Use Case |
-|---------|-----------|---------|-----|----------|
-| 1080p | 1920x1080 | 3000 kbps | 30 | High quality, good bandwidth |
-| 720p | 1280x720 | 1500 kbps | 30 | HD, recommended default |
-| 480p | 854x480 | 800 kbps | 24 | SD, moderate bandwidth |
-| 360p | 640x360 | 400 kbps | 24 | Low bandwidth |
-| auto | Adaptive | Dynamic | Dynamic | Automatic selection |
+| Quality | Resolution | Bitrate   | FPS     | Use Case                     |
+| ------- | ---------- | --------- | ------- | ---------------------------- |
+| 1080p   | 1920x1080  | 3000 kbps | 30      | High quality, good bandwidth |
+| 720p    | 1280x720   | 1500 kbps | 30      | HD, recommended default      |
+| 480p    | 854x480    | 800 kbps  | 24      | SD, moderate bandwidth       |
+| 360p    | 640x360    | 400 kbps  | 24      | Low bandwidth                |
+| auto    | Adaptive   | Dynamic   | Dynamic | Automatic selection          |
 
 ## Configuration
 
@@ -396,6 +390,7 @@ pnpm test:e2e streaming
 ## Examples
 
 See full examples in:
+
 - `/src/components/streaming/StreamBroadcaster.tsx`
 - `/src/components/streaming/StreamViewer.tsx`
 - `/docs/Live-Streaming-Implementation.md`
